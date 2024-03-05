@@ -1,735 +1,384 @@
-Return-Path: <linux-kernel+bounces-91536-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91537-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26AD5871352
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 03:09:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F00C871353
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 03:09:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4ACEB1C20B92
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 02:09:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A48631F21E47
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 02:09:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8477781AD6;
-	Tue,  5 Mar 2024 02:02:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC6A3823CE;
+	Tue,  5 Mar 2024 02:02:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Gz/NtZSG"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mUNpBBf6"
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0065F18042
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 02:02:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57C3D811E7
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 02:02:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709604159; cv=none; b=NcnYaVHI2np8aGvbo3bh4pBNz8untJrkP2iGAeqz5/NhWxMqM2+sg2wdEx6jYNkD09JSjHOMh/nBOoKXqEiKLpDwfN8bjGvDHmu+4O9UFr5HbMEcfgEM0rgr+XRookBUJGYT/xPQWJ/V5D/kqjfehs+LjhKOTbgvyZ6/NsIuo2U=
+	t=1709604161; cv=none; b=OjKdqfMKi6vZD9r2MToFXPGVZ1fYv9QHR8aul8C4JSiofRpqOnI6QDjHZgVH/27OM/iVJnNqH3JyMBd+ty68WzkbjuHTLA91SCKDQuaAQCGDQkKIsWb2CxxDnec/ib2hsB0SU7kxfDvibuiW592Rb1DBq87Ai+dRax6nKNVkDRA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709604159; c=relaxed/simple;
-	bh=fFkqQcx92p68aicbkRb9pZs7BOjQmnw+Fb2Zpoo9KNg=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=TXqUXI8hBdTQ3IW6+A3FRK61Jg5AS7U/K1EBTWjkkWfGj2o5TPeKzENob9rHolX3rN/LOrJ7qXOVEXvMd7/KXx+b/+xKJcclidzpZSf5eMiRmhaj56sOPwIf4vMw9C8t0OTFVlha6EqCua0aSJ+X2qXkqjLvfW69gE548RMI3BE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--almasrymina.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Gz/NtZSG; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--almasrymina.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dbf216080f5so8634251276.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 18:02:31 -0800 (PST)
+	s=arc-20240116; t=1709604161; c=relaxed/simple;
+	bh=0g4kx20v/tRug+W1PYpsc8oafUvPrCF9Vh1iHG822jM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=V0B8zhPHGgY8PQ+1jX68wTVfXlFnnJDimSJALfY7KQM6KxxxzSr5cxRVHfpc+5Y/OwEyKPUZWT74gqODuMN8TPCTenQU6HlIkvz7yuYT27uyOLwBUtk/y0uoAk9KYRiOjg/c90Osp8oYagaFSnk1AWrK+dlPrWKF7t1a6PwwL00=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mUNpBBf6; arc=none smtp.client-ip=209.85.208.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d2fad80eacso62700061fa.2
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 18:02:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709604150; x=1710208950; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7F3OxCHuxD/wfUd3/CXrrQOmAEUmKrZfBVtFAOxKGRs=;
-        b=Gz/NtZSG/L6LC/JscfksEBHh8IiSZFtaPPLMIVs9FKBqHxo25L4U0pp3ieForbZTNw
-         CNHZZ0wa/NzI23+DUAoWYU25XE4oBQoqfUk2XHUK3fC/zXc36kXNaKandZbDwct9hRfn
-         NnscWBtYQjkvIGphuOma26u8OkFgJ7exppYeNJl53c7zfKtlI4fuS2U2Fojngf51ymeE
-         QaoFx6Xob51QHTknhcd0GBt9Ojqll8qXRlZ6KzaH4WLGT9gu0cIfzScMsSOmthvwgJMm
-         ik6Flg/7LAysDzTYKiwxn5KMzusRkhhidjiJKW0xHvToqFXm8IZIGKaLid4wN/vXoMnm
-         He9w==
+        d=gmail.com; s=20230601; t=1709604156; x=1710208956; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dlW642xaVm1YPl/8Ib6sKqDg0VXyxF4Hc3ocprVAWtM=;
+        b=mUNpBBf6B0xbcS82v73Sbq2x0PCS1Prz0DTWRHuwlc+6+QVHfPIsHRLZyyikC14Kzo
+         mjvw1iA5BeyP703mNp0OHtpC5fg9PncE/O9kteVNOI0QUPC1YO31auuHJEIg2QUhBltX
+         xPe5FN6Lp9UAyh9+cuc0FZJ8uhcEinON6VqiY7yZ3rxC+6kJOYZ3J828pKGXFZ2gyTzh
+         +06Q44rYufu6ZBkC/9xwxIBwfRrQHTJjPq8JFCc8VlFO9AkeW4tTtn0P48abhsOw+cPF
+         ERVmKRCUVzB3pTfzDN5RJX+5gAgESt7GTN/e2jymL/fx3hIhbt7PM4fRixK4subFpyo3
+         l3mA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709604150; x=1710208950;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7F3OxCHuxD/wfUd3/CXrrQOmAEUmKrZfBVtFAOxKGRs=;
-        b=o5WsGFpZ0M1qt171tBKWCPGwvwtgMIoEk5P8y5Jb7mcvRWMdELdNIUS+giquyp8hYm
-         xVbaz9ecf28EBr8VHKDFqBpGemmyq38Ej09qUFHg5yYeCYDpvMsswLejIGza/7uxkj/u
-         C6WXuDzHDYHpR6UdJpFJOUEyLHVHZSLs4aYYFB7/bVnYt34EIfT9MAPS+PdXYLfDZ3nY
-         peFSag3XAPSHcfr1v4L1LR+Beun6m7y2koEbEnO1MEk6nseVrSdQwl9u8CYdr87UceAT
-         jkH1zgr0tX1fminv9YKvNQC6HLlQ5tMf5v0MJlAVDC+ZIxeoH2e5G1OHkQ87JKASPTtq
-         wQDg==
-X-Forwarded-Encrypted: i=1; AJvYcCW9zzO+3TKdOtlUlUe8wXgV9NGJJg8WGWyFuqEUlfFROwbtHddYoDLjfteqnDUYA3FZy3/A5CXW+38RCrLUDu+vjjj5AQos4J6ZVQMt
-X-Gm-Message-State: AOJu0YzyFk+A8dpa/vvbnNGsO82jUjGBaGxHi1uC/dyZVy6cNWW7aHRi
-	ySWLzeqCd4HakFyrPP/gpuN3SStWbO5iW5FiM7dMo3CqspGgct7/7sUOJ6+CUcUNHQkF9bYd/Yt
-	7Gy1NgPUixGm5/MRHk22IjQ==
-X-Google-Smtp-Source: AGHT+IHGjGMY+bU3KpdBxaQ4QgghhAnfQK92nUglVIsFNKiOUJPq1F/KX63yTBNBYXSN8XATOUAAoqF36I9x3VR32w==
-X-Received: from almasrymina.svl.corp.google.com ([2620:15c:2c4:200:b614:914c:63cd:3830])
- (user=almasrymina job=sendgmr) by 2002:a25:c786:0:b0:dc2:466a:23c4 with SMTP
- id w128-20020a25c786000000b00dc2466a23c4mr2819118ybe.4.1709604150002; Mon, 04
- Mar 2024 18:02:30 -0800 (PST)
-Date: Mon,  4 Mar 2024 18:01:50 -0800
-In-Reply-To: <20240305020153.2787423-1-almasrymina@google.com>
+        d=1e100.net; s=20230601; t=1709604156; x=1710208956;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dlW642xaVm1YPl/8Ib6sKqDg0VXyxF4Hc3ocprVAWtM=;
+        b=Tjc3RNNwIe7802CVUKWboV6gfca+rN0lXSZxSvHHjBlQ7zL6s4xvjPD5Bgb+EkLcrD
+         8BBnqMR6yKUx5d0vdW3mMgw/v+lvmiNBikF/60JKsgMaeoKe44z/8fSVy4xb3ZD8fRyH
+         kIUhi25dKSLgffNJoLlD54a7B1qmrxSTF0EyeHNxRAahxSufxN+jIBrFgXIuYLOTuTVS
+         +Wysi0LuNEZpal+xLBn2V6yZB9fLHk0QAo7yf7Sc62YKqQ4REZGUqMP3/oMJGBbzBW6d
+         5KieUi+Hk9rmx4aHkEbEcOdnfCm3N4eX3C/nQijep8IfJSZY+71XVUN9NnZZM/n9Pvxq
+         dCTw==
+X-Forwarded-Encrypted: i=1; AJvYcCWg3WMka6RLpcYw0LilboTCXJ2O1L8kllGpsXFHJMUvrmYDSTAowAOsIdRb7NccGtkZor6EnVII8bmIPsxohvQ30Zgu3j5zbu2JvTTT
+X-Gm-Message-State: AOJu0YwYhIoDzoMYPf/FqIaA6Rmge4KWtxftP88Ne543k77NdahTcSEI
+	gHMG594gOIiipNPKbTYDXhL+8eazdEaq76NX67KSIQMy4JDS6IgHHdLPaad6Q28L77Hq1XnFWo8
+	0p2pVpQuU7yu9DPaSSEI6d3v+jOA=
+X-Google-Smtp-Source: AGHT+IGiwUkSuP9+6+NmoXDCQ2rtvHtM4P7ba4Z9HtTCZAYBcKfxvv1g4VxkgI6pPEYXzDaY+XPTS3bfhbxe7gMTTBI=
+X-Received: by 2002:a19:9149:0:b0:513:a6:2f4 with SMTP id y9-20020a199149000000b0051300a602f4mr320633lfj.13.1709604155767;
+ Mon, 04 Mar 2024 18:02:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240305020153.2787423-1-almasrymina@google.com>
-X-Mailer: git-send-email 2.44.0.rc1.240.g4c46232300-goog
-Message-ID: <20240305020153.2787423-16-almasrymina@google.com>
-Subject: [RFC PATCH net-next v6 15/15] selftests: add ncdevmem, netcat for
- devmem TCP
-From: Mina Almasry <almasrymina@google.com>
-To: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	linux-arch@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org
-Cc: Mina Almasry <almasrymina@google.com>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Jonathan Corbet <corbet@lwn.net>, Richard Henderson <richard.henderson@linaro.org>, 
-	Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Helge Deller <deller@gmx.de>, 
-	Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, David Ahern <dsahern@kernel.org>, 
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
-	Sumit Semwal <sumit.semwal@linaro.org>, 
-	"=?UTF-8?q?Christian=20K=C3=B6nig?=" <christian.koenig@amd.com>, Pavel Begunkov <asml.silence@gmail.com>, 
-	David Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin <linyunsheng@huawei.com>, 
-	Shailend Chand <shailend@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>, 
-	Shakeel Butt <shakeelb@google.com>, Jeroen de Borst <jeroendb@google.com>, 
-	Praveen Kaligineedi <pkaligineedi@google.com>
+MIME-Version: 1.0
+References: <20240111081743.2999210-1-chao@kernel.org> <ae43ed8a-49b5-44bf-8fea-a222091e9790@kernel.org>
+ <ed3eecaf9e2f4c8fae2fd01241aa097e@BJMBX02.spreadtrum.com> <CAHJ8P3JzanzGqjuJ8ODMxE4rguxrQ-yd4Ho16RCDH9u975gOEA@mail.gmail.com>
+In-Reply-To: <CAHJ8P3JzanzGqjuJ8ODMxE4rguxrQ-yd4Ho16RCDH9u975gOEA@mail.gmail.com>
+From: Zhiguo Niu <niuzhiguo84@gmail.com>
+Date: Tue, 5 Mar 2024 10:02:24 +0800
+Message-ID: <CAHJ8P3K9uXCjJtGVtajPRWjjoH2yi29VVf09ckgqtLduYPZ6cw@mail.gmail.com>
+Subject: Re: [PATCH v3] f2fs: reduce expensive checkpoint trigger frequency
+To: "jaegeuk@kernel.org" <jaegeuk@kernel.org>
+Cc: "linux-f2fs-devel@lists.sourceforge.net" <linux-f2fs-devel@lists.sourceforge.net>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Chao Yu <chao@kernel.org>, 
+	=?UTF-8?B?6YeR57qi5a6HIChIb25neXUgSmluKQ==?= <hongyu.jin@unisoc.com>, 
+	=?UTF-8?B?54mb5b+X5Zu9IChaaGlndW8gTml1KQ==?= <zhiguo.niu@unisoc.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-ncdevmem is a devmem TCP netcat. It works similarly to netcat, but it
-sends and receives data using the devmem TCP APIs. It uses udmabuf as
-the dmabuf provider. It is compatible with a regular netcat running on
-a peer, or a ncdevmem running on a peer.
+Sorry, move jaegeuk to the "To"   list
 
-In addition to normal netcat support, ncdevmem has a validation mode,
-where it sends a specific pattern and validates this pattern on the
-receiver side to ensure data integrity.
+Dear  Jaegeuk,
 
-Suggested-by: Stanislav Fomichev <sdf@google.com>
-Signed-off-by: Mina Almasry <almasrymina@google.com>
+Let me describe the problem process, it is reproduced by monkey stability t=
+est:
 
----
+ 1.SBI_NEED_CP flag bit is set=EF=BC=8C
+ set_sbi_flag(F2FS_I_SB(inode), SBI_NEED_CP);
 
-v6:
-- Updated to bind 8 queues.
-- Added RSS configuration.
-- Added some more tests for the netlink API.
+ 2.Ckpt thread is blocked by IO busy when it is doing CP,  it can not
+get request tag from block queue,
+ PID: 505      TASK: ffffff80ed7f49c0  CPU: 4    COMMAND: "f2fs_ckpt-254:4"
+ #0 [ffffffc015fcb330] __switch_to at ffffffc010196350
+ #1 [ffffffc015fcb390] __schedule at ffffffc01168e53c
+ #2 [ffffffc015fcb3f0] schedule at ffffffc01168ed7c
+ #3 [ffffffc015fcb450] io_schedule at ffffffc01168f7a0
+ #4 [ffffffc015fcb4c0] blk_mq_get_tag at ffffffc0101008a4
+ #5 [ffffffc015fcb530] blk_mq_get_request at ffffffc0109241b0
+ #6 [ffffffc015fcb5f0] blk_mq_make_request at ffffffc0109233bc
+ #7 [ffffffc015fcb680] generic_make_request at ffffffc0100fc6ec
+ #8 [ffffffc015fcb700] submit_bio at ffffffc0100fc3b8
+ #9 [ffffffc015fcb750] __submit_bio at ffffffc01081a2e0
+ #10 [ffffffc015fcb7d0] __submit_merged_bio at ffffffc01081b07c
+ #11 [ffffffc015fcb8a0] f2fs_submit_page_write at ffffffc0100ecd3c
+ #12 [ffffffc015fcb990] f2fs_do_write_meta_page at ffffffc010845738
+ #13 [ffffffc015fcb9d0] __f2fs_write_meta_page at ffffffc01080a8f4
+ #14 [ffffffc015fcbb60] f2fs_sync_meta_pages at ffffffc01080a684
+ #15 [ffffffc015fcbca0] do_checkpoint at ffffffc01080f0a8
+ #16 [ffffffc015fcbd10] f2fs_write_checkpoint at ffffffc01080e50c
+ #17 [ffffffc015fcbdb0] __checkpoint_and_complete_reqs at ffffffc010810f54
+ #18 [ffffffc015fcbe40] issue_checkpoint_thread at ffffffc0108113ec
+ #19 [ffffffc015fcbe80] kthread at ffffffc0102665b0
 
-Changes in v1:
-- Many more general cleanups (Willem).
-- Removed driver reset (Jakub).
-- Removed hardcoded if index (Paolo).
+ 3.Subsequent regular file fsync will trigger ckpt because SBI_NEED_CP
+has not been cleared.
+ In fact, these cases should not trigger ckpt.
 
-RFC v2:
-- General cleanups (Willem).
+ 4.If some processes that perform f2fs_do_sync_file are important processes
+ in the system(such as init) and are blocked for too long, it will
+cause other problems in the system, ANR or android reboot
+ PID: 287      TASK: ffffff80f9eb0ec0  CPU: 2    COMMAND: "init"
+ #0 [ffffffc01389bab0] __switch_to at ffffffc010196350
+ #1 [ffffffc01389bb10] __schedule at ffffffc01168e53c
+ #2 [ffffffc01389bb70] schedule at ffffffc01168ed7c
+ #3 [ffffffc01389bbc0] wait_for_completion at ffffffc011692368
+ #4 [ffffffc01389bca0] f2fs_issue_checkpoint at ffffffc010810cb0
+ #5 [ffffffc01389bd00] f2fs_sync_fs at ffffffc0107f4e1c
+ #6 [ffffffc01389bdc0] f2fs_do_sync_file at ffffffc0107d4d44
+ #7 [ffffffc01389be20] f2fs_sync_file at ffffffc0107d492c
+ #8 [ffffffc01389be30] __arm64_sys_fsync at ffffffc0105d31d8
+ #9 [ffffffc01389be70] el0_svc_common at ffffffc0101aa550
+ #10 [ffffffc01389beb0] el0_svc_handler at ffffffc0100886fc
 
----
- tools/testing/selftests/net/.gitignore |   1 +
- tools/testing/selftests/net/Makefile   |   5 +
- tools/testing/selftests/net/ncdevmem.c | 546 +++++++++++++++++++++++++
- 3 files changed, 552 insertions(+)
- create mode 100644 tools/testing/selftests/net/ncdevmem.c
+and I tested Chao's patch can avoid the above case, please help
+consider this patch or
+any comment/suggestions about this?
 
-diff --git a/tools/testing/selftests/net/.gitignore b/tools/testing/selftests/net/.gitignore
-index 2f9d378edec3..b644dbae58b7 100644
---- a/tools/testing/selftests/net/.gitignore
-+++ b/tools/testing/selftests/net/.gitignore
-@@ -17,6 +17,7 @@ ipv6_flowlabel
- ipv6_flowlabel_mgr
- log.txt
- msg_zerocopy
-+ncdevmem
- nettest
- psock_fanout
- psock_snd
-diff --git a/tools/testing/selftests/net/Makefile b/tools/testing/selftests/net/Makefile
-index 7b6918d5f4af..c9853573e60c 100644
---- a/tools/testing/selftests/net/Makefile
-+++ b/tools/testing/selftests/net/Makefile
-@@ -5,6 +5,10 @@ CFLAGS =  -Wall -Wl,--no-as-needed -O2 -g
- CFLAGS += -I../../../../usr/include/ $(KHDR_INCLUDES)
- # Additional include paths needed by kselftest.h
- CFLAGS += -I../
-+CFLAGS += -I../../../net/ynl/generated/
-+CFLAGS += -I../../../net/ynl/lib/
-+
-+LDLIBS += ../../../net/ynl/lib/ynl.a ../../../net/ynl/generated/protos.a
- 
- TEST_PROGS := run_netsocktests run_afpackettests test_bpf.sh netdevice.sh \
- 	      rtnetlink.sh xfrm_policy.sh test_blackhole_dev.sh
-@@ -93,6 +97,7 @@ TEST_PROGS += test_bridge_backup_port.sh
- TEST_PROGS += fdb_flush.sh
- TEST_PROGS += fq_band_pktlimit.sh
- TEST_PROGS += vlan_hw_filter.sh
-+TEST_GEN_FILES += ncdevmem
- 
- TEST_FILES := settings
- TEST_FILES += in_netns.sh lib.sh net_helper.sh setup_loopback.sh setup_veth.sh
-diff --git a/tools/testing/selftests/net/ncdevmem.c b/tools/testing/selftests/net/ncdevmem.c
-new file mode 100644
-index 000000000000..11bfe3e1125b
---- /dev/null
-+++ b/tools/testing/selftests/net/ncdevmem.c
-@@ -0,0 +1,546 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#define _GNU_SOURCE
-+#define __EXPORTED_HEADERS__
-+
-+#include <linux/uio.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <stdbool.h>
-+#include <string.h>
-+#include <errno.h>
-+#define __iovec_defined
-+#include <fcntl.h>
-+#include <malloc.h>
-+#include <error.h>
-+
-+#include <arpa/inet.h>
-+#include <sys/socket.h>
-+#include <sys/mman.h>
-+#include <sys/ioctl.h>
-+#include <sys/syscall.h>
-+
-+#include <linux/memfd.h>
-+#include <linux/if.h>
-+#include <linux/dma-buf.h>
-+#include <linux/udmabuf.h>
-+#include <libmnl/libmnl.h>
-+#include <linux/types.h>
-+#include <linux/netlink.h>
-+#include <linux/genetlink.h>
-+#include <linux/netdev.h>
-+#include <time.h>
-+
-+#include "netdev-user.h"
-+#include <ynl.h>
-+
-+#define PAGE_SHIFT 12
-+#define TEST_PREFIX "ncdevmem"
-+#define NUM_PAGES 16000
-+
-+#ifndef MSG_SOCK_DEVMEM
-+#define MSG_SOCK_DEVMEM 0x2000000
-+#endif
-+
-+/*
-+ * tcpdevmem netcat. Works similarly to netcat but does device memory TCP
-+ * instead of regular TCP. Uses udmabuf to mock a dmabuf provider.
-+ *
-+ * Usage:
-+ *
-+ *	On server:
-+ *	ncdevmem -s <server IP> -c <client IP> -f eth1 -d 3 -n 0000:06:00.0 -l \
-+ *		-p 5201 -v 7
-+ *
-+ *	On client:
-+ *	yes $(echo -e \\x01\\x02\\x03\\x04\\x05\\x06) | \
-+ *		tr \\n \\0 | \
-+ *		head -c 5G | \
-+ *		nc <server IP> 5201 -p 5201
-+ *
-+ * Note this is compatible with regular netcat. i.e. the sender or receiver can
-+ * be replaced with regular netcat to test the RX or TX path in isolation.
-+ */
-+
-+static char *server_ip = "192.168.1.4";
-+static char *client_ip = "192.168.1.2";
-+static char *port = "5201";
-+static size_t do_validation;
-+static int start_queue = 8;
-+static int num_queues = 8;
-+static char *ifname = "eth1";
-+static unsigned int ifindex = 3;
-+static char *nic_pci_addr = "0000:06:00.0";
-+static unsigned int iterations;
-+static unsigned int dmabuf_id;
-+
-+void print_bytes(void *ptr, size_t size)
-+{
-+	unsigned char *p = ptr;
-+	int i;
-+
-+	for (i = 0; i < size; i++)
-+		printf("%02hhX ", p[i]);
-+	printf("\n");
-+}
-+
-+void print_nonzero_bytes(void *ptr, size_t size)
-+{
-+	unsigned char *p = ptr;
-+	unsigned int i;
-+
-+	for (i = 0; i < size; i++)
-+		putchar(p[i]);
-+	printf("\n");
-+}
-+
-+void validate_buffer(void *line, size_t size)
-+{
-+	static unsigned char seed = 1;
-+	unsigned char *ptr = line;
-+	int errors = 0;
-+	size_t i;
-+
-+	for (i = 0; i < size; i++) {
-+		if (ptr[i] != seed) {
-+			fprintf(stderr,
-+				"Failed validation: expected=%u, actual=%u, index=%lu\n",
-+				seed, ptr[i], i);
-+			errors++;
-+			if (errors > 20)
-+				error(1, 0, "validation failed.");
-+		}
-+		seed++;
-+		if (seed == do_validation)
-+			seed = 0;
-+	}
-+
-+	fprintf(stdout, "Validated buffer\n");
-+}
-+
-+static void reset_flow_steering(void)
-+{
-+	char command[256];
-+
-+	memset(command, 0, sizeof(command));
-+	snprintf(command, sizeof(command), "sudo ethtool -K %s ntuple off",
-+		 "eth1");
-+	system(command);
-+
-+	memset(command, 0, sizeof(command));
-+	snprintf(command, sizeof(command), "sudo ethtool -K %s ntuple on",
-+		 "eth1");
-+	system(command);
-+}
-+
-+static void configure_rss(void)
-+{
-+	char command[256];
-+
-+	memset(command, 0, sizeof(command));
-+	snprintf(command, sizeof(command), "sudo ethtool -X %s equal %d",
-+		 ifname, start_queue);
-+	system(command);
-+}
-+
-+static void configure_flow_steering(void)
-+{
-+	char command[256];
-+
-+	memset(command, 0, sizeof(command));
-+	snprintf(command, sizeof(command),
-+		 "sudo ethtool -N %s flow-type tcp4 src-ip %s dst-ip %s src-port %s dst-port %s queue %d",
-+		 ifname, client_ip, server_ip, port, port, start_queue);
-+	system(command);
-+}
-+
-+static int bind_rx_queue(unsigned int ifindex, unsigned int dmabuf_fd,
-+			 struct netdev_queue_dmabuf *queues,
-+			 unsigned int n_queue_index, struct ynl_sock **ys)
-+{
-+	struct netdev_bind_rx_req *req = NULL;
-+	struct netdev_bind_rx_rsp *rsp = NULL;
-+	struct ynl_error yerr;
-+
-+	*ys = ynl_sock_create(&ynl_netdev_family, &yerr);
-+	if (!*ys) {
-+		fprintf(stderr, "YNL: %s\n", yerr.msg);
-+		return -1;
-+	}
-+
-+	req = netdev_bind_rx_req_alloc();
-+	netdev_bind_rx_req_set_ifindex(req, ifindex);
-+	netdev_bind_rx_req_set_dmabuf_fd(req, dmabuf_fd);
-+	__netdev_bind_rx_req_set_queues(req, queues, n_queue_index);
-+
-+	rsp = netdev_bind_rx(*ys, req);
-+	if (!rsp) {
-+		perror("netdev_bind_rx");
-+		goto err_close;
-+	}
-+
-+	if (!rsp->_present.dmabuf_id) {
-+		perror("dmabuf_id not present");
-+		goto err_close;
-+	}
-+
-+	printf("got dmabuf id=%d\n", rsp->dmabuf_id);
-+	dmabuf_id = rsp->dmabuf_id;
-+
-+	netdev_bind_rx_req_free(req);
-+	netdev_bind_rx_rsp_free(rsp);
-+
-+	return 0;
-+
-+err_close:
-+	fprintf(stderr, "YNL failed: %s\n", (*ys)->err.msg);
-+	netdev_bind_rx_req_free(req);
-+	ynl_sock_destroy(*ys);
-+	return -1;
-+}
-+
-+static void create_udmabuf(int *devfd, int *memfd, int *buf, size_t dmabuf_size)
-+{
-+	struct udmabuf_create create;
-+	int ret;
-+
-+	*devfd = open("/dev/udmabuf", O_RDWR);
-+	if (*devfd < 0) {
-+		error(70, 0,
-+		      "%s: [skip,no-udmabuf: Unable to access DMA buffer device file]\n",
-+		      TEST_PREFIX);
-+	}
-+
-+	*memfd = memfd_create("udmabuf-test", MFD_ALLOW_SEALING);
-+	if (*memfd < 0)
-+		error(70, 0, "%s: [skip,no-memfd]\n", TEST_PREFIX);
-+
-+	/* Required for udmabuf */
-+	ret = fcntl(*memfd, F_ADD_SEALS, F_SEAL_SHRINK);
-+	if (ret < 0)
-+		error(73, 0, "%s: [skip,fcntl-add-seals]\n", TEST_PREFIX);
-+
-+	ret = ftruncate(*memfd, dmabuf_size);
-+	if (ret == -1)
-+		error(74, 0, "%s: [FAIL,memfd-truncate]\n", TEST_PREFIX);
-+
-+	memset(&create, 0, sizeof(create));
-+
-+	create.memfd = *memfd;
-+	create.offset = 0;
-+	create.size = dmabuf_size;
-+	*buf = ioctl(*devfd, UDMABUF_CREATE, &create);
-+	if (*buf < 0)
-+		error(75, 0, "%s: [FAIL, create udmabuf]\n", TEST_PREFIX);
-+}
-+
-+int do_server(void)
-+{
-+	char ctrl_data[sizeof(int) * 20000];
-+	struct netdev_queue_dmabuf *queues;
-+	size_t non_page_aligned_frags = 0;
-+	struct sockaddr_in client_addr;
-+	struct sockaddr_in server_sin;
-+	size_t page_aligned_frags = 0;
-+	int devfd, memfd, buf, ret;
-+	size_t total_received = 0;
-+	socklen_t client_addr_len;
-+	bool is_devmem = false;
-+	char *buf_mem = NULL;
-+	struct ynl_sock *ys;
-+	size_t dmabuf_size;
-+	char iobuf[819200];
-+	char buffer[256];
-+	int socket_fd;
-+	int client_fd;
-+	size_t i = 0;
-+	int opt = 1;
-+
-+	dmabuf_size = getpagesize() * NUM_PAGES;
-+
-+	create_udmabuf(&devfd, &memfd, &buf, dmabuf_size);
-+
-+	reset_flow_steering();
-+
-+	/* Configure RSS to divert all traffic from our devmem queues */
-+	configure_rss();
-+
-+	/* Flow steer our devmem flows to start_queue */
-+	configure_flow_steering();
-+
-+	sleep(1);
-+
-+	queues = malloc(sizeof(*queues) * num_queues);
-+
-+	for (i = 0; i < num_queues; i++) {
-+		queues[i]._present.type = 1;
-+		queues[i]._present.idx = 1;
-+		queues[i].type = NETDEV_QUEUE_TYPE_RX;
-+		queues[i].idx = start_queue + i;
-+	}
-+
-+	if (bind_rx_queue(ifindex, buf, queues, num_queues, &ys))
-+		error(1, 0, "Failed to bind\n");
-+
-+	buf_mem = mmap(NULL, dmabuf_size, PROT_READ | PROT_WRITE, MAP_SHARED,
-+		       buf, 0);
-+	if (buf_mem == MAP_FAILED)
-+		error(1, 0, "mmap()");
-+
-+	server_sin.sin_family = AF_INET;
-+	server_sin.sin_port = htons(atoi(port));
-+
-+	ret = inet_pton(server_sin.sin_family, server_ip, &server_sin.sin_addr);
-+	if (socket < 0)
-+		error(79, 0, "%s: [FAIL, create socket]\n", TEST_PREFIX);
-+
-+	socket_fd = socket(server_sin.sin_family, SOCK_STREAM, 0);
-+	if (socket < 0)
-+		error(errno, errno, "%s: [FAIL, create socket]\n", TEST_PREFIX);
-+
-+	ret = setsockopt(socket_fd, SOL_SOCKET, SO_REUSEPORT, &opt,
-+			 sizeof(opt));
-+	if (ret)
-+		error(errno, errno, "%s: [FAIL, set sock opt]\n", TEST_PREFIX);
-+
-+	ret = setsockopt(socket_fd, SOL_SOCKET, SO_REUSEADDR, &opt,
-+			 sizeof(opt));
-+	if (ret)
-+		error(errno, errno, "%s: [FAIL, set sock opt]\n", TEST_PREFIX);
-+
-+	printf("binding to address %s:%d\n", server_ip,
-+	       ntohs(server_sin.sin_port));
-+
-+	ret = bind(socket_fd, &server_sin, sizeof(server_sin));
-+	if (ret)
-+		error(errno, errno, "%s: [FAIL, bind]\n", TEST_PREFIX);
-+
-+	ret = listen(socket_fd, 1);
-+	if (ret)
-+		error(errno, errno, "%s: [FAIL, listen]\n", TEST_PREFIX);
-+
-+	client_addr_len = sizeof(client_addr);
-+
-+	inet_ntop(server_sin.sin_family, &server_sin.sin_addr, buffer,
-+		  sizeof(buffer));
-+	printf("Waiting or connection on %s:%d\n", buffer,
-+	       ntohs(server_sin.sin_port));
-+	client_fd = accept(socket_fd, &client_addr, &client_addr_len);
-+
-+	inet_ntop(client_addr.sin_family, &client_addr.sin_addr, buffer,
-+		  sizeof(buffer));
-+	printf("Got connection from %s:%d\n", buffer,
-+	       ntohs(client_addr.sin_port));
-+
-+	while (1) {
-+		struct iovec iov = { .iov_base = iobuf,
-+				     .iov_len = sizeof(iobuf) };
-+		struct dmabuf_cmsg *dmabuf_cmsg = NULL;
-+		struct dma_buf_sync sync = { 0 };
-+		struct cmsghdr *cm = NULL;
-+		struct msghdr msg = { 0 };
-+		struct dmabuf_token token;
-+		ssize_t ret;
-+
-+		is_devmem = false;
-+		printf("\n\n");
-+
-+		msg.msg_iov = &iov;
-+		msg.msg_iovlen = 1;
-+		msg.msg_control = ctrl_data;
-+		msg.msg_controllen = sizeof(ctrl_data);
-+		ret = recvmsg(client_fd, &msg, MSG_SOCK_DEVMEM);
-+		printf("recvmsg ret=%ld\n", ret);
-+		if (ret < 0 && (errno == EAGAIN || errno == EWOULDBLOCK))
-+			continue;
-+		if (ret < 0) {
-+			perror("recvmsg");
-+			continue;
-+		}
-+		if (ret == 0) {
-+			printf("client exited\n");
-+			goto cleanup;
-+		}
-+
-+		i++;
-+		for (cm = CMSG_FIRSTHDR(&msg); cm; cm = CMSG_NXTHDR(&msg, cm)) {
-+			if (cm->cmsg_level != SOL_SOCKET ||
-+			    (cm->cmsg_type != SCM_DEVMEM_DMABUF &&
-+			     cm->cmsg_type != SCM_DEVMEM_LINEAR)) {
-+				fprintf(stdout, "skipping non-devmem cmsg\n");
-+				continue;
-+			}
-+
-+			dmabuf_cmsg = (struct dmabuf_cmsg *)CMSG_DATA(cm);
-+			is_devmem = true;
-+
-+			if (cm->cmsg_type == SCM_DEVMEM_LINEAR) {
-+				/* TODO: process data copied from skb's linear
-+				 * buffer.
-+				 */
-+				fprintf(stdout,
-+					"SCM_DEVMEM_LINEAR. dmabuf_cmsg->frag_size=%u\n",
-+					dmabuf_cmsg->frag_size);
-+
-+				continue;
-+			}
-+
-+			token.token_start = dmabuf_cmsg->frag_token;
-+			token.token_count = 1;
-+
-+			total_received += dmabuf_cmsg->frag_size;
-+			printf("received frag_page=%llu, in_page_offset=%llu, frag_offset=%llu, frag_size=%u, token=%u, total_received=%lu, dmabuf_id=%u\n",
-+			       dmabuf_cmsg->frag_offset >> PAGE_SHIFT,
-+			       dmabuf_cmsg->frag_offset % getpagesize(),
-+			       dmabuf_cmsg->frag_offset, dmabuf_cmsg->frag_size,
-+			       dmabuf_cmsg->frag_token, total_received,
-+			       dmabuf_cmsg->dmabuf_id);
-+
-+			if (dmabuf_cmsg->dmabuf_id != dmabuf_id)
-+				error(1, 0,
-+				      "received on wrong dmabuf_id: flow steering error\n");
-+
-+			if (dmabuf_cmsg->frag_size % getpagesize())
-+				non_page_aligned_frags++;
-+			else
-+				page_aligned_frags++;
-+
-+			sync.flags = DMA_BUF_SYNC_READ | DMA_BUF_SYNC_START;
-+			ioctl(buf, DMA_BUF_IOCTL_SYNC, &sync);
-+
-+			if (do_validation)
-+				validate_buffer(
-+					((unsigned char *)buf_mem) +
-+						dmabuf_cmsg->frag_offset,
-+					dmabuf_cmsg->frag_size);
-+			else
-+				print_nonzero_bytes(
-+					((unsigned char *)buf_mem) +
-+						dmabuf_cmsg->frag_offset,
-+					dmabuf_cmsg->frag_size);
-+
-+			sync.flags = DMA_BUF_SYNC_READ | DMA_BUF_SYNC_END;
-+			ioctl(buf, DMA_BUF_IOCTL_SYNC, &sync);
-+
-+			ret = setsockopt(client_fd, SOL_SOCKET,
-+					 SO_DEVMEM_DONTNEED, &token,
-+					 sizeof(token));
-+			if (ret != 1)
-+				error(1, 0,
-+				      "SO_DEVMEM_DONTNEED not enough tokens");
-+		}
-+		if (!is_devmem)
-+			error(1, 0, "flow steering error\n");
-+
-+		printf("total_received=%lu\n", total_received);
-+	}
-+
-+	fprintf(stdout, "%s: ok\n", TEST_PREFIX);
-+
-+	fprintf(stdout, "page_aligned_frags=%lu, non_page_aligned_frags=%lu\n",
-+		page_aligned_frags, non_page_aligned_frags);
-+
-+	fprintf(stdout, "page_aligned_frags=%lu, non_page_aligned_frags=%lu\n",
-+		page_aligned_frags, non_page_aligned_frags);
-+
-+cleanup:
-+
-+	munmap(buf_mem, dmabuf_size);
-+	close(client_fd);
-+	close(socket_fd);
-+	close(buf);
-+	close(memfd);
-+	close(devfd);
-+	ynl_sock_destroy(ys);
-+
-+	return 0;
-+}
-+
-+void run_devmem_tests(void)
-+{
-+	struct netdev_queue_dmabuf *queues;
-+	int devfd, memfd, buf;
-+	struct ynl_sock *ys;
-+	size_t dmabuf_size;
-+	size_t i = 0;
-+
-+	dmabuf_size = getpagesize() * NUM_PAGES;
-+
-+	create_udmabuf(&devfd, &memfd, &buf, dmabuf_size);
-+
-+	/* Configure RSS to divert all traffic from our devmem queues */
-+	configure_rss();
-+
-+	sleep(1);
-+
-+	queues = malloc(sizeof(*queues) * num_queues);
-+
-+	for (i = 0; i < num_queues; i++) {
-+		queues[i]._present.type = 1;
-+		queues[i]._present.idx = 1;
-+		queues[i].type = NETDEV_QUEUE_TYPE_RX;
-+		queues[i].idx = start_queue + i;
-+	}
-+
-+	if (bind_rx_queue(ifindex, buf, queues, num_queues, &ys))
-+		error(1, 0, "Failed to bind\n");
-+
-+	/* Closing the netlink socket does an implicit unbind */
-+	ynl_sock_destroy(ys);
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	int is_server = 0, opt;
-+
-+	while ((opt = getopt(argc, argv, "ls:c:p:v:q:f:n:i:d:")) != -1) {
-+		switch (opt) {
-+		case 'l':
-+			is_server = 1;
-+			break;
-+		case 's':
-+			server_ip = optarg;
-+			break;
-+		case 'c':
-+			client_ip = optarg;
-+			break;
-+		case 'p':
-+			port = optarg;
-+			break;
-+		case 'v':
-+			do_validation = atoll(optarg);
-+			break;
-+		case 'q':
-+			num_queues = atoi(optarg);
-+			break;
-+		case 't':
-+			start_queue = atoi(optarg);
-+			break;
-+		case 'f':
-+			ifname = optarg;
-+			break;
-+		case 'd':
-+			ifindex = atoi(optarg);
-+			break;
-+		case 'n':
-+			nic_pci_addr = optarg;
-+			break;
-+		case 'i':
-+			iterations = atoll(optarg);
-+			break;
-+		case '?':
-+			printf("unknown option: %c\n", optopt);
-+			break;
-+		}
-+	}
-+
-+	for (; optind < argc; optind++)
-+		printf("extra arguments: %s\n", argv[optind]);
-+
-+	run_devmem_tests();
-+
-+	if (is_server)
-+		return do_server();
-+
-+	return 0;
-+}
--- 
-2.44.0.rc1.240.g4c46232300-goog
+thanks!
 
+On Tue, Mar 5, 2024 at 9:56=E2=80=AFAM Zhiguo Niu <niuzhiguo84@gmail.com> w=
+rote:
+>
+> Dear  Jaegeuk,
+>
+> Let me describe the problem process, it is reproduced by monkey stability=
+ test:
+>
+>  1.SBI_NEED_CP flag bit is set=EF=BC=8C
+>  set_sbi_flag(F2FS_I_SB(inode), SBI_NEED_CP);
+>
+>  2.Ckpt thread is blocked by IO busy when it is doing CP,  it can not
+> get request tag from block queue,
+>  PID: 505      TASK: ffffff80ed7f49c0  CPU: 4    COMMAND: "f2fs_ckpt-254:=
+4"
+>  #0 [ffffffc015fcb330] __switch_to at ffffffc010196350
+>  #1 [ffffffc015fcb390] __schedule at ffffffc01168e53c
+>  #2 [ffffffc015fcb3f0] schedule at ffffffc01168ed7c
+>  #3 [ffffffc015fcb450] io_schedule at ffffffc01168f7a0
+>  #4 [ffffffc015fcb4c0] blk_mq_get_tag at ffffffc0101008a4
+>  #5 [ffffffc015fcb530] blk_mq_get_request at ffffffc0109241b0
+>  #6 [ffffffc015fcb5f0] blk_mq_make_request at ffffffc0109233bc
+>  #7 [ffffffc015fcb680] generic_make_request at ffffffc0100fc6ec
+>  #8 [ffffffc015fcb700] submit_bio at ffffffc0100fc3b8
+>  #9 [ffffffc015fcb750] __submit_bio at ffffffc01081a2e0
+>  #10 [ffffffc015fcb7d0] __submit_merged_bio at ffffffc01081b07c
+>  #11 [ffffffc015fcb8a0] f2fs_submit_page_write at ffffffc0100ecd3c
+>  #12 [ffffffc015fcb990] f2fs_do_write_meta_page at ffffffc010845738
+>  #13 [ffffffc015fcb9d0] __f2fs_write_meta_page at ffffffc01080a8f4
+>  #14 [ffffffc015fcbb60] f2fs_sync_meta_pages at ffffffc01080a684
+>  #15 [ffffffc015fcbca0] do_checkpoint at ffffffc01080f0a8
+>  #16 [ffffffc015fcbd10] f2fs_write_checkpoint at ffffffc01080e50c
+>  #17 [ffffffc015fcbdb0] __checkpoint_and_complete_reqs at ffffffc010810f5=
+4
+>  #18 [ffffffc015fcbe40] issue_checkpoint_thread at ffffffc0108113ec
+>  #19 [ffffffc015fcbe80] kthread at ffffffc0102665b0
+>
+>  3.Subsequent regular file fsync will trigger ckpt because SBI_NEED_CP
+> has not been cleared.
+>  In fact, these cases should not trigger ckpt.
+>
+>  4.If some processes that perform f2fs_do_sync_file are important process=
+es
+>  in the system(such as init) and are blocked for too long, it will
+> cause other problems in the system, ANR or android reboot
+>  PID: 287      TASK: ffffff80f9eb0ec0  CPU: 2    COMMAND: "init"
+>  #0 [ffffffc01389bab0] __switch_to at ffffffc010196350
+>  #1 [ffffffc01389bb10] __schedule at ffffffc01168e53c
+>  #2 [ffffffc01389bb70] schedule at ffffffc01168ed7c
+>  #3 [ffffffc01389bbc0] wait_for_completion at ffffffc011692368
+>  #4 [ffffffc01389bca0] f2fs_issue_checkpoint at ffffffc010810cb0
+>  #5 [ffffffc01389bd00] f2fs_sync_fs at ffffffc0107f4e1c
+>  #6 [ffffffc01389bdc0] f2fs_do_sync_file at ffffffc0107d4d44
+>  #7 [ffffffc01389be20] f2fs_sync_file at ffffffc0107d492c
+>  #8 [ffffffc01389be30] __arm64_sys_fsync at ffffffc0105d31d8
+>  #9 [ffffffc01389be70] el0_svc_common at ffffffc0101aa550
+>  #10 [ffffffc01389beb0] el0_svc_handler at ffffffc0100886fc
+>
+> and I tested Chao's patch can avoid the above case, please help
+> consider this patch or
+> any comment/suggestions about this?
+>
+> thanks!
+>
+> On Mon, Feb 26, 2024 at 9:22=E2=80=AFAM =E7=89=9B=E5=BF=97=E5=9B=BD (Zhig=
+uo Niu) <Zhiguo.Niu@unisoc.com> wrote:
+> >
+> >
+> > Hi Jaegeuk
+> >
+> > Sorry for disturbing you, Do you have any comments about this patch fro=
+m Chao, I=E2=80=99ve met this issue several times on our platform when do m=
+onkey test.
+> > Thanks!
+> >
+> > -----=E9=82=AE=E4=BB=B6=E5=8E=9F=E4=BB=B6-----
+> > =E5=8F=91=E4=BB=B6=E4=BA=BA: Chao Yu <chao@kernel.org>
+> > =E5=8F=91=E9=80=81=E6=97=B6=E9=97=B4: 2024=E5=B9=B42=E6=9C=8819=E6=97=
+=A5 15:19
+> > =E6=94=B6=E4=BB=B6=E4=BA=BA: jaegeuk@kernel.org
+> > =E6=8A=84=E9=80=81: linux-f2fs-devel@lists.sourceforge.net; linux-kerne=
+l@vger.kernel.org; =E7=89=9B=E5=BF=97=E5=9B=BD (Zhiguo Niu) <Zhiguo.Niu@uni=
+soc.com>
+> > =E4=B8=BB=E9=A2=98: Re: [PATCH v3] f2fs: reduce expensive checkpoint tr=
+igger frequency
+> >
+> >
+> > =E6=B3=A8=E6=84=8F: =E8=BF=99=E5=B0=81=E9=82=AE=E4=BB=B6=E6=9D=A5=E8=87=
+=AA=E4=BA=8E=E5=A4=96=E9=83=A8=E3=80=82=E9=99=A4=E9=9D=9E=E4=BD=A0=E7=A1=AE=
+=E5=AE=9A=E9=82=AE=E4=BB=B6=E5=86=85=E5=AE=B9=E5=AE=89=E5=85=A8=EF=BC=8C=E5=
+=90=A6=E5=88=99=E4=B8=8D=E8=A6=81=E7=82=B9=E5=87=BB=E4=BB=BB=E4=BD=95=E9=93=
+=BE=E6=8E=A5=E5=92=8C=E9=99=84=E4=BB=B6=E3=80=82
+> > CAUTION: This email originated from outside of the organization. Do not=
+ click links or open attachments unless you recognize the sender and know t=
+he content is safe.
+> >
+> >
+> >
+> > Jaegeuk,
+> >
+> > Any comments?
+> >
+> > On 2024/1/11 16:17, Chao Yu wrote:
+> > > We may trigger high frequent checkpoint for below case:
+> > > 1. mkdir /mnt/dir1; set dir1 encrypted 2. touch /mnt/file1; fsync
+> > > /mnt/file1 3. mkdir /mnt/dir2; set dir2 encrypted 4. touch /mnt/file2=
+;
+> > > fsync /mnt/file2 ...
+> > >
+> > > Although, newly created dir and file are not related, due to commit
+> > > bbf156f7afa7 ("f2fs: fix lost xattrs of directories"), we will trigge=
+r
+> > > checkpoint whenever fsync() comes after a new encrypted dir created.
+> > >
+> > > In order to avoid such condition, let's record an entry including
+> > > directory's ino into global cache when we initialize encryption polic=
+y
+> > > in a checkpointed directory, and then only trigger checkpoint() when
+> > > target file's parent has non-persisted encryption policy, for the cas=
+e
+> > > its parent is not checkpointed, need_do_checkpoint() has cover that b=
+y
+> > > verifying it with f2fs_is_checkpointed_node().
+> > >
+> > > Reported-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
+> > > Tested-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
+> > > Reported-by: Yunlei He <heyunlei@hihonor.com>
+> > > Signed-off-by: Chao Yu <chao@kernel.org>
+> > > ---
+> > > v3:
+> > > - Recently, Zhiguo Niu reported the same issue, so I repost this patc=
+h
+> > > for comments.
+> > >   fs/f2fs/f2fs.h              |  2 ++
+> > >   fs/f2fs/file.c              |  3 +++
+> > >   fs/f2fs/xattr.c             | 16 ++++++++++++++--
+> > >   include/trace/events/f2fs.h |  3 ++-
+> > >   4 files changed, 21 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h index
+> > > e2e0ca45f881..0094a8c85f4a 100644
+> > > --- a/fs/f2fs/f2fs.h
+> > > +++ b/fs/f2fs/f2fs.h
+> > > @@ -279,6 +279,7 @@ enum {
+> > >       APPEND_INO,             /* for append ino list */
+> > >       UPDATE_INO,             /* for update ino list */
+> > >       TRANS_DIR_INO,          /* for transactions dir ino list */
+> > > +     ENC_DIR_INO,            /* for encrypted dir ino list */
+> > >       FLUSH_INO,              /* for multiple device flushing */
+> > >       MAX_INO_ENTRY,          /* max. list */
+> > >   };
+> > > @@ -1147,6 +1148,7 @@ enum cp_reason_type {
+> > >       CP_FASTBOOT_MODE,
+> > >       CP_SPEC_LOG_NUM,
+> > >       CP_RECOVER_DIR,
+> > > +     CP_ENC_DIR,
+> > >   };
+> > >
+> > >   enum iostat_type {
+> > > diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c index
+> > > 8198afb5fb9c..18b33b1f0c83 100644
+> > > --- a/fs/f2fs/file.c
+> > > +++ b/fs/f2fs/file.c
+> > > @@ -218,6 +218,9 @@ static inline enum cp_reason_type need_do_checkpo=
+int(struct inode *inode)
+> > >               f2fs_exist_written_data(sbi, F2FS_I(inode)->i_pino,
+> > >                                                       TRANS_DIR_INO))
+> > >               cp_reason =3D CP_RECOVER_DIR;
+> > > +     else if (f2fs_exist_written_data(sbi, F2FS_I(inode)->i_pino,
+> > > +                                                     ENC_DIR_INO))
+> > > +             cp_reason =3D CP_ENC_DIR;
+> > >
+> > >       return cp_reason;
+> > >   }
+> > > diff --git a/fs/f2fs/xattr.c b/fs/f2fs/xattr.c index
+> > > f290fe9327c4..cbd1b88297fe 100644
+> > > --- a/fs/f2fs/xattr.c
+> > > +++ b/fs/f2fs/xattr.c
+> > > @@ -629,6 +629,7 @@ static int __f2fs_setxattr(struct inode *inode, i=
+nt index,
+> > >                       const char *name, const void *value, size_t siz=
+e,
+> > >                       struct page *ipage, int flags)
+> > >   {
+> > > +     struct f2fs_sb_info *sbi =3D F2FS_I_SB(inode);
+> > >       struct f2fs_xattr_entry *here, *last;
+> > >       void *base_addr, *last_base_addr;
+> > >       int found, newsize;
+> > > @@ -772,8 +773,19 @@ static int __f2fs_setxattr(struct inode *inode, =
+int index,
+> > >       if (index =3D=3D F2FS_XATTR_INDEX_ENCRYPTION &&
+> > >                       !strcmp(name, F2FS_XATTR_NAME_ENCRYPTION_CONTEX=
+T))
+> > >               f2fs_set_encrypted_inode(inode);
+> > > -     if (S_ISDIR(inode->i_mode))
+> > > -             set_sbi_flag(F2FS_I_SB(inode), SBI_NEED_CP);
+> > > +
+> > > +     if (S_ISDIR(inode->i_mode)) {
+> > > +             /*
+> > > +              * In restrict mode, fsync() always tries triggering ch=
+eckpoint
+> > > +              * for all metadata consistency, in other mode, it only=
+ triggers
+> > > +              * checkpoint when parent's encryption metadata updates=
+.
+> > > +              */
+> > > +             if (F2FS_OPTION(sbi).fsync_mode =3D=3D FSYNC_MODE_STRIC=
+T)
+> > > +                     set_sbi_flag(F2FS_I_SB(inode), SBI_NEED_CP);
+> > > +             else if (IS_ENCRYPTED(inode) &&
+> > > +                     f2fs_is_checkpointed_node(sbi, inode->i_ino))
+> > > +                     f2fs_add_ino_entry(sbi, inode->i_ino, ENC_DIR_I=
+NO);
+> > > +     }
+> > >
+> > >   same:
+> > >       if (is_inode_flag_set(inode, FI_ACL_MODE)) { diff --git
+> > > a/include/trace/events/f2fs.h b/include/trace/events/f2fs.h index
+> > > 7ed0fc430dc6..48f2e399e184 100644
+> > > --- a/include/trace/events/f2fs.h
+> > > +++ b/include/trace/events/f2fs.h
+> > > @@ -139,7 +139,8 @@ TRACE_DEFINE_ENUM(EX_BLOCK_AGE);
+> > >               { CP_NODE_NEED_CP,      "node needs cp" },             =
+ \
+> > >               { CP_FASTBOOT_MODE,     "fastboot mode" },             =
+ \
+> > >               { CP_SPEC_LOG_NUM,      "log type is 2" },             =
+ \
+> > > -             { CP_RECOVER_DIR,       "dir needs recovery" })
+> > > +             { CP_RECOVER_DIR,       "dir needs recovery" },        =
+ \
+> > > +             { CP_ENC_DIR,           "persist encryption policy" })
+> > >
+> > >   #define show_shutdown_mode(type)                                   =
+ \
+> > >       __print_symbolic(type,                                         =
+ \
 
