@@ -1,135 +1,101 @@
-Return-Path: <linux-kernel+bounces-92279-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92281-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C5D4871DDA
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:32:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4903871DDE
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:33:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5118C284042
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:32:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 10794B22BBF
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:32:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59F425BAE0;
-	Tue,  5 Mar 2024 11:30:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="oZT0ybGG"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F76058224;
+	Tue,  5 Mar 2024 11:31:44 +0000 (UTC)
+Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B2355BAD9;
-	Tue,  5 Mar 2024 11:30:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58AB85810B;
+	Tue,  5 Mar 2024 11:31:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.14.17.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709638255; cv=none; b=pCrn84XrTRNKLpJ4xGRmXHYwiCzDFdMU3BhEsvqVirflqZ4InS0fzqR7RiJPEdv5EGUh2+KqhPGJ4Ld1YEEE6HxTH7gVQOssxi28cN3s4geHs+jwpYQDdyQBR62R26b8HADNC4p2GUYwLIof9B7TBob+C1mpZwC01HQbX/BP/Ow=
+	t=1709638303; cv=none; b=b4eZ4N3aVnhKB2DQuaebdrzUpIrAqAyvAl1FQib/BnioAtFIgur5IraUOFxssUMf6Q7Vhp8Xiavt1PQF9rZqK6zCaAdpfJIk08B3urfpDvG/OOmvEJUm36fFrOClwx6EtNIKrpxZ1d5PC9GzgPcxX/z0vCRquJqP0rIwKUrNA8k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709638255; c=relaxed/simple;
-	bh=JHWuPGz+VGj/J/e0lYBFkaZdv959aJWqPnQBqFpfv+U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ylzmjefb4dm9xZwozAl8Pj+fayklBtZoFdSEMhaWsWvw/I6unmA2muw1Jo6WXGf/H3bsy6yJQSkazbxyfGlYTB5FoCmbMv7vwZpIIgkPRqd65Lb8MnW5ZPOgDBNzkbjZznuSTcF+vzEF90Yl9oiZIp+awtAdGE7KGcNlIUQP8h4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=oZT0ybGG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7B6FC433F1;
-	Tue,  5 Mar 2024 11:30:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1709638255;
-	bh=JHWuPGz+VGj/J/e0lYBFkaZdv959aJWqPnQBqFpfv+U=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=oZT0ybGGaePPCjl76VGXn962hbyS8wOPWZMjaIavm7XkJ6A68jKojYZlDgUr9/Q8Q
-	 3kKNpzpRI7mTqUiOXYGBVNlu3L2a7X0CMluVUbCxRGmX22PJbg2RWys3F9YyLpXV/T
-	 fJOcnpS/MqdgPF5NZznwAzGI4NwJDYIwp37+jiwQ=
-Date: Tue, 5 Mar 2024 11:30:52 +0000
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev,
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-	jonathanh@nvidia.com, f.fainelli@gmail.com,
-	sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-	conor@kernel.org, allen.lkml@gmail.com,
-	Zong Li <zong.li@sifive.com>, Palmer Dabbelt <palmer@rivosinc.com>,
-	Alexandre Ghiti <alexghiti@rivosinc.com>,
-	Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 5.15 00/84] 5.15.151-rc1 review
-Message-ID: <2024030534-makeshift-gauging-72d2@gregkh>
-References: <20240304211542.332206551@linuxfoundation.org>
- <CA+G9fYvOpuVjEe_0E5bwsmP39VQwdybDEoKTZGeYC3ULtqmViQ@mail.gmail.com>
+	s=arc-20240116; t=1709638303; c=relaxed/simple;
+	bh=UqGd1ri4gTlEkvaN2aOBK9y3ML5BPpaqHWx1c43uktk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=BCFlU2MuIlqwA9hLh8acFF2Ji9B3VdV4OpDp6ICEJgralc0/0OR7UpJh64WMWAcjUM/Tnnp27anyGAKWPybiTOD03U0Z7p/xwptBApYN01D/Dp10SOL3+bN6q/zoik8mvSi3yqTHi8ZeiBVN9GC53yw0tenPqvFTcMmqvzOa8Ew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de; spf=pass smtp.mailfrom=molgen.mpg.de; arc=none smtp.client-ip=141.14.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
+Received: from abreu.molgen.mpg.de (g34.guest.molgen.mpg.de [141.14.220.34])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pmenzel)
+	by mx.molgen.mpg.de (Postfix) with ESMTPSA id C5E4961E5FE3E;
+	Tue,  5 Mar 2024 12:31:09 +0100 (CET)
+From: Paul Menzel <pmenzel@molgen.mpg.de>
+To: Bjorn Helgaas <bhelgaas@google.com>
+Cc: Paul Menzel <pmenzel@molgen.mpg.de>,
+	Mika Westerberg <mika.westerberg@linux.intel.com>,
+	nvaert1986@hotmail.com,
+	linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] PCI/DPC: Quirk PIO log size for Intel Raptor Lake Root Ports
+Date: Tue,  5 Mar 2024 12:30:56 +0100
+Message-ID: <20240305113057.56468-1-pmenzel@molgen.mpg.de>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+G9fYvOpuVjEe_0E5bwsmP39VQwdybDEoKTZGeYC3ULtqmViQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Mar 05, 2024 at 03:38:20PM +0530, Naresh Kamboju wrote:
-> On Tue, 5 Mar 2024 at 03:23, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > This is the start of the stable review cycle for the 5.15.151 release.
-> > There are 84 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
-> > Responses should be made by Wed, 06 Mar 2024 21:15:26 +0000.
-> > Anything received after that time might be too late.
-> >
-> > The whole patch series can be found in one patch at:
-> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.151-rc1.gz
-> > or in the git tree and branch at:
-> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> > and the diffstat can be found below.
-> >
-> > thanks,
-> >
-> > greg k-h
-> 
-> 
-> Following build failures noticed on riscv.
-> 
-> The riscv tinyconfig and allnoconfig builds on 5.15.
-> The riscv defconfig, tinyconfig and allnoconfig builds on 5.10.
-> 
-> linux.5.15.y build failures on riscv.
-> riscv:
->   build:
->     * gcc-12-tinyconfig
->     * gcc-8-allnoconfig
->     * clang-17-tinyconfig
->     * gcc-8-tinyconfig
->     * gcc-12-allnoconfig
-> 
-> linux.5.10.y build failures on riscv.
-> riscv:
-> 
->   * gcc-8-defconfig
->   * clang-17-allnoconfig
->   * gcc-12-tinyconfig
->   * gcc-8-allnoconfig
->   * gcc-8-allmodconfig
->   * clang-17-defconfig
->   * gcc-12-defconfig
->   * clang-17-tinyconfig
->   * gcc-12-allmodconfig
->   * gcc-8-tinyconfig
->   * gcc-12-allnoconfig
-> 
->  Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> 
-> arch/riscv/kernel/return_address.c:39:9: error: implicit declaration
-> of function 'arch_stack_walk' [-Werror=implicit-function-declaration]
->    39 |         arch_stack_walk(save_return_addr, &data, current, NULL);
->       |         ^~~~~~~~~~~~~~~
-> cc1: some warnings being treated as errors
-> 
-> Suspecting patch,
-> 
-> riscv: add CALLER_ADDRx support
-> commit 680341382da56bd192ebfa4e58eaf4fec2e5bca7 upstream.
+Commit 5459c0b70467 ("PCI/DPC: Quirk PIO log size for certain Intel Root
+Ports") and commit 3b8803494a06 ("PCI/DPC: Quirk PIO log size for Intel Ice
+Lake Root Ports") add quirks for Ice, Tiger and Alder Lake Root Ports.
+System firmware for Raptor Lake still has the bug, so Linux logs the
+warning below on several Raptor Lake systems like Dell Precision 3581 with
+Intel Raptor Lake processor (0W18NX) system firmware/BIOS version 1.10.1.
 
-Thanks, will go drop this and push out -rc2 kernels for 5.15 and 5.10
+    pci 0000:00:07.0: [8086:a76e] type 01 class 0x060400
+    pci 0000:00:07.0: PME# supported from D0 D3hot D3cold
+    pci 0000:00:07.0: PTM enabled (root), 4ns granularity
+    pci 0000:00:07.0: DPC: RP PIO log size 0 is invalid
+    pci 0000:00:07.1: [8086:a73f] type 01 class 0x060400
+    pci 0000:00:07.1: PME# supported from D0 D3hot D3cold
+    pci 0000:00:07.1: PTM enabled (root), 4ns granularity
+    pci 0000:00:07.1: DPC: RP PIO log size 0 is invalid
 
-greg k-h
+So, apply the quirk for Raptor Lake Root Ports as well.
+
+This also enables the DPC driver to dump the RP PIO Log registers when DPC
+is triggered.
+
+Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218560
+Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc: nvaert1986@hotmail.com
+Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
+---
+ drivers/pci/quirks.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+index d797df6e5f3e..663d838fa861 100644
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -6225,6 +6225,8 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x9a2b, dpc_log_size);
+ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x9a2d, dpc_log_size);
+ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x9a2f, dpc_log_size);
+ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x9a31, dpc_log_size);
++DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0xa73f, dpc_log_size);
++DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0xa76e, dpc_log_size);
+ #endif
+ 
+ /*
+-- 
+2.43.0
+
 
