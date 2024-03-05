@@ -1,46 +1,67 @@
-Return-Path: <linux-kernel+bounces-91867-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91884-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 767928717A5
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:10:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CAA758717FC
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:17:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0CA291F220D5
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:10:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 432E11F21B48
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:17:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D8707F469;
-	Tue,  5 Mar 2024 08:10:22 +0000 (UTC)
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45129823A4;
+	Tue,  5 Mar 2024 08:14:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J6771nRi"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57CEE7F46B
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 08:10:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.154.21.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DFF980620;
+	Tue,  5 Mar 2024 08:14:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709626222; cv=none; b=f/u/876e5vWlPeyv9F3TZhRc60NGk2Dw1XabvrlE20nn1oCYY7kou5iB6vOFoEj0yuZGgsWs5Yqu8GW7wdKB3DssURaAjNmrGxfyUTndp/p9cP5QIEC1xZ5XnJiqnKosI963LA1WIKZSMsuS+yoBOz5B54ROSL8jCBq0SjT08Uc=
+	t=1709626486; cv=none; b=oseavRNZC+w9U6xfT73qMvLFuI41GIo9pZZOjiUXWcZvuiTLT5ntw2v+xSumn0M+9jdN80tUzGgqrk+6eiABdYcOBC+W4gXYa9UtjzhO/LUXFQkXZhwWo1ILTytoC+OaPaPdb0KYNnMF7m1SLZZseEq0C9chBm7Vce232rVQcXM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709626222; c=relaxed/simple;
-	bh=MFPOX5W0KpeQ4hbxT4c8+pC/ewoeFCjUJSuVSnBF+1Y=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Jvx07wHyu6ugkQeRlmK4381obB6jrOXvO+kj3PBjhstCzFv9LMIrhfKMSeAO0giQVuoo+ZUCI5plndzfmhtHgeYG/iBphKBU7/l0w32uWxSH2qjXh4ISAvzxBea/3kaTs2uoqD17NQaihTuzFfEhjpm4ngh5ZQdOMSfwBT5HebQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru; spf=pass smtp.mailfrom=omp.ru; arc=none smtp.client-ip=90.154.21.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
-Received: from localhost.localdomain (78.37.41.175) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Tue, 5 Mar
- 2024 11:10:02 +0300
-From: Roman Smirnov <r.smirnov@omp.ru>
-To: Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>
-CC: Roman Smirnov <r.smirnov@omp.ru>, Sergey Shtylyov <s.shtylyov@omp.ru>,
-	Karina Yankevich <k.yankevich@omp.ru>,
-	<linux-f2fs-devel@lists.sourceforge.net>, <linux-kernel@vger.kernel.org>,
-	<lvc-project@linuxtesting.org>
-Subject: [PATCH] f2fs: Cast expression type to unsigned long in __count_extent_cache()
-Date: Tue, 5 Mar 2024 11:09:43 +0300
-Message-ID: <20240305080943.6922-1-r.smirnov@omp.ru>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1709626486; c=relaxed/simple;
+	bh=bz1gXOES0RIAkOKF6ua3EaiEwnFlMnYADUJVvZk8C9U=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Rsxi5G7wYTeRfwcvS3FmChgYhuzqVvwSAHqEuaIUOCnanGria4FMoCMpQE/IvIzloDIL8KMwIhPC8kS9hOGsyhD7sepbSlGnFOfUMMOq1zxFC+RCmsUY/cWqteDEpQodzd4BZ4V4mWco6NC7kZUp/wVBCAh1B5630UlsVzLOGvE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J6771nRi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DAE9C43399;
+	Tue,  5 Mar 2024 08:14:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709626485;
+	bh=bz1gXOES0RIAkOKF6ua3EaiEwnFlMnYADUJVvZk8C9U=;
+	h=From:To:Cc:Subject:Date:From;
+	b=J6771nRi2xyn/nMZnbhEGrcDZ+Pfem9XccK0J/zEtO2BSB0UcUJNsuIUD+Axxf7v/
+	 npLbvPU1nlKvrpu1hN5spe7umykP8zFKNo4C1mWxbr+OLZtdRaL2gD6+zU7agRvYdd
+	 gYu3GwykVpynAB2sxnBk+i0ToHIaqhJSVFutXAjWsQb9+LHLC1L4K1IdmKez5kM49D
+	 aWMN1mJ9E61vwmaTJnOXgDvlNa6+3YxU5+f78rBol6DUKrG7YWh8ynjOK7iKrVV+oW
+	 ztqHQwZaBHKdCR1NNNV+gPQDyO92wRriuUMygK9p9g1tdt+vuAKCpIUeJ/sf4UrrWu
+	 gPnGaGna/CDOQ==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan+linaro@kernel.org>)
+	id 1rhPwo-0000000037n-4AX1;
+	Tue, 05 Mar 2024 09:14:51 +0100
+From: Johan Hovold <johan+linaro@kernel.org>
+To: Bjorn Helgaas <bhelgaas@google.com>,
+	Bjorn Andersson <andersson@kernel.org>
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	=?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	linux-arm-msm@vger.kernel.org,
+	linux-pci@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Johan Hovold <johan+linaro@kernel.org>
+Subject: [PATCH v3 00/10] arm64: dts: qcom: sc8280xp: PCIe fixes and GICv3 ITS enable
+Date: Tue,  5 Mar 2024 09:10:55 +0100
+Message-ID: <20240305081105.11912-1-johan+linaro@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -48,68 +69,109 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 03/05/2024 07:39:20
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 183946 [Mar 05 2024]
-X-KSE-AntiSpam-Info: Version: 6.1.0.3
-X-KSE-AntiSpam-Info: Envelope from: r.smirnov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 8 0.3.8 4a99897b35b48c45ee5c877607d26a2d9f419920
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info:
-	d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;78.37.41.175:7.4.1,7.7.3;127.0.0.199:7.1.2;omp.ru:7.1.1
-X-KSE-AntiSpam-Info: {cloud_iprep_silent}
-X-KSE-AntiSpam-Info: ApMailHostAddress: 78.37.41.175
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 03/05/2024 07:45:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 3/5/2024 3:38:00 AM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
-Cast expression type to unsigned long in __count_extent_cache()
-to prevent integer overflow.
+This series addresses a few problems with the sc8280xp PCIe
+implementation.
 
-Found by Linux Verification Center (linuxtesting.org) with Svace.
+The DWC PCIe controller can either use its internal MSI controller or an
+external one such as the GICv3 ITS. Enabling the latter allows for
+assigning affinity to individual interrupts, but results in a large
+amount of Correctable Errors being logged on both the Lenovo ThinkPad
+X13s and the sc8280xp-crd reference design.
 
-Signed-off-by: Roman Smirnov <r.smirnov@omp.ru>
-Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
----
- fs/f2fs/shrinker.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+It turns out that these errors are always generated, but for some yet to
+be determined reason, the AER interrupts are never received when using
+the internal MSI controller, which makes the link errors harder to
+notice.
 
-diff --git a/fs/f2fs/shrinker.c b/fs/f2fs/shrinker.c
-index 83d6fb97dcae..bb86a06c5d5e 100644
---- a/fs/f2fs/shrinker.c
-+++ b/fs/f2fs/shrinker.c
-@@ -33,7 +33,7 @@ static unsigned long __count_extent_cache(struct f2fs_sb_info *sbi,
- {
- 	struct extent_tree_info *eti = &sbi->extent_tree[type];
- 
--	return atomic_read(&eti->total_zombie_tree) +
-+	return (unsigned long)atomic_read(&eti->total_zombie_tree) +
- 				atomic_read(&eti->total_ext_node);
- }
- 
+On the X13s, there is a large number of errors generated when bringing
+up the link on boot. This is related to the fact that UEFI firmware has
+already enabled the Wi-Fi PCIe link at Gen2 speed and restarting the
+link at Gen3 generates a massive amount of errors until the Wi-Fi
+firmware is restarted. This has now also been shown to cause the Wi-Fi
+to sometimes not start at all on boot for some users.
+
+A recent commit enabling ASPM on certain Qualcomm platforms introduced
+further errors when using the Wi-Fi on the X13s as well as when
+accessing the NVMe on the CRD. The exact reason for this has not yet
+been identified, but disabling ASPM L0s makes the errors go away. This
+could suggest that either the current ASPM implementation is incomplete
+or that L0s is not supported with these devices.
+
+Note that the X13s and CRD use the same Wi-Fi controller, but the errors
+are only generated on the X13s. The NVMe controller on my X13s does not
+support L0s so there are no issues there, unlike on the CRD which uses a
+different controller. The modem on the CRD does not generate any errors,
+but both the NVMe and modem keeps bouncing in and out of L0s/L1 also
+when not used, which could indicate that there are bigger problems with
+the ASPM implementation. I don't have a modem on my X13s so I have not
+been able to test whether L0s causes any trouble there.
+
+Enabling AER error reporting on sc8280xp could similarly also reveal
+existing problems with the related sa8295p and sa8540p platforms as they
+share the base dtsi.
+
+After discussing this with Bjorn Andersson at Qualcomm we have decided
+to go ahead and disable L0s for all controllers on the CRD and the
+X13s.
+
+Note that disabling ASPM L0s for the X13s Wi-Fi does not seem to have a
+significant impact on the power consumption (and there are indications
+that this applies generally for L0s on these platforms).
+
+***
+
+As we are now at 6.8-rc7, I've rebased this series on the Qualcomm PCIe
+binding rework in linux-next so that the whole series can be merged for
+6.9 (the 'aspm-no-l0s' support and devicetree fixes are all marked for
+stable backport anyway).
+
+The DT bindings and PCI patch are expected to go through the PCI tree,
+while Bjorn A takes the devicetree updates through the Qualcomm tree.
+
+Johan
+
+
+Changes in v3
+ - drop the two wifi link speed patches which have been picked up for
+   6.8
+ - rebase on binding rework in linux-next and add the properties also to
+   the new qcom,pcie-common.yaml
+   - https://lore.kernel.org/linux-pci/20240126-dt-bindings-pci-qcom-split-v3-0-f23cda4d74c0@linaro.org/
+ - fix an 'L0s' typo in one commit message
+
+Changes in v2
+ - drop RFC from ASPM patches and add stable tags
+ - reorder patches and move ITS patch last
+ - fix s/GB/MB/ typo in Gen2 speed commit messages
+ - fix an incorrect Fixes tag
+ - amend commit message X13 wifi link speed patch after user
+   confirmation that this fixes the wifi startup issue
+ - disable L0s also for modem and wifi on CRD
+ - disable L0s also for nvme and modem on X13s
+
+
+Johan Hovold (10):
+  dt-bindings: PCI: qcom: Allow 'required-opps'
+  dt-bindings: PCI: qcom: Do not require 'msi-map-mask'
+  dt-bindings: PCI: qcom: Allow 'aspm-no-l0s'
+  PCI: qcom: Add support for disabling ASPM L0s in devicetree
+  arm64: dts: qcom: sc8280xp: add missing PCIe minimum OPP
+  arm64: dts: qcom: sc8280xp-crd: disable ASPM L0s for NVMe
+  arm64: dts: qcom: sc8280xp-crd: disable ASPM L0s for modem and Wi-Fi
+  arm64: dts: qcom: sc8280xp-x13s: disable ASPM L0s for Wi-Fi
+  arm64: dts: qcom: sc8280xp-x13s: disable ASPM L0s for NVMe and modem
+  arm64: dts: qcom: sc8280xp: enable GICv3 ITS for PCIe
+
+ .../bindings/pci/qcom,pcie-common.yaml        |  6 +++++-
+ .../devicetree/bindings/pci/qcom,pcie.yaml    |  6 +++++-
+ arch/arm64/boot/dts/qcom/sc8280xp-crd.dts     |  5 +++++
+ .../qcom/sc8280xp-lenovo-thinkpad-x13s.dts    |  5 +++++
+ arch/arm64/boot/dts/qcom/sc8280xp.dtsi        | 17 +++++++++++++++-
+ drivers/pci/controller/dwc/pcie-qcom.c        | 20 +++++++++++++++++++
+ 6 files changed, 56 insertions(+), 3 deletions(-)
+
 -- 
-2.34.1
+2.43.0
 
 
