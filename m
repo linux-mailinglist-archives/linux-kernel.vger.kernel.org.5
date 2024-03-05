@@ -1,107 +1,111 @@
-Return-Path: <linux-kernel+bounces-92998-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92999-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42BD8872930
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 22:13:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 776A2872934
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 22:14:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F217A288572
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 21:13:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3094D2819CE
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 21:14:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6451812AAF5;
-	Tue,  5 Mar 2024 21:13:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47DC712AAF5;
+	Tue,  5 Mar 2024 21:14:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="KbjAvy4P"
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=wantyapps.xyz header.i=@wantyapps.xyz header.b="TWucwuDq"
+Received: from mail.wantyapps.xyz (unknown [66.135.5.160])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24B981B809
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 21:13:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D914413FFC
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 21:14:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.135.5.160
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709673187; cv=none; b=syqXgi09E4a6Q4oLsgMvg1MGmqkIg8jz+gSHt5Ufx8zPuWsGEm6VNekO/iH/TQvJu/ph5DmQezdgqXmv+TzqYHaZaI48iHRMF/fxA/E58PnIH9it97vKPPpz7YXFwv4QFr9Vvuy1XxR+ipsuB80QKOoKRaq3gdnN7MTnhnJqLG8=
+	t=1709673289; cv=none; b=Nbjvk6ZBIthKnJhVShI1vVoglLtw1PrgGgf+5rZ9SHvtxqg/ZM43dXbsgpyHQkIbYbizeQGkKZgvP/lga0rpRxgD0J4pqpL/iwRDRQ062HppSB+TQXnKMR8Vt6U0NyOU9GfLN0Sx+/W9t0uo/G37oweyDn+I1VH+mBgDlkWveHQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709673187; c=relaxed/simple;
-	bh=VTMMbyrcvI+F+Evq96GW/sG5ISuI42GOiONenrVP+Ks=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ppunMI8hwp/t0ddgEj6lLjp3pf/goxK9NXxBL8bhuka8E7JaV4vSiUxaYqGc6VaAakHz+9vMdi4eVQqSYIyYyTAnVxqO8WHzil3IIUKFwIsih/uM9uMBgPqZKFk7iGJcHyFXHGxRuF6+2dYMe0GD8/htIlKcpPOv/mm18mOayyA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=KbjAvy4P; arc=none smtp.client-ip=209.85.208.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d220e39907so92876711fa.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 13:13:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709673184; x=1710277984; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VTMMbyrcvI+F+Evq96GW/sG5ISuI42GOiONenrVP+Ks=;
-        b=KbjAvy4Po+pIluYif+oda4vYMlxUvo/d4Mc36vWHEHArXltjHsjM10rwB9rBAp7epw
-         kD5Z4y39IreYmDGa9faCK/TmsGE9JG3VZYGRBoKpRN3ibUj/niDmYN9G0Ni4D+ipeOc1
-         99eRb7qutWA5F5NdmIM7FVMqUDKOEs7MykW+KcpZGcXWTPi7jLT2NVNDAH4EYfllHh9P
-         4TdSNDYJGLiGs2GUfbM/hhYmaVjD2shiVa8emDdMyxnuD8puJEN2l/ncAGEtZ3aqrnbc
-         sNdOgaQ0z3N6yCWVXKMWlVV6vHkvOlgunlts0LjnQgK5Kv/dJMSw1osqALpcDxzmsUk/
-         guaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709673184; x=1710277984;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VTMMbyrcvI+F+Evq96GW/sG5ISuI42GOiONenrVP+Ks=;
-        b=WIPBjE23f+uGdZAe7Tmf77Qs29uL4iG+taBG8pj03CajYerYfZcCOMvKA6ta1u8TSi
-         c5wvkO73reXleMK/YtUIeimi8HHEpxtSSN657OKm4DeB2Fl3bqDX4pmI0uJtSynS53bs
-         Sx6MxSinrSlOuKp1gMc9qYp424JOzyqnB79r+Bnbc2u9wQcrMzriIyrPo6fqmkHjsTXQ
-         yqNv0kC8+mEqwebxnbMwF92zMu7szoQumnDBIXhFFuju2GeM9oyNkTLeKJQI4mZ6xPMA
-         ggeVPkzOcVH2RfJ4wmY8NMcTmemH3bc39YcFndjW1dwcfV5etCRRUH3zMiUDDRtE1D4h
-         1K6A==
-X-Forwarded-Encrypted: i=1; AJvYcCUY28aieXnqYuQI9W5p4ZMHPQQ/+JfHWWgOFBy0G+KQ+LNEwcJmlyEuJs1qd67wLoCpwON9nV5glDohgVHslFt+bEI/eKwGgLjOIOqv
-X-Gm-Message-State: AOJu0YzVChVaK33Xyga/LTaw2e3nzo7PQEr8WNnCWnrhM9hYIg5f4gt+
-	O9gL7+snpxiiyAPbIErbLJOmdCoo2kR/PHAy7gPDniasw21sOc2SnGwz5I9tTLg=
-X-Google-Smtp-Source: AGHT+IGhr3H89eAiGCZFxlWZ1xd3orw0ynsw+qKg5c6ljlYP8y+s047TPLiGz06OdZZ7jNO3UdljBg==
-X-Received: by 2002:a2e:9b58:0:b0:2d3:6ff0:31b8 with SMTP id o24-20020a2e9b58000000b002d36ff031b8mr2394750ljj.19.1709673184307;
-        Tue, 05 Mar 2024 13:13:04 -0800 (PST)
-Received: from [172.30.204.154] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id i8-20020a2e8088000000b002d102538128sm2292039ljg.131.2024.03.05.13.13.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Mar 2024 13:13:03 -0800 (PST)
-Message-ID: <ce34caf9-d96e-4cf8-8e26-a5dd84cf71f8@linaro.org>
-Date: Tue, 5 Mar 2024 22:13:02 +0100
+	s=arc-20240116; t=1709673289; c=relaxed/simple;
+	bh=5UU1/0i5zS6GvWgsS/KRzThBrMJ35VYn0MgQhE8EoMc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=CPnjmkLHS7yxo3mbzqnSXyrACpDlQzPmPg0jFiVAO7m3t+2uzt1GO/YY0WJiNwkrdF+mucnrZ3wEMnDTe/Mvhd43HwU/bsvsQZWmV5h7TF7VDTU1ZEO3U/GcNFyRKT7wr5M69peWiT28UwTFfBF3kcMc0wvQ4HHUy1SwBXr26uc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=wantyapps.xyz; spf=pass smtp.mailfrom=wantyapps.xyz; dkim=pass (2048-bit key) header.d=wantyapps.xyz header.i=@wantyapps.xyz header.b=TWucwuDq; arc=none smtp.client-ip=66.135.5.160
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=wantyapps.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wantyapps.xyz
+Received: from multivac.localdomain (unknown [147.235.203.68])
+	by mail.wantyapps.xyz (Postfix) with ESMTPSA id 7BCAF7ED7B;
+	Tue,  5 Mar 2024 21:14:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=wantyapps.xyz;
+	s=mail; t=1709673280;
+	bh=5UU1/0i5zS6GvWgsS/KRzThBrMJ35VYn0MgQhE8EoMc=;
+	h=From:To:Cc:Subject:Date:From;
+	b=TWucwuDqup0LmsEC+O3555df1oMRziXwWnYYqtBwamvysZxLL5Stxapx8d7EYjy+a
+	 o09hcjyeZtuDKa9cokH7R0HcHY7l7X7YpcOFIqZzTNA3OqM0BC3vkh92vuTCY08P7O
+	 8yrO42CvKtg9kPEAW0JmfIDVdz9Wf03/BCRmvHiUfYGOE7ny6R23kzgTCs9qVT4g8+
+	 rFPa18ukyRxBPeUwA2eMxtlP14O8KSv4dRNejfB0h2jqrNHhG8cffM+bqpdfyoHvaT
+	 Gbdsc+n7/rUGsqU+v/VK5A8plams2PF12/fjjtGUhrnZthzkb7KcoLMgxjb6sZ9Jtx
+	 uAOM0BHC8B5hg==
+From: me@wantyapps.xyz
+To: 
+Cc: me@wantyapps.xyz,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Prathu Baronia <prathubaronia2011@gmail.com>,
+	Rob Herring <robh@kernel.org>,
+	Yangtao Li <frank.li@vivo.com>,
+	"Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	Khadija Kamran <kamrankhadijadj@gmail.com>,
+	linux-staging@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: axis-fifo: Fix indentation
+Date: Tue,  5 Mar 2024 23:14:01 +0200
+Message-ID: <20240305211416.755911-1-me@wantyapps.xyz>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] firmware: qcom-scm: Remove
- QCOM_SMC_WAITQ_FLAG_WAKE_ALL
-Content-Language: en-US
-To: Unnathi Chalicheemala <quic_uchalich@quicinc.com>,
- Bjorn Andersson <andersson@kernel.org>, Sibi Sankar <quic_sibis@quicinc.com>
-Cc: linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- kernel@quicinc.com, Prasad Sodagudi <quic_psdoagud@quicinc.com>,
- Murali Nalajala <quic_mnalajal@quicinc.com>,
- Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com>
-References: <20240228-multi_waitq-v1-0-ccb096419af0@quicinc.com>
- <20240228-multi_waitq-v1-3-ccb096419af0@quicinc.com>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20240228-multi_waitq-v1-3-ccb096419af0@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+From: Uri Arev <me@wantyapps.xyz>
 
+Warning reported by checkpatch.pl script:
 
-On 2/28/24 19:50, Unnathi Chalicheemala wrote:
-> This will not be supported by current firmware due to firmware
-> limitations, so remove it.
+CHECK: Alignment should match open parenthesis
 
-"will not be" - but is it today? Has it ever been? Will it ever be?
+Signed-off-by: Uri Arev <me@wantyapps.xyz>
+---
+ drivers/staging/axis-fifo/axis-fifo.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-Remember, you're changing code that needs to keep working on all
-platforms from APQ8064 to X1E80100.. If that's only a change on
-SM8650 or so, this isn't a valid argument.
+diff --git a/drivers/staging/axis-fifo/axis-fifo.c b/drivers/staging/axis-fifo/axis-fifo.c
+index 727b956aa231..ab758a527261 100644
+--- a/drivers/staging/axis-fifo/axis-fifo.c
++++ b/drivers/staging/axis-fifo/axis-fifo.c
+@@ -381,8 +381,8 @@ static ssize_t axis_fifo_read(struct file *f, char __user *buf,
+ 		 */
+ 		mutex_lock(&fifo->read_lock);
+ 		ret = wait_event_interruptible_timeout(fifo->read_queue,
+-			ioread32(fifo->base_addr + XLLF_RDFO_OFFSET),
+-			read_timeout);
++						       ioread32(fifo->base_addr + XLLF_RDFO_OFFSET),
++						       read_timeout);
+ 
+ 		if (ret <= 0) {
+ 			if (ret == 0) {
+@@ -522,9 +522,9 @@ static ssize_t axis_fifo_write(struct file *f, const char __user *buf,
+ 		 */
+ 		mutex_lock(&fifo->write_lock);
+ 		ret = wait_event_interruptible_timeout(fifo->write_queue,
+-			ioread32(fifo->base_addr + XLLF_TDFV_OFFSET)
+-				 >= words_to_write,
+-			write_timeout);
++						       ioread32(fifo->base_addr + XLLF_TDFV_OFFSET)
++								>= words_to_write,
++						       write_timeout);
+ 
+ 		if (ret <= 0) {
+ 			if (ret == 0) {
+-- 
+2.42.0
 
-Konrad
 
