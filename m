@@ -1,225 +1,159 @@
-Return-Path: <linux-kernel+bounces-92754-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92755-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DEB487258C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:21:26 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 593FD87258D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:21:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 84592B27C79
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:21:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6F0D4B27D55
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:21:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CDB714A9F;
-	Tue,  5 Mar 2024 17:21:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B51A168DD;
+	Tue,  5 Mar 2024 17:21:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Kq6PtfbR"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jLh68MSA"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA2CD14016
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 17:21:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AD6914AA8;
+	Tue,  5 Mar 2024 17:21:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709659262; cv=none; b=MaV/CTUB+G2k2Xp2GNS6OVMT50S0ykYjkH/cB3syAYhmLcXSihgQ3j1c+VZlIuumtN5t+7t28IJWGG26WohzbTO3YEvsaA+0fhVPJmxoi3HRvEcCU2FoXPI81yU5zRhxuMYvWNNyzXAY5Nk/MCclCnOoEFNKJ0lreT/B9okG8nA=
+	t=1709659263; cv=none; b=N7lkYFVFXTUC45ibFCz/Tj/AvY5f8tsMDTvWBNo3ZVHa38Bmn0mLsL8No/+7D3YOg0JkBLinbSr6x3uxGMAL28fxqKowkyVNZ4a/13aORzcC66uBsVIJ0UeaVQO9/expmN2wiU/GsQNH92pcgtQG9NLHfohXRGhEDUjE3JqXWVY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709659262; c=relaxed/simple;
-	bh=tpyJFxPvOJiBAtImilZL4Im3oJY6JE/114nrCkoN20I=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=SnMExeZyRkhHu1dqRb/joa7MDBrRBs2FlNgLYFPluxw7p/wzBH+VcTtYLdu3nWNhjkalkN9EPtFagiEL2PHuI9Hk02ULZGESwYq9YR2WhGxLMDPGpWHLpzhHpiDUMU2xR8+0hUWDfL5lP5sK4oPqoWYIPKea/Kw6hohjZyb38cY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Kq6PtfbR; arc=none smtp.client-ip=192.198.163.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709659261; x=1741195261;
-  h=date:from:to:cc:subject:message-id;
-  bh=tpyJFxPvOJiBAtImilZL4Im3oJY6JE/114nrCkoN20I=;
-  b=Kq6PtfbRJ8gCTao/cNWl8CV1ZSfCKKjtL/QRn8lhkiPkLoyO70iKA4U9
-   41bh07if9N0XnjVF5LL4PyK82t1rpLqztBNBqGEkJ02G+0WKoLJKnAE0W
-   esZVnYsrtU867PHMkQ4ZsZ2/Wl/7DhmOZf4PQgJpqP0sdpT41BIre6pN/
-   3KQ5PhvMuqmilupc2aPYxrfjj5WNRFh0aNUzegncB/h1wm/OlqaL1S224
-   Y/6bYF4xDt+qVlgFGvZZbLrCsghY3sA2WSfdEUyfpItGQieeN3MZPqw4L
-   qYTWLqBt/SjnFkis2YRKPJ+x66iMUGIrI+1xgypPK67wA3o5m6g2UajFZ
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="4089456"
-X-IronPort-AV: E=Sophos;i="6.06,206,1705392000"; 
-   d="scan'208";a="4089456"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 09:20:55 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,206,1705392000"; 
-   d="scan'208";a="14122606"
-Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
-  by orviesa004.jf.intel.com with ESMTP; 05 Mar 2024 09:20:53 -0800
-Received: from kbuild by b21307750695 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rhYTC-0003Vl-2i;
-	Tue, 05 Mar 2024 17:20:50 +0000
-Date: Wed, 06 Mar 2024 01:20:34 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:x86/core] BUILD SUCCESS
- 35ce64922c8263448e58a2b9e8d15a64e11e9b2d
-Message-ID: <202403060131.COf9xwyd-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1709659263; c=relaxed/simple;
+	bh=u/5agPX/lDQGtNbFvNrArovCNgzjSoaqePko/71LzPA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QlDP2swwrhFqGC6HoU1xbzr+4jKHOjfi8yLQwf6gYNsbo7UiwQNa+DOxK3UDc36Ao92jb0O+GQbDRxcQVDjTfsS8Wc47UeVoMAYo6r8A2ax9k/0w87JWpiMlXPBYvReaf+VDWZDTy555N5lIvGgTD60mNNHy4GAjk4hln9vC2j8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jLh68MSA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AADEAC43390;
+	Tue,  5 Mar 2024 17:21:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709659263;
+	bh=u/5agPX/lDQGtNbFvNrArovCNgzjSoaqePko/71LzPA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=jLh68MSAY+lVY1J2FtZLY48K1b81meFAuTM98dQCDx/YN8N8VdfVtxT1fwI6ZEBTH
+	 kmXVOwXzXuoC/fKP+poyLcgqsH1MVL0JExkC5jZdgoGEV94kG7Whw2oGB9Sb0/va/i
+	 sPom6z6JzJENMaaZMWFNlmXkbwY9oSCWEjrEUnu0jDtgd7WNgq36ld5OLZRXf1h+Vs
+	 +uVjvKqF+1Z0nRHxf0cZgLMVagOXc6c74/+dPJeYsgJO6ObDWXVsB/dpH6/wfw0V0q
+	 eqm5suN4eKt4cFETc6ZVGggx+JROVMqGCEN0NO/d6TqX6RGKv6bgdQGJn9SVEmskHw
+	 BiJv3YSN0VM5A==
+Date: Tue, 5 Mar 2024 17:20:58 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Yangyu Chen <cyy@cyyself.name>
+Cc: Damien Le Moal <dlemoal@kernel.org>, linux-riscv@lists.infradead.org,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Conor Dooley <conor.dooley@microchip.com>
+Subject: Re: [PATCH v3 5/7] riscv: Kconfig.socs: Allow SOC_CANAAN with MMU
+ for K230
+Message-ID: <20240305-fascism-enrich-06483ddeb149@spud>
+References: <tencent_BB2364BBF1812F4E304F7BDDD11E57356605@qq.com>
+ <tencent_0432DA968E39B81431F921F38D747C008208@qq.com>
+ <ef8df22f-dac8-4652-bf17-d10254e6abfb@kernel.org>
+ <tencent_E56A833916E00EC7B4840C34FAF1250ADE0A@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="kCqjEWLK9A+dep2C"
+Content-Disposition: inline
+In-Reply-To: <tencent_E56A833916E00EC7B4840C34FAF1250ADE0A@qq.com>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/core
-branch HEAD: 35ce64922c8263448e58a2b9e8d15a64e11e9b2d  x86/idle: Select idle routine only once
 
-elapsed time: 1454m
+--kCqjEWLK9A+dep2C
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-configs tested: 137
-configs skipped: 3
+On Tue, Mar 05, 2024 at 03:47:15PM +0800, Yangyu Chen wrote:
+> On 2024/3/5 07:46, Damien Le Moal wrote:
+> > On 3/5/24 06:05, Yangyu Chen wrote:
+> > > Since K230 was released, SOC_CANAAN is no longer only referred to the=
+ K210.
+> > > Remove it depends on !MMU will allow building dts for K230 and remove=
+ the
+> > > K210 string from the help message.
+> > >=20
+> > > Signed-off-by: Yangyu Chen <cyy@cyyself.name>
+> > > Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+> > > ---
+> > >   arch/riscv/Kconfig.socs | 5 ++---
+> > >   1 file changed, 2 insertions(+), 3 deletions(-)
+> > >=20
+> > > diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
+> > > index 623de5f8a208..b4e9b7f75510 100644
+> > > --- a/arch/riscv/Kconfig.socs
+> > > +++ b/arch/riscv/Kconfig.socs
+> > > @@ -75,13 +75,12 @@ config ARCH_CANAAN
+> > >   	def_bool SOC_CANAAN
+> > >   config SOC_CANAAN
+> > > -	bool "Canaan Kendryte K210 SoC"
+> > > -	depends on !MMU
+> >=20
+> > This seems wrong to me. The k210 support does require no-mmu. So why re=
+move
+> > this ?
+>=20
+> It just allows SOC_CANAAN to be selected when MMU=3Dy. With this patch,
+> nommu_k210_defconfig still works.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+I think the concern here is that this would allow people to build a
+kernel for the k120 with the MMU enabled, not that the existing nommu
+build will be affected.
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20240305   gcc  
-arc                   randconfig-002-20240305   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                                 defconfig   clang
-arm                   randconfig-001-20240305   clang
-arm                   randconfig-002-20240305   gcc  
-arm                   randconfig-003-20240305   clang
-arm                   randconfig-004-20240305   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20240305   gcc  
-arm64                 randconfig-002-20240305   clang
-arm64                 randconfig-003-20240305   gcc  
-arm64                 randconfig-004-20240305   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240305   gcc  
-csky                  randconfig-002-20240305   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-hexagon               randconfig-001-20240305   clang
-hexagon               randconfig-002-20240305   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240305   clang
-i386         buildonly-randconfig-002-20240305   gcc  
-i386         buildonly-randconfig-003-20240305   gcc  
-i386         buildonly-randconfig-004-20240305   clang
-i386         buildonly-randconfig-005-20240305   clang
-i386         buildonly-randconfig-006-20240305   gcc  
-i386                                defconfig   clang
-i386                  randconfig-001-20240305   clang
-i386                  randconfig-002-20240305   gcc  
-i386                  randconfig-003-20240305   clang
-i386                  randconfig-004-20240305   gcc  
-i386                  randconfig-005-20240305   gcc  
-i386                  randconfig-006-20240305   gcc  
-i386                  randconfig-011-20240305   gcc  
-i386                  randconfig-012-20240305   gcc  
-i386                  randconfig-013-20240305   gcc  
-i386                  randconfig-014-20240305   gcc  
-i386                  randconfig-015-20240305   clang
-i386                  randconfig-016-20240305   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240305   gcc  
-loongarch             randconfig-002-20240305   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240305   gcc  
-nios2                 randconfig-002-20240305   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240305   gcc  
-parisc                randconfig-002-20240305   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc               randconfig-001-20240305   gcc  
-powerpc               randconfig-002-20240305   gcc  
-powerpc               randconfig-003-20240305   gcc  
-powerpc64             randconfig-001-20240305   clang
-powerpc64             randconfig-002-20240305   clang
-powerpc64             randconfig-003-20240305   gcc  
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-riscv                 randconfig-001-20240305   clang
-riscv                 randconfig-002-20240305   gcc  
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-s390                  randconfig-001-20240305   gcc  
-s390                  randconfig-002-20240305   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                    randconfig-001-20240305   gcc  
-sh                    randconfig-002-20240305   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20240305   gcc  
-sparc64               randconfig-002-20240305   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                             i386_defconfig   gcc  
-um                    randconfig-001-20240305   gcc  
-um                    randconfig-002-20240305   gcc  
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64                              defconfig   gcc  
-x86_64                          rhel-8.3-rust   clang
-xtensa                            allnoconfig   gcc  
-xtensa                randconfig-001-20240305   gcc  
-xtensa                randconfig-002-20240305   gcc  
+Maybe you could squash in something like the following?
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
+index b4e9b7f75510..75d55059163f 100644
+--- a/arch/riscv/Kconfig.socs
++++ b/arch/riscv/Kconfig.socs
+@@ -72,15 +72,19 @@ config SOC_VIRT
+ 	  This enables support for QEMU Virt Machine.
+=20
+ config ARCH_CANAAN
+-	def_bool SOC_CANAAN
++	bool "Canaan Kendryte SoCs"
++	help
++	  This enables support for Canaan Kendryte SoC platform hardware.
+=20
+ config SOC_CANAAN
+-	bool "Canaan Kendryte SoC"
++	bool "Canaan Kendryte K210 SoC"
++	depends on !MMU
++	depends on ARCH_CANAAN
+ 	select CLINT_TIMER if RISCV_M_MODE
+ 	select ARCH_HAS_RESET_CONTROLLER
+ 	select PINCTRL
+ 	select COMMON_CLK
+ 	help
+-	  This enables support for Canaan Kendryte SoC platform hardware.
++	  This enables support for Canaan Kendryte K210 SoC platform hardware.
+=20
+ endmenu # "SoC selection"
+
+(Which reminds me, I really need to go and finish sorting out the ARCH_
+stuff)
+
+--kCqjEWLK9A+dep2C
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZedUegAKCRB4tDGHoIJi
+0mvGAP46YoIzshNQyc4YEgagEXQXzIwdeALQV+PKRlM2tCe2FQEAvnZO3VGbXelI
+c9WuUEV6/uQa3XYyXDrSIxQdWFWinQo=
+=oH7D
+-----END PGP SIGNATURE-----
+
+--kCqjEWLK9A+dep2C--
 
