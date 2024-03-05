@@ -1,198 +1,183 @@
-Return-Path: <linux-kernel+bounces-92791-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92792-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C9CC872606
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:52:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14D2987260A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:54:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6EE5A1C26173
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:52:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8F0F8B27CD6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:53:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB05318628;
-	Tue,  5 Mar 2024 17:52:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91FBE17732;
+	Tue,  5 Mar 2024 17:53:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Sr4DAfj3"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ra1FrdKl"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 034AB14F64;
-	Tue,  5 Mar 2024 17:51:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.13
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709661120; cv=fail; b=lJiQ1DQIZkwAsN3mprYtbnsKcdqxLkIvD+XqGm7wsrZSOlzM1xkLOV7S8+8m00Ied1qTAfPQhmeEub5zGkGysaFcmlMwPpYKuy5Q/QeRPe1GoFEsXiUH+W+uT4bFHnojmPV9t8EiMEv+gdJd6Z/Xg+K25ALvwXOJfrrLJq46NhM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709661120; c=relaxed/simple;
-	bh=2sK8lScd9DUKmG+6vWUYXNddRNP1DVEBLCw/lcHZlis=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=qG4Oi4mcYfwb/qb5RZMKYpzebiVhWz8+799E5wncvThzzGS6GnvNHJCvCfq42CajEopzef+fWs8pp/709xe2lFcoUkkhGNlq7DxyuzhYYGa9qOh7BrL8nQ3j6GdmP5GzJemirhlA3GfIU89I3NgQo832AeNDb2yjqEU45BHea4s=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Sr4DAfj3; arc=fail smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709661119; x=1741197119;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=2sK8lScd9DUKmG+6vWUYXNddRNP1DVEBLCw/lcHZlis=;
-  b=Sr4DAfj3yOCwzg4YiIvJIJfUQwPsQIpwHLh+u/8Mt6kBP6Gk08SlY0YH
-   rmTtWIy/3zPXL045F9AvbsU5XPcEF8yvDMCoNKH6njx7VuxtKFG7KmZlE
-   UD3yEeuHibW8UrehFHLGBoR/REUk0a4iYl8ZCQmUz1ouddaAl91Aqm8X9
-   EdU+5SZdZ/njIjWRt8qiHgQXcq2HxwkJnOuV68YgrKVhoKx/eCZYrvfIV
-   8fjZzR1zbh98cYKeYXDYc7IZqhL1mUGk2s6ht5GhfBmNREShY7aD+nkIx
-   1NNZ6T+Q1sy0rTE3hxFxHl7iV2Qwl9zukl3h56TmaIv02zYktW0Y4usJn
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11004"; a="7177635"
-X-IronPort-AV: E=Sophos;i="6.06,206,1705392000"; 
-   d="scan'208";a="7177635"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 09:51:58 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,206,1705392000"; 
-   d="scan'208";a="9395303"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmviesa010.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 05 Mar 2024 09:51:58 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 5 Mar 2024 09:51:57 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 5 Mar 2024 09:51:57 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Tue, 5 Mar 2024 09:51:57 -0800
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 5 Mar 2024 09:51:57 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ajU0ng6xV1ovDyBmbrtZHgQcdGIF0Qmw8XomkJznn/Ym+z6G/n9bRc7xmTU4Oft/cfxnhE85wXHvoa27d5MBjOCfQIU4tQihHKQsA2Zkbi8KcXSpzJF7wtURwG2GDVCU5KJnizIJwvkzOreEF5LfEFD2G0GXwAub73HqmDBbNac/0ukcGh0twkU/cyoGsLnkvIQAq4/jSnO2yk2kltacat4BH6EKqCKdKEAYxj2aPzfkJ++HOG0W8ewzZH5UGE8uvRIeVkXkOaDWE9dvJmxsDWVtuT7BZTSL2DDymwNyLOY7UhT9NmYWcfbtv5uik040naafoYHY6I2qmHmSOn+9nQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2sK8lScd9DUKmG+6vWUYXNddRNP1DVEBLCw/lcHZlis=;
- b=M2MegVsAyoom46XtIRRnNJUQnkX17yRn89cjrk4mI/gF3DwavdSMA1ZkXtqH4eKZVBoxY/wSi/gZILqvu1rH8xB8tII6U6VO+q5w4AkquZSf87HpD4cNtMcwKTcCB8oDUefmdUL0aiT330XkHppNJJt05zBTvPlKuVuY+cL4hkqpTlbpct2GEHbupoBLlcnwOkCwagNuay+eEpBDSAfF98BiqLsiTFRZezbNFnZesTXLQo7xqAq9G+uhrKnFrXuBu63148zkFPkoic1lpREku5uga1WLxHs+nDGJ7ddkLFmCdsytfKbgeLDqYCZRBlWpGJqrR82wjhV7aKE8MO8TFw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from SJ1PR11MB6083.namprd11.prod.outlook.com (2603:10b6:a03:48a::9)
- by BN9PR11MB5242.namprd11.prod.outlook.com (2603:10b6:408:133::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.22; Tue, 5 Mar
- 2024 17:51:55 +0000
-Received: from SJ1PR11MB6083.namprd11.prod.outlook.com
- ([fe80::d5ce:2b6c:458:3ca9]) by SJ1PR11MB6083.namprd11.prod.outlook.com
- ([fe80::d5ce:2b6c:458:3ca9%7]) with mapi id 15.20.7362.019; Tue, 5 Mar 2024
- 17:51:55 +0000
-From: "Luck, Tony" <tony.luck@intel.com>
-To: "Wieczor-Retman, Maciej" <maciej.wieczor-retman@intel.com>
-CC: "Yu, Fenghua" <fenghua.yu@intel.com>, "Chatre, Reinette"
-	<reinette.chatre@intel.com>, Peter Newman <peternewman@google.com>, "Jonathan
- Corbet" <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>,
-	"x86@kernel.org" <x86@kernel.org>, Shaopeng Tan <tan.shaopeng@fujitsu.com>,
-	James Morse <james.morse@arm.com>, Jamie Iles <quic_jiles@quicinc.com>, "Babu
- Moger" <babu.moger@amd.com>, Randy Dunlap <rdunlap@infradead.org>, "Drew
- Fustini" <dfustini@baylibre.com>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-doc@vger.kernel.org"
-	<linux-doc@vger.kernel.org>, "patches@lists.linux.dev"
-	<patches@lists.linux.dev>
-Subject: RE: Cover-cover letter for two resctrl patch sets
-Thread-Topic: Cover-cover letter for two resctrl patch sets
-Thread-Index: AQHabs6oHkcOOZfsEkWvQoNAq+dXBLEpbAyg
-Date: Tue, 5 Mar 2024 17:51:55 +0000
-Message-ID: <SJ1PR11MB60835E98D52C2A0A90C2BFB1FC222@SJ1PR11MB6083.namprd11.prod.outlook.com>
-References: <20240228112215.8044-tony.luck@intel.com>
- <zhfckkyc7yr57kdcru3x4d2btuqq5dp3x5qdv26agfq2tlai4d@ice7se7vfctp>
-In-Reply-To: <zhfckkyc7yr57kdcru3x4d2btuqq5dp3x5qdv26agfq2tlai4d@ice7se7vfctp>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ1PR11MB6083:EE_|BN9PR11MB5242:EE_
-x-ms-office365-filtering-correlation-id: 9eea195b-8dd4-409d-2b4a-08dc3d3cf23a
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 3A7aTYeh5kDVE1rLy5vxwjS6Z44/B3OoLjdcxOpRX7LjuU9DpTTBduoQSDdkB4HVNPFGb5DIwlkuJUkqCwbAAfpPg5kYaTN9QQU/b97/HHLAsk8uhfei19rL97zu3Q0+4nVkFkyxwBw/iy/KvdSPXzWzFM5o63w3SowXxCIz/N990zN7TDrmCRREAwXleSFwnf1oySxRVywH4KMq2cWm+1BazYw8ZmM6qcuZxGvbnthAUC7jVJkU2Bgpi5oAxmtBu4W7glqv+6VYOjCTXezmu2xIV86TfTk1cNNqSCsh46SwmqPxY1KDP1SLeoKHp9LA/K/l315I18vgx7zVO6w95EMyJJh6+VBv/9EesSSfx1Qx4x6h2RNtNH8Z8Uq6OVZP/dCho0wd8s65+CVcRNq3ck0xcvCZBYz7eHnWsotKJJ3/Ckjw3/WcsBdmCD+LdkSYj5bHsSOQw0f/Zg/teOCPIvJhw3H8nJvG9EOJNymjQGtirlBEXGbj/hY/p3grp/iD4OyW9g6wWok/AYPV80glKvBQUYGM8nJsM+JDooRhM2wcez6rmNxSE+aqshb6vXT79Pt5N4+gIxpzc2c3lZjyoLqaR7UGfsaSve0NvBrcJLJrvuq/sEqRsq4fRbpREDn5aT3BizJkGkMfmQGBP5QjF1xzHDMNGeEkWGWKbJ92/n0/iKrhlvIXNbdu34N1l7ql+/iInM685hXlbyJ+ElT6nw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ1PR11MB6083.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?OHu9C0obV1WQCvD/0bw1rogfDYLufEKPkHkPcXcpy8jOv/6jK68uVd0dBEpK?=
- =?us-ascii?Q?xYG/KJS2DXVCgymeBXUaloIDmmxZid5G8afM7jBE/D1wuzb5DmIl23NVio/9?=
- =?us-ascii?Q?pxspwpPh3EDd68lnU1OJW2+6pDq2HV5zkNuXsbD9Oz63HHsCJwJadgvw4JMF?=
- =?us-ascii?Q?vZg5DbH08DdRbotl4WKuBiIdaAob9g0FZCfBK4NIRpVBW/85RzZxWBWkz7Ao?=
- =?us-ascii?Q?4UuSs7K328Tv15Bx5/+vh9xzHarG9XqvOv6Nf9NNfRpSK3QzcvGmYvxDPBrC?=
- =?us-ascii?Q?Fp7vYuy2m8dw0UvnytgxvkMNeLs/e5L8s+oqmN74U5UjjZYYRplm9J7rPt2O?=
- =?us-ascii?Q?qGOS9IXVki8vnmoItI/2HmFPLqbESPpx0PMFraXKYUGI0tGg/yViwQsfonEl?=
- =?us-ascii?Q?4qI60A3Xl5zi9GIeLeJub28TZsihHD6WQ+4F7UJOyPlEAWy5uv4+QJf7TauD?=
- =?us-ascii?Q?xZBrqaInFWTa0HIb/TvAjeav/oDJ0jmHG94UdXvv4nFK9IG+CKa/Hhcwzx37?=
- =?us-ascii?Q?q9DiLKgSerOtKP9gDn+ANWAlmw/kb3IoECkWPFZVz5aGu94gRZM3V7SN5N9w?=
- =?us-ascii?Q?755MIqeOTO9zDMbMrYIza7ac+biPqlRyfkylLG3T1zBSJHz1MlF4yGHHn6Cx?=
- =?us-ascii?Q?hg/SavsGjtgYR4aALHWJRPUhn4A9NBzaHskHsbIrtSXmzHSD7xFLap5+3+Iv?=
- =?us-ascii?Q?jtvcqaKCNtsDQfKu3/eKFTmBjwN9C5LjjFC5VGyU8VM3xGnQpRRbX6BWnROz?=
- =?us-ascii?Q?ob7wJSOUtx4/KnjYDvF3pBTELiTl6jJOS2+q+eeAelJ9rX41TPbI+fx3W2Pd?=
- =?us-ascii?Q?NOUOKgqwo5CHJXAhm1O7wM3sJby7daxCC4jvbMOI6yXLxbIaBIj9qkgH8Cqj?=
- =?us-ascii?Q?Qdc0jYRe6P3pR0zrg2HyAD2eANGGxK2rIYOx9HGFJ8gcw/1kVpj3RXGk0Q32?=
- =?us-ascii?Q?mSVAjMtGj5PdFKqWp+cmB/4R1hCazbiDai+H9akUVyZNimAfQJyXnZMgIdbM?=
- =?us-ascii?Q?kGATmmh1cCDMWfaV4FzHsD8S5JFDpDtFa4qkzdieDwpCeykxXXWrYhykwOZP?=
- =?us-ascii?Q?e08bZ/eeRx1V7LIanyxqYcbAaI34UTKIL9LggYOE3UZSMxGifdMv9/Ze9nbw?=
- =?us-ascii?Q?eYf9rHd5KXUEDuUbrui/r/bQ2mjVR29w8nh0ybBUSLe6tGv5vetmiEPLg3y7?=
- =?us-ascii?Q?3u+9AImGYLzB4IxeImOetxCY3DDBcRdHt7wPUqOAJ86vAVSpzxxajhfh+fO0?=
- =?us-ascii?Q?hIN7GLBOPP8qpfF28/kjKXFHqOZsZrgt1KZorhmwOQ2HG+BeZmq0zaBFWf9F?=
- =?us-ascii?Q?H+Kvi5OJBM5QXQ/FmbB6xEtXTfwfB5BnKBR2Jc61xR2rFtUvoqLtdjRD8iiT?=
- =?us-ascii?Q?lCqPu3QgBwoj4kTVP0yQYABKiVIIy/KlYRktCdgGjejc3ugy1plQqSzXupkF?=
- =?us-ascii?Q?K8SMvKXJiRLyJyn2vvpqHUle0Ws0uqYo/u7up+iiU2M9OcR2uHBYPJvVJSXE?=
- =?us-ascii?Q?ue+jsc6AZwD/iwvsZ5oyFlEKJWH6QVLEoVr0Nbt5OKwgOFii9k1OGCbRbsZT?=
- =?us-ascii?Q?/3LZl0w409CySdT55YB89qYB44LK6eojZaJwRbjJ?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B11461758F;
+	Tue,  5 Mar 2024 17:53:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709661223; cv=none; b=K3sktbcCClV0baGTCZbs2Y1mJL7BLzBeXc43etVmSkvfmWhkkASkmed+M7e1XCYQXzITU58zmckOLciwHhIPabV9A/e7KKdm9FTanT5jXFElZ2czqUwYoBaNC6pGxDR0swnvbChuxRER+6e2J/aS7ypMWsp0bcDQGqIYL/Y5+d0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709661223; c=relaxed/simple;
+	bh=6S0+38ck+Pt3uuIip4uH7OH7/HNYkmD/Ul5DLw30rKU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TDZcwaj0zFi+2FGaRjnUi+Mh1SO6oQx0LuO0ro7L1+wdhXD8l1hoAM+pVl66Fjxzn+i/MUTIlembLXVDsteQgdkYoq1PZwpOdj+Ij15AnMl1exq8+swry0/wSzW7wn1HRXXN0MhRUc2WgY6yViKR3DZf67G1AinGLJ5F/haqjnE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ra1FrdKl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F5F4C433C7;
+	Tue,  5 Mar 2024 17:53:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709661223;
+	bh=6S0+38ck+Pt3uuIip4uH7OH7/HNYkmD/Ul5DLw30rKU=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=Ra1FrdKl3GxlyeZInbLJYdmxOTYC0TxJXYrqerxvZyNKDa7qhOvEAIuWimq1xNiig
+	 agBc++Zq3bLPrN+vTOTxPRz8KbtPYJNdX7Zdri038+s8kuAvlciMkHiVlWHkEiJlib
+	 30o85HxNvVKm76P7ll1iOL+08Fj1WE2B5iaFeimaY/xc2XYrC/tcEiTDWS7swGzA5l
+	 7+wvctJoAUDK5jSWzFDgRq097e326KNp0pY6uwubPhIIj6Xym7tArviK2ywMV1gwja
+	 1tj4mxgldrdrvvkL/EwD7FloNC6jkARj6FrWsYq+VtBBbqiHYvYNtU8lBgxZ+wfm8H
+	 eg0ANlvVFQFvw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id B90A3CE078E; Tue,  5 Mar 2024 09:53:42 -0800 (PST)
+Date: Tue, 5 Mar 2024 09:53:42 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Joel Fernandes <joel@joelfernandes.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>,
+	Network Development <netdev@vger.kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
+	kernel-team <kernel-team@cloudflare.com>
+Subject: Re: [PATCH] net: raise RCU qs after each threaded NAPI poll
+Message-ID: <1e8d070e-5616-4c6d-a08b-4b6e1a0a2bad@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <55900c6a-f181-4c5c-8de2-bca640c4af3e@paulmck-laptop>
+ <10FC3F5F-AA33-4F81-9EB6-87EB2D41F3EE@joelfernandes.org>
+ <99b2ccae-07f6-4350-9c55-25ec7ae065c0@paulmck-laptop>
+ <CAEXW_YQ+40a1-hk5ZP+QJ54xniSutosC7MjMscJJy8fen-gU9Q@mail.gmail.com>
+ <f1e77cd2-18b2-4ab1-8ce3-da2c6babbd53@paulmck-laptop>
+ <CAEXW_YRDiTXJ_GwK5soSVno73yN9FUA5GjLYAOcCTtqQvPGcFA@mail.gmail.com>
+ <fcaf6cad-9959-4b6d-a6e4-05ae1b2fabdc@joelfernandes.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ1PR11MB6083.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9eea195b-8dd4-409d-2b4a-08dc3d3cf23a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Mar 2024 17:51:55.0531
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: MyegS+ra/NuFlctkEzxqvExVOTnr66VAYihY3yfiZCW9jND1c/yStGhqd+esra1fSW/fuGo6dZPTWskEW9oLTQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR11MB5242
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fcaf6cad-9959-4b6d-a6e4-05ae1b2fabdc@joelfernandes.org>
 
-> Hi, I wanted to ask a mailing technical question.
->
-> My mailing setup with b4 is capable of downloading series by their messag=
-e id.
-> With these two series tied together it for some reason doesn't want to do=
-wnload
-> the smaller series (even when I pass the smaller series ID it ignores it =
-and
-> fetches the SNC one).
->
-> Do you have some trick or method to download a series with this type of
-> formatting easier than manually saving emails?
+On Mon, Mar 04, 2024 at 04:16:01AM -0500, Joel Fernandes wrote:
+> Hi Paul,
 
-The cover-cover letter seemed like a neat idea, but since it is breaking ot=
-her
-tools and workflows I'm not going to do that again.
+Thank you, Joel!
 
-I tried asking b4 to specifically pick up version 4:
+> On 3/2/2024 8:01 PM, Joel Fernandes wrote:
+> >> As you noted, one thing that Ankur's series changes is that preemption
+> >> can occur anywhere that it is not specifically disabled in kernels
+> >> built with CONFIG_PREEMPT_NONE=y or CONFIG_PREEMPT_VOLUNTARY=y.  This in
+> >> turn changes Tasks Rude RCU's definition of a quiescent state for these
+> >> kernels, adding all code regions where preemption is not specifically
+> >> disabled to the list of such quiescent states.
+> >>
+> >> Although from what I know, this is OK, it would be good to check the
+> >> calls to call_rcu_tasks_rude() or synchronize_rcu_tasks_rude() are set
+> >> up so as to expect these new quiescent states.  One example where it
+> >> would definitely be OK is if there was a call to synchronize_rcu_tasks()
+> >> right before or after that call to synchronize_rcu_tasks_rude().
+> >>
+> >> Would you be willing to check the call sites to verify that they
+> >> are OK with this change in 
+> > Yes, I will analyze and make sure those users did not unexpectedly
+> > assume something about AUTO (i.e. preempt enabled sections using
+> > readers).
+> 
+> Other than RCU test code, there are just 3 call sites for RUDE right now, all in
+> ftrace.c.
+> 
+> (Long story short, PREEMPT_AUTO should not cause wreckage in TASKS_RCU_RUDE
+> other than any preexisting wreckage that !PREEMPT_AUTO already had. Steve is on
+> CC as well to CMIIW).
+> 
+> Case 1: For !CONFIG_DYNAMIC_FTRACE update of ftrace_trace_function
+> 
+> This config is itself expected to be slow. However seeing what it does, it is
+> trying to make sure the global function pointer "ftrace_trace_function" is
+> updated and any readers of that pointers would have finished reading it. I don't
+> personally think preemption has to be disabled across the entirety of the
+> section that calls into this function. So sensitivity to preempt disabling
+> should not be relevant for this case IMO, but lets see if ftrace folks disagree
+> (on CC). It has more to do with, any callers of this function pointer are no
+> longer calling into the old function.
 
-$ b4 am -v4 20240228112952.8090-tony.luck@intel.com
+Assuming the loads from the function pointer aren't torn by the compiler,
+they will be loaded by a single instruction, which as you say cannot
+be preempted.  Might be good to have READ_ONCE() if they aren't already
+in place.
 
-which worked for me (though it did apply Reinette's conditional
-"Reviewed-by" tag without the suggested change).
+> Case 2: Trampoline structures accessing
+> 
+> For this there is a code comment that says preemption will disabled so it should
+> not be dependent on any of the preemptiblity modes, because preempt_disable()
+> should disable preempt with PREEMPT_AUTO.
+> 
+> 		/*
+> 		 * We need to do a hard force of sched synchronization.
+> 		 * This is because we use preempt_disable() to do RCU, but
+> 		 * the function tracers can be called where RCU is not watching
+> 		 * (like before user_exit()). We can not rely on the RCU
+> 		 * infrastructure to do the synchronization, thus we must do it
+> 		 * ourselves.
+> 		 */
+> 		synchronize_rcu_tasks_rude();
+> 		[...]
+> 		ftrace_trampoline_free(ops);
+> 
+> Code comment probably needs update because it says 'can not rely on RCU..' ;-)
 
--Tony
+My guess is that this comment is left over from when that call to
+synchronize_rcu_tasks_rude() was open-coded.  ;-)
+
+Maybe "We can not rely on vanilla RCU to do..."?
+
+> My *guess* is the preempt_disable() mentioned in this case is
+> ftrace_ops_trampoline() where trampoline-related datas tructures are accessed
+> for stack unwinding purposes. This is a data structure protection thing AFAICS
+> and nothing to do with "trampoline execution" itself which needs "Tasks RCU" to
+> allow for preemption in trampolines.
+
+Sounds plausible to me, but let's see what Steve's thoughts are.
+
+> Case 3: This has to do with update of function graph tracing and there is the
+> same comment as case 2, where preempt will be disabled in readers, so it should
+> be safe for PREEMPT_AUTO (famous last words).
+> 
+> Though I am not yet able to locate that preempt_disable() which is not an
+> PREEMPT_AUTO-related issue anyway. Maybe its buried in function graph tracing
+> logic somewhere?
+
+With the trampolines, isn't synchronize_rcu_tasks_rude() paired with
+a call to synchronize_rcu_tasks()?  In that case, rude's only job is
+getting all CPUs out of their previous sojourn in either the entry/exit
+code or the deep idle loop.  RCU Tasks waits for each task to voluntarily
+block, which takes care of all tasks executing elsewhere.  (Recall that
+RCU Tasks ignores the idle tasks.)
+
+> Finally, my thought also was, if any of these thread usages/cases of Tasks RCU
+> RUDE assume working only on a CONFIG_PREEMPT_NONE=y or
+> CONFIG_PREEMPT_VOLUNTARY=y kernel, that could be worrying but AFAICS, they don't
+> assume anything related to that.
+
+Good point, most generic code should need to tolerate preemption in
+any case.  But I have nine commits queued thus far that handle some
+CONFIG_AUTO breakage or another, so a little paranoia won't go too
+far amiss.  ;-)
+
+Remaining on my list are uses of the various CONFIG_PREEMPT* Kconfig
+options, both in code and in Makefiles.  Though who knows?  Perhaps Ankur
+or Thomas have already done that.
+
+							Thanx, Paul
 
