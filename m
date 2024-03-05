@@ -1,237 +1,192 @@
-Return-Path: <linux-kernel+bounces-92420-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92421-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66AE6871FE9
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:18:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 00331871FEB
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:18:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BEA52287263
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:18:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A9E6C287EDB
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:18:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34D9F85931;
-	Tue,  5 Mar 2024 13:17:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="Lf+4cuLx"
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2074.outbound.protection.outlook.com [40.107.100.74])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9360C85953;
+	Tue,  5 Mar 2024 13:18:09 +0000 (UTC)
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 646F185C58
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 13:17:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.100.74
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709644663; cv=fail; b=UVJ61ft/C/fK5kSQcdewfY4DemzxKzfoyRMGNwo0swmOmE6GfszIgLDW2AdZlXrRxWzBiipR41o3+RaPIAIzOJbTYNKhuZJKw2GVz9sO5SFWVMJji54UhaQUztVe6xmwIebvZAyKAEZTDlS2cf1diFi1WuoZs2KSoa5dCZqQ6m0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709644663; c=relaxed/simple;
-	bh=zTDxkCKpByJUda8u62xVRAfDKI1mFqSQyMER31xKBlQ=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=E0Fm7EXCtPxNe5iaKq8QNC3ruEFi79Jv83NGSjnnb6021SKoZSWmxvjtjnib6cBxCoELFNtdJ8fmyhfAIxLBksuqQ6iKcLeSHEQ0tFFj6iDgrwADu+uLvcyQhPpdIH1nJDi2gZjH9ETQLkCWoXBBvf5mGn0SITs+GkxmkLcA1VA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=Lf+4cuLx; arc=fail smtp.client-ip=40.107.100.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=h+azJBLneArhUdyGwpYiH1BF69rjNqj1VYINztLsZqYH9RLUHy38wEJyIk/ldyKRBCpOBOwZqI/krMck32sTfQzwmICtRZMDUu4Wtn5J7xvsWSpw8fbMvvK9BHltKLahmJCZNqFRNDiLgacDmbdg87LOEqKhK38tdgdk+kfZpgovSsfrtt/KUQUcFgl9f4ieGOZv/5TbfQ38iKge3v9Z3Xi5aCK9MncaiL4twyD/xXkHQxMIXYQDLbJGp+2wWpeabtBoMVSkPibOJflSjoW1Am3ERiyM/yAdlVdRjXEc9r54rpXj+XZhP/r1aRPHBy8eZJS3K+bQ3WcmKTLnrNO8aw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+jdwt+lJe+ILvwOHEkeOtsSw/4Fro4nhv62J14SIbq4=;
- b=Q8VyeFWdUW7UlcpjopjLYR6MuisQq7vf0BA0gnCO3p0ki/M+usHWx1Mr8w+cuPnbpBb/8TZGgUnL9UXZrrhzJoFI+tlKI7d9aAWY2OzTMDGpujUNhUEXnZwt53ECOkRokxr5gCs0ej+lj9LHhpv4T2tQ57Ej+zpuMQy0A5QpnJpI2Y3T5fktkAAjKdHVtxNJ5PFayq/KcLRo3nkcz3Th5KYmHaVmJHOFNlmq3WQcmD5DBdIm+XGqUnS7nCQ9GlKW2Xu2tGfdZmPQToyetszcUZi5g0BZ4YRxRIoLoompI/2DJVMleq9dQwcTovmFbFp3KL3Ofqx5wAvlYmENAV7Rvg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+jdwt+lJe+ILvwOHEkeOtsSw/4Fro4nhv62J14SIbq4=;
- b=Lf+4cuLxMmDUsYtvGuSn5PE8RpIqP1/C8JV//YqSE2vl76UllvMJGAHnixKUvqEpPLOASKK/cBwVAUXNcYRjimraLptFGIh54L2lBbKz7+tZZyU6Dm548nGrV3xOhpuzsS3IiWBOWN6zhihEoqBygHm+TSJuYVMwPQ7DA/9OUEY=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH7PR12MB5596.namprd12.prod.outlook.com (2603:10b6:510:136::13)
- by SN7PR12MB6813.namprd12.prod.outlook.com (2603:10b6:806:267::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.38; Tue, 5 Mar
- 2024 13:17:38 +0000
-Received: from PH7PR12MB5596.namprd12.prod.outlook.com
- ([fe80::b582:10d1:a1e4:6035]) by PH7PR12MB5596.namprd12.prod.outlook.com
- ([fe80::b582:10d1:a1e4:6035%5]) with mapi id 15.20.7339.035; Tue, 5 Mar 2024
- 13:17:38 +0000
-Message-ID: <d517ae14-4668-4782-9a96-d5482ca5c81d@amd.com>
-Date: Tue, 5 Mar 2024 18:47:30 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] drm/amdgpu: add ring timeout information in
- devcoredump
-Content-Language: en-US
-To: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Sunil Khatri <sunil.khatri@amd.com>, Alex Deucher
- <alexander.deucher@amd.com>, Shashank Sharma <shashank.sharma@amd.com>
-Cc: amd-gfx@lists.freedesktop.org, Pan@rtg-sunil-navi33.amd.com,
- Xinhui <Xinhui.Pan@amd.com>, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org
-References: <20240305115843.3119708-1-sunil.khatri@amd.com>
- <209b7e69-594d-4e40-8173-42643f94f2ba@amd.com>
-From: "Khatri, Sunil" <sukhatri@amd.com>
-In-Reply-To: <209b7e69-594d-4e40-8173-42643f94f2ba@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: PN3PR01CA0101.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:9b::7) To PH7PR12MB5596.namprd12.prod.outlook.com
- (2603:10b6:510:136::13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E499B85920;
+	Tue,  5 Mar 2024 13:18:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709644689; cv=none; b=G1+4LdNlvDNa3O4otQa2H9Kh8vRZI/7z+WVB6wG6Fc/i5S/gWjCkFtCAzpzhbuH8vxmKMgrh++mrowQ37+FT7Iuz79pWmov7I7bL44Z6waMswCwbjXqCA45eUu6ssXOBYAaqj0lJI8DmOxNxL0lnTd9ra6gc5tMZqr0azAgXJUE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709644689; c=relaxed/simple;
+	bh=rTVx3vnuzXzSdWk3HXicjemCJcYYPy1I/GQBPyfPXLU=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=iEdPODPNNHFCPeA3caiFwFga7ZTuJAo/Z+UkNPEBLhDaY363ObF97NkA/bNj9Ll+4BRWG3zuHHzoOMYgQu61TbgmfbvmeqFrktY5qEJu20ZiRjumKGmbtK12zyKyodkoakgUv94J0uDd+Zc37ETK22ce54/JQ824bdpazP+Y7v4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Tpx073jDWz1Q9GW;
+	Tue,  5 Mar 2024 21:16:07 +0800 (CST)
+Received: from canpemm100003.china.huawei.com (unknown [7.192.104.85])
+	by mail.maildlp.com (Postfix) with ESMTPS id 10D851400C8;
+	Tue,  5 Mar 2024 21:18:04 +0800 (CST)
+Received: from canpemm500004.china.huawei.com (7.192.104.92) by
+ canpemm100003.china.huawei.com (7.192.104.85) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 5 Mar 2024 21:18:03 +0800
+Received: from [10.174.179.14] (10.174.179.14) by
+ canpemm500004.china.huawei.com (7.192.104.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 5 Mar 2024 21:18:03 +0800
+Subject: Re: [PATCH 3/6] scsi: hisi_sas: Use LIBSAS_SHT_BASE_NO_SLAVE_INIT
+To: John Garry <john.g.garry@oracle.com>, <jejb@linux.ibm.com>,
+	<martin.petersen@oracle.com>, <chenxiang66@hisilicon.com>,
+	<jinpu.wang@cloud.ionos.com>, <artur.paszkiewicz@intel.com>,
+	<dlemoal@kernel.org>, <ipylypiv@google.com>
+CC: <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20240305122452.340471-1-john.g.garry@oracle.com>
+ <20240305122452.340471-4-john.g.garry@oracle.com>
+From: Jason Yan <yanaijie@huawei.com>
+Message-ID: <26ff4850-2ff8-1625-cf97-6fbf063e26c7@huawei.com>
+Date: Tue, 5 Mar 2024 21:18:02 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB5596:EE_|SN7PR12MB6813:EE_
-X-MS-Office365-Filtering-Correlation-Id: cf014751-be81-4ca9-d6bf-08dc3d16a12b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	qWiEM3FtltIdCy8+CjZGO3Jerwq2BuT625ePgaRqLnJTiGOMrIFEFDCi9zvYRenHKhJ2t8pREFG1/YOTsmokb8YccgcOYBOOkT8mrOCeYyPDZGsxvrQfTcKuUCklGdnDe49GblQv2lDesp+4PtT9wQL2CgGrbe3/p9p6vURhavPojzrpkg4Orm61laJyiHIT0gAD1V7BCQDrhAH+LL0Ir/DNQqW2UF3JGOsPxPusUz/XtzwWgUF3fjcYKDSE8GP6/7JMILNmLa10/Ql03PlwVvaL7/VNdDtIL9zX6eVGqTcVdExTsUir/533viwnpgNK92JBmW5bMd43jpXrVy7X7ujHuhX/4/hABXMxL4JZieoyrhSGxY1HeTbEp6FhdPNx61moZ/fkMbcXwdP0CCXKp+f09MtpLJDeGB/Lj/rHZV7nG8hz660IyPc/Yaw6PhgxYSqAI3fku7IuIajI7sMyIecVsaD4uQ+HztU5Mdp1oUXP69cJ1hN1VlZty29m5tQsU3ZY8wat0V3mZW4YwioJ7qqAd4rqtLvh2ZIxts+b/rGGKO+zo2Qo5jvDawwQmanbOAo4QT64enZ5hu2FiMX75R/eK+Fua1hE6cqFyn0o7mgYWIE4pvi3OBSXqXMOLBDFI7UJCUSaa4mW4Vn1PUEZfYKA/FEIZNvtk0PLP2oZ3Ug=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5596.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?K1RRMmJuN3dqUW5MbFdvVWI0MVhTRkcra0krNE1MUEE2TlA1eDRDVU5KaXNv?=
- =?utf-8?B?WktFb2tVQXQrdlJram5uTEQ3SXZjck95UU9EQVBPcnEvMlhNZFNHcjlTZ0cx?=
- =?utf-8?B?NmdMTXR3U1BYeVpRVmtVZGQzVzFFZnVRdE8xOE9iYlBuTHlLUU1KUVoyWndD?=
- =?utf-8?B?N2hCUzRtaGlnK2x5SmZnUjh0Q1VmL2RvNlptWWEyWkVqTzJqZTZhaUUzMEZZ?=
- =?utf-8?B?NVMyaXorbTJBSXJGNjR0ZTl1QlhMY0xvaTR3cHZSU2FheTB5SEZMdFd2aTBM?=
- =?utf-8?B?V2tkelJvT2NvSnFQU1hWa2ZqeTVTdzVycFlNR3diVjU4aG5Yck5TOTZnNDJp?=
- =?utf-8?B?eFN0TW9oKzRmOGpHRWczRXJlK0hvTWhWenE0R09QTk1WY01JRTdVSjFwdW5a?=
- =?utf-8?B?L2VDQzg1VFQ5WXMyM2ZzYVBNQ2dBUVpycVNQNXI0OFhCR3NxWVdzQ0swVDMv?=
- =?utf-8?B?cmw3TEhUanRINnp6L2VtSHFBd2I0cG5qcmF0NDhjeHdMUjJXaXFPdzR1R1Jz?=
- =?utf-8?B?aUkwTkM2SUFTTlFDK3Z0NktIWFdLU1Y1cDhIMUJCV21xalpoanFDM2JTbTNN?=
- =?utf-8?B?aGRpTkg4cUlaYmxJUW9nOS9hSjhsRVJUUGVVSHRzZ1JSM0NpVHFhSXo0U0FN?=
- =?utf-8?B?ZFVRVUhwQ3RNMDI1TTdhTHRCMFZSMW9TUjYySk0vY1ZtbjZuK3M3V0l6aEd2?=
- =?utf-8?B?dWhmOFRlUm5LbEwvcnBDSWoxVDNYN1cyZExxaHQ5Nmx3UVJwTlY1OVNEVkRI?=
- =?utf-8?B?b09ETjMwZFVHNDQwR2puTGhwU1JuQTlmV0I4NDZINTVWWG9Vd3J5TWMwT25z?=
- =?utf-8?B?bEZIY0xzQ21YTjJEaWpjUVVJSm9zWFJzRVdIaW52bHUraW5TRk5WY3A5eVJH?=
- =?utf-8?B?Mm1ZcGJxS1doUGhITE9ZSERzSWQvRjIyb3lNTGsvZFNCcHlxOUZnOXZobzB2?=
- =?utf-8?B?c2tZaEV1bTRwQlhhWGJDMTB4cVM2aDByN0tXcGVhY1krUjZxTEJuV29Nc0d4?=
- =?utf-8?B?KzE5WWlOUi9HSVhqU0dNSEpvRDFGYlpjbm5QTE51NHA2NjFnM3BPT0JrV243?=
- =?utf-8?B?Sjg4QjcwRXBGeFFCRXdwU0VYQW0zZDFaTE1XdlhGanVOTk0ya1lqR2lNZ3Bp?=
- =?utf-8?B?UnhUUENSTzBWQkliMGtORlUwUFp6Q3g3OWE4c3gxN1ZnckEyQzA3RVBrTEdk?=
- =?utf-8?B?ZmRlTWwzQS92cmQxdndnZVRuK2FwSytWYXBkamNjYVM3ZDR1U0NRRldMYnZr?=
- =?utf-8?B?WHZvemlHV0pDa0JOZXVxUW11bFJTQlk5eTRwWVJHWEpvVm9ZN0w5SWxXSUFn?=
- =?utf-8?B?S05rOEswNVBlaG1yNFJZRi83U3EzMjVLRmNRb3ovTjhIVGd5YTUvNEs0RkV1?=
- =?utf-8?B?MWdlTVR4ci9oeHMrWjJxWFFmTXhkTDBhU0xJWTdMcE5iN0NTUjNMTDVOZTAz?=
- =?utf-8?B?NkFJTzRDNTlFVmtpaFJpdks1d1J5SVhyam1VN2JUS3FsdXRDZXhjenU1bXg5?=
- =?utf-8?B?cnJxNUN6RjZZMFBucTRSeTIwa1FiUmp2N01TSFBncEQyRnpiLzZKcEo1NVg1?=
- =?utf-8?B?dExtWGNmVllPTGtKbmFUeGpLaitzcEpkVVg2cXlYMmpYY3IzZVdnZUcwK0pD?=
- =?utf-8?B?RG42RXpJNWsrS2ZSSVlBSE12TWlid2pVbnpXM3NFb3pZVm00RkhuazNEdzJF?=
- =?utf-8?B?NUZVL3pDZU9TbExkTkFtbmZpUDdUOXRLbHAzYzEycTZJL05heG1TdUpQV2dU?=
- =?utf-8?B?aVNCUnIvSHJxTllScldpcjlib3FrcWxINE9KQ3FVTkI1bGNMeHFkbFZMWlJM?=
- =?utf-8?B?OWJPMFczMmNIU0doOFdobm9UV2hleUplNjlXR2ptTVU5MHVhN24vOWl6K0lE?=
- =?utf-8?B?ZjFabnpLc29WTEprYTJrTHIwZktlWThEMHhHMmNKTTA4VXhUbVlmbTdBb25P?=
- =?utf-8?B?cHZqRFNnSFB3N2VuOEFaMFBTY0k4OXNER0RFRWt3SnpZdWJKeHZ3Y0dnbHlm?=
- =?utf-8?B?a2M4bDVBNkp6NGZkcmV3Uy9PcW4rcXFwMXcrTWI5TGVKT2VrREdDaHdaakVN?=
- =?utf-8?B?QWF1T1A0cFMveGJMano5ZEFoRlE2Qm15eEhjNEtnSDlSOVRUaktaRDVob2xM?=
- =?utf-8?Q?7w10ZfUQHH5m+otzrxenOajET?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cf014751-be81-4ca9-d6bf-08dc3d16a12b
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5596.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Mar 2024 13:17:38.5426
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: LhrhszB+GH2yU8GLJybiVD91I98iP45CTj0Ku6e271yHrSXDlxWQhrUu7SEQUDHnMM/qiE+c/fGokqCMQpK7fw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB6813
+In-Reply-To: <20240305122452.340471-4-john.g.garry@oracle.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ canpemm500004.china.huawei.com (7.192.104.92)
 
+On 2024/3/5 20:24, John Garry wrote:
+> Use standard template for scsi_host_template structure to reduce
+> duplication.
+> 
+> Signed-off-by: John Garry <john.g.garry@oracle.com>
+> ---
+>   drivers/scsi/hisi_sas/hisi_sas_v1_hw.c | 18 +-----------------
+>   drivers/scsi/hisi_sas/hisi_sas_v2_hw.c | 18 +-----------------
+>   drivers/scsi/hisi_sas/hisi_sas_v3_hw.c | 18 +-----------------
+>   3 files changed, 3 insertions(+), 51 deletions(-)
+> 
+> diff --git a/drivers/scsi/hisi_sas/hisi_sas_v1_hw.c b/drivers/scsi/hisi_sas/hisi_sas_v1_hw.c
+> index 3c555579f9a1..161feae3acab 100644
+> --- a/drivers/scsi/hisi_sas/hisi_sas_v1_hw.c
+> +++ b/drivers/scsi/hisi_sas/hisi_sas_v1_hw.c
+> @@ -1735,28 +1735,12 @@ static struct attribute *host_v1_hw_attrs[] = {
+>   ATTRIBUTE_GROUPS(host_v1_hw);
+>   
+>   static const struct scsi_host_template sht_v1_hw = {
+> -	.name			= DRV_NAME,
+> -	.proc_name		= DRV_NAME,
+> -	.module			= THIS_MODULE,
+> -	.queuecommand		= sas_queuecommand,
+> -	.dma_need_drain		= ata_scsi_dma_need_drain,
+> -	.target_alloc		= sas_target_alloc,
+> +	LIBSAS_SHT_BASE_NO_SLAVE_INIT
+>   	.slave_configure	= hisi_sas_slave_configure,
+>   	.scan_finished		= hisi_sas_scan_finished,
+>   	.scan_start		= hisi_sas_scan_start,
+> -	.change_queue_depth	= sas_change_queue_depth,
+> -	.bios_param		= sas_bios_param,
+> -	.this_id		= -1,
+>   	.sg_tablesize		= HISI_SAS_SGE_PAGE_CNT,
+> -	.max_sectors		= SCSI_DEFAULT_MAX_SECTORS,
+> -	.eh_device_reset_handler = sas_eh_device_reset_handler,
+> -	.eh_target_reset_handler = sas_eh_target_reset_handler,
+>   	.slave_alloc		= hisi_sas_slave_alloc,
+> -	.target_destroy		= sas_target_destroy,
+> -	.ioctl			= sas_ioctl,
+> -#ifdef CONFIG_COMPAT
+> -	.compat_ioctl		= sas_ioctl,
+> -#endif
+>   	.shost_groups		= host_v1_hw_groups,
+>   	.host_reset             = hisi_sas_host_reset,
+>   };
+> diff --git a/drivers/scsi/hisi_sas/hisi_sas_v2_hw.c b/drivers/scsi/hisi_sas/hisi_sas_v2_hw.c
+> index b5d379ebe05d..d89e97e8f5c2 100644
+> --- a/drivers/scsi/hisi_sas/hisi_sas_v2_hw.c
+> +++ b/drivers/scsi/hisi_sas/hisi_sas_v2_hw.c
+> @@ -3567,28 +3567,12 @@ static void map_queues_v2_hw(struct Scsi_Host *shost)
+>   }
+>   
+>   static const struct scsi_host_template sht_v2_hw = {
+> -	.name			= DRV_NAME,
+> -	.proc_name		= DRV_NAME,
+> -	.module			= THIS_MODULE,
+> -	.queuecommand		= sas_queuecommand,
+> -	.dma_need_drain		= ata_scsi_dma_need_drain,
+> -	.target_alloc		= sas_target_alloc,
+> +	LIBSAS_SHT_BASE_NO_SLAVE_INIT
+>   	.slave_configure	= hisi_sas_slave_configure,
+>   	.scan_finished		= hisi_sas_scan_finished,
+>   	.scan_start		= hisi_sas_scan_start,
+> -	.change_queue_depth	= sas_change_queue_depth,
+> -	.bios_param		= sas_bios_param,
+> -	.this_id		= -1,
+>   	.sg_tablesize		= HISI_SAS_SGE_PAGE_CNT,
+> -	.max_sectors		= SCSI_DEFAULT_MAX_SECTORS,
+> -	.eh_device_reset_handler = sas_eh_device_reset_handler,
+> -	.eh_target_reset_handler = sas_eh_target_reset_handler,
+>   	.slave_alloc		= hisi_sas_slave_alloc,
+> -	.target_destroy		= sas_target_destroy,
+> -	.ioctl			= sas_ioctl,
+> -#ifdef CONFIG_COMPAT
+> -	.compat_ioctl		= sas_ioctl,
+> -#endif
+>   	.shost_groups		= host_v2_hw_groups,
+>   	.sdev_groups		= sdev_groups_v2_hw,
+>   	.host_reset		= hisi_sas_host_reset,
+> diff --git a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
+> index ebdfb7e7c88d..756660588a1e 100644
+> --- a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
+> +++ b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
+> @@ -3320,30 +3320,14 @@ static void hisi_sas_map_queues(struct Scsi_Host *shost)
+>   }
+>   
+>   static const struct scsi_host_template sht_v3_hw = {
+> -	.name			= DRV_NAME,
+> -	.proc_name		= DRV_NAME,
+> -	.module			= THIS_MODULE,
+> -	.queuecommand		= sas_queuecommand,
+> -	.dma_need_drain		= ata_scsi_dma_need_drain,
+> -	.target_alloc		= sas_target_alloc,
+> +	LIBSAS_SHT_BASE_NO_SLAVE_INIT
+>   	.slave_configure	= slave_configure_v3_hw,
+>   	.scan_finished		= hisi_sas_scan_finished,
+>   	.scan_start		= hisi_sas_scan_start,
+>   	.map_queues		= hisi_sas_map_queues,
+> -	.change_queue_depth	= sas_change_queue_depth,
+> -	.bios_param		= sas_bios_param,
+> -	.this_id		= -1,
+>   	.sg_tablesize		= HISI_SAS_SGE_PAGE_CNT,
+>   	.sg_prot_tablesize	= HISI_SAS_SGE_PAGE_CNT,
+> -	.max_sectors		= SCSI_DEFAULT_MAX_SECTORS,
+> -	.eh_device_reset_handler = sas_eh_device_reset_handler,
+> -	.eh_target_reset_handler = sas_eh_target_reset_handler,
+>   	.slave_alloc		= hisi_sas_slave_alloc,
+> -	.target_destroy		= sas_target_destroy,
+> -	.ioctl			= sas_ioctl,
+> -#ifdef CONFIG_COMPAT
+> -	.compat_ioctl		= sas_ioctl,
+> -#endif
+>   	.shost_groups		= host_v3_hw_groups,
+>   	.sdev_groups		= sdev_groups_v3_hw,
+>   	.tag_alloc_policy	= BLK_TAG_ALLOC_RR,
+> 
 
-On 3/5/2024 6:40 PM, Christian König wrote:
-> Am 05.03.24 um 12:58 schrieb Sunil Khatri:
->> Add ring timeout related information in the amdgpu
->> devcoredump file for debugging purposes.
->>
->> During the gpu recovery process the registered call
->> is triggered and add the debug information in data
->> file created by devcoredump framework under the
->> directory /sys/class/devcoredump/devcdx/
->>
->> Signed-off-by: Sunil Khatri <sunil.khatri@amd.com>
->> ---
->>   drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c | 15 +++++++++++++++
->>   drivers/gpu/drm/amd/amdgpu/amdgpu_reset.h |  2 ++
->>   2 files changed, 17 insertions(+)
->>
->> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c 
->> b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
->> index a59364e9b6ed..aa7fed59a0d5 100644
->> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
->> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
->> @@ -196,6 +196,13 @@ amdgpu_devcoredump_read(char *buffer, loff_t 
->> offset, size_t count,
->>                  coredump->reset_task_info.process_name,
->>                  coredump->reset_task_info.pid);
->>   +    if (coredump->ring_timeout) {
->> +        drm_printf(&p, "\nRing timed out details\n");
->> +        drm_printf(&p, "IP Type: %d Ring Name: %s \n",
->> +                coredump->ring->funcs->type,
->> +                coredump->ring->name);
->> +    }
->> +
->>       if (coredump->reset_vram_lost)
->>           drm_printf(&p, "VRAM is lost due to GPU reset!\n");
->>       if (coredump->adev->reset_info.num_regs) {
->> @@ -220,6 +227,8 @@ void amdgpu_coredump(struct amdgpu_device *adev, 
->> bool vram_lost,
->>   {
->>       struct amdgpu_coredump_info *coredump;
->>       struct drm_device *dev = adev_to_drm(adev);
->> +    struct amdgpu_job *job = reset_context->job;
->> +    struct drm_sched_job *s_job;
->>         coredump = kzalloc(sizeof(*coredump), GFP_NOWAIT);
->>   @@ -228,6 +237,12 @@ void amdgpu_coredump(struct amdgpu_device 
->> *adev, bool vram_lost,
->>           return;
->>       }
->>   +    if (job) {
->> +        s_job = &job->base;
->> +        coredump->ring = to_amdgpu_ring(s_job->sched);
->> +        coredump->ring_timeout = TRUE;
->> +    }
->> +
->>       coredump->reset_vram_lost = vram_lost;
->>         if (reset_context->job && reset_context->job->vm) {
->> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.h 
->> b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.h
->> index 19899f6b9b2b..6d67001a1057 100644
->> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.h
->> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.h
->> @@ -97,6 +97,8 @@ struct amdgpu_coredump_info {
->>       struct amdgpu_task_info         reset_task_info;
->>       struct timespec64               reset_time;
->>       bool                            reset_vram_lost;
->> +    struct amdgpu_ring          *ring;
->> +    bool                            ring_timeout;
->
-> I think you can drop ring_timeout, just having ring as optional 
-> information should be enough.
->
-> Apart from that looks pretty good I think.
->
-- GPU reset could happen due to two possibilities atleast: 1. via sysfs 
-cat /sys/kernel/debug/dri/0/amdgpu_gpu_recover there is no timeout or 
-page fault here. In this case we need information if ringtimeout 
-happened or not else it will try to print empty information in 
-devcoredump. Same goes for pagefault also in that case also we need to 
-see if recovery ran due to pagefault and then only add that information.
+Doesn't hvae ->eh_abort_handler too.
 
-So to cover all use cases i added this parameter.
-
-
-Thanks
-Sunil
-
-> Regards,
-> Christian.
->
->>   };
->>   #endif
->
+Thanks,
+Jason
 
