@@ -1,226 +1,354 @@
-Return-Path: <linux-kernel+bounces-92776-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92777-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44CA98725CE
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:38:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AD028725D3
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:41:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 682781C21DEA
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:38:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF2CE1C22C4B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:41:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B98F17555;
-	Tue,  5 Mar 2024 17:38:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DFA21758F;
+	Tue,  5 Mar 2024 17:41:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="xNhXW1xT"
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2080.outbound.protection.outlook.com [40.107.92.80])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="ZsesKOzP"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89FC3171A7
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 17:38:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.80
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709660314; cv=fail; b=SLHxYCTG+2XNaoP5M0sCe63//guEaCBt84g0PC3C5DgdERe4AVMkbkFEZhmtt3dCDfe2cC3r4NSrb7BoZ/mFR1Da7/fCap3/WRKl3aOSvlbjz1Plz5tPYLb8rwHo0/LbOhstJhqYs0BpdLUKvH7Eft9aTGpt5FGChh6oq9TC9S4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709660314; c=relaxed/simple;
-	bh=eDhQp7A2qVJRdbyKi1mvXvmdMTudK84/L5tOVgILv9Y=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=mPqJ5JpmM3Z1fGfVMWolXdFcZ6kVPok1ZudNkKSQ/8224kJlRr97/hJSscoXzuuKqmOezC9bTLTfDO45cC69yZgdx7BBx76XekOrMDISwM0BGI88tNs6vBnkzfV0VjNn+YX82qPM2VfR5iWphWxuNhq/IVxAe4U+MOJsdUSJYgs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=xNhXW1xT; arc=fail smtp.client-ip=40.107.92.80
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fZysn3ZRBp9ZUbVArv2IybgbhkzKFuv9cseDfI1GRfFE7m6kXMDm8yZ2LdBY6DESoTgYSAbAk72EE7B6TLrp+oTQEWzd/h+jI8gZHgNLrCiGZ7kymf38hqmIyfIzdRL5lEKvfN4PhUPA15Y+OSD/5SepxU7EVo2AzJ+PZb1YnxZ6E5e8wX6036wpdWMQ8wrAOF6CPSmw2eiUxpcEk+GKkzgTkgeAgf9xm0ir+jnuzBX3tR06rqV1L/UJLc2Cw4AXFP+QULjk88n6BZzXlTDBeyoT8M7WgzRoNeclbygFzkyyVsp1rSie3AgCuTVSlc4w9iPSm7luP68F+p+54szEmQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=nC6PG9C6Ebr1aEhO2RbBNZaB7daopVk03fZg1/SZ8xw=;
- b=PLrQsvd4DmYatMLO522QO86kNwzCSQVWaIRfGyvCHZDfdp2ckJQgRzh4zUw5QWlLvVZL71DWJeRUtY5oAmbokrJbIgY6vsIPsTs986kIEeq6DRPGI7jBnz91ELHAeieMvfYpfA7STdgkoRSJMVE63/zZn2tAAT8L9s2FqoVhIQXyCbNT0kpu6POSRsUjYubZB+iw6yAiksbqbdZdOowWrUkEcxyvdVkytsoWMg4IrGVbEpMehCeMqGeqJcrCIjAG4RWigXnbzoGFnESCnxrkYq1rdBRTtJ4ELb0b/dFIGqEtNN0JKy8A39ALKFSXLmDf6oK7H99fGbRw2Xuwk6gRtg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nC6PG9C6Ebr1aEhO2RbBNZaB7daopVk03fZg1/SZ8xw=;
- b=xNhXW1xTOOVtRYthLksOOvID1J7SGCwUzOTc776ePpUJVmTwp9pafcGyDValAYiWak37YgxxJRYN8/R32UdvbXZRMUNtchvV30SZp/txhPERhne881qvtmnM5Ecs/OmhoZNpCsWifmMjRX/1XNXwzk1uARTuS0c1SmH26F5E5U0=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BN9PR12MB5115.namprd12.prod.outlook.com (2603:10b6:408:118::14)
- by MN2PR12MB4343.namprd12.prod.outlook.com (2603:10b6:208:26f::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.24; Tue, 5 Mar
- 2024 17:38:30 +0000
-Received: from BN9PR12MB5115.namprd12.prod.outlook.com
- ([fe80::8099:8c89:7b48:beed]) by BN9PR12MB5115.namprd12.prod.outlook.com
- ([fe80::8099:8c89:7b48:beed%7]) with mapi id 15.20.7339.035; Tue, 5 Mar 2024
- 17:38:28 +0000
-Message-ID: <0f572801-8dcb-4124-94fa-cb219f60730d@amd.com>
-Date: Tue, 5 Mar 2024 12:38:25 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/amdkfd: make kfd_class constant
-Content-Language: en-US
-To: "Ricardo B. Marliere" <ricardo@marliere.net>,
- Alex Deucher <alexander.deucher@amd.com>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
-Cc: amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20240305-class_cleanup-drm-amd-v1-1-ea99b37f26c7@marliere.net>
-From: Felix Kuehling <felix.kuehling@amd.com>
-In-Reply-To: <20240305-class_cleanup-drm-amd-v1-1-ea99b37f26c7@marliere.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: YQXP288CA0024.CANP288.PROD.OUTLOOK.COM
- (2603:10b6:c00:41::32) To BN9PR12MB5115.namprd12.prod.outlook.com
- (2603:10b6:408:118::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4471915491;
+	Tue,  5 Mar 2024 17:41:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709660504; cv=none; b=QtMP2Y3IJQ31ku6urkhKCGnsdL0ItflIFkjjroVNYaQCBuC70fi/MLhz0staVvbCqOrqTUsjOWrc9fOS5/Nzmg+SDlRnROOdnCccSt1xZO4E6S84YSGEE8bY3PDTVUzAVWMTmAIT7p47dg4cStxzNVfqKIuB+syFMCUHWqFmGdI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709660504; c=relaxed/simple;
+	bh=dEOcX7ts0CpeQ5mnGZH9/CVe2nv0JFPTsHKcVUs7UNY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=SdePfT35E2Y3RPP4PXtdHJ6u/LV1L83csgYkoK1GtGxHmLA0igG3efRI5eYoBWMvIiwOTSEpcdPp1SnviL4tJH/d0ufxs90/bucLOuidAzTtJKqDXR7P43TB0jmmr97El3yNCsgE/1+eobj/ny88oPfMuGRI+JZtstCxathJ2zs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=ZsesKOzP; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 425HfWMm027513;
+	Tue, 5 Mar 2024 11:41:32 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1709660492;
+	bh=JCWjl0BkOxGw1vEMjrhJgcRX6D+KAW5pA9teZ2XhUwY=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=ZsesKOzPCzNZi1kPpvs9r2axQCC131f1yEz6kNeMTb0LzaFZP2G+GoGk8B59b3d/N
+	 fW+oPKreHFebvoI14+ow3ODVeqN4DfMraHrCpdqtyDIZe6lDlXY9RKuz8xRYfAX/hs
+	 kLdEfWJPloA6ue+pIprHcH8x5819TL5boM/Qoky4=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 425HfW1D041037
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Tue, 5 Mar 2024 11:41:32 -0600
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 5
+ Mar 2024 11:41:31 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 5 Mar 2024 11:41:31 -0600
+Received: from [10.249.42.149] ([10.249.42.149])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 425HfVFd000416;
+	Tue, 5 Mar 2024 11:41:31 -0600
+Message-ID: <e7114cb4-e24f-4e78-a89f-4e2e2e704b8a@ti.com>
+Date: Tue, 5 Mar 2024 11:41:31 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN9PR12MB5115:EE_|MN2PR12MB4343:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4529f1d5-682b-45fa-e621-08dc3d3b117b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	xnSs4r8SXxuvFWtx06c23JpGy2n5a+igUVzVH3+f8iE9es1nau/1NEtANyrl1dDisGiO9D4+uVXmgirJv0YWB9R7Eylp3hlgD+O1MGhn61EQW7yRWB1ybHSoog8oskrQt9sbQHnZTHjlnI3gNhLD5UeJGMd63Fz3KTF/ZTbiDHvZnnIeL7ytNPDjihX3ujv1SuU9IxCnRRPJvmMnqz8JQrwb2lLh4BAO3z0nGZYhGTOvI8SlSiNuDkxeNT0NDw3UIe6x9RsSvqOurLcvGPujuIfAi+bc7CiEQX07FDdUxk4lBSMDLoMM4b3yHqiLngKRm28QM8qDWXPRPliZhgQfQOHKN+NmEvwiZMHHbHHl2y8KoDdALVD/CQqh7mvnS85362qg2M7XPtuJx4Iodq2ONFD8SXPNA2Gfs1a/qevhj7oUuBExYpA20D/GrqEsKZzgXZz7UjBeG5eqBQDEsIfbAGAwfwZnFm41acsMqgaWGzrScGsqnv9EbLZEuOoLUo/FQ5kP92JESak33WFVIR4DK0gJ/UG1v4iqpblLnStleodFkK6jUbYtZbcZUEDD0+RoIjRc9jhvNn8Oh8WJebuuILr0reJ/uFUBaeov1eAIbFDMcPFGEjhy+nYPY6GtNt3CV53f1BOW2LHR1pznLPJsNLKgD9xFaJpnQE0rokALkPE=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5115.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?YWN2ZHYwMzg5Y3UvR1pXc3Z0cDNMcHI4N0VLbExmY0hzT1U3eGR1Nytqb2Rj?=
- =?utf-8?B?OXpBa3FrZGxISlpwRUhOTDM5QVFKK2cxUHpkK2pwNnliMTREbWF2c1JDNGFq?=
- =?utf-8?B?WVpkR2dtZjNWRkh0emFVVmJlOEFzODZwQzJZRUwzaWlSSUJsYVB4ODd2WEVI?=
- =?utf-8?B?VVJoRUZYOWwxVkl5VEFvbXBIZDlRakJJM3lZb05DNHBROXBsYWRhNEthZk41?=
- =?utf-8?B?bmpMdGFETTc0SW91N0FLRUVSeEkvTUdGVVJ1SWF0TWs5OTcrTmdsVXJWM2Rz?=
- =?utf-8?B?SHZXeE9aeE83ODFiZEtlMW5Eb1pWVlIwaGhwWUczcTJMYzArNVVCZGp6UUNi?=
- =?utf-8?B?ajd5ZEU1NHRKYVAxWE12L3M0bmlXbzV4dmV3N01DWUdoNUlDY0hVMGF2MTJj?=
- =?utf-8?B?NDRkbStmeG9xSURsQUFzenZMVmF4K01sV3BVdkU1bmZHZFppVk9pVjZ4MmNX?=
- =?utf-8?B?MXdPUi93dkJUL1E3cmUzY1JGRXhRVndLdVptR21zZ2JrUmFEdEIxaWh0dHNF?=
- =?utf-8?B?ZXVkd3g5djd0QUFZWTViajYxY1M5Wm93UEJManBQS0JPQnRDU1Z1a2gwNTVC?=
- =?utf-8?B?a1I3bDRkR1dkK0podkRDbERqR2lEUVJPTWFWMW0wSEhRL21OODRJMmtjN2hu?=
- =?utf-8?B?L2RjaVQxV3R4OEF0SEp3ZmZqQ0ZTNzlXRWF5bUdlRHd4RnptYis1UU52Q21x?=
- =?utf-8?B?bWlyaTFDV3l6WWZhN1duZkloSjBweVRyR2I3elJDVUZrRWhEYklIN0VNbVMw?=
- =?utf-8?B?VHI1SjZ5V3psNHRHVmIzaElkUU5iUS93RXhad3RoQ3dSRmE2MzJrcUJ6cmNO?=
- =?utf-8?B?b0EvajQydE4wcDJKb2kzazk4RWQydkxZNWJ5bXZ4NDBIWXcyekRHU0JGb2t4?=
- =?utf-8?B?US94MlNqaGs5aEdUaS9OMFNUdkNlTDQ5VzBnZUhyL0xydWVxeXU3WFVXN0I3?=
- =?utf-8?B?djlRRSsxbDNDVkJhQThNV0RLZE5ubldUTldNRTJoQmRvRjl3L2xCM2VmUXo0?=
- =?utf-8?B?cGNxeWZrN1BzQThQWlU4SVZHU2RIbGpTdnFZd3hQcDR3WVZONTBEdzFXU1g3?=
- =?utf-8?B?MERkY1RLNUMza1RmYkRKWjBtRGV4czJlK0RXQXl1S1FzbElYaGhwZXN6K2I1?=
- =?utf-8?B?UUV5WGdQLzIvNGhlSmFzY1EwTFBTNHpMSk1TYVhUbEtiaGUyZDlRMUxtdWsr?=
- =?utf-8?B?MzZNU0NJTXFlK0dWVk9GbGJwTFNKVUQwV29acERONDdZelJhdUpQa3VUd3g2?=
- =?utf-8?B?aW5vTnJVZ2FPZjNTWDJXanhNUUMxYkQvWnQvcW9xYm5ZNERYK2N5WWZjRGl2?=
- =?utf-8?B?cDdMS3pCcy9objVJdDVuWWRuNVdIRWdxZmNqNmozcHZma0NMZDF3MTRYa1kz?=
- =?utf-8?B?TU9EWGFYNFhXbDM2RE5VMi9DZENFVVE3L2c2MGxwWE82Q2N6cXR2UFJLU3J0?=
- =?utf-8?B?TXZ4bkRzNlJjR0FzK2NSL2xGcUh3clRHRGx2akxuTk5yUkdSWmZhMklMZmJC?=
- =?utf-8?B?S1AyRWlvc2k4UkFYdG9pbW1zRjhka3pnMzNVSjVUSkNzT0hLT05paFdDUlRK?=
- =?utf-8?B?YzBDcW12WFp0RVBsZ0lpa2JMdW8rNzZIaE5DMG1HWExoaXoreDJGcGxnNnBr?=
- =?utf-8?B?SSs3YzZKdWNuRXZ2TXZwN3FMSmFnSEhhSnRIVEpvTEY4OFl5dE9DcnIyY3Vp?=
- =?utf-8?B?SmdWMlJ1YVRXTlQxQlZMS1FJd3llVTRkMy9nUWFYTGdhZ3pLZmZ2Sjhzd0NT?=
- =?utf-8?B?aXkvVmpQcDNVZ1lGZCt3UE1kUUVrTGtyZ3Bac25XYnNDMnZOR2EwMHBHUVF5?=
- =?utf-8?B?aEdTWFRyYXhoK1NldjVXTW5UWjRROEFJODZ0djVXZlNTWDlHU085L1FGUjJa?=
- =?utf-8?B?c21KNWVhWmExNWs1d1NmSHZSMDhwRFdub1crMGlicVlaMi9tS2gvSGRvMVov?=
- =?utf-8?B?ZDRQTEtBVElIL05wQnlVOHVaVzh0eTNJd256Tk5mcGYzZk9JckZ0VENFc3Zm?=
- =?utf-8?B?emFaMWF6SlZmS2wzb25kd0dGNEhzSkVQejFMMk9LL3RKa2ZKNFJDN3I2Tmx2?=
- =?utf-8?B?TUNQMDdwR0lTZDhQMU1tNCtGeUI1MW4yR3pHaGdFS3NTSlBjZTJnK0QzMWFq?=
- =?utf-8?Q?xRm8lALu1yHPhJEeZh6TEX3NV?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4529f1d5-682b-45fa-e621-08dc3d3b117b
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5115.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Mar 2024 17:38:28.6805
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6fLv9O7H0woLRkGLNLxTCG50QN8MfTJ7Se/BgS5L+MveJMOM/Yvl7ms2DKAfZXXGsobrvaZ2EDwWYlmOpIMzeg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4343
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/4] dt-bindings: hwinfo: ti,k3-socinfo: Add nvmem-cells
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Markus
+ Schneider-Pargmann <msp@baylibre.com>
+CC: Rob Herring <robh@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Vignesh
+ Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20240206143711.2410135-1-msp@baylibre.com>
+ <20240206143711.2410135-3-msp@baylibre.com>
+ <20240206184305.GA1875492-robh@kernel.org>
+ <z56fiu2jpokp57sjvnrdcbfy7brpq2ag4yxpektqlhtidecx4n@vc7dsurhxorb>
+ <cb75c098-521e-4eed-bc3e-7237f8a6498f@linaro.org>
+ <ut63wrhsewkpfdgaatd6hqmj5upvyamjhf2rsecju2v2o3hdod@kyi5sezcggl7>
+ <48902771-5d3b-448a-8a74-ac18fb4f1a86@linaro.org>
+ <sowpixx2u4d5alj4udzr3qt47zevylukhpwkw3pfwnogqjse5w@xrxcozzvog6v>
+ <620a2dca-1901-43d4-8b2b-7ae823705a6e@linaro.org>
+ <1fe44306-b507-4017-8f47-598a76d9dbee@ti.com>
+ <44c5d664-e738-44b4-bafe-06f2e1fc1fe7@linaro.org>
+From: Andrew Davis <afd@ti.com>
+In-Reply-To: <44c5d664-e738-44b4-bafe-06f2e1fc1fe7@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On 2024-03-05 7:15, Ricardo B. Marliere wrote:
-> Since commit 43a7206b0963 ("driver core: class: make class_register() take
-> a const *"), the driver core allows for struct class to be in read-only
-> memory, so move the kfd_class structure to be declared at build time
-> placing it into read-only memory, instead of having to be dynamically
-> allocated at boot time.
->
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+On 3/5/24 11:01 AM, Krzysztof Kozlowski wrote:
+> On 05/03/2024 15:42, Andrew Davis wrote:
+>> On 3/5/24 8:11 AM, Krzysztof Kozlowski wrote:
+>>> On 05/03/2024 12:17, Markus Schneider-Pargmann wrote:
+>>>> Hi Krzysztof,
+>>>>
+>>>> On Tue, Mar 05, 2024 at 08:43:03AM +0100, Krzysztof Kozlowski wrote:
+>>>>> On 04/03/2024 11:36, Markus Schneider-Pargmann wrote:
+>>>>>> Hi,
+>>>>>>
+>>>>>> On Sat, Feb 17, 2024 at 03:25:30PM +0100, Krzysztof Kozlowski wrote:
+>>>>>>> On 14/02/2024 10:31, Markus Schneider-Pargmann wrote:
+>>>>>>>> Hi Rob,
+>>>>>>>>
+>>>>>>>> On Tue, Feb 06, 2024 at 06:43:05PM +0000, Rob Herring wrote:
+>>>>>>>>> On Tue, Feb 06, 2024 at 03:37:09PM +0100, Markus Schneider-Pargmann wrote:
+>>>>>>>>>> The information k3-socinfo requires is stored in an efuse area. This
+>>>>>>>>>> area is required by other devices/drivers as well, so using nvmem-cells
+>>>>>>>>>> can be a cleaner way to describe which information are used.
+>>>>>>>>>>
+>>>>>>>>>> If nvmem-cells are supplied, the address range is not required.
+>>>>>>>>>> Cells chipvariant, chippartno and chipmanufacturer are introduced to
+>>>>>>>>>> cover all required information.
+>>>>>>>>>>
+>>>>>>>>>> Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
+>>>>>>>>>> Reviewed-by: Andrew Davis <afd@ti.com>
+>>>>>>>>>> ---
+>>>>>>>>>>    .../bindings/hwinfo/ti,k3-socinfo.yaml        | 23 ++++++++++++++++++-
+>>>>>>>>>>    1 file changed, 22 insertions(+), 1 deletion(-)
+>>>>>>>>>>
+>>>>>>>>>> diff --git a/Documentation/devicetree/bindings/hwinfo/ti,k3-socinfo.yaml b/Documentation/devicetree/bindings/hwinfo/ti,k3-socinfo.yaml
+>>>>>>>>>> index dada28b47ea0..f085b7275b7d 100644
+>>>>>>>>>> --- a/Documentation/devicetree/bindings/hwinfo/ti,k3-socinfo.yaml
+>>>>>>>>>> +++ b/Documentation/devicetree/bindings/hwinfo/ti,k3-socinfo.yaml
+>>>>>>>>>> @@ -26,9 +26,24 @@ properties:
+>>>>>>>>>>      reg:
+>>>>>>>>>>        maxItems: 1
+>>>>>>>>>>    
+>>>>>>>>>> +  nvmem-cells:
+>>>>>>>>>> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+>>>>>>>>>> +
+>>>>>>>>>> +  nvmem-cell-names:
+>>>>>>>>>> +    items:
+>>>>>>>>>> +      - const: chipvariant
+>>>>>>>>>> +      - const: chippartno
+>>>>>>>>>> +      - const: chipmanufacturer
+>>>>>>>>>> +
+>>>>>>>>>>    required:
+>>>>>>>>>>      - compatible
+>>>>>>>>>> -  - reg
+>>>>>>>>>> +
+>>>>>>>>>> +oneOf:
+>>>>>>>>>> +  - required:
+>>>>>>>>>> +      - reg
+>>>>>>>>>> +  - required:
+>>>>>>>>>> +      - nvmem-cells
+>>>>>>>>>> +      - nvmem-cell-names
+>>>>>>>>>>    
+>>>>>>>>>>    additionalProperties: false
+>>>>>>>>>>    
+>>>>>>>>>> @@ -38,3 +53,9 @@ examples:
+>>>>>>>>>>            compatible = "ti,am654-chipid";
+>>>>>>>>>>            reg = <0x43000014 0x4>;
+>>>>>>>>>>        };
+>>>>>>>>>> +  - |
+>>>>>>>>>> +    chipid: chipid@14 {
+>>>>>>>>>> +        compatible = "ti,am654-chipid";
+>>>>>>>>>
+>>>>>>>>> This isn't compatible if you have a completely different way to access
+>>>>>>>>> it.
+>>>>>>>>
+>>>>>>>> Thanks, it is not entirely clear to me how I could go forward with this?
+>>>>>>>> Are you suggesting to use a different compatible? Or is it something
+>>>>>>>> else I could do to proceed with this conversion?
+>>>>>>>
+>>>>>>> What you claim now, is that you have one device with entirely different
+>>>>>>> interfaces and programming model. So either this is not the same device
+>>>>>>> or you just wrote bindings to whatever you have in driver.
+>>>>>>>
+>>>>>>> Nothing in commit msg explains this.
+>>>>>>>
+>>>>>>> What you should do? Depends. If you just write bindings for driver, then
+>>>>>>> stop. It's a NAK. Instead write bindings for hardware.
+>>>>>>>
+>>>>>>> If the first choice, just the hardware is somehow like this, then
+>>>>>>> explain in commit msg and device description, how this device can be
+>>>>>>> connected over other bus, not MMIO. You can draw some schematics in
+>>>>>>> commit msg explaining architecture etc.
+>>>>>>
+>>>>>> Sorry the information provided in the commit message is not very clear.
+>>>>>>
+>>>>>> The basic access to the registes is still MMIO. nvmem is used to have a
+>>>>>> better abstraction and cleaner description of the hardware.
+>>>>>>
+>>>>>> Currently most of the data is exported using the parent syscon device.
+>>>>>> The relevant data is read-only and contained in a single register with
+>>>>>> offset 0x14:
+>>>>>>     - Chip variant
+>>>>>>     - Chip part number
+>>>>>>     - Chip manufacturer
+>>>>>>
+>>>>>> There are more read-only registers in this section of address space.
+>>>>>> These are relevant to other components as they define the operating
+>>>>>> points for example. For the OPP table relevant are chip variant and chip
+>>>>>> speed (which is in a different register).
+>>>>>>
+>>>>>> Instead of devices refering to this whole register range of 0x20000 in
+>>>>>
+>>>>> Whaaaaat?
+>>>>>
+>>>>>> size, I would like to introduce this nvmem abstraction in between that
+>>>>>> describes the information and can directly be referenced by the devices
+>>>>>> that depend on it. In this case the above mentioned register with offset
+>>>>>> 0x14 is instead described as nvmem-layout like this:
+>>>>>>
+>>>>>> 	nvmem-layout {
+>>>>>> 		compatible = "fixed-layout";
+>>>>>> 		#address-cells = <1>;
+>>>>>> 		#size-cells = <1>;
+>>>>>>
+>>>>>> 		chip_manufacturer: jtagidmfg@14 {
+>>>>>> 			reg = <0x14 0x2>;
+>>>>>> 			bits = <1 11>;
+>>>>>> 		};
+>>>>>>
+>>>>>> 		chip_partno: jtagidpartno@15 {
+>>>>>> 			reg = <0x15 0x3>;
+>>>>>> 			bits = <4 16>;
+>>>>>> 		};
+>>>>>>
+>>>>>> 		chip_variant: jtagidvariant@17 {
+>>>>>> 			reg = <0x17 0x1>;
+>>>>>> 			bits = <4 4>;
+>>>>>> 		};
+>>>>>>
+>>>>>> 		chip_speed: jtaguseridspeed@18 {
+>>>>>> 			reg = <0x18 0x4>;
+>>>>>> 			bits = <6 5>;
+>>>>>> 		};
+>>>>>>
+>>>>>> The underlying registers are still the same but they are not hidden
+>>>>>> by the syscon phandles anymore.
+>>>>>>
+>>>>>> The device that consumes this data would now use
+>>>>>>
+>>>>>> 	nvmem-cells = <&chip_variant>, <&chip_speed>;
+>>>>>> 	nvmem-cell-names = "chipvariant", "chipspeed";
+>>>>>>
+>>>>>> instead of
+>>>>>>
+>>>>>> 	syscon = <&wkup_conf>;
+>>>>>
+>>>>> syscon allows you this as well - via phandle arguments.
+>>>>>
+>>>>> nvmem is for non-volatile memory, like OCOTP and eFUSE. This is not for
+>>>>> accessing regular MMIO registers of system-controller, regardless
+>>>>> whether they are read-only or not (regmap handles this nicely, BTW).
+>>>>> Although probably Apple efuses and few others can confuse here. It still
+>>>>> looks like you convert regular system-controller block into nvmem,
+>>>>> because you prefer that Linux driver abstraction...
+>>>>
+>>>> The above mentioned data is set in the factory. There is other
+>>>> non-volatile data, like device feature registers, in the same address
+>>>> region, as well as OTP data like MAC and USB IDs. But it is not a pure
+>>>> non-volatile memory region. The data is copied into these registers by
+>>>> the ROM at boot.
+>>>
+>>> Still entire block is MMIO IP in your SoC, not a efuse/OTP hardware.
+>>> nvmem is not for regular MMIO registers which are sometimes R, sometimes RW.
+>>
+>> Most eFuse/OTP hardware is accessed via MMIO, not sure what that changes.
+> 
+> Just check exiting NVMEM drivers, except Apple I think most if not all
+> are not syscon blocks.
+> 
 
-The patch looks good to me. Do you want me to apply this to Alex's 
-amd-staging-drm-next?
+We don't want it to be a syscon block either. Syscon is just another Linux
+interface for accessing MMIO areas that found its way in to DT. NVMEM
+is another way, which as a DT construct is more "correct" as the area
+we are describing here *is* a non-volatile memory. Not a "syscon"?? whatever
+that is.
 
-Reviewed-by: Felix Kuehling <felix.kuehling@amd.com>
+> Following such approach, each hardware block, even USB or PCI, which
+> exposes a read-only register with some fused value, e.g. version, should
+> be nvmem?
+> 
 
+If those fused values are grouped into a region then yes, why not. Wouldn't
+that be more correct to describe them as they actually are instead of
+hiding them behind a "syscon" block?
 
-> ---
->   drivers/gpu/drm/amd/amdkfd/kfd_chardev.c | 21 +++++++++++----------
->   1 file changed, 11 insertions(+), 10 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_chardev.c b/drivers/gpu/drm/amd/amdkfd/kfd_chardev.c
-> index f030cafc5a0a..dfa8c69532d4 100644
-> --- a/drivers/gpu/drm/amd/amdkfd/kfd_chardev.c
-> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_chardev.c
-> @@ -63,8 +63,10 @@ static const struct file_operations kfd_fops = {
->   };
->   
->   static int kfd_char_dev_major = -1;
-> -static struct class *kfd_class;
->   struct device *kfd_device;
-> +static const struct class kfd_class = {
-> +	.name = kfd_dev_name,
-> +};
->   
->   static inline struct kfd_process_device *kfd_lock_pdd_by_id(struct kfd_process *p, __u32 gpu_id)
->   {
-> @@ -94,14 +96,13 @@ int kfd_chardev_init(void)
->   	if (err < 0)
->   		goto err_register_chrdev;
->   
-> -	kfd_class = class_create(kfd_dev_name);
-> -	err = PTR_ERR(kfd_class);
-> -	if (IS_ERR(kfd_class))
-> +	err = class_register(&kfd_class);
-> +	if (err)
->   		goto err_class_create;
->   
-> -	kfd_device = device_create(kfd_class, NULL,
-> -					MKDEV(kfd_char_dev_major, 0),
-> -					NULL, kfd_dev_name);
-> +	kfd_device = device_create(&kfd_class, NULL,
-> +				   MKDEV(kfd_char_dev_major, 0),
-> +				   NULL, kfd_dev_name);
->   	err = PTR_ERR(kfd_device);
->   	if (IS_ERR(kfd_device))
->   		goto err_device_create;
-> @@ -109,7 +110,7 @@ int kfd_chardev_init(void)
->   	return 0;
->   
->   err_device_create:
-> -	class_destroy(kfd_class);
-> +	class_unregister(&kfd_class);
->   err_class_create:
->   	unregister_chrdev(kfd_char_dev_major, kfd_dev_name);
->   err_register_chrdev:
-> @@ -118,8 +119,8 @@ int kfd_chardev_init(void)
->   
->   void kfd_chardev_exit(void)
->   {
-> -	device_destroy(kfd_class, MKDEV(kfd_char_dev_major, 0));
-> -	class_destroy(kfd_class);
-> +	device_destroy(&kfd_class, MKDEV(kfd_char_dev_major, 0));
-> +	class_unregister(&kfd_class);
->   	unregister_chrdev(kfd_char_dev_major, kfd_dev_name);
->   	kfd_device = NULL;
->   }
->
-> ---
-> base-commit: 8bc75586ea01f1c645063d3472c115ecab03e76c
-> change-id: 20240305-class_cleanup-drm-amd-bdc7255b7540
->
+>>
+>> This "block" is a whole bunch of smaller logical chunks of registers,
+>> some are actually mapped to eFuses like our MAC addresses. Regions
+>> like factory fused MAC addresses are exactly what nvmem does well[0].
+>>
+>> Yes, we *could* just have this whole area be one massive blanked syscon
+>> region that every driver just manually pokes into with syscon phandles
+>> everywhere. But that is hacky and hides details, it is not how DT normally
+>> looks. We would like to correctly model our device now with nodes for each
+>> "reg" region. We took the syscon shortcut before, and we want to correct
+>> that mistake.
+> 
+> Wait, you now mix up hardware description with Linux interface.
+> Describing each register as nvmem field is not a better way of
+> describing hardware. It is unnecessarily too granular and results in
+> huge and unmaintainable DTS. It is however convenient because it is nice
+> API for other devices. 
+
+It is not convenient. How we have it currently as a blanket syscon node
+that each driver can simply poke whatever address it wants is much easier.
+We are now trying to do the more difficult (but more correct) thing here by
+modeling our non-volatile memory areas as they are as nvmem nodes.
+
+> But claiming that MMIO register block is better
+> represented as nvmem is not correct. It is still MMIO block with
+> registers, like everywhere else in every other device.
+> 
+
+Everything is MMIO on these SoCs, we don't have any sideband band
+IO ports. Following that to its logical conclusion we should just
+make the entire memory space reg = <0x0 0xffffffff> one big syscon node
+then have all other driver phandle into that for their MMIO access.
+
+>>
+>> So what are our options? Is the objection here that this is a new nvmem
+>> way of modeling this region changes the compatible "ti,am654-chipid"? If
+>> so then would you be open to us adding a new compatible that uses the
+>> nvmem nodes? We could then convert over one by one and keeping full
+>> backwards compatibility while we do it.
+> 
+> Switching from MMIO to nvmem for chipid is a different interface, so as
+> Rob pointed out devices are not really compatible. You claim that
+> devices are compatible, because there is *NO REAL NVMEM* but MMIO
+> wrapped in nvmem. So do you see the logic here?
+> 
+
+If the interface changing means it is not compatible then that is
+fine, we would use a different compatible string to identify the
+interface to be used.
+
+This is not uncommon, the example that comes to my mind is "gpio-leds".
+We used to just have named GPIO pins for our LEDs, now we can
+put "gpio-leds" on top to better represent what is going on in HW.
+Even though physically nothing changed, we just now have a better way
+to model that HW in DT.
+
+Andrew
+
 > Best regards,
+> Krzysztof
+> 
+> 
 
