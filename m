@@ -1,138 +1,261 @@
-Return-Path: <linux-kernel+bounces-92295-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92296-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8756A871E0E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:37:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03371871E10
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:37:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B97261C22407
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:37:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E9421F272DA
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:37:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC11B5813B;
-	Tue,  5 Mar 2024 11:37:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B94235677D;
+	Tue,  5 Mar 2024 11:37:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="z70saEw0"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="FfTm6qAO"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F37895490D;
-	Tue,  5 Mar 2024 11:37:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20DDA1B94A
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 11:37:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709638624; cv=none; b=toDemnPCqlvbiUZX9M/Y24kmlGrzTxslgOux/t/9srwPy8aJoYqjbZxMU1SP7dceuBdQCAViIRrtenGsYz347Ckt82RT1Z/ffTCy1W+njMyaaB4nyF7huCb31KzDrNeNxVfN1ozO+wVEWaCAZzTAOvIQlVoONZsovPXR0YXHLIQ=
+	t=1709638658; cv=none; b=mYIPc5iE0CSluG8/+FOWSjCkfBjNYBQNAFSwCBLM32YvxCMMO66cEOOE0Rth0w3uQHiFfI86LDLHZB/43rrlWc1Z4QjDQZlNXZSb2yeo1aAaygfq0MsfxQIsdr1lrcueNfOXB1F4BbHEQhGm20EPalzu2g+kL06zgQtMz2XmBnM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709638624; c=relaxed/simple;
-	bh=3ayW0IhTUeNMcpww5PHJsnIajeFZZT9ny2n8rBMH1eA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=azTM0TaKKQbCiYPdv0FlZhp9AQR6iiLKOs2/2DnrwblSXXQVOemYtvb0Lx/zAYltp3v5mUSD+DzdUPSNPBrnuDcMc49iDgu83FYtHrmZcUOMb1sPrCLAQbSMDQ8A4Nu7hu1UOJ7TMBNeTG/tYfcL79oEMqJxbWAN9qFHRltV0gI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=z70saEw0; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=IrDqOCAVFnIywCjY1vOYOH9E3WkzoSBd6y1AwGw2QPk=; b=z70saEw0Uyr9DpMfHt0qmGvV1r
-	IOgrK0UzVt4WJkKKwAMA6Z+nNottmESro61dl/j3LTnq31i1c+asqMGnwzPAvYM72RaYzTTEbC3yb
-	lTUOsmvv2A3qnseBp+jV3aRZ0ZBtoU4We8+GxzKqDQtZguiRW3k53w60f8sbwQflPkz/Dj2E5bh/O
-	o/gQMWYUgydc8kAI++cxof0gKS0uuMSLzTM6nhNeyQJy1J7nTLoSuBjJ+KeF7Zv8sF9hGnxj37P7H
-	tct7YVX5TePcXBQ2NDbPInfBNBTBvsZiQ8DOJK287YDCFLkUml+LdV4SmIO7NyF6+oKRs5pXeoTtf
-	Ux9MzmpQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:43258)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rhT6J-00073t-1k;
-	Tue, 05 Mar 2024 11:36:51 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rhT6D-0005NL-BL; Tue, 05 Mar 2024 11:36:45 +0000
-Date: Tue, 5 Mar 2024 11:36:45 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Paolo Abeni <pabeni@redhat.com>
-Cc: mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
-	Bartel Eerdekens <bartel.eerdekens@constell8.be>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org,
-	=?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
-	Daniel Golle <daniel@makrotopia.org>,
-	DENG Qingfang <dqfext@gmail.com>,
-	Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Subject: Re: [PATCH net-next v3 0/9] MT7530 DSA Subdriver Improvements Act III
-Message-ID: <ZecDzbAMrXgMG72Z@shell.armlinux.org.uk>
-References: <20240301-for-netnext-mt7530-improvements-3-v3-0-449f4f166454@arinc9.com>
- <81a5d191894e6a7741d3c266079f3404def2bb07.camel@redhat.com>
+	s=arc-20240116; t=1709638658; c=relaxed/simple;
+	bh=udS6MVqi6M+NbBoodIGwer026GYV2oRTj0s8uMTFaVA=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=kmosz0TAVzaFsaxXOF+yqFj0DjIMcLZOVGwzJyy1w0tE2+8W8jIuZKlxqjx7JxuedNresSJkPiPRvlApuG6AWbcyJ52v8p74mRaHHnq/eA41PjxmogIorkDRtIkhWt3IzcgcIisRENZvFyL0egKJP7K7giPYdr5G+fB0oANDhwQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=FfTm6qAO; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709638655;
+	bh=udS6MVqi6M+NbBoodIGwer026GYV2oRTj0s8uMTFaVA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=FfTm6qAOwp8UxYbnHOt7pzBU6T0gJ87JT6Cfaw9WT8jwuiQQh0q+s7p1r0+f7Olun
+	 OA4uVmxZkHxJMgapXtvD1nqH9VrzHuqbtXM7XeJMsJP+DQK3UzXj6cZ/nKF3+zHhWA
+	 TZohih7NeL4vWxXExso5hz7EhAL984OXrnXpX4vrPuXzP7yFPQf1fkbrpPdfIV842d
+	 ft6gpO7Yuesdxb9KyCHCWMuNz19dxoNC8Op81iPDSqbhZyhhwvXkhwLkUtdWL6iCSn
+	 goAcsc+Eu78vDQDXW6LeMyauwUNNelkJvo5y/7JwW3FxfAjT91+k9YbZccihQ+pwPg
+	 mESpBq83QAQWA==
+Received: from eldfell (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pq)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 927E53780C1F;
+	Tue,  5 Mar 2024 11:37:34 +0000 (UTC)
+Date: Tue, 5 Mar 2024 13:37:26 +0200
+From: Pekka Paalanen <pekka.paalanen@collabora.com>
+To: Sebastian Wick <sebastian.wick@redhat.com>
+Cc: Harry Wentland <harry.wentland@amd.com>, Ville =?UTF-8?B?U3lyasOkbMOk?=
+ <ville.syrjala@linux.intel.com>, Maarten Lankhorst
+ <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/drm_connector: Document Colorspace property
+ variants
+Message-ID: <20240305133726.2ebe81b8.pekka.paalanen@collabora.com>
+In-Reply-To: <20240304174512.145862-1-sebastian.wick@redhat.com>
+References: <20240304174512.145862-1-sebastian.wick@redhat.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <81a5d191894e6a7741d3c266079f3404def2bb07.camel@redhat.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Type: multipart/signed; boundary="Sig_/3wNpkWjzQ/jrIs+Uneuc7Lj";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-On Tue, Mar 05, 2024 at 12:30:20PM +0100, Paolo Abeni wrote:
-> On Fri, 2024-03-01 at 12:42 +0200, Arınç ÜNAL wrote:
-> > This is the third patch series with the goal of simplifying the MT7530 DSA
-> > subdriver and improving support for MT7530, MT7531, and the switch on the
-> > MT7988 SoC.
-> > 
-> > I have done a simple ping test to confirm basic communication on all switch
-> > ports on MCM and standalone MT7530, and MT7531 switch with this patch
-> > series applied.
-> > 
-> > MT7621 Unielec, MCM MT7530:
-> > 
-> > rgmii-only-gmac0-mt7621-unielec-u7621-06-16m.dtb
-> > gmac0-and-gmac1-mt7621-unielec-u7621-06-16m.dtb
-> > 
-> > tftpboot 0x80008000 mips-uzImage.bin; tftpboot 0x83000000 mips-rootfs.cpio.uboot; tftpboot 0x83f00000 $dtb; bootm 0x80008000 0x83000000 0x83f00000
-> > 
-> > MT7622 Bananapi, MT7531:
-> > 
-> > gmac0-and-gmac1-mt7622-bananapi-bpi-r64.dtb
-> > 
-> > tftpboot 0x40000000 arm64-Image; tftpboot 0x45000000 arm64-rootfs.cpio.uboot; tftpboot 0x4a000000 $dtb; booti 0x40000000 0x45000000 0x4a000000
-> > 
-> > MT7623 Bananapi, standalone MT7530:
-> > 
-> > rgmii-only-gmac0-mt7623n-bananapi-bpi-r2.dtb
-> > gmac0-and-gmac1-mt7623n-bananapi-bpi-r2.dtb
-> > 
-> > tftpboot 0x80008000 arm-zImage; tftpboot 0x83000000 arm-rootfs.cpio.uboot; tftpboot 0x83f00000 $dtb; bootz 0x80008000 0x83000000 0x83f00000
-> > 
-> > This patch series is the continuation of the patch series linked below.
-> > 
-> > https://lore.kernel.org/r/20230522121532.86610-1-arinc.unal@arinc9.com
-> > 
-> > Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
-> 
-> @Russell, I see you went through some patches; my understanding is that
-> there are no objection to this series in the current form. The series
-> LGTM, so I'm going to apply it: I think it would a pity if it should
-> miss this cycle.
+--Sig_/3wNpkWjzQ/jrIs+Uneuc7Lj
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-That's fine - I did read through the entire series, but only gave my
-r-b on the ones I felt I'd done a good enough job on. You may have
-noticed I haven't submitted much network stuff this cycle... I have
-limited bandwidth at the moment.
+On Mon,  4 Mar 2024 18:45:08 +0100
+Sebastian Wick <sebastian.wick@redhat.com> wrote:
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+> The initial idea of the Colorspace prop was that this maps 1:1 to
+> InfoFrames/SDP but KMS does not give user space enough information nor
+> control over the output format to figure out which variants can be used
+> for a given KMS commit. At the same time, properties like Broadcast RGB
+> expect full range quantization range being produced by user space from
+> the CRTC and drivers to convert to the range expected by the sink for
+> the chosen output format, mode, InfoFrames, etc.
+>=20
+> This change documents the reality of the Colorspace property. The
+> Default variant unfortunately is very much driver specific and not
+> reflected by the EDID. The BT2020 variants are in active use by generic
+> compositors which have expectations from the driver about the
+> conversions it has to do when selecting certain output formats.
+>=20
+> Everything else is also marked as undefined. Coming up with valid
+> behavior that makes it usable from user space and consistent with other
+> KMS properties for those variants is left as an exercise for whoever
+> wants to use them.
+>=20
+> Signed-off-by: Sebastian Wick <sebastian.wick@redhat.com>
+> ---
+>  drivers/gpu/drm/drm_connector.c | 67 ++++++++++++++++++++++++---------
+>  include/drm/drm_connector.h     |  8 ----
+>  2 files changed, 49 insertions(+), 26 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connec=
+tor.c
+> index b0516505f7ae..1c4ce7f90a76 100644
+> --- a/drivers/gpu/drm/drm_connector.c
+> +++ b/drivers/gpu/drm/drm_connector.c
+> @@ -2147,24 +2147,55 @@ EXPORT_SYMBOL(drm_mode_create_aspect_ratio_proper=
+ty);
+>   * DOC: standard connector properties
+>   *
+>   * Colorspace:
+> - *     This property helps select a suitable colorspace based on the sink
+> - *     capability. Modern sink devices support wider gamut like BT2020.
+> - *     This helps switch to BT2020 mode if the BT2020 encoded video stre=
+am
+> - *     is being played by the user, same for any other colorspace. There=
+by
+> - *     giving a good visual experience to users.
+> - *
+> - *     The expectation from userspace is that it should parse the EDID
+> - *     and get supported colorspaces. Use this property and switch to the
+> - *     one supported. Sink supported colorspaces should be retrieved by
+> - *     userspace from EDID and driver will not explicitly expose them.
+> - *
+> - *     Basically the expectation from userspace is:
+> - *      - Set up CRTC DEGAMMA/CTM/GAMMA to convert to some sink
+> - *        colorspace
+> - *      - Set this new property to let the sink know what it
+> - *        converted the CRTC output to.
+> - *      - This property is just to inform sink what colorspace
+> - *        source is trying to drive.
+> + *	This property selects the colorimetry and transfer characteristics us=
+er
+> + *	space configured the CRTC to produce.
+
+Rather than "selects", how about "informs the sink"?
+
+To avoid implying that this changes CRTC pixel operations.
+
+> + *	The transfer characteristics might get overwritten by the
+> + *	HDR_OUTPUT_METADATA property.
+> + *	The quantization range is always full (see the Broadcast RGB property=
+).
+
+This reads like infoframe data sent to the sink will always indicate
+full range. What you meant instead is, userspace configures plane and
+CRTC DEGAMMA/CTM/GAMMA to always produce full range regardless of what
+is actually sent to the sink, is it not?
+
+Can we refer to DEGAMMA/CTM/GAMMA etc. as "pixel operation properties"
+or something? To avoid having to list them (incorrectly) everywhere.
+
+> + *
+> + *	The driver is expected to send the right metadata to the sink which c=
+an
+> + *	depend on the property value, the output mode and the output format.
+> + *	It's also responsible for converting to the output format, taking into
+> + *	account YCbCr conversion and quantization range.
+> + *
+> + *	For historical reasons this property exposes a number of variants whi=
+ch
+> + *	result in undefined behavior.
+> + *
+> + *	Default:
+> + *		The behavior is driver-specific.
+> + *	BT2020_RGB:
+> + *	BT2020_YCC:
+> + *		User space configures the state such that the CRTC produces RGB
+> + *		content with Rec. ITU-R BT.2020 colorimetry, Rec. ITU-R BT.2020
+> + *		(Table 4, RGB) transfer characteristics and full quantization
+> + *		range.
+> + *		User space can use the HDR_OUTPUT_METADATA property to set the
+> + *		transfer characteristics to PQ (Rec. ITU-R BT.2100 Table 4) or
+> + *		HLG (Rec. ITU-R BT.2100 Table 5) in which case, user space
+> + *		configures the CRTC to produce content with the respective
+> + *		transfer characteristics.
+> + *		Drivers can configure the sink to use an RGB format, tell the
+> + *		sink to expect Rec. ITU-R BT.2020 R'G'B' colorimetry and convert
+> + *		to the appropriate quantization range.
+> + *		Drivers can configure the sink to use a YCbCr format, tell the
+> + *		sink to expect Rec. ITU-R BT.2020 Y'C'BC'R colorimetry, convert
+> + *		to YCbCr using the Rec. ITU-R BT.2020 non-constant luminance
+> + *		conversion matrix and convert to the appropriate quantization
+> + *		range.
+
+To avoid misunderstandings, since you have a nice paragraph split
+between RGB and YCC, maybe this should underline that BT2020_RGB and
+BT2020_YCC are equivalent from userspace perspective, and the driver
+chooses between RGB and YCC on its own.
+
+> + *	SMPTE_170M_YCC:
+> + *	BT709_YCC:
+> + *	XVYCC_601:
+> + *	XVYCC_709:
+> + *	SYCC_601:
+> + *	opYCC_601:
+> + *	opRGB:
+> + *	BT2020_CYCC:
+> + *	DCI-P3_RGB_D65:
+> + *	DCI-P3_RGB_Theater:
+> + *	RGB_WIDE_FIXED:
+> + *	RGB_WIDE_FLOAT:
+> + *	BT601_YCC:
+> + *		The behavior is undefined.
+>   *
+>   * Because between HDMI and DP have different colorspaces,
+>   * drm_mode_create_hdmi_colorspace_property() is used for HDMI connector=
+ and
+> diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
+> index fe88d7fc6b8f..02c42b01a3a7 100644
+> --- a/include/drm/drm_connector.h
+> +++ b/include/drm/drm_connector.h
+> @@ -437,14 +437,6 @@ enum drm_privacy_screen_status {
+>   *
+>   * DP definitions come from the DP v2.0 spec
+>   * HDMI definitions come from the CTA-861-H spec
+> - *
+> - * A note on YCC and RGB variants:
+> - *
+> - * Since userspace is not aware of the encoding on the wire
+> - * (RGB or YCbCr), drivers are free to pick the appropriate
+> - * variant, regardless of what userspace selects. E.g., if
+> - * BT2020_RGB is selected by userspace a driver will pick
+> - * BT2020_YCC if the encoding on the wire is YUV444 or YUV420.
+>    *
+>   * @DRM_MODE_COLORIMETRY_DEFAULT:
+>   *   Driver specific behavior.
+
+Overall, I like this patch.
+
+
+Thanks,
+pq
+
+--Sig_/3wNpkWjzQ/jrIs+Uneuc7Lj
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmXnA/YACgkQI1/ltBGq
+qqdfYRAAqTbQd4kkaCLgasq5EMW2jnMluFnuCjROdSOoGuTFYu/fiC+r4rvh4KE/
+hzo2pFfzPKhvPUaOjJkghhRs3TeImAzsl8wiViMyq+URqsq6/jtK/kh0hR47pyeS
+3s+IeH40XcdasfaiB4RJEDi53tXhwRWjQMF/8GQ78cXUnCkFtWuR+dmbjrNfZKWv
+UWEjN/BcGi/i7IyDwR7chwAuzxF7+yatv9kx1Ny0sqTQAsn6jKMQPJWDDuMILSXt
+QyN0QQ6fFGWcjcLDr1sRpexxFtzq/+M0Fle2JfqC0r0XsonzuAJPPR2NiOJyVktB
+KXfkk2M1BLQQMqOUKwFsb/68/ZGtT/G4TdeTBrMvcFtqUjSCBp2DtbwDs9io6JC7
+430Sa/HEHj+JG0MDCBK1bKtkaI3wd53JbPVfChSm030hOhE+OLGIwqh1wShzX7x9
+Jk+49ps4IzXvAMjHeY5ZIPVSUoofnvJO2W/Hnd1qNG+0j5wpOc8Obp7jSZPB7I3H
+x/QLm3kNqxGSUwW6HyHsVIjEb4jsbBkl/YQJN8xNd2uXXdqNFAyPKbvFN1fcCXbQ
+SvODGD+/9GYbi8caG9lq5RzLNqvGKt1rCZN3kl3YjQeKaNGz7hMuvUnDHmdO7LeD
+qZmLikh0WRN5YJk3d6GH00EdFmKkRP/n+eeKv50nJayn1OPX7p0=
+=Ri/v
+-----END PGP SIGNATURE-----
+
+--Sig_/3wNpkWjzQ/jrIs+Uneuc7Lj--
 
