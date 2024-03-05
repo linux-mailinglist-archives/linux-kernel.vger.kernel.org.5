@@ -1,93 +1,154 @@
-Return-Path: <linux-kernel+bounces-92111-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92113-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D15F0871B49
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:32:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59F05871B4E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:33:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 882001F222C0
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:32:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EF868B207C9
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:33:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE9A858218;
-	Tue,  5 Mar 2024 10:17:49 +0000 (UTC)
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 877E458127
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 10:17:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16B375A113;
+	Tue,  5 Mar 2024 10:18:15 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26D6D59B69;
+	Tue,  5 Mar 2024 10:18:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709633869; cv=none; b=dpriSfL4ATrpToauEdo7dHWalmW2oPRqsP1deXZFJPSXfMeQ/1Fv6nczSoB8g8Qk0J9FlV6QSL5cbKHTQZY3NbKrhiBgwKFaAnfnf/zTz+1XwDfzQf3Sf2FFn6H34AVLF8h6e7x9FV44yz7zJcpjhFJc+bwQnAz4EJINdKNREdU=
+	t=1709633894; cv=none; b=s58GNw2i9KvzYaiJfiuWXzg9IFKmxD0dHaCN51mq3jYiY7LpNpkSPW8KBjRTTuMOmr5/D+M7L3l8u3e3b+i9ut02n4DgDMrM2VaJrLXVOR0RMhLnifFc/J0d1zVQ9II4F1/8IbDwnVU1XydbUtmDfQa35ML5/Kckli8HYtd6a50=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709633869; c=relaxed/simple;
-	bh=b43DucxfSrZNmb7coHs1dYCGziXHL65Zh3a/pU2ENRA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=E1oT08GFtOp6wXzeqhFv1LQ7x88POdi3RFHGh8ev8YH36G1AQKPb0sBF13nDp9zj/qfz1m0K1klp2D14L5Xi3T+uEv51a6zo9CcOZehOVh1BExDR1fLvd2jjm6NwkOHvlHOKpxtSvlWQ48AGUQVV4N247zbz4OOXK+NoHnDYvFE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
-Received: from fsav114.sakura.ne.jp (fsav114.sakura.ne.jp [27.133.134.241])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 425AHZ4Z080546;
-	Tue, 5 Mar 2024 19:17:35 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav114.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav114.sakura.ne.jp);
- Tue, 05 Mar 2024 19:17:35 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav114.sakura.ne.jp)
-Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 425AHZg5080543
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Tue, 5 Mar 2024 19:17:35 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <1fec6a8b-7083-4b08-858a-0793f996ed52@I-love.SAKURA.ne.jp>
-Date: Tue, 5 Mar 2024 19:17:35 +0900
+	s=arc-20240116; t=1709633894; c=relaxed/simple;
+	bh=9myxDhk4TNn/N489RdupuuwTHA5CKFuSgRTP3HfAFNg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=nIuGp/d37zByJUrMjrUwjekSOB7Q/lcPFmKWIQF/VEZhbbP2s/N/PakXFJO+18k9jsCOuUjr50KwCOQRYfJh4AGD65SqTblUhGfIioAFAek7GEBhqy89UVplyfOB2Wkm524hfcdpN3hr5PITBdJX/8y//Zp8qSCGnjzhkBtZsxY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D0DAE1FB;
+	Tue,  5 Mar 2024 02:18:47 -0800 (PST)
+Received: from mango.localdomain (unknown [10.57.11.67])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 1C9B43F762;
+	Tue,  5 Mar 2024 02:18:08 -0800 (PST)
+From: Balint Dobszay <balint.dobszay@arm.com>
+To: op-tee@lists.trustedfirmware.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Cc: jens.wiklander@linaro.org,
+	sumit.garg@linaro.org,
+	corbet@lwn.net,
+	balint.dobszay@arm.com,
+	sudeep.holla@arm.com,
+	rdunlap@infradead.org,
+	krzk@kernel.org,
+	gyorgy.szing@arm.com
+Subject: [PATCH v3 0/4] TEE driver for Trusted Services
+Date: Tue,  5 Mar 2024 11:17:41 +0100
+Message-Id: <20240305101745.213933-1-balint.dobszay@arm.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [syzbot] [hardening?] [mm?] BUG: bad usercopy in fpa_set
-Content-Language: en-US
-To: syzbot <syzbot+cb76c2983557a07cdb14@syzkaller.appspotmail.com>,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <0000000000004cf5c205faf1c7f3@google.com>
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-In-Reply-To: <0000000000004cf5c205faf1c7f3@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+This series introduces a TEE driver for Trusted Services [1].
 
-diff --git a/arch/arm/kernel/ptrace.c b/arch/arm/kernel/ptrace.c
-index c421a899fc84..29b28961637c 100644
---- a/arch/arm/kernel/ptrace.c
-+++ b/arch/arm/kernel/ptrace.c
-@@ -573,8 +573,10 @@ static int fpa_get(struct task_struct *target,
- 		   const struct user_regset *regset,
- 		   struct membuf to)
- {
--	return membuf_write(&to, &task_thread_info(target)->fpstate,
--				 sizeof(struct user_fp));
-+	struct thread_info *thread = task_thread_info(target);
-+
-+	return membuf_write(&to, &thread->fpstate,
-+				 sizeof(thread->fpstate));
- }
- 
- static int fpa_set(struct task_struct *target,
-@@ -586,7 +588,7 @@ static int fpa_set(struct task_struct *target,
- 
- 	return user_regset_copyin(&pos, &count, &kbuf, &ubuf,
- 		&thread->fpstate,
--		0, sizeof(struct user_fp));
-+		0, sizeof(thread->fpstate));
- }
- 
- #ifdef CONFIG_VFP
+Trusted Services is a TrustedFirmware.org project that provides a
+framework for developing and deploying device Root of Trust services in
+FF-A [2] Secure Partitions. The project hosts the reference
+implementation of Arm Platform Security Architecture [3] for Arm
+A-profile devices.
+
+The FF-A Secure Partitions are accessible through the FF-A driver in
+Linux. However, the FF-A driver doesn't have a user space interface so
+user space clients currently cannot access Trusted Services. The goal of
+this TEE driver is to bridge this gap and make Trusted Services
+functionality accessible from user space.
+
+Changelog:
+v2[6] -> v3:
+  - Add patch "tee: Refactor TEE subsystem header files" from Sumit
+  - Remove unnecessary includes from core.c
+  - Remove the mutex from "struct ts_context_data" since the same
+    mechanism could be implemented by reusing the XArray's internal lock
+  - Rename tee_shm_pool_op_*_helper functions as suggested by Sumit
+  - Replace pr_* with dev_* as previously suggested by Krzysztof
+
+v1[5] -> v2:
+  - Refactor session handling to use XArray instead of IDR and linked
+    list (the linked list was redundant as pointed out by Jens, and IDR
+    is now deprecated in favor of XArray)
+  - Refactor tstee_probe() to not call tee_device_unregister() before
+    calling tee_device_register()
+  - Address comments from Krzysztof and Jens
+  - Address documentation comments from Randy
+  - Use module_ffa_driver() macro instead of separate module init / exit
+    functions
+  - Reformat max line length 100 -> 80
+
+RFC[4] -> v1:
+  - Add patch for moving pool_op helper functions to the TEE subsystem,
+    as suggested by Jens
+  - Address comments from Sumit, add patch for documentation
+
+[1] https://www.trustedfirmware.org/projects/trusted-services/
+[2] https://developer.arm.com/documentation/den0077/
+[3] https://www.arm.com/architecture/security-features/platform-security
+[4] https://lore.kernel.org/linux-arm-kernel/20230927152145.111777-1-balint.dobszay@arm.com/
+[5] https://lore.kernel.org/lkml/20240213145239.379875-1-balint.dobszay@arm.com/
+[6] https://lore.kernel.org/lkml/20240223095133.109046-1-balint.dobszay@arm.com/
+
+
+Balint Dobszay (3):
+  tee: optee: Move pool_op helper functions
+  tee: tstee: Add Trusted Services TEE driver
+  Documentation: tee: Add TS-TEE driver
+
+Sumit Garg (1):
+  tee: Refactor TEE subsystem header files
+
+ Documentation/tee/index.rst         |   1 +
+ Documentation/tee/ts-tee.rst        |  71 ++++
+ MAINTAINERS                         |   1 +
+ drivers/tee/Kconfig                 |   1 +
+ drivers/tee/Makefile                |   1 +
+ drivers/tee/amdtee/amdtee_private.h |   2 +-
+ drivers/tee/amdtee/call.c           |   2 +-
+ drivers/tee/amdtee/core.c           |   3 +-
+ drivers/tee/amdtee/shm_pool.c       |   2 +-
+ drivers/tee/optee/call.c            |   2 +-
+ drivers/tee/optee/core.c            |  66 +---
+ drivers/tee/optee/device.c          |   2 +-
+ drivers/tee/optee/ffa_abi.c         |   8 +-
+ drivers/tee/optee/notif.c           |   2 +-
+ drivers/tee/optee/optee_private.h   |  14 +-
+ drivers/tee/optee/rpc.c             |   2 +-
+ drivers/tee/optee/smc_abi.c         |  11 +-
+ drivers/tee/tee_core.c              |   2 +-
+ drivers/tee/tee_private.h           |  35 --
+ drivers/tee/tee_shm.c               |  66 +++-
+ drivers/tee/tee_shm_pool.c          |   2 +-
+ drivers/tee/tstee/Kconfig           |  11 +
+ drivers/tee/tstee/Makefile          |   3 +
+ drivers/tee/tstee/core.c            | 482 ++++++++++++++++++++++++++++
+ drivers/tee/tstee/tstee_private.h   |  92 ++++++
+ include/linux/tee_core.h            | 306 ++++++++++++++++++
+ include/linux/tee_drv.h             | 285 ++--------------
+ include/uapi/linux/tee.h            |   1 +
+ 28 files changed, 1087 insertions(+), 389 deletions(-)
+ create mode 100644 Documentation/tee/ts-tee.rst
+ create mode 100644 drivers/tee/tstee/Kconfig
+ create mode 100644 drivers/tee/tstee/Makefile
+ create mode 100644 drivers/tee/tstee/core.c
+ create mode 100644 drivers/tee/tstee/tstee_private.h
+ create mode 100644 include/linux/tee_core.h
+
+-- 
+2.34.1
 
 
