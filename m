@@ -1,128 +1,169 @@
-Return-Path: <linux-kernel+bounces-92046-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92047-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D40A1871A32
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:07:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F185871A3C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:08:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53225282DE6
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:07:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C21D1C212E5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:08:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49C7C5475D;
-	Tue,  5 Mar 2024 10:07:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B812E548E0;
+	Tue,  5 Mar 2024 10:08:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KfN54v7w"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nTHJcUYE"
+Received: from mail-ua1-f54.google.com (mail-ua1-f54.google.com [209.85.222.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 236D9535CF
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 10:07:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F3D7535CF
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 10:08:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709633241; cv=none; b=rW0U6EtX/mCc2OiE+arYOY6QbQbcV0bc0mY6KLvMkT58YLP6XmM2szHIm1/0MU6XpDzeHOQokF+SZRt1wdoj4ugyXjBsmfzjq5RhIAkWLczLA9WcLgIBd/GhgHWZ7UXcSwP2fDzeGNF7G+K6zChh9T03nl+jnW76qO41XL5UQSw=
+	t=1709633314; cv=none; b=oYJ2WVQi8/4qkW3dF3g0VhzMmWuPTh161vBSoBiW7DkaQzyrz6tFzlONrUCxpNcnGfg9S33gk9GxhufPcFNBbZ1r6ryKrLRwrXCEb5oF/MtcGgp9e6ioXVrU8ScHHFIWv1ihZIEFHa7cbJeoh9iDqmQbdgKdWo21zqVgJ36sOVQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709633241; c=relaxed/simple;
-	bh=tmWvhUXEZZ3pBn0rRhtM8Nj4vDkTWD01IJZIJla18XM=;
+	s=arc-20240116; t=1709633314; c=relaxed/simple;
+	bh=AAT2HVEPA3dM1HBiRM7N4VVxTR53mysqKg/WAuUxMG0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EDIR5W1ko2gqlilc2GuGFMueuTqCMK9FZwPrpMGOM/5xSzSQysd/jZOLcXUB6ZUBGSrJpn5RZ3yXB3CkuwM9vNUIkEXXZytK5Lw/sib3GKJ66x5xmmsZNEy6YDQ4lN6NkR4Xadc9th/ShWxaofCKpFjvvPrr6rDOsk3l3/PmyJY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KfN54v7w; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709633239;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5LvzkgpPOzZwlEgXOsRWtL0iyRGHSE/p12vv2dYEEWM=;
-	b=KfN54v7wKpZnBko2P5nLaVhRMkBze0S2EDlpKoHSavaCxQa0aEJ1z1OhRGdtZbXR+X1MI9
-	O8gZ7w5gD9lRojAcwsLzG0t/dBhf1Ut6572Ah6ZKUdzck3e5+wjcHoZQFRp34xofWwlqNJ
-	KZq1JYKohfMe0RLdWqk+IoDAxYWszjA=
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
- [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-460-IIg8kVZ-M4GmFzXHm1BUww-1; Tue, 05 Mar 2024 05:07:17 -0500
-X-MC-Unique: IIg8kVZ-M4GmFzXHm1BUww-1
-Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1dbcbffd853so55944345ad.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 02:07:17 -0800 (PST)
+	 To:Cc:Content-Type; b=S4AFz7pR0A7XQmmrAtwB+wE+8GhNyCBlY4WILGUY6qrEAjSx3FlbR3VWN/F76nJNnDsTzISs2dS06omGiLgiAtEBHfpBhsI4Xm4q34fAcoKcKaZqvnaR6QKu0aijYJVIb7Gu5HE369nV4w7COFv3yhx1MmUc6GdkWw/0Q06yTZY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=nTHJcUYE; arc=none smtp.client-ip=209.85.222.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ua1-f54.google.com with SMTP id a1e0cc1a2514c-7dae66def19so2045081241.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 02:08:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709633311; x=1710238111; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=RcQYPt61ZswmG7Ltk4aqTMqKV2Gt5394DVr+HiHAY7c=;
+        b=nTHJcUYEBWfnSRyAJZIy62yd5hv3on6QR+XkXkaJWkdioWDZ5YiUA6xi95IMG+t0En
+         RH1zgvk/YQS9cqxYooymQxIl+yRBF4SzmoOJ/Fk04LGk+Ap8F23gjAYhVYO9IA2TgOMW
+         peIcIpzL3aUFKRwqa/q93RxvzgoU4xqy7/VzkvtviDxt4XRdtli4fBlX8ZfKbWp3QaEf
+         hVjBDIu/119X8E/iIQe1+m6kGFBZ/ngpo+r8+zqxUOjjbhy32g/YBQmxEd2CKQe5CAGe
+         aX3r8haOfrPDjkqcwnuYdr3YXfOtJQy3m96hI1kY/jWxJcxjDmOpCO4EEfibWrOikP5E
+         RJnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709633237; x=1710238037;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5LvzkgpPOzZwlEgXOsRWtL0iyRGHSE/p12vv2dYEEWM=;
-        b=ofKUWGLOTDYTJgaBLItu/+7mF4sF7FPxP/vAwT7FI4B8gItxJFe8nscOD8Cf9Wufe7
-         +qlxTw7C85OKT8rfJDKdq61ets8pTessiJnUERwNJ0t4o/j3d41tSolYDs+kY4pEBpEb
-         fmbhusZizn9yY6gIYfBlAwe/xl0ATjNd/m5wOqPVYqM/lNeZB+Tk0OtyI6Anl8LMcKhX
-         tK79PEHFEMYH3CCEUqaV1VOKFDTjtCzKj4n7LY5gRwUeca9bPMDKpOxGqpztkSjII2YV
-         arYtpoJ1JaMtx7j3RssWGbKx+BrVNSVq3UuPmNMYah5XHFWL3ZbzFzQbuhTH1CvXYO11
-         SaQQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV+ZeTtqOJbvyt70H+/1uzEVruh37gWw1c5oKVocq4RZFOi4eYnS2+RO4pyfY/ThOCfzhX6gZYNCANDNNEciHo5H+eme3NBsB4KvxQx
-X-Gm-Message-State: AOJu0YzaS0KY69Ctfi4FNy/E+OBw24PfzB2UqTxZekv1F2aM02U7PCDx
-	wjXq1dKFm8d+QvzfSxSfnnLVIXHq65zeTme7k9NTsGN/YNXHxOR8YGOw4+NUZb3XcrA1YJbI6HC
-	Kwp6RSqZUDrsnIG/UMabFRIrqgEPOVTI6dWE1laY3OXwETOpU+se95yNHIJam4xsNTakkr7K9vn
-	UUYLdv29kw7wBbEFh1C3r/ej6HPg4BQPdBAqZy
-X-Received: by 2002:a17:902:ce8d:b0:1dc:b320:60d2 with SMTP id f13-20020a170902ce8d00b001dcb32060d2mr1446797plg.33.1709633236849;
-        Tue, 05 Mar 2024 02:07:16 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHMv6QAUQFA2PQMt09dU18T+73TTHk4Z3gqozQBVsQrgdPPOTCB2inQqNxcby7aXzwG2tWIwk4xFqDbjP3soXg=
-X-Received: by 2002:a17:902:ce8d:b0:1dc:b320:60d2 with SMTP id
- f13-20020a170902ce8d00b001dcb32060d2mr1446786plg.33.1709633236559; Tue, 05
- Mar 2024 02:07:16 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709633311; x=1710238111;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RcQYPt61ZswmG7Ltk4aqTMqKV2Gt5394DVr+HiHAY7c=;
+        b=oB98m/tLw07xoiqz8VpTS3ISTdjoiCJYuxXiHcVNGKiNq3EWZkcQwUZqkXkRmP2rcK
+         EpE5T1aPDkaHawv+QwMoOsJBLUeCc9ZwX0lYIqLwB+kZqupa3R8xrclfcUODDsuElclf
+         u8DKc8O7Yhrsul7zORGni6IiOjJelVYBWDJ36QkXhVkDcHd2Wj9+UqIcTAgpPqL9iAc/
+         KEAXwcSCuxtbUKJkB7GENgp+5YAUbX2eMtLG7qX5WZbnFDcmlgPhAVvBX3WN0RPj7hKk
+         TXYhmubDhpV4v/UcmQvpD8iJk5Y9V5EnSDnScWA9CHETV94ovzPXT7yMH8QGtSiL3i3+
+         /3Hw==
+X-Forwarded-Encrypted: i=1; AJvYcCXdL9HcFH2GYCOgdB8anLCh/iz3GuMH6/PctW9MUifuslYz6QBbgNnWiJcIxc9feda91ldOgiM1I8tJVWQKvPZTno4WavfZEoer5OvX
+X-Gm-Message-State: AOJu0YxtApAhcw1pJ/cYUGMD+TJaCOQ/cdPrjfoOB4fl0AHN5NghEcht
+	clr5GF6e6+lIm9Dy1YdBmFp2SjD+0oCNTrm/94atY1Yib9/pt4h/vRrRNEZ6IXElWgDb6f4+DqN
+	CXDBTglfBG6rA7FcUf0+oZz9hhzf91W3lwvcHPQ==
+X-Google-Smtp-Source: AGHT+IFp0tE8IoMcXWbHzzy6DSzTZLssOhqBeRslDbpiAMOBFY2vsJQqIa8loedxuKNtQwny5IBMpPE/nnJCa8ZQ8/Q=
+X-Received: by 2002:a05:6102:49a:b0:472:b056:1264 with SMTP id
+ n26-20020a056102049a00b00472b0561264mr1218311vsa.30.1709633311370; Tue, 05
+ Mar 2024 02:08:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <000000000000c925dc0604f9e2ef@google.com> <0000000000000c6e0a0612e6bd58@google.com>
-In-Reply-To: <0000000000000c6e0a0612e6bd58@google.com>
-From: Andreas Gruenbacher <agruenba@redhat.com>
-Date: Tue, 5 Mar 2024 11:07:05 +0100
-Message-ID: <CAHc6FU5ynRASxSQDYPMZ7FHuOmjxPbqe0E+TTJEc19+ArJby0Q@mail.gmail.com>
-Subject: Re: [syzbot] [gfs2?] BUG: sleeping function called from invalid
- context in gfs2_withdraw
-To: syzbot <syzbot+577d06779fa95206ba66@syzkaller.appspotmail.com>
-Cc: axboe@kernel.dk, brauner@kernel.org, gfs2@lists.linux.dev, jack@suse.cz, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	rpeterso@redhat.com, syzkaller-bugs@googlegroups.com, 
-	yuran.pereira@hotmail.com
+References: <20240304211542.332206551@linuxfoundation.org>
+In-Reply-To: <20240304211542.332206551@linuxfoundation.org>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Tue, 5 Mar 2024 15:38:20 +0530
+Message-ID: <CA+G9fYvOpuVjEe_0E5bwsmP39VQwdybDEoKTZGeYC3ULtqmViQ@mail.gmail.com>
+Subject: Re: [PATCH 5.15 00/84] 5.15.151-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
+	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, 
+	Zong Li <zong.li@sifive.com>, Palmer Dabbelt <palmer@rivosinc.com>, 
+	Alexandre Ghiti <alexghiti@rivosinc.com>, Arnd Bergmann <arnd@arndb.de>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 5, 2024 at 10:48=E2=80=AFAM syzbot
-<syzbot+577d06779fa95206ba66@syzkaller.appspotmail.com> wrote:
-> syzbot suspects this issue was fixed by commit:
+On Tue, 5 Mar 2024 at 03:23, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> commit 6f861765464f43a71462d52026fbddfc858239a5
-> Author: Jan Kara <jack@suse.cz>
-> Date:   Wed Nov 1 17:43:10 2023 +0000
+> This is the start of the stable review cycle for the 5.15.151 release.
+> There are 84 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
->     fs: Block writes to mounted block devices
+> Responses should be made by Wed, 06 Mar 2024 21:15:26 +0000.
+> Anything received after that time might be too late.
 >
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D119f927a18=
-0000
-> start commit:   6465e260f487 Linux 6.6-rc3
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D8d7d7928f7893=
-6aa
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3D577d06779fa9520=
-6ba66
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D10dbcdc1680=
-000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D17a367b668000=
-0
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.151-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> and the diffstat can be found below.
 >
-> If the result looks correct, please mark the issue as fixed by replying w=
-ith:
+> thanks,
 >
-> #syz fix: fs: Block writes to mounted block devices
+> greg k-h
 
-Sounds reasonable:
 
-#syz fix: fs: Block writes to mounted block devices
+Following build failures noticed on riscv.
 
-Andreas
+The riscv tinyconfig and allnoconfig builds on 5.15.
+The riscv defconfig, tinyconfig and allnoconfig builds on 5.10.
 
+linux.5.15.y build failures on riscv.
+riscv:
+  build:
+    * gcc-12-tinyconfig
+    * gcc-8-allnoconfig
+    * clang-17-tinyconfig
+    * gcc-8-tinyconfig
+    * gcc-12-allnoconfig
+
+linux.5.10.y build failures on riscv.
+riscv:
+
+  * gcc-8-defconfig
+  * clang-17-allnoconfig
+  * gcc-12-tinyconfig
+  * gcc-8-allnoconfig
+  * gcc-8-allmodconfig
+  * clang-17-defconfig
+  * gcc-12-defconfig
+  * clang-17-tinyconfig
+  * gcc-12-allmodconfig
+  * gcc-8-tinyconfig
+  * gcc-12-allnoconfig
+
+ Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+arch/riscv/kernel/return_address.c:39:9: error: implicit declaration
+of function 'arch_stack_walk' [-Werror=implicit-function-declaration]
+   39 |         arch_stack_walk(save_return_addr, &data, current, NULL);
+      |         ^~~~~~~~~~~~~~~
+cc1: some warnings being treated as errors
+
+Suspecting patch,
+
+riscv: add CALLER_ADDRx support
+commit 680341382da56bd192ebfa4e58eaf4fec2e5bca7 upstream.
+
+steps to reproduce:
+---
+# tuxmake --runtime podman --target-arch riscv --toolchain gcc-12
+--kconfig defconfig
+
+Links:
+ - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.15.y/v5.15.149-332-ge7cbbec10c6e/testrun/22942335/suite/test/gcc-12-allnoconfig/history/
+ - https://storage.tuxsuite.com/public/linaro/lkft/builds/2dF68wn0dXbU2xGLRyzsxGdXTyB/
+
+ - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/v5.10.210-166-g4b0abedc88b0/testrun/22941782/suite/test/gcc-12-defconfig/details/
+ - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/v5.10.210-166-g4b0abedc88b0/testrun/22941144/suite/test/gcc-12-defconfig/history/
+ - https://storage.tuxsuite.com/public/linaro/lkft/builds/2dF5ke88GqtfanduGie1JGLUbVa/
+
+--
+Linaro LKFT
+https://lkft.linaro.org
 
