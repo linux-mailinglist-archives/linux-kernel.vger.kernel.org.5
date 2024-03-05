@@ -1,100 +1,175 @@
-Return-Path: <linux-kernel+bounces-91605-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91606-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0361D87142E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 04:19:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E135B871431
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 04:21:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE5CB1F23301
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 03:19:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 44D10B20A21
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 03:21:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FD0F3717D;
-	Tue,  5 Mar 2024 03:19:28 +0000 (UTC)
-Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
-	by smtp.subspace.kernel.org (Postfix) with SMTP id DD9772942C
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 03:19:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.131.102.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF66E376E6;
+	Tue,  5 Mar 2024 03:21:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VorYs+JN"
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 639551865C;
+	Tue,  5 Mar 2024 03:21:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709608767; cv=none; b=Bji8KT/nDXTTMCmZfI/VsXjVm5qfiuCYPCO8ms3WobCRVfBVAmHz6SGX17EGoIo3ZmD1mjX8xINgHBGQMRH2r9JSMlaA2i02w+SsM+b4ycri3JE3uA/r6EExt/UEzdbi/8TptRZFZU3J12UmhN3nFrpl4gWA1Ogxdf7kI5HvS9c=
+	t=1709608865; cv=none; b=gi9axCILxXl0ph2LISaIhagLxv3mF2K0Z01JR12ZHjbrdkZB+0t/PIrungvX2cNG23+vUV84iigXE0q6LFDQ1h8SI99VTRXZknqHtUAcdimfMSchUFDx92S2E/N6330uuznyA+V5PmgwPM+Jh49aMsh0mPCht3bnPCnfs1SIE9M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709608767; c=relaxed/simple;
-	bh=Ck4ZctKVOXdlbvUJ8DoMXK80YN5zrcPcWCl0t3M5bwM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qZTsvF+M+AtVQDCF8OToNV1/tVhsFMtDb0Dm03559sNQUUPvYE/3ocNV0da0yJMbNW+F+nusJ7nQHNG3PXE+6xuw4X2vTrsMxvyOoklLUQSBmIkcIrHKnSkKUKpy9CqjZDtqQHrA886jiWGi4hZlLp2N19xX6WDZdf3KzzlBL+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu; spf=pass smtp.mailfrom=netrider.rowland.org; arc=none smtp.client-ip=192.131.102.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netrider.rowland.org
-Received: (qmail 143883 invoked by uid 1000); 4 Mar 2024 22:19:24 -0500
-Date: Mon, 4 Mar 2024 22:19:24 -0500
-From: Alan Stern <stern@rowland.harvard.edu>
-To: Marek =?iso-8859-1?Q?Marczykowski-G=F3recki?= <marmarek@invisiblethingslab.com>
-Cc: Greg KH <gregkh@linuxfoundation.org>,
-  Demi Marie Obenour <demi@invisiblethingslab.com>, linux-usb@vger.kernel.org,
-  Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: usbip doesn't work with userspace code that accesses USB devices
-Message-ID: <a95c7e71-a720-49ba-b503-6f20a86be38e@rowland.harvard.edu>
-References: <ZeYov0k8njwcZzGX@itl-email>
- <2024030406-kilogram-raving-33c5@gregkh>
- <ZeZPLX6z5pyn2Eh_@mail-itl>
- <ZeZetkR-i1bCDr9v@mail-itl>
+	s=arc-20240116; t=1709608865; c=relaxed/simple;
+	bh=fQxFj9FoBmTJzV/ZouAXdSy2rLJDNB1eESe76AOrgDI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=m1UhsJnx8FhzO3RPvqpkDjDGq2NAsckhOpmuubF8zd9s46zUthukW1kuBvREfJFsP69TTjHc8LVd/2ej8GpY+auvprjZtk+3hlVsfHneCY0IWHWeABHULLIb1LvqP42DIAStCV0X9t1OwNDRBybK/7ycisE9T2kynUsYlrSIwxA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VorYs+JN; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a44e3176120so287588366b.1;
+        Mon, 04 Mar 2024 19:21:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709608862; x=1710213662; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=g5OTOZkvI1iKHRZFDGgAFNCyc+OZsWpdVdz/BEQBjP4=;
+        b=VorYs+JN2iMVeIIpUm2WyXOPxI9BqGZYMR0xb3smQhOsDa2/EwJd7uZVlZpvbX0SUy
+         EZA0bhdJgqEZi1G4blynLdm+Rw2x3W9JIVEtutBI4LwPVYhapnmOIRfeOQ4/do5cHrav
+         m+22DLIUtpiqGKrpvCFPqaXGsTa6HouZXDzfMgiuMVuZsSZEqLGgjBOQmu7u5/a3ZB1E
+         VtgdJga+VmCJH65H3uVW/UGJQ8uzlf+LoTKGDK7C8g1U//FSmqKmjEz0SikrV8GJj12t
+         VEKFGVd7QGP/oMm6thIqJ0QVJBL4bPhobG0yup0sLaEsghBZognPhC5tsbtmRwLHp4/u
+         Hhfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709608862; x=1710213662;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=g5OTOZkvI1iKHRZFDGgAFNCyc+OZsWpdVdz/BEQBjP4=;
+        b=nXB2BQepfx86suOAnDWTVdQYZ3lNcjuiA5A/EZovkV85la8Ti+yYPF6ysmJqb8YYDc
+         gNmnSnsUQS0KYOvQqylSA5Up8LIzFCctqhiYzAQMItxE0ateQILLxPPpDI86piRK/fKR
+         sL4eYeqv3dyexJrPDYbxr4G3JKW2E++FGuuUnJAh82liUItmJh5wYPkuhpaEXfqjXWPs
+         y6tq4lWGyOfwD+yLMQdLv8NFSV8swKwnkTz27sFeBmhHdz3eBm4K85trHDZ4bPjVGhYH
+         7fbBxTvJAj9Wb7Fd34AtQv0rHh35yKS42qZY0x7sOVYsJAN8dG/Pz45yQZO2PzEajmnw
+         Or0w==
+X-Forwarded-Encrypted: i=1; AJvYcCWxDdfj00LLNyrRHOIWjzuQ7lX+ElQfu7Q7KDcgewjgBAI6gQK38rBdoZ0ptnfqXp0XbH71NTVDgNyRR5B72xr6WygniLeu
+X-Gm-Message-State: AOJu0YwW/cQZMjzroGrQtWGO7CF867yu+b/p6Kd1fPRNicUbDR5l1IPb
+	NrJI7Za3nciYMtrUXHQdBH4YgTqK7VuqR/0mLCbjX2WfaZhj8lGtWvPVdobaqHTlXKCwjdgqUZh
+	uzqgnPKdn7u8SZHZIFPhgCiqgonM=
+X-Google-Smtp-Source: AGHT+IGzCLorvfjl+krG6qfJI1O1/54XBrFfAYojjAa1cbuFXNug7cFrg5Gpu1as2dW/gXgop0TWPItpHFPcwFW/VFE=
+X-Received: by 2002:a17:906:695:b0:a45:1850:e6ed with SMTP id
+ u21-20020a170906069500b00a451850e6edmr3968306ejb.6.1709608861517; Mon, 04 Mar
+ 2024 19:21:01 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZeZetkR-i1bCDr9v@mail-itl>
+References: <CAEkJfYP5T4Xv7vn7GZnQ7ig6_QZB8B_g-DS9dk7xhxRntYNY7g@mail.gmail.com>
+ <24641.1709606824@famine>
+In-Reply-To: <24641.1709606824@famine>
+From: Sam Sun <samsun1006219@gmail.com>
+Date: Tue, 5 Mar 2024 11:20:49 +0800
+Message-ID: <CAEkJfYMfU8bSrvpgSCgCG4-canwkq3dZKSUKbd0xsjLuLPGMQQ@mail.gmail.com>
+Subject: Re: [PATCH net] drivers/net/bonding: Fix out-of-bounds read in bond_option_arp_ip_targets_set()
+To: Jay Vosburgh <jay.vosburgh@canonical.com>
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, andy@greyhouse.net, 
+	davem@davemloft.net, Eric Dumazet <edumazet@google.com>, kuba@kernel.org, 
+	pabeni@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 05, 2024 at 12:52:22AM +0100, Marek Marczykowski-Górecki wrote:
-> On Mon, Mar 04, 2024 at 11:46:04PM +0100, Marek Marczykowski-Górecki wrote:
-> > Terminology:
-> > 1. sys-usb - a VM where USB controller (a PCI device) lives; here
-> > usbip-host is attached to the device
-> > 2. testvm - target VM where usbip is connected; here vhci-hcd is used
-> > 3. qvm-usb - tool that connects the above two (equivalent of
-> > userspace part of standard usbip)
-> > 
-> > Specific steps:
-> > 1. Connect android phone - at this point it's only in sys-usb
-> > 2. Switch its mode to file transfer - observe reconnect in sys-usb
-> > 3. Use qvm-usb to attach it to the testvm
-> > 4. Call jmtpfs -d /mnt in testvm
-> 
-> Or maybe reset or something is involved here too?
-> 
-> After using qvm-usb to attach _and detach_ the device, it stays bound to
-> usbip-host driver (that's intentional). But then, even after re-binding
-> back to the "usb" driver, jmtpfs called in sys-usb directly fails the
-> same way, including failure to reset.
-> 
-> In fact, even without usbip involved at all, jmtpfs directly in sys-usb
-> works only once. The second attempt (without either physically reconnecting
-> the phone, or changing its more to "no data transfer" and back to "file
-> transfer") fails the same way. After terminating the first instance, I
-> see just this logged:
-> 
->     [921332.525210] usb 2-1: reset high-speed USB device number 22 using xhci_hcd
+On Tue, Mar 5, 2024 at 10:47=E2=80=AFAM Jay Vosburgh <jay.vosburgh@canonica=
+l.com> wrote:
+>
+> Sam Sun <samsun1006219@gmail.com> wrote:
+>
+> >Dear kernel developers and maintainers,
+> >
+> >We found a bug through our modified Syzkaller. In function
+> >bond_option_arp_ip_targets_set(), if newval->string is an empty
+> >string, newval->string+1 will point to the byte after the string,
+> >causing an out-of-bound read.  KASAN report is listed below.
+>
+>         Conceptually, the change here seems fine.  However, I don't
+> think including the full KASAN report adds much to the description
+> above.
+>
 
-If something doesn't work when usbip isn't involved, you definitely 
-shouldn't expect it to work when usbip _is_ involved.
+Thanks for pointing this out! I will remove this next time when I
+submit a patch.
 
-It sounds like you're facing more than one type of problem.  The best 
-approach is to attack them separately.
+> >We developed a patch to fix this problem. Check the string length
+> >first before calling in4_pton().
+> >
+> >Reported-by: Yue Sun <samsun1006219@gmail.com>
+> >Signed-off-by: Yue Sun <samsun1006219@gmail.com>
+> >
+> >diff --git a/drivers/net/bonding/bond_options.c
+> >b/drivers/net/bonding/bond_options.c
+> >index f3f27f0bd2a6..a6d01055f455 100644
+> >--- a/drivers/net/bonding/bond_options.c
+> >+++ b/drivers/net/bonding/bond_options.c
+> >@@ -1198,7 +1198,7 @@ static int bond_option_arp_ip_targets_set(struct
+> >bonding *bond,
+> >     __be32 target;
+> >
+> >     if (newval->string) {
+> >-        if (!in4_pton(newval->string+1, -1, (u8 *)&target, -1, NULL)) {
+> >+        if (!strlen(newval->string) || !in4_pton(newval->string+1,
+> >-1, (u8 *)&target, -1, NULL)) {
+>
+>         The text beginning with "-1," is a separate line, and something
+> messed up the tabs.  Also, this should be rewritten as
+>
+>                 if (!strlen(newval->string) ||
+>                     !in4_pton(newval->string + 1, -1, (u8 *)&target, -1, =
+NULL)) {
+>
+>         to avoid a long line.
+>
 
-I'd start with problems that exist only on sys-usb first -- keeping 
-usbip out of the picture will make everything much simpler.  You can try 
-capturing a usbmon trace, starting from before the phone is attached, 
-and continuing on through the mode changes and failures.  In fact, break 
-it up into several traces, each starting just before one of the major 
-events (initial plug-in, mode change, whatever).
+Yes you are right, I should have used the checkpatch script before
+submitting the patch. Sorry for the inconvenience.
 
-Once that's under control, I suggest using usbmon on both sides (sys-usb 
-and testvm) of the usbip connection.  But start without usbip.
+>         -J
+>
+> >             netdev_err(bond->dev, "invalid ARP target %pI4 specified\n"=
+,
+> >                    &target);
+> >             return ret;
+> >
+>
+>
+> ---
+>         -Jay Vosburgh, jay.vosburgh@canonical.com
 
-Alan Stern
+I modified the patch and it is listed below.
+
+Reported-by: Yue Sun <samsun1006219@gmail.com>
+Signed-off-by: Yue Sun <samsun1006219@gmail.com>
+diff --git a/drivers/net/bonding/bond_options.c
+b/drivers/net/bonding/bond_options.c
+index f3f27f0bd2a6..7f765b42fad4 100644
+--- a/drivers/net/bonding/bond_options.c
++++ b/drivers/net/bonding/bond_options.c
+@@ -1198,7 +1198,8 @@ static int bond_option_arp_ip_targets_set(struct
+bonding *bond,
+     __be32 target;
+
+     if (newval->string) {
+-        if (!in4_pton(newval->string+1, -1, (u8 *)&target, -1, NULL)) {
++        if (!strlen(newval->string) ||
++            !in4_pton(newval->string+1, -1, (u8 *)&target, -1, NULL)) {
+             netdev_err(bond->dev, "invalid ARP target %pI4 specified\n",
+                    &target);
+             return ret;
+
+Best Regards,
+Yue
 
