@@ -1,158 +1,115 @@
-Return-Path: <linux-kernel+bounces-92462-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92463-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A49C187208C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:42:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 839078720A7
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:46:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBDF41C22BB5
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:42:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 40B79282F28
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:46:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC99685C7D;
-	Tue,  5 Mar 2024 13:42:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NvSLPpzu"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FE4986122;
+	Tue,  5 Mar 2024 13:45:55 +0000 (UTC)
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 472DF5676A;
-	Tue,  5 Mar 2024 13:42:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C98B55915D;
+	Tue,  5 Mar 2024 13:45:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.154.21.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709646174; cv=none; b=T++4P9ztkMoA/MGtuixdzjvX+azGOrxcJgF+v+TWCc1cMRTeqOzrszghPa06SIgiHrMIlX0BaBRmm+h8+TihobGI7N864kp1H7Qip0lRIkswN9S3F1CHRbxloWBL7hcYMdB5FmvgrBuuQIyq1xYu1nLpGXYak3Cyxco//eK331E=
+	t=1709646355; cv=none; b=cQFhZ3j5OuaM27w3K6BA8YQaN+pTcz8przQ/JtmXi0CcXZqEKCxXzkn502BlDKOxfkrlCj46nmsaKXyJmL6CnlPD44SQgPKslvtmeGukpeqGIBVACc9Bu0ZB8mSzLwsDNPW/XkZ9BiJchmD2r0SMt3LYm0CDcjr0WLFJDsqakI0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709646174; c=relaxed/simple;
-	bh=1TUXrK0mJ+n0Z9W20paGt+AZeDVv0d+6JACKRbEJcIU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Qu32RHlxh8XqsbFeSIjeZievhJUnYGCDV8BXy6vgZhKkDAaHpLN9MnBuqlzzi0rWFF3ZjbzH7v1I3BT2OTTu/0r6vmR2QcZ6fpwvQLiL/CcXsh7EZLCUR9EacNxrr8KdRw1vynpZKZ8advzwHctrbhmdwPgGzFjDxlVnRj3UMP4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NvSLPpzu; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709646172; x=1741182172;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=1TUXrK0mJ+n0Z9W20paGt+AZeDVv0d+6JACKRbEJcIU=;
-  b=NvSLPpzuFE+wpZr4vmargD2hixWj3PKpnirSb7Wwi2y6Fww1xMfbbTDZ
-   szNlxbZWTaoSDXiGyqlVYYO6iBkdtMvV0zheQ3VvG5Ij9AHe0+0xR9q5l
-   m+LjHB+Js2Ww9ruFVdo7O7dG0o06RL5x66NVvyN0U5IblKX0NIGtbfwlS
-   rb3AtySDFSZvl87RA5uLRy0OBuwC079SMw8jeYlzYtXJDUsEQQnKTQZ30
-   +dlUpmEpoLVX2skhoA5rnof1sBwMwoN+YafM+6z46O1GpAYcxRZHhm+HM
-   7wYIwlhhJbyYI//CWlIMVLcvb/oxnHq/qJ/78IpCD+aMfmkKrBfVGRAel
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="4055200"
-X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
-   d="scan'208";a="4055200"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 05:42:52 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
-   d="scan'208";a="9321527"
-Received: from peizhenz-mobl2.ccr.corp.intel.com (HELO [10.124.242.47]) ([10.124.242.47])
-  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 05:42:49 -0800
-Message-ID: <15567943-817b-4fb8-a4ab-2d97ce2c827a@linux.intel.com>
-Date: Tue, 5 Mar 2024 21:42:47 +0800
+	s=arc-20240116; t=1709646355; c=relaxed/simple;
+	bh=xfh49nxcNCMeozUYuhHg+aE7kDfXE3vNBO+UGPTu1fc=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=KdB+z7dEEdzrLEnI7QdSFZPQfmdLULFC8Bcqnaz7hpwei3K0BbMzX32X8+ZJU9ZF5Uhr4bvnlwozFPnsDTMTWOvRdQcBqt4q+vzH636huCLajpsI+HJ9HPLMamvloRTawAc+zVp3IhRKEkCbEY5ubJySPigkIglQk4dLC22ghGM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru; spf=pass smtp.mailfrom=omp.ru; arc=none smtp.client-ip=90.154.21.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
+Received: from localhost.localdomain (78.37.41.175) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Tue, 5 Mar
+ 2024 16:45:41 +0300
+From: Roman Smirnov <r.smirnov@omp.ru>
+To: Jens Axboe <axboe@kernel.dk>
+CC: Roman Smirnov <r.smirnov@omp.ru>, Sergey Shtylyov <s.shtylyov@omp.ru>,
+	Karina Yankevich <k.yankevich@omp.ru>, <linux-block@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>
+Subject: [PATCH] block: prevent division by zero in blk_rq_stat_sum()
+Date: Tue, 5 Mar 2024 16:45:09 +0300
+Message-ID: <20240305134509.23108-1-r.smirnov@omp.ru>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 09/21] KVM: VMX: Modify NMI and INTR handlers to take
- intr_info as function argument
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, seanjc@google.com,
- michael.roth@amd.com, isaku.yamahata@intel.com, thomas.lendacky@amd.com
-References: <20240227232100.478238-1-pbonzini@redhat.com>
- <20240227232100.478238-10-pbonzini@redhat.com>
-From: Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <20240227232100.478238-10-pbonzini@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 03/05/2024 13:15:25
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 183964 [Mar 05 2024]
+X-KSE-AntiSpam-Info: Version: 6.1.0.3
+X-KSE-AntiSpam-Info: Envelope from: r.smirnov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 8 0.3.8 4a99897b35b48c45ee5c877607d26a2d9f419920
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 78.37.41.175 in (user) dbl.spamhaus.org}
+X-KSE-AntiSpam-Info:
+	omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: ApMailHostAddress: 78.37.41.175
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 03/05/2024 13:20:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 3/5/2024 11:10:00 AM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
+The expression dst->nr_samples + src->nr_samples may
+have zero value on overflow. It is necessary to add
+a check to avoid division by zero.
 
+Found by Linux Verification Center (linuxtesting.org) with Svace.
 
-On 2/28/2024 7:20 AM, Paolo Bonzini wrote:
-> From: Sean Christopherson <seanjc@google.com>
->
-> TDX uses different ABI to get information about VM exit.  Pass intr_info to
-> the NMI and INTR handlers instead of pulling it from vcpu_vmx in
-> preparation for sharing the bulk of the handlers with TDX.
->
-> When the guest TD exits to VMM, RAX holds status and exit reason, RCX holds
-> exit qualification etc rather than the VMCS fields because VMM doesn't have
-> access to the VMCS.  The eventual code will be
->
-> VMX:
->    - get exit reason, intr_info, exit_qualification, and etc from VMCS
->    - call NMI/INTR handlers (common code)
->
-> TDX:
->    - get exit reason, intr_info, exit_qualification, and etc from guest
->      registers
->    - call NMI/INTR handlers (common code)
->
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
-> Message-Id: <0396a9ae70d293c9d0b060349dae385a8a4fbcec.1705965635.git.isaku.yamahata@intel.com>
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Roman Smirnov <r.smirnov@omp.ru>
+Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+---
+ block/blk-stat.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Reviewed-by: Binbin Wu <binbin.wu@linux.intel.com>
-
-> ---
->   arch/x86/kvm/vmx/vmx.c | 16 +++++++---------
->   1 file changed, 7 insertions(+), 9 deletions(-)
->
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 3d8a7e4c8e37..8aedfe0fd78c 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -7000,24 +7000,22 @@ static void handle_nm_fault_irqoff(struct kvm_vcpu *vcpu)
->   		rdmsrl(MSR_IA32_XFD_ERR, vcpu->arch.guest_fpu.xfd_err);
->   }
->   
-> -static void handle_exception_irqoff(struct vcpu_vmx *vmx)
-> +static void handle_exception_irqoff(struct kvm_vcpu *vcpu, u32 intr_info)
->   {
-> -	u32 intr_info = vmx_get_intr_info(&vmx->vcpu);
-> -
->   	/* if exit due to PF check for async PF */
->   	if (is_page_fault(intr_info))
-> -		vmx->vcpu.arch.apf.host_apf_flags = kvm_read_and_reset_apf_flags();
-> +		vcpu->arch.apf.host_apf_flags = kvm_read_and_reset_apf_flags();
->   	/* if exit due to NM, handle before interrupts are enabled */
->   	else if (is_nm_fault(intr_info))
-> -		handle_nm_fault_irqoff(&vmx->vcpu);
-> +		handle_nm_fault_irqoff(vcpu);
->   	/* Handle machine checks before interrupts are enabled */
->   	else if (is_machine_check(intr_info))
->   		kvm_machine_check();
->   }
->   
-> -static void handle_external_interrupt_irqoff(struct kvm_vcpu *vcpu)
-> +static void handle_external_interrupt_irqoff(struct kvm_vcpu *vcpu,
-> +					     u32 intr_info)
->   {
-> -	u32 intr_info = vmx_get_intr_info(vcpu);
->   	unsigned int vector = intr_info & INTR_INFO_VECTOR_MASK;
->   	gate_desc *desc = (gate_desc *)host_idt_base + vector;
->   
-> @@ -7040,9 +7038,9 @@ void vmx_handle_exit_irqoff(struct kvm_vcpu *vcpu)
->   		return;
->   
->   	if (vmx->exit_reason.basic == EXIT_REASON_EXTERNAL_INTERRUPT)
-> -		handle_external_interrupt_irqoff(vcpu);
-> +		handle_external_interrupt_irqoff(vcpu, vmx_get_intr_info(vcpu));
->   	else if (vmx->exit_reason.basic == EXIT_REASON_EXCEPTION_NMI)
-> -		handle_exception_irqoff(vmx);
-> +		handle_exception_irqoff(vcpu, vmx_get_intr_info(vcpu));
->   }
->   
->   /*
+diff --git a/block/blk-stat.c b/block/blk-stat.c
+index 7ff76ae6c76a..e42c263e53fb 100644
+--- a/block/blk-stat.c
++++ b/block/blk-stat.c
+@@ -27,7 +27,7 @@ void blk_rq_stat_init(struct blk_rq_stat *stat)
+ /* src is a per-cpu stat, mean isn't initialized */
+ void blk_rq_stat_sum(struct blk_rq_stat *dst, struct blk_rq_stat *src)
+ {
+-	if (!src->nr_samples)
++	if (dst->nr_samples + src->nr_samples <= dst->nr_samples)
+ 		return;
+ 
+ 	dst->min = min(dst->min, src->min);
+-- 
+2.34.1
 
 
