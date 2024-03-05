@@ -1,188 +1,130 @@
-Return-Path: <linux-kernel+bounces-91880-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91881-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E3CE8717CA
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:15:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B3878717CF
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:15:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 11EFB1C211D5
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:15:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A6F21C20319
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:15:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEC577FBAC;
-	Tue,  5 Mar 2024 08:13:38 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A25180034;
+	Tue,  5 Mar 2024 08:14:18 +0000 (UTC)
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A71197F46A;
-	Tue,  5 Mar 2024 08:13:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2E6C7EEFD;
+	Tue,  5 Mar 2024 08:14:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709626418; cv=none; b=V1SRk22hdPmrI63w+AbrYTAS7xEP5angUiBic6pVPXpiJG9nzVi7eH92I+t1/PoSA7zHJQWlFpSQVR42Hh0Iv0c56xl+f9JiWsaDjb7GUjRbl5muOiOS5jeF7RuVeCsoCW6CS8u5LZ7tZWnn0J3ryH8/DeeOFPXvvYERHBR5RVI=
+	t=1709626457; cv=none; b=Rxs85vaZN0Oh/M32++kRYCQiDIfIhKhpVnNf216tG7V0ihK3H5iThGpjEgEynkf/fT0OaBfoWm5uLVjaIAJcvvoLBEclHEzolzB0CmccMRuIRWobpz+JHY+77YWUEQ3vmsPqqvU6PpFJa9TZPwHE30Jj10T0GXbvMJWetG5iyqc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709626418; c=relaxed/simple;
-	bh=iYtQ7w6OR03PpXoCi1pmT13C/mStvkKFlUXkTHPzHiE=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=aRQ7t0+B4xDLy5kkeApdxaMurU+a7cdoKp/ZMw6kLWA+n0DIgSLUydJHNBlYZ3YrsBj+XeE5QPI0DObw5NVQmz0vtpDkJNzrygOlA0E5bspJ4IHYwcscgqytFLJU+gFm9RYbUZeqYjvdPI5ACsff0hvyF/2UKGQZanCI1VjApAg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TppGr6dpkz4f3m7Y;
-	Tue,  5 Mar 2024 16:13:24 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 675171A016E;
-	Tue,  5 Mar 2024 16:13:32 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-	by APP1 (Coremail) with SMTP id cCh0CgDHlxAq1OZlzJIBGA--.18003S3;
-	Tue, 05 Mar 2024 16:13:32 +0800 (CST)
-Subject: Re: [PATCH md-6.8 v2 2/9] md: export helpers to stop sync_thread
-To: Paul Menzel <pmenzel@molgen.mpg.de>, Yu Kuai <yukuai1@huaweicloud.com>
-Cc: xni@redhat.com, zkabelac@redhat.com, agk@redhat.com, snitzer@kernel.org,
- mpatocka@redhat.com, dm-devel@lists.linux.dev, song@kernel.org,
- heinzm@redhat.com, jbrassow@redhat.com, neilb@suse.de,
- linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
- yi.zhang@huawei.com, yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
-References: <20240305072306.2562024-1-yukuai1@huaweicloud.com>
- <20240305072306.2562024-3-yukuai1@huaweicloud.com>
- <c0e648ea-d73e-4805-a2bb-b02ddd3ca4e2@molgen.mpg.de>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <9950cb96-ac8b-d7dd-56a0-133709f51b5f@huaweicloud.com>
-Date: Tue, 5 Mar 2024 16:13:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+	s=arc-20240116; t=1709626457; c=relaxed/simple;
+	bh=sdkbL0j1WDTfzOeFdax57xNB3etUtS+GxE2k2CRgZs4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=GDwZ2KQkpq3L0DuIYxhEoHmTTfy7zNi+/5gFw78vh2fw0vKbgz2U3vagMxcFDPodSWFVIQNFMR1itYZYfVEyB9YnqTcPE0+9XR6rcyeTmJdxRoPahaZIybpkJ//fVAdysU/lnFqLpGYwVSVkCNGzqYWc2aNkXxIOUVqHTaWEZkQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-6098bf69909so30344937b3.1;
+        Tue, 05 Mar 2024 00:14:15 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709626454; x=1710231254;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=C/PGxtgAIaNlRumVOAqmpGsRhzvUMbZ5jyQA7IZ7SLc=;
+        b=ismwGYkxuWSJcLLu4/7t30aAh8HyCBPRoJ3E4XKy7qYlDjwEkXs06EMkuYgcex1svG
+         AKg9r/8ENgH0WrWsRJOMUJoG5NG3P2VRT1Vy1bQf7Nos4kCcm0dCb58uSppdCd30/SB+
+         sYB2Rp1MIVUrKpcoSoruLHT9+eQd0GjeG78lh3Gl46ZQz+jB8TCcKOGa5Cu26tOvpO+L
+         yfFKt6u1Eg/BlXFnh0BLZq4z7EEuIrJEIwFDpWA39XXNug/hpbK701gt0FNjJXb2oIcY
+         GsZc16jz1VxE0cmQqiEEYjCBbYUWoPJKbaivE3mfyaJhE13Ms5A3gWftQZuQXhVD4GEH
+         jtjQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUTmwD6gSADtWpvKDbgLGvRCRVyzqR1TpureCv7GWNCe1BRa64EIwAmV7ZqgVYZVqfQMm5MR6YdJ9+RRY96yHsxCkG4D5UoRSewoweJa84qYeaNOuJEstABF+Z1xu5mAYzmnJVnfs5AGqKH6/I0uPuUC/9WCMitnA+4C+o1HTDvmrR32/E=
+X-Gm-Message-State: AOJu0Yy7GArQ1bPkt7vhSUKYyvL3WK5Xq8bvkGAASQEh+C9rBUXF+y0E
+	7886buCzvNDz9iFVj/sJ9rb5b9bpElT8pV6PAoWQl8XhnVa1+WWjSOEC8oiWEes=
+X-Google-Smtp-Source: AGHT+IEPMjVoeyDtKFnxJjQxc3RlnLtRTMv8Uy1TA+pBy3lUFDY8++Si8Wgu0iT6vUYDqjYyWZbqgw==
+X-Received: by 2002:a0d:cac9:0:b0:609:892e:b944 with SMTP id m192-20020a0dcac9000000b00609892eb944mr1388875ywd.4.1709626454054;
+        Tue, 05 Mar 2024 00:14:14 -0800 (PST)
+Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com. [209.85.219.181])
+        by smtp.gmail.com with ESMTPSA id r12-20020a81e40c000000b00607c3904416sm2977288ywl.40.2024.03.05.00.14.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Mar 2024 00:14:12 -0800 (PST)
+Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-dc25e12cc63so6051907276.0;
+        Tue, 05 Mar 2024 00:14:12 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVgK8caQANrK8oebiAEEtj597THcsbm+hLRHX/kpokKHmZAzzJPA0eaucpoWoBWAfF+Cm5FU2N6kDgu4iOpFHZb4HpNZEPuPJHlNdCZZoBg7paQmn7wP0fgO8sNDz/KZ85sTgBILk8ULOKplZC2OUtk3sL3BpwGhIpIb0cJ4yb/bI3NjQo=
+X-Received: by 2002:a05:6902:248f:b0:dc2:271a:3799 with SMTP id
+ ds15-20020a056902248f00b00dc2271a3799mr1604789ybb.23.1709626452674; Tue, 05
+ Mar 2024 00:14:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <c0e648ea-d73e-4805-a2bb-b02ddd3ca4e2@molgen.mpg.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgDHlxAq1OZlzJIBGA--.18003S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxCr45Jw1xGryfJw1rCF1UAwb_yoW5Kr4Dpr
-	WvqF95ArWayrZ3Zr17Xa4DCa4Yvwn7Ka4DtryfA3yfJ3ZIkr1DKF15u3Wq9FykCa1rGr1j
-	y3WjgFZ3ur1xJrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9I14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-	0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
-	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-	67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
-	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWr
-	Zr1UMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJb
-	IYCTnIWIevJa73UjIFyTuYvjfUOmhFUUUUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+References: <20240305035853.916430-1-chris.packham@alliedtelesis.co.nz> <20240305035853.916430-2-chris.packham@alliedtelesis.co.nz>
+In-Reply-To: <20240305035853.916430-2-chris.packham@alliedtelesis.co.nz>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 5 Mar 2024 09:14:01 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUYuucVQDor3na-iT+Jmsktr+vCVjQXGUA6vXd6-mXxmA@mail.gmail.com>
+Message-ID: <CAMuHMdUYuucVQDor3na-iT+Jmsktr+vCVjQXGUA6vXd6-mXxmA@mail.gmail.com>
+Subject: Re: [PATCH v4 1/3] auxdisplay: Add 7-segment LED display driver
+To: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc: andy@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, 
+	conor+dt@kernel.org, andrew@lunn.ch, gregory.clement@bootlin.com, 
+	sebastian.hesselbarth@gmail.com, lee@kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-leds@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+Hi Chris,
 
-在 2024/03/05 16:08, Paul Menzel 写道:
-> Dear Kuai,
-> 
-> 
-> Thank you for your patch.
-> 
-> Am 05.03.24 um 08:22 schrieb Yu Kuai:
->> From: Yu Kuai <yukuai3@huawei.com>
->>
->> The new heleprs will be used in dm-raid in later patches to fix
-> 
-> hel*pe*rs
-> 
->> regressions and prevent calling md_reap_sync_thread() directly.
-> 
-> Please list the new functions.
-> 
-> 1.  md_idle_sync_thread(struct mddev *mddev);
-> 2.  md_frozen_sync_thread(struct mddev *mddev);
-> 3.  md_unfrozen_sync_thread(struct mddev *mddev);
-> 
-> I do not like the naming so much. `md_reap_sync_thread()` has the verb 
-> in imperative mood. At least myself, I would not know what the functions 
-> do exactly without looking at the implementation.
-> 
-Thanks for the suggestions, I'm not that good at naming :(
+On Tue, Mar 5, 2024 at 4:59=E2=80=AFAM Chris Packham
+<chris.packham@alliedtelesis.co.nz> wrote:
+> Add a driver for a 7-segment LED display. At the moment only one
+> character is supported but it should be possible to expand this to
+> support more characters and/or 14-segment displays in the future.
+>
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> ---
+>
+> Notes:
+>     Changes in v4:
+>     - Fix one more usage of 7 segment
+>     - Move ASCII art diagram to DT binding
+>     - Include map_to_7segment.h for map_to_seg7()
+>     - Use initialiser for values in seg_led_update
 
-Usually I'll send a new version with updated naming, however, we must
-merge this set ASAP now, perhaps can we live with this for now?
+Thanks for the update!
 
-Thanks,
-Kuai
+> --- a/drivers/auxdisplay/Kconfig
+> +++ b/drivers/auxdisplay/Kconfig
+> @@ -211,6 +211,16 @@ config ARM_CHARLCD
+>           line and the Linux version on the second line, but that's
+>           still useful.
+>
+> +config SEG_LED_GPIO
+> +       tristate "Generic 7-segment LED display"
 
-> 
-> Kind regards,
-> 
-> Paul
-> 
-> 
->> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
->> Signed-off-by: Xiao Ni <xni@redhat.com>
->> Acked-by: Mike Snitzer <snitzer@kernel.org>
->> ---
->>   drivers/md/md.c | 29 +++++++++++++++++++++++++++++
->>   drivers/md/md.h |  3 +++
->>   2 files changed, 32 insertions(+)
->>
->> diff --git a/drivers/md/md.c b/drivers/md/md.c
->> index 23f31fd1d024..22e7512a5b1e 100644
->> --- a/drivers/md/md.c
->> +++ b/drivers/md/md.c
->> @@ -4919,6 +4919,35 @@ static void stop_sync_thread(struct mddev 
->> *mddev, bool locked, bool check_seq)
->>           mddev_lock_nointr(mddev);
->>   }
->> +void md_idle_sync_thread(struct mddev *mddev)
->> +{
->> +    lockdep_assert_held(&mddev->reconfig_mutex);
->> +
->> +    clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
->> +    stop_sync_thread(mddev, true, true);
->> +}
->> +EXPORT_SYMBOL_GPL(md_idle_sync_thread);
->> +
->> +void md_frozen_sync_thread(struct mddev *mddev)
->> +{
->> +    lockdep_assert_held(&mddev->reconfig_mutex);
->> +
->> +    set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
->> +    stop_sync_thread(mddev, true, false);
->> +}
->> +EXPORT_SYMBOL_GPL(md_frozen_sync_thread);
->> +
->> +void md_unfrozen_sync_thread(struct mddev *mddev)
->> +{
->> +    lockdep_assert_held(&mddev->reconfig_mutex);
->> +
->> +    clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
->> +    set_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
->> +    md_wakeup_thread(mddev->thread);
->> +    sysfs_notify_dirent_safe(mddev->sysfs_action);
->> +}
->> +EXPORT_SYMBOL_GPL(md_unfrozen_sync_thread);
->> +
->>   static void idle_sync_thread(struct mddev *mddev)
->>   {
->>       mutex_lock(&mddev->sync_mutex);
->> diff --git a/drivers/md/md.h b/drivers/md/md.h
->> index 8d881cc59799..437ab70ce79b 100644
->> --- a/drivers/md/md.h
->> +++ b/drivers/md/md.h
->> @@ -781,6 +781,9 @@ extern void md_rdev_clear(struct md_rdev *rdev);
->>   extern void md_handle_request(struct mddev *mddev, struct bio *bio);
->>   extern int mddev_suspend(struct mddev *mddev, bool interruptible);
->>   extern void mddev_resume(struct mddev *mddev);
->> +extern void md_idle_sync_thread(struct mddev *mddev);
->> +extern void md_frozen_sync_thread(struct mddev *mddev);
->> +extern void md_unfrozen_sync_thread(struct mddev *mddev);
->>   extern void md_reload_sb(struct mddev *mddev, int raid_disk);
->>   extern void md_update_sb(struct mddev *mddev, int force);
-> .
-> 
+"depends on GPIOLIB || COMPILE_TEST"?
 
+The rest LGTM, so
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
