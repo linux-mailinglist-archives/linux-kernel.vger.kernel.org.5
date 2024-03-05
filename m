@@ -1,139 +1,237 @@
-Return-Path: <linux-kernel+bounces-92419-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92420-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75AD8871FE7
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:17:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66AE6871FE9
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:18:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A83E11C2480F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:17:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BEA52287263
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:18:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B01DB85939;
-	Tue,  5 Mar 2024 13:17:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34D9F85931;
+	Tue,  5 Mar 2024 13:17:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CDrfowPh"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="Lf+4cuLx"
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2074.outbound.protection.outlook.com [40.107.100.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EA4085C51;
-	Tue,  5 Mar 2024 13:17:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709644646; cv=none; b=QF5Bw8CQmiUMfr96onivh8SXBfYdGNcVSlCsQ85xfgahfZVV1LPQQfUO3EintTPy12hBPWEdSX5URuGvB/kYxkuG00SZP1WfEnrARPuQZG+Mq49Ocy/7DW8s7dEnRRW4oU0bG/wFWR10ykUr8cQJP8zJ2bPrejr2RuFBSqjKZS4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709644646; c=relaxed/simple;
-	bh=XSZ000gYNJaQ6X4mzMWtTyUdxiMvcu9oyrTQhZJdmaA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DyIY2R89I+NF8s61k6YILfQ9iLcGEYcs4nPq0/NxqGj4dJNVQ8+pwa/BXZiaF0jp4fGowddtPGKLH1pZ11ieBfL2zr3aSjnaFA8SvJMcFT6abW1ffDYq3SkF5VePAGYkvLaLNFCcNeob0ApXvCswAHzGIglP53fuClOyZZ365qg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CDrfowPh; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709644644; x=1741180644;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=XSZ000gYNJaQ6X4mzMWtTyUdxiMvcu9oyrTQhZJdmaA=;
-  b=CDrfowPh2NFiEloMzyVqnl41cQAGHWBeozeMHMk5vEQRtVaIxzGLPKxr
-   b/4K0FxQkewuaS++03LgoASaXbtbBmIcjLM2ux/d69Xpb4Z7VXGhr4NZS
-   7T4W7Y1HPrrvSbN0Dioq8MvZEplWC2aDLR5/A85LVzsTPQgK4+PlR0Qim
-   InM3h3F+E9qToyo+ZI4nP79TLRhkGtV/eLRdFlxvHCoL5fiA39hVjnm42
-   1F2dmH/ZSeMRB5e+uCnig84WcC7ssX8+m2ttgHv4t1LSDxQnqaWIqWt2G
-   LylROoH+fims+LliAesUeWtZW4ATM51sQAo2PDjnzkjBJIBuYlM54adev
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="4777365"
-X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
-   d="scan'208";a="4777365"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 05:17:21 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
-   d="scan'208";a="14051402"
-Received: from peizhenz-mobl2.ccr.corp.intel.com (HELO [10.124.242.47]) ([10.124.242.47])
-  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 05:17:19 -0800
-Message-ID: <891c98f2-9300-4393-b3d1-ac975892bcb8@linux.intel.com>
-Date: Tue, 5 Mar 2024 21:17:16 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 646F185C58
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 13:17:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.100.74
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709644663; cv=fail; b=UVJ61ft/C/fK5kSQcdewfY4DemzxKzfoyRMGNwo0swmOmE6GfszIgLDW2AdZlXrRxWzBiipR41o3+RaPIAIzOJbTYNKhuZJKw2GVz9sO5SFWVMJji54UhaQUztVe6xmwIebvZAyKAEZTDlS2cf1diFi1WuoZs2KSoa5dCZqQ6m0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709644663; c=relaxed/simple;
+	bh=zTDxkCKpByJUda8u62xVRAfDKI1mFqSQyMER31xKBlQ=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=E0Fm7EXCtPxNe5iaKq8QNC3ruEFi79Jv83NGSjnnb6021SKoZSWmxvjtjnib6cBxCoELFNtdJ8fmyhfAIxLBksuqQ6iKcLeSHEQ0tFFj6iDgrwADu+uLvcyQhPpdIH1nJDi2gZjH9ETQLkCWoXBBvf5mGn0SITs+GkxmkLcA1VA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=Lf+4cuLx; arc=fail smtp.client-ip=40.107.100.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=h+azJBLneArhUdyGwpYiH1BF69rjNqj1VYINztLsZqYH9RLUHy38wEJyIk/ldyKRBCpOBOwZqI/krMck32sTfQzwmICtRZMDUu4Wtn5J7xvsWSpw8fbMvvK9BHltKLahmJCZNqFRNDiLgacDmbdg87LOEqKhK38tdgdk+kfZpgovSsfrtt/KUQUcFgl9f4ieGOZv/5TbfQ38iKge3v9Z3Xi5aCK9MncaiL4twyD/xXkHQxMIXYQDLbJGp+2wWpeabtBoMVSkPibOJflSjoW1Am3ERiyM/yAdlVdRjXEc9r54rpXj+XZhP/r1aRPHBy8eZJS3K+bQ3WcmKTLnrNO8aw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+jdwt+lJe+ILvwOHEkeOtsSw/4Fro4nhv62J14SIbq4=;
+ b=Q8VyeFWdUW7UlcpjopjLYR6MuisQq7vf0BA0gnCO3p0ki/M+usHWx1Mr8w+cuPnbpBb/8TZGgUnL9UXZrrhzJoFI+tlKI7d9aAWY2OzTMDGpujUNhUEXnZwt53ECOkRokxr5gCs0ej+lj9LHhpv4T2tQ57Ej+zpuMQy0A5QpnJpI2Y3T5fktkAAjKdHVtxNJ5PFayq/KcLRo3nkcz3Th5KYmHaVmJHOFNlmq3WQcmD5DBdIm+XGqUnS7nCQ9GlKW2Xu2tGfdZmPQToyetszcUZi5g0BZ4YRxRIoLoompI/2DJVMleq9dQwcTovmFbFp3KL3Ofqx5wAvlYmENAV7Rvg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+jdwt+lJe+ILvwOHEkeOtsSw/4Fro4nhv62J14SIbq4=;
+ b=Lf+4cuLxMmDUsYtvGuSn5PE8RpIqP1/C8JV//YqSE2vl76UllvMJGAHnixKUvqEpPLOASKK/cBwVAUXNcYRjimraLptFGIh54L2lBbKz7+tZZyU6Dm548nGrV3xOhpuzsS3IiWBOWN6zhihEoqBygHm+TSJuYVMwPQ7DA/9OUEY=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from PH7PR12MB5596.namprd12.prod.outlook.com (2603:10b6:510:136::13)
+ by SN7PR12MB6813.namprd12.prod.outlook.com (2603:10b6:806:267::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.38; Tue, 5 Mar
+ 2024 13:17:38 +0000
+Received: from PH7PR12MB5596.namprd12.prod.outlook.com
+ ([fe80::b582:10d1:a1e4:6035]) by PH7PR12MB5596.namprd12.prod.outlook.com
+ ([fe80::b582:10d1:a1e4:6035%5]) with mapi id 15.20.7339.035; Tue, 5 Mar 2024
+ 13:17:38 +0000
+Message-ID: <d517ae14-4668-4782-9a96-d5482ca5c81d@amd.com>
+Date: Tue, 5 Mar 2024 18:47:30 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] drm/amdgpu: add ring timeout information in
+ devcoredump
+Content-Language: en-US
+To: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Sunil Khatri <sunil.khatri@amd.com>, Alex Deucher
+ <alexander.deucher@amd.com>, Shashank Sharma <shashank.sharma@amd.com>
+Cc: amd-gfx@lists.freedesktop.org, Pan@rtg-sunil-navi33.amd.com,
+ Xinhui <Xinhui.Pan@amd.com>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org
+References: <20240305115843.3119708-1-sunil.khatri@amd.com>
+ <209b7e69-594d-4e40-8173-42643f94f2ba@amd.com>
+From: "Khatri, Sunil" <sukhatri@amd.com>
+In-Reply-To: <209b7e69-594d-4e40-8173-42643f94f2ba@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: PN3PR01CA0101.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:9b::7) To PH7PR12MB5596.namprd12.prod.outlook.com
+ (2603:10b6:510:136::13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 05/21] KVM: x86/mmu: Add Suppress VE bit to EPT
- shadow_mmio_mask/shadow_present_mask
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, seanjc@google.com,
- michael.roth@amd.com, isaku.yamahata@intel.com, thomas.lendacky@amd.com
-References: <20240227232100.478238-1-pbonzini@redhat.com>
- <20240227232100.478238-6-pbonzini@redhat.com>
-From: Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <20240227232100.478238-6-pbonzini@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR12MB5596:EE_|SN7PR12MB6813:EE_
+X-MS-Office365-Filtering-Correlation-Id: cf014751-be81-4ca9-d6bf-08dc3d16a12b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	qWiEM3FtltIdCy8+CjZGO3Jerwq2BuT625ePgaRqLnJTiGOMrIFEFDCi9zvYRenHKhJ2t8pREFG1/YOTsmokb8YccgcOYBOOkT8mrOCeYyPDZGsxvrQfTcKuUCklGdnDe49GblQv2lDesp+4PtT9wQL2CgGrbe3/p9p6vURhavPojzrpkg4Orm61laJyiHIT0gAD1V7BCQDrhAH+LL0Ir/DNQqW2UF3JGOsPxPusUz/XtzwWgUF3fjcYKDSE8GP6/7JMILNmLa10/Ql03PlwVvaL7/VNdDtIL9zX6eVGqTcVdExTsUir/533viwnpgNK92JBmW5bMd43jpXrVy7X7ujHuhX/4/hABXMxL4JZieoyrhSGxY1HeTbEp6FhdPNx61moZ/fkMbcXwdP0CCXKp+f09MtpLJDeGB/Lj/rHZV7nG8hz660IyPc/Yaw6PhgxYSqAI3fku7IuIajI7sMyIecVsaD4uQ+HztU5Mdp1oUXP69cJ1hN1VlZty29m5tQsU3ZY8wat0V3mZW4YwioJ7qqAd4rqtLvh2ZIxts+b/rGGKO+zo2Qo5jvDawwQmanbOAo4QT64enZ5hu2FiMX75R/eK+Fua1hE6cqFyn0o7mgYWIE4pvi3OBSXqXMOLBDFI7UJCUSaa4mW4Vn1PUEZfYKA/FEIZNvtk0PLP2oZ3Ug=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5596.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?K1RRMmJuN3dqUW5MbFdvVWI0MVhTRkcra0krNE1MUEE2TlA1eDRDVU5KaXNv?=
+ =?utf-8?B?WktFb2tVQXQrdlJram5uTEQ3SXZjck95UU9EQVBPcnEvMlhNZFNHcjlTZ0cx?=
+ =?utf-8?B?NmdMTXR3U1BYeVpRVmtVZGQzVzFFZnVRdE8xOE9iYlBuTHlLUU1KUVoyWndD?=
+ =?utf-8?B?N2hCUzRtaGlnK2x5SmZnUjh0Q1VmL2RvNlptWWEyWkVqTzJqZTZhaUUzMEZZ?=
+ =?utf-8?B?NVMyaXorbTJBSXJGNjR0ZTl1QlhMY0xvaTR3cHZSU2FheTB5SEZMdFd2aTBM?=
+ =?utf-8?B?V2tkelJvT2NvSnFQU1hWa2ZqeTVTdzVycFlNR3diVjU4aG5Yck5TOTZnNDJp?=
+ =?utf-8?B?eFN0TW9oKzRmOGpHRWczRXJlK0hvTWhWenE0R09QTk1WY01JRTdVSjFwdW5a?=
+ =?utf-8?B?L2VDQzg1VFQ5WXMyM2ZzYVBNQ2dBUVpycVNQNXI0OFhCR3NxWVdzQ0swVDMv?=
+ =?utf-8?B?cmw3TEhUanRINnp6L2VtSHFBd2I0cG5qcmF0NDhjeHdMUjJXaXFPdzR1R1Jz?=
+ =?utf-8?B?aUkwTkM2SUFTTlFDK3Z0NktIWFdLU1Y1cDhIMUJCV21xalpoanFDM2JTbTNN?=
+ =?utf-8?B?aGRpTkg4cUlaYmxJUW9nOS9hSjhsRVJUUGVVSHRzZ1JSM0NpVHFhSXo0U0FN?=
+ =?utf-8?B?ZFVRVUhwQ3RNMDI1TTdhTHRCMFZSMW9TUjYySk0vY1ZtbjZuK3M3V0l6aEd2?=
+ =?utf-8?B?dWhmOFRlUm5LbEwvcnBDSWoxVDNYN1cyZExxaHQ5Nmx3UVJwTlY1OVNEVkRI?=
+ =?utf-8?B?b09ETjMwZFVHNDQwR2puTGhwU1JuQTlmV0I4NDZINTVWWG9Vd3J5TWMwT25z?=
+ =?utf-8?B?bEZIY0xzQ21YTjJEaWpjUVVJSm9zWFJzRVdIaW52bHUraW5TRk5WY3A5eVJH?=
+ =?utf-8?B?Mm1ZcGJxS1doUGhITE9ZSERzSWQvRjIyb3lNTGsvZFNCcHlxOUZnOXZobzB2?=
+ =?utf-8?B?c2tZaEV1bTRwQlhhWGJDMTB4cVM2aDByN0tXcGVhY1krUjZxTEJuV29Nc0d4?=
+ =?utf-8?B?KzE5WWlOUi9HSVhqU0dNSEpvRDFGYlpjbm5QTE51NHA2NjFnM3BPT0JrV243?=
+ =?utf-8?B?Sjg4QjcwRXBGeFFCRXdwU0VYQW0zZDFaTE1XdlhGanVOTk0ya1lqR2lNZ3Bp?=
+ =?utf-8?B?UnhUUENSTzBWQkliMGtORlUwUFp6Q3g3OWE4c3gxN1ZnckEyQzA3RVBrTEdk?=
+ =?utf-8?B?ZmRlTWwzQS92cmQxdndnZVRuK2FwSytWYXBkamNjYVM3ZDR1U0NRRldMYnZr?=
+ =?utf-8?B?WHZvemlHV0pDa0JOZXVxUW11bFJTQlk5eTRwWVJHWEpvVm9ZN0w5SWxXSUFn?=
+ =?utf-8?B?S05rOEswNVBlaG1yNFJZRi83U3EzMjVLRmNRb3ovTjhIVGd5YTUvNEs0RkV1?=
+ =?utf-8?B?MWdlTVR4ci9oeHMrWjJxWFFmTXhkTDBhU0xJWTdMcE5iN0NTUjNMTDVOZTAz?=
+ =?utf-8?B?NkFJTzRDNTlFVmtpaFJpdks1d1J5SVhyam1VN2JUS3FsdXRDZXhjenU1bXg5?=
+ =?utf-8?B?cnJxNUN6RjZZMFBucTRSeTIwa1FiUmp2N01TSFBncEQyRnpiLzZKcEo1NVg1?=
+ =?utf-8?B?dExtWGNmVllPTGtKbmFUeGpLaitzcEpkVVg2cXlYMmpYY3IzZVdnZUcwK0pD?=
+ =?utf-8?B?RG42RXpJNWsrS2ZSSVlBSE12TWlid2pVbnpXM3NFb3pZVm00RkhuazNEdzJF?=
+ =?utf-8?B?NUZVL3pDZU9TbExkTkFtbmZpUDdUOXRLbHAzYzEycTZJL05heG1TdUpQV2dU?=
+ =?utf-8?B?aVNCUnIvSHJxTllScldpcjlib3FrcWxINE9KQ3FVTkI1bGNMeHFkbFZMWlJM?=
+ =?utf-8?B?OWJPMFczMmNIU0doOFdobm9UV2hleUplNjlXR2ptTVU5MHVhN24vOWl6K0lE?=
+ =?utf-8?B?ZjFabnpLc29WTEprYTJrTHIwZktlWThEMHhHMmNKTTA4VXhUbVlmbTdBb25P?=
+ =?utf-8?B?cHZqRFNnSFB3N2VuOEFaMFBTY0k4OXNER0RFRWt3SnpZdWJKeHZ3Y0dnbHlm?=
+ =?utf-8?B?a2M4bDVBNkp6NGZkcmV3Uy9PcW4rcXFwMXcrTWI5TGVKT2VrREdDaHdaakVN?=
+ =?utf-8?B?QWF1T1A0cFMveGJMano5ZEFoRlE2Qm15eEhjNEtnSDlSOVRUaktaRDVob2xM?=
+ =?utf-8?Q?7w10ZfUQHH5m+otzrxenOajET?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cf014751-be81-4ca9-d6bf-08dc3d16a12b
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5596.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Mar 2024 13:17:38.5426
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: LhrhszB+GH2yU8GLJybiVD91I98iP45CTj0Ku6e271yHrSXDlxWQhrUu7SEQUDHnMM/qiE+c/fGokqCMQpK7fw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB6813
 
 
-
-On 2/28/2024 7:20 AM, Paolo Bonzini wrote:
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
+On 3/5/2024 6:40 PM, Christian König wrote:
+> Am 05.03.24 um 12:58 schrieb Sunil Khatri:
+>> Add ring timeout related information in the amdgpu
+>> devcoredump file for debugging purposes.
+>>
+>> During the gpu recovery process the registered call
+>> is triggered and add the debug information in data
+>> file created by devcoredump framework under the
+>> directory /sys/class/devcoredump/devcdx/
+>>
+>> Signed-off-by: Sunil Khatri <sunil.khatri@amd.com>
+>> ---
+>>   drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c | 15 +++++++++++++++
+>>   drivers/gpu/drm/amd/amdgpu/amdgpu_reset.h |  2 ++
+>>   2 files changed, 17 insertions(+)
+>>
+>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c 
+>> b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
+>> index a59364e9b6ed..aa7fed59a0d5 100644
+>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
+>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
+>> @@ -196,6 +196,13 @@ amdgpu_devcoredump_read(char *buffer, loff_t 
+>> offset, size_t count,
+>>                  coredump->reset_task_info.process_name,
+>>                  coredump->reset_task_info.pid);
+>>   +    if (coredump->ring_timeout) {
+>> +        drm_printf(&p, "\nRing timed out details\n");
+>> +        drm_printf(&p, "IP Type: %d Ring Name: %s \n",
+>> +                coredump->ring->funcs->type,
+>> +                coredump->ring->name);
+>> +    }
+>> +
+>>       if (coredump->reset_vram_lost)
+>>           drm_printf(&p, "VRAM is lost due to GPU reset!\n");
+>>       if (coredump->adev->reset_info.num_regs) {
+>> @@ -220,6 +227,8 @@ void amdgpu_coredump(struct amdgpu_device *adev, 
+>> bool vram_lost,
+>>   {
+>>       struct amdgpu_coredump_info *coredump;
+>>       struct drm_device *dev = adev_to_drm(adev);
+>> +    struct amdgpu_job *job = reset_context->job;
+>> +    struct drm_sched_job *s_job;
+>>         coredump = kzalloc(sizeof(*coredump), GFP_NOWAIT);
+>>   @@ -228,6 +237,12 @@ void amdgpu_coredump(struct amdgpu_device 
+>> *adev, bool vram_lost,
+>>           return;
+>>       }
+>>   +    if (job) {
+>> +        s_job = &job->base;
+>> +        coredump->ring = to_amdgpu_ring(s_job->sched);
+>> +        coredump->ring_timeout = TRUE;
+>> +    }
+>> +
+>>       coredump->reset_vram_lost = vram_lost;
+>>         if (reset_context->job && reset_context->job->vm) {
+>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.h 
+>> b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.h
+>> index 19899f6b9b2b..6d67001a1057 100644
+>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.h
+>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.h
+>> @@ -97,6 +97,8 @@ struct amdgpu_coredump_info {
+>>       struct amdgpu_task_info         reset_task_info;
+>>       struct timespec64               reset_time;
+>>       bool                            reset_vram_lost;
+>> +    struct amdgpu_ring          *ring;
+>> +    bool                            ring_timeout;
 >
-> To make use of the same value of shadow_mmio_mask and shadow_present_mask
-> for TDX and VMX, add Suppress-VE bit to shadow_mmio_mask and
-> shadow_present_mask so that they can be common for both VMX and TDX.
+> I think you can drop ring_timeout, just having ring as optional 
+> information should be enough.
 >
-> TDX will require shadow_mmio_mask and shadow_present_mask to include
-> VMX_SUPPRESS_VE for shared GPA so that EPT violation is triggered for
-> shared GPA.  For VMX, VMX_SUPPRESS_VE doesn't matter for MMIO because the
-> spte value is defined so as to cause EPT misconfig.
+> Apart from that looks pretty good I think.
 >
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> Message-Id: <97cc616b3563cd8277be91aaeb3e14bce23c3649.1705965635.git.isaku.yamahata@intel.com>
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+- GPU reset could happen due to two possibilities atleast: 1. via sysfs 
+cat /sys/kernel/debug/dri/0/amdgpu_gpu_recover there is no timeout or 
+page fault here. In this case we need information if ringtimeout 
+happened or not else it will try to print empty information in 
+devcoredump. Same goes for pagefault also in that case also we need to 
+see if recovery ran due to pagefault and then only add that information.
 
-Reviewed-by: Binbin Wu <binbin.wu@linux.intel.com>
+So to cover all use cases i added this parameter.
 
-> ---
->   arch/x86/include/asm/vmx.h | 1 +
->   arch/x86/kvm/mmu/spte.c    | 6 ++++--
->   2 files changed, 5 insertions(+), 2 deletions(-)
+
+Thanks
+Sunil
+
+> Regards,
+> Christian.
 >
-> diff --git a/arch/x86/include/asm/vmx.h b/arch/x86/include/asm/vmx.h
-> index 0e73616b82f3..76ed39541a52 100644
-> --- a/arch/x86/include/asm/vmx.h
-> +++ b/arch/x86/include/asm/vmx.h
-> @@ -513,6 +513,7 @@ enum vmcs_field {
->   #define VMX_EPT_IPAT_BIT    			(1ull << 6)
->   #define VMX_EPT_ACCESS_BIT			(1ull << 8)
->   #define VMX_EPT_DIRTY_BIT			(1ull << 9)
-> +#define VMX_EPT_SUPPRESS_VE_BIT			(1ull << 63)
->   #define VMX_EPT_RWX_MASK                        (VMX_EPT_READABLE_MASK |       \
->   						 VMX_EPT_WRITABLE_MASK |       \
->   						 VMX_EPT_EXECUTABLE_MASK)
-> diff --git a/arch/x86/kvm/mmu/spte.c b/arch/x86/kvm/mmu/spte.c
-> index 4a599130e9c9..02a466de2991 100644
-> --- a/arch/x86/kvm/mmu/spte.c
-> +++ b/arch/x86/kvm/mmu/spte.c
-> @@ -429,7 +429,9 @@ void kvm_mmu_set_ept_masks(bool has_ad_bits, bool has_exec_only)
->   	shadow_dirty_mask	= has_ad_bits ? VMX_EPT_DIRTY_BIT : 0ull;
->   	shadow_nx_mask		= 0ull;
->   	shadow_x_mask		= VMX_EPT_EXECUTABLE_MASK;
-> -	shadow_present_mask	= has_exec_only ? 0ull : VMX_EPT_READABLE_MASK;
-> +	/* VMX_EPT_SUPPRESS_VE_BIT is needed for W or X violation. */
-> +	shadow_present_mask	=
-> +		(has_exec_only ? 0ull : VMX_EPT_READABLE_MASK) | VMX_EPT_SUPPRESS_VE_BIT;
->   	/*
->   	 * EPT overrides the host MTRRs, and so KVM must program the desired
->   	 * memtype directly into the SPTEs.  Note, this mask is just the mask
-> @@ -446,7 +448,7 @@ void kvm_mmu_set_ept_masks(bool has_ad_bits, bool has_exec_only)
->   	 * of an EPT paging-structure entry is 110b (write/execute).
->   	 */
->   	kvm_mmu_set_mmio_spte_mask(VMX_EPT_MISCONFIG_WX_VALUE,
-> -				   VMX_EPT_RWX_MASK, 0);
-> +				   VMX_EPT_RWX_MASK | VMX_EPT_SUPPRESS_VE_BIT, 0);
->   }
->   EXPORT_SYMBOL_GPL(kvm_mmu_set_ept_masks);
->   
-
+>>   };
+>>   #endif
+>
 
