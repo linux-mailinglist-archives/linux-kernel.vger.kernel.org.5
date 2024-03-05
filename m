@@ -1,88 +1,88 @@
-Return-Path: <linux-kernel+bounces-92180-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92181-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C6A2871C59
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:56:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC153871C5A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:56:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C456428596A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:56:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 282B21C229BC
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:56:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D00B59B75;
-	Tue,  5 Mar 2024 10:50:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B85785A4CD;
+	Tue,  5 Mar 2024 10:50:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EKOk9+4W"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="N+HUBit9"
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5908C5917F
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 10:50:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CBA75A4C8
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 10:50:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709635846; cv=none; b=bI4Gx0r+HdsX8BKcS6dyJ84eps6mIKNG/LO7DRNYiu5H8kMFMOkwf4IagH5fUIaafhJfSjtlw8GNqixVxoVOzFQlH8n+WsON0PhH4UfcsdbIGviVnhC4VWLYK2gxpMMprUk2nNCteVfO/LaP54wjmILvkuKX4gLQ8BBzCjV64+4=
+	t=1709635851; cv=none; b=Co8MbIek0E7CYOh0Uk/7B+5MIaSHYDSvAF5mK6YH+m9vsQ+gXrSTGkKlfi5v3PmARoqxqEZDw0k8RtnjHFrPpZtIJN8ON1OQf1cNRmnL8v8fe8v152mQGaxiCejRzzdZ4nffXBeWXQTGQOsdSITIc1pVD/Te8B25nwsUZCPcjvQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709635846; c=relaxed/simple;
-	bh=mfZrCRo1Le3xvhlG8sWohmJVn8/2Kh3YDhSk2jiRO84=;
+	s=arc-20240116; t=1709635851; c=relaxed/simple;
+	bh=ZHKgHmXsg/JKS0bzUstw6QLZ1pcz1Cv7iz+eHZtLRuM=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=WWxY/cX0rNmHIikpkqpSszdlMmcA+Z0NG6su3EXgGrwvpgNIONPPQc+6FB65MuG58Q8DHfWrjVjc1M45cW43InH8w/NQyUi5yzcwDfA046BSOvyk/4my2h61BLseecHLeIYdgvhbZZ3HIvS2157NZT2MKOpbuBkzKiyo/H4ZS6I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EKOk9+4W; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version:Content-Type; b=ITrP+wWWag4XtiGIO4992MM5B7tLfqlqoYTf9u1rs9iF5bV0C1JazkQV499ZAj0IoCb2X21L/hAtQvyoDtuiU6CwalHqGexcgUHx/hZIRurJZtG5vQXd1iw8/jXr4eK5B/wsIDFD644BGDm73lC9fST6iawMV8JY+ZKGLmIdJq4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=N+HUBit9; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709635844;
+	s=mimecast20190719; t=1709635848;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=mVYxwMtTQeWVE4Tn/hbP7z3GmeUiFdt48l1PZlAeQnI=;
-	b=EKOk9+4WGbO5PJUlNNTC5Uoc75ZXrlravWmPG+VUUCckGSburxCfO03K86mCv2QBWcvA93
-	8idi9wBlvUvAe5GRihcW3dESrAoh6SL+VlgRVE1tspMFPP96ZHzwgXH0Eo9tzmofLFCWNv
-	AxEZ/jk4lOl1mVBVMhXBaGPHmQw1sfQ=
-Received: from mail-yb1-f198.google.com (mail-yb1-f198.google.com
- [209.85.219.198]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=KIC1W236jDbhwYw6Luaw+d1BRGMWesWgAzYOzs9nE6Q=;
+	b=N+HUBit9ofd1cyyIZMxlAqG0NbLAQG8Dh1VTseTF8F52kJX7OXuY8dyc6J2L44lBBsTETu
+	Zxu2VEbsRRy/Ijav7Pcfuvx6brNg0b50TM1Sz1QIz0CC+B40NAfxtw7Nkmv1Z0EaN3NhBX
+	OpA8JxJ3WFuTcLq/RhGOc/r9uxCHgW4=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-475-D0SL6x-eNzifmJvg9RXd1g-1; Tue, 05 Mar 2024 05:50:42 -0500
-X-MC-Unique: D0SL6x-eNzifmJvg9RXd1g-1
-Received: by mail-yb1-f198.google.com with SMTP id 3f1490d57ef6-dcd1779adbeso1004762276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 02:50:42 -0800 (PST)
+ us-mta-671-9AWGJkZQOXitoDcBwgrZgw-1; Tue, 05 Mar 2024 05:50:46 -0500
+X-MC-Unique: 9AWGJkZQOXitoDcBwgrZgw-1
+Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-42ef02a3861so21843891cf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 02:50:46 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709635842; x=1710240642;
+        d=1e100.net; s=20230601; t=1709635846; x=1710240646;
         h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
          :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mVYxwMtTQeWVE4Tn/hbP7z3GmeUiFdt48l1PZlAeQnI=;
-        b=YXpfTqv2dGAg/AS0Nzsn2OP7uDXyn6dSb5htOXakryD3OtE/8VssuMXrfGucLK7YN7
-         lMSs5BMtKqDrOwuxqQFTJZApy1vVj29/u52O+RsXoACW//DADmkp3Y5jdzvz1HCQ1KYH
-         wuYF5qaTb2Y45arwtPwIPmgEIjPTIQpTpvdzAqMOS8V4VdNaakj77RX2F9Kd+qCzGXAD
-         PQh6IPqpbZ1iTa7hVONh6tuu8or8CFlwsIl1ks1PDr1w3MymM6BbSEJThtROwLiAw9FO
-         8AcciJlrAq6jeyGcBj8y77v2XY44dJOhi2326WX36JN9yf5G2W9qaoMNEAJu+5jYUmvg
-         k2zQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVarcWEi8vsTTtTbKbtsNwC8ohU282DAPu0DAPKtON3vAXEyY2/VdLWvEfPjJuYTYHl5HMDTCHcRGhJh4Cv2wqTRaTTJmt+dV0KO+LF
-X-Gm-Message-State: AOJu0Yy+XZJ7VLQoL1SRgPzSYBctXiib5luKyOGAQrDdTfMQogktWRgt
-	D9+TXuxGgnRINpa1V8efZ0PX4WSO8oWrmgU0YLVAXHvsC/Q3ANkr9/F/9FMVjinyLwaOoKuXcoq
-	dh++6Bfsu+zx87SeSyWYLVBrZ1JDKGaEnPSKx/L+dm7kjZohIGLf4HlwMeR+IIw==
-X-Received: by 2002:a25:5102:0:b0:dc6:d738:1fa6 with SMTP id f2-20020a255102000000b00dc6d7381fa6mr8621713ybb.6.1709635842249;
-        Tue, 05 Mar 2024 02:50:42 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGHgWX9vlc6wtUV8FjAMELah6/Ipv3xIrmGonysDFgQXpWH2CiR/WNvQZE1svKJDPFQUSbS+g==
-X-Received: by 2002:a25:5102:0:b0:dc6:d738:1fa6 with SMTP id f2-20020a255102000000b00dc6d7381fa6mr8621700ybb.6.1709635841978;
-        Tue, 05 Mar 2024 02:50:41 -0800 (PST)
+        bh=KIC1W236jDbhwYw6Luaw+d1BRGMWesWgAzYOzs9nE6Q=;
+        b=M+NXm7hQVt0m+afJJ4NhufLXgpRJZpplCRbdf6pYOwkyYP3aRKssZS8xb0WahrhP87
+         aUiNlOtR7J7K6R/DDZwhDZ6SNmAJoejhE4BwiEzL8fhEv7TX8kEJjp7TF3sMdbTSceEl
+         lF1wv2bu9E+ddLNUyELVoVYaXGioKt6fX8wyJssqPzrEAEDG+5xqzEkvT3PwY+LQq/+N
+         KiWzCjwBTfPSEc0trXB9jnXGK3VZxguW5zvD65Oh/ieIVE/nYqeNCyeYYompgsNyuEso
+         hK2KXbxrYsa+SapPb2pPGC3ZShKS7P5cdc/zMFZU6hF1NcfUKssYIrbLoSSIJgFwql0k
+         bUhA==
+X-Forwarded-Encrypted: i=1; AJvYcCXMuYE1qVxsNEaQLji1A1+dlQJvNTF8ih8zNSpf5E1IHCntFoQmzjk5M1qNGOZiv0Vz/0KRdT86txvhIHCR3OdkNJbd492NHiBmNjUt
+X-Gm-Message-State: AOJu0Ywzxg6iLNH+IefqaspsMxgmAo8K13DUxES3uCYXl+0xYsbugzK/
+	DtjtQt/piXev+z0/v7bSVcjyui9nM8vdvo0UD+BtTg0vsXb+iBdjDhon3s9rjgAEVzsqzcTz9WI
+	YaJBmQfwsL6MfNN4tbZD1+WJ3C9fdKlYqwDwZjX0KgaYR+J3lwUCipJnDizTALA==
+X-Received: by 2002:a05:620a:c15:b0:788:242f:469e with SMTP id l21-20020a05620a0c1500b00788242f469emr1552978qki.41.1709635846374;
+        Tue, 05 Mar 2024 02:50:46 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFE/0I8tYUsH5Dc5G0+BOshGF3kRbnfj3bZdJRstNcmje0sDFu827/BVRZf+jFknJVOCyQLMQ==
+X-Received: by 2002:a05:620a:c15:b0:788:242f:469e with SMTP id l21-20020a05620a0c1500b00788242f469emr1552971qki.41.1709635846135;
+        Tue, 05 Mar 2024 02:50:46 -0800 (PST)
 Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
-        by smtp.gmail.com with ESMTPSA id q4-20020ac84504000000b0042ef5b8b697sm1455107qtn.32.2024.03.05.02.50.40
+        by smtp.gmail.com with ESMTPSA id vv10-20020a05620a562a00b0078835bfddb8sm507370qkn.84.2024.03.05.02.50.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Mar 2024 02:50:41 -0800 (PST)
+        Tue, 05 Mar 2024 02:50:45 -0800 (PST)
 From: Valentin Schneider <vschneid@redhat.com>
 To: Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org
 Cc: Shrikanth Hegde <sshegde@linux.ibm.com>, Peter Zijlstra
  <peterz@infradead.org>, Vincent Guittot <vincent.guittot@linaro.org>,
  Dietmar Eggemann <dietmar.eggemann@arm.com>, Linus Torvalds
  <torvalds@linux-foundation.org>
-Subject: Re: [PATCH 3/9] sched/balancing: Change 'enum cpu_idle_type' to
- have more natural definitions
-In-Reply-To: <20240304094831.3639338-4-mingo@kernel.org>
+Subject: Re: [PATCH 4/9] sched/balancing: Change comment formatting to not
+ overlap Git conflict marker lines
+In-Reply-To: <20240304094831.3639338-5-mingo@kernel.org>
 References: <20240304094831.3639338-1-mingo@kernel.org>
- <20240304094831.3639338-4-mingo@kernel.org>
-Date: Tue, 05 Mar 2024 11:50:39 +0100
-Message-ID: <xhsmhfrx5dkao.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+ <20240304094831.3639338-5-mingo@kernel.org>
+Date: Tue, 05 Mar 2024 11:50:43 +0100
+Message-ID: <xhsmhedcpdkak.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -92,16 +92,17 @@ MIME-Version: 1.0
 Content-Type: text/plain
 
 On 04/03/24 10:48, Ingo Molnar wrote:
-> And gets rid of the double negation in these usages:
+> So the scheduler has two such comment blocks, with '=' used as a double underline:
 >
->   -               if (env->idle != CPU_NOT_IDLE && env->src_rq->nr_running <= 1)
->   +               if (env->idle && env->src_rq->nr_running <= 1)
+>         /*
+>          * VRUNTIME
+>          * ========
+>          *
 >
-
-Yes please :-)
-
-> Furthermore, this makes code much more obvious where there's
-> differentiation between CPU_IDLE and CPU_NEWLY_IDLE.
+> '========' also happens to be a Git conflict marker, throwing off a simple
+> search in an editor for this pattern.
+>
+> Change them to '-------' type of underline instead - it looks just as good.
 >
 > Signed-off-by: Ingo Molnar <mingo@kernel.org>
 > Cc: Peter Zijlstra <peterz@infradead.org>
