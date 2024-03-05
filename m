@@ -1,120 +1,185 @@
-Return-Path: <linux-kernel+bounces-92723-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92724-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F34948724EF
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:56:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4912B8724F0
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:56:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8EC26B25FA2
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:56:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5FC441C22BD0
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:56:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9372A14A81;
-	Tue,  5 Mar 2024 16:55:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 563EFD520;
+	Tue,  5 Mar 2024 16:56:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WG9a0llL"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=qq.com header.i=@qq.com header.b="MIYQIVo/"
+Received: from out203-205-221-235.mail.qq.com (out203-205-221-235.mail.qq.com [203.205.221.235])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D74D9457
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 16:55:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E97C3D267
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 16:56:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.235
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709657758; cv=none; b=eGORTRbEIarnpw19VB+CFHWGDfvkY7xpwIOuX8YB5sA3973g6BemrXig3zfUeKxWf4v1/+MVM6gkPXIASHMwUYBszsZUZh1fsF0Oa7nndqRGAsZ5oh3eVZMaLmBGCzA5u+Wc7SKY1Vg9k0Zkr7TGlQHxd5iLZbPGHI+5KsB/REM=
+	t=1709657776; cv=none; b=DJAMY1BcKUo1cPrEmNL5tVNzPYanprfglE1f07C8w85BdM2V9gZDYytk2ywrhRC74A5iKXcRQobbERK7TPO06E5JJmC+gPFnn2/Bx8N2eExzjeNZwuJPWtp5KjDbmDkRjNxHOgdNQryHiMMdGPVlCrsG36+xpRekm0O/sflnZHA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709657758; c=relaxed/simple;
-	bh=/ZaQ4D5/sj6XpmRCQPaFpiu0I/0aiGn7MZVxvLsa6gs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SYN79usFB2BfZMLPuj8sp31ehg0N3IFWzLl/+FkSbleCd2pFl5m6Vf+YgIl1MNtDgQIZxYBZgzr6Qd3qkQ2sWtQpW71IUzX7ypoq1tPCRFpkorHz/thyW7zT0//cfrT8NThAHe7X+rJIYKI22IUdD1iBbn0/45eC9zV+Yoc+VYE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WG9a0llL; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709657757; x=1741193757;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=/ZaQ4D5/sj6XpmRCQPaFpiu0I/0aiGn7MZVxvLsa6gs=;
-  b=WG9a0llLsDyLrOw71USOxyr2yhLwXKpVoTeI8Bk3YrqY4sOaPlEjK6Ec
-   DuXGRDbSxU6iyd7pjcEYrB7oO1GTL0j+K+oW/RMrUEjLBNo7/leUhOVLe
-   IcurGeEXFrMKUhBhiMgg4/+yYAPKSdusSMbaYTwcqdWnlQueTw02meJ4b
-   kvV+L3GPzW6lFSPrjSavWR0AU0exyr1uxtRPIbhwKK4NcIfw905wk4Juv
-   OajoWa/dVOqyAz4vTIynE6ekybzlrOghLLO+Xn/vjDLZG4qpHcDpOra89
-   H8fbp7Mp2jCKpfpoEIypD/E2q0mldvV/zCYoxac61Ux7O2CU6Hjj39VNq
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="15627262"
-X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
-   d="scan'208";a="15627262"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 08:55:56 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="914145099"
-X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
-   d="scan'208";a="914145099"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 08:55:53 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rhY50-0000000A2QW-0Je1;
-	Tue, 05 Mar 2024 18:55:50 +0200
-Date: Tue, 5 Mar 2024 18:55:49 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Dave Hansen <dave.hansen@intel.com>
-Cc: Mateusz =?utf-8?Q?Jo=C5=84czyk?= <mat.jonczyk@o2.pl>,
-	Mario Limonciello <mario.limonciello@amd.com>,
-	linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH v1 1/1] x86/rtc: Remove unused intel-mid.h
-Message-ID: <ZedOldNSTdKWCgVD@smile.fi.intel.com>
-References: <20240305161024.1364098-1-andriy.shevchenko@linux.intel.com>
- <14750023-e5fb-45f7-9c28-9510ce5a5994@intel.com>
- <ZedI9vCoCf9KtHcr@smile.fi.intel.com>
- <0c7c00c0-3b4a-41b3-8664-9ea6ee7e0814@intel.com>
- <ZedKGoPoTgWfOVNO@smile.fi.intel.com>
- <77d906e6-ff0c-489a-bc2b-5342196eb4b1@intel.com>
+	s=arc-20240116; t=1709657776; c=relaxed/simple;
+	bh=yByqG0yOrml+y/TQeDgQ4aQadtVY6yvukbinSORigW0=;
+	h=Message-ID:Content-Type:Mime-Version:Subject:From:In-Reply-To:
+	 Date:Cc:References:To; b=KqU2LVsW8HUopF8FD4BAY8kjKZgMEQpon4JpqPWPAqT+Z7QclVD7VrSpWddzGyYmNyHESNQ58jLDc1xlaRHx0BCIUdjXn8b5zYoHkFImUg8qwsumhU2dH8msitCjErUfQEpOf4t7CwPayWYkeEZPjlSHVbJ4LUKgCX1bUVQbhHo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name; spf=none smtp.mailfrom=cyyself.name; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=MIYQIVo/; arc=none smtp.client-ip=203.205.221.235
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cyyself.name
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1709657766; bh=qBC2AcX0mTtuXWYOBTP2x46Bkvdu0LNhIGH61FR39Gk=;
+	h=Subject:From:In-Reply-To:Date:Cc:References:To;
+	b=MIYQIVo/5RJr57Cdrc2jPb/DOeHLzBDfGGc/T9zOmQ6T+rkvtMTQcorNqy58WGZqp
+	 2sxWYgRCXoAmGmN9AgU03lgUioqKW3l+oucEcGGttQi4DFS17T89J87bsmrc/QAaqA
+	 I0iEZZdCq55RwWUonSTp+TpzTzvj1Cb3Q/168nnQ=
+Received: from smtpclient.apple ([2001:da8:c800:d084:84f7:c158:bab8:8899])
+	by newxmesmtplogicsvrsza1-0.qq.com (NewEsmtp) with SMTP
+	id E0297E41; Wed, 06 Mar 2024 00:56:02 +0800
+X-QQ-mid: xmsmtpt1709657762tosh5bdf9
+Message-ID: <tencent_E7385EE2AEC4B486DC343AF1A108DE68370A@qq.com>
+X-QQ-XMAILINFO: MZtEYADUG4Ag7e/E7T3snRGQVxKSEkcuqqMQynq/q/5fu+wxuD5INq9X5LMOD/
+	 iOisb1ByHIywnJVC+Kd0b1r0O3TmDy5XAKC1hxXJpkev9Hz0/9xvjw/fa5MvsyTwUdosdMvgD8Pk
+	 H8CaGnw3HKWsFBBNyPVBsWhGhLtsUwm/y3MNvJTDgRhSpCQ4iA8oZcOHKLydxbvZn0m2nDuZlLG7
+	 +ybxh4PLRTt65ZmIEschfVgPGHS+AXlfRQTURLoHjyYFrNJBaG6UvCnTfhMtvuSnQ5oxlrpl/Fkh
+	 kEZgOUhIkRtx5OskbW+gS0PaEoqu57r/ATPdmXvH9wvwJVpFCvg/hmEZxil1ZLE7yOioE482yQJR
+	 0Fl03kFshp9mdC3+3HTxHF1CJzIJ30E1I8lMqSRqCRzoOXGv8OrKBmEEEKI8E7Acy6KGro6FCiRU
+	 +o8h8NXAxoxD0syf5//co/SaR57WTem2tpL+XbFemL3vmnMS/bQN2Dvr568ttoUfJPHOrzdLFDfS
+	 tDGA680R1dhH2tcgFHCLzOhdT8MJCQeXfChh8U1woQDhtRMWi7zCqSSrimxa8hcmVyQnwdOFp3Ac
+	 ocn1XwUbxidrKz7KUQPIzKLD3l7Zh9XPjXwrNxoO+xDfjwsV7zU/o8p1Ue+GWlrLtF9eA0/HXpDJ
+	 e43NQ2FI1nCqAhYrcKkrN+/4G5+ocQ/WzbIV6qawCSOMBA/T3DIwscg3wtLSCCTs826onoRK4Q/m
+	 d15E53lYgJSbzkGif/+uUeN6C47MA3U52YTZjbr29q1iouLNv04nDl/HwZhx5LvQVUTARPDIECjC
+	 +FepNu2qUmpPLT3/oJO0IT6P0fxvpvBBeCDRl8Cy3ViFoBcCbK8sqHmqmaBReJYv+lhk+d7zlgoC
+	 armUzv3XqR2zLgEFK/2QoQuGwHpI3MwUdcYUELLNXN9dffza8+zcPp3x5uFt9p328goYhjzsjS+p
+	 d46b8vVzAHdIH5yAMHlpfY32k/OGrJ/9CzkcuIRoGl3IK5l/gqx5I32+labTqX5uLPGXiCZFVAKN
+	 Cc4za/kQ==
+X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
+Content-Type: text/plain;
+	charset=utf-8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <77d906e6-ff0c-489a-bc2b-5342196eb4b1@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.400.31\))
+Subject: Re: [PATCH v3 7/7] riscv: config: enable SOC_CANAAN in defconfig
+From: Yangyu Chen <cyy@cyyself.name>
+In-Reply-To: <2a206c9b-b570-4081-b4e4-d177343482f3@kernel.org>
+Date: Wed, 6 Mar 2024 00:55:52 +0800
+Cc: linux-riscv@lists.infradead.org,
+ Conor Dooley <conor@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Paul Walmsley <paul.walmsley@sifive.com>,
+ Palmer Dabbelt <palmer@dabbelt.com>,
+ Albert Ou <aou@eecs.berkeley.edu>,
+ Guo Ren <guoren@kernel.org>,
+ devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ Conor Dooley <conor.dooley@microchip.com>
+Content-Transfer-Encoding: quoted-printable
+X-OQ-MSGID: <0350242B-6F2F-4741-A936-5E578F86924B@cyyself.name>
+References: <tencent_BB2364BBF1812F4E304F7BDDD11E57356605@qq.com>
+ <tencent_E2812086B695A334EE5E8C70C85CA3171F06@qq.com>
+ <2a206c9b-b570-4081-b4e4-d177343482f3@kernel.org>
+To: Damien Le Moal <dlemoal@kernel.org>
+X-Mailer: Apple Mail (2.3774.400.31)
 
-On Tue, Mar 05, 2024 at 08:43:47AM -0800, Dave Hansen wrote:
-> On 3/5/24 08:36, Andy Shevchenko wrote:
-> >> Ahh, thanks for the context.  Any chance you could share that up front
-> >> next time? 😉
-> > Hmm... I'm not sure how. If it's a cover letter, then it requires a series,
-> > which seems an overkill, commenting on a single patch sounds a bit weird to
-> > me.
-> 
-> I honestly don't care how you do it.  You could send all the patches in
-> a series and ask the individual maintainers to pick them up
-> individually.  Or send cc all the maintainers and ask _one_ of them to
-> pick up all of the patches.  Or just mention in the changelog of the
-> singleton patch that it's part of a (slightly) larger effort, then Link:
-> over to the other related ones.
 
-Got it.
 
-> Seriously, the only way to go wrong is to just pretend that this patch
-> *is* a singleton when it's not.
+> On Mar 5, 2024, at 07:50, Damien Le Moal <dlemoal@kernel.org> wrote:
+>=20
+> On 3/5/24 06:06, Yangyu Chen wrote:
+>> Since K230 has been supported, allow SOC_CANAAN to be selected to =
+build dt
+>> and drivers for it in defconfig.
+>>=20
+>> Signed-off-by: Yangyu Chen <cyy@cyyself.name>
+>> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+>> ---
+>> arch/riscv/configs/defconfig | 1 +
+>> 1 file changed, 1 insertion(+)
+>>=20
+>> diff --git a/arch/riscv/configs/defconfig =
+b/arch/riscv/configs/defconfig
+>> index 89a009a580fe..20b557ec28df 100644
+>> --- a/arch/riscv/configs/defconfig
+>> +++ b/arch/riscv/configs/defconfig
+>> @@ -33,6 +33,7 @@ CONFIG_SOC_STARFIVE=3Dy
+>> CONFIG_ARCH_SUNXI=3Dy
+>> CONFIG_ARCH_THEAD=3Dy
+>> CONFIG_SOC_VIRT=3Dy
+>> +CONFIG_SOC_CANAAN=3Dy
+>=20
+> Given that the k210 need !MMU, including it like this in the defconfig =
+is
+> odd... I do not even see how that could work. But that depends on =
+patch 5,
+> which does not seem OK to me.
+>=20
 
-But technically speaking it is completely independent. TBH it is the _first_
-time I ever got such a request from a maintainer. But okay, sending in a series
-to be picked up separately sounds like in use: I have heard about such series
-more than once.
+I don=E2=80=99t know why =E2=80=9Cnot seem OK=E2=80=9D here.
 
--- 
-With Best Regards,
-Andy Shevchenko
+I will show the console to tell you what changes in defconfig:
+
+```console
+$  linux git:(rv_builtin_dtb_v3) make ARCH=3Driscv =
+CROSS_COMPILE=3Driscv64-linux-gnu- defconfig
+*** Default configuration is based on 'defconfig'
+#
+# configuration written to .config
+#
+$  linux git:(rv_builtin_dtb_v3) cp .config .config.bak
+$  linux git:(rv_builtin_dtb_v3) git checkout k230_dt_initial_v3
+Switched to branch 'k230_dt_initial_v3'
+$  linux git:(k230_dt_initial_v3) make ARCH=3Driscv =
+CROSS_COMPILE=3Driscv64-linux-gnu- defconfig
+*** Default configuration is based on 'defconfig'
+#
+# configuration written to .config
+#
+$  linux git:(k230_dt_initial_v3) diff .config .config.bak
+301,302d300
+< CONFIG_ARCH_CANAAN=3Dy
+< CONFIG_SOC_CANAAN=3Dy
+2678d2675
+< CONFIG_PINCTRL_K210=3Dy
+4621d4617
+< CONFIG_COMMON_CLK_K210=3Dy
+4<
+706,4707d4701
+< CONFIG_SOC_K210_SYSCTL=3Dy
+5334d5327
+< CONFIG_ARCH_HAS_RESET_CONTROLLER=3Dy
+5336d5328
+< CONFIG_RESET_K210=3Dy
+$  linux git:(k230_dt_initial_v3) grep -r =
+"CONFIG_ARCH_HAS_RESET_CONTROLLER"
+kernel/config_data:CONFIG_ARCH_HAS_RESET_CONTROLLER=3Dy
+include/config/auto.conf:CONFIG_ARCH_HAS_RESET_CONTROLLER=3Dy
+include/generated/autoconf.h:#define CONFIG_ARCH_HAS_RESET_CONTROLLER 1
+include/generated/rustc_cfg:--cfg=3DCONFIG_ARCH_HAS_RESET_CONTROLLER
+include/generated/rustc_cfg:--cfg=3DCONFIG_ARCH_HAS_RESET_CONTROLLER=3D"y"=
+
+config:CONFIG_ARCH_HAS_RESET_CONTROLLER=3Dy
+$  linux git:(k230_dt_initial_v3)
+```
+
+As you can see, we only have some drivers enabled for K210 and
+CONFIG_ARCH_HAS_RESET_CONTROLLER being enabled. The next grep -r shows =
+it
+does not change the kernel behavior.
+
+>> CONFIG_SMP=3Dy
+>> CONFIG_HOTPLUG_CPU=3Dy
+>> CONFIG_PM=3Dy
+>=20
+> --=20
+> Damien Le Moal
+> Western Digital Research
 
 
 
