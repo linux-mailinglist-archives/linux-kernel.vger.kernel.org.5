@@ -1,59 +1,85 @@
-Return-Path: <linux-kernel+bounces-92788-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92790-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20DF2872601
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:51:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4612872604
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:52:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D028328AEF6
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:51:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 128481C266E9
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:52:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA2BF18C38;
-	Tue,  5 Mar 2024 17:51:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 750B817BCD;
+	Tue,  5 Mar 2024 17:51:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MKB5D2GP"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j2Tgu49Y"
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 182531863C;
-	Tue,  5 Mar 2024 17:51:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E50714A99;
+	Tue,  5 Mar 2024 17:51:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709661069; cv=none; b=pSOFjdk5RMg6onzAOQGTqM/jGgEWs9Br1ENIh/olQXG1Epas792oqsuT/tB1DoOLKxgHcChH7WeNMWYogPUpn15OjoAZrGXQVxMFCtjN5y2oQ7fAD8At0Gbbw6Z0qMF7Z8v41lWHS5d/kcvNKWOtKZilh/wX4WN2oit0CIwVlZk=
+	t=1709661102; cv=none; b=lLaXVzVn+MpTRTNW3IkqZLhQKnnGuuDTEaWeUvDUifKX0rUdTrI1III+KMkG/XzYHO2Mv9Y6QI++wVitkLzWdcigyOfAtu/Ai/mxPmXb0I8dsiHWLfuCpQ2S6llSN9tKPVbmMH1wq2s/98czLoJ/QlD+upchxgDIkrhiBvC7c50=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709661069; c=relaxed/simple;
-	bh=i3sj+3QUUkb8LDWhJ8xja55O9dd546/LpAv+OJKYYSI=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=WL+q247difErRyccds4PyRrssjZRZrgEcQyxf0gFNNwO0QzqQMN83N9Grk7KJGcza9u7JulARlwrpnXAGln8ZeNgHAjzZqZd62apR78rjC9F92sG+mYSylG/mb0UtY/3uAYzyI2aCLOUN2SMaYT3+ZFeZwleUGVNKEsL6QFQMQY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MKB5D2GP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 990D9C433C7;
-	Tue,  5 Mar 2024 17:51:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709661068;
-	bh=i3sj+3QUUkb8LDWhJ8xja55O9dd546/LpAv+OJKYYSI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=MKB5D2GP1NSseE/csFxyOIwBe3jzJ47A+UDe6QrBkf888ziwxeza6b6QLb2Kqy9tj
-	 /j+aZZ7hGNpAqxY8GDiZIdwN3lKskqN+D+1JitxxV3IppynlbynfMEvaqs+R76Iv67
-	 C1ddcoDWTndj5sZjVSY0NioMyxkalw/qglh2pImcLcat6gA4cP2iv2ptxyNVCGVmjH
-	 L7mZWN+9z6o3bFER3brBCo4N6hwcbCMymFU3Gn5QQmdbLEyCl38bl5U6X0UyLj6qpO
-	 vOm8vGA+fb18aUNhbyTLUMwXM9B9qxJn4iaXZLJ9dKE8vJnuOnbYv0jvMQhyEYjtgm
-	 hyD3YbP3rn55Q==
-Date: Tue, 5 Mar 2024 11:51:07 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Lukas Wunner <lukas@wunner.de>, Bjorn Helgaas <bhelgaas@google.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof Wilczy??ski <kw@linux.com>, Rob Herring <robh@kernel.org>,
-	Mika Westerberg <mika.westerberg@linux.intel.com>,
-	quic_krichai@quicinc.com, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v3] PCI: Add D3 support for PCI bridges in DT based
- platforms
-Message-ID: <20240305175107.GA539676@bhelgaas>
+	s=arc-20240116; t=1709661102; c=relaxed/simple;
+	bh=2M9LS8/TFzVtINnbm0xitDXNpDBa5QKyfi1NFWuZEJs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kkghJ3jxZJbbDWs7xR25RtojeHoR6Z4MI8T0trcFiBH8h7isTYX7TRxbMj3LyuA/zeR/URNv/xV1P2+FoVYMUDej7SgV1z3CXUe/FpV/8VTXdVIX09D+1LTFKJprHq88MXGjUHtmumSRveZ3yyHDaX0qqZGLbUKjua0LpnN8w80=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j2Tgu49Y; arc=none smtp.client-ip=209.85.215.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5e4b775e1d6so2283533a12.1;
+        Tue, 05 Mar 2024 09:51:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709661101; x=1710265901; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=tpTAtw3UQ93UxOybj4sot8nZNmiyYpy30JpPxTWnT6o=;
+        b=j2Tgu49YGrfXjpbyl/YVmgcX0A8mqWabJ4Tp4mbzJqtrig/kfLJTBmOT+GtiOvEQKv
+         kL+p5PEZVNvxr9g0sCExmZMgT89I4QwFsLJ+TNYkUNLdCkSYU+Uo3aoyr2wzqP87AVn0
+         vHQp90Gu8COY2du9IMITaUFvCcMu1xnJHyu8KsSKVPpkE7MHyJpQdLwa5Lb92u92I9Hj
+         OFVLhkXU66LYrTDr6C/GqG1nPZzMXm1EVgXHKsTAQq4E774XkfoicaxwDr1DNrjxMam0
+         qveDFu7gh7MV4WMcnPZFD/CjfjoFAdHEIkYkRMvixkWbgydRbV0jmDl1Wi0+b5uE9LN5
+         Hm8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709661101; x=1710265901;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tpTAtw3UQ93UxOybj4sot8nZNmiyYpy30JpPxTWnT6o=;
+        b=H1o809+9DMR//TJojGlpM03DsFevgKLcz59ADoQmGwlMbnIYmnFIIwofUQzI2hboVn
+         T4krRV9nzYNg39iyUcSLMExA6jQiwyA/PJhixW0RmnxL0WEo1NzNoZPBEwGnCgLSBIZd
+         sHE0VSBr002wFn+fnamFeA1/cP8aHb1XFGyhHVVrVlO89lpFzmkmOGZzLS6m6V3091fO
+         Uu+ankVXstTrGKlBKclzFE/jSLT+77sx3qaHDwr8YEY5P87Gf3g751QZo4wdZJVaU01H
+         WOf5n6UTG+CJHrW2AMtHPfzWN3apaB5oFlmwKQ0rxfqIsG23gujjSTrF7MGCEJlw9OBZ
+         tNUg==
+X-Forwarded-Encrypted: i=1; AJvYcCWp9ZnIyhZiDxDQriF0UPkvfnh2qxzNs1y7Cr4G8Ub5tevWuv6bxNvfMqU98jMkJpHkuVbB4BiA2eq1WXfQch7XZLkxyG5NxXZ/bxuDvi4WAXrqvy66XLVzGWEXWUUXPyGxEdvW3jkQM2cUF84Hz1TdkKN94O7FBW0kyyBqBmzWBagkSKCd
+X-Gm-Message-State: AOJu0Yzz3Wt8ADKLRs/8YyLTOwu+SSPH5Rb8Fmx6VLZt9nnBFg0GYTXo
+	Eitb7s/NhaQFOGk6qq6W3zSxQlV1tjYKjmdshz0Waez6dQT6AT5NQ6x60jNp
+X-Google-Smtp-Source: AGHT+IEXCEPMzLnaVufcdsnqvv3Px87pp8CIOt+QaL3umwskWU4qB01+4dyG4lax3qmGLdnMAoYDHQ==
+X-Received: by 2002:a05:6a20:8428:b0:1a1:215a:335e with SMTP id c40-20020a056a20842800b001a1215a335emr3251417pzd.27.1709661100543;
+        Tue, 05 Mar 2024 09:51:40 -0800 (PST)
+Received: from google.com ([2620:15c:9d:2:a5d5:fe74:fba8:86b5])
+        by smtp.gmail.com with ESMTPSA id h37-20020a631225000000b005cfc1015befsm8377078pgl.89.2024.03.05.09.51.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Mar 2024 09:51:40 -0800 (PST)
+Date: Tue, 5 Mar 2024 09:51:37 -0800
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Hans de Goede <hdegoede@redhat.com>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Maxime Ripard <mripard@kernel.org>, linux-input@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: input: allwinner,sun4i-a10-lrad: drop
+ redundant type from label
+Message-ID: <ZedbqeNY23o8JzJb@google.com>
+References: <20240226122934.89257-1-krzysztof.kozlowski@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,48 +88,16 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240305162537.GA8339@thinkpad>
+In-Reply-To: <20240226122934.89257-1-krzysztof.kozlowski@linaro.org>
 
-On Tue, Mar 05, 2024 at 09:55:37PM +0530, Manivannan Sadhasivam wrote:
-> On Thu, Feb 22, 2024 at 10:40:52AM +0100, Lukas Wunner wrote:
-> > On Wed, Feb 21, 2024 at 12:20:00PM -0600, Bjorn Helgaas wrote:
-> > >   1) D3hot doesn't work per spec.  This sounds like a hardware
-> > >      defect in the device that should be a quirk based on
-> > >      Vendor/Device ID, not something in DT.  I don't actually know if
-> > >      this is common, although there are several existing quirks that
-> > >      mention issues with D3.
-> > 
-> > My recollection is that putting Root Ports into D3hot on older x86
-> > systems would raise MCEs, which is why pci_bridge_d3_possible() only
-> > allows D3hot in cases which are known to work (e.g. Thunderbolt
-> > controllers, machines with a recent BIOS).  It was a conservative
-> > policy chosen to avoid regressions.
+On Mon, Feb 26, 2024 at 01:29:34PM +0100, Krzysztof Kozlowski wrote:
+> dtschema defines label as string, so $ref in other bindings is
+> redundant.
 > 
-> So pci_bridge_d3_possible() is only checking for D3hot capability?
-> If so, I'd rename it to pci_bridge_d3hot_possible() and also
-> 'bridge_d3' to 'bridge_d3hot' to make it explicit.
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Every device is required to support D3hot (and D3cold), so I think
-"d3_possible" and "d3hot_possible" are not very descriptive since they
-should always be *possible*.
+Applied, thank you.
 
-pci_bridge_d3_possible() seems to be more about whether hotplug and
-power management events work in D3hot and maybe some firmware
-coordination and validation concerns.
-
-> Since the default value of 'd3cold_allowed' is true, I believe the
-> code expects all devices to support D0 and D3cold. Please correct me
-> if I'm wrong.
-
-D3cold means "no main power", so every device "supports" that
-situation.  The only time 'd3cold_allowed' can be false is when a user
-has set it to false via sysfs, so I think it only reflects an
-administrative policy choice.
-
-I think the important question for the code is whether software can
-remove and restore main power and maybe something about what hotplug
-events or PME can be reported, and I have a really hard time following
-that decision path.
-
-Bjorn
+-- 
+Dmitry
 
