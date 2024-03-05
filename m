@@ -1,91 +1,88 @@
-Return-Path: <linux-kernel+bounces-92326-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92327-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C2DA871E7A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:02:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C46C871E7C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:03:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DBA0D285075
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:02:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 32A471F2513C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:03:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D2115822E;
-	Tue,  5 Mar 2024 12:01:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8AD559B77;
+	Tue,  5 Mar 2024 12:03:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CIUY37uS"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="n9r0LJ9R"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FCDD5810B
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 12:01:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 398105676D;
+	Tue,  5 Mar 2024 12:03:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709640115; cv=none; b=GkploqimUiEj8HXS7P/AZubNbS+k9rxYJK+jelKeK4+pjcqfwxsEHkywIYmrzt9dTuRsf/ZMCN4RbewtKMiRTcIA5i7PNclJ4CkMGtHJR/AX2qn3vwCRCAgbrg93+yRiOAX+V+6HRDDt1SveIGgiaEQxhKI3ADVETWRYq0jSxKI=
+	t=1709640187; cv=none; b=LCI5BFodUOhy5zwts3vrAZJQTODl8qxKjK66MUrYtVRpydzcVOoXB1N5dIrenEHs0nBmc7wgqSQhmIFZB1K29S6p5IYZv1SKB1dQ8Kzvfqa3QUpC+b70/3dGmfwIT2eTAbPkv5GccgAi0wCIKFxOBkFZsgRvdvs83Z3Wl2w0oiQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709640115; c=relaxed/simple;
-	bh=p3MEnM7Hc3Q02hOH9T/CHTh7Gwecqmsvh/qEe+3UuM8=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=qTBa+O6coMSVJBygKGzB4o7RgXU/zYizt59AZmnx+PhrL8mQ7Up5635Vjy65n3UmtiSpA3JaBPeHLBRQrOE3tmGOU72UVHYxSquK9JFom02FJkU/Zq9LDo6dXS86pp2g4UrXD9wuMywYK4iEH5NmMvnNi0hQ/XcPwl3N0PBT/Js=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CIUY37uS; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709640115; x=1741176115;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=p3MEnM7Hc3Q02hOH9T/CHTh7Gwecqmsvh/qEe+3UuM8=;
-  b=CIUY37uSzllmApnZq4yTklcrOw5fNuShV1nIkT0JFgmduseD7zD1hz3B
-   x3+zXw9lhQorjNIXSIBfJO2ZskuyNXK9d7w0AOb1iE8MBxDTuLzTYcbhX
-   g7WvIO2NS/k5yCYhdyjfo0jg9u8t6xSrQL03IWRsmlXuBxY1TN3PCPMcw
-   VTtxivmW4LkNcyZXsizy5n/3KEOmx9iEMZR19n+6IJnm+K9+F5zJjn24q
-   RucrVepSso7qqQlKkhauzhga5swCW0pTw8Z81wzRt2T/TW8ZClGXZqULS
-   yLWtcKaTKVy0bAOBwsbUMoNkQi7JIZ/NPE2LFAJ9BL1RB/LLt1JDfPGQL
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="21641595"
-X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
-   d="scan'208";a="21641595"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 04:01:54 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
-   d="scan'208";a="9219180"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.249.173.205]) ([10.249.173.205])
-  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 04:01:51 -0800
-Message-ID: <eb7dc225-d7e3-471f-9758-b03089be5a3f@linux.intel.com>
-Date: Tue, 5 Mar 2024 20:01:50 +0800
+	s=arc-20240116; t=1709640187; c=relaxed/simple;
+	bh=79bRoIfWwTyJNE+ZvVpy+oLKq8Gm67lYHHCXczcorVs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kQAFh5SEChdFYbybxBhNLc1lbF/RKGHyhSbcJYvZQjFcT7DXcEtWjDXT7CmKpQ3NRNhXpiRE5KwscVDAkpUIH7LG9jQJxI1IlpGDkVtTLpWXT3Y3Z585I1GnY4F4Q4rUOe7zwPrYbm99sfV72MFKCAte777ilPh2ZyXBW0WrMOE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=n9r0LJ9R; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 328C4C43390;
+	Tue,  5 Mar 2024 12:03:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1709640186;
+	bh=79bRoIfWwTyJNE+ZvVpy+oLKq8Gm67lYHHCXczcorVs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=n9r0LJ9RfA/26lr6yOwdcDslL6g/pWULDLz2lup790Qe42gB6MIHIicIPKgGCUp5C
+	 5bg2wfB9MJFYgFnuO+6azNvbksiLEEIGw4DFBgavYf34a6zDAD4XmVzam7aPIMZMur
+	 xn7Vc6tfwLwr7etf40KCf3apgiHddiw9d7EeqCM4=
+Date: Tue, 5 Mar 2024 12:03:03 +0000
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Alan Stern <stern@rowland.harvard.edu>
+Cc: Sam Sun <samsun1006219@gmail.com>, Tejun Heo <tj@kernel.org>,
+	linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+	"xrivendell7@gmail.com" <xrivendell7@gmail.com>,
+	hgajjar@de.adit-jv.com, quic_ugoswami@quicinc.com,
+	stanley_chang@realtek.com, heikki.krogerus@linux.intel.com
+Subject: Re: [Bug] INFO: task hung in hub_activate
+Message-ID: <2024030557-bullwhip-stray-9db4@gregkh>
+References: <CAEkJfYO6jRVC8Tfrd_R=cjO0hguhrV31fDPrLrNOOHocDkPoAA@mail.gmail.com>
+ <e9d710fc-eace-44de-b3cc-1117c3575ef7@rowland.harvard.edu>
+ <2024030428-graph-harmful-1597@gregkh>
+ <416a8311-c725-419a-8b22-74c80207347f@rowland.harvard.edu>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: baolu.lu@linux.intel.com, Will Deacon <will@kernel.org>,
- Robin Murphy <robin.murphy@arm.com>, Jason Gunthorpe <jgg@ziepe.ca>,
- Kevin Tian <kevin.tian@intel.com>, Eric Badger <ebadger@purestorage.com>,
- iommu@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/5] iommu: Fix domain check on release
-Content-Language: en-US
-To: Joerg Roedel <joro@8bytes.org>
-References: <20240305013305.204605-1-baolu.lu@linux.intel.com>
- <ZebPsvHQWJcOgmUW@8bytes.org>
-From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <ZebPsvHQWJcOgmUW@8bytes.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <416a8311-c725-419a-8b22-74c80207347f@rowland.harvard.edu>
 
-On 2024/3/5 15:54, Joerg Roedel wrote:
-> On Tue, Mar 05, 2024 at 09:33:00AM +0800, Lu Baolu wrote:
->> It fixes a NULL pointer dereference issue in the Intel iommu driver and
->> strengthens the iommu core to possibly prevent similar failures in other
->> iommu drivers.
-> Please send me another pull request once you consider this ready. I
-> guess it is v6.9 material.
+On Mon, Mar 04, 2024 at 01:30:35PM -0500, Alan Stern wrote:
+> On Mon, Mar 04, 2024 at 05:36:19PM +0100, Greg KH wrote:
+> > On Mon, Mar 04, 2024 at 11:15:24AM -0500, Alan Stern wrote:
+> > > Third, this must be a generic problem.  It will occur any time a sysfs
+> > > attribute callback tries to lock its device while another process is
+> > > trying to unregister that device.
+> > > 
+> > > We faced this sort of problem some years ago when we were worrying
+> > > about "suicidal" attributes -- ones which would unregister their own
+> > > devices.  I don't remember what the fix was or how it worked.  But we
+> > > need something like it here.
+> > > 
+> > > Greg and Tejun, any ideas?  Is it possible somehow for an attribute file 
+> > > to be removed while its callback is still running?
+> > 
+> > Yes, it's a pain, and I hate it, but I think SCSI does this somehow for
+> > one of their attributes.  I don't remember how at the moment, and I
+> > can't look it up (am traveling), but this should be a good hint.
+> 
+> Are you thinking of the sysfs_break_active_protection() and 
+> sysfs_unbreak_active_protection() functions?  They seem to be the 
+> appropriate ones to use here.
 
-Sure. I will queue this series in a pull request.
-
-Best regards,
-baolu
+Yes, that sounds correct.
 
