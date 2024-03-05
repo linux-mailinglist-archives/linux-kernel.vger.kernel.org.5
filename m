@@ -1,96 +1,185 @@
-Return-Path: <linux-kernel+bounces-92352-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92329-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A427D871EF3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:20:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C099871E89
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:05:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C89F284E4F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:20:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3FC8E1C22EC0
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:05:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD5A15A7A4;
-	Tue,  5 Mar 2024 12:20:29 +0000 (UTC)
-Received: from Atcsqr.andestech.com (60-248-80-70.hinet-ip.hinet.net [60.248.80.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC48559B5E
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 12:20:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.248.80.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9D635A4D5;
+	Tue,  5 Mar 2024 12:05:36 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8E6C58ABA;
+	Tue,  5 Mar 2024 12:05:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709641229; cv=none; b=XFDBCSyh2tE7UsKw98SoV7nW1dxLQSpf11WQfaA6GL7MlJ5tYWuqI6XVaBEqoPP1i7/TXwGMJrasxMzrBjG3giqCUNw0bcrGNvRskgQsxi4Gme/gqcbYM9F0KU126RAfs0UoODuZNQ+HyoODbaeH0ygvuzBh76pDbW4znB2+O+0=
+	t=1709640336; cv=none; b=X9FyCIb+218qnTcXxkOd4PuVScCiELc6MjB43ORIzUto+o3hHlXWCgs42Niq/JKqw6sqjAlR5Un7Pwqw8dnQbQ25mgjsvIXRtyGDNDvDhe1Q+aca1Mb+R9x/eJQAefhvu03vIX3z3RAO5XYSidxJNzUDOHm9uPuRwY/OnQOy6n4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709641229; c=relaxed/simple;
-	bh=Z4ag4dmgkwg6QKinQ/3ZUdEqVOO6seGs6xNzDBwT5gs=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=eaVyAyHREtHdREt8zM7qMVYQn1t+hrVkSbNS0inAW0O4WvT45hAemLU5IPJXSwMf/N0f+gL+KUDGB1g7wPUAAXYQaQpIbf3cGxAqwAhNVIjZbnbj1ghzUFmvKVsA4BrdpUzNKMUXK7bQO6nhdIKwv+zHrpq8/jtzwGg2uPgyzO4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=andestech.com; spf=pass smtp.mailfrom=andestech.com; arc=none smtp.client-ip=60.248.80.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=andestech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=andestech.com
-Received: from Atcsqr.andestech.com (localhost [127.0.0.2] (may be forged))
-	by Atcsqr.andestech.com with ESMTP id 425C5uoP023912
-	for <linux-kernel@vger.kernel.org>; Tue, 5 Mar 2024 20:05:56 +0800 (+08)
-	(envelope-from ben717@andestech.com)
-Received: from mail.andestech.com (ATCPCS16.andestech.com [10.0.1.222])
-	by Atcsqr.andestech.com with ESMTP id 425C5kAv023873;
-	Tue, 5 Mar 2024 20:05:46 +0800 (+08)
-	(envelope-from ben717@andestech.com)
-Received: from atctrx.andestech.com (10.0.15.173) by ATCPCS16.andestech.com
- (10.0.1.222) with Microsoft SMTP Server id 14.3.498.0; Tue, 5 Mar 2024
- 20:05:43 +0800
-From: Ben Zong-You Xie <ben717@andestech.com>
-To: <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-        <namhyung@kernel.org>, <mark.rutland@arm.com>,
-        <alexander.shishkin@linux.intel.com>, <jolsa@kernel.org>,
-        <irogers@google.com>, <adrian.hunter@intel.com>,
-        <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
-        <aou@eecs.berkeley.edu>, <linux-perf-users@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>
-CC: <dylan@andestech.com>, <tim609@andestech.com>,
-        Ben Zong-You Xie
-	<ben717@andestech.com>
-Subject: [PATCH 2/2] perf riscv: Fix the warning due to the incompatible type
-Date: Tue, 5 Mar 2024 20:05:01 +0800
-Message-ID: <20240305120501.1785084-3-ben717@andestech.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240305120501.1785084-1-ben717@andestech.com>
-References: <20240305120501.1785084-1-ben717@andestech.com>
+	s=arc-20240116; t=1709640336; c=relaxed/simple;
+	bh=x2n3LYJaF3CcKkOqy6N20V4juYYDI/bsFT9DQVqOTOE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=D+Nh44t8NJJBLBfoLiBVzRqhbTpPnXGf4anvYwOwUnqZ50ca4359/gUFyXsE/wme1mSeUCh4Bu4Ht1NHk1+c04u+lzXEjhzYpfDF4aceIvgUUMrOCuTLbDDjf0hqSGoDVMDsMY4djSUA3xFNzGp0BIwvBk5bZPO5mZkVZy796L0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A49DE1FB;
+	Tue,  5 Mar 2024 04:06:08 -0800 (PST)
+Received: from [10.57.67.228] (unknown [10.57.67.228])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 25B763F73F;
+	Tue,  5 Mar 2024 04:05:25 -0800 (PST)
+Message-ID: <47afacda-3023-4eb7-b227-5f725c3187c2@arm.com>
+Date: Tue, 5 Mar 2024 12:05:23 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-DNSRBL: 
-X-SPAM-SOURCE-CHECK: pass
-X-MAIL:Atcsqr.andestech.com 425C5uoP023912
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC RESEND 00/16] Split IOMMU DMA mapping operation to two steps
+To: Leon Romanovsky <leon@kernel.org>, Christoph Hellwig <hch@lst.de>,
+ Marek Szyprowski <m.szyprowski@samsung.com>, Joerg Roedel <joro@8bytes.org>,
+ Will Deacon <will@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+ Chaitanya Kulkarni <chaitanyak@nvidia.com>
+Cc: Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
+ Keith Busch <kbusch@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
+ Yishai Hadas <yishaih@nvidia.com>,
+ Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+ Kevin Tian <kevin.tian@intel.com>,
+ Alex Williamson <alex.williamson@redhat.com>,
+ =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+ Andrew Morton <akpm@linux-foundation.org>, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-rdma@vger.kernel.org, iommu@lists.linux.dev,
+ linux-nvme@lists.infradead.org, kvm@vger.kernel.org, linux-mm@kvack.org,
+ Bart Van Assche <bvanassche@acm.org>,
+ Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+ Amir Goldstein <amir73il@gmail.com>,
+ "josef@toxicpanda.com" <josef@toxicpanda.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ "daniel@iogearbox.net" <daniel@iogearbox.net>,
+ Dan Williams <dan.j.williams@intel.com>, "jack@suse.com" <jack@suse.com>,
+ Leon Romanovsky <leonro@nvidia.com>, Zhu Yanjun <zyjzyj2000@gmail.com>
+References: <cover.1709635535.git.leon@kernel.org>
+From: Robin Murphy <robin.murphy@arm.com>
+Content-Language: en-GB
+In-Reply-To: <cover.1709635535.git.leon@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-In the 32-bit platform, the second argument of getline is expectd to be
-'size_t *'(aka 'unsigned int *'), but line_sz is of type 
-'unsigned long *'. Therefore, declare line_sz as size_t.
+On 2024-03-05 11:18 am, Leon Romanovsky wrote:
+> This is complimentary part to the proposed LSF/MM topic.
+> https://lore.kernel.org/linux-rdma/22df55f8-cf64-4aa8-8c0b-b556c867b926@linux.dev/T/#m85672c860539fdbbc8fe0f5ccabdc05b40269057
+> 
+> This is posted as RFC to get a feedback on proposed split, but RDMA, VFIO and
+> DMA patches are ready for review and inclusion, the NVMe patches are still in
+> progress as they require agreement on API first.
+> 
+> Thanks
+> 
+> -------------------------------------------------------------------------------
+> The DMA mapping operation performs two steps at one same time: allocates
+> IOVA space and actually maps DMA pages to that space. This one shot
+> operation works perfectly for non-complex scenarios, where callers use
+> that DMA API in control path when they setup hardware.
+> 
+> However in more complex scenarios, when DMA mapping is needed in data
+> path and especially when some sort of specific datatype is involved,
+> such one shot approach has its drawbacks.
+> 
+> That approach pushes developers to introduce new DMA APIs for specific
+> datatype. For example existing scatter-gather mapping functions, or
+> latest Chuck's RFC series to add biovec related DMA mapping [1] and
+> probably struct folio will need it too.
+> 
+> These advanced DMA mapping APIs are needed to calculate IOVA size to
+> allocate it as one chunk and some sort of offset calculations to know
+> which part of IOVA to map.
 
-Signed-off-by: Ben Zong-You Xie <ben717@andestech.com>
----
- tools/perf/arch/riscv/util/header.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I don't follow this part at all - at *some* point, something must know a 
+range of memory addresses involved in a DMA transfer, so that's where it 
+should map that range for DMA. Even in a badly-designed system where the 
+point it's most practical to make the mapping is further out and only 
+knows that DMA will touch some subset of a buffer, but doesn't know 
+exactly what subset yet, you'd usually just map the whole buffer. I 
+don't see why the DMA API would ever need to know about anything other 
+than pages/PFNs and dma_addr_ts (yes, it does also accept them being 
+wrapped together in scatterlists; yes, scatterlists are awful and it 
+would be nice to replace them with a better general DMA descriptor; that 
+is a whole other subject of its own).
 
-diff --git a/tools/perf/arch/riscv/util/header.c b/tools/perf/arch/riscv/util/header.c
-index 4a41856938a8..1b29030021ee 100644
---- a/tools/perf/arch/riscv/util/header.c
-+++ b/tools/perf/arch/riscv/util/header.c
-@@ -41,7 +41,7 @@ static char *_get_cpuid(void)
- 	char *mimpid = NULL;
- 	char *cpuid = NULL;
- 	int read;
--	unsigned long line_sz;
-+	size_t line_sz;
- 	FILE *cpuinfo;
- 
- 	cpuinfo = fopen(CPUINFO, "r");
--- 
-2.34.1
+> Instead of teaching DMA to know these specific datatypes, let's separate
+> existing DMA mapping routine to two steps and give an option to advanced
+> callers (subsystems) perform all calculations internally in advance and
+> map pages later when it is needed.
 
+ From a brief look, this is clearly an awkward reinvention of the IOMMU 
+API. If IOMMU-aware drivers/subsystems want to explicitly manage IOMMU 
+address spaces then they can and should use the IOMMU API. Perhaps 
+there's room for some quality-of-life additions to the IOMMU API to help 
+with common usage patterns, but the generic DMA mapping API is 
+absolutely not the place for it.
+
+Thanks,
+Robin.
+
+> In this series, three users are converted and each of such conversion
+> presents different positive gain:
+> 1. RDMA simplifies and speeds up its pagefault handling for
+>     on-demand-paging (ODP) mode.
+> 2. VFIO PCI live migration code saves huge chunk of memory.
+> 3. NVMe PCI avoids intermediate SG table manipulation and operates
+>     directly on BIOs.
+> 
+> Thanks
+> 
+> [1] https://lore.kernel.org/all/169772852492.5232.17148564580779995849.stgit@klimt.1015granger.net
+> 
+> Chaitanya Kulkarni (2):
+>    block: add dma_link_range() based API
+>    nvme-pci: use blk_rq_dma_map() for NVMe SGL
+> 
+> Leon Romanovsky (14):
+>    mm/hmm: let users to tag specific PFNs
+>    dma-mapping: provide an interface to allocate IOVA
+>    dma-mapping: provide callbacks to link/unlink pages to specific IOVA
+>    iommu/dma: Provide an interface to allow preallocate IOVA
+>    iommu/dma: Prepare map/unmap page functions to receive IOVA
+>    iommu/dma: Implement link/unlink page callbacks
+>    RDMA/umem: Preallocate and cache IOVA for UMEM ODP
+>    RDMA/umem: Store ODP access mask information in PFN
+>    RDMA/core: Separate DMA mapping to caching IOVA and page linkage
+>    RDMA/umem: Prevent UMEM ODP creation with SWIOTLB
+>    vfio/mlx5: Explicitly use number of pages instead of allocated length
+>    vfio/mlx5: Rewrite create mkey flow to allow better code reuse
+>    vfio/mlx5: Explicitly store page list
+>    vfio/mlx5: Convert vfio to use DMA link API
+> 
+>   Documentation/core-api/dma-attributes.rst |   7 +
+>   block/blk-merge.c                         | 156 ++++++++++++++
+>   drivers/infiniband/core/umem_odp.c        | 219 +++++++------------
+>   drivers/infiniband/hw/mlx5/mlx5_ib.h      |   1 +
+>   drivers/infiniband/hw/mlx5/odp.c          |  59 +++--
+>   drivers/iommu/dma-iommu.c                 | 129 ++++++++---
+>   drivers/nvme/host/pci.c                   | 220 +++++--------------
+>   drivers/vfio/pci/mlx5/cmd.c               | 252 ++++++++++++----------
+>   drivers/vfio/pci/mlx5/cmd.h               |  22 +-
+>   drivers/vfio/pci/mlx5/main.c              | 136 +++++-------
+>   include/linux/blk-mq.h                    |   9 +
+>   include/linux/dma-map-ops.h               |  13 ++
+>   include/linux/dma-mapping.h               |  39 ++++
+>   include/linux/hmm.h                       |   3 +
+>   include/rdma/ib_umem_odp.h                |  22 +-
+>   include/rdma/ib_verbs.h                   |  54 +++++
+>   kernel/dma/debug.h                        |   2 +
+>   kernel/dma/direct.h                       |   7 +-
+>   kernel/dma/mapping.c                      |  91 ++++++++
+>   mm/hmm.c                                  |  34 +--
+>   20 files changed, 870 insertions(+), 605 deletions(-)
+> 
 
