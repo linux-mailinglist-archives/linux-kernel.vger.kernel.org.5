@@ -1,332 +1,93 @@
-Return-Path: <linux-kernel+bounces-93589-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93590-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35152873215
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:10:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36B1A873218
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:10:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DEC5728EA94
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:10:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E62CB28ED44
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:10:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88ADC5D90F;
-	Wed,  6 Mar 2024 08:58:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C7455EE6A;
+	Wed,  6 Mar 2024 08:59:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="Sbel4cyo"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F27FA5D461;
-	Wed,  6 Mar 2024 08:58:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b="id1X1JK9"
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AA3F5E07D
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 08:59:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709715512; cv=none; b=t8HKx0U6Qr7G5SYRn+budezN2qeIh0bIj3XycbzNa6QNoZF9HUOiceR43c562k8Rc8fE6jd+xWS0RMHiuGxwB9vOnh+MB4VDsvxm9rGyLN7DtL5gToCtrEixJqZYRy08vMkkumH7LUGPVDr9ojMqCqv4394RcpAJiHkXtdxzyXc=
+	t=1709715584; cv=none; b=CTk7y7FkT7Rx+gjNRNGHt464n6pdSEdVkjWjPeTVPPHtxXTVDf20O49IOt7jmA5xiarWQUL0XuXLGM9yV0FmTF53Kw9d+YnuqdPgmzr/+i8+a+RusZBuGcxhKP7zvXX8pi3+ilAPl7fUpeDGRk+4A7O0ELBoGyCLtDrAIELXyiY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709715512; c=relaxed/simple;
-	bh=cuIK1b4/1+vKdEXy8P2h3TciGHn9/Yah1kPLjtwXu1s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mCdNPCS2DE4mRNyH6U6sG33YTq/xoFGNJ8ujERbG6VdQuflnjS5gh9lm02FZfS0tXUL7pv0YQu1pKVW66hShHWbzxRnm8LeJ/YyE5fw1vC2qswHCs/ctofgdr2xUDPBHhGUntGWu9LQWCaNRqYQX+0xkKOzSMkrAvyRGuj4xl+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=Sbel4cyo; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1134)
-	id 75A5120B74C0; Wed,  6 Mar 2024 00:58:30 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 75A5120B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1709715510;
-	bh=6S+THTFapOlQelKzQxilLIPab/ngucjmPxPdz5JbrcA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Sbel4cyoSfEBxSlOX5Q/Y0A/phTeyUHLj1lj6gnKPNpgDSYh9olEaPN1VhbMPI9HP
-	 6kXEMKfG4kiZ0Yp8r7myWm7l66RiBtDeFM7Oy3dw3toV69UEwwUKBjiese/bzG/Qj6
-	 loPQS5eMbFLQ47Ksck8AzgJbf+NFgN3n7atp+SuI=
-Date: Wed, 6 Mar 2024 00:58:30 -0800
-From: Shradha Gupta <shradhagupta@linux.microsoft.com>
-To: Ani Sinha <anisinha@redhat.com>
-Cc: linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-	Long Li <longli@microsoft.com>,
-	Michael Kelley <mikelley@microsoft.com>,
-	Olaf Hering <olaf@aepfle.de>,
-	Shradha Gupta <shradhagupta@microsoft.com>
-Subject: Re: [PATCH] hv/hv_kvp_daemon: Handle IPv4 and Ipv6 combination for
- keyfile format
-Message-ID: <20240306085830.GA18235@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1709297778-20420-1-git-send-email-shradhagupta@linux.microsoft.com>
- <AE3A11C5-5EAA-4929-8FE2-BB1B2BDE57CE@redhat.com>
+	s=arc-20240116; t=1709715584; c=relaxed/simple;
+	bh=0RMThRYDQdA0TKmAkapeJIRKOEouEr8pVUiXNRXISH8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=m7igrEvAjZlql/wvihXlKZO7o5JOTEexg9l648pMO5PSDkdnOqQ7Fg6pVIyjsTaNdfnEu3DKtnSom7Lj1z8ZYxZMsO0Kov5Bm9zIIt43mjL0UEVVUFru4YuEZAbIgkkB+VPGBC6UE+2fR/6Cvc+d8/11NYF4muHjiibz5VDaHOA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org; spf=none smtp.mailfrom=yoseli.org; dkim=pass (2048-bit key) header.d=yoseli.org header.i=@yoseli.org header.b=id1X1JK9; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yoseli.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=yoseli.org
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 1A14C1C0006;
+	Wed,  6 Mar 2024 08:59:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yoseli.org; s=gm1;
+	t=1709715578;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=0DSKgS0W+zLLPr66Oq1nzuRX4tN4JYLBFnk2o4+Pe20=;
+	b=id1X1JK9Pw9kR1CVsvoDE9Ix1KShX5NnPsaPvdlarcPXBOGauvtsdiK3dKffjueUlug0WO
+	npw2KwBBNTfcQA7nIqZdaEnt76TgTSRc3Dg8exjmKey/U2xUKtxz8Yb4LqTJyeQf1uo/hU
+	He+EN7P7tA/FuiEGBYiodsJHSdFYGu7NztyJEGYXpeG63F1sugNCiI9+7j4F30sb64NkQk
+	P1/fHkTw/Y4pcHsVvIyGcSyYK+P4Rx5Y3NFdmAwndhebtokC4AXb8S7ydf0beEdUIc36/R
+	v6p6Pt2Nahc5Qwf4kf+6RZxQV3e67z8rGVXDvA8s09rg+OpjpyO/3RT+KzBIPg==
+From: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+To: linux-kernel@vger.kernel.org
+Cc: axboe@kernel.dk,
+	stephen@networkplumber.org,
+	o.rempel@pengutronix.de,
+	quic_bjorande@quicinc.com,
+	heiko@sntech.de,
+	konrad.dybcio@linaro.org,
+	kuba@kernel.org,
+	akpm@linux-foundation.org,
+	Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+Subject: [PATCH] mailmap: add entry for Jean-Michel Hautbois
+Date: Wed,  6 Mar 2024 09:59:34 +0100
+Message-Id: <20240306085934.35904-1-jeanmichel.hautbois@yoseli.org>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <AE3A11C5-5EAA-4929-8FE2-BB1B2BDE57CE@redhat.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: jeanmichel.hautbois@yoseli.org
 
-Thanks Ani, will send out another version soon with these fixes.
+Despite having contributed several patches, my email address was not
+previously included. This update ensures that my contributions are
+correctly attributed.
 
-On Wed, Mar 06, 2024 at 01:54:36PM +0530, Ani Sinha wrote:
-> 
-> 
-> > On 01-Mar-2024, at 18:26, Shradha Gupta <shradhagupta@linux.microsoft.com> wrote:
-> > 
-> > If the network configuration strings are passed as a combination of IPv and
-> > IPv6 addresses, the current KVP daemon doesnot handle it for the keyfile
-> > configuration format.
-> > With these changes, the keyfile config generation logic scans through the
-> > list twice to generate IPv4 and IPv6 sections for the configuration files
-> > to handle this support.
-> 
-> We tried to test this but seems some memory corruption is happening.
-> Some more feedbacks follows ...
-> 
-> > 
-> > Built-on: Rhel9
-> > Tested-on: Rhel9(IPv4 only, IPv6 only, IPv4 and IPv6 combination)
-> > Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
-> > ---
-> > tools/hv/hv_kvp_daemon.c | 152 ++++++++++++++++++++++++++++-----------
-> > 1 file changed, 112 insertions(+), 40 deletions(-)
-> > 
-> > diff --git a/tools/hv/hv_kvp_daemon.c b/tools/hv/hv_kvp_daemon.c
-> > index 318e2dad27e0..7e84e40b55fb 100644
-> > --- a/tools/hv/hv_kvp_daemon.c
-> > +++ b/tools/hv/hv_kvp_daemon.c
-> > @@ -76,6 +76,11 @@ enum {
-> > DNS
-> > };
-> > 
-> > +enum {
-> > + IPV4 = 1,
-> > + IPV6
-> > +};
-> > +
-> > static int in_hand_shake;
-> > 
-> > static char *os_name = "";
-> > @@ -1171,6 +1176,18 @@ static int process_ip_string(FILE *f, char *ip_string, int type)
-> > return 0;
-> > }
-> > 
-> > +int ip_version_check(const char *input_addr)
-> > +{
-> > + struct in6_addr addr;
-> > +
-> > + if (inet_pton(AF_INET, input_addr, &addr))
-> > + return IPV4;
-> > + else if (inet_pton(AF_INET6, input_addr, &addr))
-> > + return IPV6;
-> > + else
-> > + return -EINVAL;
-> > +}
-> > +
-> > /*
-> >  * Only IPv4 subnet strings needs to be converted to plen
-> >  * For IPv6 the subnet is already privided in plen format
-> > @@ -1197,14 +1214,56 @@ static int kvp_subnet_to_plen(char *subnet_addr_str)
-> > return plen;
-> > }
-> > 
-> > +static int process_dns_gateway_nm(FILE *f, char *ip_string, int type,
-> > +  int ip_sec)
-> > +{
-> > + char addr[INET6_ADDRSTRLEN], *output_str;
-> > + int ip_offset = 0, error, ip_ver;
-> > + char *param_name;
-> > +
-> > + output_str = malloc(strlen(ip_string));
-> > +
-> > + if (!output_str)
-> > + return 1;
-> 
-> Shouldn???t you be returning -ENOMEM or some such here?
-> 
-> > +
-> > + output_str[0] = '\0';
-> > +
-> > + if (type == DNS)
-> > + param_name = "dns";
-> > + else
-> 
-> Please be more explicit here and check for type == GATEWAY
-> 
-> > + param_name = "gateway";
-> 
-> Else, if neither, it should return error.
-> 
-> > +
-> > + while (parse_ip_val_buffer(ip_string, &ip_offset, addr,
-> > +   (MAX_IP_ADDR_SIZE * 2))) {
-> > + ip_ver = ip_version_check(addr);
-> > +
-> > + if ((ip_ver == IPV4 && ip_sec == IPV4) ||
-> > +    (ip_ver == IPV6 && ip_sec == IPV6)) {
-> > + strcat(output_str, addr);
-> > + strcat(output_str, ",");
-> 
-> I prefer strncat() here.
-> 
-> > + } else {
-> > + continue;
-> > + }
-> > + }
-> > +
-> > + if (strlen(output_str)) {
-> > + output_str[strlen(output_str) - 1] = '\0';
-> > + error = fprintf(f, "%s=%s\n", param_name, output_str);
-> 
-> Please do not forget to free output_str.
-> 
-> > + if (error <  0)
-> > + return error;
-> > + }
-> > +
-> > + return 0;
-> > +}
-> > +
-> > static int process_ip_string_nm(FILE *f, char *ip_string, char *subnet,
-> > - int is_ipv6)
-> > + int ip_sec)
-> > {
-> > char addr[INET6_ADDRSTRLEN];
-> > char subnet_addr[INET6_ADDRSTRLEN];
-> > int error, i = 0;
-> > int ip_offset = 0, subnet_offset = 0;
-> > - int plen;
-> > + int plen, ip_ver;
-> > 
-> > memset(addr, 0, sizeof(addr));
-> > memset(subnet_addr, 0, sizeof(subnet_addr));
-> > @@ -1216,10 +1275,13 @@ static int process_ip_string_nm(FILE *f, char *ip_string, char *subnet,
-> >       subnet_addr,
-> >       (MAX_IP_ADDR_SIZE *
-> > 2))) {
-> > - if (!is_ipv6)
-> > + ip_ver = ip_version_check(addr);
-> > + if (ip_ver == IPV4 && ip_sec == IPV4)
-> > plen = kvp_subnet_to_plen((char *)subnet_addr);
-> > - else
-> > + else if (ip_ver == IPV6 && ip_sec == IPV6)
-> > plen = atoi(subnet_addr);
-> > + else
-> > + continue;
-> > 
-> > if (plen < 0)
-> > return plen;
-> > @@ -1242,8 +1304,8 @@ static int kvp_set_ip_info(char *if_name, struct hv_kvp_ipaddr_value *new_val)
-> > char if_filename[PATH_MAX];
-> > char nm_filename[PATH_MAX];
-> > FILE *ifcfg_file, *nmfile;
-> > + int ip_sections_count;
-> > char cmd[PATH_MAX];
-> > - int is_ipv6 = 0;
-> > char *mac_addr;
-> > int str_len;
-> > 
-> > @@ -1421,52 +1483,62 @@ static int kvp_set_ip_info(char *if_name, struct hv_kvp_ipaddr_value *new_val)
-> > if (error)
-> > goto setval_error;
-> > 
-> > - if (new_val->addr_family & ADDR_FAMILY_IPV6) {
-> > - error = fprintf(nmfile, "\n[ipv6]\n");
-> > - if (error < 0)
-> > - goto setval_error;
-> > - is_ipv6 = 1;
-> > - } else {
-> > - error = fprintf(nmfile, "\n[ipv4]\n");
-> > - if (error < 0)
-> > - goto setval_error;
-> > - }
-> > -
-> > /*
-> > - * Now we populate the keyfile format
-> > + * The keyfile format expects the IPv6 and IPv4 configuration in
-> > + * different sections. Therefore we iterate through the list twice,
-> > + * once to populate the IPv4 section and the next time for IPv6
-> > */
-> > + ip_sections_count = 1;
-> > + do {
-> > + if (ip_sections_count == 1) {
-> > + error = fprintf(nmfile, "\n[ipv4]\n");
-> > + if (error < 0)
-> > + goto setval_error;
-> > + } else {
-> > + error = fprintf(nmfile, "\n[ipv6]\n");
-> > + if (error < 0)
-> > + goto setval_error;
-> > + }
-> > 
-> > - if (new_val->dhcp_enabled) {
-> > - error = kvp_write_file(nmfile, "method", "", "auto");
-> > - if (error < 0)
-> > - goto setval_error;
-> > - } else {
-> > - error = kvp_write_file(nmfile, "method", "", "manual");
-> > + /*
-> > + * Now we populate the keyfile format
-> > + */
-> > +
-> > + if (new_val->dhcp_enabled) {
-> > + error = kvp_write_file(nmfile, "method", "", "auto");
-> > + if (error < 0)
-> > + goto setval_error;
-> > + } else {
-> > + error = kvp_write_file(nmfile, "method", "", "manual");
-> > + if (error < 0)
-> > + goto setval_error;
-> > + }
-> > +
-> > + /*
-> > + * Write the configuration for ipaddress, netmask, gateway and
-> > + * name services
-> > + */
-> > + error = process_ip_string_nm(nmfile, (char *)new_val->ip_addr,
-> > +     (char *)new_val->sub_net,
-> > +     ip_sections_count);
-> > if (error < 0)
-> > goto setval_error;
-> > - }
-> > 
-> > - /*
-> > - * Write the configuration for ipaddress, netmask, gateway and
-> > - * name services
-> > - */
-> > - error = process_ip_string_nm(nmfile, (char *)new_val->ip_addr,
-> > -     (char *)new_val->sub_net, is_ipv6);
-> > - if (error < 0)
-> > - goto setval_error;
-> > -
-> > - /* we do not want ipv4 addresses in ipv6 section and vice versa */
-> > - if (is_ipv6 != is_ipv4((char *)new_val->gate_way)) {
-> > - error = fprintf(nmfile, "gateway=%s\n", (char *)new_val->gate_way);
-> > + error = process_dns_gateway_nm(nmfile,
-> > +       (char *)new_val->gate_way,
-> > +       GATEWAY, ip_sections_count);
-> > if (error < 0)
-> > goto setval_error;
-> > - }
-> > 
-> > - if (is_ipv6 != is_ipv4((char *)new_val->dns_addr)) {
-> > - error = fprintf(nmfile, "dns=%s\n", (char *)new_val->dns_addr);
-> > + error = process_dns_gateway_nm(nmfile,
-> > +       (char *)new_val->dns_addr, DNS,
-> > +       ip_sections_count);
-> > if (error < 0)
-> 
-> But you return +ve from this function so this will never be true.
-> 
-> > goto setval_error;
-> > - }
-> > +
-> > + ip_sections_count++;
-> > + } while (ip_sections_count <= 2);
-> > +
-> > fclose(nmfile);
-> > fclose(ifcfg_file);
-> > 
-> > -- 
-> > 2.34.1
-> > 
+Signed-off-by: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+---
+ .mailmap | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/.mailmap b/.mailmap
+index 43031441b2d9..b18e0437e2d7 100644
+--- a/.mailmap
++++ b/.mailmap
+@@ -250,6 +250,7 @@ Jayachandran C <c.jayachandran@gmail.com> <jchandra@broadcom.com>
+ Jayachandran C <c.jayachandran@gmail.com> <jchandra@digeo.com>
+ Jayachandran C <c.jayachandran@gmail.com> <jnair@caviumnetworks.com>
+ <jean-philippe@linaro.org> <jean-philippe.brucker@arm.com>
++Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+ Jean Tourrilhes <jt@hpl.hp.com>
+ Jeevan Shriram <quic_jshriram@quicinc.com> <jshriram@codeaurora.org>
+ Jeff Garzik <jgarzik@pretzel.yyz.us>
+-- 
+2.40.1
+
 
