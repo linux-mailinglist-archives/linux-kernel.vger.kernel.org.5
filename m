@@ -1,132 +1,145 @@
-Return-Path: <linux-kernel+bounces-93618-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93619-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C290D873269
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:21:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EC0087326D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:23:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 582ED1F22EBB
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:21:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EAEDF292475
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:22:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1126514F7F;
-	Wed,  6 Mar 2024 09:21:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25E285DF1A;
+	Wed,  6 Mar 2024 09:22:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TLhEwIF3"
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=xen0n.name header.i=@xen0n.name header.b="rBzkv6WH"
+Received: from mailbox.box.xen0n.name (mail.xen0n.name [115.28.160.31])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 019845D91F
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 09:21:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8623C5DF01;
+	Wed,  6 Mar 2024 09:22:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.28.160.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709716905; cv=none; b=WUfkjYGYMd6VcH1zYbeU044NZTl1fTR4WSkgP/7XzCjXwTI7TiQAPp8uoiOmS6rJ+KwnXJNjxRU6sdhUaQdvtb9UvmTSTyfxRTTcKEVhhpezwMng2klfmd2EoLYUTg7ZXy8JZM/SeChKzzcrFWS6gk8+69up7q2FBTGRDtSgchk=
+	t=1709716970; cv=none; b=jIszY+j/M/kP7NZQ113j54l/6cGluj1+dMROzZoBRwpz6yHGELh5v88jBryFvLPoeM6yo/s4UEYHEx+99W84bPuhFn7OSl/QvmMqDPPfornCaXFCMzifU96YIt9gFsFKkZTYro3MJtLy+uXm5zCKglqnZDwieil17uPPxirUnB4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709716905; c=relaxed/simple;
-	bh=zPmVvzS5dPNxox3FTlthI+VtPBf1PINX+vtjBXnCwDI=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=LyO1kX2KHzK5opyzVMukRx61OA1k81DwnQiKw2cAakO+qVV7ez6uuelemnnyvdXHMOQGTQabDU1FZJnkaovMdzhAv3teBY3rvxI4xtKeKxQVc5l2lnmkaOf++vtOOK/ROCDBgEGx3wVpj3ox/ppLS36k/cerpT1Hlxm1/Wg//18=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TLhEwIF3; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-412ea23a750so3706255e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 01:21:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709716901; x=1710321701; darn=vger.kernel.org;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=DEbhInZlM3kJtT7xjjkbZehB8ROzUjJZQUZRHEJT3Fw=;
-        b=TLhEwIF3y4ti6Mex/X7UtqrUyu66EsMQFc9EXA0nU3wKptZYlifkjQWpIBtX8Se4ED
-         zDBiXkIquaCUKI6zvo8cII6Zih2QMNotfMIllxUjX+07ChrdkAQq05oRwhj6xm4UVk/k
-         iron+oy/h2uifidpBop1BvUc7QR8PK9xCktntH/2Cy/RHtBx45/GjEhB1jZIoy0Cc3O+
-         cdIfhIuW75aZDbfZWvGDE6wQ7yJ2yJkca/1nV/WGCdvUvERyQkZEFBDkweQMMlBRSTx9
-         Sx5frV5SsHzXlwXNIaIu8clKjqGgWOi43ujzMEbXih2Jh5QRbXoCR9dkB0kZ972CO7iT
-         1YNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709716901; x=1710321701;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DEbhInZlM3kJtT7xjjkbZehB8ROzUjJZQUZRHEJT3Fw=;
-        b=daaFjp55Q+I7H0OKRh6rczfDeKia+ID3GdupB+2Kx95khtZAImxWG3ZHKbyP3v5REc
-         kiLjKToZ1HwvG6acdcPBjO+0vLOlWJV0gNPKfZwSmFTIZrcDK/bukA7SJ9OQ9DrRW2lZ
-         xoU8kOd7MOY4F8J98NSxGmlGpdCFhEUFylyX8JBoy7rVGStWNWeg8dV6HtgiSTfmKBze
-         g1xyEEcBMTP/6HgltjgVP0qW4979s2JhiaNLGmfYh8TlNoSNanQnDN1C/jDc3ZUP+1IV
-         NCJ+upwm7MmHtKWvJy35dWeEIAgcjCyb4zy0AVrhLoWguT31N2XirKepYQe/VdWYFkuD
-         QiIQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWWjcu3phpDfvtIcK+Kb4p5O/hey+grHuB8kLneSDUSn36EUne4M324X7dwfRcw0zlyhPthHhX59CRq1/1qG8lwQZsEYeg5Xaqlc6q1
-X-Gm-Message-State: AOJu0YzGHXgKJX8/AH500skaufWfWMQpXJ3OlqWxLisgS7qUlrZa3Hwi
-	EwdJ17dozTxC4rVN/1fIq60E9y32/Q/NGZ9zYqscpdVNR9oAMwot
-X-Google-Smtp-Source: AGHT+IEFn3clUVe3HbSihlyMh7NH6uC2n7uWdal4zB80Ths400Ms6K94kq6wQTFqZ5PbecFVK2jH1g==
-X-Received: by 2002:a05:600c:4448:b0:412:ee6a:8826 with SMTP id v8-20020a05600c444800b00412ee6a8826mr3596962wmn.12.1709716900620;
-        Wed, 06 Mar 2024 01:21:40 -0800 (PST)
-Received: from localhost (a109-49-32-45.cpe.netcabo.pt. [109.49.32.45])
-        by smtp.gmail.com with ESMTPSA id v13-20020adfd04d000000b0033d202abf01sm16944420wrh.28.2024.03.06.01.21.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Mar 2024 01:21:40 -0800 (PST)
-From: Rui Miguel Silva <rmfrfs@gmail.com>
-To: Mikhail Lobanov <m.lobanov@rosalinux.ru>
-Cc: Mikhail Lobanov <m.lobanov@rosalinux.ru>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, greybus-dev@lists.linaro.org,
- linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] greybus: Fix deref of NULL in
- __gb_lights_flash_brightness_set
-In-Reply-To: <20240301190425.120605-1-m.lobanov@rosalinux.ru>
-References: <20240301190425.120605-1-m.lobanov@rosalinux.ru>
-Date: Wed, 06 Mar 2024 09:21:39 +0000
-Message-ID: <m38r2v67h8.fsf@gmail.com>
+	s=arc-20240116; t=1709716970; c=relaxed/simple;
+	bh=o4WXpLuFlb2On21gYF6e06FQki+re+8xuTwVBSizxMI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=swnWBWEqkamfgfUgPw+3EoJitExCJ536ldb1/6JII5lm6BmfJY+KdfZ93H2vamt2wFPtwMg0RcpoqONxWu+TC5aVcDDRxZ+EGfsPcJ0YPrBb7aZrQlNPQxbHzgeotViA8DJUo7cyWwDG1uAgj0R3LjybKT1ijVn9Nis3wnFW1hs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=xen0n.name; spf=pass smtp.mailfrom=xen0n.name; dkim=pass (1024-bit key) header.d=xen0n.name header.i=@xen0n.name header.b=rBzkv6WH; arc=none smtp.client-ip=115.28.160.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=xen0n.name
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xen0n.name
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xen0n.name; s=mail;
+	t=1709716964; bh=o4WXpLuFlb2On21gYF6e06FQki+re+8xuTwVBSizxMI=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=rBzkv6WHSyXZIk6znzU7nnLyL4/jck+sMZRhuySYFRLWZKkN1d1KsNE7YUsV8NWoK
+	 umxFcxOBgdLaEa1rvbZ520CbIoNR8/RHQG/cdi98q2Tll/TNBWCQER0u0OTXpPmCEc
+	 CsAEx0w4+waz8+o8k40rSOV9dqnlRmLpToVMFjRA=
+Received: from [IPV6:240e:688:100:1:e42:6442:8662:5647] (unknown [IPv6:240e:688:100:1:e42:6442:8662:5647])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mailbox.box.xen0n.name (Postfix) with ESMTPSA id 7524F600CE;
+	Wed,  6 Mar 2024 17:22:44 +0800 (CST)
+Message-ID: <4039d1ff-8e9f-42cf-a8fa-b326102fcbf5@xen0n.name>
+Date: Wed, 6 Mar 2024 17:22:43 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 7/7] Documentation: KVM: Add hypercall for LoongArch
+To: maobibo <maobibo@loongson.cn>, Tianrui Zhao <zhaotianrui@loongson.cn>,
+ Juergen Gross <jgross@suse.com>, Paolo Bonzini <pbonzini@redhat.com>,
+ Jonathan Corbet <corbet@lwn.net>
+Cc: loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
+ virtualization@lists.linux.dev, kvm@vger.kernel.org
+References: <20240302082532.1415200-1-maobibo@loongson.cn>
+ <20240302084724.1415344-1-maobibo@loongson.cn>
+ <846a5e46-4e8f-4f73-ac5b-323e78ec1bb1@xen0n.name>
+ <853f2909-e455-bd1c-c6a4-6a13beb37125@loongson.cn>
+ <ec871702-388d-4a29-aec1-5cd6d1de6d0a@xen0n.name>
+ <7079bf3b-a7af-7cab-be78-3de1081649e1@loongson.cn>
+Content-Language: en-US
+From: WANG Xuerui <kernel@xen0n.name>
+In-Reply-To: <7079bf3b-a7af-7cab-be78-3de1081649e1@loongson.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hi Mikhail,
-Mikhail Lobanov <m.lobanov@rosalinux.ru> writes:
+On 3/6/24 11:28, maobibo wrote:
+> On 2024/3/6 上午2:26, WANG Xuerui wrote:
+>> On 3/4/24 17:10, maobibo wrote:
+>>> On 2024/3/2 下午5:41, WANG Xuerui wrote:
+>>>> On 3/2/24 16:47, Bibo Mao wrote:
+>>>>> [snip]
+>>>>> +
+>>>>> +KVM hypercall ABI
+>>>>> +=================
+>>>>> +
+>>>>> +Hypercall ABI on KVM is simple, only one scratch register a0 (v0) 
+>>>>> and at most
+>>>>> +five generic registers used as input parameter. FP register and 
+>>>>> vector register
+>>>>> +is not used for input register and should not be modified during 
+>>>>> hypercall.
+>>>>> +Hypercall function can be inlined since there is only one scratch 
+>>>>> register.
+>>>>
+>>>> It should be pointed out explicitly that on hypercall return all 
+>>> Well, return value description will added. What do think about the 
+>>> meaning of return value for KVM_HCALL_FUNC_PV_IPI hypercall?  The 
+>>> number of CPUs with IPI delivered successfully like kvm x86 or simply 
+>>> success/failure?
 
-> Dereference of null pointer in the __gb_lights_flash_brightness_set function.
-> Assigning the channel the result of executing the get_channel_from_mode function
-> without checking for NULL may result in an error.
->
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
->
-> Fixes: 2870b52bae4c ("greybus: lights: add lights implementation")
-> Signed-off-by: Mikhail Lobanov <m.lobanov@rosalinux.ru>
+I just noticed I've forgotten to comment on this question. FYI, RISC-V 
+SBI's equivalent [1] doesn't even indicate errors. And from my 
+perspective, we can always add a new hypercall returning more info 
+should that info is needed in the future; for now I don't have a problem 
+whether the return type is void, bool or number of CPUs that are 
+successfully reached.
 
-Are you sending a new version with the changes suggested in this thread?
-or do you want me to prepare something with your reported-by tag?
+[1]: 
+https://github.com/riscv-non-isa/riscv-sbi-doc/blob/v2.0/src/ext-ipi.adoc
 
-Cheers,
-    Rui
+>>>> architectural state except ``$a0`` is preserved. Or is the whole 
+>>>> ``$a0 - $t8`` range clobbered, just like with Linux syscalls?
+>>>>
+>>> what is advantage with $a0 - > $t8 clobbered?
+>>
+>> Because then a hypercall is going to behave identical as an ordinary C 
+>> function call, which is easy for people and compilers to understand.
+>>
+> If you really understand detailed behavior about hypercall/syscall, the 
+> conclusion may be different.
+> 
+> If T0 - T8 is clobbered with hypercall instruction, hypercall caller 
+> need save clobbered register, now hypercall exception save/restore all 
+> the registers during VM exits. If so, hypercall caller need not save 
+> general registers and it is not necessary scratched for hypercall ABI.
+> 
+> Until now all the discussion the macro level, no detail code level.
+> 
+> Can you show me some example code where T0-T8 need not save/restore 
+> during LoongArch hypercall exception?
 
-> ---
->  drivers/staging/greybus/light.c | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/staging/greybus/light.c b/drivers/staging/greybus/light.c
-> index 87d36948c610..929514350947 100644
-> --- a/drivers/staging/greybus/light.c
-> +++ b/drivers/staging/greybus/light.c
-> @@ -148,10 +148,15 @@ static int __gb_lights_flash_brightness_set(struct gb_channel *channel)
->  						GB_CHANNEL_MODE_TORCH);
->  
->  	/* For not flash we need to convert brightness to intensity */
-> -	intensity = channel->intensity_uA.min +
-> +
-> +	if (channel) {
-> +		intensity = channel->intensity_uA.min +
->  			(channel->intensity_uA.step * channel->led->brightness);
->  
-> -	return __gb_lights_flash_intensity_set(channel, intensity);
-> +		return __gb_lights_flash_intensity_set(channel, intensity);
-> +	}
-> +
-> +	return 0;
->  }
->  #else
->  static struct gb_channel *get_channel_from_cdev(struct led_classdev *cdev)
-> -- 
-> 2.43.0
+I was emphasizing that consistency is generally good, and yes that's 
+"macroscopic" level talk. Of course, the hypercall client code would 
+have to do *less* work if *more* registers than the minimum are 
+preserved -- if right now everything is already preserved, nothing needs 
+to change.
+
+But please also notice that the context switch cost is paid for every 
+hypercall, and we can't reduce the number of preserved registers without 
+breaking compatibility. So I think we can keep the current 
+implementation behavior, but promise less in the spec: this way we'll 
+keep the possibility of reducing the context switch overhead.
+
+-- 
+WANG "xen0n" Xuerui
+
+Linux/LoongArch mailing list: https://lore.kernel.org/loongarch/
+
 
