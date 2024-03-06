@@ -1,174 +1,118 @@
-Return-Path: <linux-kernel+bounces-93899-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93900-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28F7B873684
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:33:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 56E6D873687
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:33:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D8E1C289851
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:33:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 134082894C6
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:33:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAD9A130AC6;
-	Wed,  6 Mar 2024 12:32:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD2F8130E4B;
+	Wed,  6 Mar 2024 12:32:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="HItIfRhZ"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="b3msKupl"
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E58B812FF67
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 12:32:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86318130E2F
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 12:32:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709728373; cv=none; b=Z+j2O3BmEYSatHoFFOTqYSh8u+vod0rTJaKCnVX/OfK0QpAdojMKG3Pu1iUKApS+1PHCvl6t0BFuPiQx4cJ4To6LW0UIb51sPXWA2uuq1u/0yDNEJi5NzZ/VOImcLNYnhxRLIYkM16eK1WDy8hq1Zymf9lAnpdcF88dludzBSWM=
+	t=1709728379; cv=none; b=oJWeQaF6rj8U/XCtE/Y/PiYj4gpBcdLaBDiduS0S9I680yJiUq9oCo2C9uk5qthOTKZ9uXM39SoRfmJ58CXywSqVp2LqYpJBoPVmPVadeZn5AUk/pOoagwdvtMl5X8Da0eOF1c6UKVKicyEF2LWH0LHaa/e/xHhSBU/ZhI4bUx8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709728373; c=relaxed/simple;
-	bh=0Tc0hQYDtt48jZhh0NYn8h+kJpBxzpBz3yqZS60Ykn0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Qwo7UO8QCQKT+Yr742kRPic77tIYilQvV+Mr7JT1nr8Ra+j5YJBR8KIz3RT9Zy3eHkR2JfkW/XIIV5ZoKS5KH7cG7UdM9PfWQXJt/rjDrRm/MXMk7SBlP0t8OAftN6MFoh+qkh4HyuDrtTXuWC3y5QkReBvfAOIbsq698LamQRM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=HItIfRhZ; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 369DB40E01A8;
-	Wed,  6 Mar 2024 12:32:48 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id Vl3CpBHFptTT; Wed,  6 Mar 2024 12:32:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1709728365; bh=PAp1bf6qrMiX4CQWZNcoZnKRC6rV4wKaDkhIHyk1xsA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=HItIfRhZ6cmgWXlbyxVTiOHumC88/3sDgSLBtHKgyUFgjAE84Rsu2wYWymQQ5Scsx
-	 gxiRW4FytlI4qiEp0RIsxvHRV5R8HMU9vOnvRY7xCDpDu+edKrKtdmwCzI9kOWq7jZ
-	 E1aQ2zCtrRe4Dg8g4+V+JatJ4bLyXJgVJNEPPg9aphRdOF6g9JbQV1w0GAE4OKsCij
-	 ws0CpIZTPqOluyt3L7PYKsajN53koEtEOdJ3bEq7m85jAm08fm048WIl1JFVHOJUsg
-	 pXvf9tGqCpNcsM86Sal7uM3g3Em2Oc5UWbZMQNKnPzegiUq5MZTR1Tmvsn1rx18qDS
-	 ykI8B1zfQsPV7TaLgp69P0sfOt/dJroPDLyzaqmamUq9/kRP7bA3cfxB3TAt7MxIQL
-	 ohN3kmjdMmNfNGOd8ctUkqqoEWMajnb8z4Mwcau+k/ucMmQ8Yoi5q/SdbeYPMMxkab
-	 fYE5ukc3eIn8mhGxJfCVNTz09jbjsArowojq6NDF3TmL9OqA08fVoRCD+M5kgbhQn7
-	 Sn/Fihhz35zHcvAI7uRzO6boVPcRjx9R7nRguXenPw+RiOMJ3nLW3GLnvlGr3VuhCm
-	 m71Ys7HxdXJw1lRX6ji+Km6XzZxzPCG4qUCLKBjh28SmiNalJ0bvlqqcSpyAVmO6Xn
-	 lpfzutfmuXg5buYpiHkJdpNQ=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 65CD340E0185;
-	Wed,  6 Mar 2024 12:32:37 +0000 (UTC)
-Date: Wed, 6 Mar 2024 13:32:30 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: "Liang, Kan" <kan.liang@linux.intel.com>, x86-ml <x86@kernel.org>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Alexander Antonov <alexander.antonov@linux.intel.com>,
-	lkml <linux-kernel@vger.kernel.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: unchecked MSR access error: WRMSR to 0xd84 (tried to write
- 0x0000000000010003) at rIP: 0xffffffffa025a1b8
- (snbep_uncore_msr_init_box+0x38/0x60 [intel_uncore])
-Message-ID: <20240306123230.GCZehiXhHIZwi2zU1_@fat_crate.local>
-References: <20240304201233.GDZeYrMc9exmV21PFB@fat_crate.local>
- <87sf15ugsz.ffs@tglx>
- <20240305121014.GCZecLppQTzWmpI_yR@fat_crate.local>
- <87a5nbvccx.ffs@tglx>
+	s=arc-20240116; t=1709728379; c=relaxed/simple;
+	bh=8wvd3gt3M/oXf0kj888CTRPdhQLqnel9BUfji3e//qY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=O5s24ZxVRDkWXiEubAdW0GgToeSfECRxa5jmatwE8f27rLxgk76ePBQXBZesqcjns97NYyG+8gjF4ALEYiyRcQ/+MpfO2WHl1cmZTbJDeHeKADs7UOcAVmppnoIHB/VzCW0WIcgo5HoO5P6b1j05E276n1ZuHFULunWXPHuI8WA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=b3msKupl; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-412f0655d81so9594085e9.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 04:32:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709728376; x=1710333176; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3P65RJ0ScisBLyG1I2ooEc4j5/yHla4aIpipvPFtxpw=;
+        b=b3msKuplfiimQt57VzIso0Zet0BT3pj79PPsftWyS2E7vejPkWIA8kRH1hHxu0AZkW
+         1yJ75Gj/R5bCgxlVbXzIfEBaML4+I86LpNwx9rCPXEKHOkj8rgh2ZSso8P8EuXbfUUnR
+         i5lmGZFxjJfXj69nHZe0URn/vqebocBeHBj2HXJskcDS6wbBlwdlSwpkrhXZDxMJF20p
+         HrN76eOtfo7JkkgErLOUvMHGVpkg1Rh/ReY8ohnNKMoM25NKUfX05TE7XqaV7MWdenup
+         Rt+yBfN5+D1kictUecbDAoIqA3MQpaVKiOMcjq+tKFHRFKsRE+oEoaFzQXk/yc6MloYB
+         crDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709728376; x=1710333176;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3P65RJ0ScisBLyG1I2ooEc4j5/yHla4aIpipvPFtxpw=;
+        b=wFE7pwx5ewMUo5vc399Q3U+Ca2h5IB3uwhXOu4ZSnVAIg19e5YGLcVzQP9R+idH7SO
+         XHmUAQF36oz/hVMZF6CMdEFsWX+NWovVRIxFNSnB13MhhF+WR3tIfTRKufaQ2UW9JOgf
+         63BcnGcznQAVhoeB4U1KEc51bQ7PBlVXZh3vHCWfjMN8dvokMQwGJud93lGWHusVndXx
+         6+reaXFnDVHIeNq7ADJ9syZXCbfy5C3apI0Ww9OgJSE+B0fw3bN6JlLYocT4DKjpR/th
+         Zd5zttR2odHn17gcSNGFAxcRpW1Pj2bBcuT6Bx+qJ65/ZGfeNfpZ/c8PGi5yaVmPfbp2
+         brcQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUy6lHwH7gR2qoFCodfq53w3usF7mLWbb4lfzqTkw7g7QV7FE5e5erHm9CBzK0jeHmunmQqQHDz1Ep8DsC9dLm5QeTXp5v2UHXJigPZ
+X-Gm-Message-State: AOJu0Yx6wImp5l9z84DMTDbMYO5nlm89VSYOupT2ljYDOoyyKobec88a
+	muEmlGzEsWzK59q/qLvYsQW7rlH2a3SGS2wg/d/PLuLHWGBSEnCxgb1TF6md5p6lAIF4FYyBj3E
+	Y
+X-Google-Smtp-Source: AGHT+IERkLljOFqEG/0zM4LPhgeyclm7KvDT1K/I2YSz6yw0l4JvHTg8n1dNAx0KmP7Lx5Rt0FoGeg==
+X-Received: by 2002:a05:600c:4f4d:b0:412:eb6e:1fdb with SMTP id m13-20020a05600c4f4d00b00412eb6e1fdbmr3309269wmq.40.1709728375902;
+        Wed, 06 Mar 2024 04:32:55 -0800 (PST)
+Received: from [192.168.0.102] ([176.61.106.68])
+        by smtp.gmail.com with ESMTPSA id t14-20020a05600c198e00b00412f02bff2csm3466711wmq.37.2024.03.06.04.32.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Mar 2024 04:32:55 -0800 (PST)
+Message-ID: <da824ab8-a9a6-4f07-a5c5-8cd38e01844b@linaro.org>
+Date: Wed, 6 Mar 2024 12:32:54 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <87a5nbvccx.ffs@tglx>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 10/20] media: venus: core: Drop cache properties in
+ resource struct
+Content-Language: en-US
+To: Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+ Vikash Garodia <quic_vgarodia@quicinc.com>,
+ Bryan O'Donoghue <bryan.odonoghue@linaro.org>, Andy Gross
+ <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Dikshita Agarwal <quic_dikshita@quicinc.com>,
+ Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Marijn Suijten <marijn.suijten@somainline.org>,
+ Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+ Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+ linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20230911-topic-mars-v2-0-3dac84b88c4b@linaro.org>
+ <20230911-topic-mars-v2-10-3dac84b88c4b@linaro.org>
+From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <20230911-topic-mars-v2-10-3dac84b88c4b@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Mar 06, 2024 at 12:17:02PM +0100, Thomas Gleixner wrote:
-> On Tue, Mar 05 2024 at 13:10, Borislav Petkov wrote:
-> > I guess ship it but we'll pay attention to what else ends up
-> > complaining.
+On 09/02/2024 21:09, Konrad Dybcio wrote:
+> Currently VMEM/OCMEM/LLCC is disabled on all platforms.
 > 
-> Here is an updated version which handles it in the topology core code so
-> that MPPARSE is covered as well.
+> Make it unconditional to save on space.
 > 
-> Thanks,
+> These caches will not be enabled until the Venus driver can reference
+> them as chunks of SRAM (they're modelled as separate devices) to avoid
+> hardcoding magic addresses and rougely accessing the hardware,
+> bypassing the normal accessors.
 > 
->         tglx
-> ---
-> Subject: x86/topology: Ignore non-present APIC IDs in a present package
-> From: Thomas Gleixner <tglx@linutronix.de>
-> Date: Tue, 05 Mar 2024 10:57:26 +0100
-> 
-> Borislav reported that one of his systems has a broken MADT table which
-> advertises eight present APICs and 24 non-present APICs in the same
-> package.
-> 
-> The non-present ones are considered hot-pluggable by the topology
-> evaluation code, which is obviously bogus as there is no way to hot-plug
-> within the same package.
-> 
-> As the topology evaluation code accounts for hot-pluggable CPUs in a
-> package, the maximum number of cores per package is computed wrong, which
-> in turn causes the uncore performance counter driver to access non-existing
-> MSRs. It will probably confuse other entities which rely on the maximum
-> number of cores and threads per package too.
-> 
-> Cure this by ignoring hot-pluggable APIC IDs within a present package.
-> 
-> In theory it would be reasonable to just do this unconditionally, but then
-> there is this thing called reality^Wvirtualization which ruins
-> everything. Virtualization is the only existing user of "physical" hotplug
-> and the virtualization tools allow the above scenario. Whether that is
-> actually in use or not is unknown.
-> 
-> As it can be argued that the virtualization case is not affected by the
-> issues which exposed the reported problem, allow the bogosity if the kernel
-> determined that it is running in a VM for now.
-> 
-> Reported-by: Borislav Petkov (AMD) <bp@alien8.de>
-> Fixes: 89b0f15f408f ("x86/cpu/topology: Get rid of cpuinfo::x86_max_cores")
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
->  arch/x86/kernel/cpu/topology.c |   38 +++++++++++++++++++++++++++++---------
->  1 file changed, 29 insertions(+), 9 deletions(-)
-> 
-> --- a/arch/x86/kernel/cpu/topology.c
-> +++ b/arch/x86/kernel/cpu/topology.c
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-#include <asm/hypervisor.h>
+Agreed, this is dead code.
 
-at the top here.
+Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 
-With that, relevant new lines from dmesg:
-
-+CPU topo: Ignoring hot-pluggable APIC ID 8 in present package.
-
-and
-
-@@ -129,9 +130,10 @@ CPU topo: Max. logical packages:   1
- CPU topo: Max. logical dies:       1
- CPU topo: Max. dies per package:   1
- CPU topo: Max. threads per core:   2
--CPU topo: Num. cores per package:    16
--CPU topo: Num. threads per package:  32
--CPU topo: Allowing 8 present CPUs plus 24 hotplug CPUs
-+CPU topo: Num. cores per package:     4
-+CPU topo: Num. threads per package:   8
-+CPU topo: Allowing 8 present CPUs plus 0 hotplug CPUs
-+CPU topo: Rejected CPUs 24
-
-AFAIC, ship it.
-
-Tested-by: Borislav Petkov (AMD) <bp@alien8.de>
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
 
