@@ -1,49 +1,49 @@
-Return-Path: <linux-kernel+bounces-93540-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93543-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97C8787312B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:52:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D63A873134
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:53:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBB071C22EEE
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 08:52:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3DF451F21345
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 08:53:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E0915F561;
-	Wed,  6 Mar 2024 08:51:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11D735D8E7;
+	Wed,  6 Mar 2024 08:51:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="hTZz3rGq"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="IKId+XNt"
 Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06D025D903;
-	Wed,  6 Mar 2024 08:51:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 201565F57A;
+	Wed,  6 Mar 2024 08:51:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709715087; cv=none; b=l92mn+5OM3c66FTXHKvuUTEZy/gHWxp6/M6z4lswrqAP9XP8wSDkdH+u5aM2h96KDp2Bef2Pq628OnSkio7jtMYJZBFueKt8k4iqw9uBEi2fPNwqyrZyhBJPXDHgghFN7F69vfXSYGQOyWrps6Bhn15OXD9VJMqasYaG5MZ1ERI=
+	t=1709715091; cv=none; b=RA7+eZauX3PEhMS7MPqCoWUzvELZWsa3nefnqolOLCZIsMsG7xx3878kuwWpgW0aGdYgNQPgucU2AtXO5w5TJuakJde2ITl4b+/TaHyk8utT10J0M/iOBpJcbnFvJCmOXoyUz7KTFHjPDdjtOFeIQcETGcLMWK0H2Ucttpa2whQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709715087; c=relaxed/simple;
-	bh=Xu5oz9rC9aAHVGxqOIzLFqO/NQg3xCelrfmXQxsPL20=;
+	s=arc-20240116; t=1709715091; c=relaxed/simple;
+	bh=wzT7UhMTi5fgGYNzyYXCwdvm1pnKZUabXN24TffNYU0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XXqyyofXfLAdMto90C8BpR+Q5l2FShhO54wOgRU+M5yIoyW43FIYHM1dhJoLcx2Mon++xzaO/He55Wp+AqAqoNgi74+p84tfRwwOpESw9alpxNgkpBZLWrVVg2ZCe+RHNtC53j3Hl+E3fz6+Xl/o/9cAExtsycEzv8SSS0JXMOk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=hTZz3rGq; arc=none smtp.client-ip=217.70.183.198
+	 MIME-Version; b=uTI3P3dGNNw54pZbsysOtqyEZlFlNHTnSRlzE0YjJ+OqE1FWeZMzNYKhLN4+wDIppl2hvrqqPnc+DYow+KYMDcYTHLuea65TEp4IGPBnHmNY+2LfecMS6F/81S5A96qVTOhIGxbfNo+WBQgROc+KJvEI/x4i4hJ0P0MGPqcKQkg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=IKId+XNt; arc=none smtp.client-ip=217.70.183.198
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPA id B225CC000C;
-	Wed,  6 Mar 2024 08:51:20 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPA id 5D105C000E;
+	Wed,  6 Mar 2024 08:51:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709715082;
+	t=1709715087;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=qVM96PgVwXU28etPYwEN4Q3znMesrfWkFxM+u1kekeI=;
-	b=hTZz3rGqKsx7IDpHwuAEZ1ZOyq9FIHJlfFwtcCophk91hecbJEXHbaNkTV7PNxDgKPGu++
-	si1uOyCUc/d0DMd1c7coAhosw/IFBMLhPj565x82/igQA+uiHSR6+sf+pP2tMl/WDjJ1If
-	D/5lArT8v53FTb48hbmb7UTgThkulncUIxLcQJ7SE26OCmoc9BPi31EnicOYesbpMfXB15
-	l3hRIqPjnj3mNU5tOWDuNRWD6ut1dKvUaulcKRq9vIDkmU9ch/GBSJQ2xXSZLz/eZr86TS
-	3F7HFP3P6C+M1EHqfKsEVnrDfX7icxDrfSwPIcU81tkk+Bi3c6dadFcDGb0jTQ==
+	bh=MsaNdjrSmF9njVQ3P2uiU1SWMrwODHyriD/FQt22xJA=;
+	b=IKId+XNtwfMc9maul8rDek2w6giZktzfLy7TYFnWymsvRHGxatxduZdlZyFiAyZ4eyoN1N
+	89sVlm3zLG88SKO1emmcJCxSzevEs0XyVOVre/s5b4uQWqoKGwl2N3gaaS6HO6UoPLFy/5
+	Eo/Gw4CAjc6em+XGmRMkpV4I0z0Mty6FHDgbz1t/fEzAxA8JM4JR0He4K1d17zq0plLqr9
+	IiekxPe4aoxjw6E1sKJGS/SjdqH2+L1LrSLepzOqU2W3kEVMXdnRt5rGlPZNPCKEbpKPTw
+	XnNefiYjlp9N/qL10vMEk825zf+qhhKkxJhGYHdp4nNzkVdYfkJ0PEiRczNlDw==
 From: Herve Codina <herve.codina@bootlin.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	"Rafael J. Wysocki" <rafael@kernel.org>,
@@ -65,9 +65,9 @@ Cc: Lizhi Hou <lizhi.hou@amd.com>,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 	Herve Codina <herve.codina@bootlin.com>,
 	stable@vger.kernel.org
-Subject: [PATCH v4 1/2] driver core: Introduce device_link_wait_removal()
-Date: Wed,  6 Mar 2024 09:50:02 +0100
-Message-ID: <20240306085007.169771-2-herve.codina@bootlin.com>
+Subject: [PATCH v4 2/2] of: dynamic: Synchronize of_changeset_destroy() with the devlink removals
+Date: Wed,  6 Mar 2024 09:50:03 +0100
+Message-ID: <20240306085007.169771-3-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240306085007.169771-1-herve.codina@bootlin.com>
 References: <20240306085007.169771-1-herve.codina@bootlin.com>
@@ -80,114 +80,59 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: herve.codina@bootlin.com
 
-The commit 80dd33cf72d1 ("drivers: base: Fix device link removal")
-introduces a workqueue to release the consumer and supplier devices used
-in the devlink.
-In the job queued, devices are release and in turn, when all the
-references to these devices are dropped, the release function of the
-device itself is called.
-
-Nothing is present to provide some synchronisation with this workqueue
-in order to ensure that all ongoing releasing operations are done and
-so, some other operations can be started safely.
-
-For instance, in the following sequence:
+In the following sequence:
   1) of_platform_depopulate()
   2) of_overlay_remove()
 
-During the step 1, devices are released and related devlinks are removed
-(jobs pushed in the workqueue).
-During the step 2, OF nodes are destroyed but, without any
-synchronisation with devlink removal jobs, of_overlay_remove() can raise
-warnings related to missing of_node_put():
-  ERROR: memory leak, expected refcount 1 instead of 2
+During the step 1, devices are destroyed and devlinks are removed.
+During the step 2, OF nodes are destroyed but
+__of_changeset_entry_destroy() can raise warnings related to missing
+of_node_put():
+  ERROR: memory leak, expected refcount 1 instead of 2 ...
 
-Indeed, the missing of_node_put() call is going to be done, too late,
-from the workqueue job execution.
+Indeed, during the devlink removals performed at step 1, the removal
+itself releasing the device (and the attached of_node) is done by a job
+queued in a workqueue and so, it is done asynchronously with respect to
+function calls.
+When the warning is present, of_node_put() will be called but wrongly
+too late from the workqueue job.
 
-Introduce device_link_wait_removal() to offer a way to synchronize
-operations waiting for the end of devlink removals (i.e. end of
-workqueue jobs).
-Also, as a flushing operation is done on the workqueue, the workqueue
-used is moved from a system-wide workqueue to a local one.
+In order to be sure that any ongoing devlink removals are done before
+the of_node destruction, synchronize the of_changeset_destroy() with the
+devlink removals.
 
 Fixes: 80dd33cf72d1 ("drivers: base: Fix device link removal")
 Cc: stable@vger.kernel.org
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
 ---
- drivers/base/core.c    | 26 +++++++++++++++++++++++---
- include/linux/device.h |  1 +
- 2 files changed, 24 insertions(+), 3 deletions(-)
+ drivers/of/dynamic.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index d5f4e4aac09b..48b28c59c592 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -44,6 +44,7 @@ static bool fw_devlink_is_permissive(void);
- static void __fw_devlink_link_to_consumers(struct device *dev);
- static bool fw_devlink_drv_reg_done;
- static bool fw_devlink_best_effort;
-+static struct workqueue_struct *device_link_wq;
+diff --git a/drivers/of/dynamic.c b/drivers/of/dynamic.c
+index 3bf27052832f..169e2a9ae22f 100644
+--- a/drivers/of/dynamic.c
++++ b/drivers/of/dynamic.c
+@@ -9,6 +9,7 @@
  
- /**
-  * __fwnode_link_add - Create a link between two fwnode_handles.
-@@ -532,12 +533,26 @@ static void devlink_dev_release(struct device *dev)
- 	/*
- 	 * It may take a while to complete this work because of the SRCU
- 	 * synchronization in device_link_release_fn() and if the consumer or
--	 * supplier devices get deleted when it runs, so put it into the "long"
--	 * workqueue.
-+	 * supplier devices get deleted when it runs, so put it into the
-+	 * dedicated workqueue.
- 	 */
--	queue_work(system_long_wq, &link->rm_work);
-+	queue_work(device_link_wq, &link->rm_work);
- }
+ #define pr_fmt(fmt)	"OF: " fmt
  
-+/**
-+ * device_link_wait_removal - Wait for ongoing devlink removal jobs to terminate
-+ */
-+void device_link_wait_removal(void)
-+{
++#include <linux/device.h>
+ #include <linux/of.h>
+ #include <linux/spinlock.h>
+ #include <linux/slab.h>
+@@ -667,6 +668,12 @@ void of_changeset_destroy(struct of_changeset *ocs)
+ {
+ 	struct of_changeset_entry *ce, *cen;
+ 
 +	/*
-+	 * devlink removal jobs are queued in the dedicated work queue.
-+	 * To be sure that all removal jobs are terminated, ensure that any
-+	 * scheduled work has run to completion.
++	 * Wait for any ongoing device link removals before destroying some of
++	 * nodes.
 +	 */
-+	flush_workqueue(device_link_wq);
-+}
-+EXPORT_SYMBOL_GPL(device_link_wait_removal);
++	device_link_wait_removal();
 +
- static struct class devlink_class = {
- 	.name = "devlink",
- 	.dev_groups = devlink_groups,
-@@ -4099,9 +4114,14 @@ int __init devices_init(void)
- 	sysfs_dev_char_kobj = kobject_create_and_add("char", dev_kobj);
- 	if (!sysfs_dev_char_kobj)
- 		goto char_kobj_err;
-+	device_link_wq = alloc_workqueue("device_link_wq", 0, 0);
-+	if (!device_link_wq)
-+		goto wq_err;
- 
- 	return 0;
- 
-+ wq_err:
-+	kobject_put(sysfs_dev_char_kobj);
-  char_kobj_err:
- 	kobject_put(sysfs_dev_block_kobj);
-  block_kobj_err:
-diff --git a/include/linux/device.h b/include/linux/device.h
-index 1795121dee9a..d7d8305a72e8 100644
---- a/include/linux/device.h
-+++ b/include/linux/device.h
-@@ -1249,6 +1249,7 @@ void device_link_del(struct device_link *link);
- void device_link_remove(void *consumer, struct device *supplier);
- void device_links_supplier_sync_state_pause(void);
- void device_links_supplier_sync_state_resume(void);
-+void device_link_wait_removal(void);
- 
- /* Create alias, so I can be autoloaded. */
- #define MODULE_ALIAS_CHARDEV(major,minor) \
+ 	list_for_each_entry_safe_reverse(ce, cen, &ocs->entries, node)
+ 		__of_changeset_entry_destroy(ce);
+ }
 -- 
 2.43.0
 
