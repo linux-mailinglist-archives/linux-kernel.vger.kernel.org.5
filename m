@@ -1,117 +1,130 @@
-Return-Path: <linux-kernel+bounces-93201-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93160-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9B85872C4C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 02:41:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9E8E872BAC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 01:19:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ECDF31C225FF
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 01:41:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 88B921F2921F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 00:19:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B969F7499;
-	Wed,  6 Mar 2024 01:41:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74AF7BA55;
+	Wed,  6 Mar 2024 00:19:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="friY4roL"
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ismIrwIF"
+Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCE6D2CA7;
-	Wed,  6 Mar 2024 01:41:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61639EC4
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 00:19:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709689298; cv=none; b=cln8Uqu1qNi5ho72ozk4JjI1aHOiMxn9kgb6C1iGaTttDVf9RgrTemTRYr0qrV8Q8ALMifaWU0pPLUJi+64IApRZpaFb4zNqIr3P+jfwNNWlAiDMyYPaWxqOR5/Y8LLPhqtgye6nekBE2re4v99JxhAMxA3TfjT6huouc3f2MuI=
+	t=1709684389; cv=none; b=DzAqO9K6huOgP/+13UPuITlVyxSS8oVfs3ZTtdd+B4KQg/JwUU7yUzg//5XFweDCW/qqYBtDFIOr76xK6W/gr+NmMIG49cpyPNuxM2UlH3ISjzO067EGRBIKqhwoMKfmMFEgX2VvO+Y9dYKLiJSHLysJTl/cvLfHWw8x2ofdQ/Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709689298; c=relaxed/simple;
-	bh=hUZhXekL3czb/m0SA5YEhBv9lBYNkRRC/zAjd6jzNaI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mHXddueyI07Lr3vD0fcMiCRnVvEhZiVOklxQKF0yliinn96KHcJG8qmEy9sjaGPwUx95XgIxXVwJxsYEhNUiSgkm4DtMZyhycIor1gmwIu02B/qYTr9RVYOMILrkJ0kp+LXS5gNjYcCU6GLme580edFL3D9Cl/szthVxOuYlJp8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=friY4roL; arc=none smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 425KrIRj008049;
-	Wed, 6 Mar 2024 00:19:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2023-11-20; bh=egK10wqwXb2fu+g1i/MZi3vjpY9NQX6hwN6M7fWN5jE=;
- b=friY4roL0pv2sKy7l3IPJco9M3jBCHV5aCL9c1I8XBZDzepoyoSoW69o1Z8cz4G0Vva6
- 1ddxuiXBdPJWm+3gynugKUcxgAOsn5rSZrmQikiyGftJ3WXMGDYHACKh3KNXEsx6tOnj
- AaXgrR/iPoKqJ/eUO3voG56AVWmnc+OqvLRkbTa1BxJFE2K2T7Jf8eiVdPYHosVQaxgu
- aITNxtU4gV1YgvMv4MsDkFpt89t9kxWO5ZOUnsiSS3G4v6vP5BWIGbfqqGtPa+b5Kyta
- 4eKptBIhHrz3qF41tcdil9fOig2LpA4r5Dr3T69IFSjFRO1QkVRTZxHzeH5yZAeTUFEA 2w== 
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wkuqvfgtr-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 06 Mar 2024 00:19:07 +0000
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 425NSNgu013814;
-	Wed, 6 Mar 2024 00:18:58 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3wktj8f5w2-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 06 Mar 2024 00:18:58 +0000
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 4260Iv2A021727;
-	Wed, 6 Mar 2024 00:18:57 GMT
-Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.129.136.47])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3wktj8f5v6-1;
-	Wed, 06 Mar 2024 00:18:57 +0000
-From: Samasth Norway Ananda <samasth.norway.ananda@oracle.com>
-To: peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        namhyung@kernel.org
-Cc: samasth.norway.ananda@oracle.com, jolsa@kernel.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH ] perf test pmu: Fix file Leak in test_format_dir_get
-Date: Tue,  5 Mar 2024 16:18:55 -0800
-Message-ID: <20240306001855.4070582-1-samasth.norway.ananda@oracle.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1709684389; c=relaxed/simple;
+	bh=l5Z4UTiZAV0FnKHADONYXORI5k3mrUH4FrHUJ/WTslc=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=K5fXZpa2LH0siUbsM6MLPLa7ao5B6yaoUrPuDxof0r0CZyuUseFEqFHLpb6OeXduqhz1giD6uXSo1wpXK25hg0MPsiNrVn++OQPIdn2LcSG5a4vS3FeHRdfEfO4lSeF9astUP2IGgBtFkAGoNClK9i15WjOZNKjggZ8TQGdn9P8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ismIrwIF; arc=none smtp.client-ip=209.85.215.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-5dbddee3694so163123a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 16:19:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709684388; x=1710289188; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=OlafunnuQDmjQI6RGQQ8IG6bwWUsRoZnzCla50xupzE=;
+        b=ismIrwIFvYMISOdBkmI7N5m/tcB87kkhyGIVzc6/DuXBo1KZlReryVhSBwUwyZQzv1
+         GiwuJcHMILNr9RzHT4QGpxrFSsbBNhpKb/5zTt3AeV2MLpw40LYbiV16PowI7YIWOqT3
+         cQEW6lYRc3tP9M+1l3slyaNBTpwRxDuYwD803IgBxDUqnEa+Srq8lrxQgWouvT14zXFe
+         XfEHm6IzuB/1iPtw9v3Q9SUc0ChBDLSV0bttZbQyPKQrKAwTGV0fGiPiUCyt2B5XpCKv
+         ScI06BMWPfNGlnZsHcaN33S2wslMwQnT9BvxsXXmJs3iTvU2FmnEb1EgSZpOlxhF3l+n
+         CMCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709684388; x=1710289188;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OlafunnuQDmjQI6RGQQ8IG6bwWUsRoZnzCla50xupzE=;
+        b=N8jk3jY/C++NJQxD2dg+Ueu6W0N3YK5nJwrjZA8UfwjUAzQbsOICwOOUsJSdDONR+h
+         MHQNiR9njE+El5k1n46Y2PXx8/A+4S/Ix1LgC3r9ibHZ1r+H3ug/lspa2eE7emO2/6Ba
+         ND8Kb2Bl7m7LbXw3Jzlr/8oB7CzvWw2WOVbl4D8BP/rZ/9sVsILZ3NVCOl2pyoUwK2NC
+         ptiqCp6q+mUKCgt0yQI9sDuajM4V/ouxGPaQbR5l89QjPQsLZEI9CLP1lkemZB5ryONP
+         er391EcYldtTfM+nJymXbhUu/APJCrD8OE5JaST4lvDtnpvJwaa9FL2jONJNtohujGfp
+         ZWwg==
+X-Forwarded-Encrypted: i=1; AJvYcCVTU7qQrE45Z9ausmOj9b8sbBB/5k1u0I2C+ZFw45XfYuipEIVs7HueSwxc4Z7Kx0qG6G05Jq4D1IyVikF5aSd19OtNNNIX/vJrSBlX
+X-Gm-Message-State: AOJu0YxoYJCopIZQExEahC/jwCIuuiiE+a0wTwjbNyxJ1oUlrN4Zxxll
+	VMsYylQt1D39G5xla5MQ0iq3yKfMon1pmluV47lcicaXcM4ABDEdJpbFgXQWzkgr76yq+ddFNar
+	icw==
+X-Google-Smtp-Source: AGHT+IGnRNghV9U0qTiTeThRt68W4kCSoa4n/bzHUjWD8qRkEmjsgFZT0aiuWc8DkWGKfbQn5Mz5agbV/hI=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a63:f311:0:b0:5dc:4a5f:a5ee with SMTP id
+ l17-20020a63f311000000b005dc4a5fa5eemr11899pgh.1.1709684387635; Tue, 05 Mar
+ 2024 16:19:47 -0800 (PST)
+Date: Tue, 5 Mar 2024 16:19:46 -0800
+In-Reply-To: <edd86a97-b2ef-49e6-aa2b-16b1ef790d96@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-05_19,2024-03-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0 mlxscore=0
- spamscore=0 phishscore=0 suspectscore=0 malwarescore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2403060001
-X-Proofpoint-GUID: JVqj9h-YQouvnBbo0wV38Xr9sL4foS_D
-X-Proofpoint-ORIG-GUID: JVqj9h-YQouvnBbo0wV38Xr9sL4foS_D
+Mime-Version: 1.0
+References: <1880816055.4545532.1709260250219.JavaMail.zimbra@sjtu.edu.cn>
+ <ZeYK-hNDQz5cFhre@google.com> <edd86a97-b2ef-49e6-aa2b-16b1ef790d96@amd.com>
+Message-ID: <Zee2ogAOl8cR4vNZ@google.com>
+Subject: Re: [PATCH] KVM:SVM: Flush cache only on CPUs running SEV guest
+From: Sean Christopherson <seanjc@google.com>
+To: Tom Lendacky <thomas.lendacky@amd.com>
+Cc: Zheyun Shen <szy0127@sjtu.edu.cn>, pbonzini@redhat.com, tglx@linutronix.de, 
+	kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 
-File is opened inside the for loop. But if the 'if' condition is
-successful then 'break' statement will be reached, exiting the
-'for' loop prior to reaching 'fclose'.
+On Tue, Mar 05, 2024, Tom Lendacky wrote:
+> On 3/4/24 11:55, Sean Christopherson wrote:
+> > +Tom
+> > 
+> > "KVM: SVM:" for the shortlog scope.
+> > 
+> > On Fri, Mar 01, 2024, Zheyun Shen wrote:
+> > > On AMD CPUs without ensuring cache consistency, each memory page reclamation in
+> > > an SEV guest triggers a call to wbinvd_on_all_cpus, thereby affecting the
+> > > performance of other programs on the host.
+> > > 
+> > > Typically, an AMD server may have 128 cores or more, while the SEV guest might only
+> > > utilize 8 of these cores. Meanwhile, host can use qemu-affinity to bind these 8 vCPUs
+> > > to specific physical CPUs.
+> > > 
+> > > Therefore, keeping a record of the physical core numbers each time a vCPU runs
+> > > can help avoid flushing the cache for all CPUs every time.
+> > 
+> > This needs an unequivocal statement from AMD that flushing caches only on CPUs
+> > that do VMRUN is sufficient.  That sounds like it should be obviously correct,
+> > as I don't see how else a cache line can be dirtied for the encrypted PA, but
+> > this entire non-coherent caches mess makes me more than a bit paranoid.
+> 
+> As long as the wbinvd_on_all_cpus() related to the ASID flushing isn't
+> changed, this should be ok. And the code currently flushes the source pages
+> when doing LAUNCH_UPDATE commands and adding encrypted regions, so should be
+> good there.
 
-Signed-off-by: Samasth Norway Ananda <samasth.norway.ananda@oracle.com>
----
-Found this error through static analysis. This has only been compile
-tested.
----
- tools/perf/tests/pmu.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Nice, thanks!
 
-diff --git a/tools/perf/tests/pmu.c b/tools/perf/tests/pmu.c
-index 8f18127d876a..f751e6cb6ac0 100644
---- a/tools/perf/tests/pmu.c
-+++ b/tools/perf/tests/pmu.c
-@@ -106,8 +106,10 @@ static char *test_format_dir_get(char *dir, size_t sz)
- 		if (!file)
- 			return NULL;
- 
--		if (1 != fwrite(format->value, strlen(format->value), 1, file))
-+		if (1 != fwrite(format->value, strlen(format->value), 1, file)) {
-+			fclose(file);
- 			break;
-+		}
- 
- 		fclose(file);
- 	}
--- 
-2.43.0
+> Would it make sense to make this configurable, with the current behavior the
+> default, until testing looks good for a while?
 
+I don't hate the idea, but I'm inclined to hit the "I'm feeling lucky" button.
+I would rather we put in effort to all but guarantee we can do a clean revert in
+the future, at which point a kill switch doesn't add all that much value.  E.g.
+it would allow for a non-disruptive fix, and maybe a slightly faster confirmation
+of a bug, but that's about it.
+
+And since the fallout from this would be host data corruption, _not_ rebooting
+hosts that may have been corrupted is probably a bad idea, i.e. the whole
+non-disruptive fix benefit is quite dubious.
+
+The other issue is that it'd be extremely difficult to know when we could/should
+remove the kill switch.  It might be months or even years before anyone starts
+running high volume of SEV/SEV-ES VMs with this optimization.
 
