@@ -1,135 +1,122 @@
-Return-Path: <linux-kernel+bounces-94643-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94645-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E41C874295
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 23:17:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E20A087429F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 23:22:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39BC428287C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 22:17:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 62718281CB5
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 22:22:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7E461BC58;
-	Wed,  6 Mar 2024 22:17:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF7DB1BC4B;
+	Wed,  6 Mar 2024 22:22:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EiZIfPzR"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L8awcRI+"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 575141B95B;
-	Wed,  6 Mar 2024 22:17:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2041C1BC22;
+	Wed,  6 Mar 2024 22:22:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709763451; cv=none; b=qP2RS8/pOq1zb02xqfDoh4Catp+k3Ab0hmJzXUBYphALMepOdUyZbffRO730uoA6w6ilJCup2wvEUMOWsY0/7AlfQs3HL21k2qZTWyuFkpH1JQXUOfxxM1oaLI3wllk+UG46XwGhI21QHUz3glBy9BsimwgiV1FaUVd0egYOKgQ=
+	t=1709763721; cv=none; b=lnQz80WiaLpGxe9HbH3QnEHL6ilUnSLRyoEBmV3WOaue7ovylkRTpdSU1vqWCLSETPhQ7vpcBh+zKP62Z7e9bMZV234jiPgraF1WyDmmkqC8dj42OFeloifqEiJreDiPl3/IpF+UB//M3IHXpWc28O90xCuSow9HtTa3Ava1xAs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709763451; c=relaxed/simple;
-	bh=Q/HnkSBjRtmv2HAo1EODOvFiwirAxHCTijp7h5jPD2M=;
+	s=arc-20240116; t=1709763721; c=relaxed/simple;
+	bh=MlQq2QOH4T5O53iSAeAQzQexenXuj0qdDakJrAMFRSA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lLEpuqolgxyoY+NOCwWSf3FOW79rXUuQ+BigGNtpRNA26kuVFuppMDFaIi9P0lKP+j1LXDp35WyaeOEiY8heGZIWE1St1f5kq/P87lsw2GIKTxQ5w+S8Fgy3k5rtjHKm5gAJzWn9UeENW1TgiHhXxc6kPDXMLOOCGJmGKD6Bec8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=EiZIfPzR; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709763449; x=1741299449;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Q/HnkSBjRtmv2HAo1EODOvFiwirAxHCTijp7h5jPD2M=;
-  b=EiZIfPzRJRLESFLLnzJj3wl2e6+aQDb6XyVhK4FgftoE5ao7NdMm1/d8
-   I4xnBJVSTo02Xhp4czfQuOOACSp6SCc3rVRpaMicqP+b7T5vBGYST6QLK
-   2S++jmaQjLMoWAuEGrTmtqxnDuqBN6yIn+i3UuFfENO88hGOIt3EnDV1M
-   dCrhgrFphs78580oODg6qR1EXw1S5iizWRoLqduqbv7IVRurV1mshbf1U
-   zDSzdu7EsZ7f5y7UZAZRoOA+fnRAObvKJ0tQzwF4G1xmAr3hD3xHleEtq
-   1BJT6n8PIH6OWzmpoMKy2TQHm8l+GtaYKLUn+gsEEOv8zoXWPg0QlzmSQ
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11005"; a="15054814"
-X-IronPort-AV: E=Sophos;i="6.06,209,1705392000"; 
-   d="scan'208";a="15054814"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 14:17:28 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,209,1705392000"; 
-   d="scan'208";a="40882683"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 14:17:28 -0800
-Date: Wed, 6 Mar 2024 14:17:28 -0800
-From: Isaku Yamahata <isaku.yamahata@linux.intel.com>
-To: "Huang, Kai" <kai.huang@intel.com>
-Cc: Isaku Yamahata <isaku.yamahata@linux.intel.com>,
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-	isaku.yamahata@intel.com, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-	Sean Christopherson <seanjc@google.com>,
-	Sagi Shahar <sagis@google.com>, chen.bo@intel.com,
-	hang.yuan@intel.com, tina.zhang@intel.com
-Subject: Re: [PATCH v19 008/130] x86/tdx: Warning with 32bit build
- shift-count-overflow
-Message-ID: <20240306221728.GB368614@ls.amr.corp.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <a50918ba3415be4186a91161fe3bbd839153d8b2.1708933498.git.isaku.yamahata@intel.com>
- <2f6897c0-1b57-45b3-a1f1-9862b0e4c884@intel.com>
- <jvyz3nuz225ry6ss6hs42jyuvrytsnsi2l74cwibtt5sedaimb@v2vilg4mbhws>
- <20240305081219.GC10568@ls.amr.corp.intel.com>
- <75adc31d-6632-4ea1-8191-dad1659e7b33@intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=lOezdhvDjMZl5cfADo0W3sPEautFxyQQixsNAkkvLQWZTaqActZ4C/uw+cPERFK9VVbNF8eT6Y3jwKKcyT3BRlBrC/ZV5Gx+fJ9zIPLthB1RMFsthLlJlcJqb3CvusMNymMAeHOCAeUqul0K68OQUMfnJleIxPS7i9KQwH3uBHg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L8awcRI+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61A63C433C7;
+	Wed,  6 Mar 2024 22:22:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709763720;
+	bh=MlQq2QOH4T5O53iSAeAQzQexenXuj0qdDakJrAMFRSA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=L8awcRI+cbOQJ4rFYl4bBiukwg9eMMOOdqzZW0bvoWx/Km8dBtRKxJbmMAEjBD0eA
+	 cHZh292AmDPfCHHSfp/bsFgKO3w8qo1JDn8FE10B6L3u5QJxD5Ki9sNyuZCe+fqwlm
+	 TF/8wHBLxGibSw7vZCFZoibS1J6y2wciUYeMf5jWB/EZFqToWqor3YDfefnSKLJSF1
+	 Sp7ZBhJ+hijF9j8mdyDS930GGC9UpabGJlkRruygLYXfvk2M+O3ArV65KDGUC1+w/Z
+	 wTpkVQG/6NzWxcwDLAsmxePOXzQAxwmkEeHHShKaWrmg5LyY9VHesY+c4PiHKH+na1
+	 g3S7Abgc9IMOg==
+Date: Wed, 6 Mar 2024 19:21:57 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org, Andi Kleen <ak@linux.intel.com>
+Subject: Re: [PATCH v2 0/4] perf annotate: Improve memory usage for symbol
+ histogram
+Message-ID: <ZejshUg8XiQz5YGa@x1>
+References: <20240304230815.1440583-1-namhyung@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <75adc31d-6632-4ea1-8191-dad1659e7b33@intel.com>
+In-Reply-To: <20240304230815.1440583-1-namhyung@kernel.org>
 
-On Wed, Mar 06, 2024 at 10:35:43AM +1300,
-"Huang, Kai" <kai.huang@intel.com> wrote:
-
+On Mon, Mar 04, 2024 at 03:08:11PM -0800, Namhyung Kim wrote:
+> Hello,
+> 
+> This is another series of memory optimization in perf annotate.
+> 
+> v2 changes:
+>  * fix a bug when offset is bigger than 16 bits
 > 
 > 
-> On 5/03/2024 9:12 pm, Isaku Yamahata wrote:
-> > On Fri, Mar 01, 2024 at 01:36:43PM +0200,
-> > "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com> wrote:
-> > 
-> > > On Thu, Feb 29, 2024 at 11:49:13AM +1300, Huang, Kai wrote:
-> > > > 
-> > > > 
-> > > > On 26/02/2024 9:25 pm, isaku.yamahata@intel.com wrote:
-> > > > > From: Isaku Yamahata <isaku.yamahata@intel.com>
-> > > > > 
-> > > > > This patch fixes the following warnings.
-> > > > > 
-> > > > >      In file included from arch/x86/kernel/asm-offsets.c:22:
-> > > > >      arch/x86/include/asm/tdx.h:92:87: warning: shift count >= width of type [-Wshift-count-overflow]
-> > > > >      arch/x86/include/asm/tdx.h:20:21: note: expanded from macro 'TDX_ERROR'
-> > > > >      #define TDX_ERROR                       _BITUL(63)
-> > > > > 
-> > > > >                                              ^~~~~~~~~~
-> > > > > 
-> > > 
-> > > I think you trim the warning message. I don't see the actual user of the
-> > > define. Define itself will not generate the warning. You need to actually
-> > > use it outside of preprocessor. I don't understand who would use it in
-> > > 32-bit code. Maybe fixing it this way masking other issue.
-> > > 
-> > > That said, I don't object the change itself. We just need to understand
-> > > the context more.
-> > 
-> > v18 used it as stub function. v19 dropped it as the stub was not needed.
+> When perf annotate (or perf report/top with TUI) processes samples, it
+> needs to save the sample period (overhead) at instruction level.  For
+> now, it allocates an array to do that for the whole symbol when it
+> hits any new symbol.  This comes with a lot of waste since samples can
+> be very few and instructions span to multiple bytes.
 > 
-> Sorry I literally don't understand what you are talking about here.
+> For example, when a sample hits symbol 'foo' that has size of 100 and
+> that's the only sample falls into the symbol.  Then it needs to
+> allocate a symbol histogram (sym_hist) and the its size would be
 > 
-> Please just clarify (at least):
+>   16 (header) + 16 (sym_hist_entry) * 100 (symbol_size) = 1616
 > 
->  - Does this problem exist in upstream code?
+> But actually it just needs 32 (header + sym_hist_entry) bytes.  Things
+> get worse if the symbol size is bigger (and it doesn't have many
+> samples in different places).  Also note that it needs a separate
+> histogram for each event.
+> 
+> Let's split the sym_hist_entry and have it in a hash table so that it
+> can allocate only necessary entries.
+> 
+> No functional change intended.
+> 
+> Thanks,
+> Namhyung
 
-No.
+No difference before/after on that 'perf annotate --stdio2' for all
+binaries in a perf record of building perf using the default binutils
+objdump disassembler, etc.
 
->  - If it does, what is the root cause, and how to reproduce?
+Reviewed-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-v18 had a problem because it has stub function. v19 doesn't have problem because
-it deleted the stub function.
--- 
-Isaku Yamahata <isaku.yamahata@linux.intel.com>
+- Arnaldo
+ 
+> 
+> Namhyung Kim (4):
+>   perf annotate: Add a hashmap for symbol histogram
+>   perf annotate: Calculate instruction overhead using hashmap
+>   perf annotate: Remove sym_hist.addr[] array
+>   perf annotate: Add comments in the data structures
+> 
+>  tools/perf/ui/gtk/annotate.c |  14 ++++-
+>  tools/perf/util/annotate.c   | 116 ++++++++++++++++++++++-------------
+>  tools/perf/util/annotate.h   |  86 +++++++++++++++++++++++---
+>  3 files changed, 159 insertions(+), 57 deletions(-)
+> 
+> -- 
+> 2.44.0.rc1.240.g4c46232300-goog
 
