@@ -1,127 +1,113 @@
-Return-Path: <linux-kernel+bounces-93208-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93218-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77EA4872C5E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 02:52:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 525DD872C74
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 03:00:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E3665B27247
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 01:52:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E23711F24BF5
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 02:00:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECBB679DE;
-	Wed,  6 Mar 2024 01:52:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D64A7D518;
+	Wed,  6 Mar 2024 01:58:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mEfbDRIV"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="xWcUMi01"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 362256FBD
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 01:52:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D38379E4;
+	Wed,  6 Mar 2024 01:58:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709689923; cv=none; b=Vy4tfDzXvguHUycyndLczq9BrgEOUBPHZsfhj+qGeKLrLSerltFgBEpJggtuSBD97A1wFJvdmkan8oDgv6RqZeJdJQeg1wbs+cFP5MQbPPovmHaVTWa7fhMPvW6uU/S16/OSXG2wyx39qnYBZZDEnqbXYeUpGxttCCr+AOEniE0=
+	t=1709690310; cv=none; b=c7d7ifOZewCwT7hA3aFFwvTOGkd+NzReUhAORDZ8HqNwadqSmf9tNiQVjTAgI6haSsTOgPizDq8RLr9Lo2NtCPDmAJfr+/JedwEkDRJV8Tdru8GZ1Gg54Q5/1D+tqFOdJHZJq3V3DaLolAqyA4KsvfEyocu/CaCur5EA5qUKzrA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709689923; c=relaxed/simple;
-	bh=pjR8YIBGq1VNa51QiHXbbJg32nHSnWWaN8QomRREMxg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=sFK0XL5RXKs1z8mGn/G1czPdc5LIkmweML7pIZtAaFYWdMoo9Sm7nuPENRvvhy7FUQ02Pp65LsjrrY8wky5H2cdBDBdRYwgD7gU1vat8Rx66zYyH7sE4A4CcjfT1oK+2FGAMXpANTaoVZJN+v5ggfXf+yiVAPFjrRt8h+1FR0n4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mEfbDRIV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A360EC433F1;
-	Wed,  6 Mar 2024 01:51:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709689922;
-	bh=pjR8YIBGq1VNa51QiHXbbJg32nHSnWWaN8QomRREMxg=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=mEfbDRIVBOG3N/to2d9M9OyD8pavLacY7xA6M0dCBYF3+yCwNfpKJHE6PZY9aSkyK
-	 fxOg3yMuv9s6UwhwvaRHtz7NcMpxGTFX0yJRb3F0GqjdGT/As8DLtfzP1XUwnbzf7M
-	 abS0A2sQH5ZHwcUPJu99IfhR31tYhQe5lJk5MCUVx/a9g0Of21GX2fMb9+S2hiG3cU
-	 6Iiby7rxMELga0D8EgoYLg3n28/cqAx0a3sMruRb7oC6KdypIyF0+cWz/5nElMqfW0
-	 5IJXL14zQJsqo3g0FziOt2u0dXLUStgqxeR5QESaB0pz93VzENEzJIdnNdTJfx6Qrd
-	 yHYRhP//SuDmQ==
-Message-ID: <61637917-440e-4ed1-8820-fc7af8b8b4f3@kernel.org>
-Date: Wed, 6 Mar 2024 09:51:56 +0800
+	s=arc-20240116; t=1709690310; c=relaxed/simple;
+	bh=NDJHWMFByDMvSMmiIQpuUnrq3/RJFevyjBzAN9KgNjc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=cLD9+abJN/0thQ7olz+/RpcHmSYugtz7BL87fPQVb4shizLWp9yLHK0jh4deQhNRctXsyb2A1cs8RAJtHIIOcPswYzeVg7Bz0DRwm9fI/IO3AxhDATQwclOvzZeOAykOdeZZ0COlutShCcESfy6bRLO564/huycE1pN18r5UPcM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=xWcUMi01; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709690306;
+	bh=NDJHWMFByDMvSMmiIQpuUnrq3/RJFevyjBzAN9KgNjc=;
+	h=From:To:Cc:Subject:Date:From;
+	b=xWcUMi01dIt7Gnw8Ju2UlKoh3JVJ82I8z55YVnaiYg92ZprRNQIeVQmUz77VlU03c
+	 qv3y3B3q6hj9x+IoXGWnXMHfQExM5C8IlRxPKxOdVzP4LRtcqn+TpAez88hXamTEKj
+	 0rnj3llG0amZ+nBpS6fM7/goOCJFQOhsRrM4d8I/d4wdqBWpytgpOYThImqB8N+Iwf
+	 xfTTX2h3Txfd2J11i1yvoag3ia9iAivAxZGo7i4cIl35XDZPKqTrumtp5/AJdsdXIZ
+	 cyY6jI9OZTmceQutPhlHWMeAyR9f/Gm2wxeGDTxW846Fyri0p/cTRb2/YQfZkfEo/p
+	 SadjSk9IE1jgw==
+Received: from localhost.localdomain (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: alarumbe)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id CE8A63780B5F;
+	Wed,  6 Mar 2024 01:58:25 +0000 (UTC)
+From: =?UTF-8?q?Adri=C3=A1n=20Larumbe?= <adrian.larumbe@collabora.com>
+To: boris.brezillon@collabora.com,
+	robh@kernel.org,
+	steven.price@arm.com,
+	airlied@gmail.com,
+	daniel@ffwll.ch,
+	maarten.lankhorst@linux.intel.com,
+	mripard@kernel.org,
+	tzimmermann@suse.de,
+	corbet@lwn.net
+Cc: kernel@collabora.com,
+	adrian.larumbe@collabora.com,
+	linux-kernel@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	linux-doc@vger.kernel.org
+Subject: [PATCH v3 0/1] drm/panfrost: Replace fdinfo's profiling debugfs knob
+Date: Wed,  6 Mar 2024 01:56:35 +0000
+Message-ID: <20240306015819.822128-1-adrian.larumbe@collabora.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] f2fs: compress: relocate some judgments in
- f2fs_reserve_compress_blocks
-Content-Language: en-US
-To: Xiuhong Wang <xiuhong.wang@unisoc.com>, jaegeuk@kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
-Cc: hongyu.jin.cn@gmail.com, niuzhiguo84@gmail.com, ke.wang@unisoc.com,
- xiuhong.wang.cn@gmail.com
-References: <20240305084023.3686070-1-xiuhong.wang@unisoc.com>
-From: Chao Yu <chao@kernel.org>
-In-Reply-To: <20240305084023.3686070-1-xiuhong.wang@unisoc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On 2024/3/5 16:40, Xiuhong Wang wrote:
-> The following f2fs_io test will get a "0" result instead of -EINVAL,
-> unisoc # ./f2fs_io compress file
-> unisoc # ./f2fs_io reserve_cblocks file
->   0
-> it's not reasonable, so the judgement of
-> atomic_read(&F2FS_I(inode)->i_compr_blocks) should be placed after
-> the judgement of is_inode_flag_set(inode, FI_COMPRESS_RELEASED).
-> 
-> Fixes: c75488fb4d82 ("f2fs: introduce F2FS_IOC_RESERVE_COMPRESS_BLOCKS")
-> Signed-off-by: Xiuhong Wang <xiuhong.wang@unisoc.com>
-> Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
-> ---
->   fs/f2fs/file.c | 11 +++++------
->   1 file changed, 5 insertions(+), 6 deletions(-)
-> 
-> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> index 4ca6c693b33a..572d7bd4d161 100644
-> --- a/fs/f2fs/file.c
-> +++ b/fs/f2fs/file.c
-> @@ -3720,18 +3720,18 @@ static int f2fs_reserve_compress_blocks(struct file *filp, unsigned long arg)
->   	if (ret)
->   		return ret;
->   
-> -	if (atomic_read(&F2FS_I(inode)->i_compr_blocks))
-> -		goto out;
-> -
->   	f2fs_balance_fs(sbi, true);
->   
->   	inode_lock(inode);
->   
->   	if (!is_inode_flag_set(inode, FI_COMPRESS_RELEASED)) {
->   		ret = -EINVAL;
-> -		goto unlock_inode;
+This is v3 of the patch already discussed in [2] and [1]
 
-Nitpick, maybe keep unlock_inode label is better.
+Changelog:
+ v3:
+ - Replaced manual kobj initialisation with a device attribute
+ - Handle user input with kstrtobool instead of treating it as an uint
+ v2:
+ - Turned the profile mode atomic variable into a boolean
+ - Rewrote the sysfs file's uAPI documentation to make it more generic
+ - Improved the casting of the profiling variable inside the Panfrost device structure
 
-> +		goto out;
->   	}
->   
-> +	if (atomic_read(&F2FS_I(inode)->i_compr_blocks))
-> +		goto out;
+[2]https://lore.kernel.org/dri-devel/20240302154845.3223223-2-adrian.larumbe@collabora.com/
+[1]https://lore.kernel.org/dri-devel/20240221161237.2478193-1-adrian.larumbe@collabora.com/
 
-goto unlock_inode
 
-Thanks,
+Adrián Larumbe (1):
+  drm/panfrost: Replace fdinfo's profiling debugfs knob with sysfs
 
-> +
->   	f2fs_down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
->   	filemap_invalidate_lock(inode->i_mapping);
->   
-> @@ -3776,9 +3776,8 @@ static int f2fs_reserve_compress_blocks(struct file *filp, unsigned long arg)
->   		inode_set_ctime_current(inode);
->   		f2fs_mark_inode_dirty_sync(inode, true);
->   	}
-> -unlock_inode:
-> -	inode_unlock(inode);
->   out:
-> +	inode_unlock(inode);
->   	mnt_drop_write_file(filp);
->   
->   	if (ret >= 0) {
+ .../testing/sysfs-driver-panfrost-profiling   | 10 +++++
+ Documentation/gpu/panfrost.rst                |  9 ++++
+ drivers/gpu/drm/panfrost/Makefile             |  2 -
+ drivers/gpu/drm/panfrost/panfrost_debugfs.c   | 21 ----------
+ drivers/gpu/drm/panfrost/panfrost_debugfs.h   | 14 -------
+ drivers/gpu/drm/panfrost/panfrost_device.h    |  2 +-
+ drivers/gpu/drm/panfrost/panfrost_drv.c       | 41 ++++++++++++++++---
+ drivers/gpu/drm/panfrost/panfrost_job.c       |  2 +-
+ 8 files changed, 57 insertions(+), 44 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-driver-panfrost-profiling
+ delete mode 100644 drivers/gpu/drm/panfrost/panfrost_debugfs.c
+ delete mode 100644 drivers/gpu/drm/panfrost/panfrost_debugfs.h
+
+
+base-commit: e635b7eb7062b464bbd9795308b1a80eac0b01f5
+-- 
+2.43.0
+
 
