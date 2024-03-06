@@ -1,164 +1,106 @@
-Return-Path: <linux-kernel+bounces-93695-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93676-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20505873371
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 11:02:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39894873325
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:54:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE65F287856
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:02:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA2F2286EF1
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:54:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74D686088C;
-	Wed,  6 Mar 2024 09:59:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F7965F862;
+	Wed,  6 Mar 2024 09:54:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="gMWrhojv"
-Received: from out203-205-221-155.mail.qq.com (out203-205-221-155.mail.qq.com [203.205.221.155])
+	dkim=pass (2048-bit key) header.d=gmx.net header.i=j.neuschaefer@gmx.net header.b="YBIsdeLU"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD0E25DF30
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 09:59:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.155
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 690635F859
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 09:54:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709719190; cv=none; b=olESMobc3qbpEcN1uJ9nZCDswbP9j1DFGU/ijJFeCmR8nFheAbxueER8A6fqTgh36uK8rf69u+e8ekb/3AtB/3bDFdS1Gyn9e+RDV99bYJn8GYXerNTmk8eyMZY4fdtTIKGtLjSWYJZsbbKcr4JkYUU+8wBLu+KUXAMx3g3DCD4=
+	t=1709718860; cv=none; b=ivIFw//aL3Mlp7c+8n9ysJ2nkxPSBHG7BoTu8NVSW5FKVbck4EJm5nbkher00ZCjksbzW48/2OHB/pW2Z07ql6vGCd84EMErbi3jqXKBIM8HGQosvSPGM8KEKlndunHst0Ddwv/Gx+Qqt4zcDuV2yQnM8p1i9CwbewYoD37QkzM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709719190; c=relaxed/simple;
-	bh=PYrLa71JafYTrx6ScD/co5t0rYc+KGdAr2yCFd2nTeI=;
-	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=N6XQCPfAABmLcc7quuHpC/YWE2XL49HsiGS9m9krpUWLBxIKVK296yHoRHSXz3C0HuYxlZb9guffERKv/u8iBjgA0ND4dy7fgXwScbjQHKayjOHD5UAcTGbX1cwbkGOL6hHvwBurGrKZrGS18wf2AFP+Edpv/ubLAxL8mglSFuI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=gMWrhojv; arc=none smtp.client-ip=203.205.221.155
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-	s=s201512; t=1709718879;
-	bh=oNIsFqxxtkHbwol+QQzHwWGVGalIcSBK9gQ9PgE3tlg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=gMWrhojvFUpZkWNcj5+4X2MOJXXyg/J2T+JkpJzocWn/jdURgbiQ9F3RlpteXW7RZ
-	 l6wn5kioiVwI+aasY2NfW8BvcePMcc3hOq2DSFDr+OOtZYhlXbgbzcyHfLJuR/ffZQ
-	 hi6gx+/jlDvfjSIiijDH0nnUm+TrCyOvC4lDIkUE=
-Received: from localhost ([2409:895a:3aa0:aa0:3ef0:ad11:601:8a38])
-	by newxmesmtplogicsvrsza1-0.qq.com (NewEsmtp) with SMTP
-	id DA515AD4; Wed, 06 Mar 2024 17:54:37 +0800
-X-QQ-mid: xmsmtpt1709718877tmkxjqfu6
-Message-ID: <tencent_744E0AF832049C200F96FD6582D5114D7F0A@qq.com>
-X-QQ-XMAILINFO: N3QMWHy44bBnzVjCFnVL/EJKR287sqNOnb7s3DASL0C7TUlF8Mwqub5ZvAESTp
-	 9Lz+7mtA3/FQK/x7U2OKgM8bLI4FEg6lEkBcvZhembgq1sCsLuM2nxyqxvq+cDvuERHArRuYYm+J
-	 +oV5CQzgZUgo+kaOhLQ8T83MgqrZB+zkyBslhfwzNpZXvO01yO9FIntCsVjGF4qJdFtOBVN8TekQ
-	 Jmyjjrh6YlvRK3MqDsTuSp3+54ZOyZ/9mqkT35Q/sOcdJSMiaDmkBdUPXwBfFXAJ02eaERoy4nuv
-	 os06Qh7YrdFjmJ/Wz/nEBDwga3k1I/hTWE76nu5xOKOEyEgNrPZKxhuVH066kT0nMepcMGt6+htF
-	 IyBJBK8oi21RKGRB4qNG1iugxMXCmUA1xoJcDa99rSAVtFYr7ZTtA9vfLPuICuwuvk5fmwOY9LrH
-	 TZtgClDeSelwcyRn0i2nSaqffpNJLPS+3lPM6p38PrYt+wtBftD0SvnyR3X/XU4gIutLu44+BLgZ
-	 iTu9Ulqt8BuXFBNWn1A1p3/zd33ReKYe/prGpzqKpiOzTiQJqntCiyVd9RvPf86uNErt7rWCo8ug
-	 X68pDK+ou3F51hXFDBdL/dRSDK4HaHOXv1e2g7b45btbOSqHFTL3db9OnQCWiVKUosQGW0oQ5MyI
-	 jh0/CxjPsQEHtwW0FrGduq28CWMSTcsV4Qh1JS4d1HDqwGbMN2WCoQaP3tLeygyfsg3LChJy84xH
-	 2EfUTBJuMVy5vHKzZGGB2SkZKGp2VoghKcoeDkSdHgxqlyl1IXohYNCbReMBXoFtvMsBjoq1CyBT
-	 D41uA5SL9DtJzz8xwYnXvKOSuVkvZTgVqK0y2KkK6+kwhXJSfsQa9JGearyD2A9CEpgG5gtKuf8l
-	 qQ5U9t6Pug0ZYXki9+u8Fv03V1lFCLQfczHvwEb21PpfzBI5duVa0DVYysQHgDN/iWDCWdD0XPbd
-	 a0q1RBElSz2Vzd23Yv56NMTmKT//R7ue0EQERoi0w=
-X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
-Sender: kenneth-lee-2012@foxmail.com
-Date: Wed, 6 Mar 2024 17:53:31 +0800
-From: Kenneth-Lee-2012@foxmail.com
-To: Andrea Parri <parri.andrea@gmail.com>
-Cc: linux-kernel@vger.kernel.org, stern@rowland.harvard.edu,
-	paulmck@kernel.org
-Subject: Re: Question about PB rule of LKMM
-X-OQ-MSGID: <20240306095331.sgmksoorkebfb2cw@kllt01>
-References: <tencent_C5266B7D6F024A916BCA7833FDEA94A74309@qq.com>
- <Zedd18wiAkK68Lzr@andrea>
+	s=arc-20240116; t=1709718860; c=relaxed/simple;
+	bh=Cfsjv3bMraaDifxBSHB4874EPFtiZVDgXo474KE3U1c=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=T4lJWrOZZGR6LdhKsUYO5c/FY2g26ZmtPoHc0D1pv3k6kv+jKFxe17qldA1fkAnJCicMGQ8rsgFklO2EKiQ1+RPg6zdXf9M55/tJo0MaGBuwq+CZxHpEvIT5kBdQTYmHfWKC26GVnKpIg3GDvm53XFKvAoXYERYP02oZTyVQ8lw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=j.neuschaefer@gmx.net header.b=YBIsdeLU; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+	s=s31663417; t=1709718844; x=1710323644; i=j.neuschaefer@gmx.net;
+	bh=Cfsjv3bMraaDifxBSHB4874EPFtiZVDgXo474KE3U1c=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+	b=YBIsdeLUFZrENphSgtFfQOht98Gj7fpz0C8Gsk+F/kRKNw+E0f+syepUnK/GAh0R
+	 yic4s3FAiY2prCs6T2ADDIS/1MbWnmkSHBdhTW0YFa9ioeCihWOCUmCGuYxPNYj+Y
+	 Yfwxty77dMXFy4/3Y3nSZMXPX43+WACFtaBfdpRNlQ0NJRjvGyl0xVKfQVBmgXLUc
+	 rZAbenCMxmLGt9AeY6+tbpiRw7JuT0WwYoxfR4Q2G5QWHz5BOa4hRbBHExJacLfc+
+	 YtDCZBkzWm5ovdaSIXHfcYOvitFrhVUCC7spElEhTKxWuiAedpHkYyT1O1Uot7ZUB
+	 yVqcYrHkOhtroKoDLw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from probook ([89.1.58.16]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MYeMt-1rMeLP1nBD-00VjrS; Wed, 06
+ Mar 2024 10:54:04 +0100
+From: =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To: linux-arm-kernel@lists.infradead.org
+Cc: =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+	Russell King <linux@armlinux.org.uk>,
+	openbmc@lists.ozlabs.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] ARM: wpcm450_defconfig: Fix formatting of 32-bit number
+Date: Wed,  6 Mar 2024 10:53:58 +0100
+Message-ID: <20240306095358.509785-1-j.neuschaefer@gmx.net>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zedd18wiAkK68Lzr@andrea>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:RKv9wcRZzdbbUc8vslPj0/ift4zM2q31+YoQqAj7SP6uKHlVkDp
+ /yVdn6Ol6am9gnjXrDd27PFrNO6rTdw53UmEMC09AA3yxp1QopeSMax4bGsbMBC4XB2khyK
+ HE1S+iZa2bsYGxHLUTUj5K6/g0OrGSxeHXJsfDhC4ySw59Ppr56scFNh9FKn2OaNTGYpD08
+ r9MAGCkl6Mde4e9LYVSUg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:OXmeCf3YRuQ=;8fXEFAY1RSLKfyS011j4wMXFL5x
+ 36SMp+OOuDxYHYtpK88bqtxDiGEJrqgz4KhrVAZ9iEEbZVKXELKmyW4GQQpRHkLhw3C/wkoum
+ uMpcaAiudzFYxk59K0gdsaVUAmzO3dnLnzEG+CTd4bipgf55Nrd6mx+fFe/ePpI3BQzj94qdq
+ X9bIqOentvxj63vC3rPs9ZSqriJVL/R5dzQLzu9YX9lv2ScjaS3oDSDxRSC1cz7tSYIUO9N92
+ wD+784kzEBGSk2LGBI90HT8M32iLVpGzg/nqBB9Ee+4hQ6YCCxGsIRJrMCf+0vRJqQ42mfKxD
+ TV359jMFV3cSC684/Qb5rtvf0RvmmH8M1EZCJKJvpOIGFnC+FVWWiNaHfpfrWoVAwqL+YF4J4
+ IV8B9Y7opV1tRXvAPfEC47zR1J4lrbrAwgfnlVDoU37fYbLGefRJYGgFcH3zQbiX1amG8nAt3
+ yR4dAHW2Z7ZnZ30M2/wcFotSvUy4TuIBbgW6tRfve2h4W/Mu/tZJuM3eg8B4r1uwhCi4TciUC
+ uts8oTFsnjE15dM7ijhF3Dj6yw8m0U3TMhhd3XfLbiJK1u5mP5oP6o9RkHLBJs0cONoInNOZw
+ qSvOvhyteGgkw5HVhe2TtGHGM0MMLLS0mf0REEg2AIbo14k0tW7NP0k/efD7bKX8yvvXnSjYb
+ iJ3dyCpTeOAEMsSz/nhJZPtuxTAP7eg64sCbzKcN50RkBje+O7ZZ4grdjS+mlFXcFcQF7pCPU
+ o2D+H0CxQfFn/grcqvPk24TKISC/j3f0/oGf2p40aCZBxGVZhfMqc88boiLWnjEDFrSqGZ0gX
+ MATAg0+qBfONFzyJcBQJjU9TJGV4xYDTWjOpO5OqPzZJc=
 
-On Tue, Mar 05, 2024 at 07:00:55PM +0100, Andrea Parri wrote:
-> Date: Tue, 5 Mar 2024 19:00:55 +0100
-> From: Andrea Parri <parri.andrea@gmail.com>
-> To: Kenneth-Lee-2012@foxmail.com
-> Cc: linux-kernel@vger.kernel.org, stern@rowland.harvard.edu,
->  paulmck@kernel.org
-> Subject: Re: Question about PB rule of LKMM
-> 
-> (Expanding Cc:,)
-> 
-> > In the LKMM document, it said the pb link:
-> > 
-> >    E ->coe W ->cumul-fence* X ->rfe? Y ->strong-fence Z ->hb* F
-> > 
-> > can make sure E execute before F. But the cat file define pb as follow:
-> > 
-> >   let pb = prop ; strong-fence ; hb* ; [Marked]
-> >   acyclic pb as propagation
-> > 
-> > So the acyclic rule is only on pb relationshit itself. So it won't
-> > forbid F -rfe-> E, will it? It only forgit F -pb-> E. So how can
-> > propagation rule ensure E execute before F?
-> 
-> With regard to your first question, the propagation rule does indeed forbid
-> F ->rfe E.  To see why, suppose that F ->rfe E (in particular, E is a load
-> and the first link in your sequence is fre instead of coe).  Then
-> 
->    E ->fre W ->cumul-fence* X ->rfe? Y ->strong-fence Z ->hb* F ->rfe E.
-> 
-> Since any rfe-link is an hb-link (by definition of the hb-relation), the
-> previous expression can be written as follows:
-> 
->    E ->fre W ->cumul-fence* X ->rfe? Y ->strong-fence Z ->hb* F ->hb E,
-> 
-> that is, given that hb* is the reflexive transitive closure of hb,
-> 
->    E ->fre W ->cumul-fence* X ->rfe? Y ->strong-fence Z ->hb* E,
-> 
-> contradicting the fact that pb is acyclic.  An argument similar to the one
-> reported above can show that the propagation rule forbids F ->hb E.
-> 
+Nine digits are one too many.
 
-Wow, my gosh, I didn't expect the last "hb*" works like this:). Very clear
-explaination, thank you very much.
+Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+=2D--
+ arch/arm/configs/wpcm450_defconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> To address the second question, I'd start by first remarking that the CAT
-> file doesn't define an "execute-before" relation currently.  This file does
-> however include the following comment:
-> 
-> (*
->  * The happens-before, propagation, and rcu constraints are all
->  * expressions of temporal ordering.  They could be replaced by
->  * a single constraint on an "executes-before" relation, xb:
->  *
->  * let xb = hb | pb | rb
->  * acyclic xb as executes-before
->  *)
-> 
-> In this sense, the propagation rule (like other "acyclicity"-constraints of
-> the LKMM) expresses "temporal ordering", and any pb-link is (by definition)
-> an "execute-before"-link.  The file explanation.txt can provide additional
-> context/information, based on the (informal) operational model described in
-> that file, about this matter.
-
-So it is just a rule in the sence of mathematics? I think it would be better
-if there were some explaination in the explaination file. It is
-descripted in nature language, the reader might not notify it is just a
-mathematics rule. And you cannot say an action executes before another
-because they are in the pb link. It becomes a cycling in logic...
-
-But anyway, now I understand. Thank you very much.
-
-> 
-> Notice that, as examples in tools/memory-model/litmus-tests/ can illustrate,
-> none of the three components of the xb-relation is redundant.  Specifically,
-> there do exist pb-links/cycles which are not hb-link/cycles (and viceversa).
-> 
-> Maintaining three distinct/separate constraints (happens-before, propagation,
-> and rcu) instead of a single "executes-before" constraint, although formally
-> unnecessary, highlights the modularity and eases the debugging of the LKMM.
-
--- 
-			-Kenneth Lee
+diff --git a/arch/arm/configs/wpcm450_defconfig b/arch/arm/configs/wpcm450=
+_defconfig
+index 45483deab034f..78b6c671eade5 100644
+=2D-- a/arch/arm/configs/wpcm450_defconfig
++++ b/arch/arm/configs/wpcm450_defconfig
+@@ -206,6 +206,6 @@ CONFIG_DEBUG_USER=3Dy
+ CONFIG_DEBUG_LL=3Dy
+ CONFIG_DEBUG_LL_UART_8250=3Dy
+ CONFIG_DEBUG_UART_PHYS=3D0xb8000000
+-CONFIG_DEBUG_UART_VIRT=3D0x0ff000000
++CONFIG_DEBUG_UART_VIRT=3D0xff000000
+ CONFIG_DEBUG_UART_8250_WORD=3Dy
+ CONFIG_EARLY_PRINTK=3Dy
+=2D-
+2.43.0
 
 
