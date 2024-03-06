@@ -1,41 +1,42 @@
-Return-Path: <linux-kernel+bounces-94329-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94330-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D955873D77
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 18:24:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 93ED8873D7A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 18:24:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 84D79B25676
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:24:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F1F1EB23E7D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:24:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4668313BACA;
-	Wed,  6 Mar 2024 17:24:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99CE713DBA2;
+	Wed,  6 Mar 2024 17:24:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=leica-geosystems.com header.i=@leica-geosystems.com header.b="nUYB3w69"
-Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2065.outbound.protection.outlook.com [40.107.105.65])
+	dkim=pass (1024-bit key) header.d=leica-geosystems.com header.i=@leica-geosystems.com header.b="lU4DMf7b"
+Received: from EUR02-DB5-obe.outbound.protection.outlook.com (mail-db5eur02on2078.outbound.protection.outlook.com [40.107.249.78])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D378605DC;
-	Wed,  6 Mar 2024 17:24:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.105.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17E2813BAD4;
+	Wed,  6 Mar 2024 17:24:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.249.78
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709745856; cv=fail; b=ex0tRqGk3E7hVEzx7IDcNqvbKYB7eJPjD6mjl2KSr35MCqie5tl07GAF0gLP+sfWU8O9qviO3C2tjQxciEU4uHGgGFq1uu6dwHET8vKdfOqbO2ANnrd+cJmUq+3o7wdQa5imLDnGCrLEih9SjNK3g+Hp75kcaJz1odr/oQVbcGI=
+	t=1709745858; cv=fail; b=TKWzO7bOZ+NXhHkBiLuhxVn4SKvJQCp63tUPdiokvVhfBf06+BLa8BSfCQh1fEYMhF+KQWXFUuQo2b+7gst+n3vYrPEYnmsZH+nPS5tubCGBEsXZ0zhfX5zUCiRDQp34wL1gCRJutCF39tuD5u6gllqm9xYw0d4ymQKXADtIbGQ=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709745856; c=relaxed/simple;
-	bh=RgngnF///VPJb0YSM1SFRzIFtD+7xEZBFxcwX7gxwPk=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=iKdhowBpjOCwBMmLpAf4ZpgQlIwNA8GBLiIZDjgZh9c/gPAYe0UGQJtTJrCJoyD6KNhsAwqRSpNtgrT6y1OCHtW1ptioRqQqPpyMYT7IEs5aF5F7pXtiE0kcA34Q/E4Rh258ZjJc6Izn3koCCEitfMgAKXzfNdh/qFVBSyrRBA8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=leica-geosystems.com; spf=fail smtp.mailfrom=leica-geosystems.com; dkim=pass (1024-bit key) header.d=leica-geosystems.com header.i=@leica-geosystems.com header.b=nUYB3w69; arc=fail smtp.client-ip=40.107.105.65
+	s=arc-20240116; t=1709745858; c=relaxed/simple;
+	bh=vcgWp5TJBXL6cOh9tIhKWQvVOFHby8gvNZQwRIBVgk4=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Qlqimo6tOAPZRS3wLMAHgMcmIhrRuMcI1ucyEKrWSjWEUF3J+J8g5Ng6qHptVhs9lynalswZ1MVTa3AsIp6HsYxp/uQ8qQzdx7cnorGJaKZhYSi7JWuuBTDbks/jMMhAgSHvznEFOqE1G82HyiIzPibeIdwP1l+mqSf29BEAYWM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=leica-geosystems.com; spf=fail smtp.mailfrom=leica-geosystems.com; dkim=pass (1024-bit key) header.d=leica-geosystems.com header.i=@leica-geosystems.com header.b=lU4DMf7b; arc=fail smtp.client-ip=40.107.249.78
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=leica-geosystems.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=leica-geosystems.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bH49yqx+71fXM6bmCEm+fNLw40f92AYozeXBgPmTFIYJS6Gi+8Kma/v4ir3jrS9qhD2AiH7kw93VR5BYbQZaMxoa2aYdg18bN5dYHjIGLkOe5KJVfnjeKZbspNhvFwwDSNLYv+71m7tAbjCxJxZEFUu+4M1dawo+vSAiG5aH5csrU3VPfkE2Kc/WFxf8V+9C15HvHChpUiAYLvWe/XUhkkaGC5pKU80C+PZRxAGJWXnEzv0KHYXOBpkQwVJgsAmUVsJO1ZQI0OeI2EDmBZrBHjfH7eCmoZxynKgw8XS6f5TW4VUc0BtIaolAQtpAmFpFCfPwUCKSEpeB8RoZBSNwdg==
+ b=Du1fW0rW80SBf6i85Hd/y/+pS6GCnTWQBCb8If49+KJc5jbazvjx0z/fh/cLPrB3mJoZP/48IWPXQNSED5JFVpBfYKapLezuEdvkEp4Ht/tww5mNdp1vING77UJ/MhmApnGulzkffhMCFvURnA28U7s4j5Yevx7UNJhjKYa90p7jUY/NkoipuCIlsRFt9Ew8+j+VwXryfZbkqNoFA9c9wI9LrBFx9XtemnDNezdDDowTAuUFOtA0UVkrUzRS+3jhRl6+aOtSRvH1NAQqq7+MqKUIT1SGYY7KiGJn1fZ7xUik4gCVH/8hkqmksGgtSmicU3s7aC2R877cD+bvDs0T8g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1Sl16cHBNQAbXFgM02+tz761jWn2RvyeXV/YFlT1QP4=;
- b=nT7mtss+MadhAYEmHw8PMLWUnPRjUzR8xLrTQ0IXaIR7XEc5NyIbVMU0xAURRAGClII1pPsxt7mxhNcIeS3Eys+dfaFITftluVNrZ5zDDT0Yaj3WpgVnu02ISyfPhbsRWAak2uKLl+qLoolVgBBHrS0mLWbIIUbiMbw+GpjCQwHVX7BU+p6toHJ8f+cuR8myNSPitr71Dp3KYSbihKscBuHKiXcVFflIWsdDD5REvK5w74fYTj1ZZIbpIAx6MWOKS0cIF0SigiFRDhcTa/LKLTxZX0m1/xR0LqCorxGXeMQa4vHoaPRYlbj1DNaqFHRHcmkBOCpJQsbf1GTiFn6gwA==
+ bh=PGaeE1bYJJpRe+mBdhfHv5qwBoRinQKyAbpJJwn88Tk=;
+ b=myAY95OjZrVKO85payh30tcikMMw+cgfBTDiVQzKjGgCvoLnocctjonDGURP0kQhpdsa/bSE0wl12fcFUPP91VdGOUZH8Vi2cPLvFrj+ReQX6U14CohpK8Ufv4vBygCHbVL9NtWJcGzKmUNXIMdmnL+CQGh1UYqN12hpw0u9hWJW9iKKk+Ay3/H2lUwCKh3dghDyJ1KCqaJKElAt23LQUGV0P0FxlIGsf1DEkNwLtaEU8FrbDuXhUXp14si7cseiOdQKvRBiMHlPV2f4oIVUJITxDCk+sczg/7uh3fL2l7XOOVOMGXRFQ1ER5GuHQ2STYWd68X820t/w58QdOTdMmQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  193.8.40.94) smtp.rcpttodomain=vger.kernel.org
  smtp.mailfrom=leica-geosystems.com; dmarc=pass (p=reject sp=reject pct=100)
@@ -44,18 +45,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=leica-geosystems.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1Sl16cHBNQAbXFgM02+tz761jWn2RvyeXV/YFlT1QP4=;
- b=nUYB3w69Gke6HzaaUchh6znea0WAz2bq8xLihC6GoPNgVJhCnOvLybIyGcJAO6YV79wCnmTg5UuPpXlRcwau6quWyHHwlByPIG/fXmaBpkoEwgKYOSNhApD4GlSYvKviuLEB0UsY7xFu1BqmwV6FtnQAk8c50Qeq7nI4JIQ0FBE=
-Received: from AS8PR04CA0021.eurprd04.prod.outlook.com (2603:10a6:20b:310::26)
- by AM9PR06MB8147.eurprd06.prod.outlook.com (2603:10a6:20b:3aa::7) with
+ bh=PGaeE1bYJJpRe+mBdhfHv5qwBoRinQKyAbpJJwn88Tk=;
+ b=lU4DMf7byJmChVWyYz7oyfikMizNi5RYReyBqCXWYmKjYyaf8tUTWjhkyhbZSTx02Dw1UEqfdmqlYtSvO4awPTFbPRLptPE86z+EkCy2ORAQvJwOPradRs76ckMda27vyUSO9r6/6UGByM4Femjtl1tPg7pFOFVdtUKxndRrP9c=
+Received: from AS8PR04CA0010.eurprd04.prod.outlook.com (2603:10a6:20b:310::15)
+ by GVXPR06MB9041.eurprd06.prod.outlook.com (2603:10a6:150:11f::11) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.24; Wed, 6 Mar
- 2024 17:24:11 +0000
+ 2024 17:24:12 +0000
 Received: from AM1PEPF000252DA.eurprd07.prod.outlook.com
- (2603:10a6:20b:310:cafe::4a) by AS8PR04CA0021.outlook.office365.com
- (2603:10a6:20b:310::26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.39 via Frontend
- Transport; Wed, 6 Mar 2024 17:24:11 +0000
+ (2603:10a6:20b:310:cafe::f9) by AS8PR04CA0010.outlook.office365.com
+ (2603:10a6:20b:310::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.24 via Frontend
+ Transport; Wed, 6 Mar 2024 17:24:12 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 193.8.40.94)
  smtp.mailfrom=leica-geosystems.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=leica-geosystems.com;
@@ -94,10 +95,12 @@ Cc: netdev@vger.kernel.org,
 	bsp-development.geo@leica-geosystems.com,
 	m.felsch@pengutronix.de,
 	Catalin Popescu <catalin.popescu@leica-geosystems.com>
-Subject: [PATCH net-next 1/2] dt-bindings: net: dwmac-imx: add nxp,phy-wol
-Date: Wed,  6 Mar 2024 18:24:08 +0100
-Message-Id: <20240306172409.878928-1-catalin.popescu@leica-geosystems.com>
+Subject: [PATCH net-next 2/2] net: stmmac: dwmac-imx: add support for PHY WOL
+Date: Wed,  6 Mar 2024 18:24:09 +0100
+Message-Id: <20240306172409.878928-2-catalin.popescu@leica-geosystems.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240306172409.878928-1-catalin.popescu@leica-geosystems.com>
+References: <20240306172409.878928-1-catalin.popescu@leica-geosystems.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -105,59 +108,75 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-OriginalArrivalTime: 06 Mar 2024 17:24:11.0104 (UTC) FILETIME=[1A5B4E00:01DA6FEB]
+X-OriginalArrivalTime: 06 Mar 2024 17:24:11.0885 (UTC) FILETIME=[1AD279D0:01DA6FEB]
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM1PEPF000252DA:EE_|AM9PR06MB8147:EE_
+X-MS-TrafficTypeDiagnostic: AM1PEPF000252DA:EE_|GVXPR06MB9041:EE_
 Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: 93792a1e-7ed4-4d92-66a5-08dc3e023d24
+X-MS-Office365-Filtering-Correlation-Id: f4dcbc95-26cf-4a30-c651-08dc3e023d64
 X-SET-LOWER-SCL-SCANNER: YES
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	vIIzsi2DgD3xpVWr6BllZ7nYJvOxyObliKpiafRIv/jyf1RxiDNiEngtQgVYXgw7nQVzUF0ipjwDz7PnVghmycso7bLTeMDppcdj+GOdADNhBcUHSvFePPUbD8XlJgyixBy1VwUf5m3aelC5VTujhnrzwK59P0woCchbIdSSdniTg/BLgOX8fgtSLC5ktjI+OEiNyjGh6UHS/1t1b9CL7YT9GWOSNmrPldZTwCUms96zRYIAlePOqOpfVl0FLU+7SRP5eHGwz5dj/P/N4uoT2emtZAgiVOh4fokxDJvbEwEfDD4F6w5ugfc/aYMSOvcOFy+DcG08T1jEcBWh88U6AJwjnUdL1EXVaG4DJAScReo+vxuAPqDJopr8r24GAHYZdJyHLtUuf9FLv6lMJQCaOuyjLzpyv3DLNNp+vUOr98m80G+rXzBh1jPj0yPbugEyWZVb4mw6AyEdPL5cje3HS3sKVKXRqrUVrq0pl6klRIclmRJk9cmyTMnu4Lne/cJnTIt3CBaXFK3hmglNMLM5kEVLiwEE7ecsgtP/4U6TXl0Bd2NsJchL6EEZc+UDOkmLBwc937n7BNYzqwx2DvSsJpqh4isV6LAOtTQqzqXOxDJWEY9gb0r5xm6G2M6jkOPt+ItarVneoDJXTe+UxewMv/HRG/BQtSyOkRBuT37MqJdJuJDhnD0oNTnMDSVn9k15jkrPxGy+3fyen8093xIf2lJH93ITSxcJQTAmLofh90DyPwTN1iEFfrDgZ4WRjexdauO3fSTD49kT112wkS47JA==
+	X/5Q0shPMEq/Br+URC7Cykfc1wlqGDj5L1HHw87a0ajMwxQmAJhuHsPFMBqee8svThpoXXEDJe4/fih5bU/DFJMNtW9F9Na4224FfZWt8pLYf4GhKRBV4qDrjxJKGWwRqL71a8YxO9CCShzdOK3IhBOjJrsURNYVHS3033HwFdQmI01NRmrpMiljoU33bj65QLLrgZ6dedLRZj5UIrYu2Cs/rFMLStKgaEMWQQRItvYDdlRQITwMimQxpfitEM+PswWulirl29g56VxNyoLNRbYU5mylUt+j0o+xPqxfCX7Y35Uv4E1ITLiOfjw4okPit+vXUadEP/xJaORoC2Y7i4c7OjxAsNqNQOw8NgLA/Vd0dqRiWuuQmxhQoOO3lWT9/eFrAhCojpbi4OKGIr6n+JDTbil5c7iDY3P25raATFgG6B8JvnjcxkJLj6YVsGhr5ujhGyE68b7Mk1AcNAxpw2j7O+mS4ijUggjqXYjIIK6fWiYq/81R570xxgml+3c5p2JwkZIz4ZpjymlYEt0Nj+RSm+3ppJt+ZfjGfeVBVH8pctegji/Ttg5+e/ZI9rPi0zK7zgodT1F0vRsnY2TkKQAzniWzCbjOI669ETV3Gz6G77ZZivOXNGqN1E64HQThfg7T6fRQJRCMp0DbeQSTLeK5c9+7KQlNwxX3cCLfTMHQu/ZRCR0ABIGhAIyZl0b5FbhEEivHNPmqZojqbw3jHyIyKlcG/I9ukk271iHhHW3hu/822T7hh8mb2f1S333Lul0pD03irJDy7sSmFe/vJg==
 X-Forefront-Antispam-Report:
-	CIP:193.8.40.94;CTRY:CH;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:hexagon.com;PTR:ahersrvdom50.leica-geosystems.com;CAT:NONE;SFS:(13230031)(376005)(82310400014)(36860700004)(921011);DIR:OUT;SFP:1101;
+	CIP:193.8.40.94;CTRY:CH;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:hexagon.com;PTR:ahersrvdom50.leica-geosystems.com;CAT:NONE;SFS:(13230031)(82310400014)(36860700004)(376005)(921011);DIR:OUT;SFP:1101;
 X-OriginatorOrg: leica-geosystems.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Mar 2024 17:24:11.5639
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Mar 2024 17:24:11.9857
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 93792a1e-7ed4-4d92-66a5-08dc3e023d24
+X-MS-Exchange-CrossTenant-Network-Message-Id: f4dcbc95-26cf-4a30-c651-08dc3e023d64
 X-MS-Exchange-CrossTenant-Id: 1b16ab3e-b8f6-4fe3-9f3e-2db7fe549f6a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=1b16ab3e-b8f6-4fe3-9f3e-2db7fe549f6a;Ip=[193.8.40.94];Helo=[hexagon.com]
 X-MS-Exchange-CrossTenant-AuthSource:
 	AM1PEPF000252DA.eurprd07.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR06MB8147
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: GVXPR06MB9041
 
-Add support for PHY WOL capability to dwmac-imx MAC driver.
+Add support for PHY WOL capability into dwmac-imx MAC driver.
+This is required to enable WOL feature on a platform where MAC
+WOL capability is not sufficient and WOL capability built into
+the PHY is actually needed.
 
 Signed-off-by: Catalin Popescu <catalin.popescu@leica-geosystems.com>
 ---
- Documentation/devicetree/bindings/net/nxp,dwmac-imx.yaml | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/net/nxp,dwmac-imx.yaml b/Documentation/devicetree/bindings/net/nxp,dwmac-imx.yaml
-index 4c01cae7c93a..6cf373772eb1 100644
---- a/Documentation/devicetree/bindings/net/nxp,dwmac-imx.yaml
-+++ b/Documentation/devicetree/bindings/net/nxp,dwmac-imx.yaml
-@@ -71,6 +71,12 @@ properties:
-     description:
-       To select RMII reference clock from external.
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c
+index 6b65420e11b5..9d7278c083bf 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c
+@@ -59,6 +59,7 @@ struct imx_priv_data {
+ 	struct regmap *intf_regmap;
+ 	u32 intf_reg_off;
+ 	bool rmii_refclk_ext;
++	bool phy_wol;
+ 	void __iomem *base_addr;
  
-+  nxp,phy-wol:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description:
-+      If present, indicates that PHY supports WOL(Wake-On-LAN), and PHY WOL will be enabled.
-+      Otherwise, MAC WOL is preferred.
+ 	const struct imx_dwmac_ops *ops;
+@@ -312,6 +313,8 @@ imx_dwmac_parse_dt(struct imx_priv_data *dwmac, struct device *dev)
+ 		}
+ 	}
+ 
++	dwmac->phy_wol = of_property_read_bool(np, "nxp,phy-wol");
 +
- required:
-   - compatible
-   - clocks
-
-base-commit: 61996c073c9b070922ad3a36c981ca6ddbea19a5
-prerequisite-patch-id: 0000000000000000000000000000000000000000
+ 	return err;
+ }
+ 
+@@ -353,6 +356,11 @@ static int imx_dwmac_probe(struct platform_device *pdev)
+ 	if (data->flags & STMMAC_FLAG_HWTSTAMP_CORRECT_LATENCY)
+ 		plat_dat->flags |= STMMAC_FLAG_HWTSTAMP_CORRECT_LATENCY;
+ 
++	if (dwmac->phy_wol)
++		plat_dat->flags |= STMMAC_FLAG_USE_PHY_WOL;
++	else
++		plat_dat->flags &= ~STMMAC_FLAG_USE_PHY_WOL;
++
+ 	/* Default TX Q0 to use TSO and rest TXQ for TBS */
+ 	for (int i = 1; i < plat_dat->tx_queues_to_use; i++)
+ 		plat_dat->tx_queues_cfg[i].tbs_en = 1;
 -- 
 2.34.1
 
