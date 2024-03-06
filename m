@@ -1,119 +1,113 @@
-Return-Path: <linux-kernel+bounces-94039-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94032-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E59348738EE
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:24:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C0A78738D7
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:20:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A19B2284421
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:24:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9DF2F1C208A2
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:20:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 358651339A6;
-	Wed,  6 Mar 2024 14:24:09 +0000 (UTC)
-Received: from mail.aperture-lab.de (mail.aperture-lab.de [116.203.183.178])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98694132472;
+	Wed,  6 Mar 2024 14:20:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=gaisler.com header.i=@gaisler.com header.b="BsKkkRCG"
+Received: from smtp-out3.simply.com (smtp-out3.simply.com [94.231.106.210])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A662F130ACE;
-	Wed,  6 Mar 2024 14:24:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.183.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9714612FB31;
+	Wed,  6 Mar 2024 14:20:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=94.231.106.210
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709735048; cv=none; b=Guk2MgXcmU7ZtFHIJTQ/mWqjyYbSEzXY3Uh0N5UVSn7Fc1m7f4pIFa0l5s7TbLFIrjdypI7AuzIFcPZfuZ5vXHobwkqJfZ2w6GiJqKYuX1BoHy7OfrlD1uINMUXhcG9du4LKdj5cTAf+MB+bfW+XQtE3oBl8A8JFOh6K/i4vNxA=
+	t=1709734811; cv=none; b=JlOYE9kPS4g8qHUl+D3WzC268/2pzuDvAaP311NnYLUpW/EH/INPyLEVk8Qb9yUbaQZE2S7q8wkf4nk2I0JeVw84KPJNrk2HL+AbC/tFWwE80XrU/bmFl6N/Y1D8HqKgJXyDwR04FAZW5aHlet+CcRK68hhfnbgRHixh1BWBCQs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709735048; c=relaxed/simple;
-	bh=qJ4gjt253xxum5utg91XBCGmUOduxiyObpAmLwXzzHw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=BTrZxFeRlaLEvdly3bgBGFv20KFzYmVNF/w90hdQ7PZnZFOp65brtGc8hxfngHEaq3tV3fqwkrJScmk0xaZtkzQj0vwLfu8RaHo//cXXe8gddJIF/mNI/kMwmMrvYPVbS1s0C6toNl9E5H6O7jLCbuWt74+PYskbX7sfDcYz4TE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c0d3.blue; spf=pass smtp.mailfrom=c0d3.blue; arc=none smtp.client-ip=116.203.183.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c0d3.blue
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=c0d3.blue
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id CC7DA419A4;
-	Wed,  6 Mar 2024 15:18:26 +0100 (CET)
-From: =?UTF-8?q?Linus=20L=C3=BCssing?= <linus.luessing@c0d3.blue>
-To: netfilter-devel@vger.kernel.org
-Cc: coreteam@netfilter.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Pablo Neira Ayuso <pablo@netfilter.org>,
-	Jozsef Kadlecsik <kadlec@netfilter.org>,
-	Florian Westphal <fw@strlen.de>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Dietmar Maurer <dietmar@proxmox.com>,
-	Thomas Lamprecht <t.lamprecht@proxmox.com>,
-	Wolfgang Bumiller <w.bumiller@proxmox.com>,
-	Alexandre Derumier <aderumier@odiso.com>,
-	=?UTF-8?q?Linus=20L=C3=BCssing?= <linus.luessing@c0d3.blue>
-Subject: [PATCH net] netfilter: conntrack: fix ct-state for ICMPv6 Multicast Router Discovery
-Date: Wed,  6 Mar 2024 15:18:04 +0100
-Message-ID: <20240306141805.17679-1-linus.luessing@c0d3.blue>
-X-Mailer: git-send-email 2.42.0
+	s=arc-20240116; t=1709734811; c=relaxed/simple;
+	bh=McctcHhqQMibqTvYby+OXEkgk4Kh1OWoXHWLWD0xOC8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qKIzW1i23PLMEOGSn+ehSssBA2HJXCVOsSVTRFW+a0GBWgxofwXdPT3onY4MIf4b2fth2TnviuN4l8IQmhz79JY3s8PRfbV89fHxM4dplq+Jsn87r8rQpD5x5elvdhwtNn9PlOLComcMyIlfxIBX6HQ+IBXFV/y7n1yLC6PGaKk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gaisler.com; spf=pass smtp.mailfrom=gaisler.com; dkim=pass (1024-bit key) header.d=gaisler.com header.i=@gaisler.com header.b=BsKkkRCG; arc=none smtp.client-ip=94.231.106.210
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gaisler.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gaisler.com
+Received: from localhost (localhost [127.0.0.1])
+	by smtp.simply.com (Simply.com) with ESMTP id 4TqZMQ2BVyz680t;
+	Wed,  6 Mar 2024 15:20:02 +0100 (CET)
+Received: from [192.168.0.25] (h-98-128-223-123.NA.cust.bahnhof.se [98.128.223.123])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(Client did not present a certificate)
+	by smtp.simply.com (Simply.com) with ESMTPSA id 4TqZMF6Xq0z681X;
+	Wed,  6 Mar 2024 15:19:52 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gaisler.com;
+	s=unoeuro; t=1709734802;
+	bh=hVRSs/eDr7XRRgIPsEAN6nhxFc0Gk85vgNCTb2fvG6Q=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=BsKkkRCGa7W0CdTem+fLw58yT5TQbTKLGZNEzY02ITcRxJ1HdAHeAtWXDlbUBaEnJ
+	 qFhuybrZKjKhOzDnpn/DTKkBZr49SDjgcspP/c5saZQz8zIiDCgPoB/tggQZz6s7Px
+	 0s5ZXRU+XtzyQZ1c2G8iZll7IJbqmn+qvsItTM60=
+Message-ID: <bc33b608-e0b5-4dff-aa05-8513dce409b3@gaisler.com>
+Date: Wed, 6 Mar 2024 15:19:52 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 4/7] sparc32: Do not select ZONE_DMA
+Content-Language: en-US
+To: Arnd Bergmann <arnd@arndb.de>, Sam Ravnborg <sam@ravnborg.org>,
+ "Maciej W. Rozycki" <macro@orcam.me.uk>, sparclinux@vger.kernel.org,
+ Randy Dunlap <rdunlap@infradead.org>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+ linux-parport@lists.infradead.org, "David S . Miller" <davem@davemloft.net>,
+ linux-kernel@vger.kernel.org
+References: <20240224-sam-fix-sparc32-all-builds-v2-0-1f186603c5c4@ravnborg.org>
+ <20240224-sam-fix-sparc32-all-builds-v2-4-1f186603c5c4@ravnborg.org>
+ <8d5780f5-1047-48d7-a9c9-09b95c7b5604@gaisler.com>
+ <5648dca0-4853-4dfb-91cf-282a656beb1e@app.fastmail.com>
+From: Andreas Larsson <andreas@gaisler.com>
+In-Reply-To: <5648dca0-4853-4dfb-91cf-282a656beb1e@app.fastmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Last-TLS-Session-Version: TLSv1.3
+Content-Transfer-Encoding: 7bit
 
-So far Multicast Router Advertisements and Multicast Router
-Solicitations from the Multicast Router Discovery protocol (RFC4286)
-would be marked as INVALID for IPv6, even if they are in fact intact
-and adhering to RFC4286.
+On 2024-03-05 16:26, Arnd Bergmann wrote:
+> On Tue, Mar 5, 2024, at 16:06, Andreas Larsson wrote:
+>> On 2024-02-24 18:42, Sam Ravnborg via B4 Relay wrote:
+> 
+>>> diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
+>>> index 734f23daecca..bdbde506c01e 100644
+>>> --- a/arch/sparc/Kconfig
+>>> +++ b/arch/sparc/Kconfig
+>>> @@ -62,7 +62,6 @@ config SPARC32
+>>>  	select HAVE_UID16
+>>>  	select LOCK_MM_AND_FIND_VMA
+>>>  	select OLD_SIGACTION
+>>> -	select ZONE_DMA
+>>
+>> This however makes a number of PCI drivers that depend on
+>> ZONE_DMA unselectable.
+> 
+> I think that is the correct thing to do then: the only
+> drivers that I see with this dependency are PCI sound cards
+> that apparently rely on DMA to the 16MB ISA range, which is
+> not provided by sparc.
 
-This broke MRA reception and by that multicast reception on
-IPv6 multicast routers in a Proxmox managed setup, where Proxmox
-would install a rule like "-m conntrack --ctstate INVALID -j DROP"
-at the top of the FORWARD chain with br-nf-call-ip6tables enabled
-by default.
+The ZONE_DMA dependency does not seem related to ISA per se. Commit
+80ab8eae70e5 ("ALSA: Enable CONFIG_ZONE_DMA for smaller PCI DMA masks")
+that started to introduce it did were about ensuring 32-bit masks.
 
-Similar to as it's done for MLDv1, MLDv2 and IPv6 Neighbor Discovery
-already, fix this issue by excluding MRD from connection tracking
-handling as MRD always uses predefined multicast destinations
-for its messages, too. This changes the ct-state for ICMPv6 MRD messages
-from INVALID to UNTRACKED.
+Some of those sound card drivers sets a 24 bit mask, i.e. a 0-16MB
+range, but some among those sets a 28, and 30 bit DMA mask with
+dma_set_mask_and_coherent. Testing, in a different driver, setting and
+allocating under a 30-bit DMA mask (or even a 28-bit DMA mask depending
+on where the physical memory resides) is possible before removing
+ZONE_DMA, but not after. 
 
-This issue was found and fixed with the help of the mrdisc tool
-(https://github.com/troglobit/mrdisc).
+I am also a bit concerned if removing ZONE_DMA will let DMA be allocated
+in highmem and what that could lead to.
 
-Signed-off-by: Linus Lüssing <linus.luessing@c0d3.blue>
----
- include/uapi/linux/icmpv6.h               | 1 +
- net/netfilter/nf_conntrack_proto_icmpv6.c | 4 +++-
- 2 files changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/include/uapi/linux/icmpv6.h b/include/uapi/linux/icmpv6.h
-index ecaece3af38d..4eaab89e2856 100644
---- a/include/uapi/linux/icmpv6.h
-+++ b/include/uapi/linux/icmpv6.h
-@@ -112,6 +112,7 @@ struct icmp6hdr {
- #define ICMPV6_MOBILE_PREFIX_ADV	147
- 
- #define ICMPV6_MRDISC_ADV		151
-+#define ICMPV6_MRDISC_SOL		152
- 
- #define ICMPV6_MSG_MAX          255
- 
-diff --git a/net/netfilter/nf_conntrack_proto_icmpv6.c b/net/netfilter/nf_conntrack_proto_icmpv6.c
-index 1020d67600a9..327b8059025d 100644
---- a/net/netfilter/nf_conntrack_proto_icmpv6.c
-+++ b/net/netfilter/nf_conntrack_proto_icmpv6.c
-@@ -62,7 +62,9 @@ static const u_int8_t noct_valid_new[] = {
- 	[NDISC_ROUTER_ADVERTISEMENT - 130] = 1,
- 	[NDISC_NEIGHBOUR_SOLICITATION - 130] = 1,
- 	[NDISC_NEIGHBOUR_ADVERTISEMENT - 130] = 1,
--	[ICMPV6_MLD2_REPORT - 130] = 1
-+	[ICMPV6_MLD2_REPORT - 130] = 1,
-+	[ICMPV6_MRDISC_ADV - 130] = 1,
-+	[ICMPV6_MRDISC_SOL - 130] = 1
- };
- 
- bool nf_conntrack_invert_icmpv6_tuple(struct nf_conntrack_tuple *tuple,
--- 
-2.43.0
+Cheers,
+Andreas
 
 
