@@ -1,341 +1,495 @@
-Return-Path: <linux-kernel+bounces-94228-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94229-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B60C873BB1
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:07:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23553873BB3
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:07:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD54E28B4EF
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:07:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA4302859B6
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:07:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9308D13540F;
-	Wed,  6 Mar 2024 16:06:17 +0000 (UTC)
-Received: from CHN02-BJS-obe.outbound.protection.partner.outlook.cn (mail-bjschn02on2106.outbound.protection.partner.outlook.cn [139.219.17.106])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1F0D1361DC;
+	Wed,  6 Mar 2024 16:06:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="VKiril35"
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2065.outbound.protection.outlook.com [40.107.93.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF637135A52;
-	Wed,  6 Mar 2024 16:06:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.17.106
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E4EA135A4B
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 16:06:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.65
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709741176; cv=fail; b=iva9ugSqCTsfIZaf6QhlDYTWp1qQ1TR6Iw+oSQwRUtnYiXxQFz3EX3FbxN30F3c7wr90SkK7lQmg/uj3e+fOr/1L7zWITq5/iaoYVcGgC9HcUqVdcyL2sFUxKMAE6T79YX652B2MIQNuYYlanKKny3gdmpEmHkBtFpVKOxIsYuU=
+	t=1709741216; cv=fail; b=tCekz6Dva8PWEclm60HWmpk05Bp93ekBuUii5nUIVZN08w48Yeh/Et3jOKYAvkE5Z6naOWbCd3VAX1gNFM2sp4lUZ7csBh9H6wzMqauEvWvCQo/MyxHvw3qfuLW2aVhAb2H+xEjooEZx0PhRHBKSPXs5dRb22NKenbnoybktBUI=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709741176; c=relaxed/simple;
-	bh=2BVIZpV2Iw53wmdjYbJs8BO3RHnHAuYvlwVfSrclSow=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=NX71j/ZyzXOP+mCHc4mCd4h3kpv+8gQKnd5xntyKoW0w5lgAVhlbpGhWJnmsdBGCzvInNMm7DkaZ5T2GLl2yOdA0p1Bkb1kRt30I22I4cgW0gI8S/Gi1lDm6zks/Zg7L9zGNwhrsFaTq4QOSKBUQYZkmdPsrXWHCZKJV8Gug+q0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.17.106
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
+	s=arc-20240116; t=1709741216; c=relaxed/simple;
+	bh=P4njCFLQGb08Q9fs+yCXjvLoOT8D5swMp+U6gNuRNOY=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=pW0q9oWjSCQIca3EXvwdkZmPUBmRHmEhG0b7NGK5ajYJrFNQaw1QQB1retbmnDZIxZxx0qH5+YPaHeqRdGL4RUtMkITPcn04wD56iSlWwjB8lHpryGImNy837GndQfu1QBmYvU7R9M0AOwKuX5l3lQi0yPQaN6nB/RwzXXogNGU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=VKiril35; arc=fail smtp.client-ip=40.107.93.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dEtd28K2kpY0M/RQozIHLyv/IWx5Fu4Vn9oC8/DEON5gdqioZI/BgbjdhTaHuSTA697QSHtVAX523zhkp6a8BLFXRzoeltTYvlaSgC7llLIunb902uz8C0YOfxpeKezyR55c/AUZaahwLiH1GCf3Ye76acoVO6seYtrCmNdsstzC2Run+MLSHKZBEOsOt3hTUgT6xId9tYTO/kWsAp9Byc19FD4gbW3ro8CibUOEIrcS7TvVm0M0BrTx0rz4GyLli6Jcx1jfDazsTwp/MOR4ykP4PEtqAqo+t2ifZ99qSn/0pDPmYRCZ7JMLUOzAHibyYxZXgRyzqNCEi/3p+lFPwg==
+ b=nw94KQQdGwz5rSB6h7V/SRxUKjY0CjJOqodOfkopEh3gU1FxRkUbcZsOfLHQo03m+4E7baG5rO1YaDBSGae21KFiCFLIvGhh3lbu7UDCEw9ndMO/va3Q/tanYWtJVHbIYLXVai++P3MawUnP54Z1ldaCqzBm7hYvzUOiWNAyS1XULfFJYFLDXWQ8UI3GdnEFlz2L3IqLKXiRHENeRoh5vz2VY0b6N5WPQz7DNIqtqcty83OoK1CkFKminbk/bu4xBfE/XRO4Pa5UtthJyeDNCYrqjfHie1ibabLo5ZkXHIwMMRkIGVmDfacJH/DauC7K333iO7L2SEGs/aAdxe1C0w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=euCVAdcK7KDmDrtZQ7R1aFcxAy45UFglzkhmoELsw54=;
- b=k57FndzPeYQJVnjdcnSQ8XhBqcR5v3s8GYSsgSbwXM+Yb63Y4ogNyOlYOawsId++qmqopfbuUgd8BNI9sRpJhJTxlhaMzyNazQ1he/58goeePI6iye0Oy1+7OSfA9Fx8KxF9wK2UimijfQJbZOTg6qVZvhwih9RLdfqDzAPzciE+zaMvdfgq/J/Cy0IxBN00DrbVGnZAmpfQ0swJo4hYCeU6bndrPv60gsRMr/ba7nLnYfwIDYqfSVnEUAzTi3dvKFl20/zx4R2LUwb5csiKOuhNTIcaTH3p4XvAH/Z33gdzP7UgjwXAouZiGGwJWgKe4/23r6fNwLpXkLwO8jdlOw==
+ bh=D9hQauP96nLI8qwYuGge191mfbSGxZDO+WJJRfRtpN4=;
+ b=Yb2eosDGfgh+OjOdgN+CQCeCgwlHxxRzRBiAXWyOdWTN+Cb8Qh7hsDOLBHJJ6m4voFTzV4rj96Z3Who7dMh0kuqc7bWnz8scaRBuBq/WqgBHBLhT55Ho8wOJVO37A24Z0IbBmkL1BFcPMstHVpKTYn+5KptAn1+BZygmEzxD1Mo9solVP54TzN8pAs2saFpKdaIbPg/SfayVKvGFd6n2Xt/ISo6GW/5z2l7VAbOv/SlYMqxUPYm/usYrnKRmwLMg1vA1ozfyoOfpsOqAce9Sbr1UhNniukqAng3751sE6G5j4C+I2pQR4ojK8554Zl1DZGnIsNe1elSmR/7EFTffUw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=starfivetech.com; dmarc=pass action=none
- header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
-Received: from SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c311:20::14) by SH0PR01MB0571.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c311:8::20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.53; Wed, 6 Mar
- 2024 16:06:11 +0000
-Received: from SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn
- ([fe80::f6ed:1a18:3fbf:788]) by SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn
- ([fe80::f6ed:1a18:3fbf:788%6]) with mapi id 15.20.7316.050; Wed, 6 Mar 2024
- 16:06:11 +0000
-From: Joshua Yeong <joshua.yeong@starfivetech.com>
-To: Frank Li <Frank.Li@nxp.com>
-CC: "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
-	"conor.culhane@silvaco.com" <conor.culhane@silvaco.com>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-	"ilpo.jarvinen@linux.intel.com" <ilpo.jarvinen@linux.intel.com>,
-	"imx@lists.linux.dev" <imx@lists.linux.dev>, "jirislaby@kernel.org"
-	<jirislaby@kernel.org>, "joe@perches.com" <joe@perches.com>,
-	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
-	"krzysztof.kozlowski@linaro.org" <krzysztof.kozlowski@linaro.org>,
-	"linux-i3c@lists.infradead.org" <linux-i3c@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
-	"miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, "robh@kernel.org"
-	<robh@kernel.org>, "zbigniew.lukwinski@linux.intel.com"
-	<zbigniew.lukwinski@linux.intel.com>
-Subject: RE: [PATCH v8 5/8] i3c: target: add svc target controller support
-Thread-Topic: [PATCH v8 5/8] i3c: target: add svc target controller support
-Thread-Index: AQHaWrDF4YqbxbLTO0S8kWb/HNrCK7ErCfUA
-Date: Wed, 6 Mar 2024 16:06:11 +0000
-Message-ID:
- <SH0PR01MB08411D27D7A3CD39CDDE618FF921A@SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn>
-References: <20240208170117.798357-1-Frank.Li@nxp.com>
- <20240208170117.798357-6-Frank.Li@nxp.com>
-In-Reply-To: <20240208170117.798357-6-Frank.Li@nxp.com>
-Accept-Language: en-US
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=D9hQauP96nLI8qwYuGge191mfbSGxZDO+WJJRfRtpN4=;
+ b=VKiril35rZpafpLq4dgcrziASzOkp6HsPmP9eSMkPeS399e8bGI/23wwzDnwahlZkxycll6ICiQJr7QbcA+96TlOvbgDr+BFdkWOBSbS0xq5m2eaYpby8eEBnTBH39olm5Bufzb3YWmJ2m3YUD8jtRNBcrPHRhh+DmuAxOjCcGQ=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from PH7PR12MB5596.namprd12.prod.outlook.com (2603:10b6:510:136::13)
+ by SN7PR12MB8170.namprd12.prod.outlook.com (2603:10b6:806:32c::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.24; Wed, 6 Mar
+ 2024 16:06:50 +0000
+Received: from PH7PR12MB5596.namprd12.prod.outlook.com
+ ([fe80::6f48:e3f1:6ff9:75bd]) by PH7PR12MB5596.namprd12.prod.outlook.com
+ ([fe80::6f48:e3f1:6ff9:75bd%4]) with mapi id 15.20.7362.019; Wed, 6 Mar 2024
+ 16:06:50 +0000
+Message-ID: <852e4f0e-c743-44c2-a2bb-59f0e8e25e1b@amd.com>
+Date: Wed, 6 Mar 2024 21:36:39 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/amdgpu: cache in more vm fault information
 Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=starfivetech.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SH0PR01MB0841:EE_|SH0PR01MB0571:EE_
-x-ms-office365-filtering-correlation-id: b02dfa58-6050-40ae-5e03-08dc3df757b2
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- cEhvcX1VZpAYdzm25rxEjiIudK2mAxTD9sdXUwztfBCPX4gV0r/MRlJDb/XQTr79FSjt5mfxNt6GGbv8LzCWxXuJez+rvxYvAbJ41Xd//nYg2EzWczaJX6BZb5TzCs+F5q2ltWCXb3LIg5Hw4wJ8lBEVL++CZvkFZgYnO9jV1Kh56ZGaFJHGFWo2bu91KpjpOiGUm1ryzZC9HxqcOCPf2lbyCKaLq4a+tJ1GIeoL8NLkwyQYihckB7nmo01vqvMlRfWaEc+EBhqYTUntAGnlIjiExBEFaS1R4LqVhxB2X6IbdDX4zMD46CzoIMJR+Pep6JtAa/0K1X7NXpnCo1xlEkt0jQy/u1Jb7jGg4N7fmbPQ8wjvwPQ4OaUkKinl5cRGPb+Ae0Xd1viJR2CvwN1+TrimzhSCvBaGptdnYdzjaslzm0FoW+fLbffkdaP8wk5T0/xx22HqHDLvRSUldKUab+D/fgbfZo74EsjQkYvONRSJgsUTKtFaHa/qo8nZyL52WetsARJ9bxwYvH+sx23M1dtzFQiRKkJAXTth1ZghZuxKnFiToOTLqKSqhDJ7rv/TFmmwVKroUQCSNSsJqISLlmsHh09LptiCu2MAdW1boyufTQ32IxHTCfSki1B7oDM4
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(41320700004)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?HCc2XV8MNRehi9xNrYUY63qAzLwbaisc0cQkWhcAa5VO77IbbQyMAPfkQCAv?=
- =?us-ascii?Q?KZgRMChshg9wj/QOTTIK8WEhv0DkwFJONq9ZEugz3ZVBk6j8pgWP4yrP+e24?=
- =?us-ascii?Q?zyQyZelQY1GXAk9Zb0nBAMxkb+nL3I8u0/eianrEw/Cl66wCHI1arkRe5v/m?=
- =?us-ascii?Q?ZPiwlHmjwHu6iHqKL4qDZ+ZSpmw05x86qat/JrXe+fQNb+LHm1FqyEMr7agx?=
- =?us-ascii?Q?AIGPLXoLf6IBSR2lx5Omu9TMxp5vBvxl1yIIeCwi/b6xII58nLJ36W49/0JK?=
- =?us-ascii?Q?rt5uNhGh1hupUm2QxjAWF0XsOV4vzHFrYMEh1t6/nDv5OsTHiIoMLXTRMrKg?=
- =?us-ascii?Q?zvj3RDA0Tc2fn2w3V7CnxWj9KELudgPdkNTomiG5nHvhBGYvPdWKFzvRCGWI?=
- =?us-ascii?Q?NE9QxEIpbUin2NymR9G89vCNHPMJTsPKJJiXQgqwjVtmC/VX2xjqR+4pKdjM?=
- =?us-ascii?Q?jK5EJfijYB7mdQXbPcwGume+Ty0mjgPZOMyRdaeAZD8vnLfwio/DT57EzFfP?=
- =?us-ascii?Q?wcE3R1ka6P1nD2kcPzl44jHWE5Bs7TWKa5R8INa5Zd4wHEGX6PQwfdM6ZF8l?=
- =?us-ascii?Q?zkG0MXg4fic7S7UCdpZEcfcOgFvYON3GzXMGuSQWvm1gk79+zd1mgVoMOclI?=
- =?us-ascii?Q?98S+pVx+HFn8gW08EifVkRciJo0K7WqR3obk885upJWkvPcbz1Us+fkfgfXp?=
- =?us-ascii?Q?AWtnR38q4qTualrqN3FqwDJsoy2OQ/+ZOYZpo/QXCLFepWlT8GlC61MwhUwH?=
- =?us-ascii?Q?AR27lU1LzmfPbX9WzXUdf6b9s9qTuuL1Vip/wxF4VULmjT+4lf1zm0ieic/P?=
- =?us-ascii?Q?M+Gcl8hGb1WwO3VhSBVlmJv0JyNWRbdSXFUt7WGItjq5Eki3vS1oFAvmYW5n?=
- =?us-ascii?Q?UM+/cL9bQ+Jyt8o0aZ97gPg8f2G+anCYa96Pg2u/0lG7rnyUtXju+ejwGNOo?=
- =?us-ascii?Q?MH1ngQXCY08hLh7FnlccFFVLdeykXk+FKnAs8J8pXxsIIvqtx4BhjGyrHowZ?=
- =?us-ascii?Q?AhIHkcMbMBLU9Xlj7gHveSoAO4tcQxcNJjo+O4vHclLcyQWFJVfXZrUVk6EW?=
- =?us-ascii?Q?kchqQWxrJ1DMVAF++BJIQ+EX/Aa5ru8OCygJnfqasylXxDx4SzmR5y/yLWJO?=
- =?us-ascii?Q?8gGX5kiL/FJf/2rntYjbEnakrP9hc/Fr0AYPsgxvoIT5129IefWTCkJP5QgU?=
- =?us-ascii?Q?gCi3cel+HbKIHj0cyxMZVwEwcdFy1D9Rkp+p1gmLw7UZhRtJdwBf1Z1LR8K6?=
- =?us-ascii?Q?jwpHIwZlALkMd16rrJ1YRjkrIGp5xeJ9nC+AUKA37Lio5btDPmrqwS1GZ2oC?=
- =?us-ascii?Q?2IdS0jv4yXMkjrrww4089wJ7hNFgHXoiE/IPBXtjD7T+ytSK2lBTTaqehSZA?=
- =?us-ascii?Q?KT6gK/TR9Q3ZmfD4bbOnv9U+boAm+MLUTPjnYYDH9ujgHaL30f32fInuFHkg?=
- =?us-ascii?Q?i0YApsZZzDFEaF6+PsPlnoitL8X0gUqyhw3A+WnzEkur3Y6F0+X3abDCtt1D?=
- =?us-ascii?Q?7HG/9rNE4Khmzm8WtTjckzrS4h0n8HBoP8GanoJqpWNeCxPwDI85zvA0A20J?=
- =?us-ascii?Q?NZSZuLrEZL9RZwSz/fZsdoUhRwwFiPaKl3UzlSfXlXRPkeUEMsvJizZUKUtu?=
- =?us-ascii?Q?Lw=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+To: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
+ Alex Deucher <alexdeucher@gmail.com>
+Cc: Sunil Khatri <sunil.khatri@amd.com>,
+ Alex Deucher <alexander.deucher@amd.com>,
+ Shashank Sharma <shashank.sharma@amd.com>, amd-gfx@lists.freedesktop.org,
+ Pan@rtg-sunil-navi33.amd.com, Xinhui <Xinhui.Pan@amd.com>,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ Mukul Joshi <mukul.joshi@amd.com>,
+ Arunpravin Paneer Selvam <Arunpravin.PaneerSelvam@amd.com>
+References: <20240306090408.3453152-1-sunil.khatri@amd.com>
+ <2f792620-fd8a-412e-9130-e276ba36d5a0@amd.com>
+ <5e2899cd-75b4-4ddd-97ff-4e10a2e67fbb@amd.com>
+ <66815303-bd9c-4dfc-ae1a-bbdc5d1bb47c@amd.com>
+ <17e12147-79dd-44ba-b8ae-b96fb72dcfbd@amd.com>
+ <CADnq5_OkeH1x4YgSv6uw0HLb5c-5NOXnzQPJHsDvb=NmEePB-A@mail.gmail.com>
+ <e5781df5-5244-465e-b986-c1802e1262db@gmail.com>
+ <0df75ff4-ece5-4eaa-93bd-6f03ec31ecfa@amd.com>
+ <bfaaad63-a5d7-4ceb-8e1c-d541f76f4037@amd.com>
+From: "Khatri, Sunil" <sukhatri@amd.com>
+In-Reply-To: <bfaaad63-a5d7-4ceb-8e1c-d541f76f4037@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: PN2P287CA0015.INDP287.PROD.OUTLOOK.COM
+ (2603:1096:c01:21b::14) To PH7PR12MB5596.namprd12.prod.outlook.com
+ (2603:10b6:510:136::13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: starfivetech.com
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR12MB5596:EE_|SN7PR12MB8170:EE_
+X-MS-Office365-Filtering-Correlation-Id: 150473e8-8a15-4bfe-6eb0-08dc3df76e43
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	qNZmEXSAruoZsTqQ2FCi9evosCb7PIYUaDT1wg4rOEsCttO7RjRe0XXmYEKBnTLBqKA08/zk/X7iyA67/2JuefJ6tUfW/5/ugj6Z35moFTKAaMRSdIIrC9JmpIExRPYiBSHCPYO0XBBAmLcpMHMgIpsEeqYEsK97/wM7EQBBkHBKamW6ATsegJdc23tufUbC2tYpABZRztEP4hfSc2cPxC9TLs5HrNU80+kbuRdjnnG7Xp1UpWbmBl83vRj3anu+wZ83xnoz/yI1qCNrrUI9hViIEiKHlvyBJBln4FCb3x0bWAukQ/Alo6IhkUg1t+pw3OvirQLgHBug0M6rzcSUatILVgSBHfCzxow4mQA0/yHv7DUvol2OM49KxnaLkb1JnvqiPYQUz/4xT9t4vtIZ650ElEDU0Akq30PbLnxceGKEyVM08l9erBAwgY89HmoEzljGwPGuFiFXuXJ23ZQ6HBIehjrTiD4KMzU12ZBLyMZMZc06TaE8yt8XeahKjqtJnkQeCpz7x5eUYKVa1CAv7E2aN84X+FwE9dBHsDdhTYvl8X+fOuPz0QruvxxPmjMC1QHx3+R0bih2C1jYbcSRUCMXoqVOvZJemsbM8b7noDz+bEflKfWpTZ6+CpLVGji1
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5596.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?aXk5TUNDZGtUWEdMOCs1SjF4L3Z1empEMk9wSVpqV0Fza01VcVNmcllMeFph?=
+ =?utf-8?B?cEZtdDBJT0V4RmROc3MvbHBCREhZT1FzUVp6N1FRZTZGcmpZSnZ5MkpJVGp0?=
+ =?utf-8?B?cjdQYzllcWNVREp6YkVwWHJFU2ZFQjNzY2NSNlN2SWhZVjNSSlBrK0ErT3hn?=
+ =?utf-8?B?WkdwNGNGaEhKVnB4UUtGZFhCOEw4WVFYTnMvemx1dFFFSzAvaGVVRFZ2cmRp?=
+ =?utf-8?B?bnVIR0dsVVg5Q1hFSlNlRnZrVTZnZUIwWUxJTjNTRVRHRmZMRjRvUy9raUJH?=
+ =?utf-8?B?d2ZRKzA3N1VFWE5WZEJNWGR3K0tRa1RNZWlvUVgzWU9ZdlVuUUhSZFozV2l3?=
+ =?utf-8?B?UmpIQmwwRnhNcTRQK2lUazFpTDV2UUlkaVl3cmhsQ29YdVJ2NDhuNnhjK0pn?=
+ =?utf-8?B?ZVhEdWNuRG4rSFF6dGVTb0UvMTVtM2l2Q0JlUGVHL1hGQnhmdEkyWE9kdG53?=
+ =?utf-8?B?RjNzQnRmL3BRUFZUV1F3RUlhK011YVhkcDVIZFYxMzhyVW0rZmNMTEdjaGhk?=
+ =?utf-8?B?MWZ6QUNWUU53RTNEYjRUMUJzV2IvQ254MmF0TmJVSm5qeExkUTZQREt1L1Jj?=
+ =?utf-8?B?cnVPS2FFRWo2TmZmUVkvR2tVVzZyOEI2bnVYZ1JYdVp1dHk4amcvNmpqeita?=
+ =?utf-8?B?bHpQcUtvWWUvd2dmWGYwem9TWVRQNVlwd2hKaFB5RFpYYW1MLzQ1WXBMZkRj?=
+ =?utf-8?B?dWMvU00xcmRPZHQyYll1NmVWZ3hLY1hJZjRwT0lwdjJNOTJ0NjJMKzA1U3Jy?=
+ =?utf-8?B?L2VqV0R2aUFTcUhhbFRaRklmU2paUndzZEQxTlZkTy84bUhRTjdzb3JocDBE?=
+ =?utf-8?B?Sjk4MEJyaTZMamJuS2ZGS2tpeEhhRFRjMXJpWUk2UFhJaFpyT0lLNlltU0sv?=
+ =?utf-8?B?THRkTllKUzJXVXRVU24xeDBVd21sSExzRThDNjNwZmRKNVl1OFIzS3FMYzFH?=
+ =?utf-8?B?SDhMR2w2WkkwZGdDNkFOdCt2dkhpTVozZEVBa1BkYzc1SDRzdXYzU2VDL3Jz?=
+ =?utf-8?B?M0cwenMvNGNXdFA5anQ3NkVhU2ppMkFYbklYT1pmWUJkZXRmZ3NpQit2UVNE?=
+ =?utf-8?B?dDUvZXV5OUxyKytoNmdVdUtoWEI4Q3ZxbDUxYldwY1hjV1c3amc0c3h5a21h?=
+ =?utf-8?B?VG4vZHZkNm92WUgwbVl5ZXBpdVE2RCtLTUhPUjhJSHdEUlFZWFJvQ0NjeTBP?=
+ =?utf-8?B?TTFsQXBNSzlHeDNUQmlTaE5TcmU1Z1VNV2VmWFZ3YXdRSW9CTXdIaWNLZmhQ?=
+ =?utf-8?B?cnVVSXFML3EzaVZtakFYRWs0dkZrTjY0TEFsSXZIOExiYzhXY000Mmd4QjE5?=
+ =?utf-8?B?KzZxbjNNUmxyRlZ0c0pmRUhhaWR0WnhGMkdLSVExdkxMMG5kV1hzNFU3cFNJ?=
+ =?utf-8?B?NThHYnBWUlIwUTlzZzRlZlpXemowQmErT0lZaC9zTjBmRE5JS3JkanE5d1Bm?=
+ =?utf-8?B?OURnNDhLUmtaaSt4aDVBSEpLQUoxUTd2VjVoNEU2d2QxYUExR0krcnFQcXFQ?=
+ =?utf-8?B?MWJvWGhhNnVVWVNMSkxxMEhHZUQxS2szSlhsWU9pYjRQVHhRUjVwcUMrWExs?=
+ =?utf-8?B?Sm42Z3ZUbTRqVlJKbU5Ld3FiMlhnWWhGRmVGcVpnV21IczdjK2hRVTRmSmha?=
+ =?utf-8?B?Z3lDN2FpQlE5OVd1cXhsdWlLeC82UW5uTnJ5TzJpeExGSEo4OFZtanNEWUo3?=
+ =?utf-8?B?MG1HdmxnZEVvR0xZeGNucXVWVWFEeEVCZ3J6WHpjb2xYbG40T1pqMlg5RDhJ?=
+ =?utf-8?B?V3UxbnJPNGRnMGxmYzFkT2FvWVBjVDdpOU4xM3J6OTd6N1VHYUFFc1FDYmJN?=
+ =?utf-8?B?aDFOeS9JZnRVNnd4UkRUZ1ZXNHF6MGlWR21NalI0T1dMcnpVVXNpSHhtV3V2?=
+ =?utf-8?B?Y0RBaTd2aVE2Q2pmMUFDWFpFVUlZSWZSWFpBZWdpL0poL1MwNUhneGdYamg3?=
+ =?utf-8?B?U3NOajI0YzRJa1dpNDZKamg3TVpOUUZ0YjBxUk11U0Yra1c4UTY5Y2hmbk5k?=
+ =?utf-8?B?NHFhWXcwUWFjc2w2YkpZZ2lXb1JZN09EV2p6dnppeU8yZXh4bWZNc0NSN3Q1?=
+ =?utf-8?B?aEtNVXhJeU5FOHJsTVBZUUlkQk9USllXODRQL2FwRkhLL0daYTRxZjFYYlFm?=
+ =?utf-8?Q?QqMxPOId3QWbM1jcXxgNtA0Dd?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 150473e8-8a15-4bfe-6eb0-08dc3df76e43
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5596.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn
-X-MS-Exchange-CrossTenant-Network-Message-Id: b02dfa58-6050-40ae-5e03-08dc3df757b2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Mar 2024 16:06:11.6804
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Mar 2024 16:06:49.9358
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: KO0xZJx/FVttO4rRTRtrsUwiCawp/6vbTdIWMyNsl4CDZQd5xp1rZOumej0VYAtclFDlhbH9q0BHSzOE6hyd57EDc1gyn4MMXBBtbg0cSH8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SH0PR01MB0571
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: jyXjhl85zk3t2ypzHcTOK8kBFPJT1Dkj/5P+RzRxpZcOfeLWwR+O3ocVOC57Ky11srEgdTv+GGLfzlOMJ48EOQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB8170
 
-Hi Frank,
 
-Apologize I replied to the older patch series version. I copy the text from=
- there to here instead.
+On 3/6/2024 9:07 PM, Christian König wrote:
+> Am 06.03.24 um 16:13 schrieb Khatri, Sunil:
+>>
+>> On 3/6/2024 8:34 PM, Christian König wrote:
+>>> Am 06.03.24 um 15:29 schrieb Alex Deucher:
+>>>> On Wed, Mar 6, 2024 at 8:04 AM Khatri, Sunil <sukhatri@amd.com> wrote:
+>>>>>
+>>>>> On 3/6/2024 6:12 PM, Christian König wrote:
+>>>>>> Am 06.03.24 um 11:40 schrieb Khatri, Sunil:
+>>>>>>> On 3/6/2024 3:37 PM, Christian König wrote:
+>>>>>>>> Am 06.03.24 um 10:04 schrieb Sunil Khatri:
+>>>>>>>>> When an  page fault interrupt is raised there
+>>>>>>>>> is a lot more information that is useful for
+>>>>>>>>> developers to analyse the pagefault.
+>>>>>>>> Well actually those information are not that interesting because
+>>>>>>>> they are hw generation specific.
+>>>>>>>>
+>>>>>>>> You should probably rather use the decoded strings here, e.g. hub,
+>>>>>>>> client, xcc_id, node_id etc...
+>>>>>>>>
+>>>>>>>> See gmc_v9_0_process_interrupt() an example.
+>>>>>>>> I saw this v9 does provide more information than what v10 and v11
+>>>>>>>> provide like node_id and fault from which die but thats again very
+>>>>>>>> specific to IP_VERSION(9, 4, 3)) i dont know why thats information
+>>>>>>>> is not there in v10 and v11.
+>>>>>>> I agree to your point but, as of now during a pagefault we are
+>>>>>>> dumping this information which is useful like which client
+>>>>>>> has generated an interrupt and for which src and other information
+>>>>>>> like address. So i think to provide the similar information in the
+>>>>>>> devcoredump.
+>>>>>>>
+>>>>>>> Currently we do not have all this information from either job or vm
+>>>>>>> being derived from the job during a reset. We surely could add more
+>>>>>>> relevant information later on as per request but this 
+>>>>>>> information is
+>>>>>>> useful as
+>>>>>>> eventually its developers only who would use the dump file provided
+>>>>>>> by customer to debug.
+>>>>>>>
+>>>>>>> Below is the information that i dump in devcore and i feel that is
+>>>>>>> good information but new information could be added which could be
+>>>>>>> picked later.
+>>>>>>>
+>>>>>>>> Page fault information
+>>>>>>>> [gfxhub] page fault (src_id:0 ring:24 vmid:3 pasid:32773)
+>>>>>>>> in page starting at address 0x0000000000000000 from client 0x1b 
+>>>>>>>> (UTCL2)
+>>>>>> This is a perfect example what I mean. You record in the patch is 
+>>>>>> the
+>>>>>> client_id, but this is is basically meaningless unless you have 
+>>>>>> access
+>>>>>> to the AMD internal hw documentation.
+>>>>>>
+>>>>>> What you really need is the client in decoded form, in this case
+>>>>>> UTCL2. You can keep the client_id additionally, but the decoded 
+>>>>>> client
+>>>>>> string is mandatory to have I think.
+>>>>>>
+>>>>>> Sure i am capturing that information as i am trying to minimise the
+>>>>>> memory interaction to minimum as we are still in interrupt context
+>>>>>> here that why i recorded the integer information compared to 
+>>>>>> decoding
+>>>>> and writing strings there itself but to postpone till we dump.
+>>>>>
+>>>>> Like decoding to the gfxhub/mmhub based on vmhub/vmid_src and client
+>>>>> string from client id. So are we good to go with the information with
+>>>>> the above information of sharing details in devcoredump using the
+>>>>> additional information from pagefault cached.
+>>>> I think amdgpu_vm_fault_info() has everything you need already (vmhub,
+>>>> status, and addr).  client_id and src_id are just tokens in the
+>>>> interrupt cookie so we know which IP to route the interrupt to. We
+>>>> know what they will be because otherwise we'd be in the interrupt
+>>>> handler for a different IP.  I don't think ring_id has any useful
+>>>> information in this context and vmid and pasid are probably not too
+>>>> useful because they are just tokens to associate the fault with a
+>>>> process.  It would be better to have the process name.
+>>
+>> Just to share context here Alex, i am preparing this for devcoredump, 
+>> my intention was to replicate the information which in KMD we are 
+>> sharing in Dmesg for page faults. If assuming we do not add client id 
+>> specially we would not be able to share enough information in 
+>> devcoredump.
+>> It would be just address and hub(gfxhub/mmhub) and i think that is 
+>> partial information as src id and client id and ip block shares good 
+>> information.
+>>
+>> For process related information we are capturing that information 
+>> part of dump from existing functionality.
+>> **** AMDGPU Device Coredump ****
+>> version: 1
+>> kernel: 6.7.0-amd-staging-drm-next
+>> module: amdgpu
+>> time: 45.084775181
+>> process_name: soft_recovery_p PID: 1780
+>>
+>> Ring timed out details
+>> IP Type: 0 Ring Name: gfx_0.0.0
+>>
+>> Page fault information
+>> [gfxhub] page fault (src_id:0 ring:24 vmid:3 pasid:32773)
+>> in page starting at address 0x0000000000000000 from client 0x1b (UTCL2)
+>> VRAM is lost due to GPU reset!
+>>
+>> Regards
+>> Sunil
+>>
+>>>
+>>> The decoded client name would be really useful I think since the 
+>>> fault handled is a catch all and handles a whole bunch of different 
+>>> clients.
+>>>
+>>> But that should be ideally passed in as const string instead of the 
+>>> hw generation specific client_id.
+>>>
+>>> As long as it's only a pointer we also don't run into the trouble 
+>>> that we need to allocate memory for it.
+>>
+>> I agree but i prefer adding the client id and decoding it in 
+>> devcorecump using soc15_ih_clientid_name[fault_info->client_id]) is 
+>> better else we have to do an sprintf this string to fault_info in irq 
+>> context which is writing more bytes to memory i guess compared to an 
+>> integer:)
+>
+> Well I totally agree that we shouldn't fiddle to much in the interrupt 
+> handler, but exactly what you suggest here won't work.
+>
+> The client_id is hw generation specific, so the only one who has that 
+> is the hw generation specific fault handler. Just compare the defines 
+> here:
+>
+> https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c#L83 
+>
+>
+> and here:
+>
+> https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/amd/amdgpu/gfxhub_v11_5_0.c#L38 
+>
+>
+Got your point. Let me see but this is a lot of work in irq context. 
+Either we can drop totally the client id thing as alex is suggesting 
+here as its always be same client and src id or let me come up with a 
+patch and see if its acceptable.
 
-> -----Original Message-----
-> From: linux-i3c <linux-i3c-bounces@lists.infradead.org> On Behalf Of Fran=
-k Li
-> Sent: Friday, February 9, 2024 1:01 AM
-> To: frank.li@nxp.com
-> Cc: alexandre.belloni@bootlin.com; conor.culhane@silvaco.com;
-> devicetree@vger.kernel.org; gregkh@linuxfoundation.org;
-> ilpo.jarvinen@linux.intel.com; imx@lists.linux.dev; jirislaby@kernel.org;
-> joe@perches.com; krzysztof.kozlowski+dt@linaro.org;
-> krzysztof.kozlowski@linaro.org; linux-i3c@lists.infradead.org; linux-
-> kernel@vger.kernel.org; linux-serial@vger.kernel.org;
-> miquel.raynal@bootlin.com; robh@kernel.org;
-> zbigniew.lukwinski@linux.intel.com
-> Subject: [PATCH v8 5/8] i3c: target: add svc target controller support
->=20
-> Add Silvaco I3C target controller support
->=20
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> ---
->=20
-> Notes:
->     Chagne from v7 to v8
->     -reorder header files
->     - add missed header files
->=20
->     Change from v3 to v7
->     - none
->     Change from v2 to v3
->     - fix build warning
->=20
->  drivers/i3c/master/Makefile         |   2 +-
->  drivers/i3c/master/svc-i3c-main.c   |  35 +-
->  drivers/i3c/master/svc-i3c-target.c | 776
+Also as Alex pointed we need to decode from status register which kind 
+of page fault it is (permission, read, write etc) this all is again 
+family specific and thats all in IRQ context. Not feeling good about it 
+but let me try to share all that in a new patch.
 
-I think putting target mode files under "master" might not make sense.
-We might have to consider that we may have a "secondary master" mode.
-Some other ways of splitting or handling of target mode is needed here.
+Regards
+Sunil.
 
->=20
->  static const struct dev_pm_ops svc_i3c_pm_ops =3D { diff --git
-> a/drivers/i3c/master/svc-i3c-target.c b/drivers/i3c/master/svc-i3c-target=
-c
-> new file mode 100644
-> index 0000000000000..06210ed0c3219
-> --- /dev/null
-> +++ b/drivers/i3c/master/svc-i3c-target.c
-> @@ -0,0 +1,776 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright 2023 NXP.
-> + *
-> + * Author: Frank Li <Frank.Li@nxp.com>
-> + */
-> +
-> +#include <linux/bits.h>
-> +#include <linux/bitfield.h>
-> +#include <linux/clk.h>
-> +#include <linux/completion.h>
-> +#include <linux/errno.h>
-> +#include <linux/i3c/device.h>
-> +#include <linux/i3c/target.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/iopoll.h>
-> +#include <linux/kernel.h>
-> +#include <linux/list.h>
-> +#include <linux/module.h>
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/of.h>
-> +#include <linux/pinctrl/consumer.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/pm_runtime.h>
-> +#include <linux/spinlock.h>
-> +#include <linux/workqueue.h>
-> +
-> +#include "svc-i3c.h"
-> +
-> +enum i3c_clks {
-> +	PCLK,
-> +	FCLK,
-> +	SCLK,
-> +	MAXCLK,
-> +};
-> +
-> +struct svc_i3c_target {
-> +	struct device *dev;
-> +	void __iomem *regs;
-> +	int irq;
-> +	struct clk_bulk_data clks[MAXCLK];
-> +
-> +	struct list_head txq;
-> +	spinlock_t txq_lock; /* protect tx queue */
-> +	struct list_head rxq;
-> +	spinlock_t rxq_lock; /* protect rx queue */
-> +	struct list_head cq;
-> +	spinlock_t cq_lock; /* protect complete queue */
-> +
-> +	struct work_struct work;
-> +	struct workqueue_struct *workqueue;
-> +
-> +	struct completion dacomplete;
-> +	struct i3c_target_ctrl_features features;
-> +
-> +	spinlock_t ctrl_lock; /* protext access SCTRL register */ };
-> +
-> +#define I3C_SCONFIG	0x4
-> +#define   I3C_SCONFIG_SLVENA_MASK	BIT(0)
-> +#define	  I3C_SCONFIG_OFFLINE_MASK	BIT(9)
-> +#define   I3C_SCONFIG_SADDR_MASK	GENMASK(31, 25)
-> +
-> +#define I3C_SSTATUS	0x8
-> +#define	  I3C_SSTATUS_STNOTSTOP_MASK	BIT(0)
-> +#define	  I3C_SSTATUS_STOP_MASK		BIT(10)
-> +#define	  I3C_SSTATUS_RX_PEND_MASK	BIT(11)
-> +#define   I3C_SSTATUS_TXNOTFULL_MASK	BIT(12)
-> +#define	  I3C_SSTATUS_DACHG_MASK	BIT(13)
-> +#define	  I3C_SSTATUS_EVDET_MASK	GENMASK(21, 20)
-> +#define	  I3C_SSTATUS_EVDET_ACKED	0x3
-> +#define	  I3C_SSTATUS_IBIDIS_MASK	BIT(24)
-> +#define	  I3C_SSTATUS_HJDIS_MASK	BIT(27)
-> +
-> +#define I3C_SCTRL	0xc
-> +#define   I3C_SCTRL_EVENT_MASK		GENMASK(1, 0)
-> +#define	  I3C_SCTRL_EVENT_IBI		0x1
-> +#define	  I3C_SCTRL_EVENT_HOTJOIN	0x3
-> +#define   I3C_SCTRL_EXTDATA_MASK	BIT(3)
-> +#define   I3C_SCTRL_IBIDATA_MASK	GENMASK(15, 8)
-> +
-> +#define I3C_SINTSET	0x10
-> +#define I3C_SINTCLR	0x14
-> +#define   I3C_SINT_START	BIT(8)
-> +#define   I3C_SINT_MATCHED	BIT(9)
-> +#define   I3C_SINT_STOP		BIT(10)
-> +#define   I3C_SINT_RXPEND	BIT(11)
-> +#define   I3C_SINT_TXSEND	BIT(12)
-> +#define   I3C_SINT_DACHG	BIT(13)
-> +#define   I3C_SINT_CCC		BIT(14)
-> +#define   I3C_SINT_ERRWARN	BIT(15)
-> +#define   I3C_SINT_DDRMAATCHED	BIT(16)
-> +#define   I3C_SINT_CHANDLED	BIT(17)
-> +#define   I3C_SINT_EVENT	BIT(18)
-> +#define   I3C_SINT_SLVRST	BIT(19)
-> +
-> +#define I3C_SDATACTRL	0x2c
-> +#define   I3C_SDATACTRL_RXEMPTY_MASK	BIT(31)
-> +#define   I3C_SDATACTRL_TXFULL_MASK	BIT(30)
-> +#define	  I3C_SDATACTRL_RXCOUNT_MASK	GENMASK(28, 24)
-> +#define	  I3C_SDATACTRL_TXCOUNT_MASK	GENMASK(20, 16)
-> +#define   I3C_SDATACTRL_FLUSHFB_MASK	BIT(1)
-> +#define   I3C_SDATACTRL_FLUSHTB_MASK	BIT(0)
-> +
-> +#define I3C_SWDATAB	0x30
-> +#define   I3C_SWDATAB_END_ALSO_MASK	BIT(16)
-> +#define	  I3C_SWDATAB_END_MASK		BIT(8)
-> +
-> +#define I3C_SWDATAE	0x34
-> +#define I3C_SRDATAB	0x40
-> +
-> +#define I3C_SCAPABILITIES 0x60
-> +#define   I3C_SCAPABILITIES_FIFOTX_MASK     GENMASK(27, 26)
-> +#define   I3C_SCAPABILITIES_FIFORX_MASK     GENMASK(29, 28)
-> +
-> +#define I3C_SMAXLIMITS	0x68
-> +#define   I3C_SMAXLIMITS_MAXRD_MASK  GENMASK(11, 0)
-> +#define   I3C_SMAXLIMITS_MAXWR_MASK  GENMASK(27, 16)
-> +
-> +#define I3C_SIDPARTNO	0x6c
-> +
-> +#define I3C_SIDEXT	0x70
-> +#define	  I3C_SIDEXT_BCR_MASK	GENMASK(23, 16)
-> +#define	  I3C_SIDEXT_DCR_MASK	GENMASK(15, 8)
-> +#define I3C_SVENDORID	0x74
-> +
-> +#define I3C_SMAPCTRL0	0x11c
-> +#define	  I3C_SMAPCTRL0_ENA_MASK	BIT(0)
-> +#define   I3C_SMAPCTRL0_DA_MASK	GENMASK(7, 1)
-> +
-> +#define I3C_IBIEXT1	0x140
-> +#define   I3C_IBIEXT1_CNT_MASK	GEN_MASK(2, 0)
-> +#define   I3C_IBIEXT1_MAX_MASK	GEN_MASK(4, 6)
-> +#define   I3C_IBIEXT1_EXT1_SHIFT	8
-> +#define   I3C_IBIEXT1_EXT2_SHIFT	16
-> +#define   I3C_IBIEXT1_EXT3_SHIFT	24
-> +
-> +#define I3C_IBIEXT2	0x144
-> +#define	  I3C_IBIEXT2_EXT4_SHIFT	0
-> +#define	  I3C_IBIEXT2_EXT5_SHIFT	8
-> +#define	  I3C_IBIEXT2_EXT6_SHIFT	16
-> +#define	  I3C_IBIEXT2_EXT7_SHIFT	24
-> +
-
-There is couple of space formatting here that requires to be fixed.
-
-Cheers,
-Joshua
-
+> Regards,
+> Christian.
+>
+>>
+>> We can argue on values like pasid and vmid and ring id to be taken 
+>> off if they are totally not useful.
+>>
+>> Regards
+>> Sunil
+>>
+>>>
+>>> Christian.
+>>>
+>>>>
+>>>> Alex
+>>>>
+>>>>> regards
+>>>>> sunil
+>>>>>
+>>>>>> Regards,
+>>>>>> Christian.
+>>>>>>
+>>>>>>> Regards
+>>>>>>> Sunil Khatri
+>>>>>>>
+>>>>>>>> Regards,
+>>>>>>>> Christian.
+>>>>>>>>
+>>>>>>>>> Add all such information in the last cached
+>>>>>>>>> pagefault from an interrupt handler.
+>>>>>>>>>
+>>>>>>>>> Signed-off-by: Sunil Khatri <sunil.khatri@amd.com>
+>>>>>>>>> ---
+>>>>>>>>>    drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c | 9 +++++++--
+>>>>>>>>>    drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h | 7 ++++++-
+>>>>>>>>>    drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c | 2 +-
+>>>>>>>>>    drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c | 2 +-
+>>>>>>>>>    drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c  | 2 +-
+>>>>>>>>>    drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c  | 2 +-
+>>>>>>>>>    drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c  | 2 +-
+>>>>>>>>>    7 files changed, 18 insertions(+), 8 deletions(-)
+>>>>>>>>>
+>>>>>>>>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+>>>>>>>>> b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+>>>>>>>>> index 4299ce386322..b77e8e28769d 100644
+>>>>>>>>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+>>>>>>>>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+>>>>>>>>> @@ -2905,7 +2905,7 @@ void amdgpu_debugfs_vm_bo_info(struct
+>>>>>>>>> amdgpu_vm *vm, struct seq_file *m)
+>>>>>>>>>     * Cache the fault info for later use by userspace in 
+>>>>>>>>> debugging.
+>>>>>>>>>     */
+>>>>>>>>>    void amdgpu_vm_update_fault_cache(struct amdgpu_device *adev,
+>>>>>>>>> -                  unsigned int pasid,
+>>>>>>>>> +                  struct amdgpu_iv_entry *entry,
+>>>>>>>>>                      uint64_t addr,
+>>>>>>>>>                      uint32_t status,
+>>>>>>>>>                      unsigned int vmhub)
+>>>>>>>>> @@ -2915,7 +2915,7 @@ void amdgpu_vm_update_fault_cache(struct
+>>>>>>>>> amdgpu_device *adev,
+>>>>>>>>> xa_lock_irqsave(&adev->vm_manager.pasids, flags);
+>>>>>>>>>    -    vm = xa_load(&adev->vm_manager.pasids, pasid);
+>>>>>>>>> +    vm = xa_load(&adev->vm_manager.pasids, entry->pasid);
+>>>>>>>>>        /* Don't update the fault cache if status is 0.  In the 
+>>>>>>>>> multiple
+>>>>>>>>>         * fault case, subsequent faults will return a 0 status 
+>>>>>>>>> which is
+>>>>>>>>>         * useless for userspace and replaces the useful fault
+>>>>>>>>> status, so
+>>>>>>>>> @@ -2924,6 +2924,11 @@ void amdgpu_vm_update_fault_cache(struct
+>>>>>>>>> amdgpu_device *adev,
+>>>>>>>>>        if (vm && status) {
+>>>>>>>>>            vm->fault_info.addr = addr;
+>>>>>>>>>            vm->fault_info.status = status;
+>>>>>>>>> +        vm->fault_info.client_id = entry->client_id;
+>>>>>>>>> +        vm->fault_info.src_id = entry->src_id;
+>>>>>>>>> +        vm->fault_info.vmid = entry->vmid;
+>>>>>>>>> +        vm->fault_info.pasid = entry->pasid;
+>>>>>>>>> +        vm->fault_info.ring_id = entry->ring_id;
+>>>>>>>>>            if (AMDGPU_IS_GFXHUB(vmhub)) {
+>>>>>>>>>                vm->fault_info.vmhub = AMDGPU_VMHUB_TYPE_GFX;
+>>>>>>>>>                vm->fault_info.vmhub |=
+>>>>>>>>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h
+>>>>>>>>> b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h
+>>>>>>>>> index 047ec1930d12..c7782a89bdb5 100644
+>>>>>>>>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h
+>>>>>>>>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h
+>>>>>>>>> @@ -286,6 +286,11 @@ struct amdgpu_vm_fault_info {
+>>>>>>>>>        uint32_t    status;
+>>>>>>>>>        /* which vmhub? gfxhub, mmhub, etc. */
+>>>>>>>>>        unsigned int    vmhub;
+>>>>>>>>> +    unsigned int    client_id;
+>>>>>>>>> +    unsigned int    src_id;
+>>>>>>>>> +    unsigned int    ring_id;
+>>>>>>>>> +    unsigned int    pasid;
+>>>>>>>>> +    unsigned int    vmid;
+>>>>>>>>>    };
+>>>>>>>>>      struct amdgpu_vm {
+>>>>>>>>> @@ -605,7 +610,7 @@ static inline void
+>>>>>>>>> amdgpu_vm_eviction_unlock(struct amdgpu_vm *vm)
+>>>>>>>>>    }
+>>>>>>>>>      void amdgpu_vm_update_fault_cache(struct amdgpu_device 
+>>>>>>>>> *adev,
+>>>>>>>>> -                  unsigned int pasid,
+>>>>>>>>> +                  struct amdgpu_iv_entry *entry,
+>>>>>>>>>                      uint64_t addr,
+>>>>>>>>>                      uint32_t status,
+>>>>>>>>>                      unsigned int vmhub);
+>>>>>>>>> diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
+>>>>>>>>> b/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
+>>>>>>>>> index d933e19e0cf5..6b177ce8db0e 100644
+>>>>>>>>> --- a/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
+>>>>>>>>> +++ b/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
+>>>>>>>>> @@ -150,7 +150,7 @@ static int gmc_v10_0_process_interrupt(struct
+>>>>>>>>> amdgpu_device *adev,
+>>>>>>>>>            status = RREG32(hub->vm_l2_pro_fault_status);
+>>>>>>>>>            WREG32_P(hub->vm_l2_pro_fault_cntl, 1, ~1);
+>>>>>>>>>    -        amdgpu_vm_update_fault_cache(adev, entry->pasid, 
+>>>>>>>>> addr,
+>>>>>>>>> status,
+>>>>>>>>> +        amdgpu_vm_update_fault_cache(adev, entry, addr, status,
+>>>>>>>>>                             entry->vmid_src ? AMDGPU_MMHUB0(0) :
+>>>>>>>>> AMDGPU_GFXHUB(0));
+>>>>>>>>>        }
+>>>>>>>>>    diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c
+>>>>>>>>> b/drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c
+>>>>>>>>> index 527dc917e049..bcf254856a3e 100644
+>>>>>>>>> --- a/drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c
+>>>>>>>>> +++ b/drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c
+>>>>>>>>> @@ -121,7 +121,7 @@ static int gmc_v11_0_process_interrupt(struct
+>>>>>>>>> amdgpu_device *adev,
+>>>>>>>>>            status = RREG32(hub->vm_l2_pro_fault_status);
+>>>>>>>>>            WREG32_P(hub->vm_l2_pro_fault_cntl, 1, ~1);
+>>>>>>>>>    -        amdgpu_vm_update_fault_cache(adev, entry->pasid, 
+>>>>>>>>> addr,
+>>>>>>>>> status,
+>>>>>>>>> +        amdgpu_vm_update_fault_cache(adev, entry, addr, status,
+>>>>>>>>>                             entry->vmid_src ? AMDGPU_MMHUB0(0) :
+>>>>>>>>> AMDGPU_GFXHUB(0));
+>>>>>>>>>        }
+>>>>>>>>>    diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c
+>>>>>>>>> b/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c
+>>>>>>>>> index 3da7b6a2b00d..e9517ebbe1fd 100644
+>>>>>>>>> --- a/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c
+>>>>>>>>> +++ b/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c
+>>>>>>>>> @@ -1270,7 +1270,7 @@ static int 
+>>>>>>>>> gmc_v7_0_process_interrupt(struct
+>>>>>>>>> amdgpu_device *adev,
+>>>>>>>>>        if (!addr && !status)
+>>>>>>>>>            return 0;
+>>>>>>>>>    -    amdgpu_vm_update_fault_cache(adev, entry->pasid,
+>>>>>>>>> +    amdgpu_vm_update_fault_cache(adev, entry,
+>>>>>>>>>                         ((u64)addr) << AMDGPU_GPU_PAGE_SHIFT,
+>>>>>>>>> status, AMDGPU_GFXHUB(0));
+>>>>>>>>>          if (amdgpu_vm_fault_stop == AMDGPU_VM_FAULT_STOP_FIRST)
+>>>>>>>>> diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c
+>>>>>>>>> b/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c
+>>>>>>>>> index d20e5f20ee31..a271bf832312 100644
+>>>>>>>>> --- a/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c
+>>>>>>>>> +++ b/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c
+>>>>>>>>> @@ -1438,7 +1438,7 @@ static int 
+>>>>>>>>> gmc_v8_0_process_interrupt(struct
+>>>>>>>>> amdgpu_device *adev,
+>>>>>>>>>        if (!addr && !status)
+>>>>>>>>>            return 0;
+>>>>>>>>>    -    amdgpu_vm_update_fault_cache(adev, entry->pasid,
+>>>>>>>>> +    amdgpu_vm_update_fault_cache(adev, entry,
+>>>>>>>>>                         ((u64)addr) << AMDGPU_GPU_PAGE_SHIFT,
+>>>>>>>>> status, AMDGPU_GFXHUB(0));
+>>>>>>>>>          if (amdgpu_vm_fault_stop == AMDGPU_VM_FAULT_STOP_FIRST)
+>>>>>>>>> diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
+>>>>>>>>> b/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
+>>>>>>>>> index 47b63a4ce68b..dc9fb1fb9540 100644
+>>>>>>>>> --- a/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
+>>>>>>>>> +++ b/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
+>>>>>>>>> @@ -666,7 +666,7 @@ static int gmc_v9_0_process_interrupt(struct
+>>>>>>>>> amdgpu_device *adev,
+>>>>>>>>>        rw = REG_GET_FIELD(status, 
+>>>>>>>>> VM_L2_PROTECTION_FAULT_STATUS, RW);
+>>>>>>>>>        WREG32_P(hub->vm_l2_pro_fault_cntl, 1, ~1);
+>>>>>>>>>    -    amdgpu_vm_update_fault_cache(adev, entry->pasid, addr,
+>>>>>>>>> status, vmhub);
+>>>>>>>>> +    amdgpu_vm_update_fault_cache(adev, entry, addr, status, 
+>>>>>>>>> vmhub);
+>>>>>>>>>          dev_err(adev->dev,
+>>>>>>>>> "VM_L2_PROTECTION_FAULT_STATUS:0x%08X\n",
+>>>
+>
 
