@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-93787-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93788-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1962B87348B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 11:42:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AD8A873490
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 11:42:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B26B1C215BA
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:42:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C73131F20846
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:42:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EC296089F;
-	Wed,  6 Mar 2024 10:42:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C67E605B8;
+	Wed,  6 Mar 2024 10:42:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="egUpHwnQ"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XH/CyYsl"
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F9C3605C8
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 10:42:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B4CE1E520
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 10:42:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709721737; cv=none; b=qBTPSdIuZtmMmNVOwOj1ayoSoQyPSWzW+M5+DZvcwgEW5kECg5OIWWf0vIrf4lnr3gqYaBWAoIGuTB8NthTEc8XIVSMQ1n1iKhRgKDvJrL5MScKky+qJLInV094RWDAYV8D/gONdnPvZ/iR+icB5IanmQ0KsWFHiq6oITS9dFnU=
+	t=1709721746; cv=none; b=qQX3g7zOjTEYxhau62O5hF3DjCUfB+B+Z97JNkaax44zBZ9bssjg25HaUyoTbkLrPM2tcv0Kdxx3F66xLU/pOm5Q6kDXK1t/QEYGbrvnJA3Aj/IsW40r3lH1sgCNH9d8d8i+XBKuMXcYTjxPVFPxdbtYeVgJl1Pv5Jk4/Fv98hA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709721737; c=relaxed/simple;
-	bh=PJKzqnHG6HtyEXo/aXT9kPop7Tc4xiPLd1rW13UePCc=;
+	s=arc-20240116; t=1709721746; c=relaxed/simple;
+	bh=CxV8MifY1lrwJx7GkesgEIYplTEI/H1POQkB3NsGQqU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Zv655Knfn9/dAb9uozgemXKibCgTi1lUidH3MIq++OCzhSo4t84lWPLLdHBOMnCVuU04OD+YlWOYGVNR/tYtzRxluRKS+tV6AgeDhrWld5cIGjiCFVInidT8Db7LkXZE4iWrsgy15aDCIpt1q8H+D4GDUuegXJ0fNm9DT5lxlDQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=egUpHwnQ; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version; b=CBQShobxuOWQ7NsREr/2nf2GZnz5huwhl7/9m2yUW6IDBWh48mhyc9Y9563WZ8cX2BEqfVGBiCh5CDIB4AZfPolyEvgKB/FYiCFROxWOgIpcc1g3wsxctmM0GfU++59eGuGe3DV6HI9PSSegm+nmXghv+NKyVO+HAh9BDo+IV/8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XH/CyYsl; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709721735;
+	s=mimecast20190719; t=1709721744;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=3D9LYre9es5Pr/ZmF0ksBqg/v+REJVkPqwZxeVyu2sc=;
-	b=egUpHwnQ9bOefbF/GDc94QJJh5HC1kfVnjG0cJCHvxMvVEGt3PkPR+t534oahk7QTBDodX
-	MyFB0XPczxoJpgoPJvRLQM2xhNfQCwv/TINSNlBXII9AVICRN27mHrSDBC1hMeFY4J3AT0
-	RpgBM7W2d1ZylU0AJfULQWzwhDZeBFA=
+	bh=1JTq1zOoPcvZLzyDHIG6xTSG66u1JMVbpFEt5kpx07M=;
+	b=XH/CyYslzUhUiwZa5q9LWSJSx1XaUejmTPGU6RHS3o+G2O+pG07eLCIjftNysD4GUQBgdL
+	htrkhv23yOVQu6c22PxeESGPut1HEmtveHXmMQ0/iXt2afq51ICDlIqyHzM7Mw3zve3iyK
+	lDf2hhhCkPrJ/ZTL6QWWfbMpAP4CTcM=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-158-uC-oagQgMFWs_CgooWNVxQ-1; Wed, 06 Mar 2024 05:42:11 -0500
-X-MC-Unique: uC-oagQgMFWs_CgooWNVxQ-1
+ us-mta-630-w92BStQdNuqU_EljwB5_jw-1; Wed, 06 Mar 2024 05:42:18 -0500
+X-MC-Unique: w92BStQdNuqU_EljwB5_jw-1
 Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D81EA8007A2;
-	Wed,  6 Mar 2024 10:42:10 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6AC0E800267;
+	Wed,  6 Mar 2024 10:42:17 +0000 (UTC)
 Received: from x1n.redhat.com (unknown [10.72.116.8])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 97C19112131D;
-	Wed,  6 Mar 2024 10:42:04 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTP id A7360111E3F3;
+	Wed,  6 Mar 2024 10:42:11 +0000 (UTC)
 From: peterx@redhat.com
 To: linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org
@@ -68,9 +68,9 @@ Cc: linuxppc-dev@lists.ozlabs.org,
 	x86@kernel.org,
 	sparclinux@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH RFC 02/13] mm/gup: Cache p4d in follow_p4d_mask()
-Date: Wed,  6 Mar 2024 18:41:36 +0800
-Message-ID: <20240306104147.193052-3-peterx@redhat.com>
+Subject: [PATCH RFC 03/13] mm/gup: Check p4d presence before going on
+Date: Wed,  6 Mar 2024 18:41:37 +0800
+Message-ID: <20240306104147.193052-4-peterx@redhat.com>
 In-Reply-To: <20240306104147.193052-1-peterx@redhat.com>
 References: <20240306104147.193052-1-peterx@redhat.com>
 Precedence: bulk
@@ -84,42 +84,38 @@ X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
 From: Peter Xu <peterx@redhat.com>
 
-Add a variable to cache p4d in follow_p4d_mask().  It's a good practise to
-make sure all the following checks will have a consistent view of the entry.
+Currently there should have no p4d swap entries so it may not matter much,
+however this may help us to rule out swap entries in pXd_huge() API, which
+will include p4d_huge().  The p4d_present() checks make it 100% clear that
+we won't rely on p4d_huge() for swap entries.
 
 Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
- mm/gup.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ mm/gup.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/mm/gup.c b/mm/gup.c
-index df83182ec72d..69a777f4fc5c 100644
+index 69a777f4fc5c..f87a7d90f2ae 100644
 --- a/mm/gup.c
 +++ b/mm/gup.c
-@@ -772,16 +772,17 @@ static struct page *follow_p4d_mask(struct vm_area_struct *vma,
- 				    unsigned int flags,
- 				    struct follow_page_context *ctx)
- {
--	p4d_t *p4d;
-+	p4d_t *p4dp, p4d;
+@@ -776,7 +776,7 @@ static struct page *follow_p4d_mask(struct vm_area_struct *vma,
  
--	p4d = p4d_offset(pgdp, address);
--	if (p4d_none(*p4d))
-+	p4dp = p4d_offset(pgdp, address);
-+	p4d = READ_ONCE(*p4dp);
-+	if (p4d_none(p4d))
+ 	p4dp = p4d_offset(pgdp, address);
+ 	p4d = READ_ONCE(*p4dp);
+-	if (p4d_none(p4d))
++	if (p4d_none(p4d) || !p4d_present(p4d))
  		return no_page_table(vma, flags);
--	BUILD_BUG_ON(p4d_huge(*p4d));
--	if (unlikely(p4d_bad(*p4d)))
-+	BUILD_BUG_ON(p4d_huge(p4d));
-+	if (unlikely(p4d_bad(p4d)))
- 		return no_page_table(vma, flags);
+ 	BUILD_BUG_ON(p4d_huge(p4d));
+ 	if (unlikely(p4d_bad(p4d)))
+@@ -3069,7 +3069,7 @@ static int gup_p4d_range(pgd_t *pgdp, pgd_t pgd, unsigned long addr, unsigned lo
+ 		p4d_t p4d = READ_ONCE(*p4dp);
  
--	return follow_pud_mask(vma, address, p4d, flags, ctx);
-+	return follow_pud_mask(vma, address, p4dp, flags, ctx);
- }
- 
- /**
+ 		next = p4d_addr_end(addr, end);
+-		if (p4d_none(p4d))
++		if (p4d_none(p4d) || !p4d_present(p4d))
+ 			return 0;
+ 		BUILD_BUG_ON(p4d_huge(p4d));
+ 		if (unlikely(is_hugepd(__hugepd(p4d_val(p4d))))) {
 -- 
 2.44.0
 
