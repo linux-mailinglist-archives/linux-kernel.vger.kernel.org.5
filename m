@@ -1,135 +1,97 @@
-Return-Path: <linux-kernel+bounces-94195-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94199-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D782873B33
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:52:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF8F0873B3F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:54:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D0801C20A73
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:52:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9018B1F24119
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:54:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE2C81361DC;
-	Wed,  6 Mar 2024 15:52:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46567135A4E;
+	Wed,  6 Mar 2024 15:54:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YiaraTxC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Nnn+lCzg"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 056FB131742;
-	Wed,  6 Mar 2024 15:52:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B9271350EF;
+	Wed,  6 Mar 2024 15:54:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709740323; cv=none; b=teX7I/1Q5p4pgAq1DETFknudWq2A/6J2mQDAd0ZXEF5bpNuwf4TyyIBrtyU4ysbQaaMOE9oAOw+xwXhPm97DTCcUOmP82Z5rwfQvmibiRQwzVbp1FmsoQqgUNpkPpZkndkIkFb4gop55xb5n8hx2jU9OlAMFdzv5xfW3IJdjfC0=
+	t=1709740462; cv=none; b=baHCQ/0wq0iD1DuVCjVEmKI/EbGlrDIf4brPCIq1gYjSJj1SM52xQTDVBRipzhfETA9VvKg6d03hddrARJW3tMD1JX3h9xbb1CiJtyGPZdxAayC6GYuH7BURWwQ/TjObfG8PUuTma4AJrQNDVx//diCd168s6wspg3QiU00PE7M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709740323; c=relaxed/simple;
-	bh=jZtqjcc68teaxGW7BSP8LVZ6Tdy5taDJ5nwTMZlZ+/Q=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=WP7BgK+qkaTEATqdv76raNN/cyMXMiyOik8ysyscBhUKrYAVdCQLPjIEnBIJw2g7gIwKPCGCFau/DvAiBGs+8cYkAcjNCJm7F9jZ2RPX7h8xObQvjVya8AlmsZCqccdyEJ9TCyXnGUzyDLsF5XXB3GQk6M8l1AveVqZ+AIIpjvc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YiaraTxC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1DF2C43394;
-	Wed,  6 Mar 2024 15:52:01 +0000 (UTC)
+	s=arc-20240116; t=1709740462; c=relaxed/simple;
+	bh=QA/aKryvrm59TLPorBsymx+woVTJLVgY9zv5V0F3bU0=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=avXYo5MYuGW1e4gDERMdexuzIZ4X3ccbjZdQCk3koflBCi9EndwvKI5jJlXkPmVoyqP07YKpnqZZvjg4FRrHovGJjqVbQjsCvMbwmCFKvxspgUjZw68wWXWyLla4Qpfp2lT21GdbRGQcOLneo7EhOdHAHkFFhpxVH4cWxjObwA4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Nnn+lCzg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD9FCC433F1;
+	Wed,  6 Mar 2024 15:54:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709740322;
-	bh=jZtqjcc68teaxGW7BSP8LVZ6Tdy5taDJ5nwTMZlZ+/Q=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=YiaraTxCYX+sh145ycLJRCrfAXHa6UY5RzGXxeOI2u4pNbnKN3EXM2agofesj++8p
-	 9A5BxVuBz+tX6RKj9ZzXZez63QQV5zX3qVef6cVDps63BmqndBBoBWN5MQQMYAFhfl
-	 BvyydWoIt27qJE3CH2suIykw+jMx2pPk/cpIUZLrbE0z+j05MSIXhz8drVO+K+Wca9
-	 c4sDa+B+tOzEaCMJr5k/BpNbE7HdxrlD3BTFznFAWXNZ/in6zjfr+7VYyr2lVjaKVJ
-	 cRFJuK/7HHfHZbgyCTLsX8ZZRRBWln1cqdlx+Y1ghlC+rlKvIwU27JWnnOUugX6vCF
-	 yUXWQde6Y6YDw==
-From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To: Anup Patel <apatel@ventanamicro.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, Thomas
- Gleixner <tglx@linutronix.de>, Rob Herring <robh+dt@kernel.org>, Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Frank Rowand
- <frowand.list@gmail.com>, Conor Dooley <conor+dt@kernel.org>
-Cc: Anup Patel <apatel@ventanamicro.com>, devicetree@vger.kernel.org,
- Saravana Kannan <saravanak@google.com>, Marc Zyngier <maz@kernel.org>,
- Anup Patel <anup@brainfault.org>, linux-kernel@vger.kernel.org, Atish
- Patra <atishp@atishpatra.org>, linux-riscv@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, Andrew Jones
- <ajones@ventanamicro.com>
-Subject: Re: [PATCH v15 08/10] irqchip/riscv-aplic: Add support for MSI-mode
-In-Reply-To: <20240226040746.1396416-9-apatel@ventanamicro.com>
-References: <20240226040746.1396416-1-apatel@ventanamicro.com>
- <20240226040746.1396416-9-apatel@ventanamicro.com>
-Date: Wed, 06 Mar 2024 16:51:56 +0100
-Message-ID: <87y1avbboj.fsf@all.your.base.are.belong.to.us>
+	s=k20201202; t=1709740462;
+	bh=QA/aKryvrm59TLPorBsymx+woVTJLVgY9zv5V0F3bU0=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=Nnn+lCzgK2O0834H3DjRpkECGzxGhTGpjdqCmxV8l4JW/MmZrBBD48eM3XLgMQ3mn
+	 salDfOTZczGTQH/nNcVXmFOX7QEkFijfgfEuItCJaHceEGm3r71A9zVWzrGd7YmtFP
+	 jZ3dDx1RRP1I0WctktE4IyyJOnhjntiny+sW/bhLM42Vl1Ln/pgbXQFG/pRkDYWjVW
+	 Ny2TKAcKClFQf3s943jqGteHH2XVAaLx/BTe7NnVvBacvxE2igcL7f512vc05jsvmJ
+	 BH6rm/MBFQi3drNGqxDx+sNR19xQimQUOG+PhY3uYLrB4DgxMvE8gfs0dttBY1atcn
+	 9uO53qEmQx3dw==
+From: Mark Brown <broonie@kernel.org>
+To: Linus Walleij <linus.walleij@linaro.org>, 
+ Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Lee Jones <lee@kernel.org>, 
+ linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+In-Reply-To: <19f62cc2-bdcf-46f7-a5c5-971ef05e1ea7@moroto.mountain>
+References: <19f62cc2-bdcf-46f7-a5c5-971ef05e1ea7@moroto.mountain>
+Subject: Re: [PATCH] regulator: lp8788-buck: fix copy and paste bug in
+ lp8788_dvs_gpio_request()
+Message-Id: <170974046063.173132.14907640215703299478.b4-ty@kernel.org>
+Date: Wed, 06 Mar 2024 15:54:20 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-a684c
 
-Anup Patel <apatel@ventanamicro.com> writes:
+On Wed, 06 Mar 2024 16:52:29 +0300, Dan Carpenter wrote:
+> "gpio2" as intended here, not "gpio1".
+> 
+> 
 
-> diff --git a/drivers/irqchip/irq-riscv-aplic-msi.c b/drivers/irqchip/irq-=
-riscv-aplic-msi.c
-> new file mode 100644
-> index 000000000000..b2a25e011bb2
-> --- /dev/null
-> +++ b/drivers/irqchip/irq-riscv-aplic-msi.c
-> +static void aplic_msi_write_msg(struct irq_data *d, struct msi_msg *msg)
-> +{
-> +	unsigned int group_index, hart_index, guest_index, val;
-> +	struct aplic_priv *priv =3D irq_data_get_irq_chip_data(d);
-> +	struct aplic_msicfg *mc =3D &priv->msicfg;
-> +	phys_addr_t tppn, tbppn, msg_addr;
-> +	void __iomem *target;
-> +
-> +	/* For zeroed MSI, simply write zero into the target register */
-> +	if (!msg->address_hi && !msg->address_lo && !msg->data) {
-> +		target =3D priv->regs + APLIC_TARGET_BASE;
-> +		target +=3D (d->hwirq - 1) * sizeof(u32);
-> +		writel(0, target);
+Applied to
 
-Is the fence needed here (writel_relaxed())...
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
-> +		return;
-> +	}
-> +
-> +	/* Sanity check on message data */
-> +	WARN_ON(msg->data > APLIC_TARGET_EIID_MASK);
-> +
-> +	/* Compute target MSI address */
-> +	msg_addr =3D (((u64)msg->address_hi) << 32) | msg->address_lo;
-> +	tppn =3D msg_addr >> APLIC_xMSICFGADDR_PPN_SHIFT;
-> +
-> +	/* Compute target HART Base PPN */
-> +	tbppn =3D tppn;
-> +	tbppn &=3D ~APLIC_xMSICFGADDR_PPN_HART(mc->lhxs);
-> +	tbppn &=3D ~APLIC_xMSICFGADDR_PPN_LHX(mc->lhxw, mc->lhxs);
-> +	tbppn &=3D ~APLIC_xMSICFGADDR_PPN_HHX(mc->hhxw, mc->hhxs);
-> +	WARN_ON(tbppn !=3D mc->base_ppn);
-> +
-> +	/* Compute target group and hart indexes */
-> +	group_index =3D (tppn >> APLIC_xMSICFGADDR_PPN_HHX_SHIFT(mc->hhxs)) &
-> +		     APLIC_xMSICFGADDR_PPN_HHX_MASK(mc->hhxw);
-> +	hart_index =3D (tppn >> APLIC_xMSICFGADDR_PPN_LHX_SHIFT(mc->lhxs)) &
-> +		     APLIC_xMSICFGADDR_PPN_LHX_MASK(mc->lhxw);
-> +	hart_index |=3D (group_index << mc->lhxw);
-> +	WARN_ON(hart_index > APLIC_TARGET_HART_IDX_MASK);
-> +
-> +	/* Compute target guest index */
-> +	guest_index =3D tppn & APLIC_xMSICFGADDR_PPN_HART(mc->lhxs);
-> +	WARN_ON(guest_index > APLIC_TARGET_GUEST_IDX_MASK);
-> +
-> +	/* Update IRQ TARGET register */
-> +	target =3D priv->regs + APLIC_TARGET_BASE;
-> +	target +=3D (d->hwirq - 1) * sizeof(u32);
-> +	val =3D FIELD_PREP(APLIC_TARGET_HART_IDX, hart_index);
-> +	val |=3D FIELD_PREP(APLIC_TARGET_GUEST_IDX, guest_index);
-> +	val |=3D FIELD_PREP(APLIC_TARGET_EIID, msg->data);
-> +	writel(val, target);
+Thanks!
 
-..and here?
+[1/1] regulator: lp8788-buck: fix copy and paste bug in lp8788_dvs_gpio_request()
+      commit: e6f0b08a036734552628ab788ecb528ca53814ab
 
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-Bj=C3=B6rn
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
 
