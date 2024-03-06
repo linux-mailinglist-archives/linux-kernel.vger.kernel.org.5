@@ -1,162 +1,206 @@
-Return-Path: <linux-kernel+bounces-94564-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94565-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9963C87417A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 21:40:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD29687417E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 21:40:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 532AE28272E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 20:40:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3CD401F25CF2
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 20:40:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C09F14A82;
-	Wed,  6 Mar 2024 20:40:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B648F1757A;
+	Wed,  6 Mar 2024 20:40:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="IF22+C//"
-Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T8/ws5qM"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B0C212E7F
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 20:40:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E15E9175B7;
+	Wed,  6 Mar 2024 20:40:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709757630; cv=none; b=mwjc9LLxDx7dJEQc4e3Yw7GAC0mtbANl3c6L6rwsw2uSvaAjXoRG/g3FA+uO7ZRILuJCSAfBbFPikLf2OIzMzW5d9ybCJRpxILQK8DI1RsXjf9dslYLh0yK5pOf36sUCN0wVIZ2m/BeGDT2DMV35dCr35HdNF/pDbZGt9ppWGuI=
+	t=1709757639; cv=none; b=F8c+7fgCuE8qLFrY/e7WqWzNJnSKJ5197MZZqLx9f9lA5gMQk3RzdTK/wmGURVzMD7eQvaMgq2jhG28QFzHtwrvkuU1ROdc/DUOR6VLFy0hOgiG0rSykEh3R/dyhSUbjtSE5OTnlGZVV/WTuAtW5ktODdUu5WyR+TGfXuPK4Go0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709757630; c=relaxed/simple;
-	bh=Xtmn5eZuoRYGUPwEZUSP+0NSl+3b5TM+JwdWgf2bntg=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=kOO+Lxq47byU8pSwtudden9MqU7qpYTSgwUF/Kxu+1yk9YHf1oVMVJLdMx+if5B0A+L+kp3D2T/HlSLzwKCJMAQeuH+z/D9mw0Nd/X4JGQ5Bcre6uyTeWs8VAqX6GBD41r+PgZjK/gHVpwSJ6Qau9f0sr7uomJ5MMgdzpZxaxH0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=IF22+C//; arc=none smtp.client-ip=198.137.202.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
-Received: from [127.0.0.1] ([76.133.66.138])
-	(authenticated bits=0)
-	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 426KdmEp1568117
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Wed, 6 Mar 2024 12:39:48 -0800
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 426KdmEp1568117
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2024021201; t=1709757590;
-	bh=T+TFJC5MWmKywYtHsaL1+tz57km/tmqpnjzR2/q4Iy8=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=IF22+C//PAdzoFM8/VC1KFqG86Yd4ozJyBLsozfUBX6dL48f4gjVLkL49nu+pfrmS
-	 tdDItHryquTqMaCAnNDb/lfU4fdOih7nPD1rscZBjqobxd5R4klrzAuFw9bfNo5fDo
-	 Ga9x/AR6CxYeyZCZkPtK4/TkBldMs5EFH9eOx1StAn5z5qFQmzZZ/4YGyTOtaniCPu
-	 v7LydORJLK3MIafxsts6K+MW780pijaPNPoxCGzPhPCnAsJdNN7DEE4zLUuVEzhoYi
-	 GMcpIAa3ksyd92zD2RbM7eBLLZWLLNECVhZU0XfErLpuM8uhp1GxVLHMyz8M+JHV2V
-	 iYAXCLEh7Kwfg==
-Date: Wed, 06 Mar 2024 12:39:46 -0800
-From: "H. Peter Anvin" <hpa@zytor.com>
-To: Xin Li <xin@zytor.com>, linux-kernel@vger.kernel.org,
-        xen-devel@lists.xenproject.org
-CC: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, jgross@suse.com,
-        boris.ostrovsky@oracle.com, arnd@arndb.de, andrew.cooper3@citrix.com,
-        brgerst@gmail.com
-Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_v2_1/1=5D_x86/fred=3A_Fix_init=5Ft?= =?US-ASCII?Q?ask_thread_stack_pointer_initialization?=
-User-Agent: K-9 Mail for Android
-In-Reply-To: <f982f5ad-36be-4173-a15b-b898252c103c@zytor.com>
-References: <20240304083333.449322-1-xin@zytor.com> <f982f5ad-36be-4173-a15b-b898252c103c@zytor.com>
-Message-ID: <82259B6F-2F57-4099-869D-84891D996664@zytor.com>
+	s=arc-20240116; t=1709757639; c=relaxed/simple;
+	bh=sswSikc9379ND8q2IbxyQfnO0n1h0QcZWhVJ5y3cvaU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hmCmm5ZPp05VsJ8IYQhXhyrwMvvKjkX0OA5SlztUfZ0+scG4vKNcxlNC4wivGDt0sPTElG2ufnb/EjeepICzekyqLm5LhvKxXIDR5u2iSNrNwceI525mCx0a6y6Lph4pYXKDvu/XVNxDTwg+hhtMXFdi7rp6mKBGQHBiXXNYuV0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T8/ws5qM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8170AC43390;
+	Wed,  6 Mar 2024 20:40:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709757638;
+	bh=sswSikc9379ND8q2IbxyQfnO0n1h0QcZWhVJ5y3cvaU=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=T8/ws5qMT2ZeTSc51b1Eib/zZP0Bic95ObfOLhmnFI6WWEkBsyEl8vGvsLXcfyAKo
+	 eXOSRIunkpWWaW13DDe+UuAfMmdbbMhe3bXf355jRYlAu+9T2GL4TfXSQIB5H+MIts
+	 cY7T0qhxeeu88XgXRTGgW8DV8nvGQKu0/t1SoWJZenI1I5imZpyKQpurVBR6tTR/eq
+	 Aa2xSbiYR3EfIt1RPVDci+rUsIwoyuofq8zXyd5zv8kq16/cioamSKHrtUSzGaYBqT
+	 qISnREjX/vWwbF7CkvbsqrnJzQOfg0VptWhIBORmtijTeo9YqXhEdryLecBqroaD0e
+	 IjELyvAiHZOlQ==
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d26227d508so724531fa.2;
+        Wed, 06 Mar 2024 12:40:38 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWTrubUlMl8+4Xy57LcTOHtvWrLa7p1K/wWdiBLitBirO6NUKYslyz6+yCY9a0myeLIlnl7MsiaDDatEczBBVStvP0mKOkae4GizfzqG35xaH6QANTA6KesS1ZHS8hm7vtUQFut5gtzhF3MgYki3WEmD6TLUGDuNtY+PA3I/+I4nhwsIg==
+X-Gm-Message-State: AOJu0YymRRr7Kuimx0M6EF1tbMIXzAdurJ4vTt/LbETW7TVG4pLBmAQN
+	QVVJW0gHC9anRtHsX+kdmhZqwGXmS2Eg3lEhe6Ckt2lFt41J6DgnMbZ2SXjm/JlpOk4D4M6vEie
+	gnAZ+HGRdbofW1Cy7JcVn0wepQw==
+X-Google-Smtp-Source: AGHT+IH8UTdel4s/VRNesdS4qceNJhsOkk+LDnUl/yDAojAV9TkPDtsy3/Q6DOzm2AeEjlXIQ6cPB2Jm2nQ7JJv7G7M=
+X-Received: by 2002:a2e:7c17:0:b0:2d2:ca54:707b with SMTP id
+ x23-20020a2e7c17000000b002d2ca54707bmr83492ljc.38.1709757636588; Wed, 06 Mar
+ 2024 12:40:36 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+References: <20240229-8ulp_edma-v2-0-9d12f883c8f7@nxp.com> <20240229-8ulp_edma-v2-4-9d12f883c8f7@nxp.com>
+ <20240304164423.GA626742-robh@kernel.org> <ZeZZyTU8FWACW9aj@lizhi-Precision-Tower-5810>
+In-Reply-To: <ZeZZyTU8FWACW9aj@lizhi-Precision-Tower-5810>
+From: Rob Herring <robh@kernel.org>
+Date: Wed, 6 Mar 2024 14:40:23 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKU=Qay75i1zaasaNHCV2jkseX94fzfe-4AwrV093NOLA@mail.gmail.com>
+Message-ID: <CAL_JsqKU=Qay75i1zaasaNHCV2jkseX94fzfe-4AwrV093NOLA@mail.gmail.com>
+Subject: Re: [PATCH v2 4/5] dt-bindings: dma: fsl-edma: add fsl,imx8ulp-edma
+ compatible string
+To: Frank Li <Frank.li@nxp.com>
+Cc: Vinod Koul <vkoul@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Peng Fan <peng.fan@nxp.com>, imx@lists.linux.dev, dmaengine@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
+	Joy Zou <joy.zou@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On March 6, 2024 10:28:25 AM PST, Xin Li <xin@zytor=2Ecom> wrote:
->On 3/4/2024 12:33 AM, Xin Li (Intel) wrote:
->> As TOP_OF_KERNEL_STACK_PADDING is defined as 0 on x86_64, no one notice=
-d
->> it's missing in the calculation of the =2Esp field in INIT_THREAD until=
- it
->> is defined to 16 with CONFIG_X86_FRED=3Dy=2E
->>=20
->> Subtract TOP_OF_KERNEL_STACK_PADDING from the =2Esp field of INIT_THREA=
-D=2E
->>=20
->> Fixes: 65c9cc9e2c14 ("x86/fred: Reserve space for the FRED stack frame"=
-)
->> Fixes: 3adee777ad0d ("x86/smpboot: Remove initial_stack on 64-bit")
->> Reported-by: kernel test robot <oliver=2Esang@intel=2Ecom>
->> Closes: https://lore=2Ekernel=2Eorg/oe-lkp/202402262159=2E183c2a37-lkp@=
-intel=2Ecom
->> Signed-off-by: Xin Li (Intel) <xin@zytor=2Ecom>
->> ---
+On Mon, Mar 4, 2024 at 5:31=E2=80=AFPM Frank Li <Frank.li@nxp.com> wrote:
 >
->Should this fix, if it looks good, be included for the coming merge
->window?
+> On Mon, Mar 04, 2024 at 10:44:23AM -0600, Rob Herring wrote:
+> > On Thu, Feb 29, 2024 at 03:58:10PM -0500, Frank Li wrote:
+> > > From: Joy Zou <joy.zou@nxp.com>
+> > >
+> > > Introduce the compatible string 'fsl,imx8ulp-edma' to enable support =
+for
+> > > the i.MX8ULP's eDMA, alongside adjusting the clock numbering. The i.M=
+X8ULP
+> > > eDMA architecture features one clock for each DMA channel and an addi=
+tional
+> > > clock for the core controller. Given a maximum of 32 DMA channels, th=
+e
+> > > maximum clock number consequently increases to 33.
+> > >
+> > > Signed-off-by: Joy Zou <joy.zou@nxp.com>
+> > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > > ---
+> > >  .../devicetree/bindings/dma/fsl,edma.yaml          | 26 ++++++++++++=
+++++++++--
+> > >  1 file changed, 24 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/dma/fsl,edma.yaml b/Do=
+cumentation/devicetree/bindings/dma/fsl,edma.yaml
+> > > index aa51d278cb67b..55cce79c759f8 100644
+> > > --- a/Documentation/devicetree/bindings/dma/fsl,edma.yaml
+> > > +++ b/Documentation/devicetree/bindings/dma/fsl,edma.yaml
+> > > @@ -23,6 +23,7 @@ properties:
+> > >            - fsl,imx7ulp-edma
+> > >            - fsl,imx8qm-adma
+> > >            - fsl,imx8qm-edma
+> > > +          - fsl,imx8ulp-edma
+> > >            - fsl,imx93-edma3
+> > >            - fsl,imx93-edma4
+> > >            - fsl,imx95-edma5
+> > > @@ -53,11 +54,11 @@ properties:
+> > >
+> > >    clocks:
+> > >      minItems: 1
+> > > -    maxItems: 2
+> > > +    maxItems: 33
+> > >
+> > >    clock-names:
+> > >      minItems: 1
+> > > -    maxItems: 2
+> > > +    maxItems: 33
+> > >
+> > >    big-endian:
+> > >      description: |
+> > > @@ -108,6 +109,7 @@ allOf:
+> > >        properties:
+> > >          clocks:
+> > >            minItems: 2
+> > > +          maxItems: 2
+> > >          clock-names:
+> > >            items:
+> > >              - const: dmamux0
+> > > @@ -136,6 +138,7 @@ allOf:
+> > >        properties:
+> > >          clock:
+> > >            minItems: 2
+> > > +          maxItems: 2
+> > >          clock-names:
+> > >            items:
+> > >              - const: dma
+> > > @@ -151,6 +154,25 @@ allOf:
+> > >          dma-channels:
+> > >            const: 32
+> > >
+> > > +  - if:
+> > > +      properties:
+> > > +        compatible:
+> > > +          contains:
+> > > +            const: fsl,imx8ulp-edma
+> > > +    then:
+> > > +      properties:
+> > > +        clock:
+> >
+> > clocks
+> >
+> > > +          maxItems: 33
+> >
+> > That is already the max. I think you want 'minItems: 33' here.
+> >
+> > > +        clock-names:
+> > > +          items:
+> > > +            - const: dma
+> > > +            - pattern: "^CH[0-31]-clk$"
+> >
+> > '-clk' is redundant. [0-31] is not how you do a range of numbers with
+> > regex.
+> >
+> > This doesn't cover clocks 3-33. Not a great way to express in
+> > json-schema, but this should do it:
+> >
+> > allOf:
+> >   - items:
+> >       - const: dma
+> >   - items:
+> >       oneOf:
+> >         - const: dma
+> >         - pattern: "^ch([0-9]|[1-2][0-9]|[3[01])$"
 >
->Thanks!
->    Xin
->
->>=20
->> Change Since v1:
->> * Apply offset TOP_OF_KERNEL_STACK_PADDING to all uses of __end_init_ta=
-sk
->>    (Brian Gerst)=2E
->> ---
->>   arch/x86/include/asm/processor=2Eh | 6 ++++--
->>   arch/x86/kernel/head_64=2ES        | 3 ++-
->>   arch/x86/xen/xen-head=2ES          | 2 +-
->>   3 files changed, 7 insertions(+), 4 deletions(-)
->>=20
->> diff --git a/arch/x86/include/asm/processor=2Eh b/arch/x86/include/asm/=
-processor=2Eh
->> index 26620d7642a9=2E=2E17fe81998ce4 100644
->> --- a/arch/x86/include/asm/processor=2Eh
->> +++ b/arch/x86/include/asm/processor=2Eh
->> @@ -664,8 +664,10 @@ static __always_inline void prefetchw(const void *=
-x)
->>   #else
->>   extern unsigned long __end_init_task[];
->>   -#define INIT_THREAD {							    \
->> -	=2Esp	=3D (unsigned long)&__end_init_task - sizeof(struct pt_regs), \
->> +#define INIT_THREAD {							\
->> +	=2Esp	=3D (unsigned long)&__end_init_task -			\
->> +		  TOP_OF_KERNEL_STACK_PADDING -				\
->> +		  sizeof(struct pt_regs),				\
->>   }
->>     extern unsigned long KSTK_ESP(struct task_struct *task);
->> diff --git a/arch/x86/kernel/head_64=2ES b/arch/x86/kernel/head_64=2ES
->> index d4918d03efb4=2E=2Ec38e43589046 100644
->> --- a/arch/x86/kernel/head_64=2ES
->> +++ b/arch/x86/kernel/head_64=2ES
->> @@ -26,6 +26,7 @@
->>   #include <asm/apicdef=2Eh>
->>   #include <asm/fixmap=2Eh>
->>   #include <asm/smp=2Eh>
->> +#include <asm/thread_info=2Eh>
->>     /*
->>    * We are not able to switch in one step to the final KERNEL ADDRESS =
-SPACE
->> @@ -66,7 +67,7 @@ SYM_CODE_START_NOALIGN(startup_64)
->>   	mov	%rsi, %r15
->>     	/* Set up the stack for verify_cpu() */
->> -	leaq	(__end_init_task - PTREGS_SIZE)(%rip), %rsp
->> +	leaq	(__end_init_task - TOP_OF_KERNEL_STACK_PADDING - PTREGS_SIZE)(%r=
-ip), %rsp
->>     	leaq	_text(%rip), %rdi
->>   diff --git a/arch/x86/xen/xen-head=2ES b/arch/x86/xen/xen-head=2ES
->> index a0ea285878db=2E=2E04101b984f24 100644
->> --- a/arch/x86/xen/xen-head=2ES
->> +++ b/arch/x86/xen/xen-head=2ES
->> @@ -49,7 +49,7 @@ SYM_CODE_START(startup_xen)
->>   	ANNOTATE_NOENDBR
->>   	cld
->>   -	leaq	(__end_init_task - PTREGS_SIZE)(%rip), %rsp
->> +	leaq	(__end_init_task - TOP_OF_KERNEL_STACK_PADDING - PTREGS_SIZE)(%r=
-ip), %rsp
->>     	/* Set up %gs=2E
->>   	 *
->>=20
->> base-commit: e13841907b8fda0ae0ce1ec03684665f578416a8
->
+> I understand pattern is wrong. But I don't understand why need 'allOf'.
 
-Absolutely=2E
+The first 'items' says the 1st entry must be 'dma'. (It might need a
+'maxItems: 33' too now that I look at it.) The 2nd 'items' says all
+entries must be either 'dma' or the CHn pattern.
+
+> 8ulp need clock 'dma" and "ch*". I think
+>
+> items:
+>     - const: dma
+>     - pattern: "^CH[0-31]-clk$"
+>
+> should be enough.
+
+If it was, then I would not have said anything. If you don't believe
+me see if this passes validation:
+
+clock-names =3D "dma", "CH0", "foobar";
+
+> If you means put on top allOf, other platform use clock name such as
+> 'dmamux0'.
+
+What? It's under an if/then schema.
+
+Rob
 
