@@ -1,73 +1,72 @@
-Return-Path: <linux-kernel+bounces-94680-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94683-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51B1287430C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 23:58:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88B4387435D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 00:01:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 439081C21BC9
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 22:58:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 08008B20B43
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 23:01:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44E601C2BE;
-	Wed,  6 Mar 2024 22:58:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 485A61CA83;
+	Wed,  6 Mar 2024 23:01:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h1cIKGlO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FzGykI5t"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B4C01BC56;
-	Wed,  6 Mar 2024 22:58:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81C0F1C6B7;
+	Wed,  6 Mar 2024 23:01:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709765918; cv=none; b=jKHjwIwVgX1ub/mRVyTjUlAya+ptALkP+Dex3ymgUtwynn5PxXzpSVgzZ77vVIXl0PssJeIw1FbUzwywlGOqxyIgupmf6zsVBeCt8ykHzabsXR2/6qzvJajMlFbuyS4sW21aHO6zNRR/Jl18/GEYBe4jlluX9sLMq2wXUuFk0HA=
+	t=1709766073; cv=none; b=qKntluW54J/S1L/iyxgaOlPfMbysz4EIuweWAcjbwmfjdiAH8EfX9G+3cmimgWN3kwgdgTw4ytDr5UE9YYjl3StpxFOQn4GtRZmKeK6pXmT9P+PiWzWxgCne7Qj5MwCvy96KoykwC3FutgdzPeAW63c5JJfgEtbRtLnvV/meX8Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709765918; c=relaxed/simple;
-	bh=zmqQrFwoEDSQz2SwnjEGFE81FIyebYKtaD+xjmng/wg=;
+	s=arc-20240116; t=1709766073; c=relaxed/simple;
+	bh=1foeIlAL02HQ/9fWETjo+VPeQRpGEBkjUsRFchJX7d4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cutSPDm8JAoYpng9I/4opdt17jK4n207zLgQ9/45lwOB7LcWHaP8cwvtPylxJzrX8tmEVXahxacVrCnmuY7ADX0NKEviZFPdWiI/XbMRAAqE7Uls3NNc1K1vO2XIg9sOIl6R6oehf6kL3LBCUyl9LwahNKzd5Ox9xEyAMVb3uV4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h1cIKGlO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 079D1C43399;
-	Wed,  6 Mar 2024 22:58:38 +0000 (UTC)
+	 To:Cc:Content-Type; b=f7s0X0KyGwm9aOcW0Y2JfdRZA3TCIJWg4NEAugeZy/xEpHxi0N5ovzeWEwvW5An/bFX6oIm6YddOdFQkg2z6ZkzqU8EOXM4rsfdJr6GD2Za8sV5jH/+vGGJzFQhjVZc7BNC+KfzyPZMf6WzS9IhCzjfr/Thlf4Blbp7uTBOMTZ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FzGykI5t; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61598C433A6;
+	Wed,  6 Mar 2024 23:01:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709765918;
-	bh=zmqQrFwoEDSQz2SwnjEGFE81FIyebYKtaD+xjmng/wg=;
+	s=k20201202; t=1709766073;
+	bh=1foeIlAL02HQ/9fWETjo+VPeQRpGEBkjUsRFchJX7d4=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=h1cIKGlO4ISsx49R/HjszbjkUuwHYfMwq5ZWRUjEcLCUgF1rz1asG2lCCSBfAnOQL
-	 9LvfHdCt1nnFoWHobs0rPoxjihVQzHz1EyLtWU4Y1+d0iHxinlapeKQ9e/5fajtPhl
-	 FJK57fvoqgrezIc1+TBQpzd53chplBoN3PaQZGM0Ykckrr0/JHrzJKKsh/tH7Ou5fo
-	 ndLtqoChgyvY64Otmt5pGMmfamyu6Acik+mSzaGN7i5EEHx9W8hn71VszlNIy9ewBh
-	 4Wx7Wo7ZZK5Ej8RhC63r9I6XZ+s84owdwK8UUpE/9W3dfhgc8fBoCM/igfkBiotliS
-	 5cylcgR1xkkoA==
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-513298d6859so238375e87.3;
-        Wed, 06 Mar 2024 14:58:37 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXJs+U5UolVewGsWDyLsK/HnuuveTZX1uZnu6BAgZ8DPqkx8/YeHKFSwSWM0KLMyDV6vFyhY941DPbk4+lWsQZwaSxS2dCWZocyXp+7Sb08mbEWuMVOzv/SvIZ5+xZBSUJ2vqZIbim/JPohK4aqhJ7F1Tf0sXpLD/2j+O5KMTltwQWwIKlt
-X-Gm-Message-State: AOJu0YwFnCJOnCxXQUeTaTN/78POECNXrgD28Yw116kTb4c+NH+zlJCM
-	Oche0bwJ8t9UYeI0bPiGXTyIi3++1cJDsAjT6SWBEYD+RMAkASfTLjN1pbfAfxq1wa5HZlyK0K4
-	7wxgMaq6YGihsJl89kiqJxuguVQ==
-X-Google-Smtp-Source: AGHT+IGzBx6mSFthVJlSrV24EBZpfXDKIuIdnv6rYK52jj9+48g85h39FbbcvGD42fLRIuZkJRPSBhKn31q6q7gzoDc=
-X-Received: by 2002:a19:2d4f:0:b0:513:2b35:2520 with SMTP id
- t15-20020a192d4f000000b005132b352520mr274982lft.58.1709765915961; Wed, 06 Mar
- 2024 14:58:35 -0800 (PST)
+	b=FzGykI5t1KZcrcNh3uIkXsI4mhxdAVRhHvFVRqEEeCR8jYOZBf7sIsQYsEmuoj7Cp
+	 VJ6XN/kVz/j7ISNU6iJKQDCYUJmit3KyAdc//QwJiR2o5MN2ihF+ss0bY2FRwXOw8Y
+	 16xCLbhfe6SOMgclhR+g9ttqkRAacHzIx+G26l4lFwWlcxDagL7vq1NClMiqfMZrLF
+	 V3aL0pc75FJc0Fhi9frO5zcqRZAwskdM87VYHPQH+CUDT3xk8JSontUBbFSweZ3oS8
+	 JNJxUi6okj8ACN6TKTIWyhVqSRg7/4sSKO41qB7DO6R3zCyv4rLzMKCu0wHoRzla0L
+	 09TQtdiq5BF3Q==
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-51331634948so1430963e87.0;
+        Wed, 06 Mar 2024 15:01:13 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCX55ddvTi+1PL8+Fw8hmol8Drzqhd1Jk4Iq9GjqI+BYY0AmhJEFpErttfEiBIkfbKrYEMcKIt7EGNelZ/lqaeVFJtLLNDlshDu2GUgibRCkAwVp2UHe78wuRnpKsLW7v4hr6kRSp/wAmeENopzOhY+o+iZ4ZTVfzkNhGRO5SYwUUZmM51nv
+X-Gm-Message-State: AOJu0YzPyrXfz5fPXnB28hWBbo6+R1725ikxRac/d3dnEffvkuxDZupO
+	6lsE+Juz3dP08WI19IL6iuL83p/CaQsEUMUitlHRA252jpf5wcdIn769nTVP0Zrwm5EZW6jgofs
+	LJdS2yXLWaFMiozW4ukwRzUWbKw==
+X-Google-Smtp-Source: AGHT+IEe7ONAG3lrAgIWy+05ru/C7vwOPDlzVeORdLHPWUfWrnU47WOhZwb4SSMXu5BC5lZaDn1RllTR5GSnhrsxEUU=
+X-Received: by 2002:ac2:5a0b:0:b0:513:3b3e:c361 with SMTP id
+ q11-20020ac25a0b000000b005133b3ec361mr70664lfn.2.1709766071504; Wed, 06 Mar
+ 2024 15:01:11 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240305-asrc_8qxp-v4-0-c61b98046591@nxp.com> <20240305-asrc_8qxp-v4-3-c61b98046591@nxp.com>
- <20240306-pebble-grope-88fdaa95a87c@spud> <ZejDQddMp17RD6Yk@lizhi-Precision-Tower-5810>
- <20240306205524.GB587561-robh@kernel.org> <Zejdz0BKwSlsio9S@lizhi-Precision-Tower-5810>
-In-Reply-To: <Zejdz0BKwSlsio9S@lizhi-Precision-Tower-5810>
+References: <20240305-asrc_8qxp-v4-0-c61b98046591@nxp.com> <20240305-asrc_8qxp-v4-2-c61b98046591@nxp.com>
+ <20240306202537.GA587561-robh@kernel.org> <ZejX0/FA/z4wa7cY@lizhi-Precision-Tower-5810>
+In-Reply-To: <ZejX0/FA/z4wa7cY@lizhi-Precision-Tower-5810>
 From: Rob Herring <robh@kernel.org>
-Date: Wed, 6 Mar 2024 16:58:22 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJw5W7a9Pz9gRPuP717onHdSwRvwGJ=v+QDSe+4ORvTaA@mail.gmail.com>
-Message-ID: <CAL_JsqJw5W7a9Pz9gRPuP717onHdSwRvwGJ=v+QDSe+4ORvTaA@mail.gmail.com>
-Subject: Re: [PATCH v4 3/4] ASoC: dt-bindings: fsl-sai: allow only one dma-names
+Date: Wed, 6 Mar 2024 17:00:59 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJ6U2-EGeJgTuxBooEy=OEJ08wDNshWnfKooryAr6=QNg@mail.gmail.com>
+Message-ID: <CAL_JsqJ6U2-EGeJgTuxBooEy=OEJ08wDNshWnfKooryAr6=QNg@mail.gmail.com>
+Subject: Re: [PATCH v4 2/4] ASoC: dt-bindings: fsl,imx-asrc: update max
+ interrupt numbers
 To: Frank Li <Frank.li@nxp.com>
-Cc: Conor Dooley <conor@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, 
-	Mark Brown <broonie@kernel.org>, 
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
 	Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, 
 	Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, 
@@ -77,127 +76,68 @@ Cc: Conor Dooley <conor@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 6, 2024 at 3:19=E2=80=AFPM Frank Li <Frank.li@nxp.com> wrote:
+On Wed, Mar 6, 2024 at 2:53=E2=80=AFPM Frank Li <Frank.li@nxp.com> wrote:
 >
-> On Wed, Mar 06, 2024 at 02:55:24PM -0600, Rob Herring wrote:
-> > On Wed, Mar 06, 2024 at 02:25:53PM -0500, Frank Li wrote:
-> > > On Wed, Mar 06, 2024 at 06:45:13PM +0000, Conor Dooley wrote:
-> > > > On Tue, Mar 05, 2024 at 12:33:04PM -0500, Frank Li wrote:
-> > > > > Some sai only connect one direction dma (rx/tx) in SOC. For examp=
-le:
-> > > > > imx8qxp sai5 only connect tx dma channel. So allow only one "rx" =
-or "tx"
-> > > > > for dma-names.
-> > > > >
-> > > > > Remove description under dmas because no user use index to get dm=
-a channel.
-> > > > > All user use 'dma-names' to get correct dma channel. dma-names al=
-ready in
-> > > > > 'required' list.
-> > > >
-> > > > Acked-by: Conor Dooley <conor.dooley@microchip.com>
-> > > >
-> > > > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > > > > ---
-> > > > >  Documentation/devicetree/bindings/sound/fsl,sai.yaml | 13 ++++++=
--------
-> > > > >  1 file changed, 6 insertions(+), 7 deletions(-)
-> > > > >
-> > > > > diff --git a/Documentation/devicetree/bindings/sound/fsl,sai.yaml=
- b/Documentation/devicetree/bindings/sound/fsl,sai.yaml
-> > > > > index 2456d958adeef..6f551c68d33db 100644
-> > > > > --- a/Documentation/devicetree/bindings/sound/fsl,sai.yaml
-> > > > > +++ b/Documentation/devicetree/bindings/sound/fsl,sai.yaml
-> > > > > @@ -81,15 +81,14 @@ properties:
-> > > > >
-> > > > >    dmas:
-> > > > >      minItems: 1
-> > > > > -    items:
-> > > > > -      - description: DMA controller phandle and request line for=
- RX
-> > > > > -      - description: DMA controller phandle and request line for=
- TX
-> > > > > +    maxItems: 2
-> > > > >
-> > > > >    dma-names:
-> > > > > -    minItems: 1
-> > > > > -    items:
-> > > > > -      - const: rx
-> > > > > -      - const: tx
-> > > > > +    oneOf:
-> > > > > +      - items:
-> > > > > +          - const: rx
-> > > > > +          - const: tx
-> > > > > +      - enum: [ rx, tx ]
-> > > >
-> > > > I'm not entirely sure if this was Rob's suggestion, I got the impre=
-ssion
-> > > > he was suggesting that in the two items case we'd not care about th=
-e
-> > > > order. But while I think this is different to that suggestion it's =
-also
-> > > > not wrong.
+> On Wed, Mar 06, 2024 at 02:25:37PM -0600, Rob Herring wrote:
+> > On Tue, Mar 05, 2024 at 12:33:03PM -0500, Frank Li wrote:
+> > > fsl,imx8qxp-spdif and fsl,imx8qm-spdif have 2 interrupts. Other platf=
+orms
+> > > have 1 interrupt.
 > > >
-> > > I log this at cover-letter. b4 can't support write change log at ever=
-y
-> > > patch yet.
+> > > Increase max interrupt number to 2 and add restriction for platforms =
+except
+> > > i.MX8QXP and i.MX8QM.
+> > >
+> > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > > ---
+> > >  Documentation/devicetree/bindings/sound/fsl,spdif.yaml | 18 ++++++++=
++++++++++-
+> > >  1 file changed, 17 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/sound/fsl,spdif.yaml b=
+/Documentation/devicetree/bindings/sound/fsl,spdif.yaml
+> > > index 56f8c0c8afdea..7f6590708e1ec 100644
+> > > --- a/Documentation/devicetree/bindings/sound/fsl,spdif.yaml
+> > > +++ b/Documentation/devicetree/bindings/sound/fsl,spdif.yaml
+> > > @@ -31,7 +31,8 @@ properties:
+> > >      maxItems: 1
+> > >
+> > >    interrupts:
+> > > -    maxItems: 1
+> > > +    minItems: 1
+> > > +    maxItems: 2
+> > >
+> > >    dmas:
+> > >      items:
+> > > @@ -101,6 +102,21 @@ required:
+> > >  additionalProperties: false
+> > >
+> > >  allOf:
+> > > +  - if:
+> > > +      properties:
+> > > +        compatible:
+> > > +          enum:
+> > > +            - fsl,imx8qm-spdif
+> > > +            - fsl,imx8qxp-spdif
+> > > +    then:
+> > > +      properties:
+> > > +        interrupts:
+> > > +          minItems: 2
 > >
-> > It never will (probably). That's because it doesn't need to. You can
-> > just do it with git. When you edit the commit message, then after the
-> > tags, Add '---' and put whatever you want after. That works as long as
-> > the commit is applied from a patch as 'git am' will drop it.
+> > Nowhere is it explained what the 2 interrupts are or what the order of
+> > them is. Is the first interrupt the same as before, and there is a new
+> > interrupt for something else? Or it's the same interrupts, but they've
+> > just split up into 2?
 >
-> The key problem is that I don't want to lost notes when respin patches. I=
-t
-> is easy to make mistake when I copy old serise change logs.
+> It is same one and split to tx and rx. Order doesn't matter.
 
-You don't. It is all saved in the commit. When you rebase for the next
-version, you just add to the changes history.
+Make that clear in the schema. Order does matter and you have to
+define the order in the schema.
 
-> Previously I use git notes + git-rebase, it work fine. Notes can be kept
-> when I do rebase and git commit --amend. But one thing is not good.
-> git send-email --to-cmd=3D./script/get_maintainer.sh *.patch. It can't
-> combine all patches's maitainer to a list. It looks like difference patch
-> will be difference --to list.
->
-> b4 can help some case. But can't keep git-notes information when rebase.
-> It should be git bugs or feature missed.
+> They uses one
+> irq handle.
 
-git-notes always seemed clunky and to be extra work to me. Just having
-the changelog in the commit msg is a lot easier.
-
-> > > Rob's suggest was not work. dt-binding check complain too long
-> > > if there are two dma-names =3D "rx", "tx".
-> >
-> > So I'm wrong or you didn't have it correct? No way to tell with your
-> > explanation. Let me give you the exact schema:
-> >
-> > dma-names:
-> >   minItems: 1
-> >   items:
-> >     - enum: [ rx, tx ]
-> >     - const: tx
-> >
-> > This says we can have 1 or 2 entries. The first entry can be either rx
-> > or tx. The 2nd entry must be tx. That's what you want. However, '"tx",
-> > "tx"' is allowed with the above, but we enforce items to be unique
-> > elsewhere. Or I thought we did, but we relaxed '.*-names$' at some
-> > point. I'm going to fix that now.
->
-> Conor find out my problem. The below code works. I missed maxItems.
->
->   dma-names:
->      minItems: 1
->      maxItems: 2
->      items
-
-Missing ':'
-
->        enum: [ rx, tx ]
-
-That is not my suggestion. This would be my 3rd choice after what I
-proposed or what you had already. Please plug in exactly what I told
-you and report back what doesn't work.
+What does that mean?
 
 Rob
 
