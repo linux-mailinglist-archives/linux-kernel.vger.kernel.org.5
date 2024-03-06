@@ -1,130 +1,122 @@
-Return-Path: <linux-kernel+bounces-93160-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93161-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9E8E872BAC
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 01:19:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7501872BB1
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 01:23:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 88B921F2921F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 00:19:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 849561F267E5
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 00:23:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74AF7BA55;
-	Wed,  6 Mar 2024 00:19:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A40CC142;
+	Wed,  6 Mar 2024 00:23:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ismIrwIF"
-Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="lRhkRyeA"
+Received: from mail-vk1-f177.google.com (mail-vk1-f177.google.com [209.85.221.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61639EC4
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 00:19:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D12263CF
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 00:23:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709684389; cv=none; b=DzAqO9K6huOgP/+13UPuITlVyxSS8oVfs3ZTtdd+B4KQg/JwUU7yUzg//5XFweDCW/qqYBtDFIOr76xK6W/gr+NmMIG49cpyPNuxM2UlH3ISjzO067EGRBIKqhwoMKfmMFEgX2VvO+Y9dYKLiJSHLysJTl/cvLfHWw8x2ofdQ/Q=
+	t=1709684619; cv=none; b=kf65f+hYfhiOC0A3xsS/Bl1sLqwXp09z5Yr7DCofuR0/IHiitVVpE/DyTpqGTzs4Zn75z4hMtAqf4l2hdVDG05RpI63s1c41K1PF6ChjCga+N45Rt/gAYJpjdHu9Y5E0aWU9Uu5h4df7iHZGidcQ5xKs892eLzKz4ZXnm5XkohA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709684389; c=relaxed/simple;
-	bh=l5Z4UTiZAV0FnKHADONYXORI5k3mrUH4FrHUJ/WTslc=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=K5fXZpa2LH0siUbsM6MLPLa7ao5B6yaoUrPuDxof0r0CZyuUseFEqFHLpb6OeXduqhz1giD6uXSo1wpXK25hg0MPsiNrVn++OQPIdn2LcSG5a4vS3FeHRdfEfO4lSeF9astUP2IGgBtFkAGoNClK9i15WjOZNKjggZ8TQGdn9P8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ismIrwIF; arc=none smtp.client-ip=209.85.215.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-5dbddee3694so163123a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 16:19:48 -0800 (PST)
+	s=arc-20240116; t=1709684619; c=relaxed/simple;
+	bh=inIrOcNkYayxA9apxKIBrNWVP7rVZSaJzSTWLCBHFMc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JWKjilTuODL4x4/TBIRx+iorqgJwaXfq088rgInQj+98lH/ErLUoHOnbh8oqnlw5iOoEurDxBYb+cLN2SJdW3iJ0QoqPDY0UPx0RZsE7m9E5N5HUJETSahEUiJfe8pdUSqYqpIe/WTp19V4qYxQ84NeqrJ9XuzGCMkT38dhBBdI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=lRhkRyeA; arc=none smtp.client-ip=209.85.221.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-vk1-f177.google.com with SMTP id 71dfb90a1353d-4d345250ee1so1493510e0c.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 16:23:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709684388; x=1710289188; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=OlafunnuQDmjQI6RGQQ8IG6bwWUsRoZnzCla50xupzE=;
-        b=ismIrwIFvYMISOdBkmI7N5m/tcB87kkhyGIVzc6/DuXBo1KZlReryVhSBwUwyZQzv1
-         GiwuJcHMILNr9RzHT4QGpxrFSsbBNhpKb/5zTt3AeV2MLpw40LYbiV16PowI7YIWOqT3
-         cQEW6lYRc3tP9M+1l3slyaNBTpwRxDuYwD803IgBxDUqnEa+Srq8lrxQgWouvT14zXFe
-         XfEHm6IzuB/1iPtw9v3Q9SUc0ChBDLSV0bttZbQyPKQrKAwTGV0fGiPiUCyt2B5XpCKv
-         ScI06BMWPfNGlnZsHcaN33S2wslMwQnT9BvxsXXmJs3iTvU2FmnEb1EgSZpOlxhF3l+n
-         CMCg==
+        d=chromium.org; s=google; t=1709684615; x=1710289415; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rBN1BqbcbZ76mWTdYzaQ/VGjxsv9OMJI1R5f8bpftUs=;
+        b=lRhkRyeAZ0I0unAkbN5FYkJSM6rcDsdFtEZNmVsBg04ITRW5rNwn3Pbo70O8ZGq5Kn
+         70qv3D3ghVUsP3QJJGLc2AzQJ4FvWFlIRwBiLOtO+MtQgyhzdum98MMyRl9uk1PtzwF4
+         z61CplACjCJbhjArC92cx95lscjpBeT4IPavs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709684388; x=1710289188;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OlafunnuQDmjQI6RGQQ8IG6bwWUsRoZnzCla50xupzE=;
-        b=N8jk3jY/C++NJQxD2dg+Ueu6W0N3YK5nJwrjZA8UfwjUAzQbsOICwOOUsJSdDONR+h
-         MHQNiR9njE+El5k1n46Y2PXx8/A+4S/Ix1LgC3r9ibHZ1r+H3ug/lspa2eE7emO2/6Ba
-         ND8Kb2Bl7m7LbXw3Jzlr/8oB7CzvWw2WOVbl4D8BP/rZ/9sVsILZ3NVCOl2pyoUwK2NC
-         ptiqCp6q+mUKCgt0yQI9sDuajM4V/ouxGPaQbR5l89QjPQsLZEI9CLP1lkemZB5ryONP
-         er391EcYldtTfM+nJymXbhUu/APJCrD8OE5JaST4lvDtnpvJwaa9FL2jONJNtohujGfp
-         ZWwg==
-X-Forwarded-Encrypted: i=1; AJvYcCVTU7qQrE45Z9ausmOj9b8sbBB/5k1u0I2C+ZFw45XfYuipEIVs7HueSwxc4Z7Kx0qG6G05Jq4D1IyVikF5aSd19OtNNNIX/vJrSBlX
-X-Gm-Message-State: AOJu0YxoYJCopIZQExEahC/jwCIuuiiE+a0wTwjbNyxJ1oUlrN4Zxxll
-	VMsYylQt1D39G5xla5MQ0iq3yKfMon1pmluV47lcicaXcM4ABDEdJpbFgXQWzkgr76yq+ddFNar
-	icw==
-X-Google-Smtp-Source: AGHT+IGnRNghV9U0qTiTeThRt68W4kCSoa4n/bzHUjWD8qRkEmjsgFZT0aiuWc8DkWGKfbQn5Mz5agbV/hI=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a63:f311:0:b0:5dc:4a5f:a5ee with SMTP id
- l17-20020a63f311000000b005dc4a5fa5eemr11899pgh.1.1709684387635; Tue, 05 Mar
- 2024 16:19:47 -0800 (PST)
-Date: Tue, 5 Mar 2024 16:19:46 -0800
-In-Reply-To: <edd86a97-b2ef-49e6-aa2b-16b1ef790d96@amd.com>
+        d=1e100.net; s=20230601; t=1709684615; x=1710289415;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rBN1BqbcbZ76mWTdYzaQ/VGjxsv9OMJI1R5f8bpftUs=;
+        b=YLccq+b5vdHzs33Zzby/ef83CpAyDk4NEo1rzwM6o/P6qC1NBKC+MCe9fxf1s3kjO5
+         JcbW07bL7n9lMWdToqpZsAk/qI1/Snia6CVi0pMqoWexbhj9XnFPEzHQnfNeHEGXsqF5
+         Ad3K2iG5xugGEFIkNjRNfznvMpLKPfP5n7Jw++76poF1z1ih3qmHBVwJHbQwNJtw5Yqm
+         MzdgNgDIpNsi1knT1tYBK+zwLqsMtzsfi7zHJfxc21hIWpQMc7HDRmvcoi53BG/NhuDF
+         zoaVlvXjJK206/jl5Xa3RqdFMuT1ngpHyUVgXjEs4NMjVD/KCw/Xzuso/yNWomDtq29v
+         TdQA==
+X-Forwarded-Encrypted: i=1; AJvYcCWWJdRGs/+yj3tQZMXWPt16DPUCGHI9GDP+LM+JhX5Ppqfy8Q5DHd7sugtaPm1F+EdB4Sj/hRuC/n5BIOLi6Rbpz0tx4A4Xratds673
+X-Gm-Message-State: AOJu0YwAIWmhWAJVOjG8D2Eh142HFQ5UORpZbFJyGDsQ0o9lj1oQ5PVL
+	Yuhfq7OPZsE4hcUIglejrFyAsakz4EqqsjWDbA3yZUK2O3wTPNC4cbCwGqShnD2hhviV/UZTrn1
+	YWtHf
+X-Google-Smtp-Source: AGHT+IGaC7OJ+3dwDxen4AhlXRRJ2Oxb2bUfC+JExxaKBr+ynXAMt2x3C4kxoYvgaxzwt1HqtyiJvw==
+X-Received: by 2002:a05:6122:d0a:b0:4bd:29f7:53c4 with SMTP id az10-20020a0561220d0a00b004bd29f753c4mr3395743vkb.1.1709684615484;
+        Tue, 05 Mar 2024 16:23:35 -0800 (PST)
+Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com. [209.85.160.169])
+        by smtp.gmail.com with ESMTPSA id d3-20020ac80603000000b0042ec8412342sm4856978qth.80.2024.03.05.16.23.34
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Mar 2024 16:23:34 -0800 (PST)
+Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-42f024b809cso123361cf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 16:23:34 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCU55pNl+/BZSW/Hvtk8WkBVWOGxaso+bxrHWSAXMWo9RkIPTp+65ghrXD43EibrnU0CzSfj25trp7QzGqS4kmrHyCE6pIn6ovagP+qj
+X-Received: by 2002:ac8:7e83:0:b0:42e:f49b:8753 with SMTP id
+ w3-20020ac87e83000000b0042ef49b8753mr321969qtj.11.1709684614147; Tue, 05 Mar
+ 2024 16:23:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <1880816055.4545532.1709260250219.JavaMail.zimbra@sjtu.edu.cn>
- <ZeYK-hNDQz5cFhre@google.com> <edd86a97-b2ef-49e6-aa2b-16b1ef790d96@amd.com>
-Message-ID: <Zee2ogAOl8cR4vNZ@google.com>
-Subject: Re: [PATCH] KVM:SVM: Flush cache only on CPUs running SEV guest
-From: Sean Christopherson <seanjc@google.com>
-To: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: Zheyun Shen <szy0127@sjtu.edu.cn>, pbonzini@redhat.com, tglx@linutronix.de, 
-	kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+References: <20240305012604.3869593-1-yangcong5@huaqin.corp-partner.google.com>
+In-Reply-To: <20240305012604.3869593-1-yangcong5@huaqin.corp-partner.google.com>
+From: Doug Anderson <dianders@chromium.org>
+Date: Tue, 5 Mar 2024 16:23:18 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=XUhBUscqx5TY6Ax94_St6xggnirP6hiy_VG9Y_1uB-kg@mail.gmail.com>
+Message-ID: <CAD=FV=XUhBUscqx5TY6Ax94_St6xggnirP6hiy_VG9Y_1uB-kg@mail.gmail.com>
+Subject: Re: [PATCH V2] drm/panel: boe-tv101wum-nl6: Fine tune Himax83102-j02
+ panel HFP and HBP (again)
+To: Cong Yang <yangcong5@huaqin.corp-partner.google.com>
+Cc: sam@ravnborg.org, neil.armstrong@linaro.org, daniel@ffwll.ch, 
+	hsinyi@chromium.org, swboyd@chromium.org, airlied@gmail.com, 
+	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 05, 2024, Tom Lendacky wrote:
-> On 3/4/24 11:55, Sean Christopherson wrote:
-> > +Tom
-> > 
-> > "KVM: SVM:" for the shortlog scope.
-> > 
-> > On Fri, Mar 01, 2024, Zheyun Shen wrote:
-> > > On AMD CPUs without ensuring cache consistency, each memory page reclamation in
-> > > an SEV guest triggers a call to wbinvd_on_all_cpus, thereby affecting the
-> > > performance of other programs on the host.
-> > > 
-> > > Typically, an AMD server may have 128 cores or more, while the SEV guest might only
-> > > utilize 8 of these cores. Meanwhile, host can use qemu-affinity to bind these 8 vCPUs
-> > > to specific physical CPUs.
-> > > 
-> > > Therefore, keeping a record of the physical core numbers each time a vCPU runs
-> > > can help avoid flushing the cache for all CPUs every time.
-> > 
-> > This needs an unequivocal statement from AMD that flushing caches only on CPUs
-> > that do VMRUN is sufficient.  That sounds like it should be obviously correct,
-> > as I don't see how else a cache line can be dirtied for the encrypted PA, but
-> > this entire non-coherent caches mess makes me more than a bit paranoid.
-> 
-> As long as the wbinvd_on_all_cpus() related to the ASID flushing isn't
-> changed, this should be ok. And the code currently flushes the source pages
-> when doing LAUNCH_UPDATE commands and adding encrypted regions, so should be
-> good there.
+Cong,
 
-Nice, thanks!
+On Mon, Mar 4, 2024 at 5:26=E2=80=AFPM Cong Yang
+<yangcong5@huaqin.corp-partner.google.com> wrote:
+>
+> The current measured frame rate is 59.95Hz, which does not meet the
+> requirements of touch-stylus and stylus cannot work normally. After
+> adjustment, the actual measurement is 60.001Hz. Now this panel looks
+> like it's only used by me on the MTK platform, so let's change this
+> set of parameters.
+>
+> Fixes: cea7008190ad ("drm/panel: boe-tv101wum-nl6: Fine tune Himax83102-j=
+02 panel HFP and HBP")
+> Signed-off-by: Cong Yang <yangcong5@huaqin.corp-partner.google.com>
+> ---
+>  drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 
-> Would it make sense to make this configurable, with the current behavior the
-> default, until testing looks good for a while?
+I actually already made these fixes myself for you and applied. My
+notes were mostly for you to keep in mind for next time. This is
+already in drm-misc-fixes as:
 
-I don't hate the idea, but I'm inclined to hit the "I'm feeling lucky" button.
-I would rather we put in effort to all but guarantee we can do a clean revert in
-the future, at which point a kill switch doesn't add all that much value.  E.g.
-it would allow for a non-disruptive fix, and maybe a slightly faster confirmation
-of a bug, but that's about it.
+9dfc46c87cdc drm/panel: boe-tv101wum-nl6: Fine tune Himax83102-j02
+panel HFP and HBP (again)
 
-And since the fallout from this would be host data corruption, _not_ rebooting
-hosts that may have been corrupted is probably a bad idea, i.e. the whole
-non-disruptive fix benefit is quite dubious.
-
-The other issue is that it'd be extremely difficult to know when we could/should
-remove the kill switch.  It might be months or even years before anyone starts
-running high volume of SEV/SEV-ES VMs with this optimization.
+-Doug
 
