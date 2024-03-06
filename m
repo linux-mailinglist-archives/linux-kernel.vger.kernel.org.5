@@ -1,158 +1,175 @@
-Return-Path: <linux-kernel+bounces-94371-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94373-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D205A873E36
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 19:12:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D6B2873E38
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 19:12:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F1891C20B67
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 18:12:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 912B01C20297
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 18:12:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E715114038A;
-	Wed,  6 Mar 2024 18:03:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FACF14290C;
+	Wed,  6 Mar 2024 18:04:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gdXdAWtb"
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=leica-geosystems.com header.i=@leica-geosystems.com header.b="lLtgrr+L"
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2071.outbound.protection.outlook.com [40.107.22.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93F6A13B2BC;
-	Wed,  6 Mar 2024 18:03:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709748192; cv=none; b=Ffo9k44LPbNQOjZywzHw/MaIAzAII2TuPVFi2G5TG9osL47HxwfF/sigxgtYiaOKtgBoksHwMjJLTKQt3Jy1Uzt110TpmEO8JcLpacMc7cCoIVOVSI3GUSSengYR4SOcmF54k8JAG1eJb6HalKxRaEje0/4yn62mDsAhCoHV+Q8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709748192; c=relaxed/simple;
-	bh=MslP/GgC8iwDTAnt8RyubtvFyZFUlfOY+NPdmCr9Me4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=fIG3Iho6RfwybOCpc/fOY5K8PDfS0tkAY7ffkVhOtEfmx0QJiKaRUprAfqJZ4SsWFfrZLbKU6KtD1UxXGmKkQo3iR/ECnhkVMj2LhZZqdAnN9xJsNEPygBJSM0XkV2KEPFt5lln0C+8wdKG5F60dvJBHp5KZknES6Nm4X+NVOak=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gdXdAWtb; arc=none smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-564fc495d83so9605a12.0;
-        Wed, 06 Mar 2024 10:03:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709748189; x=1710352989; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2npUY4eeDDvoekzBCU0xKhb2LdvwtEzu1Ljw3wVUCC0=;
-        b=gdXdAWtbc5e9Sn1uLVGZpus0TSEJYItJ2kmTOsI0rErIzBkOcO716tXZZpjOZz0hLN
-         Fl6omOBjRTkKoH+U73TK+DVHYurnZT1YQMjjPAhjHq4d6vjiRLNJQxCpG0YTEXb57UMy
-         HggAL5ggBrIfHcuceec8mskhLlsVD02KHhV4ED1g4ySzl94/KriFU8XYYR4zpjuZttHa
-         TJ44n//klsCOHntxuvYvszRWuv2Wo8N+i9YY0OctjsLGiXPMBaaurlR8W26IMkjgXpNF
-         u9/redG0OkaaHZEwSIS3Qewimxea8pFOETTpfp3balOTaeJMY0onA4iJg1io2PLFvMGr
-         bnjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709748189; x=1710352989;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2npUY4eeDDvoekzBCU0xKhb2LdvwtEzu1Ljw3wVUCC0=;
-        b=oBSUXeajZKvsWAnOilMjkFguXkf6BAhTWz4EYeWQXH1N4e6Hwia0OqncrdUd5V3VVI
-         g4u0TctVPItDiihsHSYXJ8//quAXSutBr3cqsa2oLTFWJx0yf7F1lKK5SURKUdzi3WZ4
-         3KAis7utNEB1YtDdnIiF9CLPESzSEd2uBLZSZXeQg7h7Nd0rfFI8+4SH6+2ARcmEG8Kk
-         t5rwj+imYCQQHXMSIAXhdpOFwcQ8bUa33u+zhE3GVJojaOFJlqGozDGVsaOVpavu1p0l
-         spran/eJdMWFHzd6j4TNW+ZNRv59cvZPss+0D1n6LtilAzKAU8Q7OQ7EW3vdR4vt7ABF
-         +5Ug==
-X-Forwarded-Encrypted: i=1; AJvYcCUl8rG/eyBM4YkCefRVsYEct0HIX3qHAOSuOikMTPTau5l4zgFPea7MXTXbQVPS/EkOZlo8///Jj51atJd46tm9bE1GXOcSLB2Wy4YpzbG/B6rQaBia5Zy6ypknf521/3RNpL3qoqFaSvyeAZDhK7YqX7V/au21EqyooAA/j1G24pFS6Q==
-X-Gm-Message-State: AOJu0YyjxStFCM0lHyGIDq9RZIr6r5SZGYoG5QDZfuBJNIKLYB2O9JPp
-	I19Jr2foeGhF2rUkTe9MyeIqfPZPARNUCHVwm1BBbV/jYEsnooOw
-X-Google-Smtp-Source: AGHT+IFM/XXRTaSemXFiIcyA3yuOycYUFJwAQNMOBZTb3n2Xc4QR6NRDStodxTdg9XOV6FjMxBsf8A==
-X-Received: by 2002:a17:906:f898:b0:a44:17da:424 with SMTP id lg24-20020a170906f89800b00a4417da0424mr10646147ejb.56.1709748188522;
-        Wed, 06 Mar 2024 10:03:08 -0800 (PST)
-Received: from [192.168.20.170] (57657817.catv.pool.telekom.hu. [87.101.120.23])
-        by smtp.gmail.com with ESMTPSA id lb10-20020a170906adca00b00a45380dfd09sm3898898ejb.105.2024.03.06.10.03.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Mar 2024 10:03:08 -0800 (PST)
-Message-ID: <f28633b9-cad8-4e1f-807c-830ba9368eb5@gmail.com>
-Date: Wed, 6 Mar 2024 19:03:06 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81F451428FE;
+	Wed,  6 Mar 2024 18:04:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.22.71
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709748282; cv=fail; b=cDtbHzEJkOXth9I5YFiKscO/26cZVMEXq9SQ4xE+xAVG6ig2f5gGDAVM93oBaYGRP0UwMDLNzU7Yy/HrKJyPRytcYysfSKqp+PY+VD60jjku+U44isG7YlOUJ/UT3iCr6u4JNPaqhyQP7UH01jj57gUpZ4TQLWwomiz04hrR4iY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709748282; c=relaxed/simple;
+	bh=UsKa7tIHLMp1wTklpMNWN3DRQsBwbxmdf8XPj5b9WYk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=tkhS1hx0tNdDghswLnz5TxjI1jKcmVru/h42DXHa+iMtLJwQ+mWAY6qaG/+qPgm/uOLjGBSSNnF2ESFMiqaYP8jvB5b0WqIn8vTuVvx9l6Ldwku31UewXtP2WhV/oGG3ndknFOilhGZFLWb6KPL4AJF1jq/+3DXmcwCPtQ3DIvM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=leica-geosystems.com; spf=fail smtp.mailfrom=leica-geosystems.com; dkim=pass (1024-bit key) header.d=leica-geosystems.com header.i=@leica-geosystems.com header.b=lLtgrr+L; arc=fail smtp.client-ip=40.107.22.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=leica-geosystems.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=leica-geosystems.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MIPK5qfm8EkJWWrcthuDRCUo1p103UON4IEXI5NZRyT2iXIyrsb+InW/kIEdYmC5SOo6qfm4Yr+2K39hsDMbq4iBllgWl6UKj2nvbFl5Lloo0xburunreei0YAWov3ZHi1Z+Cm0Se04bHk0NlwhAPfX7RjooMa5FBir1XP1y2N/iDMdvY7wmRDJDKsuzsHAtfiLptIbbD+mB6qj8/6L0vhZL+vVWMmW6uMquL7X/IdS7C+pPq+Keo9AT3NgBViGzqnIjQX6ZS2yt/UAHesJqfRYydfAyhKBdI/yc5y7LZFvmHhTKRNUA4I8Irar8lAd38BHp2jEOQU5mpnWhFgIelA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=O6v2HbHcgkKbexa8oZfX/H/QR+qOB904iEZZ7iuZxbk=;
+ b=PHElU38tAsXhSsDadAwWMhP4yZ8M/kkY4KHGXS5iDkZhxXkXYdZrCV4np4Sfe4y8UJ36tNIAUcvoEFocAVWR28HGIuCD0IqOvAGZWV2jfidd7eAWq4qdqY0pNgxNScXmC4vse6jbA8sWbHQ3sLifIhr0KR+nse5pYrRT03fpCgJ/oRwGyMsA9dyMkBOaODSAP5cSUYOpSGTIaq2nYKX1hErFt6gbYAz0j8tDKjnXSy2FBvem8WGyj2HojqgqPlEc2WfJcal+s1Xzpe5KZjL2uZo1bBOxqyU6Vukanc9zmTWKrvux3pheE6+KdgDaNXumfEGL46XzAlcrEUSYITuX6A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 193.8.40.94) smtp.rcpttodomain=vger.kernel.org
+ smtp.mailfrom=leica-geosystems.com; dmarc=pass (p=reject sp=reject pct=100)
+ action=none header.from=leica-geosystems.com; dkim=none (message not signed);
+ arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=leica-geosystems.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=O6v2HbHcgkKbexa8oZfX/H/QR+qOB904iEZZ7iuZxbk=;
+ b=lLtgrr+L13E+XDA0O9wy/lsXNdlD25TWZg7T4m54q1U/MReQnFK563TB3rRI4hevcl5q5bK85vVv81R58dsF4F80+GBfMA1WAFPdrkvDlr3fDj/9XXOWiiGwqMS3/SOm26ermoCR8D/xwYd6+mN9+MxG8OFbSuHlqqXb/ezEVjM=
+Received: from DB9PR02CA0015.eurprd02.prod.outlook.com (2603:10a6:10:1d9::20)
+ by DB9PR06MB7467.eurprd06.prod.outlook.com (2603:10a6:10:262::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.24; Wed, 6 Mar
+ 2024 18:04:37 +0000
+Received: from DB5PEPF00014B99.eurprd02.prod.outlook.com
+ (2603:10a6:10:1d9:cafe::2c) by DB9PR02CA0015.outlook.office365.com
+ (2603:10a6:10:1d9::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.39 via Frontend
+ Transport; Wed, 6 Mar 2024 18:04:37 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 193.8.40.94)
+ smtp.mailfrom=leica-geosystems.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=leica-geosystems.com;
+Received-SPF: Pass (protection.outlook.com: domain of leica-geosystems.com
+ designates 193.8.40.94 as permitted sender) receiver=protection.outlook.com;
+ client-ip=193.8.40.94; helo=hexagon.com; pr=C
+Received: from hexagon.com (193.8.40.94) by
+ DB5PEPF00014B99.mail.protection.outlook.com (10.167.8.166) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7362.11 via Frontend Transport; Wed, 6 Mar 2024 18:04:37 +0000
+Received: from aherlnxbspsrv01.lgs-net.com ([10.60.34.116]) by hexagon.com with Microsoft SMTPSVC(10.0.17763.1697);
+	 Wed, 6 Mar 2024 19:04:36 +0100
+From: Catalin Popescu <catalin.popescu@leica-geosystems.com>
+To: mturquette@baylibre.com,
+	sboyd@kernel.org
+Cc: linux-clk@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	bsp-development.geo@leica-geosystems.com,
+	m.felsch@pengutronix.de,
+	Catalin Popescu <catalin.popescu@leica-geosystems.com>
+Subject: [PATCH next] clk: rs9: fix wrong default value for clock amplitude
+Date: Wed,  6 Mar 2024 19:04:35 +0100
+Message-Id: <20240306180435.1033052-1-catalin.popescu@leica-geosystems.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] firmware: qcom_scm: disable clocks if
- qcom_scm_bw_enable() fails
-Content-Language: hu
-To: Konrad Dybcio <konrad.dybcio@linaro.org>,
- Bjorn Andersson <andersson@kernel.org>, Sibi Sankar
- <quic_sibis@quicinc.com>, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20240304-qcom-scm-disable-clk-v1-1-b36e51577ca1@gmail.com>
- <d655a4db-89a8-4b03-86b1-55258d37aa19@linaro.org>
- <20240305200306921-0800.eberman@hu-eberman-lv.qualcomm.com>
- <2fdb87f5-3702-44d9-9ebe-974c4a53a77d@linaro.org>
-From: Gabor Juhos <j4g8y7@gmail.com>
-In-Reply-To: <2fdb87f5-3702-44d9-9ebe-974c4a53a77d@linaro.org>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-OriginalArrivalTime: 06 Mar 2024 18:04:36.0986 (UTC) FILETIME=[C04B85A0:01DA6FF0]
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DB5PEPF00014B99:EE_|DB9PR06MB7467:EE_
+Content-Type: text/plain
+X-MS-Office365-Filtering-Correlation-Id: 74e5f93b-8c9d-4df6-b236-08dc3e07e306
+X-SET-LOWER-SCL-SCANNER: YES
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	sOgseA4eA+1GlG18A/OgliOyuig5TC036hdusGnYimHE1dR7nVfflki90lYu09JuHhAuhFcV+nVjMJlPLIX67JE7IHnF3zMLIaoAtUJNlp4N9kr21X9fe7GAS39EltsUK1bV51F2oeikLX/KWOpHM9cEoBWATH8cSa5XeJ7dntG6tw8+SUJBNx7ZG33EncfmpVp1hK6C/bvgsGqXf0PK2fkFFd9i31Ctkjv426WdgmdEZeXvOyjlz46f/WEuCLJdFe1mvROeDUH59JKRnDRKJRnvD19HHDKSUi2xeOSqSmQEYyGWq7SvPMXijJZ+h+3FHJ5/FMMQO/BXuI9TN7nfkvA6hLjjiCKlMMzNIUkU4oSh5gB1uJbHRqf66sCHNpyDrnOyfcCpyZp2IsM+tr1KJ4Aq7t8Q4uAIJS5Zg5WPuUfHU22H9XSD9eDyoLOPpBPDC3lqo+QsBMLVIOzNaiHct5SQyQIz6p82fuCEwkIx3KdHZzjBW8Wq3q3HM5zgnDnCRXcLk9AU+l20M6pAvUPGlYfC7ueqFeGfWNkc+svjN4cYKb/KBCwam2x3RS5dlmHuDPByFYvi8hv+o66W5g8A9I+W+feNaRr8xvFgAC18Wox4/l1wvpn+vUnezoX9WE0v0kRewGlu5wY/vb+Yo9HM253GUkUN/qRvRl8la9jOXhMMdZRfYEXQOa79mogl8DZLvADHoh4bhs1foGlXI5pfLRjE2RcCLCV0MwxayVFghy4YcGpeo16JGuPeUANqklab
+X-Forefront-Antispam-Report:
+	CIP:193.8.40.94;CTRY:CH;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:hexagon.com;PTR:ahersrvdom50.leica-geosystems.com;CAT:NONE;SFS:(13230031)(82310400014)(36860700004)(376005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: leica-geosystems.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Mar 2024 18:04:37.3077
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 74e5f93b-8c9d-4df6-b236-08dc3e07e306
+X-MS-Exchange-CrossTenant-Id: 1b16ab3e-b8f6-4fe3-9f3e-2db7fe549f6a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=1b16ab3e-b8f6-4fe3-9f3e-2db7fe549f6a;Ip=[193.8.40.94];Helo=[hexagon.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	DB5PEPF00014B99.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR06MB7467
 
-2024. 03. 06. 17:02 keltezéssel, Konrad Dybcio írta:
-> 
-> 
-> On 3/6/24 05:10, Elliot Berman wrote:
->> On Tue, Mar 05, 2024 at 10:15:19PM +0100, Konrad Dybcio wrote:
->>>
->>>
->>> On 3/4/24 14:14, Gabor Juhos wrote:
->>>> There are several functions which are calling qcom_scm_bw_enable()
->>>> then returns immediately if the call fails and leaves the clocks
->>>> enabled.
->>>>
->>>> Change the code of these functions to disable clocks when the
->>>> qcom_scm_bw_enable() call fails. This also fixes a possible dma
->>>> buffer leak in the qcom_scm_pas_init_image() function.
->>>>
->>>> Compile tested only due to lack of hardware with interconnect
->>>> support.
->>>>
->>>> Cc: stable@vger.kernel.org
->>>> Fixes: 65b7ebda5028 ("firmware: qcom_scm: Add bw voting support to the SCM
->>>> interface")
->>>> Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
->>>> ---
->>>
->>> Taking a closer look, is there any argument against simply
->>> putting the clk/bw en/dis calls in qcom_scm_call()?
->>
->> We shouldn't do this because the clk/bw en/dis calls are only needed in
->> few SCM calls.
-> 
-> Then the argument list could be expanded with `bool require_resources`,
-> or so still saving us a lot of boilerplate
+According to 9FGV0241 & 9FGV0441 datasheets, the default value
+for the clock amplitude is 0.8V, while the driver was assuming
+0.7V.
 
-That would mean that we have to modify each callers of qcom_scm_call() to pass a
-new parameter. Additionally, there are cases, when the bw enable part is not
-needed so we should add separate parameters, one for clk and one for bw or we
-should use a bitmask.
+Signed-off-by: Catalin Popescu <catalin.popescu@leica-geosystems.com>
+---
+ drivers/clk/clk-renesas-pcie.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-Would not it be simpler to use a helper function like the following instead?
+diff --git a/drivers/clk/clk-renesas-pcie.c b/drivers/clk/clk-renesas-pcie.c
+index 53e21ac302e6..4c3a5e4eb77a 100644
+--- a/drivers/clk/clk-renesas-pcie.c
++++ b/drivers/clk/clk-renesas-pcie.c
+@@ -25,10 +25,12 @@
+ #define RS9_REG_SS_AMP_0V7			0x1
+ #define RS9_REG_SS_AMP_0V8			0x2
+ #define RS9_REG_SS_AMP_0V9			0x3
++#define RS9_REG_SS_AMP_DEFAULT			RS9_REG_SS_AMP_0V8
+ #define RS9_REG_SS_AMP_MASK			0x3
+ #define RS9_REG_SS_SSC_100			0
+ #define RS9_REG_SS_SSC_M025			(1 << 3)
+ #define RS9_REG_SS_SSC_M050			(3 << 3)
++#define RS9_REG_SS_SSC_DEFAULT			RS9_REG_SS_SSC_100
+ #define RS9_REG_SS_SSC_MASK			(3 << 3)
+ #define RS9_REG_SS_SSC_LOCK			BIT(5)
+ #define RS9_REG_SR				0x2
+@@ -205,8 +207,8 @@ static int rs9_get_common_config(struct rs9_driver_data *rs9)
+ 	int ret;
+ 
+ 	/* Set defaults */
+-	rs9->pll_amplitude = RS9_REG_SS_AMP_0V7;
+-	rs9->pll_ssc = RS9_REG_SS_SSC_100;
++	rs9->pll_amplitude = RS9_REG_SS_AMP_DEFAULT;
++	rs9->pll_ssc = RS9_REG_SS_SSC_DEFAULT;
+ 
+ 	/* Output clock amplitude */
+ 	ret = of_property_read_u32(np, "renesas,out-amplitude-microvolt",
+@@ -247,13 +249,13 @@ static void rs9_update_config(struct rs9_driver_data *rs9)
+ 	int i;
+ 
+ 	/* If amplitude is non-default, update it. */
+-	if (rs9->pll_amplitude != RS9_REG_SS_AMP_0V7) {
++	if (rs9->pll_amplitude != RS9_REG_SS_AMP_DEFAULT) {
+ 		regmap_update_bits(rs9->regmap, RS9_REG_SS, RS9_REG_SS_AMP_MASK,
+ 				   rs9->pll_amplitude);
+ 	}
+ 
+ 	/* If SSC is non-default, update it. */
+-	if (rs9->pll_ssc != RS9_REG_SS_SSC_100) {
++	if (rs9->pll_ssc != RS9_REG_SS_SSC_DEFAULT) {
+ 		regmap_update_bits(rs9->regmap, RS9_REG_SS, RS9_REG_SS_SSC_MASK,
+ 				   rs9->pll_ssc);
+ 	}
 
-static int qcom_scm_call_clk_bw(struct device *dev,
-				const struct qcom_scm_desc *desc,
-				struct qcom_scm_res *res)
-{
-	int ret;
-
-	ret = qcom_scm_clk_enable();
-	if (ret)
-		return ret;
-
-	ret = qcom_scm_bw_enable();
-	if (ret)
-		goto disable_clk;
-
-	ret = qcom_scm_call(dev, desc, res);
-	qcom_scm_bw_disable();
-
-disable_clk:
-	qcom_scm_clk_disable();
-
-	return ret;
-}
+base-commit: 61996c073c9b070922ad3a36c981ca6ddbea19a5
+prerequisite-patch-id: 0000000000000000000000000000000000000000
+-- 
+2.34.1
 
 
