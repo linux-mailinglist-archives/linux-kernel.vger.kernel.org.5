@@ -1,235 +1,189 @@
-Return-Path: <linux-kernel+bounces-93158-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93159-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4152872BA7
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 01:14:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 530ED872BA8
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 01:15:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D5AB1F2D43B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 00:14:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0676D28200E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 00:15:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF893179B2;
-	Wed,  6 Mar 2024 00:12:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B4B0EC4;
+	Wed,  6 Mar 2024 00:15:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WuNuzncz"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="KLRvMa9y"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFFE8817;
-	Wed,  6 Mar 2024 00:12:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE7E6173
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 00:15:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709683930; cv=none; b=i1WyUOjaGefk2Xos7k7r8mJaAIpU4lmpAwa/TKQbqtTXLYsND8485QFNNSi+ey3TZrR6UG6aTihI+6UVEJJ3kLnf9IVrtGTT/qnlPPTsitDMQ9wRL6e1Ie8ErN1S2CT/6glCd0H2cuCf8JGwmpHvLVHxxQJHCb1NNLeYASDL3ew=
+	t=1709684124; cv=none; b=LTjwtQOf1ddyjbL0p9pR0nPR58MZ4t2t6j/eNKpkWuStm35tjZtrhRMdhtdTccpRSXIVO5EOVwwsf65s5yysKp7Og7bTTaEhso+DMUjYxhAci8dMmeOV3RD7WfSJaGPMDQJpiPuQQiwDfNCBSeT4nh7mebXWD5WtV19vjPqE6jU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709683930; c=relaxed/simple;
-	bh=VjqFb+792DmN0ilxw7UhrsTId54QKmptBSdzy0wdoxI=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=DjQNEwAVct5ynwzcqHpOwq+tKIod+jiPzDxpKm0w8moZhOcWRUqDBBMboG3iLXEOVOWiyMN0rY2gyGfhbzE97GXWC2Fs6OAHHcUNOMGh0WRX9Dn/FBgifYwrtHBT33GS37CctzvB0y+gHSOPguia9v197wXC9x7/ozTAM3BHpSU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WuNuzncz; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709683927; x=1741219927;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=VjqFb+792DmN0ilxw7UhrsTId54QKmptBSdzy0wdoxI=;
-  b=WuNuznczLAmbFQrv3q0+1A6WsSzgxlh7EQbrpzH2GI+co/621fzWqHrZ
-   YvywNu14h3B1h+f02kAQRgtrgmOIB0Sxo2LSs/3fnyteVKPsx7+tweowl
-   qkDEvccoYv4jOOCzhyf0yBA/YFFbSkKHYnrTmuUXnTVNN+uod+AIlOBZe
-   amYwAR/WJbpdb1ugm6EI3zYWjf6RDkC4cMjVjfC04DNkVRf3qYIICBiyi
-   1qdlqs8ebMapoV87wwn14buWIXW/BCERticVsrx3so9ENmswTyZezlv0C
-   1VPY2KWEaFk8gnV+f9UMdmvOjDD1agIEz9Pcl+6N+Ph8Dvf0eQ7p/bUMD
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11004"; a="14921675"
-X-IronPort-AV: E=Sophos;i="6.06,206,1705392000"; 
-   d="scan'208";a="14921675"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 16:12:06 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,206,1705392000"; 
-   d="scan'208";a="9519955"
-Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
-  by orviesa010.jf.intel.com with ESMTP; 05 Mar 2024 16:12:05 -0800
-Received: from kbuild by b21307750695 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rhet7-0003ln-2S;
-	Wed, 06 Mar 2024 00:12:01 +0000
-Date: Wed, 6 Mar 2024 08:11:05 +0800
-From: kernel test robot <lkp@intel.com>
-To: Hans Verkuil <hverkuil@xs4all.nl>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	linux-media@vger.kernel.org
-Subject: WARNING: modpost: "__udelay"
- [drivers/media/pci/saa7146/hexium_orion.ko] has no CRC!
-Message-ID: <202403060852.Vgg0tWp7-lkp@intel.com>
+	s=arc-20240116; t=1709684124; c=relaxed/simple;
+	bh=Ery4zifMCCuUuZyzrIBlY0WEBPD7CQi0y3uIJntdw9E=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=R4t9HNNw90V4Sj7CpRWhIuRDhSZi6DKWB79mfp+j3IPWfLolndXm5OQAEms66VvaG/qB4x11ecev0NDP+anOYIgE/KVB/B/CXbZMBuW6AAhamhpKh4CWFKZNrdJ1vaen9Kr7jRvCpd9MyZqOk1VzCST0rrRJebqDcz4Oug2xKR4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jthoughton.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=KLRvMa9y; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jthoughton.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-6096c745c33so117360597b3.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 16:15:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709684122; x=1710288922; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ChgiPj0kYltLQzZMIn6xeFnYbJXLFSJLwKxQczKImDM=;
+        b=KLRvMa9yTvD44rFz7ov1LtSm3goSqRD7dkILYh94flF9Gk8dgH9EH9dImsMh2JLaMt
+         BCq9aNtWuoYilr4ZdK/rtYewdfkza1iHP2ENOXIaFCTzBIR8pG+BS9Y6k6BFS2U19OqA
+         9BZy84caM8NMk0+2WGpU6rNUeUDBCtmvuAGJyjIaLJcpJOSNgMQEu2DMok0W8CMShuR1
+         hNruRRY3+FXilIoW0X0A/mN+ZOohiZrsPSvP8z5NSQ+78SY4G49Ib7GzshtbE/4vRi72
+         U9iqBn2RSxfqstp3kkeXAQUyG2Sl8aoEeO5ajS8MlnUkIZGxq4gOOB4XP2SQ71AzDRSD
+         z6ZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709684122; x=1710288922;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ChgiPj0kYltLQzZMIn6xeFnYbJXLFSJLwKxQczKImDM=;
+        b=tW4Or4VGESm+QSE9n7iP2HvnrJmc08QeGnT+68pP3Gxo5zt2ATUPJGHgLouBoXGXc1
+         jKYj+iU79BFrMPpAz4Qb3AOjBkT2jUF8Zd5reRJxvo7hEVgx+aQLK7cqa+i4jInILFgm
+         qxBiJYfQ2Jjk6z8+/pAbmxdmREkr1xduw84Ycq3HzL+x2L7EHqGEHVnLn1VzIwz1vCHG
+         0bHRXW2zEupcu9k9ESbWuVNychC75xDFC4C9X8q/4RAiaZpn3pydeXG74NNXLkk3p3FC
+         5IRPBZa2QJSaubtzYGyoveNjrm0T9sZh8t40eVQhtNdTUgdsm8UN1+a2eJvQwH98i5dO
+         71oA==
+X-Forwarded-Encrypted: i=1; AJvYcCWmzQJ6pVAlG5SWYP5wGJY4YCftIW5XntbdL8835KaeG9zjpJNjGjPuK5wG6fgpITlMTPYZfOrVpEN4nzbTlxhC2oUqUF6Dc7fhhSe8
+X-Gm-Message-State: AOJu0YwK/untwWvtJwr6i5DQ5wixe1PZ8gRifP6dvh5Ep6nqB/q03zPc
+	ZNhP6nE6aVYnJf3nnwIljbichHzFsWqWQXUHw4TFXTOBdrzw9RFKvpj8yzvI7B+AHGyp76m1cwh
+	kuHWiqhQTUvX79z+j7w==
+X-Google-Smtp-Source: AGHT+IFfsY8LjMQNkNxTJ0rSe20ZUdfR3+FzZIQB2yeaN8wmwfvRIu02vM39uiLYIz0MeSq9L6HZCKPA8Bw8F9cK
+X-Received: from jthoughton.c.googlers.com ([fda3:e722:ac3:cc00:14:4d90:c0a8:2a4f])
+ (user=jthoughton job=sendgmr) by 2002:a81:9a92:0:b0:607:fd67:b946 with SMTP
+ id r140-20020a819a92000000b00607fd67b946mr3796447ywg.10.1709684121991; Tue,
+ 05 Mar 2024 16:15:21 -0800 (PST)
+Date: Wed,  6 Mar 2024 00:15:10 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
+Message-ID: <20240306001511.932348-1-jthoughton@google.com>
+Subject: [PATCH] mm: Add an explicit smp_wmb() to UFFDIO_CONTINUE
+From: James Houghton <jthoughton@google.com>
+To: Peter Xu <peterx@redhat.com>, Axel Rasmussen <axelrasmussen@google.com>, 
+	Andrew Morton <akpm@linux-foundation.org>
+Cc: Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, James Houghton <jthoughton@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Hans,
+Users of UFFDIO_CONTINUE may reasonably assume that a write memory
+barrier is included as part of UFFDIO_CONTINUE. That is, a user may
+(mistakenly) believe that all writes it has done to a page that it is
+now UFFDIO_CONTINUE'ing are guaranteed to be visible to anyone
+subsequently reading the page through the newly mapped virtual memory
+region.
 
-First bad commit (maybe != root cause):
+Include only a single smp_wmb() for each UFFDIO_CONTINUE, as that is all
+that is necessary. While we're at it, optimize the smp_wmb() that is
+already incidentally present for the HugeTLB case.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   29cd507cbec282e13dcf8f38072a100af96b2bb7
-commit: 39d08ab979b7995d22dd6b3ce74d3179f02847a1 media: Revert "media: saa7146: deprecate hexium_gemini/orion, mxb and ttpci"
-date:   1 year, 1 month ago
-config: sparc-randconfig-s033-20230621 (https://download.01.org/0day-ci/archive/20240306/202403060852.Vgg0tWp7-lkp@intel.com/config)
-compiler: sparc-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240306/202403060852.Vgg0tWp7-lkp@intel.com/reproduce)
+Documentation doesn't specify if the kernel does a wmb(), so it's not
+wrong not to include it. But by not including it, we are making is easy
+for a user to have a very hard-to-detect bug. Include it now to be safe.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403060852.Vgg0tWp7-lkp@intel.com/
+A user that decides to update the contents of the page in one thread and
+UFFDIO_CONTINUE that page in another must already take additional steps
+to synchronize properly.
 
-All warnings (new ones prefixed by >>, old ones prefixed by <<):
+Signed-off-by: James Houghton <jthoughton@google.com>
+---
 
-WARNING: modpost: vmlinux.o: section mismatch in reference: leon_pci_init (section: .text) -> pci_assign_unassigned_resources (section: .init.text)
-WARNING: modpost: vmlinux.o: section mismatch in reference: grpci2_of_driver (section: .data) -> grpci2_of_match (section: .init.rodata)
-WARNING: modpost: vmlinux.o: section mismatch in reference: grpci1_of_driver (section: .data) -> grpci1_of_match (section: .init.rodata)
-WARNING: modpost: EXPORT symbol "empty_zero_page" [vmlinux] version generation failed, symbol will not be versioned.
-Is "empty_zero_page" prototyped in <asm/asm-prototypes.h>?
-WARNING: modpost: EXPORT symbol "__udelay" [vmlinux] version generation failed, symbol will not be versioned.
-Is "__udelay" prototyped in <asm/asm-prototypes.h>?
-WARNING: modpost: EXPORT symbol "__ndelay" [vmlinux] version generation failed, symbol will not be versioned.
-Is "__ndelay" prototyped in <asm/asm-prototypes.h>?
-WARNING: modpost: EXPORT symbol "__ashldi3" [vmlinux] version generation failed, symbol will not be versioned.
-Is "__ashldi3" prototyped in <asm/asm-prototypes.h>?
-WARNING: modpost: EXPORT symbol "__ashrdi3" [vmlinux] version generation failed, symbol will not be versioned.
-Is "__ashrdi3" prototyped in <asm/asm-prototypes.h>?
-WARNING: modpost: EXPORT symbol "bzero_1page" [vmlinux] version generation failed, symbol will not be versioned.
-Is "bzero_1page" prototyped in <asm/asm-prototypes.h>?
-WARNING: modpost: EXPORT symbol "__copy_1page" [vmlinux] version generation failed, symbol will not be versioned.
-Is "__copy_1page" prototyped in <asm/asm-prototypes.h>?
-WARNING: modpost: EXPORT symbol "__divdi3" [vmlinux] version generation failed, symbol will not be versioned.
-Is "__divdi3" prototyped in <asm/asm-prototypes.h>?
-WARNING: modpost: EXPORT symbol "___rw_read_enter" [vmlinux] version generation failed, symbol will not be versioned.
-Is "___rw_read_enter" prototyped in <asm/asm-prototypes.h>?
-WARNING: modpost: EXPORT symbol "___rw_read_exit" [vmlinux] version generation failed, symbol will not be versioned.
-Is "___rw_read_exit" prototyped in <asm/asm-prototypes.h>?
-WARNING: modpost: EXPORT symbol "___rw_read_try" [vmlinux] version generation failed, symbol will not be versioned.
-Is "___rw_read_try" prototyped in <asm/asm-prototypes.h>?
-WARNING: modpost: EXPORT symbol "___rw_write_enter" [vmlinux] version generation failed, symbol will not be versioned.
-Is "___rw_write_enter" prototyped in <asm/asm-prototypes.h>?
-WARNING: modpost: EXPORT symbol "__lshrdi3" [vmlinux] version generation failed, symbol will not be versioned.
-Is "__lshrdi3" prototyped in <asm/asm-prototypes.h>?
-WARNING: modpost: EXPORT symbol "__muldi3" [vmlinux] version generation failed, symbol will not be versioned.
-Is "__muldi3" prototyped in <asm/asm-prototypes.h>?
-WARNING: modpost: "__udelay" [kernel/locking/locktorture.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [fs/xfs/xfs.ko] has no CRC!
-WARNING: modpost: "__udelay" [fs/xfs/xfs.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [fs/xfs/xfs.ko] has no CRC!
-WARNING: modpost: "__ashrdi3" [fs/xfs/xfs.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [fs/f2fs/f2fs.ko] has no CRC!
-WARNING: modpost: "empty_zero_page" [security/keys/encrypted-keys/encrypted-keys.ko] has no CRC!
-WARNING: modpost: "empty_zero_page" [lib/crypto/libchacha20poly1305.ko] has no CRC!
-WARNING: modpost: "__udelay" [lib/test_lockup.ko] has no CRC!
-WARNING: modpost: "__ndelay" [lib/test_lockup.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/bus/mhi/host/mhi.ko] has no CRC!
-WARNING: modpost: "__ndelay" [drivers/gpio/gpio-latch.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/rapidio/rio-scan.ko] has no CRC!
-WARNING: modpost: "__ndelay" [drivers/video/backlight/ktd253-backlight.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/char/ipmi/ipmi_si.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/clk/clk-palmas.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/tty/serial/sunzilog.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/tty/serial/sc16is7xx.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/tty/serial/jsm/jsm.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/char/hw_random/ba431-rng.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/char/hw_random/omap-rng.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/char/hw_random/stm32-rng.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/char/hw_random/ks-sa-rng.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/block/mtip32xx/mtip32xx.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/misc/hpilo.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/misc/c2port/core.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/mfd/axp20x.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/scsi/megaraid/megaraid_mbox.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/scsi/aic7xxx/aic7xxx.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/scsi/aic94xx/aic94xx.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/scsi/esp_scsi.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/scsi/sun_esp.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/scsi/a100u2w.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/scsi/ipr.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/scsi/stex.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/scsi/mvumi.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/scsi/esas2r/esas2r.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [drivers/scsi/sd_mod.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/mtd/nand/raw/nandsim.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [drivers/mtd/nand/raw/nandsim.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/mtd/nand/raw/nandsim.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [drivers/mtd/tests/mtd_nandbiterrs.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/input/touchscreen/cyttsp4_core.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/input/touchscreen/elants_i2c.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/input/touchscreen/mms114.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/input/touchscreen/raydium_i2c_ts.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/input/touchscreen/wdt87xx_i2c.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/input/touchscreen/sx8654.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/input/misc/adxl34x.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/input/misc/drv260x.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/rtc/rtc-ds2404.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/rtc/rtc-x1205.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/i2c/busses/i2c-rk3x.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/i3c/master/i3c-master-cdns.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/i3c/master/svc-i3c-master.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/media/i2c/adv7183.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/media/i2c/adv7604.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/media/i2c/bt819.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/media/i2c/cx25840/cx25840.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/media/i2c/ks0127.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/media/i2c/tc358743.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/media/i2c/vpx3220.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/media/tuners/max2165.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/media/tuners/mt20xx.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/media/tuners/tuner-simple.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/media/tuners/tda18271.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/media/common/saa7146/saa7146.ko] has no CRC!
->> WARNING: modpost: "__udelay" [drivers/media/pci/saa7146/hexium_orion.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/media/pci/cx25821/cx25821.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/media/pci/dt3155/dt3155.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/media/pci/ivtv/ivtv.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/media/v4l2-core/tuner.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/media/radio/si4713/si4713.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/media/radio/tea575x.ko] has no CRC!
-WARNING: modpost: "__ndelay" [drivers/w1/masters/ds2482.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/w1/masters/sgi_w1.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/hwmon/lm93.ko] has no CRC!
-WARNING: modpost: "__ndelay" [drivers/hwmon/sht15.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/watchdog/pcwd_pci.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/watchdog/da9062_wdt.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/watchdog/gpio_wdt.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/watchdog/rave-sp-wdt.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/mmc/host/sdhci.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/mmc/host/sdhci-pci.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/mmc/host/sdhci-milbeaut.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/mmc/host/cb710-mmc.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/mmc/host/toshsd.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/mmc/host/sdhci-of-dwcmshc.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/mmc/host/sdhci-omap.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/leds/leds-bd2802.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/leds/leds-lt3593.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/staging/rts5208/rts5208.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/iio/accel/mma9551_core.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/iio/adc/adi-axi-adc.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/iio/pressure/dlhl60d.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/iio/proximity/ping.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/ata/libata.ko] has no CRC!
-WARNING: modpost: "__ndelay" [drivers/ata/libata.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/ata/libahci.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/ata/sata_sx4.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/pcmcia/pcmcia_core.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/fpga/altera-pr-ip-core.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/mux/mux-core.ko] has no CRC!
-WARNING: modpost: "__ndelay" [drivers/siox/siox-bus-gpio.ko] has no CRC!
+I'm not sure if this patch should be merged. I think it's the right
+thing to do, as it is very easy for a user to get this wrong. (I have
+been using UFFDIO_CONTINUE for >2 years and only realized this problem
+recently.) Given that it's not a "bug" strictly speaking, even if this
+patch is a good idea, I'm unsure if it needs to be backported.
 
+This quirk has existed since minor fault support was added for shmem[1].
+
+I've tried to see if I can legitimately get a user to read stale data,
+and a few attempts with this test[2] have been unsuccessful.
+
+[1]: commit 153132571f02 ("userfaultfd/shmem: support UFFDIO_CONTINUE for shmem")
+[2]: https://gist.github.com/48ca/38d0665b0f1a6319a56507dc73a173f9
+
+ mm/hugetlb.c     | 15 +++++++++------
+ mm/userfaultfd.c | 18 ++++++++++++++++++
+ 2 files changed, 27 insertions(+), 6 deletions(-)
+
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index bb17e5c22759..533bf6b2d94d 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -6779,12 +6779,15 @@ int hugetlb_mfill_atomic_pte(pte_t *dst_pte,
+ 		}
+ 	}
+ 
+-	/*
+-	 * The memory barrier inside __folio_mark_uptodate makes sure that
+-	 * preceding stores to the page contents become visible before
+-	 * the set_pte_at() write.
+-	 */
+-	__folio_mark_uptodate(folio);
++	if (!is_continue) {
++		/*
++		 * The memory barrier inside __folio_mark_uptodate makes sure
++		 * that preceding stores to the page contents become visible
++		 * before the set_pte_at() write.
++		 */
++		__folio_mark_uptodate(folio);
++	} else
++		WARN_ON_ONCE(!folio_test_uptodate(folio));
+ 
+ 	/* Add shared, newly allocated pages to the page cache. */
+ 	if (vm_shared && !is_continue) {
+diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
+index 503ea77c81aa..d515b640ca48 100644
+--- a/mm/userfaultfd.c
++++ b/mm/userfaultfd.c
+@@ -531,6 +531,10 @@ static __always_inline ssize_t mfill_atomic_hugetlb(
+ 			goto out_unlock;
+ 	}
+ 
++	if (uffd_flags_mode_is(flags, MFILL_ATOMIC_CONTINUE))
++		/* See the comment in mfill_atomic. */
++		smp_wmb();
++
+ 	while (src_addr < src_start + len) {
+ 		BUG_ON(dst_addr >= dst_start + len);
+ 
+@@ -743,6 +747,20 @@ static __always_inline ssize_t mfill_atomic(struct userfaultfd_ctx *ctx,
+ 	    uffd_flags_mode_is(flags, MFILL_ATOMIC_CONTINUE))
+ 		goto out_unlock;
+ 
++	if (uffd_flags_mode_is(flags, MFILL_ATOMIC_CONTINUE))
++		/*
++		 * A caller might reasonably assume that UFFDIO_CONTINUE
++		 * contains a wmb() to ensure that any writes to the
++		 * about-to-be-mapped page by the thread doing the
++		 * UFFDIO_CONTINUE are guaranteed to be visible to subsequent
++		 * reads of the page through the newly mapped address.
++		 *
++		 * For MFILL_ATOMIC_COPY, the wmb() is done for each COPYed
++		 * page. We can do the wmb() now for CONTINUE as the user has
++		 * already prepared the page contents.
++		 */
++		smp_wmb();
++
+ 	while (src_addr < src_start + len) {
+ 		pmd_t dst_pmdval;
+ 
+
+base-commit: a7f399ae964e1d2a11d88d863a1d64392678ccaf
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.44.0.278.ge034bb2e1d-goog
+
 
