@@ -1,638 +1,212 @@
-Return-Path: <linux-kernel+bounces-93385-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93386-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E40F3872EE9
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 07:32:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12EC8872EEE
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 07:33:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CFC591C2125B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 06:32:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6C21BB24F91
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 06:33:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6600C5B662;
-	Wed,  6 Mar 2024 06:31:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EFBB5B67A;
+	Wed,  6 Mar 2024 06:33:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QUv0dILo"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="O+vTxwX8"
+Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F17621C6BB
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 06:31:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD36758AC3
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 06:33:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709706717; cv=none; b=sdyMAt8aWgssQfMBM5bi1F/8RNuinc0t78yLNAG1QB2KQbjP1JOLmS5h/Ym8B8tsSxo6zR1KP1Yo2WH2DLZRwdLsVw0XqMEGNq3AsKWPm9g1i5SM2Aj0xD4964icq80LDzcixudg0QB4hrsDZtutm23VYcUMncX6pdFh74is6os=
+	t=1709706794; cv=none; b=oEFz3/jKwaGfFKQJ3TQMKk8hd99DYQTJJofQ/umOsa24i0FW2GIM18bTmFCtkKZqzeNgsn3+djMApmjsFHpp1gFM3b5IbLnjsW6vsb542/Ukwo+S7r/eNI5QqIT8nuU5KKfQG9IMRMEKFF6Yk6JWXk0osMW+hKcE/JFm9U8ctrU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709706717; c=relaxed/simple;
-	bh=4BSYoRefiwx7fEEkNm9b5ciSL9N04oFFyWZnIni2wJ0=;
+	s=arc-20240116; t=1709706794; c=relaxed/simple;
+	bh=lnj04D8zBAmypP6j2POjy3y/xNsAC09Cm+3BIi+/VRE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZIFeTUgoCKRpcQ5oaC9+F6RG29xDOGBWirCSDkhBO/ucbCEwr+hUw5LIcv++yQKQ91l8fCJnOW+J63HlhSZzKnw/V1640gflkVgYLnluGWRRLXS0oKV9FSo7ltRER48uYfc8GBxadfEkvbQ26oaCv7CNyq6iPHQBHVGbxN0e1wk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QUv0dILo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5984BC433C7;
-	Wed,  6 Mar 2024 06:31:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709706716;
-	bh=4BSYoRefiwx7fEEkNm9b5ciSL9N04oFFyWZnIni2wJ0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=QUv0dILoz1CqQ9bMlFyfiWj7LvyDVz1ITqFoaaO8nvZPeUdsbxBbH4OzHuttWTIzb
-	 Qlwq9lPwOT9dtXFKgDwq6n6uP7SYPGEkde5jq0oeNg0+AO/VipQpjg9tpQNmuAFSKi
-	 y07n6nSKdBBmGwFvjotBcqufCg0GL1KHBywJYroQPyNdWNaYNUHvpJ74ku7TDUS7cw
-	 Y8wce+31rMpTZyYZJkQLe4qbX7qYA8KKkeMNit62WmrNXUWhaYvexoEfb86rb58py6
-	 99zB8/h8tWIjkxi1ZRmctrWpJOfWlGiBC6GghABX9YQrtHE0eSdRi1anMPVP3pbw0F
-	 WARs4ohkiraig==
-Date: Wed, 6 Mar 2024 08:31:04 +0200
-From: Mike Rapoport <rppt@kernel.org>
-To: peterx@redhat.com
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	Christophe Leroy <christophe.leroy@csgroup.eu>, x86@kernel.org,
-	"Kirill A . Shutemov" <kirill@shutemov.name>,
-	Jason Gunthorpe <jgg@nvidia.com>, Yang Shi <shy828301@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linuxppc-dev@lists.ozlabs.org, Muchun Song <muchun.song@linux.dev>
-Subject: Re: [PATCH v3 07/10] mm/treewide: Replace pmd_large() with pmd_leaf()
-Message-ID: <ZegNqDH-HMcWupwB@kernel.org>
-References: <20240305043750.93762-1-peterx@redhat.com>
- <20240305043750.93762-8-peterx@redhat.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=jx51hjG+hQOj2sNquZyd+WfGGqrdcabyJeTcS46ftFGIwp1FH8/Zkpox1mEx1L4QbrqnYu4UgH5lnCxT1n706reKmpnz3odZ4DOcfg/NgTsdYdzf04YubPWShcKlvpPOtHKMJg6zs67nU2V1pabpoocmQqpFxGwA5B6O3OmJiRI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=O+vTxwX8; arc=none smtp.client-ip=209.85.222.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-788303f317eso64375985a.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 22:33:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709706790; x=1710311590; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=PzzqnLQBHpN+9urj8XiH2dFm2U46R6xFzTYOnXW2Hvs=;
+        b=O+vTxwX8jPbg+fbjLrM2yUfgSznPFlGhGMSzaiwFimqk/+kGzC57CuV4OllfUxr/pk
+         fO15Y3K9PFb7EzF7zfjt/yfE68/yaPvccu06Vu1yyxviXrjtfvlSVeFKNvls9g2qT9Uf
+         bbGGIBbsWbvrDT6tJsPWuJGgcEIcf2XJkJDeqxMYrdubRdRrttik+Li8RnYVPkOYH4Oz
+         Kv0AHQ9oHBiZMPkAsvUOhNFfKRwj70IK/uU8xlgaR7XHcFcch2gEwxxBTxe2iLufIGSX
+         3iJFvXhSwmfAXYIS7hkcrUl8xX57izNy3vsrbNfyxlyjyhUZygV9R7V87HT4VkONPPG5
+         /reA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709706790; x=1710311590;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PzzqnLQBHpN+9urj8XiH2dFm2U46R6xFzTYOnXW2Hvs=;
+        b=c0Fx4I6mfoSyVCPgzmG8rdetIF1qkzpHpJbwj8y+kGL7ayF3me5pqTpyMWfxOkZQk4
+         v5fA8zZvLuLjgku4esOH74pKPgWlc6M8mO8YmCdaG/KqMylAU1C8NE3eMUhoOB214LPj
+         L5WOdfQ51CLuFUsJ1riNDwOafHkddYR/ytgQuVBWfTz82FV1mbGFkufP2ftibyrhXk6e
+         TfUG9XfMI2n1WB0ub4kyuZy9vN7PnONLesDnjtq5mu+jBztmZHGfU+OSu9hE5vdBX8nQ
+         NdG+DzTwqfuNVOw7vXioYEHY1oVIsIpYKbl+v5iN33EpbtJK8IjVSZmyMObXP5qBXS0k
+         P2aw==
+X-Forwarded-Encrypted: i=1; AJvYcCUNwcuEsH4VboIC44/bHKNEakBaU6VxIKSs34ws3aWQlKEVkZdSl2fq2E9ackK7cyJz74S3CCiMsjH5cEjX4MCXTu5Sm3B+Vo1AHSdB
+X-Gm-Message-State: AOJu0YzsZKmTJEnA3RP9bYay8UiLHT1ecfo/yd2cuSrVNjm/V2Yysl6O
+	dkpOArqV/XcwYv/Y4VaOzXEMcUxflsOH3qaDU+2z3Qqx0/Sn+7NWap/ulTxxyg==
+X-Google-Smtp-Source: AGHT+IFLka1W5sBQpiugLgmQG2wEsLa+Bvr76ZGfB5U9MeSgecbtI+9k8NDXeMjSLd+eRIFfWofSjg==
+X-Received: by 2002:a05:620a:6120:b0:788:3c4e:b84f with SMTP id oq32-20020a05620a612000b007883c4eb84fmr1755223qkn.35.1709706790464;
+        Tue, 05 Mar 2024 22:33:10 -0800 (PST)
+Received: from thinkpad ([117.248.1.99])
+        by smtp.gmail.com with ESMTPSA id p14-20020ae9f30e000000b0078825e2c57dsm3109737qkg.76.2024.03.05.22.33.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Mar 2024 22:33:10 -0800 (PST)
+Date: Wed, 6 Mar 2024 12:03:02 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Johan Hovold <johan+linaro@kernel.org>
+Cc: Bjorn Helgaas <bhelgaas@google.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
+	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 00/10] arm64: dts: qcom: sc8280xp: PCIe fixes and
+ GICv3 ITS enable
+Message-ID: <20240306063302.GA4129@thinkpad>
+References: <20240305081105.11912-1-johan+linaro@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240305043750.93762-8-peterx@redhat.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240305081105.11912-1-johan+linaro@kernel.org>
 
-On Tue, Mar 05, 2024 at 12:37:47PM +0800, peterx@redhat.com wrote:
-> From: Peter Xu <peterx@redhat.com>
+On Tue, Mar 05, 2024 at 09:10:55AM +0100, Johan Hovold wrote:
+> This series addresses a few problems with the sc8280xp PCIe
+> implementation.
 > 
-> pmd_large() is always defined as pmd_leaf().  Merge their usages.  Chose
-> pmd_leaf() because pmd_leaf() is a global API, while pmd_large() is not.
+> The DWC PCIe controller can either use its internal MSI controller or an
+> external one such as the GICv3 ITS. Enabling the latter allows for
+> assigning affinity to individual interrupts, but results in a large
+> amount of Correctable Errors being logged on both the Lenovo ThinkPad
+> X13s and the sc8280xp-crd reference design.
 > 
-> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-> Signed-off-by: Peter Xu <peterx@redhat.com>
-> ---
->  arch/arm/mm/dump.c                       |  4 ++--
->  arch/powerpc/mm/book3s64/pgtable.c       |  2 +-
->  arch/powerpc/mm/book3s64/radix_pgtable.c |  2 +-
->  arch/powerpc/mm/pgtable_64.c             |  2 +-
->  arch/s390/boot/vmem.c                    |  2 +-
->  arch/s390/include/asm/pgtable.h          |  8 ++++----
->  arch/s390/mm/gmap.c                      | 12 ++++++------
->  arch/s390/mm/hugetlbpage.c               |  2 +-
->  arch/s390/mm/pageattr.c                  |  2 +-
->  arch/s390/mm/pgtable.c                   |  6 +++---
->  arch/s390/mm/vmem.c                      |  6 +++---
->  arch/sparc/mm/init_64.c                  |  4 ++--
->  arch/x86/boot/compressed/ident_map_64.c  |  2 +-
->  arch/x86/kvm/mmu/mmu.c                   |  2 +-
->  arch/x86/mm/fault.c                      |  8 ++++----
->  arch/x86/mm/init_32.c                    |  2 +-
->  arch/x86/mm/init_64.c                    |  8 ++++----
->  arch/x86/mm/kasan_init_64.c              |  2 +-
->  arch/x86/mm/mem_encrypt_identity.c       |  4 ++--
->  arch/x86/mm/pat/set_memory.c             |  4 ++--
->  arch/x86/mm/pgtable.c                    |  2 +-
->  arch/x86/mm/pti.c                        |  4 ++--
->  arch/x86/power/hibernate.c               |  2 +-
->  arch/x86/xen/mmu_pv.c                    |  4 ++--
->  drivers/misc/sgi-gru/grufault.c          |  2 +-
->  25 files changed, 49 insertions(+), 49 deletions(-)
+> It turns out that these errors are always generated, but for some yet to
+> be determined reason, the AER interrupts are never received when using
+> the internal MSI controller, which makes the link errors harder to
+> notice.
+> 
+> On the X13s, there is a large number of errors generated when bringing
+> up the link on boot. This is related to the fact that UEFI firmware has
+> already enabled the Wi-Fi PCIe link at Gen2 speed and restarting the
+> link at Gen3 generates a massive amount of errors until the Wi-Fi
+> firmware is restarted. This has now also been shown to cause the Wi-Fi
+> to sometimes not start at all on boot for some users.
+> 
+> A recent commit enabling ASPM on certain Qualcomm platforms introduced
+> further errors when using the Wi-Fi on the X13s as well as when
+> accessing the NVMe on the CRD. The exact reason for this has not yet
+> been identified, but disabling ASPM L0s makes the errors go away. This
+> could suggest that either the current ASPM implementation is incomplete
+> or that L0s is not supported with these devices.
+> 
+> Note that the X13s and CRD use the same Wi-Fi controller, but the errors
+> are only generated on the X13s. The NVMe controller on my X13s does not
+> support L0s so there are no issues there, unlike on the CRD which uses a
+> different controller. The modem on the CRD does not generate any errors,
+> but both the NVMe and modem keeps bouncing in and out of L0s/L1 also
+> when not used, which could indicate that there are bigger problems with
+> the ASPM implementation. I don't have a modem on my X13s so I have not
+> been able to test whether L0s causes any trouble there.
+> 
+> Enabling AER error reporting on sc8280xp could similarly also reveal
+> existing problems with the related sa8295p and sa8540p platforms as they
+> share the base dtsi.
+> 
+> After discussing this with Bjorn Andersson at Qualcomm we have decided
+> to go ahead and disable L0s for all controllers on the CRD and the
+> X13s.
+> 
 
-Reviewed-by: Mike Rapoport (IBM) <rppt@kernel.org>
+Just received confirmation from Qcom that L0s is not supported for any of the
+PCIe instances in sc8280xp (and its derivatives). Please move the property to
+SoC dtsi.
 
+- Mani
+
+> Note that disabling ASPM L0s for the X13s Wi-Fi does not seem to have a
+> significant impact on the power consumption (and there are indications
+> that this applies generally for L0s on these platforms).
 > 
-> diff --git a/arch/arm/mm/dump.c b/arch/arm/mm/dump.c
-> index a9381095ab36..cd032522d902 100644
-> --- a/arch/arm/mm/dump.c
-> +++ b/arch/arm/mm/dump.c
-> @@ -349,12 +349,12 @@ static void walk_pmd(struct pg_state *st, pud_t *pud, unsigned long start)
->  	for (i = 0; i < PTRS_PER_PMD; i++, pmd++) {
->  		addr = start + i * PMD_SIZE;
->  		domain = get_domain_name(pmd);
-> -		if (pmd_none(*pmd) || pmd_large(*pmd) || !pmd_present(*pmd))
-> +		if (pmd_none(*pmd) || pmd_leaf(*pmd) || !pmd_present(*pmd))
->  			note_page(st, addr, 4, pmd_val(*pmd), domain);
->  		else
->  			walk_pte(st, pmd, addr, domain);
->  
-> -		if (SECTION_SIZE < PMD_SIZE && pmd_large(pmd[1])) {
-> +		if (SECTION_SIZE < PMD_SIZE && pmd_leaf(pmd[1])) {
->  			addr += SECTION_SIZE;
->  			pmd++;
->  			domain = get_domain_name(pmd);
-> diff --git a/arch/powerpc/mm/book3s64/pgtable.c b/arch/powerpc/mm/book3s64/pgtable.c
-> index 3438ab72c346..45f526547b27 100644
-> --- a/arch/powerpc/mm/book3s64/pgtable.c
-> +++ b/arch/powerpc/mm/book3s64/pgtable.c
-> @@ -113,7 +113,7 @@ void set_pmd_at(struct mm_struct *mm, unsigned long addr,
->  
->  	WARN_ON(pte_hw_valid(pmd_pte(*pmdp)) && !pte_protnone(pmd_pte(*pmdp)));
->  	assert_spin_locked(pmd_lockptr(mm, pmdp));
-> -	WARN_ON(!(pmd_large(pmd)));
-> +	WARN_ON(!(pmd_leaf(pmd)));
->  #endif
->  	trace_hugepage_set_pmd(addr, pmd_val(pmd));
->  	return set_pte_at(mm, addr, pmdp_ptep(pmdp), pmd_pte(pmd));
-> diff --git a/arch/powerpc/mm/book3s64/radix_pgtable.c b/arch/powerpc/mm/book3s64/radix_pgtable.c
-> index 1f8db10693e3..5cc4008329be 100644
-> --- a/arch/powerpc/mm/book3s64/radix_pgtable.c
-> +++ b/arch/powerpc/mm/book3s64/radix_pgtable.c
-> @@ -924,7 +924,7 @@ bool vmemmap_can_optimize(struct vmem_altmap *altmap, struct dev_pagemap *pgmap)
->  int __meminit vmemmap_check_pmd(pmd_t *pmdp, int node,
->  				unsigned long addr, unsigned long next)
->  {
-> -	int large = pmd_large(*pmdp);
-> +	int large = pmd_leaf(*pmdp);
->  
->  	if (large)
->  		vmemmap_verify(pmdp_ptep(pmdp), node, addr, next);
-> diff --git a/arch/powerpc/mm/pgtable_64.c b/arch/powerpc/mm/pgtable_64.c
-> index 386c6b06eab7..9b99113cb51a 100644
-> --- a/arch/powerpc/mm/pgtable_64.c
-> +++ b/arch/powerpc/mm/pgtable_64.c
-> @@ -132,7 +132,7 @@ struct page *pmd_page(pmd_t pmd)
->  		 * enabled so these checks can't be used.
->  		 */
->  		if (!IS_ENABLED(CONFIG_HAVE_ARCH_HUGE_VMAP))
-> -			VM_WARN_ON(!(pmd_large(pmd) || pmd_huge(pmd)));
-> +			VM_WARN_ON(!(pmd_leaf(pmd) || pmd_huge(pmd)));
->  		return pte_page(pmd_pte(pmd));
->  	}
->  	return virt_to_page(pmd_page_vaddr(pmd));
-> diff --git a/arch/s390/boot/vmem.c b/arch/s390/boot/vmem.c
-> index e3a4500a5a75..348ab02b1028 100644
-> --- a/arch/s390/boot/vmem.c
-> +++ b/arch/s390/boot/vmem.c
-> @@ -333,7 +333,7 @@ static void pgtable_pmd_populate(pud_t *pud, unsigned long addr, unsigned long e
->  			}
->  			pte = boot_pte_alloc();
->  			pmd_populate(&init_mm, pmd, pte);
-> -		} else if (pmd_large(*pmd)) {
-> +		} else if (pmd_leaf(*pmd)) {
->  			continue;
->  		}
->  		pgtable_pte_populate(pmd, addr, next, mode);
-> diff --git a/arch/s390/include/asm/pgtable.h b/arch/s390/include/asm/pgtable.h
-> index 4b91e65c85d9..431d03d5116b 100644
-> --- a/arch/s390/include/asm/pgtable.h
-> +++ b/arch/s390/include/asm/pgtable.h
-> @@ -721,7 +721,7 @@ static inline int pmd_large(pmd_t pmd)
->  
->  static inline int pmd_bad(pmd_t pmd)
->  {
-> -	if ((pmd_val(pmd) & _SEGMENT_ENTRY_TYPE_MASK) > 0 || pmd_large(pmd))
-> +	if ((pmd_val(pmd) & _SEGMENT_ENTRY_TYPE_MASK) > 0 || pmd_leaf(pmd))
->  		return 1;
->  	return (pmd_val(pmd) & ~_SEGMENT_ENTRY_BITS) != 0;
->  }
-> @@ -820,8 +820,8 @@ static inline int pte_protnone(pte_t pte)
->  
->  static inline int pmd_protnone(pmd_t pmd)
->  {
-> -	/* pmd_large(pmd) implies pmd_present(pmd) */
-> -	return pmd_large(pmd) && !(pmd_val(pmd) & _SEGMENT_ENTRY_READ);
-> +	/* pmd_leaf(pmd) implies pmd_present(pmd) */
-> +	return pmd_leaf(pmd) && !(pmd_val(pmd) & _SEGMENT_ENTRY_READ);
->  }
->  #endif
->  
-> @@ -1385,7 +1385,7 @@ static inline unsigned long pmd_deref(pmd_t pmd)
->  	unsigned long origin_mask;
->  
->  	origin_mask = _SEGMENT_ENTRY_ORIGIN;
-> -	if (pmd_large(pmd))
-> +	if (pmd_leaf(pmd))
->  		origin_mask = _SEGMENT_ENTRY_ORIGIN_LARGE;
->  	return (unsigned long)__va(pmd_val(pmd) & origin_mask);
->  }
-> diff --git a/arch/s390/mm/gmap.c b/arch/s390/mm/gmap.c
-> index 4d2674f89322..b78ded9d3bf7 100644
-> --- a/arch/s390/mm/gmap.c
-> +++ b/arch/s390/mm/gmap.c
-> @@ -603,7 +603,7 @@ int __gmap_link(struct gmap *gmap, unsigned long gaddr, unsigned long vmaddr)
->  	pmd = pmd_offset(pud, vmaddr);
->  	VM_BUG_ON(pmd_none(*pmd));
->  	/* Are we allowed to use huge pages? */
-> -	if (pmd_large(*pmd) && !gmap->mm->context.allow_gmap_hpage_1m)
-> +	if (pmd_leaf(*pmd) && !gmap->mm->context.allow_gmap_hpage_1m)
->  		return -EFAULT;
->  	/* Link gmap segment table entry location to page table. */
->  	rc = radix_tree_preload(GFP_KERNEL_ACCOUNT);
-> @@ -615,7 +615,7 @@ int __gmap_link(struct gmap *gmap, unsigned long gaddr, unsigned long vmaddr)
->  		rc = radix_tree_insert(&gmap->host_to_guest,
->  				       vmaddr >> PMD_SHIFT, table);
->  		if (!rc) {
-> -			if (pmd_large(*pmd)) {
-> +			if (pmd_leaf(*pmd)) {
->  				*table = (pmd_val(*pmd) &
->  					  _SEGMENT_ENTRY_HARDWARE_BITS_LARGE)
->  					| _SEGMENT_ENTRY_GMAP_UC;
-> @@ -945,7 +945,7 @@ static inline pmd_t *gmap_pmd_op_walk(struct gmap *gmap, unsigned long gaddr)
->  	}
->  
->  	/* 4k page table entries are locked via the pte (pte_alloc_map_lock). */
-> -	if (!pmd_large(*pmdp))
-> +	if (!pmd_leaf(*pmdp))
->  		spin_unlock(&gmap->guest_table_lock);
->  	return pmdp;
->  }
-> @@ -957,7 +957,7 @@ static inline pmd_t *gmap_pmd_op_walk(struct gmap *gmap, unsigned long gaddr)
->   */
->  static inline void gmap_pmd_op_end(struct gmap *gmap, pmd_t *pmdp)
->  {
-> -	if (pmd_large(*pmdp))
-> +	if (pmd_leaf(*pmdp))
->  		spin_unlock(&gmap->guest_table_lock);
->  }
->  
-> @@ -1068,7 +1068,7 @@ static int gmap_protect_range(struct gmap *gmap, unsigned long gaddr,
->  		rc = -EAGAIN;
->  		pmdp = gmap_pmd_op_walk(gmap, gaddr);
->  		if (pmdp) {
-> -			if (!pmd_large(*pmdp)) {
-> +			if (!pmd_leaf(*pmdp)) {
->  				rc = gmap_protect_pte(gmap, gaddr, pmdp, prot,
->  						      bits);
->  				if (!rc) {
-> @@ -2500,7 +2500,7 @@ void gmap_sync_dirty_log_pmd(struct gmap *gmap, unsigned long bitmap[4],
->  	if (!pmdp)
->  		return;
->  
-> -	if (pmd_large(*pmdp)) {
-> +	if (pmd_leaf(*pmdp)) {
->  		if (gmap_test_and_clear_dirty_pmd(gmap, pmdp, gaddr))
->  			bitmap_fill(bitmap, _PAGE_ENTRIES);
->  	} else {
-> diff --git a/arch/s390/mm/hugetlbpage.c b/arch/s390/mm/hugetlbpage.c
-> index 297a6d897d5a..1ccb5b40fe92 100644
-> --- a/arch/s390/mm/hugetlbpage.c
-> +++ b/arch/s390/mm/hugetlbpage.c
-> @@ -235,7 +235,7 @@ pte_t *huge_pte_offset(struct mm_struct *mm,
->  
->  int pmd_huge(pmd_t pmd)
->  {
-> -	return pmd_large(pmd);
-> +	return pmd_leaf(pmd);
->  }
->  
->  int pud_huge(pud_t pud)
-> diff --git a/arch/s390/mm/pageattr.c b/arch/s390/mm/pageattr.c
-> index 631e3a4ee2de..9f55d5a3210c 100644
-> --- a/arch/s390/mm/pageattr.c
-> +++ b/arch/s390/mm/pageattr.c
-> @@ -185,7 +185,7 @@ static int walk_pmd_level(pud_t *pudp, unsigned long addr, unsigned long end,
->  		if (pmd_none(*pmdp))
->  			return -EINVAL;
->  		next = pmd_addr_end(addr, end);
-> -		if (pmd_large(*pmdp)) {
-> +		if (pmd_leaf(*pmdp)) {
->  			need_split  = !!(flags & SET_MEMORY_4K);
->  			need_split |= !!(addr & ~PMD_MASK);
->  			need_split |= !!(addr + PMD_SIZE > next);
-> diff --git a/arch/s390/mm/pgtable.c b/arch/s390/mm/pgtable.c
-> index b71432b15d66..9ac66304d776 100644
-> --- a/arch/s390/mm/pgtable.c
-> +++ b/arch/s390/mm/pgtable.c
-> @@ -827,7 +827,7 @@ int set_guest_storage_key(struct mm_struct *mm, unsigned long addr,
->  		return key ? -EFAULT : 0;
->  	}
->  
-> -	if (pmd_large(*pmdp)) {
-> +	if (pmd_leaf(*pmdp)) {
->  		paddr = pmd_val(*pmdp) & HPAGE_MASK;
->  		paddr |= addr & ~HPAGE_MASK;
->  		/*
-> @@ -938,7 +938,7 @@ int reset_guest_reference_bit(struct mm_struct *mm, unsigned long addr)
->  		return 0;
->  	}
->  
-> -	if (pmd_large(*pmdp)) {
-> +	if (pmd_leaf(*pmdp)) {
->  		paddr = pmd_val(*pmdp) & HPAGE_MASK;
->  		paddr |= addr & ~HPAGE_MASK;
->  		cc = page_reset_referenced(paddr);
-> @@ -1002,7 +1002,7 @@ int get_guest_storage_key(struct mm_struct *mm, unsigned long addr,
->  		return 0;
->  	}
->  
-> -	if (pmd_large(*pmdp)) {
-> +	if (pmd_leaf(*pmdp)) {
->  		paddr = pmd_val(*pmdp) & HPAGE_MASK;
->  		paddr |= addr & ~HPAGE_MASK;
->  		*key = page_get_storage_key(paddr);
-> diff --git a/arch/s390/mm/vmem.c b/arch/s390/mm/vmem.c
-> index eb100479f7be..afe5edf2a604 100644
-> --- a/arch/s390/mm/vmem.c
-> +++ b/arch/s390/mm/vmem.c
-> @@ -236,7 +236,7 @@ static int __ref modify_pmd_table(pud_t *pud, unsigned long addr,
->  		if (!add) {
->  			if (pmd_none(*pmd))
->  				continue;
-> -			if (pmd_large(*pmd)) {
-> +			if (pmd_leaf(*pmd)) {
->  				if (IS_ALIGNED(addr, PMD_SIZE) &&
->  				    IS_ALIGNED(next, PMD_SIZE)) {
->  					if (!direct)
-> @@ -281,7 +281,7 @@ static int __ref modify_pmd_table(pud_t *pud, unsigned long addr,
->  			if (!pte)
->  				goto out;
->  			pmd_populate(&init_mm, pmd, pte);
-> -		} else if (pmd_large(*pmd)) {
-> +		} else if (pmd_leaf(*pmd)) {
->  			if (!direct)
->  				vmemmap_use_sub_pmd(addr, next);
->  			continue;
-> @@ -610,7 +610,7 @@ pte_t *vmem_get_alloc_pte(unsigned long addr, bool alloc)
->  		if (!pte)
->  			goto out;
->  		pmd_populate(&init_mm, pmd, pte);
-> -	} else if (WARN_ON_ONCE(pmd_large(*pmd))) {
-> +	} else if (WARN_ON_ONCE(pmd_leaf(*pmd))) {
->  		goto out;
->  	}
->  	ptep = pte_offset_kernel(pmd, addr);
-> diff --git a/arch/sparc/mm/init_64.c b/arch/sparc/mm/init_64.c
-> index f83017992eaa..5e067b6a4464 100644
-> --- a/arch/sparc/mm/init_64.c
-> +++ b/arch/sparc/mm/init_64.c
-> @@ -1672,7 +1672,7 @@ bool kern_addr_valid(unsigned long addr)
->  	if (pmd_none(*pmd))
->  		return false;
->  
-> -	if (pmd_large(*pmd))
-> +	if (pmd_leaf(*pmd))
->  		return pfn_valid(pmd_pfn(*pmd));
->  
->  	pte = pte_offset_kernel(pmd, addr);
-> @@ -2968,7 +2968,7 @@ void update_mmu_cache_pmd(struct vm_area_struct *vma, unsigned long addr,
->  	struct mm_struct *mm;
->  	pmd_t entry = *pmd;
->  
-> -	if (!pmd_large(entry) || !pmd_young(entry))
-> +	if (!pmd_leaf(entry) || !pmd_young(entry))
->  		return;
->  
->  	pte = pmd_val(entry);
-> diff --git a/arch/x86/boot/compressed/ident_map_64.c b/arch/x86/boot/compressed/ident_map_64.c
-> index d040080d7edb..71c6e2fdcec7 100644
-> --- a/arch/x86/boot/compressed/ident_map_64.c
-> +++ b/arch/x86/boot/compressed/ident_map_64.c
-> @@ -284,7 +284,7 @@ static int set_clr_page_flags(struct x86_mapping_info *info,
->  	pudp = pud_offset(p4dp, address);
->  	pmdp = pmd_offset(pudp, address);
->  
-> -	if (pmd_large(*pmdp))
-> +	if (pmd_leaf(*pmdp))
->  		ptep = split_large_pmd(info, pmdp, address);
->  	else
->  		ptep = pte_offset_kernel(pmdp, address);
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 2d6cdeab1f8a..c15123248c52 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -3135,7 +3135,7 @@ static int host_pfn_mapping_level(struct kvm *kvm, gfn_t gfn,
->  	if (pmd_none(pmd) || !pmd_present(pmd))
->  		goto out;
->  
-> -	if (pmd_large(pmd))
-> +	if (pmd_leaf(pmd))
->  		level = PG_LEVEL_2M;
->  
->  out:
-> diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-> index 8b69ce3f4115..09417f950343 100644
-> --- a/arch/x86/mm/fault.c
-> +++ b/arch/x86/mm/fault.c
-> @@ -250,7 +250,7 @@ static noinline int vmalloc_fault(unsigned long address)
->  	if (!pmd_k)
->  		return -1;
->  
-> -	if (pmd_large(*pmd_k))
-> +	if (pmd_leaf(*pmd_k))
->  		return 0;
->  
->  	pte_k = pte_offset_kernel(pmd_k, address);
-> @@ -319,7 +319,7 @@ static void dump_pagetable(unsigned long address)
->  	 * And let's rather not kmap-atomic the pte, just in case
->  	 * it's allocated already:
->  	 */
-> -	if (!low_pfn(pmd_pfn(*pmd)) || !pmd_present(*pmd) || pmd_large(*pmd))
-> +	if (!low_pfn(pmd_pfn(*pmd)) || !pmd_present(*pmd) || pmd_leaf(*pmd))
->  		goto out;
->  
->  	pte = pte_offset_kernel(pmd, address);
-> @@ -384,7 +384,7 @@ static void dump_pagetable(unsigned long address)
->  		goto bad;
->  
->  	pr_cont("PMD %lx ", pmd_val(*pmd));
-> -	if (!pmd_present(*pmd) || pmd_large(*pmd))
-> +	if (!pmd_present(*pmd) || pmd_leaf(*pmd))
->  		goto out;
->  
->  	pte = pte_offset_kernel(pmd, address);
-> @@ -1053,7 +1053,7 @@ spurious_kernel_fault(unsigned long error_code, unsigned long address)
->  	if (!pmd_present(*pmd))
->  		return 0;
->  
-> -	if (pmd_large(*pmd))
-> +	if (pmd_leaf(*pmd))
->  		return spurious_kernel_fault_check(error_code, (pte_t *) pmd);
->  
->  	pte = pte_offset_kernel(pmd, address);
-> diff --git a/arch/x86/mm/init_32.c b/arch/x86/mm/init_32.c
-> index 5c736b707cae..ac41b1e0940d 100644
-> --- a/arch/x86/mm/init_32.c
-> +++ b/arch/x86/mm/init_32.c
-> @@ -463,7 +463,7 @@ void __init native_pagetable_init(void)
->  			break;
->  
->  		/* should not be large page here */
-> -		if (pmd_large(*pmd)) {
-> +		if (pmd_leaf(*pmd)) {
->  			pr_warn("try to clear pte for ram above max_low_pfn: pfn: %lx pmd: %p pmd phys: %lx, but pmd is big page and is not using pte !\n",
->  				pfn, pmd, __pa(pmd));
->  			BUG_ON(1);
-> diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
-> index d691e7992a9a..2c5490e58f41 100644
-> --- a/arch/x86/mm/init_64.c
-> +++ b/arch/x86/mm/init_64.c
-> @@ -530,7 +530,7 @@ phys_pmd_init(pmd_t *pmd_page, unsigned long paddr, unsigned long paddr_end,
->  		}
->  
->  		if (!pmd_none(*pmd)) {
-> -			if (!pmd_large(*pmd)) {
-> +			if (!pmd_leaf(*pmd)) {
->  				spin_lock(&init_mm.page_table_lock);
->  				pte = (pte_t *)pmd_page_vaddr(*pmd);
->  				paddr_last = phys_pte_init(pte, paddr,
-> @@ -1114,7 +1114,7 @@ remove_pmd_table(pmd_t *pmd_start, unsigned long addr, unsigned long end,
->  		if (!pmd_present(*pmd))
->  			continue;
->  
-> -		if (pmd_large(*pmd)) {
-> +		if (pmd_leaf(*pmd)) {
->  			if (IS_ALIGNED(addr, PMD_SIZE) &&
->  			    IS_ALIGNED(next, PMD_SIZE)) {
->  				if (!direct)
-> @@ -1520,9 +1520,9 @@ void __meminit vmemmap_set_pmd(pmd_t *pmd, void *p, int node,
->  int __meminit vmemmap_check_pmd(pmd_t *pmd, int node,
->  				unsigned long addr, unsigned long next)
->  {
-> -	int large = pmd_large(*pmd);
-> +	int large = pmd_leaf(*pmd);
->  
-> -	if (pmd_large(*pmd)) {
-> +	if (pmd_leaf(*pmd)) {
->  		vmemmap_verify((pte_t *)pmd, node, addr, next);
->  		vmemmap_use_sub_pmd(addr, next);
->  	}
-> diff --git a/arch/x86/mm/kasan_init_64.c b/arch/x86/mm/kasan_init_64.c
-> index 0302491d799d..f41d26bc9161 100644
-> --- a/arch/x86/mm/kasan_init_64.c
-> +++ b/arch/x86/mm/kasan_init_64.c
-> @@ -95,7 +95,7 @@ static void __init kasan_populate_pud(pud_t *pud, unsigned long addr,
->  	pmd = pmd_offset(pud, addr);
->  	do {
->  		next = pmd_addr_end(addr, end);
-> -		if (!pmd_large(*pmd))
-> +		if (!pmd_leaf(*pmd))
->  			kasan_populate_pmd(pmd, addr, next, nid);
->  	} while (pmd++, addr = next, addr != end);
->  }
-> diff --git a/arch/x86/mm/mem_encrypt_identity.c b/arch/x86/mm/mem_encrypt_identity.c
-> index d73aeb16417f..bca4fea80579 100644
-> --- a/arch/x86/mm/mem_encrypt_identity.c
-> +++ b/arch/x86/mm/mem_encrypt_identity.c
-> @@ -161,7 +161,7 @@ static void __init sme_populate_pgd_large(struct sme_populate_pgd_data *ppd)
->  		return;
->  
->  	pmd = pmd_offset(pud, ppd->vaddr);
-> -	if (pmd_large(*pmd))
-> +	if (pmd_leaf(*pmd))
->  		return;
->  
->  	set_pmd(pmd, __pmd(ppd->paddr | ppd->pmd_flags));
-> @@ -185,7 +185,7 @@ static void __init sme_populate_pgd(struct sme_populate_pgd_data *ppd)
->  		set_pmd(pmd, __pmd(PMD_FLAGS | __pa(pte)));
->  	}
->  
-> -	if (pmd_large(*pmd))
-> +	if (pmd_leaf(*pmd))
->  		return;
->  
->  	pte = pte_offset_kernel(pmd, ppd->vaddr);
-> diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
-> index 5359a9c88099..b4037fe08eed 100644
-> --- a/arch/x86/mm/pat/set_memory.c
-> +++ b/arch/x86/mm/pat/set_memory.c
-> @@ -692,7 +692,7 @@ pte_t *lookup_address_in_pgd(pgd_t *pgd, unsigned long address,
->  		return NULL;
->  
->  	*level = PG_LEVEL_2M;
-> -	if (pmd_large(*pmd) || !pmd_present(*pmd))
-> +	if (pmd_leaf(*pmd) || !pmd_present(*pmd))
->  		return (pte_t *)pmd;
->  
->  	*level = PG_LEVEL_4K;
-> @@ -1229,7 +1229,7 @@ static void unmap_pmd_range(pud_t *pud, unsigned long start, unsigned long end)
->  	 * Try to unmap in 2M chunks.
->  	 */
->  	while (end - start >= PMD_SIZE) {
-> -		if (pmd_large(*pmd))
-> +		if (pmd_leaf(*pmd))
->  			pmd_clear(pmd);
->  		else
->  			__unmap_pmd_range(pud, pmd, start, start + PMD_SIZE);
-> diff --git a/arch/x86/mm/pgtable.c b/arch/x86/mm/pgtable.c
-> index 0cbc1b8e8e3d..d05dd86ceb41 100644
-> --- a/arch/x86/mm/pgtable.c
-> +++ b/arch/x86/mm/pgtable.c
-> @@ -792,7 +792,7 @@ int pud_clear_huge(pud_t *pud)
->   */
->  int pmd_clear_huge(pmd_t *pmd)
->  {
-> -	if (pmd_large(*pmd)) {
-> +	if (pmd_leaf(*pmd)) {
->  		pmd_clear(pmd);
->  		return 1;
->  	}
-> diff --git a/arch/x86/mm/pti.c b/arch/x86/mm/pti.c
-> index c17aab24c1b3..0442e8f479a6 100644
-> --- a/arch/x86/mm/pti.c
-> +++ b/arch/x86/mm/pti.c
-> @@ -252,7 +252,7 @@ static pte_t *pti_user_pagetable_walk_pte(unsigned long address)
->  		return NULL;
->  
->  	/* We can't do anything sensible if we hit a large mapping. */
-> -	if (pmd_large(*pmd)) {
-> +	if (pmd_leaf(*pmd)) {
->  		WARN_ON(1);
->  		return NULL;
->  	}
-> @@ -341,7 +341,7 @@ pti_clone_pgtable(unsigned long start, unsigned long end,
->  			continue;
->  		}
->  
-> -		if (pmd_large(*pmd) || level == PTI_CLONE_PMD) {
-> +		if (pmd_leaf(*pmd) || level == PTI_CLONE_PMD) {
->  			target_pmd = pti_user_pagetable_walk_pmd(addr);
->  			if (WARN_ON(!target_pmd))
->  				return;
-> diff --git a/arch/x86/power/hibernate.c b/arch/x86/power/hibernate.c
-> index 28153789f873..277eaf610e0e 100644
-> --- a/arch/x86/power/hibernate.c
-> +++ b/arch/x86/power/hibernate.c
-> @@ -175,7 +175,7 @@ int relocate_restore_code(void)
->  		goto out;
->  	}
->  	pmd = pmd_offset(pud, relocated_restore_code);
-> -	if (pmd_large(*pmd)) {
-> +	if (pmd_leaf(*pmd)) {
->  		set_pmd(pmd, __pmd(pmd_val(*pmd) & ~_PAGE_NX));
->  		goto out;
->  	}
-> diff --git a/arch/x86/xen/mmu_pv.c b/arch/x86/xen/mmu_pv.c
-> index 12a43a4abebf..dde551bbd231 100644
-> --- a/arch/x86/xen/mmu_pv.c
-> +++ b/arch/x86/xen/mmu_pv.c
-> @@ -1059,7 +1059,7 @@ static void __init xen_cleanmfnmap_pmd(pmd_t *pmd, bool unpin)
->  	pte_t *pte_tbl;
->  	int i;
->  
-> -	if (pmd_large(*pmd)) {
-> +	if (pmd_leaf(*pmd)) {
->  		pa = pmd_val(*pmd) & PHYSICAL_PAGE_MASK;
->  		xen_free_ro_pages(pa, PMD_SIZE);
->  		return;
-> @@ -1871,7 +1871,7 @@ static phys_addr_t __init xen_early_virt_to_phys(unsigned long vaddr)
->  	if (!pmd_present(pmd))
->  		return 0;
->  	pa = pmd_val(pmd) & PTE_PFN_MASK;
-> -	if (pmd_large(pmd))
-> +	if (pmd_leaf(pmd))
->  		return pa + (vaddr & ~PMD_MASK);
->  
->  	pte = native_make_pte(xen_read_phys_ulong(pa + pte_index(vaddr) *
-> diff --git a/drivers/misc/sgi-gru/grufault.c b/drivers/misc/sgi-gru/grufault.c
-> index 629edb6486de..3557d78ee47a 100644
-> --- a/drivers/misc/sgi-gru/grufault.c
-> +++ b/drivers/misc/sgi-gru/grufault.c
-> @@ -227,7 +227,7 @@ static int atomic_pte_lookup(struct vm_area_struct *vma, unsigned long vaddr,
->  	if (unlikely(pmd_none(*pmdp)))
->  		goto err;
->  #ifdef CONFIG_X86_64
-> -	if (unlikely(pmd_large(*pmdp)))
-> +	if (unlikely(pmd_leaf(*pmdp)))
->  		pte = ptep_get((pte_t *)pmdp);
->  	else
->  #endif
+> ***
+> 
+> As we are now at 6.8-rc7, I've rebased this series on the Qualcomm PCIe
+> binding rework in linux-next so that the whole series can be merged for
+> 6.9 (the 'aspm-no-l0s' support and devicetree fixes are all marked for
+> stable backport anyway).
+> 
+> The DT bindings and PCI patch are expected to go through the PCI tree,
+> while Bjorn A takes the devicetree updates through the Qualcomm tree.
+> 
+> Johan
+> 
+> 
+> Changes in v3
+>  - drop the two wifi link speed patches which have been picked up for
+>    6.8
+>  - rebase on binding rework in linux-next and add the properties also to
+>    the new qcom,pcie-common.yaml
+>    - https://lore.kernel.org/linux-pci/20240126-dt-bindings-pci-qcom-split-v3-0-f23cda4d74c0@linaro.org/
+>  - fix an 'L0s' typo in one commit message
+> 
+> Changes in v2
+>  - drop RFC from ASPM patches and add stable tags
+>  - reorder patches and move ITS patch last
+>  - fix s/GB/MB/ typo in Gen2 speed commit messages
+>  - fix an incorrect Fixes tag
+>  - amend commit message X13 wifi link speed patch after user
+>    confirmation that this fixes the wifi startup issue
+>  - disable L0s also for modem and wifi on CRD
+>  - disable L0s also for nvme and modem on X13s
+> 
+> 
+> Johan Hovold (10):
+>   dt-bindings: PCI: qcom: Allow 'required-opps'
+>   dt-bindings: PCI: qcom: Do not require 'msi-map-mask'
+>   dt-bindings: PCI: qcom: Allow 'aspm-no-l0s'
+>   PCI: qcom: Add support for disabling ASPM L0s in devicetree
+>   arm64: dts: qcom: sc8280xp: add missing PCIe minimum OPP
+>   arm64: dts: qcom: sc8280xp-crd: disable ASPM L0s for NVMe
+>   arm64: dts: qcom: sc8280xp-crd: disable ASPM L0s for modem and Wi-Fi
+>   arm64: dts: qcom: sc8280xp-x13s: disable ASPM L0s for Wi-Fi
+>   arm64: dts: qcom: sc8280xp-x13s: disable ASPM L0s for NVMe and modem
+>   arm64: dts: qcom: sc8280xp: enable GICv3 ITS for PCIe
+> 
+>  .../bindings/pci/qcom,pcie-common.yaml        |  6 +++++-
+>  .../devicetree/bindings/pci/qcom,pcie.yaml    |  6 +++++-
+>  arch/arm64/boot/dts/qcom/sc8280xp-crd.dts     |  5 +++++
+>  .../qcom/sc8280xp-lenovo-thinkpad-x13s.dts    |  5 +++++
+>  arch/arm64/boot/dts/qcom/sc8280xp.dtsi        | 17 +++++++++++++++-
+>  drivers/pci/controller/dwc/pcie-qcom.c        | 20 +++++++++++++++++++
+>  6 files changed, 56 insertions(+), 3 deletions(-)
+> 
 > -- 
-> 2.44.0
-> 
+> 2.43.0
 > 
 
 -- 
-Sincerely yours,
-Mike.
+மணிவண்ணன் சதாசிவம்
 
