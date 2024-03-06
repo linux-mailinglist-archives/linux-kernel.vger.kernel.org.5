@@ -1,181 +1,103 @@
-Return-Path: <linux-kernel+bounces-94058-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94060-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2FAC873938
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:33:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61438873941
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:34:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 00D451C219F6
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:33:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 930781C223DF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:34:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3F03133439;
-	Wed,  6 Mar 2024 14:33:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 057AA1339A6;
+	Wed,  6 Mar 2024 14:34:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Cd7hp7DQ"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="PSkA855X"
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 601DD7FBDC;
-	Wed,  6 Mar 2024 14:33:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1576131759
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 14:34:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709735610; cv=none; b=aJTUjoTYR4Kn6LcXW3d1+HmYS3UPhRMgTsBoFakAU1aqZJH13sgYCWPUb2HQ/alJ3W+84HiPVxZcd+VDG8jjZ+45rtxaMTp7qMLeEkJLPOsESCxf+soFiLTi+l9Ob7LRXS5kh0HUNRNmw12fR9RinePFtCCovor8IQxGlFjPEfc=
+	t=1709735644; cv=none; b=bcLdtIdgAU7DX0ZWE7wCCtdhILAhLmYzA2mMW5B/6UL0xAEjFd7H5+BmXlKzEe0OZq7G6QGLwgYm9L7kfrrCkxf9GKK2F+T6Nh2yz2ss32zk3BVLdNpXcrknejqcVyaI0MdwmM+O6S4pmdCDTsZusO4hUrw3qvqvoPjcZCAr3M4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709735610; c=relaxed/simple;
-	bh=HUrdNo04SJI+Qhl7X0wlBzlTLUsv8zfi8LaV6ct1kuI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RJ4FdfK++teFzmKAw3klgXw16MHOimOvsm8FWWZjD4kvotboTE1Ufzs0Kd/LQgHNWiaIGHqi9b1bq3LZkmuwyX0ZbihA63lGhStavUXsfTaf7POiwsOME3Bi8txjPNBvJkvAypjEBmBpgzpkc3Q5vGP6J+qGJKTvH6JQN39pbI8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Cd7hp7DQ; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709735610; x=1741271610;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=HUrdNo04SJI+Qhl7X0wlBzlTLUsv8zfi8LaV6ct1kuI=;
-  b=Cd7hp7DQooPf1BSDPTCi/5jKPf5WaCgjdtyPUeoMEBQOcJK8Fra+eQFw
-   7Dn79nfa2orn3MdsrsVGoAqjiLgLKtp4kMtJYypko5CLvHS93vO2K/G8g
-   7vINF/IQ4/JBDF0q/RbNEbnPqnydM90pP5w+0NHjrxRLy+fFc+heUmr0R
-   qe88cE2QFeLJVN2s0ulfXlzMxmBUoeT32siyIzTRiJdAG79dzVwqc01+C
-   L1Rz44XilVJycZ1aZXXTk5pjiwCp/2pVQf63AHeiahZH9Ti0b6FHYiFHd
-   CxHrAQ3kH/ITA8g8PEcapk2c6SsY2RVw+YEyQmBUcxaGCj1hafIB1gTuc
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11004"; a="4464017"
-X-IronPort-AV: E=Sophos;i="6.06,208,1705392000"; 
-   d="scan'208";a="4464017"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 06:33:29 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11004"; a="937045010"
-X-IronPort-AV: E=Sophos;i="6.06,208,1705392000"; 
-   d="scan'208";a="937045010"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 06 Mar 2024 06:33:26 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id B4C453F1; Wed,  6 Mar 2024 16:33:25 +0200 (EET)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org
-Cc: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>
-Subject: [PATCH v1 1/1] serial: 8250_dw: Replace ACPI device check by a quirk
-Date: Wed,  6 Mar 2024 16:33:22 +0200
-Message-ID: <20240306143322.3291123-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
+	s=arc-20240116; t=1709735644; c=relaxed/simple;
+	bh=8tF4zD/DoI86F4TEW60dAFkd+rSLr7rAvtLQ/qAsILk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Yqv6VuV1dWZ+M+Plb6Yur46xiaV0R64CXqOWjvmA4VZ+sI84aQAfu14ulFJQdZ+RFG56+BOhYjZhLV0Xb2+S68l45dXysxSxx0Hv7XMLyHE2VxNn4zJdzsJtk3tRzDP7BfPo3NNvwfmYtELuvATEaK0L2ODKDLc2+tKD//iZ0yc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=PSkA855X; arc=none smtp.client-ip=209.85.128.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-6098bf69909so8736237b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 06:34:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709735641; x=1710340441; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=5tl54IW/dapOkOzvX7dqtIh+kMyPuZW30xDY6G/Oi0o=;
+        b=PSkA855XL4A0GL67pXZ4S/KbAGXYnAg/I7O5FqXn1opXfPhgZD9Cw0WhPe4fIH28QH
+         OcovXW42kkwbIVnKiJfTi7HGp8rwKZe1wSLeGjfsmjI51TYkYoMMYURZ8bI89b9xIC/K
+         Y+IeHl3LwALxiI+7sUwRxnCUZu9H2tHjsBfEyfDCQAdbnhNI/SWEGEn0Am1eGrUjdN76
+         er2VaoMSfL5FrpkPFCGmYYECSqE9wprniwDh2P0Ni+HzIpnLoSdrj44YfAzMz3VcroB0
+         29Q25Ats+5+9ZjZ00/+i6X/mdzga4WnLtSJYTvuAhX4/ECUqT1Kot4NE5vX8Zu6xQHCq
+         eqag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709735641; x=1710340441;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5tl54IW/dapOkOzvX7dqtIh+kMyPuZW30xDY6G/Oi0o=;
+        b=hVDP0IOuQ53vrl6Hlw9ir0/ARaJhlQQ37bewduNniEhAax2RYO/Yuw2kI+CXDZul7h
+         zQWnXmb/t+GdHhHDL0UcO0+vTDYF/Ij068FnHHc8y6C0ewxZF770VptJxKgfDhwlF9Cf
+         jAnfz0FRUiLTow0MIPnqhxXgCSHgeENbLb4cjfYG7r0RB6ThGjsY8RtkpOdF/HneS/PC
+         WMmiVE/K/m/5u9TPBT+p0vAP9A8gMZKsWjRi0X0rj+AjG/XPVKyWB+jC0xxjq2dMfnm/
+         lYm2SgnvP1bT870Qm+4PVb+0uhGdBn1HiGYGkLHbaY++m+wfokppjsJfRDgXS0OLD+CV
+         1zSQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUT0NgVOaRhAH0ZZ4rtVPu1sztt0fPOj7rr/WPJQjTLDJXdHbnjLqWAGwiEIfx02+LGfTN7tdGRnXbaP/hDNgNvxg8fJRX+60lPCiWC
+X-Gm-Message-State: AOJu0YwfGCYtZFW0D4+hpGYdONXf/1A7WchA/M6m+ZmTnSbkNzafU/g0
+	DdKLdDduCCs5dMGglCYAjTLX5aRDOohZNfB787synWyGlBTbW1G3TZKJhgDKxzRlLYEBZsboEWk
+	9T29EVH7fwNF+m7nGS8BLh4DZt2q0QalIo9jKPQ==
+X-Google-Smtp-Source: AGHT+IG4i73vV9M5abPrhNjNK5qY0fZKQ4WxRD7jBvhda00ztOvVyjpmvTLYxgEXds3PfBdMC0x8iFWhYyA8g+/tSyI=
+X-Received: by 2002:a81:c809:0:b0:609:e710:3a32 with SMTP id
+ n9-20020a81c809000000b00609e7103a32mr39066ywi.12.1709735641619; Wed, 06 Mar
+ 2024 06:34:01 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240306140306.876188-1-amadeus@jmu.edu.cn> <20240306140306.876188-2-amadeus@jmu.edu.cn>
+In-Reply-To: <20240306140306.876188-2-amadeus@jmu.edu.cn>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Wed, 6 Mar 2024 16:33:50 +0200
+Message-ID: <CAA8EJpreeGWfstEKEFiHM_RJCZbYYdo0H=fY0GqPPtZM-7ZUhA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/4] arm64: dts: qcom: ipq6018: add 1.2GHz CPU Frequency
+To: Chukun Pan <amadeus@jmu.edu.cn>
+Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Rob Herring <robh@kernel.org>, linux-arm-msm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Instead of checking for APMC0D08 ACPI device presence,
-use a quirk based on driver data.
+On Wed, 6 Mar 2024 at 16:04, Chukun Pan <amadeus@jmu.edu.cn> wrote:
+>
+> Some IPQ6000 SoCs have CPU frequencies up to 1.2GHz,
+> so add this frequency.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/tty/serial/8250/8250_dw.c | 51 ++++++++++++++++---------------
- 1 file changed, 26 insertions(+), 25 deletions(-)
+How is it "some"? You are enabling this opp for all IPQ6000 SoC instances.
 
-diff --git a/drivers/tty/serial/8250/8250_dw.c b/drivers/tty/serial/8250/8250_dw.c
-index 9ac4be748596..a3acbf0f5da1 100644
---- a/drivers/tty/serial/8250/8250_dw.c
-+++ b/drivers/tty/serial/8250/8250_dw.c
-@@ -9,7 +9,6 @@
-  * LCR is written whilst busy.  If it is, then a busy detect interrupt is
-  * raised, the LCR needs to be rewritten and the uart status register read.
-  */
--#include <linux/acpi.h>
- #include <linux/clk.h>
- #include <linux/delay.h>
- #include <linux/device.h>
-@@ -55,6 +54,7 @@
- #define DW_UART_QUIRK_ARMADA_38X	BIT(1)
- #define DW_UART_QUIRK_SKIP_SET_RATE	BIT(2)
- #define DW_UART_QUIRK_IS_DMA_FC		BIT(3)
-+#define DW_UART_QUIRK_APMC0D08		BIT(4)
- 
- static inline struct dw8250_data *clk_to_dw8250_data(struct notifier_block *nb)
- {
-@@ -444,33 +444,29 @@ static void dw8250_prepare_rx_dma(struct uart_8250_port *p)
- 
- static void dw8250_quirks(struct uart_port *p, struct dw8250_data *data)
- {
--	struct device_node *np = p->dev->of_node;
--
--	if (np) {
--		unsigned int quirks = data->pdata->quirks;
-+	unsigned int quirks = data->pdata ? data->pdata->quirks : 0;
- 
- #ifdef CONFIG_64BIT
--		if (quirks & DW_UART_QUIRK_OCTEON) {
--			p->serial_in = dw8250_serial_inq;
--			p->serial_out = dw8250_serial_outq;
--			p->flags = UPF_SKIP_TEST | UPF_SHARE_IRQ | UPF_FIXED_TYPE;
--			p->type = PORT_OCTEON;
--			data->skip_autocfg = true;
--		}
-+	if (quirks & DW_UART_QUIRK_OCTEON) {
-+		p->serial_in = dw8250_serial_inq;
-+		p->serial_out = dw8250_serial_outq;
-+		p->flags = UPF_SKIP_TEST | UPF_SHARE_IRQ | UPF_FIXED_TYPE;
-+		p->type = PORT_OCTEON;
-+		data->skip_autocfg = true;
-+	}
- #endif
- 
--		if (quirks & DW_UART_QUIRK_ARMADA_38X)
--			p->serial_out = dw8250_serial_out38x;
--		if (quirks & DW_UART_QUIRK_SKIP_SET_RATE)
--			p->set_termios = dw8250_do_set_termios;
--		if (quirks & DW_UART_QUIRK_IS_DMA_FC) {
--			data->data.dma.txconf.device_fc = 1;
--			data->data.dma.rxconf.device_fc = 1;
--			data->data.dma.prepare_tx_dma = dw8250_prepare_tx_dma;
--			data->data.dma.prepare_rx_dma = dw8250_prepare_rx_dma;
--		}
--
--	} else if (acpi_dev_present("APMC0D08", NULL, -1)) {
-+	if (quirks & DW_UART_QUIRK_ARMADA_38X)
-+		p->serial_out = dw8250_serial_out38x;
-+	if (quirks & DW_UART_QUIRK_SKIP_SET_RATE)
-+		p->set_termios = dw8250_do_set_termios;
-+	if (quirks & DW_UART_QUIRK_IS_DMA_FC) {
-+		data->data.dma.txconf.device_fc = 1;
-+		data->data.dma.rxconf.device_fc = 1;
-+		data->data.dma.prepare_tx_dma = dw8250_prepare_tx_dma;
-+		data->data.dma.prepare_rx_dma = dw8250_prepare_rx_dma;
-+	}
-+	if (quirks & DW_UART_QUIRK_APMC0D08) {
- 		p->iotype = UPIO_MEM32;
- 		p->regshift = 2;
- 		p->serial_in = dw8250_serial_in32;
-@@ -750,13 +746,18 @@ static const struct of_device_id dw8250_of_match[] = {
- };
- MODULE_DEVICE_TABLE(of, dw8250_of_match);
- 
-+static const struct dw8250_platform_data dw8250_apmc0d08 = {
-+	.usr_reg = DW_UART_USR,
-+	.quirks = DW_UART_QUIRK_APMC0D08,
-+};
-+
- static const struct acpi_device_id dw8250_acpi_match[] = {
- 	{ "80860F0A", (kernel_ulong_t)&dw8250_dw_apb },
- 	{ "8086228A", (kernel_ulong_t)&dw8250_dw_apb },
- 	{ "AMD0020", (kernel_ulong_t)&dw8250_dw_apb },
- 	{ "AMDI0020", (kernel_ulong_t)&dw8250_dw_apb },
- 	{ "AMDI0022", (kernel_ulong_t)&dw8250_dw_apb },
--	{ "APMC0D08", (kernel_ulong_t)&dw8250_dw_apb},
-+	{ "APMC0D08", (kernel_ulong_t)&dw8250_apmc0d08 },
- 	{ "BRCM2032", (kernel_ulong_t)&dw8250_dw_apb },
- 	{ "HISI0031", (kernel_ulong_t)&dw8250_dw_apb },
- 	{ "INT33C4", (kernel_ulong_t)&dw8250_dw_apb },
+>
+> Signed-off-by: Chukun Pan <amadeus@jmu.edu.cn>
+> ---
+>  arch/arm64/boot/dts/qcom/ipq6018.dtsi | 7 +++++++
+>  1 file changed, 7 insertions(+)
+
+
+
 -- 
-2.43.0.rc1.1.gbec44491f096
-
+With best wishes
+Dmitry
 
