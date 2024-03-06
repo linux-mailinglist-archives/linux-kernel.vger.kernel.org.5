@@ -1,181 +1,152 @@
-Return-Path: <linux-kernel+bounces-94605-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94606-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D35F787420B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 22:34:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AAC087420C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 22:34:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 39C0FB22CBB
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 21:34:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32798288F9A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 21:34:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E39291B80F;
-	Wed,  6 Mar 2024 21:34:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93A421B59E;
+	Wed,  6 Mar 2024 21:34:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="aBdgnM2F"
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="kZnBZUv7"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90D8B1B299
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 21:34:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA13A1429B
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 21:34:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709760843; cv=none; b=Pm4q5VrZEso5RgZyYfqQeBCtrtJVqnmp8WRWp0cfPJM/v4Gn5Wz9aWcRyRQ2lEiVPG91FPAelBxKjun83SHewj07rdRE84I7fVcdiP2yFNKXe04lc/6iW1xmEwnQl1TOtGAuZG8+hTzPQ2jWZ/83VeHLI1KLaY0tPUpUHM5X5To=
+	t=1709760886; cv=none; b=ajECru051q+tYaUKMqcOeB6xGPh1ih+caOSsvUXf59Aiq/oV8r2XpJsdaYnBhSZ33BfMDWTKspjZ+oRzS7XF2YQM1ZK/rhUPUzR40bypDmeiRWV2mdFl+68nI6Rz3KlvkCK/p6ippGzkt+/9DlnVQ1PPUMioZkRpnukFD10nuis=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709760843; c=relaxed/simple;
-	bh=peAbg4zTIh+UTQtLUNXjdZERPwEBRspOqi/uvi47S5Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hIEhpbUgNKofjiEWzTRgefA3d1xNznU2F1Mueigc7QjXfBT2Ou4WD2553VUj1bUp0vbitzBfcXT7kyt0XjFZhbvGcUfwz0NB58X2PRMFeLzKqHTCa2cgjZi6xSuiNu2J8nJQl9qwm2pTUW11lEpEr8S6Hs6HsBdAfztcgPD7yLo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=aBdgnM2F; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1d944e8f367so1785585ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 13:34:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709760841; x=1710365641; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=spCvMYknEOhSMD+gnBZqeFH7EvzN91XDO9RNAyR+qps=;
-        b=aBdgnM2FRSz5up/ufxvS4vnkA+O1A7l5yUQjsO2C0bddUGFfS/Sq+zkXazBIkLZZWw
-         69d34eiOYxGf2XyarkMRtnZLY8ObsKJstBHO9YESvXrcSBMOblYus1/6orrBL+OIHsiK
-         iWnWBBjoAZePkbeSPGVtXuVapbUFmcf/7g4WAPp61g/6pw8rpfkSGyI2viFyknPBfoqt
-         2+7IsAdp6HqQlbLADDh0C7X6AOsxfhuho+3wQVYzgzsz/D4p2Y3Slps+ptx8xTIZhzZE
-         imvOXb1H0QMQM4JJrFstYhsMPANO6R4GIfVgcdqZmRRbiXi3zkU1a14TuzGNfNuvo2ai
-         atIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709760841; x=1710365641;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=spCvMYknEOhSMD+gnBZqeFH7EvzN91XDO9RNAyR+qps=;
-        b=LiDxM717fucOgHMrS+R+MWVG5AJeEM+AZtJvOIY1Mn+HAr3Fy2R0ErUyZN+DKc+PTC
-         2ZjN0AI1VZHd1x57hKcDF/ozlNAQn91f42VpdQmTR1odRQMKJgKdc1XWfIBStnySxCJd
-         dJHIwntd850i4gZzpy9NbyMt0sW0mP4Ccg64V1oFCwgKETD527l5DhEPnhAldl3drBg4
-         GMRZC4f+TrkrqRRpp8EaSZZUrTL9tc8h4TsceLn8xe25QhgqFYX+ekLnuZzSwXbhnk0m
-         MsrOdpUMQXzbuK+EpWbeDgLDV41RhGOMAP4XlSncLCLNYDE0ExSbLyFb9TH/X9DBfe23
-         P7DQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUefAXlCcWeDdEsOfLLj97NSmVhgiYsuhBQArpeT6EmOVFSpr4pquucXholZtwn+K4V57SSkb6W6r3aGH+GYULvXWkF7p273sMbdBGY
-X-Gm-Message-State: AOJu0Yxo6oYR3ajCZjTBHm8piQuSwlMxIJ5mN22Yb8FZoBikM0S4vhk9
-	TEoT5/pVL9B730OuJRR3bZMAld8UBbsblnkHOnQCOKOzfrz29ByrKZQ0nMEGtg==
-X-Google-Smtp-Source: AGHT+IFT59l4bms+SwWKG/vnM8EnnHFXormej4iFF9afmQhiVqbtqHArrM4el5GtDToqRrBwaMv3WQ==
-X-Received: by 2002:a17:903:41cc:b0:1dc:499b:8e80 with SMTP id u12-20020a17090341cc00b001dc499b8e80mr7742894ple.54.1709760840505;
-        Wed, 06 Mar 2024 13:34:00 -0800 (PST)
-Received: from google.com ([2620:15c:2c5:13:9a91:c17:53d9:d156])
-        by smtp.gmail.com with ESMTPSA id lc11-20020a170902fa8b00b001dc668e145asm13063705plb.200.2024.03.06.13.33.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Mar 2024 13:34:00 -0800 (PST)
-Date: Wed, 6 Mar 2024 13:33:55 -0800
-From: Igor Pylypiv <ipylypiv@google.com>
-To: Niklas Cassel <cassel@kernel.org>
-Cc: Damien Le Moal <dlemoal@kernel.org>,
-	John Garry <john.g.garry@oracle.com>,
-	Jason Yan <yanaijie@huawei.com>,
-	"James E.J. Bottomley" <jejb@linux.ibm.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	Jack Wang <jinpu.wang@cloud.ionos.com>,
-	Hannes Reinecke <hare@suse.de>,
-	Xiang Chen <chenxiang66@hisilicon.com>,
-	Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
-	Bart Van Assche <bvanassche@acm.org>,
-	TJ Adams <tadamsjr@google.com>, linux-ide@vger.kernel.org,
-	linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 0/7] NCQ Priority sysfs sttributes for libsas
-Message-ID: <ZejhQ7PMFdYV_ktq@google.com>
-References: <20240306012226.3398927-1-ipylypiv@google.com>
- <ZehLXDoWQZiLzCTo@ryzen>
+	s=arc-20240116; t=1709760886; c=relaxed/simple;
+	bh=VfP4PQ6CLQO2Gx1ykfJd2b0T4aya1Jb6oeEkNhDI5OY=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=YNz1m9f1txpA2Vtg3q/6CKG4W/tT2p2p/r2Xxcj9IuiOV3LIGClmn5vfavD+c9X4TtC19s2pIuSwTdccrH72GiRG9CwappR6xRZelAgDi/KdqkX/ijXO+L7d9PD28GGUxzg87NljWuysNIQWoGxaeGjJKYolbP9vzYiZ4Fk1NJw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=kZnBZUv7; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1709760880;
+	bh=vXx7/JmCH9QW+7mXHC7u2NKptyAP4I+/LVyLTHOKxQw=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=kZnBZUv7seCuEMLDXYJIJ659rQLRmzBPRXiYFpQd6snY11Askz00l6XCmCIPAv3gA
+	 OPjMFXZwGRbUxEx65XCMiUzKY1qApurG9rZE8Z55C8hqadOFagE84C7f2QW+4o7by5
+	 /ogXbXq+Mpp4/4Ob0jfQAVwtsHd4+2U9R+8JXW5xVb/b2ID5L14q2dnxkMNRutrBP2
+	 R6ijO2hpJyrQMxhRXtGtFaiIBHZiaFsstpLTzPXYTIdcxkD9idIb70VG/q22FX1AVt
+	 tSIo6nUPO6qwHdvKQy5UcUdXeolOYZEEpcbs3thqf2ry831ui7s3VYBtDLCEDjv4ex
+	 /ROm5tCMDJ6GQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Tqm0v3jb5z4wc7;
+	Thu,  7 Mar 2024 08:34:39 +1100 (AEDT)
+Date: Thu, 7 Mar 2024 08:34:38 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= <u.kleine-koenig@pengutronix.de>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Thorsten Scherer
+ <T.Scherer@eckelmann.de>, linux-kernel@vger.kernel.org, Pengutronix Kernel
+ Team <kernel@pengutronix.de>, "Ricardo B. Marliere" <ricardo@marliere.net>
+Subject: Re: siox patches for next development cycle [Re: [PATCH 0/4] siox:
+ Move some complexity into the core]
+Message-ID: <20240307083438.3cef23c5@canb.auug.org.au>
+In-Reply-To: <vg5yex3wpnfeibgkwmi33yazdxdz2pbhn4w72mnffqm3qtvjf6@gv3syxj6gsk7>
+References: <cover.1708328466.git.u.kleine-koenig@pengutronix.de>
+	<lkgvr2t4wzw4jkfg523zcek6y2v5l7kj6onw77yffvvs7i2gfy@6ectsjpcg64t>
+	<vg5yex3wpnfeibgkwmi33yazdxdz2pbhn4w72mnffqm3qtvjf6@gv3syxj6gsk7>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZehLXDoWQZiLzCTo@ryzen>
+Content-Type: multipart/signed; boundary="Sig_/kRCEx92IgB_FF=d7zFx1lWQ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-On Wed, Mar 06, 2024 at 11:54:20AM +0100, Niklas Cassel wrote:
-> Hello Igor,
-> 
-> On Tue, Mar 05, 2024 at 05:22:19PM -0800, Igor Pylypiv wrote:
-> > This patch series adds sas_ncq_prio_supported and sas_ncq_prio_enable
-> > sysfs sttributes for libsas managed SATA devices. Existing libata sysfs
-> > attributes cannot be used directly because the ata_port location is
-> > different for libsas.
-> 
-> As far as I can tell, you don't add sas_ncq_prio_supported and
-> sas_ncq_prio_enable, but instead add ncq_prio_supported and
-> ncq_prio_enable, so perhaps update this sentence.
-> 
-Thank you for catching this, Niklas! I've updated the sysfs naming in
-the actual patch but forgot to update the cover letter.
+--Sig_/kRCEx92IgB_FF=d7zFx1lWQ
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Thanks,
-Igor
-> 
-> Kind regards,
-> Niklas
-> 
-> > 
-> > Changes since v6:
-> > - Replaced sas_ata_sdev_attr_group definition with a macro for
-> >   the "CONFIG_SCSI_SAS_ATA is not set" case. The macro defines
-> >   an empty rvalue struct eliminating the variable definition.
-> > 
-> > Changes since v5:
-> > - Added __maybe_unused attribute to sas_ata_sdev_attr_group to prevent
-> >   an unused-const-variable warning when CONFIG_SCSI_SAS_ATA is not set.
-> > 
-> > Changes since v4:
-> > - Updated sas_ncq_prio_* sysfs functions to use WARN_ON_ONCE() instead
-> >   of WARN_ON().
-> > 
-> > Changes since v3:
-> > - Changed ata_ncq_prio_supported() and ata_ncq_prio_enabled() to store
-> >   the result into a boolean variable passed by address.
-> > - Removed the "usable with both libsas and libata" wording from
-> >   ata_ncq_prio_* helper's function comments.
-> > - Removed the unlikely() in ata_ncq_prio_enable() because the function
-> >   is not in a fastpath.
-> > - Dropped hisi_sas v1 HW driver changes because it doesn't support SATA.
-> > 
-> > Changes since v2:
-> > - Added libsas SATA sysfs attributes to aic94xx and isci.
-> > 
-> > Changes since v1:
-> > - Dropped the "sas_" prefix to align sysfs sttributes naming with AHCI.
-> > - Dropped ternary operators to make the code more readable.
-> > - Corrected the formatting %u -> %d in sysfs_emit().
-> > - Changed kstrtol() to kstrtobool() in [ata|sas]_ncq_prio_enable_store().
-> > - Changed comments to use the "/* */" style instead of "//".
-> > - Added libsas SATA sysfs attributes to mvsas and hisi_sas.
-> > - Dropped the 'Reviewed-by' tags because they were not sent in-reply
-> >   to the patch emails.
-> > 
-> > Igor Pylypiv (7):
-> >   ata: libata-sata: Factor out NCQ Priority configuration helpers
-> >   scsi: libsas: Define NCQ Priority sysfs attributes for SATA devices
-> >   scsi: pm80xx: Add libsas SATA sysfs attributes group
-> >   scsi: mvsas: Add libsas SATA sysfs attributes group
-> >   scsi: hisi_sas: Add libsas SATA sysfs attributes group
-> >   scsi: aic94xx: Add libsas SATA sysfs attributes group
-> >   scsi: isci: Add libsas SATA sysfs attributes group
-> > 
-> >  drivers/ata/libata-sata.c              | 140 ++++++++++++++++++-------
-> >  drivers/scsi/aic94xx/aic94xx_init.c    |   8 ++
-> >  drivers/scsi/hisi_sas/hisi_sas_v2_hw.c |   6 ++
-> >  drivers/scsi/hisi_sas/hisi_sas_v3_hw.c |   6 ++
-> >  drivers/scsi/isci/init.c               |   6 ++
-> >  drivers/scsi/libsas/sas_ata.c          |  94 +++++++++++++++++
-> >  drivers/scsi/mvsas/mv_init.c           |   7 ++
-> >  drivers/scsi/pm8001/pm8001_ctl.c       |   5 +
-> >  drivers/scsi/pm8001/pm8001_init.c      |   1 +
-> >  drivers/scsi/pm8001/pm8001_sas.h       |   1 +
-> >  include/linux/libata.h                 |   6 ++
-> >  include/scsi/sas_ata.h                 |   6 ++
-> >  12 files changed, 247 insertions(+), 39 deletions(-)
-> > 
-> > -- 
-> > 2.44.0.278.ge034bb2e1d-goog
-> > 
+Hi Uwe,
+
+On Wed, 6 Mar 2024 19:24:38 +0100 Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pe=
+ngutronix.de> wrote:
+>
+> On Tue, Feb 27, 2024 at 11:21:24AM +0100, Thorsten Scherer wrote:
+> > On Mon, Feb 19, 2024 at 08:46:28AM +0100, Uwe Kleine-K=C3=B6nig wrote:
+> > The series looks sensible.
+> >=20
+> > Acked-by: Thorsten Scherer <t.scherer@eckelmann.de>
+> >=20
+> > @gregkh: Would you please pick up Uwe's series as well? =20
+>=20
+> There are currently six patches for drivers/siox waiting to be applied.
+> (Two by Ricardo and four by me.) Thorsten asked Greg to do so. Greg
+> didn't pick these up yet though. So I collected them and put them to a
+> branch at:
+>=20
+> 	https://git.kernel.org/pub/scm/linux/kernel/git/ukleinek/linux.git siox/=
+for-next
+>=20
+> I'd like to get them in during the next development cycle.
+>=20
+> Greg, what is easiest for you? Are they still on your list of open
+> patches and we (I) need just a bit more patience? Or should I send a PR
+> to Linus when the merge window opens?
+>=20
+> Stephen: It would be nice to get this above branch into next, no matter
+> if the patches make it in via Greg or me. Could you please add this
+> branch to your list for next? If Greg will apply them, I'll empty this
+> branch to not get duplicates.
+
+Added from today.
+
+Thanks for adding your subsystem tree as a participant of linux-next.  As
+you may know, this is not a judgement of your code.  The purpose of
+linux-next is for integration testing and to lower the impact of
+conflicts between subsystems in the next merge window.=20
+
+You will need to ensure that the patches/commits in your tree/series have
+been:
+     * submitted under GPL v2 (or later) and include the Contributor's
+        Signed-off-by,
+     * posted to the relevant mailing list,
+     * reviewed by you (or another maintainer of your subsystem tree),
+     * successfully unit tested, and=20
+     * destined for the current or next Linux merge window.
+
+Basically, this should be just what you would send to Linus (or ask him
+to fetch).  It is allowed to be rebased if you deem it necessary.
+
+--=20
+Cheers,
+Stephen Rothwell=20
+sfr@canb.auug.org.au
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/kRCEx92IgB_FF=d7zFx1lWQ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXo4W4ACgkQAVBC80lX
+0GytDwf/Tvd1t4Lrr1ksGM7s2MpeL5yqrSXLDXgEY5/XcCk9VQLqhLqgpKEKwVMC
+l/GyXbf21xxBofrXsHbnBQAnIRaOI/Ltuf4TVMvQOyEAqhQcjmc1jzxsHwfA7zM5
+5Gy/VWT7I8KTywq0qDO4hkxjRrTMh8avd7E2Cz0883NMgFRK9P1wrQLUynWV3clo
+eTMGAqiusNL9Ske5Up3KrrtLQvr6b7+8pA5xXCp8d5tyRK97u7plHGQB9ShjfnFw
+h5IeXjrE66sqxKPgGEiW+nuJxK5+bzvKXtbKwDzGofEw1UAAD7xOmRSTA7YKqEpB
+Cbvmfj0G+Z0scjS3B1HDipYGwTnSog==
+=epjE
+-----END PGP SIGNATURE-----
+
+--Sig_/kRCEx92IgB_FF=d7zFx1lWQ--
 
