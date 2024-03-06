@@ -1,154 +1,232 @@
-Return-Path: <linux-kernel+bounces-94120-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94115-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 047B4873A3B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:07:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39270873A2F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:06:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6A4CFB2359E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:07:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5DCB71C2201F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:06:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E24613BAC2;
-	Wed,  6 Mar 2024 15:05:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9442F137904;
+	Wed,  6 Mar 2024 15:05:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="LbLQvkPy"
-Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="U/94v3DE"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D38A13A89A
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 15:05:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAE67134738;
+	Wed,  6 Mar 2024 15:05:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709737555; cv=none; b=nPjLFQBjacWOuc++Wh2A6ECxcmZRrJoIb+GdhTsApClNEmmXufDnjQwLZaLQZxeqNjsG4pwbouY1F4n895W68RDKL7LKa7xFZXBxa2Quh++zBjiq1MsAXfviPOQwz2qrNackGfRFNciM1nDBWfUM9CFCApe7nsfEDESj2jtqVQM=
+	t=1709737540; cv=none; b=O7tTr8bJP/RHrZGEdtjMEsQsRHjDXy7xEnfO9k4lmvlhPQ9p34aGDC1b7e/SbGFEcHLvsW5NlFgQa8xw4zigaxGy9VC9MLvr3lKgM7VYuCYnr6ytkaUJPrgR3Xv5c6n7EgRUECHOCSQ9jwDSwYULvaeQgieqYA6QzmOMBX4sO8w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709737555; c=relaxed/simple;
-	bh=TEL7jZMgML85VNjr4PtxvsHiPMSN5+DPoz2ZgxK9Hjw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OKiX4GO8gNfV9WB9iX+yfuBVnvOn1Q4NrfKBdZMKgSNwBH+t58Hd1YWapBjLxjrWWyGLKFXpTVlChlqeodaz7G3wCw1PEHhOaYOVNTdwoOLA5b/PEfKOJZI8X0kZd58VmG4HwtZ8Ll918YgjOJndcIfygwCOFvNe/L/2+B3yZFA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=LbLQvkPy; arc=none smtp.client-ip=209.85.222.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-7884114feb8so17961585a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 07:05:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709737550; x=1710342350; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TEL7jZMgML85VNjr4PtxvsHiPMSN5+DPoz2ZgxK9Hjw=;
-        b=LbLQvkPyi+hFbR1vjou4iqpI/CgNN8PolM61A129B3fxHlHAKB0X6EinGjD/vIu8Th
-         kbi2VSJs4XXlKPOTw4buObevCW2+IiPo9ZaTmhbxuwG84oK+qgaufSRf7JXOHZJhBd/7
-         WMOnanwEE0YFvOnPkxmLdq/eWDTKhIsryKSQs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709737550; x=1710342350;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TEL7jZMgML85VNjr4PtxvsHiPMSN5+DPoz2ZgxK9Hjw=;
-        b=hN1Bn0TbJsL4YkbJp+b7Cc21MefO6QQbMywFueYMNvwEDyumsyJ/yqrXrChsvVg/KO
-         eQUVKFzDYP4PNX/8stgdMhl9n0oUgtTRUz8IPTFH4/ZIKNijDXqd83t0mj7fHnBRdzBa
-         MI8YUnmuya/P9BL3/GNKW/VlTElCGNZajA/ujjrsUif6xCH2GmDEPYYSdmt4LxlYBmS7
-         YJI7+0+do1TRsKo13OetU93h9udceulCJfas7Iiy1YhzL+rkg9NCIFrteOu3Nc83qbK9
-         TwthYSrt+jC0RIIyLp6OeHSBeZEHAETeV3EAOHKcxvz+0YhjiY69PF/rjHtf6wKcH42I
-         Sekg==
-X-Forwarded-Encrypted: i=1; AJvYcCWp9PcFLw9wW6ETms2ueIhb2ODUNbPM42N560+TBUrnqkDFbpP0/p9dw+k/tXaiI830GhKruFCUtQxBX6y5Cik2u9nebVlg6Gs5jEER
-X-Gm-Message-State: AOJu0YxlrptWoGCTwmYTSv0siQuybJdTDi3FFS9Ev98rcZjOyKatx0Wq
-	gbgaU5r6FzETqA4fObKyzvSokXwMQ0p4BHSW0/nRVc4LUnA3ybqtCIXRwzMeKo57QQ0VK1gyOAy
-	SX6h/
-X-Google-Smtp-Source: AGHT+IF28ZLimK95FrjKT8id/I+22cQFQ21mA7sHe71y4Z0ONQFXV15uxDeSsFs4IWbFxUDWiZuy6w==
-X-Received: by 2002:a05:620a:47a8:b0:788:2b0e:a78e with SMTP id dt40-20020a05620a47a800b007882b0ea78emr5341641qkb.74.1709737549607;
-        Wed, 06 Mar 2024 07:05:49 -0800 (PST)
-Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com. [209.85.160.180])
-        by smtp.gmail.com with ESMTPSA id vv24-20020a05620a563800b0078821ab6668sm4019621qkn.34.2024.03.06.07.05.48
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Mar 2024 07:05:49 -0800 (PST)
-Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-42ee0c326e8so267711cf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 07:05:48 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVjh82sCCXeKJgrsDSXx2zYOvL53Xlfy9SLJW28HOj3g6E29+n9q95yyTy/ynmIMbwbr9OUqZNCNYN3ZtxAowp5QQDCJctQVfvi/gre
-X-Received: by 2002:a05:622a:118e:b0:42f:a3c:2d46 with SMTP id
- m14-20020a05622a118e00b0042f0a3c2d46mr275703qtk.7.1709737547815; Wed, 06 Mar
- 2024 07:05:47 -0800 (PST)
+	s=arc-20240116; t=1709737540; c=relaxed/simple;
+	bh=xhfWyunDWc55B8i1Bgv5qsbhlkWAm+qBXVsXbA/nBZs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kbvVD4OHar3sKwXEc2XBIHRQsPMqHXTPmRTWOLiKEuRfnFtKUGakqCD1Sf5qQJx2WtNKdBHFb1HBKyYHki0zqHTxaKNqA3tW0hz7QM/ts7Xtknv/8JdOOJFaKm5V2DwXmfh6VPPsYL+WDownZ3Lug1zADpEIKFTaiRs4/kORBCw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=U/94v3DE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D5C7C433F1;
+	Wed,  6 Mar 2024 15:05:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1709737540;
+	bh=xhfWyunDWc55B8i1Bgv5qsbhlkWAm+qBXVsXbA/nBZs=;
+	h=From:To:Cc:Subject:Date:From;
+	b=U/94v3DEnN6grUKJAzMwFiD8+PZPNbzaeeGVtEgcLRUnzeJ4HRzPHgf6R85Xkg8IK
+	 4m4YQLCX1t1Lyej4zjbxObqRoDlJL2KlumsGJM80Al+AidCNnIJCNxeCXHItwVmr98
+	 t5ojRfXbs9nEtkxKKoNYNwV/GaV8yC6UkS3PiQDg=
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: linux-kernel@vger.kernel.org,
+	akpm@linux-foundation.org,
+	torvalds@linux-foundation.org,
+	stable@vger.kernel.org
+Cc: lwn@lwn.net,
+	jslaby@suse.cz,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 5.10.212
+Date: Wed,  6 Mar 2024 15:05:34 +0000
+Message-ID: <2024030635-stylishly-tackle-b393@gregkh>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240227141928.1.I24ac8d51544e4624b7e9d438d95880c4283e611b@changeid>
- <60dc7697-d7a0-4bf4-a22e-32f1bbb792c2@suse.de>
-In-Reply-To: <60dc7697-d7a0-4bf4-a22e-32f1bbb792c2@suse.de>
-From: Doug Anderson <dianders@chromium.org>
-Date: Wed, 6 Mar 2024 07:05:31 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=VSFEFPzFhvMKwc7D3NBgnDq9qRp6eN1stSuhBCi_HoMQ@mail.gmail.com>
-Message-ID: <CAD=FV=VSFEFPzFhvMKwc7D3NBgnDq9qRp6eN1stSuhBCi_HoMQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/udl: Add ARGB8888 as a format
-To: Thomas Zimmermann <tzimmermann@suse.de>
-Cc: dri-devel@lists.freedesktop.org, Rob Clark <robdclark@chromium.org>, 
-	Javier Martinez Canillas <javierm@redhat.com>, Daniel Vetter <daniel@ffwll.ch>, Dave Airlie <airlied@redhat.com>, 
-	David Airlie <airlied@gmail.com>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Maxime Ripard <mripard@kernel.org>, =?UTF-8?B?TWHDrXJhIENhbmFs?= <mcanal@igalia.com>, 
-	Sean Paul <sean@poorly.run>, =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Hi,
+I'm announcing the release of the 5.10.212 kernel.
 
-On Wed, Mar 6, 2024 at 4:07=E2=80=AFAM Thomas Zimmermann <tzimmermann@suse.=
-de> wrote:
->
-> Hi,
->
-> sorry that I did not see the patch before.
->
-> Am 27.02.24 um 23:19 schrieb Douglas Anderson:
-> > Even though the UDL driver converts to RGB565 internally (see
-> > pixel32_to_be16() in udl_transfer.c), it advertises XRGB8888 for
-> > compatibility. Let's add ARGB8888 to that list.
->
-> We had a heated discussion about the emulation of color formats. It was
-> decided that XRGB8888 is the only format to support; and that's only
-> because legacy userspace sometimes expects it. Adding other formats to
-> the list should not be done easily.
+All users of the 5.10 kernel series must upgrade.
 
-Sorry! I wasn't aware of the previous discussion and nobody had
-brought it up till now. As discussed on #dri-devel IRC, I've posted a
-revert:
+The updated 5.10.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-5.10.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
-https://lore.kernel.org/r/20240306063721.1.I4a32475190334e1fa4eef4700ecd278=
-7a43c94b5@changeid
+thanks,
 
+greg k-h
 
-> > This makes UDL devices work on ChromeOS again after commit
-> > c91acda3a380 ("drm/gem: Check for valid formats"). Prior to that
-> > commit things were "working" because we'd silently treat the ARGB8888
-> > that ChromeOS wanted as XRGB8888.
->
-> This problem has been caused by userspace. Why can it not be fixed there?
+------------
 
-I guess the one argument I could make is that the kernel isn't
-supposed to break userspace. Before the extra format validation patch,
-AKA commit c91acda3a380 ("drm/gem: Check for valid formats"),
-userspace worked. Now it doesn't.
+ Makefile                                            |    2 
+ arch/riscv/include/asm/pgtable.h                    |    2 
+ arch/x86/kernel/cpu/intel.c                         |  178 ++++++++++----------
+ drivers/crypto/virtio/virtio_crypto_akcipher_algs.c |    5 
+ drivers/dma/fsl-qdma.c                              |   21 +-
+ drivers/firmware/efi/capsule-loader.c               |    2 
+ drivers/gpio/gpio-74x164.c                          |    4 
+ drivers/gpio/gpiolib.c                              |   10 -
+ drivers/mmc/core/mmc.c                              |    2 
+ drivers/mmc/host/sdhci-xenon-phy.c                  |   48 ++++-
+ drivers/mtd/nand/spi/gigadevice.c                   |   81 +++++++--
+ drivers/net/gtp.c                                   |   12 -
+ drivers/net/tun.c                                   |    1 
+ drivers/net/usb/dm9601.c                            |    2 
+ drivers/net/usb/lan78xx.c                           |    3 
+ drivers/platform/x86/touchscreen_dmi.c              |    4 
+ drivers/power/supply/bq27xxx_battery_i2c.c          |    4 
+ drivers/soc/qcom/rpmhpd.c                           |    7 
+ fs/afs/dir.c                                        |    4 
+ fs/btrfs/dev-replace.c                              |   24 ++
+ fs/cachefiles/bind.c                                |    3 
+ fs/ext4/mballoc.c                                   |   39 ++--
+ fs/hugetlbfs/inode.c                                |    6 
+ net/bluetooth/hci_core.c                            |    7 
+ net/bluetooth/hci_event.c                           |   13 +
+ net/bluetooth/l2cap_core.c                          |    8 
+ net/core/rtnetlink.c                                |   11 -
+ net/ipv4/ip_tunnel.c                                |   28 ++-
+ net/ipv6/addrconf.c                                 |    7 
+ net/mptcp/diag.c                                    |    3 
+ net/mptcp/protocol.c                                |   49 +++++
+ net/netfilter/nft_compat.c                          |   20 ++
+ net/netlink/af_netlink.c                            |    2 
+ net/wireless/nl80211.c                              |    2 
+ security/tomoyo/common.c                            |    3 
+ sound/core/Makefile                                 |    1 
+ 36 files changed, 426 insertions(+), 192 deletions(-)
 
-That being said, one can certainly argue that userspace was working in
-the past simply due to relying on a bug. ...and in such a case fixing
-the bug in userspace is preferred.
+Alexander Ofitserov (1):
+      gtp: fix use-after-free and null-ptr-deref in gtp_newlink()
 
-I don't personally know _how_ to fix userspace but it feels like it
-should be possible.
+Andy Shevchenko (1):
+      gpiolib: Fix the error path order in gpiochip_add_data_with_key()
 
+Arnd Bergmann (1):
+      efi/capsule-loader: fix incorrect allocation size
 
-> And udl is just one driver. Any other driver without ARGB8888, such as
-> simpledrm or ofdrm, would be affected. Do these work?
+Arturas Moskvinas (1):
+      gpio: 74x164: Enable output pins after registers are reset
 
-It's the ChromeOS compositor. I can totally believe that those drivers
-don't work. In this case, though, those drivers aren't needed by a USB
-peripheral that someone might plug in. ;-)
+Baokun Li (2):
+      ext4: avoid bb_free and bb_fragments inconsistency in mb_free_blocks()
+      cachefiles: fix memory leak in cachefiles_add_cache()
 
+Bartosz Golaszewski (1):
+      gpio: fix resource unwinding order in error path
 
--Doug
+Bjorn Andersson (1):
+      pmdomain: qcom: rpmhpd: Fix enabled_corner aggregation
+
+Chuanhong Guo (1):
+      mtd: spinand: gigadevice: fix Quad IO for GD5F1GQ5UExxG
+
+Curtis Klein (1):
+      dmaengine: fsl-qdma: init irq after reg initialization
+
+David Howells (1):
+      afs: Fix endless loop in directory parsing
+
+David Sterba (1):
+      btrfs: dev-replace: properly validate device names
+
+Davide Caratti (1):
+      mptcp: fix double-free on socket dismantle
+
+Dimitris Vlachos (1):
+      riscv: Sparse-Memory/vmemmap out-of-bounds fix
+
+Elad Nachman (2):
+      mmc: sdhci-xenon: add timeout for PHY init complete
+      mmc: sdhci-xenon: fix PHY init clock stability
+
+Eric Dumazet (1):
+      ipv6: fix potential "struct net" leak in inet6_rtm_getaddr()
+
+Florian Westphal (1):
+      net: ip_tunnel: prevent perpetual headroom growth
+
+Greg Kroah-Hartman (1):
+      Linux 5.10.212
+
+Han Xu (1):
+      mtd: spinand: gigadevice: Fix the get ecc status issue
+
+Hans de Goede (2):
+      platform/x86: touchscreen_dmi: Allow partial (prefix) matches for ACPI names
+      power: supply: bq27xxx-i2c: Do not free non existing IRQ
+
+Ignat Korchagin (1):
+      netfilter: nf_tables: allow NFPROTO_INET in nft_(match/target)_validate()
+
+Ivan Semenov (1):
+      mmc: core: Fix eMMC initialization with 1-bit bus connection
+
+Javier Carrasco (1):
+      net: usb: dm9601: fix wrong return value in dm9601_mdio_read
+
+Johannes Berg (1):
+      wifi: nl80211: reject iftype change with mesh ID change
+
+Kai-Heng Feng (1):
+      Bluetooth: Enforce validation on max value of connection interval
+
+Lin Ma (1):
+      rtnetlink: fix error logic of IFLA_BRIDGE_FLAGS writing back
+
+Luiz Augusto von Dentz (1):
+      Bluetooth: hci_event: Fix handling of HCI_EV_IO_CAPA_REQUEST
+
+Oleksij Rempel (1):
+      lan78xx: enable auto speed configuration for LAN7850 if no EEPROM is detected
+
+Oscar Salvador (1):
+      fs,hugetlb: fix NULL pointer dereference in hugetlbs_fill_super
+
+Paolo Abeni (1):
+      mptcp: fix possible deadlock in subflow diag
+
+Paolo Bonzini (1):
+      x86/cpu/intel: Detect TME keyid bits before setting MTRR mask registers
+
+Peng Ma (1):
+      dmaengine: fsl-qdma: fix SoC may hang on 16 byte unaligned read
+
+Reto Schneider (1):
+      mtd: spinand: gigadevice: Support GD5F1GQ5UExxG
+
+Ryosuke Yasuoka (1):
+      netlink: Fix kernel-infoleak-after-free in __skb_datagram_iter
+
+Takashi Iwai (1):
+      ALSA: Drop leftover snd-rtctimer stuff from Makefile
+
+Tetsuo Handa (1):
+      tomoyo: fix UAF write bug in tomoyo_write_control()
+
+Ying Hsu (1):
+      Bluetooth: Avoid potential use-after-free in hci_error_reset
+
+Yunjian Wang (1):
+      tun: Fix xdp_rxq_info's queue_index when detaching
+
+Zijun Hu (1):
+      Bluetooth: hci_event: Fix wrongly recorded wakeup BD_ADDR
+
+zhenwei pi (1):
+      crypto: virtio/akcipher - Fix stack overflow on memcpy
+
 
