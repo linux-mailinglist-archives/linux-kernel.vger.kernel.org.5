@@ -1,156 +1,208 @@
-Return-Path: <linux-kernel+bounces-93992-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93993-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FBA18737F4
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:41:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F39A873802
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:43:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 034D5B24350
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:41:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 839A01C21968
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:43:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B67413173E;
-	Wed,  6 Mar 2024 13:41:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1C12131739;
+	Wed,  6 Mar 2024 13:42:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="pQqyyCql";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="WUeFs0LG"
-Received: from wfout8-smtp.messagingengine.com (wfout8-smtp.messagingengine.com [64.147.123.151])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Ku2SIWdj";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="8rsFia/T"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83B3A131745
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 13:41:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 114F712D208;
+	Wed,  6 Mar 2024 13:42:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709732466; cv=none; b=vFR+1kuAwsIQxgzwtMkPwDaf49g1UM3IlzrZq/0f6ZxuvCRflnScmc7c1Jk1oeCer/vozQDxzmaQif3IEpf7cnuK9zYw8T9v0w7mbqS2NhhLAZi4yD+bo3S9kZK7r1I9ZSA2J9GksZDG5WjSOsH5mhUIPAlmKQcFs5kRtODFQB0=
+	t=1709732578; cv=none; b=jwcxOn5z0XFsxastuvJFCA4KuroMXa2+3vNFx0CsqrUMnLZ9jgIFvVHBWXKEK7ofl1aO8WWPhwfybsAJwZPzvvh+oqzKOzDawRuqM4sK4KkKObeykZkDRhBtr66u/X/jj4HZDdX1Lvweu4/jwLy6VJerrUiDYWROXIdc4svXAzo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709732466; c=relaxed/simple;
-	bh=DqyuLe982M0gCzXNHkRNqdo/en/tcqMLSPM6bGJs+l8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rq7/pYcz3aG5IVU8ulU//l6v5Yw3ltP36vbj5iOm5p872Kl9l6FIHXDhnsLMokpVG+hT6JUGyCj7NauMqR/1N5GXPLg/oBoeGj0sXoDZ2Vd0AmZoTINS0mSYA9V6Ht0QPCTYAkkzNo4xjFQRYrVEdpVMbQCmf2qU5WRTGzdqo6k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp; spf=pass smtp.mailfrom=sakamocchi.jp; dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b=pQqyyCql; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=WUeFs0LG; arc=none smtp.client-ip=64.147.123.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfout.west.internal (Postfix) with ESMTP id 0CC0E1C000B5;
-	Wed,  6 Mar 2024 08:41:01 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Wed, 06 Mar 2024 08:41:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
-	 h=cc:cc:content-type:content-type:date:date:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm1; t=1709732461; x=
-	1709818861; bh=8eGGmM1KR7AcuGh7NIqABGQLQZZwfZwqFbPI2nbC2o0=; b=p
-	QqyyCqlax0VekC+Sgn3UonHyKUxzjko/W+1I49gCNsNSOSpFGuGt+jX6m5ghUE8n
-	eQvLK3o2Z529+WIfSAE4pO9+YabIUhYNRZIBKm/4BVvQkQCFEUMCPvl/S1nyvZ3h
-	Ud95cHEkOVbPKBvvHNm3tFgd7jAKjZ2L4ngTRUkERfHwmWnvZHBtimAtKXTvLszT
-	xSpLFosx9nW5MqDTVSm6oY6mD0OG6Fv2eiQ313czSC47S/75KnjXa08FhLI0EGZ2
-	9n5JiZ38jyvo3Jt0QoRxds4SWlleXfaUN5a72h/SQaKQMOXsWfhjE1F5EvsmJ5ID
-	+A/ZuM4zifYaDpbUhGGdg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1709732461; x=1709818861; bh=8eGGmM1KR7AcuGh7NIqABGQLQZZw
-	fZwqFbPI2nbC2o0=; b=WUeFs0LGk+h67KdusPFYnAPyCP/I7PhiyPqAPsH+uhPo
-	kXkK/66ApjN8jCvAGWG8ioQlOkQM1z3bei0M6Pb/SgzpKThnZLZzZZdT502pzgmw
-	fHMMwb/KKUo8t7dCMFTe+2CfaLUCLN7pevgsboQlZqJu5R+KV/Qlsz8QmuV0coXq
-	0cdGUpd8AOsI2EaRQa1UtnwggfAWtDMBvfmPdz0LiS/RYr4efYHaXKtCd34sZ0kh
-	v9uDY6SiIFc0Ml0cdxCmWzSddsnSOtfOVZnsQmDyANIt0/vtZwkay+ePV4xpLw75
-	e69DvuS9T010AV4lIR5HPmOnGhiq51j5hjQN+cSDaw==
-X-ME-Sender: <xms:bXLoZVdyXPRFp6RCD3IpYeGYkEDNjxMGxnaL8c_cqI-afWySLOVjpA>
-    <xme:bXLoZTP1QDxaj1SNudq65pPpEcknU5WOSdvneihzIGikGs9Vzjya0b5wfvuqGMA0b
-    kV9dh9SyTSKo4JYbgo>
-X-ME-Received: <xmr:bXLoZeiQWEDkGssYHYRPHzV82RcF9qv1Lkh4oWKufrYDp6veHKTDAfHinzSf9ARummzJDsb9CVqH_TvJoyaMiKBary6LXfZX7S8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledriedugdehudcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvrghkrghs
-    hhhiucfurghkrghmohhtohcuoehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjh
-    hpqeenucggtffrrghtthgvrhhnpeehhffhteetgfekvdeiueffveevueeftdelhfejieei
-    tedvleeftdfgfeeuudekueenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
-    grihhlfhhrohhmpehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:bXLoZe-OqQKS3RKwvDSkU0HPNW5z0GbGAdce_AePAnn1xV_vahYBZA>
-    <xmx:bXLoZRtaNLvV9E2QKz8xAdXAsX5dSAmUG3tVOU-DWKo3x-SDbEzNYg>
-    <xmx:bXLoZdE7Cbqz4ejL_s30yiKUlnFQwaDsxwy15-koxLygLEogs3Ai0w>
-    <xmx:bXLoZZLqNBEWe0WpFndDAjlIi2zzGoYf5loRyz4cs3g_IHmIPV5w7bNw4Do>
-Feedback-ID: ie8e14432:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 6 Mar 2024 08:41:00 -0500 (EST)
-Date: Wed, 6 Mar 2024 22:40:56 +0900
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: Edmund Raile <edmund.raile@proton.me>
-Cc: linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] firewire: ohci: prevent leak of left-over IRQ on
- unbind
-Message-ID: <20240306134056.GA124318@workstation.local>
-Mail-Followup-To: Edmund Raile <edmund.raile@proton.me>,
-	linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
-References: <20240229101236.8074-1-edmund.raile@proton.me>
- <20240229144723.13047-2-edmund.raile@proton.me>
+	s=arc-20240116; t=1709732578; c=relaxed/simple;
+	bh=HVjMc8CVQ1jrgupstiVR9/S+aObbWibTgffHr+hczE0=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=sZ7N/RF7A3BPh+SotVxlEOYfknmPFosS75TCvl+ebly2i3du6JSXltKyXyPmfCe++pRv3hXY77eZOFbLzNj8LT68rWOxo33xO2rjYBwDywgN+RVamPNYJCW1xd5maZG7wM+tRHK641PbQ9XjlGdwt5mF5/HuD1xcOuFp3vCx354=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Ku2SIWdj; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=8rsFia/T; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Wed, 06 Mar 2024 13:42:53 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1709732575;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Q/UQh+cWN1wv4y4EOOlV9B2v0eJnmk+ZsfSlS1RdISk=;
+	b=Ku2SIWdj4fmBTCge69/DtUPqxd3EtKDzw07ycUeRVaHxzwHZctVqWxSKL0+Td5vt2ix9Of
+	yWIVZSzt6oKpxhu8MIM1t3j4APHImKtADQDFsihf/WntKimtZoN73LmfW+0fj3ExUl9xLB
+	t7tWJ4cHdN5LJccwW1uhDxoK/51i3vfQA3xmt5RGTDXLL5r3u9jb+ImnVG0bqODnBFqYAv
+	unm4PmN8bMCeoA04y3B2JVjiTJDB90R7hC+VkFZ49Le8zQq5c8A3LcXj//MRdVxHxlj+lz
+	vBcwA//mmvd5oCjv7szufJmC2iaFt7kChtqmBt4nJBX8QRk7CU7SyqVkIrYslA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1709732575;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Q/UQh+cWN1wv4y4EOOlV9B2v0eJnmk+ZsfSlS1RdISk=;
+	b=8rsFia/TaIFBxCt/G/cTpGbPZaLlpWGhCIw3CNHD5UM/Aez21qVK3hUAE1NUflcsql7Mzp
+	HilJiSsLynVVBjBg==
+From: "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/apic] x86/topology: Ignore non-present APIC IDs in a
+ present package
+Cc: "Borislav Petkov (AMD)" <bp@alien8.de>,
+ Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <87a5nbvccx.ffs@tglx>
+References: <87a5nbvccx.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240229144723.13047-2-edmund.raile@proton.me>
+Message-ID: <170973257400.398.13676030407350802838.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-Hi,
+The following commit has been merged into the x86/apic branch of tip:
 
-On Thu, Feb 29, 2024 at 02:47:59PM +0000, Edmund Raile wrote:
-> 
-> Commit 5a95f1ded28691e6 ("firewire: ohci: use devres for requested IRQ")
-> also removed the call to free_irq() in pci_remove(), leading to a
-> leftover irq of devm_request_irq() at pci_disable_msi() in pci_remove()
-> when unbinding the driver from the device
-> 
-> remove_proc_entry: removing non-empty directory 'irq/136', leaking at
-> least 'firewire_ohci'
-> Call Trace:
->  ? remove_proc_entry+0x19c/0x1c0
->  ? __warn+0x81/0x130
->  ? remove_proc_entry+0x19c/0x1c0
->  ? report_bug+0x171/0x1a0
->  ? console_unlock+0x78/0x120
->  ? handle_bug+0x3c/0x80
->  ? exc_invalid_op+0x17/0x70
->  ? asm_exc_invalid_op+0x1a/0x20
->  ? remove_proc_entry+0x19c/0x1c0
->  unregister_irq_proc+0xf4/0x120
->  free_desc+0x3d/0xe0
->  ? kfree+0x29f/0x2f0
->  irq_free_descs+0x47/0x70
->  msi_domain_free_locked.part.0+0x19d/0x1d0
->  msi_domain_free_irqs_all_locked+0x81/0xc0
->  pci_free_msi_irqs+0x12/0x40
->  pci_disable_msi+0x4c/0x60
->  pci_remove+0x9d/0xc0 [firewire_ohci
->      01b483699bebf9cb07a3d69df0aa2bee71db1b26]
->  pci_device_remove+0x37/0xa0
->  device_release_driver_internal+0x19f/0x200
->  unbind_store+0xa1/0xb0
-> 
-> remove irq with devm_free_irq() before pci_disable_msi()
-> also remove it in fail_msi: of pci_probe() as this would lead to
-> an identical leak
-> 
-> Fixes: 5a95f1ded28691e6 ("firewire: ohci: use devres for requested IRQ")
-> 
-> Signed-off-by: Edmund Raile <edmund.raile@proton.me>
+Commit-ID:     f0551af021308a2a1163dc63d1f1bba3594208bd
+Gitweb:        https://git.kernel.org/tip/f0551af021308a2a1163dc63d1f1bba3594208bd
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Wed, 06 Mar 2024 12:17:02 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Wed, 06 Mar 2024 14:35:30 +01:00
 
-Applied to for-linus branch. I'll send it for v6.8-final.
+x86/topology: Ignore non-present APIC IDs in a present package
 
-I think the pairs of 'pci_alloc_irq_vectors()' and 'request_irq()',
-'free_irq()' and 'pci_free_irq_vectors()' would be fine here, but the
-replacement of legacy API is not welcome in the last week of kernel
-development, so I postpone the work to the future.
+Borislav reported that one of his systems has a broken MADT table which
+advertises eight present APICs and 24 non-present APICs in the same
+package.
 
-Thanks
+The non-present ones are considered hot-pluggable by the topology
+evaluation code, which is obviously bogus as there is no way to hot-plug
+within the same package.
 
+As the topology evaluation code accounts for hot-pluggable CPUs in a
+package, the maximum number of cores per package is computed wrong, which
+in turn causes the uncore performance counter driver to access non-existing
+MSRs. It will probably confuse other entities which rely on the maximum
+number of cores and threads per package too.
 
-Takashi Sakamoto
+Cure this by ignoring hot-pluggable APIC IDs within a present package.
+
+In theory it would be reasonable to just do this unconditionally, but then
+there is this thing called reality^Wvirtualization which ruins
+everything. Virtualization is the only existing user of "physical" hotplug
+and the virtualization tools allow the above scenario. Whether that is
+actually in use or not is unknown.
+
+As it can be argued that the virtualization case is not affected by the
+issues which exposed the reported problem, allow the bogosity if the kernel
+determined that it is running in a VM for now.
+
+Fixes: 89b0f15f408f ("x86/cpu/topology: Get rid of cpuinfo::x86_max_cores")
+Reported-by: Borislav Petkov (AMD) <bp@alien8.de>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: Borislav Petkov (AMD) <bp@alien8.de>
+Link: https://lore.kernel.org/r/87a5nbvccx.ffs@tglx
+
+---
+ arch/x86/kernel/cpu/topology.c | 39 +++++++++++++++++++++++++--------
+ 1 file changed, 30 insertions(+), 9 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/topology.c b/arch/x86/kernel/cpu/topology.c
+index 43650fe..3259b1d 100644
+--- a/arch/x86/kernel/cpu/topology.c
++++ b/arch/x86/kernel/cpu/topology.c
+@@ -27,6 +27,7 @@
+ #include <xen/xen.h>
+ 
+ #include <asm/apic.h>
++#include <asm/hypervisor.h>
+ #include <asm/io_apic.h>
+ #include <asm/mpspec.h>
+ #include <asm/smp.h>
+@@ -157,6 +158,20 @@ static __init bool check_for_real_bsp(u32 apic_id)
+ 	return true;
+ }
+ 
++static unsigned int topo_unit_count(u32 lvlid, enum x86_topology_domains at_level,
++				    unsigned long *map)
++{
++	unsigned int id, end, cnt = 0;
++
++	/* Calculate the exclusive end */
++	end = lvlid + (1U << x86_topo_system.dom_shifts[at_level]);
++
++	/* Unfortunately there is no bitmap_weight_range() */
++	for (id = find_next_bit(map, end, lvlid); id < end; id = find_next_bit(map, end, ++id))
++		cnt++;
++	return cnt;
++}
++
+ static __init void topo_register_apic(u32 apic_id, u32 acpi_id, bool present)
+ {
+ 	int cpu, dom;
+@@ -178,6 +193,20 @@ static __init void topo_register_apic(u32 apic_id, u32 acpi_id, bool present)
+ 		cpuid_to_apicid[cpu] = apic_id;
+ 		topo_set_cpuids(cpu, apic_id, acpi_id);
+ 	} else {
++		u32 pkgid = topo_apicid(apic_id, TOPO_PKG_DOMAIN);
++
++		/*
++		 * Check for present APICs in the same package when running
++		 * on bare metal. Allow the bogosity in a guest.
++		 */
++		if (hypervisor_is_type(X86_HYPER_NATIVE) &&
++		    topo_unit_count(pkgid, TOPO_PKG_DOMAIN, phys_cpu_present_map)) {
++			pr_info_once("Ignoring hot-pluggable APIC ID %x in present package.\n",
++				     apic_id);
++			topo_info.nr_rejected_cpus++;
++			return;
++		}
++
+ 		topo_info.nr_disabled_cpus++;
+ 	}
+ 
+@@ -280,7 +309,6 @@ unsigned int topology_unit_count(u32 apicid, enum x86_topology_domains which_uni
+ {
+ 	/* Remove the bits below @at_level to get the proper level ID of @apicid */
+ 	unsigned int lvlid = topo_apicid(apicid, at_level);
+-	unsigned int id, end, cnt = 0;
+ 
+ 	if (lvlid >= MAX_LOCAL_APIC)
+ 		return 0;
+@@ -290,14 +318,7 @@ unsigned int topology_unit_count(u32 apicid, enum x86_topology_domains which_uni
+ 		return 0;
+ 	if (which_units == at_level)
+ 		return 1;
+-
+-	/* Calculate the exclusive end */
+-	end = lvlid + (1U << x86_topo_system.dom_shifts[at_level]);
+-	/* Unfortunately there is no bitmap_weight_range() */
+-	for (id = find_next_bit(apic_maps[which_units].map, end, lvlid);
+-	     id < end; id = find_next_bit(apic_maps[which_units].map, end, ++id))
+-		cnt++;
+-	return cnt;
++	return topo_unit_count(lvlid, at_level, apic_maps[which_units].map);
+ }
+ 
+ #ifdef CONFIG_ACPI_HOTPLUG_CPU
 
