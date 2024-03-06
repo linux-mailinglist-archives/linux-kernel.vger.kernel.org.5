@@ -1,161 +1,102 @@
-Return-Path: <linux-kernel+bounces-94103-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94104-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A62DE873A0A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:01:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F386A873A0D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:03:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 61DFB28BE61
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:01:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 92E651F228D6
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:03:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35B4F135408;
-	Wed,  6 Mar 2024 15:01:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CF44134738;
+	Wed,  6 Mar 2024 15:02:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Diub9Vs8"
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VNJ3NK4u"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B62313473B;
-	Wed,  6 Mar 2024 15:01:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CA737F7FA
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 15:02:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709737269; cv=none; b=mkHqAOzMEGbgb/6V4ucK5wjlJVeu9WEhuztTZyDaP4GiiHBwZ7dLtf16m6AisaHmpi6QviV/9DgmVr64OmWdNSgey0emraSjiecw56Ngz0JWUswrO5CuxmRGzr06VhJ2ClLp4LOWpXcaNId3QJwtPELy9mzNclkfpzcizH//090=
+	t=1709737373; cv=none; b=KZr33gnooRbXqM6zhGzXOZ79rnB310wsVzlV5Le1n5F/RNhGN3UA5tGF1+rYs7qSbDRFCPxhwuH7Bbqy+CMH0msMuOjdc03c1edRvH0Bxc9MIABV0ps3vPXeR7ej6EkDlxwCqUMp14EcnnA/FgEgCijGft7rbzag2OdB9wrpCNY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709737269; c=relaxed/simple;
-	bh=p5Z3Q6RIYQmwH9W/ZIoGnyeT1rKzJM+Geblbu0rvw84=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qcpoXrPxbB8hhEvpbvDZZHyjzO/Kd6TSpctHPBJz5J+LrE+YSy4X7J5dbpHAQ8AyjHnqcVPryU5QDxXqj9sbVbrZnHUB25MJEg32KUmA/RnLnPH4tzGxD1PAtrcmbXuv8adyBqChjPWhyL3qMKv7CPjSISnzL01Fd5ojiO/575w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Diub9Vs8; arc=none smtp.client-ip=217.70.183.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id D9FCB24000B;
-	Wed,  6 Mar 2024 15:01:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709737264;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+foT+JzMpkZ+qs4nuYW7kwD/p65OO/iMpozXg8yy+i0=;
-	b=Diub9Vs89qkCeYZKoSN24ddM/+DA8ul0SaqXYF//ZQRBxJUkRsY3Kl7871YO8yEdagWVST
-	p7u8TCrqmlNdmFC4c2eCRQA0nmeHxG2zYsPOGwziJlr/ZXUZ+ubbArZ1qDbvNzdmJBhB2H
-	QCi1BCN5waghCny5y8+ZXSm+MsOq2cnahQi3FWLjAFrRQPtWRz4ZxiFW8z3548IibJrpAn
-	WApPJLU9Ua5GVTCE8sd3Pzhk4IPynFURL41a2RUdtdTIRy1eh0SWOpBuyC+9XFh2Y6TeLy
-	Df/DPuBQGSek/iHHkHkSFXehm3Z4mmSHrHhYrQ2yoP6rl1oH+tasATU5bHvZ/A==
-Date: Wed, 6 Mar 2024 16:01:01 +0100
-From: Herve Codina <herve.codina@bootlin.com>
-To: Nuno =?UTF-8?B?U8Oh?= <noname.nuno@gmail.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Rob Herring <robh+dt@kernel.org>, Frank
- Rowand <frowand.list@gmail.com>, Saravana Kannan <saravanak@google.com>,
- Lizhi Hou <lizhi.hou@amd.com>, Max Zhen <max.zhen@amd.com>, Sonal Santan
- <sonal.santan@amd.com>, Stefano Stabellini <stefano.stabellini@xilinx.com>,
- Jonathan Cameron <Jonathan.Cameron@huawei.com>,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Allan Nielsen
- <allan.nielsen@microchip.com>, Horatiu Vultur
- <horatiu.vultur@microchip.com>, Steen Hegelund
- <steen.hegelund@microchip.com>, Luca Ceresoli <luca.ceresoli@bootlin.com>,
- Nuno Sa <nuno.sa@analog.com>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, stable@vger.kernel.org
-Subject: Re: [PATCH v4 1/2] driver core: Introduce
- device_link_wait_removal()
-Message-ID: <20240306160101.25b45335@bootlin.com>
-In-Reply-To: <86a0f91675197a00bbd921d6e57d2f3c57796e68.camel@gmail.com>
-References: <20240306085007.169771-1-herve.codina@bootlin.com>
-	<20240306085007.169771-2-herve.codina@bootlin.com>
-	<1fff8742a13c28dd7e1dda47ad2d6fa8e21e421e.camel@gmail.com>
-	<CAJZ5v0gWCo9nDAHkzeD08tTKoE0DE0ocht-Qq4zA7P59y9KeuQ@mail.gmail.com>
-	<ed442b6916016b3a40782dc32538fc517715db6c.camel@gmail.com>
-	<CAJZ5v0iQNEj6e_L1=uBTPaWn7BqV4pnoWxUq7LRPe5iVWsaifw@mail.gmail.com>
-	<ec7705f410bc848e79b8ab878b5fbf7618d9456d.camel@gmail.com>
-	<CAJZ5v0iMUOJmm99H6SgfP9179hBsLdyC+1ixJwBxSP0b18V6XA@mail.gmail.com>
-	<86a0f91675197a00bbd921d6e57d2f3c57796e68.camel@gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
+	s=arc-20240116; t=1709737373; c=relaxed/simple;
+	bh=0YlQcNDY2yZmAytkOmvFnpG2SeB7XydxVJMOyJgBm2U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ak4JKfva3/HXBr46p6kF4+UDd5F0MUDSIuWGmK1ZTihcgZ6Svei8qq4ZyRAnuINFQBFyi8YRJLRvxyAuqTsG2KsTf5x1BSMQv9eLAt6FNFn8yqLxjycLFyfBUToY8XGI7rIgeBCwjD0Tro7QhudQjUTk/tZ+X7hAlbCdFG1K4TI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VNJ3NK4u; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709737372; x=1741273372;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=0YlQcNDY2yZmAytkOmvFnpG2SeB7XydxVJMOyJgBm2U=;
+  b=VNJ3NK4u7SbSGb1dKEL3Zp7ZerXNG7Yng7KygEaeMEuBXU7/YVjn40qS
+   W698ufl58Q9ZsPp2yO7u7VCVdknJ6RPDwy/hiC+K3NpOmq8opM57U6tan
+   LFgphFasIZ5wbID0jqLAUyytyc4A0uUadb9C7g3s9yp3tIIbMsLav20Dj
+   WaO6noABHWShnEWtFN6+9AQ7gzzzEjemp7DFeZNLmwbUZpKPpKYklWjkq
+   AXmFLWvyXBd1+JS8CQOPR/GKFHCbP66rKNzdeuMZ/PCrWeUfXR330hZf8
+   Uz7pWdiF+0IBuwPjl49/YGRgQLokD9hTZxsCe1OdHcKs2jpTYFKrYqjbc
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11004"; a="4467260"
+X-IronPort-AV: E=Sophos;i="6.06,208,1705392000"; 
+   d="scan'208";a="4467260"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 07:02:51 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11004"; a="937045015"
+X-IronPort-AV: E=Sophos;i="6.06,208,1705392000"; 
+   d="scan'208";a="937045015"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 06 Mar 2024 07:02:46 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+	id B7F1D184; Wed,  6 Mar 2024 17:02:45 +0200 (EET)
+Date: Wed, 6 Mar 2024 17:02:45 +0200
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>, Elena Reshetova <elena.reshetova@intel.com>, 
+	Jun Nakajima <jun.nakajima@intel.com>, Rick Edgecombe <rick.p.edgecombe@intel.com>, 
+	Tom Lendacky <thomas.lendacky@amd.com>, "Kalra, Ashish" <ashish.kalra@amd.com>, 
+	Sean Christopherson <seanjc@google.com>, "Huang, Kai" <kai.huang@intel.com>, Baoquan He <bhe@redhat.com>, 
+	kexec@lists.infradead.org, linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv8 00/17, CORRECTED] x86/tdx: Add kexec support
+Message-ID: <4iospuc5oxs7vbgm3driasjeyixvgz6yrmym3kzguzngngo7zm@c6ymrw52fn5v>
+References: <20240227212452.3228893-1-kirill.shutemov@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240227212452.3228893-1-kirill.shutemov@linux.intel.com>
 
-Hi Nuno,
-
-On Wed, 06 Mar 2024 15:50:44 +0100
-Nuno Sá <noname.nuno@gmail.com> wrote:
-
-..
-> > > > > 
-> > > > > That makes sense but then the only thing I still don't fully get is why
-> > > > > we
-> > > > > have
-> > > > > a separate devlink_class_init() initcall for registering the devlink
-> > > > > class
-> > > > > (which can also fail)...  
-> > > > 
-> > > > Well, I haven't added it. :-)
-> > > >   
-> > > > > What I take from the above is that we should fail the
-> > > > > driver model if one of it's fundamental components fails so I would say
-> > > > > we
-> > > > > should merge devlink_class_init() with device_init() otherwise it's a
-> > > > > bit
-> > > > > confusing (at least to me) and gives the idea that it's ok for the
-> > > > > driver
-> > > > > model
-> > > > > to exist without the links (unless I'm missing some other reason for the
-> > > > > devlink
-> > > > > init function).  
-> > > > 
-> > > > +1
-> > > > 
-> > > > Feel free to send a patch along these lines, chances are that it will
-> > > > be popular. ;-)  
-> > > 
-> > > I was actually thinking about that but I think I encountered the reason why
-> > > we
-> > > have it like this... devices_init() is called from driver_init() and there
-> > > we
-> > > have:
-> > > 
-> > > ...
-> > > 
-> > > devices_init();
-> > > buses_init();
-> > > classes_init();
-> > > 
-> > > ...
-> > > 
-> > > So classes are initialized after devices which means we can't really do
-> > > class_register(&devlink_class) from devices_init(). Unless, of course, we
-> > > re-
-> > > order things in driver_init() but that would be a questionable change at the
-> > > very least.
-> > > 
-> > > So, while I agree with what you've said, I'm still not sure if mixing
-> > > devlink
-> > > stuff between devices_init() and devlink_class_init() is the best thing to
-> > > do
-> > > given that we already have the case where devlink_class_init() can fail
-> > > while
-> > > the driver model is up.  
-> > 
-> > So why don't you make devlink_class_init() do a BUG() on failure
-> > instead of returning an error?  IMO crashing early is better than
-> > crashing later or otherwise failing in a subtle way due to a missed
-> > dependency.  
+On Tue, Feb 27, 2024 at 11:24:35PM +0200, Kirill A. Shutemov wrote:
+> The patchset adds bits and pieces to get kexec (and crashkernel) work on
+> TDX guest.
 > 
-> Well, I do agree with that... Maybe that's something that Herve can sneak in
-> this patch? Otherwise, I can later (after this one is applied) send a patch for
-> it.
+> The last patch implements CPU offlining according to the approved ACPI
+> spec change poposal[1]. It unlocks kexec with all CPUs visible in the target
+> kernel. It requires BIOS-side enabling. If it missing we fallback to booting
+> 2nd kernel with single CPU.
+> 
+> Please review. I would be glad for any feedback.
 
-Well, I don't thing that this have to be part of this current series.
-It is an other topic and should be handled out of this current series.
+Thomas, Ingo, Borislav, Dave,
 
-Hervé
+Any feedback?
+
+Is there anything else I can do to get the patchset moving?
+
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
 
