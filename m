@@ -1,147 +1,157 @@
-Return-Path: <linux-kernel+bounces-94205-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94206-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F48B873B50
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:56:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 875D0873B51
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:56:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4BC52281DB7
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:56:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B958E1C22D94
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:56:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9287A135A6C;
-	Wed,  6 Mar 2024 15:55:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AB01137921;
+	Wed,  6 Mar 2024 15:55:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Lj9C1aaF"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LT+083dN"
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1054C5DF3C;
-	Wed,  6 Mar 2024 15:55:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2F53135415
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 15:55:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709740555; cv=none; b=MSTFxkf32qWRRGFgipDEenqEB80MyqCeQzCvml7++Qv8rCO2ZW91v1vbFA/m0Ixy3OpI1ogN4+tcpXdxvljxVyuj9jTbGSyY7e2aUfP9h9oO3hMZtmx1T/lcS+DMNvMh28q55/sStyalOz3J3MgC6VnLHeawl27gD6h1YzNdjZA=
+	t=1709740556; cv=none; b=ZJCcANePS9/tResQnN+Y6Go+qtJgo77QBVFRGI5Bd8x1j4YJFnsBDvUojUiqRkEr8huyR9v6ASHlTGYdUduOneTOVH0KHuen+UNzaPzOutLjPew8W7e6wCfixeb5D3F31OOR4i34u9vKeVXcFmp+hS0p0b7w0/DNzpk7sIN+/vA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709740555; c=relaxed/simple;
-	bh=DWLsQTYRY4NV202mbVOUcPSKxCp8J/1ljk2rS3jeIHY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=M1F69fdSTo4l/C41Jn7r2qUCydFiiXc6vtECGW90quK/iUM0kKseYav1n7Oe6zQb6UvefzYD6qJRBachaOqT47TV8cLUcYGTV7nebuQYM1vKRfmq4CjUR8ofdCMMyxv/nThNh/KCU6m2exfpLOxXbUAmy/FxZr0c533CQjOKqEo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Lj9C1aaF; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709740554; x=1741276554;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=DWLsQTYRY4NV202mbVOUcPSKxCp8J/1ljk2rS3jeIHY=;
-  b=Lj9C1aaFQFlCKmUjGwH+DYcY88GHnm8nCX92u2VesKc/VCaKskp2M87D
-   rfYNBNX7sJbyG04olI03pNT0JFjBZZ+hBf7UzX0YOdFOwFL0iJtsegB+A
-   jGSiekBoS8jOrEe98/8CNoQ+ob/itfGuEJvufa9dGn1VsK9i2O2e66ucC
-   1mRN04bjnuGKiv3oH4VAODLnZ61Bgvb4u4MrT7cg+Qzm4vYNzrx1wtOfi
-   ztAC1pdI3lO7CYKL5RiR715/6SN4mF0TqjebVUqfdLYth5hy/LOcESBxQ
-   Wx5e1DUdk/xwPQXKpUHVSDyZP34HNVnJ9X4eMFHIRtzwM6zda9Y8Rddwg
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11005"; a="4541549"
-X-IronPort-AV: E=Sophos;i="6.06,208,1705392000"; 
-   d="scan'208";a="4541549"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 07:55:53 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11005"; a="914182389"
-X-IronPort-AV: E=Sophos;i="6.06,208,1705392000"; 
-   d="scan'208";a="914182389"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 07:55:49 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rhtcQ-0000000AItQ-22Eu;
-	Wed, 06 Mar 2024 17:55:46 +0200
-Date: Wed, 6 Mar 2024 17:55:46 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Herve Codina <herve.codina@bootlin.com>
-Cc: Yury Norov <yury.norov@gmail.com>,
-	Vadim Fedorenko <vadim.fedorenko@linux.dev>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, Andrew Lunn <andrew@lunn.ch>,
-	Mark Brown <broonie@kernel.org>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v6 4/5] net: wan: fsl_qmc_hdlc: Add runtime timeslots
- changes support
-Message-ID: <ZeiSArlb24aSp-CJ@smile.fi.intel.com>
-References: <20240306080726.167338-1-herve.codina@bootlin.com>
- <20240306080726.167338-5-herve.codina@bootlin.com>
- <ZehqRMZwtazTf6P6@yury-ThinkPad>
- <Zehy6K0Sj-cqcxZE@smile.fi.intel.com>
- <20240306164311.735ded83@bootlin.com>
+	s=arc-20240116; t=1709740556; c=relaxed/simple;
+	bh=S63c2sNZMMYma70DFF7Q9B7pmKfrKJBfr4eRWQ2DWSU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=D331wtl3XgipEmv9w9bmITXMuO3tr6ziSOwS+EgFlD97X+g1emj2ei88Gg3EsEuW3Am/g+3924UspAHyj3SHBRQycSeLQENawtSol5plq7Or/3sgsUufGOErnaENr0o+czVlpdQto8w/e/mvPbzVh6NGiovtclAcJXBkzgpy/Qc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=LT+083dN; arc=none smtp.client-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-33dd2f0a0c4so4138581f8f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 07:55:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709740553; x=1710345353; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XZt95k/86iLi9wV68qjX2HqV51z+ByDGihNj6bj2L/M=;
+        b=LT+083dNGyrPdnoA7flbYtJRIfs2651fBPE9hm/78+ZJ6L3a7QuJQs60zmZbXF651s
+         lWKeKqXaoFIOhdCQwqyIsGjJ4/SS0oKVuPS1mct030uOGhqsNOLLygQj4GxOT6K6lL/9
+         9aKckZIG+9ADo0D20dDscH/0x885hvPREtrJcIxNoCa97WZJ8Uo7isBPWp+FncLDRf35
+         T0zTTZoG4n0LXtXW+xoqqcsvSI9eDVg78h/ReOjqqhoOjKzI2zAYrtDPJROTl/2Gdh+Q
+         OIcLgcaEcWpwYYHiwMUxoqVg0VygxT8SriIKpa36UrhGfZj3j4z4EDvxYOT517ZhswWs
+         mndQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709740553; x=1710345353;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XZt95k/86iLi9wV68qjX2HqV51z+ByDGihNj6bj2L/M=;
+        b=UiuGts/hNY6JgHuSaav+DCprKbmXQbPLuy06z+WFCtldbogiLJzNLXgvfon+jGlZfA
+         b20GyBCFgJnLhT5p8OW5Z3DYU+VRvXyIfx9qygZsl8uGpDRk/ORc52QrYPNlonP9WoW4
+         mj3Nxg2wzYrnlN35WKedh7LpJ+Kpz31jY7XgUqaiqm0GBHj+wWgvB01y/1VVaBPZn59e
+         Tml4KRqKH8HGpus4jY/OFpsUaXwKBLhN9mXhLmMdGTa+1KzluinLhNWd8i+y9cO3t7kB
+         JdtjW9kyfPATKjggHArIYbxY4Zw125wQE1RcM+W09yCZdu0hrmQ0k+z8VUuWdHym+rk6
+         3JTw==
+X-Forwarded-Encrypted: i=1; AJvYcCWLd5zxLkgWkNzq0gbkLsAU9ooopx2KtgoeX43HtAvT51/Z1lx8g81dq4kk5Kdco88z4rdOTc4Xa7s1e3SABYzrV+9henzUzxtn8pL5
+X-Gm-Message-State: AOJu0Yxgfer7eBh6Zu/Dor58mfahQHWGucVcLFzM8pMBJptmtuPs9Vm7
+	OLh4pIMt4F1VfOhEvqGfrYudnx8tQ68+5pdu0/26qECi+mMIdQWWHVklVhgGdNQ=
+X-Google-Smtp-Source: AGHT+IF8Ps/jDtz8CnXzXspP0aFRnqs7Bqs2fvkUzIE3ZTrMwpDofRipU2owwFHDX9E7zuS//MFTWg==
+X-Received: by 2002:a5d:550c:0:b0:33d:a2f7:ab33 with SMTP id b12-20020a5d550c000000b0033da2f7ab33mr10287562wrv.55.1709740552769;
+        Wed, 06 Mar 2024 07:55:52 -0800 (PST)
+Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
+        by smtp.googlemail.com with ESMTPSA id f15-20020adffccf000000b0033dedd63382sm17969939wrs.101.2024.03.06.07.55.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Mar 2024 07:55:52 -0800 (PST)
+Message-ID: <3bb7c6cf-f7a8-4059-ad8e-02e09c2a44b1@linaro.org>
+Date: Wed, 6 Mar 2024 16:55:51 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240306164311.735ded83@bootlin.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH] thermal/core: Fix trip point crossing events ordering
+Content-Language: en-US
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: rjw@rjwysocki.net, linux-kernel@vger.kernel.org,
+ Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>,
+ "open list:THERMAL" <linux-pm@vger.kernel.org>
+References: <20240306085428.88011-1-daniel.lezcano@linaro.org>
+ <CAJZ5v0jAn2F-GH=fguX0+3bG38vyAxfufadtFiBUfg=EjTBh6Q@mail.gmail.com>
+ <14651d5b-0f67-4bff-b699-2cd1601b4fb2@linaro.org>
+ <CAJZ5v0j6At1DuQYjjbA-fw9Z-jJPhXSVSz=_uLa3KfNMJowYbA@mail.gmail.com>
+ <0e7f32aa-b2c3-43d0-8ebe-7118cb6e0edf@linaro.org>
+ <CAJZ5v0gWhNqTGpoOH01scCdC51cEnt_8_T5ccqZC6yXPDv9QcA@mail.gmail.com>
+From: Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <CAJZ5v0gWhNqTGpoOH01scCdC51cEnt_8_T5ccqZC6yXPDv9QcA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Mar 06, 2024 at 04:43:11PM +0100, Herve Codina wrote:
-> On Wed, 6 Mar 2024 15:43:04 +0200
-> Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
-> > On Wed, Mar 06, 2024 at 05:06:12AM -0800, Yury Norov wrote:
-> > > On Wed, Mar 06, 2024 at 09:07:20AM +0100, Herve Codina wrote:  
-
-..
-
-> > > > +	DECLARE_BITMAP(ts_mask_avail, 64);
-> > > > +	DECLARE_BITMAP(ts_mask, 64);
-> > > > +	DECLARE_BITMAP(map, 64);  
-> > 
-> > 
-> > > > +	bitmap_from_u64(ts_mask_avail, ts_info->rx_ts_mask_avail);
-> > > > +	bitmap_from_u64(map, slot_map);  
-> > 
-> > > We've got a BITMAP_FROM_U64() for this:
-> > > 
-> > > 	DECLARE_BITMAP(ts_mask_avail, 64) = { BITMAP_FROM_U64(ts_info->rx_ts_mask_avail) };
-> > > 	DECLARE_BITMAP(map, 64) = { BITMAP_FROM_U64(slot_map) };  
-> > 
-> > This looks ugly. Can we rather provide a macro that does this under the hood?
-> > 
-> > Roughly:
-> > 
-> > #define DEFINE_BITMAP_64(name, src)				\
-> > 	DECLARE_BITMAP(name, 64) = { BITMAP_FROM_U64(src) }
-> > 
+On 06/03/2024 16:41, Rafael J. Wysocki wrote:
+> On Wed, Mar 6, 2024 at 2:16 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
+>>
+>> On 06/03/2024 13:53, Rafael J. Wysocki wrote:
+>>> On Wed, Mar 6, 2024 at 1:43 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
+>>>>
+>>>> On 06/03/2024 13:02, Rafael J. Wysocki wrote:
+>>>>
+>>>> [ ... ]
+>>>>
+>>>>>> +#define for_each_trip_reverse(__tz, __trip)    \
+>>>>>> +       for (__trip = &__tz->trips[__tz->num_trips - 1]; __trip >= __tz->trips ; __trip--)
+>>>>>> +
+>>>>>>     void __thermal_zone_set_trips(struct thermal_zone_device *tz);
+>>>>>>     int thermal_zone_trip_id(const struct thermal_zone_device *tz,
+>>>>>>                             const struct thermal_trip *trip);
+>>>>>> --
+>>>>>
+>>>>> Generally speaking, this is a matter of getting alignment on the
+>>>>> expectations between the kernel and user space.
+>>>>>
+>>>>> It looks like user space expects to get the notifications in the order
+>>>>> of either growing or falling temperatures, depending on the direction
+>>>>> of the temperature change.  Ordering the trips in the kernel is not
+>>>>> practical, but the notifications can be ordered in principle.  Is this
+>>>>> what you'd like to do?
+>>>>
+>>>> Yes
+>>>>
+>>>>> Or can user space be bothered with recognizing that it may get the
+>>>>> notifications for different trips out of order?
+>>>>
+>>>> IMO it is a bad information if the trip points events are coming
+>>>> unordered. The temperature signal is a time related measurements, the
+>>>> userspace should receive thermal information from this signal in the
+>>>> right order. It sounds strange to track the temperature signal in the
+>>>> kernel, then scramble the information, pass it to the userspace and
+>>>> except it to apply some kind of logic to unscramble it.
+>>>
+>>> So the notifications can be ordered before sending them out, as long
+>>> as they are produced by a single __thermal_zone_device_update() call.
+>>>
+>>> I guess you also would like the thermal_debug_tz_trip_up/down() calls
+>>> to be ordered, wouldn't you?
+>>
+>> Right
 > 
-> Well, the construction I used:
-> 	DECLARE_BITMAP(foo, 64);
-> 	...
-> 	bitmap_from_u64(foo, init_value);
-> 	...
-> can be found in several places in the kernel.
+> I have an idea how to do this, but it is based on a couple of patches
+> that I've been working on in the meantime.
 > 
-> Having the DEFINE_BITMAP_64() macro can be a way to remove this
-> construction but I am not sure that this should be done in this
-> series.
+> Let me post these patches first and then I'll send a prototype patch
+> addressing this on top of them.
 
-I also think that this can be done later, above is just a pure suggestion how.
-
-> IMHO, a specific series introducing the macro and updating pieces of
-> code in the kernel everywhere it is needed to replace this construction
-> would make much more sense.
-
-Right.
+That is awesome, thanks !
 
 -- 
-With Best Regards,
-Andy Shevchenko
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
 
 
