@@ -1,40 +1,40 @@
-Return-Path: <linux-kernel+bounces-93210-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93213-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C39EB872C6B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 02:58:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E786872C6A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 02:58:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AFCD2B248A2
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 01:58:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A09991C21907
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 01:58:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80C6712E6A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FA9912B9A;
 	Wed,  6 Mar 2024 01:58:15 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 926747460;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7519D518;
 	Wed,  6 Mar 2024 01:58:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709690294; cv=none; b=o2GiXkjQmIfC9MpiLdV5new0CYs1LaBHedzr2Z1LhDGLvcQRKdoFT5JHp0RkeRg2saK/hWod/KIInZAk+w0BONLuYWs/bc71jva0sOYODL/lQzqx4qULFstZUxunWbU5DFJ5xm3XEnph+tcHowXsCv5zzL9rYStxt31CbW9/Wy0=
+	t=1709690294; cv=none; b=spD1ooTUAEMqD/0nu/QlxX5LlAZ231xOEO4SFGWToTvi78OWEkGUKc/ehHmxa5lvRWI3CDYfIJv7tt70QICyQelnObXWiGsTPbtpzZjjEKNRTS9WKLSi56ylZPcR3e8IdGg3wNvGMpbc3DZkmuTiJWBR/OOR2oJFQI8s4XTswVE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1709690294; c=relaxed/simple;
-	bh=2/CKQBuq9CSlnosVwiJHlMV4gWcxEq3p69MeimVmHLI=;
+	bh=YbMoNGJoQ7LPWdY+QV7XwG6+ZinAIu9HNwmJVTQ9CoU=;
 	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=lhCpbJeoU17uwDRX+C3Z1z8NP6H2louncnc5rBSXjUfV45Dlp5YEGCY4mGZm+NDz/Xj0MAf5j/4m3eJN1Up6NZaJ9Nz1w0xxDb3uQwuWFximcQBT3w+mNriCt/XQpZBjcWBz5kkoJknAdCfu7YnRWMEN57CdxCz2PtuNoim0SXI=
+	 Content-Type; b=H8X1xqzlmZB0DAFcdDD17Hwh47Hj9bI13vAFjruXcBvmsJiqCsy2GqPBD7zSWChDS1eZqvCEbLn+4IqZMfvUHayOaLnoMLYYPsvmOuzMrcHyODHo4oplrlqPxTIU1qS4tG5w2u980w7PaaxgIECplzfFdBiZNQOAQFsOir2dSEE=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30FB8C433B2;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63663C43142;
 	Wed,  6 Mar 2024 01:58:14 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.97)
 	(envelope-from <rostedt@goodmis.org>)
-	id 1rhgZh-00000000TAu-3CEg;
+	id 1rhgZh-00000000TBO-3sEl;
 	Tue, 05 Mar 2024 21:00:05 -0500
-Message-ID: <20240306020005.621589841@goodmis.org>
+Message-ID: <20240306020005.782553145@goodmis.org>
 User-Agent: quilt/0.67
-Date: Tue, 05 Mar 2024 20:59:12 -0500
+Date: Tue, 05 Mar 2024 20:59:13 -0500
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-kernel@vger.kernel.org,
  linux-trace-kernel@vger.kernel.org
@@ -57,7 +57,7 @@ Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  Borislav Petkov <bp@alien8.de>,
  "Paul E. McKenney" <paulmck@kernel.org>,
  David Howells <dhowells@redhat.com>
-Subject: [PATCH 2/8] ring-buffer: Add ring_buffer_alloc_range()
+Subject: [PATCH 3/8] tracing: Create "boot_mapped" instance for memory mapped buffer
 References: <20240306015910.766510873@goodmis.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -69,384 +69,194 @@ Content-Type: text/plain; charset=UTF-8
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-In preparation to allowing the trace ring buffer to be allocated in a
-range of memory that is persistent across reboots, add
-ring_buffer_alloc_range(). It takes a contiguous range of memory and will
-split it up evening for the per CPU ring buffers.
+Add two global variables trace_buffer_start and trace_buffer_size. If they
+are both set, then a "boot_mapped" instance will be created using the
+memory specified by these variables as its ring buffer.
 
-If there's not enough memory to handle all CPUs with the minimum size, it
-will fail to allocate the ring buffer.
+The instance will exist in:
+
+  /sys/kernel/tracing/instances/boot_mapped
+
+Note, because the ring buffer is using a defined memory ranged, it will
+act just like a memory mapped ring buffer. It will not have a snapshot
+buffer, as it can't swap out the buffer. The snapshot files as well as any
+tracers that uses a snapshot will not be present in the boot_mapped
+instance.
 
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- include/linux/ring_buffer.h |  17 +++
- kernel/trace/ring_buffer.c  | 221 ++++++++++++++++++++++++++++++------
- 2 files changed, 203 insertions(+), 35 deletions(-)
+ include/linux/trace.h |  7 +++++
+ kernel/trace/trace.c  | 65 ++++++++++++++++++++++++++++++++++++-------
+ kernel/trace/trace.h  |  3 ++
+ 3 files changed, 65 insertions(+), 10 deletions(-)
 
-diff --git a/include/linux/ring_buffer.h b/include/linux/ring_buffer.h
-index 0841ba8bab14..17b5508f042c 100644
---- a/include/linux/ring_buffer.h
-+++ b/include/linux/ring_buffer.h
-@@ -89,6 +89,11 @@ void ring_buffer_discard_commit(struct trace_buffer *buffer,
- struct trace_buffer *
- __ring_buffer_alloc(unsigned long size, unsigned flags, struct lock_class_key *key);
- 
-+struct trace_buffer *__ring_buffer_alloc_range(unsigned long size, unsigned flags,
-+					       int order, unsigned long start,
-+					       unsigned long range_size,
-+					       struct lock_class_key *key);
-+
- /*
-  * Because the ring buffer is generic, if other users of the ring buffer get
-  * traced by ftrace, it can produce lockdep warnings. We need to keep each
-@@ -100,6 +105,18 @@ __ring_buffer_alloc(unsigned long size, unsigned flags, struct lock_class_key *k
- 	__ring_buffer_alloc((size), (flags), &__key);	\
- })
+diff --git a/include/linux/trace.h b/include/linux/trace.h
+index fdcd76b7be83..75dab6bb88c9 100644
+--- a/include/linux/trace.h
++++ b/include/linux/trace.h
+@@ -33,6 +33,13 @@ struct trace_array;
+ int register_ftrace_export(struct trace_export *export);
+ int unregister_ftrace_export(struct trace_export *export);
  
 +/*
-+ * Because the ring buffer is generic, if other users of the ring buffer get
-+ * traced by ftrace, it can produce lockdep warnings. We need to keep each
-+ * ring buffer's lock class separate.
++ * If the below are set, then a "boot_mapped" tracing instance will
++ * be created using this memory for its ring buffer.
 + */
-+#define ring_buffer_alloc_range(size, flags, order, start, range_size)	\
-+({									\
-+	static struct lock_class_key __key;				\
-+	__ring_buffer_alloc_range((size), (flags), (order), (start),	\
-+				  (range_size), &__key);		\
-+})
-+
- int ring_buffer_wait(struct trace_buffer *buffer, int cpu, int full);
- __poll_t ring_buffer_poll_wait(struct trace_buffer *buffer, int cpu,
- 			  struct file *filp, poll_table *poll_table, int full);
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index 524b2c185c88..367597dc766b 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -41,6 +41,9 @@
- 
- static void update_pages_handler(struct work_struct *work);
- 
-+struct ring_buffer_meta {
-+};
-+
- /*
-  * The ring buffer header is special. We must manually up keep it.
-  */
-@@ -339,7 +342,8 @@ struct buffer_page {
- 	local_t		 entries;	/* entries on this page */
- 	unsigned long	 real_end;	/* real end of data */
- 	unsigned	 order;		/* order of the page */
--	u32		 id;		/* ID for external mapping */
-+	u32		 id:30;		/* ID for external mapping */
-+	u32		 range:1;	/* Mapped via a range */
- 	struct buffer_data_page *page;	/* Actual data page */
- };
- 
-@@ -370,7 +374,9 @@ static __always_inline unsigned int rb_page_commit(struct buffer_page *bpage)
- 
- static void free_buffer_page(struct buffer_page *bpage)
- {
--	free_pages((unsigned long)bpage->page, bpage->order);
-+	/* Range pages are not to be freed */
-+	if (!bpage->range)
-+		free_pages((unsigned long)bpage->page, bpage->order);
- 	kfree(bpage);
- }
- 
-@@ -520,6 +526,9 @@ struct trace_buffer {
- 	struct rb_irq_work		irq_work;
- 	bool				time_stamp_abs;
- 
-+	unsigned long			range_addr_start;
-+	unsigned long			range_addr_end;
-+
- 	unsigned int			subbuf_size;
- 	unsigned int			subbuf_order;
- 	unsigned int			max_data_size;
-@@ -1431,9 +1440,67 @@ static void rb_check_pages(struct ring_buffer_per_cpu *cpu_buffer)
- 	}
- }
- 
-+/*
-+ * Take an address, add the meta data size as well as the array of
-+ * array subbuffer indexes, then align it to a subbuffer size.
-+ */
-+static unsigned long
-+rb_range_align_subbuf(unsigned long addr, int subbuf_size, int nr_subbufs)
-+{
-+	addr += sizeof(struct ring_buffer_meta) +
-+		sizeof(int) * nr_subbufs;
-+	return ALIGN(addr, subbuf_size);
-+}
-+
-+/*
-+ * Return a specific sub-buffer for a given @cpu defined by @idx.
-+ */
-+static void *rb_range_buffer(struct trace_buffer *buffer, int cpu, int nr_pages, int idx)
-+{
-+	unsigned long ptr;
-+	int subbuf_size = buffer->subbuf_size + BUF_PAGE_HDR_SIZE;
-+	int nr_subbufs;
-+
-+	/* Include the reader page */
-+	nr_subbufs = nr_pages + 1;
-+
-+	/*
-+	 * The first chunk may not be subbuffer aligned, where as
-+	 * the rest of the chunks are.
-+	 */
-+	ptr = buffer->range_addr_start;
-+	ptr = rb_range_align_subbuf(ptr, subbuf_size, nr_subbufs);
-+	if (cpu) {
-+		unsigned long p;
-+
-+		ptr += subbuf_size * nr_subbufs;
-+
-+		/* Save the beginning of this CPU chunk */
-+		p = ptr;
-+
-+		ptr = rb_range_align_subbuf(ptr, subbuf_size, nr_subbufs);
-+
-+		if (cpu > 1) {
-+			unsigned long size;
-+
-+			ptr += subbuf_size * nr_subbufs;
-+
-+			/* Now all chunks after this are the same size */
-+			size = ptr - p;
-+			ptr += size * (cpu - 2);
-+
-+			ptr = rb_range_align_subbuf(ptr, subbuf_size, nr_subbufs);
-+		}
-+	}
-+	if (ptr + subbuf_size * nr_subbufs > buffer->range_addr_end)
-+		return NULL;
-+	return (void *)ptr;
-+}
-+
- static int __rb_allocate_pages(struct ring_buffer_per_cpu *cpu_buffer,
- 		long nr_pages, struct list_head *pages)
- {
-+	struct trace_buffer *buffer = cpu_buffer->buffer;
- 	struct buffer_page *bpage, *tmp;
- 	bool user_thread = current->mm != NULL;
- 	gfp_t mflags;
-@@ -1470,6 +1537,7 @@ static int __rb_allocate_pages(struct ring_buffer_per_cpu *cpu_buffer,
- 		set_current_oom_origin();
- 	for (i = 0; i < nr_pages; i++) {
- 		struct page *page;
-+		int cpu = cpu_buffer->cpu;
- 
- 		bpage = kzalloc_node(ALIGN(sizeof(*bpage), cache_line_size()),
- 				    mflags, cpu_to_node(cpu_buffer->cpu));
-@@ -1478,14 +1546,22 @@ static int __rb_allocate_pages(struct ring_buffer_per_cpu *cpu_buffer,
- 
- 		rb_check_bpage(cpu_buffer, bpage);
- 
--		list_add(&bpage->list, pages);
-+		list_add_tail(&bpage->list, pages);
- 
--		page = alloc_pages_node(cpu_to_node(cpu_buffer->cpu),
--					mflags | __GFP_ZERO,
--					cpu_buffer->buffer->subbuf_order);
--		if (!page)
--			goto free_pages;
--		bpage->page = page_address(page);
-+		if (buffer->range_addr_start) {
-+			/* A range was given. Use that for the buffer page */
-+			bpage->page = rb_range_buffer(buffer, cpu, nr_pages, i + 1);
-+			if (!bpage->page)
-+				goto free_pages;
-+			bpage->range = 1;
-+		} else {
-+			page = alloc_pages_node(cpu_to_node(cpu_buffer->cpu),
-+						mflags | __GFP_ZERO,
-+						cpu_buffer->buffer->subbuf_order);
-+			if (!page)
-+				goto free_pages;
-+			bpage->page = page_address(page);
-+		}
- 		bpage->order = cpu_buffer->buffer->subbuf_order;
- 		rb_init_page(bpage->page);
- 
-@@ -1567,11 +1643,18 @@ rb_allocate_cpu_buffer(struct trace_buffer *buffer, long nr_pages, int cpu)
- 
- 	cpu_buffer->reader_page = bpage;
- 
--	page = alloc_pages_node(cpu_to_node(cpu), GFP_KERNEL | __GFP_ZERO,
--				cpu_buffer->buffer->subbuf_order);
--	if (!page)
--		goto fail_free_reader;
--	bpage->page = page_address(page);
-+	if (buffer->range_addr_start) {
-+		bpage->page = rb_range_buffer(buffer, cpu, nr_pages, 0);
-+		if (!bpage->page)
-+			goto fail_free_reader;
-+		bpage->range = 1;
-+	} else {
-+		page = alloc_pages_node(cpu_to_node(cpu), GFP_KERNEL | __GFP_ZERO,
-+					cpu_buffer->buffer->subbuf_order);
-+		if (!page)
-+			goto fail_free_reader;
-+		bpage->page = page_address(page);
-+	}
- 	rb_init_page(bpage->page);
- 
- 	INIT_LIST_HEAD(&cpu_buffer->reader_page->list);
-@@ -1622,22 +1705,14 @@ static void rb_free_cpu_buffer(struct ring_buffer_per_cpu *cpu_buffer)
- 	kfree(cpu_buffer);
- }
- 
--/**
-- * __ring_buffer_alloc - allocate a new ring_buffer
-- * @size: the size in bytes per cpu that is needed.
-- * @flags: attributes to set for the ring buffer.
-- * @key: ring buffer reader_lock_key.
-- *
-- * Currently the only flag that is available is the RB_FL_OVERWRITE
-- * flag. This flag means that the buffer will overwrite old data
-- * when the buffer wraps. If this flag is not set, the buffer will
-- * drop data when the tail hits the head.
-- */
--struct trace_buffer *__ring_buffer_alloc(unsigned long size, unsigned flags,
--					struct lock_class_key *key)
-+static struct trace_buffer *alloc_buffer(unsigned long size, unsigned flags,
-+					 int order, unsigned long start,
-+					 unsigned long end,
-+					 struct lock_class_key *key)
- {
- 	struct trace_buffer *buffer;
- 	long nr_pages;
-+	int subbuf_size;
- 	int bsize;
- 	int cpu;
- 	int ret;
-@@ -1651,14 +1726,13 @@ struct trace_buffer *__ring_buffer_alloc(unsigned long size, unsigned flags,
- 	if (!zalloc_cpumask_var(&buffer->cpumask, GFP_KERNEL))
- 		goto fail_free_buffer;
- 
--	/* Default buffer page size - one system page */
--	buffer->subbuf_order = 0;
--	buffer->subbuf_size = PAGE_SIZE - BUF_PAGE_HDR_SIZE;
-+	buffer->subbuf_order = order;
-+	subbuf_size = (PAGE_SIZE << order);
-+	buffer->subbuf_size = subbuf_size - BUF_PAGE_HDR_SIZE;
- 
- 	/* Max payload is buffer page size - header (8bytes) */
- 	buffer->max_data_size = buffer->subbuf_size - (sizeof(u32) * 2);
- 
--	nr_pages = DIV_ROUND_UP(size, buffer->subbuf_size);
- 	buffer->flags = flags;
- 	buffer->clock = trace_clock_local;
- 	buffer->reader_lock_key = key;
-@@ -1666,10 +1740,6 @@ struct trace_buffer *__ring_buffer_alloc(unsigned long size, unsigned flags,
- 	init_irq_work(&buffer->irq_work.work, rb_wake_up_waiters);
- 	init_waitqueue_head(&buffer->irq_work.waiters);
- 
--	/* need at least two pages */
--	if (nr_pages < 2)
--		nr_pages = 2;
--
- 	buffer->cpus = nr_cpu_ids;
- 
- 	bsize = sizeof(void *) * nr_cpu_ids;
-@@ -1678,6 +1748,46 @@ struct trace_buffer *__ring_buffer_alloc(unsigned long size, unsigned flags,
- 	if (!buffer->buffers)
- 		goto fail_free_cpumask;
- 
-+	/* If start/end are specified, then that overrides size */
-+	if (start && end) {
-+		unsigned long ptr;
-+		int n;
-+
-+		size = end - start;
-+		size = size / nr_cpu_ids;
-+		nr_pages = (size - sizeof(struct ring_buffer_meta)) /
-+			(subbuf_size + sizeof(int));
-+		/* Need at least two pages plus the reader page */
-+		if (nr_pages < 3)
-+			goto fail_free_buffers;
-+
-+ again:
-+		/* Make sure that the size fits aligned */
-+		for (n = 0, ptr = start; n < nr_cpu_ids; n++) {
-+			ptr += sizeof(struct ring_buffer_meta) +
-+				sizeof(int) * nr_pages;
-+			ptr = ALIGN(ptr, subbuf_size);
-+			ptr += subbuf_size * nr_pages;
-+		}
-+		if (ptr > end) {
-+			if (nr_pages <= 3)
-+				goto fail_free_buffers;
-+			nr_pages--;
-+			goto again;
-+		}
-+
-+		/* nr_pages should not count the reader page */
-+		nr_pages--;
-+		buffer->range_addr_start = start;
-+		buffer->range_addr_end = end;
-+	} else {
-+
-+		/* need at least two pages */
-+		nr_pages = DIV_ROUND_UP(size, buffer->subbuf_size);
-+		if (nr_pages < 2)
-+			nr_pages = 2;
-+	}
-+
- 	cpu = raw_smp_processor_id();
- 	cpumask_set_cpu(cpu, buffer->cpumask);
- 	buffer->buffers[cpu] = rb_allocate_cpu_buffer(buffer, nr_pages, cpu);
-@@ -1706,8 +1816,49 @@ struct trace_buffer *__ring_buffer_alloc(unsigned long size, unsigned flags,
- 	kfree(buffer);
- 	return NULL;
- }
-+
-+/**
-+ * __ring_buffer_alloc - allocate a new ring_buffer
-+ * @size: the size in bytes per cpu that is needed.
-+ * @flags: attributes to set for the ring buffer.
-+ * @key: ring buffer reader_lock_key.
-+ *
-+ * Currently the only flag that is available is the RB_FL_OVERWRITE
-+ * flag. This flag means that the buffer will overwrite old data
-+ * when the buffer wraps. If this flag is not set, the buffer will
-+ * drop data when the tail hits the head.
-+ */
-+struct trace_buffer *__ring_buffer_alloc(unsigned long size, unsigned flags,
-+					struct lock_class_key *key)
-+{
-+	/* Default buffer page size - one system page */
-+	return alloc_buffer(size, flags, 0, 0, 0,key);
-+
-+}
- EXPORT_SYMBOL_GPL(__ring_buffer_alloc);
- 
-+/**
-+ * __ring_buffer_alloc_range - allocate a new ring_buffer from existing memory
-+ * @size: the size in bytes per cpu that is needed.
-+ * @flags: attributes to set for the ring buffer.
-+ * @start: start of allocated range
-+ * @range_size: size of allocated range
-+ * @order: sub-buffer order
-+ * @key: ring buffer reader_lock_key.
-+ *
-+ * Currently the only flag that is available is the RB_FL_OVERWRITE
-+ * flag. This flag means that the buffer will overwrite old data
-+ * when the buffer wraps. If this flag is not set, the buffer will
-+ * drop data when the tail hits the head.
-+ */
-+struct trace_buffer *__ring_buffer_alloc_range(unsigned long size, unsigned flags,
-+					       int order, unsigned long start,
-+					       unsigned long range_size,
-+					       struct lock_class_key *key)
-+{
-+	return alloc_buffer(size, flags, order, start, start + range_size, key);
-+}
++extern unsigned long trace_buffer_start;
++extern unsigned long trace_buffer_size;
 +
  /**
-  * ring_buffer_free - free a ring buffer.
-  * @buffer: the buffer to free.
+  * trace_array_puts - write a constant string into the trace buffer.
+  * @tr:    The trace array to write to
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index ff0b0a999171..ff986d2a4bd0 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -4900,6 +4900,11 @@ static int tracing_open(struct inode *inode, struct file *file)
+ static bool
+ trace_ok_for_array(struct tracer *t, struct trace_array *tr)
+ {
++#ifdef CONFIG_TRACER_SNAPSHOT
++	/* arrays with mapped buffer range do not have snapshots */
++	if (tr->range_addr_start && t->use_max_tr)
++		return false;
++#endif
+ 	return (tr->flags & TRACE_ARRAY_FL_GLOBAL) || t->allow_instances;
+ }
+ 
+@@ -8670,11 +8675,13 @@ tracing_init_tracefs_percpu(struct trace_array *tr, long cpu)
+ 				tr, cpu, &tracing_entries_fops);
+ 
+ #ifdef CONFIG_TRACER_SNAPSHOT
+-	trace_create_cpu_file("snapshot", TRACE_MODE_WRITE, d_cpu,
+-				tr, cpu, &snapshot_fops);
++	if (!tr->range_addr_start) {
++		trace_create_cpu_file("snapshot", TRACE_MODE_WRITE, d_cpu,
++				      tr, cpu, &snapshot_fops);
+ 
+-	trace_create_cpu_file("snapshot_raw", TRACE_MODE_READ, d_cpu,
+-				tr, cpu, &snapshot_raw_fops);
++		trace_create_cpu_file("snapshot_raw", TRACE_MODE_READ, d_cpu,
++				      tr, cpu, &snapshot_raw_fops);
++	}
+ #endif
+ }
+ 
+@@ -9211,7 +9218,18 @@ allocate_trace_buffer(struct trace_array *tr, struct array_buffer *buf, int size
+ 
+ 	buf->tr = tr;
+ 
+-	buf->buffer = ring_buffer_alloc(size, rb_flags);
++	if (tr->range_addr_start && tr->range_addr_size) {
++		buf->buffer = ring_buffer_alloc_range(size, rb_flags, 0,
++						      tr->range_addr_start,
++						      tr->range_addr_size);
++		/*
++		 * This is basically the same as a mapped buffer,
++		 * with the same restrictions.
++		 */
++		tr->mapped++;
++	} else {
++		buf->buffer = ring_buffer_alloc(size, rb_flags);
++	}
+ 	if (!buf->buffer)
+ 		return -ENOMEM;
+ 
+@@ -9248,6 +9266,10 @@ static int allocate_trace_buffers(struct trace_array *tr, int size)
+ 		return ret;
+ 
+ #ifdef CONFIG_TRACER_MAX_TRACE
++	/* Fix mapped buffer trace arrays do not have snapshot buffers */
++	if (tr->range_addr_start)
++		return 0;
++
+ 	ret = allocate_trace_buffer(tr, &tr->max_buffer,
+ 				    allocate_snapshot ? size : 1);
+ 	if (MEM_FAIL(ret, "Failed to allocate trace buffer\n")) {
+@@ -9348,7 +9370,9 @@ static int trace_array_create_dir(struct trace_array *tr)
+ }
+ 
+ static struct trace_array *
+-trace_array_create_systems(const char *name, const char *systems)
++trace_array_create_systems(const char *name, const char *systems,
++			   unsigned long range_addr_start,
++			   unsigned long range_addr_size)
+ {
+ 	struct trace_array *tr;
+ 	int ret;
+@@ -9374,6 +9398,10 @@ trace_array_create_systems(const char *name, const char *systems)
+ 			goto out_free_tr;
+ 	}
+ 
++	/* Only for boot up memory mapped ring buffers */
++	tr->range_addr_start = range_addr_start;
++	tr->range_addr_size = range_addr_size;
++
+ 	tr->trace_flags = global_trace.trace_flags & ~ZEROED_TRACE_FLAGS;
+ 
+ 	cpumask_copy(tr->tracing_cpumask, cpu_all_mask);
+@@ -9431,9 +9459,24 @@ trace_array_create_systems(const char *name, const char *systems)
+ 
+ static struct trace_array *trace_array_create(const char *name)
+ {
+-	return trace_array_create_systems(name, NULL);
++	return trace_array_create_systems(name, NULL, 0, 0);
++}
++
++unsigned long trace_buffer_start;
++unsigned long trace_buffer_size;
++
++static int __init trace_range_tr(void)
++{
++	if (!trace_buffer_start || !trace_buffer_size)
++		return 0;
++
++	trace_array_create_systems("boot_mapped", NULL,
++				   trace_buffer_start, trace_buffer_size);
++	return 0;
+ }
+ 
++fs_initcall(trace_range_tr);
++
+ static int instance_mkdir(const char *name)
+ {
+ 	struct trace_array *tr;
+@@ -9485,7 +9528,7 @@ struct trace_array *trace_array_get_by_name(const char *name, const char *system
+ 			goto out_unlock;
+ 	}
+ 
+-	tr = trace_array_create_systems(name, systems);
++	tr = trace_array_create_systems(name, systems, 0, 0);
+ 
+ 	if (IS_ERR(tr))
+ 		tr = NULL;
+@@ -9678,8 +9721,10 @@ init_tracer_tracefs(struct trace_array *tr, struct dentry *d_tracer)
+ 		MEM_FAIL(1, "Could not allocate function filter files");
+ 
+ #ifdef CONFIG_TRACER_SNAPSHOT
+-	trace_create_file("snapshot", TRACE_MODE_WRITE, d_tracer,
+-			  tr, &snapshot_fops);
++	if (!tr->range_addr_start) {
++		trace_create_file("snapshot", TRACE_MODE_WRITE, d_tracer,
++				  tr, &snapshot_fops);
++	}
+ #endif
+ 
+ 	trace_create_file("error_log", TRACE_MODE_WRITE, d_tracer,
+diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
+index 749a182dab48..d22d7c3b770a 100644
+--- a/kernel/trace/trace.h
++++ b/kernel/trace/trace.h
+@@ -338,6 +338,9 @@ struct trace_array {
+ 	unsigned int		snapshot;
+ 	unsigned int		mapped;
+ 	unsigned long		max_latency;
++	/* The below is for memory mapped ring buffer */
++	unsigned long		range_addr_start;
++	unsigned long		range_addr_size;
+ #ifdef CONFIG_FSNOTIFY
+ 	struct dentry		*d_max_latency;
+ 	struct work_struct	fsnotify_work;
 -- 
 2.43.0
 
