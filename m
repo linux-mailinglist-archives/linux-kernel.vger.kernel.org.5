@@ -1,114 +1,111 @@
-Return-Path: <linux-kernel+bounces-93254-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93262-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2772B872D15
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 03:55:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11468872D3B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 04:05:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D26411F28778
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 02:55:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 42FF11C2323B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 03:05:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD13ADDA8;
-	Wed,  6 Mar 2024 02:55:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EC4EDF49;
+	Wed,  6 Mar 2024 03:05:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxtx.org header.i=@linuxtx.org header.b="gr9MzxY6"
-Received: from mail-oa1-f53.google.com (mail-oa1-f53.google.com [209.85.160.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="qAzJNIG1"
+Received: from out162-62-58-211.mail.qq.com (out162-62-58-211.mail.qq.com [162.62.58.211])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 697CBD52E
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 02:55:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B1DD173;
+	Wed,  6 Mar 2024 03:05:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.58.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709693714; cv=none; b=TJPGeGTv/mIDGHayQ2BLfunL6VbPkOvex3rcAm8OFJKZJtfuBQABEY6GHKSqma4Zesp2dBHFZLNsk5uVsDKQHaqTTyoLK3iTRtpsekRGPStgLt4xrAcWHomZhKEOEPsoK6jdksUy4idMRWk3IKfFvjDq/6klVPwGxAPOWMSa8AE=
+	t=1709694328; cv=none; b=H9kgC9pQVQKE6N9cAhd04PHuPKjtQAxyfqNV0YSy1Txe+gYZRbWMjl1E0P22I512JcpEbiJkOc6Ocaf7M0oh3ezIg8tFNOuvNgJI6hLuCW3rllQ4TyV3Yi8kUf9L7KRhpzI1wqmltJ2z2Q9RtLHr3Iss9cQqWD900QIeIVCPsCc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709693714; c=relaxed/simple;
-	bh=GsRdJoaN6E/LLUOYDglle0uztnU6Sis59Fl7J6wutgY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YdAl6yBAQhLrHeDydNVmMjJzoIWDJrOaU9vP7xkuaufTGpXYwwOhYZRuSsTOKaWc0OtB9tRPNWp5v5bZRAwbrbKRoDwCNhDE4eVRQRBU+Xw5babRD6lYUFneZ07hYz+iaGJN0UOzTXQVAu22WrLLFx9HAWHu+wP48D3CQEL995s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=fedoraproject.org; spf=pass smtp.mailfrom=linuxtx.org; dkim=pass (1024-bit key) header.d=linuxtx.org header.i=@linuxtx.org header.b=gr9MzxY6; arc=none smtp.client-ip=209.85.160.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=fedoraproject.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxtx.org
-Received: by mail-oa1-f53.google.com with SMTP id 586e51a60fabf-2210865d962so2089539fac.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 18:55:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxtx.org; s=google; t=1709693711; x=1710298511; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xRMkuI014AzS1zR02MZc4IRf3TGjXINu42gGkCfeGs0=;
-        b=gr9MzxY6didSDee6a3fcTJvshdgeUWuGOajnzve4ciqcfD25SrXInp+dlXNELYE01Q
-         UmA2qeoHQ1EN/Qr6s1ZHa8D96bRKjIBndr+w3LksBg9BNKTaiiHMlXfd79jJNNKc/iu6
-         +Zf2xH0ZnDnkqEmy1dPrhwnE9CSVRK+yW79DI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709693711; x=1710298511;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xRMkuI014AzS1zR02MZc4IRf3TGjXINu42gGkCfeGs0=;
-        b=B0wCKMLkBZ0ZTcZbOHNPOmwISoQy2U7Ckmv50EfnZYpw7cgA7KDVBEUmj56Mee1puz
-         NgPqAWv+/hvgcwoMHELf+S+BANEQ8QCvdcFm21w+acz/wG+iFEzkhAp3qW2LrH2zU5Yb
-         DyLZbzE1D7FO8ATAc5SqnDfgZoqcLo3woPvXFZ9e+4aXaOL+zNn72meAQYZqilSbBYLm
-         eZXEYIEdDMNNTWOWsgmw6+cibts5I2A6rAP9JnX/Ti31KcyIvLxcIkewNgMbPpC82XDG
-         +lOKcLIJ+PgU8+BOEZaprteAX0QPBA1JWoQKNqcHF/VZmqIHCHQqgnHKuLnHnzl98we2
-         pZwA==
-X-Forwarded-Encrypted: i=1; AJvYcCWyfgu0e2xDAdXP7HE1ZyJBMJjjQMllXByUhLCP+yiDf36LDYHcz1qEgs6aInGElc+gRVbpSiMCJBslyZ5seBcFEO73bYK518nJ66eB
-X-Gm-Message-State: AOJu0YxUAzxTIIFwXGn4WAsienh14uYemIJGx0sb0IVdfasSX2BacxVO
-	56zcJH3C/5ue3VhzccBCMH+tQQT0CrUp/M0NctaybzXBPdkrv5Me/2Nv/umSvbBwkgepOO5jMyT
-	GNg==
-X-Google-Smtp-Source: AGHT+IGVQj4drpeLlqZu0UGH7MJF2dKwPJG+QIfz4rVWUgG8ZqQMiN4a2/ohEToFBsdf7vzvg14fqw==
-X-Received: by 2002:a05:6870:63a7:b0:21f:17b4:3842 with SMTP id t39-20020a05687063a700b0021f17b43842mr3820887oap.45.1709693711394;
-        Tue, 05 Mar 2024 18:55:11 -0800 (PST)
-Received: from fedora64.linuxtx.org ([99.47.93.78])
-        by smtp.gmail.com with ESMTPSA id qh10-20020a056870bf0a00b002208ea2347asm3245084oab.11.2024.03.05.18.55.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Mar 2024 18:55:11 -0800 (PST)
-Sender: Justin Forbes <jmforbes@linuxtx.org>
-Date: Tue, 5 Mar 2024 20:55:09 -0600
-From: Justin Forbes <jforbes@fedoraproject.org>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev,
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-	jonathanh@nvidia.com, f.fainelli@gmail.com,
-	sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-	conor@kernel.org, allen.lkml@gmail.com
-Subject: Re: [PATCH 6.7 000/161] 6.7.9-rc3 review
-Message-ID: <ZefbDbzbLpiIR-0J@fedora64.linuxtx.org>
-References: <20240305112824.448003471@linuxfoundation.org>
+	s=arc-20240116; t=1709694328; c=relaxed/simple;
+	bh=+6dHN2SSImxbZVsLMYu8GjPrXgMt14/8zzaKZLLtt6w=;
+	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=J9IoSGVGpwFJ90DlGnxTLa0hKormeHQoCBUVFJKFP7bv8tStMhLwpGyEWm/um2udnSqIqBSOBCxtxXl/p5vFv/KFj1RWKW7/2v+TH2Dq/vSQL6FQHGfW8PAAbpP06MNSpvrcwZWEQGlfeNvWG+saSurgl1zxl7kXTzscmGbTCKI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=qAzJNIG1; arc=none smtp.client-ip=162.62.58.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1709694320; bh=C1CCOEGfxwvS0ORC18PbykbGWEcGm+e5TlS2qTiTC8M=;
+	h=From:To:Cc:Subject:Date;
+	b=qAzJNIG1GjapQ/ruL6Gk2OIxfzaaElejbgO/E8VXY5hUwN9fKxlPPROwXsKulo3Uh
+	 IYjvcl3cgBbv7cGIeQc26o9J7hSdgkWoq+Sj/qolWEjKuJvsoSobUkol/oNdnfE5w0
+	 MwM3OnbitvZbyR6uk3fFJV2iaZl4qqYYpv7ADxh8=
+Received: from localhost.localdomain ([218.94.142.74])
+	by newxmesmtplogicsvrsza7-0.qq.com (NewEsmtp) with SMTP
+	id EB629EBA; Wed, 06 Mar 2024 10:58:54 +0800
+X-QQ-mid: xmsmtpt1709693934tgba4zn3s
+Message-ID: <tencent_BA1473492BC618B473864561EA3AB1418908@qq.com>
+X-QQ-XMAILINFO: Mm/8i8/T4ynehAJEBEIWe8kG3QjwIOBAAFjtzj/bi2QqEXFKL/S0q3DtlSLDJP
+	 BSQ1mTkDMHeN2FDx2PpEyPWS+EZvcrvr9opjubjS1khLEHyACXUzhs6ImoJi3R+dcAxX5wuvQEhg
+	 bDc1CGQC+rNI+P0tEL7pFcI97ZZWuMK2hjcYuQ74eoEsEPmK656+dtO6EFYyY7xDkWV68PnC28F8
+	 QVcXabTYCVwWNfFlyq4hZNfxSxjvIf9hXTFfy+4z2ZIWLiKXLvBeZZIs9u5FJmT8uYU2AFi1d8ja
+	 WmQb1U24QeArVysoV7/afaOElbGEZptRK51F7dBKOTuxGBqz4sZxhkukVuRwZkr93r2vHyojzMuF
+	 K/5fvUetXJfqHmTLCpsmvHOQgaaMjW/i8lI12o4aHaM/W7hEsoMEZRrDE9qTuDQwERR+vzm0zS0G
+	 mgeuM08ijapmyO/Cb6QKWz7DrFtjpSAm89AZf2Rq7T7CNoifpgI7bEz0c1QKMoxntQzeI0zXd24F
+	 7KkudePX2InU0iabP2J6UHXS6swI1jHtMbrb3Ty1FHFYFaKD3zLKElG1bZDf3V9mc0PRqNkRVI5J
+	 SubW5Opks1Y+LMYWnxYJ9Qqyqm8XsROdZDVf5vKhUyT+vJZRYuDqHQ+r5h7X6XQk0eZXNlKXWFvS
+	 a5l9OsYQeNnOJIoRBxMChUnOGkpgXjatisEbgAwu6NeJVEtM7JD5Zd0i8e2Xv1fcjNbMmJI84EGc
+	 iHVWEWEaKAWWSKQxTbQm7ZUfkWk0pcYPEBzEHfLZ+lUyjvG0muxKfBF4lMFHhdh3ztBfqZ7VIi43
+	 3F7zaRgMUUDIR8J6UtH66Ik8zRQGKT2rXNdyRXvy+FQRwzZkKJ0yWd0AbvJMmGTIH0/l4BMowHtV
+	 +heYewETaagm7CfFxxek4zgMbHjYZxvrnAcWFfS7jxxGvZg0C4e4iTzxO+ddX9BKMP8eCvt48Rbz
+	 UTbfUusx93/iresHxmihJaNw2j4DpD6UxsPfoudIm587AI8qTxd/kBote8auyJOo+0FYCgb6n089
+	 7AcTDDnOohg7b9wPWXYYE0wexUbBtgbp2hfbCM+9SSgBQddk1VNpkYXfatTjE=
+X-QQ-XMRINFO: OWPUhxQsoeAVDbp3OJHYyFg=
+From: linke li <lilinke99@qq.com>
+To: 
+Cc: lilinke99@qq.com,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org
+Subject: [PATCH] ring-buffer: mark racy accesses on work->wait_index
+Date: Wed,  6 Mar 2024 10:55:34 +0800
+X-OQ-MSGID: <20240306025534.49139-1-lilinke99@qq.com>
+X-Mailer: git-send-email 2.39.3 (Apple Git-145)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240305112824.448003471@linuxfoundation.org>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Mar 05, 2024 at 11:28:47AM +0000, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.7.9 release.
-> There are 161 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 07 Mar 2024 11:27:43 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.7.9-rc3.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.7.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+Mark data races to work->wait_index as benign using READ_ONCE and WRITE_ONCE. These accesses are expected to be racy.
 
-Tested rc3 against the Fedora build system (aarch64, ppc64le, s390x,
-x86_64), and boot tested x86_64. No regressions noted.
+Signed-off-by: linke li <lilinke99@qq.com>
+---
+ kernel/trace/ring_buffer.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Tested-by: Justin M. Forbes <jforbes@fedoraproject.org>
+diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+index 0699027b4f4c..a47e9e9750cc 100644
+--- a/kernel/trace/ring_buffer.c
++++ b/kernel/trace/ring_buffer.c
+@@ -798,7 +798,7 @@ void ring_buffer_wake_waiters(struct trace_buffer *buffer, int cpu)
+ 		rbwork = &cpu_buffer->irq_work;
+ 	}
+ 
+-	rbwork->wait_index++;
++	WRITE_ONCE(rbwork->wait_index, READ_ONCE(rbwork->wait_index) + 1);
+ 	/* make sure the waiters see the new index */
+ 	smp_wmb();
+ 
+@@ -906,7 +906,7 @@ int ring_buffer_wait(struct trace_buffer *buffer, int cpu, int full)
+ 
+ 		/* Make sure to see the new wait index */
+ 		smp_rmb();
+-		if (wait_index != work->wait_index)
++		if (wait_index != READ_ONCE(work->wait_index))
+ 			break;
+ 	}
+ 
+-- 
+2.39.3 (Apple Git-145)
+
 
