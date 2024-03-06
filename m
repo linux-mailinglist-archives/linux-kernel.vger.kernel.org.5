@@ -1,68 +1,68 @@
-Return-Path: <linux-kernel+bounces-94529-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94530-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99F16874115
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 21:05:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDC40874117
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 21:05:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE2AC1C221DC
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 20:05:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 93800286DD7
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 20:05:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2301F143C5B;
-	Wed,  6 Mar 2024 20:04:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0296414262B;
+	Wed,  6 Mar 2024 20:04:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="cDqSro8N"
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="BYRzg4OQ"
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9A8A142906
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 20:03:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90ABF14374D
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 20:03:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709755440; cv=none; b=NtZ06Z9teJK6DEu+XUZwi/ChZXsJpGKgF88o8j3K4qinnjTJ+8QBuo1N+Hc9BbVedpYAblB5zIcAqoQoH7h78GixRk5wn7KJzVMES8YRh7NWs8Kk5fUBiq7Bnw3BHkEmxBVSA8tVvhsvLJ4U7DdAZel0YKBwjWlAaEeimiDZ9bg=
+	t=1709755441; cv=none; b=s2UTG3bxLzszPT5a0U0x/fgXwrjKEPTxhDa20fUT7ZqbOzwXgx0jN0HAZNptCu5dNTRKOKtayJU+/J/rzsLK21YO7TUVEAxL22qnn6F0AF9Ns/HP5qX/b4ikBqmdI2G1tBh0iS2K+3KqrqQMcMULPa4jUSgaDSMmljZ2izQk4Kg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709755440; c=relaxed/simple;
-	bh=Q+pRA35gd4K0k7v6qKItUMaetKmHyCKrGSHriuKb4Lo=;
+	s=arc-20240116; t=1709755441; c=relaxed/simple;
+	bh=4iHWWRMdzWrUYQZlSrJyyHmHQ8zWNejad1qscDWR5GU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SwLeKyjdKUhtXi04cMZZLN0Qc1g1tygrNjTq/pBLP5/RQmpRl/0q+TLC+8AoFVLZ887LgL0AGFe8IQXQryM795LXeImk7SV+dPZrZxgUeShjgtJjTqUZ3boT1z4+wzHtZAHHrYmOk8D6XrKFSVeOjaae4yrEz5yVX8l2JEtSi7A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=cDqSro8N; arc=none smtp.client-ip=209.85.210.175
+	 MIME-Version; b=moJpMVO2E1gpzSCPs94T6MeWcNf0SYia8sMab4iFuDHnVIwE5hjZ6/ppkrRg1wLHj7R10V090Yg/JJ5qWT+x1c1uQUu7MRqpW3ZL+8yUS+1tWHOfZcCz50xTZ1suH0gH+F4HKu8XoVGaN0w5Lg9H93MAE0epeIhucgjBtU++sEg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=BYRzg4OQ; arc=none smtp.client-ip=209.85.210.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6e6277f72d8so97292b3a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 12:03:58 -0800 (PST)
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6e63e9abf6aso86265b3a.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 12:03:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709755438; x=1710360238; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1709755439; x=1710360239; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4JCkj6GVRUNO967KT3bkL0DjQ/CoTjKrWRf8htMUslg=;
-        b=cDqSro8NR+5yvJjCoAEa+JB9s4T/aGRkP9eKi9Ar7R00wheR5BzeFQZ73bPpTSTJnJ
-         mNFwsq2fwC5yx/ljsvpuAVC7eMr5gv7jcCNWMGXywZPvrJAEmO4bflJy/6qcA7Ut+pd3
-         IzdB1aDeOAXtECN0laSqBNENQbi42hOEPWZhA=
+        bh=JRJUYRt2oq67C0/LdzkUEFZ3CsguCNeMnqbNn5e2Vjw=;
+        b=BYRzg4OQVb4CuD4uk2AIAKWHpScWRfu0qeYCR9HU/YRmZ7lZfrb+YzKrOtTUlkPVqu
+         /LJgUYEn7LOy+9tkXdrCqFAWN4aUZ/hrTMB/tSISfs8cUl2TfSL1fyQpmv9FRfqeg26I
+         GFDFLbQl5RF6eg4t4sf4Wj83yQvhdXqSr9hk4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709755438; x=1710360238;
+        d=1e100.net; s=20230601; t=1709755439; x=1710360239;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4JCkj6GVRUNO967KT3bkL0DjQ/CoTjKrWRf8htMUslg=;
-        b=EuBljqHuv1tYAl+MLQE/F+NggM6Rs0MpUV2AQfxvZDUAXPYlnJmskmELTD66mnmyGC
-         x6nC09flhwFi6Y5qDgFo5pIAMSrtswzBn75jSGsU0tLOBX//7+jge2wzZLqk0Bw+1ZUh
-         zVRqxkpTko4AuptnaCefnV54a24dvlvJklN0bg3BQkmV+ISMM8wzVRbZlxpU1zNu0LuC
-         ZzmIVq7jiZZ3VLWWy3Zp3K6ermfrLxU/NcUL5l7De6wpJcXJx2B/XHnLA6vXDaU0xkSy
-         kcpMvcwrc1TPjetQGKAMbxigu9adPcYzyb6uAErdarzyPYTOcNbmqTHS4e14Z1dVhd5x
-         YX2g==
-X-Forwarded-Encrypted: i=1; AJvYcCUT+Ewayz5aU21FRf7UdivR3G7XZH3W3PllSC1e5xDgcjUoqAMeKxKJnVf4GxsEtCVy6MO8TEihZlNdapf97lySPLGyG83SO/p2mhhO
-X-Gm-Message-State: AOJu0YxaHEn8jwfpmygEv8woCxKrjVyzGT0Ilr1irCARWFJCmuCw6Glq
-	+iG5r5zxflz5rH0g/NLHfh8U0+flDb5joRIjU3JmMQer/mt2h3agdUbFfXeVhQ==
-X-Google-Smtp-Source: AGHT+IHUlhDXpMflxQ7aiaCnsIh19pRSvBvh8iAGRXwrLu9WFPh0MIGQKicT8WXJgg+viWcZikJTdQ==
-X-Received: by 2002:a05:6a00:4f8d:b0:6e6:16b5:2eac with SMTP id ld13-20020a056a004f8d00b006e616b52eacmr13189150pfb.29.1709755437897;
-        Wed, 06 Mar 2024 12:03:57 -0800 (PST)
+        bh=JRJUYRt2oq67C0/LdzkUEFZ3CsguCNeMnqbNn5e2Vjw=;
+        b=A2DrKDHs7M4d4EYxbFG/Pv/U414VftIsHIP2t3LoVm/IiPxitMksqTErANCOtIZ2FG
+         4C2d2T7JJaBGWaXaHFrmpmeXMziba0dj62izF/SwgFIeADdpbqte7k3QYw2ew7SIr5Kl
+         AW/FB//BWC9VvZka+iahQQBWs7bXrB9Fz1gTzm7h+WUW5vwItJrmDmjwLiR7wXa+nYm5
+         swZBK3PnGAl8CPBsG4krlccjhfgTqMs1m8ED/0k/hV2meeQ16npLmWQiZBbDngO7bpjf
+         xI4lbm1si9Ii6tABjsGAQccQj9RG6DKXhGm8HfBVbf1SVHmBsYNL0KKyRVG4WA/VhiKa
+         3jqw==
+X-Forwarded-Encrypted: i=1; AJvYcCXcS2mqCfU7NmcE7y6H6bk2H7WmfhelGyFMnPV9ALkf6InnpNshwTwma3W5ojxB0hLNEyahINe5upGlAsviYLaMX4MFIEiLa6VkjQig
+X-Gm-Message-State: AOJu0YwoKzhdaSF5q9vKLz9RHk3rx5AlaFMLmVgq5YM8kcgj5uXzukmq
+	lTdHgaaLJ3XawvcL/vLxTphbwJ16rTCXmmtttvOMO8dGfBHqxaeE9PnLLAbRJg==
+X-Google-Smtp-Source: AGHT+IEXmTS6PLw1/iaxz3ACFLOd7WH1/YNx8U/VqwNBQW526mexbfJ/D5D3qnZ8ATCE2qu9PJRPeg==
+X-Received: by 2002:a05:6a00:2da3:b0:6e6:451c:a519 with SMTP id fb35-20020a056a002da300b006e6451ca519mr6034543pfb.5.1709755438763;
+        Wed, 06 Mar 2024 12:03:58 -0800 (PST)
 Received: from hsinyi.sjc.corp.google.com ([2620:15c:9d:2:a215:f6c0:3224:5460])
-        by smtp.gmail.com with ESMTPSA id e3-20020aa79803000000b006e5667793d4sm11124241pfl.66.2024.03.06.12.03.57
+        by smtp.gmail.com with ESMTPSA id e3-20020aa79803000000b006e5667793d4sm11124241pfl.66.2024.03.06.12.03.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Mar 2024 12:03:57 -0800 (PST)
+        Wed, 06 Mar 2024 12:03:58 -0800 (PST)
 From: Hsin-Yi Wang <hsinyi@chromium.org>
 To: Jani Nikula <jani.nikula@linux.intel.com>,
 	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
@@ -77,9 +77,9 @@ Cc: Neil Armstrong <neil.armstrong@linaro.org>,
 	Daniel Vetter <daniel@ffwll.ch>,
 	dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v5 2/6] drm/edid: Clean up drm_edid_get_panel_id()
-Date: Wed,  6 Mar 2024 11:55:52 -0800
-Message-ID: <20240306200353.1436198-3-hsinyi@chromium.org>
+Subject: [PATCH v5 3/6] drm/edid: Add a function to match EDID with identity
+Date: Wed,  6 Mar 2024 11:55:53 -0800
+Message-ID: <20240306200353.1436198-4-hsinyi@chromium.org>
 X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
 In-Reply-To: <20240306200353.1436198-1-hsinyi@chromium.org>
 References: <20240306200353.1436198-1-hsinyi@chromium.org>
@@ -91,82 +91,132 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-drm_edid_get_panel_id() now just directly call edid_extract_panel_id().
+Create a type drm_edid_ident as the identity of an EDID. Currently it
+contains panel id and monitor name.
 
-Merge them into one function.
+Create a function that can match a given EDID and an identity:
+1. Reject if the panel id doesn't match.
+2. If name is not null in identity, try to match it in the detailed timing
+   blocks. Note that some panel vendors put the monitor name after
+   EDID_DETAIL_MONITOR_STRING.
 
 Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
 ---
-v4->v5: new
+v4->v5: use strncmp, change function/variable names.
 ---
- drivers/gpu/drm/drm_edid.c | 39 ++++++++++++++++++--------------------
- 1 file changed, 18 insertions(+), 21 deletions(-)
+ drivers/gpu/drm/drm_edid.c | 65 ++++++++++++++++++++++++++++++++++++++
+ include/drm/drm_edid.h     |  8 +++++
+ 2 files changed, 73 insertions(+)
 
 diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
-index 8c7e871eff58..febe374fa969 100644
+index febe374fa969..29ef35ebee32 100644
 --- a/drivers/gpu/drm/drm_edid.c
 +++ b/drivers/gpu/drm/drm_edid.c
-@@ -2743,8 +2743,24 @@ const struct drm_edid *drm_edid_read(struct drm_connector *connector)
- }
- EXPORT_SYMBOL(drm_edid_read);
+@@ -100,6 +100,11 @@ struct detailed_mode_closure {
+ 	int modes;
+ };
  
--static u32 edid_extract_panel_id(const struct edid *edid)
-+/**
-+ * drm_edid_get_panel_id - Get a panel's ID from EDID
-+ * @drm_edid: EDID that contains panel ID.
-+ *
-+ * This function uses the first block of the EDID of a panel and (assuming
-+ * that the EDID is valid) extracts the ID out of it. The ID is a 32-bit value
-+ * (16 bits of manufacturer ID and 16 bits of per-manufacturer ID) that's
-+ * supposed to be different for each different modem of panel.
-+ *
-+ * Return: A 32-bit ID that should be different for each make/model of panel.
-+ *         See the functions drm_edid_encode_panel_id() and
-+ *         drm_edid_decode_panel_id() for some details on the structure of this
-+ *         ID.
-+ */
-+u32 drm_edid_get_panel_id(const struct drm_edid *drm_edid)
- {
-+	const struct edid *edid = drm_edid->edid;
++struct drm_edid_match_closure {
++	const struct drm_edid_ident *ident;
++	bool matched;
++};
 +
- 	/*
- 	 * We represent the ID as a 32-bit number so it can easily be compared
- 	 * with "==".
-@@ -2762,25 +2778,6 @@ static u32 edid_extract_panel_id(const struct edid *edid)
- 	       (u32)edid->mfg_id[1] << 16   |
- 	       (u32)EDID_PRODUCT_ID(edid);
+ #define LEVEL_DMT	0
+ #define LEVEL_GTF	1
+ #define LEVEL_GTF2	2
+@@ -5405,6 +5410,66 @@ drm_parse_hdmi_vsdb_audio(struct drm_connector *connector, const u8 *db)
+ 		    connector->audio_latency[0], connector->audio_latency[1]);
  }
--
--/**
-- * drm_edid_get_panel_id - Get a panel's ID from EDID
-- * @drm_edid: EDID that contains panel ID.
-- *
-- * This function uses the first block of the EDID of a panel and (assuming
-- * that the EDID is valid) extracts the ID out of it. The ID is a 32-bit value
-- * (16 bits of manufacturer ID and 16 bits of per-manufacturer ID) that's
-- * supposed to be different for each different modem of panel.
-- *
-- * Return: A 32-bit ID that should be different for each make/model of panel.
-- *         See the functions drm_edid_encode_panel_id() and
-- *         drm_edid_decode_panel_id() for some details on the structure of this
-- *         ID.
-- */
--u32 drm_edid_get_panel_id(const struct drm_edid *drm_edid)
--{
--	return edid_extract_panel_id(drm_edid->edid);
--}
- EXPORT_SYMBOL(drm_edid_get_panel_id);
  
- /**
-@@ -2881,7 +2878,7 @@ EXPORT_SYMBOL(drm_edid_duplicate);
-  */
- static u32 edid_get_quirks(const struct drm_edid *drm_edid)
++static void
++match_identity(const struct detailed_timing *timing, void *data)
++{
++	struct drm_edid_match_closure *closure = data;
++	unsigned int i;
++	const char *name = closure->ident->name;
++	unsigned int name_len = strlen(name);
++	const char *desc = timing->data.other_data.data.str.str;
++	unsigned int desc_len = ARRAY_SIZE(timing->data.other_data.data.str.str);
++
++	if (name_len > desc_len ||
++	    !(is_display_descriptor(timing, EDID_DETAIL_MONITOR_NAME) ||
++	      is_display_descriptor(timing, EDID_DETAIL_MONITOR_STRING)))
++		return;
++
++	if (strncmp(name, desc, name_len))
++		return;
++
++	/* Allow trailing white spaces and \0. */
++	for (i = name_len; i < desc_len; i++) {
++		if (desc[i] == '\n')
++			break;
++		if (!isspace(desc[i]) && !desc[i])
++			return;
++	}
++
++	closure->matched = true;
++}
++
++/**
++ * drm_edid_match - match drm_edid with given identity
++ * @drm_edid: EDID
++ * @ident: the EDID identity to match with
++ *
++ * Check if the EDID matches with the given identity.
++ *
++ * Return: True if the given identity matched with EDID, false otherwise.
++ */
++bool drm_edid_match(const struct drm_edid *drm_edid,
++		    const struct drm_edid_ident *ident)
++{
++	if (!drm_edid || drm_edid_get_panel_id(drm_edid) != ident->panel_id)
++		return false;
++
++	/* Match with name only if it's not NULL. */
++	if (ident->name) {
++		struct drm_edid_match_closure closure = {
++			.ident = ident,
++			.matched = false,
++		};
++
++		drm_for_each_detailed_block(drm_edid, match_identity, &closure);
++
++		return closure.matched;
++	}
++
++	return true;
++}
++EXPORT_SYMBOL(drm_edid_match);
++
+ static void
+ monitor_name(const struct detailed_timing *timing, void *data)
  {
--	u32 panel_id = edid_extract_panel_id(drm_edid->edid);
-+	u32 panel_id = drm_edid_get_panel_id(drm_edid);
- 	const struct edid_quirk *quirk;
- 	int i;
+diff --git a/include/drm/drm_edid.h b/include/drm/drm_edid.h
+index 8b233865b085..28f05a7b2f7b 100644
+--- a/include/drm/drm_edid.h
++++ b/include/drm/drm_edid.h
+@@ -367,6 +367,12 @@ struct edid {
+ 	u8 checksum;
+ } __attribute__((packed));
  
++/* EDID matching */
++struct drm_edid_ident {
++	u32 panel_id;
++	const char *name;
++};
++
+ #define EDID_PRODUCT_ID(e) ((e)->prod_code[0] | ((e)->prod_code[1] << 8))
+ 
+ /* Short Audio Descriptor */
+@@ -567,6 +573,8 @@ struct edid *drm_get_edid(struct drm_connector *connector,
+ 			  struct i2c_adapter *adapter);
+ const struct drm_edid *drm_edid_read_base_block(struct i2c_adapter *adapter);
+ u32 drm_edid_get_panel_id(const struct drm_edid *drm_edid);
++bool drm_edid_match(const struct drm_edid *drm_edid,
++		    const struct drm_edid_ident *ident);
+ struct edid *drm_get_edid_switcheroo(struct drm_connector *connector,
+ 				     struct i2c_adapter *adapter);
+ struct edid *drm_edid_duplicate(const struct edid *edid);
 -- 
 2.44.0.278.ge034bb2e1d-goog
 
