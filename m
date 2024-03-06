@@ -1,342 +1,149 @@
-Return-Path: <linux-kernel+bounces-93276-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93263-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD543872D5B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 04:10:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A80D872D3F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 04:07:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8315428CE66
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 03:10:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA324285B53
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 03:07:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA4D515AC4;
-	Wed,  6 Mar 2024 03:08:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BAE2DF49;
+	Wed,  6 Mar 2024 03:07:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="C+1Sum/b"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="VSIZXhl7"
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 243B51C2AC
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 03:08:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 869336FBD
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 03:07:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709694524; cv=none; b=sdEhXBrNevkEZJZp8VRkKof1joW6xI0GMsB239fHC4/eZjKL6DTIFyzm3WB+isjoZWwWyv9n2L7l0OPFf/DC9PLQXKU/6Rkh5D7INyq+liH2ZDVW9zeikhsOpzI5HhqYc0nTk3at7Hlnp5YVUmbvsydNZ/eVAbSBvQNQwOugOQg=
+	t=1709694461; cv=none; b=A7Uee92gGFVKnGSWZUFGAHff/Gd8VdqrzN8LjNzf5jwyv/0wTOUXqBc6v8dYvKLsQ4w6n8JmMBPhb/FoFVKHdaYvae/5o84Abk1a8iZnAv6rJC7NubuprgMlHtTJc4DU1yP+Pcw2pRFw/JAfGSXyFa7rgINaxaspENfeQ7F+htQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709694524; c=relaxed/simple;
-	bh=3BkW4+8RNznPg6meUhhBDbwnnX1CBhl5Rcgu7Am9+s0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=F6LndDKcE+VzaZSYXuSo/mlLTcSSWGQx7MU+KK5cfGt1LTDybVC8bb8itoQJAyGYe4WWNzPuLWduNuJ7QyHNFk1r5jzae2+pd7aCtEstYnCqIezvOR8xzvOHluhr1Q7xrXSZUN+bgDStNB9J+sswgXlyjrqazEBOZriO4wWX3kg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=C+1Sum/b; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1709694521;
-	bh=3BkW4+8RNznPg6meUhhBDbwnnX1CBhl5Rcgu7Am9+s0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=C+1Sum/bqROLqploRnozFIM75LgacpvQGO0AnWA/NVqgehCj2MKL2c539iZAzkBaY
-	 dNikF6i1kqmzTaaMpNlyysoy2tR46okcjfot+svf0khLi4r0plPkI5jqq0XfHtDN2s
-	 3V4TpKkZ2FFLCIdpLghISk8vvG0P10orwDrmeODOAew/6ogtiBVQi42ACACHQOum8F
-	 7fNRWkd2nNE/Bv87yk6LkUHlQbgjA7MeCln2CugWAEXPR4yr5/X79YZUPiJfZHIxkG
-	 2WoCRl9uIfbb3br77ESJ7whP2fGSScRiNq4t5ev+/rbSeUySQj1Grm6xeRB+dn50op
-	 dtnAL/12QWZJA==
-Received: from localhost.localdomain (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: vignesh)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 79AC33780624;
-	Wed,  6 Mar 2024 03:08:37 +0000 (UTC)
-From: Vignesh Raman <vignesh.raman@collabora.com>
-To: dri-devel@lists.freedesktop.org
-Cc: daniels@collabora.com,
-	helen.koike@collabora.com,
-	airlied@gmail.com,
-	daniel@ffwll.ch,
-	emma@anholt.net,
-	robdclark@gmail.com,
-	david.heidelberg@collabora.com,
-	guilherme.gallo@collabora.com,
-	sergi.blanch.torne@collabora.com,
-	hamohammed.sa@gmail.com,
-	rodrigosiqueiramelo@gmail.com,
-	melissa.srw@gmail.com,
-	mairacanal@riseup.net,
-	mcanal@igalia.com,
-	linux-mediatek@lists.infradead.org,
-	linux-amlogic@lists.infradead.org,
-	linux-rockchip@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v4 11/11] drm/ci: add tests on vkms
-Date: Wed,  6 Mar 2024 08:36:49 +0530
-Message-Id: <20240306030649.60269-12-vignesh.raman@collabora.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240306030649.60269-1-vignesh.raman@collabora.com>
-References: <20240306030649.60269-1-vignesh.raman@collabora.com>
+	s=arc-20240116; t=1709694461; c=relaxed/simple;
+	bh=6B1nkuOxoST/+lT2hJKGS+JnQ1uuTVGEHk5JkbzMaMI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bXTqm21Ysem4b9JgkV62gWcd8dkjwYn+2yII9lCmZ1RAlC9y2oFhv7CgYhH84GfUTChboM5odCSClIdrWZbHERmd07XoFzbk8SrjY1JstMcb9f8pKHtQ6a6paXn77BhRecFKM7bDVUWWUZ+WffQhBb3poFlke2TQ59BBUPOhWR0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=VSIZXhl7; arc=none smtp.client-ip=209.85.208.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2d22b8801b9so91727521fa.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 19:07:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1709694457; x=1710299257; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=c3G5ilIgHzJp9EnFwdcrT7Tr1Dh0x/+SLzMuY+cXrdc=;
+        b=VSIZXhl73Qt11fRTHrwMG24y89AHLhWlo+7Swvx5TksNxwuo/z+XGuHZKZ870QdYOf
+         gtoKEvXX+vbGbM9TAmikuBdU5Yjgnqm5OA1ZFWP1Px9AzW9wnXC0SS5MbWEHI2z2N3GL
+         /+b3GPkHbe9e/siHx7qq3vxVbnyU4iuAjHhyk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709694457; x=1710299257;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=c3G5ilIgHzJp9EnFwdcrT7Tr1Dh0x/+SLzMuY+cXrdc=;
+        b=duGuYs5xQ3hvo3IlR0xtn2Sr3MmtBWqA37UxILmZ6dTRkwUfIrZfMl+4bwHidPUvcH
+         wCnUXTcHdd/Qygq23booqkYwnoQrC2NKwDBNyIH6PeDf++mYpcvbALMBovoQU0BweOva
+         DU5WK7SOJEVsgwTt9dHFuCp8Uq3HnwaASbBPGnmu5dwb97sVSlynIAXEK686EXOPQf+N
+         3CTCksBPVnh8uORHKHn+4ghHDsIpWIUIyXPMTKL7U8xWAGZazrueB+9MRKcruQwD3rXy
+         ML/soxmJYF9uuUTvpNPGtvu2Q2vnSGejIVp6mY0iybtK+vpGBCmd99P54x4UcvIkur41
+         9HwQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVzDYpildDJfNXJCCidSoMsB5hHMf8+J3xGxXsivYBg4pRzlz4FTN8RE5vhSAzYzj2ti8IX4S74Z2mLViiZfEXz9MG/UxevR0rBDwU4
+X-Gm-Message-State: AOJu0YxhxnYCInI2Wcci50iQXClvi1RqvsK4C7NqIsW4cG5vk4gZyNVH
+	NgRm8+KW07Y//TWymz4Lm/J5RUp7zvhFtrFK3wy6YMD4VK3w/Jr4DoYSgM0gVsjS/JZA9IZIfL2
+	wIAq+7fPF32YEgzuRhFTPwkJZm76zLUdFpZHt
+X-Google-Smtp-Source: AGHT+IFd4fYrH7VT+oC7ZfIpSRkqSnwMMbSguOpGCTPqEmdBUEJov0MCaZASXOwtSpdb28dWKW8lrLtkXDn42JRqQ8M=
+X-Received: by 2002:a2e:9e16:0:b0:2d2:d32b:dabf with SMTP id
+ e22-20020a2e9e16000000b002d2d32bdabfmr2332926ljk.22.1709694457516; Tue, 05
+ Mar 2024 19:07:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240305-anx7625-v1-1-83ed3ccfa64c@chromium.org>
+In-Reply-To: <20240305-anx7625-v1-1-83ed3ccfa64c@chromium.org>
+From: Chen-Yu Tsai <wenst@chromium.org>
+Date: Wed, 6 Mar 2024 11:07:26 +0800
+Message-ID: <CAGXv+5GdgECuCeXGX3MJJRMr3XyMdZkJPyH7e5V+041ViQEi-g@mail.gmail.com>
+Subject: Re: [PATCH] drm/bridge:anx7625:Update audio status while detecting
+To: Hsin-Te Yuan <yuanhsinte@chromium.org>
+Cc: Andrzej Hajda <andrzej.hajda@intel.com>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	Robert Foss <rfoss@kernel.org>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
+	Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add job that runs igt on top of vkms.
+Hi,
 
-Signed-off-by: Vignesh Raman <vignesh.raman@collabora.com>
-Acked-by: Jessica Zhang <quic_jesszhan@quicinc.com>
-Tested-by: Jessica Zhang <quic_jesszhan@quicinc.com>
-Acked-by: Maxime Ripard <mripard@kernel.org>
-Signed-off-by: Helen Koike <helen.koike@collabora.com>
----
+Please add a space after the colons in the subject line.
 
-v4:
-  - New patch in the series.
-    https://lore.kernel.org/lkml/20240201065346.801038-1-vignesh.raman@collabora.com/
+On Tue, Mar 5, 2024 at 8:32=E2=80=AFPM Hsin-Te Yuan <yuanhsinte@chromium.or=
+g> wrote:
+>
+> Previously, the audio status was not updated during detection, leading
+> to a persistent audio despite hot plugging events. To resolve this
 
----
- MAINTAINERS                                   |  2 ++
- drivers/gpu/drm/ci/build.sh                   |  1 -
- drivers/gpu/drm/ci/gitlab-ci.yml              |  3 +-
- drivers/gpu/drm/ci/igt_runner.sh              |  6 ++--
- drivers/gpu/drm/ci/image-tags.yml             |  2 +-
- drivers/gpu/drm/ci/test.yml                   | 24 +++++++++++++-
- drivers/gpu/drm/ci/x86_64.config              |  1 +
- .../drm/ci/xfails/virtio_gpu-none-fails.txt   |  1 -
- drivers/gpu/drm/ci/xfails/vkms-none-fails.txt | 33 +++++++++++++++++++
- .../gpu/drm/ci/xfails/vkms-none-flakes.txt    | 20 +++++++++++
- drivers/gpu/drm/ci/xfails/vkms-none-skips.txt | 16 +++++++++
- 11 files changed, 101 insertions(+), 8 deletions(-)
- create mode 100644 drivers/gpu/drm/ci/xfails/vkms-none-fails.txt
- create mode 100644 drivers/gpu/drm/ci/xfails/vkms-none-flakes.txt
- create mode 100644 drivers/gpu/drm/ci/xfails/vkms-none-skips.txt
+                       ^ it feels like this sentence is incomplete.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 264b23108847..c38d2555cedc 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -6964,6 +6964,8 @@ L:	dri-devel@lists.freedesktop.org
- S:	Maintained
- T:	git git://anongit.freedesktop.org/drm/drm-misc
- F:	Documentation/gpu/vkms.rst
-+F:	drivers/gpu/drm/ci/testlist.txt
-+F:	drivers/gpu/drm/ci/xfails/vkms*
- F:	drivers/gpu/drm/vkms/
- 
- DRM DRIVER FOR VIRTUALBOX VIRTUAL GPU
-diff --git a/drivers/gpu/drm/ci/build.sh b/drivers/gpu/drm/ci/build.sh
-index 106f2d40d222..4342872de45f 100644
---- a/drivers/gpu/drm/ci/build.sh
-+++ b/drivers/gpu/drm/ci/build.sh
-@@ -155,7 +155,6 @@ fi
- 
- mkdir -p artifacts/install/lib
- mv install/* artifacts/install/.
--rm -rf artifacts/install/modules
- ln -s common artifacts/install/ci-common
- cp .config artifacts/${CI_JOB_NAME}_config
- 
-diff --git a/drivers/gpu/drm/ci/gitlab-ci.yml b/drivers/gpu/drm/ci/gitlab-ci.yml
-index 9dae74465ce1..b98e56170561 100644
---- a/drivers/gpu/drm/ci/gitlab-ci.yml
-+++ b/drivers/gpu/drm/ci/gitlab-ci.yml
-@@ -110,6 +110,7 @@ stages:
-   - panfrost
-   - powervr
-   - virtio-gpu
-+  - software-driver
- 
- # YAML anchors for rule conditions
- # --------------------------------
-@@ -264,4 +265,4 @@ sanity:
- 
- # Jobs that need to pass before spending hardware resources on further testing
- .required-for-hardware-jobs:
--  needs: []
-\ No newline at end of file
-+  needs: []
-diff --git a/drivers/gpu/drm/ci/igt_runner.sh b/drivers/gpu/drm/ci/igt_runner.sh
-index 711f32772e48..81f66f1687a4 100755
---- a/drivers/gpu/drm/ci/igt_runner.sh
-+++ b/drivers/gpu/drm/ci/igt_runner.sh
-@@ -20,10 +20,10 @@ cat /sys/kernel/debug/dri/*/state
- set -e
- 
- case "$DRIVER_NAME" in
--    amdgpu)
-+    amdgpu|vkms)
-         # Cannot use HWCI_KERNEL_MODULES as at that point we don't have the module in /lib
--        mv /install/modules/lib/modules/* /lib/modules/.
--        modprobe amdgpu
-+        mv /install/modules/lib/modules/* /lib/modules/. || true
-+        modprobe --first-time $DRIVER_NAME
-         ;;
- esac
- 
-diff --git a/drivers/gpu/drm/ci/image-tags.yml b/drivers/gpu/drm/ci/image-tags.yml
-index cf07c3e09b8c..bf861ab8b9c2 100644
---- a/drivers/gpu/drm/ci/image-tags.yml
-+++ b/drivers/gpu/drm/ci/image-tags.yml
-@@ -4,7 +4,7 @@ variables:
-    DEBIAN_BASE_TAG: "${CONTAINER_TAG}"
- 
-    DEBIAN_X86_64_BUILD_IMAGE_PATH: "debian/x86_64_build"
--   DEBIAN_BUILD_TAG: "2023-10-08-config"
-+   DEBIAN_BUILD_TAG: "2024-01-29-vkms"
- 
-    KERNEL_ROOTFS_TAG: "2023-10-06-amd"
-    PKG_REPO_REV: "67f2c46b"
-diff --git a/drivers/gpu/drm/ci/test.yml b/drivers/gpu/drm/ci/test.yml
-index ac8e974723a5..f517f8ee248e 100644
---- a/drivers/gpu/drm/ci/test.yml
-+++ b/drivers/gpu/drm/ci/test.yml
-@@ -407,7 +407,7 @@ panfrost:g12b:
-     DRIVER_NAME: panfrost
- 
- virtio_gpu:none:
--  stage: virtio-gpu
-+  stage: software-driver
-   variables:
-     CROSVM_GALLIUM_DRIVER: llvmpipe
-     DRIVER_NAME: virtio_gpu
-@@ -427,3 +427,25 @@ virtio_gpu:none:
-     - debian/x86_64_test-gl
-     - testing:x86_64
-     - igt:x86_64
-+
-+vkms:none:
-+  stage: software-driver
-+  variables:
-+    DRIVER_NAME: vkms
-+    GPU_VERSION: none
-+  extends:
-+    - .test-gl
-+    - .test-rules
-+  tags:
-+    - kvm
-+  script:
-+    - ln -sf $CI_PROJECT_DIR/install /install
-+    - mv install/bzImage /lava-files/bzImage
-+    - mkdir -p /lib/modules
-+    - mkdir -p $CI_PROJECT_DIR/results
-+    - ln -sf $CI_PROJECT_DIR/results /results
-+    - ./install/crosvm-runner.sh ./install/igt_runner.sh
-+  needs:
-+    - debian/x86_64_test-gl
-+    - testing:x86_64
-+    - igt:x86_64
-diff --git a/drivers/gpu/drm/ci/x86_64.config b/drivers/gpu/drm/ci/x86_64.config
-index 1cbd49a5b23a..8eaba388b141 100644
---- a/drivers/gpu/drm/ci/x86_64.config
-+++ b/drivers/gpu/drm/ci/x86_64.config
-@@ -24,6 +24,7 @@ CONFIG_DRM=y
- CONFIG_DRM_PANEL_SIMPLE=y
- CONFIG_PWM_CROS_EC=y
- CONFIG_BACKLIGHT_PWM=y
-+CONFIG_DRM_VKMS=m
- 
- # Strip out some stuff we don't need for graphics testing, to reduce
- # the build.
-diff --git a/drivers/gpu/drm/ci/xfails/virtio_gpu-none-fails.txt b/drivers/gpu/drm/ci/xfails/virtio_gpu-none-fails.txt
-index 007f21e56d89..f82d437909b5 100644
---- a/drivers/gpu/drm/ci/xfails/virtio_gpu-none-fails.txt
-+++ b/drivers/gpu/drm/ci/xfails/virtio_gpu-none-fails.txt
-@@ -41,7 +41,6 @@ kms_flip@flip-vs-absolute-wf_vblank,Fail
- kms_flip@flip-vs-absolute-wf_vblank-interruptible,Fail
- kms_flip@flip-vs-blocking-wf-vblank,Fail
- kms_flip@flip-vs-expired-vblank,Fail
--kms_flip@flip-vs-expired-vblank-interruptible,Fail
- kms_flip@flip-vs-modeset-vs-hang,Fail
- kms_flip@flip-vs-panning-vs-hang,Fail
- kms_flip@flip-vs-wf_vblank-interruptible,Fail
-diff --git a/drivers/gpu/drm/ci/xfails/vkms-none-fails.txt b/drivers/gpu/drm/ci/xfails/vkms-none-fails.txt
-new file mode 100644
-index 000000000000..ef6101d2c356
---- /dev/null
-+++ b/drivers/gpu/drm/ci/xfails/vkms-none-fails.txt
-@@ -0,0 +1,33 @@
-+kms_cursor_crc@cursor-rapid-movement-128x128,Fail
-+kms_cursor_crc@cursor-rapid-movement-128x42,Fail
-+kms_cursor_crc@cursor-rapid-movement-256x256,Fail
-+kms_cursor_crc@cursor-rapid-movement-256x85,Fail
-+kms_cursor_crc@cursor-rapid-movement-32x10,Fail
-+kms_cursor_crc@cursor-rapid-movement-32x32,Fail
-+kms_cursor_crc@cursor-rapid-movement-512x170,Fail
-+kms_cursor_crc@cursor-rapid-movement-512x512,Fail
-+kms_cursor_crc@cursor-rapid-movement-64x21,Fail
-+kms_cursor_crc@cursor-rapid-movement-64x64,Fail
-+kms_cursor_legacy@basic-flip-before-cursor-atomic,Fail
-+kms_cursor_legacy@basic-flip-before-cursor-legacy,Fail
-+kms_cursor_legacy@cursor-vs-flip-atomic,Fail
-+kms_cursor_legacy@cursor-vs-flip-legacy,Fail
-+kms_cursor_legacy@cursor-vs-flip-toggle,Fail
-+kms_cursor_legacy@cursor-vs-flip-varying-size,Fail
-+kms_cursor_legacy@flip-vs-cursor-atomic,Fail
-+kms_cursor_legacy@flip-vs-cursor-crc-atomic,Fail
-+kms_cursor_legacy@flip-vs-cursor-crc-legacy,Fail
-+kms_cursor_legacy@flip-vs-cursor-legacy,Fail
-+kms_flip@flip-vs-modeset-vs-hang,Fail
-+kms_flip@flip-vs-panning-vs-hang,Fail
-+kms_pipe_crc_basic@nonblocking-crc,Fail
-+kms_pipe_crc_basic@nonblocking-crc-frame-sequence,Fail
-+kms_pipe_crc_basic@suspend-read-crc,Fail
-+kms_plane@plane-panning-bottom-right-suspend,Fail
-+kms_universal_plane@universal-plane-pipe-A-sanity,Fail
-+kms_universal_plane@universal-plane-sanity,Fail
-+kms_vblank@pipe-A-ts-continuation-dpms-suspend,Fail
-+kms_writeback@writeback-check-output,Fail
-+kms_writeback@writeback-fb-id,Fail
-+kms_writeback@writeback-invalid-parameters,Fail
-+kms_writeback@writeback-pixel-formats,Fail
-diff --git a/drivers/gpu/drm/ci/xfails/vkms-none-flakes.txt b/drivers/gpu/drm/ci/xfails/vkms-none-flakes.txt
-new file mode 100644
-index 000000000000..7b52dab45457
---- /dev/null
-+++ b/drivers/gpu/drm/ci/xfails/vkms-none-flakes.txt
-@@ -0,0 +1,20 @@
-+# Board Name: vkms
-+# Bug Report: https://lore.kernel.org/dri-devel/005da8f1-8050-bffd-653c-2a87ae6376f7@collabora.com/T/#u
-+# IGT Version: 1.28-gb0cc8160e
-+# Linux Version: 6.7.0-rc3
-+# Failure Rate: 50
-+
-+# Reported by deqp-runner
-+kms_cursor_legacy@cursorA-vs-flipA-legacy
-+kms_cursor_legacy@cursorA-vs-flipA-varying-size
-+kms_flip@flip-vs-expired-vblank-interruptible
-+kms_flip@flip-vs-expired-vblank
-+kms_flip@plain-flip-fb-recreate
-+kms_flip@plain-flip-fb-recreate-interruptible
-+kms_flip@plain-flip-ts-check-interruptible
-+
-+# The below test shows inconsistency across multiple runs,
-+# giving results of Pass and Fail alternately.
-+kms_cursor_legacy@cursorA-vs-flipA-toggle
-+kms_pipe_crc_basic@nonblocking-crc
-+kms_flip@plain-flip-ts-check
-diff --git a/drivers/gpu/drm/ci/xfails/vkms-none-skips.txt b/drivers/gpu/drm/ci/xfails/vkms-none-skips.txt
-new file mode 100644
-index 000000000000..524e7972c75a
---- /dev/null
-+++ b/drivers/gpu/drm/ci/xfails/vkms-none-skips.txt
-@@ -0,0 +1,16 @@
-+# Hits:
-+# rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-+# rcu: 	Tasks blocked on level-0 rcu_node (CPUs 0-1): P749/1:b..l
-+kms_prop_blob@invalid-get-prop
-+
-+# keeps printing vkms_vblank_simulate: vblank timer overrun and never ends
-+kms_invalid_mode@int-max-clock
-+
-+# Suspend seems to be broken
-+.*suspend.*
-+
-+# Hangs machine and timeout occurs
-+kms_flip@flip-vs-absolute-wf_vblank-interruptible
-+kms_invalid_mode@zero-hdisplay
-+kms_invalid_mode@bad-vtotal
-+kms_cursor_crc.*
--- 
-2.40.1
+> issue, update the audio status during detection.
 
+Please add a Fixes: tag.
+
+> Signed-off-by: Hsin-Te Yuan <yuanhsinte@chromium.org>
+> ---
+>  drivers/gpu/drm/bridge/analogix/anx7625.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/=
+bridge/analogix/anx7625.c
+> index 29d91493b101a..9f0d0c5b8ebf5 100644
+> --- a/drivers/gpu/drm/bridge/analogix/anx7625.c
+> +++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
+> @@ -2481,15 +2481,22 @@ static void anx7625_bridge_atomic_disable(struct =
+drm_bridge *bridge,
+>         mutex_unlock(&ctx->aux_lock);
+>  }
+>
+> +static void
+> +anx7625_audio_update_connector_status(struct anx7625_data *ctx,
+> +                                     enum drm_connector_status status);
+> +
+>  static enum drm_connector_status
+>  anx7625_bridge_detect(struct drm_bridge *bridge)
+>  {
+>         struct anx7625_data *ctx =3D bridge_to_anx7625(bridge);
+>         struct device *dev =3D ctx->dev;
+> +       enum drm_connector_status status;
+>
+>         DRM_DEV_DEBUG_DRIVER(dev, "drm bridge detect\n");
+>
+> -       return anx7625_sink_detect(ctx);
+> +       status =3D anx7625_sink_detect(ctx);
+> +       anx7625_audio_update_connector_status(ctx, status);
+
+Nit: add an empty line here.
+
+> +       return status;
+>  }
+>
+>  static struct edid *anx7625_bridge_get_edid(struct drm_bridge *bridge,
+>
+> ---
+> base-commit: 90d35da658da8cff0d4ecbb5113f5fac9d00eb72
+> change-id: 20240305-anx7625-fe16d3a9d37d
+>
+> Best regards,
+> --
+> Hsin-Te Yuan <yuanhsinte@chromium.org>
+>
 
