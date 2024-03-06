@@ -1,229 +1,118 @@
-Return-Path: <linux-kernel+bounces-93865-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93866-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04A66873603
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:03:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1586873605
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:05:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 326311C22CDF
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:03:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DCC081C22CC6
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:05:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 866F78003E;
-	Wed,  6 Mar 2024 12:03:00 +0000 (UTC)
-Received: from mail-oa1-f51.google.com (mail-oa1-f51.google.com [209.85.160.51])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DDDE7FBDC;
+	Wed,  6 Mar 2024 12:05:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kAeF81mT"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 604677FBAE;
-	Wed,  6 Mar 2024 12:02:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0D5A78B43;
+	Wed,  6 Mar 2024 12:05:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709726580; cv=none; b=dpTyfAp5pUV6nZlBZJ7QFL9FRmB+h0XsIc0PW6gCBQB01pzuSy25Q7AY+5Jc9/BUPk0giPAXoPXV6x6aTE/yuh0iLTHfOvaCyO6In2ae7vA+RJTTssA8yWfT5+j8lzwf6bl59/HlaP93ieHKb2pQNaN+E7zTPy4TZZOhc85E/gs=
+	t=1709726722; cv=none; b=bUL1pGdY12Z9MMwOyvPveDfV4ULQl6u31ESN4OdFG1vurdZk6hyCti9WeSoq3kp9ZiLym7ZXMoCAAUOI48VWlNTgirR3vScqut3uLwEQJlrQr9O9Axc0VtzBUGJFr7ZJwQZNQGsbZ/FlWiAaKKhYSgEyuLAKK1O6FEFBM3nrQCg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709726580; c=relaxed/simple;
-	bh=ygOUcxcRpUINHsb9d9oL2323fFjzJsOlLgRBp5SVIVY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TQvtpoz8mHqMNaibxC+GkjNCmPIUeGED+Y1tNL+Lnwp7Bp5X9S2e/fEoZo4ExRgmuF4RtUsO3YwsmDMw01Z1ExOYuTMhSZIyTeKwY/zqrrMz7Hzj4axDXOF+nVT8eOPoabwPrD3AQbWOa5gtUwHf4xTo/RbdHAFtx9X6FShHRY4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.160.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	s=arc-20240116; t=1709726722; c=relaxed/simple;
+	bh=eQFHMv8UUo9nQQ3yy4xIIoO43toDxUa8TDUZCAlrLJY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=iTcIgWl3UFu2O2H6hFVSuJhInoc7SSU/KR5vzi3BXnNqcV9XKgYZXgYtv5RB2fEVTDJONlFU04VYcIQfjpln5Mub6BvyqAjNXFSX3x68rqugFEuhp9WunReMjcOF05ffcpLk8f3OPpBfQiNuNjIFvhFBlwcRx4DR+y7OU3igV48=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kAeF81mT; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-21f10aae252so735106fac.0;
-        Wed, 06 Mar 2024 04:02:58 -0800 (PST)
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a4429c556efso900510366b.0;
+        Wed, 06 Mar 2024 04:05:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709726719; x=1710331519; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z8RIolar8ojewqWNyIt1GZK9S7XixCtLVhwrhP98c+A=;
+        b=kAeF81mTngChlwUGS6c/arwbYyHgw9RSHfe4PcxFdkG8PqdM9JLTths4qcYWjk1ye6
+         WcLY9P3DzGalBpzDLezwEdFfQyupNL9e1ZZZ2bZuY8Z8W09v87l1fW3WqJXEe2YYPcPi
+         szrc09an83E6X0TkkdXxirCc0w2d0budSQY2HtNlBnbfIz2PwTX5vQyrUN2EBnBKEXLY
+         2prHY735pV9b/JHkzRmJpkADTFtIIDT6GYBgcaBqSh2wgsu/qqvDOlEN46nzxGtzoqkA
+         cXUH8o/F779r3awrxxbbDzTnLGrLzZ6o3bnVXUUClz3U/QYcwvkJk7f7s6E3hGkeACtf
+         OuvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709726577; x=1710331377;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wGkv/Y4Ut4vTGw3rcpL6a48vgfRCwr0jO5gV/dxwk4I=;
-        b=KLFt0akeThbOisMBSLftHT9KUMOf+cW9MTt45+atWKlEzuxx5MMqBk0LWpTB9u12g9
-         kD1S/jVb9LbFLaX3fcmvE7zLjjr2SL41hO/5o1rTLns78f17RbybkwI6euYe8cAav4Y3
-         GgsOze17K/E3nQNDvesKpyy2LxsJv8/kWxsr1vCBUp1ne44F88jMdmlRhHmtEIDr2UyB
-         8flblyKakUyiSNK3I7lrtiVYyms5qW4db8vBPpOSBGVarMoJiMAjAROFFjOVTAzHVJDw
-         5lIHxNTEvWqIwN3ZRXuz1Is7wwy+2bvGH8gVM+RqAqSw0Bx32MsybZmGauq+VLtSbl0o
-         i9AQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUwPGm6h9neV5AQG/S0froefPj1E6Na1P4/GQVs8gh8M3EVAAyAfaYUIE/a4Uzp1q8U6NSPLGF1mtmt6fvVPwi8pRk6WG7h+9sf7YPFWVNyQbmT+Re+Mufi1mUbyUY8SZl8tS2xI5s=
-X-Gm-Message-State: AOJu0YxZ32y67S+ZjYeLdaiaBnD/9jqIrAPKaOSWCssFXvNZPD7kJHPr
-	hupvklKK5Im+BrVkO8LE3eau0k6bh6gD7Y3v+XJ40M9joYDtA6SYYiUo/elUYzLEZ7wef9m7ujs
-	KT7leANX02obp7QTV90EOdiG1mVE=
-X-Google-Smtp-Source: AGHT+IFnaboa01aFQV5lPR30HlGfY/+Il5mmcq+JaTPaMIvwVPJBshCCIa27lGDlV0b/Uqzmcdc68nhgL+dmu42frE8=
-X-Received: by 2002:a05:6870:b507:b0:21f:cd7d:9904 with SMTP id
- v7-20020a056870b50700b0021fcd7d9904mr3487536oap.4.1709726577329; Wed, 06 Mar
- 2024 04:02:57 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709726719; x=1710331519;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Z8RIolar8ojewqWNyIt1GZK9S7XixCtLVhwrhP98c+A=;
+        b=tXY5AIE/chPLYjzMw8HLfAjAcOjgnzOudzrKtBdN+e1b6NSCiTjeFAo+GHBV7RmnBq
+         +KAdB3OZxQw3aCeh8eIvFqX55cPsfXZSdFs/jzs5DR0VCJTpUsd4F66N3WShz1f7sMJF
+         zyHeXFxvP2GDqu5y2JjTqouXu49DbK6VLDISAzVrv01IrdNIz2F8wWeSeORk0wrf+IZy
+         xO+HXk5CnZn9fyaRa9ImIq6qCK9G4L4BZhmMMeaYkgQoDfzdMSmIp1Zm2464x/TDAjIm
+         jAGmB4G09gFjMGC5f+ol9HK4yzWyS2gInwfskInir2nm5S7XBbuzQi9G1ioLLWqBtBFQ
+         mv1g==
+X-Forwarded-Encrypted: i=1; AJvYcCV2kSlvaau6x/uCvKu8xjr9daPADvE6gJkxqGBQshlg3Nv5M1OucKW6QtJczg8oYi2eeHs0jBiiB2aZfycCeqqYAqHfQtysvECdlh6H
+X-Gm-Message-State: AOJu0Yw+LEyi3i+Q4ikuMnmCs1lnh8BuWL+2LfqzzNZGunOe+5ABinIM
+	VxsbAQAyGHywezHWqvfcCnPqFJc0NT3gQeiklpAKL+9LVrCOG5HHUWAYqO6kTOw=
+X-Google-Smtp-Source: AGHT+IGCoXG6Rl4slT5HV6uXkUjMR2UjZ+4AnyHwlfCUp0/BkCYBOE0k6LPL7CYJvUf1+uaWpPSQTA==
+X-Received: by 2002:a17:906:13d5:b0:a45:95f5:f314 with SMTP id g21-20020a17090613d500b00a4595f5f314mr3820262ejc.42.1709726719025;
+        Wed, 06 Mar 2024 04:05:19 -0800 (PST)
+Received: from lola.. ([2a02:810d:7e40:14b0:d371:e319:5dd0:9b35])
+        by smtp.gmail.com with ESMTPSA id v27-20020a170906381b00b00a449f43a7afsm5637290ejc.113.2024.03.06.04.05.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Mar 2024 04:05:18 -0800 (PST)
+From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To: Rodolfo Giometti <giometti@enneenne.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] pps: use cflags-y instead of EXTRA_CFLAGS
+Date: Wed,  6 Mar 2024 13:05:15 +0100
+Message-ID: <20240306120515.15711-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240306085428.88011-1-daniel.lezcano@linaro.org>
-In-Reply-To: <20240306085428.88011-1-daniel.lezcano@linaro.org>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 6 Mar 2024 13:02:45 +0100
-Message-ID: <CAJZ5v0jAn2F-GH=fguX0+3bG38vyAxfufadtFiBUfg=EjTBh6Q@mail.gmail.com>
-Subject: Re: [RFC PATCH] thermal/core: Fix trip point crossing events ordering
-To: Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: rjw@rjwysocki.net, linux-kernel@vger.kernel.org, 
-	"Rafael J. Wysocki" <rafael@kernel.org>, Zhang Rui <rui.zhang@intel.com>, 
-	Lukasz Luba <lukasz.luba@arm.com>, "open list:THERMAL" <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Mar 6, 2024 at 9:54=E2=80=AFAM Daniel Lezcano <daniel.lezcano@linar=
-o.org> wrote:
->
-> Let's assume the following setup:
->
->  - trip 0 =3D 65=C2=B0C
->  - trip 1 =3D 70=C2=B0C
->  - trip 2 =3D 75=C2=B0C
->
-> The current temperature is 35=C2=B0C.
->
-> The interrupt is setup to fire at 65=C2=B0C. If the thermal capacity is
-> saturated it is possible the temperature jumps to 72=C2=B0c when reading
-> the temperature after the interrupt fired when 65=C2=B0C was crossed. Tha=
-t
-> means we should have two events notified to userspace. The first one
-> for trip 0 and the second one for trip 1.
->
-> When the function thermal_zone_update() is called from the threaded
-> interrupt, it will read the temperature and then call for_each_trip()
-> which in turns call handle_trip_point().
->
-> This function will check:
->
->      if (tz->last_temperature < trip->temperature &&
->         tz->temperature >=3D trip->temperature)
->                         thermal_notify_tz_trip_up()
+Commit f77bf01425b1 ("kbuild: introduce ccflags-y, asflags-y and
+ldflags-y") deprecates use of EXTRA_CFLAGS in the kernel build.
 
-For the mainline:
+This has been cleaned up in the whole kernel tree long ago, but this one
+single place must have been missed.
 
-$ git grep handle_trip_point | cat
-$
+Replace the EXTRA_CFLAGS use by the common pattern for such debug flags.
+No functional change.
 
-Do you mean handle_thermal_trip()?
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+Rodolfo, please ack.
 
-But it doesn't do the above in the mainline.  It does (comments omitted)
+Greg, please pick this minor cleanup patch.
 
-if (tz->last_temperature < trip->threshold) {
-   if (tz->temperature >=3D trip->temperature) {
-        thermal_notify_tz_trip_up(tz, trip);
-        thermal_debug_tz_trip_up(tz, trip);
-        trip->threshold =3D trip->temperature - trip->hysteresis;
-    } else {
-        trip->threshold =3D trip->temperature;
-    }
-}
+ drivers/pps/generators/Makefile | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
->
-> So here, we will call this function with trip0 followed by trip1. That
-> will result in an event for each trip point, reflecting the trip point
-> being crossed the way up with a temperature raising. So far, so good.
->
-> Usually the sensors have an interrupt when the temperature is crossed
-> the way up but not the way down, so there an extra delay corresponding
-> to the passive polling where the temperature could have dropped and
-> crossed more than one trip point. This scenario is likely to happen
-> more often when multiple trip points are specified. So considering the
-> same setup after crossing the trip 2, we stop the workload responsible
-> of the heat and the temperature drops suddenly to 62=C2=B0C. In this case=
-,
-> the next polling will call thermal_zone_device_update(), then
-> for_each_trip() and handle_trip_point().
->
-> This function will check:
->
->      if (tz->last_temperature >=3D trip->temperature &&
->         tz->temperature < trip->temperature - trip->hysteresis)
->                         thermal_notify_tz_trip_down()
+diff --git a/drivers/pps/generators/Makefile b/drivers/pps/generators/Makefile
+index 2d56dd0495d5..2589fd0f2481 100644
+--- a/drivers/pps/generators/Makefile
++++ b/drivers/pps/generators/Makefile
+@@ -5,6 +5,4 @@
+ 
+ obj-$(CONFIG_PPS_GENERATOR_PARPORT) += pps_gen_parport.o
+ 
+-ifeq ($(CONFIG_PPS_DEBUG),y)
+-EXTRA_CFLAGS += -DDEBUG
+-endif
++ccflags-$(CONFIG_PPS_DEBUG) := -DDEBUG
+-- 
+2.43.2
 
-Again, assuming that you mean handle_thermal_trip(), the above is not
-the current mainline code, which is (comments omitted)
-
-if (tz->last_temperature >=3D trip->threshold) {
-    if (tz->temperature < trip->temperature - trip->hysteresis) {
-         thermal_notify_tz_trip_down(tz, trip);
-         thermal_debug_tz_trip_down(tz, trip);
-         trip->threshold =3D trip->temperature;
-    } else {
-        trip->threshold =3D trip->temperature - trip->hysteresis;
-    }
-}
-
-I guess this doesn't matter here?
-
-> The loop for_each_trip() will call trip0, 1 and 2. That will result in
-> generating the events for trip0, 1 and 2, in the wrong order. That is
-> not reflecting the thermal dynamic and puzzles the userspace
-> monitoring the temperature.
-
-Only if the trips are ordered in a specific way, but they don't need
-to be ordered in any way.
-
-> Fix this by inspecting the trend of the temperature. If it is raising,
-> then we browse the trip point in the ascending order, if it is falling
-> then we browse in the descending order.
->
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> ---
->  drivers/thermal/thermal_core.c | 8 ++++++--
->  drivers/thermal/thermal_core.h | 3 +++
->  2 files changed, 9 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_cor=
-e.c
-> index dfaa6341694a..abb8ee5c9afe 100644
-> --- a/drivers/thermal/thermal_core.c
-> +++ b/drivers/thermal/thermal_core.c
-> @@ -473,8 +473,12 @@ void __thermal_zone_device_update(struct thermal_zon=
-e_device *tz,
->
->         tz->notify_event =3D event;
->
-> -       for_each_trip(tz, trip)
-> -               handle_thermal_trip(tz, trip);
-> +       if (tz->last_temperature < tz->temperature)
-> +               for_each_trip(tz, trip)
-> +                       handle_thermal_trip(tz, trip);
-> +       else
-> +               for_each_trip_reverse(tz, trip)
-> +                       handle_thermal_trip(tz, trip);
-
-This works assuming a "proper" ordering of the trips.
-
->
->         monitor_thermal_zone(tz);
->  }
-> diff --git a/drivers/thermal/thermal_core.h b/drivers/thermal/thermal_cor=
-e.h
-> index e9c099ecdd0f..0072b3d4039e 100644
-> --- a/drivers/thermal/thermal_core.h
-> +++ b/drivers/thermal/thermal_core.h
-> @@ -123,6 +123,9 @@ void thermal_governor_update_tz(struct thermal_zone_d=
-evice *tz,
->  #define for_each_trip(__tz, __trip)    \
->         for (__trip =3D __tz->trips; __trip - __tz->trips < __tz->num_tri=
-ps; __trip++)
->
-> +#define for_each_trip_reverse(__tz, __trip)    \
-> +       for (__trip =3D &__tz->trips[__tz->num_trips - 1]; __trip >=3D __=
-tz->trips ; __trip--)
-> +
->  void __thermal_zone_set_trips(struct thermal_zone_device *tz);
->  int thermal_zone_trip_id(const struct thermal_zone_device *tz,
->                          const struct thermal_trip *trip);
-> --
-
-Generally speaking, this is a matter of getting alignment on the
-expectations between the kernel and user space.
-
-It looks like user space expects to get the notifications in the order
-of either growing or falling temperatures, depending on the direction
-of the temperature change.  Ordering the trips in the kernel is not
-practical, but the notifications can be ordered in principle.  Is this
-what you'd like to do?
-
-Or can user space be bothered with recognizing that it may get the
-notifications for different trips out of order?
 
