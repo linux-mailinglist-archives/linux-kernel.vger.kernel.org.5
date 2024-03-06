@@ -1,147 +1,124 @@
-Return-Path: <linux-kernel+bounces-94266-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94267-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CADC8873C35
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:27:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9716B873C3A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:27:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBD4D1C23C34
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:27:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C8A2A1C23BD4
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:27:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5035A13793D;
-	Wed,  6 Mar 2024 16:27:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D31B137775;
+	Wed,  6 Mar 2024 16:27:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nhZld4lG"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Jj1RDJb9"
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FAA6137927;
-	Wed,  6 Mar 2024 16:27:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0052D1369B6
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 16:27:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709742430; cv=none; b=UiqHFEWsjS9+U/DSAEBp2MZlhWFKpksXn8VWzEFXPpwaPiOUslY+sebuwYdlL666q6UYebRn3wF3rOuVJmNubAi2Ui8QXfJoa4AVgfS3j5jNl/I87DhukLHp0/CNMPHCsChHEv+Sf5EyPMaijl071W1VY/bomLikeC9cwHzhs6s=
+	t=1709742464; cv=none; b=KgMujUFb8yLT6kbCT40BfqCqPnXT5pcwsy2ouWns3KP+0qI1l3BISLZNaMYD7wPmboOEhR3OGRhd1oAg1xDPfjuNZ+nZGvZeQ+Zi36DUCmWPpEcRNrxfTkeQpiXFJdWa/jrbnkuarjHU9YLcX2ax64oqWtOu1EGl/ub3NnffQGs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709742430; c=relaxed/simple;
-	bh=mST0baNuDZQDxdlBh3gFG3t11nxhv4188xlTctM8KAI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=r4l08d/VMcu+rO5DdqUhcDeAKa54zxY6W0GJfRR0pemUxw/JBcWc0Wf3Z8ii57jj4dkwDktSVO0ZRjc+VgWKOaEprMwgc7Cx0rqU6msdZa+iIJFfzocGPWDHV4Hn+e1hWdxF6Ikwt30YVTfEcphzkSPrm/QYTjgSwVS22NcgQlg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nhZld4lG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0319C43394;
-	Wed,  6 Mar 2024 16:27:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709742430;
-	bh=mST0baNuDZQDxdlBh3gFG3t11nxhv4188xlTctM8KAI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nhZld4lG7GINhc9K+uHkPNx96orLDEa10TFZ8fEVhsgtrQGnohY+sjOGAJeqHRUk0
-	 EunhC94QsqjPcgQJIBoTGD+jl+/oBLty/HOXPxhSDDx0ILhdXmjg3OV4oqSyBifmEg
-	 fx8vh9KvS7IBDFmGCka2nhjMkPRLCctoO2ukJYxMlSqD0OGibw+RXKhWQxdT/CmCPX
-	 dKHXpLknEXw4ezT7k+4mUhxBxC+BbY9q94jfHImJVTIAC76bg+YAPhzQeVuK8VH4el
-	 VjK/aIAMMvuaG0KfflRxexmg7SG8eKGpm0uULUJyAotL8fN0VJ7N/BS9hTPX0DE24s
-	 NoWoYQntpKEkw==
-Date: Wed, 6 Mar 2024 13:27:06 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Mike Galbraith <efault@gmx.de>, Peter Zijlstra <peterz@infradead.org>,
-	Marco Elver <elver@google.com>, linux-rt-users@vger.kernel.org,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Clark Williams <williams@redhat.com>,
-	Alessandro Carminati <acarmina@redhat.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Artem Savkov <asavkov@redhat.com>
-Subject: Re: 'perf test sigtrap' failing on PREEMPT_RT_FULL
-Message-ID: <ZeiZWjRUmXszp0CN@x1>
-References: <ZdZOYnIkjqkyfo5P@x1>
+	s=arc-20240116; t=1709742464; c=relaxed/simple;
+	bh=yEXFKs84hTr0UyD4ojePo0Svlb29UBTd8UFd7uJjn1k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=aENqXYz1fHoe3F3JuIflWcygNGF9sJgDOJSix/3dIua5+DE+lqevwBzJAiRO3mVdlPzb3mHr2WiU7bzjLbpj03fLulgwZ44q339VRy5WGtabjsnb/DzQePFeFOKJQZywxc5VRp55uE6zY4sTtIb8ZFTZdikWYI2IMsG3TWXZU/Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Jj1RDJb9; arc=none smtp.client-ip=209.85.167.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-5135ab96dcbso1262348e87.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 08:27:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709742461; x=1710347261; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tAZMCH8J07QiijNq8o/NNBXhy5JhnjDlTuZhK1cgvds=;
+        b=Jj1RDJb9ClKBaKQm/HIvqaNeCwKFo1gfELy63XVtFcQYczE46C8WAGHDSpsK/VhBjX
+         YMpCF+O6j8Ytq8AFirexXjIu2d9eA2Xj2id67kkJpsWozTQnifW08oFNQuwOYEHlMVS1
+         WCz5BseurrMKngRZ7i5Q+bpDLztOrkw1Kkguhn//8ZudRuLzq9HYco01y47h/AnwZ2QA
+         uv1LtWmTuHGuxmkV1Ww4xmbL2x7Ny0FWJVZf0H5/mJRBmLGyWyg9UsGTTaqsdOy4utdT
+         W5w31ctIEQgIlrvjEiSXnpKdvtkYMTR1acepcPKXAD5lyRexJriosAf6mpN4kr5NeBBV
+         5DDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709742461; x=1710347261;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tAZMCH8J07QiijNq8o/NNBXhy5JhnjDlTuZhK1cgvds=;
+        b=cXM5taF5209ZKA9k8HEBtBPPsywSdHJN3u6DmBi+0W8wh8RDBYajxbJgpEmNJIuOny
+         2FLouPmLr4b70o3IRdXJNqn3XK1k9AbpoUfdL2iW35zVdzI/TaEaFrA7Q+HhB6zFE4Xh
+         tm7J0w29KE+Cca0R+QQRGl00C4Rg05HaF0TBlxYhpjkpTAQpin3Pzp3NzCvPc8FSAfbU
+         //d4QZKnlJxwGcXQv7AmX54XByLPiYJ58ItAyGNb1Eo5RoUnZg74iWcoFV4Rwr/iWWh2
+         r6KGFHQU/tEW0Cp19pdIqP0HRFgLuS8w+vJFVubTDSGQJ1ziH3vUNahwczaKxcDggt4l
+         wIfA==
+X-Forwarded-Encrypted: i=1; AJvYcCXe61khKIajBSYcG04Wl9YJw3+hPlyc+Fle18BtNc+ycGLBzWTcf9ht0gS8WN28Z9W02p0ard3Ws0yWvHIIpd1/4ulNqhfuYnJETxEE
+X-Gm-Message-State: AOJu0Yy1mAcArkUqJh5kPNWivckMIkpmeo9y7PeoOqYfWt0OFCK9OFoY
+	qh4IOIi7eRGPdN6YBIzxiUsGSe4SSnK5tW45qWnGnKIMdqmXoG0g55Qr+BxHMyc=
+X-Google-Smtp-Source: AGHT+IHFSt5jWo2bCyn5EXHjWo85KHHEtu2g3w+sAhUaXX7yL60kB98Uk0rzf0XF8spju2KcgjvxlQ==
+X-Received: by 2002:a05:6512:ba5:b0:513:5bbe:7b29 with SMTP id b37-20020a0565120ba500b005135bbe7b29mr1708191lfv.1.1709742461054;
+        Wed, 06 Mar 2024 08:27:41 -0800 (PST)
+Received: from [87.246.221.128] (netpanel-87-246-221-128.pol.akademiki.lublin.pl. [87.246.221.128])
+        by smtp.gmail.com with ESMTPSA id u25-20020a196a19000000b00513588ac414sm561395lfu.161.2024.03.06.08.27.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Mar 2024 08:27:40 -0800 (PST)
+Message-ID: <19176685-898b-4aeb-b819-fec54a126233@linaro.org>
+Date: Wed, 6 Mar 2024 17:27:39 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZdZOYnIkjqkyfo5P@x1>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/5] spi: spi-qpic: Add qpic spi nand driver support
+Content-Language: en-US
+To: Md Sadre Alam <quic_mdalam@quicinc.com>, andersson@kernel.org,
+ broonie@kernel.org, robh@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
+ vigneshr@ti.com, manivannan.sadhasivam@linaro.org,
+ linux-arm-msm@vger.kernel.org, linux-spi@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+Cc: quic_srichara@quicinc.com, quic_varada@quicinc.com
+References: <20240215134856.1313239-1-quic_mdalam@quicinc.com>
+ <20240215134856.1313239-4-quic_mdalam@quicinc.com>
+ <d1c80d3f-3b70-4630-8f7d-b00983b487dd@linaro.org>
+ <f5177fad-214f-1b60-46ba-1dc0a4fb059e@quicinc.com>
+ <3e544d37-b1d2-9c58-3130-9e6950430671@quicinc.com>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <3e544d37-b1d2-9c58-3130-9e6950430671@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Mar 06, 2024 at 10:06:30AM -0300, Arnaldo Carvalho de Melo wrote:
-> > In Thu, 4 Jan 2024 19:35:57 -0300, Arnaldo Carvalho de Melo wrote:
-> > > +++ b/kernel/events/core.c
-> > > @@ -6801,7 +6801,7 @@ static void perf_pending_task(struct callback_head *head)
-> > >         * If we 'fail' here, that's OK, it means recursion is already disabled
-> > >         * and we won't recurse 'further'.
-> > >         */
-> > >-       preempt_disable_notrace();
-> > >+       migrate_disable();
-> > >        rctx = perf_swevent_get_recursion_context();
->  
-> > Pardon my ignorance, is it safe to call preempt_count() with preemption
-> > enabled on PREEMPT_RT, or at least in the context being discussed here?
->  
-> > Because:
->  
-> > 	 perf_swevent_get_recursion_context()
-> > 	     get_recursion_context()
-> >                  interrupt_context_level()
-> >                      preempt_count()	
->  
-> > And:
->  
-> > int perf_swevent_get_recursion_context(void)
-> > {
-> >         struct swevent_htable *swhash = this_cpu_ptr(&swevent_htable);
-> > 
-> >         return get_recursion_context(swhash->recursion);
-> > }
+
+
+On 3/6/24 07:01, Md Sadre Alam wrote:
+> Konrad,
 > 
-> Seems to be enough because perf_pending_task is a irq_work callback and
-
-s/irq_work/task_work/ but that also doesn't reentry, I think
-
-> that is guaranteed not to reentry?
+> On 2/20/2024 5:44 PM, Md Sadre Alam wrote:
+>>>> +    ecc_cfg->cfg0 = (cwperpage - 1) << CW_PER_PAGE
+>>>> +                | ecc_cfg->cw_data << UD_SIZE_BYTES
+>>>> +                | 1 << DISABLE_STATUS_AFTER_WRITE
+>>>> +                | 3 << NUM_ADDR_CYCLES
+>>>> +                | ecc_cfg->ecc_bytes_hw << ECC_PARITY_SIZE_BYTES_RS
+>>>> +                | 0 << STATUS_BFR_READ
+>>>> +                | 1 << SET_RD_MODE_AFTER_STATUS
+>>>> +                | ecc_cfg->spare_bytes << SPARE_SIZE_BYTES;
+>>>
+>>> Let me introduce you to FIELD_PREP/GET and GENMASK().. Many assignments
+>>> in this file could use these.
+>>
+>>   Ok
 > 
-> Artem's tests with a RHEL kernel seems to indicate that, ditto for my,
-> will test with upstream linux-6.8.y-rt.
-> 
-> But there is a lot more happening in perf_sigtrap and I'm not sure if
-> the irq_work callback gets preempted we would not race with something
-> else.
-> 
-> Marco, Mike, ideas?
+> While doing the change i realized that it will impact raw nand driver as well.
+> Shall I post this change as separate patch. Is this ok? Please let me know.
 
-Looking at:
+One patch per file/topic, yes, please
 
-commit ca6c21327c6af02b7eec31ce4b9a740a18c6c13f
-Author: Peter Zijlstra <peterz@infradead.org>
-Date:   Thu Oct 6 15:00:39 2022 +0200
-
-    perf: Fix missing SIGTRAPs
-    
-    Marco reported:
-    
-    Due to the implementation of how SIGTRAP are delivered if
-    perf_event_attr::sigtrap is set, we've noticed 3 issues:
-    
-      1. Missing SIGTRAP due to a race with event_sched_out() (more
-         details below).
-    
-      2. Hardware PMU events being disabled due to returning 1 from
-         perf_event_overflow(). The only way to re-enable the event is
-         for user space to first "properly" disable the event and then
-         re-enable it.
-    
-      3. The inability to automatically disable an event after a
-         specified number of overflows via PERF_EVENT_IOC_REFRESH.
-    
-    The worst of the 3 issues is problem (1), which occurs when a
-    pending_disable is "consumed" by a racing event_sched_out(), observed
-    as follows:
-
--------------------------------------------------------------
-
-That its what introduces perf_pending_task(), I'm now unsure we can just
-disable migration, as event_sched_out() seems to require being called
-under a raw_spin_lock and that disables preemption...
-
-- Arnaldo
+Konrad
 
