@@ -1,133 +1,94 @@
-Return-Path: <linux-kernel+bounces-94387-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94384-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3ED4B873E64
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 19:20:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11FCD873E5C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 19:18:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D4C321F213FB
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 18:20:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BCDC61F21440
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 18:18:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46B7A13E7D1;
-	Wed,  6 Mar 2024 18:20:03 +0000 (UTC)
-Received: from rtg-sunil-navi33.amd.com (unknown [165.204.156.251])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4B3713DB99;
+	Wed,  6 Mar 2024 18:18:22 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13AED13E7D7
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 18:20:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=165.204.156.251
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A4265D48F;
+	Wed,  6 Mar 2024 18:18:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709749202; cv=none; b=osstAh/ccFkYDQDuwjXvwvF3BuTk7V1cP6C0x9pLBURdx+mMiVRV0h+TNJtnKFNIUKyILEJaiLzVaQihjaV/TFDNRzRhQzLWP2s+dSTihmc6DON3hrGvlt7gQMIMOQSnXV9/e4x/N2wmqlpG1Bl4kXHFOq3PLx46jTFrLKGLdug=
+	t=1709749102; cv=none; b=bkI9Nm9uIy5aoi+a5uRw2r0J5x2XTzZNkgQzisatZ3tpYJP67Apz87cBFSiVtcVDvt0zV84SI7fdgtGU4HzWDFTECUbvSBnIYz4dviFQqlsEaiaSMziG2D3KnjJjozeHq7Pas+gq1+csGtl5RhAjw5dker6DgPepNhSSKN0aESA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709749202; c=relaxed/simple;
-	bh=+iollw6RNHf4rVAe+1PGyDqPPQwM/B5Io5R9gOBtVdQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=n2Vy8vmeyenlMi7csdTANoE0Bisc/TK5HhhZi4Lo7rugnjCC/6Eu9mOnSMURiWTDb6rPxmqofJneOzuiE2enIJwO9I4JZCcP5ZWu1D/tauQfR0XVMgQh0oM8nVYEpI3GwlpdX220YFAwmpZVbvHr5wXHx9ZlHVVMhebJgAuEwo8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=amd.com; spf=none smtp.mailfrom=rtg-sunil-navi33.amd.com; arc=none smtp.client-ip=165.204.156.251
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=rtg-sunil-navi33.amd.com
-Received: from rtg-sunil-navi33.amd.com (localhost [127.0.0.1])
-	by rtg-sunil-navi33.amd.com (8.15.2/8.15.2/Debian-22ubuntu3) with ESMTP id 426IJqHF3551787;
-	Wed, 6 Mar 2024 23:49:52 +0530
-Received: (from sunil@localhost)
-	by rtg-sunil-navi33.amd.com (8.15.2/8.15.2/Submit) id 426IJqmh3551786;
-	Wed, 6 Mar 2024 23:49:52 +0530
-From: Sunil Khatri <sunil.khatri@amd.com>
-To: Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Shashank Sharma <shashank.sharma@amd.com>
-Cc: amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Mukul Joshi <mukul.joshi@amd.com>,
-        Arunpravin Paneer Selvam <Arunpravin.PaneerSelvam@amd.com>,
-        Sunil Khatri <sunil.khatri@amd.com>
-Subject: [PATCH] drm/amdgpu: add vm fault information to devcoredump
-Date: Wed,  6 Mar 2024 23:49:37 +0530
-Message-Id: <20240306181937.3551648-2-sunil.khatri@amd.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240306181937.3551648-1-sunil.khatri@amd.com>
-References: <20240306181937.3551648-1-sunil.khatri@amd.com>
+	s=arc-20240116; t=1709749102; c=relaxed/simple;
+	bh=mauWxPEgozeSMabTexkNXZEChb8JRyo2zdyWL8MlYAA=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=lvrTqEjBdcFSSarBSDS0h6tf8CDKRYXJOrF8I8Prnps0yzPLXhjANAQh/oWSl08j8FpBbSiaG+SiuMsywZeSgErFthcSDLj+HQJtW5Sep10IoEQ3Xf+eks1F7uB5zqWP37vN2JXvKQT2B0He+hHwhp/nvTF0ylYzxNxpib79LFo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 526CFC433C7;
+	Wed,  6 Mar 2024 18:18:20 +0000 (UTC)
+Date: Wed, 6 Mar 2024 13:20:12 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: linke li <lilinke99@qq.com>, joel@joelfernandes.org,
+ boqun.feng@gmail.com, dave@stgolabs.net, frederic@kernel.org,
+ jiangshanlai@gmail.com, josh@joshtriplett.org,
+ linux-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
+ qiang.zhang1211@gmail.com, quic_neeraju@quicinc.com, rcu@vger.kernel.org,
+ Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH] rcutorture: Fix
+ rcu_torture_pipe_update_one()/rcu_torture_writer() data race and
+ concurrency bug
+Message-ID: <20240306132012.54a9ec01@gandalf.local.home>
+In-Reply-To: <140c2d21-1d52-4c46-bbdd-f7b4b7eabbff@paulmck-laptop>
+References: <f3624f39-bbb1-451d-8161-8518e4108d8e@joelfernandes.org>
+	<tencent_9882B228F292088CDD68F10CF1C228742009@qq.com>
+	<20240306103719.1d241b93@gandalf.local.home>
+	<27665890-8314-4252-8622-1e019fee27e4@paulmck-laptop>
+	<20240306130103.6da71ddf@gandalf.local.home>
+	<140c2d21-1d52-4c46-bbdd-f7b4b7eabbff@paulmck-laptop>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Add page fault information to the devcoredump.
+On Wed, 6 Mar 2024 10:09:48 -0800
+"Paul E. McKenney" <paulmck@kernel.org> wrote:
 
-Output of devcoredump:
-**** AMDGPU Device Coredump ****
-version: 1
-kernel: 6.7.0-amd-staging-drm-next
-module: amdgpu
-time: 29.725011811
-process_name: soft_recovery_p PID: 1720
+> > Perhaps we need a way to annotate them, like we have with __rcu. "__shared"?
+> > 
+> > Then all accesses to that variable must be wrapped with a READ_ONCE() or
+> > WRITE_ONCE()? I mean, if this can cause legitimate bugs, we should probably
+> > address it like we do with locking and RCU.  
+> 
+> If we want that, just mark the field "volatile", as in "jiffies".
 
-Ring timed out details
-IP Type: 0 Ring Name: gfx_0.0.0
+I already know Linus's view on "volatile" variables ;-)
 
-[gfxhub] Page fault observed for GPU family:143
-Faulty page starting at address 0x0000000000000000
-Protection fault status register:0x301031
+> 
+> And one of the strengths of READ_ONCE() and WRITE_ONCE() is that they
+> allow non-volatile access where it is safe.  For example, if you hold the
+> lock protecting all stores to that variable, you still need WRITE_ONCE()
+> but not READ_ONCE().  In initialization and cleanup code, you don't
+> need either.
 
-VRAM is lost due to GPU reset!
+I guess the current static analyzers just look to see where READ_ONCE() or
+WRITE_ONCE() is used and checks to see if other places have them properly
+used. I'm guessing that's where the OP patch came from.
 
-Signed-off-by: Sunil Khatri <sunil.khatri@amd.com>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c | 15 ++++++++++++++-
- drivers/gpu/drm/amd/amdgpu/amdgpu_reset.h |  1 +
- 2 files changed, 15 insertions(+), 1 deletion(-)
+Sounds like we just need a ADD_ONCE() or INC_ONCE() then. Because I am not
+taking a
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
-index 147100c27c2d..d7fea6cdf2f9 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
-@@ -203,8 +203,20 @@ amdgpu_devcoredump_read(char *buffer, loff_t offset, size_t count,
- 			   coredump->ring->name);
- 	}
- 
-+	if (coredump->fault_info.status) {
-+		struct amdgpu_vm_fault_info *fault_info = &coredump->fault_info;
-+
-+		drm_printf(&p, "\n[%s] Page fault observed for GPU family:%d\n",
-+			   fault_info->vmhub ? "mmhub" : "gfxhub",
-+			   coredump->adev->family);
-+		drm_printf(&p, "Faulty page starting at address 0x%016llx\n",
-+			   fault_info->addr);
-+		drm_printf(&p, "Protection fault status register:0x%x\n",
-+			   fault_info->status);
-+	}
-+
- 	if (coredump->reset_vram_lost)
--		drm_printf(&p, "VRAM is lost due to GPU reset!\n");
-+		drm_printf(&p, "\nVRAM is lost due to GPU reset!\n");
- 	if (coredump->adev->reset_info.num_regs) {
- 		drm_printf(&p, "AMDGPU register dumps:\nOffset:     Value:\n");
- 
-@@ -253,6 +265,7 @@ void amdgpu_coredump(struct amdgpu_device *adev, bool vram_lost,
- 	if (job) {
- 		s_job = &job->base;
- 		coredump->ring = to_amdgpu_ring(s_job->sched);
-+		coredump->fault_info = job->vm->fault_info;
- 	}
- 
- 	coredump->adev = adev;
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.h b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.h
-index 60522963aaca..3197955264f9 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.h
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.h
-@@ -98,6 +98,7 @@ struct amdgpu_coredump_info {
- 	struct timespec64               reset_time;
- 	bool                            reset_vram_lost;
- 	struct amdgpu_ring			*ring;
-+	struct amdgpu_vm_fault_info	fault_info;
- };
- #endif
- 
--- 
-2.34.1
+	WRITE_ONCE(a, READ_ONCE(a) + 1);
+
+patch that replaces a simple "a++".
+
+-- Steve
 
 
