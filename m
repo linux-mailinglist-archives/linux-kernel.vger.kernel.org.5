@@ -1,56 +1,57 @@
-Return-Path: <linux-kernel+bounces-94047-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94048-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23565873904
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:27:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D7201873908
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:27:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0232E28126C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:27:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91903283A1F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:27:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B62013340D;
-	Wed,  6 Mar 2024 14:26:53 +0000 (UTC)
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8AC5134721;
+	Wed,  6 Mar 2024 14:26:54 +0000 (UTC)
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EB6F130E4A;
-	Wed,  6 Mar 2024 14:26:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 917AB131759;
+	Wed,  6 Mar 2024 14:26:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709735212; cv=none; b=AWd4eIs0k9f6ZZhx6BhP6Z9E35+pp9IXZLWdciMJy0dDKpPJd3Z/fzbP7Ed7w6rXl7mXQgLvMb513vB8wSWAcO7Ccjwr2DGbVKCwWoTgDUYHEEqCw8cBh18FhQtqaFdGvlsIM+N/2fftcN3qATO9fpkyaz6ZQdaQ8SUVSDLQwYI=
+	t=1709735214; cv=none; b=efUVIu2hU9j6CjKbE/GBc2khftgSr8XLmDXWAWA7YyumXDxVxqrkxHK2zUJzF/I97LHy8trEy/UwqKc5uszW6kfMRUnOD3Z/WSjxyuh8vkjV3vUQWowN2FAn8oNszSGuZjtffUmgY9FJ0gGRZp9bhja2QH9rUa3koauK/M48TTs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709735212; c=relaxed/simple;
-	bh=spXrl0cpkI8U/JGv23K543iF1o4J1oTNfrIlz6uYPbc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LP10HIhJU0+vY4T6mKHFU6N9O/433bykt7bTtJrtlsILKeazvskMtuEwEW7Jkuz+mSVYKLgabk08etNaV1T4AuLa9/HV4Pd9ZkZyXmlBL+TCm+B70hxfCudCBAbE89UQqaw71a7az0ATS3NtZoJT0/H9n/BNCtZ8ApfezzVagRQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.53
+	s=arc-20240116; t=1709735214; c=relaxed/simple;
+	bh=IPhqRpKqR3sy7ZHHLSH1nPq95d8MYyZshYGrN4QCbF8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=ebpWW7uGJdRacWqftYYlMPpcEk9XCiWQA/w0oyCGpm0WVtbEiJdPHM1F0KLLzEmTs8sNrU80Z5JWdWlb3VitU9UGp7mDftGJvL20hBoekBZdAlX+k+7EWmBppHEvjuvTdcrZaqJ/HSppbNUU2llEO8heTTzehCpelOb6T6t7PJc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-565b434f90aso10066349a12.3;
-        Wed, 06 Mar 2024 06:26:50 -0800 (PST)
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a44f2d894b7so545716066b.1;
+        Wed, 06 Mar 2024 06:26:52 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709735209; x=1710340009;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=l/vFaq6XZtMUFoGhIOxwz4EZMEc/T8NwmKiTND7gdLc=;
-        b=DSRYOu7oDhRl5bhcQMqWkvlWDV5f2zws7p2QK044oMcTK07/PffIk2a/nU3xjitU9+
-         SHyjHL8qt2MdxYcUV+dJdBqX+OFxnRNHSNn9HIGVg7cR+j9i6gWaYfCkiIm+Pk0z7Tpj
-         asCFRIf5OpNQNQCnW/8E0VSlutdTChfFu4uh76VaO1OWTsFjqclz2rYxZkSNK5nCqffd
-         Jb2t7QLyyCcLcJDeEaxnjteknX8A9msKF+EFLnsLITa+062IioDLO/hwQji51pFhn3V0
-         xFjrSrzvGInc6W2n+btmsdr2R3ZBiZNBpwo/QCu+lVlFeQQMW7Rd4vaCUzNrjpSVKhx/
-         nUKg==
-X-Forwarded-Encrypted: i=1; AJvYcCW5QR9F8jMx28Uk3vQv0rgomuGfptKixxQDmAOxDkEopRUv8QFq3t3X0jDdQJ7y/4yWQaltjfFA7j0rcTRJv6+DmfF8vIAz4kFnw4HE7APOd99E4MGnltL1BGbVljfJ8xOQugfpQYS5
-X-Gm-Message-State: AOJu0Yy1uKa2HSQzNzvr+qUatKuPGRjJYOrftgeuZDaOctXingBrvPN0
-	monAAx4E4lKBFXnEK/hzpRrFpjNvHt0z2Rk6Cm/ESa+CH+LoYP71
-X-Google-Smtp-Source: AGHT+IFJpV1Npg6Fs/H15eBAtNoVnA8/iT8ZzI3QDv8j+bCEzEfPSKZQ/IbVLLRtQ/a+doq0M9fi+g==
-X-Received: by 2002:a05:6402:5c5:b0:566:ab45:e6c0 with SMTP id n5-20020a05640205c500b00566ab45e6c0mr10537608edx.33.1709735209315;
-        Wed, 06 Mar 2024 06:26:49 -0800 (PST)
-Received: from localhost (fwdproxy-lla-003.fbsv.net. [2a03:2880:30ff:3::face:b00c])
-        by smtp.gmail.com with ESMTPSA id o20-20020aa7c514000000b005663e9bd8c1sm6944833edq.38.2024.03.06.06.26.48
+        d=1e100.net; s=20230601; t=1709735211; x=1710340011;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hqjfQ3I1iB32XahTp39x8hHpwxXe+SMvVIkZ0gdQ7VA=;
+        b=pRQZjLp/0/ysbpSdMK9Pa6EdRgO288mp97Wn1DphyE+Oh3972f13CUMMBDnZfagefX
+         GJmROdPV/+idUKx1vs6SN9XCP7WGQ4wpqo8gya48hpAVfSL+23DPAQ6w38jZvznh/PDu
+         dEyxzMUR51jP2fiKaalazKH17uHyne9mE5vopjBT7/db2t8juGI/6UhNLKUw9B4PPP1O
+         5fZj6yrE7Qk8POTbIe3nqZck/vBBLqt+V8mOS3YaFv7/S5lxM+j/VGfTX12xDOwrWlYd
+         Zb+uHA2mqJfzj3+XXd/chp1lvrDhzWhtq0rSvlbQNynAiVKWKddj8j77BTae+zJB5yj3
+         OOhQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVLVwofm957UmRECzLoTKW4CwNFPeZE4BFZAU5kl03P9krZWFym9nEo9lmpl3PVHzKE3a8RRZX/jm5BWzt8OMEaWHSH0rwCf9FH6O057sYNWPAtuuoOQ4lXpZqZth8jXsOQRdD0NWXu
+X-Gm-Message-State: AOJu0Yz7/Er56BEw81ck46nBPma4RXO3XIJgxW7SeQKtdFZTM11C5Sa3
+	wNGXsD5gJQHcJ9UML0AyAO+15JVFD8fPYhSiMlnANE6ru68x0zwJ3UVPhxAe
+X-Google-Smtp-Source: AGHT+IEpVtnkvtOGqj3WqkZPoejKhkOCpVak/Ik26VZx9HfShSlg42b94xwnXJI0tavSXyXlIHv/Ng==
+X-Received: by 2002:a17:906:5953:b0:a44:b90b:3262 with SMTP id g19-20020a170906595300b00a44b90b3262mr10343584ejr.5.1709735210946;
+        Wed, 06 Mar 2024 06:26:50 -0800 (PST)
+Received: from localhost (fwdproxy-lla-005.fbsv.net. [2a03:2880:30ff:5::face:b00c])
+        by smtp.gmail.com with ESMTPSA id w8-20020a170906b18800b00a43fe2d3062sm7231231ejy.158.2024.03.06.06.26.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Mar 2024 06:26:49 -0800 (PST)
+        Wed, 06 Mar 2024 06:26:50 -0800 (PST)
 From: Breno Leitao <leitao@debian.org>
 To: Oliver Neukum <oneukum@suse.com>,
 	"David S. Miller" <davem@davemloft.net>,
@@ -62,10 +63,12 @@ Cc: netdev@vger.kernel.org,
 	horms@kernel.org,
 	dsahern@kernel.org,
 	linux-usb@vger.kernel.org (open list:USB NETWORKING DRIVERS)
-Subject: [PATCH net-next 1/2] net: usbnet: Leverage core stats allocator
-Date: Wed,  6 Mar 2024 06:26:41 -0800
-Message-ID: <20240306142643.2429409-1-leitao@debian.org>
+Subject: [PATCH net-next 2/2] net: usbnet: Remove generic .ndo_get_stats64
+Date: Wed,  6 Mar 2024 06:26:42 -0800
+Message-ID: <20240306142643.2429409-2-leitao@debian.org>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240306142643.2429409-1-leitao@debian.org>
+References: <20240306142643.2429409-1-leitao@debian.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,62 +77,32 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-With commit 34d21de99cea9 ("net: Move {l,t,d}stats allocation to core and
-convert veth & vrf"), stats allocation could be done on net core
-instead of in this driver.
+Commit 3e2f544dd8a33 ("net: get stats64 if device if driver is
+configured") moved the callback to dev_get_tstats64() to net core, so,
+unless the driver is doing some custom stats collection, it does not
+need to set .ndo_get_stats64.
 
-With this new approach, the driver doesn't have to bother with error
-handling (allocation failure checking, making sure free happens in the
-right spot, etc). This is core responsibility now.
-
-Remove the allocation in the usbnet driver and leverage the network
-core allocation instead.
+Since this driver is now relying in NETDEV_PCPU_STAT_TSTATS, then, it
+doesn't need to set the dev_get_tstats64() generic .ndo_get_stats64
+function pointer.
 
 Signed-off-by: Breno Leitao <leitao@debian.org>
 ---
- drivers/net/usb/usbnet.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+ drivers/net/usb/usbnet.c | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/drivers/net/usb/usbnet.c b/drivers/net/usb/usbnet.c
-index b21ebe24057f..a3a46794ce43 100644
+index a3a46794ce43..e84efa661589 100644
 --- a/drivers/net/usb/usbnet.c
 +++ b/drivers/net/usb/usbnet.c
-@@ -1633,7 +1633,6 @@ void usbnet_disconnect (struct usb_interface *intf)
- 	usb_free_urb(dev->interrupt);
- 	kfree(dev->padding_pkt);
- 
--	free_percpu(net->tstats);
- 	free_netdev(net);
- }
- EXPORT_SYMBOL_GPL(usbnet_disconnect);
-@@ -1710,10 +1709,6 @@ usbnet_probe (struct usb_interface *udev, const struct usb_device_id *prod)
- 	dev->rx_speed = SPEED_UNSET;
- 	dev->tx_speed = SPEED_UNSET;
- 
--	net->tstats = netdev_alloc_pcpu_stats(struct pcpu_sw_netstats);
--	if (!net->tstats)
--		goto out0;
--
- 	dev->msg_enable = netif_msg_init (msg_level, NETIF_MSG_DRV
- 				| NETIF_MSG_PROBE | NETIF_MSG_LINK);
- 	init_waitqueue_head(&dev->wait);
-@@ -1743,6 +1738,7 @@ usbnet_probe (struct usb_interface *udev, const struct usb_device_id *prod)
- 	net->netdev_ops = &usbnet_netdev_ops;
- 	net->watchdog_timeo = TX_TIMEOUT_JIFFIES;
- 	net->ethtool_ops = &usbnet_ethtool_ops;
-+	net->pcpu_stat_type = NETDEV_PCPU_STAT_TSTATS;
- 
- 	// allow device-specific bind/init procedures
- 	// NOTE net->name still not usable ...
-@@ -1861,8 +1857,6 @@ usbnet_probe (struct usb_interface *udev, const struct usb_device_id *prod)
- 	 */
- 	cancel_work_sync(&dev->kevent);
- 	del_timer_sync(&dev->delay);
--	free_percpu(net->tstats);
--out0:
- 	free_netdev(net);
- out:
- 	return status;
+@@ -1644,7 +1644,6 @@ static const struct net_device_ops usbnet_netdev_ops = {
+ 	.ndo_tx_timeout		= usbnet_tx_timeout,
+ 	.ndo_set_rx_mode	= usbnet_set_rx_mode,
+ 	.ndo_change_mtu		= usbnet_change_mtu,
+-	.ndo_get_stats64	= dev_get_tstats64,
+ 	.ndo_set_mac_address 	= eth_mac_addr,
+ 	.ndo_validate_addr	= eth_validate_addr,
+ };
 -- 
 2.43.0
 
