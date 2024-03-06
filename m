@@ -1,104 +1,94 @@
-Return-Path: <linux-kernel+bounces-94451-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94452-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84ACD874002
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 19:53:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADECD874003
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 19:55:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EF97EB21450
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 18:53:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68CC7286850
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 18:55:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B180413E7D9;
-	Wed,  6 Mar 2024 18:53:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Aug0Cwrj"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAC54136647;
+	Wed,  6 Mar 2024 18:54:55 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB2AA5FDCC;
-	Wed,  6 Mar 2024 18:53:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7165E13E7C0
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 18:54:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709751215; cv=none; b=A0zpjldQgJFhI6wDmodz16+xzjx5G/nG1515pbfmG9ZOKLCHxp3UiDa6sgiackmMTq8r8+KfVmQXeD7qKB9uNtVNJ7SECB7KGdosSgfo2zU7gCyUmzwArqQZO1/bi5+djxf34E24OisxByqyahvBkcPI5E3S2jBOR0dKYq7nK7E=
+	t=1709751295; cv=none; b=iB35LZilBMnAeipb5V3aGja44Zw5M5Z17G8+sxS3u616YxvDFTv8DaxBHscSFPDmWm1aUgNjESjuiVEwo9ScrWlufBtLIyi6XC78+mOnZH73t9sjVqHxfiiziA5jUz7yPJHO9lpl1+yuGkMiOduHYRSfw5gIAq7wb0c2v1ahCVE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709751215; c=relaxed/simple;
-	bh=sNdO9nT79tocdpHlSu6Tel+IFTT6tNR337Bq9tNA2DI=;
+	s=arc-20240116; t=1709751295; c=relaxed/simple;
+	bh=XVWvLjdsX32ZmRa0CwqnidrODKERDiQECVzC7kjs1fg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TlEfVcy6/BTWA+BgBb5EbGnP6cltfZU/bmopYG4TLWwcnQ8qtj2+iOlOfbs86r1UtivCbmbWb6XRmixFTdbw8GQv9p3SXAjJ0rb/vB2j2eW1zHecQRisCQ2a1PE/ljBbyA1lV4C3aSUjv84bVZ/3/hCdElQTRifKtCJgMCChF9M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Aug0Cwrj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D10FC433F1;
-	Wed,  6 Mar 2024 18:53:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709751214;
-	bh=sNdO9nT79tocdpHlSu6Tel+IFTT6tNR337Bq9tNA2DI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Aug0CwrjD0Fj3Uh/SHf0yMg+mCs0N/Ik/CMN4qqQfSX0vcBtRfDMfhaqTwc8X1vOr
-	 8NHcAODztGqGSVkOiHjlV63q+rGR/Ri9+5+QcgVjvaNUuWHzuod4JsizNd39WZTaaf
-	 obeJjjvNEQJ33eP03jLOOatiMPcXpuVKPvbwxKkMtkDVo7CSs+ujlg8FHQVOcZlbN3
-	 tU5TIv8MQcUi2yuDez625vgt5MPdHfurMTiY/H5J1uY/Csigzm8V/F/PipDDfiSvKB
-	 B52JwMOZ5BvOrTPxMQGTvEF1SmLapAC8C2guP11EmCmlgQetz2FZYh8oVd1zXafgj3
-	 4gLX0BivxOJoQ==
-Date: Wed, 6 Mar 2024 18:53:29 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Frank Li <Frank.Li@nxp.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	Shengjiu Wang <shengjiu.wang@nxp.com>, linux-sound@vger.kernel.org,
-	devicetree@vger.kernel.org, imx@lists.linux.dev,
+	 Content-Type:Content-Disposition:In-Reply-To; b=D/eZ+OZkVu5fGEEq4+K0npUntGDMYA91t1UQbDY+vw667msK2f/FRV7qU1cXuxYuMAqVmRSvIOL9Q4LrZjsM5NBcHAnu3mwpiCdypcPbpyij34hZKuIUQzafjsCJJaU24zJYqvl3vOgmSEuc4DhlwnVH451Ub6ZIZZgk4FSldUY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B25FFC433C7;
+	Wed,  6 Mar 2024 18:54:53 +0000 (UTC)
+Date: Wed, 6 Mar 2024 18:54:51 +0000
+From: Catalin Marinas <catalin.marinas@arm.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Will Deacon <will@kernel.org>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+	Dave Martin <dave.martin@arm.com>,
 	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/4] ASoC: dt-bindings: fsl,imx-asrc/spdif: Add
- power-domains property
-Message-ID: <20240306-rack-hurling-4ffabd4f507b@spud>
-References: <20240305-asrc_8qxp-v4-0-c61b98046591@nxp.com>
- <20240305-asrc_8qxp-v4-1-c61b98046591@nxp.com>
+Subject: Re: [PATCH v4] arm64/fpsimd: Suppress SVE access traps when loading
+ FPSIMD state
+Message-ID: <Zei7-0RMCpiWw49e@arm.com>
+References: <20240122-arm64-sve-trap-mitigation-v4-1-54e0d78a3ae9@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="JzFOx+mcF0ef70Ss"
-Content-Disposition: inline
-In-Reply-To: <20240305-asrc_8qxp-v4-1-c61b98046591@nxp.com>
-
-
---JzFOx+mcF0ef70Ss
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240122-arm64-sve-trap-mitigation-v4-1-54e0d78a3ae9@kernel.org>
 
-On Tue, Mar 05, 2024 at 12:33:02PM -0500, Frank Li wrote:
-> Add power-domains property for asrc and spdif since fsl,imx8qm-asrc/spdif
-> and fsl,imx8qxp-asrc/spdif require 'power-domains'.
->=20
-> Set 'power-domains' as required property for compatible string
-> fsl,imx8qm-asrc/spdif and fsl,imx8qxp-asrc/spdif.
->=20
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+On Mon, Jan 22, 2024 at 07:42:14PM +0000, Mark Brown wrote:
+> This indicates that there should be some useful benefit from reducing the
+> number of SVE access traps for blocking system calls like we did for non
+> blocking system calls in commit 8c845e273104 ("arm64/sve: Leave SVE enabled
+> on syscall if we don't context switch"). Let's do this by counting the
+> number of times we have loaded FPSIMD only register state for SVE tasks
+> and only disabling traps after some number of times, otherwise leaving
+> traps disabled and flushing the non-shared register state like we would on
+> trap.
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+It looks like some people complain about SVE being disabled, though I
+assume this is for kernels prior to 6.2 and commit 8c845e273104
+("arm64/sve: Leave SVE enabled on syscall if we don't context switch"):
 
-Cheers,
-Conor.
+https://bugs.launchpad.net/ubuntu/+source/glibc/+bug/1999551/comments/52
 
---JzFOx+mcF0ef70Ss
-Content-Type: application/pgp-signature; name="signature.asc"
+I assume we may see the other camp complaining about the additional
+state saving on context switch.
 
------BEGIN PGP SIGNATURE-----
+Anyway, I don't see why we should treat blocking syscalls differently
+from non-blocking ones (addressed by the commit above). I guess the
+difference is that one goes through a context switch but, from a user
+perspective, it's still a syscall. The SVE state is expected to be
+discarded and there may be a preference for avoiding the subsequent
+fault.
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZei7qQAKCRB4tDGHoIJi
-0gn7AP0dCMMNi73674NaiMLRXtLe28MNRzsLoBHYAWMCVW3jCAD+LZ5OhLVdWRAs
-deG5qWB9TVWh/dGTLOkOMlnBWwJRmQI=
-=eERr
------END PGP SIGNATURE-----
+> I pulled 64 out of thin air for the number of flushes to do, there is
+> doubtless room for tuning here. Ideally we would be able to tell if the
+> task is actually using SVE but without using performance counters (which
+> would be substantial work) we can't currently tell. I picked the number
+> because so many of the tasks using SVE used it so frequently.
 
---JzFOx+mcF0ef70Ss--
+So I wonder whether we should make the timeout disabling behaviour the
+same for both blocking and non-blocking syscalls. IOW, ignore the
+context switching aspect. Every X number of returns, disable SVE
+irrespective of whether it was context switched or not. Or, if the
+number of returns has a variation in time, just use a jiffy (or other
+time based figure), it would time out in the same way for all types of
+workloads.
+
+-- 
+Catalin
 
