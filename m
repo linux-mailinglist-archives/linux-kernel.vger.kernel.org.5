@@ -1,250 +1,184 @@
-Return-Path: <linux-kernel+bounces-93975-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93976-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FB708737B5
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:28:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42D198737B7
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:28:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 732C61C22217
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:28:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C2ABD1F23075
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:28:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9547130E4D;
-	Wed,  6 Mar 2024 13:27:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE338130E50;
+	Wed,  6 Mar 2024 13:28:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kelRpGi+"
-Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HrDmfvBV"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 877381BDD3;
-	Wed,  6 Mar 2024 13:27:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D6781BDD3
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 13:28:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709731675; cv=none; b=D2Fpt5vvM79o/wg006KjZPdOap9FYa2Az2qFTeuQrylO6FMO+qkUMvB6JXTegQrKlSfQxN0ICBt3C0hJYcT1Oe2FyWB5A7OXtHCwDSMrBlpaa2gGU8Dk/H3AXt8gly5hyjR5EyD4z2rbuFFVP6gP26uQMuqq4Y8fwPtkexhUfYY=
+	t=1709731717; cv=none; b=LpUm7Cz7cTCog0Yaz/1MghcLXJ/LUAYCJq65eMdIv7S5cdTROwDI12PLqPKxlpJ5WRP8lL5G+nzHq6LnFEOyeiE7JoJszzbhKFdfJctr742zYUyDXOjnnxnET09VlvS8K8m35U/UpA4svxCuKlr3F+veQQO1e4cQZ0jUIHdQ5sw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709731675; c=relaxed/simple;
-	bh=32FImB/6Av8MctDXbEHxecRUUlW8E8O7NRAYsdFTSho=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=W9kOAvfpa8VAjL3ZCBIoLOM5o8gobDrl6vJrOY8EY+2sheRQwu9Kykvnlxcq4xjwCpFgZO4KrbK58E3/oYCSYjou50YW2/1h3gCAI+ozMUNxgJk2ahh8kAFqSf/BYBJQyJppIUQqLqrMYcu5Bzkt0YKR5z2RlbjooT2Mya5Zf/I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kelRpGi+; arc=none smtp.client-ip=209.85.219.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dc6dcd9124bso7247833276.1;
-        Wed, 06 Mar 2024 05:27:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709731672; x=1710336472; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=v0PvucL6HmTJPxI4SoEkWegaPuUqqdMQQ07XKPr7IUE=;
-        b=kelRpGi+nGSj8ga58hBReEWqXm1BgtLhs52WJ1OfMhzSeV4lFrlgbwvJ77QXfBP+yx
-         nR0ibL3O35tPUlTBIn2PZRy9QtOya4X5W/VwWgwCyHcAPJbfeSrghbDCwDRzyzeRn7X4
-         J4qkgxIhHw4QjcM/4nMsXFlm3mxKN3MogFrRTgu1Bjh8ErmPlhM/dixXFd27nnSscVHC
-         LCCHNJNM9Q9LY8sqmmxVWBGWGmagNPbskE3LxISSskUVc2E5S0FQTgWK5V+x6dUmsar6
-         fpm49+QOd5aBC1i6pHsVHOISwVDeFVmo320QZZqbUVIaJFdlQ4elP+yw79y0i2Qodcfy
-         Y+Cw==
+	s=arc-20240116; t=1709731717; c=relaxed/simple;
+	bh=fcIgWOfzIjITg/Pk6c+DophWQJue2iTjEylD+UfmmIE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fnlAKej+CpFxCyC0zImB2YpBCUe54oo6xGZn0Tbo5FpKVz4c2Zv/bb2W25WI4lvG70flhPjfxuLSQDIyALDexQ8IT3bEQ3FYhb71/ze2o/9s6esEBFMzJ9Tt7gGR9ECJOlG2u3QqcjJCuSLrhKUzXJ5tyzGBmQocvLGMl6oFIRg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=HrDmfvBV; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709731713;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VLXzxsRK3Iu8e3gbLkJL8uGRbsakoyMKf/7Xwj8EiO0=;
+	b=HrDmfvBV2sCFt6OWE8cdGt804EjGw6Ke2Aqbbn/W1lS0PMD5f1T+XZarshjJJIY5sistaZ
+	8ssVmk4yliP0GvRpkq1hg6PpLKGtE0pz1a1OCb9D0D5A+CygAqjBcmxqDdbJf3xKl/ESQz
+	bC3cuY2omcbRL6jkkwpehpDtCs/+bRE=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-611-oPWwaYsTO5CAevrusxDY-Q-1; Wed, 06 Mar 2024 08:28:32 -0500
+X-MC-Unique: oPWwaYsTO5CAevrusxDY-Q-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a448cfe2266so81523866b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 05:28:31 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709731672; x=1710336472;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=v0PvucL6HmTJPxI4SoEkWegaPuUqqdMQQ07XKPr7IUE=;
-        b=bdr3rxhxlblcirUw2PX538FDiJp/T4gx5hCPWdsNnW8XL2PbzA5VYZt5X/DD3Ny9xQ
-         deC1/BOVDGo1EgA2VV4UZOVn7Az/o2hlL7DO3fkIKjZwjL+YQecTofEp/58+SEkbx5KJ
-         YSVMi3wfR6Z0VfA5Qg3jdqonmKkRDUljoccuCO5HjvDOOLa88Yd/3C+ekM88wagN4ukL
-         Aa1E5GS5khIcn4HeehsTp9sijfgLECIGcZbq1f+z6IY0YVeYRjq/VMzpfApsjteAdwoN
-         HYKe7/R3UWcFIRQxfz+Fazju8nApS3rNfJrM89fPrlXqcztame/KM44YSC3s1PG+byvh
-         KttQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW9eZCK/Lh6KpW5O/+nUDnD8ckS8Mf4ZcpPzlTwhgN7YC9a/JGZZaMGPYs+qLUXb56oizR6KMNRUKWxecwQGxE/x+z+222H/OYt25uwp31hml8tXZVyW/WEWVXMecL5TMYzY1MB
-X-Gm-Message-State: AOJu0YxVU3nhefW9Hla5r0Pn5cMO7Rq0EOUFRPWY1vaWDz03KBas2xbu
-	RXRkLg4UwvFK2QMh7FDV6t7F9eCVNvgMZwUZnyzxbV4II+5ri6AF
-X-Google-Smtp-Source: AGHT+IEdFCX2aJgj0ez4SSkRsd6MT2uesocn1kIUh63onuC2wn5Lla2LBTT79+qSGTnzA1IsbvsBJA==
-X-Received: by 2002:a25:ae60:0:b0:dc6:b8f5:50ae with SMTP id g32-20020a25ae60000000b00dc6b8f550aemr13653049ybe.32.1709731672289;
-        Wed, 06 Mar 2024 05:27:52 -0800 (PST)
-Received: from localhost ([2601:344:8301:57f0:a708:4ac5:2d2f:c5bb])
-        by smtp.gmail.com with ESMTPSA id g7-20020a258a07000000b00dcdb7d232f9sm3019270ybl.4.2024.03.06.05.27.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Mar 2024 05:27:51 -0800 (PST)
-Date: Wed, 6 Mar 2024 05:27:51 -0800
-From: Yury Norov <yury.norov@gmail.com>
-To: Herve Codina <herve.codina@bootlin.com>
-Cc: Vadim Fedorenko <vadim.fedorenko@linux.dev>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, Andrew Lunn <andrew@lunn.ch>,
-	Mark Brown <broonie@kernel.org>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v6 1/5] net: wan: Add support for QMC HDLC
-Message-ID: <ZehvV6kCD3RCumAL@yury-ThinkPad>
-References: <20240306080726.167338-1-herve.codina@bootlin.com>
- <20240306080726.167338-2-herve.codina@bootlin.com>
+        d=1e100.net; s=20230601; t=1709731711; x=1710336511;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VLXzxsRK3Iu8e3gbLkJL8uGRbsakoyMKf/7Xwj8EiO0=;
+        b=nf8Zc+umwglhMhuAxswn3ChtMaauw/9oEr/S7AN1VahdWUODw95s7aHU9PFEe7Iqvv
+         /0/bK3dzzS/ufebGrVON80hDj1hRN9qzXfELaZ9PIGJMNx7r2y7N//9B4iVadBFhjt+K
+         8eQ1t6UDwD+ygClmTqAHkpdU9QCOoq75EmCia6h/FKcanWpjsN6yrkrdLZp78pS2F1eb
+         g+xR7iCb62K6sDo+0ETrt8e3NElRU083WcgT2346LkNSsEhx2V8FJaQBEJkD8Aux2z5v
+         M615pU6YSQVtbHLlBu00kuwEw4fkGf9/vgNftvgYcvWFuLqV5B7qey7juVY4YIwVXY5+
+         Q/RA==
+X-Forwarded-Encrypted: i=1; AJvYcCVfQusmgIj9eJTD2N0R/rTg+wZAbzT4/YcXeRjNr0dmEPUq28qguXLTr8w7knXjaI1v2CHgLv598MoT3y3wISmj6TLUA+pqDCzB3N1/
+X-Gm-Message-State: AOJu0Yz62h09eduDGQnEkVV1xt+djiCBitvCoY7FZGZL7WrojmzPTCz2
+	xfGWSeZcYZ4pduk+XnwMKwFMjx3ZZLEoW3MEW0WWJyH8vSWd4BLvBg/TX20cOTW/jrRSE6MgeGA
+	+FOhs1ywZSvHBTA9CY0jNKCwjgC5wRegaw4B6LvdKno8b71YjZ88vdNtO9SHmZw==
+X-Received: by 2002:a17:906:19cf:b0:a43:f588:de2a with SMTP id h15-20020a17090619cf00b00a43f588de2amr10951597ejd.66.1709731710896;
+        Wed, 06 Mar 2024 05:28:30 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEdHv/qmn4Oz92+aUXiB8ZaTGt8Xcm+1UB6IQimCJgT3yXflXJanq+soZIR4Ye4Z4Q67O6HGA==
+X-Received: by 2002:a17:906:19cf:b0:a43:f588:de2a with SMTP id h15-20020a17090619cf00b00a43f588de2amr10951582ejd.66.1709731710603;
+        Wed, 06 Mar 2024 05:28:30 -0800 (PST)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id t12-20020a17090616cc00b00a45122b564asm1192094ejd.26.2024.03.06.05.28.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Mar 2024 05:28:30 -0800 (PST)
+Message-ID: <2c77e58a-fe07-464f-9032-3933080be349@redhat.com>
+Date: Wed, 6 Mar 2024 14:28:29 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240306080726.167338-2-herve.codina@bootlin.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] usb: misc: ljca: Fix double free in error handling path
+Content-Language: en-US, nl
+To: Yongzhi Liu <hyperlyzcs@gmail.com>, wentong.wu@intel.com,
+ gregkh@linuxfoundation.org, andi.shyti@linux.intel.com
+Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+ jitxie@tencent.com, huntazhang@tencent.com
+References: <20240306130042.26811-1-hyperlyzcs@gmail.com>
+From: Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20240306130042.26811-1-hyperlyzcs@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Mar 06, 2024 at 09:07:17AM +0100, Herve Codina wrote:
-> The QMC HDLC driver provides support for HDLC using the QMC (QUICC
-> Multichannel Controller) to transfer the HDLC data.
+Hi,
+
+On 3/6/24 14:00, Yongzhi Liu wrote:
+> When auxiliary_device_add() returns error and then calls
+> auxiliary_device_uninit(), callback function ljca_auxdev_release
+> calls kfree(auxdev->dev.platform_data) to free the parameter data
+> of the function ljca_new_client_device. The callers of
+> ljca_new_client_device shouldn't call kfree() again
+> in the error handling path to free the platform data.
 > 
-> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-> Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> Acked-by: Jakub Kicinski <kuba@kernel.org>
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Fix this by cleaning up the redundant kfree().
+
+If things fail in ljca_new_client_device() before 
+auxiliary_device_init() gets called (or if that call fails)
+then auxiliary_device_uninit() will NOT be called leading to
+a memory-leak.
+
+So this patch is no good as is.
+
+To properly fix this you must make ljca_new_client_device() 
+always take ownership of the passed in platform_data and
+make it also kfree() the passed in platform_data on errors
+which happen before auxiliary_device_init() succeeds.
+
+Regards,
+
+Hans
+
+
+
+
+
+> 
+> Fixes: acd6199f195d ("usb: Add support for Intel LJCA device")
+> Signed-off-by: Yongzhi Liu <hyperlyzcs@gmail.com>
 > ---
->  drivers/net/wan/Kconfig        |  12 +
->  drivers/net/wan/Makefile       |   1 +
->  drivers/net/wan/fsl_qmc_hdlc.c | 413 +++++++++++++++++++++++++++++++++
->  3 files changed, 426 insertions(+)
->  create mode 100644 drivers/net/wan/fsl_qmc_hdlc.c
+>  drivers/usb/misc/usb-ljca.c | 18 +++---------------
+>  1 file changed, 3 insertions(+), 15 deletions(-)
 > 
-> diff --git a/drivers/net/wan/Kconfig b/drivers/net/wan/Kconfig
-> index 7dda87756d3f..31ab2136cdf1 100644
-> --- a/drivers/net/wan/Kconfig
-> +++ b/drivers/net/wan/Kconfig
-> @@ -197,6 +197,18 @@ config FARSYNC
->  	  To compile this driver as a module, choose M here: the
->  	  module will be called farsync.
+> diff --git a/drivers/usb/misc/usb-ljca.c b/drivers/usb/misc/usb-ljca.c
+> index 35770e608c64..be702364be08 100644
+> --- a/drivers/usb/misc/usb-ljca.c
+> +++ b/drivers/usb/misc/usb-ljca.c
+> @@ -590,12 +590,8 @@ static int ljca_enumerate_gpio(struct ljca_adapter *adap)
+>  		valid_pin[i] = get_unaligned_le32(&desc->bank_desc[i].valid_pins);
+>  	bitmap_from_arr32(gpio_info->valid_pin_map, valid_pin, gpio_num);
 >  
-> +config FSL_QMC_HDLC
-> +	tristate "Freescale QMC HDLC support"
-> +	depends on HDLC
-> +	depends on CPM_QMC
-> +	help
-> +	  HDLC support using the Freescale QUICC Multichannel Controller (QMC).
-> +
-> +	  To compile this driver as a module, choose M here: the
-> +	  module will be called fsl_qmc_hdlc.
-> +
-> +	  If unsure, say N.
-> +
->  config FSL_UCC_HDLC
->  	tristate "Freescale QUICC Engine HDLC support"
->  	depends on HDLC
-> diff --git a/drivers/net/wan/Makefile b/drivers/net/wan/Makefile
-> index 8119b49d1da9..00e9b7ee1e01 100644
-> --- a/drivers/net/wan/Makefile
-> +++ b/drivers/net/wan/Makefile
-> @@ -25,6 +25,7 @@ obj-$(CONFIG_WANXL)		+= wanxl.o
->  obj-$(CONFIG_PCI200SYN)		+= pci200syn.o
->  obj-$(CONFIG_PC300TOO)		+= pc300too.o
->  obj-$(CONFIG_IXP4XX_HSS)	+= ixp4xx_hss.o
-> +obj-$(CONFIG_FSL_QMC_HDLC)	+= fsl_qmc_hdlc.o
->  obj-$(CONFIG_FSL_UCC_HDLC)	+= fsl_ucc_hdlc.o
->  obj-$(CONFIG_SLIC_DS26522)	+= slic_ds26522.o
+> -	ret = ljca_new_client_device(adap, LJCA_CLIENT_GPIO, 0, "ljca-gpio",
+> +	return ljca_new_client_device(adap, LJCA_CLIENT_GPIO, 0, "ljca-gpio",
+>  				     gpio_info, LJCA_GPIO_ACPI_ADR);
+> -	if (ret)
+> -		kfree(gpio_info);
+> -
+> -	return ret;
+>  }
 >  
-> diff --git a/drivers/net/wan/fsl_qmc_hdlc.c b/drivers/net/wan/fsl_qmc_hdlc.c
-> new file mode 100644
-> index 000000000000..90063a92209e
-> --- /dev/null
-> +++ b/drivers/net/wan/fsl_qmc_hdlc.c
-> @@ -0,0 +1,413 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Freescale QMC HDLC Device Driver
-> + *
-> + * Copyright 2023 CS GROUP France
-> + *
-> + * Author: Herve Codina <herve.codina@bootlin.com>
-> + */
-> +
-> +#include <linux/array_size.h>
-> +#include <linux/bug.h>
-> +#include <linux/cleanup.h>
-> +#include <linux/dma-mapping.h>
-> +#include <linux/device.h>
-> +#include <linux/err.h>
-> +#include <linux/hdlc.h>
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/slab.h>
-> +#include <linux/spinlock.h>
-> +#include <linux/types.h>
-> +
-> +#include <soc/fsl/qe/qmc.h>
-> +
-> +struct qmc_hdlc_desc {
-> +	struct net_device *netdev;
-> +	struct sk_buff *skb; /* NULL if the descriptor is not in use */
-> +	dma_addr_t dma_addr;
-> +	size_t dma_size;
-> +};
-> +
-> +struct qmc_hdlc {
-> +	struct device *dev;
-> +	struct qmc_chan *qmc_chan;
-> +	struct net_device *netdev;
-> +	bool is_crc32;
-> +	spinlock_t tx_lock; /* Protect tx descriptors */
-> +	struct qmc_hdlc_desc tx_descs[8];
-> +	unsigned int tx_out;
-> +	struct qmc_hdlc_desc rx_descs[4];
-> +};
-> +
-> +static struct qmc_hdlc *netdev_to_qmc_hdlc(struct net_device *netdev)
-> +{
-> +	return dev_to_hdlc(netdev)->priv;
-> +}
-> +
-> +static int qmc_hdlc_recv_queue(struct qmc_hdlc *qmc_hdlc, struct qmc_hdlc_desc *desc, size_t size);
-> +
-> +#define QMC_HDLC_RX_ERROR_FLAGS				\
-> +	(QMC_RX_FLAG_HDLC_OVF | QMC_RX_FLAG_HDLC_UNA |	\
-> +	 QMC_RX_FLAG_HDLC_CRC | QMC_RX_FLAG_HDLC_ABORT)
-> +
-> +static void qmc_hcld_recv_complete(void *context, size_t length, unsigned int flags)
-> +{
-> +	struct qmc_hdlc_desc *desc = context;
-> +	struct net_device *netdev = desc->netdev;
-> +	struct qmc_hdlc *qmc_hdlc = netdev_to_qmc_hdlc(netdev);
-> +	int ret;
-> +
-> +	dma_unmap_single(qmc_hdlc->dev, desc->dma_addr, desc->dma_size, DMA_FROM_DEVICE);
-> +
-> +	if (flags & QMC_HDLC_RX_ERROR_FLAGS) {
-> +		netdev->stats.rx_errors++;
-> +		if (flags & QMC_RX_FLAG_HDLC_OVF) /* Data overflow */
-> +			netdev->stats.rx_over_errors++;
-> +		if (flags & QMC_RX_FLAG_HDLC_UNA) /* bits received not multiple of 8 */
-> +			netdev->stats.rx_frame_errors++;
-> +		if (flags & QMC_RX_FLAG_HDLC_ABORT) /* Received an abort sequence */
-> +			netdev->stats.rx_frame_errors++;
-> +		if (flags & QMC_RX_FLAG_HDLC_CRC) /* CRC error */
-> +			netdev->stats.rx_crc_errors++;
+>  static int ljca_enumerate_i2c(struct ljca_adapter *adap)
+> @@ -626,13 +622,9 @@ static int ljca_enumerate_i2c(struct ljca_adapter *adap)
+>  		i2c_info->capacity = desc->info[i].capacity;
+>  		i2c_info->intr_pin = desc->info[i].intr_pin;
+>  
+> -		ret = ljca_new_client_device(adap, LJCA_CLIENT_I2C, i,
+> +		return ljca_new_client_device(adap, LJCA_CLIENT_I2C, i,
+>  					     "ljca-i2c", i2c_info,
+>  					     LJCA_I2C1_ACPI_ADR + i);
+> -		if (ret) {
+> -			kfree(i2c_info);
+> -			return ret;
+> -		}
+>  	}
+>  
+>  	return 0;
+> @@ -666,13 +658,9 @@ static int ljca_enumerate_spi(struct ljca_adapter *adap)
+>  		spi_info->id = desc->info[i].id;
+>  		spi_info->capacity = desc->info[i].capacity;
+>  
+> -		ret = ljca_new_client_device(adap, LJCA_CLIENT_SPI, i,
+> +		return ljca_new_client_device(adap, LJCA_CLIENT_SPI, i,
+>  					     "ljca-spi", spi_info,
+>  					     LJCA_SPI1_ACPI_ADR + i);
+> -		if (ret) {
+> -			kfree(spi_info);
+> -			return ret;
+> -		}
+>  	}
+>  
+>  	return 0;
 
-It's minor, but you can avoid conditionals doing something like:
-
-		netdev->stats.rx_over_errors += !!(flags & QMC_RX_FLAG_HDLC_OVF);
-
-Thanks,
-Yury
-
-> +		kfree_skb(desc->skb);
-> +	} else {
-> +		netdev->stats.rx_packets++;
-> +		netdev->stats.rx_bytes += length;
-> +
-> +		skb_put(desc->skb, length);
-> +		desc->skb->protocol = hdlc_type_trans(desc->skb, netdev);
-> +		netif_rx(desc->skb);
-> +	}
-> +
-> +	/* Re-queue a transfer using the same descriptor */
-> +	ret = qmc_hdlc_recv_queue(qmc_hdlc, desc, desc->dma_size);
-> +	if (ret) {
-> +		dev_err(qmc_hdlc->dev, "queue recv desc failed (%d)\n", ret);
-> +		netdev->stats.rx_errors++;
-> +	}
-> +}
 
