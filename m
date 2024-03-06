@@ -1,159 +1,111 @@
-Return-Path: <linux-kernel+bounces-93693-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93700-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E394873369
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 11:01:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59146873389
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 11:05:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7069287D4B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:00:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5965E1C23011
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:05:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 725A16026E;
-	Wed,  6 Mar 2024 09:59:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC4B35FB9D;
+	Wed,  6 Mar 2024 10:05:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RhoIEeDR"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=infotecs.ru header.i=@infotecs.ru header.b="mi4Yy9F5"
+Received: from mx0.infotecs.ru (mx0.infotecs.ru [91.244.183.115])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72E995F576;
-	Wed,  6 Mar 2024 09:59:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD0D85FB8C;
+	Wed,  6 Mar 2024 10:05:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.244.183.115
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709719189; cv=none; b=b4e6wY3xg3f+mLP271HdcKdp/OFzNoJG4DD5yLiizrLBnCth3be0w8M2ogJqFTIoackOjanZVuYzmxsEfW7XK2p/sw7FN1EG6sKgzcfP1Pu+VIs+E4BJgWaFkS6JGyvkshr+tQQzQFtozcr0rdx6DzUf1SgxLA0ZtOiFELUCUss=
+	t=1709719502; cv=none; b=UAJ/sNzDMcFMVCyebJl4Ddfif3IitXiAksnZ5kb6nHVvelSGnfasze/otuBKm2uHcAiXallXb0eVSTgk/LXSJm0YQHSRvrHZ1kcLskVEVt/3ELQtebRliuUxLv2x6ZdkiYTzxF7WJQ+lHDwcDXSSsYIDVNmIO7HBqrYCYGX0S6I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709719189; c=relaxed/simple;
-	bh=ojYPW7jE2rJIAUqkKuKAwwVsYcr465YkRrcIVQM/NDI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lgtTEuHu7+PPV9jj4pXw5rvwG2i07WsvU1HsnKuAmZdp7jdVB0mpocbd6xntgkPDEZwlj+VcX6uKjpKZkOxmu0PAY563+SjSRRxuPQj3wyBGHVdFyKZmaf1VNhlIt9kooZ1csrFl8mN6ifpLdKqDlbgrOlfE5LEZ+kxdUpzpqLo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RhoIEeDR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18B8CC4167E;
-	Wed,  6 Mar 2024 09:59:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709719189;
-	bh=ojYPW7jE2rJIAUqkKuKAwwVsYcr465YkRrcIVQM/NDI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=RhoIEeDROIaO8AA16Uum4Jfj6q12UBAvn3pYSlFTbJnaVJhwiVMNublQEuWDG3yZR
-	 JpM1gQgmw9RaHpxVTegRt7ahmT7BsXW+49mj97Dw0LgSSCRsNS1BY9uaFObTxVTOVt
-	 +0csGMJeKdOoWd6eZ+Lqs2Vdju2s2FLtTNQOv836oh0jKC50EUDU3p6Int4i+3hO6+
-	 rXV7qgepKR5dxXHsI9Ngvg96O2kVxzxbnkmAXInMZe3TQpWlfFGTfuejH+fwSj87Dc
-	 hLLoCf3vyVJSatkk69eWSYf3sFG3r25tBo7DBlx8e9vjlD6HvCSr5jo9MU78Vk/mLZ
-	 865AlormdHJUw==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan+linaro@kernel.org>)
-	id 1rho44-000000001b8-40Qa;
-	Wed, 06 Mar 2024 10:59:56 +0100
-From: Johan Hovold <johan+linaro@kernel.org>
-To: Bjorn Helgaas <bhelgaas@google.com>,
-	Bjorn Andersson <andersson@kernel.org>
-Cc: Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	=?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	linux-arm-msm@vger.kernel.org,
-	linux-pci@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Johan Hovold <johan+linaro@kernel.org>
-Subject: [PATCH v4 5/5] arm64: dts: qcom: sc8280xp: enable GICv3 ITS for PCIe
-Date: Wed,  6 Mar 2024 10:56:51 +0100
-Message-ID: <20240306095651.4551-6-johan+linaro@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240306095651.4551-1-johan+linaro@kernel.org>
-References: <20240306095651.4551-1-johan+linaro@kernel.org>
+	s=arc-20240116; t=1709719502; c=relaxed/simple;
+	bh=Xx6fuMijWmbCZ68HGYxzw2XFhSveMJbNuQ55fTD8vyM=;
+	h=From:To:CC:Subject:Date:Message-ID:Content-Type:MIME-Version; b=jy8K7dUu1urXGN65F7xomN+Y/g/HZhaIefUORxgfqCgpNNK5XmQbjlIiKZHggCdXfzGpZSU3LKlviPiRNojZoRwUucLMJf3Ru+Ovjv+nIJ4vjehbTSNCgsANAzgoMwbN2PLFEdPiVT2YB4WJdy/D0dK8DX4ReceQE3OvJHAHIJM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=infotecs.ru; spf=pass smtp.mailfrom=infotecs.ru; dkim=pass (1024-bit key) header.d=infotecs.ru header.i=@infotecs.ru header.b=mi4Yy9F5; arc=none smtp.client-ip=91.244.183.115
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=infotecs.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=infotecs.ru
+Received: from mx0.infotecs-nt (localhost [127.0.0.1])
+	by mx0.infotecs.ru (Postfix) with ESMTP id DEC201423784;
+	Wed,  6 Mar 2024 12:57:50 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx0.infotecs.ru DEC201423784
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=infotecs.ru; s=mx;
+	t=1709719071; bh=MO5pj3YzaettEmio8Z6W3c3zdCICCzph1tchXffqFi0=;
+	h=From:To:CC:Subject:Date:From;
+	b=mi4Yy9F5aiqk54JaClW5h6c9Gec/kRoaj7FXX9qxryuWIghOXRki8XdrSsz5LVMBN
+	 EXog8AwH911oOB229tNkwriQu9b6EEzuzBmEMcHVES2XReqknLywhd9xJzA7s2/yEK
+	 u7mVLQD73atAokkuKX9UHUtm9dciPepvwaYCI2LY=
+Received: from msk-exch-02.infotecs-nt (msk-exch-02.infotecs-nt [10.0.7.192])
+	by mx0.infotecs-nt (Postfix) with ESMTP id DB8FD318FDDC;
+	Wed,  6 Mar 2024 12:57:50 +0300 (MSK)
+From: Gavrilov Ilia <Ilia.Gavrilov@infotecs.ru>
+To: Eric Dumazet <edumazet@google.com>
+CC: "David S. Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>
+Subject: [PATCH net-next] tcp: fix incorrect parameter validation in the
+ do_tcp_getsockopt() function
+Thread-Topic: [PATCH net-next] tcp: fix incorrect parameter validation in the
+ do_tcp_getsockopt() function
+Thread-Index: AQHab6y/ymlnx20eHUyJFqMhxuWaSg==
+Date: Wed, 6 Mar 2024 09:57:50 +0000
+Message-ID: <20240306095430.1782163-1-Ilia.Gavrilov@infotecs.ru>
+Accept-Language: ru-RU, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-exclaimer-md-config: 208ac3cd-1ed4-4982-a353-bdefac89ac0a
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-KLMS-Rule-ID: 5
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2024/03/06 07:48:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2024/03/06 02:14:00 #24008090
+X-KLMS-AntiVirus-Status: Clean, skipped
 
-The DWC PCIe controller can be used with its internal MSI controller or
-with an external one such as the GICv3 Interrupt Translation Service
-(ITS).
+The 'len' variable can't be negative because all 'min_t' parameters
+cast to unsigned int, and then the minimum one is chosen.
 
-Add the msi-map properties needed to use the GIC ITS. This will also
-make Linux switch to the ITS implementation, which allows for assigning
-affinity to individual MSIs.
+To fix it, move the if statement higher.
 
-Note that using the GIC ITS on SC8280XP will cause Advanced Error
-Reporting (AER) interrupts to be received on errors unlike when using
-the internal MSI controller. This will specifically lead to
-notifications about Correctable Errors being logged for the Wi-Fi
-controller on the Lenovo ThinkPad X13s when ASPM L0s is enabled.
-
-Suggested-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Gavrilov Ilia <Ilia.Gavrilov@infotecs.ru>
 ---
- arch/arm64/boot/dts/qcom/sc8280xp.dtsi | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ net/ipv4/tcp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sc8280xp.dtsi b/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
-index a8279ba6a756..906dd4a656a2 100644
---- a/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
-@@ -1737,6 +1737,8 @@ pcie4: pcie@1c00000 {
- 			linux,pci-domain = <6>;
- 			num-lanes = <1>;
- 
-+			msi-map = <0x0 &its 0xe0000 0x10000>;
+diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
+index c82dc42f57c6..a4f418592314 100644
+--- a/net/ipv4/tcp.c
++++ b/net/ipv4/tcp.c
+@@ -4010,11 +4010,11 @@ int do_tcp_getsockopt(struct sock *sk, int level,
+ 	if (copy_from_sockptr(&len, optlen, sizeof(int)))
+ 		return -EFAULT;
+=20
+-	len =3D min_t(unsigned int, len, sizeof(int));
+-
+ 	if (len < 0)
+ 		return -EINVAL;
+=20
++	len =3D min_t(unsigned int, len, sizeof(int));
 +
- 			interrupts = <GIC_SPI 141 IRQ_TYPE_LEVEL_HIGH>,
- 				     <GIC_SPI 142 IRQ_TYPE_LEVEL_HIGH>,
- 				     <GIC_SPI 143 IRQ_TYPE_LEVEL_HIGH>,
-@@ -1838,6 +1840,8 @@ pcie3b: pcie@1c08000 {
- 			linux,pci-domain = <5>;
- 			num-lanes = <2>;
- 
-+			msi-map = <0x0 &its 0xd0000 0x10000>;
-+
- 			interrupts = <GIC_SPI 145 IRQ_TYPE_LEVEL_HIGH>,
- 				     <GIC_SPI 146 IRQ_TYPE_LEVEL_HIGH>,
- 				     <GIC_SPI 147 IRQ_TYPE_LEVEL_HIGH>,
-@@ -1937,6 +1941,8 @@ pcie3a: pcie@1c10000 {
- 			linux,pci-domain = <4>;
- 			num-lanes = <4>;
- 
-+			msi-map = <0x0 &its 0xc0000 0x10000>;
-+
- 			interrupts = <GIC_SPI 312 IRQ_TYPE_LEVEL_HIGH>,
- 				     <GIC_SPI 313 IRQ_TYPE_LEVEL_HIGH>,
- 				     <GIC_SPI 314 IRQ_TYPE_LEVEL_HIGH>,
-@@ -2039,6 +2045,8 @@ pcie2b: pcie@1c18000 {
- 			linux,pci-domain = <3>;
- 			num-lanes = <2>;
- 
-+			msi-map = <0x0 &its 0xb0000 0x10000>;
-+
- 			interrupts = <GIC_SPI 306 IRQ_TYPE_LEVEL_HIGH>,
- 				     <GIC_SPI 307 IRQ_TYPE_LEVEL_HIGH>,
- 				     <GIC_SPI 308 IRQ_TYPE_LEVEL_HIGH>,
-@@ -2138,6 +2146,8 @@ pcie2a: pcie@1c20000 {
- 			linux,pci-domain = <2>;
- 			num-lanes = <4>;
- 
-+			msi-map = <0x0 &its 0xa0000 0x10000>;
-+
- 			interrupts = <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>,
- 				     <GIC_SPI 523 IRQ_TYPE_LEVEL_HIGH>,
- 				     <GIC_SPI 524 IRQ_TYPE_LEVEL_HIGH>,
-@@ -4424,7 +4434,7 @@ intc: interrupt-controller@17a00000 {
- 			#size-cells = <2>;
- 			ranges;
- 
--			msi-controller@17a40000 {
-+			its: msi-controller@17a40000 {
- 				compatible = "arm,gic-v3-its";
- 				reg = <0 0x17a40000 0 0x20000>;
- 				msi-controller;
--- 
-2.43.0
-
+ 	switch (optname) {
+ 	case TCP_MAXSEG:
+ 		val =3D tp->mss_cache;
+--=20
+2.39.2
 
