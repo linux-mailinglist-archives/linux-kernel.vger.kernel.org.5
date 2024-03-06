@@ -1,45 +1,53 @@
-Return-Path: <linux-kernel+bounces-94174-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94175-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF652873AE8
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:39:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A645F873AED
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:41:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E11F51C2160B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:39:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D0FD1F291EC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:41:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 636F51353FF;
-	Wed,  6 Mar 2024 15:38:59 +0000 (UTC)
-Received: from mail-out.aladdin-rd.ru (mail-out.aladdin-rd.ru [91.199.251.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 750FF135405;
+	Wed,  6 Mar 2024 15:40:53 +0000 (UTC)
+Received: from mail-m49198.qiye.163.com (mail-m49198.qiye.163.com [45.254.49.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2A3C1353F2;
-	Wed,  6 Mar 2024 15:38:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.199.251.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 843391350DE;
+	Wed,  6 Mar 2024 15:40:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.254.49.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709739538; cv=none; b=nMQHxV+TpVcP+6Y5B+OXp/tBaanEasbxAg/XFAuUXYDF9uc7J46qXxZMbAnXEr4rS0NqR/ALot13OOvvSsJGbTfA7DKn/cZ+sh78poj+cWIe2pb1ckzE7prgU+l1Y6PlsgOcHYWmXBLx3NzcLtlZTSCoEVqAq+FE5R2YQWaq3KU=
+	t=1709739653; cv=none; b=YX1XvxK3Gv4ORWp3Ob0gdMsuvtV3LPeI+sQEp23GoCYOXUBNpwqGONmQZKl96aen4+0xwsSK7Uzp5S1I6DBt9c/iOuW4TFXm8xmcdzCCWznriTGgM+r4yV2CxXwwk0Xn5mW4TPUsK0eFZnihqG//uzVOtd32hnvtlUNG6PHEqw4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709739538; c=relaxed/simple;
-	bh=mIrYgWybZIzzTmLvKcdEwm229Qxy6TkUJtHepPTkmW0=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=OF9X1R/1FbwykANr7kxC2r4pK/qDAzRg78+vZ3m9M6r7ogEw3We/ODwgd+vCsfGlZ3jMdA61fXg04yrxCsjT76IATO2n6l9e5eS8EO95h0qnrn4T4/LHZHG1UnwvAHnPOZh3nc8DG3V5DgsUjgTAler3CQzD2CHLbgAdjMxwKSQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=aladdin.ru; spf=pass smtp.mailfrom=aladdin.ru; arc=none smtp.client-ip=91.199.251.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=aladdin.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aladdin.ru
-From: Daniil Dulov <d.dulov@aladdin.ru>
-To: Vadim Pasternak <vadimp@nvidia.com>
-CC: Daniil Dulov <d.dulov@aladdin.ru>, Mark Gross <mgross@linux.intel.com>,
-	Andy Shevchenko <andy@infradead.org>, Darren Hart <dvhart@infradead.org>,
-	Hans de Goede <hdegoede@redhat.com>, <platform-driver-x86@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>
-Subject: [PATCH] platform/mellanox: mlxreg-hotplug: Remove redundant NULL-check
-Date: Wed, 6 Mar 2024 18:38:04 +0300
-Message-ID: <20240306153804.6509-1-d.dulov@aladdin.ru>
+	s=arc-20240116; t=1709739653; c=relaxed/simple;
+	bh=8iuBFQ8oqHOkkPo6WFZS6qJnmeXi0Tgaz9wJ53pSCRE=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=n8fZZSx/zN2kKT/ie5hRyndoahmxnpJBzzCJFkosony/DfUGdkFoeQHP5f6gRfE5XtWgdxqlDCGS5OfuvTV+jnXpjSX5In/hDRvTt8l1+M57zCzo0aYo7UvR6QfWWNLyArEgJDnNzvvClBwywKKX1+x3+zIjYxCl5ADNwjSCkkM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=jmu.edu.cn; spf=pass smtp.mailfrom=jmu.edu.cn; arc=none smtp.client-ip=45.254.49.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=jmu.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jmu.edu.cn
+Received: from amadeus-Vostro-3710.lan (unknown [IPV6:240e:3b3:2c01:4970:eaac:ef59:d8ae:5dc6])
+	by smtp.qiye.163.com (Hmail) with ESMTPA id 4B9F87E0126;
+	Wed,  6 Mar 2024 23:40:36 +0800 (CST)
+From: Chukun Pan <amadeus@jmu.edu.cn>
+To: dmitry.baryshkov@linaro.org
+Cc: amadeus@jmu.edu.cn,
+	andersson@kernel.org,
+	conor+dt@kernel.org,
+	devicetree@vger.kernel.org,
+	konrad.dybcio@linaro.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	robh@kernel.org
+Subject: Re: [PATCH v2 2/4] arm64: dts: qcom: ipq6018: add 1.5GHz CPU Frequency
+Date: Wed,  6 Mar 2024 23:40:33 +0800
+Message-Id: <20240306154033.1290330-1-amadeus@jmu.edu.cn>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <BN9PR12MB53815F52C9033DC526085827AF232@BN9PR12MB5381.namprd12.prod.outlook.com>
-References: <BN9PR12MB53815F52C9033DC526085827AF232@BN9PR12MB5381.namprd12.prod.outlook.com>
+In-Reply-To: <CAA8EJpo+wLYzLNheCJKXHTZwwQO9zEnVYyGbj4gSPVVo9yoAMA@mail.gmail.com>
+References: <CAA8EJpo+wLYzLNheCJKXHTZwwQO9zEnVYyGbj4gSPVVo9yoAMA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -47,49 +55,28 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EXCH-2016-02.aladdin.ru (192.168.1.102) To
- EXCH-2016-01.aladdin.ru (192.168.1.101)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVlCSRkeVk4aHUsfTU9DQkxLQlUTARMWGhIXJBQOD1
+	lXWRgSC1lBWUlPSx5BSBlIQUkYS0pBT0JMS0EeGhoYQR4dTkJBH0MaHkFOHxhNWVdZFhoPEhUdFF
+	lBWU9LSFVKSktISkNVSktLVUtZBg++
+X-HM-Tid: 0a8e146c774003a2kunm4b9f87e0126
+X-HM-MType: 10
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PRQ6PSo*PzMPA0MhQzgYLCpL
+	KDUaFA9VSlVKTEtCTEhCTUhNQ0JKVTMWGhIXVRoWGh8eDgg7ERYOVR4fDlUYFUVZV1kSC1lBWUlP
+	Sx5BSBlIQUkYS0pBT0JMS0EeGhoYQR4dTkJBH0MaHkFOHxhNWVdZCAFZQUpDSUk3Bg++
 
-Pointer item is checked fo NULL at mlxreg_hotplug_work_helper() and then
-it is dereferenced to produce dev_err().
-This pointer is also dereferenced before calling this function and should
-never be NULL except some piece of hardware is broken as it is said in
-the comment before the check. So, this check can be safely removed.
+Hi, Dmitry
+> After this patch non-PMIC IPQ6000 boardss are broken until patch3 is
+> applied. Please change the order of these patches.
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
+This is not the case, please see `opp-supported-hw = <0x2>;`.
+Also: https://github.com/torvalds/linux/blob/master/drivers/cpufreq/qcom-cpufreq-nvmem.c#L334
+This 1.5GHz Frequency only takes effect when the fuse value is `2'b1`.
+I have tested this patch on both fused 1.2GHz and 1.5GHz devices.
 
-Fixes: c6acad68eb2d ("platform/mellanox: mlxreg-hotplug: Modify to use a regmap interface")
-Signed-off-by: Daniil Dulov <d.dulov@aladdin.ru>
----
- drivers/platform/mellanox/mlxreg-hotplug.c | 14 --------------
- 1 file changed, 14 deletions(-)
+Thanks,
+Chukun
 
-diff --git a/drivers/platform/mellanox/mlxreg-hotplug.c b/drivers/platform/mellanox/mlxreg-hotplug.c
-index 5c022b258f91..0ce9fff1f7d4 100644
---- a/drivers/platform/mellanox/mlxreg-hotplug.c
-+++ b/drivers/platform/mellanox/mlxreg-hotplug.c
-@@ -348,20 +348,6 @@ mlxreg_hotplug_work_helper(struct mlxreg_hotplug_priv_data *priv,
- 	u32 regval, bit;
- 	int ret;
- 
--	/*
--	 * Validate if item related to received signal type is valid.
--	 * It should never happen, excepted the situation when some
--	 * piece of hardware is broken. In such situation just produce
--	 * error message and return. Caller must continue to handle the
--	 * signals from other devices if any.
--	 */
--	if (unlikely(!item)) {
--		dev_err(priv->dev, "False signal: at offset:mask 0x%02x:0x%02x.\n",
--			item->reg, item->mask);
--
--		return;
--	}
--
- 	/* Mask event. */
- 	ret = regmap_write(priv->regmap, item->reg + MLXREG_HOTPLUG_MASK_OFF,
- 			   0);
 -- 
 2.25.1
 
