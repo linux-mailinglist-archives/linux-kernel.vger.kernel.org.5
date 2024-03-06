@@ -1,114 +1,170 @@
-Return-Path: <linux-kernel+bounces-93389-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93390-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12D48872EF5
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 07:40:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FAD8872F00
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 07:49:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B2B1EB23DC0
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 06:40:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0DD79B256CD
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 06:49:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 458C95B67A;
-	Wed,  6 Mar 2024 06:40:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FEE35BADE;
+	Wed,  6 Mar 2024 06:49:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JD/ENoz0"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="DjJtbwI7"
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B25664A;
-	Wed,  6 Mar 2024 06:40:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD715171BB
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 06:49:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709707205; cv=none; b=omf0fpVSEzgEakeUsKeIgahv4CL/a4bWg5LXgAGmJTDFfZ+FwxZ4zBDX/ze6hIwDk4/HI7Yumpy6bNJnglDm+Wt9JZyChdTE/kqTbV9Hrzk7vgj5tn/JMBLaCcrteg8vW+W5Bat5T73rLDX5nJNFUaDKqzA5NWBrA/hFxZ2GX0g=
+	t=1709707771; cv=none; b=cMepSkBfn1PKBMlCVWVbNbcXzBDF8d+tet6zRghw9Z5NuFYw6DL3Di/awmBJEJ8Iekx5FRB6FBH66V76w7LdW99OXVV1sHa9jAkOpBYaX4wTKIShF0ZOcNUJy+2jcdQ1B1iAoByc7rs4J8GNNbhZLMDXlx+hiiAKUgpCvDKTFRo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709707205; c=relaxed/simple;
-	bh=HISJxbHriH4GTTn+bHyCKPVqp6pdRvCDgIHrPnLT7t8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hxSqbZwArEN44Q2+MYMuphDSO9J4DxueqPO1QZJe49J7nBTsQKHULRFGJQ1j5gnQdSPyuL1o7XnLIlLIrt2htQe/C/4OJzUQHhOOO7gqbPfCSs05v1W5JX7rYeSLDu2cCncitZ0LWkl1ZXHWwz7Xb30uoqtVhzBZMXjScp5mQoI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JD/ENoz0; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1dc3b4b9b62so4260765ad.1;
-        Tue, 05 Mar 2024 22:40:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709707203; x=1710312003; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=X4b8KDa+7Y7BtH1fZO/uArrcTNHwrzvt5hC9CF6M2Ko=;
-        b=JD/ENoz0PpqOafkxFbc6W+3MQb4MJ1Kjyqng9XQTgul16oae2dNb8nhzJhnMUyLqLF
-         ftAMtRZ81PB5f+mBsaI86o+QQe7nYTr3k3WM4QFya2lpsCAv18Z6iKKgc7cInsuyTrx8
-         p6KKCAO/QRd6uBLQY+LuzsFKZT86N7SLpojfXHwnnoh934dqpyxxVHsmWxi0WaQIi/HT
-         IXPX3XspnwM2z+hjHjfAQ+wWOYes/VUcsnkFDUpSPS1elsUh472FTegUXIoJuh9F7NJG
-         q0VXtD+ybZIOMvURJnlMAErEA5YS1YS5h7S8Qs/u+WpsaR763SHg4lFnaMOb95M/KwUK
-         jdvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709707203; x=1710312003;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=X4b8KDa+7Y7BtH1fZO/uArrcTNHwrzvt5hC9CF6M2Ko=;
-        b=hLrh3so1IGRR+B84yfg7ZraBCA7SvHzoWlDyDE7xTmX8uxOJ7zm8fYCv8dIFd3LpZg
-         fEwERnifgpw74So3fHtISGEhiyj5Wb89hWgfZCGKVpfKju7g4uJiJvnhL2DHvLSyWUJz
-         AcrdQTc/Bh9HiyludaYBRUVC+5Qg39TivUBjvEo3d6oJlDmRcXaAPl7iggJFae8KJQZW
-         n6HC7pS1r6u/reROtdl3S2qXTTxYe7SVq+B+wXu7tZVCzYwNC/Hkag9dAMGAWE1ggbQw
-         6AIXlVuf3aTDMuDl7AK6KTLvEIVDnSNQG1Li0chRmrgnIqZRm6vaO+UXMWL3mWlz5eHJ
-         5BmQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVgMKquPpEwCNja1sX14oEUd6Fr1gb7u1yq8XQyYq4vhHDxKNoCP0KSQpeja/zKdZRJIccDtZaJcCfA3ajpNEE9icYKI1gXxxzGZyU3
-X-Gm-Message-State: AOJu0YzeR/22C1GcopShB5VI2dsiYKLWbX6PDiIinBg6xPoxIjHTqbQX
-	+uVCN12fDH5x9gzKaFdDcY8d3blGXLExuO9zoghpAJeyA7Ts/VocavfiLESoGB4=
-X-Google-Smtp-Source: AGHT+IHdCoZDM2XlYwpSR1f/Djppwn+lkd8AgNHr57+8d4FaxcCTYW4TEL3z7titTZlR5DVdzRH4Eg==
-X-Received: by 2002:a17:902:c946:b0:1dc:f989:3116 with SMTP id i6-20020a170902c94600b001dcf9893116mr4927614pla.18.1709707203462;
-        Tue, 05 Mar 2024 22:40:03 -0800 (PST)
-Received: from [192.168.1.7] ([61.7.133.192])
-        by smtp.googlemail.com with ESMTPSA id z16-20020a170903019000b001d74502d261sm11681281plg.115.2024.03.05.22.40.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Mar 2024 22:40:03 -0800 (PST)
-Message-ID: <160fdf7f-553a-40ed-8493-95a7d31a8b38@gmail.com>
-Date: Wed, 6 Mar 2024 13:39:54 +0700
+	s=arc-20240116; t=1709707771; c=relaxed/simple;
+	bh=b/nO7us7hYB0VszOCL9lFmQyRWHDXkJW3ruCl9UdwOA=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=ARJVaf1NCjM57bpI4/xYKGEZOxAuL8OJYfjhmAnpgNHNCjH4CvToKHqgO1z1l8ZrXRoSnnIBGakaGzGQ5cRQDNfy+kjoPIAlV41Phq/6ViUZlyNjew1yNNEUS/AhQaRXIJdAYFfUKRZ1MNHZ0FEg7Uzqt5IjnAQzaIyg2RGc4bE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=DjJtbwI7; arc=none smtp.client-ip=159.69.126.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+	s=mail; t=1709707759;
+	bh=b/nO7us7hYB0VszOCL9lFmQyRWHDXkJW3ruCl9UdwOA=;
+	h=From:Date:Subject:To:Cc:From;
+	b=DjJtbwI7qX1cmaKDD+8DUdHUKG/cSgDfs89ru/WHXMucQU9ls8+3ZjQW1zMY3lqfd
+	 SNW3aKEtBONLztlr6FrUcTs1uNfAXOrnyGOwEebLk0/2xv3g6kLWhtzNMaJeTIRwUc
+	 vBzWutJ1Ah6QjYTHCTstQVWG5k6Nd4voItAJ9iag=
+From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Date: Wed, 06 Mar 2024 07:49:16 +0100
+Subject: [PATCH] watchdog/core: remove sysctl handlers from public header
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] USB: serial: option: add Fibocom FM135-GL variants
-Content-Language: en-US
-To: "Bolan Wang(Bolan)" <bolan.wang@fibocom.com>,
- "johan@kernel.org" <johan@kernel.org>,
- "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-Cc: "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <KL1PR02MB6283EBD2786A3B3E4E373F0389212@KL1PR02MB6283.apcprd02.prod.outlook.com>
-From: Lars Melin <larsm17@gmail.com>
-In-Reply-To: <KL1PR02MB6283EBD2786A3B3E4E373F0389212@KL1PR02MB6283.apcprd02.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20240306-const-sysctl-prep-watchdog-v1-1-bd45da3a41cf@weissschuh.net>
+X-B4-Tracking: v=1; b=H4sIAOsR6GUC/x3MTQqEMAxA4atI1hOotcjoVWQWkkYNSCtN8Qfx7
+ pZZfjx4NygnYYW+uiHxLioxFNSfCmgZw8wovhissc40pkWKQTPqpZRX3BJveIyZFh9nnOhL3rf
+ OOuqgDEqd5PzPh9/zvB4R6qtsAAAA
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, 
+ =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1709707756; l=3733;
+ i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
+ bh=b/nO7us7hYB0VszOCL9lFmQyRWHDXkJW3ruCl9UdwOA=;
+ b=qrN/3paDMKoRS//KvwBvwJRR6orfkwT4cD/VQVa3JvfSu0LVX7MLiwVoLBQ146pY0EJ2fmZLZ
+ YPGGyH9q3O9BzqhP+kPfj6RXAmftA2eRCBKwqIdeH7jIysbNAjFNeww
+X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
+ pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 
-On 2024-03-06 13:18, Bolan Wang(Bolan) wrote:
->> If the device with pid 0x01a1 only has an mbim interface as you have indicated then why do you add it to the option serial driver?
-> 
-> Hi Lars:
->    The pid 0x01a1 may include at, diag ports in different usb modes. Currently, only has the mbim interface.
-> 
-> thanks
-> bolan
+The functions are only used in the file where they are defined.
+Remove them from the header and make them static.
 
-Hi Bolan,
-so you already know that other versions of the card will have the pid 
-0x01a1 and the serial interfaces will be of class ff but you don't
-know what those interfaces will be used for?
-You shall only add driver support for what you know today and not for 
-something that might or might not be implemented in the future.
+Also guard proc_soft_watchdog with a #define-guard as it is not used
+otherwise.
 
-For the device with pid 0x0115 you have listed an adb interface and adb 
-interfaces should not be in the option driver.
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+---
+ include/linux/nmi.h |  7 -------
+ kernel/watchdog.c   | 22 ++++++++++++----------
+ 2 files changed, 12 insertions(+), 17 deletions(-)
 
-thanks
-Lars
+diff --git a/include/linux/nmi.h b/include/linux/nmi.h
+index e92e378df000..f53438eae815 100644
+--- a/include/linux/nmi.h
++++ b/include/linux/nmi.h
+@@ -216,13 +216,6 @@ void watchdog_update_hrtimer_threshold(u64 period);
+ static inline void watchdog_update_hrtimer_threshold(u64 period) { }
+ #endif
+ 
+-struct ctl_table;
+-int proc_watchdog(struct ctl_table *, int, void *, size_t *, loff_t *);
+-int proc_nmi_watchdog(struct ctl_table *, int , void *, size_t *, loff_t *);
+-int proc_soft_watchdog(struct ctl_table *, int , void *, size_t *, loff_t *);
+-int proc_watchdog_thresh(struct ctl_table *, int , void *, size_t *, loff_t *);
+-int proc_watchdog_cpumask(struct ctl_table *, int, void *, size_t *, loff_t *);
+-
+ #ifdef CONFIG_HAVE_ACPI_APEI_NMI
+ #include <asm/nmi.h>
+ #endif
+diff --git a/kernel/watchdog.c b/kernel/watchdog.c
+index 81a8862295d6..d7b2125503af 100644
+--- a/kernel/watchdog.c
++++ b/kernel/watchdog.c
+@@ -796,8 +796,8 @@ static int proc_watchdog_common(int which, struct ctl_table *table, int write,
+ /*
+  * /proc/sys/kernel/watchdog
+  */
+-int proc_watchdog(struct ctl_table *table, int write,
+-		  void *buffer, size_t *lenp, loff_t *ppos)
++static int proc_watchdog(struct ctl_table *table, int write,
++			 void *buffer, size_t *lenp, loff_t *ppos)
+ {
+ 	return proc_watchdog_common(WATCHDOG_HARDLOCKUP_ENABLED |
+ 				    WATCHDOG_SOFTOCKUP_ENABLED,
+@@ -807,8 +807,8 @@ int proc_watchdog(struct ctl_table *table, int write,
+ /*
+  * /proc/sys/kernel/nmi_watchdog
+  */
+-int proc_nmi_watchdog(struct ctl_table *table, int write,
+-		      void *buffer, size_t *lenp, loff_t *ppos)
++static int proc_nmi_watchdog(struct ctl_table *table, int write,
++			     void *buffer, size_t *lenp, loff_t *ppos)
+ {
+ 	if (!watchdog_hardlockup_available && write)
+ 		return -ENOTSUPP;
+@@ -816,21 +816,23 @@ int proc_nmi_watchdog(struct ctl_table *table, int write,
+ 				    table, write, buffer, lenp, ppos);
+ }
+ 
++#ifdef CONFIG_SOFTLOCKUP_DETECTOR
+ /*
+  * /proc/sys/kernel/soft_watchdog
+  */
+-int proc_soft_watchdog(struct ctl_table *table, int write,
+-			void *buffer, size_t *lenp, loff_t *ppos)
++static int proc_soft_watchdog(struct ctl_table *table, int write,
++			      void *buffer, size_t *lenp, loff_t *ppos)
+ {
+ 	return proc_watchdog_common(WATCHDOG_SOFTOCKUP_ENABLED,
+ 				    table, write, buffer, lenp, ppos);
+ }
++#endif
+ 
+ /*
+  * /proc/sys/kernel/watchdog_thresh
+  */
+-int proc_watchdog_thresh(struct ctl_table *table, int write,
+-			 void *buffer, size_t *lenp, loff_t *ppos)
++static int proc_watchdog_thresh(struct ctl_table *table, int write,
++				void *buffer, size_t *lenp, loff_t *ppos)
+ {
+ 	int err, old;
+ 
+@@ -852,8 +854,8 @@ int proc_watchdog_thresh(struct ctl_table *table, int write,
+  * user to specify a mask that will include cpus that have not yet
+  * been brought online, if desired.
+  */
+-int proc_watchdog_cpumask(struct ctl_table *table, int write,
+-			  void *buffer, size_t *lenp, loff_t *ppos)
++static int proc_watchdog_cpumask(struct ctl_table *table, int write,
++				 void *buffer, size_t *lenp, loff_t *ppos)
+ {
+ 	int err;
+ 
 
+---
+base-commit: 5847c9777c303a792202c609bd761dceb60f4eed
+change-id: 20240306-const-sysctl-prep-watchdog-fc8cdd6424c9
+
+Best regards,
+-- 
+Thomas Weißschuh <linux@weissschuh.net>
 
 
