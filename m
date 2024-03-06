@@ -1,89 +1,116 @@
-Return-Path: <linux-kernel+bounces-93354-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93351-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52072872E72
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 06:33:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66342872E67
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 06:32:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0DD1D28361C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 05:33:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8A4BE1C21DFE
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 05:32:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64F901B947;
-	Wed,  6 Mar 2024 05:33:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 498041B966;
+	Wed,  6 Mar 2024 05:32:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="dtxR7PHC"
-Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QU5plOdO"
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C6AE18E27
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 05:33:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.98
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BAA11B7F4
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 05:32:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709703230; cv=none; b=KgPG2mYRAhd0udNRgQd0jtxvo5MiN08N7P7JvaFr+0uDNd0R2dnFUl3FfH9awDwe/uqStYJn8vKiqkvSI228bmZ5GCJVqhS+iCgtW0dYTREEOKCEIU41U4iY+27oVB6bCwBL55tcLS3t6tEz6Dj/44by3SFEJCh7Vd2H1YOWfcg=
+	t=1709703125; cv=none; b=nI3uBNg84dmGeejhGcE32lQUlSOvEfeO4f+CxX0KdYTMpr7w0ggJI641y2IkGMkoTsZS380uZT6fOlz8QoX0It7KGmJQQc3gCj3VUntQOgG0N2eHuhnXwjewdQWWp8W4aXgdrwcqKnvOCzD/0v9DSTtR4O+lUsddgrPBFBySgjk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709703230; c=relaxed/simple;
-	bh=84IwcSpV1S63Qa+MDtGLZqKo6Jg+nu9My8ASXSMbwbg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Olw0O4kkj1iLB2pHDCy4I2y3tdtqJNVaZASXobkHzYb+2v4gUBzVe2YRMF3tudxCg4Rnlg4hA/jUmjYJFyuju2Noylt/BW214YKfiCgu+ROhfchimoqMf/pYfDKrFkCMwRlXBAHPwfZQANHatGyskk9bobJG0XCNRsTDw1JxcDU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=dtxR7PHC; arc=none smtp.client-ip=115.124.30.98
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1709703219; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=cv/b8QEJHpK26e3vniBXfBcOQGyvHRwEXLa8qoipZkk=;
-	b=dtxR7PHCAIhpnugXzw9TXIKQ5NkU0MOo2S1IOPaBCgqeq84svXwwkRME1jvLeedj3qUpHxsVj9LQUH+XL8VoNf75bhaFNX5qADZQQiGil3+jpikpGrDG3xRzYFlmoyqQXwQCTUUFKYybv4iAkrA93jxg9H0vZ4VzEm7hV47kOEE=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R761e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0W1wGvSw_1709703213;
-Received: from e69b19392.et15sqa.tbsite.net(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0W1wGvSw_1709703213)
-          by smtp.aliyun-inc.com;
-          Wed, 06 Mar 2024 13:33:38 +0800
-From: Gao Xiang <hsiangkao@linux.alibaba.com>
-To: linux-erofs@lists.ozlabs.org
-Cc: LKML <linux-kernel@vger.kernel.org>,
-	Gao Xiang <hsiangkao@linux.alibaba.com>
-Subject: [PATCH] erofs: apply proper VMA alignment for memory mapped files on THP
-Date: Wed,  6 Mar 2024 13:31:38 +0800
-Message-Id: <20240306053138.2240206-1-hsiangkao@linux.alibaba.com>
-X-Mailer: git-send-email 2.39.3
+	s=arc-20240116; t=1709703125; c=relaxed/simple;
+	bh=8ZwdkK1o5nMt3H6MI7q3MsTaBcRoHRpzOrtlXg1QdYg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SHkXcHmCfDOZs7Rqay2FjEq8xoLnWr2yEdpwX02WJEutUKiIhz6zioYQs8po/JJKUTYas+btEPkLRhTaoOyzP+r7z+v48cyISoqk942V4BLKcbPixZGvVVLIIDIoIb6fnKVSSxU+k6TOZNOcvJgwEoCIXUhA91Ft0mMYOc1mdek=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=QU5plOdO; arc=none smtp.client-ip=209.85.216.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-29954bb87b4so4216853a91.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 21:32:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709703123; x=1710307923; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=vv4Fvjj+hLabaioHe5ZIqLRtWmYmjjafrhYl8vez/84=;
+        b=QU5plOdOMaZ2M3PqJtRnLIvX7WLc2fTDydctUa/PXNSO39tm3np6CyK82JBZf0w2Nj
+         ylMNDKNmmpy9Q7bxcDHRFPt4kk2oOd/BnA0vpup4UF8arNRxytjoLKBqyto7Nx15Tw+b
+         lbLj48IfcHac6vbWshP3KoA2iwcCjtj30Zb9OMWHK630hPo7Hc+uiiHKuTNv1VCrx6HU
+         /nrPHhkaOWZrzoOIWW1VDCmK5DL4E8/01LN5xIITJtQKf2BcGwoiTRN5QvL2tGMM9u+C
+         tq+D05nLCFnnzVNI8UIs4JTPJEfIzzFIGi8QFYGKMj5Oegu6XGGRY5/32Dc2nCIcsHUl
+         IZYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709703123; x=1710307923;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vv4Fvjj+hLabaioHe5ZIqLRtWmYmjjafrhYl8vez/84=;
+        b=IExtnMCyhtLPCbCtwYvFhDKN/y43IhKcudkME1NmFClKhR2SjIR7Nj0DXAAhIyFz1C
+         QikSMUfpRRUc19Hx1zDMLuv3CvvNinttKCXpkG2qN8Jzwvk9lENwGirSSJ2GSt7SX9LO
+         mO7nhCxP7RSZ+Z2lIWcwChzp25x6mkR+W9g7OimRofkxPErf/zGh5G8bfV+KURcuuCZN
+         0TNex6jaeCOF9aAo2YYqh/aZDoq5TVMQPMtn5M5Spa0pMPMwtjuIsTdeM09RiQDnYbCC
+         ofL0Gv4k2bFaiy91AVdHLa8JnQensyfk6GNaUgE42gMcmVZTjwxoHuwRBubWJrGoeoRG
+         bKiQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXhTGtCF15Sx4IJ7UcNVJkISgEyWuEcCKwiX5c/LSjyzPaaVrvXEJVU+QEoS9QCa3QXtMIlYkAUMQw5VltRAfHSGSLyORcXJyCVQUxu
+X-Gm-Message-State: AOJu0YzwSnCJzTnCGM/ujQfUcH4Wz8efiq6XLEGDijdJ2my53q4lEbKS
+	fzn2LecybR6deDgY3JofyBPWsvq8bi55n3eyljBmORV/IkbX0DNqxYUj7JkQEJUYkA1NONKurwE
+	f
+X-Google-Smtp-Source: AGHT+IF6Dp1NMYhSjLZXpcOkBAA67LHH9kSdq+ASxfFf0Cwmc99nOfJajj256GFSS2pOZvaAOvumWg==
+X-Received: by 2002:a17:90a:bf01:b0:29a:a1c7:fc28 with SMTP id c1-20020a17090abf0100b0029aa1c7fc28mr11103516pjs.10.1709703123176;
+        Tue, 05 Mar 2024 21:32:03 -0800 (PST)
+Received: from localhost ([122.172.85.206])
+        by smtp.gmail.com with ESMTPSA id y6-20020a17090aca8600b0029a78f22bd2sm9658195pjt.33.2024.03.05.21.32.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Mar 2024 21:32:02 -0800 (PST)
+Date: Wed, 6 Mar 2024 11:02:00 +0530
+From: Viresh Kumar <viresh.kumar@linaro.org>
+To: Bjorn Andersson <andersson@kernel.org>,
+	Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Ilia Lin <ilia.lin@kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH 3/3] cpufreq: qcom-nvmem: add support for IPQ5321
+Message-ID: <20240306053200.6iwrviltwt3pnfnt@vireshk-i7>
+References: <20240228-ipq5321-sku-support-v1-0-14e4d4715f4b@quicinc.com>
+ <20240228-ipq5321-sku-support-v1-3-14e4d4715f4b@quicinc.com>
+ <20240304071222.cx3s37mphddk23bv@vireshk-i7>
+ <20240305043503.tgy5ahl243or7lm5@vireshk-i7>
+ <c82e4053-4cef-4010-a734-4dc537574201@quicinc.com>
+ <20240306051809.rk4xhl47zai7um3n@vireshk-i7>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240306051809.rk4xhl47zai7um3n@vireshk-i7>
 
-There are mainly two reasons that thp_get_unmapped_area() should be
-used for EROFS as other filesystems:
+On 06-03-24, 10:48, Viresh Kumar wrote:
+> Bjorn,
+> 
+> On 06-03-24, 10:10, Kathiravan Thirumoorthy wrote:
+> > patch 1/3 and 2/3 are already has the R-b and A-b tags. But typically those
+> > patches will go via qcom tree. Do you want to pick it via your tree? Sorry,
+> > I'm not sure on this...
+> 
+> Should I pick all the patches ?
 
- - It's needed to enable PMD mappings as a FSDAX filesystem, see
-   commit 74d2fad1334d ("thp, dax: add thp_get_unmapped_area for pmd
-   mappings");
+Okay, there are conflicts for the first patch itself. Bjorn you can
+apply all the patches.
 
- - It's useful together with CONFIG_READ_ONLY_THP_FOR_FS which enables
-   THPs for read-only mmapped files (e.g. shared libraries) even without
-   FSDAX.  See commit 1854bc6e2420 ("mm/readahead: Align file mappings
-   for non-DAX").
+For this patch:
 
-Fixes: 06252e9ce05b ("erofs: dax support for non-tailpacking regular file")
-Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
----
- fs/erofs/data.c | 1 +
- 1 file changed, 1 insertion(+)
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-diff --git a/fs/erofs/data.c b/fs/erofs/data.c
-index c98aeda8abb2..3d9721b3faa8 100644
---- a/fs/erofs/data.c
-+++ b/fs/erofs/data.c
-@@ -447,5 +447,6 @@ const struct file_operations erofs_file_fops = {
- 	.llseek		= generic_file_llseek,
- 	.read_iter	= erofs_file_read_iter,
- 	.mmap		= erofs_file_mmap,
-+	.get_unmapped_area = thp_get_unmapped_area,
- 	.splice_read	= filemap_splice_read,
- };
 -- 
-2.39.3
-
+viresh
 
