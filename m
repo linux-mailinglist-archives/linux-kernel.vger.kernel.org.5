@@ -1,189 +1,101 @@
-Return-Path: <linux-kernel+bounces-94488-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94489-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1BF787408F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 20:37:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C45E5874093
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 20:37:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 63C8AB22E24
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 19:37:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 70D4CB23804
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 19:37:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DCD013F45D;
-	Wed,  6 Mar 2024 19:37:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5C0B14036B;
+	Wed,  6 Mar 2024 19:37:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="pefVynv8"
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yyipT7by"
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF3DA1386A3;
-	Wed,  6 Mar 2024 19:37:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A096A13DBB7
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 19:37:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709753834; cv=none; b=D+49U+6Jl6lrGS3ljnjkaYx4bubtLtPY2CwMmu0nTHGoxjZkXG17e+c1v8Cc2PrdFGJk1D3uczAlmlSugvgleYydN5ubhj9ukjpVSCycF9W0H0+KXr7BSSmH+nOUVTTP6r4X/GONN0xUoMW13Qra1YwLibXkj+WcodVdHKG0KpA=
+	t=1709753847; cv=none; b=OKLL3+OI+LU69dLNWUJjbzFn53+TiGutFVW2rXl4lMUTLIVBFBOTLhQ/od/Jwoflu4vf6HkB98VfVd8P1rxmPDT5ah/V7Abnczji2M1KsF9JyYJkPTEteh2W1EqJ7H1YZeSXcEitbPIyCOgyPCW9v4piAmnlf9bHH7dLlh7+sOg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709753834; c=relaxed/simple;
-	bh=xLUEqkI4LpMh0mVULwiRUGKtpy7yUL3zf46szV7+d0Y=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=lMKlX+LzAWPZ00z0fr6ICT2VJ6wiGBptU2j7/5mKHA80IaOQqmZxNiu1hjchKCkY/bwE6F11/fFJr/tFrIPmJR7aty8THZc3MWMk9kdCrfNPTomM5S/jibDUuwN3uJ327Ebb7GIPR/BGlVF1SJkwc3h0USQXR5Gg4Y8q+prtQWg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=pefVynv8; arc=none smtp.client-ip=159.69.126.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-	s=mail; t=1709753827;
-	bh=xLUEqkI4LpMh0mVULwiRUGKtpy7yUL3zf46szV7+d0Y=;
-	h=From:Date:Subject:To:Cc:From;
-	b=pefVynv88NHSPhb2g1ZtD1+Smq2DyjExzOiNv557oMp5UzEfHx11gdDCvj7ELwDlv
-	 jGQfN8H4NOdkjV4G19iQi8UHkJhINdhIqSCMLTdIFq75wBCHRo4Ls+0m2LlTKxJBEN
-	 Fv9BzPep4Md7KGEIBkZWKAYiRJnAjM1Gon3QPOuU=
-From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Date: Wed, 06 Mar 2024 20:37:04 +0100
-Subject: [PATCH v3] power: supply: test-power: implement charge_behaviour
- property
+	s=arc-20240116; t=1709753847; c=relaxed/simple;
+	bh=6cnpZDUdkD29IWFwR/q5G6jtdmxkXbldKBzmXR0qa0I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Rpseq9sP4SYVgPi1YBOeYKzmm3Rlv1w1JB7JTplPgfuGVcan9S9gl6dXVjvDMSsADK9g4q2hspD7xy47CVxnY+GNyR2tXYq5JgWSPliGvvus113lRuQdAnJsaCfeLL5hwJGb/TEFSWEkqari6mauThDttCrKCcy5qpbjlAiTW2I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=yyipT7by; arc=none smtp.client-ip=209.85.128.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-60978479651so1019787b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 11:37:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709753844; x=1710358644; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=GNGb5BZ7AINJbJgQXn/Q7jDuTAr3ISUOPfFvM1cAIAU=;
+        b=yyipT7byMgTy1xWWkm9c8BWhf+0Tah4k419plUmM/Ny+1Xa5ArZq1+uhJRYGpGqD1F
+         mHc7/HDPoNbSiEIYUJlT5igXpJ7C3JqLduWmnBXpaLE13DU938CqozHdj7fSm2rc098P
+         aZZlRBFwG6iATUBXfi+yGBJEnhbbT+rqxgzQCI+QPQmtlPLFmg2YfircU649bLaZ79x2
+         g0H3QAalXZAblrkc6MMGjIcCwtexh8LQ+uzxG6rrHSeBMKNWuOFhJueACsjvYQRds5wi
+         HGEq0BvoGsqqeugtrxsx6hKx8HKEZ/DJQO2/lwkpbWANCGhOH0cW9KbXJSLYaijK49k9
+         N/Yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709753844; x=1710358644;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GNGb5BZ7AINJbJgQXn/Q7jDuTAr3ISUOPfFvM1cAIAU=;
+        b=p0w8t258syb7SR3WY1JWmoD1omr2lsGADD8o2oW/dpSUKk8rO/J8WvMuw9eArbOpUO
+         TaFrJyt48B5L1Gga8Yt6dr64M1M4h+cs9IAWN/DnMsb/otpYDibLESVRVFdRj1MpuLxO
+         lVcBfClbr9MqiQ/nikQzulsBvcFn+09hNSksTDhUD5HLXfxypPgOTf8KzJDGUlB+CemL
+         EFmW5MD/NgBa3V1+Bj1LZZTfFtuS+Wzaa42voigZm1UCx7mIhBwJJ1tl+Fh/ZJUp4uFe
+         MjsaFmh3SbYNRmHL17+IXpfXn1cDwm1GtMaFdQDCHTP1onUsjOELkYYmHWWQ9DYkZfRc
+         Bg2w==
+X-Forwarded-Encrypted: i=1; AJvYcCWvzuBiwEEPaBwvMNuKIyc+FcRmQBhMvjpBnRWPfZRdOGtJh7VYSEXlR+l0hywNPyZPT+Y85wwh86x6ggqJusWsBlp2pjdmtOwCa3t5
+X-Gm-Message-State: AOJu0YxhfSXyekhzac09epKhy+DKG2ANIbWQlOE4yEU3dci+MNal37it
+	qxk5AIyRT1qR+8KLCj/sotqNS19E2HH17d46xtsprSVaPnUw36Vr/Ug5WoirrLnTx9dkDH/DH73
+	p+vXfvQDciPfxH9dRPRzJ8j3Li66TnHc5FJrVAw==
+X-Google-Smtp-Source: AGHT+IHuei9cSteH/A4mQ8tGokXyI8WejeGtf2o3u3B0yT5hvLrRj3UV5f5zbG98ZxwHbe98Gp2+giMbUEY+VqeSeS0=
+X-Received: by 2002:a0d:e8c4:0:b0:609:845a:4a89 with SMTP id
+ r187-20020a0de8c4000000b00609845a4a89mr16100721ywe.39.1709753844667; Wed, 06
+ Mar 2024 11:37:24 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20240306-power_supply-charge_behaviour_prop-v3-1-d04cf1f5f0af@weissschuh.net>
-X-B4-Tracking: v=1; b=H4sIAN/F6GUC/43NQQ6DIBAF0Ks0rEszoqXSVe/RNAZxFJJGCCjWG
- O9edNNFNy7/ZP77CwnoDQZyPy3EYzTB2D6F/HwiSsu+Q2qalAkDloNggjo7oa/C6Nx7punFd1j
- VqGU0dvSV89bRDJRqG8El55wkyHlszWcfeb5S1iYM1s/7Zsy268YXwKA4wseMAgUuGShxLVvBH
- xOaEILSo770OJBtI7Kfm0N+yGXJLbGuQd5Uqok/d13XL2FZwl4xAQAA
-To: Sebastian Reichel <sre@kernel.org>, Hans de Goede <hdegoede@redhat.com>, 
- Konrad Dybcio <konradybcio@kernel.org>
-Cc: linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Sebastian Reichel <sebastian.reichel@collabora.com>, 
- =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1709753826; l=4455;
- i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=xLUEqkI4LpMh0mVULwiRUGKtpy7yUL3zf46szV7+d0Y=;
- b=XM1O/iQ3VKSppJ/Zg38R1HM0bv/0AImI+miKd+LnML8hFdvSBJui9EDdjQR0BH82fLhaLSd7Y
- oIE1qZ01d+oCCp5OGpKAF8gkNHz3O1bx6LYgvw/ed3FqJyRTbU7lhI9
-X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
- pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
+References: <20240306193515.455388-1-quic_abhinavk@quicinc.com>
+In-Reply-To: <20240306193515.455388-1-quic_abhinavk@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Wed, 6 Mar 2024 21:37:13 +0200
+Message-ID: <CAA8EJpqATJdV6f7Yi4gDeSpmgd45TUxqFmtk-nniPe6EhtFtXg@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm/dp: fix typo in dp_display_handle_port_status_changed()
+To: Abhinav Kumar <quic_abhinavk@quicinc.com>
+Cc: freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>, 
+	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Kuogee Hsieh <quic_khsieh@quicinc.com>, dri-devel@lists.freedesktop.org, 
+	swboyd@chromium.org, quic_jesszhan@quicinc.com, quic_parellan@quicinc.com, 
+	Rob Clark <robdclark@chromium.org>, linux-arm-msm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-To validate the special formatting of the "charge_behaviour" sysfs
-property add it to the example driver.
+On Wed, 6 Mar 2024 at 21:35, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+>
+> Fix the typo in the name of dp_display_handle_port_status_changed().
+>
+> Fixes: c58eb1b54fee ("drm/msm/dp: fix connect/disconnect handled at irq_hpd")
+> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
 
-Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
----
-The original submission of the charge_behaviour property did not
-implement proper formatting in the default formatting handler in
-power_supply_sysfs.c.
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-At that time it was not a problem because the only provider of the UAPI,
-thinkpad_acpi, did its own formatting.
 
-Now there is an in-tree driver, mm8013, and out-of-tree driver which use
-the normal power-supply properties and are affected by the wrong
-formatting.
-In this revision the handling of CHARGE_BEHAVIOUR in mm8013 is dropped
-as it is not the correct API for it to use.
-That change was not tested by me as I don't have the hardware.
----
-Changes in v3:
-- Drop already applied patches
-- Validate value in test_power_set_battery_property
-- Link to v2: https://lore.kernel.org/r/20240303-power_supply-charge_behaviour_prop-v2-0-8ebb0a7c2409@weissschuh.net
-
-Changes in v2:
-- Simplify the backwards-compatibility logic (adds a preparatory patch)
-- Extend test-power to also handle writing of charge_behaviour
-- Drop incorrect CHARGE_BEHAVIOUR from mm8013 driver
-- Replace special CHARGE_BEHAVIOUR_AVAILABLE property with bitmask in
-  struct power_supply_desc
-- Link to v1: https://lore.kernel.org/r/20240204-power_supply-charge_behaviour_prop-v1-0-06a20c958f96@weissschuh.net
----
- drivers/power/supply/test_power.c | 36 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 36 insertions(+)
-
-diff --git a/drivers/power/supply/test_power.c b/drivers/power/supply/test_power.c
-index 0d0a77584c5d..442ceb7795e1 100644
---- a/drivers/power/supply/test_power.c
-+++ b/drivers/power/supply/test_power.c
-@@ -35,6 +35,8 @@ static int battery_capacity		= 50;
- static int battery_voltage		= 3300;
- static int battery_charge_counter	= -1000;
- static int battery_current		= -1600;
-+static enum power_supply_charge_behaviour battery_charge_behaviour =
-+	POWER_SUPPLY_CHARGE_BEHAVIOUR_AUTO;
- 
- static bool module_initialized;
- 
-@@ -123,6 +125,9 @@ static int test_power_get_battery_property(struct power_supply *psy,
- 	case POWER_SUPPLY_PROP_CURRENT_NOW:
- 		val->intval = battery_current;
- 		break;
-+	case POWER_SUPPLY_PROP_CHARGE_BEHAVIOUR:
-+		val->intval = battery_charge_behaviour;
-+		break;
- 	default:
- 		pr_info("%s: some properties deliberately report errors.\n",
- 			__func__);
-@@ -131,6 +136,31 @@ static int test_power_get_battery_property(struct power_supply *psy,
- 	return 0;
- }
- 
-+static int test_power_battery_property_is_writeable(struct power_supply *psy,
-+						    enum power_supply_property psp)
-+{
-+	return psp == POWER_SUPPLY_PROP_CHARGE_BEHAVIOUR;
-+}
-+
-+static int test_power_set_battery_property(struct power_supply *psy,
-+					   enum power_supply_property psp,
-+					   const union power_supply_propval *val)
-+{
-+	switch (psp) {
-+	case POWER_SUPPLY_PROP_CHARGE_BEHAVIOUR:
-+		if (val->intval < 0 ||
-+		    val->intval >= BITS_PER_TYPE(typeof(psy->desc->charge_behaviours)) ||
-+		    !(BIT(val->intval) & psy->desc->charge_behaviours)) {
-+			return -EINVAL;
-+		}
-+		battery_charge_behaviour = val->intval;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+	return 0;
-+}
-+
- static enum power_supply_property test_power_ac_props[] = {
- 	POWER_SUPPLY_PROP_ONLINE,
- };
-@@ -156,6 +186,7 @@ static enum power_supply_property test_power_battery_props[] = {
- 	POWER_SUPPLY_PROP_VOLTAGE_NOW,
- 	POWER_SUPPLY_PROP_CURRENT_AVG,
- 	POWER_SUPPLY_PROP_CURRENT_NOW,
-+	POWER_SUPPLY_PROP_CHARGE_BEHAVIOUR,
- };
- 
- static char *test_power_ac_supplied_to[] = {
-@@ -178,6 +209,11 @@ static const struct power_supply_desc test_power_desc[] = {
- 		.properties = test_power_battery_props,
- 		.num_properties = ARRAY_SIZE(test_power_battery_props),
- 		.get_property = test_power_get_battery_property,
-+		.set_property = test_power_set_battery_property,
-+		.property_is_writeable = test_power_battery_property_is_writeable,
-+		.charge_behaviours = BIT(POWER_SUPPLY_CHARGE_BEHAVIOUR_AUTO)
-+				   | BIT(POWER_SUPPLY_CHARGE_BEHAVIOUR_INHIBIT_CHARGE)
-+				   | BIT(POWER_SUPPLY_CHARGE_BEHAVIOUR_FORCE_DISCHARGE),
- 	},
- 	[TEST_USB] = {
- 		.name = "test_usb",
-
----
-base-commit: 4e61f1e9d58fb0765f59f47d4d1f318b36c14d95
-change-id: 20230929-power_supply-charge_behaviour_prop-10ccfd96a666
-
-Best regards,
 -- 
-Thomas Weißschuh <linux@weissschuh.net>
-
+With best wishes
+Dmitry
 
