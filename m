@@ -1,185 +1,156 @@
-Return-Path: <linux-kernel+bounces-93516-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93517-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69DCA8730E8
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:39:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96EEE8730ED
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:39:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BE1C3B28A66
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 08:39:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA2B01C241D9
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 08:39:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B16855D901;
-	Wed,  6 Mar 2024 08:38:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBB655D49E;
+	Wed,  6 Mar 2024 08:39:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="TnLSS4vr"
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hptdLoP1"
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 620435D48E
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 08:38:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D44A5D72D
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 08:39:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709714322; cv=none; b=nE1dA7/XFtid7iu2nNi1/BFxKOlt+OINdC0LKvo7XTFs921/7gEu8SsX4g0wWI4Lxb2KrkywDQCpO5ulgerV/9jEcvFrUwkjJtF7wTUXdhuJHGsw1uP4DZ7xWjarAjCrpArnQJ0Q4HqC5ykvDNjR63tvEcVXhPUXVTB3mYoI8OA=
+	t=1709714374; cv=none; b=l0HvHtwGcFAXuvz3HgqzWMXNsdA2rqqFxYkOsHXaojWA0PlPgQKLUVZisBhYgFEHdJXcRfyX5hdd/9rwqLigWZDVbLwF8fJ838T1NS8PR039aEvL+pU6PTwoSN3nlIhX6IRLAKmdKvsTqeAZhEaw1s9HUA7BlNxGDGEUpkwGmyc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709714322; c=relaxed/simple;
-	bh=1j7FVYWOl4e4ea+0P/SG0uIg0cAbesMlIJniqXAFIOw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=ETKa9sVeXjfZkGbXGwtzK5kpRal3QW1g0ERE/mD90tht4BgC2eyU0/TBvG6a9amgZ0s15oKtEASyQefjeCtVbLYfNao6swBb6IZYdqKlH9SrZfR8zWNQOfwOWBM9i/Wm3YGD8iMQpeEjSQo2oYq7AaUIao37NnuxG8poKIb6xCw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=TnLSS4vr; arc=none smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-5673b5a356eso1807307a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 00:38:40 -0800 (PST)
+	s=arc-20240116; t=1709714374; c=relaxed/simple;
+	bh=QlH3Wow2rZzvmp6ckeHeqUHMD2Vdr13Mh65ALOXij+A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GhTAyIRwIMJ6EYg/3vrUCTZC+sBwZtuy1Y7eR+QF5lBATeoU6qzm490PgXm9RPgzMT9+jOGnq1m9uJj1DRvtqdSJw3wFCrmMgpinoofHMpXI+dzGLbGiVZ/YfctXpAtXiEQxZbkIEcxCVR+GnzDPDrCmINsTdrN2BAaLHYaX7Sk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hptdLoP1; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1dd10a37d68so28293655ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 00:39:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1709714318; x=1710319118; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=C7AhbRz6OtQJVItGlMtQVOqS/HRoKaHG5JWZSZ3Yc8g=;
-        b=TnLSS4vrdsswQxChnR4LphJAE5fx9KlN4KezKDf0JBM0fMJBM0k82fS87N9l1VTwYe
-         oKZnp5w4D3TEGvXKoEECUco40/9t0UaItp59div/v4U492l1/dUSnPKn9rqKX4afSQ7c
-         JYeTVR+Fhn783sO+6SHGjSQ+VpVfm+5QQEktzZvIaOjd9+TRtNips2vs7jSIQKLWSncC
-         yTJM8s2baLEII1QMfdcEe+nsojYyDxHgEyqANgwXeEp44W//bmR7cMrGIDXX8q9CmZ5d
-         wVsDu7HXg+1ZkiFPlgyWt6cN9DAV0PK8GetBvVn/qTTtIIExGtZyyexgFhsWPoCUXPcs
-         5K7g==
+        d=linaro.org; s=google; t=1709714372; x=1710319172; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=OLL4vtiaVuob8hMTl3EPZBu7b8uDGWEMU5ByLQSiHn4=;
+        b=hptdLoP1UShB2ofMJ7Gz6+WeW+nuQOGGp0XiOF9jsDU2i9pH+z/tkz4d5E+YkwRqAu
+         b9fTWJ0xwHBff+HbJakf29RuyBMq21vyO82o9iEMK1kz/t555NUjlVWAjrf/2OT/FIJj
+         xbv/2XtmkJZXsdndDd1Ji23JEyZQH1IqroTh4ktT9cU+n2cbZBOrKdZB7SK4Jc9Vcmyf
+         DYKeDCx6YQeyKdevF8Blf/wwbFxd9LbwQcLOBz0jNp1zWPN8nnkdlSVGlgeJxbP95mar
+         W0ksywNPNg2YAwPjYA0gnNFK5e0CnqDySogH1D6dWttVNCGaCgpZZl1UszNN/DrUoN1W
+         tLtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709714318; x=1710319118;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1709714372; x=1710319172;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=C7AhbRz6OtQJVItGlMtQVOqS/HRoKaHG5JWZSZ3Yc8g=;
-        b=vSShlkpS2TCFlOOLDje8KsIqJ001B66c0zKscKsp6MQJUWI8uLZqAzzP4GiMWeYF7F
-         h7SneAcUOyKKGK2dPo354mz+/e7aPfGQYxKDDqrjZkLtCoY4qrlxSGd23Xjcaml9h+R2
-         OQgVRG4b92FQHHTpqxrvty1CPmP70xo1gCxoMIm0XZlxK8nH2VtTVCQVhUXnatvBF0ht
-         ipOlT7hBkL3Q0ZTzoFlp08u6nWRu298blb4WJ0R5RVTTSTjMs2L+GSc6Ltwvf8fv2kzv
-         mzbve+9yFilZCMY6A53RZPPv6A/XEzD2+LUlF16LTQDHb/0Lyhg+7EdQjNqoHmzuU6So
-         +nqw==
-X-Forwarded-Encrypted: i=1; AJvYcCUfmOSkzMm+rmFtVLYeOS77k4WkcQwubTCSjtVr8mr+X15BjMTFay7lfa0yiKKJR+wmdJT01tpq9D8SyL26264NhOl/JAlivgElic0w
-X-Gm-Message-State: AOJu0Yw4waJmsaB6RPbS/Hx7aC42qGKPbBeDGqdI22SxGjWXCGRHW2+L
-	j5W5YGB9omcdcqlmmpcARkbWkYgLqIzS0D1Opr6WBiLXhkWPiHXTFuHnkTwitGc=
-X-Google-Smtp-Source: AGHT+IE2g9PqQGFjWHN2nFj43dtlU1h78UFJwGeGQAKRgBRTVUB8WbBGclSqQnfU7K/3jY0zazqNBg==
-X-Received: by 2002:a17:906:34c9:b0:a45:1d32:ac7 with SMTP id h9-20020a17090634c900b00a451d320ac7mr5749166ejb.42.1709714318517;
-        Wed, 06 Mar 2024 00:38:38 -0800 (PST)
-Received: from [192.168.50.4] ([82.78.167.38])
-        by smtp.gmail.com with ESMTPSA id yk1-20020a17090770c100b00a42f4678c95sm6873403ejb.59.2024.03.06.00.38.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Mar 2024 00:38:38 -0800 (PST)
-Message-ID: <2f5ee8f2-9d07-471a-92e5-d547fdb9454d@tuxon.dev>
-Date: Wed, 6 Mar 2024 10:38:36 +0200
+        bh=OLL4vtiaVuob8hMTl3EPZBu7b8uDGWEMU5ByLQSiHn4=;
+        b=cdUc5LQVxKgVtnpx5b3/eZLiIp6l/D4RE4c6mN+cX070gMPBWy2g73jMyyF6sinyOw
+         GF/tKJeT4ynqeken07IArNgjDB8HR9FtSYfydPYn2ZMWYz/3TgdZr1OWjxltYnpLEa/l
+         S8mANAIjeZyN+l0EwnjRVLqHTDxVh500LeJejt5aAT7wjkMkGCz1v9SSvdMZyfwGZ0bo
+         qcbs0wKzMyIxGAhUDF0Agxr9MlYAEJnNcgbANS3/e2YHuhYIiyNPjEaRnr1O6uH7f0uW
+         /dknXZbZVUTrZ273XIJ3LhYhMvdYPH+K2ZBBYpumszJWWTRSmKZyKLx9IpQSDl717cyJ
+         uCxw==
+X-Forwarded-Encrypted: i=1; AJvYcCW5F5fC3wVXn04P9kJDKJGPrjOIWM5FDn65nif3r9blD0hn379e3OjW+loOruLA+479dhFWnl5o4p7Xeuxft7LgwGN5Scw4cMMGgqG0
+X-Gm-Message-State: AOJu0YxMaN9GH0WcvXztRr5pzkBzytz5G3ZUxUwdn3nuXyODu6lNuwNY
+	pFLak62iE8bFh8WYlZu7Ba4uPK3l7daF6j7Xaj4KJl7GFg8DFk3V4XXy98mIRA==
+X-Google-Smtp-Source: AGHT+IEKcpq6WpONUJLlWmUdwNrA2CS8okOHDA4GD4M4FYuHGBHkQTrblblynQVMeIuI6ij6U423FQ==
+X-Received: by 2002:a17:902:7845:b0:1dc:b382:da8d with SMTP id e5-20020a170902784500b001dcb382da8dmr3856250pln.38.1709714371623;
+        Wed, 06 Mar 2024 00:39:31 -0800 (PST)
+Received: from thinkpad ([117.248.1.194])
+        by smtp.gmail.com with ESMTPSA id u9-20020a170902e80900b001d9a42f6183sm11962904plg.45.2024.03.06.00.39.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Mar 2024 00:39:31 -0800 (PST)
+Date: Wed, 6 Mar 2024 14:09:25 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Johan Hovold <johan@kernel.org>
+Cc: Johan Hovold <johan+linaro@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
+	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 00/10] arm64: dts: qcom: sc8280xp: PCIe fixes and
+ GICv3 ITS enable
+Message-ID: <20240306083925.GB4129@thinkpad>
+References: <20240305081105.11912-1-johan+linaro@kernel.org>
+ <20240306063302.GA4129@thinkpad>
+ <ZegZMNWxCnLbHDxP@hovoldconsulting.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 37/39] ARM: dts: at91: sam9x7: add device tree for SoC
-Content-Language: en-US
-To: Varshini.Rajendran@microchip.com, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- Nicolas.Ferre@microchip.com, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240223171342.669133-1-varshini.rajendran@microchip.com>
- <20240223173051.673490-1-varshini.rajendran@microchip.com>
- <9b5cf569-bbff-4520-8815-70b6f4c41625@tuxon.dev>
- <e4e0aba6-9ee4-45b6-80c5-02c430af9e10@microchip.com>
-From: claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <e4e0aba6-9ee4-45b6-80c5-02c430af9e10@microchip.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZegZMNWxCnLbHDxP@hovoldconsulting.com>
 
-
-
-On 04.03.2024 18:33, Varshini.Rajendran@microchip.com wrote:
-> Hi Claudiu,
+On Wed, Mar 06, 2024 at 08:20:16AM +0100, Johan Hovold wrote:
+> On Wed, Mar 06, 2024 at 12:03:02PM +0530, Manivannan Sadhasivam wrote:
+> > On Tue, Mar 05, 2024 at 09:10:55AM +0100, Johan Hovold wrote:
+> > > This series addresses a few problems with the sc8280xp PCIe
+> > > implementation.
+> > > 
+> > > The DWC PCIe controller can either use its internal MSI controller or an
+> > > external one such as the GICv3 ITS. Enabling the latter allows for
+> > > assigning affinity to individual interrupts, but results in a large
+> > > amount of Correctable Errors being logged on both the Lenovo ThinkPad
+> > > X13s and the sc8280xp-crd reference design.
+> > > 
+> > > It turns out that these errors are always generated, but for some yet to
+> > > be determined reason, the AER interrupts are never received when using
+> > > the internal MSI controller, which makes the link errors harder to
+> > > notice.
 > 
-> Thanks for your time in reviewing this patch. I will address all your 
-> comments in the next version. There are some clarifications provided 
-> inline below.
+> > > Enabling AER error reporting on sc8280xp could similarly also reveal
+> > > existing problems with the related sa8295p and sa8540p platforms as they
+> > > share the base dtsi.
+> > > 
+> > > After discussing this with Bjorn Andersson at Qualcomm we have decided
+> > > to go ahead and disable L0s for all controllers on the CRD and the
+> > > X13s.
+>  
+> > Just received confirmation from Qcom that L0s is not supported for any of the
+> > PCIe instances in sc8280xp (and its derivatives). Please move the property to
+> > SoC dtsi.
 > 
-> On 03/03/24 5:54 pm, claudiu beznea wrote:
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>
->> On 23.02.2024 19:30, Varshini Rajendran wrote:
->>> Add device tree file for SAM9X7 SoC family.
->>>
->>> Co-developed-by: Nicolas Ferre <nicolas.ferre@microchip.com>
->>> Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
->>> Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
->>> ---
->>> Changes in v4:
->>> - Added pwm node support
->>> - Added microchip,nr-irqs to the interrupt-controller node for the
->>>    driver to fetch the NIRQs
->>> - Dropped USB nodes owing to the discussion here
->>>   https://lore.kernel.org/linux-devicetree/CAL_JsqJ9PrX6fj-EbffeJce09MXs=B7t+KS_kOinxaRx38=WxA@mail.gmail.com/
->>> (Explained elaborartely in the cover letter)
->>> ---
->>>   arch/arm/boot/dts/microchip/sam9x7.dtsi | 1214 +++++++++++++++++++++++
->>>   1 file changed, 1214 insertions(+)
->>>   create mode 100644 arch/arm/boot/dts/microchip/sam9x7.dtsi
->>>
->>> diff --git a/arch/arm/boot/dts/microchip/sam9x7.dtsi b/arch/arm/boot/dts/microchip
-
-[ ... ]
-
->>> +             reset_controller: reset-controller@fffffe00 {
->>> +                     compatible = "microchip,sam9x7-rstc", "microchip,sam9x60-rstc";
->>> +                     reg = <0xfffffe00 0x10>;
->>> +                     clocks = <&clk32k 0>;
->>> +             };
->>> +
->>> +             power_management: power-management@fffffe10 {
->>
->> Usually the node name for this is poweroff. Any reason you changed it like
->> this?
->>
-> Yes Claudiu. Based on the comment given for the version 2.
-
-I think poweroff fits better. Documentation is also using poweroff for node
-name. The rest of at91 device uses it. And poweroff is what this controller
-does (it is named shutdown controller).
-
+> Ok, thanks for confirming. But then the devicetree property is not the
+> right way to handle this, and we should disable L0s based on the
+> compatible string instead.
 > 
-> https://patches.linaro.org/project/linux-mmc/patch/20230623203056.689705-44-varshini.rajendran@microchip.com/#:~:text=Usually%20power%2Dmanagement%20or%20reset%2Dcontroller%20or%20something%20like%20this.
-> 
->>> +                     compatible = "microchip,sam9x7-shdwc", "microchip,sam9x60-shdwc";
->>> +                     reg = <0xfffffe10 0x10>;
->>> +                     clocks = <&clk32k 0>;
->>> +                     #address-cells = <1>;
->>> +                     #size-cells = <0>;
->>> +                     atmel,wakeup-rtc-timer;
->>> +                     atmel,wakeup-rtt-timer;
->>> +                     status = "disabled";
->>> +             };
->>> +
->>> +             rtt: rtc@fffffe20 {
->>> +                     compatible = "microchip,sam9x7-rtt", "atmel,at91sam9260-rtt";
->>> +                     reg = <0xfffffe20 0x20>;
->>> +                     interrupts = <1 IRQ_TYPE_LEVEL_HIGH 7>;
->>> +                     clocks = <&clk32k 0>;
->>> +             };
->>> +
->>> +             clk32k: sckc@fffffe50 {
->>
->> Node name should be generic, e.g. clock-controller
->>
->>> +                     compatible = "microchip,sam9x7-sckc", "microchip,sam9x60-sckc";
->>> +                     reg = <0xfffffe50 0x4>;
->>> +                     clocks = <&slow_xtal>;
->>> +                     #clock-cells = <1>;
->>> +             };
->>> +
->>> +             gpbr: syscon@fffffe60 {
->>> +                     compatible = "microchip,sam9x7-gbpr", "atmel,at91sam9260-gpbr", "syscon";
->>
->> microchip,sam9x7-gbpr seems undocummented.
-> 
-> The patch that adds support is already applied.
-> https://lore.kernel.org/linux-arm-kernel/169226306696.928678.2345448260460546641.b4-ty@kernel.org/
 
-Ok, then there is a typo in this patch:
-s/microchip,sam9x7-gbpr/microchip,sam9x7-gpbr
+Hmm. I checked further and got the info that there is no change in the IP, but
+the PHY sequence is not tuned correctly for L0s (as I suspected earlier). So
+there will be AERs when L0s is enabled on any controller instance. And there
+will be no updated PHY sequence in the future also for this chipset.
+
+So yeah, let's disable it in the driver instead.
+
+> > > As we are now at 6.8-rc7, I've rebased this series on the Qualcomm PCIe
+> > > binding rework in linux-next so that the whole series can be merged for
+> > > 6.9 (the 'aspm-no-l0s' support and devicetree fixes are all marked for
+> > > stable backport anyway).
+> 
+> I'll respin the series. Looks like we've already missed the chance to
+> enable ITS in 6.9 anyway.
+> 
+
+Sounds good, thanks!
+
+- Mani
+
+-- 
+மணிவண்ணன் சதாசிவம்
 
