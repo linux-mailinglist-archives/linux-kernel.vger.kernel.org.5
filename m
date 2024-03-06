@@ -1,92 +1,73 @@
-Return-Path: <linux-kernel+bounces-93406-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93407-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 667E6872F50
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 08:14:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C9DA872F53
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 08:14:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E976C287FAE
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 07:14:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE1BF1F25740
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 07:14:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D264A5C5F9;
-	Wed,  6 Mar 2024 07:14:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6269E5C5EB;
+	Wed,  6 Mar 2024 07:14:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="eFqlF7SY";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="28spvLDT";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="LKUwrPPn";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="twKdFAQo"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Urb0gCBJ"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49DE01427E;
-	Wed,  6 Mar 2024 07:14:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC6801B7FF
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 07:14:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709709252; cv=none; b=gqh3vhi3zlNXniZLSckq9OuEsUTQ3FHUzrbEeXCgXeNdMP6GQ4aCAvfEKHcs+/resYITISwHYIkJXxPcL263eL8G+MFnve8831hoTrvoERhZlDjSYYE7QpdTgJPq8hwFOeo8bQ38N6APXL1nO/cWixgOnFOl+/sE/PL4IEWZc6I=
+	t=1709709260; cv=none; b=nNU8pX6KtFs0lKeTLXU1W54y7IWdkTd0aAIvVtpYoSCsSEdPpX+fRR7TiCObQxA41NQnveuqORevtBwbBj6kKPYEzYOQWIhvXE3Z1/4QqKqGM/f7YFZ+wCXmURm6iCwp0M5Cumod/0DpEF0R7+qLCNC5JdfyaPWXZ1z499ZGcjE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709709252; c=relaxed/simple;
-	bh=TRzvoJhUB5lFksiERRyjBbOWUn5zGGUZW6M+gsKhq8s=;
+	s=arc-20240116; t=1709709260; c=relaxed/simple;
+	bh=PJz5VgJhJ3QniqYbnJEMV1SdYgsk90S2IsXlezyH2ZY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TdVCvk6N2zxhoIXJtKUasM81WOU39zsBfcFX9SHbD419x9Pma3FTGXlhb134saygLkVGSCeSnbPKmeZU2kHNOWqs4CBIdPsFLoVhkxc1xjzuP/4zL+PSeJpRF4NTKLOVWF3Jjv/x+Me7wppXQRKVl+9m3X03+wvyuhIy0gaKEIc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=eFqlF7SY; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=28spvLDT; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=LKUwrPPn; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=twKdFAQo; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 8A64366FB6;
-	Wed,  6 Mar 2024 07:14:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1709709248; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=y+lCFStqJhRgrujaxA2G7OrESQahwJduS9yoJsutlHU=;
-	b=eFqlF7SYyemx9Bui/sr3aTwjd7IoB4AlWAr3Cpc3rMPi8YfM43Q73CY5Zo51Tiwo2tEfpy
-	+Gk5rmvKzPgS4UEuqHMuUe8UskO1wMdHATDymTn9Bxfk7TtP49f4mQ+H6bR5bVq2ROWwB3
-	Fh6VdGIKYTMkEWTS1zQLrdWz0+dg9C8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1709709248;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=y+lCFStqJhRgrujaxA2G7OrESQahwJduS9yoJsutlHU=;
-	b=28spvLDTn06AJOQcFFTzuqhho9GZwOTxEs/AtkwEustz0eK2loFU049cFOvT251TPB87K4
-	GXU/xKjq22VeH7CQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1709709246; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=y+lCFStqJhRgrujaxA2G7OrESQahwJduS9yoJsutlHU=;
-	b=LKUwrPPnWVkqC5pQlk/e9rRDkdwThkEUEj6vqAe7qCHzSMkJCffovdnMqRxcSPGs4zUcPb
-	HycGqjCXc2A54ufvAayDC8uBdoqWwP1f+ciuG8hPwLbaJdUzSyyGdw/ZMhm6M3EuFhCGb8
-	KRMvPoWy5Xe6sciy2udt0r/oo8BudZM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1709709246;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=y+lCFStqJhRgrujaxA2G7OrESQahwJduS9yoJsutlHU=;
-	b=twKdFAQowdFoIiiNVtPwq6ry3GpPEuN7EWwHkqNB2QVshgtIxzzq5vl21TdF8Lh8nTteyv
-	bW9RDPhylqm+kdAQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E7BCF13A9C;
-	Wed,  6 Mar 2024 07:14:05 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id q3y5Nr0X6GWbVgAAD6G6ig
-	(envelope-from <hare@suse.de>); Wed, 06 Mar 2024 07:14:05 +0000
-Message-ID: <e58e0273-c0f0-4249-b4d0-d16d274311a1@suse.de>
-Date: Wed, 6 Mar 2024 08:14:04 +0100
+	 In-Reply-To:Content-Type; b=iJguPNhLfY8TJMAoqLPDRtq9JmOP68cj5ID5Goby6WEx5Jgf3dvquXMVuLaQy+bYX1376biZ2jQPxTiwmObYdABAw3PeWWaZ1YDArr/djrNcJuCjMdvaOESZk3IVHJqbQ7+Ds1DyzbZt/kaxVsp4sFG0qnoitKp62M3FbN3svik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Urb0gCBJ; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a44e3176120so459586066b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 23:14:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709709257; x=1710314057; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PJz5VgJhJ3QniqYbnJEMV1SdYgsk90S2IsXlezyH2ZY=;
+        b=Urb0gCBJjlbNghmhGaGHNWCZuTXVnNk+66o2+75fSVDFWaGrQusssyFFYylDjdIJ2F
+         tbnpcC270jlJxTQAtYn2V0wd26tU8bh/secKAFfcZqzuyHBNLej8TR9l0rlnpD9pqPGx
+         sXXF1+p4WSrAQVACEKcHRTY2tr7pdcHMxhAdqgei4c7tR1CVUwMXP9wYugmMhQbVuYyc
+         e9Bw+FGZvKzIqEyFxmoeowsv2eww4X5SpU+1A2XdDGiqchEPWM6YiHiYgLakYqIk/AUZ
+         QRocBvUoocFEuQS07oDeo+NXzH+DbbywLYTWlXNGPp1LQg0uOZzJskZaJS8ORX0UqWNs
+         YT3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709709257; x=1710314057;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PJz5VgJhJ3QniqYbnJEMV1SdYgsk90S2IsXlezyH2ZY=;
+        b=VGEUg9N+M60hG2PHltydEbcK/MGSeM5r+gsvWD7rWE+tQGD1ZIN7ZEL0oCuTvnXJK6
+         kiIhO39ohuBNttJzUUviSFyRrMDF9xVb4oYafDX9PspT6yIHfISIXX3/kPcviRz28xZD
+         NSfQNx2gjxO3ZZOQqNQ9tiXF8QNVaJ3qVK7SPUX87kLcSgaxa8iZdsl68R4X9XabQfzi
+         YLRnTyNkbIa1aqt4z4H1DvXxfAEClJuqwKO8a74KofpStsOWn2cu7rxop9Zg0LooC23n
+         63O4ZyH2MoL/hG+dWQm4mKgH+Pb2SHtDuotYa+Sft8+NCFczNZgHyNuxOtANSOe1oUjO
+         oaqA==
+X-Forwarded-Encrypted: i=1; AJvYcCV7UlvHzbUkanCgXZVPl9kW1J8pKTiKooJ4GuYsX/sRGMaxNlZEVnqLD/HRGnOJ2qR3SfseV5YGICJ6RJyqh6TTacKjscgnTKHIpEVz
+X-Gm-Message-State: AOJu0YyYACUhtPuLkclks9g+2owbV82r/tFQVxs6YNHS4mi0lmD8RUp9
+	QnJjOzQjLdBLS/AG7ULo3MBzjW01BpQwT15yhD5A+HPZhNBT1s/AIqTHmgHAZ08=
+X-Google-Smtp-Source: AGHT+IEecCk+TqZFdqb8f1EzPLA2CdGJLn2LnM5oErrBM2/NB5iMvFeVVka3XAupTqGzHL7ZOyo0jA==
+X-Received: by 2002:a17:906:6805:b0:a45:b1e7:df8b with SMTP id k5-20020a170906680500b00a45b1e7df8bmr1561462ejr.64.1709709257349;
+        Tue, 05 Mar 2024 23:14:17 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id y6-20020a056402358600b005645961ad39sm6535904edc.47.2024.03.05.23.14.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Mar 2024 23:14:16 -0800 (PST)
+Message-ID: <a32a2655-7561-4339-8521-bc2558e0bdb1@linaro.org>
+Date: Wed, 6 Mar 2024 08:14:15 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -94,214 +75,77 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 2/7] scsi: libsas: Define NCQ Priority sysfs attributes
- for SATA devices
+Subject: Re: [PATCH v3] dt-bindings: hwmon: tda38640: Add interrupt &
+ regulator properties
 Content-Language: en-US
-To: Igor Pylypiv <ipylypiv@google.com>, Damien Le Moal <dlemoal@kernel.org>,
- Niklas Cassel <cassel@kernel.org>, John Garry <john.g.garry@oracle.com>,
- Jason Yan <yanaijie@huawei.com>, "James E.J. Bottomley"
- <jejb@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>,
- Jack Wang <jinpu.wang@cloud.ionos.com>,
- Xiang Chen <chenxiang66@hisilicon.com>,
- Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
- Bart Van Assche <bvanassche@acm.org>
-Cc: TJ Adams <tadamsjr@google.com>, linux-ide@vger.kernel.org,
- linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240305235823.3308225-1-ipylypiv@google.com>
- <20240305235823.3308225-3-ipylypiv@google.com>
-From: Hannes Reinecke <hare@suse.de>
-In-Reply-To: <20240305235823.3308225-3-ipylypiv@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -4.29
-X-Spamd-Result: default: False [-4.29 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 NEURAL_HAM_SHORT(-0.20)[-0.985];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%];
-	 ARC_NA(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[15];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email,huawei.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 RCVD_TLS_ALL(0.00)[]
-X-Spam-Flag: NO
+To: Naresh Solanki <naresh.solanki@9elements.com>,
+ Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: mazziesaccount@gmail.com, linux-hwmon@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240305210747.1377506-1-naresh.solanki@9elements.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240305210747.1377506-1-naresh.solanki@9elements.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 3/6/24 00:58, Igor Pylypiv wrote:
-> Libata sysfs attributes cannot be used for libsas managed SATA devices
-> because the ata_port location is different for libsas.
-> 
-> Defined sysfs attributes (visible for SATA devices only):
-> - /sys/block/sda/device/ncq_prio_enable
-> - /sys/block/sda/device/ncq_prio_supported
-> 
-> The newly defined attributes will pass the correct ata_port to libata
-> helper functions.
-> 
-> Reviewed-by: John Garry <john.g.garry@oracle.com>
-> Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
-> Reviewed-by: Jason Yan <yanaijie@huawei.com>
-> Signed-off-by: Igor Pylypiv <ipylypiv@google.com>
-> ---
->   drivers/scsi/libsas/sas_ata.c | 94 +++++++++++++++++++++++++++++++++++
->   include/scsi/sas_ata.h        |  6 +++
->   2 files changed, 100 insertions(+)
-> 
-> diff --git a/drivers/scsi/libsas/sas_ata.c b/drivers/scsi/libsas/sas_ata.c
-> index 12e2653846e3..04b0bd9a4e01 100644
-> --- a/drivers/scsi/libsas/sas_ata.c
-> +++ b/drivers/scsi/libsas/sas_ata.c
-> @@ -964,3 +964,97 @@ int sas_execute_ata_cmd(struct domain_device *device, u8 *fis, int force_phy_id)
->   			       force_phy_id, &tmf_task);
->   }
->   EXPORT_SYMBOL_GPL(sas_execute_ata_cmd);
-> +
-> +static ssize_t sas_ncq_prio_supported_show(struct device *device,
-> +					   struct device_attribute *attr,
-> +					   char *buf)
-> +{
-> +	struct scsi_device *sdev = to_scsi_device(device);
-> +	struct domain_device *ddev = sdev_to_domain_dev(sdev);
-> +	bool supported;
-> +	int rc;
-> +
-> +	/* This attribute shall be visible for SATA devices only */
-> +	if (WARN_ON_ONCE(!dev_is_sata(ddev)))
-> +		return -EINVAL;
-> +
-You don't need the WARN_ON here; the 'is_visible' function will take
-care of it.
+On 05/03/2024 22:07, Naresh Solanki wrote:
+> Add properties for interrupt & regulator.
+> Also update example.
 
-> +	rc = ata_ncq_prio_supported(ddev->sata_dev.ap, sdev, &supported);
-> +	if (rc)
-> +		return rc;
-> +
-> +	return sysfs_emit(buf, "%d\n", supported);
-> +}
-> +
-> +DEVICE_ATTR(ncq_prio_supported, S_IRUGO, sas_ncq_prio_supported_show, NULL);
-> +
-> +static ssize_t sas_ncq_prio_enable_show(struct device *device,
-> +					struct device_attribute *attr,
-> +					char *buf)
-> +{
-> +	struct scsi_device *sdev = to_scsi_device(device);
-> +	struct domain_device *ddev = sdev_to_domain_dev(sdev);
-> +	bool enabled;
-> +	int rc;
-> +
-> +	/* This attribute shall be visible for SATA devices only */
-> +	if (WARN_ON_ONCE(!dev_is_sata(ddev)))
-> +		return -EINVAL;
-> +
+Nothing improved.
 
-Same here.
+Broken record. You got the same comment 3rd or 4th time!
 
-> +	rc = ata_ncq_prio_enabled(ddev->sata_dev.ap, sdev, &enabled);
-> +	if (rc)
-> +		return rc;
-> +
-> +	return sysfs_emit(buf, "%d\n", enabled);
-> +}
-> +
-> +static ssize_t sas_ncq_prio_enable_store(struct device *device,
-> +					 struct device_attribute *attr,
-> +					 const char *buf, size_t len)
-> +{
-> +	struct scsi_device *sdev = to_scsi_device(device);
-> +	struct domain_device *ddev = sdev_to_domain_dev(sdev);
-> +	bool enable;
-> +	int rc;
-> +
-> +	/* This attribute shall be visible for SATA devices only */
-> +	if (WARN_ON_ONCE(!dev_is_sata(ddev)))
-> +		return -EINVAL;
-> +
+NAK
 
-And here.
-
-> +	rc = kstrtobool(buf, &enable);
-> +	if (rc)
-> +		return rc;
-> +
-> +	rc = ata_ncq_prio_enable(ddev->sata_dev.ap, sdev, enable);
-> +	if (rc)
-> +		return rc;
-> +
-> +	return len;
-> +}
-> +
-> +DEVICE_ATTR(ncq_prio_enable, S_IRUGO | S_IWUSR,
-> +	    sas_ncq_prio_enable_show, sas_ncq_prio_enable_store);
-> +
-> +static struct attribute *sas_ata_sdev_attrs[] = {
-> +	&dev_attr_ncq_prio_supported.attr,
-> +	&dev_attr_ncq_prio_enable.attr,
-> +	NULL
-> +};
-> +
-> +static umode_t sas_ata_attr_is_visible(struct kobject *kobj,
-> +				       struct attribute *attr, int i)
-> +{
-> +	struct device *dev = kobj_to_dev(kobj);
-> +	struct scsi_device *sdev = to_scsi_device(dev);
-> +	struct domain_device *ddev = sdev_to_domain_dev(sdev);
-> +
-> +	if (!dev_is_sata(ddev))
-> +		return 0;
-> +
-> +	return attr->mode;
-> +}
-> +
-> +const struct attribute_group sas_ata_sdev_attr_group = {
-> +	.attrs = sas_ata_sdev_attrs,
-> +	.is_visible = sas_ata_attr_is_visible,
-> +};
-> +EXPORT_SYMBOL_GPL(sas_ata_sdev_attr_group);
-> diff --git a/include/scsi/sas_ata.h b/include/scsi/sas_ata.h
-> index 2f8c719840a6..59a75cd8b5e0 100644
-> --- a/include/scsi/sas_ata.h
-> +++ b/include/scsi/sas_ata.h
-> @@ -39,6 +39,8 @@ int smp_ata_check_ready_type(struct ata_link *link);
->   int sas_discover_sata(struct domain_device *dev);
->   int sas_ata_add_dev(struct domain_device *parent, struct ex_phy *phy,
->   		    struct domain_device *child, int phy_id);
-> +
-> +extern const struct attribute_group sas_ata_sdev_attr_group;
->   #else
->   
->   static inline void sas_ata_disabled_notice(void)
-> @@ -123,6 +125,10 @@ static inline int sas_ata_add_dev(struct domain_device *parent, struct ex_phy *p
->   	sas_ata_disabled_notice();
->   	return -ENODEV;
->   }
-> +
-> +static const struct attribute_group sas_ata_sdev_attr_group __maybe_unused = {
-> +	.attrs = NULL,
-> +};
->   #endif
->   
->   #endif /* _SAS_ATA_H_ */
-
-Cheers,
-
-Hannes
--- 
-Dr. Hannes Reinecke                  Kernel Storage Architect
-hare@suse.de                                +49 911 74053 688
-SUSE Software Solutions GmbH, Frankenstr. 146, 90461 Nürnberg
-HRB 36809 (AG Nürnberg), GF: I. Totev, A. McDonald, W. Knoblich
+Best regards,
+Krzysztof
 
 
