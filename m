@@ -1,350 +1,165 @@
-Return-Path: <linux-kernel+bounces-94133-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94135-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F3C9873A63
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:11:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE869873A6A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:12:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A4672B24802
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:11:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A9844282C47
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:12:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20E2D1353FC;
-	Wed,  6 Mar 2024 15:10:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="4POVxNX1"
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3E87135A6F;
+	Wed,  6 Mar 2024 15:11:06 +0000 (UTC)
+Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7C14132472
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 15:10:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72941134CF7;
+	Wed,  6 Mar 2024 15:11:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.14.17.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709737820; cv=none; b=dgjGTj8TtX2FZE80DIhcyVKXnzWwdkr1tD9xj0KSPzuMcCPDmgh290MOvGsAN9KG+wCOS3SEAKnklVP3GfNkCUeldGtSDQFfDaijwbhr/3WIzEIckZYcMbTyPm0WJ+9ag1dDDU5lNq3OEl8R6jr5jqcKo0kdNMp/NaQBpaVB1gs=
+	t=1709737866; cv=none; b=Qo9sNH2mDkt7pkbLLDfHzij7wBAerhI50FcNSjJ5JS25PRqzeFmZ24tfjFfg4b27ugGhK7HNl+lkfmBcfn48iUXYzUMWNKsmdceq9b0cfRPAiw4SuO6XJBkH/4CSpJsiCEWQ15GF5dsUMiiwcWTvBWxq0Xpy5w+AqEHyY7k1cXg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709737820; c=relaxed/simple;
-	bh=qjcYnOAyDzwpMl+5pOVw0IVok5rrLJ4e3o/tFfBhl94=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=r7iY34LHz7j6GnmiIge4i9reRVaQt7fGD66KMMHjTvTynUcmdIRNnLqZrrl3LMMhKCWYasCrcUNNYaJ9RlD6m7TxZK1pVM6QBnQUjKJRys93W3Qd65GHUtm8fntTQY5dVBS4RzgYDUfjghsH2hlQJbvJ3Kbm0XaiPVtBVsgiILM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=4POVxNX1; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-566b160f6eeso11970a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 07:10:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709737815; x=1710342615; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WiqlRH5D1PVFZ4xdoZ1pgXd2c0JlwaOYFpF6GFPgDLc=;
-        b=4POVxNX1J4awkvhNO9sXZexzqvQAHV34MdBl8y6xO9Awujdm3GUH9gp5dbsCJIV7B8
-         vXIc6LWF1a4ejkZyuMUxSVnw4TqSaN6sU3NyqQ6fvnH870xpXw2ef4DVAs2Foobpb6j+
-         OuxHbpm7i37920BGc3KCEhFW1MVXWcAjQk2JDHDDaz8Jo+y2SqPDZJwnNtmdt6xkyhBI
-         Sv+xYkB9V2U/p2HeiWH4a0ewMIXraEIiKPdwELd5/mIQhhA7uz+NdNVJi7TSNgXbBMRh
-         zbK1XfnHDYDgoRinYB2gNvyGr+u286RaTf+GOboyI03dzGvI+ySwll3+kmG36ADJcnxP
-         3/Og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709737815; x=1710342615;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WiqlRH5D1PVFZ4xdoZ1pgXd2c0JlwaOYFpF6GFPgDLc=;
-        b=L/ZFQnpUkB5XQcXFAh0vPI7+fzc9tAeIFgUTXx6KfI7mLkXYcJFxxRewATgj3Idckt
-         wG+Max7SqH2aGSI5bS8dIqgZoj7rYmW9cMp4c/1nBcubBS35NjhklD74dES24p9hTLDn
-         b8ryfjJ69vPCZMMMC3NS+36Hkhy5r16hhdSLmi0IywktB9oqiYNYmQE0Hk3PmFRmMZ7r
-         q5oJT+2P7wzTNUsRXABQ3MtjD+oZQ4HQp1lUREASZ872rI9XZI+7jmLhlwoALQkYyllm
-         F0oHJvXTEcaHxAq+DU74v+rye9dWk9MoyD6Eyo2+YX6eCch5JqHnV4INE/YM/I2hYTve
-         KINQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUOTASPssZv2VdYCqKtoAduKL/WKEk2CytiFNfCZcjElV1ylnH5TLdw+syT7Ivix3FlqzoGvelnqaHhZv7d7Zr4CDo9R+Khuf6VM5hR
-X-Gm-Message-State: AOJu0YwI6fuw+fAHx5VEiLh7tlmFqcHpUfoxo+irkiU0vPP3k59k4Xqw
-	CuzQsZowKaaqkfyqkUZysJF/tN/qELR4PF4hPPENgXY4AbVn0FGtKH/uTgb4AcQRyVVnox9e0rA
-	GVlk/jv3PbFRd0yOGlZ6cYt+Bo0P6KbynUc0J
-X-Google-Smtp-Source: AGHT+IFB1IcbYq+9PUXUuTDs2L8KEUVjGvpB3JhRS9KEiojP6irE5Yzg60XIM8yO4VltL6KJuGJoi6jd4Dm6myghMKI=
-X-Received: by 2002:aa7:c397:0:b0:566:a44d:2a87 with SMTP id
- k23-20020aa7c397000000b00566a44d2a87mr405942edq.0.1709737815010; Wed, 06 Mar
- 2024 07:10:15 -0800 (PST)
+	s=arc-20240116; t=1709737866; c=relaxed/simple;
+	bh=JYpMEoOzZQs3yAFQY3yegUBgCw5BXctmdMIzmY4XVNU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=aUg014CLiH4Wbpu3O6+I0fz4aj9thTpibQt/p+o2FKnZ44uK5oXWehmO9ojqTqO8YAiI4mHEgAp/b58zpfXOgTXN0si+8wg8loF0+CPkF5zSne3QedjI/xvj5mc6oOT9QOFrVMxuPxoJOo4nDyt/gD7LRu4CAoYLyQtuzrAeEko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de; spf=pass smtp.mailfrom=molgen.mpg.de; arc=none smtp.client-ip=141.14.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
+Received: from [192.168.0.224] (ip5f5aedd4.dynamic.kabel-deutschland.de [95.90.237.212])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pmenzel)
+	by mx.molgen.mpg.de (Postfix) with ESMTPSA id 96BB861E5FE01;
+	Wed,  6 Mar 2024 16:10:05 +0100 (CET)
+Message-ID: <f9d3cad9-6d7d-4aa1-9592-79300812dce4@molgen.mpg.de>
+Date: Wed, 6 Mar 2024 16:10:04 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230824020546.1108516-1-dapeng1.mi@linux.intel.com>
- <ZeepGjHCeSfadANM@google.com> <2677739b-bc84-43ee-ba56-a5e243148ceb@gmail.com>
-In-Reply-To: <2677739b-bc84-43ee-ba56-a5e243148ceb@gmail.com>
-From: Jim Mattson <jmattson@google.com>
-Date: Wed, 6 Mar 2024 07:09:59 -0800
-Message-ID: <CALMp9eQ531ZC-8-Y+gwLer9mCK-hZ9yVNQZAFE6z76RXkMNnPA@mail.gmail.com>
-Subject: Re: [Patch v3] KVM: x86/pmu: Manipulate FIXED_CTR_CTRL MSR with macros
-To: Like Xu <like.xu.linux@gmail.com>
-Cc: Sean Christopherson <seanjc@google.com>, Mingwei Zhang <mizhang@google.com>, 
-	Paolo Bonzini <pbonzini@redhat.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	Like Xu <likexu@tencent.com>, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Zhenyu Wang <zhenyuw@linux.intel.com>, 
-	Zhang Xiong <xiong.y.zhang@intel.com>, Lv Zhiyuan <zhiyuan.lv@intel.com>, 
-	Dapeng Mi <dapeng1.mi@intel.com>, Dapeng Mi <dapeng1.mi@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH md-6.8 v2 2/9] md: export helpers to stop sync_thread
+Content-Language: en-US
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: xni@redhat.com, zkabelac@redhat.com, agk@redhat.com, snitzer@kernel.org,
+ mpatocka@redhat.com, dm-devel@lists.linux.dev, song@kernel.org,
+ heinzm@redhat.com, jbrassow@redhat.com, neilb@suse.de,
+ linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
+ yi.zhang@huawei.com, yangerkun@huawei.com, yukuai3@huawei.com
+References: <20240305072306.2562024-1-yukuai1@huaweicloud.com>
+ <20240305072306.2562024-3-yukuai1@huaweicloud.com>
+ <c0e648ea-d73e-4805-a2bb-b02ddd3ca4e2@molgen.mpg.de>
+ <9950cb96-ac8b-d7dd-56a0-133709f51b5f@huaweicloud.com>
+From: Paul Menzel <pmenzel@molgen.mpg.de>
+In-Reply-To: <9950cb96-ac8b-d7dd-56a0-133709f51b5f@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Mar 6, 2024 at 1:11=E2=80=AFAM Like Xu <like.xu.linux@gmail.com> wr=
-ote:
->
-> On 6/3/2024 7:22 am, Sean Christopherson wrote:
-> > +Mingwei
-> >
-> > On Thu, Aug 24, 2023, Dapeng Mi wrote:
-> >   diff --git a/arch/x86/kvm/pmu.h b/arch/x86/kvm/pmu.h
-> >> index 7d9ba301c090..ffda2ecc3a22 100644
-> >> --- a/arch/x86/kvm/pmu.h
-> >> +++ b/arch/x86/kvm/pmu.h
-> >> @@ -12,7 +12,8 @@
-> >>                                        MSR_IA32_MISC_ENABLE_BTS_UNAVAI=
-L)
-> >>
-> >>   /* retrieve the 4 bits for EN and PMI out of IA32_FIXED_CTR_CTRL */
-> >> -#define fixed_ctrl_field(ctrl_reg, idx) (((ctrl_reg) >> ((idx)*4)) & =
-0xf)
-> >> +#define fixed_ctrl_field(ctrl_reg, idx) \
-> >> +    (((ctrl_reg) >> ((idx) * INTEL_FIXED_BITS_STRIDE)) & INTEL_FIXED_=
-BITS_MASK)
-> >>
-> >>   #define VMWARE_BACKDOOR_PMC_HOST_TSC               0x10000
-> >>   #define VMWARE_BACKDOOR_PMC_REAL_TIME              0x10001
-> >> @@ -165,7 +166,8 @@ static inline bool pmc_speculative_in_use(struct k=
-vm_pmc *pmc)
-> >>
-> >>      if (pmc_is_fixed(pmc))
-> >>              return fixed_ctrl_field(pmu->fixed_ctr_ctrl,
-> >> -                                    pmc->idx - INTEL_PMC_IDX_FIXED) &=
- 0x3;
-> >> +                                    pmc->idx - INTEL_PMC_IDX_FIXED) &
-> >> +                                    (INTEL_FIXED_0_KERNEL | INTEL_FIX=
-ED_0_USER);
-> >>
-> >>      return pmc->eventsel & ARCH_PERFMON_EVENTSEL_ENABLE;
-> >>   }
-> >> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel=
-c
-> >> index f2efa0bf7ae8..b0ac55891cb7 100644
-> >> --- a/arch/x86/kvm/vmx/pmu_intel.c
-> >> +++ b/arch/x86/kvm/vmx/pmu_intel.c
-> >> @@ -548,8 +548,13 @@ static void intel_pmu_refresh(struct kvm_vcpu *vc=
-pu)
-> >>              setup_fixed_pmc_eventsel(pmu);
-> >>      }
-> >>
-> >> -    for (i =3D 0; i < pmu->nr_arch_fixed_counters; i++)
-> >> -            pmu->fixed_ctr_ctrl_mask &=3D ~(0xbull << (i * 4));
-> >> +    for (i =3D 0; i < pmu->nr_arch_fixed_counters; i++) {
-> >> +            pmu->fixed_ctr_ctrl_mask &=3D
-> >> +                     ~intel_fixed_bits_by_idx(i,
-> >> +                                              INTEL_FIXED_0_KERNEL |
-> >> +                                              INTEL_FIXED_0_USER |
-> >> +                                              INTEL_FIXED_0_ENABLE_PM=
-I);
-> >> +    }
-> >>      counter_mask =3D ~(((1ull << pmu->nr_arch_gp_counters) - 1) |
-> >>              (((1ull << pmu->nr_arch_fixed_counters) - 1) << INTEL_PMC=
-_IDX_FIXED));
-> >>      pmu->global_ctrl_mask =3D counter_mask;
-> >> @@ -595,7 +600,7 @@ static void intel_pmu_refresh(struct kvm_vcpu *vcp=
-u)
-> >>                      pmu->reserved_bits &=3D ~ICL_EVENTSEL_ADAPTIVE;
-> >>                      for (i =3D 0; i < pmu->nr_arch_fixed_counters; i+=
-+) {
-> >>                              pmu->fixed_ctr_ctrl_mask &=3D
-> >> -                                    ~(1ULL << (INTEL_PMC_IDX_FIXED + =
-i * 4));
-> >
-> > OMG, this might just win the award for most obfuscated PMU code in KVM,=
- which is
-> > saying something.  The fact that INTEL_PMC_IDX_FIXED happens to be 32, =
-the same
-> > bit number as ICL_FIXED_0_ADAPTIVE, is 100% coincidence.  Good riddance=
-.
-> >
-> > Argh, and this goofy code helped introduce a real bug.  reprogram_fixed=
-_counters()
-> > doesn't account for the upper 32 bits of IA32_FIXED_CTR_CTRL.
-> >
-> > Wait, WTF?  Nothing in KVM accounts for the upper bits.  This can't pos=
-sibly work.
-> >
-> > IIUC, because KVM _always_ sets precise_ip to a non-zero bit for PEBS e=
-vents,
-> > perf will _always_ generate an adaptive record, even if the guest reque=
-sted a
-> > basic record.  Ugh, and KVM will always generate adaptive records even =
-if the
-> > guest doesn't support them.  This is all completely broken.  It probabl=
-y kinda
-> > sorta works because the Basic info is always stored in the record, and =
-generating
-> > more info requires a non-zero MSR_PEBS_DATA_CFG, but ugh.
->
-> Yep, it works at least on machines with both adaptive and pebs_full featu=
-res.
->
-> I remember one generation of Atom core (? GOLDMONT) that didn't have both
-> above PEBS sub-features, so we didn't set x86_pmu.pebs_ept on that platfo=
-rm.
->
-> Mingwei or others are encouraged to construct use cases in KUT::pmu_pebs.=
-flat
-> that violate guest-pebs rules (e.g., leak host state), as we all recogniz=
-e that
-> testing
-> is the right way to condemn legacy code, not just lengthy emails.
->
-> >
-> > Oh great, and it gets worse.  intel_pmu_disable_fixed() doesn't clear t=
-he upper
-> > bits either, i.e. leaves ICL_FIXED_0_ADAPTIVE set.  Unless I'm misreadi=
-ng the code,
-> > intel_pmu_enable_fixed() effectively doesn't clear ICL_FIXED_0_ADAPTIVE=
- either,
-> > as it only modifies the bit when it wants to set ICL_FIXED_0_ADAPTIVE.
-> >
-> > *sigh*
-> >
-> > I'm _very_ tempted to disable KVM PEBS support for the current PMU, and=
- make it
-> > available only when the so-called passthrough PMU is available[*].  Bec=
-ause I
-> > don't see how this is can possibly be functionally correct, nor do I se=
-e a way
-> > to make it functionally correct without a rather large and invasive ser=
-ies.
->
-> Considering that I've tried the idea myself, I have no inclination toward=
-s
-> "passthrough PMU", and I'd like to be able to take the time to review tha=
-t
-> patchset while we all wait for a clear statement from that perf-core man,
-> who don't really care about virtualization and don't want to lose control
-> of global hardware resources.
->
-> Before we actually get to that ideal state you want, we have to deal with
-> some intermediate state and face to any users that rely on the current co=
-de,
-> you had urged to merge in a KVM document for vPMU, not sure how far
-> along that part of the work is.
->
-> >
-> > Ouch.  And after chatting with Mingwei, who asked the very good questio=
-n of
-> > "can this leak host state?", I am pretty sure that yes, this can leak h=
-ost state.
->
-> The Basic Info has a tsc field, I suspect it's the host-state-tsc.
->
-> >
-> > When PERF_CAP_PEBS_BASELINE is enabled for the guest, i.e. when the gue=
-st has
-> > access to adaptive records, KVM gives the guest full access to MSR_PEBS=
-_DATA_CFG
-> >
-> >       pmu->pebs_data_cfg_mask =3D ~0xff00000full;
-> >
-> > which makes sense in a vacuum, because AFAICT the architecture doesn't =
-allow
-> > exposing a subset of the four adaptive controls.
-> >
-> > GPRs and XMMs are always context switched and thus benign, but IIUC, Me=
-mory Info
-> > provides data that might now otherwise be available to the guest, e.g. =
-if host
-> > userspace has disallowed equivalent events via KVM_SET_PMU_EVENT_FILTER=
-.
->
-> Indeed, KVM_SET_PMU_EVENT_FILTER doesn't work in harmony with
-> guest-pebs, and I believe there is a big problem here, especially with th=
-e
-> lack of targeted testing.
->
-> One reason for this is that we don't use this cockamamie API in our
-> large-scale production environments, and users of vPMU want to get real
-> runtime information about physical cpus, not just virtualised hardware
-> architecture interfaces.
->
-> >
-> > And unless I'm missing something, LBRs are a full leak of host state.  =
-Nothing
-> > in the SDM suggests that PEBS records honor MSR intercepts, so unless K=
-VM is
-> > also passing through LBRs, i.e. is context switching all LBR MSRs, the =
-guest can
-> > use PEBS to read host LBRs at will.
->
-> KVM is also passing through LBRs when guest uses LBR but not at the
-> granularity of vm-exit/entry. I'm not sure if the LBR_EN bit is required
-> to get LBR information via PEBS, also not confirmed whether PEBS-lbr
-> can be enabled at the same time as independent LBR;
->
-> I recall that PEBS-assist, per cpu-arch, would clean up this part of the
-> record when crossing root/non-root boundaries, or not generate record.
->
-> We're looking forward to the tests that will undermine this perception.
->
-> There are some devilish details during the processing of vm-exit and
-> the generation of host/guest pebs, and those interested can delve into
-> the short description in this SDM section "20.9.5 EPT-Friendly PEBS".
->
-> >
-> > Unless someone chimes in to point out how PEBS virtualization isn't a b=
-roken mess,
-> > I will post a patch to effectively disable PEBS virtualization.
->
-> There are two factors that affect the availability of guest-pebs:
->
-> 1. the technical need to use core-PMU in both host/guest worlds;
-> (I don't think Googlers are paying attention to this part of users' needs=
-)
+Dear Kuai,
 
-Let me clear up any misperceptions you might have that Google alone is
-foisting the pass-through PMU on the world. The work so far has been a
-collaboration between Google and Intel. Now, AMD has joined the
-collaboration as well. Mingwei is taking the lead on the project, but
-Googlers are outnumbered by the x86 CPU vendors ten to one.
 
-The pass-through PMU allows both the host and guest worlds to use the
-core PMU, more so than the existing vPMU implementation. I assume your
-complaint is about the desire for host software to monitor guest
-behavior with core PMU events while the guest is running. Today,
-Google Cloud does this for fleet management, and losing this
-capability is not something we are looking forward to. However, the
-writing is on the wall: Coco is going to take this capability away
-from us anyway.
+Am 05.03.24 um 09:13 schrieb Yu Kuai:
 
-> 2. guest-pebs is temporarily disabled in the case of cross-mapping counte=
-r,
-> which reduces the number of performance samples collected by guest;
+> 在 2024/03/05 16:08, Paul Menzel 写道:
+
+>> Am 05.03.24 um 08:22 schrieb Yu Kuai:
+>>> From: Yu Kuai <yukuai3@huawei.com>
+>>>
+>>> The new heleprs will be used in dm-raid in later patches to fix
+>>
+>> hel*pe*rs
+>>
+>>> regressions and prevent calling md_reap_sync_thread() directly.
+>>
+>> Please list the new functions.
+>>
+>> 1.  md_idle_sync_thread(struct mddev *mddev);
+>> 2.  md_frozen_sync_thread(struct mddev *mddev);
+>> 3.  md_unfrozen_sync_thread(struct mddev *mddev);
+>>
+>> I do not like the naming so much. `md_reap_sync_thread()` has the verb 
+>> in imperative mood. At least myself, I would not know what the 
+>> functions do exactly without looking at the implementation.
 >
-> >
-> > diff --git a/arch/x86/kvm/vmx/capabilities.h b/arch/x86/kvm/vmx/capabil=
-ities.h
-> > index 41a4533f9989..a2f827fa0ca1 100644
-> > --- a/arch/x86/kvm/vmx/capabilities.h
-> > +++ b/arch/x86/kvm/vmx/capabilities.h
-> > @@ -392,7 +392,7 @@ static inline bool vmx_pt_mode_is_host_guest(void)
-> >
-> >   static inline bool vmx_pebs_supported(void)
-> >   {
-> > -       return boot_cpu_has(X86_FEATURE_PEBS) && kvm_pmu_cap.pebs_ept;
-> > +       return false;
->
-> As you know, user-space VMM may disable guest-pebs by filtering out the
-> MSR_IA32_PERF_CAPABILITIE.PERF_CAP_PEBS_FORMAT or CPUID.PDCM.
->
-> In the end, if our great KVM maintainers insist on doing this,
-> there is obviously nothing I can do about it.
->
-> Hope you have a good day.
->
-> >   }
-> >
-> >   static inline bool cpu_has_notify_vmexit(void)
-> >
->
+> Thanks for the suggestions, I'm not that good at naming :(
+> 
+> Usually I'll send a new version with updated naming, however, we must
+> merge this set ASAP now, perhaps can we live with this for now?
+
+Fine by me. Maybe when applying the typo can be fixed, and the naming 
+than later.
+
+
+Kind regards,
+
+Paul
+
+
+>>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+>>> Signed-off-by: Xiao Ni <xni@redhat.com>
+>>> Acked-by: Mike Snitzer <snitzer@kernel.org>
+>>> ---
+>>>   drivers/md/md.c | 29 +++++++++++++++++++++++++++++
+>>>   drivers/md/md.h |  3 +++
+>>>   2 files changed, 32 insertions(+)
+>>>
+>>> diff --git a/drivers/md/md.c b/drivers/md/md.c
+>>> index 23f31fd1d024..22e7512a5b1e 100644
+>>> --- a/drivers/md/md.c
+>>> +++ b/drivers/md/md.c
+>>> @@ -4919,6 +4919,35 @@ static void stop_sync_thread(struct mddev 
+>>> *mddev, bool locked, bool check_seq)
+>>>           mddev_lock_nointr(mddev);
+>>>   }
+>>> +void md_idle_sync_thread(struct mddev *mddev)
+>>> +{
+>>> +    lockdep_assert_held(&mddev->reconfig_mutex);
+>>> +
+>>> +    clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+>>> +    stop_sync_thread(mddev, true, true);
+>>> +}
+>>> +EXPORT_SYMBOL_GPL(md_idle_sync_thread);
+>>> +
+>>> +void md_frozen_sync_thread(struct mddev *mddev)
+>>> +{
+>>> +    lockdep_assert_held(&mddev->reconfig_mutex);
+>>> +
+>>> +    set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+>>> +    stop_sync_thread(mddev, true, false);
+>>> +}
+>>> +EXPORT_SYMBOL_GPL(md_frozen_sync_thread);
+>>> +
+>>> +void md_unfrozen_sync_thread(struct mddev *mddev)
+>>> +{
+>>> +    lockdep_assert_held(&mddev->reconfig_mutex);
+>>> +
+>>> +    clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+>>> +    set_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
+>>> +    md_wakeup_thread(mddev->thread);
+>>> +    sysfs_notify_dirent_safe(mddev->sysfs_action);
+>>> +}
+>>> +EXPORT_SYMBOL_GPL(md_unfrozen_sync_thread);
+>>> +
+>>>   static void idle_sync_thread(struct mddev *mddev)
+>>>   {
+>>>       mutex_lock(&mddev->sync_mutex);
+>>> diff --git a/drivers/md/md.h b/drivers/md/md.h
+>>> index 8d881cc59799..437ab70ce79b 100644
+>>> --- a/drivers/md/md.h
+>>> +++ b/drivers/md/md.h
+>>> @@ -781,6 +781,9 @@ extern void md_rdev_clear(struct md_rdev *rdev);
+>>>   extern void md_handle_request(struct mddev *mddev, struct bio *bio);
+>>>   extern int mddev_suspend(struct mddev *mddev, bool interruptible);
+>>>   extern void mddev_resume(struct mddev *mddev);
+>>> +extern void md_idle_sync_thread(struct mddev *mddev);
+>>> +extern void md_frozen_sync_thread(struct mddev *mddev);
+>>> +extern void md_unfrozen_sync_thread(struct mddev *mddev);
+>>>   extern void md_reload_sb(struct mddev *mddev, int raid_disk);
+>>>   extern void md_update_sb(struct mddev *mddev, int force);
 
