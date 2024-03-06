@@ -1,110 +1,124 @@
-Return-Path: <linux-kernel+bounces-94535-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94550-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD3F787411E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 21:06:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8B7287413E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 21:14:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D6F59B2424C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 20:06:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 73E4228711E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 20:13:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62487140E38;
-	Wed,  6 Mar 2024 20:04:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 919D51419A2;
+	Wed,  6 Mar 2024 20:13:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="ayaV22xq"
-Received: from mx0.riseup.net (mx0.riseup.net [198.252.153.6])
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="kFyJm9c6"
+Received: from relay.smtp-ext.broadcom.com (relay.smtp-ext.broadcom.com [192.19.144.205])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68F0F145661
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 20:04:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.6
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64E0060250;
+	Wed,  6 Mar 2024 20:13:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.19.144.205
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709755449; cv=none; b=ats66oc405yx6pZPCH/lq2e/0AfjpbfytqgBVpcdxW5V6jvw2iAehlk/7jb7E6uCGVG/WXBfh7KoGL2BPHjg1qT+QVVcpjetLtvLuPffaVtDd/VECnhuDNzHkJQBTj9PLqGeu9PpIvM9+RIHrtDNFuc++YS9K/eg7dKf4IKmKaw=
+	t=1709756030; cv=none; b=Zqkw7dLTLHpmk5WawbO6tnOUsDYm+LRE7M+uqM+edCL5U4OQSD21rGj95ueQIt2HhgdAYG3ukjk4PWE3f5AFFHrTHJlRmVGHCFmEEpYHNgUgwsVdE6u9k1NqK6ZM7zJeBTnX8jKSmMxA/ZM5j+MgRbePR+Pzpkp7P/yXEqnD3nk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709755449; c=relaxed/simple;
-	bh=pRKJ1wttMJkyGZCwTEIz+hTdD6Hyg69u3flp9qpG3Q4=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=rhMueYscvBRzOioHwkWodYhjZYihMhO3fpnIPc9RYy3NzJOuRvDF67/uViRw+JIRmJ7PNR1SteDsqOexrS4e38QCOftH0etW83X+Lla/XaZ2fOty9IC35eZyDHgPksTHnHarAHmcAsqCGT4az0/NDHsWGH21Vn594iqFpQbhwIo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=ayaV22xq; arc=none smtp.client-ip=198.252.153.6
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
-Received: from fews02-sea.riseup.net (fews02-sea-pn.riseup.net [10.0.1.112])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	s=arc-20240116; t=1709756030; c=relaxed/simple;
+	bh=rAnJtzfRsWJZwGzIDXpwXhY4p4LSVYOL62mHk1jLZOw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=JvWn68g5DrDjLETiRdLcRbd04UzcEl0dAEZ6QVGPs1CVZ0c8p2jbvxAulodl/ly/s096fmXEIYuEKLBhxciRVurxEWw/qC8Mzr05EwYyBF+er/oPA6C3BvPDiQ8wLuTWSQuSf+xYai0NN5RR8cjY2cOdHwmGvxBUPmkgEALcl78=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=kFyJm9c6; arc=none smtp.client-ip=192.19.144.205
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: from mail-lvn-it-01.lvn.broadcom.net (mail-lvn-it-01.lvn.broadcom.net [10.36.132.253])
+	by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id C2008C0000F5;
+	Wed,  6 Mar 2024 12:04:48 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com C2008C0000F5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
+	s=dkimrelay; t=1709755488;
+	bh=rAnJtzfRsWJZwGzIDXpwXhY4p4LSVYOL62mHk1jLZOw=;
+	h=From:To:Cc:Subject:Date:From;
+	b=kFyJm9c6s4H07GlIrjh+RboECL5o1RtQrDDT15LJhKYBFtto292h+wyC53+c5EmOm
+	 k3PRkTm4uB0mH+bigf4hyG3KPBxTbiOhik1ZM9GBW6HoohOPHGfdtQ4lSTllgmt1Ov
+	 +4swbldgKPtrR3PWtEi+JW2fc/ttu+GYGkSq/QiI=
+Received: from fainelli-desktop.igp.broadcom.net (fainelli-desktop.dhcp.broadcom.net [10.67.48.245])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mx0.riseup.net (Postfix) with ESMTPS id 4Tqk0R1yfQz9wN6;
-	Wed,  6 Mar 2024 20:04:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-	t=1709755447; bh=pRKJ1wttMJkyGZCwTEIz+hTdD6Hyg69u3flp9qpG3Q4=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=ayaV22xqkUWsVtLxjkIUOHqh7kNJ8gHRZLdN4Lu0SPsOYzqLPIPM+abcsoJXd5Uf2
-	 kycE4fQC/uOsqYKKSJ9QQPK6mcJPrlGlciaElmCY57mKFC5rm+tVpaAiGOGKdDyTKv
-	 Ons78J6vBlDL0stpuujmta53FkbX+NzqrcC6YCvU=
-X-Riseup-User-ID: 7889D8E448EB907AFFB289CD86314B66A18DF58B483C34C560BB5166FCAE0B74
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-	 by fews02-sea.riseup.net (Postfix) with ESMTPSA id 4Tqk0L0qM7zFsTN;
-	Wed,  6 Mar 2024 20:04:01 +0000 (UTC)
-From: Arthur Grillo <arthurgrillo@riseup.net>
-Date: Wed, 06 Mar 2024 17:03:14 -0300
-Subject: [PATCH 7/7] drm/vkms: Add how to run the Kunit tests
+	by mail-lvn-it-01.lvn.broadcom.net (Postfix) with ESMTPSA id F320718041CAC4;
+	Wed,  6 Mar 2024 12:04:46 -0800 (PST)
+From: Florian Fainelli <florian.fainelli@broadcom.com>
+To: netdev@vger.kernel.org
+Cc: leitao@debian.org,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Vladimir Oltean <olteanv@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH net-next] net: dsa: Leverage core stats allocator
+Date: Wed,  6 Mar 2024 12:04:09 -0800
+Message-Id: <20240306200416.2973179-1-florian.fainelli@broadcom.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240306-louis-vkms-conv-v1-7-5bfe7d129fdd@riseup.net>
-References: <20240306-louis-vkms-conv-v1-0-5bfe7d129fdd@riseup.net>
-In-Reply-To: <20240306-louis-vkms-conv-v1-0-5bfe7d129fdd@riseup.net>
-To: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>, 
- Melissa Wen <melissa.srw@gmail.com>, 
- =?utf-8?q?Ma=C3=ADra_Canal?= <mairacanal@riseup.net>, 
- Haneen Mohammed <hamohammed.sa@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
- David Airlie <airlied@gmail.com>, arthurgrillo@riseup.net, 
- Jonathan Corbet <corbet@lwn.net>, pekka.paalanen@haloniitty.fi, 
- Louis Chauvet <louis.chauvet@bootlin.com>
-Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
- jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com, 
- thomas.petazzoni@bootlin.com, seanpaul@google.com, marcheu@google.com, 
- nicolejadeyee@google.com
+Content-Transfer-Encoding: 8bit
 
-Now that we have KUnit tests, add instructions on how to run them.
+With commit 34d21de99cea9 ("net: Move {l,t,d}stats allocation to core
+and convert veth & vrf"), stats allocation could be done on net core
+instead of in this driver.
 
-Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
+With this new approach, the driver doesn't have to bother with error
+handling (allocation failure checking, making sure free happens in the
+right spot, etc). This is core responsibility now.
+
+Remove the allocation in the DSA user network device code and leverage
+the network core allocation instead.
+
+Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
 ---
- Documentation/gpu/vkms.rst | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ net/dsa/user.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
-diff --git a/Documentation/gpu/vkms.rst b/Documentation/gpu/vkms.rst
-index 13b866c3617c..5ef5ef2e6a21 100644
---- a/Documentation/gpu/vkms.rst
-+++ b/Documentation/gpu/vkms.rst
-@@ -89,6 +89,17 @@ You can also run subtests if you do not want to run the entire test::
-   sudo ./build/tests/kms_flip --run-subtest basic-plain-flip --device "sys:/sys/devices/platform/vkms"
-   sudo IGT_DEVICE="sys:/sys/devices/platform/vkms" ./build/tests/kms_flip --run-subtest basic-plain-flip
+diff --git a/net/dsa/user.c b/net/dsa/user.c
+index 9c42a6edcdc8..16d395bb1a1f 100644
+--- a/net/dsa/user.c
++++ b/net/dsa/user.c
+@@ -2625,11 +2625,7 @@ int dsa_user_create(struct dsa_port *port)
+ 	user_dev->vlan_features = conduit->vlan_features;
  
-+Testing With KUnit
-+==================
-+
-+KUnit (Kernel unit testing framework) provides a common framework for unit tests
-+within the Linux kernel.
-+More information in ../dev-tools/kunit/index.rst .
-+
-+To run the VKMS KUnit tests::
-+
-+  tools/testing/kunit/kunit.py run --kunitconfig=drivers/gpu/drm/vkms/tests
-+
- TODO
- ====
+ 	p = netdev_priv(user_dev);
+-	user_dev->tstats = netdev_alloc_pcpu_stats(struct pcpu_sw_netstats);
+-	if (!user_dev->tstats) {
+-		free_netdev(user_dev);
+-		return -ENOMEM;
+-	}
++	user_dev->pcpu_stat_type = NETDEV_PCPU_STAT_TSTATS;
  
-
+ 	ret = gro_cells_init(&p->gcells, user_dev);
+ 	if (ret)
+@@ -2695,7 +2691,6 @@ int dsa_user_create(struct dsa_port *port)
+ out_gcells:
+ 	gro_cells_destroy(&p->gcells);
+ out_free:
+-	free_percpu(user_dev->tstats);
+ 	free_netdev(user_dev);
+ 	port->user = NULL;
+ 	return ret;
+@@ -2716,7 +2711,6 @@ void dsa_user_destroy(struct net_device *user_dev)
+ 
+ 	dsa_port_phylink_destroy(dp);
+ 	gro_cells_destroy(&p->gcells);
+-	free_percpu(user_dev->tstats);
+ 	free_netdev(user_dev);
+ }
+ 
 -- 
-2.43.0
+2.34.1
 
 
