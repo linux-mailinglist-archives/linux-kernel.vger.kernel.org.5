@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-94037-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94038-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 444D28738E4
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:24:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E33888738E7
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:24:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EEF872832EF
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:24:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 20B4C1C20E4A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:24:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AC661332B1;
-	Wed,  6 Mar 2024 14:23:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F8A512C52C;
+	Wed,  6 Mar 2024 14:23:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="pK81bOb2"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Us2g2gT/"
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7838F132483
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 14:23:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 567D7130ACE
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 14:23:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709735022; cv=none; b=qdgb1mD2L2ibogkL06dXjt7+eOZY0IkAffDyBAn2GIFXklUY8puVAzLzVchtv0HdFre054eH226cqqRWGXI2dTTjNczOcfK1Eim5oDUmQQ1LAIUBv98ykL9UnzFRcxLkwKVnTdSdAA/rXKwA9kEFQfuJ2J0FVuOozqz34cDcaD0=
+	t=1709735036; cv=none; b=Rq1hr3RucSFCOlLTfJ0p1pdyfI+kUeknLERMsVNGfqnvdOTmXWti8Qk//FDjigR5eV2ZD6rvWmdaEU0Y9rHfFwhObAgiRlzzjLN0yRNFw/Qc+kj0QUjIeJOop/XSTbJ8FU7ODZEFMYIlbCYCZsndYCyI0VjDWpVomcJHfIzn54k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709735022; c=relaxed/simple;
-	bh=wWtAyzQ2eyj1PNsc5Aylj7VkYcp64jWdRu1hy0W+UZE=;
+	s=arc-20240116; t=1709735036; c=relaxed/simple;
+	bh=wdJDKRGS7HFTRE8jxAsQE8U65zjJmRnaG0CudQdRd+I=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=c07t1ixzYtCNwPah0CK1PMSjmfp2GpxBrRcumvvmenyKPsl6rTIwItTeVW3t2WD/sVEhzH/ubRNC5EfCdfMNgVJJe0gNwg/su9Z3RzwfZTtn/Am81JNyIwBArf/asp6cl4u7J1u9ZYOxTyD2SgAmVUTgPK59tAmKUcYLuC2mijE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=pK81bOb2; arc=none smtp.client-ip=209.85.167.43
+	 Content-Type:Content-Disposition:In-Reply-To; b=UVml8dn526UTM/N03vECfisJTCcfxx2BktZQ8903nipLt56GY+eR0dCdo0MZ+6Uwz/wccN8ODlB4NPApQNuA+EXRPmq+Uelq/fIcCgvX0RhUlj+4v01EeRPMTh7TDDMrWXgtjJgG9OtJo64M0IjLfcvgqAKUbRIi1Vl09YQBuSA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Us2g2gT/; arc=none smtp.client-ip=209.85.221.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-5135e8262e4so791167e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 06:23:40 -0800 (PST)
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-33e4c676f0aso1411570f8f.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 06:23:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709735018; x=1710339818; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1709735034; x=1710339834; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FWpAe22ZCtZ5eNl+BAwXkR2RWIIxHugyeXcFlN6Srtw=;
-        b=pK81bOb2telD5nOir3KEUOzsJLnDI59javgao0O8wA0IQ702uHPL2ibrymCmJUlITO
-         VDQHxM8VLjUDTNNQazVe3sTZAwKRNAC24n+2u+bw14LpF9yb8PMEtpV9Nt9+T1U6Yt+u
-         NBW24drxqFzRL4+Vtq5X1KrOXloSOtR/vMH1fecBMCOqvjeJSxYraFthDFYsNACPawWG
-         faJ+o9n0T+REGxIvdds/C+fLwNzVk4dtkJp0cf2FfbolYBMkfzSVY15M9+MMJBWByrWf
-         F+sKlQEfuCVBDNiOe2kTPn6dMCbgxleYX3b3uUW9+YRgode6TmwTWWM0nq4mtkKSRV7c
-         c8cA==
+        bh=GJrroynuRnHM9d1uxPX2EIxDpMmTQhr265Ne8XiRXJ0=;
+        b=Us2g2gT/BroLpTQ5pnBCRIMgKu6chDvKboLg5nvalACT+k2Yq0gufVu+Q1rkdrrcuh
+         HG4H22Baot02e5KJJT+SM2pYIVz+uS9qocctFosjlFCmVWLSTvwEqKQQk2MVJvoojSUw
+         zdNxZmftRWTNa4NmAHOVOsJXiCDgtgWjRy2hil00dQaGi3iQpgjJKjqkWXzuHqsURrae
+         uLkIIjNXV+BkSTrqP4OT6NM0HkHpFqcZxf3sJDD1+FPrAhqUkaouHPLIzRhyEI/1dB5I
+         q+LbaBQFmPHbDp6GKVJGuKZh8xWkpfbDYoez878eq6IMWzbRnq8+ewHOZQdB0JnmJutm
+         QjXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709735018; x=1710339818;
+        d=1e100.net; s=20230601; t=1709735034; x=1710339834;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=FWpAe22ZCtZ5eNl+BAwXkR2RWIIxHugyeXcFlN6Srtw=;
-        b=REGaYzDzbpfXA1hhnNJbXSdpMQy51lbmnIBnYY9nGkK9kGBgomCJqfi7bmg3kA2o44
-         CWhoGurD/DxQeWdxRU9b2WbfWlSaoscDE2tZNT8PN2BqRbgwWcqFV1cRkN7bf0FpDGM1
-         k0lNlGeeGkwzOLtihrmVqQqqrjqbOyGVCJRanJ60Ov1I7+hTmIOmUMKRnTSXmGY3VSnj
-         qGZDEJD1SWK2P9BdQJB22MXkHrJwApnC+3ixFeNs5NdBD3INt+LdhQpmUZxXxjhWuVr9
-         sEmxeMMi4y3+H+WGoAkaSjgBaUBX36ZFT4N3m1bROycwySOZp+uKAgO+2zu892a9oZBn
-         1leA==
-X-Forwarded-Encrypted: i=1; AJvYcCXU+ySf02KC/ehcK7Jvg6+vq1a90pSnDAZREFkaIXZCHj2lizej4WOjfhBgW/mTRxutZBLDyky779kmFlWWpXQ8pHqqrCrQ06LPfyf8
-X-Gm-Message-State: AOJu0Ywa53jjcjfdQIE3et77Iiug+L5mGBFlfMBeZ/95Y5zKkREimvYZ
-	f0Ct/CUR6HIRzItUmXMrxOQsaqVhos+mESiCMiAUPuk8i34QryGUKuZQBkmepF8=
-X-Google-Smtp-Source: AGHT+IFEPqlIv/3Y/Zi3m//vC0Az3HmKtpwp8kiu+mg/iRghQHpj3gg8+eWTlQn1ycox43TLImj/XQ==
-X-Received: by 2002:a19:3846:0:b0:513:3e1a:75af with SMTP id d6-20020a193846000000b005133e1a75afmr2876327lfj.16.1709735018288;
-        Wed, 06 Mar 2024 06:23:38 -0800 (PST)
+        bh=GJrroynuRnHM9d1uxPX2EIxDpMmTQhr265Ne8XiRXJ0=;
+        b=V/KBiJ71oO6lSXvtw0nUyiZ+n1Zo9Kep1oMVRzcN2/uXeV/91YJn5Y6FtjHOpHochX
+         31O5ALGjXDEAqengnI6kUxJnt1oCy0D7dyKymD0EAn5EhtfI2g22eYsr+4COEHwivKdm
+         5reoPfptuRQfDQhwpSjcx2owIBS28H9GFu7TmnWJ0ScHE7oGHlp907d4JV4r5FOOHukC
+         59kieMWvXkA2HKypZyF7jAD/ofAPuvnjlVTrP8F85Ow0Z7h2B4s/ZmFfoGqxzUuwIyhD
+         /9KiEH9DkYbH6VmAvfgavDLtOe8FSSzSSNbg9kCxaW8lXLvFfr5bwP2gJs4FMi1KsVe5
+         ITWQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVys7MBr3K3xa+wJqWX7SPFhjEXQvSK9XvfLxXoDlUzVNCOyfZaDhMgNMvH1qxG/5WEnDf9z6MdEOcWZXd/nXj0J6CeL14ihIxzJDcX
+X-Gm-Message-State: AOJu0YzODVZp5PrHq115GbGdlNP/yfZj1HovjBIgo4QHQRHSJ/TPmywE
+	NzOEG+639hTJq8FnCzCXOOIosDGPb0vRX2nhCfJLeLpPMtfohBSj1RsRThwViiY=
+X-Google-Smtp-Source: AGHT+IGCOKQomyj1XoUe7rvgu9g82j1JsX9Z7KQrQqSb0Ub+eD1e9HZF+KS6bVximLW/7kDpMlUX3A==
+X-Received: by 2002:a5d:6310:0:b0:33e:834:13d5 with SMTP id i16-20020a5d6310000000b0033e083413d5mr10627030wru.69.1709735033674;
+        Wed, 06 Mar 2024 06:23:53 -0800 (PST)
 Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id t16-20020a05600c451000b00412ee12d4absm4838035wmo.31.2024.03.06.06.23.37
+        by smtp.gmail.com with ESMTPSA id bu16-20020a056000079000b0033dc3f3d689sm17892394wrb.93.2024.03.06.06.23.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Mar 2024 06:23:38 -0800 (PST)
-Date: Wed, 6 Mar 2024 17:23:34 +0300
+        Wed, 06 Mar 2024 06:23:53 -0800 (PST)
+Date: Wed, 6 Mar 2024 17:23:49 +0300
 From: Dan Carpenter <dan.carpenter@linaro.org>
 To: Changhuang Liang <changhuang.liang@starfivetech.com>
 Cc: Mauro Carvalho Chehab <mchehab@kernel.org>,
@@ -74,10 +74,11 @@ Cc: Mauro Carvalho Chehab <mchehab@kernel.org>,
 	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
 	Jack Zhu <jack.zhu@starfivetech.com>, linux-media@vger.kernel.org,
 	linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
-Subject: Re: [PATCH v1 2/7] staging: media: starfive: Add raw pad for ISP
-Message-ID: <4d54e516-448a-47ce-abcd-e705896935a7@moroto.mountain>
+Subject: Re: [PATCH v1 3/7] staging: media: starfive: Sink rectangle set to
+ ISP source pad
+Message-ID: <892d9583-afc9-4acb-8013-faf021f8ae87@moroto.mountain>
 References: <20240306093334.9321-1-changhuang.liang@starfivetech.com>
- <20240306093334.9321-3-changhuang.liang@starfivetech.com>
+ <20240306093334.9321-4-changhuang.liang@starfivetech.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -86,159 +87,17 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240306093334.9321-3-changhuang.liang@starfivetech.com>
+In-Reply-To: <20240306093334.9321-4-changhuang.liang@starfivetech.com>
 
-On Wed, Mar 06, 2024 at 01:33:29AM -0800, Changhuang Liang wrote:
-> Add raw pad for ISP, it supported the conversion of RAW10 into RAW12.
+On Wed, Mar 06, 2024 at 01:33:30AM -0800, Changhuang Liang wrote:
+> Sink rectangle will be valid for all source pads.
 > 
 
-To be honest, I don't understand what "it supported the conversion of
-RAW10 into RAW12" means.  I don't think that this patch has any impact
-on user space but I'm not 100% sure.
+This commit message is just really unclear.  What does "Sink rectangle
+set to ISP source pad" even mean?  A better subject would probably be
+"staging: media: starfive: Use PAD_SINK instead of PAD_SRC for crop"
 
-A lot of this patch is just reformating stuff and it would be easier to
-review if the reformating were separated into a separate patch.
-
-patch 2: Clean pad selection in isp_try_format()
-
-The code to select isp_dev->formats[] is overly complicated.  We can
-just use the "pad" as the index.  This will making adding new pads
-easier in future patches.  No functional change.
-
-patch 3: Add raw pad for ISP
-
-> Signed-off-by: Changhuang Liang <changhuang.liang@starfivetech.com>
-> ---
->  .../staging/media/starfive/camss/stf-isp.c    | 26 ++++++++++++-------
->  .../staging/media/starfive/camss/stf-isp.h    |  1 +
->  2 files changed, 17 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/staging/media/starfive/camss/stf-isp.c b/drivers/staging/media/starfive/camss/stf-isp.c
-> index a5573abe0d7b..6bab0ac23120 100644
-> --- a/drivers/staging/media/starfive/camss/stf-isp.c
-> +++ b/drivers/staging/media/starfive/camss/stf-isp.c
-> @@ -10,9 +10,6 @@
->  
->  #include "stf-camss.h"
->  
-> -#define SINK_FORMATS_INDEX	0
-> -#define SOURCE_FORMATS_INDEX	1
-> -
-
-This is cleanup.  patch 2.
-
->  static int isp_set_selection(struct v4l2_subdev *sd,
->  			     struct v4l2_subdev_state *state,
->  			     struct v4l2_subdev_selection *sel);
-> @@ -28,9 +25,17 @@ static const struct stf_isp_format isp_formats_source[] = {
->  	{ MEDIA_BUS_FMT_YUYV8_1_5X8, 8 },
->  };
->  
-> +static const struct stf_isp_format isp_formats_source_raw[] = {
-> +	{ MEDIA_BUS_FMT_SRGGB12_1X12, 12 },
-> +	{ MEDIA_BUS_FMT_SGRBG12_1X12, 12 },
-> +	{ MEDIA_BUS_FMT_SGBRG12_1X12, 12 },
-> +	{ MEDIA_BUS_FMT_SBGGR12_1X12, 12 },
-> +};
-> +
-
-patch 3.
-
->  static const struct stf_isp_format_table isp_formats_st7110[] = {
->  	{ isp_formats_sink, ARRAY_SIZE(isp_formats_sink) },
->  	{ isp_formats_source, ARRAY_SIZE(isp_formats_source) },
-> +	{ isp_formats_source_raw, ARRAY_SIZE(isp_formats_source_raw) },
->  };
-
-patch 3.
-
->  
->  static const struct stf_isp_format *
-> @@ -113,10 +118,7 @@ static void isp_try_format(struct stf_isp_dev *isp_dev,
->  		return;
->  	}
->  
-> -	if (pad == STF_ISP_PAD_SINK)
-> -		formats = &isp_dev->formats[SINK_FORMATS_INDEX];
-> -	else if (pad == STF_ISP_PAD_SRC)
-> -		formats = &isp_dev->formats[SOURCE_FORMATS_INDEX];
-> +	formats = &isp_dev->formats[pad];
-
-patch 2.
-
->  
->  	fmt->width = clamp_t(u32, fmt->width, STFCAMSS_FRAME_MIN_WIDTH,
->  			     STFCAMSS_FRAME_MAX_WIDTH);
-> @@ -142,7 +144,7 @@ static int isp_enum_mbus_code(struct v4l2_subdev *sd,
->  		if (code->index >= ARRAY_SIZE(isp_formats_sink))
->  			return -EINVAL;
->  
-> -		formats = &isp_dev->formats[SINK_FORMATS_INDEX];
-> +		formats = &isp_dev->formats[code->pad];
-
-
-patch 2.
-
-
->  		code->code = formats->fmts[code->index].code;
->  	} else {
->  		struct v4l2_mbus_framefmt *sink_fmt;
-> @@ -281,8 +283,11 @@ static int isp_set_selection(struct v4l2_subdev *sd,
->  		crop.target = V4L2_SEL_TGT_CROP;
->  		crop.r = *rect;
->  		isp_set_selection(sd, state, &crop);
-> +
-> +		crop.pad = STF_ISP_PAD_SRC_RAW;
-> +		isp_set_selection(sd, state, &crop);
-
-patch 3.
-
->  	} else if (sel->target == V4L2_SEL_TGT_CROP &&
-> -		   sel->pad == STF_ISP_PAD_SRC) {
-> +		   (sel->pad == STF_ISP_PAD_SRC || sel->pad == STF_ISP_PAD_SRC_RAW)) {
-
-patch 3.
-
->  		struct v4l2_subdev_format fmt = { 0 };
->  
->  		rect = v4l2_subdev_state_get_crop(state, sel->pad);
-> @@ -294,7 +299,7 @@ static int isp_set_selection(struct v4l2_subdev *sd,
->  
->  		/* Reset source pad format width and height */
->  		fmt.which = sel->which;
-> -		fmt.pad = STF_ISP_PAD_SRC;
-> +		fmt.pad = sel->pad;
-
-patch 2.
-
->  		fmt.format.width = rect->width;
->  		fmt.format.height = rect->height;
->  		isp_set_format(sd, state, &fmt);
-> @@ -361,6 +366,7 @@ int stf_isp_register(struct stf_isp_dev *isp_dev, struct v4l2_device *v4l2_dev)
->  
->  	pads[STF_ISP_PAD_SINK].flags = MEDIA_PAD_FL_SINK;
->  	pads[STF_ISP_PAD_SRC].flags = MEDIA_PAD_FL_SOURCE;
-> +	pads[STF_ISP_PAD_SRC_RAW].flags = MEDIA_PAD_FL_SOURCE;
-
-patch 3.
-
->  
->  	sd->entity.function = MEDIA_ENT_F_PROC_VIDEO_ISP;
->  	sd->entity.ops = &isp_media_ops;
-> diff --git a/drivers/staging/media/starfive/camss/stf-isp.h b/drivers/staging/media/starfive/camss/stf-isp.h
-> index 07d6c2758253..4fc5cfac115c 100644
-> --- a/drivers/staging/media/starfive/camss/stf-isp.h
-> +++ b/drivers/staging/media/starfive/camss/stf-isp.h
-> @@ -393,6 +393,7 @@
->  enum stf_isp_pad_id {
->  	STF_ISP_PAD_SINK = 0,
->  	STF_ISP_PAD_SRC,
-> +	STF_ISP_PAD_SRC_RAW,
-
-patch 3.
-
->  	STF_ISP_PAD_MAX
->  };
+But why are we making this change?  It's not clear.
 
 regards,
 dan carpenter
