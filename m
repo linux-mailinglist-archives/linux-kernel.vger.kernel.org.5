@@ -1,137 +1,131 @@
-Return-Path: <linux-kernel+bounces-94176-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94177-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C87C873AEE
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:41:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFBCA873AF0
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:41:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 26AF01F294AA
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:41:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 990C528119C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:41:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ECF01353E2;
-	Wed,  6 Mar 2024 15:41:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XHrnKv1h"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00DF513540D;
+	Wed,  6 Mar 2024 15:41:30 +0000 (UTC)
+Received: from mail-oa1-f43.google.com (mail-oa1-f43.google.com [209.85.160.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FC6C1350DE;
-	Wed,  6 Mar 2024 15:41:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16EC81350DE;
+	Wed,  6 Mar 2024 15:41:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709739678; cv=none; b=hUr4zNHaeZltbz0RLspJkHPq5IAV6C4zZKUtCBxk0hRQBAqd+87axKiJjM+dgG/axCsPGAEpnjj62E3GPh5fkkM/bwtWKvacz1xa93/ZhsCAtyaZ0MP/SGLFUMRO5ucQbjtL5bosJx88QfTB/Z1DRSNSVWjhl0Antty1OP8bxu4=
+	t=1709739689; cv=none; b=V2FFgpFb3EamQR94p0aIZsEyx+LWSRJJy7WZ/BjmvEuAHidpzKKu5izv182RB7wxx5suQNLP1oIOhZ930irKHHqiagN1V1P4fQf9umzXaht7dNUlcQiatGLlS67g1lp3XUIdJRHyu6Cxv7SsBOCu+c82yAB4ONjtbWwCo2TgWbo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709739678; c=relaxed/simple;
-	bh=WU7LTgl7ib+/Zzz8hPXucfF7yOkR9eYf40hf2eDXtwA=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=I+DeysbkcThlHfPTVIAW58nN7IMaAeCdJ3fSlr72kGDuwzqcgpMSVIcDM5VDvLrPe1UGRiUZNJfbl5MgPoL6bDXs85KNIgp5c99eSZaq8RSVehz2ZHzOcSjnDqgNqiVC+azVYWBwrshS+dtt3OHq4Ue45N1Jbo6DS8fruneixMc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XHrnKv1h; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43939C433C7;
-	Wed,  6 Mar 2024 15:41:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709739678;
-	bh=WU7LTgl7ib+/Zzz8hPXucfF7yOkR9eYf40hf2eDXtwA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=XHrnKv1hp8A+ykApqcbth+QUQ1ba/XO8DxAM2vQVfgwtAOZvyR+pjidJ70Cc05yS3
-	 jSu1aQ3jQPt4maWXKNt2B8DBiBFTcnaR9FKEIWjsGV1sWLS46Ho/7xHhaeZ/iF6o2C
-	 G1W4nf6wGx2NOhsV9kJC5yLOzBkOj8sbDkSIcPNYENLHoN+X/DlUr/aubPPMx5HLwa
-	 3bpZXp4PnMzGX9GMAtKcNbKz1rXk10b2EJHz4U/aRwZL3nLCHfwEJWFAVZBe7G3FoF
-	 JrkmNAmwEkvN0IYOOrwHjurJDmavbre+ATm9NtwWxGYiFWeuWdGETaEqSduaiT3D6Y
-	 38G3IaSvGldSg==
-Date: Thu, 7 Mar 2024 00:41:13 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Linus Torvalds <torvalds@linux-foundation.org>, Sachin Sant
- <sachinp@linux.ibm.com>
-Subject: Re: [PATCH v2] tracing: Limit trace_marker writes to just 4K
-Message-Id: <20240307004113.760ab8a999504523819e058e@kernel.org>
-In-Reply-To: <20240304223433.4ba47dff@gandalf.local.home>
-References: <20240304223433.4ba47dff@gandalf.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1709739689; c=relaxed/simple;
+	bh=Y7msQX6hlYEAcec3lwddke08WECZzCMsCX5OZt0uRMk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=L5ATDBCZgELWOCtPwf/5eDbvDc71bhKSolAQTQQ+Ta1fzR/yrR6TXfJZc+3/KeRO2+AJNPIU1X12jtJAk6IYWIJ8EiaZvcMIwLKjQwpDFeWR4ZAuqj2u02cCT/7t1YTnxKPJBEB9mCpDfjje1W3Z4Vs1vN7TgxT2XHonK18ADQY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.160.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f43.google.com with SMTP id 586e51a60fabf-220ce420472so1342646fac.1;
+        Wed, 06 Mar 2024 07:41:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709739687; x=1710344487;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=F78bIbT0P37zvvyz4bkiHFYqGTllW22ypORx2SaQJ08=;
+        b=UyRnSiGnjgTU8k5S0PMbO1X7XCXFTNe3BHnJzOEi2JQbraIQ/TDuW+7a3udysvy7Xl
+         FM+RbTe5IoDHNH8QnGXMCxdS80+ZpogBc1XlGvk6wQ4dEgu27IR0ddPmJ2N8ouguVRXC
+         BtcXLCozoe5fbMv8WOeonoyt7HKNo70EfB1atXiv9ynrCApr0FnsC/Ta3DU7bilssPCe
+         9Qo7pEqeXIKlFEMhAWvg5Wp9h99G+MielNXgDxDN4wSbRReYBMc34Jj3p9sLXiTLj0je
+         MYGVj3KNyRJd/5Tb5+q9CQvDciEx5lJr3BTw9Gk87qAGiephErr9+JizPK8FA8JwB++z
+         wEYQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVe/6aNLvgiSnot/CRQESyraExU4VPt3FtbRSR/mCHEDCpLvkLaIN1BUcxPeNtgxzLwTeVZl+ZAlc/soksmDLQoa7Mkt3DnIK68hdzEjabEV9zt/h0zd37bQnnI5zdUUdqKBl9eK28=
+X-Gm-Message-State: AOJu0Ywkei9dNQJqc9Yop7YmzKMwKeZzai37K1fHKcDSfeE80yCsMC2q
+	yt/9kKmbxPlyNDgIRT+aLlogzyL0b8DG8ciJQ8IfR9m+97xjBpuPOVd4HeQ97xAbJ1/txZg2MSR
+	qjaZ0zNiosI7/6a+GdHfOcqaoElE=
+X-Google-Smtp-Source: AGHT+IFmX+FQzpiDkvtWMX+QyHRjkNUKTg7pvgNraTk/YCQSp6p6U0VDsiDoRLbacWLsDzNW6Z0MGbrQGOSywv4RJ6U=
+X-Received: by 2002:a05:6871:60a:b0:221:16e3:8f22 with SMTP id
+ w10-20020a056871060a00b0022116e38f22mr3798613oan.5.1709739687157; Wed, 06 Mar
+ 2024 07:41:27 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+References: <20240306085428.88011-1-daniel.lezcano@linaro.org>
+ <CAJZ5v0jAn2F-GH=fguX0+3bG38vyAxfufadtFiBUfg=EjTBh6Q@mail.gmail.com>
+ <14651d5b-0f67-4bff-b699-2cd1601b4fb2@linaro.org> <CAJZ5v0j6At1DuQYjjbA-fw9Z-jJPhXSVSz=_uLa3KfNMJowYbA@mail.gmail.com>
+ <0e7f32aa-b2c3-43d0-8ebe-7118cb6e0edf@linaro.org>
+In-Reply-To: <0e7f32aa-b2c3-43d0-8ebe-7118cb6e0edf@linaro.org>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Wed, 6 Mar 2024 16:41:15 +0100
+Message-ID: <CAJZ5v0gWhNqTGpoOH01scCdC51cEnt_8_T5ccqZC6yXPDv9QcA@mail.gmail.com>
+Subject: Re: [RFC PATCH] thermal/core: Fix trip point crossing events ordering
+To: Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, rjw@rjwysocki.net, linux-kernel@vger.kernel.org, 
+	Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>, 
+	"open list:THERMAL" <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 4 Mar 2024 22:34:33 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Wed, Mar 6, 2024 at 2:16=E2=80=AFPM Daniel Lezcano <daniel.lezcano@linar=
+o.org> wrote:
+>
+> On 06/03/2024 13:53, Rafael J. Wysocki wrote:
+> > On Wed, Mar 6, 2024 at 1:43=E2=80=AFPM Daniel Lezcano <daniel.lezcano@l=
+inaro.org> wrote:
+> >>
+> >> On 06/03/2024 13:02, Rafael J. Wysocki wrote:
+> >>
+> >> [ ... ]
+> >>
+> >>>> +#define for_each_trip_reverse(__tz, __trip)    \
+> >>>> +       for (__trip =3D &__tz->trips[__tz->num_trips - 1]; __trip >=
+=3D __tz->trips ; __trip--)
+> >>>> +
+> >>>>    void __thermal_zone_set_trips(struct thermal_zone_device *tz);
+> >>>>    int thermal_zone_trip_id(const struct thermal_zone_device *tz,
+> >>>>                            const struct thermal_trip *trip);
+> >>>> --
+> >>>
+> >>> Generally speaking, this is a matter of getting alignment on the
+> >>> expectations between the kernel and user space.
+> >>>
+> >>> It looks like user space expects to get the notifications in the orde=
+r
+> >>> of either growing or falling temperatures, depending on the direction
+> >>> of the temperature change.  Ordering the trips in the kernel is not
+> >>> practical, but the notifications can be ordered in principle.  Is thi=
+s
+> >>> what you'd like to do?
+> >>
+> >> Yes
+> >>
+> >>> Or can user space be bothered with recognizing that it may get the
+> >>> notifications for different trips out of order?
+> >>
+> >> IMO it is a bad information if the trip points events are coming
+> >> unordered. The temperature signal is a time related measurements, the
+> >> userspace should receive thermal information from this signal in the
+> >> right order. It sounds strange to track the temperature signal in the
+> >> kernel, then scramble the information, pass it to the userspace and
+> >> except it to apply some kind of logic to unscramble it.
+> >
+> > So the notifications can be ordered before sending them out, as long
+> > as they are produced by a single __thermal_zone_device_update() call.
+> >
+> > I guess you also would like the thermal_debug_tz_trip_up/down() calls
+> > to be ordered, wouldn't you?
+>
+> Right
 
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> 
-> Limit the max print event of trace_marker to just 4K string size. This must
-> also be less than the amount that can be held by a trace_seq along with
-> the text that is before the output (like the task name, PID, CPU, state,
-> etc). As trace_seq is made to handle large events (some greater than 4K).
-> Make the max size of a trace_marker write event be 4K which is guaranteed
-> to fit in the trace_seq buffer.
-> 
-> Suggested-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+I have an idea how to do this, but it is based on a couple of patches
+that I've been working on in the meantime.
 
-This looks good to me.
-
-Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-
-Thank you,
-
-> ---
-> Changes since v1: https://lore.kernel.org/linux-trace-kernel/20240304192710.4c99677c@gandalf.local.home/
-> 
-> - Just make the max limit 4K and not half of the trace_seq size.
->   The trace_seq is already made to handle events greater than 4k.
-> 
->  kernel/trace/trace.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-> index 8198bfc54b58..d16b95ca58a7 100644
-> --- a/kernel/trace/trace.c
-> +++ b/kernel/trace/trace.c
-> @@ -7293,6 +7293,8 @@ tracing_free_buffer_release(struct inode *inode, struct file *filp)
->  	return 0;
->  }
->  
-> +#define TRACE_MARKER_MAX_SIZE		4096
-> +
->  static ssize_t
->  tracing_mark_write(struct file *filp, const char __user *ubuf,
->  					size_t cnt, loff_t *fpos)
-> @@ -7320,6 +7322,9 @@ tracing_mark_write(struct file *filp, const char __user *ubuf,
->  	if ((ssize_t)cnt < 0)
->  		return -EINVAL;
->  
-> +	if (cnt > TRACE_MARKER_MAX_SIZE)
-> +		cnt = TRACE_MARKER_MAX_SIZE;
-> +
->  	meta_size = sizeof(*entry) + 2;  /* add '\0' and possible '\n' */
->   again:
->  	size = cnt + meta_size;
-> @@ -7328,11 +7333,6 @@ tracing_mark_write(struct file *filp, const char __user *ubuf,
->  	if (cnt < FAULTED_SIZE)
->  		size += FAULTED_SIZE - cnt;
->  
-> -	if (size > TRACE_SEQ_BUFFER_SIZE) {
-> -		cnt -= size - TRACE_SEQ_BUFFER_SIZE;
-> -		goto again;
-> -	}
-> -
->  	buffer = tr->array_buffer.buffer;
->  	event = __trace_buffer_lock_reserve(buffer, TRACE_PRINT, size,
->  					    tracing_gen_ctx());
-> -- 
-> 2.43.0
-> 
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Let me post these patches first and then I'll send a prototype patch
+addressing this on top of them.
 
