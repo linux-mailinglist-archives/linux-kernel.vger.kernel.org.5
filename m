@@ -1,187 +1,143 @@
-Return-Path: <linux-kernel+bounces-93937-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93938-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 300E9873735
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:02:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE9E5873737
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:02:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 45ABCB2132C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:02:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6BA4A283CE3
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:02:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FD59130AC3;
-	Wed,  6 Mar 2024 13:02:06 +0000 (UTC)
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31D68130AC6;
+	Wed,  6 Mar 2024 13:02:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UbmVyClh"
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADD0F7FBAF;
-	Wed,  6 Mar 2024 13:02:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1B8112D1FC;
+	Wed,  6 Mar 2024 13:02:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709730125; cv=none; b=toodEE6TsuvMVLmhkZjvh1ZbMJprPbOsHXruww5XFWg2lkgvbAVHoawXgJIgp6BT5bA24gC67jfhRTUPVrRvU44n56dvSe3VPI7VvnMx+ztyD21P0DL0W8baeCZyfqqgjD71PB4zDXyaTTA252ng5dOCladJFCgrM+olUggGnaU=
+	t=1709730146; cv=none; b=FS9RJzjJRFuXV7PjWjdDs5pM3XaSoosXSqz1pdslMxpUqyZOJlg7Axb3nGFVtefU010ASAkJkb7tMTdYBkffhpXziiRIqEzt9XUKaG0xiSKY2/Ek1X8BJURlVK2emUku5LwPnjap6ItC6mwQWAugHmUVbij0ctLCUwwzMDOVNro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709730125; c=relaxed/simple;
-	bh=sLNJRztVhA8TtYhb/exdQXUkIVIKU+BQJpgybmhd68U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=bfu3gAIAJcMJnBTIxmmZmfwTwoaEnFKVi/k2l5ku1hnfNcNU4AlqG6TiiatW6rpPvS+Q+tnRPef/w31dLMrOSl8tf65cOsenimqZ0doFHaU38KVouFuoqMVaknL20+arrAuv0FEUCiQ7f+b39Y3OGNBQMpkr0J9tJTIhXwX/SnI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TqXZf5hkTz2Bdtb;
-	Wed,  6 Mar 2024 20:59:38 +0800 (CST)
-Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
-	by mail.maildlp.com (Postfix) with ESMTPS id 0A4451A016E;
-	Wed,  6 Mar 2024 21:02:00 +0800 (CST)
-Received: from [10.67.111.104] (10.67.111.104) by
- dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 6 Mar 2024 21:01:59 +0800
-Message-ID: <df64802a-02fd-4f72-b9ec-7812e2779df3@huawei.com>
-Date: Wed, 6 Mar 2024 21:01:59 +0800
+	s=arc-20240116; t=1709730146; c=relaxed/simple;
+	bh=4AFROTHMuHkNbiIJu1IN5g677k3qgMNbGiZ+lMx65Aw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qp+eHxOEBLspQif9dXkkLPl0vUlcedh8bvgNPYvZasgA02Yw1LWVEK4AW9cnbDEPHl2/aXa6ULt/EwND/7Ihe/mY8JXy5B3wFGTtzwmXCwuiv17yawbVZ1BQg+oiFVQGkeurV2esWswKkjNk3Gt+3SdtCl5wr7G0BkhE17/WlRU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UbmVyClh; arc=none smtp.client-ip=209.85.167.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-51326436876so1144819e87.1;
+        Wed, 06 Mar 2024 05:02:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709730143; x=1710334943; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2scCxrSMIVw48B77Is9FzJLaywsQG2nWxV6RCAhtBdc=;
+        b=UbmVyClhCT6RMXB6cGI7/sQ0jDAx/ak9gm3e5tkD9WPf368LVxUB1fxShiPMlwHwff
+         vZaryrIJ+dAs3UKvpPTdLc5lc0ZZ2bCJh1qrcUB8vlavVp4OiNvh650RpTjkaTcwaSkK
+         WJgvqPOq31zOYugkZBDCHqMFRllulZ67BZ7UUTSI6bak3BFgS0pgQ4HItufZi8lmQNoB
+         LDA0V26/2V9H46sTs8Tm6nY8PndulUF0eqkxrwlD5jKYmvXUtlTZUDAc852nLrIY3cQg
+         zOCmU60KhWVqiofm4Vi/Ajh8MB2jdrwJE+57V5v4rCmpDvMXeDN0t8qdZKZLI7n6PmMK
+         cwxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709730143; x=1710334943;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2scCxrSMIVw48B77Is9FzJLaywsQG2nWxV6RCAhtBdc=;
+        b=J6orjpd3TH3jeNrg+WzDUbd+HA1vppy0LTrfm/JMYavgGexL0sda9Rin+iNWYqVZrr
+         68rGAYvyV9X/l/Bp8vGm7gswA0+XunET4q+TNpQyoxYh7KnKTjUP4hpiuZk47H5O76Xd
+         4ctpVNwp89RB4wIBTh1R4pwsMcmgtpSzekOHJ/AQY178EsJjckSmK8g4HJrhNO9khS4C
+         ldKEj/1Ctm+IrjDHiKMGh1ncMevL8VrMYwZwdwq6vEmET0UJJtOCCJgQNNF+iQNIg5LG
+         u7QkUqoqhuHI4eyjod7TOncdfSNudXKaQiccqPsCKHB0dugfuI1wsRHJ5CeAbEyGHDUU
+         X16w==
+X-Forwarded-Encrypted: i=1; AJvYcCWJvlWzYL/DOWyvpbpG/51BSKFPPHYB9au+/HZOHh9448RFy1mMaN5xeUztCHS1/UX/gMnSWrY6oPZo7FpEcjuSv+5I5RIfr6P8
+X-Gm-Message-State: AOJu0YzYrpcs2dpoyCuLpH1hpUJiJMpmLCVVTdU0EjobeMhaj88/jwlc
+	qEJzPAXb5owB0CMm4SE3sqpJTZYx2/zim4uhosiEvsp2nZj9AB0oQnfOF9HH1t4IsFSCgIqPeXC
+	X6VVQv8g2BZYsYu2SjrfwDi+ZRya0Hiua
+X-Google-Smtp-Source: AGHT+IG8sad1DURZBguoblizmSAITvuTR16ntLK/rmABipQNAgS2rnsDGDXEsNZRrdG5Nj86zK0RB7yHnrM9wVZtxG8=
+X-Received: by 2002:a05:6512:6d3:b0:512:d6b6:dc44 with SMTP id
+ u19-20020a05651206d300b00512d6b6dc44mr4301391lff.66.1709730142561; Wed, 06
+ Mar 2024 05:02:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] bcachefs: chardev: make bch_chardev_class constant
-Content-Language: en-US
-To: "Ricardo B. Marliere" <ricardo@marliere.net>
-CC: Kent Overstreet <kent.overstreet@linux.dev>, Brian Foster
-	<bfoster@redhat.com>, <linux-bcachefs@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, Greg Kroah-Hartman
-	<gregkh@linuxfoundation.org>
-References: <20240305-bcachefs-v1-1-436196e25729@marliere.net>
- <d1209aa3-b8d4-4509-9689-4882bc079ffd@huawei.com>
- <sky4no6qxoytrkd3azcf5hokmhxrrpluao5ilhbqvprqxwuj4r@ozwmbbulfbrt>
-From: Hongbo Li <lihongbo22@huawei.com>
-In-Reply-To: <sky4no6qxoytrkd3azcf5hokmhxrrpluao5ilhbqvprqxwuj4r@ozwmbbulfbrt>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500022.china.huawei.com (7.185.36.66)
+References: <hxiq3upwxs3j5mc5arwlx4jriqm7fq5z54wroc4h4kqcq4gq7m@uwnoq2vnkhup>
+ <ZeXzuWVmC9AnsECt@debian> <7ubz52rfdl2i76sotvd3s4thv6jvbfao6zct3sywqus2owlvkx@wpbeqqdvipo4>
+ <ZehMWQ0LkemsTHAC@debian>
+In-Reply-To: <ZehMWQ0LkemsTHAC@debian>
+From: Oliver Crumrine <ozlinuxc@gmail.com>
+Date: Wed, 6 Mar 2024 08:02:10 -0500
+Message-ID: <CAK1VsR0XZMgUW8qMQMcDPohD8-+OZsgW68sZegLbVy6cdoWucQ@mail.gmail.com>
+Subject: Re: [PATCH] ip.7: Add not supported by SOCK_STREAM to socket options
+To: Alejandro Colomar <alx@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-man@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-
-On 2024/3/6 19:50, Ricardo B. Marliere wrote:
-> On  6 Mar 09:23, Hongbo Li wrote:
->> On 2024/3/6 4:21, Ricardo B. Marliere wrote:
->>> Since commit 43a7206b0963 ("driver core: class: make class_register() take
->>> a const *"), the driver core allows for struct class to be in read-only
->>> memory, so move the bch_chardev_class structure to be declared at build
->>> time placing it into read-only memory, instead of having to be dynamically
->>> allocated at boot time.
->>>
->>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->>> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->>> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
->>> ---
->>>    fs/bcachefs/chardev.c | 23 ++++++++++++-----------
->>>    1 file changed, 12 insertions(+), 11 deletions(-)
->>>
->>> diff --git a/fs/bcachefs/chardev.c b/fs/bcachefs/chardev.c
->>> index 226b39c17667..af587453fd3d 100644
->>> --- a/fs/bcachefs/chardev.c
->>> +++ b/fs/bcachefs/chardev.c
->>> @@ -940,7 +940,9 @@ static const struct file_operations bch_chardev_fops = {
->>>    };
->>>    
->>>    static int bch_chardev_major;
->>> -static struct class *bch_chardev_class;
->>> +static const struct class bch_chardev_class = {
->>> +	.name = "bcachefs",
->>> +};
->>>    static struct device *bch_chardev;
->>>    
->>>    void bch2_fs_chardev_exit(struct bch_fs *c)
->>> @@ -957,7 +959,7 @@ int bch2_fs_chardev_init(struct bch_fs *c)
->>>    	if (c->minor < 0)
->>>    		return c->minor;
->>>    
->>> -	c->chardev = device_create(bch_chardev_class, NULL,
->>> +	c->chardev = device_create(&bch_chardev_class, NULL,
->>>    				   MKDEV(bch_chardev_major, c->minor), c,
->>>    				   "bcachefs%u-ctl", c->minor);
->>>    	if (IS_ERR(c->chardev))
->>> @@ -968,26 +970,25 @@ int bch2_fs_chardev_init(struct bch_fs *c)
->>>    
->>>    void bch2_chardev_exit(void)
->>>    {
->>> -	if (!IS_ERR_OR_NULL(bch_chardev_class))
->>> -		device_destroy(bch_chardev_class,
->>> -			       MKDEV(bch_chardev_major, U8_MAX));
->>> -	if (!IS_ERR_OR_NULL(bch_chardev_class))
->>> -		class_destroy(bch_chardev_class);
->>> +	device_destroy(&bch_chardev_class, MKDEV(bch_chardev_major, U8_MAX));
->>> +	class_unregister(&bch_chardev_class);
->>>    	if (bch_chardev_major > 0)
->>>    		unregister_chrdev(bch_chardev_major, "bcachefs");
->>>    }
->>>    
->>>    int __init bch2_chardev_init(void)
->>>    {
->>> +	int ret;
->>> +
->>>    	bch_chardev_major = register_chrdev(0, "bcachefs-ctl", &bch_chardev_fops);
->>>    	if (bch_chardev_major < 0)
->>>    		return bch_chardev_major;
->>>    
->>> -	bch_chardev_class = class_create("bcachefs");
->>> -	if (IS_ERR(bch_chardev_class))
->>> -		return PTR_ERR(bch_chardev_class);
->>> +	ret = class_register(&bch_chardev_class);
->>> +	if (ret)
->> Here, I think you should call class_unregister to relase resource which
->> allocated before. And the same thing shoud be done in other exception exit.
-> 
-> Hi Hongbo,
-> 
-> Thank you for the feedback. Did you mean that bch_chardev_major should
-> be unregistered if the class_register() call fails? Because if it does,
-> there is no need to call class_unregister().
-> 
->>> +		return ret;
->>>    
->>> -	bch_chardev = device_create(bch_chardev_class, NULL,
->>> +	bch_chardev = device_create(&bch_chardev_class, NULL,
->>>    				    MKDEV(bch_chardev_major, U8_MAX),
->>>    				    NULL, "bcachefs-ctl");
->>>    	if (IS_ERR(bch_chardev))
->> like here..
-> 
-> Can you please elaborate?
-> 
-Yes, this I mean. The example like this:
-
-```c
-    major = register_chrdev(0, xx, xx);
-    class = class_create("bcachefs");
-    if (IS_ERR(class))
-         goto out_chrdev:
-
-    ...
-out_class:
-     class_unregister(xxx);
-out_chrdev:
-     unregister_chrdev(xx, xx);
-     ...
-```
-
-Although this was not part of your original intention, it is indeed a flaw.
-
-
-> Best regards,
-> -	Ricardo.
-> 
-> 
->>>
->>> ---
->>> base-commit: 90d35da658da8cff0d4ecbb5113f5fac9d00eb72
->>> change-id: 20240305-bcachefs-27a4bb8b9f4f
->>>
->>> Best regards,
-> 
+On Wed, Mar 6, 2024 at 5:58=E2=80=AFAM Alejandro Colomar <alx@kernel.org> w=
+rote:
+>
+> Hi Oliver,
+>
+> On Tue, Mar 05, 2024 at 02:31:48PM -0500, Oliver Crumrine wrote:
+> > Hi Alex,
+> > I have attached two programs in the form of C source code below. No
+> > special compilation options required. To change between the three
+> > different socket options outlined in my patch, there are two options on
+> > line 16 and 18 with a comment above them explaining how to use the
+> > fields.
+> >
+> > Here's how to use the programs:
+> > 0. Make sure you have netcat installed.
+> > 1. Compile the dgram one.
+> > 2. Run it.
+> > 3. Run nc localhost 8888 -u (in a seperate terminal window or tab)
+> > 4. Type whatever into netcat and press enter
+> > 5. Observe that there is a control message recieved, and there is a byt=
+e
+> > printed, which is the first byte of the data in the control message.
+>
+> Can't reproduce this.  The terminal running nc(1) isn't printing
+> anything.
+>
+> alx@debian:~$ which nc
+> /usr/bin/nc
+> alx@debian:~$ which nc | xargs realpath
+> /usr/bin/nc.openbsd
+> alx@debian:~$ dpkg -S /bin/nc.openbsd
+> netcat-openbsd: /bin/nc.openbsd
+>
+> > 6. You may repeat this for the three different socket options.
+> > 7. Repeat for the stream one, but use nc localhost 8888 (without the -u=
+)
+> > for #5.
+> > 8. Observe that there are no control messages recieved with the stream =
+one,
+> > and byte is 00, which is the initial value of the variable, before it h=
+as
+> > a value assigned when the control messages (of which there are none) ar=
+e read.
+> >
+> > Thanks,
+> > Oliver
+>
+> Have a lovely day!
+> Alex
+>
+Hi Alex,
+Type into netcat, not the program I sent.
+My program is the server and prints out whatever it recieves,
+along with some other stuff that lets you know which options
+are supported.
+Thanks,
+Oliver
 
