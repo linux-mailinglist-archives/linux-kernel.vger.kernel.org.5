@@ -1,495 +1,214 @@
-Return-Path: <linux-kernel+bounces-94229-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94230-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23553873BB3
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:07:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C169873BB5
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:08:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA4302859B6
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:07:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 486AB1C22DA0
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:08:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1F0D1361DC;
-	Wed,  6 Mar 2024 16:06:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="VKiril35"
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2065.outbound.protection.outlook.com [40.107.93.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E4EA135A4B
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 16:06:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.65
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709741216; cv=fail; b=tCekz6Dva8PWEclm60HWmpk05Bp93ekBuUii5nUIVZN08w48Yeh/Et3jOKYAvkE5Z6naOWbCd3VAX1gNFM2sp4lUZ7csBh9H6wzMqauEvWvCQo/MyxHvw3qfuLW2aVhAb2H+xEjooEZx0PhRHBKSPXs5dRb22NKenbnoybktBUI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709741216; c=relaxed/simple;
-	bh=P4njCFLQGb08Q9fs+yCXjvLoOT8D5swMp+U6gNuRNOY=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=pW0q9oWjSCQIca3EXvwdkZmPUBmRHmEhG0b7NGK5ajYJrFNQaw1QQB1retbmnDZIxZxx0qH5+YPaHeqRdGL4RUtMkITPcn04wD56iSlWwjB8lHpryGImNy837GndQfu1QBmYvU7R9M0AOwKuX5l3lQi0yPQaN6nB/RwzXXogNGU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=VKiril35; arc=fail smtp.client-ip=40.107.93.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nw94KQQdGwz5rSB6h7V/SRxUKjY0CjJOqodOfkopEh3gU1FxRkUbcZsOfLHQo03m+4E7baG5rO1YaDBSGae21KFiCFLIvGhh3lbu7UDCEw9ndMO/va3Q/tanYWtJVHbIYLXVai++P3MawUnP54Z1ldaCqzBm7hYvzUOiWNAyS1XULfFJYFLDXWQ8UI3GdnEFlz2L3IqLKXiRHENeRoh5vz2VY0b6N5WPQz7DNIqtqcty83OoK1CkFKminbk/bu4xBfE/XRO4Pa5UtthJyeDNCYrqjfHie1ibabLo5ZkXHIwMMRkIGVmDfacJH/DauC7K333iO7L2SEGs/aAdxe1C0w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=D9hQauP96nLI8qwYuGge191mfbSGxZDO+WJJRfRtpN4=;
- b=Yb2eosDGfgh+OjOdgN+CQCeCgwlHxxRzRBiAXWyOdWTN+Cb8Qh7hsDOLBHJJ6m4voFTzV4rj96Z3Who7dMh0kuqc7bWnz8scaRBuBq/WqgBHBLhT55Ho8wOJVO37A24Z0IbBmkL1BFcPMstHVpKTYn+5KptAn1+BZygmEzxD1Mo9solVP54TzN8pAs2saFpKdaIbPg/SfayVKvGFd6n2Xt/ISo6GW/5z2l7VAbOv/SlYMqxUPYm/usYrnKRmwLMg1vA1ozfyoOfpsOqAce9Sbr1UhNniukqAng3751sE6G5j4C+I2pQR4ojK8554Zl1DZGnIsNe1elSmR/7EFTffUw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=D9hQauP96nLI8qwYuGge191mfbSGxZDO+WJJRfRtpN4=;
- b=VKiril35rZpafpLq4dgcrziASzOkp6HsPmP9eSMkPeS399e8bGI/23wwzDnwahlZkxycll6ICiQJr7QbcA+96TlOvbgDr+BFdkWOBSbS0xq5m2eaYpby8eEBnTBH39olm5Bufzb3YWmJ2m3YUD8jtRNBcrPHRhh+DmuAxOjCcGQ=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH7PR12MB5596.namprd12.prod.outlook.com (2603:10b6:510:136::13)
- by SN7PR12MB8170.namprd12.prod.outlook.com (2603:10b6:806:32c::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.24; Wed, 6 Mar
- 2024 16:06:50 +0000
-Received: from PH7PR12MB5596.namprd12.prod.outlook.com
- ([fe80::6f48:e3f1:6ff9:75bd]) by PH7PR12MB5596.namprd12.prod.outlook.com
- ([fe80::6f48:e3f1:6ff9:75bd%4]) with mapi id 15.20.7362.019; Wed, 6 Mar 2024
- 16:06:50 +0000
-Message-ID: <852e4f0e-c743-44c2-a2bb-59f0e8e25e1b@amd.com>
-Date: Wed, 6 Mar 2024 21:36:39 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/amdgpu: cache in more vm fault information
-Content-Language: en-US
-To: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
- Alex Deucher <alexdeucher@gmail.com>
-Cc: Sunil Khatri <sunil.khatri@amd.com>,
- Alex Deucher <alexander.deucher@amd.com>,
- Shashank Sharma <shashank.sharma@amd.com>, amd-gfx@lists.freedesktop.org,
- Pan@rtg-sunil-navi33.amd.com, Xinhui <Xinhui.Pan@amd.com>,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- Mukul Joshi <mukul.joshi@amd.com>,
- Arunpravin Paneer Selvam <Arunpravin.PaneerSelvam@amd.com>
-References: <20240306090408.3453152-1-sunil.khatri@amd.com>
- <2f792620-fd8a-412e-9130-e276ba36d5a0@amd.com>
- <5e2899cd-75b4-4ddd-97ff-4e10a2e67fbb@amd.com>
- <66815303-bd9c-4dfc-ae1a-bbdc5d1bb47c@amd.com>
- <17e12147-79dd-44ba-b8ae-b96fb72dcfbd@amd.com>
- <CADnq5_OkeH1x4YgSv6uw0HLb5c-5NOXnzQPJHsDvb=NmEePB-A@mail.gmail.com>
- <e5781df5-5244-465e-b986-c1802e1262db@gmail.com>
- <0df75ff4-ece5-4eaa-93bd-6f03ec31ecfa@amd.com>
- <bfaaad63-a5d7-4ceb-8e1c-d541f76f4037@amd.com>
-From: "Khatri, Sunil" <sukhatri@amd.com>
-In-Reply-To: <bfaaad63-a5d7-4ceb-8e1c-d541f76f4037@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: PN2P287CA0015.INDP287.PROD.OUTLOOK.COM
- (2603:1096:c01:21b::14) To PH7PR12MB5596.namprd12.prod.outlook.com
- (2603:10b6:510:136::13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5CC4135A67;
+	Wed,  6 Mar 2024 16:08:16 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3FCC5C615
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 16:08:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709741296; cv=none; b=ryGnd8BGuPfPq3nsvgzuA3YGvl5sit3t6HnhiJBjaJ3CURnWjVLo+NtI3RTAmKIPUwgpU9PYnPRnRwavpwMW+SrlfDZDMw8kBRrb8fKYCOFEbe7k3olDbfR1GuNAqz18n364Bx4s0jt+1qxkjRodH0aFrFd4hRJ/YmRfsvuJxpE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709741296; c=relaxed/simple;
+	bh=g4IulMMoICbFReyKs0ybsPisWpvJ7jOuCUHWQDQd2k8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sMXBkJKx8SZJktITbBW8nYzdxqlnG2vrZIPoXqlcNqzgmQU9+lG40JiT4rE8jwbRHuXGVgBDLQg6Gt8IYllKBAsMPpwAy/wcJuTACXOh5F0DTbe48N4bjrZxbBk3gBMu+QRVUtD6hWF6cLUlBWbLaum47/WyUsa1Vv6NwLVHJtg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 33D301FB;
+	Wed,  6 Mar 2024 08:08:49 -0800 (PST)
+Received: from pluto (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 289733F73F;
+	Wed,  6 Mar 2024 08:08:10 -0800 (PST)
+Date: Wed, 6 Mar 2024 16:08:07 +0000
+From: Cristian Marussi <cristian.marussi@arm.com>
+To: Flash Liu =?utf-8?B?KOWKieeCs+WCsyk=?= <Flash.Liu@mediatek.com>
+Cc: "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	wsd_upstream <wsd_upstream@mediatek.com>,
+	Cylen Yao =?utf-8?B?KOWnmueri+S4iSk=?= <cylen.yao@mediatek.com>,
+	"sudeep.holla@arm.com" <sudeep.holla@arm.com>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+	"angelogioacchino.delregno@collabora.com" <angelogioacchino.delregno@collabora.com>
+Subject: Re: [PATCH v2] firmware: arm_scmi: Avoid to call mbox_client_txdone
+ on txdone_irq mode
+Message-ID: <ZeiU5_k7s-31A93h@pluto>
+References: <20240201095754.25374-1-flash.liu@mediatek.com>
+ <ZbzKckIhn8HQv5pW@pluto>
+ <053cb4a2edfe576412942daed2f7055b2ba9e207.camel@mediatek.com>
+ <56e1b2f5adbca437a14b738e1c58a054f6302fcd.camel@mediatek.com>
+ <Zeg8F6VVaZtpmH8n@pluto>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB5596:EE_|SN7PR12MB8170:EE_
-X-MS-Office365-Filtering-Correlation-Id: 150473e8-8a15-4bfe-6eb0-08dc3df76e43
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	qNZmEXSAruoZsTqQ2FCi9evosCb7PIYUaDT1wg4rOEsCttO7RjRe0XXmYEKBnTLBqKA08/zk/X7iyA67/2JuefJ6tUfW/5/ugj6Z35moFTKAaMRSdIIrC9JmpIExRPYiBSHCPYO0XBBAmLcpMHMgIpsEeqYEsK97/wM7EQBBkHBKamW6ATsegJdc23tufUbC2tYpABZRztEP4hfSc2cPxC9TLs5HrNU80+kbuRdjnnG7Xp1UpWbmBl83vRj3anu+wZ83xnoz/yI1qCNrrUI9hViIEiKHlvyBJBln4FCb3x0bWAukQ/Alo6IhkUg1t+pw3OvirQLgHBug0M6rzcSUatILVgSBHfCzxow4mQA0/yHv7DUvol2OM49KxnaLkb1JnvqiPYQUz/4xT9t4vtIZ650ElEDU0Akq30PbLnxceGKEyVM08l9erBAwgY89HmoEzljGwPGuFiFXuXJ23ZQ6HBIehjrTiD4KMzU12ZBLyMZMZc06TaE8yt8XeahKjqtJnkQeCpz7x5eUYKVa1CAv7E2aN84X+FwE9dBHsDdhTYvl8X+fOuPz0QruvxxPmjMC1QHx3+R0bih2C1jYbcSRUCMXoqVOvZJemsbM8b7noDz+bEflKfWpTZ6+CpLVGji1
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5596.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?aXk5TUNDZGtUWEdMOCs1SjF4L3Z1empEMk9wSVpqV0Fza01VcVNmcllMeFph?=
- =?utf-8?B?cEZtdDBJT0V4RmROc3MvbHBCREhZT1FzUVp6N1FRZTZGcmpZSnZ5MkpJVGp0?=
- =?utf-8?B?cjdQYzllcWNVREp6YkVwWHJFU2ZFQjNzY2NSNlN2SWhZVjNSSlBrK0ErT3hn?=
- =?utf-8?B?WkdwNGNGaEhKVnB4UUtGZFhCOEw4WVFYTnMvemx1dFFFSzAvaGVVRFZ2cmRp?=
- =?utf-8?B?bnVIR0dsVVg5Q1hFSlNlRnZrVTZnZUIwWUxJTjNTRVRHRmZMRjRvUy9raUJH?=
- =?utf-8?B?d2ZRKzA3N1VFWE5WZEJNWGR3K0tRa1RNZWlvUVgzWU9ZdlVuUUhSZFozV2l3?=
- =?utf-8?B?UmpIQmwwRnhNcTRQK2lUazFpTDV2UUlkaVl3cmhsQ29YdVJ2NDhuNnhjK0pn?=
- =?utf-8?B?ZVhEdWNuRG4rSFF6dGVTb0UvMTVtM2l2Q0JlUGVHL1hGQnhmdEkyWE9kdG53?=
- =?utf-8?B?RjNzQnRmL3BRUFZUV1F3RUlhK011YVhkcDVIZFYxMzhyVW0rZmNMTEdjaGhk?=
- =?utf-8?B?MWZ6QUNWUU53RTNEYjRUMUJzV2IvQ254MmF0TmJVSm5qeExkUTZQREt1L1Jj?=
- =?utf-8?B?cnVPS2FFRWo2TmZmUVkvR2tVVzZyOEI2bnVYZ1JYdVp1dHk4amcvNmpqeita?=
- =?utf-8?B?bHpQcUtvWWUvd2dmWGYwem9TWVRQNVlwd2hKaFB5RFpYYW1MLzQ1WXBMZkRj?=
- =?utf-8?B?dWMvU00xcmRPZHQyYll1NmVWZ3hLY1hJZjRwT0lwdjJNOTJ0NjJMKzA1U3Jy?=
- =?utf-8?B?L2VqV0R2aUFTcUhhbFRaRklmU2paUndzZEQxTlZkTy84bUhRTjdzb3JocDBE?=
- =?utf-8?B?Sjk4MEJyaTZMamJuS2ZGS2tpeEhhRFRjMXJpWUk2UFhJaFpyT0lLNlltU0sv?=
- =?utf-8?B?THRkTllKUzJXVXRVU24xeDBVd21sSExzRThDNjNwZmRKNVl1OFIzS3FMYzFH?=
- =?utf-8?B?SDhMR2w2WkkwZGdDNkFOdCt2dkhpTVozZEVBa1BkYzc1SDRzdXYzU2VDL3Jz?=
- =?utf-8?B?M0cwenMvNGNXdFA5anQ3NkVhU2ppMkFYbklYT1pmWUJkZXRmZ3NpQit2UVNE?=
- =?utf-8?B?dDUvZXV5OUxyKytoNmdVdUtoWEI4Q3ZxbDUxYldwY1hjV1c3amc0c3h5a21h?=
- =?utf-8?B?VG4vZHZkNm92WUgwbVl5ZXBpdVE2RCtLTUhPUjhJSHdEUlFZWFJvQ0NjeTBP?=
- =?utf-8?B?TTFsQXBNSzlHeDNUQmlTaE5TcmU1Z1VNV2VmWFZ3YXdRSW9CTXdIaWNLZmhQ?=
- =?utf-8?B?cnVVSXFML3EzaVZtakFYRWs0dkZrTjY0TEFsSXZIOExiYzhXY000Mmd4QjE5?=
- =?utf-8?B?KzZxbjNNUmxyRlZ0c0pmRUhhaWR0WnhGMkdLSVExdkxMMG5kV1hzNFU3cFNJ?=
- =?utf-8?B?NThHYnBWUlIwUTlzZzRlZlpXemowQmErT0lZaC9zTjBmRE5JS3JkanE5d1Bm?=
- =?utf-8?B?OURnNDhLUmtaaSt4aDVBSEpLQUoxUTd2VjVoNEU2d2QxYUExR0krcnFQcXFQ?=
- =?utf-8?B?MWJvWGhhNnVVWVNMSkxxMEhHZUQxS2szSlhsWU9pYjRQVHhRUjVwcUMrWExs?=
- =?utf-8?B?Sm42Z3ZUbTRqVlJKbU5Ld3FiMlhnWWhGRmVGcVpnV21IczdjK2hRVTRmSmha?=
- =?utf-8?B?Z3lDN2FpQlE5OVd1cXhsdWlLeC82UW5uTnJ5TzJpeExGSEo4OFZtanNEWUo3?=
- =?utf-8?B?MG1HdmxnZEVvR0xZeGNucXVWVWFEeEVCZ3J6WHpjb2xYbG40T1pqMlg5RDhJ?=
- =?utf-8?B?V3UxbnJPNGRnMGxmYzFkT2FvWVBjVDdpOU4xM3J6OTd6N1VHYUFFc1FDYmJN?=
- =?utf-8?B?aDFOeS9JZnRVNnd4UkRUZ1ZXNHF6MGlWR21NalI0T1dMcnpVVXNpSHhtV3V2?=
- =?utf-8?B?Y0RBaTd2aVE2Q2pmMUFDWFpFVUlZSWZSWFpBZWdpL0poL1MwNUhneGdYamg3?=
- =?utf-8?B?U3NOajI0YzRJa1dpNDZKamg3TVpOUUZ0YjBxUk11U0Yra1c4UTY5Y2hmbk5k?=
- =?utf-8?B?NHFhWXcwUWFjc2w2YkpZZ2lXb1JZN09EV2p6dnppeU8yZXh4bWZNc0NSN3Q1?=
- =?utf-8?B?aEtNVXhJeU5FOHJsTVBZUUlkQk9USllXODRQL2FwRkhLL0daYTRxZjFYYlFm?=
- =?utf-8?Q?QqMxPOId3QWbM1jcXxgNtA0Dd?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 150473e8-8a15-4bfe-6eb0-08dc3df76e43
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5596.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Mar 2024 16:06:49.9358
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jyXjhl85zk3t2ypzHcTOK8kBFPJT1Dkj/5P+RzRxpZcOfeLWwR+O3ocVOC57Ky11srEgdTv+GGLfzlOMJ48EOQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB8170
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Zeg8F6VVaZtpmH8n@pluto>
 
+On Wed, Mar 06, 2024 at 09:49:16AM +0000, Cristian Marussi wrote:
+> On Wed, Mar 06, 2024 at 06:13:48AM +0000, Flash Liu (劉炳傳) wrote:
+> > Hi Cristian,
+> > 
+> > Kindly ping :)
+> > 
+> 
+> Hi Pin-Chuan,
+> 
+> sorry for the delay...I have NOT forgot :D, indeed I was just testing
+> yesterday with some mailbox IP of ours equipped with a TxAck IRQ and I
+> would have some question for you because I've seen some anomalies while
+> using this: does your solution work reliably in your setup ALSO when
+> multiple SCMI transactions are attempted ? (like cpufreq issuing cmds
+> while polling a sensor from some other thread)
+> 
+> ...I'll dig deeper today in this matter, but my current suspect is that
+> using the mailbox TXAck IRQ to let the controller tick the internal mailbox
+> queues does not play well with SCMI, since the SCMI TX channel is really the
+> SCMI "a2p" bidirectional channel and it is associated with just only one shmem
+> area used to hold both the egressing CMD and to receive the incoming REPLY
+> from the platform: so if you let the controller tick the queues as soon as you
+> received the TXAck you are telling the mailbox subsystem to queue another message
+> on the same area while you are not really done, since only the client know
+> when it's done with the whole SCMI transaction and the reply has been fetched.
+> 
+> Indeed, for these reasons we have the BUSY/FREE bit in the shmem to protect it
+> from pending new requests until the previous one has completed, but when the
+> waited-for reply comes in, the platform would have cleared the BUSY bit and
+> let the new queued message overwrite the pending reply prematurely, and one
+> message is lost...
+> 
+> ...but as said I want to delve deeper into this, as of now just suppositions
+> and maybe I am just missing something more that has to be configured
+> properly...
+> 
+> Thanks,
+> Cristian
+>
 
-On 3/6/2024 9:07 PM, Christian König wrote:
-> Am 06.03.24 um 16:13 schrieb Khatri, Sunil:
->>
->> On 3/6/2024 8:34 PM, Christian König wrote:
->>> Am 06.03.24 um 15:29 schrieb Alex Deucher:
->>>> On Wed, Mar 6, 2024 at 8:04 AM Khatri, Sunil <sukhatri@amd.com> wrote:
->>>>>
->>>>> On 3/6/2024 6:12 PM, Christian König wrote:
->>>>>> Am 06.03.24 um 11:40 schrieb Khatri, Sunil:
->>>>>>> On 3/6/2024 3:37 PM, Christian König wrote:
->>>>>>>> Am 06.03.24 um 10:04 schrieb Sunil Khatri:
->>>>>>>>> When an  page fault interrupt is raised there
->>>>>>>>> is a lot more information that is useful for
->>>>>>>>> developers to analyse the pagefault.
->>>>>>>> Well actually those information are not that interesting because
->>>>>>>> they are hw generation specific.
->>>>>>>>
->>>>>>>> You should probably rather use the decoded strings here, e.g. hub,
->>>>>>>> client, xcc_id, node_id etc...
->>>>>>>>
->>>>>>>> See gmc_v9_0_process_interrupt() an example.
->>>>>>>> I saw this v9 does provide more information than what v10 and v11
->>>>>>>> provide like node_id and fault from which die but thats again very
->>>>>>>> specific to IP_VERSION(9, 4, 3)) i dont know why thats information
->>>>>>>> is not there in v10 and v11.
->>>>>>> I agree to your point but, as of now during a pagefault we are
->>>>>>> dumping this information which is useful like which client
->>>>>>> has generated an interrupt and for which src and other information
->>>>>>> like address. So i think to provide the similar information in the
->>>>>>> devcoredump.
->>>>>>>
->>>>>>> Currently we do not have all this information from either job or vm
->>>>>>> being derived from the job during a reset. We surely could add more
->>>>>>> relevant information later on as per request but this 
->>>>>>> information is
->>>>>>> useful as
->>>>>>> eventually its developers only who would use the dump file provided
->>>>>>> by customer to debug.
->>>>>>>
->>>>>>> Below is the information that i dump in devcore and i feel that is
->>>>>>> good information but new information could be added which could be
->>>>>>> picked later.
->>>>>>>
->>>>>>>> Page fault information
->>>>>>>> [gfxhub] page fault (src_id:0 ring:24 vmid:3 pasid:32773)
->>>>>>>> in page starting at address 0x0000000000000000 from client 0x1b 
->>>>>>>> (UTCL2)
->>>>>> This is a perfect example what I mean. You record in the patch is 
->>>>>> the
->>>>>> client_id, but this is is basically meaningless unless you have 
->>>>>> access
->>>>>> to the AMD internal hw documentation.
->>>>>>
->>>>>> What you really need is the client in decoded form, in this case
->>>>>> UTCL2. You can keep the client_id additionally, but the decoded 
->>>>>> client
->>>>>> string is mandatory to have I think.
->>>>>>
->>>>>> Sure i am capturing that information as i am trying to minimise the
->>>>>> memory interaction to minimum as we are still in interrupt context
->>>>>> here that why i recorded the integer information compared to 
->>>>>> decoding
->>>>> and writing strings there itself but to postpone till we dump.
->>>>>
->>>>> Like decoding to the gfxhub/mmhub based on vmhub/vmid_src and client
->>>>> string from client id. So are we good to go with the information with
->>>>> the above information of sharing details in devcoredump using the
->>>>> additional information from pagefault cached.
->>>> I think amdgpu_vm_fault_info() has everything you need already (vmhub,
->>>> status, and addr).  client_id and src_id are just tokens in the
->>>> interrupt cookie so we know which IP to route the interrupt to. We
->>>> know what they will be because otherwise we'd be in the interrupt
->>>> handler for a different IP.  I don't think ring_id has any useful
->>>> information in this context and vmid and pasid are probably not too
->>>> useful because they are just tokens to associate the fault with a
->>>> process.  It would be better to have the process name.
->>
->> Just to share context here Alex, i am preparing this for devcoredump, 
->> my intention was to replicate the information which in KMD we are 
->> sharing in Dmesg for page faults. If assuming we do not add client id 
->> specially we would not be able to share enough information in 
->> devcoredump.
->> It would be just address and hub(gfxhub/mmhub) and i think that is 
->> partial information as src id and client id and ip block shares good 
->> information.
->>
->> For process related information we are capturing that information 
->> part of dump from existing functionality.
->> **** AMDGPU Device Coredump ****
->> version: 1
->> kernel: 6.7.0-amd-staging-drm-next
->> module: amdgpu
->> time: 45.084775181
->> process_name: soft_recovery_p PID: 1780
->>
->> Ring timed out details
->> IP Type: 0 Ring Name: gfx_0.0.0
->>
->> Page fault information
->> [gfxhub] page fault (src_id:0 ring:24 vmid:3 pasid:32773)
->> in page starting at address 0x0000000000000000 from client 0x1b (UTCL2)
->> VRAM is lost due to GPU reset!
->>
->> Regards
->> Sunil
->>
->>>
->>> The decoded client name would be really useful I think since the 
->>> fault handled is a catch all and handles a whole bunch of different 
->>> clients.
->>>
->>> But that should be ideally passed in as const string instead of the 
->>> hw generation specific client_id.
->>>
->>> As long as it's only a pointer we also don't run into the trouble 
->>> that we need to allocate memory for it.
->>
->> I agree but i prefer adding the client id and decoding it in 
->> devcorecump using soc15_ih_clientid_name[fault_info->client_id]) is 
->> better else we have to do an sprintf this string to fault_info in irq 
->> context which is writing more bytes to memory i guess compared to an 
->> integer:)
->
-> Well I totally agree that we shouldn't fiddle to much in the interrupt 
-> handler, but exactly what you suggest here won't work.
->
-> The client_id is hw generation specific, so the only one who has that 
-> is the hw generation specific fault handler. Just compare the defines 
-> here:
->
-> https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c#L83 
->
->
-> and here:
->
-> https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/amd/amdgpu/gfxhub_v11_5_0.c#L38 
->
->
-Got your point. Let me see but this is a lot of work in irq context. 
-Either we can drop totally the client id thing as alex is suggesting 
-here as its always be same client and src id or let me come up with a 
-patch and see if its acceptable.
+Hi again :D,
 
-Also as Alex pointed we need to decode from status register which kind 
-of page fault it is (permission, read, write etc) this all is again 
-family specific and thats all in IRQ context. Not feeling good about it 
-but let me try to share all that in a new patch.
+so articulating more on my supposition that TxAck-capable mailboxes and
+SCMI do not play well together (and would not be worth either really...)
 
-Regards
-Sunil.
+Consider the following scenario.
 
-> Regards,
-> Christian.
->
->>
->> We can argue on values like pasid and vmid and ring id to be taken 
->> off if they are totally not useful.
->>
->> Regards
->> Sunil
->>
->>>
->>> Christian.
->>>
->>>>
->>>> Alex
->>>>
->>>>> regards
->>>>> sunil
->>>>>
->>>>>> Regards,
->>>>>> Christian.
->>>>>>
->>>>>>> Regards
->>>>>>> Sunil Khatri
->>>>>>>
->>>>>>>> Regards,
->>>>>>>> Christian.
->>>>>>>>
->>>>>>>>> Add all such information in the last cached
->>>>>>>>> pagefault from an interrupt handler.
->>>>>>>>>
->>>>>>>>> Signed-off-by: Sunil Khatri <sunil.khatri@amd.com>
->>>>>>>>> ---
->>>>>>>>>    drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c | 9 +++++++--
->>>>>>>>>    drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h | 7 ++++++-
->>>>>>>>>    drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c | 2 +-
->>>>>>>>>    drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c | 2 +-
->>>>>>>>>    drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c  | 2 +-
->>>>>>>>>    drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c  | 2 +-
->>>>>>>>>    drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c  | 2 +-
->>>>>>>>>    7 files changed, 18 insertions(+), 8 deletions(-)
->>>>>>>>>
->>>>>>>>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
->>>>>>>>> b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
->>>>>>>>> index 4299ce386322..b77e8e28769d 100644
->>>>>>>>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
->>>>>>>>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
->>>>>>>>> @@ -2905,7 +2905,7 @@ void amdgpu_debugfs_vm_bo_info(struct
->>>>>>>>> amdgpu_vm *vm, struct seq_file *m)
->>>>>>>>>     * Cache the fault info for later use by userspace in 
->>>>>>>>> debugging.
->>>>>>>>>     */
->>>>>>>>>    void amdgpu_vm_update_fault_cache(struct amdgpu_device *adev,
->>>>>>>>> -                  unsigned int pasid,
->>>>>>>>> +                  struct amdgpu_iv_entry *entry,
->>>>>>>>>                      uint64_t addr,
->>>>>>>>>                      uint32_t status,
->>>>>>>>>                      unsigned int vmhub)
->>>>>>>>> @@ -2915,7 +2915,7 @@ void amdgpu_vm_update_fault_cache(struct
->>>>>>>>> amdgpu_device *adev,
->>>>>>>>> xa_lock_irqsave(&adev->vm_manager.pasids, flags);
->>>>>>>>>    -    vm = xa_load(&adev->vm_manager.pasids, pasid);
->>>>>>>>> +    vm = xa_load(&adev->vm_manager.pasids, entry->pasid);
->>>>>>>>>        /* Don't update the fault cache if status is 0.  In the 
->>>>>>>>> multiple
->>>>>>>>>         * fault case, subsequent faults will return a 0 status 
->>>>>>>>> which is
->>>>>>>>>         * useless for userspace and replaces the useful fault
->>>>>>>>> status, so
->>>>>>>>> @@ -2924,6 +2924,11 @@ void amdgpu_vm_update_fault_cache(struct
->>>>>>>>> amdgpu_device *adev,
->>>>>>>>>        if (vm && status) {
->>>>>>>>>            vm->fault_info.addr = addr;
->>>>>>>>>            vm->fault_info.status = status;
->>>>>>>>> +        vm->fault_info.client_id = entry->client_id;
->>>>>>>>> +        vm->fault_info.src_id = entry->src_id;
->>>>>>>>> +        vm->fault_info.vmid = entry->vmid;
->>>>>>>>> +        vm->fault_info.pasid = entry->pasid;
->>>>>>>>> +        vm->fault_info.ring_id = entry->ring_id;
->>>>>>>>>            if (AMDGPU_IS_GFXHUB(vmhub)) {
->>>>>>>>>                vm->fault_info.vmhub = AMDGPU_VMHUB_TYPE_GFX;
->>>>>>>>>                vm->fault_info.vmhub |=
->>>>>>>>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h
->>>>>>>>> b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h
->>>>>>>>> index 047ec1930d12..c7782a89bdb5 100644
->>>>>>>>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h
->>>>>>>>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h
->>>>>>>>> @@ -286,6 +286,11 @@ struct amdgpu_vm_fault_info {
->>>>>>>>>        uint32_t    status;
->>>>>>>>>        /* which vmhub? gfxhub, mmhub, etc. */
->>>>>>>>>        unsigned int    vmhub;
->>>>>>>>> +    unsigned int    client_id;
->>>>>>>>> +    unsigned int    src_id;
->>>>>>>>> +    unsigned int    ring_id;
->>>>>>>>> +    unsigned int    pasid;
->>>>>>>>> +    unsigned int    vmid;
->>>>>>>>>    };
->>>>>>>>>      struct amdgpu_vm {
->>>>>>>>> @@ -605,7 +610,7 @@ static inline void
->>>>>>>>> amdgpu_vm_eviction_unlock(struct amdgpu_vm *vm)
->>>>>>>>>    }
->>>>>>>>>      void amdgpu_vm_update_fault_cache(struct amdgpu_device 
->>>>>>>>> *adev,
->>>>>>>>> -                  unsigned int pasid,
->>>>>>>>> +                  struct amdgpu_iv_entry *entry,
->>>>>>>>>                      uint64_t addr,
->>>>>>>>>                      uint32_t status,
->>>>>>>>>                      unsigned int vmhub);
->>>>>>>>> diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
->>>>>>>>> b/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
->>>>>>>>> index d933e19e0cf5..6b177ce8db0e 100644
->>>>>>>>> --- a/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
->>>>>>>>> +++ b/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
->>>>>>>>> @@ -150,7 +150,7 @@ static int gmc_v10_0_process_interrupt(struct
->>>>>>>>> amdgpu_device *adev,
->>>>>>>>>            status = RREG32(hub->vm_l2_pro_fault_status);
->>>>>>>>>            WREG32_P(hub->vm_l2_pro_fault_cntl, 1, ~1);
->>>>>>>>>    -        amdgpu_vm_update_fault_cache(adev, entry->pasid, 
->>>>>>>>> addr,
->>>>>>>>> status,
->>>>>>>>> +        amdgpu_vm_update_fault_cache(adev, entry, addr, status,
->>>>>>>>>                             entry->vmid_src ? AMDGPU_MMHUB0(0) :
->>>>>>>>> AMDGPU_GFXHUB(0));
->>>>>>>>>        }
->>>>>>>>>    diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c
->>>>>>>>> b/drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c
->>>>>>>>> index 527dc917e049..bcf254856a3e 100644
->>>>>>>>> --- a/drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c
->>>>>>>>> +++ b/drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c
->>>>>>>>> @@ -121,7 +121,7 @@ static int gmc_v11_0_process_interrupt(struct
->>>>>>>>> amdgpu_device *adev,
->>>>>>>>>            status = RREG32(hub->vm_l2_pro_fault_status);
->>>>>>>>>            WREG32_P(hub->vm_l2_pro_fault_cntl, 1, ~1);
->>>>>>>>>    -        amdgpu_vm_update_fault_cache(adev, entry->pasid, 
->>>>>>>>> addr,
->>>>>>>>> status,
->>>>>>>>> +        amdgpu_vm_update_fault_cache(adev, entry, addr, status,
->>>>>>>>>                             entry->vmid_src ? AMDGPU_MMHUB0(0) :
->>>>>>>>> AMDGPU_GFXHUB(0));
->>>>>>>>>        }
->>>>>>>>>    diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c
->>>>>>>>> b/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c
->>>>>>>>> index 3da7b6a2b00d..e9517ebbe1fd 100644
->>>>>>>>> --- a/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c
->>>>>>>>> +++ b/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c
->>>>>>>>> @@ -1270,7 +1270,7 @@ static int 
->>>>>>>>> gmc_v7_0_process_interrupt(struct
->>>>>>>>> amdgpu_device *adev,
->>>>>>>>>        if (!addr && !status)
->>>>>>>>>            return 0;
->>>>>>>>>    -    amdgpu_vm_update_fault_cache(adev, entry->pasid,
->>>>>>>>> +    amdgpu_vm_update_fault_cache(adev, entry,
->>>>>>>>>                         ((u64)addr) << AMDGPU_GPU_PAGE_SHIFT,
->>>>>>>>> status, AMDGPU_GFXHUB(0));
->>>>>>>>>          if (amdgpu_vm_fault_stop == AMDGPU_VM_FAULT_STOP_FIRST)
->>>>>>>>> diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c
->>>>>>>>> b/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c
->>>>>>>>> index d20e5f20ee31..a271bf832312 100644
->>>>>>>>> --- a/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c
->>>>>>>>> +++ b/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c
->>>>>>>>> @@ -1438,7 +1438,7 @@ static int 
->>>>>>>>> gmc_v8_0_process_interrupt(struct
->>>>>>>>> amdgpu_device *adev,
->>>>>>>>>        if (!addr && !status)
->>>>>>>>>            return 0;
->>>>>>>>>    -    amdgpu_vm_update_fault_cache(adev, entry->pasid,
->>>>>>>>> +    amdgpu_vm_update_fault_cache(adev, entry,
->>>>>>>>>                         ((u64)addr) << AMDGPU_GPU_PAGE_SHIFT,
->>>>>>>>> status, AMDGPU_GFXHUB(0));
->>>>>>>>>          if (amdgpu_vm_fault_stop == AMDGPU_VM_FAULT_STOP_FIRST)
->>>>>>>>> diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
->>>>>>>>> b/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
->>>>>>>>> index 47b63a4ce68b..dc9fb1fb9540 100644
->>>>>>>>> --- a/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
->>>>>>>>> +++ b/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
->>>>>>>>> @@ -666,7 +666,7 @@ static int gmc_v9_0_process_interrupt(struct
->>>>>>>>> amdgpu_device *adev,
->>>>>>>>>        rw = REG_GET_FIELD(status, 
->>>>>>>>> VM_L2_PROTECTION_FAULT_STATUS, RW);
->>>>>>>>>        WREG32_P(hub->vm_l2_pro_fault_cntl, 1, ~1);
->>>>>>>>>    -    amdgpu_vm_update_fault_cache(adev, entry->pasid, addr,
->>>>>>>>> status, vmhub);
->>>>>>>>> +    amdgpu_vm_update_fault_cache(adev, entry, addr, status, 
->>>>>>>>> vmhub);
->>>>>>>>>          dev_err(adev->dev,
->>>>>>>>> "VM_L2_PROTECTION_FAULT_STATUS:0x%08X\n",
->>>
->
+1. scmi: mbox_send_message(X) is called from SCMI stack to send mesg-X
+         on the a2p channel (a command)
+
+2. mbox: mesg-X is
+  2a. queued by mbox subsystem [add_to_rbuf(X)]
+  2b. submitted for transmission [msg_submit(X)]
+  2c. prepared by SCMI clk->tx_prepare
+  2d. finally sent via mhu driver .send_data
+  2e. mesg-X is now an active_req for mbox and in-flight for SCMI
+
+3. scmi: ANOTHER mesg-Y tx is attempted via mbox_send_message(Y)
+
+4. mbox: mesg-Y is
+  4a. queued by mbox_subsys [add_to_rbuf()]
+  4b. NOT submitted since there is already an active_req=mesg-X pending
+
+Any further SCMI mesg TX attempt will behave similarly: queued/not_submitted
+till at some in the future someone calls the txdone routines, which in turn
+calls tx_tick()...this SOMEONE can be the client, like it is now, or the
+controller if it is configured to use the TxAck IRQ (as per-your-patch)...
+..so lets see what happen in your TxAck enabled case.
+
+5. TxAck IRQ received, transmission of mesg-X has been successfull
+  (NOTE that SCMI at this point is still waiting for a reply to mesg-X..)
+
+  5a. controller calls mbox_chan_txdone()
+  5b. mbox in turn calls tx_tick
+  5c. active_req is cleared and next queued mesg-Y is submitted
+  5d. mesg-Y transmission gets anyway stuck on cl->tx_prepare since
+      we check the SCMI shmem BUSY bit and busy-loop there till it
+      clears: this clearing can happen ONLY after the mesg-X reply
+      has come through, since it is the platform SCMI server that
+      clears it having delivered the reply in the shmem.
+
+6. platform SCMI server replies to mesg-X finally:
+  6a. platform writes reply in shmem
+  6b. platform clears BUSY bit
+
+  -- note SCMI stack is still waiting for a reply at this point...
+     so waiting for an IRQ OR by simply spinning on that same BUSY bit
+     if polling mode was requested for the transaction....
+
+     ...lets assume you are in IRQ mode:
+
+7. mesg-Y sender which was spinning on BUSY bit (blocked on tx_prepare)
+   is immediately cleared to send and so tx_prepare can proceed further
+   and completely overwrite the just received mesg-X, which is now LOST
+
+.in case you were polling I guess you will have anyway some corruption
+due to the race between the polling-mesg-X-receiver retrieving the reply
+and the same tx_prepare codeflow as above...
+
+Indeed, the spec says that you should protect the channel till the reply
+has been retrieved from the SCMI (even after the BUSY bit is cleared), and
+in other transport we DO have some form of locks, BUT here in mailboxes
+there is not since it is NOT needed IF you stick to the non-TxAck original
+behaviour, since the tx_tick, as it is now, will be run by the SCMI stack
+ONLY after it has waited for mesg-X and retrieved the mesg-X-reply payload
+..not before.
+
+Instead, if you enable the TxAck mode you are basically letting the controller
+itself issue the tx_tick(), which means "previous TX is done, please proceed
+with the next", BUT the current TX is really NOT done at all as intended
+by the client (SCMI), since the reply is missing and the only entity which
+can have the whole picture about when a transaction is completed (or timed-out)
+is the SCMI client.
+
+As said, I think the fundamental clash is between what the mailbox
+subsystem considers a TXDONE event (and related actions) and what
+instead is considered a completed transaction on the SCMI a2p channel:
+i.e. CMD_sent + REPLY_retrieved.
+
+At the end, anyway, would it be worth in any way to leverage such TxAck
+capabilities (somehow) of a mailbox in the SCMI world ?
+
+I mean, even if we make this work, what is supposed to happen better and faster
+when using a TxAck instead of a TX_polling mode like it is now ?
+
+..because the SCMI stack cannot really do anything with this information in
+this case, given that there is just one single a2p_shem area for sending command
+and receiving replies...it has just to wait anyway even after the
+TxAck...
+
+.maybe it is a bit more power-favourable to sleep_wait for the TxAck IRQ
+instead of polling the MHU regs ?... other than this the TxAck means nothing
+really in the context of the SCMI world, since you cannot safely queue anything
+more till the previous exchange has fully completed...
+
+..in other non-SCMI scenarios that I experimented with, it really makes a
+difference havig the TxAck since it avoids all the internal polling/requeueing
+dance in the mailbox subsystem, but in this case I think is all made useless by
+the way SCMI/SMT based transport works...i.e. using a single shmem area for
+the a2p channel..
+
+..not really a short and sweet email... :P ... any feedback or further
+ideas are welcome anyway...especially if you can prove that all of the
+above is somehow wrong, or that there is a good reason to leverage the
+TxAck capable mailboxes  :D
+
+Thanks,
+Cristian
+
 
