@@ -1,128 +1,209 @@
-Return-Path: <linux-kernel+bounces-94348-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94331-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F04D5873DC1
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 18:49:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 585EA873D82
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 18:28:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 67559B20A79
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:49:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B4378B239AB
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:28:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FDA913C9FB;
-	Wed,  6 Mar 2024 17:49:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24D9E13BADE;
+	Wed,  6 Mar 2024 17:28:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=jiaxyga.com header.i=@jiaxyga.com header.b="dqn6goSP";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=jiaxyga.com header.i=@jiaxyga.com header.b="qVJlq9pw"
-Received: from fallback21.i.mail.ru (fallback21.i.mail.ru [79.137.243.75])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ZnOX00fc"
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BA1C7FBAE;
-	Wed,  6 Mar 2024 17:49:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.137.243.75
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A29C8135401
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 17:27:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709747372; cv=none; b=OGrqXzJbPXPmfsIbUGwb0DGgcQ9pCflcZBAmnhDGML15px5tm8eMqAjA3sEaAF1ZIXI9FokdFJMdHK1hnW3iNO/zcQtXkhEb/ZNw4SxXAbxgnToQAi3ylDnCZu4oHmj6vWgF2CnrxaUFCP5xK/J8Tuuz+pj4YYHgy5TE5V6DRkQ=
+	t=1709746081; cv=none; b=qXZdqwdNjyOuPgcL1HVv3ThKQofu7mv6oSJS9AifccKAkZpCFZNdtAvKnF/jv8l4qJMVf6JFSHnmORm7G0XSoah69bdoRQi/BCSWOLiMWqp5+hJjuudU5TEw2RVxZ7QiMmLn6jZ2pyxVJ19+TXxtamhxLDX6hHYQfUBqf4AdPng=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709747372; c=relaxed/simple;
-	bh=nfuv/qNlghjeWSk4MflAiPLs70gZ3Wj71I2bcATpPTE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BRhrTlXx9arNF8KLHaRL7Fdy7pttn5HHx30+I9PYzPZ+JD30fDIldysM9zU90qroYQOIWWahUZRkE80kjeSW+N2cU6u80WlSoQVcnLd+5fMzKg6JdGprqkSTYhn0v5FMXTaCbJIMk0k/n8FfnclUFClFMBAg1HIon26ksCIaAMI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jiaxyga.com; spf=pass smtp.mailfrom=jiaxyga.com; dkim=pass (1024-bit key) header.d=jiaxyga.com header.i=@jiaxyga.com header.b=dqn6goSP; dkim=pass (1024-bit key) header.d=jiaxyga.com header.i=@jiaxyga.com header.b=qVJlq9pw; arc=none smtp.client-ip=79.137.243.75
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jiaxyga.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jiaxyga.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=jiaxyga.com; s=mailru;
-	h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=sayOMG/a7cxTEcN/F+mJpbiKXDApnBZxhnQAjqETHYg=;
-	t=1709747369;x=1709837369; 
-	b=dqn6goSPV+36Z+6br0vt0isbE15q/GsrTY9TNH6uZGBsF+aQWY6sNdt7GnoMcL5/apBj7g906ABpLCczsFe0ohtgQgVJEp+y+kz4eWl0c2b8nkNkZdhgpqDqLIHQXVA2cYupBeYeVP8cCjF2JfvSZQHoOvXHbRX2Y3j5dMV1D+A=;
-Received: from [10.12.4.36] (port=32876 helo=smtp59.i.mail.ru)
-	by fallback21.i.mail.ru with esmtp (envelope-from <danila@jiaxyga.com>)
-	id 1rhv3E-00EWkO-OB; Wed, 06 Mar 2024 20:27:33 +0300
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=jiaxyga.com
-	; s=mailru; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:From:Sender:Reply-To:To:Cc:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive:
-	X-Cloud-Ids:Disposition-Notification-To;
-	bh=sayOMG/a7cxTEcN/F+mJpbiKXDApnBZxhnQAjqETHYg=; t=1709746052; x=1709836052; 
-	b=qVJlq9pwdd2beDyaRhh2TxuPzkL+GHMg7RPOghYa2SvUN6UcLFB7FEi0i1znFV2T3oGfpRhq28R
-	zu/0He9NjLCUq/oe06YlDBgBLTDjsJIuDaDlAFSSUEBa3FAYMwx8rwq5D7rWi23BLgpob0etPILxM
-	0jA77NwOPNhJT0EcHwI=;
-Received: by smtp59.i.mail.ru with esmtpa (envelope-from <danila@jiaxyga.com>)
-	id 1rhv30-0000000F1Va-2RcR; Wed, 06 Mar 2024 20:27:19 +0300
-From: Danila Tikhonov <danila@jiaxyga.com>
-To: pavel@ucw.cz,
-	lee@kernel.org,
-	robh@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	andersson@kernel.org,
-	konrad.dybcio@linaro.org
-Cc: linux-leds@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org,
-	Danila Tikhonov <danila@jiaxyga.com>
-Subject: [PATCH 2/2] arm64: dts: qcom: pm6150l: add Light Pulse Generator device node
-Date: Wed,  6 Mar 2024 20:27:10 +0300
-Message-ID: <20240306172710.59780-3-danila@jiaxyga.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240306172710.59780-1-danila@jiaxyga.com>
-References: <20240306172710.59780-1-danila@jiaxyga.com>
+	s=arc-20240116; t=1709746081; c=relaxed/simple;
+	bh=eX3/X50p4A7OOA8htCEucfM7TcgCP6daHV9nlBfFHEI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gSQ5Niido9gy6+Cla+jMpNcDX8LUwx1UcO490mKtZyhjvcSRiS99zvqqU0M2o2tdNzvE2pUgDfrESWfL1GUiw6LB9Bu7EPjxygMVel5SB5CeuLTOcXPvmHVi3nwOYOXkt/PIC022zk7yj71giS7CFt5bQvKyLM4ThUamkQbSmsA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ZnOX00fc; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-563cb3ba9daso1332156a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 09:27:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709746078; x=1710350878; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=w94diZ9iNEVg6u9UwjKj2DUh++QG9DmeQZBnfcZOhW8=;
+        b=ZnOX00fc9GvzypiOvC+omM8G+kx9tS08LA0Xd7fF6vEC4CtUQ5R/JecEBJl8DfDho7
+         ACUKMLpS1o4Bs2X4pKduni6AfwVIXN3ijkJrmqFGcJrjJZlpR3MzeyB1HJVUqZB3Pr/J
+         UhSkYKKRXuPTkCCMNNeYf4C0W3G5EfUQpK5fyxMKPHtFYHboYLSnJZ0twFOSuIy1t36i
+         yerD9rhU1nyYW5P7IltH1utiKMehW1J8S4JTx+eEK5EIeITVvV/zvwhyP6SsGjpOiN8y
+         EDFrAXHPZ84unqUWuO1PUWUbNASJgiHVhCI7+dEWJFVNGP+0/QLWkfVFJ2exuZLh2BD2
+         gbBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709746078; x=1710350878;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=w94diZ9iNEVg6u9UwjKj2DUh++QG9DmeQZBnfcZOhW8=;
+        b=k7i1gZiOjgC8grtWnSuhZleIyunD1NPQixDgvf65muzJB0nyRJ3oTiUceSvBTUW9oq
+         vwuNfn6tKyPrj8K+QJkmCcWSvStFmBeTGbnoRDP/D2r1Au9/N6BVgtZo4KKfWofwhw+E
+         JAHJ6hwHm5kOut8RX68oMIf2ExSJnlnfBI3WKgq8UGILUuXOtIPqhv3nzUDqZGg62E+Y
+         M4kg2qSng5bDYPQrcpyH+2UGp3o7znQ5C/y3c5vyMpk1j7Ezq1d7f4aTxaJny0R5jmV5
+         Tt6a0m7tpX5p4ri0ZgAwRJHphX7bkVC24cWp0aN7FlNTdaR5U7k7qhHVI2oBWYgWB12H
+         SXuQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXb3C9V3V0Y0Cx02zZ2ywT8wVaGSJjwsZBvnqqH+uFOcjGHrrm2TqbJMCM4b4fWsYnC7UJler1Ho/LxeVHN99dhDWmnNs+6cPvd2vpx
+X-Gm-Message-State: AOJu0YxxRTU+Fi20W/K2vbBdRGb4z05l8DD+vhZwHMaDCBFazJTz/p/C
+	Mn/u9g2XSMrPvFjqyO57yecDhRsgoBkIjuJ7rdD4DySfFDCaJIgIa8UMk8h6PLxFqaBiCMy4dUk
+	AcHHZCymDom7Y0LI0kH2tq9OteS0nUKS4T1CP
+X-Google-Smtp-Source: AGHT+IEBkMzksp0NHQ8swQKzOv58zFZ3WYJCQCTWJNk2pd57sW7vdPk0BysnKSIsx8vreleNP/wzinem9L/gnOwQfU8=
+X-Received: by 2002:a17:906:1c81:b0:a45:98f3:997e with SMTP id
+ g1-20020a1709061c8100b00a4598f3997emr4847806ejh.7.1709746077588; Wed, 06 Mar
+ 2024 09:27:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Mailru-Src: smtp
-X-7564579A: 646B95376F6C166E
-X-77F55803: 4F1203BC0FB41BD987C0EE6E7F0A597DF2E6F6001F0923FF54E1DF110EA51DBE182A05F538085040E9F556BD55C367DB411046492FDDF8064ABD3B6D7136F02B8FCBEF1FD3BB67B1390AAA442BE8083A
-X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE75210414551E8CD62EA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F79006377E85B0EC44E8FD73EA1F7E6F0F101C6723150C8DA25C47586E58E00D9D99D84E1BDDB23E98D2D38B73AB1701401CD87157E3AD6515A1C3C110CEC9970578033BACE5DE51FC050994A471835C12D1D9774AD6D5ED66289B5278DA827A17800CE73AFA331E307B52169FA2833FD35BB23D2EF20D2F80756B5F868A13BD56FB6657A471835C12D1D977725E5C173C3A84C3E97D2AE7161E217F117882F4460429728AD0CFFFB425014E868A13BD56FB6657D81D268191BDAD3DC09775C1D3CA48CFDC43A4843798502DBA3038C0950A5D36C8A9BA7A39EFB766D91E3A1F190DE8FDBA3038C0950A5D36D5E8D9A59859A8B6CC57694C5FB0D60276E601842F6C81A1F004C906525384303E02D724532EE2C3F43C7A68FF6260569E8FC8737B5C2249957A4DEDD2346B42E827F84554CEF50127C277FBC8AE2E8BA83251EDC214901ED5E8D9A59859A8B666D37212B2E9A769089D37D7C0E48F6C5571747095F342E88FB05168BE4CE3AF
-X-C1DE0DAB: 0D63561A33F958A5BF8E783E94BD245D5002B1117B3ED6969485218F8EE43FEBBFF4097FFC9E796F823CB91A9FED034534781492E4B8EEAD6A17C1D737525568C79554A2A72441328621D336A7BC284946AD531847A6065A535571D14F44ED41
-X-C8649E89: 1C3962B70DF3F0ADE00A9FD3E00BEEDF77DD89D51EBB7742D3581295AF09D3DF87807E0823442EA2ED31085941D9CD0AF7F820E7B07EA4CF99C035884670EE351B27250F58A98014BE4A057260BAC83169A130FCF8937442D753EA1A396000B0A2A143A52978B9DD6D3EEF26A1BDEB90C777010AFA8312B6FB53AEAA466CFC9A42BF32D1DA1046D202C26D483E81D6BE72B480F99247062FEE42F474E8A1C6FD34D382445848F2F3
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojbL9S8ysBdXhgskDnfdo7g8O5UHNuBNSp
-X-Mailru-Sender: 9EB879F2C80682A09F26F806C73949810C5FAF77747E6D2EF6A6F50B1491C0352187E280D90D46DEB44C5CD3DD77950C2C62728BC403A049225EC17F3711B6CF1A6F2E8989E84EC137BFB0221605B344978139F6FA5A77F05FEEDEB644C299C0ED14614B50AE0675
-X-Mras: Ok
-X-7564579A: 646B95376F6C166E
-X-77F55803: 6242723A09DB00B485448333635D8AFAF2FD4A3C9FF394F5F12B0793FCE63EAD049FFFDB7839CE9ED2C2511FF248D2A27B44701CBD463A8A5C1E53EC3AF7BC7D0F63E9A0504151D2
-X-7FA49CB5: 0D63561A33F958A560416A7FD8E4649890419354EF96C38935C53782351F85508941B15DA834481FA18204E546F3947C2F20CBB68F4D2F81F6B57BC7E64490618DEB871D839B7333395957E7521B51C2DFABB839C843B9C08941B15DA834481F8AA50765F7900637F35A6E24A0A0A547389733CBF5DBD5E9B5C8C57E37DE458BD96E472CDF7238E0725E5C173C3A84C3975373433331DEB835872C767BF85DA2F004C90652538430E4A6367B16DE6309
-X-87b9d050: 1
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2bioj9auBsoWJeY8O8DzWRTqOfg==
-X-Mailru-MI: 8000000000000800
-X-Mras: Ok
+References: <20240304094950.761233-1-dtatulea@nvidia.com> <20240305190427.757b92b8@kernel.org>
+ <7fc334b847dc4d90af796f84a8663de9f43ede5d.camel@nvidia.com>
+ <20240306072225.4a61e57c@kernel.org> <320ef2399e48ba0a8a11a3b258b7ad88384f42fb.camel@nvidia.com>
+ <20240306080931.2e24101b@kernel.org> <CAHS8izMw_hxdoNDoCZs8T7c5kmX=0Lwqw_dboSj7z1LqtS-WKA@mail.gmail.com>
+ <9a78b37abdf40daafd9936299ea2c08f936ad3d5.camel@nvidia.com>
+In-Reply-To: <9a78b37abdf40daafd9936299ea2c08f936ad3d5.camel@nvidia.com>
+From: Mina Almasry <almasrymina@google.com>
+Date: Wed, 6 Mar 2024 09:27:45 -0800
+Message-ID: <CAHS8izO-dWP3sHdZYjsEZfF3XS8Qt8jhWAXmx6LU=O9PWtzoqg@mail.gmail.com>
+Subject: Re: [RFC] net: esp: fix bad handling of pages from page_pool
+To: Dragos Tatulea <dtatulea@nvidia.com>
+Cc: "kuba@kernel.org" <kuba@kernel.org>, "davem@davemloft.net" <davem@davemloft.net>, 
+	"herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>, Gal Pressman <gal@nvidia.com>, 
+	"dsahern@kernel.org" <dsahern@kernel.org>, 
+	"steffen.klassert@secunet.com" <steffen.klassert@secunet.com>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>, 
+	Leon Romanovsky <leonro@nvidia.com>, "edumazet@google.com" <edumazet@google.com>, 
+	"ian.kumlien@gmail.com" <ian.kumlien@gmail.com>, 
+	"Anatoli.Chechelnickiy@m.interpipe.biz" <Anatoli.Chechelnickiy@m.interpipe.biz>, 
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add device node defining LPG/PWM block on PM6150L PMIC chip.
+On Wed, Mar 6, 2024 at 9:10=E2=80=AFAM Dragos Tatulea <dtatulea@nvidia.com>=
+ wrote:
+>
+> On Wed, 2024-03-06 at 08:40 -0800, Mina Almasry wrote:
+> > On Wed, Mar 6, 2024 at 8:09=E2=80=AFAM Jakub Kicinski <kuba@kernel.org>=
+ wrote:
+> > >
+> > > On Wed, 6 Mar 2024 16:00:46 +0000 Dragos Tatulea wrote:
+> > > > > Hm, that's a judgment call.
+> > > > > Part of me wants to put it next to napi_frag_unref(), since we
+> > > > > basically need to factor out the insides of this function.
+> > > > > When you post the patch the page pool crowd will give us
+> > > > > their opinions.
+> > > >
+> > > > Why not have napi_pp_put_page simply return false if CONFIG_PAGE_PO=
+OL is not
+> > > > set?
+> > >
+> > > Without LTO it may still be a function call.
+> > > Plus, subjectively, I think that it's a bit too much logic to encode =
+in
+> > > the caller (you must also check skb->pp_recycle, AFAIU)
+> > > Maybe we should make skb_pp_recycle() take struct page and move it to
+> > > skbuff.h ? Rename it to skb_page_unref() ?
+> > >
+> >
+> > Does the caller need to check skb->pp_recycle? pp_recycle seems like a
+> > redundant bit. We can tell whether the page is pp by checking
+> > is_pp_page(page). the pages in the frag must be pp pages when
+> > skb->pp_recycle is set and must be non pp pages when the
+> > skb->pp_recycle is not set, so it all seems redundant to me.
+> >
+> AFAIU we don't have to check for pp_recycle, at least not in this specifi=
+c case.
+>
+> > My fix would be something like:
+> >
+> > diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+> > index d577e0bee18d..cc737b7b9860 100644
+> > --- a/include/linux/skbuff.h
+> > +++ b/include/linux/skbuff.h
+> > @@ -3507,17 +3507,25 @@ int skb_cow_data_for_xdp(struct page_pool
+> > *pool, struct sk_buff **pskb,
+> >  bool napi_pp_put_page(struct page *page, bool napi_safe);
+> >
+> >  static inline void
+> > -napi_frag_unref(skb_frag_t *frag, bool recycle, bool napi_safe)
+> > +napi_page_unref(struct page *page, bool napi_safe)
+> >  {
+> > -       struct page *page =3D skb_frag_page(frag);
+> > -
+> >  #ifdef CONFIG_PAGE_POOL
+> > -       if (recycle && napi_pp_put_page(page, napi_safe))
+> > +       if (napi_pp_put_page(page, napi_safe))
+> >                 return;
+> >  #endif
+> >         put_page(page);
+> >  }
+> >
+> > +static inline void
+> > +napi_frag_unref(skb_frag_t *frag, bool recycle, bool napi_safe)
+> > +{
+> > +       struct page *page =3D skb_frag_page(frag);
+> > +
+> > +       DEBUG_NET_WARN_ON(recycle !=3D is_pp_page(page));
+> > +
+> > +       napi_page_unref(page);
+> > +}
+> > +
+> >
+> > And then use napi_page_unref() in the callers to handle page pool &
+> > non-page pool gracefully without leaking page pool internals to the
+> > callers.
+> >
+> We'd also need to add is_pp_page() in the header with the changes above..=
+.
+>
 
-Signed-off-by: Danila Tikhonov <danila@jiaxyga.com>
----
- arch/arm64/boot/dts/qcom/pm6150l.dtsi | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+Gah, I did not realize skbuff.h doesn't have is_pp_page(). Sorry!
 
-diff --git a/arch/arm64/boot/dts/qcom/pm6150l.dtsi b/arch/arm64/boot/dts/qcom/pm6150l.dtsi
-index d13a1ab7c20b..0fce45276e5c 100644
---- a/arch/arm64/boot/dts/qcom/pm6150l.dtsi
-+++ b/arch/arm64/boot/dts/qcom/pm6150l.dtsi
-@@ -118,6 +118,16 @@ pm6150l_flash: led-controller@d300 {
- 			status = "disabled";
- 		};
- 
-+		pm6150l_lpg: pwm {
-+			compatible = "qcom,pm6150l-lpg", "qcom,pm8150l-lpg";
-+
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			#pwm-cells = <2>;
-+
-+			status = "disabled";
-+		};
-+
- 		pm6150l_wled: leds@d800 {
- 			compatible = "qcom,pm6150l-wled";
- 			reg = <0xd800>, <0xd900>;
--- 
-2.44.0
+> On that line of thought, unless these new APIs are useful for other use-c=
+ases,
+> why not keep it simple:
+> - Move is_pp_page() to skbuff.h.
 
+I prefer this. is_pp_page() is a one-liner anyway.
+
+> - Do a simple is_pp_page(page) ? page_pool_put_full_page(page):put_page(p=
+age) in
+> the caller? Checking skb->pp_recycle would not be needed.
+>
+
+IMHO page pool internals should not leak to the callers like this.
+There should be a helper that does the right thing for pp & non-pp
+pages so that the caller can use it without worrying about subtle pp
+concepts that they may miss at some callsites, but I'm fine either way
+if there is strong disagreement from others.
+
+> Thanks,
+> Dragos
+>
+> > > > Regarding stable would I need to send a separate fix that does the =
+raw pp page
+> > > > check without the API?
+> > >
+> > > You can put them in one patch, I reckon.
+> >
+>
+
+
+--=20
+Thanks,
+Mina
 
