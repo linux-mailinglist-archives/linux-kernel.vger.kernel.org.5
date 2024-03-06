@@ -1,148 +1,140 @@
-Return-Path: <linux-kernel+bounces-93819-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93822-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2E5E873528
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 11:58:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35A21873530
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 11:59:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 792D81F2121D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:58:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E111828937B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:59:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A666D77F2A;
-	Wed,  6 Mar 2024 10:57:21 +0000 (UTC)
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6DAF63102;
+	Wed,  6 Mar 2024 10:57:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DSH671vw"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89B5F77A05
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 10:57:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA540779F8
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 10:57:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709722641; cv=none; b=pYT6fol+gQ7NMM5XxStD7h46wn1G3XMKoAn15QedMgbG82XzGiCVlZCr1sMqGDCUy8NkTrnRnI8GmgenMrsUxNCA+AfoHNW3ifjpd4fBi2SX2/nQzBJ1N1wy9q0pfxSiFAyP6LDynL0moOzR+a/reKyxr8n5P4PbVdu/ByJciq4=
+	t=1709722648; cv=none; b=Rdz0AKZ2LPQ4dPJo2mQ9wD7Gm4s4X5ibyTm/2F9MPgAuQ89ECPdyaw+7tR/rC4MlpDf3hRWfoIda/bEUDOhrxdSS+d7pfnoebAcqwaglHuo+OBY6CMlvr/XCWmXXXrx2P/wJKKE44tor3tSclqfMaC7bezDQGhlQg9PBv7Wu0MQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709722641; c=relaxed/simple;
-	bh=XsLw6ackKx33O4QozjLGkHXzho6GlTehmojGjYysM3A=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=i+YxQXk9FJ54CXOC/7rv4F8eRC95koKeSrUY2AI69PZSKP7iTAiKzA8iwgsjuBX3dzn4NrEhEVBcYcLkBn7K1ku1MqfpxztQwKhw2kO2X41/Oeehxa/06blE2lgQ757gONAdoPdJ9NUW3x3cY4iIJHGA37HZ5SpP6cp3jcwf1uk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7c8440b33b6so96892039f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 02:57:19 -0800 (PST)
+	s=arc-20240116; t=1709722648; c=relaxed/simple;
+	bh=b4XyqL2PnC56hJ2b/S40mLdDbJwaGE9J/KbgoSiF4LY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RnghBFD5NRm9tjU5sRuK/2sWLOtY07Yxotqi9t8Ia3HhGhXV9VxxOxyY4T2rk732EokZX5D3ipaN1BHaW6+q7KcSYTJ7lbM+hde+OIvRZHRkzhxHKdzi7RPecI5nNUxzIpzCtWW1cJi1muX8s4AYgcy7x9QpyA/j7+Wup6XVgZs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DSH671vw; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709722645;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=b4XyqL2PnC56hJ2b/S40mLdDbJwaGE9J/KbgoSiF4LY=;
+	b=DSH671vwCJN+v69pk6RKe/udFDqYlsJUBm+V0skAxpsNgFYBFhzxpqiZPFDqy63KNWOtOy
+	DDI+eQnrvFluvDDK2cn4Cz3/aDRP4bXaSspmsfQMbpYeGbiDA9trbyZ+rOkjes5kLkbV7N
+	NbogP6hGxwO9MPhR/fm+Raa3yVm0Cts=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-127-q8SZT93IPn-ctm5Aea4oYQ-1; Wed, 06 Mar 2024 05:57:21 -0500
+X-MC-Unique: q8SZT93IPn-ctm5Aea4oYQ-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-33d60ac6781so955844f8f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 02:57:21 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709722638; x=1710327438;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cCr0TsSg56p14urXWsXr6XqDfXQJ+JrQT+/U6eWZWoU=;
-        b=ouOqZHSsEsaMSEnLgdtdzuvtecS3WX5riUrMmG7m8oExlGhr/G+FYG0GzW+mVIV4kF
-         TQvwiK/eVdaBsS30qKhD6LV0kulgJy9VhEsJ89hauwzPUbaJ0ZSDuFVwENaJgTU0sxkv
-         lQ0HFi/JJ/RS4IQL16kW08s3XPR7JpBYi8qUb47p26HB05aUSDVbnASfEmkwqVQ4qmAf
-         4/8xFvwmWI7hWu3OqbD/3kGu7ysXagXF/1ok8f2y83jJOO19iwi8ZKmmO8Av0GrgxbHY
-         vhZvGO5WfF1rwp67KewGL4p7wYNU1fY+Y24K20H+lDFis0q1mU7o4k4NKZRr/DdrHbsv
-         mvDg==
-X-Forwarded-Encrypted: i=1; AJvYcCW1zFFfycu7uCqtPXdifvwAjfSmSaQA8T99H+Ij3zopwKb8eqQHWMKuYNtbB1B0Ph+KprABXkku7ezuwJUnRHaelVX3ZRpN5n6oMMim
-X-Gm-Message-State: AOJu0YxXI/+HLfKJIxdZ6vaC8MDCi7m7wBdsFWh1UFKscIVbXwqVn35l
-	zN2Wv6JCT/Hq5R8C03vVIXvbEK0JBo67IQl4nEHjJ7zeY0pHR2SmLMVlJjoMzYLPClbunq5Vn4o
-	ooUgN4fcrp/bToXuoqqGeug3LqRcTgAMyKSWcnqV0GAC7OnY6bVpgWWY=
-X-Google-Smtp-Source: AGHT+IGujKW2GhxdCNQ+Pa5KCV/cUet5XpNsDkba1TrtXtNMS5JvOpNbY2oFFSHru0lhN+xwADASaEzKIqfHM3WdDRjqcBtD0+mh
+        d=1e100.net; s=20230601; t=1709722640; x=1710327440;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=b4XyqL2PnC56hJ2b/S40mLdDbJwaGE9J/KbgoSiF4LY=;
+        b=MZAYI3AJlRROZwMcgDaPR6f/IdEnGCr8hju4QM5Al+oz8Nq1/CVaKTcz08IyGjDJ0V
+         /2wYzJZD6jYHcgc0BRW0vZvvdXDsyJA+RjgB21xGwF5faMXz/ph/jP4sHSr3A+KY4DDT
+         jPDxy0Zyk09cFm77RzLdlewH4Ye9K2d6H15UBHrSKmeCfrjdIRzJbqCI+6z4psTLVrGD
+         6uP65l+jumCm4f7qHCW3n+drwHxJsbV6lvz4eiZoro/+APUdTzNhxTFOjmxd4ASOe301
+         6kBhsvOsyE4AN4E+jPqmNAFtvOSTLe6iVFKWOlweuE6k57pYhkOCTZ55EM3TWdUH/05j
+         Ujlw==
+X-Forwarded-Encrypted: i=1; AJvYcCVfywEFda3gx2VNaQb5HD5uC38uBz/uzKPa/W6z7V+ZVJaR0As5+FByNyWIs1OJ8kSZxDvBxEctZif1BcAkPITjM9cn3GApQ+0PTBl4
+X-Gm-Message-State: AOJu0Yw+wD4Jxr5U7Cvr0l9xjMpJlv3vfNbnvuG3n835d/UxvhKKviEf
+	ZSitqAYRvc0RreB8EqhGj5QfHqa+KZxnu38nBrVTsIzhavmVFsUvYs2/gWFT+T08vVUMmRMB26Y
+	DYffMeUOKPvC0nLZ8b2xGHuXDwoIBBrn2cwL0XujFwHjulR73r9+7DoNA0QMVvg==
+X-Received: by 2002:a5d:5f48:0:b0:33d:215a:1914 with SMTP id cm8-20020a5d5f48000000b0033d215a1914mr13001148wrb.38.1709722640468;
+        Wed, 06 Mar 2024 02:57:20 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHRZPOXIucKkLpt2y1Kl5ONuSx0wUfC6rVS8K/ER3pp2uiUyHn4H8Vrm+c3L1dNUe5NOyldIw==
+X-Received: by 2002:a5d:5f48:0:b0:33d:215a:1914 with SMTP id cm8-20020a5d5f48000000b0033d215a1914mr13001113wrb.38.1709722639939;
+        Wed, 06 Mar 2024 02:57:19 -0800 (PST)
+Received: from localhost ([2a01:e0a:b25:f902::ff])
+        by smtp.gmail.com with ESMTPSA id bx5-20020a5d5b05000000b0033e103eaf5bsm17353346wrb.115.2024.03.06.02.57.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Mar 2024 02:57:19 -0800 (PST)
+Date: Wed, 6 Mar 2024 11:57:19 +0100
+From: Maxime Ripard <mripard@redhat.com>
+To: Dmitry Kasatkin <dmitry.kasatkin@gmail.com>, 
+	Paul Moore <paul@paul-moore.com>, Mimi Zohar <zohar@linux.ibm.com>, 
+	James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, Coiby Xu <coxu@redhat.com>
+Cc: linux-integrity@vger.kernel.org, itrymybest80@protonmail.com, 
+	Eric Snowberg <eric.snowberg@oracle.com>, Jarkko Sakkinen <jarkko@kernel.org>, 
+	"open list:SECURITY SUBSYSTEM" <linux-security-module@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] integrity: eliminate unnecessary "Problem loading
+ X.509 certificate" msg
+Message-ID: <20240306-humongous-nuthatch-of-science-00e58b@houat>
+References: <20231227044156.166009-1-coxu@redhat.com>
+ <20240109002429.1129950-1-coxu@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:16ca:b0:474:b9df:7315 with SMTP id
- g10-20020a05663816ca00b00474b9df7315mr747827jat.2.1709722638714; Wed, 06 Mar
- 2024 02:57:18 -0800 (PST)
-Date: Wed, 06 Mar 2024 02:57:18 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008b9c410612fbd266@google.com>
-Subject: [syzbot] [netfilter?] KASAN: slab-use-after-free Read in ip_skb_dst_mtu
-From: syzbot <syzbot+e5167d7144a62715044c@syzkaller.appspotmail.com>
-To: davem@davemloft.net, dsahern@kernel.org, edumazet@google.com, fw@strlen.de, 
-	kadlec@netfilter.org, kuba@kernel.org, linux-kernel@vger.kernel.org, 
-	netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, pabeni@redhat.com, 
-	pablo@netfilter.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    805d849d7c3c Merge tag 'acpi-6.8-rc7' of git://git.kernel...
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=14e106ac180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=fad652894fc96962
-dashboard link: https://syzkaller.appspot.com/bug?extid=e5167d7144a62715044c
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16d490ca180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1025fa6a180000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/17c4652fa589/disk-805d849d.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/7fc3b5760ca4/vmlinux-805d849d.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/d88bfccc316a/bzImage-805d849d.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e5167d7144a62715044c@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: slab-use-after-free in sk_fullsock include/net/sock.h:2823 [inline]
-BUG: KASAN: slab-use-after-free in ip_skb_dst_mtu+0x830/0x9b0 include/net/ip.h:499
-Read of size 1 at addr ffff88802dc5a012 by task swapper/1/0
-
-CPU: 1 PID: 0 Comm: swapper/1 Not tainted 6.8.0-rc6-syzkaller-00037-g805d849d7c3c #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2e0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:377 [inline]
- print_report+0x167/0x540 mm/kasan/report.c:488
- kasan_report+0x142/0x180 mm/kasan/report.c:601
- sk_fullsock include/net/sock.h:2823 [inline]
- ip_skb_dst_mtu+0x830/0x9b0 include/net/ip.h:499
- __ip_finish_output+0x12b/0x400 net/ipv4/ip_output.c:306
- ipvlan_process_v4_outbound+0x3ef/0x700 drivers/net/ipvlan/ipvlan_core.c:442
- ipvlan_process_outbound drivers/net/ipvlan/ipvlan_core.c:540 [inline]
- ipvlan_xmit_mode_l3 drivers/net/ipvlan/ipvlan_core.c:602 [inline]
- ipvlan_queue_xmit+0xaa2/0x11f0 drivers/net/ipvlan/ipvlan_core.c:668
- ipvlan_start_xmit+0x4a/0x150 drivers/net/ipvlan/ipvlan_main.c:222
- __netdev_start_xmit include/linux/netdevice.h:4989 [inline]
- netdev_start_xmit include/linux/netdevice.h:5003 [inline]
- xmit_one net/core/dev.c:3547 [inline]
- dev_hard_start_xmit+0x242/0x770 net/core/dev.c:3563
- sch_direct_xmit+0x2b6/0x5f0 net/sched/sch_generic.c:342
- qdisc_restart net/sched/sch_generic.c:407 [inline]
- __qdisc_run+0xbed/0x2150 net/sched/sch_generic.c:415
- qdisc_run+0xda/0x270 include/net/pkt_sched.h:125
- net_tx_action+0x877/0xa30 net/core/dev.c:5197
- __do_softirq+0x2bb/0x942 kernel/softirq.c:553
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="xv7pnznz2fqkk5di"
+Content-Disposition: inline
+In-Reply-To: <20240109002429.1129950-1-coxu@redhat.com>
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+--xv7pnznz2fqkk5di
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Hi Dmitry, Eric, James, Mimi, Paul, Serge,
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+On Tue, Jan 09, 2024 at 08:24:28AM +0800, Coiby Xu wrote:
+> Currently when the kernel fails to add a cert to the .machine keyring,
+> it will throw an error immediately in the function integrity_add_key.
+>=20
+> Since the kernel will try adding to the .platform keyring next or throw
+> an error (in the caller of integrity_add_key i.e. add_to_machine_keyring),
+> so there is no need to throw an error immediately in integrity_add_key.
+>=20
+> Reported-by: itrymybest80@protonmail.com
+> Closes: https://bugzilla.redhat.com/show_bug.cgi?id=3D2239331
+> Fixes: d19967764ba8 ("integrity: Introduce a Linux keyring called machine=
+")
+> Reviewed-by: Eric Snowberg <eric.snowberg@oracle.com>
+> Signed-off-by: Coiby Xu <coxu@redhat.com>
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+Any chance this patch can be merged? This is breaking (at least) Fedora
+at the moment.
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+Thanks!
+Maxime
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
+--xv7pnznz2fqkk5di
+Content-Type: application/pgp-signature; name="signature.asc"
 
-If you want to undo deduplication, reply with:
-#syz undup
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZehMDgAKCRDj7w1vZxhR
+xRjcAQDO43bKYImGBD+B/EBUcAe1M2J0uqbm6+QesqiYtsPvGAD/fUFr3rDbhTvM
+CAt76KLDM5Hbt0iKpgt0TgS06wTsLQQ=
+=tyck
+-----END PGP SIGNATURE-----
+
+--xv7pnznz2fqkk5di--
+
 
