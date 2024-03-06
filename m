@@ -1,62 +1,45 @@
-Return-Path: <linux-kernel+bounces-93679-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93678-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D757087332D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:55:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93E1687332A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:55:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 14AE41C2301E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:55:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B7BFD1C23DFF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:55:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CD2B5F543;
-	Wed,  6 Mar 2024 09:54:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="GZgRO7tK"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A09C5F473;
+	Wed,  6 Mar 2024 09:54:49 +0000 (UTC)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E98385F554;
-	Wed,  6 Mar 2024 09:54:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CCD45F470
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 09:54:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709718891; cv=none; b=FfOztFctKJ34pXZQvBSpG3YZS7mTJhYthM3UmLUKjg9Z963k5n8ySFq3tkMM1nzFq/4p7ES1gtYLb8Sxl9x5ggxFVJoRWsSvO1ZO07YSAFSVyTI36gPO2H69etjW0dys7boTKdKjPRgSoc1JJSrglFBObxSXYi39SFdBVy18WPI=
+	t=1709718888; cv=none; b=IToAE4re2+ADoo8cCnUTPh91PxbT1Iq1IwimXOjicTZCy5KOkJ9IUmqM8jwU5aibYYx0Mkd2LyjAD9JAEk4+HUZnSNKF9UHpg3SngFzLora1Kjj3QrJJiAb9Nhv+k79FAXnWWSoLtyH9tQX3OAYjMJgEl694zEtr/m7GlQgy0/E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709718891; c=relaxed/simple;
-	bh=QN3XzJAj1R3sWj03mZ3aXIu5s0TqDPotRLyYDLKw+lA=;
+	s=arc-20240116; t=1709718888; c=relaxed/simple;
+	bh=xh91JLOgR2kNsYKEWZgBzfvf+Kmb4c7kAobQzP3t/90=;
 	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=mMTuAEQNCtikDt19418BxEk+/8jA4b188LhHGYyChabxIODM/MKFbwyIjw6gcgGLkeBmuvQWgXYThsvnb/cusTEez4KeCHqsk/F9EO6T7ApfE35FV7km+lagu/p5Vy0LH/ZZ0skjW72hv6dVYxg/bIW3Dp+aVEdgprJ6LdoHTjQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=GZgRO7tK; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4266g62k009792;
-	Wed, 6 Mar 2024 09:54:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=Jpg/tAei9KK0CIcihk4hp7iGus5b+h9Ir7FkA6Ntb4A=; b=GZ
-	gRO7tKVmKbiRaCl8o/+xO7mxb4LLOSkPb2r1GKFBN5vijdW6ySPE8uU2likHivNZ
-	5IGsPr4SEpfvGgsMukIzYUTVSgY1euGESWR70S4sEi9g/svwX/VP3u9ZAwmN7HcA
-	6AMJsufucRhIepwoeUCilnoGg8gTq8BR6mpzObsyd2AOUphtI9nvVKRSEKCdb+Tc
-	U12nFTDLOk6S4oAEabfVv94oq/M6SEshxtXZagv8YAXYfzlKf0ETzlPuDqyuZKgI
-	nIVva2KR0KLyacs7KvltnHihDIK4p876m8qUrqfP0uOiW5wvgyHhTVRxSbrB81wW
-	R9j3Yl+xyHk1tXJXDXXA==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wpke38d58-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 06 Mar 2024 09:54:37 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4269saeD022499
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 6 Mar 2024 09:54:36 GMT
-Received: from [10.204.65.104] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 6 Mar
- 2024 01:54:31 -0800
-Message-ID: <84970313-4ca4-4195-6a06-fd7a0d925648@quicinc.com>
-Date: Wed, 6 Mar 2024 15:24:19 +0530
+	 In-Reply-To:Content-Type; b=ijkbl9GQVxws0ydkAkAdq1PdjEyYCWXwftY3DdDL8shR3rJzI2NiA9IxMxZ36NxTTthPSeetWaWFVmrS4Ul0FlPLn+wwu/4egen0PdYOjhwrlJnVY5vTVGcA9SOyc020ETdf4FsYkP8zr46EkrrSfNh2LXXUaJJqkvRQRcS8Kvk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TqSRG4rVdz1xqHm;
+	Wed,  6 Mar 2024 17:52:58 +0800 (CST)
+Received: from kwepemm600020.china.huawei.com (unknown [7.193.23.147])
+	by mail.maildlp.com (Postfix) with ESMTPS id 5553D14011A;
+	Wed,  6 Mar 2024 17:54:36 +0800 (CST)
+Received: from [10.174.179.160] (10.174.179.160) by
+ kwepemm600020.china.huawei.com (7.193.23.147) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 6 Mar 2024 17:54:35 +0800
+Message-ID: <3f2b71de-6d90-8b9a-cd7c-fea947a8a2ba@huawei.com>
+Date: Wed, 6 Mar 2024 17:54:34 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,88 +47,186 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 14/20] media: venus: pm_helpers: Remove
- pm_ops->core_put
-To: Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Stanimir Varbanov
-	<stanimir.k.varbanov@gmail.com>,
-        Vikash Garodia <quic_vgarodia@quicinc.com>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Andy Gross
-	<agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        "Mauro Carvalho
- Chehab" <mchehab@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-CC: Marijn Suijten <marijn.suijten@somainline.org>,
-        Stanimir Varbanov
-	<stanimir.varbanov@linaro.org>,
-        Mauro Carvalho Chehab
-	<mchehab+huawei@kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        "Dmitry
- Baryshkov" <dmitry.baryshkov@linaro.org>
-References: <20230911-topic-mars-v2-0-3dac84b88c4b@linaro.org>
- <20230911-topic-mars-v2-14-3dac84b88c4b@linaro.org>
- <ec239f69-6ace-c4a4-409c-771f1d24ce81@quicinc.com>
- <d19bd56c-dc85-46ee-831d-e67768ccf6ed@linaro.org>
+ Thunderbird/102.9.0
+Subject: Re: [PATCH v4] filemap: avoid unnecessary major faults in
+ filemap_fault()
 Content-Language: en-US
-From: Dikshita Agarwal <quic_dikshita@quicinc.com>
-In-Reply-To: <d19bd56c-dc85-46ee-831d-e67768ccf6ed@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+To: "Huang, Ying" <ying.huang@intel.com>
+CC: <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+	<akpm@linux-foundation.org>, <willy@infradead.org>, <fengwei.yin@intel.com>,
+	<david@redhat.com>, <aneesh.kumar@linux.ibm.com>, <shy828301@gmail.com>,
+	<hughd@google.com>, <wangkefeng.wang@huawei.com>, <sunnanyong@huawei.com>
+References: <20240306083809.1236634-1-zhangpeng362@huawei.com>
+ <871q8n926m.fsf@yhuang6-desk2.ccr.corp.intel.com>
+From: "zhangpeng (AS)" <zhangpeng362@huawei.com>
+In-Reply-To: <871q8n926m.fsf@yhuang6-desk2.ccr.corp.intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: WoknJ7hswKpRMlBqHGd4GwLD_I1bTXsJ
-X-Proofpoint-GUID: WoknJ7hswKpRMlBqHGd4GwLD_I1bTXsJ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-06_05,2024-03-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
- priorityscore=1501 mlxlogscore=999 phishscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 malwarescore=0 bulkscore=0 suspectscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2403060078
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemm600020.china.huawei.com (7.193.23.147)
 
+On 2024/3/6 16:47, Huang, Ying wrote:
 
-
-On 3/5/2024 4:22 AM, Konrad Dybcio wrote:
-> 
-> 
-> On 3/4/24 07:57, Dikshita Agarwal wrote:
+> Peng Zhang <zhangpeng362@huawei.com> writes:
+>> From: ZhangPeng <zhangpeng362@huawei.com>
 >>
+>> The major fault occurred when using mlockall(MCL_CURRENT | MCL_FUTURE)
+>> in application, which leading to an unexpected issue[1].
 >>
->> On 2/10/2024 2:39 AM, Konrad Dybcio wrote:
->>> Without an OPP table and with vcodec_pmdomains_num (so, v1, v3 and
->>> sdm845_legacy targets), core_put_v4 is a NOP, jut like core_put_v1.
->>> Unify them!
->>>
->>> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
->>> ---
-> 
-> [...]
-> 
-> 
->>> -static void vcodec_domains_put(struct venus_core *core)
->>> +void vcodec_domains_put(struct venus_core *core)
->>>   {
->>>       dev_pm_domain_detach_list(core->pmdomains);
->>>   
->> what is the base of this change?
->> I don't see dev_pm_domain_detach_list in mainline code.
->> Am I missing anything here?
-> 
-> The base is specified in the cover letter.
-> 
-> The code in question is indeed here since January, perhaps
-> you're looking at something older than -next.
-> 
-Thanks for the clarification, I was looking at media tree which
-surprisingly doesn't have the base change.
-> Konrad
-> 
+>> This caused by temporarily cleared PTE during a read+clear/modify/write
+>> update of the PTE, eg, do_numa_page()/change_pte_range().
+>>
+>> For the data segment of the user-mode program, the global variable area
+>> is a private mapping. After the pagecache is loaded, the private anonymous
+>> page is generated after the COW is triggered. Mlockall can lock COW pages
+>> (anonymous pages), but the original file pages cannot be locked and may
+>> be reclaimed. If the global variable (private anon page) is accessed when
+>> vmf->pte is zeroed in numa fault, a file page fault will be triggered.
+>> At this time, the original private file page may have been reclaimed.
+>> If the page cache is not available at this time, a major fault will be
+>> triggered and the file will be read, causing additional overhead.
+>>
+>> This issue affects our traffic analysis service. The inbound traffic is
+>> heavy. If a major fault occurs, the I/O schedule is triggered and the
+>> original I/O is suspended. Generally, the I/O schedule is 0.7 ms. If
+>> other applications are operating disks, the system needs to wait for
+>> more than 10 ms. However, the inbound traffic is heavy and the NIC buffer
+>> is small. As a result, packet loss occurs. But the traffic analysis service
+>> can't tolerate packet loss.
+>>
+>> Fix this by holding PTL and rechecking the PTE in filemap_fault() before
+>> triggering a major fault. We do this check only if vma is VM_LOCKED to
+>> reduce the performance impact in common scenarios.
+>>
+>> In our product environment, there were 7 major faults every 12 hours.
+>> After the patch is applied, no major fault have been triggered.
+>>
+>> Testing file page read and write page fault performance in ext4 and
+>> ramdisk using will-it-scale[2] on a x86 physical machine. The data is
+>> the average change compared with the mainline after the patch is applied.
+>> The test results are within the range of fluctuation. We do this check
+>> only if vma is VM_LOCKED, therefore, no performance regressions is caused
+>> for most common cases.
+>>
+>> The test results are as follows:
+>>                            processes processes_idle  threads threads_idle
+>> ext4    private file write:  0.22%    0.26%           1.21%  -0.15%
+>> ext4    private file  read:  0.03%    1.00%           1.39%   0.34%
+>> ext4    shared  file write: -0.50%   -0.02%          -0.14%  -0.02%
+>> ramdisk private file write:  0.07%    0.02%           0.53%   0.04%
+>> ramdisk private file  read:  0.01%    1.60%          -0.32%  -0.02%
+>>
+>> [1] https://lore.kernel.org/linux-mm/9e62fd9a-bee0-52bf-50a7-498fa17434ee@huawei.com/
+>> [2] https://github.com/antonblanchard/will-it-scale/
+>>
+>> Suggested-by: "Huang, Ying" <ying.huang@intel.com>
+>> Suggested-by: David Hildenbrand <david@redhat.com>
+>> Signed-off-by: ZhangPeng <zhangpeng362@huawei.com>
+>> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> LGTM, Thanks!  Feel free to add
+>
+> Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
+
+Thanks ! 😁
+
+>> ---
+>> v3->v4:
+>> - Update the performance data and commit message
+>> - Check PTE without lock firstly per Huang, Ying
+>> - Update comments for recheck function per David Hildenbrand
+>> - Simply return 0 to make it easier to read per David Hildenbrand
+>> - Check !FAULT_FLAG_ORIG_PTE_VALID instead of pmd_none()
+>>
+>> v2->v3:
+>> - Do this check only if vma is VM_LOCKED per David Hildenbrand
+>> - Hold PTL and recheck the PTE
+>> - Place the recheck code in a new function filemap_fault_recheck_pte()
+>>
+>> v1->v2:
+>> - Add more test results per Huang, Ying
+>> - Add more comments before check PTE per Huang, Ying, David Hildenbrand
+>>    and Yin Fengwei
+>> - Change pte_offset_map_nolock to pte_offset_map as the PTL won't
+>>    be used
+>>
+>> RFC->v1:
+>> - Add error handling when ptep == NULL per Huang, Ying and Matthew
+>>    Wilcox
+>> - Check the PTE without acquiring PTL in filemap_fault(), suggested by
+>>    Huang, Ying and Yin Fengwei
+>> - Add pmd_none() check before PTE map
+>> - Update commit message and add performance test information
+>>
+>>   mm/filemap.c | 46 ++++++++++++++++++++++++++++++++++++++++++++++
+>>   1 file changed, 46 insertions(+)
+>>
+>> diff --git a/mm/filemap.c b/mm/filemap.c
+>> index b4858d89f1b1..31ab455c4537 100644
+>> --- a/mm/filemap.c
+>> +++ b/mm/filemap.c
+>> @@ -3181,6 +3181,48 @@ static struct file *do_async_mmap_readahead(struct vm_fault *vmf,
+>>   	return fpin;
+>>   }
+>>   
+>> +static vm_fault_t filemap_fault_recheck_pte_none(struct vm_fault *vmf)
+>> +{
+>> +	struct vm_area_struct *vma = vmf->vma;
+>> +	vm_fault_t ret = 0;
+>> +	pte_t *ptep;
+>> +
+>> +	/*
+>> +	 * We might have COW'ed a pagecache folio and might now have an mlocked
+>> +	 * anon folio mapped. The original pagecache folio is not mlocked and
+>> +	 * might have been evicted. During a read+clear/modify/write update of
+>> +	 * the PTE, such as done in do_numa_page()/change_pte_range(), we
+>> +	 * temporarily clear the PTE under PT lock and might detect it here as
+>> +	 * "none" when not holding the PT lock.
+>> +	 *
+>> +	 * Not rechecking the PTE under PT lock could result in an unexpected
+>> +	 * major fault in an mlock'ed region. Recheck only for this special
+>> +	 * scenario while holding the PT lock, to not degrade non-mlocked
+>> +	 * scenarios. Recheck the PTE without PT lock firstly, thereby reducing
+>> +	 * the number of times we hold PT lock.
+>> +	 */
+>> +	if (!(vma->vm_flags & VM_LOCKED))
+>> +		return 0;
+>> +
+>> +	if (!(vmf->flags & FAULT_FLAG_ORIG_PTE_VALID))
+>> +		return 0;
+>> +
+>> +	ptep = pte_offset_map(vmf->pmd, vmf->address);
+>> +	if (unlikely(!ptep))
+>> +		return VM_FAULT_NOPAGE;
+>> +
+>> +	if (unlikely(!pte_none(ptep_get_lockless(ptep)))) {
+>> +		ret = VM_FAULT_NOPAGE;
+>> +	} else {
+>> +		spin_lock(vmf->ptl);
+>> +		if (unlikely(!pte_none(ptep_get(ptep))))
+>> +			ret = VM_FAULT_NOPAGE;
+>> +		spin_unlock(vmf->ptl);
+>> +	}
+>> +	pte_unmap(ptep);
+>> +	return ret;
+>> +}
+>> +
+>>   /**
+>>    * filemap_fault - read in file data for page fault handling
+>>    * @vmf:	struct vm_fault containing details of the fault
+>> @@ -3236,6 +3278,10 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
+>>   			mapping_locked = true;
+>>   		}
+>>   	} else {
+>> +		ret = filemap_fault_recheck_pte_none(vmf);
+>> +		if (unlikely(ret))
+>> +			return ret;
+>> +
+>>   		/* No page in the page cache at all */
+>>   		count_vm_event(PGMAJFAULT);
+>>   		count_memcg_event_mm(vmf->vma->vm_mm, PGMAJFAULT);
+
+-- 
+Best Regards,
+Peng
+
 
