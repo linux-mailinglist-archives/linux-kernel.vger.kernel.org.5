@@ -1,131 +1,105 @@
-Return-Path: <linux-kernel+bounces-94253-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94254-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44F27873C03
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:20:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCB16873C06
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:21:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 765121C249B0
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:20:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D1B22889B2
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:21:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CFAF137923;
-	Wed,  6 Mar 2024 16:20:35 +0000 (UTC)
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03498137775;
+	Wed,  6 Mar 2024 16:21:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="oLI8sKfu"
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE00C136647;
-	Wed,  6 Mar 2024 16:20:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69A141361C6
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 16:21:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709742034; cv=none; b=kn8egoL1TkF4asYij3SHwO4imn9T1hblygN58jSpay77nx25uPXGIV/UIW4gO9pTjzmY2YpgbJOupOsJ0SUO4enPv49NC39pbm+qg5DY5qBfO+pQ689Mez2cHioObzHnPL1dkoYzVyXkjYf5zHYMLbC7Bat42NdaKU+2tO2BC3I=
+	t=1709742063; cv=none; b=VnqV+PqfOaYa/YhY9UiI6Tfyl0m2eA8zjDu6ALUnyXrW1bo74jjZJYHvaWXoZzW/rYzjbzvbMyLCC6bt+fK2JqaPAHgVBvDAd/Rjle30x4b6pSTTnIOAWYYMuH399iqdEoacs+8PjnVXMC/KNa17TOAh69dutoze1lFTNogP+QM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709742034; c=relaxed/simple;
-	bh=aPt/CEGkasNVIZ01RHfKkPFD8TFNenT7o5dBwNYWmn0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pL8nFcWVvojoAf+JIiLhmqdpcHQpifWNEGR5nth820OsnZcL4YF5rsXJl1X7tIa8OYgUu/k0GMsQHIHYLu7z0qLPEX0dl/Nzi/CEGkMP0hOGdALEmwT3uu4Xa3gaww1jm7noVidCc8rOVZPwXcvcFH9Oltn83VREmF4+ddHOGfs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id 1908468CFE; Wed,  6 Mar 2024 17:20:23 +0100 (CET)
-Date: Wed, 6 Mar 2024 17:20:22 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Christoph Hellwig <hch@lst.de>, Leon Romanovsky <leon@kernel.org>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-	Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-	Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
-	Keith Busch <kbusch@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-	iommu@lists.linux.dev, linux-nvme@lists.infradead.org,
-	kvm@vger.kernel.org, linux-mm@kvack.org,
-	Bart Van Assche <bvanassche@acm.org>,
-	Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-	Amir Goldstein <amir73il@gmail.com>,
-	"josef@toxicpanda.com" <josef@toxicpanda.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	"daniel@iogearbox.net" <daniel@iogearbox.net>,
-	Dan Williams <dan.j.williams@intel.com>,
-	"jack@suse.com" <jack@suse.com>, Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [RFC RESEND 00/16] Split IOMMU DMA mapping operation to two
- steps
-Message-ID: <20240306162022.GB28427@lst.de>
-References: <cover.1709635535.git.leon@kernel.org> <47afacda-3023-4eb7-b227-5f725c3187c2@arm.com> <20240305122935.GB36868@unreal> <20240306144416.GB19711@lst.de> <20240306154328.GM9225@ziepe.ca>
+	s=arc-20240116; t=1709742063; c=relaxed/simple;
+	bh=QtV70zoK2wJMqjwc6JzcKlIIzpzc17EKl1UKLHvpnpQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=OZbylz0p6b6adShlTQMG/+DaetyzP9hpmiqpYc4BOK83iC2q2R16oHmJt6ZicEgyNERTLESe4i84q5vExTMvyY061r67Ge5AZsL7sUvXDWqUaVOxanfPvT/88fJUZiHVosYC7JgYzRTHAHgUdAXSzAOSb4gXSr+PpBUmmlg9s9M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=oLI8sKfu; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-51320ca689aso8589832e87.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 08:21:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709742059; x=1710346859; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9D2dbq9C8ecgKvX2qeUpbQy5XcASI5cg+tM6zwv+Yhk=;
+        b=oLI8sKfuGmHJMXYCXhSBKI7YyC9shC9Yyt5UoCKHPSv2wAWNMIsUm+RkIAZgemYvp+
+         idU4ZNp/H1ZuBxtVVom52SHMYiAz5mXKGJOtbhsmXrmIYwYZYWfAAWEreEXJNjAmGhH+
+         2xEa6lzNvNfJtWgBtiEts8h3ufbct+WI7VdGR9TvVdAA3xMePJXSlT1pn/R5khOIyHla
+         2LhKWwezHjMpbL3OUMjvB0nrjXd5otupfTxUAtH7twfyj9mX9pF38pJp3OXAOM3ta8yn
+         H4xpg6MHj2LOKZi7WpahBovuDMsNGeAiCK8QWlzTYPN8kEqkJNLaAiKTyqzSutO21x19
+         PGbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709742059; x=1710346859;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9D2dbq9C8ecgKvX2qeUpbQy5XcASI5cg+tM6zwv+Yhk=;
+        b=ZkNHQM5/u15b5lF1CcZ+MgmA6QKZaoWgRQzxGTSj4jYDxRWLKAr4nn5F59IuKqxfNr
+         pGYF9CiZlrNXVbN7vubnUPWZE08QwfvzdOb1eNc+x0EFbVz9Eyc/pbLeF7Z/V11I2AJ2
+         7DwHIWDjuddHELIJZhfGqCFf81PUmeXt1dP+a+JmVlC34ZafDQYglbc2Hi0uQpzLfWXx
+         86kmXyQO6orbk6hNlcoE0k9E9sVAxDzVgpZ7+Q2Drn0rTYcyKM8T9BxfhSYrM++JaHs+
+         npBlrnVqCMv0Af6s5AqboEZunRq2Eeq9O5poCeF4AkytxCcbz/fhBhTWHm7setwvdPiy
+         H8OQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUxwFN80bAaZNn/+o9l4cHqqMKAxb830fR2dUEIPdT3iyGdMjCzyG10ltfBy1cJgc6lk249wRebrWh0h73XTl7+s9QHOHfpbj1o0Vg9
+X-Gm-Message-State: AOJu0Yz2NElhA5iphTybo3jtZrOgfxyZaYw8I0pW+0SQ/E8V68QYa/MJ
+	XdRXoZhmdY+VX592SONfXpf5tc/GPmYP2nQ3ghv7YIH5r3Im0hFgyUqsgaNXw5I=
+X-Google-Smtp-Source: AGHT+IE70VPLZUiRtlAnFhCH8uvdp+2sTCgFunoRNb6UCJs7VtjSsds9ReixnTbK8+WSXqduWqHbyw==
+X-Received: by 2002:a05:6512:203:b0:513:55ec:71be with SMTP id a3-20020a056512020300b0051355ec71bemr3278286lfo.30.1709742059492;
+        Wed, 06 Mar 2024 08:20:59 -0800 (PST)
+Received: from [87.246.221.128] (netpanel-87-246-221-128.pol.akademiki.lublin.pl. [87.246.221.128])
+        by smtp.gmail.com with ESMTPSA id u12-20020ac258cc000000b005131941f7e9sm2668396lfo.5.2024.03.06.08.20.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Mar 2024 08:20:59 -0800 (PST)
+Message-ID: <9bebba94-f124-4853-9126-8d80c764048a@linaro.org>
+Date: Wed, 6 Mar 2024 17:20:58 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240306154328.GM9225@ziepe.ca>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/4] arm64: dts: qcom: ipq6018: add 1.5GHz CPU
+ Frequency
+Content-Language: en-US
+To: Chukun Pan <amadeus@jmu.edu.cn>, Bjorn Andersson <andersson@kernel.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Rob Herring <robh@kernel.org>,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org
+References: <20240306140306.876188-1-amadeus@jmu.edu.cn>
+ <20240306140306.876188-3-amadeus@jmu.edu.cn>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20240306140306.876188-3-amadeus@jmu.edu.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Mar 06, 2024 at 11:43:28AM -0400, Jason Gunthorpe wrote:
-> I don't think they are so fundamentally different, at least in our
-> past conversations I never came out with the idea we should burden the
-> driver with two different flows based on what kind of alignment the
-> transfer happens to have.
 
-Then we talked past each other..
 
-> At least the RDMA drivers could productively use just a page aligned
-> interface. But I didn't think this would make BIO users happy so never
-> even thought about it..
-
-page aligned is generally the right thing for the block layer.  NVMe
-for example already requires that anyway due to PRPs.
-
-> > The total transfer size should just be passed in by the callers and
-> > be known, and there should be no offset.
+On 3/6/24 15:03, Chukun Pan wrote:
+> The IPQ6005 and some IPQ6000 SoCs (with PMIC) have CPU
+> frequencies up to 1.5GHz, so add this frequency.
 > 
-> The API needs the caller to figure out the total number of IOVA pages
-> it needs, rounding up the CPU ranges to full aligned pages. That
-> becomes the IOVA allocation.
+> Signed-off-by: Chukun Pan <amadeus@jmu.edu.cn>
+> ---
 
-Yes, it's a basic align up to the granularity asuming we don't bother
-with non-aligned transfers.
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-> 
-> > So if we want to efficiently be able to handle these cases we need
-> > two APIs in the driver and a good framework to switch between them.
-> 
-> But, what does the non-page-aligned version look like? Doesn't it
-> still look basically like this?
-
-I'd just rather have the non-aligned case for those who really need
-it be the loop over map single region that is needed for the direct
-mapping anyway.
-
-> 
-> And what is the actual difference if the input is aligned? The caller
-> can assume it doesn't need to provide a per-range dma_addr_t during
-> unmap.
-
-A per-range dma_addr_t doesn't really make sense for the aligned and
-coalesced case.
-
-> It still can't assume the HW programming will be linear due to the P2P
-> !ACS support.
-> 
-> And it still has to call an API per-cpu range to actually program the
-> IOMMU.
-> 
-> So are they really so different to want different APIs? That strikes
-> me as a big driver cost.
-
-To not have to store a dma_address range per CPU range that doesn't
-actually get used at all.
+Konrad
 
