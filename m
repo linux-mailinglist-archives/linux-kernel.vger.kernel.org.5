@@ -1,319 +1,428 @@
-Return-Path: <linux-kernel+bounces-94388-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94391-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 322DF873E67
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 19:21:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DD41873E7F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 19:25:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B3C9C1F218E6
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 18:21:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87D2C286D00
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 18:25:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7935137C29;
-	Wed,  6 Mar 2024 18:21:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51D4113DB96;
+	Wed,  6 Mar 2024 18:24:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="HFfTq5WP"
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2080.outbound.protection.outlook.com [40.107.237.80])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="fKPO5f6k"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CA3B8060D
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 18:21:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.80
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709749264; cv=fail; b=hTkUwfWxEpW/pCwHx2eldbGfcJ6p3rH3Uhbbu/Y5hHXUEKwtE3+bjZ7GLxgNkknF2AbSLyX8ipZJkE7SVLYYOZXapkuTn9WT0UJhaphYsmiYseR4ZgM/svIETMGyfu6U8y5XZ+iEqOm1YlApDlJx0LtfcVDcz+m5C75gG2q8MXg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709749264; c=relaxed/simple;
-	bh=Nr89U5j6BcZbtylHyKZHis4n32UK9aXqlza8hJaOqWk=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=NWCra/edQcrYy4PGQ5SopQXUOF40zs7xYHgvIIlbEmEq4lG0+PsKxEl5VyzK3H8ffFCa2UCiDwlQm3nND/KjQCRY4JC1lxD0cqkSS7bmlaXCb8T+BwAArckAcDX5Aeuh4naSEUmkKsfbPGH7Gb2BaHxuG+QknLPSyBQijQOAo54=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=HFfTq5WP; arc=fail smtp.client-ip=40.107.237.80
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=l6Q5yFmxZgEzSX2fCi9vNgO84DQ/DgocTqtohqiJ6mcIzrfM8pMLAm65yCY2n7S9iWCkqTDmF0xKNPfRdeNMGoSWFE83NLwrFIN9AAxOUn8taVITdzC4l3Uhphiu5JuxKoDlXr/6vtToTPI1EtCuf7SPs7ulB++LGWLgAVefzyz8gO+kxUZNbBVhqP3gihfloz4VAWWum+gc0yWswn7E1USKS15RUHS4scZEcHUlX/vrvjp0NRDH/mfVz0eThQgTQhrTQnmjvPDjUd+qkbT12gBREYhRH8rQyWW6qyxnlM00YpCCGUY1jozpNgO4p+WkFuz639jELp8pYIPz3j8Nyw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=l1NQvloMBWzTth0YhLMDyIqdm0uAwqqEzEYa0yluYPk=;
- b=Ew+ZJwZm3hnKeGtzT4I00ADZkGyh8dWgtUQwWkCeS3ld4UkO5u85tOEP5UqnHr2q3mXGzrMiePKKtIewGN1YGM/L+z09+5x5BQvarTuubmiM8YgcH9Ade5VqaLtGY+HuTWTM2pw7hsnstK+yMOCQvd0HnH5CxjXn2MgRGoP83xPGtLwqncNgvXVo13zrmKBS9zTKrBrHxJBvDfYJdNyB/u2X40+q7OitdJbT9JYn7VhgCF7WpHogE+NjpX65/ZQELR47VEJZQnSW1c/HWbtqDAlXOSWNkk+nClA4FXNtjjWsO4473nOo6VPIEHDYHfYo4frdD4z44DBl+NLVtqwskQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=l1NQvloMBWzTth0YhLMDyIqdm0uAwqqEzEYa0yluYPk=;
- b=HFfTq5WPrPlknLorQsUS33IcXquUMbDOF8awfzT5mKyzBDob29hW0UEIcy7gaYcpJ4LtqPE2xEAAMDKkvo8fDQUmsC3OvgPEjK1SBrdLmzHr0aNBa0KIBJgtVPj/caR5xFsfYGRt4Cl0w9I+dwZWnbNBDhOFpwa8GQ5tnqADlfI=
-Received: from PH7PR12MB5596.namprd12.prod.outlook.com (2603:10b6:510:136::13)
- by DM6PR12MB4105.namprd12.prod.outlook.com (2603:10b6:5:217::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.37; Wed, 6 Mar
- 2024 18:20:58 +0000
-Received: from PH7PR12MB5596.namprd12.prod.outlook.com
- ([fe80::6f48:e3f1:6ff9:75bd]) by PH7PR12MB5596.namprd12.prod.outlook.com
- ([fe80::6f48:e3f1:6ff9:75bd%4]) with mapi id 15.20.7362.019; Wed, 6 Mar 2024
- 18:20:58 +0000
-From: "Khatri, Sunil" <Sunil.Khatri@amd.com>
-To: "Khatri, Sunil" <Sunil.Khatri@amd.com>, "Deucher, Alexander"
-	<Alexander.Deucher@amd.com>, "Koenig, Christian" <Christian.Koenig@amd.com>,
-	"Sharma, Shashank" <Shashank.Sharma@amd.com>
-CC: "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Joshi, Mukul"
-	<Mukul.Joshi@amd.com>, "Paneer Selvam, Arunpravin"
-	<Arunpravin.PaneerSelvam@amd.com>
-Subject: RE: [PATCH] drm/amdgpu: cache in more vm fault information
-Thread-Topic: [PATCH] drm/amdgpu: cache in more vm fault information
-Thread-Index: AQHab/LdrvwAfg0zAkKIpsvH9Yf/ybErBhxQ
-Date: Wed, 6 Mar 2024 18:20:58 +0000
-Message-ID:
- <PH7PR12MB55969E46DE97968839CE025F93212@PH7PR12MB5596.namprd12.prod.outlook.com>
-References: <20240306181937.3551648-1-sunil.khatri@amd.com>
-In-Reply-To: <20240306181937.3551648-1-sunil.khatri@amd.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
- MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ActionId=9a5e1642-9e58-4919-b3a8-858cd66ae208;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ContentBits=0;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Enabled=true;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Method=Standard;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Name=General;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SetDate=2024-03-06T18:20:44Z;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH7PR12MB5596:EE_|DM6PR12MB4105:EE_
-x-ms-office365-filtering-correlation-id: e1cdf4c5-b9c3-49d4-ea80-08dc3e0a2b8c
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- fRkuCngeMeI56vrwkOCbfzQ5IYT8YMd0chdd1jZGdvuUUf9e/lwvK3hZDIkNrk0GMW28IgNAnMUGUIjEil+xeprh9UzZDW+Mjkh7hB/cG5T3ipvZUWChYwz01n8MmVJetxtXN/5FAoNDopu5Pi600ZDTC92ZEVBps3+G4iCZqq8U51ke8wS+rF3ifiCvlsAPaVqOTSSUatzi9dUAEf2m9E12HfmqwKd0Z3Bl6Swnuz0wnW7bGjchHkRysxMQstOm1Fo+r1mQHtZZHrUUS3Qld58TPp6V9DHbiwcIoHrz5VTlsUorQ4nkYxr9BmBZONB4w6sA7HzL3I0IW0BLjfMJv/dHosGW/scWtZUG0eEAG8pZzYKLT79mveUzuQTF2Wv5AEGG8Ed3xBJG9q+FrGVuUK/aR7hDpsBGkgiOKmdUP5+plNPIq9pWxnp1bKbU/PX1BtjwZsV+SHNaA+E3AMut+GzNt4/2Hdkw+i+IN25duOsQvE53Laul5FdIZb4VJYGTkC5tsQqL+MP0QsV6hVQ8qnON9adp6YLksVYGVE2aXzapo4FdZQS8KceF9MKdn+b/FZP9HwgMtsgA8gX50g7YAm2X2ttY1vkpbI9a/FuzH3UEkCRsQqWDFhEU7cuGxQfqEBQriiXscakOuiDKtNCbv1V6hKPqxD6tGi1gS0NaIT/46l9t63a+guOe70S8EyVw7+c0dXl0Aa9IIAN45Sk9vA==
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5596.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?AXiVnlewVItsfZfwDWXzkA6lEEtOUO/42mCcmJKdsf/2XrtpNBBhyPnabh8T?=
- =?us-ascii?Q?RwQt9G/TVKntbu0uhRmhNsS+sXPJkbzXXD1218/imIjrEv9dbyTQbBMRIqyM?=
- =?us-ascii?Q?1dS0Hg33quO0QVbvIUl5Pkkspg94NAyOS0LsFhYhkNjzIyvCsqHN5Xm8pPDx?=
- =?us-ascii?Q?z99sFJ0IMrUirIcjWpxXwZGyldYefi/AvYzfWLC5P0xhTvvZSqqvhM30sBcC?=
- =?us-ascii?Q?hKtM52sJFDe4tlGHfvWewp3WcE9qCd1+jUYlF0607cirzXwI6UTxQns7CrPV?=
- =?us-ascii?Q?VNbD+SqYmSM54siQyQErPNaYWEUNYojRY55WsajWQ7LmyuxeqXfvK16xE/BH?=
- =?us-ascii?Q?w9Mgd7tylQ1Ied3Ws+k/1SO0zfNst5h64C1IBni6Y0eTEcrAvHhZdG7mho80?=
- =?us-ascii?Q?SZdRSuqeZ/8L8ozURRf+kawSF0zctFlCLhEsAi1YVfu4Z6E3wncL7RyeQTJ+?=
- =?us-ascii?Q?Q4kZGMTqlM1/5O8YfTF4tgAFKeupN7lALyS1ItqyW0DP9PNtMDfFsxg35QSd?=
- =?us-ascii?Q?gaEcgBvzDTG9X/tZtrpeBY8tsiX+NALmZpMlhZmyzJ8UDSaOsidJILP4Umfn?=
- =?us-ascii?Q?FO9T/eA/Ktd+4XVpHjQKrMTlgOeHxpLG3Ywhf+D8/82FQLsj+wiabXQdcUoy?=
- =?us-ascii?Q?EnRZzaz7vs8JD31UI2zBVcStk0FLWytyXl//3+Qjy6ynvwTOU5+ufDsW2RE8?=
- =?us-ascii?Q?GOPwILynKaW4rjBQ8X2PClagap5d6witINAWrU9uzdCRLJM9Lq/Qu9B2EsKR?=
- =?us-ascii?Q?xR7bTK3ck0hTJRzNzoeJCXIyUAGmjVOx91PnXd7ZfDwTfT+aDMwuxVfmRzdK?=
- =?us-ascii?Q?dbW5hC9ruUBGjApGkbgDM5BIeDebcWylHwi0T5jqGGHCZd5t4R3FOvnJ9eDo?=
- =?us-ascii?Q?5Kd7GrDPElum0Mt+x0dqQgMTl3ZbjR6R7vROrFPXL/lnUnWdX0yT59uNBXwX?=
- =?us-ascii?Q?PtMYaSHTVgexIGswJnjt/gRDI3H/ExSqS1rh30WSfEq+hs782aYK3VHhCXty?=
- =?us-ascii?Q?8F0EwherE423qFNc3pwCVYuY8dmvs9thWoJKx07d3HNdbxFx5FqbzHGHhmbu?=
- =?us-ascii?Q?dSVLte1RA5JwhU+p8SpamIC38a3XD13us43NK+YET/YAlTA8tgCKpuZuFAOr?=
- =?us-ascii?Q?zbxMTbRk2LOC6UHxKutFhgrtx+Q0pgV5jSe2dptUfqAw/xUETknV5cpMoZfO?=
- =?us-ascii?Q?ujxZzhmhLSCs2PR6/ipNNQQW7B8gMrkDpq/79/jcntkf7vENOfxT68I8DueY?=
- =?us-ascii?Q?FhtZjaEIDmRlxhYwvDEu/7CJeQMyOShepNYE5w4y68rMe7jTTHyicmmm1ZIU?=
- =?us-ascii?Q?dUOcP5DlE99L6JQS4zra4TNOfE5o+/glkIjN7EJn+rh+Cf0LPWGXPDBuGamB?=
- =?us-ascii?Q?hkwLSJRYIF+kbbIr/l3+N6gnIj6BgqDTssqf1P8wNmDKctUMhBj0pLhmEtIE?=
- =?us-ascii?Q?hwcgbCuPuMaus3jnIMUHAELIgb9jGhokHumOeao5wdCB48188MEhtqbmfOsN?=
- =?us-ascii?Q?WMuOyAUplhJY7vXKbyFQGeHttjYUjO5KMDvFtD8Z+7Xk7NCcGph8GrfooMjC?=
- =?us-ascii?Q?88xtfSUTil9PO0WwFwoUyFSzGthFinsDA88re3Iy?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE7F41369B7
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 18:24:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709749488; cv=none; b=iT5HdxncXqLn+DMInpDguKt1H12qYmGMPeyoL1BDvOAsPL/5C6nmrnPcKEwH7daefdr4LUvOlYBCiWdPs8oSLDQUa5fj2s9o/dalbzohXa4P5ZCAZX3XMTni6fj5sYXt+m8rdh6gdwXpIdLCHVWHbN9byr1aUuMvRO+exYoUT1I=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709749488; c=relaxed/simple;
+	bh=blX3Y28A7j/o5pvTG+xovM0sK0i27Mw46TmHlvlflKk=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=CbAce+KoEPgBVVugCJe8Z84Qh8RjS09ZYPgdG84yUTfW4Vvb7hZl2H/WHlFHJoQB3/rY3zPnVU1d5LTRz71nyULsNTeYqg3nDo0bJ6bC/EwRyB2ZpW/Z6CGr+HomJbJmZ7nKiGkx27PZEcJcPx2tvsxhex0qRkuGvOuCwTLz+Pk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--surenb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=fKPO5f6k; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--surenb.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dcc58cddb50so12488323276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 10:24:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709749485; x=1710354285; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=RyFy+o939hhJJtOBz2smMq9dZDCMxXVMPA36WKy2XKs=;
+        b=fKPO5f6kV2eJc01z/qP7My72z6YoTsY/z1AQQhnapbtFNJgE3TViOWtIvFTRikcm/Q
+         tpONGUhXFjDWk4udUiHFuMtCNfpSJJZVHnRumMurSTyazcx/k3qiSB6iihFaOOsDzXJ6
+         TP2KdMBZq8aKFpaFhFhlQ+nvqecYZqaDnw//1BFPeAEe1T/RtFayLHEFjQQoW8xKByHF
+         p1ArCTMR7JxFNx1GauX3KklN/V9SKGwBdTHDfoqrqGKD+jz+VoIWohtg2rMq3E/Ouw5C
+         Nrs9LdDaUD2uQh1YCu80RoCOoYTT1rCq5pUhARtuffCWnVDi4nSbUcAtwODPg7DUIRH2
+         x5Kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709749485; x=1710354285;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RyFy+o939hhJJtOBz2smMq9dZDCMxXVMPA36WKy2XKs=;
+        b=gI9y0OqbI6/Ezjd+B+4o9BtQGrYjKz2dyr7UXtr8qAkp1WrtuVIRpx5gp1rE5dCUch
+         QMpuxaejQnzMbyRQ6SPvXAYGmjTZlyeXWWd7IIA1SmgVAeWyrvRCXgbd6PhMUpOQztJf
+         daOKemCRY9YVx3CEgUQ/KlSpjDmzYP3xTkcC8TnsOHWSs7/ENO1VlbEAHcHOBhJUs8XB
+         Vx9gnQs6eHQqDvQtfzWfm57hhd2ENHIncsMuBRBloWRYoPlEW/jeu0fLSPqUGbsaeujq
+         lRq+DCqm4ds+e5xNA7SUsxIxaE5XgXOJ/m/ANZCc+3bSge3MeNJ7dMMW8Rx+VSzvzMUk
+         OJSQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXx0/c/DgTyovIdT+3Up4BlKQdz0bVLujLzm1bycH0f7OB0Kji7zW1u/PIjqKZVoRqUYO3rI5m3OeZqRPr+6mz0JHNU3PUItikYzq84
+X-Gm-Message-State: AOJu0Yw+aTODjWfVVpXAv3WR9p0H8gOJSDPFEQqUpXOHOsXP+/CYXRHp
+	wDb+QrZNYblawKlwSz5h4Z1vKnq3r13sTnLr+1LTNgZ2HF++NF+jvfCCMxQy0ll03xMNP3rplUq
+	tHQ==
+X-Google-Smtp-Source: AGHT+IFxWhscAtmHFqVARupfDbCnYirPYeuewmxRn+Ji3V4MrmINBlSy8mq1BztHmr3T3yFBdMS18fz4TYU=
+X-Received: from surenb-desktop.mtv.corp.google.com ([2620:15c:211:201:85f0:e3db:db05:85e2])
+ (user=surenb job=sendgmr) by 2002:a05:6902:1004:b0:dc2:3441:897f with SMTP id
+ w4-20020a056902100400b00dc23441897fmr3842720ybt.6.1709749484713; Wed, 06 Mar
+ 2024 10:24:44 -0800 (PST)
+Date: Wed,  6 Mar 2024 10:23:58 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5596.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e1cdf4c5-b9c3-49d4-ea80-08dc3e0a2b8c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Mar 2024 18:20:58.0468
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: G4jJdZZp9Exdq5hICsa7Uy6NmBHG9ETZmRThqo9PQXkIudO3ZMO5OYGu0S02pef+uyfGyEX+nEEmKO5USBiB7Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4105
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
+Message-ID: <20240306182440.2003814-1-surenb@google.com>
+Subject: [PATCH v5 00/37] Memory allocation profiling
+From: Suren Baghdasaryan <surenb@google.com>
+To: akpm@linux-foundation.org
+Cc: kent.overstreet@linux.dev, mhocko@suse.com, vbabka@suse.cz, 
+	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
+	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
+	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, 
+	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
+	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
+	nathan@kernel.org, dennis@kernel.org, jhubbard@nvidia.com, tj@kernel.org, 
+	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org, 
+	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com, 
+	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
+	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com, 
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com, 
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
+	bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com, 
+	penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, 
+	glider@google.com, elver@google.com, dvyukov@google.com, shakeelb@google.com, 
+	songmuchun@bytedance.com, jbaron@akamai.com, aliceryhl@google.com, 
+	rientjes@google.com, minchan@google.com, kaleshsingh@google.com, 
+	surenb@google.com, kernel-team@android.com, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, 
+	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
+	cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-[AMD Official Use Only - General]
+Rebased over mm-unstable.
 
-Ignore this. Triggered wrongly.
+Overview:
+Low overhead [1] per-callsite memory allocation profiling. Not just for
+debug kernels, overhead low enough to be deployed in production.
 
------Original Message-----
-From: Sunil Khatri <sunil.khatri@amd.com>
-Sent: Wednesday, March 6, 2024 11:50 PM
-To: Deucher, Alexander <Alexander.Deucher@amd.com>; Koenig, Christian <Chri=
-stian.Koenig@amd.com>; Sharma, Shashank <Shashank.Sharma@amd.com>
-Cc: amd-gfx@lists.freedesktop.org; dri-devel@lists.freedesktop.org; linux-k=
-ernel@vger.kernel.org; Joshi, Mukul <Mukul.Joshi@amd.com>; Paneer Selvam, A=
-runpravin <Arunpravin.PaneerSelvam@amd.com>; Khatri, Sunil <Sunil.Khatri@am=
-d.com>
-Subject: [PATCH] drm/amdgpu: cache in more vm fault information
+Example output:
+  root@moria-kvm:~# sort -rn /proc/allocinfo
+   127664128    31168 mm/page_ext.c:270 func:alloc_page_ext
+    56373248     4737 mm/slub.c:2259 func:alloc_slab_page
+    14880768     3633 mm/readahead.c:247 func:page_cache_ra_unbounded
+    14417920     3520 mm/mm_init.c:2530 func:alloc_large_system_hash
+    13377536      234 block/blk-mq.c:3421 func:blk_mq_alloc_rqs
+    11718656     2861 mm/filemap.c:1919 func:__filemap_get_folio
+     9192960     2800 kernel/fork.c:307 func:alloc_thread_stack_node
+     4206592        4 net/netfilter/nf_conntrack_core.c:2567 func:nf_ct_alloc_hashtable
+     4136960     1010 drivers/staging/ctagmod/ctagmod.c:20 [ctagmod] func:ctagmod_start
+     3940352      962 mm/memory.c:4214 func:alloc_anon_folio
+     2894464    22613 fs/kernfs/dir.c:615 func:__kernfs_new_node
+     ...
 
-When an  page fault interrupt is raised there is a lot more information tha=
-t is useful for developers to analyse the pagefault.
+Since v4 [2]:
+ - Added Reviewed-by, per Pasha Tatashin, Vlastimil Babka, Alice Ryhl
+ - Changed slab_free_freelist_hook() to use __fastpath_inline,
+   per Pasha Tatashin
+ - Removed [3] as it is already Ack'ed and merged into in mm-unstable
+ - Moved alloc_slab_obj_exts(), prepare_slab_obj_exts_hook() and
+   alloc_tagging_slab_free_hook() into slub.c, per Vlastimil Babka
+ - Removed drive-by spacing fixups, per Vlastimil Babka
+ - Restored early memcg_kmem_online() check before calling
+   free_slab_obj_exts(), per Vlastimil Babka
+ - Added pr_warn() when module can't be unloaded, per Vlastimil Babka
+ - Dropped __alloc_tag_sub() and alloc_tag_sub_noalloc(),
+   per Vlastimil Babka
+ - Fixed alloc_tag_add() to check for tag to be valid, per Vlastimil Babka
+ - Moved alloc_tag_ref_set() where it's first used
+ - Added a patch introducing a tristate early boot parameter,
+   per Vlastimil Babka
+ - Updated description for page splitting patch, per Vlastimil Babka
+ - Added a patch fixing non-compound page accounting in __free_pages(),
+   per Vlastimil Babka
+ - Added early mem_alloc_profiling_enabled() checks in
+   alloc_tagging_slab_free_hook() and prepare_slab_obj_exts_hook(),
+   per Vlastimil Babka
+ - Moved rust krealloc() helper patch before krealloc() is redefined,
+   per Alice Ryhl
+ - Replaced printk(KERN_NOTICE...) with pr_notice(), per Vlastimil Babka
+ - Fixed codetag_{un}load_module() redefinition for CONFIG_MODULE=n,
+   per kernel test robot
+ - Updated documentation to describe new early boot parameter
+ - Rebased over mm-unstable
 
-Add all such information in the last cached pagefault from an interrupt han=
-dler.
+Usage:
+kconfig options:
+ - CONFIG_MEM_ALLOC_PROFILING
+ - CONFIG_MEM_ALLOC_PROFILING_ENABLED_BY_DEFAULT
+ - CONFIG_MEM_ALLOC_PROFILING_DEBUG
+   adds warnings for allocations that weren't accounted because of a
+   missing annotation
 
-Signed-off-by: Sunil Khatri <sunil.khatri@amd.com>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c | 9 +++++++--  drivers/gpu/drm/amd/=
-amdgpu/amdgpu_vm.h | 7 ++++++-  drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c | 2 =
-+-  drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c | 2 +-  drivers/gpu/drm/amd/amdg=
-pu/gmc_v7_0.c  | 2 +-  drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c  | 2 +-  drive=
-rs/gpu/drm/amd/amdgpu/gmc_v9_0.c  | 2 +-
- 7 files changed, 18 insertions(+), 8 deletions(-)
+sysctl:
+  /proc/sys/vm/mem_profiling
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c b/drivers/gpu/drm/amd/a=
-mdgpu/amdgpu_vm.c
-index 4299ce386322..b77e8e28769d 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-@@ -2905,7 +2905,7 @@ void amdgpu_debugfs_vm_bo_info(struct amdgpu_vm *vm, =
-struct seq_file *m)
-  * Cache the fault info for later use by userspace in debugging.
-  */
- void amdgpu_vm_update_fault_cache(struct amdgpu_device *adev,
--                                 unsigned int pasid,
-+                                 struct amdgpu_iv_entry *entry,
-                                  uint64_t addr,
-                                  uint32_t status,
-                                  unsigned int vmhub)
-@@ -2915,7 +2915,7 @@ void amdgpu_vm_update_fault_cache(struct amdgpu_devic=
-e *adev,
+Runtime info:
+  /proc/allocinfo
 
-        xa_lock_irqsave(&adev->vm_manager.pasids, flags);
+Notes:
 
--       vm =3D xa_load(&adev->vm_manager.pasids, pasid);
-+       vm =3D xa_load(&adev->vm_manager.pasids, entry->pasid);
-        /* Don't update the fault cache if status is 0.  In the multiple
-         * fault case, subsequent faults will return a 0 status which is
-         * useless for userspace and replaces the useful fault status, so @=
-@ -2924,6 +2924,11 @@ void amdgpu_vm_update_fault_cache(struct amdgpu_devic=
-e *adev,
-        if (vm && status) {
-                vm->fault_info.addr =3D addr;
-                vm->fault_info.status =3D status;
-+               vm->fault_info.client_id =3D entry->client_id;
-+               vm->fault_info.src_id =3D entry->src_id;
-+               vm->fault_info.vmid =3D entry->vmid;
-+               vm->fault_info.pasid =3D entry->pasid;
-+               vm->fault_info.ring_id =3D entry->ring_id;
-                if (AMDGPU_IS_GFXHUB(vmhub)) {
-                        vm->fault_info.vmhub =3D AMDGPU_VMHUB_TYPE_GFX;
-                        vm->fault_info.vmhub |=3D
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h b/drivers/gpu/drm/amd/a=
-mdgpu/amdgpu_vm.h
-index 047ec1930d12..c7782a89bdb5 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h
-@@ -286,6 +286,11 @@ struct amdgpu_vm_fault_info {
-        uint32_t        status;
-        /* which vmhub? gfxhub, mmhub, etc. */
-        unsigned int    vmhub;
-+       unsigned int    client_id;
-+       unsigned int    src_id;
-+       unsigned int    ring_id;
-+       unsigned int    pasid;
-+       unsigned int    vmid;
- };
+[1]: Overhead
+To measure the overhead we are comparing the following configurations:
+(1) Baseline with CONFIG_MEMCG_KMEM=n
+(2) Disabled by default (CONFIG_MEM_ALLOC_PROFILING=y &&
+    CONFIG_MEM_ALLOC_PROFILING_BY_DEFAULT=n)
+(3) Enabled by default (CONFIG_MEM_ALLOC_PROFILING=y &&
+    CONFIG_MEM_ALLOC_PROFILING_BY_DEFAULT=y)
+(4) Enabled at runtime (CONFIG_MEM_ALLOC_PROFILING=y &&
+    CONFIG_MEM_ALLOC_PROFILING_BY_DEFAULT=n && /proc/sys/vm/mem_profiling=1)
+(5) Baseline with CONFIG_MEMCG_KMEM=y && allocating with __GFP_ACCOUNT
+(6) Disabled by default (CONFIG_MEM_ALLOC_PROFILING=y &&
+    CONFIG_MEM_ALLOC_PROFILING_BY_DEFAULT=n)  && CONFIG_MEMCG_KMEM=y
+(7) Enabled by default (CONFIG_MEM_ALLOC_PROFILING=y &&
+    CONFIG_MEM_ALLOC_PROFILING_BY_DEFAULT=y) && CONFIG_MEMCG_KMEM=y
 
- struct amdgpu_vm {
-@@ -605,7 +610,7 @@ static inline void amdgpu_vm_eviction_unlock(struct amd=
-gpu_vm *vm)  }
+Performance overhead:
+To evaluate performance we implemented an in-kernel test executing
+multiple get_free_page/free_page and kmalloc/kfree calls with allocation
+sizes growing from 8 to 240 bytes with CPU frequency set to max and CPU
+affinity set to a specific CPU to minimize the noise. Below are results
+from running the test on Ubuntu 22.04.2 LTS with 6.8.0-rc1 kernel on
+56 core Intel Xeon:
 
- void amdgpu_vm_update_fault_cache(struct amdgpu_device *adev,
--                                 unsigned int pasid,
-+                                 struct amdgpu_iv_entry *entry,
-                                  uint64_t addr,
-                                  uint32_t status,
-                                  unsigned int vmhub);
-diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c b/drivers/gpu/drm/amd/a=
-mdgpu/gmc_v10_0.c
-index d933e19e0cf5..6b177ce8db0e 100644
---- a/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
-+++ b/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
-@@ -150,7 +150,7 @@ static int gmc_v10_0_process_interrupt(struct amdgpu_de=
-vice *adev,
-                status =3D RREG32(hub->vm_l2_pro_fault_status);
-                WREG32_P(hub->vm_l2_pro_fault_cntl, 1, ~1);
+                        kmalloc                 pgalloc
+(1 baseline)            6.764s                  16.902s
+(2 default disabled)    6.793s  (+0.43%)        17.007s (+0.62%)
+(3 default enabled)     7.197s  (+6.40%)        23.666s (+40.02%)
+(4 runtime enabled)     7.405s  (+9.48%)        23.901s (+41.41%)
+(5 memcg)               13.388s (+97.94%)       48.460s (+186.71%)
+(6 def disabled+memcg)  13.332s (+97.10%)       48.105s (+184.61%)
+(7 def enabled+memcg)   13.446s (+98.78%)       54.963s (+225.18%)
 
--               amdgpu_vm_update_fault_cache(adev, entry->pasid, addr, stat=
-us,
-+               amdgpu_vm_update_fault_cache(adev, entry, addr, status,
-                                             entry->vmid_src ? AMDGPU_MMHUB=
-0(0) : AMDGPU_GFXHUB(0));
-        }
+Memory overhead:
+Kernel size:
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c b/drivers/gpu/drm/amd/a=
-mdgpu/gmc_v11_0.c
-index 527dc917e049..bcf254856a3e 100644
---- a/drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c
-+++ b/drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c
-@@ -121,7 +121,7 @@ static int gmc_v11_0_process_interrupt(struct amdgpu_de=
-vice *adev,
-                status =3D RREG32(hub->vm_l2_pro_fault_status);
-                WREG32_P(hub->vm_l2_pro_fault_cntl, 1, ~1);
+   text           data        bss         dec         diff
+(1) 26515311	      18890222    17018880    62424413
+(2) 26524728	      19423818    16740352    62688898    264485
+(3) 26524724	      19423818    16740352    62688894    264481
+(4) 26524728	      19423818    16740352    62688898    264485
+(5) 26541782	      18964374    16957440    62463596    39183
 
--               amdgpu_vm_update_fault_cache(adev, entry->pasid, addr, stat=
-us,
-+               amdgpu_vm_update_fault_cache(adev, entry, addr, status,
-                                             entry->vmid_src ? AMDGPU_MMHUB=
-0(0) : AMDGPU_GFXHUB(0));
-        }
+Memory consumption on a 56 core Intel CPU with 125GB of memory:
+Code tags:           192 kB
+PageExts:         262144 kB (256MB)
+SlabExts:           9876 kB (9.6MB)
+PcpuExts:            512 kB (0.5MB)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c b/drivers/gpu/drm/amd/am=
-dgpu/gmc_v7_0.c
-index 3da7b6a2b00d..e9517ebbe1fd 100644
---- a/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c
-+++ b/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c
-@@ -1270,7 +1270,7 @@ static int gmc_v7_0_process_interrupt(struct amdgpu_d=
-evice *adev,
-        if (!addr && !status)
-                return 0;
+Total overhead is 0.2% of total memory.
 
--       amdgpu_vm_update_fault_cache(adev, entry->pasid,
-+       amdgpu_vm_update_fault_cache(adev, entry,
-                                     ((u64)addr) << AMDGPU_GPU_PAGE_SHIFT, =
-status, AMDGPU_GFXHUB(0));
+Benchmarks:
 
-        if (amdgpu_vm_fault_stop =3D=3D AMDGPU_VM_FAULT_STOP_FIRST) diff --=
-git a/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c b/drivers/gpu/drm/amd/amdgpu/gm=
-c_v8_0.c
-index d20e5f20ee31..a271bf832312 100644
---- a/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c
-+++ b/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c
-@@ -1438,7 +1438,7 @@ static int gmc_v8_0_process_interrupt(struct amdgpu_d=
-evice *adev,
-        if (!addr && !status)
-                return 0;
+Hackbench tests run 100 times:
+hackbench -s 512 -l 200 -g 15 -f 25 -P
+      baseline       disabled profiling           enabled profiling
+avg   0.3543         0.3559 (+0.0016)             0.3566 (+0.0023)
+stdev 0.0137         0.0188                       0.0077
 
--       amdgpu_vm_update_fault_cache(adev, entry->pasid,
-+       amdgpu_vm_update_fault_cache(adev, entry,
-                                     ((u64)addr) << AMDGPU_GPU_PAGE_SHIFT, =
-status, AMDGPU_GFXHUB(0));
 
-        if (amdgpu_vm_fault_stop =3D=3D AMDGPU_VM_FAULT_STOP_FIRST) diff --=
-git a/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c b/drivers/gpu/drm/amd/amdgpu/gm=
-c_v9_0.c
-index 47b63a4ce68b..dc9fb1fb9540 100644
---- a/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
-+++ b/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
-@@ -666,7 +666,7 @@ static int gmc_v9_0_process_interrupt(struct amdgpu_dev=
-ice *adev,
-        rw =3D REG_GET_FIELD(status, VM_L2_PROTECTION_FAULT_STATUS, RW);
-        WREG32_P(hub->vm_l2_pro_fault_cntl, 1, ~1);
+hackbench -l 10000
+      baseline       disabled profiling           enabled profiling
+avg   6.4218         6.4306 (+0.0088)             6.5077 (+0.0859)
+stdev 0.0933         0.0286                       0.0489
 
--       amdgpu_vm_update_fault_cache(adev, entry->pasid, addr, status, vmhu=
-b);
-+       amdgpu_vm_update_fault_cache(adev, entry, addr, status, vmhub);
+stress-ng tests:
+stress-ng --class memory --seq 4 -t 60
+stress-ng --class cpu --seq 4 -t 60
+Results posted at: https://evilpiepirate.org/~kent/memalloc_prof_v4_stress-ng/
 
-        dev_err(adev->dev,
-                "VM_L2_PROTECTION_FAULT_STATUS:0x%08X\n",
---
-2.34.1
+[2] https://lore.kernel.org/all/20240221194052.927623-1-surenb@google.com/
+[3] https://lore.kernel.org/all/20240221194052.927623-7-surenb@google.com/
+
+Kent Overstreet (13):
+  fix missing vmalloc.h includes
+  asm-generic/io.h: Kill vmalloc.h dependency
+  mm/slub: Mark slab_free_freelist_hook() __always_inline
+  scripts/kallysms: Always include __start and __stop symbols
+  fs: Convert alloc_inode_sb() to a macro
+  rust: Add a rust helper for krealloc()
+  mempool: Hook up to memory allocation profiling
+  mm: percpu: Introduce pcpuobj_ext
+  mm: percpu: Add codetag reference into pcpuobj_ext
+  mm: vmalloc: Enable memory allocation profiling
+  rhashtable: Plumb through alloc tag
+  MAINTAINERS: Add entries for code tagging and memory allocation
+    profiling
+  memprofiling: Documentation
+
+Suren Baghdasaryan (24):
+  mm: introduce slabobj_ext to support slab object extensions
+  mm: introduce __GFP_NO_OBJ_EXT flag to selectively prevent slabobj_ext
+    creation
+  mm/slab: introduce SLAB_NO_OBJ_EXT to avoid obj_ext creation
+  slab: objext: introduce objext_flags as extension to
+    page_memcg_data_flags
+  lib: code tagging framework
+  lib: code tagging module support
+  lib: prevent module unloading if memory is not freed
+  lib: add allocation tagging support for memory allocation profiling
+  lib: introduce support for page allocation tagging
+  lib: introduce early boot parameter to avoid page_ext memory overhead
+  mm: percpu: increase PERCPU_MODULE_RESERVE to accommodate allocation
+    tags
+  change alloc_pages name in dma_map_ops to avoid name conflicts
+  mm: enable page allocation tagging
+  mm: create new codetag references during page splitting
+  mm: fix non-compound multi-order memory accounting in __free_pages
+  mm/page_ext: enable early_page_ext when
+    CONFIG_MEM_ALLOC_PROFILING_DEBUG=y
+  lib: add codetag reference into slabobj_ext
+  mm/slab: add allocation accounting into slab allocation and free paths
+  mm/slab: enable slab allocation tagging for kmalloc and friends
+  mm: percpu: enable per-cpu allocation tagging
+  lib: add memory allocations report in show_mem()
+  codetag: debug: skip objext checking when it's for objext itself
+  codetag: debug: mark codetags for reserved pages as empty
+  codetag: debug: introduce OBJEXTS_ALLOC_FAIL to mark failed slab_ext
+    allocations
+
+ Documentation/admin-guide/sysctl/vm.rst       |  16 +
+ Documentation/filesystems/proc.rst            |  29 ++
+ Documentation/mm/allocation-profiling.rst     |  91 +++++
+ MAINTAINERS                                   |  17 +
+ arch/alpha/kernel/pci_iommu.c                 |   2 +-
+ arch/alpha/lib/checksum.c                     |   1 +
+ arch/alpha/lib/fpreg.c                        |   1 +
+ arch/alpha/lib/memcpy.c                       |   1 +
+ arch/arm/kernel/irq.c                         |   1 +
+ arch/arm/kernel/traps.c                       |   1 +
+ arch/arm64/kernel/efi.c                       |   1 +
+ arch/loongarch/include/asm/kfence.h           |   1 +
+ arch/mips/jazz/jazzdma.c                      |   2 +-
+ arch/powerpc/kernel/dma-iommu.c               |   2 +-
+ arch/powerpc/kernel/iommu.c                   |   1 +
+ arch/powerpc/mm/mem.c                         |   1 +
+ arch/powerpc/platforms/ps3/system-bus.c       |   4 +-
+ arch/powerpc/platforms/pseries/vio.c          |   2 +-
+ arch/riscv/kernel/elf_kexec.c                 |   1 +
+ arch/riscv/kernel/probes/kprobes.c            |   1 +
+ arch/s390/kernel/cert_store.c                 |   1 +
+ arch/s390/kernel/ipl.c                        |   1 +
+ arch/x86/include/asm/io.h                     |   1 +
+ arch/x86/kernel/amd_gart_64.c                 |   2 +-
+ arch/x86/kernel/cpu/sgx/main.c                |   1 +
+ arch/x86/kernel/irq_64.c                      |   1 +
+ arch/x86/mm/fault.c                           |   1 +
+ drivers/accel/ivpu/ivpu_mmu_context.c         |   1 +
+ drivers/gpu/drm/gma500/mmu.c                  |   1 +
+ drivers/gpu/drm/i915/gem/i915_gem_pages.c     |   1 +
+ .../gpu/drm/i915/gem/selftests/mock_dmabuf.c  |   1 +
+ drivers/gpu/drm/i915/gt/shmem_utils.c         |   1 +
+ drivers/gpu/drm/i915/gvt/firmware.c           |   1 +
+ drivers/gpu/drm/i915/gvt/gtt.c                |   1 +
+ drivers/gpu/drm/i915/gvt/handlers.c           |   1 +
+ drivers/gpu/drm/i915/gvt/mmio.c               |   1 +
+ drivers/gpu/drm/i915/gvt/vgpu.c               |   1 +
+ drivers/gpu/drm/i915/intel_gvt.c              |   1 +
+ drivers/gpu/drm/imagination/pvr_vm_mips.c     |   1 +
+ drivers/gpu/drm/mediatek/mtk_drm_gem.c        |   1 +
+ drivers/gpu/drm/omapdrm/omap_gem.c            |   1 +
+ drivers/gpu/drm/v3d/v3d_bo.c                  |   1 +
+ drivers/gpu/drm/vmwgfx/vmwgfx_binding.c       |   1 +
+ drivers/gpu/drm/vmwgfx/vmwgfx_cmd.c           |   1 +
+ drivers/gpu/drm/vmwgfx/vmwgfx_devcaps.c       |   1 +
+ drivers/gpu/drm/vmwgfx/vmwgfx_drv.c           |   1 +
+ drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c       |   1 +
+ drivers/gpu/drm/vmwgfx/vmwgfx_ioctl.c         |   1 +
+ drivers/gpu/drm/xen/xen_drm_front_gem.c       |   1 +
+ drivers/hwtracing/coresight/coresight-trbe.c  |   1 +
+ drivers/iommu/dma-iommu.c                     |   2 +-
+ .../marvell/octeon_ep/octep_pfvf_mbox.c       |   1 +
+ .../net/ethernet/microsoft/mana/hw_channel.c  |   1 +
+ drivers/parisc/ccio-dma.c                     |   2 +-
+ drivers/parisc/sba_iommu.c                    |   2 +-
+ drivers/platform/x86/uv_sysfs.c               |   1 +
+ drivers/scsi/mpi3mr/mpi3mr_transport.c        |   2 +
+ drivers/staging/media/atomisp/pci/hmm/hmm.c   |   2 +-
+ drivers/vfio/pci/pds/dirty.c                  |   1 +
+ drivers/virt/acrn/mm.c                        |   1 +
+ drivers/virtio/virtio_mem.c                   |   1 +
+ drivers/xen/grant-dma-ops.c                   |   2 +-
+ drivers/xen/swiotlb-xen.c                     |   2 +-
+ include/asm-generic/codetag.lds.h             |  14 +
+ include/asm-generic/io.h                      |   1 -
+ include/asm-generic/vmlinux.lds.h             |   3 +
+ include/linux/alloc_tag.h                     | 205 +++++++++++
+ include/linux/codetag.h                       |  81 +++++
+ include/linux/dma-map-ops.h                   |   2 +-
+ include/linux/fortify-string.h                |   5 +-
+ include/linux/fs.h                            |   6 +-
+ include/linux/gfp.h                           | 126 ++++---
+ include/linux/gfp_types.h                     |  11 +
+ include/linux/memcontrol.h                    |  56 ++-
+ include/linux/mempool.h                       |  73 ++--
+ include/linux/mm.h                            |   9 +
+ include/linux/mm_types.h                      |   4 +-
+ include/linux/page_ext.h                      |   1 -
+ include/linux/pagemap.h                       |   9 +-
+ include/linux/pds/pds_common.h                |   2 +
+ include/linux/percpu.h                        |  27 +-
+ include/linux/pgalloc_tag.h                   | 134 +++++++
+ include/linux/rhashtable-types.h              |  11 +-
+ include/linux/sched.h                         |  24 ++
+ include/linux/slab.h                          | 175 +++++-----
+ include/linux/string.h                        |   4 +-
+ include/linux/vmalloc.h                       |  60 +++-
+ include/rdma/rdmavt_qp.h                      |   1 +
+ init/Kconfig                                  |   4 +
+ kernel/dma/mapping.c                          |   4 +-
+ kernel/kallsyms_selftest.c                    |   2 +-
+ kernel/module/main.c                          |  29 +-
+ lib/Kconfig.debug                             |  31 ++
+ lib/Makefile                                  |   3 +
+ lib/alloc_tag.c                               | 243 +++++++++++++
+ lib/codetag.c                                 | 283 +++++++++++++++
+ lib/rhashtable.c                              |  28 +-
+ mm/compaction.c                               |   7 +-
+ mm/debug_vm_pgtable.c                         |   1 +
+ mm/filemap.c                                  |   6 +-
+ mm/huge_memory.c                              |   2 +
+ mm/kfence/core.c                              |  14 +-
+ mm/kfence/kfence.h                            |   4 +-
+ mm/memcontrol.c                               |  56 +--
+ mm/mempolicy.c                                |  52 +--
+ mm/mempool.c                                  |  36 +-
+ mm/mm_init.c                                  |  13 +-
+ mm/nommu.c                                    |  64 ++--
+ mm/page_alloc.c                               |  77 +++--
+ mm/page_ext.c                                 |  13 +
+ mm/page_owner.c                               |   2 +-
+ mm/percpu-internal.h                          |  26 +-
+ mm/percpu.c                                   | 120 +++----
+ mm/show_mem.c                                 |  26 ++
+ mm/slab.h                                     |  51 ++-
+ mm/slab_common.c                              |   6 +-
+ mm/slub.c                                     | 327 +++++++++++++++---
+ mm/util.c                                     |  44 +--
+ mm/vmalloc.c                                  |  88 ++---
+ rust/helpers.c                                |   8 +
+ scripts/kallsyms.c                            |  13 +
+ scripts/module.lds.S                          |   7 +
+ sound/pci/hda/cs35l41_hda.c                   |   1 +
+ 123 files changed, 2305 insertions(+), 657 deletions(-)
+ create mode 100644 Documentation/mm/allocation-profiling.rst
+ create mode 100644 include/asm-generic/codetag.lds.h
+ create mode 100644 include/linux/alloc_tag.h
+ create mode 100644 include/linux/codetag.h
+ create mode 100644 include/linux/pgalloc_tag.h
+ create mode 100644 lib/alloc_tag.c
+ create mode 100644 lib/codetag.c
+
+
+base-commit: b38c34939fe4735b8716511f0a98814be3865a1b
+-- 
+2.44.0.278.ge034bb2e1d-goog
 
 
