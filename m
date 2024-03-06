@@ -1,83 +1,66 @@
-Return-Path: <linux-kernel+bounces-93990-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93991-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7A6B8737E2
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:39:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4891F8737E9
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:40:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 631AA288088
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:39:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D95921F2744A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:40:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B404131746;
-	Wed,  6 Mar 2024 13:39:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D48A131749;
+	Wed,  6 Mar 2024 13:40:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HRh2z5x/"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="pRmGogdB"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 291FE130AFE;
-	Wed,  6 Mar 2024 13:39:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 333327FBBB;
+	Wed,  6 Mar 2024 13:40:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709732355; cv=none; b=ZeXSBqKkuD1P7E03whgmWZeBO7qCUhAZCp4+XbmNHLEIYWrT13WW5ix0KY9bU534qapDrHOcPvJNxDpNr0JGSU/Ww07RuoaIYqmP9ZNpJsHYnUO7jR//7G/++Onzk9gtezjAGn7PxZRSFcfNMgteavBFvFs8DshkPsasUngl8mQ=
+	t=1709732441; cv=none; b=auAO/aanD2p2VgTZFaG5FfWZr7GInESX0NdcTzppzRLBOSJJOw+A47SBAmVXHzL6wsXQHmGAnxGvCXTNUZCIVz9VhwGksrA4m0EnRx43rGFr79tIN4FwxTU2b0KYItg1MerS1ct5C2Si3o+RwYAEUjqCcJQmwvapSYekqBwfN6U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709732355; c=relaxed/simple;
-	bh=EWzERcgJ3gRSC618OjmqDgGRixGjDHjDqIOjuHDHl/E=;
+	s=arc-20240116; t=1709732441; c=relaxed/simple;
+	bh=MI0+GrJQL4JofYsjp7q2Zgut3VuhGSL1qh3TWn5mGm4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qTkljFXcN0g/gD3qcgvD3LjSx1DUL16KATo0j+3lkpnTkhs7fzYIQr6atn0aMbMwGWejWh8WX3b1lzybVo33oR7sTnuRNt7srkf9oVyBCYCbazoXoNKmRIzxHKMbggJ44bKf1ALhS2QSCVr0aQVI8jL/doF/0utuE7QJETpe+b4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HRh2z5x/; arc=none smtp.client-ip=192.198.163.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709732354; x=1741268354;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=EWzERcgJ3gRSC618OjmqDgGRixGjDHjDqIOjuHDHl/E=;
-  b=HRh2z5x/NldfLV1pSyk8JPXiSIysN4h0WH9C0yxItRadPgzZYSMwysYE
-   JcodictuWlfQEvZ/ItmL3NYivuCtViirBPYyFZvzO5heD45liZI4TylB4
-   ChhCKG5nI3JClzTobydlxsgPbAKPjVNnPvMah4fx6xWbnT8xnBR9TgBUG
-   SiXR7NMUhIMFMs4rtIUIyUAQO3ngEZJABTECIJsWabk3NbPolsfiDIRQg
-   3ldO6TN+4H4R7xTPT1nWkq0nzThIwPVnkEirF2f8swZ8MxcqzbJnI3Yi+
-   J0vTorT1tFAukWs6NGv+iQM54U8R6XEf76I2AGvf3ENdW+Y/UpmMx4IPL
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11004"; a="4207812"
-X-IronPort-AV: E=Sophos;i="6.06,208,1705392000"; 
-   d="scan'208";a="4207812"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 05:39:13 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11004"; a="914178648"
-X-IronPort-AV: E=Sophos;i="6.06,208,1705392000"; 
-   d="scan'208";a="914178648"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 05:39:09 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rhrUA-0000000AHHd-3JzQ;
-	Wed, 06 Mar 2024 15:39:06 +0200
-Date: Wed, 6 Mar 2024 15:39:06 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Yury Norov <yury.norov@gmail.com>
-Cc: Herve Codina <herve.codina@bootlin.com>,
-	Vadim Fedorenko <vadim.fedorenko@linux.dev>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, Andrew Lunn <andrew@lunn.ch>,
-	Mark Brown <broonie@kernel.org>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v6 3/5] lib/bitmap: Introduce bitmap_scatter() and
- bitmap_gather() helpers
-Message-ID: <Zehx-v7h38TPJWwe@smile.fi.intel.com>
-References: <20240306080726.167338-1-herve.codina@bootlin.com>
- <20240306080726.167338-4-herve.codina@bootlin.com>
- <Zehrd/VgW5AnfJEu@yury-ThinkPad>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Vp0y1A4XfHCj62Y/zrI7d/RTK7jHIgyPcx/PMFJzvIQareWsVANaH8jJOP/hQiweDkPQxgQ2mh2puD3USOPXfy1ztZFT/frBDD0ej/vqqwOBN2UeaCDDm4b2/o+qT1TcEyBDJbsr+yTLYvORu3Xx+um8KIGpkwj4yJbygQaBCKU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=pRmGogdB; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=91gSRt6gnV2LL9+GkPFyvaYfVwxeGuHq0ieaBFdOqeo=; b=pRmGogdBNBj+w6+DZ1iaWZrN6U
+	jeJRo+f6V1VFBHhsrak6FjUIsu5cyLZHJzLpQBMFyRSsxrkjUDQyWuDFCrNxwcHgjOZid+SL+NZRZ
+	W0XILwKDCskZBWTqs+vPdS708GrMhAvlOsJUwqjqKUrjhiJR+YPGZoJOUgve/sYXgxJQ=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rhrVv-009VFy-Py; Wed, 06 Mar 2024 14:40:55 +0100
+Date: Wed, 6 Mar 2024 14:40:55 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, horms@kernel.org, saeedm@nvidia.com,
+	anthony.l.nguyen@intel.com, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, corbet@lwn.net,
+	linux-doc@vger.kernel.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	devicetree@vger.kernel.org, horatiu.vultur@microchip.com,
+	ruanjinjie@huawei.com, steen.hegelund@microchip.com,
+	vladimir.oltean@nxp.com, UNGLinuxDriver@microchip.com,
+	Thorsten.Kummermehr@microchip.com, Pier.Beruto@onsemi.com,
+	Selvamani.Rajagopal@onsemi.com, Nicolas.Ferre@microchip.com,
+	benjamin.bigler@bernformulastudent.ch
+Subject: Re: [PATCH net-next v3 02/12] net: ethernet: oa_tc6: implement
+ register write operation
+Message-ID: <43f49aff-ca74-4d10-a478-89ea7497ba83@lunn.ch>
+References: <20240306085017.21731-1-Parthiban.Veerasooran@microchip.com>
+ <20240306085017.21731-3-Parthiban.Veerasooran@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -86,24 +69,43 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Zehrd/VgW5AnfJEu@yury-ThinkPad>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20240306085017.21731-3-Parthiban.Veerasooran@microchip.com>
 
-On Wed, Mar 06, 2024 at 05:11:19AM -0800, Yury Norov wrote:
-> On Wed, Mar 06, 2024 at 09:07:19AM +0100, Herve Codina wrote:
+> +config OA_TC6
+> +	tristate "OPEN Alliance TC6 10BASE-T1x MAC-PHY support"
+> +	depends on SPI
+> +	select PHYLIB
+> +	help
+> +	  This library implements OPEN Alliance TC6 10BASE-T1x MAC-PHY
+> +	  Serial Interface protocol for supporting 10BASE-T1x MAC-PHYs.
+> +
+> +	  To know the implementation details, refer documentation in
+> +	  <file:Documentation/networking/oa-tc6-framework.rst>.
+> +
+> +	  This option is provided for the case where no in-kernel-tree modules
+> +	  require OA_TC6 functions, but a module built outside the kernel tree
+> +	  does. Such modules that use library OA_TC6 functions require M here.
 
-..
+We generally don't refer to out of tree modules. We know they exist,
+but we don't take any steps to support them, the internal APIs are not
+fixed etc. So i would drop this last paragraph.
 
-> Signed-off-by: Yury Norov <yury.norov@gmail.com>
+> +static int oa_tc6_check_ctrl_write_reply(struct oa_tc6 *tc6, u8 size)
+> +{
+> +	u8 *tx_buf = tc6->spi_ctrl_tx_buf;
+> +	u8 *rx_buf = tc6->spi_ctrl_rx_buf;
+> +
+> +	rx_buf += OA_TC6_CTRL_IGNORED_SIZE;
+> +
+> +	/* The echoed control write must match with the one that was
+> +	 * transmitted.
+> +	 */
+> +	if (memcmp(tx_buf, rx_buf, size - OA_TC6_CTRL_IGNORED_SIZE))
+> +		return -ENODEV;
+> +
 
-Why? Shouldn't be Acked-by?
+I think EPROTO or EIO would be better. The device might have crashed,
+burned and is gone, but isn't a bit flip on the SPI bus more likely?
 
-> Would you like to move this with the rest of the series? If so please
-> pull my Sof-by, otherwise I can move it with bitmap-for-next.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+       Andrew
 
