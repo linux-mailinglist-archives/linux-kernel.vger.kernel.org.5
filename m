@@ -1,167 +1,185 @@
-Return-Path: <linux-kernel+bounces-94551-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94644-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BD8B87413F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 21:14:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EAA187429E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 23:22:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E5C7D287612
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 20:14:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 83F98B21748
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 22:22:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8DC814263B;
-	Wed,  6 Mar 2024 20:13:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B3C41BDCE;
+	Wed,  6 Mar 2024 22:21:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="O8G6Oyis"
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=epam.com header.i=@epam.com header.b="EqpTCoIt"
+Received: from mx0b-0039f301.pphosted.com (mx0b-0039f301.pphosted.com [148.163.137.242])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 012FD1350DB
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 20:13:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709756032; cv=none; b=WuAOp/rMxfzh/amaJu17dnAdgRr3aOy+0spx0Ng5z2jZ2u3L4ceSAij4G87OP/RmYD49WTKR2IIhzD4bK4Pm5l00JsrKaAfMUWPA2pBqRpAL+mL1//wkjmJYBlcc+ZQhxYBYmSlbpwfqRYwnquOdwCzi9ffZP/Js5M+m7cscLzE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709756032; c=relaxed/simple;
-	bh=SyrHb40N341DxXn2vMM7iLdQWShX0cFfOW4dnLdSUZ4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uTkTLk9MGJ2mppzclTCOgUcjTV+oH+Rsme1PFshmWvidTkZ5cTgmrsrapjQglSON2xfGSH1cW0e58z2h7V2zsr9k6RZ76TLp8pp7rO0/930T+PNMFz/FamyZ0DHNuL8bxnEPOYcNoHvgvS8MftIqgkIsrOLGNfTt2hrNpmMgOyg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=O8G6Oyis; arc=none smtp.client-ip=209.85.218.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a2f22bfb4e6so29947866b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 12:13:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1709756028; x=1710360828; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=IFv5gaMBFA/PPhuhGbhdZFZpUSVHV/ywVciaghdbwWE=;
-        b=O8G6Oyisf391jO5tTz46D/gKYfxtubmuc8FvdITvYYYadhHdfkrAcNfNao9U9RjgKH
-         tm3kQBX89Hdb42o6Jep7mmGCw8ZVjZzMmihB6ImNcfZGCdnDZ3Gzs9aryx1hIDGVOyQr
-         v883x0M1sW9b2C6GG0/uwf8gO31NTnLhih5/4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709756028; x=1710360828;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IFv5gaMBFA/PPhuhGbhdZFZpUSVHV/ywVciaghdbwWE=;
-        b=YSbILE5I3mqXiT1hk7knCUXTdlSOdRVtReeM8OJqdgO5bfdt+2PauvEOD/GTO8RSan
-         K36c1yF//DO41t9mtiXkg7+bUUVJpN3fjLbQhktak5iRAzMreIqWd7Q97c1ZXZbTiYAa
-         dEQHAbXnRLUCgx9fdKju474/bT3Ft7jt7qun/07DMoIzv5D4Qqs4HUCJvq99M2N9c4dz
-         almOpcIqVabjaePcQ71KxYfI5foL41klDXIEafboOKbzPfcUVIONh8l2Zmp4gXQLy3jC
-         0/PwzWsqTTMSIWowABfs+ExTJmksIn9cV22buPslzSkW97Vmy++7iLYfdNldl37O3KRH
-         WcSA==
-X-Forwarded-Encrypted: i=1; AJvYcCVnELJ5J1DfP1/KpGknWpsPsavISZ9ND8QE0pQhH9kapk+ERQTWiJQd5TrNja4srkOFDzLXnrXnxBYaaCfvi9ySU9u9zcoLjZIsRIs1
-X-Gm-Message-State: AOJu0YzFqSfbrb4hZmITWiaGdt/g02/AVkyIaBQ6ZrQAT31RvFka/DPj
-	PY6v+VbKUXyioLA344/yQ1ygwhSDLorCtiDsSXdjCupGwQC/1EFWoivMdGBZVeknkIjzE/pZSRS
-	fZvatJw==
-X-Google-Smtp-Source: AGHT+IGfe5/M36nVQoIz+9bU+MoY+gzf8Q7ZtwUPBBM56nXjAcbIKJ+V2eq1QxyIQJ5bxBMJHzgMPg==
-X-Received: by 2002:a17:906:d8b4:b0:a45:ae7d:c8fc with SMTP id qc20-20020a170906d8b400b00a45ae7dc8fcmr3300301ejb.60.1709756027981;
-        Wed, 06 Mar 2024 12:13:47 -0800 (PST)
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com. [209.85.221.44])
-        by smtp.gmail.com with ESMTPSA id tj10-20020a170907c24a00b00a4452ed413asm7320778ejc.16.2024.03.06.12.13.47
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Mar 2024 12:13:47 -0800 (PST)
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-33d9c3f36c2so2524f8f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 12:13:47 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCU8ThHjtG4rP4MDBP8oT4HIMc7P0UHmhysZn6nVopcafr9RxYTE3WGUdv5c6iLPBKi7XZFw50ESryWZvz5Alvnak0XI8w8JTZGtNxWq
-X-Received: by 2002:a17:906:364d:b0:a43:811b:71de with SMTP id
- r13-20020a170906364d00b00a43811b71demr10393124ejb.38.1709755577715; Wed, 06
- Mar 2024 12:06:17 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90F0718EAB;
+	Wed,  6 Mar 2024 22:21:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=148.163.137.242
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709763713; cv=fail; b=t6/Dc3GPdJJX+xD1Ag87cEDEG2+EXHXQ1P+G19Olw8TRZutNLfY4H2rATIzD6kHPHlf6k9qiZBtzeaj/6f8wufcpV32+USnBNpW//oozDAnKgrgb4uFwRSC74knPFPvlRQP07bz/gjDz5idKI+2MiyJ7LEIKvOZSueBAsPF27qU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709763713; c=relaxed/simple;
+	bh=ikDbV0OdMoxaOZkplE/+ZpRYlecrZofcRD3ZLNOdn3w=;
+	h=From:CC:Subject:Date:Message-ID:Content-Type:MIME-Version; b=dneziFzYnN+Z04uhcbEkB7+ELSPMisGZ5039LKd7UIo1E+Zw7zzYJQdLzUGSZiedZtdpavpY8sTSmZIkwgMI50pto9mtKAiUu/C+dnkNK5/OuTilBh7URrrPcF+L1wqcnm89PK04QxJXKdzXH9i+cuNl7xmt1jzIpiMDixMfNJc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=epam.com; spf=pass smtp.mailfrom=epam.com; dkim=pass (2048-bit key) header.d=epam.com header.i=@epam.com header.b=EqpTCoIt; arc=fail smtp.client-ip=148.163.137.242
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=epam.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=epam.com
+Received: from pps.filterd (m0174680.ppops.net [127.0.0.1])
+	by mx0b-0039f301.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 426JmPdK013085;
+	Wed, 6 Mar 2024 20:09:25 GMT
+Received: from eur04-vi1-obe.outbound.protection.outlook.com (mail-vi1eur04lp2050.outbound.protection.outlook.com [104.47.14.50])
+	by mx0b-0039f301.pphosted.com (PPS) with ESMTPS id 3wpg1wk94d-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 06 Mar 2024 20:09:24 +0000 (GMT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=J97Q8qAx6RW27fCWnO8BS5jIMzWYmdyO3zlHB+/grKXqqSMkfGFxUtGrHpVxmN5JURk7P0kMjum47AKnVxwnIZ88b8MAE4lSnx2yo+mBiFF4sbWCEaQ6Hj1w7N0Sw3S9S3M29GS5nLRM4m72xWlt/lbjtgILtxaXfSwTOM8TekbnHle5sjbKnSHfIPN7DAcCl3MS0aEGxy6UqlO+SM5rfkMLsR2ACTUNWyPSexhJ5Tw9o8N1p8FBDJaCoQFcrpUaoS2D52Pb828Nko31K5MuCG+0EB36IYQhT+neSycR4hFqkz00l55DHKd4DtLscecMumFP5kuAGSZt/pTAcFD7Ww==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=9q2UimSOsgGg2OzdsJUGNxFsddrAQ63FCu8kWjIBEhw=;
+ b=EnvHuM4sWkRIG/nKcyu2wyUevDJ4rhP47hjSvu9pWGjcJa6biV7s8ZFLhlA31furfNO+aMIh398lmHE+J3sDpwuq/D3QWrcB684DoAYd/38u8sxIEvNxQYKyB1g/zuMiKVdrH+wTOwvoUspQOd1SVjnKxEqMcFFGa21avBeuuqUHRK5KvCqT+ficuxDMUebDnrRg1oiMLrynWPB3mnSVnH4GFm3wxjuQBwmGnKIo481ZwXLXVrd5mkDU7nfg3Huka+vFmXvhRME3C5lSDBIvcUay/AkgAPGtziaNJfJ8loSPo9UZ5Hd2L3t3VzQh1XndfdUQBPCPb/OOvaa9EhzMew==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=epam.com; dmarc=pass action=none header.from=epam.com;
+ dkim=pass header.d=epam.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=epam.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9q2UimSOsgGg2OzdsJUGNxFsddrAQ63FCu8kWjIBEhw=;
+ b=EqpTCoItQkQnIYccxqzOQqsz17kld0zr+66SzYjojwB1g8VqD0sUgxyzbY8lIQw9psPvfOx77IYt3CgWFUr2Rv/Aa375yG7R1y41YGK9FUvo4Ul13P99z7cFrDw4WtRoD7wB39pswiVYc9diSeDTgpC4YMbhhpdF+UZZNtfWwCiwS1i2wMtzh0zMHBXxwcnhEQsQiNKQ+qrjPYMLFtbEuwL48s4xn1nqi+RGFowmR/m4sWoSDnCvLCdUNc2jXyn8amWiNikF6NfWJc6yMcmDShZoqFRpo8d7o6cdjBPlb8jF6Ttk1P5ApQlvSLsube9zi2RfgdfHPsRAFbvFmH2AXQ==
+Received: from GV1PR03MB10456.eurprd03.prod.outlook.com
+ (2603:10a6:150:16a::21) by PAWPR03MB9763.eurprd03.prod.outlook.com
+ (2603:10a6:102:2f2::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.39; Wed, 6 Mar
+ 2024 20:09:22 +0000
+Received: from GV1PR03MB10456.eurprd03.prod.outlook.com
+ ([fe80::bfa8:3549:ac92:d0d8]) by GV1PR03MB10456.eurprd03.prod.outlook.com
+ ([fe80::bfa8:3549:ac92:d0d8%4]) with mapi id 15.20.7362.024; Wed, 6 Mar 2024
+ 20:09:21 +0000
+From: Volodymyr Babchuk <Volodymyr_Babchuk@epam.com>
+CC: Sumit Garg <sumit.garg@linaro.org>,
+        Volodymyr Babchuk
+	<Volodymyr_Babchuk@epam.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad
+ Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        "linux-arm-msm@vger.kernel.org"
+	<linux-arm-msm@vger.kernel.org>,
+        "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+Subject: [PATCH] arm64: dts: qcom: sm8150: add reset name for ethernet node
+Thread-Topic: [PATCH] arm64: dts: qcom: sm8150: add reset name for ethernet
+ node
+Thread-Index: AQHacAItveF3myb2TEeE2+qqsjF4PA==
+Date: Wed, 6 Mar 2024 20:09:21 +0000
+Message-ID: <20240306200910.2732835-1-volodymyr_babchuk@epam.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: git-send-email 2.43.0
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: GV1PR03MB10456:EE_|PAWPR03MB9763:EE_
+x-ms-office365-filtering-correlation-id: f33e0bf8-ec41-4424-4d01-08dc3e19501d
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 
+ q34SOTIXYsOBIO5YSGhvYccQct2ksSWQeSNLs9oLoDQGDSiWKz8oraK0wTJup2HoTNte8KDUfnDuKCdmQZSNa3y8ZjpsQWjZPfiTglz8p3SGEHbUFUVZFi/tl8RiImEDaq/g7JSACCzHl+TASO1yPBg7JHzUDflTfIzD1azoItouly4y61JSdTd4j4GqZCe4knJWnIE9cp5ae7GwMBnbLhcoibW/RswoHX4Lu1PGWyMXQTdzB4LmodmuF8uH1gmh4L6akFXCn9Hh/69cmg7sIh4HPhI4b3Ma5A3DtUQ65Bq4YIo4oEnr+NgvQEwwXm0075sXFgqullKA2RsRXU+iOqWZKCm1Fm2hgV1cE84RAoX9HfCjupQjgP4XEEbHWsynWD32xsMZjpK1AGoWiIkmVJQHcy0N1hNBkpclbPHoV5devNP1XXAes6ms7ld3Eb+To4LEZ8tjN2tRBL12fhpGKRcmTctujmozjDxprNVTG4H/r98ikEJTysY4U/xZHOMG8wUnY7tWaip3eO/g+G0Ey8JFtvoxvfVzzwFbIFWNcbYw4eAdPdQNF/r9Eh+Okm4ZPlRR6SiGbc4HqMz8sTXcwMLqpPnjwxUIfJ6n7mgZUKP/JGrjhulfcxVNOl6mawAPpD/Q0UEi4un6aqydUohKmQ/z0yxQ6cQyKCy+aSVym2Oetpy1Upkc249M6OQh9b+eOSEyQgpLdaxvS/5ryKXBoP48H5UBPP30Tk0fT7NuoNo=
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:GV1PR03MB10456.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(38070700009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?iso-8859-1?Q?sb3yPmw49Mv/CrOS8366t7KRihGzKv3XoHRvSlbMltggH5XvkG24Rh5Tn1?=
+ =?iso-8859-1?Q?dR8q2aCAnwbHF+H02W5UM2VxVTxE1aPnfgGCbuC3qjs4VF4yeFmY03bJ8b?=
+ =?iso-8859-1?Q?blyKzg11tnY1JA3JvrCGVNIstaowEhUIQR5ljReWBSLC7Dk05v90VG3gD5?=
+ =?iso-8859-1?Q?bVzW29JJQEJMeXhXvgRlB8JU9jw/B5M72nASN5BbMIws2sDUE83AOFm/5O?=
+ =?iso-8859-1?Q?qt5TFfKycuzLQVQy3zw8fhtRyJgMLogHm7PkTCtb3cAuDOF125afmjnsp8?=
+ =?iso-8859-1?Q?eu/nhFwAfvvDlN818UNymNzlA9rogxpMa202nMpYdsWR/Jw/AiAbxwvvkz?=
+ =?iso-8859-1?Q?jl166zn1CM8f2A+MqCakmyIjcVhM8mzSJUInEmyYKn5N8PFH/B9vDARjiA?=
+ =?iso-8859-1?Q?D7G574+6jk3AnOEXsY7lI8/0ard3/e2PTL45aA944vpmM8C2LDIaXSyKk1?=
+ =?iso-8859-1?Q?QTvrKN31ISLixU+wA+51EkquGw7TvFnF5gCEMmsfwY/7w0oPGvG8MGtLhW?=
+ =?iso-8859-1?Q?2BM5j1MzSMXYEbDgPExCLWFGlzMCihK4/EwJU6o3c4Go2n2ZPOfqS4DEos?=
+ =?iso-8859-1?Q?1+UGuxNF56jBIAnNZB2M4TdAjBAjnkxLtR9Kr8erU7hCfY4y2fmH/nnvpT?=
+ =?iso-8859-1?Q?Ese1UggAdm8i0MyMlQDQ6zhD8cj8Yh4EQNGzNu4lLFmlT1wQ32sQUJ6Mrz?=
+ =?iso-8859-1?Q?mKSFOiUGFyRunEBiy06UjDHbCanwsjk9A1S8v2bBb2eDQKZ29Vc/g/xOVg?=
+ =?iso-8859-1?Q?LSBlZMS73d+Q0XDRGu77f/uSzzBVc4peGin3H4vcl9wwr3zT4gf1bm1dIU?=
+ =?iso-8859-1?Q?SGJ3cXIjpeasEQ+CU+SbGo+hk9XlFRItuVVfnzysjekkUjdDrseSzQIOLB?=
+ =?iso-8859-1?Q?Ae2YfbMmmajrrz34eRkCWitKmekL0CjgO9nMQJAXLLDi1xswNuL3tziAj8?=
+ =?iso-8859-1?Q?20Y832b664Bk4MOtw4vot0Wa/y6OHHNbqNQzI0NMv8zkmGGC3VJ69Etk3B?=
+ =?iso-8859-1?Q?McOjfZmKDG90rClzIIrTxDWlttkgdpoAg7WloP5XHkgQ/Hylqco2Y9TVes?=
+ =?iso-8859-1?Q?wdKZCLZFgV2W5tXXvlQNCuCmnoDJ9Q0ooLOq+JPeFVR3caeJO+Tv/F9oKe?=
+ =?iso-8859-1?Q?7sLgXBbbuCVVIZwI5m5AdBnYXLWGl5nn010g8eNmE+IRiAnojjz2s2nUkc?=
+ =?iso-8859-1?Q?qR8XHnn4cgMX9GGF5NGNKyT88cIqXIXnaK2heE78sEc5jkuGq3kWQ9oDoy?=
+ =?iso-8859-1?Q?s2PfV36rdS8lr3Kw4dg2pSXfvt7cD5A/kBqxr8IrVLXMjDBXWQ9saLe7zm?=
+ =?iso-8859-1?Q?UozNMBvEV3MQ1eIokMcDKrOT8zzmcpe0mh1bcBM23Gsd7LzPlDiI0iu81M?=
+ =?iso-8859-1?Q?bYEAOQbl1u0PA87je0wsFIKPR7XrIRpOtHETeBf+hq0gBW3YKoMtjWT/RV?=
+ =?iso-8859-1?Q?+2T4z3BxNF6CCyGxSzWe8rlP4o8GpvxiapXc4DTlh7Cx2ucNeM59XrwQpo?=
+ =?iso-8859-1?Q?56/ArEkwXwdP9YPD3dXn/a+ajQSVZX+EtgZSJQ+2SX01Pv+4ZdTDuUokLG?=
+ =?iso-8859-1?Q?+i0LxbK18uIGceeWfN2nILqJR2YgUunTpmFIXD8H0KZFrRXIfp5PHefFl4?=
+ =?iso-8859-1?Q?hR+J/yqL6ZdwS/YPJ4/elwnoJLEd1WRUoDcZf73BpIW9EVYphvY4h/pw?=
+ =?iso-8859-1?Q?=3D=3D?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <f3624f39-bbb1-451d-8161-8518e4108d8e@joelfernandes.org>
- <tencent_9882B228F292088CDD68F10CF1C228742009@qq.com> <20240306103719.1d241b93@gandalf.local.home>
- <27665890-8314-4252-8622-1e019fee27e4@paulmck-laptop> <20240306130103.6da71ddf@gandalf.local.home>
- <CAHk-=wgG6Dmt1JTXDbrbXh_6s2yLjL=9pHo7uv0==LHFD+aBtg@mail.gmail.com>
- <20240306135504.2b3872ef@gandalf.local.home> <CAHk-=wjbDgMKLgxbV+yK4LKZ+2Qj6zVL_sHeb+L9KDia980Q8Q@mail.gmail.com>
- <CAHk-=whvyzsbqLkw4kwEC-KzAMKFuy5VuMtJFn-mCerSYoRnqw@mail.gmail.com> <20240306144713.2e1709ad@gandalf.local.home>
-In-Reply-To: <20240306144713.2e1709ad@gandalf.local.home>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Wed, 6 Mar 2024 12:06:00 -0800
-X-Gmail-Original-Message-ID: <CAHk-=whs5MdtNjzFkTyaUy=vHi=qwWgPi0JgTe6OYUYMNSRZfg@mail.gmail.com>
-Message-ID: <CAHk-=whs5MdtNjzFkTyaUy=vHi=qwWgPi0JgTe6OYUYMNSRZfg@mail.gmail.com>
-Subject: Re: [PATCH] rcutorture: Fix rcu_torture_pipe_update_one()/rcu_torture_writer()
- data race and concurrency bug
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>, linke li <lilinke99@qq.com>, joel@joelfernandes.org, 
-	boqun.feng@gmail.com, dave@stgolabs.net, frederic@kernel.org, 
-	jiangshanlai@gmail.com, josh@joshtriplett.org, linux-kernel@vger.kernel.org, 
-	mathieu.desnoyers@efficios.com, qiang.zhang1211@gmail.com, 
-	quic_neeraju@quicinc.com, rcu@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: epam.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: GV1PR03MB10456.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f33e0bf8-ec41-4424-4d01-08dc3e19501d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Mar 2024 20:09:21.8554
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b41b72d0-4e9f-4c26-8a69-f949f367c91d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 6KfB5I49DPIF6qytnfvzdbM+cQElC3UANp1cSDLBVdwyrxkWKtFBaEomAKRl1cZvb7x/2TH8NR+pRnxsxVCt86PnfhiNoh/0AuH758W0apU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAWPR03MB9763
+X-Proofpoint-ORIG-GUID: 9MFX-_cifhWMuO8sJPBnqK_nTnisUBec
+X-Proofpoint-GUID: 9MFX-_cifhWMuO8sJPBnqK_nTnisUBec
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-06_12,2024-03-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ lowpriorityscore=0 priorityscore=1501 mlxscore=0 mlxlogscore=999
+ adultscore=0 spamscore=0 impostorscore=0 clxscore=1011 malwarescore=0
+ phishscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2402120000 definitions=main-2403060162
 
-On Wed, 6 Mar 2024 at 11:45, Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> Here's the back story. I received the following patch:
->
->   https://lore.kernel.org/all/tencent_BA1473492BC618B473864561EA3AB1418908@qq.com/
->
-> I didn't like it. My reply was:
->
->         > -     rbwork->wait_index++;
->         > +     WRITE_ONCE(rbwork->wait_index, READ_ONCE(rbwork->wait_index) + 1);
->
->         I mean the above is really ugly. If this is the new thing to do, we need
->         better macros.
->
->         If anything, just convert it to an atomic_t.
+Add reset-names property to the ethernet@20000 node. This patch does
+not change behavior on Linux, but it is needed for U-Boot, as it tries
+to find the reset by name, not by index.
 
-The right thing is definitely to convert it to an atomic_t.
+Signed-off-by: Volodymyr Babchuk <volodymyr_babchuk@epam.com>
+---
+ arch/arm64/boot/dts/qcom/sm8150.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
-The memory barriers can probably also be turned into atomic ordering,
-although we don't always have all the variates.
-
-But for example, that
-
-                /* Make sure to see the new wait index */
-                smp_rmb();
-                if (wait_index != work->wait_index)
-                        break;
-
-looks odd, and should probably do an "atomic_read_acquire()" instead
-of a rmb and a (non-atomic and non-READ_ONCE thing).
-
-The first READ_ONCE() should probably also be that atomic_read_acquire() op.
-
-On the writing side, my gut feel is that the
-
-        rbwork->wait_index++;
-        /* make sure the waiters see the new index */
-        smp_wmb();
-
-should be an "atomic_inc_release(&rbwork->wait_index);" but we don't
-actually have that operation. We only have the "release" versions for
-things that return a value.
-
-So it would probably need to be either
-
-        atomic_inc(&rbwork->wait_index);
-        /* make sure the waiters see the new index */
-        smp_wmb();
-
-or
-
-        atomic_inc_return_release(&rbwork->wait_index);
-
-or we'd need to add the "basic atomics with ordering semantics" (which
-we aren't going to do unless we end up with a lot more people who want
-them).
-
-I dunno. I didn't look all *that* closely at the code. The above might
-be garbage too. Somebody who actually knows the code should think
-about what ordering they actually were looking for.
-
-(And I note that 'wait_index' is of type 'long' in 'struct
-rb_irq_work', so I guess it should be "atomic_long_t" instead -  just
-shows how little attention I paid on the first read-through, which
-should make everybody go "I need to double-check Linus here")
-
-               Linus
+diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qco=
+m/sm8150.dtsi
+index 761a6757dc26f..c2e65d6a2ac62 100644
+--- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+@@ -951,6 +951,7 @@ ethernet: ethernet@20000 {
+=20
+ 			power-domains =3D <&gcc EMAC_GDSC>;
+ 			resets =3D <&gcc GCC_EMAC_BCR>;
++			resets-names =3D "emac";
+=20
+ 			iommus =3D <&apps_smmu 0x3c0 0x0>;
+=20
+--=20
+2.43.0
 
