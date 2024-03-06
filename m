@@ -1,119 +1,127 @@
-Return-Path: <linux-kernel+bounces-94491-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94492-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C772E87409D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 20:40:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A210A87409E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 20:40:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 48A8B283495
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 19:40:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3693C282EC9
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 19:40:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C266714037F;
-	Wed,  6 Mar 2024 19:40:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 300B4140E47;
+	Wed,  6 Mar 2024 19:40:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="K+756lvs"
-Received: from mail-vs1-f41.google.com (mail-vs1-f41.google.com [209.85.217.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JKLC432o"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A641140360
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 19:40:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77190140E25
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 19:40:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709754022; cv=none; b=B1dc+2ld2O4y3pPwwi4kd3IrkrtSqVqB3froUt0lx3DzyJ07WCASu28EYc/0qN/Iyi0wuWsFKlsCaFgykgHy99U37Cv8ofXpgbS4XTQ6MmV6/LI9xD/3Xw6Y/Du5Q4Kr93TcpaSKXHYBWb2KR7dzE0bax2KKZcDkjRDLIHRD5B4=
+	t=1709754024; cv=none; b=BQDcV9DT9GxOJaSZjA5w3HnfyMcpqQJTP/mSoJ5PUDr+zlD9/nWRnFAOho4GUtNKkFjeKKN7ptQVQo36LBIYC+8e2zXk++MZd6pzVw73qeHb3FpHW0/yUO+oECbTgh99HmDyAKBF0Ye08Ed+uz1SIXlqiKzVjxuUpPqrk7Bfmb4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709754022; c=relaxed/simple;
-	bh=FimmtqSvqEqbFvMuJNijf2tqqdZSK3fWXSJq7n19k98=;
+	s=arc-20240116; t=1709754024; c=relaxed/simple;
+	bh=5/Zn7NHW1uTwkwELhBiHm6Z/dCQjigrm4gBqAaJY9Ho=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ah9ypIpx8SGgHsImyNzowKCb/DqoaXvbgfI7ao4QBUFAzG13+S+iNP5ZMoEjK83t8i2YS+MkyB2gW97dxOAlT6GB1L6F8vpdoCdcdtAFJ1KhLE63YsrbiVyU3TQIPzwEHpbmHReeoLeMcz6f5AyeocX719AV7mPOj94ZqntJI10=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=K+756lvs; arc=none smtp.client-ip=209.85.217.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-vs1-f41.google.com with SMTP id ada2fe7eead31-472687a2f7cso30430137.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 11:40:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709754019; x=1710358819; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FimmtqSvqEqbFvMuJNijf2tqqdZSK3fWXSJq7n19k98=;
-        b=K+756lvs+a4bRvQG5dp9hox4T/iRhEVLEMv779e7mJE4QG7DwmMO8Uo57kxVRYMq8I
-         HBBr6lUS88Nr0YL46hW1sjYWJHLf4HVdg5k5axmCbPuOxNcmP0sDRSi9bzoLaC4Dyfjp
-         j2GhgW+p8p1B7wR3uktsOIWwaq/5++xTxadTmvghJbqPGaP13m7R/om/2Kc4cCLQGLMp
-         R4Hal64G8WJSHo5sBdDok2cJ81xfypyTRX0nWhc03mOnx6WzK2LIF1cvv5em84idxhI9
-         ipE9SJEAl06m7sDGsKPLvNFGtn4D/AOtj6dhA0nUvssTzFEu0gPDl0N8d9cRYhHR3u7r
-         3Z3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709754019; x=1710358819;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FimmtqSvqEqbFvMuJNijf2tqqdZSK3fWXSJq7n19k98=;
-        b=EWfZXA5QKYAWkLaj8lL8ZchIbYTi0nZumcjbZ/CCYzDnBekIpgl2nM0wg7LjG+ipGv
-         SotQIVw79Hj4ZcpUyKY6w9sxZ/BFs8+8HDChzIBxHa/MvxYYhZxm095uXB9W9M+DkE2L
-         XcD2MdCpaHl+5ylqJowCqbn7d8uExmkfGzudXK/QUl+05ov++Qw+/0hif6m8zrLY73fv
-         TO4OFPd5WMBDlnz92IRn5b6F44UzWxgIEstxr9gL/UaUPYz8ZP9ORb7k158BRHDCzRk2
-         /MFs9Wb8DSqWjuzlkY+qbzR+jGCBe0jSsK6E0adbNcRAiTTXlKvqsP094+FEMFL3I9jS
-         XfTw==
-X-Forwarded-Encrypted: i=1; AJvYcCUsid8Bhezol+mWvHkg71m1M8J3+lfBUjEl+WG1oDpdlWKAAWRhBkuAZ5pxXNM3SOg1ZFNXOnCJdfQAjeN387pSbF1RI99wsDIRpMcG
-X-Gm-Message-State: AOJu0YzSpPnCqZFVe/p2mdjt/BcfjoiTryHvYJaUqw2M+ma5GuaKxduL
-	z6NAdsda/0Ms4mtnydFp/4KibeqwD3nt71D986z1t2j5Uxoa8bg7TBponcvtQro=
-X-Google-Smtp-Source: AGHT+IFOhv+r/bUzCCGiBr5OHd5VcarVt4eCtbw0P5hHbSyBkgUa/QGZ5B+jCpn573A0lhwZV9TGmw==
-X-Received: by 2002:a67:c412:0:b0:472:e292:3933 with SMTP id c18-20020a67c412000000b00472e2923933mr4977115vsk.17.1709754019440;
-        Wed, 06 Mar 2024 11:40:19 -0800 (PST)
-Received: from ishi ([185.243.57.249])
-        by smtp.gmail.com with ESMTPSA id 38-20020a9f22a9000000b007cb1514c862sm2305766uan.10.2024.03.06.11.40.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Mar 2024 11:40:18 -0800 (PST)
-Date: Wed, 6 Mar 2024 14:40:17 -0500
-From: William Breathitt Gray <william.gray@linaro.org>
-To: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-Cc: lee@kernel.org, alexandre.torgue@foss.st.com, linux-iio@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 09/11] counter: stm32-timer-cnt: probe number of
- channels from registers
-Message-ID: <ZejGoa8J5uReN0fg@ishi>
-References: <20240227173803.53906-1-fabrice.gasnier@foss.st.com>
- <20240227173803.53906-10-fabrice.gasnier@foss.st.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=hTsmbn2mQah4Vi/fEtq0oshQkKccP5khswCqvnx8S4dgvfYC9TE5m1B2IHuCwqOa22Aaax4yNw2B4w2tf+CMAlD54lvD0frFxgEQpSgkOqRR0kAC8cuddyQAhUH1uLZqLq5DvesCiDfsyfbCPeXuM1rmyXs180SxmSvmRfST1Ew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JKLC432o; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A15D6C433C7;
+	Wed,  6 Mar 2024 19:40:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709754023;
+	bh=5/Zn7NHW1uTwkwELhBiHm6Z/dCQjigrm4gBqAaJY9Ho=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=JKLC432oMy/qlvpf9vVwvVrMXSu9agkHKeeO3zV41CO6dZ20Sm+V1eNXj22cNLo5Z
+	 G+5sWuR3L6AmhazuPitHyEI9Q62kI8Foz0g935QQYo5vAzrjZ8nDxoXm0R/Wr/9CFG
+	 vPXG+0e+XKAtpxEOR49vSMOYzsg0x7aSvwcfzAYphXrOpC1eDjwtgQjdyTDVvoqQSC
+	 SuqdIW6aNwut2F9YETPd7sXXRv9mmM45omYm/5wkTilQZD9GK9SEX1YNN/R2vmh6sP
+	 W8ymyxZAaL1dbgbc4v+T12pja5MoSTS/EQylltQZ+i5r84F3qO2rQpqaPUmf0jdR02
+	 kkHwk+XGSsg9Q==
+Date: Wed, 6 Mar 2024 12:40:20 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: Chunhui Li <chunhui.li@mediatek.com>
+Cc: Petr Mladek <pmladek@suse.com>, Steven Rostedt <rostedt@goodmis.org>,
+	John Ogness <john.ogness@linutronix.de>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com
+Subject: Re: [PATCH] printk: fix _entry_ptr build warning
+Message-ID: <20240306194020.GA3711543@dev-arch.thelio-3990X>
+References: <20240306092647.16010-1-chunhui.li@mediatek.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="TYYl/++2NBOFjIIm"
-Content-Disposition: inline
-In-Reply-To: <20240227173803.53906-10-fabrice.gasnier@foss.st.com>
-
-
---TYYl/++2NBOFjIIm
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240306092647.16010-1-chunhui.li@mediatek.com>
 
-On Tue, Feb 27, 2024 at 06:38:01PM +0100, Fabrice Gasnier wrote:
-> Probe the number of capture compare channels, by writing CCER register bi=
-ts
-> and read them back. Take care to restore the register original value.
->=20
-> This is a precursor patch to support capture channels.
->=20
-> Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+On Wed, Mar 06, 2024 at 05:26:47PM +0800, Chunhui Li wrote:
+> We build with Werror and suffer build error when
+> enable CONFIG_PRINTK_INDEX, such as
+> gfp.h:223:2: error: unused variable '_entry_ptr'
+> ratelimit.h:31:3: error: unused variable '_entry_ptr'
+> kallsyms.h:172:2: error: unused variable '_entry_ptr'
+> [-Werror,-Wunused-variable]
+> 
+> Fix the warning by appending __attribute__((unused)).
+> 
+> Signed-off-by: Chunhui Li <chunhui.li@mediatek.com>
 
-Reviewed-by: William Breathitt Gray <william.gray@linaro.org>
+Are these warnings being emitted from an Android version of clang,
+specifically 18.0.0 with the build ID of 11209041 (you should be able to
+tell this from the "bid" field in the BUILD_INFO file in the clang
+toolchain folder)? This seems remarkably similar to
+https://github.com/ClangBuiltLinux/linux/issues/1977, which was a report
+using that version of Android clang.
 
---TYYl/++2NBOFjIIm
-Content-Type: application/pgp-signature; name="signature.asc"
+Ultimately, this warning is a bug in a clang change that was quickly
+found and reverted upstream
 
------BEGIN PGP SIGNATURE-----
+  https://github.com/llvm/llvm-project/commit/f0f395e00e2ec3f1f20ca9021d1554fde73d56c9
+  https://github.com/llvm/llvm-project/commit/cfa578cde0314935c6eb5d7fa19ec26390d431dd
 
-iHUEARYKAB0WIQSNN83d4NIlKPjon7a1SFbKvhIjKwUCZejGoQAKCRC1SFbKvhIj
-K9rKAP4tIgFMewvSx7gbLKhcLYNMVQevAg9siIMXNnOlzExhTAD/TwMoxemDO0+A
-xgY8nsPjYelz/A1209HizxjuPRgMfQo=
-=roE/
------END PGP SIGNATURE-----
+but unfortunately, Android picked a revision for the 11209041 build that
+was between the landing of the broken commit and its revert. It was
+quickly fixed with the 11368308 build
 
---TYYl/++2NBOFjIIm--
+  https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+/42d100b025eb5f4a41781348016c148e9e912cf9
+
+so you should just be able to update to that version to resolve this.
+
+Cheers,
+Nathan
+
+> ---
+>  include/linux/printk.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/printk.h b/include/linux/printk.h
+> index 8ef499ab3c1e..749c1c4257f1 100644
+> --- a/include/linux/printk.h
+> +++ b/include/linux/printk.h
+> @@ -392,7 +392,7 @@ struct pi_entry {
+>  				.level = __builtin_constant_p(_level) ? (_level) : NULL, \
+>  				.subsys_fmt_prefix = _subsys_fmt_prefix,\
+>  			};						\
+> -			static const struct pi_entry *_entry_ptr	\
+> +			static const struct pi_entry *_entry_ptr __attribute__((unused)) \
+>  			__used __section(".printk_index") = &_entry;	\
+>  		}							\
+>  	} while (0)
+> -- 
+> 2.18.0
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
