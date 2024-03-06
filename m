@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-94542-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94544-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DEF187412B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 21:08:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C757F87412F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 21:09:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3493E28892F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 20:08:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D8C7288D8C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 20:09:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E14C143758;
-	Wed,  6 Mar 2024 20:05:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB757143C7D;
+	Wed,  6 Mar 2024 20:05:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kzbTbw7N"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eu1a2O/q"
 Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F0FE14372D;
-	Wed,  6 Mar 2024 20:05:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C19214373E;
+	Wed,  6 Mar 2024 20:05:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709755550; cv=none; b=JVIFquYcNvdzvesgE8k5RF1Osy4YBk1LhPX9jBkHtMuxKevp51Y/dm6HHRreX3kZLGUBhO4IopBBZqFNoPfXLNU6Qf/EO21IhsiPEXd2XdIUDAec7R2jDDPOtDtr3B9HKI69nxI7WWMhBFuKI/7cqxA0pkMkss0xnjwnp0rTZnI=
+	t=1709755552; cv=none; b=rNNdJgwaXZun7LqJeET6tPNBWjeCMzIz6XhaP5DkYwGDb9BulxgtPROrwrPYa1BJ3zViFoO5vPRb91CKhPQJWlWy+kjbJ137nqp/cG9EeoynJ+QbPfIzMyrtFQyib/NH9GAzqkvMzkJEOJkMNIYQs57hBm38JrakQF2MA7xW6Ds=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709755550; c=relaxed/simple;
-	bh=joPS7aRxwYa4hZZkszZGFWj2FC8Fr3qNLAdjdoRuogw=;
+	s=arc-20240116; t=1709755552; c=relaxed/simple;
+	bh=plb56a5rhyamjhuFzBgg3vJIKSYIbdnXKncSM6kqvIY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=B2hlIhUpxrl2Er1l/Jk405YCNAhWBDRLErV1pGrk6FUx1MioLCe7la2v0hbLN7FuMiqYguNdFtuA+Q4KxKXzklzF3qo2R+ic/SSp57LkWGJMGa+K5tVY1kIlznivdpJmOppuJ2jzERw3r/LdZjxijuqKv6O5+VOLpbJLhb1bSkQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kzbTbw7N; arc=none smtp.client-ip=209.85.214.181
+	 MIME-Version; b=YSy6lM3l4AVYu5a4H0adjab5YKor7TWyl9hcOMfzyCp3u0cPIoDUrZ/cSAY94do0t3q6o3fZInAwAFnLphOTRkw1EyatNEDf6nWzlokWlo+Z9+ivKWqMoLrC0xAR6PhmGmwoaBeYcJyX5ZXOkhXEO7lcY9vQxpITusVR/cm9VRI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eu1a2O/q; arc=none smtp.client-ip=209.85.214.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1dc1ff3ba1aso827655ad.3;
-        Wed, 06 Mar 2024 12:05:49 -0800 (PST)
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1dd2dca2007so932025ad.2;
+        Wed, 06 Mar 2024 12:05:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709755548; x=1710360348; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1709755550; x=1710360350; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=I57kyg6eTucwv8eo/E5FOHR5MopFsB/omhETuWjxqlw=;
-        b=kzbTbw7N5F1WNBI3IUy+6lXpkbSV6Scc0Ag6udfuKbKVLEQOkzKh7yWylDtB29TG4k
-         Rb/TT+CkWEOFVkW2MYuvBlx+Xm1vRbBH1LUxXCWQIdsICt4RAxKvuRQyy+Fq2HC9U9VJ
-         fTWN8uXpD9FJCCLfj3lxn7IeqmBMl1gTcQf93Xr1Pmr3WlZbolzO5o+oliAdjBxr4ZmM
-         xXU0eLDQUGWyOHvhFZHrM/bo2DJUTpUqel0+zNqYEAzZtE659mEh+7+abU2mmSRKPGy4
-         75MNwnN8CfaN7rtCtjndRSwSvMCvRkPQqaU8ZOiFAxFHuOd7iSgXHbe/NkssPgIEAto/
-         q4mg==
+        bh=xXTKoLXqIrz4+7SOUgtyLjrSNsVHgUbwLacVV55lgdc=;
+        b=eu1a2O/q0bN7//Bbb14Qr4gXMAIvb709kIX4hrk76lgNDhVX0HQNYzi5HByDk4ponA
+         2nj7FpTtjDJQrNYHxxmbN3dacBL6hKSuEES7tivholWkCXaEkJ39w+2CpHo6D1UcE/+r
+         XaY8z3rhOgze1qUsDKKwU1wIRB1N6TrYZzounKKkg67hDqi2Ps/Ql5JOKBwZK3SGVzOI
+         e3r84r/08YA/Fm7SXAhXI0xStJ0EvvETbEv/2e8Bma75QPTEPvCOW3YtLFjDrCjnZA/1
+         +vP0EBvaXHP6JLMwaGKYi5YfwuwB7DqJJ+UrnrgXYWznVuU/4VP+NHPl9d58DjWH/mdk
+         roHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709755548; x=1710360348;
+        d=1e100.net; s=20230601; t=1709755550; x=1710360350;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=I57kyg6eTucwv8eo/E5FOHR5MopFsB/omhETuWjxqlw=;
-        b=V9Z4rdVKoedOh+6VI4ooeivZQ02iBXzN2LowWK5LkUyZ7ZNzxlOJTA2jM4koLT7AW7
-         8RQiveKyGZHRBPLktl+DklYrWFgq//ehiHZIk1TCIXQAcvGnEWJ2fdrkoSTNg+KsXIKs
-         kGkoebbJNWjwvZ9/j47gLjE4NSQNIZBFC4C9c/W0ysLUuSRiLjWPVgyQ1ZoqZD1xS59I
-         I0mbUfQIt1Jg5xkClzZ1ZJUH/a6bpUleVnFfNowiFqaO46BLw2H2Y9NeYlQ0R0xiK7kA
-         xG95tupyW17gxSyuILhsA72ZNQFGVjeBWO3DgLY62L1AofwKF4oFg37xhAB3SFw5III8
-         G9tQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVAtccP+lpUTJ+tLwV4R74HdSRxoud0GfuKMt4S7LFg50K2jyAOVq0MfreuyDWtryjHwVmIMzayVcDca39l7tIM3VDLSTNkXqckCvNfCq6FxOPUS0KYd8Eo2VUmHi/0xAr4akii06faODywmHAJz9YyAKizBpMnzKC+Z0BXKVdhsA==
-X-Gm-Message-State: AOJu0Yz0a0ZWPGK/ZMKk5OihMz7aNFtGue8ZSFNhlB9U/0pnT4t/UnmZ
-	EuBkPoEGWEpdFxEEWjV3azcwrKVLGYn/Bn7ZSaiUVTeJNTcY8z3g
-X-Google-Smtp-Source: AGHT+IH8zfganj5XWPVSBbSsHDUFg52F70PkgfZSuw9plNsQY5H+gIvjYq7zI0Mzm73ysjj5eI88rQ==
-X-Received: by 2002:a17:902:650b:b0:1dc:c93e:f5f5 with SMTP id b11-20020a170902650b00b001dcc93ef5f5mr5840853plk.12.1709755548504;
-        Wed, 06 Mar 2024 12:05:48 -0800 (PST)
+        bh=xXTKoLXqIrz4+7SOUgtyLjrSNsVHgUbwLacVV55lgdc=;
+        b=s6HtjbRNHY6TeefpJGxwpvlxbi/fVGHQAHoLmm0yxHWmRQVv4FHiRVzwmzN4FTTLJS
+         nypt1Q09HyMFbuxgT2qNQM62Q9nhhWYcpzz313QsivQldEuucBRPzIa+BPwQLGXysJ9a
+         AvWzYApNRR/iUzTZ4cXOtW6nM24oL1lfTgSYuxhTTQHcAkLmiZdHlfcwq4rjh6FOpOvE
+         SR/ESaTz117q/4Z2400Ipc8z4O8hvh0XF7s6vgrpilxJDLxcAPnOMABgRDec5/crpRvd
+         mZhxbs+ReP6LFuzrI77q2VEIUTxl7QNi6s1tczVvmpdogp8urpkmW7ZIN/QT9gAi5A7u
+         4hEw==
+X-Forwarded-Encrypted: i=1; AJvYcCXpNA8Ie2DQmI2i3kHzk4uS0RHvHTTmKTzOgLc7Reeu//RHI9upkZk1gLix8rM2ba6ynEDdB6d3hB3/MqTja70uTpa5lhs+kmxDB/1eT9VO+sLsE5b1Mu4M5wdK1voS115cs1IwmgMA7eM9je7xtdu+FtqEvmDnzeLc/JtJekE0ug==
+X-Gm-Message-State: AOJu0Yzq5qt/szKJcaW/3w0HU8xsp4fBQcYAY4Ai6cTbj2rzzLlrV/Do
+	7oTxurxjEMV/bdLJmyAWTsH2d9tmwMS3+ozn3cGJB4IPbivf3pOL
+X-Google-Smtp-Source: AGHT+IEiJ2roCAI40K2a3VrS8d+2SDADw8E/cXlaEZMQDwqlxjJ7wW9UFJ/Gb5WylySCIDRIqvZdnA==
+X-Received: by 2002:a17:903:22c6:b0:1dc:fadb:4b1a with SMTP id y6-20020a17090322c600b001dcfadb4b1amr6868463plg.54.1709755549717;
+        Wed, 06 Mar 2024 12:05:49 -0800 (PST)
 Received: from mozart.vkv.me ([192.184.166.229])
-        by smtp.gmail.com with ESMTPSA id n15-20020a170902e54f00b001dcfc88ccf6sm8869341plf.263.2024.03.06.12.05.47
+        by smtp.gmail.com with ESMTPSA id n15-20020a170902e54f00b001dcfc88ccf6sm8869341plf.263.2024.03.06.12.05.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Mar 2024 12:05:48 -0800 (PST)
+        Wed, 06 Mar 2024 12:05:49 -0800 (PST)
 From: Calvin Owens <jcalvinowens@gmail.com>
 To: Luis Chamberlain <mcgrof@kernel.org>,
 	Andrew Morton <akpm@linux-foundation.org>,
@@ -82,9 +82,9 @@ Cc: Calvin Owens <jcalvinowens@gmail.com>,
 	bpf@vger.kernel.org,
 	linux-modules@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [RFC][PATCH 2/4] bpf: Allow BPF_JIT with CONFIG_MODULES=n
-Date: Wed,  6 Mar 2024 12:05:09 -0800
-Message-ID: <afebd15dd032f908e46871bec5be438063ae7458.1709676663.git.jcalvinowens@gmail.com>
+Subject: [RFC][PATCH 3/4] kprobes: Allow kprobes with CONFIG_MODULES=n
+Date: Wed,  6 Mar 2024 12:05:10 -0800
+Message-ID: <2af01251ca21d79fa29092505d192f1f1b746cff.1709676663.git.jcalvinowens@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1709676663.git.jcalvinowens@gmail.com>
 References: <cover.1709676663.git.jcalvinowens@gmail.com>
@@ -96,101 +96,193 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-No BPF code has to change, except in struct_ops (for module refs).
-
-This conflicts with bpf-next because of this (relevant) series:
-
-    https://lore.kernel.org/all/20240119225005.668602-1-thinker.li@gmail.com/
-
-If something like this is merged down the road, it can go through
-bpf-next at leisure once the module_alloc change is in: it's a one-way
-dependency.
+If something like this is merged down the road, it can go in at leisure
+once the module_alloc change is in: it's a one-way dependency.
 
 Signed-off-by: Calvin Owens <jcalvinowens@gmail.com>
 ---
- kernel/bpf/Kconfig          |  2 +-
- kernel/bpf/bpf_struct_ops.c | 28 ++++++++++++++++++++++++----
- 2 files changed, 25 insertions(+), 5 deletions(-)
+ arch/Kconfig                |  2 +-
+ kernel/kprobes.c            | 22 ++++++++++++++++++++++
+ kernel/trace/trace_kprobe.c | 11 +++++++++++
+ 3 files changed, 34 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/Kconfig b/kernel/bpf/Kconfig
-index 6a906ff93006..77df483a8925 100644
---- a/kernel/bpf/Kconfig
-+++ b/kernel/bpf/Kconfig
-@@ -42,7 +42,7 @@ config BPF_JIT
- 	bool "Enable BPF Just In Time compiler"
- 	depends on BPF
- 	depends on HAVE_CBPF_JIT || HAVE_EBPF_JIT
+diff --git a/arch/Kconfig b/arch/Kconfig
+index cfc24ced16dd..e60ce984d095 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -52,8 +52,8 @@ config GENERIC_ENTRY
+ 
+ config KPROBES
+ 	bool "Kprobes"
 -	depends on MODULES
+ 	depends on HAVE_KPROBES
 +	select MODULE_ALLOC
+ 	select KALLSYMS
+ 	select TASKS_RCU if PREEMPTION
  	help
- 	  BPF programs are normally handled by a BPF interpreter. This option
- 	  allows the kernel to generate native code when a program is loaded
-diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
-index 02068bd0e4d9..fbf08a1bb00c 100644
---- a/kernel/bpf/bpf_struct_ops.c
-+++ b/kernel/bpf/bpf_struct_ops.c
-@@ -108,11 +108,30 @@ const struct bpf_prog_ops bpf_struct_ops_prog_ops = {
- #endif
- };
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index 9d9095e81792..194270e17d57 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -1556,8 +1556,12 @@ static bool is_cfi_preamble_symbol(unsigned long addr)
+ 		str_has_prefix("__pfx_", symbuf);
+ }
  
 +#if IS_ENABLED(CONFIG_MODULES)
- static const struct btf_type *module_type;
- 
-+static int bpf_struct_module_type_init(struct btf *btf)
-+{
-+	s32 module_id;
-+
-+	module_id = btf_find_by_name_kind(btf, "module", BTF_KIND_STRUCT);
-+	if (module_id < 0)
-+		return 1;
-+
-+	module_type = btf_type_by_id(btf, module_id);
-+	return 0;
-+}
+ static int check_kprobe_address_safe(struct kprobe *p,
+ 				     struct module **probed_mod)
 +#else
-+static int bpf_struct_module_type_init(struct btf *btf)
-+{
-+	return 0;
-+}
++static int check_kprobe_address_safe(struct kprobe *p)
++#endif
+ {
+ 	int ret;
+ 
+@@ -1580,6 +1584,7 @@ static int check_kprobe_address_safe(struct kprobe *p,
+ 		goto out;
+ 	}
+ 
++#if IS_ENABLED(CONFIG_MODULES)
+ 	/* Check if 'p' is probing a module. */
+ 	*probed_mod = __module_text_address((unsigned long) p->addr);
+ 	if (*probed_mod) {
+@@ -1603,6 +1608,8 @@ static int check_kprobe_address_safe(struct kprobe *p,
+ 			ret = -ENOENT;
+ 		}
+ 	}
 +#endif
 +
- void bpf_struct_ops_init(struct btf *btf, struct bpf_verifier_log *log)
+ out:
+ 	preempt_enable();
+ 	jump_label_unlock();
+@@ -1614,7 +1621,9 @@ int register_kprobe(struct kprobe *p)
  {
--	s32 type_id, value_id, module_id;
-+	s32 type_id, value_id;
- 	const struct btf_member *member;
- 	struct bpf_struct_ops *st_ops;
- 	const struct btf_type *t;
-@@ -125,12 +144,10 @@ void bpf_struct_ops_init(struct btf *btf, struct bpf_verifier_log *log)
- #include "bpf_struct_ops_types.h"
- #undef BPF_STRUCT_OPS_TYPE
+ 	int ret;
+ 	struct kprobe *old_p;
++#if IS_ENABLED(CONFIG_MODULES)
+ 	struct module *probed_mod;
++#endif
+ 	kprobe_opcode_t *addr;
+ 	bool on_func_entry;
  
--	module_id = btf_find_by_name_kind(btf, "module", BTF_KIND_STRUCT);
--	if (module_id < 0) {
-+	if (bpf_struct_module_type_init(btf)) {
- 		pr_warn("Cannot find struct module in btf_vmlinux\n");
- 		return;
- 	}
--	module_type = btf_type_by_id(btf, module_id);
+@@ -1633,7 +1642,11 @@ int register_kprobe(struct kprobe *p)
+ 	p->nmissed = 0;
+ 	INIT_LIST_HEAD(&p->list);
  
- 	for (i = 0; i < ARRAY_SIZE(bpf_struct_ops); i++) {
- 		st_ops = bpf_struct_ops[i];
-@@ -433,12 +450,15 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
++#if IS_ENABLED(CONFIG_MODULES)
+ 	ret = check_kprobe_address_safe(p, &probed_mod);
++#else
++	ret = check_kprobe_address_safe(p);
++#endif
+ 	if (ret)
+ 		return ret;
  
- 		moff = __btf_member_bit_offset(t, member) / 8;
- 		ptype = btf_type_resolve_ptr(btf_vmlinux, member->type, NULL);
+@@ -1676,8 +1689,10 @@ int register_kprobe(struct kprobe *p)
+ out:
+ 	mutex_unlock(&kprobe_mutex);
+ 
++#if IS_ENABLED(CONFIG_MODULES)
+ 	if (probed_mod)
+ 		module_put(probed_mod);
++#endif
+ 
+ 	return ret;
+ }
+@@ -2482,6 +2497,7 @@ int kprobe_add_area_blacklist(unsigned long start, unsigned long end)
+ 	return 0;
+ }
+ 
++#if IS_ENABLED(CONFIG_MODULES)
+ /* Remove all symbols in given area from kprobe blacklist */
+ static void kprobe_remove_area_blacklist(unsigned long start, unsigned long end)
+ {
+@@ -2499,6 +2515,7 @@ static void kprobe_remove_ksym_blacklist(unsigned long entry)
+ {
+ 	kprobe_remove_area_blacklist(entry, entry + 1);
+ }
++#endif
+ 
+ int __weak arch_kprobe_get_kallsym(unsigned int *symnum, unsigned long *value,
+ 				   char *type, char *sym)
+@@ -2564,6 +2581,7 @@ static int __init populate_kprobe_blacklist(unsigned long *start,
+ 	return ret ? : arch_populate_kprobe_blacklist();
+ }
+ 
++#if IS_ENABLED(CONFIG_MODULES)
+ static void add_module_kprobe_blacklist(struct module *mod)
+ {
+ 	unsigned long start, end;
+@@ -2665,6 +2683,7 @@ static struct notifier_block kprobe_module_nb = {
+ 	.notifier_call = kprobes_module_callback,
+ 	.priority = 0
+ };
++#endif /* IS_ENABLED(CONFIG_MODULES) */
+ 
+ void kprobe_free_init_mem(void)
+ {
+@@ -2724,8 +2743,11 @@ static int __init init_kprobes(void)
+ 	err = arch_init_kprobes();
+ 	if (!err)
+ 		err = register_die_notifier(&kprobe_exceptions_nb);
 +
 +#if IS_ENABLED(CONFIG_MODULES)
- 		if (ptype == module_type) {
- 			if (*(void **)(udata + moff))
- 				goto reset_unlock;
- 			*(void **)(kdata + moff) = BPF_MODULE_OWNER;
- 			continue;
- 		}
+ 	if (!err)
+ 		err = register_module_notifier(&kprobe_module_nb);
 +#endif
  
- 		err = st_ops->init_member(t, member, kdata, udata);
- 		if (err < 0)
+ 	kprobes_initialized = (err == 0);
+ 	kprobe_sysctls_init();
+diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+index c4c6e0e0068b..dd4598f775b9 100644
+--- a/kernel/trace/trace_kprobe.c
++++ b/kernel/trace/trace_kprobe.c
+@@ -102,6 +102,7 @@ static nokprobe_inline bool trace_kprobe_has_gone(struct trace_kprobe *tk)
+ 	return kprobe_gone(&tk->rp.kp);
+ }
+ 
++#if IS_ENABLED(CONFIG_MODULES)
+ static nokprobe_inline bool trace_kprobe_within_module(struct trace_kprobe *tk,
+ 						 struct module *mod)
+ {
+@@ -129,6 +130,12 @@ static nokprobe_inline bool trace_kprobe_module_exist(struct trace_kprobe *tk)
+ 
+ 	return ret;
+ }
++#else
++static nokprobe_inline bool trace_kprobe_module_exist(struct trace_kprobe *tk)
++{
++	return true;
++}
++#endif
+ 
+ static bool trace_kprobe_is_busy(struct dyn_event *ev)
+ {
+@@ -670,6 +677,7 @@ static int register_trace_kprobe(struct trace_kprobe *tk)
+ 	return ret;
+ }
+ 
++#if IS_ENABLED(CONFIG_MODULES)
+ /* Module notifier call back, checking event on the module */
+ static int trace_kprobe_module_callback(struct notifier_block *nb,
+ 				       unsigned long val, void *data)
+@@ -704,6 +712,7 @@ static struct notifier_block trace_kprobe_module_nb = {
+ 	.notifier_call = trace_kprobe_module_callback,
+ 	.priority = 1	/* Invoked after kprobe module callback */
+ };
++#endif /* IS_ENABLED(CONFIG_MODULES) */
+ 
+ static int count_symbols(void *data, unsigned long unused)
+ {
+@@ -1897,8 +1906,10 @@ static __init int init_kprobe_trace_early(void)
+ 	if (ret)
+ 		return ret;
+ 
++#if IS_ENABLED(CONFIG_MODULES)
+ 	if (register_module_notifier(&trace_kprobe_module_nb))
+ 		return -EINVAL;
++#endif
+ 
+ 	return 0;
+ }
 -- 
 2.43.0
 
