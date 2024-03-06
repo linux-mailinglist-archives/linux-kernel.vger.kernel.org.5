@@ -1,281 +1,110 @@
-Return-Path: <linux-kernel+bounces-94482-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94483-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B913187406D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 20:32:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A961D874070
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 20:34:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1EE23B2208C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 19:32:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D9C1D1C20C23
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 19:34:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F5C214036A;
-	Wed,  6 Mar 2024 19:32:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2733914036A;
+	Wed,  6 Mar 2024 19:34:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b="RYtIIVdI"
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sI3xyIiw"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D396133425;
-	Wed,  6 Mar 2024 19:32:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66C5F133425;
+	Wed,  6 Mar 2024 19:34:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709753554; cv=none; b=tpnnXqr+4nwMGlTLawjodyQWdKbmikFLeOQIRr+tX1eD5ncDBZKwfkGQw2CjFuaKqrapZMKAOPXXpd5/xPP4U92IIr238O1Y5tZkgZh5bpHdjAHsFqZVqJ2f7vyYL/9fSnpnmLU7EUZEYDtTPCHv1za+Q5G6qa6MCtpNAEb6yyY=
+	t=1709753643; cv=none; b=Xw2QoVrSL4tufs5S5r0ewdBgu9iRLNzJ1uf+z4lQx0VsDznXJ01uVcMSywhid8sZzhupo4LF7r7+GSUIXZW6wzcJnlO6U8CIrJmmfv34k6eGTrj6fm9iK/rbCWMP6wfg9TYEZMLh2C1p+rrWR6mSgSgcS1VFDB4KB4mS4TU3yCI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709753554; c=relaxed/simple;
-	bh=J8LrJmXXin5ZmB2UdR8/rbJ2RaY0YRW3LuLK1SaEaGk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rdkS293XLzsmZpKBers6M5S++sZlfq/skTxa4+OCsjYVHGWwzKybKuKBqGKMC4h9YmZyevn7GxQYWqYcv5qNxM2i+wLHWTocgiAQg/JhQnZcHuMtV5/MNya6riWOlNLcgcxjqZmVkYgiE2hT9eHmAJm09ZbxKCzv7PXg/zhycPM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; dkim=fail (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b=RYtIIVdI reason="signature verification failed"; arc=none smtp.client-ip=79.96.170.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
- id 288d8298a4b950b2; Wed, 6 Mar 2024 20:32:30 +0100
-Received: from kreacher.localnet (unknown [195.136.19.94])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by cloudserver094114.home.pl (Postfix) with ESMTPSA id EB0D866AB79;
-	Wed,  6 Mar 2024 20:32:29 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rjwysocki.net;
-	s=dkim; t=1709753550;
-	bh=J8LrJmXXin5ZmB2UdR8/rbJ2RaY0YRW3LuLK1SaEaGk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=RYtIIVdIfdVsRVTemnTv59TqL4JeT79IsynbOYgMKKidOiAtlk1k0IMOffJluYnnj
-	 QxFOJQYL+04H4gJON1bSBjYzUVnAjlxbtZ5v97w8SawBKWnZs6Ka4vTp16XStCT0Zf
-	 AWHUMSVAbQUiz8iHWKPgYYvQFSbNslt72rrog/pb7bTG2pN0JrHoKiMeTFWAH5bNov
-	 drYggXEqcfne553aDHx4csdrk7cUrbVcIDb72wmCtg2aSGE88ZMdRSAs6kCv6YauMP
-	 3V9ysIN7XZtiEKQBpV17ucquLMD7qM8Y5OxS3qrGkfdsfQmtevDnXqGyuxAoxtmi69
-	 kOnuUJ1hGCzmQ==
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, linux-kernel@vger.kernel.org,
- Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>,
- "open list:THERMAL" <linux-pm@vger.kernel.org>
-Subject: Re: [RFC PATCH] thermal/core: Fix trip point crossing events ordering
-Date: Wed, 06 Mar 2024 20:32:29 +0100
-Message-ID: <2266782.iZASKD2KPV@kreacher>
-In-Reply-To: <3bb7c6cf-f7a8-4059-ad8e-02e09c2a44b1@linaro.org>
-References:
- <20240306085428.88011-1-daniel.lezcano@linaro.org>
- <CAJZ5v0gWhNqTGpoOH01scCdC51cEnt_8_T5ccqZC6yXPDv9QcA@mail.gmail.com>
- <3bb7c6cf-f7a8-4059-ad8e-02e09c2a44b1@linaro.org>
+	s=arc-20240116; t=1709753643; c=relaxed/simple;
+	bh=NxG7c84KCIRvUyNiatI7Fs+XWdHJoJzx+ZoNblQinjQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lk9Gfe+xdmOVnCGrDeNGF6Rpcw6FO0U7ZhUD3dUCnTch5IKGGOnoeWbasQWlaoptjo1LVSY46KT4Q0/cKl1iiMZZdSCJzfM4eY9ljyyoKukdtb4X5ZS1i2DJpyXNExiX2tOmztMmTAkaqwSeXpFjpPhHvBUdhmtL8Ddd4OO8G3M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sI3xyIiw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBC36C433C7;
+	Wed,  6 Mar 2024 19:34:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709753643;
+	bh=NxG7c84KCIRvUyNiatI7Fs+XWdHJoJzx+ZoNblQinjQ=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=sI3xyIiwHTEy5SBgnTMY3TrPlZwq9SmhjZDA3o3XuyBYW6Ilz5GycQ3cmEqXLHlqb
+	 NtMW704FzJsUsA5tMJJlR8ng51LeB8vk3tykzHfdfzrMCaERjqZD92Vl/sMD8oGrwy
+	 0+CA9HU38I3B7kDacb4PJaWoTDYw+TcPVCrBwPFTihACxEPT/bDXf3T72wf0+o4wlC
+	 OGR8wjzzorHyMjrpV818+W6oZ6OJ6OOczVeUg8K3DNrHfdrMYVPcaBm0DXfDacjZOI
+	 lKhNQ5F/kgjPK/+Cz3zRP9jWgy5vCbtKaBiB3HajvvwbOH9c67Hx19jBmfnaXmbEZX
+	 anPiZjZmDxEWw==
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2d269dc3575so1364151fa.1;
+        Wed, 06 Mar 2024 11:34:02 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCV6cEj2mTN20e5HeznoFbGBj9+QBt6+UmhHcIBkwqHJLfmKjig2DD9d1Jhw/324ZMPiUlFXwXAEhopvmIvMsMFVLR0HLhhqGtDcHfgR7pAScL9zPk4f5me9AcwbiYNpZbXZO0wQl9BX0A==
+X-Gm-Message-State: AOJu0YzLfRC07RWxPCyeC2bRG2vdMB4Lq3tTeNu426cL4k3PEiEzJvfw
+	r5oVog1AsaQEJ6IGMXiThwI+OjcYtaT1RNO1l3qfgCixyFX9A0vWuxSTzvVEFXTh8elc64uqqpi
+	pQGnzoHIM1V+ImtyOreIYqJbIrQ==
+X-Google-Smtp-Source: AGHT+IHj9T9ZxSSjSJWnklZdCep5i77b8MXKdD7YCbGnK8tHFKVNotvbvwUZ2BkWqiY/N+w8gM9JaHjktQblhXimjRM=
+X-Received: by 2002:a05:651c:b06:b0:2d2:b5cb:cc3f with SMTP id
+ b6-20020a05651c0b0600b002d2b5cbcc3fmr2465655ljr.2.1709753641108; Wed, 06 Mar
+ 2024 11:34:01 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+References: <20240303104853.31511-1-brgl@bgdev.pl> <CAMuHMdXWdKZjjZc39iXfa6Nohtn+Xm9YvcF+YoRpNzCgeWD8tA@mail.gmail.com>
+ <CAL_JsqJjo1SBcf=ZLi=iunaHiX6Mt5H6wkoPcecnZmiAcAyihw@mail.gmail.com> <CAMRc=McBf8Fbacnxozr+=-7AFQ0EOXbaG+zUhkNEb9g1mihmMw@mail.gmail.com>
+In-Reply-To: <CAMRc=McBf8Fbacnxozr+=-7AFQ0EOXbaG+zUhkNEb9g1mihmMw@mail.gmail.com>
+From: Rob Herring <robh+dt@kernel.org>
+Date: Wed, 6 Mar 2024 13:33:47 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJaJciL5UT5f9y_omVj6OHCSoM6rHhVTVGfVTPtcqed4Q@mail.gmail.com>
+Message-ID: <CAL_JsqJaJciL5UT5f9y_omVj6OHCSoM6rHhVTVGfVTPtcqed4Q@mail.gmail.com>
+Subject: Re: [PATCH] of: make for_each_property_of_node() available to to !OF
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Frank Rowand <frowand.list@gmail.com>, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, Geert Uytterhoeven <geert@linux-m68k.org>
 Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledriedugdduvddvucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtqhertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepkeeileehffelfefggfdtjedvkeettdejfeevueegfedvhffgudeuteeigfeileetnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeeipdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrghdprhgtphhtthhopehrrghfrggvlheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprhhuihdriihhrghnghesihhnthgvlhdrtgho
- mhdprhgtphhtthhopehluhhkrghsiidrlhhusggrsegrrhhmrdgtohhmpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
+Content-Transfer-Encoding: quoted-printable
 
-On Wednesday, March 6, 2024 4:55:51 PM CET Daniel Lezcano wrote:
-> On 06/03/2024 16:41, Rafael J. Wysocki wrote:
-> > On Wed, Mar 6, 2024 at 2:16=E2=80=AFPM Daniel Lezcano <daniel.lezcano@l=
-inaro.org> wrote:
-> >>
-> >> On 06/03/2024 13:53, Rafael J. Wysocki wrote:
-> >>> On Wed, Mar 6, 2024 at 1:43=E2=80=AFPM Daniel Lezcano <daniel.lezcano=
-@linaro.org> wrote:
-> >>>>
-> >>>> On 06/03/2024 13:02, Rafael J. Wysocki wrote:
-> >>>>
-> >>>> [ ... ]
-> >>>>
-> >>>>>> +#define for_each_trip_reverse(__tz, __trip)    \
-> >>>>>> +       for (__trip =3D &__tz->trips[__tz->num_trips - 1]; __trip =
->=3D __tz->trips ; __trip--)
-> >>>>>> +
-> >>>>>>     void __thermal_zone_set_trips(struct thermal_zone_device *tz);
-> >>>>>>     int thermal_zone_trip_id(const struct thermal_zone_device *tz,
-> >>>>>>                             const struct thermal_trip *trip);
-> >>>>>> --
-> >>>>>
-> >>>>> Generally speaking, this is a matter of getting alignment on the
-> >>>>> expectations between the kernel and user space.
-> >>>>>
-> >>>>> It looks like user space expects to get the notifications in the or=
-der
-> >>>>> of either growing or falling temperatures, depending on the directi=
-on
-> >>>>> of the temperature change.  Ordering the trips in the kernel is not
-> >>>>> practical, but the notifications can be ordered in principle.  Is t=
-his
-> >>>>> what you'd like to do?
-> >>>>
-> >>>> Yes
-> >>>>
-> >>>>> Or can user space be bothered with recognizing that it may get the
-> >>>>> notifications for different trips out of order?
-> >>>>
-> >>>> IMO it is a bad information if the trip points events are coming
-> >>>> unordered. The temperature signal is a time related measurements, the
-> >>>> userspace should receive thermal information from this signal in the
-> >>>> right order. It sounds strange to track the temperature signal in the
-> >>>> kernel, then scramble the information, pass it to the userspace and
-> >>>> except it to apply some kind of logic to unscramble it.
-> >>>
-> >>> So the notifications can be ordered before sending them out, as long
-> >>> as they are produced by a single __thermal_zone_device_update() call.
-> >>>
-> >>> I guess you also would like the thermal_debug_tz_trip_up/down() calls
-> >>> to be ordered, wouldn't you?
-> >>
-> >> Right
-> >=20
-> > I have an idea how to do this, but it is based on a couple of patches
-> > that I've been working on in the meantime.
-> >=20
-> > Let me post these patches first and then I'll send a prototype patch
-> > addressing this on top of them.
->=20
-> That is awesome, thanks !
+On Tue, Mar 5, 2024 at 12:46=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl>=
+ wrote:
+>
+> On Tue, 5 Mar 2024 18:56:04 +0100, Rob Herring <robh+dt@kernel.org> said:
+> >
+> > Long term, I want to make struct device_node opaque. So if we really
+> > want to fix this, I think we'd want to convert this to use an iterator
+> > function. Though I guess any user would be mucking with struct
+> > property too, so the whole loop would need to be reworked. So in
+> > conclusion, don't use for_each_property_of_node(). :) Shrug.
+> >
+>
+> I basically just need to get the list of all properties of a node. Even j=
+ust
+> names. I'm working on a testing driver that needs to request all GPIOs as=
+signed
+> to it over DT so it must find all `foo-gpios` properties.
+>
+> How about:
+>
+> int of_node_for_each_property(struct device_node *dn, int
+> (*func)(struct property *, void *), void *data)
+>
+> as the iterator?
 
-Anytime!
+Why would we make the caller provide the iterator? We just need a
+function call like the other iterators rather than directly
+dereferencing the pointers: of_next_property_iter(node, last_prop)
 
-Now that I've posted this series:
+> You didn't say if you want to make struct property opaque as
+> well but even then it can be used with provided interfaces.
 
-https://lore.kernel.org/linux-pm/4558384.LvFx2qVVIh@kreacher/
+Yes, I'd like to make struct property opaque as well. That's probably
+the first step.
 
-I can append the patch below that is based on it.
-
-The idea is really straightforward: Instead of sending the notifications
-and recording the stats right away, create two lists of trips for which
-they need to be send, sort them and then send the notifications etc in
-the right order.  I want to avoid explicit memory allocations that can
-fail in principle, which is why lists are used.
-
-The reason why two lists are used is in case the trips are updated and
-that's why they appear to be crossed (which may not depend on the actual
-temperature change).
-
-One caveat is that the lists are sorted by trip thresholds (because they
-are the real values take into account in the code), but user space may
-expect them to be sorted by trip temperatures instead.  That can be changed.
-
-=2D--
- drivers/thermal/thermal_core.c |   39 +++++++++++++++++++++++++++++++++---=
-=2D--
- drivers/thermal/thermal_core.h |    1 +
- 2 files changed, 34 insertions(+), 6 deletions(-)
-
-Index: linux-pm/drivers/thermal/thermal_core.c
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-=2D-- linux-pm.orig/drivers/thermal/thermal_core.c
-+++ linux-pm/drivers/thermal/thermal_core.c
-@@ -15,6 +15,7 @@
- #include <linux/slab.h>
- #include <linux/kdev_t.h>
- #include <linux/idr.h>
-+#include <linux/list_sort.h>
- #include <linux/thermal.h>
- #include <linux/reboot.h>
- #include <linux/string.h>
-@@ -361,7 +362,9 @@ static void handle_critical_trips(struct
- }
-=20
- static void handle_thermal_trip(struct thermal_zone_device *tz,
-=2D				struct thermal_trip_desc *td)
-+				struct thermal_trip_desc *td,
-+				struct list_head *way_up_list,
-+				struct list_head *way_down_list)
- {
- 	const struct thermal_trip *trip =3D &td->trip;
-=20
-@@ -382,8 +385,7 @@ static void handle_thermal_trip(struct t
- 		 * the threshold and the trip temperature will be equal.
- 		 */
- 		if (tz->temperature >=3D trip->temperature) {
-=2D			thermal_notify_tz_trip_up(tz, trip);
-=2D			thermal_debug_tz_trip_up(tz, trip);
-+			list_add_tail(&td->notify_list_node, way_up_list);
- 			td->threshold =3D trip->temperature - trip->hysteresis;
- 		} else {
- 			td->threshold =3D trip->temperature;
-@@ -400,8 +402,7 @@ static void handle_thermal_trip(struct t
- 		 * the trip.
- 		 */
- 		if (tz->temperature < trip->temperature - trip->hysteresis) {
-=2D			thermal_notify_tz_trip_down(tz, trip);
-=2D			thermal_debug_tz_trip_down(tz, trip);
-+			list_add(&td->notify_list_node, way_down_list);
- 			td->threshold =3D trip->temperature;
- 		} else {
- 			td->threshold =3D trip->temperature - trip->hysteresis;
-@@ -457,10 +458,24 @@ static void thermal_zone_device_init(str
- 		pos->initialized =3D false;
- }
-=20
-+static int thermal_trip_notify_cmp(void *ascending, const struct list_head=
- *a,
-+				   const struct list_head *b)
-+{
-+	struct thermal_trip_desc *tda =3D container_of(a, struct thermal_trip_des=
-c,
-+						     notify_list_node);
-+	struct thermal_trip_desc *tdb =3D container_of(b, struct thermal_trip_des=
-c,
-+						     notify_list_node);
-+	int ret =3D tdb->threshold - tda->threshold;
-+
-+	return ascending ? ret : -ret;
-+}
-+
- void __thermal_zone_device_update(struct thermal_zone_device *tz,
- 				  enum thermal_notify_event event)
- {
- 	struct thermal_trip_desc *td;
-+	LIST_HEAD(way_down_list);
-+	LIST_HEAD(way_up_list);
-=20
- 	if (tz->suspended)
- 		return;
-@@ -475,7 +490,19 @@ void __thermal_zone_device_update(struct
- 	tz->notify_event =3D event;
-=20
- 	for_each_trip_desc(tz, td)
-=2D		handle_thermal_trip(tz, td);
-+		handle_thermal_trip(tz, td, &way_up_list, &way_down_list);
-+
-+	list_sort((void *)true, &way_up_list, thermal_trip_notify_cmp);
-+	list_for_each_entry(td, &way_up_list, notify_list_node) {
-+		thermal_notify_tz_trip_up(tz, &td->trip);
-+		thermal_debug_tz_trip_up(tz, &td->trip);
-+	}
-+
-+	list_sort(NULL, &way_down_list, thermal_trip_notify_cmp);
-+	list_for_each_entry(td, &way_down_list, notify_list_node) {
-+		thermal_notify_tz_trip_down(tz, &td->trip);
-+		thermal_debug_tz_trip_down(tz, &td->trip);
-+	}
-=20
- 	monitor_thermal_zone(tz);
- }
-Index: linux-pm/drivers/thermal/thermal_core.h
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-=2D-- linux-pm.orig/drivers/thermal/thermal_core.h
-+++ linux-pm/drivers/thermal/thermal_core.h
-@@ -17,6 +17,7 @@
-=20
- struct thermal_trip_desc {
- 	struct thermal_trip trip;
-+	struct list_head notify_list_node;
- 	int threshold;
- };
-=20
-
-
-
+Rob
 
