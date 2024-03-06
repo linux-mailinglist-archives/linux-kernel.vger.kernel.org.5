@@ -1,281 +1,289 @@
-Return-Path: <linux-kernel+bounces-93332-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93340-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AA6A872E1E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 05:49:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A0B7872E47
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 06:20:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5DB6285E95
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 04:49:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A74B51F272F8
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 05:20:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FBB117741;
-	Wed,  6 Mar 2024 04:49:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EE7A18637;
+	Wed,  6 Mar 2024 05:20:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="sai8k+7s"
-Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="auXr+KCm"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92C4C15E88
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 04:49:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.24
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709700583; cv=none; b=BwntH5cMakHjduJ2/vcLlEmuIsTeBD0ZMJ1h4ByWrGckDmGXUcj/BUozdFatWPaf0CbsSEnguiQZhW3mnYG8G+6JYWC0eGvC0jeqDAnqW1gHpNCWlb6mwFYTqKCh1eZ3Xxss8TiIk99ArMYfO4yxvQn+AoG/vlCBm/ESBWKGHDI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709700583; c=relaxed/simple;
-	bh=dcCd7e0xe1/zUt4IjtCnVX9tWxflV+CbGxf+YsozPFg=;
-	h=From:To:Cc:In-Reply-To:Subject:Date:Message-ID:MIME-Version:
-	 Content-Type:References; b=Ap++i97YiflC1q6brozvInwViER3KRQpWhQauuqRJosNNsAOnzpHaxR8K7Nz9C5oFiaop0W6C76/VzKiH+MjjeDIOK2wF1VmkDIJLD8detOwW2P6kzatJ7GZk1v1jYIfxnNMUmlMkfnPNzjbHDe5PKusqFsfWSeYIivGSdwJNLI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=sai8k+7s; arc=none smtp.client-ip=203.254.224.24
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
-	by mailout1.samsung.com (KnoxPortal) with ESMTP id 20240306044933epoutp01e5d5a8ca8e5acd76555f2a231992b6c9~6E50Fqe-x2109421094epoutp01I
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 04:49:33 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20240306044933epoutp01e5d5a8ca8e5acd76555f2a231992b6c9~6E50Fqe-x2109421094epoutp01I
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1709700573;
-	bh=dcCd7e0xe1/zUt4IjtCnVX9tWxflV+CbGxf+YsozPFg=;
-	h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-	b=sai8k+7s21QSwcMfnmRT3w2gQaV52ajiv6g2b2yqAXzt10IttwjkpoRW7czq/VcZt
-	 XxDvdZ5n6YB6fzEUOjev94xaIWhcwRieTt0yVCoap7FLgf3mPKPCwVN6uy5mVrdP56
-	 pRETu0UBuTlLv+55LaP+IPvLpgJdOVcGPkAUTeIE=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-	epcas5p4.samsung.com (KnoxPortal) with ESMTP id
-	20240306044933epcas5p441c641ce1a58c982f14b46bcabbc1135~6E5zpyOhX0510405104epcas5p4C;
-	Wed,  6 Mar 2024 04:49:33 +0000 (GMT)
-Received: from epsmges5p2new.samsung.com (unknown [182.195.38.182]) by
-	epsnrtp2.localdomain (Postfix) with ESMTP id 4TqKj74yZVz4x9Px; Wed,  6 Mar
-	2024 04:49:31 +0000 (GMT)
-Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
-	epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	01.50.10009.BD5F7E56; Wed,  6 Mar 2024 13:49:31 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-	epcas5p3.samsung.com (KnoxPortal) with ESMTPA id
-	20240306044930epcas5p3014ecdf54086346dc1086bab96cccdd6~6E5xjAJqx0157201572epcas5p3D;
-	Wed,  6 Mar 2024 04:49:30 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-	epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-	20240306044930epsmtrp21a3d5b90fc7426fedf185024ee92452f~6E5xh6Jki2822228222epsmtrp2i;
-	Wed,  6 Mar 2024 04:49:30 +0000 (GMT)
-X-AuditID: b6c32a4a-ff1ff70000002719-02-65e7f5db954a
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-	epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	E1.0E.08755.AD5F7E56; Wed,  6 Mar 2024 13:49:30 +0900 (KST)
-Received: from INBRO000447 (unknown [107.122.12.5]) by epsmtip1.samsung.com
-	(KnoxPortal) with ESMTPA id
-	20240306044928epsmtip1bbfde040c44185536aebc5aa7ec61b80~6E5vm6T0Y2041420414epsmtip1R;
-	Wed,  6 Mar 2024 04:49:28 +0000 (GMT)
-From: "Alim Akhtar" <alim.akhtar@samsung.com>
-To: "'Tudor Ambarus'" <tudor.ambarus@linaro.org>, "'Sylwester Nawrocki'"
-	<s.nawrocki@samsung.com>, "'Chanwoo Choi'" <cw00.choi@samsung.com>
-Cc: "'Sam Protsenko'" <semen.protsenko@linaro.org>, "'Krzysztof Kozlowski'"
-	<krzysztof.kozlowski@linaro.org>, <linux-samsung-soc@vger.kernel.org>,
-	<linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	"'linux-arm-kernel'" <linux-arm-kernel@lists.infradead.org>, "'Peter
- Griffin'" <peter.griffin@linaro.org>, =?utf-8?Q?'Andr=C3=A9_Draszik'?=
-	<andre.draszik@linaro.org>, "'William McVicker'" <willmcvicker@google.com>,
-	<kernel-team@android.com>
-In-Reply-To: <d508dfc1-bc28-4470-92aa-cf71915966f4@linaro.org>
-Subject: RE: samsung: clk: re-parent MUX to OSCCLK at run-time
-Date: Wed, 6 Mar 2024 10:19:27 +0530
-Message-ID: <324701da6f81$ad1379d0$073a6d70$@samsung.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 887BF33CA;
+	Wed,  6 Mar 2024 05:20:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.12
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709702446; cv=fail; b=TDRlaQesq2V7wThKV+yjGx21rNIhlnrLFOCQjzhnT0fn9u/oRWWdgLNaEnuAO3X0pTgJUPMRkQKaO+gbvpR/tPBEgl+wQ3M3eToYYz9P9aMle1A18ENxZfOmL0hZTAIt7q3LC30jBtw8RG8okQKECaukgGAM8/gPhO/PlMnZv5M=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709702446; c=relaxed/simple;
+	bh=cDMoqob9KmuCwuvTFaK4+DJpjwOcR4RNVsgYy+7I/sw=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=JnZ3YksAk9TFOWyrFKwJQzjPDkM/WH12tHHGzJoFbtMTQz1GtHcGWkIlAXXX3hMKw+4QPMvghakZwkiW7Pb8mx05f2UpTza0rvR1HlK7RDpNh1giHfW/EHSRoaXkTFKYAMh/UrLiaTda4ly2DjaesNaOnfIRNBEazbV4Zl6/tys=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=auXr+KCm; arc=fail smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709702443; x=1741238443;
+  h=date:from:to:cc:subject:message-id:reply-to:references:
+   in-reply-to:mime-version;
+  bh=cDMoqob9KmuCwuvTFaK4+DJpjwOcR4RNVsgYy+7I/sw=;
+  b=auXr+KCm5zrg9CbC3cW+fpOeBc4lHA4vLmLlJIpbQbHJCbRdOAmWeDLk
+   bKWRAG9qVjHYaqiJgJutRy6Jx0xD8p88TKqtm/LrAo/0M60eaenX4XPyW
+   POs5tZ/WJJQoKu95xbx9whh+aibcc5nRJLslHgQt1LHy6mJBBX6zpZThn
+   IKC0GJ8OKg8CjaKvYox/4SaqK5acTchD9t3gOJ2PrP4+uxSWsxop0Uk9T
+   kje25CNWlX0O9+Oe6JwQF+AgkGlGKKx2a5x6koRutvHM51N5gOY9fheNI
+   6xbTd+F7u0udKlk8wxkI4yXK0faDjx3dPVBC7jLjK8zjhtiPLJ+kqzm5L
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11004"; a="8061892"
+X-IronPort-AV: E=Sophos;i="6.06,207,1705392000"; 
+   d="scan'208";a="8061892"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 21:20:42 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,207,1705392000"; 
+   d="scan'208";a="40626223"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmviesa001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 05 Mar 2024 21:20:42 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 5 Mar 2024 21:20:41 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Tue, 5 Mar 2024 21:20:41 -0800
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (104.47.73.41) by
+ edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 5 Mar 2024 21:20:41 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NIDcODo7WXT8q0SBxft23/iWQLoZCtqoBhk2P497rvE8WDpwNbKPwDkqpqinJLUZniAS8mKdYHPXkmEaudaH9oozXdgqCpjyKNoqvH5UChAcvvk4BzxC+fruIfGAt3MUlhyeYUGALStTlIRinQxv4deF7M1vP4seI+zVRu4g+8jHyx052U1x8M/yX2eGflqUiH9XFhaqmVNuueMOs6+4Ff0wWdGoFj+ILzh/JFFZJxbB6ANuZ/iBdvpGASs45yh7N9GwbNtXjkF3Czk1xeunkuJNFasy9+yh9Lt2DdLMiPlOTlMQyxM5LOpDAjdCIdKvbMFFmE44YYZ9iNsbISmwjA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=WmtmpG1/t8bg99N8TK2XQSd7CxQQ5qlLrjX/g6UxiWc=;
+ b=WbbzjPqsy0ek/xPJWGdX0G2Q3FSuUIaPpQbn2RS8Yl8NM5cEyqNzhwEwFHfEcHAZ1GTgRnkQ35YBhGTgOcCij4JUDqwE5jCxIjE4quInvHoRQCLGzROJJT1pR3Zpr/VuKBZFCMtNRFbmrpW61dSH0KO7qY+xjp/DrIKaQNx54XNXzuuFZbivfdZOOKyKtIEhfDiLonDpe+xHUyaNvHnEereAIvrqV30+/2GO1xAgSOcznZFiS/la2gmH/2o66YNPgOhMy6digIm0ixAuPtG4XgJrFUxrcFTLXLEq45DCS2C7eeUbYjk4oYkPp1pB11zWV651MVjm1xxEPUNyg0ciVQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DS7PR11MB5966.namprd11.prod.outlook.com (2603:10b6:8:71::6) by
+ BL1PR11MB5256.namprd11.prod.outlook.com (2603:10b6:208:30a::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.24; Wed, 6 Mar
+ 2024 05:20:39 +0000
+Received: from DS7PR11MB5966.namprd11.prod.outlook.com
+ ([fe80::55f1:8d0:2fa1:c7af]) by DS7PR11MB5966.namprd11.prod.outlook.com
+ ([fe80::55f1:8d0:2fa1:c7af%5]) with mapi id 15.20.7362.019; Wed, 6 Mar 2024
+ 05:20:39 +0000
+Date: Wed, 6 Mar 2024 12:50:47 +0800
+From: Yan Zhao <yan.y.zhao@intel.com>
+To: Sagi Shahar <sagis@google.com>
+CC: <linux-kselftest@vger.kernel.org>, Ackerley Tng <ackerleytng@google.com>,
+	Ryan Afranji <afranji@google.com>, Erdem Aktas <erdemaktas@google.com>,
+	"Isaku Yamahata" <isaku.yamahata@intel.com>, Sean Christopherson
+	<seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan
+	<shuah@kernel.org>, "Peter Gonda" <pgonda@google.com>, Haibo Xu
+	<haibo1.xu@intel.com>, Chao Peng <chao.p.peng@linux.intel.com>, Vishal
+ Annapurve <vannapurve@google.com>, Roger Wang <runanwang@google.com>, Vipin
+ Sharma <vipinsh@google.com>, <jmattson@google.com>, <dmatlack@google.com>,
+	<linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>, <linux-mm@kvack.org>
+Subject: Re: [RFC PATCH v5 21/29] KVM: selftests: TDX: Add TDG.VP.INFO test
+Message-ID: <Zef2J/ygG8KT5a02@yzhao56-desk.sh.intel.com>
+Reply-To: Yan Zhao <yan.y.zhao@intel.com>
+References: <20231212204647.2170650-1-sagis@google.com>
+ <20231212204647.2170650-22-sagis@google.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231212204647.2170650-22-sagis@google.com>
+X-ClientProxiedBy: SI1PR02CA0026.apcprd02.prod.outlook.com
+ (2603:1096:4:1f4::11) To DS7PR11MB5966.namprd11.prod.outlook.com
+ (2603:10b6:8:71::6)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQKxjg6/pX91DIw7ou3pXLvWj7BlkgJSyW8Wr2lJ2sA=
-Content-Language: en-us
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrOJsWRmVeSWpSXmKPExsWy7bCmuu7tr89TDTYeV7TY8mozi8X1L89Z
-	LXZsF7HY+3oru8Wmx9dYLT723GO1uLxrDpvFjPP7mCw2zPjHYnH4TTurxfM+IPfTrTiLVZ/+
-	MzrwemzbvY3VY8GmUo871/aweWxeUu/Rt2UVo8fnTXIBbFHZNhmpiSmpRQqpecn5KZl56bZK
-	3sHxzvGmZgaGuoaWFuZKCnmJuam2Si4+AbpumTlAVyoplCXmlAKFAhKLi5X07WyK8ktLUhUy
-	8otLbJVSC1JyCkwK9IoTc4tL89L18lJLrAwNDIxMgQoTsjOuN15iKfgXVNE5p7CBcUdAFyMn
-	h4SAicTbK3+Yuxi5OIQEdjNKLFi8mx3C+cQocW3LXUYI5xujxP9FN5hgWmZOWwtVtZdR4vrR
-	y1BVLxglVsw9zApSxSagK7FjcRsbiC0i0MsosXJXAEgRs8BZZomX7/rZQRKcAnYSXQ8vMYPY
-	wkD2+sO/wJpZBFQkWpbOY+li5ODgFbCUmHjZHSTMKyAocXLmExYQm1lAW2LZwtfMEBcpSPx8
-	uowVYpeVxNtlZ9ggasQlXh49wg5Rc4RDYudXfQjbRWL6t3aouLDEq+NboGwpic/v9rKBrJUQ
-	8JBY9EcKIpwh8Xb5ekYI217iwJU5YJcxC2hKrN+lD7GJT6L39xMmiE5eiY42IYhqVYnmd1dZ
-	IGxpiYnd3awQtofEryurmSYwKs5C8tcsJH/NQnL/LIRlCxhZVjFKphYU56anFpsWGOWllsNj
-	Ozk/dxMjOAVree1gfPjgg94hRiYOxkOMEhzMSiK8Nb+epArxpiRWVqUW5ccXleakFh9iNAWG
-	9URmKdHkfGAWyCuJNzSxNDAxMzMzsTQ2M1QS533dOjdFSCA9sSQ1OzW1ILUIpo+Jg1OqgSnv
-	Rk0Dz3WpZ7zMxRtWWP02dVlYtnvXzsCr2yJ4/BaySHF+mtCl3ZUne8a2mmuB1FlBkws+PnP5
-	j1j+yP3Lb2UxR3b6lm9zPpa8F78Z9oPbwP+A68VFxnGluftDigXrWpITN+/gW+A+q3XKSx7+
-	82m3J621L1h4w0sqR/xIQlrtl3RhpYKctChf2eWyz9J1lzLd2xTmoHSrjjvqxqqbYdPbVaU/
-	P/T9+2yle9harhW7w+rPRrxmla7wbC69kziL7fakuCUuR6d+CitozPrJKay6UCzd5dNZ8Uam
-	Q9vmb779Lvli0/sVuUyCyv4TK0sebP/AIV2z/sjTvF1JUs8s39w50Pnae87TKZ3ZSokRnEos
-	xRmJhlrMRcWJAJ/Jp+lKBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrCIsWRmVeSWpSXmKPExsWy7bCSnO6tr89TDZ7d0rXY8mozi8X1L89Z
-	LXZsF7HY+3oru8Wmx9dYLT723GO1uLxrDpvFjPP7mCw2zPjHYnH4TTurxfM+IPfTrTiLVZ/+
-	MzrwemzbvY3VY8GmUo871/aweWxeUu/Rt2UVo8fnTXIBbFFcNimpOZllqUX6dglcGUf6d7MX
-	9GpXvJr6kamB8aV4FyMnh4SAicTMaWvZuxi5OIQEdjNKtPy4xQyRkJa4vnECO4QtLLHy33Oo
-	omeMEqf3PwZLsAnoSuxY3MYGkhAR6GeUeNE5lRHEYRa4zCzRemMdE0QLUGbfiguMIC2cAnYS
-	XQ8vge0QBrLXH/7FCmKzCKhItCydx9LFyMHBK2ApMfGyO0iYV0BQ4uTMJywgNrOAtsTTm0/h
-	7GULX0OdqiDx8+kysDEiAlYSb5edYYOoEZd4efQI+wRG4VlIRs1CMmoWklGzkLQsYGRZxSiZ
-	WlCcm55bbFhgmJdarlecmFtcmpeul5yfu4kRHJFamjsYt6/6oHeIkYmD8RCjBAezkghvza8n
-	qUK8KYmVValF+fFFpTmpxYcYpTlYlMR5xV/0pggJpCeWpGanphakFsFkmTg4pRqYFKrfZHms
-	mWFTV6rCE+eekfhvljXf24Vubdscfqzjm/vIs+duZo382jAB7bjm8NTS5y/ZzmnVyz7/K1E2
-	ZWFFXP/PDx+c4sqSH0RtLrVJ5XxlcEZk6cPfbp5yUuvUNHN0/+W77K99uGLmvviYqebHVjKl
-	VPMUVVUYMZsz7ZxXtrm97nmytqlV85o7eyTP/21V/t5hfmKiwm2vy+tEM6zEDvv/FHbyO269
-	f/KDhnLXi+wPVnXui6r6k8W4OOF8O7uYdObsI3s+SYrOfDXTfcOPk14uTzgZRDrr9Gzf39FX
-	WNWn4rzhcqP70oNcJ8pYvgidSZuW8q9v2vHSFZk7lkyzDNrE3OLxZPJB5Sn71SKVWIozEg21
-	mIuKEwG+9SnwNwMAAA==
-X-CMS-MailID: 20240306044930epcas5p3014ecdf54086346dc1086bab96cccdd6
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20240306032013epcas5p4932674432fbb49f586ed9d00f006a9e8
-References: <CGME20240306032013epcas5p4932674432fbb49f586ed9d00f006a9e8@epcas5p4.samsung.com>
-	<d508dfc1-bc28-4470-92aa-cf71915966f4@linaro.org>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR11MB5966:EE_|BL1PR11MB5256:EE_
+X-MS-Office365-Filtering-Correlation-Id: e26b55e5-15e2-4672-3835-08dc3d9d2936
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 33WjOPrR1aErE6j1+QQIRgqZG8GeU6KTppYOmPUphGTgm9w07ew5glZAqkvVTLzDJaNz130fxWuCOpMeQvNdgQrFCIvH+zu0+6wTGAJnkWNuHzXmIJxO1Eq0DwYvdGwUc2g64kxCqaBRU7NOFjNei7aXUiOX7MoGieGR6KF8z2QoN/uMnChOQlS5xug1kybp911lYgLPMUyTdiZKeFahmtAFw2jWJQblhiniXRZW7AhHWMvBdmDwx98EnEjs0VjT5nFpHspng9J4BTVfK7GS7ndMt70PBSmChmjBhO6NoZ0PXCDEB+t+ZJ3G4rRfL9VsGL6UnFLqlMhYm5+BE0sLyIT9huqqw/9O1Qh0Rrgd6WmY5YP0rycJyUAEdrMpqg37FjH9rmoAaPS+Kdl9kyj0KeB3QmOzbvoqkijtFQ2YXqFCi8SwB0++5KvJ0BG1FHGV8nQ7oC7mzXwZZLs2ljp6AYDl4fbLKDyqYMqhVwsZjvSfDnU8RnAP3jwublPqEJzr6aXhLHDfLYv1a1qdx7bEZS9/WnGCQQAayt8weWoY5C38Z4TEwFF2vfomoD3HkGMspR38DGG1xEe7SjA6FdBvdQyIEvwu9NVBu7SrbLk1VtY=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR11MB5966.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?6TyOfnXD5udL0qVOpcuFKOKSgXZljr8im+ZwTZ9U5EbgwB7GpCwdDyc+n3da?=
+ =?us-ascii?Q?nLe2QTlmvJ47y28qwc8D4Ye7LRDBhhvKqPsigHHsorrMZnfYVXolyQSg6zMO?=
+ =?us-ascii?Q?5BcVF4jjj6mXZlTo48azSKSu4BNj1Ers+u5aRDShgAKFsAzoRoolSpneSiSF?=
+ =?us-ascii?Q?g60ZTxzOHld3/JdqzRePgbgjmdQQROITnQxb4GI/ijck/20iugXpzfTUVEsG?=
+ =?us-ascii?Q?m8okNIUQ1W52HUKUaqC1ObdCwk1BtFYLljVKpR6cLpuY95SRn6wHFcV06dY+?=
+ =?us-ascii?Q?l3dgZY/BgHMDVckSIp46fjXGHMo2qTxS/aNFkEqCc79dCw6SP62W83W+hLzd?=
+ =?us-ascii?Q?Z9JvgJ1TjIUBdjUKma1gVzhx5okcoJp24rzZw4Ko0lDUYfC9zHBJAkXZWkp0?=
+ =?us-ascii?Q?lo71we9g82geyozuCK6KLvhNskASXY7csWAhVvMcFZux0M20ZWLySN98Vm5k?=
+ =?us-ascii?Q?MWGD/h2TcC/pvng84w27DrDZXOF+SvgNPE+uTqLgE8sh8C5g/bYJrhaXjwCM?=
+ =?us-ascii?Q?87xu9lpN1wabM4VB7paGka5orEYU7A3seKfJIrSv+KR92ZUiTIjnpnxJJhTA?=
+ =?us-ascii?Q?uYKWTHyp5BwqITbG2yXt8jPhNVMXS+3+c42RKsBNemSUBIgNujYkCHpnayFB?=
+ =?us-ascii?Q?424U4hU3JVY6f/cwiEeqN6SeJsbL3oWohS4qmlzMB+a9SjCZVcSULA57Ro1y?=
+ =?us-ascii?Q?r1JhQzHCO695qQq0R35Uw9dYH7WXLlKkIECce48okUQuU3DVshLOskLbVFGq?=
+ =?us-ascii?Q?DHydLDq0BAA5g4RFPKP+imgMDdzhEYZlwRNlfwojENWb7disW8uXS/LnDSpU?=
+ =?us-ascii?Q?FIdLKd9Q1kMkXPyPDhX6xC0mA4vIvEhOd7mf7Pxsm545EC0APZLURdFfr//5?=
+ =?us-ascii?Q?9PdvOon4K2dAQlV+guK/HvoniUwy3uqaeGxGHTc6dHRYGQnKU4hxgMjjUj+G?=
+ =?us-ascii?Q?6Y9aPRjO975Px2Mpkv8Z4E0X3NdGJqcoFAaaU0Z12ya+uIUoxobefzL8U5At?=
+ =?us-ascii?Q?SUlu4RC7mQPQRTHleWo2wfw2av63llyaK1y/oJxrxaiQZNRSNK8xlvYa2WdZ?=
+ =?us-ascii?Q?qurJ4+KHHOjCTsfn0BlFzMr2d1ZP7Zg+D56rqgefH++q7WFGMBx0caCQTV6q?=
+ =?us-ascii?Q?vM2HJFImhBZjKUdej185ciUzkLVe+hTy06EyfeENy8XgJzhriZ6zvP3vEWCR?=
+ =?us-ascii?Q?MFb8TpYDViBb/1A/QQCaaWvYJCTRjUWqz2tQFFGOnygkWA7rZ+nWL/zUEHCd?=
+ =?us-ascii?Q?Dq8WKellczRVgNaDNml4Hdi9H5Q3z5crkkNsLu2O+YxFabATXzbmNJ24RDCh?=
+ =?us-ascii?Q?f81syTaNxXzm0MNDAvmZTodzxETj9ZXwgtVvIQ6kL6K3GMlm1U4OULkFUagd?=
+ =?us-ascii?Q?nn4NwQRn9g/OmnWu0IJshBO4PINQVfILKOdunXlLj+XybGltIN3pLdMGXyb9?=
+ =?us-ascii?Q?r64RmdhHfpDEyWejgT+ohj6QrqCKuWUbUKSuDvCRoiESGPEeXv4Ks9dMWyyN?=
+ =?us-ascii?Q?6frLOqmL/BPEXW170vYtYnAifgPOIQAYrVTmxSAiTeb5O/AJK6idgGRVpDLp?=
+ =?us-ascii?Q?f1e7bms/QE7WFqDg7b6C1Ibk9OQgwj/8YTGCoIz0?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: e26b55e5-15e2-4672-3835-08dc3d9d2936
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR11MB5966.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Mar 2024 05:20:39.1456
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Hwf2LKoJSSDuxylax/a57PhLqAu02Cqm5kE7NcSN/8RMjXTTddgSQpw4d1qym+LbJTSx1WY0AzMto+efr6AUEw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR11MB5256
+X-OriginatorOrg: intel.com
 
-Hi Tudor
+> +/*
+> + * TDG.VP.INFO call from the guest. Verify the right values are returned
+> + */
+> +void verify_tdcall_vp_info(void)
+> +{
+> +	const int num_vcpus = 2;
+> +	struct kvm_vcpu *vcpus[num_vcpus];
+> +	struct kvm_vm *vm;
+> +
+> +	uint64_t rcx, rdx, r8, r9, r10, r11;
+> +	uint32_t ret_num_vcpus, ret_max_vcpus;
+> +	uint64_t attributes;
+> +	uint32_t i;
+> +	const struct kvm_cpuid_entry2 *cpuid_entry;
+> +	int max_pa = -1;
+> +
+> +	vm = td_create();
+> +
+> +#define TDX_TDPARAM_ATTR_SEPT_VE_DISABLE_BIT	(1UL << 28)
+> +#define TDX_TDPARAM_ATTR_PKS_BIT		(1UL << 30)
+> +	/* Setting attributes parameter used by TDH.MNG.INIT to 0x50000000 */
+> +	attributes = TDX_TDPARAM_ATTR_SEPT_VE_DISABLE_BIT |
+> +		     TDX_TDPARAM_ATTR_PKS_BIT;
+> +
+> +	td_initialize(vm, VM_MEM_SRC_ANONYMOUS, attributes);
+> +
+> +	for (i = 0; i < num_vcpus; i++)
+> +		vcpus[i] = td_vcpu_add(vm, i, guest_tdcall_vp_info);
+> +
+> +	td_finalize(vm);
+> +
+> +	printf("Verifying TDG.VP.INFO call:\n");
+> +
+> +	/* Get KVM CPUIDs for reference */
+> +	cpuid_entry = get_cpuid_entry(kvm_get_supported_cpuid(), 0x80000008, 0);
+> +	TEST_ASSERT(cpuid_entry, "CPUID entry missing\n");
+> +	max_pa = cpuid_entry->eax & 0xff;
+> +
+> +	for (i = 0; i < num_vcpus; i++) {
+> +		struct kvm_vcpu *vcpu = vcpus[i];
+> +
+> +		/* Wait for guest to report rcx value */
+> +		td_vcpu_run(vcpu);
+> +		TDX_TEST_CHECK_GUEST_FAILURE(vcpu);
+> +		rcx = tdx_test_read_64bit_report_from_guest(vcpu);
+> +
+> +		/* Wait for guest to report rdx value */
+> +		td_vcpu_run(vcpu);
+> +		TDX_TEST_CHECK_GUEST_FAILURE(vcpu);
+> +		rdx = tdx_test_read_64bit_report_from_guest(vcpu);
+> +
+> +		/* Wait for guest to report r8 value */
+> +		td_vcpu_run(vcpu);
+> +		TDX_TEST_CHECK_GUEST_FAILURE(vcpu);
+> +		r8 = tdx_test_read_64bit_report_from_guest(vcpu);
+> +
+> +		/* Wait for guest to report r9 value */
+> +		td_vcpu_run(vcpu);
+> +		TDX_TEST_CHECK_GUEST_FAILURE(vcpu);
+> +		r9 = tdx_test_read_64bit_report_from_guest(vcpu);
+> +
+> +		/* Wait for guest to report r10 value */
+> +		td_vcpu_run(vcpu);
+> +		TDX_TEST_CHECK_GUEST_FAILURE(vcpu);
+> +		r10 = tdx_test_read_64bit_report_from_guest(vcpu);
+> +
+> +		/* Wait for guest to report r11 value */
+> +		td_vcpu_run(vcpu);
+> +		TDX_TEST_CHECK_GUEST_FAILURE(vcpu);
+> +		r11 = tdx_test_read_64bit_report_from_guest(vcpu);
+> +
+> +		ret_num_vcpus = r8 & 0xFFFFFFFF;
+> +		ret_max_vcpus = (r8 >> 32) & 0xFFFFFFFF;
+> +
+> +		/* first bits 5:0 of rcx represent the GPAW */
+> +		TEST_ASSERT_EQ(rcx & 0x3F, max_pa);
+> +		/* next 63:6 bits of rcx is reserved and must be 0 */
+> +		TEST_ASSERT_EQ(rcx >> 6, 0);
+> +		TEST_ASSERT_EQ(rdx, attributes);
+> +		TEST_ASSERT_EQ(ret_num_vcpus, num_vcpus);
+> +		TEST_ASSERT_EQ(ret_max_vcpus, 512);
 
-> -----Original Message-----
-> From: Tudor Ambarus <tudor.ambarus=40linaro.org>
-> Sent: Wednesday, March 6, 2024 8:50 AM
-> To: Sylwester Nawrocki <s.nawrocki=40samsung.com>; Chanwoo Choi
-> <cw00.choi=40samsung.com>; Alim Akhtar <alim.akhtar=40samsung.com>
-> Cc: Sam Protsenko <semen.protsenko=40linaro.org>; Krzysztof Kozlowski
-> <krzysztof.kozlowski=40linaro.org>; linux-samsung-soc=40vger.kernel.org;
-> linux-clk=40vger.kernel.org; linux-kernel=40vger.kernel.org; linux-arm-ke=
-rnel
-> <linux-arm-kernel=40lists.infradead.org>; Peter Griffin
-> <peter.griffin=40linaro.org>; Andr=C3=A9=20Draszik=20<andre.draszik=40lin=
-aro.org>;=0D=0A>=20William=20McVicker=20<willmcvicker=40google.com>;=20kern=
-el-team=40android.com=0D=0A>=20Subject:=20samsung:=20clk:=20re-parent=20MUX=
-=20to=20OSCCLK=20at=20run-time=0D=0A>=20=0D=0A>=20Hi,=0D=0A>=20=0D=0A>=20Tr=
-ying=20to=20get=20some=20feedback=20from=20the=20samsung=20experts.=20Pleas=
-e=20consider=20the=0D=0A>=20following:=0D=0A>=20=0D=0A>=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20---------------=
-------------------------------=0D=0A>=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=7C=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20CMU_PERIC0=
-=20=20=20=7C=0D=0A>=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=7C=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=7C=0D=0A>=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=7C=20=20MUX_USI=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=7C=
-=0D=0A>=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=7C=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=7C=
-=0D=0A>=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=7C=20=20=7C=5C=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=7C=
-=0D=0A>=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20OSCCLK=20---=7C->=7C=20=
-=5C=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=7C=0D=0A>=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=7C=20=20=7C=20=
-=20=5C=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=7C=0D=0A>=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=7C=20=20=7C=20=
-M=20=7C=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=7C=0D=0A>=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=7C=20=20=7C=20=
-U=20=7C-->=20DIV_CLK_PERIC0_USI*_=20-->=20GATE_USI=20=7C=0D=0A>=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=7C=20=20=7C=
-=20X=20=7C=20=20=20=20=20=20=20=20(1=20=7E=2016)=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=7C=0D=0A>=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=7C=20=20=7C=20=20/=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=7C=0D=0A>=20DIV_CLKCMU_PERIC0_IP=20=
----=7C->=7C=20/=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=7C=0D=0A>=20=
-=20=20=20=20(1=20=7E=2016)=20=20=20=20=20=20=20=20=20=20=7C=20=7C=20=20=7C/=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=7C=0D=0A>=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=7C=20=7C=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=7C=0D=0A>=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=7C=20=7C=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=7C=0D=0A>=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=7C=20=7C=20=20MUX_I3=
-C=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=7C=0D=0A>=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=7C=20=7C=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=7C=0D=0A>=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=7C=20=7C=20=20=7C=5C=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=7C=0D=0A>=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20--=7C->=7C=20=5C=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=7C=0D=0A>=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=7C=20=20=7C=20=20=5C=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=7C=0D=0A>=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=7C=20=20=7C=20M=20=7C=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=7C=0D=0A>=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=7C=20=20=7C=20U=20=7C-->=20DIV_C=
-LK_PERIC0_I3C=20-->=20GATE_I3C=20=20=20=7C=0D=0A>=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=7C=20=20=7C=20X=20=7C=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=7C=0D=0A>=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=7C=20=20=7C=20=20/=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=7C=0D=0A>=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20OSCCLK=20---=7C->=7C=20/=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=7C=0D=0A>=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=7C=20=20=7C/=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=7C=0D=0A>=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=7C=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=7C=0D=0A>=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
-=20=20=20=20=20=20=20=20=20=20---------------------------------------------=
-=0D=0A>=20=0D=0A>=20Is=20it=20fine=20to=20re-parent=20the=20MUX_USI=20from=
-=20above=20to=20OSCCLK=20at=20run-time,=0D=0A=0D=0AI=20am=20not=20aware=20o=
-f=20the=20exact=20SOC/HW=20you=20are=20working=20on.=20=0D=0AIt=20depends=
-=20on=20the=20CMU=20design=20about=20how=20to=20achieve=20low=20power=20mod=
-e=20and=20clock=20gating=20for=20an=20IP/Block.=20=0D=0A=0D=0AIn=20theory=
-=20and=20looking=20at=20your=20clock=20diagram=20above,=20it=20is=20ok=20to=
-=20switch=20to=20OSCCLK=20=20for=20MUX_USI.=0D=0A=0D=0AIf=20you=20can=20jus=
-t=20use=20GATE_USI=20clock=20to=20clock=20gate=20USI=20IP,=20you=20will=20h=
-ave=20a=20low=20power=20for=20USI=20(of=20course=20there=20will=20be=20a=20=
-leakage=20current=20still=20drawn).=0D=0AIs=20that=20what=20you=20want=20to=
-=20achieve=20(low=20power=20mode)?=20Or=20you=20are=20looking=20to=20get=20=
-lowest=20possible=20operating=20clock=20for=20USI=20IP?=0D=0A=0D=0AYou=20ne=
-ed=20to=20takecare=20about=20if=20that=20clock=20is=20being=20shared=20with=
-=20any=20other=20IP,=0D=0Aso=20unless=20all=20the=20IPs=20which=20consume=
-=20this=20clock,=20goes=20into=20idle=20state,=20you=20can=20avoid=20MUX_US=
-I=20change=20to=20OSCCLK.=0D=0A=0D=0A=0D=0A>=20during=20normal=20operation=
-=20mode?=20Experimentally=20I=20determined=20that=20it's=20fine,=0D=0A>=20b=
-ut=20the=20datasheet=20that=20I'm=20reading=20mentions=20OSCCLK=20just=20in=
-=20the=20low-power=0D=0A>=20mode=20context:=0D=0A>=20i/=20CMU=20...=20=22Co=
-mmunicates=20with=20Power=20Management=20Unit=20(PMU)=20to=20stop=0D=0A>=20=
-clocks=20or=20switch=20OSC=20clock=20before=20entering=20a=20Low-Power=20mo=
-de=20to=20reduce=0D=0A>=20power=20consumption=20by=20minimizing=20clock=20t=
-oggling=22.=0D=0A>=20ii/=20=22All=20CMUs=20have=20MUXs=20to=20change=20the=
-=20OSCCLK=20during=20power-down=20mode=22.=0D=0A>=20=0D=0A>=20Re-parenting=
-=20the=20MUX=20to=20OSCCLK=20allows=20lower=20clock=20rates=20for=20the=20U=
-SI=20blocks=0D=0A>=20than=20the=20DIV_CLK_PERIC0_USI=20can=20offer.=20For=
-=20a=20USI=20clock=20rate=20below=0D=0A>=206.25=20MHz=20I=20have=20to=20eit=
-her=20reparent=20MUX_USI=20to=20OSCCLK,=20or=20to=20propagate=20the=0D=0A>=
-=20clock=20rate=20to=20the=20common=20divider=20DIV_CLKCMU_PERIC0_IP.=20I=
-=20find=20the=0D=0A>=20propagation=20to=20the=20common=20DIV=20less=20desir=
-able=20as=20a=20low=20USI=20clock=20rate=20affects=0D=0A>=20I3C=20by=20lowe=
-ring=20its=20clock=20rate=20too.=20Worse,=20if=20the=20common=20bus=20divid=
-er=20is=20not=0D=0A>=20protected=20(using=20CLK_SET_RATE_GATE),=20USI=20can=
-=20lower=20the=20I3C=20clock=20rate=0D=0A>=20without=20I3C=20noticing.=0D=
-=0A>=20=0D=0A>=20Either=20re-parenting=20the=20MUX_USI=20to=20OSCCLK,=20or=
-=20propagating=20the=20clock=20rate=20to=0D=0A>=20DIV_CLKCMU_PERIC0_IP=20al=
-lows=20the=20same=20clock=20ranges.=20The=20first=20with=20the=0D=0A>=20ben=
-efit=20of=20not=20affecting=20the=20clock=20rate=20of=20I3C=20for=20USI=20c=
-lock=20rates=20below=0D=0A>=206.25=20MHz.=20Is=20it=20fine=20to=20re-parent=
-=20MUX_USI=20to=20OSCCLK=20at=20run-time?=0D=0A>=20=0D=0A>=20If=20no=20feed=
-back=20is=20received=20I=20lean=20towards=20propagating=20the=20USI=20clock=
-=20rate=20to=20the=0D=0A>=20common=20divider,=20but=20by=20protecting=20it=
-=20with=20CLK_SET_RATE_GATE.=0D=0A>=20=0D=0A>=20Feel=20free=20to=20add=20in=
-=20To:=20or=20Cc:=20whoever=20might=20be=20interested.=20Thanks,=20ta=0D=0A=
-=0D=0A
+Better to assert of kvm_check_cap(KVM_CAP_MAX_VCPUS) here .
+
+> +		/* VCPU_INDEX = i */
+> +		TEST_ASSERT_EQ(r9, i);
+> +		/*
+> +		 * verify reserved bits are 0
+> +		 * r10 bit 0 (SYS_RD) indicates that the TDG.SYS.RD/RDM/RDALL
+> +		 * functions are available and can be either 0 or 1.
+> +		 */
+> +		TEST_ASSERT_EQ(r10 & ~1, 0);
+> +		TEST_ASSERT_EQ(r11, 0);
+> +
+> +		/* Wait for guest to complete execution */
+> +		td_vcpu_run(vcpu);
+> +
+> +		TDX_TEST_CHECK_GUEST_FAILURE(vcpu);
+> +		TDX_TEST_ASSERT_SUCCESS(vcpu);
+> +
+> +		printf("\t ... Guest completed run on VCPU=%u\n", i);
+> +	}
+> +
+> +	kvm_vm_free(vm);
+> +	printf("\t ... PASSED\n");
+> +}
+> +
+>  int main(int argc, char **argv)
+>  {
+>  	setbuf(stdout, NULL);
+> @@ -1169,6 +1313,7 @@ int main(int argc, char **argv)
+>  	run_in_new_process(&verify_mmio_writes);
+>  	run_in_new_process(&verify_td_cpuid_tdcall);
+>  	run_in_new_process(&verify_host_reading_private_mem);
+> +	run_in_new_process(&verify_tdcall_vp_info);
+>  
+>  	return 0;
+>  }
+> -- 
+> 2.43.0.472.g3155946c3a-goog
+> 
+> 
 
