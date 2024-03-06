@@ -1,277 +1,157 @@
-Return-Path: <linux-kernel+bounces-93240-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93300-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67B9D872CB2
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 03:22:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9770872DB3
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 04:53:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C28F8286299
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 02:22:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0645E1C21A2D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 03:53:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25595DF44;
-	Wed,  6 Mar 2024 02:22:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="nxQYEVlH"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A66CA156C2;
+	Wed,  6 Mar 2024 03:53:29 +0000 (UTC)
+Received: from CHN02-BJS-obe.outbound.protection.partner.outlook.cn (mail-bjschn02on2106.outbound.protection.partner.outlook.cn [139.219.17.106])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E91206117;
-	Wed,  6 Mar 2024 02:22:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709691751; cv=none; b=uNKh8eCFw23D6KNRlGMjlt7NrcOgg4QR/No4pS2MJcnjQcsYxM3vVnPVIHU9el3JP2W6X0wiOCcFPQSgxhQqRVrAL8i8/8RUNoRhoBXrzauJyZqJeu0xUSW2ic3cgC6jBFSwxuiz4919Wn+fT1d77ePRgwuOn7R7RCrRF1h+fyU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709691751; c=relaxed/simple;
-	bh=BY5cAWwdUufd1lZC7KL4e1CLMCvpDyaykzCDEmw3piE=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=QWyeH9TLe17tA/S0HWn0Qmp/Yr9TsmrSUx5Mb198d/2OdTwZ/3efK//uadLW2U8HMSRJw+THjaqpZUN+F2fxVnkKO5nVFickSx2QlPJOW65bhGJWFCjdrT8k+10nvIePZc8XVnVd9tU7Rq618g14ZMvkZJPRsp90BYT+4AdXufI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=nxQYEVlH; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4261v3aj030129;
-	Wed, 6 Mar 2024 02:21:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=obieB/aGXWUQxrjkUCIoo5ZBlMGaQ2KaeavDHRbRQLI=;
- b=nxQYEVlHsY8TY9DZ7RvKpc9ICN6yUD3ks/4AjtAMmEQtTmgl7BmRMd2keEOziSpMnbe8
- RM07du1XSbu2YrzoqJnB9dd62sqqwf3d6ttYyyAzcdFQ8Witk711uc/gtgp2qTVKtfsq
- T7j2xnOwKyPniGxCjrik350kSQzK4tHZGQ21i2GRWO79Ezim++Flmr+Kr4r9P8BZa+KL
- OVhCReVGdzPFiArK1tvXfR5zUmgY3KApxixvBSSCTOPdTR0eKhzWUt4M04KdG58X76CS
- TFpcBlpJ37N2behrtvT636E58DI8fivLcL2YPxtKZYwAJYSEo8+yRwgUNOoiA92l4L0K fQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wpf9b0cej-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 06 Mar 2024 02:21:46 +0000
-Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42625tFc019455;
-	Wed, 6 Mar 2024 02:21:45 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wpf9b0ccx-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 06 Mar 2024 02:21:45 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 4261c6Pt020608;
-	Wed, 6 Mar 2024 02:17:39 GMT
-Received: from smtprelay07.dal12v.mail.ibm.com ([172.16.1.9])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3wmfxkukta-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 06 Mar 2024 02:17:39 +0000
-Received: from smtpav06.wdc07v.mail.ibm.com (smtpav06.wdc07v.mail.ibm.com [10.39.53.233])
-	by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4262HaMD43909640
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 6 Mar 2024 02:17:38 GMT
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 5456558056;
-	Wed,  6 Mar 2024 02:17:36 +0000 (GMT)
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id D3B705804E;
-	Wed,  6 Mar 2024 02:17:33 +0000 (GMT)
-Received: from li-5cd3c5cc-21f9-11b2-a85c-a4381f30c2f3.ibm.com (unknown [9.61.10.162])
-	by smtpav06.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Wed,  6 Mar 2024 02:17:33 +0000 (GMT)
-Message-ID: <10773e5b90ec9378cbc69fa9cfeb61a84273edc2.camel@linux.ibm.com>
-Subject: Re: [PATCH v2 24/25] commoncap: use vfs fscaps interfaces
-From: Mimi Zohar <zohar@linux.ibm.com>
-To: Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        Christian Brauner
-	 <brauner@kernel.org>,
-        "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
-Cc: Serge Hallyn <serge@hallyn.com>, Paul Moore <paul@paul-moore.com>,
-        Eric
- Paris <eparis@redhat.com>, James Morris <jmorris@namei.org>,
-        Alexander Viro
- <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
-        Stephen Smalley
- <stephen.smalley.work@gmail.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Roberto Sassu
- <roberto.sassu@huawei.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        Eric Snowberg <eric.snowberg@oracle.com>,
-        "Matthew Wilcox (Oracle)"
- <willy@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>, Miklos Szeredi
- <miklos@szeredi.hu>,
-        Amir Goldstein <amir73il@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-security-module@vger.kernel.org,
-        audit@vger.kernel.org, selinux@vger.kernel.org,
-        linux-integrity@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-unionfs@vger.kernel.org
-Date: Tue, 05 Mar 2024 21:17:33 -0500
-In-Reply-To: <7058e2f93d16f910336a5380877b14a2e069ee9d.camel@huaweicloud.com>
-References: <20240221-idmap-fscap-refactor-v2-0-3039364623bd@kernel.org>
-	 <20240221-idmap-fscap-refactor-v2-24-3039364623bd@kernel.org>
-	 <dcbd9e7869d2fcce69546b53851d694b8ebad54e.camel@huaweicloud.com>
-	 <ZeXpbOsdRTbLsYe9@do-x1extreme>
-	 <a7124afa6bed2fcadcb66efa08e256828cd6f8ab.camel@huaweicloud.com>
-	 <ZeX9MRhU/EGhHkCY@do-x1extreme>
-	 <20240305-fachjargon-abmontieren-75b1d6c67a83@brauner>
-	 <3098aef3e5f924e5717b4ba4a34817d9f22ec479.camel@huaweicloud.com>
-	 <7058e2f93d16f910336a5380877b14a2e069ee9d.camel@huaweicloud.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 5d2LP9goU7jdJnNYQKugPWTEZlmFuvLX
-X-Proofpoint-ORIG-GUID: 9zv_pGh2oYkeWF_4Thb1moVWjaRCV6Bo
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF289134B2;
+	Wed,  6 Mar 2024 03:53:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.17.106
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709697209; cv=fail; b=lI9vulse78/PVEnd+CbBRzYY5oFYJFpaf9n4n+4BDYwmb8QdYrJfw1PjYpagtYcoycsQhyD2cdYyJAXW2LQN9jKiHFtgT1CDEMe2sgfkN4RZe3JhG7AFFZNYG6JCiTDdUaMty7XIY/uTQATZiZlnnMgnJt05VgmWovaNefWxcMU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709697209; c=relaxed/simple;
+	bh=eO5UpaMNMp42zkn/aV6k+QYvQdgv6b9fS8lhapV9Vl0=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=UkNY73cUSJE4Ut22HhAxCOVkkJ3vv0aRKG8PWZLoJ+z6NeSyKkW+Xd5J+J0MCbDkS07Gx+5c7rNGEOHbE6d7PnbvHWR4yr1DBF2STvzrqlfCMMNbZz2rXorHKonxfLT8OXimBvgkNqay7EBOv+qDmKF61M+qIaV0jd9E6ENd0PE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.17.106
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=D2V7mopVlBg1tFlJCiVeR8ce12+SggzPztBFjcdOTYfX883VvZZ5nid2jG4BjDwxA2cSbLKwmUrtiV4EdLgLnFcBHhfxw5zz0EfCVdrG+x4LerhC2vMw9rhGAyDWwaRvcXtFL9j+TBTewgfDGa5YslMtKM1fSpppoAnJLEY3RJM9yrCgDzWwaFoFnFrMGFf1QIB94TPVzDayVNuA0bXsfVlzpRsd4EA/SqXTIcc5Yw5cUnQ6fhP3MyA1YgfmMccyfUwP/Owff4P7+/GhOSr8hmw0pxFTR73Q250S1auOWDBMJtX56o1N/qd4zKcfXaFG7XLkwbDYixOVfQPynKJ+Wg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=eO5UpaMNMp42zkn/aV6k+QYvQdgv6b9fS8lhapV9Vl0=;
+ b=Cd2RW3YEdCL3DHfBa9PuyeImjwjBkmvwbFgc65ckfrfo1v9B7ryoMQZIzfeezPjHFPqGXvFdVN4PehPEr4pekXCvjvjL+7S9vGgkUun+C7Wr6MBDBGjfa9qc+rhu+ZxSPLi5fDq9hfVMOfevpd2/YxFc/zWRHecAlWKR11wkNSpZdgRo8+Mu9MkVj87ggQPhht/JaiBniRKKHkIpsqYcPauSoFfbuO9aKyi5twtvKvDegpah4056nP99l1Wb9NaELG9AWa77DTMO0s9GJa7HoPr5dlKIUQTPegR+FtCr4QboFsM06Q5qV4EbNnhoyJaVBNKMlN26ZjWWlalx8pexnQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=starfivetech.com; dmarc=pass action=none
+ header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
+Received: from SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c311:25::10) by SHXPR01MB0768.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c311:24::11) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.51; Wed, 6 Mar
+ 2024 02:19:49 +0000
+Received: from SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn
+ ([fe80::b0af:4c9d:2058:a344]) by
+ SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn ([fe80::b0af:4c9d:2058:a344%6])
+ with mapi id 15.20.7249.041; Wed, 6 Mar 2024 02:19:49 +0000
+From: Changhuang Liang <changhuang.liang@starfivetech.com>
+To: Mauro Carvalho Chehab <mchehab@kernel.org>, Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>, Matthias Brugger <matthias.bgg@gmail.com>, Hans
+ Verkuil <hverkuil-cisco@xs4all.nl>, Ming Qian <ming.qian@nxp.com>, Laurent
+ Pinchart <laurent.pinchart@ideasonboard.com>, Nicolas Dufresne
+	<nicolas.dufresne@collabora.com>, Benjamin Gaignard
+	<benjamin.gaignard@collabora.com>, Tomi Valkeinen
+	<tomi.valkeinen+renesas@ideasonboard.com>, Mingjia Zhang
+	<mingjia.zhang@mediatek.com>
+CC: Jack Zhu <jack.zhu@starfivetech.com>, "linux-media@vger.kernel.org"
+	<linux-media@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "linux-staging@lists.linux.dev"
+	<linux-staging@lists.linux.dev>
+Subject:
+ =?gb2312?B?u9i4tDogW1BBVENIIHYzIDAwLzEzXSBBZGQgSVNQIDNBIGZvciBTdGFyRml2?=
+ =?gb2312?Q?e?=
+Thread-Topic: [PATCH v3 00/13] Add ISP 3A for StarFive
+Thread-Index: AQHaWBJVG1ff5kRXW0SpS9Y4ee+DwbEqJ8mw
+Date: Wed, 6 Mar 2024 02:19:49 +0000
+Message-ID:
+ <SHXPR01MB0671C020C9923943E1A6B008F221A@SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn>
+References: <20240205090424.40302-1-changhuang.liang@starfivetech.com>
+In-Reply-To: <20240205090424.40302-1-changhuang.liang@starfivetech.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=starfivetech.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SHXPR01MB0671:EE_|SHXPR01MB0768:EE_
+x-ms-office365-filtering-correlation-id: 2d4537b5-d9bd-41d4-df37-08dc3d83e672
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ IW9xCOjwQwwGdTGGXyEos7H5MYchiam2v8PQrDAIZi86f6/+POWYjppKtXT3MXKHTG5DtdXc3oBYsGjtRHRQSZ0kIznD9XjQKZWrqQY7AUeXEyliMPVzfoQbwnIPvSbfHjTNNckBLbT5EgKCUD57Uj8tH1pXMe1q7XCQZI4lL8NZwyz4I4/hZFOGqYPWxl5EK3yM9Hw82GfchGMKHIZV576rBJeh9CypgrKC2DOo0IGuEGvYjWFKkpvCUeIKgSqM0X5aUxkFoUuxJx/b1NX3zuhjbv+zial//PdoCy2OBCx85nHKH0Fzc/VoHcOi1um56aO3NNHLmg8FU0Y0Ez3QrqHibgn3JUgEfvaFPR/xyXWVKywpbP3drSDCEMniVD5I60YOQGX4Tp/JoQaIF1BEZVXLMmmbzdUypT83e1VBlkX4jMrB/NmIHtUtUNHnFLjGCh9d7N4Gxea6Z5bCEzB2Bp1z9zk1+Ang1GprO387vxJgOQYtQNst7uQvekYlFjta9Ja/nEi8lbA1YRjCsCwmLIwCbposWiObGUeDK2QSGYC33ivCdXneiNlBWdfI0h0FguEeCLiW7CtlSJIe66Llags2yxYDFQpiTgE9DmJqA5E1teBfS0NAV7dI7C0OKMGtwOZGMsnVwKYZyQNdiHmJ1w==
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:zh-cn;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(41320700004)(38070700009)(921011);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?gb2312?B?M1c2L1BaZnhKR0l1eFRYWXhNbkZhdG5mU0dFZmRpRVo4bTJSVm9hakZtb1RZ?=
+ =?gb2312?B?RVJoL2szNlFOZ3lRb0JCM1ZBaHFra1RIKy9HQ3ZpR3lMM2tuZURrbHRzeFFZ?=
+ =?gb2312?B?OWNyYW0rQWpXNVQ1SWpHNUUydzNJWW80SlVSaXNDY3RIU1UvMUVUTWlCL2xn?=
+ =?gb2312?B?MkFOclBIWHZnMVRNbCtYcGNiODRLbi9DZ3JlQThTeXA3dTdYUTZ1VGl2REgz?=
+ =?gb2312?B?c3JTYTR5UWkxUmxOSmpZVzhuV0kzVTIvdnFzb0Vnc3l1enlGSWg1M3AvZHRw?=
+ =?gb2312?B?NmdJVHVpMk9RUlUreCtZK3pxNG5uWXR2R0Vka2VLSXVkcFdyL011aVl4WGhI?=
+ =?gb2312?B?OTFYbndGUTlYVGlzTUg0ODFpd1dRR040OHBXMDR1ZFVKNkpIMTlpR0F0a1dT?=
+ =?gb2312?B?aWFhY1dMd3R6NXB1aVNiYyttd2RKdWdxaE8zNUNBRmdFQjdGL1E2bTQ5N2cw?=
+ =?gb2312?B?KytRc3ozV1BTakVMZGNzZGEvR2RzelFXNU9PaWpHaWRXTHRBS1NCU0RKNXpW?=
+ =?gb2312?B?K3ZGYjEyNlVCdVhzcUlqS3RzQWQvLy81T3A1V2JyWUxJZlVxR2tRSWU5Q3Ri?=
+ =?gb2312?B?cVdFdGNMcXAyalluMFZWZHl4Vmx5Sis5MXJkR1J0VzMvaCtmN21IRHAreUN1?=
+ =?gb2312?B?TkVTT3l1OUFQU2ZwcnczNDJHNnZtMGtkR0l1byt2amdSdCsrZ1JNbW5JWTA5?=
+ =?gb2312?B?K1FWNUdkZDV0ejIwbXJINkZtcmVMN3djdndMQVhLejhYSVprVjVicEtieXc4?=
+ =?gb2312?B?dUtqVW9UeWZOQnhwdWdKU0lRSTBwbEwzRkdnMHNoeUxReWd4WEhUNncyeDFx?=
+ =?gb2312?B?VXl5YktlWXdUcTdXS2NmVWZhdTRqUEVlY3VjZWpuUDlQVHA4SWpvZlduOE1w?=
+ =?gb2312?B?UXZ0L0F4VTdaZGhyZ09zUnhrUmdvVFFxSHE2UVdMeVNIMWJCUHdtU2c2N2dX?=
+ =?gb2312?B?VllaK0hIUUpvUFFmMGVHRW9POUJKNU1xbWROWlhheFFBZlZCMTJ1N2h3SDVy?=
+ =?gb2312?B?UTZKYkU4ajlCNFdRQkppUHRGL212OTNDSC90T3VwRFUvRFVPUklPYmVhYmx0?=
+ =?gb2312?B?azRGSk1LNWx5TkkzaWdSMjVucEZzZTNxT2lTQjRYQ2IrQlo1aVRPU0RaREZZ?=
+ =?gb2312?B?a0FwdTFHZDV3end3Y2tlMEh2N3JOaDZnSUJOK0RNYkFqTTVXOHJjdE03NUVH?=
+ =?gb2312?B?Skoxa3d2bDJnVi9TbU9sS2FFY0ZHTHBhQU9KV05BM3ZrZUd6Qi8wK1VmNmpj?=
+ =?gb2312?B?MFhzOTJFSTQvNUp6QVIrU1o0MExlVHBOL0dWM20rcHFFeFFmNGthQnF4Umxk?=
+ =?gb2312?B?c2R1ZEMwaWlNWFNIeitrblVISU5rVXpadTh5d2MwMnRUVUhuQnBXSEpEc3Ju?=
+ =?gb2312?B?QUgyTGRNVGkyM29VbzlYYjc0ZSs2T1FWR0hRTUFWajBsZGxRakpTMmxDMWtN?=
+ =?gb2312?B?Um56dW1FRGtYK0dhck1XeVpSTm5NVGlKTTBWNHkxbXJVM1o4RVZneDdqODhp?=
+ =?gb2312?B?UXZCSWdWMWRRVUVUeVRjQTd1Z001aFhEamp3MTY0eSsrWjdubGJmR1hpaWZ0?=
+ =?gb2312?B?VVNMSEZsL25vcmx3SlFEMUJZaTVwT2o5dHhYakN1Rlg3TlZzUXJvdzE0dGdw?=
+ =?gb2312?B?eXZHSFNwOE5TSDByOGgwUGMzVDFyeWVlS2swYk1Hc1MyMzk0OHBVOTlZZm9o?=
+ =?gb2312?B?MEUwK0FqVGFZNEM5MjFpTFBTOWphK0dVRi9kR1l1RTFSclE2NGpCQm9aNTht?=
+ =?gb2312?B?cVR4bUtveEM0eXdTVkdLKysvMW1wWVdTUFRuOWxRZjl3WktJNzRRNkpRUjJl?=
+ =?gb2312?B?dXlSN20xMFBRNGd2Y3RNVk1xUjgwVTNNUG8rSjlmblNmUHRBQlZsTEhqMEo1?=
+ =?gb2312?B?dEc3WEVJRzJKclR4YXVZMkRYdnlLQVFtUC9NVUdXdzNreUR4NVNRVHAzaktv?=
+ =?gb2312?B?THoySmxtSmVTVVI5eFZnTmthUmNqZ3FxUGJESmdYdXNUQkRYWCtsZ0R5bTAr?=
+ =?gb2312?B?c1VqWG5KRXFZRDBTQzVDbjYxbGFZTTVGRCsyVTdldDczV3hlWHJJU0hzZWJD?=
+ =?gb2312?B?ZnlzZjdYbWUxL2M4YnN6MFBlZFVpczJISVNwZU9nenRJRCtDWUNua0JBaGVC?=
+ =?gb2312?B?RVVJYVEwQkRUcXVUTEVTR3JBcTBxa0FyM0ZPVStnK3FoRVlnbUt1K3Z3K2J0?=
+ =?gb2312?B?WEE9PQ==?=
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-05_20,2024-03-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
- adultscore=0 malwarescore=0 suspectscore=0 impostorscore=0 clxscore=1011
- mlxlogscore=999 spamscore=0 lowpriorityscore=0 phishscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2403060018
+X-OriginatorOrg: starfivetech.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2d4537b5-d9bd-41d4-df37-08dc3d83e672
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Mar 2024 02:19:49.5561
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: RaCqQwRlvIL324Pj3BosUEkO793VAC1DuCJM5KBtZU7thofQ0bjCFBvFpG2avYIEVONcnFrkEu8piLMg3MqXcCNpGImlKJ3i0Zs+H7MHfrZ2hLj7A9nt63u76XcbDdsA
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SHXPR01MB0768
 
-On Tue, 2024-03-05 at 18:11 +0100, Roberto Sassu wrote:
-> On Tue, 2024-03-05 at 13:46 +0100, Roberto Sassu wrote:
-> > On Tue, 2024-03-05 at 10:12 +0100, Christian Brauner wrote:
-> > > On Mon, Mar 04, 2024 at 10:56:17AM -0600, Seth Forshee (DigitalOcean)
-> > > wrote:
-> > > > On Mon, Mar 04, 2024 at 05:17:57PM +0100, Roberto Sassu wrote:
-> > > > > On Mon, 2024-03-04 at 09:31 -0600, Seth Forshee (DigitalOcean) wrote:
-> > > > > > On Mon, Mar 04, 2024 at 11:19:54AM +0100, Roberto Sassu wrote:
-> > > > > > > On Wed, 2024-02-21 at 15:24 -0600, Seth Forshee (DigitalOcean)
-> > > > > > > wrote:
-> > > > > > > > Use the vfs interfaces for fetching file capabilities for
-> > > > > > > > killpriv
-> > > > > > > > checks and from get_vfs_caps_from_disk(). While there, update
-> > > > > > > > the
-> > > > > > > > kerneldoc for get_vfs_caps_from_disk() to explain how it is
-> > > > > > > > different
-> > > > > > > > from vfs_get_fscaps_nosec().
-> > > > > > > > 
-> > > > > > > > Signed-off-by: Seth Forshee (DigitalOcean) <sforshee@kernel.org>
-> > > > > > > > ---
-> > > > > > > >  security/commoncap.c | 30 +++++++++++++-----------------
-> > > > > > > >  1 file changed, 13 insertions(+), 17 deletions(-)
-> > > > > > > > 
-> > > > > > > > diff --git a/security/commoncap.c b/security/commoncap.c
-> > > > > > > > index a0ff7e6092e0..751bb26a06a6 100644
-> > > > > > > > --- a/security/commoncap.c
-> > > > > > > > +++ b/security/commoncap.c
-> > > > > > > > @@ -296,11 +296,12 @@ int cap_capset(struct cred *new,
-> > > > > > > >   */
-> > > > > > > >  int cap_inode_need_killpriv(struct dentry *dentry)
-> > > > > > > >  {
-> > > > > > > > -	struct inode *inode = d_backing_inode(dentry);
-> > > > > > > > +	struct vfs_caps caps;
-> > > > > > > >  	int error;
-> > > > > > > >  
-> > > > > > > > -	error = __vfs_getxattr(dentry, inode, XATTR_NAME_CAPS,
-> > > > > > > > NULL, 0);
-> > > > > > > > -	return error > 0;
-> > > > > > > > +	/* Use nop_mnt_idmap for no mapping here as mapping is
-> > > > > > > > unimportant */
-> > > > > > > > +	error = vfs_get_fscaps_nosec(&nop_mnt_idmap, dentry,
-> > > > > > > > &caps);
-> > > > > > > > +	return error == 0;
-> > > > > > > >  }
-> > > > > > > >  
-> > > > > > > >  /**
-> > > > > > > > @@ -323,7 +324,7 @@ int cap_inode_killpriv(struct mnt_idmap
-> > > > > > > > *idmap, struct dentry *dentry)
-> > > > > > > >  {
-> > > > > > > >  	int error;
-> > > > > > > >  
-> > > > > > > > -	error = __vfs_removexattr(idmap, dentry,
-> > > > > > > > XATTR_NAME_CAPS);
-> > > > > > > > +	error = vfs_remove_fscaps_nosec(idmap, dentry);
-> > > > > > > 
-> > > > > > > Uhm, I see that the change is logically correct... but the
-> > > > > > > original
-> > > > > > > code was not correct, since the EVM post hook is not called (thus
-> > > > > > > the
-> > > > > > > HMAC is broken, or an xattr change is allowed on a portable
-> > > > > > > signature
-> > > > > > > which should be not).
-> > > > > > > 
-> > > > > > > For completeness, the xattr change on a portable signature should
-> > > > > > > not
-> > > > > > > happen in the first place, so cap_inode_killpriv() would not be
-> > > > > > > called.
-> > > > > > > However, since EVM allows same value change, we are here.
-> > > > > > 
-> > > > > > I really don't understand EVM that well and am pretty hesitant to
-> > > > > > try an
-> > > > > > change any of the logic around it. But I'll hazard a thought: should
-> > > > > > EVM
-> > > > > > have a inode_need_killpriv hook which returns an error in this
-> > > > > > situation?
-> > > > > 
-> > > > > Uhm, I think it would not work without modifying
-> > > > > security_inode_need_killpriv() and the hook definition.
-> > > > > 
-> > > > > Since cap_inode_need_killpriv() returns 1, the loop stops and EVM
-> > > > > would
-> > > > > not be invoked. We would need to continue the loop and let EVM know
-> > > > > what is the current return value. Then EVM can reject the change.
-> > > > > 
-> > > > > An alternative way would be to detect that actually we are setting the
-> > > > > same value for inode metadata, and maybe not returning 1 from
-> > > > > cap_inode_need_killpriv().
-> > > > > 
-> > > > > I would prefer the second, since EVM allows same value change and we
-> > > > > would have an exception if there are fscaps.
-> > > > > 
-> > > > > This solves only the case of portable signatures. We would need to
-> > > > > change cap_inode_need_killpriv() anyway to update the HMAC for mutable
-> > > > > files.
-> > > > 
-> > > > I see. In any case this sounds like a matter for a separate patch
-> > > > series.
-> > > 
-> > > Agreed.
-> > 
-> > Christian, how realistic is that we don't kill priv if we are setting
-> > the same owner?
-> > 
-> > Serge, would we be able to replace __vfs_removexattr() (or now
-> > vfs_get_fscaps_nosec()) with a security-equivalent alternative?
-> 
-> It seems it is not necessary.
-> 
-> security.capability removal occurs between evm_inode_setattr() and
-> evm_inode_post_setattr(), after the HMAC has been verified and before
-> the new HMAC is recalculated (without security.capability).
-> 
-> So, all good.
-> 
-> Christian, Seth, I pushed the kernel and the updated tests (all patches
-> are WIP):
-> 
-> https://github.com/robertosassu/linux/commits/evm-fscaps-v2/
-
-Resetting the IMA status flag is insufficient.  The EVM status needs to be reset
-as well.  Stefan's "ima: re-evaluate file integrity on file metadata change"
-patch does something similar for overlay.
-
-Mimi
-
-https://lore.kernel.org/linux-integrity/20240223172513.4049959-8-stefanb@linux.ibm.com/
-
-> 
-> https://github.com/robertosassu/ima-evm-utils/commits/evm-fscaps-v2/
-> 
-> 
-> The tests are passing:
-> 
-> https://github.com/robertosassu/ima-evm-utils/actions/runs/8159877004/job/22305521359
-> 
-> Roberto
-> 
-> 
-
+SGksIExhdXJlbnQNCg0KPiBbUEFUQ0ggdjMgMDAvMTNdIEFkZCBJU1AgM0EgZm9yIFN0YXJGaXZl
+DQo+IA0KPiBUaGlzIHNlcmllcyBpbXBsZW1lbnRzIHRoZSBJU1AgM0EgZnVuY3Rpb24gdG8gdGhl
+IENhbWVyYSBTdWJzeXN0ZW0gb24NCj4gU3RhckZpdmUNCj4gSkg3MTEwIFNvQy4gVGhlIHNlcmll
+cyBoYXMgYmVlbiB0ZXN0ZWQgb24gdGhlIFZpc2lvbkZpdmUgMiBib2FyZC4NCj4gDQo+IFRoaXMg
+c2VyaWVzIGlzIGJhc2VkIG9uIHRvcCBvZiB0aGUgbWFzdGVyIGJyYW5jaCBvZiBtZWRpYV9zdGFn
+ZSByZXBvc2l0b3J5LA0KPiB3aGljaCBpcyB0ZXN0ZWQgd2l0aCBhIHY0bDItY29tcGxpYW5jZSBj
+b21waWxlZCBmcm9tIHRoZSBnaXQgcmVwbw0KPiAoZ2l0Oi8vbGludXh0di5vcmcvdjRsLXV0aWxz
+LmdpdCkuDQo+IA0KDQpBcmUgdGhlcmUgYW55IHVwZGF0ZXMgdG8gdGhpcyBzZXJpZXMsIEkgYW0g
+bG9va2luZyBmb3J3YXJkIHRvIHlvdXIgcmVzcG9uc2UuDQoNClJlZ2FyZHMsDQpDaGFuZ2h1YW5n
+DQo=
 
