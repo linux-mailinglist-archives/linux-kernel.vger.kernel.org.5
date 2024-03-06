@@ -1,145 +1,105 @@
-Return-Path: <linux-kernel+bounces-93878-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93879-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65CDC87363A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:25:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CECFE873642
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:26:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 068AE1F2506E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:25:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B09F28AB5F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:26:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FAEF8002A;
-	Wed,  6 Mar 2024 12:25:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 536BB80049;
+	Wed,  6 Mar 2024 12:26:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=rasmusvillemoes.dk header.i=@rasmusvillemoes.dk header.b="Z/kbMr8T"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="OLVWpRZ9"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 663187FBB4
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 12:24:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DC67605DC;
+	Wed,  6 Mar 2024 12:26:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709727901; cv=none; b=UDcVdluVFDpkgQVF4g3w2/keHerbUB9P1bHoBMJqkI1PqRPIppu22SiA8JIptO+y2QocS9AHkRhyUU+GVEC2L7LO5CoAJiIzEtgmzodG52cDdYOAjaxPDxxrWxlXOOQl+9DyXk3DnBjTsZnDWbavXvcqYK2GmHWWGlg2UDVFRic=
+	t=1709728012; cv=none; b=WaVROVr6HVds/P4/clWAfwO1FpPj32ua8h19z56Jsqx9HwYUPAaxXxkkHq+dxj6XzRR/jabjHe2WStf6dN3TOateLiXUD+49Msa4+LbYn4Cg2N++tzC0RH+CZH+ODeVfjNyZyvD+a2SOLdPlBLzZpl0C5P0L1UxW2rkmuzVuDQs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709727901; c=relaxed/simple;
-	bh=8Okp8JRxkiMV0YH6KA8qSv/58IcamZ6z7suvOrup3fk=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=oq8t5ELnk/Ls/T4Dot7KUgviUhahZpAYpfvH8dvqFag0IVHri1hTw72xwI7KUbXpYnEVSPnfFeQf9DAGUOvxrDNbZmy7VMUn+ReyrQh2ObOjjD2TBEZUqeE5jXEXYZvO2EwDQIE2bzHXfK40TsE89k6swV3ugiuSsbEx3++w3fk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rasmusvillemoes.dk; spf=pass smtp.mailfrom=rasmusvillemoes.dk; dkim=pass (1024-bit key) header.d=rasmusvillemoes.dk header.i=@rasmusvillemoes.dk header.b=Z/kbMr8T; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rasmusvillemoes.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rasmusvillemoes.dk
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-56454c695e6so1415858a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 04:24:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google; t=1709727897; x=1710332697; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=TnhgomKEb2hCIMvadWXGuCkjrFe6c2aqwtVVtmkSCVQ=;
-        b=Z/kbMr8TjakO8P/RO4YsBcm3AWTqDZCEJGe+Z9ecNvfd8DfTFVTA6bR52fs0GKTsFF
-         LBt5AGr6IAhTmZi+mNgaAZJ478Ibxyp2gFsrHkfs6hppfCSYbNMAVcm3MKdFhTYC5swP
-         60umqC9WTBwU5c7j29Ew8sum26YNRmAmHs5Sc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709727897; x=1710332697;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TnhgomKEb2hCIMvadWXGuCkjrFe6c2aqwtVVtmkSCVQ=;
-        b=pxPiU16yM8WGMkfRKdrxk1Q92UNL4S8cVCACWSLE3hFrfZgu1ycp0DCE2n+EpWtg6V
-         L6EPisg134YOli3aIGA+5diLEc0e2CouO79TPoLX89aJ4SeIKIh9XEz4qotjI5uENV0k
-         DbsGHwfJwa0vpGzs4IGVmUnXgHdcEcc7YvCwwJr19UlZahMS7jgsSFlqHitRUBgyC9et
-         BsCwRnsyyhVdAi00piuZxLrAMf6dM+eth6dOX0BfdoBvyQ3/oQL7xktwUpxmLVq42HWl
-         GriXIt2AHDb4X/xxuhXjazBrbkwUxDbFBsJUIAW84OCF4aWTHiRFyTkwwabwjPLIJwQf
-         2OFQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVjnTmlsJhbAUm68FXAUzaueFfOf52H16OCzd5fWqLOWrdoDueFvRxCZB0sYnsOLAxCXCcuJtSmcMoAd6XDQp1HOhbNWdu+atMQD20n
-X-Gm-Message-State: AOJu0YzRQOrfhToFw6vzd40AnlYFRmlXOUjTbVZspPzXHcHdm0x1G9Sm
-	zmIu8COdUxV/F43WD4jrGUkErtiuCRJ0urKW5e3LO8E+SarcL/8oLZZi5KniP8qtDE1C83TzFyG
-	ej3I=
-X-Google-Smtp-Source: AGHT+IEYQOE8fNX1fwnNFoGDCQMUs8PYmUaptl57ojeAbHTGvvGb+3Y3BwKHP7t2ucH+oHLofH/jAQ==
-X-Received: by 2002:aa7:db4a:0:b0:565:6b76:3140 with SMTP id n10-20020aa7db4a000000b005656b763140mr5542386edt.18.1709727897279;
-        Wed, 06 Mar 2024 04:24:57 -0800 (PST)
-Received: from prevas-ravi.prevas.se ([81.216.59.226])
-        by smtp.gmail.com with ESMTPSA id u17-20020a056402111100b0056729e902f7sm4160471edv.56.2024.03.06.04.24.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Mar 2024 04:24:56 -0800 (PST)
-From: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] bootconfig: do not put quotes on cmdline items unless necessary
-Date: Wed,  6 Mar 2024 13:24:52 +0100
-Message-Id: <20240306122452.1664709-1-linux@rasmusvillemoes.dk>
-X-Mailer: git-send-email 2.40.1.1.g1c60b9335d
+	s=arc-20240116; t=1709728012; c=relaxed/simple;
+	bh=c86ZEGbT6ZU6Z39dOgBxdZmzp3F1p3SoRnmfSFzl24Q=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ZdxiLu+Ivws2yiTam2JlNw2UPfy1WWkh5K2KDFJ4dxc3wa3Ov6XKx19nN4a+Xx7aFNdYZx09iOxEMGtwrqI28iAYScG71Ks1Bpv/nt7eJPZmGkLmINl+MWyxTvdyiLEXNe+RB7AxMVnbehyklQLgUxrZYBuUVUUa18YFANiHwMk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=OLVWpRZ9; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4266TGuc015150;
+	Wed, 6 Mar 2024 12:26:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version:content-type; s=
+	qcppdkim1; bh=WlzpenKnUYk6IrrhvbBlI0xOgW/za7on8QxUC8/k9pE=; b=OL
+	VWpRZ9oE0OBXwlfltr8NQGD/gtMKNjMeoWmZ8W+luqScNX6lEH1iqpOuFU0TigyC
+	lLKraj7WsAFyxrZetBYv1A5aTVbzjnMHoihy78w2GMYh4S/Vtgo3Tdy2b6146CjP
+	RgzM1tEsbpEhPPDjKaYEITa8KdHYPNHEHlWa6zKDmHekrbhugnQZCYV/fALNIjG9
+	ixMh+0CQSRhOoLfv7lXkHGCStrzdD2qOoevmCWVLO8EzGD+mAWbr98k3NjKMccHr
+	fkkR1a/M/1x5bFJDA4NggPql5krUEBR+bP4IIzD30alXB+eCVxeY+dUvUZzS5x/Z
+	12VNNYLBLlAlppffrcFA==
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wpbav1m5c-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 06 Mar 2024 12:26:46 +0000 (GMT)
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 426CQj7b014748
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 6 Mar 2024 12:26:45 GMT
+Received: from hu-mojha-hyd.qualcomm.com (10.80.80.8) by
+ nasanex01c.na.qualcomm.com (10.45.79.139) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 6 Mar 2024 04:26:43 -0800
+From: Mukesh Ojha <quic_mojha@quicinc.com>
+To: <andersson@kernel.org>, <konrad.dybcio@linaro.org>, <robh@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
+CC: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Mukesh Ojha <quic_mojha@quicinc.com>
+Subject: [PATCH 0/3] Add eFuse region for Qualcomm SoCs
+Date: Wed, 6 Mar 2024 17:56:32 +0530
+Message-ID: <1709727995-19821-1-git-send-email-quic_mojha@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: R0hc1XmWrZXJu2hflbxz1WkfdsVob4DB
+X-Proofpoint-ORIG-GUID: R0hc1XmWrZXJu2hflbxz1WkfdsVob4DB
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-06_07,2024-03-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ mlxlogscore=399 impostorscore=0 adultscore=0 bulkscore=0 mlxscore=0
+ phishscore=0 clxscore=1015 priorityscore=1501 spamscore=0 malwarescore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2403060099
 
-When trying to migrate to using bootconfig to embed the kernel's and
-PID1's command line with the kernel image itself, and so allowing
-changing that without modifying the bootloader, I noticed that
-/proc/cmdline changed from e.g.
+This series is dependent on [1] for binding.
 
-  console=ttymxc0,115200n8 cma=128M quiet -- --log-level=notice
+[1]
+https://lore.kernel.org/lkml/1709662869-10569-1-git-send-email-quic_mojha@quicinc.com/
 
-to
+Mukesh Ojha (3):
+  arm64: dts: qcom: sm8450: Add qfprom node
+  arm64: dts: qcom: sm8550: Add qfprom node
+  arm64: dts: qcom: sm8650: Add qfprom node
 
-  console="ttymxc0,115200n8" cma="128M" quiet -- --log-level="notice"
+ arch/arm64/boot/dts/qcom/sm8450.dtsi | 7 +++++++
+ arch/arm64/boot/dts/qcom/sm8550.dtsi | 7 +++++++
+ arch/arm64/boot/dts/qcom/sm8650.dtsi | 7 +++++++
+ 3 files changed, 21 insertions(+)
 
-The kernel parameters are parsed just fine, and the quotes are indeed
-stripped from the actual argv[] given to PID1. However, the quoting
-doesn't really serve any purpose and looks excessive, and might
-confuse some (naive) userspace tool trying to parse /proc/cmdline. So
-do not quote the value unless it contains whitespace.
-
-Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
----
- init/main.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
-
-diff --git a/init/main.c b/init/main.c
-index e24b0780fdff..a658c00a0208 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -319,12 +319,20 @@ static char xbc_namebuf[XBC_KEYLEN_MAX] __initdata;
- 
- #define rest(dst, end) ((end) > (dst) ? (end) - (dst) : 0)
- 
-+static int has_space(const char *v)
-+{
-+	for (; *v; v++)
-+		if (isspace(*v))
-+			return 1;
-+	return 0;
-+}
-+
- static int __init xbc_snprint_cmdline(char *buf, size_t size,
- 				      struct xbc_node *root)
- {
- 	struct xbc_node *knode, *vnode;
- 	char *end = buf + size;
--	const char *val;
-+	const char *val, *q;
- 	int ret;
- 
- 	xbc_node_for_each_key_value(root, knode, val) {
-@@ -342,8 +350,9 @@ static int __init xbc_snprint_cmdline(char *buf, size_t size,
- 			continue;
- 		}
- 		xbc_array_for_each_value(vnode, val) {
--			ret = snprintf(buf, rest(buf, end), "%s=\"%s\" ",
--				       xbc_namebuf, val);
-+			q = has_space(val) ? "\"" : "";
-+			ret = snprintf(buf, rest(buf, end), "%s=%s%s%s ",
-+				       xbc_namebuf, q, val, q);
- 			if (ret < 0)
- 				return ret;
- 			buf += ret;
 -- 
-2.40.1.1.g1c60b9335d
+2.7.4
 
 
