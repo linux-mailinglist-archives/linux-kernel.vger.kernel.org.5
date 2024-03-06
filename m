@@ -1,157 +1,199 @@
-Return-Path: <linux-kernel+bounces-93300-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93236-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9770872DB3
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 04:53:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A593872CA6
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 03:20:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0645E1C21A2D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 03:53:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 668BBB2542B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 02:20:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A66CA156C2;
-	Wed,  6 Mar 2024 03:53:29 +0000 (UTC)
-Received: from CHN02-BJS-obe.outbound.protection.partner.outlook.cn (mail-bjschn02on2106.outbound.protection.partner.outlook.cn [139.219.17.106])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7244DD52A;
+	Wed,  6 Mar 2024 02:20:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="PpUTOqRZ"
+Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF289134B2;
-	Wed,  6 Mar 2024 03:53:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.17.106
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709697209; cv=fail; b=lI9vulse78/PVEnd+CbBRzYY5oFYJFpaf9n4n+4BDYwmb8QdYrJfw1PjYpagtYcoycsQhyD2cdYyJAXW2LQN9jKiHFtgT1CDEMe2sgfkN4RZe3JhG7AFFZNYG6JCiTDdUaMty7XIY/uTQATZiZlnnMgnJt05VgmWovaNefWxcMU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709697209; c=relaxed/simple;
-	bh=eO5UpaMNMp42zkn/aV6k+QYvQdgv6b9fS8lhapV9Vl0=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=UkNY73cUSJE4Ut22HhAxCOVkkJ3vv0aRKG8PWZLoJ+z6NeSyKkW+Xd5J+J0MCbDkS07Gx+5c7rNGEOHbE6d7PnbvHWR4yr1DBF2STvzrqlfCMMNbZz2rXorHKonxfLT8OXimBvgkNqay7EBOv+qDmKF61M+qIaV0jd9E6ENd0PE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.17.106
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=D2V7mopVlBg1tFlJCiVeR8ce12+SggzPztBFjcdOTYfX883VvZZ5nid2jG4BjDwxA2cSbLKwmUrtiV4EdLgLnFcBHhfxw5zz0EfCVdrG+x4LerhC2vMw9rhGAyDWwaRvcXtFL9j+TBTewgfDGa5YslMtKM1fSpppoAnJLEY3RJM9yrCgDzWwaFoFnFrMGFf1QIB94TPVzDayVNuA0bXsfVlzpRsd4EA/SqXTIcc5Yw5cUnQ6fhP3MyA1YgfmMccyfUwP/Owff4P7+/GhOSr8hmw0pxFTR73Q250S1auOWDBMJtX56o1N/qd4zKcfXaFG7XLkwbDYixOVfQPynKJ+Wg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=eO5UpaMNMp42zkn/aV6k+QYvQdgv6b9fS8lhapV9Vl0=;
- b=Cd2RW3YEdCL3DHfBa9PuyeImjwjBkmvwbFgc65ckfrfo1v9B7ryoMQZIzfeezPjHFPqGXvFdVN4PehPEr4pekXCvjvjL+7S9vGgkUun+C7Wr6MBDBGjfa9qc+rhu+ZxSPLi5fDq9hfVMOfevpd2/YxFc/zWRHecAlWKR11wkNSpZdgRo8+Mu9MkVj87ggQPhht/JaiBniRKKHkIpsqYcPauSoFfbuO9aKyi5twtvKvDegpah4056nP99l1Wb9NaELG9AWa77DTMO0s9GJa7HoPr5dlKIUQTPegR+FtCr4QboFsM06Q5qV4EbNnhoyJaVBNKMlN26ZjWWlalx8pexnQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=starfivetech.com; dmarc=pass action=none
- header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
-Received: from SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c311:25::10) by SHXPR01MB0768.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c311:24::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.51; Wed, 6 Mar
- 2024 02:19:49 +0000
-Received: from SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn
- ([fe80::b0af:4c9d:2058:a344]) by
- SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn ([fe80::b0af:4c9d:2058:a344%6])
- with mapi id 15.20.7249.041; Wed, 6 Mar 2024 02:19:49 +0000
-From: Changhuang Liang <changhuang.liang@starfivetech.com>
-To: Mauro Carvalho Chehab <mchehab@kernel.org>, Greg Kroah-Hartman
-	<gregkh@linuxfoundation.org>, Matthias Brugger <matthias.bgg@gmail.com>, Hans
- Verkuil <hverkuil-cisco@xs4all.nl>, Ming Qian <ming.qian@nxp.com>, Laurent
- Pinchart <laurent.pinchart@ideasonboard.com>, Nicolas Dufresne
-	<nicolas.dufresne@collabora.com>, Benjamin Gaignard
-	<benjamin.gaignard@collabora.com>, Tomi Valkeinen
-	<tomi.valkeinen+renesas@ideasonboard.com>, Mingjia Zhang
-	<mingjia.zhang@mediatek.com>
-CC: Jack Zhu <jack.zhu@starfivetech.com>, "linux-media@vger.kernel.org"
-	<linux-media@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-staging@lists.linux.dev"
-	<linux-staging@lists.linux.dev>
-Subject:
- =?gb2312?B?u9i4tDogW1BBVENIIHYzIDAwLzEzXSBBZGQgSVNQIDNBIGZvciBTdGFyRml2?=
- =?gb2312?Q?e?=
-Thread-Topic: [PATCH v3 00/13] Add ISP 3A for StarFive
-Thread-Index: AQHaWBJVG1ff5kRXW0SpS9Y4ee+DwbEqJ8mw
-Date: Wed, 6 Mar 2024 02:19:49 +0000
-Message-ID:
- <SHXPR01MB0671C020C9923943E1A6B008F221A@SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn>
-References: <20240205090424.40302-1-changhuang.liang@starfivetech.com>
-In-Reply-To: <20240205090424.40302-1-changhuang.liang@starfivetech.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=starfivetech.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SHXPR01MB0671:EE_|SHXPR01MB0768:EE_
-x-ms-office365-filtering-correlation-id: 2d4537b5-d9bd-41d4-df37-08dc3d83e672
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- IW9xCOjwQwwGdTGGXyEos7H5MYchiam2v8PQrDAIZi86f6/+POWYjppKtXT3MXKHTG5DtdXc3oBYsGjtRHRQSZ0kIznD9XjQKZWrqQY7AUeXEyliMPVzfoQbwnIPvSbfHjTNNckBLbT5EgKCUD57Uj8tH1pXMe1q7XCQZI4lL8NZwyz4I4/hZFOGqYPWxl5EK3yM9Hw82GfchGMKHIZV576rBJeh9CypgrKC2DOo0IGuEGvYjWFKkpvCUeIKgSqM0X5aUxkFoUuxJx/b1NX3zuhjbv+zial//PdoCy2OBCx85nHKH0Fzc/VoHcOi1um56aO3NNHLmg8FU0Y0Ez3QrqHibgn3JUgEfvaFPR/xyXWVKywpbP3drSDCEMniVD5I60YOQGX4Tp/JoQaIF1BEZVXLMmmbzdUypT83e1VBlkX4jMrB/NmIHtUtUNHnFLjGCh9d7N4Gxea6Z5bCEzB2Bp1z9zk1+Ang1GprO387vxJgOQYtQNst7uQvekYlFjta9Ja/nEi8lbA1YRjCsCwmLIwCbposWiObGUeDK2QSGYC33ivCdXneiNlBWdfI0h0FguEeCLiW7CtlSJIe66Llags2yxYDFQpiTgE9DmJqA5E1teBfS0NAV7dI7C0OKMGtwOZGMsnVwKYZyQNdiHmJ1w==
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:zh-cn;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(41320700004)(38070700009)(921011);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?gb2312?B?M1c2L1BaZnhKR0l1eFRYWXhNbkZhdG5mU0dFZmRpRVo4bTJSVm9hakZtb1RZ?=
- =?gb2312?B?RVJoL2szNlFOZ3lRb0JCM1ZBaHFra1RIKy9HQ3ZpR3lMM2tuZURrbHRzeFFZ?=
- =?gb2312?B?OWNyYW0rQWpXNVQ1SWpHNUUydzNJWW80SlVSaXNDY3RIU1UvMUVUTWlCL2xn?=
- =?gb2312?B?MkFOclBIWHZnMVRNbCtYcGNiODRLbi9DZ3JlQThTeXA3dTdYUTZ1VGl2REgz?=
- =?gb2312?B?c3JTYTR5UWkxUmxOSmpZVzhuV0kzVTIvdnFzb0Vnc3l1enlGSWg1M3AvZHRw?=
- =?gb2312?B?NmdJVHVpMk9RUlUreCtZK3pxNG5uWXR2R0Vka2VLSXVkcFdyL011aVl4WGhI?=
- =?gb2312?B?OTFYbndGUTlYVGlzTUg0ODFpd1dRR040OHBXMDR1ZFVKNkpIMTlpR0F0a1dT?=
- =?gb2312?B?aWFhY1dMd3R6NXB1aVNiYyttd2RKdWdxaE8zNUNBRmdFQjdGL1E2bTQ5N2cw?=
- =?gb2312?B?KytRc3ozV1BTakVMZGNzZGEvR2RzelFXNU9PaWpHaWRXTHRBS1NCU0RKNXpW?=
- =?gb2312?B?K3ZGYjEyNlVCdVhzcUlqS3RzQWQvLy81T3A1V2JyWUxJZlVxR2tRSWU5Q3Ri?=
- =?gb2312?B?cVdFdGNMcXAyalluMFZWZHl4Vmx5Sis5MXJkR1J0VzMvaCtmN21IRHAreUN1?=
- =?gb2312?B?TkVTT3l1OUFQU2ZwcnczNDJHNnZtMGtkR0l1byt2amdSdCsrZ1JNbW5JWTA5?=
- =?gb2312?B?K1FWNUdkZDV0ejIwbXJINkZtcmVMN3djdndMQVhLejhYSVprVjVicEtieXc4?=
- =?gb2312?B?dUtqVW9UeWZOQnhwdWdKU0lRSTBwbEwzRkdnMHNoeUxReWd4WEhUNncyeDFx?=
- =?gb2312?B?VXl5YktlWXdUcTdXS2NmVWZhdTRqUEVlY3VjZWpuUDlQVHA4SWpvZlduOE1w?=
- =?gb2312?B?UXZ0L0F4VTdaZGhyZ09zUnhrUmdvVFFxSHE2UVdMeVNIMWJCUHdtU2c2N2dX?=
- =?gb2312?B?VllaK0hIUUpvUFFmMGVHRW9POUJKNU1xbWROWlhheFFBZlZCMTJ1N2h3SDVy?=
- =?gb2312?B?UTZKYkU4ajlCNFdRQkppUHRGL212OTNDSC90T3VwRFUvRFVPUklPYmVhYmx0?=
- =?gb2312?B?azRGSk1LNWx5TkkzaWdSMjVucEZzZTNxT2lTQjRYQ2IrQlo1aVRPU0RaREZZ?=
- =?gb2312?B?a0FwdTFHZDV3end3Y2tlMEh2N3JOaDZnSUJOK0RNYkFqTTVXOHJjdE03NUVH?=
- =?gb2312?B?Skoxa3d2bDJnVi9TbU9sS2FFY0ZHTHBhQU9KV05BM3ZrZUd6Qi8wK1VmNmpj?=
- =?gb2312?B?MFhzOTJFSTQvNUp6QVIrU1o0MExlVHBOL0dWM20rcHFFeFFmNGthQnF4Umxk?=
- =?gb2312?B?c2R1ZEMwaWlNWFNIeitrblVISU5rVXpadTh5d2MwMnRUVUhuQnBXSEpEc3Ju?=
- =?gb2312?B?QUgyTGRNVGkyM29VbzlYYjc0ZSs2T1FWR0hRTUFWajBsZGxRakpTMmxDMWtN?=
- =?gb2312?B?Um56dW1FRGtYK0dhck1XeVpSTm5NVGlKTTBWNHkxbXJVM1o4RVZneDdqODhp?=
- =?gb2312?B?UXZCSWdWMWRRVUVUeVRjQTd1Z001aFhEamp3MTY0eSsrWjdubGJmR1hpaWZ0?=
- =?gb2312?B?VVNMSEZsL25vcmx3SlFEMUJZaTVwT2o5dHhYakN1Rlg3TlZzUXJvdzE0dGdw?=
- =?gb2312?B?eXZHSFNwOE5TSDByOGgwUGMzVDFyeWVlS2swYk1Hc1MyMzk0OHBVOTlZZm9o?=
- =?gb2312?B?MEUwK0FqVGFZNEM5MjFpTFBTOWphK0dVRi9kR1l1RTFSclE2NGpCQm9aNTht?=
- =?gb2312?B?cVR4bUtveEM0eXdTVkdLKysvMW1wWVdTUFRuOWxRZjl3WktJNzRRNkpRUjJl?=
- =?gb2312?B?dXlSN20xMFBRNGd2Y3RNVk1xUjgwVTNNUG8rSjlmblNmUHRBQlZsTEhqMEo1?=
- =?gb2312?B?dEc3WEVJRzJKclR4YXVZMkRYdnlLQVFtUC9NVUdXdzNreUR4NVNRVHAzaktv?=
- =?gb2312?B?THoySmxtSmVTVVI5eFZnTmthUmNqZ3FxUGJESmdYdXNUQkRYWCtsZ0R5bTAr?=
- =?gb2312?B?c1VqWG5KRXFZRDBTQzVDbjYxbGFZTTVGRCsyVTdldDczV3hlWHJJU0hzZWJD?=
- =?gb2312?B?ZnlzZjdYbWUxL2M4YnN6MFBlZFVpczJISVNwZU9nenRJRCtDWUNua0JBaGVC?=
- =?gb2312?B?RVVJYVEwQkRUcXVUTEVTR3JBcTBxa0FyM0ZPVStnK3FoRVlnbUt1K3Z3K2J0?=
- =?gb2312?B?WEE9PQ==?=
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE11479E4
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 02:19:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.51
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709691599; cv=none; b=bCVHxstHZhrjMwpiU5jJVcuwp5weGnx+LjEEnlYi6+0DCTp6ZQpYykbRRFL90un7rHJ0Cc8x1ZHk/vfBBrdQsf52siROPeVR4DAECR1HMxpe0bWbVXGS90fksJedZrXiNUXACq5oO4k4it+SnnFHmCnWo/qg6oz3UlWtrSkgvko=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709691599; c=relaxed/simple;
+	bh=onWesjGOBT5yTGQmpOG1LxJdI89DNGUvK1WI3F/z19k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mISzBK1XpjrvC97dySQmNBIh19fJSex+5CdehfEmGPPC1USWcRND7F5QEmAGfNmlAitBZzcjEJ3HfMjCLVRjMzhLx18+FzWKCEgWUmT5TO8aEyDtIquZc8rUdDQjmQEvkFbbn13DvQNvliPdqN7L7ssNxjyw7/LbspDl85z8Kaw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=PpUTOqRZ; arc=none smtp.client-ip=209.85.219.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-68ee2c0a237so3308196d6.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 18:19:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1709691595; x=1710296395; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=acf+30rZOU0mvAbyQhYXFdJzkgjEIoHhA9P8NXsNW7E=;
+        b=PpUTOqRZ0wRh0l7sEW5J/XK5emyGAu0rv9q4q6oV9molp3oDkdbmvw5yqpeg4AaoXY
+         BcJEBWRb92PJvVoZeUTEn1Qf4eJvtQG+Hn0I2PIv2yt2N4Q0gdZriuEfbJHOeohBvz/N
+         9l6oSwegZs6oOrn2Hittxpn8zrdRtXKQEPa7L4Cvvqun30CLp7meYhpMwwgSSe8NGSfJ
+         6ztyVWJBENTKzqUXmtiZZu545UMModMSqNLP/qZ1biac+tJE8Cbf3fNCOYbxiNxELh9r
+         iu+tKM+g4LD85WGoTJERUihZy5YuQKeqSueg4fpPVZ4quH1kFoC0H2HTzd6EmlRJHC8e
+         LdtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709691595; x=1710296395;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=acf+30rZOU0mvAbyQhYXFdJzkgjEIoHhA9P8NXsNW7E=;
+        b=v12JOnRsHa34i0e0cGSN9YmUeq8S//QxdJTGbP93odeUV2TB2jMtfbRNpadFH97lhg
+         HuwsKVlbF9ABBCUmYvhnkXJ0EfsGRpoOHp28x+ElbaZhjgtuGzXp+Wm/+elxfOC6zc5E
+         woY/sdEeNVDqgHZGXJR+c4tU3rMhHLP7A9M69E/tZ+VKfJv3o6Mi+UktmPDsetxhvfF0
+         3Rf2vob+B6wvAyvlKt0ifGuErMa8Jb5tFJCIt/VXjfd5eMcCynhTeppPoHk3JiEggjTx
+         iANESUQ0RH4hp4cywy89dNY1NQhISPLNTflEHDJgdFuVnWa/W4yD5rXUhtCidvz+DmEg
+         L/CA==
+X-Forwarded-Encrypted: i=1; AJvYcCWXGsSzGfvf3/p1C4eh5wMwrlqlQuw+X6DLB04Dymn5EiO0P+O+WQI0vzys+Vjf0zeY6Q7sRhRB3VwpWBYe5Os5sj5n0h0hr4yPXjyN
+X-Gm-Message-State: AOJu0YzWYNKLvC/1lcklS+Ph7EUfGJerigG7/NXKIQ9GiXGelXb6QhUO
+	lSmauckmnxf4MygpmXSKOS6m559OWgE/wkIinKIyY4EuQt17Sq8bivU0njk+d5M=
+X-Google-Smtp-Source: AGHT+IEmyP0orYTDcGtYCnkFo+3YjfLkmaNOkkJK6Ir3myHyg0AcpXpcmUhE2WdPcJpjeWnyKDNU1A==
+X-Received: by 2002:a0c:dc04:0:b0:690:68a:a141 with SMTP id s4-20020a0cdc04000000b00690068aa141mr6220950qvk.24.1709691595613;
+        Tue, 05 Mar 2024 18:19:55 -0800 (PST)
+Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
+        by smtp.gmail.com with ESMTPSA id pd6-20020a056214490600b006907801a000sm2629696qvb.26.2024.03.05.18.19.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Mar 2024 18:19:54 -0800 (PST)
+Date: Tue, 5 Mar 2024 21:19:50 -0500
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Ryan Roberts <ryan.roberts@arm.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	David Hildenbrand <david@redhat.com>,
+	"Huang, Ying" <ying.huang@intel.com>, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v1] mm: swap: Fix race between free_swap_and_cache() and
+ swapoff()
+Message-ID: <20240306021950.GA801254@cmpxchg.org>
+References: <20240305151349.3781428-1-ryan.roberts@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: starfivetech.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2d4537b5-d9bd-41d4-df37-08dc3d83e672
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Mar 2024 02:19:49.5561
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: RaCqQwRlvIL324Pj3BosUEkO793VAC1DuCJM5KBtZU7thofQ0bjCFBvFpG2avYIEVONcnFrkEu8piLMg3MqXcCNpGImlKJ3i0Zs+H7MHfrZ2hLj7A9nt63u76XcbDdsA
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SHXPR01MB0768
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240305151349.3781428-1-ryan.roberts@arm.com>
 
-SGksIExhdXJlbnQNCg0KPiBbUEFUQ0ggdjMgMDAvMTNdIEFkZCBJU1AgM0EgZm9yIFN0YXJGaXZl
-DQo+IA0KPiBUaGlzIHNlcmllcyBpbXBsZW1lbnRzIHRoZSBJU1AgM0EgZnVuY3Rpb24gdG8gdGhl
-IENhbWVyYSBTdWJzeXN0ZW0gb24NCj4gU3RhckZpdmUNCj4gSkg3MTEwIFNvQy4gVGhlIHNlcmll
-cyBoYXMgYmVlbiB0ZXN0ZWQgb24gdGhlIFZpc2lvbkZpdmUgMiBib2FyZC4NCj4gDQo+IFRoaXMg
-c2VyaWVzIGlzIGJhc2VkIG9uIHRvcCBvZiB0aGUgbWFzdGVyIGJyYW5jaCBvZiBtZWRpYV9zdGFn
-ZSByZXBvc2l0b3J5LA0KPiB3aGljaCBpcyB0ZXN0ZWQgd2l0aCBhIHY0bDItY29tcGxpYW5jZSBj
-b21waWxlZCBmcm9tIHRoZSBnaXQgcmVwbw0KPiAoZ2l0Oi8vbGludXh0di5vcmcvdjRsLXV0aWxz
-LmdpdCkuDQo+IA0KDQpBcmUgdGhlcmUgYW55IHVwZGF0ZXMgdG8gdGhpcyBzZXJpZXMsIEkgYW0g
-bG9va2luZyBmb3J3YXJkIHRvIHlvdXIgcmVzcG9uc2UuDQoNClJlZ2FyZHMsDQpDaGFuZ2h1YW5n
-DQo=
+Hi Ryan,
+
+On Tue, Mar 05, 2024 at 03:13:49PM +0000, Ryan Roberts wrote:
+> There was previously a theoretical window where swapoff() could run and
+> teardown a swap_info_struct while a call to free_swap_and_cache() was
+> running in another thread. This could cause, amongst other bad
+> possibilities, swap_page_trans_huge_swapped() (called by
+> free_swap_and_cache()) to access the freed memory for swap_map.
+> 
+> This is a theoretical problem and I haven't been able to provoke it from
+> a test case. But there has been agreement based on code review that this
+> is possible (see link below).
+> 
+> Fix it by using get_swap_device()/put_swap_device(), which will stall
+> swapoff(). There was an extra check in _swap_info_get() to confirm that
+> the swap entry was valid. This wasn't present in get_swap_device() so
+> I've added it. I couldn't find any existing get_swap_device() call sites
+> where this extra check would cause any false alarms.
+
+Unfortunately, I found one, testing current mm-everything:
+
+[  189.420777] get_swap_device: Unused swap offset entry 000641ae
+[  189.426648] ------------[ cut here ]------------
+[  189.431290] WARNING: CPU: 3 PID: 369 at mm/swapfile.c:1301 get_swap_device+0x2da/0x3f0
+[  189.439242] CPU: 3 PID: 369 Comm: cachish Not tainted 6.8.0-rc5-00527-g19d98776f227-dirty #30
+[  189.447791] Hardware name: Micro-Star International Co., Ltd. MS-7B98/Z390-A PRO (MS-7B98), BIOS 1.80 12/25/2019
+[  189.457998] RIP: 0010:get_swap_device+0x2da/0x3f0
+[  189.462721] Code: a8 03 75 2a 65 48 ff 08 e9 36 ff ff ff 4c 89 e9 48 c7 c2 40 fd 91 83 48 c7 c6 c0 f9 91 83 48 c7 c7 60 ee 91 83 e8 26 2f af ff <0f> 0b eb af 4c 8d 6b 08 48 b8 00 00 00 00 00 fc ff df 4c 89 ea 48
+[  189.481497] RSP: 0000:ffffc90000cff8a8 EFLAGS: 00010282
+[  189.486760] RAX: 0000000000000032 RBX: ffff8881262eee00 RCX: 0000000000000000
+[  189.493909] RDX: 0000000000000001 RSI: ffffffff83a1e620 RDI: 0000000000000001
+[  189.501054] RBP: 1ffff9200019ff15 R08: 0000000000000001 R09: fffff5200019fee1
+[  189.508202] R10: ffffc90000cff70f R11: 0000000000000001 R12: ffffc900018d51ae
+[  189.515346] R13: 00000000000641ae R14: 0000000000000000 R15: 00000000000641af
+[  189.522494] FS:  00007f7120263680(0000) GS:ffff88841c380000(0000) knlGS:0000000000000000
+[  189.530591] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  189.536373] CR2: 00007f6e659a2ea3 CR3: 0000000046860004 CR4: 00000000003706f0
+[  189.543516] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[  189.550661] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[  189.557811] Call Trace:
+[  189.560276]  <TASK>
+[  189.562393]  ? __warn+0xc4/0x250
+[  189.565647]  ? get_swap_device+0x2da/0x3f0
+[  189.569761]  ? report_bug+0x348/0x440
+[  189.573444]  ? handle_bug+0x6d/0x90
+[  189.576951]  ? exc_invalid_op+0x13/0x40
+[  189.580810]  ? asm_exc_invalid_op+0x16/0x20
+[  189.585019]  ? get_swap_device+0x2da/0x3f0
+[  189.589142]  ? get_swap_device+0x2da/0x3f0
+[  189.593255]  ? __pfx_get_swap_device+0x10/0x10
+[  189.597717]  __read_swap_cache_async+0x9f/0x630
+[  189.602281]  ? __pfx___read_swap_cache_async+0x10/0x10
+[  189.607439]  ? __mod_memcg_lruvec_state+0x238/0x4f0
+[  189.612344]  ? __pfx_swp_swap_info+0x10/0x10
+[  189.616652]  swap_cluster_readahead+0x2cd/0x510
+[  189.621206]  ? __pfx_swap_cluster_readahead+0x10/0x10
+[  189.626279]  ? swap_cache_get_folio+0xcd/0x360
+[  189.630760]  ? __count_memcg_events+0x10a/0x370
+[  189.635318]  shmem_swapin_folio+0x2f2/0xc60
+[  189.639525]  ? __pfx__raw_spin_lock+0x10/0x10
+[  189.643908]  ? __pte_offset_map+0x19/0x1d0
+[  189.648024]  shmem_get_folio_gfp+0x307/0xe30
+[  189.652323]  ? __schedule+0x9f0/0x1fe0
+[  189.656096]  ? __pfx_shmem_get_folio_gfp+0x10/0x10
+[  189.660923]  ? filemap_map_pages+0x999/0xe60
+[  189.665211]  shmem_fault+0x1d9/0x810
+[  189.668834]  ? __pfx_shmem_fault+0x10/0x10
+[  189.672954]  ? __pfx_filemap_map_pages+0x10/0x10
+[  189.677590]  __do_fault+0xed/0x390
+[  189.681012]  __handle_mm_fault+0x1ba1/0x2e80
+[  189.685297]  ? __pfx___handle_mm_fault+0x10/0x10
+[  189.689933]  ? __pfx_down_read_trylock+0x10/0x10
+[  189.694570]  ? __pfx_hrtimer_nanosleep+0x10/0x10
+[  189.699215]  handle_mm_fault+0xe0/0x560
+[  189.703074]  ? __pfx_restore_fpregs_from_fpstate+0x10/0x10
+[  189.708620]  do_user_addr_fault+0x2ba/0x9d0
+[  189.712828]  exc_page_fault+0x54/0x90
+[  189.716508]  asm_exc_page_fault+0x22/0x30
+[  189.720535] RIP: 0033:0x5640dc2d72b5
+[  189.724131] Code: 98 48 ba 00 00 00 00 03 00 00 00 48 89 d6 48 2b 75 a0 ba 00 00 00 00 48 f7 f6 48 89 d1 48 89 ca 48 8b 45 a0 48 01 d0 48 01 d8 <0f> b6 00 bf e8 03 00 00 e8 1e fe ff ff 48 83 45 a8 01 48 8d 45 d0
+[  189.742922] RSP: 002b:00007ffc227e3f60 EFLAGS: 00010206
+[  189.748165] RAX: 00007f6e659a2ea3 RBX: 00007f6e2007e000 RCX: 0000000045924ea3
+[  189.755311] RDX: 0000000045924ea3 RSI: 0000000300000000 RDI: 00007f71202586a0
+[  189.762483] RBP: 00007ffc227e3fe0 R08: 00007f7120258074 R09: 00007f71202580a0
+[  189.769633] R10: 0000000000019458 R11: 00000000008aa400 R12: 0000000000000000
+[  189.776781] R13: 00007ffc227e4128 R14: 00007f712029d000 R15: 00005640dc2d9dd8
+[  189.783928]  </TASK>
+[  189.786126] ---[ end trace 0000000000000000 ]---
+[  285.827888] get_swap_device: Unused swap offset entry 0018403f
+[  320.699306] get_swap_device: Unused swap offset entry 000b001b
+[  354.031339] get_swap_device: Unused swap offset entry 000681a9
+[  364.958435] get_swap_device: Unused swap offset entry 001f4055
+[  364.976235] get_swap_device: Unused swap offset entry 001f4057
+[  365.530174] get_swap_device: Unused swap offset entry 000d415c
+[  394.223792] get_swap_device: Unused swap offset entry 001540d0
+[  394.317299] get_swap_device: Unused swap offset entry 000341d9
+[  394.341727] get_swap_device: Unused swap offset entry 0006c07e
+[  396.062365] get_swap_device: Unused swap offset entry 000541a4
+[  396.068262] get_swap_device: Unused swap offset entry 000541a7
+[  402.629551] get_swap_device: Unused swap offset entry 00294021
+[  436.740622] get_swap_device: Unused swap offset entry 00334155
+[  436.758527] get_swap_device: Unused swap offset entry 001b417c
+
+swap_cluster_readahead() calls __read_swap_cache_async() on a range of
+made-up swap entries around the faulting slot. The device and the
+range (si->max) are valid, but the specific entry might not be in
+use. __read_swap_cache_async() instead relies on swapcache_prepare()
+returning -ENOENT to catch this and skip gracefully.
+
+Confirmed that reverting the patch makes the warnings go away.
 
