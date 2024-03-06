@@ -1,73 +1,54 @@
-Return-Path: <linux-kernel+bounces-94006-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94007-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35B0E873830
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:56:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC615873837
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:01:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0E58282EBD
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:56:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7C1A7B20E3C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:01:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CE9E132C0D;
-	Wed,  6 Mar 2024 13:55:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDDA7131E56;
+	Wed,  6 Mar 2024 14:01:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zufErZF2"
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="Q9wVm5eL"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7549131749
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 13:55:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 596A11E519;
+	Wed,  6 Mar 2024 14:01:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709733350; cv=none; b=ubrJh6hZcdrs3hhlpXVwpQJOvZX6B3+5MQyjk1zrAW1Eu0l7fqjsIc38eY1T7sHIk1sVUckYjR/5/2mfrhOYJwYorIpwL+4cgdtSKA4Sb3Z8EQ70m6EMM1epZ4fyadtDFg6994h4MYEbgIcWHWkPcBA5CK2NmNE9GLh8Ti1HVcM=
+	t=1709733683; cv=none; b=gKzDapIUaY8YojBcHv1agU7R2zGhEpIWQAd1APctni57X0BATyCYAaR+WJid5jw4U/bkfYNfMwrecbWJkEYOcW05pCzvsc0UjwTlYD2fh0IEsoPAPnb6sllw/yR2MMMCFHmyek5oUClQcMtb68Hs6O+cjA6WQkv7AHnpQDJZ2L4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709733350; c=relaxed/simple;
-	bh=Esvwv4GmKkRGzYN48ZvM7fQdZPibiAf4YX9bG9qSQJs=;
+	s=arc-20240116; t=1709733683; c=relaxed/simple;
+	bh=OL16fx6KjUVBqodWcez5kPju6qteSkdvY8c4p+ZXvLI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Mvcdjd12I7BSxw4Go/6wX4zth4qWCB0bIhaovP2KH+BYxNx61PsbhJ6qbB0tUrwNd0dcD/4xAwWXiudhVVuOqf1wlmwwiflPmIlIhvdra/0aMPjW+smW3ohe6kO1pQxISr+hhXtV6fshy5OISM1cgDZGtkGtxdkeGoqeygnfGgc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zufErZF2; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-412f67bc6d0so4395105e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 05:55:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709733347; x=1710338147; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zqeQcb2lk7Isbti9CqhzC6h0iZhvy2vGvXInpl28c0M=;
-        b=zufErZF2tckoyq2AJn+Jhh32JfCRaH7dxfdp/d7WuBIyHqGS1Wb4XdQaV2wNvkA5rg
-         hfwdDh1YFyoXCUBepvATNtKyisE3x293UJhq56VjStj1wv40TO+AJbUaKyWhkTbgczfM
-         94R6KyNawHfCxVnav5RzBMk83ZgRjRx3RXZXl6A9JAVm8sfizxyz9ahqjCxPD4L5jUpn
-         fUx7p1tLW4EQR6QavWnJ8I27lpRwLGL6Kq6TKCNa1KBem9Q9vr9cpkkkAzPBQhou5yZv
-         rPeMwyqTt2lofjHwZ4WWslT2Ktf3TkTZRQdCl0++WAR8v4ZNUeVqQhaf+8DhpK5g36/E
-         mrAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709733347; x=1710338147;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zqeQcb2lk7Isbti9CqhzC6h0iZhvy2vGvXInpl28c0M=;
-        b=ZQVHUllUm4SuOhZ9r+K/1LqXytlov0bzphp78O34sbCdbADzCY3sBAax1uXSQFXOzp
-         5YpuUnxiD7bgpYtpngLOJYDF59VAKSpPFDAlj04A5QeHFitH6hzOO2eVIlvK64Xfdbvk
-         vMAYbKi0MfqU0lCOpvSjQRyywETFklF1CfzZbYRF01zdnAtHhrL3z3o0UuL2PHEIrx3v
-         wC0fskRLKkK98Bf7TvDYAUHQP9xr9jCCe5VWy8W1WpFrt/VTLodpoS7sIpf+7uUj+biJ
-         mCqMHyuG0j+a6JXJOXoubwib7dsJ60YPstWjlidRm+VZr9d9CtBC/uyg8nTuucSON931
-         LhgQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU6Mb0g4hqu/y5n/GqRSheBcFpJMzXlz2W3qGY69/tzcsOEPf9UYX0FXf37nkqFzFCYbYjxHVKNwJUlWPBii10+YU4yUO4SRSta5iIE
-X-Gm-Message-State: AOJu0Yy5pUufAGTgZ00WC/hE41NApyAzzDEFtcgfM1tTErQ91dYK4+YP
-	0nn+h34IKwm64DVjFOFgFtnDybOD/rH4JcNf/yGA0ld12ACb8I0nyLmyRgf6oho=
-X-Google-Smtp-Source: AGHT+IGOBEiwkCooM4Sxrm8AQUC8qi0kWf3U4eptBtTlJ4YxKa+a3fBbBRdx4QqI2Cc2S6bVl3jE4g==
-X-Received: by 2002:a05:600c:358c:b0:412:b10d:27da with SMTP id p12-20020a05600c358c00b00412b10d27damr11333800wmq.1.1709733347321;
-        Wed, 06 Mar 2024 05:55:47 -0800 (PST)
-Received: from [192.168.0.102] ([176.61.106.68])
-        by smtp.gmail.com with ESMTPSA id da8-20020a056000196800b0033b87c2725csm17548409wrb.104.2024.03.06.05.55.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Mar 2024 05:55:47 -0800 (PST)
-Message-ID: <4817a5b0-5407-4437-b94a-fc8a1bfcd25d@linaro.org>
-Date: Wed, 6 Mar 2024 13:55:45 +0000
+	 In-Reply-To:Content-Type; b=TAgMNT3uf56XYymU4i/pUoCRqC6msvWb0mcT2zhq/o3NEwBYcKvnDBVyPZCd3mNcGkh5nH+OPu+F/8ILruFkOHOHebvqFEKxfgizWNJEAvll68hpg9eu3qTLnuCg6XvCu+lFgsHBwatUaw95AOp9W0Qa/j/iqrvzkvBjgWBrSXA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=Q9wVm5eL; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709733673;
+	bh=OL16fx6KjUVBqodWcez5kPju6qteSkdvY8c4p+ZXvLI=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=Q9wVm5eLpkVFAhVCMsjJ/hcOI1icOPvyOHKdr9rvAH0/Rrb6hMjHXePH37OnLUEHl
+	 Nu0mINsbRFk0gOe1fWLv4nBRKJIuXRMirkx9EwomEPFn5OGXYTBrHgyNXoElkd8EVt
+	 7BNRcXUNKRa4tjUhjCNrfDE+fp5jLKbiU+e3ZwxkRwCmRdUunG98rB2Lbep7D2MW6C
+	 XwDq/ILuj44uJTQuPKle3N1RGORioEzlmYkXZcd8snpXeiM7UflTk2negWjWViyO/Z
+	 i4kRhXezOUkaAPvnig3EQCe7eDAxgS4LgQdaoW9LgSjiqDwh9y6k+UHjpBqk46X1MA
+	 jqPWrGSQhkv5g==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 9B09037813B6;
+	Wed,  6 Mar 2024 14:01:12 +0000 (UTC)
+Message-ID: <66a2307a-1420-4cea-aab3-53ac81f8c246@collabora.com>
+Date: Wed, 6 Mar 2024 15:01:11 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,84 +56,80 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/5] clk: qcom: Add camera clock controller driver for
- SM8150
+Subject: Re: [PATCH v2] media: mediatek: vcodec: support 36 bits physical
+ address
 Content-Language: en-US
-To: "Satya Priya Kakitapalli (Temp)" <quic_skakitap@quicinc.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Abhishek Sahu <absahu@codeaurora.org>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: Stephen Boyd <sboyd@codeaurora.org>, linux-arm-msm@vger.kernel.org,
- linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, Ajit Pandey <quic_ajipan@quicinc.com>,
- Imran Shaik <quic_imrashai@quicinc.com>, Taniya Das <quic_tdas@quicinc.com>,
- Jagadeesh Kona <quic_jkona@quicinc.com>
-References: <20240229-camcc-support-sm8150-v1-0-8c28c6c87990@quicinc.com>
- <20240229-camcc-support-sm8150-v1-4-8c28c6c87990@quicinc.com>
- <18567989-fb60-49ae-92e6-94e1bc2fa1c7@linaro.org>
- <83fd1995-a06e-b76a-d91b-de1c1a6ab0ea@quicinc.com>
-From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <83fd1995-a06e-b76a-d91b-de1c1a6ab0ea@quicinc.com>
+To: Yunfei Dong <yunfei.dong@mediatek.com>,
+ =?UTF-8?Q?N=C3=ADcolas_F_=2E_R_=2E_A_=2E_Prado?= <nfraprado@collabora.com>,
+ Sebastian Fricke <sebastian.fricke@collabora.com>,
+ Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+ Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+ Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+ Nathan Hebert <nhebert@chromium.org>
+Cc: Hsin-Yi Wang <hsinyi@chromium.org>, Fritz Koenig <frkoenig@chromium.org>,
+ Daniel Vetter <daniel@ffwll.ch>, Steve Cho <stevecho@chromium.org>,
+ linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org,
+ Project_Global_Chrome_Upstream_Group@mediatek.com
+References: <20240306121902.25069-1-yunfei.dong@mediatek.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20240306121902.25069-1-yunfei.dong@mediatek.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 06/03/2024 08:30, Satya Priya Kakitapalli (Temp) wrote:
->>
->> Anyway I suspect the right thing to do is to define a 
->> titan_top_gdsc_clk with shared ops to "park" the GDSC clock to 19.2 
->> MHz instead of turning it off.
->>
->> You can get rid of the hard-coded always-on and indeed represent the 
->> clock in /sysfs - which is preferable IMO to just whacking registers 
->> to keep clocks always-on in probe anyway.
->>
->> Please try to define the titan_top_gdsc_clk as a shared_ops clock 
->> instead of hard coding to always on.
->>
+Il 06/03/24 13:19, Yunfei Dong ha scritto:
+> The physical address on the MT8188 platform is larger than 32 bits,
+> change the type from unsigned int to dma_addr_t to be able to access
+> the high bits of the address.
 > 
-> Defining the gdsc clk allows consumers to control it, we do not want 
-> this clock to be disabled/controlled from consumers. Hence it is better 
-> to not model this clock and just keep it always on from probe.
+> Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
 
-Not if you mark it critical
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
-static struct clk_branch cam_cc_gdsc_clk = {
-         .halt_reg = 0xc1e4,
-         .halt_check = BRANCH_HALT,
-         .clkr = {
-                 .enable_reg = 0xc1e4,
-                 .enable_mask = BIT(0),
-                 .hw.init = &(struct clk_init_data){
-                         .name = "cam_cc_gdsc_clk",
-                         .parent_hws = (const struct clk_hw*[]){
-                                 &cam_cc_xo_clk_src.clkr.hw
-                         },
-                         .num_parents = 1,
-                         .flags = CLK_IS_CRITICAL | CLK_SET_RATE_PARENT,
-                         .ops = &clk_branch2_ops,
-                 },
-         },
-};
+> ---
+> compare with v1:
+> - change address type from unsigned long to dma_addr_t
+> - change vp8 address type
+> ---
+>   .../media/platform/mediatek/vcodec/decoder/vdec/vdec_vp8_if.c | 2 +-
+>   .../mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.c        | 4 ++--
+>   2 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp8_if.c b/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp8_if.c
+> index 19407f9bc773..987b3d71b662 100644
+> --- a/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp8_if.c
+> +++ b/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp8_if.c
+> @@ -449,7 +449,7 @@ static int vdec_vp8_decode(void *h_vdec, struct mtk_vcodec_mem *bs,
+>   		       inst->frm_cnt, y_fb_dma, c_fb_dma, fb);
+>   
+>   	inst->cur_fb = fb;
+> -	dec->bs_dma = (unsigned long)bs->dma_addr;
+> +	dec->bs_dma = (uint64_t)bs->dma_addr;
+>   	dec->bs_sz = bs->size;
+>   	dec->cur_y_fb_dma = y_fb_dma;
+>   	dec->cur_c_fb_dma = c_fb_dma;
+> diff --git a/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.c b/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.c
+> index cf48d09b78d7..eea709d93820 100644
+> --- a/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.c
+> +++ b/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.c
+> @@ -1074,7 +1074,7 @@ static int vdec_vp9_slice_setup_tile_buffer(struct vdec_vp9_slice_instance *inst
+>   	unsigned int mi_row;
+>   	unsigned int mi_col;
+>   	unsigned int offset;
+> -	unsigned int pa;
+> +	dma_addr_t pa;
+>   	unsigned int size;
+>   	struct vdec_vp9_slice_tiles *tiles;
+>   	unsigned char *pos;
+> @@ -1109,7 +1109,7 @@ static int vdec_vp9_slice_setup_tile_buffer(struct vdec_vp9_slice_instance *inst
+>   	pos = va + offset;
+>   	end = va + bs->size;
+>   	/* truncated */
+> -	pa = (unsigned int)bs->dma_addr + offset;
+> +	pa = bs->dma_addr + offset;
+>   	tb = instance->tile.va;
+>   	for (i = 0; i < rows; i++) {
+>   		for (j = 0; j < cols; j++) {
 
-and then add this to your camss clocks
-
-<&clock_camcc CAM_CC_GDSC_CLK>;
-
-The practice we have of just whacking clocks always-on in the probe() of 
-the clock driver feels lazy to me, leaving the broken cleanups we have 
-aside.
-
-As a user of the system I'd rather see correct/complete data in 
-/sys/kernel/debug/clk/clk_summary
-
-Anyway I'm fine with setting the clock always on, I can always send out 
-a series to address this bug-bear myself.
-
-So yeah just fix the cleanup and then please feel free to add my
-
-Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 
