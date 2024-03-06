@@ -1,35 +1,35 @@
-Return-Path: <linux-kernel+bounces-93750-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93772-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 064B187341D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 11:26:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6821887345D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 11:35:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B19C1F21237
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:26:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B9731C21D0B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:35:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70D486088C;
-	Wed,  6 Mar 2024 10:25:14 +0000 (UTC)
-Received: from out187-15.us.a.mail.aliyun.com (out187-15.us.a.mail.aliyun.com [47.90.187.15])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D65E0605C1;
+	Wed,  6 Mar 2024 10:35:21 +0000 (UTC)
+Received: from out0-195.mail.aliyun.com (out0-195.mail.aliyun.com [140.205.0.195])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFC525F869
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 10:25:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=47.90.187.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AC66605B3
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 10:35:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.205.0.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709720714; cv=none; b=j418ZjkLNPhdiriHB8J/axbMx8bLUnKlc6n5UQ+THIcUTa2+mA6YSsna0qfMEQDpomE9GKIqJikVMnjeLodC3kUOgNHcnkJwDY3yuXaotxt6wKtpHtFmlDoqSrj97mQyfP453Mxl6lbczVtbeOe7AGkIV/K/DTPwnVy4ti+/77c=
+	t=1709721321; cv=none; b=AcVWhr9SfvXiygntFng8Xf3hwE4c97eFJZ3zG0dbyIpX8UnJ7vZ8j7wbJfuomjzgRrvgTsHpYpqioopLJ4xt4rcHjfCnCedNve+dEKjyXpUuB/vM1VCNab+u6LkG+DuGICM02gEmfFYL7aFyFwvG5ubQO9AAx7gNyauHOrpjbTI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709720714; c=relaxed/simple;
-	bh=aeIv3sGdCkzoeZ0Sga2roNKU5ZWZgPhlxgVKkJoerUE=;
+	s=arc-20240116; t=1709721321; c=relaxed/simple;
+	bh=/GC90DWrL7cXoxLWup0Y9mv2Ik+79aVESmMJJq8tlo0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=hkVu8AjF0MQo638UfpuO7p0Q8yJnymwshrCACzqnQBhRf62Af0mjE0HAms5n83LNVTkC2chWho83KqNxtBFjT0npNnYG3itutokk+rHxa5VxWu4WytPq7M45Q5nIGJlhn2QGJdATi9LNHbEDWhKOwgDn0KQClli3JMCjVE7TRNU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=antgroup.com; spf=pass smtp.mailfrom=antgroup.com; arc=none smtp.client-ip=47.90.187.15
+	 MIME-Version:Content-Type; b=Zhph66ub8BnU9vvMPrMoXZiuh/ann8Ou6vvVcLCNBOdSRVMPEdz/pWctury1MgVnJ98F066upVm0yVj0uQz3aYA+R+XSNVyKvxEv/aM9GCBFj3vvac1kb0Tc74ImqvRXE6ASvysDN+gawlEXTiXVqXg0/0g7r8LfZ2x2EC5iWFE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=antgroup.com; spf=pass smtp.mailfrom=antgroup.com; arc=none smtp.client-ip=140.205.0.195
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=antgroup.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=antgroup.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R321e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047193;MF=tiwei.btw@antgroup.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---.Wgbn-Jv_1709720383;
-Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.Wgbn-Jv_1709720383)
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047208;MF=tiwei.btw@antgroup.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---.Wgbn-Jx_1709720383;
+Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.Wgbn-Jx_1709720383)
           by smtp.aliyun-inc.com;
           Wed, 06 Mar 2024 18:19:43 +0800
 From: "Tiwei Bie" <tiwei.btw@antgroup.com>
@@ -41,9 +41,9 @@ Cc:  <jani.nikula@intel.com>,
    <linux-kernel@vger.kernel.org>,
    <intel-xe@lists.freedesktop.org>,
   "Tiwei Bie" <tiwei.btw@antgroup.com>
-Subject: [PATCH v3 6/9] um: Stop tracking host PID in cpu_tasks
-Date: Wed, 06 Mar 2024 18:19:22 +0800
-Message-Id: <20240306101925.1088870-7-tiwei.btw@antgroup.com>
+Subject: [PATCH v3 7/9] um: Move declarations to proper headers
+Date: Wed, 06 Mar 2024 18:19:23 +0800
+Message-Id: <20240306101925.1088870-8-tiwei.btw@antgroup.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240306101925.1088870-1-tiwei.btw@antgroup.com>
 References: <20240306101925.1088870-1-tiwei.btw@antgroup.com>
@@ -53,84 +53,168 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-The host PID tracked in 'cpu_tasks' is no longer used. Stopping
-tracking it will also save some cycles.
+This will address below -Wmissing-prototypes warnings:
+
+arch/um/kernel/initrd.c:18:12: warning: no previous prototype for ‘read_initrd’ [-Wmissing-prototypes]
+arch/um/kernel/um_arch.c:408:19: warning: no previous prototype for ‘read_initrd’ [-Wmissing-prototypes]
+arch/um/os-Linux/start_up.c:301:12: warning: no previous prototype for ‘parse_iomem’ [-Wmissing-prototypes]
+arch/x86/um/ptrace_32.c:15:6: warning: no previous prototype for ‘arch_switch_to’ [-Wmissing-prototypes]
+arch/x86/um/ptrace_32.c:101:5: warning: no previous prototype for ‘poke_user’ [-Wmissing-prototypes]
+arch/x86/um/ptrace_32.c:153:5: warning: no previous prototype for ‘peek_user’ [-Wmissing-prototypes]
+arch/x86/um/ptrace_64.c:111:5: warning: no previous prototype for ‘poke_user’ [-Wmissing-prototypes]
+arch/x86/um/ptrace_64.c:171:5: warning: no previous prototype for ‘peek_user’ [-Wmissing-prototypes]
+arch/x86/um/syscalls_64.c:48:6: warning: no previous prototype for ‘arch_switch_to’ [-Wmissing-prototypes]
+arch/x86/um/tls_32.c:184:5: warning: no previous prototype for ‘arch_switch_tls’ [-Wmissing-prototypes]
 
 Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
 ---
- arch/um/include/shared/as-layout.h |  1 -
- arch/um/kernel/process.c           | 12 ++----------
- arch/um/kernel/skas/process.c      |  4 ----
- 3 files changed, 2 insertions(+), 15 deletions(-)
+ arch/um/include/asm/ptrace-generic.h | 3 +++
+ arch/um/include/shared/kern_util.h   | 1 +
+ arch/um/kernel/physmem.c             | 3 +--
+ arch/um/kernel/process.c             | 2 --
+ arch/um/kernel/ptrace.c              | 3 ---
+ arch/um/kernel/um_arch.h             | 2 ++
+ arch/um/os-Linux/start_up.c          | 1 +
+ arch/x86/um/asm/ptrace.h             | 6 ++++++
+ arch/x86/um/ptrace_32.c              | 2 --
+ 9 files changed, 14 insertions(+), 9 deletions(-)
 
-diff --git a/arch/um/include/shared/as-layout.h b/arch/um/include/shared/as-layout.h
-index 9ec3015bc5e2..c22f46a757dc 100644
---- a/arch/um/include/shared/as-layout.h
-+++ b/arch/um/include/shared/as-layout.h
-@@ -31,7 +31,6 @@
- #include <sysdep/ptrace.h>
+diff --git a/arch/um/include/asm/ptrace-generic.h b/arch/um/include/asm/ptrace-generic.h
+index adf91ef553ae..4696f24d1492 100644
+--- a/arch/um/include/asm/ptrace-generic.h
++++ b/arch/um/include/asm/ptrace-generic.h
+@@ -36,6 +36,9 @@ extern long subarch_ptrace(struct task_struct *child, long request,
+ extern unsigned long getreg(struct task_struct *child, int regno);
+ extern int putreg(struct task_struct *child, int regno, unsigned long value);
  
- struct cpu_task {
--	int pid;
- 	void *task;
- };
++extern int poke_user(struct task_struct *child, long addr, long data);
++extern int peek_user(struct task_struct *child, long addr, long data);
++
+ extern int arch_set_tls(struct task_struct *new, unsigned long tls);
+ extern void clear_flushed_tls(struct task_struct *task);
+ extern int syscall_trace_enter(struct pt_regs *regs);
+diff --git a/arch/um/include/shared/kern_util.h b/arch/um/include/shared/kern_util.h
+index 789b83013f35..81bc38a2e3fc 100644
+--- a/arch/um/include/shared/kern_util.h
++++ b/arch/um/include/shared/kern_util.h
+@@ -41,6 +41,7 @@ extern void uml_pm_wake(void);
  
+ extern int start_uml(void);
+ extern void paging_init(void);
++extern int parse_iomem(char *str, int *add);
+ 
+ extern void uml_cleanup(void);
+ extern void do_uml_exitcalls(void);
+diff --git a/arch/um/kernel/physmem.c b/arch/um/kernel/physmem.c
+index 91485119ae67..fb2adfb49945 100644
+--- a/arch/um/kernel/physmem.c
++++ b/arch/um/kernel/physmem.c
+@@ -12,6 +12,7 @@
+ #include <as-layout.h>
+ #include <init.h>
+ #include <kern.h>
++#include <kern_util.h>
+ #include <mem_user.h>
+ #include <os.h>
+ 
+@@ -161,8 +162,6 @@ __uml_setup("mem=", uml_mem_setup,
+ "	Example: mem=64M\n\n"
+ );
+ 
+-extern int __init parse_iomem(char *str, int *add);
+-
+ __uml_setup("iomem=", parse_iomem,
+ "iomem=<name>,<file>\n"
+ "    Configure <file> as an IO memory region named <name>.\n\n"
 diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
-index 4235e2ca2664..1201c1a79b23 100644
+index 1201c1a79b23..30bf7739ed0f 100644
 --- a/arch/um/kernel/process.c
 +++ b/arch/um/kernel/process.c
-@@ -43,13 +43,7 @@
-  * cares about its entry, so it's OK if another processor is modifying its
-  * entry.
-  */
--struct cpu_task cpu_tasks[NR_CPUS] = { [0 ... NR_CPUS - 1] = { -1, NULL } };
--
--static inline int external_pid(void)
--{
--	/* FIXME: Need to look up userspace_pid by cpu */
--	return userspace_pid[0];
--}
-+struct cpu_task cpu_tasks[NR_CPUS] = { [0 ... NR_CPUS - 1] = { NULL } };
- 
- void free_stack(unsigned long stack, int order)
- {
-@@ -70,8 +64,7 @@ unsigned long alloc_stack(int order, int atomic)
- 
- static inline void set_current(struct task_struct *task)
- {
--	cpu_tasks[task_thread_info(task)->cpu] = ((struct cpu_task)
--		{ external_pid(), task });
-+	cpu_tasks[task_thread_info(task)->cpu] = ((struct cpu_task) { task });
+@@ -67,8 +67,6 @@ static inline void set_current(struct task_struct *task)
+ 	cpu_tasks[task_thread_info(task)->cpu] = ((struct cpu_task) { task });
  }
  
- extern void arch_switch_to(struct task_struct *to);
-@@ -208,7 +201,6 @@ void um_idle_sleep(void)
- 
- void arch_cpu_idle(void)
+-extern void arch_switch_to(struct task_struct *to);
+-
+ struct task_struct *__switch_to(struct task_struct *from, struct task_struct *to)
  {
--	cpu_tasks[current_thread_info()->cpu].pid = os_getpid();
- 	um_idle_sleep();
+ 	to->thread.prev_sched = from;
+diff --git a/arch/um/kernel/ptrace.c b/arch/um/kernel/ptrace.c
+index 6600a2782796..2124624b7817 100644
+--- a/arch/um/kernel/ptrace.c
++++ b/arch/um/kernel/ptrace.c
+@@ -35,9 +35,6 @@ void ptrace_disable(struct task_struct *child)
+ 	user_disable_single_step(child);
  }
  
-diff --git a/arch/um/kernel/skas/process.c b/arch/um/kernel/skas/process.c
-index fdd5922f9222..99a5cbb36083 100644
---- a/arch/um/kernel/skas/process.c
-+++ b/arch/um/kernel/skas/process.c
-@@ -18,12 +18,8 @@ extern void start_kernel(void);
- 
- static int __init start_kernel_proc(void *unused)
- {
--	int pid;
+-extern int peek_user(struct task_struct * child, long addr, long data);
+-extern int poke_user(struct task_struct * child, long addr, long data);
 -
- 	block_signals_trace();
--	pid = os_getpid();
+ long arch_ptrace(struct task_struct *child, long request,
+ 		 unsigned long addr, unsigned long data)
+ {
+diff --git a/arch/um/kernel/um_arch.h b/arch/um/kernel/um_arch.h
+index 1e07fb7ee35e..46e731ab9dfc 100644
+--- a/arch/um/kernel/um_arch.h
++++ b/arch/um/kernel/um_arch.h
+@@ -11,4 +11,6 @@ extern void __init uml_dtb_init(void);
+ static inline void uml_dtb_init(void) { }
+ #endif
  
--	cpu_tasks[0].pid = pid;
- 	cpu_tasks[0].task = current;
++extern int __init read_initrd(void);
++
+ #endif
+diff --git a/arch/um/os-Linux/start_up.c b/arch/um/os-Linux/start_up.c
+index 8b0e98ab842c..6b21061c431c 100644
+--- a/arch/um/os-Linux/start_up.c
++++ b/arch/um/os-Linux/start_up.c
+@@ -20,6 +20,7 @@
+ #include <asm/unistd.h>
+ #include <init.h>
+ #include <os.h>
++#include <kern_util.h>
+ #include <mem_user.h>
+ #include <ptrace_user.h>
+ #include <registers.h>
+diff --git a/arch/x86/um/asm/ptrace.h b/arch/x86/um/asm/ptrace.h
+index 83822fd42204..2fef3da55533 100644
+--- a/arch/x86/um/asm/ptrace.h
++++ b/arch/x86/um/asm/ptrace.h
+@@ -54,6 +54,8 @@ extern int ptrace_get_thread_area(struct task_struct *child, int idx,
+ extern int ptrace_set_thread_area(struct task_struct *child, int idx,
+                                   struct user_desc __user *user_desc);
  
- 	start_kernel();
++extern int arch_switch_tls(struct task_struct *to);
++
+ #else
+ 
+ #define PT_REGS_R8(r) UPT_R8(&(r)->regs)
+@@ -83,5 +85,9 @@ extern long arch_prctl(struct task_struct *task, int option,
+ 		       unsigned long __user *addr);
+ 
+ #endif
++
+ #define user_stack_pointer(regs) PT_REGS_SP(regs)
++
++extern void arch_switch_to(struct task_struct *to);
++
+ #endif /* __UM_X86_PTRACE_H */
+diff --git a/arch/x86/um/ptrace_32.c b/arch/x86/um/ptrace_32.c
+index 7f1abde2c84b..b0a71c6cdc6e 100644
+--- a/arch/x86/um/ptrace_32.c
++++ b/arch/x86/um/ptrace_32.c
+@@ -10,8 +10,6 @@
+ #include <registers.h>
+ #include <skas.h>
+ 
+-extern int arch_switch_tls(struct task_struct *to);
+-
+ void arch_switch_to(struct task_struct *to)
+ {
+ 	int err = arch_switch_tls(to);
 -- 
 2.34.1
 
