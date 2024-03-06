@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-93378-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93379-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA0B0872EC3
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 07:21:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19A90872ECA
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 07:24:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5CF69289E68
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 06:21:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B31C289F53
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 06:24:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF04F1BDE2;
-	Wed,  6 Mar 2024 06:21:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07FF21BF50;
+	Wed,  6 Mar 2024 06:24:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AATwXqWj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pRd4hIXl"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0341A33CA
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 06:21:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEB091BF33
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 06:24:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709706066; cv=none; b=O2t3Lfb4PjxPtbW2512WXaxarfILgIsB0If2C/6D/2P2ZJb2AO2oCFk3eHRp69u+jhdEgBC6tSwGkijFR05x+9RwW6s/Fw1mznwxGv8c0yDVohYGM03gLhxUOUIFo2Ih2mGVryEx8Xl6CKwHDCUvwtBhzocfn4xOvqTfTdev1PQ=
+	t=1709706242; cv=none; b=D86olHVh009/VgKX0drmIVHdnvdClA9qZP4ohNiBqmCMEflbugUnFVkbL1Y5E+qSq/xQA4Dj9TtVC06Efkb3BRG3BEb2IDoU5+bd/AI1FV3QA+Yn0Bx6W6eYW64BL2U+w+OC9QPRUGK+R2tnw/V86Iglv67fp13+fqBi+478JfY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709706066; c=relaxed/simple;
-	bh=JwLG1O9cTgT6rkMYgbnDYqcO11kWTExWKYTlhvhWHJg=;
+	s=arc-20240116; t=1709706242; c=relaxed/simple;
+	bh=RjcUrgFFbqLCRk4mp6+71yebhvFupXWUxXPN5bFeYEc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nM7LlXeuN4+ROkby3+cH4IGYnWRzjiUxDaKfaTvY/Vge02yrhnMA/rzxmJuhjG6d453TDbwhqVIPzl0rMI7Ofr8amCCjaFdtHr5mNpPif8FM7nhfv6D0XoYyfo8PGaHlUdCCnQpKGocIKoPhUf04gqw9TUj/wxyKYbiFZ+/OOrI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AATwXqWj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD50DC433C7;
-	Wed,  6 Mar 2024 06:21:00 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=QO3MkG/aYWb/wdVGXr9MxMTRzkTETriY9u8IawwdxLHkNE+qt19GGOuYgUTlDpIHrahOyr2QAZG4XdQEf633ChA3NlggOJJPS6qcijSMWE0nqT2mZFxOIOro6w8gOza6mxQFU2qp1u+vF624AlhTkKtOw+mFcU0btH2qV8pYg3M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pRd4hIXl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBDBFC433F1;
+	Wed,  6 Mar 2024 06:23:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709706065;
-	bh=JwLG1O9cTgT6rkMYgbnDYqcO11kWTExWKYTlhvhWHJg=;
+	s=k20201202; t=1709706241;
+	bh=RjcUrgFFbqLCRk4mp6+71yebhvFupXWUxXPN5bFeYEc=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=AATwXqWjQfueEDfBMEZ5dhrm03fz5RHLyzkdJGraEOK7KDttG/SS43Bid5GYATyIF
-	 DFMzYHL4cyn4geHVTtCg0pA+p/+0OrWjPJTcmwQNqP2wWzcPSZNU5DWQHAL1U/t4La
-	 TvGEgiZDmaHCrZZDADKhIgusABdfrqms3jNXJrtIwFrkPWv5k0GoGkwnhVn7t8augu
-	 +d0WdJBf+Fd+9L0kTfkzD+2yi1heH2pGlnsBk/vlQyRb3Obq5ckrKv9yMGjlxlIqIr
-	 WYaQXfuCtkenVS7ve+wf0kfgpkjt95MmhLYUhBpokX9Pc3pJAytnyPfbRdrHTY7x+7
-	 aK0aeUuEn0z4Q==
-Date: Wed, 6 Mar 2024 08:20:11 +0200
+	b=pRd4hIXllVAPYIPtLMMzSPf8ff00qQuCW3SfaXOqUD0RmE00JMLNSCefhf3qCvS9v
+	 iXMTwezrqdF2Tw+jmSQKGpvH1i9g7BiXu4hyp4wP3wQw6YXLVNaLlJFM+uDQrLxfyy
+	 T1N4heGZOJDB27E6vlPsuikUAkdiVw9moQBOtLTrMdFi81r0nhUnKBTY8qG7s7wliY
+	 LNkxN5O7d3nRQmYKmioxKmovfm6U0oHWVkiC7hmL932YDpmqBag/ql4uC2HZMGO41l
+	 mmdIfdeSfKu1GzqJ3iHFseO7h9d3L5EOC9eRpw9xyGk0RkcXaJW1hfE5iGA+BtdoXg
+	 i4VKBk+Je/NYw==
+Date: Wed, 6 Mar 2024 08:23:07 +0200
 From: Mike Rapoport <rppt@kernel.org>
 To: peterx@redhat.com
 Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
@@ -49,14 +49,13 @@ Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
 	Jason Gunthorpe <jgg@nvidia.com>, Yang Shi <shy828301@gmail.com>,
 	Andrew Morton <akpm@linux-foundation.org>,
 	linuxppc-dev@lists.ozlabs.org, Muchun Song <muchun.song@linux.dev>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
-Subject: Re: [PATCH v3 02/10] mm/ppc: Replace pXd_is_leaf() with pXd_leaf()
-Message-ID: <ZegLG2-0iTl5zp3c@kernel.org>
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>
+Subject: Re: [PATCH v3 03/10] mm/x86: Replace p4d_large() with p4d_leaf()
+Message-ID: <ZegLy9z7cdROGL3D@kernel.org>
 References: <20240305043750.93762-1-peterx@redhat.com>
- <20240305043750.93762-3-peterx@redhat.com>
+ <20240305043750.93762-4-peterx@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,316 +64,132 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240305043750.93762-3-peterx@redhat.com>
+In-Reply-To: <20240305043750.93762-4-peterx@redhat.com>
 
-On Tue, Mar 05, 2024 at 12:37:42PM +0800, peterx@redhat.com wrote:
+On Tue, Mar 05, 2024 at 12:37:43PM +0800, peterx@redhat.com wrote:
 > From: Peter Xu <peterx@redhat.com>
 > 
-> They're the same macros underneath.  Drop pXd_is_leaf(), instead always use
-> pXd_leaf().
+> p4d_large() is always defined as p4d_leaf().  Merge their usages.  Chose
+> p4d_leaf() because p4d_leaf() is a global API, while p4d_large() is not.
 > 
-> At the meantime, instead of renames, drop the pXd_is_leaf() fallback
-> definitions directly in arch/powerpc/include/asm/pgtable.h. because similar
-> fallback macros for pXd_leaf() are already defined in
-> include/linux/pgtable.h.
+> Only x86 has p4d_leaf() defined as of now.  So it also means after this
+> patch we removed all p4d_large() usages.
 > 
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Nicholas Piggin <npiggin@gmail.com>
-> Cc: "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>
-> Cc: "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Suggested-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: x86@kernel.org
 > Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 > Signed-off-by: Peter Xu <peterx@redhat.com>
 
 Reviewed-by: Mike Rapoport (IBM) <rppt@kernel.org>
 
 > ---
->  arch/powerpc/include/asm/book3s/64/pgtable.h | 10 ++++----
->  arch/powerpc/include/asm/pgtable.h           | 24 --------------------
->  arch/powerpc/kvm/book3s_64_mmu_radix.c       | 12 +++++-----
->  arch/powerpc/mm/book3s64/radix_pgtable.c     | 14 ++++++------
->  arch/powerpc/mm/pgtable.c                    |  6 ++---
->  arch/powerpc/mm/pgtable_64.c                 |  6 ++---
->  arch/powerpc/xmon/xmon.c                     |  6 ++---
->  7 files changed, 26 insertions(+), 52 deletions(-)
+>  arch/x86/mm/fault.c          | 4 ++--
+>  arch/x86/mm/init_64.c        | 2 +-
+>  arch/x86/mm/pat/set_memory.c | 4 ++--
+>  arch/x86/mm/pti.c            | 2 +-
+>  arch/x86/power/hibernate.c   | 2 +-
+>  arch/x86/xen/mmu_pv.c        | 2 +-
+>  6 files changed, 8 insertions(+), 8 deletions(-)
 > 
-> diff --git a/arch/powerpc/include/asm/book3s/64/pgtable.h b/arch/powerpc/include/asm/book3s/64/pgtable.h
-> index d1318e8582ac..3e99e409774a 100644
-> --- a/arch/powerpc/include/asm/book3s/64/pgtable.h
-> +++ b/arch/powerpc/include/asm/book3s/64/pgtable.h
-> @@ -1439,18 +1439,16 @@ static inline bool is_pte_rw_upgrade(unsigned long old_val, unsigned long new_va
->  /*
->   * Like pmd_huge() and pmd_large(), but works regardless of config options
->   */
-> -#define pmd_is_leaf pmd_is_leaf
-> -#define pmd_leaf pmd_is_leaf
-> +#define pmd_leaf pmd_leaf
->  #define pmd_large pmd_leaf
-> -static inline bool pmd_is_leaf(pmd_t pmd)
-> +static inline bool pmd_leaf(pmd_t pmd)
->  {
->  	return !!(pmd_raw(pmd) & cpu_to_be64(_PAGE_PTE));
->  }
+> diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+> index 679b09cfe241..8b69ce3f4115 100644
+> --- a/arch/x86/mm/fault.c
+> +++ b/arch/x86/mm/fault.c
+> @@ -368,7 +368,7 @@ static void dump_pagetable(unsigned long address)
+>  		goto bad;
 >  
-> -#define pud_is_leaf pud_is_leaf
-> -#define pud_leaf pud_is_leaf
-> +#define pud_leaf pud_leaf
->  #define pud_large pud_leaf
-> -static inline bool pud_is_leaf(pud_t pud)
-> +static inline bool pud_leaf(pud_t pud)
->  {
->  	return !!(pud_raw(pud) & cpu_to_be64(_PAGE_PTE));
->  }
-> diff --git a/arch/powerpc/include/asm/pgtable.h b/arch/powerpc/include/asm/pgtable.h
-> index 5928b3c1458d..e6edf1cdbc5b 100644
-> --- a/arch/powerpc/include/asm/pgtable.h
-> +++ b/arch/powerpc/include/asm/pgtable.h
-> @@ -182,30 +182,6 @@ static inline void pte_frag_set(mm_context_t *ctx, void *p)
->  }
->  #endif
+>  	pr_cont("P4D %lx ", p4d_val(*p4d));
+> -	if (!p4d_present(*p4d) || p4d_large(*p4d))
+> +	if (!p4d_present(*p4d) || p4d_leaf(*p4d))
+>  		goto out;
 >  
-> -#ifndef pmd_is_leaf
-> -#define pmd_is_leaf pmd_is_leaf
-> -static inline bool pmd_is_leaf(pmd_t pmd)
-> -{
-> -	return false;
-> -}
-> -#endif
-> -
-> -#ifndef pud_is_leaf
-> -#define pud_is_leaf pud_is_leaf
-> -static inline bool pud_is_leaf(pud_t pud)
-> -{
-> -	return false;
-> -}
-> -#endif
-> -
-> -#ifndef p4d_is_leaf
-> -#define p4d_is_leaf p4d_is_leaf
-> -static inline bool p4d_is_leaf(p4d_t p4d)
-> -{
-> -	return false;
-> -}
-> -#endif
-> -
->  #define pmd_pgtable pmd_pgtable
->  static inline pgtable_t pmd_pgtable(pmd_t pmd)
->  {
-> diff --git a/arch/powerpc/kvm/book3s_64_mmu_radix.c b/arch/powerpc/kvm/book3s_64_mmu_radix.c
-> index 4a1abb9f7c05..408d98f8a514 100644
-> --- a/arch/powerpc/kvm/book3s_64_mmu_radix.c
-> +++ b/arch/powerpc/kvm/book3s_64_mmu_radix.c
-> @@ -503,7 +503,7 @@ static void kvmppc_unmap_free_pmd(struct kvm *kvm, pmd_t *pmd, bool full,
->  	for (im = 0; im < PTRS_PER_PMD; ++im, ++p) {
->  		if (!pmd_present(*p))
->  			continue;
-> -		if (pmd_is_leaf(*p)) {
-> +		if (pmd_leaf(*p)) {
->  			if (full) {
->  				pmd_clear(p);
->  			} else {
-> @@ -532,7 +532,7 @@ static void kvmppc_unmap_free_pud(struct kvm *kvm, pud_t *pud,
->  	for (iu = 0; iu < PTRS_PER_PUD; ++iu, ++p) {
->  		if (!pud_present(*p))
->  			continue;
-> -		if (pud_is_leaf(*p)) {
-> +		if (pud_leaf(*p)) {
->  			pud_clear(p);
->  		} else {
->  			pmd_t *pmd;
-> @@ -635,12 +635,12 @@ int kvmppc_create_pte(struct kvm *kvm, pgd_t *pgtable, pte_t pte,
->  		new_pud = pud_alloc_one(kvm->mm, gpa);
+>  	pud = pud_offset(p4d, address);
+> @@ -1039,7 +1039,7 @@ spurious_kernel_fault(unsigned long error_code, unsigned long address)
+>  	if (!p4d_present(*p4d))
+>  		return 0;
 >  
->  	pmd = NULL;
-> -	if (pud && pud_present(*pud) && !pud_is_leaf(*pud))
-> +	if (pud && pud_present(*pud) && !pud_leaf(*pud))
->  		pmd = pmd_offset(pud, gpa);
->  	else if (level <= 1)
->  		new_pmd = kvmppc_pmd_alloc();
+> -	if (p4d_large(*p4d))
+> +	if (p4d_leaf(*p4d))
+>  		return spurious_kernel_fault_check(error_code, (pte_t *) p4d);
 >  
-> -	if (level == 0 && !(pmd && pmd_present(*pmd) && !pmd_is_leaf(*pmd)))
-> +	if (level == 0 && !(pmd && pmd_present(*pmd) && !pmd_leaf(*pmd)))
->  		new_ptep = kvmppc_pte_alloc();
->  
->  	/* Check if we might have been invalidated; let the guest retry if so */
-> @@ -658,7 +658,7 @@ int kvmppc_create_pte(struct kvm *kvm, pgd_t *pgtable, pte_t pte,
->  		new_pud = NULL;
->  	}
->  	pud = pud_offset(p4d, gpa);
-> -	if (pud_is_leaf(*pud)) {
-> +	if (pud_leaf(*pud)) {
->  		unsigned long hgpa = gpa & PUD_MASK;
->  
->  		/* Check if we raced and someone else has set the same thing */
-> @@ -709,7 +709,7 @@ int kvmppc_create_pte(struct kvm *kvm, pgd_t *pgtable, pte_t pte,
->  		new_pmd = NULL;
->  	}
->  	pmd = pmd_offset(pud, gpa);
-> -	if (pmd_is_leaf(*pmd)) {
-> +	if (pmd_leaf(*pmd)) {
->  		unsigned long lgpa = gpa & PMD_MASK;
->  
->  		/* Check if we raced and someone else has set the same thing */
-> diff --git a/arch/powerpc/mm/book3s64/radix_pgtable.c b/arch/powerpc/mm/book3s64/radix_pgtable.c
-> index c6a4ac766b2b..1f8db10693e3 100644
-> --- a/arch/powerpc/mm/book3s64/radix_pgtable.c
-> +++ b/arch/powerpc/mm/book3s64/radix_pgtable.c
-> @@ -204,14 +204,14 @@ static void radix__change_memory_range(unsigned long start, unsigned long end,
->  		pudp = pud_alloc(&init_mm, p4dp, idx);
->  		if (!pudp)
->  			continue;
-> -		if (pud_is_leaf(*pudp)) {
-> +		if (pud_leaf(*pudp)) {
->  			ptep = (pte_t *)pudp;
->  			goto update_the_pte;
->  		}
->  		pmdp = pmd_alloc(&init_mm, pudp, idx);
->  		if (!pmdp)
->  			continue;
-> -		if (pmd_is_leaf(*pmdp)) {
-> +		if (pmd_leaf(*pmdp)) {
->  			ptep = pmdp_ptep(pmdp);
->  			goto update_the_pte;
->  		}
-> @@ -767,7 +767,7 @@ static void __meminit remove_pmd_table(pmd_t *pmd_start, unsigned long addr,
->  		if (!pmd_present(*pmd))
->  			continue;
->  
-> -		if (pmd_is_leaf(*pmd)) {
-> +		if (pmd_leaf(*pmd)) {
->  			if (IS_ALIGNED(addr, PMD_SIZE) &&
->  			    IS_ALIGNED(next, PMD_SIZE)) {
->  				if (!direct)
-> @@ -807,7 +807,7 @@ static void __meminit remove_pud_table(pud_t *pud_start, unsigned long addr,
->  		if (!pud_present(*pud))
->  			continue;
->  
-> -		if (pud_is_leaf(*pud)) {
-> +		if (pud_leaf(*pud)) {
->  			if (!IS_ALIGNED(addr, PUD_SIZE) ||
->  			    !IS_ALIGNED(next, PUD_SIZE)) {
->  				WARN_ONCE(1, "%s: unaligned range\n", __func__);
-> @@ -845,7 +845,7 @@ remove_pagetable(unsigned long start, unsigned long end, bool direct,
+>  	pud = pud_offset(p4d, address);
+> diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
+> index ebdbcae48011..d691e7992a9a 100644
+> --- a/arch/x86/mm/init_64.c
+> +++ b/arch/x86/mm/init_64.c
+> @@ -1197,7 +1197,7 @@ remove_p4d_table(p4d_t *p4d_start, unsigned long addr, unsigned long end,
 >  		if (!p4d_present(*p4d))
 >  			continue;
 >  
-> -		if (p4d_is_leaf(*p4d)) {
-> +		if (p4d_leaf(*p4d)) {
->  			if (!IS_ALIGNED(addr, P4D_SIZE) ||
->  			    !IS_ALIGNED(next, P4D_SIZE)) {
->  				WARN_ONCE(1, "%s: unaligned range\n", __func__);
-> @@ -1554,7 +1554,7 @@ int pud_set_huge(pud_t *pud, phys_addr_t addr, pgprot_t prot)
+> -		BUILD_BUG_ON(p4d_large(*p4d));
+> +		BUILD_BUG_ON(p4d_leaf(*p4d));
 >  
->  int pud_clear_huge(pud_t *pud)
->  {
-> -	if (pud_is_leaf(*pud)) {
-> +	if (pud_leaf(*pud)) {
->  		pud_clear(pud);
->  		return 1;
->  	}
-> @@ -1601,7 +1601,7 @@ int pmd_set_huge(pmd_t *pmd, phys_addr_t addr, pgprot_t prot)
->  
->  int pmd_clear_huge(pmd_t *pmd)
->  {
-> -	if (pmd_is_leaf(*pmd)) {
-> +	if (pmd_leaf(*pmd)) {
->  		pmd_clear(pmd);
->  		return 1;
->  	}
-> diff --git a/arch/powerpc/mm/pgtable.c b/arch/powerpc/mm/pgtable.c
-> index 549a440ed7f6..9e7ba9c3851f 100644
-> --- a/arch/powerpc/mm/pgtable.c
-> +++ b/arch/powerpc/mm/pgtable.c
-> @@ -410,7 +410,7 @@ pte_t *__find_linux_pte(pgd_t *pgdir, unsigned long ea,
->  	if (p4d_none(p4d))
+>  		pud_base = pud_offset(p4d, 0);
+>  		remove_pud_table(pud_base, addr, next, altmap, direct);
+> diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
+> index e9b448d1b1b7..5359a9c88099 100644
+> --- a/arch/x86/mm/pat/set_memory.c
+> +++ b/arch/x86/mm/pat/set_memory.c
+> @@ -676,7 +676,7 @@ pte_t *lookup_address_in_pgd(pgd_t *pgd, unsigned long address,
 >  		return NULL;
 >  
-> -	if (p4d_is_leaf(p4d)) {
-> +	if (p4d_leaf(p4d)) {
->  		ret_pte = (pte_t *)p4dp;
->  		goto out;
->  	}
-> @@ -432,7 +432,7 @@ pte_t *__find_linux_pte(pgd_t *pgdir, unsigned long ea,
->  	if (pud_none(pud))
+>  	*level = PG_LEVEL_512G;
+> -	if (p4d_large(*p4d) || !p4d_present(*p4d))
+> +	if (p4d_leaf(*p4d) || !p4d_present(*p4d))
+>  		return (pte_t *)p4d;
+>  
+>  	pud = pud_offset(p4d, address);
+> @@ -739,7 +739,7 @@ pmd_t *lookup_pmd_address(unsigned long address)
 >  		return NULL;
 >  
-> -	if (pud_is_leaf(pud)) {
-> +	if (pud_leaf(pud)) {
->  		ret_pte = (pte_t *)pudp;
+>  	p4d = p4d_offset(pgd, address);
+> -	if (p4d_none(*p4d) || p4d_large(*p4d) || !p4d_present(*p4d))
+> +	if (p4d_none(*p4d) || p4d_leaf(*p4d) || !p4d_present(*p4d))
+>  		return NULL;
+>  
+>  	pud = pud_offset(p4d, address);
+> diff --git a/arch/x86/mm/pti.c b/arch/x86/mm/pti.c
+> index 669ba1c345b3..dc0a81f5f60e 100644
+> --- a/arch/x86/mm/pti.c
+> +++ b/arch/x86/mm/pti.c
+> @@ -206,7 +206,7 @@ static pmd_t *pti_user_pagetable_walk_pmd(unsigned long address)
+>  	if (!p4d)
+>  		return NULL;
+>  
+> -	BUILD_BUG_ON(p4d_large(*p4d) != 0);
+> +	BUILD_BUG_ON(p4d_leaf(*p4d) != 0);
+>  	if (p4d_none(*p4d)) {
+>  		unsigned long new_pud_page = __get_free_page(gfp);
+>  		if (WARN_ON_ONCE(!new_pud_page))
+> diff --git a/arch/x86/power/hibernate.c b/arch/x86/power/hibernate.c
+> index 6f955eb1e163..28153789f873 100644
+> --- a/arch/x86/power/hibernate.c
+> +++ b/arch/x86/power/hibernate.c
+> @@ -165,7 +165,7 @@ int relocate_restore_code(void)
+>  	pgd = (pgd_t *)__va(read_cr3_pa()) +
+>  		pgd_index(relocated_restore_code);
+>  	p4d = p4d_offset(pgd, relocated_restore_code);
+> -	if (p4d_large(*p4d)) {
+> +	if (p4d_leaf(*p4d)) {
+>  		set_p4d(p4d, __p4d(p4d_val(*p4d) & ~_PAGE_NX));
 >  		goto out;
 >  	}
-> @@ -471,7 +471,7 @@ pte_t *__find_linux_pte(pgd_t *pgdir, unsigned long ea,
->  		goto out;
->  	}
+> diff --git a/arch/x86/xen/mmu_pv.c b/arch/x86/xen/mmu_pv.c
+> index e21974f2cf2d..12a43a4abebf 100644
+> --- a/arch/x86/xen/mmu_pv.c
+> +++ b/arch/x86/xen/mmu_pv.c
+> @@ -1104,7 +1104,7 @@ static void __init xen_cleanmfnmap_p4d(p4d_t *p4d, bool unpin)
+>  	pud_t *pud_tbl;
+>  	int i;
 >  
-> -	if (pmd_is_leaf(pmd)) {
-> +	if (pmd_leaf(pmd)) {
->  		ret_pte = (pte_t *)pmdp;
->  		goto out;
->  	}
-> diff --git a/arch/powerpc/mm/pgtable_64.c b/arch/powerpc/mm/pgtable_64.c
-> index 1b366526f4f2..386c6b06eab7 100644
-> --- a/arch/powerpc/mm/pgtable_64.c
-> +++ b/arch/powerpc/mm/pgtable_64.c
-> @@ -100,7 +100,7 @@ EXPORT_SYMBOL(__pte_frag_size_shift);
->  /* 4 level page table */
->  struct page *p4d_page(p4d_t p4d)
->  {
-> -	if (p4d_is_leaf(p4d)) {
-> +	if (p4d_leaf(p4d)) {
->  		if (!IS_ENABLED(CONFIG_HAVE_ARCH_HUGE_VMAP))
->  			VM_WARN_ON(!p4d_huge(p4d));
->  		return pte_page(p4d_pte(p4d));
-> @@ -111,7 +111,7 @@ struct page *p4d_page(p4d_t p4d)
->  
->  struct page *pud_page(pud_t pud)
->  {
-> -	if (pud_is_leaf(pud)) {
-> +	if (pud_leaf(pud)) {
->  		if (!IS_ENABLED(CONFIG_HAVE_ARCH_HUGE_VMAP))
->  			VM_WARN_ON(!pud_huge(pud));
->  		return pte_page(pud_pte(pud));
-> @@ -125,7 +125,7 @@ struct page *pud_page(pud_t pud)
->   */
->  struct page *pmd_page(pmd_t pmd)
->  {
-> -	if (pmd_is_leaf(pmd)) {
-> +	if (pmd_leaf(pmd)) {
->  		/*
->  		 * vmalloc_to_page may be called on any vmap address (not only
->  		 * vmalloc), and it uses pmd_page() etc., when huge vmap is
-> diff --git a/arch/powerpc/xmon/xmon.c b/arch/powerpc/xmon/xmon.c
-> index b3b94cd37713..9669c9925225 100644
-> --- a/arch/powerpc/xmon/xmon.c
-> +++ b/arch/powerpc/xmon/xmon.c
-> @@ -3342,7 +3342,7 @@ static void show_pte(unsigned long addr)
+> -	if (p4d_large(*p4d)) {
+> +	if (p4d_leaf(*p4d)) {
+>  		pa = p4d_val(*p4d) & PHYSICAL_PAGE_MASK;
+>  		xen_free_ro_pages(pa, P4D_SIZE);
 >  		return;
->  	}
->  
-> -	if (p4d_is_leaf(*p4dp)) {
-> +	if (p4d_leaf(*p4dp)) {
->  		format_pte(p4dp, p4d_val(*p4dp));
->  		return;
->  	}
-> @@ -3356,7 +3356,7 @@ static void show_pte(unsigned long addr)
->  		return;
->  	}
->  
-> -	if (pud_is_leaf(*pudp)) {
-> +	if (pud_leaf(*pudp)) {
->  		format_pte(pudp, pud_val(*pudp));
->  		return;
->  	}
-> @@ -3370,7 +3370,7 @@ static void show_pte(unsigned long addr)
->  		return;
->  	}
->  
-> -	if (pmd_is_leaf(*pmdp)) {
-> +	if (pmd_leaf(*pmdp)) {
->  		format_pte(pmdp, pmd_val(*pmdp));
->  		return;
->  	}
 > -- 
 > 2.44.0
 > 
