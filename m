@@ -1,124 +1,153 @@
-Return-Path: <linux-kernel+bounces-94585-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94579-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69E768741C4
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 22:17:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E68578741B5
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 22:15:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CA3CBB22CC0
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 21:17:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A188A283EB4
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 21:15:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24C551CAAD;
-	Wed,  6 Mar 2024 21:15:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B6361AAD7;
+	Wed,  6 Mar 2024 21:14:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TSAwVOCL"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="a5QMrMSk"
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1ECA1C6B8
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 21:15:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2292C19BA2
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 21:14:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709759710; cv=none; b=JYO/a7qB5H4wrc3V8WbWDt507rP9qW77aHHqMt2qAeZbesSLTWPbi50nRKMrIZSore5VP76cwIZmtXXgkCn04jATdjk0tuPUoG2bHqkQXwm1yL4mX20/HI2Ywajgghot+Y06f/zqPNh//lVxU2j/t3COTKKy8/SAM+aGtb+tstU=
+	t=1709759693; cv=none; b=uYYA0NcLamFM9AabvOTxyziLKOfeZzPmQ4tRPq36+BV3oAZuJQzCkJ4yxkl5pgry/H0X7ameXsGgopiLO/QyDDjmBefZJvTCuyTI7PWWO/O0+2VYkWWIvvGFUa5kmXA5EYvdYAoSHAfPGf/+0yvqvIi8WB35Y00lD0mxWupyjNY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709759710; c=relaxed/simple;
-	bh=DcVKXTML5ywo+4G+K2NpqKcgjW37poRbZY0R6kODpyA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sgJoKCOIwKa/PmAabCZOCXxbkc79JUm8FP+Or9d6MwrQvmM4R4Hzq/ue4nZrGhxk9YpKCkm/N0LJk9+OgmC03OWN+1kVCC/dQvctzF5z6poUkBFN0YNrpI+E2D8wQezyysBULObhM9gno06ft5K3ZnIKowHkEAOmDmQgXZ58gJY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TSAwVOCL; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709759707;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uvV/nDuM+sweXjvIC5LuTFavoYDPU4njYTvMMtNtIIo=;
-	b=TSAwVOCL7J3JIlOOuK/810LMfmssxzT1U6v3jZDaMt2+az2dlNmNZvNCnI0xuQsirYnlOR
-	kZxoBgadm76jBR+BpaXZGw8hdeBvLfrj+9MuSBSrZxrGjTtuDi4se/BAAnJLQdqIVlweob
-	L9ZfZ3JaocG4I18mZl+A6ThKWkscFW4=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-499-Q7XHd1CCMGiyPq3ivckN0w-1; Wed,
- 06 Mar 2024 16:15:04 -0500
-X-MC-Unique: Q7XHd1CCMGiyPq3ivckN0w-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E6DCC1C05158;
-	Wed,  6 Mar 2024 21:15:03 +0000 (UTC)
-Received: from omen.home.shazbot.org (unknown [10.22.33.99])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id E05B537F6;
-	Wed,  6 Mar 2024 21:15:02 +0000 (UTC)
-From: Alex Williamson <alex.williamson@redhat.com>
-To: alex.williamson@redhat.com
-Cc: kvm@vger.kernel.org,
-	eric.auger@redhat.com,
-	clg@redhat.com,
-	reinette.chatre@intel.com,
-	linux-kernel@vger.kernel.org,
-	kevin.tian@intel.com,
-	diana.craciun@oss.nxp.com
-Subject: [PATCH 7/7] vfio/fsl-mc: Block calling interrupt handler without trigger
-Date: Wed,  6 Mar 2024 14:14:42 -0700
-Message-ID: <20240306211445.1856768-8-alex.williamson@redhat.com>
-In-Reply-To: <20240306211445.1856768-1-alex.williamson@redhat.com>
-References: <20240306211445.1856768-1-alex.williamson@redhat.com>
+	s=arc-20240116; t=1709759693; c=relaxed/simple;
+	bh=HlvIehcW7DL2ZkTuZYSlHhQXYbpHC0zj0KWYZTviIpI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DSp5BXpmwaItDvVaXaFZtLgZ1ReL1v2hoFQqL5DDfa9pvYtoRaxXMJqK4dcddA07y8h49RNOg4WdPUB+pCB0+uS3Tm1V7gglomJXxT7IQv4ser5BFv3K/pT/J+r5ziW0dMr5WNpSjJCCbZdzYEsgSv7fyCiFV4bVh3DEOJO7puI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=a5QMrMSk; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6e63e9abf6aso148463b3a.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 13:14:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1709759691; x=1710364491; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=eqhjGVQ8jE8dziHNEPcBuEnJh6YM6o6ZWh6K+R5yz1M=;
+        b=a5QMrMSkCh6CKxSZp1aoMlsWOh1/LdslQA8sbOLyLO3ibrMd6x/h0JqfrHeUOgWa3J
+         L2KBWDgR/51+DeX0Bp/LE2FiKIAdtDpbfigFomyfaR48wFJxkh19s7Uz/Cvg6F/lpdLh
+         pfY3hnq6G4woDGNTNVlZ+kkcj5qJRCngnVAy+gkb868EWY5EU04VMoO1sIADCHOqt0pb
+         0dcvTCDjJerRPi3a5DXq74ZDszeyTNeI58Z29vZ1ArrGPUohsZW1UeNBPoG7+jIry6gX
+         hmB5veaCo5PFqElLML5tRN7hI14+AHMRiFkTvu8fBtN2WcUyHORPEkKzNvapQJQmCyad
+         L5vg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709759691; x=1710364491;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eqhjGVQ8jE8dziHNEPcBuEnJh6YM6o6ZWh6K+R5yz1M=;
+        b=LHPZHe23xJbq4dwyehYidNtA4lPoGB2Iu3nw1sybXEbj0V7H2GxVQHl1dFhsdDvyad
+         yKKtyOSm2OFwbwIpHN7E8LQXzVPfkhofvUJLYQHRJZ33/LeHI5giNTNkdaKflZYUBy/u
+         gJ7itBoQFvvV/jdrC2NFQ6CJ6HHnF9+dXZh3/ZLKReMJJBAIoQXwaUZRHH0jKCn3LOsm
+         jObV6u2bGdu5fV1nXauPeiNYN/1/Cav+wn5+xk1GvRQuMkXbkluOEW3EivJ7kyuG6aLb
+         g6FM7w1OD1tknoNDA38aTBvoZm6NF1R389H/NgcXcC/RnCA284sG01Y1/RAxWNvj3z+g
+         HSvA==
+X-Forwarded-Encrypted: i=1; AJvYcCXMz0vJnyR+LAjMNWme2R2vIVbcCZWLfESkawIK7JwLyXY/eW0ovCoGXDyS6f9QRM2yzvv11g8qJ3vYTeAfTL9RwhjwhWbj4gysm5Nz
+X-Gm-Message-State: AOJu0YxGjfFZ90GOetCovJO29KDGJ4gGB2KM3tCq1AVBFOoSxMLrCOG6
+	0uKNHJYB1mEwps3LfLAQpifwpp4CT4vhzP3cX+4EPURwSFda2tNdU4E/EWSROOY=
+X-Google-Smtp-Source: AGHT+IH/HqdsN5E4yHe5JC1g3zqWSwIIHXA5eCXfP7jkdLhyjmJz4hhQirNSqS0uE/Icr0g3GgFBXQ==
+X-Received: by 2002:aa7:88cd:0:b0:6e5:561b:4670 with SMTP id k13-20020aa788cd000000b006e5561b4670mr18155480pff.30.1709759691277;
+        Wed, 06 Mar 2024 13:14:51 -0800 (PST)
+Received: from dread.disaster.area (pa49-179-47-118.pa.nsw.optusnet.com.au. [49.179.47.118])
+        by smtp.gmail.com with ESMTPSA id y133-20020a62ce8b000000b006e45a0101basm12036767pfg.99.2024.03.06.13.14.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Mar 2024 13:14:50 -0800 (PST)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1rhybA-00Fy7Q-1A;
+	Thu, 07 Mar 2024 08:14:48 +1100
+Date: Thu, 7 Mar 2024 08:14:48 +1100
+From: Dave Chinner <david@fromorbit.com>
+To: John Garry <john.g.garry@oracle.com>
+Cc: djwong@kernel.org, hch@lst.de, viro@zeniv.linux.org.uk,
+	brauner@kernel.org, jack@suse.cz, chandan.babu@oracle.com,
+	axboe@kernel.dk, martin.petersen@oracle.com,
+	linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
+	ojaswin@linux.ibm.com, ritesh.list@gmail.com,
+	linux-block@vger.kernel.org
+Subject: Re: [PATCH v2 07/14] fs: iomap: Sub-extent zeroing
+Message-ID: <ZejcyPPX3bVdvJyV@dread.disaster.area>
+References: <20240304130428.13026-1-john.g.garry@oracle.com>
+ <20240304130428.13026-8-john.g.garry@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240304130428.13026-8-john.g.garry@oracle.com>
 
-The eventfd_ctx trigger pointer of the vfio_fsl_mc_irq object is
-initially NULL and may become NULL if the user sets the trigger
-eventfd to -1.  The interrupt handler itself is guaranteed that
-trigger is always valid between request_irq() and free_irq(), but
-the loopback testing mechanisms to invoke the handler function
-need to test the trigger.  The triggering and setting ioctl paths
-both make use of igate and are therefore mutually exclusive.
+On Mon, Mar 04, 2024 at 01:04:21PM +0000, John Garry wrote:
+> For FS_XFLAG_FORCEALIGN support, we want to treat any sub-extent IO like
+> sub-fsblock DIO, in that we will zero the sub-extent when the mapping is
+> unwritten.
+> 
+> This will be important for atomic writes support, in that atomically
+> writing over a partially written extent would mean that we would need to
+> do the unwritten extent conversion write separately, and the write could
+> no longer be atomic.
+> 
+> It is the task of the FS to set iomap.extent_shift per iter to indicate
+> sub-extent zeroing required.
+> 
+> Maybe a macro like i_blocksize() should be introduced for extent sizes,
+> instead of using extent_shift. It would also eliminate excessive use
+> of xfs_get_extss() for XFS in future.
+> 
+> Signed-off-by: John Garry <john.g.garry@oracle.com>
+> ---
+>  fs/iomap/direct-io.c  | 14 ++++++++------
+>  include/linux/iomap.h |  1 +
+>  2 files changed, 9 insertions(+), 6 deletions(-)
+> 
+> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+> index bcd3f8cf5ea4..733f83f839b6 100644
+> --- a/fs/iomap/direct-io.c
+> +++ b/fs/iomap/direct-io.c
+> @@ -277,7 +277,7 @@ static loff_t iomap_dio_bio_iter(const struct iomap_iter *iter,
+>  {
+>  	const struct iomap *iomap = &iter->iomap;
+>  	struct inode *inode = iter->inode;
+> -	unsigned int fs_block_size = i_blocksize(inode), pad;
+> +	unsigned int zeroing_size, pad;
+>  	loff_t length = iomap_length(iter);
+>  	loff_t pos = iter->pos;
+>  	blk_opf_t bio_opf;
+> @@ -288,6 +288,8 @@ static loff_t iomap_dio_bio_iter(const struct iomap_iter *iter,
+>  	size_t copied = 0;
+>  	size_t orig_count;
+>  
+> +	zeroing_size = i_blocksize(inode) << iomap->extent_shift;
 
-The vfio-fsl-mc driver does not make use of irqfds, nor does it
-support any sort of masking operations, therefore unlike vfio-pci
-and vfio-platform, the flow can remain essentially unchanged.
+The iomap interfaces use units of bytes for offsets, sizes, ranges,
+etc. Using shifts to define a granularity value seems like a
+throwback to decades old XFS code and just a bit weird nowdays.  Can
+we just pass this as a byte count? i.e.:
 
-Cc: Diana Craciun <diana.craciun@oss.nxp.com>
-Fixes: cc0ee20bd969 ("vfio/fsl-mc: trigger an interrupt via eventfd")
-Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
----
- drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+	zeroing_size = i_blocksize(inode);
+	if (iomap->extent_size)
+		zeroing_size = iomap->extent_size;
 
-diff --git a/drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c b/drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c
-index d62fbfff20b8..82b2afa9b7e3 100644
---- a/drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c
-+++ b/drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c
-@@ -141,13 +141,14 @@ static int vfio_fsl_mc_set_irq_trigger(struct vfio_fsl_mc_device *vdev,
- 	irq = &vdev->mc_irqs[index];
- 
- 	if (flags & VFIO_IRQ_SET_DATA_NONE) {
--		vfio_fsl_mc_irq_handler(hwirq, irq);
-+		if (irq->trigger)
-+			eventfd_signal(irq->trigger);
- 
- 	} else if (flags & VFIO_IRQ_SET_DATA_BOOL) {
- 		u8 trigger = *(u8 *)data;
- 
--		if (trigger)
--			vfio_fsl_mc_irq_handler(hwirq, irq);
-+		if (trigger && irq->trigger)
-+			eventfd_signal(irq->trigger);
- 	}
- 
- 	return 0;
+Cheers,
+
+Dave.
 -- 
-2.43.2
-
+Dave Chinner
+david@fromorbit.com
 
