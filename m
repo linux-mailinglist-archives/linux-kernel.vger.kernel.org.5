@@ -1,199 +1,114 @@
-Return-Path: <linux-kernel+bounces-93236-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93228-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A593872CA6
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 03:20:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E415C872C90
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 03:11:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 668BBB2542B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 02:20:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 577D2B22233
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 02:11:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7244DD52A;
-	Wed,  6 Mar 2024 02:20:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62E09D29B;
+	Wed,  6 Mar 2024 02:10:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="PpUTOqRZ"
-Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ite.com.tw header.i=@ite.com.tw header.b="lzv7qrNY"
+Received: from ironport.ite.com.tw (60-251-196-230.hinet-ip.hinet.net [60.251.196.230])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE11479E4
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 02:19:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26D7717FE
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 02:10:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.251.196.230
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709691599; cv=none; b=bCVHxstHZhrjMwpiU5jJVcuwp5weGnx+LjEEnlYi6+0DCTp6ZQpYykbRRFL90un7rHJ0Cc8x1ZHk/vfBBrdQsf52siROPeVR4DAECR1HMxpe0bWbVXGS90fksJedZrXiNUXACq5oO4k4it+SnnFHmCnWo/qg6oz3UlWtrSkgvko=
+	t=1709691057; cv=none; b=qzBccyBAKLpiknPzDSvwybNtMcCfQXgBrRrrDcV2wIafmxhc/VcIJypXBIEq+cC45IrbaQtMLoOSf/SPsn6S3GorbX0Ipb9c1hYIkUSayK53YJ3v9pu5SWT7h1YAZcdY3j3HBCWU2u9ZJ/hKZhyuyI9LHMAnNsO5Tcj83XImeuc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709691599; c=relaxed/simple;
-	bh=onWesjGOBT5yTGQmpOG1LxJdI89DNGUvK1WI3F/z19k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mISzBK1XpjrvC97dySQmNBIh19fJSex+5CdehfEmGPPC1USWcRND7F5QEmAGfNmlAitBZzcjEJ3HfMjCLVRjMzhLx18+FzWKCEgWUmT5TO8aEyDtIquZc8rUdDQjmQEvkFbbn13DvQNvliPdqN7L7ssNxjyw7/LbspDl85z8Kaw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=PpUTOqRZ; arc=none smtp.client-ip=209.85.219.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-68ee2c0a237so3308196d6.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 18:19:56 -0800 (PST)
+	s=arc-20240116; t=1709691057; c=relaxed/simple;
+	bh=YjLFxDb1a8kwlPycmJzHsBR+BeJHCMj9DDXnHJdsiCk=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ZmJu5mup63SfBkwAonw5zs1jSpBbsQPuWD1mI6b8Q7ba3+zfdYA/VG0sBZV6s1z/dAPAQEoeR0OVe+9ZsLFFwtC/cQYJkHFmvtpemyMvbZqVirbExAagpjubK0Kfz1iQZZPvP7CtnDiWnhVGJnomuq1aFQAqCCmLr0Uv1svBOzQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ite.com.tw; spf=pass smtp.mailfrom=ite.com.tw; dkim=pass (2048-bit key) header.d=ite.com.tw header.i=@ite.com.tw header.b=lzv7qrNY; arc=none smtp.client-ip=60.251.196.230
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ite.com.tw
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ite.com.tw
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1709691595; x=1710296395; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=acf+30rZOU0mvAbyQhYXFdJzkgjEIoHhA9P8NXsNW7E=;
-        b=PpUTOqRZ0wRh0l7sEW5J/XK5emyGAu0rv9q4q6oV9molp3oDkdbmvw5yqpeg4AaoXY
-         BcJEBWRb92PJvVoZeUTEn1Qf4eJvtQG+Hn0I2PIv2yt2N4Q0gdZriuEfbJHOeohBvz/N
-         9l6oSwegZs6oOrn2Hittxpn8zrdRtXKQEPa7L4Cvvqun30CLp7meYhpMwwgSSe8NGSfJ
-         6ztyVWJBENTKzqUXmtiZZu545UMModMSqNLP/qZ1biac+tJE8Cbf3fNCOYbxiNxELh9r
-         iu+tKM+g4LD85WGoTJERUihZy5YuQKeqSueg4fpPVZ4quH1kFoC0H2HTzd6EmlRJHC8e
-         LdtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709691595; x=1710296395;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=acf+30rZOU0mvAbyQhYXFdJzkgjEIoHhA9P8NXsNW7E=;
-        b=v12JOnRsHa34i0e0cGSN9YmUeq8S//QxdJTGbP93odeUV2TB2jMtfbRNpadFH97lhg
-         HuwsKVlbF9ABBCUmYvhnkXJ0EfsGRpoOHp28x+ElbaZhjgtuGzXp+Wm/+elxfOC6zc5E
-         woY/sdEeNVDqgHZGXJR+c4tU3rMhHLP7A9M69E/tZ+VKfJv3o6Mi+UktmPDsetxhvfF0
-         3Rf2vob+B6wvAyvlKt0ifGuErMa8Jb5tFJCIt/VXjfd5eMcCynhTeppPoHk3JiEggjTx
-         iANESUQ0RH4hp4cywy89dNY1NQhISPLNTflEHDJgdFuVnWa/W4yD5rXUhtCidvz+DmEg
-         L/CA==
-X-Forwarded-Encrypted: i=1; AJvYcCWXGsSzGfvf3/p1C4eh5wMwrlqlQuw+X6DLB04Dymn5EiO0P+O+WQI0vzys+Vjf0zeY6Q7sRhRB3VwpWBYe5Os5sj5n0h0hr4yPXjyN
-X-Gm-Message-State: AOJu0YzWYNKLvC/1lcklS+Ph7EUfGJerigG7/NXKIQ9GiXGelXb6QhUO
-	lSmauckmnxf4MygpmXSKOS6m559OWgE/wkIinKIyY4EuQt17Sq8bivU0njk+d5M=
-X-Google-Smtp-Source: AGHT+IEmyP0orYTDcGtYCnkFo+3YjfLkmaNOkkJK6Ir3myHyg0AcpXpcmUhE2WdPcJpjeWnyKDNU1A==
-X-Received: by 2002:a0c:dc04:0:b0:690:68a:a141 with SMTP id s4-20020a0cdc04000000b00690068aa141mr6220950qvk.24.1709691595613;
-        Tue, 05 Mar 2024 18:19:55 -0800 (PST)
-Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with ESMTPSA id pd6-20020a056214490600b006907801a000sm2629696qvb.26.2024.03.05.18.19.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Mar 2024 18:19:54 -0800 (PST)
-Date: Tue, 5 Mar 2024 21:19:50 -0500
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	David Hildenbrand <david@redhat.com>,
-	"Huang, Ying" <ying.huang@intel.com>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v1] mm: swap: Fix race between free_swap_and_cache() and
- swapoff()
-Message-ID: <20240306021950.GA801254@cmpxchg.org>
-References: <20240305151349.3781428-1-ryan.roberts@arm.com>
+  d=ite.com.tw; s=dkim;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=zCxEGb0mnx0UG+l1KpllEKhQN/7/zBRB0JApGyWfuwc=;
+  b=lzv7qrNYN2vhhg04j4AVuZ9Jd6BEzmZ0lUrTZsiBWhOyoXs/qFa6grTj
+   mibA0ZkIgyQaz85Gm7zl7RFlQswZ/QSdmoB6Pk7Y/OQdHRLZfrHhOW0Yz
+   9OPobbdP/6HUgGmbCEQ2gH13uChre/Yn6MCK0LoiUVWjGbpBUh+WtaPHH
+   0Cjf/VB0/sn9nLKd1gq2ec/AuthDEocUIY/PIwIu7xpqhYkEeeesCMupQ
+   PU3PsgtvOGGe/0PgIGqSt2yVrdY/cP+qzteU1w0Del/vi8hKkGXe19h0F
+   mUVeZ1sUZmUYJBhrEo3QnyNN4gTJZAIOkcru3VEpJOSOF0r64exFtI6Bm
+   g==;
+Received: from unknown (HELO mse.ite.com.tw) ([192.168.35.30])
+  by ironport.ite.com.tw with ESMTP; 06 Mar 2024 10:09:40 +0800
+Received: from CSBMAIL1.internal.ite.com.tw (CSBMAIL1.internal.ite.com.tw [192.168.65.58])
+	by mse.ite.com.tw with ESMTP id 42629cT7035623;
+	Wed, 6 Mar 2024 10:09:38 +0800 (GMT-8)
+	(envelope-from kuro.chung@ite.com.tw)
+Received: from ite-XPS-13-9360.internal.ite.com.tw (192.168.72.42) by
+ CSBMAIL1.internal.ite.com.tw (192.168.65.58) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 6 Mar 2024 10:09:36 +0800
+From: kuro <kuro.chung@ite.com.tw>
+To:
+CC: Allen Chen <allen.chen@ite.com.tw>, Pin-yen Lin <treapking@chromium.org>,
+        Kuro Chung <kuro.chung@ite.com.tw>,
+        Kenneth Haung <kenneth.hung@ite.com.tw>,
+        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+        Jernej Skrabec
+	<jernej.skrabec@gmail.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart
+	<Laurent.pinchart@ideasonboard.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3 0/1] drm/bridge: it6505: fix hibernate to resume no display issue
+Date: Wed, 6 Mar 2024 10:20:02 +0800
+Message-ID: <20240306022003.259245-1-kuro.chung@ite.com.tw>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240305151349.3781428-1-ryan.roberts@arm.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: CSBMAIL1.internal.ite.com.tw (192.168.65.58) To
+ CSBMAIL1.internal.ite.com.tw (192.168.65.58)
+X-TM-SNTS-SMTP:
+	2DFA835B7C214D7669D99BAA3D584D1C5E99CA3D8F1D676F920BE02F59D14C3C2002:8
+X-MAIL:mse.ite.com.tw 42629cT7035623
 
-Hi Ryan,
+New patch description for v3 patch 
+	
+	update upstream MAINTAINERS mail list
 
-On Tue, Mar 05, 2024 at 03:13:49PM +0000, Ryan Roberts wrote:
-> There was previously a theoretical window where swapoff() could run and
-> teardown a swap_info_struct while a call to free_swap_and_cache() was
-> running in another thread. This could cause, amongst other bad
-> possibilities, swap_page_trans_huge_swapped() (called by
-> free_swap_and_cache()) to access the freed memory for swap_map.
-> 
-> This is a theoretical problem and I haven't been able to provoke it from
-> a test case. But there has been agreement based on code review that this
-> is possible (see link below).
-> 
-> Fix it by using get_swap_device()/put_swap_device(), which will stall
-> swapoff(). There was an extra check in _swap_info_get() to confirm that
-> the swap entry was valid. This wasn't present in get_swap_device() so
-> I've added it. I couldn't find any existing get_swap_device() call sites
-> where this extra check would cause any false alarms.
+New patch description for v2 patch
 
-Unfortunately, I found one, testing current mm-everything:
+	Missing declaration for i variable in function it6505_irq_video_error_handler
+	, add it by this patch
 
-[  189.420777] get_swap_device: Unused swap offset entry 000641ae
-[  189.426648] ------------[ cut here ]------------
-[  189.431290] WARNING: CPU: 3 PID: 369 at mm/swapfile.c:1301 get_swap_device+0x2da/0x3f0
-[  189.439242] CPU: 3 PID: 369 Comm: cachish Not tainted 6.8.0-rc5-00527-g19d98776f227-dirty #30
-[  189.447791] Hardware name: Micro-Star International Co., Ltd. MS-7B98/Z390-A PRO (MS-7B98), BIOS 1.80 12/25/2019
-[  189.457998] RIP: 0010:get_swap_device+0x2da/0x3f0
-[  189.462721] Code: a8 03 75 2a 65 48 ff 08 e9 36 ff ff ff 4c 89 e9 48 c7 c2 40 fd 91 83 48 c7 c6 c0 f9 91 83 48 c7 c7 60 ee 91 83 e8 26 2f af ff <0f> 0b eb af 4c 8d 6b 08 48 b8 00 00 00 00 00 fc ff df 4c 89 ea 48
-[  189.481497] RSP: 0000:ffffc90000cff8a8 EFLAGS: 00010282
-[  189.486760] RAX: 0000000000000032 RBX: ffff8881262eee00 RCX: 0000000000000000
-[  189.493909] RDX: 0000000000000001 RSI: ffffffff83a1e620 RDI: 0000000000000001
-[  189.501054] RBP: 1ffff9200019ff15 R08: 0000000000000001 R09: fffff5200019fee1
-[  189.508202] R10: ffffc90000cff70f R11: 0000000000000001 R12: ffffc900018d51ae
-[  189.515346] R13: 00000000000641ae R14: 0000000000000000 R15: 00000000000641af
-[  189.522494] FS:  00007f7120263680(0000) GS:ffff88841c380000(0000) knlGS:0000000000000000
-[  189.530591] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  189.536373] CR2: 00007f6e659a2ea3 CR3: 0000000046860004 CR4: 00000000003706f0
-[  189.543516] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[  189.550661] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[  189.557811] Call Trace:
-[  189.560276]  <TASK>
-[  189.562393]  ? __warn+0xc4/0x250
-[  189.565647]  ? get_swap_device+0x2da/0x3f0
-[  189.569761]  ? report_bug+0x348/0x440
-[  189.573444]  ? handle_bug+0x6d/0x90
-[  189.576951]  ? exc_invalid_op+0x13/0x40
-[  189.580810]  ? asm_exc_invalid_op+0x16/0x20
-[  189.585019]  ? get_swap_device+0x2da/0x3f0
-[  189.589142]  ? get_swap_device+0x2da/0x3f0
-[  189.593255]  ? __pfx_get_swap_device+0x10/0x10
-[  189.597717]  __read_swap_cache_async+0x9f/0x630
-[  189.602281]  ? __pfx___read_swap_cache_async+0x10/0x10
-[  189.607439]  ? __mod_memcg_lruvec_state+0x238/0x4f0
-[  189.612344]  ? __pfx_swp_swap_info+0x10/0x10
-[  189.616652]  swap_cluster_readahead+0x2cd/0x510
-[  189.621206]  ? __pfx_swap_cluster_readahead+0x10/0x10
-[  189.626279]  ? swap_cache_get_folio+0xcd/0x360
-[  189.630760]  ? __count_memcg_events+0x10a/0x370
-[  189.635318]  shmem_swapin_folio+0x2f2/0xc60
-[  189.639525]  ? __pfx__raw_spin_lock+0x10/0x10
-[  189.643908]  ? __pte_offset_map+0x19/0x1d0
-[  189.648024]  shmem_get_folio_gfp+0x307/0xe30
-[  189.652323]  ? __schedule+0x9f0/0x1fe0
-[  189.656096]  ? __pfx_shmem_get_folio_gfp+0x10/0x10
-[  189.660923]  ? filemap_map_pages+0x999/0xe60
-[  189.665211]  shmem_fault+0x1d9/0x810
-[  189.668834]  ? __pfx_shmem_fault+0x10/0x10
-[  189.672954]  ? __pfx_filemap_map_pages+0x10/0x10
-[  189.677590]  __do_fault+0xed/0x390
-[  189.681012]  __handle_mm_fault+0x1ba1/0x2e80
-[  189.685297]  ? __pfx___handle_mm_fault+0x10/0x10
-[  189.689933]  ? __pfx_down_read_trylock+0x10/0x10
-[  189.694570]  ? __pfx_hrtimer_nanosleep+0x10/0x10
-[  189.699215]  handle_mm_fault+0xe0/0x560
-[  189.703074]  ? __pfx_restore_fpregs_from_fpstate+0x10/0x10
-[  189.708620]  do_user_addr_fault+0x2ba/0x9d0
-[  189.712828]  exc_page_fault+0x54/0x90
-[  189.716508]  asm_exc_page_fault+0x22/0x30
-[  189.720535] RIP: 0033:0x5640dc2d72b5
-[  189.724131] Code: 98 48 ba 00 00 00 00 03 00 00 00 48 89 d6 48 2b 75 a0 ba 00 00 00 00 48 f7 f6 48 89 d1 48 89 ca 48 8b 45 a0 48 01 d0 48 01 d8 <0f> b6 00 bf e8 03 00 00 e8 1e fe ff ff 48 83 45 a8 01 48 8d 45 d0
-[  189.742922] RSP: 002b:00007ffc227e3f60 EFLAGS: 00010206
-[  189.748165] RAX: 00007f6e659a2ea3 RBX: 00007f6e2007e000 RCX: 0000000045924ea3
-[  189.755311] RDX: 0000000045924ea3 RSI: 0000000300000000 RDI: 00007f71202586a0
-[  189.762483] RBP: 00007ffc227e3fe0 R08: 00007f7120258074 R09: 00007f71202580a0
-[  189.769633] R10: 0000000000019458 R11: 00000000008aa400 R12: 0000000000000000
-[  189.776781] R13: 00007ffc227e4128 R14: 00007f712029d000 R15: 00005640dc2d9dd8
-[  189.783928]  </TASK>
-[  189.786126] ---[ end trace 0000000000000000 ]---
-[  285.827888] get_swap_device: Unused swap offset entry 0018403f
-[  320.699306] get_swap_device: Unused swap offset entry 000b001b
-[  354.031339] get_swap_device: Unused swap offset entry 000681a9
-[  364.958435] get_swap_device: Unused swap offset entry 001f4055
-[  364.976235] get_swap_device: Unused swap offset entry 001f4057
-[  365.530174] get_swap_device: Unused swap offset entry 000d415c
-[  394.223792] get_swap_device: Unused swap offset entry 001540d0
-[  394.317299] get_swap_device: Unused swap offset entry 000341d9
-[  394.341727] get_swap_device: Unused swap offset entry 0006c07e
-[  396.062365] get_swap_device: Unused swap offset entry 000541a4
-[  396.068262] get_swap_device: Unused swap offset entry 000541a7
-[  402.629551] get_swap_device: Unused swap offset entry 00294021
-[  436.740622] get_swap_device: Unused swap offset entry 00334155
-[  436.758527] get_swap_device: Unused swap offset entry 001b417c
+Origianl description for v1 patch 
 
-swap_cluster_readahead() calls __read_swap_cache_async() on a range of
-made-up swap entries around the faulting slot. The device and the
-range (si->max) are valid, but the specific entry might not be in
-use. __read_swap_cache_async() instead relies on swapcache_prepare()
-returning -ENOENT to catch this and skip gracefully.
+	drm/bridge: it6505: fix hibernate to resume no display issue
 
-Confirmed that reverting the patch makes the warnings go away.
+	ITE added a FIFO reset bit for input video. When system power resume,
+	the TTL input of it6505 may get some noise before video signal stable
+	and the hardware function reset is required.
+	But the input FIFO reset will also trigger error interrupts of output module rising.
+	Thus, it6505 have to wait a period can clear those expected error interrupts
+	caused by manual hardware reset in one interrupt handler calling to avoid interrupt looping.
+
+
+allen (1):
+  drm/bridge: it6505: fix hibernate to resume no display issue
+
+ drivers/gpu/drm/bridge/ite-it6505.c | 54 ++++++++++++++++++++++++-----
+ 1 file changed, 45 insertions(+), 9 deletions(-)
+
+-- 
+2.25.1
+
 
