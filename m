@@ -1,297 +1,196 @@
-Return-Path: <linux-kernel+bounces-93286-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93287-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B2D0872D84
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 04:29:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 566B9872D86
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 04:29:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C1E58B25222
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 03:29:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BD30DB2298C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 03:29:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D817914F7F;
-	Wed,  6 Mar 2024 03:28:55 +0000 (UTC)
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC64913AE2;
-	Wed,  6 Mar 2024 03:28:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709695735; cv=none; b=EiQqaV11GsAO4MBW0uQAhFBO5n4f/eVoAICVg+I4WF6aIhovJLmlj2ShS6byxZFyLjxepCCzd43rB5YsziJsAItsX4WISHb4G9wxz98Ra/OH41pQyP44FzLEBXmbB1cyYmNGMEh1S46ku0R/e5LgJtuhByhNLYUhkc8m2x2L3JA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709695735; c=relaxed/simple;
-	bh=GGQf/qr075ECyEnMvmwHfFhNfOw7/FeOEawrUy7BtaQ=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=i/ERGGDS7wATZ0gSVbf1jVntrKs6faUBWO8n6x94ZZjj7gWc0RaYq+bkh0UZnOcsB4Ijq2GE6ORMV3PGOnJ5UOY7yd2l5+HCEGSjN4SEI7h+9MBMfKQ9DwOIakqXoZrDs9K81hgq3P417AvedA2prBRW5kbo0q28KcR0illWfRM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [10.20.42.173])
-	by gateway (Coremail) with SMTP id _____8Ax++jx4udlvPwUAA--.32675S3;
-	Wed, 06 Mar 2024 11:28:49 +0800 (CST)
-Received: from [10.20.42.173] (unknown [10.20.42.173])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8CxrhPr4udlyftOAA--.23378S3;
-	Wed, 06 Mar 2024 11:28:46 +0800 (CST)
-Subject: Re: [PATCH v6 7/7] Documentation: KVM: Add hypercall for LoongArch
-To: WANG Xuerui <kernel@xen0n.name>, Tianrui Zhao <zhaotianrui@loongson.cn>,
- Juergen Gross <jgross@suse.com>, Paolo Bonzini <pbonzini@redhat.com>,
- Jonathan Corbet <corbet@lwn.net>
-Cc: loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
- virtualization@lists.linux.dev, kvm@vger.kernel.org
-References: <20240302082532.1415200-1-maobibo@loongson.cn>
- <20240302084724.1415344-1-maobibo@loongson.cn>
- <846a5e46-4e8f-4f73-ac5b-323e78ec1bb1@xen0n.name>
- <853f2909-e455-bd1c-c6a4-6a13beb37125@loongson.cn>
- <ec871702-388d-4a29-aec1-5cd6d1de6d0a@xen0n.name>
-From: maobibo <maobibo@loongson.cn>
-Message-ID: <7079bf3b-a7af-7cab-be78-3de1081649e1@loongson.cn>
-Date: Wed, 6 Mar 2024 11:28:42 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CAFE14A8B;
+	Wed,  6 Mar 2024 03:29:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="gTBIffop";
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="vxXERetH"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80E9B14263;
+	Wed,  6 Mar 2024 03:29:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.154.123
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709695786; cv=fail; b=gUy/n4zfDzclt8x4zlWRowfVOyPlwhu2P2ckddwy786IX49kJvE6/nOGT68IouQkiQ43TsIFLCP4rhibz/nd7dkFsar0cJvgh/CaNh2ftWYRfr/YXdFss3SPRkU4onDcBTiMfxmlCudc/gJo10UvjA9yEBK8n0uzK9Ys/ysfjdg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709695786; c=relaxed/simple;
+	bh=cCtyBKWyyvU6aOMLUwJ6PiqQWA6r0DWl/OLXst3/ews=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=Ffgj6TyyV2y21dAHC/ZDUIxUSxcTTU0tLQJFeLIWPU66MnkN1gi5Y7pk8rJKxw914HdqjkGtQ+TisP6BpJhgjbpseKJIP8gdEaEFKhMW0b81Vv+TLpFewBWHdom3/O1xHK/JAdBZcwcBdCB6zjnQzZqNGpPqriE8hRt9HZ6t4oc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=gTBIffop; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=vxXERetH; arc=fail smtp.client-ip=68.232.154.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1709695780; x=1741231780;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=cCtyBKWyyvU6aOMLUwJ6PiqQWA6r0DWl/OLXst3/ews=;
+  b=gTBIffopKN+BHiaNYhT5GLoF3hye6K7JeoWwYI0q4zCycCg1Y9U20rdz
+   /Sj3Ti3ElvaMlAdh76DP79ocf4UiVAlbGIb9Ogjypsa/9sWyTY4vNENqM
+   hxbsvJ25N8iTMm5NcuHGuUrvefBkG7JorNX2h1vh38wl1OKdIk8cE2rp/
+   +viZ6FpPDxOl+hwRUYRDhMDIwVdUWI9KcpuzMKKFpghsiWpD8BLy5aSha
+   zWX2OCf/qjhyUbEQEE9kiQ7mAkBhSGLjOpxNrTp7G6MWCjQ31KAX0VL1h
+   jOdLGMa081Z+oBHe7lR8fxN1RDWvJ4sGBfFbypMmt/MlptH7oW7MBsQx3
+   g==;
+X-CSE-ConnectionGUID: 72aG6ZR8SF2usJ9v+jCVsA==
+X-CSE-MsgGUID: pmDX1VG5TcWpr6QU0cSArw==
+X-IronPort-AV: E=Sophos;i="6.06,207,1705388400"; 
+   d="scan'208";a="17803756"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 05 Mar 2024 20:29:39 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 5 Mar 2024 20:29:35 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (10.10.215.250)
+ by email.microchip.com (10.10.87.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Tue, 5 Mar 2024 20:29:35 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KCp0Bow5i/c8G2nvy1l8qUdON4lmTro3EGjiUbNvaXRCBx+0aCQVUqYOeb9m4k6IWk45S3uYgLmtz0f6LYwEdYJ1hgf5lb3NUVPijrIR2Wl3g4dQQP8GOU7KLPdZq+MIreUpGaFxRIdndIDhLsXc5RPnAG/up3HMwe+0jW57wJaxi43m6qQbiPRjF5hZFg+UK7Ui8z6eeUtD1WckI9jJBABgJyOFUK/rnjrPC+XHZk/qPFgdbctXVUKYm45SYvydUSiIzYck6sftJQnIdytIn02L+yfusc3Xn5EwVJR1QALjdPl6uvjX0ItbLI1cQ2LXnSlOvuepqeuOkZ9uiEPKqg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=cCtyBKWyyvU6aOMLUwJ6PiqQWA6r0DWl/OLXst3/ews=;
+ b=jKAX0TQQG3xyQ77H6Il+SuMOGzKXtAXiGMRuq0nyBpgbQD8AaQWiE3L+mqnxOALtmzjqD060pLYpO/PzALArMkemHEYCTM7MM5NrDNnoWi37CANQr/cAwzrtDQyq3JIBtIafODby6F60SGLdGtzjY/NCfQwS5qrVxQQIqZcGt69nZHWrSmh0yLEyXaeysCA9vjIb7O7Ro9f3YDvKurEpEIZghtRXlyEvsK4U3acPWvCuCSUj/6QuQsQOAivTWpfFW90pvCyW8h0CxpaWRScn7CZhGpvJPKW2V8sVWcYYZGoWHCHMxmTV7PGJaKN5zxnrQXARYZnOsCcLNlxtmQA/UA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microchip.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cCtyBKWyyvU6aOMLUwJ6PiqQWA6r0DWl/OLXst3/ews=;
+ b=vxXERetHqY+kWMF9a4TVkMzdei2teuwJvytZ8WTSnWwgkp3y9DmHgmk9tuz5tgJ/GjbYItUAT2PVhVApU96wcIPXa3DxzwWBSCWfg1eFwNMTKH7CLjP3w+r+QFdi9aAr8khsXNzNX3TMC2kID+ZHQrmtaeJIWZDPRmOig3J3piXL0tgyVsOvqQc3Ic3RGhKzuIBfg5mK560BT8Vg3rH0idJ+U5tA7D9gMOpDGPY2iY/q2sD0vJgqyNa+bJBMn3I9+ssB4HPggS8iT7p+Qq5ciTl9U0wuLHTak+iXPC8wcE5GfeiAbI6aXykwcnlE0mGvKPKGgdab1va2w7lbbLTiZQ==
+Received: from PH7PR11MB8033.namprd11.prod.outlook.com (2603:10b6:510:246::12)
+ by CH3PR11MB8591.namprd11.prod.outlook.com (2603:10b6:610:1af::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.22; Wed, 6 Mar
+ 2024 03:29:33 +0000
+Received: from PH7PR11MB8033.namprd11.prod.outlook.com
+ ([fe80::d529:f716:6630:2a1d]) by PH7PR11MB8033.namprd11.prod.outlook.com
+ ([fe80::d529:f716:6630:2a1d%3]) with mapi id 15.20.7362.019; Wed, 6 Mar 2024
+ 03:29:32 +0000
+From: <Arun.Ramadoss@microchip.com>
+To: <o.rempel@pengutronix.de>, <kuba@kernel.org>, <andrew@lunn.ch>
+CC: <kernel@pengutronix.de>, <olteanv@gmail.com>, <davem@davemloft.net>,
+	<Woojung.Huh@microchip.com>, <linux-kernel@vger.kernel.org>,
+	<pabeni@redhat.com>, <f.fainelli@gmail.com>, <edumazet@google.com>,
+	<netdev@vger.kernel.org>, <UNGLinuxDriver@microchip.com>
+Subject: Re: [PATCH net v2 1/1] net: dsa: microchip: make sure drive strength
+ configuration is not lost by soft reset
+Thread-Topic: [PATCH net v2 1/1] net: dsa: microchip: make sure drive strength
+ configuration is not lost by soft reset
+Thread-Index: AQHabskmJdw9ZE4JnUWWiAJ3CfXms7EqC1yAgAAEXoA=
+Date: Wed, 6 Mar 2024 03:29:32 +0000
+Message-ID: <935b7bd6fe116291ff5f1f5a7a52cdad89e4607a.camel@microchip.com>
+References: <20240305064802.2478971-1-o.rempel@pengutronix.de>
+	 <20240305191457.37419bd4@kernel.org>
+In-Reply-To: <20240305191457.37419bd4@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Evolution 3.36.5-0ubuntu1 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microchip.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH7PR11MB8033:EE_|CH3PR11MB8591:EE_
+x-ms-office365-filtering-correlation-id: 6001a1ab-573b-44db-f8b4-08dc3d8da3e5
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: jjl+q09Bqe99fFR5TvCmtK7hrVdJYdJkdB28C5nbaOGSEFIRLdQyEBk1vSI0G8w5OQi1VQoOSbk26g3XMG/nSZRHXf+WMYn7TAS1zw9so4dbvVQzvM/A9SZeskBtHfLXEVcnAhLjjuYt7Xurxrq/f8QGWMxKGJ/NRyBu2eMHcFci/Fou2fTI/rw0FPihKB2q3x3HsUn7YUkxN+/VnDuSScpPiCNyRbItBdAq3WnnjaU93uD4vImj6WEsRFj+wTfFeFt3VmJHCP+tJooGxD1PJw6ZMazG/ZDYKvYW0Ql3MNucOHgyAbzG4bUiLVAHj04Q14D7JaZcv6P08ZpO9GggZsWuAuMvd1Wm4A0RRbB5Tuae8C9q08MzrM7BTJ0aIvI0XrqNQ11KQhIRnzx7sacsqHS7OQh7s4jN33FzJhUtSVj92N+vT3onr3H6iKGQE0svInq1a6DwaQ0xvfQYSOhyEm0/9bsXZLVC8Lc9EdsD+cv40FX3YRjUxs/SMQ5SlqiHLOZAvD3RvEEC/H0jsGs3cgmaXWiQ9RZa+SLvqxeLeka/hfXmrbJ2VXERrn+YNtXcbLgprNgvsdm76tZWtjChDHNjSQQjJrxDbwBF+nNkb7U5CIgJcAw4+b1pE5iKvExJCmRgtYb6sOv9x5TKCOPtHIFsbf5MqbJLMYwObIxbWp3Mr6ZumzCj90bQnTczKRIpua/PF+mmX8OtOBwuvmCcAg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR11MB8033.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?emd0cTdoYlhWOHBEMjU3K2lMNWZFNGNVSVdENUhKdTRHWlloMUNpK2phWEZH?=
+ =?utf-8?B?RjJjL0sreHZlQ3FuUGhsTmZqVzhOSVlCdk9RUHNUY0NjQ2tmR1krTVAzcmZH?=
+ =?utf-8?B?TjdSR2YzMzBvZlFIZGxlQzEwSThJQ1duWFNKckNYdEtPTGpPVUNvMnZGQkVr?=
+ =?utf-8?B?SFlKaHJIQXRxVEJ2a3MzOTJPdmJaeWFYTjJqMkFZRHRPcjJ5QzFPQVY4WXNP?=
+ =?utf-8?B?TGNld1dKQVBuRi90RVhRM3FkMXVOc1JHM1lWUWc2TkthWVhLaHBsTDVFMEtW?=
+ =?utf-8?B?M1prV1BpUVVZMm8wMnM2Skd1S3BXdmNOKzRBbEJkVzdoV1BWMFNhMkh6VHpn?=
+ =?utf-8?B?d1JvK2N5L2tVV0lWT0h1ZWxQUnBPanQ4OHlIMjN5QjBJRE9lRHoyNnR5TTkw?=
+ =?utf-8?B?c3RmaG9WOGU3bHVURE04VUc2bHpid0YzcGJSbnh0ZzRPZ0lEUUwwM3M0UDlS?=
+ =?utf-8?B?VDlCZjRnSVVScXZNbEFEZGViMExvWkRsa21jTkhUYXFKYlplUzByMm80WVBG?=
+ =?utf-8?B?MHpUREJTKysxdUNHM3gvWlhlZmJ1Z2pHTFg3MFFNR3hyZllZWUtQaDdsNmFi?=
+ =?utf-8?B?YlFxVnhNRXcxRXpuWVVvOEdwMGdhTWdIWU8zVzV5eFh1U0hQVWhoTXpIZjRD?=
+ =?utf-8?B?R1hKbnVkRGNqZWVjZ2ovbi9waklWT2taU1JwL0VuMklUZm5ydnpkeUFCcjNL?=
+ =?utf-8?B?RThCUG9uNnVLSGNXZFJXQXhDcDFEenJXOHlCUmViT0tFSEJrVFJEeW4vbGgy?=
+ =?utf-8?B?ampZNjJ1SVpkdCtSMm1UKzRwaVpwTDZDc1dMd1U1RWg5Q0ZCMmJWY1c3VUJZ?=
+ =?utf-8?B?ajdkZWNXV2JRSnpEbWhkZGV3VTBCbllwS1kvbHFoc0NMOHg5RGNXaXZEOEln?=
+ =?utf-8?B?UG9Zdzc0VCtORlREdjhtT0VqRDR4MFprT3pYb2hNQmNhaXp0R040RU1sWDVM?=
+ =?utf-8?B?ME1LT1IweisrdjVkRWFzWk9qSTQ5ZlluNFBlQ2ZheExqNXRsT2F1SmJaWklv?=
+ =?utf-8?B?b3ZKRVp3NDJIbVAyZzRDSm9LRGIyNXpZU2dUSnUzOFVwYmlqYTFYSW4xdW1Z?=
+ =?utf-8?B?M2hpR1NxZng4Qm5nb2cvSElWOTNpTVc4N1pmN1lCTmZIa05OUVNMenhmMklt?=
+ =?utf-8?B?Ukh5dUh1T0VjK2lOV3pRMS9GUmFvV3VubjdFNG92dDRrZTJUcXBtL3BzUktF?=
+ =?utf-8?B?LzdreGFmbkVVSVAvSVVXcEtMNStLTTkwclFiZ2pXSjRxMVQ1dVJ5SEY2VDVy?=
+ =?utf-8?B?QkdJbGV4bWFTYkFWUDB4V0RRa0xNU2dxYnJmeUdQUzI0UjJZQjJTeU5KWSsx?=
+ =?utf-8?B?NHhGT3dnZXpoeUtMZmF5VEdKT1c5V1V1YTRBSGN1VDJNNXNXY2tYY3h6MUw2?=
+ =?utf-8?B?TVREVGxtUG9UbldqSmM0bTg3bXByWmMyUUtQTnhxOUZWZ1lPQ01sVmViU2c2?=
+ =?utf-8?B?VS9XY1YxTk5iS05ubUk1Y2NCcnZNaHZGM2d1NWlxemdSVUFZWnN4dDA1eGN3?=
+ =?utf-8?B?aTFnWTJJWGg0ekNHcmo5QXFzY292R2tBNnlxSXdvOUwweGkvY0tBcG5vUElh?=
+ =?utf-8?B?NjZkOWFVYjZWdmtYMFVybkdwdkMxVUZnajNCdEtuS25IdUlEamw5YVVQRDRE?=
+ =?utf-8?B?SW5Tczd6bGIyYm5FSXpEaTlZL24yakdYVjJWb0FUV2Jlb1hmSUIzSmhJMUtL?=
+ =?utf-8?B?Z0lQVzk2aE5FME5NWmttNEUrS3htNG92cnFiT29tcXIrUHV1NWZhQXhwcU1I?=
+ =?utf-8?B?Nyt3dDV5b0tuQmIvbWd1SEx0bTR0cG55aWlUMTIyc2RERDBaek1BV1dkUzZC?=
+ =?utf-8?B?cTZzQlhkVk1hWVA5eU5LbUY1TzN3OHVFY2tPY0dyb0lDM2VMbUJwUHczeDZS?=
+ =?utf-8?B?VHg4dWxaSm1JZ1V2K0RvR0ZpQm9IUzVsVnZ1RXJqQXNrc05tR1NoaGN0aUNG?=
+ =?utf-8?B?SHluZ3U4R0MrNnZ1UXZGem1jZmV1Zi94ZTJ1WmdMZ2JNR2dkcm51VSs5Tkdi?=
+ =?utf-8?B?cldZWGpRUkJjbWtlQk8wMGdyeUQzbTRuUVZabUFMUkdtSUxkYjBzYTBZOHAy?=
+ =?utf-8?B?b1plZWJMUUdoOFFTV0xlT2FiYTAxMTdQVW9xTWk4cGJJSVVKdnhJNk1IcVls?=
+ =?utf-8?B?RTNsYzF0QlV2ek9NditmT1pkWW52OHhRajZCNTRpZnFCRVdZbU15cEtYdndY?=
+ =?utf-8?B?Vnc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <0C29AC4477E59640BFBE1DA3D47A04F3@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <ec871702-388d-4a29-aec1-5cd6d1de6d0a@xen0n.name>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8CxrhPr4udlyftOAA--.23378S3
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj93XoWxKw4DAFWrZr1rXFWUtF1kJFc_yoWfCr47pF
-	95Ga4xtrWkJryxAw12gw1UXry2yr18Jw1UXrn5JFy8Aws8Zr1aqr42qF1Y9F1kGr48Ar1j
-	qr4UXry7uw15A3cCm3ZEXasCq-sJn29KB7ZKAUJUUUU7529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUP2b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6r4UJVWxJr1ln4kS14v26r1Y6r17M2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12
-	xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r12
-	6r1DMcIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr4
-	1lc7I2V7IY0VAS07AlzVAYIcxG8wCY1x0262kKe7AKxVWUAVWUtwCF04k20xvY0x0EwIxG
-	rwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C267AKxVWUXVWUAwC20s026c02F40E14
-	v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
-	c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
-	0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4U
-	MIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8HKZJUUUU
-	U==
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB8033.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6001a1ab-573b-44db-f8b4-08dc3d8da3e5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Mar 2024 03:29:32.8869
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Q1PC3M1L71JoqLuf2vFvImuW0YZGwxzM8jGlNm7apfnWcePBzOJyPkh5fHr2KHBJgX+7NEQC2zy+R21CdY68eJ+R+lH9T3FW5dJxrp+Zc74=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB8591
 
-
-
-On 2024/3/6 上午2:26, WANG Xuerui wrote:
-> On 3/4/24 17:10, maobibo wrote:
->> On 2024/3/2 下午5:41, WANG Xuerui wrote:
->>> On 3/2/24 16:47, Bibo Mao wrote:
->>>> [snip]
->>>> +Querying for existence
->>>> +======================
->>>> +
->>>> +To find out if we're running on KVM or not, cpucfg can be used with 
->>>> index
->>>> +CPUCFG_KVM_BASE (0x40000000), cpucfg range between 0x40000000 - 
->>>> 0x400000FF
->>>> +is marked as a specially reserved range. All existing and future 
->>>> processors
->>>> +will not implement any features in this range.
->>>> +
->>>> +When Linux is running on KVM, cpucfg with index CPUCFG_KVM_BASE 
->>>> (0x40000000)
->>>> +returns magic string "KVM\0"
->>>> +
->>>> +Once you determined you're running under a PV capable KVM, you can 
->>>> now use
->>>> +hypercalls as described below.
->>>
->>> So this is still the approach similar to the x86 CPUID-based 
->>> implementation. But here the non-privileged behavior isn't specified 
->>> -- I see there is PLV checking in Patch 3 but it's safer to have the 
->>> requirement spelled out here too.
->>>
->>> But I still think this approach touches more places than strictly 
->>> needed. As it is currently the case in 
->>> arch/loongarch/kernel/cpu-probe.c, the FEATURES IOCSR is checked for 
->>> a bit IOCSRF_VM that already signifies presence of a hypervisor; if 
->>> this information can be interpreted as availability of the HVCL 
->>> instruction (which I suppose is the case -- a hypervisor can always 
->>> trap-and-emulate in case HVCL isn't provided by hardware), here we 
->>> can already start making calls with HVCL.
->>>
->>> We can and should define a uniform interface for probing the 
->>> hypervisor kind, similar to the centrally-managed RISC-V SBI 
->>> implementation ID registry [1]: otherwise future non-KVM hypervisors 
->>> would have to
->>>
->>> 1. somehow pretend they are KVM and eventually fail to do so, leading 
->>> to subtle incompatibilities,
->>> 2. invent another way of probing for their existence,
->>> 3. piggy-back on the current KVM definition, which is inelegant 
->>> (reading the LoongArch-KVM-defined CPUCFG leaf only to find it's not 
->>> KVM) and utterly makes the definition here *not* KVM-specific.
->>>
->>> [1]: 
->>> https://github.com/riscv-non-isa/riscv-sbi-doc/blob/v2.0/src/ext-base.adoc 
->>>
->>>
->> Sorry, I know nothing about riscv. Can you describe how 
->> sbi_get_mimpid() is implemented in detailed? Is it a simple library or 
->> need trap into secure mode or need trap into hypervisor mode?
-> 
-> For these simple interfaces you can expect trivial implementation. See 
-> for example [OpenSBI]'s respective code.
-> 
-> [OpenSBI]: 
-> https://github.com/riscv-software-src/opensbi/blob/v1.4/lib/sbi/sbi_ecall.c#L29-L34 
-> 
-> 
->>> My take on this:
->>>
->>> To check if we are running on Linux KVM or not, first check IOCSR 0x8 
->>> (``LOONGARCH_IOCSR_FEATURES``) for bit 11 (``IOCSRF_VM``); we are 
->>> running under a hypervisor if the bit is set. Then invoke ``HVCL 0`` 
->>> to find out the hypervisor implementation ID; a return value in 
->>> ``$a0`` of 0x004d564b (``KVM\0``) means Linux KVM, in which case the 
->>> rest of the convention applies.
->>>
->> I do not think so. `HVCL 0` requires that hypercall ABIs need be 
->> unified for all hypervisors. Instead it is not necessary, each 
->> hypervisor can has its own hypercall ABI.
-> 
-> I don't think agreeing upon the ABI of HVCL 0 is going to affect ABI of 
-> other hypercalls. Plus, as long as people don't invent something that 
-> they think is smart and deviate from the platform calling convention, 
-> I'd expect every hypervisor to have identical ABI apart from the exact 
-> HVCL operation ID chosen.
-> 
->>>> +
->>>> +KVM hypercall ABI
->>>> +=================
->>>> +
->>>> +Hypercall ABI on KVM is simple, only one scratch register a0 (v0) 
->>>> and at most
->>>> +five generic registers used as input parameter. FP register and 
->>>> vector register
->>>> +is not used for input register and should not be modified during 
->>>> hypercall.
->>>> +Hypercall function can be inlined since there is only one scratch 
->>>> register.
->>>
->>> It should be pointed out explicitly that on hypercall return all 
->> Well, return value description will added. What do think about the 
->> meaning of return value for KVM_HCALL_FUNC_PV_IPI hypercall?  The 
->> number of CPUs with IPI delivered successfully like kvm x86 or simply 
->> success/failure?
->>> architectural state except ``$a0`` is preserved. Or is the whole 
->>> ``$a0 - $t8`` range clobbered, just like with Linux syscalls?
->>>
->> what is advantage with $a0 - > $t8 clobbered?
-> 
-> Because then a hypercall is going to behave identical as an ordinary C 
-> function call, which is easy for people and compilers to understand.
-> 
-If you really understand detailed behavior about hypercall/syscall, the 
-conclusion may be different.
-
-If T0 - T8 is clobbered with hypercall instruction, hypercall caller 
-need save clobbered register, now hypercall exception save/restore all 
-the registers during VM exits. If so, hypercall caller need not save 
-general registers and it is not necessary scratched for hypercall ABI.
-
-Until now all the discussion the macro level, no detail code level.
-
-Can you show me some example code where T0-T8 need not save/restore 
-during LoongArch hypercall exception?
-
-Regards
-Bibo Mao
-
->> It seems that with linux Loongarch syscall, t0--t8 are clobber rather 
->> than a0-t8. Am I wrong?
-> 
-> You're right, my memory has faded a bit. But I think my reasoning still 
-> holds.
-> 
->>>> +
->>>> +The parameters are as follows:
->>>> +
->>>> +        ========    ================    ================
->>>> +    Register    IN            OUT
->>>> +        ========    ================    ================
->>>> +    a0        function number        Return code
->>>> +    a1        1st parameter        -
->>>> +    a2        2nd parameter        -
->>>> +    a3        3rd parameter        -
->>>> +    a4        4th parameter        -
->>>> +    a5        5th parameter        -
->>>> +        ========    ================    ================
->>>> +
->>>> +Return codes can be as follows:
->>>> +
->>>> +    ====        =========================
->>>> +    Code        Meaning
->>>> +    ====        =========================
->>>> +    0        Success
->>>> +    -1        Hypercall not implemented
->>>> +    -2        Hypercall parameter error
->>>
->>> What about re-using well-known errno's, like -ENOSYS for "hypercall 
->>> not implemented" and -EINVAL for "invalid parameter"? This could save 
->>> people some hair when more error codes are added in the future.
->>>
->> No, I do not think so. Here is hypercall return value, some OS need 
->> see it. -ENOSYS/-EINVAL may be not understandable for non-Linux OS.
-> 
-> As long as you accept the associated costs (documentation, potential 
-> mapping back-and-forth, proper conveyance of information etc.) I have no 
-> problem with that either.
-> 
->>>> +    ====        =========================
->>>> +
->>>> +KVM Hypercalls Documentation
->>>> +============================
->>>> +
->>>> +The template for each hypercall is:
->>>> +1. Hypercall name
->>>> +2. Purpose
->>>> +
->>>> +1. KVM_HCALL_FUNC_PV_IPI
->>>> +------------------------
->>>> +
->>>> +:Purpose: Send IPIs to multiple vCPUs.
->>>> +
->>>> +- a0: KVM_HCALL_FUNC_PV_IPI
->>>> +- a1: lower part of the bitmap of destination physical CPUIDs
->>>> +- a2: higher part of the bitmap of destination physical CPUIDs
->>>> +- a3: the lowest physical CPUID in bitmap
->>>
->>> "CPU ID", instead of "CPUID" for clarity: I suppose most people 
->>> reading this also know about x86, so "CPUID" could evoke the wrong 
->>> intuition.
->>>
->> Both "CPU core id" or "CPUID" are ok for me since there is csr 
->> register named LOONGARCH_CSR_CPUID already.
-> 
-> I was suggesting to minimize confusion even at theoretical level, 
-> because you cannot assume anything about your readers. Feel free to 
-> provide extra info (e.g. the "CPU core ID" you suggested) as long as it 
-> helps to resolve any potential ambiguity / confusion.
-> 
->>> This function is equivalent to the C signature "void hypcall(int 
->>> func, u128 mask, int lowest_cpu_id)", which I think is fine, but one 
->>> can also see that the return value description is missing.
->>>
->> Sure, the return value description will added.
->>
->> And it is not equivalent to the C signature "void hypcall(int func, 
->> u128 mask, int lowest_cpu_id)". int/u128/stucture is not permitted 
->> with hypercall ABI, all parameter is "unsigned long".
-> 
-> I was talking about the ABI in a C perspective, and the register usage 
-> is identical. You can define the KVM hypercall ABI however you want but 
-> having some nice analogy/equivalence would help a lot, especially for 
-> people not already familiar with all the details.
-> 
-
+SGkgSmFrdWIsDQoNCk9uIFR1ZSwgMjAyNC0wMy0wNSBhdCAxOToxNCAtMDgwMCwgSmFrdWIgS2lj
+aW5za2kgd3JvdGU6DQo+IEVYVEVSTkFMIEVNQUlMOiBEbyBub3QgY2xpY2sgbGlua3Mgb3Igb3Bl
+biBhdHRhY2htZW50cyB1bmxlc3MgeW91DQo+IGtub3cgdGhlIGNvbnRlbnQgaXMgc2FmZQ0KPiAN
+Cj4gT24gVHVlLCAgNSBNYXIgMjAyNCAwNzo0ODowMiArMDEwMCBPbGVrc2lqIFJlbXBlbCB3cm90
+ZToNCj4gPiBUaGlzIGRyaXZlciBoYXMgdHdvIHNlcGFyYXRlIHJlc2V0IHNlcXVlbmNlIGluIGRp
+ZmZlcmVudCBwbGFjZXM6DQo+ID4gLSBncGlvL0hXIHJlc2V0IG9uIHN0YXJ0IG9mIGtzel9zd2l0
+Y2hfcmVnaXN0ZXIoKQ0KPiA+IC0gU1cgcmVzZXQgb24gc3RhcnQgb2Yga3N6X3NldHVwKCkNCj4g
+PiANCj4gPiBUaGUgc2Vjb25kIG9uZSB3aWxsIG92ZXJ3cml0ZSBkcml2ZSBzdHJlbmd0aCBjb25m
+aWd1cmF0aW9uIG1hZGUgaW4NCj4gPiB0aGUNCj4gPiBrc3pfc3dpdGNoX3JlZ2lzdGVyKCkuDQo+
+ID4gDQo+ID4gVG8gZml4IGl0LCBtb3ZlIGtzel9wYXJzZV9kcml2ZV9zdHJlbmd0aCgpIGZyb20N
+Cj4gPiBrc3pfc3dpdGNoX3JlZ2lzdGVyKCkgdG8NCj4gPiBrc3pfc2V0dXAoKS4NCj4gPiANCj4g
+PiBGaXhlczogZDY3ZDcyNDdmNjQxICgibmV0OiBkc2E6IG1pY3JvY2hpcDogQWRkIGRyaXZlIHN0
+cmVuZ3RoDQo+ID4gY29uZmlndXJhdGlvbiIpDQo+ID4gU2lnbmVkLW9mZi1ieTogT2xla3NpaiBS
+ZW1wZWwgPG8ucmVtcGVsQHBlbmd1dHJvbml4LmRlPg0KPiANCj4gSG0sIHRoaXMgaXMgbXVjaCBs
+YXJnZXIgdGhhbiBJIGFudGljaXBhdGVkLCBhbmQgYWxzbyBkb2Vzbid0IGFwcGx5LA0KPiBzbyB0
+aGVyZSB3aWxsIGJlIGNvbmZsaWN0IHdpdGggLW5leHQuIEFuZHJldywgc2hvdWxkIHdlIGdvIGJh
+Y2sgdG8NCj4gdGhlIHYxPw0KDQpTdWdnZXN0aW9uOiBJbnN0ZWFkIG9mIG1vdmluZyBrc3pfcGFy
+c2VfZHJpdmVfc3RyZW5ndGgoKSBmcm9tIGVuZCBvZg0KZmlsZSB0byBhYm92ZSwgY2FuIHdlIG1v
+dmUga3N6X3NldHVwKCkgJiBrc3pfdGVhcmRvd24oKSBkb3duLiBTbyB0aGF0DQp0aGUgY2hhbmdl
+cyB3aWxsIGJlIG1pbmltYWwuIFdpbGwgdGhhdCB3b3JrPw0KDQoNCg==
 
