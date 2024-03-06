@@ -1,111 +1,260 @@
-Return-Path: <linux-kernel+bounces-93607-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93610-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBDE787324D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:17:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D555873251
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:18:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E7271F2836D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:17:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E95B528FA47
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:18:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A08085D903;
-	Wed,  6 Mar 2024 09:17:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB8535F55E;
+	Wed,  6 Mar 2024 09:17:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OQHgjgIP"
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TuaaJn85"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5288914F7F
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 09:16:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23C7C5F54D
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 09:17:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709716620; cv=none; b=Dq/SJu9YuiVSjGyJK/drHnuP5z1PLwIONcM6D+YI8FxG9odhruwKHcRuio2nz2mOrPz391mpANP2ljr8VIutae0lMiTBoaNZWgxeRxQVn0bx7mAOi30GkcH/GZR0Z/0SCE7QkS3QPW82WXUkwbsb3eivwiiuVXjq80F1YLt5RZY=
+	t=1709716628; cv=none; b=HaNNPiU1w/vYZPb2jDS6e6vrtEnMl9wgcH1a4hkGWhsybR13nl4e94USKNIr1OF0BWfmWsuBzrtOmIeZQ9YcTRpQWX4GMVg+OO/OsiAkhkXrc6MGtgCwBQgphbR6NBvapuq2/nOAJScdClag+gyOseZTdhLUlvIXY1yhAZAh4l8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709716620; c=relaxed/simple;
-	bh=O/uagpH1J2ovFBUYOloLfOGN60s6T8qshy3/cRcREIw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LtR3nZ5pvFv9/cKvX3wdEWN4Ib7eC1qawvUCGW/YLkUuV6PkW+0T0G6tzfDrTA6QEfK1jYdK/+0rHrn15CBBaKjT3OsAWzlAXZ41vR8qv3KzyHV3/Km83SHHXm82DsVQ1Sh2bpV3qicaNTZ6x2BANL4e2f626hJ+0nOSigKjA3U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OQHgjgIP; arc=none smtp.client-ip=209.85.208.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-56759dc7ea6so4101795a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 01:16:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709716617; x=1710321417; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Bsi/FoHj6ShlQY8qXSzOurtSi457MXtNJ96Ob2I9GjQ=;
-        b=OQHgjgIPj6aC4i1k1j3dKDefYYFOd0ePjPevLVPTrR0O8ZwQYxJ9npr24ZX5CUD15K
-         iXjWF2Mrl6JWebHb6DPmvrEFu8KJgBq7ZoAS0rCAkPM5pAMcFiUcX14mvLmM7rIkcfJ1
-         Gqr4R/cSt99qROs1LOLaZiDUdLDi9r5BNZr6f3csDn0Iz1DDvZMkWzaVMmMEPRatE02b
-         2HP0V6acWT7CG1KRjy/9SkO0x6P8bVQhh3BkRUihhL0KA8rRn3LML5WxHx0DLZSdT6nI
-         XpBaUe1+4Yu2DNtleLMNN/XmL+W01tZbalk/n/sAIV103k4k967iZFMfvK3P0R/2mke0
-         DtTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709716617; x=1710321417;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Bsi/FoHj6ShlQY8qXSzOurtSi457MXtNJ96Ob2I9GjQ=;
-        b=aVH8m8P99zTQqICKQWvZrde67a4xvrHYQpBxJ6tugT2J65VyorjlfQAJrFtc1p9SiU
-         9qO6M2GbLFVZW0KIpF0G7+AWeUImoBwxPNlhNBBt20FnI/bczTYBZ51hn+l2COFE3k+D
-         fD+o6844z0b0eVsmkawhPDDoJwJHDM2KHln/VEzDbG3EtYFDmgOR4VvEz1XFMwYbtjKE
-         f6Cul+0veFIAeRSn7Jmw2ic3S5FjKtcUp6t0xmu326m/v7VSqbjdtVO9rllzYtLLhBKB
-         ZOrs01HXey3BONRxYfK04MGA189MRFRkK+0xBXi0f/A4tHj4qitlzylzGe7mosdPH4IP
-         iCIg==
-X-Gm-Message-State: AOJu0YzUMh4EhYSdaivJQTg8MDQclxurbkCFuq99acAjVgqM4cnOlbvf
-	oaofQsh64WXeTtw+NraEtcCxK0I3HVnKbuthIyXlHpGM2vBqLLj4
-X-Google-Smtp-Source: AGHT+IHMEriM1V1S/rHkOG+u1hX2eaAYg/Mb9sMSIRPWAU5KTUXIItClzgGjKpyENv7M5zkBZlSmgA==
-X-Received: by 2002:a50:85cc:0:b0:565:ec92:bec8 with SMTP id q12-20020a5085cc000000b00565ec92bec8mr9268292edh.7.1709716617053;
-        Wed, 06 Mar 2024 01:16:57 -0800 (PST)
-Received: from gmail.com (1F2EF3E5.nat.pool.telekom.hu. [31.46.243.229])
-        by smtp.gmail.com with ESMTPSA id be27-20020a0564021a3b00b0056650031d94sm6713057edb.90.2024.03.06.01.16.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Mar 2024 01:16:56 -0800 (PST)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date: Wed, 6 Mar 2024 10:16:54 +0100
-From: Ingo Molnar <mingo@kernel.org>
-To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc: LKML <linux-kernel@vger.kernel.org>,
-	the arch/x86 maintainers <x86@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH v2] x86: disable non-instrumented version of copy_mc when
- KMSAN is enabled
-Message-ID: <Zeg0hpElT3TSZcNW@gmail.com>
-References: <3b7dbd88-0861-4638-b2d2-911c97a4cadf@I-love.SAKURA.ne.jp>
- <06c11112-db64-40ed-bb96-fa02b590a432@I-love.SAKURA.ne.jp>
+	s=arc-20240116; t=1709716628; c=relaxed/simple;
+	bh=IUe3cAnoMPthLD2FcvfY1gDuS5k9Mc7AV8gDfGAWObY=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=RGmBwKq+Zxh5QPTXykApdrc0nF2lFIEiG064y3stm1DHGAGyizpFx30z2Rh18fOMNwWjgpuxjmLVRQJgJBWHR68W0FZB8GNsoCw9tGB4r6+J7MHMawGu6ggTACjfVxiNq07+qosMpDxIt5Aye0wH83S1tOc7WPyCKpLEpDz6P3c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TuaaJn85; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709716627; x=1741252627;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=IUe3cAnoMPthLD2FcvfY1gDuS5k9Mc7AV8gDfGAWObY=;
+  b=TuaaJn85bbZdN6zPtEp5+1CReL9vu9kl5UWdfa1y/ktkRdY1+VYkB3XR
+   7XBw3Ztn6UUxVtYsBo+8YZszjUZu+mQeQhH9d945So2FGbWTAp2brCiw6
+   TRBp8k38iQ73lxZGBcL2P0ZBabNPjqVuEh1VA/8eH7v/fKhLXdKhaW8bu
+   ava9oYR1F8bSVxQOckAGa82E8aKEeUAce7Ox+gxuSoGprjftlPYmtqWhj
+   XOp5iQdMZkcf6LwtYlubDeXz+hYoqpLAJO0+E0FOd75yDIEpYO1PM4+MW
+   MKCekUblXhaQIzjsZ4D2VplsoxQVpBHssVCgq0PpeUNVM8BfBpmoT91JC
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11004"; a="7260737"
+X-IronPort-AV: E=Sophos;i="6.06,207,1705392000"; 
+   d="scan'208";a="7260737"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 01:17:06 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,207,1705392000"; 
+   d="scan'208";a="9855181"
+Received: from rjongalo-mobl2.ger.corp.intel.com (HELO localhost) ([10.252.33.211])
+  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 01:17:02 -0800
+From: Jani Nikula <jani.nikula@linux.intel.com>
+To: Hsin-Yi Wang <hsinyi@chromium.org>, Dmitry Baryshkov
+ <dmitry.baryshkov@linaro.org>, Douglas Anderson <dianders@chromium.org>
+Cc: Neil Armstrong <neil.armstrong@linaro.org>, Jessica Zhang
+ <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, Maarten
+ Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
+ <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David
+ Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 2/5] drm/edid: Add a function to match EDID with
+ identity
+In-Reply-To: <20240306004347.974304-3-hsinyi@chromium.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20240306004347.974304-1-hsinyi@chromium.org>
+ <20240306004347.974304-3-hsinyi@chromium.org>
+Date: Wed, 06 Mar 2024 11:16:59 +0200
+Message-ID: <87sf13zpmc.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <06c11112-db64-40ed-bb96-fa02b590a432@I-love.SAKURA.ne.jp>
+Content-Type: text/plain
+
+On Tue, 05 Mar 2024, Hsin-Yi Wang <hsinyi@chromium.org> wrote:
+> Create a type drm_edid_ident as the identity of an EDID. Currently it
+> contains panel id and monitor name.
+>
+> Create a function that can match a given EDID and an identity:
+> 1. Reject if the panel id doesn't match.
+> 2. If name is not null in identity, try to match it in the detailed timing
+>    blocks. Note that some panel vendors put the monitor name after
+>    EDID_DETAIL_MONITOR_STRING.
+>
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> ---
+> v3->v4:
+> 1. add a type drm_edid_ident
+> 2. match name -> match identity. Modify function to use edid iterators.
+> ---
+>  drivers/gpu/drm/drm_edid.c | 76 ++++++++++++++++++++++++++++++++++++++
+>  include/drm/drm_edid.h     |  8 ++++
+>  2 files changed, 84 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
+> index f9e09f327f81..5e7e69e0e345 100644
+> --- a/drivers/gpu/drm/drm_edid.c
+> +++ b/drivers/gpu/drm/drm_edid.c
+> @@ -102,6 +102,11 @@ struct detailed_mode_closure {
+>  	int modes;
+>  };
+>  
+> +struct drm_edid_ident_closure {
+> +	const struct drm_edid_ident *ident;
+> +	bool matched;
+> +};
+
+More like drm_edid_match_closure.
+
+> +
+>  #define LEVEL_DMT	0
+>  #define LEVEL_GTF	1
+>  #define LEVEL_GTF2	2
+> @@ -5455,6 +5460,77 @@ drm_parse_hdmi_vsdb_audio(struct drm_connector *connector, const u8 *db)
+>  		    connector->audio_latency[0], connector->audio_latency[1]);
+>  }
+>  
+> +static void
+> +match_identity(const struct detailed_timing *timing, void *data)
+> +{
+> +	struct drm_edid_ident_closure *closure = data;
+> +	unsigned int i, j;
+> +	const char *str = closure->ident->name;
+> +	unsigned int buflen = strlen(str);
+> +	unsigned int size = ARRAY_SIZE(timing->data.other_data.data.str.str);
+> +
+> +	if (buflen > size ||
+> +	    !(is_display_descriptor(timing, EDID_DETAIL_MONITOR_NAME) ||
+> +	      is_display_descriptor(timing, EDID_DETAIL_MONITOR_STRING)))
+> +		return;
+> +
+> +	for (i = 0; i < buflen; i++) {
+> +		char c = timing->data.other_data.data.str.str[i];
+> +
+> +		if (c != str[i] ||  c == '\n')
+> +			break;
+> +		}
+> +
+> +		if (i == buflen) {
+
+This will never be true.
+
+> +			/* Allow trailing white spaces. */
+> +			for (j = i; j < size; j++) {
+> +				char c = timing->data.other_data.data.str.str[j];
+> +
+> +				if (c == '\n') {
+> +					closure->matched = true;
+> +					return;
+> +				} else if (c != ' ') {
+> +					break;
+> +				}
+> +			}
+> +			if (j == size) {
+> +				closure->matched = true;
+> +				return;
+> +			}
+> +	}
+
+Please let's use strcmp and friends instead of reinventing our own:
+
+const char *name = closure->ident->name;
+int name_len = strlen(name);
+const char *desc = timing->data.other_data.data.str.str;
+int desc_len = ARRAY_SIZE(timing->data.other_data.data.str.str);
+
+if (name_len > desc_len)
+	return;
+
+if (strncmp(name, desc, name_en))
+	return;
+
+for (i = name_len; i < desc_len; i++) {
+	if (!isspace(desc[i]) && !desc[i])
+        	return;
+}
+
+closure->matched = true;
 
 
-* Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp> wrote:
+> +}
+> +
+> +/**
+> + * drm_edid_match_identity - match drm_edid with given identity
+> + * @drm_edid: EDID
+> + * @ident: the EDID identity to match with
+> + *
+> + * Check if the EDID matches with the given identity.
+> + *
+> + * Return: True if the given identity matched with EDID, false otherwise.
+> + */
+> +bool drm_edid_match_identity(const struct drm_edid *drm_edid,
+> +			     const struct drm_edid_ident *ident)
 
-> Ping?
-> 
-> This is current top crasher.
-> I hope this patch is applied before the merge window opens.
+Can we please just call this drm_edid_match()? Is the _identity in the
+name somehow helpful?
 
-1) A false positive is not a 'crasher', it's a bug in instrumentation.
+> +{
+> +	if (!drm_edid || edid_extract_panel_id(drm_edid->edid) != ident->panel_id)
+> +		return false;
 
-2) A false positive in intrusive instrumentation that top distributions do 
-   not enable in their kernels has no immediate relevance to the timing of 
-   the merge window.
+Side note, edid_extract_panel_id() could now be made to take struct
+drm_edid.
 
-Thanks,
+> +
+> +	/* Match with name only if it's not NULL. */
+> +	if (ident->name) {
+> +		struct drm_edid_ident_closure closure = {
+> +			.ident = ident,
+> +			.matched = false,
+> +		};
+> +
+> +		drm_for_each_detailed_block(drm_edid, match_identity, &closure);
+> +
+> +		return closure.matched;
+> +	}
+> +
+> +	return true;
+> +}
+> +EXPORT_SYMBOL(drm_edid_match_identity);
+> +
+>  static void
+>  monitor_name(const struct detailed_timing *timing, void *data)
+>  {
+> diff --git a/include/drm/drm_edid.h b/include/drm/drm_edid.h
+> index 9686a7cee6a6..01825a8954b6 100644
+> --- a/include/drm/drm_edid.h
+> +++ b/include/drm/drm_edid.h
+> @@ -312,6 +312,12 @@ struct edid {
+>  	u8 checksum;
+>  } __packed;
+>  
+> +/* EDID matching */
+> +struct drm_edid_ident {
+> +	u32 panel_id;
+> +	const char *name;
+> +};
+> +
+>  #define EDID_PRODUCT_ID(e) ((e)->prod_code[0] | ((e)->prod_code[1] << 8))
+>  
+>  /* Short Audio Descriptor */
+> @@ -412,6 +418,8 @@ struct edid *drm_get_edid(struct drm_connector *connector,
+>  			  struct i2c_adapter *adapter);
+>  const struct drm_edid *drm_edid_read_base_block(struct i2c_adapter *adapter);
+>  u32 drm_edid_get_panel_id(const struct drm_edid *drm_edid);
+> +bool drm_edid_match_identity(const struct drm_edid *drm_edid,
+> +			     const struct drm_edid_ident *ident);
+>  struct edid *drm_get_edid_switcheroo(struct drm_connector *connector,
+>  				     struct i2c_adapter *adapter);
+>  struct edid *drm_edid_duplicate(const struct edid *edid);
 
-	Ingo
+-- 
+Jani Nikula, Intel
 
