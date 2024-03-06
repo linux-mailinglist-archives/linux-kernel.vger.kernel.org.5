@@ -1,138 +1,135 @@
-Return-Path: <linux-kernel+bounces-93481-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93482-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5880587305E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:15:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BA67873065
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:15:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E745AB2455F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 08:15:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E2541C2424A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 08:15:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89FC65CDFF;
-	Wed,  6 Mar 2024 08:14:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFAF05D478;
+	Wed,  6 Mar 2024 08:15:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="r2ZsXmv+"
-Received: from out203-205-221-192.mail.qq.com (out203-205-221-192.mail.qq.com [203.205.221.192])
+	dkim=pass (2048-bit key) header.d=atmark-techno.com header.i=@atmark-techno.com header.b="hcmvYpWq"
+Received: from gw2.atmark-techno.com (gw2.atmark-techno.com [35.74.137.57])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E525199DC;
-	Wed,  6 Mar 2024 08:14:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.192
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DAC05C8F9
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 08:15:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.74.137.57
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709712892; cv=none; b=E9ThCOyLl0+a7O81E1IM3YpWE2J2sUxGDXU0kfPLKsZyxT4Xs3CHlESC5kri+B4G+YQF5chM1ZF7GjCv22zC2snM+oNC4tC+2qZRNv1Bh4B/O/QHmJTRExkOcEBSxoj8lM9iF2Qjy81KYfSR66XsTfslTOwoyY9BtNt52FsXPtg=
+	t=1709712939; cv=none; b=PUumF4yRE6KxvacDDRWYlmKwkphhotxRbzZnNHJb+CidObOXeZ7H12OfAaFFa9HkfGkQYdh3oVf/4ZVSmcHgwAJkpg3AgI0bRA4M0TcEKX5GvMXH+BpK1gTWA3S3bnHKLJHu9tpZ450CNkoVDSUZW9wiJ+Ipb03kgrHhUiXgwaI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709712892; c=relaxed/simple;
-	bh=pPMJnH0jCizktLagCZ8sCvRmAhlYwiHpXpjh0p5Cjuw=;
-	h=Message-ID:Content-Type:Mime-Version:Subject:From:In-Reply-To:
-	 Date:Cc:References:To; b=pK1PbPRyP+Jba45GDr/A4/hgstmkaSP8FowjLheN8sEGZ1P+xoQoFpzMeIAdK9ZOjTQv06x8gDHITJ2uUzaqr1uwAxpqMb4/S38O2w4PLI8XLQBaSJDjXg+hkTnSwF5bkaXvBYBGJY3GOSbLfwdx4pO409WlUgrIEef69DJpivg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name; spf=none smtp.mailfrom=cyyself.name; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=r2ZsXmv+; arc=none smtp.client-ip=203.205.221.192
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cyyself.name
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1709712887; bh=9ZDgt5gLIY11SLql3p/ig4kBiaTGNRUoEIGN2lKaRXU=;
-	h=Subject:From:In-Reply-To:Date:Cc:References:To;
-	b=r2ZsXmv+5w0eHtCGI8p4hI9qOsBODQFlhj7zPbD9ZDOLngvhrssOinr1vJbvjs4G5
-	 qll6pevem8iMGrWjkqEacXvvorEMlI0qeGPvPx0uoM4AX1D2cP/dOuPz2HEeIW2uG3
-	 5IRtc2faS6pdPVF/sYtgaH4dvxE/wVQBaTFbkEqs=
-Received: from smtpclient.apple ([2001:da8:c800:d084:84f7:c158:bab8:8899])
-	by newxmesmtplogicsvrszb9-1.qq.com (NewEsmtp) with SMTP
-	id 3AB9F6A4; Wed, 06 Mar 2024 16:14:43 +0800
-X-QQ-mid: xmsmtpt1709712883txjjbm2qe
-Message-ID: <tencent_91E604E3B4D51DA37045625242A81B07F909@qq.com>
-X-QQ-XMAILINFO: NMiAo2azIaDAtuI0CHS+mfpvOPYmsI2MiZYibrr/Tsqdm+I3ZxIzjMsk3qNcep
-	 bVa+c/igwFVBE7LJiCeCBXQQIdVsJFCeHTu/UXDofThdVgjwzC4yaytc+SKptboVVzHmBORSmUky
-	 dXxngSHahP3Q1cTkzvkZPXhWa1KXSNjSfLVelBBevdNZtcouoYJVLJi4k8D30fUe33u3+uMQMvLm
-	 BDxoto3LUqeCA4yDGbRlnoQyvn8PWnKGljzgvv+5wbDOXWP3ULy5zeouxE09pb5s3gboRlLe/q4X
-	 /TXzDxuqCh+R0SIQXumhb1PnhlhVzmptBKZyHs9f3ilHa2arjn+BDrV7h5/5yUh8JrIHnyGY1gdu
-	 tHx3JTfCf+EEtneSZOoMIH+1hFGiEx+Bi6zQaPhoWdR/is811MseSHUO/ni4GYDn0KHi2K8IPdiC
-	 sE+CVL5hrQJw758Np+RfPCOdy5DgSQd3Dy0FP2KC31gEeXlkItCVGN2vemAl9IeG8ohDdZysZoF7
-	 +iofmHf8wTvz2Fj1NyBgZCINVb9d9jQ8kht4zHUR+M0nHxq0zo57sLDSLaXTeK07wmVrZPMNHjZ5
-	 KnjQg17qFfzyJSoqcBnYB06lc6VsI8WTrbJUr3Zr85Sd9gAnhzv1CiVE1eYMJ9Q3omrihXhjONu5
-	 /yq9labyj23RC0xT0ggp8sLrTh3H/RQIpaK8+zI/ykjQ53jEMfzbuBBLB7pXShvl6PkeMXitcaYk
-	 CXCZdvzryDdnZ5Kzr57l2GaKXXsecCFV4VXyfnWGq+YG4uheKooDCB+zQzOJ013FuzoJ0OcIg8eU
-	 7cf/fZvY99GxeE+jJfDea/azin5FF0gOpZzGLeIZ8op0vwiPBS5tde2QXoJyq3msRVW5MhF4g9c5
-	 yggGyaKG7nDUBJKq8lnrMF6rh7pF0s5iWgcbcTcE9OgTc21DljLiVXskBbxbNo7YGelP+fZSJvvm
-	 DhjeoXvsc0r1Mu2lfAHUZTxUmjMxcrxhrlNvPrQcNOrd9vu0A/mvrYBvUdxRGFK7j846MxlPg=
-X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
-Content-Type: text/plain;
-	charset=utf-8
+	s=arc-20240116; t=1709712939; c=relaxed/simple;
+	bh=kuIcTGLwOZErPf8b2yIdBJP+0ZEw/WDW0R9rZ6+4nmw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZuGOH8VHYBN49ln2Q6PHg2nRRkWr3y9JXkKaWPX+ZOhW1n9H25yAb/C1V5TxrV95+EEdJTkKcWLFCuH3ORgVm0VsgUNXoqIkYQAPRCfWrY7dlPuLwqpFpDt44eoS3JI00eDEFF5L4x0HwWZSFsD1FdWwByxDxKvgxaiJlkkxsFg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=atmark-techno.com; spf=pass smtp.mailfrom=atmark-techno.com; dkim=pass (2048-bit key) header.d=atmark-techno.com header.i=@atmark-techno.com header.b=hcmvYpWq; arc=none smtp.client-ip=35.74.137.57
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=atmark-techno.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=atmark-techno.com
+Authentication-Results: gw2.atmark-techno.com;
+	dkim=pass (2048-bit key; unprotected) header.d=atmark-techno.com header.i=@atmark-techno.com header.a=rsa-sha256 header.s=google header.b=hcmvYpWq;
+	dkim-atps=neutral
+Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com [209.85.210.199])
+	by gw2.atmark-techno.com (Postfix) with ESMTPS id 671D4A35
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 17:15:30 +0900 (JST)
+Received: by mail-pf1-f199.google.com with SMTP id d2e1a72fcca58-6dd65194396so599158b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 00:15:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=atmark-techno.com; s=google; t=1709712929; x=1710317729; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=hWN8aeGqlV2ux5okD9VzvqXOF7Q3jr/QQJsicRZ17gQ=;
+        b=hcmvYpWqT9o8xVqPxn8ALmPrqim2x/3CG1AVALKVuKbOzqlCO/PlhFAsfkcR5b3n6x
+         QrXVH7AHGGfT26PU67ujERF7P8uZHyCcaN6ykEOxN6ZJwHh2BKFLyL37pMKjrY2DYcOE
+         HINuPmbQCgchWF7OKa+rRu/66nsWbFBTq9XoL6W1uaRTwEl5yT3Gxl+OnlC6cBoeFuAA
+         aXVH0Si8YjgWYXAPSTmqxsyASA2TTSn0SHgx6L3IHNcERTa1rYBNfR2y1QTh8pD9fV8d
+         XjN8WY5vtWrnssr/UoXKunBcd1hguASxk6QncqKRX7oOffLRtR7/KPO7EOiIFwSf77Fg
+         wUxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709712929; x=1710317729;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hWN8aeGqlV2ux5okD9VzvqXOF7Q3jr/QQJsicRZ17gQ=;
+        b=GQJkVkBWlTrg6Pj9m29pDhcQ4L5euAV+OyPSL+XxphzftF0gFNKvZzLTXhpAlb1QNF
+         NIFRGOnB4Q7e3gkLg4Ix+EeguKpzibW++4jvX4pqA5Yqws3itSyTTzSNFdJ6+yIEgL37
+         xUV6zzH+31DLTMeu+nt/CpkbwYEVk5fpGLXT0dyGSG924WQAfGz0oVD6MRJZx2KbwA4w
+         lARKzytRN//ZgSXZ1BG6Tf4eG6vLfSKEsWeF3uqI3BXZVPwDknLDVogsqNa2lgAvo0UB
+         47VXm5/RouHsyuZG6EtL36I/HjsA10hb3+FaXo4Q1rbNzHufu5BIo/PLRjvLgwDNORim
+         Yqkg==
+X-Forwarded-Encrypted: i=1; AJvYcCWuXFhMHJfMlivtdhSfiViqFycpiZJuOPIhyP9TGY9VS+CATOKs6hKD8YOOoY2Cgr4RjWRT5utjfPTzBvJDebea2c3cBAXqfaGhdpeC
+X-Gm-Message-State: AOJu0YwPZo8CmAmiHA0YBud6+xbUM5PlITgq4/ZamAkiosi+ttTPVydr
+	pbm02lbsGnnpB7M9nUX71LRDiCS/ZG/nS8qFnaZXMYl5mmlON6544iyJn3qORAD3htDkaDE3PeC
+	yw85I01HYEwI4QmtDyrSOMdjVDC/kJWwtGP9bNuJWPNw17QWECJByNEieFBJ5ZVA=
+X-Received: by 2002:a05:6a21:339c:b0:1a1:4eb3:63ce with SMTP id yy28-20020a056a21339c00b001a14eb363cemr5755558pzb.4.1709712929350;
+        Wed, 06 Mar 2024 00:15:29 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFNjWF7ePYRhNAEoKXtR6DlJ88neTb/+vtcNm81O2YILEL3J+4R7ntYBgxkijCYEjuy/zQbIg==
+X-Received: by 2002:a05:6a21:339c:b0:1a1:4eb3:63ce with SMTP id yy28-20020a056a21339c00b001a14eb363cemr5755525pzb.4.1709712928785;
+        Wed, 06 Mar 2024 00:15:28 -0800 (PST)
+Received: from pc-0182.atmarktech (76.125.194.35.bc.googleusercontent.com. [35.194.125.76])
+        by smtp.gmail.com with ESMTPSA id z19-20020aa785d3000000b006e583a649b4sm10206885pfn.210.2024.03.06.00.15.28
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 06 Mar 2024 00:15:28 -0800 (PST)
+Received: from martinet by pc-0182.atmarktech with local (Exim 4.96)
+	(envelope-from <martinet@pc-zest>)
+	id 1rhmQw-007TIc-1G;
+	Wed, 06 Mar 2024 17:15:26 +0900
+Date: Wed, 6 Mar 2024 17:15:16 +0900
+From: Dominique Martinet <dominique.martinet@atmark-techno.com>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: Dominique Martinet <asmadeus@codewreck.org>,
+	Ulf Hansson <ulf.hansson@linaro.org>,
+	Jorge Ramirez-Ortiz <jorge@foundries.io>, linux-mmc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] mmc: part_switch: fixes switch on gp3 partition
+Message-ID: <ZegmFOnrLk79Oacf@atmark-techno.com>
+References: <20240306-mmc-partswitch-v1-1-bf116985d950@codewreck.org>
+ <CACRpkda4pVotd9Fc2Qn0Ae=89sZR7-rXDiZ7OdHE3eDvO=049Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.400.31\))
-Subject: Re: [PATCH v5 5/7] riscv: Kconfig.socs: Split ARCH_CANAAN and
- SOC_CANAAN_K210
-From: Yangyu Chen <cyy@cyyself.name>
-In-Reply-To: <20240306-scowling-mortify-9b427c80e8ab@wendy>
-Date: Wed, 6 Mar 2024 16:14:33 +0800
-Cc: Guo Ren <guoren@kernel.org>,
- linux-riscv@lists.infradead.org,
- Conor Dooley <conor@kernel.org>,
- Damien Le Moal <dlemoal@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Paul Walmsley <paul.walmsley@sifive.com>,
- Palmer Dabbelt <palmer@dabbelt.com>,
- Albert Ou <aou@eecs.berkeley.edu>,
- devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-X-OQ-MSGID: <AEDFD00A-160A-4237-99C0-A3A50929E4A1@cyyself.name>
-References: <tencent_FC10B3C630BE27412FED2547245CBE18D807@qq.com>
- <tencent_6F35FEF31908DE6AEB385AE30AC658863C0A@qq.com>
- <CAJF2gTS1-VQP=gQBx=SoUWsdap153EGOObKVn+2L7=kbP2CqFg@mail.gmail.com>
- <20240306-scowling-mortify-9b427c80e8ab@wendy>
-To: Conor Dooley <conor.dooley@microchip.com>
-X-Mailer: Apple Mail (2.3774.400.31)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CACRpkda4pVotd9Fc2Qn0Ae=89sZR7-rXDiZ7OdHE3eDvO=049Q@mail.gmail.com>
 
+Thanks for the review!
 
+Linus Walleij wrote on Wed, Mar 06, 2024 at 09:03:45AM +0100:
+> > A couple of notes:
+> > - this doesn't fail on all eMMCs, I can still access gp3 on some models
+> >   but it seems to fail reliably with micron's "G1M15L"
+> > - I've encountered this on the 5.10 backport (in 5.10.208), so that'll
+> >   need to be backported everywhere the fix was taken...
+> 
+> Which device is this?
 
-> On Mar 6, 2024, at 16:01, Conor Dooley <conor.dooley@microchip.com> =
-wrote:
->=20
-> On Wed, Mar 06, 2024 at 07:38:52AM +0800, Guo Ren wrote:
->=20
->> On Wed, Mar 6, 2024 at 7:04=E2=80=AFAM Yangyu Chen <cyy@cyyself.name> =
-wrote:
->>>=20
->>> Since we have Canaan Kendryte K230 with MMU now. The use of =
-SOC_CANAAN
->>> is no longer only referred to K210. Split them and add _K210 suffix
->>> to the name for old SOC_CANAAN. And allows ARCH_CANAAN to be =
-selected
->>> for other Canaan SoCs.
->>>=20
->>> Signed-off-by: Yangyu Chen <cyy@cyyself.name>
->>> ---
->>> arch/riscv/Kconfig.socs                        | 8 +++++---
->>> arch/riscv/Makefile                            | 2 +-
->>> arch/riscv/configs/nommu_k210_defconfig        | 3 ++-
->>> arch/riscv/configs/nommu_k210_sdcard_defconfig | 3 ++-
->>> drivers/clk/Kconfig                            | 4 ++--
->>> drivers/pinctrl/Kconfig                        | 4 ++--
->>> drivers/reset/Kconfig                          | 4 ++--
->>> drivers/soc/Makefile                           | 2 +-
->>> drivers/soc/canaan/Kconfig                     | 4 ++--
->>> 9 files changed, 19 insertions(+), 15 deletions(-)
->=20
->> This patch cross so many subsystems, I am not sure about it. If I =
-were
->> you, I would keep SOC_CANAAN and just add SOC_CANAAN_K230.
->=20
-> Right. That is why I didn't try to rename the symbol, and just left it
-> as SOC_CANAAN, but if the relevant people ack it, the chances of a
-> significant conflict are low.
->=20
+Sorry I gave the 'name' as seen in linux, the actual reference is
+MTFC32GAZAQHD-IT
+(but we're creating the GP manually)
 
-Maybe I should split this patch into different subsystems for better
-review. I think at least drivers/soc/Makefile should changed to use
-ARCH_CANAAN. Because we need some SoC drivers for K230 in the future.
-And arch/riscv/Makefile should use SOC_CANAAN_K210 instead of
-ARCH_CANAAN.  Because we should avoid the M-Mode loader build for
-other Canaan SoCs except for K210.=
+> I have never seen an eMMC using the GP:s in my life.
+> 
+> Or did you create the GP manually?
 
+Yes, we're creating them on all our devices:
+(japanese only, but you might get something out of google translate or
+similar if interested: https://armadillo.atmark-techno.com/about )
+
+I'd be hard pressed to explain why other than "it's always been done"
+and I've been replicating that pattern, but as far as I understand the
+gp partitions are always created in "write reliable" mode so it might
+help a bit with lifetime if the main area is left as default.
+
+We're using them for rare, important logs and things like that (minimal
+trace of updates, hard reset etc for diagnostic)
+
+-- 
+Dominique
 
