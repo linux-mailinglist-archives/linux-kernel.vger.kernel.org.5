@@ -1,60 +1,74 @@
-Return-Path: <linux-kernel+bounces-93357-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93358-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 901E1872E7B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 06:43:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40866872E7D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 06:44:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2B309B24934
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 05:43:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB036287E38
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 05:44:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 373251BC3E;
-	Wed,  6 Mar 2024 05:43:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F354D1B948;
+	Wed,  6 Mar 2024 05:44:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZZ2ovyhU"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="B1vNTTJq"
+Received: from mail-qv1-f45.google.com (mail-qv1-f45.google.com [209.85.219.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDD8012E78;
-	Wed,  6 Mar 2024 05:43:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 826151BF28
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 05:43:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709703823; cv=none; b=uf0HuB7ALFeeQqrdiys7PJd5OU3QqzyKeKc/N2kKVlPKLIU1/pEhxz/ez/w4z0R4YuKH9RRJKIUW9fybLY42TXzfuxxvVvR4O5pB98AHAk7ujBxJcgGfZnBdFXSP6JXZdn3nsPCHojDPOR/mdkOCDm9tZUPTIOm0ANOkvqiygUQ=
+	t=1709703840; cv=none; b=I0Nps0gy7gsIonbaJUBix8Mrea1WvPaWIa9Jl0Xytdb02svNH2a0DcB7ythFPZXvpJC+sd0FAEDQHJF/8rItjYNjiepBiuo1Iq6dLRliLJPYc4z8pHsIzxdjzv4kVB/HgtwLDwhh/X1VOqtjLd/upkKOv/k6sdMG/8r+ua+wiGc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709703823; c=relaxed/simple;
-	bh=/a5zZ6hcRIn1rjkNmOJWYFt2Nz3D3X6QmzZo3MOttLc=;
+	s=arc-20240116; t=1709703840; c=relaxed/simple;
+	bh=vJK76+h0P/w83D+dv8tCr7KX/pKTDybaF7t8CLG0UpI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nSSxw07xVwhRuhyc3lFtapMMpsdqOCQr9IGY2CBAAfSoAPGzeTrfiyz9qq7SzE+uRTotz7NM0F2EeaoFjXWj0OjiMSXT7cdrjrhbIog3V4FlMpqZVOt7J5Hcuuhtn1d0Uek98hqnWZvxhoCFKXjdQy9hEX26WnsVtproT3tF0eU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZZ2ovyhU; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709703822; x=1741239822;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=/a5zZ6hcRIn1rjkNmOJWYFt2Nz3D3X6QmzZo3MOttLc=;
-  b=ZZ2ovyhU6xho8BGr6NLjWL+k4Tgvcq+gvJByQK6gxC1obf0kQ4q1L7eJ
-   UiK+FFtm9exXaJfHcHg+UTgpL+b9N1ugGE1zuQw4B8mB07rZcBH/ZbgEe
-   75pNQbq5q/MUD7bm1mTNE5bDZ/bSa/8dKDC8fPoudR/Irbgynop3myY6h
-   LOavlkaDRSR1+49RIW3tsvxgIP81BtV5dWOwdJjFW67j11XT12bwmJysZ
-   1s+bB+5mmTu3f4+9P1be+SkkT7xUfeL6e9gnCz6UKL1NVoVXFG0UDATkp
-   R3URBXCpu8ly9L76klCknV6pKrBk+l241kJCTEQyb6TNyrmmjH4dBJ/5v
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11004"; a="4235015"
-X-IronPort-AV: E=Sophos;i="6.06,207,1705392000"; 
-   d="scan'208";a="4235015"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 21:43:41 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,207,1705392000"; 
-   d="scan'208";a="14327459"
-Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.124.242.48]) ([10.124.242.48])
-  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 21:43:37 -0800
-Message-ID: <61c01b21-7422-4bcb-895d-57b0eb07b5ff@intel.com>
-Date: Wed, 6 Mar 2024 13:43:34 +0800
+	 In-Reply-To:Content-Type; b=d3ygI9zAzWCvlVrJzeqcIkIlXb61jjYUgl4U7Nz7grlrgTyV/KxDTEehMrO/BX+6qjQU2XNZYtQYqxVHOxvwZGHLn+IAiyajOdY2BLdy/+XDkB0hkD0/9Uqu+jBjx6iB+nnYwvlYRQRi+XtWcsMd8A9/yD3Rs0IQceUk+ygnLZE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=B1vNTTJq; arc=none smtp.client-ip=209.85.219.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
+Received: by mail-qv1-f45.google.com with SMTP id 6a1803df08f44-6901a6dca63so41497566d6.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 21:43:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1709703836; x=1710308636; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Wo3r4Jf7W8kBCpIU2AztHSyZaa0WfmZJXclb5GpV3EE=;
+        b=B1vNTTJqsBgeUuJ2RshgJITv4sykfMf9fmw+3i1h8oE9AGzp6pyTszT1xgmt/YNBNn
+         sjQ33o6Nq0Lk8MZCj6vkhAmMeDtiwtAsl13zAHZmzh5LiJmdQTThbSxdOK0CpHFXVKdE
+         ii/luQC8cdatdREGrQoUI0/HOI66h3EMbe/2fMZlkp+9fz5lAU3KX75qjcqVx3tz00OA
+         zDEaczx0gGXMQ68DLE7gTwcsCh2Bmu6iQ55q1yN6wwqBW611z/b+hfX15sApEPEkLxZA
+         a22amjRjr89ZiqpSDU5/eucq9rCBU5T/hSaj6m8UjwYFJcuRDIRt+BEAqxAXT9V3mOHs
+         Ia/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709703836; x=1710308636;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Wo3r4Jf7W8kBCpIU2AztHSyZaa0WfmZJXclb5GpV3EE=;
+        b=P8MQd58bJ8bXrkQZ0YbnKgFiJ2S++ou6roshxhy1KyBEOkV97jpxjh9B3LOldJUtFN
+         /9/ivdOyNcQ4VOYdqjflK+nkFvqR0AomHoemIaUOKMilByN4V7xaMWd0gNvSWow52cJF
+         mHuOthZlMscMu0j4DepiBjX7Xv2fv537Pn3doy6qgxBRYrpAIOAuuc83v0gxlnhlqT6C
+         G50+PyzTfK8jI3t4gjh7O7h45YcdOHumuXskpuFmPUgDiHEhX/ODR3V/28JD5q70e7d4
+         eeV2mwCOaR1gyHP8rUtYJCxf9hiLhOb8Q1B4MGnlDN3GNB8GUJ8M+QzjSgNYH/DCLJx2
+         O8wA==
+X-Forwarded-Encrypted: i=1; AJvYcCUc5It5h309IdebYEx03Sq8JJuGJgR10YtHScYHxPxsRmIF8e8dxhzriMwxzCMkC42UVP3ARUEvuPgEua1HiBIm9LaFXVpk86cOd/G2
+X-Gm-Message-State: AOJu0YwfPhozn2E4uXX+w7OJpRuUWKrjKcMQ1HUjAllDdzVi5siRTE9v
+	vUvYco7mdMjUcYfdHRnJ/qqnW0DgDzFnBvGDtV0C0qaIsXnUJbQsTL7oBUL08itO8qZHpL05oel
+	H
+X-Google-Smtp-Source: AGHT+IGjaRCHme+oU0kSkxsFbuhf00fb/NSUiJ5wJD5G1YljPGgaAwF0KORZDmadUNFrfMOX1bzYJg==
+X-Received: by 2002:a0c:ec88:0:b0:690:667e:573f with SMTP id u8-20020a0cec88000000b00690667e573fmr3987545qvo.63.1709703836418;
+        Tue, 05 Mar 2024 21:43:56 -0800 (PST)
+Received: from [100.64.0.1] ([170.85.8.192])
+        by smtp.gmail.com with ESMTPSA id cy20-20020a05621418d400b006907e34d029sm2278090qvb.2.2024.03.05.21.43.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Mar 2024 21:43:55 -0800 (PST)
+Message-ID: <8a0c321a-6b61-40d0-98d4-6c2c868da45e@sifive.com>
+Date: Tue, 5 Mar 2024 23:43:53 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,230 +76,414 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] kvm: set guest physical bits in CPUID.0x80000008
-To: Sean Christopherson <seanjc@google.com>, Gerd Hoffmann <kraxel@redhat.com>
-Cc: kvm@vger.kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
- Paolo Bonzini <pbonzini@redhat.com>, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
- Dave Hansen <dave.hansen@linux.intel.com>,
- "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
- "H. Peter Anvin" <hpa@zytor.com>,
- "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)"
- <linux-kernel@vger.kernel.org>
-References: <20240305103506.613950-1-kraxel@redhat.com>
- <ZedJ1UmvaYZ4PWp6@google.com>
+Subject: Re: [PATCH v15 08/10] irqchip/riscv-aplic: Add support for MSI-mode
 Content-Language: en-US
-From: Xiaoyao Li <xiaoyao.li@intel.com>
-In-Reply-To: <ZedJ1UmvaYZ4PWp6@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Anup Patel <apatel@ventanamicro.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Frank Rowand <frowand.list@gmail.com>, Conor Dooley <conor+dt@kernel.org>
+Cc: devicetree@vger.kernel.org, Saravana Kannan <saravanak@google.com>,
+ Marc Zyngier <maz@kernel.org>, Anup Patel <anup@brainfault.org>,
+ linux-kernel@vger.kernel.org, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
+ <bjorn@kernel.org>, Atish Patra <atishp@atishpatra.org>,
+ linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ Andrew Jones <ajones@ventanamicro.com>
+References: <20240226040746.1396416-1-apatel@ventanamicro.com>
+ <20240226040746.1396416-9-apatel@ventanamicro.com>
+From: Samuel Holland <samuel.holland@sifive.com>
+In-Reply-To: <20240226040746.1396416-9-apatel@ventanamicro.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-On 3/6/2024 12:35 AM, Sean Christopherson wrote:
-> KVM: x86:
-> 
-> On Tue, Mar 05, 2024, Gerd Hoffmann wrote:
->> Set CPUID.0x80000008:EAX[23:16] to guest phys bits, i.e. the bits which
->> are actually addressable.  In most cases this is identical to the host
->> phys bits, but tdp restrictions (no 5-level paging) can limit this to
->> 48.
->>
->> Quoting AMD APM (revision 3.35):
->>
->>    23:16 GuestPhysAddrSize Maximum guest physical address size in bits.
->>                            This number applies only to guests using nested
->>                            paging. When this field is zero, refer to the
->>                            PhysAddrSize field for the maximum guest
->>                            physical address size. See “Secure Virtual
->>                            Machine” in APM Volume 2.
->>
->> Tom Lendacky confirmed the purpose of this field is software use,
->> hardware always returns zero here.
->>
->> Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
->> ---
->>   arch/x86/kvm/mmu.h     |  2 ++
->>   arch/x86/kvm/cpuid.c   |  3 ++-
->>   arch/x86/kvm/mmu/mmu.c | 15 +++++++++++++++
->>   3 files changed, 19 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
->> index 60f21bb4c27b..42b5212561c8 100644
->> --- a/arch/x86/kvm/mmu.h
->> +++ b/arch/x86/kvm/mmu.h
->> @@ -100,6 +100,8 @@ static inline u8 kvm_get_shadow_phys_bits(void)
->>   	return boot_cpu_data.x86_phys_bits;
->>   }
->>   
->> +int kvm_mmu_get_guest_phys_bits(void);
->> +
->>   void kvm_mmu_set_mmio_spte_mask(u64 mmio_value, u64 mmio_mask, u64 access_mask);
->>   void kvm_mmu_set_me_spte_mask(u64 me_value, u64 me_mask);
->>   void kvm_mmu_set_ept_masks(bool has_ad_bits, bool has_exec_only);
->> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
->> index adba49afb5fe..12037f1b017e 100644
->> --- a/arch/x86/kvm/cpuid.c
->> +++ b/arch/x86/kvm/cpuid.c
->> @@ -1240,7 +1240,8 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
->>   		else if (!g_phys_as)
-> 
-> Based on the new information that GuestPhysAddrSize is software-defined, and the
-> fact that KVM and QEMU are planning on using GuestPhysAddrSize to communicate
-> the maximum *addressable* GPA, deriving PhysAddrSize from GuestPhysAddrSize is
-> wrong.
-> 
-> E.g. if KVM is running as L1 on top of a new KVM, on a CPU with MAXPHYADDR=52,
-> and on a CPU without 5-level TDP, then KVM (as L1) will see:
-> 
->    PhysAddrSize      = 52
->    GuestPhysAddrSize = 48
-> 
-> Propagating GuestPhysAddrSize to PhysAddrSize (which is confusingly g_phys_as)
-> will yield an L2 with
-> 
->    PhysAddrSize      = 48
->    GuestPhysAddrSize = 48
-> 
-> which is broken, because GPAs with bits 51:48!=0 are *legal*, but not addressable.
-> 
->>   			g_phys_as = phys_as;
->>   
->> -		entry->eax = g_phys_as | (virt_as << 8);
->> +		entry->eax = g_phys_as | (virt_as << 8)
->> +			| kvm_mmu_get_guest_phys_bits() << 16;
-> 
-> The APM explicitly states that GuestPhysAddrSize only applies to NPT.  KVM should
-> follow suit to avoid creating unnecessary ABI, and because KVM can address any
-> legal GPA when using shadow paging.
-> 
->>   		entry->ecx &= ~(GENMASK(31, 16) | GENMASK(11, 8));
->>   		entry->edx = 0;
->>   		cpuid_entry_override(entry, CPUID_8000_0008_EBX);
->> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
->> index 2d6cdeab1f8a..8bebb3e96c8a 100644
->> --- a/arch/x86/kvm/mmu/mmu.c
->> +++ b/arch/x86/kvm/mmu/mmu.c
->> @@ -5267,6 +5267,21 @@ static inline int kvm_mmu_get_tdp_level(struct kvm_vcpu *vcpu)
->>   	return max_tdp_level;
->>   }
->>   
->> +/*
->> + * return the actually addressable guest phys bits, which might be
->> + * less than host phys bits due to tdp restrictions.
->> + */
->> +int kvm_mmu_get_guest_phys_bits(void)
->> +{
->> +	if (tdp_enabled && shadow_phys_bits > 48) {
->> +		if (tdp_root_level && tdp_root_level != PT64_ROOT_5LEVEL)
->> +			return 48;
->> +		if (max_tdp_level != PT64_ROOT_5LEVEL)
->> +			return 48;
-> 
-> I would prefer to not use shadow_phys_bits to cap the reported CPUID.0x8000_0008,
-> so that the logic isn't spread across the CPUID code and the MMU.  I don't love
-> that the two have duplicate logic, but there's no great way to handle that since
-> the MMU needs to be able to determine the effective host MAXPHYADDR even if
-> CPUID.0x8000_0008 is unsupported.
-> 
-> I'm thinking this, maybe spread across two patches: one to undo KVM's usage of
-> GuestPhysAddrSize, and a second to then set GuestPhysAddrSize for userspace?
+Hi Anup,
 
-Below code looks good to me. And make it into two patches makes sense.
-
+On 2024-02-25 10:07 PM, Anup Patel wrote:
+> The RISC-V advanced platform-level interrupt controller (APLIC) has
+> two modes of operation: 1) Direct mode and 2) MSI mode.
+> (For more details, refer https://github.com/riscv/riscv-aia)
+> 
+> In APLIC MSI-mode, wired interrupts are forwared as message signaled
+> interrupts (MSIs) to CPUs via IMSIC.
+> 
+> Extend the existing APLIC irqchip driver to support MSI-mode for
+> RISC-V platforms having both wired interrupts and MSIs.
+> 
+> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
 > ---
->   arch/x86/kvm/cpuid.c   | 38 ++++++++++++++++++++++++++++----------
->   arch/x86/kvm/mmu.h     |  2 ++
->   arch/x86/kvm/mmu/mmu.c |  5 +++++
->   3 files changed, 35 insertions(+), 10 deletions(-)
+>  drivers/irqchip/Kconfig                |   6 +
+>  drivers/irqchip/Makefile               |   1 +
+>  drivers/irqchip/irq-riscv-aplic-main.c |   2 +-
+>  drivers/irqchip/irq-riscv-aplic-main.h |   8 +
+>  drivers/irqchip/irq-riscv-aplic-msi.c  | 263 +++++++++++++++++++++++++
+>  5 files changed, 279 insertions(+), 1 deletion(-)
+>  create mode 100644 drivers/irqchip/irq-riscv-aplic-msi.c
 > 
-> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> index adba49afb5fe..ae03e69d7fb9 100644
-> --- a/arch/x86/kvm/cpuid.c
-> +++ b/arch/x86/kvm/cpuid.c
-> @@ -1221,9 +1221,18 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
->   		entry->eax = entry->ebx = entry->ecx = 0;
->   		break;
->   	case 0x80000008: {
-> -		unsigned g_phys_as = (entry->eax >> 16) & 0xff;
-> -		unsigned virt_as = max((entry->eax >> 8) & 0xff, 48U);
-> -		unsigned phys_as = entry->eax & 0xff;
-> +		unsigned int virt_as = max((entry->eax >> 8) & 0xff, 48U);
+> diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+> index dbc8811d3764..806b5fccb3e8 100644
+> --- a/drivers/irqchip/Kconfig
+> +++ b/drivers/irqchip/Kconfig
+> @@ -551,6 +551,12 @@ config RISCV_APLIC
+>  	depends on RISCV
+>  	select IRQ_DOMAIN_HIERARCHY
+>  
+> +config RISCV_APLIC_MSI
+> +	bool
+> +	depends on RISCV_APLIC
+> +	select GENERIC_MSI_IRQ
+> +	default RISCV_APLIC
 > +
-> +		/*
-> +		 * KVM's ABI is to report the effective MAXPHYADDR for the guest
-> +		 * in PhysAddrSize (phys_as), and the maximum *addressable* GPA
-> +		 * in GuestPhysAddrSize (g_phys_as).  GuestPhysAddrSize is valid
-> +		 * if and only if TDP is enabled, in which case the max GPA that
-> +		 * can be addressed by KVM may be less than the max GPA that can
-> +		 * be legally generated by the guest, e.g. if MAXPHYADDR>48 but
-> +		 * the CPU doesn't support 5-level TDP.
-> +		 */
-> +		unsigned int phys_as, g_phys_as;
->   
->   		/*
->   		 * If TDP (NPT) is disabled use the adjusted host MAXPHYADDR as
-> @@ -1231,16 +1240,25 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
->   		 * reductions in MAXPHYADDR for memory encryption affect shadow
->   		 * paging, too.
->   		 *
-> -		 * If TDP is enabled but an explicit guest MAXPHYADDR is not
-> -		 * provided, use the raw bare metal MAXPHYADDR as reductions to
-> -		 * the HPAs do not affect GPAs.
-> +		 * If TDP is enabled, the effective guest MAXPHYADDR is the same
-> +		 * as the raw bare metal MAXPHYADDR, as reductions to HPAs don't
-> +		 * affect GPAs.  The max addressable GPA is the same as the max
-> +		 * effective GPA, except that it's capped at 48 bits if 5-level
-> +		 * TDP isn't supported (hardware processes bits 51:48 only when
-> +		 * walking the fifth level page table).
->   		 */
-> -		if (!tdp_enabled)
-> -			g_phys_as = boot_cpu_data.x86_phys_bits;
-> -		else if (!g_phys_as)
-> +		if (!tdp_enabled) {
-> +			phys_as = boot_cpu_data.x86_phys_bits;
-> +			g_phys_as = 0;
-> +		} else {
-> +			phys_as = entry->eax & 0xff;
->   			g_phys_as = phys_as;
->   
-> -		entry->eax = g_phys_as | (virt_as << 8);
-> +			if (kvm_mmu_get_max_tdp_level() < 5)
-> +				g_phys_as = min(g_phys_as, 48);
-> +		}
-> +
-> +		entry->eax = phys_as | (virt_as << 8) | (g_phys_as << 16);
->   		entry->ecx &= ~(GENMASK(31, 16) | GENMASK(11, 8));
->   		entry->edx = 0;
->   		cpuid_entry_override(entry, CPUID_8000_0008_EBX);
-> diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
-> index 60f21bb4c27b..b410a227c601 100644
-> --- a/arch/x86/kvm/mmu.h
-> +++ b/arch/x86/kvm/mmu.h
-> @@ -100,6 +100,8 @@ static inline u8 kvm_get_shadow_phys_bits(void)
->   	return boot_cpu_data.x86_phys_bits;
->   }
->   
-> +u8 kvm_mmu_get_max_tdp_level(void);
-> +
->   void kvm_mmu_set_mmio_spte_mask(u64 mmio_value, u64 mmio_mask, u64 access_mask);
->   void kvm_mmu_set_me_spte_mask(u64 me_value, u64 me_mask);
->   void kvm_mmu_set_ept_masks(bool has_ad_bits, bool has_exec_only);
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 2d6cdeab1f8a..ffd32400fd8c 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -5267,6 +5267,11 @@ static inline int kvm_mmu_get_tdp_level(struct kvm_vcpu *vcpu)
->   	return max_tdp_level;
->   }
->   
-> +u8 kvm_mmu_get_max_tdp_level(void)
+>  config RISCV_IMSIC
+>  	bool
+>  	depends on RISCV
+> diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
+> index 7f8289790ed8..47995fdb2c60 100644
+> --- a/drivers/irqchip/Makefile
+> +++ b/drivers/irqchip/Makefile
+> @@ -96,6 +96,7 @@ obj-$(CONFIG_CSKY_MPINTC)		+= irq-csky-mpintc.o
+>  obj-$(CONFIG_CSKY_APB_INTC)		+= irq-csky-apb-intc.o
+>  obj-$(CONFIG_RISCV_INTC)		+= irq-riscv-intc.o
+>  obj-$(CONFIG_RISCV_APLIC)		+= irq-riscv-aplic-main.o irq-riscv-aplic-direct.o
+> +obj-$(CONFIG_RISCV_APLIC_MSI)		+= irq-riscv-aplic-msi.o
+>  obj-$(CONFIG_RISCV_IMSIC)		+= irq-riscv-imsic-state.o irq-riscv-imsic-early.o irq-riscv-imsic-platform.o
+>  obj-$(CONFIG_SIFIVE_PLIC)		+= irq-sifive-plic.o
+>  obj-$(CONFIG_IMX_IRQSTEER)		+= irq-imx-irqsteer.o
+> diff --git a/drivers/irqchip/irq-riscv-aplic-main.c b/drivers/irqchip/irq-riscv-aplic-main.c
+> index 160ff99d6979..774a0c97fdab 100644
+> --- a/drivers/irqchip/irq-riscv-aplic-main.c
+> +++ b/drivers/irqchip/irq-riscv-aplic-main.c
+> @@ -187,7 +187,7 @@ static int aplic_probe(struct platform_device *pdev)
+>  	if (is_of_node(dev->fwnode))
+>  		msi_mode = of_property_present(to_of_node(dev->fwnode), "msi-parent");
+>  	if (msi_mode)
+> -		rc = -ENODEV;
+> +		rc = aplic_msi_setup(dev, regs);
+>  	else
+>  		rc = aplic_direct_setup(dev, regs);
+>  	if (rc)
+> diff --git a/drivers/irqchip/irq-riscv-aplic-main.h b/drivers/irqchip/irq-riscv-aplic-main.h
+> index 4cfbadf37ddc..4393927d8c80 100644
+> --- a/drivers/irqchip/irq-riscv-aplic-main.h
+> +++ b/drivers/irqchip/irq-riscv-aplic-main.h
+> @@ -40,5 +40,13 @@ int aplic_irqdomain_translate(struct irq_fwspec *fwspec, u32 gsi_base,
+>  void aplic_init_hw_global(struct aplic_priv *priv, bool msi_mode);
+>  int aplic_setup_priv(struct aplic_priv *priv, struct device *dev, void __iomem *regs);
+>  int aplic_direct_setup(struct device *dev, void __iomem *regs);
+> +#ifdef CONFIG_RISCV_APLIC_MSI
+> +int aplic_msi_setup(struct device *dev, void __iomem *regs);
+> +#else
+> +static inline int aplic_msi_setup(struct device *dev, void __iomem *regs)
 > +{
-> +	return tdp_root_level ? tdp_root_level : max_tdp_level;
+> +	return -ENODEV;
+> +}
+> +#endif
+>  
+>  #endif
+> diff --git a/drivers/irqchip/irq-riscv-aplic-msi.c b/drivers/irqchip/irq-riscv-aplic-msi.c
+> new file mode 100644
+> index 000000000000..b2a25e011bb2
+> --- /dev/null
+> +++ b/drivers/irqchip/irq-riscv-aplic-msi.c
+> @@ -0,0 +1,263 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2021 Western Digital Corporation or its affiliates.
+> + * Copyright (C) 2022 Ventana Micro Systems Inc.
+> + */
+> +
+> +#include <linux/bitfield.h>
+> +#include <linux/bitops.h>
+> +#include <linux/cpu.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/irqchip.h>
+> +#include <linux/irqchip/riscv-aplic.h>
+> +#include <linux/irqchip/riscv-imsic.h>
+> +#include <linux/module.h>
+> +#include <linux/msi.h>
+> +#include <linux/of_irq.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/printk.h>
+> +#include <linux/smp.h>
+> +
+> +#include "irq-riscv-aplic-main.h"
+> +
+> +static void aplic_msi_irq_unmask(struct irq_data *d)
+> +{
+> +	aplic_irq_unmask(d);
+> +	irq_chip_unmask_parent(d);
 > +}
 > +
->   static union kvm_mmu_page_role
->   kvm_calc_tdp_mmu_root_page_role(struct kvm_vcpu *vcpu,
->   				union kvm_cpu_role cpu_role)
-> 
-> base-commit: c0372e747726ce18a5fba8cdc71891bd795148f6
+> +static void aplic_msi_irq_mask(struct irq_data *d)
+> +{
+> +	irq_chip_mask_parent(d);
+> +	aplic_irq_mask(d);
+
+Surely it's not necessary to mask an interrupt at both the APLIC and the
+receiver of the MSI. This ends up with __imsic_local_sync() in the hot path,
+which adds significant overhead.
+
+I would suggest the following:
+
+	.irq_mask	= aplic_irq_mask,
+	.irq_unmask	= aplic_irq_unmask,
+	.irq_enable	= irq_chip_enable_parent,
+	.irq_disable	= irq_chip_disable_parent,
+
+> +}
+> +
+> +static void aplic_msi_irq_eoi(struct irq_data *d)
+> +{
+> +	struct aplic_priv *priv = irq_data_get_irq_chip_data(d);
+> +	u32 reg_off, reg_mask;
+> +
+> +	/*
+> +	 * EOI handling is required only for level-triggered interrupts
+> +	 * when APLIC is in MSI mode.
+> +	 */
+> +
+> +	reg_off = APLIC_CLRIP_BASE + ((d->hwirq / APLIC_IRQBITS_PER_REG) * 4);
+> +	reg_mask = BIT(d->hwirq % APLIC_IRQBITS_PER_REG);
+> +	switch (irqd_get_trigger_type(d)) {
+> +	case IRQ_TYPE_LEVEL_LOW:
+> +		/*
+> +		 * If the rectified input value of the source is still low
+> +		 * then set the interrupt pending bit so that interrupt is
+> +		 * re-triggered via MSI.
+> +		 */
+> +		if (!(readl(priv->regs + reg_off) & reg_mask))
+> +			writel(d->hwirq, priv->regs + APLIC_SETIPNUM_LE);
+
+When a level-low interrupt is active, the rectified input value is high, so this
+case can be combined with the level-high case below.
+
+In fact, there's no need to check the input value at all. The AIA spec mentions
+this interrupt flow explicitly (section 4.9.2, see also section 4.7):
+
+"A second option is for the interrupt service routine to write the APLIC’s
+source identity number for the interrupt to the domain’s setipnum register just
+before exiting. This will cause the interrupt’s pending bit to be set to one
+again if the source is still asserting an interrupt, but not if the source is
+not asserting an interrupt."
+
+Unfortunately, QEMU currently gets this wrong, so the input value check is
+necessary for testing this series until QEMU is fixed.
+
+> +		break;
+> +	case IRQ_TYPE_LEVEL_HIGH:
+> +		/*
+> +		 * If the rectified input value of the source is still high
+> +		 * then set the interrupt pending bit so that interrupt is
+> +		 * re-triggered via MSI.
+> +		 */
+> +		if (readl(priv->regs + reg_off) & reg_mask)
+> +			writel(d->hwirq, priv->regs + APLIC_SETIPNUM_LE);
+> +		break;
+> +	}
+> +}
+> +
+> +static void aplic_msi_write_msg(struct irq_data *d, struct msi_msg *msg)
+> +{
+> +	unsigned int group_index, hart_index, guest_index, val;
+> +	struct aplic_priv *priv = irq_data_get_irq_chip_data(d);
+> +	struct aplic_msicfg *mc = &priv->msicfg;
+> +	phys_addr_t tppn, tbppn, msg_addr;
+> +	void __iomem *target;
+> +
+> +	/* For zeroed MSI, simply write zero into the target register */
+> +	if (!msg->address_hi && !msg->address_lo && !msg->data) {
+> +		target = priv->regs + APLIC_TARGET_BASE;
+> +		target += (d->hwirq - 1) * sizeof(u32);
+> +		writel(0, target);
+> +		return;
+> +	}
+> +
+> +	/* Sanity check on message data */
+> +	WARN_ON(msg->data > APLIC_TARGET_EIID_MASK);
+> +
+> +	/* Compute target MSI address */
+> +	msg_addr = (((u64)msg->address_hi) << 32) | msg->address_lo;
+> +	tppn = msg_addr >> APLIC_xMSICFGADDR_PPN_SHIFT;
+> +
+> +	/* Compute target HART Base PPN */
+> +	tbppn = tppn;
+> +	tbppn &= ~APLIC_xMSICFGADDR_PPN_HART(mc->lhxs);
+> +	tbppn &= ~APLIC_xMSICFGADDR_PPN_LHX(mc->lhxw, mc->lhxs);
+> +	tbppn &= ~APLIC_xMSICFGADDR_PPN_HHX(mc->hhxw, mc->hhxs);
+> +	WARN_ON(tbppn != mc->base_ppn);
+> +
+> +	/* Compute target group and hart indexes */
+> +	group_index = (tppn >> APLIC_xMSICFGADDR_PPN_HHX_SHIFT(mc->hhxs)) &
+> +		     APLIC_xMSICFGADDR_PPN_HHX_MASK(mc->hhxw);
+> +	hart_index = (tppn >> APLIC_xMSICFGADDR_PPN_LHX_SHIFT(mc->lhxs)) &
+> +		     APLIC_xMSICFGADDR_PPN_LHX_MASK(mc->lhxw);
+> +	hart_index |= (group_index << mc->lhxw);
+> +	WARN_ON(hart_index > APLIC_TARGET_HART_IDX_MASK);
+> +
+> +	/* Compute target guest index */
+> +	guest_index = tppn & APLIC_xMSICFGADDR_PPN_HART(mc->lhxs);
+> +	WARN_ON(guest_index > APLIC_TARGET_GUEST_IDX_MASK);
+> +
+> +	/* Update IRQ TARGET register */
+> +	target = priv->regs + APLIC_TARGET_BASE;
+> +	target += (d->hwirq - 1) * sizeof(u32);
+> +	val = FIELD_PREP(APLIC_TARGET_HART_IDX, hart_index);
+> +	val |= FIELD_PREP(APLIC_TARGET_GUEST_IDX, guest_index);
+> +	val |= FIELD_PREP(APLIC_TARGET_EIID, msg->data);
+> +	writel(val, target);
+> +}
+> +
+> +static void aplic_msi_set_desc(msi_alloc_info_t *arg, struct msi_desc *desc)
+> +{
+> +	arg->desc = desc;
+> +	arg->hwirq = (u32)desc->data.icookie.value;
+> +}
+> +
+> +static int aplic_msi_translate(struct irq_domain *d, struct irq_fwspec *fwspec,
+> +			       unsigned long *hwirq, unsigned int *type)
+> +{
+> +	struct msi_domain_info *info = d->host_data;
+> +	struct aplic_priv *priv = info->data;
+> +
+> +	return aplic_irqdomain_translate(fwspec, priv->gsi_base, hwirq, type);
+> +}
+> +
+> +static const struct msi_domain_template aplic_msi_template = {
+> +	.chip = {
+> +		.name			= "APLIC-MSI",
+> +		.irq_mask		= aplic_msi_irq_mask,
+> +		.irq_unmask		= aplic_msi_irq_unmask,
+> +		.irq_set_type		= aplic_irq_set_type,
+> +		.irq_eoi		= aplic_msi_irq_eoi,
+> +#ifdef CONFIG_SMP
+> +		.irq_set_affinity	= irq_chip_set_affinity_parent,
+> +#endif
+> +		.irq_write_msi_msg	= aplic_msi_write_msg,
+> +		.flags			= IRQCHIP_SET_TYPE_MASKED |
+> +					  IRQCHIP_SKIP_SET_WAKE |
+> +					  IRQCHIP_MASK_ON_SUSPEND,
+> +	},
+> +
+> +	.ops = {
+> +		.set_desc		= aplic_msi_set_desc,
+> +		.msi_translate		= aplic_msi_translate,
+> +	},
+> +
+> +	.info = {
+> +		.bus_token		= DOMAIN_BUS_WIRED_TO_MSI,
+> +		.flags			= MSI_FLAG_USE_DEV_FWNODE,
+> +		.handler		= handle_fasteoi_irq,
+
+msi_domain_ops_init() requires .handler_name to be set, or .handler is ignored.
+Either that needs to be changed, or .handler_name needs to be provided here.
+Since the handler is not set, currently the EOI logic for level interrupts is
+never run.
+
+Regards,
+Samuel
+
+> +	},
+> +};
+> +
+> +int aplic_msi_setup(struct device *dev, void __iomem *regs)
+> +{
+> +	const struct imsic_global_config *imsic_global;
+> +	struct aplic_priv *priv;
+> +	struct aplic_msicfg *mc;
+> +	phys_addr_t pa;
+> +	int rc;
+> +
+> +	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+> +	if (!priv)
+> +		return -ENOMEM;
+> +
+> +	rc = aplic_setup_priv(priv, dev, regs);
+> +	if (rc) {
+> +		dev_err(dev, "failed to create APLIC context\n");
+> +		return rc;
+> +	}
+> +	mc = &priv->msicfg;
+> +
+> +	/*
+> +	 * The APLIC outgoing MSI config registers assume target MSI
+> +	 * controller to be RISC-V AIA IMSIC controller.
+> +	 */
+> +	imsic_global = imsic_get_global_config();
+> +	if (!imsic_global) {
+> +		dev_err(dev, "IMSIC global config not found\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	/* Find number of guest index bits (LHXS) */
+> +	mc->lhxs = imsic_global->guest_index_bits;
+> +	if (APLIC_xMSICFGADDRH_LHXS_MASK < mc->lhxs) {
+> +		dev_err(dev, "IMSIC guest index bits big for APLIC LHXS\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	/* Find number of HART index bits (LHXW) */
+> +	mc->lhxw = imsic_global->hart_index_bits;
+> +	if (APLIC_xMSICFGADDRH_LHXW_MASK < mc->lhxw) {
+> +		dev_err(dev, "IMSIC hart index bits big for APLIC LHXW\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	/* Find number of group index bits (HHXW) */
+> +	mc->hhxw = imsic_global->group_index_bits;
+> +	if (APLIC_xMSICFGADDRH_HHXW_MASK < mc->hhxw) {
+> +		dev_err(dev, "IMSIC group index bits big for APLIC HHXW\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	/* Find first bit position of group index (HHXS) */
+> +	mc->hhxs = imsic_global->group_index_shift;
+> +	if (mc->hhxs < (2 * APLIC_xMSICFGADDR_PPN_SHIFT)) {
+> +		dev_err(dev, "IMSIC group index shift should be >= %d\n",
+> +			(2 * APLIC_xMSICFGADDR_PPN_SHIFT));
+> +		return -EINVAL;
+> +	}
+> +	mc->hhxs -= (2 * APLIC_xMSICFGADDR_PPN_SHIFT);
+> +	if (APLIC_xMSICFGADDRH_HHXS_MASK < mc->hhxs) {
+> +		dev_err(dev, "IMSIC group index shift big for APLIC HHXS\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	/* Compute PPN base */
+> +	mc->base_ppn = imsic_global->base_addr >> APLIC_xMSICFGADDR_PPN_SHIFT;
+> +	mc->base_ppn &= ~APLIC_xMSICFGADDR_PPN_HART(mc->lhxs);
+> +	mc->base_ppn &= ~APLIC_xMSICFGADDR_PPN_LHX(mc->lhxw, mc->lhxs);
+> +	mc->base_ppn &= ~APLIC_xMSICFGADDR_PPN_HHX(mc->hhxw, mc->hhxs);
+> +
+> +	/* Setup global config and interrupt delivery */
+> +	aplic_init_hw_global(priv, true);
+> +
+> +	/* Set the APLIC device MSI domain if not available */
+> +	if (!dev_get_msi_domain(dev)) {
+> +		/*
+> +		 * The device MSI domain for OF devices is only set at the
+> +		 * time of populating/creating OF device. If the device MSI
+> +		 * domain is discovered later after the OF device is created
+> +		 * then we need to set it explicitly before using any platform
+> +		 * MSI functions.
+> +		 *
+> +		 * In case of APLIC device, the parent MSI domain is always
+> +		 * IMSIC and the IMSIC MSI domains are created later through
+> +		 * the platform driver probing so we set it explicitly here.
+> +		 */
+> +		if (is_of_node(dev->fwnode))
+> +			of_msi_configure(dev, to_of_node(dev->fwnode));
+> +	}
+> +
+> +	if (!msi_create_device_irq_domain(dev, MSI_DEFAULT_DOMAIN, &aplic_msi_template,
+> +					  priv->nr_irqs + 1, priv, priv)) {
+> +		dev_err(dev, "failed to create MSI irq domain\n");
+> +		return -ENOMEM;
+> +	}
+> +
+> +	/* Advertise the interrupt controller */
+> +	pa = priv->msicfg.base_ppn << APLIC_xMSICFGADDR_PPN_SHIFT;
+> +	dev_info(dev, "%d interrupts forwared to MSI base %pa\n", priv->nr_irqs, &pa);
+> +
+> +	return 0;
+> +}
 
 
