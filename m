@@ -1,113 +1,106 @@
-Return-Path: <linux-kernel+bounces-93940-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93941-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45CC487373E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:04:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC88F87373F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:04:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 77A2E1C2189A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:04:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 717E5281C1B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:04:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1191F130AD6;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A707130AF2;
 	Wed,  6 Mar 2024 13:04:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="D7rLAIdH"
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GKjXhq/t"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDD2E126F1C
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 13:03:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDA4712FF9F;
+	Wed,  6 Mar 2024 13:04:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709730241; cv=none; b=g5XP0qu86+STxXmNlKWay9GP1JCGE44h9KPOycmluvUEr0DAcUE2wDOcc0T6i6KkGNrMJKtS53XU2iqwU0cgBCjfjxOjK2JUUhP1GPXS33BS2XLj+5w+WirULmXCiFLazOpKqPl7mvwqb5cQxeIIGpUxU8eEClQuHID0h415jvk=
+	t=1709730241; cv=none; b=hkGXPnu7K8qDuPOSlkmO4GAdY8VFdU9OkHg1VA4cnMZrkGdkj1NIiMZLnqK+F684pOtSMdX3Izi6fpL2A2bo53R15FO/iSFmJoSv54r2dcpfkwFIT9srtqR3C5ay55Khy647c7wLg4NBUltPb/2BGj3SWi9M7C60nWrYH1yO5ZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1709730241; c=relaxed/simple;
-	bh=0SzVCSc+6IVgdLQjBVikpTpZ5IdNQX3I6EMVPlgDMbA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=psE/oHcL6iGjfoY/mfNZPFi+Hrfx1/y2ufb5K2J4PhD/boLc3t6SLjhO1ju6Q6F3LtcLPKWA1CXCLMKnz6+zoP/Bq2dS2BMsESjX223/IWF5uicI9Mtw4ZfS4y3KYAdKhWLARzkQfMpwVkdwbxC359mouphjUzhKVXYgYpUEtV4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=D7rLAIdH; arc=none smtp.client-ip=209.85.128.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-608c40666e0so65209797b3.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 05:03:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709730239; x=1710335039; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gBiDejV3EtOMJmuMxDeh773rkjpBFgTE/mtHVi8J4f4=;
-        b=D7rLAIdH2G5/jUCqjM1rkWiWQLQ/DgFRDS9MXjPcuiXudanm5mQJErhiDT5dmExSbV
-         YujPOOJFWTrri1ZrgDugdTp6kok3Jc7fGS5TcSmbmxxfu+c1TlZS/0fbmjTGG0/NF4uE
-         PGLF47GjeV8T6C8YUAwrigc6HoRj4s+Ow31mBHqkPse3AL603YBp9PsJbNZ7fpiWAZSS
-         HZ9kiUiEEZhbWoxZI48MgycEXqAItAvM4T4sh/9sccibVTRGhcqVCEqhcaCVXylpHQVr
-         R7/4OheYnaRSRi10ygpsaWTl4xwYL8x3FJKYpw1X5bTl4CyE2tQIhszFnZsGzNtByWZv
-         dCSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709730239; x=1710335039;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gBiDejV3EtOMJmuMxDeh773rkjpBFgTE/mtHVi8J4f4=;
-        b=YrG7lPMW53FykXqcREpN3Ulmub4nkSjyL+8+ik+q2t58cxHS1Fj1vlSjY0XVatr5N1
-         z44DzUEzUGPXhJWvTAHFkv6zK7KWTLR4WfufY6U+viD3GBD7C+C0oJVxpHI5aDyBlNsm
-         N2xtutOEwBAF6/sQNhFQqgWq8seTNhQeLhuhwFJdXt8qIDuKJYO8+mzTYLnSffBOJ69w
-         eGnoQRdCLgROADitPArPO5sai1h2CQR2xMB2SbrrnvS+TKvGZ52pdNUGswGNimhVWzQm
-         jwMDLrtjkHuyRmfIrlzIFXzezRkaH25NHX+2zIbB1QwwuIHdZTeqjefRdiNQVfqXnCSn
-         8Xag==
-X-Forwarded-Encrypted: i=1; AJvYcCV/TzuLgZzqjD+Zp/+PrNKgAzt3JWwvYojFdB+MZ0fd6+ANmFSgMjasjQcnP0qm6LlhTCH3IMSX8ZcLrFR2D50XgObsIPyD3IYj2wU2
-X-Gm-Message-State: AOJu0YyKpB46XZAIG9JidvM0ijEu7ld3/BmcsEUEJTnz42i0I9Po8r2x
-	D6ife9yhVjZKOQZrA9YVXoUV1uxMSznLH8KP2tdeW3vvDLTT3FEQjZk8nT6aymGoRrBH5nBZd1T
-	6SOnYi6dlkg7YckNJQWlSfXkCddozy7wAvpugSg==
-X-Google-Smtp-Source: AGHT+IGoznzaO9Xw4qNyGRElOSvHFz7f8QVovTmZFfDUeysoa5V9mZ6cAUmshhXwf2lLcYtw5uLKyTLOhjYMd2NX47k=
-X-Received: by 2002:a25:290:0:b0:dcc:2da:e44e with SMTP id 138-20020a250290000000b00dcc02dae44emr10903650ybc.61.1709730238839;
- Wed, 06 Mar 2024 05:03:58 -0800 (PST)
+	bh=tPKM3fbs+N1jnkgIdgrhQAzhyAXdLqv6da+7MERgVTE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uXxx7WVz+VuV8NDx+SqDVoMYc+iMGGy94i0ra9q1PIkUCRdQB1C0jd/mp3SmAcWjm8y2sAZkcdQMtPiejPLrWqa8e7z9PBIWG5kc/bNQv+mnUHVVEfcGYiJ6I7OGVOLl42wYkIq0PpG++6/VkEpk0up6ou8GM8arcTwsi5iKvoc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GKjXhq/t; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66E6AC433F1;
+	Wed,  6 Mar 2024 13:03:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709730241;
+	bh=tPKM3fbs+N1jnkgIdgrhQAzhyAXdLqv6da+7MERgVTE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GKjXhq/tE2qihb2Xd55900MGCJsOgaStfVo1TBt6kSoLZyEMtASEzK/j+IRRnIcA/
+	 pd5e0nVj7F6/qFxTKgzw97tJ241G/DJ/GKPJnyc6SCqF2Ee9hKFonrqXjZj45ZIOQR
+	 Y/8gTQ+AVn1AV+YYber7m5sKyD8zMfuyg3BNhvexYyLHJN7x+fRvjmIQ/9umBsghM6
+	 CdkkxebIsOk7/b2HdUt2dGBphKHaHGnhQmkHqzTHDriqvcgejzbKC43NBGJ7rAv1AS
+	 S6ZBEOxqTJgkEIRCIJnM3usfP8H14XBzv6FFVnDcBIcGmW9U0cAQR53uudWfx9Hyza
+	 ihhRsjtCprb3g==
+Date: Wed, 6 Mar 2024 13:03:56 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Shalini Manjunatha <quic_c_shalma@quicinc.com>
+Cc: Vinod Koul <vkoul@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	Raghu Bankapur <quic_rbankapu@quicinc.com>,
+	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Krishna Jha <quic_kkishorj@quicinc.com>
+Subject: Re: [PATCH V0 0/1] ASoC: soc-compress: Fix and add missing DPCM
+ locking
+Message-ID: <fae7335b-bb58-400a-9b72-936b0dcc2fc2@sirena.org.uk>
+References: <cover.1709720380.git.quic_c_shalma@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240306-mmc-partswitch-v1-1-bf116985d950@codewreck.org> <Zegx5PCtg6hs8zyp@trax>
-In-Reply-To: <Zegx5PCtg6hs8zyp@trax>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Wed, 6 Mar 2024 14:03:47 +0100
-Message-ID: <CACRpkdYS-5mDjNP2zJ2J=_k_uboyVGK61Z1XWHcUh26HT6WKmQ@mail.gmail.com>
-Subject: Re: [PATCH] mmc: part_switch: fixes switch on gp3 partition
-To: "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>
-Cc: Dominique Martinet <asmadeus@codewreck.org>, Ulf Hansson <ulf.hansson@linaro.org>, 
-	linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Dominique Martinet <dominique.martinet@atmark-techno.com>, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="1AkDkuUU23ZBtHTV"
+Content-Disposition: inline
+In-Reply-To: <cover.1709720380.git.quic_c_shalma@quicinc.com>
+X-Cookie: Have at you!
+
+
+--1AkDkuUU23ZBtHTV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 6, 2024 at 10:05=E2=80=AFAM Jorge Ramirez-Ortiz, Foundries
-<jorge@foundries.io> wrote:
+On Wed, Mar 06, 2024 at 04:23:19PM +0530, Shalini Manjunatha wrote:
+> We find mising DPCM locking inside soc_compr_set_params_fe()
+> before calling dpcm_be_dai_hw_params() and dpcm_be_dai_prepare()
+> which cause lockdep assert for DPCM lock not held in
+> __soc_pcm_hw_params() and __soc_pcm_prepare() in above flow
+> when ever we play compress offload audio playback use case.
+>=20
+> To fix this issue added DPCM lock and unlock in both places of
+> above code flow mentioned.
 
-> That looked strange as there should be support for 4 GP but this code
-> kind of convinced me of the opposite.
->
->         if (idata->rpmb) {
->                 /* Support multiple RPMB partitions */
->                 target_part =3D idata->rpmb->part_index;
->                 target_part |=3D EXT_CSD_PART_CONFIG_ACC_RPMB;
->         }
->
-> So if we apply the fix that you propose, how are multiple RPMB
-> partitions (ie, 4) going to be identified as RPMB? Unless there can't be
-> more than 3?
+Please don't send cover letters for single patches, if there is anything
+that needs saying put it in the changelog of the patch or after the ---
+if it's administrative stuff.  This reduces mail volume and ensures that=20
+any important information is recorded in the changelog rather than being
+lost.=20
 
-Sorry for writing bad code comments.
+--1AkDkuUU23ZBtHTV
+Content-Type: application/pgp-signature; name="signature.asc"
 
-This comment means:
+-----BEGIN PGP SIGNATURE-----
 
-"support multiple RPMB partitions [on the same Linux system]"
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXoabsACgkQJNaLcl1U
+h9DCbQf+J6u1XRg5N8iHTV4CowIy+CabymZa6H2WDtsc0EK4gge5qVbNtxPiTmkP
+5qDrXNXWtYDGDHZlBGGWn/YZJYjZkILCPdqsGGCi5PXsRns8EDarm0P1/fMh/qgt
+dLe+eSA760Fhewm3n5ugW7aK2Y7/Jk1dVV2x8tJahVvMMslDNYqk7+xQJ6kLmE3e
+VB9Eigc2AIw2gu46jg+iOKHh0eMylSjuKi61TDgWP5LN5fFY/y5TirX32tZR4w1N
+NRnWQca7G2bB0zTP9JVLNSIYbELd7oKkui+nQtTFqovCPFUNv8wd5SjF/te9hCEo
+KsnfC/NSgySY7g9XIKyAfwnB7mdkaA==
+=6SHa
+-----END PGP SIGNATURE-----
 
-not:
-
-"support multiple RPMB partitions [on the same eMMC device]"
-
-Yours,
-Linus Walleij
+--1AkDkuUU23ZBtHTV--
 
