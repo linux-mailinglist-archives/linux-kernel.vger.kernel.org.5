@@ -1,145 +1,141 @@
-Return-Path: <linux-kernel+bounces-94569-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94570-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F8E887418A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 21:49:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 420D887418B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 21:49:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DAFF61F221C3
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 20:49:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F2D7F2822E0
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 20:49:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D1E217559;
-	Wed,  6 Mar 2024 20:49:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C89A171B0;
+	Wed,  6 Mar 2024 20:49:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="f7RMqKbX"
-Received: from mail-oo1-f52.google.com (mail-oo1-f52.google.com [209.85.161.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="KcoqCCIO"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF62C14A82
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 20:49:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5A5014A82
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 20:49:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709758147; cv=none; b=XrnkScDbJpomZPEE6TGbCFlvhgLqy7JWPMlb8HZ5caRA9ipGwOOqUAsPSLW2g53iFS1iOx+Y3NnqluKL3Ut511PA2fR/TcNdc/fYs9PvnZ6gSjfXAfC0EPto1Jaeu4RBlb79N3IQp1t0Is/uQhGVGZSh3HnH628DtQZq9NTVJiQ=
+	t=1709758179; cv=none; b=k4NO2U+dOsfXK28WGRBT439XKlFZJfLJyrVdkA0/OUBhVifHr+HM/1s8ChRqPky5u5K+XAbFb/BNMGMfmvkPaZqLcao7pe3Gxtz2DLb3znu0MLQWccrKUO5SaWqttUPKW61Y2mzIk7pVKH3krLkGrE6jW18VIOKnYcgv5M5f0zM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709758147; c=relaxed/simple;
-	bh=u0NUGzaBwJJBDPDk+I8V2n/hSdIaXHnoyk2XhQl0fYk=;
-	h=Content-Type:Message-ID:Date:MIME-Version:To:Cc:From:Subject; b=duCV6JJy3pC3vnHY1AUYxiNCmj22AwJo/AHG8uA5cc0F/O3fm3JE5CXbjvD+X2mK1RjI7aCLFMKpC2B6xOzkYN4F0daUyblwqfqjIsb4F4rPOXAaV8R+vbEMdEv2K+2CnYyU2KsPmxp+J8epZqJ/i7HmSQYM/dZFBM1FU+Bqz5c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=f7RMqKbX; arc=none smtp.client-ip=209.85.161.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-5a12d31d76fso11455eaf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 12:49:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1709758144; x=1710362944; darn=vger.kernel.org;
-        h=subject:from:cc:to:content-language:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=Lh7llgd/JQCb1eSfK1/AyRPT+0hSRouCKpBQqLhFMy4=;
-        b=f7RMqKbXketNJuB3shvhxAYuIQt1p/W9KEofFfFoXNtGMEvwcLKlbA/y8B7qFAP0mz
-         Uaq6FeF/hmPRJQ4Mlypercfkb2NAAdGlsQ16zjf6MbKKyAGJOqwZhpUdUC2HsHktbiHc
-         /B3tqGI01Wih4X5zjSHgQdwyyerh1/5oOxK/c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709758144; x=1710362944;
-        h=subject:from:cc:to:content-language:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Lh7llgd/JQCb1eSfK1/AyRPT+0hSRouCKpBQqLhFMy4=;
-        b=t/TCwWdwMvmLZb98WJw5+V0W1ECTrIWI9mddbkGxNEo+ZRmlqJGgK14k/CYqCYDmRM
-         glCpl2a8KYy5VfCVE0WNPcoBhnWoP3WJ4VjcXnRPFe5gpzZKmlg6bCHHYlSLoT3WV1Ue
-         UAxQ79RYh5UTbPYLufvMtVy4HuLf537UxziUhEiJAMDhKeeKpB/EM2ArJeyR06oorxMu
-         rSJuWUT+jg7BO/LZmZ2/vfnFOJavIQJ58WZSiAGmZQkmHPbKJgtv9Q6oXE96S1wfIdkg
-         xm3k67dCEFAyhd7cxoP6W5wxt27yP4Yf5P8098+mrLlcL2f3vRWDxrbxOYwdE3SCrfKN
-         BnvQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXtY+m/8vFx/xJ9StkyahYErbS8XPQ58NtqZiylHSV/V3fW+ujXb+phpPKgPvxVOmF1cKjqQJozYHyik2wtlByQt4xAo2YQwVP2EtOd
-X-Gm-Message-State: AOJu0Yy0LudzLbu7VyOpaX4eG5FHe4m7jyiG8whJ98qwwnRfBWZBr8hh
-	AkorKvUqZWaUbBhm5vdblQIut1ky2e++uBALhcYbgNUHz1RKl9sQWtlWL5zK1pEa5W5XGrxYZv8
-	+xw0=
-X-Google-Smtp-Source: AGHT+IFVGZQR8U86VJz5P43E6DGSqdoAEwPbFVdw+UeJSKUHFVIrSm4jUdmSmlkCdRuRVJE+M+tXdw==
-X-Received: by 2002:a4a:9296:0:b0:5a1:31a1:7f75 with SMTP id i22-20020a4a9296000000b005a131a17f75mr125515ooh.1.1709758143774;
-        Wed, 06 Mar 2024 12:49:03 -0800 (PST)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id ce4-20020a056820218400b005a163045e17sm649619oob.26.2024.03.06.12.49.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Mar 2024 12:49:02 -0800 (PST)
-Content-Type: multipart/mixed; boundary="------------dyrB9Dj0dIFy7kqQK25HEesI"
-Message-ID: <6eeb5f78-a38d-4f00-abca-db417d08d6fe@linuxfoundation.org>
-Date: Wed, 6 Mar 2024 13:49:01 -0700
+	s=arc-20240116; t=1709758179; c=relaxed/simple;
+	bh=LK0gBJGkoaxvPUcQkbcW85MwC6l95SvrK86Yk7Qjrwc=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mb9sVGGKu3EaM8Yrss6JHJX/1p0rxuKME+TKOJAkqwvRtnP9/22BW1UOYnKtuq7E8nHpMLLNR5w8nPKHXBOBrt/9sX/69Q6vaDnDyVhq4pwfprcWcML/K+gkCnqlenH4vSGbozxh8M2mekJVgNGwt/+L2msv1HzGXJOQS6xcZT4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=KcoqCCIO; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 426KnHKZ077609;
+	Wed, 6 Mar 2024 14:49:17 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1709758157;
+	bh=Ow2bJDZHIOf/6igE/KhcehTJAmDzHvpWjmUZu+Rns58=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To;
+	b=KcoqCCIOLbX4YeHIzuGlPoM0Wmev536JdwEHJdqMpPotaPzqUVIFATkbAxWOu0r0/
+	 UXSga6WDTSeBhe2frLfGB1xA3ZwZZZObLUAPAKSRrJw/cOCgJKaWOMnIj/DkPrH1FR
+	 ZlZo5h7vVgknJN26leqPFq8gFjWP+kiOeL7RHtvk=
+Received: from DLEE110.ent.ti.com (dlee110.ent.ti.com [157.170.170.21])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 426KnH7J010115
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 6 Mar 2024 14:49:17 -0600
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 6
+ Mar 2024 14:49:17 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 6 Mar 2024 14:49:17 -0600
+Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 426KnHQl052746;
+	Wed, 6 Mar 2024 14:49:17 -0600
+Date: Wed, 6 Mar 2024 14:49:17 -0600
+From: Nishanth Menon <nm@ti.com>
+To: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+CC: Philipp Zabel <p.zabel@pengutronix.de>, Tero Kristo <kristo@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@pengutronix.de>
+Subject: Re: [PATCH 3/3] reset: ti-sci: Convert to platform remove callback
+ returning void
+Message-ID: <20240306204917.l4vlp6hjotkwa5ig@stingy>
+References: <cover.1709674157.git.u.kleine-koenig@pengutronix.de>
+ <ab374da386cafd6748aac5bdf66e6be3e1860509.1709674157.git.u.kleine-koenig@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: shuah <shuah@kernel.org>, skhan@linuxfoundation.org,
- Linux PM <linux-pm@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Thomas Renninger <trenn@suse.de>
-From: Shuah Khan <skhan@linuxfoundation.org>
-Subject: [GIT PULL] cpupower update for Linux 6.9-rc1
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ab374da386cafd6748aac5bdf66e6be3e1860509.1709674157.git.u.kleine-koenig@pengutronix.de>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-This is a multi-part message in MIME format.
---------------dyrB9Dj0dIFy7kqQK25HEesI
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+On 22:32-20240305, Uwe Kleine-König wrote:
+> The .remove() callback for a platform driver returns an int which makes
+> many driver authors wrongly assume it's possible to do error handling by
+> returning an error code. However the value returned is ignored (apart
+> from emitting a warning) and this typically results in resource leaks.
+> 
+> To improve here there is a quest to make the remove callback return
+> void. In the first step of this quest all drivers are converted to
+> .remove_new(), which already returns void. Eventually after all drivers
+> are converted, .remove_new() will be renamed to .remove().
+> 
+> Trivially convert this driver from always returning zero in the remove
+> callback to the void returning variant.
+> 
+> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> ---
 
-Hi Rafael,
+Thanks.
 
-Please pull the following cpupower fixes update for Linux 6.9-rc1.
+Reviewed-by: Nishanth Menon <nm@ti.com>
 
-This cpupower update for Linux 6.9-rc1 consists of a single fix
-to a typo in cpupower-frequency-info.1 man page.
+>  drivers/reset/reset-ti-sci.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/reset/reset-ti-sci.c b/drivers/reset/reset-ti-sci.c
+> index cc01fa5b0bea..d384da0982fa 100644
+> --- a/drivers/reset/reset-ti-sci.c
+> +++ b/drivers/reset/reset-ti-sci.c
+> @@ -235,20 +235,18 @@ static int ti_sci_reset_probe(struct platform_device *pdev)
+>  	return reset_controller_register(&data->rcdev);
+>  }
+>  
+> -static int ti_sci_reset_remove(struct platform_device *pdev)
+> +static void ti_sci_reset_remove(struct platform_device *pdev)
+>  {
+>  	struct ti_sci_reset_data *data = platform_get_drvdata(pdev);
+>  
+>  	reset_controller_unregister(&data->rcdev);
+>  
+>  	idr_destroy(&data->idr);
+> -
+> -	return 0;
+>  }
+>  
+>  static struct platform_driver ti_sci_reset_driver = {
+>  	.probe = ti_sci_reset_probe,
+> -	.remove = ti_sci_reset_remove,
+> +	.remove_new = ti_sci_reset_remove,
+>  	.driver = {
+>  		.name = "ti-sci-reset",
+>  		.of_match_table = ti_sci_reset_of_match,
+> -- 
+> 2.43.0
+> 
 
-diff is included.
-
-thanks,
--- Shuah
-
-----------------------------------------------------------------
-The following changes since commit b401b621758e46812da61fa58a67c3fd8d91de0d:
-
-   Linux 6.8-rc5 (2024-02-18 12:56:25 -0800)
-
-are available in the Git repository at:
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux tags/linux-cpupower-6.9-rc1
-
-for you to fetch changes up to a114d9f1f2cf4896d838ab0a9c30a75411736829:
-
-   Fix cpupower-frequency-info.1 man page typo (2024-03-06 09:27:57 -0700)
-
-----------------------------------------------------------------
-linux-cpupower-6.9-rc1
-
-This cpupower update for Linux 6.9-rc1 consists of a single fix
-to a typo in cpupower-frequency-info.1 man page.
-
-----------------------------------------------------------------
-Jan Kratochvil (1):
-       Fix cpupower-frequency-info.1 man page typo
-
-  tools/power/cpupower/man/cpupower-frequency-info.1 | 2 +-
-  1 file changed, 1 insertion(+), 1 deletion(-)
-----------------------------------------------------------------
---------------dyrB9Dj0dIFy7kqQK25HEesI
-Content-Type: text/x-patch; charset=UTF-8; name="linux-cpupower-6.9-rc1.diff"
-Content-Disposition: attachment; filename="linux-cpupower-6.9-rc1.diff"
-Content-Transfer-Encoding: base64
-
-ZGlmZiAtLWdpdCBhL3Rvb2xzL3Bvd2VyL2NwdXBvd2VyL21hbi9jcHVwb3dlci1mcmVxdWVu
-Y3ktaW5mby4xIGIvdG9vbHMvcG93ZXIvY3B1cG93ZXIvbWFuL2NwdXBvd2VyLWZyZXF1ZW5j
-eS1pbmZvLjEKaW5kZXggZGQ1NDViNDk5NDgwLi40N2ZkZDcyMTg3NDggMTAwNjQ0Ci0tLSBh
-L3Rvb2xzL3Bvd2VyL2NwdXBvd2VyL21hbi9jcHVwb3dlci1mcmVxdWVuY3ktaW5mby4xCisr
-KyBiL3Rvb2xzL3Bvd2VyL2NwdXBvd2VyL21hbi9jcHVwb3dlci1mcmVxdWVuY3ktaW5mby4x
-CkBAIC0zMiw3ICszMiw3IEBAIEdldHMgdGhlIGN1cnJlbnRseSB1c2VkIGNwdWZyZXEgcG9s
-aWN5LgogXGZCXC1nXGZSIFxmQlwtXC1nb3Zlcm5vcnNcZlIKIERldGVybWluZXMgYXZhaWxh
-YmxlIGNwdWZyZXEgZ292ZXJub3JzLgogLlRQICAKLVxmQlwtYVxmUiBcZkJcLVwtcmVsYXRl
-ZFwtY3B1c1xmUgorXGZCXC1yXGZSIFxmQlwtXC1yZWxhdGVkXC1jcHVzXGZSCiBEZXRlcm1p
-bmVzIHdoaWNoIENQVXMgcnVuIGF0IHRoZSBzYW1lIGhhcmR3YXJlIGZyZXF1ZW5jeS4KIC5U
-UCAgCiBcZkJcLWFcZlIgXGZCXC1cLWFmZmVjdGVkXC1jcHVzXGZSCg==
-
---------------dyrB9Dj0dIFy7kqQK25HEesI--
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
 
