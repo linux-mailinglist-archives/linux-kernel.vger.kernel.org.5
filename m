@@ -1,274 +1,303 @@
-Return-Path: <linux-kernel+bounces-94465-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94466-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0991F87402D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 20:12:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFA94874039
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 20:14:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5109281DC3
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 19:12:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B1E12815E9
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 19:14:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31B5D13E7FC;
-	Wed,  6 Mar 2024 19:12:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C433414036F;
+	Wed,  6 Mar 2024 19:14:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="adDmdDZM"
-Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01on2043.outbound.protection.outlook.com [40.107.15.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ViWF+FBv"
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A839113DB9F;
-	Wed,  6 Mar 2024 19:12:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.15.43
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709752331; cv=fail; b=tJQMJJhwGqe5Gy9MyG9KG6aVIKJOzml8XztcYdnYA2hCJPxiMu7LKBcLtw7LWmwmo1nYDCA5738OqArQOSyO0yeaQf+QJw98N0ipetZv8+9WNJYmp6j1dt8JyYgfl6QqPwYtfbvxY3YT06bFYePFIdmLbBbp5VF+Pd7y+svRcag=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709752331; c=relaxed/simple;
-	bh=iQtqGMyNkDHZOTp28pP3zz1MkCrwWTRmPphADpkHssw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=G8iRpZfyVCwgb4yasN9k4PaMSMNfgifxziR50IelUEd7PE28IEcfrPZjCGu1oJow+icrJVcAnZqCebWLOXC2zWlelpx0WFEVWg+z4lVQvTi6FtV6TFQR8qxF3Gg8IUF5ckU/1GXlqCB++EBahF78l8cbC3NbnAzOxKLbfsepfZU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=adDmdDZM; arc=fail smtp.client-ip=40.107.15.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gLb+xEhAc0tqgkoUZQkqeq4k27eFX1bh2oJp9JMlKszjFi8uhPdXkX4dNxRYeVi0R6bVMVnW1tF/SohPSaiayCgSY2YWrjpPLDLgc/xu1LwYp6MKqckAnDtlOzrkqT2XKqqLLZYeZf3469AJkKNDMWiFMZPu+zr4nPBtAzqcJRETBYsOpCPtqI3Y1vbqdRlv5i0fH8n8dY6Mwx23wA6auCjwA+/egSDdHKV2TgjW5H2+Di2E3WDUQv/9U2Kz13x9Ap8uiPRVQOp+6uX3WQJeLMaxwHvKW+QaU+rHF6yzUdKwvZulFUUcT82x/3UKy3+CbDCxTlBnDzdbkv/amHLFvA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=W5VrlgSXLW00+KPPzs7+fLDHOjJYYXVUkqJlaaq1Umo=;
- b=c9FnWc/Ghnj1qufBolpvupzi79AI+a3ZwUtBzpauH1IwgwgTELNGzPKiQ1UgMApoOWsx1DZjViJFVPTroAr+ifpoAEXqwdxeExeLAKM2NDvhKVUl5yGsfT5aYtm1lJeij0KOFCWWxHF32sQcULoHazn4dm5qEkBy6J261KbDjSWHGNMwhra+/YpGYd+qN41iv9FmNIZ8JV836f6GAQtr816WodDYBNF2LuVjn3oz1oMSER8SGL4sEt3P0ubVXZvJqzNXiP/Q/nrtkzHj+2zfIpNFQ9d7hMBrrkr4d/xamFQydJUuBDUKM/EP/64rTip0xeDYxnRAwEs92DGO+K4SiA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=W5VrlgSXLW00+KPPzs7+fLDHOjJYYXVUkqJlaaq1Umo=;
- b=adDmdDZMOQaf46Pwo+2El6KXuryCG65MAqRtAzEwux57UgVnFwPO1WTf/rG99BTy81OKv82DccCaLhHTxg0QX3uzxaoVAHH4oAdsINgKxLwwFaXbLUw4LegISy3mPWfguCiefkHD9LAIAPcom0ZL5+F6cJRVZgCodUsVowBBva0=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by DB8PR04MB6921.eurprd04.prod.outlook.com (2603:10a6:10:119::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.26; Wed, 6 Mar
- 2024 19:12:05 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::3168:91:27c6:edf6]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::3168:91:27c6:edf6%3]) with mapi id 15.20.7339.035; Wed, 6 Mar 2024
- 19:12:05 +0000
-Date: Wed, 6 Mar 2024 14:11:57 -0500
-From: Frank Li <Frank.li@nxp.com>
-To: Joshua Yeong <joshua.yeong@starfivetech.com>
-Cc: "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
-	"conor.culhane@silvaco.com" <conor.culhane@silvaco.com>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-	"ilpo.jarvinen@linux.intel.com" <ilpo.jarvinen@linux.intel.com>,
-	"imx@lists.linux.dev" <imx@lists.linux.dev>,
-	"jirislaby@kernel.org" <jirislaby@kernel.org>,
-	"joe@perches.com" <joe@perches.com>,
-	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
-	"krzysztof.kozlowski@linaro.org" <krzysztof.kozlowski@linaro.org>,
-	"linux-i3c@lists.infradead.org" <linux-i3c@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
-	"miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
-	"robh@kernel.org" <robh@kernel.org>,
-	"zbigniew.lukwinski@linux.intel.com" <zbigniew.lukwinski@linux.intel.com>
-Subject: Re: [PATCH v7 5/8] i3c: target: add svc target controller support
-Message-ID: <Zei//Si8TzoYBLMF@lizhi-Precision-Tower-5810>
-References: <20240205233326.552576-1-Frank.Li@nxp.com>
- <20240205233326.552576-6-Frank.Li@nxp.com>
- <SH0PR01MB08410A70ABB956DF9DD4DE25F921A@SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn>
- <ZeirpIpcsPuBAiIR@lizhi-Precision-Tower-5810>
- <SH0PR01MB0841C4D6B76DE99A789312BEF921A@SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <SH0PR01MB0841C4D6B76DE99A789312BEF921A@SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn>
-X-ClientProxiedBy: SJ0PR05CA0104.namprd05.prod.outlook.com
- (2603:10b6:a03:334::19) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1F2413E7DB;
+	Wed,  6 Mar 2024 19:14:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709752464; cv=none; b=loGbv408TEa9RHBx1373figaTC8c7O6QaPjoa0gSIYEpQuBCwSYVV/ge3+UFULqA5z4aWT6PKsFQMJ2C/pP7eUVt9qJ84n7/8hFeN4dD6gFrgZhJN9EWh3af7O7+H7b+3hwRlNu87xg5/pE+7kcBoMBSZBNMTbwQSHzfXe5WxXU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709752464; c=relaxed/simple;
+	bh=rqeHAwxjnBJfSjkh66zxDx3278+2ytmY3CRS/ZATqfE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DFLV5EyvDJy6u9emfgK0JHs+RjibcGx/66ywUmpT32aZjdKMe/exQV7QZxpktM2bZHfd4PnkoBobh5TB+AlZjE6c/ehXFXvJGz8MyYUsCac+jrsBRU4IxSkJoZ6ZIxwkfZ+Tinve8SfZsxMmdvscm6V9p+R2V3CGUW//iDRQvMo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ViWF+FBv; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a450615d1c4so23425466b.0;
+        Wed, 06 Mar 2024 11:14:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709752461; x=1710357261; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=koyC+OXWaVBitynJT4B5M9yEfbXa623u0u8Rn+ueAuI=;
+        b=ViWF+FBvFlvBOiv5PWd8lqtxy62GRdL5k8hrxoy9p20taYwc758/aHJZXCv2+nBCPv
+         qdssh2R0rkZh1yG+/oHkP+uAPqhObdc7dtJAcfG/+JVo2mQqiHzt8/NRCDv2U0/0lSdb
+         Yir14GaJjWcgTdXnrBUGNn9sr+/bBxO8CD+6AEUDeKCR/W9595868P+Oz0B0M0t0mTNM
+         oXPI11DlFkqa/vfHF8NHGachH/drmTFjNI4LepEGdDRXg6juU6KcNbDadAsxpI+gasT3
+         iLaOGZq9AaX8TQw9bzQtFfFgANzG2zhorb8B2tSAeR9If0aRdWFwjgoqjpjNHV+5uiMn
+         Jl+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709752461; x=1710357261;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=koyC+OXWaVBitynJT4B5M9yEfbXa623u0u8Rn+ueAuI=;
+        b=QNsR6mXmjyD8/QQ5C5PdNEXVD/GPAYuCjpnpqvK1d/PbT9sUZtRU5WyUGBRVY3fhqc
+         lUn7CYj/DS3jwHJKzKlR5Lp7va8v/TfSiHQTQDZTXeVhmZr222Z4SoQXFTnZ5tdAU1t3
+         Vt9f8lwEPbOvNra5C9P5SWwdjCzZUdGd9FuIhwB+ky0RFpeyAXys1WRahZBYnMmkwecf
+         5EzQ92KMADYp0JmxpX+LBBRkT+aPLld7gkrTqGMpP1F6Mn5TZhuhZ4ljuzeyCrh54Imo
+         JTMgWKczAcKAXfy2tlBrzAiknPHpcYF2E/PoDItJdg2QnlOYjzvWLrb/JaLRZwaY+7Lp
+         0PYw==
+X-Forwarded-Encrypted: i=1; AJvYcCVrOja2zARvneyG562nxQHrlzimwkdzbE82PK+4BZ1RToTx3C95zCrrsFaMMvT7qtQ40RNK9wHAzTJNtjC6jImSaQFcSU8/yl2snfEyEOEOSq/qHJzi9zLK4rFtMTiduFlz4QFlmNm03L6WW00aeIwf4FUKSUB9PCiFBc1/t205fvoXFZegcpVdeW2HoSueJ0FXb3dfNGlU4xOg7it6H9Jb2zq4iR7pikdM2KVhEMPIIezbJiA/X5jZwOxK9mmfBxIM3romxZji9yBiNWN4uxggMasPoi2aWERXEjv0mydV/D85z+YEw7+Xjy3FIAe/AkT90ghwcsSv8DZUVH51TQTtXvu+gXLGCIG6Pa2TZb9bxqc6yt/eFoLo2KdFCVC9LiplpZVPOvtnR5pSvGZyjJ3zKGVRXwi9AjGvOE9FWWI8+3+fYpcSSleaUi9rB/OPg8GcJV67+LgdaqiEMpZHL6Q/xS13lFswCr7JW93EAGXnw3phls+RWx6UrVZzQuuRZWBFnujYmg==
+X-Gm-Message-State: AOJu0YxhSRB0qK/UuVoXCMmPC9+K8Mkr08GGN1h2Z57fdHjEF5zxwOtD
+	TZ4l4iw7s7YCeweEjdvfjUZnH66L+rPwHCNQo+wLXxTJMb3/nK/G
+X-Google-Smtp-Source: AGHT+IFItB8heVRezTYv3CUtiqgvQIid/hRamLnrcs20FhE6FaoKpuU57YkPC1CFMKt9DanhDiASxQ==
+X-Received: by 2002:a17:906:74d:b0:a45:8b6d:42c9 with SMTP id z13-20020a170906074d00b00a458b6d42c9mr5974291ejb.23.1709752460817;
+        Wed, 06 Mar 2024 11:14:20 -0800 (PST)
+Received: from [192.168.8.100] ([148.252.132.18])
+        by smtp.gmail.com with ESMTPSA id jw11-20020a170906e94b00b00a455d78be5bsm3479312ejb.9.2024.03.06.11.14.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Mar 2024 11:14:20 -0800 (PST)
+Message-ID: <772b9ab0-c6d7-4b13-8e05-44dd312b9879@gmail.com>
+Date: Wed, 6 Mar 2024 19:12:58 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|DB8PR04MB6921:EE_
-X-MS-Office365-Filtering-Correlation-Id: f6752a51-919d-4de3-b7fe-08dc3e114fe5
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	l11F5T+TGZUKP7mDfWL13u17jiNTHiXRrzvz9ZN1UUc3cK8u7Bg2ltxU93dPCyILfNkibND+TxSsbtWr87lFEtLyKrGDPLFZXBNHypbIbf8HcI+yn63600knUCggDx4rAnGBWkbW7laH/awSZJ9UmUZ5fTCfPNJ1cYTH7zIrtO/vYT7ui3At7GjO6Ku+vGPY3s3zj1MMGisVmOSFIB3bBim+YAQC7RLLE/sDMuZuAEXHTXVU6vSLRtJyiYK+ve0oRmEvUjNiyN2ERA4/NQ0ztFYwR61JvGGZbk0HBFJrEDHTzx94cT/WGAr0SFnm6b6ONj2mswc4HPI0Byg84DRFsdQU3Ct1tGk/JPYBSlmsAhayc5D8e5itSmnPUaNg07jRZ9V2rWN6ESUY3uK7P23/Jq/KQeqT6cBq/t0EV7UUOJAYEvhJ/A8B83WyGiBLQzsP7RBaQkOARRIoceXIDpYqe3DAfHaoDS+QA1ceSPVp1be1ZS/BO9T4DGJCz0qTSWdglT9qBzCCVv20nezjw+MyEhymtDxU8FDKP95jTTthD4L7GxpQxqvyOihHgrMgdtvSO+DFeahoGA9C8CLXrcMO8FuVjrJ5Pz/vvOIYttutxvAufplN3RW3Kyu5TVCPt7AUwsBaP//hKVb74p/8hDsnnL+qHDXTQk0xF+t/Zv02PCOeZKx1b2Qy6zfJCnoPLtStmVFRbzq/BiQrLeXsbBaxi30ePlkOvKPVw4Nl4KXyH+4=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(38350700005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?c0t4jPpr1cTvK714Vo73BI+X7gqINhqmVP97sHgnZ16IqLjBp8I6MjgK6FHG?=
- =?us-ascii?Q?UgaTrQ7wdR6e1PxhrXPRkeL67gLTxkttVPxeR7RJIE+6002xHrViwzxgI5Ez?=
- =?us-ascii?Q?UVmlmDQvjcIo8iRB6J1/o8mgai5mNHaf+eYnkXY8qybazuaUJdqT1ejYrW6z?=
- =?us-ascii?Q?o2BECwiljvCjp9zdMdKDDX/SHs03DJmxBvoo3/sA/FBMfw+PWpqIsAXtzU66?=
- =?us-ascii?Q?Rrg2Le9T/T8zEyXW0knZjcGgaXeVhuy5QFOy0tyJ1euNOcc289oc+Vbd/fiH?=
- =?us-ascii?Q?1WKelW/OIYV0yfeF02bXyNv3AP/KFDbvAnGGAXpabrDuPRgMbWk1lsYgmU4C?=
- =?us-ascii?Q?/8mraZ8cb89/yXH+se6KznTNYAYfHkpSNNGIp7mcUKWzkU57h6I56xWOq65K?=
- =?us-ascii?Q?m9Yz64sEd3Ib82JQ0GfUfBcn13pehRh0dRP58MPkQWz9RZSFRqpCL6O5/HIx?=
- =?us-ascii?Q?0tOP3PIzfcsCgGV/7y4NPUosMN/GYqf/+F8DB2WCTb451v9DEyP4s7iEv6v9?=
- =?us-ascii?Q?ayduQoN2HMlZYNImJ3g4AnDPGEtzKO4PkciaK5fvgDAPzcEpiq5KVqYJ8/hN?=
- =?us-ascii?Q?JHkcnaG5jH5VjFwtG0Og4oXdZlkN+2uAx0sk4kDABQO1Nn2lWEjMF4yv+iEK?=
- =?us-ascii?Q?G2sNpYAY2SjnixK9388FemLXPpYcTNn6eKKy6BkWuM6+8YhMxzITLbtLk5TB?=
- =?us-ascii?Q?mxzG8TMKnVDAXpyumBk3v+H8oqH6rTA4pfCumHSy6aLatoCP4sLVQHlL4AID?=
- =?us-ascii?Q?IB2Xvq4qeN42zZC3DZZJ3YRJy/ub60iy9DWwjYT+uPA34WTg88PvEYvm566+?=
- =?us-ascii?Q?/rJ4tbH9eXqtviQT9HChX1XJgITzkN1JDiSzrrKeP/DFtEcwDyyEP7PiTFjU?=
- =?us-ascii?Q?iBcVsVTdWqKo/+5plVD7omVTCRzlJJhPV1Zx1PbA0I18JDqQgu/uMXZKczDL?=
- =?us-ascii?Q?i84rGrUaZhqC35yEKkEMXeC7gzxF9Th6HmmDEaArogJkfC6lozLBbvWYQrIA?=
- =?us-ascii?Q?l5XM8wqC92mXNX3XEN3JrJID/aOhbQU0KKbKgDWS1eR4khZsqom94PiDdqL+?=
- =?us-ascii?Q?vBubPyyOzX319BhItnztooZdREC7EfgnPMxpZpv3saxdzoDUjgV8e9zPBgKr?=
- =?us-ascii?Q?jnMCB8aXKU9EtuBsTRJHVZF+eqpcrmhlEucNpuE6bWu4/sYys+02ZUs3iTuQ?=
- =?us-ascii?Q?GZPFSaXALMxxWnHMwjPZNWg+0zIBIjzSKr2AB6dQouGqoBsQc4QBZ88wtpQ/?=
- =?us-ascii?Q?HBO6Q6ReGsWAboz9lDMnPmjWm89uVTIViGZFjBjyCL3BCCvgRMe9ktzNTpEE?=
- =?us-ascii?Q?kpKb+GdtqOvSTjwhrVkNO+pTCv2l9Q3AQsrcbD2As/yMlURvlr7E8HrkE9r/?=
- =?us-ascii?Q?6Xx/IRFVLbdyVxHrMfG00SvGU7QWoguvnfRIixgCq93XtfGP0a6ZPq65N8Wv?=
- =?us-ascii?Q?1NjEJuGWwtIM/wsVmKaYWKFRgWVWI/lYYRPBC2wcajnnoxCqB1csoN+l0LoK?=
- =?us-ascii?Q?KSVqR8ctpA8KWecnf8BLrkkx+jN9qcdabPEcj57qKF9gRzj0nKrURshlbWWz?=
- =?us-ascii?Q?Y+xh0GPoAWbjl7Tg3YLycxkVFMzuLP3k9GzjB2sL?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f6752a51-919d-4de3-b7fe-08dc3e114fe5
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Mar 2024 19:12:05.7483
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jHjs3rgF81fVJ3MTrYHVH0NOdOX5n+sXZvnMpY/Ran0Xsuu28WmZbVad//9ulFvqC2Scis3ttK7jKEbz50hF5A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB6921
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH net-next v6 02/15] net: page_pool: create hooks for
+ custom page providers
+Content-Language: en-US
+To: Mina Almasry <almasrymina@google.com>
+Cc: David Wei <dw@davidwei.uk>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+ linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+ bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Jonathan Corbet <corbet@lwn.net>,
+ Richard Henderson <richard.henderson@linaro.org>,
+ Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner
+ <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+ Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+ Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, David Ahern <dsahern@kernel.org>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ Shuah Khan <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin <linyunsheng@huawei.com>,
+ Shailend Chand <shailend@google.com>,
+ Harshitha Ramamurthy <hramamurthy@google.com>,
+ Jeroen de Borst <jeroendb@google.com>,
+ Praveen Kaligineedi <pkaligineedi@google.com>, shakeel.butt@linux.dev
+References: <20240305020153.2787423-1-almasrymina@google.com>
+ <20240305020153.2787423-3-almasrymina@google.com>
+ <1b57dac2-4b04-4bec-b2d7-d0edb4fcabbc@davidwei.uk>
+ <CAHS8izM5O39mnTQ8mhcQE75amDT4G-3vcgozzjcYsAdd_-he1g@mail.gmail.com>
+ <417f293a-848e-4eb2-b690-c8696079b452@gmail.com>
+ <CAHS8izNPtHb2GnEMviiJTFT_dPxsxgYsNw5V9s-gSC2YnJRPRg@mail.gmail.com>
+From: Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <CAHS8izNPtHb2GnEMviiJTFT_dPxsxgYsNw5V9s-gSC2YnJRPRg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Mar 06, 2024 at 06:10:30PM +0000, Joshua Yeong wrote:
+On 3/6/24 17:04, Mina Almasry wrote:
+> On Wed, Mar 6, 2024 at 6:30 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
+>>
+>> On 3/5/24 22:36, Mina Almasry wrote:
+>>> On Tue, Mar 5, 2024 at 1:55 PM David Wei <dw@davidwei.uk> wrote:
+>>>>
+>>>> On 2024-03-04 18:01, Mina Almasry wrote:
+>>>>> +struct memory_provider_ops {
+>>>>> +     int (*init)(struct page_pool *pool);
+>>>>> +     void (*destroy)(struct page_pool *pool);
+>>>>> +     struct page *(*alloc_pages)(struct page_pool *pool, gfp_t gfp);
+>>>>> +     bool (*release_page)(struct page_pool *pool, struct page *page);
+>>>>
+>>>> For ZC Rx we added a scrub() function to memory_provider_ops that is
+>>>> called from page_pool_scrub(). Does TCP devmem not custom behaviour
+>>>> waiting for all netmem_refs to return before destroying the page pool?
+>>>> What happens if e.g. application crashes?
+>>>
+>>> (sorry for the long reply, but he refcounting is pretty complicated to
+>>> explain and I feel like we need to agree on how things currently work)
+>>>
+>>> Yeah, the addition of the page_pool_scrub() function is a bit of a
+>>> head scratcher for me. Here is how the (complicated) refcounting works
+>>> for devmem TCP (assuming the driver is not doing its own recycling
+>>> logic which complicates things further):
+>>>
+>>> 1. When a netmem_ref is allocated by the page_pool (from dmabuf or
+>>> page), the netmem_get_pp_ref_count_ref()==1 and belongs to the page
+>>> pool as long as the netmem is waiting in the pool for driver
+>>> allocation.
+>>>
+>>> 2. When a netmem is allocated by the driver, no refcounting is
+>>> changed, but the ownership of the netmem_get_pp_ref_count_ref() is
+>>> implicitly transferred from the page pool to the driver. i.e. the ref
+>>> now belongs to the driver until an skb is formed.
+>>>
+>>> 3. When the driver forms an skb using skb_rx_add_frag_netmem(), no
+>>> refcounting is changed, but the ownership of the
+>>> netmem_get_pp_ref_count_ref() is transferred from the driver to the
+>>> TCP stack.
+>>>
+>>> 4. When the TCP stack hands the skb to the application, the TCP stack
+>>> obtains an additional refcount, so netmem_get_pp_ref_count_ref()==2,
+>>> and frees the skb using skb_frag_unref(), which drops the
+>>> netmem_get_pp_ref_count_ref()==1.
+>>>
+>>> 5. When the user is done with the skb, the user calls the
+>>> DEVMEM_DONTNEED setsockopt which calls napi_pp_put_netmem() which
+>>> recycles the netmem back to the page pool. This doesn't modify any
+>>> refcounting, but the refcount ownership transfers from the userspace
+>>> back to the page pool, and we're back at step 1.
+>>>
+>>> So all in all netmem can belong either to (a) the page pool, or (b)
+>>> the driver, or (c) the TCP stack, or (d) the application depending on
+>>> where exactly it is in the RX path.
+>>>
+>>> When an application running devmem TCP crashes, the netmem that belong
+>>> to the page pool or driver are not touched, because the page pool is
+>>> not tied to the application in our case really. However, the TCP stack
+>>> notices the devmem socket of the application close, and when it does,
+>>> the TCP stack will:
+>>>
+>>> 1. Free all the skbs in the sockets receive queue. This is not custom
+>>> behavior for devmem TCP, it's just standard for TCP to free all skbs
+>>> waiting to be received by the application.
+>>> 2. The TCP stack will free references that belong to the application.
+>>> Since the application crashed, it will not call the DEVMEM_DONTNEED
+>>> setsockopt, so we need to free those on behalf of the application.
+>>> This is done in this diff:
+>>>
+>>> @@ -2498,6 +2498,15 @@ static void tcp_md5sig_info_free_rcu(struct
+>>> rcu_head *head)
+>>>    void tcp_v4_destroy_sock(struct sock *sk)
+>>>    {
+>>>     struct tcp_sock *tp = tcp_sk(sk);
+>>> + __maybe_unused unsigned long index;
+>>> + __maybe_unused void *netmem;
+>>> +
+>>> +#ifdef CONFIG_PAGE_POOL
+>>> + xa_for_each(&sk->sk_user_frags, index, netmem)
+>>> + WARN_ON_ONCE(!napi_pp_put_page((__force netmem_ref)netmem, false));
+>>> +#endif
+>>> +
+>>> + xa_destroy(&sk->sk_user_frags);
+>>>
+>>>     trace_tcp_destroy_sock(sk);
+>>>
+>>> To be honest, I think it makes sense for the TCP stack to be
+>>> responsible for putting the references that belong to it and the
+>>> application. To me, it does not make much sense for the page pool to
+>>> be responsible for putting the reference that belongs to the TCP stack
+>>> or driver via a page_pool_scrub() function, as those references do not
+>>> belong to the page pool really. I'm not sure why there is a diff
+>>> between our use cases here because I'm not an io_uring expert. Why do
+>>> you need to scrub all the references on page pool destruction? Don't
+>>> these belong to non-page pool components like io_uring stack or TCP
+>>> stack ol otherwise?
+>>
+>> That one is about cleaning buffers that are in b/w 4 and 5, i.e.
+>> owned by the user, which devmem does at sock destruction. io_uring
+>> could get by without scrub, dropping user refs while unregistering
+>> ifq, but then it'd need to wait for all requests to finish so there
+>> is no step 4 in the meantime. Might change, can be useful, but it
+>> was much easier to hook into the pp release loop.
+>>
+>> Another concern is who and when can reset ifq / kill pp outside
+>> of io_uring/devmem. I assume it can happen on a whim, which is
+>> hard to handle gracefully.
+>>
 > 
-> > -----Original Message-----
-> > From: Frank Li <Frank.li@nxp.com>
-> > Sent: Thursday, March 7, 2024 1:45 AM
-> > To: Joshua Yeong <joshua.yeong@starfivetech.com>
-> > Cc: alexandre.belloni@bootlin.com; conor.culhane@silvaco.com;
-> > devicetree@vger.kernel.org; gregkh@linuxfoundation.org;
-> > ilpo.jarvinen@linux.intel.com; imx@lists.linux.dev; jirislaby@kernel.org;
-> > joe@perches.com; krzysztof.kozlowski+dt@linaro.org;
-> > krzysztof.kozlowski@linaro.org; linux-i3c@lists.infradead.org; linux-
-> > kernel@vger.kernel.org; linux-serial@vger.kernel.org;
-> > miquel.raynal@bootlin.com; robh@kernel.org;
-> > zbigniew.lukwinski@linux.intel.com
-> > Subject: Re: [PATCH v7 5/8] i3c: target: add svc target controller support
-> > 
-> > On Wed, Mar 06, 2024 at 04:01:17PM +0000, Joshua Yeong wrote:
-> > > Hi Frank,
-> > >
-> > > > -----Original Message-----
-> > > > From: linux-i3c <linux-i3c-bounces@lists.infradead.org> On Behalf Of
-> > > > Frank Li
-> > > > Sent: Tuesday, February 6, 2024 7:33 AM
-> > > > To: frank.li@nxp.com
-> > > > Cc: alexandre.belloni@bootlin.com; conor.culhane@silvaco.com;
-> > > > devicetree@vger.kernel.org; gregkh@linuxfoundation.org;
-> > > > ilpo.jarvinen@linux.intel.com; imx@lists.linux.dev;
-> > > > jirislaby@kernel.org; joe@perches.com;
-> > > > krzysztof.kozlowski+dt@linaro.org;
-> > > > krzysztof.kozlowski@linaro.org; linux-i3c@lists.infradead.org;
-> > > > linux- kernel@vger.kernel.org; linux-serial@vger.kernel.org;
-> > > > miquel.raynal@bootlin.com; robh@kernel.org;
-> > > > zbigniew.lukwinski@linux.intel.com
-> > > > Subject: [PATCH v7 5/8] i3c: target: add svc target controller
-> > > > support
-> > > >
-> > > > Add Silvaco I3C target controller support
-> > > >
-> > > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > > > ---
-> > > >
-> > > > Notes:
-> > > >     Change from v2 to v3
-> > > >     - fix build warning
-> > > >
-> > > >  drivers/i3c/master/Makefile         |   2 +-
-> > > >  drivers/i3c/master/svc-i3c-main.c   |  35 +-
-> > > >  drivers/i3c/master/svc-i3c-target.c | 776
-> > >
-> > > I think putting target mode files under "master" might not make sense.
-> > > We might have to consider that we may have a "secondary master" mode.
-> > > Some other ways of splitting or handling of target mode is needed here.
-> > 
-> > I think name 'master' is not good here. Previously only support 'master'
-> > mode, it should be fine. Now many controller are dual mode.
-> > 
-> > And I3C spec use 'controller/target' instead of 'master/slave'. I think
-> > 'controller' as master are quite confused. It can be master controller and slave
-> > controller.
-> > 
-> > Anyway, slave/master may share some code and resource, even only one file.
-> > 
-> > So far, I think it is fine put under master now. we can rename 'master'
-> > later when more dual mode controller added.
-> > 
-> > Frank
+> If this is about dropping application refs in step 4 & step 5, then
+> from devmem TCP perspective it must be done on socket close & skb
+> freeing AFAIU, and not delayed until page_pool destruction. 
+
+Right, something in the kernel should take care of it. You temporarily
+attach it to the socket, which is fine. And you could've also stored
+it in the netlink socket or some other object. In case of zcrx io_uring
+impl, it's bound to io_uring, io_uring is responsible for cleaning them
+up. And we do it before __page_pool_destroy, otherwise there would be
+a ref dependency.
+
+A side note, attaching to netlink or some other global object sounds
+conceptually better, as once you return a buffer to the user, the
+socket should not have any further business with the buffer. FWIW,
+that better resembles io_uring approach. For example allows to:
+
+recv(sock);
+close(sock);
+process_rx_buffers();
+
+or to return (i.e. DEVMEM_DONTNEED) buffers from different sockets
+in one call. However, I don't think it's important for devmem and
+perhaps more implementation dictated.
+
+> Think
+> about a stupid or malicious user that does something like:
 > 
-> I am currently working on secondary-controller mode. I would like to explore if 
-> we can have a different way to implement various modes.
-
-Second controller should be more similar than master mode.
-
+> 1. Set up dmabuf binding using netlink api.
+> 2. While (100000):
+> 3.   create devmem TCP socket.
+> 4.   receive some devmem data on TCP socket.
+> 5.   close TCP socket without calling DEVMEM_DONTNEED.
+> 6. clean up dmabuf binding using netlink api.
 > 
-> I am guessing that the current inspiration is coming from the existing i2c 
-> framework.
+> In this case, we need to drop the references in step 5 when the socket
+> is destroyed, so the memory is freed to the page pool and available
+> for the next socket in step 3. We cannot delay the freeing until step
+> 6 when the rx queue is recreated and the page pool is destroyed,
+> otherwise the net_iovs would leak in the loop and eventually the NIC
+> would fail to find available memory. The same bug would be
 
-i2c slave mode is quite simple. The major problem is that the latency to
-fill FIFO. Modem async transfer queue should be better handle it. When
-host START transfer, fetch one transfer from queue. 
+By "would leak" you probably mean until step 6, right? There are
+always many ways to shoot yourself in the leg. Even if you clean
+up in 5, the user can just leak the socket and get the same result
+with pp starvation. I see it not as a requirement but rather a
+uapi choice, that's assuming netlink would be cleaned as a normal
+socket when the task exits.
 
-There are only a simple I2c slave test driver in kernel. I think not much
-people use it.
+> reproducible with io_uring unless you're creating a new page pool for
+> each new io_uring socket equivalent.
 
-> 
-> However, I am thinking of having a more generic function to replace the way how 
-> we register the i3c driver. (existing 'i3c_master_register' or 
-> 'devm_i3c_target_ctrl_create' from yours) Maybe along the line where we can have
-> all the modes set in a struct and return to the i3c framework. So we only need 1
-> API to register all the different modes instead of having one each.
+Surely we don't, but it's still the user's responsibility to
+return buffers back. And in case of io_uring buffers returned
+to the user are not attached to a socket, so even the
+scope / lifetime is a bit different.
 
-You can try, but it is not easy. Like USB, PCIE-Endpoint, all was use
-different register for difference mode. 
+> But even outside of this, I think it's a bit semantically off to ask
+> the page_pool to drop references that belong to the application IMO,
+> because those references are not the page_pool's.
 
-By the way, rename 'master' as 'controller' should be good idea. A I3C IP
-can support (master, slave and second) controller.
+Completely agree with you, which is why it was in a callback,
+totally controlled by io_uring.
 
-I think the folder name should not block issue for this patch series.
-
-Frank
-
-> 
-> > 
-> > >
-> > > ...
-> > >
-> > > > +
-> > > > +#define I3C_SCONFIG	0x4
-> > > > +#define   I3C_SCONFIG_SLVENA_MASK	BIT(0)
-> > > > +#define	  I3C_SCONFIG_OFFLINE_MASK	BIT(9)
-> > > > +#define   I3C_SCONFIG_SADDR_MASK	GENMASK(31, 25)
-> > > > +
-> > > > +#define I3C_SSTATUS	0x8
-> > > > +#define	  I3C_SSTATUS_STNOTSTOP_MASK	BIT(0)
-> > > > +#define	  I3C_SSTATUS_STOP_MASK		BIT(10)
-> > > > +#define	  I3C_SSTATUS_RX_PEND_MASK	BIT(11)
-> > > > +#define   I3C_SSTATUS_TXNOTFULL_MASK	BIT(12)
-> > > > +#define	  I3C_SSTATUS_DACHG_MASK	BIT(13)
-> > > > +#define	  I3C_SSTATUS_EVDET_MASK	GENMASK(21, 20)
-> > > > +#define	  I3C_SSTATUS_EVDET_ACKED	0x3
-> > > > +#define	  I3C_SSTATUS_IBIDIS_MASK	BIT(24)
-> > > > +#define	  I3C_SSTATUS_HJDIS_MASK	BIT(27)
-> > > > +
-> > >
-> > > There is couple of space formatting here that requires to be fixed.
-> > >
-> > > Cheers,
-> > > Joshua
+-- 
+Pavel Begunkov
 
