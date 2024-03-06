@@ -1,153 +1,99 @@
-Return-Path: <linux-kernel+bounces-94436-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94437-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29ABE873FD3
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 19:41:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 227CC873FD6
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 19:42:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 43D08B237EA
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 18:41:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B8162B238D5
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 18:41:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9472613E7CA;
-	Wed,  6 Mar 2024 18:41:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Q+6iQs17"
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D23313E7D7;
+	Wed,  6 Mar 2024 18:41:50 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41BB8136647
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 18:41:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFCBF136647
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 18:41:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709750488; cv=none; b=pBFL4yxSo0Mdp18OtGFgzEGbA2cb3TMU0zZpZqBGizUeswFfhcPGfbg8J22RDCO5FLWzRFT6bHLKbjw5qHpLF8WfOqA8rGixOYRnEMNP+qMLoOsjL42smSDG4VYiHtVHY9joBimTRBTC2QyK0o0H4aybnbF9CAhYujHvA3J9/qM=
+	t=1709750509; cv=none; b=gQNJIFDVUTrvj43jds2DwtSu0XjubyynjaFFPzQ032NPkgPrPraFodom5oNO2R05NkxaJl8/lhEA3Or+b80XQ1WsOiDZjKs20fleaBDQRzXwu7j7IJNC9BbZbW+D5h53v7H65u0hNRsn88e1LQNIUUDrnnwnH5HG3uW+JsMWSVA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709750488; c=relaxed/simple;
-	bh=ArsTKsXHQof2yGqmTsW0MPeeUHyHUqiUp43CBbiEDkQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mEa+B2PKH2bXypDLop4kTjNtos1nYebZ3XHZ2LZLIDNmCSSy67BCMeqbhFmMv3NWYtc+0z5a/zZTs1sJD8D5Wckzwbl1Vvw9shkk9rLBwSqYYd0tmX55p8hGisoBEtj/CJaS13vA8c6bD0/3fp75YvHYtp288mQ8G4ZRBfS33Jw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Q+6iQs17; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a458850dbddso17028366b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 10:41:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709750484; x=1710355284; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ArsTKsXHQof2yGqmTsW0MPeeUHyHUqiUp43CBbiEDkQ=;
-        b=Q+6iQs170zrfY/P8rn+jj2GatlZQijQST9+JM0WzozJgwdKcrEMnRoU7B8qLpo6r04
-         8Y8xZEhtUBglYpxSl6Xksql0qqPe7fHx2PidS3H/FfUtFtWXyX4Sc/YMOR+Zyef66h4A
-         LiTYQ56O78YL+h0k5RE/t738cVduZkfU+gnocv9TGlvgCMT1tXM/j6l/gHcA/8QdXSCO
-         gaupO2yxB1wsv6Cnk2kUDaqR9ZT4sTdg9d2QeEHkExZxqHr/viOSnT8HPZWEpoH9mQps
-         R2Xx/XKfjf6HT2d2oFYXDHtlCt70YcPahh+XHccBDCRzomaEycEuCOsIKzJ0eovzmqVg
-         2xSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709750484; x=1710355284;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ArsTKsXHQof2yGqmTsW0MPeeUHyHUqiUp43CBbiEDkQ=;
-        b=esSnX//r5n8Wi3ydf1+nGo9eq11JVzPwFUyjCwF54F71qLayc6OwGi1EAfKrkXNFIh
-         AkIZJYfnjFS+Sear9nqDDs2xdUwwWAUSu+vxjHFCHtZdSEmIA7Ra1o83dbV57Rdl4PZS
-         Z5UTPXfa1AdvcUdZlLynnkr9DBLZA9P3MkwHXZKYrn1OV3DWRs2WWoozBG9MQbzF4opM
-         tkjjX/Y5QUCYlXVEo2E0qS2zMYaAXS+mIDS0AQFKe1Y4X/p8cJSA5ih4HkhlFyhriNeN
-         KlfdCDA1E/HT2tD6vbtjwb3x7bsFfS+0yrgrbq3NrUfuUItf7fv537i48O3lQjT6aXCj
-         7W4Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVkW5QpYSJNKVCS/te+V7jgTSqAsjwDRrUEYqm8//FQf3860itLukx3OACci8OPuMvXQNwVHwbpvpRJIfPbsCsXeljET4wCfmxzWeE3
-X-Gm-Message-State: AOJu0YwrBDzwS/DVMHeC6nlnItSd8XDXQoQ5F1XBGzRONqRXARp3vJtZ
-	BU7wQYfeaIFrA3KXOw6ciun6Th4Osf51xrV9XG3yJkqu3W1xjtq5li5FVv/BblO55mAqQ4RG354
-	Yk1nvZjjjlOwIlcE619fYOgLUGrkbyeXeHWKB
-X-Google-Smtp-Source: AGHT+IEcj9L5XlTsUgR7NutURA5guIGFaY0Ag4iCBcd0lDLfPYQ4ZdXQa05kpAWGdG0hTeFJxeVbtTCZUKN0+egjPWQ=
-X-Received: by 2002:a17:906:d045:b0:a44:5589:c098 with SMTP id
- bo5-20020a170906d04500b00a445589c098mr11219162ejb.7.1709750484307; Wed, 06
- Mar 2024 10:41:24 -0800 (PST)
+	s=arc-20240116; t=1709750509; c=relaxed/simple;
+	bh=rh3NBCsWYsDUflpMZYfEWR9/FWHXtIuVhRGaRqvFENo=;
+	h=Message-ID:Date:From:To:Cc:Subject; b=dK9d0/Ab6/RBmCJh5Rd5vKVgAO5vcl9zMgV1Npg+cSOt7pdLcXoWlJdMCS1+y+ptd3pKc+XgNbkz7ne2/+EZDOqwEG/EBfxUfQilv170uRxxRXof89evFHHyc3m+pqNtbpijeIqJg0QK89Q4JFxTeRH4YPeDrrn84Jl7Eu7OKc4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6365AC433C7;
+	Wed,  6 Mar 2024 18:41:49 +0000 (UTC)
+Received: from rostedt by gandalf with local (Exim 4.97)
+	(envelope-from <rostedt@goodmis.org>)
+	id 1rhwEw-00000000Y9E-1okx;
+	Wed, 06 Mar 2024 13:43:42 -0500
+Message-ID: <20240306184244.754263547@goodmis.org>
+User-Agent: quilt/0.67
+Date: Wed, 06 Mar 2024 13:42:44 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: linux-kernel@vger.kernel.org
+Cc: Masami Hiramatsu <mhiramat@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Andrew Morton <akpm@linux-foundation.org>
+Subject: [for-linus][PATCH 0/3] tracing: Fixes for v6.8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240304094950.761233-1-dtatulea@nvidia.com> <20240305190427.757b92b8@kernel.org>
- <7fc334b847dc4d90af796f84a8663de9f43ede5d.camel@nvidia.com>
- <20240306072225.4a61e57c@kernel.org> <320ef2399e48ba0a8a11a3b258b7ad88384f42fb.camel@nvidia.com>
- <20240306080931.2e24101b@kernel.org> <CAHS8izMw_hxdoNDoCZs8T7c5kmX=0Lwqw_dboSj7z1LqtS-WKA@mail.gmail.com>
- <9a78b37abdf40daafd9936299ea2c08f936ad3d5.camel@nvidia.com> <20240306094133.7075c39f@kernel.org>
-In-Reply-To: <20240306094133.7075c39f@kernel.org>
-From: Mina Almasry <almasrymina@google.com>
-Date: Wed, 6 Mar 2024 10:41:12 -0800
-Message-ID: <CAHS8izN436pn3SndrzsCyhmqvJHLyxgCeDpWXA4r1ANt3RCDLQ@mail.gmail.com>
-Subject: Re: [RFC] net: esp: fix bad handling of pages from page_pool
-To: Jakub Kicinski <kuba@kernel.org>, Liang Chen <liangchen.linux@gmail.com>, 
-	Yunsheng Lin <linyunsheng@huawei.com>
-Cc: Dragos Tatulea <dtatulea@nvidia.com>, "davem@davemloft.net" <davem@davemloft.net>, 
-	"herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>, Gal Pressman <gal@nvidia.com>, 
-	"dsahern@kernel.org" <dsahern@kernel.org>, 
-	"steffen.klassert@secunet.com" <steffen.klassert@secunet.com>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>, 
-	Leon Romanovsky <leonro@nvidia.com>, "edumazet@google.com" <edumazet@google.com>, 
-	"ian.kumlien@gmail.com" <ian.kumlien@gmail.com>, 
-	"Anatoli.Chechelnickiy@m.interpipe.biz" <Anatoli.Chechelnickiy@m.interpipe.biz>, 
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 6, 2024 at 9:41=E2=80=AFAM Jakub Kicinski <kuba@kernel.org> wro=
-te:
->
-> On Wed, 6 Mar 2024 17:09:57 +0000 Dragos Tatulea wrote:
-> > > Does the caller need to check skb->pp_recycle? pp_recycle seems like =
-a
-> > > redundant bit. We can tell whether the page is pp by checking
-> > > is_pp_page(page). the pages in the frag must be pp pages when
-> > > skb->pp_recycle is set and must be non pp pages when the
-> > > skb->pp_recycle is not set, so it all seems redundant to me.
-> > >
-> > AFAIU we don't have to check for pp_recycle, at least not in this speci=
-fic case.
->
-> Definitely not something we assuming in a fix that needs to go
-> to stable.
->
-> So far, AFAIU, it's legal to have an skb without skb->pp_recycle
-> set, which holds full page refs to a PP page.
 
-Interesting. I apologize then I did not realize this combination is
-legal. But I have a follow up question: what is the ref code supposed
-to do in this combination? AFAIU:
+Tracing fixes for v6.8-rc7:
 
-- skb->pp_recycle && is_pp_page()
-ref via page_pool_ref_page()
-unref via page_pool_unref_page()
+- The size of a string written into trace_marker was determined by
+  the size of the sub-buffer in the ring buffer. That size is
+  dependent on the PAGE_SIZE of the architecture as it can be mapped
+  into user space. But on PowerPC, where PAGE_SIZE is 64K, that made
+  the limit of the string of writing into trace_marker 64K.
 
-- !skb->pp_recycle && !is_pp_page()
-ref via get_page()
-unref via put_page()
+  One of the selftests looks at the size of the ring buffer sub-buffers
+  and writes that plus more into the trace_marker. The write will take
+  what it can and report back what it consumed so that the user space
+  application (like echo) will write the rest of the string. The string
+  is stored in the ring buffer and can be read via the "trace" or
+  "trace_pipe" files.
 
-- !skb->pp_recycle && is_pp_page()
-ref via ?
-unref via?
+  The reading of the ring buffer uses vsnprintf(), which uses a precision
+  "%.*s" to make sure it only reads what is stored in the buffer, as
+  a bug could cause the string to be non terminated.
 
-Also is this combination also legal you think? and if so what to do?
-- skb->pp_recycle && !is_pp_page()
-ref via ?
-unref via?
+  With the combination of the precision change and the PAGE_SIZE of 64K
+  allowing huge strings to be added into the ring buffer, plus the test
+  that would actually stress that limit, a bug was reported that
+  the precision used was too big for "%.*s" as the string was close to
+  64K in size and the max precision of vsnprintf is 32K.
 
-I'm asking because I'm starting to wonder if this patch has some issue in i=
-t:
-https://patchwork.kernel.org/project/netdevbpf/patch/20231215033011.12107-4=
--liangchen.linux@gmail.com/
+  Linus suggested not to have that precision as it could hide a bug
+  if the string was again stored without a nul byte.
 
-Because in this patch, if we have a !skb->pp_recycle & is_pp_page()
-combination we end up doing in skb_try_coalesce():
-ref via page_pool_ref_page()
-unref via put_page() via eventual napi_frag_unref()
+  Another issue that was brought up is that the trace_seq buffer is
+  also based on PAGE_SIZE even though it is not tied to the architecture
+  limit like the ring buffer sub-buffer is. Having it be 64K * 2 is
+  simply just too big and wasting memory on systems with 64K page sizes.
+  It is now hardcoded to 8K which is what all other architectures with
+  4K PAGE_SIZE has.
 
-which seems like an issue, no?
+  Finally, the write to trace_marker is now limited to 4K as there is no
+  reason to write larger strings into trace_marker.
 
---=20
-Thanks,
-Mina
+Steven Rostedt (Google) (3):
+      tracing: Remove precision vsnprintf() check from print event
+      tracing: Limit trace_seq size to just 8K and not depend on architecture PAGE_SIZE
+      tracing: Limit trace_marker writes to just 4K
+
+----
+ include/linux/trace_seq.h   |  8 +++++++-
+ kernel/trace/trace.c        | 10 +++++-----
+ kernel/trace/trace_output.c |  6 ++----
+ 3 files changed, 14 insertions(+), 10 deletions(-)
 
