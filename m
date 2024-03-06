@@ -1,69 +1,69 @@
-Return-Path: <linux-kernel+bounces-93190-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93191-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE627872C12
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 02:23:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D557872C1A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 02:23:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D24041C249D7
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 01:23:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 30E151C24ACE
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 01:23:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 200FCFC18;
-	Wed,  6 Mar 2024 01:22:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0F8E14F70;
+	Wed,  6 Mar 2024 01:22:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="swLQjKvz"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="LlQ3keOV"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61D266FD7
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 01:22:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42CBBDDA5
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 01:22:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709688155; cv=none; b=cXoe740DE/L+edOJX5o2n0XoLzTqi6mfJE/vQa07NPxj9gFrguayUrQvzJ0kxiDfXmQh3QGUS1eXM4ppKbM31FdFG6nO0HfcKEf2yx/a8FIOnwwgKIWS/+fJ8W8TATlbXtvswLfH2BaNSJspyOVdYT2EB3hy+6AEAF6zYTMfKxU=
+	t=1709688157; cv=none; b=D0yYYLA8CXjkqzMKhFnRPsao0Rxx5k96Ay+2wJkOc9KrDfEVy/l+QxGxQtK1hJ+Tjo2ZhjnknrMUyp/3B9nFOIVwRwapYa+D1KH3/HNl0P+1Ix5WQUPwVq75vHssUkfC6pY5XqccKaNpf70ihkPFZwnZocg6Pwot3X/sSWaErrM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709688155; c=relaxed/simple;
-	bh=HdE6FN0o7wTsTE4Ul3fnw6MLY1Eiy7U6ACIH7VY572U=;
+	s=arc-20240116; t=1709688157; c=relaxed/simple;
+	bh=n4LxPfG7AS9Lalbw6aTzUiw335yJJpF6kZEovqNpXTU=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=I5IwNeHcDYxCWreRb5T5/4htfLk+KizPVzl35fumsC43frveNzFjX7I1IwXj7Ktmf6XidHXH+Whcv5QBJtvd8sMh6rkptYYAzun0mWdN4mVaLuIVCY+Hh6MvgmyExyZyFqnmg/tD0b//Xl6jTu/glB4uZFz1NZtu7WhCr/ZZqYY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ipylypiv.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=swLQjKvz; arc=none smtp.client-ip=209.85.128.202
+	 To:Cc:Content-Type; b=kK9jhtdHYKYmQZQL2n4xDqguAmaTyVX1GtRXqBSL0h0YAlDPh0JdE5e1a6KOqstINno4VJQ1LxYOSL8wEVasC3cgDYQbM5Aozihy57rue8gaxgsk4chGM6hz0rReRwOIGhMaukQLgke8q/Ru9h7/W1IOynMbPDOa0KeDiVteeCw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ipylypiv.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=LlQ3keOV; arc=none smtp.client-ip=209.85.128.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ipylypiv.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-6099e707622so24523477b3.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 17:22:33 -0800 (PST)
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-609da1d86edso2760647b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 17:22:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709688152; x=1710292952; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1709688154; x=1710292954; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=hWaHPf3ur6A4qCJxa5rb9778tyG9D1zv7n6pTIOMylY=;
-        b=swLQjKvzg/27APMhBRnnxlopiH/s6Yw8Rc3gmJ1cRzO2DfvEZ9kJEcpCSsrQI3xsdn
-         RTEbhpmJyX/7MQalwVDKFuMmUW6ByRtFNSR9W4qs6M0c0Tw3PIvJItqOS7FPmi6X7Xgx
-         LBsukHf2AE2J4GKTq78QklDhOxUts4jy4X78MIy5oDkkLQ+f+GjdtNUXKdtHMgrgdoO1
-         SyDtjqfJNvvFrSmJGkVeaHjIzgez7GwqkPbIzIFvuDAHbT4WcoqRiqEeA+XgvkBZjSLt
-         Eab3muGN9002jgAdhbe8V2yA/qr68TNM4kcHdg79e6uwXouz6t4tBJNtx72beEAlH5Hk
-         Dvrw==
+        bh=FSTiKWyL/nnmXNuU8GslZSbybClSIgn/PnMeem+fE3I=;
+        b=LlQ3keOVH1NiKBPBhsf5A6vyC8eD6hnFfuv0bBkDPnuXWYgqztQh54V6SIZUWLfTQ3
+         PzbsRCqTjYVW+93+1QAiOGofnAPiybsek0FzmCfFv7WEPZth4Zj/ZWOLFZ/XHh18Jfp8
+         WmHGE+4IEb4MB8BrAiUT1IqLGWz/mAGFHzbHuAiQDuJF/bgLXP0yl2NPzlhxz3vLP4+h
+         4dpk0/urSBvTM7mjW9OXC3kCyHLsFdjj/MfmoLasQR/HhvkGXwoCBtx744wMndxkRXqH
+         QHExQyfixRfYIvJ18Tb46A5Bj40QgTIssmQNyafQNHRA/ssiCNK4vtN3/AfcxnZvkd0x
+         /g8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709688152; x=1710292952;
+        d=1e100.net; s=20230601; t=1709688154; x=1710292954;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hWaHPf3ur6A4qCJxa5rb9778tyG9D1zv7n6pTIOMylY=;
-        b=Wak0U1uZfQU674d3OoUVE6m6tXiNF7CP3fgmF/XTVUdOrKpnGhqj7ZwQRE/4/HY0WD
-         QXreZHXDItL8VFjIHv0U7VVtIw+yywA0JPMTVCQuo4Il8Yv1+MdgBGH+DI/P4MdT0ZpI
-         QHIGim6PZOUMck5IXKPT/1nO6yut02PnZPMzOie6hUIt8lEKbWfHQAipH0pOreimIWgs
-         UA2FcEO2BmmyYxCkstuc5qfYa0T6kfCszSuMmdpcYRwquDwVna5sgurvNREG7JQutT9r
-         QI2yJbvj/p0DAaoSLo8s4M80Vr+UeC2ExQ10tyUqwlnSsl2UlEZCrWk/paOyfLGMa6H2
-         HSjw==
-X-Forwarded-Encrypted: i=1; AJvYcCWDTJSSYtWVdNLPLvLgyKhVFiZrlEKqjyvcYXuylVOhDbPjhQmC6lMcLfjdcdDKxLiqgWrnadWzQGtPf6+IT8BAxdEjpda/Uv+kDw93
-X-Gm-Message-State: AOJu0YyaRPKNfCTweH+r1kvlBXGg2VORb8uH8azHhKiDZvRyGY6V9hWV
-	7LY5BE7/VDwiaQz52ded043+ahNy+441f8mMjS1tPvgkoLAIvSNWClVY6n5fTE6ZPJzBGzDFenc
-	qCd8Yz9QXag==
-X-Google-Smtp-Source: AGHT+IH1ype8EVVw3Vv5hVUATc5MuGE0VPWUCQs+MGbWunJiewT97ix6EIEegvIOjPQ/ld8NPVGY1dCsazei4w==
+        bh=FSTiKWyL/nnmXNuU8GslZSbybClSIgn/PnMeem+fE3I=;
+        b=pdm23nv3f4DJTc4Ho74YCdpBoUYFVsgoauzgY8olk9NRBkHpOIk/FqWl3HbvNuhscT
+         YMs2uCzFC+kPq0pz4mEShuGqaOC3gac3YnQcpIL0ATP2FXQedNIbdDZejSl6ygyBHbDq
+         b4i0V969giW74oLIAeNYsTNknnUQPW1mCafeowrBvdQT8Payulxh0C7LjvrW3B/CBzya
+         WevIzhrsIi4S69Ga3KQgWTvWSHhSXRd808S6KmU/+YDI8GjkHZzO26ItfxSpxdQhEgi7
+         MJLwdEQfXEhxTyPgJRapyXhIoq1ZCwkEXf4JEFG1/M2+2XAlxyRYKmzalf08KFjVSbyI
+         vHlQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUajhWNm5qqyVZmJ35lUf6q+4DwvrxUZD18AdqJi/hv6w22wIHmPFMC94tSgti/aKwbAgE/Uc9FGEk7jhaSvvYlj/aRz+qLZBfSWtuo
+X-Gm-Message-State: AOJu0Yy1Rv4yJcPgkrjSfjjgmupBvaxKHB7FM0LCUg+9Vlrst2zxA9q0
+	DcJ+MAhJaAdzs+ctf5cRpd7k7V6/PqtyXfjfYPw/T2yaJFO2Iclb+dPNcTK39qxkuSRqq07LSb3
+	tD1W7aJyRrQ==
+X-Google-Smtp-Source: AGHT+IGDgdAZaaUbvgWkTXP+6EFmj00+0ikeM9JhzpBpk4U5EIlsiZ7KKpZ+KsZUT+sILS7ZtWuHFzRcgbReHA==
 X-Received: from ipylypiv.svl.corp.google.com ([2620:15c:2c5:13:69ff:df2c:aa81:7b74])
- (user=ipylypiv job=sendgmr) by 2002:a05:690c:3508:b0:609:3212:94c7 with SMTP
- id fq8-20020a05690c350800b00609321294c7mr3942886ywb.6.1709688152470; Tue, 05
- Mar 2024 17:22:32 -0800 (PST)
-Date: Tue,  5 Mar 2024 17:22:20 -0800
+ (user=ipylypiv job=sendgmr) by 2002:a05:690c:3386:b0:609:2570:f06f with SMTP
+ id fl6-20020a05690c338600b006092570f06fmr3759250ywb.0.1709688154461; Tue, 05
+ Mar 2024 17:22:34 -0800 (PST)
+Date: Tue,  5 Mar 2024 17:22:21 -0800
 In-Reply-To: <20240306012226.3398927-1-ipylypiv@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -73,9 +73,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240306012226.3398927-1-ipylypiv@google.com>
 X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-Message-ID: <20240306012226.3398927-2-ipylypiv@google.com>
-Subject: [PATCH v7 1/7] ata: libata-sata: Factor out NCQ Priority
- configuration helpers
+Message-ID: <20240306012226.3398927-3-ipylypiv@google.com>
+Subject: [PATCH v7 2/7] scsi: libsas: Define NCQ Priority sysfs attributes for
+ SATA devices
 From: Igor Pylypiv <ipylypiv@google.com>
 To: Damien Le Moal <dlemoal@kernel.org>, Niklas Cassel <cassel@kernel.org>, 
 	John Garry <john.g.garry@oracle.com>, Jason Yan <yanaijie@huawei.com>, 
@@ -88,230 +88,151 @@ Cc: TJ Adams <tadamsjr@google.com>, linux-ide@vger.kernel.org,
 	Igor Pylypiv <ipylypiv@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Export libata NCQ Priority configuration helpers to be reused
-for libsas managed SATA devices.
+Libata sysfs attributes cannot be used for libsas managed SATA devices
+because the ata_port location is different for libsas.
 
-Acked-by: Damien Le Moal <dlemoal@kernel.org>
+Defined sysfs attributes (visible for SATA devices only):
+- /sys/block/sda/device/ncq_prio_enable
+- /sys/block/sda/device/ncq_prio_supported
+
+The newly defined attributes will pass the correct ata_port to libata
+helper functions.
+
+Reviewed-by: John Garry <john.g.garry@oracle.com>
+Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
 Reviewed-by: Jason Yan <yanaijie@huawei.com>
 Signed-off-by: Igor Pylypiv <ipylypiv@google.com>
 ---
- drivers/ata/libata-sata.c | 140 +++++++++++++++++++++++++++-----------
- include/linux/libata.h    |   6 ++
- 2 files changed, 107 insertions(+), 39 deletions(-)
+ drivers/scsi/libsas/sas_ata.c | 94 +++++++++++++++++++++++++++++++++++
+ include/scsi/sas_ata.h        |  6 +++
+ 2 files changed, 100 insertions(+)
 
-diff --git a/drivers/ata/libata-sata.c b/drivers/ata/libata-sata.c
-index 0fb1934875f2..f00dd02dc6f8 100644
---- a/drivers/ata/libata-sata.c
-+++ b/drivers/ata/libata-sata.c
-@@ -848,80 +848,122 @@ DEVICE_ATTR(link_power_management_policy, S_IRUGO | S_IWUSR,
- 	    ata_scsi_lpm_show, ata_scsi_lpm_store);
- EXPORT_SYMBOL_GPL(dev_attr_link_power_management_policy);
- 
--static ssize_t ata_ncq_prio_supported_show(struct device *device,
--					   struct device_attribute *attr,
--					   char *buf)
-+/**
-+ *	ata_ncq_prio_supported - Check if device supports NCQ Priority
-+ *	@ap: ATA port of the target device
-+ *	@sdev: SCSI device
-+ *	@supported: Address of a boolean to store the result
-+ *
-+ *	Helper to check if device supports NCQ Priority feature.
-+ */
-+int ata_ncq_prio_supported(struct ata_port *ap, struct scsi_device *sdev,
-+			   bool *supported)
- {
--	struct scsi_device *sdev = to_scsi_device(device);
--	struct ata_port *ap = ata_shost_to_port(sdev->host);
- 	struct ata_device *dev;
--	bool ncq_prio_supported;
-+	unsigned long flags;
- 	int rc = 0;
- 
--	spin_lock_irq(ap->lock);
-+	spin_lock_irqsave(ap->lock, flags);
- 	dev = ata_scsi_find_dev(ap, sdev);
- 	if (!dev)
- 		rc = -ENODEV;
- 	else
--		ncq_prio_supported = dev->flags & ATA_DFLAG_NCQ_PRIO;
--	spin_unlock_irq(ap->lock);
-+		*supported = dev->flags & ATA_DFLAG_NCQ_PRIO;
-+	spin_unlock_irqrestore(ap->lock, flags);
-+	return rc;
-+}
-+EXPORT_SYMBOL_GPL(ata_ncq_prio_supported);
+diff --git a/drivers/scsi/libsas/sas_ata.c b/drivers/scsi/libsas/sas_ata.c
+index 12e2653846e3..04b0bd9a4e01 100644
+--- a/drivers/scsi/libsas/sas_ata.c
++++ b/drivers/scsi/libsas/sas_ata.c
+@@ -964,3 +964,97 @@ int sas_execute_ata_cmd(struct domain_device *device, u8 *fis, int force_phy_id)
+ 			       force_phy_id, &tmf_task);
+ }
+ EXPORT_SYMBOL_GPL(sas_execute_ata_cmd);
 +
-+static ssize_t ata_ncq_prio_supported_show(struct device *device,
++static ssize_t sas_ncq_prio_supported_show(struct device *device,
 +					   struct device_attribute *attr,
 +					   char *buf)
 +{
 +	struct scsi_device *sdev = to_scsi_device(device);
-+	struct ata_port *ap = ata_shost_to_port(sdev->host);
++	struct domain_device *ddev = sdev_to_domain_dev(sdev);
 +	bool supported;
 +	int rc;
- 
--	return rc ? rc : sysfs_emit(buf, "%u\n", ncq_prio_supported);
-+	rc = ata_ncq_prio_supported(ap, sdev, &supported);
++
++	/* This attribute shall be visible for SATA devices only */
++	if (WARN_ON_ONCE(!dev_is_sata(ddev)))
++		return -EINVAL;
++
++	rc = ata_ncq_prio_supported(ddev->sata_dev.ap, sdev, &supported);
 +	if (rc)
 +		return rc;
 +
 +	return sysfs_emit(buf, "%d\n", supported);
- }
- 
- DEVICE_ATTR(ncq_prio_supported, S_IRUGO, ata_ncq_prio_supported_show, NULL);
- EXPORT_SYMBOL_GPL(dev_attr_ncq_prio_supported);
- 
--static ssize_t ata_ncq_prio_enable_show(struct device *device,
--					struct device_attribute *attr,
--					char *buf)
-+/**
-+ *	ata_ncq_prio_enabled - Check if NCQ Priority is enabled
-+ *	@ap: ATA port of the target device
-+ *	@sdev: SCSI device
-+ *	@enabled: Address of a boolean to store the result
-+ *
-+ *	Helper to check if NCQ Priority feature is enabled.
-+ */
-+int ata_ncq_prio_enabled(struct ata_port *ap, struct scsi_device *sdev,
-+			 bool *enabled)
- {
--	struct scsi_device *sdev = to_scsi_device(device);
--	struct ata_port *ap = ata_shost_to_port(sdev->host);
- 	struct ata_device *dev;
--	bool ncq_prio_enable;
-+	unsigned long flags;
- 	int rc = 0;
- 
--	spin_lock_irq(ap->lock);
-+	spin_lock_irqsave(ap->lock, flags);
- 	dev = ata_scsi_find_dev(ap, sdev);
- 	if (!dev)
- 		rc = -ENODEV;
- 	else
--		ncq_prio_enable = dev->flags & ATA_DFLAG_NCQ_PRIO_ENABLED;
--	spin_unlock_irq(ap->lock);
--
--	return rc ? rc : sysfs_emit(buf, "%u\n", ncq_prio_enable);
-+		*enabled = dev->flags & ATA_DFLAG_NCQ_PRIO_ENABLED;
-+	spin_unlock_irqrestore(ap->lock, flags);
-+	return rc;
- }
-+EXPORT_SYMBOL_GPL(ata_ncq_prio_enabled);
- 
--static ssize_t ata_ncq_prio_enable_store(struct device *device,
--					 struct device_attribute *attr,
--					 const char *buf, size_t len)
-+static ssize_t ata_ncq_prio_enable_show(struct device *device,
++}
++
++DEVICE_ATTR(ncq_prio_supported, S_IRUGO, sas_ncq_prio_supported_show, NULL);
++
++static ssize_t sas_ncq_prio_enable_show(struct device *device,
 +					struct device_attribute *attr,
 +					char *buf)
- {
- 	struct scsi_device *sdev = to_scsi_device(device);
--	struct ata_port *ap;
--	struct ata_device *dev;
--	long int input;
--	int rc = 0;
-+	struct ata_port *ap = ata_shost_to_port(sdev->host);
++{
++	struct scsi_device *sdev = to_scsi_device(device);
++	struct domain_device *ddev = sdev_to_domain_dev(sdev);
 +	bool enabled;
 +	int rc;
- 
--	rc = kstrtol(buf, 10, &input);
-+	rc = ata_ncq_prio_enabled(ap, sdev, &enabled);
- 	if (rc)
- 		return rc;
--	if ((input < 0) || (input > 1))
--		return -EINVAL;
- 
--	ap = ata_shost_to_port(sdev->host);
--	dev = ata_scsi_find_dev(ap, sdev);
--	if (unlikely(!dev))
--		return  -ENODEV;
++
++	/* This attribute shall be visible for SATA devices only */
++	if (WARN_ON_ONCE(!dev_is_sata(ddev)))
++		return -EINVAL;
++
++	rc = ata_ncq_prio_enabled(ddev->sata_dev.ap, sdev, &enabled);
++	if (rc)
++		return rc;
++
 +	return sysfs_emit(buf, "%d\n", enabled);
 +}
 +
-+/**
-+ *	ata_ncq_prio_enable - Enable/disable NCQ Priority
-+ *	@ap: ATA port of the target device
-+ *	@sdev: SCSI device
-+ *	@enable: true - enable NCQ Priority, false - disable NCQ Priority
-+ *
-+ *	Helper to enable/disable NCQ Priority feature.
-+ */
-+int ata_ncq_prio_enable(struct ata_port *ap, struct scsi_device *sdev,
-+			bool enable)
-+{
-+	struct ata_device *dev;
-+	unsigned long flags;
-+	int rc = 0;
-+
-+	spin_lock_irqsave(ap->lock, flags);
- 
--	spin_lock_irq(ap->lock);
-+	dev = ata_scsi_find_dev(ap, sdev);
-+	if (!dev) {
-+		rc = -ENODEV;
-+		goto unlock;
-+	}
- 
- 	if (!(dev->flags & ATA_DFLAG_NCQ_PRIO)) {
- 		rc = -EINVAL;
- 		goto unlock;
- 	}
- 
--	if (input) {
-+	if (enable) {
- 		if (dev->flags & ATA_DFLAG_CDL_ENABLED) {
- 			ata_dev_err(dev,
- 				"CDL must be disabled to enable NCQ priority\n");
-@@ -934,9 +976,29 @@ static ssize_t ata_ncq_prio_enable_store(struct device *device,
- 	}
- 
- unlock:
--	spin_unlock_irq(ap->lock);
-+	spin_unlock_irqrestore(ap->lock, flags);
-+	return rc;
-+}
-+EXPORT_SYMBOL_GPL(ata_ncq_prio_enable);
-+
-+static ssize_t ata_ncq_prio_enable_store(struct device *device,
++static ssize_t sas_ncq_prio_enable_store(struct device *device,
 +					 struct device_attribute *attr,
 +					 const char *buf, size_t len)
 +{
 +	struct scsi_device *sdev = to_scsi_device(device);
-+	struct ata_port *ap = ata_shost_to_port(sdev->host);
++	struct domain_device *ddev = sdev_to_domain_dev(sdev);
 +	bool enable;
 +	int rc;
++
++	/* This attribute shall be visible for SATA devices only */
++	if (WARN_ON_ONCE(!dev_is_sata(ddev)))
++		return -EINVAL;
 +
 +	rc = kstrtobool(buf, &enable);
 +	if (rc)
 +		return rc;
 +
-+	rc = ata_ncq_prio_enable(ap, sdev, enable);
++	rc = ata_ncq_prio_enable(ddev->sata_dev.ap, sdev, enable);
 +	if (rc)
 +		return rc;
- 
--	return rc ? rc : len;
++
 +	return len;
- }
++}
++
++DEVICE_ATTR(ncq_prio_enable, S_IRUGO | S_IWUSR,
++	    sas_ncq_prio_enable_show, sas_ncq_prio_enable_store);
++
++static struct attribute *sas_ata_sdev_attrs[] = {
++	&dev_attr_ncq_prio_supported.attr,
++	&dev_attr_ncq_prio_enable.attr,
++	NULL
++};
++
++static umode_t sas_ata_attr_is_visible(struct kobject *kobj,
++				       struct attribute *attr, int i)
++{
++	struct device *dev = kobj_to_dev(kobj);
++	struct scsi_device *sdev = to_scsi_device(dev);
++	struct domain_device *ddev = sdev_to_domain_dev(sdev);
++
++	if (!dev_is_sata(ddev))
++		return 0;
++
++	return attr->mode;
++}
++
++const struct attribute_group sas_ata_sdev_attr_group = {
++	.attrs = sas_ata_sdev_attrs,
++	.is_visible = sas_ata_attr_is_visible,
++};
++EXPORT_SYMBOL_GPL(sas_ata_sdev_attr_group);
+diff --git a/include/scsi/sas_ata.h b/include/scsi/sas_ata.h
+index 2f8c719840a6..92e27e7bf088 100644
+--- a/include/scsi/sas_ata.h
++++ b/include/scsi/sas_ata.h
+@@ -39,6 +39,9 @@ int smp_ata_check_ready_type(struct ata_link *link);
+ int sas_discover_sata(struct domain_device *dev);
+ int sas_ata_add_dev(struct domain_device *parent, struct ex_phy *phy,
+ 		    struct domain_device *child, int phy_id);
++
++extern const struct attribute_group sas_ata_sdev_attr_group;
++
+ #else
  
- DEVICE_ATTR(ncq_prio_enable, S_IRUGO | S_IWUSR,
-diff --git a/include/linux/libata.h b/include/linux/libata.h
-index 26d68115afb8..6dd9a4f9ca7c 100644
---- a/include/linux/libata.h
-+++ b/include/linux/libata.h
-@@ -1157,6 +1157,12 @@ extern int ata_scsi_change_queue_depth(struct scsi_device *sdev,
- 				       int queue_depth);
- extern int ata_change_queue_depth(struct ata_port *ap, struct scsi_device *sdev,
- 				  int queue_depth);
-+extern int ata_ncq_prio_supported(struct ata_port *ap, struct scsi_device *sdev,
-+				  bool *supported);
-+extern int ata_ncq_prio_enabled(struct ata_port *ap, struct scsi_device *sdev,
-+				bool *enabled);
-+extern int ata_ncq_prio_enable(struct ata_port *ap, struct scsi_device *sdev,
-+			       bool enable);
- extern struct ata_device *ata_dev_pair(struct ata_device *adev);
- extern int ata_do_set_mode(struct ata_link *link, struct ata_device **r_failed_dev);
- extern void ata_scsi_port_error_handler(struct Scsi_Host *host, struct ata_port *ap);
+ static inline void sas_ata_disabled_notice(void)
+@@ -123,6 +126,9 @@ static inline int sas_ata_add_dev(struct domain_device *parent, struct ex_phy *p
+ 	sas_ata_disabled_notice();
+ 	return -ENODEV;
+ }
++
++#define sas_ata_sdev_attr_group ((struct attribute_group) {})
++
+ #endif
+ 
+ #endif /* _SAS_ATA_H_ */
 -- 
 2.44.0.278.ge034bb2e1d-goog
 
