@@ -1,152 +1,109 @@
-Return-Path: <linux-kernel+bounces-94606-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94607-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7AAC087420C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 22:34:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33B7687420F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 22:35:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32798288F9A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 21:34:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9F781B20F5E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 21:35:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93A421B59E;
-	Wed,  6 Mar 2024 21:34:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AAE01B94D;
+	Wed,  6 Mar 2024 21:34:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="kZnBZUv7"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="WnGdPuGj"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA13A1429B
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 21:34:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58B1C1B59C;
+	Wed,  6 Mar 2024 21:34:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709760886; cv=none; b=ajECru051q+tYaUKMqcOeB6xGPh1ih+caOSsvUXf59Aiq/oV8r2XpJsdaYnBhSZ33BfMDWTKspjZ+oRzS7XF2YQM1ZK/rhUPUzR40bypDmeiRWV2mdFl+68nI6Rz3KlvkCK/p6ippGzkt+/9DlnVQ1PPUMioZkRpnukFD10nuis=
+	t=1709760888; cv=none; b=hRKQu+/dRObGg5JhSUh5jQfQ17wyd5Zw0ckxFYYrZl8kng9PtuwG8ivw0ZHTA1Mn1FEoTnkiQcA1mB/SvnptbOuAgbAClRPOszlRv9c9DaEDSEs7BJyBWm07gnVJXwmtxrhB/VVDoeZALc/OZVjxgX/WprNouawjIROfp+kZtTo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709760886; c=relaxed/simple;
-	bh=VfP4PQ6CLQO2Gx1ykfJd2b0T4aya1Jb6oeEkNhDI5OY=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=YNz1m9f1txpA2Vtg3q/6CKG4W/tT2p2p/r2Xxcj9IuiOV3LIGClmn5vfavD+c9X4TtC19s2pIuSwTdccrH72GiRG9CwappR6xRZelAgDi/KdqkX/ijXO+L7d9PD28GGUxzg87NljWuysNIQWoGxaeGjJKYolbP9vzYiZ4Fk1NJw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=kZnBZUv7; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1709760880;
-	bh=vXx7/JmCH9QW+7mXHC7u2NKptyAP4I+/LVyLTHOKxQw=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=kZnBZUv7seCuEMLDXYJIJ659rQLRmzBPRXiYFpQd6snY11Askz00l6XCmCIPAv3gA
-	 OPjMFXZwGRbUxEx65XCMiUzKY1qApurG9rZE8Z55C8hqadOFagE84C7f2QW+4o7by5
-	 /ogXbXq+Mpp4/4Ob0jfQAVwtsHd4+2U9R+8JXW5xVb/b2ID5L14q2dnxkMNRutrBP2
-	 R6ijO2hpJyrQMxhRXtGtFaiIBHZiaFsstpLTzPXYTIdcxkD9idIb70VG/q22FX1AVt
-	 tSIo6nUPO6qwHdvKQy5UcUdXeolOYZEEpcbs3thqf2ry831ui7s3VYBtDLCEDjv4ex
-	 /ROm5tCMDJ6GQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Tqm0v3jb5z4wc7;
-	Thu,  7 Mar 2024 08:34:39 +1100 (AEDT)
-Date: Thu, 7 Mar 2024 08:34:38 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= <u.kleine-koenig@pengutronix.de>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Thorsten Scherer
- <T.Scherer@eckelmann.de>, linux-kernel@vger.kernel.org, Pengutronix Kernel
- Team <kernel@pengutronix.de>, "Ricardo B. Marliere" <ricardo@marliere.net>
-Subject: Re: siox patches for next development cycle [Re: [PATCH 0/4] siox:
- Move some complexity into the core]
-Message-ID: <20240307083438.3cef23c5@canb.auug.org.au>
-In-Reply-To: <vg5yex3wpnfeibgkwmi33yazdxdz2pbhn4w72mnffqm3qtvjf6@gv3syxj6gsk7>
-References: <cover.1708328466.git.u.kleine-koenig@pengutronix.de>
-	<lkgvr2t4wzw4jkfg523zcek6y2v5l7kj6onw77yffvvs7i2gfy@6ectsjpcg64t>
-	<vg5yex3wpnfeibgkwmi33yazdxdz2pbhn4w72mnffqm3qtvjf6@gv3syxj6gsk7>
+	s=arc-20240116; t=1709760888; c=relaxed/simple;
+	bh=EENCLqG5V3ac8guut1rXuephqedDKNfSA+GEUUm2Ldc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JvGu2waQrdDdT1k39KKMJWdGVOtf8bEw6f2tXLI+r3hu8X9ARbY50pSMhGyCqsFReMaprWQ7uzTJMuZWKHBtCdsr2OfEDSuP+UEHRney6mKyeesfIyLVJ7r5CLgnew8FjUBdx8U01DxlBsctNRqs0zlNyNusSoDHdvXhQzb2UQI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=WnGdPuGj; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=Pnrclyp8qd04tGL+paauReWhMqljiQ5BhKgBB0WcrGc=; b=WnGdPuGjK0DJWslO+RClJS5y4I
+	5B8C5YAmXsTC55hIAo8YMFhw2q8p4bch0h7B8wC2w9wScUcSlicDw2Ngd+HVnDWZ6M2t62VKOQr3g
+	xa19j5fyo9dOSgZvD1Tt3Ne44oT/0bK1MLvxnP257sEIFzNoQntAvUhfGNCF6rV7A0jhQNMkdPwew
+	tUYo716dQGB0rZx09USyxW2Kdi0cFIyWXhsw3MTC4w9MJnsAXxPFCd64pW7Yt4RekRpDZwzegFOyr
+	2fOR7osn7I78XruxsHsT6Hd7MBR3Uhc6sFCu0yxbe1ZAbILzWusyPeZ/Ainmpv63ADEiA/z79WTyH
+	IjW4rvbQ==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rhyuO-00000001xdj-0ljc;
+	Wed, 06 Mar 2024 21:34:40 +0000
+Date: Wed, 6 Mar 2024 13:34:40 -0800
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: Calvin Owens <jcalvinowens@gmail.com>, Song Liu <song@kernel.org>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Mike Rapoport <rppt@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Naveen N Rao <naveen.n.rao@linux.ibm.com>,
+	Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+	David S Miller <davem@davemloft.net>,
+	Thomas Gleixner <tglx@linutronix.de>, bpf@vger.kernel.org,
+	linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC][PATCH 0/4] Make bpf_jit and kprobes work with
+ CONFIG_MODULES=n
+Message-ID: <ZejhcP_r5QJZcS6j@bombadil.infradead.org>
+References: <cover.1709676663.git.jcalvinowens@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/kRCEx92IgB_FF=d7zFx1lWQ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1709676663.git.jcalvinowens@gmail.com>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 
---Sig_/kRCEx92IgB_FF=d7zFx1lWQ
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On Wed, Mar 06, 2024 at 12:05:07PM -0800, Calvin Owens wrote:
+> Hello all,
+> 
+> This patchset makes it possible to use bpftrace with kprobes on kernels
+> built without loadable module support.
 
-Hi Uwe,
+This is a step in the right direction for another reason: clearly the
+module_alloc() is not about modules, and we have special reasons for it
+now beyond modules. The effort to share a generalize a huge page for
+these things is also another reason for some of this but that is more
+long term.
 
-On Wed, 6 Mar 2024 19:24:38 +0100 Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pe=
-ngutronix.de> wrote:
->
-> On Tue, Feb 27, 2024 at 11:21:24AM +0100, Thorsten Scherer wrote:
-> > On Mon, Feb 19, 2024 at 08:46:28AM +0100, Uwe Kleine-K=C3=B6nig wrote:
-> > The series looks sensible.
-> >=20
-> > Acked-by: Thorsten Scherer <t.scherer@eckelmann.de>
-> >=20
-> > @gregkh: Would you please pick up Uwe's series as well? =20
->=20
-> There are currently six patches for drivers/siox waiting to be applied.
-> (Two by Ricardo and four by me.) Thorsten asked Greg to do so. Greg
-> didn't pick these up yet though. So I collected them and put them to a
-> branch at:
->=20
-> 	https://git.kernel.org/pub/scm/linux/kernel/git/ukleinek/linux.git siox/=
-for-next
->=20
-> I'd like to get them in during the next development cycle.
->=20
-> Greg, what is easiest for you? Are they still on your list of open
-> patches and we (I) need just a bit more patience? Or should I send a PR
-> to Linus when the merge window opens?
->=20
-> Stephen: It would be nice to get this above branch into next, no matter
-> if the patches make it in via Greg or me. Could you please add this
-> branch to your list for next? If Greg will apply them, I'll empty this
-> branch to not get duplicates.
+I'm all for minor changes here so to avoid regressions but it seems a
+rename is in order -- if we're going to all this might as well do it
+now. And for that I'd just like to ask you paint the bikeshed with
+Song Liu as he's been the one slowly making way to help us get there
+with the "module: replace module_layout with module_memory",
+and Mike Rapoport as he's had some follow up attempts [0]. As I see it,
+the EXECMEM stuff would be what we use instead then. Mike kept the
+module_alloc() and the execmem was just a wrapper but your move of the
+arch stuff makes sense as well and I think would complement his series
+nicely.
 
-Added from today.
+If you're gonna split code up to move to another place, it'd be nice
+if you can add copyright headers as was done with the kernel/module.c
+split into kernel/module/*.c
 
-Thanks for adding your subsystem tree as a participant of linux-next.  As
-you may know, this is not a judgement of your code.  The purpose of
-linux-next is for integration testing and to lower the impact of
-conflicts between subsystems in the next merge window.=20
+Can we start with some small basic stuff we can all agree on?
 
-You will need to ensure that the patches/commits in your tree/series have
-been:
-     * submitted under GPL v2 (or later) and include the Contributor's
-        Signed-off-by,
-     * posted to the relevant mailing list,
-     * reviewed by you (or another maintainer of your subsystem tree),
-     * successfully unit tested, and=20
-     * destined for the current or next Linux merge window.
+[0] https://lwn.net/Articles/944857/
 
-Basically, this should be just what you would send to Linus (or ask him
-to fetch).  It is allowed to be rebased if you deem it necessary.
-
---=20
-Cheers,
-Stephen Rothwell=20
-sfr@canb.auug.org.au
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/kRCEx92IgB_FF=d7zFx1lWQ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXo4W4ACgkQAVBC80lX
-0GytDwf/Tvd1t4Lrr1ksGM7s2MpeL5yqrSXLDXgEY5/XcCk9VQLqhLqgpKEKwVMC
-l/GyXbf21xxBofrXsHbnBQAnIRaOI/Ltuf4TVMvQOyEAqhQcjmc1jzxsHwfA7zM5
-5Gy/VWT7I8KTywq0qDO4hkxjRrTMh8avd7E2Cz0883NMgFRK9P1wrQLUynWV3clo
-eTMGAqiusNL9Ske5Up3KrrtLQvr6b7+8pA5xXCp8d5tyRK97u7plHGQB9ShjfnFw
-h5IeXjrE66sqxKPgGEiW+nuJxK5+bzvKXtbKwDzGofEw1UAAD7xOmRSTA7YKqEpB
-Cbvmfj0G+Z0scjS3B1HDipYGwTnSog==
-=epjE
------END PGP SIGNATURE-----
-
---Sig_/kRCEx92IgB_FF=d7zFx1lWQ--
+  Luis
 
