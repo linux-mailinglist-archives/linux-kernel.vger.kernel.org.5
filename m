@@ -1,150 +1,350 @@
-Return-Path: <linux-kernel+bounces-94130-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94133-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB32D873A5C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:10:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F3C9873A63
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:11:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8687F2888EE
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:10:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A4672B24802
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:11:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84FAA135A6C;
-	Wed,  6 Mar 2024 15:09:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20E2D1353FC;
+	Wed,  6 Mar 2024 15:10:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="EUiNFsrA"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="4POVxNX1"
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5FBC1339B1
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 15:09:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7C14132472
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 15:10:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709737746; cv=none; b=s5uzRWOPwtvcHMhRHb9ZH6UuaqNTkGyfdxml1Vn7t0xkTlkmH4OjB8Xsa8aAOcaB5aq5q//aZBtdMs9Z9dqhl2xvmXudWG9yA8AbD/oKmg5FnKVIs8S0Vpn2qHVkp4ugxUAmQYKKvL8ONDbcOHl1NWqcsX67ofxk/lNRk06esH4=
+	t=1709737820; cv=none; b=dgjGTj8TtX2FZE80DIhcyVKXnzWwdkr1tD9xj0KSPzuMcCPDmgh290MOvGsAN9KG+wCOS3SEAKnklVP3GfNkCUeldGtSDQFfDaijwbhr/3WIzEIckZYcMbTyPm0WJ+9ag1dDDU5lNq3OEl8R6jr5jqcKo0kdNMp/NaQBpaVB1gs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709737746; c=relaxed/simple;
-	bh=htNfJZekXycwOASRu5msrIzhBCYy6azwytM+8tCUVI8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PmPobtjwuDRtukqmoQDvqq7eylUV4xLfUrhmzf0QSirSn2Ni9Ejunjl84laQu0MDr8j4q3BVK4Wo6onvJPG3pJCvu+6J+GHdWedqFbUYbOXZTvbjFMDOGJiJeAfCsshsjKAF4CPmnSdtmKpo1o7N4I1n+ogZYToqd9WmHa+lFU4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=EUiNFsrA; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-567fe9d7741so523034a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 07:09:04 -0800 (PST)
+	s=arc-20240116; t=1709737820; c=relaxed/simple;
+	bh=qjcYnOAyDzwpMl+5pOVw0IVok5rrLJ4e3o/tFfBhl94=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=r7iY34LHz7j6GnmiIge4i9reRVaQt7fGD66KMMHjTvTynUcmdIRNnLqZrrl3LMMhKCWYasCrcUNNYaJ9RlD6m7TxZK1pVM6QBnQUjKJRys93W3Qd65GHUtm8fntTQY5dVBS4RzgYDUfjghsH2hlQJbvJ3Kbm0XaiPVtBVsgiILM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=4POVxNX1; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-566b160f6eeso11970a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 07:10:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709737743; x=1710342543; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cSTbGviUj2+tzM5FN3SRFJrPn5A4S/cykEjFUlu9MjQ=;
-        b=EUiNFsrAGfkfTPNH8wMsnuHS0yzhEii6mZzmu51HZG6i4fhzVgn+EAUPyTqzAEpQIG
-         oUx5/mVOOpccC+8ZX0zcqSK5qDAh0L8YHLAINlgflYpxsduk0QlsRRbm7rXmwcKuQb8f
-         NXugL4E7QI3os+2DwCJQRSEqBZbj9EbZz6FRukSMQ/ou6k6R2y+a5PuvIuGcn9MSvWyL
-         xJrSx6QzKDayAmZly5DAIrdlbEy2a/Ah5ncvHluKglEFW85CeDkYn/Ejyba5XlDsf+qF
-         LWnikr/MOX+aMtdwa3Q+MN0KJmPmCOUNLriR9NHbDqiIMBrXjU0GQQQlpJ210iLnDOVr
-         1WCw==
+        d=google.com; s=20230601; t=1709737815; x=1710342615; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WiqlRH5D1PVFZ4xdoZ1pgXd2c0JlwaOYFpF6GFPgDLc=;
+        b=4POVxNX1J4awkvhNO9sXZexzqvQAHV34MdBl8y6xO9Awujdm3GUH9gp5dbsCJIV7B8
+         vXIc6LWF1a4ejkZyuMUxSVnw4TqSaN6sU3NyqQ6fvnH870xpXw2ef4DVAs2Foobpb6j+
+         OuxHbpm7i37920BGc3KCEhFW1MVXWcAjQk2JDHDDaz8Jo+y2SqPDZJwnNtmdt6xkyhBI
+         Sv+xYkB9V2U/p2HeiWH4a0ewMIXraEIiKPdwELd5/mIQhhA7uz+NdNVJi7TSNgXbBMRh
+         zbK1XfnHDYDgoRinYB2gNvyGr+u286RaTf+GOboyI03dzGvI+ySwll3+kmG36ADJcnxP
+         3/Og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709737743; x=1710342543;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cSTbGviUj2+tzM5FN3SRFJrPn5A4S/cykEjFUlu9MjQ=;
-        b=AI+Bm/5DfvgLEV6xKkIJrrwEYAkR6Uxdr2nKiLd3Nr8Nt9CJvGU87Bvcu7B0VgLc+k
-         yrlyunFs7qCGgQJVyZDcAVrSpqTXV5/zKTpnK34EArc58166IeTWRE/I5fct7H6fiPf9
-         o2m3sjYGzJC59vryFk6jK2PHzkqsEkFFGy/6d4ixGEdflGhsLlzUsGg3B/B/qD5xQwb8
-         UjXU4179mCsj8ZjCa61OkhhkrP8y1ixQHJDRmiVJzl4p+UlJY7lRCCuPVEZ/OV11Wjsh
-         HxPkCx9jOueZVLzuxN09CKKIeAsYYH35ovSFehHpwxfhvvqOKYLwEjEJvL56HUO3GQO5
-         km/A==
-X-Forwarded-Encrypted: i=1; AJvYcCWwgkzgChE06USi6W4WHPTZQ2CXswnslW/JHbOYzRUYtEsCol6beQpryZwLeg9EKkby76TZXluZNDCqCudmFAyPD0f3w7mIeN19TFmD
-X-Gm-Message-State: AOJu0YyJCDRfg7RXqgOmJXsiWOYIy+3iBI0vxGNbtYRT1Pc2hcdpf12k
-	zEwOcFPcKIEp6i5Z2dLKLKurBXkdNtAM0uFPeOvnfq7sfFhntb1RI3SQk62aV0U=
-X-Google-Smtp-Source: AGHT+IGSqvfoKmQVDern3nCGhWPi1qthThjIn2tJn+52dhPSsZC8l1H00bzhjnXKVDNv6UweY+zF/Q==
-X-Received: by 2002:a17:906:37d6:b0:a45:f5c:fdb7 with SMTP id o22-20020a17090637d600b00a450f5cfdb7mr7891569ejc.35.1709737743055;
-        Wed, 06 Mar 2024 07:09:03 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id ao17-20020a170907359100b00a4581ea674esm2717452ejc.223.2024.03.06.07.09.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Mar 2024 07:09:02 -0800 (PST)
-Message-ID: <b4aecd63-ec3c-46e7-b6cf-e72994a9a2d6@linaro.org>
-Date: Wed, 6 Mar 2024 16:09:01 +0100
+        d=1e100.net; s=20230601; t=1709737815; x=1710342615;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WiqlRH5D1PVFZ4xdoZ1pgXd2c0JlwaOYFpF6GFPgDLc=;
+        b=L/ZFQnpUkB5XQcXFAh0vPI7+fzc9tAeIFgUTXx6KfI7mLkXYcJFxxRewATgj3Idckt
+         wG+Max7SqH2aGSI5bS8dIqgZoj7rYmW9cMp4c/1nBcubBS35NjhklD74dES24p9hTLDn
+         b8ryfjJ69vPCZMMMC3NS+36Hkhy5r16hhdSLmi0IywktB9oqiYNYmQE0Hk3PmFRmMZ7r
+         q5oJT+2P7wzTNUsRXABQ3MtjD+oZQ4HQp1lUREASZ872rI9XZI+7jmLhlwoALQkYyllm
+         F0oHJvXTEcaHxAq+DU74v+rye9dWk9MoyD6Eyo2+YX6eCch5JqHnV4INE/YM/I2hYTve
+         KINQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUOTASPssZv2VdYCqKtoAduKL/WKEk2CytiFNfCZcjElV1ylnH5TLdw+syT7Ivix3FlqzoGvelnqaHhZv7d7Zr4CDo9R+Khuf6VM5hR
+X-Gm-Message-State: AOJu0YwI6fuw+fAHx5VEiLh7tlmFqcHpUfoxo+irkiU0vPP3k59k4Xqw
+	CuzQsZowKaaqkfyqkUZysJF/tN/qELR4PF4hPPENgXY4AbVn0FGtKH/uTgb4AcQRyVVnox9e0rA
+	GVlk/jv3PbFRd0yOGlZ6cYt+Bo0P6KbynUc0J
+X-Google-Smtp-Source: AGHT+IFB1IcbYq+9PUXUuTDs2L8KEUVjGvpB3JhRS9KEiojP6irE5Yzg60XIM8yO4VltL6KJuGJoi6jd4Dm6myghMKI=
+X-Received: by 2002:aa7:c397:0:b0:566:a44d:2a87 with SMTP id
+ k23-20020aa7c397000000b00566a44d2a87mr405942edq.0.1709737815010; Wed, 06 Mar
+ 2024 07:10:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: nvmem: Add compatible for sm8450, sm8550 and
- sm8650
-Content-Language: en-US
-To: Mukesh Ojha <quic_mojha@quicinc.com>, andersson@kernel.org,
- konrad.dybcio@linaro.org, srinivas.kandagatla@linaro.org, robh@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <1709662869-10569-1-git-send-email-quic_mojha@quicinc.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <1709662869-10569-1-git-send-email-quic_mojha@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20230824020546.1108516-1-dapeng1.mi@linux.intel.com>
+ <ZeepGjHCeSfadANM@google.com> <2677739b-bc84-43ee-ba56-a5e243148ceb@gmail.com>
+In-Reply-To: <2677739b-bc84-43ee-ba56-a5e243148ceb@gmail.com>
+From: Jim Mattson <jmattson@google.com>
+Date: Wed, 6 Mar 2024 07:09:59 -0800
+Message-ID: <CALMp9eQ531ZC-8-Y+gwLer9mCK-hZ9yVNQZAFE6z76RXkMNnPA@mail.gmail.com>
+Subject: Re: [Patch v3] KVM: x86/pmu: Manipulate FIXED_CTR_CTRL MSR with macros
+To: Like Xu <like.xu.linux@gmail.com>
+Cc: Sean Christopherson <seanjc@google.com>, Mingwei Zhang <mizhang@google.com>, 
+	Paolo Bonzini <pbonzini@redhat.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	Like Xu <likexu@tencent.com>, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Zhenyu Wang <zhenyuw@linux.intel.com>, 
+	Zhang Xiong <xiong.y.zhang@intel.com>, Lv Zhiyuan <zhiyuan.lv@intel.com>, 
+	Dapeng Mi <dapeng1.mi@intel.com>, Dapeng Mi <dapeng1.mi@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 05/03/2024 19:21, Mukesh Ojha wrote:
-> Document QFPROM compatible for sm8450, sm8550 and sm8650 SoCs.
-> 
-> Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
-> ---
->  Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml | 3 +++
->  1 file changed, 3 insertions(+)
+On Wed, Mar 6, 2024 at 1:11=E2=80=AFAM Like Xu <like.xu.linux@gmail.com> wr=
+ote:
+>
+> On 6/3/2024 7:22 am, Sean Christopherson wrote:
+> > +Mingwei
+> >
+> > On Thu, Aug 24, 2023, Dapeng Mi wrote:
+> >   diff --git a/arch/x86/kvm/pmu.h b/arch/x86/kvm/pmu.h
+> >> index 7d9ba301c090..ffda2ecc3a22 100644
+> >> --- a/arch/x86/kvm/pmu.h
+> >> +++ b/arch/x86/kvm/pmu.h
+> >> @@ -12,7 +12,8 @@
+> >>                                        MSR_IA32_MISC_ENABLE_BTS_UNAVAI=
+L)
+> >>
+> >>   /* retrieve the 4 bits for EN and PMI out of IA32_FIXED_CTR_CTRL */
+> >> -#define fixed_ctrl_field(ctrl_reg, idx) (((ctrl_reg) >> ((idx)*4)) & =
+0xf)
+> >> +#define fixed_ctrl_field(ctrl_reg, idx) \
+> >> +    (((ctrl_reg) >> ((idx) * INTEL_FIXED_BITS_STRIDE)) & INTEL_FIXED_=
+BITS_MASK)
+> >>
+> >>   #define VMWARE_BACKDOOR_PMC_HOST_TSC               0x10000
+> >>   #define VMWARE_BACKDOOR_PMC_REAL_TIME              0x10001
+> >> @@ -165,7 +166,8 @@ static inline bool pmc_speculative_in_use(struct k=
+vm_pmc *pmc)
+> >>
+> >>      if (pmc_is_fixed(pmc))
+> >>              return fixed_ctrl_field(pmu->fixed_ctr_ctrl,
+> >> -                                    pmc->idx - INTEL_PMC_IDX_FIXED) &=
+ 0x3;
+> >> +                                    pmc->idx - INTEL_PMC_IDX_FIXED) &
+> >> +                                    (INTEL_FIXED_0_KERNEL | INTEL_FIX=
+ED_0_USER);
+> >>
+> >>      return pmc->eventsel & ARCH_PERFMON_EVENTSEL_ENABLE;
+> >>   }
+> >> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel=
+c
+> >> index f2efa0bf7ae8..b0ac55891cb7 100644
+> >> --- a/arch/x86/kvm/vmx/pmu_intel.c
+> >> +++ b/arch/x86/kvm/vmx/pmu_intel.c
+> >> @@ -548,8 +548,13 @@ static void intel_pmu_refresh(struct kvm_vcpu *vc=
+pu)
+> >>              setup_fixed_pmc_eventsel(pmu);
+> >>      }
+> >>
+> >> -    for (i =3D 0; i < pmu->nr_arch_fixed_counters; i++)
+> >> -            pmu->fixed_ctr_ctrl_mask &=3D ~(0xbull << (i * 4));
+> >> +    for (i =3D 0; i < pmu->nr_arch_fixed_counters; i++) {
+> >> +            pmu->fixed_ctr_ctrl_mask &=3D
+> >> +                     ~intel_fixed_bits_by_idx(i,
+> >> +                                              INTEL_FIXED_0_KERNEL |
+> >> +                                              INTEL_FIXED_0_USER |
+> >> +                                              INTEL_FIXED_0_ENABLE_PM=
+I);
+> >> +    }
+> >>      counter_mask =3D ~(((1ull << pmu->nr_arch_gp_counters) - 1) |
+> >>              (((1ull << pmu->nr_arch_fixed_counters) - 1) << INTEL_PMC=
+_IDX_FIXED));
+> >>      pmu->global_ctrl_mask =3D counter_mask;
+> >> @@ -595,7 +600,7 @@ static void intel_pmu_refresh(struct kvm_vcpu *vcp=
+u)
+> >>                      pmu->reserved_bits &=3D ~ICL_EVENTSEL_ADAPTIVE;
+> >>                      for (i =3D 0; i < pmu->nr_arch_fixed_counters; i+=
++) {
+> >>                              pmu->fixed_ctr_ctrl_mask &=3D
+> >> -                                    ~(1ULL << (INTEL_PMC_IDX_FIXED + =
+i * 4));
+> >
+> > OMG, this might just win the award for most obfuscated PMU code in KVM,=
+ which is
+> > saying something.  The fact that INTEL_PMC_IDX_FIXED happens to be 32, =
+the same
+> > bit number as ICL_FIXED_0_ADAPTIVE, is 100% coincidence.  Good riddance=
+.
+> >
+> > Argh, and this goofy code helped introduce a real bug.  reprogram_fixed=
+_counters()
+> > doesn't account for the upper 32 bits of IA32_FIXED_CTR_CTRL.
+> >
+> > Wait, WTF?  Nothing in KVM accounts for the upper bits.  This can't pos=
+sibly work.
+> >
+> > IIUC, because KVM _always_ sets precise_ip to a non-zero bit for PEBS e=
+vents,
+> > perf will _always_ generate an adaptive record, even if the guest reque=
+sted a
+> > basic record.  Ugh, and KVM will always generate adaptive records even =
+if the
+> > guest doesn't support them.  This is all completely broken.  It probabl=
+y kinda
+> > sorta works because the Basic info is always stored in the record, and =
+generating
+> > more info requires a non-zero MSR_PEBS_DATA_CFG, but ugh.
+>
+> Yep, it works at least on machines with both adaptive and pebs_full featu=
+res.
+>
+> I remember one generation of Atom core (? GOLDMONT) that didn't have both
+> above PEBS sub-features, so we didn't set x86_pmu.pebs_ept on that platfo=
+rm.
+>
+> Mingwei or others are encouraged to construct use cases in KUT::pmu_pebs.=
+flat
+> that violate guest-pebs rules (e.g., leak host state), as we all recogniz=
+e that
+> testing
+> is the right way to condemn legacy code, not just lengthy emails.
+>
+> >
+> > Oh great, and it gets worse.  intel_pmu_disable_fixed() doesn't clear t=
+he upper
+> > bits either, i.e. leaves ICL_FIXED_0_ADAPTIVE set.  Unless I'm misreadi=
+ng the code,
+> > intel_pmu_enable_fixed() effectively doesn't clear ICL_FIXED_0_ADAPTIVE=
+ either,
+> > as it only modifies the bit when it wants to set ICL_FIXED_0_ADAPTIVE.
+> >
+> > *sigh*
+> >
+> > I'm _very_ tempted to disable KVM PEBS support for the current PMU, and=
+ make it
+> > available only when the so-called passthrough PMU is available[*].  Bec=
+ause I
+> > don't see how this is can possibly be functionally correct, nor do I se=
+e a way
+> > to make it functionally correct without a rather large and invasive ser=
+ies.
+>
+> Considering that I've tried the idea myself, I have no inclination toward=
+s
+> "passthrough PMU", and I'd like to be able to take the time to review tha=
+t
+> patchset while we all wait for a clear statement from that perf-core man,
+> who don't really care about virtualization and don't want to lose control
+> of global hardware resources.
+>
+> Before we actually get to that ideal state you want, we have to deal with
+> some intermediate state and face to any users that rely on the current co=
+de,
+> you had urged to merge in a KVM document for vPMU, not sure how far
+> along that part of the work is.
+>
+> >
+> > Ouch.  And after chatting with Mingwei, who asked the very good questio=
+n of
+> > "can this leak host state?", I am pretty sure that yes, this can leak h=
+ost state.
+>
+> The Basic Info has a tsc field, I suspect it's the host-state-tsc.
+>
+> >
+> > When PERF_CAP_PEBS_BASELINE is enabled for the guest, i.e. when the gue=
+st has
+> > access to adaptive records, KVM gives the guest full access to MSR_PEBS=
+_DATA_CFG
+> >
+> >       pmu->pebs_data_cfg_mask =3D ~0xff00000full;
+> >
+> > which makes sense in a vacuum, because AFAICT the architecture doesn't =
+allow
+> > exposing a subset of the four adaptive controls.
+> >
+> > GPRs and XMMs are always context switched and thus benign, but IIUC, Me=
+mory Info
+> > provides data that might now otherwise be available to the guest, e.g. =
+if host
+> > userspace has disallowed equivalent events via KVM_SET_PMU_EVENT_FILTER=
+.
+>
+> Indeed, KVM_SET_PMU_EVENT_FILTER doesn't work in harmony with
+> guest-pebs, and I believe there is a big problem here, especially with th=
+e
+> lack of targeted testing.
+>
+> One reason for this is that we don't use this cockamamie API in our
+> large-scale production environments, and users of vPMU want to get real
+> runtime information about physical cpus, not just virtualised hardware
+> architecture interfaces.
+>
+> >
+> > And unless I'm missing something, LBRs are a full leak of host state.  =
+Nothing
+> > in the SDM suggests that PEBS records honor MSR intercepts, so unless K=
+VM is
+> > also passing through LBRs, i.e. is context switching all LBR MSRs, the =
+guest can
+> > use PEBS to read host LBRs at will.
+>
+> KVM is also passing through LBRs when guest uses LBR but not at the
+> granularity of vm-exit/entry. I'm not sure if the LBR_EN bit is required
+> to get LBR information via PEBS, also not confirmed whether PEBS-lbr
+> can be enabled at the same time as independent LBR;
+>
+> I recall that PEBS-assist, per cpu-arch, would clean up this part of the
+> record when crossing root/non-root boundaries, or not generate record.
+>
+> We're looking forward to the tests that will undermine this perception.
+>
+> There are some devilish details during the processing of vm-exit and
+> the generation of host/guest pebs, and those interested can delve into
+> the short description in this SDM section "20.9.5 EPT-Friendly PEBS".
+>
+> >
+> > Unless someone chimes in to point out how PEBS virtualization isn't a b=
+roken mess,
+> > I will post a patch to effectively disable PEBS virtualization.
+>
+> There are two factors that affect the availability of guest-pebs:
+>
+> 1. the technical need to use core-PMU in both host/guest worlds;
+> (I don't think Googlers are paying attention to this part of users' needs=
+)
 
+Let me clear up any misperceptions you might have that Google alone is
+foisting the pass-through PMU on the world. The work so far has been a
+collaboration between Google and Intel. Now, AMD has joined the
+collaboration as well. Mingwei is taking the lead on the project, but
+Googlers are outnumbered by the x86 CPU vendors ten to one.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+The pass-through PMU allows both the host and guest worlds to use the
+core PMU, more so than the existing vPMU implementation. I assume your
+complaint is about the desire for host software to monitor guest
+behavior with core PMU events while the guest is running. Today,
+Google Cloud does this for fleet management, and losing this
+capability is not something we are looking forward to. However, the
+writing is on the wall: Coco is going to take this capability away
+from us anyway.
 
-Best regards,
-Krzysztof
-
+> 2. guest-pebs is temporarily disabled in the case of cross-mapping counte=
+r,
+> which reduces the number of performance samples collected by guest;
+>
+> >
+> > diff --git a/arch/x86/kvm/vmx/capabilities.h b/arch/x86/kvm/vmx/capabil=
+ities.h
+> > index 41a4533f9989..a2f827fa0ca1 100644
+> > --- a/arch/x86/kvm/vmx/capabilities.h
+> > +++ b/arch/x86/kvm/vmx/capabilities.h
+> > @@ -392,7 +392,7 @@ static inline bool vmx_pt_mode_is_host_guest(void)
+> >
+> >   static inline bool vmx_pebs_supported(void)
+> >   {
+> > -       return boot_cpu_has(X86_FEATURE_PEBS) && kvm_pmu_cap.pebs_ept;
+> > +       return false;
+>
+> As you know, user-space VMM may disable guest-pebs by filtering out the
+> MSR_IA32_PERF_CAPABILITIE.PERF_CAP_PEBS_FORMAT or CPUID.PDCM.
+>
+> In the end, if our great KVM maintainers insist on doing this,
+> there is obviously nothing I can do about it.
+>
+> Hope you have a good day.
+>
+> >   }
+> >
+> >   static inline bool cpu_has_notify_vmexit(void)
+> >
+>
 
