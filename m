@@ -1,144 +1,174 @@
-Return-Path: <linux-kernel+bounces-94209-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94208-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E497873B5C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:58:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F6F8873B59
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:57:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 605F41C229E6
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:58:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 53BB01C209B5
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:57:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6975D137915;
-	Wed,  6 Mar 2024 15:57:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="G+9JnmEF"
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 159481361C6;
+	Wed,  6 Mar 2024 15:57:02 +0000 (UTC)
+Received: from mail-oa1-f51.google.com (mail-oa1-f51.google.com [209.85.160.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 302B4137914
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 15:57:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14C6460912;
+	Wed,  6 Mar 2024 15:56:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709740625; cv=none; b=AzrSJssUVCHECpd1sF7z5iuTUC0iLhnzHuqObrTVw7sLe88Z5J9ttM0uyJmwKUQmDt2lCJ2kt/gfuLprTBbdPWcaQkuc39reK/22WX25M06t642ufSkYDs4+/7EF0cuKXCwrYQSnGcuKWzoE5T7V3Y4+fTi3UPBd19v53D7eZLI=
+	t=1709740621; cv=none; b=FNbQJgz2dVLIbhozGAK2rVbiNFE7Wy2jDLc79e6mgJfQxdow06WtftK0E3tVNc3f8zhkHOXZeZzgN6NUBym3Wrpr5kiOZ+EyQEmAtNShRnFbLuwVh3U2JCqvw3htDT9uu0J9TLT3O6K3Ad2jNxW0gwCaFs/h6oNI79zxntN3miM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709740625; c=relaxed/simple;
-	bh=y1KNSY2klj9TyNv0mKj+D0MKiuhGSXTO5BHMy1t7fH8=;
+	s=arc-20240116; t=1709740621; c=relaxed/simple;
+	bh=4tghISU+9PtSjWtX/KooJvAfp+afRTcd2Wim7+281EQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BJMX7hp1ObHJjBP/2DYkEJu7ziLBYyppR3YQ+jwqMTrRwjX0pf1XeCiMQyepmZkzNEoCtMy4mVlNnduiw0p4LPMw98zWS/8OHJc1pNhRQugt6r8qwTqQ2TTOocj9g8pZN6AOWOmEhI7oE6zQI4D1x96GFHKWDhlseI3T7BAAcAA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=G+9JnmEF; arc=none smtp.client-ip=209.85.128.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-6095dfcb461so11643297b3.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 07:57:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709740623; x=1710345423; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2f+5aPU/XdbNCp1ggYwNVgQ5AaKBkNmvjYLVF7eMmS8=;
-        b=G+9JnmEFomgLSXSdnMmXKue6XtwdWTMZFLJDq62dzc4zs0lo6Ee2KwAFQQCz/Ga23o
-         QCQpNBVDawtZDlD3hZTeFCR0hcmn6liXnD8yTfQKFB5RNCA6u2DNfgguYOmD3NA15rOa
-         K87ivmidMac+if65s7GvP8GOWsFeIxBeew02QlL4A1Kbs+YjDxhNf/2J7RwUGDNTHUoJ
-         nQH3eXGailZepNEgGqP0Rmxn/BTbtfw/heGmle7/GA2ZpVm05fT1lqEWfiIlwS+itICi
-         7DpYNyXiVQBW3FM8FzHAT6uu1DBgC9n7Y012oL6okeVHwEYOUlX9sb6m+iGn+xF7I9II
-         j91g==
+	 To:Cc:Content-Type; b=V3fnhn+SqQpRPkCjVpcJk7kKElfpovxu33CdVAQJWT500Dpd5VPSseM4T7eJ3LfSrGWtxXd5+Gzl6uFjlKAs3i9VGnXo/0rFSToiAT6Fw+xLtgU7gnI1CeRPo/hbl3InZRhNsvXhO64u+d0kY04ifh3PdX6sgyeAMQQZPupY3Qw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.160.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-220ce420472so1347446fac.1;
+        Wed, 06 Mar 2024 07:56:59 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709740623; x=1710345423;
+        d=1e100.net; s=20230601; t=1709740619; x=1710345419;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2f+5aPU/XdbNCp1ggYwNVgQ5AaKBkNmvjYLVF7eMmS8=;
-        b=Zzs1KCB3nX2/+Njgt3ny3Ujm86sqdtetkV5lIQctbemlvkPEwbM6noRfbv8zg+1los
-         I+a8AvAdsHNPAtF6HY+0JFyz/fbY8neq0DpZfzVFo38FXBT7s8KA0m4j+dhMM+FgTiZd
-         mgieqOcVf0HSCvQ1aM+o3gaROSoK/RyCWdOXKiDbZPdtfpbyJscY/ngzTDLiiuT8gjpE
-         QcfjSZYsG3xKr5W8BZksUyuwibhc/hAQdF4X588JWSioDG1qTXPRZ9PUJtwsv3q4FcfO
-         mk61MO9+mO+p6nXa0x2Np483ylWpJnY/ChiCNFxa7aBM2G8VHlOX0VgCS+C+UakkfYbj
-         r1OQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWGSzdiWCKe0j5KtWOkwW3NOz9fHm8Hv324rEzG0le2tUYGt91IOoF9jFoRqTyKB4ejsv4LzG8ucpFqPjZZpdAaZhSzz+XPkfshN7eP
-X-Gm-Message-State: AOJu0Yx4P1xURZVA1OznoFaNSKCFdELvXenVxWmSFK0beOz8n+lSvRBU
-	DuZdrBzqkiL/EgHNGYedcyBtYLgSUZKzxEwPABXbn2tDjlTyXfoY3jPBn2X1tUWPDaamRxaRlZg
-	DoUpnelNuQc+YMrq2aRaOsMz/JPPai9QrzipcTQ==
-X-Google-Smtp-Source: AGHT+IEiBAntuAC1iQgfrTxPAdJ0FUKBL/8fqeqAZ/6SuiKB3vWu9Qa4XggVFqJogNCxgNIqcJZDkJj8OmAWXl+Vt8g=
-X-Received: by 2002:a25:6b09:0:b0:dcd:24b6:1aee with SMTP id
- g9-20020a256b09000000b00dcd24b61aeemr10930675ybc.47.1709740622702; Wed, 06
- Mar 2024 07:57:02 -0800 (PST)
+        bh=rRuYu3pgVDn4yl5odBwmAdoeGMF5J7JUGXQ//zks9Lo=;
+        b=caIkFuJjjXDO/al/axSusjbPiXmNNt3mzhGkUieoiXW90xWxq0v/0W4pKvI2xfUQRM
+         a7YOFhY6kd2MM+3+NoDaVLgbSKaxXp4+eMveJLzae5phMVGBbgstmYUuDUvWh48da8jl
+         x8MOjDFepXKxQXs4DXjRt10wz5zczX/XeUE6buQZTjVIdPVDRWuds8aI2JjaU2Id1Zf8
+         v6r5N/TvY3Pxhhwna0Uj9Momr7AOcggC+hHdIOqX7FcgSEmKGsDDZhEXPzs9VJkabcjv
+         YRbBShnhkblHMXs498jj53GpeLbFaGxwzEcYkg+PtjPZPab2Yr5QCPO91KETeZC6Y03i
+         bjWQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW2T2/rJcCyAMW3lFrqSlJ6aK8MN8aUqRIu7CDisTdZZyItHdpfyO+l99n7bf9rR+cl5Smx649y2fXnwzd52XyyUu43/mpZsj0RegLuRhlB2sOqsDzqS4S/FXG8KKv3AGW/ppe+DsrDsiJEG6Z4v4QlH361jFzLIHJLdTD+2NhJAw==
+X-Gm-Message-State: AOJu0YyF3NvROZjWzy/q6GkfQeLoa64NEaQB7naVxrCWzVpJY+n8I1P3
+	wH1gQ1LFEWTZ6ktQqiMD3alGTMy7waMsNYu5TXsSEQHKXsbK+UxwdDN60u240/3rDffc1+uqtj8
+	YloACJiYIHU84iKAu7bt86VecMhI=
+X-Google-Smtp-Source: AGHT+IEsBZ3LiBc38I6NvmS8TqLDiRTOWQTra2Xy4MwzY0sHI3hzoucfdrgc0TI/rKjp4G4ZH/bvtO8MllvCteIq4ac=
+X-Received: by 2002:a05:6870:d681:b0:21e:ad52:3029 with SMTP id
+ z1-20020a056870d68100b0021ead523029mr4049265oap.0.1709740619125; Wed, 06 Mar
+ 2024 07:56:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240306-mmc-partswitch-v1-1-bf116985d950@codewreck.org>
- <Zegx5PCtg6hs8zyp@trax> <CACRpkdYZrDgVVCp2bqJqY1BpeHSXDWbRSqk6d=N_QhC4OVv=Ew@mail.gmail.com>
- <Zeh8HGDToMoHglD2@trax> <CACRpkdZ1ervTXj6++oBPDNJT3TpVgPeYsyhaEMRYavJQ5iZPqg@mail.gmail.com>
-In-Reply-To: <CACRpkdZ1ervTXj6++oBPDNJT3TpVgPeYsyhaEMRYavJQ5iZPqg@mail.gmail.com>
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Wed, 6 Mar 2024 16:56:26 +0100
-Message-ID: <CAPDyKFqYDPgNjSkpH=XATkUY2XtjsaDstChcAnGxoas4jgDVfw@mail.gmail.com>
-Subject: Re: [PATCH] mmc: part_switch: fixes switch on gp3 partition
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>, Jens Wiklander <jens.wiklander@linaro.org>, 
-	Tomas Winkler <tomas.winkler@intel.com>, Dominique Martinet <asmadeus@codewreck.org>, 
-	linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Dominique Martinet <dominique.martinet@atmark-techno.com>, stable@vger.kernel.org
+References: <20240306085007.169771-1-herve.codina@bootlin.com>
+ <20240306085007.169771-2-herve.codina@bootlin.com> <CAJZ5v0gENrBFfJ3FDJ=m0-veFbue_Bw168+k2cs7v2u9MtCT8Q@mail.gmail.com>
+ <20240306162447.2a843a11@bootlin.com>
+In-Reply-To: <20240306162447.2a843a11@bootlin.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Wed, 6 Mar 2024 16:56:47 +0100
+Message-ID: <CAJZ5v0hYxhoLEEJ=MXPNFWpp7bidx_832RdOAgzx4m=aM0YzXg@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] driver core: Introduce device_link_wait_removal()
+To: Herve Codina <herve.codina@bootlin.com>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>, 
+	Saravana Kannan <saravanak@google.com>, Lizhi Hou <lizhi.hou@amd.com>, Max Zhen <max.zhen@amd.com>, 
+	Sonal Santan <sonal.santan@amd.com>, Stefano Stabellini <stefano.stabellini@xilinx.com>, 
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>, linux-kernel@vger.kernel.org, 
+	devicetree@vger.kernel.org, Allan Nielsen <allan.nielsen@microchip.com>, 
+	Horatiu Vultur <horatiu.vultur@microchip.com>, 
+	Steen Hegelund <steen.hegelund@microchip.com>, Luca Ceresoli <luca.ceresoli@bootlin.com>, 
+	Nuno Sa <nuno.sa@analog.com>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+	stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 6 Mar 2024 at 15:38, Linus Walleij <linus.walleij@linaro.org> wrote=
-:
+On Wed, Mar 6, 2024 at 4:24=E2=80=AFPM Herve Codina <herve.codina@bootlin.c=
+om> wrote:
 >
-> On Wed, Mar 6, 2024 at 3:22=E2=80=AFPM Jorge Ramirez-Ortiz, Foundries
-> <jorge@foundries.io> wrote:
+> Hi Rafael,
 >
-> > I still cant grasp how "target_part =3D idata->rpmb->part_index" is
-> > helping in the design.
-> >
-> > What happens when:
-> > 1) EXT_CSD_PART_CONFIG_ACC_MASK > part_index > EXT_CSD_PART_CONFIG_ACC_=
-RPMB
-> > target_part now could be indicating a GP instead of an RPMB leading to =
-failures.
-> >
-> > 2) part_index <=3D EXT_CSD_PART_CONFIG_ACC_RPMB
-> > loses the part_index value .
-> >
-> > So part_index should be larger than EXT_CSD_PART_CONFIG_ACC_MASK even
-> > though the comment indicates it starts at 0?
-> >
-> > /**
-> >  * struct mmc_rpmb_data - special RPMB device type for these areas
-> >  * @dev: the device for the RPMB area
-> >  * @chrdev: character device for the RPMB area
-> >  * @id: unique device ID number
-> >  * @part_index: partition index (0 on first)    <---------------------
-> >  * @md: parent MMC block device
-> >  * @node: list item, so we can put this device on a list
-> >  */
-> > struct mmc_rpmb_data {
-> >         struct device dev;
-> >         struct cdev chrdev;
-> >         int id;
-> >
-> > is it just possible that "target_part =3D idata->rpmb->part_index" just
-> > needs to be shifted to avoid issues?
-> >
-> > I think the fix to the regression I introduced could perhaps address
-> > this as well.
+> On Wed, 6 Mar 2024 13:48:37 +0100
+> "Rafael J. Wysocki" <rafael@kernel.org> wrote:
 >
-> I have no clue how the regression happened really ... heh.
+> > On Wed, Mar 6, 2024 at 9:51=E2=80=AFAM Herve Codina <herve.codina@bootl=
+in.com> wrote:
+> > >
+> > > The commit 80dd33cf72d1 ("drivers: base: Fix device link removal")
+> > > introduces a workqueue to release the consumer and supplier devices u=
+sed
+> > > in the devlink.
+> > > In the job queued, devices are release and in turn, when all the
+> > > references to these devices are dropped, the release function of the
+> > > device itself is called.
+> > >
+> > > Nothing is present to provide some synchronisation with this workqueu=
+e
+> > > in order to ensure that all ongoing releasing operations are done and
+> > > so, some other operations can be started safely.
+> > >
+> > > For instance, in the following sequence:
+> > >   1) of_platform_depopulate()
+> > >   2) of_overlay_remove()
+> > >
+> > > During the step 1, devices are released and related devlinks are remo=
+ved
+> > > (jobs pushed in the workqueue).
+> > > During the step 2, OF nodes are destroyed but, without any
+> > > synchronisation with devlink removal jobs, of_overlay_remove() can ra=
+ise
+> > > warnings related to missing of_node_put():
+> > >   ERROR: memory leak, expected refcount 1 instead of 2
+> > >
+> > > Indeed, the missing of_node_put() call is going to be done, too late,
+> > > from the workqueue job execution.
+> > >
+> > > Introduce device_link_wait_removal() to offer a way to synchronize
+> > > operations waiting for the end of devlink removals (i.e. end of
+> > > workqueue jobs).
+> > > Also, as a flushing operation is done on the workqueue, the workqueue
+> > > used is moved from a system-wide workqueue to a local one.
+> > >
+> > > Fixes: 80dd33cf72d1 ("drivers: base: Fix device link removal")
+> >
+> > No, it is not fixed by this patch.
 >
-> We should probably rename it part_cfg because that is what we
-> store in it, it's assigned from card->part[idx].part_cfg.
->
-> Then the id field in mmc_rpmb_data should be deleted along
-> with all the IDA counter code etc and the partition name hardcoded
-> to be "0" as there will never be anything else.
+> Was explicitly asked by Saravana on v1 review:
+> https://lore.kernel.org/linux-kernel/CAGETcx9uP86EHyKJNifBMd23oCsA+KpMa+e=
+36wJEEnHDve+Avg@mail.gmail.com/
 
-Seems reasonable to me. Are you thinking of sending a cleanup patch on
-top of $subject patch?
+Well, I don't think this is a valid request, sorry.
 
-Kind regards
-Uffe
+> The commit 80dd33cf72d1 introduces the workqueue and so some asynchronous=
+ tasks
+> on removal.
+> This patch and the next one allows to re-sync execution waiting for jobs =
+in
+> the workqueue when it is needed.
+
+I get this, but still, this particular individual patch by itself
+doesn't fix anything.  Do you agree with this?
+
+If somebody applies this patch without the next one in the series,
+they will not get any change in behavior, so the tag is at least
+misleading.
+
+You can claim that the next patch on top of this one fixes things, so
+adding a Fixes tag to the other patch would be fine.
+
+There is an explicit dependency between them (the second patch is not
+even applicable without the first one, or if it is, the resulting code
+won't compile anyway), but you can make a note to the maintainer that
+they need to go to -stable together.
+
+> >
+> > In fact, the only possibly observable effect of this patch is the
+> > failure when the allocation of device_link_wq fails AFAICS.
+> >
+> > > Cc: stable@vger.kernel.org
+> >
+> > So why?
+>
+> Cc:stable is needed as this patch is a prerequisite of patch 2 (needed
+> to fix the asynchronous workqueue task issue).
+
+Dependencies like this can be expressed in "Cc: stable" tags.
+Personally, I'd do it like this:
+
+Cc: stable@vger.kernel.org # 5.13: Depends on the first patch in the series
 
