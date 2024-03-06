@@ -1,69 +1,69 @@
-Return-Path: <linux-kernel+bounces-94400-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94401-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDF14873ED2
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 19:28:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34E69873EDA
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 19:28:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 24561B20CBA
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 18:28:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF2EF286F7B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 18:28:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88150145331;
-	Wed,  6 Mar 2024 18:25:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70576144036;
+	Wed,  6 Mar 2024 18:25:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Ey2Q77cW"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="sCB89E39"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4024B144038
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 18:25:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54B3D1448C5
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 18:25:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709749508; cv=none; b=JAzrvBhhwI43sn0oVyJwsyprulQjvW+kDhEZY7jvTA9Iugls0YOi0GkApd+OJGyaT3qCYOuKrVBo2OphO+Wy3XYL1hTO8uqq81OAWwm1A5Kmmp8clDbZsKS8/GketJF9k6mWxQpXF4hfy4HWRt2K02ahjA4+faJgC5U/+jRceI4=
+	t=1709749511; cv=none; b=o8PlxZIsoSnkHFbtl8KfQ+Tw97QcFgHEQ3sRY2EZuVe0Y1n4qNZ4XWLxHw5Gyg+8+9RdiPXnUTIpyy4ohzKb5zBGZc0+xF42opJwvwg78bVgj3SJzsjb76sPwthCixPTeQS4uTk/M+9wYjh2TR4IM8wjw4+KqaRGa7KYd5aQxpQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709749508; c=relaxed/simple;
-	bh=1sxQZmjy1XEQBwtwWVa15MZq646rnX7fSBToqhzHkTU=;
+	s=arc-20240116; t=1709749511; c=relaxed/simple;
+	bh=albNRPclY31OMsLi45ZofXTwQmw5AsuMhZuimCzjicI=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=tnABze5wwXQGwIP495RyriMaT8fTfYJbJobHVZfWiTT4WkLsCFaNpnFhrxBsSeAFCCYEtA+uUtSDp9JuqDkXcnNgbqPVxzTWTCW4a873vxMCrlgA/P18w7rMklI4jGLFIGLS3rdkh1mQSGMfcVqylru1m5B3v3TrRtkD6zbkS2U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--surenb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Ey2Q77cW; arc=none smtp.client-ip=209.85.128.201
+	 To:Cc:Content-Type; b=jClscCKK7DP/Y3DmILaf48dXin8e5ulqjxf0SyiSPUAHxAULvf2aDUebuVzB1GFmMCrs39EJ8bY0j9ghCnnwVvjPscmZyKO1GCw8UJ6nIwYju89PowjB9j01l+eFU+DOCmmF+9P6/WkIdCfvEdY/XYLGUOPY6PRz2eeRevwpRfQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--surenb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=sCB89E39; arc=none smtp.client-ip=209.85.219.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--surenb.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-609d8275c70so86097b3.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 10:25:05 -0800 (PST)
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc6b5d1899eso1603196276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 10:25:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709749504; x=1710354304; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1709749506; x=1710354306; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WRHB/CGZyDTcWTfW8LE9qYpRlSe4g56CTtmfKB0L28A=;
-        b=Ey2Q77cW8vE9BwLvEaKVvY6+/R96rv/n2InDHh2N5DPm0uQ+RVOqiuCV23FEFIacqn
-         mPD1OdUNiIGSsjPn2FPlH3n4EGSWvtV9HbaUSNxDQLp8UlyVJMBMHqhNCaENE+aekLkB
-         Y2KXAO4SF1hjhZmFVQPGcGbt9IviGYhsatHvDZAW/kvL2CCuZ+NxZhgWZBh1OJqc34YZ
-         yXX1WUelLt63hRuZHvvDJ4yo7Zl+CxG+r11A9/T0Q9nQyBN+DRn623U9OMdSoDeBcNl3
-         538q5R6EUNEr6WehWElPKeLU10it0JVPXN8WrkOkR2O5fpE88Jx2/TFuBiQhRgcH3Yx7
-         ZuuQ==
+        bh=BNgaGcRDgPcaIXeO4Fkb/yIfx8W6judwG+Ary21N5qY=;
+        b=sCB89E396LwkB6vJbwchaAYT/e1dQblpn9q520lb/5RhXXOBJRUbWy589S2bQSF/s4
+         4rpYHmpEtWVQnpu2i3ilpSyZsg4548ELfkZktrtd+eYbbyDyP+LQoPOAXSpctIPqmFjW
+         TCOTx9ycS+nTf/TGXHG0YPHmkmBvSIksuYd/7ZCc5idrzAy03CpbIR27aAyCiV5GsIqG
+         /e0EFBaZY2+tcoWlfUWNb9Dm1ojn3V8Ec8hf70t4KMXJpcHwPnzhVO/U8R1Hm3FOkISZ
+         lULgDAHDD3FzMJo0JFUICbWUESlLPJ1mSFdWxwnLA/H8YiAfRxOOLXzrEWA8wGFKZLdd
+         RGTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709749504; x=1710354304;
+        d=1e100.net; s=20230601; t=1709749506; x=1710354306;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WRHB/CGZyDTcWTfW8LE9qYpRlSe4g56CTtmfKB0L28A=;
-        b=lAjlvxzRtgmnXZM5GJEKfwAaZ1nQ0XhBf+Ao5dCnu8BwY47Zdm4atqBdS1xwpIhZEP
-         zp9U/1SNTeuHeWBWBMxypTBnBRfnxgr9hDzpQEJraCThdgoPGzRCWeBOFbnc1nnaGper
-         M7ZAKGiCHheOd7m8R1PpnlwTIQXDZdXGpQfow7YPilesakFJEUK/jt145tzegeVipyEs
-         FMaNzlImgZEqrFptuEGcsn8YJFvbcuG4S10QoRNKpGE1fq/B+XCf646K4/JD5FQmNIq8
-         mAH+cGmxbx2c9hz8QLKOWoHr8ExjT6rsCtr3wz8XTgnuL4caZItBNzUCd+l0oUWGWC1h
-         pmHA==
-X-Forwarded-Encrypted: i=1; AJvYcCX4nI4pPDEoNSKD6RM+wOTWKwnNauW/TeqsZBRdOu4Ue9ZHY9PCanH9StGrDzVh/nePYu765+S4xZ0YmummYwzLbwbjm/xLTRw/QbIS
-X-Gm-Message-State: AOJu0YzWBIVvyZ6a2V7og5mfR+mAxxXQ+lBgOfIcxfNzWWv6TUBnQYpp
-	gVtD+I8Gor2ID3EwoaB/RLqKvTji42roQTYm7rtFer3zKfo94jwK3XhjoqESYMvbsN0yAsHqXE6
-	7/Q==
-X-Google-Smtp-Source: AGHT+IFUSmekR0M1FVWzKb1jjXcJpGUE8Fd5c5LGEWBTD5HNNgZzfSlizaoDyWgDdYfuybzaLrnil2CkymA=
+        bh=BNgaGcRDgPcaIXeO4Fkb/yIfx8W6judwG+Ary21N5qY=;
+        b=J6UV7d60xjY+TuP28lHsUj87rVvQ3etTDt0+QNsW/BY43oh1RJafNo2UcU6IBNKqZF
+         tM1o742FhEjx/bpjB65UlSgPzN06crSSJWfXnI68ZifIKa0hHnrtO2K+KMqZwmeayvby
+         BfSsWf4IAp5TvodPVZLPQINpbGMhI+jkWjmrINIMRjfxPRK491CiKwHaToUrE/49IgbD
+         tcLSEKEAqH/nBEvXPj/PzrNjiU8w3ZuCvRG3St6dRJcl7YfbeveC/ZFx8tApJTd6nEFC
+         1SpWY99x/su+UqQnT+sXhIfmwwBR36wU1RRN/Wb40qHZNHTmmiegmsOU47qMcdUzt4qZ
+         vyDw==
+X-Forwarded-Encrypted: i=1; AJvYcCU+VizQ1TmC2n3rrSllCe5OJxhigEs0NB2OJKifXzfBQmw6OOyD5plmwV+n4o/uU5Z7O0bnAnIp7/CDg/nubd6vApm2Fqrd95NtteCR
+X-Gm-Message-State: AOJu0YxUS0T+RN64q3rX8vOZj49IAidD5t6bkFIgsqXQI/usJOhTZT+s
+	KWCHuDwG0q9ZzFp03KfvbaCUvputLF8drQgm4k95bFlyVZdX2wMZVF+8rh8WVfqdzVn/Lc6Gq6Y
+	S8A==
+X-Google-Smtp-Source: AGHT+IHPRw/ef5CXgN/EcTIYcsNOxCQ2QBNqcSc4reoJ5he/nASVYkogu18nMMcl34PXaT57a/C89ka0n4s=
 X-Received: from surenb-desktop.mtv.corp.google.com ([2620:15c:211:201:85f0:e3db:db05:85e2])
- (user=surenb job=sendgmr) by 2002:a05:690c:ed3:b0:609:3c46:1885 with SMTP id
- cs19-20020a05690c0ed300b006093c461885mr3528012ywb.10.1709749504202; Wed, 06
- Mar 2024 10:25:04 -0800 (PST)
-Date: Wed,  6 Mar 2024 10:24:07 -0800
+ (user=surenb job=sendgmr) by 2002:a05:6902:1504:b0:dbd:b4e8:1565 with SMTP id
+ q4-20020a056902150400b00dbdb4e81565mr1895059ybu.4.1709749506288; Wed, 06 Mar
+ 2024 10:25:06 -0800 (PST)
+Date: Wed,  6 Mar 2024 10:24:08 -0800
 In-Reply-To: <20240306182440.2003814-1-surenb@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -73,8 +73,8 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240306182440.2003814-1-surenb@google.com>
 X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-Message-ID: <20240306182440.2003814-10-surenb@google.com>
-Subject: [PATCH v5 09/37] slab: objext: introduce objext_flags as extension to page_memcg_data_flags
+Message-ID: <20240306182440.2003814-11-surenb@google.com>
+Subject: [PATCH v5 10/37] lib: code tagging framework
 From: Suren Baghdasaryan <surenb@google.com>
 To: akpm@linux-foundation.org
 Cc: kent.overstreet@linux.dev, mhocko@suse.com, vbabka@suse.cz, 
@@ -104,108 +104,349 @@ Cc: kent.overstreet@linux.dev, mhocko@suse.com, vbabka@suse.cz,
 	cgroups@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-Introduce objext_flags to store additional objext flags unrelated to memcg.
+Add basic infrastructure to support code tagging which stores tag common
+information consisting of the module name, function, file name and line
+number. Provide functions to register a new code tag type and navigate
+between code tags.
 
+Co-developed-by: Kent Overstreet <kent.overstreet@linux.dev>
+Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Reviewed-by: Pasha Tatashin <pasha.tatashin@soleen.com>
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- include/linux/memcontrol.h | 29 ++++++++++++++++++++++-------
- mm/slab.h                  |  5 +----
- 2 files changed, 23 insertions(+), 11 deletions(-)
+ include/linux/codetag.h |  68 +++++++++++++
+ lib/Kconfig.debug       |   4 +
+ lib/Makefile            |   1 +
+ lib/codetag.c           | 219 ++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 292 insertions(+)
+ create mode 100644 include/linux/codetag.h
+ create mode 100644 lib/codetag.c
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 9a731523000d..7709fc3f8f5f 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -357,7 +357,22 @@ enum page_memcg_data_flags {
- 	__NR_MEMCG_DATA_FLAGS  = (1UL << 2),
- };
- 
--#define MEMCG_DATA_FLAGS_MASK (__NR_MEMCG_DATA_FLAGS - 1)
-+#define __FIRST_OBJEXT_FLAG	__NR_MEMCG_DATA_FLAGS
+diff --git a/include/linux/codetag.h b/include/linux/codetag.h
+new file mode 100644
+index 000000000000..7734269cdb63
+--- /dev/null
++++ b/include/linux/codetag.h
+@@ -0,0 +1,68 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * code tagging framework
++ */
++#ifndef _LINUX_CODETAG_H
++#define _LINUX_CODETAG_H
 +
-+#else /* CONFIG_MEMCG */
++#include <linux/types.h>
 +
-+#define __FIRST_OBJEXT_FLAG	(1UL << 0)
++struct codetag_iterator;
++struct codetag_type;
++struct codetag_module;
++struct seq_buf;
++struct module;
 +
-+#endif /* CONFIG_MEMCG */
++/*
++ * An instance of this structure is created in a special ELF section at every
++ * code location being tagged.  At runtime, the special section is treated as
++ * an array of these.
++ */
++struct codetag {
++	unsigned int flags; /* used in later patches */
++	unsigned int lineno;
++	const char *modname;
++	const char *function;
++	const char *filename;
++} __aligned(8);
 +
-+enum objext_flags {
-+	/* the next bit after the last actual flag */
-+	__NR_OBJEXTS_FLAGS  = __FIRST_OBJEXT_FLAG,
++union codetag_ref {
++	struct codetag *ct;
 +};
 +
-+#define OBJEXTS_FLAGS_MASK (__NR_OBJEXTS_FLAGS - 1)
++struct codetag_type_desc {
++	const char *section;
++	size_t tag_size;
++};
 +
-+#ifdef CONFIG_MEMCG
++struct codetag_iterator {
++	struct codetag_type *cttype;
++	struct codetag_module *cmod;
++	unsigned long mod_id;
++	struct codetag *ct;
++};
++
++#ifdef MODULE
++#define CT_MODULE_NAME KBUILD_MODNAME
++#else
++#define CT_MODULE_NAME NULL
++#endif
++
++#define CODE_TAG_INIT {					\
++	.modname	= CT_MODULE_NAME,		\
++	.function	= __func__,			\
++	.filename	= __FILE__,			\
++	.lineno		= __LINE__,			\
++	.flags		= 0,				\
++}
++
++void codetag_lock_module_list(struct codetag_type *cttype, bool lock);
++struct codetag_iterator codetag_get_ct_iter(struct codetag_type *cttype);
++struct codetag *codetag_next_ct(struct codetag_iterator *iter);
++
++void codetag_to_text(struct seq_buf *out, struct codetag *ct);
++
++struct codetag_type *
++codetag_register_type(const struct codetag_type_desc *desc);
++
++#endif /* _LINUX_CODETAG_H */
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index ef36b829ae1f..5485a5780fa7 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -968,6 +968,10 @@ config DEBUG_STACKOVERFLOW
  
- static inline bool folio_memcg_kmem(struct folio *folio);
+ 	  If in doubt, say "N".
  
-@@ -391,7 +406,7 @@ static inline struct mem_cgroup *__folio_memcg(struct folio *folio)
- 	VM_BUG_ON_FOLIO(memcg_data & MEMCG_DATA_OBJEXTS, folio);
- 	VM_BUG_ON_FOLIO(memcg_data & MEMCG_DATA_KMEM, folio);
++config CODE_TAGGING
++	bool
++	select KALLSYMS
++
+ source "lib/Kconfig.kasan"
+ source "lib/Kconfig.kfence"
+ source "lib/Kconfig.kmsan"
+diff --git a/lib/Makefile b/lib/Makefile
+index 6b09731d8e61..6b48b22fdfac 100644
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -235,6 +235,7 @@ obj-$(CONFIG_OF_RECONFIG_NOTIFIER_ERROR_INJECT) += \
+ 	of-reconfig-notifier-error-inject.o
+ obj-$(CONFIG_FUNCTION_ERROR_INJECTION) += error-inject.o
  
--	return (struct mem_cgroup *)(memcg_data & ~MEMCG_DATA_FLAGS_MASK);
-+	return (struct mem_cgroup *)(memcg_data & ~OBJEXTS_FLAGS_MASK);
- }
++obj-$(CONFIG_CODE_TAGGING) += codetag.o
+ lib-$(CONFIG_GENERIC_BUG) += bug.o
  
- /*
-@@ -412,7 +427,7 @@ static inline struct obj_cgroup *__folio_objcg(struct folio *folio)
- 	VM_BUG_ON_FOLIO(memcg_data & MEMCG_DATA_OBJEXTS, folio);
- 	VM_BUG_ON_FOLIO(!(memcg_data & MEMCG_DATA_KMEM), folio);
- 
--	return (struct obj_cgroup *)(memcg_data & ~MEMCG_DATA_FLAGS_MASK);
-+	return (struct obj_cgroup *)(memcg_data & ~OBJEXTS_FLAGS_MASK);
- }
- 
- /*
-@@ -469,11 +484,11 @@ static inline struct mem_cgroup *folio_memcg_rcu(struct folio *folio)
- 	if (memcg_data & MEMCG_DATA_KMEM) {
- 		struct obj_cgroup *objcg;
- 
--		objcg = (void *)(memcg_data & ~MEMCG_DATA_FLAGS_MASK);
-+		objcg = (void *)(memcg_data & ~OBJEXTS_FLAGS_MASK);
- 		return obj_cgroup_memcg(objcg);
- 	}
- 
--	return (struct mem_cgroup *)(memcg_data & ~MEMCG_DATA_FLAGS_MASK);
-+	return (struct mem_cgroup *)(memcg_data & ~OBJEXTS_FLAGS_MASK);
- }
- 
- /*
-@@ -512,11 +527,11 @@ static inline struct mem_cgroup *folio_memcg_check(struct folio *folio)
- 	if (memcg_data & MEMCG_DATA_KMEM) {
- 		struct obj_cgroup *objcg;
- 
--		objcg = (void *)(memcg_data & ~MEMCG_DATA_FLAGS_MASK);
-+		objcg = (void *)(memcg_data & ~OBJEXTS_FLAGS_MASK);
- 		return obj_cgroup_memcg(objcg);
- 	}
- 
--	return (struct mem_cgroup *)(memcg_data & ~MEMCG_DATA_FLAGS_MASK);
-+	return (struct mem_cgroup *)(memcg_data & ~OBJEXTS_FLAGS_MASK);
- }
- 
- static inline struct mem_cgroup *page_memcg_check(struct page *page)
-diff --git a/mm/slab.h b/mm/slab.h
-index 0e61a5834c5f..c8504574f8fb 100644
---- a/mm/slab.h
-+++ b/mm/slab.h
-@@ -559,11 +559,8 @@ static inline struct slabobj_ext *slab_obj_exts(struct slab *slab)
- 	VM_BUG_ON_PAGE(obj_exts && !(obj_exts & MEMCG_DATA_OBJEXTS),
- 							slab_page(slab));
- 	VM_BUG_ON_PAGE(obj_exts & MEMCG_DATA_KMEM, slab_page(slab));
--
--	return (struct slabobj_ext *)(obj_exts & ~MEMCG_DATA_FLAGS_MASK);
--#else
--	return (struct slabobj_ext *)obj_exts;
- #endif
-+	return (struct slabobj_ext *)(obj_exts & ~OBJEXTS_FLAGS_MASK);
- }
- 
- #else /* CONFIG_SLAB_OBJ_EXT */
+ obj-$(CONFIG_HAVE_ARCH_TRACEHOOK) += syscall.o
+diff --git a/lib/codetag.c b/lib/codetag.c
+new file mode 100644
+index 000000000000..8b5b89ad508d
+--- /dev/null
++++ b/lib/codetag.c
+@@ -0,0 +1,219 @@
++// SPDX-License-Identifier: GPL-2.0-only
++#include <linux/codetag.h>
++#include <linux/idr.h>
++#include <linux/kallsyms.h>
++#include <linux/module.h>
++#include <linux/seq_buf.h>
++#include <linux/slab.h>
++
++struct codetag_type {
++	struct list_head link;
++	unsigned int count;
++	struct idr mod_idr;
++	struct rw_semaphore mod_lock; /* protects mod_idr */
++	struct codetag_type_desc desc;
++};
++
++struct codetag_range {
++	struct codetag *start;
++	struct codetag *stop;
++};
++
++struct codetag_module {
++	struct module *mod;
++	struct codetag_range range;
++};
++
++static DEFINE_MUTEX(codetag_lock);
++static LIST_HEAD(codetag_types);
++
++void codetag_lock_module_list(struct codetag_type *cttype, bool lock)
++{
++	if (lock)
++		down_read(&cttype->mod_lock);
++	else
++		up_read(&cttype->mod_lock);
++}
++
++struct codetag_iterator codetag_get_ct_iter(struct codetag_type *cttype)
++{
++	struct codetag_iterator iter = {
++		.cttype = cttype,
++		.cmod = NULL,
++		.mod_id = 0,
++		.ct = NULL,
++	};
++
++	return iter;
++}
++
++static inline struct codetag *get_first_module_ct(struct codetag_module *cmod)
++{
++	return cmod->range.start < cmod->range.stop ? cmod->range.start : NULL;
++}
++
++static inline
++struct codetag *get_next_module_ct(struct codetag_iterator *iter)
++{
++	struct codetag *res = (struct codetag *)
++			((char *)iter->ct + iter->cttype->desc.tag_size);
++
++	return res < iter->cmod->range.stop ? res : NULL;
++}
++
++struct codetag *codetag_next_ct(struct codetag_iterator *iter)
++{
++	struct codetag_type *cttype = iter->cttype;
++	struct codetag_module *cmod;
++	struct codetag *ct;
++
++	lockdep_assert_held(&cttype->mod_lock);
++
++	if (unlikely(idr_is_empty(&cttype->mod_idr)))
++		return NULL;
++
++	ct = NULL;
++	while (true) {
++		cmod = idr_find(&cttype->mod_idr, iter->mod_id);
++
++		/* If module was removed move to the next one */
++		if (!cmod)
++			cmod = idr_get_next_ul(&cttype->mod_idr,
++					       &iter->mod_id);
++
++		/* Exit if no more modules */
++		if (!cmod)
++			break;
++
++		if (cmod != iter->cmod) {
++			iter->cmod = cmod;
++			ct = get_first_module_ct(cmod);
++		} else
++			ct = get_next_module_ct(iter);
++
++		if (ct)
++			break;
++
++		iter->mod_id++;
++	}
++
++	iter->ct = ct;
++	return ct;
++}
++
++void codetag_to_text(struct seq_buf *out, struct codetag *ct)
++{
++	if (ct->modname)
++		seq_buf_printf(out, "%s:%u [%s] func:%s",
++			       ct->filename, ct->lineno,
++			       ct->modname, ct->function);
++	else
++		seq_buf_printf(out, "%s:%u func:%s",
++			       ct->filename, ct->lineno, ct->function);
++}
++
++static inline size_t range_size(const struct codetag_type *cttype,
++				const struct codetag_range *range)
++{
++	return ((char *)range->stop - (char *)range->start) /
++			cttype->desc.tag_size;
++}
++
++#ifdef CONFIG_MODULES
++static void *get_symbol(struct module *mod, const char *prefix, const char *name)
++{
++	DECLARE_SEQ_BUF(sb, KSYM_NAME_LEN);
++	const char *buf;
++
++	seq_buf_printf(&sb, "%s%s", prefix, name);
++	if (seq_buf_has_overflowed(&sb))
++		return NULL;
++
++	buf = seq_buf_str(&sb);
++	return mod ?
++		(void *)find_kallsyms_symbol_value(mod, buf) :
++		(void *)kallsyms_lookup_name(buf);
++}
++
++static struct codetag_range get_section_range(struct module *mod,
++					      const char *section)
++{
++	return (struct codetag_range) {
++		get_symbol(mod, "__start_", section),
++		get_symbol(mod, "__stop_", section),
++	};
++}
++
++static int codetag_module_init(struct codetag_type *cttype, struct module *mod)
++{
++	struct codetag_range range;
++	struct codetag_module *cmod;
++	int err;
++
++	range = get_section_range(mod, cttype->desc.section);
++	if (!range.start || !range.stop) {
++		pr_warn("Failed to load code tags of type %s from the module %s\n",
++			cttype->desc.section,
++			mod ? mod->name : "(built-in)");
++		return -EINVAL;
++	}
++
++	/* Ignore empty ranges */
++	if (range.start == range.stop)
++		return 0;
++
++	BUG_ON(range.start > range.stop);
++
++	cmod = kmalloc(sizeof(*cmod), GFP_KERNEL);
++	if (unlikely(!cmod))
++		return -ENOMEM;
++
++	cmod->mod = mod;
++	cmod->range = range;
++
++	down_write(&cttype->mod_lock);
++	err = idr_alloc(&cttype->mod_idr, cmod, 0, 0, GFP_KERNEL);
++	if (err >= 0)
++		cttype->count += range_size(cttype, &range);
++	up_write(&cttype->mod_lock);
++
++	if (err < 0) {
++		kfree(cmod);
++		return err;
++	}
++
++	return 0;
++}
++
++#else /* CONFIG_MODULES */
++static int codetag_module_init(struct codetag_type *cttype, struct module *mod) { return 0; }
++#endif /* CONFIG_MODULES */
++
++struct codetag_type *
++codetag_register_type(const struct codetag_type_desc *desc)
++{
++	struct codetag_type *cttype;
++	int err;
++
++	BUG_ON(desc->tag_size <= 0);
++
++	cttype = kzalloc(sizeof(*cttype), GFP_KERNEL);
++	if (unlikely(!cttype))
++		return ERR_PTR(-ENOMEM);
++
++	cttype->desc = *desc;
++	idr_init(&cttype->mod_idr);
++	init_rwsem(&cttype->mod_lock);
++
++	err = codetag_module_init(cttype, NULL);
++	if (unlikely(err)) {
++		kfree(cttype);
++		return ERR_PTR(err);
++	}
++
++	mutex_lock(&codetag_lock);
++	list_add_tail(&cttype->link, &codetag_types);
++	mutex_unlock(&codetag_lock);
++
++	return cttype;
++}
 -- 
 2.44.0.278.ge034bb2e1d-goog
 
