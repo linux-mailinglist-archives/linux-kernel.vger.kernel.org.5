@@ -1,640 +1,292 @@
-Return-Path: <linux-kernel+bounces-93299-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93303-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BF58872DB1
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 04:50:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F1886872DC7
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 05:00:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 18F2C1F26091
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 03:50:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7719B1F264F6
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 04:00:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A66614F61;
-	Wed,  6 Mar 2024 03:50:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GsnsPebI"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C98B1156C2;
+	Wed,  6 Mar 2024 04:00:18 +0000 (UTC)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B8688833;
-	Wed,  6 Mar 2024 03:50:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 538E214280;
+	Wed,  6 Mar 2024 04:00:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709697035; cv=none; b=OphInKFqcwAVjx7SIUpLzPjybMLS3rpTpywRxP2eBYpGBynsEAsRMXBYEJ3n6Kox9GRq0q3xclclDk3ej0+e03jKNj45c/dmks1PyttTiVKZbAonfKoY4Z3QiehKgQwgXb0n/WMgyKGAlCsvLYMLPjRPA1XCXpDW+qO+f2cT8WI=
+	t=1709697618; cv=none; b=n74GRQISFDNueVaS1YO/RTuY4okC1O+/zQMs8oEHI1SgyBIcEl+nxrcMLyJImsOOydNCZVY5kwfz0yPGWao4gCYnsXidcjJPEAu3Nu6ER3fhMm6/gKkuVfw0ijkeINkDi+HPlaiRFzNj2lkYTxMnLLIfJsO38T80Yyp2Q3Y8W30=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709697035; c=relaxed/simple;
-	bh=cOFmHYKifiuUfP2042dQ03GlPRwH0PiDqpBkDL/nBuw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=E0JKSCF3TQV7lCVuZhIdIWgnPZB9JGAJv9cwDhvFYqFG5/hMK+cjq+1aEYE5ZBJ072WmEdDSjQyQ+EUR3/IYEcykvOcji7C9Tl3PFqy5pJiON3UekUJCuLZhcvKUo3V0v3sTKhF0vNDs3hv1czOpjTEwnGuFhwKCXddnD+9KKuo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GsnsPebI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9754C433F1;
-	Wed,  6 Mar 2024 03:50:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709697034;
-	bh=cOFmHYKifiuUfP2042dQ03GlPRwH0PiDqpBkDL/nBuw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GsnsPebIvgkU74ydTa5xkzioXPOObbvvtvOHQYMjtpI2Yd9EEZzAf85LXnnDsKevJ
-	 +vLvHNcTJj/qvdtq/x4jRkAQgwnArS9k+wtFs/8HZ6ehrXnufVHspexKvTjIMudXZe
-	 7BXI7AUjty4aaZSACnbgaNuZ3lMHWa+fv9YUr3Bqx8th9qskblpDHG38auq9ttumwp
-	 doOmv3wNtJMYdTi+8K3dUObbkwqFv4Ew/z3rG1tXDfhsUpa1G/jh6o0kKoq4oQXTb5
-	 YG2oM+im6YBt25ZHS7Xhm5t041cgpeDbbRYxO0imboCpY86EqJpXTHtRqNc7wqSkLX
-	 qCJ3zr9pW1mSg==
-Date: Tue, 5 Mar 2024 19:55:28 -0800
-From: Bjorn Andersson <andersson@kernel.org>
-To: Vignesh Viswanathan <quic_viswanat@quicinc.com>
-Cc: agross@kernel.org, konrad.dybcio@linaro.org, lee@kernel.org, 
-	mathieu.poirier@linaro.org, linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, quic_mojha@quicinc.com, quic_anusha@quicinc.com, 
-	quic_sjaganat@quicinc.com, quic_srichara@quicinc.com, quic_varada@quicinc.com
-Subject: Re: [PATCH V4] remoteproc: qcom: q6v5: Get crash reason from
- specific SMEM partition
-Message-ID: <xu72amg46ogwuyleayyhhlgjlq5jqyxrdys3vj2o3zojiifeyj@xyc7zcgseulu>
-References: <20231220055511.519395-1-quic_viswanat@quicinc.com>
+	s=arc-20240116; t=1709697618; c=relaxed/simple;
+	bh=18I9mupyrBGOFzaf8UoK03PmTIbkKPxV4//j3ENYo2Q=;
+	h=Subject:To:References:CC:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=Zdux9A7j8wifnT0/GoLsfIyHmgqY8AH2AI8NbP72fTIja2WwO8PfuY4tdDc+mOMfVbCxyAfncR4xECYL52yQ1H0h0Gt6Wrh7SAbHw9XZQDpmw4xbvuJ6qGDnt2EbNMZgRY+31wjm+gtqxmhtN7frOVmIuGDPqBJ8HRpa8n4wpN4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TqJYS5MLvz2BfN5;
+	Wed,  6 Mar 2024 11:57:48 +0800 (CST)
+Received: from canpemm500010.china.huawei.com (unknown [7.192.105.118])
+	by mail.maildlp.com (Postfix) with ESMTPS id A006014011A;
+	Wed,  6 Mar 2024 12:00:09 +0800 (CST)
+Received: from [10.67.111.82] (10.67.111.82) by canpemm500010.china.huawei.com
+ (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Wed, 6 Mar
+ 2024 12:00:09 +0800
+Subject: Re: [PATCH] usercopy: delete __noreturn from usercopy_abort
+To: Josh Poimboeuf <jpoimboe@kernel.org>
+References: <1709516385-7778-1-git-send-email-xiaojiangfeng@huawei.com>
+ <CAG48ez1h9X7Qv-5OR6hAhwnSOng6_PSXBaR6cT7xrk2Wzu39Yg@mail.gmail.com>
+ <202403040938.D770633@keescook>
+ <77bb0d81-f496-7726-9495-57088a4c0bfc@huawei.com>
+ <202403050129.5B72ACAA0D@keescook>
+ <b274b545-9439-7ff8-e3ed-604a9ac81f65@huawei.com>
+ <20240305175846.qnyiru7uaa7itqba@treble>
+CC: Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>,
+	<gustavoars@kernel.org>, <akpm@linux-foundation.org>, <peterz@infradead.org>,
+	<dave.hansen@linux.intel.com>, <kirill.shutemov@linux.intel.com>,
+	<linux-kernel@vger.kernel.org>, <linux-hardening@vger.kernel.org>,
+	<linux-mm@kvack.org>, <nixiaoming@huawei.com>, <kepler.chenxin@huawei.com>,
+	<wangbing6@huawei.com>, <wangfangpeng1@huawei.com>, <douzhaolei@huawei.com>,
+	Russell King <linux@armlinux.org.uk>, <linux-arm-kernel@lists.infradead.org>,
+	Ard Biesheuvel <ardb@kernel.org>
+From: Jiangfeng Xiao <xiaojiangfeng@huawei.com>
+Message-ID: <be92b3b6-9f08-6f99-75be-35c217751101@huawei.com>
+Date: Wed, 6 Mar 2024 12:00:04 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231220055511.519395-1-quic_viswanat@quicinc.com>
+In-Reply-To: <20240305175846.qnyiru7uaa7itqba@treble>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ canpemm500010.china.huawei.com (7.192.105.118)
 
-On Wed, Dec 20, 2023 at 11:25:11AM +0530, Vignesh Viswanathan wrote:
-> q6v5 fatal and watchdog IRQ handlers always retrieves the crash reason
-> information from SMEM global partition (QCOM_SMEM_HOST_ANY).
-> 
-> For some targets like IPQ9574 and IPQ5332, crash reason information is
-> present in target specific partition due to which the crash reason is
-> not printed in the current implementation.
-> 
-> Add support to pass crash_reason_partition along with crash_reason_item
-> number in qcom_q6v5_init call and use the same to get the crash
-> information from SMEM in fatal and watchdog IRQ handlers.
-> 
-> While at it, rename all instances of "crash_reason_smem" with
-> "crash_reason_item" as this reflects the proper meaning.
-> 
-> Signed-off-by: Vignesh Viswanathan <quic_viswanat@quicinc.com>
 
-No concerns with the patch now, but as this depends on the mpd driver,
-which is being refactored, please resubmit this once the driver is being
-accepted.
 
-> ---
-> Changes in V4: Rename all instances of crash_reason_smem to crash_reason_item
-> Changes in V3: Updated commit message.
-> Changes in V2: Addressed comments in V1.
+On 2024/3/6 1:58, Josh Poimboeuf wrote:
+>>>> For the usercopy_abort function, whether '__noreturn' is added
+>>>> does not affect the internal behavior of the usercopy_abort function.
+>>>> Therefore, it is recommended that '__noreturn' be deleted
+>>>> so that backtrace can work properly.
+>>>
+>>> This isn't acceptable. Removing __noreturn this will break
+>>> objtool's processing of execution flow for livepatching, IBT, and
+>>> KCFI instrumentation. These all depend on an accurate control flow
+>>> descriptions, and usercopy_abort is correctly marked __noreturn.
+> 
+> __noreturn also has the benefit of enabling the compiler to produce more
+> compact code for callees.
+> 
+>> Thank you for providing this information.
+>> I'll go back to further understand how __noreturn is used
+>> in features such as KCFI and livepatching.
+> 
+> Adding ARM folks -- see
+> https://lkml.kernel.org/lkml/1709516385-7778-1-git-send-email-xiaojiangfeng@huawei.com
+> for the original bug report.
+> 
+> This is an off-by-one bug which is common in unwinders, due to the fact
+> that the address on the stack points to the return address rather than
+> the call address.
+> 
 
-Please review go/upstream and start using b4.
+Thanks for your advice. I think I understand. To solve this problem, I need to
+fix the off-by-one bug which is common in unwinders. I'll try to fix it later
+by referring to your patch.
 
-Regards,
-Bjorn
-
+> So, for example, when the last instruction of a function is a function
+> call (e.g., to a noreturn function), it can cause the unwinder to
+> incorrectly try to unwind from the function *after* the callee.
 > 
-> This patch depends on [1] which adds support for IPQ9574 and IPQ5332
-> remoteproc q5v5_mpd driver.
+> For ORC (x86), we fixed this by decrementing the PC for call frames (but
+> not exception frames).  I've seen user space unwinders do similar, for
+> non-signal frames.
 > 
-> [1]: https://lore.kernel.org/all/20231110091939.3025413-1-quic_mmanikan@quicinc.com/
+> Something like the following might fix your issue (completely untested):
 > 
->  drivers/remoteproc/qcom_q6v5.c      | 10 +++--
->  drivers/remoteproc/qcom_q6v5.h      |  6 ++-
->  drivers/remoteproc/qcom_q6v5_adsp.c | 17 +++++----
->  drivers/remoteproc/qcom_q6v5_mpd.c  | 13 ++++---
->  drivers/remoteproc/qcom_q6v5_mss.c  |  5 ++-
->  drivers/remoteproc/qcom_q6v5_pas.c  | 59 +++++++++++++++--------------
->  drivers/remoteproc/qcom_q6v5_wcss.c | 12 +++---
->  7 files changed, 66 insertions(+), 56 deletions(-)
-> 
-> diff --git a/drivers/remoteproc/qcom_q6v5.c b/drivers/remoteproc/qcom_q6v5.c
-> index 0e32f13c196d..e4a28bf25130 100644
-> --- a/drivers/remoteproc/qcom_q6v5.c
-> +++ b/drivers/remoteproc/qcom_q6v5.c
-> @@ -100,7 +100,7 @@ static irqreturn_t q6v5_wdog_interrupt(int irq, void *data)
->  		return IRQ_HANDLED;
+> diff --git a/arch/arm/include/asm/stacktrace.h b/arch/arm/include/asm/stacktrace.h
+> index 360f0d2406bf..4891e38cdc1f 100644
+> --- a/arch/arm/include/asm/stacktrace.h
+> +++ b/arch/arm/include/asm/stacktrace.h
+> @@ -21,9 +21,7 @@ struct stackframe {
+>  	struct llist_node *kr_cur;
+>  	struct task_struct *tsk;
+>  #endif
+> -#ifdef CONFIG_UNWINDER_FRAME_POINTER
+>  	bool ex_frame;
+> -#endif
+>  };
+>  
+>  static __always_inline
+> @@ -37,9 +35,8 @@ void arm_get_current_stackframe(struct pt_regs *regs, struct stackframe *frame)
+>  		frame->kr_cur = NULL;
+>  		frame->tsk = current;
+>  #endif
+> -#ifdef CONFIG_UNWINDER_FRAME_POINTER
+> -		frame->ex_frame = in_entry_text(frame->pc);
+> -#endif
+> +		frame->ex_frame = !!regs;
+> +
+>  }
+>  
+>  extern int unwind_frame(struct stackframe *frame);
+> diff --git a/arch/arm/kernel/stacktrace.c b/arch/arm/kernel/stacktrace.c
+> index 620aa82e3bdd..caed7436da09 100644
+> --- a/arch/arm/kernel/stacktrace.c
+> +++ b/arch/arm/kernel/stacktrace.c
+> @@ -154,9 +154,6 @@ static void start_stack_trace(struct stackframe *frame, struct task_struct *task
+>  	frame->kr_cur = NULL;
+>  	frame->tsk = task;
+>  #endif
+> -#ifdef CONFIG_UNWINDER_FRAME_POINTER
+> -	frame->ex_frame = in_entry_text(frame->pc);
+> -#endif
+>  }
+>  
+>  void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
+> @@ -167,6 +164,7 @@ void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
+>  	if (regs) {
+>  		start_stack_trace(&frame, NULL, regs->ARM_fp, regs->ARM_sp,
+>  				  regs->ARM_lr, regs->ARM_pc);
+> +		frame.ex_frame = true;
+>  	} else if (task != current) {
+>  #ifdef CONFIG_SMP
+>  		/*
+> @@ -180,6 +178,7 @@ void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
+>  				  thread_saved_sp(task), 0,
+>  				  thread_saved_pc(task));
+>  #endif
+> +		frame.ex_frame = false;
+>  	} else {
+>  here:
+>  		start_stack_trace(&frame, task,
+> @@ -187,6 +186,7 @@ void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
+>  				  current_stack_pointer,
+>  				  (unsigned long)__builtin_return_address(0),
+>  				  (unsigned long)&&here);
+> +		frame.ex_frame = false;
+>  		/* skip this function */
+>  		if (unwind_frame(&frame))
+>  			return;
+> diff --git a/arch/arm/kernel/traps.c b/arch/arm/kernel/traps.c
+> index 3bad79db5d6e..46a5b1eb3f0a 100644
+> --- a/arch/arm/kernel/traps.c
+> +++ b/arch/arm/kernel/traps.c
+> @@ -84,10 +84,10 @@ void dump_backtrace_entry(unsigned long where, unsigned long from,
+>  	printk("%sFunction entered at [<%08lx>] from [<%08lx>]\n",
+>  		loglvl, where, from);
+>  #elif defined CONFIG_BACKTRACE_VERBOSE
+> -	printk("%s[<%08lx>] (%ps) from [<%08lx>] (%pS)\n",
+> +	printk("%s[<%08lx>] (%ps) from [<%08lx>] (%pB)\n",
+>  		loglvl, where, (void *)where, from, (void *)from);
+>  #else
+> -	printk("%s %ps from %pS\n", loglvl, (void *)where, (void *)from);
+> +	printk("%s %ps from %pB\n", loglvl, (void *)where, (void *)from);
+>  #endif
+>  
+>  	if (in_entry_text(from) && end <= ALIGN(frame, THREAD_SIZE))
+> diff --git a/arch/arm/kernel/unwind.c b/arch/arm/kernel/unwind.c
+> index 9d2192156087..99ded32196af 100644
+> --- a/arch/arm/kernel/unwind.c
+> +++ b/arch/arm/kernel/unwind.c
+> @@ -407,7 +407,7 @@ int unwind_frame(struct stackframe *frame)
+>  {
+>  	const struct unwind_idx *idx;
+>  	struct unwind_ctrl_block ctrl;
+> -	unsigned long sp_low;
+> +	unsigned long sp_low, pc;
+>  
+>  	/* store the highest address on the stack to avoid crossing it*/
+>  	sp_low = frame->sp;
+> @@ -417,19 +417,22 @@ int unwind_frame(struct stackframe *frame)
+>  	pr_debug("%s(pc = %08lx lr = %08lx sp = %08lx)\n", __func__,
+>  		 frame->pc, frame->lr, frame->sp);
+>  
+> -	idx = unwind_find_idx(frame->pc);
+> +	pc = frame->ex_frame ? frame->pc : frame->pc - 4;
+> +
+> +	idx = unwind_find_idx(pc);
+>  	if (!idx) {
+> -		if (frame->pc && kernel_text_address(frame->pc)) {
+> -			if (in_module_plt(frame->pc) && frame->pc != frame->lr) {
+> +		if (kernel_text_address(pc)) {
+> +			if (in_module_plt(pc) && frame->pc != frame->lr) {
+>  				/*
+>  				 * Quoting Ard: Veneers only set PC using a
+>  				 * PC+immediate LDR, and so they don't affect
+>  				 * the state of the stack or the register file
+>  				 */
+>  				frame->pc = frame->lr;
+> +				frame->ex_frame = false;
+>  				return URC_OK;
+>  			}
+> -			pr_warn("unwind: Index not found %08lx\n", frame->pc);
+> +			pr_warn("unwind: Index not found %08lx\n", pc);
+>  		}
+>  		return -URC_FAILURE;
+>  	}
+> @@ -442,7 +445,7 @@ int unwind_frame(struct stackframe *frame)
+>  	if (idx->insn == 1)
+>  		/* can't unwind */
+>  		return -URC_FAILURE;
+> -	else if (frame->pc == prel31_to_addr(&idx->addr_offset)) {
+> +	else if (frame->ex_frame && pc == prel31_to_addr(&idx->addr_offset)) {
+>  		/*
+>  		 * Unwinding is tricky when we're halfway through the prologue,
+>  		 * since the stack frame that the unwinder expects may not be
+> @@ -451,9 +454,10 @@ int unwind_frame(struct stackframe *frame)
+>  		 * a function, we are still effectively in the stack frame of
+>  		 * the caller, and the unwind info has no relevance yet.
+>  		 */
+> -		if (frame->pc == frame->lr)
+> +		if (pc == frame->lr)
+>  			return -URC_FAILURE;
+>  		frame->pc = frame->lr;
+> +		frame->ex_frame = false;
+>  		return URC_OK;
+>  	} else if ((idx->insn & 0x80000000) == 0)
+>  		/* prel31 to the unwind table */
+> @@ -515,6 +519,7 @@ int unwind_frame(struct stackframe *frame)
+>  	frame->lr = ctrl.vrs[LR];
+>  	frame->pc = ctrl.vrs[PC];
+>  	frame->lr_addr = ctrl.lr_addr;
+> +	frame->ex_frame = false;
+>  
+>  	return URC_OK;
+>  }
+> @@ -544,6 +549,7 @@ void unwind_backtrace(struct pt_regs *regs, struct task_struct *tsk,
+>  		 */
+>  here:
+>  		frame.pc = (unsigned long)&&here;
+> +		frame.ex_frame = false;
+>  	} else {
+>  		/* task blocked in __switch_to */
+>  		frame.fp = thread_saved_fp(tsk);
+> @@ -554,11 +560,12 @@ void unwind_backtrace(struct pt_regs *regs, struct task_struct *tsk,
+>  		 */
+>  		frame.lr = 0;
+>  		frame.pc = thread_saved_pc(tsk);
+> +		frame.ex_frame = false;
 >  	}
 >  
-> -	msg = qcom_smem_get(QCOM_SMEM_HOST_ANY, q6v5->crash_reason, &len);
-> +	msg = qcom_smem_get(q6v5->crash_reason_partition, q6v5->crash_reason_item, &len);
->  	if (!IS_ERR(msg) && len > 0 && msg[0])
->  		dev_err(q6v5->dev, "watchdog received: %s\n", msg);
->  	else
-> @@ -121,7 +121,7 @@ irqreturn_t q6v5_fatal_interrupt(int irq, void *data)
->  	if (!q6v5->running)
->  		return IRQ_HANDLED;
+>  	while (1) {
+>  		int urc;
+> -		unsigned long where = frame.pc;
+> +		unsigned long where = frame.ex_frame ? frame.pc : frame.pc - 4;
 >  
-> -	msg = qcom_smem_get(QCOM_SMEM_HOST_ANY, q6v5->crash_reason, &len);
-> +	msg = qcom_smem_get(q6v5->crash_reason_partition, q6v5->crash_reason_item, &len);
->  	if (!IS_ERR(msg) && len > 0 && msg[0])
->  		dev_err(q6v5->dev, "fatal error received: %s\n", msg);
->  	else
-> @@ -279,14 +279,16 @@ EXPORT_SYMBOL_GPL(qcom_q6v5_panic);
->   * Return: 0 on success, negative errno on failure
->   */
->  int qcom_q6v5_init(struct qcom_q6v5 *q6v5, struct platform_device *pdev,
-> -		   struct rproc *rproc, int crash_reason, const char *load_state,
-> +		   struct rproc *rproc, int crash_reason_partition,
-> +		   int crash_reason_item, const char *load_state,
->  		   void (*handover)(struct qcom_q6v5 *q6v5))
->  {
->  	int ret;
->  
->  	q6v5->rproc = rproc;
->  	q6v5->dev = &pdev->dev;
-> -	q6v5->crash_reason = crash_reason;
-> +	q6v5->crash_reason_partition = crash_reason_partition;
-> +	q6v5->crash_reason_item = crash_reason_item;
->  	q6v5->handover = handover;
->  
->  	init_completion(&q6v5->start_done);
-> diff --git a/drivers/remoteproc/qcom_q6v5.h b/drivers/remoteproc/qcom_q6v5.h
-> index 4e1bb1a68284..cd02372e9856 100644
-> --- a/drivers/remoteproc/qcom_q6v5.h
-> +++ b/drivers/remoteproc/qcom_q6v5.h
-> @@ -40,7 +40,8 @@ struct qcom_q6v5 {
->  	struct completion stop_done;
->  	struct completion spawn_done;
->  
-> -	int crash_reason;
-> +	int crash_reason_partition;
-> +	int crash_reason_item;
->  
->  	bool running;
->  
-> @@ -49,7 +50,8 @@ struct qcom_q6v5 {
->  };
->  
->  int qcom_q6v5_init(struct qcom_q6v5 *q6v5, struct platform_device *pdev,
-> -		   struct rproc *rproc, int crash_reason, const char *load_state,
-> +		   struct rproc *rproc, int crash_reason_partition,
-> +		   int crash_reason_item, const char *load_state,
->  		   void (*handover)(struct qcom_q6v5 *q6v5));
->  void qcom_q6v5_deinit(struct qcom_q6v5 *q6v5);
->  
-> diff --git a/drivers/remoteproc/qcom_q6v5_adsp.c b/drivers/remoteproc/qcom_q6v5_adsp.c
-> index 6c67514cc493..055764aa201c 100644
-> --- a/drivers/remoteproc/qcom_q6v5_adsp.c
-> +++ b/drivers/remoteproc/qcom_q6v5_adsp.c
-> @@ -62,7 +62,7 @@
->  #define LPASS_EFUSE_Q6SS_EVB_SEL 0x0
->  
->  struct adsp_pil_data {
-> -	int crash_reason_smem;
-> +	int crash_reason_item;
->  	const char *firmware_name;
->  
->  	const char *ssr_name;
-> @@ -98,7 +98,7 @@ struct qcom_adsp {
->  	struct regmap *halt_map;
->  	unsigned int halt_lpass;
->  
-> -	int crash_reason_smem;
-> +	int crash_reason_item;
->  	const char *info_name;
->  
->  	struct completion start_done;
-> @@ -731,8 +731,9 @@ static int adsp_probe(struct platform_device *pdev)
->  	if (ret)
->  		goto disable_pm;
->  
-> -	ret = qcom_q6v5_init(&adsp->q6v5, pdev, rproc, desc->crash_reason_smem,
-> -			     desc->load_state, qcom_adsp_pil_handover);
-> +	ret = qcom_q6v5_init(&adsp->q6v5, pdev, rproc, QCOM_SMEM_HOST_ANY,
-> +			     desc->crash_reason_item, desc->load_state,
-> +			     qcom_adsp_pil_handover);
->  	if (ret)
->  		goto disable_pm;
->  
-> @@ -776,7 +777,7 @@ static void adsp_remove(struct platform_device *pdev)
->  }
->  
->  static const struct adsp_pil_data adsp_resource_init = {
-> -	.crash_reason_smem = 423,
-> +	.crash_reason_item = 423,
->  	.firmware_name = "adsp.mdt",
->  	.ssr_name = "lpass",
->  	.sysmon_name = "adsp",
-> @@ -794,7 +795,7 @@ static const struct adsp_pil_data adsp_resource_init = {
->  };
->  
->  static const struct adsp_pil_data adsp_sc7280_resource_init = {
-> -	.crash_reason_smem = 423,
-> +	.crash_reason_item = 423,
->  	.firmware_name = "adsp.pbn",
->  	.load_state = "adsp",
->  	.ssr_name = "lpass",
-> @@ -809,7 +810,7 @@ static const struct adsp_pil_data adsp_sc7280_resource_init = {
->  };
->  
->  static const struct adsp_pil_data cdsp_resource_init = {
-> -	.crash_reason_smem = 601,
-> +	.crash_reason_item = 601,
->  	.firmware_name = "cdsp.mdt",
->  	.ssr_name = "cdsp",
->  	.sysmon_name = "cdsp",
-> @@ -827,7 +828,7 @@ static const struct adsp_pil_data cdsp_resource_init = {
->  };
->  
->  static const struct adsp_pil_data wpss_resource_init = {
-> -	.crash_reason_smem = 626,
-> +	.crash_reason_item = 626,
->  	.firmware_name = "wpss.mdt",
->  	.ssr_name = "wpss",
->  	.sysmon_name = "wpss",
-> diff --git a/drivers/remoteproc/qcom_q6v5_mpd.c b/drivers/remoteproc/qcom_q6v5_mpd.c
-> index b133285888c7..27c9f4317e98 100644
-> --- a/drivers/remoteproc/qcom_q6v5_mpd.c
-> +++ b/drivers/remoteproc/qcom_q6v5_mpd.c
-> @@ -555,9 +555,9 @@ static int q6_get_outbound_irq(struct qcom_q6v5 *q6,
->  	return 0;
->  }
->  
-> -static int init_irq(struct qcom_q6v5 *q6,
-> -		    struct platform_device *pdev, struct rproc *rproc,
-> -		    int crash_reason, const char *load_state,
-> +static int init_irq(struct qcom_q6v5 *q6, struct platform_device *pdev,
-> +		    struct rproc *rproc, int crash_reason_partition,
-> +		    int crash_reason_item, const char *load_state,
->  		    void (*handover)(struct qcom_q6v5 *q6))
->  {
->  	int ret;
-> @@ -565,7 +565,8 @@ static int init_irq(struct qcom_q6v5 *q6,
->  
->  	q6->rproc = rproc;
->  	q6->dev = &pdev->dev;
-> -	q6->crash_reason = crash_reason;
-> +	q6->crash_reason_partition = crash_reason_partition;
-> +	q6->crash_reason_item = crash_reason_item;
->  	q6->handover = handover;
->  
->  	init_completion(&q6->start_done);
-> @@ -666,7 +667,7 @@ static int q6_register_userpd(struct platform_device *pdev,
->  	if (ret)
->  		goto free_rproc;
->  
-> -	ret = init_irq(&wcss->q6, userpd_pdev, rproc,
-> +	ret = init_irq(&wcss->q6, userpd_pdev, rproc, WCSS_SMEM_HOST,
->  		       WCSS_CRASH_REASON, NULL, NULL);
->  	if (ret)
->  		goto free_rproc;
-> @@ -725,7 +726,7 @@ static int q6_wcss_probe(struct platform_device *pdev)
->  	if (ret)
->  		goto free_rproc;
->  
-> -	ret = qcom_q6v5_init(&wcss->q6, pdev, rproc,
-> +	ret = qcom_q6v5_init(&wcss->q6, pdev, rproc, WCSS_SMEM_HOST,
->  			     WCSS_CRASH_REASON, NULL, NULL);
->  	if (ret)
->  		goto free_rproc;
-> diff --git a/drivers/remoteproc/qcom_q6v5_mss.c b/drivers/remoteproc/qcom_q6v5_mss.c
-> index 394b2c1cb5e2..48f115f9337b 100644
-> --- a/drivers/remoteproc/qcom_q6v5_mss.c
-> +++ b/drivers/remoteproc/qcom_q6v5_mss.c
-> @@ -26,6 +26,7 @@
->  #include <linux/remoteproc.h>
->  #include <linux/reset.h>
->  #include <linux/soc/qcom/mdt_loader.h>
-> +#include <linux/soc/qcom/smem.h>
->  #include <linux/iopoll.h>
->  #include <linux/slab.h>
->  
-> @@ -2093,8 +2094,8 @@ static int q6v5_probe(struct platform_device *pdev)
->  	qproc->need_mem_protection = desc->need_mem_protection;
->  	qproc->has_mba_logs = desc->has_mba_logs;
->  
-> -	ret = qcom_q6v5_init(&qproc->q6v5, pdev, rproc, MPSS_CRASH_REASON_SMEM, "modem",
-> -			     qcom_msa_handover);
-> +	ret = qcom_q6v5_init(&qproc->q6v5, pdev, rproc, QCOM_SMEM_HOST_ANY,
-> +			     MPSS_CRASH_REASON_SMEM, "modem", qcom_msa_handover);
->  	if (ret)
->  		goto detach_proxy_pds;
->  
-> diff --git a/drivers/remoteproc/qcom_q6v5_pas.c b/drivers/remoteproc/qcom_q6v5_pas.c
-> index 913a5d2068e8..daca648d4ddb 100644
-> --- a/drivers/remoteproc/qcom_q6v5_pas.c
-> +++ b/drivers/remoteproc/qcom_q6v5_pas.c
-> @@ -34,7 +34,7 @@
->  #define ADSP_DECRYPT_SHUTDOWN_DELAY_MS	100
->  
->  struct adsp_data {
-> -	int crash_reason_smem;
-> +	int crash_reason_item;
->  	const char *firmware_name;
->  	const char *dtb_firmware_name;
->  	int pas_id;
-> @@ -73,7 +73,7 @@ struct qcom_adsp {
->  	int pas_id;
->  	int dtb_pas_id;
->  	unsigned int minidump_id;
-> -	int crash_reason_smem;
-> +	int crash_reason_item;
->  	bool decrypt_shutdown;
->  	const char *info_name;
->  
-> @@ -728,7 +728,8 @@ static int adsp_probe(struct platform_device *pdev)
->  		goto free_rproc;
->  	adsp->proxy_pd_count = ret;
->  
-> -	ret = qcom_q6v5_init(&adsp->q6v5, pdev, rproc, desc->crash_reason_smem, desc->load_state,
-> +	ret = qcom_q6v5_init(&adsp->q6v5, pdev, rproc, QCOM_SMEM_HOST_ANY,
-> +			     desc->crash_reason_item, desc->load_state,
->  			     qcom_pas_handover);
->  	if (ret)
->  		goto detach_proxy_pds;
-> @@ -777,7 +778,7 @@ static void adsp_remove(struct platform_device *pdev)
->  }
->  
->  static const struct adsp_data adsp_resource_init = {
-> -		.crash_reason_smem = 423,
-> +		.crash_reason_item = 423,
->  		.firmware_name = "adsp.mdt",
->  		.pas_id = 1,
->  		.auto_boot = true,
-> @@ -787,7 +788,7 @@ static const struct adsp_data adsp_resource_init = {
->  };
->  
->  static const struct adsp_data sdm845_adsp_resource_init = {
-> -		.crash_reason_smem = 423,
-> +		.crash_reason_item = 423,
->  		.firmware_name = "adsp.mdt",
->  		.pas_id = 1,
->  		.auto_boot = true,
-> @@ -798,7 +799,7 @@ static const struct adsp_data sdm845_adsp_resource_init = {
->  };
->  
->  static const struct adsp_data sm6350_adsp_resource = {
-> -	.crash_reason_smem = 423,
-> +	.crash_reason_item = 423,
->  	.firmware_name = "adsp.mdt",
->  	.pas_id = 1,
->  	.auto_boot = true,
-> @@ -814,7 +815,7 @@ static const struct adsp_data sm6350_adsp_resource = {
->  };
->  
->  static const struct adsp_data sm6375_mpss_resource = {
-> -	.crash_reason_smem = 421,
-> +	.crash_reason_item = 421,
->  	.firmware_name = "modem.mdt",
->  	.pas_id = 4,
->  	.minidump_id = 3,
-> @@ -829,7 +830,7 @@ static const struct adsp_data sm6375_mpss_resource = {
->  };
->  
->  static const struct adsp_data sm8150_adsp_resource = {
-> -		.crash_reason_smem = 423,
-> +		.crash_reason_item = 423,
->  		.firmware_name = "adsp.mdt",
->  		.pas_id = 1,
->  		.auto_boot = true,
-> @@ -844,7 +845,7 @@ static const struct adsp_data sm8150_adsp_resource = {
->  };
->  
->  static const struct adsp_data sm8250_adsp_resource = {
-> -	.crash_reason_smem = 423,
-> +	.crash_reason_item = 423,
->  	.firmware_name = "adsp.mdt",
->  	.pas_id = 1,
->  	.auto_boot = true,
-> @@ -860,7 +861,7 @@ static const struct adsp_data sm8250_adsp_resource = {
->  };
->  
->  static const struct adsp_data sm8350_adsp_resource = {
-> -	.crash_reason_smem = 423,
-> +	.crash_reason_item = 423,
->  	.firmware_name = "adsp.mdt",
->  	.pas_id = 1,
->  	.auto_boot = true,
-> @@ -876,7 +877,7 @@ static const struct adsp_data sm8350_adsp_resource = {
->  };
->  
->  static const struct adsp_data msm8996_adsp_resource = {
-> -		.crash_reason_smem = 423,
-> +		.crash_reason_item = 423,
->  		.firmware_name = "adsp.mdt",
->  		.pas_id = 1,
->  		.auto_boot = true,
-> @@ -890,7 +891,7 @@ static const struct adsp_data msm8996_adsp_resource = {
->  };
->  
->  static const struct adsp_data cdsp_resource_init = {
-> -	.crash_reason_smem = 601,
-> +	.crash_reason_item = 601,
->  	.firmware_name = "cdsp.mdt",
->  	.pas_id = 18,
->  	.auto_boot = true,
-> @@ -900,7 +901,7 @@ static const struct adsp_data cdsp_resource_init = {
->  };
->  
->  static const struct adsp_data sdm845_cdsp_resource_init = {
-> -	.crash_reason_smem = 601,
-> +	.crash_reason_item = 601,
->  	.firmware_name = "cdsp.mdt",
->  	.pas_id = 18,
->  	.auto_boot = true,
-> @@ -911,7 +912,7 @@ static const struct adsp_data sdm845_cdsp_resource_init = {
->  };
->  
->  static const struct adsp_data sm6350_cdsp_resource = {
-> -	.crash_reason_smem = 601,
-> +	.crash_reason_item = 601,
->  	.firmware_name = "cdsp.mdt",
->  	.pas_id = 18,
->  	.auto_boot = true,
-> @@ -927,7 +928,7 @@ static const struct adsp_data sm6350_cdsp_resource = {
->  };
->  
->  static const struct adsp_data sm8150_cdsp_resource = {
-> -	.crash_reason_smem = 601,
-> +	.crash_reason_item = 601,
->  	.firmware_name = "cdsp.mdt",
->  	.pas_id = 18,
->  	.auto_boot = true,
-> @@ -942,7 +943,7 @@ static const struct adsp_data sm8150_cdsp_resource = {
->  };
->  
->  static const struct adsp_data sm8250_cdsp_resource = {
-> -	.crash_reason_smem = 601,
-> +	.crash_reason_item = 601,
->  	.firmware_name = "cdsp.mdt",
->  	.pas_id = 18,
->  	.auto_boot = true,
-> @@ -957,7 +958,7 @@ static const struct adsp_data sm8250_cdsp_resource = {
->  };
->  
->  static const struct adsp_data sc8280xp_nsp0_resource = {
-> -	.crash_reason_smem = 601,
-> +	.crash_reason_item = 601,
->  	.firmware_name = "cdsp.mdt",
->  	.pas_id = 18,
->  	.auto_boot = true,
-> @@ -971,7 +972,7 @@ static const struct adsp_data sc8280xp_nsp0_resource = {
->  };
->  
->  static const struct adsp_data sc8280xp_nsp1_resource = {
-> -	.crash_reason_smem = 633,
-> +	.crash_reason_item = 633,
->  	.firmware_name = "cdsp.mdt",
->  	.pas_id = 30,
->  	.auto_boot = true,
-> @@ -985,7 +986,7 @@ static const struct adsp_data sc8280xp_nsp1_resource = {
->  };
->  
->  static const struct adsp_data sm8350_cdsp_resource = {
-> -	.crash_reason_smem = 601,
-> +	.crash_reason_item = 601,
->  	.firmware_name = "cdsp.mdt",
->  	.pas_id = 18,
->  	.auto_boot = true,
-> @@ -1001,7 +1002,7 @@ static const struct adsp_data sm8350_cdsp_resource = {
->  };
->  
->  static const struct adsp_data mpss_resource_init = {
-> -	.crash_reason_smem = 421,
-> +	.crash_reason_item = 421,
->  	.firmware_name = "modem.mdt",
->  	.pas_id = 4,
->  	.minidump_id = 3,
-> @@ -1018,7 +1019,7 @@ static const struct adsp_data mpss_resource_init = {
->  };
->  
->  static const struct adsp_data sc8180x_mpss_resource = {
-> -	.crash_reason_smem = 421,
-> +	.crash_reason_item = 421,
->  	.firmware_name = "modem.mdt",
->  	.pas_id = 4,
->  	.auto_boot = false,
-> @@ -1033,7 +1034,7 @@ static const struct adsp_data sc8180x_mpss_resource = {
->  };
->  
->  static const struct adsp_data msm8996_slpi_resource_init = {
-> -		.crash_reason_smem = 424,
-> +		.crash_reason_item = 424,
->  		.firmware_name = "slpi.mdt",
->  		.pas_id = 12,
->  		.auto_boot = true,
-> @@ -1047,7 +1048,7 @@ static const struct adsp_data msm8996_slpi_resource_init = {
->  };
->  
->  static const struct adsp_data sdm845_slpi_resource_init = {
-> -		.crash_reason_smem = 424,
-> +		.crash_reason_item = 424,
->  		.firmware_name = "slpi.mdt",
->  		.pas_id = 12,
->  		.auto_boot = true,
-> @@ -1063,7 +1064,7 @@ static const struct adsp_data sdm845_slpi_resource_init = {
->  };
->  
->  static const struct adsp_data wcss_resource_init = {
-> -	.crash_reason_smem = 421,
-> +	.crash_reason_item = 421,
->  	.firmware_name = "wcnss.mdt",
->  	.pas_id = 6,
->  	.auto_boot = true,
-> @@ -1073,7 +1074,7 @@ static const struct adsp_data wcss_resource_init = {
->  };
->  
->  static const struct adsp_data sdx55_mpss_resource = {
-> -	.crash_reason_smem = 421,
-> +	.crash_reason_item = 421,
->  	.firmware_name = "modem.mdt",
->  	.pas_id = 4,
->  	.auto_boot = true,
-> @@ -1088,7 +1089,7 @@ static const struct adsp_data sdx55_mpss_resource = {
->  };
->  
->  static const struct adsp_data sm8450_mpss_resource = {
-> -	.crash_reason_smem = 421,
-> +	.crash_reason_item = 421,
->  	.firmware_name = "modem.mdt",
->  	.pas_id = 4,
->  	.minidump_id = 3,
-> @@ -1106,7 +1107,7 @@ static const struct adsp_data sm8450_mpss_resource = {
->  };
->  
->  static const struct adsp_data sm8550_adsp_resource = {
-> -	.crash_reason_smem = 423,
-> +	.crash_reason_item = 423,
->  	.firmware_name = "adsp.mdt",
->  	.dtb_firmware_name = "adsp_dtb.mdt",
->  	.pas_id = 1,
-> @@ -1125,7 +1126,7 @@ static const struct adsp_data sm8550_adsp_resource = {
->  };
->  
->  static const struct adsp_data sm8550_cdsp_resource = {
-> -	.crash_reason_smem = 601,
-> +	.crash_reason_item = 601,
->  	.firmware_name = "cdsp.mdt",
->  	.dtb_firmware_name = "cdsp_dtb.mdt",
->  	.pas_id = 18,
-> @@ -1145,7 +1146,7 @@ static const struct adsp_data sm8550_cdsp_resource = {
->  };
->  
->  static const struct adsp_data sm8550_mpss_resource = {
-> -	.crash_reason_smem = 421,
-> +	.crash_reason_item = 421,
->  	.firmware_name = "modem.mdt",
->  	.dtb_firmware_name = "modem_dtb.mdt",
->  	.pas_id = 4,
-> diff --git a/drivers/remoteproc/qcom_q6v5_wcss.c b/drivers/remoteproc/qcom_q6v5_wcss.c
-> index cff1fa07d1de..f6b6ec10d21b 100644
-> --- a/drivers/remoteproc/qcom_q6v5_wcss.c
-> +++ b/drivers/remoteproc/qcom_q6v5_wcss.c
-> @@ -18,6 +18,7 @@
->  #include <linux/regulator/consumer.h>
->  #include <linux/reset.h>
->  #include <linux/soc/qcom/mdt_loader.h>
-> +#include <linux/soc/qcom/smem.h>
->  #include "qcom_common.h"
->  #include "qcom_pil_info.h"
->  #include "qcom_q6v5.h"
-> @@ -93,7 +94,7 @@ enum {
->  
->  struct wcss_data {
->  	const char *firmware_name;
-> -	unsigned int crash_reason_smem;
-> +	unsigned int crash_reason_item;
->  	u32 version;
->  	bool aon_reset_required;
->  	bool wcss_q6_reset_required;
-> @@ -143,7 +144,7 @@ struct q6v5_wcss {
->  	void *mem_region;
->  	size_t mem_size;
->  
-> -	unsigned int crash_reason_smem;
-> +	unsigned int crash_reason_item;
->  	u32 version;
->  	bool requires_force_stop;
->  
-> @@ -1047,7 +1048,8 @@ static int q6v5_wcss_probe(struct platform_device *pdev)
->  	if (ret)
->  		goto free_rproc;
->  
-> -	ret = qcom_q6v5_init(&wcss->q6v5, pdev, rproc, desc->crash_reason_smem, NULL, NULL);
-> +	ret = qcom_q6v5_init(&wcss->q6v5, pdev, rproc, QCOM_SMEM_HOST_ANY,
-> +			     desc->crash_reason_item, NULL, NULL);
->  	if (ret)
->  		goto free_rproc;
->  
-> @@ -1085,7 +1087,7 @@ static void q6v5_wcss_remove(struct platform_device *pdev)
->  
->  static const struct wcss_data wcss_ipq8074_res_init = {
->  	.firmware_name = "IPQ8074/q6_fw.mdt",
-> -	.crash_reason_smem = WCSS_CRASH_REASON,
-> +	.crash_reason_item = WCSS_CRASH_REASON,
->  	.aon_reset_required = true,
->  	.wcss_q6_reset_required = true,
->  	.ops = &q6v5_wcss_ipq8074_ops,
-> @@ -1093,7 +1095,7 @@ static const struct wcss_data wcss_ipq8074_res_init = {
->  };
->  
->  static const struct wcss_data wcss_qcs404_res_init = {
-> -	.crash_reason_smem = WCSS_CRASH_REASON,
-> +	.crash_reason_item = WCSS_CRASH_REASON,
->  	.firmware_name = "wcnss.mdt",
->  	.version = WCSS_QCS404,
->  	.aon_reset_required = false,
-> -- 
-> 2.41.0
+>  		urc = unwind_frame(&frame);
+>  		if (urc < 0)
+> .
 > 
 
