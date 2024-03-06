@@ -1,182 +1,259 @@
-Return-Path: <linux-kernel+bounces-93929-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93930-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26B1C87370C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:55:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74901873710
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:56:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 56D121C23C17
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:55:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2AC0D2813E1
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:56:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF7D312C53E;
-	Wed,  6 Mar 2024 12:55:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A4EB12C53E;
+	Wed,  6 Mar 2024 12:56:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="KxfLIW5Z"
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xEEOSUi1"
+Received: from mail-vk1-f177.google.com (mail-vk1-f177.google.com [209.85.221.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 009D45DF1D;
-	Wed,  6 Mar 2024 12:54:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.152.168
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2918923745
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 12:56:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709729701; cv=none; b=pwYOsRI0bkZdf8YjxwqOKeeB9AX0DvJwd5lf6HAMmLPInAkxqF2di+4JEJwVwmU+iHBUlvHjGaqrcX3Qswu4L9DkKx7sQ+71ghJEjtGcl7p3+WeqL7iTtlqZZTXV5l+JwqIWgrgRAWjMFmx99r+Qla514NQ7ES9b+7XsJyYn5Zw=
+	t=1709729768; cv=none; b=P/kIiO/3WGoHzCs3zZ/sjBD/WmvX1YYuGQoEMe7VajgEgjYK7vJvG415lfLU/AYEN3/871ceBWK2yqAkmMUOz2GJ0EPIHi6nImvKBR51lR1nSxtE0g8BEDYAsk/auIPOnVXIwByBDOxy6tShANoGoXmRe197rVWohIYXuhtwfDk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709729701; c=relaxed/simple;
-	bh=czwmuKZynxP030wgUGa8GWEjB9o8Lc2TErJL0actoqk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=HOpXTIdbO8h/5oUIUedfrYeMZ3XgDuZmXpEYUguqnbMU3hSulSqc9JbTvblNRaUeCz55IyYFwNXWPzpwsgSnChF62Xov59a64SEKfZ91cOiK9NYecF+Y72iDMQyBqNcyqNUEiCB28VqhW3bcbiEAarX1tbZpZgvJvsCaZbxSPqY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=KxfLIW5Z; arc=none smtp.client-ip=67.231.152.168
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4268keDm013652;
-	Wed, 6 Mar 2024 06:54:46 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	PODMain02222019; bh=dUnOWEoxp3SnJf2CLLou3NRw4azRYH8sTPSVS7jTw3c=; b=
-	KxfLIW5ZslqURg+L4ZEH6tjKmxwt06qhWECFicj/THLPKjRvstRQgfQ6ki4e5PTf
-	+35OntL91YPaaGaigZAWUN5i5TbjwCHRl25guPLLG2z81RcZ3yiuQUjaCbzCochX
-	bQU8nHv+XY//hCf7NAkmc6MFc3OUw40//e0FS/nIMZsbMJOmTG+pHRq0/wiCS3bw
-	4tN+R8jXnrpzETHN2UA5sVhuBV6POgzb47aptlax+m2xIIjJa8Jew17F/LkL/5BO
-	q2+pJZvF7DHXCvdFa3y1+9K3jj6BoLvyYVEu88oCntCt11sFfKCy90/D/iJtTSJM
-	oVoJuKZTokzobNHXdtxK6w==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3wpn930795-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 06 Mar 2024 06:54:45 -0600 (CST)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 6 Mar 2024
- 12:54:43 +0000
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1544.4 via Frontend Transport; Wed, 6 Mar 2024 12:54:43 +0000
-Received: from [198.61.64.14] (EDIN4L06LR3.ad.cirrus.com [198.61.64.14])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 7BA69820241;
-	Wed,  6 Mar 2024 12:54:43 +0000 (UTC)
-Message-ID: <fedf6e86-ca14-4236-85c0-64205c63d7f9@opensource.cirrus.com>
-Date: Wed, 6 Mar 2024 12:54:43 +0000
+	s=arc-20240116; t=1709729768; c=relaxed/simple;
+	bh=PgHt/os8BmHr6ku0XPfx09raukbvgI1JM8YKUigkwqI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ArIbKt8u0j08oXPPf2GYeDyzdQAo7Wl7F7KmCWKqH8uTQuxNRxOl+rkcKqCzRVKmXa24rQQ16QKJqUW7QOuILxVVc9QaeGz1UKJkjhOm5jpouVkK+ViJ56qFObe8hKqP1aoiuNzrEiwu5FHZlCD4p/WW0O+73zDadTaJ+d8t4N4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=xEEOSUi1; arc=none smtp.client-ip=209.85.221.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-vk1-f177.google.com with SMTP id 71dfb90a1353d-4d367dadd14so783353e0c.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 04:56:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709729766; x=1710334566; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mF51TmcU3SYCWdS+xut7sKhWkD9/Cw1BL/jjWneKjIw=;
+        b=xEEOSUi1nYSQQibeYAe5XHCnSljYTAapCekVtIG+OWuZWOBUv/cM+hzWT3/jtVQ9ro
+         u30IxDV4Ens0zed/T5Hp6YVBdIsygUK5pv4JUlJquNxHYqJTfF5Q9lOkuCk5FEzFnNl3
+         jpK7DnydXdqmPYXPGD0b3fMijmA5hbbdNhNEY9XCtoCC0uC3oQ8PGUWsNoojC5diq5uS
+         932WJOsZR0BfbbdNdS0JDQnoEqO5ihZe6YIeMS4kuQs0O6R2n3C68dGJ/IAQDkSwbNpg
+         SasZaVKgW9K3bU/hXq901hhS09PA9zYLRBsZt9+K4ekT6L7UON32TRAMxmysooKFmbLL
+         KLvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709729766; x=1710334566;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mF51TmcU3SYCWdS+xut7sKhWkD9/Cw1BL/jjWneKjIw=;
+        b=vUiO1M1uEr1xWwwjG1UqIs5KMGiYQrymvg2dJ5Fcq74t0e43+/g0D6qksvVq0nWqoC
+         JSjdxLFETXBGyox7ElDH6iOwGbDuw3+SvPWf6MCEG1SMefljfVkYKOWNLCxPta8Qo1gG
+         4qbbs3clQ08z/AWjmFaDt96SLfrxQn6sDcu9T9ASZm+aHK6Se5NDqM6MThCN9aetrP1U
+         yeMnRF8DVJW8HWcFvh9jFH4BE6ZdOPRpfhuruOUZX7ntE8WRYT5fWbjTqVWoxXL6GLgc
+         V2/V6Wtfv/84u1fYi2GHvTCVrTXaSmvfPlKUMvvhPJINTlgvt93RVHFgMM/mA5Zqwoj3
+         qwSw==
+X-Forwarded-Encrypted: i=1; AJvYcCUGyoiHafXWiDX3iDgCVEuHZs8CboAZfR/eM2+L3DMIgxW6AOlG0kuRIiFAre540FJgB/9h+zyU3cwH4kgRntwZ/DGloVFfb9IqKNla
+X-Gm-Message-State: AOJu0YwsGaq/X175H00oyOBimUn42r4osDMg8cKetN+Nk6ZpOVHaAU3l
+	9alf+lWkdxI5jryw43aDijR7tYv+7F8HxUj/WuiYsioKFybXvpPR57C/rZBkTEKMilYaQLcClc7
+	G+LGBKC+CBie1nOTA1M9BhFUjEr38uUH9IQwYtw==
+X-Google-Smtp-Source: AGHT+IGYfA7GXwmmA55ca5fewYia6cPXDbMo0V4xJFmtFcpijfX6V7O8HrKJ4j/b4c4yZ/koOoyYa9hnBv9GtCTyue0=
+X-Received: by 2002:a05:6122:3683:b0:4cd:b55a:bb0d with SMTP id
+ ec3-20020a056122368300b004cdb55abb0dmr5608477vkb.2.1709729765868; Wed, 06 Mar
+ 2024 04:56:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ASoC: soc-card: Fix missing locking in
- snd_soc_card_get_kcontrol()
-To: Takashi Iwai <tiwai@suse.de>
-CC: <broonie@kernel.org>, <shengjiu.wang@gmail.com>, <Xiubo.Lee@gmail.com>,
-        <linux-sound@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        <linux-kernel@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
-        <patches@opensource.cirrus.com>
-References: <20240221123710.690224-1-rf@opensource.cirrus.com>
- <878r33hf81.wl-tiwai@suse.de>
-Content-Language: en-US
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-In-Reply-To: <878r33hf81.wl-tiwai@suse.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-GUID: YEs5JGMEo5VD8m1KlprrWBCx10iE2ihb
-X-Proofpoint-ORIG-GUID: YEs5JGMEo5VD8m1KlprrWBCx10iE2ihb
-X-Proofpoint-Spam-Reason: safe
+References: <20240304211549.876981797@linuxfoundation.org>
+In-Reply-To: <20240304211549.876981797@linuxfoundation.org>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Wed, 6 Mar 2024 18:25:54 +0530
+Message-ID: <CA+G9fYvTnAyEt-Cn7fmXQ2FK3+xLyOULmcxhrk7dMTypckDEsA@mail.gmail.com>
+Subject: Re: [PATCH 6.6 000/143] 6.6.21-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
+	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 29/2/24 08:00, Takashi Iwai wrote:
-> On Wed, 21 Feb 2024 13:37:10 +0100,
-> Richard Fitzgerald wrote:
->>
->> snd_soc_card_get_kcontrol() must be holding a read lock on
->> card->controls_rwsem while walking the controls list.
->>
->> Compare with snd_ctl_find_numid().
->>
->> The existing function is renamed snd_soc_card_get_kcontrol_locked()
->> so that it can be called from contexts that are already holding
->> card->controls_rwsem (for example, control get/put functions).
->>
->> There are few direct or indirect callers of
->> snd_soc_card_get_kcontrol(), and most are safe. Three require
->> changes, which have been included in this patch:
->>
->> codecs/cs35l45.c:
->>    cs35l45_activate_ctl() is called from a control put() function so
->>    is changed to call snd_soc_card_get_kcontrol_locked().
->>
->> codecs/cs35l56.c:
->>    cs35l56_sync_asp1_mixer_widgets_with_firmware() is called from
->>    control get()/put() functions so is changed to call
->>    snd_soc_card_get_kcontrol_locked().
->>
->> fsl/fsl_xcvr.c:
->>    fsl_xcvr_activate_ctl() is called from three places, one of which
->>    already holds card->controls_rwsem:
->>    1. fsl_xcvr_mode_put(), a control put function, which will
->>       already be holding card->controls_rwsem.
->>    2. fsl_xcvr_startup(), a DAI startup function.
->>    3. fsl_xcvr_shutdown(), a DAI shutdown function.
->>
->>    To fix this, fsl_xcvr_activate_ctl() has been changed to call
->>    snd_soc_card_get_kcontrol_locked() so that it is safe to call
->>    directly from fsl_xcvr_mode_put().
->>    The fsl_xcvr_startup() and fsl_xcvr_shutdown() functions have been
->>    changed to take a read lock on card->controls_rsem() around calls
->>    to fsl_xcvr_activate_ctl(). While this is not very elegant, it
->>    keeps the change small, to avoid this patch creating a large
->>    collateral churn in fsl/fsl_xcvr.c.
->>
->> Analysis of other callers of snd_soc_card_get_kcontrol() is that
->> they do not need any changes, they are not holding card->controls_rwsem
->> when they call snd_soc_card_get_kcontrol().
->>
->> Direct callers of snd_soc_card_get_kcontrol():
->>    fsl/fsl_spdif.c: fsl_spdif_dai_probe() - DAI probe function
->>    fsl/fsl_micfil.c: voice_detected_fn() - IRQ handler
->>
->> Indirect callers via soc_component_notify_control():
->>    codecs/cs42l43: cs42l43_mic_shutter() - IRQ handler
->>    codecs/cs42l43: cs42l43_spk_shutter() - IRQ handler
->>    codecs/ak4118.c: ak4118_irq_handler() - IRQ handler
->>    codecs/wm_adsp.c: wm_adsp_write_ctl() - not currently used
->>
->> Indirect callers via snd_soc_limit_volume():
->>    qcom/sc8280xp.c: sc8280xp_snd_init() - DAIlink init function
->>    ti/rx51.c: rx51_aic34_init() - DAI init function
->>
->> I don't have hardware to test the fsl/*, qcom/sc828xp.c, ti/rx51.c
->> and ak4118.c changes.
->>
->> Backport note:
->> The fsl/, qcom/, cs35l45, cs35l56 and cs42l43 callers were added
->> since the Fixes commit so won't all be present on older kernels.
->>
->> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
->> Fixes: 209c6cdfd283 ("ASoC: soc-card: move snd_soc_card_get_kcontrol() to soc-card")
->> ---
->> It would be great if people could test the fsl/, qcom/, ti/rx51 and ak4418
->> drivers.
-> 
-> This fix itself looks correct, and I merged Mark's PR now.
-> 
-> But in general, it'd be better to use snd_ctl_find_id() and
-> snd_ctl_find_id_unlocked() if possible.  Those standard APIs can use
-> the fast Xarray lookup, and especially for the case like many ASoC
-> drivers that expose hundreds of kcontrols, the performance gain
-> becomes significant.
-> 
-> I see that there is no snd_ctl_find_mixer_id_unlocked() variant, but
-> it should be trivial to add.
-> 
-> 
-
-Yes, I'll have a look at that. I was thinking that it would be good
-to have all the code to find controls in one place, instead of a special
-case for ASoC. But I decided to make the bugfix with minimum changes.
-
+On Tue, 5 Mar 2024 at 03:07, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 6.6.21 release.
+> There are 143 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 06 Mar 2024 21:15:26 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
+6.6.21-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-6.6.y
+> and the diffstat can be found below.
+>
 > thanks,
-> 
-> Takashi
+>
+> greg k-h
 
+
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
+
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+## Build
+* kernel: 6.6.21-rc1
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-6.6.y
+* git commit: 5f9255b6ac459ba1b98dfffa0680a5700447d28c
+* git describe: v6.6.18-445-g5f9255b6ac45
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.6.y/build/v6.6.1=
+8-445-g5f9255b6ac45
+
+## Test Regressions (compared to v6.6.18)
+
+## Metric Regressions (compared to v6.6.18)
+
+## Test Fixes (compared to v6.6.18)
+
+## Metric Fixes (compared to v6.6.18)
+
+## Test result summary
+total: 168781, pass: 145491, fail: 2395, skip: 20734, xfail: 161
+
+## Build Summary
+* arc: 5 total, 5 passed, 0 failed
+* arm: 135 total, 132 passed, 3 failed
+* arm64: 43 total, 41 passed, 2 failed
+* i386: 35 total, 30 passed, 5 failed
+* mips: 26 total, 23 passed, 3 failed
+* parisc: 4 total, 4 passed, 0 failed
+* powerpc: 36 total, 28 passed, 8 failed
+* riscv: 18 total, 18 passed, 0 failed
+* s390: 13 total, 13 passed, 0 failed
+* sh: 10 total, 10 passed, 0 failed
+* sparc: 8 total, 8 passed, 0 failed
+* x86_64: 39 total, 34 passed, 5 failed
+
+## Test suites summary
+* boot
+* kselftest-android
+* kselftest-arm64
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers-dma-buf
+* kselftest-efivarfs
+* kselftest-exec
+* kselftest-filesystems
+* kselftest-filesystems-binderfs
+* kselftest-filesystems-epoll
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-ftrace
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mm
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-net-forwarding
+* kselftest-net-mptcp
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-user_events
+* kselftest-vDSO
+* kselftest-watchdog
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* log-parser-boot
+* log-parser-test
+* ltp-cap_bounds
+* ltp-commands
+* ltp-containers
+* ltp-controllers
+* ltp-cpuhotplug
+* ltp-crypto
+* ltp-cve
+* ltp-dio
+* ltp-fcntl-locktests
+* ltp-filecaps
+* ltp-fs
+* ltp-fs_bind
+* ltp-fs_perms_simple
+* ltp-hugetlb
+* ltp-io
+* ltp-ipc
+* ltp-math
+* ltp-mm
+* ltp-nptl
+* ltp-pty
+* ltp-sched
+* ltp-securebits
+* ltp-smoke
+* ltp-smoketest
+* ltp-syscalls
+* ltp-tracing
+* perf
+* rcutorture
+
+--
+Linaro LKFT
+https://lkft.linaro.org
 
