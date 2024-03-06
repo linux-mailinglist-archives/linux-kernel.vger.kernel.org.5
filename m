@@ -1,198 +1,113 @@
-Return-Path: <linux-kernel+bounces-93984-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93983-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D18578737CB
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:36:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52AC28737C7
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:36:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DED051C23E0C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:36:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F08521F26BB5
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:36:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58286131751;
-	Wed,  6 Mar 2024 13:36:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41FBA130E57;
+	Wed,  6 Mar 2024 13:36:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="N/kKxGsH"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JZ9n/ao1"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28839130E53;
-	Wed,  6 Mar 2024 13:36:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F16C8130AD5;
+	Wed,  6 Mar 2024 13:36:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709732165; cv=none; b=ClvVatI71obYvivrjWllCgGDZkhzN58foXCA8EN4oBXEboOMZ+gFdPmKql/sy1J3C83rh1kZOcRkL31L35s27oHLgSB3gayw+pFlf3r7NrXWRG9Yl5dAJTDVOow7xbNdGedgvLhqwVdRWo6ykcZrWJ9bi3nhMkJJwb35opEh4Gw=
+	t=1709732162; cv=none; b=b73sIr3rSrL3VsVYUC1G6P++LVQwJTcVSREjj0ku9ENkEP5ROq5tMvS5n29989Z/oOcFFk9jN4aSLkMMN9r6RMiwHS7cFeD2NC1uTm7xg6xtXBNvV2CNDMdP38On9dzS7rhHzRmQfLX3Zrj8UbofkYhl0qseTE7SAYE+pNsyU2w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709732165; c=relaxed/simple;
-	bh=45rfJriq8pHTLWr4t7k5bjYjJj5l2xBOYzlRQciLBtE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=mzkjRCfvc3mjQLABKTb+FR5SzxhfUTg+F3l3WQxr/FPmgi8yq67M2+rEXFIwrt6+0p4fB0oBLiPeH1JPT2uCoE6Hhi8f1+tdFDaRtHbc1DGPYspT4lxrcw5KJmm3fW5t9TACabbtgR0vRWLF13Tuty5yFqHWgcv1JDw33AlWNMc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=N/kKxGsH; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42668Qg7020826;
-	Wed, 6 Mar 2024 13:35:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=xoHpZpwwQUQZQok0NwWkenfwu8JYTx3dNHbq+3VZ4PQ=; b=N/
-	kKxGsHJEPtiLZxKmtQvnUvzWquGzPrnyOOi0iFmeqivp1ggD1s5Qs5d9WPtr0uPf
-	CeGMKxYL6eqsbBsDdqjB/0JPDhrzjb1iK+0x9eWkP+nv4v8bAmTqsodzi8xMiT0r
-	5QwZ2z/AipyNSWaD+pT+pUh7yqo+F8EXXuaLr4movpeHOsA8AtNeDglMVp5b6Ub6
-	iarlV2a21cYlipIAc/Wt4F02PZ6dW1wlFHIFOCSybyceRvAyPVtrTeDGT2cgz808
-	RVryyS1ZUzL9PLeGiI9n8Lk2HDMV40wZUJWQyL20CgOvm3ixC2JzASA4XR/sN8vc
-	mL8RoZnCeQuRt8koL4yQ==
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wpjy3rup5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 06 Mar 2024 13:35:53 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 426DZpMW018597
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 6 Mar 2024 13:35:51 GMT
-Received: from [10.218.10.86] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 6 Mar
- 2024 05:35:43 -0800
-Message-ID: <da971427-e3d3-88d4-b455-57b469c2fea8@quicinc.com>
-Date: Wed, 6 Mar 2024 19:05:40 +0530
+	s=arc-20240116; t=1709732162; c=relaxed/simple;
+	bh=MemqcjPwJQZWP7+0A11zacmkdchsbQdVCJLcuQ9fTVc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=vD0WZ1pXX3wck02druuwwD9grWvR4FmPIjnbb4fyJxQnpsOtmKNVXIdYwvjwiJTSGSz+Ba2Fur2N7Z/XCu7blt/uNc7IVvTo6n44GGbHMr/mNmI5614xJyKnWolnLesMD4pYec/zXYAq7ImkbmOWXxJXGMd/L36H0nWsl6WgBaU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JZ9n/ao1; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709732161; x=1741268161;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=MemqcjPwJQZWP7+0A11zacmkdchsbQdVCJLcuQ9fTVc=;
+  b=JZ9n/ao1jGuXxel6EGQ0jPZeuFilchgabjj9+tmHjJVJj+WFYd9ji40u
+   xblGecaK3vwaKJUWnBAUS8lirsnsH/w6wqlQw8RWZsH0KjKWonO224qxn
+   BVXMoV1GD9I25CzLOSfc5/I2vhb4iQHLC6x64ZaZ6hZQ5rDJw/UEtVcdc
+   EvLWGnTDpka5Ojqi56q6K8oUiiM8bqkIHIC4boahZdEblBaE3NbDRZdWS
+   iRcvGJLoub4ULWauxeM8UeduuvxdmN6BX2VfFM/zR27JIk5ydNul086xv
+   CyAIEMK8lNIpSeZrEhsoOIYvh2syzJAt+rlXctV9yct6u7l7JWEn5/FKA
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11004"; a="4207366"
+X-IronPort-AV: E=Sophos;i="6.06,208,1705392000"; 
+   d="scan'208";a="4207366"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 05:36:00 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11004"; a="914178566"
+X-IronPort-AV: E=Sophos;i="6.06,208,1705392000"; 
+   d="scan'208";a="914178566"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 05:35:58 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rhrR6-0000000AHFQ-2aGk;
+	Wed, 06 Mar 2024 15:35:56 +0200
+Date: Wed, 6 Mar 2024 15:35:56 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Andi Shyti <andi.shyti@kernel.org>
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Sean Young <sean@mess.org>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>
+Subject: Re: [SPAM] [PATCH v1 5/5] media: ir-spi: Unify indentation and
+ comment style
+Message-ID: <ZehxPFh2ecxsKsOF@smile.fi.intel.com>
+References: <20240305174933.1370708-1-andriy.shevchenko@linux.intel.com>
+ <20240305174933.1370708-6-andriy.shevchenko@linux.intel.com>
+ <hwtodfwrgonzzf2dpoqa3b5b3v66ypp7uu7upsnt6dx7weua2f@byxbgpxurhmf>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v9 0/5] arm64: qcom: sa8775p: add support for EP PCIe
-Content-Language: en-US
-To: Manivannan Sadhasivam <mani@kernel.org>
-CC: <agross@kernel.org>, <andersson@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <quic_shazhuss@quicinc.com>, <quic_nitegupt@quicinc.com>,
-        <quic_ramkri@quicinc.com>, <quic_nayiluri@quicinc.com>,
-        <dmitry.baryshkov@linaro.org>, <robh@kernel.org>,
-        <quic_krichai@quicinc.com>, <quic_vbadigan@quicinc.com>,
-        <quic_parass@quicinc.com>, <quic_schintav@quicinc.com>,
-        <quic_shijjose@quicinc.com>, Bjorn Helgaas
-	<bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Kishon Vijay Abraham I
-	<kishon@kernel.org>,
-        <linux-pci@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <mhi@lists.linux.dev>
-References: <1701432377-16899-1-git-send-email-quic_msarkar@quicinc.com>
- <20240216105241.GB2559@thinkpad>
-From: Mrinmay Sarkar <quic_msarkar@quicinc.com>
-In-Reply-To: <20240216105241.GB2559@thinkpad>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: Q27V3CctFGVspXbA9dCVLk9ZDdGVC6f6
-X-Proofpoint-ORIG-GUID: Q27V3CctFGVspXbA9dCVLk9ZDdGVC6f6
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-06_08,2024-03-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 impostorscore=0
- adultscore=0 priorityscore=1501 lowpriorityscore=0 mlxlogscore=999
- suspectscore=0 phishscore=0 malwarescore=0 mlxscore=0 spamscore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2403060109
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <hwtodfwrgonzzf2dpoqa3b5b3v66ypp7uu7upsnt6dx7weua2f@byxbgpxurhmf>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+
+On Tue, Mar 05, 2024 at 11:52:15PM +0100, Andi Shyti wrote:
+> On Tue, Mar 05, 2024 at 07:48:30PM +0200, Andy Shevchenko wrote:
+
+..
+
+> > +static int ir_spi_tx(struct rc_dev *dev, unsigned int *buffer, unsigned int count)
+> 
+> this goes over 80 characters, though. Not an error, but not worth
+> a change either.
+
+It's only 82 characters and I consider this as an improvement in readability.
+It's quite pity that some of the subsystems are too conservative, hope this
+one is not an obstacle for them.
+
+> I'm not going block the patch as the rest is OK.
+> 
+> Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
+
+Thank you!
+
+Btw, don't you want to either add your entry into .mailcap and/or update your
+email address in this source file (and maybe others)? I Cc'ed you only after
+I looked closer to the sources...
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-On 2/16/2024 4:22 PM, Manivannan Sadhasivam wrote:
-> On Fri, Dec 01, 2023 at 05:36:11PM +0530, Mrinmay Sarkar wrote:
->> This series adds the relavent DT bindings, new compatible string,
->> add support to EPF driver and add EP PCIe node in dtsi file for
->> ep pcie0 controller.
->>
-> Applied patches 3 and 4 to pci/endpoint!
->
-> - Mani
->
->> v8 -> v9:
->> - update author in "Add pci_epf_mhi_ prefix to the function" patch.
->> - add ack by and reviewed by tag in commit message.
->>
->> v7 -> v8:
->> - Add new patch PCI: epf-mhi: Add "pci_epf_mhi_" prefix to the function
->>    names
->> - Update PCI: epf-mhi: Add support for SA8775P patch on top of the new
->>    patch and update commit message.
->>
->> v6 -> v7:
->> - add reviewed by tag in commit message in all patches.
->> - update commit message in patch 2 as per comment.
->> - update reason for reusing PID in commit message.
->>
->> v5 -> v6:
->> - update cover letter.
->>
->> v4 -> v5:
->> - add maxItems to the respective field to constrain io space and
->>    interrupt in all variants.
->>
->> v3 -> v4:
->> - add maxItems field in dt bindings
->> - update comment in patch2
->> - dropped PHY driver patch as it is already applied [1]
->> - update comment in EPF driver patch
->> - update commect in dtsi and add iommus instead of iommu-map
->>
->> [1] https://lore.kernel.org/all/169804254205.383714.18423881810869732517.b4-ty@kernel.org/
->>
->> v2 -> v3:
->> - removed if/then schemas, added minItems for reg,
->>    reg-bnames, interrupt and interrupt-names instead.
->> - adding qcom,sa8775p-pcie-ep compitable for sa8775p
->>    as we have some specific change to add.
->> - reusing sm8450's pcs_misc num table as it is same as sa8775p.
->>    used appropriate namespace for pcs.
->> - remove const from sa8775p_header as kernel test robot
->>    throwing some warnings due to this.
->> - remove fallback compatiable as we are adding compatiable for sa8775p.
->>
->> v1 -> v2:
->> - update description for dma
->> - Reusing qcom,sdx55-pcie-ep compatibe so remove compaitable
->>    for sa8775p
->> - sort the defines in phy header file and remove extra defines
->> - add const in return type pci_epf_header and remove MHI_EPF_USE_DMA
->>    flag as hdma patch is not ready
->> - add fallback compatiable as qcom,sdx55-pcie-ep, add iommu property
->>
->>
->> Manivannan Sadhasivam (1):
->>    PCI: epf-mhi: Add "pci_epf_mhi_" prefix to the function names
->>
->> Mrinmay Sarkar (4):
->>    dt-bindings: PCI: qcom-ep: Add support for SA8775P SoC
->>    PCI: qcom-ep: Add support for SA8775P SOC
->>    PCI: epf-mhi: Add support for SA8775P
->>    arm64: dts: qcom: sa8775p: Add ep pcie0 controller node
->>
->>   .../devicetree/bindings/pci/qcom,pcie-ep.yaml      | 64 +++++++++++++++++++++-
->>   arch/arm64/boot/dts/qcom/sa8775p.dtsi              | 46 ++++++++++++++++
->>   drivers/pci/controller/dwc/pcie-qcom-ep.c          |  1 +
->>   drivers/pci/endpoint/functions/pci-epf-mhi.c       | 21 ++++++-
->>   4 files changed, 128 insertions(+), 4 deletions(-)
->>
->> -- 
->> 2.7.4
-Thanks for applying patches 3 and 4.
-
-Seems like patches 1,2 and 5 are yet to apply on linux-next.
-Please help me by applying those patches.
-
-Thanks,
-Mrinmay
->>
->>
 
