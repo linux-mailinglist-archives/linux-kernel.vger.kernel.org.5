@@ -1,260 +1,137 @@
-Return-Path: <linux-kernel+bounces-93610-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93612-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D555873251
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:18:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5739C87328A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:29:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E95B528FA47
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:18:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D7A34B29A9C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:18:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB8535F55E;
-	Wed,  6 Mar 2024 09:17:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9FCA5DF14;
+	Wed,  6 Mar 2024 09:18:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TuaaJn85"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="KxpyDxY5"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23C7C5F54D
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 09:17:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6836D5C5E9;
+	Wed,  6 Mar 2024 09:18:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709716628; cv=none; b=HaNNPiU1w/vYZPb2jDS6e6vrtEnMl9wgcH1a4hkGWhsybR13nl4e94USKNIr1OF0BWfmWsuBzrtOmIeZQ9YcTRpQWX4GMVg+OO/OsiAkhkXrc6MGtgCwBQgphbR6NBvapuq2/nOAJScdClag+gyOseZTdhLUlvIXY1yhAZAh4l8=
+	t=1709716691; cv=none; b=JRep0TFGBfr5xnp0p36fxvZinJr5tgNpCciGbYe93mWfpouGHvPPFdiJp/H6eup3R2IOvZ9p/7kh1d2Snv0W9qoHQAyoc57ch5cOwIUdefzZfBCJr7HAsdQRtC22YiPmIWsztDnWXHRuLveuP4zK/hhfo4AwNnQzstvlpSxlPGU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709716628; c=relaxed/simple;
-	bh=IUe3cAnoMPthLD2FcvfY1gDuS5k9Mc7AV8gDfGAWObY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=RGmBwKq+Zxh5QPTXykApdrc0nF2lFIEiG064y3stm1DHGAGyizpFx30z2Rh18fOMNwWjgpuxjmLVRQJgJBWHR68W0FZB8GNsoCw9tGB4r6+J7MHMawGu6ggTACjfVxiNq07+qosMpDxIt5Aye0wH83S1tOc7WPyCKpLEpDz6P3c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TuaaJn85; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709716627; x=1741252627;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=IUe3cAnoMPthLD2FcvfY1gDuS5k9Mc7AV8gDfGAWObY=;
-  b=TuaaJn85bbZdN6zPtEp5+1CReL9vu9kl5UWdfa1y/ktkRdY1+VYkB3XR
-   7XBw3Ztn6UUxVtYsBo+8YZszjUZu+mQeQhH9d945So2FGbWTAp2brCiw6
-   TRBp8k38iQ73lxZGBcL2P0ZBabNPjqVuEh1VA/8eH7v/fKhLXdKhaW8bu
-   ava9oYR1F8bSVxQOckAGa82E8aKEeUAce7Ox+gxuSoGprjftlPYmtqWhj
-   XOp5iQdMZkcf6LwtYlubDeXz+hYoqpLAJO0+E0FOd75yDIEpYO1PM4+MW
-   MKCekUblXhaQIzjsZ4D2VplsoxQVpBHssVCgq0PpeUNVM8BfBpmoT91JC
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11004"; a="7260737"
-X-IronPort-AV: E=Sophos;i="6.06,207,1705392000"; 
-   d="scan'208";a="7260737"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 01:17:06 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,207,1705392000"; 
-   d="scan'208";a="9855181"
-Received: from rjongalo-mobl2.ger.corp.intel.com (HELO localhost) ([10.252.33.211])
-  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 01:17:02 -0800
-From: Jani Nikula <jani.nikula@linux.intel.com>
-To: Hsin-Yi Wang <hsinyi@chromium.org>, Dmitry Baryshkov
- <dmitry.baryshkov@linaro.org>, Douglas Anderson <dianders@chromium.org>
-Cc: Neil Armstrong <neil.armstrong@linaro.org>, Jessica Zhang
- <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, Maarten
- Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
- <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David
- Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/5] drm/edid: Add a function to match EDID with
- identity
-In-Reply-To: <20240306004347.974304-3-hsinyi@chromium.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20240306004347.974304-1-hsinyi@chromium.org>
- <20240306004347.974304-3-hsinyi@chromium.org>
-Date: Wed, 06 Mar 2024 11:16:59 +0200
-Message-ID: <87sf13zpmc.fsf@intel.com>
+	s=arc-20240116; t=1709716691; c=relaxed/simple;
+	bh=cfxI20d5y5qk2MaaG3XBW6TAX2+iMo5kGMHs5KLDOuQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=kHcx6i5BKbOk3w4gWIR5misES8/rTvTvrQ4fBawzpZHe7AIePSGXlNNZxKWm75Dn7JhYs8O+ExMacak65uh1tWXN4ImKkz0jayN2FUmMQlM9PDAVtXAkHrBmPnc6B8T3vqyA5o21C/RSHv80t0JwO5dpupymY+E0ip2Vd5EWolU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=KxpyDxY5; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4268mK6M001240;
+	Wed, 6 Mar 2024 09:18:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=mmJx23rcur9WCYWhXR3zM5xECJQumaTs6Yiz4SRud2A=; b=Kx
+	pyDxY54wN3Y+5ZDYaRGYe4oMGaercyIgndTI9WOvSd3Mvg0/gmJvKzjangXITGO0
+	XaPfF8dVqj9PbmUlPCXH8rCpGiX/K4MJ7STHrHNNPakgpSnW6LskUcX0NUIPVRRe
+	rZNPZ0giPJHAdwujtCWAKyGoDObV6YaLER47JyOlt8SRpy5Ec2GBrM1bwKgdWyn7
+	aYVl2EH2U0aKtCoB/tf55+3ZONybjI6ij2YukYgQ9ohBJnIpizhCVWmM1QcQzApu
+	GhZmVNEC7F6VqG7J4xj88vEb2Ehc9NQOfWze4SQikBl1Yc7t4Rt3p9EUQnzfn3H0
+	pNkhg4cqOu+7JVV+FQpw==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wpgwmrk3u-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 06 Mar 2024 09:18:00 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4269Hx7n002862
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 6 Mar 2024 09:17:59 GMT
+Received: from [10.216.25.241] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 6 Mar
+ 2024 01:17:55 -0800
+Message-ID: <1fafd225-e647-4a60-bd95-af12ad243182@quicinc.com>
+Date: Wed, 6 Mar 2024 14:47:52 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-
-On Tue, 05 Mar 2024, Hsin-Yi Wang <hsinyi@chromium.org> wrote:
-> Create a type drm_edid_ident as the identity of an EDID. Currently it
-> contains panel id and monitor name.
->
-> Create a function that can match a given EDID and an identity:
-> 1. Reject if the panel id doesn't match.
-> 2. If name is not null in identity, try to match it in the detailed timing
->    blocks. Note that some panel vendors put the monitor name after
->    EDID_DETAIL_MONITOR_STRING.
->
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> ---
-> v3->v4:
-> 1. add a type drm_edid_ident
-> 2. match name -> match identity. Modify function to use edid iterators.
-> ---
->  drivers/gpu/drm/drm_edid.c | 76 ++++++++++++++++++++++++++++++++++++++
->  include/drm/drm_edid.h     |  8 ++++
->  2 files changed, 84 insertions(+)
->
-> diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
-> index f9e09f327f81..5e7e69e0e345 100644
-> --- a/drivers/gpu/drm/drm_edid.c
-> +++ b/drivers/gpu/drm/drm_edid.c
-> @@ -102,6 +102,11 @@ struct detailed_mode_closure {
->  	int modes;
->  };
->  
-> +struct drm_edid_ident_closure {
-> +	const struct drm_edid_ident *ident;
-> +	bool matched;
-> +};
-
-More like drm_edid_match_closure.
-
-> +
->  #define LEVEL_DMT	0
->  #define LEVEL_GTF	1
->  #define LEVEL_GTF2	2
-> @@ -5455,6 +5460,77 @@ drm_parse_hdmi_vsdb_audio(struct drm_connector *connector, const u8 *db)
->  		    connector->audio_latency[0], connector->audio_latency[1]);
->  }
->  
-> +static void
-> +match_identity(const struct detailed_timing *timing, void *data)
-> +{
-> +	struct drm_edid_ident_closure *closure = data;
-> +	unsigned int i, j;
-> +	const char *str = closure->ident->name;
-> +	unsigned int buflen = strlen(str);
-> +	unsigned int size = ARRAY_SIZE(timing->data.other_data.data.str.str);
-> +
-> +	if (buflen > size ||
-> +	    !(is_display_descriptor(timing, EDID_DETAIL_MONITOR_NAME) ||
-> +	      is_display_descriptor(timing, EDID_DETAIL_MONITOR_STRING)))
-> +		return;
-> +
-> +	for (i = 0; i < buflen; i++) {
-> +		char c = timing->data.other_data.data.str.str[i];
-> +
-> +		if (c != str[i] ||  c == '\n')
-> +			break;
-> +		}
-> +
-> +		if (i == buflen) {
-
-This will never be true.
-
-> +			/* Allow trailing white spaces. */
-> +			for (j = i; j < size; j++) {
-> +				char c = timing->data.other_data.data.str.str[j];
-> +
-> +				if (c == '\n') {
-> +					closure->matched = true;
-> +					return;
-> +				} else if (c != ' ') {
-> +					break;
-> +				}
-> +			}
-> +			if (j == size) {
-> +				closure->matched = true;
-> +				return;
-> +			}
-> +	}
-
-Please let's use strcmp and friends instead of reinventing our own:
-
-const char *name = closure->ident->name;
-int name_len = strlen(name);
-const char *desc = timing->data.other_data.data.str.str;
-int desc_len = ARRAY_SIZE(timing->data.other_data.data.str.str);
-
-if (name_len > desc_len)
-	return;
-
-if (strncmp(name, desc, name_en))
-	return;
-
-for (i = name_len; i < desc_len; i++) {
-	if (!isspace(desc[i]) && !desc[i])
-        	return;
-}
-
-closure->matched = true;
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] slimbus: qcom-ngd-ctrl: Add timeout for wait operation
+To: Konrad Dybcio <konrad.dybcio@linaro.org>, <andersson@kernel.org>,
+        <srinivas.kandagatla@linaro.org>, <linux-arm-msm@vger.kernel.org>,
+        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>
+CC: <quic_msavaliy@quicinc.com>, <quic_vtanuku@quicinc.com>,
+        <quic_anupkulk@quicinc.com>, <quic_cchiluve@quicinc.com>
+References: <20240304134228.16627-1-quic_vdadhani@quicinc.com>
+ <8dbcd393-580b-4c29-9d6f-42988a5e7655@linaro.org>
+Content-Language: en-US
+From: Viken Dadhaniya <quic_vdadhani@quicinc.com>
+In-Reply-To: <8dbcd393-580b-4c29-9d6f-42988a5e7655@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: Zft9A-24MaGqR3GARGOpsN3quW_Iwrn8
+X-Proofpoint-ORIG-GUID: Zft9A-24MaGqR3GARGOpsN3quW_Iwrn8
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-06_04,2024-03-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
+ clxscore=1015 spamscore=0 bulkscore=0 impostorscore=0 malwarescore=0
+ mlxscore=0 lowpriorityscore=0 priorityscore=1501 suspectscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2403060073
 
 
-> +}
-> +
-> +/**
-> + * drm_edid_match_identity - match drm_edid with given identity
-> + * @drm_edid: EDID
-> + * @ident: the EDID identity to match with
-> + *
-> + * Check if the EDID matches with the given identity.
-> + *
-> + * Return: True if the given identity matched with EDID, false otherwise.
-> + */
-> +bool drm_edid_match_identity(const struct drm_edid *drm_edid,
-> +			     const struct drm_edid_ident *ident)
 
-Can we please just call this drm_edid_match()? Is the _identity in the
-name somehow helpful?
+On 3/6/2024 2:49 AM, Konrad Dybcio wrote:
+> 
+> 
+> On 3/4/24 14:42, Viken Dadhaniya wrote:
+>> In current driver qcom_slim_ngd_up_worker() indefinitely
+>> waiting for ctrl->qmi_up completion object. This is
+>> resulting in workqueue lockup on Kthread.
+>>
+>> Added wait_for_completion_interruptible_timeout to
+>> allow the thread to wait for specific timeout period and
+>> bail out instead waiting infinitely.
+>>
+>> Signed-off-by: Viken Dadhaniya <quic_vdadhani@quicinc.com>
+>> ---
+> 
+> Fixes: a899d324863a ("slimbus: qcom-ngd-ctrl: add Sub System Restart 
+> support")
+> Cc: stable@vger.kernel.org
+> 
+> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> 
+>>   drivers/slimbus/qcom-ngd-ctrl.c | 7 ++++++-
+>>   1 file changed, 6 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/slimbus/qcom-ngd-ctrl.c 
+>> b/drivers/slimbus/qcom-ngd-ctrl.c
+>> index efeba8275a66..c27076d8b7db 100644
+>> --- a/drivers/slimbus/qcom-ngd-ctrl.c
+>> +++ b/drivers/slimbus/qcom-ngd-ctrl.c
+>> @@ -83,6 +83,7 @@
+>>   #define QCOM_SLIM_NGD_AUTOSUSPEND    MSEC_PER_SEC
+>>   #define SLIM_RX_MSGQ_TIMEOUT_VAL    0x10000
+>> +#define SLIM_QMI_TIMEOUT_MS        1000
+> 
+> This could be inlined instead
 
-> +{
-> +	if (!drm_edid || edid_extract_panel_id(drm_edid->edid) != ident->panel_id)
-> +		return false;
+Updated in v2.
 
-Side note, edid_extract_panel_id() could now be made to take struct
-drm_edid.
-
-> +
-> +	/* Match with name only if it's not NULL. */
-> +	if (ident->name) {
-> +		struct drm_edid_ident_closure closure = {
-> +			.ident = ident,
-> +			.matched = false,
-> +		};
-> +
-> +		drm_for_each_detailed_block(drm_edid, match_identity, &closure);
-> +
-> +		return closure.matched;
-> +	}
-> +
-> +	return true;
-> +}
-> +EXPORT_SYMBOL(drm_edid_match_identity);
-> +
->  static void
->  monitor_name(const struct detailed_timing *timing, void *data)
->  {
-> diff --git a/include/drm/drm_edid.h b/include/drm/drm_edid.h
-> index 9686a7cee6a6..01825a8954b6 100644
-> --- a/include/drm/drm_edid.h
-> +++ b/include/drm/drm_edid.h
-> @@ -312,6 +312,12 @@ struct edid {
->  	u8 checksum;
->  } __packed;
->  
-> +/* EDID matching */
-> +struct drm_edid_ident {
-> +	u32 panel_id;
-> +	const char *name;
-> +};
-> +
->  #define EDID_PRODUCT_ID(e) ((e)->prod_code[0] | ((e)->prod_code[1] << 8))
->  
->  /* Short Audio Descriptor */
-> @@ -412,6 +418,8 @@ struct edid *drm_get_edid(struct drm_connector *connector,
->  			  struct i2c_adapter *adapter);
->  const struct drm_edid *drm_edid_read_base_block(struct i2c_adapter *adapter);
->  u32 drm_edid_get_panel_id(const struct drm_edid *drm_edid);
-> +bool drm_edid_match_identity(const struct drm_edid *drm_edid,
-> +			     const struct drm_edid_ident *ident);
->  struct edid *drm_get_edid_switcheroo(struct drm_connector *connector,
->  				     struct i2c_adapter *adapter);
->  struct edid *drm_edid_duplicate(const struct edid *edid);
-
--- 
-Jani Nikula, Intel
+> 
+> Konrad
 
