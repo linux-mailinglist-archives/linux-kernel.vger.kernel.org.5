@@ -1,153 +1,204 @@
-Return-Path: <linux-kernel+bounces-94579-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94589-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E68578741B5
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 22:15:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 507A48741CD
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 22:18:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A188A283EB4
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 21:15:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5EEBD1C20E5E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 21:18:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B6361AAD7;
-	Wed,  6 Mar 2024 21:14:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2348E1B960;
+	Wed,  6 Mar 2024 21:15:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="a5QMrMSk"
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="Mw1Vet8G"
+Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2292C19BA2
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 21:14:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BF5818EB3
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 21:15:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709759693; cv=none; b=uYYA0NcLamFM9AabvOTxyziLKOfeZzPmQ4tRPq36+BV3oAZuJQzCkJ4yxkl5pgry/H0X7ameXsGgopiLO/QyDDjmBefZJvTCuyTI7PWWO/O0+2VYkWWIvvGFUa5kmXA5EYvdYAoSHAfPGf/+0yvqvIi8WB35Y00lD0mxWupyjNY=
+	t=1709759737; cv=none; b=PHi06YHWaZyu4TUcWZzmA8SVBzsKWwv90Y+8tLvotTCOvJN0UtEiwN3yxfoXaZxoOxqZ7Kw97PPRKo+x0dv/GESG9ld2YXw+sFrjrS+mTLucEG/EbGP+WE2eWjls80mhyeC9KEyraXgBFnVDZq8VpTi5ijGN1Gz9c6Q2lTIPAF4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709759693; c=relaxed/simple;
-	bh=HlvIehcW7DL2ZkTuZYSlHhQXYbpHC0zj0KWYZTviIpI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DSp5BXpmwaItDvVaXaFZtLgZ1ReL1v2hoFQqL5DDfa9pvYtoRaxXMJqK4dcddA07y8h49RNOg4WdPUB+pCB0+uS3Tm1V7gglomJXxT7IQv4ser5BFv3K/pT/J+r5ziW0dMr5WNpSjJCCbZdzYEsgSv7fyCiFV4bVh3DEOJO7puI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=a5QMrMSk; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6e63e9abf6aso148463b3a.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 13:14:52 -0800 (PST)
+	s=arc-20240116; t=1709759737; c=relaxed/simple;
+	bh=+l8m3POtAaDtB80yHDgkTD7KG7R8IqP1r+IYUdBueyY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WOwqSXkh4on1nDwZt7dMJPxYFhUroqqRSVGqS/cPcP5EiMQIHrDg0n7BMcvOU/Gd7TbtrT+po3Yfq3Ow0TqH1Xycs1DpI/XD6JwwCd8ZYFpiQMC3M3kX54OHB0lrgnsD11jMPjVInVY685TQQmkvCIFTV0PyceRjKOlh821DGcQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Mw1Vet8G; arc=none smtp.client-ip=209.85.160.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-428405a0205so9111cf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 13:15:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1709759691; x=1710364491; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=eqhjGVQ8jE8dziHNEPcBuEnJh6YM6o6ZWh6K+R5yz1M=;
-        b=a5QMrMSkCh6CKxSZp1aoMlsWOh1/LdslQA8sbOLyLO3ibrMd6x/h0JqfrHeUOgWa3J
-         L2KBWDgR/51+DeX0Bp/LE2FiKIAdtDpbfigFomyfaR48wFJxkh19s7Uz/Cvg6F/lpdLh
-         pfY3hnq6G4woDGNTNVlZ+kkcj5qJRCngnVAy+gkb868EWY5EU04VMoO1sIADCHOqt0pb
-         0dcvTCDjJerRPi3a5DXq74ZDszeyTNeI58Z29vZ1ArrGPUohsZW1UeNBPoG7+jIry6gX
-         hmB5veaCo5PFqElLML5tRN7hI14+AHMRiFkTvu8fBtN2WcUyHORPEkKzNvapQJQmCyad
-         L5vg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709759691; x=1710364491;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1709759734; x=1710364534; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=eqhjGVQ8jE8dziHNEPcBuEnJh6YM6o6ZWh6K+R5yz1M=;
-        b=LHPZHe23xJbq4dwyehYidNtA4lPoGB2Iu3nw1sybXEbj0V7H2GxVQHl1dFhsdDvyad
-         yKKtyOSm2OFwbwIpHN7E8LQXzVPfkhofvUJLYQHRJZ33/LeHI5giNTNkdaKflZYUBy/u
-         gJ7itBoQFvvV/jdrC2NFQ6CJ6HHnF9+dXZh3/ZLKReMJJBAIoQXwaUZRHH0jKCn3LOsm
-         jObV6u2bGdu5fV1nXauPeiNYN/1/Cav+wn5+xk1GvRQuMkXbkluOEW3EivJ7kyuG6aLb
-         g6FM7w1OD1tknoNDA38aTBvoZm6NF1R389H/NgcXcC/RnCA284sG01Y1/RAxWNvj3z+g
-         HSvA==
-X-Forwarded-Encrypted: i=1; AJvYcCXMz0vJnyR+LAjMNWme2R2vIVbcCZWLfESkawIK7JwLyXY/eW0ovCoGXDyS6f9QRM2yzvv11g8qJ3vYTeAfTL9RwhjwhWbj4gysm5Nz
-X-Gm-Message-State: AOJu0YxGjfFZ90GOetCovJO29KDGJ4gGB2KM3tCq1AVBFOoSxMLrCOG6
-	0uKNHJYB1mEwps3LfLAQpifwpp4CT4vhzP3cX+4EPURwSFda2tNdU4E/EWSROOY=
-X-Google-Smtp-Source: AGHT+IH/HqdsN5E4yHe5JC1g3zqWSwIIHXA5eCXfP7jkdLhyjmJz4hhQirNSqS0uE/Icr0g3GgFBXQ==
-X-Received: by 2002:aa7:88cd:0:b0:6e5:561b:4670 with SMTP id k13-20020aa788cd000000b006e5561b4670mr18155480pff.30.1709759691277;
-        Wed, 06 Mar 2024 13:14:51 -0800 (PST)
-Received: from dread.disaster.area (pa49-179-47-118.pa.nsw.optusnet.com.au. [49.179.47.118])
-        by smtp.gmail.com with ESMTPSA id y133-20020a62ce8b000000b006e45a0101basm12036767pfg.99.2024.03.06.13.14.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Mar 2024 13:14:50 -0800 (PST)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1rhybA-00Fy7Q-1A;
-	Thu, 07 Mar 2024 08:14:48 +1100
-Date: Thu, 7 Mar 2024 08:14:48 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: John Garry <john.g.garry@oracle.com>
-Cc: djwong@kernel.org, hch@lst.de, viro@zeniv.linux.org.uk,
-	brauner@kernel.org, jack@suse.cz, chandan.babu@oracle.com,
-	axboe@kernel.dk, martin.petersen@oracle.com,
-	linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
-	ojaswin@linux.ibm.com, ritesh.list@gmail.com,
-	linux-block@vger.kernel.org
-Subject: Re: [PATCH v2 07/14] fs: iomap: Sub-extent zeroing
-Message-ID: <ZejcyPPX3bVdvJyV@dread.disaster.area>
-References: <20240304130428.13026-1-john.g.garry@oracle.com>
- <20240304130428.13026-8-john.g.garry@oracle.com>
+        bh=XzC+C2S5Etcf2Z/JbeuSZgXqxgIWaVv4J2sVk7ZKEIU=;
+        b=Mw1Vet8GaEjAR37NCCWU79/XvpjY61JEVlsYVuM0bBxoWhcr7p3KI3TwYELi1G3AmH
+         hUHx5EVmveFcA+PMrW0VKHzDfqdxEURqfonmPAdETQHm6DDvuIT+Kk6xYggmAsm9f2AM
+         BQA7u7eCSAsKZcXJ3fKLkOVs8Y2dyEQKoxECKYmMnVGvhjTWCO4H19p/6xGYF3cUF/5O
+         TQ1aj+zuY4EkbTjdBz75gLuHsI5GzqisOwCfUaI+PUkA9kMmlr+z4QiCwZkymMAi7iS4
+         hHJQV27bPht0Bk1ekYjQ19CIHeP4FMgPMc3rvaGdJAK41mwUy0Om7DOyLPnlJLlEWd0b
+         /0/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709759734; x=1710364534;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XzC+C2S5Etcf2Z/JbeuSZgXqxgIWaVv4J2sVk7ZKEIU=;
+        b=n50DY2rmAbzgGoa7MsOXk3GhSCVk+GZv0Q8pDfCeNoQKHv8KiPGEUtJpOWORX43u/s
+         nnslp6nq7wyTJFzhWRaVjZUOEzX+Jvz95tHh8w0t7gS9oKHGTke440XE4Dsw9UtCStnC
+         R06AHBUseY6bvAVH7TIMvJYxOtvol8Aci1qOECKtCGn++8+eb1fg8rUslMeW8pija/vE
+         BNoCrgE7p0m8vK8bqLGlfS6jN/4yXA3n+K89MhYq56F5ykKnzHEvvyz8dncomeR3Kinr
+         BwAJ1uTz0vbPR7PnUgfO6LgyEoDKj9f53OvLKqLshRxr2sMxzI4ovZQH7RRsbtXbYYYp
+         eSiQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXEIchqtOhQd20RPifjME3OL2QaHBiS+0MEsWIbPN3uCk0ArstC0XD7Gj6svU/3yCKvqcwE3bsa3uJZCiriqBEMfTwcEDC0X65LbVtJ
+X-Gm-Message-State: AOJu0Yy5pyf9S+FYrq6p2XXzrDoQQ3Pumib4Pk0TKK+X9Vw7OYIwE/KU
+	jZ5JgfoVU42OmG3thIO5+E2+5Nw6ZCEspwi7Id7MSBC0uaF+QsSfn25PdodGyLBvz6+YQev6Wyv
+	EI3Su+T2waPGJ8JUQ+ECmB0ZW0IhQttUC+akD
+X-Google-Smtp-Source: AGHT+IEkdwDQ65xQJC4KiGNeJrl9lSmewlEJY+cm2QqzmQ3s0lzsNIKMMTqzMAl/OTMEg2JkcSDB6qm9XpzdcPTbpho=
+X-Received: by 2002:ac8:5e0b:0:b0:42e:b7b2:2e99 with SMTP id
+ h11-20020ac85e0b000000b0042eb7b22e99mr123586qtx.2.1709759734197; Wed, 06 Mar
+ 2024 13:15:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240304130428.13026-8-john.g.garry@oracle.com>
+References: <20240306085007.169771-1-herve.codina@bootlin.com>
+ <20240306085007.169771-2-herve.codina@bootlin.com> <CAJZ5v0gENrBFfJ3FDJ=m0-veFbue_Bw168+k2cs7v2u9MtCT8Q@mail.gmail.com>
+ <20240306162447.2a843a11@bootlin.com> <CAJZ5v0hYxhoLEEJ=MXPNFWpp7bidx_832RdOAgzx4m=aM0YzXg@mail.gmail.com>
+In-Reply-To: <CAJZ5v0hYxhoLEEJ=MXPNFWpp7bidx_832RdOAgzx4m=aM0YzXg@mail.gmail.com>
+From: Saravana Kannan <saravanak@google.com>
+Date: Wed, 6 Mar 2024 13:14:55 -0800
+Message-ID: <CAGETcx9Oo3F8oAOOS9e9RTCdWHvigx5On0phXrVfJqap2VcN2g@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] driver core: Introduce device_link_wait_removal()
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Herve Codina <herve.codina@bootlin.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Rob Herring <robh+dt@kernel.org>, 
+	Frank Rowand <frowand.list@gmail.com>, Lizhi Hou <lizhi.hou@amd.com>, Max Zhen <max.zhen@amd.com>, 
+	Sonal Santan <sonal.santan@amd.com>, Stefano Stabellini <stefano.stabellini@xilinx.com>, 
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>, linux-kernel@vger.kernel.org, 
+	devicetree@vger.kernel.org, Allan Nielsen <allan.nielsen@microchip.com>, 
+	Horatiu Vultur <horatiu.vultur@microchip.com>, 
+	Steen Hegelund <steen.hegelund@microchip.com>, Luca Ceresoli <luca.ceresoli@bootlin.com>, 
+	Nuno Sa <nuno.sa@analog.com>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+	stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 04, 2024 at 01:04:21PM +0000, John Garry wrote:
-> For FS_XFLAG_FORCEALIGN support, we want to treat any sub-extent IO like
-> sub-fsblock DIO, in that we will zero the sub-extent when the mapping is
-> unwritten.
-> 
-> This will be important for atomic writes support, in that atomically
-> writing over a partially written extent would mean that we would need to
-> do the unwritten extent conversion write separately, and the write could
-> no longer be atomic.
-> 
-> It is the task of the FS to set iomap.extent_shift per iter to indicate
-> sub-extent zeroing required.
-> 
-> Maybe a macro like i_blocksize() should be introduced for extent sizes,
-> instead of using extent_shift. It would also eliminate excessive use
-> of xfs_get_extss() for XFS in future.
-> 
-> Signed-off-by: John Garry <john.g.garry@oracle.com>
-> ---
->  fs/iomap/direct-io.c  | 14 ++++++++------
->  include/linux/iomap.h |  1 +
->  2 files changed, 9 insertions(+), 6 deletions(-)
-> 
-> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-> index bcd3f8cf5ea4..733f83f839b6 100644
-> --- a/fs/iomap/direct-io.c
-> +++ b/fs/iomap/direct-io.c
-> @@ -277,7 +277,7 @@ static loff_t iomap_dio_bio_iter(const struct iomap_iter *iter,
->  {
->  	const struct iomap *iomap = &iter->iomap;
->  	struct inode *inode = iter->inode;
-> -	unsigned int fs_block_size = i_blocksize(inode), pad;
-> +	unsigned int zeroing_size, pad;
->  	loff_t length = iomap_length(iter);
->  	loff_t pos = iter->pos;
->  	blk_opf_t bio_opf;
-> @@ -288,6 +288,8 @@ static loff_t iomap_dio_bio_iter(const struct iomap_iter *iter,
->  	size_t copied = 0;
->  	size_t orig_count;
->  
-> +	zeroing_size = i_blocksize(inode) << iomap->extent_shift;
+On Wed, Mar 6, 2024 at 7:56=E2=80=AFAM Rafael J. Wysocki <rafael@kernel.org=
+> wrote:
+>
+> On Wed, Mar 6, 2024 at 4:24=E2=80=AFPM Herve Codina <herve.codina@bootlin=
+com> wrote:
+> >
+> > Hi Rafael,
+> >
+> > On Wed, 6 Mar 2024 13:48:37 +0100
+> > "Rafael J. Wysocki" <rafael@kernel.org> wrote:
+> >
+> > > On Wed, Mar 6, 2024 at 9:51=E2=80=AFAM Herve Codina <herve.codina@boo=
+tlin.com> wrote:
+> > > >
+> > > > The commit 80dd33cf72d1 ("drivers: base: Fix device link removal")
+> > > > introduces a workqueue to release the consumer and supplier devices=
+ used
+> > > > in the devlink.
+> > > > In the job queued, devices are release and in turn, when all the
+> > > > references to these devices are dropped, the release function of th=
+e
+> > > > device itself is called.
+> > > >
+> > > > Nothing is present to provide some synchronisation with this workqu=
+eue
+> > > > in order to ensure that all ongoing releasing operations are done a=
+nd
+> > > > so, some other operations can be started safely.
+> > > >
+> > > > For instance, in the following sequence:
+> > > >   1) of_platform_depopulate()
+> > > >   2) of_overlay_remove()
+> > > >
+> > > > During the step 1, devices are released and related devlinks are re=
+moved
+> > > > (jobs pushed in the workqueue).
+> > > > During the step 2, OF nodes are destroyed but, without any
+> > > > synchronisation with devlink removal jobs, of_overlay_remove() can =
+raise
+> > > > warnings related to missing of_node_put():
+> > > >   ERROR: memory leak, expected refcount 1 instead of 2
+> > > >
+> > > > Indeed, the missing of_node_put() call is going to be done, too lat=
+e,
+> > > > from the workqueue job execution.
+> > > >
+> > > > Introduce device_link_wait_removal() to offer a way to synchronize
+> > > > operations waiting for the end of devlink removals (i.e. end of
+> > > > workqueue jobs).
+> > > > Also, as a flushing operation is done on the workqueue, the workque=
+ue
+> > > > used is moved from a system-wide workqueue to a local one.
+> > > >
+> > > > Fixes: 80dd33cf72d1 ("drivers: base: Fix device link removal")
+> > >
+> > > No, it is not fixed by this patch.
+> >
+> > Was explicitly asked by Saravana on v1 review:
+> > https://lore.kernel.org/linux-kernel/CAGETcx9uP86EHyKJNifBMd23oCsA+KpMa=
++e36wJEEnHDve+Avg@mail.gmail.com/
+>
+> Well, I don't think this is a valid request, sorry.
+>
+> > The commit 80dd33cf72d1 introduces the workqueue and so some asynchrono=
+us tasks
+> > on removal.
+> > This patch and the next one allows to re-sync execution waiting for job=
+s in
+> > the workqueue when it is needed.
+>
+> I get this, but still, this particular individual patch by itself
+> doesn't fix anything.  Do you agree with this?
+>
+> If somebody applies this patch without the next one in the series,
+> they will not get any change in behavior, so the tag is at least
+> misleading.
+>
+> You can claim that the next patch on top of this one fixes things, so
+> adding a Fixes tag to the other patch would be fine.
+>
+> There is an explicit dependency between them (the second patch is not
+> even applicable without the first one, or if it is, the resulting code
+> won't compile anyway), but you can make a note to the maintainer that
+> they need to go to -stable together.
+>
+> > >
+> > > In fact, the only possibly observable effect of this patch is the
+> > > failure when the allocation of device_link_wq fails AFAICS.
+> > >
+> > > > Cc: stable@vger.kernel.org
+> > >
+> > > So why?
+> >
+> > Cc:stable is needed as this patch is a prerequisite of patch 2 (needed
+> > to fix the asynchronous workqueue task issue).
+>
+> Dependencies like this can be expressed in "Cc: stable" tags.
+> Personally, I'd do it like this:
+>
+> Cc: stable@vger.kernel.org # 5.13: Depends on the first patch in the seri=
+es
 
-The iomap interfaces use units of bytes for offsets, sizes, ranges,
-etc. Using shifts to define a granularity value seems like a
-throwback to decades old XFS code and just a bit weird nowdays.  Can
-we just pass this as a byte count? i.e.:
+I'm okay with this too. I personally think it's better to list "Fixes:
+xyz" in all the patches that are needed to fix xyz (especially when
+there's no compile time dependency on earlier patches), but it's not a
+hill I'll die on. And if Rafael's suggestion is the expected norm,
+then I'll remember to follow that in the future.
 
-	zeroing_size = i_blocksize(inode);
-	if (iomap->extent_size)
-		zeroing_size = iomap->extent_size;
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+-Saravana
 
