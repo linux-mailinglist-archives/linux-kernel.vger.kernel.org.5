@@ -1,295 +1,235 @@
-Return-Path: <linux-kernel+bounces-93257-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93258-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B12C8872D1E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 03:58:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1281872D22
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 04:00:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40C611F2899F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 02:58:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6ABACB25213
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 03:00:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36F4C13FF6;
-	Wed,  6 Mar 2024 02:58:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6C59DF51;
+	Wed,  6 Mar 2024 03:00:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SMmCPwTL"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="tWCV8sVi"
+Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E4A3101D5
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 02:58:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EB37D266
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 03:00:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709693924; cv=none; b=uCBQXS50gr1cJZ/de98AAXrP2ZXzBHNqCtsG+q0+/zUhqtuEL4US8rqk/H/2h3YqDNV3qil752iGu9L6PZEYSVznxatKFIUOAtTF8pc9qdZ+ZugsPCwkc48ZmCozBEH+rv35Xs1DZ5hJ1GXOlGz71EuD3dCP0qaQQXEFebQ4WKA=
+	t=1709694028; cv=none; b=QsrqECBTHXzAe8YiMOWFjDlJ/jfyjVQAW4olAZ1YCu5IGa4gf2fKH33XqOcyLF0Obenx2xg7oC36aQTYj91ZhXWM84ksGZ82jQMcPYD5UREuztr5kp9R6mhGICGSTZgfjl19znK4TV6P6vc7Bo6MuwwDpw7ePBKUNgWPwhfgp6A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709693924; c=relaxed/simple;
-	bh=u5XzMlnY4+tTSryX0rYuMqOLUdw+8I1od7UBF8OxdRM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hpbx3RzcKzIXx9+khHS2/uyBB+DyjaPDrrgByho2fFDbe4+yllP0etDgaiG2Zf36vSuNDjgrYKUEx7JzHtwqOmhYB8gHbNiwHNT2Kd/sFV99MybTa4/0J13cV8dfVyx7+59idF+/XGdhJ6e46ThJnDN0JJ2kQx4VnRMPDFKd4/o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SMmCPwTL; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709693921;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=d6Feb/kkhpCYsSkkmMKP8hofHJvVLIgNb/bdVhbvDgc=;
-	b=SMmCPwTL48XtSvUxOUYVIo4q631fh2JiuKfQT+nXHr/q27Adf9yEUPvcQ86xlXXuytcE/Z
-	j1jaz/8CKRxaHHEPBZvUdxdsfwG8hGs7XUZ+2wJQoKL8I34ZrNIoQvXYBcfql4We4K+B7h
-	TdIDNW5Pc2aecfDw7+vFtSAmDHOmxdQ=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-230-48gyDewVMoKW3Rwm2DJGVg-1; Tue, 05 Mar 2024 21:58:36 -0500
-X-MC-Unique: 48gyDewVMoKW3Rwm2DJGVg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1EFCA80F7E4;
-	Wed,  6 Mar 2024 02:58:36 +0000 (UTC)
-Received: from fedora.redhat.com (unknown [10.39.192.36])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 9BE611121306;
-	Wed,  6 Mar 2024 02:58:31 +0000 (UTC)
-From: Kate Hsuan <hpa@redhat.com>
-To: Pavel Machek <pavel@ucw.cz>,
-	Lee Jones <lee@kernel.org>,
-	linux-leds@vger.kernel.org,
-	platform-driver-x86@vger.kernel.org,
-	Hans de Goede <hdegoede@redhat.com>,
-	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	=?UTF-8?q?Andr=C3=A9=20Apitzsch?= <git@apitzsch.eu>,
-	linux-kernel@vger.kernel.org
-Cc: Kate Hsuan <hpa@redhat.com>
-Subject: [PATCH v4 2/2] leds: rgb: leds-ktd202x: Get device properties through fwnode to support ACPI
-Date: Wed,  6 Mar 2024 10:58:01 +0800
-Message-ID: <20240306025801.8814-3-hpa@redhat.com>
-In-Reply-To: <20240306025801.8814-1-hpa@redhat.com>
-References: <20240306025801.8814-1-hpa@redhat.com>
+	s=arc-20240116; t=1709694028; c=relaxed/simple;
+	bh=nWq2RjA6xIKVHD53z5lCOa7DP8gC0ToPNtns2+g4VwI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=huwR3jRMZBkyk8xC40OaX97RSjwhhYWiXVrrVOlU+OXO4ec7/YwyCEHT+r/TimrvmhSngVdg0cacm6E308ZZBqDE3YGTeL1XDiSnvdhKXgslobZWRN0D9+jVqNH/zRwirCVzQkPSyle3ZxqM1ZIYzsZsHklRjUnLmO9GOZvHj5c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=tWCV8sVi; arc=none smtp.client-ip=209.85.160.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-42f024b809cso149861cf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 19:00:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709694025; x=1710298825; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VDLZzB+bt3GZcs1jFg49I3gbIv3ak3sP4bxpEBluYl4=;
+        b=tWCV8sVijyin+gqrzoRSLglZTRHd1rLe1Ahu3So2L8a+3UsACtIpdJOlCc6F97/xiJ
+         OExcHbBQ5MC6AaTgs+a6D+/YHrXUGcZzhEtEYzaYF/hvYoPysMx4oS6IQ1U+vGCW/ns9
+         QO00sqIwNtdnylYXrFonIBS5uf1RowKxSroeIaMBPgKkR1IcgbgINMOvdFqF42pqzB6L
+         lCYOOKwsSUWjA7qd1iy0pjJH01uLD+7alA3saBzD4ynf28zq9FsQhaOF9Krs8z12eizs
+         Sil8qsbuz5Z478jiN+lNjhlRqXaQ7OVTlrLVtoccLx6woxHrtBHDHYgOfdUIFc6F7kWo
+         fLVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709694025; x=1710298825;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VDLZzB+bt3GZcs1jFg49I3gbIv3ak3sP4bxpEBluYl4=;
+        b=imDOwfKlpFR6I56oaC94yi+CWqYdPiArdo81cixjLPxys2dRM9tqqgJOx46ShFG1xM
+         TYqpbx6T/azzG77Xv5BmFAJaNjF0sIvPwjOikUMEMA5JDeAFjs8VOTUmpyLWrttDxdLy
+         Y2wwq5LDUD7lliOltm4Fl+65UWgw0M0hdRgfbR0EK/T5/Iw3yyuOBkeaeI6SDMhR2YyZ
+         i0xs4xPNjTvlgBsFVnWqi6QM4SAU1UyWjROmsNi4PZaUvwynt40HzeN4JcUsgd5vRuRX
+         8OnzpPdmh6EAzdL+dYh4UBVQM8DaOyQ7s/WItrQBM6hXcyLyYbdGimjWe05sTZUHoH92
+         hW+w==
+X-Forwarded-Encrypted: i=1; AJvYcCWSgzgLlBs2+LntkzrV4X4BAo0TCqK7483YwqNdCSCGx1Z//Yr3fw1IKWeF5Ojhygx1SE92uAybOVTLrFpgRUM3QqsbpEGUx4yQyMzT
+X-Gm-Message-State: AOJu0Yyv0trrtronCVkqxj6HpBm9DCM+0/QUr2pvTspGsdiuzvt4bFO1
+	ux0d7JN87vqRS6VtXddMQLPM2hOS4O35Nayv2jbF58MVoVjIlKVj1aUnDi44ZLeu7qK3/48BHUy
+	Sibh5WGzfwsdMpWSuSSHKw3RlZZ6s4p0RCDUE
+X-Google-Smtp-Source: AGHT+IFbiQbpmvfWgUpkxWjLJMdlRthJJh/rzASOKXR1l2syMub/sbufMHigAdAk3F+vv22c8tPcls43uGvju6+yl1o=
+X-Received: by 2002:a05:622a:5490:b0:42e:e9a3:4a49 with SMTP id
+ ep16-20020a05622a549000b0042ee9a34a49mr147815qtb.28.1709694025321; Tue, 05
+ Mar 2024 19:00:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+References: <20240229105204.720717-1-herve.codina@bootlin.com>
+ <20240229105204.720717-3-herve.codina@bootlin.com> <acb69aa8c1a4c4e9849123ef538b9646a71507a0.camel@gmail.com>
+ <20240304152202.GA222088-robh@kernel.org> <20240304174933.7ad023f9@bootlin.com>
+ <CAGETcx-tmyJA30GtdU_dO9tWFoK+rO5tm-On4tPR7oQotnMkqQ@mail.gmail.com>
+ <2f497783da939f13d8c8faeab931cac0ef9c98eb.camel@gmail.com>
+ <20240305112708.56869e4c@bootlin.com> <c2be9a4cbbe6946e2f98a69d915c22bc52c9f1d9.camel@gmail.com>
+In-Reply-To: <c2be9a4cbbe6946e2f98a69d915c22bc52c9f1d9.camel@gmail.com>
+From: Saravana Kannan <saravanak@google.com>
+Date: Tue, 5 Mar 2024 18:59:47 -0800
+Message-ID: <CAGETcx9W81JNeqKFJvG_ydGMdBML9SvNMsmoxnCuyKgf2vN89w@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] of: overlay: Synchronize of_overlay_remove() with
+ the devlink removals
+To: =?UTF-8?B?TnVubyBTw6E=?= <noname.nuno@gmail.com>
+Cc: Herve Codina <herve.codina@bootlin.com>, Rob Herring <robh@kernel.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Frank Rowand <frowand.list@gmail.com>, Lizhi Hou <lizhi.hou@amd.com>, Max Zhen <max.zhen@amd.com>, 
+	Sonal Santan <sonal.santan@amd.com>, Stefano Stabellini <stefano.stabellini@xilinx.com>, 
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>, linux-kernel@vger.kernel.org, 
+	devicetree@vger.kernel.org, Allan Nielsen <allan.nielsen@microchip.com>, 
+	Horatiu Vultur <horatiu.vultur@microchip.com>, 
+	Steen Hegelund <steen.hegelund@microchip.com>, Luca Ceresoli <luca.ceresoli@bootlin.com>, 
+	Nuno Sa <nuno.sa@analog.com>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+	stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This LED controller also installed on a Xiaomi pad2 and it is a x86
-platform. The original driver is based on device tree and can't be
-used for this ACPI based system. This patch migrated the driver to
-use fwnode to access the properties. Moreover, the fwnode API
-supports device tree so this work won't effect the original
-implementations.
+On Tue, Mar 5, 2024 at 2:43=E2=80=AFAM Nuno S=C3=A1 <noname.nuno@gmail.com>=
+ wrote:
+>
+> On Tue, 2024-03-05 at 11:27 +0100, Herve Codina wrote:
+> > Hi Nuno, Saravana, Rob,
+> >
+> > On Tue, 05 Mar 2024 08:36:45 +0100
+> > Nuno S=C3=A1 <noname.nuno@gmail.com> wrote:
+> >
+> > > On Mon, 2024-03-04 at 22:47 -0800, Saravana Kannan wrote:
+> > > > On Mon, Mar 4, 2024 at 8:49=E2=80=AFAM Herve Codina <herve.codina@b=
+ootlin.com>
+> > > > wrote:
+> > > > >
+> > > > > Hi Rob,
+> > > > >
+> > > > > On Mon, 4 Mar 2024 09:22:02 -0600
+> > > > > Rob Herring <robh@kernel.org> wrote:
+> > > > >
+> > > > > ...
+> > > > >
+> > > > > > > > @@ -853,6 +854,14 @@ static void free_overlay_changeset(str=
+uct
+> > > > > > > > overlay_changeset *ovcs)
+> > > > > > > >  {
+> > > > > > > >   int i;
+> > > > > > > >
+> > > > > > > > + /*
+> > > > > > > > +  * Wait for any ongoing device link removals before remov=
+ing
+> > > > > > > > some of
+> > > > > > > > +  * nodes. Drop the global lock while waiting
+> > > > > > > > +  */
+> > > > > > > > + mutex_unlock(&of_mutex);
+> > > > > > > > + device_link_wait_removal();
+> > > > > > > > + mutex_lock(&of_mutex);
+> > > > > > >
+> > > > > > > I'm still not convinced we need to drop the lock. What happen=
+s if
+> > > > > > > someone else
+> > > > > > > grabs the lock while we are in device_link_wait_removal()? Ca=
+n we
+> > > > > > > guarantee that
+> > > > > > > we can't screw things badly?
+> > > > > >
+> > > > > > It is also just ugly because it's the callers of
+> > > > > > free_overlay_changeset() that hold the lock and now we're relea=
+sing it
+> > > > > > behind their back.
+> > > > > >
+> > > > > > As device_link_wait_removal() is called before we touch anythin=
+g,
+> > > > > > can't
+> > > > > > it be called before we take the lock? And do we need to call it=
+ if
+> > > > > > applying the overlay fails?
+> > > >
+> > > > Rob,
+> > > >
+> > > > This[1] scenario Luca reported seems like a reason for the
+> > > > device_link_wait_removal() to be where Herve put it. That example
+> > > > seems reasonable.
+> > > >
+> > > > [1] - https://lore.kernel.org/all/20231220181627.341e8789@booty/
+> > > >
+> > >
+> > > I'm still not totally convinced about that. Why not putting the check=
+ right
+> > > before checking the kref in __of_changeset_entry_destroy(). I'll cont=
+radict
+> > > myself a bit because this is just theory but if we look at pci_stop_d=
+ev(),
+> > > which
+> > > AFAIU, could be reached from a sysfs write(), we have:
+> > >
+> > > device_release_driver(&dev->dev);
+> > > ...
+> > > of_pci_remove_node(dev);
+> > >     of_changeset_revert(np->data);
+> > >     of_changeset_destroy(np->data);
+> > >
+> > > So looking at the above we would hit the same issue if we flush the q=
+ueue in
+> > > free_overlay_changeset() - as the queue won't be flushed at all and w=
+e could
+> > > have devlink removal due to device_release_driver(). Right?
+> > >
+> > > Again, completely theoretical but seems like a reasonable one plus I'=
+m not
+> > > understanding the push against having the flush in
+> > > __of_changeset_entry_destroy(). Conceptually, it looks the best place=
+ to me
+> > > but
+> > > I may be missing some issue in doing it there?
+> >
+> > Instead of having the wait called in __of_changeset_entry_destroy() and=
+ so
+> > called in a loop. I could move this call in the __of_changeset_entry_de=
+stroy()
+> > caller (without any of_mutex lock drop).
+> >
+>
+> Oh, good catch! At this point all the devlinks removals (related to the
+> changeset) should have been queued so yes, we should only need to flush o=
+nce.
+>
+> > So this will look like this:
+> > --- 8< ---
+> > void of_changeset_destroy(struct of_changeset *ocs)
+> > {
+> >       struct of_changeset_entry *ce, *cen;
+> >
+> >       device_link_wait_removal();
+> >
+> >       list_for_each_entry_safe_reverse(ce, cen, &ocs->entries, node)
+> >               __of_changeset_entry_destroy(ce);
+> > }
+> > --- 8< ---
+> >
+> > I already tested on my system and it works correctly with
+> > device_link_wait_removal() only called from of_changeset_destroy()
+> > as proposed.
+> >
+> > Saravana, Nuno, Rob does it seems ok for you ?
 
-Signed-off-by: Kate Hsuan <hpa@redhat.com>
----
- drivers/leds/rgb/Kconfig        |  1 -
- drivers/leds/rgb/leds-ktd202x.c | 60 ++++++++++++++++++++++-----------
- 2 files changed, 40 insertions(+), 21 deletions(-)
+Looks good to me.
 
-diff --git a/drivers/leds/rgb/Kconfig b/drivers/leds/rgb/Kconfig
-index a6a21f564673..f245dbd9a163 100644
---- a/drivers/leds/rgb/Kconfig
-+++ b/drivers/leds/rgb/Kconfig
-@@ -17,7 +17,6 @@ config LEDS_GROUP_MULTICOLOR
- config LEDS_KTD202X
- 	tristate "LED support for KTD202x Chips"
- 	depends on I2C
--	depends on OF
- 	select REGMAP_I2C
- 	help
- 	  This option enables support for the Kinetic KTD2026/KTD2027
-diff --git a/drivers/leds/rgb/leds-ktd202x.c b/drivers/leds/rgb/leds-ktd202x.c
-index 514965795a10..fb0d7c102dea 100644
---- a/drivers/leds/rgb/leds-ktd202x.c
-+++ b/drivers/leds/rgb/leds-ktd202x.c
-@@ -99,7 +99,7 @@ struct ktd202x {
- 	struct device *dev;
- 	struct regmap *regmap;
- 	bool enabled;
--	int num_leds;
-+	unsigned long num_leds;
- 	struct ktd202x_led leds[] __counted_by(num_leds);
- };
- 
-@@ -381,16 +381,18 @@ static int ktd202x_blink_mc_set(struct led_classdev *cdev,
- 				 mc->num_colors);
- }
- 
--static int ktd202x_setup_led_rgb(struct ktd202x *chip, struct device_node *np,
-+static int ktd202x_setup_led_rgb(struct ktd202x *chip, struct fwnode_handle *np,
- 				 struct ktd202x_led *led, struct led_init_data *init_data)
- {
-+	struct fwnode_handle *child;
- 	struct led_classdev *cdev;
--	struct device_node *child;
- 	struct mc_subled *info;
--	int num_channels;
-+	int num_channels = 0;
- 	int i = 0;
- 
--	num_channels = of_get_available_child_count(np);
-+	fwnode_for_each_available_child_node(np, child) {
-+		num_channels++;
-+	}
- 	if (!num_channels || num_channels > chip->num_leds)
- 		return -EINVAL;
- 
-@@ -398,22 +400,22 @@ static int ktd202x_setup_led_rgb(struct ktd202x *chip, struct device_node *np,
- 	if (!info)
- 		return -ENOMEM;
- 
--	for_each_available_child_of_node(np, child) {
-+	fwnode_for_each_available_child_node(np, child) {
- 		u32 mono_color;
- 		u32 reg;
- 		int ret;
- 
--		ret = of_property_read_u32(child, "reg", &reg);
-+		ret = fwnode_property_read_u32(child, "reg", &reg);
- 		if (ret != 0 || reg >= chip->num_leds) {
- 			dev_err(chip->dev, "invalid 'reg' of %pOFn\n", child);
--			of_node_put(child);
-+			fwnode_handle_put(child);
- 			return -EINVAL;
- 		}
- 
--		ret = of_property_read_u32(child, "color", &mono_color);
-+		ret = fwnode_property_read_u32(child, "color", &mono_color);
- 		if (ret < 0 && ret != -EINVAL) {
- 			dev_err(chip->dev, "failed to parse 'color' of %pOF\n", child);
--			of_node_put(child);
-+			fwnode_handle_put(child);
- 			return ret;
- 		}
- 
-@@ -433,14 +435,14 @@ static int ktd202x_setup_led_rgb(struct ktd202x *chip, struct device_node *np,
- 	return devm_led_classdev_multicolor_register_ext(chip->dev, &led->mcdev, init_data);
- }
- 
--static int ktd202x_setup_led_single(struct ktd202x *chip, struct device_node *np,
-+static int ktd202x_setup_led_single(struct ktd202x *chip, struct fwnode_handle *np,
- 				    struct ktd202x_led *led, struct led_init_data *init_data)
- {
- 	struct led_classdev *cdev;
- 	u32 reg;
- 	int ret;
- 
--	ret = of_property_read_u32(np, "reg", &reg);
-+	ret = fwnode_property_read_u32(np, "reg", &reg);
- 	if (ret != 0 || reg >= chip->num_leds) {
- 		dev_err(chip->dev, "invalid 'reg' of %pOFn\n", np);
- 		return -EINVAL;
-@@ -454,7 +456,7 @@ static int ktd202x_setup_led_single(struct ktd202x *chip, struct device_node *np
- 	return devm_led_classdev_register_ext(chip->dev, &led->cdev, init_data);
- }
- 
--static int ktd202x_add_led(struct ktd202x *chip, struct device_node *np, unsigned int index)
-+static int ktd202x_add_led(struct ktd202x *chip, struct fwnode_handle *np, unsigned int index)
- {
- 	struct ktd202x_led *led = &chip->leds[index];
- 	struct led_init_data init_data = {};
-@@ -463,14 +465,14 @@ static int ktd202x_add_led(struct ktd202x *chip, struct device_node *np, unsigne
- 	int ret;
- 
- 	/* Color property is optional in single color case */
--	ret = of_property_read_u32(np, "color", &color);
-+	ret = fwnode_property_read_u32(np, "color", &color);
- 	if (ret < 0 && ret != -EINVAL) {
- 		dev_err(chip->dev, "failed to parse 'color' of %pOF\n", np);
- 		return ret;
- 	}
- 
- 	led->chip = chip;
--	init_data.fwnode = of_fwnode_handle(np);
-+	init_data.fwnode = np;
- 
- 	if (color == LED_COLOR_ID_RGB) {
- 		cdev = &led->mcdev.led_cdev;
-@@ -492,26 +494,30 @@ static int ktd202x_add_led(struct ktd202x *chip, struct device_node *np, unsigne
- 
- static int ktd202x_probe_dt(struct ktd202x *chip)
- {
--	struct device_node *np = dev_of_node(chip->dev), *child;
-+	struct fwnode_handle *child, *np;
-+	struct device *dev = chip->dev;
- 	int count;
- 	int i = 0;
- 
--	chip->num_leds = (int)(unsigned long)of_device_get_match_data(chip->dev);
-+	count = device_get_child_node_count(dev);
- 
--	count = of_get_available_child_count(np);
- 	if (!count || count > chip->num_leds)
- 		return -EINVAL;
- 
-+	np = dev_fwnode(chip->dev);
-+	if (!np)
-+		return -ENODEV;
-+
- 	regmap_write(chip->regmap, KTD202X_REG_RESET_CONTROL, KTD202X_RSTR_RESET);
- 
- 	/* Allow the device to execute the complete reset */
- 	usleep_range(200, 300);
- 
--	for_each_available_child_of_node(np, child) {
-+	fwnode_for_each_available_child_node(np, child) {
- 		int ret = ktd202x_add_led(chip, child, i);
- 
- 		if (ret) {
--			of_node_put(child);
-+			fwnode_handle_put(child);
- 			return ret;
- 		}
- 		i++;
-@@ -568,6 +574,8 @@ static int ktd202x_probe(struct i2c_client *client)
- 		return ret;
- 	}
- 
-+	chip->num_leds = (unsigned long)i2c_get_match_data(client);
-+
- 	ret = ktd202x_probe_dt(chip);
- 	if (ret < 0) {
- 		regulator_bulk_disable(ARRAY_SIZE(chip->regulators), chip->regulators);
-@@ -602,21 +610,33 @@ static void ktd202x_shutdown(struct i2c_client *client)
- 	regmap_write(chip->regmap, KTD202X_REG_RESET_CONTROL, KTD202X_RSTR_RESET);
- }
- 
-+static const struct i2c_device_id ktd202x_id[] = {
-+	{"ktd2026", KTD2026_NUM_LEDS},
-+	{"ktd2027", KTD2027_NUM_LEDS},
-+	{},
-+};
-+MODULE_DEVICE_TABLE(i2c, ktd202x_id);
-+
-+#ifndef CONFIG_ACPI
- static const struct of_device_id ktd202x_match_table[] = {
- 	{ .compatible = "kinetic,ktd2026", .data = (void *)KTD2026_NUM_LEDS },
- 	{ .compatible = "kinetic,ktd2027", .data = (void *)KTD2027_NUM_LEDS },
- 	{},
- };
- MODULE_DEVICE_TABLE(of, ktd202x_match_table);
-+#endif
- 
- static struct i2c_driver ktd202x_driver = {
- 	.driver = {
- 		.name = "leds-ktd202x",
-+#ifndef CONFIG_ACPI
- 		.of_match_table = ktd202x_match_table,
-+#endif
- 	},
- 	.probe = ktd202x_probe,
- 	.remove = ktd202x_remove,
- 	.shutdown = ktd202x_shutdown,
-+	.id_table = ktd202x_id,
- };
- module_i2c_driver(ktd202x_driver);
- 
--- 
-2.43.2
+-Saravana
 
+> >
+>
+> It looks good to me...
+>
+> - Nuno S=C3=A1
+> >
+>
 
