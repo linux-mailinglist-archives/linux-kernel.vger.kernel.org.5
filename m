@@ -1,159 +1,256 @@
-Return-Path: <linux-kernel+bounces-94309-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94310-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFC97873CDF
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 18:05:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB3A2873CEB
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 18:05:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F20631C21780
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:05:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75AFD28891F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:05:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C296E139571;
-	Wed,  6 Mar 2024 17:04:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC1DE139569;
+	Wed,  6 Mar 2024 17:05:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="XOtjBIP0";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Vs7Gi6T0";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="XOtjBIP0";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Vs7Gi6T0"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YGPSFtgj"
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1383A60250;
-	Wed,  6 Mar 2024 17:04:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0902132C0C
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 17:05:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709744697; cv=none; b=mKlBiNSeF76rHCjIqbUAVZJeupVrmjjDdOrzYWO80zXqBGN8iZurJ6SiPQxrCT22AbVBEwenxygmNvdupjo8JuTorql/gig8lOg80iVs8o2SNxgKIV8ZnSrc9k1gcVxYqrWnJaYtMjmLQSmJSW08E76U0D6KEP8BnkKU501DFf0=
+	t=1709744711; cv=none; b=pj8px3c4h3YCtT+KaPyFysqzHYpJxlcNMa9ZHIyAMiryqyzfkVLCJfyYhbTH7vf2uovmSJgJT2uF92uBku5MwqyKD3Y4uIHFIblsPadIbIqDU5YThEqbT5OhbeCYdHB3JkQA/GPDtiKF+L9/cii/4NiFYcdUc3EDrt6v3qVaRak=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709744697; c=relaxed/simple;
-	bh=XLrlDpOXHe7T4pCX8rTTxilVvdwj055vNn3mEfO3djY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EBq22JcY/PDDC4R1pk4oiihgoJOdByMoNHlcupiPN5vk4z7E3SQL1FRytMwAQrefrSVeirzeMsmfzKW+IWaxSwJ1fRDVea3QpEd/9/5z25ktzQ7p4b056aVoUMNPQO096pfsOfK8SMG3zBrbch/OrlmBq8I06GCP387Uks7FL74=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=XOtjBIP0; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Vs7Gi6T0; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=XOtjBIP0; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Vs7Gi6T0; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 647254582;
-	Wed,  6 Mar 2024 17:04:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1709744687; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=x4KelZJu8ci6w5fIk5guYKW0tSpTyxQbHEFdWP4uuNE=;
-	b=XOtjBIP0LFUAhmFY7hOQyaL2PC4cxJpjdnYaw4suysaIMz/x+ReJF73NPV8FAZqdX3l95E
-	eHXBulSx4BxrtXd/MoSPc633//Nfz8OzKPFmVd8wCmJ72G9nZY8OOYDUwnIPyPWXWe5H5O
-	BV5ml76ELYVL4LA2SCoEXWU1A76VNA0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1709744687;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=x4KelZJu8ci6w5fIk5guYKW0tSpTyxQbHEFdWP4uuNE=;
-	b=Vs7Gi6T0iPGgZGqfF0IGL7EQhkPHlbZmHnEz2SFGsAXygMFxhJ/zFg0SRhpkgDmXPQjUj2
-	qN9fPkPwj3uho5BQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1709744687; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=x4KelZJu8ci6w5fIk5guYKW0tSpTyxQbHEFdWP4uuNE=;
-	b=XOtjBIP0LFUAhmFY7hOQyaL2PC4cxJpjdnYaw4suysaIMz/x+ReJF73NPV8FAZqdX3l95E
-	eHXBulSx4BxrtXd/MoSPc633//Nfz8OzKPFmVd8wCmJ72G9nZY8OOYDUwnIPyPWXWe5H5O
-	BV5ml76ELYVL4LA2SCoEXWU1A76VNA0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1709744687;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=x4KelZJu8ci6w5fIk5guYKW0tSpTyxQbHEFdWP4uuNE=;
-	b=Vs7Gi6T0iPGgZGqfF0IGL7EQhkPHlbZmHnEz2SFGsAXygMFxhJ/zFg0SRhpkgDmXPQjUj2
-	qN9fPkPwj3uho5BQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 56ED71377D;
-	Wed,  6 Mar 2024 17:04:47 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id z7HyFC+i6GUDEgAAn2gu4w
-	(envelope-from <jack@suse.cz>); Wed, 06 Mar 2024 17:04:47 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 01A40A0803; Wed,  6 Mar 2024 18:04:46 +0100 (CET)
-Date: Wed, 6 Mar 2024 18:04:46 +0100
-From: Jan Kara <jack@suse.cz>
-To: syzbot <syzbot+46073c22edd7f242c028@syzkaller.appspotmail.com>
-Cc: axboe@kernel.dk, brauner@kernel.org, jack@suse.com, jack@suse.cz,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [udf?] KASAN: use-after-free Read in udf_finalize_lvid
-Message-ID: <20240306170446.ohmpxz3r24t4wry7@quack3>
-References: <00000000000084090905fe7d22bb@google.com>
- <000000000000f279ea0612dc62cd@google.com>
+	s=arc-20240116; t=1709744711; c=relaxed/simple;
+	bh=f1WmBqp+S6Tcw7A8Oq9HJf0VJDtBrJ0ATA6lz8ebmoc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VsF4Iyjb+MQfUTBVWsEB9X78dU/tUSC7ehSwQ81fMFAVhsoFDMEDTRHINkOliybf/gy6o6VxOAuCcT89Ohdahjx0Jf/QGrTStyoQDJrEcE9xLmXBMX1IzLAy0Hxuu/Oycwzm+7x0/9h9JOv8t2t21FRHIIFIVZ7xrEzMag7Iauo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=YGPSFtgj; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a44628725e3so2304866b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 09:05:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709744707; x=1710349507; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=A1xSBjsofT/9pZS7Yx9G3XGpR9XoFLam+fQU7TnybVs=;
+        b=YGPSFtgjiZCZ2/fuo+t9hwJeE6OWJF42MA00e/1bbwxL4sNb2/4OygmNqZk6G1kDV3
+         SmmGm7Z2FiRELYmj/mWtsxnVBpHGTCMFWS1a0BaKZalgzAxl0ni/yS8mqyV38GnbNBRr
+         yb5Mb8zHgmrFvODzq1rVBfG+fJ0WfZROjkaIjECLEAnstyK2x++QDjrxpzz75DILwvqm
+         D5Cn45O4ZK52+wqd/abE/c7vgFqhD1Zn4HWJNk7RFSxd2bjYfoz+Yz3CXo5qaYUpaxL9
+         2HSwptCAvjycaff/WigX2F0Ns/pl/6wmEn3v/qS4GPz1tpIuvc7rj5x9lhqJqzb8U0GW
+         nGMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709744707; x=1710349507;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=A1xSBjsofT/9pZS7Yx9G3XGpR9XoFLam+fQU7TnybVs=;
+        b=W6AlgmwmijyAuVex2ESkbqz4rvxscm4PjVOxZRzYZomOGAJcdfVDym9dlIb9MaguBu
+         1lu4/uz9l7VQUzJVAQ9hvtQ6NHMidZRFxJcX7LGhd1rCVJmFby/D/J+Jjb+nPkcOKt74
+         qwey5qt5emK0eiBrRBUV5PAK7oZsUnHECm74aPmgtWEwtVVmp2DAouqPzznT3P/1gLbw
+         DiRwQpt9B0ZsrgPvMCqTIa7e51Mj0sQ4aEy1YtRmJ7h9OKBu60Hqd9euAcNI6XVNMtyy
+         BWvm+IBmsv/0enFvCsHyEjpDB2rt14WTy4MQZD2mNp5kiec90WYhjHCNcOIkvxj2ge/8
+         s/Mg==
+X-Forwarded-Encrypted: i=1; AJvYcCWg5oIMR1p4PsM+79q61XgD60b8+X0AxbHH8kNw/yl459AWlj1NNkI2fcIv83gj9dOe6xydLMw9RbsE3GmGpS713+agcmrXUntC5Nmi
+X-Gm-Message-State: AOJu0Yw4nXP0JBYdg/JsSdwaYRcn8VGfSbJcegiW2NFEbe/b9NKNQh+B
+	6uJLcVAiHBQwgW0rW3LluByD65ADiNnIf3mI2rXkOgZIv/vD9JikqbHgfZcsv/1O5A8Iase7Lqn
+	0n8m/w32V5yQpQ0M0rCKlye4Hhg0wPrCj6iDr
+X-Google-Smtp-Source: AGHT+IEFAot1sqpMocgXEq0iHPu0SbjnF94L+Z+kSlPfTE1HrQ8kPH2Z8oVY6d8041os4lHMCzDMgHeBjBfnC6a+Now=
+X-Received: by 2002:a17:906:b00b:b0:a44:c583:dfc8 with SMTP id
+ v11-20020a170906b00b00b00a44c583dfc8mr9370474ejy.48.1709744706904; Wed, 06
+ Mar 2024 09:05:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000000000000f279ea0612dc62cd@google.com>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [2.82 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_HAM(-0.08)[63.96%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=e1e118a9228c45d7];
-	 TAGGED_RCPT(0.00)[46073c22edd7f242c028];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_SEVEN(0.00)[8];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[];
-	 SUBJECT_HAS_QUESTION(0.00)[]
-X-Spam-Level: **
-X-Spam-Score: 2.82
-X-Spam-Flag: NO
+References: <20240305020153.2787423-1-almasrymina@google.com>
+ <20240305020153.2787423-3-almasrymina@google.com> <1b57dac2-4b04-4bec-b2d7-d0edb4fcabbc@davidwei.uk>
+ <CAHS8izM5O39mnTQ8mhcQE75amDT4G-3vcgozzjcYsAdd_-he1g@mail.gmail.com> <417f293a-848e-4eb2-b690-c8696079b452@gmail.com>
+In-Reply-To: <417f293a-848e-4eb2-b690-c8696079b452@gmail.com>
+From: Mina Almasry <almasrymina@google.com>
+Date: Wed, 6 Mar 2024 09:04:54 -0800
+Message-ID: <CAHS8izNPtHb2GnEMviiJTFT_dPxsxgYsNw5V9s-gSC2YnJRPRg@mail.gmail.com>
+Subject: Re: [RFC PATCH net-next v6 02/15] net: page_pool: create hooks for
+ custom page providers
+To: Pavel Begunkov <asml.silence@gmail.com>
+Cc: David Wei <dw@davidwei.uk>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	linux-arch@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Richard Henderson <richard.henderson@linaro.org>, 
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, David Ahern <dsahern@kernel.org>, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
+	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin <linyunsheng@huawei.com>, 
+	Shailend Chand <shailend@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>, 
+	Jeroen de Borst <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>, shakeel.butt@linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon 04-03-24 13:27:02, syzbot wrote:
-> syzbot suspects this issue was fixed by commit:
-> 
-> commit 6f861765464f43a71462d52026fbddfc858239a5
-> Author: Jan Kara <jack@suse.cz>
-> Date:   Wed Nov 1 17:43:10 2023 +0000
-> 
->     fs: Block writes to mounted block devices
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1495d341180000
-> start commit:   861deac3b092 Linux 6.7-rc7
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=e1e118a9228c45d7
-> dashboard link: https://syzkaller.appspot.com/bug?extid=46073c22edd7f242c028
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16a44d79e80000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=130b99e9e80000
-> 
-> If the result looks correct, please mark the issue as fixed by replying with:
+On Wed, Mar 6, 2024 at 6:30=E2=80=AFAM Pavel Begunkov <asml.silence@gmail.c=
+om> wrote:
+>
+> On 3/5/24 22:36, Mina Almasry wrote:
+> > On Tue, Mar 5, 2024 at 1:55=E2=80=AFPM David Wei <dw@davidwei.uk> wrote=
+:
+> >>
+> >> On 2024-03-04 18:01, Mina Almasry wrote:
+> >>> +struct memory_provider_ops {
+> >>> +     int (*init)(struct page_pool *pool);
+> >>> +     void (*destroy)(struct page_pool *pool);
+> >>> +     struct page *(*alloc_pages)(struct page_pool *pool, gfp_t gfp);
+> >>> +     bool (*release_page)(struct page_pool *pool, struct page *page)=
+;
+> >>
+> >> For ZC Rx we added a scrub() function to memory_provider_ops that is
+> >> called from page_pool_scrub(). Does TCP devmem not custom behaviour
+> >> waiting for all netmem_refs to return before destroying the page pool?
+> >> What happens if e.g. application crashes?
+> >
+> > (sorry for the long reply, but he refcounting is pretty complicated to
+> > explain and I feel like we need to agree on how things currently work)
+> >
+> > Yeah, the addition of the page_pool_scrub() function is a bit of a
+> > head scratcher for me. Here is how the (complicated) refcounting works
+> > for devmem TCP (assuming the driver is not doing its own recycling
+> > logic which complicates things further):
+> >
+> > 1. When a netmem_ref is allocated by the page_pool (from dmabuf or
+> > page), the netmem_get_pp_ref_count_ref()=3D=3D1 and belongs to the page
+> > pool as long as the netmem is waiting in the pool for driver
+> > allocation.
+> >
+> > 2. When a netmem is allocated by the driver, no refcounting is
+> > changed, but the ownership of the netmem_get_pp_ref_count_ref() is
+> > implicitly transferred from the page pool to the driver. i.e. the ref
+> > now belongs to the driver until an skb is formed.
+> >
+> > 3. When the driver forms an skb using skb_rx_add_frag_netmem(), no
+> > refcounting is changed, but the ownership of the
+> > netmem_get_pp_ref_count_ref() is transferred from the driver to the
+> > TCP stack.
+> >
+> > 4. When the TCP stack hands the skb to the application, the TCP stack
+> > obtains an additional refcount, so netmem_get_pp_ref_count_ref()=3D=3D2=
+,
+> > and frees the skb using skb_frag_unref(), which drops the
+> > netmem_get_pp_ref_count_ref()=3D=3D1.
+> >
+> > 5. When the user is done with the skb, the user calls the
+> > DEVMEM_DONTNEED setsockopt which calls napi_pp_put_netmem() which
+> > recycles the netmem back to the page pool. This doesn't modify any
+> > refcounting, but the refcount ownership transfers from the userspace
+> > back to the page pool, and we're back at step 1.
+> >
+> > So all in all netmem can belong either to (a) the page pool, or (b)
+> > the driver, or (c) the TCP stack, or (d) the application depending on
+> > where exactly it is in the RX path.
+> >
+> > When an application running devmem TCP crashes, the netmem that belong
+> > to the page pool or driver are not touched, because the page pool is
+> > not tied to the application in our case really. However, the TCP stack
+> > notices the devmem socket of the application close, and when it does,
+> > the TCP stack will:
+> >
+> > 1. Free all the skbs in the sockets receive queue. This is not custom
+> > behavior for devmem TCP, it's just standard for TCP to free all skbs
+> > waiting to be received by the application.
+> > 2. The TCP stack will free references that belong to the application.
+> > Since the application crashed, it will not call the DEVMEM_DONTNEED
+> > setsockopt, so we need to free those on behalf of the application.
+> > This is done in this diff:
+> >
+> > @@ -2498,6 +2498,15 @@ static void tcp_md5sig_info_free_rcu(struct
+> > rcu_head *head)
+> >   void tcp_v4_destroy_sock(struct sock *sk)
+> >   {
+> >    struct tcp_sock *tp =3D tcp_sk(sk);
+> > + __maybe_unused unsigned long index;
+> > + __maybe_unused void *netmem;
+> > +
+> > +#ifdef CONFIG_PAGE_POOL
+> > + xa_for_each(&sk->sk_user_frags, index, netmem)
+> > + WARN_ON_ONCE(!napi_pp_put_page((__force netmem_ref)netmem, false));
+> > +#endif
+> > +
+> > + xa_destroy(&sk->sk_user_frags);
+> >
+> >    trace_tcp_destroy_sock(sk);
+> >
+> > To be honest, I think it makes sense for the TCP stack to be
+> > responsible for putting the references that belong to it and the
+> > application. To me, it does not make much sense for the page pool to
+> > be responsible for putting the reference that belongs to the TCP stack
+> > or driver via a page_pool_scrub() function, as those references do not
+> > belong to the page pool really. I'm not sure why there is a diff
+> > between our use cases here because I'm not an io_uring expert. Why do
+> > you need to scrub all the references on page pool destruction? Don't
+> > these belong to non-page pool components like io_uring stack or TCP
+> > stack ol otherwise?
+>
+> That one is about cleaning buffers that are in b/w 4 and 5, i.e.
+> owned by the user, which devmem does at sock destruction. io_uring
+> could get by without scrub, dropping user refs while unregistering
+> ifq, but then it'd need to wait for all requests to finish so there
+> is no step 4 in the meantime. Might change, can be useful, but it
+> was much easier to hook into the pp release loop.
+>
+> Another concern is who and when can reset ifq / kill pp outside
+> of io_uring/devmem. I assume it can happen on a whim, which is
+> hard to handle gracefully.
+>
 
-Looks good.
+If this is about dropping application refs in step 4 & step 5, then
+from devmem TCP perspective it must be done on socket close & skb
+freeing AFAIU, and not delayed until page_pool destruction. Think
+about a stupid or malicious user that does something like:
 
-#syz fix: fs: Block writes to mounted block devices
+1. Set up dmabuf binding using netlink api.
+2. While (100000):
+3.   create devmem TCP socket.
+4.   receive some devmem data on TCP socket.
+5.   close TCP socket without calling DEVMEM_DONTNEED.
+6. clean up dmabuf binding using netlink api.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+In this case, we need to drop the references in step 5 when the socket
+is destroyed, so the memory is freed to the page pool and available
+for the next socket in step 3. We cannot delay the freeing until step
+6 when the rx queue is recreated and the page pool is destroyed,
+otherwise the net_iovs would leak in the loop and eventually the NIC
+would fail to find available memory. The same bug would be
+reproducible with io_uring unless you're creating a new page pool for
+each new io_uring socket equivalent.
+
+But even outside of this, I think it's a bit semantically off to ask
+the page_pool to drop references that belong to the application IMO,
+because those references are not the page_pool's.
+
+> --
+> Pavel Begunkov
+
+--=20
+Thanks,
+Mina
 
