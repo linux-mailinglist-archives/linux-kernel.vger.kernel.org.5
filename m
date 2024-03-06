@@ -1,183 +1,112 @@
-Return-Path: <linux-kernel+bounces-93961-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93962-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EECD187378A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:14:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13FBB87378C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:16:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7EA38B22D38
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:14:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4607F1C2262A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:16:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 082E8130AEB;
-	Wed,  6 Mar 2024 13:14:42 +0000 (UTC)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1DD7130E23;
+	Wed,  6 Mar 2024 13:16:23 +0000 (UTC)
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10F5A86647
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 13:14:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B062F7FBAA;
+	Wed,  6 Mar 2024 13:16:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709730881; cv=none; b=Iuxor8avHkO7MXnj9/RKikoamx2QjhlP3xwMzqwEuqpY6CEszOr8ooPGGIUgi3Tuh8R4diuuUh5s5ryq07sROucYLoit98BNev4gOlzxXYb3LLqRD1nkYxnTw8pT/+yIcVhFFmKjpeC0EW/r5NO3lspbazaDC0ovh3svaD/qhQE=
+	t=1709730983; cv=none; b=hInI7OaA/HHKN2z6REn6neHUdBGg7o8SarNiSGgHnD1zrO6q2QqfyQDzYGXg7QeOLmoGa8Wqqxdi2m2VWP9FN7YworXcp9DoB6uXS3Erhgnd3+gOQd2U4gzyC+r9IpO+MUs3dRbKqMhgFfActasL7o3GMtCdRxD0VyM+1Iptp/0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709730881; c=relaxed/simple;
-	bh=NBkN7yQfAa7PLCdKB8AWp3JIJxP/gKGV/xcc0W35Ujw=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=YA+n20VPE3hmHrergnuzvtfoMtbGh+5Tmh25TZBB+vNfng1XeTqxtl6m87e8CjE/Hgpk9zT1eC8nnnewV5jyLNY2KaQI/ul4R8qtOkcskvtvKMEezV3Qzd5sNCSdyYE4tpSPDrb9BUWae/cpbYgFY+q76R2N8xTjkMrkoWwA/FA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7c84939e5a4so291379439f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 05:14:39 -0800 (PST)
+	s=arc-20240116; t=1709730983; c=relaxed/simple;
+	bh=UN5GxUcdpytO2U2Ldms6mARi4xRRCE3E9Hta9POhZ64=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HjINBt1OtV7fXtK3CkaP0t3XJ3fQZY13iazPg3ZntdP8vsLpSkR4HILLBWmclHqFd1fg0EasczI1UXWCXKAPEsRWyQzb0/QA8XSoH0Vyzm8b/AZ6WNmH19FNnbmdoy5I8GI9thIvMMChSkr1LS5u/DMLOEXwhU14KZSGB5G+gCY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a3ed9cae56fso151513166b.1;
+        Wed, 06 Mar 2024 05:16:21 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709730879; x=1710335679;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=u5M20glDBiQnz053hv9P0J8VDogdHXOJ11z3E6yWqJI=;
-        b=FN1m/R3E5Cj2D98Z124MAEWvCMtjfnvcFBM8/PfIPq81fJy1oE8cSXKrSbBQZu5ZX7
-         oF9xSvat6xLr0P7gEPYted9sc0wx7DZE9c0ZRsfE36ugoN/WuppWyO9wWa7sy5DtWEcv
-         DF8oazMTgkLPMh2e0HzzHenC7ZlB+XsNw3yLIG3vPuHf2hKlqLlbARzSYCiD7HiHcgUc
-         FNG2peRbKh0d84FWKCoTLlfNkGspMC4YV8jLQ26uZ0JuaIF/J/s5TEuM/0Rzg+V05RjD
-         b0YHzhTLA2YBTV4rUdpWt1lzbuxmRkxAAq0vI2/hNkrbbZIQVHLk0v+ITutmkMrwGX6a
-         jvLg==
-X-Gm-Message-State: AOJu0YzUUUbqfjWJ4smEnl3EMT1pG6cEu8PMzlO9XAF/fcHLWD6jcI14
-	j3GizIs/mkpHBf6ZwAyNQbsUDqyknTOssM/esdwhGnJikfhtefvMuj6ZIMccM4i1LBhbI7M/zap
-	irWnHU2HAj/BLZNPxZhYqRavtnFL3DAJ0o7KUQ5Oqv3V5gLpkgVx4Jkzlig==
-X-Google-Smtp-Source: AGHT+IFkIdlj3Vh+Dr0JneBvr/lbEYMK9+EY5Kx/huO52Th9Lh+ScMAWiyOkddlzR2PS7JknLqj4vKkS/2yM4Y+Qq+1y5UPJC/sY
+        d=1e100.net; s=20230601; t=1709730980; x=1710335780;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=L/tWs4fwCFAZTFAAtDBZh8EOdci0pgq2gOC8rOm/wUU=;
+        b=WXm1vZPoK4l4oN79kgOiioPM8WcqbpiBWALVMq3iSEMtkqq+E6sNv0XPpTifs8Mrre
+         ZTrVak9EnpMVpbqaMDeughU22zqrbJ6Hp1dSqmjR14BKTJ8RMFL2oQ6L0T9FRTwjEvnz
+         h45I1KmJbE5Hab2TJYiylbt72iKoo9o9D5zVd1HncMkcJm2LZGNHitjXeah9QL4fHp+q
+         JgcuMziSNHYSepo4nrFjq3qI5s/grfjYmp+gcVyj02Vuv0LltT5kHObJLedxUCYxpvTB
+         LgyV0QycFwlwzNOOIBHsDweZzKdBZ5N6EJyo7W9cV7ljZJbYBuWgHj9jYGmF9pK6SZHG
+         yAhQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVJ2v129hMhBWInqAjOHSe4fHPHHva5lU7F6Je/nDGO2BUXHeo6M5JeSGk4VKGDKSSIuLhnHI17H8F1lQ4kej/1rTlfDJQmB0hy28qHmcAyJZ2z9moyuOJOP264mB7Zk1kZbYmFosO+1f2AfUQp+QCcqKzy57D7Yi8InG6lAQNGQobpFwdZ
+X-Gm-Message-State: AOJu0YwJmPP82Xe9s4GWjGHoTV/pl65cMnft8jQuH6zu0pLrZ0HGJAyx
+	4WJnBf17slJJiUxJVDDbHuB9tz25RlpTtHwiJuqNX/rf3STcJTjS
+X-Google-Smtp-Source: AGHT+IEIJgWZ+UxwNt0E0FsQRxJuaM40G5bRPgHAbMZdVYsXZGcRQxWwzTl9LNOtD+BeAqHsNuqevw==
+X-Received: by 2002:a17:906:57d4:b0:a45:a2cc:eb93 with SMTP id u20-20020a17090657d400b00a45a2cceb93mr5652823ejr.4.1709730979709;
+        Wed, 06 Mar 2024 05:16:19 -0800 (PST)
+Received: from gmail.com (fwdproxy-lla-007.fbsv.net. [2a03:2880:30ff:7::face:b00c])
+        by smtp.gmail.com with ESMTPSA id k14-20020a1709063e0e00b00a45beabb104sm499441eji.159.2024.03.06.05.16.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Mar 2024 05:16:19 -0800 (PST)
+Date: Wed, 6 Mar 2024 05:16:16 -0800
+From: Breno Leitao <leitao@debian.org>
+To: Jakub Kicinski <kuba@kernel.org>, keescook@chromium.org
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	netdev@vger.kernel.org, linux-hardening@vger.kernel.org,
+	Simon Horman <horms@kernel.org>, Jiri Pirko <jiri@resnulli.us>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Coco Li <lixiaoyan@google.com>,
+	Amritha Nambiar <amritha.nambiar@intel.com>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] netdev: Use flexible array for trailing private bytes
+Message-ID: <ZehsoPb/WZzUcFHa@gmail.com>
+References: <20240229213018.work.556-kees@kernel.org>
+ <20240229225910.79e224cf@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d01:b0:365:177f:6db6 with SMTP id
- i1-20020a056e021d0100b00365177f6db6mr1109462ila.3.1709730879216; Wed, 06 Mar
- 2024 05:14:39 -0800 (PST)
-Date: Wed, 06 Mar 2024 05:14:39 -0800
-In-Reply-To: <000000000000fd588e060de27ef4@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b7b41d0612fdbdb5@google.com>
-Subject: Re: [syzbot] Re: [syzbot] [virtualization?] KMSAN: uninit-value in
- virtqueue_add (4)
-From: syzbot <syzbot+d7521c1e3841ed075a42@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240229225910.79e224cf@kernel.org>
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+On Thu, Feb 29, 2024 at 10:59:10PM -0800, Jakub Kicinski wrote:
+> On Thu, 29 Feb 2024 13:30:22 -0800 Kees Cook wrote:
+> > Introduce a new struct net_device_priv that contains struct net_device
+> > but also accounts for the commonly trailing bytes through the "size" and
+> > "data" members.
+> 
+> I'm a bit unclear on the benefit. Perhaps I'm unaccustomed to "safe C".
+> 
+> > As many dummy struct net_device instances exist still,
+> > it is non-trivial to but this flexible array inside struct net_device
+> 
+> put
+> 
+> Non-trivial, meaning what's the challenge?
+> We also do somewhat silly things with netdev lifetime, because we can't
+> assume netdev gets freed by netdev_free(). Cleaning up the "embedders"
+> would be beneficial for multiple reasons.
 
-***
+I've been looking at some of these embedders as reported by Kees[1], and
+most of them are for dummy interfaces. I.e, they are basically used for
+schedule NAPI poll.
 
-Subject: Re: [syzbot] [virtualization?] KMSAN: uninit-value in virtqueue_add (4)
-Author: penguin-kernel@i-love.sakura.ne.jp
+From that list[1], most of the driver matches with:
 
-#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git v6.7
+	# git grep init_dummy_netdev
 
-diff --git a/arch/x86/lib/copy_mc.c b/arch/x86/lib/copy_mc.c
-index 6e8b7e600def..6858f80fc9a2 100644
---- a/arch/x86/lib/copy_mc.c
-+++ b/arch/x86/lib/copy_mc.c
-@@ -61,12 +61,18 @@ unsigned long copy_mc_enhanced_fast_string(void *dst, const void *src, unsigned
-  */
- unsigned long __must_check copy_mc_to_kernel(void *dst, const void *src, unsigned len)
- {
--	if (copy_mc_fragile_enabled)
--		return copy_mc_fragile(dst, src, len);
--	if (static_cpu_has(X86_FEATURE_ERMS))
--		return copy_mc_enhanced_fast_string(dst, src, len);
--	memcpy(dst, src, len);
--	return 0;
-+	unsigned long ret;
-+
-+	if (copy_mc_fragile_enabled) {
-+		ret = copy_mc_fragile(dst, src, len);
-+	} else if (static_cpu_has(X86_FEATURE_ERMS)) {
-+		ret = copy_mc_enhanced_fast_string(dst, src, len);
-+	} else {
-+		memcpy(dst, src, len);
-+		ret = 0;
-+	}
-+	kmsan_memmove(dst, src, len - ret);
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(copy_mc_to_kernel);
- 
-@@ -78,15 +84,13 @@ unsigned long __must_check copy_mc_to_user(void __user *dst, const void *src, un
- 		__uaccess_begin();
- 		ret = copy_mc_fragile((__force void *)dst, src, len);
- 		__uaccess_end();
--		return ret;
--	}
--
--	if (static_cpu_has(X86_FEATURE_ERMS)) {
-+	} else if (static_cpu_has(X86_FEATURE_ERMS)) {
- 		__uaccess_begin();
- 		ret = copy_mc_enhanced_fast_string((__force void *)dst, src, len);
- 		__uaccess_end();
--		return ret;
-+	} else {
-+		ret = copy_user_generic((__force void *)dst, src, len);
- 	}
--
--	return copy_user_generic((__force void *)dst, src, len);
-+	kmsan_copy_to_user(dst, src, len, ret);
-+	return ret;
- }
-diff --git a/include/linux/kmsan-checks.h b/include/linux/kmsan-checks.h
-index c4cae333deec..4c2a614dab2d 100644
---- a/include/linux/kmsan-checks.h
-+++ b/include/linux/kmsan-checks.h
-@@ -61,6 +61,17 @@ void kmsan_check_memory(const void *address, size_t size);
- void kmsan_copy_to_user(void __user *to, const void *from, size_t to_copy,
- 			size_t left);
- 
-+/**
-+ * kmsan_memmove() - Notify KMSAN about a data copy within kernel.
-+ * @to:   destination address in the kernel.
-+ * @from: source address in the kernel.
-+ * @size: number of bytes to copy.
-+ *
-+ * Invoked after non-instrumented version (e.g. implemented using assembly
-+ * code) of memmove()/memcpy() is called, in order to copy KMSAN's metadata.
-+ */
-+void kmsan_memmove(void *to, const void *from, size_t size);
-+
- #else
- 
- static inline void kmsan_poison_memory(const void *address, size_t size,
-@@ -77,6 +88,9 @@ static inline void kmsan_copy_to_user(void __user *to, const void *from,
- 				      size_t to_copy, size_t left)
- {
- }
-+static inline void kmsan_memmove(void *to, const void *from, size_t size)
-+{
-+}
- 
- #endif
- 
-diff --git a/mm/kmsan/hooks.c b/mm/kmsan/hooks.c
-index 5d6e2dee5692..364f778ee226 100644
---- a/mm/kmsan/hooks.c
-+++ b/mm/kmsan/hooks.c
-@@ -285,6 +285,17 @@ void kmsan_copy_to_user(void __user *to, const void *from, size_t to_copy,
- }
- EXPORT_SYMBOL(kmsan_copy_to_user);
- 
-+void kmsan_memmove(void *to, const void *from, size_t size)
-+{
-+	if (!kmsan_enabled || kmsan_in_runtime())
-+		return;
-+
-+	kmsan_enter_runtime();
-+	kmsan_internal_memmove_metadata(to, (void *)from, size);
-+	kmsan_leave_runtime();
-+}
-+EXPORT_SYMBOL(kmsan_memmove);
-+
- /* Helper function to check an URB. */
- void kmsan_handle_urb(const struct urb *urb, bool is_out)
- {
+That said, do you think it is still worth cleaning up embedders for
+dummy net_devices?
 
+[1] https://lore.kernel.org/all/202402281554.C1CEEF744@keescook/
 
