@@ -1,560 +1,147 @@
-Return-Path: <linux-kernel+bounces-94265-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94266-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00CB3873C34
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:27:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CADC8873C35
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:27:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6AF73B20B08
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:27:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBD4D1C23C34
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:27:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 518F8137775;
-	Wed,  6 Mar 2024 16:27:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5035A13793D;
+	Wed,  6 Mar 2024 16:27:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="3xWDl1H4"
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2050.outbound.protection.outlook.com [40.107.220.50])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nhZld4lG"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8587B12EBF3
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 16:27:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.50
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709742423; cv=fail; b=rQTch8UVRHVYJSoloUWyzQOHb6NrokPBL+P3/US2G2sqIycLAk4EdfTLHh01PiJaGTCVdC14Mw6dWA1I5Vaz4HwDHXRIGMCau2kShOXvB3U+1Z5xjLWc+ydM/fwcVcxY5+Y5TNUf1Q5Z9OSCuwzI5fOVPWjtXSIcyLc4DOGK3KE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709742423; c=relaxed/simple;
-	bh=1z57VLwu2ti0VeFClcwq5FLmnWAcez53fmyCGqpogHc=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=LPgTgMJ0H28vVL1HVPLHZkYu8x+yep684G/sqtaTQA5bjrEZITMMNem8adDt2cFPpHvmq4hEYAqNvnbK7hZ1//ss80seY7PX/ElbcK56d6Rd4IBPuhG/jrNKmPFMjWJ4364D/vhokvq67zAWSGnwu8IvFQ6FhF4ZWUm3zjJsOx4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=3xWDl1H4; arc=fail smtp.client-ip=40.107.220.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iXm8mgCoYFFd3gNYTrBF+NBOHScx2au3wdWw7aK9LQzYxsXvVgi8Ty9KVr1drbwpRiOhlt+qTEjszh0YS8iG6ZJndorCWWQZhJaxdBytqOda3L+PCU2S2sGvZSZ9/OoNII16x64d7wrOLNyJl1M4/xV5CqIingdfqEFW0nKu6/qRuEjbVCsgMPH/5sktCkFxBM/0fK/Dk3S1s5iBvsnHwSTX2R3bLyZGP+PbiakzbY1SzSaO5FjxXsbKMpDHDSvPQp0/CXswtm/mdAoMeKiKoyQuMBuNwKDVO7QMxh44gJZ6A3FGfBdw6z8CG0AVn73VyaTkSiSjRzmk08NRJNPHBQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1GwWLH2Q1vDA4466nG1JMDSz+P+RoSYYAxKoSU7xVGg=;
- b=FMVxFCCWdGznKQZGPvXVpkScXp6NX0kvJBOxYB3T05ajWLXBHPFdJCgorFohjzYWXxs7Es5o0dFZxo68byJYHKzPnedQJhPUwP/9D89SkCjyweWbRbEbMTbkXb9lnS/Zb9i56EJYFJmonwGf1dQe+brc1bK0ht4Itp84Mr0UfheZGisGxZ6Wc7lL2pSyfEQK8Ea2Q78ZgcSUS9MFSAkV1j4/h51I7rVkb28L2pX+lq4jThlaFlZI73kPDM0h9a8ys9dVl56/be5o5gHfJYWE5SsZo7+w82OdPBMRX31K+FeViZ0kKKcjRcfuUtuall58iawwc7g+mXum2E4JJkZjeA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1GwWLH2Q1vDA4466nG1JMDSz+P+RoSYYAxKoSU7xVGg=;
- b=3xWDl1H4R8XInqK9IbtbJZOtjSSjk0gNzfRqbDp9dgjh5LsEIgR8raTH1vfc2XKYGM87Gf4Mzv9un74GZobWuj3hh/ToHj0oFIkKL7JcRkzrfqtjh4ivIdEslzoYZBy7oLXlvJ54NC0hcSF21pwPCNC667eAt5E9R0Mka0l6Sb8=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH7PR12MB5596.namprd12.prod.outlook.com (2603:10b6:510:136::13)
- by MN0PR12MB6174.namprd12.prod.outlook.com (2603:10b6:208:3c5::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.39; Wed, 6 Mar
- 2024 16:26:56 +0000
-Received: from PH7PR12MB5596.namprd12.prod.outlook.com
- ([fe80::6f48:e3f1:6ff9:75bd]) by PH7PR12MB5596.namprd12.prod.outlook.com
- ([fe80::6f48:e3f1:6ff9:75bd%4]) with mapi id 15.20.7362.019; Wed, 6 Mar 2024
- 16:26:56 +0000
-Message-ID: <32f94f5c-88c6-4e18-8ac3-ff1b80cbd5d0@amd.com>
-Date: Wed, 6 Mar 2024 21:56:48 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/amdgpu: cache in more vm fault information
-Content-Language: en-US
-To: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
- Alex Deucher <alexdeucher@gmail.com>
-Cc: Sunil Khatri <sunil.khatri@amd.com>,
- Alex Deucher <alexander.deucher@amd.com>,
- Shashank Sharma <shashank.sharma@amd.com>, amd-gfx@lists.freedesktop.org,
- Pan@rtg-sunil-navi33.amd.com, Xinhui <Xinhui.Pan@amd.com>,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- Mukul Joshi <mukul.joshi@amd.com>,
- Arunpravin Paneer Selvam <Arunpravin.PaneerSelvam@amd.com>
-References: <20240306090408.3453152-1-sunil.khatri@amd.com>
- <2f792620-fd8a-412e-9130-e276ba36d5a0@amd.com>
- <5e2899cd-75b4-4ddd-97ff-4e10a2e67fbb@amd.com>
- <66815303-bd9c-4dfc-ae1a-bbdc5d1bb47c@amd.com>
- <17e12147-79dd-44ba-b8ae-b96fb72dcfbd@amd.com>
- <CADnq5_OkeH1x4YgSv6uw0HLb5c-5NOXnzQPJHsDvb=NmEePB-A@mail.gmail.com>
- <e5781df5-5244-465e-b986-c1802e1262db@gmail.com>
- <0df75ff4-ece5-4eaa-93bd-6f03ec31ecfa@amd.com>
- <bfaaad63-a5d7-4ceb-8e1c-d541f76f4037@amd.com>
- <852e4f0e-c743-44c2-a2bb-59f0e8e25e1b@amd.com>
- <0be0df75-9794-4b7a-a975-a5ea86b7d3f3@amd.com>
-From: "Khatri, Sunil" <sukhatri@amd.com>
-In-Reply-To: <0be0df75-9794-4b7a-a975-a5ea86b7d3f3@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: MA1P287CA0009.INDP287.PROD.OUTLOOK.COM
- (2603:1096:a00:35::17) To PH7PR12MB5596.namprd12.prod.outlook.com
- (2603:10b6:510:136::13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FAA6137927;
+	Wed,  6 Mar 2024 16:27:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709742430; cv=none; b=UiqHFEWsjS9+U/DSAEBp2MZlhWFKpksXn8VWzEFXPpwaPiOUslY+sebuwYdlL666q6UYebRn3wF3rOuVJmNubAi2Ui8QXfJoa4AVgfS3j5jNl/I87DhukLHp0/CNMPHCsChHEv+Sf5EyPMaijl071W1VY/bomLikeC9cwHzhs6s=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709742430; c=relaxed/simple;
+	bh=mST0baNuDZQDxdlBh3gFG3t11nxhv4188xlTctM8KAI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=r4l08d/VMcu+rO5DdqUhcDeAKa54zxY6W0GJfRR0pemUxw/JBcWc0Wf3Z8ii57jj4dkwDktSVO0ZRjc+VgWKOaEprMwgc7Cx0rqU6msdZa+iIJFfzocGPWDHV4Hn+e1hWdxF6Ikwt30YVTfEcphzkSPrm/QYTjgSwVS22NcgQlg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nhZld4lG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0319C43394;
+	Wed,  6 Mar 2024 16:27:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709742430;
+	bh=mST0baNuDZQDxdlBh3gFG3t11nxhv4188xlTctM8KAI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=nhZld4lG7GINhc9K+uHkPNx96orLDEa10TFZ8fEVhsgtrQGnohY+sjOGAJeqHRUk0
+	 EunhC94QsqjPcgQJIBoTGD+jl+/oBLty/HOXPxhSDDx0ILhdXmjg3OV4oqSyBifmEg
+	 fx8vh9KvS7IBDFmGCka2nhjMkPRLCctoO2ukJYxMlSqD0OGibw+RXKhWQxdT/CmCPX
+	 dKHXpLknEXw4ezT7k+4mUhxBxC+BbY9q94jfHImJVTIAC76bg+YAPhzQeVuK8VH4el
+	 VjK/aIAMMvuaG0KfflRxexmg7SG8eKGpm0uULUJyAotL8fN0VJ7N/BS9hTPX0DE24s
+	 NoWoYQntpKEkw==
+Date: Wed, 6 Mar 2024 13:27:06 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Mike Galbraith <efault@gmx.de>, Peter Zijlstra <peterz@infradead.org>,
+	Marco Elver <elver@google.com>, linux-rt-users@vger.kernel.org,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Clark Williams <williams@redhat.com>,
+	Alessandro Carminati <acarmina@redhat.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Artem Savkov <asavkov@redhat.com>
+Subject: Re: 'perf test sigtrap' failing on PREEMPT_RT_FULL
+Message-ID: <ZeiZWjRUmXszp0CN@x1>
+References: <ZdZOYnIkjqkyfo5P@x1>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB5596:EE_|MN0PR12MB6174:EE_
-X-MS-Office365-Filtering-Correlation-Id: 46167744-8c53-47fc-7100-08dc3dfa3d9e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	5MXFesnD6hulsVdLyu9+auv5ai1V4KoshAnJy9ilziPnUIyJTdtwD5oUQMQy9aq7iGCAil9bzlAHC/zllC+N0Mtx2J8JGo6tkZVKVIzmzg7l9WELgeFbGWUlztwj0mnuW1YQUU7fTuqgfghS+WqqB1fcFxyyq8Oe5D70YMfs/5P/O14SyAKj3Qf8z5ybY5X+Om0uPZdtIDbdiVe3gZSE5SEaPp+H1j8B/IZhGquvRzyZwsGqQR4eXOnf4ATaxBAE061eTGyslyVJk7nGda32aoyyUTYpeOwoKIuL5A7BTczGMBZFboGD4W+AfSYIuw0as6nVtuDXJUiFBWvPOLsGirXIu9gd9X9so2mE79t8NGoROqldi1ze1ZIRue5X/+1Ibps5gl7sht6iWA+rjVBReZ4lXA6CFqhD9bL/ZfRTi/N5oqcXMZTfCy4DeEh+oIkCY8TRfZw/JDNWziCCeboWJ+LhvZG3LEZTr8C2cGWC4uOmKZ9Mrt60OEdWG5wZykXx+WOkudgqorK8BxHHFAFJndpuex3gMN3QvFEfzTv3FQeR46+AJe+Vl2Y+fEkOivtVSCeJ+SfDiKaxqMv1PGj96lU13XQdQ3iK44IVWzoxqT7Kh4Ecn9Ms0kNfB2yYS9/Y
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5596.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?NWM4anNJUG1aeXlvNHZMSkh2bUcxcFJqdVJ5Rmlxa3MwL3F3Wm1CUU94Szdz?=
- =?utf-8?B?WXg5UVRjMytTczBlZFhtd0FURjM1TDJZeFJ0YjJ3WHlRU2VHU01IZ3NUbyt6?=
- =?utf-8?B?R3BwcHRxd0R1S0x6NGpOT0IxMGVxK3B1enNPYlpyUFNpbm81Y1FaYVJpMTdW?=
- =?utf-8?B?Zk4vQ1VIRmt6M1kxaHZ5VWsyUExnQ215R0puR3FzMVV2N2paNUV0VkxmNFRr?=
- =?utf-8?B?ZFhwSFlSY3BrS3cvbEgxYWt1eit3UG5rWnltMk1Zcmo2eXNHOS9TNjc4ZlZO?=
- =?utf-8?B?NGZiNExoWEV2SDBhSVNweUZRMGx1MS8xcWxEWm1VVFNiLytWSmR2MkhlSTY5?=
- =?utf-8?B?MlRjZXhaSjBaajNTSUhzdmNOUmRGRG8ycGV4Q0Q4b1dYOG41ckJoMHhOS1Y1?=
- =?utf-8?B?T3EwOHZIM2JCNlBsVElVdWFjc1AyQUthaDJJTDI2N1dpbHZEU1FnTVRnVG81?=
- =?utf-8?B?Q1g2QXBnek9raHJ5N2lySkN3UjRleE41T2w4UkthTm5aanp4dmhuZkhwQlR2?=
- =?utf-8?B?R0k1NEx1K0xwOGNiVFNUdWVxQzJxNXNaNlM4OEZwbzBLbm5YYTA0dStmWVZn?=
- =?utf-8?B?aHNGVTdFandxSXlxMWdrZG1JNlJkSWdpcmlFQStORi9xeDhlRDJ6ajBRdVhm?=
- =?utf-8?B?Nnp4UElFVUVKYTd3NmJIRjIyeklpa3lRUnVVL2NJY3c3Sjh1VlQ4NWdNZi8v?=
- =?utf-8?B?UjVEVFlXOXYzdG1BSG13SjRIaGxiNWM4SmJieHBuNXFOZlpGQjlwOHFRU0Ju?=
- =?utf-8?B?aktISm5JaGt5SnhFQjk1Q0JZQThiS1Z5dURDY25ITFVMbm53dXNhWnFQcWZv?=
- =?utf-8?B?OVhCd3c3SnJkcDdUV0RKQVlYWVYzRW5wdzJxd1B1dEx5MFRUTkRuckVxcmRO?=
- =?utf-8?B?dlVjOXhFVWhHQU9JMG9pck93U0NYU3dUdlhraG13eTRlVVVoRWNoR3hwWlJK?=
- =?utf-8?B?dDNBd0p1ejM4czdRbGRUWnVHSjE3T1dMWk5GQTg5b0M5NnVBWTJ1emZIL0pI?=
- =?utf-8?B?ZkxsL3YxY1FYK3ZKR2Rzc0RsVEczWitZM3BTdUNNQmZNdkZsUFI3OHVRU1Jq?=
- =?utf-8?B?TFJVV1FhZXFMaUR3dkZPQk90cmdYa2MweE5PZjEyTTdqU3FFeFBUbXJ2bWdE?=
- =?utf-8?B?SW9NTzkyM1JlL3BtcFBkL2pQQ2VpcS9wajd6TGNscTJsRVNDZzJMbE4wWGtu?=
- =?utf-8?B?SmZ0MU5wem00Q2FIOVdja2lFdEtaWGhKeWtubHYzL1lWaG05VUx5WjVzc29t?=
- =?utf-8?B?NjZ2bzhKVmxmRmphSURuTmV2VnZ2ZzVWd29aZW9aNjQ5REdxUEZlbmxHWjNo?=
- =?utf-8?B?cGFnaHEvZWxGZ2pBdzBURnJHQ256SnFJYURIUkdZK1Z5WTZuUVNEMzNlbnVU?=
- =?utf-8?B?UFlmYUxYRlRTcGYybEtyTGNmcHBQc2ZhRXNHWWxlL0lSZkMvUXd2VkVJY0g5?=
- =?utf-8?B?TWtXb2w5MG9zbU9XTUdEd0FNdUtjQjB2ak1SWVlHZ2VCODU3ZnlHVGt2T2Fn?=
- =?utf-8?B?WEwyUUNONnVvYnF5dlkrMzlXRjhKWHcrTzlxNFRSc1p5R0ZsVGFMSUVaVzhM?=
- =?utf-8?B?OWQ3Rlp1KzNRaDhPVU1veGJrMnJPRTBRN2crUitka09VanRmbmZ3LzJWKzZD?=
- =?utf-8?B?OFJMY1JESDY5MGZtamVUWlVrZmMzbnZLMEFuU1VGVGN1dCtZRGxER0VuMXc3?=
- =?utf-8?B?NGdpS0UvV1RXQVZ2RS8rTjJWaWJlYWVZcElTZHQxSTVUbUFET3ZrT0hlWW5J?=
- =?utf-8?B?bklsUktxeE00TmRmOFJweVV0Q3VsNHkzQWdJdkI2ZEZpRjRJVEZnaC84UG9r?=
- =?utf-8?B?YUJVaXR5NDU1eWc1Z0hqRFlrUGhoTytxVGtiVFdvVWx2MUlQWklvWlpJUmNB?=
- =?utf-8?B?SE1UYk9mT25hT1J6alR1OEhacFBCSndVN3dGVGZXci80N0g0d2ZWeFMydVIw?=
- =?utf-8?B?dlhPM1JwL2htbFhPdFFhMEFlNzRnWjZ2QnNCdFdPUVliWXF3RTlsakxsOXZl?=
- =?utf-8?B?Qy91Ymk1bWpCbXFETjBNdlJBcHBLNERUVTFhQUh2cGwxSG5lMFlmMU1Sd2tQ?=
- =?utf-8?B?em40ZjdERlViOHk1cTN5cUpYeTRtOHJlQXJKaFV4RkVidUlGMVNYcEpQaWJv?=
- =?utf-8?Q?dP0wBvpmGW1EHu+LWGV42dZxI?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 46167744-8c53-47fc-7100-08dc3dfa3d9e
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5596.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Mar 2024 16:26:56.6117
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: NVOZrSwOkp0Eeu/8rw1W4ONAXwxejH5r7RPBz1kRwyqOqECO4iMIjJ4DB0zN2qyjzYs//stJv7TX5MEYWPUxoA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB6174
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZdZOYnIkjqkyfo5P@x1>
 
+On Wed, Mar 06, 2024 at 10:06:30AM -0300, Arnaldo Carvalho de Melo wrote:
+> > In Thu, 4 Jan 2024 19:35:57 -0300, Arnaldo Carvalho de Melo wrote:
+> > > +++ b/kernel/events/core.c
+> > > @@ -6801,7 +6801,7 @@ static void perf_pending_task(struct callback_head *head)
+> > >         * If we 'fail' here, that's OK, it means recursion is already disabled
+> > >         * and we won't recurse 'further'.
+> > >         */
+> > >-       preempt_disable_notrace();
+> > >+       migrate_disable();
+> > >        rctx = perf_swevent_get_recursion_context();
+>  
+> > Pardon my ignorance, is it safe to call preempt_count() with preemption
+> > enabled on PREEMPT_RT, or at least in the context being discussed here?
+>  
+> > Because:
+>  
+> > 	 perf_swevent_get_recursion_context()
+> > 	     get_recursion_context()
+> >                  interrupt_context_level()
+> >                      preempt_count()	
+>  
+> > And:
+>  
+> > int perf_swevent_get_recursion_context(void)
+> > {
+> >         struct swevent_htable *swhash = this_cpu_ptr(&swevent_htable);
+> > 
+> >         return get_recursion_context(swhash->recursion);
+> > }
+> 
+> Seems to be enough because perf_pending_task is a irq_work callback and
 
-On 3/6/2024 9:49 PM, Christian König wrote:
-> Am 06.03.24 um 17:06 schrieb Khatri, Sunil:
->>
->> On 3/6/2024 9:07 PM, Christian König wrote:
->>> Am 06.03.24 um 16:13 schrieb Khatri, Sunil:
->>>>
->>>> On 3/6/2024 8:34 PM, Christian König wrote:
->>>>> Am 06.03.24 um 15:29 schrieb Alex Deucher:
->>>>>> On Wed, Mar 6, 2024 at 8:04 AM Khatri, Sunil <sukhatri@amd.com> 
->>>>>> wrote:
->>>>>>>
->>>>>>> On 3/6/2024 6:12 PM, Christian König wrote:
->>>>>>>> Am 06.03.24 um 11:40 schrieb Khatri, Sunil:
->>>>>>>>> On 3/6/2024 3:37 PM, Christian König wrote:
->>>>>>>>>> Am 06.03.24 um 10:04 schrieb Sunil Khatri:
->>>>>>>>>>> When an  page fault interrupt is raised there
->>>>>>>>>>> is a lot more information that is useful for
->>>>>>>>>>> developers to analyse the pagefault.
->>>>>>>>>> Well actually those information are not that interesting because
->>>>>>>>>> they are hw generation specific.
->>>>>>>>>>
->>>>>>>>>> You should probably rather use the decoded strings here, e.g. 
->>>>>>>>>> hub,
->>>>>>>>>> client, xcc_id, node_id etc...
->>>>>>>>>>
->>>>>>>>>> See gmc_v9_0_process_interrupt() an example.
->>>>>>>>>> I saw this v9 does provide more information than what v10 and 
->>>>>>>>>> v11
->>>>>>>>>> provide like node_id and fault from which die but thats again 
->>>>>>>>>> very
->>>>>>>>>> specific to IP_VERSION(9, 4, 3)) i dont know why thats 
->>>>>>>>>> information
->>>>>>>>>> is not there in v10 and v11.
->>>>>>>>> I agree to your point but, as of now during a pagefault we are
->>>>>>>>> dumping this information which is useful like which client
->>>>>>>>> has generated an interrupt and for which src and other 
->>>>>>>>> information
->>>>>>>>> like address. So i think to provide the similar information in 
->>>>>>>>> the
->>>>>>>>> devcoredump.
->>>>>>>>>
->>>>>>>>> Currently we do not have all this information from either job 
->>>>>>>>> or vm
->>>>>>>>> being derived from the job during a reset. We surely could add 
->>>>>>>>> more
->>>>>>>>> relevant information later on as per request but this 
->>>>>>>>> information is
->>>>>>>>> useful as
->>>>>>>>> eventually its developers only who would use the dump file 
->>>>>>>>> provided
->>>>>>>>> by customer to debug.
->>>>>>>>>
->>>>>>>>> Below is the information that i dump in devcore and i feel 
->>>>>>>>> that is
->>>>>>>>> good information but new information could be added which 
->>>>>>>>> could be
->>>>>>>>> picked later.
->>>>>>>>>
->>>>>>>>>> Page fault information
->>>>>>>>>> [gfxhub] page fault (src_id:0 ring:24 vmid:3 pasid:32773)
->>>>>>>>>> in page starting at address 0x0000000000000000 from client 
->>>>>>>>>> 0x1b (UTCL2)
->>>>>>>> This is a perfect example what I mean. You record in the patch 
->>>>>>>> is the
->>>>>>>> client_id, but this is is basically meaningless unless you have 
->>>>>>>> access
->>>>>>>> to the AMD internal hw documentation.
->>>>>>>>
->>>>>>>> What you really need is the client in decoded form, in this case
->>>>>>>> UTCL2. You can keep the client_id additionally, but the decoded 
->>>>>>>> client
->>>>>>>> string is mandatory to have I think.
->>>>>>>>
->>>>>>>> Sure i am capturing that information as i am trying to minimise 
->>>>>>>> the
->>>>>>>> memory interaction to minimum as we are still in interrupt context
->>>>>>>> here that why i recorded the integer information compared to 
->>>>>>>> decoding
->>>>>>> and writing strings there itself but to postpone till we dump.
->>>>>>>
->>>>>>> Like decoding to the gfxhub/mmhub based on vmhub/vmid_src and 
->>>>>>> client
->>>>>>> string from client id. So are we good to go with the information 
->>>>>>> with
->>>>>>> the above information of sharing details in devcoredump using the
->>>>>>> additional information from pagefault cached.
->>>>>> I think amdgpu_vm_fault_info() has everything you need already 
->>>>>> (vmhub,
->>>>>> status, and addr).  client_id and src_id are just tokens in the
->>>>>> interrupt cookie so we know which IP to route the interrupt to. We
->>>>>> know what they will be because otherwise we'd be in the interrupt
->>>>>> handler for a different IP.  I don't think ring_id has any useful
->>>>>> information in this context and vmid and pasid are probably not too
->>>>>> useful because they are just tokens to associate the fault with a
->>>>>> process.  It would be better to have the process name.
->>>>
->>>> Just to share context here Alex, i am preparing this for 
->>>> devcoredump, my intention was to replicate the information which in 
->>>> KMD we are sharing in Dmesg for page faults. If assuming we do not 
->>>> add client id specially we would not be able to share enough 
->>>> information in devcoredump.
->>>> It would be just address and hub(gfxhub/mmhub) and i think that is 
->>>> partial information as src id and client id and ip block shares 
->>>> good information.
->>>>
->>>> For process related information we are capturing that information 
->>>> part of dump from existing functionality.
->>>> **** AMDGPU Device Coredump ****
->>>> version: 1
->>>> kernel: 6.7.0-amd-staging-drm-next
->>>> module: amdgpu
->>>> time: 45.084775181
->>>> process_name: soft_recovery_p PID: 1780
->>>>
->>>> Ring timed out details
->>>> IP Type: 0 Ring Name: gfx_0.0.0
->>>>
->>>> Page fault information
->>>> [gfxhub] page fault (src_id:0 ring:24 vmid:3 pasid:32773)
->>>> in page starting at address 0x0000000000000000 from client 0x1b 
->>>> (UTCL2)
->>>> VRAM is lost due to GPU reset!
->>>>
->>>> Regards
->>>> Sunil
->>>>
->>>>>
->>>>> The decoded client name would be really useful I think since the 
->>>>> fault handled is a catch all and handles a whole bunch of 
->>>>> different clients.
->>>>>
->>>>> But that should be ideally passed in as const string instead of 
->>>>> the hw generation specific client_id.
->>>>>
->>>>> As long as it's only a pointer we also don't run into the trouble 
->>>>> that we need to allocate memory for it.
->>>>
->>>> I agree but i prefer adding the client id and decoding it in 
->>>> devcorecump using soc15_ih_clientid_name[fault_info->client_id]) is 
->>>> better else we have to do an sprintf this string to fault_info in 
->>>> irq context which is writing more bytes to memory i guess compared 
->>>> to an integer:)
->>>
->>> Well I totally agree that we shouldn't fiddle to much in the 
->>> interrupt handler, but exactly what you suggest here won't work.
->>>
->>> The client_id is hw generation specific, so the only one who has 
->>> that is the hw generation specific fault handler. Just compare the 
->>> defines here:
->>>
->>> https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c#L83 
->>>
->>>
->>> and here:
->>>
->>> https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/amd/amdgpu/gfxhub_v11_5_0.c#L38 
->>>
->>>
->> Got your point. Let me see but this is a lot of work in irq context. 
->> Either we can drop totally the client id thing as alex is suggesting 
->> here as its always be same client and src id or let me come up with a 
->> patch and see if its acceptable.
->
-> Wait a second, I now realized that you are mixing something up here. 
-> As Alex said the src_id and client_id in the IV are always the same, 
-> e.g. the VMC or the UTCL2.
->
-> This is the client_id which send the IV to IH so that the IH can write 
-> it into the ring buffer and we end up in the fault handler.
->
-> But additional to that we also have a client_id inside the fault and 
-> that is the value printed in the logs. This is the client which caused 
-> the fault inside the VMC or UTCL2.
->
-Yes the value remains the same irrespective of the family. Client always 
-will be VMC/UTCL2 so i think as Alex suggested we can drop this 
-information or just add a hardcoded string for information purposes only.
->>
->> Also as Alex pointed we need to decode from status register which 
->> kind of page fault it is (permission, read, write etc) this all is 
->> again family specific and thats all in IRQ context. Not feeling good 
->> about it but let me try to share all that in a new patch.
->
-> Yeah, but that is all hw specific. I'm not sure how best to put it 
-> into a devcoredump.
->
-> Maybe just record the 32bit value and re-design the GMC code to have 
-> that decoded into a string for both the system log and the devcoredump.
->
-> Alex suggested a good way to just share the value of status register 
-> and add family information and let developer use the family/asic id to 
-> check the register value and decode it manually.
->
-Regards
+s/irq_work/task_work/ but that also doesn't reentry, I think
 
-Sunil.
+> that is guaranteed not to reentry?
+> 
+> Artem's tests with a RHEL kernel seems to indicate that, ditto for my,
+> will test with upstream linux-6.8.y-rt.
+> 
+> But there is a lot more happening in perf_sigtrap and I'm not sure if
+> the irq_work callback gets preempted we would not race with something
+> else.
+> 
+> Marco, Mike, ideas?
 
->
->
->>
->> Regards
->> Sunil.
->>
->>> Regards,
->>> Christian.
->>>
->>>>
->>>> We can argue on values like pasid and vmid and ring id to be taken 
->>>> off if they are totally not useful.
->>>>
->>>> Regards
->>>> Sunil
->>>>
->>>>>
->>>>> Christian.
->>>>>
->>>>>>
->>>>>> Alex
->>>>>>
->>>>>>> regards
->>>>>>> sunil
->>>>>>>
->>>>>>>> Regards,
->>>>>>>> Christian.
->>>>>>>>
->>>>>>>>> Regards
->>>>>>>>> Sunil Khatri
->>>>>>>>>
->>>>>>>>>> Regards,
->>>>>>>>>> Christian.
->>>>>>>>>>
->>>>>>>>>>> Add all such information in the last cached
->>>>>>>>>>> pagefault from an interrupt handler.
->>>>>>>>>>>
->>>>>>>>>>> Signed-off-by: Sunil Khatri <sunil.khatri@amd.com>
->>>>>>>>>>> ---
->>>>>>>>>>>    drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c | 9 +++++++--
->>>>>>>>>>>    drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h | 7 ++++++-
->>>>>>>>>>>    drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c | 2 +-
->>>>>>>>>>>    drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c | 2 +-
->>>>>>>>>>>    drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c  | 2 +-
->>>>>>>>>>>    drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c  | 2 +-
->>>>>>>>>>>    drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c  | 2 +-
->>>>>>>>>>>    7 files changed, 18 insertions(+), 8 deletions(-)
->>>>>>>>>>>
->>>>>>>>>>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
->>>>>>>>>>> b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
->>>>>>>>>>> index 4299ce386322..b77e8e28769d 100644
->>>>>>>>>>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
->>>>>>>>>>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
->>>>>>>>>>> @@ -2905,7 +2905,7 @@ void amdgpu_debugfs_vm_bo_info(struct
->>>>>>>>>>> amdgpu_vm *vm, struct seq_file *m)
->>>>>>>>>>>     * Cache the fault info for later use by userspace in 
->>>>>>>>>>> debugging.
->>>>>>>>>>>     */
->>>>>>>>>>>    void amdgpu_vm_update_fault_cache(struct amdgpu_device 
->>>>>>>>>>> *adev,
->>>>>>>>>>> -                  unsigned int pasid,
->>>>>>>>>>> +                  struct amdgpu_iv_entry *entry,
->>>>>>>>>>>                      uint64_t addr,
->>>>>>>>>>>                      uint32_t status,
->>>>>>>>>>>                      unsigned int vmhub)
->>>>>>>>>>> @@ -2915,7 +2915,7 @@ void amdgpu_vm_update_fault_cache(struct
->>>>>>>>>>> amdgpu_device *adev,
->>>>>>>>>>> xa_lock_irqsave(&adev->vm_manager.pasids, flags);
->>>>>>>>>>>    -    vm = xa_load(&adev->vm_manager.pasids, pasid);
->>>>>>>>>>> +    vm = xa_load(&adev->vm_manager.pasids, entry->pasid);
->>>>>>>>>>>        /* Don't update the fault cache if status is 0.  In 
->>>>>>>>>>> the multiple
->>>>>>>>>>>         * fault case, subsequent faults will return a 0 
->>>>>>>>>>> status which is
->>>>>>>>>>>         * useless for userspace and replaces the useful fault
->>>>>>>>>>> status, so
->>>>>>>>>>> @@ -2924,6 +2924,11 @@ void amdgpu_vm_update_fault_cache(struct
->>>>>>>>>>> amdgpu_device *adev,
->>>>>>>>>>>        if (vm && status) {
->>>>>>>>>>>            vm->fault_info.addr = addr;
->>>>>>>>>>>            vm->fault_info.status = status;
->>>>>>>>>>> +        vm->fault_info.client_id = entry->client_id;
->>>>>>>>>>> +        vm->fault_info.src_id = entry->src_id;
->>>>>>>>>>> +        vm->fault_info.vmid = entry->vmid;
->>>>>>>>>>> +        vm->fault_info.pasid = entry->pasid;
->>>>>>>>>>> +        vm->fault_info.ring_id = entry->ring_id;
->>>>>>>>>>>            if (AMDGPU_IS_GFXHUB(vmhub)) {
->>>>>>>>>>>                vm->fault_info.vmhub = AMDGPU_VMHUB_TYPE_GFX;
->>>>>>>>>>>                vm->fault_info.vmhub |=
->>>>>>>>>>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h
->>>>>>>>>>> b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h
->>>>>>>>>>> index 047ec1930d12..c7782a89bdb5 100644
->>>>>>>>>>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h
->>>>>>>>>>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h
->>>>>>>>>>> @@ -286,6 +286,11 @@ struct amdgpu_vm_fault_info {
->>>>>>>>>>>        uint32_t    status;
->>>>>>>>>>>        /* which vmhub? gfxhub, mmhub, etc. */
->>>>>>>>>>>        unsigned int    vmhub;
->>>>>>>>>>> +    unsigned int    client_id;
->>>>>>>>>>> +    unsigned int    src_id;
->>>>>>>>>>> +    unsigned int    ring_id;
->>>>>>>>>>> +    unsigned int    pasid;
->>>>>>>>>>> +    unsigned int    vmid;
->>>>>>>>>>>    };
->>>>>>>>>>>      struct amdgpu_vm {
->>>>>>>>>>> @@ -605,7 +610,7 @@ static inline void
->>>>>>>>>>> amdgpu_vm_eviction_unlock(struct amdgpu_vm *vm)
->>>>>>>>>>>    }
->>>>>>>>>>>      void amdgpu_vm_update_fault_cache(struct amdgpu_device 
->>>>>>>>>>> *adev,
->>>>>>>>>>> -                  unsigned int pasid,
->>>>>>>>>>> +                  struct amdgpu_iv_entry *entry,
->>>>>>>>>>>                      uint64_t addr,
->>>>>>>>>>>                      uint32_t status,
->>>>>>>>>>>                      unsigned int vmhub);
->>>>>>>>>>> diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
->>>>>>>>>>> b/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
->>>>>>>>>>> index d933e19e0cf5..6b177ce8db0e 100644
->>>>>>>>>>> --- a/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
->>>>>>>>>>> +++ b/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
->>>>>>>>>>> @@ -150,7 +150,7 @@ static int 
->>>>>>>>>>> gmc_v10_0_process_interrupt(struct
->>>>>>>>>>> amdgpu_device *adev,
->>>>>>>>>>>            status = RREG32(hub->vm_l2_pro_fault_status);
->>>>>>>>>>> WREG32_P(hub->vm_l2_pro_fault_cntl, 1, ~1);
->>>>>>>>>>>    -        amdgpu_vm_update_fault_cache(adev, entry->pasid, 
->>>>>>>>>>> addr,
->>>>>>>>>>> status,
->>>>>>>>>>> +        amdgpu_vm_update_fault_cache(adev, entry, addr, 
->>>>>>>>>>> status,
->>>>>>>>>>>                             entry->vmid_src ? 
->>>>>>>>>>> AMDGPU_MMHUB0(0) :
->>>>>>>>>>> AMDGPU_GFXHUB(0));
->>>>>>>>>>>        }
->>>>>>>>>>>    diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c
->>>>>>>>>>> b/drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c
->>>>>>>>>>> index 527dc917e049..bcf254856a3e 100644
->>>>>>>>>>> --- a/drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c
->>>>>>>>>>> +++ b/drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c
->>>>>>>>>>> @@ -121,7 +121,7 @@ static int 
->>>>>>>>>>> gmc_v11_0_process_interrupt(struct
->>>>>>>>>>> amdgpu_device *adev,
->>>>>>>>>>>            status = RREG32(hub->vm_l2_pro_fault_status);
->>>>>>>>>>> WREG32_P(hub->vm_l2_pro_fault_cntl, 1, ~1);
->>>>>>>>>>>    -        amdgpu_vm_update_fault_cache(adev, entry->pasid, 
->>>>>>>>>>> addr,
->>>>>>>>>>> status,
->>>>>>>>>>> +        amdgpu_vm_update_fault_cache(adev, entry, addr, 
->>>>>>>>>>> status,
->>>>>>>>>>>                             entry->vmid_src ? 
->>>>>>>>>>> AMDGPU_MMHUB0(0) :
->>>>>>>>>>> AMDGPU_GFXHUB(0));
->>>>>>>>>>>        }
->>>>>>>>>>>    diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c
->>>>>>>>>>> b/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c
->>>>>>>>>>> index 3da7b6a2b00d..e9517ebbe1fd 100644
->>>>>>>>>>> --- a/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c
->>>>>>>>>>> +++ b/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c
->>>>>>>>>>> @@ -1270,7 +1270,7 @@ static int 
->>>>>>>>>>> gmc_v7_0_process_interrupt(struct
->>>>>>>>>>> amdgpu_device *adev,
->>>>>>>>>>>        if (!addr && !status)
->>>>>>>>>>>            return 0;
->>>>>>>>>>>    -    amdgpu_vm_update_fault_cache(adev, entry->pasid,
->>>>>>>>>>> +    amdgpu_vm_update_fault_cache(adev, entry,
->>>>>>>>>>>                         ((u64)addr) << AMDGPU_GPU_PAGE_SHIFT,
->>>>>>>>>>> status, AMDGPU_GFXHUB(0));
->>>>>>>>>>>          if (amdgpu_vm_fault_stop == 
->>>>>>>>>>> AMDGPU_VM_FAULT_STOP_FIRST)
->>>>>>>>>>> diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c
->>>>>>>>>>> b/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c
->>>>>>>>>>> index d20e5f20ee31..a271bf832312 100644
->>>>>>>>>>> --- a/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c
->>>>>>>>>>> +++ b/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c
->>>>>>>>>>> @@ -1438,7 +1438,7 @@ static int 
->>>>>>>>>>> gmc_v8_0_process_interrupt(struct
->>>>>>>>>>> amdgpu_device *adev,
->>>>>>>>>>>        if (!addr && !status)
->>>>>>>>>>>            return 0;
->>>>>>>>>>>    -    amdgpu_vm_update_fault_cache(adev, entry->pasid,
->>>>>>>>>>> +    amdgpu_vm_update_fault_cache(adev, entry,
->>>>>>>>>>>                         ((u64)addr) << AMDGPU_GPU_PAGE_SHIFT,
->>>>>>>>>>> status, AMDGPU_GFXHUB(0));
->>>>>>>>>>>          if (amdgpu_vm_fault_stop == 
->>>>>>>>>>> AMDGPU_VM_FAULT_STOP_FIRST)
->>>>>>>>>>> diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
->>>>>>>>>>> b/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
->>>>>>>>>>> index 47b63a4ce68b..dc9fb1fb9540 100644
->>>>>>>>>>> --- a/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
->>>>>>>>>>> +++ b/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
->>>>>>>>>>> @@ -666,7 +666,7 @@ static int 
->>>>>>>>>>> gmc_v9_0_process_interrupt(struct
->>>>>>>>>>> amdgpu_device *adev,
->>>>>>>>>>>        rw = REG_GET_FIELD(status, 
->>>>>>>>>>> VM_L2_PROTECTION_FAULT_STATUS, RW);
->>>>>>>>>>>        WREG32_P(hub->vm_l2_pro_fault_cntl, 1, ~1);
->>>>>>>>>>>    -    amdgpu_vm_update_fault_cache(adev, entry->pasid, addr,
->>>>>>>>>>> status, vmhub);
->>>>>>>>>>> +    amdgpu_vm_update_fault_cache(adev, entry, addr, status, 
->>>>>>>>>>> vmhub);
->>>>>>>>>>>          dev_err(adev->dev,
->>>>>>>>>>> "VM_L2_PROTECTION_FAULT_STATUS:0x%08X\n",
->>>>>
->>>
->
+Looking at:
+
+commit ca6c21327c6af02b7eec31ce4b9a740a18c6c13f
+Author: Peter Zijlstra <peterz@infradead.org>
+Date:   Thu Oct 6 15:00:39 2022 +0200
+
+    perf: Fix missing SIGTRAPs
+    
+    Marco reported:
+    
+    Due to the implementation of how SIGTRAP are delivered if
+    perf_event_attr::sigtrap is set, we've noticed 3 issues:
+    
+      1. Missing SIGTRAP due to a race with event_sched_out() (more
+         details below).
+    
+      2. Hardware PMU events being disabled due to returning 1 from
+         perf_event_overflow(). The only way to re-enable the event is
+         for user space to first "properly" disable the event and then
+         re-enable it.
+    
+      3. The inability to automatically disable an event after a
+         specified number of overflows via PERF_EVENT_IOC_REFRESH.
+    
+    The worst of the 3 issues is problem (1), which occurs when a
+    pending_disable is "consumed" by a racing event_sched_out(), observed
+    as follows:
+
+-------------------------------------------------------------
+
+That its what introduces perf_pending_task(), I'm now unsure we can just
+disable migration, as event_sched_out() seems to require being called
+under a raw_spin_lock and that disables preemption...
+
+- Arnaldo
 
