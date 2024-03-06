@@ -1,92 +1,147 @@
-Return-Path: <linux-kernel+bounces-93327-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93328-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C73FD872E0A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 05:38:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15E59872E10
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 05:41:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 34D96289A33
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 04:38:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B6D81F238F3
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 04:41:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8FD41757A;
-	Wed,  6 Mar 2024 04:38:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3420E17BC5;
+	Wed,  6 Mar 2024 04:41:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="MihSQD3n"
-Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="bJ16IoUx"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41054D502
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 04:38:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3203479E4;
+	Wed,  6 Mar 2024 04:41:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709699922; cv=none; b=YSaeiOMW1ji7ynjHmro/aHfDg7aFW/Fo6MbGPfX6riKX4Zy45ELxF4bibwsaj+uKQcjQxUCB7kKFr35F1qr821JOq6Eu7OuIlw57rHxlXJAbc1oXgiLlBc+uVqOMk61RL+kDwYeOkL1qwCFoCcGcOg/VyRzTjvEu0YZQo3HtEWo=
+	t=1709700073; cv=none; b=iK7K7bF9eCfvKFnlIojPrJs/4COCb06GO1o1/EgcDtrbcuVDj73N/jOhr0QR5csCNK0jz0GYiNQj+8ZvK6iNBNurlXQPBPRDmPdPYVHIzasVyks3cPcpQKRc3Oy0OMOq4ysay5jfVFT4uF/5xePd//PvCnaskWmjPB8vRNWlXiw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709699922; c=relaxed/simple;
-	bh=H5Cs0WgN4HGxfefS4RsQQ7ok2rioEczgmMWuHda6CP4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FPN1w4Ov1Oqksp+Erh5bodheizkUQB4J6YhNmipEgyJNBNHJwTLMxvo9xs0ysFEA/ptKPOP8TlWRIF36wj0CXsPYwXXufD1rxVmB65UgdN7RcTuwG4B6lYDrX9+zK6VgLS31gS70RvJsrBZ0GbyWcTfq1zC6zIjigJfv6iLkmIg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=MihSQD3n; arc=none smtp.client-ip=209.85.222.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-7882c4a259bso122697985a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 20:38:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1709699918; x=1710304718; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=H5Cs0WgN4HGxfefS4RsQQ7ok2rioEczgmMWuHda6CP4=;
-        b=MihSQD3n2XSzWh4bf45SPmln+RR+us3qstjAxOEQSkYcGrkKIgs51sy1jlgzInww+G
-         1wYOknP4Awqv0/ZoSb2RHEPL3vS9CntM45AcG7tQJo6u16d468n+Y2C+gIT3AUZfYmUB
-         BTCCWFe+HZ9IhpDuoIyhrBoRYcExuRcQ1amEwa3+2v2N44VlHcndWWaHKHE2hX7SpRDX
-         ciF7HNDB/29ItzEVgdQoKADoUCKFht3a6rlbI/khLT0S0Sw85WDANMdbrCHw7mmuUDcT
-         qRlZJkRcmbT2gaEulzZIYehj1rQ3EFuk/sQGE3UCGFTG5TfIqS44OpB4aII1W6BvxZTE
-         s0Og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709699918; x=1710304718;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=H5Cs0WgN4HGxfefS4RsQQ7ok2rioEczgmMWuHda6CP4=;
-        b=Z3AQfd/HOAmcCN2Q5rhyGSB4h5UTfYkLsCjrwtKmYtSgsMu3LHPtMQcbIxNn0/91Rn
-         wJR+sq+kL6t3jlXhcOD956uCVoueQXDl41LAIRSi21Mydw4i/snn/kzwED8Iwb3p/CI4
-         wi6yKtvcsgQKzj492T0YXh8w2ft0zfnrIJhj6WSn4NNPQF8hgDfGatbziD1BBamDo72Q
-         4rPODMDJMq0kkHX3VKRYwYXMBspCl0Jkgk9wuWLopwOotAZYlY2s9MeRXpYh30nUHXyb
-         VB9gyuhetSYKhLuPT+XRj3DOPlBYeP2BoFGAOOFrfXXF2AncLaDNzZDW3HWlvRw4JXw5
-         CslA==
-X-Forwarded-Encrypted: i=1; AJvYcCXPHzXW+7BRt+ov1TxtWG2mCRQvdyH2ndEwwpyQm8A6NbBnLyCO/itQs/CCjAv4R3LndIg8pwlhEKhi+DxIKGKgNJQfJRFevgiVsYud
-X-Gm-Message-State: AOJu0Yx36y1QGxiBZThTrqxWi+mHmvHtzxdEjuVWKFqlC3wIUmalvbVz
-	hjuEeZmZvmjBciaXsplPHGpA39dVJpXGCwonFFLr/wsX11yvKZ/dQ+U4o7u0tTkUDIvwUDJAqCZ
-	J
-X-Google-Smtp-Source: AGHT+IHcgDuex73i1sb6eOmPxRVTfio+RyI58EfzQ8jAaxQ1lVw7tZwGtq5iU1jrypr0r/MmYj8uGA==
-X-Received: by 2002:a05:620a:171e:b0:788:3e25:7c55 with SMTP id az30-20020a05620a171e00b007883e257c55mr1358358qkb.49.1709699918042;
-        Tue, 05 Mar 2024 20:38:38 -0800 (PST)
-Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with ESMTPSA id pe23-20020a056214495700b00690766cd5b5sm2883876qvb.141.2024.03.05.20.38.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Mar 2024 20:38:37 -0800 (PST)
-Date: Tue, 5 Mar 2024 23:38:36 -0500
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Vlastimil Babka <vbabka@suse.cz>,
-	Mel Gorman <mgorman@techsingularity.net>, Zi Yan <ziy@nvidia.com>,
-	"Huang, Ying" <ying.huang@intel.com>,
-	David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V3 01/10] mm: page_alloc: freelist migratetype hygiene
-Message-ID: <20240306043836.GA891917@cmpxchg.org>
-References: <20240306041526.892167-1-hannes@cmpxchg.org>
+	s=arc-20240116; t=1709700073; c=relaxed/simple;
+	bh=l1IkUrzW1mx/cl0rRLZCQm8SdUirtVorXIAt/5PbKi0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=mYvWWLwhT2k2wIT2eEXByT2xhTfyRnSccTv7bKxxzevdTSMHSpUxOr2Hl8ptDqAZ5tCu5wygMaGQPjjN5nB8/lAXI0OvAPUOySksCYVxgdCfnfs7UAVHvKXervNb18zLDuOftoSGP2WhsIsmp8x+8ZEdkNgP5tLVtQamTwLWbLw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=bJ16IoUx; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4263fUZH032054;
+	Wed, 6 Mar 2024 04:41:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=b9uw5W43OlRVR4Cue9hE0vrDZHYom0RR5NRmkjne8MI=; b=bJ
+	16IoUxr4tPnyHmlhvxt0VtPN3l8w5cTbSdM23k3hrT8zynb3KgvjuGMBMYVfZ9kC
+	4HxxLB5MXVgKNqM0S6sVU+O/IGL5ZiWbGD6zXeNTX7WVkgTHFAucC59FtwhKCv8N
+	FLdHSPfupu3TCY7MegnvBr2qZPRmBCPywINumkZnP2yl22V3UHWABsYIBeSWl824
+	eAEk3YrX659wKRqQqC6heHbQEM9t0DiJxfeM4Yr2NwbJpvhcmjWWf9XKr+EyjYvi
+	eLn15bRJkN/3ie29FA2PvPxCprCppZWSkZ1Ps2y2uwG+2f3DuBrHPzrG9l81UWhP
+	uTkLn+EPTBcBD3iHLvgw==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wp028adab-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 06 Mar 2024 04:41:06 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4264f6bd023500
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 6 Mar 2024 04:41:06 GMT
+Received: from [10.216.40.128] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 5 Mar
+ 2024 20:41:01 -0800
+Message-ID: <c82e4053-4cef-4010-a734-4dc537574201@quicinc.com>
+Date: Wed, 6 Mar 2024 10:10:55 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240306041526.892167-1-hannes@cmpxchg.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/3] cpufreq: qcom-nvmem: add support for IPQ5321
+To: Viresh Kumar <viresh.kumar@linaro.org>
+CC: Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>, Ilia Lin <ilia.lin@kernel.org>,
+        "Rafael J. Wysocki"
+	<rafael@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>
+References: <20240228-ipq5321-sku-support-v1-0-14e4d4715f4b@quicinc.com>
+ <20240228-ipq5321-sku-support-v1-3-14e4d4715f4b@quicinc.com>
+ <20240304071222.cx3s37mphddk23bv@vireshk-i7>
+ <20240305043503.tgy5ahl243or7lm5@vireshk-i7>
+Content-Language: en-US
+From: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+In-Reply-To: <20240305043503.tgy5ahl243or7lm5@vireshk-i7>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 90V_eyBGKQmCDXZ03aQ0nE73f1tGH7lZ
+X-Proofpoint-ORIG-GUID: 90V_eyBGKQmCDXZ03aQ0nE73f1tGH7lZ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-06_01,2024-03-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ lowpriorityscore=0 mlxlogscore=999 suspectscore=0 phishscore=0 spamscore=0
+ malwarescore=0 mlxscore=0 clxscore=1015 bulkscore=0 impostorscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2403060034
 
-I didn't realize Mike's email address is defunct. Be sure to remove it
-when replying to save yourselves the bounces from the Oracle MTA.
+
+
+On 3/5/2024 10:05 AM, Viresh Kumar wrote:
+> On 04-03-24, 12:42, Viresh Kumar wrote:
+>> On 28-02-24, 20:21, Kathiravan Thirumoorthy wrote:
+>>> Like all other SoCs in IPQ5332 family, cpufreq for IPQ5321 is also
+>>> determined by the eFuse, with the maximum limit of 1.1GHz. Add support
+>>> for the same.
+>>>
+>>> Signed-off-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+>>> ---
+>>>   drivers/cpufreq/qcom-cpufreq-nvmem.c | 1 +
+>>>   1 file changed, 1 insertion(+)
+>>>
+>>> diff --git a/drivers/cpufreq/qcom-cpufreq-nvmem.c b/drivers/cpufreq/qcom-cpufreq-nvmem.c
+>>> index ea05d9d67490..0a46b5d49d32 100644
+>>> --- a/drivers/cpufreq/qcom-cpufreq-nvmem.c
+>>> +++ b/drivers/cpufreq/qcom-cpufreq-nvmem.c
+>>> @@ -191,6 +191,7 @@ static int qcom_cpufreq_kryo_name_version(struct device *cpu_dev,
+>>>   	case QCOM_ID_IPQ5312:
+>>>   	case QCOM_ID_IPQ5302:
+>>>   	case QCOM_ID_IPQ5300:
+>>> +	case QCOM_ID_IPQ5321:
+>>>   	case QCOM_ID_IPQ9514:
+>>>   	case QCOM_ID_IPQ9550:
+>>>   	case QCOM_ID_IPQ9554:
+>>
+>> Applied. Thanks.
+> 
+> Dropped since the previous commit it required too. Can we get the
+> necessary acks for me to pick those ?
+> 
+
+Sorry for not mentioning the dependencies.
+
+patch 1/3 and 2/3 are already has the R-b and A-b tags. But typically 
+those patches will go via qcom tree. Do you want to pick it via your 
+tree? Sorry, I'm not sure on this...
+
+
+Thanks,
+Kathiravan T.
 
