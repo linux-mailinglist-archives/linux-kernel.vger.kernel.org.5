@@ -1,111 +1,101 @@
-Return-Path: <linux-kernel+bounces-94241-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94236-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 120BF873BDB
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:15:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5151873BD5
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:15:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 444DC1C2426D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:15:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 51638B21F2A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:15:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36B24138489;
-	Wed,  6 Mar 2024 16:15:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="Yxr2izgv"
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 895A2137752;
+	Wed,  6 Mar 2024 16:14:48 +0000 (UTC)
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8CA81361C6;
-	Wed,  6 Mar 2024 16:15:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.149.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39A37134733;
+	Wed,  6 Mar 2024 16:14:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709741716; cv=none; b=HCZIHL0JI7+Ov6yG/UgKqbBTVL0UaqL+3a/bW5HDCm0kh0fmaTQtJ5S8vhTeu8uag2AnM5dyGVdbVEuqsNX1JyEH0W8CoSx7+vnJVxCkHRG9x/RzP36GpjFdi58106NnFAVvMWkIXLeWCDUZZ0Su8OGlbyZSS7/+A9uWrlteGrM=
+	t=1709741688; cv=none; b=L7TJNPk3lEIESSUKTD6LPna9mehxaQxAm2Mkt1oMhTdfS20ojxx3t4EfYuLzUzIk3lBz2W3Zp5NtDhhLUMEa+ONyTnwJxFBx2YZw27WZuWEdV+E/A4xDj7cK2f3iK0OPP2Bye/gpHx3pOIkV5lWpf0y0evkFhqjnrRXEu4cftqM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709741716; c=relaxed/simple;
-	bh=RMQmLYTq+/lca1JA6Zn12GvSI8xskgbIRo9zEF+OM+U=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=okIcfsckkGCzj6d+XkgUfQZF3FMnjbjoT8spw0/mGNCgyZ6v4VMxc7DOAEvGX+dwB5wrTWvWt6/2YFOMg0DLKs1ocD3Vna7eTm9gqzME652Psfj79IV9igQHsdOP1cOIvhZNqLteJThMBcycBDxZA66mKNSYPmzB4MLKtDEEXHM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=Yxr2izgv; arc=none smtp.client-ip=67.231.149.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4265UZQj010435;
-	Wed, 6 Mar 2024 10:15:08 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=2EYpIdLCLpu/Qfdxs7ZcC2sdIWeueyqtT7yWJw24UdI=; b=
-	Yxr2izgvWnvIXEAv+/AgNeH3mFypNJerj0Ku9cYA+ai/uqu60rCo6udHh1DE5XoR
-	aUEASdBg7jsLjAB4PAPFChbUP5pHzq/uHU/klTOuECzeIm77SIy8LMIQKj//R+jL
-	xMxBoNNO2jYKLNVszi0Dml6stGNxFqSKApcBKcceHYnOK/DAk4W50Hl7Q+7UR7Ml
-	3X1iHT8rqcn3I39No05fDSfUZw24Tq52tVYzL0IW4PI5n5JdNhE/79D4N2UTcpER
-	tx66c34JTYcvPitlfbrDE6Hq09scvOCrsQ+UrH2eqeCJx5eH1xZrLJjWOljMNMEc
-	F6H5zvESrzgpDW8nIKcnQg==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3wm2d2mwg1-2
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 06 Mar 2024 10:15:07 -0600 (CST)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 6 Mar 2024
- 16:15:07 +0000
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1544.4 via Frontend Transport; Wed, 6 Mar 2024 16:15:06 +0000
-Received: from ediswws08.ad.cirrus.com (ediswws08.ad.cirrus.com [198.90.208.13])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id E33D6820243;
-	Wed,  6 Mar 2024 16:15:06 +0000 (UTC)
-From: Stuart Henderson <stuarth@opensource.cirrus.com>
-To: <broonie@kernel.org>, <shengjiu.wang@gmail.com>, <Xiubo.Lee@gmail.com>
-CC: <patches@opensource.cirrus.com>, <linux-sound@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        "Stuart
- Henderson" <stuarth@opensource.cirrus.com>
-Subject: [PATCH 3/5] ASoC: fsl: Fix up mclk_id for fsl,imx-audio-wm8962
-Date: Wed, 6 Mar 2024 16:14:37 +0000
-Message-ID: <20240306161439.1385643-3-stuarth@opensource.cirrus.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240306161439.1385643-1-stuarth@opensource.cirrus.com>
-References: <20240306161439.1385643-1-stuarth@opensource.cirrus.com>
+	s=arc-20240116; t=1709741688; c=relaxed/simple;
+	bh=ph4wOA/W80emziteg+Lwe4Qh5uu+xg9ATnw4VSdVs0s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cKgaNcSvYN4Sks/GOTe7Vrb+MaJub+wA+xUk8qxDetNO5/H688N8Bqf8noezxhPSl63a5ved1axvwJPDxO6vcXalf/5inTckEZ8yRNkkQw1bHdj9/J8/JIpPQBuZFt8mqL25ZarhZLI/SgZqq6YOBrQyq2DxG4PFsN6d9uk0Ktw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id 339E968C4E; Wed,  6 Mar 2024 17:14:39 +0100 (CET)
+Date: Wed, 6 Mar 2024 17:14:38 +0100
+From: Christoph Hellwig <hch@lst.de>
+To: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Christoph Hellwig <hch@lst.de>, Keith Busch <kbusch@kernel.org>,
+	Leon Romanovsky <leon@kernel.org>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+	Chaitanya Kulkarni <chaitanyak@nvidia.com>,
+	Chaitanya Kulkarni <kch@nvidia.com>,
+	Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
+	Sagi Grimberg <sagi@grimberg.me>, Yishai Hadas <yishaih@nvidia.com>,
+	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
+	iommu@lists.linux.dev, linux-nvme@lists.infradead.org,
+	kvm@vger.kernel.org, linux-mm@kvack.org,
+	Bart Van Assche <bvanassche@acm.org>,
+	Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+	Amir Goldstein <amir73il@gmail.com>,
+	"josef@toxicpanda.com" <josef@toxicpanda.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	"daniel@iogearbox.net" <daniel@iogearbox.net>,
+	Dan Williams <dan.j.williams@intel.com>,
+	"jack@suse.com" <jack@suse.com>,
+	Leon Romanovsky <leonro@nvidia.com>,
+	Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: Re: [RFC RESEND 16/16] nvme-pci: use blk_rq_dma_map() for NVMe SGL
+Message-ID: <20240306161438.GA28427@lst.de>
+References: <cover.1709635535.git.leon@kernel.org> <016fc02cbfa9be3c156a6f74df38def1e09c08f1.1709635535.git.leon@kernel.org> <Zec_nAQn1Ft_ZTHH@kbusch-mbp.dhcp.thefacebook.com> <20240306143321.GA19711@lst.de> <20240306150518.GL9225@ziepe.ca>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: Zq9cizakeBP__Op7gmoYpMpTME1TrWbh
-X-Proofpoint-GUID: Zq9cizakeBP__Op7gmoYpMpTME1TrWbh
-X-Proofpoint-Spam-Reason: safe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240306150518.GL9225@ziepe.ca>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 
-wm8962_set_fll is currently incorrect, and largely ignores the source
-parameter.  This patch fixes this use of wm8962_set_fll in preparation
-for fixing this.  Previously we were using WM8962_SYSCLK_MCLK (0), but
-wm8962_set_fll ends up using the fll_id (in this case WM8962_FLL = 1).
-Change this to WM8962_FLL_MCLK (1) instead.
+On Wed, Mar 06, 2024 at 11:05:18AM -0400, Jason Gunthorpe wrote:
+> > Yes.  And this whole proposal also seems clearly confused (not just
+> > because of the gazillion reposts) but because it mixes up the case
+> > where we can coalesce CPU regions into a single dma_addr_t range
+> > (iommu and maybe in the future swiotlb) and one where we need a
+> 
+> I had the broad expectation that the DMA API user would already be
+> providing a place to store the dma_addr_t as it has to feed that into
+> the HW. That memory should simply last up until we do dma unmap and
+> the cases that need dma_addr_t during unmap can go get it from there.
 
-Signed-off-by: Stuart Henderson <stuarth@opensource.cirrus.com>
----
- sound/soc/fsl/fsl-asoc-card.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Well.  The dma_addr_t needs to be fed into the hardware somehow
+obviously.  But for a the coalesced case we only need one such
+field, not Nranges.
 
-diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
-index bc07f26ba303..2781fd8d198e 100644
---- a/sound/soc/fsl/fsl-asoc-card.c
-+++ b/sound/soc/fsl/fsl-asoc-card.c
-@@ -656,7 +656,7 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
- 		priv->card.num_dapm_routes = ARRAY_SIZE(audio_map_tx);
- 	} else if (of_device_is_compatible(np, "fsl,imx-audio-wm8962")) {
- 		codec_dai_name = "wm8962";
--		priv->codec_priv.mclk_id = WM8962_SYSCLK_MCLK;
-+		priv->codec_priv.mclk_id = WM8962_FLL_MCLK;
- 		priv->codec_priv.fll_id = WM8962_SYSCLK_FLL;
- 		priv->codec_priv.pll_id = WM8962_FLL;
- 		priv->dai_fmt |= SND_SOC_DAIFMT_CBP_CFP;
--- 
-2.39.2
+> We can't do much on the map side as single range doesn't imply
+> contiguous range, P2P and alignment create discontinuities in the
+> dma_addr_t that still have to be delt with.
 
+For alignment the right answer is almost always to require the
+upper layers to align to the iommu granularity.  We've been a bit
+lax about that due to the way scatterlists are designed, but
+requiring the proper alignment actually benefits everyone.
 
