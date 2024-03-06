@@ -1,73 +1,39 @@
-Return-Path: <linux-kernel+bounces-93491-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93492-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E432873093
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:21:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB12B873096
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:23:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F2D58B28E63
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 08:21:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4814F1F222D9
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 08:23:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DE395D48A;
-	Wed,  6 Mar 2024 08:21:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WKCZTUd0"
-Received: from mail-io1-f44.google.com (mail-io1-f44.google.com [209.85.166.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B6FE5CDD2
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 08:21:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 483055D486;
+	Wed,  6 Mar 2024 08:23:10 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C6945CDE8;
+	Wed,  6 Mar 2024 08:23:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709713296; cv=none; b=EY76py0vonYInetGnLOr8DTFmRA6zM59rMyum9XCbgUP3E/pOIsB/GZj3me7hJVk47f/+tnQlaaVmLsQucSJCkRHc6eIOEQSvzJmOGfS5yZ3wX7sGoMYlAaB6XdoSRaXGO/N3WZ+X2+OrH8wTDHA9Futnpa2kNJeowE13xG8tFk=
+	t=1709713389; cv=none; b=QhYN2OibuI4UoCLXRQOSxyQ48bD/gvE4eDvDaUagAWsHztJtwayOkYeNYgtvb8EhA6rvdu+CnViKFXl5+CGLnDW21oi9HTVnz+IIaOoaip63n1gDXmB1D2KeZKXQtcX9r2Zhm83K/CBUa5EzyIrB2Ho3LYX9FYOMEUpbrmj9i1k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709713296; c=relaxed/simple;
-	bh=UvsZjDqPT1S2Np84REw+zWEhb+wHYVxM127m3ZQEIZg=;
+	s=arc-20240116; t=1709713389; c=relaxed/simple;
+	bh=Y/6fBjZoaBPlXaXY9NgypvZz401Af4r3ftZnTux/eS0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=e+ovE2FvWybbYObeuQUq5d4DfHSnxtGxzhLKOVlzeVN8FsE1DcatFPP7BAqlzp/1CvaE3wt4i/9FYNhJZvLFa6oMokkDQTD9Iz95EXWHwJRq0s2TgwVRN9IBI/FJg3hsdsQImzcSnRuR84lzJuAk2zTnssSoE/U8jJ3UE9rpsyY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=WKCZTUd0; arc=none smtp.client-ip=209.85.166.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-io1-f44.google.com with SMTP id ca18e2360f4ac-7c870863216so30456139f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 00:21:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709713294; x=1710318094; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=d8aTtUjDS4K2DXIpYTlNqMZB+SKPeqhA/7PjV1CZm4Q=;
-        b=WKCZTUd0xr1DSS3wJDu9vn/zqYG7BsHdXxxjP2TaKfLHBZMDdJUdRFf/IpzcYZU+0W
-         cyFMbTcs8sLEwYd0BjmgXcZlJa8MYWX/czn69sO9IzIc6naILKqCYsS9yXhC6LhpBUUl
-         IAiZ/qAtMq9SQRWDPbgIGPftTeiCYqXWZgtQ36pKy8XUDVF4+8XK/Gt0+Jk9tLztYNhz
-         9im0aBFrtlovsvbsmL6JyM2se2LL5d+cv7wS7fCRh/OFl/lwHzQexQTmxCpj26EsmjiR
-         nkCUb8BK1obkHYQv5Vi5YC3d6O3y7gzy3sk6N8gNezRtuvXYn5VOgmNblrYk2Gkg0p94
-         AnAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709713294; x=1710318094;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=d8aTtUjDS4K2DXIpYTlNqMZB+SKPeqhA/7PjV1CZm4Q=;
-        b=TCCXFkgx0uLucJ1qS3cMl9TcF/N/1TSclqxtCCftVtPa3kAQJFPtN+ljN76qIRFCW0
-         j3o4CKIxUCG0C7tgkEMOkCFFw4BtpnN1jvKq9Bi6o7T/d8cSfPqmT+Gz6E0VaPJ0gkVz
-         ZUDxJmI+wvYJaHHHAlYY2OD95kYFhdYzUj4LEVlAqLSO5bc2l8EBEp1J+8lY7h9mn6Bv
-         0h85w4wFN9qUMJh2C/FkKlCRXbuj63B4Bg26r4nZhZ2dkSaDWnDTPkARU/BpsqaCqeoJ
-         LDk6yKOwRYR/2cKjnzORJcdToi1P0nDKKOir3it9ycp9KfF2ZIR7Y8TQ4zR+e1lPdfOi
-         +1Tg==
-X-Forwarded-Encrypted: i=1; AJvYcCUwXC/gjmxesdMws8MXbt86vycfH6S7zDGuy7PXDxU+KyUNPmwkx5BOLutSJAPu0uBLvEcHGTc8gJvNph8HaCPUzRK63+4zLgxY4zm/
-X-Gm-Message-State: AOJu0YzP62YBvi6MzNCVn5j4f9fGvv9JbBpSs93OisDiO5DFNkK3yHun
-	Rf63RSxpIVpIEi7hl9ZJFzcU6Rtz5vdHY66eoMfbE1xB8LMLuuAyEevDhiNMLpI=
-X-Google-Smtp-Source: AGHT+IHP5Mlf8s3lcTSNL0LJFQURwWQwIjurrNQzrERKX0PHH79cvXz9X27SMhCwvjwJ+uG4XsoqMw==
-X-Received: by 2002:a6b:ef17:0:b0:7c8:6e53:95cf with SMTP id k23-20020a6bef17000000b007c86e5395cfmr3638659ioh.3.1709713294353;
-        Wed, 06 Mar 2024 00:21:34 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id eh28-20020a056638299c00b004743c6462d5sm3228461jab.116.2024.03.06.00.21.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Mar 2024 00:21:34 -0800 (PST)
-Message-ID: <ae3f9ef0-8e51-4c0f-9b60-c6dfebb1ab0c@linaro.org>
-Date: Wed, 6 Mar 2024 09:21:28 +0100
+	 In-Reply-To:Content-Type; b=eFG1iwaHnG/Aod/Ff8Qb2ot/4Egi3YE9zad1k/uuXkUXKscicJMt5YInvT1mo3rQm0rvHaaXXt5c6743ml2jtRAeK4D8aMcsfDpJ+RnENdtnsgJw+X17mJ6hQkpPfBmGAmu5nl+ktIW/mvnD2gz9wulnYi8dZCDVFNDRAZu5cNg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8AC331FB;
+	Wed,  6 Mar 2024 00:23:43 -0800 (PST)
+Received: from [10.57.68.241] (unknown [10.57.68.241])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 044B93F762;
+	Wed,  6 Mar 2024 00:23:04 -0800 (PST)
+Message-ID: <50e0ebda-b1e9-4bfa-9877-967e6b8cd4c2@arm.com>
+Date: Wed, 6 Mar 2024 08:23:03 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,103 +41,135 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: altera-fpga2sdram-bridge: Convert to
- dtschema
-Content-Language: en-US
-To: Rob Herring <robh@kernel.org>, Conor Dooley <conor@kernel.org>
-Cc: Animesh Agarwal <animeshagarwal28@gmail.com>, mdf@kernel.org,
- Wu Hao <hao.wu@intel.com>, Xu Yilun <yilun.xu@intel.com>,
- Tom Rix <trix@redhat.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, linux-fpga@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240301161648.124859-1-animeshagarwal28@gmail.com>
- <20240301-uphold-numerous-305c3702805b@spud>
- <20240304170759.GA752387-robh@kernel.org>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240304170759.GA752387-robh@kernel.org>
+Subject: Re: [PATCH v1] mm: swap: Fix race between free_swap_and_cache() and
+ swapoff()
+Content-Language: en-GB
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ David Hildenbrand <david@redhat.com>, "Huang, Ying" <ying.huang@intel.com>,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <20240305151349.3781428-1-ryan.roberts@arm.com>
+ <20240306021950.GA801254@cmpxchg.org>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20240306021950.GA801254@cmpxchg.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 04/03/2024 18:07, Rob Herring wrote:
->>> diff --git a/Documentation/devicetree/bindings/fpga/altera-fpga2sdram-bridge.yaml b/Documentation/devicetree/bindings/fpga/altera-fpga2sdram-bridge.yaml
->>> new file mode 100644
->>> index 000000000000..88bf9e3151b6
->>> --- /dev/null
->>> +++ b/Documentation/devicetree/bindings/fpga/altera-fpga2sdram-bridge.yaml
->>> @@ -0,0 +1,23 @@
->>> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
->>> +%YAML 1.2
->>> +---
->>> +$id: http://devicetree.org/schemas/fpga/altr-fpga2sdram-bridge.yaml#
->>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>> +
->>> +title: Altera FPGA To SDRAM Bridge Driver
+On 06/03/2024 02:19, Johannes Weiner wrote:
+> Hi Ryan,
 > 
-> Bindings are for h/w blocks, not Drivers.
-> 
->>> +
+> On Tue, Mar 05, 2024 at 03:13:49PM +0000, Ryan Roberts wrote:
+>> There was previously a theoretical window where swapoff() could run and
+>> teardown a swap_info_struct while a call to free_swap_and_cache() was
+>> running in another thread. This could cause, amongst other bad
+>> possibilities, swap_page_trans_huge_swapped() (called by
+>> free_swap_and_cache()) to access the freed memory for swap_map.
 >>
->> You're missing maintainers: (shouldn't dt_binding_check complain?)
+>> This is a theoretical problem and I haven't been able to provoke it from
+>> a test case. But there has been agreement based on code review that this
+>> is possible (see link below).
+>>
+>> Fix it by using get_swap_device()/put_swap_device(), which will stall
+>> swapoff(). There was an extra check in _swap_info_get() to confirm that
+>> the swap entry was valid. This wasn't present in get_swap_device() so
+>> I've added it. I couldn't find any existing get_swap_device() call sites
+>> where this extra check would cause any false alarms.
 > 
-> Yes. Patchwork says this failed to apply which is odd because it is 
-> doubtful that altera-fpga2sdram-bridge.txt has been modified.
+> Unfortunately, I found one, testing current mm-everything:
+> 
+> [  189.420777] get_swap_device: Unused swap offset entry 000641ae
+> [  189.426648] ------------[ cut here ]------------
+> [  189.431290] WARNING: CPU: 3 PID: 369 at mm/swapfile.c:1301 get_swap_device+0x2da/0x3f0
+> [  189.439242] CPU: 3 PID: 369 Comm: cachish Not tainted 6.8.0-rc5-00527-g19d98776f227-dirty #30
+> [  189.447791] Hardware name: Micro-Star International Co., Ltd. MS-7B98/Z390-A PRO (MS-7B98), BIOS 1.80 12/25/2019
+> [  189.457998] RIP: 0010:get_swap_device+0x2da/0x3f0
+> [  189.462721] Code: a8 03 75 2a 65 48 ff 08 e9 36 ff ff ff 4c 89 e9 48 c7 c2 40 fd 91 83 48 c7 c6 c0 f9 91 83 48 c7 c7 60 ee 91 83 e8 26 2f af ff <0f> 0b eb af 4c 8d 6b 08 48 b8 00 00 00 00 00 fc ff df 4c 89 ea 48
+> [  189.481497] RSP: 0000:ffffc90000cff8a8 EFLAGS: 00010282
+> [  189.486760] RAX: 0000000000000032 RBX: ffff8881262eee00 RCX: 0000000000000000
+> [  189.493909] RDX: 0000000000000001 RSI: ffffffff83a1e620 RDI: 0000000000000001
+> [  189.501054] RBP: 1ffff9200019ff15 R08: 0000000000000001 R09: fffff5200019fee1
+> [  189.508202] R10: ffffc90000cff70f R11: 0000000000000001 R12: ffffc900018d51ae
+> [  189.515346] R13: 00000000000641ae R14: 0000000000000000 R15: 00000000000641af
+> [  189.522494] FS:  00007f7120263680(0000) GS:ffff88841c380000(0000) knlGS:0000000000000000
+> [  189.530591] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [  189.536373] CR2: 00007f6e659a2ea3 CR3: 0000000046860004 CR4: 00000000003706f0
+> [  189.543516] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [  189.550661] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [  189.557811] Call Trace:
+> [  189.560276]  <TASK>
+> [  189.562393]  ? __warn+0xc4/0x250
+> [  189.565647]  ? get_swap_device+0x2da/0x3f0
+> [  189.569761]  ? report_bug+0x348/0x440
+> [  189.573444]  ? handle_bug+0x6d/0x90
+> [  189.576951]  ? exc_invalid_op+0x13/0x40
+> [  189.580810]  ? asm_exc_invalid_op+0x16/0x20
+> [  189.585019]  ? get_swap_device+0x2da/0x3f0
+> [  189.589142]  ? get_swap_device+0x2da/0x3f0
+> [  189.593255]  ? __pfx_get_swap_device+0x10/0x10
+> [  189.597717]  __read_swap_cache_async+0x9f/0x630
+> [  189.602281]  ? __pfx___read_swap_cache_async+0x10/0x10
+> [  189.607439]  ? __mod_memcg_lruvec_state+0x238/0x4f0
+> [  189.612344]  ? __pfx_swp_swap_info+0x10/0x10
+> [  189.616652]  swap_cluster_readahead+0x2cd/0x510
+> [  189.621206]  ? __pfx_swap_cluster_readahead+0x10/0x10
+> [  189.626279]  ? swap_cache_get_folio+0xcd/0x360
+> [  189.630760]  ? __count_memcg_events+0x10a/0x370
+> [  189.635318]  shmem_swapin_folio+0x2f2/0xc60
+> [  189.639525]  ? __pfx__raw_spin_lock+0x10/0x10
+> [  189.643908]  ? __pte_offset_map+0x19/0x1d0
+> [  189.648024]  shmem_get_folio_gfp+0x307/0xe30
+> [  189.652323]  ? __schedule+0x9f0/0x1fe0
+> [  189.656096]  ? __pfx_shmem_get_folio_gfp+0x10/0x10
+> [  189.660923]  ? filemap_map_pages+0x999/0xe60
+> [  189.665211]  shmem_fault+0x1d9/0x810
+> [  189.668834]  ? __pfx_shmem_fault+0x10/0x10
+> [  189.672954]  ? __pfx_filemap_map_pages+0x10/0x10
+> [  189.677590]  __do_fault+0xed/0x390
+> [  189.681012]  __handle_mm_fault+0x1ba1/0x2e80
+> [  189.685297]  ? __pfx___handle_mm_fault+0x10/0x10
+> [  189.689933]  ? __pfx_down_read_trylock+0x10/0x10
+> [  189.694570]  ? __pfx_hrtimer_nanosleep+0x10/0x10
+> [  189.699215]  handle_mm_fault+0xe0/0x560
+> [  189.703074]  ? __pfx_restore_fpregs_from_fpstate+0x10/0x10
+> [  189.708620]  do_user_addr_fault+0x2ba/0x9d0
+> [  189.712828]  exc_page_fault+0x54/0x90
+> [  189.716508]  asm_exc_page_fault+0x22/0x30
+> [  189.720535] RIP: 0033:0x5640dc2d72b5
+> [  189.724131] Code: 98 48 ba 00 00 00 00 03 00 00 00 48 89 d6 48 2b 75 a0 ba 00 00 00 00 48 f7 f6 48 89 d1 48 89 ca 48 8b 45 a0 48 01 d0 48 01 d8 <0f> b6 00 bf e8 03 00 00 e8 1e fe ff ff 48 83 45 a8 01 48 8d 45 d0
+> [  189.742922] RSP: 002b:00007ffc227e3f60 EFLAGS: 00010206
+> [  189.748165] RAX: 00007f6e659a2ea3 RBX: 00007f6e2007e000 RCX: 0000000045924ea3
+> [  189.755311] RDX: 0000000045924ea3 RSI: 0000000300000000 RDI: 00007f71202586a0
+> [  189.762483] RBP: 00007ffc227e3fe0 R08: 00007f7120258074 R09: 00007f71202580a0
+> [  189.769633] R10: 0000000000019458 R11: 00000000008aa400 R12: 0000000000000000
+> [  189.776781] R13: 00007ffc227e4128 R14: 00007f712029d000 R15: 00005640dc2d9dd8
+> [  189.783928]  </TASK>
+> [  189.786126] ---[ end trace 0000000000000000 ]---
+> [  285.827888] get_swap_device: Unused swap offset entry 0018403f
+> [  320.699306] get_swap_device: Unused swap offset entry 000b001b
+> [  354.031339] get_swap_device: Unused swap offset entry 000681a9
+> [  364.958435] get_swap_device: Unused swap offset entry 001f4055
+> [  364.976235] get_swap_device: Unused swap offset entry 001f4057
+> [  365.530174] get_swap_device: Unused swap offset entry 000d415c
+> [  394.223792] get_swap_device: Unused swap offset entry 001540d0
+> [  394.317299] get_swap_device: Unused swap offset entry 000341d9
+> [  394.341727] get_swap_device: Unused swap offset entry 0006c07e
+> [  396.062365] get_swap_device: Unused swap offset entry 000541a4
+> [  396.068262] get_swap_device: Unused swap offset entry 000541a7
+> [  402.629551] get_swap_device: Unused swap offset entry 00294021
+> [  436.740622] get_swap_device: Unused swap offset entry 00334155
+> [  436.758527] get_swap_device: Unused swap offset entry 001b417c
+> 
+> swap_cluster_readahead() calls __read_swap_cache_async() on a range of
+> made-up swap entries around the faulting slot. The device and the
+> range (si->max) are valid, but the specific entry might not be in
+> use. __read_swap_cache_async() instead relies on swapcache_prepare()
+> returning -ENOENT to catch this and skip gracefully.
 
-The file was already converted by Michal, two months ago!
+Sorry this got in your way, but thanks for the report! Clearly I didn't review
+the call sites thoroughly enough. I'll move the extra check to
+free_swap_and_cache(), retest and hopefully repost later today.
 
-Animesh,
-Please (almost) always work on current next. Also, before doing
-conversion check if there is such work on the lists ("dfn:" on
-lore.kernel.org).
-
-It's waste of your and ours (three maintainers...) time, since this was
-already done two months ago.
-
-Best regards,
-Krzysztof
+> 
+> Confirmed that reverting the patch makes the warnings go away.
 
 
