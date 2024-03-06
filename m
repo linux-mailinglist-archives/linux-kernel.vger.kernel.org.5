@@ -1,147 +1,118 @@
-Return-Path: <linux-kernel+bounces-94351-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94352-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A75CA873DD4
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 18:53:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CAED873DD7
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 18:57:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3B79AB23AC5
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:53:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 19B77B2127D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:57:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C23613C9C9;
-	Wed,  6 Mar 2024 17:53:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="thRr20yN"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF5AA13C9D6;
+	Wed,  6 Mar 2024 17:57:19 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAA3F135418;
-	Wed,  6 Mar 2024 17:53:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88CBC136987
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 17:57:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709747590; cv=none; b=rjRYxu0Pm/IbqjHW3wYDuNV8zunBj/CcYeLVvlrrQOlg9mlfsO4d310AQTdRojJTWmQdkOqUxhXI4lFZ/CxM+E4rbMUIl8FdQOP79TG+yjyEYH6zcCdgS1SKsL2WB6XNZaFJHFK/Kd3RHrQMb9LhNsoeqw142TlhJ38gEidxc48=
+	t=1709747839; cv=none; b=umJGEK2M5RLLprtfyOBzK/5iAe84FtBaSbJuNFifJzAWKJpcEJGZsjfCHfuQqy3RNwOLUhEwcPsbJCyccoGzJmeiG/4MibfmdQwTGcTlmySAG6qEtDBb7HwyiNybuIL2ATr1Jr+Q14Qm5Y70D0D0x37B6EslImD2V5079MkB7Fo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709747590; c=relaxed/simple;
-	bh=J4pW+9sn+ycWvhZXkL8EDJX7Gbm1CDDis3/1Tf2LG7Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=V4UjCaGfDP+zjoeRK+RMgT+JzWmVUOCYAw78nwOHOVoN+E0svbpXrrhRX7YFvgMrAnhz+s3pFNkjQCFdI2z0d+R7Tp1Jew6cyZ9MZRvDgM2dig3lYBjIWGPb9oUAov4yM6LeNWCfNAfsrLwIG1s1vEYHXtmddwo5csuRyz/BE7Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=thRr20yN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5F7CC43390;
-	Wed,  6 Mar 2024 17:53:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709747590;
-	bh=J4pW+9sn+ycWvhZXkL8EDJX7Gbm1CDDis3/1Tf2LG7Q=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=thRr20yNSs4YSLr3Z1rnir4XCdj3nBoHgNa3v8yaRVIvQFRJtI097Cduh7FfZcAoE
-	 xu9xdwUhWWOio8ea1MIRPpUeEoPJrgp/pzWYLAXRmFM34BUW0quSOcBGJcViRuT+/a
-	 lt9qTqmDGD6Z7j6/sZ+i5eaMJlMNev28SPLM0/XgE7WLHWqU/RvsZJ8xbVhUJSGfHw
-	 V8lSsd3xiS9QA6l0wVc34z5bFyyOCQwShYW1RRBKpetgo8c7VdH6cb5LZVPijsz0wd
-	 EOC0ya/lRtQxeYyEclJ0tq0ZgiMj9pL/YvkZoeFSd/erCYHF37Lz50wllgP+KdBwEy
-	 nALwWxPEiAgFg==
-Date: Wed, 6 Mar 2024 17:53:05 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Michal Simek <michal.simek@amd.com>
-Cc: linux-kernel@vger.kernel.org, monstr@monstr.eu, michal.simek@xilinx.com,
-	git@xilinx.com, Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
-	"moderated list:ARM/ZYNQ ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>,
-	"open list:REAL TIME CLOCK (RTC) SUBSYSTEM" <linux-rtc@vger.kernel.org>
-Subject: Re: [PATCH v2] dt-bindings: rtc: zynqmp: Add support for
- Versal/Versal NET SoCs
-Message-ID: <20240306-mystify-playset-5b4ae2f955f3@spud>
-References: <70b646d60f53cccc734afbc7f22245d53394075e.1709728587.git.michal.simek@amd.com>
+	s=arc-20240116; t=1709747839; c=relaxed/simple;
+	bh=kkX6BTdc1ryQj7fgIQCDJyq35Q1Vik6KHEiij+hMoRA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=uNGsCGqXc0r/gsqWVcDW3Ij/uVlKUxj5f40BxRshkB9fqlAcGGAZdl7y/YjXkfNrn52W2nEag1pZvJHyoZdfwBoWV5hwWjbTvjJ4k2teD2tZau6KmbGgfyGObwmsq/sjARz+caMujJZHnzremvqq/RrYmXLaNsINRa6BtqR2/mQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rhvVy-0008Su-FF; Wed, 06 Mar 2024 18:57:14 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rhvVx-004n7L-Nr; Wed, 06 Mar 2024 18:57:13 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rhvVx-000o8H-26;
+	Wed, 06 Mar 2024 18:57:13 +0100
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Eli Billauer <eli.billauer@gmail.com>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	linux-kernel@vger.kernel.org,
+	kernel@pengutronix.de
+Subject: [PATCH] char: xillybus: Convert to platform remove callback returning void
+Date: Wed,  6 Mar 2024 18:57:10 +0100
+Message-ID: <20240306175710.82569-2-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="p/fOP0/kzkjNlStW"
-Content-Disposition: inline
-In-Reply-To: <70b646d60f53cccc734afbc7f22245d53394075e.1709728587.git.michal.simek@amd.com>
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1783; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=kkX6BTdc1ryQj7fgIQCDJyq35Q1Vik6KHEiij+hMoRA=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBl6K52KsrpqyyuBjasHigGxdGVbTw4gEXGTfWF3 mqydt/1GAiJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZeiudgAKCRCPgPtYfRL+ Tj6WCACN4YneiHGbSn6AOXZbwnOMLiBXY3Ix2iB0dJQrdSTsnqLkI5cMALtj9qHAAy71z9XyrYY 1fK9e2IUH/roiBS8hb52l7DPEgqbH5IYiLZkEA4hKzXVdtFJMKB25qMUTPeIkEuZiGwR5TyLRVB nxs0Uq8vD0512N2XUfTQciJmI/qS+wY4g/4k03nID78O2TGKQZKVSk6IvwlZrz1fQYbWDnXlRTC +p7O9Vbod/jPqSZDmAVvKxDmU0wul/+z6JlO92iMrEWJZxVCKNzcOiNtt8MTOU7dbs6jb9/Bo3u zjL9cnJn7GqldDvhl7nq6f/gYOEForyUxBsdM5qlUAOAJ6/1
+X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
+The .remove() callback for a platform driver returns an int which makes
+many driver authors wrongly assume it's possible to do error handling by
+returning an error code. However the value returned is ignored (apart
+from emitting a warning) and this typically results in resource leaks.
 
---p/fOP0/kzkjNlStW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+To improve here there is a quest to make the remove callback return
+void. In the first step of this quest all drivers are converted to
+remove_new(), which already returns void. Eventually after all drivers
+are converted, .remove_new() will be renamed to .remove().
 
-On Wed, Mar 06, 2024 at 01:36:34PM +0100, Michal Simek wrote:
-> Add support for Versal and Versal NET SoCs. Both of them should use the
-> same IP core but differences can be in integration part that's why create
-> separate compatible strings.
->=20
-> Also describe optional power-domains property. It is optional because pow=
-er
-> domain doesn't need to be onwed by non secure firmware hence no access to
-> control it via any driver.
->=20
-> Signed-off-by: Michal Simek <michal.simek@amd.com>
-> ---
->=20
-> Changes in v2:
-> - Change subject
-> - Add compatible string for versal and versal NET
-> - Update commit message to reflect why power domain is optional.
->=20
->  .../devicetree/bindings/rtc/xlnx,zynqmp-rtc.yaml          | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/rtc/xlnx,zynqmp-rtc.yaml b=
-/Documentation/devicetree/bindings/rtc/xlnx,zynqmp-rtc.yaml
-> index d1f5eb996dba..5652df8ec121 100644
-> --- a/Documentation/devicetree/bindings/rtc/xlnx,zynqmp-rtc.yaml
-> +++ b/Documentation/devicetree/bindings/rtc/xlnx,zynqmp-rtc.yaml
-> @@ -18,7 +18,10 @@ allOf:
-> =20
->  properties:
->    compatible:
-> -    const: xlnx,zynqmp-rtc
-> +    enum:
-> +      - xlnx,versal-rtc
-> +      - xlnx,versal-net-rtc
-> +      - xlnx,zynqmp-rtc
+Trivially convert this driver from always returning zero in the remove
+callback to the void returning variant.
 
-You sure chief? I don't see a driver patch alongside this adding these
-new versal compatibles there, so should these versal compatibles not
-fall back to the zynqmp one?
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+ drivers/char/xillybus/xillybus_of.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-Thanks,
-Conor.
+diff --git a/drivers/char/xillybus/xillybus_of.c b/drivers/char/xillybus/xillybus_of.c
+index e5372e45d211..8802e2a6fd20 100644
+--- a/drivers/char/xillybus/xillybus_of.c
++++ b/drivers/char/xillybus/xillybus_of.c
+@@ -64,19 +64,17 @@ static int xilly_drv_probe(struct platform_device *op)
+ 	return xillybus_endpoint_discovery(endpoint);
+ }
+ 
+-static int xilly_drv_remove(struct platform_device *op)
++static void xilly_drv_remove(struct platform_device *op)
+ {
+ 	struct device *dev = &op->dev;
+ 	struct xilly_endpoint *endpoint = dev_get_drvdata(dev);
+ 
+ 	xillybus_endpoint_remove(endpoint);
+-
+-	return 0;
+ }
+ 
+ static struct platform_driver xillybus_platform_driver = {
+ 	.probe = xilly_drv_probe,
+-	.remove = xilly_drv_remove,
++	.remove_new = xilly_drv_remove,
+ 	.driver = {
+ 		.name = xillyname,
+ 		.of_match_table = xillybus_of_match,
 
-> =20
->    reg:
->      maxItems: 1
-> @@ -48,6 +51,9 @@ properties:
->      default: 0x198233
->      deprecated: true
-> =20
-> +  power-domains:
-> +    maxItems: 1
-> +
->  required:
->    - compatible
->    - reg
-> --=20
-> 2.36.1
->=20
+base-commit: 11afac187274a6177a7ac82997f8691c0f469e41
+-- 
+2.43.0
 
---p/fOP0/kzkjNlStW
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZeitgQAKCRB4tDGHoIJi
-0lR0AQDThWJ+9/UbQ2HAJQImVzfkdbfv85FsDZpRODFQwqT+BwD9GMputTe1LtAz
-1aZaDasFqMBFJ8Tn1IH6vfz8bq6C8AY=
-=m8/k
------END PGP SIGNATURE-----
-
---p/fOP0/kzkjNlStW--
 
