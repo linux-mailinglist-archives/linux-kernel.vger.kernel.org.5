@@ -1,109 +1,166 @@
-Return-Path: <linux-kernel+bounces-94672-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94673-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CEED18742EE
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 23:44:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 19A888742EF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 23:44:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4749BB21D4F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 22:44:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 08A87B23088
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 22:44:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E64E1C294;
-	Wed,  6 Mar 2024 22:44:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 969791BC4B;
+	Wed,  6 Mar 2024 22:44:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="GHBF2p9L"
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OkwYtSyw"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D96F1BC3C
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 22:44:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCCDB1C6A1
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 22:44:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709765062; cv=none; b=YyVHH65sh7FZI6KM6S/gt2GXW0IklP6nEAJOAeKb0HurcOQRn2jLmLjmWUWwNxe1/sEo2v8FdEzrF+iW1IrkJ3yLof7FYM/wVrcM/9hvWfeiiek3iDI7sVOfpkYeVcsLCTbWKmfulEh1dJLjGWaGs0Ls1ljBlMMgkqD0800b4sU=
+	t=1709765068; cv=none; b=XXUE/NuUkfsFyAmOOGdxxuAu6Dqv9iSp+p7G5H+zMTX8/ohP3N50TIH657RVBc7P3RqW15tri2sCIAr/HWl3SSHCSL3/5eDAHKnFr9hrg0dH1E4u9wistG0AvgrpqhSE+DkV1RUprwend/rr67Yn+v/r4J2cGOwFgvVpF/kup+s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709765062; c=relaxed/simple;
-	bh=jcXSGLvSsNQ+837L6bjKovQh0l0mKvXmOQiuZs3pLv4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mZEW7q4tqwJaNwq9nN9W6+fJTGv9rTq/G8mmVeL+JkCQSZ1MnRPMZc+tmpIFj0izF/5jvmwIQh5jwbEF9PlDpBCISWBHQy2xywn796aesmudB/f8KTPBP21I8Pa9+cQ2v21pdTZ2j8dU5kcXjZOebGRHirHdCbP157W/KKys/ps=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=GHBF2p9L; arc=none smtp.client-ip=209.85.208.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d2509c66daso2324761fa.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 14:44:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1709765059; x=1710369859; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jcXSGLvSsNQ+837L6bjKovQh0l0mKvXmOQiuZs3pLv4=;
-        b=GHBF2p9LwTKnH6qPltIk8moSS06iMyiF8dwA8P2PHs4GO2M3qzWv71d3lMTSQdO70j
-         ck3JVBfpvx5So8g1sGs2wu/k84AIh29aRCguB3kD9aQ+QUYicyssg9+VCdNQl5RpMAr7
-         L6zMEUJl90BZFSnhpm6WMt8/Sa00tlOFBTVzM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709765059; x=1710369859;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jcXSGLvSsNQ+837L6bjKovQh0l0mKvXmOQiuZs3pLv4=;
-        b=c32baTM/hwzsi2o4a1A8Od3MsW0pKtdURW4Fvl6zflV/+xVdECf4AJzRPBRq4DSyM3
-         LNY7I7a2AqH9LDmRLQbn7wTc3U6Weuco2mByymKJouGCOixaEUPVjMSsObpch5cbKz7S
-         gFnonM/lhTT/JXlyqW/hHD6rDPgJ8COYfzDNA/thMoO4Kli/ltKC8mpvG0iFgQN5rLUK
-         zNtpw+WCDPY619kVGulBY7StwtCYlp7NHMkztZhO8Zfs7J2ZfnoOFDyg6hGE0s18tdFX
-         6a7VsdKVtlfIvFQDnPXrpxvQR7iPn0o8Adl/DohYpRBl83IjeCGNCzU1FcJ3mpYJPd89
-         P0Hw==
-X-Forwarded-Encrypted: i=1; AJvYcCWUDvEKK5khxelqVSmx9YxdhAx90M1okpHb+J/ekBqoROeW9tPBpOVzjR1q38RiJyLpXijti/wrPUsWCkoDegUj7Xo0OGClbut57JV1
-X-Gm-Message-State: AOJu0YxNJSlauK1H44hwmvdH2h3vKh/Zdbhk6bhiqoP/3MSBXoY71VXl
-	FKqBbn7uwmAYIfXCALs9UUnzjXYB3ucA3xcackYc2OoQeXZMdZFK0AnjIZkYzy82/PotQJrZYzy
-	0Q7RXTLKimI/b6exvxsSEHnug/Ll8tVTh5ifXHQ==
-X-Google-Smtp-Source: AGHT+IHzlrJYF1P91BYKHk8y7TVpLavPJyNGKgpSg0CVZsTmR9LRYk1TxAXG3mJM6JYcYOirnDOciZ1xQicqUDGVrhs=
-X-Received: by 2002:a05:651c:220c:b0:2d2:65b9:b420 with SMTP id
- y12-20020a05651c220c00b002d265b9b420mr229434ljq.1.1709765058444; Wed, 06 Mar
- 2024 14:44:18 -0800 (PST)
+	s=arc-20240116; t=1709765068; c=relaxed/simple;
+	bh=a2UX1TpwzNRrKOHg66g1kPeFUJh/I+u22ob6piRQG9A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TjvGszMAAU8acVIu7bI/hFyh98AxwZ45+jGbbVCa2KUqalpjiNpgmwK2u11yMyzEaWHcynT2BBsnHFPAin0SJqnokUJbBUN/mtvVKmbKiP108v7l9wIOKo6KXgr1SoQZfZsrmXZbYtN23HOELPzsyfzBzGAJ92OZIonCmxwS8/4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OkwYtSyw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21F9CC433F1;
+	Wed,  6 Mar 2024 22:44:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709765068;
+	bh=a2UX1TpwzNRrKOHg66g1kPeFUJh/I+u22ob6piRQG9A=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=OkwYtSyw32aIKJNqnwoBbEZaBt0BUqa3ca2bQmMOmEMbL3jEa6uvnU+WAWdv3rDCU
+	 9lT/B70s1dObC5AbkAGDZQ3gJVBRFTpMvHfbcs6bUsOqShhT5FcAUmhOcGmFKITQ6J
+	 VPPNXVzZnVMUTJFKdXdfph1ecRbNo+Cf06brNjxtVM69mjESVY0rW8IMA5fcK3mH+l
+	 Tv+Gln/jejj3RO3mw2QNu3nN+xqD1DbjWFdx0Rhgle4BI8W9UeFKWtOZMNYQbRsV0A
+	 H8ThdlpDyi+mbFML5vWBgC41MZNoln38yn9lCzoK00WqAHFDSbLVIu8+I5sDMQd4Yg
+	 eknYNuiWRnbSg==
+Date: Wed, 6 Mar 2024 22:44:24 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+	Dave Martin <dave.martin@arm.com>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] arm64/fpsimd: Suppress SVE access traps when loading
+ FPSIMD state
+Message-ID: <b734ea8c-af4c-4dc2-8d96-2f08d3d780ea@sirena.org.uk>
+References: <20240122-arm64-sve-trap-mitigation-v4-1-54e0d78a3ae9@kernel.org>
+ <Zei7-0RMCpiWw49e@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240305195720.42687-1-urezki@gmail.com> <a1faf101-c689-4530-a9a5-c7f95b8825d6@joelfernandes.org>
-In-Reply-To: <a1faf101-c689-4530-a9a5-c7f95b8825d6@joelfernandes.org>
-From: Joel Fernandes <joel@joelfernandes.org>
-Date: Wed, 6 Mar 2024 17:44:04 -0500
-Message-ID: <CAEXW_YTzMPxdm=UmMScppfP2WTqoyo6Z4c0p06HNgT-NAL2ciQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] rcu: Do not release a wait-head from a GP kthread
-To: "Uladzislau Rezki (Sony)" <urezki@gmail.com>, "Paul E . McKenney" <paulmck@kernel.org>
-Cc: RCU <rcu@vger.kernel.org>, Neeraj upadhyay <Neeraj.Upadhyay@amd.com>, 
-	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>, Frederic Weisbecker <frederic@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="wIiEGiyPO53cvUgL"
+Content-Disposition: inline
+In-Reply-To: <Zei7-0RMCpiWw49e@arm.com>
+X-Cookie: Have at you!
+
+
+--wIiEGiyPO53cvUgL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 6, 2024 at 5:31=E2=80=AFPM Joel Fernandes <joel@joelfernandes.o=
-rg> wrote:
->
->
->
-> On 3/5/2024 2:57 PM, Uladzislau Rezki (Sony) wrote:
-> > Fix a below race by not releasing a wait-head from the
-> > GP-kthread as it can lead for reusing it whereas a worker
-> > can still access it thus execute newly added callbacks too
-> > early.
-> >
-[...]
-> There might a way to prevent queuing new work as fast-path optimization, =
-incase
-> the CBs per GP will always be < SR_MAX_USERS_WAKE_FROM_GP but I could not=
- find a
-> workqueue API that helps there, and work_busy() has comments saying not t=
-o use that.
+On Wed, Mar 06, 2024 at 06:54:51PM +0000, Catalin Marinas wrote:
+> On Mon, Jan 22, 2024 at 07:42:14PM +0000, Mark Brown wrote:
 
-One way to do this would be to maintain a count of how many CBs are in
-flight via the worker route, and then fast-path-free the thing if the
-count is 0. Should I send a patch around something like that? It saves
-1 more wakeup per synchronize_rcu() I think.
+> > This indicates that there should be some useful benefit from reducing t=
+he
+> > number of SVE access traps for blocking system calls like we did for non
+> > blocking system calls in commit 8c845e273104 ("arm64/sve: Leave SVE ena=
+bled
+> > on syscall if we don't context switch"). Let's do this by counting the
+> > number of times we have loaded FPSIMD only register state for SVE tasks
+> > and only disabling traps after some number of times, otherwise leaving
+> > traps disabled and flushing the non-shared register state like we would=
+ on
+> > trap.
 
- - Joel
+> It looks like some people complain about SVE being disabled, though I
+> assume this is for kernels prior to 6.2 and commit 8c845e273104
+> ("arm64/sve: Leave SVE enabled on syscall if we don't context switch"):
+
+> https://bugs.launchpad.net/ubuntu/+source/glibc/+bug/1999551/comments/52
+
+Yes, from a user perspective this is a case where they're running what
+they see as a perfectly standard instruction and finding that it might
+take thousands of cycles longer than you'd expect it to while we take a
+trip through EL1.  If this happens frequently then it becomes much
+harder to justify using SVE, especially for things that run for a short
+time or which don't have an overwhelming performance advantage over a
+non-SVE implementation.
+
+> I assume we may see the other camp complaining about the additional
+> state saving on context switch.
+
+Yes, in the case where things get preempted that's an issue for tasks
+that are mostly FPSIMD only otherwise we'd be better off just never
+disabling SVE after it's been enabled and we had to allocate the
+storage.
+
+> Anyway, I don't see why we should treat blocking syscalls differently
+> from non-blocking ones (addressed by the commit above). I guess the
+> difference is that one goes through a context switch but, from a user
+> perspective, it's still a syscall. The SVE state is expected to be
+> discarded and there may be a preference for avoiding the subsequent
+> fault.
+
+To me this is purely about the fault behaviour, the fact that this is
+related to the state saving/loading is more of an implementation detail
+than=20
+
+> > I pulled 64 out of thin air for the number of flushes to do, there is
+> > doubtless room for tuning here. Ideally we would be able to tell if the
+> > task is actually using SVE but without using performance counters (which
+> > would be substantial work) we can't currently tell. I picked the number
+> > because so many of the tasks using SVE used it so frequently.
+
+> So I wonder whether we should make the timeout disabling behaviour the
+> same for both blocking and non-blocking syscalls. IOW, ignore the
+> context switching aspect. Every X number of returns, disable SVE
+> irrespective of whether it was context switched or not. Or, if the
+> number of returns has a variation in time, just use a jiffy (or other
+> time based figure), it would time out in the same way for all types of
+> workloads.
+
+I think of those approaches a time based one seems more appealing -
+we're basically just using the number of times we needed to reload the
+state as a proxy for "has been running for a while" here since it's
+information that's readily to hand.  It would penalize tasks that spend
+a lot of time blocked.
+
+I'd still be inclined to only actually check when loading the state
+simply because otherwise you can't avoid the overhead by doing something
+like pinning your sensitive task to a CPU so it never gets scheduled
+away which seems like a reasonable thing to optimise for.  That would
+mean a task that is only ever context switched through preemption would
+never drop SVE state but I think that if your task is using that much
+CPU the cost of saving the extra state on context switch is kind of in
+the noise.
+
+--wIiEGiyPO53cvUgL
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXo8ccACgkQJNaLcl1U
+h9Chkgf+KgmqB2YYVHrDMVzjg4E5AitT19Z1A5tgiTtVSBf/Ns4VcBGUBcJkQisT
+/JtSIjP1/rfOOh4A5vyqQ33U9MO96/ZG2jtzyuWJHcqGADJU+5QM59l7pOffQhIv
+onso5OXaRATktbFwk410kBzJdHwRu7gAWAqBuk7yald3iz/eeMDn7331w1pTwPTu
+bLG3ofEyZioMbveDJ6to+5smMT/6rIKD9lSnYvg5+qpvURs06r6AYKDIaARR383Q
+itMhGRgHq9U2xlp4yR1K8z0ANpNinRWem/L6VuqS1svrCF2oMcicnQ8OauooXba4
+naho8Phpynq0g5tCHCxCQiZ1IuhWGg==
+=QnM7
+-----END PGP SIGNATURE-----
+
+--wIiEGiyPO53cvUgL--
 
