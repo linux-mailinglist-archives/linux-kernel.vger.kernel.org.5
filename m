@@ -1,202 +1,127 @@
-Return-Path: <linux-kernel+bounces-93662-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93658-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E2A4873302
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:48:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 863FC8732FA
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:47:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9BD251F22E27
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:48:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B86961C20F43
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:47:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CE835EE6F;
-	Wed,  6 Mar 2024 09:47:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 433085EE89;
+	Wed,  6 Mar 2024 09:45:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EQnF6Z1I"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WDzaenik"
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A85C95DF3B;
-	Wed,  6 Mar 2024 09:47:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 099C15C904
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 09:45:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709718457; cv=none; b=XjoorcbkcKlhT0VygS50VChtUfjBtiNeLxE2Fm8wgKhveJv/bcUVbcLPXTx+mxkdZbmmQwX0lvHVlury3aX3QvOCO9NFHa4Xsd1wiWGl67ojeYGryASDJGAsLrPnwJsemsym5mNpY0IuSRYyccH+5EYFZWUvoppKgXRzkD77ev8=
+	t=1709718304; cv=none; b=eiBIb/psWD/QFIp8MirH7ebJ3OfenbuBPB3hsSj4CfNAaSvAqG/ZpdMcrbjwnGGAf4hR2pb0pzpbYkesBTR5WN3JGADdD8GjajEauYF3a0I50Nm+b5YCDEUqANszg0ZYay+iRh5d+vsdX3UQCtnLTugzJeZrupMoYk+aSEMd988=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709718457; c=relaxed/simple;
-	bh=0Z6Bqj7WGyMcJwm4bMhfmiCLbED3HC5PGJMJVusSN8c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=APsDC/sZBVTd5fep9/U0HV3EafyL3gcReSGCs8VNQyCjqSOuT6QE4tgdE936mwitV4zL9uY7bnkIP2wzHWVQM87cwJUbciy/JJmejEWw8FOUxndbLRPuNHPqGnpFYGUBbspNxBRbh4NSn9NttWrRj8paioNw8r6N885YKBufg7g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=EQnF6Z1I; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709718456; x=1741254456;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=0Z6Bqj7WGyMcJwm4bMhfmiCLbED3HC5PGJMJVusSN8c=;
-  b=EQnF6Z1IAOWU9vu8XJ88awbq6tRItauOHwk+SzMdN0heujQlicnrmdYN
-   jJ4Wm68cYOZMaQyzX22Tt+ZKnv1gh3d+2z1WP3JW/5iHBC7/tw+qv1dHz
-   7+sJvb4TYzcui6aMYrA1uSJW67vZ4BH+IcgJBQUikU3k0PXI4McZVK75B
-   ZvmT3LtTLCURhTTcS7kJDjEJuHsI+1BPj9WXU7r/lTk1/KZ3+96xMXy3m
-   URZmh5nmykzow+h0r49VLxX51u0falDNZx1D59RUQ0l3rBATjuMlYTeQh
-   pJb1TsYfQE9sJdGiG4uIkt4TWBSPRx2opaYJ8wAsCS048Yu26OldhW3/O
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11004"; a="21843505"
-X-IronPort-AV: E=Sophos;i="6.06,207,1705392000"; 
-   d="scan'208";a="21843505"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 01:47:35 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,207,1705392000"; 
-   d="scan'208";a="14360830"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by orviesa003.jf.intel.com with ESMTP; 06 Mar 2024 01:47:31 -0800
-Date: Wed, 6 Mar 2024 17:43:16 +0800
-From: Xu Yilun <yilun.xu@linux.intel.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Yan Zhao <yan.y.zhao@intel.com>,
-	Isaku Yamahata <isaku.yamahata@intel.com>,
-	Michael Roth <michael.roth@amd.com>,
-	Yu Zhang <yu.c.zhang@linux.intel.com>,
-	Chao Peng <chao.p.peng@linux.intel.com>,
-	Fuad Tabba <tabba@google.com>, David Matlack <dmatlack@google.com>
-Subject: Re: [PATCH 05/16] KVM: x86/mmu: Use synthetic page fault error code
- to indicate private faults
-Message-ID: <Zeg6tKA0zNQ+dUpn@yilunxu-OptiPlex-7050>
-References: <20240228024147.41573-1-seanjc@google.com>
- <20240228024147.41573-6-seanjc@google.com>
+	s=arc-20240116; t=1709718304; c=relaxed/simple;
+	bh=HOZAMW/H6iDoUqklncDGbTIw5V9afaXH/RbYAT/6KBQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ox0mZ97TwRJb645m2Zo+LybeLqz5wDirXqZzCPorRax8a8Yq8SwDwiJJ+pVwUdj+Ki0/Jk0UGvLGn2NZRItokPXKmIEG3KUicprrEcMIzvpFDZKXEEVIYx2kdzD7sNtoYmVUdKwf1My5CDmU1MIdIooHiPfzcUOW1VkZKZcjd2s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=WDzaenik; arc=none smtp.client-ip=209.85.219.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dc74e33fe1bso808293276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 01:45:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709718302; x=1710323102; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mQP1wgCpBBioFokr90QAK5gY3jqGey3mX1zxKrDnCL8=;
+        b=WDzaenikIh72Ul+Pj4kWeS/tODp7Fh74634i0vjJkzTIfMwqB5QpAqsn1vUvJCBt5U
+         OasuSZgk7SInxlcLEW78TcROBRiiP57hZso6F6vjpaw9gHBcNsBjjmQmIGtTA2xSUH7W
+         kX7OSFVgQNVnndxwNFt3S+DWyKe4jPoImBhi0rQTIOhYvsVmNlJQ+Mk9HOsS0Mlh8kHX
+         Nk8mXhwL8EspfyIk45HnPqj/UFvRShhnyURFtKnIkiXM7rS/qXK6f2+rTbIVsQ3PY8xi
+         tXAVuFMm20CV7enzIalcwPMKM7QqKL7YSAVX24ZZiMaqh3gXrCtMiEb2NlsLab9cR/fE
+         Tgzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709718302; x=1710323102;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mQP1wgCpBBioFokr90QAK5gY3jqGey3mX1zxKrDnCL8=;
+        b=RCmyYXvRI/4L/aE0eK4sOwXG4SC1QEvZBWWhufkuS8RUG4TdaDiELRrWQ7mpzTIK1p
+         PV5yrxFbM+rF/xzrUCWe/ALoRZd+lypK6s1w0hfkNbJqFC5wbZtZaVSCRxLB581gEl9K
+         ePAhKiaEM4awplcm28zGLysTDkRRcFEH2Q9npb54BfyVKpKJ/f5ZuBe5nOnkt1KksQhM
+         PtJwrL0K2h3nh6zG1yczv5wZoml+fQrZrT7mMWjxRsOLL4Jf1L/DsAe5M89GA9aUZ2zU
+         kxCwl/t9tTp8WC288Nl9vrdC5O+cGHFZehkMaaFxvm3hdoRwsSw3EUZdPpf3cGvBdSjX
+         bUww==
+X-Gm-Message-State: AOJu0YzYKa503UkpDJ52n77ZCkIdh9Rbox9QL3DXt2PNIskUHpf0aTSk
+	BPvUpdhMH8CKhR/mn1oyzo3uT0xyV9m5vvwJgG7lwy1vxTNhQJwCpC1GLt7ZmB3447/JAXdcuIV
+	hxCzSq6xxX3E8ytrP1/cYejjpgvW4FacXbVTYcA==
+X-Google-Smtp-Source: AGHT+IHWT6I+snMD+D9zIeDpZ6WEp58iDCV+aplCIJiyTv3e4e4154r40sk77XmqDRXyrrx892Y7VbpFM0ogd6KQsNY=
+X-Received: by 2002:a25:868f:0:b0:dc7:776b:5e4a with SMTP id
+ z15-20020a25868f000000b00dc7776b5e4amr11676441ybk.56.1709718301925; Wed, 06
+ Mar 2024 01:45:01 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240228024147.41573-6-seanjc@google.com>
+References: <20240220171457.703-1-kprateek.nayak@amd.com>
+In-Reply-To: <20240220171457.703-1-kprateek.nayak@amd.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Wed, 6 Mar 2024 10:44:50 +0100
+Message-ID: <CACRpkdbxjU0r+PDTxJwrgzuJgaKnOCHtkaZtm4jO6bmFQ0SPiQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 00/14] Introducing TIF_NOTIFY_IPI flag
+To: K Prateek Nayak <kprateek.nayak@amd.com>
+Cc: linux-kernel@vger.kernel.org, "Gautham R. Shenoy" <gautham.shenoy@amd.com>, 
+	Richard Henderson <richard.henderson@linaro.org>, Russell King <linux@armlinux.org.uk>, 
+	Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, 
+	Dietmar Eggemann <dietmar.eggemann@arm.com>, Ard Biesheuvel <ardb@kernel.org>, 
+	Arnd Bergmann <arnd@arndb.de>, x86@kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 27, 2024 at 06:41:36PM -0800, Sean Christopherson wrote:
-> Add and use a synthetic, KVM-defined page fault error code to indicate
-> whether a fault is to private vs. shared memory.  TDX and SNP have
-> different mechanisms for reporting private vs. shared, and KVM's
-> software-protected VMs have no mechanism at all.  Usurp an error code
-> flag to avoid having to plumb another parameter to kvm_mmu_page_fault()
-> and friends.
-> 
-> Alternatively, KVM could borrow AMD's PFERR_GUEST_ENC_MASK, i.e. set it
-> for TDX and software-protected VMs as appropriate, but that would require
-> *clearing* the flag for SEV and SEV-ES VMs, which support encrypted
-> memory at the hardware layer, but don't utilize private memory at the
-> KVM layer.
+Hi K Prateek,
 
-I see this alternative in other patchset.  And I still don't understand why
-synthetic way is better after reading patch #5-7.  I assume for SEV(-ES) if
-there is spurious PFERR_GUEST_ENC flag set in error code when private memory
-is not used in KVM, then it is a HW issue or SW bug that needs to be caught
-and warned, and by the way cleared.
+I trimmed down the recipient list so we don't bounce.
 
-Thanks,
-Yilun
+On Tue, Feb 20, 2024 at 6:15=E2=80=AFPM K Prateek Nayak <kprateek.nayak@amd=
+com> wrote:
 
-> 
-> Opportunistically add a comment to call out that the logic for software-
-> protected VMs is (and was before this commit) broken for nested MMUs, i.e.
-> for nested TDP, as the GPA is an L2 GPA.  Punt on trying to play nice with
-> nested MMUs as there is a _lot_ of functionality that simply doesn't work
-> for software-protected VMs, e.g. all of the paths where KVM accesses guest
-> memory need to be updated to be aware of private vs. shared memory.
-> 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  arch/x86/include/asm/kvm_host.h | 11 +++++++++++
->  arch/x86/kvm/mmu/mmu.c          | 26 +++++++++++++++++++-------
->  arch/x86/kvm/mmu/mmu_internal.h |  2 +-
->  3 files changed, 31 insertions(+), 8 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 1e69743ef0fb..4077c46c61ab 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -267,7 +267,18 @@ enum x86_intercept_stage;
->  #define PFERR_GUEST_ENC_MASK	BIT_ULL(34)
->  #define PFERR_GUEST_SIZEM_MASK	BIT_ULL(35)
->  #define PFERR_GUEST_VMPL_MASK	BIT_ULL(36)
-> +
-> +/*
-> + * IMPLICIT_ACCESS is a KVM-defined flag used to correctly perform SMAP checks
-> + * when emulating instructions that triggers implicit access.
-> + */
->  #define PFERR_IMPLICIT_ACCESS	BIT_ULL(48)
-> +/*
-> + * PRIVATE_ACCESS is a KVM-defined flag us to indicate that a fault occurred
-> + * when the guest was accessing private memory.
-> + */
-> +#define PFERR_PRIVATE_ACCESS	BIT_ULL(49)
-> +#define PFERR_SYNTHETIC_MASK	(PFERR_IMPLICIT_ACCESS | PFERR_PRIVATE_ACCESS)
->  
->  #define PFERR_NESTED_GUEST_PAGE (PFERR_GUEST_PAGE_MASK |	\
->  				 PFERR_WRITE_MASK |		\
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 408969ac1291..7807bdcd87e8 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -5839,19 +5839,31 @@ int noinline kvm_mmu_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa, u64 err
->  	bool direct = vcpu->arch.mmu->root_role.direct;
->  
->  	/*
-> -	 * IMPLICIT_ACCESS is a KVM-defined flag used to correctly perform SMAP
-> -	 * checks when emulating instructions that triggers implicit access.
->  	 * WARN if hardware generates a fault with an error code that collides
-> -	 * with the KVM-defined value.  Clear the flag and continue on, i.e.
-> -	 * don't terminate the VM, as KVM can't possibly be relying on a flag
-> -	 * that KVM doesn't know about.
-> +	 * with KVM-defined sythentic flags.  Clear the flags and continue on,
-> +	 * i.e. don't terminate the VM, as KVM can't possibly be relying on a
-> +	 * flag that KVM doesn't know about.
->  	 */
-> -	if (WARN_ON_ONCE(error_code & PFERR_IMPLICIT_ACCESS))
-> -		error_code &= ~PFERR_IMPLICIT_ACCESS;
-> +	if (WARN_ON_ONCE(error_code & PFERR_SYNTHETIC_MASK))
-> +		error_code &= ~PFERR_SYNTHETIC_MASK;
->  
->  	if (WARN_ON_ONCE(!VALID_PAGE(vcpu->arch.mmu->root.hpa)))
->  		return RET_PF_RETRY;
->  
-> +	/*
-> +	 * Except for reserved faults (emulated MMIO is shared-only), set the
-> +	 * private flag for software-protected VMs based on the gfn's current
-> +	 * attributes, which are the source of truth for such VMs.  Note, this
-> +	 * wrong for nested MMUs as the GPA is an L2 GPA, but KVM doesn't
-> +	 * currently supported nested virtualization (among many other things)
-> +	 * for software-protected VMs.
-> +	 */
-> +	if (IS_ENABLED(CONFIG_KVM_SW_PROTECTED_VM) &&
-> +	    !(error_code & PFERR_RSVD_MASK) &&
-> +	    vcpu->kvm->arch.vm_type == KVM_X86_SW_PROTECTED_VM &&
-> +	    kvm_mem_is_private(vcpu->kvm, gpa_to_gfn(cr2_or_gpa)))
-> +		error_code |= PFERR_PRIVATE_ACCESS;
-> +
->  	r = RET_PF_INVALID;
->  	if (unlikely(error_code & PFERR_RSVD_MASK)) {
->  		r = handle_mmio_page_fault(vcpu, cr2_or_gpa, direct);
-> diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
-> index 1fab1f2359b5..d7c10d338f14 100644
-> --- a/arch/x86/kvm/mmu/mmu_internal.h
-> +++ b/arch/x86/kvm/mmu/mmu_internal.h
-> @@ -306,7 +306,7 @@ static inline int kvm_mmu_do_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
->  		.max_level = KVM_MAX_HUGEPAGE_LEVEL,
->  		.req_level = PG_LEVEL_4K,
->  		.goal_level = PG_LEVEL_4K,
-> -		.is_private = kvm_mem_is_private(vcpu->kvm, cr2_or_gpa >> PAGE_SHIFT),
-> +		.is_private = err & PFERR_PRIVATE_ACCESS,
->  	};
->  	int r;
->  
-> -- 
-> 2.44.0.278.ge034bb2e1d-goog
-> 
-> 
+> Same experiment was repeated on an dual socket ARM server (2 x 64C)
+> which too saw a significant improvement in the ipistorm performance:
+>
+>   =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>   Test          : ipistorm (modified)
+>   Units         : Normalized runtime
+>   Interpretation: Lower is better
+>   Statistic     : AMean
+>   =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>   kernel:                               time [pct imp]
+>   tip:sched/core                        1.00 [0.00]
+>   tip:sched/core + TIF_NOTIFY_IPI       0.41 [59.29]
+
+Is that a 64bit ARM64 system or really an ARM 32-bit 64-core system?
+
+I'm confused because:
+
+> K Prateek Nayak (10):
+>   arm/thread_info: Introduce TIF_NOTIFY_IPI flag
+
+There is no arm64 patch in the patch series.
+
+I can perhaps test the patches on an ARM32 system but all I have is dualcor=
+e
+I think.
+
+Yours,
+Linus Walleij
 
