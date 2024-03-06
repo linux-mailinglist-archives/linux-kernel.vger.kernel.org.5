@@ -1,90 +1,149 @@
-Return-Path: <linux-kernel+bounces-93806-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93807-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A22238734F6
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 11:54:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 111E58734FB
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 11:54:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30A072888DF
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:54:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C0E51289360
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:54:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F3F4605DB;
-	Wed,  6 Mar 2024 10:54:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B2406086E;
+	Wed,  6 Mar 2024 10:54:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ckLjFwAG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nfOBlZye"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A4D75FBB7;
-	Wed,  6 Mar 2024 10:54:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 669C5605B4;
+	Wed,  6 Mar 2024 10:54:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709722442; cv=none; b=C1nbh64Qn7qkyvqShIimQXlAK0B60xT14g65OJfC92zciH6uhkHQI1X2kjd8NAf+AgBjrQd/Lw7r0+kTDgRAEDyPoiDW+uLoRxRiASDJzbE1rbmySCBO1qkVPWA+v3V74+jN3+LYspKQiJ4TpVGnMNqXOTVQ9JaD6GaNpkfZ9lE=
+	t=1709722467; cv=none; b=cTJMhu1QeXJgo3Oq+PaqmeFmGP8806qtWyqg4PceOAht+e5bVJT3oPOMNYFBvRbEUBiSYOjm2v4Na0h51oRcEAGBQUGin9DD52Eio5GfZ1rwjJVrbCGRQPkSe97LOQhE3ucMfs9tKV80i/ZDfEQYdABDkRFKCPuefd4yKRVp6ok=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709722442; c=relaxed/simple;
-	bh=V9ulxqkvtjrXOF64TXsr5C+5Oyn26F+JRDAIJVyStmk=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
-	 MIME-Version:Content-Type; b=SDWmFgr/yBGh5lo7+G/sd3yg/XEkhHeX4fkiJZ4/m30Ng6Ecwg/t+IcxsH+UUf6zOGCPCZrHQUFZWhZ9uUzfVEuPOAbzry/4KbM1K4Yb2e3vIomBOF01aPUPaI0Ct7UK2Taw93xYLqFrgIslr1YD5r1eazWb9uX47ty2g/0mVM4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ckLjFwAG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF0FCC433F1;
-	Wed,  6 Mar 2024 10:53:59 +0000 (UTC)
+	s=arc-20240116; t=1709722467; c=relaxed/simple;
+	bh=tNVnFoiAMQ5QeMVMqZGqNlm8+sdvCROQkfknzCEfqIo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JSEeA6s0TuXFeMh11oZIh7tzAyj/DcDtCaJvzpd8sFnqbJhg7TcGbDrfOrkgtOttTMnoHjMIOfby/OKAj1gkbyMzUGAd8N0YIewS0BV8lQ87/SQ74akQg70L07kYGQZRadZtIYexfTGQWUEK49tqCx11a0/AYn1hR1dVWBk2lyk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nfOBlZye; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1428FC433C7;
+	Wed,  6 Mar 2024 10:54:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709722442;
-	bh=V9ulxqkvtjrXOF64TXsr5C+5Oyn26F+JRDAIJVyStmk=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=ckLjFwAGbZree5//Mk79opO8RFRXtxd3J1fmcNm7ysSEH9FaRS7m04lrP55Phgvss
-	 2hoJWZWCgWvTo5CzhWJnxZJPgIwqrKP6m3KCbAzrSqMwZQNkQ2UzSQ7pRv4U4IknE9
-	 R4DikOsiqr3WkLY4OC2M5TKRiWeC888z/DUVvA4YmToqgSvfd21V7P184gngZ/ZWlz
-	 sVQth2oggNteEFDkGsPlbURiwxZcNu3zuKpDv/zpa+mdkJOwtBxI8mzbFMX6O39K85
-	 TVjp+y274Gua4VSCErNLVCtWkWYUxLisA/eMRWLi5s1P0xyLvXKujRyUsaDDEbhHo5
-	 BMWzfMkmPLKsA==
-From: Kalle Valo <kvalo@kernel.org>
-To: Arend van Spriel <arend.vanspriel@broadcom.com>,
-    Arnd Bergmann <arnd@arndb.de>
-Cc: Duoming Zhou <duoming@zju.edu.cn>,  linux-kernel@vger.kernel.org,
-  konrad.dybcio@linaro.org,  hdegoede@redhat.com,  minipli@grsecurity.net,
-  linux-wireless@vger.kernel.org,  brcm80211@lists.linux.dev,
-  brcm80211-dev-list.pdl@broadcom.com
-Subject: Re: [PATCH] wifi: brcmfmac: pcie: handle randbuf allocation failure
-References: <20240301135134.29577-1-duoming@zju.edu.cn>
-	<fdaefac9-1d02-4424-b893-4306b97028ca@broadcom.com>
-Date: Wed, 06 Mar 2024 12:53:57 +0200
-In-Reply-To: <fdaefac9-1d02-4424-b893-4306b97028ca@broadcom.com> (Arend van
-	Spriel's message of "Wed, 6 Mar 2024 10:19:58 +0100")
-Message-ID: <87h6hjhbqy.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+	s=k20201202; t=1709722467;
+	bh=tNVnFoiAMQ5QeMVMqZGqNlm8+sdvCROQkfknzCEfqIo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=nfOBlZyeqBHPAr5+5y1Br4CmyNoSEbpTx7c11qnnscZF/V9wZKDBd8VkYZfSIvAaQ
+	 /W1gDJhctcoet3zqt997+qergIeLSHVLVlVfVv7+PGEMD0Xd7YDr929Z09/fyplhRC
+	 gEZbICqjkJonllN68zmyhgnoOGtQVftzjBiN4poo3tNM0FkmEAb5vNk2AntutRGyqO
+	 lql4igMg+iwW7Lnoq2uS5iSQfM31XKMZSlfu/CkS2aXu9tFDD4uF+tdRCIi5HreLQM
+	 ItD7zyTcQ5q53zm83EonjVSkbb96AmeH3utNTD8DbqZdqbmMTiade250dO/a52lSHF
+	 CXhh/yYNMvJlA==
+Date: Wed, 6 Mar 2024 11:54:20 +0100
+From: Niklas Cassel <cassel@kernel.org>
+To: Igor Pylypiv <ipylypiv@google.com>
+Cc: Damien Le Moal <dlemoal@kernel.org>,
+	John Garry <john.g.garry@oracle.com>,
+	Jason Yan <yanaijie@huawei.com>,
+	"James E.J. Bottomley" <jejb@linux.ibm.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	Jack Wang <jinpu.wang@cloud.ionos.com>,
+	Hannes Reinecke <hare@suse.de>,
+	Xiang Chen <chenxiang66@hisilicon.com>,
+	Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
+	Bart Van Assche <bvanassche@acm.org>,
+	TJ Adams <tadamsjr@google.com>, linux-ide@vger.kernel.org,
+	linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 0/7] NCQ Priority sysfs sttributes for libsas
+Message-ID: <ZehLXDoWQZiLzCTo@ryzen>
+References: <20240306012226.3398927-1-ipylypiv@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240306012226.3398927-1-ipylypiv@google.com>
 
-Arend van Spriel <arend.vanspriel@broadcom.com> writes:
+Hello Igor,
 
-> On 3/1/2024 2:51 PM, Duoming Zhou wrote:
->> The kzalloc() in brcmf_pcie_download_fw_nvram() will return
->> null if the physical memory has run out. As a result, if we
->> use get_random_bytes() to generate random bytes in the randbuf,
->> the null pointer dereference bug will happen.
->> Return -ENOMEM from brcmf_pcie_download_fw_nvram() if kzalloc()
->> fails for randbuf.
->> Fixes: 91918ce88d9f ("wifi: brcmfmac: pcie: Provide a buffer of
->> random bytes to the device")
->
-> Looks good to me. Looking for kernel guideline about stack usage to
-> determine whether it would be ok to just use buffer on stack. Does
-> anyone know. This one is 256 bytes so I guess the allocation is
-> warranted here.
+On Tue, Mar 05, 2024 at 05:22:19PM -0800, Igor Pylypiv wrote:
+> This patch series adds sas_ncq_prio_supported and sas_ncq_prio_enable
+> sysfs sttributes for libsas managed SATA devices. Existing libata sysfs
+> attributes cannot be used directly because the ata_port location is
+> different for libsas.
 
-Arnd, what do you suggest? Do we have any documentation or guidelines
-anywhere?
+As far as I can tell, you don't add sas_ncq_prio_supported and
+sas_ncq_prio_enable, but instead add ncq_prio_supported and
+ncq_prio_enable, so perhaps update this sentence.
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Kind regards,
+Niklas
+
+> 
+> Changes since v6:
+> - Replaced sas_ata_sdev_attr_group definition with a macro for
+>   the "CONFIG_SCSI_SAS_ATA is not set" case. The macro defines
+>   an empty rvalue struct eliminating the variable definition.
+> 
+> Changes since v5:
+> - Added __maybe_unused attribute to sas_ata_sdev_attr_group to prevent
+>   an unused-const-variable warning when CONFIG_SCSI_SAS_ATA is not set.
+> 
+> Changes since v4:
+> - Updated sas_ncq_prio_* sysfs functions to use WARN_ON_ONCE() instead
+>   of WARN_ON().
+> 
+> Changes since v3:
+> - Changed ata_ncq_prio_supported() and ata_ncq_prio_enabled() to store
+>   the result into a boolean variable passed by address.
+> - Removed the "usable with both libsas and libata" wording from
+>   ata_ncq_prio_* helper's function comments.
+> - Removed the unlikely() in ata_ncq_prio_enable() because the function
+>   is not in a fastpath.
+> - Dropped hisi_sas v1 HW driver changes because it doesn't support SATA.
+> 
+> Changes since v2:
+> - Added libsas SATA sysfs attributes to aic94xx and isci.
+> 
+> Changes since v1:
+> - Dropped the "sas_" prefix to align sysfs sttributes naming with AHCI.
+> - Dropped ternary operators to make the code more readable.
+> - Corrected the formatting %u -> %d in sysfs_emit().
+> - Changed kstrtol() to kstrtobool() in [ata|sas]_ncq_prio_enable_store().
+> - Changed comments to use the "/* */" style instead of "//".
+> - Added libsas SATA sysfs attributes to mvsas and hisi_sas.
+> - Dropped the 'Reviewed-by' tags because they were not sent in-reply
+>   to the patch emails.
+> 
+> Igor Pylypiv (7):
+>   ata: libata-sata: Factor out NCQ Priority configuration helpers
+>   scsi: libsas: Define NCQ Priority sysfs attributes for SATA devices
+>   scsi: pm80xx: Add libsas SATA sysfs attributes group
+>   scsi: mvsas: Add libsas SATA sysfs attributes group
+>   scsi: hisi_sas: Add libsas SATA sysfs attributes group
+>   scsi: aic94xx: Add libsas SATA sysfs attributes group
+>   scsi: isci: Add libsas SATA sysfs attributes group
+> 
+>  drivers/ata/libata-sata.c              | 140 ++++++++++++++++++-------
+>  drivers/scsi/aic94xx/aic94xx_init.c    |   8 ++
+>  drivers/scsi/hisi_sas/hisi_sas_v2_hw.c |   6 ++
+>  drivers/scsi/hisi_sas/hisi_sas_v3_hw.c |   6 ++
+>  drivers/scsi/isci/init.c               |   6 ++
+>  drivers/scsi/libsas/sas_ata.c          |  94 +++++++++++++++++
+>  drivers/scsi/mvsas/mv_init.c           |   7 ++
+>  drivers/scsi/pm8001/pm8001_ctl.c       |   5 +
+>  drivers/scsi/pm8001/pm8001_init.c      |   1 +
+>  drivers/scsi/pm8001/pm8001_sas.h       |   1 +
+>  include/linux/libata.h                 |   6 ++
+>  include/scsi/sas_ata.h                 |   6 ++
+>  12 files changed, 247 insertions(+), 39 deletions(-)
+> 
+> -- 
+> 2.44.0.278.ge034bb2e1d-goog
+> 
 
