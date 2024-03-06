@@ -1,221 +1,136 @@
-Return-Path: <linux-kernel+bounces-94184-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94185-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07455873B09
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:44:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20E7A873B0A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:45:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 832241F2A456
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:44:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1B722855CC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:44:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D36313541D;
-	Wed,  6 Mar 2024 15:44:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3063A1361D3;
+	Wed,  6 Mar 2024 15:44:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ff16X58d"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xtV/cuRw"
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2F2C13175F;
-	Wed,  6 Mar 2024 15:44:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E750E13175F
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 15:44:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709739860; cv=none; b=i5kIgfFnunEwJNZraVRBvJfc28icMQ2M8PB4JnlEInC0s13AGiLpj2sAxI9PYbr9zMAouhVCNx7mG0WrIV15tBMyS2LcAPE7nOqtg4U5idaaRONdbgA99FSAx99+D/t3P9QFg4BQRKHsKFE8/1z1JmRECBj9T5PHlp3lgFOx91Q=
+	t=1709739875; cv=none; b=TEQyQabrtz2BTQRaTGW5zUmWrLy8noqBOgLbCRv0sWjSuAlyG8qXx2mpU+sw7OxSjLQ1bvAZi6RXHFviyuU4P31oNhpytqHv1x4Oz0aM7Jy1eiU1CS5cbgXYSb08G0M1OsHtEGiqyZgB2D0KO3HPAi4HBSq29u37C5OcxS/LETk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709739860; c=relaxed/simple;
-	bh=o5tGBwakNL1GHUnA3SZuy7tj0ORXAvss4hL0Ws3LNmc=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=V+YIphqOE9e27RCl1wXcUG7t87xNFkotPlOw5bXzF9qouLRA/pPWt2Dg0jHEW546dlfKrImgzlgpJ/k1MHWK9Sx0cwl6AGlYrVqNDd/croox8y99sI10vdxjHVQmC0uxIO5g/M2CizTRnUtoRfaUyLRO1H1jAgy13DVXCv7IZuY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ff16X58d; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709739859; x=1741275859;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version:content-id;
-  bh=o5tGBwakNL1GHUnA3SZuy7tj0ORXAvss4hL0Ws3LNmc=;
-  b=ff16X58drXNNDAhIacr5hp+t5YcUI8A1jRaqX5V5d/fwOngSS4jigDD3
-   DDYgDKl95j67oaCHDECBgk9WDKWRk/bV/L00YnZDFqmVMhBnQG0Xv2PU3
-   BciqCQCaLrXCoOxICrl8AYhRUWQWp1exbdR0fOx93TxnqtVZmBktIs25J
-   x25f23OxjDtR9JiJciAJ44D6O5Vu5pGW8VQkxOPa2riOA2yDhDiDXCk4j
-   ymm6yMGqA91s31kiqWCZI+YE8GzVyJAcL+C54/oa2JeRHq3iaCmoy8/Yu
-   9w6oBosrbvmrjBU/rOfso0oZv3eQ1TgAyKSz9w7DwrFFTlXM5/0jH7kYg
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11005"; a="21812076"
-X-IronPort-AV: E=Sophos;i="6.06,208,1705392000"; 
-   d="scan'208";a="21812076"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 07:44:18 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,208,1705392000"; 
-   d="scan'208";a="14360260"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.244.146])
-  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 07:44:16 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Wed, 6 Mar 2024 17:44:11 +0200 (EET)
-To: "Maciej W. Rozycki" <macro@orcam.me.uk>
-cc: Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org, 
-    LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] PCI: Use the correct bit in Link Training not active
- check
-In-Reply-To: <alpine.DEB.2.21.2403060951310.43702@angie.orcam.me.uk>
-Message-ID: <01666075-504d-a434-d039-2e25db931f23@linux.intel.com>
-References: <20240301150641.4037-1-ilpo.jarvinen@linux.intel.com> <alpine.DEB.2.21.2403011622560.42226@angie.orcam.me.uk> <c740c6e4-ca1a-33ad-8437-4a1219c16eb1@linux.intel.com> <alpine.DEB.2.21.2403060951310.43702@angie.orcam.me.uk>
+	s=arc-20240116; t=1709739875; c=relaxed/simple;
+	bh=fy3hqPPtFleijSb5Uq92VFf00vojXkST46ntWh1Qq0Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dCspjZtXTy5OfqseGXQbSZ7Drl9/hWMyMCIzymAT5hYnaX6gEGGIAXejTp1rFoEJM51K1Uavo7Z/E97fbhvmkWCsfUZVKJY/w3UkZhkrKHts8LF7SwwB1NC1uNEwNc7dZFG/B2S11qIm9UClF+hbRXZQMcIVmNRk/JHxkoDgeLg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=xtV/cuRw; arc=none smtp.client-ip=209.85.215.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-5d81b08d6f2so6278295a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 07:44:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709739873; x=1710344673; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=4GTEQwM/YBhR8th/Bxd4bpNmbVxmzOwpK9LNFUE5Vk4=;
+        b=xtV/cuRwi0tFhIUuxrRsmEpArd+viPDJnnPg6HLpEJiVi+CSA9SceY4x53Crri0cUX
+         OOioWlrVv2S6st8FiqPlI5K61FqQ6YnijCzp1sonPjlD9C70T5ulnm3Tjn/ukqpwnj1L
+         HnH7TDTBrmDekFF1waiSCba3lv+LjQK66HxcTujXXq28D2kOhIziARkL8t+NVNEoKy1L
+         cSkRjEcUw0Q8s3+MvikXIT8zxU0FlKHQHL9p5hPrKvGQnY6UJQe4xke4tdEFFVXO/5BE
+         aw6o2+KOWgRG4d/6xG3QyMpSoBPwIaRnMUb2Z0Y3C/+oJJ4nn32uQ3dZPTgr7LPZ50k7
+         xDbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709739873; x=1710344673;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4GTEQwM/YBhR8th/Bxd4bpNmbVxmzOwpK9LNFUE5Vk4=;
+        b=Uaf2peZEpmazrNfN0SYK6P1pfwevx9UN+Nq4bFvdwbfc4DY/htaqbfJ4iwwkFhDAyN
+         40FVRvLOMSU217V7tawR1t26d2eQ5Y0xVXQNIjRaroVefvcfqvm50dn1ORB+Enw1W+MG
+         gOle2nAh0TOOhgxQSDyv0I3jVpMdWWpl6y6GglYjaMRLCD+fj7IbGvAtJQ/5RxB/BNdg
+         qEPKqWgyFJ9X6kNb9tJpYC7EvCZLEusKB4Qsiuzu9pihO2inBrrsI4p7Nl2gLAZcgdEa
+         IZS9SieZVXQ8jyQYlM9ufXwHd0sFznjZzn1JU8ffcIzkf8LBYHznJkey8Pz62ED5nBuO
+         XU4Q==
+X-Gm-Message-State: AOJu0YypPvbsfIN5fVFiAANHrsQQGEsVnx5Me//KO4QcoKg9gwHlSwmw
+	GGKPJxuM4jSSi6VKfWc8h4fc+OxK0gxD9Fj2YUbZFv9bzCivjlOp38Oiv4b+BxOaY3p64fI9OOX
+	gGyq+35EZeOHLAa8CJck/fMNRV+CBkISVAA5pmQ==
+X-Google-Smtp-Source: AGHT+IEKhURjpbpHGzpdESWS0FfkOUbCcWPpQepL+OGNHo54YuaIt3b2OroBL+hMUx1Es5TrHK1Ew3J4/1GOckD5p+E=
+X-Received: by 2002:a17:90a:6b82:b0:29b:8134:5bc9 with SMTP id
+ w2-20020a17090a6b8200b0029b81345bc9mr415677pjj.29.1709739873094; Wed, 06 Mar
+ 2024 07:44:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="8323328-376951620-1709737480=:1022"
-Content-ID: <0788f6d6-895c-36ff-ac83-a3e053dc0f78@linux.intel.com>
+References: <20240304094831.3639338-1-mingo@kernel.org> <20240304094831.3639338-5-mingo@kernel.org>
+In-Reply-To: <20240304094831.3639338-5-mingo@kernel.org>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Wed, 6 Mar 2024 16:44:22 +0100
+Message-ID: <CAKfTPtCHVkZudjwzErGvm+LboB39shN_rOVLXMMusEkdXAk0aw@mail.gmail.com>
+Subject: Re: [PATCH 4/9] sched/balancing: Change comment formatting to not
+ overlap Git conflict marker lines
+To: Ingo Molnar <mingo@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Shrikanth Hegde <sshegde@linux.ibm.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
+	Linus Torvalds <torvalds@linux-foundation.org>, Valentin Schneider <vschneid@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---8323328-376951620-1709737480=:1022
-Content-Type: text/plain; CHARSET=ISO-8859-15
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Content-ID: <b7a297db-e162-1f79-03f7-9dff695ed070@linux.intel.com>
-
-On Wed, 6 Mar 2024, Maciej W. Rozycki wrote:
-> On Mon, 4 Mar 2024, Ilpo J=E4rvinen wrote:
->=20
-> > > > Since waiting for Data Link Layer Link Active bit is only used for =
-the
-> > > > Target Speed quirk, this only impacts the case when the quirk attem=
-pts
-> > > > to restore speed to higher than 2.5 GT/s (The link is Up at that po=
-int
-> > > > so pcie_retrain_link() will fail).
-> > >=20
-> > >  NAK.  It's used for both clamping and unclamping and it will break t=
-he=20
-> > > workaround, because the whole point there is to wait until DLLA has b=
-een=20
-> > > set.  Using LT is not reliable because it will oscillate in the failu=
-re=20
-> > > case and seeing the bit clear does not mean link has been established=
-=2E =20
-> >=20
-> > In pcie_retrain_link(), there are two calls into=20
-> > pcie_wait_for_link_status() and the second one of them is meant to=20
-> > implement the link-has-been-established check.
-> >=20
-> > The first wait call comes from e7e39756363a ("PCI/ASPM: Avoid link=20
-> > retraining race") and is just to ensure the link is not ongoing retrain=
-ing=20
-> > to make sure the latest configuration in captured as required by the=20
-> > implementation note. LT being cleared is exactly what is wanted for tha=
-t=20
-> > check because it means that any earlier retraining has ended (a new one=
-=20
-> > might be starting but that doesn't matter, we saw it cleared so the new=
-=20
-> > configuration should be in effect for that instance of link retraining)=
-=2E
-> >=20
-> > So my point is, the first check is not even meant to check that link ha=
-s=20
-> > been established.
->=20
->  I see what you mean, and I now remember the note in the spec.  I had=20
-> concerns about it, but did not do anything about it at that point.
->=20
->  I think we still have no guarantee that LT will be clear at the point we=
-=20
-> set RL, because LT could get reasserted by hardware between our read and=
-=20
-> the setting of RL.
+On Mon, 4 Mar 2024 at 10:48, Ingo Molnar <mingo@kernel.org> wrote:
 >
-> IIUC that doesn't matter really, because the new link=20
-> parameters will be taken into account regardless of whether retraining wa=
-s
-> initiated by hardware in an attempt to do link recovery or triggered by=
-=20
-> software via RL.
-
-I, too, was somewhat worried about having LT never clear for long enough=20
-to successfully sample it during the wait but it's like you say, any new=20
-link training should take account the new Target Speed which should=20
-successfully bring the link up (assuming the quirk works in the first=20
-place) and that should clear LT.
-
-> > Of course, I cannot test this with your configuration so I cannot=20
-> > confirm how the target speed quirk behaves, I just found it by reading =
-the=20
-> > code. The current code does not make sense because the first wait is=20
-> > supposed to wait for LT bit, not for DLLLA.
->=20
->  I think I now understand the problem correctly, and indeed from master=
-=20
-> Linux repo's point of view it's been a defect with the merge referred. =
-=20
-> So I withdraw my objection.  Sorry about the confusion.
-
-Thanks, and the confusion was entirely my fault caused my confusing=20
-and partly wrong wording.
-
->  However I think the last paragraph of your commit description:
->=20
-> > Since waiting for Data Link Layer Link Active bit is only used for the
-> > Target Speed quirk, this only impacts the case when the quirk attempts
-> > to restore speed to higher than 2.5 GT/s (The link is Up at that point
-> > so pcie_retrain_link() will fail).
->=20
-> is not accurate enough, which contributed to my confusion.  In particular=
-=20
-> `pcie_retrain_link' succeeds when the link is up, because it calls=20
-> `pcie_wait_for_link_status' such as to succeed when either LT is clear or=
-=20
-> DLLLA is set.
-
-I know, it was simply wrong because I somehow misthought which way those=20
-use_lt negations worked (and thus thought I found a different problem=20
-than there really was).
-
-I already did major rewriting here to explain out how the code ended up=20
-into its current shape but I'll also consider your explanation below=20
-which is likely better than what I've currently, thanks.
-
->  How about:
->=20
-> This only impacts the Target Speed quirk, which is the only case where=20
-> waiting for Data Link Layer Link Active bit is used.  It currently works=
-=20
-> in the problematic case by means of link training getting initiated by=20
-> hardware repeatedly and respecting the new link parameters set by the=20
-> caller, which then make training succeed and bring the link up, setting=
-=20
-> DLLLA and causing pcie_wait_for_link_status() to return success.  We are=
-=20
-> not supposed to rely on luck and need to make sure that LT transitioned
-> through the inactive state though before we initiate link training by=20
-> hand via RL.
+> So the scheduler has two such comment blocks, with '=' used as a double underline:
 >
-> then?
->=20
->  Also for `pcie_retrain_link' I think it would be clearer if we rephrased=
-=20
-> the note as follows:
->=20
-> =09 * Ensure the updated LNKCTL parameters are used during link
-> =09 * training by checking that there is no ongoing link training
-> =09 * that may have started before link parameters were changed, so
-> =09 * as to avoid LTSSM race as recommended in Implementation Note
-> =09 * at the end of PCIe r6.0.1 sec 7.5.3.7.
->=20
->  NB I am currently away on holiday until the end of next week.  However I=
-=20
-> do have access to my lab and I'll see if I can verify your change tonight
-> or another evening this week, and overall thank you for your patience.
+>         /*
+>          * VRUNTIME
+>          * ========
+>          *
+>
+> '========' also happens to be a Git conflict marker, throwing off a simple
+> search in an editor for this pattern.
+>
+> Change them to '-------' type of underline instead - it looks just as good.
+>
+> Signed-off-by: Ingo Molnar <mingo@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Vincent Guittot <vincent.guittot@linaro.org>
+> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> Cc: Linus Torvalds <torvalds@linux-foundation.org>
+> Cc: Valentin Schneider <vschneid@redhat.com>
 
-Don't worry. I can easily wait even until you're back from the holiday
-so no need to push it or anything. :-)
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
 
---=20
- i.
---8323328-376951620-1709737480=:1022--
+> ---
+>  kernel/sched/fair.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index f11fc6dd39b1..934ace69eb30 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -3679,7 +3679,7 @@ static void reweight_eevdf(struct cfs_rq *cfs_rq, struct sched_entity *se,
+>
+>         /*
+>          * VRUNTIME
+> -        * ========
+> +        * --------
+>          *
+>          * COROLLARY #1: The virtual runtime of the entity needs to be
+>          * adjusted if re-weight at !0-lag point.
+> @@ -3762,7 +3762,7 @@ static void reweight_eevdf(struct cfs_rq *cfs_rq, struct sched_entity *se,
+>
+>         /*
+>          * DEADLINE
+> -        * ========
+> +        * --------
+>          *
+>          * When the weight changes, the virtual time slope changes and
+>          * we should adjust the relative virtual deadline accordingly.
+> --
+> 2.40.1
+>
 
