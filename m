@@ -1,233 +1,189 @@
-Return-Path: <linux-kernel+bounces-93200-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93202-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97D71872C48
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 02:37:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C847872C4F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 02:45:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBEEB1C254A7
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 01:37:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D7B8EB216BA
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 01:45:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 079D67499;
-	Wed,  6 Mar 2024 01:37:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E310479F2;
+	Wed,  6 Mar 2024 01:45:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Hr6S1wl1"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b="Ts2xDUgc";
+	dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b="WrixH0Vs"
+Received: from nautica.notk.org (nautica.notk.org [91.121.71.147])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56DD06FB8;
-	Wed,  6 Mar 2024 01:37:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6ACD6FBD;
+	Wed,  6 Mar 2024 01:45:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.121.71.147
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709689061; cv=none; b=LW+V1zPFkk8EdBkyS8CsIwUaf+8xnZrNeXyaNvD4IuWmPIerACEilnd4JnAiiTmuR74/7f8x8YDEN60g6xzBxOZBNyEFsJuGtb88g0UjUCpbbrp2FJJRG+In73bBEvHIMYptXK0OxRKWlmvavhftpxUXh/Sz0VZfCFpJm8c8Skg=
+	t=1709689524; cv=none; b=YTK9PRHTaNbCf6bVOgehKFi4nRoxd+cz+sdvx6PcIwQZNKfyWtQ9K87DodY3osJrpu/GeMy36nWzg7vpYeAzCxsVn1APeZ32DpxWZUoZO6eG9RPhqiqzk3kqgS4f79cgVg5TXgqr3ak7OGzmumPCu7TcmDix+pNBhgVd4tXhkUQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709689061; c=relaxed/simple;
-	bh=lwaJiedob5FjeCFBQo1p0B88jPm61ksE34kgp3U7OKs=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=O/Dd2sfrRTnwhjlutm4HvrjL/TbfcqcmJWpbkDZRD+3WHiDg9JqJ2ooAdpnZxo4xM7aaFvdAiH3i8wcf59d3fPs59xM/JuZzqGqDTh5KW+WHqvv4F1IZOPbAMBat0HEBvvrxuqEzAHbfMc0eItlsl8IAHu2Klbkzmz3l59nk2tU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Hr6S1wl1; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709689059; x=1741225059;
-  h=message-id:subject:from:reply-to:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=lwaJiedob5FjeCFBQo1p0B88jPm61ksE34kgp3U7OKs=;
-  b=Hr6S1wl12rQO6mqX41+3QAWq9qMyIvkz4eQvSOi9vuW+Rw+ak/gEB1rF
-   aqCdhsYfI/wVgLGXYjvVQu3TXIdV2X9dys0RpwjcprcS+pO6o4rY+dOp4
-   5WSwgj29NouX+Ok2gUEoCMt0ySIpVzexhhvoi617CoftuGeG4CIYF4n5W
-   LfLkd1Y+HXAzTtcb3R70Bz0JvXOB0abRnyDFE0OgRyvbHKGYGl+0HGgxn
-   m2CXrrGHGCL3ostlH269ib8iWQ2I+jXrWkRRcahQSVXDAFU5yLHriPHHH
-   Q0vzXtdM9rs+ZHTzUNdUEJClPStG/57PlODzv1N84pimRNzYFsJL/nKVY
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11004"; a="8099917"
-X-IronPort-AV: E=Sophos;i="6.06,207,1705392000"; 
-   d="scan'208";a="8099917"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 17:37:38 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,207,1705392000"; 
-   d="scan'208";a="9552132"
-Received: from linux.intel.com ([10.54.29.200])
-  by orviesa010.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 17:37:39 -0800
-Received: from kgoverx-mobl1.amr.corp.intel.com (unknown [10.209.23.213])
-	by linux.intel.com (Postfix) with ESMTP id 416A5580DA0;
-	Tue,  5 Mar 2024 17:37:38 -0800 (PST)
-Message-ID: <2fe4d50f4e5690ffaf4134b1c21dc40cacfafe5b.camel@linux.intel.com>
-Subject: Re: [PATCH V4] PCI/ASPM: Update saved buffers with latest ASPM
-From: "David E. Box" <david.e.box@linux.intel.com>
-Reply-To: david.e.box@linux.intel.com
-To: Bjorn Helgaas <helgaas@kernel.org>, Vidya Sagar <vidyas@nvidia.com>, 
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc: bhelgaas@google.com, macro@orcam.me.uk, ajayagarwal@google.com, 
- ilpo.jarvinen@linux.intel.com, hkallweit1@gmail.com,
- johan+linaro@kernel.org,  xueshuai@linux.alibaba.com,
- linux-pci@vger.kernel.org,  linux-kernel@vger.kernel.org,
- treding@nvidia.com, jonathanh@nvidia.com,  kthota@nvidia.com,
- mmaddireddy@nvidia.com, sagar.tv@gmail.com
-Date: Tue, 05 Mar 2024 17:37:38 -0800
-In-Reply-To: <20240305220342.GA552530@bhelgaas>
-References: <20240305220342.GA552530@bhelgaas>
-Organization: David E. Box
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1709689524; c=relaxed/simple;
+	bh=8icK7I6k2ySylpR6U/utwQ5wybqz1zyNXnnpXmTq7/M=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=BcBs6okaTIpV76RP5KOPLSkRR56UD9BFjPnyMx6eEpvtxelIGtO+OWJv/TU0e8q3OZnuoK4gBtg0Y46DgI83rodOJBpa6ic/xYIU81lhgvSAwCU/1ejCaG6lVWg7j7+XOzCqd/EVu2yBMfKG9mHSoi3/Q8XqM984VzlcrX4cyWs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codewreck.org; spf=pass smtp.mailfrom=codewreck.org; dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b=Ts2xDUgc; dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b=WrixH0Vs; arc=none smtp.client-ip=91.121.71.147
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codewreck.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codewreck.org
+Received: by nautica.notk.org (Postfix, from userid 108)
+	id 4F97EC009; Wed,  6 Mar 2024 02:45:12 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+	t=1709689512; bh=24w78wFIT+tiDvHI5JiAHjNSzb2X5BqfSjmd7z6L0h8=;
+	h=From:Date:Subject:To:Cc:From;
+	b=Ts2xDUgci5g5MuYu3CKBP0uHW+R/CcycKJWQ8oQle2r47ROQ/5eHac4uBrH1lLGN5
+	 kuIbjnylYgnZll0N74IaLpwiPbbogYXtqttN/yDqMKdRmnpNKJPJcA3MC2q09wQ8ou
+	 I+F4vy6oj3ZwLVbom6TB/nCMi6QbdXEU8rg4mzo0Z8FRJHpq4qUKH+lj0ewo+2Sluw
+	 ZAPidxtcze0LlmH1noRgCLV/wAe3nOJuP/QPhqTG9gOf+KGCUlzABhXPMPnkl6lSek
+	 jF6muuaV9WUj4N1bBGedwkClOPtUp4WIy3LRXt4abvXVXcAKlLeLAgewtzVPRZYZm6
+	 36dvphHl4mtvA==
+X-Spam-Level: 
+Received: from gaia.codewreck.org (localhost [127.0.0.1])
+	by nautica.notk.org (Postfix) with ESMTPS id EDE2FC009;
+	Wed,  6 Mar 2024 02:45:05 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+	t=1709689508; bh=24w78wFIT+tiDvHI5JiAHjNSzb2X5BqfSjmd7z6L0h8=;
+	h=From:Date:Subject:To:Cc:From;
+	b=WrixH0VsIj47VP+VKle8iE5Zmhp0iznWP0RSHryxDNXtFdiRyh/Qpm+xJhaqNdoTc
+	 L73TvAwrKzhputsnHIVNtJ42jdbluoZPsaOyr4A4xCzeeFgljC3rZ4DtlBq/eqMqHH
+	 gjmZk0XnQGcvUoG9Mg5E0AKcvWRrD4fxT59VZ5UxT2H8sy2XjUauC9pe+hAtJNvbOL
+	 odohqhGCkhltsd+LO1Q6Wwp1kaeP7bnexxdICDcj4BEWbmVOkmHnFiT8AI/t5iGRxa
+	 D9hk4HL41XapAObUvGozSgk7n0iGLO2sa882lOAlgeVchwpBVkKZjrtMokw59tKmhS
+	 CwvzgBQWP75QA==
+Received: from [127.0.0.1] (localhost.lan [::1])
+	by gaia.codewreck.org (OpenSMTPD) with ESMTP id cd420dad;
+	Wed, 6 Mar 2024 01:45:01 +0000 (UTC)
+From: Dominique Martinet <asmadeus@codewreck.org>
+Date: Wed, 06 Mar 2024 10:44:38 +0900
+Subject: [PATCH] mmc: part_switch: fixes switch on gp3 partition
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240306-mmc-partswitch-v1-1-bf116985d950@codewreck.org>
+X-B4-Tracking: v=1; b=H4sIAIXK52UC/x2NywrCQAwAf6XkbGDtQ8RfEQ/ZGN0cdi3JooXSf
+ +/W4zAMs4KLqTjcuhVMvur6KQ3Opw44UXkL6rMx9KEfwxAumDPjTFb9p5UT8kBTiFO4jiTQokg
+ uGI0KpyPL5FXsELPJS5f/6f7Yth3UctOueQAAAA==
+To: Ulf Hansson <ulf.hansson@linaro.org>, 
+ Linus Walleij <linus.walleij@linaro.org>, 
+ Jorge Ramirez-Ortiz <jorge@foundries.io>
+Cc: linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Dominique Martinet <dominique.martinet@atmark-techno.com>, 
+ stable@vger.kernel.org
+X-Mailer: b4 0.13-dev-f371f
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3246;
+ i=asmadeus@codewreck.org; h=from:subject:message-id;
+ bh=w9OlutTB4nTqNTkTKcCGg2BC0kAnzLlfIIcxRubstHw=;
+ b=owEBbQKS/ZANAwAIAatOm+xqmOZwAcsmYgBl58qd3EDKJquFQVqr5C+PMXOYo5Oak5/nQwXwg
+ nESjIyMMY+JAjMEAAEIAB0WIQT8g9txgG5a3TOhiE6rTpvsapjmcAUCZefKnQAKCRCrTpvsapjm
+ cJTtD/9ambGPqZXUPyn6wOQAiJYvaqw+Kslr2NYKgb0gtcgO04dvPR6s8y2oWuJtiUlo/jHeFb5
+ i/IbFKmyyHnybn6Vg3MQUErtGV3CsiZgFsfKH2/sXU0N6tz/YtPhbhaoaTynE3+FHWmspQut9iR
+ TGxwTUbiYQ2p2IlEm0gTO/WbuONIsJRQggpSEfBgmjtHFVPnZvp5bTxSXTRldO/D6tIvwCDNezM
+ 6OdyyyqmGPJUEUriLQJnOtnNaYW+8hEh2bTCxHNmAG2otSeWt5ZU+4JCKtn69IJHRI7HD+FSSoA
+ OMuHwtauN7/TKGXAUwyJVR5gL9WHDIKIzVBOX6x6qtVNnqcFZcOkAN3yXeRAD8NttJJWy0D10XD
+ NDO/2NHC0GBmY40v2sZsQB69ceMaLSwWgAuG8FL01cyTxnt0bEVEfqWdytSGs8uIVqzQ1fdwqMi
+ LjUvhHTBEMAqqoQhHchSvi2beaHynRAbxZh7dD9bU07+jqCbAcpQgFyaRF+nfJ2m3aSsUYrJmRR
+ k+B45Ob2yysWoP7QUlbAiWmNQYHIGcc8G0C8QKBvi8/tU7UN9VXNt4q101qNxX3EMFLw1Lhm2CZ
+ WEdItVMXNs0zM8051B8TB2/CSNUS1j9TokJgfjP7MJhh0pkk7PKKV3Rz56Em6Ycf3htm74ZUJfw
+ KeTdfI0hVC2EJzA==
+X-Developer-Key: i=asmadeus@codewreck.org; a=openpgp;
+ fpr=B894379F662089525B3FB1B9333F1F391BBBB00A
 
-On Tue, 2024-03-05 at 16:03 -0600, Bjorn Helgaas wrote:
-> [+to Sathy, David in case you want to update your Reviewed-by]
->=20
-> On Thu, Feb 22, 2024 at 11:14:36PM +0530, Vidya Sagar wrote:
-> > Many PCIe device drivers save the configuration state of their respecti=
-ve
-> > devices during probe and restore the same when their 'slot_reset' hook
-> > is called through PCIe Error Recovery Handler.
-> >=20
-> > If the system has a change in ASPM policy after the driver's probe is
-> > called and before error event occurred, 'slot_reset' hook restores the
-> > PCIe configuration state to what it was at the time of probe but not to
-> > what it was just before the occurrence of the error event.
-> > This effectively leads to a mismatch in the ASPM configuration between
-> > the device and its upstream parent device.
-> >=20
-> > Update the saved configuration state of the device with the latest info
-> > whenever there is a change w.r.t ASPM policy.
-> >=20
-> > Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
->=20
-> > -void pci_save_aspm_state(struct pci_dev *pdev);
-> > +void pci_save_aspm_l1ss_state(struct pci_dev *pdev);
->=20
-> I rebased this again on top of my pci/aspm updates to remove the need
-> for the rename above.
->=20
-> > +static void pci_save_aspm_state(struct pci_dev *dev)
-> > +{
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct pci_cap_saved_state *=
-save_state;
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0u16 *cap;
-> > +
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (!pci_is_pcie(dev))
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0return;
-> > +
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0save_state =3D pci_find_save=
-d_cap(dev, PCI_CAP_ID_EXP);
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (!save_state)
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0return;
-> > +
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0cap =3D (u16 *)&save_state->=
-cap.data[0];
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0pcie_capability_read_word(de=
-v, PCI_EXP_LNKCTL, &cap[1]);
->=20
-> And I changed this part so it only updates the PCI_EXP_LNKCTL_ASPMC
-> bits, not the entire LNKCTL.
->=20
-> Updating the entire saved register probably wouldn't *break* anything,
-> but it could randomly hide other LNKCTL changes depending on whether
-> or not ASPM configuration was changed in the interim.=C2=A0 For example:
->=20
-> =C2=A0 - driver .probe() saves LNKCTL
-> =C2=A0 - LNKCTL changes some non-ASPMC thing via setpci or other mechanis=
-m
-> =C2=A0 - save_state updated via pcie_config_aspm_link()
->=20
-> A restore in .slot_reset() would restore different LNKCTL values for
-> the non-ASPMC change depending on whether pcie_config_aspm_link() was
-> used.
->=20
-> I applied it on pci/aspm for v6.9.=C2=A0 Please take a look and make sure
-> it still does what you need:
-> https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git/commit/?h=3Da=
-spm&id=3Da6315434436d587f70e489e6365c5b7e20176a71
->=20
-> Sathy and David, I didn't add your Reviewed-by because I didn't want
-> to presume that you were OK with my changes.=C2=A0 But I'd be more than
-> happy to add them if you take a look.
->=20
-> Bjorn
->=20
-> > +}
-> > +
-> > =C2=A0void pci_aspm_get_l1ss(struct pci_dev *pdev)
-> > =C2=A0{
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* Read L1 PM substate =
-capabilities */
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0pdev->l1ss =3D pci_find=
-_ext_capability(pdev, PCI_EXT_CAP_ID_L1SS);
-> > =C2=A0}
-> > =C2=A0
-> > -void pci_save_aspm_state(struct pci_dev *pdev)
-> > +void pci_save_aspm_l1ss_state(struct pci_dev *pdev)
-> > =C2=A0{
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct pci_cap_saved_st=
-ate *save_state;
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0u16 l1ss =3D pdev->l1ss=
-;
-> > @@ -309,10 +325,12 @@ static void pcie_set_clkpm_nocheck(struct
-> > pcie_link_state *link, int enable)
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct pci_bus *linkbus=
- =3D link->pdev->subordinate;
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0u32 val =3D enable ? PC=
-I_EXP_LNKCTL_CLKREQ_EN : 0;
-> > =C2=A0
-> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0list_for_each_entry(child, &=
-linkbus->devices, bus_list)
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0list_for_each_entry(child, &=
-linkbus->devices, bus_list) {
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0pcie_capability_clear_and_set_word(child, PCI_EX=
-P_LNKCTL,
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 PCI_EXP_LNKCTL_CLKREQ_EN,
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 val);
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0pci_save_aspm_state(child);
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0link->clkpm_enabled =3D=
- !!enable;
-> > =C2=A0}
-> > =C2=A0
-> > @@ -931,6 +949,12 @@ static void pcie_config_aspm_link(struct
-> > pcie_link_state *link, u32 state)
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0pcie_config_aspm_dev(parent, upstream);
-> > =C2=A0
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0link->aspm_enabled =3D =
-state;
-> > +
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* Update latest ASPM config=
-uration in saved context */
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0pci_save_aspm_state(link->do=
-wnstream);
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0pci_save_aspm_l1ss_state(lin=
-k->downstream);
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0pci_save_aspm_state(parent);
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0pci_save_aspm_l1ss_state(par=
-ent);
-> > =C2=A0}
-> > =C2=A0
-> > =C2=A0static void pcie_config_aspm_path(struct pcie_link_state *link)
-> > --=20
-> > 2.25.1
-> >=20
+From: Dominique Martinet <dominique.martinet@atmark-techno.com>
 
-Reviewed-by: David E. Box <david.e.box@linux.intel.com>
+Commit e7794c14fd73 ("mmc: rpmb: fixes pause retune on all RPMB
+partitions.") added a mask check for 'part_type', but the mask used was
+wrong leading to the code intended for rpmb also being executed for GP3.
+
+On some MMCs (but not all) this would make gp3 partition inaccessible:
+armadillo:~# head -c 1 < /dev/mmcblk2gp3
+head: standard input: I/O error
+armadillo:~# dmesg -c
+[  422.976583] mmc2: running CQE recovery
+[  423.058182] mmc2: running CQE recovery
+[  423.137607] mmc2: running CQE recovery
+[  423.137802] blk_update_request: I/O error, dev mmcblk2gp3, sector 0 op 0x0:(READ) flags 0x80700 phys_seg 4 prio class 0
+[  423.237125] mmc2: running CQE recovery
+[  423.318206] mmc2: running CQE recovery
+[  423.397680] mmc2: running CQE recovery
+[  423.397837] blk_update_request: I/O error, dev mmcblk2gp3, sector 0 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+[  423.408287] Buffer I/O error on dev mmcblk2gp3, logical block 0, async page read
+
+the part_type values of interest here are defined as follow:
+main  0
+boot0 1
+boot1 2
+rpmb  3
+gp0   4
+gp1   5
+gp2   6
+gp3   7
+
+so mask with EXT_CSD_PART_CONFIG_ACC_MASK (7) to correctly identify rpmb
+
+Fixes: e7794c14fd73 ("mmc: rpmb: fixes pause retune on all RPMB partitions.")
+Cc: stable@vger.kernel.org
+Cc: Jorge Ramirez-Ortiz <jorge@foundries.io>
+Signed-off-by: Dominique Martinet <dominique.martinet@atmark-techno.com>
+---
+A couple of notes:
+- this doesn't fail on all eMMCs, I can still access gp3 on some models
+  but it seems to fail reliably with micron's "G1M15L"
+- I've encountered this on the 5.10 backport (in 5.10.208), so that'll
+  need to be backported everywhere the fix was taken...
+
+Thanks!
+---
+ drivers/mmc/core/block.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+index 32d49100dff5..86efa6084696 100644
+--- a/drivers/mmc/core/block.c
++++ b/drivers/mmc/core/block.c
+@@ -874,10 +874,11 @@ static const struct block_device_operations mmc_bdops = {
+ static int mmc_blk_part_switch_pre(struct mmc_card *card,
+ 				   unsigned int part_type)
+ {
+-	const unsigned int mask = EXT_CSD_PART_CONFIG_ACC_RPMB;
++	const unsigned int mask = EXT_CSD_PART_CONFIG_ACC_MASK;
++	const unsigned int rpmb = EXT_CSD_PART_CONFIG_ACC_RPMB;
+ 	int ret = 0;
+ 
+-	if ((part_type & mask) == mask) {
++	if ((part_type & mask) == rpmb) {
+ 		if (card->ext_csd.cmdq_en) {
+ 			ret = mmc_cmdq_disable(card);
+ 			if (ret)
+@@ -892,10 +893,11 @@ static int mmc_blk_part_switch_pre(struct mmc_card *card,
+ static int mmc_blk_part_switch_post(struct mmc_card *card,
+ 				    unsigned int part_type)
+ {
+-	const unsigned int mask = EXT_CSD_PART_CONFIG_ACC_RPMB;
++	const unsigned int mask = EXT_CSD_PART_CONFIG_ACC_MASK;
++	const unsigned int rpmb = EXT_CSD_PART_CONFIG_ACC_RPMB;
+ 	int ret = 0;
+ 
+-	if ((part_type & mask) == mask) {
++	if ((part_type & mask) == rpmb) {
+ 		mmc_retune_unpause(card->host);
+ 		if (card->reenable_cmdq && !card->ext_csd.cmdq_en)
+ 			ret = mmc_cmdq_enable(card);
+
+---
+base-commit: 5847c9777c303a792202c609bd761dceb60f4eed
+change-id: 20240306-mmc-partswitch-c3a50b5084ae
+
+Best regards,
+-- 
+Dominique Martinet | Asmadeus
+
 
