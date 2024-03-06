@@ -1,155 +1,112 @@
-Return-Path: <linux-kernel+bounces-94457-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94458-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3A78874016
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 20:05:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E187987401B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 20:08:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 322A81C22F30
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 19:05:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9DEA6287368
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 19:08:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3965113E7D3;
-	Wed,  6 Mar 2024 19:05:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADDB813E7EF;
+	Wed,  6 Mar 2024 19:08:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nU3fX5Tu"
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iav4H9D6"
+Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C754613E7CD
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 19:05:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CCDE13E7CD;
+	Wed,  6 Mar 2024 19:08:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709751915; cv=none; b=WN2ZCWsroxNYhV8ErpgBvp+zsOdpPqIHi3qx40fu/d9BUru9kdtzZqFmvMBdcywIY2Y9g+sXzaTcY8Ix4rJ99Bko7Tc1cRj9TX7XG31sHJoWiBdlnZbYyNVYpBYIz4vsKjhekReh5R+CX0VamGoyBRFRrH5LyVdifd1Dx1JFRcM=
+	t=1709752102; cv=none; b=Lgr2xezHKNLGyY+RmUBDtsvwhTrRQ05LiboWlSqd4hvEkCdksY6ykj1H3V/DrBxyFVv2UM/RcUIyEQZZen4/4xmFoQzhUxyz2qw+prDWG0tsZorb9thTN1MnvSG5VEAeBR2MGLIvTdW4VLrV/kmU4XvvX6rPQK2t3KqKfWmDEE4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709751915; c=relaxed/simple;
-	bh=mHLju7qL93F2u968OifIn91fsuAol3MDudKqWQKxROc=;
+	s=arc-20240116; t=1709752102; c=relaxed/simple;
+	bh=RV6mL5v2qERzLuB7fby5/iAWOoXRQGIT6BUiqUllKfg=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XTjAzv+KWECcZizXeNT5JruRrNHHHnXcfLJCAoz8W0Sl8ttVAl+eIzyIPOsOHB2VdUaC04Yk1UaJm4Rv67R49oeq/VC17XIcC4iXFJtIJwm2TwkHxIgbw/JLL1KUiVVIPG4tayGJUxHVIPn+3aRexkOX8abIL08fG60QdHlpb1I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=nU3fX5Tu; arc=none smtp.client-ip=209.85.219.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dd02fb9a31cso4315303276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 11:05:13 -0800 (PST)
+	 To:Cc:Content-Type; b=tpQJxk3lKdTuxGyTTzWsxYBzd4P66K/VrwK5DrhqESgQwNsx8J96ktlkue5TMvRkySGqCHuL6XSks6AtyF6c9jJnXKicOY9LPOA0ak9REfRbmL7yKl1V8l0Xhy4L3m9L0/izyUUTVgA0hywC7qSyNT8OC4y7dpBaSuhjeQXwsk4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iav4H9D6; arc=none smtp.client-ip=209.85.167.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f178.google.com with SMTP id 5614622812f47-3c1ec2d05feso1858019b6e.0;
+        Wed, 06 Mar 2024 11:08:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709751913; x=1710356713; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1709752099; x=1710356899; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=q9Dz5IweVp7u5AkiGYK4q5oZtWjMI5V6f9hbtIZbpnw=;
-        b=nU3fX5TuZkYqo628+U2CZ7LTDIXLy8rHpM1hIbJ+Jcn3KYsrFNo+jk2n/Jr63nwUvL
-         3FfZ/ftece8LHjrawKn8SZt/36xHc1rptCpEsbH58BblT9do3JDklWXovvwip4c0nklf
-         F7X71p8Bqgk9vaS/NH7oCd69kaqt7ht/YT6neD4HdGdvNjB6Rl952dUSyCTTZC0pkpIb
-         PRghW0coRbR3+ttZoyX9ORYbsySBJYAvI31g64SkFRksbZKfKjp9mgn6Qu3Bef3W6Lvj
-         Dyt+HnoPDSFA3qGvWZxFwn4CzmOA6csHwEbyoethy+swhSszmRT1lVL+lMVn6JNH72Et
-         MGPQ==
+        bh=l9ljfn8pzLcyr0pmoDnBqgXrNCS95cr4N6iPjugHZLU=;
+        b=iav4H9D6IMq6BGQleGOCznVC1Z/cGJfaTVXXjGJyXPxC5lVsAyJLeVK9zfslPuRAae
+         +4+cuK3WjQKP1ViSAywnkG0Aguo8RGNV4rL6fFJm5W+KZtqe9ufyqqYjL9LlWajTOtWU
+         GG9DoFoSvgG+hskBB3H9F5OxmOiVjQc8hclDsDRE8Z0dFLwRIY8dozCGTMcO/q4wmnWy
+         kml7uRJ7ujZZ4DLl3l5XfMo3iJE0U22+SuKDt13midhOezdNzVZyJ0lqZWbVHxUEOi2h
+         gebPRfV1uTuO9Xe8CQ1j0IKlGSMk7GA+Wv4IqJ7FuwkaQGg2wLk9bZhsv2e9Ut2d7FSX
+         flyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709751913; x=1710356713;
+        d=1e100.net; s=20230601; t=1709752099; x=1710356899;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=q9Dz5IweVp7u5AkiGYK4q5oZtWjMI5V6f9hbtIZbpnw=;
-        b=lNAyNgXNakrxu6gxrTC+eJgkokIu9hexwvd/4elLLoEI0AA/xwMYO9043Mpl3Wvy/e
-         x9KhIlhh0FJe5A95xxFcOZa+xPK8iFz0k50dny/oWge724kVWwrK83ZQOvHpjWSbnhZ5
-         B09K33n8WFNcy4DxzWL1BHmjT9r0r6u5xdXcGgtChpBWcvfrCNjefPiGwW5rO+eNTBIb
-         mLWpNYPCKq+RDw3ubnxXClCejQSJk3Jshp9adhPVlDQVBVqnGOb8c79Xae1j0t+D66gz
-         PcVa7V9Weiy2XTpzldeBdWK+A5+BUA/NEq7vxa3Q8oTCtAsReaYCywIVp+FxDBOYH4w9
-         k7kQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVCHyfOmzQKdtnEYt54OMuYFpiDJEA9KKJdCoi7YcesND4XZDz898ikkbMAo5/lXWhWlZP6rdarJ/GHQMI6HGRsOKyItDlLjInob86q
-X-Gm-Message-State: AOJu0Yz7uRPINn/8wAMcQYJ7fDVx726+nAtkT5twZ86R/6UOBuO9Yo3O
-	qgeGUp4GplG2OEq8i1i+OClAx2BJoau5E3CknMfxzAWzDqThitQr2BJ4lnFnR7uzKNL+aFTAKqV
-	ICW1YfOX8rNFZ8gIXoicwEUqaW7AyTPOFCeCrmw==
-X-Google-Smtp-Source: AGHT+IFC+4YdX9W/XnW+sn+ulzfAedByNbzUijQDRlwBizUg8UJ0PuL6UYp9q1eWBsfhKNGKnuSCWJkwn3BXptbDTO4=
-X-Received: by 2002:a25:df11:0:b0:dcc:245b:690e with SMTP id
- w17-20020a25df11000000b00dcc245b690emr10217316ybg.40.1709751912731; Wed, 06
- Mar 2024 11:05:12 -0800 (PST)
+        bh=l9ljfn8pzLcyr0pmoDnBqgXrNCS95cr4N6iPjugHZLU=;
+        b=fec4fwLHf67YYJfOFyi67NnsE9EvtlXUXoyzcg1wiCRMdt6Vb5e89jH0wh1WJAMPc5
+         K/L7wVnEJBIWg9sYtw3/egL1lHGG0oYNxKHdyLI535JdflKTFwMuHX0At+16pg9Hhtdp
+         q4I5Do/LSfJY/wzKAmMOiL6GtYlTmp9uoCN+B+VK7Lev8k52Rx9PdI4sm2poSeMXhgHi
+         /qXRsknupyzV8Rsfr6thc7i2FtqV8x3IAAEU73jD8+N+RM3LcPZm2JTqFiJ8zGbY7DGl
+         gEAjYzxOsnxyRJz3QfD3TYfTKDjXwS8qfFgVDRxUt6kDie3RHwOtEffrJMejSNdWsP0R
+         WU2Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVG6ydRPCwilNCx1L/iQ+010Otpb3aKrPQEM3pht3prjTpOQu792+dKn95zIYlIyX8tZVGh9lfKDiUQvbGKPCWFi/uixzM7QT4VgT7W
+X-Gm-Message-State: AOJu0YzkTGdLlnjNjo7ATwlVwSTyR994kBwKbFobWmFFbldeEMshLVAD
+	OPjkI+IKya50hqrJkKM1hu1Ir+R2+Avb4Hl2J6x0JBR+HSGT76rUp2IQI+1Uxi/x7Cd66v9M2AN
+	rwiyxlejxZPYFHDvdIlEQ6W0zxQg=
+X-Google-Smtp-Source: AGHT+IFGQgNUfYbTsIVGa0MQeXkalL+JAaMYuehv8v54bumXXrGiXEnM64uhAFoqLtkLmDxL77ohByHAhIPdLU4DRS0=
+X-Received: by 2002:a05:6808:13cc:b0:3c2:1805:8cfc with SMTP id
+ d12-20020a05680813cc00b003c218058cfcmr4403457oiw.53.1709752098638; Wed, 06
+ Mar 2024 11:08:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1709657858-8563-1-git-send-email-quic_sriramd@quicinc.com>
- <1709657858-8563-3-git-send-email-quic_sriramd@quicinc.com>
- <CAA8EJpoi0T-riqxbTzVymHwZmBHg5xO_Rwqy0ck-7cvGy291_A@mail.gmail.com> <935cdd47-ce71-4095-8cb5-e0f03fb30959@quicinc.com>
-In-Reply-To: <935cdd47-ce71-4095-8cb5-e0f03fb30959@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Wed, 6 Mar 2024 21:05:01 +0200
-Message-ID: <CAA8EJpp4pYCx5hVwrmb0gs2PaRnxUapHqAhksDocEugBsOECbQ@mail.gmail.com>
-Subject: Re: [RFC 2/3] USB: dwc3: qcom: Add support for firmware managed resources
-To: Sriram Dash <quic_sriramd@quicinc.com>
-Cc: andersson@kernel.org, konrad.dybcio@linaro.org, vkoul@kernel.org, 
-	kishon@kernel.org, robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, 
-	conor+dt@kernel.org, gregkh@linuxfoundation.org, quic_wcheng@quicinc.com, 
-	Thinh.Nguyen@synopsys.com, p.zabel@pengutronix.de, 
-	linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-usb@vger.kernel.org, quic_psodagud@quicinc.com, quic_nkela@quicinc.com, 
-	manivannan.sadhasivam@linaro.org, ulf.hansson@linaro.org, 
-	sudeep.holla@arm.com, quic_shazhuss@quicinc.com
+References: <20240305113135.403426564@linuxfoundation.org>
+In-Reply-To: <20240305113135.403426564@linuxfoundation.org>
+From: Allen <allen.lkml@gmail.com>
+Date: Wed, 6 Mar 2024 11:08:07 -0800
+Message-ID: <CAOMdWSL6uPRvG-DwOmWRs89WfchXzPUuG0KzkBFu46ibKfv-0A@mail.gmail.com>
+Subject: Re: [PATCH 5.15 00/83] 5.15.151-rc2 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
+	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-On Wed, 6 Mar 2024 at 18:53, Sriram Dash <quic_sriramd@quicinc.com> wrote:
+> This is the start of the stable review cycle for the 5.15.151 release.
+> There are 83 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
-> On 3/6/2024 2:15 PM, Dmitry Baryshkov wrote:
-> > On Tue, 5 Mar 2024 at 18:59, Sriram Dash <quic_sriramd@quicinc.com> wrote:
-> >>
-> >> Some target systems allow multiple resources to be managed by firmware.
-> >> On these targets, tasks related to clocks, regulators, resets, and
-> >> interconnects can be delegated to the firmware, while the remaining
-> >> responsibilities are handled by Linux.
-> >>
-> >> The driver is responsible for managing multiple power domains and
-> >> linking them to consumers as needed. Incase there is only single
-> >> power domain, it is considered to be a standard GDSC hooked on to
-> >> the qcom dt node which is read and assigned to device structure
-> >> (by genpd framework) before the driver probe even begins.
-> >>
-> >> This differentiation logic allows the driver to determine whether
-> >> device resources are managed by Linux or firmware, ensuring
-> >> backward compatibility.
-> >>
-> >> Furthermore, minor cleanup is performed for the private data of
-> >> the SNPS Femto PHY. However, ACPI handling is omitted due to the
-> >> absence of clients on the ACPI side.
-> >>
-> >> Signed-off-by: Sriram Dash <quic_sriramd@quicinc.com>
-> >> ---
-> >>   drivers/phy/qualcomm/phy-qcom-qmp-usb.c       | 290 ++++++++++++++++++++------
-> >>   drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c | 213 +++++++++++++++----
-> >>   drivers/usb/dwc3/dwc3-qcom.c                  | 259 +++++++++++++++++------
-
-[skipped]
-
-> >> @@ -2165,9 +2305,11 @@ static int qmp_usb_probe(struct platform_device *pdev)
-> >>           */
-> >>          pm_runtime_forbid(dev);
-> >>
-> >> -       ret = phy_pipe_clk_register(qmp, np);
-> >> -       if (ret)
-> >> -               goto err_node_put;
-> >> +       if (!qmp->fw_managed) {
-> >> +               ret = phy_pipe_clk_register(qmp, np);
-> >> +               if (ret)
-> >> +                       goto err_node_put;
-> >
-> > pipe_clk is an input to the GCC. If you are not registering it here,
-> > how would GCC get it?
-> >
+> Responses should be made by Thu, 07 Mar 2024 11:31:11 +0000.
+> Anything received after that time might be too late.
 >
-> The pipe clk will be managed by the firmware.
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.151-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+>
 
-Which pipe clk? Coming from the PHY to GCC or from GCC back to the PHY?
+Compiled and booted on my x86_64 and ARM64 test systems. No errors or
+regressions.
 
-Anyway, you can not drop this, this will break the ABI. The rule of
-thumb: existing DTB files MUST continue to work.
+Tested-by: Allen Pais <apais@linux.microsoft.com>
 
-> >> +       }
-> >>
-> >>          qmp->phy = devm_phy_create(dev, np, &qmp_usb_phy_ops);
-> >>          if (IS_ERR(qmp->phy)) {
-
--- 
-With best wishes
-Dmitry
+Thanks.
 
