@@ -1,126 +1,117 @@
-Return-Path: <linux-kernel+bounces-94063-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94067-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B123887394C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:36:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63B0787395A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:38:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A5A31F217CF
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:36:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 13C85286AA1
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:38:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC8C41339A2;
-	Wed,  6 Mar 2024 14:36:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F65113473B;
+	Wed,  6 Mar 2024 14:38:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BCHpRZxJ"
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="oC+eSq2f"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0D46130E49
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 14:36:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15481133993
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 14:38:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709735794; cv=none; b=tmh5ML1v804T8EObKvisjdd7fKccxfW08JaxtkXYnhsq2Dw5qopiJPhReYhj3zlmsvVkcWvhIG1JPPskAquaLUIODb4DsFcYTmpMSyWFcM4e5Q3BL40I+RsqIOdsAlLVHZBeFu+SvdgVAecWOwMv92YIPC7fUvPUSm11Idtzegk=
+	t=1709735903; cv=none; b=SjfEbSozwiWHuV+l8JRBTYuDvutqXLTSezrtCtYe5QD3QdJgDKWvAx8m3YaiSNCAyjfOa+YErXIYpc4YC+914PZs9bJvP/1u5uOjMGxXarUPa2xnR/UvRrWfkwTg6szaIyzZoVpqzEmpJtINCP3XSNDMsTASKSxdGb4i/YIceIs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709735794; c=relaxed/simple;
-	bh=1LLQImUgWptF5aTl7tp+pyRCwj6XNl/NYoCHRTgTYms=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qeHkE/zTx3g9kD6vskmsySci6yGHmKpht6CJSESiZrtTq6lk4RHox2E8p2h/320o2xF4LinaY4TAhKsWgjArkGUENoP8xXbbuKnc1DgozfaMKEdFGDLyYYHUy6dAQD+kg7q6zgdxyJzkhotMwQcF/+Q1qi1/R0sspv8r+rP4ZV0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=BCHpRZxJ; arc=none smtp.client-ip=209.85.128.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-60978e6f9a3so72191237b3.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 06:36:32 -0800 (PST)
+	s=arc-20240116; t=1709735903; c=relaxed/simple;
+	bh=NoMdI+P3ezDczKim8qhxeNDYdobYgb/tcnA+4xYseTE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LVOykd21p6atW6/MpR443sMIu+uIcCHHtZhUT5HpxjUlqpUroQ1iKtmq55YKsJQdlGb1NPFGNXhJmmobvDzDTg0XG8/HNP3k4xQEcZFQLSMbN1EgGiWQvZ+EGRwcTXxpoRPL22GKQR3tmjbwQ4GSqfTVkuNhEwFXgROWsvhWddk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=oC+eSq2f; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1dba177c596so6515795ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 06:38:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709735792; x=1710340592; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=iHNwpCe+I31CTwN7aUrmyx61YaV7nOH+nNHqHsIA11Y=;
-        b=BCHpRZxJWxalje9L7WlqJguo1HTa7MpF8LJ33LqN/L+0J8dTF13MCd8aUXoSJotOa2
-         fbwL/ziW++3e7c+h9i5YPcO4HZdcDNWsKVzLckV87v04/1o0o+TWVuHqcOnNhKzCuRpf
-         JwxrtfB5PlvDTV+XYCYF59bSflrCsqU9NQmNERhfSLR8wYfaVGx5L2LVIOX53iGcHZ47
-         WBr2K40Y4f0QFY6wj6x5fxs4vxvddrFOODwD4lbusHO9j8RToRQS9FZiRb7yyyPdtqT0
-         f7KkXH3AsSYqpEvgkqVtjT8Zbmg0PjSG7CTg8BPUsX3yPfDZ5feDbLQkZmipjnt4zJPY
-         kmpw==
+        d=chromium.org; s=google; t=1709735901; x=1710340701; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=pLyuD/CIq7Kcq2J+mXAcpPtUiY8V5eDIIqZPqq8Wh04=;
+        b=oC+eSq2f52991kigKwibLRWjJMsDjuGw/CFx+zyUoyC0Wx9rIoHukwC3Xocz9zirqU
+         qznOIvOucFVVm+1dw2E/6KyTcxsoOSQx39BkPc+r7deQVSNrLao6SO8t+xnukfPw1pdi
+         7YRFOBTtWCPw/aUog6e48z/nWOE6p66js6IJ8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709735792; x=1710340592;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1709735901; x=1710340701;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=iHNwpCe+I31CTwN7aUrmyx61YaV7nOH+nNHqHsIA11Y=;
-        b=LP0C9TW9RYdK2Qhmd6aAGyhAB7Mlgj04DSaQf7fDqREHC7WX37VZ4yEgRcSq+08oSu
-         KujMvvVWwRyOZO+QeDectGdSZ59pY3PqYfLp5G2lPcx9WYbLX73xmxzMo7kZBXQH9t7U
-         E8OkpmWAnT6EuuGYiQ6wd63yTPOuflWgcwqQZZI6d+4WrdGl5HMN1kPjsMZXfoRNpvKJ
-         lyyBi6JEIj+TfzcXZT7lwkDTX0FjEHwdyJ2/VXrnbJxbVN/HwYb43Q8aL3r5NNHZxQkw
-         AwTUVK+8/3cX+GLS99STmuAWYpCrQXThS8Y5SX8tm6UK9MtzULcy4KaLKpLcd/x/OKnj
-         2AYQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUitxYxBm/cpX33SpXMm8N8i67l4kFDco8UKWIBKgVfu6ieIu+SoccIrQitAzYZzWCOSpDMCo3pYbh3fglcKY4rvYrcema+ThrpNS++
-X-Gm-Message-State: AOJu0YzwFpXSCwv6sX8bch5uP/yrzB8p+xhNRQuafieeE5g3byxR5hFI
-	6GA9CVqtyXboUep503MY6VCRAVOi0IXifYfX5cpBd4FGEwwhSNFRN6t9LQXomT+WmzYLnorwL4O
-	6uE9oCALIB7CJbe2lkjcQo1DRjId9Cz0RoY8KfQ==
-X-Google-Smtp-Source: AGHT+IEPpVST+4/Bc4TNGCJR/RGKL6oQPaPcYMdtq9368ed+1AVIeaEVq3Hm15PMiDpt0MhWoG0yHtosTgDkNuKx8fY=
-X-Received: by 2002:a25:b28f:0:b0:dc7:5c37:5420 with SMTP id
- k15-20020a25b28f000000b00dc75c375420mr12698928ybj.60.1709735790316; Wed, 06
- Mar 2024 06:36:30 -0800 (PST)
+        bh=pLyuD/CIq7Kcq2J+mXAcpPtUiY8V5eDIIqZPqq8Wh04=;
+        b=n/g5XlKN5HBBoUN4JR7PVxB3HbDxKKqA1VitRpSNgz8pC2eaADA06mFcxbOcuMwsUj
+         fb/CtTlyQzISaQvVZDryl/0lBLNqWJs8IX4/QmEeNovDrhEmTpZBr5K5I2hNkW46LDxx
+         oDm61UVA/0lCciNv+rRzwa7eIF3EiK1Eh/+n/5PmZ6ATCKXJudHPK+s1miUz7cFRp4R6
+         HyOKuGD/gSmloGJzu2StyyZ0ccyMKIo4E6oEYNRg033JsIeSTYIlf5DC0fEOlwP5W/6i
+         UQFOZf0EqgHzM900WSazEJuU6WpEBJWtOV8u843jInwcKdOO3BONJ95BANqZYe1GJUxa
+         43hg==
+X-Forwarded-Encrypted: i=1; AJvYcCWX0xXzzdpqMHE8bfL0xJuyABJDZP/IsPrWjNXWCPnfykuZHcwQZRgglhCH9co6e4//DhvmXpY1VyQu6uOG/EC9VmoqL3aHqzKXZ967
+X-Gm-Message-State: AOJu0YwO0t45BDMj9GwizOaVCNX9bZRYx/NolRek5wk7xtwEcMRK3GrB
+	Ml/vWBM59vqCBJiTDkWksWKzzPJEyUXOJl4Nc3hzdsMlywh90mECZPWcV1bLjA==
+X-Google-Smtp-Source: AGHT+IHZhsekI2nK6sFkLJTOQ3qMI60iZPbvn0ydMSpr9wbA4qAouFyjXAj8VD/Xwrbaf9QKuboxEQ==
+X-Received: by 2002:a17:902:f7cc:b0:1dc:a605:53fd with SMTP id h12-20020a170902f7cc00b001dca60553fdmr252901plw.10.1709735901343;
+        Wed, 06 Mar 2024 06:38:21 -0800 (PST)
+Received: from dianders.sjc.corp.google.com ([2620:15c:9d:2:bc24:1849:151f:5509])
+        by smtp.gmail.com with ESMTPSA id e7-20020a17090301c700b001db9e12cd62sm12667178plh.10.2024.03.06.06.38.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Mar 2024 06:38:20 -0800 (PST)
+From: Douglas Anderson <dianders@chromium.org>
+To: dri-devel@lists.freedesktop.org
+Cc: Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Douglas Anderson <dianders@chromium.org>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Dave Airlie <airlied@redhat.com>,
+	David Airlie <airlied@gmail.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Sean Paul <sean@poorly.run>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] Revert "drm/udl: Add ARGB8888 as a format"
+Date: Wed,  6 Mar 2024 06:37:22 -0800
+Message-ID: <20240306063721.1.I4a32475190334e1fa4eef4700ecd2787a43c94b5@changeid>
+X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240306140306.876188-1-amadeus@jmu.edu.cn> <20240306140306.876188-3-amadeus@jmu.edu.cn>
-In-Reply-To: <20240306140306.876188-3-amadeus@jmu.edu.cn>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Wed, 6 Mar 2024 16:36:19 +0200
-Message-ID: <CAA8EJpo+wLYzLNheCJKXHTZwwQO9zEnVYyGbj4gSPVVo9yoAMA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/4] arm64: dts: qcom: ipq6018: add 1.5GHz CPU Frequency
-To: Chukun Pan <amadeus@jmu.edu.cn>
-Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Rob Herring <robh@kernel.org>, linux-arm-msm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Wed, 6 Mar 2024 at 16:04, Chukun Pan <amadeus@jmu.edu.cn> wrote:
->
-> The IPQ6005 and some IPQ6000 SoCs (with PMIC) have CPU
-> frequencies up to 1.5GHz, so add this frequency.
+This reverts commit 95bf25bb9ed5dedb7fb39f76489f7d6843ab0475.
 
-After this patch non-PMIC IPQ6000 boardss are broken until patch3 is
-applied. Please change the order of these patches.
+Apparently there was a previous discussion about emulation of formats
+and it was decided XRGB8888 was the only format to support for legacy
+userspace [1]. Remove ARGB8888. Userspace needs to be fixed to accept
+XRGB8888.
 
->
-> Signed-off-by: Chukun Pan <amadeus@jmu.edu.cn>
-> ---
->  arch/arm64/boot/dts/qcom/ipq6018.dtsi | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/qcom/ipq6018.dtsi b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-> index 7fdb119083a2..064b5706a289 100644
-> --- a/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-> @@ -140,6 +140,13 @@ opp-1440000000 {
->                         clock-latency-ns = <200000>;
->                 };
->
-> +               opp-1512000000 {
-> +                       opp-hz = /bits/ 64 <1512000000>;
-> +                       opp-microvolt = <937500>;
-> +                       opp-supported-hw = <0x2>;
-> +                       clock-latency-ns = <200000>;
-> +               };
-> +
->                 opp-1608000000 {
->                         opp-hz = /bits/ 64 <1608000000>;
->                         opp-microvolt = <987500>;
-> --
-> 2.25.1
->
->
+[1] https://lore.kernel.org/r/60dc7697-d7a0-4bf4-a22e-32f1bbb792c2@suse.de
 
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
 
+ drivers/gpu/drm/udl/udl_modeset.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/udl/udl_modeset.c b/drivers/gpu/drm/udl/udl_modeset.c
+index 0f8d3678770e..7702359c90c2 100644
+--- a/drivers/gpu/drm/udl/udl_modeset.c
++++ b/drivers/gpu/drm/udl/udl_modeset.c
+@@ -253,7 +253,6 @@ static int udl_handle_damage(struct drm_framebuffer *fb,
+ static const uint32_t udl_primary_plane_formats[] = {
+ 	DRM_FORMAT_RGB565,
+ 	DRM_FORMAT_XRGB8888,
+-	DRM_FORMAT_ARGB8888,
+ };
+ 
+ static const uint64_t udl_primary_plane_fmtmods[] = {
 -- 
-With best wishes
-Dmitry
+2.44.0.278.ge034bb2e1d-goog
+
 
