@@ -1,295 +1,260 @@
-Return-Path: <linux-kernel+bounces-94283-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94284-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17718873C76
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:42:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E16F9873C78
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:43:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9AE7F284AD8
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:42:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 989A1288EE5
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:43:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AC8F137925;
-	Wed,  6 Mar 2024 16:42:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D66F135418;
+	Wed,  6 Mar 2024 16:42:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EuIZTf/D"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=raspberrypi.com header.i=@raspberrypi.com header.b="P9mQfS6C"
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8F8EF9EB
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 16:42:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B61560882
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 16:42:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709743337; cv=none; b=oIm9l88VFUGUmoCUVGi4urxOcwt3gRgWmm8BqLi8wnFex1dwwxXhiMTZXr381fC0BlWJ/JxD7T09HRDjCc59h9Iek9A1Uz23B1on4+37z2eR1EWIaxbedzXOH2KwHUv6uOgZqh0oidpogVB7w8r7GkrtY9SFp+gvAft6b+4HRkM=
+	t=1709743376; cv=none; b=gAqMlP/UI8Rqi3slkyi/FOxhEV3qi0kXDpPiA8t/vjCGuLQxaNuklJNR6vCUFaHqW6Sw2AIwR8WHAd3LBbPkhsQsFXJ2bHGw9NP0GDDCYCKqc8KOUE7qVUHcKaF/M6flgI3MOup4YX4LUT1Y3qHGZss3hnkSnnS39HrTFCbBFTQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709743337; c=relaxed/simple;
-	bh=g8/7BLljzk9T1pqoXvHUVS4HHFDjTxTexs1XFJMZSFU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VP5nw6iHFL2qr7Sz3h3FKF6XuwzRZMMQD+wstyzkcVclIjaUN/ahpV5Yy5/7pf7Y2N7mwOQYzEvNnAvxBI04UPzwN1wGhrYnCMkrRJ/WCUVhLVO6e6TKns+TAx/A8Y30p3ZH2ph1AAxZpkEsmS8v28RkzuZy6LD1el89EgmQxTg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EuIZTf/D; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709743334;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XOnfHZ/CYWbvpHfKXEjkt5DY20w7GYdEJtPq6ODzSwM=;
-	b=EuIZTf/DHIjCveXLty5qat1vlxX3dqEqSGoNTd2wcLN+3PTJlPDUHfnlg6JdPhExj0TYnl
-	ZHEi/iLcsEg7A8iiOXry0vl/j4UtEaZ27GsTAaRLyk2Vnx9SkbFiiZy6YPVEp+MThSJq/F
-	ah4icEnOugNd66+dd7XHjV0rz/Rd27A=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-86-s9jgkvQJPgmApo8o2oVdZw-1; Wed, 06 Mar 2024 11:42:13 -0500
-X-MC-Unique: s9jgkvQJPgmApo8o2oVdZw-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-412f6ba3c6aso4310825e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 08:42:13 -0800 (PST)
+	s=arc-20240116; t=1709743376; c=relaxed/simple;
+	bh=9R9Uql4dpTfR5UzkP02I39c1Wae43SMY2i4QRqQ2E04=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=j1fWnPzID98Y3IYAyMKJrTQy+lgDEpDR8+/bbEVITla5Cx3lAWU/7KvEqe1UigYRVx3L5uONUjrpsKJwqrY6IXRU8fAyoRkRNAmsCO1FJGPUoIiFn8EcyQrhsWeOOfseAu4I8slfGVQHgtsP50r0MtgrMovJArl28KVN7aD0p+k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=raspberrypi.com; spf=pass smtp.mailfrom=raspberrypi.com; dkim=pass (2048-bit key) header.d=raspberrypi.com header.i=@raspberrypi.com header.b=P9mQfS6C; arc=none smtp.client-ip=209.85.219.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=raspberrypi.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=raspberrypi.com
+Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dc6d24737d7so6977148276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 08:42:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=raspberrypi.com; s=google; t=1709743373; x=1710348173; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=yzW7+P93llx+4bGlKmeM0ss5L9EqxXJA6GAV234pxq4=;
+        b=P9mQfS6Cm7gD052Fhc4IkDpAg2Mz690/n9h3QqkhPI2iXomb8U3sAFNPjt4TgRVJpk
+         fYPC4jNjJmKC2ngB1+ORw13jDfRLWvvQavGIye0g6B7v5EUvOCSVuaI6GTP59lNZGHdU
+         FjHLOhflbVQzDkiqFWpqpPE14H8il3ocQ/DjL3YnCAdbU3FryO9Al3E6rD2ZfgBvqRdZ
+         H7EcykgL+LW+kXR+pqJs5p2niIVvSqdPyXnl7HUF/L+0tpagJjA42W+ajV9oeSVM3nbU
+         xeQN4Kf3pn+4u7zjPWvcEIx8RsX0FaeyPA8E7zKfbNKHXOX+jgq+PP5eJL8G2qySHRqm
+         pP1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709743332; x=1710348132;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XOnfHZ/CYWbvpHfKXEjkt5DY20w7GYdEJtPq6ODzSwM=;
-        b=TQMTejq4sDhnYvRi1/L9+VsXZoP7wxSdcJxNJnebb/mNJAlax+eqARgWkq3Fj/eZlf
-         DfCEo0nANEM175hM/tcdJgprSOlsexdpDvlEFl+kwjvNcU/hRknVCqhX4QZ2lJK2VmoQ
-         eiH9wQj5D1tziiZMljngIB4Et8bI5rDjWvgnNH/FtSfkR+SxXfl925KH0wVjSD/Mwii3
-         dHiYXqtiKSFbvLxo24sNqEJ56Q2s4YTRtSbDJqLECtm5sy5hTAKxaaG42yhAynS9+/5V
-         1r89TxQpQLxIKIl1YLEZm445zY7IyA4HB8wqw+BQpKa5ZfaD0ETT2IrRVLwySEHwUWlB
-         0Nlw==
-X-Forwarded-Encrypted: i=1; AJvYcCVrZKUQrbwPpJtjDb8ORekkRZJVA14OIqYS1PGqFB3JKQc7jNvrgeGQMJi6l6m4f4Ztj7iC+zEWHlIwhVmU82yAxyvNsnjkGHTOfMvj
-X-Gm-Message-State: AOJu0Yw1ddOARPDhUEWy5oRQ2ouNf4Iljwz7DKsX3fSubT0TmTw5C7Qn
-	3khdjGKRmNQN+C/Alpxhq7Hrk+E/Unra5610k1uInaq5vpXM2lDzR9j1rybIv09S+i23DcESNQn
-	CwuZJl3DKabtmWhfx432CPq6zaXYj4NNlUBQQPdiOo/4BiNnBgQKYm40uVw0Vuw==
-X-Received: by 2002:a05:600c:4fd3:b0:412:f8e4:78cf with SMTP id o19-20020a05600c4fd300b00412f8e478cfmr1743734wmq.5.1709743331868;
-        Wed, 06 Mar 2024 08:42:11 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IH8qyc9Qj4DIiRbo3ZG/X5cZ/V6KRAWNYAqX2pIF65DvpGlQjT2qW3qQIf1TkalTKiwhTTk5Q==
-X-Received: by 2002:a05:600c:4fd3:b0:412:f8e4:78cf with SMTP id o19-20020a05600c4fd300b00412f8e478cfmr1743710wmq.5.1709743331443;
-        Wed, 06 Mar 2024 08:42:11 -0800 (PST)
-Received: from toolbox ([2001:9e8:89a4:b300:8654:3fb5:7140:1e06])
-        by smtp.gmail.com with ESMTPSA id n6-20020a05600c500600b00412ee8e2f2asm5119679wmr.9.2024.03.06.08.42.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Mar 2024 08:42:11 -0800 (PST)
-Date: Wed, 6 Mar 2024 17:42:09 +0100
-From: Sebastian Wick <sebastian.wick@redhat.com>
-To: Pekka Paalanen <pekka.paalanen@collabora.com>
-Cc: Harry Wentland <harry.wentland@amd.com>,
-	Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>,
-	Xaver Hugl <xaver.hugl@gmail.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] drm/drm_connector: Document Colorspace property
- variants
-Message-ID: <20240306164209.GA11561@toolbox>
-References: <20240305135155.231687-1-sebastian.wick@redhat.com>
- <20240306102721.3c9c3785.pekka.paalanen@collabora.com>
+        d=1e100.net; s=20230601; t=1709743373; x=1710348173;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yzW7+P93llx+4bGlKmeM0ss5L9EqxXJA6GAV234pxq4=;
+        b=nsJzYtKWm2xgUdUNUnrib1MNHEEb99cUU0FqsAdEa4F/L7P5Qg8fn3eird2zPkgIR1
+         phtzxZqslzdjJisUxA7OoeWmD+5OqKYYw5FNNrxfPl80WiKTmj2YbqYjBYZezYPPm+s7
+         d9iOf22B4kpGRBsLXhC11AuGEzJJ1z8P85w8ElrEI6elRu4pf937Q4Ttbre/2Zs8s7go
+         h9sSU8qltsKUQNgjOavbpHZ0Xc1U2D7TFL5hc2P+qiOGpjODUoQ0p7hkDjGC67cUYi61
+         odO1NsReNYaTRlkyzcASL/acWSO0MzDMnYHCAlkax1b35qY3fMgBtQlFagrflN+RWQF6
+         ji7g==
+X-Forwarded-Encrypted: i=1; AJvYcCUEzmdfIjXOdwU5AMwrCCRCLg3G6DD39+HibZFnlI4bG5iG4yc7f1r2b6YqcOEqtbIpcMIoMTOtiY+AgVENa2NZCEGsLyiItLhye702
+X-Gm-Message-State: AOJu0YzRPdQpSo6/CrnLWSs02g8rpUZPY5Wygh03/TH2nmAPm/KyH7uw
+	Z5qqPJCWGUR04P4cjGNszvUr15cZgUUsaqFJa3eeFFipCzpB0fGCddg9PcomYUGwueJaQSQTTQQ
+	eyGol8f750TQBx/e1Fw3X9Ie+ddKc93ZMyWpkSQ==
+X-Google-Smtp-Source: AGHT+IGFvljXxaw12g2V5h9H1EpK5MQBF/YE9XuxVDI14Hwlf+10umhfNZ3LtAFSz8CGLOBPqpBbj9paScPYt1XdPQo=
+X-Received: by 2002:a05:6902:2503:b0:dcb:b0f0:23fc with SMTP id
+ dt3-20020a056902250300b00dcbb0f023fcmr14726647ybb.22.1709743373120; Wed, 06
+ Mar 2024 08:42:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240306102721.3c9c3785.pekka.paalanen@collabora.com>
+References: <20240306081038.212412-1-umang.jain@ideasonboard.com> <20240306081038.212412-2-umang.jain@ideasonboard.com>
+In-Reply-To: <20240306081038.212412-2-umang.jain@ideasonboard.com>
+From: Dave Stevenson <dave.stevenson@raspberrypi.com>
+Date: Wed, 6 Mar 2024 16:42:36 +0000
+Message-ID: <CAPY8ntAv2XCgMoA7N6Wj72jOX4rRt4b-HRUr1WXR1diH1bHx8A@mail.gmail.com>
+Subject: Re: [PATCH 1/5] media: imx335: Support 2 or 4 lane operation modes
+To: Umang Jain <umang.jain@ideasonboard.com>
+Cc: linux-media@vger.kernel.org, 
+	Alexander Shiyan <eagle.alexander923@gmail.com>, 
+	Kieran Bingham <kieran.bingham@ideasonboard.com>, 
+	Mauro Carvalho Chehab <mchehab@kernel.org>, Sakari Ailus <sakari.ailus@linux.intel.com>, 
+	open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Mar 06, 2024 at 10:27:21AM +0200, Pekka Paalanen wrote:
-> On Tue,  5 Mar 2024 14:51:49 +0100
-> Sebastian Wick <sebastian.wick@redhat.com> wrote:
-> 
-> > The initial idea of the Colorspace prop was that this maps 1:1 to
-> > InfoFrames/SDP but KMS does not give user space enough information nor
-> > control over the output format to figure out which variants can be used
-> > for a given KMS commit. At the same time, properties like Broadcast RGB
-> > expect full range quantization range being produced by user space from
-> > the CRTC and drivers to convert to the range expected by the sink for
-> > the chosen output format, mode, InfoFrames, etc.
-> > 
-> > This change documents the reality of the Colorspace property. The
-> > Default variant unfortunately is very much driver specific and not
-> > reflected by the EDID. The BT2020 variants are in active use by generic
-> > compositors which have expectations from the driver about the
-> > conversions it has to do when selecting certain output formats.
-> > 
-> > Everything else is also marked as undefined. Coming up with valid
-> > behavior that makes it usable from user space and consistent with other
-> > KMS properties for those variants is left as an exercise for whoever
-> > wants to use them.
-> > 
-> > v2:
-> >  * Talk about "pixel operation properties" that user space configures
-> >  * Mention that user space is responsible for checking the EDID for sink
-> >    support
-> >  * Make it clear that drivers can choose between RGB and YCbCr on their
-> >    own
-> > 
-> > Signed-off-by: Sebastian Wick <sebastian.wick@redhat.com>
-> > ---
-> >  drivers/gpu/drm/drm_connector.c | 79 +++++++++++++++++++++++++--------
-> >  include/drm/drm_connector.h     |  8 ----
-> >  2 files changed, 61 insertions(+), 26 deletions(-)
-> > 
-> > diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
-> > index b0516505f7ae..65cdcc7d22db 100644
-> > --- a/drivers/gpu/drm/drm_connector.c
-> > +++ b/drivers/gpu/drm/drm_connector.c
-> > @@ -2147,24 +2147,67 @@ EXPORT_SYMBOL(drm_mode_create_aspect_ratio_property);
-> >   * DOC: standard connector properties
-> >   *
-> >   * Colorspace:
-> > - *     This property helps select a suitable colorspace based on the sink
-> > - *     capability. Modern sink devices support wider gamut like BT2020.
-> > - *     This helps switch to BT2020 mode if the BT2020 encoded video stream
-> > - *     is being played by the user, same for any other colorspace. Thereby
-> > - *     giving a good visual experience to users.
-> > - *
-> > - *     The expectation from userspace is that it should parse the EDID
-> > - *     and get supported colorspaces. Use this property and switch to the
-> > - *     one supported. Sink supported colorspaces should be retrieved by
-> > - *     userspace from EDID and driver will not explicitly expose them.
-> > - *
-> > - *     Basically the expectation from userspace is:
-> > - *      - Set up CRTC DEGAMMA/CTM/GAMMA to convert to some sink
-> > - *        colorspace
-> > - *      - Set this new property to let the sink know what it
-> > - *        converted the CRTC output to.
-> > - *      - This property is just to inform sink what colorspace
-> > - *        source is trying to drive.
-> > + *	This property is used to inform the driver about the color encoding
-> > + *	user space configured the pixel operation properties to produce.
-> > + *	The variants set the colorimetry, transfer characteristics, and which
-> > + *	YCbCr conversion should be used when necessary.
-> > + *	The transfer characteristics from HDR_OUTPUT_METADATA takes precedence
-> > + *	over this property.
-> > + *	User space always configures the pixel operation properties to produce
-> > + *	full quantization range data (see the Broadcast RGB property).
-> > + *
-> > + *	Drivers inform the sink about what colorimetry, transfer
-> > + *	characteristics, YCbCr conversion, and quantization range to expect
-> > + *	(this can depend on the output mode, output format and other
-> > + *	properties). Drivers also convert the user space provided data to what
-> > + *	the sink expects.
-> 
-> Hi Sebastian,
-> 
-> should it be more explicit that drivers are allowed to do only
-> RGB->YCbCr and quantization range conversions, but not TF nor gamut
-> conversions?
-> 
-> That is, if the driver cannot pick the TF implied by "Colorspace"
-> property for the sink, then it cannot pick another TF for the sink and
-> silently convert. It think this should apply to all options including
-> the undefined ones. Or is that too much to guess?
+Hi Umang and Kieran
 
-That's a really good point. I'll add it in the next revision.
+On Wed, 6 Mar 2024 at 08:11, Umang Jain <umang.jain@ideasonboard.com> wrote:
+>
+> From: Kieran Bingham <kieran.bingham@ideasonboard.com>
+>
+> The IMX335 can support both 2 and 4 lane configurations.
+> Extend the driver to configure the lane mode accordingly.
+> Update the pixel rate depending on the number of lanes in use.
+>
+> Signed-off-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
+> Signed-off-by: Umang Jain <umang.jain@ideasonboard.com>
+> ---
+>  drivers/media/i2c/imx335.c | 46 +++++++++++++++++++++++++++++++-------
+>  1 file changed, 38 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/media/i2c/imx335.c b/drivers/media/i2c/imx335.c
+> index dab6d080bc4c..a42f48823515 100644
+> --- a/drivers/media/i2c/imx335.c
+> +++ b/drivers/media/i2c/imx335.c
+> @@ -21,6 +21,11 @@
+>  #define IMX335_MODE_STANDBY    0x01
+>  #define IMX335_MODE_STREAMING  0x00
+>
+> +/* Data Lanes */
+> +#define IMX335_LANEMODE                0x3a01
+> +#define IMX335_2LANE           1
+> +#define IMX335_4LANE           3
+> +
+>  /* Lines per frame */
+>  #define IMX335_REG_LPFR                0x3030
+>
+> @@ -67,8 +72,6 @@
+>  #define IMX335_LINK_FREQ_594MHz                594000000LL
+>  #define IMX335_LINK_FREQ_445MHz                445500000LL
+>
+> -#define IMX335_NUM_DATA_LANES  4
+> -
+>  #define IMX335_REG_MIN         0x00
+>  #define IMX335_REG_MAX         0xfffff
+>
+> @@ -115,7 +118,6 @@ static const char * const imx335_supply_name[] = {
+>   * @vblank: Vertical blanking in lines
+>   * @vblank_min: Minimum vertical blanking in lines
+>   * @vblank_max: Maximum vertical blanking in lines
+> - * @pclk: Sensor pixel clock
+>   * @reg_list: Register list for sensor mode
+>   */
+>  struct imx335_mode {
+> @@ -126,7 +128,6 @@ struct imx335_mode {
+>         u32 vblank;
+>         u32 vblank_min;
+>         u32 vblank_max;
+> -       u64 pclk;
+>         struct imx335_reg_list reg_list;
+>  };
+>
+> @@ -147,6 +148,7 @@ struct imx335_mode {
+>   * @exp_ctrl: Pointer to exposure control
+>   * @again_ctrl: Pointer to analog gain control
+>   * @vblank: Vertical blanking in lines
+> + * @lane_mode Mode for number of connected data lanes
+>   * @cur_mode: Pointer to current selected sensor mode
+>   * @mutex: Mutex for serializing sensor controls
+>   * @link_freq_bitmap: Menu bitmap for link_freq_ctrl
+> @@ -171,6 +173,7 @@ struct imx335 {
+>                 struct v4l2_ctrl *again_ctrl;
+>         };
+>         u32 vblank;
+> +       u32 lane_mode;
+>         const struct imx335_mode *cur_mode;
+>         struct mutex mutex;
+>         unsigned long link_freq_bitmap;
+> @@ -377,7 +380,6 @@ static const struct imx335_mode supported_mode = {
+>         .vblank = 2560,
+>         .vblank_min = 2560,
+>         .vblank_max = 133060,
+> -       .pclk = 396000000,
+>         .reg_list = {
+>                 .num_of_regs = ARRAY_SIZE(mode_2592x1940_regs),
+>                 .regs = mode_2592x1940_regs,
+> @@ -936,6 +938,11 @@ static int imx335_start_streaming(struct imx335 *imx335)
+>                 return ret;
+>         }
+>
+> +       /* Configure lanes */
+> +       ret = imx335_write_reg(imx335, IMX335_LANEMODE, 1, imx335->lane_mode);
+> +       if (ret)
+> +               return ret;
+> +
+>         /* Setup handler will write actual exposure and gain */
+>         ret =  __v4l2_ctrl_handler_setup(imx335->sd.ctrl_handler);
+>         if (ret) {
+> @@ -1096,7 +1103,14 @@ static int imx335_parse_hw_config(struct imx335 *imx335)
+>         if (ret)
+>                 return ret;
+>
+> -       if (bus_cfg.bus.mipi_csi2.num_data_lanes != IMX335_NUM_DATA_LANES) {
+> +       switch (bus_cfg.bus.mipi_csi2.num_data_lanes) {
+> +       case 2:
+> +               imx335->lane_mode = IMX335_2LANE;
+> +               break;
+> +       case 4:
+> +               imx335->lane_mode = IMX335_4LANE;
+> +               break;
+> +       default:
+>                 dev_err(imx335->dev,
+>                         "number of CSI2 data lanes %d is not supported\n",
+>                         bus_cfg.bus.mipi_csi2.num_data_lanes);
+> @@ -1209,6 +1223,9 @@ static int imx335_init_controls(struct imx335 *imx335)
+>         struct v4l2_ctrl_handler *ctrl_hdlr = &imx335->ctrl_handler;
+>         const struct imx335_mode *mode = imx335->cur_mode;
+>         u32 lpfr;
+> +       u64 pclk;
+> +       s64 link_freq_in_use;
+> +       u8 bpp;
+>         int ret;
+>
+>         ret = v4l2_ctrl_handler_init(ctrl_hdlr, 7);
+> @@ -1252,11 +1269,24 @@ static int imx335_init_controls(struct imx335 *imx335)
+>                                      0, 0, imx335_tpg_menu);
+>
+>         /* Read only controls */
+> +
+> +       /* pixel rate = link frequency * lanes * 2 / bits_per_pixel */
+> +       switch (imx335->cur_mbus_code) {
+> +       case MEDIA_BUS_FMT_SRGGB10_1X10:
+> +               bpp = 10;
+> +               break;
+> +       case MEDIA_BUS_FMT_SRGGB12_1X12:
+> +               bpp = 12;
+> +               break;
+> +       }
+> +
+> +       link_freq_in_use = link_freq[__ffs(imx335->link_freq_bitmap)];
+> +       pclk = link_freq_in_use * (imx335->lane_mode + 1) * 2 / bpp;
+>         imx335->pclk_ctrl = v4l2_ctrl_new_std(ctrl_hdlr,
+>                                               &imx335_ctrl_ops,
+>                                               V4L2_CID_PIXEL_RATE,
+> -                                             mode->pclk, mode->pclk,
+> -                                             1, mode->pclk);
+> +                                             pclk, pclk,
+> +                                             1, pclk);
 
-> > + *
-> > + *	User space has to check if the sink supports all of the possible
-> > + *	colorimetries that the driver is allowed to pick by parsing the EDID.
-> 
-> All? Rather than at least one?
-> 
-> Is this how it has been implemented for BT2020, that userspace picked
-> colorimetry and driver picked color model and quantization are
-> completely independent, and drivers do not check the combination
-> against EDID?
+Is this actually correct?
+A fair number of the sensors I've encountered have 2 PLL paths - one
+for the pixel array, and one for the CSI block. The bpp will generally
+be fed into the CSI block PLL path, but not into the pixel array one.
+The link frequency will therefore vary with bit depth, but
+V4L2_CID_PIXEL_RATE doesn't change.
 
-AFAIK the driver exposes all Colorspace variants that it can support in
-the driver, independent of the sink. That means user space has to make
-sure that the sink supports all colorimetry variants the driver can
-pick.
+imx290 certainly has a disjoin between pixel rate and link freq
+(cropping reduces link freq, but not pixel rate), and we run imx477 in
+2 lane mode with the pixel array at full tilt (840MPix/s) but large
+horizontal blanking to allow CSI2 enough time to send the data.
 
-Would be good to get a confirmation from Harry and Ville.
+If you've validated that for a range of frame rates you get the
+correct output from the sensor in both 10 and 12 bit modes, then I
+don't object. I just have an instinctive tick whenever I see drivers
+computing PIXEL_RATE from LINK_FREQ or vice versa :)
+If you get the right frame rate it may also imply that the link
+frequency isn't as configured, but that rarely has any negative
+effects. You need a reasonably good oscilloscope to be able to measure
+the link frequency.
 
-> If so, "all" it is. Would be good to explain this in the commit message.
+  Dave
 
-Will do.
-
-> > + *
-> > + *	For historical reasons this property exposes a number of variants which
-> > + *	result in undefined behavior.
-> > + *
-> > + *	Default:
-> > + *		The behavior is driver-specific.
-> > + *	BT2020_RGB:
-> > + *	BT2020_YCC:
-> > + *		User space configures the pixel operation properties to produce
-> > + *		RGB content with Rec. ITU-R BT.2020 colorimetry, Rec.
-> > + *		ITU-R BT.2020 (Table 4, RGB) transfer characteristics and full
-> > + *		quantization range.
-> > + *		User space can use the HDR_OUTPUT_METADATA property to set the
-> > + *		transfer characteristics to PQ (Rec. ITU-R BT.2100 Table 4) or
-> > + *		HLG (Rec. ITU-R BT.2100 Table 5) in which case, user space
-> > + *		configures pixel operation properties to produce content with
-> > + *		the respective transfer characteristics.
-> > + *		User space has to make sure the sink supports Rec.
-> > + *		ITU-R BT.2020 R'G'B' and Rec. ITU-R BT.2020 Y'C'BC'R
-> > + *		colorimetry.
-> > + *		Drivers can configure the sink to use an RGB format, tell the
-> > + *		sink to expect Rec. ITU-R BT.2020 R'G'B' colorimetry and convert
-> > + *		to the appropriate quantization range.
-> > + *		Drivers can configure the sink to use a YCbCr format, tell the
-> > + *		sink to expect Rec. ITU-R BT.2020 Y'C'BC'R colorimetry, convert
-> > + *		to YCbCr using the Rec. ITU-R BT.2020 non-constant luminance
-> > + *		conversion matrix and convert to the appropriate quantization
-> > + *		range.
-> > + *		The variants BT2020_RGB and BT2020_YCC are equivalent and the
-> > + *		driver chooses between RGB and YCbCr on its own.
-> > + *	SMPTE_170M_YCC:
-> > + *	BT709_YCC:
-> > + *	XVYCC_601:
-> > + *	XVYCC_709:
-> > + *	SYCC_601:
-> > + *	opYCC_601:
-> > + *	opRGB:
-> > + *	BT2020_CYCC:
-> > + *	DCI-P3_RGB_D65:
-> > + *	DCI-P3_RGB_Theater:
-> > + *	RGB_WIDE_FIXED:
-> > + *	RGB_WIDE_FLOAT:
-> > + *	BT601_YCC:
-> > + *		The behavior is undefined.
-> >   *
-> >   * Because between HDMI and DP have different colorspaces,
-> >   * drm_mode_create_hdmi_colorspace_property() is used for HDMI connector and
-> > diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
-> > index fe88d7fc6b8f..02c42b01a3a7 100644
-> > --- a/include/drm/drm_connector.h
-> > +++ b/include/drm/drm_connector.h
-> > @@ -437,14 +437,6 @@ enum drm_privacy_screen_status {
-> >   *
-> >   * DP definitions come from the DP v2.0 spec
-> >   * HDMI definitions come from the CTA-861-H spec
-> > - *
-> > - * A note on YCC and RGB variants:
-> > - *
-> > - * Since userspace is not aware of the encoding on the wire
-> > - * (RGB or YCbCr), drivers are free to pick the appropriate
-> > - * variant, regardless of what userspace selects. E.g., if
-> > - * BT2020_RGB is selected by userspace a driver will pick
-> > - * BT2020_YCC if the encoding on the wire is YUV444 or YUV420.
-> >    *
-> >   * @DRM_MODE_COLORIMETRY_DEFAULT:
-> >   *   Driver specific behavior.
-> 
-> This looks really good. This also makes me need to revisit the Weston
-> series I've been brewing that adds "Colorspace" KMS support.
-> 
-> I think the two questions I had may be slightly too much in the
-> direction of improving rather than just documenting this property, so
-> I'll already give
-> 
-> Reviewed-by: Pekka Paalanen <pekka.paalanen@collabora.com>
-
-Thanks.
-
-> 
-> Thanks,
-> pq
-
-
+>
+>         imx335->link_freq_ctrl = v4l2_ctrl_new_int_menu(ctrl_hdlr,
+>                                                         &imx335_ctrl_ops,
+> --
+> 2.43.0
+>
+>
 
