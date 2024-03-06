@@ -1,74 +1,134 @@
-Return-Path: <linux-kernel+bounces-93606-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93608-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AAA287324A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:17:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2410D87328D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:30:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E9FAD28604D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:16:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 90C57B28388
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:17:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FED65DF01;
-	Wed,  6 Mar 2024 09:16:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC3485EE61;
+	Wed,  6 Mar 2024 09:17:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Q27lC3TZ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="g3hibTTt"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D33EB5D91A
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 09:16:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 630A25D8F9;
+	Wed,  6 Mar 2024 09:17:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709716593; cv=none; b=EEA1RTkvgWYPgVE6uNnl6wfWm5TaSmIyKvlknD3dxrpfIgL39oa7w1DqyBuLUjpXf3lgck8olJ3DFmBjv5mmCk7z6tLgpobKiQuqDm/OUYoKiWvxZQicbFK9HZGzbEdY0YjHw2WZSy6ONuMiEFEA9WIA53gCa3sQyrfSbIXGiKg=
+	t=1709716623; cv=none; b=GHuAdFC+1BGME1AllYEOfkeUzOFKvgM/a20YL+oM+tXpbLWmcsVFVf3VxyOBjlhv7ot4zdgAhklu2JDovwzfrjQ0hZd+nCP+4l1KzyCmzjYATbLkP7ZWiG7E0r8z798gzCW56eZEH7b08hIQk9ton2S3QygG49c/jNAQiohexNI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709716593; c=relaxed/simple;
-	bh=AxT/q9GfqhNnP2P8qI4TfjdaZ0cJ/bFkdt1x4Rv1YwM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Y/uYsaA8CxHCgs1etMAcYWNIBRwWev3iwegAfUXSBf6atX4iQEw5jXwpaeOhy4yjj4gDIh5O1fGNe3p2/1IBEH0zaog4j/5V+p4u0lseVh/lukHOWorjoByygC1gvzzm5TkQFciEr8ur4OiZOQ6X/Q0ubsbM3IPQipLWXmLOAi0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Q27lC3TZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F35FFC433F1;
-	Wed,  6 Mar 2024 09:16:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1709716593;
-	bh=AxT/q9GfqhNnP2P8qI4TfjdaZ0cJ/bFkdt1x4Rv1YwM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Q27lC3TZ9eUOVELoitFV2p9rPPsKO/di3aPgsL5ZWfXGDUhL1/wE5aDcGeaso13ax
-	 GhaGf0MTbx7L2AJfSOAbuaMMFh61vgcePVPhn1VIa8yj3k3XGgW965Sbd9wMUVLBQ0
-	 kmAjdgCTkJvJtk55yozl/kLavdYKAD2uH7pglqEM=
-Date: Wed, 6 Mar 2024 09:16:30 +0000
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Red Hat Product Security <secalert@redhat.com>
-Cc: security@suse.de, rfrohl@suse.de, cve@kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: Re: CVE-2023-52572: cifs: Fix UAF in cifs_demultiplex_thread()
-Message-ID: <2024030628-skyline-contently-4b85@gregkh>
-References: <15436477.7601.1709663408600@app142018.ycg3.service-now.com>
+	s=arc-20240116; t=1709716623; c=relaxed/simple;
+	bh=6VrZRSURzUXrSBObI2POcRjZjknLbdF/Dl4bUKgbr9M=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=Qxf22Af3s5iqoE0rzbrdFP32BKdHpnKV365lAxHZKceNH+/CzrD4DeQZlBPHdO2BPwg4twIJTBmly8j9uEHUQ9HeQsQx9HAz3Emv0sx0Vuw3VbxPyK3s6BnafLjwcgx2n5s3f5eLea4qW+NOqgwzHCOdZdjdyyjDNLDQXU3RTxU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=qualcomm.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=g3hibTTt; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4265q93M026583;
+	Wed, 6 Mar 2024 09:16:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id; s=qcppdkim1; bh=gQv1BqfTdUsf
+	nWnODQhK96rxVTBRcHtoOh+02sf4lcI=; b=g3hibTTtKpbYCOwJlBXWXOYb4Sbv
+	I1IXYHKCkppebLWb+v0gLOGg6Fyf2sH0QgXgwlUkNqqItJyM6SJYSBRJ4fxtegZv
+	gwbslXAn3GCsZSGzypFpwSAD1GfvMkOfDp0QPYf+I+l8pZJzDS3dAKoej4pRk3fZ
+	DXCmwKILt92uFuGgzAXKuxmFw2coW2vIq+BmK7KDHPDlKYWy18vi51EzqUo0Tt4d
+	W+F2nb3KpEuRYoOffdCXkxqpAMCgUqRagjwVS2h3P7aRScpvNGiYLm9TyLom3VOC
+	gBJedd6fO42gAz10/BZ+B03DDGD+ccGXc4Dg9UVMIjgW4gLLDTD7pD0k1Q==
+Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wpjqf0dae-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 06 Mar 2024 09:16:49 +0000 (GMT)
+Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+	by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 4269GktO022533;
+	Wed, 6 Mar 2024 09:16:46 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3wkw6kt155-1;
+	Wed, 06 Mar 2024 09:16:46 +0000
+Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 4269GkNT022528;
+	Wed, 6 Mar 2024 09:16:46 GMT
+Received: from hu-maiyas-hyd.qualcomm.com (hu-vdadhani-hyd.qualcomm.com [10.213.106.28])
+	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 4269Gk91022527;
+	Wed, 06 Mar 2024 09:16:46 +0000
+Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 4047106)
+	id C772A5001D9; Wed,  6 Mar 2024 14:46:44 +0530 (+0530)
+From: Viken Dadhaniya <quic_vdadhani@quicinc.com>
+To: andersson@kernel.org, konrad.dybcio@linaro.org,
+        srinivas.kandagatla@linaro.org, linux-arm-msm@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: quic_msavaliy@quicinc.com, quic_vtanuku@quicinc.com,
+        quic_anupkulk@quicinc.com, quic_cchiluve@quicinc.com,
+        Viken Dadhaniya <quic_vdadhani@quicinc.com>, stable@vger.kernel.org
+Subject: [PATCH v2] slimbus: qcom-ngd-ctrl: Add timeout for wait operation
+Date: Wed,  6 Mar 2024 14:46:42 +0530
+Message-Id: <20240306091642.9123-1-quic_vdadhani@quicinc.com>
+X-Mailer: git-send-email 2.17.1
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: jDFJ5S_vQCEQaiGFzoqot2HSa80kYa4k
+X-Proofpoint-ORIG-GUID: jDFJ5S_vQCEQaiGFzoqot2HSa80kYa4k
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-06_04,2024-03-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
+ clxscore=1011 phishscore=0 malwarescore=0 bulkscore=0 impostorscore=0
+ mlxlogscore=999 priorityscore=1501 lowpriorityscore=0 adultscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2403060072
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <15436477.7601.1709663408600@app142018.ycg3.service-now.com>
 
-On Tue, Mar 05, 2024 at 10:30:08AM -0800, Red Hat Product Security wrote:
-> 
-> Hello Robert,
->  Thank you for reaching to Red Hat Product Security.
->  I have reviewed the flaws, CVE-2023-1192 has the correct patch used in the reference.
+In current driver qcom_slim_ngd_up_worker() indefinitely
+waiting for ctrl->qmi_up completion object. This is
+resulting in workqueue lockup on Kthread.
 
-What do you mean by "reference"?
+Added wait_for_completion_interruptible_timeout to
+allow the thread to wait for specific timeout period and
+bail out instead waiting infinitely.
 
-CVE-2023-1192 points to a patch for a totally different filesystem
-(ntfs3).  Will that be fixed?
+Fixes: a899d324863a ("slimbus: qcom-ngd-ctrl: add Sub System Restart support")
+Cc: stable@vger.kernel.org
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Signed-off-by: Viken Dadhaniya <quic_vdadhani@quicinc.com>
+---
+v1 -> v2:
+- Remove macro and add value inline.
+- add fix, cc and review tag.
+---
+---
+ drivers/slimbus/qcom-ngd-ctrl.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-And please stop responding in HTML format, the mailing lists reject this :(
+diff --git a/drivers/slimbus/qcom-ngd-ctrl.c b/drivers/slimbus/qcom-ngd-ctrl.c
+index efeba8275a66..a09a26bf4988 100644
+--- a/drivers/slimbus/qcom-ngd-ctrl.c
++++ b/drivers/slimbus/qcom-ngd-ctrl.c
+@@ -1451,7 +1451,11 @@ static void qcom_slim_ngd_up_worker(struct work_struct *work)
+ 	ctrl = container_of(work, struct qcom_slim_ngd_ctrl, ngd_up_work);
+ 
+ 	/* Make sure qmi service is up before continuing */
+-	wait_for_completion_interruptible(&ctrl->qmi_up);
++	if (!wait_for_completion_interruptible_timeout(&ctrl->qmi_up,
++						       msecs_to_jiffies(MSEC_PER_SEC))) {
++		dev_err(ctrl->dev, "QMI wait timeout\n");
++		return;
++	}
+ 
+ 	mutex_lock(&ctrl->ssr_lock);
+ 	qcom_slim_ngd_enable(ctrl, true);
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
 
-thanks,
-
-greg k-h
 
