@@ -1,180 +1,189 @@
-Return-Path: <linux-kernel+bounces-94657-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94658-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 836AC8742C5
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 23:29:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50B0C8742C9
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 23:31:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 385492863EA
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 22:29:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 74B421C23246
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 22:31:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3E971BC53;
-	Wed,  6 Mar 2024 22:29:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6549B1BF3A;
+	Wed,  6 Mar 2024 22:31:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QpEUo+41"
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="SAkTirlS"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB6DA14276
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 22:29:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2C9C17BC5
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 22:30:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709764179; cv=none; b=d+cWew4j2OcNXvU34uZfJaoGl0m7Ie4Hppfwsng4cLapT0SlBsfPqY/9tXVMG3G0uHAy1WsuFB0/4JdYMXwK5+ZLN5xZWxWLj4SvLzfRA5hpNG5TL/Ea2+plRQjxvHMBeciU41vtRu9amkKjC/D5dfUNG/lNXbWcNIZRMW4/px4=
+	t=1709764261; cv=none; b=IZ7RGnsfTs367C5QUE7VnbTS4GCE6j6heWR8yLy1U/8DluvGaV8RfbG0nc+lrRrUV4lE1TdgfzWDBKyV5zKJcjjJywEAfBDGcYKGqhk5h4CutkGHBtg0slAoZNZomLijL3I+El0Its0zNxxeC1+qYTzFr0hHyLfqcwMon6ZzSrA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709764179; c=relaxed/simple;
-	bh=nfP4HpGNkJV7s1vErNFkemgrvK2LJnhE+5pQrmQiQyg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=AXB+JgNAKIumYwiHY6E8A7E0u3PYIligotCEimrv+KNUxpoTgGpIXP7wSyXFFx+PrQNc8AVYNx/D5s8DESLhyiCNREsAFQ5dyeOh4aDpnUuKNUaV7YrRxUgJRx/eySKZ9KEB+KpX/11TysV3/3jEzaUxhq1QLL+rSmz3gxNn8K8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QpEUo+41; arc=none smtp.client-ip=209.85.214.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1dc49afb495so2002885ad.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 14:29:37 -0800 (PST)
+	s=arc-20240116; t=1709764261; c=relaxed/simple;
+	bh=lK/a+UW2iqYrSft0qZc8gZiAODZfN0e4TWyPvAGbCBQ=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=OLCzV1YNeCC0eLj2+yo7i3RCdqG3q0B/ZZARTzSOwRFw4s6r6XOYILWM4WnDu2usxlEpXe2TPuK832w/6PCWOX2ztvmxqcjnY+SNuNhsUJ9UoqKzgV1RbjXe6Bq3HqescRu8rGxVFV7C2RRtOf93ZFOZWkxNvY5Wisvn1X/giS0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--rmoar.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=SAkTirlS; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--rmoar.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc6b26eef6cso283937276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 14:30:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709764177; x=1710368977; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=EjBcB2hHrnmuukqTrYM7z9KDV2woHsk649HcWXaHWDc=;
-        b=QpEUo+41fswfZtIq/+B8vog8MNXUjWBtw5IFtWDX83iMJgQNn5g+jkFUu9i0FW96pf
-         uiD0458cjw6wuJX7tLbtgBBaZenF7O9+ylbuCSV6PDSIoflBEtqrh6Z+37T8WUPRe/K/
-         IuZ+2DhYDsiH0VnM5ArnDC839pI1wTEuNgEuDH3wvZp/longRDcZV0EKX5AENHmdwcyB
-         9RYuSoKbYQgPl/SSTKc0uI1mdblJaYjutgTzQQQdkI2cGVZgfDyT8nmH1sUSYbh4CvqP
-         K+Os/yG9uhQn1jhsRIGbYErpaSBBPe0TCle0pjhvY086QKIfsXxThTPGr99Serc83zLo
-         TN3g==
+        d=google.com; s=20230601; t=1709764259; x=1710369059; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=t/bvsMxpmGUk/de5zo1mkM3uxtDnlir1VqeH2uLCc5M=;
+        b=SAkTirlStmGR/43PTS1GFDwzZHiRLKdIjORwcxqApfj00S4bu2rHNEhfdQVeIPvguN
+         O7EjEmBcRnWEjWIiXZ4rn1KlxlRKPFxesIXnMzdPtQQkX7XgHvuDAbGKDjD52g6JUibv
+         Jr2cKuOY2Ay4sVP/W1AIY2NQVVTJf7UAB33/dQgMhNZxx+UIMd6/extJMHykA74p9jIH
+         hbvXM+J862NTRXtfTVOIeLeAX7auLp8tzrJ0IoQPn6mC0/LGo3zELZua2cxOraSrvpCb
+         /idbIxL0EqM2x27iYnnbzXeT7hzG8lNYbePrJsCOzXcUei2CKdsRwoBAC69qKBTrvjrh
+         NREg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709764177; x=1710368977;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=EjBcB2hHrnmuukqTrYM7z9KDV2woHsk649HcWXaHWDc=;
-        b=cvOYqLVtyMWfvpZqrqg7CgmTb1NUKD3vKr/JnR+R8s5qw7N+859wuFWkrWaujg8YHF
-         Q+w2FZXi4Cgjc8lGfT9r4hnY2/mxbFR92vfGmZsT67cmIbzlHBf6y3rwWTHvmC88FB24
-         ILcSFe8YmAuLVR1dIu46q81QCg0LDEv/iJA0CDBzuy7lBf/4mIX+yqWJ2b+VMOGNtp+s
-         f2YfRwrOKL5KEE+C/+9Ldg9UiYmegjGvRxJznI1oUA5gdQLSgDZrtorxDeqaRFanP8k3
-         EUbF+KICJ7qinmEpSTjayioSEwbR4M8PgsPxzgvl2YcmeMiygPOFlrJJgtvkhjCOFOBb
-         U55w==
-X-Forwarded-Encrypted: i=1; AJvYcCVEZyF+noow8+h4KK2SMd3RmzdttIsHcyY9mqPyZNM+k3JaxWlJLbw4V7Vq/l7hIjOB3IdPCTh+7Hv5rctTBFr8yUGD2K/DAY4FKt70
-X-Gm-Message-State: AOJu0Yz39tGdBuyGDMtWyS2opu9412jaNRkGOgKz4zzcpuqPXaDwAw92
-	rZ15BpQvJcQE6q1xooK4yVAK06D34p8xwqqkPPcFLv49lvNAbos0x8+++zm1kuPjWA==
-X-Google-Smtp-Source: AGHT+IEECA8/AoDfWJ9atsGYh8CUiK9veuYUQbr58TU0uhFzyPCecFdebD2QSBteJAqjXWw0EJpqGg==
-X-Received: by 2002:a17:903:1c4:b0:1dc:1379:213b with SMTP id e4-20020a17090301c400b001dc1379213bmr8997275plh.35.1709764176693;
-        Wed, 06 Mar 2024 14:29:36 -0800 (PST)
-Received: from ub23 (c-24-16-118-101.hsd1.wa.comcast.net. [24.16.118.101])
-        by smtp.gmail.com with ESMTPSA id i9-20020a170902c94900b001dcc09487e8sm13114357pla.50.2024.03.06.14.29.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Mar 2024 14:29:36 -0800 (PST)
-From: Dawei Li <daweilics@gmail.com>
-To: 
-Cc: Dawei Li <daweilics@gmail.com>,
-	Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>,
-	Mel Gorman <mgorman@suse.de>,
-	Daniel Bristot de Oliveira <bristot@redhat.com>,
-	Valentin Schneider <vschneid@redhat.com>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] sched/fair: simplify __calc_delta()
-Date: Wed,  6 Mar 2024 14:28:37 -0800
-Message-Id: <20240306222838.15087-1-daweilics@gmail.com>
-X-Mailer: git-send-email 2.40.1
+        d=1e100.net; s=20230601; t=1709764259; x=1710369059;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=t/bvsMxpmGUk/de5zo1mkM3uxtDnlir1VqeH2uLCc5M=;
+        b=cBPmyXm3C3hsCzEKnTMzZdINS+WH2tN2hYvxsBxb3aXbz4rRIXvtQIYXoqV+RQwtOG
+         oA85HHc5l7hJ03ygIph7Yv/5C/fsvA0TJOjOjvmINHLNvcUPOdAegDdGcRTnXeOv8LWt
+         EtH6IHQma8PT/g26VAr+k3Tk8TgLc0JK4dQn/HaHf9Mqu/86TUIJYt7HAuMIHgLTLx/g
+         ITZ86nF4vjcJb40mSanhLl6l6b85uVznzZ5vnRxx6v7HDVvCpCR5TdvT/iuLEG0lW3/g
+         Yxez+f2loiiCfb+68xZSskbVGRJTS8zqPeFawUoxVf0CvYF+SkbJw12DewEdcgexCsBU
+         7fbg==
+X-Forwarded-Encrypted: i=1; AJvYcCXLXDJrKUaftPaoN/q4rHm6P+l9Ed9ZeRb7Nw9lFZUBErQ8He6Dx4Sug1mpYcnWaGwIokE+4EPgsYTOO7VLX9k3DE37+NqKo30Nwm8B
+X-Gm-Message-State: AOJu0YzUJ8jYrCqX2bSNvqAFt591T5WNp0snpcYTEZl2Glc6Wox5wMQS
+	J9zNo6YYallHpZWGtLCxmZjfWN/rmjgEKYafHkFYHEn3A3yUpyRqIthin/j79kHQwoSpTp7WFA=
+	=
+X-Google-Smtp-Source: AGHT+IGyamNCZigG0HsVlujxHmVGogCiuk1hBEFD3c7kz4ZcZj/+UiDou6mQry67mxqdeJSfQcOnenjmgg==
+X-Received: from rmoar-specialist.c.googlers.com ([fda3:e722:ac3:cc00:2b:7d90:c0a8:45d3])
+ (user=rmoar job=sendgmr) by 2002:a05:6902:726:b0:dcd:b593:6503 with SMTP id
+ l6-20020a056902072600b00dcdb5936503mr660480ybt.2.1709764258897; Wed, 06 Mar
+ 2024 14:30:58 -0800 (PST)
+Date: Wed,  6 Mar 2024 22:30:55 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
+Message-ID: <20240306223056.226518-1-rmoar@google.com>
+Subject: [PATCH v2] kunit: tool: add ability to parse multiple files
+From: Rae Moar <rmoar@google.com>
+To: shuah@kernel.org, davidgow@google.com, dlatypov@google.com, 
+	brendan.higgins@linux.dev, kevko@google.com
+Cc: linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com, 
+	linux-kernel@vger.kernel.org, Rae Moar <rmoar@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-Based on how __calc_delta() is called now, the input parameter, weight
-is always NICE_0_LOAD. I think we don't need it as an input parameter
-now?
+Add ability to parse multiple files. Additionally add the
+ability to parse all results in the KUnit debugfs repository.
 
-Also, when weight is always NICE_0_LOAD, the initial fact value is
-always 2^10, and the first fact_hi will always be 0. Thus, we can get
-rid of the first if bock.
+How to parse multiple files:
 
-The previous comment "(delta_exec * (weight * lw->inv_weight)) >>
-WMULT_SHIFT" seems to be assuming that lw->weight * lw->inv_weight is
-always (approximately) equal to 2^WMULT_SHIFT. However, when
-CONFIG_64BIT is set, lw->weight * lw->inv_weight is (approximately)
-equal to 2^WMULT_SHIFT * 2^10. What remains true for both CONFIG_32BIT
-and CONFIG_64BIT is: scale_load_down(lw->weight) * lw->inv_weight is
-(approximately) equal to 2^WMULT_SHIFT. (Correct me if I am wrong.)
+/tools/testing/kunit/kunit.py parse results.log results2.log
 
-Also updated the comment for calc_delta_fair() to make it more
-accurate.
+How to parse all files in directory:
 
-Signed-off-by: Dawei Li <daweilics@gmail.com>
+/tools/testing/kunit/kunit.py parse directory_path/*
+
+How to parse KUnit debugfs repository:
+
+/tools/testing/kunit/kunit.py parse debugfs
+
+For each file, the parser outputs the file name, results, and test
+summary. At the end of all parsing, the parser outputs a total summary
+line.
+
+This feature can be easily tested on the tools/testing/kunit/test_data/
+directory.
+
+Signed-off-by: Rae Moar <rmoar@google.com>
 ---
- kernel/sched/fair.c | 29 ++++++++++-------------------
- 1 file changed, 10 insertions(+), 19 deletions(-)
+Changes since v1:
+- Annotate type of parsed_files
+- Add ability to input file name from stdin again
+- Make for loops a bit terser
+- Add no output warning
+- Change feature to take in multiple fields rather than a directory.
+  Currently nonrecursive. Let me know if people would prefer this as
+  recursive.
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 6a16129f9a5c..c5cdb15f7d62 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -252,32 +252,23 @@ static void __update_inv_weight(struct load_weight *lw)
- }
+ tools/testing/kunit/kunit.py | 45 +++++++++++++++++++++++++-----------
+ 1 file changed, 32 insertions(+), 13 deletions(-)
+
+diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
+index bc74088c458a..df804a118aa5 100755
+--- a/tools/testing/kunit/kunit.py
++++ b/tools/testing/kunit/kunit.py
+@@ -511,19 +511,37 @@ def exec_handler(cli_args: argparse.Namespace) -> None:
  
- /*
-- * delta_exec * weight / lw.weight
-+ * delta_exec * NICE_0_LOAD / lw->weight
-  *   OR
-- * (delta_exec * (weight * lw->inv_weight)) >> WMULT_SHIFT
-+ * (delta_exec * scale_load_down(NICE_0_LOAD) * lw->inv_weight) >> WMULT_SHIFT
-  *
-- * Either weight := NICE_0_LOAD and lw \e sched_prio_to_wmult[], in which case
-- * we're guaranteed shift stays positive because inv_weight is guaranteed to
-- * fit 32 bits, and NICE_0_LOAD gives another 10 bits; therefore shift >= 22.
-- *
-- * Or, weight =< lw.weight (because lw.weight is the runqueue weight), thus
-- * weight/lw.weight <= 1, and therefore our shift will also be positive.
-+ * We're guaranteed shift stays positive because inv_weight is guaranteed to
-+ * fit 32 bits, and scale_load_down(NICE_0_LOAD) gives another 10 bits;
-+ * therefore shift >= 22.
-  */
--static u64 __calc_delta(u64 delta_exec, unsigned long weight, struct load_weight *lw)
-+static u64 __calc_delta(u64 delta_exec, struct load_weight *lw)
- {
--	u64 fact = scale_load_down(weight);
--	u32 fact_hi = (u32)(fact >> 32);
-+	u64 fact = scale_load_down(NICE_0_LOAD);
-+	int fact_hi;
- 	int shift = WMULT_SHIFT;
- 	int fs;
  
- 	__update_inv_weight(lw);
+ def parse_handler(cli_args: argparse.Namespace) -> None:
+-	if cli_args.file is None:
++	parsed_files = [] # type: List[str]
++	total_test = kunit_parser.Test()
++	total_test.status = kunit_parser.TestStatus.SUCCESS
++	if cli_args.files is None:
+ 		sys.stdin.reconfigure(errors='backslashreplace')  # type: ignore
+-		kunit_output = sys.stdin  # type: Iterable[str]
++		parsed_files.append(sys.stdin)
++	elif cli_args.files[0] == "debugfs" and len(cli_args.files) == 1:
++		for (root, _, files) in os.walk("/sys/kernel/debug/kunit"):
++			parsed_files.extend(os.path.join(root, f) for f in files if f == "results")
+ 	else:
+-		with open(cli_args.file, 'r', errors='backslashreplace') as f:
++		parsed_files.extend(f for f in cli_args.files if os.path.isfile(f))
++
++	if len(parsed_files) == 0:
++		print("No output found.")
++
++	for file in parsed_files:
++		print(file)
++		with open(file, 'r', errors='backslashreplace') as f:
+ 			kunit_output = f.read().splitlines()
+-	# We know nothing about how the result was created!
+-	metadata = kunit_json.Metadata()
+-	request = KunitParseRequest(raw_output=cli_args.raw_output,
+-					json=cli_args.json)
+-	result, _ = parse_tests(request, metadata, kunit_output)
+-	if result.status != KunitStatus.SUCCESS:
+-		sys.exit(1)
++		# We know nothing about how the result was created!
++		metadata = kunit_json.Metadata()
++		request = KunitParseRequest(raw_output=cli_args.raw_output,
++						json=cli_args.json)
++		_, test = parse_tests(request, metadata, kunit_output)
++		total_test.subtests.append(test)
++
++	if len(parsed_files) > 1: # if more than one file was parsed output total summary
++		print('All files parsed.')
++		stdout.print_with_timestamp(kunit_parser.DIVIDER)
++		kunit_parser.bubble_up_test_results(total_test)
++		kunit_parser.print_summary_line(total_test)
  
--	if (unlikely(fact_hi)) {
--		fs = fls(fact_hi);
--		shift -= fs;
--		fact >>= fs;
--	}
--
- 	fact = mul_u32_u32(fact, lw->inv_weight);
  
- 	fact_hi = (u32)(fact >> 32);
-@@ -291,12 +282,12 @@ static u64 __calc_delta(u64 delta_exec, unsigned long weight, struct load_weight
- }
+ subcommand_handlers_map = {
+@@ -569,9 +587,10 @@ def main(argv: Sequence[str]) -> None:
+ 					    help='Parses KUnit results from a file, '
+ 					    'and parses formatted results.')
+ 	add_parse_opts(parse_parser)
+-	parse_parser.add_argument('file',
+-				  help='Specifies the file to read results from.',
+-				  type=str, nargs='?', metavar='input_file')
++	parse_parser.add_argument('files',
++				  help='List of file paths to read results from or keyword'
++				  		'"debugfs" to read all results from the debugfs directory.',
++				  type=str, nargs='*', metavar='input_files')
  
- /*
-- * delta /= w
-+ * delta *= NICE_0_LOAD / se->load.weight
-  */
- static inline u64 calc_delta_fair(u64 delta, struct sched_entity *se)
- {
- 	if (unlikely(se->load.weight != NICE_0_LOAD))
--		delta = __calc_delta(delta, NICE_0_LOAD, &se->load);
-+		delta = __calc_delta(delta, &se->load);
+ 	cli_args = parser.parse_args(massage_argv(argv))
  
- 	return delta;
- }
+
+base-commit: 806cb2270237ce2ec672a407d66cee17a07d3aa2
 -- 
-2.40.1
+2.44.0.278.ge034bb2e1d-goog
 
 
