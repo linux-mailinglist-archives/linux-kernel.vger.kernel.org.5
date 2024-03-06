@@ -1,105 +1,237 @@
-Return-Path: <linux-kernel+bounces-93531-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93533-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84FDD87310F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:47:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C5E1873116
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:49:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F66B283488
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 08:47:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31619282665
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 08:49:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3859E5D901;
-	Wed,  6 Mar 2024 08:47:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BB8D5D8EA;
+	Wed,  6 Mar 2024 08:49:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="GDba/hMN"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hAIWm4NP"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D93602E641;
-	Wed,  6 Mar 2024 08:47:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A5E85BAD4
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 08:49:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709714858; cv=none; b=ruSriDnlyfh8Yu0KgCU1YFrnACUzXV72qsi5HUZMcI3tC4/jEELlTxhutg4FkcncYJ6+PjNDeM7YHW0AQCtUR/4GMUaDIyXw+TM8LDHUkDdaoLN24fhG/gIQA96O+Q6dj6nuHyS00BF88baB3clfid+0HGYvEP9HaOtwXWR1wyE=
+	t=1709714986; cv=none; b=BZYcjWLmtKbe/s9zBA3tp52dGmHO0sV1Fki25KK2yWv2OWYyKpMtKmjVWjcaJ5+9TUtdWO65N049JIx8o/NLFqryNsGqJxSWSoj+uQL7PmUdcYP4u5ytktYeW/+BGPR4kBgxMn+/5cfks/AUkv4muRYQ5yqR57ROvvtgkHRhHE0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709714858; c=relaxed/simple;
-	bh=y75YYFxmcbFw4jJsqaiBwrNaZMabJFUxzrao5runQ4A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Dx2JEHS4WBRKUm32CG2WFN1IBUBStHFPZ6nE4nL5TZajEkNYWempyCMBwlDiT5/f3SgQWBUNh0iPGmK01bJMNFo/fupv3PaJSsZjbu6Z6XW5c/nKtKg3uQzrjUrYQV/uOF/Y5ooC26+3SPAznnTUjHkw0u6NHutNiot9VCWlUH0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=GDba/hMN; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=v/9N1iM5TX6NtNle71vklmx0npL2usz7wNoysh2Fozw=; b=GDba/hMN1BQIUNaqMdZc52/JsE
-	lBc1Qoys5eenNO1iwbCxKSX8yJ9sfhtXEGI5HJGUF0uk/4nJxW4zuAc894m/Pkl6ANsbnTbUv866X
-	E5QInK3v8WFKKWyhu50VsMrn9hams4PmseHnWKMKjVxwT1ATIXSY+LowCV+9ltdYHy3jJnP7WpaB1
-	LU+LNplTp9mwXzcbJs4bQ0Iioic6u9ApMWvqjpzDLF7AE1Qvsn2Sn+wd816B/3iQwTABhKEUANHXK
-	O1rRF2rVgAGd7+8LbjXQAC7lpoKdev/Q6x1VdBasGmjG1urBGycTOs/jTCBfLhDwAk6mN18CjJe5+
-	iOoDha6A==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:38862)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rhmw1-00086U-0p;
-	Wed, 06 Mar 2024 08:47:33 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rhmw0-0006E2-3c; Wed, 06 Mar 2024 08:47:32 +0000
-Date: Wed, 6 Mar 2024 08:47:31 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Pawel Dembicki <paweldembicki@gmail.com>
-Cc: netdev@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
-	Simon Horman <horms@kernel.org>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	Vladimir Oltean <olteanv@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Claudiu Manoil <claudiu.manoil@nxp.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	UNGLinuxDriver@microchip.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v6 03/16] net: dsa: vsc73xx: use macros for
- rgmii recognition
-Message-ID: <Zegto1XwPTku59CD@shell.armlinux.org.uk>
-References: <20240301221641.159542-1-paweldembicki@gmail.com>
- <20240301221641.159542-4-paweldembicki@gmail.com>
+	s=arc-20240116; t=1709714986; c=relaxed/simple;
+	bh=yYuU7VBni22INYGto9gt3oHjxTlQN5HG/8o/ajfAzJk=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=A656mz4033mDe+V4v3BUWH8kT0QfdThBTaB26RqRf4AsCZSPorcqLAYVrNJPfhUsHZRsFd/ECGWhsmuMAcpLa1SGMEQk2NwYvo8Z9JJNGv3P2TL+xzYDKy7ztaFwJJyQAd5qBbROYgayEI8drzPMEWsD9ZBn17hq/vxB6m+41Ek=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hAIWm4NP; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709714984; x=1741250984;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=yYuU7VBni22INYGto9gt3oHjxTlQN5HG/8o/ajfAzJk=;
+  b=hAIWm4NPKv2/Ya0UsDn56gZ82PDpk7uYTfLZBt+pm/+fKTFCJbbzgic8
+   DU7Dpj4yNK2YqG0tXF/WytQNY1rztsJ+h60zXyDFlNZO83VyDCkHNImSX
+   FAPy79lpe1aH/G2QUWG/NuahW2hIdbrv5nh0mWI7FiZW7+puOcdZ63Xyr
+   dk0syn1HUm/ftprQ1IZbEJ/AxCi/wJBBY68RwODgrQMQ0uC4Pbvc9nWZW
+   1K+R3eE277euqJm8T05a1fh/OBoqg7QX3Gpwj2kJkiS7NgCA5Mdo/zxnn
+   7jGiJXFx3j6oYqM3BuF1eieyAki8QTspAmqJjOiXj1CANyLlSwYJGBvln
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11004"; a="29765374"
+X-IronPort-AV: E=Sophos;i="6.06,207,1705392000"; 
+   d="scan'208";a="29765374"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 00:49:43 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,207,1705392000"; 
+   d="scan'208";a="9628784"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 00:49:40 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Peng Zhang <zhangpeng362@huawei.com>
+Cc: <linux-mm@kvack.org>,  <linux-kernel@vger.kernel.org>,
+  <akpm@linux-foundation.org>,  <willy@infradead.org>,
+  <fengwei.yin@intel.com>,  <david@redhat.com>,
+  <aneesh.kumar@linux.ibm.com>,  <shy828301@gmail.com>,
+  <hughd@google.com>,  <wangkefeng.wang@huawei.com>,
+  <sunnanyong@huawei.com>
+Subject: Re: [PATCH v4] filemap: avoid unnecessary major faults in
+ filemap_fault()
+In-Reply-To: <20240306083809.1236634-1-zhangpeng362@huawei.com> (Peng Zhang's
+	message of "Wed, 6 Mar 2024 16:38:09 +0800")
+References: <20240306083809.1236634-1-zhangpeng362@huawei.com>
+Date: Wed, 06 Mar 2024 16:47:45 +0800
+Message-ID: <871q8n926m.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240301221641.159542-4-paweldembicki@gmail.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Type: text/plain; charset=ascii
 
-On Fri, Mar 01, 2024 at 11:16:25PM +0100, Pawel Dembicki wrote:
-> It's preparation for future use. At this moment, the RGMII port is used
-> only for a connection to the MAC interface, but in the future, someone
-> could connect a PHY to it. Using the "phy_interface_mode_is_rgmii" macro
-> allows for the proper recognition of all RGMII modes.
-> 
-> Suggested-by: Russell King <linux@armlinux.org.uk>
+Peng Zhang <zhangpeng362@huawei.com> writes:
 
-Please change this to:
+> From: ZhangPeng <zhangpeng362@huawei.com>
+>
+> The major fault occurred when using mlockall(MCL_CURRENT | MCL_FUTURE)
+> in application, which leading to an unexpected issue[1].
+>
+> This caused by temporarily cleared PTE during a read+clear/modify/write
+> update of the PTE, eg, do_numa_page()/change_pte_range().
+>
+> For the data segment of the user-mode program, the global variable area
+> is a private mapping. After the pagecache is loaded, the private anonymous
+> page is generated after the COW is triggered. Mlockall can lock COW pages
+> (anonymous pages), but the original file pages cannot be locked and may
+> be reclaimed. If the global variable (private anon page) is accessed when
+> vmf->pte is zeroed in numa fault, a file page fault will be triggered.
+> At this time, the original private file page may have been reclaimed.
+> If the page cache is not available at this time, a major fault will be
+> triggered and the file will be read, causing additional overhead.
+>
+> This issue affects our traffic analysis service. The inbound traffic is
+> heavy. If a major fault occurs, the I/O schedule is triggered and the
+> original I/O is suspended. Generally, the I/O schedule is 0.7 ms. If
+> other applications are operating disks, the system needs to wait for
+> more than 10 ms. However, the inbound traffic is heavy and the NIC buffer
+> is small. As a result, packet loss occurs. But the traffic analysis service
+> can't tolerate packet loss.
+>
+> Fix this by holding PTL and rechecking the PTE in filemap_fault() before
+> triggering a major fault. We do this check only if vma is VM_LOCKED to
+> reduce the performance impact in common scenarios.
+>
+> In our product environment, there were 7 major faults every 12 hours.
+> After the patch is applied, no major fault have been triggered.
+>
+> Testing file page read and write page fault performance in ext4 and
+> ramdisk using will-it-scale[2] on a x86 physical machine. The data is
+> the average change compared with the mainline after the patch is applied.
+> The test results are within the range of fluctuation. We do this check
+> only if vma is VM_LOCKED, therefore, no performance regressions is caused
+> for most common cases.
+>
+> The test results are as follows:
+>                           processes processes_idle  threads threads_idle
+> ext4    private file write:  0.22%    0.26%           1.21%  -0.15%
+> ext4    private file  read:  0.03%    1.00%           1.39%   0.34%
+> ext4    shared  file write: -0.50%   -0.02%          -0.14%  -0.02%
+> ramdisk private file write:  0.07%    0.02%           0.53%   0.04%
+> ramdisk private file  read:  0.01%    1.60%          -0.32%  -0.02%
+>
+> [1] https://lore.kernel.org/linux-mm/9e62fd9a-bee0-52bf-50a7-498fa17434ee@huawei.com/
+> [2] https://github.com/antonblanchard/will-it-scale/
+>
+> Suggested-by: "Huang, Ying" <ying.huang@intel.com>
+> Suggested-by: David Hildenbrand <david@redhat.com>
+> Signed-off-by: ZhangPeng <zhangpeng362@huawei.com>
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 
-Suggested-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+LGTM, Thanks!  Feel free to add
 
-Also:
+Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
 
-Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-
-Thanks!
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+> ---
+> v3->v4:
+> - Update the performance data and commit message
+> - Check PTE without lock firstly per Huang, Ying
+> - Update comments for recheck function per David Hildenbrand
+> - Simply return 0 to make it easier to read per David Hildenbrand
+> - Check !FAULT_FLAG_ORIG_PTE_VALID instead of pmd_none()
+>
+> v2->v3:
+> - Do this check only if vma is VM_LOCKED per David Hildenbrand
+> - Hold PTL and recheck the PTE
+> - Place the recheck code in a new function filemap_fault_recheck_pte()
+>
+> v1->v2:
+> - Add more test results per Huang, Ying
+> - Add more comments before check PTE per Huang, Ying, David Hildenbrand
+>   and Yin Fengwei
+> - Change pte_offset_map_nolock to pte_offset_map as the PTL won't
+>   be used
+>
+> RFC->v1:
+> - Add error handling when ptep == NULL per Huang, Ying and Matthew
+>   Wilcox
+> - Check the PTE without acquiring PTL in filemap_fault(), suggested by
+>   Huang, Ying and Yin Fengwei
+> - Add pmd_none() check before PTE map
+> - Update commit message and add performance test information
+>
+>  mm/filemap.c | 46 ++++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 46 insertions(+)
+>
+> diff --git a/mm/filemap.c b/mm/filemap.c
+> index b4858d89f1b1..31ab455c4537 100644
+> --- a/mm/filemap.c
+> +++ b/mm/filemap.c
+> @@ -3181,6 +3181,48 @@ static struct file *do_async_mmap_readahead(struct vm_fault *vmf,
+>  	return fpin;
+>  }
+>  
+> +static vm_fault_t filemap_fault_recheck_pte_none(struct vm_fault *vmf)
+> +{
+> +	struct vm_area_struct *vma = vmf->vma;
+> +	vm_fault_t ret = 0;
+> +	pte_t *ptep;
+> +
+> +	/*
+> +	 * We might have COW'ed a pagecache folio and might now have an mlocked
+> +	 * anon folio mapped. The original pagecache folio is not mlocked and
+> +	 * might have been evicted. During a read+clear/modify/write update of
+> +	 * the PTE, such as done in do_numa_page()/change_pte_range(), we
+> +	 * temporarily clear the PTE under PT lock and might detect it here as
+> +	 * "none" when not holding the PT lock.
+> +	 *
+> +	 * Not rechecking the PTE under PT lock could result in an unexpected
+> +	 * major fault in an mlock'ed region. Recheck only for this special
+> +	 * scenario while holding the PT lock, to not degrade non-mlocked
+> +	 * scenarios. Recheck the PTE without PT lock firstly, thereby reducing
+> +	 * the number of times we hold PT lock.
+> +	 */
+> +	if (!(vma->vm_flags & VM_LOCKED))
+> +		return 0;
+> +
+> +	if (!(vmf->flags & FAULT_FLAG_ORIG_PTE_VALID))
+> +		return 0;
+> +
+> +	ptep = pte_offset_map(vmf->pmd, vmf->address);
+> +	if (unlikely(!ptep))
+> +		return VM_FAULT_NOPAGE;
+> +
+> +	if (unlikely(!pte_none(ptep_get_lockless(ptep)))) {
+> +		ret = VM_FAULT_NOPAGE;
+> +	} else {
+> +		spin_lock(vmf->ptl);
+> +		if (unlikely(!pte_none(ptep_get(ptep))))
+> +			ret = VM_FAULT_NOPAGE;
+> +		spin_unlock(vmf->ptl);
+> +	}
+> +	pte_unmap(ptep);
+> +	return ret;
+> +}
+> +
+>  /**
+>   * filemap_fault - read in file data for page fault handling
+>   * @vmf:	struct vm_fault containing details of the fault
+> @@ -3236,6 +3278,10 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
+>  			mapping_locked = true;
+>  		}
+>  	} else {
+> +		ret = filemap_fault_recheck_pte_none(vmf);
+> +		if (unlikely(ret))
+> +			return ret;
+> +
+>  		/* No page in the page cache at all */
+>  		count_vm_event(PGMAJFAULT);
+>  		count_memcg_event_mm(vmf->vma->vm_mm, PGMAJFAULT);
 
