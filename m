@@ -1,189 +1,117 @@
-Return-Path: <linux-kernel+bounces-93159-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93201-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 530ED872BA8
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 01:15:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9B85872C4C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 02:41:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0676D28200E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 00:15:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ECDF31C225FF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 01:41:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B4B0EC4;
-	Wed,  6 Mar 2024 00:15:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B969F7499;
+	Wed,  6 Mar 2024 01:41:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="KLRvMa9y"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="friY4roL"
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE7E6173
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 00:15:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCE6D2CA7;
+	Wed,  6 Mar 2024 01:41:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709684124; cv=none; b=LTjwtQOf1ddyjbL0p9pR0nPR58MZ4t2t6j/eNKpkWuStm35tjZtrhRMdhtdTccpRSXIVO5EOVwwsf65s5yysKp7Og7bTTaEhso+DMUjYxhAci8dMmeOV3RD7WfSJaGPMDQJpiPuQQiwDfNCBSeT4nh7mebXWD5WtV19vjPqE6jU=
+	t=1709689298; cv=none; b=cln8Uqu1qNi5ho72ozk4JjI1aHOiMxn9kgb6C1iGaTttDVf9RgrTemTRYr0qrV8Q8ALMifaWU0pPLUJi+64IApRZpaFb4zNqIr3P+jfwNNWlAiDMyYPaWxqOR5/Y8LLPhqtgye6nekBE2re4v99JxhAMxA3TfjT6huouc3f2MuI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709684124; c=relaxed/simple;
-	bh=Ery4zifMCCuUuZyzrIBlY0WEBPD7CQi0y3uIJntdw9E=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=R4t9HNNw90V4Sj7CpRWhIuRDhSZi6DKWB79mfp+j3IPWfLolndXm5OQAEms66VvaG/qB4x11ecev0NDP+anOYIgE/KVB/B/CXbZMBuW6AAhamhpKh4CWFKZNrdJ1vaen9Kr7jRvCpd9MyZqOk1VzCST0rrRJebqDcz4Oug2xKR4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jthoughton.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=KLRvMa9y; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jthoughton.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-6096c745c33so117360597b3.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 16:15:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709684122; x=1710288922; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ChgiPj0kYltLQzZMIn6xeFnYbJXLFSJLwKxQczKImDM=;
-        b=KLRvMa9yTvD44rFz7ov1LtSm3goSqRD7dkILYh94flF9Gk8dgH9EH9dImsMh2JLaMt
-         BCq9aNtWuoYilr4ZdK/rtYewdfkza1iHP2ENOXIaFCTzBIR8pG+BS9Y6k6BFS2U19OqA
-         9BZy84caM8NMk0+2WGpU6rNUeUDBCtmvuAGJyjIaLJcpJOSNgMQEu2DMok0W8CMShuR1
-         hNruRRY3+FXilIoW0X0A/mN+ZOohiZrsPSvP8z5NSQ+78SY4G49Ib7GzshtbE/4vRi72
-         U9iqBn2RSxfqstp3kkeXAQUyG2Sl8aoEeO5ajS8MlnUkIZGxq4gOOB4XP2SQ71AzDRSD
-         z6ZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709684122; x=1710288922;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ChgiPj0kYltLQzZMIn6xeFnYbJXLFSJLwKxQczKImDM=;
-        b=tW4Or4VGESm+QSE9n7iP2HvnrJmc08QeGnT+68pP3Gxo5zt2ATUPJGHgLouBoXGXc1
-         jKYj+iU79BFrMPpAz4Qb3AOjBkT2jUF8Zd5reRJxvo7hEVgx+aQLK7cqa+i4jInILFgm
-         qxBiJYfQ2Jjk6z8+/pAbmxdmREkr1xduw84Ycq3HzL+x2L7EHqGEHVnLn1VzIwz1vCHG
-         0bHRXW2zEupcu9k9ESbWuVNychC75xDFC4C9X8q/4RAiaZpn3pydeXG74NNXLkk3p3FC
-         5IRPBZa2QJSaubtzYGyoveNjrm0T9sZh8t40eVQhtNdTUgdsm8UN1+a2eJvQwH98i5dO
-         71oA==
-X-Forwarded-Encrypted: i=1; AJvYcCWmzQJ6pVAlG5SWYP5wGJY4YCftIW5XntbdL8835KaeG9zjpJNjGjPuK5wG6fgpITlMTPYZfOrVpEN4nzbTlxhC2oUqUF6Dc7fhhSe8
-X-Gm-Message-State: AOJu0YwK/untwWvtJwr6i5DQ5wixe1PZ8gRifP6dvh5Ep6nqB/q03zPc
-	ZNhP6nE6aVYnJf3nnwIljbichHzFsWqWQXUHw4TFXTOBdrzw9RFKvpj8yzvI7B+AHGyp76m1cwh
-	kuHWiqhQTUvX79z+j7w==
-X-Google-Smtp-Source: AGHT+IFfsY8LjMQNkNxTJ0rSe20ZUdfR3+FzZIQB2yeaN8wmwfvRIu02vM39uiLYIz0MeSq9L6HZCKPA8Bw8F9cK
-X-Received: from jthoughton.c.googlers.com ([fda3:e722:ac3:cc00:14:4d90:c0a8:2a4f])
- (user=jthoughton job=sendgmr) by 2002:a81:9a92:0:b0:607:fd67:b946 with SMTP
- id r140-20020a819a92000000b00607fd67b946mr3796447ywg.10.1709684121991; Tue,
- 05 Mar 2024 16:15:21 -0800 (PST)
-Date: Wed,  6 Mar 2024 00:15:10 +0000
+	s=arc-20240116; t=1709689298; c=relaxed/simple;
+	bh=hUZhXekL3czb/m0SA5YEhBv9lBYNkRRC/zAjd6jzNaI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mHXddueyI07Lr3vD0fcMiCRnVvEhZiVOklxQKF0yliinn96KHcJG8qmEy9sjaGPwUx95XgIxXVwJxsYEhNUiSgkm4DtMZyhycIor1gmwIu02B/qYTr9RVYOMILrkJ0kp+LXS5gNjYcCU6GLme580edFL3D9Cl/szthVxOuYlJp8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=friY4roL; arc=none smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 425KrIRj008049;
+	Wed, 6 Mar 2024 00:19:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-11-20; bh=egK10wqwXb2fu+g1i/MZi3vjpY9NQX6hwN6M7fWN5jE=;
+ b=friY4roL0pv2sKy7l3IPJco9M3jBCHV5aCL9c1I8XBZDzepoyoSoW69o1Z8cz4G0Vva6
+ 1ddxuiXBdPJWm+3gynugKUcxgAOsn5rSZrmQikiyGftJ3WXMGDYHACKh3KNXEsx6tOnj
+ AaXgrR/iPoKqJ/eUO3voG56AVWmnc+OqvLRkbTa1BxJFE2K2T7Jf8eiVdPYHosVQaxgu
+ aITNxtU4gV1YgvMv4MsDkFpt89t9kxWO5ZOUnsiSS3G4v6vP5BWIGbfqqGtPa+b5Kyta
+ 4eKptBIhHrz3qF41tcdil9fOig2LpA4r5Dr3T69IFSjFRO1QkVRTZxHzeH5yZAeTUFEA 2w== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wkuqvfgtr-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 06 Mar 2024 00:19:07 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 425NSNgu013814;
+	Wed, 6 Mar 2024 00:18:58 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3wktj8f5w2-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 06 Mar 2024 00:18:58 +0000
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 4260Iv2A021727;
+	Wed, 6 Mar 2024 00:18:57 GMT
+Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.129.136.47])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3wktj8f5v6-1;
+	Wed, 06 Mar 2024 00:18:57 +0000
+From: Samasth Norway Ananda <samasth.norway.ananda@oracle.com>
+To: peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        namhyung@kernel.org
+Cc: samasth.norway.ananda@oracle.com, jolsa@kernel.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH ] perf test pmu: Fix file Leak in test_format_dir_get
+Date: Tue,  5 Mar 2024 16:18:55 -0800
+Message-ID: <20240306001855.4070582-1-samasth.norway.ananda@oracle.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-Message-ID: <20240306001511.932348-1-jthoughton@google.com>
-Subject: [PATCH] mm: Add an explicit smp_wmb() to UFFDIO_CONTINUE
-From: James Houghton <jthoughton@google.com>
-To: Peter Xu <peterx@redhat.com>, Axel Rasmussen <axelrasmussen@google.com>, 
-	Andrew Morton <akpm@linux-foundation.org>
-Cc: Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, James Houghton <jthoughton@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-05_19,2024-03-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0 mlxscore=0
+ spamscore=0 phishscore=0 suspectscore=0 malwarescore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2403060001
+X-Proofpoint-GUID: JVqj9h-YQouvnBbo0wV38Xr9sL4foS_D
+X-Proofpoint-ORIG-GUID: JVqj9h-YQouvnBbo0wV38Xr9sL4foS_D
 
-Users of UFFDIO_CONTINUE may reasonably assume that a write memory
-barrier is included as part of UFFDIO_CONTINUE. That is, a user may
-(mistakenly) believe that all writes it has done to a page that it is
-now UFFDIO_CONTINUE'ing are guaranteed to be visible to anyone
-subsequently reading the page through the newly mapped virtual memory
-region.
+File is opened inside the for loop. But if the 'if' condition is
+successful then 'break' statement will be reached, exiting the
+'for' loop prior to reaching 'fclose'.
 
-Include only a single smp_wmb() for each UFFDIO_CONTINUE, as that is all
-that is necessary. While we're at it, optimize the smp_wmb() that is
-already incidentally present for the HugeTLB case.
-
-Documentation doesn't specify if the kernel does a wmb(), so it's not
-wrong not to include it. But by not including it, we are making is easy
-for a user to have a very hard-to-detect bug. Include it now to be safe.
-
-A user that decides to update the contents of the page in one thread and
-UFFDIO_CONTINUE that page in another must already take additional steps
-to synchronize properly.
-
-Signed-off-by: James Houghton <jthoughton@google.com>
+Signed-off-by: Samasth Norway Ananda <samasth.norway.ananda@oracle.com>
 ---
+Found this error through static analysis. This has only been compile
+tested.
+---
+ tools/perf/tests/pmu.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-I'm not sure if this patch should be merged. I think it's the right
-thing to do, as it is very easy for a user to get this wrong. (I have
-been using UFFDIO_CONTINUE for >2 years and only realized this problem
-recently.) Given that it's not a "bug" strictly speaking, even if this
-patch is a good idea, I'm unsure if it needs to be backported.
-
-This quirk has existed since minor fault support was added for shmem[1].
-
-I've tried to see if I can legitimately get a user to read stale data,
-and a few attempts with this test[2] have been unsuccessful.
-
-[1]: commit 153132571f02 ("userfaultfd/shmem: support UFFDIO_CONTINUE for shmem")
-[2]: https://gist.github.com/48ca/38d0665b0f1a6319a56507dc73a173f9
-
- mm/hugetlb.c     | 15 +++++++++------
- mm/userfaultfd.c | 18 ++++++++++++++++++
- 2 files changed, 27 insertions(+), 6 deletions(-)
-
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index bb17e5c22759..533bf6b2d94d 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -6779,12 +6779,15 @@ int hugetlb_mfill_atomic_pte(pte_t *dst_pte,
- 		}
+diff --git a/tools/perf/tests/pmu.c b/tools/perf/tests/pmu.c
+index 8f18127d876a..f751e6cb6ac0 100644
+--- a/tools/perf/tests/pmu.c
++++ b/tools/perf/tests/pmu.c
+@@ -106,8 +106,10 @@ static char *test_format_dir_get(char *dir, size_t sz)
+ 		if (!file)
+ 			return NULL;
+ 
+-		if (1 != fwrite(format->value, strlen(format->value), 1, file))
++		if (1 != fwrite(format->value, strlen(format->value), 1, file)) {
++			fclose(file);
+ 			break;
++		}
+ 
+ 		fclose(file);
  	}
- 
--	/*
--	 * The memory barrier inside __folio_mark_uptodate makes sure that
--	 * preceding stores to the page contents become visible before
--	 * the set_pte_at() write.
--	 */
--	__folio_mark_uptodate(folio);
-+	if (!is_continue) {
-+		/*
-+		 * The memory barrier inside __folio_mark_uptodate makes sure
-+		 * that preceding stores to the page contents become visible
-+		 * before the set_pte_at() write.
-+		 */
-+		__folio_mark_uptodate(folio);
-+	} else
-+		WARN_ON_ONCE(!folio_test_uptodate(folio));
- 
- 	/* Add shared, newly allocated pages to the page cache. */
- 	if (vm_shared && !is_continue) {
-diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
-index 503ea77c81aa..d515b640ca48 100644
---- a/mm/userfaultfd.c
-+++ b/mm/userfaultfd.c
-@@ -531,6 +531,10 @@ static __always_inline ssize_t mfill_atomic_hugetlb(
- 			goto out_unlock;
- 	}
- 
-+	if (uffd_flags_mode_is(flags, MFILL_ATOMIC_CONTINUE))
-+		/* See the comment in mfill_atomic. */
-+		smp_wmb();
-+
- 	while (src_addr < src_start + len) {
- 		BUG_ON(dst_addr >= dst_start + len);
- 
-@@ -743,6 +747,20 @@ static __always_inline ssize_t mfill_atomic(struct userfaultfd_ctx *ctx,
- 	    uffd_flags_mode_is(flags, MFILL_ATOMIC_CONTINUE))
- 		goto out_unlock;
- 
-+	if (uffd_flags_mode_is(flags, MFILL_ATOMIC_CONTINUE))
-+		/*
-+		 * A caller might reasonably assume that UFFDIO_CONTINUE
-+		 * contains a wmb() to ensure that any writes to the
-+		 * about-to-be-mapped page by the thread doing the
-+		 * UFFDIO_CONTINUE are guaranteed to be visible to subsequent
-+		 * reads of the page through the newly mapped address.
-+		 *
-+		 * For MFILL_ATOMIC_COPY, the wmb() is done for each COPYed
-+		 * page. We can do the wmb() now for CONTINUE as the user has
-+		 * already prepared the page contents.
-+		 */
-+		smp_wmb();
-+
- 	while (src_addr < src_start + len) {
- 		pmd_t dst_pmdval;
- 
-
-base-commit: a7f399ae964e1d2a11d88d863a1d64392678ccaf
 -- 
-2.44.0.278.ge034bb2e1d-goog
+2.43.0
 
 
