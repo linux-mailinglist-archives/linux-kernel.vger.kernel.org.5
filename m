@@ -1,145 +1,120 @@
-Return-Path: <linux-kernel+bounces-93619-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93620-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EC0087326D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:23:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0E12873270
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:23:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EAEDF292475
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:22:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B35F292767
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:23:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25E285DF1A;
-	Wed,  6 Mar 2024 09:22:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FA7F5DF0C;
+	Wed,  6 Mar 2024 09:23:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xen0n.name header.i=@xen0n.name header.b="rBzkv6WH"
-Received: from mailbox.box.xen0n.name (mail.xen0n.name [115.28.160.31])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Mr6q31YU";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="SpZybAFY"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8623C5DF01;
-	Wed,  6 Mar 2024 09:22:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.28.160.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B38AD5D91F;
+	Wed,  6 Mar 2024 09:22:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709716970; cv=none; b=jIszY+j/M/kP7NZQ113j54l/6cGluj1+dMROzZoBRwpz6yHGELh5v88jBryFvLPoeM6yo/s4UEYHEx+99W84bPuhFn7OSl/QvmMqDPPfornCaXFCMzifU96YIt9gFsFKkZTYro3MJtLy+uXm5zCKglqnZDwieil17uPPxirUnB4=
+	t=1709716981; cv=none; b=BpQdLwV3lTqhqPNtJRZofbQmX+FwTRzgby/EfyLsFyfGNNnpD/e4gjbeFVIItK05GmWW2u0ewUbuaypVHeQk7rOaeVR1dgpsZKimuIFLeg22k9NhwMuLVZ+UIsB1npR/pkDAGXKpP0U+WxDMtWr3hTDlrcruuViFg2ZA4jzSxjA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709716970; c=relaxed/simple;
-	bh=o4WXpLuFlb2On21gYF6e06FQki+re+8xuTwVBSizxMI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=swnWBWEqkamfgfUgPw+3EoJitExCJ536ldb1/6JII5lm6BmfJY+KdfZ93H2vamt2wFPtwMg0RcpoqONxWu+TC5aVcDDRxZ+EGfsPcJ0YPrBb7aZrQlNPQxbHzgeotViA8DJUo7cyWwDG1uAgj0R3LjybKT1ijVn9Nis3wnFW1hs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=xen0n.name; spf=pass smtp.mailfrom=xen0n.name; dkim=pass (1024-bit key) header.d=xen0n.name header.i=@xen0n.name header.b=rBzkv6WH; arc=none smtp.client-ip=115.28.160.31
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=xen0n.name
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xen0n.name
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xen0n.name; s=mail;
-	t=1709716964; bh=o4WXpLuFlb2On21gYF6e06FQki+re+8xuTwVBSizxMI=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=rBzkv6WHSyXZIk6znzU7nnLyL4/jck+sMZRhuySYFRLWZKkN1d1KsNE7YUsV8NWoK
-	 umxFcxOBgdLaEa1rvbZ520CbIoNR8/RHQG/cdi98q2Tll/TNBWCQER0u0OTXpPmCEc
-	 CsAEx0w4+waz8+o8k40rSOV9dqnlRmLpToVMFjRA=
-Received: from [IPV6:240e:688:100:1:e42:6442:8662:5647] (unknown [IPv6:240e:688:100:1:e42:6442:8662:5647])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mailbox.box.xen0n.name (Postfix) with ESMTPSA id 7524F600CE;
-	Wed,  6 Mar 2024 17:22:44 +0800 (CST)
-Message-ID: <4039d1ff-8e9f-42cf-a8fa-b326102fcbf5@xen0n.name>
-Date: Wed, 6 Mar 2024 17:22:43 +0800
+	s=arc-20240116; t=1709716981; c=relaxed/simple;
+	bh=ZoZAFpnXAIJuXfD4zTp2dyuISQoKk0qGZNiwVZw73xE=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=s0vE3rjPc/7RHanFfolduu/ZqR4jYy2LQVUKLmp9Jp+GTezFGgDGysxThv2FUMzR+XmycngLaFysyvWHye6wxCoVXC3qnoyrh7fO+Vbhq1zgcTFb+aocjTcRzawoRlcEBrcSdflil6qxiVKr5wYBmFBrk1aQxxkPiq2HqAfbLoY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Mr6q31YU; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=SpZybAFY; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Wed, 06 Mar 2024 09:22:53 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1709716974;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=oCbaMdXFmHvzM3rg9VFcTTzEusauzL0ySMi6yjcgNhQ=;
+	b=Mr6q31YUxAlWI1xfEA8qHGjraDb77P2KCjJOmq8QyqrOWGCAJD9X1ONfP813NbA/uEmyfN
+	XIaxgKdJCxa68DtaBqgf5pEBXTOjke5eg4rIJztEd8JpY5gfBRSBVF7mPlS6PcxW2y6rqh
+	4lzBo2eJr+7Q6Zgzxx2WbIwjJoMfi1N1gj8vio5TRMWraolyOsPG4AixK2HkkH0bRf0No0
+	tShNDJteXFU1liJCiNPzD8C4przWc+tpoiI1yjDtZc2aW35m8B6hcpeB3FjFXR8UOczaYi
+	7kz/bEI/vF2FE88pE9p106PwGjApJb5F95fM5VQwZ3bp+Vvw9iBSIHTS1ueruw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1709716974;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=oCbaMdXFmHvzM3rg9VFcTTzEusauzL0ySMi6yjcgNhQ=;
+	b=SpZybAFYk7aRKDh/5FSvT/APR7fGyl8+aiEake9f8gbylwNYUmzbCTWWfa3qXw2GWx2W3N
+	xLewN1lhLdHZqEDA==
+From:
+ tip-bot2 for Thomas =?utf-8?q?Wei=C3=9Fschuh?= <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject:
+ [tip: x86/cleanups] x86/nmi: Drop unused declaration of proc_nmi_enabled()
+Cc: linux@weissschuh.net, "Borislav Petkov (AMD)" <bp@alien8.de>,
+ x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240306-const-sysctl-prep-x86-v1-1-f9d1fa38dd2b@weissschuh.net>
+References: <20240306-const-sysctl-prep-x86-v1-1-f9d1fa38dd2b@weissschuh.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 7/7] Documentation: KVM: Add hypercall for LoongArch
-To: maobibo <maobibo@loongson.cn>, Tianrui Zhao <zhaotianrui@loongson.cn>,
- Juergen Gross <jgross@suse.com>, Paolo Bonzini <pbonzini@redhat.com>,
- Jonathan Corbet <corbet@lwn.net>
-Cc: loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
- virtualization@lists.linux.dev, kvm@vger.kernel.org
-References: <20240302082532.1415200-1-maobibo@loongson.cn>
- <20240302084724.1415344-1-maobibo@loongson.cn>
- <846a5e46-4e8f-4f73-ac5b-323e78ec1bb1@xen0n.name>
- <853f2909-e455-bd1c-c6a4-6a13beb37125@loongson.cn>
- <ec871702-388d-4a29-aec1-5cd6d1de6d0a@xen0n.name>
- <7079bf3b-a7af-7cab-be78-3de1081649e1@loongson.cn>
-Content-Language: en-US
-From: WANG Xuerui <kernel@xen0n.name>
-In-Reply-To: <7079bf3b-a7af-7cab-be78-3de1081649e1@loongson.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Message-ID: <170971697378.398.205017146158091581.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 3/6/24 11:28, maobibo wrote:
-> On 2024/3/6 上午2:26, WANG Xuerui wrote:
->> On 3/4/24 17:10, maobibo wrote:
->>> On 2024/3/2 下午5:41, WANG Xuerui wrote:
->>>> On 3/2/24 16:47, Bibo Mao wrote:
->>>>> [snip]
->>>>> +
->>>>> +KVM hypercall ABI
->>>>> +=================
->>>>> +
->>>>> +Hypercall ABI on KVM is simple, only one scratch register a0 (v0) 
->>>>> and at most
->>>>> +five generic registers used as input parameter. FP register and 
->>>>> vector register
->>>>> +is not used for input register and should not be modified during 
->>>>> hypercall.
->>>>> +Hypercall function can be inlined since there is only one scratch 
->>>>> register.
->>>>
->>>> It should be pointed out explicitly that on hypercall return all 
->>> Well, return value description will added. What do think about the 
->>> meaning of return value for KVM_HCALL_FUNC_PV_IPI hypercall?  The 
->>> number of CPUs with IPI delivered successfully like kvm x86 or simply 
->>> success/failure?
+The following commit has been merged into the x86/cleanups branch of tip:
 
-I just noticed I've forgotten to comment on this question. FYI, RISC-V 
-SBI's equivalent [1] doesn't even indicate errors. And from my 
-perspective, we can always add a new hypercall returning more info 
-should that info is needed in the future; for now I don't have a problem 
-whether the return type is void, bool or number of CPUs that are 
-successfully reached.
+Commit-ID:     774a86f1c885460ade4334b901919fa1d8ae6ec6
+Gitweb:        https://git.kernel.org/tip/774a86f1c885460ade4334b901919fa1d8a=
+e6ec6
+Author:        Thomas Wei=C3=9Fschuh <linux@weissschuh.net>
+AuthorDate:    Wed, 06 Mar 2024 07:50:29 +01:00
+Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+CommitterDate: Wed, 06 Mar 2024 10:13:33 +01:00
 
-[1]: 
-https://github.com/riscv-non-isa/riscv-sbi-doc/blob/v2.0/src/ext-ipi.adoc
+x86/nmi: Drop unused declaration of proc_nmi_enabled()
 
->>>> architectural state except ``$a0`` is preserved. Or is the whole 
->>>> ``$a0 - $t8`` range clobbered, just like with Linux syscalls?
->>>>
->>> what is advantage with $a0 - > $t8 clobbered?
->>
->> Because then a hypercall is going to behave identical as an ordinary C 
->> function call, which is easy for people and compilers to understand.
->>
-> If you really understand detailed behavior about hypercall/syscall, the 
-> conclusion may be different.
-> 
-> If T0 - T8 is clobbered with hypercall instruction, hypercall caller 
-> need save clobbered register, now hypercall exception save/restore all 
-> the registers during VM exits. If so, hypercall caller need not save 
-> general registers and it is not necessary scratched for hypercall ABI.
-> 
-> Until now all the discussion the macro level, no detail code level.
-> 
-> Can you show me some example code where T0-T8 need not save/restore 
-> during LoongArch hypercall exception?
+The declaration is unused as the definition got deleted.
 
-I was emphasizing that consistency is generally good, and yes that's 
-"macroscopic" level talk. Of course, the hypercall client code would 
-have to do *less* work if *more* registers than the minimum are 
-preserved -- if right now everything is already preserved, nothing needs 
-to change.
+Fixes: 5f2b0ba4d94b ("x86, nmi_watchdog: Remove the old nmi_watchdog").
+Signed-off-by: Thomas Wei=C3=9Fschuh <linux@weissschuh.net>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Link: https://lore.kernel.org/r/20240306-const-sysctl-prep-x86-v1-1-f9d1fa38d=
+d2b@weissschuh.net
+---
+ arch/x86/include/asm/nmi.h | 3 ---
+ 1 file changed, 3 deletions(-)
 
-But please also notice that the context switch cost is paid for every 
-hypercall, and we can't reduce the number of preserved registers without 
-breaking compatibility. So I think we can keep the current 
-implementation behavior, but promise less in the spec: this way we'll 
-keep the possibility of reducing the context switch overhead.
-
--- 
-WANG "xen0n" Xuerui
-
-Linux/LoongArch mailing list: https://lore.kernel.org/loongarch/
-
+diff --git a/arch/x86/include/asm/nmi.h b/arch/x86/include/asm/nmi.h
+index 5c5f1e5..41a0ebb 100644
+--- a/arch/x86/include/asm/nmi.h
++++ b/arch/x86/include/asm/nmi.h
+@@ -14,9 +14,6 @@ extern void release_perfctr_nmi(unsigned int);
+ extern int reserve_evntsel_nmi(unsigned int);
+ extern void release_evntsel_nmi(unsigned int);
+=20
+-struct ctl_table;
+-extern int proc_nmi_enabled(struct ctl_table *, int ,
+-			void __user *, size_t *, loff_t *);
+ extern int unknown_nmi_panic;
+=20
+ #endif /* CONFIG_X86_LOCAL_APIC */
 
