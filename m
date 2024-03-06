@@ -1,226 +1,223 @@
-Return-Path: <linux-kernel+bounces-93918-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93919-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1085E8736EC
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:52:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0BDB8736F0
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:52:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BBF2328475D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:52:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D41261C20B26
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:52:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C83485291;
-	Wed,  6 Mar 2024 12:51:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BDA812C81D;
+	Wed,  6 Mar 2024 12:52:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="TRMsbHf8"
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="YhW4WnCl"
+Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7EB412C53E
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 12:51:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5656D23745;
+	Wed,  6 Mar 2024 12:52:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.119
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709729517; cv=none; b=NESZ/6ftfvWCh/JFo7GAZcSHIhfHW+FoYRGrg771MBEa6ODrch/9ijzvbyDeMKkA28mYcgYy6gXXV/2CykV7p6ioA6Q2ZuymBFTbQuySjItOSpPhOUycz5KIM/ZenhipkXM6jNgU0HbJ7t6ZZJbjG/OuWzmh6mNZbn0DB6GiFe8=
+	t=1709729541; cv=none; b=EFQjHtI9Lhgf3FGOxiTEs+hPpNabos0h3kqOmrM/Bek1Py1CP32zlqh84sy9yLh4N1zzhZwHe5jwts/Wtv0FwVdsWWG0E58zBrKLuZeT19UNdBKwIg1tgr969AOe86zL4SDYM6sduL6fzZKSWcx609LpKBpxQaFPsGLGWFYQmX4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709729517; c=relaxed/simple;
-	bh=RdX+DSyimaOFGLL/X/PkNBOiu5y8vWHzGkaUio1sOK4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nTHY0T7Vj5NFgcuiJo51HKvIpdyD+x5zl5LiFbyx53he5AJDRPktaxAbJ612VBgNBaSUV9lreXpRlURp738EhwkrM7dVa7seYi/rbkqtVCqc8dMklSngeL7C8cSjxfRBrz3CZBNChaBr1+La7vEBPLnF5qBawy0GtIZiNvRtq5c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=TRMsbHf8; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5654ef0c61fso12713a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 04:51:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709729514; x=1710334314; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NZ53iU6hdRTVPXgb3bO7wAZ+renq+wmZYoXZ3DzIzD0=;
-        b=TRMsbHf8bi7lRPrYccur/RzoR/6TByjI8Lk5ZQOB6mkNxKWV0jt7xJUz5xZYS37Jei
-         kM20drBiHkynuKBUP3iA5Xql3KNH8VgxQmP5qW9d2KBSHX6NhJwkOSZHkZt3yJtDS8jz
-         WhR68MA55IQopWjDcBt/dTtKGOEDdW6Rg24eSX+PcVzro8c8JLQ7pFylkAddHhDlXCt3
-         V+k6XagdGcY3oJONrUzbJ5v6iX/5QaYF78xJAPF4IbhcpJKTUWrn4TsPm5le+1vVq8GV
-         ESt/bhFAL5gG3G6Idz9evRnTybfIuEMqmC5cNQ4Q6SCpOxS++5kgy2aZFlRD58IFpo4X
-         uBTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709729514; x=1710334314;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NZ53iU6hdRTVPXgb3bO7wAZ+renq+wmZYoXZ3DzIzD0=;
-        b=u1EQ6Tc1Wm57whUlKYMD+atHrw5UHKOtpQTB67xZvs6n51Xo2Nl1f33MtSDa33Xdts
-         xT8ESvDi7ZsgnrABRNCson/edq1dIsYVdzSwh7mfXToSjuzK/X7Hmueno9zqz1FNetRt
-         eL4Jd83M/ZlEKUHPX76QkuTV3eTsmBJ4IBu22QZBvOhtuqAEEIcKZlVTfvNATJe/gQoa
-         Jl+0tviHlKoIF0BoYCTACyZtXgjPOXj95AWP95swM/rk/VrOoHisfwapXJNClMgP1ca4
-         ppy1d4PRWpche1Nr3ji0ULbVIxw1pOUIveTbjyiW5YXVQmriqQ/bpuCcHmDxW+fIBEkq
-         JUTQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVNeJLHu152roJsIz9mJblh5lmmfhBzaXQSwQH0FJ3C2HVdHKU8pVOcrOAeaGLaKCrHntCw2IEYbDcngn5staSoWUJ1y8CWFNDzrrmJ
-X-Gm-Message-State: AOJu0Yy1QR5x3ggE+vlV66RhAqb2YzbtKTHvrGEw79NNvJ1/6N9HuFUv
-	d23nwquZSZjWennut2SeMWQZoMf1aLgNIuL8pgiIkAuhVvBgzOxpVdOlWSX2SgcMC5rGdgeQUWw
-	lx42gKECQvPThX5QVXL/titDRPR18+0248sC1
-X-Google-Smtp-Source: AGHT+IFtvFD2ZWOokx9QBO0s8NCnSEsCvbB5F7v6PO7oH9hJmXc+UvaqBvlsIWlzux1PjlgPgyqNDGVVrunv73mxrSU=
-X-Received: by 2002:a05:6402:22c4:b0:567:3840:15be with SMTP id
- dm4-20020a05640222c400b00567384015bemr312577edb.1.1709729513557; Wed, 06 Mar
- 2024 04:51:53 -0800 (PST)
+	s=arc-20240116; t=1709729541; c=relaxed/simple;
+	bh=eGsoKPZufISeCYGt/rX1Jv5lnmMMRJ9a1eFakihrkHg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=aa/uVchZoXcm/ZxwexSIB7Rj8wV1UJIA13rfX/ff/H6Y0gWDZFR5v4ZQ30FoC3ylQcaOyNva8H3AZzWFEIiyE2O7MWLj3jhZUF1nh4aFLtW1aftCSTAyMuiChUFih96Pgv7lqvHZcbH7QaM22JF5NJhs2/HyS0D2VS3vwOUCtmw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=YhW4WnCl; arc=none smtp.client-ip=115.124.30.119
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1709729535; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=vAd18UMTC+H+2qmCwd/zJ/rEA4cX+MeF1ID88VDxGUg=;
+	b=YhW4WnClW9UPCoY08QnQejV5eg0Zf2G+nVIGfDiGgd0LFdE9UkJRToz0kHrL/eS0KfmtShAgEbCoVaMU4T1LhFcER7wp7DZBOcOj7AkCotfMdZt+D9UB9oLipFVvGqO5v6YgGw2jbt5oVheopg7ZkyejsOaQ8/r2mJFQgeL0+pw=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=yaoma@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0W1xhgEY_1709729532;
+Received: from localhost.localdomain(mailfrom:yaoma@linux.alibaba.com fp:SMTPD_---0W1xhgEY_1709729532)
+          by smtp.aliyun-inc.com;
+          Wed, 06 Mar 2024 20:52:13 +0800
+From: Bitao Hu <yaoma@linux.alibaba.com>
+To: dianders@chromium.org,
+	tglx@linutronix.de,
+	liusong@linux.alibaba.com,
+	akpm@linux-foundation.org,
+	pmladek@suse.com,
+	kernelfans@gmail.com,
+	deller@gmx.de,
+	npiggin@gmail.com,
+	tsbogend@alpha.franken.de,
+	James.Bottomley@HansenPartnership.com,
+	jan.kiszka@siemens.com
+Cc: linux-kernel@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	yaoma@linux.alibaba.com
+Subject: [PATCHv12 0/4] *** Detect interrupt storm in softlockup ***
+Date: Wed,  6 Mar 2024 20:52:04 +0800
+Message-Id: <20240306125208.71803-1-yaoma@linux.alibaba.com>
+X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CALkn8kLOozs5UO52SQa9PR-CiKx_mqW8VF9US94qN+ixyqnkdQ@mail.gmail.com>
- <CANn89iLH5+KryWa3GMs-Fz+sdy9Qs7kJqfBwf0229iwgW65Hxg@mail.gmail.com> <CACHbv+x5732JVEWkO14ogz48cze7_ai_D5TA9C2X6_b97rioEA@mail.gmail.com>
-In-Reply-To: <CACHbv+x5732JVEWkO14ogz48cze7_ai_D5TA9C2X6_b97rioEA@mail.gmail.com>
-From: Eric Dumazet <edumazet@google.com>
-Date: Wed, 6 Mar 2024 13:51:42 +0100
-Message-ID: <CANn89i+CEHApkAO7msUPoQdMgjJsgJ=gNuHcOdYZqbwEdwVrOg@mail.gmail.com>
-Subject: Re: Network performance regression in Linux kernel 6.6 for small
- socket size test cases
-To: Boon Ang <boon.ang@broadcom.com>
-Cc: Abdul Anshad Azeez <abdul-anshad.azeez@broadcom.com>, davem@davemloft.net, kuba@kernel.org, 
-	pabeni@redhat.com, corbet@lwn.net, dsahern@kernel.org, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, John Savanyo <john.savanyo@broadcom.com>, 
-	Peter Jonasson <peter.jonasson@broadcom.com>, Rajender M <rajender.m@broadcom.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Mar 6, 2024 at 1:43=E2=80=AFPM Boon Ang <boon.ang@broadcom.com> wro=
-te:
->
-> Hello Eric,
->
-> The choice of socket buffer size is something that  an application can de=
-cide and there many be reasons to keep to smaller sizes.  While high bandwi=
-dth transfers obviously should use larger sizes, a change that regresses th=
-e performance of existing configuration is a regression.  Is there any way =
-to modify your change so that it keeps the benefits while avoiding the degr=
-adation for small socket sizes?
->
+Hi, guys.
+I have implemented a low-overhead method for detecting interrupt
+storm in softlockup. Please review it, all comments are welcome.
 
+Changes from v11 to v12:
 
-The kernel limits the amount of memory used by the receive queue.
+- From Douglas and Thomas, add a new kconfig knob save memory when
+the softlock detector code is not enabled.
 
-The problem is that for XXX bytes of payload (what the user application wan=
-ts),
-the metadata overhead is not fixed.
+- Adjust the order of the patches; patch #1 and patch #2 are related
+to genirq, while patch #3 and patch #4 are related to watchdog/softlockup,
+making the dependency relationships clearer.
 
-Kernel structures change over time, and packets are not always full
-from the remote peer (that we can not control)
+- Add the 'Reviewed-by' tag of Douglas.
 
-1000 bytes of payload might fit in 2KB, or 2MB depending on how the
-bytes are spread over multiple skbs.
+Changes from v10 to v11:
 
-This issue has been there forever, the kernel can not put in stone any rule=
- :
+- Only patch #2 and patch #3 have been changed.
 
-XXXX bytes of payload  --->  YYYY bytes of kernel memory to hold XXXX
-bytes of payload.
+- Add comments to explain each field of 'struct irqstat' in patch #2.
 
-It is time that applications setting tiny SO_RCVBUF values get what they wa=
-nt :
+- Split the inner summation logic out of kstat_irqs() and encapsulate
+it into kstat_irqs_desc() in patch #3.
 
-Poor TCP performance.
+- Adopt Thomas's change log for patch #3.
 
-Thanks.
+- Add the 'Reviewed-by' tag of Liu Song.
 
-> Thanks
->   Boon
->
-> On Wed, Feb 28, 2024 at 12:48=E2=80=AFAM Eric Dumazet <edumazet@google.co=
-m> wrote:
->>
->> On Wed, Feb 28, 2024 at 7:43=E2=80=AFAM Abdul Anshad Azeez
->> <abdul-anshad.azeez@broadcom.com> wrote:
->> >
->> > During performance regression workload execution of the Linux
->> > kernel we observed up to 30% performance decrease in a specific networ=
-king
->> > workload on the 6.6 kernel compared to 6.5 (details below). The regres=
-sion is
->> > reproducible in both Linux VMs running on ESXi and bare metal Linux.
->> >
->> > Workload details:
->> >
->> > Benchmark - Netperf TCP_STREAM
->> > Socket buffer size - 8K
->> > Message size - 256B
->> > MTU - 1500B
->> > Socket option - TCP_NODELAY
->> > # of STREAMs - 32
->> > Direction - Uni-Directional Receive
->> > Duration - 60 Seconds
->> > NIC - Mellanox Technologies ConnectX-6 Dx EN 100G
->> > Server Config - Intel(R) Xeon(R) Gold 6348 CPU @ 2.60GHz & 512G Memory
->> >
->> > Bisect between 6.5 and 6.6 kernel concluded that this regression origi=
-nated
->> > from the below commit:
->> >
->> > commit - dfa2f0483360d4d6f2324405464c9f281156bd87 (tcp: get rid of
->> > sysctl_tcp_adv_win_scale)
->> > Author - Eric Dumazet <edumazet@google.com>
->> > Link -
->> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/com=
-mit/?id=3D
->> > dfa2f0483360d4d6f2324405464c9f281156bd87
->> >
->> > Performance data for (Linux VM on ESXi):
->> > Test case - TCP_STREAM_RECV Throughput in Gbps
->> > (for different socket buffer sizes and with constant message size - 25=
-6B):
->> >
->> > Socket buffer size - [LK6.5 vs LK6.6]
->> > 8K - [8.4 vs 5.9 Gbps]
->> > 16K - [13.4 vs 10.6 Gbps]
->> > 32K - [19.1 vs 16.3 Gbps]
->> > 64K - [19.6 vs 19.7 Gbps]
->> > Autotune - [19.7 vs 19.6 Gbps]
->> >
->> > From the above performance data, we can infer that:
->> > * Regression is specific to lower fixed socket buffer sizes (8K, 16K &=
- 32K).
->> > * Increasing the socket buffer size gradually decreases the throughput=
- impact.
->> > * Performance is equal for higher fixed socket size (64K) and Autotune=
- socket
->> > tests.
->> >
->> > We would like to know if there are any opportunities for optimization =
-in
->> > the test cases with small socket sizes.
->> >
->>
->> Sure, I would suggest not setting small SO_RCVBUF values in 2024,
->> or you get what you ask for (going back to old TCP performance of year 2=
-010 )
->>
->> Back in 2018, we set tcp_rmem[1] to 131072 for a good reason.
->>
->> commit a337531b942bd8a03e7052444d7e36972aac2d92
->> Author: Yuchung Cheng <ycheng@google.com>
->> Date:   Thu Sep 27 11:21:19 2018 -0700
->>
->>     tcp: up initial rmem to 128KB and SYN rwin to around 64KB
->>
->>
->> I can not enforce a minimum in SO_RCVBUF (other than the small one added=
- in
->> commit eea86af6b1e18d6fa8dc959e3ddc0100f27aff9f     ("net: sock: adapt
->> SOCK_MIN_RCVBUF and SOCK_MIN_SNDBUF"))
->> otherwise many test programs will break, expecting to set a low value.
->
->
-> This electronic communication and the information and any files transmitt=
-ed with it, or attached to it, are confidential and are intended solely for=
- the use of the individual or entity to whom it is addressed and may contai=
-n information that is confidential, legally privileged, protected by privac=
-y laws, or otherwise restricted from disclosure to anyone else. If you are =
-not the intended recipient or the person responsible for delivering the e-m=
-ail to the intended recipient, you are hereby notified that any use, copyin=
-g, distributing, dissemination, forwarding, printing, or copying of this e-=
-mail is strictly prohibited. If you received this e-mail in error, please r=
-eturn the e-mail to the sender, delete it from your computer, and destroy a=
-ny printed copy of it.
+Changes from v9 to v10:
+
+- The two patches related to 'watchdog/softlockup' remain unchanged.
+
+- The majority of the work related to 'genirq' is contributed by
+Thomas, indicated by adding 'Originally-by' tag. And I'd like to
+express my gratitude for Thomas's contributions and guidance here.
+
+- Adopt Thomas's change log for the snapshot mechanism for interrupt
+statistics.
+
+- Split unrelated change in patch #2 into a separate patch #3.
+
+Changes from v8 to v9:
+
+- Patch #1 remains unchanged.
+
+- From Thomas Gleixner, split patch #2 into two patches. Interrupt
+infrastructure first and then the actual usage site in the
+watchdog code.
+
+Changes from v7 to v8:
+
+- From Thomas Gleixner, implement statistics within the interrupt
+core code and provide sensible interfaces for the watchdog code.
+
+- Patch #1 remains unchanged. Patch #2 has significant changes
+based on Thomas's suggestions, which is why I have removed
+Liu Song and Douglas's Reviewed-by from patch #2. Please review
+it again, and all comments are welcome.
+
+Changes from v6 to v7:
+
+- Remove "READ_ONCE" in "start_counting_irqs"
+
+- Replace the hard-coded 5 with "NUM_SAMPLE_PERIODS" macro in
+"set_sample_period".
+
+- Add empty lines to help with reading the code.
+
+- Remove the branch that processes IRQs where "counts_diff = 0".
+
+- Add the Reviewed-by of Liu Song and Douglas.
+
+Changes from v5 to v6:
+
+- Use "./scripts/checkpatch.pl --strict" to get a few extra
+style nits and fix them.
+
+- Squash patch #3 into patch #1, and wrapp the help text to
+80 columns.
+
+- Sort existing headers alphabetically in watchdog.c
+
+- Drop "softlockup_hardirq_cpus", just read "hardirq_counts"
+and see if it's non-NULL.
+
+- Store "nr_irqs" in a local variable.
+
+- Simplify the calculation of "cpu_diff".
+
+Changes from v4 to v5:
+
+- Rearranging variable placement to make code look neater.
+
+Changes from v3 to v4:
+
+- Renaming some variable and function names to make the code logic
+more readable.
+
+- Change the code location to avoid predeclaring.
+
+- Just swap rather than a double loop in tabulate_irq_count.
+
+- Since nr_irqs has the potential to grow at runtime, bounds-check
+logic has been implemented.
+
+- Add SOFTLOCKUP_DETECTOR_INTR_STORM Kconfig knob.
+
+Changes from v2 to v3:
+
+- From Liu Song, using enum instead of macro for cpu_stats, shortening
+the name 'idx_to_stat' to 'stats', adding 'get_16bit_precesion' instead
+of using right shift operations, and using 'struct irq_counts'.
+
+- From kernel robot test, using '__this_cpu_read' and '__this_cpu_write'
+instead of accessing to an per-cpu array directly, in order to avoid
+this warning.
+'sparse: incorrect type in initializer (different modifiers)'
+
+Changes from v1 to v2:
+
+- From Douglas, optimize the memory of cpustats. With the maximum number
+of CPUs, that's now this.
+2 * 8192 * 4 + 1 * 8192 * 5 * 4 + 1 * 8192 = 237,568 bytes.
+
+- From Liu Song, refactor the code format and add necessary comments.
+
+- From Douglas, use interrupt counts instead of interrupt time to
+determine the cause of softlockup.
+
+- Remove the cmdline parameter added in PATCHv1.
+Bitao Hu (4):
+  genirq: Provide a snapshot mechanism for interrupt statistics
+  genirq: Avoid summation loops for /proc/interrupts
+  watchdog/softlockup: low-overhead detection of interrupt storm
+  watchdog/softlockup: report the most frequent interrupts
+
+ arch/mips/dec/setup.c                |   2 +-
+ arch/parisc/kernel/smp.c             |   2 +-
+ arch/powerpc/kvm/book3s_hv_rm_xics.c |   2 +-
+ include/linux/irqdesc.h              |  16 +-
+ include/linux/kernel_stat.h          |   8 +
+ kernel/irq/Kconfig                   |   4 +
+ kernel/irq/internals.h               |   4 +-
+ kernel/irq/irqdesc.c                 |  54 +++++--
+ kernel/irq/proc.c                    |   9 +-
+ kernel/watchdog.c                    | 213 ++++++++++++++++++++++++++-
+ lib/Kconfig.debug                    |  14 ++
+ scripts/gdb/linux/interrupts.py      |   6 +-
+ 12 files changed, 302 insertions(+), 32 deletions(-)
+
+-- 
+2.37.1 (Apple Git-137.1)
+
 
