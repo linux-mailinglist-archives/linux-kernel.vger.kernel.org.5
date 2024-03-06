@@ -1,278 +1,118 @@
-Return-Path: <linux-kernel+bounces-94480-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94481-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A4AC874065
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 20:28:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A3E2874069
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 20:31:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51495281DE3
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 19:28:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1A559B22026
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 19:31:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 171CC14036A;
-	Wed,  6 Mar 2024 19:28:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75362140366;
+	Wed,  6 Mar 2024 19:31:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="R+iKghyo"
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JpdDGX21"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEEE813F01A
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 19:28:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7BF560250
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 19:31:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709753333; cv=none; b=FJO6jNIgjcWBnxnwZsJ6wPKwgQK4P2+px7qO/F9zj4MjmKYh57k2uySIKWWVO5D/AQLcV8H0RgKOM9+O0DWx3eAddRukYb8YgVrEo78rfHh33PclXa9vhLXFgJZwXXc6sfo9Nj5vYFesoaDGApUbeD90sjLXJH4NszglBtFWp48=
+	t=1709753463; cv=none; b=SisbERvG6D/ckpY9VNOTiH2oEGVqXtghBmVcKVWfOQ1K5M7bEugaYiFp65OYVgNOMR7kLMYK38CsY814EBdaZdVAa/TbBMXqhwXG+2oy1CfYQkIfdHgKjhaBJwWkpduQu6EVMtNC53KhJY62qb2FjF8JpdLpeLgM1tu5c4lv0sw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709753333; c=relaxed/simple;
-	bh=oVbP8h99GUK9lOc/Amw1op4GHOhWRRASuthXoAH1gbE=;
+	s=arc-20240116; t=1709753463; c=relaxed/simple;
+	bh=dZejzDtOwNBcY1Csz/PwMQsoTNS21ghdsMm5cjM+xQ0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R/cZRAGYnhZ34pv44ZajxrW7voBAFfDKKbqXdgYHAwJjqwuXRJoB7mVuSmZn+ClyDRncpg6oZ0AGS7xXM8WKjJDspOHUOxxpHzOAhQplABybgJZTucsIj3saFAwqNSPwwQc4KLBso7u/IREs/9niSF4ye2zFCTmhCWhX/kd/jn4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=R+iKghyo; arc=none smtp.client-ip=209.85.210.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6e55731af5cso78207b3a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 11:28:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709753330; x=1710358130; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=m9++UoKpeeQiFQPK2S6XtFoDKlxqW5vdVso25F8fqUo=;
-        b=R+iKghyoQDh5a92Rgy8ermZReGcTEAJKdfigKeXwTapaAMM65j3r/8br9CS0da04mK
-         G42Wly5B14AX2d4IKQwm57XqpOlWHzQr59zUMqsBZq4obsf/m4t+ddbP5VvBFQBRbNn6
-         wudyd+zRPUZi5zH+ZKi7qaD1g+FemIfgFM76uZnk26aaHHwdrUEYUT9DD54+eGXnLBWL
-         Tytber+V+3spP7Q02UNIODHt47VPM7KFlAvDGcYhtiQ8gDLowaymlBzZfjxsZXCl1rdN
-         N2TWVPQ8oPOuF2rY5CDX766wdf3hF970igQD31DSN/aHOwdqIbvLSp1xWBrULWA/iWGf
-         yxAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709753330; x=1710358130;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=m9++UoKpeeQiFQPK2S6XtFoDKlxqW5vdVso25F8fqUo=;
-        b=Hu5nKv3esonOj2Rjr1AejV8R5t06WhzHunA2a7D9KsBpINUq56MvFy17bKpZRH39hn
-         GAhTo8Xjmpj5lKty+QARWblwl19oBskEboZrvfTg754h/zdtAWxKGza+gm6G2F3dbC+i
-         RDMxR6pL8Kc+wO0LkN8DxmMfzuTw0T/Q/sBAduAq1fIRgA3Ft4Ikequ3bviDxdpG3faP
-         UfZ5wv1oANsA13dVGsu5AryUoKtE11THHWDX+9A3Mw8SuI3ZEZixF2A3Fjfa8IbMhdhd
-         l/MU8EKt1ef1PQXIfILoNb/VliloU67R7VoMiza7tOd7Xd/j0IBfffLNGbNpUW8JgAgd
-         Ykeg==
-X-Forwarded-Encrypted: i=1; AJvYcCXuu8lHqW6/aIibkpP8W9vqp9EvPVIrhM1Hqkd9O0/G6/ImrdNng/C5QuNKl5jL4rc2IswZjHF7EnuCJ68614+t/QjCNtTEy8vEFs3/
-X-Gm-Message-State: AOJu0YwBGHDFAvvj0ma6q8BmwixWE1xceKxRWo8qwXjOZOMRh0+sYY/N
-	ukJb93X82q8QG1WJeynq9AULn3pN1PcoBPaL1IqTEkV5S0+r2LviK63ZVZDjMg==
-X-Google-Smtp-Source: AGHT+IGakAHWNMkzUL4cVU+huFc20UjAENCfOhUHpM8bWIsR6IZeSjD2XDwSligdYZMB5iErYVB1qg==
-X-Received: by 2002:a05:6a20:3d19:b0:1a1:6ee9:336 with SMTP id y25-20020a056a203d1900b001a16ee90336mr137360pzi.15.1709753330036;
-        Wed, 06 Mar 2024 11:28:50 -0800 (PST)
-Received: from google.com ([2620:15c:2c5:13:9a91:c17:53d9:d156])
-        by smtp.gmail.com with ESMTPSA id p41-20020a056a000a2900b006e641fee598sm3260316pfh.141.2024.03.06.11.28.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Mar 2024 11:28:49 -0800 (PST)
-Date: Wed, 6 Mar 2024 11:28:42 -0800
-From: Igor Pylypiv <ipylypiv@google.com>
-To: Niklas Cassel <cassel@kernel.org>, Damien Le Moal <dlemoal@kernel.org>,
-	Hannes Reinecke <hare@suse.de>
-Cc: Damien Le Moal <dlemoal@kernel.org>,
-	John Garry <john.g.garry@oracle.com>,
-	Jason Yan <yanaijie@huawei.com>,
-	"James E.J. Bottomley" <jejb@linux.ibm.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	Jack Wang <jinpu.wang@cloud.ionos.com>,
-	Hannes Reinecke <hare@suse.de>,
-	Xiang Chen <chenxiang66@hisilicon.com>,
-	Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
-	Bart Van Assche <bvanassche@acm.org>,
-	TJ Adams <tadamsjr@google.com>, linux-ide@vger.kernel.org,
-	linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 2/7] scsi: libsas: Define NCQ Priority sysfs
- attributes for SATA devices
-Message-ID: <ZejD6mYBhYFQ5Xq8@google.com>
-References: <20240306012226.3398927-1-ipylypiv@google.com>
- <20240306012226.3398927-3-ipylypiv@google.com>
- <ZehLfEjfOTs2wGZe@ryzen>
+	 Content-Type:Content-Disposition:In-Reply-To; b=LaI3gR/PYGjqYealMMJNElNpIZR2dwEFH0D4ZJ+qQNAEyAkvFQ75mtt7WAv2ROc1C8qr/x1rKgdk0e3qiHi2pdtm8L4iaEeDnXEK1jK0dXkTXNcEkFeccZrEfvgnayHOxmZ00YGx0gW7nwSx2cfJJCtKa+ZucER4+lBuHVSB4cI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JpdDGX21; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE88FC433C7;
+	Wed,  6 Mar 2024 19:31:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709753463;
+	bh=dZejzDtOwNBcY1Csz/PwMQsoTNS21ghdsMm5cjM+xQ0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=JpdDGX21PfDcW40OoRhD8mgrM6fbccviuPt8URrm/zYuiz7cdKa1ikDblf2PuZK7q
+	 qz+D++q5QIATixs2NuP7oHxKi9A3ksnffg4Q0FOJAcyGeT94Go4BqURlK7WZyGLkX4
+	 BjH3HeFocLRB7grjDJ0jE6UTZoNT5BSgczHXJ5Q19jDo1KmfQyZ1I6OZ+ve8PmT8IC
+	 WUtOo3hebAiJA6SudCa2DPPQbuJwChT3v95aS596Ogl/O9ch9o7c8e+8IwBFCF+aUN
+	 iO6GmsHFGcvs/aRgeH8qw0pUU8J/pn3y95tkyJEJEKmC90kyU1ND6F6Tarf5rGJBSx
+	 ZzAmZ1H28CB4w==
+Date: Wed, 6 Mar 2024 11:31:01 -0800
+From: Josh Poimboeuf <jpoimboe@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Sam Sun <samsun1006219@gmail.com>, linux-kernel@vger.kernel.org,
+	syzkaller@googlegroups.com, xrivendell7@gmail.com, ardb@kernel.org,
+	jbaron@akamai.com, peterz@infradead.org, linux-mm@kvack.org,
+	akpm@linux-foundation.org, Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [Bug] WARNING in static_key_disable_cpuslocked
+Message-ID: <20240306193101.s2g33o4viqi2azf3@treble>
+References: <CAEkJfYNNZftjpYBpnH4tEnm82orKtQ6SQn9i3sg7YNO-Df3tSQ@mail.gmail.com>
+ <20240306105420.6a6bea2c@gandalf.local.home>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZehLfEjfOTs2wGZe@ryzen>
+In-Reply-To: <20240306105420.6a6bea2c@gandalf.local.home>
 
-On Wed, Mar 06, 2024 at 11:54:52AM +0100, Niklas Cassel wrote:
-> On Tue, Mar 05, 2024 at 05:22:21PM -0800, Igor Pylypiv wrote:
-> > Libata sysfs attributes cannot be used for libsas managed SATA devices
-> > because the ata_port location is different for libsas.
-> > 
-> > Defined sysfs attributes (visible for SATA devices only):
-> > - /sys/block/sda/device/ncq_prio_enable
-> > - /sys/block/sda/device/ncq_prio_supported
-> > 
-> > The newly defined attributes will pass the correct ata_port to libata
-> > helper functions.
-> > 
-> > Reviewed-by: John Garry <john.g.garry@oracle.com>
-> > Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
-> > Reviewed-by: Jason Yan <yanaijie@huawei.com>
-> > Signed-off-by: Igor Pylypiv <ipylypiv@google.com>
-> > ---
-> >  drivers/scsi/libsas/sas_ata.c | 94 +++++++++++++++++++++++++++++++++++
-> >  include/scsi/sas_ata.h        |  6 +++
-> >  2 files changed, 100 insertions(+)
-> > 
-> > diff --git a/drivers/scsi/libsas/sas_ata.c b/drivers/scsi/libsas/sas_ata.c
-> > index 12e2653846e3..04b0bd9a4e01 100644
-> > --- a/drivers/scsi/libsas/sas_ata.c
-> > +++ b/drivers/scsi/libsas/sas_ata.c
-> > @@ -964,3 +964,97 @@ int sas_execute_ata_cmd(struct domain_device *device, u8 *fis, int force_phy_id)
-> >  			       force_phy_id, &tmf_task);
-> >  }
-> >  EXPORT_SYMBOL_GPL(sas_execute_ata_cmd);
-> > +
-> > +static ssize_t sas_ncq_prio_supported_show(struct device *device,
-> > +					   struct device_attribute *attr,
-> > +					   char *buf)
-> > +{
-> > +	struct scsi_device *sdev = to_scsi_device(device);
-> > +	struct domain_device *ddev = sdev_to_domain_dev(sdev);
-> > +	bool supported;
-> > +	int rc;
-> > +
-> > +	/* This attribute shall be visible for SATA devices only */
-> > +	if (WARN_ON_ONCE(!dev_is_sata(ddev)))
-> > +		return -EINVAL;
-> 
-> Like Hannes commented, I don't believe this is needed.
-> 
+On Wed, Mar 06, 2024 at 10:54:20AM -0500, Steven Rostedt wrote:
+> Now I guess the question is, why is something trying to disable something
+> that is not enabled? Is the above scenario OK? Or should the users of
+> static_key also prevent this?
 
-The intention for the check is to serve as a fail-safe in case 'is_visible()'
-callback gets incorrectly modified and stops hiding the sysfs attributes
-for non-SATA devices.
+Apparently that's an allowed scenario, as the jump label code seems to
+be actively trying to support it.  Basically the last one "wins".
 
-Just want to clarify should I remove the WARN_ON_ONCE and keep the fail-safe
-check or should I get rid of the check completely and trust 'is_visible()'
-to always hide the sysfs attributes for non-SATA devices? 
+See for example:
 
-> 
-> > +
-> > +	rc = ata_ncq_prio_supported(ddev->sata_dev.ap, sdev, &supported);
-> > +	if (rc)
-> > +		return rc;
-> > +
-> > +	return sysfs_emit(buf, "%d\n", supported);
-> > +}
-> > +
-> 
-> While this is a bit different depending on file, the most common way is to
-> have no blank link before the DEVICE_ATTR().
->
+  1dbb6704de91 ("jump_label: Fix concurrent static_key_enable/disable()")
 
-In "[PATCH 1/3] ata: libata-sata: Factor out NCQ Priority configuration helpers"
-Damien asked to keep the blank link before the DEVICE_ATTR() in libata-sata.c.
+Also the purpose of the first atomic_read() is to do a quick test before
+grabbing the jump lock.  So instead of grabbing the jump lock earlier,
+it should actually do the first test atomically:
 
-Non-prio sysfs attributes in libata-sata.c don't have blank lines
-before DEVICE_ATTR() so I'm more inclined to remove the lines.
-
-I'm fine with either of ways, just want to get a consensus and make it 
-consistent for both libata-sata.c and sas_ata.c.
+diff --git a/kernel/jump_label.c b/kernel/jump_label.c
+index d9c822bbffb8..f29c47930d46 100644
+--- a/kernel/jump_label.c
++++ b/kernel/jump_label.c
+@@ -191,11 +191,14 @@ EXPORT_SYMBOL_GPL(static_key_slow_inc);
  
-> 
-> > +DEVICE_ATTR(ncq_prio_supported, S_IRUGO, sas_ncq_prio_supported_show, NULL);
-> > +
-> > +static ssize_t sas_ncq_prio_enable_show(struct device *device,
-> > +					struct device_attribute *attr,
-> > +					char *buf)
-> > +{
-> > +	struct scsi_device *sdev = to_scsi_device(device);
-> > +	struct domain_device *ddev = sdev_to_domain_dev(sdev);
-> > +	bool enabled;
-> > +	int rc;
-> > +
-> > +	/* This attribute shall be visible for SATA devices only */
-> > +	if (WARN_ON_ONCE(!dev_is_sata(ddev)))
-> > +		return -EINVAL;
-> > +
-> > +	rc = ata_ncq_prio_enabled(ddev->sata_dev.ap, sdev, &enabled);
-> > +	if (rc)
-> > +		return rc;
-> > +
-> > +	return sysfs_emit(buf, "%d\n", enabled);
-> > +}
-> > +
-> > +static ssize_t sas_ncq_prio_enable_store(struct device *device,
-> > +					 struct device_attribute *attr,
-> > +					 const char *buf, size_t len)
-> > +{
-> > +	struct scsi_device *sdev = to_scsi_device(device);
-> > +	struct domain_device *ddev = sdev_to_domain_dev(sdev);
-> > +	bool enable;
-> > +	int rc;
-> > +
-> > +	/* This attribute shall be visible for SATA devices only */
-> > +	if (WARN_ON_ONCE(!dev_is_sata(ddev)))
-> > +		return -EINVAL;
-> > +
-> > +	rc = kstrtobool(buf, &enable);
-> > +	if (rc)
-> > +		return rc;
-> > +
-> > +	rc = ata_ncq_prio_enable(ddev->sata_dev.ap, sdev, enable);
-> > +	if (rc)
-> > +		return rc;
-> > +
-> > +	return len;
-> > +}
-> > +
-> > +DEVICE_ATTR(ncq_prio_enable, S_IRUGO | S_IWUSR,
-> > +	    sas_ncq_prio_enable_show, sas_ncq_prio_enable_store);
-> > +
-> > +static struct attribute *sas_ata_sdev_attrs[] = {
-> > +	&dev_attr_ncq_prio_supported.attr,
-> > +	&dev_attr_ncq_prio_enable.attr,
-> > +	NULL
-> > +};
-> > +
-> > +static umode_t sas_ata_attr_is_visible(struct kobject *kobj,
-> > +				       struct attribute *attr, int i)
-> > +{
-> > +	struct device *dev = kobj_to_dev(kobj);
-> > +	struct scsi_device *sdev = to_scsi_device(dev);
-> > +	struct domain_device *ddev = sdev_to_domain_dev(sdev);
-> > +
-> > +	if (!dev_is_sata(ddev))
-> > +		return 0;
-> > +
-> > +	return attr->mode;
-> > +}
-> > +
-> > +const struct attribute_group sas_ata_sdev_attr_group = {
-> > +	.attrs = sas_ata_sdev_attrs,
-> > +	.is_visible = sas_ata_attr_is_visible,
-> > +};
-> > +EXPORT_SYMBOL_GPL(sas_ata_sdev_attr_group);
-> > diff --git a/include/scsi/sas_ata.h b/include/scsi/sas_ata.h
-> > index 2f8c719840a6..92e27e7bf088 100644
-> > --- a/include/scsi/sas_ata.h
-> > +++ b/include/scsi/sas_ata.h
-> > @@ -39,6 +39,9 @@ int smp_ata_check_ready_type(struct ata_link *link);
-> >  int sas_discover_sata(struct domain_device *dev);
-> >  int sas_ata_add_dev(struct domain_device *parent, struct ex_phy *phy,
-> >  		    struct domain_device *child, int phy_id);
-> > +
-> > +extern const struct attribute_group sas_ata_sdev_attr_group;
-> > +
-> >  #else
-> >  
-> >  static inline void sas_ata_disabled_notice(void)
-> > @@ -123,6 +126,9 @@ static inline int sas_ata_add_dev(struct domain_device *parent, struct ex_phy *p
-> >  	sas_ata_disabled_notice();
-> >  	return -ENODEV;
-> >  }
-> > +
-> > +#define sas_ata_sdev_attr_group ((struct attribute_group) {})
-> > +
-> >  #endif
-> >  
-> >  #endif /* _SAS_ATA_H_ */
-> > -- 
-> > 2.44.0.278.ge034bb2e1d-goog
-> > 
+ void static_key_enable_cpuslocked(struct static_key *key)
+ {
++	int tmp;
++
+ 	STATIC_KEY_CHECK_USE(key);
+ 	lockdep_assert_cpus_held();
+ 
+-	if (atomic_read(&key->enabled) > 0) {
+-		WARN_ON_ONCE(atomic_read(&key->enabled) != 1);
++	tmp = atomic_read(&key->enabled);
++	if (tmp != 0) {
++		WARN_ON_ONCE(tmp != 1);
+ 		return;
+ 	}
+ 
+@@ -222,11 +225,14 @@ EXPORT_SYMBOL_GPL(static_key_enable);
+ 
+ void static_key_disable_cpuslocked(struct static_key *key)
+ {
++	int tmp;
++
+ 	STATIC_KEY_CHECK_USE(key);
+ 	lockdep_assert_cpus_held();
+ 
+-	if (atomic_read(&key->enabled) != 1) {
+-		WARN_ON_ONCE(atomic_read(&key->enabled) != 0);
++	tmp = atomic_read(&key->enabled);
++	if (tmp != 1) {
++		WARN_ON_ONCE(tmp != 0);
+ 		return;
+ 	}
+ 
 
