@@ -1,112 +1,146 @@
-Return-Path: <linux-kernel+bounces-93462-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93461-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF026873031
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:07:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00BCD873030
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:06:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F0F891C22A47
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 08:07:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AC292287E0F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 08:06:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61AF25D492;
-	Wed,  6 Mar 2024 08:06:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 444D05C8F9;
+	Wed,  6 Mar 2024 08:06:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BK0GBPG7"
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="uMaM97xM";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="uMaM97xM"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DE4C5D460
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 08:06:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C51DF5CDDC
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 08:06:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709712409; cv=none; b=P1KD0ynkhaAXxorFK5C4D82EHfTkhV5As6rOQvE4nwE2XQ25JJ22nk8d/7B+t24DnDi8OBfIFB5BETmThOxQMugWf7IFeIaFQz5BLqPUoElEf+g0+ycQU0yZe3K8nUYK5rMX3W19WsZwA5TicK1f3PMHrkKURoV1YPF40HhLk50=
+	t=1709712406; cv=none; b=Y8i/UkXPj9zHr3AkO5lrHXFJSlXHXy0+eNVAJrNo1wQE06Zb1MddpU5LV5J8xjNRMzoxGid88pKUcoCxKoAh0+xfexDcbbc5FhbL/cS/to6P5GcT24BtzQWhVCb2ZVgRTQsiiB5v561VqoE8pnxbeHG5C05ogSLG9KOVPoQw+q8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709712409; c=relaxed/simple;
-	bh=C3Ztksq1l7A04RRMglZnwFlXOXmS/C199y+UaIehcFU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kiXq/qPm3lxGnjVxFhhG5Td/C4F5/0ZThGAM5kyfrWQVHRsOzhjkVIOsG99anLWljNuGmtXfflear0fu9cV1kM9H1YWpcDjN7jrvOut6rhrpeEO0K1jMjdqoq0V/XByTaTDkxgGbmbpsxiRd9qnPwDAD2xSo/WN0WcG6BGAyN14=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=BK0GBPG7; arc=none smtp.client-ip=209.85.128.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-60821136c5aso47830587b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 00:06:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709712407; x=1710317207; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=C3Ztksq1l7A04RRMglZnwFlXOXmS/C199y+UaIehcFU=;
-        b=BK0GBPG7OKWL/gD8vUSphQZygf4GLgV2PXxaKfknezU9NNkMjJO72bXETo9MVuaxpO
-         gwPvHIohexDdtpE4r8ICpjsUWlnP75Oez7gdNhtg6cWnGeGUoV2gfOiuCjUOgJs0zHnB
-         5rfYldlgq97HIalIjn89NdWBj0o2/8qFgjF2oVuroq9qx3ReJ1lD4lPZkGcHYPyetv+D
-         L6CzIGSsJZq18SryxieYyt4l8ACelMGCnk1Jt3a2/uiZTKZAWr/n2w/UQfVBhnAJLwVY
-         1xCEOwVcmo8CBiQjtrY+K/cngtdbTnBSxzMl4d/SPPRNMU0ouV4MTdmoE/WGFoFHLV25
-         ezkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709712407; x=1710317207;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=C3Ztksq1l7A04RRMglZnwFlXOXmS/C199y+UaIehcFU=;
-        b=N2/jcpuu9OhNgyymCtwe3nO+hLpmW5+jucMy7UZKWCtwWtpROx/NnF+EU3SrCl1N7v
-         AWXmFKLZzVunja0AykamlrBNkmwHVHo81ek0ZhQ+ZzOhoJ4E6t+Uj3ucnrKHGD0ZqEi0
-         EfnEROyWZbicMm9e6XsNoyXvaMhcFIyiDCCllLskK7tYLfc1DHdpi4xWTnd1ZDMM/f2w
-         RzgsIEHd3oVBqfgttLWtLMPiwpOHmKCQDO2eDDwd+9vyrV1idOwdTWaSPAkLgtb0l8ph
-         e8NsvI8OgikrGLSKsfsg6sH0JOTPIKlQDeRLEcVXcc6AJVPugqyLLl2usBaxCl6+usiJ
-         AiXA==
-X-Forwarded-Encrypted: i=1; AJvYcCUc1XOJ2vfV3BrnrPwuDvdezqiW/lM6C8RR5G/K6OY9s4yowr1YKZwS3gBnopGzINYrTLGWd2uvN6vpe+ULcY0Yff5Aml6n4g+UalP4
-X-Gm-Message-State: AOJu0YwMd+xslv4u1oeZDJ4YhiffL8X8ubzcIsbuOz08EtnNtBmk+f17
-	Nh4w+JzH+tCy9eTIZzCbDJa/Hec8pbVbsDDBwLE+mKgzbec8V3KnFwH3gJO3PlfKaYTNTnXkFHr
-	Z9/2DWAP3hXe07f+N3O4Yd4u/2IZVkUyV4V7JwA==
-X-Google-Smtp-Source: AGHT+IHRtBIwm6wvaDL3JJRC+EtkHRhtg1Rh8XMi8YL4NhEOPx0wbM1EIpmo39CJmntE7XTva7TagCxU7j3w4z2FMIA=
-X-Received: by 2002:a25:361e:0:b0:dc6:d093:8622 with SMTP id
- d30-20020a25361e000000b00dc6d0938622mr12231100yba.15.1709712407155; Wed, 06
- Mar 2024 00:06:47 -0800 (PST)
+	s=arc-20240116; t=1709712406; c=relaxed/simple;
+	bh=MqQXZ9imZCuItatNwAjp9sOkRK9vVNm4gr2kYvZTvn0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HLfzjgM95P2wWIjeqCeLJKX5Pi2zqp1ZnFYj6whSYVVhrUVok0svgwxLvK0r81N/z5wCSjdn2B8I9ZPziUaGableYkdgnMTX+fa9V9UJD1QFKkOBOr2GWBdJX0CUfFem/TWmfTGJVyMAuueN5dPbsQlqE2rpncKpaJcG/v2/cKU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=uMaM97xM; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=uMaM97xM; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 09AC46732A;
+	Wed,  6 Mar 2024 08:06:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1709712403; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xJyqNxLf+jZXOXYD+8fg3XBfC72ZeiyXKr8oxT9zAQk=;
+	b=uMaM97xMyVH5AQI463diHs9G6GIX6zVf53LthBxh2ifNA6xCxBpYaEii2NAFISC/QB2m5X
+	/6pKPiTZZHa3fC9DgHnriuOg750S82tmsrU/M9R/PeP3ZeIGdHo05QLx+VlVO/ewVsCe58
+	C9stWHUMpgAqY5UHNTNuQiJZZXNYqD8=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1709712403; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xJyqNxLf+jZXOXYD+8fg3XBfC72ZeiyXKr8oxT9zAQk=;
+	b=uMaM97xMyVH5AQI463diHs9G6GIX6zVf53LthBxh2ifNA6xCxBpYaEii2NAFISC/QB2m5X
+	/6pKPiTZZHa3fC9DgHnriuOg750S82tmsrU/M9R/PeP3ZeIGdHo05QLx+VlVO/ewVsCe58
+	C9stWHUMpgAqY5UHNTNuQiJZZXNYqD8=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E72AB13AAD;
+	Wed,  6 Mar 2024 08:06:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id MI9qNRIk6GUqZAAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Wed, 06 Mar 2024 08:06:42 +0000
+Date: Wed, 6 Mar 2024 09:06:42 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: cve@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: CVE-2021-47090: mm/hwpoison: clear MF_COUNT_INCREASED before
+ retrying get_any_page()
+Message-ID: <ZegkEqtGcC1p_7Xb@tiehlicka>
+References: <2024030413-CVE-2021-47090-a429@gregkh>
+ <ZedoMIyhF8d_XLIV@tiehlicka>
+ <2024030541-unhappily-staff-8662@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240118-ep93xx-v7-0-d953846ae771@maquefel.me> <20240118-ep93xx-v7-3-d953846ae771@maquefel.me>
-In-Reply-To: <20240118-ep93xx-v7-3-d953846ae771@maquefel.me>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Wed, 6 Mar 2024 09:06:36 +0100
-Message-ID: <CACRpkdYKeQYvDma0NvrryETZdC5Tp__XNqFtw6TULOK2RSEPyg@mail.gmail.com>
-Subject: Re: [PATCH v7 03/39] ARM: ep93xx: add regmap aux_dev
-To: nikita.shubin@maquefel.me
-Cc: =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
-	Thierry Reding <thierry.reding@gmail.com>, Damien Le Moal <dlemoal@kernel.org>, 
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, linux-kernel@vger.kernel.org, 
-	Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2024030541-unhappily-staff-8662@gregkh>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [-2.60 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[3];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -2.60
 
-On Thu, Jan 18, 2024 at 9:23=E2=80=AFAM Nikita Shubin via B4 Relay
-<devnull+nikita.shubin.maquefel.me@kernel.org> wrote:
+On Tue 05-03-24 22:20:17, Greg KH wrote:
+> On Tue, Mar 05, 2024 at 07:45:04PM +0100, Michal Hocko wrote:
+> > On Mon 04-03-24 19:11:17, Greg KH wrote:
+> > > Description
+> > > ===========
+> > > 
+> > > In the Linux kernel, the following vulnerability has been resolved:
+> > > 
+> > > mm/hwpoison: clear MF_COUNT_INCREASED before retrying get_any_page()
+> > 
+> > I would like to dispute this CVE. The interface is behind CAP_SYSADMIN
+> > and allowing access to this to any untrusted party is risking serious
+> > troubles. This is a testing only feature.
+> 
+> This fixes a weakness in the kernel, one that is allowed to crash it,
+> why isn't that a good thing to have a CVE entry for?  Are we saying that
+> all VM_BUG_ON_PAGE() instances should not be accounted for?  That's not
+> what the config option for CONFIG_DEBUG_VM says, it just says it will
+> affect performance.
 
-> From: Nikita Shubin <nikita.shubin@maquefel.me>
->
-> The following driver's should be instantiated by ep93xx syscon driver:
->
-> - reboot
-> - pinctrl
-> - clock
->
-> They all require access to DEVCFG register with a shared lock held, to
-> avoid conflict writing to swlocked parts of DEVCFG.
->
-> Provide common resources such as base, regmap and spinlock via auxiliary
-> bus framework.
->
-> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+I wouldn't personaly recommend anybody using CONFIG_DEBUG_VM=y in
+production. But I am not questioning if somebody does that. This is
+not really what I am objecting to. Hwpoisoning or soft offlining is not
+aimed for other than testing purposes. Things can go wrong during
+these oprations.
 
-This looks like a reasonable solution.
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+If you insist this still qualifies as a vulnaribility/weakness fix then
+I would propose a new category pig-with-a-lipstick-CVE.
 
-Yours,
-Linus Walleij
+> Also /sys/devices/system/memory/soft_offline_page doesn't say "can crash
+> the system", so it should work properly, even if an admin uses it, it
+> shouldn't shut the box down.
+
+I agree that Documentation/ABI/testing/sysfs-memory-page-offline would
+benefit from an update. Documentation/admin-guide/mm/memory-hotplug.rst
+is explicit about this being a testing feature.
+-- 
+Michal Hocko
+SUSE Labs
 
