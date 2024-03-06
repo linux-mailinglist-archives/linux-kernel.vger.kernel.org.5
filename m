@@ -1,122 +1,123 @@
-Return-Path: <linux-kernel+bounces-94742-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94743-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7FA48744A3
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 00:44:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CDD98744A4
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 00:44:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6DBD41F29664
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 23:44:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8A321F29AA3
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 23:44:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72EE2200D1;
-	Wed,  6 Mar 2024 23:42:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C29A52577C;
+	Wed,  6 Mar 2024 23:42:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="FmSbYH6f"
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hZa7c3ch"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46E0F1D545
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 23:42:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D8121D539
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 23:42:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709768572; cv=none; b=YJhk4XGEQxeEfEcxy6Sv1aFq0hdWv1CYhyLQPdqRbdMPry+KMRUZKoPJ2AxmUi6XBow4wkbw27k1TS30w89oZbs0ad3kZMQLReIrdN4DnGJUovehTiUFYD8Zk/N6spb6vojN9AtUM5GU0cYRk/0/nBaifiMV4fkkC9RwSXn9J20=
+	t=1709768576; cv=none; b=oT9njD8KkdxMurOwDziUTBhIpk5RMSc9j/RaQMOQ6Xk9YhxleCO4HivhYF8ZyvMM79sNwhdXEMeCFh8710tfAqKGACkkaqQjN0YWnyEbGwFvppburDPPVjuO8mHmgOMfD/alCVWWx9SGMfESEx3yhbY5NdJ46N8vXZyvJmgtnL4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709768572; c=relaxed/simple;
-	bh=1uAjtmVUg8TOo5XCruda8HusbcghSINaRVyMFyYA2J8=;
+	s=arc-20240116; t=1709768576; c=relaxed/simple;
+	bh=UcIj1NgElwaYVIBc4qGuz5BB8JG1G2ZXHw9GrTQfZqQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AnNGUnp8xB4+b2SWME2jrU6V6otJ9+Hbc462zQpHPd6+TbhBySTmVuc4qszyVwPZssC8KyBJHNLjQQNsJu6M85C8u1fMSDDKCow/TLlLdCsGxtyasgnqiTN5J7dozZlZv2eBxVoDV8rpaFUynoHK+YXGwtPlp2DLpRh7UPj4Ukc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=FmSbYH6f; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1dcad814986so2582515ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 15:42:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709768570; x=1710373370; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KXRCoET8aNW/39aRLX1D1ZOWhLKJAW+cDfFuNbY9XEo=;
-        b=FmSbYH6fycrBViC7DCGpYBQTBNKeiLm5BFgumllN9wfDs9gtX8DjA+H2k+7xsw3uZh
-         dVDfu9e02ZMkLJebbKwQGddns31OuD4WcmFXqqLYzox4ntB6UaHyv9djld8SEyOQScJr
-         /jvP+RRIS4GVngcdsgUr5JwcyrGtNEeWI8B9M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709768570; x=1710373370;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KXRCoET8aNW/39aRLX1D1ZOWhLKJAW+cDfFuNbY9XEo=;
-        b=IBTcqyetFdkNL5gNF/2mG38nVC0ZshAuHX6Haw0/BJyyy64xLEkf0EpRl4XI3ix7L5
-         yqdZ8NYM16M4ow7aja972+Po7eRj43HIGfvv81eVq4+pMZd+iIAiyIvP++inH1NXsoam
-         83flwT8OifJZwsE5V+Uqa5+ugw0TCUCEEg/Xbu/E76xapH4uhZBTa2AEADQg9eTknQDg
-         EiL+GcEx3WfkrYCB3I1MJX1EEFkAA70DaKgpnI+8RJNAtQaR7Ie04Z/fSrah2V9TxptS
-         cJFv7UmzsTWFEs6ZK2JbrQw5mD/srOU58uLSRQn3cntsBWK/lAtlYfxLZLpWAN86KfAl
-         uPhg==
-X-Forwarded-Encrypted: i=1; AJvYcCXixChICVrfQomu74Bo4cjWWM/BTJX8fRL1ZfdQP7XenHwHh5zR4o1Gs3TyerL3SnrzhZlmfGiTdgBasFhIrrHJ6SLv2yQgE+oPZ6cE
-X-Gm-Message-State: AOJu0YwerhrW1aY2Xz/g31HOc1DVDU0PNLwJ2KROKXoTdEFqiifC9zKg
-	NN9us7Q5wSnSbeJDfj86t0Xs9PxZqsTLmXhQjNIkupj0zLtIAQKWhG1Hq7D3wA==
-X-Google-Smtp-Source: AGHT+IHADupVs6FRdhDggj0sTct4wDHOWb2w2b9Auv5+VfZEeMw6HDOu57s1NGT+WKYASYmgqSVHgw==
-X-Received: by 2002:a17:903:11c3:b0:1dc:d8de:5664 with SMTP id q3-20020a17090311c300b001dcd8de5664mr7564197plh.33.1709768570588;
-        Wed, 06 Mar 2024 15:42:50 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id u3-20020a17090341c300b001dd0d090954sm7330904ple.269.2024.03.06.15.42.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Mar 2024 15:42:49 -0800 (PST)
-Date: Wed, 6 Mar 2024 15:42:49 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Breno Leitao <leitao@debian.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	netdev@vger.kernel.org, linux-hardening@vger.kernel.org,
-	Simon Horman <horms@kernel.org>, Jiri Pirko <jiri@resnulli.us>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Coco Li <lixiaoyan@google.com>,
-	Amritha Nambiar <amritha.nambiar@intel.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] netdev: Use flexible array for trailing private bytes
-Message-ID: <202403061540.A8462E9@keescook>
-References: <20240229213018.work.556-kees@kernel.org>
- <20240229225910.79e224cf@kernel.org>
- <ZehsoPb/WZzUcFHa@gmail.com>
- <20240306070658.4216fdf2@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=RQZt7AyhOAfh2UglM1ld/oGeskSmYYqLjBunJG1nC7ECC7KEoo1EKRh1xpqMgTdXE66tfGqGpniBx84F3ahpHdQLIwMvgr41a4EvYxdC+WC+gNQ7qiGOfF9S+uZaL6iJewLyxKio5w4Zj1KtL0WkY0eBbzXuybmb+B+nWsvEBxs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hZa7c3ch; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21698C433C7;
+	Wed,  6 Mar 2024 23:42:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709768575;
+	bh=UcIj1NgElwaYVIBc4qGuz5BB8JG1G2ZXHw9GrTQfZqQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=hZa7c3ch/j0MhN56RFaxAHFPOqcRbGkZoHG07cI7OhP4hLzyBnf635aWoyWUPODmo
+	 HnnaFhUtb6usrMMnZhGe5UJRnNjr4JOipoBFX/Jl3B5inxP4UbGmSt4zZvbFca/J4i
+	 yjyGubgFueVxZCPGroXAc30i8bSzEXvRM2ztYqwjyA3v/Ne7MPn4rXprSEX3uNbNGx
+	 EUl2rs5vsxVi+Ph8kvyg7jQBlrDnD0fVJJJYyUxd42aKR1NVDxL567ibl4hZgpePfz
+	 hEeQzRKN9Tm1njmuJG5khh4umJFVUNejcjEP8onmANHCpahcfN7QkJC6WuVwBmaivN
+	 4OZ7HDdPyGdqw==
+Date: Wed, 6 Mar 2024 15:42:53 -0800
+From: Josh Poimboeuf <jpoimboe@kernel.org>
+To: Jason Baron <jbaron@akamai.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Sam Sun <samsun1006219@gmail.com>,
+	linux-kernel@vger.kernel.org, syzkaller@googlegroups.com,
+	xrivendell7@gmail.com, ardb@kernel.org, peterz@infradead.org,
+	linux-mm@kvack.org, akpm@linux-foundation.org,
+	Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [Bug] WARNING in static_key_disable_cpuslocked
+Message-ID: <20240306234253.zporv6cypoc7yihs@treble>
+References: <CAEkJfYNNZftjpYBpnH4tEnm82orKtQ6SQn9i3sg7YNO-Df3tSQ@mail.gmail.com>
+ <20240306105420.6a6bea2c@gandalf.local.home>
+ <20240306193101.s2g33o4viqi2azf3@treble>
+ <854e523c-c467-47f6-b977-933cbaadeb62@akamai.com>
+ <20240306221650.sw3lha7kca2quv63@treble>
+ <8f586bd2-c436-4334-92af-762a284e1101@akamai.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240306070658.4216fdf2@kernel.org>
+In-Reply-To: <8f586bd2-c436-4334-92af-762a284e1101@akamai.com>
 
-On Wed, Mar 06, 2024 at 07:06:58AM -0800, Jakub Kicinski wrote:
-> On Wed, 6 Mar 2024 05:16:16 -0800 Breno Leitao wrote:
-> > I've been looking at some of these embedders as reported by Kees[1], and
-> > most of them are for dummy interfaces. I.e, they are basically used for
-> > schedule NAPI poll.
-> > 
-> > From that list[1], most of the driver matches with:
-> > 
-> > 	# git grep init_dummy_netdev
-> > 
-> > That said, do you think it is still worth cleaning up embedders for
-> > dummy net_devices?
-> > 
-> > [1] https://lore.kernel.org/all/202402281554.C1CEEF744@keescook/
+On Wed, Mar 06, 2024 at 05:40:11PM -0500, Jason Baron wrote:
 > 
-> Yes, I think so.
-> Kees, did you plan to send a v2? Otherwise I can put the cleanup on our
-> "public ToDo" list :)
+> 
+> On 3/6/24 5:16 PM, Josh Poimboeuf wrote:
+> > On Wed, Mar 06, 2024 at 03:12:07PM -0500, Jason Baron wrote:
+> > > 
+> > > 
+> > > On 3/6/24 2:31 PM, Josh Poimboeuf wrote:
+> > > > On Wed, Mar 06, 2024 at 10:54:20AM -0500, Steven Rostedt wrote:
+> > > > > Now I guess the question is, why is something trying to disable something
+> > > > > that is not enabled? Is the above scenario OK? Or should the users of
+> > > > > static_key also prevent this?
+> > > > 
+> > > > Apparently that's an allowed scenario, as the jump label code seems to
+> > > > be actively trying to support it.  Basically the last one "wins".
+> > > > 
+> > > > See for example:
+> > > > 
+> > > >     1dbb6704de91 ("jump_label: Fix concurrent static_key_enable/disable()")
+> > > > 
+> > > > Also the purpose of the first atomic_read() is to do a quick test before
+> > > > grabbing the jump lock.  So instead of grabbing the jump lock earlier,
+> > > > it should actually do the first test atomically:
+> > > 
+> > > Makes sense but the enable path can also set key->enabled to -1.
+> > 
+> > Ah, this code is really subtle :-/
+> > 
+> > > So I think a concurrent disable could then see the -1 in tmp and still
+> > > trigger the WARN.
+> > 
+> > I think this shouldn't be possible, for the same reason that
+> > static_key_slow_try_dec() warns on -1:  key->enabled can only be -1
+> > during the first enable.  And disable should never be called before
+> > then.
+> 
+> hmm, right but I think in this case the reproducer is writing to a sysfs
+> file to enable/disable randomly so i'm not sure if there is anything that
+> would enforce that ordering. I guess you could try the reproducer, I haven't
+> really looked at it in any detail.
+> 
+> The code in question here is in mm/vmscan.c which actually already takes the
+> local 'state_mutex' for some cases. So that could be extended I think easily
+> to avoid this warning.
 
-I found the requested collateral changes that popped out of v1 to be
-rather a bit much for me to tackle right now, so I think adding to the
-TODO list is probably best. :)
+Hm, right... For now I'll just continue to allow "disable before enable"
+(or "double disable") since it may be harmless and I don't want to
+introduce any unnecessary constraints, unless we manage to convince
+ourselves that it's the right thing to do.
 
--Kees
+I'll work up a patch.
 
 -- 
-Kees Cook
+Josh
 
