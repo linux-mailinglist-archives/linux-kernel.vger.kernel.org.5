@@ -1,167 +1,119 @@
-Return-Path: <linux-kernel+bounces-93451-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93449-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03918873008
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 08:56:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7041873004
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 08:55:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 30BDB1C22918
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 07:56:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 616E228955F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 07:55:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A47D85CDF2;
-	Wed,  6 Mar 2024 07:56:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F85A5CDF5;
+	Wed,  6 Mar 2024 07:55:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="HEM4xhsp"
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2071.outbound.protection.outlook.com [40.107.20.71])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="RZMYyu/m"
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D51005C60F;
-	Wed,  6 Mar 2024 07:56:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.20.71
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709711776; cv=fail; b=AiGSnRRRE0ujaVfQx30skQ6vxouc0v6NHs07iohHwOfj3tirnLI7A3RRAPK9TpJWaxt6/7at7DxnldiYhPBY6g0H4TR66YeI3LhtUeD4Abx0p0ss5RhTBofcROSudVDMWM2rTT11zW4OBaYJw3DAv23Yi79uNJRoxgF6EX1KqRY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709711776; c=relaxed/simple;
-	bh=MEcCxXykT3WpTFkSYYKMFyG1D1HdVIEMVAxg7nJGFkQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=T4jZI27+ruvvNjemVl2G/riVCxBc1Iea9Fq60I2/p4DMCrJGgQYVzrJwhgXrN0945XfW1sVF9p8af2n/71T9ulnVABm4WyzfxK3CQmpks3AiQsSxv21E3CLeYPr27j5uWvrulrgbUxmQclM7nvnJsiS2DqxkPpsMsTQJ1OkRX68=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=HEM4xhsp; arc=fail smtp.client-ip=40.107.20.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=N2UEUQydOrMinr8GovqQW/caR7GWL4bTHezQFrfHOrkpI1aP7/r/B66sHzqn+/Pyep5+FbnE2YBm9QG2KejiKOh0fN5ND6zU2B751kk9fcre5fYNqAWAmzgBARyTmjigQau7O/gyafVxsWmD4R63LOzevmfYkep+uiYCqA6AGCOEFU5ULZZjpMdodE0QGlAZBRe0zdXrYc2HpKVn0g4UnKpeAM+NV+qnbFrqvy27ExeKzD55YyFnmJcxHmvU8GugnZQIF11rJCXfKLCFWl0Bq3HANTHV231Dsu1bN2IjDR8QperApJscjAhoy8+tbzBatUB/iXQctv3VDANN0XRdJg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=KogfI+Bwc+F6tW2umRyYpttJgjfLzTfDgR6lxTBBDFU=;
- b=R1QzG//alN9RKZImIll2RERczET4ovc0CBG60ZMQyXIOu32/cH0EvyPI3oncQCTFd098wwEhFb3QWymtQSXGBxIbARGezHCfQLBqIldCk34yoPzd1Aa5AHJkej3k3+YkfeC/ltc1BoNzN5mpmuIzlSNKk7hjkdr1Dyb/cruIN9JMbOrEI+h3qURz9ANUCOjiKBDfFDeWSAqeY4i6MmseAl0z4+l/5RlPqLIDPwSlgeXS0HqKz3VNxbJlQHvx9YUvTXdYCyY49XqUoFt+BrWRzWwKZ7eto278bgifPWHBwA/3g+Gx+JL23q2Tl/J/zrR2yuHfuYJ/A4QzxmXtobDs4g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KogfI+Bwc+F6tW2umRyYpttJgjfLzTfDgR6lxTBBDFU=;
- b=HEM4xhspZPvzNKto4xLbah924lY1vw49i1YtT379EzDtM2edoTdsUTr7WFMkUhBUg5MqC6Q2VaGp5dn/ZK0VKwZqpJ1Vsy6UTtZnUjqZtVmpjLlofVlppTLgQgXCPtIw9pHWUGD/Ln1Yf3Xc70XsVNS8h5SNx+7/YueaBXhSIPg=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from DB9PR04MB9498.eurprd04.prod.outlook.com (2603:10a6:10:360::21)
- by DU2PR04MB9147.eurprd04.prod.outlook.com (2603:10a6:10:2f6::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.39; Wed, 6 Mar
- 2024 07:56:12 +0000
-Received: from DB9PR04MB9498.eurprd04.prod.outlook.com
- ([fe80::4bee:acb0:401a:3a01]) by DB9PR04MB9498.eurprd04.prod.outlook.com
- ([fe80::4bee:acb0:401a:3a01%7]) with mapi id 15.20.7339.035; Wed, 6 Mar 2024
- 07:56:11 +0000
-From: Chancel Liu <chancel.liu@nxp.com>
-To: shengjiu.wang@gmail.com,
-	Xiubo.Lee@gmail.com,
-	festevam@gmail.com,
-	nicoleotsuka@gmail.com,
-	lgirdwood@gmail.com,
-	broonie@kernel.org,
-	perex@perex.cz,
-	tiwai@suse.com,
-	shawnguo@kernel.org,
-	s.hauer@pengutronix.de,
-	kernel@pengutronix.de,
-	linux-imx@nxp.com,
-	alsa-devel@alsa-project.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org
-Cc: Chancel Liu <chancel.liu@nxp.com>
-Subject: [PATCH 0/4] ASoC: fsl: Support register and unregister rpmsg sound card through remoteproc
-Date: Wed,  6 Mar 2024 16:55:06 +0900
-Message-ID: <20240306075510.535963-1-chancel.liu@nxp.com>
-X-Mailer: git-send-email 2.43.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SI2PR04CA0017.apcprd04.prod.outlook.com
- (2603:1096:4:197::15) To DB9PR04MB9498.eurprd04.prod.outlook.com
- (2603:10a6:10:360::21)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C1165C60F
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 07:55:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.130
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709711714; cv=none; b=lvmsZANjXIZGpybX5IYcAnof8bzchOY4ZEJrisuS+BDWfOA+gXOCEjYg+Udjwcq/KXYUJVGU6+FobbOEeuLeh/RtpNf5KtDEEOARrd17WU4SryKPZtWbx5r8V/sZoWJrl5zSnnCRImiM0JIzGKwp4MatRbUvv36T0jZoHgfY4T0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709711714; c=relaxed/simple;
+	bh=vw1Do1mdUeSYW8XeseizCXsoA/vB1CreAqCRX8tXwoI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Mn7k81cAQFxKuEUJiZBRwXQkzptrKuI5Fz9pBa19xi5fKuV8K6khwQ1H3GeDHw/ayVTJYxLsUcVhEChtbo/Ly3AqUSpcJcT03JQJJF9QLa8nxyGz+3VlEOqMc2B2/85TZroULMx13TLgH4ivocsiRUo2zYd2ymgKcCSqqrxfE8I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=RZMYyu/m; arc=none smtp.client-ip=115.124.30.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1709711708; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=6m9vEWZGyUoYUNKNnaBD15J1Z0XArlRy+U6S81860p4=;
+	b=RZMYyu/mWJUEasutgo7FvnE/M2gGaBnUL9CI3RfDG7x6IeEMCRW5DS6cnROxadx/f0t3M3Xk1O8L0m8kDFUJ1L7fTMzzPvBRUSb0NIAK7L+BCATm+VMQiSv6zjA2X5FlVFQAt7HJJSQvp/T+0Yt+vPak1fEwHU/CqJR3sudXRrM=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R291e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0W1wff2R_1709711707;
+Received: from 30.221.146.143(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0W1wff2R_1709711707)
+          by smtp.aliyun-inc.com;
+          Wed, 06 Mar 2024 15:55:08 +0800
+Message-ID: <3db6b039-a071-4736-aaa8-fe1a7934f981@linux.alibaba.com>
+Date: Wed, 6 Mar 2024 15:55:06 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB9PR04MB9498:EE_|DU2PR04MB9147:EE_
-X-MS-Office365-Filtering-Correlation-Id: 38389de8-9272-41c9-b011-08dc3db2e384
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	gtgctc5BgGap1/+LjmqbF/7ZkmSyHzpx1pFubDmwcpuJ44zmrTBppK+mIUnEHPwCe/EKP/aunQ4sWonjcUPUgUXYXTyLWgHpjbraUuXdyy4ZdKUrbacAbpB9mmMbE4fGKUh8HRO23uwm7GwjJ8FySHn0e3YKq0cESP2EtKI6R5ivBITikiZem7EmnE+wRTtZLqxPy9j+vMX0ml7oSHE16BUAwKcDUoX2OwlkfufRfw497KvqApH/WjAY7/AbyeG3Mu7jGMNh4h1p+bGPURrbP8x/x+TvFKamc7rxHWo1RNEcjmn+VoEShE0MQ+X1fN/tKvUt1iPFnmKI0/LLXoi71X7y3QGENC8NvSFelR4fsaYOq0Emnsjs/KR/W3fIVb1WyFNLY3DniW9ArZUe1wwQMJHSZxQwAxeDelBrUwCM0rtyBFodCiPvvopEh3a8e0pH6JRsotrmF0SBrGhZ95iPYFwLdFsZdE9i4KqvseyZFuSjXxcMOraH8VrYNM1aE8AKhHHGBqXGfkjPPnA4MijjBK+EgSQbId96wO2epz74l3GjSPny9dFt0Imf0o+biAWuiLJiM5nyXXUIleJAYT2ijJWbVCWw9uDpcVw3nXbYoMAq5TyeMHO5qMZ4r1gSVEA8aJ/2LyhfCqQG3ppl8oQsy8jM+Tka4aAG1v7lDS5HIw6zXHypwi08WKPN1K1BMQMcZF0tav3sw/CIyx/LsnwP8qEfqpohNqs/cTZF51LU2V8=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB9498.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(921011)(38350700005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?38LmUDWj9toWTvdkZ0y+GK6VSKf+s/26wED4tQLO8CFG5kU1nWm8iZUtiHyQ?=
- =?us-ascii?Q?24zgZngmFxmRFv5yGYknOa2I1qRE3eR0OyQbEtilO4jhKyr31r72410NAYKt?=
- =?us-ascii?Q?+Hnf8z069H9eoCL3cfqYY1TdI/rx/d/BVYtZTuPjysAeIFobeHoOCcAAy4Ot?=
- =?us-ascii?Q?Y3iI/MZc2TQBdyuYUpM7L8oNOCh9p7DUgvrhQ9SGztjI3tZLUZuJe/Enpm1W?=
- =?us-ascii?Q?dpVOHBKo+QGwkkfvDvO6cuDyVPjTtYezjy8OgplATS+woBVtA8kNkO+HiHg9?=
- =?us-ascii?Q?jJW/n7pRztq1ifxkLzadYTuCBsHlrOZ2/Iqu2I9CN9wepZsTpO3RknbTtk5a?=
- =?us-ascii?Q?dMro5HcPxnJKHXlyYOO7EPqXj+e6aBUmkjd3faEWGRyNiCBYFEyjlkqbYiK0?=
- =?us-ascii?Q?2N6x+pHIbLkTh6Wp7Eje77zktloXTEM9BaStZvozT+VmOLN4eYvymFteoxco?=
- =?us-ascii?Q?j/Wy7/7+le6ydv/6C+4uGopG0TpI2gB4CRrlc2s8mh+Ck6cY3vt177lSndl9?=
- =?us-ascii?Q?zBgYFcNoZ94cSq8kWZS7tnemsHDyCczInHQjpDr2FgJE2F+F6FaQSJ3eDTEx?=
- =?us-ascii?Q?rssmkZcAw9vxpFPkCv6YDEIknGqlWM49yob77besRT2wVwjeNMXV2yQPvItY?=
- =?us-ascii?Q?BtBCEhCzdwneWFncSCFsTXvPq9P1EEEvyguVmm0CI815F4BbUuduoBHK91CT?=
- =?us-ascii?Q?FRNJ5bvPcaWQP2xnJZS/QePPoVthvc5FKO7pTO9W8AO9uDV7u+E24djuXM0O?=
- =?us-ascii?Q?pKQn1b213f1+7YF49b6RRz+yXKvDgXf2+qwXF2fHoZyAoDbu4/Y0DLNSdFFz?=
- =?us-ascii?Q?LheHK/b+NWytpm4CDu8U4DjW8w8DZbyr1tCo9NT0OIrr5UX8ZFcKR6u763Am?=
- =?us-ascii?Q?pNlEBa+qHv1HqQ8DsEPdIKcL/RTGMqk/h4u5eTAc99ZZMof1Zy6bob83AyGc?=
- =?us-ascii?Q?OsM990uZMXDqkqs+c6DsKsF5g1PmyjojzO+GO4Qi0MPrNm+DLCdEPL264lXH?=
- =?us-ascii?Q?CGt286nEc5nD3Abio45ax0QRWfhtb3dWZCoL9MFfIFOfn9P87yUybp2y64kk?=
- =?us-ascii?Q?LQ8k7NR0tOh5T9Mc2TjDLVWxYa/p0qrnShci+6o7500CYVhhcY13jjjbClZk?=
- =?us-ascii?Q?jeVZ5KnfQhti/RN1f1NdHAnMr3/N5cnxDvl0iAXAL5g9psGPQHiiQOyKSBNv?=
- =?us-ascii?Q?VDtPxOsg9685xdGMdRr7K3vhphyeLOOKHLh0DS1Zr7URwxenmU1gzIEWw6Aj?=
- =?us-ascii?Q?C8r4rdkhJPjtV7Mh6kheJPQgPRGS09EWicSwpQL8tao3ECwy7GtqxTzDGASs?=
- =?us-ascii?Q?mN4cLRNh0hdpqJTZBHmbCXDELnPAPkariKWrb55uZobs4Mea7AO7VVdNsb6r?=
- =?us-ascii?Q?AC3d/GAg4IBklemE3Uhji1Yx9HpZrKH8+onglrkOxnMOcsVnDta0F7Tyr/16?=
- =?us-ascii?Q?+r0XK6pfQ6Oo3u2b5FdU5A/zbd0Qqjfu69kUJQNMLlyjUrEZWIqb1lkZZ+R7?=
- =?us-ascii?Q?joMvtRTW9QAPnf2d7y7aZkLgSOKrdRA4zuHXo5FdRj8JI6mUHi+hDDf9355s?=
- =?us-ascii?Q?6Jc2h74WTZE5T1gtb5KT943WWtj28eJYsHjNJ2wN?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 38389de8-9272-41c9-b011-08dc3db2e384
-X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB9498.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Mar 2024 07:56:11.3433
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ZxtT8zOpNWqmqvS53eLPPkMFz9gZmLQtijnrR/7lF4q8ajUCk5Y+ibW808WV1+rHFN4ysJFNyzQE4kCI5zkElA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB9147
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] erofs: apply proper VMA alignment for memory mapped files
+ on THP
+Content-Language: en-US
+To: Gao Xiang <hsiangkao@linux.alibaba.com>, linux-erofs@lists.ozlabs.org
+Cc: LKML <linux-kernel@vger.kernel.org>
+References: <20240306053138.2240206-1-hsiangkao@linux.alibaba.com>
+ <30300dc7-3063-4e09-bb21-22951ec23a38@linux.alibaba.com>
+From: Jingbo Xu <jefflexu@linux.alibaba.com>
+In-Reply-To: <30300dc7-3063-4e09-bb21-22951ec23a38@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-	echo /lib/firmware/fw.elf > /sys/class/remoteproc/remoteproc0/firmware
-(A)	echo start > /sys/class/remoteproc/remoteproc0/state
-(B)	echo stop > /sys/class/remoteproc/remoteproc0/state
 
-The rpmsg sound card is registered in (A) and unregistered in (B).
-After "start", imx-audio-rpmsg registers devices for ASoC platform driver
-and machine driver. Then sound card is registered. After "stop",
-imx-audio-rpmsg unregisters devices for ASoC platform driver and machine
-driver. Then sound card is unregistered.
 
-Chancel Liu (4):
-  ASoC: fsl: imx_pcm_rpmsg: Register component with rpmsg channel name
-  ASoC: fsl: imx-audio-rpmsg: Register device with rpmsg channel name
-  ASoC: fsl: Let imx-audio-rpmsg register platform device for card
-  ASoC: fsl: imx-rpmsg: Update to correct DT node
+On 3/6/24 2:51 PM, Gao Xiang wrote:
+> 
+> 
+> On 2024/3/6 13:31, Gao Xiang wrote:
+>> There are mainly two reasons that thp_get_unmapped_area() should be
+>> used for EROFS as other filesystems:
+>>
+>>   - It's needed to enable PMD mappings as a FSDAX filesystem, see
+>>     commit 74d2fad1334d ("thp, dax: add thp_get_unmapped_area for pmd
+>>     mappings");
+>>
+>>   - It's useful together with CONFIG_READ_ONLY_THP_FOR_FS which enables
+>>     THPs for read-only mmapped files (e.g. shared libraries) even without
+>>     FSDAX.  See commit 1854bc6e2420 ("mm/readahead: Align file mappings
+>>     for non-DAX").
+> 
+> Refine this part as
+> 
+>  - It's useful together with large folios and CONFIG_READ_ONLY_THP_FOR_FS
+>    which enable THPs for mmapped files (e.g. shared libraries) even without
+>    ...
+> 
+>>
+>> Fixes: 06252e9ce05b ("erofs: dax support for non-tailpacking regular
+>> file")
+> 
+> Fixes: ce529cc25b18 ("erofs: enable large folios for iomap mode")
+> Fixes: be62c5198861 ("erofs: enable large folios for fscache mode")
+> 
+>> Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+>> ---
+>>   fs/erofs/data.c | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/fs/erofs/data.c b/fs/erofs/data.c
+>> index c98aeda8abb2..3d9721b3faa8 100644
+>> --- a/fs/erofs/data.c
+>> +++ b/fs/erofs/data.c
+>> @@ -447,5 +447,6 @@ const struct file_operations erofs_file_fops = {
+>>       .llseek        = generic_file_llseek,
+>>       .read_iter    = erofs_file_read_iter,
+>>       .mmap        = erofs_file_mmap,
+>> +    .get_unmapped_area = thp_get_unmapped_area,
+>>       .splice_read    = filemap_splice_read,
+>>   };
 
- sound/soc/fsl/fsl_rpmsg.c       | 11 -----------
- sound/soc/fsl/imx-audio-rpmsg.c | 22 +++++++++++++++++++---
- sound/soc/fsl/imx-pcm-rpmsg.c   | 11 ++++++++---
- sound/soc/fsl/imx-rpmsg.c       | 21 ++++++++++++++++++---
- 4 files changed, 45 insertions(+), 20 deletions(-)
 
---
-2.43.0
+LGTM.
 
+Reviewed-by: Jingbo Xu \<jefflexu@linux.alibaba.com>
+
+-- 
+Thanks,
+Jingbo
 
