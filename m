@@ -1,113 +1,214 @@
-Return-Path: <linux-kernel+bounces-93983-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93985-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52AC28737C7
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:36:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15C598737D7
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:38:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F08521F26BB5
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:36:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B4F0F1F2742A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:38:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41FBA130E57;
-	Wed,  6 Mar 2024 13:36:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2A93131722;
+	Wed,  6 Mar 2024 13:37:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JZ9n/ao1"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Ak1d3DZC"
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F16C8130AD5;
-	Wed,  6 Mar 2024 13:36:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06745130AD5;
+	Wed,  6 Mar 2024 13:37:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709732162; cv=none; b=b73sIr3rSrL3VsVYUC1G6P++LVQwJTcVSREjj0ku9ENkEP5ROq5tMvS5n29989Z/oOcFFk9jN4aSLkMMN9r6RMiwHS7cFeD2NC1uTm7xg6xtXBNvV2CNDMdP38On9dzS7rhHzRmQfLX3Zrj8UbofkYhl0qseTE7SAYE+pNsyU2w=
+	t=1709732275; cv=none; b=Whf0BBRLhepVwm+VbERXK9aAHpelNLnfaXkNp6d/LJURVfLUD8gxsGpMVap19kQcRuWKkOLjSqdDhhvYAB1Wt02k3zsB7fiqUpB1ePvOp5wps4V8GXElhMuKoVRHznGd1+Hnd3Y7/V57yJZnbB9/ZzSxMJa1JwOe8+RyX9HaXlA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709732162; c=relaxed/simple;
-	bh=MemqcjPwJQZWP7+0A11zacmkdchsbQdVCJLcuQ9fTVc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=vD0WZ1pXX3wck02druuwwD9grWvR4FmPIjnbb4fyJxQnpsOtmKNVXIdYwvjwiJTSGSz+Ba2Fur2N7Z/XCu7blt/uNc7IVvTo6n44GGbHMr/mNmI5614xJyKnWolnLesMD4pYec/zXYAq7ImkbmOWXxJXGMd/L36H0nWsl6WgBaU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JZ9n/ao1; arc=none smtp.client-ip=192.198.163.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709732161; x=1741268161;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=MemqcjPwJQZWP7+0A11zacmkdchsbQdVCJLcuQ9fTVc=;
-  b=JZ9n/ao1jGuXxel6EGQ0jPZeuFilchgabjj9+tmHjJVJj+WFYd9ji40u
-   xblGecaK3vwaKJUWnBAUS8lirsnsH/w6wqlQw8RWZsH0KjKWonO224qxn
-   BVXMoV1GD9I25CzLOSfc5/I2vhb4iQHLC6x64ZaZ6hZQ5rDJw/UEtVcdc
-   EvLWGnTDpka5Ojqi56q6K8oUiiM8bqkIHIC4boahZdEblBaE3NbDRZdWS
-   iRcvGJLoub4ULWauxeM8UeduuvxdmN6BX2VfFM/zR27JIk5ydNul086xv
-   CyAIEMK8lNIpSeZrEhsoOIYvh2syzJAt+rlXctV9yct6u7l7JWEn5/FKA
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11004"; a="4207366"
-X-IronPort-AV: E=Sophos;i="6.06,208,1705392000"; 
-   d="scan'208";a="4207366"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 05:36:00 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11004"; a="914178566"
-X-IronPort-AV: E=Sophos;i="6.06,208,1705392000"; 
-   d="scan'208";a="914178566"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 05:35:58 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rhrR6-0000000AHFQ-2aGk;
-	Wed, 06 Mar 2024 15:35:56 +0200
-Date: Wed, 6 Mar 2024 15:35:56 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Andi Shyti <andi.shyti@kernel.org>
-Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Sean Young <sean@mess.org>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>
-Subject: Re: [SPAM] [PATCH v1 5/5] media: ir-spi: Unify indentation and
- comment style
-Message-ID: <ZehxPFh2ecxsKsOF@smile.fi.intel.com>
-References: <20240305174933.1370708-1-andriy.shevchenko@linux.intel.com>
- <20240305174933.1370708-6-andriy.shevchenko@linux.intel.com>
- <hwtodfwrgonzzf2dpoqa3b5b3v66ypp7uu7upsnt6dx7weua2f@byxbgpxurhmf>
+	s=arc-20240116; t=1709732275; c=relaxed/simple;
+	bh=FT0CuWap6zBzxhbKjuZ6jvoFoUhW89ZJUGjASGAUnVU=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Ni6HPf/j/8/WFVCux/9KdNk5NeePW3LP4NTty/u3ISjyMIyav2EDDgfAZ9qep69CjWc9Fcd/74mhwplceHx4Md3XErXlXZJ7yOJ/tSCQ5vtrMD28o+GBD38peNMskP/o6hEK2MKH+Bp22bu61gC10vG+UPsW1drAHyGu9bUEn+0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Ak1d3DZC; arc=none smtp.client-ip=217.70.183.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 45A8DE000C;
+	Wed,  6 Mar 2024 13:37:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709732264;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Sy4JIC0/Wgrgbb/8vwfGd+8uG9N2YnNcKef9emZ4Q+Y=;
+	b=Ak1d3DZCv1iDyVKudR877bHXBTN+ZKzEpLvMLpUYS11rNFGWn6QCz7Y4vKvg+VsttQFOcy
+	EUOJU0z6mFdEMaK3Vn5svoJHos2RJh6c2Y3baSL56GP/WIm48IPKJ5292crTJFgKn+t8kX
+	04QLU26nKbvY6BX4Ueqx4qqpcOs6iVBck8F5wLN0CJmR4hDDcVnh1Gea1XBpcS6cgra9Na
+	iMAeecizJVBlkQ54fG6izl8hN/Vkmk4tu5NL41zOxg2p3xnxW/Eq2QyCfeeaGXockMMf4H
+	B4GZe0coskS+BlgYcUneK34x7mZiTp10lNI71kqub4nXH1vlRIO8TjDI+bwndw==
+Date: Wed, 6 Mar 2024 14:37:43 +0100
+From: Herve Codina <herve.codina@bootlin.com>
+To: Ratheesh Kannoth <rkannoth@marvell.com>
+Cc: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 1/5] net: wan: Add support for QMC HDLC
+Message-ID: <20240306143743.5732b298@bootlin.com>
+In-Reply-To: <20240306105651.1210286-1-rkannoth@marvell.com>
+References: <20240306080726.167338-2-herve.codina@bootlin.com>
+	<20240306105651.1210286-1-rkannoth@marvell.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <hwtodfwrgonzzf2dpoqa3b5b3v66ypp7uu7upsnt6dx7weua2f@byxbgpxurhmf>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: herve.codina@bootlin.com
 
-On Tue, Mar 05, 2024 at 11:52:15PM +0100, Andi Shyti wrote:
-> On Tue, Mar 05, 2024 at 07:48:30PM +0200, Andy Shevchenko wrote:
+Hi Ratheesh
+
+On Wed, 6 Mar 2024 16:26:51 +0530
+Ratheesh Kannoth <rkannoth@marvell.com> wrote:
 
 ..
 
-> > +static int ir_spi_tx(struct rc_dev *dev, unsigned int *buffer, unsigned int count)
+> > +static void qmc_hcld_recv_complete(void *context, size_t length, unsigned int flags)
+> > +{
+> > +	struct qmc_hdlc_desc *desc = context;
+> > +	struct net_device *netdev = desc->netdev;
+> > +	struct qmc_hdlc *qmc_hdlc = netdev_to_qmc_hdlc(netdev);  
+> Reverse xmas tree
+
+The reverse xmas tree order cannot be used here.
+qmc_hdlc depends on netdev, netdev depends on desc.
+
+..
+> > +static void qmc_hdlc_xmit_complete(void *context)
+> > +{
+> > +	struct qmc_hdlc_desc *desc = context;
+> > +	struct net_device *netdev = desc->netdev;
+> > +	struct qmc_hdlc *qmc_hdlc = netdev_to_qmc_hdlc(netdev);
+> > +	struct sk_buff *skb;  
+> Reverse xmas tree
+
+Ditto
+
+> > +
+> > +	scoped_guard(spinlock_irqsave, &qmc_hdlc->tx_lock) {
+> > +		dma_unmap_single(qmc_hdlc->dev, desc->dma_addr, desc->dma_size, DMA_TO_DEVICE);
+> > +		skb = desc->skb;
+> > +		desc->skb = NULL; /* Release the descriptor */
+> > +		if (netif_queue_stopped(netdev))
+> > +			netif_wake_queue(netdev);
+> > +	}
+> > +
+> > +	netdev->stats.tx_packets++;
+> > +	netdev->stats.tx_bytes += skb->len;
+> > +
+> > +	dev_consume_skb_any(skb);
+> > +}
+> > +
+..
+> > +
+> > +static netdev_tx_t qmc_hdlc_xmit(struct sk_buff *skb, struct net_device *netdev)
+> > +{
+> > +	struct qmc_hdlc *qmc_hdlc = netdev_to_qmc_hdlc(netdev);
+> > +	struct qmc_hdlc_desc *desc;
+> > +	int err;
+> > +
+> > +	guard(spinlock_irqsave)(&qmc_hdlc->tx_lock);
+> > +
+> > +	desc = &qmc_hdlc->tx_descs[qmc_hdlc->tx_out];
+> > +	if (WARN_ONCE(desc->skb, "No tx descriptors available\n")) {
+> > +		/* Should never happen.
+> > +		 * Previous xmit should have already stopped the queue.
+> > +		 */
+> > +		netif_stop_queue(netdev);
+> > +		return NETDEV_TX_BUSY;
+> > +	}
+> > +
+> > +	desc->netdev = netdev;
+> > +	desc->dma_size = skb->len;
+> > +	desc->skb = skb;
+> > +	err = qmc_hdlc_xmit_queue(qmc_hdlc, desc);
+> > +	if (err) {
+> > +		desc->skb = NULL; /* Release the descriptor */
+> > +		if (err == -EBUSY) {
+> > +			netif_stop_queue(netdev);
+> > +			return NETDEV_TX_BUSY;
+> > +		}
+> > +		dev_kfree_skb(skb);
+> > +		netdev->stats.tx_dropped++;
+> > +		return NETDEV_TX_OK;
+> > +	}
+> > +
+> > +	qmc_hdlc->tx_out = (qmc_hdlc->tx_out + 1) % ARRAY_SIZE(qmc_hdlc->tx_descs);
+> > +
+> > +	if (qmc_hdlc->tx_descs[qmc_hdlc->tx_out].skb)  
+> wont it race if tx completion and this function context run in different cpu ?
+
+We are protected by the qmc_hdlc->tx_lock spinlock.
+
+guard() call in this function and scoped_guard() call in qmc_hdlc_xmit_complete().
+
+What is the race you thought of ?
+
 > 
-> this goes over 80 characters, though. Not an error, but not worth
-> a change either.
+> > +		netif_stop_queue(netdev);
+> > +
+> > +	return NETDEV_TX_OK;
+> > +}
+> > +
+..
+> > +	/* Queue as many recv descriptors as possible */
+> > +	for (i = 0; i < ARRAY_SIZE(qmc_hdlc->rx_descs); i++) {
+> > +		desc = &qmc_hdlc->rx_descs[i];
+> > +
+> > +		desc->netdev = netdev;
+> > +		ret = qmc_hdlc_recv_queue(qmc_hdlc, desc, chan_param.hdlc.max_rx_buf_size);
+> > +		if (ret == -EBUSY && i != 0)
+> > +			break; /* We use all the QMC chan capability */
+> > +		if (ret)
+> > +			goto free_desc;
+> > +	}
+> > +
+> > +	ret = qmc_chan_start(qmc_hdlc->qmc_chan, QMC_CHAN_ALL);
+> > +	if (ret) {
+> > +		dev_err(qmc_hdlc->dev, "qmc chan start failed (%d)\n", ret);
+> > +		goto free_desc;
+> > +	}
+> > +
+> > +	netif_start_queue(netdev);
+> > +
+> > +	return 0;
+> > +
+> > +free_desc:
+> > +	qmc_chan_reset(qmc_hdlc->qmc_chan, QMC_CHAN_ALL);
+> > +	while (i--) {  
+> Double free ? i'th descriptor skb is freed in qmc_hdlc_recv_queue() function's error handler itself.
+> Should we be predecrement of i ?
 
-It's only 82 characters and I consider this as an improvement in readability.
-It's quite pity that some of the subsystems are too conservative, hope this
-one is not an obstacle for them.
+Suppose a failure on i = 5. The item 5 is already cleaned (done by 
+qmc_hdlc_recv_queue() itself).
+The 'while (i--)' set i to 4 and operations are performed with i = 4, 3, 2, 1 and 0.
 
-> I'm not going block the patch as the rest is OK.
+Where is the double free ?
+Do I miss something ?
+
 > 
-> Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
+> > +		desc = &qmc_hdlc->rx_descs[i];
+> > +		dma_unmap_single(qmc_hdlc->dev, desc->dma_addr, desc->dma_size,
+> > +				 DMA_FROM_DEVICE);
+> > +		kfree_skb(desc->skb);
+> > +		desc->skb = NULL;
+> > +	}
+> > +hdlc_close:
+> > +	hdlc_close(netdev);
+> > +	return ret;
+> > +}
+> > +
+> > +
 
-Thank you!
-
-Btw, don't you want to either add your entry into .mailcap and/or update your
-email address in this source file (and maybe others)? I Cc'ed you only after
-I looked closer to the sources...
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Best regards,
+Hervé
 
