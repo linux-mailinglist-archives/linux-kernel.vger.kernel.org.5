@@ -1,156 +1,151 @@
-Return-Path: <linux-kernel+bounces-93854-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93855-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEC6F8735B3
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:42:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 565C58735DD
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:48:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 604201F222AE
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 11:42:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D7D4F1F215D7
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 11:48:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D90CF7F7D3;
-	Wed,  6 Mar 2024 11:42:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1978B7F7FC;
+	Wed,  6 Mar 2024 11:48:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="NboYcYnF"
-Received: from SG2PR03CU006.outbound.protection.outlook.com (mail-southeastasiaazolkn19010000.outbound.protection.outlook.com [52.103.65.0])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="V5bjZv2J"
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 432905EE70;
-	Wed,  6 Mar 2024 11:42:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.103.65.0
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709725362; cv=fail; b=axbMDulD0UnMQG1QiNJNN00lo8nomiP85tSrDAF9QKoTcY7AZ/QvPM0/MFxUQvSeG1BS6zzu+/ZFguskjrrTy978ZyAmtss9K5poog9lj7qliUJnn3p6qvxIb9S3cX/BwoR89oBlcQMZ2JFumUFxJWUlYA41X4ZpM4Wpd6WvfvM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709725362; c=relaxed/simple;
-	bh=UZ6XzhaqEvo4Sz735jzl+U2owzJRht4sX7quUtfmD7g=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=NxZzlNLvhEKjUnbjaW5u0Nr1TUIbtOaP2OLmgI0LRh1J5CZ/eFzIsMA+XvVExPtJhEGhUrpAY1Hsg+5TnrE0n89STwPM5Dtus4qDvJdgPJhlRJ/B64h3DPUWY8Pw1hRnkY5Oww35W/IDe8U7G1927HP6ggJ5qtI/OY2w343YnfY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=NboYcYnF; arc=fail smtp.client-ip=52.103.65.0
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ivy9ZkrN2rpcESshyV6Yam1SgWboXC+LOY7jsyAsbY5IEh+LMPvNqjGW6S955Ri6wx7m+gC4X+NwObj601sz7ewDYtk9oJ97Eolrdq+D3mMDy8oVSd95jaIwLXojztXMvEC5MCbocTtvqLIGUfMhJGkdHD64715nCrC37b12OEfgCE4r11zoPQsb52rxsjXRCK5sdykbeP/tercR59emtUlNZhFIAzvqXgJhG6AJeYWtHexbt70UF7pOWXBKRARkM98IRIyr5jXvCf+FUT1rczwfRB2O7PdOB2TueBQgr+Tqzf19w1Qjpz8vgTjLy6U80c0iSfTMNrWMUoC35JKYug==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=BItPXvOzfEkhY+Mw18wVWnJknPtnJ0UQAoGm2kIPYks=;
- b=DUhbFdoJkd2BbY5hq6wuoFYCpqY0zOn69KrSjssI62ZUWyDfz1wlEE1+0kGzAvIBWFf2aqhbllF+EIhpYq1KxAsKWMeeFgBSxe+767tV2e6xYBkLngv2p49IlLyeivastOK0FgVTUWznltGmsU0SnfZpBoMHy5x2NL/9J1iaCYSfOXeJnAG4mVZYB3JIDgCYf6RV1S+INiFdIqOSvJPMrIDjOJeCM+cwkb5vbDTItMdnYZe32xKcmO6dvLah3kiOeuwAWkcxigtL7LpsC8PN1i4RlC5twhrcdORpIBkfPogbTOc2eWKYXoKKDEtCfemvS/zX3DGs3RHBSq85jU6mAw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BItPXvOzfEkhY+Mw18wVWnJknPtnJ0UQAoGm2kIPYks=;
- b=NboYcYnF0r7JznUfvWVDDZotOcU94I7YYbGvEbwN2Kf8Q1BzEJNE9eJ7tUCu00tpMFTWW5i9/WzkMa+G3xDuyZq8PLp3rVzEBqN+3YBgUPORM2v8iU6QGzZKP5ktfQj5xrXN0jN5Hw4Qn4EwnyipQTRbDvmI1vu/igncy2hxy2iFvmir0kJH2oQ7EjfTw+RfHqPQd/ekwyOK/ixZ1b0YKM6BTV0Dyh+DVVO7gdrqknB9mHJQ0UbNYe9Rkv7Ies2X3nDX7wQyJO68iRj2dbUstVtvy/Oi9U2ptz6qRODcW1nPJISfnI9SiTQpRecDBMM2ABSSyc0IaG91voGeji0Ygg==
-Received: from PSAPR06MB4952.apcprd06.prod.outlook.com (2603:1096:301:a3::11)
- by SG2PR06MB5012.apcprd06.prod.outlook.com (2603:1096:4:1c4::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.24; Wed, 6 Mar
- 2024 11:42:36 +0000
-Received: from PSAPR06MB4952.apcprd06.prod.outlook.com
- ([fe80::1e13:cc11:3196:e0a6]) by PSAPR06MB4952.apcprd06.prod.outlook.com
- ([fe80::1e13:cc11:3196:e0a6%6]) with mapi id 15.20.7362.019; Wed, 6 Mar 2024
- 11:42:36 +0000
-From: Guanbing Huang <albanhuang@outlook.com>
-To: gregkh@linuxfoundation.org
-Cc: jirislaby@kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org,
-	albanhuang@tencent.com,
-	tombinfan@tencent.com
-Subject: [PATCH v2] serial: 8250_pnp: Support configurable reg shift property
-Date: Wed,  6 Mar 2024 19:42:27 +0800
-Message-ID:
- <PSAPR06MB4952ED7EAD4410B25258F42FC9212@PSAPR06MB4952.apcprd06.prod.outlook.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <2024030518-encrust-gutter-f507@gregkh>
-References: <2024030518-encrust-gutter-f507@gregkh>
-Content-Type: text/plain
-X-TMN: [/LBBpEzWebFjYSYF8RnyZEKQB47Dp0xz]
-X-ClientProxiedBy: SG2P153CA0040.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c6::9)
- To PSAPR06MB4952.apcprd06.prod.outlook.com (2603:1096:301:a3::11)
-X-Microsoft-Original-Message-ID:
- <20240306114227.78924-1-albanhuang@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62EE47FBAC
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 11:48:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709725696; cv=none; b=jIhEsS08BS4p9VnbDH4LGqzUPwcnuqlaOVxnuYs1IqDF082cXMYAaeyS/9cJPAJ2hg+OjJ3n7Nhn5ZqhNc8VpcpXTk2P9aXrKh5XmuE05GXWR+Z4lPy/qf+2a7oeO18fIjX5zo543GyXW+Vc3EIvd7pqcEyFaWblvUoCai6pdsc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709725696; c=relaxed/simple;
+	bh=/NaooI6MCdbyOlXlO6KxhqtDj6Xc9BLxT2lYpNpuyTA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Dax+IfPeFUSkZOg9i6X1IgLYFd/cBOWqwbk+oh3MIj2ghRzXHrWPUB9MLftsfIwJh/6XQ2WvKwzhJJWue2kLZt8dOlDmkuJcX1Dp0JnFMLzKtZ/ycocM0lL7XKqFodl314rEU+Wiv3CCBSjJnGg8aT9D+kAoDKQQIfcvzGBZqTw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=V5bjZv2J; arc=none smtp.client-ip=209.85.221.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-33d2b354c72so4995851f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 03:48:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709725693; x=1710330493; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hdjqKhX03PzSI2pyjOvW3uxLZQ+MIlVgUNLnoaZ5QpY=;
+        b=V5bjZv2J3imnvnThGkTlo+FkH4FH3cxv/3MgIkgQZodEKj7v5zGxaSHTlayFI/PdBv
+         mD1dOS6VXD3jl9L9rtF7wYpaeomReM7nISz+C2WF34p6mST0JJ/pLS3/pOXn2iQLxNJl
+         45Cv+qNTl0zEzKC9WBiBwM8Qj1zA6qlyaCNls+c8gonKwSyTIvW4l5pn+t873BIE9X76
+         sd3amm2NVA3TZZdvx0CZT8IOsn2RGT2l9dzEI6JRj531TocrJtujPbWHQxbKMpIlyQJC
+         69N/zfJD1hXwXY9vGZvBuhChYDBSWYPEphmGy75ajBcSBNqpjZz7P/IPzMWoPrSaGGRV
+         5UeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709725693; x=1710330493;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hdjqKhX03PzSI2pyjOvW3uxLZQ+MIlVgUNLnoaZ5QpY=;
+        b=Q2/QCytwIxvTsdeyR4eW2LYbvid/AXD8flKOGvxzgiy/0t/VgKS4NLvITgQF566BfQ
+         FN+4M2cBO4pSoHDHc9dnH80vB69OmWJKHi7cA61xZHJwTWIaPNCEgDEJqyVBVxn4NsI8
+         0brSN4bK2QoM6W7v4iuuC00VUPILVwFQh7mcuPLSlQFS5b/M7psbdja9YtNfWE819bp4
+         w2PSAVGkP6cVa1IDqN5/KcQ6eWPJZLUbUBwgFze1IWyKb0UrzaoaWFXoP5PSdUjcNE2q
+         aUaU10PUlaBhw8v+ArXykWVxoziG3A84RO5zH6Y9Mq7FCFoD8anFRWrV6h7ufodm5M7J
+         8qEw==
+X-Forwarded-Encrypted: i=1; AJvYcCX2zuCawbIZZ26F8jGIsPrdl72u7yfzSbDA0pAwWcpTyiyEKv4YRbQECGfIa3Bydybj4Q+dTA79/XMuWuuKKAPbSpBBUEvnei65QheB
+X-Gm-Message-State: AOJu0YwbI23paqnd8e1r4agrxaTt8dPinab5EdcWrI9yWxpYJYUmSak+
+	luBaEkm4hTZZRbs2/BSbISbZ+x0pGAn72sQbJVfH/FUqtpLcaJxKXMd2T5CNCKY=
+X-Google-Smtp-Source: AGHT+IFRGKSDU1o5pzZkisag4+rQAq6jSD+XrXtlozIedUnam1oEQFdwWmmInfdxpXcI48SF9F2kQg==
+X-Received: by 2002:adf:fccf:0:b0:33d:3fed:3a18 with SMTP id f15-20020adffccf000000b0033d3fed3a18mr10598070wrs.51.1709725692648;
+        Wed, 06 Mar 2024 03:48:12 -0800 (PST)
+Received: from [192.168.0.102] ([176.61.106.68])
+        by smtp.gmail.com with ESMTPSA id da8-20020a056000196800b0033b87c2725csm17275033wrb.104.2024.03.06.03.48.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Mar 2024 03:48:12 -0800 (PST)
+Message-ID: <ebe234db-73e0-46db-b377-6b9f960597c8@linaro.org>
+Date: Wed, 6 Mar 2024 11:48:11 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PSAPR06MB4952:EE_|SG2PR06MB5012:EE_
-X-MS-Office365-Filtering-Correlation-Id: 33f6d9cb-1357-4849-437c-08dc3dd284d3
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	VdbCCszulPVYB0idHNKveKksC27pM/whwuv8OnFLkY7TtZNsPc2KNAS+tJYD0J4gPeU3maxBa8EnfH/IOOXLkAHe6zfXalMHkQRkcgn79XitQT8Qx6oWY+zdrW04ItXE6ubGFoRXNco5Nz2FpyUEFHDmu6ZnvbET1bMTbhd2SKaFJFtN1qBb2ErPb+I1MKQyPcRjLTU0lfsj6BxGfBbTJc3RUIgvfqkyzpJ3/ilokFiv55uay790Cslxi/i1oyt85zMrFeMaRvd+6pHeUg9CLlamvdCY9k3p6M5Q3OXMxiEnC7m5DWe65kOeFpchk4g+ZaXA/UK5urfNicoCKISbMYhm9ufWPrqaG0OW4cmeOl+lR0oPxW9amrGdF3HBxpnT8JgHh1yHk87ZtNBFOkLMH8BlJMHD9yeK6EQzT0N+Cpfx+ie3/0l8rKi5O09M+z/onGR4/kG/YBC0gl8wZpdP6Aygux4EFnKAbbvBeD6EBbaGjgzZY0XyRRI+Iu33N6UfavD6L5pjHe5DpcQM+mgUONw23QoCYhJINRH28LetD5Eisk+0keXkoVY+zeEGorZR
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?yIrIoNhkX/U5dEIqa2WD58yMVhfOoEpy/d05Nw4rR6dgApLskilr5nKmdb0b?=
- =?us-ascii?Q?4LgO9Ks+8MPHjh5dBz55Y498Uyp9KTm+geUE1AiNFIJL8y4alwqMed4qYF6j?=
- =?us-ascii?Q?aslInNMBdFKEP2YdH0P0CzWFwN/jdtk+UKOCcukdB/eo7aEsIM7wP1bTocvK?=
- =?us-ascii?Q?cg5Zs6FNtxNQEm+c1It/1NYO4u1a2BLnZdJlBJ6wKn7oJdbn70zde57pP6L4?=
- =?us-ascii?Q?FjziuYElFD8JVwPnY3Pw4w6E8EeZsFyahhHrXwXAr23hdaWrMl+dBq+CWIg1?=
- =?us-ascii?Q?Xzc7Z2eioTW3Q6YiVEuwFluxsmtCWwTWDbb3trCvIcNDOgbO7yEckSnfVo2L?=
- =?us-ascii?Q?iAt55P17G1EhmJNKa3H1Ls8mf1LPeQQsnt2iBNHpqZyTCIgTG4+KHQMUFrkB?=
- =?us-ascii?Q?xKBqv83XsK07Kg7d2hcLGad2/Gh1U/nGMNLKFsj5FS+GB0neckNCKkFN3HOm?=
- =?us-ascii?Q?UoaexKtANb8adWtljAlHWEJ7kK+sxSgukDLcu8v4by8gdd83IbcmUCJWdy0T?=
- =?us-ascii?Q?P5XyYiQ5Pw+dFWTNXSbrwOzKIXBSN+l7AUBnq+F0DnWw5jp9g0LJrN/Wl22a?=
- =?us-ascii?Q?tUTyYU59eNVDUCd5tRqaLP7bK04s/vHU0ToP8saTdj3IdLamgYeHbaip5uzu?=
- =?us-ascii?Q?HgDO6K3IEkY6VUdbgO3wS7ApRH1/jhnbF90xMSxToVmVVgDmVkckfZWDuucP?=
- =?us-ascii?Q?DCPRrWufWq2uYEXeXo90ui//aUv+pKHegpmTuDtEQuVp2nhzfRMXnQG7g+w4?=
- =?us-ascii?Q?HbOz881WkWTjR5oCQMXOCXKZzw8aLfBiSDgMcvhvBVepr4pjjzth9zKRfgKw?=
- =?us-ascii?Q?vXpjEdQi56w85YpncjJl12NzaVjvB74B84e27bH9oV9eX6tEsGKQ1yG5/veC?=
- =?us-ascii?Q?Q7cn6X9/fOyeymXinlY+s5IhsiTMIyIaGSAvXYA+nnmyPspFenLnYXZS/PJG?=
- =?us-ascii?Q?rNDaE1GkF7lkQQhMJo0x/oNmoN6OWbtrB2dDSGCL0BCuaN0IVPWtZCSwbjH/?=
- =?us-ascii?Q?Px9R6jb2l0ywVjug9CuzYyXg2XDtzWwXtoIAVTqLA0vM3lsfwF5NywXszb4G?=
- =?us-ascii?Q?peWmOxSGOyFH5kiJDvPMNDgF7xuI2XQ06LsClTFV72AQ3gekC+5Q647ZzXKB?=
- =?us-ascii?Q?IeVNnliRTt4OSP7TmB6Yyqg57Nrb+ETrJgmuaZchx15AjaPj8BPwVy2Ne4Ks?=
- =?us-ascii?Q?jZA2Vq6uchnr8bOJCpRtRZT7IU4938JAt0BWygQNxqaR12fN6MFQHCPDj28?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 33f6d9cb-1357-4849-437c-08dc3dd284d3
-X-MS-Exchange-CrossTenant-AuthSource: PSAPR06MB4952.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Mar 2024 11:42:36.3662
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR06MB5012
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 02/20] media: venus: pm_helpers: Rename core_clks_get
+ to venus_clks_get
+Content-Language: en-US
+To: Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+ Vikash Garodia <quic_vgarodia@quicinc.com>,
+ Bryan O'Donoghue <bryan.odonoghue@linaro.org>, Andy Gross
+ <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Dikshita Agarwal <quic_dikshita@quicinc.com>,
+ Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Marijn Suijten <marijn.suijten@somainline.org>,
+ Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+ Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+ linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20230911-topic-mars-v2-0-3dac84b88c4b@linaro.org>
+ <20230911-topic-mars-v2-2-3dac84b88c4b@linaro.org>
+From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <20230911-topic-mars-v2-2-3dac84b88c4b@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Guanbing Huang <albanhuang@tencent.com>
+On 09/02/2024 21:09, Konrad Dybcio wrote:
+> "core" is used in multiple contexts when talking about Venus, rename
+> the function to save on confusion.
+> 
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> ---
+>   drivers/media/platform/qcom/venus/pm_helpers.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/media/platform/qcom/venus/pm_helpers.c b/drivers/media/platform/qcom/venus/pm_helpers.c
+> index 8bd0ce4ce69d..ac7c83404c6e 100644
+> --- a/drivers/media/platform/qcom/venus/pm_helpers.c
+> +++ b/drivers/media/platform/qcom/venus/pm_helpers.c
+> @@ -23,7 +23,7 @@
+>   
+>   static bool legacy_binding;
+>   
+> -static int core_clks_get(struct venus_core *core)
+> +static int venus_clks_get(struct venus_core *core)
+>   {
+>   	const struct venus_resources *res = core->res;
+>   	struct device *dev = core->dev;
+> @@ -294,7 +294,7 @@ static int core_get_v1(struct venus_core *core)
+>   {
+>   	int ret;
+>   
+> -	ret = core_clks_get(core);
+> +	ret = venus_clks_get(core);
+>   	if (ret)
+>   		return ret;
+>   
+> @@ -961,7 +961,7 @@ static int core_get_v4(struct venus_core *core)
+>   	const struct venus_resources *res = core->res;
+>   	int ret;
+>   
+> -	ret = core_clks_get(core);
+> +	ret = venus_clks_get(core);
+>   	if (ret)
+>   		return ret;
+>   
+> 
 
-The 16550a serial port based on the ACPI table requires obtaining the
-reg-shift attribute. In the ACPI scenario, If the reg-shift property
-is not configured like in DTS, the 16550a serial driver cannot read or
-write controller registers properly during initialization.
+We have vcodec_clks_get(). It seems a bit nit-picky but if you are 
+tidying up the namepsace, then I'd suggest venus_core_clks_get() or 
+vcore_clks_get().
 
-Signed-off-by: Guanbing Huang <albanhuang@tencent.com>
-Signed-off-by: Bing Fan <tombinfan@tencent.com>
-Signed-off-by: Linheng Du <dylanlhdu@tencent.com>
+Seems more consistent.
+
 ---
-v2: change the names after "Signed off by" to the real names
-
- drivers/tty/serial/8250/8250_pnp.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/tty/serial/8250/8250_pnp.c b/drivers/tty/serial/8250/8250_pnp.c
-index 1974bbadc975..25b4e41e9745 100644
---- a/drivers/tty/serial/8250/8250_pnp.c
-+++ b/drivers/tty/serial/8250/8250_pnp.c
-@@ -473,6 +473,7 @@ serial_pnp_probe(struct pnp_dev *dev, const struct pnp_device_id *dev_id)
- 		uart.port.flags |= UPF_SHARE_IRQ;
- 	uart.port.uartclk = 1843200;
- 	device_property_read_u32(&dev->dev, "clock-frequency", &uart.port.uartclk);
-+	device_property_read_u8(&dev->dev, "reg-shift", &uart.port.regshift);
- 	uart.port.dev = &dev->dev;
- 
- 	line = serial8250_register_8250_port(&uart);
--- 
-2.17.1
-
+bod
 
