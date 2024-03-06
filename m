@@ -1,147 +1,101 @@
-Return-Path: <linux-kernel+bounces-94171-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94163-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A3A5873AE0
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:38:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D457873AC8
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:36:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 560872814DC
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:38:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8B406B22985
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:36:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57BEE135401;
-	Wed,  6 Mar 2024 15:37:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HGbh7rcm"
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69209137C3D;
+	Wed,  6 Mar 2024 15:35:30 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDDBE80605
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 15:37:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF8DE13792E;
+	Wed,  6 Mar 2024 15:35:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709739452; cv=none; b=qmDJzOcTSRRLV0/AODb16tU2AV2bJGnQy8r4VsTzoxjDAQ5QXwe0kVk+JsRhAx6zc11lKIrGWOJ7XPMu4D0clz6tILjJy7yB846XtyzxDiW1Dx00v/L9V01/S0bZRS3rh5GqKrknAnKC7E39zO/Ssw3D55v391kc50BjQS0eDZ0=
+	t=1709739329; cv=none; b=FbzCANx5bZNeKxO6BZUeJq1vSWB3zUF3siTjfcWnhMlR9iFVf3xDds3gfo1hrobfZ1rIvwSjJ2jChYwdQVD+Y4LrZ65NQpYPc7fBIL2RMGwp37TLd7xxdKV9H2L2ELwefrdfItUIrcMxNff9k2Z+LYZDvRFf/lmPhZ2EugPr68c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709739452; c=relaxed/simple;
-	bh=u1/Yc+IAFEUXc5d7chyPtNMhHboxhzwpw49Grb8KD50=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Fqs7/UVnMO2k9Ezgy3A6gIIPJmlLzsKIFvPtscUMSM9gj/toPECWitSnXvyQawdfu6BYwMhVFJd4EGpFuRjcxBg2n/wplsKvk6BddQH4obaIDqJrCRIrBSeDfGgJHnWdV1iEc0pGCr8mjdcB8XQjOcDHrbEUVJcm8tS4LUFpyVs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HGbh7rcm; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-55a179f5fa1so10276753a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 07:37:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709739449; x=1710344249; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=u1/Yc+IAFEUXc5d7chyPtNMhHboxhzwpw49Grb8KD50=;
-        b=HGbh7rcmth7pUVDRg0RuC6VD65rdjvO2VjE7bRsS19Isj3bhW5BLFGQgCquxANmZW7
-         U1jvsbx3/ONSOzyCDX5KZ4TJZTqSa1YEQvL9bAPWMJHxXBouFrsEHW2zk9BI7GBPHoxH
-         ArvKRLd0jkOmhZm7vvO171LdvskYrkctkt+J+tTpPwI0+nrNn9qZsIb6mK6ZAkZ0txHS
-         3YrdJ037OX+nZLq+p7C7LoIDxwYilEmhdGx2Gq6IveMLt0N0HWX1el8ze9+5uEguPhYh
-         SS95y3ysWkyKcz/rQ3PNsVriGs7U969v+Y85xyi4sRuaEvo+zLqcp7JslxtGDs0sbl+9
-         svIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709739449; x=1710344249;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=u1/Yc+IAFEUXc5d7chyPtNMhHboxhzwpw49Grb8KD50=;
-        b=FJowzBgotrygONF5Ij9lJhqTH8GLJivrUncpAzXRXYn5NfJ63UGn9+hQgkjjGdobHO
-         RsB4NhO94xM6KoGe9bjTdCwrtBD0uCVrKymterVPy5Cw/AmSH1dED3C7QLc0HdMRNlI+
-         X15dNLf42ekvD/NFZ1QU5JIitvohTlfLNb+vVnXiZlwSbaqiJ++oMpy6mnCd6+MgI4Di
-         D9tSt6UZ4ep+O1jyS24Ew3rBdoDpktrP1bFVW073JzMG9gB5wYVJAPBNPwZYMWOtcLqY
-         FnT9fj2tz1g/GQeXBJfc1S0FPnHxkImNh0EiWYXDkOBgYUFEQ8u+5wglqr2k9KQqK9eZ
-         CQAw==
-X-Forwarded-Encrypted: i=1; AJvYcCVcoJhetPsUBeP4QMp7QPrPh+NXfIrwA0KbxmiOS7z5zPcFGyI0xz/qxclCvLZBKTe02KLiv72Z/ePPnHWbS/2jGjxqQOBBja9nNIES
-X-Gm-Message-State: AOJu0YzHlltaO+4xgCgfJY9KdFb/o7HLY+m/V1sE6iqgaOsoW/E9fGiE
-	VmMvm8f8l4qJa9aZD12wDOBgoren/1exVqpJhzJ8T28bQzNd6yWP5ZCrY2sj7brr0oTUOcuEbux
-	yaAWVokbvjyqPRJWJez+LvGZSJ3SI3sU+
-X-Google-Smtp-Source: AGHT+IFPBo/wgUiW7TE1+MYYfswg9itE4B5nwKJcVcwSilfEDgdHUVhvIZwW0ZUMtglS+OrSGmle1I+8sszEi1RcBKA=
-X-Received: by 2002:a05:6402:c02:b0:567:e280:6411 with SMTP id
- co2-20020a0564020c0200b00567e2806411mr1467481edb.15.1709739449054; Wed, 06
- Mar 2024 07:37:29 -0800 (PST)
+	s=arc-20240116; t=1709739329; c=relaxed/simple;
+	bh=XzHQ63q+wO8yRhMAcPLJwguwCBW5R4lx0MMXE87Ck+Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=c7mDYKm+4cQlQoPqJ1Wehwm3MjOsrq6FYkY32Nar7PT2v7y5rRP6Q2SHf21hICiKKiShdcuYMk59q7TOCZItjRz+AtOGY+TqXRwkiquBViM9DkrRFv/NS8lRihjycCBya1fs0GhOruU6JUwHhkFDiq+zp+QU/TirjPLCqmLpJyY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E408BC43390;
+	Wed,  6 Mar 2024 15:35:26 +0000 (UTC)
+Date: Wed, 6 Mar 2024 10:37:19 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: linke li <lilinke99@qq.com>
+Cc: joel@joelfernandes.org, boqun.feng@gmail.com, dave@stgolabs.net,
+ frederic@kernel.org, jiangshanlai@gmail.com, josh@joshtriplett.org,
+ linux-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
+ paulmck@kernel.org, qiang.zhang1211@gmail.com, quic_neeraju@quicinc.com,
+ rcu@vger.kernel.org, Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH] rcutorture: Fix
+ rcu_torture_pipe_update_one()/rcu_torture_writer() data race and
+ concurrency bug
+Message-ID: <20240306103719.1d241b93@gandalf.local.home>
+In-Reply-To: <tencent_9882B228F292088CDD68F10CF1C228742009@qq.com>
+References: <f3624f39-bbb1-451d-8161-8518e4108d8e@joelfernandes.org>
+	<tencent_9882B228F292088CDD68F10CF1C228742009@qq.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240227141928.1.I24ac8d51544e4624b7e9d438d95880c4283e611b@changeid>
- <60dc7697-d7a0-4bf4-a22e-32f1bbb792c2@suse.de> <CAF6AEGs2zCP1SWPzxz4v2CU--yyEsN0+PS3dKM1nOuGyVkCpLg@mail.gmail.com>
- <ZeiGi4l1lL_fYJ69@intel.com>
-In-Reply-To: <ZeiGi4l1lL_fYJ69@intel.com>
-From: Rob Clark <robdclark@gmail.com>
-Date: Wed, 6 Mar 2024 07:37:16 -0800
-Message-ID: <CAF6AEGs1ce2xzuo3xEO+xgj+0iCi59nM8AiTwBfEhwZZ2w6Vww@mail.gmail.com>
-Subject: Re: [PATCH] drm/udl: Add ARGB8888 as a format
-To: =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
-Cc: Thomas Zimmermann <tzimmermann@suse.de>, Douglas Anderson <dianders@chromium.org>, 
-	dri-devel@lists.freedesktop.org, Rob Clark <robdclark@chromium.org>, 
-	Javier Martinez Canillas <javierm@redhat.com>, Daniel Vetter <daniel@ffwll.ch>, Dave Airlie <airlied@redhat.com>, 
-	David Airlie <airlied@gmail.com>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Maxime Ripard <mripard@kernel.org>, =?UTF-8?B?TWHDrXJhIENhbmFs?= <mcanal@igalia.com>, 
-	Sean Paul <sean@poorly.run>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, Mar 6, 2024 at 7:06=E2=80=AFAM Ville Syrj=C3=A4l=C3=A4
-<ville.syrjala@linux.intel.com> wrote:
->
-> On Wed, Mar 06, 2024 at 06:49:15AM -0800, Rob Clark wrote:
-> > On Wed, Mar 6, 2024 at 4:18=E2=80=AFAM Thomas Zimmermann <tzimmermann@s=
-use.de> wrote:
-> > >
-> > > Hi,
-> > >
-> > > sorry that I did not see the patch before.
-> > >
-> > > Am 27.02.24 um 23:19 schrieb Douglas Anderson:
-> > > > Even though the UDL driver converts to RGB565 internally (see
-> > > > pixel32_to_be16() in udl_transfer.c), it advertises XRGB8888 for
-> > > > compatibility. Let's add ARGB8888 to that list.
-> > >
-> > > We had a heated discussion about the emulation of color formats. It w=
-as
-> > > decided that XRGB8888 is the only format to support; and that's only
-> > > because legacy userspace sometimes expects it. Adding other formats t=
-o
-> > > the list should not be done easily.
-> >
-> > OTOH it is fixing a kernel change that broke userspace
-> >
-> > > >
-> > > > This makes UDL devices work on ChromeOS again after commit
-> > > > c91acda3a380 ("drm/gem: Check for valid formats"). Prior to that
-> > > > commit things were "working" because we'd silently treat the ARGB88=
-88
-> > > > that ChromeOS wanted as XRGB8888.
-> > >
-> > > This problem has been caused by userspace. Why can it not be fixed th=
-ere?
-> > >
-> > > And udl is just one driver. Any other driver without ARGB8888, such a=
-s
-> > > simpledrm or ofdrm, would be affected. Do these work?
-> >
-> > Probably any driver where ARGB8888 is equivalent to XRGB8888 (ie.
-> > single primary plane, etc) should advertise both.
->
-> To me that seemes likely to trick userspace developers into
-> assuming that ARGB is always available, and then when they
-> finally try on hardware that doesn't have ARGB it'll just
-> fail miserably.
+On Tue,  5 Mar 2024 14:24:20 +0800
+linke li <lilinke99@qq.com> wrote:
 
-I think that ship has sailed already, at least for any drivers that
-previously silently accepted ARGB8888
+> > Anyway, a slightly related/different question:
+> > 
+> > Should that:
+> > WRITE_ONCE(rp->rtort_pipe_count, rp->rtort_pipe_count + 1);
+> > 
+> > Be:
+> > WRITE_ONCE(rp->rtort_pipe_count, READ_ONCE(rp->rtort_pipe_count) + 1);
+> > 
+> > ?  
+> 
+> Hi, Joel. Sorry, I am not very sure about this. I do a little research on
+> it.
+> 
+> I looked through all code in kernel that looks like this, both kinds are
+> used. I also try to compile this file with and without the READ_ONCE in
+> WRITE_ONCE using gcc-9. Their binary is just the same. 
+> 
+> Thus I think in the current compiler version, they do not have a big
+> difference, but if the compiler wants to optimize more, maybe the latter
+> one is better.
 
-BR,
--R
+I'm sorry but all these READ_ONCE/WRITE_ONCE() additions that are being
+added because there's a fear of the compiler tearing long words, is going to
+make the code really ugly and hard to read.
 
-> --
-> Ville Syrj=C3=A4l=C3=A4
-> Intel
+If we take the policy of handling a compiler that can tear reads and writes
+of any size word, then we should have proper macros to handle it.
+
+Perhaps READ_SHARED(), WRITE_SHARED(), ADD_SHARED(), SUB_SHARED(). The ONCE
+has nothing to do with the reasons for these changes. But at least "SHARED"
+can be considered "this variable is shared between different contexts".
+Note, this is different than "atomic". It's just to document that this
+variable must be loaded or stored in one transaction.
+
+I don't know if Linus even cares about fixing "read/write tearing" which is
+why I Cc'd him.
+
+But I'm not going to take any patches that add these macros to fix
+compilers that tear words on load and store until we have a set policy on
+what to do with them.
+
+-- Steve
 
