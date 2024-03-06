@@ -1,129 +1,86 @@
-Return-Path: <linux-kernel+bounces-94127-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94126-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57485873A50
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CFB08873A51
 	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:09:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ACA7F1F297A3
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:09:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4793FB21AA5
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:09:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7A5F13790C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6EF2137909;
 	Wed,  6 Mar 2024 15:07:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="le/G77he"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Yqh9LnU6"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47ED11350D8
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 15:06:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB9B713667B;
+	Wed,  6 Mar 2024 15:06:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709737620; cv=none; b=dSXb4nfQa/q6KCJ5FFzS6C0jjqTRoZHhlW7EPVTKgoJJh+ssaDADYaWRksHRSgfxHUZmDc0dVZ1IdiUnGX+mVkqO5vUabr6UjFHYrWx5KT7N/ryDYfYesjQ02ZZ45M0S7Cn8ch+mFnbh2K/Ou185sEN0YMyakmqJMg7AzIFYT9w=
+	t=1709737619; cv=none; b=ADA7Yt2rgrPRJCQpduSItszwXE56hDhMN4yXPVPLqmRrvBxIdT5CMe5FUE1xCk1oa1K6/7wH36/4p1Gl21QxpBays/TCXb1c8V1qcWjDDbInBs1O5t/RN2cYU/Y/Pd+Ebq/tXssZkOFGBdXhGUZkB7n0jQVteYaWDrsJvXx2XZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709737620; c=relaxed/simple;
-	bh=NkW0kjqnGBo5wFggNC6XMC1hc0EuI58azaDi+ScyGKk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bOQchqCsfVMJDRWRGcOWjVhHMvfjW3t4VXnGWwBhOkG5miork0fWLPs7BulybhnZmnvaWRQLh+aIYr7Pl9zNLxQY8fiNA8M+PCE5Ar040t8qPcovXXkmXVy90U4z4dKSdkFsRfIaeWr2P4YT5oTAY0IA7EcKzse90cE+ugb/tg8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=le/G77he; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709737618; x=1741273618;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=NkW0kjqnGBo5wFggNC6XMC1hc0EuI58azaDi+ScyGKk=;
-  b=le/G77heZ2Z+nHB46j4uQozOhKAorE/GbZq8ORyb11rUGIGFmeJfyqXk
-   UqKk2EhjKZSRegqIDR9PbooQJXCS0xmCKH2qKqncX4KpvbxaAAXcKp6Y+
-   4xmtGRYrp/yLRHmlh6o3SWhws3nkRSXXAu2G2O+1V/u3oIe5uiW089N6h
-   ubHEJ0v5oxckU8ua1mDQ2FXgRGzQMMKFhfbzCKcJ+1KHP6+cPGoCq/0vp
-   JijR+R7IlBtQOitwlpyn4l4k82zyhQkNayosJHLYQGmUWRECKWk+bbdt6
-   IoviZqnlG8n1i2qYdtQPM75N5MRuzotgPEOv/Zt9ehjd/xnWEBC6hc59K
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11004"; a="15008372"
-X-IronPort-AV: E=Sophos;i="6.06,208,1705392000"; 
-   d="scan'208";a="15008372"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 07:06:58 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11004"; a="827774338"
-X-IronPort-AV: E=Sophos;i="6.06,208,1705392000"; 
-   d="scan'208";a="827774338"
-Received: from stinkpipe.fi.intel.com (HELO stinkbox) ([10.237.72.74])
-  by orsmga001.jf.intel.com with SMTP; 06 Mar 2024 07:06:52 -0800
-Received: by stinkbox (sSMTP sendmail emulation); Wed, 06 Mar 2024 17:06:51 +0200
-Date: Wed, 6 Mar 2024 17:06:51 +0200
-From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To: Rob Clark <robdclark@gmail.com>
-Cc: Thomas Zimmermann <tzimmermann@suse.de>,
-	Douglas Anderson <dianders@chromium.org>,
-	dri-devel@lists.freedesktop.org, Rob Clark <robdclark@chromium.org>,
-	Javier Martinez Canillas <javierm@redhat.com>,
-	Daniel Vetter <daniel@ffwll.ch>, Dave Airlie <airlied@redhat.com>,
-	David Airlie <airlied@gmail.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	=?iso-8859-1?Q?Ma=EDra?= Canal <mcanal@igalia.com>,
-	Sean Paul <sean@poorly.run>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/udl: Add ARGB8888 as a format
-Message-ID: <ZeiGi4l1lL_fYJ69@intel.com>
-References: <20240227141928.1.I24ac8d51544e4624b7e9d438d95880c4283e611b@changeid>
- <60dc7697-d7a0-4bf4-a22e-32f1bbb792c2@suse.de>
- <CAF6AEGs2zCP1SWPzxz4v2CU--yyEsN0+PS3dKM1nOuGyVkCpLg@mail.gmail.com>
+	s=arc-20240116; t=1709737619; c=relaxed/simple;
+	bh=SZlyoBAGWRDBRp2u5L70J/RZwbAwTu9tQQtjQCgNUuY=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Qz2RzNaUPINzm+I7DK3bHkC66bRkE+5p4XQjM4RbCF3JN4HXRFVLKyzwbHMpmQCNfisVk2dQU93cBroq6AStWRESiZLEN9uTz+bAJwjDfBTFGHQHYNvFPGTnwe7z7kJGWUsVqmN5NpqJEHxL7k+3ODEXULDTv0xKFBuHiKEAxGg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Yqh9LnU6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A930C433C7;
+	Wed,  6 Mar 2024 15:06:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709737619;
+	bh=SZlyoBAGWRDBRp2u5L70J/RZwbAwTu9tQQtjQCgNUuY=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Yqh9LnU6jP3h2U+QlbSvrrMk3G4wZm0TEbB1l0+4aCQcd/AqgCiuh9j1Dbxy5tkTt
+	 c4FwdhpBO88i6QMd2xLE43VMZYcoRwI3T78Zc41MUEzp4uS4V1SGU3LmPUiNyy5F13
+	 9YOcIlancMLb9GIeDkIIj7BP7Zgu2QO8dO8xNF/0h/xqd/duVujFvFQJwcfgVLPzxu
+	 +Uz7se7rG+6GgErhgLji9WRhP58GlzuICcVU0wRhGRmcZVo+7ewBNbd2YdKvvqRKHT
+	 ZgybOt2kB4DegGRXLTte8ed3lhksynHbD7dDbwjtYeNN5GpgeTfJIPfzwiDVSt8aqw
+	 IDwZWhZblok1w==
+Date: Wed, 6 Mar 2024 07:06:58 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Breno Leitao <leitao@debian.org>, keescook@chromium.org
+Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Andy Shevchenko
+ <andriy.shevchenko@linux.intel.com>, "Gustavo A. R. Silva"
+ <gustavoars@kernel.org>, netdev@vger.kernel.org,
+ linux-hardening@vger.kernel.org, Simon Horman <horms@kernel.org>, Jiri
+ Pirko <jiri@resnulli.us>, Daniel Borkmann <daniel@iogearbox.net>, Coco Li
+ <lixiaoyan@google.com>, Amritha Nambiar <amritha.nambiar@intel.com>,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] netdev: Use flexible array for trailing private bytes
+Message-ID: <20240306070658.4216fdf2@kernel.org>
+In-Reply-To: <ZehsoPb/WZzUcFHa@gmail.com>
+References: <20240229213018.work.556-kees@kernel.org>
+	<20240229225910.79e224cf@kernel.org>
+	<ZehsoPb/WZzUcFHa@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAF6AEGs2zCP1SWPzxz4v2CU--yyEsN0+PS3dKM1nOuGyVkCpLg@mail.gmail.com>
-X-Patchwork-Hint: comment
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, Mar 06, 2024 at 06:49:15AM -0800, Rob Clark wrote:
-> On Wed, Mar 6, 2024 at 4:18 AM Thomas Zimmermann <tzimmermann@suse.de> wrote:
-> >
-> > Hi,
-> >
-> > sorry that I did not see the patch before.
-> >
-> > Am 27.02.24 um 23:19 schrieb Douglas Anderson:
-> > > Even though the UDL driver converts to RGB565 internally (see
-> > > pixel32_to_be16() in udl_transfer.c), it advertises XRGB8888 for
-> > > compatibility. Let's add ARGB8888 to that list.
-> >
-> > We had a heated discussion about the emulation of color formats. It was
-> > decided that XRGB8888 is the only format to support; and that's only
-> > because legacy userspace sometimes expects it. Adding other formats to
-> > the list should not be done easily.
+On Wed, 6 Mar 2024 05:16:16 -0800 Breno Leitao wrote:
+> I've been looking at some of these embedders as reported by Kees[1], and
+> most of them are for dummy interfaces. I.e, they are basically used for
+> schedule NAPI poll.
 > 
-> OTOH it is fixing a kernel change that broke userspace
+> From that list[1], most of the driver matches with:
 > 
-> > >
-> > > This makes UDL devices work on ChromeOS again after commit
-> > > c91acda3a380 ("drm/gem: Check for valid formats"). Prior to that
-> > > commit things were "working" because we'd silently treat the ARGB8888
-> > > that ChromeOS wanted as XRGB8888.
-> >
-> > This problem has been caused by userspace. Why can it not be fixed there?
-> >
-> > And udl is just one driver. Any other driver without ARGB8888, such as
-> > simpledrm or ofdrm, would be affected. Do these work?
+> 	# git grep init_dummy_netdev
 > 
-> Probably any driver where ARGB8888 is equivalent to XRGB8888 (ie.
-> single primary plane, etc) should advertise both.
+> That said, do you think it is still worth cleaning up embedders for
+> dummy net_devices?
+> 
+> [1] https://lore.kernel.org/all/202402281554.C1CEEF744@keescook/
 
-To me that seemes likely to trick userspace developers into
-assuming that ARGB is always available, and then when they
-finally try on hardware that doesn't have ARGB it'll just
-fail miserably.
-
--- 
-Ville Syrjälä
-Intel
+Yes, I think so.
+Kees, did you plan to send a v2? Otherwise I can put the cleanup on our
+"public ToDo" list :)
 
