@@ -1,73 +1,70 @@
-Return-Path: <linux-kernel+bounces-93262-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93255-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11468872D3B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 04:05:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E973E872D16
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 03:58:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 42FF11C2323B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 03:05:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 814671F28929
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 02:58:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EC4EDF49;
-	Wed,  6 Mar 2024 03:05:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC1C4DDA9;
+	Wed,  6 Mar 2024 02:58:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="qAzJNIG1"
-Received: from out162-62-58-211.mail.qq.com (out162-62-58-211.mail.qq.com [162.62.58.211])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ylj4pOSC"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B1DD173;
-	Wed,  6 Mar 2024 03:05:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.58.211
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B21633E1
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 02:58:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709694328; cv=none; b=H9kgC9pQVQKE6N9cAhd04PHuPKjtQAxyfqNV0YSy1Txe+gYZRbWMjl1E0P22I512JcpEbiJkOc6Ocaf7M0oh3ezIg8tFNOuvNgJI6hLuCW3rllQ4TyV3Yi8kUf9L7KRhpzI1wqmltJ2z2Q9RtLHr3Iss9cQqWD900QIeIVCPsCc=
+	t=1709693905; cv=none; b=E9gKQ1R9sNGUTc3M6zjuHmCM+xG+x9OX/FNDf901VNbEyEZU7hMcn1aeNWmK/Im5/p6wqHAZYqvU1/qqy31QDHTaPUS7p6bYOBDwSKAIgl/nag/bZtMPK3EORT3rchmgqowuKSbNGCMFLNi6IM/8EHkn3hlszNxs4aL4jNYSt3Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709694328; c=relaxed/simple;
-	bh=+6dHN2SSImxbZVsLMYu8GjPrXgMt14/8zzaKZLLtt6w=;
-	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=J9IoSGVGpwFJ90DlGnxTLa0hKormeHQoCBUVFJKFP7bv8tStMhLwpGyEWm/um2udnSqIqBSOBCxtxXl/p5vFv/KFj1RWKW7/2v+TH2Dq/vSQL6FQHGfW8PAAbpP06MNSpvrcwZWEQGlfeNvWG+saSurgl1zxl7kXTzscmGbTCKI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=qAzJNIG1; arc=none smtp.client-ip=162.62.58.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1709694320; bh=C1CCOEGfxwvS0ORC18PbykbGWEcGm+e5TlS2qTiTC8M=;
-	h=From:To:Cc:Subject:Date;
-	b=qAzJNIG1GjapQ/ruL6Gk2OIxfzaaElejbgO/E8VXY5hUwN9fKxlPPROwXsKulo3Uh
-	 IYjvcl3cgBbv7cGIeQc26o9J7hSdgkWoq+Sj/qolWEjKuJvsoSobUkol/oNdnfE5w0
-	 MwM3OnbitvZbyR6uk3fFJV2iaZl4qqYYpv7ADxh8=
-Received: from localhost.localdomain ([218.94.142.74])
-	by newxmesmtplogicsvrsza7-0.qq.com (NewEsmtp) with SMTP
-	id EB629EBA; Wed, 06 Mar 2024 10:58:54 +0800
-X-QQ-mid: xmsmtpt1709693934tgba4zn3s
-Message-ID: <tencent_BA1473492BC618B473864561EA3AB1418908@qq.com>
-X-QQ-XMAILINFO: Mm/8i8/T4ynehAJEBEIWe8kG3QjwIOBAAFjtzj/bi2QqEXFKL/S0q3DtlSLDJP
-	 BSQ1mTkDMHeN2FDx2PpEyPWS+EZvcrvr9opjubjS1khLEHyACXUzhs6ImoJi3R+dcAxX5wuvQEhg
-	 bDc1CGQC+rNI+P0tEL7pFcI97ZZWuMK2hjcYuQ74eoEsEPmK656+dtO6EFYyY7xDkWV68PnC28F8
-	 QVcXabTYCVwWNfFlyq4hZNfxSxjvIf9hXTFfy+4z2ZIWLiKXLvBeZZIs9u5FJmT8uYU2AFi1d8ja
-	 WmQb1U24QeArVysoV7/afaOElbGEZptRK51F7dBKOTuxGBqz4sZxhkukVuRwZkr93r2vHyojzMuF
-	 K/5fvUetXJfqHmTLCpsmvHOQgaaMjW/i8lI12o4aHaM/W7hEsoMEZRrDE9qTuDQwERR+vzm0zS0G
-	 mgeuM08ijapmyO/Cb6QKWz7DrFtjpSAm89AZf2Rq7T7CNoifpgI7bEz0c1QKMoxntQzeI0zXd24F
-	 7KkudePX2InU0iabP2J6UHXS6swI1jHtMbrb3Ty1FHFYFaKD3zLKElG1bZDf3V9mc0PRqNkRVI5J
-	 SubW5Opks1Y+LMYWnxYJ9Qqyqm8XsROdZDVf5vKhUyT+vJZRYuDqHQ+r5h7X6XQk0eZXNlKXWFvS
-	 a5l9OsYQeNnOJIoRBxMChUnOGkpgXjatisEbgAwu6NeJVEtM7JD5Zd0i8e2Xv1fcjNbMmJI84EGc
-	 iHVWEWEaKAWWSKQxTbQm7ZUfkWk0pcYPEBzEHfLZ+lUyjvG0muxKfBF4lMFHhdh3ztBfqZ7VIi43
-	 3F7zaRgMUUDIR8J6UtH66Ik8zRQGKT2rXNdyRXvy+FQRwzZkKJ0yWd0AbvJMmGTIH0/l4BMowHtV
-	 +heYewETaagm7CfFxxek4zgMbHjYZxvrnAcWFfS7jxxGvZg0C4e4iTzxO+ddX9BKMP8eCvt48Rbz
-	 UTbfUusx93/iresHxmihJaNw2j4DpD6UxsPfoudIm587AI8qTxd/kBote8auyJOo+0FYCgb6n089
-	 7AcTDDnOohg7b9wPWXYYE0wexUbBtgbp2hfbCM+9SSgBQddk1VNpkYXfatTjE=
-X-QQ-XMRINFO: OWPUhxQsoeAVDbp3OJHYyFg=
-From: linke li <lilinke99@qq.com>
-To: 
-Cc: lilinke99@qq.com,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org
-Subject: [PATCH] ring-buffer: mark racy accesses on work->wait_index
-Date: Wed,  6 Mar 2024 10:55:34 +0800
-X-OQ-MSGID: <20240306025534.49139-1-lilinke99@qq.com>
-X-Mailer: git-send-email 2.39.3 (Apple Git-145)
+	s=arc-20240116; t=1709693905; c=relaxed/simple;
+	bh=a0OOWv2WSGmSbvPtvl2vO3P9ZD7k/by876B14jjFqP4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qt3TaEZiNNf8+ct1oLgUpxSCljoRlUoR9rktvtLl5v9NH6vZXRt04PeNyZJMiV412SCARJpDldD+zDMLJkveCShLqmg5iPMAX+wiAsHIsimuXYmFugOKH5iOSH49R++ZoyPPzYXSVXC/X4zMTfMFhkNUfrIEqTcKp/+dOO7/rwQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ylj4pOSC; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709693902;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=NpaEtz8DypAu/ov2Q0LUUMD0B3ELzhFV6wWxCNb2Rjc=;
+	b=Ylj4pOSCFcS/Fz00gBOCJLdk9EBqq2TYDAwiG5GIXEBIQHL9AtRedJ8aSp1c+0rWxc5Q3U
+	VsmH3PEyX5NSZAs8tVuebuOWhSFQ9J+jqw0ffbUH4KZ6q/uuv9IHXoH+5s5+GdrAUZpIdR
+	xVAhHzfUy/op1uZoLcpt9cFJmjrnj8M=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-222-5dusHTwePVCJ3TuZP1Wrpw-1; Tue, 05 Mar 2024 21:58:21 -0500
+X-MC-Unique: 5dusHTwePVCJ3TuZP1Wrpw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 945338007A7;
+	Wed,  6 Mar 2024 02:58:20 +0000 (UTC)
+Received: from fedora.redhat.com (unknown [10.39.192.36])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 0BA0D111DCFF;
+	Wed,  6 Mar 2024 02:58:15 +0000 (UTC)
+From: Kate Hsuan <hpa@redhat.com>
+To: Pavel Machek <pavel@ucw.cz>,
+	Lee Jones <lee@kernel.org>,
+	linux-leds@vger.kernel.org,
+	platform-driver-x86@vger.kernel.org,
+	Hans de Goede <hdegoede@redhat.com>,
+	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	=?UTF-8?q?Andr=C3=A9=20Apitzsch?= <git@apitzsch.eu>,
+	linux-kernel@vger.kernel.org
+Cc: Kate Hsuan <hpa@redhat.com>
+Subject: [PATCH v4 0/2] KTD2026 indicator LED for X86 Xiaomi Pad2
+Date: Wed,  6 Mar 2024 10:57:59 +0800
+Message-ID: <20240306025801.8814-1-hpa@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,37 +72,45 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
-Mark data races to work->wait_index as benign using READ_ONCE and WRITE_ONCE. These accesses are expected to be racy.
+This patch added the support for Xiaomi Pad2 indicator LED. This work
+included two parts.
+1. Added the KTD2026 swnode description to describe the LED controller.
+2. Migrated the original driver to fwnode to support x86 platform.
 
-Signed-off-by: linke li <lilinke99@qq.com>
----
- kernel/trace/ring_buffer.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Moreover, the LED trigger is set to bq27520-0-charging for Xiaomi Pad2
+so the LED will be turned on when charging.
 
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index 0699027b4f4c..a47e9e9750cc 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -798,7 +798,7 @@ void ring_buffer_wake_waiters(struct trace_buffer *buffer, int cpu)
- 		rbwork = &cpu_buffer->irq_work;
- 	}
- 
--	rbwork->wait_index++;
-+	WRITE_ONCE(rbwork->wait_index, READ_ONCE(rbwork->wait_index) + 1);
- 	/* make sure the waiters see the new index */
- 	smp_wmb();
- 
-@@ -906,7 +906,7 @@ int ring_buffer_wait(struct trace_buffer *buffer, int cpu, int full)
- 
- 		/* Make sure to see the new wait index */
- 		smp_rmb();
--		if (wait_index != work->wait_index)
-+		if (wait_index != READ_ONCE(work->wait_index))
- 			break;
- 	}
- 
+--
+Changes in v4:
+1. Fix double casting.
+2. Since force casting a pointer value to int will trigger a compiler
+   warning, the type of num_leds was changed to unsigned long. 
+
+Changes in v3:
+1. Drop the patch "leds-ktd202x: Skip regulator settings for Xiaomi
+   pad2"
+
+Changes in v2:
+1. Typo and style fixes.
+2. The patch 0003 skips all the regulator setup for Xiaomi pad2 since
+   KTD2026 on Xiaomi pad2 is already powered by BP25890RTWR. So, the
+   sleep can be removed when removing the module.
+
+Kate Hsuan (2):
+  platform: x86-android-tablets: other: Add swnode for Xiaomi pad2
+    indicator LED
+  leds: rgb: leds-ktd202x: Get device properties through fwnode to
+    support ACPI
+
+ drivers/leds/rgb/Kconfig                      |  1 -
+ drivers/leds/rgb/leds-ktd202x.c               | 60 ++++++++-----
+ .../platform/x86/x86-android-tablets/other.c  | 85 +++++++++++++++++++
+ .../x86/x86-android-tablets/shared-psy-info.h |  2 +
+ 4 files changed, 127 insertions(+), 21 deletions(-)
+
 -- 
-2.39.3 (Apple Git-145)
+2.43.2
 
 
