@@ -1,51 +1,60 @@
-Return-Path: <linux-kernel+bounces-93514-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93515-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E046F8730E4
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:38:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B3358730E7
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:39:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 973382818AA
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 08:38:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D0651C21CFB
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 08:39:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AC9B5D910;
-	Wed,  6 Mar 2024 08:38:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 432645D8FA;
+	Wed,  6 Mar 2024 08:38:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="ZogQy2Hp"
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MYIh9gPa"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 906515D48E;
-	Wed,  6 Mar 2024 08:38:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8A255D730;
+	Wed,  6 Mar 2024 08:38:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709714304; cv=none; b=WwTKcpaQbEqRRBywFrT7lnzxrlIn2ViyxLSkRMzMU4DxPZaFTWxD4BH9SMJbadVVtEfrRLVH6R22sAtyV8x9sM94GHFp2iUOHwPGmliql0vhFIqYsYGYnRdAPLtYmslrMrbu8vdG2D2UKgoICnBmFDU0SH/m/5yvVe0I9E/VqEc=
+	t=1709714322; cv=none; b=gaEif7Cm0nVA0BX+NXq7nJp5xCWvtn0apKxulVLDruFRZ9aZwiEZn6KUAtwpTPD7je4iaZbgLESli1nbnjQVqQy4mVsCB3nIE/KRFh88IUg1D8Kabk1LPLOOwF9ticgOD12FOyV9P2zHH6QkvQSQtCY6pfK9ALnx+0mssVp+SD8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709714304; c=relaxed/simple;
-	bh=INVur/i/2/DnqgH4GT7WzVy7FSpV2dn4I1Y4wqIez2U=;
+	s=arc-20240116; t=1709714322; c=relaxed/simple;
+	bh=L6Cn4uTVTBHKqlz1yW8rNDu318FD8WsCh6wVNeDEbwk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XSjHjU24bhibT98DdeHAUfhbXFij+DXUrBwmwccyLvpgKDOZnRa/5ha603oonHo/UYMSOBHmJtxhXp1r6Vf2ApqF9GXQ/jrN8ufA4PdeMFEkRP9RGNeapSYW5dOeU/VswU43uqHI+9NJdBpY7HthG14xAEuiL3ec9sHCIrofiLE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=ZogQy2Hp; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
-	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
-	In-Reply-To:References; bh=INVur/i/2/DnqgH4GT7WzVy7FSpV2dn4I1Y4wqIez2U=;
-	t=1709714302; x=1710146302; b=ZogQy2HpFkX3F0HNQcmnquu/XVJMOewSj1tOwKqIydcuh4v
-	Utv1m3VBl+I1xf0/K9yjb2qYoE9S7rdsNW32aEZ31sjgMyzgqIzJMJ9zQibhajuI4R3yxCOmfcr8H
-	6PwE6OIFzhE4GwB8ZQiLntBfosqXd3QJg5eopOTdOsPJ1FmgXont3mQMUho7qwYm0ZbICiTRPUepf
-	tanfMOWbIcaCyRHUAQW7p4GcNMsJUX1Als/RL3vlGQuojPMpzX1bxZ+GlRoikIU3n6l9JSMR+I6TL
-	VJjiUqKg60zFOsvYya5ZjCAHZ2CmKII3oBGiEDQ2QRri9np0/XvmVz4sEShpjq4Q==;
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1rhmn4-0004eJ-Kv; Wed, 06 Mar 2024 09:38:18 +0100
-Message-ID: <1d3ed2b9-a44e-45f9-a523-d219c141ea5a@leemhuis.info>
-Date: Wed, 6 Mar 2024 09:38:17 +0100
+	 In-Reply-To:Content-Type; b=py43/CT1vw3kQUJPZ1qpxj7crDRCjN6DJVC/gcqT/b215nkwI7YNjlRwFXdQgSe7UgvpzKRzyQr0GAgpJcNOkJnJjLRWX8uaYoUqwYAPbgh4mRi5hs/z1NftPUHe5enGUe/qq7Jkc7xK5AJug3+x1QTa5+m5ri0O9JN4ZTUGDKY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MYIh9gPa; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709714321; x=1741250321;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=L6Cn4uTVTBHKqlz1yW8rNDu318FD8WsCh6wVNeDEbwk=;
+  b=MYIh9gPa+lsUr9CMkOtLvXf2zJRusP9o/CxLdSbrkexdFrPSxntY4rM6
+   6PP94mIcTQFklmtQ6foJY1K1y1NJHCmCEOv+Rpkj17ZHHpcyaRWq5lfry
+   G9I1nfs5JYsQxV8Zq+xIsmfKOQ/9WhZr3CMYR8Zd/BxHgRAgnBSnouRNu
+   MeAog+Q4B5qnyd6d257cR9cBoSQeiyTUq4E0EgsBVP11AhKRlYEbDulA6
+   Y7iEEVxS/QnnaSUMMmvxisbIdd39ncRj0U5EabLWLl6yycjq+dwrC4+vh
+   njn9QXdTguyvom7O9bkR3HUeJ5bpowj/l7oKiyF3wK9XaryTwT+4vOvO+
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11004"; a="21837365"
+X-IronPort-AV: E=Sophos;i="6.06,207,1705392000"; 
+   d="scan'208";a="21837365"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 00:38:40 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,207,1705392000"; 
+   d="scan'208";a="47210936"
+Received: from naamamex-mobl.ger.corp.intel.com (HELO [10.12.48.215]) ([10.12.48.215])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 00:38:36 -0800
+Message-ID: <3d984c02-0154-4c72-92ee-16fa34d4b537@linux.intel.com>
+Date: Wed, 6 Mar 2024 10:38:33 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,58 +62,50 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [REGRESSION] 6.7.1: md: raid5 hang and unresponsive system;
- successfully bisected
-Content-Language: en-US, de-DE
-To: Song Liu <song@kernel.org>, Dan Moulding <dan@danm.net>
-Cc: junxiao.bi@oracle.com, gregkh@linuxfoundation.org,
- linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
- regressions@lists.linux.dev, stable@vger.kernel.org
-References: <739634c3-3e21-44dd-abb1-356cf54e54fd@oracle.com>
- <20240301231222.20120-1-dan@danm.net>
- <CAPhsuW73WZRekVSEFPgL7R-KNtd2DuhDo7oUNmjZN4Hr7w0dhg@mail.gmail.com>
-From: "Linux regression tracking (Thorsten Leemhuis)"
- <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <CAPhsuW73WZRekVSEFPgL7R-KNtd2DuhDo7oUNmjZN4Hr7w0dhg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1709714302;fc871cb1;
-X-HE-SMSGID: 1rhmn4-0004eJ-Kv
+Subject: Re: [Intel-wired-lan] [iwl-net v2 1/2] igc: Fix missing time sync
+ events
+Content-Language: en-US
+To: Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+ intel-wired-lan@lists.osuosl.org
+Cc: sasha.neftin@intel.com, netdev@vger.kernel.org, richardcochran@gmail.com,
+ kurt@linutronix.de, jesse.brandeburg@intel.com,
+ linux-kernel@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+ anthony.l.nguyen@intel.com, Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ "David S. Miller" <davem@davemloft.net>
+References: <20240220235712.241552-1-vinicius.gomes@intel.com>
+ <20240220235712.241552-2-vinicius.gomes@intel.com>
+From: "naamax.meir" <naamax.meir@linux.intel.com>
+In-Reply-To: <20240220235712.241552-2-vinicius.gomes@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On 02.03.24 01:05, Song Liu wrote:
-> On Fri, Mar 1, 2024 at 3:12 PM Dan Moulding <dan@danm.net> wrote:
->>
->>> 5. Looks like the block layer or underlying(scsi/virtio-scsi) may have
->>> some issue which leading to the io request from md layer stayed in a
->>> partial complete statue. I can't see how this can be related with the
->>> commit bed9e27baf52 ("Revert "md/raid5: Wait for MD_SB_CHANGE_PENDING in
->>> raid5d"")
->>
->> There is no question that the above mentioned commit makes this
->> problem appear. While it may be that ultimately the root cause lies
->> outside the md/raid5 code (I'm not able to make such an assessment), I
->> can tell you that change is what turned it into a runtime
->> regression. Prior to that change, I cannot reproduce the problem. One
->> of my RAID-5 arrays has been running on every kernel version since
->> 4.8, without issue. Then kernel 6.7.1 the problem appeared within
->> hours of running the new code and affected not just one but two
->> different machines with RAID-5 arrays. With that change reverted, the
->> problem is not reproducible. Then when I recently upgraded to 6.8-rc5
->> I immediately hit the problem again (because it hadn't been reverted
->> in the mainline yet). I'm now running 6.8.0-rc5 on one of my affected
->> machines without issue after reverting that commit on top of it.
-> [...]
-> I also tried again to reproduce the issue, but haven't got luck. While
-> I will continue try to repro the issue, I will also send the revert to 6.8
-> kernel.
+On 2/21/2024 01:57, Vinicius Costa Gomes wrote:
+> Fix "double" clearing of interrupts, which can cause external events
+> or timestamps to be missed.
+> 
+> The IGC_TSIRC Time Sync Interrupt Cause register can be cleared in two
+> ways, by either reading it or by writing '1' into the specific cause
+> bit. This is documented in section 8.16.1.
+> 
+> The following flow was used:
+>   1. read IGC_TSIRC into 'tsicr';
+>   2. handle the interrupts present in 'tsirc' and mark them in 'ack';
+>   3. write 'ack' into IGC_TSICR;
+> 
+> As both (1) and (3) will clear the interrupt cause, if the same
+> interrupt happens again between (1) and (3) it will be ignored,
+> causing events to be missed.
+> 
+> Remove the extra clear in (3).
+> 
+> Fixes: 2c344ae24501 ("igc: Add support for TX timestamping")
+> Reviewed-by: Kurt Kanzenbach <kurt@linutronix.de>
+> Tested-by: Kurt Kanzenbach <kurt@linutronix.de> # Intel i225
+> Signed-off-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+> ---
+>   drivers/net/ethernet/intel/igc/igc_main.c | 12 +-----------
+>   1 file changed, 1 insertion(+), 11 deletions(-)
 
-Is that revert on the way meanwhile? I'm asking because Linus might
-release 6.8 on Sunday.
-
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-If I did something stupid, please tell me, as explained on that page.
+Tested-by: Naama Meir <naamax.meir@linux.intel.com>
 
