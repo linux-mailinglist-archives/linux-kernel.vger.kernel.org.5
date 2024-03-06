@@ -1,133 +1,190 @@
-Return-Path: <linux-kernel+bounces-94430-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94432-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE0AB873FB2
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 19:37:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CF084873FB4
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 19:38:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6967F285789
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 18:37:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8AAC7286EA9
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 18:38:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3771143723;
-	Wed,  6 Mar 2024 18:26:38 +0000 (UTC)
-Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E1E3142640;
+	Wed,  6 Mar 2024 18:29:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=zytor.com header.i=@zytor.com header.b="WKyWZwZq"
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E068B14290D;
-	Wed,  6 Mar 2024 18:26:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7EB713E7E7
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 18:29:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709749598; cv=none; b=OBEACqQWnc8FrUvqNR/MQCot3BTAdJt0heWfe57V3RblxQdvCLYBCHOaXD4xZj/nmDPAOfa1ukJAPUCXpwcQ9h3BAnJAL46brvmc68PcHw1jJXJodijl36pNi3KS5aIBbmXY4TCL6QRNK9xWxws5CmoE2jjA1KycDhPcRsn3I70=
+	t=1709749763; cv=none; b=lHHvh749w7MKvXXb6iOXWRbDiGwx80dm36nAVMbKPJqtzFjvS/QtBIAVtOE4Dh8nTIN9/3N373fVhRjbjQ+Aw+H4J+3c2+3MmySMaAtPkYxr4CwY+kwS/IYBem0oOvD/lM5w13tZepbdI0B9Oa2ho+I5bnSlG6Lkbg+/B7OjBnE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709749598; c=relaxed/simple;
-	bh=T71wY2scHtTXTP4/sl05QrepXCFVXT46YKK4DY2mUDg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XdCDr4pAK2C1xqZ9InSqR1dA3AbclCw4kUchNOp2WzPdCRf4TN74XqYmASYMaEmCLyIqIaMWiwkR1fDyiO5tO2Us4Bl3NV8LRLhpagvhLvpv1zG7LyoxGPssr18W8qOy+nf0RUyIU0mq7PjQmAJ07vfPgUhzCv757yfDy+Iq5lQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-5d8b887bb0cso994118a12.2;
-        Wed, 06 Mar 2024 10:26:36 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709749596; x=1710354396;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=h9R6qqm0g/+E63vqpNrdKfjU08hftBk5a0rLrgW5krU=;
-        b=s5tZGIscCF40KeW5U+6wRzxDhXiBnmnRNdu6FNJf9nEKDrMEkK1nvah3z9/btcUhoQ
-         w40CAkok0ZOIsExAHf0Pbbivh+nJqpqJinnhetYdrgc5pzPXm2unBVzuy+zM6NaODM0L
-         PCAG8l7Rb3vSEg/9a/4VzDESa654T4qga8ZIxprd664S+MoVEsQcO2yvDK4keINI2swQ
-         jvUecKFfL/dhJ84Kv1ZIktGe41JzRnlJ/jyCIimetm2IVlNi9z4P5rpmNSiQuLX6tt6d
-         BDLaYpwL7YYyXUHSGVgkcxusEkPsDRBu3Fjh2urXpNaIFcPoHXA8ZZAPkL4v9mhv4LlU
-         e8mA==
-X-Forwarded-Encrypted: i=1; AJvYcCU8CMKUkxVVDGLOasIRNNoU5+11bU5GKSumY1ak6p04I7WouzXcPOXYHlA0sJG3Nu1Mw0rgDogTo7hKrZ9mifLHjzutO6k95eb1maakUHYUB+0jgHAVQFzHfhtz2JUkJanKGxxN1UvwU5ePQwLvLg==
-X-Gm-Message-State: AOJu0Yxs/FBga9babKTJ1Bggx2bUv75gorwgv72IbVtJtUUMlpS5Gi1f
-	OhA2RXC5EpcQl1FH38S4CnPeHSKlGuFsvR/W27QUjGXtw8fVodVr0KBdPGZ5RrG/zdsNVgyHuGF
-	IlT1VfHPHmYhu2ZA1aKrHUffPR7Q=
-X-Google-Smtp-Source: AGHT+IH7yeQ6EPQb5Dz9tV6ssROlhefmL/NLrrsFoEA04BJ4KF6ZRvT5NZoQ/7OSNL/fsMcn0GLg9I+a0XenK+g0PEA=
-X-Received: by 2002:a17:90b:892:b0:299:5401:89d2 with SMTP id
- bj18-20020a17090b089200b00299540189d2mr12323738pjb.45.1709749596082; Wed, 06
- Mar 2024 10:26:36 -0800 (PST)
+	s=arc-20240116; t=1709749763; c=relaxed/simple;
+	bh=b2NtjrcvXQJqz/AVXkk3RxGWkCw+tf+mZi/GXAeFbYE=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=I838cvVJCxhxsMLndSTK5n9kxSfE1szhnvwySQPKWXzT8g24ktp1CGqG9kR2cdh6hnUJ5IJKuqf3J0jT/EpteGPF0WoMPOKSSBMXz4xP1uh6u0cgDcy13v7VPQvqgBb+n1KQdBQAzQFO0+9N5s/VdZ8yCdMyYqUvHAuNhjYROzo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=WKyWZwZq; arc=none smtp.client-ip=198.137.202.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Received: from [192.168.7.187] ([71.202.166.45])
+	(authenticated bits=0)
+	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 426ISQw91528489
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Wed, 6 Mar 2024 10:28:27 -0800
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 426ISQw91528489
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2024021201; t=1709749708;
+	bh=XQAir3QRa5LQDi4wpuJlDHfgaqnwTrNgWliu5M/6UP4=;
+	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+	b=WKyWZwZqRkd0DiLDAyMi5GM+f+MfmhKuUh/wbJdQIAdwUtv0kKzPL6nlh/4toQG/H
+	 PF5Sszl+gtSmhdTPeBuBZoPXgDpednmhUbwDvyXHs6II7gdoA1E3zeg/PhwZ73dJls
+	 GECwKlguNNbFXv1k5YyqHSQhjEfuQ02Rat/dl18qx/tXfRNV5ORM+CzK6AH1MFtJDx
+	 rs8r0MocTOaRThspYxT2xB/XSyXVwWNzICsGv2o8ILA5qwuJnnJhE2et++7cPh8dEr
+	 ktx8Vo53tnvOQQ6FPaZgfGQJY1PQosR7hboXEUQH0aSHWuBY857Qkl3g8TD3kGw9s/
+	 7BmBpxRWbTEIQ==
+Message-ID: <f982f5ad-36be-4173-a15b-b898252c103c@zytor.com>
+Date: Wed, 6 Mar 2024 10:28:25 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240304230815.1440583-1-namhyung@kernel.org>
-In-Reply-To: <20240304230815.1440583-1-namhyung@kernel.org>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Wed, 6 Mar 2024 10:26:24 -0800
-Message-ID: <CAM9d7chkbcV14PtjhretGLkhUh2mF7sGx9Y0fvG3kZE8aUqpeg@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] perf annotate: Improve memory usage for symbol histogram
-To: Arnaldo Carvalho de Melo <acme@kernel.org>, Ian Rogers <irogers@google.com>
-Cc: Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, linux-perf-users@vger.kernel.org, 
-	Andi Kleen <ak@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/1] x86/fred: Fix init_task thread stack pointer
+ initialization
+Content-Language: en-US
+From: Xin Li <xin@zytor.com>
+To: linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org
+Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        jgross@suse.com, boris.ostrovsky@oracle.com, arnd@arndb.de,
+        andrew.cooper3@citrix.com, brgerst@gmail.com
+References: <20240304083333.449322-1-xin@zytor.com>
+Autocrypt: addr=xin@zytor.com; keydata=
+ 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
+ l75w1xInsg==
+In-Reply-To: <20240304083333.449322-1-xin@zytor.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Arnaldo,
+On 3/4/2024 12:33 AM, Xin Li (Intel) wrote:
+> As TOP_OF_KERNEL_STACK_PADDING is defined as 0 on x86_64, no one noticed
+> it's missing in the calculation of the .sp field in INIT_THREAD until it
+> is defined to 16 with CONFIG_X86_FRED=y.
+> 
+> Subtract TOP_OF_KERNEL_STACK_PADDING from the .sp field of INIT_THREAD.
+> 
+> Fixes: 65c9cc9e2c14 ("x86/fred: Reserve space for the FRED stack frame")
+> Fixes: 3adee777ad0d ("x86/smpboot: Remove initial_stack on 64-bit")
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Closes: https://lore.kernel.org/oe-lkp/202402262159.183c2a37-lkp@intel.com
+> Signed-off-by: Xin Li (Intel) <xin@zytor.com>
+> ---
 
-On Mon, Mar 4, 2024 at 3:08=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> w=
-rote:
->
-> Hello,
->
-> This is another series of memory optimization in perf annotate.
->
-> v2 changes:
->  * fix a bug when offset is bigger than 16 bits
+Should this fix, if it looks good, be included for the coming merge
+window?
 
-Are you ok with this now?
+Thanks!
+     Xin
 
-Thanks,
-Namhyung
+> 
+> Change Since v1:
+> * Apply offset TOP_OF_KERNEL_STACK_PADDING to all uses of __end_init_task
+>    (Brian Gerst).
+> ---
+>   arch/x86/include/asm/processor.h | 6 ++++--
+>   arch/x86/kernel/head_64.S        | 3 ++-
+>   arch/x86/xen/xen-head.S          | 2 +-
+>   3 files changed, 7 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
+> index 26620d7642a9..17fe81998ce4 100644
+> --- a/arch/x86/include/asm/processor.h
+> +++ b/arch/x86/include/asm/processor.h
+> @@ -664,8 +664,10 @@ static __always_inline void prefetchw(const void *x)
+>   #else
+>   extern unsigned long __end_init_task[];
+>   
+> -#define INIT_THREAD {							    \
+> -	.sp	= (unsigned long)&__end_init_task - sizeof(struct pt_regs), \
+> +#define INIT_THREAD {							\
+> +	.sp	= (unsigned long)&__end_init_task -			\
+> +		  TOP_OF_KERNEL_STACK_PADDING -				\
+> +		  sizeof(struct pt_regs),				\
+>   }
+>   
+>   extern unsigned long KSTK_ESP(struct task_struct *task);
+> diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
+> index d4918d03efb4..c38e43589046 100644
+> --- a/arch/x86/kernel/head_64.S
+> +++ b/arch/x86/kernel/head_64.S
+> @@ -26,6 +26,7 @@
+>   #include <asm/apicdef.h>
+>   #include <asm/fixmap.h>
+>   #include <asm/smp.h>
+> +#include <asm/thread_info.h>
+>   
+>   /*
+>    * We are not able to switch in one step to the final KERNEL ADDRESS SPACE
+> @@ -66,7 +67,7 @@ SYM_CODE_START_NOALIGN(startup_64)
+>   	mov	%rsi, %r15
+>   
+>   	/* Set up the stack for verify_cpu() */
+> -	leaq	(__end_init_task - PTREGS_SIZE)(%rip), %rsp
+> +	leaq	(__end_init_task - TOP_OF_KERNEL_STACK_PADDING - PTREGS_SIZE)(%rip), %rsp
+>   
+>   	leaq	_text(%rip), %rdi
+>   
+> diff --git a/arch/x86/xen/xen-head.S b/arch/x86/xen/xen-head.S
+> index a0ea285878db..04101b984f24 100644
+> --- a/arch/x86/xen/xen-head.S
+> +++ b/arch/x86/xen/xen-head.S
+> @@ -49,7 +49,7 @@ SYM_CODE_START(startup_xen)
+>   	ANNOTATE_NOENDBR
+>   	cld
+>   
+> -	leaq	(__end_init_task - PTREGS_SIZE)(%rip), %rsp
+> +	leaq	(__end_init_task - TOP_OF_KERNEL_STACK_PADDING - PTREGS_SIZE)(%rip), %rsp
+>   
+>   	/* Set up %gs.
+>   	 *
+> 
+> base-commit: e13841907b8fda0ae0ce1ec03684665f578416a8
 
->
->
-> When perf annotate (or perf report/top with TUI) processes samples, it
-> needs to save the sample period (overhead) at instruction level.  For
-> now, it allocates an array to do that for the whole symbol when it
-> hits any new symbol.  This comes with a lot of waste since samples can
-> be very few and instructions span to multiple bytes.
->
-> For example, when a sample hits symbol 'foo' that has size of 100 and
-> that's the only sample falls into the symbol.  Then it needs to
-> allocate a symbol histogram (sym_hist) and the its size would be
->
->   16 (header) + 16 (sym_hist_entry) * 100 (symbol_size) =3D 1616
->
-> But actually it just needs 32 (header + sym_hist_entry) bytes.  Things
-> get worse if the symbol size is bigger (and it doesn't have many
-> samples in different places).  Also note that it needs a separate
-> histogram for each event.
->
-> Let's split the sym_hist_entry and have it in a hash table so that it
-> can allocate only necessary entries.
->
-> No functional change intended.
->
-> Thanks,
-> Namhyung
->
->
-> Namhyung Kim (4):
->   perf annotate: Add a hashmap for symbol histogram
->   perf annotate: Calculate instruction overhead using hashmap
->   perf annotate: Remove sym_hist.addr[] array
->   perf annotate: Add comments in the data structures
->
->  tools/perf/ui/gtk/annotate.c |  14 ++++-
->  tools/perf/util/annotate.c   | 116 ++++++++++++++++++++++-------------
->  tools/perf/util/annotate.h   |  86 +++++++++++++++++++++++---
->  3 files changed, 159 insertions(+), 57 deletions(-)
->
-> --
-> 2.44.0.rc1.240.g4c46232300-goog
->
->
 
