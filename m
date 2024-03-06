@@ -1,375 +1,170 @@
-Return-Path: <linux-kernel+bounces-94327-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94328-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E51FE873D6E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 18:22:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 553CD873D73
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 18:24:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 124751C211E6
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:22:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 93E421F23BE1
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:24:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C822F13BAD7;
-	Wed,  6 Mar 2024 17:22:06 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F87313958C;
-	Wed,  6 Mar 2024 17:22:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709745726; cv=none; b=lwRE9c9AhEvlzAN1k2J9erxn5n1e18tAY/iphRmok6Q2Lr2mmES/NtacQZdeneZeVeLR+cIWp5kjfpSrbr7VDjCSnlfSOnMNG5ZrWmPElWlP57RZiqvC6o6w7Ud9OrI1Q1q0FrUt4euuyes3Tk3B8Uu1noiphmYDWWMrMfhL0WQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709745726; c=relaxed/simple;
-	bh=DY6cFZTmgUJJaTEAtByqdoN93dmEbV+D1IkvVR6D0/g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=HkK1/yi9DCLLu4S9ATmXcfwpu4+5qC8qz6Glekk14+jNyaS0SJfdQDb0J39dmTpIc/r+/roIndQ5i0GAaVxiA3OfH8LixFDHD2yJeXmBDCGqM6CpKRikoaf80CRECko8e9QwpoiZ8Sp63PPo2buv44kgiNecr3hWvBS3GL1JB/M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 92A8E1FB;
-	Wed,  6 Mar 2024 09:22:38 -0800 (PST)
-Received: from [10.57.51.153] (unknown [10.57.51.153])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4B3443F738;
-	Wed,  6 Mar 2024 09:21:59 -0800 (PST)
-Message-ID: <2bd6ed98-fd58-42ef-8b86-fddac28df5c7@arm.com>
-Date: Wed, 6 Mar 2024 17:21:57 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1509A13BAD2;
+	Wed,  6 Mar 2024 17:24:07 +0000 (UTC)
+Received: from CHN02-BJS-obe.outbound.protection.partner.outlook.cn (mail-bjschn02on2135.outbound.protection.partner.outlook.cn [139.219.17.135])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FD17605DC;
+	Wed,  6 Mar 2024 17:24:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.17.135
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709745846; cv=fail; b=W0b/EDw3F3Cri9dox6z+wX8ea+u8og+TqRPsechZ+ZKzEmEOv2b+ry71Qa5RDJKYjZ+Ift8dDHdNPgaXEujn7zFQX58V9HLF5ujmQZbq4EjGlyX6bfOer6YCZm7SWVMfDv/p+u1jy+6IKYTbgSsbj2cTD3DvEEETSjKBEVFxtUk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709745846; c=relaxed/simple;
+	bh=ruLSbQZfw4F7ha7h+7BUfNVIlsMkIacYgq+qnvgPgQk=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=pawhfh3YRO9+fzr7nsd6/jRedz38CaZdbg+r8TE2IckDBS3oqRDUmTBr1eFrKzCUcHcQPoYIsVuHCbNFRYzkkauTxgSJfulM0fieZKoy0bvnAeASLpXNDQIgiotuvExZ5pZAUENqVs5nUuoX2RFQY824+2LioRAZDXqWjdkrQoo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.17.135
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nA9y2LV8QqJJwyZG6VML+ebxhu1x512Ke1raKIQFI/iH07oGbnToGA6F1DAQldweUcD7Efel/0LnSsxnKra7fyKpJcEnrABPTPzceYKuTDS8oWkS0NpVkOxK2K2tRy1uUXImT5+sE//6yBATq+NHmSV42oUnRpINXhbr8WbhbGPAfvDxUCX26Hubd9h0g8t5+uibugbAiOswVvhuM8HRqD5n4CCXSPYxIhR2xuLWCYmqJzEISsau3w7X1hn2en+vJR7z/s2jJmPzJP4FEkvrOwpEjnVZNAtAeq6vP76+shHyF9N/WCvBrggR6546bwKl3sHZ2Vs5bbU0HghL4hYFOQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=rjPu3HmoRqXxTMrq8/4Xh/+FRgsoE/H1VR/fH/N3uEM=;
+ b=nqNN+PoSk4ApZytMsykfFIJYqb6f91d4wRBTG0U2SH4Ncs3/RuV8nKCeI2B1wkI+wB5hBDwyDz9ygnlwHy9Wntpf1y8Bhw84eZNXu/CFMwyHn5SWsr5aNdU8XHN3El0Eih8ykhsWORiHoVtFagl5xcEin2q9KprK0FBSQhUp+U+MstOJpAtwv5su2wBL2Yc/ZHjtsB/TSKvgCPpewsAgHWqpjUgS0wSL6Vm9rqiyk8A6i77OJHaP2rDtK4zmDCzhLEb9U44bxByBtLRXmBt1YWT5ZPGlRpsbm84OzF1vPidEWEZ78uhbvYw4PTOUQGY+/F9ULWMLWilMlGyCXsw28w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=starfivetech.com; dmarc=pass action=none
+ header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=starfivetech.com;
+Received: from ZQZPR01MB0979.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c550:f::12) by ZQZPR01MB1043.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c550:f::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.41; Wed, 6 Mar
+ 2024 17:23:58 +0000
+Received: from ZQZPR01MB0979.CHNPR01.prod.partner.outlook.cn
+ ([fe80::f2cf:d7c2:e40b:d36e]) by
+ ZQZPR01MB0979.CHNPR01.prod.partner.outlook.cn ([fe80::f2cf:d7c2:e40b:d36e%5])
+ with mapi id 15.20.7270.046; Wed, 6 Mar 2024 17:23:58 +0000
+From: Ley Foon Tan <leyfoon.tan@starfivetech.com>
+To: Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Albert Ou <aou@eecs.berkeley.edu>
+Cc: atishp@rivosinc.com,
+	Samuel Holland <samuel.holland@sifive.com>,
+	Anup Patel <apatel@ventanamicro.com>,
+	linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Ley Foon Tan <lftan.linux@gmail.com>,
+	stable@vger.kernel.org
+Subject: [PATCH v3] clocksource: timer-riscv: Clear timer interrupt on timer initialization
+Date: Thu,  7 Mar 2024 01:23:30 +0800
+Message-ID: <20240306172330.255844-1-leyfoon.tan@starfivetech.com>
+X-Mailer: git-send-email 2.43.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: BJSPR01CA0012.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c211:c::24) To ZQZPR01MB0979.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c550:f::12)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V5 07/11] coresight: catu: Move ACPI support from AMBA
- driver to platform driver
-Content-Language: en-GB
-To: Anshuman Khandual <anshuman.khandual@arm.com>,
- linux-arm-kernel@lists.infradead.org
-Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
- Sudeep Holla <sudeep.holla@arm.com>, Mike Leach <mike.leach@linaro.org>,
- James Clark <james.clark@arm.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>, linux-acpi@vger.kernel.org,
- linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
- linux-stm32@st-md-mailman.stormreply.com
-References: <20240222082142.3663983-1-anshuman.khandual@arm.com>
- <20240222082142.3663983-8-anshuman.khandual@arm.com>
- <c43fcd3a-9813-4e1f-adb3-25cc32c54438@arm.com>
- <c52865b2-8608-4a47-967a-6cf3e11b197a@arm.com>
-From: Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <c52865b2-8608-4a47-967a-6cf3e11b197a@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: ZQZPR01MB0979:EE_|ZQZPR01MB1043:EE_
+X-MS-Office365-Filtering-Correlation-Id: bc5e1a72-6791-4f6e-1b24-08dc3e023529
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	iH39KKqYwZopLnHPLu+H9Wfea7LrAtSoEwTfOlbN60JngROcpA9wHX0bdOmHzklQKHbAcbLzMZLRRLAXwwRHk5LEKfjdmfAsR8OkNitm9DicpgTDRv9J5xzstR8U+7bM+H0PgqahCb4joMBlc1ICIf4/cj5GPkTwQ4de4C6JpkBoQcbj8bDztzaEngB0EfjFMs9Mm94IghDyCizuyPoc0YA//IGEdvZbxyjR4iOuzjoHtZEqO/UomJTBsR5LiLscCzbDD99Hy//FBuYjkvlTBP8vMUTZegMqA8zjOqxAYDzP5MOktApyxYnfcAFxh4s8neUH68+zaczJyUETaYLF8k/Gu6GYNXqG3GNWarKzijVKbAhLzSF2fRbXd2iw6EnWyUU6MsiRCmPS1vK8TL3WdJa+r+5vJEG4vbdwsJnmiJ62bP2MkI95RjMaG7my167Mm+5qGf8PJuEcdvJ0am3CXsBmst+8+cC4P393c0zp2iCP9alqNHUkKFlaiD2xK/itMHtPS5U79b/EHUll2KsdcSjzlJljbi9RWtHImeNpPLdnmRu8OtjOvCVKuFtZlY8wsRjKg3G+uLPQUxoSULOEdH11d1cMaayn9byxPxcKWfWVDyqaj2KYnIuo8hnEzSjl
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:ZQZPR01MB0979.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(41320700004)(38350700005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?s12m7vI4iOByP3EoE/70ntbeK5DYTdHCdSAvC8RjeATvlQEP+i+QJf1o+72e?=
+ =?us-ascii?Q?2/8vtKgcb2RHIRGY2u+P9M95Z/hL4U0/ttHy0FhD9U9B+pQ6cvgAbZ/Bx9d6?=
+ =?us-ascii?Q?cWcrVkfkdKBi4zdm1kE+du+bwDZhf/89aHCpHMP9VKLyyPP3bVIbnZ3Tz3M8?=
+ =?us-ascii?Q?dKqNU5iZtwERjS7BDT+vmBIwg+hv/iBzVQ8Xq5tGj7C+jxI9Jm8ZR+t2sVRy?=
+ =?us-ascii?Q?vB4+2mdTccxp63YvyHaOxOL3YJu8NL7o8Pqok5G0esMZz9CfFDS3xTVOYxxQ?=
+ =?us-ascii?Q?Jd4HU3XlWKkvvCK310uDL9Qqy0awa+w7EKmfwL7gUmqCrFx2ohGUPg4TMxiZ?=
+ =?us-ascii?Q?SZCiZ9T1NPAAVf/L2IvlvUSRxDnqd/TtOzLPWHbX5SIKE9oNUqbNIJet9rvJ?=
+ =?us-ascii?Q?5zH+yJDtlgWls+3X2Sa04wOYWM9xpLNki+K79frtEhLKYiIkr8FetGq6Q2t3?=
+ =?us-ascii?Q?i5ppwo4RDxlm6wKkgf/1r3SVmbgg3WL8nwePxDcg3xhoMaeJMJPjLHmr5FUo?=
+ =?us-ascii?Q?PoUcj/bwX8cQemBytq1ZWJ0FykhiuiE5FiAgujWVoUA4d5kvcQ1ARAuoQtZy?=
+ =?us-ascii?Q?6klcnnzwaRWmVPxBgiE1KsKjHwJgpycCuy36eNGDCJ9b4EwskjCCB9eUzw2V?=
+ =?us-ascii?Q?H2uZ9arueyHHMxeFeyGTLdyHfgjcELviD3EFUSQQurL5Z01Kg/7+c5niuvmi?=
+ =?us-ascii?Q?RqX1OsctJ+FfP5iTVMqjiCP5ucBLB+tesPyE8V5Ztw8IrhJZU3Yb8DhIyBr9?=
+ =?us-ascii?Q?2yAZ6Lie7HZzoPh3ububat7EfKpdloB9G4C3ZTHt19loyT++cf3OE9Jf0clc?=
+ =?us-ascii?Q?0iOt28QyuPqOlJ5xgoFMIeOw+msUclHK+7B/LkTfig3tOwi3pp2Q8E+9Urlp?=
+ =?us-ascii?Q?sYDjl71S31PwKUAGaOD7dKrpnA0sqmhkYjM18iHxWy/7jo8CO9U29IX5xrmQ?=
+ =?us-ascii?Q?Im+DhR97paeZvIrtgoERjuRgleLYYedInHzMMth3JaVA6sVxkPaHCt55sF3Z?=
+ =?us-ascii?Q?382PqKEfs3NIjsO6EJAKFfJU5dZqNyqZzzibxbc0NCa3mxOVRcs9T/kBWko9?=
+ =?us-ascii?Q?WOHdnZoJGK6xQBw3KBRXdj0+9mhNT7ga0jcYZ31EtrZzXSnDJp7JQRRlbix+?=
+ =?us-ascii?Q?uHrQbVOxmMdvhFzLME4cUGNdMIL/67x/+YbbJDjrVKj8EhbuXyWRNysVn4vW?=
+ =?us-ascii?Q?iWpZAzBvLjGpGt9xhEpMkoeIVd50LSc6dcR9yqSEPnMY92hM9L06FtxEtHId?=
+ =?us-ascii?Q?EcI2K53m1qffg82B5fldr8OqmakLBRTT3o5nZKEye+idQCRvWYeMezy8Tlva?=
+ =?us-ascii?Q?hQHRgup/r7O95OCLftZlceU/OiBA7dobjK5ze/Sgs3xpz8/YeXskz5mxXVbB?=
+ =?us-ascii?Q?FLXSaXD6b/6GM0HoJt65VE1DORjFrJSZh3zdNykCJPMQdnsPwL+7nA9wFKp1?=
+ =?us-ascii?Q?oD0sf1GQnLLJdiZ3VTBl2Rrpa1EwUWGKciEP2TE07X63PrGxZcM4qMDckWK3?=
+ =?us-ascii?Q?miciC0MnMYH7RKnAg5PXRNjTz8tbWaD/E1ZdRjqfV209UEhmMSlpqYLXn9hK?=
+ =?us-ascii?Q?5JD2Mn2INKXVkUYa6dmBUPTkFAYKZ4k/NjHSAnSPAzqUGuGp0MX4OHbSwPue?=
+ =?us-ascii?Q?cmq6s2KfocuGkDyaoba+St4=3D?=
+X-OriginatorOrg: starfivetech.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bc5e1a72-6791-4f6e-1b24-08dc3e023529
+X-MS-Exchange-CrossTenant-AuthSource: ZQZPR01MB0979.CHNPR01.prod.partner.outlook.cn
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Mar 2024 17:23:58.4846
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3Jmw5zhTrAkPDbGFlCtDB7So/u5ZcrMIwoOOmMCsNaMPSbG7/MCQgLOb8J9TP2OoeefTZ1v5AosMUidI62cHs+ABNjQCpLI8u5XHzrjDQXA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: ZQZPR01MB1043
 
-On 06/03/2024 06:14, Anshuman Khandual wrote:
-> 
-> 
-> On 3/5/24 23:02, Suzuki K Poulose wrote:
->> On 22/02/2024 08:21, Anshuman Khandual wrote:
->>> Add support for the catu devices in a new platform driver, which can then
->>> be used on ACPI based platforms. This change would now allow runtime power
->>> management for ACPI based systems. The driver would try to enable the APB
->>> clock if available. But first this renames and then refactors catu_probe()
->>> and catu_remove(), making sure it can be used both for platform and AMBA
->>> drivers. This also moves pm_runtime_put() from catu_probe() to the callers.
->>>
->>> Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
->>> Cc: Sudeep Holla <sudeep.holla@arm.com>
->>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
->>> Cc: Mike Leach <mike.leach@linaro.org>
->>> Cc: James Clark <james.clark@arm.com>
->>> Cc: linux-acpi@vger.kernel.org
->>> Cc: linux-arm-kernel@lists.infradead.org
->>> Cc: linux-kernel@vger.kernel.org
->>> Cc: coresight@lists.linaro.org
->>> Acked-by: Sudeep Holla <sudeep.holla@arm.com> # For ACPI related changes
->>> Reviewed-by: James Clark <james.clark@arm.com>
->>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->>> ---
->>> Changes in V5:
->>>
->>> - Updated commit message regarding catu_probe/remove() refactoring and renaming
->>>
->>>    drivers/acpi/arm64/amba.c                    |   1 -
->>>    drivers/hwtracing/coresight/coresight-catu.c | 142 ++++++++++++++++---
->>>    drivers/hwtracing/coresight/coresight-catu.h |   1 +
->>>    3 files changed, 124 insertions(+), 20 deletions(-)
->>>
->>> diff --git a/drivers/acpi/arm64/amba.c b/drivers/acpi/arm64/amba.c
->>> index afb6afb66967..587061b0fd2f 100644
->>> --- a/drivers/acpi/arm64/amba.c
->>> +++ b/drivers/acpi/arm64/amba.c
->>> @@ -27,7 +27,6 @@ static const struct acpi_device_id amba_id_list[] = {
->>>        {"ARMHC503", 0}, /* ARM CoreSight Debug */
->>>        {"ARMHC979", 0}, /* ARM CoreSight TPIU */
->>>        {"ARMHC97C", 0}, /* ARM CoreSight SoC-400 TMC, SoC-600 ETF/ETB */
->>> -    {"ARMHC9CA", 0}, /* ARM CoreSight CATU */
->>>        {"", 0},
->>>    };
->>>    diff --git a/drivers/hwtracing/coresight/coresight-catu.c b/drivers/hwtracing/coresight/coresight-catu.c
->>> index 3949ded0d4fa..a3ea46b53898 100644
->>> --- a/drivers/hwtracing/coresight/coresight-catu.c
->>> +++ b/drivers/hwtracing/coresight/coresight-catu.c
->>> @@ -7,6 +7,8 @@
->>>     * Author: Suzuki K Poulose <suzuki.poulose@arm.com>
->>>     */
->>>    +#include <linux/platform_device.h>
->>> +#include <linux/acpi.h>
->>>    #include <linux/amba/bus.h>
->>>    #include <linux/device.h>
->>>    #include <linux/dma-mapping.h>
->>> @@ -502,28 +504,20 @@ static const struct coresight_ops catu_ops = {
->>>        .helper_ops = &catu_helper_ops,
->>>    };
->>>    -static int catu_probe(struct amba_device *adev, const struct amba_id *id)
->>> +static int __catu_probe(struct device *dev, struct resource *res)
->>>    {
->>>        int ret = 0;
->>>        u32 dma_mask;
->>> -    struct catu_drvdata *drvdata;
->>> +    struct catu_drvdata *drvdata = dev_get_drvdata(dev);
->>>        struct coresight_desc catu_desc;
->>>        struct coresight_platform_data *pdata = NULL;
->>> -    struct device *dev = &adev->dev;
->>>        void __iomem *base;
->>>          catu_desc.name = coresight_alloc_device_name(&catu_devs, dev);
->>>        if (!catu_desc.name)
->>>            return -ENOMEM;
->>>    -    drvdata = devm_kzalloc(dev, sizeof(*drvdata), GFP_KERNEL);
->>> -    if (!drvdata) {
->>> -        ret = -ENOMEM;
->>> -        goto out;
->>> -    }
->>> -
->>> -    dev_set_drvdata(dev, drvdata);
->>> -    base = devm_ioremap_resource(dev, &adev->res);
->>> +    base = devm_ioremap_resource(dev, res);
->>>        if (IS_ERR(base)) {
->>>            ret = PTR_ERR(base);
->>>            goto out;
->>> @@ -567,19 +561,39 @@ static int catu_probe(struct amba_device *adev, const struct amba_id *id)
->>>        drvdata->csdev = coresight_register(&catu_desc);
->>>        if (IS_ERR(drvdata->csdev))
->>>            ret = PTR_ERR(drvdata->csdev);
->>> -    else
->>> -        pm_runtime_put(&adev->dev);
->>>    out:
->>>        return ret;
->>>    }
->>>    -static void catu_remove(struct amba_device *adev)
->>> +static int catu_probe(struct amba_device *adev, const struct amba_id *id)
->>>    {
->>> -    struct catu_drvdata *drvdata = dev_get_drvdata(&adev->dev);
->>> +    struct catu_drvdata *drvdata;
->>> +    int ret;
->>> +
->>> +    drvdata = devm_kzalloc(&adev->dev, sizeof(*drvdata), GFP_KERNEL);
->>> +    if (!drvdata)
->>> +        return -ENOMEM;
->>> +
->>> +    amba_set_drvdata(adev, drvdata);
->>> +    ret = __catu_probe(&adev->dev, &adev->res);
->>> +    if (!ret)
->>> +        pm_runtime_put(&adev->dev);
->>> +
->>> +    return ret;
->>> +}
->>> +
->>> +static void __catu_remove(struct device *dev)
->>> +{
->>> +    struct catu_drvdata *drvdata = dev_get_drvdata(dev);
->>>          coresight_unregister(drvdata->csdev);
->>>    }
->>>    +static void catu_remove(struct amba_device *adev)
->>> +{
->>> +    __catu_remove(&adev->dev);
->>> +}
->>> +
->>>    static struct amba_id catu_ids[] = {
->>>        CS_AMBA_ID(0x000bb9ee),
->>>        {},
->>> @@ -598,13 +612,103 @@ static struct amba_driver catu_driver = {
->>>        .id_table            = catu_ids,
->>>    };
->>>    +static int catu_platform_probe(struct platform_device *pdev)
->>> +{
->>> +    struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->>> +    struct catu_drvdata *drvdata;
->>> +    int ret = 0;
->>> +
->>> +    drvdata = devm_kzalloc(&pdev->dev, sizeof(*drvdata), GFP_KERNEL);
->>> +    if (!drvdata)
->>> +        return -ENOMEM;
->>> +
->>> +    drvdata->pclk = coresight_get_enable_apb_pclk(&pdev->dev);
->>> +    if (IS_ERR(drvdata->pclk))
->>> +        return -ENODEV;
->>
->>
->> ---8>---
->>
->>> +
->>> +    if (res) {
->>> +        drvdata->base = devm_ioremap_resource(&pdev->dev, res);
->>> +        if (IS_ERR(drvdata->base)) {
->>> +            clk_put(drvdata->pclk);
->>> +            return PTR_ERR(drvdata->base);
->>> +        }
->>> +    }
->>
->> ---<8---
->>
->> The above section seems unncessary as we already try to map the base in __catu_probe ?
-> 
-> Agreed, though it seems unnecessary, there is a small difference in there. In the platform
-> driver case i.e catu_platform_probe(), clk_put() is called on platform clock drvdata->pclk
-> (just enabled earlier) for cases when devm_ioremap_resource() fails.
-> 
-> To remove this redundancy, let's move devm_ioremap_resource() into it's AMBA caller i.e
-> catu_probe() thus dropping struct resource argument from __catu_probe(). Similar situation
-> is present in coresight-cpu-debug driver as well, will fix that.
-> 
-> But there are some other drivers in the series where coresight_get_enable_apb_pclk() called
-> on 'drvdata->pclk' and devm_ioremap_resource() is attempted inside the factored __xxx_probe()
-> function which is common for both AMBA and platform drivers.
-> 
-> Such drivers are ...
-> 
-> - tpiu
-> - tmc
-> - stm
-> - replicator
-> 
-> IMHO it would be better to follow same scheme for all drivers in the series. Please do let
-> me know which method will be preferred.
+In the RISC-V specification, the stimecmp register doesn't have a default
+value. To prevent the timer interrupt from being triggered during timer
+initialization, clear the timer interrupt by writing stimecmp with a
+maximum value.
 
-Lets pass the "res" to the common probe and deal it there.
+Fixes: 9f7a8ff6391f ("RISC-V: Prefer sstc extension if available")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Ley Foon Tan <leyfoon.tan@starfivetech.com>
 
-> 
->>
->>> +
-> 
->>> +    pm_runtime_get_noresume(&pdev->dev);
->>> +    pm_runtime_set_active(&pdev->dev);
->>> +    pm_runtime_enable(&pdev->dev);
->>> +
->>> +    dev_set_drvdata(&pdev->dev, drvdata);
->>> +    ret = __catu_probe(&pdev->dev, res);
->>> +    pm_runtime_put(&pdev->dev);
->>> +    if (ret)
->>> +        pm_runtime_disable(&pdev->dev);
->>> +
->>> +    return ret;
->>> +}
->>> +
->>> +static int catu_platform_remove(struct platform_device *pdev)
->>> +{
->>> +    struct catu_drvdata *drvdata = dev_get_drvdata(&pdev->dev);
->>> +
->>> +    if (drvdata)
->>> +        __catu_remove(&pdev->dev);
->>
->> I don't understand the need for if () check here (and on all the other drivers). Even if we have a drvdata != NULL, what guarantees that
->> the drvdata->csdev is valid (which is used in xx_remove) ?
-> 
-> Agreed, although drvdata is derived in __xxx_remove() functions, a pre-check here is not
-> required - similar to the AMBA remove path. Sure, will drop them across drivers.
+---
+v3:
+Resolved comment from Samuel Holland.
+- Function riscv_clock_event_stop() needs to be called before
+  clockevents_config_and_register(), move riscv_clock_event_stop().
 
-No, my point is : Is there a case where :
+v2:
+Resolved comments from Anup.
+- Moved riscv_clock_event_stop() to riscv_timer_starting_cpu().
+- Added Fixes tag
+---
+ drivers/clocksource/timer-riscv.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-1) drvdata == NULL, but we have a device to do some cleanup ?
-2) If drvdata != NULL, but drvdata->csdev is not valid, because we 
-failed to register the coresight device ?
-
-
-Suzuki
-
-
-> 
->>
->> Suzuki
->>
->>> +
->>> +    pm_runtime_disable(&pdev->dev);
->>> +    if (drvdata && !IS_ERR_OR_NULL(drvdata->pclk))
->>> +        clk_put(drvdata->pclk);
->>> +    return 0;
->>> +}
->>> +
->>> +#ifdef CONFIG_PM
->>> +static int catu_runtime_suspend(struct device *dev)
->>> +{
->>> +    struct catu_drvdata *drvdata = dev_get_drvdata(dev);
->>> +
->>> +    if (drvdata && !IS_ERR_OR_NULL(drvdata->pclk))
->>> +        clk_disable_unprepare(drvdata->pclk);
->>> +    return 0;
->>> +}
->>> +
->>> +static int catu_runtime_resume(struct device *dev)
->>> +{
->>> +    struct catu_drvdata *drvdata = dev_get_drvdata(dev);
->>> +
->>> +    if (drvdata && !IS_ERR_OR_NULL(drvdata->pclk))
->>> +        clk_prepare_enable(drvdata->pclk);
->>> +    return 0;
->>> +}
->>> +#endif
->>> +
->>> +static const struct dev_pm_ops catu_dev_pm_ops = {
->>> +    SET_RUNTIME_PM_OPS(catu_runtime_suspend, catu_runtime_resume, NULL)
->>> +};
->>> +
->>> +#ifdef CONFIG_ACPI
->>> +static const struct acpi_device_id catu_acpi_ids[] = {
->>> +    {"ARMHC9CA", 0}, /* ARM CoreSight CATU */
->>> +    {},
->>> +};
->>> +
->>> +MODULE_DEVICE_TABLE(acpi, catu_acpi_ids);
->>> +#endif
->>> +
->>> +static struct platform_driver catu_platform_driver = {
->>> +    .probe    = catu_platform_probe,
->>> +    .remove    = catu_platform_remove,
->>> +    .driver    = {
->>> +        .name            = "coresight-catu-platform",
->>> +        .acpi_match_table    = ACPI_PTR(catu_acpi_ids),
->>> +        .suppress_bind_attrs    = true,
->>> +        .pm            = &catu_dev_pm_ops,
->>> +    },
->>> +};
->>> +
->>>    static int __init catu_init(void)
->>>    {
->>>        int ret;
->>>    -    ret = amba_driver_register(&catu_driver);
->>> -    if (ret)
->>> -        pr_info("Error registering catu driver\n");
->>> +    ret = coresight_init_driver("catu", &catu_driver, &catu_platform_driver);
->>>        tmc_etr_set_catu_ops(&etr_catu_buf_ops);
->>>        return ret;
->>>    }
->>> @@ -612,7 +716,7 @@ static int __init catu_init(void)
->>>    static void __exit catu_exit(void)
->>>    {
->>>        tmc_etr_remove_catu_ops();
->>> -    amba_driver_unregister(&catu_driver);
->>> +    coresight_remove_driver(&catu_driver, &catu_platform_driver);
->>>    }
->>>      module_init(catu_init);
->>> diff --git a/drivers/hwtracing/coresight/coresight-catu.h b/drivers/hwtracing/coresight/coresight-catu.h
->>> index 442e034bbfba..141feac1c14b 100644
->>> --- a/drivers/hwtracing/coresight/coresight-catu.h
->>> +++ b/drivers/hwtracing/coresight/coresight-catu.h
->>> @@ -61,6 +61,7 @@
->>>    #define CATU_IRQEN_OFF        0x0
->>>      struct catu_drvdata {
->>> +    struct clk *pclk;
->>>        void __iomem *base;
->>>        struct coresight_device *csdev;
->>>        int irq;
->>
+diff --git a/drivers/clocksource/timer-riscv.c b/drivers/clocksource/timer-riscv.c
+index e66dcbd66566..79bb9a98baa7 100644
+--- a/drivers/clocksource/timer-riscv.c
++++ b/drivers/clocksource/timer-riscv.c
+@@ -108,6 +108,9 @@ static int riscv_timer_starting_cpu(unsigned int cpu)
+ {
+ 	struct clock_event_device *ce = per_cpu_ptr(&riscv_clock_event, cpu);
+ 
++	/* Clear timer interrupt */
++	riscv_clock_event_stop();
++
+ 	ce->cpumask = cpumask_of(cpu);
+ 	ce->irq = riscv_clock_event_irq;
+ 	if (riscv_timer_cannot_wake_cpu)
+-- 
+2.43.0
 
 
