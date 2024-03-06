@@ -1,107 +1,95 @@
-Return-Path: <linux-kernel+bounces-94106-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94107-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0B60873A13
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:04:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55494873A17
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:04:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E43B1C23C7E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:04:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E99C01F26808
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:04:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 389EE134CFC;
-	Wed,  6 Mar 2024 15:03:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 280A113475B;
+	Wed,  6 Mar 2024 15:04:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=cybernetics.com header.i=@cybernetics.com header.b="W8ww5OEB"
-Received: from mail.cybernetics.com (mail.cybernetics.com [72.215.153.18])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ZSFZ7s8Y"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDFD1130ADD
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 15:03:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=72.215.153.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6B4C5D904;
+	Wed,  6 Mar 2024 15:04:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709737434; cv=none; b=tiIGZke5WL0LV81AX1i1qKed6YW0bFqseM83adHXezlvwr9V3k4ndGfAoTFdx4HC2o23zSq9yp+qZp7T1I/2iwCahbLgALB6h9jRNyaQi2gG86HCnPWY4v1C5TmyMbJGj86UIYiwOyO6VUJYUo9I1eTqDLCl6JfCpTc9s5WZGIQ=
+	t=1709737485; cv=none; b=k85yBnU/2Vuzs8xTdOlPY9ZIEijQU/XWZZqR7iSfD1ZixMr+ej0b7PVgekP+NNknx8C70EDmy/b9TYZEJEtl/qntpVpqyTVeZvSkq+hx+lxg4NyN+VqDh5cooq51QrhRP8WlE7JO5yo2Hf/NYNdMicaDErNXdW4D66i+7dLED+k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709737434; c=relaxed/simple;
-	bh=l37PvbgjdurE3CHa9QnNHILZ3KXr3K0O8dJPZpkbpYo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Fpi0l0TuCB5ETE5KaJ+BoZxIWn5bw42KXYJYAPPRajpOU6kauELB0lV23EuOaR5I6GXXSaoWKCg6Gn9k9B7WW+Kfam2ahDZgKX7WShxG6+VVNR6FRt2XJlTHVvEvsPxwRDeFhKe9uFMYEhhkrmUUmVQpHcO74eoSWoujlCQHtok=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cybernetics.com; spf=pass smtp.mailfrom=cybernetics.com; dkim=pass (1024-bit key) header.d=cybernetics.com header.i=@cybernetics.com header.b=W8ww5OEB; arc=none smtp.client-ip=72.215.153.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cybernetics.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cybernetics.com
-X-ASG-Debug-ID: 1709737400-1cf4391a1c953b0003-xx1T2L
-Received: from cybernetics.com ([10.10.4.126]) by mail.cybernetics.com with ESMTP id g6dx9Nqb30PiU2Gj; Wed, 06 Mar 2024 10:03:43 -0500 (EST)
-X-Barracuda-Envelope-From: tonyb@cybernetics.com
-X-Barracuda-RBL-Trusted-Forwarder: 10.10.4.126
-X-ASG-Whitelist: Client
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=cybernetics.com; s=mail;
-	bh=7qc4ffRYNtvZccYs4/U0SMXhHZBv427Ly9EChqUIDts=;
-	h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:References:Cc:To:
-	Content-Language:Subject:MIME-Version:Date:Message-ID; b=W8ww5OEBmzs8NaHgEkoZ
-	7JNFDiLMMztKUdLXIcL/jSdNGT9JhIKQmG9mbb3+85HA/frx4z5JdSgfNArLSPFbzOKkZ/LjXeiYo
-	AMvEQeTqhnjGUnnl8aH1Jvb+Z+9Mj3gGIEnba//g5rLTdMt6+P2hhKTNxk+GA6yzXWGhhxf/Gk=
-Received: from [10.157.2.224] (HELO [192.168.200.1])
-  by cybernetics.com (CommuniGate Pro SMTP 7.1.1)
-  with ESMTPS id 13115879; Wed, 06 Mar 2024 10:03:26 -0500
-Message-ID: <dd86cf53-d884-4a5c-b5b5-eefe1d7641d7@cybernetics.com>
-X-Barracuda-RBL-Trusted-Forwarder: 10.157.2.224
-Date: Wed, 6 Mar 2024 10:03:25 -0500
+	s=arc-20240116; t=1709737485; c=relaxed/simple;
+	bh=s0cP/vdeTBfqUMpPi1K2dMYOFXlNATU+OscAfsIgh9Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KVBauO5XqTUwpANohxNPl7/09XovzAhJMj0K2kGifo8OtTMe40QnqVPH/B2X0nVFd+V2gbcqOugnRO36pOIxUQyquikhdmX7p2jigb4MUzFyJv+M7JonEdmkA020jFqAOqAUFNMZv0kKEGnUnWXy5r6V2cqurgeP7+wxj+i8LUY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=ZSFZ7s8Y; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=bIU+Y5tx9f1r7LHMtxJaaNjMHc4LWtkAUlFKv4XMp0s=; b=ZSFZ7s8YIDIt3b0Xse+j2mtEhj
+	YBv9PmhQb2Sr+mtg/nLN85fQCd08SSYbxHLzctr+hn9NTjtJpKHlOZO3UoZkorkMF8JxiHBn35N+K
+	kcCo51zZYbX228avPHZxiQzHGn5kj1WL7jgXHzPJKtzaA4Q33z8OYpDxSbyTw0jB/VCXk50bHviC7
+	l91UxkVIUBnshpCIvi6dqC6HKYm9rVf/uMuASQlVOPcBPM7dYi7Q/UN+NcF2mwUXFqGB4zFTD+drp
+	9/QveY/6yGnml+UULDxNINgBZVmuKJ7gj7tBN5HHWorUcTW2fosCnVaES8QpEqpwQc/15FN9l/RS3
+	CX7hQ42g==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rhsow-00000000hHr-35do;
+	Wed, 06 Mar 2024 15:04:38 +0000
+Date: Wed, 6 Mar 2024 07:04:38 -0800
+From: Christoph Hellwig <hch@infradead.org>
+To: Andreas Larsson <andreas@gaisler.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, Sam Ravnborg <sam@ravnborg.org>,
+	"Maciej W. Rozycki" <macro@orcam.me.uk>, sparclinux@vger.kernel.org,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	linux-parport@lists.infradead.org,
+	"David S . Miller" <davem@davemloft.net>,
+	linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+	iommu@lists.linux.dev, linux-kbuild@vger.kernel.org,
+	Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: [PATCH v2 4/7] sparc32: Do not select ZONE_DMA
+Message-ID: <ZeiGBuMN_I9V94Mx@infradead.org>
+References: <20240224-sam-fix-sparc32-all-builds-v2-0-1f186603c5c4@ravnborg.org>
+ <20240224-sam-fix-sparc32-all-builds-v2-4-1f186603c5c4@ravnborg.org>
+ <8d5780f5-1047-48d7-a9c9-09b95c7b5604@gaisler.com>
+ <5648dca0-4853-4dfb-91cf-282a656beb1e@app.fastmail.com>
+ <bc33b608-e0b5-4dff-aa05-8513dce409b3@gaisler.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] block: Fix page refcounts for unaligned buffers in
- __bio_release_pages()
-Content-Language: en-US
-X-ASG-Orig-Subj: Re: [PATCH] block: Fix page refcounts for unaligned buffers in
- __bio_release_pages()
-To: Greg Edwards <gedwards@ddn.com>
-Cc: Jens Axboe <axboe@kernel.dk>,
- "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
- Hugh Dickins <hughd@google.com>, Hannes Reinecke <hare@suse.de>,
- Keith Busch <kbusch@kernel.org>, linux-mm <linux-mm@kvack.org>,
- linux-block@vger.kernel.org, linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <86e592a9-98d4-4cff-a646-0c0084328356@cybernetics.com>
- <20240229225630.GA460680@bobdog.home.arpa>
-From: Tony Battersby <tonyb@cybernetics.com>
-In-Reply-To: <20240229225630.GA460680@bobdog.home.arpa>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Barracuda-Connect: UNKNOWN[10.10.4.126]
-X-Barracuda-Start-Time: 1709737423
-X-Barracuda-URL: https://10.10.4.122:443/cgi-mod/mark.cgi
-X-Virus-Scanned: by bsmtpd at cybernetics.com
-X-Barracuda-Scan-Msg-Size: 785
-X-Barracuda-BRTS-Status: 1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bc33b608-e0b5-4dff-aa05-8513dce409b3@gaisler.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On 2/29/24 17:56, Greg Edwards wrote:
-> On Thu, Feb 29, 2024 at 01:08:09PM -0500, Tony Battersby wrote:
->> Fix an incorrect number of pages being released for buffers that do not
->> start at the beginning of a page.
->>
->> Fixes: 1b151e2435fc ("block: Remove special-casing of compound pages")
->> Cc: stable@vger.kernel.org
->> Signed-off-by: Tony Battersby <tonyb@cybernetics.com>
->> ---
-> This resolves the QEMU hugetlb issue I noted earlier today here [1].
-> I tested it on 6.1.79, 6.8-rc6 and linux-next-20240229.  Thank you!
->
-> Feel free to add a:
->
-> Tested-by: Greg Edwards <gedwards@ddn.com>
->
-> [1] https://lore.kernel.org/linux-block/20240229182513.GA17355@bobdog.home.arpa/
+On Wed, Mar 06, 2024 at 03:19:52PM +0100, Andreas Larsson wrote:
+> > I think that is the correct thing to do then: the only
+> > drivers that I see with this dependency are PCI sound cards
+> > that apparently rely on DMA to the 16MB ISA range, which is
+> > not provided by sparc.
+> 
+> The ZONE_DMA dependency does not seem related to ISA per se. Commit
+> 80ab8eae70e5 ("ALSA: Enable CONFIG_ZONE_DMA for smaller PCI DMA masks")
+> that started to introduce it did were about ensuring 32-bit masks.
 
-Jens, can I get this added to 6.8 (or 6.9 if it is too late)?
+Yikes!  That commit is just unbelievable buggy.  CONFIG_ZONE_DMA
+is only for architetures to select, not drivers.  A driver randomly
+enabling such an arch zone is just crazy.
 
-Thanks,
-Tony
+I've been wondering for a while if we need some Kconfig magic
+so that certain symbols can only be select from arch/* and not
+elsewhere to prevent this (we had a few other similar cases like
+DMA_MAP_OPS).
 
 
