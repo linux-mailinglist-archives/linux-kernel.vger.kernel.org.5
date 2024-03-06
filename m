@@ -1,59 +1,55 @@
-Return-Path: <linux-kernel+bounces-93279-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93280-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60F62872D65
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 04:15:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BF29872D68
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 04:18:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7E481B22A4D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 03:15:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 27F7F1F24BAD
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 03:18:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30B1312E7C;
-	Wed,  6 Mar 2024 03:15:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FEE9134A5;
+	Wed,  6 Mar 2024 03:18:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HaoY3I0S"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iyvlXl7V"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74038DDA8;
-	Wed,  6 Mar 2024 03:14:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8051E79E4;
+	Wed,  6 Mar 2024 03:18:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709694899; cv=none; b=GTdCdQ78im61o1qT5KtcY/A3OKI2vaUEYEj6Niw4IZP2bhkiAA6MACTsa3HBVxRd3UTYc6vVFjjQvzrr5Cc2PYZpvxARQh7MthjWhNTXGpUSfrL1amqAMaW5KHaM7G2Q5PspP6kAHdr3hTaEJddjOE+rBexqvogQohK1zd1u8KQ=
+	t=1709695111; cv=none; b=lUzmRDbl3LH9U0n5815rMCdHnabe+oj28RW6haax6ganAPw+YcKQZSJI4R6ZFHmetb9gDMGafqy+za9Rw9Vyxcs5k6ZC4LAtiuwvYLigdHfRzlqCwSJItHPHEsu7AjHMoUNDsqbca/Sr3xEYk2TNF8UEKyxHqm3gSud5aBIF02I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709694899; c=relaxed/simple;
-	bh=ADX2aLUl83Ht7eqwNw1wCGw/JUzgdAjweDaoeaKB7Mc=;
+	s=arc-20240116; t=1709695111; c=relaxed/simple;
+	bh=mvhk95b95i5F452rphX9EHU3jHBno47T1oeALgtxQdg=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=T6KjvLSCealSrrewMZkbFORl7JfX2oCH/e5QsacHKLJnaV9ayQYrixX/eKHK+CTqb44tM0+m9hgah01MZv8QX0RF/7A1gxbdGOZa33P82wRWqhHbTYQOFKUImOE7ssi7rBBOBbKagzoGyy/pUp54d4BWid0y+7nYX6myVvPYaDU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HaoY3I0S; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8626AC433C7;
-	Wed,  6 Mar 2024 03:14:58 +0000 (UTC)
+	 MIME-Version:Content-Type; b=C0Yd+ufNlRVFHI1m++Etsw47MgDXUJPg/dQ57xFBrPvSTXVPcUi37Ip+f9Rx/OW6JgC6JyF4ffNpPi4VLd0TNClcNBep75tuCWq+0sylMYvN5MNeiQbBDVboIpjFm6KvUYPX4F2a5LC9UGYgBi8Si+Sg7ObcdEQB9NT5Wj0h5wM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iyvlXl7V; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79AEDC433C7;
+	Wed,  6 Mar 2024 03:18:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709694899;
-	bh=ADX2aLUl83Ht7eqwNw1wCGw/JUzgdAjweDaoeaKB7Mc=;
+	s=k20201202; t=1709695110;
+	bh=mvhk95b95i5F452rphX9EHU3jHBno47T1oeALgtxQdg=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=HaoY3I0S1NwcF2DBr3I9Cxc1FOlamxDp+JDDN8xxcm2o/mDu3zGWJinEZpq/kYoSu
-	 x5uXks4LYHCZBbNvMnvTBXpvdPAW5dLYSdQBEhsJ5Fsv7HB3yLOI0zrVS7JqqqKRjM
-	 ZXsoAEEPumhDKeMBs9i4vF0Cc3+yBcKYbaDea5kFLAAvK6D35rpzzQruUce1cKe47c
-	 DgMeNdh7CA/70d2o2ic7Ql5d9Q5rnfv20qyuGXY4RC3iGuKBwBj19FzwBh7pVl3Jpn
-	 ZcL+kl63zKt+3PinT/A9PCulnEqB9xXjnrLopTxUVT7xB0OeJxCAtN4twaoGGHuCwY
-	 4cyeFCzYLo/+A==
-Date: Tue, 5 Mar 2024 19:14:57 -0800
+	b=iyvlXl7V8bapyhuZSoPvonj6gCY9sTdAKGZGJ2ioQyY9+vK/dpEszoUWAnd0s2s81
+	 jxS97t9qkbNcogwcJNdhrtBnP0a82wcjj3yCsph6FNWN3bIRiEYfhPcGXQlPsei8q5
+	 Uu7onBBx316wDONB2nRANFNwTea8UQSr0acVX51ioa4AzrYqxTsVOYw1s6oenN89Le
+	 E1JmBGnI8PQSXQloBdfXR4KTjzDJiRIGFszMCWfSVBKGHVQDUggtu3Fudj0A/+U1XC
+	 d6mUQyr7HYIX4RTpi/KWRb2ANWJVbFAuhKg6pgrGaqEchuIHhpTEInIzxmolnKmZyU
+	 cRlbdrY28jMjw==
+Date: Tue, 5 Mar 2024 19:18:29 -0800
 From: Jakub Kicinski <kuba@kernel.org>
-To: Oleksij Rempel <o.rempel@pengutronix.de>, Andrew Lunn <andrew@lunn.ch>
-Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Florian Fainelli <f.fainelli@gmail.com>, Paolo Abeni
- <pabeni@redhat.com>, Vladimir Oltean <olteanv@gmail.com>, Woojung Huh
- <woojung.huh@microchip.com>, Arun Ramadoss <arun.ramadoss@microchip.com>,
- kernel@pengutronix.de, linux-kernel@vger.kernel.org,
- netdev@vger.kernel.org, UNGLinuxDriver@microchip.com
-Subject: Re: [PATCH net v2 1/1] net: dsa: microchip: make sure drive
- strength configuration is not lost by soft reset
-Message-ID: <20240305191457.37419bd4@kernel.org>
-In-Reply-To: <20240305064802.2478971-1-o.rempel@pengutronix.de>
-References: <20240305064802.2478971-1-o.rempel@pengutronix.de>
+To: Juntong Deng <juntong.deng@outlook.com>
+Cc: davem@davemloft.net, dsahern@kernel.org, edumazet@google.com,
+ pabeni@redhat.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] net: ipv4, ipv6: Fix incorrect skb->data_len
+ caused by __ip_append_data
+Message-ID: <20240305191829.083ba9d8@kernel.org>
+In-Reply-To: <AM6PR03MB5848A1EE8F0EBA45D440F8EA99222@AM6PR03MB5848.eurprd03.prod.outlook.com>
+References: <AM6PR03MB5848A1EE8F0EBA45D440F8EA99222@AM6PR03MB5848.eurprd03.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,21 +59,27 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Tue,  5 Mar 2024 07:48:02 +0100 Oleksij Rempel wrote:
-> This driver has two separate reset sequence in different places:
-> - gpio/HW reset on start of ksz_switch_register()
-> - SW reset on start of ksz_setup()
+On Tue,  5 Mar 2024 22:42:05 +0000 Juntong Deng wrote:
+> When __ip_append_data allocate the first skb in the queue, or when the
+> size of the data in the skb exceed the MTU and require a new fragment
+> and allocate a new skb, both cause the size of the data increased by
+> this __ip_append_data to not be added to skb->data_len.
 > 
-> The second one will overwrite drive strength configuration made in the
-> ksz_switch_register().
+> This is because in the current __ip_append_data, skb_put is used when
+> putting in the data for the new skb, but skb_put only increase skb->len,
+> but not skb->data_len, resulting in skb->data_len missing this part of
+> the data size.
 > 
-> To fix it, move ksz_parse_drive_strength() from ksz_switch_register() to
-> ksz_setup().
+> All skb processed by __ip_append_data are unable to obtain the accurate
+> data size based on skb->data_len for the above reason.
 > 
-> Fixes: d67d7247f641 ("net: dsa: microchip: Add drive strength configuration")
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> Also __ip6_append_data has the same problem.
+> 
+> This patch fixes the bug.
 
-Hm, this is much larger than I anticipated, and also doesn't apply,
-so there will be conflict with -next. Andrew, should we go back to
-the v1?
+data_len is the amount of data in the non-linear parts of the skb.
+Please run some tests before submitting patches.
+-- 
+pw-bot: cr
+pv-bot: s
 
