@@ -1,224 +1,109 @@
-Return-Path: <linux-kernel+bounces-93871-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93876-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7468F87361C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:13:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75459873631
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:22:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9B45FB22053
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:13:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D4063289318
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:22:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9D358002D;
-	Wed,  6 Mar 2024 12:13:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D12F80618;
+	Wed,  6 Mar 2024 12:22:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="bhDodZOL"
-Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+	dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b="flKz97UR"
+Received: from smtpdh17-1.aruba.it (smtpdh17-1.aruba.it [62.149.155.116])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 977A48002B
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 12:13:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E68A7FBC1
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 12:21:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.149.155.116
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709727208; cv=none; b=ASPgdHjXcujHytUBA1JsBwNXKW3SVZCxvjTJk91g1TCTDRhAfi+gjxNo9PG/bLLMnqN97VZ8M0Ns+ZPvrcKVMGFcnPQROSTipkxyO0ovJ3mnlvsADeIjMpyQNnl/sWtJ9EOFRdyWJgLrEw/X7v7bxFgQhdc/NZQakBvzA7ogrOw=
+	t=1709727721; cv=none; b=QYHAkJaoC6fgbqRuKEaFfn1Bnr4ln5aY+We+jC672MPLjLUojVILUNsS/2ixaI8OCiGjGUKGEqrKxwkF5qr/wOCd/wVEVIpd+mJKLG72326wdFmNxmams6Mah1Zgr4x657UNYAh+sKGu6d5hBvuseL9DdQNwP3AD6fm7AUAZO0Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709727208; c=relaxed/simple;
-	bh=MvQWTMYzbR7pSSNPtXrU0pZYKoIJ+SgRUhNdIt6jGjg=;
-	h=From:To:Cc:In-Reply-To:Subject:Date:Message-ID:MIME-Version:
-	 Content-Type:References; b=n5NKmlTXCBW/2ZKfOZcxTjqdAeyKvjk8Hh34obM2UBm22Tagg9QCqveCFWEzdim8LJliwSHxc7hNDBOG+T91ap4nUBOS6vtb7wjOtgokTlDexMOIr0hjx4A3ayEjgehRJFLr/79Fak8ZVw3Ga4i1dA/9UHqvdPt8xj1qW7RM0qs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=bhDodZOL; arc=none smtp.client-ip=203.254.224.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
-	by mailout3.samsung.com (KnoxPortal) with ESMTP id 20240306121318epoutp0379b74f160b74436a5cf9ea41f06d4e4c~6K9QwRDT00253402534epoutp03b
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 12:13:18 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20240306121318epoutp0379b74f160b74436a5cf9ea41f06d4e4c~6K9QwRDT00253402534epoutp03b
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1709727198;
-	bh=WTQ15VypupqP8VXJmmdKI+HBcUQn7Q0FdOahxVlCL5Q=;
-	h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-	b=bhDodZOL5GHRl6QNmRlQvbmmZ8mxapoCFy7ev0q1057BdCSiTV6exNPL9FjMuaTWT
-	 PRn2744KUFFmWRmmffLSihx1+AqnHoHA/TK1FnNDWPjy6Ir7BaXAv/nk6zdH/ZVUPP
-	 U+hK+4+L2AOPoV4DyHiV35SAlS+hPEgaAbZBHtas=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-	epcas5p4.samsung.com (KnoxPortal) with ESMTP id
-	20240306121318epcas5p46d8921f3096590ae7e8b27e08f1f0a0e~6K9QQ5BhA2378723787epcas5p4E;
-	Wed,  6 Mar 2024 12:13:18 +0000 (GMT)
-Received: from epsmges5p1new.samsung.com (unknown [182.195.38.178]) by
-	epsnrtp2.localdomain (Postfix) with ESMTP id 4TqWY84pFhz4x9Pv; Wed,  6 Mar
-	2024 12:13:16 +0000 (GMT)
-Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
-	epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	E0.62.09634.CDD58E56; Wed,  6 Mar 2024 21:13:16 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-	epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
-	20240306121316epcas5p2dd93d2a62d83e2bae45ef4fcfb7362f5~6K9OKiGjh1360113601epcas5p2_;
-	Wed,  6 Mar 2024 12:13:16 +0000 (GMT)
-Received: from epsmgms1p2new.samsung.com (unknown [182.195.42.42]) by
-	epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-	20240306121316epsmtrp17a3a8dcd902734f3b463752b5ef267a5~6K9OJjFBD1302513025epsmtrp1g;
-	Wed,  6 Mar 2024 12:13:16 +0000 (GMT)
-X-AuditID: b6c32a49-159fd700000025a2-af-65e85ddc69fc
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-	epsmgms1p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	09.63.08817.BDD58E56; Wed,  6 Mar 2024 21:13:15 +0900 (KST)
-Received: from FDSFTE462 (unknown [107.122.81.248]) by epsmtip1.samsung.com
-	(KnoxPortal) with ESMTPA id
-	20240306121311epsmtip1a9216d1eb53f803e079c054ed232e15a~6K9J5QBtm2312523125epsmtip1O;
-	Wed,  6 Mar 2024 12:13:11 +0000 (GMT)
-From: "Shradha Todi" <shradha.t@samsung.com>
-To: "'Dan Carpenter'" <dan.carpenter@linaro.org>
-Cc: <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-pci@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-samsung-soc@vger.kernel.org>, <mturquette@baylibre.com>,
-	<sboyd@kernel.org>, <jingoohan1@gmail.com>, <lpieralisi@kernel.org>,
-	<kw@linux.com>, <robh@kernel.org>, <bhelgaas@google.com>,
-	<krzysztof.kozlowski@linaro.org>, <alim.akhtar@samsung.com>,
-	<linux@armlinux.org.uk>, <m.szyprowski@samsung.com>,
-	<manivannan.sadhasivam@linaro.org>, <pankaj.dubey@samsung.com>,
-	<gost.dev@samsung.com>
-In-Reply-To: <f00eed31-4baf-4d5c-934d-8223d1ab554d@moroto.mountain>
-Subject: RE: [PATCH v6 1/2] clk: Provide managed helper to get and enable
- bulk clocks
-Date: Wed, 6 Mar 2024 17:43:03 +0530
-Message-ID: <022301da6fbf$aae4f7e0$00aee7a0$@samsung.com>
+	s=arc-20240116; t=1709727721; c=relaxed/simple;
+	bh=wU3G8YFak0o+nuh4lyA5VMTG3gwzwPSpparlbmHgvS8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=aDtJ8HDsnsBjcO+GXKn0cwAsxk+l7WcpCUoy/u3Bb6N9O8kTShFnkJ1rQjoFfjt8Cq5Nb8T0nNvbYJJh6gCTJfiWmWVGTOtlemgxYjltwY7xaTvDHjYoNoxUMfDh1yPNHnSzDUHCIBfeRXp9qNy/rRvZ4OkI1v9ZR0hnevQ+T14=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=enneenne.com; spf=pass smtp.mailfrom=enneenne.com; dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b=flKz97UR; arc=none smtp.client-ip=62.149.155.116
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=enneenne.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=enneenne.com
+Received: from [192.168.1.59] ([79.0.204.227])
+	by Aruba Outgoing Smtp  with ESMTPSA
+	id hqEQrVf32URZ5hqERrGgl2; Wed, 06 Mar 2024 13:18:47 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
+	t=1709727527; bh=wU3G8YFak0o+nuh4lyA5VMTG3gwzwPSpparlbmHgvS8=;
+	h=Date:MIME-Version:Subject:To:From:Content-Type;
+	b=flKz97URq48twY0yFh0zwWlL+ErKCOt2hGsBd/Bmm+y6iDNpMOG7FBaKkM01eXsGS
+	 0GXH8TohjL6KjoV2RWhnA0aONAIica+GIkgnvWFr/xrsIaFSPJYhMlSxiPjI6Pr4k8
+	 AJNenef8m1h0f8314SlgpoMI+vyAX3YaQSxMAefcobzDqMFJjYcJhzzrMQt9TGcUfh
+	 aC5oQaXD138RgLEOxIsU5p3mZXZTki7Cec7A7a3Xq46plUhnhR3TEICYsMG8fnfFL+
+	 d0CuZKIFi2dVS/xw7XFrv0LnZcRP8ab6VyM2xw1P9UVLFg4yBGZOLfHLJAFSE09I/v
+	 tofxpWXUTPYuA==
+Message-ID: <b10e330a-ca9e-47b9-a80f-3dc350e6c502@enneenne.com>
+Date: Wed, 6 Mar 2024 13:18:46 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] pps: use cflags-y instead of EXTRA_CFLAGS
+Content-Language: en-US
+To: Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240306120515.15711-1-lukas.bulwahn@gmail.com>
+From: Rodolfo Giometti <giometti@enneenne.com>
+In-Reply-To: <20240306120515.15711-1-lukas.bulwahn@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQH2hJCcwYDjJDqbclltz640cKP7jQL/AcmgAaOboDkDexFUCLCxgc9A
-Content-Language: en-in
-X-Brightmail-Tracker: H4sIAAAAAAAAA01Tf0xTVxjN62v7CoPxBhguxG317UeECbSjhcsi4AKaN6YGsjgXg6lv8GyR
-	/lp/6GAkIKEykK1ixkYLVNDGAIYRWioUYbDiYHNBZUA3MiA4cEOJAxRMQHFreXXjv/N995yc
-	73z3Xh4avMyN4OUqdbRGSckJrj/76kBkZPTk0XlacPcOH85YrnKhtUQGlywGDE70O1mwacWE
-	wd4FBwaLK59woG3WzYHLldMcONpdx4XDliEurLn1HQu6qnsRWPq0lA1br09hcKq0nANHbuyF
-	Fx0rGPynpwuDz9zt7D2h5Kh7BCUXfzNgpNM8hZENNj1paynnkpPuHi45N/YNi7Rbi8gvO1oQ
-	8pHtlQz/I3m7ZTSVQ2v4tDJblZOrlCYR738gSZWI4wXCaGEiTCD4SkpBJxFp+zOi9+XKPeEI
-	/klKrve0MiitlohN3q1R6XU0X6bS6pIIWp0jV4vUMVpKodUrpTFKWveOUCB4W+whHsuT2S58
-	rJ4P+bT7tAUtRlaDKhA/HsBFoHn2K3YF4s8Lxq8hoOFsGcYUDxHwc1UXhykeI+D7v43s55K1
-	y4u+g14EjN+5wmWKeQTc6h/GvCwuvgvMjT1FvTgUF4AldzvqJaF4PRv0j5dvkvzwVPCnu4nl
-	xSH4YVC2+JDrxWz8ddBq79jsB+KJoH71Dw6DXwI/meY2x0DxV0HngzqUGYkP1u5e5jBm+4DF
-	8S2L4YSBH9YqN40BXusHnH3TLEaQBn6/edEnDgH3hzowBkeAe8YzPiwFzfYaH0cOHtutPm0K
-	6B+r8wzB8xhEgrbuWMbrRfDFkzmWtw3wQPD5mWCG/RpY2ejxbS4cWAZHOQwmQe3GDewcssO8
-	JZl5SzLzlgTm/80aEHYLEk6rtQoprRWrhUr61H8Xnq1S2JDNtx/1XhcyNbMU40JYPMSFAB5K
-	hAYWrs/RwYE5VH4BrVFJNHo5rXUhYs+6q9CIbdkqz+dR6iRCUaJAFB8fL0qMixcSYYELhvqc
-	YFxK6eg8mlbTmuc6Fs8vopjlPN7X112AlvwSjpvpo9d3haVY9oObhfnOKKNpo3P2XfbJ9MHC
-	9pS4rimVZEhITBgPH7p/ujFoukK7ai9q+pHq3xZq7UytPhBRf2xHQkl6QBhbVyh6OXln821F
-	46meRiuYyBJHG4ySQ1X2EEf6lemeIwS8ECA9aN3eNqCJTB8OeqFWWBWwvpxlGHkjoywzzDEt
-	1H8ofrNlT2HsbSz2gOlE3M7M85c4Q/L8kYTt6WnrJ/aeXVgrMznvXUpx9ZpnDraajhuanpFZ
-	mX99Nrlh/JpnbnRzEmHRR82DKnoypIR6q3Rko616dgzrcP06sGyihbJrDx4ln3dwxj/JVBTM
-	1hBsrYwSRqEaLfUvVaqDpYQEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrOIsWRmVeSWpSXmKPExsWy7bCSnO7t2BepBlN7LSwezNvGZrGkKcPi
-	w7xWdoubB3YyWaz4MpPdYu/rrewWDT2/WS02Pb7GavGx5x6rxeVdc9gszs47zmYx4/w+JotD
-	U/cyWrT8aWGxWHvkLrvF3ZZOVouLp1wtFm39wm7xf88Odot/1zayOIh4XL52kdnj/Y1Wdo+d
-	s+6yeyzYVOqxaVUnm8eda3vYPJ5cmc7ksXlJvUffllWMHp83yQVwRXHZpKTmZJalFunbJXBl
-	bJqfVPBCuGJX4zzmBsav/F2MnBwSAiYSP5e9Z+1i5OIQEtjNKLFuyS0miISkxOeL66BsYYmV
-	/56zg9hCAs8YJe7/UQSx2QR0JJ5c+cMMYosIGEh8uLaRGWQQs8BGFok5n/awQEz9xCjxs2kt
-	I0gVp4CzxLNrK8CmCguESnRN2QI2lUVARWLt5i1gcV4BS4m5Xx+xQtiCEidnPgEaxAE0VU+i
-	bSPYGGYBeYntb+cwQxynIPHz6TJWiCPcJOZthTiaWUBc4ujPHuYJjMKzkEyahTBpFpJJs5B0
-	LGBkWcUomVpQnJueW2xYYJSXWq5XnJhbXJqXrpecn7uJERz3Wlo7GPes+qB3iJGJg/EQowQH
-	s5IIb82vJ6lCvCmJlVWpRfnxRaU5qcWHGKU5WJTEeb+97k0REkhPLEnNTk0tSC2CyTJxcEo1
-	MKkXvuir5VvLqlqaYK5TfqST/fTc7652zlNPa9Rt9tHxZD/Qvi24fRf37N/6b//8/fjw9cRF
-	0tL7+80mXNn6wD/504cd+XE187aIyou/Yfx5i+/qrMn9ApMjZ+o1GUz8WVz1KNV9dqIgJ2NF
-	9Kq+qy85w6q2ztymNPtg9Y4LdZuNivqWXl90e2FH+LUfZ8QXRS/b8nZKb/60Lws3xPO+eBvn
-	o7//xa6PkziuFM00++L9a6eC5HW3CT/23gizf8Ltsz6Fw+PuA/4+9ewStl1bVYS/e4pdXbUj
-	OLSveK6U97qQVYFTroTxcTefORH2cL9idMn0Gf4bV9xQ2nZUSI3F3vF9N+c3lwL7G61zK78p
-	BbYosRRnJBpqMRcVJwIAvC2ismoDAAA=
-X-CMS-MailID: 20240306121316epcas5p2dd93d2a62d83e2bae45ef4fcfb7362f5
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20240220084120epcas5p1e8980539667c3d9da20f49fc645d8f4c
-References: <20240220084046.23786-1-shradha.t@samsung.com>
-	<CGME20240220084120epcas5p1e8980539667c3d9da20f49fc645d8f4c@epcas5p1.samsung.com>
-	<20240220084046.23786-2-shradha.t@samsung.com>
-	<f00eed31-4baf-4d5c-934d-8223d1ab554d@moroto.mountain>
+X-CMAE-Envelope: MS4xfNpTQvcxk3honCktkOckSd+dwohuJYM+49XLWmnri4QPHL0a471NeOZqM1PwjXcVHK8OUTVwjfqvdln8hJDHfJaPyOmACwVFiLQ9dKVBsKZsfTxZBL6h
+ cjOfb5sLl/VJYRKphd5mjSsppQ3T60QzGxCdv6m9Xg0QIA/AmD7wH+1O7oboZGwZMDt2lgd+wJyWzKyPV1vkDxzBiQ0lY5YCpSt0FJj2Avbgw6FUwfJKMVXw
+ w3oTF3Dg/rgio+X/nmHBkl0WgtGe6JdoU9hiroFHu2bbkaifvaEECblFCrDTldIqrW4oEhIW32lJta0mttzpsgfeOhtVEi9v9HTUaR3HOm8=
 
-
-
-> -----Original Message-----
-> From: Dan Carpenter <dan.carpenter@linaro.org>
-> Sent: 05 March 2024 14:20
-> To: Shradha Todi <shradha.t@samsung.com>
-> Cc: linux-clk@vger.kernel.org; linux-kernel@vger.kernel.org; linux-
-> pci@vger.kernel.org; linux-arm-kernel@lists.infradead.org; linux-samsung-
-> soc@vger.kernel.org; mturquette@baylibre.com; sboyd@kernel.org;
-> jingoohan1@gmail.com; lpieralisi@kernel.org; kw@linux.com; robh@kernel.org;
-> bhelgaas@google.com; krzysztof.kozlowski@linaro.org;
-> alim.akhtar@samsung.com; linux@armlinux.org.uk;
-> m.szyprowski@samsung.com; manivannan.sadhasivam@linaro.org;
-> pankaj.dubey@samsung.com; gost.dev@samsung.com
-> Subject: Re: [PATCH v6 1/2] clk: Provide managed helper to get and enable bulk
-> clocks
+On 06/03/24 13:05, Lukas Bulwahn wrote:
+> Commit f77bf01425b1 ("kbuild: introduce ccflags-y, asflags-y and
+> ldflags-y") deprecates use of EXTRA_CFLAGS in the kernel build.
 > 
-> On Tue, Feb 20, 2024 at 02:10:45PM +0530, Shradha Todi wrote:
-> > +int __must_check devm_clk_bulk_get_all_enable(struct device *dev,
-> > +					      struct clk_bulk_data **clks) {
-> > +	struct clk_bulk_devres *devres;
-> > +	int ret;
-> > +
-> > +	devres = devres_alloc(devm_clk_bulk_release_all_enable,
-> > +			      sizeof(*devres), GFP_KERNEL);
-> > +	if (!devres)
-> > +		return -ENOMEM;
-> > +
-> > +	ret = clk_bulk_get_all(dev, &devres->clks);
-> > +	if (ret > 0) {
+> This has been cleaned up in the whole kernel tree long ago, but this one
+> single place must have been missed.
 > 
-> I feel like this should be >= instead of >.  There aren't any callers of this
-function
-> yet so we can't see what's in *clks at the start but it's easy to imagine a
-situation
-> where it's bad data.
+> Replace the EXTRA_CFLAGS use by the common pattern for such debug flags.
+> No functional change.
 > 
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
-Reference for this piece of code has been taken from devm_clk_bulk_get_all()
-which
-has multiple callers, so it's safe. If we make this >=, it will hold on to the
-devres node
-even though there are no clocks.
+Acked-by: Rodolfo Giometti <giometti@enneenne.com>
 
-> > +		*clks = devres->clks;
-> > +		devres->num_clks = ret;
-> > +	} else {
-> > +		devres_free(devres);
-> > +		return ret;
+> ---
+> Rodolfo, please ack.
 > 
-> When clk_bulk_get_all() returns zero then we return success here.
+> Greg, please pick this minor cleanup patch.
 > 
-
-Yes, we are returning success in case there are no clocks as well. In case there
-are no
-clocks defined in the DT-node, then it is assumed that the driver does not need
-any
-clock manipulation for driver operation. So the intention here is to continue
-without
-throwing error.
-
-> regards,
-> dan carpenter
+>   drivers/pps/generators/Makefile | 4 +---
+>   1 file changed, 1 insertion(+), 3 deletions(-)
 > 
-> > +	}
-> > +
-> > +	ret = clk_bulk_prepare_enable(devres->num_clks, *clks);
-> > +	if (!ret) {
-> > +		devres_add(dev, devres);
-> > +	} else {
-> > +		clk_bulk_put_all(devres->num_clks, devres->clks);
-> > +		devres_free(devres);
-> > +	}
-> > +
-> > +	return ret;
-> > +}
-> > +EXPORT_SYMBOL_GPL(devm_clk_bulk_get_all_enable);
-> > +
+> diff --git a/drivers/pps/generators/Makefile b/drivers/pps/generators/Makefile
+> index 2d56dd0495d5..2589fd0f2481 100644
+> --- a/drivers/pps/generators/Makefile
+> +++ b/drivers/pps/generators/Makefile
+> @@ -5,6 +5,4 @@
+>   
+>   obj-$(CONFIG_PPS_GENERATOR_PARPORT) += pps_gen_parport.o
+>   
+> -ifeq ($(CONFIG_PPS_DEBUG),y)
+> -EXTRA_CFLAGS += -DDEBUG
+> -endif
+> +ccflags-$(CONFIG_PPS_DEBUG) := -DDEBUG
 
+-- 
+GNU/Linux Solutions                  e-mail: giometti@enneenne.com
+Linux Device Driver                          giometti@linux.it
+Embedded Systems                     phone:  +39 349 2432127
+UNIX programming
 
 
