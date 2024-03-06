@@ -1,86 +1,126 @@
-Return-Path: <linux-kernel+bounces-93776-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93777-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7A4A873464
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 11:36:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E78E873470
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 11:39:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 945812805FD
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:36:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B8EB1C21471
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:39:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08BA2605AD;
-	Wed,  6 Mar 2024 10:36:42 +0000 (UTC)
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69DBF605A5;
+	Wed,  6 Mar 2024 10:38:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="P0Oeeb/c"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77E22604D7;
-	Wed,  6 Mar 2024 10:36:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 024475D75E;
+	Wed,  6 Mar 2024 10:38:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709721401; cv=none; b=vCeQ9ZY2sjOJe4l+E1R1zn84rr5e/3ARZ8EEZh/Hb7Lp2qK4rYl/haqGPT4yI/iqqzCt7i/xx9i/xfVwWcOf4YEMS+9zcjBRYI+Zoxcseix3VlRNGYgyeFquQou806Mw4NuZLWVd68CJ89t3vA3DDLsMdp6ZSEEfmQxVtpLw+Ek=
+	t=1709721537; cv=none; b=ZgaptmA4mZX+tennCm6eNC5Bbbe+DgLF7s3nd2azmvkAXOwxYidg49YZjz1QqxW29BE6lXwjtAovmvgWi7eCeKx+7pTGhn+B9hEnk8yt2gVbnHvubDglHCjD8KeYAn7z3C16Qn8fvq27niwwigaZY+/G+42t7wCUrJ5xEVpu3Mk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709721401; c=relaxed/simple;
-	bh=N6jX8ADXXK5aXnOAfJU8uWTNWIUA6GVIw/zP4wxmiGQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mvi5KTf9l4mIYsfvkG37vw6JfpysY1raBQgOMe4z6KcH/Ow8VRS40Kixvs7PC8NOQqnfR7CnLL7NlP98Ldh0Ww0/RrjIckBg37ns1FwdOW0DctreJGDjiEHuJxrDZh4awBikJ4cL9gwc15Gxo2NfphUPqLU4AKIC88/6BnshDeM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-	(envelope-from <fw@strlen.de>)
-	id 1rhodU-0005vI-29; Wed, 06 Mar 2024 11:36:32 +0100
-Date: Wed, 6 Mar 2024 11:36:32 +0100
-From: Florian Westphal <fw@strlen.de>
-To: Eric Dumazet <edumazet@google.com>
-Cc: xingwei lee <xrivendell7@gmail.com>, Florian Westphal <fw@strlen.de>,
-	pabeni@redhat.com, davem@davemloft.net, kuba@kernel.org,
-	linux-hams@vger.kernel.org, linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org, ralf@linux-mips.org,
-	syzkaller-bugs@googlegroups.com, samsun1006219@gmail.com
-Subject: Re: KASAN: slab-use-after-free Read in ip_finish_output
-Message-ID: <20240306103632.GC4420@breakpoint.cc>
-References: <CABOYnLwtfAxS7WoMw-1_uxVe3EYajXRuzZfwaQEk0+7m6-B+ug@mail.gmail.com>
- <CANn89i+qLwyPLztPt6Mavjimyv0H_UihVVNfJXWLjcwrqOudTw@mail.gmail.com>
+	s=arc-20240116; t=1709721537; c=relaxed/simple;
+	bh=r0STAe9hlRR6y5SgsGZsrkhln+sTjnj9/ZohlOVMJLk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=IAoO0DoGdCgEwLa3vBROuqCVQJ69JCCWmYhfJPDC1AE3jaV48pyiO6ojZ4/N0pbQo8F/8Vz/6dYDQr4ZIvLIVFJPPFf7isZLW6CuBN9lBrFdzJ38ajj4vtT+oHGQ6ry/4GTBVelE9szn7RJbJ/Ociqk7Amqt8iLNk4R/RRvEfwg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=P0Oeeb/c; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709721536; x=1741257536;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=r0STAe9hlRR6y5SgsGZsrkhln+sTjnj9/ZohlOVMJLk=;
+  b=P0Oeeb/cIV4B3uJHx80rhveCxj/4jS5iTs/Qh8Ik1noXujt1OR/yo0pg
+   698rmZ83Uqie1vNs6XOmbzp7SSZ7A3xZmAlQ1y1Ghp1LW6gYSfbbf4rVw
+   +wfMGVflX7mAERNS08DdOe4O7AOeN/Ot9lAjLohN9nEVh4v4OJYjdTq3J
+   r/6uVBtIppM91cVb+uqp8dDnERsMylNIgbN/1hrsIQZGNC8pQgFdmJJIo
+   0Wi10QPva8ON49nIaGiqnZeAhgCT5QRfWVjftVBm85KnN/zUEYV+fVECn
+   c1CCR/haMKjRK/d9cQMvmeNlU27w4UnImcYInZheZ4UUGyti7AD7azL/N
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11004"; a="4177838"
+X-IronPort-AV: E=Sophos;i="6.06,208,1705392000"; 
+   d="scan'208";a="4177838"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 02:38:53 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,208,1705392000"; 
+   d="scan'208";a="40697585"
+Received: from ksznyce-mobl1.ger.corp.intel.com (HELO wieczorr-mobl1.intel.com) ([10.213.25.14])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 02:38:50 -0800
+From: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
+To: shuah@kernel.org,
+	reinette.chatre@intel.com,
+	fenghua.yu@intel.com
+Cc: linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	ilpo.jarvinen@linux.intel.com,
+	tony.luck@intel.com
+Subject: [PATCH 0/4] SNC support for resctrl selftests
+Date: Wed,  6 Mar 2024 11:38:32 +0100
+Message-ID: <cover.1709721159.git.maciej.wieczor-retman@intel.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANn89i+qLwyPLztPt6Mavjimyv0H_UihVVNfJXWLjcwrqOudTw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 
-Eric Dumazet <edumazet@google.com> wrote:
-> On Wed, Mar 6, 2024 at 11:00 AM xingwei lee <xrivendell7@gmail.com> wrote:
-> >
-> > Hello, I found a new bug titled "KASAN: slab-use-after-free Read in
-> > ip_finish_output” or “KASAN: slab-use-after-free in sk_to_full_sk" and
-> > confirmed it in the latest net and net-next branch. After my simple
-> > analysis, it may be related to the net/rose or AF_PACKET/PF_PACKET
-> > socket.
-> 
-> I already had a syzbot report for this issue, thanks.
-> 
-> Adding Florian to the discussion.
-> The issue is cause by ip defrag layer, which calls skb_orphan()
-> These were my notes, I had little time to work on it so far.
+Sub-Numa Clustering (SNC) allows splitting CPU cores, caches and memory
+into multiple NUMA nodes. When enabled, NUMA-aware applications can
+achieve better performance on bigger server platforms.
 
-> Calling ip_defrag() in output path is also implying skb_orphan(),
-> which is buggy because output path relies on sk not disappearing.
+The series adding SNC support to the kernel is currently in review [1]
+but the selftests for resctrl need NUMA-aware adjustments to use these
+changes. Issues with resctrl selftests not working properly with SNC
+enabled were originally reported by Shaopeng Tan [2][3] and the
+following series resolves them.
 
-Ugh.  Thanks for your annotations and notes, this is very helpful.
+The main concept currently missing from resctrl selftests is that while
+resctrl tracks memory accesses on a single NUMA node (which normally is
+the same as the CPU socket) on machines with SNC enabled memory accesses
+can leak outside of the local NUMA node and into other NUMA nodes on the
+same socket. In that case resctrl could report a diminished value in one
+of its monitoring technologies: Cache Monitoring Technology (CMT) or
+Memory Bandwidth Monitoring (MBM) .
 
-ipvlan (and two spots in ip_output.c do):
+Implemented solutions for both CMT and MBM follow the same idea which is
+to simply sum values reported by different NUMA nodes for a single
+Resource Monitoring ID (RMID).
 
-   err = ip_local_out(net, skb->sk, skb);
+Series was tested on Ice Lake server platforms with SNC disabled, SNC-2
+and SNC-4. The tests were also ran with and without kernel support for
+SNC.
 
-so skb->sk gets propagated down to __ip_finish_output(), long
-after connrack defrag has called skb_orphan().
+Series applies cleanly on kselftest/next.
 
-No idea yet how to fix it,
+[1] https://lore.kernel.org/all/20240228112215.8044-tony.luck@intel.com/
+[2] https://lore.kernel.org/all/TYAPR01MB6330B9B17686EF426D2C3F308B25A@TYAPR01MB6330.jpnprd01.prod.outlook.com/
+[3] https://lore.kernel.org/lkml/TYAPR01MB6330A4EB3633B791939EA45E8B39A@TYAPR01MB6330.jpnprd01.prod.outlook.com/
+
+Maciej Wieczor-Retman (4):
+  selftests/resctrl: Adjust effective L3 cache size with SNC enabled
+  selftests/resctrl: SNC support for CMT
+  selftests/resctrl: SNC support for MBM
+  selftests/resctrl: Adjust SNC support messages
+
+ tools/testing/selftests/resctrl/cache.c       |  17 ++-
+ tools/testing/selftests/resctrl/cat_test.c    |   2 +-
+ tools/testing/selftests/resctrl/cmt_test.c    |   6 +-
+ tools/testing/selftests/resctrl/mba_test.c    |   3 +-
+ tools/testing/selftests/resctrl/mbm_test.c    |   4 +-
+ tools/testing/selftests/resctrl/resctrl.h     |  13 +-
+ tools/testing/selftests/resctrl/resctrl_val.c |  46 ++++---
+ tools/testing/selftests/resctrl/resctrlfs.c   | 128 +++++++++++++++++-
+ 8 files changed, 185 insertions(+), 34 deletions(-)
+
+-- 
+2.44.0
+
 
