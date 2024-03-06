@@ -1,259 +1,300 @@
-Return-Path: <linux-kernel+bounces-93930-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93932-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74901873710
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:56:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DCC9E87371C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:57:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2AC0D2813E1
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:56:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92817285622
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:57:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A4EB12C53E;
-	Wed,  6 Mar 2024 12:56:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 686463E48E;
+	Wed,  6 Mar 2024 12:56:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xEEOSUi1"
-Received: from mail-vk1-f177.google.com (mail-vk1-f177.google.com [209.85.221.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Kv+721DW"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2918923745
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 12:56:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C00578B43;
+	Wed,  6 Mar 2024 12:56:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709729768; cv=none; b=P/kIiO/3WGoHzCs3zZ/sjBD/WmvX1YYuGQoEMe7VajgEgjYK7vJvG415lfLU/AYEN3/871ceBWK2yqAkmMUOz2GJ0EPIHi6nImvKBR51lR1nSxtE0g8BEDYAsk/auIPOnVXIwByBDOxy6tShANoGoXmRe197rVWohIYXuhtwfDk=
+	t=1709729812; cv=none; b=J4roJNEK+d2i9VDfkv5w2Cl9m5ZE3qCcaQcdoG+B/3TQqPfcj8bd0pp4jD4N12RnghlIGUdZjH06sc0iDBWd0mRwO7e5DC9HlFVBnlJyLLIxWCUWgkLmtADoNHA3/VyA/g9/Zb+zvdrLB81lxBqesBccLzpca9/T2XfDkvvZkdo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709729768; c=relaxed/simple;
-	bh=PgHt/os8BmHr6ku0XPfx09raukbvgI1JM8YKUigkwqI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ArIbKt8u0j08oXPPf2GYeDyzdQAo7Wl7F7KmCWKqH8uTQuxNRxOl+rkcKqCzRVKmXa24rQQ16QKJqUW7QOuILxVVc9QaeGz1UKJkjhOm5jpouVkK+ViJ56qFObe8hKqP1aoiuNzrEiwu5FHZlCD4p/WW0O+73zDadTaJ+d8t4N4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=xEEOSUi1; arc=none smtp.client-ip=209.85.221.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-vk1-f177.google.com with SMTP id 71dfb90a1353d-4d367dadd14so783353e0c.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 04:56:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709729766; x=1710334566; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mF51TmcU3SYCWdS+xut7sKhWkD9/Cw1BL/jjWneKjIw=;
-        b=xEEOSUi1nYSQQibeYAe5XHCnSljYTAapCekVtIG+OWuZWOBUv/cM+hzWT3/jtVQ9ro
-         u30IxDV4Ens0zed/T5Hp6YVBdIsygUK5pv4JUlJquNxHYqJTfF5Q9lOkuCk5FEzFnNl3
-         jpK7DnydXdqmPYXPGD0b3fMijmA5hbbdNhNEY9XCtoCC0uC3oQ8PGUWsNoojC5diq5uS
-         932WJOsZR0BfbbdNdS0JDQnoEqO5ihZe6YIeMS4kuQs0O6R2n3C68dGJ/IAQDkSwbNpg
-         SasZaVKgW9K3bU/hXq901hhS09PA9zYLRBsZt9+K4ekT6L7UON32TRAMxmysooKFmbLL
-         KLvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709729766; x=1710334566;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mF51TmcU3SYCWdS+xut7sKhWkD9/Cw1BL/jjWneKjIw=;
-        b=vUiO1M1uEr1xWwwjG1UqIs5KMGiYQrymvg2dJ5Fcq74t0e43+/g0D6qksvVq0nWqoC
-         JSjdxLFETXBGyox7ElDH6iOwGbDuw3+SvPWf6MCEG1SMefljfVkYKOWNLCxPta8Qo1gG
-         4qbbs3clQ08z/AWjmFaDt96SLfrxQn6sDcu9T9ASZm+aHK6Se5NDqM6MThCN9aetrP1U
-         yeMnRF8DVJW8HWcFvh9jFH4BE6ZdOPRpfhuruOUZX7ntE8WRYT5fWbjTqVWoxXL6GLgc
-         V2/V6Wtfv/84u1fYi2GHvTCVrTXaSmvfPlKUMvvhPJINTlgvt93RVHFgMM/mA5Zqwoj3
-         qwSw==
-X-Forwarded-Encrypted: i=1; AJvYcCUGyoiHafXWiDX3iDgCVEuHZs8CboAZfR/eM2+L3DMIgxW6AOlG0kuRIiFAre540FJgB/9h+zyU3cwH4kgRntwZ/DGloVFfb9IqKNla
-X-Gm-Message-State: AOJu0YwsGaq/X175H00oyOBimUn42r4osDMg8cKetN+Nk6ZpOVHaAU3l
-	9alf+lWkdxI5jryw43aDijR7tYv+7F8HxUj/WuiYsioKFybXvpPR57C/rZBkTEKMilYaQLcClc7
-	G+LGBKC+CBie1nOTA1M9BhFUjEr38uUH9IQwYtw==
-X-Google-Smtp-Source: AGHT+IGYfA7GXwmmA55ca5fewYia6cPXDbMo0V4xJFmtFcpijfX6V7O8HrKJ4j/b4c4yZ/koOoyYa9hnBv9GtCTyue0=
-X-Received: by 2002:a05:6122:3683:b0:4cd:b55a:bb0d with SMTP id
- ec3-20020a056122368300b004cdb55abb0dmr5608477vkb.2.1709729765868; Wed, 06 Mar
- 2024 04:56:05 -0800 (PST)
+	s=arc-20240116; t=1709729812; c=relaxed/simple;
+	bh=K+4T1t1fYlm3bHNZus2J5bKmrA/rIRHnPXRpNPk2kdw=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=ClrvxDjMcrWGGIPENGYL6WOX5YyNmrKdOWgzGVDHKfWcBQOfAx9zWqUPB6hhPZnyIwJmOZppyTFkYm+QhwN/vsPut8OsxUsfXRRwFblZ/3vBqQCZDgJTJD2zXZYDFiO87olzQIhWyJ7Bn/Qzs/ak2kDw0YTRelHiqPCsb+iXUEo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Kv+721DW; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 426CbNqQ023639;
+	Wed, 6 Mar 2024 12:56:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=TIC8QxWYz2/20GTl1RuwrLMGb//tdSoQQWTLa00LA50=;
+ b=Kv+721DWzkixjrNTWyEw8mweoVcjXE+6Ow3tv30mh1Mw9JWNTjzyH74F/Uzko94nRGX7
+ xUOoVgH0CSqA8TPCt0deAYmWzFX+xsLQ9Rj3Ur2vF3eEGOSaXw1XX4l6KiDIE4u0p3mb
+ ZiIkz+Xh3rrO8DW4QlInR4URU8SB04vu0mmc9Qs6SN6wfnSAI4gUoof+j+yygEqjDTNs
+ KCRoeTemlCQ/ogAHM2sC0bpsU4yWsN2oS/j8fGi5T91Lml7dtJ+z7ep6GTZFYXV4ClEO
+ YLXt0zm4rjT0qjUuVRHfFHhQwkMc0KfpSUkW9a8aQ0h4dxSylAnSLnPCujk69J1tc4F5 hA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wprna0d00-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 06 Mar 2024 12:56:17 +0000
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 426Csk1S010054;
+	Wed, 6 Mar 2024 12:56:16 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wprna0ct6-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 06 Mar 2024 12:56:16 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 426ChIah006073;
+	Wed, 6 Mar 2024 12:56:10 GMT
+Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wmeet6ygw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 06 Mar 2024 12:56:10 +0000
+Received: from smtpav02.dal12v.mail.ibm.com (smtpav02.dal12v.mail.ibm.com [10.241.53.101])
+	by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 426Cu7ox35783124
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 6 Mar 2024 12:56:09 GMT
+Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 0501A58051;
+	Wed,  6 Mar 2024 12:56:07 +0000 (GMT)
+Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 807F65805A;
+	Wed,  6 Mar 2024 12:56:05 +0000 (GMT)
+Received: from li-5cd3c5cc-21f9-11b2-a85c-a4381f30c2f3.ibm.com (unknown [9.61.175.142])
+	by smtpav02.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Wed,  6 Mar 2024 12:56:05 +0000 (GMT)
+Message-ID: <da450fd44278913fda27542f6e9c0d26b0148829.camel@linux.ibm.com>
+Subject: Re: [PATCH v2 24/25] commoncap: use vfs fscaps interfaces
+From: Mimi Zohar <zohar@linux.ibm.com>
+To: Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        Christian Brauner
+	 <brauner@kernel.org>,
+        "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
+Cc: Serge Hallyn <serge@hallyn.com>, Paul Moore <paul@paul-moore.com>,
+        Eric
+ Paris <eparis@redhat.com>, James Morris <jmorris@namei.org>,
+        Alexander Viro
+ <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
+        Stephen Smalley
+ <stephen.smalley.work@gmail.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Roberto Sassu
+ <roberto.sassu@huawei.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        Eric Snowberg <eric.snowberg@oracle.com>,
+        "Matthew Wilcox (Oracle)"
+ <willy@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>, Miklos Szeredi
+ <miklos@szeredi.hu>,
+        Amir Goldstein <amir73il@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-security-module@vger.kernel.org,
+        audit@vger.kernel.org, selinux@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-unionfs@vger.kernel.org
+Date: Wed, 06 Mar 2024 07:56:05 -0500
+In-Reply-To: <1217017cc1928842abfdb40a7fa50bad8ae5e99f.camel@huaweicloud.com>
+References: <20240221-idmap-fscap-refactor-v2-0-3039364623bd@kernel.org>
+	 <20240221-idmap-fscap-refactor-v2-24-3039364623bd@kernel.org>
+	 <dcbd9e7869d2fcce69546b53851d694b8ebad54e.camel@huaweicloud.com>
+	 <ZeXpbOsdRTbLsYe9@do-x1extreme>
+	 <a7124afa6bed2fcadcb66efa08e256828cd6f8ab.camel@huaweicloud.com>
+	 <ZeX9MRhU/EGhHkCY@do-x1extreme>
+	 <20240305-fachjargon-abmontieren-75b1d6c67a83@brauner>
+	 <3098aef3e5f924e5717b4ba4a34817d9f22ec479.camel@huaweicloud.com>
+	 <7058e2f93d16f910336a5380877b14a2e069ee9d.camel@huaweicloud.com>
+	 <10773e5b90ec9378cbc69fa9cfeb61a84273edc2.camel@linux.ibm.com>
+	 <1217017cc1928842abfdb40a7fa50bad8ae5e99f.camel@huaweicloud.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: E5j-kc7WvevmTwvKk7T6_RIK4OIKy8vW
+X-Proofpoint-GUID: uSeR4qO7CSvtOXS7HNLBLLt_jgvGmJpS
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240304211549.876981797@linuxfoundation.org>
-In-Reply-To: <20240304211549.876981797@linuxfoundation.org>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Wed, 6 Mar 2024 18:25:54 +0530
-Message-ID: <CA+G9fYvTnAyEt-Cn7fmXQ2FK3+xLyOULmcxhrk7dMTypckDEsA@mail.gmail.com>
-Subject: Re: [PATCH 6.6 000/143] 6.6.21-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
-	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-06_08,2024-03-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ adultscore=0 mlxscore=0 suspectscore=0 phishscore=0 malwarescore=0
+ lowpriorityscore=0 clxscore=1015 impostorscore=0 mlxlogscore=999
+ bulkscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2403060104
 
-On Tue, 5 Mar 2024 at 03:07, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 6.6.21 release.
-> There are 143 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 06 Mar 2024 21:15:26 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
-6.6.21-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-6.6.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Wed, 2024-03-06 at 09:25 +0100, Roberto Sassu wrote:
+> On Tue, 2024-03-05 at 21:17 -0500, Mimi Zohar wrote:
+> > On Tue, 2024-03-05 at 18:11 +0100, Roberto Sassu wrote:
+> > > On Tue, 2024-03-05 at 13:46 +0100, Roberto Sassu wrote:
+> > > > On Tue, 2024-03-05 at 10:12 +0100, Christian Brauner wrote:
+> > > > > On Mon, Mar 04, 2024 at 10:56:17AM -0600, Seth Forshee (DigitalOcean)
+> > > > > wrote:
+> > > > > > On Mon, Mar 04, 2024 at 05:17:57PM +0100, Roberto Sassu wrote:
+> > > > > > > On Mon, 2024-03-04 at 09:31 -0600, Seth Forshee (DigitalOcean)
+> > > > > > > wrote:
+> > > > > > > > On Mon, Mar 04, 2024 at 11:19:54AM +0100, Roberto Sassu wrote:
+> > > > > > > > > On Wed, 2024-02-21 at 15:24 -0600, Seth Forshee (DigitalOcean)
+> > > > > > > > > wrote:
+> > > > > > > > > > Use the vfs interfaces for fetching file capabilities for
+> > > > > > > > > > killpriv
+> > > > > > > > > > checks and from get_vfs_caps_from_disk(). While there,
+> > > > > > > > > > update
+> > > > > > > > > > the
+> > > > > > > > > > kerneldoc for get_vfs_caps_from_disk() to explain how it is
+> > > > > > > > > > different
+> > > > > > > > > > from vfs_get_fscaps_nosec().
+> > > > > > > > > > 
+> > > > > > > > > > Signed-off-by: Seth Forshee (DigitalOcean) <
+> > > > > > > > > > sforshee@kernel.org>
+> > > > > > > > > > ---
+> > > > > > > > > >  security/commoncap.c | 30 +++++++++++++-----------------
+> > > > > > > > > >  1 file changed, 13 insertions(+), 17 deletions(-)
+> > > > > > > > > > 
+> > > > > > > > > > diff --git a/security/commoncap.c b/security/commoncap.c
+> > > > > > > > > > index a0ff7e6092e0..751bb26a06a6 100644
+> > > > > > > > > > --- a/security/commoncap.c
+> > > > > > > > > > +++ b/security/commoncap.c
+> > > > > > > > > > @@ -296,11 +296,12 @@ int cap_capset(struct cred *new,
+> > > > > > > > > >   */
+> > > > > > > > > >  int cap_inode_need_killpriv(struct dentry *dentry)
+> > > > > > > > > >  {
+> > > > > > > > > > -	struct inode *inode = d_backing_inode(dentry);
+> > > > > > > > > > +	struct vfs_caps caps;
+> > > > > > > > > >  	int error;
+> > > > > > > > > >  
+> > > > > > > > > > -	error = __vfs_getxattr(dentry, inode, XATTR_NAME_CAPS,
+> > > > > > > > > > NULL, 0);
+> > > > > > > > > > -	return error > 0;
+> > > > > > > > > > +	/* Use nop_mnt_idmap for no mapping here as mapping is
+> > > > > > > > > > unimportant */
+> > > > > > > > > > +	error = vfs_get_fscaps_nosec(&nop_mnt_idmap, dentry,
+> > > > > > > > > > &caps);
+> > > > > > > > > > +	return error == 0;
+> > > > > > > > > >  }
+> > > > > > > > > >  
+> > > > > > > > > >  /**
+> > > > > > > > > > @@ -323,7 +324,7 @@ int cap_inode_killpriv(struct mnt_idmap
+> > > > > > > > > > *idmap, struct dentry *dentry)
+> > > > > > > > > >  {
+> > > > > > > > > >  	int error;
+> > > > > > > > > >  
+> > > > > > > > > > -	error = __vfs_removexattr(idmap, dentry,
+> > > > > > > > > > XATTR_NAME_CAPS);
+> > > > > > > > > > +	error = vfs_remove_fscaps_nosec(idmap, dentry);
+> > > > > > > > > 
+> > > > > > > > > Uhm, I see that the change is logically correct... but the
+> > > > > > > > > original
+> > > > > > > > > code was not correct, since the EVM post hook is not called
+> > > > > > > > > (thus
+> > > > > > > > > the
+> > > > > > > > > HMAC is broken, or an xattr change is allowed on a portable
+> > > > > > > > > signature
+> > > > > > > > > which should be not).
+> > > > > > > > > 
+> > > > > > > > > For completeness, the xattr change on a portable signature
+> > > > > > > > > should
+> > > > > > > > > not
+> > > > > > > > > happen in the first place, so cap_inode_killpriv() would not
+> > > > > > > > > be
+> > > > > > > > > called.
+> > > > > > > > > However, since EVM allows same value change, we are here.
+> > > > > > > > 
+> > > > > > > > I really don't understand EVM that well and am pretty hesitant
+> > > > > > > > to
+> > > > > > > > try an
+> > > > > > > > change any of the logic around it. But I'll hazard a thought:
+> > > > > > > > should
+> > > > > > > > EVM
+> > > > > > > > have a inode_need_killpriv hook which returns an error in this
+> > > > > > > > situation?
+> > > > > > > 
+> > > > > > > Uhm, I think it would not work without modifying
+> > > > > > > security_inode_need_killpriv() and the hook definition.
+> > > > > > > 
+> > > > > > > Since cap_inode_need_killpriv() returns 1, the loop stops and EVM
+> > > > > > > would
+> > > > > > > not be invoked. We would need to continue the loop and let EVM
+> > > > > > > know
+> > > > > > > what is the current return value. Then EVM can reject the change.
+> > > > > > > 
+> > > > > > > An alternative way would be to detect that actually we are setting
+> > > > > > > the
+> > > > > > > same value for inode metadata, and maybe not returning 1 from
+> > > > > > > cap_inode_need_killpriv().
+> > > > > > > 
+> > > > > > > I would prefer the second, since EVM allows same value change and
+> > > > > > > we
+> > > > > > > would have an exception if there are fscaps.
+> > > > > > > 
+> > > > > > > This solves only the case of portable signatures. We would need to
+> > > > > > > change cap_inode_need_killpriv() anyway to update the HMAC for
+> > > > > > > mutable
+> > > > > > > files.
+> > > > > > 
+> > > > > > I see. In any case this sounds like a matter for a separate patch
+> > > > > > series.
+> > > > > 
+> > > > > Agreed.
+> > > > 
+> > > > Christian, how realistic is that we don't kill priv if we are setting
+> > > > the same owner?
+> > > > 
+> > > > Serge, would we be able to replace __vfs_removexattr() (or now
+> > > > vfs_get_fscaps_nosec()) with a security-equivalent alternative?
+> > > 
+> > > It seems it is not necessary.
+> > > 
+> > > security.capability removal occurs between evm_inode_setattr() and
+> > > evm_inode_post_setattr(), after the HMAC has been verified and before
+> > > the new HMAC is recalculated (without security.capability).
+> > > 
+> > > So, all good.
+> > > 
+> > > Christian, Seth, I pushed the kernel and the updated tests (all patches
+> > > are WIP):
+> > > 
+> > > https://github.com/robertosassu/linux/commits/evm-fscaps-v2/
+> > 
+> > Resetting the IMA status flag is insufficient.  The EVM status needs to be
+> > reset
+> > as well.  Stefan's "ima: re-evaluate file integrity on file metadata change"
+> > patch does something similar for overlay.
+> 
+> Both the IMA and EVM status are reset. The IMA one is reset based on
+> the evm_revalidate_status() call, similarly to ACLs.
 
+Agreed. Oh, evm_status is being reset in evm_inode_post_set_fscaps().
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+> 
+> 
+> > https://lore.kernel.org/linux-integrity/20240223172513.4049959-8-stefanb@linux.ibm.com/
+> > 
+> > > https://github.com/robertosassu/ima-evm-utils/commits/evm-fscaps-v2/
+> > > 
+> > > 
+> > > The tests are passing:
+> > > 
+> > > https://github.com/robertosassu/ima-evm-utils/actions/runs/8159877004/job/22305521359
+> > > 
+> > > Roberto
+> > > 
+> > > 
+> 
+> 
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-## Build
-* kernel: 6.6.21-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-6.6.y
-* git commit: 5f9255b6ac459ba1b98dfffa0680a5700447d28c
-* git describe: v6.6.18-445-g5f9255b6ac45
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.6.y/build/v6.6.1=
-8-445-g5f9255b6ac45
-
-## Test Regressions (compared to v6.6.18)
-
-## Metric Regressions (compared to v6.6.18)
-
-## Test Fixes (compared to v6.6.18)
-
-## Metric Fixes (compared to v6.6.18)
-
-## Test result summary
-total: 168781, pass: 145491, fail: 2395, skip: 20734, xfail: 161
-
-## Build Summary
-* arc: 5 total, 5 passed, 0 failed
-* arm: 135 total, 132 passed, 3 failed
-* arm64: 43 total, 41 passed, 2 failed
-* i386: 35 total, 30 passed, 5 failed
-* mips: 26 total, 23 passed, 3 failed
-* parisc: 4 total, 4 passed, 0 failed
-* powerpc: 36 total, 28 passed, 8 failed
-* riscv: 18 total, 18 passed, 0 failed
-* s390: 13 total, 13 passed, 0 failed
-* sh: 10 total, 10 passed, 0 failed
-* sparc: 8 total, 8 passed, 0 failed
-* x86_64: 39 total, 34 passed, 5 failed
-
-## Test suites summary
-* boot
-* kselftest-android
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers-dma-buf
-* kselftest-efivarfs
-* kselftest-exec
-* kselftest-filesystems
-* kselftest-filesystems-binderfs
-* kselftest-filesystems-epoll
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-ftrace
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mm
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-forwarding
-* kselftest-net-mptcp
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-user_events
-* kselftest-vDSO
-* kselftest-watchdog
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-cpuhotplug
-* ltp-crypto
-* ltp-cve
-* ltp-dio
-* ltp-fcntl-locktests
-* ltp-filecaps
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-hugetlb
-* ltp-io
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-securebits
-* ltp-smoke
-* ltp-smoketest
-* ltp-syscalls
-* ltp-tracing
-* perf
-* rcutorture
-
---
-Linaro LKFT
-https://lkft.linaro.org
 
