@@ -1,126 +1,131 @@
-Return-Path: <linux-kernel+bounces-94252-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94253-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54E62873BFE
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:20:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44F27873C03
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:20:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E94B91C243CD
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:20:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 765121C249B0
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:20:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DD59137915;
-	Wed,  6 Mar 2024 16:20:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LHekgeMm"
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CFAF137923;
+	Wed,  6 Mar 2024 16:20:35 +0000 (UTC)
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC68E1361DC
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 16:20:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE00C136647;
+	Wed,  6 Mar 2024 16:20:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709742016; cv=none; b=sY9Rv39dHN6Y7Eqbw61ALNeFEauWtnipiZOltYbqqojSjUARfPi6Qu8EkzjrQElwfIjZjtWmpzYb/N+c3MjlTE6JsNTkSs5yEr4gjcccg3RSzkFW6CpD8BP6uVsYLcO7oQr2xZanVBG8pjx407F4bGPL2N2UWXd1B+bEOlKKF14=
+	t=1709742034; cv=none; b=kn8egoL1TkF4asYij3SHwO4imn9T1hblygN58jSpay77nx25uPXGIV/UIW4gO9pTjzmY2YpgbJOupOsJ0SUO4enPv49NC39pbm+qg5DY5qBfO+pQ689Mez2cHioObzHnPL1dkoYzVyXkjYf5zHYMLbC7Bat42NdaKU+2tO2BC3I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709742016; c=relaxed/simple;
-	bh=U61Ij+6yIHoX0sWkGhtCLeCXXM4Gtkmuv90V6iCUpQI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ea2W0CVhZ51jW2HAFDT3Yl17PliW2rd92VgL2Pgl0RbZktjF7aAp8XK/QiaAl+MRUi27BsufZjN7B2U1eVWD7YRBAWjjnTRlyCpiiFMGu2+wa9RA18e+iW2I+soX0InmkJ597HDJ56F/p8bYLTYUXYGNaNmkiuuSQcKumlGjTSo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=LHekgeMm; arc=none smtp.client-ip=209.85.167.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-51321e71673so1209084e87.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 08:20:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709742013; x=1710346813; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=y+9BGaaVGAGFWOR1PbxLVisEHKQDTc6S5yLurq1hQUM=;
-        b=LHekgeMmcQPvbSQkcFvFj6V6c4ARizvJIn7qHkrXkmj3UO3AdgEVHTcfOW3GL1qYFf
-         fF5135vrIj7TyqiwcKOMMkbcfY9uMyl2v/n7+DzZGw4PVc/lHrVyxV8HwkqQR1dkS53Z
-         Nzvx77TMrhrWbD91Zys9Qo6QA3j1F+prNQeaAIEpkQJgOnL5b0/Hp8wo+81Bv71jKl7v
-         vslVB0XN3mcKgB0mhsJC5ISrs+ghp67M88weoDBXxwd2KJAu03HrnpGFDVGyDoxacjJc
-         04sQuEilX7l3r0vLF9F7Eb27z5EcUfTFWlLi6EQlxCmFIj6I5m8lD+74lpLrjHKS9rnS
-         +rIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709742013; x=1710346813;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=y+9BGaaVGAGFWOR1PbxLVisEHKQDTc6S5yLurq1hQUM=;
-        b=blHnwTPJW713D2391QX9EnKZUoG9KLJYT1Xtp+z893MNDH6+g07j/L+C13G+g2x0qQ
-         jefa60FJGVw3RkQoN8M7HUwnKF2rRB6tnuPuIwwLiofKux/y+Zdimjhtf+XwESWeCLWt
-         PPhRICdbOWRjzclxQB32E9S0MpgmRhHLJE79FDEptlf/f/KSXAu/Pu/eXge8x0uox/vi
-         qI9AgIDCypluHTqVT3Giu9bHpMZT7rN897RJ7x5M1Xwnv65PjqUeqznLlcI3vRfTegeH
-         FeOAA48AZ+B7kYm/ecFXbEC07ocErVvXXOlXP1K5np3hVYkT0s/su+7HJh3z87rqOpbh
-         Issw==
-X-Forwarded-Encrypted: i=1; AJvYcCUQpQo4fVJ+gdQPdl4+XT/tRXs1NP3rVVy6tEqFI0/JeE/nLx3kNmJpMp+0FMAx3KCOcv/NB/ECu6VlogTBDT50RhrRa9LVF4aVKtD+
-X-Gm-Message-State: AOJu0Yxh1hJRUWX7HBGDzdyIigM+ipzTINegZuPXfZ1z/pvBb2EbB90J
-	Klbjv+aFNkENKiGSFjA1nxz6I1/FlzcLOFqbI2mDKfN7ZasfJe2R2kIn+8ij1uM=
-X-Google-Smtp-Source: AGHT+IFnD63DLYuxsyRw6MDwHM55KllMc0o5AiDbBG9xpEzbdjGc42Pf9Yc21OU1cgkt/hEWU7kElg==
-X-Received: by 2002:a19:f011:0:b0:512:fe3d:a991 with SMTP id p17-20020a19f011000000b00512fe3da991mr3543283lfc.61.1709742012940;
-        Wed, 06 Mar 2024 08:20:12 -0800 (PST)
-Received: from [87.246.221.128] (netpanel-87-246-221-128.pol.akademiki.lublin.pl. [87.246.221.128])
-        by smtp.gmail.com with ESMTPSA id u12-20020ac258cc000000b005131941f7e9sm2668396lfo.5.2024.03.06.08.20.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Mar 2024 08:20:12 -0800 (PST)
-Message-ID: <21a53796-c4d4-44d0-b62b-52d327784a90@linaro.org>
-Date: Wed, 6 Mar 2024 17:20:11 +0100
+	s=arc-20240116; t=1709742034; c=relaxed/simple;
+	bh=aPt/CEGkasNVIZ01RHfKkPFD8TFNenT7o5dBwNYWmn0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pL8nFcWVvojoAf+JIiLhmqdpcHQpifWNEGR5nth820OsnZcL4YF5rsXJl1X7tIa8OYgUu/k0GMsQHIHYLu7z0qLPEX0dl/Nzi/CEGkMP0hOGdALEmwT3uu4Xa3gaww1jm7noVidCc8rOVZPwXcvcFH9Oltn83VREmF4+ddHOGfs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id 1908468CFE; Wed,  6 Mar 2024 17:20:23 +0100 (CET)
+Date: Wed, 6 Mar 2024 17:20:22 +0100
+From: Christoph Hellwig <hch@lst.de>
+To: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Christoph Hellwig <hch@lst.de>, Leon Romanovsky <leon@kernel.org>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+	Chaitanya Kulkarni <chaitanyak@nvidia.com>,
+	Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
+	Keith Busch <kbusch@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
+	Yishai Hadas <yishaih@nvidia.com>,
+	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
+	iommu@lists.linux.dev, linux-nvme@lists.infradead.org,
+	kvm@vger.kernel.org, linux-mm@kvack.org,
+	Bart Van Assche <bvanassche@acm.org>,
+	Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+	Amir Goldstein <amir73il@gmail.com>,
+	"josef@toxicpanda.com" <josef@toxicpanda.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	"daniel@iogearbox.net" <daniel@iogearbox.net>,
+	Dan Williams <dan.j.williams@intel.com>,
+	"jack@suse.com" <jack@suse.com>, Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: Re: [RFC RESEND 00/16] Split IOMMU DMA mapping operation to two
+ steps
+Message-ID: <20240306162022.GB28427@lst.de>
+References: <cover.1709635535.git.leon@kernel.org> <47afacda-3023-4eb7-b227-5f725c3187c2@arm.com> <20240305122935.GB36868@unreal> <20240306144416.GB19711@lst.de> <20240306154328.GM9225@ziepe.ca>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/4] arm64: dts: qcom: ipq6018: add 1.2GHz CPU
- Frequency
-Content-Language: en-US
-To: Chukun Pan <amadeus@jmu.edu.cn>, Bjorn Andersson <andersson@kernel.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Rob Herring <robh@kernel.org>,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org
-References: <20240306140306.876188-1-amadeus@jmu.edu.cn>
- <20240306140306.876188-2-amadeus@jmu.edu.cn>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20240306140306.876188-2-amadeus@jmu.edu.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240306154328.GM9225@ziepe.ca>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 
+On Wed, Mar 06, 2024 at 11:43:28AM -0400, Jason Gunthorpe wrote:
+> I don't think they are so fundamentally different, at least in our
+> past conversations I never came out with the idea we should burden the
+> driver with two different flows based on what kind of alignment the
+> transfer happens to have.
 
+Then we talked past each other..
 
-On 3/6/24 15:03, Chukun Pan wrote:
-> Some IPQ6000 SoCs have CPU frequencies up to 1.2GHz,
+> At least the RDMA drivers could productively use just a page aligned
+> interface. But I didn't think this would make BIO users happy so never
+> even thought about it..
 
-(which ones specifically?)
+page aligned is generally the right thing for the block layer.  NVMe
+for example already requires that anyway due to PRPs.
 
-Konrad
-> so add this frequency.
+> > The total transfer size should just be passed in by the callers and
+> > be known, and there should be no offset.
 > 
-> Signed-off-by: Chukun Pan <amadeus@jmu.edu.cn>
-> ---
->   arch/arm64/boot/dts/qcom/ipq6018.dtsi | 7 +++++++
->   1 file changed, 7 insertions(+)
+> The API needs the caller to figure out the total number of IOVA pages
+> it needs, rounding up the CPU ranges to full aligned pages. That
+> becomes the IOVA allocation.
+
+Yes, it's a basic align up to the granularity asuming we don't bother
+with non-aligned transfers.
+
 > 
-> diff --git a/arch/arm64/boot/dts/qcom/ipq6018.dtsi b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-> index 4e29adea570a..7fdb119083a2 100644
-> --- a/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-> @@ -119,6 +119,13 @@ opp-1056000000 {
->   			clock-latency-ns = <200000>;
->   		};
->   
-> +		opp-1200000000 {
-> +			opp-hz = /bits/ 64 <1200000000>;
-> +			opp-microvolt = <850000>;
-> +			opp-supported-hw = <0x4>;
-> +			clock-latency-ns = <200000>;
-> +		};
+> > So if we want to efficiently be able to handle these cases we need
+> > two APIs in the driver and a good framework to switch between them.
+> 
+> But, what does the non-page-aligned version look like? Doesn't it
+> still look basically like this?
 
-Looks like said SoC can *only* run the CPUs at 1.2 GHz?
+I'd just rather have the non-aligned case for those who really need
+it be the loop over map single region that is needed for the direct
+mapping anyway.
 
-Konrad
+> 
+> And what is the actual difference if the input is aligned? The caller
+> can assume it doesn't need to provide a per-range dma_addr_t during
+> unmap.
+
+A per-range dma_addr_t doesn't really make sense for the aligned and
+coalesced case.
+
+> It still can't assume the HW programming will be linear due to the P2P
+> !ACS support.
+> 
+> And it still has to call an API per-cpu range to actually program the
+> IOMMU.
+> 
+> So are they really so different to want different APIs? That strikes
+> me as a big driver cost.
+
+To not have to store a dma_address range per CPU range that doesn't
+actually get used at all.
 
