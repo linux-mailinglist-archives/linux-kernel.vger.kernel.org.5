@@ -1,181 +1,253 @@
-Return-Path: <linux-kernel+bounces-93944-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93936-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B862E873751
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:05:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E6D8873734
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:02:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B921B1C21AB2
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:05:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 806DD1C2476E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:02:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D0F4130ACC;
-	Wed,  6 Mar 2024 13:05:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A775130ACE;
+	Wed,  6 Mar 2024 13:01:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="PEjDqaJC"
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GXXJG5EX"
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B235E3E48E;
-	Wed,  6 Mar 2024 13:05:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.40
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709730320; cv=fail; b=pNl/lsWbsyJ26aQ37qZsPL59e5Cl01MF/jFMlaaQTFI0wcG5U+9wHQkAv2N49mgi0QorkfVA9ded/pVf78QvL7xnIcSuU2vtH9K4l/tNFbjg29oyT40qN9x/ytPDo+rmrsdD9IBxBo/ZA9tfp1mem1WURsbk3XDX1ec3+LR3Rbg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709730320; c=relaxed/simple;
-	bh=99/cXbGK8H66CXp1ntcaeMHhfgMmS4M9FfBBYjS+qDs=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=cmX8Yf1QpzszsboceFIqBARlIpP8IWnh7+Y0OJxEy1b5KXhMAhIh7iMTK/iZP/GZnoKRvnQlzXKBQZua7BJdY422rTPEPEDOoNsGc2bitb6WzVQLSyqu6ulpxAoCfOvRtsIV+EeqJ8Bn17WMqGdipWrT2rvqwQa7wVilFgWjWTk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=PEjDqaJC; arc=fail smtp.client-ip=40.107.236.40
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VyRt6guFb46Pm/cQpSSLAMiCDJFG5WWv89N7zpop+QdGd74folhA8huzXmVeCMk3Lb4zld5DWtdd1DpnVd4thcPlDQl8/EwMhppKDVlmt1GznB5aqcYlWFKmn7QF6VptEN+AtNUTiowUJQEfgFwjPvg6DQHu/YGnPflgGCmaDDi7IyQzaT0zkYV4sthWsa5EBwHAv1RsWmt8QxBGX8U6uHms4MC6SSNt6ZgWISB15Hpxtef3s4z+TmES5KKgO92/jwEa/CE30rVclb8op7IEdASIOkYa7Glnc0iggx1a7Q4xtcp2jyRiZUkyLNf7SziqO0BrV3ixOeyoPRZdWczOaw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=99/cXbGK8H66CXp1ntcaeMHhfgMmS4M9FfBBYjS+qDs=;
- b=gL4mskHM0+5rbiHpX5hVTEH5T0Fxgnwrf+qBX50wSFjjqc65EvYOa8fBHbzIRtMsmwGT0WosILEUczaMm4uCtjnN0q3X/mUztbYPeQQKs+0xu1skz8XbS3QWmAo+QYKvawlTS+a6fs+ORd52hpDJAv/X0aQOQRhe9sz/RqTT+55jTHXb69ovAkAoW78+yPZ10ojkfsQpy7z8M7ozO+BUuxPtBn7wlTU0hT2xbCn24gQ22oCxkHwNmvpUjjNwyrHc7m3vdr/B33Z/IIjeCDxi40ra5ReAv18dN9fo5Gsf0PwUd12pbFkniA68tCOmqwe3vm+CnbaiFLBNgSLS7d4VPg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=99/cXbGK8H66CXp1ntcaeMHhfgMmS4M9FfBBYjS+qDs=;
- b=PEjDqaJC39yjtvC6WPiX0kL10LkkbbxB5du/ou3JJdBUUwONH/p1qgpuMFYT3jK7FC+EEGB0fqwqXZLbxeWlyoZk1k6o8C10DGT24UctnwJuMIoK25/6/Ybbebfa0/vYhHi4+X1Ehasr4Y1v5ZpiWh58wqam9dj5+FkYAJnW5kYwo4K+glYVBZGNUbL2oW8D6mHP2Dzvx518O5wH0F7kVaECz8kTFyx+e9HzK1Xs7nakkwYXtOXZEQBfD/C/H41P9GO246kVYJWO8Mxwnh/doP2dCymdQnYC1tdsbwMOQw45rRNVKVL/plJW9CycKuNuKB3A8UH4CpxHrPZWVlZOLw==
-Received: from DM6PR12MB5565.namprd12.prod.outlook.com (2603:10b6:5:1b6::13)
- by IA0PR12MB8423.namprd12.prod.outlook.com (2603:10b6:208:3dc::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.24; Wed, 6 Mar
- 2024 13:05:14 +0000
-Received: from DM6PR12MB5565.namprd12.prod.outlook.com
- ([fe80::bfce:51e5:6c7b:98ae]) by DM6PR12MB5565.namprd12.prod.outlook.com
- ([fe80::bfce:51e5:6c7b:98ae%3]) with mapi id 15.20.7362.024; Wed, 6 Mar 2024
- 13:05:14 +0000
-From: Dragos Tatulea <dtatulea@nvidia.com>
-To: "kuba@kernel.org" <kuba@kernel.org>
-CC: "almasrymina@google.com" <almasrymina@google.com>, "davem@davemloft.net"
-	<davem@davemloft.net>, "herbert@gondor.apana.org.au"
-	<herbert@gondor.apana.org.au>, Gal Pressman <gal@nvidia.com>,
-	"dsahern@kernel.org" <dsahern@kernel.org>, "steffen.klassert@secunet.com"
-	<steffen.klassert@secunet.com>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, Leon Romanovsky <leonro@nvidia.com>,
-	"pabeni@redhat.com" <pabeni@redhat.com>, "edumazet@google.com"
-	<edumazet@google.com>, "ian.kumlien@gmail.com" <ian.kumlien@gmail.com>,
-	"Anatoli.Chechelnickiy@m.interpipe.biz"
-	<Anatoli.Chechelnickiy@m.interpipe.biz>, "netdev@vger.kernel.org"
-	<netdev@vger.kernel.org>
-Subject: Re: [RFC] net: esp: fix bad handling of pages from page_pool
-Thread-Topic: [RFC] net: esp: fix bad handling of pages from page_pool
-Thread-Index: AQHabhlPr1Jip1r+TESj3iFnglf1YrEqCc2AgACn2oA=
-Date: Wed, 6 Mar 2024 13:05:14 +0000
-Message-ID: <7fc334b847dc4d90af796f84a8663de9f43ede5d.camel@nvidia.com>
-References: <20240304094950.761233-1-dtatulea@nvidia.com>
-	 <20240305190427.757b92b8@kernel.org>
-In-Reply-To: <20240305190427.757b92b8@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Evolution 3.50.4 (3.50.4-1.fc39) 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DM6PR12MB5565:EE_|IA0PR12MB8423:EE_
-x-ms-office365-filtering-correlation-id: 3a72334a-af97-4ee2-e11a-08dc3dde1045
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- LpCRhJmX6NwSFXAX1Oqe8otIMfU4kwfbwMoCQPPimBZuzrPTYI0J/wU+xPZu9VFnU1gmJBvxQ4VB7vK6DAlT7rwvjO3P9fw9JMwkZeMLcBuhB9fN1aoAa4BJUUueqWy5j5/qNGta3N7a/f/MTqNY9y9LT+ZRntXL92/R1MHuGe152W6WtS81zbcYvsfBo8poufeFtSWgW4tKB0iuny63MYpPj8IZ5x2BoIOTNeCmaMJ2dnVOugo6no967Lqm6DKB5XC+0atDGiN+yWc32uVSt2N3Xas8unzZGO+iXeAPHADAhVzKrJK7rwGeGb02Y87cIMLNl/SRpNZlZP10jrS/fYq/ssb0LYf74d5g1apImmEooU77moFRvsFu8KkuHkpiROHPOcjQNeh8XcNy6oaqhA5RLFf7/X3zh79uLPsY5OxO6l18W6LkU+Ehuy/p3f7bu7pM3LxCmYm83uEjFgWcIzEOIpv3pwXOibY6vCLBOGA6cqPPAgCh5ahXecXcDIR4oJEZDq49Elgy6MVcXSyQ0BbZrvebbA0grjJTjmJDQDmKtpsfsBASPc8ndBtCuHXUznJiQ7noaAUKqOll5BHY93yBdcEoMfKtIcjH0+z7FHSiJlkbX5SO1Ana1H3klps2K/W2omuG5ImIGietXXp+UoRo5Tu//FKVlAh+hg+9+/KveZ+/g5l1MMxwhfDvvXV29aYpR1sVKG8x9bC/JyLmLrFT3IDvKYsi3qWuO9Zih2U=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB5565.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?eVVuOENpTkVMbWNLU0l6WTJTTE5wb3RURUZTR0FlL25CUEdybDJxM0lUd0dw?=
- =?utf-8?B?OEdjRndNY2xPeGU1MzhUL2ZuaFZIVGw2Y0pIdmdlemk5N1JTUzdtNkpuMkt0?=
- =?utf-8?B?ZUlrK20yeC80RTBFMEE5eVc0OEVld0RVdG1na0VSenZjemZxZldlb3hDZ1ZE?=
- =?utf-8?B?aXVhWmlLRFNSbnNZdFhnT294ZkYyUHlhbC8xUEJLemtHaWNaRUhCSkxWanA5?=
- =?utf-8?B?aWNJaVVpenRzVkllRUJPVkUyRDVYZWFCbkt5Mm5VcXBVZUV2OFhFUWdPcStz?=
- =?utf-8?B?bXlRdmNrWlQyVW85YmxHWkZCNXhoa1Z0YWlwMTRJR01GYkFJdENvL2RwNTlN?=
- =?utf-8?B?bEx3QzVJVFJOeUhTcTVSeDVOT0pYRnZoZGFkTGZvK3MvR3gybW5GY0JOU0tF?=
- =?utf-8?B?YnEvQ2xUdFJad0VRd0tneXBPTVQ0U2FEZ1BRbHFxRmFlMVhPUFZGY3NTWWhX?=
- =?utf-8?B?d2I1d1pnYmdKTjZWYitXaHg1L1dpd1hGdzMxV3o5UlJHOGRtM3hLU05rRS9w?=
- =?utf-8?B?QXJkUUkrT1RVWGxPMFlBN2tKc2UrZWNzME9mT2t3ZWVZTzl3T1l3amRNMENq?=
- =?utf-8?B?WVlRd1B6UjRmeDRqV21QL1hUVVlPWVJnMTVEOEEzQ2RUaEZ0dHFNQjlRNU5l?=
- =?utf-8?B?R01nWDc5Z2ozNWdldVFQQndiRzAxMGJwbE1DaGN5ZWtUQnBVOHFCNXBJNWVF?=
- =?utf-8?B?QzdFOSt5aVB3ZFFpb1owY0VUbFhobm5MenpnQWtwUzhNL0wzdVhqMUlzWTNR?=
- =?utf-8?B?NlJFU0ZZTXhGNjVSR1B2RzRYb3ByZDVvangxQW03T0lMQkZ1bUp6SEwvNkF1?=
- =?utf-8?B?cjBtY25HL05ndHNUeE4zYnFGUjhLUWVMNjRPRDdtYWxnZWl2aWRvdlFKTmk4?=
- =?utf-8?B?T0Nuc0J3WVJnLzFWQkZaRkhCTW0vY3o1eGFaaEtpSnRkSGpVM0pZNnljdVlF?=
- =?utf-8?B?WHRRbGdTaXFTbnR3d29CMmZFcWxJc3hWSzNYMXRleCtLSTZXdDdPaWhMMWNG?=
- =?utf-8?B?a3V0YXNYa0RzdjBFdzcvMW5BZmk1SFZtOSt3Y0phRUcwRmtQb1hhZFc1d0gr?=
- =?utf-8?B?ZjNURWE4dzFkUmFEazNMRXJ0Vm80MDRpVVVCbmMrWEJsVE1zM0p2Zm9vYUZh?=
- =?utf-8?B?WXNBbXVvdHBGQlcza2ZJK2dDMndZTGhPNlFaQXorQldPWnFJL3NnU0ZMNU1M?=
- =?utf-8?B?cWMrQ1JGemh0bGlOaDBjU2pDUmgrbmlGV25QbzN1cTllMXNId2lTUEh3b2dT?=
- =?utf-8?B?SFV1T2p1U1hodlZraDFuM1NaeXJrQ2ZaYnp4MHpUSWMyVWFYbnJ3MEZnVGhB?=
- =?utf-8?B?MmNIRW9EbEJsSUhYMHR6NDlDYitxMUJGLzd5b0xJa2VyOW9ubmVWOExrY1JX?=
- =?utf-8?B?dWkyWWlrMWZpYjNLTUlrVHVnSzJhRGlSNlBhZ3lJMG01SGlHM3UxdjJXK0J4?=
- =?utf-8?B?WWgrS3RkRjc5OGdJUHZrUGZtc0pORkErMDJBcjRuSlYxTHowV3pyUFAyZ1BC?=
- =?utf-8?B?RFYwancrQStRSTFzeGxIM1N2VXFHdlY5QkQxbXVtVEFKTzVXVzY0U0pqRVFm?=
- =?utf-8?B?RlViSThHaTVqTWlZeVVVU2E5UW5LWkhSNUh1LzhlYWk2OGNuOFJOUkc0T1E2?=
- =?utf-8?B?WlFLbjk0RlpyN3BMcVNVcXVrc3NFOVVkejdod3dTQUxhUjNUN1pqU2xyc0p4?=
- =?utf-8?B?UCt0MzNqeUptV3djSnZXajFqMU1yY3lrOFVKQmRBUS9CSWgybTJTaGhLTGJp?=
- =?utf-8?B?SlpUU0xFQk0zcGJZcE1TQTByMnFoSThweHFxZzgxMnFEcGZ6SnMrNUpGQWdX?=
- =?utf-8?B?MU5BZ3RnalVFN1U1eHlnZzFLdVZBUXFIZEJxOEc3TTJFS293ZmRTakZvelVv?=
- =?utf-8?B?TUpCZlUrbXpDdzV1VGdCTlZoc3hsb1o2R1I3MUhsL3R1WjBMN3B4NEdLUTBo?=
- =?utf-8?B?QmFGcnMyWWxDY2gxNnB1T1NJSk4zektGbmZrS2Z1UHk0RjE4NTNRdThJSXhH?=
- =?utf-8?B?eWhoSUtFZTIwMTNkSEl0UzhnZWxQTlZSSGdZb1Z5cU1kU3hYNlVQd2JONm5R?=
- =?utf-8?B?WExZSE0rK2VkYTRaeFZJNEZoaU54MGJOeFdVYUpoQTNaVFRMV2prY1lGdThF?=
- =?utf-8?B?Q0dQMVg1VHd1N05yNGg3UnVMNTNwVjZpc0JIV2ZiR0x6VGlHUWg5YUp3Nm9O?=
- =?utf-8?Q?9BBkZhiZkuqRt9j3LDCRJoOjOpc464MzosHVGK1F8ny7?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <6C74CB93C43CCB49A5DDE6B86AE13070@namprd12.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 581FC12D1FC;
+	Wed,  6 Mar 2024 13:01:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709730115; cv=none; b=YzxSAvUWmkUvKiX9vNlyst7iIOszoGA6L0BcYwsIjFa7q445CY7q/B4/n/PumWwfYqKPemEjmj69FYevSGWXzfke2BKs4d/CfE+kV6qcomI/QEQJnzCaYi8uXTudnUkzk3jtWDuV4NnlV1RWpVsW5+5mSCZytjRVSpmIsrQ99aY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709730115; c=relaxed/simple;
+	bh=aitebT0QlJARJIrnF7SJmZko1XhGLFibTGZNq/mnCkE=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=txQYiCcWfMqHUO79z3IgwBG0JLeNWdA3Do4IY5JKf74f3ZSgbNp7how+hlqFi1Ae8vFpTGoMUO8BCYPX12bhZ+8kXdsVyk8nean9jAo9PEIjLYR3ZwCQ3p+j/9NaPUsiS6yCrhrJbpPpbLfaW/Y0NYKqTZv7EHOIHrL5cCqyF5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GXXJG5EX; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a458eb7db13so129277266b.2;
+        Wed, 06 Mar 2024 05:01:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709730112; x=1710334912; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=aitebT0QlJARJIrnF7SJmZko1XhGLFibTGZNq/mnCkE=;
+        b=GXXJG5EXtbuXmXN6p95dTdCRNwqc75GlzC4BS2VQOpIkFP3Hn7iA2lE2lLzRjJ2dvF
+         RzVqOOieVKofbJoW68EzmxwSQYQKvPLbuzbu6h4q+/9O2S3lB5b+GHLQvr9n9awfjkvD
+         2BfZWUCTziHcphHV64uGAh7aLoyq0bcwZaeZ6KuscunV3NjnENuEAw57p5moU17WDomR
+         TURdMAvPhvq9DJ6Niff2oNZmlb9W6IX3pRR7UQbhy2+nWQ9R9kCDduXMEvvaa4LHFYOv
+         AwJ1tgpn2l53UYl72XJ3L1lLEvjvs8Wl9FHJEwCagthfpMh6I6DUWGX50MKHyz3N9wpk
+         INqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709730112; x=1710334912;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=aitebT0QlJARJIrnF7SJmZko1XhGLFibTGZNq/mnCkE=;
+        b=tH4rwieQdEc/NGDh2Exa1rdNcKKUXaPmtbNHBR3xCkakvH9MeV6ybv5ZmmLxMt0tRo
+         fO/d/zCgGdqLSwsTswGGhfR824cSxE7n/ve4Mf7AavFOIqu/72VhrYJmgpVgpIm/BweD
+         sFOhxE2FXQp3lI+Bb8B22xaLmUwAhRiwRkJMEJikySiu+LrRiETN4UVyxzd9BbMHGWm2
+         b+fsLxWMvmfS8UbUXnzMgSGeOyO3E2lDIiE5/HjfDmjp/qP+UPUjzdOh3viaA/pAsik1
+         2xnqMHKRFyYhVit4GyY8tf3/I6uskGS43SNoXh4NIwXof6WKsIlvjw9SWExH6sGXStjG
+         Un+A==
+X-Forwarded-Encrypted: i=1; AJvYcCU+XMwkcK2XreG194aAmiH5peEP8mck2GJp3qo10QYhRlsmnOO2OFQc/xXFN/BQT6iat5nFj1a8ki1z3ttv883szzL35jvEyG8RG8YjLP5jtqMlvaYyNT2bSwzbmFLiDxeC4DP7viy/6f6RO102uWIPXYa1pPcaQq3GNpHojKubHA==
+X-Gm-Message-State: AOJu0YxGtlf0nNH9gUBYAysmG5+Bh3vcsGgaZIZeppKCUCXcBEjXNrbx
+	J9YuaBw5nwuHINEUuzqukH+g8ISK1SdLbD+H13K9u3EPUwe+OUsu
+X-Google-Smtp-Source: AGHT+IE0ImX8FGEU2/tPsozvNoAqk/2A8buSxLSrFuz5xxCaSXO3E+756WshmkQCzBmZWK3KY5Y06A==
+X-Received: by 2002:a17:906:d92d:b0:a43:fa38:901d with SMTP id rn13-20020a170906d92d00b00a43fa38901dmr10066621ejb.45.1709730111283;
+        Wed, 06 Mar 2024 05:01:51 -0800 (PST)
+Received: from ?IPv6:2003:f6:ef1b:2000:944c:cbc7:1e1c:2c47? (p200300f6ef1b2000944ccbc71e1c2c47.dip0.t-ipconnect.de. [2003:f6:ef1b:2000:944c:cbc7:1e1c:2c47])
+        by smtp.gmail.com with ESMTPSA id f17-20020a170906085100b00a45b6e84e00sm808577ejd.75.2024.03.06.05.01.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Mar 2024 05:01:50 -0800 (PST)
+Message-ID: <ed442b6916016b3a40782dc32538fc517715db6c.camel@gmail.com>
+Subject: Re: [PATCH v4 1/2] driver core: Introduce device_link_wait_removal()
+From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Herve Codina <herve.codina@bootlin.com>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Rob Herring <robh+dt@kernel.org>, Frank
+ Rowand <frowand.list@gmail.com>, Saravana Kannan <saravanak@google.com>,
+ Lizhi Hou <lizhi.hou@amd.com>, Max Zhen <max.zhen@amd.com>, Sonal Santan
+ <sonal.santan@amd.com>, Stefano Stabellini <stefano.stabellini@xilinx.com>,
+  Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Allan Nielsen
+ <allan.nielsen@microchip.com>, Horatiu Vultur
+ <horatiu.vultur@microchip.com>, Steen Hegelund
+ <steen.hegelund@microchip.com>, Luca Ceresoli <luca.ceresoli@bootlin.com>,
+ Nuno Sa <nuno.sa@analog.com>, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>,  stable@vger.kernel.org
+Date: Wed, 06 Mar 2024 14:05:16 +0100
+In-Reply-To: <CAJZ5v0gWCo9nDAHkzeD08tTKoE0DE0ocht-Qq4zA7P59y9KeuQ@mail.gmail.com>
+References: <20240306085007.169771-1-herve.codina@bootlin.com>
+	 <20240306085007.169771-2-herve.codina@bootlin.com>
+	 <1fff8742a13c28dd7e1dda47ad2d6fa8e21e421e.camel@gmail.com>
+	 <CAJZ5v0gWCo9nDAHkzeD08tTKoE0DE0ocht-Qq4zA7P59y9KeuQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB5565.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3a72334a-af97-4ee2-e11a-08dc3dde1045
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Mar 2024 13:05:14.4464
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: kjyfcKhxzBQznsgehONOIJIEOWevAf2dJVH037takYBUAchYCfq0y4+BOOsWweAT1YmcNbnEstWsezmW6OIhUg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB8423
 
-T24gVHVlLCAyMDI0LTAzLTA1IGF0IDE5OjA0IC0wODAwLCBKYWt1YiBLaWNpbnNraSB3cm90ZToN
-Cj4gT24gTW9uLCA0IE1hciAyMDI0IDExOjQ4OjUyICswMjAwIERyYWdvcyBUYXR1bGVhIHdyb3Rl
-Og0KPiA+IFdoZW4gdGhlIHNrYiBpcyByZW9yZ2FuaXplZCBkdXJpbmcgZXNwX291dHB1dCAoIWVz
-cC0+aW5saW5lKSwgdGhlIHBhZ2VzDQo+ID4gY29taW5nIGZyb20gdGhlIG9yaWdpbmFsIHNrYiBm
-cmFnbWVudHMgYXJlIHN1cHBvc2VkIHRvIGJlIHJlbGVhc2VkIGJhY2sNCj4gPiB0byB0aGUgc3lz
-dGVtIHRocm91Z2ggcHV0X3BhZ2UuIEJ1dCBpZiB0aGUgc2tiIGZyYWdtZW50IHBhZ2VzIGFyZQ0K
-PiA+IG9yaWdpbmF0aW5nIGZyb20gYSBwYWdlX3Bvb2wsIGNhbGxpbmcgcHV0X3BhZ2Ugb24gdGhl
-bSB3aWxsIHRyaWdnZXIgYQ0KPiA+IHBhZ2VfcG9vbCBsZWFrIHdoaWNoIHdpbGwgZXZlbnR1YWxs
-eSByZXN1bHQgaW4gYSBjcmFzaC4NCj4gDQo+IFNvIGl0IGp1c3QgZG9lczogc2tiX3NoaW5mbyhz
-a2IpLT5ucl9mcmFncyA9IDE7DQo+IGFuZCBhc3N1bWVzIHRoYXQncyBlcXVpdmFsZW50IHRvIG93
-bmluZyBhIHBhZ2UgcmVmIG9uIGFsbCB0aGUgZnJhZ3M/DQo+IA0KTXkgdW5kZXJzdGFuZGluZyBp
-cyBkaWZmZXJlbnQ6IGl0IHNldHMgbnJfZnJhZ3MgdG8gMSBiZWNhdXNlIGl0J3Mgc3dhcHBpbmcg
-b3V0DQp0aGUgb2xkIHBhZ2UgZnJhZyBpbiBmcmFnbWVudCAwIHdpdGggdGhlIG5ldyB4ZnJhZyBw
-YWdlIGZyYWcgYW5kIHdpbGwgdXNlIHRoaXMNCiJuZXciIHNrYiBmcm9tIGhlcmUuIEl0IGRvZXMg
-dGFrZSBhIHBhZ2UgcmVmZXJlbmNlIGZvciB0aGUgeGZyYWcgcGFnZSBmcmFnLg0KDQo+IEZpeCBs
-b29rcyBtb3JlIG9yIGxlc3MgZ29vZCwgd2Ugd291bGQgbmVlZCBhIG5ldyB3cmFwcGVyIHRvIGF2
-b2lkDQo+IGJ1aWxkIGlzc3VlcyB3aXRob3V0IFBBR0VfUE9PTCzCoA0KPiANCkFjay4gV2hpY2gg
-Y29tcG9uZW50IHdvdWxkIGJlIGJlc3QgbG9jYXRpb24gZm9yIHRoaXMgd3JhcHBlcjogcGFnZV9w
-b29sPw0KDQo+IGJ1dCBJIHdvbmRlciBpZiB3ZSB3b3VsZG4ndCBiZSBiZXR0ZXINCj4gb2ZmIGNo
-YW5naW5nIHRoZSBvdGhlciBzaWRlLiBJbnN0ZWFkIG9mICJjdXR0aW5nIG9mZiIgdGhlIGZyYWdz
-IC0NCj4gd2Fsa2luZyB0aGVtIGFuZCBkZWFsaW5nIHdpdGggdmFyaW91cyBwYWdlIHR5cGVzLiBC
-ZWNhdXNlIE1pbmEgYW5kIGNvLg0KPiB3aWxsIHN0ZXAgb250byB0aGlzIGxhbmRtaW5lIGFzIHdl
-bGwuDQpUaGUgcGFnZSBmcmFncyBhcmUgc3RpbGwgc3RvcmVkIGFuZCB1c2VkIGluIHRoZSBzZyBz
-Y2F0dGVybGlzdC4gSWYgd2UgcmVsZWFzZQ0KdGhlbSBhdCB0aGUgbW9tZW50IHdoZW4gdGhlIHNr
-YiBpcyAiY3V0IG9mZiIsIHRoZSBwYWdlcyBpbiB0aGUgc2cgd2lsbCBiZQ0KaW52YWxpZC4gQXQg
-bGVhc3QgdGhhdCdzIG15IHVuZGVyc3RhbmRpbmcuDQoNClRoYW5rcywNCkRyYWdvcw0K
+On Wed, 2024-03-06 at 13:43 +0100, Rafael J. Wysocki wrote:
+> On Wed, Mar 6, 2024 at 10:17=E2=80=AFAM Nuno S=C3=A1 <noname.nuno@gmail.c=
+om> wrote:
+> >=20
+> > On Wed, 2024-03-06 at 09:50 +0100, Herve Codina wrote:
+> > > The commit 80dd33cf72d1 ("drivers: base: Fix device link removal")
+> > > introduces a workqueue to release the consumer and supplier devices u=
+sed
+> > > in the devlink.
+> > > In the job queued, devices are release and in turn, when all the
+> > > references to these devices are dropped, the release function of the
+> > > device itself is called.
+> > >=20
+> > > Nothing is present to provide some synchronisation with this workqueu=
+e
+> > > in order to ensure that all ongoing releasing operations are done and
+> > > so, some other operations can be started safely.
+> > >=20
+> > > For instance, in the following sequence:
+> > > =C2=A0 1) of_platform_depopulate()
+> > > =C2=A0 2) of_overlay_remove()
+> > >=20
+> > > During the step 1, devices are released and related devlinks are remo=
+ved
+> > > (jobs pushed in the workqueue).
+> > > During the step 2, OF nodes are destroyed but, without any
+> > > synchronisation with devlink removal jobs, of_overlay_remove() can ra=
+ise
+> > > warnings related to missing of_node_put():
+> > > =C2=A0 ERROR: memory leak, expected refcount 1 instead of 2
+> > >=20
+> > > Indeed, the missing of_node_put() call is going to be done, too late,
+> > > from the workqueue job execution.
+> > >=20
+> > > Introduce device_link_wait_removal() to offer a way to synchronize
+> > > operations waiting for the end of devlink removals (i.e. end of
+> > > workqueue jobs).
+> > > Also, as a flushing operation is done on the workqueue, the workqueue
+> > > used is moved from a system-wide workqueue to a local one.
+> > >=20
+> > > Fixes: 80dd33cf72d1 ("drivers: base: Fix device link removal")
+> > > Cc: stable@vger.kernel.org
+> > > Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+> > > ---
+> >=20
+> > With the below addressed:
+> >=20
+> > Reviewed-by: Nuno Sa <nuno.sa@analog.com>
+> >=20
+> > > =C2=A0drivers/base/core.c=C2=A0=C2=A0=C2=A0 | 26 ++++++++++++++++++++=
++++---
+> > > =C2=A0include/linux/device.h |=C2=A0 1 +
+> > > =C2=A02 files changed, 24 insertions(+), 3 deletions(-)
+> > >=20
+> > > diff --git a/drivers/base/core.c b/drivers/base/core.c
+> > > index d5f4e4aac09b..48b28c59c592 100644
+> > > --- a/drivers/base/core.c
+> > > +++ b/drivers/base/core.c
+> > > @@ -44,6 +44,7 @@ static bool fw_devlink_is_permissive(void);
+> > > =C2=A0static void __fw_devlink_link_to_consumers(struct device *dev);
+> > > =C2=A0static bool fw_devlink_drv_reg_done;
+> > > =C2=A0static bool fw_devlink_best_effort;
+> > > +static struct workqueue_struct *device_link_wq;
+> > >=20
+> > > =C2=A0/**
+> > > =C2=A0 * __fwnode_link_add - Create a link between two fwnode_handles=
+.
+> > > @@ -532,12 +533,26 @@ static void devlink_dev_release(struct device *=
+dev)
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * It may take a while to complet=
+e this work because of the SRCU
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * synchronization in device_link=
+_release_fn() and if the consumer
+> > > or
+> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * supplier devices get deleted when i=
+t runs, so put it into the
+> > > "long"
+> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * workqueue.
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * supplier devices get deleted when i=
+t runs, so put it into the
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * dedicated workqueue.
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+> > > -=C2=A0=C2=A0=C2=A0=C2=A0 queue_work(system_long_wq, &link->rm_work);
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 queue_work(device_link_wq, &link->rm_work);
+> > > =C2=A0}
+> > >=20
+> > > +/**
+> > > + * device_link_wait_removal - Wait for ongoing devlink removal jobs =
+to
+> > > terminate
+> > > + */
+> > > +void device_link_wait_removal(void)
+> > > +{
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 /*
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * devlink removal jobs are queued in =
+the dedicated work queue.
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * To be sure that all removal jobs ar=
+e terminated, ensure that any
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * scheduled work has run to completio=
+n.
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 flush_workqueue(device_link_wq);
+> > > +}
+> > > +EXPORT_SYMBOL_GPL(device_link_wait_removal);
+> > > +
+> > > =C2=A0static struct class devlink_class =3D {
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .name =3D "devlink",
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .dev_groups =3D devlink_groups,
+> > > @@ -4099,9 +4114,14 @@ int __init devices_init(void)
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 sysfs_dev_char_kobj =3D kobject_create=
+_and_add("char", dev_kobj);
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!sysfs_dev_char_kobj)
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 goto char_kobj_err;
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 device_link_wq =3D alloc_workqueue("device_=
+link_wq", 0, 0);
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0 if (!device_link_wq)
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 goto wq_err;
+> > >=20
+> >=20
+> > I can't still agree with this. Why not doing it in devlink_class_init()=
+?
+> > This is
+> > devlink specific so it makes complete sense to me.
+>=20
+> If you do that in devlink_class_init() and it fails, you essentially
+> cause the creation of every device link to fail.=C2=A0 IOW, you try to li=
+ve
+> without device links and pretend that it is all OK.=C2=A0 That won't get
+> you very far, especially on systems where DT is used.
+>=20
+> Doing it here, if it fails, you prevent the driver model from working
+> at all (because one of its necessary components is unavailable), which
+> arguably is a better choice.
+
+That makes sense but then the only thing I still don't fully get is why we =
+have
+a separate devlink_class_init() initcall for registering the devlink class
+(which can also fail)... What I take from the above is that we should fail =
+the
+driver model if one of it's fundamental components fails so I would say we
+should merge devlink_class_init() with device_init() otherwise it's a bit
+confusing (at least to me) and gives the idea that it's ok for the driver m=
+odel
+to exist without the links (unless I'm missing some other reason for the de=
+vlink
+init function).
+
+- Nuno S=C3=A1
+
 
