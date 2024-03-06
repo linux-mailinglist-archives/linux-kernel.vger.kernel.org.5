@@ -1,155 +1,224 @@
-Return-Path: <linux-kernel+bounces-93868-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93869-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E33B87360C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:06:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7C0287360E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:07:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A8E91F241EE
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:06:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EAC0E1C23E80
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:07:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E9317F7E6;
-	Wed,  6 Mar 2024 12:05:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E53737FBC7;
+	Wed,  6 Mar 2024 12:07:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="fCgebXBY"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="tTUeGG8V";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="fjax02Ws";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="lpVBm/Jg";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="msdowrf6"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B7097FBC1
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 12:05:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 222DB1426B
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 12:07:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709726749; cv=none; b=Wt76Jk0WB0VO2qO6R9aF0IG47lrvoWLfTtLFab4s0h/S70esUOgeL1BSyWvbyNTIUOTNLr3UMNVIP7s8NfXFi4S6E0nUorv9GQ9zwb9iEg3BkVO8Ab7qLgrrMLnNNUGgHe+oIsJ5UxVK80dQFMw0VYs1eTHbmI/VCf+0sLq25gc=
+	t=1709726828; cv=none; b=jFtuAhSC4XLAo6TMkpNa+P1/yciU7vOTY/cNj+5UMUlAlcKmG9Y/wUWAYu3dhsNKjxI+o28BEC+K/9UP2KcDUdtoYDQAPhqMHo4vcjTJBOZ6QnzG9NKn4ukK0QDb9V+1ZT8oJ9tvObBIW2juXKxTuLvECfAeLbPQFoP0JxYo1MQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709726749; c=relaxed/simple;
-	bh=G2h6GxpF5//h2blrI86hP/+PhlQEWBbGNRiIcqGjf/8=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mFuNQ7WRmb5tJmXYSbNchVtcvmwUfrGq1y/vAEPibP+PX0fV0dtsQVtKGdzlCqDmUFULUprD37Al2jIn+nnBYDXfx5mqY2XMqzcp7DonivgrwiXhHGgDP1qAHueIY8fKiMGKscgQdUfB1GDW3MJU4ICrNkc3+5CbBimvEAhjbf0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=fCgebXBY; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a44e3176120so498569466b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 04:05:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709726746; x=1710331546; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=vQBd6ohf0amX1OsSt75FPx0/Dj4ojSvbJw4UdMmdjuQ=;
-        b=fCgebXBYJimHJMxp00O/23sjiuNFitpMjZsaJr+t6q6WsXMP4XPGS4Lz5IjYEjB7kN
-         c2DnCATa1OzElDPifJZjjvufaKVJfGOqdwNRU2CeOaZdYCWzzCMlsIQ8ajx1TuxKI+fQ
-         ev65ybWNwJUFOE3Yh24ECvFK24u4ebuM/duhXeVoKxLSjWXIkRn2cMx6QcMxGV8WEYpj
-         TS/nLoCvrcxajaNtl83q3/2ebk3YVBA3Dlc1+V/QTIr2CZXSkP9y1Rek5NtWM+kp9Au5
-         3qkdO2btEyrw5IdlG6zugk3VnzNKpr2CxlGi1yrL83W6XGhbIGsWdt+FQpdbtvjPhoMY
-         ZJkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709726746; x=1710331546;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vQBd6ohf0amX1OsSt75FPx0/Dj4ojSvbJw4UdMmdjuQ=;
-        b=RYf9opSZCF0pi48X5fQO1sfGhjUQudBO62ObGJuEKIxhkb2DoIFIP1vRAUbJ9i/lSP
-         p62stmCVhQy95Cg43Yiwj8gAKJPUkXcudeBf0r7/WfIhTlaHhrWBVsBaSPSIY/5rnmFh
-         LeyES8dpp6uonPlJH5QVeUyv+fUc/sEpzzn/C22rqP+EmM+1qSTp0YpWI44+N3Id8XjJ
-         HfiAZrDDfjsV6WTA94cPFb6uiTXtOCb98iTNJY49bqRW0DoTc30BSRL7mm532TGa3pxA
-         Bb3sHp+HdzcflKvdv+al9RNuDkeVHAh6gjq5OJM4WuB7enPtTqKeCoxEm1uEi45pGmDk
-         fi2A==
-X-Forwarded-Encrypted: i=1; AJvYcCVtsmvB3U/Sl4idmlwQFFu3GZXfKhwFZJtbyxjO5IwP2/k9bJAg+wLOOSHQFkBqdBgKtfVXoUKT7JDXIX6gKOeiU5BuV2chZZie4P5n
-X-Gm-Message-State: AOJu0YwWqHmyWno6QdurbeRxKYfd1+0P0NR3E99Yy0Dor81ocuFAhs+e
-	aCeWj9KVN3El4+UKizMuDY5nG5f8W2+4i6ZQtjUkOsPoWJDf58JKIRmAzRCAJw==
-X-Google-Smtp-Source: AGHT+IENvyQtE8JoTg5kWVbQtkdALMsWYIyvhW3MrnxD6N4yBhPGZfzqW1SSMI9IG01/r9t2iOYJ8Q==
-X-Received: by 2002:a17:906:b850:b0:a45:ad29:72e7 with SMTP id ga16-20020a170906b85000b00a45ad2972e7mr2827372ejb.36.1709726746372;
-        Wed, 06 Mar 2024 04:05:46 -0800 (PST)
-Received: from google.com (64.227.90.34.bc.googleusercontent.com. [34.90.227.64])
-        by smtp.gmail.com with ESMTPSA id h20-20020a170906591400b00a3d5efc65e0sm7072616ejq.91.2024.03.06.04.05.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Mar 2024 04:05:45 -0800 (PST)
-Date: Wed, 6 Mar 2024 12:05:38 +0000
-From: Quentin Perret <qperret@google.com>
-To: Christoph Hellwig <hch@infradead.org>, Will Deacon <will@kernel.org>,
-	Chris Goldsworthy <quic_cgoldswo@quicinc.com>,
-	Android KVM <android-kvm@google.com>,
-	Patrick Daly <quic_pdaly@quicinc.com>,
-	Alex Elder <elder@linaro.org>,
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Murali Nalajal <quic_mnalajal@quicinc.com>,
-	Trilok Soni <quic_tsoni@quicinc.com>,
-	Srivatsa Vaddagiri <quic_svaddagi@quicinc.com>,
-	Carl van Schaik <quic_cvanscha@quicinc.com>,
-	Philip Derrin <quic_pderrin@quicinc.com>,
-	Prakruthi Deepak Heragu <quic_pheragu@quicinc.com>,
-	Jonathan Corbet <corbet@lwn.net>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Fuad Tabba <tabba@google.com>,
-	Sean Christopherson <seanjc@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-arm-msm@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org
-Subject: Re: Re: Re: Re: [PATCH v17 19/35] arch/mm: Export direct {un,}map
- functions
-Message-ID: <ZehcEqvC3Y9YytNi@google.com>
-References: <20240222-gunyah-v17-0-1e9da6763d38@quicinc.com>
- <20240222-gunyah-v17-19-1e9da6763d38@quicinc.com>
- <ZdhEtH7xzbzdhS2j@infradead.org>
- <20240223071006483-0800.eberman@hu-eberman-lv.qualcomm.com>
- <ZeXIWBLVWzVycm0r@google.com>
- <20240304094828133-0800.eberman@hu-eberman-lv.qualcomm.com>
- <Zec6shyjblcZvTG0@google.com>
- <20240305093131473-0800.eberman@hu-eberman-lv.qualcomm.com>
+	s=arc-20240116; t=1709726828; c=relaxed/simple;
+	bh=5q6spnDDpamI5/yLFHc8sn/sUBXfsV87QBUl0XF8GaY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=u2Pw4To1kQdPhqXc4FAXxbTvp8sk0Cz4j+B4XgIA5TeizDJ404TP0wG1VxcgMM7KYRrjksr6hgs7jUaK/XvW6nvhHpkgsrI7WI6t0/tE72+WgWMi036rPjAmF23Tz5f/Fzuu5QKq5QGvS3IIPJFDJZnVH/6dmCNIbYL0u3HyCxA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=tTUeGG8V; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=fjax02Ws; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=lpVBm/Jg; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=msdowrf6; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 262F0769D9;
+	Wed,  6 Mar 2024 12:07:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1709726824; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=SRkZVI18S6bgk9ZbLKMEURbAB0iGiWwMfy857f4aJ2I=;
+	b=tTUeGG8VSCig4nlz9sMFPkCBwfUWLESJ8AfxBaXmywpzVJVZPV6RIoebnKYdtyhm/WUoYu
+	k3zwwTPXz7KteQYvUBWKAmLDrHphc+EjeFIJ2uXTPv0NTVhukb2pj0gj+GWChrkdzVJBi1
+	ODSKmiJqY04flsXQj4L3q9+Nv2BroxM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1709726824;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=SRkZVI18S6bgk9ZbLKMEURbAB0iGiWwMfy857f4aJ2I=;
+	b=fjax02WsEjLvNsfbo1FYYXek+lcvcb4nQQ04MRKA3y4nqiQZEHf8XVoX+j5wdBumm/B/6w
+	I4E3KveMiwWcaDBg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1709726823; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=SRkZVI18S6bgk9ZbLKMEURbAB0iGiWwMfy857f4aJ2I=;
+	b=lpVBm/Jg7YaI51RogA9hEws2WO1onCGxdSRluKaRbSMBdp2uF3YqE7kS8b7DRPBpIObOvf
+	4bQhS0EQ53TAap++grsVdZgBOq748vgFb7x2BNv9mYTCE/aiUR8zK6q4hAlXKsjNFMZCai
+	lN/t47eygSkoDXdw3/iw0MpKxfPGzjE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1709726823;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=SRkZVI18S6bgk9ZbLKMEURbAB0iGiWwMfy857f4aJ2I=;
+	b=msdowrf6E1MBRJ/3qG2CLP5JFAQhIbG3tUHykSBCg9I53ShBIR0dIisL6ITKwSAZcbZsFX
+	9LI3g4Yw7uaUUHDg==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id B7D5D13A79;
+	Wed,  6 Mar 2024 12:07:02 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id asQNK2Zc6GVeSQAAn2gu4w
+	(envelope-from <tzimmermann@suse.de>); Wed, 06 Mar 2024 12:07:02 +0000
+Message-ID: <60dc7697-d7a0-4bf4-a22e-32f1bbb792c2@suse.de>
+Date: Wed, 6 Mar 2024 13:07:02 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240305093131473-0800.eberman@hu-eberman-lv.qualcomm.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/udl: Add ARGB8888 as a format
+To: Douglas Anderson <dianders@chromium.org>, dri-devel@lists.freedesktop.org
+Cc: Rob Clark <robdclark@chromium.org>,
+ Javier Martinez Canillas <javierm@redhat.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Dave Airlie <airlied@redhat.com>,
+ David Airlie <airlied@gmail.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, =?UTF-8?Q?Ma=C3=ADra_Canal?=
+ <mcanal@igalia.com>, Sean Paul <sean@poorly.run>,
+ =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
+ linux-kernel@vger.kernel.org
+References: <20240227141928.1.I24ac8d51544e4624b7e9d438d95880c4283e611b@changeid>
+Content-Language: en-US
+From: Thomas Zimmermann <tzimmermann@suse.de>
+Autocrypt: addr=tzimmermann@suse.de; keydata=
+ xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
+ XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
+ BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
+ hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
+ 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
+ AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
+ AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
+ AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
+ lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
+ U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
+ vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
+ 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
+ j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
+ T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
+ 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
+ GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
+ hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
+ EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
+ C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
+ yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
+ SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
+ Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
+ 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
+In-Reply-To: <20240227141928.1.I24ac8d51544e4624b7e9d438d95880c4283e611b@changeid>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -1.30
+X-Spamd-Result: default: False [-1.30 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 BAYES_HAM(-0.01)[45.24%];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_TWELVE(0.00)[13];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[chromium.org:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[chromium.org,redhat.com,ffwll.ch,gmail.com,linux.intel.com,kernel.org,igalia.com,poorly.run,vger.kernel.org];
+	 RCVD_TLS_ALL(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[]
+X-Spam-Flag: NO
 
-On Tuesday 05 Mar 2024 at 12:26:59 (-0800), Elliot Berman wrote:
-> I still disagree that this is a Gunyah-specific problem. As far as we
-> can tell, Arm doesn't specify how EL2 can tell EL1 its S2 page tables
-> couldn't give a validation translation of the IPA from stage 1. IMO,
-> downstream/Android pKVM is violating spec for ESR_EL1 by using the
-> S1PTW bit (which is res0 for everyone except EL2 [1]) and this means
-> that guests need to be pKVM-enlightened.
+Hi,
 
-Not really, in pKVM we have a very clear distinction between host Linux
-and guests, and only the host needs to be enlightened. But luckily,
-since pKVM is part of Linux, this is pretty much an internal kernel
-thing, so we're very flexible and if the S1PTW trick ever conflicts
-with something else (e.g. NV) we can fairly easily switch to another
-approach. We can tolerate non-architectural tricks like that between
-pKVM and host Linux because that is not ABI, but we certainly can't do
-that for guests.
+sorry that I did not see the patch before.
 
-> If we are adding pKVM
-> enlightment in the exception handlers, can we add Gunyah enlightment to
-> handle the same?
+Am 27.02.24 um 23:19 schrieb Douglas Anderson:
+> Even though the UDL driver converts to RGB565 internally (see
+> pixel32_to_be16() in udl_transfer.c), it advertises XRGB8888 for
+> compatibility. Let's add ARGB8888 to that list.
 
-If you mean extending the Linux SEA handler so it does what Gunyah
-wants, then I'm personally not supportive of that idea since the
-'contract' between Linux and Gunyah _is_ the architecture.
+We had a heated discussion about the emulation of color formats. It was 
+decided that XRGB8888 is the only format to support; and that's only 
+because legacy userspace sometimes expects it. Adding other formats to 
+the list should not be done easily.
 
-The only ways I could see Gunyah delegate stage-2 fault handling to
-Linux cleanly is:
+>
+> This makes UDL devices work on ChromeOS again after commit
+> c91acda3a380 ("drm/gem: Check for valid formats"). Prior to that
+> commit things were "working" because we'd silently treat the ARGB8888
+> that ChromeOS wanted as XRGB8888.
 
- - either talk to Arm to introduce a new ESR specifically for this,
-   which doesn't sound entirely crazy to me;
+This problem has been caused by userspace. Why can it not be fixed there?
 
- - or have Gunyah and Linux negotiate in software the location of the
-   handlers. That probably means SDEI or equivalent which is a can of
-   worm in itself I presume, and I'm not sure how feasible it would be
-   for this handler to live in the Gunyah driver (that too probably
-   requires exporting kernel symbols we don't want to export).
+And udl is just one driver. Any other driver without ARGB8888, such as 
+simpledrm or ofdrm, would be affected. Do these work?
 
-Thanks,
-Quentin
+Best regards
+Thomas
+
+>
+> Fixes: c91acda3a380 ("drm/gem: Check for valid formats")
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
+>
+>   drivers/gpu/drm/udl/udl_modeset.c | 1 +
+>   1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/gpu/drm/udl/udl_modeset.c b/drivers/gpu/drm/udl/udl_modeset.c
+> index 7702359c90c2..0f8d3678770e 100644
+> --- a/drivers/gpu/drm/udl/udl_modeset.c
+> +++ b/drivers/gpu/drm/udl/udl_modeset.c
+> @@ -253,6 +253,7 @@ static int udl_handle_damage(struct drm_framebuffer *fb,
+>   static const uint32_t udl_primary_plane_formats[] = {
+>   	DRM_FORMAT_RGB565,
+>   	DRM_FORMAT_XRGB8888,
+> +	DRM_FORMAT_ARGB8888,
+>   };
+>   
+>   static const uint64_t udl_primary_plane_fmtmods[] = {
+
+-- 
+--
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Frankenstrasse 146, 90461 Nuernberg, Germany
+GF: Ivo Totev, Andrew Myers, Andrew McDonald, Boudien Moerman
+HRB 36809 (AG Nuernberg)
+
 
