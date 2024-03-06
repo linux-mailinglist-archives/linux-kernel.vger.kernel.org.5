@@ -1,164 +1,108 @@
-Return-Path: <linux-kernel+bounces-93414-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93418-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4ABF3872F70
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 08:18:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3665872F7B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 08:21:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6BB6B1C21559
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 07:18:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4F29AB256FE
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 07:20:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44D3B5BAF0;
-	Wed,  6 Mar 2024 07:18:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="KojWK95l";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="qDCwZvlf";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="KojWK95l";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="qDCwZvlf"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A016E5C90E;
+	Wed,  6 Mar 2024 07:20:34 +0000 (UTC)
+Received: from smtpbgbr1.qq.com (smtpbgbr1.qq.com [54.207.19.206])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1501E5BACE
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 07:18:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26B655A783;
+	Wed,  6 Mar 2024 07:20:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.207.19.206
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709709506; cv=none; b=F46iQLpDizUwqxhkpD1xYfmF254yNZyFcIWYvrxC709qbBGWH7rQT69phx45mrZHlrFYTPNV86ROdxMXOD4HW2KOg8i4lmGE3v+NMhrr+RpR3n9OpQ+/EhMUTTRd6S8hZttT9Vi8wlv/lYqw7EZH+8vlmA9s7EX9c/Q79rHqVFE=
+	t=1709709634; cv=none; b=lIvyE9L1v3sGEG01jEUIkovU3abpKl26QxT9iQRV29pgvrObFY+m8EsCakgOpbS/BFEIGwBsfjHcQGKHYuYs6qG4gnQRbkZXEq+yR6aoKP/p3gYrJojvjEYLtjbeid/Ji4vSScCoJ2JQIV6JR0D7ohrdkicg+lawBq6cArIs1kY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709709506; c=relaxed/simple;
-	bh=AXYajY2U+Z5syUU9moej2Uf1Mod4PTuKh3eK0Bnxjek=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=db3JeqLKUtbvaS5p1a/OEP2RJnfx6Nc70Gnya9cyldrIgPIXKOJQWES/VeIA1MkCf5mm30UuG8d4pKfroIUykOlFUVWOQT8dXXOAaU8IAXcXg7tCWUR/3agco2wFPkS+hKJ3QcpVO2pboSaBzDeAff7NoL5KnV926+6xaUQN3dw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=KojWK95l; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=qDCwZvlf; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=KojWK95l; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=qDCwZvlf; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 46AD24D86C;
-	Wed,  6 Mar 2024 07:18:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1709709503; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dUQr1xvU/HmWnyZi7rd9MHflgE+MVTNA8Pa29gacj80=;
-	b=KojWK95lbUNcOhMutLDRrgPCMAPSG1jqiIoD34bkBaZ4fBXOZ2L/OcI/1OuoS+YlVqxBqE
-	8IDpzhsB6TLp21oHWo73h9ZQATbCGfVjAdmNPrt3/xSf9idBtRWabYs24s/s03xuTizJM6
-	uuvpmApegmidEs/pmhJiih4gnCrlHkU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1709709503;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dUQr1xvU/HmWnyZi7rd9MHflgE+MVTNA8Pa29gacj80=;
-	b=qDCwZvlfBUkSpmw78ZJs6fUm2b703Y94syoIkkIuDyBBeVKX7qclC6qJrufpy9L3HvdW8k
-	o6lxXRFAAXLoXgCw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1709709503; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dUQr1xvU/HmWnyZi7rd9MHflgE+MVTNA8Pa29gacj80=;
-	b=KojWK95lbUNcOhMutLDRrgPCMAPSG1jqiIoD34bkBaZ4fBXOZ2L/OcI/1OuoS+YlVqxBqE
-	8IDpzhsB6TLp21oHWo73h9ZQATbCGfVjAdmNPrt3/xSf9idBtRWabYs24s/s03xuTizJM6
-	uuvpmApegmidEs/pmhJiih4gnCrlHkU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1709709503;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dUQr1xvU/HmWnyZi7rd9MHflgE+MVTNA8Pa29gacj80=;
-	b=qDCwZvlfBUkSpmw78ZJs6fUm2b703Y94syoIkkIuDyBBeVKX7qclC6qJrufpy9L3HvdW8k
-	o6lxXRFAAXLoXgCw==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id A25E613A79;
-	Wed,  6 Mar 2024 07:18:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id RozhJL4Y6GXlCQAAn2gu4w
-	(envelope-from <osalvador@suse.de>); Wed, 06 Mar 2024 07:18:22 +0000
-Date: Wed, 6 Mar 2024 08:19:37 +0100
-From: Oscar Salvador <osalvador@suse.de>
-To: Marco Elver <elver@google.com>
-Cc: kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
-	lkp@intel.com, Linux Memory Management List <linux-mm@kvack.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Andrey Konovalov <andreyknvl@gmail.com>,
-	Alexander Potapenko <glider@google.com>,
-	Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org
-Subject: Re: [linux-next:master] [mm,page_owner] 4bedfb314b:
- BUG:KASAN:null-ptr-deref_in_init_page_owner
-Message-ID: <ZegZCaFJrnAWL4kb@localhost.localdomain>
-References: <202403051032.e2f865a-lkp@intel.com>
- <ZeblmHyVlxl_6HGC@localhost.localdomain>
- <CANpmjNMOazCrzJr+Ckx0vM73P86dPM_0qbcv=Nu44jUtPERD+A@mail.gmail.com>
- <ZedlIv2ECH08KJcM@localhost.localdomain>
- <Zedmst0pEtGuY6B6@localhost.localdomain>
+	s=arc-20240116; t=1709709634; c=relaxed/simple;
+	bh=HAP+iMl7BUZdNXqZwAThepZm1K7kacwAMmWl+dtV+7w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=dr5sTfvs6kkXbT+yUJyUZwlJTE1eOSAxNO8HWsecpgCskxj63DQeboPqqoqG06QpkR7CZCETLk7CRfmr8EYlvGtpJMyz6iDMP9mmnLQlXEyUzQt5yeaWvAJCjv584bvOBduG9Kzc3PtpF4WVe66RT0ynhkcK69qS9Ax5sXRoMSE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=54.207.19.206
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
+X-QQ-mid: bizesmtp70t1709709583ts91r9nd
+X-QQ-Originating-IP: p4pVVYXG8UKSO1Htum6vp1WgSp9sIHOFpaemxhXGfzU=
+Received: from [127.0.0.1] ( [223.112.234.130])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Wed, 06 Mar 2024 15:19:41 +0800 (CST)
+X-QQ-SSF: 00400000000000B0B000000A0000000
+X-QQ-FEAT: qO3Ke1AXI6F1dreDptSiRTmiAnB+l5LDO3YcMSKeHKiRL1DlwaBEDMxG6Oqwi
+	E+QOlXgMrpjFt7CF1WJgX4smAQKP4Lm/8fCCiJe8WBRgzfMXgNYv9G0qsCLQwpuLg/15HjU
+	lI3At+WRKGuNTG2C7dRGAC0XmmV+oWCPvvEhRKcYYbuCaKx4HDzpwRKc3M3hgfXwJFi8gUq
+	d7kPmoFyOb7dwXCwyA+ig3KAkO7UaWkr+y9CRDb+/oh0SzpeneZSuJjG5XTKEmpIds2Oln9
+	CtZaHOrL4jdgGksSNRFSMcMKARZzTQBCsJ/9gpl0NAln32OAMPrrGQT7diwTiKL13ja9pax
+	6wxzhhsZXxNGG8ZnWoeUYGp0lJmXdifa11/kExoD0ZVbbjoNJNM7z74102Fo41xznjimtSz
+	Bx9OCSbW9+QimKa4YKbxHg==
+X-QQ-GoodBg: 2
+X-BIZMAIL-ID: 16879831237417784052
+Message-ID: <CB998A5566DC04D2+c2e15da5-9b6b-40fc-8651-7b3a631b0e45@shingroup.cn>
+Date: Wed, 6 Mar 2024 15:19:40 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zedmst0pEtGuY6B6@localhost.localdomain>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -4.07
-X-Spamd-Result: default: False [-4.07 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-0.988];
-	 RCPT_COUNT_SEVEN(0.00)[11];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[intel.com,lists.linux.dev,kvack.org,linux-foundation.org,suse.cz,gmail.com,google.com,suse.com,vger.kernel.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-2.77)[99.02%]
-X-Spam-Flag: NO
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 0/2] dt-bindings: Add HEXIN Technologies Co., Ltd.
+ vendor prefix
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc: shenghui.qu@shingroup.cn, Rob Herring <robh@kernel.org>,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Rob Herring <robh+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>
+References: <cover.1709694173.git.jialong.yang@shingroup.cn>
+ <f674ec19ce824dfc13258396931256c3d33cd207.1709694173.git.jialong.yang@shingroup.cn>
+ <74debf9c-d83a-4e97-93c3-3a1322f1b5fe@linaro.org>
+From: =?UTF-8?B?WWFuZyBKaWFsb25nIOadqOS9s+m+mQ==?= <jialong.yang@shingroup.cn>
+In-Reply-To: <74debf9c-d83a-4e97-93c3-3a1322f1b5fe@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz6a-1
 
-On Tue, Mar 05, 2024 at 07:38:42PM +0100, Oscar Salvador wrote:
-> But they point out to 
+
+
+在 2024/3/6 15:10, Krzysztof Kozlowski 写道:
+> On 06/03/2024 07:16, JiaLong.Yang wrote:
+>> Update file vendor-prefixes.yaml to include hexin as a vendor prefix
+>> for "HEXIN Technologies Co., Ltd.".
+>>
+>> Signed-off-by: JiaLong.Yang <jialong.yang@shingroup.cn>
+>> ---
+>> v1 --> v2: Not changes this file and give warning.
+>> v2 --> v3: Add this patch to fix the warning.
+>>
+>>   Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>>   1 file changed, 2 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+>> index 1a0dc04f1db4..3a82104ac8a7 100644
+>> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
+>> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+>> @@ -619,6 +619,8 @@ patternProperties:
+>>       description: HwaCom Systems Inc.
+>>     "^hxt,.*":
+>>       description: HXT Semiconductor
+>> +  "^hexin,.*":
 > 
-> commit 4bedfb314bdd85c1662ecc46fa25b33b998f994d (HEAD, bisection)
-> Author: Oscar Salvador <osalvador@suse.de>
-> Date:   Thu Feb 15 22:59:03 2024 +0100
+> Please fix order of entries.
+
+OK. Thanks.
+
 > 
->     mm,page_owner: maintain own list of stack_records structs
+> Best regards,
+> Krzysztof
 > 
-> which the only thing it does is to retrieve the stack_record for
-> {dummy,failure}.handle and increment their refcount and link them.
-> I am pretty sure the problem comes from either dummy_handle or
-> failure_handle being 0 and the stack_record we get is NULL.
+> 
 
-Yes, jfyi: I "artificially" reproduced this by making
-dummy_handle explicitly = 0 again.
-And I see that KASAN points to the same location.
-
-I am kind of surprised stackdepot ran out of space that early, but I
-guess we cannot take anything for granted.
-
-I am alrady working on a fixup to now blow up here.
-
-
--- 
-Oscar Salvador
-SUSE Labs
 
