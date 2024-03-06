@@ -1,361 +1,207 @@
-Return-Path: <linux-kernel+bounces-93624-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93625-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E3A0873285
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:27:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22397873289
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:28:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C36BE283107
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:27:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC42A2858C2
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:28:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 258175DF15;
-	Wed,  6 Mar 2024 09:27:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC38C5DF29;
+	Wed,  6 Mar 2024 09:28:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XFxACi2z"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="DPL10Ywi"
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01olkn2095.outbound.protection.outlook.com [40.92.107.95])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B26D5D916
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 09:27:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709717253; cv=none; b=dL3rviaHGfYuF/igovckwj7dhKlR70aJg1eY6px9TMboRhXLGXligGJ7d+G7E2AyOiVbae4NuxuTiWB0hUNCER8Xkbg/3bum0n22CkTbxJfMnQ9pgaRUDo9QfH+n8ynRsFRB32NK+Xe4/yO/GzuiRwSXuX8WaCSCoh6lQRiQ8wM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709717253; c=relaxed/simple;
-	bh=HvXNosOI8PBmaGV32V3/Wd/i++F5cG42M+SR7Lu+Z+U=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=isFUBcTMX/XAb84J0+xDSiW2OFB0TlKoNGu91JFuscByCumcAmhpFVAQT2auPGfrIT3u/ZcvqXfBAOuwl6zgCPkzKDaVY3miFz0MjSNUtk6UcwT/Yrsb4LmfqkMOiXjKrX2E+08IucBW57cghctcOTaOW1pWLy0RbstGbZNzv3o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XFxACi2z; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709717250;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aS/2iq54TyvTFJNOfej37LI9H38zniQqeQDzeMNsmjI=;
-	b=XFxACi2zXVxcdSFg9ASSRxgrS8ve4wdK/AXqDakXyHcZvZQ1zA+rEQ0lYlucPZUobhFkx9
-	0bCd+/nIljIvFWp62hm+RUibCRf3X2Yn1gf5GNu41sqmaCcxi4DdCQV4dFMXXlnVBI1yFp
-	cmDcTYIj4fQyQcA1bYL5kgYx1xfyRiY=
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
- [209.85.214.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-611-K2WGAHztNsm2ybP2DA1U4A-1; Wed, 06 Mar 2024 04:27:29 -0500
-X-MC-Unique: K2WGAHztNsm2ybP2DA1U4A-1
-Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-1dcb30afc63so71372575ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 01:27:28 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709717248; x=1710322048;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aS/2iq54TyvTFJNOfej37LI9H38zniQqeQDzeMNsmjI=;
-        b=ZeBJVZpJDjWfS638AWiFMfsPswNuY+QCgpRjWXyGaRa/+BcLuTQ5YNwT6NSwOtDD+I
-         anm7OUaIZjt/DKFBRV8rfqfDwtkP5wckokS+1rrZwYmEPu8cexJLhXEP5fxMgwhsojue
-         TEyLslQ0Yg62eHjSkQ2Db4fw9/4mZ9rC5in+j6N2XzD6h96v+pV+81PMzgFE9a1AO3Ki
-         xve6AwpvJXxrwtWsjtvyMum8U2ANeP4lymKGd3AVL6GFLCKhSH+IXMP18vlVQKytpJTo
-         a/RP22PVYtsPGnRTSBK/ITOdogJ6WjiXkTniCFgcRSL9iZ2wgHWC06hYX5Ke6KegpU9b
-         uo/Q==
-X-Gm-Message-State: AOJu0Yw1N1mXNao0b5b1EsTuS+LAkZT74yss1Welt4SsxkqFavcaafTC
-	ZxqzkV27+flzIXeGom3v5LY6rjF33v0rdx9t7/EiDwrqzeo+Dppot143EI0kUL+8rfd0QGGwmiz
-	vfhXQwfoXqLQLCgeIYNiVonN9k+6UAxhsDFZwXV6BO22S41VsB5EuqPKzECSN9w==
-X-Received: by 2002:a17:902:e883:b0:1dc:78bc:ad0a with SMTP id w3-20020a170902e88300b001dc78bcad0amr5594452plg.36.1709717247972;
-        Wed, 06 Mar 2024 01:27:27 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEjLULHrANw7xNSwvW+pqGBlzjXXuCu94BOTxa2Wq7PjapZbbs08OjU+s8864KgO2p5it9NMQ==
-X-Received: by 2002:a17:902:e883:b0:1dc:78bc:ad0a with SMTP id w3-20020a170902e88300b001dc78bcad0amr5594431plg.36.1709717247597;
-        Wed, 06 Mar 2024 01:27:27 -0800 (PST)
-Received: from smtpclient.apple ([115.96.30.47])
-        by smtp.gmail.com with ESMTPSA id p6-20020a170902b08600b001dc30f13e6asm12024747plr.137.2024.03.06.01.27.23
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 06 Mar 2024 01:27:26 -0800 (PST)
-Content-Type: text/plain;
-	charset=us-ascii
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DB4E5D8FB;
+	Wed,  6 Mar 2024 09:28:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.107.95
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709717326; cv=fail; b=r9yf75N/rHP6B/l6OmnQXcnabBbUcge5XZFEVRLFe6E7XSzH44VJ7MfcIwRHCuf3a/7gijcJYAEnX1EKSg+MJ/k7nzT5Fmey7oIpLy+d+D7rTfruJFaBV7mlC7X9DyAwwApJbJo4FfgVPHab/jD2Go75VGXnfL0k1e92lAQi1mY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709717326; c=relaxed/simple;
+	bh=SHyH7W/weD7gDmfLLQ8QOTf2I47OAug/XoSXbniRcuw=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=CMJIeU3H8DSIB87+ZFDeD3DiVoMPn/BgHeKzDSSyiXDiDxn4OeF0bxeepwT2SpPCXrm0IqaarGNP4oOyb9hrOUzWg172V4FVTRmtCn06k5nZHbifH6oQtZ8EqnXG6he0XxNB/ZdUbIOkFN7niubPIQ6T+0td4YygeMKRjFwzPxE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=DPL10Ywi; arc=fail smtp.client-ip=40.92.107.95
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BpJHPY3ay+6gx863ZtlwXXDuDyTufGVqNh1iJw8jwPvH9qSLIhM2XiPGyokziQ8ybqOn3C1nA11J7yGLo64FlAb5st/070VU2yJ11DzDwab33pqzsoYvEijyP3osoEVjMLpSeJXt6fY6mSfcpM7EqETyd5pxAO3+eT/kEs8FAY8FA7vJCQQWl6NWqhRYccPajEeMe0eWyZWPFtpTtRNhO5lcCPRBzaSgk5DRUQtH+NjoXb1zH6664pM5noTeVoeoc93goaoW4ea4chFCqt817xg/9vowT88SGuCykWanq6esDjEiDSp0drr38D5oj+ezNikkj1hGUN8v9tg0NoXnIg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bGo4ZC6YvmF888JPmaUx8IE0HiYz7LXkXehhzGngtUk=;
+ b=frvWRsIWwd8nTek7RNybTTOSdhmrcz/S8qwBa6e8WF1iof3CjsB7Ij5A2ryHgxpAX5S/bDAIODHK0A/huZphL1EHz4nFOYH1d4zBQopMGkcnFsz07G1lbTYs2FU23/IFRmIKpwaZKW+K/D//tdaqkwAUBLlEcp/tbUba5GSON0qsj0lKLDJ0nNQiog+YnxXd7Hq4LtAdlCqlfp+NDDJT1Q8cPeBmfsjCx5QgzgE7UDYq4gWGrenvF0ZAhJoierCToLqteG4ClC05gXQM4kj8ON/dwlE8bg0mo5CrSoGe+DQIDGurWFFB+AoqwqXNg2cezaOIDgXSouT7eggsx2EhFA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bGo4ZC6YvmF888JPmaUx8IE0HiYz7LXkXehhzGngtUk=;
+ b=DPL10YwiJENcM9UJyI914R8c6XiawrJeYLwmrGGi8Lw34Xfl+Y86fllxY3ANirQBkoZwDmESkNmQkcGLprG7edwhWpARk7oQGQNt0SAVTf3utI8Lb0flgtGrohlee24WfDobgvlOu9fqbIHf8EwlOzs2FuiZkhDZO15vBmL6AYAUL+pGJTDHfVBjnFF5pzL/X6sItTNtowpalIFhyDfOoFbty8a36CdVtOsfHvLgSkTwYX2cGVeBDt0jvNjH/2zpi56IEVIqE5M6tDXizkkANyBuf4ZB6wp31KW0PWWdrvtVLLV3QMSbUTrJUzikPQZWnvvLsm5W4T+3/eOypHblRQ==
+Received: from SEZPR06MB6959.apcprd06.prod.outlook.com (2603:1096:101:1ed::14)
+ by SEYPR06MB6613.apcprd06.prod.outlook.com (2603:1096:101:169::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.39; Wed, 6 Mar
+ 2024 09:28:38 +0000
+Received: from SEZPR06MB6959.apcprd06.prod.outlook.com
+ ([fe80::aced:cbb9:4616:96d8]) by SEZPR06MB6959.apcprd06.prod.outlook.com
+ ([fe80::aced:cbb9:4616:96d8%2]) with mapi id 15.20.7339.035; Wed, 6 Mar 2024
+ 09:28:38 +0000
+Message-ID:
+ <SEZPR06MB69594BB6F24CF86E859D698196212@SEZPR06MB6959.apcprd06.prod.outlook.com>
+Date: Wed, 6 Mar 2024 17:28:31 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v8 4/9] dt-bindings: net: convert hisi-femac.txt
+ to YAML
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Yisen Zhuang <yisen.zhuang@huawei.com>, Salil Mehta
+ <salil.mehta@huawei.com>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+ Heiner Kallweit <hkallweit1@gmail.com>, Russell King <linux@armlinux.org.uk>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org
+References: <20240305-net-v8-0-166aaeea2107@outlook.com>
+ <20240305-net-v8-4-166aaeea2107@outlook.com>
+ <66cf4c42-5b8e-41b8-bbdb-7fb2c6bb9e66@linaro.org>
+From: Yang Xiwen <forbidden405@outlook.com>
+In-Reply-To: <66cf4c42-5b8e-41b8-bbdb-7fb2c6bb9e66@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TMN: [ACSyLj/2pw3Q4gpFszX+18bJ/9DoPtbjJiWSCO/aGi+EGCaAyfo++Wuwhw0Mjfkg]
+X-ClientProxiedBy: SI1PR02CA0043.apcprd02.prod.outlook.com
+ (2603:1096:4:1f6::19) To SEZPR06MB6959.apcprd06.prod.outlook.com
+ (2603:1096:101:1ed::14)
+X-Microsoft-Original-Message-ID:
+ <0414374e-6fc8-4606-9ee8-45a85b27b10c@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.400.31\))
-Subject: Re: [PATCH] hv/hv_kvp_daemon: Handle IPv4 and Ipv6 combination for
- keyfile format
-From: Ani Sinha <anisinha@redhat.com>
-In-Reply-To: <1709297778-20420-1-git-send-email-shradhagupta@linux.microsoft.com>
-Date: Wed, 6 Mar 2024 14:57:12 +0530
-Cc: linux-kernel@vger.kernel.org,
- linux-hyperv@vger.kernel.org,
- "K. Y. Srinivasan" <kys@microsoft.com>,
- Haiyang Zhang <haiyangz@microsoft.com>,
- Wei Liu <wei.liu@kernel.org>,
- Dexuan Cui <decui@microsoft.com>,
- Long Li <longli@microsoft.com>,
- Michael Kelley <mikelley@microsoft.com>,
- Olaf Hering <olaf@aepfle.de>,
- Shradha Gupta <shradhagupta@microsoft.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <4547D425-64EF-4974-A131-56811F25B9E6@redhat.com>
-References: <1709297778-20420-1-git-send-email-shradhagupta@linux.microsoft.com>
-To: Shradha Gupta <shradhagupta@linux.microsoft.com>
-X-Mailer: Apple Mail (2.3774.400.31)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SEZPR06MB6959:EE_|SEYPR06MB6613:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9ac6ef1e-1b9e-4caf-4228-08dc3dbfcd9c
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	VX2HSxjPhveW5LpcBfoMhsOHuyr7n9pxOC6HOpJWe+kYUAe3T3qpALiN0UntjqacUJO195orYQdhjnq3iICMBFVMhFhk/WHQyZoLCxcCmiZTWzFxMwGKJes9h+swdpj5hbaoaa7mB4eT7W4S08x6pxPTAbcVuOrCmXOxPmjlXk9qgW8w3G/safz4xUndewgW26tZAEYx0Ww1nP3MzBgJFIo1tVPyXFMZhuG22gKoJy1xxzc9fHuTzAdRnGxY+Q42FGIc+3DkVrU+k2elF93TG6gfd9B34fDiigwmg/iE1Q16NftiW068qYzci+vEcU/nc67Pnd0i9RBozh+2Qnm6bHUdoLoXUylUIy4AuGcd72zJNBNmYgDgqw+L4EzCwzH9mEQWlqZux7gVzNimX6eR+S3rQt0DgUkca52wduF6LpW9d9WV5N0XCeJ1k0vOMFxZY6d433fio+tl/ksnY6JSgMs93e6RTnNta5bqK7y+Gn2HSRHzqTxEmkpK9devZjuSOot/3TPh3pYT1iqTDSzFW3KAlyEi/+4buCI7fcZoGMW6e52YYdYJgCcaLX7YdoM1TeXRGbueV2yUIN0D47Jo+0Ve1Tva2fAKeq7326jkNg8CqOyiXEz7lDFioVUtUIPZji5bXeBI4dIEcu2e6K4lQu/xGRMZl32IiAM/xXhVQnQ=
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?bC9tTVRObFFCWmJ0cEY0bWRGVnp6b1duYWRZR05Rc3d0d1FhMlEyaGdreG12?=
+ =?utf-8?B?YWJUTkI2S2ZjVEwvSE85Uy9PN00yenBnTnpHNnUyT2t1eXlCK1ZOVS9Lc0p3?=
+ =?utf-8?B?NW1kMmhwVTc1eVBZa3JBSnlvVUtBaU1KMkRJM2x0TlZscUZaNkhMc3JBQllu?=
+ =?utf-8?B?cmpmeU0vbmMvWUNQMUJ3bVo5V0hyYXNWeXZ0dEhYOHlnaHNSK0Vxc1IwZndn?=
+ =?utf-8?B?dTdwY1QybU5TbEEyMWxOT3Q3RXBHazV3VWFnZVJHWGNZNzYwOGFHVzZKOFd4?=
+ =?utf-8?B?SnNKTllIb0Q2dUs3NFZhSXpoZjk2U01FcVphdXM1UHVTM2UrNGZKeVdSTVUv?=
+ =?utf-8?B?RXc4c2NrVERvdnpNclQ5Y1E3cGhGOWhpcExDbFpZeHRJYUZ6a2grbmFOSHZ2?=
+ =?utf-8?B?OXh1Q3c1RjdPNkRZMmsvL0tvcW5vWHJjTVZMZC9Mc2tSN2pBckNURkZ5SEdU?=
+ =?utf-8?B?QlZ2UXJ2dXMxTERhZkNkZXQxMThOYU90V05CdDAxRldTUVFERU1TMlNrYVlQ?=
+ =?utf-8?B?M0p6YnQrMFFLTUQwcmZ6SmExMHRPS1kyNEtzTEdDb3BKQVVWRXJXNzBpL1p6?=
+ =?utf-8?B?YnlIREV1UzhTVDFXMHFaUm00bUV6L0Q4VU81b0gzR0xlRWtOUnNvN0JRTjg5?=
+ =?utf-8?B?TjFpazR5UG9PQ2kzZWpqdzEzd3ZORU5PUUZ3NHh1VnU2bXE2SlNodTBrMVZj?=
+ =?utf-8?B?WnpXU0w5MlJCSUh4a2NCYzJqeXZLV2UzVTI0SEdpR002cEZVZVpmbk9GY2U2?=
+ =?utf-8?B?a1ZDQks1M0NObGtrd2h1SDhQMklUWnRoVE1JQnp4Rm43b3dPUGtHY093MWNS?=
+ =?utf-8?B?QkpsUC9ibXRFY1N6c2VGRmpEdFVYQ3ZkOG1POCs0ZlhRME01c2lzY3I5czdi?=
+ =?utf-8?B?UDhTbm5lR2hqbVBJUStXc3NnbU1nb1FjRTNGeTZiSnZzTFdDQXpwWDhoT01p?=
+ =?utf-8?B?bUlFSWN0bjBpMExkeitEeWxBd0RNNW9CSjlNb2RQL1hsdm1DR2FmWE9DZFhW?=
+ =?utf-8?B?STEybWVXZDJ3V1lsMndLclU1YWEwdTBOR3ptdC9JV0EyVXJ4TjY4TFp6akVo?=
+ =?utf-8?B?bWlvRzVobkZmM1VEbUM4T3QrWFJpQ3ZSaUhaRTdsbjZRaUY5VWhmRXRudklK?=
+ =?utf-8?B?WjZuNENFNTJmTmZWTTRNVzJOMHY3QmwwNjVDNWVqSHFwUUZoclJ5dUx2N0Iy?=
+ =?utf-8?B?NEtMcDB0Qm8wUzQrSjc1NjFMb0IzZklDaGJCZk5YbEY2NW5DMnkyKzNtRXdV?=
+ =?utf-8?B?d2VaTExtQk9WdEVzcFhIaTJCNWFUaFBvZDNhN3BRYWRDR2NhM0JRa0Y3VzVS?=
+ =?utf-8?B?ajR4dFVxNTJmalhaWTdBR0xNL0FMMStNSjE4QUx5UkFWUk1YNVREOTZOZGJn?=
+ =?utf-8?B?d0RORDRURmRyeTdzN285WGliQkNFeDNzRG5DdmcvalhDUXgrL3l1TjFZWFpl?=
+ =?utf-8?B?T25pMTc0UW83TUNFaXpVaEdzc0w1dFVha1YxSUJEMEdTSWowUkFpYjVqUDZ4?=
+ =?utf-8?B?YWM3bTQ0MDdpeVVYeGxpVDZDUEFTK0hBalRYRnBoNytLV245MWtGN2drUTA4?=
+ =?utf-8?B?ZjNQM1VSZ1hJTlpmRVBsNXNvQklkQ05uUkIxZlB0cFUva2dxUEM3VmRCSGRv?=
+ =?utf-8?B?WUZZVVpZYWZ1SURWUVVlekY2ZUVCVUFteWZzRzJsQkhQZVByWE9UZUoxSXVP?=
+ =?utf-8?B?ZjI4Tld2aFdhRC9XZmtrWXloTElrZ3Rwa3RNUElTREltSnR2QzdpVHJRd2kw?=
+ =?utf-8?Q?1345m9a5s6ChreYwx9FZiL0Zv+SqTgd9l6T9zjf?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9ac6ef1e-1b9e-4caf-4228-08dc3dbfcd9c
+X-MS-Exchange-CrossTenant-AuthSource: SEZPR06MB6959.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Mar 2024 09:28:38.1892
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEYPR06MB6613
+
+On 3/6/2024 3:39 PM, Krzysztof Kozlowski wrote:
+> On 05/03/2024 08:51, Yang Xiwen via B4 Relay wrote:
+>> From: Yang Xiwen <forbidden405@outlook.com>
+>>
+>> Convert the old text binding to new YAML.
+>>
+>> While at it, make some changes to the binding:
+>> - The version numbers are not documented publicly. The version also does
+>> not change programming interface. Remove it until it's really needed.
+>> - A few clocks are missing in old binding file. Add them to match the real
+>> hardware.
+>>
+>> Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
+>> ---
+>>   .../bindings/net/hisilicon,hisi-femac.yaml         | 89 ++++++++++++++++++++++
+>>   .../devicetree/bindings/net/hisilicon-femac.txt    | 41 ----------
+>>   2 files changed, 89 insertions(+), 41 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/net/hisilicon,hisi-femac.yaml b/Documentation/devicetree/bindings/net/hisilicon,hisi-femac.yaml
+>> new file mode 100644
+>> index 000000000000..ba207f2c9ae4
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/net/hisilicon,hisi-femac.yaml
+>> @@ -0,0 +1,89 @@
+>> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/net/hisilicon,hisi-femac.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Hisilicon Fast Ethernet MAC controller
+>> +
+>> +maintainers:
+>> +  - Yang Xiwen <forbidden405@foxmail.com>
+>> +
+>> +allOf:
+>> +  - $ref: ethernet-controller.yaml
+>> +
+>> +properties:
+>> +  compatible:
+>> +    items:
+>> +      - enum:
+>> +          - hisilicon,hi3516cv300-femac
+>> +      - const: hisilicon,hisi-femac
+> Drop this fallback, your later driver change does not use it, so neither
+> should have binding. Explain in commit msg, that old binding was
+> incorrect (we discussed it a lot) thus you are making such change during
+> conversion.
 
 
+What about deprecating "hisilicon,hisi-femac-vn" compatibles and 
+introduce a new generic compatible "hisilicon,hisi-femac" instead? This 
+way, We can keep backward compatibility.
 
-> On 01-Mar-2024, at 18:26, Shradha Gupta =
-<shradhagupta@linux.microsoft.com> wrote:
->=20
-> If the network configuration strings are passed as a combination of =
-IPv and
-> IPv6 addresses, the current KVP daemon doesnot handle it for the =
-keyfile
-> configuration format.
-> With these changes, the keyfile config generation logic scans through =
-the
-> list twice to generate IPv4 and IPv6 sections for the configuration =
-files
-> to handle this support.
->=20
-> Built-on: Rhel9
-> Tested-on: Rhel9(IPv4 only, IPv6 only, IPv4 and IPv6 combination)
-> Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
-> ---
-> tools/hv/hv_kvp_daemon.c | 152 ++++++++++++++++++++++++++++-----------
-> 1 file changed, 112 insertions(+), 40 deletions(-)
->=20
-> diff --git a/tools/hv/hv_kvp_daemon.c b/tools/hv/hv_kvp_daemon.c
-> index 318e2dad27e0..7e84e40b55fb 100644
-> --- a/tools/hv/hv_kvp_daemon.c
-> +++ b/tools/hv/hv_kvp_daemon.c
-> @@ -76,6 +76,11 @@ enum {
-> DNS
-> };
->=20
-> +enum {
-> + IPV4 =3D 1,
-> + IPV6
-> +};
-> +
-> static int in_hand_shake;
->=20
-> static char *os_name =3D "";
-> @@ -1171,6 +1176,18 @@ static int process_ip_string(FILE *f, char =
-*ip_string, int type)
-> return 0;
-> }
->=20
-> +int ip_version_check(const char *input_addr)
-> +{
-> + struct in6_addr addr;
-> +
-> + if (inet_pton(AF_INET, input_addr, &addr))
-> + return IPV4;
-> + else if (inet_pton(AF_INET6, input_addr, &addr))
-> + return IPV6;
-> + else
-> + return -EINVAL;
-> +}
-> +
-> /*
->  * Only IPv4 subnet strings needs to be converted to plen
->  * For IPv6 the subnet is already privided in plen format
-> @@ -1197,14 +1214,56 @@ static int kvp_subnet_to_plen(char =
-*subnet_addr_str)
-> return plen;
-> }
->=20
-> +static int process_dns_gateway_nm(FILE *f, char *ip_string, int type,
-> +  int ip_sec)
-> +{
-> + char addr[INET6_ADDRSTRLEN], *output_str;
-> + int ip_offset =3D 0, error, ip_ver;
-> + char *param_name;
-> +
-> + output_str =3D malloc(strlen(ip_string));
-> +
-> + if (!output_str)
-> + return 1;
-> +
-> + output_str[0] =3D '\0';
-> +
-> + if (type =3D=3D DNS)
-> + param_name =3D "dns";
-> + else
-> + param_name =3D "gateway";
-> +
-> + while (parse_ip_val_buffer(ip_string, &ip_offset, addr,
-> +   (MAX_IP_ADDR_SIZE * 2))) {
-> + ip_ver =3D ip_version_check(addr);
-> +
-> + if ((ip_ver =3D=3D IPV4 && ip_sec =3D=3D IPV4) ||
-> +    (ip_ver =3D=3D IPV6 && ip_sec =3D=3D IPV6)) {
-> + strcat(output_str, addr);
-> + strcat(output_str, ",");
 
-We need to check if we are not going out of bounds here. So existing =
-length of output_str + length of addr + 1 should be < strlen(ip_string) =
-which is the length of the buffer. See parse_ip_val_buffer() how it does =
-out of bounds check.
+>
+> Best regards,
+> Krzysztof
+>
 
-> + } else {
-> + continue;
-> + }
-> + }
-> +
-> + if (strlen(output_str)) {
-> + output_str[strlen(output_str) - 1] =3D '\0';
-> + error =3D fprintf(f, "%s=3D%s\n", param_name, output_str);
-> + if (error <  0)
-> + return error;
-> + }
-> +
-> + return 0;
-> +}
-> +
-> static int process_ip_string_nm(FILE *f, char *ip_string, char =
-*subnet,
-> - int is_ipv6)
-> + int ip_sec)
-> {
-> char addr[INET6_ADDRSTRLEN];
-> char subnet_addr[INET6_ADDRSTRLEN];
-> int error, i =3D 0;
-> int ip_offset =3D 0, subnet_offset =3D 0;
-> - int plen;
-> + int plen, ip_ver;
->=20
-> memset(addr, 0, sizeof(addr));
-> memset(subnet_addr, 0, sizeof(subnet_addr));
-> @@ -1216,10 +1275,13 @@ static int process_ip_string_nm(FILE *f, char =
-*ip_string, char *subnet,
->       subnet_addr,
->       (MAX_IP_ADDR_SIZE *
-> 2))) {
-> - if (!is_ipv6)
-> + ip_ver =3D ip_version_check(addr);
-> + if (ip_ver =3D=3D IPV4 && ip_sec =3D=3D IPV4)
-> plen =3D kvp_subnet_to_plen((char *)subnet_addr);
-> - else
-> + else if (ip_ver =3D=3D IPV6 && ip_sec =3D=3D IPV6)
-> plen =3D atoi(subnet_addr);
-> + else
-> + continue;
->=20
-> if (plen < 0)
-> return plen;
-> @@ -1242,8 +1304,8 @@ static int kvp_set_ip_info(char *if_name, struct =
-hv_kvp_ipaddr_value *new_val)
-> char if_filename[PATH_MAX];
-> char nm_filename[PATH_MAX];
-> FILE *ifcfg_file, *nmfile;
-> + int ip_sections_count;
-> char cmd[PATH_MAX];
-> - int is_ipv6 =3D 0;
-> char *mac_addr;
-> int str_len;
->=20
-> @@ -1421,52 +1483,62 @@ static int kvp_set_ip_info(char *if_name, =
-struct hv_kvp_ipaddr_value *new_val)
-> if (error)
-> goto setval_error;
->=20
-> - if (new_val->addr_family & ADDR_FAMILY_IPV6) {
-> - error =3D fprintf(nmfile, "\n[ipv6]\n");
-> - if (error < 0)
-> - goto setval_error;
-> - is_ipv6 =3D 1;
-> - } else {
-> - error =3D fprintf(nmfile, "\n[ipv4]\n");
-> - if (error < 0)
-> - goto setval_error;
-> - }
-> -
-> /*
-> - * Now we populate the keyfile format
-> + * The keyfile format expects the IPv6 and IPv4 configuration in
-> + * different sections. Therefore we iterate through the list twice,
-> + * once to populate the IPv4 section and the next time for IPv6
-> */
-> + ip_sections_count =3D 1;
-> + do {
-> + if (ip_sections_count =3D=3D 1) {
-> + error =3D fprintf(nmfile, "\n[ipv4]\n");
-> + if (error < 0)
-> + goto setval_error;
-> + } else {
-> + error =3D fprintf(nmfile, "\n[ipv6]\n");
-> + if (error < 0)
-> + goto setval_error;
-> + }
->=20
-> - if (new_val->dhcp_enabled) {
-> - error =3D kvp_write_file(nmfile, "method", "", "auto");
-> - if (error < 0)
-> - goto setval_error;
-> - } else {
-> - error =3D kvp_write_file(nmfile, "method", "", "manual");
-> + /*
-> + * Now we populate the keyfile format
-> + */
-> +
-> + if (new_val->dhcp_enabled) {
-> + error =3D kvp_write_file(nmfile, "method", "", "auto");
-> + if (error < 0)
-> + goto setval_error;
-> + } else {
-> + error =3D kvp_write_file(nmfile, "method", "", "manual");
-> + if (error < 0)
-> + goto setval_error;
-> + }
-> +
-> + /*
-> + * Write the configuration for ipaddress, netmask, gateway and
-> + * name services
-> + */
-> + error =3D process_ip_string_nm(nmfile, (char *)new_val->ip_addr,
-> +     (char *)new_val->sub_net,
-> +     ip_sections_count);
-> if (error < 0)
-> goto setval_error;
-> - }
->=20
-> - /*
-> - * Write the configuration for ipaddress, netmask, gateway and
-> - * name services
-> - */
-> - error =3D process_ip_string_nm(nmfile, (char *)new_val->ip_addr,
-> -     (char *)new_val->sub_net, is_ipv6);
-> - if (error < 0)
-> - goto setval_error;
-> -
-> - /* we do not want ipv4 addresses in ipv6 section and vice versa */
-> - if (is_ipv6 !=3D is_ipv4((char *)new_val->gate_way)) {
-> - error =3D fprintf(nmfile, "gateway=3D%s\n", (char =
-*)new_val->gate_way);
-> + error =3D process_dns_gateway_nm(nmfile,
-> +       (char *)new_val->gate_way,
-> +       GATEWAY, ip_sections_count);
-> if (error < 0)
-> goto setval_error;
-> - }
->=20
-> - if (is_ipv6 !=3D is_ipv4((char *)new_val->dns_addr)) {
-> - error =3D fprintf(nmfile, "dns=3D%s\n", (char *)new_val->dns_addr);
-> + error =3D process_dns_gateway_nm(nmfile,
-> +       (char *)new_val->dns_addr, DNS,
-> +       ip_sections_count);
-> if (error < 0)
-> goto setval_error;
-> - }
-> +
-> + ip_sections_count++;
-> + } while (ip_sections_count <=3D 2);
-> +
-> fclose(nmfile);
-> fclose(ifcfg_file);
->=20
-> --=20
-> 2.34.1
->=20
+-- 
+Regards,
+Yang Xiwen
 
 
