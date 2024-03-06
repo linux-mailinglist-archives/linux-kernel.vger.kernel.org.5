@@ -1,169 +1,155 @@
-Return-Path: <linux-kernel+bounces-93442-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93443-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45A7F872FE7
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 08:40:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 805C3872FEF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 08:41:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A3D0FB26FC0
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 07:40:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A4B5E1C21271
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 07:41:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CC145D469;
-	Wed,  6 Mar 2024 07:40:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35E125CDD1;
+	Wed,  6 Mar 2024 07:41:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Y6oobY5C"
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=fibocomcorp.onmicrosoft.com header.i=@fibocomcorp.onmicrosoft.com header.b="kQqx9yzW"
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2110.outbound.protection.outlook.com [40.107.215.110])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EADD5C615
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 07:40:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709710826; cv=none; b=srjVuFKQSqkRhVeppvKijsrfLCJ4kDWRptBbi8ialFGTI39YIg8/ipf7+oI83RLr3h4pZ7xfALAxM8bl6pM/zV02Za3RX19h3oZ4zaiPK8nwyJG0nor7nowIdUX53g5yiMrv7gVwr5iWleGsO9H/BG7NOuMWkhY5ELD/zOronsU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709710826; c=relaxed/simple;
-	bh=QVLq+Gm+V9t85A12vsREyIHEMnBHst4n+Xq+IcVdUSw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SV11mYt1E11IOkDk7/cAW5voiNCnW8NgGI75T3darKNloaGunG0Nyofjo12IvX7vkyMfn5ZG81lcqt2Ff8Cz6Tfc+rL9aO3kZRTG2kWky+Og6IIrO+ZQozqO8BTJJJPKx1KjDyHZc/xuBnp1A9TieYJyHTOk/19EMVWThdp8FPc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Y6oobY5C; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5673f7b3196so4139589a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 23:40:24 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 888CA5C8F9;
+	Wed,  6 Mar 2024 07:41:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.215.110
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709710905; cv=fail; b=awlk1GMNL+w4nyEKkJiua6+RIHoGdCWwgtL6Q7TwwK2AvQ+7N9+gKjfIP154PeSpd9j8MCZbrgiXLFIepkZpQ1pxa27/E3858QvuinAGR9k1pHshPAxCglaZ22ocljPbi/LBwv9ggF+WcpwLNSnXoIwt5Dnkcw8t+SLAbUlaees=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709710905; c=relaxed/simple;
+	bh=q/mYZuakaFRDzPePeUyz8PyKq70GrFfEYpnYQhZH8jI=;
+	h=From:To:CC:Subject:Date:Message-ID:Content-Type:MIME-Version; b=QwZM0POO4S1sgSP4dAQsO6ONWezKOMzfKbilkelss/DrKxr3C0A+94WERvxSokuedH6QS7GdsMgst0uUoIyywrpNl5Q4iPtjMruiW3dLRieNOziAF72pa3YWV5ZKqyBwAp7ObISLXMYaEfXVBAvy/NFnniNVPFZmJ2RG0JjGm3Y=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fibocom.com; spf=pass smtp.mailfrom=fibocom.com; dkim=pass (1024-bit key) header.d=fibocomcorp.onmicrosoft.com header.i=@fibocomcorp.onmicrosoft.com header.b=kQqx9yzW; arc=fail smtp.client-ip=40.107.215.110
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fibocom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fibocom.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VC/JwRvKVMFvmpJrl0kQ7iYu2wbZCR4HDvozvJLIIem+4hQpkvp36QWKj5CRLUCoTx6UpeqlAzjTYNzKhaViZ4PC4B9eyQwqZncA/CYinkO+UkWp/Uu7HfEmll7l5ugvSTne5ixXvreojqZRuvLSeOj8QB1vaQ4DPlYdBuljzNBLDRayDQnUsFwxtgD0InXEWF/w8AkdA1G6pYJmWN9/B6bF+eyaEd4ltOeJtQI5Ttn3+iQl6BvL2iBIYjfQFHYS6OKsOH7nMlQ1hmJwdrTFcTPuvfPI+n4h0AzvJ/To707MwdsDCVetfWxl+FBWcPrTHdHMpobQ5Rk1IAZ2Mw1ZTw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=q/mYZuakaFRDzPePeUyz8PyKq70GrFfEYpnYQhZH8jI=;
+ b=HlC4LOdb4zgyB0F4vkoBVNMhQQgdI36yAF2ZyfvGHgxzPb5aAnXLokfm43HwN51buI/iCWJZehGFkT9FPbGmrgolVtUhZX1BeCHvsT7jokQjZ8l9Ql7a74RQpC8iPq0m1pEJhd7PTqPIelTlwz5dpZw8Lb2L4gE/zL/3xQ4Sz8j1WUMBTu+JKNQl14lo2go7ShC56voQnOHw/xjqAzyM8HPmGHtiwD/AAyjfS1ZDYqgzSVwc9lVA1y0A5SnBu+Qlqbjuaogor/5VC1V3a1smJzPmlqFhPQhCV/87toltD0ZXmHX9q9bIPYoO9hgt73HizSeaOgNA7XFtJ2ddtjRxTQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fibocom.com; dmarc=pass action=none header.from=fibocom.com;
+ dkim=pass header.d=fibocom.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709710822; x=1710315622; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jekXDxYErb4VAUlKgbKLA8WJ/FN7SJA3Qr5o92TwKV0=;
-        b=Y6oobY5C0ss4Rs1udW3g02p1h+oEQznmrCi9eZaafVkYBeU2lRWCOi94ZD3liurZBn
-         ZV1TU9PIRXjvquyMb6/zyYsDknGIq++oYywPKARfpR5JJSMnDc8eAwkWfqyK3f6MIQoU
-         /UVXxfCXt/2XIpHqJmr/YryB7nJYrYn+WX1x0sKCWntUq6xK92/MGmbwhHX2MjqK6uJd
-         OFHaUZKQ/7faQlI94PDzoVQUIPHmIDlx0gp2rJfgLJcOJn+hHX6CrpYURQ21UeCVN6P0
-         vybP5MHAAe7Egjs/a2xxJAWTrzrGsyHDiWJpEmGfU+rY9KJfeLyfF++eAob2PkJC6v1m
-         LfjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709710822; x=1710315622;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jekXDxYErb4VAUlKgbKLA8WJ/FN7SJA3Qr5o92TwKV0=;
-        b=DoOzwTXIqFcJcUU3+0nXSQ9FjjuPJmxpktSQJEvWK2CKCwQ/bJKEkVPkmqx1DKMDPi
-         XKzKjbcyWbk7wAurXLQsAnmZzns6RnQwb81aPyDeMAiR0swrSpXq4SmMnp8HOPiRMgds
-         elHQQ4icIs1tVve6GHJTbZDcaPT9tZ5U8PDI50Q1fmxW+UTWKN+1KICi+Rta6qI8Dwbq
-         nqHPe8LwZ8UOeOEBhQEuDBtjZEGSl8HsWI9JSHluC1KO/Glrnl5d9uvyTt3fYyqZ2Ilg
-         bXPSyzMX9ltWNQ3DbtveZEnbsadg032e17gtWN8vinoK0dIcMvBwiB+3CcyirWKN+PEM
-         ctVA==
-X-Forwarded-Encrypted: i=1; AJvYcCXNdI+63JP578TLE+dNBURGB4o6KKphrTq8K/nwWm9hRtsnW5IVFiC/8yuETmEbr8wLdJmS8V+ftaZUbmAds5EICm3qlDwENXtwq+J+
-X-Gm-Message-State: AOJu0YwwD1OhJmze8Jox9MEqbwlThz1PDu0ezijVUU9d5JcgfBxH7/RC
-	IEF08F7zOoVtKxoa90Jh4dmGWduQNVJbvIvFGj0P6FSPM88PLn7OyK9SXOsqWAs=
-X-Google-Smtp-Source: AGHT+IGbD+uuef3gNCsWrUl/QdPG7+grersJWGsXsyHYWEYG+GHosge7HenHOwsMo7xzaTv6SJgJFg==
-X-Received: by 2002:a17:906:fb0c:b0:a45:b2bc:3157 with SMTP id lz12-20020a170906fb0c00b00a45b2bc3157mr1457485ejb.23.1709710822618;
-        Tue, 05 Mar 2024 23:40:22 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id gq13-20020a170906e24d00b00a45621ded4bsm2851488ejb.146.2024.03.05.23.40.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Mar 2024 23:40:22 -0800 (PST)
-Message-ID: <68e3e9fd-a099-4e5c-afd7-cad8f4170590@linaro.org>
-Date: Wed, 6 Mar 2024 08:40:21 +0100
+ d=fibocomcorp.onmicrosoft.com; s=selector1-fibocomcorp-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=q/mYZuakaFRDzPePeUyz8PyKq70GrFfEYpnYQhZH8jI=;
+ b=kQqx9yzWP2TjIegJ+1fpD2cwM/uR4y3j/rQNSTGLXVAFsA8BrfLgMpr0drt65H2FYiF627kCwC+Fb7pM7HWLUKH3WLyh8QzbxgzzJcldFVQatHf2bGj0wDZcod+B26I0rHuiI2QmvajEoBwqGU1dOCjxInbEPjBh2AwRmIg3uLI=
+Received: from KL1PR02MB6283.apcprd02.prod.outlook.com (2603:1096:820:dc::11)
+ by TYZPR02MB6074.apcprd02.prod.outlook.com (2603:1096:400:25c::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.39; Wed, 6 Mar
+ 2024 07:41:37 +0000
+Received: from KL1PR02MB6283.apcprd02.prod.outlook.com
+ ([fe80::87a8:fbd4:757d:2f75]) by KL1PR02MB6283.apcprd02.prod.outlook.com
+ ([fe80::87a8:fbd4:757d:2f75%7]) with mapi id 15.20.7316.023; Wed, 6 Mar 2024
+ 07:41:37 +0000
+From: "Bolan Wang(Bolan)" <bolan.wang@fibocom.com>
+To: Lars Melin <larsm17@gmail.com>, "johan@kernel.org" <johan@kernel.org>,
+	"gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+CC: "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] USB: serial: option: add Fibocom FM135-GL variants
+Thread-Topic: [PATCH] USB: serial: option: add Fibocom FM135-GL variants
+Thread-Index: Adpvko0jRh2Nq0RESdW8MpHCbG6u0A==
+Date: Wed, 6 Mar 2024 07:41:37 +0000
+Message-ID:
+ <KL1PR02MB6283F5203E50CD87F344331689212@KL1PR02MB6283.apcprd02.prod.outlook.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=fibocom.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: KL1PR02MB6283:EE_|TYZPR02MB6074:EE_
+x-ms-office365-filtering-correlation-id: 59c7b070-aab2-4808-26ef-08dc3db0daac
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ Uf3oiHAe1MZUE6kJmaSKiPXJf/6asKTm8zvxc8v1ODy905xWNclRX+crABos1CbCS5qbjwtWMX23luQLWiNhwRqIafcPmDQiJ7gFoHtsF+GJf7VTX0TurjariqOH63ppVYUntws5EhI7qE3U/kFFiAVYUHmF8t6l/9UDoD7+7/L/n2lWJPiqxw82GIkqXs/qmVy/DgVDvTr1dNmxEAuRQLGd/MIFKUZ6KAvG2LVLMv5h2jFEl8OHs6R/xMFCAvYb6POhMTtB98ebdvMnQiyjRDU4h/Fy556tr15MMmTK9+je+Ph5i8jYiVp3kCvhd7quI7bzdVSIlEXhL+MQ6govqrbU8hJJlCq+O8PHq+ebLepiHGCtsk4n0o/bFvhittt3qiL+gOC5Fu58Wg9V0z3PIkLrw6nguPY0YYgHSmB39UInhhN3aYEBDQqwhdZ3uKiqmmXlVt2vFXfK7288rmEHFJV0x39k48LEGS8oOqnPwLFBGSQi0f9/9j/db04/j8b7gN2ZmZa5yzeRJOZFtP2euUqpQg0CIxCEzynzpD0T04H8IJ41QQzJ2qg0ZGQ6vjvCI9NTgaaleyMek90cr/8tTssPvdEsNtUN/va3B8C+KF9GQqCrrHT4L+dhsmQE/f83aL+aArrZXMlrP/ujFBBG18ctcgCme+xLtzo6yyaKo47/9tgveABj5BvsiDOPSeADdAgVor97cqwyk7KVJTn+9A==
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:zh-cn;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:KL1PR02MB6283.apcprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(38070700009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?bDVHRlhBQUlLUFlSRmpxT1JaSDlHU05OZW9SRWJzUFpaT041UWlLWWRoeHZB?=
+ =?utf-8?B?STIwV1kvWEYyb1VpUkNjVFQvSmVzNlJFUDRWQk9rYU5qRnU1MnlLaG9nSlhX?=
+ =?utf-8?B?M0dIN1p2T2NRUkJOcGVlTzREa1V3UnRZbWg3TDUxV1RWcUJJYlBnR0lNbFIx?=
+ =?utf-8?B?Rjg2ZVhOLzBTMDhJN21IM1JyM011Q1BQOFN1czN3OVZxWUpLLzVpTmFKdUJK?=
+ =?utf-8?B?MFFDOTNVSlJQNGIvRyt3VXVMbTRVSnNrN0lIT3p0SG1NZVBYRUI1S1JtcG9u?=
+ =?utf-8?B?R2Q2b3dEOVZmamZlQUhFUTdUNUpJZWZ3UUJKSklZQ0NsaTFCSmUxZTd2MHRG?=
+ =?utf-8?B?Q05OZXJOTWZTbjAvb2RuMzdUTk1OODI3RmJVQ3M2KytJQmhOdjd6djFHZVpC?=
+ =?utf-8?B?TjQwNGZQS3lPV1hWUmxEcFN3aGxpNnUrNzVoSnNNbDlsUG1OVGsrTzdxdHJO?=
+ =?utf-8?B?SVhEbDBoTGtzVUtZYzR0cmxHVGd3ZnJBaThyUVduSWVxeWJnRy95akUrenU0?=
+ =?utf-8?B?aGpTK3lqUWhTRndVUlFkU3BiT080a2I1aktJS0FPVUM3Q3FGU3labjNrM1ht?=
+ =?utf-8?B?b1AydUlPU0o5L0JlQ0J3N1BNNEZSZnJra0NtVGlpb0EzbitlYjRlQUJzRVZM?=
+ =?utf-8?B?aGFlNlZIZ0RYZ1hqV2pwaWxxSk5GSFcxaTY0VVJYaTVTc0d5RUxoN21lemJ3?=
+ =?utf-8?B?ckVSQk9kU25MUGY0R1BpUDZPYTIvV0QvNko1aENoZENENnhiN1Z4S2hZZ0Yx?=
+ =?utf-8?B?TE9OMENsNldDUmtwUldVNEV3RFl3ZjIzdHUyVy8xTWhvVnRLT3Rpdk13dGZE?=
+ =?utf-8?B?WUhoaXJCZ0hqWFViUkw3eVYxQ2FPMzV0dDRIRUw3N0I4SHpnUFVDWm02ZXJ4?=
+ =?utf-8?B?aG5tdWtzQmFOaG5BQUpFWnNYbVE3VVB4QWpTZHBCK0lNNjRxeDNLWEhTd2Yz?=
+ =?utf-8?B?NHR5eXB5dlBNOXNSMmJwU1hDS2VRWUdKbWpIUjFmQ3V2Zm9zOCtaa2ZPSDVQ?=
+ =?utf-8?B?V3VkQ0cwajRVZG5nTUlRK2UxN2xuN3cvQ2NDaWxlNkZ4Zm5PS2dNUDUxYTdS?=
+ =?utf-8?B?YUxnNmh2VEJsY0plT2xscloyV2p5enNVcFJhbS9YVXRCdWlEbFo3VndJcWRM?=
+ =?utf-8?B?enVnWDZwL3JBNWhNT0hoeVpsYVdyRDJ3ZXhKTldVRldLdkZpQVAwMmovbTB4?=
+ =?utf-8?B?ZzZZYWVEM2Y4dngwWjdQWTRzdWkrTUpyOEhxZHhhUVVFaVl5cXJuM3RXcjMz?=
+ =?utf-8?B?UDB0NkhySnFFT2ZJYkdJbkVpQnJXNXJTTUNsUDZYNU1KT0dwNmRvNU1uVFNq?=
+ =?utf-8?B?S2l5eUdRUDRnSHFCQ0cxNk1mUTBPWmVYVmRFYzFTcEttckdhRTM4WERkTVRS?=
+ =?utf-8?B?R3N0WFlBbFdoVWZmUXZPRHM0aDdCcS9WS3ZCdnc1dkt1RTlaMWE1emk1VG1L?=
+ =?utf-8?B?Z00rT3NIZzMvUDU3M0NSb0g0N21RY01YSmxZTy9Xd1g3djQrclpJWFRnckNK?=
+ =?utf-8?B?LzcxeDVlUHdocDFRZ0tMcU9XZndPRTBaQkIrZTJqcUhYS0Q4VVBLdzlpWnlq?=
+ =?utf-8?B?VUZjMlR6Y0d5eU5wekRtK1JWQ2syRXpFSnNibUFya2JJd0p0UHpIcmMvL2FV?=
+ =?utf-8?B?TWFXMkhRcXZnWklVS2lQYm5zSTZMK2JFUGdVZmJNbWh1VWtPSnRTTWZhY2U4?=
+ =?utf-8?B?TUt6eERkUUVsL0Q5VXZGUEJ6b2cyemRiWDc1aDlDbndZQ080WW1zUW9KZVVv?=
+ =?utf-8?B?SFJwWXdaL0FudDc3ZWprTHN2UWlPL2VPR3FFWHVEb0hkOGxIM0htZnpqVnpJ?=
+ =?utf-8?B?d3JtRG1WWTN5ZTJaS1NzaGwyQnhiS1pNL0ZadjlqQ1dRb0p3YlhSTERlaW1p?=
+ =?utf-8?B?ZTFBNFo3ZlgrU0RQTzlta1BjV1d2R2pvdXlzdEFGWUtUYzVEOXd1anZCSGFF?=
+ =?utf-8?B?M1UxSXc0TllnZWhiY3ArNmZVc2F4dlduL0lCaE5SKzZnOVZVTGdGOWUzemc4?=
+ =?utf-8?B?bTV2dUFXeFFIOTNEVFB0S2ZzUU5kYTRaQWhsVnY0MHhLdDlBYzJRNCtQWkNN?=
+ =?utf-8?B?WHFydk16NE1Fd1k0SXdINnVQblFVMTM3L3g2Z2ZsYkp1c3pVSC9FRzhMVUNr?=
+ =?utf-8?Q?4ufec39zR2rcVmtGUkVysd5C2?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v8 6/9] dt-bindings: net: hisi-femac: add binding
- for Hi3798MV200 FEMAC core
-Content-Language: en-US
-To: forbidden405@outlook.com, Yisen Zhuang <yisen.zhuang@huawei.com>,
- Salil Mehta <salil.mehta@huawei.com>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
- Heiner Kallweit <hkallweit1@gmail.com>, Russell King <linux@armlinux.org.uk>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org
-References: <20240305-net-v8-0-166aaeea2107@outlook.com>
- <20240305-net-v8-6-166aaeea2107@outlook.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240305-net-v8-6-166aaeea2107@outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: fibocom.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: KL1PR02MB6283.apcprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 59c7b070-aab2-4808-26ef-08dc3db0daac
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Mar 2024 07:41:37.1392
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 889bfe61-8c21-436b-bc07-3908050c8236
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ID8GmbrTVSF4MD/kLEqFZIbb61K6THwI3juzMyLMIgDPVWZGq8o6858jPnEkHv4yw5xYDpxvGS5qnGNst4bfRg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR02MB6074
 
-On 05/03/2024 08:51, Yang Xiwen via B4 Relay wrote:
-> From: Yang Xiwen <forbidden405@outlook.com>
-> 
-> HiSilicon FEMAC core is also found on Hi3798MV200 SoC. Document it in
-> binding.
-> 
-> Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
-> ---
->  Documentation/devicetree/bindings/net/hisilicon,hisi-femac.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/net/hisilicon,hisi-femac.yaml b/Documentation/devicetree/bindings/net/hisilicon,hisi-femac.yaml
-> index ff6b090ed34e..4f51c5ec90b3 100644
-> --- a/Documentation/devicetree/bindings/net/hisilicon,hisi-femac.yaml
-> +++ b/Documentation/devicetree/bindings/net/hisilicon,hisi-femac.yaml
-> @@ -17,6 +17,7 @@ properties:
->      items:
->        - enum:
->            - hisilicon,hi3516cv300-femac
-> +          - hisilicon,hi3798mv200-femac
-
-Your driver suggests this is compatible with hi3516cv300 so make it
-compatible.
-
-Best regards,
-Krzysztof
-
+PiBIaSBCb2xhbiwNCj4gc28geW91IGFscmVhZHkga25vdyB0aGF0IG90aGVyIHZlcnNpb25zIG9m
+IHRoZSBjYXJkIHdpbGwgaGF2ZSB0aGUgcGlkDQo+IDB4MDFhMSBhbmQgdGhlIHNlcmlhbCBpbnRl
+cmZhY2VzIHdpbGwgYmUgb2YgY2xhc3MgZmYgYnV0IHlvdSBkb24ndCBrbm93IHdoYXQgdGhvc2Ug
+aW50ZXJmYWNlcyB3aWxsIGJlIHVzZWQgZm9yPw0KPiBZb3Ugc2hhbGwgb25seSBhZGQgZHJpdmVy
+IHN1cHBvcnQgZm9yIHdoYXQgeW91IGtub3cgdG9kYXkgYW5kIG5vdCBmb3Igc29tZXRoaW5nIHRo
+YXQgbWlnaHQgb3IgbWlnaHQgbm90IGJlIGltcGxlbWVudGVkIGluIHRoZSBmdXR1cmUuDQoNCj4g
+Rm9yIHRoZSBkZXZpY2Ugd2l0aCBwaWQgMHgwMTE1IHlvdSBoYXZlIGxpc3RlZCBhbiBhZGIgaW50
+ZXJmYWNlIGFuZCBhZGIgaW50ZXJmYWNlcyBzaG91bGQgbm90IGJlIGluIHRoZSBvcHRpb24gZHJp
+dmVyLg0KDQpIaSBMYXJzOg0KDQpPaywgSSB3aWxsIHJlbW92ZSAweDAxYTEgZnJvbSBvcHRpb24g
+c2VyaWFsIGRyaXZlci4gQW5kIHRoZSBhZGIgbGlzdGVkIGluIHBpZCAweDAxMTUgd2lsbCBhbHNv
+IGJlIHJlbW92ZWQuDQpBY3R1YWxseSBhZGIgaW50ZXJmYWNlIGluZm8gd2l0aCBwaWQgMHgwMTE1
+IGlzOiBDbGFzc19mZiZTdWJDbGFzc180MiZQcm90XzAxLCB0aGUgb3B0aW9uIGRyaXZlciB3aWxs
+IG5vdCBiaW5kIGl0Pw0KSSB3aWxsIHJlc3VibWl0IGEgbmV3IHBhdGNoLCBwbGVhc2UgaGVscCBy
+ZXZpZXcgYW5kIGFiYW5kb24gdGhpcy4NCg0KdGhhbmtzDQpib2xhbg0KDQoNCg==
 
