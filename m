@@ -1,49 +1,50 @@
-Return-Path: <linux-kernel+bounces-94302-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94301-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21725873CC6
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:59:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08401873CC2
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:59:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C1849B22BBA
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:59:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3ABF71C22A9A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:59:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0913C13BAFC;
-	Wed,  6 Mar 2024 16:59:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5A5713BAD5;
+	Wed,  6 Mar 2024 16:58:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b="aUXi9APT"
+	dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b="FBGdCd14"
 Received: from mail1.fiberby.net (mail1.fiberby.net [193.104.135.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61926137921;
-	Wed,  6 Mar 2024 16:58:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5D4313958C;
+	Wed,  6 Mar 2024 16:58:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.104.135.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709744340; cv=none; b=nChNfiuUIBMfyi1qHHsp8VOxlKH9km7UDCbXReBAl112BNNOS2NM270yWrjYqHYN3uFHwrV89+EG1S0TttI6ofJELRoN6T3VG28zCiafplB63RFxpKK1OThyEhFIqCllX4ajamFyUM+7UPyl8O47Gs+CSijAvY1ZQwz/QlVxqzI=
+	t=1709744339; cv=none; b=olrFbYrqcSFQcoSH4eTYTZESFRhJj8FtURT6LjapZpFCMF/1mGPRpX4GUABMwuoLgYF1LrWE9TMya5IvQJIkQwB9s0Cbh+4vncuKGyVisC494RHyE9zjbbLAT35i+FWBIyaxPUbeVN4xxB4jpzW7DFO8CVpx2lHb/nigBpSjYi0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709744340; c=relaxed/simple;
-	bh=7KcwAx8GomKY81dwdLlPImImGc1QY46ZYt5n12Z+btk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=anpmbO2fPD8Smsg0TQ6DQljOy5o/pXboynLzB5WV6XM2l7g5lpnm8Y14W2yuzcDQR3zVzB5IROVGeakEfVs4toRHxCzQ3YvgyIT1E3gKafukUQoFLIJ9d8eLRJ3jiT3TQUNM/chxrKx5OxQ/yDyoh94GGApQGRFji03uKLn2SKE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net; spf=pass smtp.mailfrom=fiberby.net; dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b=aUXi9APT; arc=none smtp.client-ip=193.104.135.124
+	s=arc-20240116; t=1709744339; c=relaxed/simple;
+	bh=0qX6BUcKSD/m80wV0OqOMy5T5kt64bceTHF5BMHCdPk=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Vi7dduzMmRSpSsyRiLI2omccQz1V/p5vMg909j/IvpmPzBQ5CtZKSrOTldNyD8QjfuXgE2tRBBnotuqZalRNQgMFSt8GTRzowXes2uASYStfHGGgxn6LTsIcqGmUoAJMGsPBJxTmAJpdF5OjCLkipeuAoj8TZdatsvOdPymk0ks=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net; spf=pass smtp.mailfrom=fiberby.net; dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b=FBGdCd14; arc=none smtp.client-ip=193.104.135.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fiberby.net
 Received: from x201s (193-104-135-243.ip4.fiberby.net [193.104.135.243])
-	by mail1.fiberby.net (Postfix) with ESMTPSA id 041CC60311;
-	Wed,  6 Mar 2024 16:58:55 +0000 (UTC)
+	by mail1.fiberby.net (Postfix) with ESMTPSA id 8CF696030A;
+	Wed,  6 Mar 2024 16:58:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fiberby.net;
-	s=202008; t=1709744335;
-	bh=7KcwAx8GomKY81dwdLlPImImGc1QY46ZYt5n12Z+btk=;
-	h=From:To:Cc:Subject:Date:From;
-	b=aUXi9APTa+3aMxCc+bghaMIHksFhAiOf+0Q44BI032sdjEFsMhOAyzOH1z4mw3NYq
-	 S5AysNk3v+sJoNEH10usqETy2TYf2WRzOGfeKhKAHOIfcavZLnYdPOu22lepbIGkKg
-	 Hqxgxiq421HAiVP8SFS3mp7MZdxJxIMTdIZcsBxAUI2afGLSv2/P0Bn8ZtH6v/Q1bV
-	 Wzk18copaP/LGRTPESOt2sJ93H7vZebw3PZIR6St2IdPIOV0HRx3iD1MOVtDZ0OH5T
-	 YuIuo1DkYwjQ/e2n2ugHXqp4e5O/L/Q/TQwOx387Yel+it+goJTwNgLPVZXUpYCjCk
-	 JpCB60+05UDyA==
+	s=202008; t=1709744326;
+	bh=0qX6BUcKSD/m80wV0OqOMy5T5kt64bceTHF5BMHCdPk=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=FBGdCd14MTKWxXFYmqJ5+2p9IcCI2AX44huOxLUUquSpAT5M4Fcpw0yQi7hXqsq3g
+	 1Ktze2xoBPnhgiIdBb7nl3XVNmLdvuAoRq6se0BqzIxvMTsTHRkSnNtwTlieC6dcrk
+	 IUEOxLND3B80OCcFb89zvj95Nym4utts57oPma6mR5GIsLYMRgYmjxIMUOQKIC5X2+
+	 bEEqjEPLgX/lRaas13S8v2z/f9clMdhlQDL9s4gTFiAkbN6yNuZD85o6d1vuGdkrgf
+	 G4baK3cQC2SaEKbSLCrv2pyEFum1tPfI4c9dfnxmZ8ukdL/6enblnTcY0ob0Tfp+5X
+	 HN/tEGg3TlWqA==
 Received: by x201s (Postfix, from userid 1000)
-	id 7953E201D3B; Wed,  6 Mar 2024 16:58:22 +0000 (UTC)
+	id A37E02022E5; Wed,  6 Mar 2024 16:58:23 +0000 (UTC)
 From: =?UTF-8?q?Asbj=C3=B8rn=20Sloth=20T=C3=B8nnesen?= <ast@fiberby.net>
 To: Jamal Hadi Salim <jhs@mojatatu.com>,
 	Cong Wang <xiyou.wangcong@gmail.com>,
@@ -54,11 +55,14 @@ Cc: =?UTF-8?q?Asbj=C3=B8rn=20Sloth=20T=C3=B8nnesen?= <ast@fiberby.net>,
 	Marcelo Ricardo Leitner <mleitner@redhat.com>,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	llu@fiberby.dk
-Subject: [PATCH net-next v3 0/3] make skip_sw actually skip software
-Date: Wed,  6 Mar 2024 16:58:08 +0000
-Message-ID: <20240306165813.656931-1-ast@fiberby.net>
+	llu@fiberby.dk,
+	Jiri Pirko <jiri@nvidia.com>
+Subject: [PATCH net-next v3 1/3] net: sched: cls_api: add skip_sw counter
+Date: Wed,  6 Mar 2024 16:58:09 +0000
+Message-ID: <20240306165813.656931-2-ast@fiberby.net>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240306165813.656931-1-ast@fiberby.net>
+References: <20240306165813.656931-1-ast@fiberby.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,61 +72,52 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Hi,
+Maintain a count of skip_sw filters.
 
-During development of flower-route[1], which I
-recently presented at FOSDEM[2], I noticed that
-CPU usage, would increase the more rules I installed
-into the hardware for IP forwarding offloading.
+This counter is protected by the cb_lock, and is updated
+at the same time as offloadcnt.
 
-Since we use TC flower offload for the hottest
-prefixes, and leave the long tail to the normal (non-TC)
-Linux network stack for slow-path IP forwarding.
-We therefore need both the hardware and software
-datapath to perform well.
+Signed-off-by: Asbjørn Sloth Tønnesen <ast@fiberby.net>
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+---
+ include/net/sch_generic.h | 1 +
+ net/sched/cls_api.c       | 4 ++++
+ 2 files changed, 5 insertions(+)
 
-I found that skip_sw rules, are quite expensive
-in the kernel datapath, since they must be evaluated
-and matched upon, before the kernel checks the
-skip_sw flag.
-
-This patchset optimizes the case where all rules
-are skip_sw, by implementing a TC bypass for these
-cases, where TC is only used as a control plane
-for the hardware path.
-
-CHanges from v2:
-- Patch 3:
-  - Fix source_inline
-  - Fix build failure, when CONFIG_NET_CLS without CONFIG_NET_CLS_ACT.
-
-Changes from v1:
-- Patch 1:
-  - Add Reviewed-By from Jiri Pirko
-- Patch 2:
-  - Move code, to avoid forward declaration (Jiri).
-- Patch 3
-  - Refactor to use a static key.
-  - Add performance data for trapping, or sending
-    a packet to a non-existent chain (as suggested by Marcelo).
-
-[1] flower-route
-    https://github.com/fiberby-dk/flower-route
-
-[2] FOSDEM talk
-    https://fosdem.org/2024/schedule/event/fosdem-2024-3337-flying-higher-hardware-offloading-with-bird/
-
-Asbjørn Sloth Tønnesen (3):
-  net: sched: cls_api: add skip_sw counter
-  net: sched: cls_api: add filter counter
-  net: sched: make skip_sw actually skip software
-
- include/net/pkt_cls.h     |  9 +++++++++
- include/net/sch_generic.h |  4 ++++
- net/core/dev.c            | 10 ++++++++++
- net/sched/cls_api.c       | 41 +++++++++++++++++++++++++++++++++++++++
- 4 files changed, 64 insertions(+)
-
+diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
+index 934fdb977551..46a63d1818a0 100644
+--- a/include/net/sch_generic.h
++++ b/include/net/sch_generic.h
+@@ -476,6 +476,7 @@ struct tcf_block {
+ 	struct flow_block flow_block;
+ 	struct list_head owner_list;
+ 	bool keep_dst;
++	atomic_t skipswcnt; /* Number of skip_sw filters */
+ 	atomic_t offloadcnt; /* Number of oddloaded filters */
+ 	unsigned int nooffloaddevcnt; /* Number of devs unable to do offload */
+ 	unsigned int lockeddevcnt; /* Number of devs that require rtnl lock. */
+diff --git a/net/sched/cls_api.c b/net/sched/cls_api.c
+index ca5676b2668e..397c3d29659c 100644
+--- a/net/sched/cls_api.c
++++ b/net/sched/cls_api.c
+@@ -3483,6 +3483,8 @@ static void tcf_block_offload_inc(struct tcf_block *block, u32 *flags)
+ 	if (*flags & TCA_CLS_FLAGS_IN_HW)
+ 		return;
+ 	*flags |= TCA_CLS_FLAGS_IN_HW;
++	if (tc_skip_sw(*flags))
++		atomic_inc(&block->skipswcnt);
+ 	atomic_inc(&block->offloadcnt);
+ }
+ 
+@@ -3491,6 +3493,8 @@ static void tcf_block_offload_dec(struct tcf_block *block, u32 *flags)
+ 	if (!(*flags & TCA_CLS_FLAGS_IN_HW))
+ 		return;
+ 	*flags &= ~TCA_CLS_FLAGS_IN_HW;
++	if (tc_skip_sw(*flags))
++		atomic_dec(&block->skipswcnt);
+ 	atomic_dec(&block->offloadcnt);
+ }
+ 
 -- 
 2.43.0
 
