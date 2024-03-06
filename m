@@ -1,162 +1,165 @@
-Return-Path: <linux-kernel+bounces-93246-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93248-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7A3D872CD5
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 03:41:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFB95872CE4
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 03:43:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 939B728BD60
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 02:41:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EBCD928BD9A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 02:43:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14891D272;
-	Wed,  6 Mar 2024 02:40:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 068F2125DB;
+	Wed,  6 Mar 2024 02:42:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="MZr+N44x"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ZFNSeEi6"
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 868A9D518
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 02:40:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E06E1D51D
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 02:42:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709692858; cv=none; b=VF2gcwku0Z9rZntawI1PtrSNKb7qmzrfDL0DbqOy+/xXHJjB+QlvvUkKPQWLYRugVjQvZPbVbsoU7ccodBrlc9LA5umtw/h1TV+tt3Zb3oC8sntdA4RRKceW2qH9PTFz2pjnGgNOwt4qgMsyv0a69mJPtfcxCjjNVg3uvOaK9Lw=
+	t=1709692973; cv=none; b=mdSvP+au+Ygu3Dw+yqIQqKzaQiGMLxeM75s/ReX5XHcXdIyqEBokBUkhvLgnxsqJtf1UsaFHXMW+Als/QaQiZU5oXGSaLT+d/xgicko/cuJCXNbwVd0uayJP6LHYGpL3BrojviRQXW7UYBZMLbM4kAxCB/i5uM0Rbop3QBrs6a8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709692858; c=relaxed/simple;
-	bh=mgOhO0IDZgLwsPvXZt6ogw3x+b9+CWMm5P2F9Ag7u7o=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=QUCOrQGg3AkJz/3PqWEQ+9Ysnlo5Q4MlUSp0zPM8g5IVS8z8S9Vukbw0KUQQjlEf9T9a6aXiSBqpekSDDKSz3Rk0pGsDNCvp9vHHs8vQaKtvNvGawAv5P+mps4scdTDDwSI+O2Kx9zl7sojMQbSW6Mzl77WSySQri/SCybtpIiI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=MZr+N44x; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1709692854;
-	bh=mgOhO0IDZgLwsPvXZt6ogw3x+b9+CWMm5P2F9Ag7u7o=;
-	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-	b=MZr+N44xWgYx/KeDYYxby6i5AzGFwBKGEf04A7jZxAjv/oiqSPM+Iac/PrkzORUkH
-	 A1WXgZKX3mcU8AvNMeimSYpUq9t+Juc6tBMXKanpqny19+fjNt1wAbIolq2ednOBDw
-	 tanlqsaUCXZnB1wseZjvY1ci9HHDWh3b5k5xvDYaV1PxT0tMOW9DklPtS7+xuMdDdG
-	 OjxOq2VbGWANCyPIMv2jX4XA0pChfI+Awtt/4eJr+aZkeUYEHzXwriZbtWCFwW466B
-	 MAgE7dgS0n1Wqkcs5dR+rnPHEJ1gCpsR2axSkhPy+RRHhGjmInK6oQcXWqffprHr2V
-	 nCXUY3ZHF6V3g==
-Received: from [100.66.96.193] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: vignesh)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id F0AC53780624;
-	Wed,  6 Mar 2024 02:40:51 +0000 (UTC)
-Message-ID: <ea5d08ef-a9bb-5102-4357-21dbae3462cd@collabora.com>
-Date: Wed, 6 Mar 2024 08:10:49 +0530
+	s=arc-20240116; t=1709692973; c=relaxed/simple;
+	bh=NvDvKdXSBfFKBtLGn84e/ck4Kn9xC15K+wg1+/TVvIE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=l9jdUOHRGkb90yjXzXMQecL83CcB0Df9JaRpnlj3gcDRhFPA3jN/6XcSK88la0O+pihvpJtDWSKNn2Im76c12zlQK97SvXSChdew9IlKDTLE+cfxXb1ey0hgz/V8DiLuIDsPwcXAKaO+4+bWkQLltyjWogzz3YDYbObVzJuG0YE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ZFNSeEi6; arc=none smtp.client-ip=209.85.218.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a45b6fcd5e8so32165966b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 18:42:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709692969; x=1710297769; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=x2WY4uFfSORqsxmoN252fMsc5YpGsXMNwoTLggkrkUc=;
+        b=ZFNSeEi6fJz1DxapDerPDO0oc3CCjhA4NKeWKjNh5mOF7RPy73sAJa+6d8Jl0hD4//
+         qaWfnGJDRztzQdE2ONgL48DEla3ykgVII3xlYaOzktBdXeecXIwEZVtg6/f6zcJSbyCX
+         +v2Pw8/EdMIoYJEAWnRtEM5Wsg6PMFK7cK+8MTNNuip90TSqu4T/KUDQbN7knCo4jkU6
+         XxmEhZhJtc0Xv79ozueLyCX+rP7eVEN6JxHPfclD5yooPfLL0R/mf0co4iPW0Kp4nVuU
+         0bn1Ttic5qrtTyM+vhJn3yWOo08SQZQt7OWKODQd9eXY3FFWNQ28hjWU0UeuyvPQb3qp
+         LS6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709692969; x=1710297769;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=x2WY4uFfSORqsxmoN252fMsc5YpGsXMNwoTLggkrkUc=;
+        b=Ag4SkbBmUujdC9A+RV/YQ3k0SuO3X1QlVSm5Cxsdj/Sagq8bTbhzVKIfcv/YCy3bgn
+         y7Y3x0MXnu8BBStE29YWiESV8jRUYvuyOIVdVwdYNXCOz1LD26/P9J6DJEEqeSprEjhd
+         lQlvNdtymawSiMvj0T0H9mytfyzujpE8O+tH5kw5sb3MEgkflluV2077sUcC0jVQScnA
+         wzf6S4+puMCQpz6JBYTZ1ehvWtmK6tHSZfujEpRQ1l8Vddmrd3e2Whm6GLWPo+vxM/aN
+         XTlU9jHz70Ak/GGPRByaDGKCIO2rDEzciX2OSLQIXC+gE+N/o7fv2E7U1blapgAmAwNV
+         rXFA==
+X-Forwarded-Encrypted: i=1; AJvYcCW86G/WaTM02fpOsUqwp9kQig1j/8BKlzzN9KQNazMZEgaSM6EOH1PTMMUV1nm1vAg0mAz0LjheyngeOBZ2203r23rJ5HYY9A1HADDy
+X-Gm-Message-State: AOJu0YxnOuy54UiOCRCAvlXXjDQf2WKRhCVyBFBug5A+8gY85jK7ztKP
+	Nbw6EUHQhNwan8DF7i2Ip8GI4evVRaZtmIsbb/Lv16C5gis2jC8p/BvEZhOMasXjYnxC3JEFkgC
+	gpUDY3PjqQB96I2H4F8RJDcl4Fycnp+0NscTa
+X-Google-Smtp-Source: AGHT+IE0p4dMKmBQEWPN97sZRzFoRZYkkR6K2Lqxx/MoMEWGX+2miy2Ao5l4zesUpz9uL42402ZTwWMCpTdHvKmmsvU=
+X-Received: by 2002:a17:906:2417:b0:a45:ad5d:98ac with SMTP id
+ z23-20020a170906241700b00a45ad5d98acmr1779500eja.44.1709692968869; Tue, 05
+ Mar 2024 18:42:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 9/9] drm/ci: uprev IGT and update testlist
-Content-Language: en-US
-From: Vignesh Raman <vignesh.raman@collabora.com>
-To: =?UTF-8?Q?Ma=c3=adra_Canal?= <mcanal@igalia.com>,
- dri-devel@lists.freedesktop.org
-Cc: linux-rockchip@lists.infradead.org, guilherme.gallo@collabora.com,
- sergi.blanch.torne@collabora.com, linux-kernel@vger.kernel.org,
- david.heidelberg@collabora.com, helen.koike@collabora.com,
- linux-mediatek@lists.infradead.org, amd-gfx@lists.freedesktop.org,
- daniel@ffwll.ch, linux-amlogic@lists.infradead.org, airlied@gmail.com
-References: <20240130150340.687871-1-vignesh.raman@collabora.com>
- <20240130150340.687871-10-vignesh.raman@collabora.com>
- <26f6426d-dcb6-4b14-b031-368b2248e9e7@igalia.com>
- <799653a3-e079-4e17-9d68-c0e384a216b0@igalia.com>
- <e1f56317-b70d-0b81-75f0-fef50616e026@collabora.com>
-In-Reply-To: <e1f56317-b70d-0b81-75f0-fef50616e026@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240305020153.2787423-1-almasrymina@google.com>
+ <20240305020153.2787423-10-almasrymina@google.com> <383c4870-167f-4123-bbf3-928db1463e01@davidwei.uk>
+In-Reply-To: <383c4870-167f-4123-bbf3-928db1463e01@davidwei.uk>
+From: Mina Almasry <almasrymina@google.com>
+Date: Tue, 5 Mar 2024 18:42:35 -0800
+Message-ID: <CAHS8izP_PzDJVxycwZe_d_x10-SX4=Q-CWpKTjoOQ5dc2NSn3w@mail.gmail.com>
+Subject: Re: [RFC PATCH net-next v6 09/15] memory-provider: dmabuf devmem
+ memory provider
+To: David Wei <dw@davidwei.uk>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	linux-arch@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Richard Henderson <richard.henderson@linaro.org>, 
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, David Ahern <dsahern@kernel.org>, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
+	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	Pavel Begunkov <asml.silence@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
+	Yunsheng Lin <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>, 
+	Harshitha Ramamurthy <hramamurthy@google.com>, Jeroen de Borst <jeroendb@google.com>, 
+	Praveen Kaligineedi <pkaligineedi@google.com>, Willem de Bruijn <willemb@google.com>, 
+	Kaiyuan Zhang <kaiyuanz@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Maíra,
+On Tue, Mar 5, 2024 at 6:28=E2=80=AFPM David Wei <dw@davidwei.uk> wrote:
+>
+> On 2024-03-04 18:01, Mina Almasry wrote:
+> > +     if (pool->p.queue)
+> > +             binding =3D READ_ONCE(pool->p.queue->binding);
+> > +
+> > +     if (binding) {
+> > +             pool->mp_ops =3D &dmabuf_devmem_ops;
+> > +             pool->mp_priv =3D binding;
+> > +     }
+>
+> This is specific to TCP devmem. For ZC Rx we will need something more
+> generic to let us pass our own memory provider backend down to the page
+> pool.
+>
+> What about storing ops and priv void ptr in struct netdev_rx_queue
+> instead? Then we can both use it.
 
-On 19/02/24 14:22, Vignesh Raman wrote:
-> Hi Maíra,
-> 
-> On 10/02/24 23:50, Maíra Canal wrote:
->> On 2/10/24 15:17, Maíra Canal wrote:
->>> On 1/30/24 12:03, Vignesh Raman wrote:
->>>> Uprev IGT and add amd, v3d, vc4 and vgem specific
->>>> tests to testlist. Have testlist.txt per driver
->>>> and include a base testlist so that the driver
->>>> specific tests will run only on those hardware.
->>>>
->>>> Signed-off-by: Vignesh Raman <vignesh.raman@collabora.com>
->>>> ---
->>>>
->>>> v3:
->>>>    - New patch in series to uprev IGT and update testlist.
->>>>
->>>> ---
->>>>   drivers/gpu/drm/ci/gitlab-ci.yml              |   2 +-
->>>>   drivers/gpu/drm/ci/igt_runner.sh              |  12 +-
->>>>   drivers/gpu/drm/ci/testlist-amdgpu.txt        | 151 
->>>> ++++++++++++++++++
->>>>   drivers/gpu/drm/ci/testlist-msm.txt           |  50 ++++++
->>>>   drivers/gpu/drm/ci/testlist-panfrost.txt      |  17 ++
->>>>   drivers/gpu/drm/ci/testlist-v3d.txt           |  73 +++++++++
->>>>   drivers/gpu/drm/ci/testlist-vc4.txt           |  49 ++++++
->>>>   drivers/gpu/drm/ci/testlist.txt               | 100 ++++--------
->>>>   .../gpu/drm/ci/xfails/amdgpu-stoney-fails.txt |  24 ++-
->>>>   .../drm/ci/xfails/amdgpu-stoney-flakes.txt    |   9 +-
->>>>   .../gpu/drm/ci/xfails/amdgpu-stoney-skips.txt |  10 +-
->>>>   11 files changed, 427 insertions(+), 70 deletions(-)
->>>>   create mode 100644 drivers/gpu/drm/ci/testlist-amdgpu.txt
->>>>   create mode 100644 drivers/gpu/drm/ci/testlist-msm.txt
->>>>   create mode 100644 drivers/gpu/drm/ci/testlist-panfrost.txt
->>>>   create mode 100644 drivers/gpu/drm/ci/testlist-v3d.txt
->>>>   create mode 100644 drivers/gpu/drm/ci/testlist-vc4.txt
->>>>
->>>> diff --git a/drivers/gpu/drm/ci/gitlab-ci.yml 
->>>> b/drivers/gpu/drm/ci/gitlab-ci.yml
->>>> index bc8cb3420476..e2b021616a8e 100644
->>>> --- a/drivers/gpu/drm/ci/gitlab-ci.yml
->>>> +++ b/drivers/gpu/drm/ci/gitlab-ci.yml
->>>> @@ -5,7 +5,7 @@ variables:
->>>>     UPSTREAM_REPO: git://anongit.freedesktop.org/drm/drm
->>>>     TARGET_BRANCH: drm-next
->>>> -  IGT_VERSION: d2af13d9f5be5ce23d996e4afd3e45990f5ab977
->>>> +  IGT_VERSION: b0cc8160ebdc87ce08b7fd83bb3c99ff7a4d8610
->>>>     DEQP_RUNNER_GIT_URL: 
->>>> https://gitlab.freedesktop.org/anholt/deqp-runner.git
->>>>     DEQP_RUNNER_GIT_TAG: v0.15.0
->>>> diff --git a/drivers/gpu/drm/ci/igt_runner.sh 
->>>> b/drivers/gpu/drm/ci/igt_runner.sh
->>>> index f001e015d135..2fd09b9b7cf6 100755
->>>> --- a/drivers/gpu/drm/ci/igt_runner.sh
->>>> +++ b/drivers/gpu/drm/ci/igt_runner.sh
->>>> @@ -64,10 +64,20 @@ if ! grep -q "core_getversion" 
->>>> /install/testlist.txt; then
->>>>   fi
->>>>   set +e
->>>> +if [ "$DRIVER_NAME" = "amdgpu" ]; then
->>>> +    TEST_LIST="/install/testlist-amdgpu.txt"
->>>> +elif [ "$DRIVER_NAME" = "msm" ]; then
->>>> +    TEST_LIST="/install/testlist-msm.txt"
->>>> +elif [ "$DRIVER_NAME" = "panfrost" ]; then
->>>> +    TEST_LIST="/install/testlist-panfrost.txt"
->>>> +else
->>>> +    TEST_LIST="/install/testlist.txt"
->>>> +fi
->>>> +
->>>
->>> Isn't V3D and VC4 testlists missing?
-> 
-> Yes. We need to add ci jobs to test v3d/vc4. The initial idea was just 
-> to split the testlist per driver and add vc4/v3d tests so that it can be 
-> used in future. I will add the jobs as part of v4.
+Yes, this is dmabuf specific, I was thinking you'd define your own
+member of netdev_rx_queue, and then add something like this to
+page_pool_init:
 
-To include RPi jobs, we need to tweak mesa-ci to pass kernel and dtb and 
-update mesa-ci in drm-ci. So will send this as a seperate patch/series.
++       if (pool->p.queue)
++               io_uring_metadata =3D READ_ONCE(pool->p.queue->io_uring_met=
+adata);
++
++       /* We don't support rx-queues that are configured for both
+io_uring & dmabuf binding */
++       BUG_ON(io_uring_metadata && binding);
++
++       if (io_uring_metadata) {
++               pool->mp_ops =3D &io_uring_ops;
++               pool->mp_priv =3D io_uring_metadata;
++       }
 
-Regards,
-Vignesh
+I.e., we share the pool->mp_ops and the pool->mp_priv but we don't
+really need to share the same netdev_rx_queue member. For me it's a
+dma-buf specific data structure (netdev_dmabuf_binding) and for you
+it's something else.
+
+page_pool_init() probably needs to validate that the queue is
+configured for dma-buf or io_uring but not both. If it's configured
+for both then the user is doing something funky we shouldn't support.
+
+Perhaps I can make the intention clearer by renaming 'binding' to
+something more specific to dma-buf like queue->dmabuf_binding, to make
+it clear that this is the dma-buf binding and not some other binding
+like io_uring?
+
+--=20
+Thanks,
+Mina
 
