@@ -1,86 +1,69 @@
-Return-Path: <linux-kernel+bounces-93846-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93847-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32007873590
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:26:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67068873595
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:28:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C2D3D1F24A53
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 11:26:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F08F28728E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 11:28:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2E6A7F7CF;
-	Wed,  6 Mar 2024 11:26:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EE5D7F7F8;
+	Wed,  6 Mar 2024 11:28:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XNRSSwK3"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=risingedge.co.za header.i=@risingedge.co.za header.b="IMglP+Az"
+Received: from outgoing1.flk.host-h.net (outgoing1.flk.host-h.net [188.40.0.86])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 883547F481;
-	Wed,  6 Mar 2024 11:26:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4ABA5FDB1;
+	Wed,  6 Mar 2024 11:28:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.40.0.86
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709724393; cv=none; b=tT9J7wsyupa7HpVp/aKT2DhI2x/usCzHvGsfae2n3oCo/lwivvf2cm/WsTqBvETsFk6sP9TpqDWbsxFThyLXMpv6QCrwwGFZ5dtpDKgZE573Wq0nVCZiZ3P3lToRR+EPzZ140IBor0GKvl2Y1W8HNW2MfVbcRikeNMDwE8vzGcg=
+	t=1709724499; cv=none; b=ucDjHNfjPBXuAMZOMlG9wZk2iP0BuKvqtqDNjCz+itgLWBrtJa1gEayLLQp1t5jq1Le5UZRe2zZOEPUPx7Jg79ahmF4066A1fdYWnAj6xEnhFBwYzOhfpPEzl9OdTjEq/82QwGcNs5GF/XeabwunAwNJKq1VFuLqan4hDykOhjY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709724393; c=relaxed/simple;
-	bh=gOliCHdIhgBV7q1NLhl7x0s+V5V9uDwRDxehcYX/cE0=;
+	s=arc-20240116; t=1709724499; c=relaxed/simple;
+	bh=qOxw6drcIJfHDzCp2HpmVZyrdkcdpvEnY/jp+2DnwyU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=cO9yAxc0txkf94ldmnJVjSu6exDJsnTfJyIEAvWaEckCKgiY5YK//mP/gOFlmdKZRSaiDFyRxjlWRPXxAyRwuK/fbAD2Uh2faoTwHXRQqU+/lCuc8mV/bo27bWhqwJEvBLcm5DhI7oPQgnXTmpanE4J0TlVOWx+IyBvAg8c668o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XNRSSwK3; arc=none smtp.client-ip=209.85.167.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-5135ab96dcbso863615e87.1;
-        Wed, 06 Mar 2024 03:26:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709724390; x=1710329190; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tpGDKqk8r4MMhQWPAjkpllQftqadx7vE/B26eIDNkxw=;
-        b=XNRSSwK3YGLc3E+nfwPoxXjCOEOwYoXxggLaq8y87w/WmcuIZCtSkSDs5Mhtmodx5T
-         zcCBHSiBWCTbyr1fR/jQp1tWe9P7CvpS3Jbm2z3IJYWPrHj9i/N/LJ5kg+q41s3erm5J
-         oYT471s5Rn6ul95mrK+1MR49zjXqIya63xLyDEjP1q/Ycs0qcr60jk1zOf6999YIyauM
-         d+/QbcnxNM1chz+n9JgWvv0WblF6lEo3f8TIGrA2l92/8VIUNdXtuiNU+rKNFbY/bvRa
-         xXLsOTXU68nmz0oyi3k260TS5Nl46Rrh5h7QuuyVwoM+jZpP8xvIYH3//1YMvylfBtZU
-         RoUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709724390; x=1710329190;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tpGDKqk8r4MMhQWPAjkpllQftqadx7vE/B26eIDNkxw=;
-        b=hvIwQKADHeaR6h5adF8ovyWbQga5Ayc4Kw7q0Huw6O9fJBqIi1aKUwVaswG70JAeqj
-         xmkaIyM6lSoYiKN7CojlXeyy4UAI8iUh0jTGLG62icbIuZ5Sa3ebwjQAfzxnjQP3E1Gw
-         qEwVwJxrxRnjs1uz0c+OrXKEpVzjBFNOAmy40m1q4P/lpc+8dXUj2maXEcpWS/zSS54X
-         mq4491gsKCAFw99cThQeFEJshqS24g7VgCqCyiKtNGcRwloRXvwQm8Nc+gk1HdX7+mCb
-         8tcPalWO0DtnYa2yfA326IW3NkF7TmnAsxFI3OjrdU0JupXiaRxSpTPejs4sGwfA5fZ3
-         36pw==
-X-Forwarded-Encrypted: i=1; AJvYcCV2PcV5chqY1yaTxs8pnOrISTrmb9FMzxShw33nWndLNt6nTw0UujRginy9eNmX1BVezxrd6Qgdulg7uVjZCr5mFBlTgAFSPh/L0L/1caP/CUlitux/k4jL5+3YcAwm6oSLYSa+cDFP2Nol57E=
-X-Gm-Message-State: AOJu0Yzkc8rJhcFBfC5056ZVPy7q9ToxcJAi04+mt0XJyNZmFqogAPao
-	1pEbW1AZlcPaCW1iKxBwTScZFYYhfILbIl5tL/KErwsGswzOigDZ
-X-Google-Smtp-Source: AGHT+IFLqQYS4L2t+Ktsd23D5IHht1KQAiUdDItEDyVlhuNVQapcO3cLMkivaXKBF1MIZP28km9tZA==
-X-Received: by 2002:ac2:4836:0:b0:512:f4f6:9343 with SMTP id 22-20020ac24836000000b00512f4f69343mr1853154lft.26.1709724389385;
-        Wed, 06 Mar 2024 03:26:29 -0800 (PST)
-Received: from rand-ubuntu-development.dl.local (mail.confident.ru. [85.114.29.218])
-        by smtp.gmail.com with ESMTPSA id b6-20020a056512070600b00513216fa562sm2576385lfs.202.2024.03.06.03.26.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Mar 2024 03:26:28 -0800 (PST)
-From: Rand Deeb <rand.sec96@gmail.com>
-To: kvalo@kernel.org
-Cc: deeb.rand@confident.ru,
-	linux-kernel@vger.kernel.org,
-	linux-wireless@vger.kernel.org,
-	lvc-project@linuxtesting.org,
-	m@bues.ch,
-	rand.sec96@gmail.com,
-	voskresenski.stanislav@confident.ru
-Subject: [PATCH v2] ssb: Fix potential NULL pointer dereference in ssb_device_uevent
-Date: Wed,  6 Mar 2024 14:25:58 +0300
-Message-Id: <20240306112558.163415-1-rand.sec96@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <170966495037.424347.1344425289163744212.kvalo@kernel.org>
-References: <170966495037.424347.1344425289163744212.kvalo@kernel.org>
+	 MIME-Version; b=Y+oAvguX6sMcNlyl/542wJDvh2NedRsn8Y0xizXugLdPNyZMh9b7Hx06LaBK7jWGbXSy/+paoDs6AefH5Odn04NmK6Sm+hWIPpaq++K8Rkr2G9+VNv8QkuYubOXD5sSmya2cNdWejsP4krnnp9w1tCXzflJW26w9P+BgrUa2agQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=risingedge.co.za; spf=pass smtp.mailfrom=risingedge.co.za; dkim=pass (2048-bit key) header.d=risingedge.co.za header.i=@risingedge.co.za header.b=IMglP+Az; arc=none smtp.client-ip=188.40.0.86
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=risingedge.co.za
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=risingedge.co.za
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=risingedge.co.za; s=xneelo; h=Content-Transfer-Encoding:MIME-Version:
+	References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:reply-to:sender:bcc
+	:content-type; bh=QX5O6bEJujg104O2+dobjhvnkWUNnNqoK2mKLqkQID4=; b=IMglP+Az3fj
+	jBSh5lzkQQGJeUlKoZ5BTeFk++/ahRizcGAiJW2K/e9lbC7b3Fegkixdp3nqKK8QL8a1hNjM1LlLq
+	ocQ1S2CCN3eq8Wm57ogBgFXcMSQZkDrM53SoyJ9DSEMzLLUN8wZBINwUuU8k7hlPpAArhJhVTg3lC
+	tbtU94lq09P8SG1R+u0T1GXlKXoiGfyRYzqwT8s9ljZzDeUoOCAxs881TQOoZrQMU3TrZu7iFw/oK
+	Ji8WuddkF93s6PzhljiTO7H8ZktLAO68GHY1zDOn1oH4oeOu4bcCOuQNp9xOofvLrmEqI3shctMia
+	nRVuX58ttA/dfhOos+P8VWQ==;
+Received: from www31.flk1.host-h.net ([188.40.1.173])
+	by antispam3-flk1.host-h.net with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <justin.swartz@risingedge.co.za>)
+	id 1rhpRG-00D1yl-0k; Wed, 06 Mar 2024 13:28:08 +0200
+Received: from [41.144.0.96] (helo=localhost.localdomain)
+	by www31.flk1.host-h.net with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <justin.swartz@risingedge.co.za>)
+	id 1rhpRE-0007Ve-8U; Wed, 06 Mar 2024 13:27:56 +0200
+From: Justin Swartz <justin.swartz@risingedge.co.za>
+To: Martin Schiller <ms@dev.tdt.de>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: Justin Swartz <justin.swartz@risingedge.co.za>,
+	linux-x25@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] net: x25: remove dead links from Kconfig
+Date: Wed,  6 Mar 2024 13:26:59 +0200
+Message-Id: <20240306112659.25375-1-justin.swartz@risingedge.co.za>
+In-Reply-To: <20240305193024.6bcfa98f@kernel.org>
+References: <20240305193024.6bcfa98f@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -88,41 +71,69 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: justin.swartz@risingedge.co.za
+X-Virus-Scanned: Clear
+X-SpamExperts-Domain: risingedge.co.za
+X-SpamExperts-Username: 
+Authentication-Results: host-h.net; auth=pass (login) smtp.auth=@risingedge.co.za
+X-SpamExperts-Outgoing-Class: ham
+X-SpamExperts-Outgoing-Evidence: Combined (0.03)
+X-Recommended-Action: accept
+X-Filter-ID: Pt3MvcO5N4iKaDQ5O6lkdGlMVN6RH8bjRMzItlySaT+1Xyj7RFlVodHdpUUkulxsPUtbdvnXkggZ
+ 3YnVId/Y5jcf0yeVQAvfjHznO7+bT5w1OL79HMxE022P+rQy8YAdcSeERs4TOTnIH1kc1IWc5QvZ
+ FNshWKOptDHV4rDuRrwD+zBJgS5HrOaXNfwbIcOpslpzQZPofqiTKbbOumrM1Ahcg0OQCe1UFSTL
+ VX1PEI9kcFJ7mC+M3fkSvxOXcnIOjhh9biKiQoANZ/M+dhYIXxdYA5DCYv6MMCKeadXRzZkEvAAo
+ NnFXprYbAz6gPUYKNm1gRFF2i3O7cygKtabI1caTYyXVRVReaTKIqXapBXQ6SEDiG08q6BgvyDW7
+ 3UBJk4145zaNGRdZhgkYldKBwo37lJC8G4ef8lY22yNyhLy8ZNBDpxcCl9WvEtu4BGz6+JKO/vS7
+ EG2gDc+C8niViTuAVoxNXxfObDHTY9R9kOMB03AEjHq2zzYAxIiW6tWKEwBJ0Y5r/Ifw7gpxllqW
+ qh1hAHI3nwCbzMT4k0hu17rkR2VEZyK4VXrfqC5ENAfcWEKt0SZ8melITUergkwVPYHrfa8GVwpl
+ 6YSPTJ8WKUKinFA3k5Tcj/1EShAL4PF2W+n8Hj6CJNEWfIqe3AMrex08L8pZyQFEYMQabfOl4Iov
+ Pg1PsShbZub3egBhMSkddtGkzDoCDN7V/f3066scTAKJY9yeQo6mFj+oBoJpRlWX4vjTQlD7O6wn
+ npQLJZtbVa3xvGXfp826J8a7DErOLhdzJn/v5xKkWSd0caeqJ/t2+3veilCAGrFXkXD4oI+vIK/1
+ NH5THMtlYvyHAYGOGpsHxDkFVDWJ1kN9NA6enCQxN+y/AP7Hwkn5qe9DeggJMKBj3vp74dfVTxFt
+ 5O5oiyLWM/ONOO3o7I7qeta3MwIt1wTxeW5J+eu/5uYi9cxKzXK7YBu7usJ10X4+nRkO3HYOP+pS
+ yxpciHfO4+QS8IwE7z4kCK74eEzERj8DODlNdNTe/+4bG5GHvx8kXQZ6KkM6Oo8fr3pIQE+Tur0x
+ NxCuL8HoZUszBrq3huV3gkB+ALLd1kk/nKAaSrwOm55G9lHeRkIRCAe1wI3mSezkL0Odgl2TNyIR
+ 4pSaiLxpHpeYfKG7Yu4jBlczMx1L5jSK60OT80m7/tzraDBlV1d5K5bY3LlRuQAi2Cph2PK+Rfkf
+ SFXnDC0qBXDCRyMmNkwa//frYBrnXOB0PHbQD6cgMnC5M1rshWxsw1/gXTMtnmqhmzF4KZUIm82X
+ davERDHbcD5xFI4Tc4UvrRQcxVnmH7g=
+X-Report-Abuse-To: spam@antispamquarantine.host-h.net
 
-Hi Kalle,
+Remove the "You can read more about X.25 at" links provided in
+Kconfig as they have not pointed at any relevant pages for quite
+a while.
 
-It seems there's been a mix-up in applying the patch. The previous patch
-was intended for the linux-5.10.y branch, not the master branch. I
-appreciate your attention to detail.
+An old copy of https://www.sangoma.com/tutorials/x25/ can be
+retrieved via https://archive.org/web/ but nothing useful seems
+to have been preserved for http://docwiki.cisco.com/wiki/X.25
 
-The following patch has been tailored for the master branch and should
-resolve the issue properly. Thank you for your understanding.
+For the sake of necromancy and those who really did want to
+read more about X.25, a previous incarnation of Kconfig included
+a link to:
+http://www.cisco.com/univercd/cc/td/doc/product/software/ios11/cbook/cx25.htm
 
-Signed-off-by: Rand Deeb <rand.sec96@gmail.com>
+Which can still be read at:
+https://web.archive.org/web/20071013101232/http://cisco.com/en/US/docs/ios/11_0/router/configuration/guide/cx25.html
+
+Signed-off-by: Justin Swartz <justin.swartz@risingedge.co.za>
 ---
- drivers/ssb/main.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ net/x25/Kconfig | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/ssb/main.c b/drivers/ssb/main.c
-index b9934b9c2d70..070a99a4180c 100644
---- a/drivers/ssb/main.c
-+++ b/drivers/ssb/main.c
-@@ -341,11 +341,13 @@ static int ssb_bus_match(struct device *dev, struct device_driver *drv)
+diff --git a/net/x25/Kconfig b/net/x25/Kconfig
+index 68729aa3a..dc72302cb 100644
+--- a/net/x25/Kconfig
++++ b/net/x25/Kconfig
+@@ -17,8 +17,6 @@ config X25
+ 	  if you want that) and the lower level data link layer protocol LAPB
+ 	  (say Y to "LAPB Data Link Driver" below if you want that).
  
- static int ssb_device_uevent(const struct device *dev, struct kobj_uevent_env *env)
- {
--	const struct ssb_device *ssb_dev = dev_to_ssb_dev(dev);
-+	const struct ssb_device *ssb_dev;
- 
- 	if (!dev)
- 		return -ENODEV;
- 
-+	ssb_dev = dev_to_ssb_dev(dev);
-+
- 	return add_uevent_var(env,
- 			     "MODALIAS=ssb:v%04Xid%04Xrev%02X",
- 			     ssb_dev->id.vendor, ssb_dev->id.coreid,
+-	  You can read more about X.25 at <https://www.sangoma.com/tutorials/x25/> and
+-	  <http://docwiki.cisco.com/wiki/X.25>.
+ 	  Information about X.25 for Linux is contained in the files
+ 	  <file:Documentation/networking/x25.rst> and
+ 	  <file:Documentation/networking/x25-iface.rst>.
 -- 
-2.34.1
+2.30.2
 
 
