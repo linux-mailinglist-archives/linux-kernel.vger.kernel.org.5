@@ -1,140 +1,123 @@
-Return-Path: <linux-kernel+bounces-93860-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93861-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F25088735F0
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:56:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C3318735F2
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:57:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ADD63285754
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 11:56:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1CA3A1F23533
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 11:57:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3A417FBBB;
-	Wed,  6 Mar 2024 11:56:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 660327FBC5;
+	Wed,  6 Mar 2024 11:57:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g1a20u7C"
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eFljGz+Z"
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41D722D7B8;
-	Wed,  6 Mar 2024 11:56:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B68E2D7B8;
+	Wed,  6 Mar 2024 11:57:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709726194; cv=none; b=C+EtAlfy3xYk3H3i8FBMoGwe0l9V6VIIlONmIpK9u54+En8x+bOHcb9OkAxz68aFnfXMjDkBFBNs8zDg+ug6kvPU/suNJu+2gFnjSbeksaZt9e0BcSAYneDVF4moRR91elb3YTkwou8VfGij+ckbgiWPJROHbzPGeIhvyWP1xaM=
+	t=1709726232; cv=none; b=Yhz2jCgzqIPL/+g7PAroMeCCvsaXfCMtHWA/4VvM12e26EwU6VTBSL2taLZJiCC2GtsOLfeBPAFtDuvxp6jjTkdgCoBg1cxzwYjdW1r0fQJmLXG8bL2fMHPvufn2mcCKtAMjb4/ie5B0yXuldeZseTmxbLv7xJ9jnzwD+Z4srBU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709726194; c=relaxed/simple;
-	bh=UrapeRk4i8gmM86Amitnr2+Q6gX/VbewF7zIepiz7V0=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Yn8HoYw1Td/N3Yne7bh45hwclctSWdIdTF2cUueBxE4uaJHMinsxTCGmM2mlbE7KtXy8aT4f0vg75jJPK2GVxBsvs0wxYHpR4mPqU8YJAvrV6T0GnLP+tI7KajQgAYe+r0MWjbup5z3isUI2h0JpG8T+58lXJauh4Z4Bit6E7Ws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g1a20u7C; arc=none smtp.client-ip=209.85.167.46
+	s=arc-20240116; t=1709726232; c=relaxed/simple;
+	bh=hlmHhTli9UgDXytybNg1lFQ0imkQVgEKhGeyjOGwQdQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DHFMnZBMXMtkA0e+0KYVUOsp8inCd/fCeukgV+ElzLIeY/1o1PSfwOkbLuymp7cxqyz4wzXunjUCaeE2cBaHelrm6e9bsobDNDfG2lCwT/Rz9sCdFZkuGM8u8YOS/jAQtxGhjvHVepwQw308z7OlEdmu3KoWUIwCQkyzEOfYAs4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eFljGz+Z; arc=none smtp.client-ip=209.85.218.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-512f54fc2dbso5912833e87.1;
-        Wed, 06 Mar 2024 03:56:32 -0800 (PST)
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a4417fa396fso813843866b.1;
+        Wed, 06 Mar 2024 03:57:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709726191; x=1710330991; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=NeF0Ei8m8d4A5gmCE/VG9m7laohctkjiFtIiDyy/jY8=;
-        b=g1a20u7CzsbxBLJog6hqstP9wSrAckNkjnOF/iI3TmJa+xYi4Dxf9WUI3NM63DXNgy
-         N+9W46jzYn/yE96LTMXkzb1MvNBadHQwo8dD2GP/O+ZIByX0EN6r8c9YXivE8BZGhOp5
-         5+1coLV4ty2RTrygiJXUZdNQ1w4nnHvB2eSk33om5ybWWiT5zfzQ9pylA+84YGfFy9ng
-         jSLZYSERTJrkKcfW9Uh5cnW9qZASzCepaVdW2jAkHg7MYIE6WcvjER3lXvssRv08Zx9V
-         vSVokmsKb1o7xAflqElHVT7uMxMeSWGDeTZH5VoSH7tFT4UNPdAP/OIrjc4Yq96rmFOZ
-         kMKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709726191; x=1710330991;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1709726229; x=1710331029; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=NeF0Ei8m8d4A5gmCE/VG9m7laohctkjiFtIiDyy/jY8=;
-        b=dk9JVDJMa8hVb51CmhTLKFge5DZkIsX31AofYwSClTkTAML8mcoeFCxEakwjbzju3X
-         KCc99QJ1f0+qCW86PpMWaNJMPz8f4KCx7eqPk27WXPflxVh53R2HFOWXxt9GvVfkvM94
-         n9cM9WrpmWHxqjv0jx/1av1UbOJsd8uA8v0pCkDKOBowEmq33iObXpgZ8zhTIsimFWO6
-         WecyEDlFTOD5EE2th7i0CjGrq4Zr16kuW70AKAi6FZqSXctdf6nTzKugrC8E0QO/HzD9
-         KE0GG/tqtAWGxdGue7xbuc1hTchkzo54Sc+JACEmGfLurawBGypiGkOFQ0EEi5nR/sNd
-         5Ngg==
-X-Forwarded-Encrypted: i=1; AJvYcCX6XCHfF8p5sR0oztQ3gqQ9i2GjksZUck46CfnrPHAUL6eOhrqgO3SwOWpKHVQh8QlsHdeAcjKNHJfHgfiWyH4gwOVZN9/U/bWQNxx1obsWTGnKRrmJWAglm/SwRAl3EGlV
-X-Gm-Message-State: AOJu0Yzuf3YnOuiOMgEQWBMH4bnTTvJqbj1BJxE83uJDRpJouz+IIIwc
-	lI9dwv7BN5JYiC+iWWnkOdprmL+NULpj9AXMWDdnMxiPDEr+lHFQ
-X-Google-Smtp-Source: AGHT+IE5EdoAhOmujbMVYbxHEmDr76Ukr3iG9OZB+oZHA66WY7PakFMZ2YN4KlQ6EOYiGzQhttTq7Q==
-X-Received: by 2002:a19:690b:0:b0:513:5bdb:10f8 with SMTP id e11-20020a19690b000000b005135bdb10f8mr1113142lfc.48.1709726190957;
-        Wed, 06 Mar 2024 03:56:30 -0800 (PST)
-Received: from pc636 (host-90-235-1-20.mobileonline.telia.com. [90.235.1.20])
-        by smtp.gmail.com with ESMTPSA id u26-20020ac25bda000000b005133b2d1acasm1855509lfn.50.2024.03.06.03.56.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Mar 2024 03:56:30 -0800 (PST)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Wed, 6 Mar 2024 12:56:28 +0100
-To: Z qiang <qiang.zhang1211@gmail.com>
-Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>, RCU <rcu@vger.kernel.org>,
-	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-	Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH 2/2] rcu: Allocate WQ with WQ_MEM_RECLAIM bit set
-Message-ID: <ZehZ7Ef3DW2mT9fc@pc636>
-References: <20240305195720.42687-1-urezki@gmail.com>
- <20240305195720.42687-2-urezki@gmail.com>
- <CALm+0cWiOfKR=Gci0dj=z4gT4vSbZ=ZzMfo+CxLZCFQzL1bjfQ@mail.gmail.com>
+        bh=hlmHhTli9UgDXytybNg1lFQ0imkQVgEKhGeyjOGwQdQ=;
+        b=eFljGz+ZfYfqljM36lueKzDbg/LQmgSsJ6UDBLXaOmUBmA6mI+bfQLrutWRo348t30
+         FNChKqqVgLEgQhA4fE538MlMzEreKfUOy2igYGyTpfio7nvJfMOQlte8UcW+beFc8PrR
+         N1I3hKlf5WrzmERDwFlgHH+Vec2elKUJ/osBdTrYyGXkgn/CSYE7JaqpWnYTG+5FS0gY
+         +VMzddiG76y4AHwzrEO38NhDSUXsl1K4yuOSQQMong/YCSRQKg/PfEgzpY3dAAcHdkbw
+         6dErCOk8LQpqcQ5a0/86M+w2kWWbpeRn0nJifq0O2lQeTK0t1UQ/ccdRgdxEN7D+Qw3k
+         JY5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709726229; x=1710331029;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hlmHhTli9UgDXytybNg1lFQ0imkQVgEKhGeyjOGwQdQ=;
+        b=fF6tFuexJ3774rWXC78P8xmKSuNDjUJowL94+8ZXLNwXDblmSASElmTkDpqZ56ahST
+         /nQ3ydmJzXHH1eJwMlKv7ypvlbzvO01c0MPwjIOTd/0fRYZopz1iwT2nfuUzLO2qTV+3
+         fumYb0SUxMhmDhmKbGE+x/wFx9pLOfhuJGA0LzhZIdfeEHOFAlsfHDBypMhTGBGdUH5o
+         Ks+I4x46ccWLuyFaV+C1n0EDdFW96v7P0L4HWacwoVAaS6Ay9L2HXt6XaZxUij35UT6n
+         lnW/q1Lks/4hZK2VRxLw367CboDj87csSLMIfEutB+xb6lfNUCdBykWkFbGcK+u5eUBP
+         sSBQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXMxsP1Y5gUDTlsHBxpnU7EAWe7fuWpOWvpcBIQno2XMHqfbjTjruiDKDluynPlAvRlncesty2cLto1S0YDaOFe9MKzfqWZZn0OcMdPpMZk0ePP9dSMgX0uup9Lkj3kNwR451E2
+X-Gm-Message-State: AOJu0YyR/L7GprCgrB764m6gsEVGuJC6kMCfqHciBGVsqtfrRur6itAO
+	z2cZwEdfe63dghP4YfRJxMpht+2xMeACoryd9xw/d24AWbmGv8YBcN96JP5JnIzFzt5f0qDfTDe
+	8WiJN6ygcU6eKpjij5rvIqCLKVx8=
+X-Google-Smtp-Source: AGHT+IGailb4OIrLvE1WX5ySFLMib5+ATyLrDLu/T3dUqo47Kuy3gf5yns9q1SM68Rb/Rmse/NvV8cluWIWA6/2sJv0=
+X-Received: by 2002:a17:906:c20f:b0:a45:a9c2:85d7 with SMTP id
+ d15-20020a170906c20f00b00a45a9c285d7mr3372797ejz.44.1709726229206; Wed, 06
+ Mar 2024 03:57:09 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALm+0cWiOfKR=Gci0dj=z4gT4vSbZ=ZzMfo+CxLZCFQzL1bjfQ@mail.gmail.com>
+References: <20240306095430.1782163-1-Ilia.Gavrilov@infotecs.ru> <095ce1d0f2cd6771b30ab1d73ee6aa8e8460c7c8.camel@redhat.com>
+In-Reply-To: <095ce1d0f2cd6771b30ab1d73ee6aa8e8460c7c8.camel@redhat.com>
+From: Jason Xing <kerneljasonxing@gmail.com>
+Date: Wed, 6 Mar 2024 19:56:32 +0800
+Message-ID: <CAL+tcoBSkBG0SDnjDOzjqzpSFphrE-_Qyw_DcdcebHcRCU3xgw@mail.gmail.com>
+Subject: Re: [PATCH net-next] tcp: fix incorrect parameter validation in the
+ do_tcp_getsockopt() function
+To: Paolo Abeni <pabeni@redhat.com>
+Cc: Gavrilov Ilia <Ilia.Gavrilov@infotecs.ru>, Eric Dumazet <edumazet@google.com>, 
+	"David S. Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>, 
+	Jakub Kicinski <kuba@kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 06, 2024 at 10:15:44AM +0800, Z qiang wrote:
-> >
-> > synchronize_rcu() users have to be processed regardless
-> > of memory pressure so our private WQ needs to have at least
-> > one execution context what WQ_MEM_RECLAIM flag guarantees.
-> >
-> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > ---
-> >  kernel/rcu/tree.c | 6 +++++-
-> >  1 file changed, 5 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index 475647620b12..59881a68dd26 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -1581,6 +1581,7 @@ static void rcu_sr_put_wait_head(struct llist_node *node)
-> >  /* Disabled by default. */
-> >  static int rcu_normal_wake_from_gp;
-> >  module_param(rcu_normal_wake_from_gp, int, 0644);
-> > +static struct workqueue_struct *sync_wq;
-> >
-> >  static void rcu_sr_normal_complete(struct llist_node *node)
-> >  {
-> > @@ -1679,7 +1680,7 @@ static void rcu_sr_normal_gp_cleanup(void)
-> >          * of outstanding users(if still left) and releasing wait-heads
-> >          * added by rcu_sr_normal_gp_init() call.
-> >          */
-> > -       queue_work(system_highpri_wq, &rcu_state.srs_cleanup_work);
-> > +       queue_work(sync_wq, &rcu_state.srs_cleanup_work);
-> >  }
-> >
-> >  /*
-> > @@ -5584,6 +5585,9 @@ void __init rcu_init(void)
-> >         rcu_gp_wq = alloc_workqueue("rcu_gp", WQ_MEM_RECLAIM, 0);
-> >         WARN_ON(!rcu_gp_wq);
-> >
-> > +       sync_wq = alloc_workqueue("sync_wq", WQ_MEM_RECLAIM, 0);
-> 
-> Why was WQ_HIGHPRI removed?
-> 
-I would like to check perf. figures with it and send out it as a
-separate patch if it is worth it.
+Hello Paolo,
 
---
-Uladzislau Rezki
+On Wed, Mar 6, 2024 at 7:36=E2=80=AFPM Paolo Abeni <pabeni@redhat.com> wrot=
+e:
+>
+> On Wed, 2024-03-06 at 09:57 +0000, Gavrilov Ilia wrote:
+> > The 'len' variable can't be negative because all 'min_t' parameters
+> > cast to unsigned int, and then the minimum one is chosen.
+>
+> The above is incorrect, as the 'len' variable is a signed integer
+
+The 'len' variable should be converted to the non-negative value as
+this sentence:
+
+len =3D min_t(unsigned int, len, sizeof(int));
+
+See the comments of min_t(): return minimum of two values, using the
+specified type.
+
+After executing the above code, it doesn't make sense to test if 'len
+< 0', I think.
+
+Thanks,
+Jason
+
+>
+>
+> The same applies to the following patches.
+>
+> Cheers,
+>
+> Paolo
+>
+>
 
