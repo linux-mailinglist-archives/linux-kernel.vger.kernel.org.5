@@ -1,258 +1,165 @@
-Return-Path: <linux-kernel+bounces-93408-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93401-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA91F872F5C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 08:14:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0663872F40
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 08:10:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C14B91C243CA
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 07:14:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 22E82B22697
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 07:10:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 358CF5C8E0;
-	Wed,  6 Mar 2024 07:14:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0F8F5C5ED;
+	Wed,  6 Mar 2024 07:10:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ODMG4cU0"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="KKFO3nSk"
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75C695C604;
-	Wed,  6 Mar 2024 07:14:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7040B5BAF7
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 07:10:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709709278; cv=none; b=PcWihtHWGAifJbgNhj0UUakvYfyN3YaB5Ov/JS6tPAJWw4Mlt8Dz4BnhaVN+6DbdvOVC4IaL566dWUW7uwSeR5MIvctVGdHME494+/0NB0LdFxeES3rLFg/lPWgAfI8IHN89tD23GE++coELl6AMnV0pL2FfkCBG4UCsv0KlGtE=
+	t=1709709028; cv=none; b=hM4iQI998yWxWsUXVMi7G7TlDpFjRfr1i+RlJbqmFzIPuF7zHOdugpL1+H5PORgmZZifUl3cmU4B1Whuk+ZqYeMK/fI9+ABpw6P6US2EWr6d2QsyBxLLUyElrfg4GVD4WR9suI8Sd72IErpTivbdgezd0Ivy1UtrQjYs1gvMEdU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709709278; c=relaxed/simple;
-	bh=Q4jNS53sz6z+xgVv/481OuFX1jfdnAmQc8opmwqbePw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YpDTs6hVR/xnKnBUYPnNerRXEK4UysFSpEkE34PQq08RQKnJEb3cYYWaTkBzVlhoe9liI+6UNoAwkBk+mvnmXxZEyOaOS6qmn1FPVlhE6Upc1FzWeIgyI4GhaqpTX8qITDzX5tc8hZyvvJPxkzgZa+IJ9E3djcJxXgcLYaxyCgY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ODMG4cU0; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709709277; x=1741245277;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Q4jNS53sz6z+xgVv/481OuFX1jfdnAmQc8opmwqbePw=;
-  b=ODMG4cU0lRQrleCoQw0ha0qTW3R8SPVUawB+P/fmDE39Om2uTONFIVTG
-   5aiqY1XBIEHXfNG1gECHvVnCWMmxkplwcJ+CFEtgcgZtYmL0zAlML0lOZ
-   Te4Kld7vzzJ95963siWDtyB99xtwQpb19lLRLoB1UYFmk7qYVtyy5fsFW
-   0I5yJAkCvwrR6sY72acmMBUICii16a8TAsw5fzgyrinQxqVkjA0RD1Vtd
-   DYx93oUWF+yA8ZNbYf6VPMVzAxesBFQw8XBHO8v8eLs22z/ne6Jk4O/+x
-   XcCJVqPmtvGDymYzNnzUQNl/9fe+Pf8TW/7CkoPkXygL4lzQ+lchjR3WN
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11004"; a="4164856"
-X-IronPort-AV: E=Sophos;i="6.06,207,1705392000"; 
-   d="scan'208";a="4164856"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 23:14:36 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,207,1705392000"; 
-   d="scan'208";a="14319175"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by orviesa003.jf.intel.com with ESMTP; 05 Mar 2024 23:14:31 -0800
-Date: Wed, 6 Mar 2024 15:10:17 +0800
-From: Xu Yilun <yilun.xu@linux.intel.com>
-To: Charles Perry <charles.perry@savoirfairelinux.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	yilun xu <yilun.xu@intel.com>, Rob Herring <robh+dt@kernel.org>,
-	mdf <mdf@kernel.org>, Allen VANDIVER <avandiver@markem-imaje.com>,
-	Brian CODY <bcody@markem-imaje.com>, hao wu <hao.wu@intel.com>,
-	Tom Rix <trix@redhat.com>,
-	krzysztof kozlowski+dt <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Michal Simek <michal.simek@amd.com>,
-	linux-fpga <linux-fpga@vger.kernel.org>,
-	devicetree <devicetree@vger.kernel.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v4 2/3] dt-bindings: fpga: xlnx,fpga-selectmap: add DT
- schema
-Message-ID: <ZegW2QpgO0Kk1Iip@yilunxu-OptiPlex-7050>
-References: <20240221195058.1281973-1-charles.perry@savoirfairelinux.com>
- <20240221195058.1281973-3-charles.perry@savoirfairelinux.com>
- <4a9f0eef-590b-45df-92bc-b63ad9282e18@linaro.org>
- <1012793477.1508198.1709486517581.JavaMail.zimbra@savoirfairelinux.com>
- <cb51aadd-c350-42e2-9684-ac4f7dbf864c@linaro.org>
- <d377f0ea-2df2-4d4e-b1bc-8a4ca55eec15@linaro.org>
- <23887452.1534761.1709605624728.JavaMail.zimbra@savoirfairelinux.com>
+	s=arc-20240116; t=1709709028; c=relaxed/simple;
+	bh=2oGH+pHCSLSGyNiEFWfxDSSylQn62idxl4CVzvAOR1c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EcECYWokBgRvHlF8XE+rhJ32xmJ8S57lTcgk41PnO75+36vUEnw9sVr66N7ujFp/KAl7mXdPOlyvKlD7LxXGToHgWOxQlB8bCb14KBt7YmGSMxVpZ1AuyYcLywXoyuY/Yco5IGenjT0XPfck/AaCJGkU3FHw+yD4bfTly7kuDpk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=KKFO3nSk; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a3ddc13bbb3so94703466b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 23:10:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709709023; x=1710313823; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+7sHPBpdrJDf2Gc17VKoGqLaSwAYgcISgsRt0u8Sj24=;
+        b=KKFO3nSkY7HTsXOdoBDqe6nEyItt6IjfU3eZpF5/GeycM/TojpMK4l5XGqpN+kfRlp
+         NqcKn28o9XZ40QhYSLzS0KvrrihNy/UqDQKRs9shz2PX+BGzHUT9KMJ/wHhmnI4XcUK/
+         zIFS7oPNTCD8hWUDPEhHomcCmLih6qoAairjJgTtrljUbm+R5x3ZaaVDEvzgQIQTmsMF
+         m9pnrESamACEReEavBhwoPPvoxQWYX7kvRdG7z7Lu8dLS9lTNcsHcT1DBJs+0G7Av0d8
+         LKFYiiJ9lUAo2ngyE8UHNR6rhyClbvvBkBEL6uilXsjP5I3qpIlIsbadqX/KOCEE9QyW
+         piVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709709023; x=1710313823;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+7sHPBpdrJDf2Gc17VKoGqLaSwAYgcISgsRt0u8Sj24=;
+        b=D1uNmhWgG8ihc+zfYF1pnk2e05VTJitpnmnzMCdEpGaa1D5yKBldC5skIddRv9YpaL
+         sK/xt+bLACAIFMpP1ikkUUX66TPhdLAKatH/XuQW6gn19CoB5sR4a6CUgYWCcHzFSWP+
+         0kg61hQidTMj02fTYZwV3Sd2we6RaZOXgxZznugoe1KZojQujkL5BLNj36kh7Lf68kMz
+         vseBpRLPb6iD8mlhgzDJAtOWlX+i9eXaIwmzWw8x7GDruI0WePpsjD3VtpGYgxuxCPm7
+         96P1Ff9pZhNGKta2zRJr0DVRrm5+hnFvLDCg/+QDGFyCGInWFEfNWFnHcdop1Gb45Qt4
+         yxgQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWAM7xrCacD7peg8nUKx8NtZaigaCJit9KTLh1/rmzWIbr18untdL4CV//RhhMQL9PU6braIK86ENWZXJISmx+Um87/XmszWQGRvkgT
+X-Gm-Message-State: AOJu0YyWOfe/7RdHOur5UpcyyVDGm2YUu+azfoiPmi0b/sO9O5Y1ACw9
+	ktR29pF4x6ilFNH1Zz3YSuFis2i+ccyiXXY4Ffk9vvG7VGvPJ4/Jr3mzsiksb9Y=
+X-Google-Smtp-Source: AGHT+IE5YW6eQJl5g2nzEYPOoiZfVvqEc1aWd4ItlJscwo94R8AypB7f8YfkYCZ8yRpoQjMy5p0CpQ==
+X-Received: by 2002:a17:906:4ac1:b0:a44:405b:1e17 with SMTP id u1-20020a1709064ac100b00a44405b1e17mr4501459ejt.34.1709709023068;
+        Tue, 05 Mar 2024 23:10:23 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id s7-20020a170906a18700b00a44ba5557c1sm5172681ejy.131.2024.03.05.23.10.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Mar 2024 23:10:22 -0800 (PST)
+Message-ID: <74debf9c-d83a-4e97-93c3-3a1322f1b5fe@linaro.org>
+Date: Wed, 6 Mar 2024 08:10:20 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <23887452.1534761.1709605624728.JavaMail.zimbra@savoirfairelinux.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 0/2] dt-bindings: Add HEXIN Technologies Co., Ltd.
+ vendor prefix
+Content-Language: en-US
+To: "JiaLong.Yang" <jialong.yang@shingroup.cn>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: shenghui.qu@shingroup.cn, Rob Herring <robh@kernel.org>,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1709694173.git.jialong.yang@shingroup.cn>
+ <f674ec19ce824dfc13258396931256c3d33cd207.1709694173.git.jialong.yang@shingroup.cn>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <f674ec19ce824dfc13258396931256c3d33cd207.1709694173.git.jialong.yang@shingroup.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Mar 04, 2024 at 09:27:04PM -0500, Charles Perry wrote:
+On 06/03/2024 07:16, JiaLong.Yang wrote:
+> Update file vendor-prefixes.yaml to include hexin as a vendor prefix
+> for "HEXIN Technologies Co., Ltd.".
 > 
+> Signed-off-by: JiaLong.Yang <jialong.yang@shingroup.cn>
+> ---
+> v1 --> v2: Not changes this file and give warning.
+> v2 --> v3: Add this patch to fix the warning.
 > 
-> On Mar 4, 2024, at 12:31 AM, Krzysztof Kozlowski krzysztof.kozlowski@linaro.org wrote:
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> > On 04/03/2024 08:30, Krzysztof Kozlowski wrote:
-> >> On 03/03/2024 18:21, Charles Perry wrote:
-> >>> On Feb 27, 2024, at 3:10 AM, Krzysztof Kozlowski krzysztof.kozlowski@linaro.org
-> >>> wrote:
-> >>>
-> >>>> On 21/02/2024 20:50, Charles Perry wrote:
-> >>>>> Document the SelectMAP interface of Xilinx 7 series FPGA.
-> >>>>>
-> >>>>> Signed-off-by: Charles Perry <charles.perry@savoirfairelinux.com>
-> >>>>> ---
-> >>>>>  .../bindings/fpga/xlnx,fpga-selectmap.yaml    | 86 +++++++++++++++++++
-> >>>>>  1 file changed, 86 insertions(+)
-> >>>>>  create mode 100644
-> >>>>>  Documentation/devicetree/bindings/fpga/xlnx,fpga-selectmap.yaml
-> >>>>>
-> >>>>> diff --git a/Documentation/devicetree/bindings/fpga/xlnx,fpga-selectmap.yaml
-> >>>>> b/Documentation/devicetree/bindings/fpga/xlnx,fpga-selectmap.yaml
-> >>>>> new file mode 100644
-> >>>>> index 0000000000000..08a5e92781657
-> >>>>> --- /dev/null
-> >>>>> +++ b/Documentation/devicetree/bindings/fpga/xlnx,fpga-selectmap.yaml
-> >>>>> @@ -0,0 +1,86 @@
-> >>>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> >>>>> +%YAML 1.2
-> >>>>> +---
-> >>>>> +$id: http://devicetree.org/schemas/fpga/xlnx,fpga-selectmap.yaml#
-> >>>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> >>>>> +
-> >>>>> +title: Xilinx SelectMAP FPGA interface
-> >>>>> +
-> >>>>> +maintainers:
-> >>>>> +  - Charles Perry <charles.perry@savoirfairelinux.com>
-> >>>>> +
-> >>>>> +description: |
-> >>>>> +  Xilinx 7 Series FPGAs support a method of loading the bitstream over a
-> >>>>> +  parallel port named the SelectMAP interface in the documentation. Only
-> >>>>> +  the x8 mode is supported where data is loaded at one byte per rising edge of
-> >>>>> +  the clock, with the MSB of each byte presented to the D0 pin.
-> >>>>> +
-> >>>>> +  Datasheets:
-> >>>>> +
-> >>>>> https://www.xilinx.com/support/documentation/user_guides/ug470_7Series_Config.pdf
-> >>>>> +
-> >>>>> +allOf:
-> >>>>> +  - $ref: /schemas/memory-controllers/mc-peripheral-props.yaml#
-> >>>>> +
-> >>>>> +properties:
-> >>>>> +  compatible:
-> >>>>> +    enum:
-> >>>>> +      - xlnx,fpga-xc7s-selectmap
-> >>>>> +      - xlnx,fpga-xc7a-selectmap
-> >>>>> +      - xlnx,fpga-xc7k-selectmap
-> >>>>> +      - xlnx,fpga-xc7v-selectmap
-> >>>>> +
-> >>>>> +  reg:
-> >>>>> +    description:
-> >>>>> +      At least 1 byte of memory mapped IO
-> >>>>> +    maxItems: 1
-> >>>>> +
-> >>>>> +  prog_b-gpios:
-> >>>>
-> >>>> I commented on this and still see underscore. Nothing in commit msg
-> >>>> explains why this should have underscore. Changelog is also vague -
-> >>>> describes that you brought back underscores, instead of explaining why
-> >>>> you did it.
-> >>>>
-> >>>> So the same comments as usual:
-> >>>>
-> >>>> No underscores in names.
-> >>>>
-> >>>> Best regards,
-> >>>> Krzysztof
-> >>>
-> >>> Hello Krzysztof,
-> >>>
-> >>> Yes, I've gone full circle on that issue. Here's what I tried so far:
-> >> 
-> >> And what part of the commit description allows me to understand this?
-> >> 
-> 
-> I have a changelog in the cover letter:
-> https://lore.kernel.org/all/20240221195058.1281973-1-charles.perry@savoirfairelinux.com/
-> 
-> >>>
-> >>>  1) Reuse the same gpio names: Duplicates errors of the past, Krzysztof
-> >>>     doesn't like it.
-> >>>  2) Different gpio names for new driver only: Makes the driver code
-> >>>     overly complicated, Yilun doesn't like it.
-> >> 
-> >> That's a new driver, right? So what is complicated here? You have new
-> >> code and you take prog-b or prog_b?
-> >> 
-> >>>  3) Change gpio names for both drivers, deprecate the old names: Makes
-> >>>     the DT binding and the driver code overly complicated, Rob doesn't
-> >>>     like it.
-> >> 
-> >> I don't think I proposed changing existing bindings.
-> >> 
-> >>>
-> >>> I think that while the driver code shouldn't be the driving force for
-> >>> the DT spec, it can be a good indication that the spec is unpractical to
-> >>> implement.
-> >> 
-> >> What is impractical in implementing this? You just pass either A or B to
-> >> function requesting GPIO. Just choose proper name.
-> >>
-> 
-> It's not complicated but it requires more code than if "prog_b" had been
-> used. 
->  
-> >>>
-> >>> In this case, there are two interfaces on a chip that uses the same GPIO
-> >>> protocol, it would only make sense that they use the same names, this
-> >>> discards solution #2.
-> >> 
-> >> I don't understand this. You have devm_gpiod_get() in your new code. Why
-> >> is it difficult to use different name?
-> 
-> Yilun asked to avoid changing the names between the two drivers.
-> First comment in this mail:
-> https://lore.kernel.org/all/Zb9GkY6cMtR+4xOX@yilunxu-OptiPlex-7050/
-> 
-> Yilun, let me know if this is something you'd accept as this is a concern
-> for the device tree maintainers.
+> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> index 1a0dc04f1db4..3a82104ac8a7 100644
+> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> @@ -619,6 +619,8 @@ patternProperties:
+>      description: HwaCom Systems Inc.
+>    "^hxt,.*":
+>      description: HXT Semiconductor
+> +  "^hexin,.*":
 
-I agree that deprecated names should not be used for new DT bindings, while
-keeping backward compatibility to exsiting ones, unless there is other
-DT side concern.
+Please fix order of entries.
 
-I'm also good that the driver adapts to the DT binding change.
+Best regards,
+Krzysztof
 
-What I'm concerned is the driver API:
-
-  int xilinx_core_probe(struct xilinx_fpga_core *core, struct device *dev,
-		      xilinx_write_func write,
-  -		      xilinx_write_one_dummy_byte_func write_one_dummy_byte)
-  +		      xilinx_write_one_dummy_byte_func write_one_dummy_byte,
-  +		      const char *prog_con_id, const char *init_con_id)
-
-You don't have to make every bus driver input the gpio names.  The core
-falls back to use old gpio names only for existing devices
-(.compatible = "xlnx,fpga-slave-serial").  Then the issue could be
-solved?
-
-Thanks,
-Yilun
-
-> 
-> > 
-> > And I forgot to emphasize: none of these is mentioned in commit msg, so
-> > for v5 you will get exactly the same complains. And for every other
-> > patch which repeats the same and does not clarify caveats or exceptions.
-> > 
-> > Best regards,
-> > Krzysztof
-> 
-> Should I keep my changelog in the individual commits? I thought the norm
-> was to put this the cover letter.
-> 
-> Regards,
-> Charles
-> 
 
