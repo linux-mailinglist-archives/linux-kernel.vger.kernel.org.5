@@ -1,128 +1,148 @@
-Return-Path: <linux-kernel+bounces-93196-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93197-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9D5D872C2C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 02:25:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CDC02872C31
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 02:25:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 863CF285C92
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 01:25:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 690E2B284C6
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 01:25:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4A491BDE2;
-	Wed,  6 Mar 2024 01:22:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="k8jNQqeK"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A46ABDDAA;
+	Wed,  6 Mar 2024 01:23:54 +0000 (UTC)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8159E1B96E
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 01:22:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 676DCA50;
+	Wed,  6 Mar 2024 01:23:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709688167; cv=none; b=ifuFCONqCaKGETPAI3V3S9O61aWJPRVtUA2GPggXtGj6VwCdwgnBNqgaxF+k3UnV7xVE2B1eAyCg8IyskX434MGtwwPjG6fgkVVuUDtOLuMynvwmwx4oE3UvlrowokcSOpWacq6frxy/7wgsBmwGJW9TCDAut/NJVhjJ7FG9Rw8=
+	t=1709688234; cv=none; b=FwwhZQg7RQvlwzeJpigFNMInmgbA2DUVt3CB0mYgo63m4QuWdfeB5KBgn/IdJ/Yj/6jYTbye2Ms6nNRedaRfOvZKg4ze2Pq3Oo+BlN7ipeWcbRTis2eUznolstJe4pgHahRnhy0OKUyB0izWUT9ez2ccRxoaNrMIYNWmyI9ugfs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709688167; c=relaxed/simple;
-	bh=ZQgGWVSWytcgK5MJZ6jggoBjQfFJugefhTJSzcVcgYk=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=MQvPTq24EpMH0mLjVNSbLuPMWEmLf+WHQS+jGw/u+8piL0IUK0aoyF12a+UBxLUrTF9K++5m7T6gaX4alHRrTmMFmQeJ4qc8W2asL1M0eecrTP1kV2sz7DOu/DLlpCvkriVdhSwhAY4llOVt58MMYkix4n4l0Wl43LSNm9o2zos=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ipylypiv.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=k8jNQqeK; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ipylypiv.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dbf216080f5so10531995276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 17:22:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709688164; x=1710292964; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=iW4+YjuNAKvAoJg+NmQ5C96xY/u5WzV8UruESW/Bs4M=;
-        b=k8jNQqeK7gQKIbzMge/onFNDkBDQoWlKZc9e1Yu5CHgqUsTYSSqY8AvFKi/KUny4DT
-         eopA1+krKRaFD23m9rv6jQF0VejsCHmxr5u0R4oLH64/KmvAcIQjvVSnFCrglueIk5rE
-         +811v4ySFHjV5W/G5zybxXKbGN0RpuM7A38KXr+KiDdgsOLYSVDgsScifR4XuFNE/Ofe
-         fR2HaeDOz1SeyUQvp1ZJTkm1mPCMLLlTWozsmEswBw3jTw0VlgxDspSE6qhgysp/RktO
-         u8X9t2eA4dFH37vUCJ8LIM+t+2ck2ck3LO5L1Yc3Yl86HRj1EiYR+uMWrGhWMAau+QtH
-         BaYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709688164; x=1710292964;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=iW4+YjuNAKvAoJg+NmQ5C96xY/u5WzV8UruESW/Bs4M=;
-        b=G6g/kq0wJHR3x/brMUnH7HIEzvWlP3dxbVk+UrbnsQi/VWcO3XNRZmOBHADQeNNx/j
-         ECycuclrg059vUfhhy3oWwWyjKaXTyfS+t2yVrA/k53bN0P84hKt1AIgh3SRtr0GI8k4
-         w3VTALpCBNHPbc8raIOiG0wddUuYr/5ivbTXbNDE0fPcIqvicrVIAPxjoNRY5YR6lIVW
-         LKd+0D2ZhwV98qHLpNU04ncR7hkYQ0v/kuaPfii5gvz9GRbF6XSczothfkUyDIrSvBgN
-         EkgB/oO/eMX0NewJwCE1cVIQJrq5AQ8smxtEmhc6BbzkRFEilSfBa1FHTfzKvz6Y+sw7
-         6Qhg==
-X-Forwarded-Encrypted: i=1; AJvYcCUIAciyGJtIuw6qcpEQDiJinf0iy9f0XatD5zn7XkHlGMDmLc3pPwooNWNrUkIDQY3eSmwrNbfLSdZAgqpG4C4GL0NhqySzdt0T4pvP
-X-Gm-Message-State: AOJu0YwnNpviDxYHBgVL4FtwYSablv4XFWJ262cMgnfw+wKtZHng/FIG
-	i9l329F2cEoWK23+YYoV48gq6+a0bylgW3wjijomLHQ5BspRtrjb8aP70ek0UN/3CIEKgF4dAwJ
-	uRsAa9gDWnA==
-X-Google-Smtp-Source: AGHT+IHdUO0CSTTXSxP9RMH2G/OtJPNDHKSmhMwQ7efvIbVrkR+X7rTKxQ+kI29DRE6cGTrNY3Jc+MzpCV3TDQ==
-X-Received: from ipylypiv.svl.corp.google.com ([2620:15c:2c5:13:69ff:df2c:aa81:7b74])
- (user=ipylypiv job=sendgmr) by 2002:a05:6902:728:b0:dc2:1f34:fac4 with SMTP
- id l8-20020a056902072800b00dc21f34fac4mr3554574ybt.2.1709688164688; Tue, 05
- Mar 2024 17:22:44 -0800 (PST)
-Date: Tue,  5 Mar 2024 17:22:26 -0800
-In-Reply-To: <20240306012226.3398927-1-ipylypiv@google.com>
+	s=arc-20240116; t=1709688234; c=relaxed/simple;
+	bh=ROuXL7+LUPZ8Db7wqcYiyDitQ6800u+otyIvruCWmOc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=q2Y/f8i1BetxcP1F6xGDYTOcbz9Nn55r1QQ4qjbBG32OdXSh4MlPRKTbZKNVtCIFMwMEOLmDQkzpTrUqz0Zr4eZ7DTce2mEl/fbkeK5CkWsdS5vQd1Hy6/dIDp7uTR9UUs49QLANZgCBYBlmC+EjAcWy4g9zF8cST1IYRa7QiTQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4TqF5849jbzXhlr;
+	Wed,  6 Mar 2024 09:21:32 +0800 (CST)
+Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
+	by mail.maildlp.com (Postfix) with ESMTPS id 7AB8B140F95;
+	Wed,  6 Mar 2024 09:23:47 +0800 (CST)
+Received: from [10.67.111.104] (10.67.111.104) by
+ dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 6 Mar 2024 09:23:47 +0800
+Message-ID: <d1209aa3-b8d4-4509-9689-4882bc079ffd@huawei.com>
+Date: Wed, 6 Mar 2024 09:23:46 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240306012226.3398927-1-ipylypiv@google.com>
-X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-Message-ID: <20240306012226.3398927-8-ipylypiv@google.com>
-Subject: [PATCH v7 7/7] scsi: isci: Add libsas SATA sysfs attributes group
-From: Igor Pylypiv <ipylypiv@google.com>
-To: Damien Le Moal <dlemoal@kernel.org>, Niklas Cassel <cassel@kernel.org>, 
-	John Garry <john.g.garry@oracle.com>, Jason Yan <yanaijie@huawei.com>, 
-	"James E.J. Bottomley" <jejb@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, 
-	Jack Wang <jinpu.wang@cloud.ionos.com>, Hannes Reinecke <hare@suse.de>, 
-	Xiang Chen <chenxiang66@hisilicon.com>, Artur Paszkiewicz <artur.paszkiewicz@intel.com>, 
-	Bart Van Assche <bvanassche@acm.org>
-Cc: TJ Adams <tadamsjr@google.com>, linux-ide@vger.kernel.org, 
-	linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Igor Pylypiv <ipylypiv@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] bcachefs: chardev: make bch_chardev_class constant
+Content-Language: en-US
+To: "Ricardo B. Marliere" <ricardo@marliere.net>, Kent Overstreet
+	<kent.overstreet@linux.dev>, Brian Foster <bfoster@redhat.com>
+CC: <linux-bcachefs@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20240305-bcachefs-v1-1-436196e25729@marliere.net>
+From: Hongbo Li <lihongbo22@huawei.com>
+In-Reply-To: <20240305-bcachefs-v1-1-436196e25729@marliere.net>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500022.china.huawei.com (7.185.36.66)
 
-The added sysfs attributes group enables the configuration of NCQ Priority
-feature for HBAs that rely on libsas to manage SATA devices.
 
-Reviewed-by: John Garry <john.g.garry@oracle.com>
-Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
-Reviewed-by: Jason Yan <yanaijie@huawei.com>
-Signed-off-by: Igor Pylypiv <ipylypiv@google.com>
----
- drivers/scsi/isci/init.c | 6 ++++++
- 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/scsi/isci/init.c b/drivers/scsi/isci/init.c
-index 6277162a028b..8658dcd61b87 100644
---- a/drivers/scsi/isci/init.c
-+++ b/drivers/scsi/isci/init.c
-@@ -149,6 +149,11 @@ static struct attribute *isci_host_attrs[] = {
- 
- ATTRIBUTE_GROUPS(isci_host);
- 
-+static const struct attribute_group *isci_sdev_groups[] = {
-+	&sas_ata_sdev_attr_group,
-+	NULL
-+};
-+
- static const struct scsi_host_template isci_sht = {
- 
- 	.module				= THIS_MODULE,
-@@ -176,6 +181,7 @@ static const struct scsi_host_template isci_sht = {
- 	.compat_ioctl			= sas_ioctl,
- #endif
- 	.shost_groups			= isci_host_groups,
-+	.sdev_groups			= isci_sdev_groups,
- 	.track_queue_depth		= 1,
- };
- 
--- 
-2.44.0.278.ge034bb2e1d-goog
-
+On 2024/3/6 4:21, Ricardo B. Marliere wrote:
+> Since commit 43a7206b0963 ("driver core: class: make class_register() take
+> a const *"), the driver core allows for struct class to be in read-only
+> memory, so move the bch_chardev_class structure to be declared at build
+> time placing it into read-only memory, instead of having to be dynamically
+> allocated at boot time.
+> 
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+> ---
+>   fs/bcachefs/chardev.c | 23 ++++++++++++-----------
+>   1 file changed, 12 insertions(+), 11 deletions(-)
+> 
+> diff --git a/fs/bcachefs/chardev.c b/fs/bcachefs/chardev.c
+> index 226b39c17667..af587453fd3d 100644
+> --- a/fs/bcachefs/chardev.c
+> +++ b/fs/bcachefs/chardev.c
+> @@ -940,7 +940,9 @@ static const struct file_operations bch_chardev_fops = {
+>   };
+>   
+>   static int bch_chardev_major;
+> -static struct class *bch_chardev_class;
+> +static const struct class bch_chardev_class = {
+> +	.name = "bcachefs",
+> +};
+>   static struct device *bch_chardev;
+>   
+>   void bch2_fs_chardev_exit(struct bch_fs *c)
+> @@ -957,7 +959,7 @@ int bch2_fs_chardev_init(struct bch_fs *c)
+>   	if (c->minor < 0)
+>   		return c->minor;
+>   
+> -	c->chardev = device_create(bch_chardev_class, NULL,
+> +	c->chardev = device_create(&bch_chardev_class, NULL,
+>   				   MKDEV(bch_chardev_major, c->minor), c,
+>   				   "bcachefs%u-ctl", c->minor);
+>   	if (IS_ERR(c->chardev))
+> @@ -968,26 +970,25 @@ int bch2_fs_chardev_init(struct bch_fs *c)
+>   
+>   void bch2_chardev_exit(void)
+>   {
+> -	if (!IS_ERR_OR_NULL(bch_chardev_class))
+> -		device_destroy(bch_chardev_class,
+> -			       MKDEV(bch_chardev_major, U8_MAX));
+> -	if (!IS_ERR_OR_NULL(bch_chardev_class))
+> -		class_destroy(bch_chardev_class);
+> +	device_destroy(&bch_chardev_class, MKDEV(bch_chardev_major, U8_MAX));
+> +	class_unregister(&bch_chardev_class);
+>   	if (bch_chardev_major > 0)
+>   		unregister_chrdev(bch_chardev_major, "bcachefs");
+>   }
+>   
+>   int __init bch2_chardev_init(void)
+>   {
+> +	int ret;
+> +
+>   	bch_chardev_major = register_chrdev(0, "bcachefs-ctl", &bch_chardev_fops);
+>   	if (bch_chardev_major < 0)
+>   		return bch_chardev_major;
+>   
+> -	bch_chardev_class = class_create("bcachefs");
+> -	if (IS_ERR(bch_chardev_class))
+> -		return PTR_ERR(bch_chardev_class);
+> +	ret = class_register(&bch_chardev_class);
+> +	if (ret)
+Here, I think you should call class_unregister to relase resource which 
+allocated before. And the same thing shoud be done in other exception exit.
+> +		return ret;
+>   
+> -	bch_chardev = device_create(bch_chardev_class, NULL,
+> +	bch_chardev = device_create(&bch_chardev_class, NULL,
+>   				    MKDEV(bch_chardev_major, U8_MAX),
+>   				    NULL, "bcachefs-ctl");
+>   	if (IS_ERR(bch_chardev))
+like here..
+> 
+> ---
+> base-commit: 90d35da658da8cff0d4ecbb5113f5fac9d00eb72
+> change-id: 20240305-bcachefs-27a4bb8b9f4f
+> 
+> Best regards,
 
