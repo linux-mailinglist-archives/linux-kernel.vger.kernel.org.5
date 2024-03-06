@@ -1,247 +1,211 @@
-Return-Path: <linux-kernel+bounces-93801-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93803-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 174B18734C4
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 11:47:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87D8F8734D0
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 11:49:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 391711C20F6D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:47:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0032F1F22A45
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:49:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B126605C1;
-	Wed,  6 Mar 2024 10:47:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DE1A60B80;
+	Wed,  6 Mar 2024 10:49:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VC+waviz"
-Received: from mail-vs1-f54.google.com (mail-vs1-f54.google.com [209.85.217.54])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="JdmmeZGj"
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D84755FBB7
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 10:47:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 121FD605B2
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 10:49:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709722046; cv=none; b=NqXEhkjOjvNTsfMMqtziFbkpFsEQQBBrqRur+QB+6RE7o4QaAy0zaNFVAoAwrmhj3HUkpjL+CB7T3sleuHiY9+R2cqt6OQ/rOCLvqkxQcLOJAhuIfYpioNiqWC99NO8GJL8bodSGFZorJnodFrOgtJnzFZj9fXr2YGgcqJ0QLBQ=
+	t=1709722177; cv=none; b=NbJuZnTIuEEaHyO31d2sBLfQ4T9VeKBbSo7cD2fhiTGgNZp+PTHlBBLy6CjyCgWIx7MpEcajz65r/s+9vIXs4txVeANxVMKfbGH+orRzDd9E0GBtFz4fzjRiZ1YCN7va3GQbLHt/nFX8yWbPwS3v5ffozT+XTwLABRTiC4PMFQY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709722046; c=relaxed/simple;
-	bh=T0tkg6tNNzgKe4ggRojauYOz8jIgWQEfoBASA+Nkh5M=;
+	s=arc-20240116; t=1709722177; c=relaxed/simple;
+	bh=RASrq3LBTekIgSKG7TbLLKECG+SrNyOwLafAkERxv94=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JO/sOqDy1P0gM1QwuQnMaOB8XFo8Pu7uM4ggNP23yO/ehn/xK9idSNCBYoB7RZdOUvF/I1wlCgT7y4z+lhmfRRf+ojJGWZNGLOn1khG+UIY9Cjx4TSWvwieWu1W0XHVIvNQLArpLmmyEdYxlCTkd1Rm9UKWQQaWRlYc9an8aBO0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VC+waviz; arc=none smtp.client-ip=209.85.217.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-vs1-f54.google.com with SMTP id ada2fe7eead31-47299367f78so502206137.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 02:47:24 -0800 (PST)
+	 To:Cc:Content-Type; b=vGa/vqbInIKWFAjYlLCZYmasY15L6XoeVdFqeKKjVMB2cQ/RNh1qyxJcuw+GIwHcGi8N8wPfv4osGXLMYE519N347Wb2gv94Pe1KHNFbTCETu0xYrB38TFL1tKZULNTuckmQDLPFoEenXXmAjI50ZAUMEH6HwiA43m2efsnlFgw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=JdmmeZGj; arc=none smtp.client-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-33de4d3483eso4133688f8f.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 02:49:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709722044; x=1710326844; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1709722174; x=1710326974; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=sw05fDmD/5sw/n+gj4x6MEl4S6mdDxa4iaEzvHHso+g=;
-        b=VC+wavizYS7XHaXmzOKL+YqIfVDnXqH9zie7ngCVDFPsoI6DiCreNLhk7koTPQ0/Qt
-         0xALrnHchi2P7w2/mG9rMQyIEbEvSmjPBL6l8OlKaJtsHi/4RwnE+z15tH2jIdEOHeFT
-         AxpP+YLXNyEnwp1niah2Jp97fy+B69kJvbnQiQb97MUz8c4rbJc5RNxtR+5cL+HYckof
-         Zkg8nDCgEpEiN8x0UqTBufxqII0HtObyxkLaFAc65SfI3Q8KK0UBCTgcvnMzK9dFaJVh
-         kexcZirml7vZn8AqdnIG/tjVmQDl4qRdNjZPmpa7y7edhDzml1i6sugFkCfDM6bU6fHQ
-         CbMw==
+        bh=GmiutPs420KSubfj+E41AV5jWZP3h7vvOSaBZaC9xL0=;
+        b=JdmmeZGjN6ACa8pcWynXSw/Sk3ibfpc+h/Nktcl9+z/Rjj50TCSRIGCKVBHsHTa6WU
+         L1X2Zhr8zeipNbM/iXMaowEFJl6gO/JW7yHi+giDQBboojZ6Y4N8n9Q+oSwekATJplMr
+         PVeXye5+MCLUud04JYqHiX8yTlwEJ9KbfIf8SY2sScr5uXbh8nWxSsicaTkO62EAa7UL
+         i55tuw8ix+2OdNcWgLGLwdOpGeQhF4tpB/WLmTRZ7wamzEUium3tL7Bom8Kh/fRHkqmX
+         NiGYKFp3v24j4psntFMDB1bUB3Vj5pm2Du9RdoErXLJi31TjL87bkgSNP40bD+i/8NE6
+         VN9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709722044; x=1710326844;
+        d=1e100.net; s=20230601; t=1709722174; x=1710326974;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sw05fDmD/5sw/n+gj4x6MEl4S6mdDxa4iaEzvHHso+g=;
-        b=MiXeHyaQ9BpjvvRbNf7UZHNgGwhdrDqrKY2IFj6GKRw6IoslyksxRKO2RMp/tALiiJ
-         UzRt0JYbGOJCxrLVuC7X0cZabKj9/nq5Ljxzo7uKTuGrGKu1UldpeJiP3b0CvGIfe/Gf
-         bR0Fv4gBZJJ5woFG020do06wIqJbffUIRXQ7jjmnmedQ2djIbyZiThU0lwqHIPTLedpt
-         nZMFb/FqcIa92FKRGRwU49kOXNpn8HP3HcB1uQCib+V5AoqObbALqh0URl5jfyYt0jKe
-         S6yhH4XUZL5d0j4AV/JZ+4Od4+mQapb3Y4btjdaox55tJwH4kBPceIqqoUMRQFYbt/t/
-         gvBg==
-X-Forwarded-Encrypted: i=1; AJvYcCWeWIqIY57bWLV5vTRF7N9YouWWW7w9ixrTwWPa3akjNTqwJ7Uv30rWWMMXxaqyhjt0cisp0WleZUI6ZjIipglVbwAtjh88ReRWlZvB
-X-Gm-Message-State: AOJu0Yx/IQgTLi9zqf7ug1KOZx062szEYWCE2Ix6kClPm9W/gmSgFDL5
-	P2guwIwZxx574yN+Tl3K4zaZiY1i9gM1rqoBI8OJJ+RucN3YOEu6MW5zRmUd8QiMg5FV5F0YPf6
-	xrMQoS0ijos8hzSGajK4up9RRsd/DWWJs+eN3sEOC37kcOV4DY2I=
-X-Google-Smtp-Source: AGHT+IHFMma7JuSceVxjvjNRcZ0aadlI+aj3d1JXNvjpIxhakTYNUAvBqf/soLRi+E9TJ3sHbH/sfpJqlCtd0CiIXY8=
-X-Received: by 2002:a67:e3b8:0:b0:472:e85e:7a53 with SMTP id
- j24-20020a67e3b8000000b00472e85e7a53mr1941063vsm.33.1709722043784; Wed, 06
- Mar 2024 02:47:23 -0800 (PST)
+        bh=GmiutPs420KSubfj+E41AV5jWZP3h7vvOSaBZaC9xL0=;
+        b=rVbYOSA8J3bc+JpmajUyS81gM/2GK6m/9j/5enjskSUHVRtQaC0NwGd0AoBFsdpASG
+         zRCrd0BxRF0EIwMZzK0eKCGPjt6q2pQz5mjzj/U8ma/orRAeoHWUakgRv2PSGebxLd8L
+         vxYVh98a9UKSC7OUlgLoGSSAMbB85+i7ATBTHd9LtzT197D9AGDifbuxjhRHRyPDz7G4
+         dI7fpqS99PFIGIBJOfFQrcLY3SEI/bz9ma+lbKR9AtaK1dl4VS+NfmH0gQsUlxJMhvTz
+         Y31NfnjmmmOtgKw2uwdXl4snTO7B1THV2ZMT3dqOKNXhBRlxaF6yjf+gC+ieEaWWSCbD
+         D1LQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXNiERYe88/FT/9jIuAT/SIOBhDj1ySK5X5zNxhSbzfPbW0+V7b6kF46NJ4dcJdikZ9N9OXx7XjFjtxM8dbXeJCCyfYNcvVLu5A1zR+
+X-Gm-Message-State: AOJu0YxKHH+kM3s1orZZt0A3jMJLffQupjyM9zaklWVwbMqtq6HC/LYh
+	uKPoib8OxalR9fD4yXfAUo4WHRVTcQs8Gfx/fTO8Teel6M6UF0iSjYHaNzGCA7AvducKgvMqv8P
+	JuoofW2mKXZs/be2aBjcWmwHz3ta5jmdhowA=
+X-Google-Smtp-Source: AGHT+IHuDffvn/pnnziaF4PScFMpADJINdhzS4hqx6J2YTbhZdXnevKvtPrPZgkBTOW92T27l1SGBqRt+5kxzCXiHsU=
+X-Received: by 2002:adf:e883:0:b0:33d:1720:8cfd with SMTP id
+ d3-20020adfe883000000b0033d17208cfdmr10811564wrm.41.1709722174393; Wed, 06
+ Mar 2024 02:49:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240304211535.741936181@linuxfoundation.org>
-In-Reply-To: <20240304211535.741936181@linuxfoundation.org>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Wed, 6 Mar 2024 16:17:12 +0530
-Message-ID: <CA+G9fYtOAL4Kco7zCMp38niCHUJ7Z1hxV5VkT8VnbaWF4mqt_Q@mail.gmail.com>
-Subject: Re: [PATCH 5.4 00/25] 5.4.271-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
-	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
+References: <20240301213442.198443-1-adrian.ratiu@collabora.com>
+ <20240304-zugute-abtragen-d499556390b3@brauner> <202403040943.9545EBE5@keescook>
+ <20240305-attentat-robust-b0da8137b7df@brauner> <202403050134.784D787337@keescook>
+ <20240305-kontakt-ticken-77fc8f02be1d@brauner> <20240305-gremien-faucht-29973b61fb57@brauner>
+In-Reply-To: <20240305-gremien-faucht-29973b61fb57@brauner>
+From: Matt Denton <mpdenton@google.com>
+Date: Wed, 6 Mar 2024 02:49:21 -0800
+Message-ID: <CAFsT0xi1Dkv4eoG86vBHWvTzS=JjmrxBf0BNLDafi-Eq2H2tfw@mail.gmail.com>
+Subject: Re: [PATCH v2] proc: allow restricting /proc/pid/mem writes
+To: Christian Brauner <brauner@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>, Matthew Denton <mpdenton@chromium.org>, 
+	Adrian Ratiu <adrian.ratiu@collabora.com>, linux-fsdevel@vger.kernel.org, 
+	kernel@collabora.com, linux-security-module@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
+	Guenter Roeck <groeck@chromium.org>, Doug Anderson <dianders@chromium.org>, 
+	Jann Horn <jannh@google.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Randy Dunlap <rdunlap@infradead.org>, Mike Frysinger <vapier@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 5 Mar 2024 at 03:04, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+The SECCOMP_RET_USER_NOTIF sandbox is partially implemented but the
+reason we needed it (glibc blocking signals during certain syscalls we
+wanted to emulate) got reverted and we haven't had any important
+issues with the SECCOMP_RET_TRAP sandbox since then. /proc/pid/mem was
+always restricted on ChromeOS so the plan was to use
+process_vm_readv() and process_vm_writev() in the unsandboxed broker
+process. We knew about the pid race of course, but this would be far
+from the only place that Chrome would be potentially vulnerable to the
+race so it didn't seem any worse.
+
+We did need to use process_vm_writev() for some syscalls, like
+emulating stat() required us to write into the supervised process.
+
+On Tue, Mar 5, 2024 at 3:03=E2=80=AFAM Christian Brauner <brauner@kernel.or=
+g> wrote:
 >
-> This is the start of the stable review cycle for the 5.4.271 release.
-> There are 25 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> On Tue, Mar 05, 2024 at 10:58:31AM +0100, Christian Brauner wrote:
+> > On Tue, Mar 05, 2024 at 01:41:29AM -0800, Kees Cook wrote:
+> > > On Tue, Mar 05, 2024 at 09:59:47AM +0100, Christian Brauner wrote:
+> > > > > > Uhm, this will break the seccomp notifier, no? So you can't tur=
+n on
+> > > > > > SECURITY_PROC_MEM_RESTRICT_WRITE when you want to use the secco=
+mp
+> > > > > > notifier to do system call interception and rewrite memory loca=
+tions of
+> > > > > > the calling task, no? Which is very much relied upon in various
+> > > > > > container managers and possibly other security tools.
+> > > > > >
+> > > > > > Which means that you can't turn this on in any of the regular d=
+istros.
+> > > > >
+> > > > > FWIW, it's a run-time toggle, but yes, let's make sure this works
+> > > > > correctly.
+> > > > >
+> > > > > > So you need to either account for the calling task being a secc=
+omp
+> > > > > > supervisor for the task whose memory it is trying to access or =
+you need
+> > > > > > to provide a migration path by adding an api that let's caller'=
+s perform
+> > > > > > these writes through the seccomp notifier.
+> > > > >
+> > > > > How do seccomp supervisors that use USER_NOTIF do those kinds of
+> > > > > memory writes currently? I thought they were actually using ptrac=
+e?
+> > > > > Everything I'm familiar with is just using SECCOMP_IOCTL_NOTIF_AD=
+DFD,
+> > > > > and not doing fancy memory pokes.
+> > > >
+> > > > For example, incus has a seccomp supervisor such that each containe=
+r
+> > > > gets it's own goroutine that is responsible for handling system cal=
+l
+> > > > interception.
+> > > >
+> > > > If a container is started the container runtime connects to an AF_U=
+NIX
+> > > > socket to register with the seccomp supervisor. It stays connected =
+until
+> > > > it stops. Everytime a system call is performed that is registered i=
+n the
+> > > > seccomp notifier filter the container runtime will send a AF_UNIX
+> > > > message to the seccomp supervisor. This will include the following =
+fds:
+> > > >
+> > > > - the pidfd of the task that performed the system call (we should
+> > > >   actually replace this with SO_PEERPIDFD now that we have that)
+> > > > - the fd of the task's memory to /proc/<pid>/mem
+> > > >
+> > > > The seccomp supervisor will then perform the system call intercepti=
+on
+> > > > including the required memory reads and writes.
+> > >
+> > > Okay, so the patch would very much break that. Some questions, though=
+:
+> > > - why not use process_vm_writev()?
+> >
+> > Because it's inherently racy as I've explained in an earlier mail in
+> > this thread. Opening /proc/<pid>/mem we can guard via:
+> >
+> > // Assume we hold @pidfd for supervised process
+> >
+> > int fd_mem =3D open("/proc/$pid/mem", O_RDWR);:
+> >
+> > if (pidfd_send_signal(pidfd, 0, ...) =3D=3D 0)
+> >         write(fd_mem, ...);
+> >
+> > But we can't exactly do:
+> >
+> > process_vm_writev(pid, WRITE_TO_MEMORY, ...);
+> > if (pidfd_send_signal(pidfd, 0, ...) =3D=3D 0)
+> >         write(fd_mem, ...);
+> >
+> > That's always racy. The process might have been reaped before we even
+> > call pidfd_send_signal() and we're writing to some random process
+> > memory.
+> >
+> > If we wanted to support this we'd need to implement a proposal I had a
+> > while ago:
+> >
+> > #define PROCESS_VM_RW_PIDFD (1 << 0)
+> >
+> > process_vm_readv(pidfd,  ..., PROCESS_VM_RW_PIDFD);
+> > process_vm_writev(pidfd, ..., PROCESS_VM_RW_PIDFD);
+> >
+> > which is similar to what we did for waitid(pidfd, P_PIDFD, ...)
+> >
+> > That would make it possible to use a pidfd instead of a pid in the two
+> > system calls. Then we can get rid of the raciness and actually use thos=
+e
+> > system calls. As they are now, we can't.
 >
-> Responses should be made by Wed, 06 Mar 2024 21:15:26 +0000.
-> Anything received after that time might be too late.
+> What btw, is the Linux sandbox on Chromium doing? Did they finally move
+> away from SECCOMP_RET_TRAP to SECCOMP_RET_USER_NOTIF? I see:
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.4.271-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.4.y
-> and the diffstat can be found below.
+> https://issues.chromium.org/issues/40145101
 >
-> thanks,
->
-> greg k-h
-
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
-
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-## Build
-* kernel: 5.4.271-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-5.4.y
-* git commit: fe27532da81b5465567e329b6950454328c9482f
-* git describe: v5.4.269-110-gfe27532da81b
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.2=
-69-110-gfe27532da81b
-
-## Test Regressions (compared to v5.4.269)
-
-## Metric Regressions (compared to v5.4.269)
-
-## Test Fixes (compared to v5.4.269)
-
-## Metric Fixes (compared to v5.4.269)
-
-## Test result summary
-total: 98648, pass: 77795, fail: 4006, skip: 16788, xfail: 59
-
-## Build Summary
-* arc: 5 total, 5 passed, 0 failed
-* arm: 138 total, 138 passed, 0 failed
-* arm64: 38 total, 36 passed, 2 failed
-* i386: 25 total, 19 passed, 6 failed
-* mips: 27 total, 27 passed, 0 failed
-* parisc: 3 total, 0 passed, 3 failed
-* powerpc: 32 total, 31 passed, 1 failed
-* riscv: 12 total, 12 passed, 0 failed
-* s390: 8 total, 8 passed, 0 failed
-* sh: 10 total, 10 passed, 0 failed
-* sparc: 8 total, 8 passed, 0 failed
-* x86_64: 34 total, 34 passed, 0 failed
-
-## Test suites summary
-* boot
-* kselftest-android
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers-dma-buf
-* kselftest-efivarfs
-* kselftest-exec
-* kselftest-filesystems
-* kselftest-filesystems-binderfs
-* kselftest-filesystems-epoll
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-ftrace
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mm
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-forwarding
-* kselftest-net-mptcp
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-user_events
-* kselftest-vDSO
-* kselftest-x86
-* kselftest-zram
-* kunit
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-cpuhotplug
-* ltp-crypto
-* ltp-cve
-* ltp-dio
-* ltp-fcntl-locktests
-* ltp-filecaps
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-hugetlb
-* ltp-io
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-securebits
-* ltp-smoke
-* ltp-smoketest
-* ltp-syscalls
-* ltp-tracing
-* perf
-* rcutorture
-
---
-Linaro LKFT
-https://lkft.linaro.org
+> What ever became of this?
 
