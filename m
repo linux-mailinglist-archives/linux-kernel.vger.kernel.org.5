@@ -1,180 +1,127 @@
-Return-Path: <linux-kernel+bounces-94146-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94147-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11CF2873A8F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:21:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02F13873A92
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:22:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 09F7A1F21B89
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:21:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D68B11C214F3
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:22:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A0B31350DD;
-	Wed,  6 Mar 2024 15:21:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C6E61350DD;
+	Wed,  6 Mar 2024 15:22:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b="P8Jjnct+"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c6JdyTqK"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DCE212FF88
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 15:21:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F1E45DF1D;
+	Wed,  6 Mar 2024 15:22:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709738492; cv=none; b=CLYK3ojSwXkaZrPCB6eaeD+Nbo9j02LpO3BY6HVysSl/t297qTpgeyB9zeVp6OtN1PiujSEnoMOOp9bXyWZoAgxtCZv6HG4bXjRr8ST1SLMXAP+10E0xNQMhZbOE6YCuzCYXRQPeE8gR7UkzoStugsGYXO5Lax2FhkHuRPW2OlY=
+	t=1709738547; cv=none; b=ulEk7mAn1Q2kGpBp+HE27einJKGvCMOFfG/vcUa42VEQp2439Sy1BVyWHStx4dPym5zuxiBW2xyKMfW5VvE99lAe1n4aqTUj2f/YQ9NkUkZOzeiKSCvCguUZNNUH+/qNkMRMupqs3CsD6dZsoaWq7WpziDxGpPb1TGqzM5aZpMM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709738492; c=relaxed/simple;
-	bh=JDc5r3BRrOZ1w1zNcP41fD1K/PAk1OWRsEOHFAyAIe4=;
-	h=Date:Subject:In-Reply-To:CC:From:To:Message-ID:Mime-Version:
-	 Content-Type; b=DxPMWYohb2/KbjQxrAuLc8/bkMOyjunn8LVxsFQ/xZ60XQm5oSqB8gqFuKF4OofItc5qAjF8UQRb+fiQ09qa0VwRxjulpYfJiV5NncBmk5h5ASNy39AQUlEuRtV4dUdCOzTKnUnIrMTolOHqDDKGM+1kfX9aI3AuAVigwel3Izk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com; spf=pass smtp.mailfrom=dabbelt.com; dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b=P8Jjnct+; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dabbelt.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1dca3951ad9so9626685ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 07:21:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1709738489; x=1710343289; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=n8Qqx9ooCSBKu7MZRWmQy03iinWuJivXIhQKkqlVv5I=;
-        b=P8Jjnct+6XKuJIQn74As4ATNMt9yIGu293nUfPHrg0NptSrTVZJWc3KmZWSuRQGQ0u
-         pzd9FoYuvMxZVFfzuedo+BkbgsHXMJHqsxDnMJiN75uXatnE2YvnAtmqMRSTSLvVt+wU
-         8MerIGGu8HfB5QCZpEsvKEgqEfzAADQgXxWkYYyqPZ+MvJfY2W9ZDmICNPVubkGOnyI4
-         z4cv3Jq+yZj2P6U4LbcecjrjD4qCmCJfWRr06sDXm1+xzcaPO9Vbty9egylrx3hJbCRM
-         lZTYJf7bvkuj48fRMd4dV+SIgwCRLQpgcZheL26af/atGyJpIZeqbZ0Gypn0K2YLn50E
-         asBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709738489; x=1710343289;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=n8Qqx9ooCSBKu7MZRWmQy03iinWuJivXIhQKkqlVv5I=;
-        b=mAtkywBSOjtrl6bxedk/4YbplQD53FjyNo4LkLwMuq5RtVh6f5MIa4lXgvx43CnnTs
-         ShtA4xg64FnhiT+oEnOiVU8R1e9rkpozP3P/DO9WcTzSCa8ZWQRWjJlSrLiTStGtY/re
-         s+P5RkjBg1YKxp9fKyhVMPG/k0IYYzJDjyUcLtVffGoaQl0KsWzK/7yOHErAqoneA8vv
-         HCmjAZtPfDiceEFDuLVX1o0QEx9HsJC2KHk/61Cn9kMiFlOmDbCfpJae87OEYxJYSxuz
-         1GyINF2QQZFOHTVzqOfGkWpJz/g6vgIIi8fas3Oc2guQD6fnWEyS75rXuMGz9x7wHTC4
-         TKTA==
-X-Forwarded-Encrypted: i=1; AJvYcCWoQKTsXhoLa+njsej01+nSZYIEicIBw5taLFfWctheTPQSz4irwo6d76fdc2wUHaas1aZZZIwTvvH0YD8Ao0JRRHqePYKO/rRhz2Xj
-X-Gm-Message-State: AOJu0YwGYu87wP0Cr2fb5/MMnXeoaevpHzkjmvtf7Ze27aMKlxBqp35U
-	D8A5Ix23tHU5InHQkK4ChKTB5nx8TLUxvnBvt0tjvWrxCBV9YMU/jmpUp03xVZ8=
-X-Google-Smtp-Source: AGHT+IHS64f5maqdTjPkHR3rlh1H8dRVq7aDFlNHNq/juokRqXnYFlJ9FFwUBMnE7dQOFGHwlqSFxw==
-X-Received: by 2002:a17:903:230a:b0:1dc:fb9d:402d with SMTP id d10-20020a170903230a00b001dcfb9d402dmr6231276plh.58.1709738488550;
-        Wed, 06 Mar 2024 07:21:28 -0800 (PST)
-Received: from localhost ([192.184.165.199])
-        by smtp.gmail.com with ESMTPSA id ld4-20020a170902fac400b001db5b39635dsm12783423plb.277.2024.03.06.07.21.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Mar 2024 07:21:27 -0800 (PST)
-Date: Wed, 06 Mar 2024 07:21:27 -0800 (PST)
-X-Google-Original-Date: Wed, 06 Mar 2024 07:21:17 PST (-0800)
-Subject:     Re: [External] Re: [PATCH 3/3] efistub: fix missed the initialization of gp
-In-Reply-To: <CAMj1kXH1oMbONoHFMPaatfaqrHNE2ryfrG7kw-7J-eFsuXkK-Q@mail.gmail.com>
-CC: cuiyunhui@bytedance.com, Paul Walmsley <paul.walmsley@sifive.com>,
-  aou@eecs.berkeley.edu, xuzhipeng.1973@bytedance.com, alexghiti@rivosinc.com, samitolvanen@google.com,
-  bp@alien8.de, xiao.w.wang@intel.com, jan.kiszka@siemens.com, kirill.shutemov@linux.intel.com,
-  nathan@kernel.org, linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-  linux-efi@vger.kernel.org
-From: Palmer Dabbelt <palmer@dabbelt.com>
-To: Ard Biesheuvel <ardb@kernel.org>
-Message-ID: <mhng-c53211c1-4708-459a-bdc5-6e013c2adaee@palmer-ri-x1c9>
+	s=arc-20240116; t=1709738547; c=relaxed/simple;
+	bh=1LgluQv1M0MpfLZxjv6T5+z/3k7YjbHLdzNPN3vfxrQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=vGQrb9o7FEaweItTyXV72QmO03s7dXmiJrHxkPE5N2+gQk17Lio93rjkPBocnFajD8PLG/gW3Po0vm2IZzlJJW4ZAbeplx3IFEl63Kyq0auQU6OShLHElbPf5IIJigt39oT9EaXMngIElcTn2rJf0Vr66zbUKRWhk0Fuo4LXADo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c6JdyTqK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 485FBC433F1;
+	Wed,  6 Mar 2024 15:22:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709738546;
+	bh=1LgluQv1M0MpfLZxjv6T5+z/3k7YjbHLdzNPN3vfxrQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=c6JdyTqKkKCGVZO+Af70uAEJ2llNw5TNzY1aRj2xHJxozsPCsV1pgOOSipXDvyvq6
+	 GDThdToWSVOc2K8DbA+kXsJxWcmMSqGjFsbeFkXODveioXeAcIGuJDZ6AZcJjm9ayr
+	 HABbgzUMl+9BJSSxST3RY6mrbhlxactZcuGMjaIsYB80+X9bjUVUXxgyBbPl34vhvw
+	 GdnhXLPMMIGq6ToRkab8kNPm8wR/3/xKA0I9jxp99/AjIzOlf8flMBwF9jfLbWSbwJ
+	 rzw1wqDYtL4wT62bPQ3tTQWoO2vDAth/HtrW+NeAe3PGcG9agGH0tTqWXQ8eCOh038
+	 qMXHTOGI4c1TA==
+Date: Wed, 6 Mar 2024 07:22:25 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Dragos Tatulea <dtatulea@nvidia.com>
+Cc: "almasrymina@google.com" <almasrymina@google.com>, "davem@davemloft.net"
+ <davem@davemloft.net>, "herbert@gondor.apana.org.au"
+ <herbert@gondor.apana.org.au>, Gal Pressman <gal@nvidia.com>,
+ "dsahern@kernel.org" <dsahern@kernel.org>, "steffen.klassert@secunet.com"
+ <steffen.klassert@secunet.com>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, Leon Romanovsky <leonro@nvidia.com>,
+ "pabeni@redhat.com" <pabeni@redhat.com>, "edumazet@google.com"
+ <edumazet@google.com>, "ian.kumlien@gmail.com" <ian.kumlien@gmail.com>,
+ "Anatoli.Chechelnickiy@m.interpipe.biz"
+ <Anatoli.Chechelnickiy@m.interpipe.biz>, "netdev@vger.kernel.org"
+ <netdev@vger.kernel.org>
+Subject: Re: [RFC] net: esp: fix bad handling of pages from page_pool
+Message-ID: <20240306072225.4a61e57c@kernel.org>
+In-Reply-To: <7fc334b847dc4d90af796f84a8663de9f43ede5d.camel@nvidia.com>
+References: <20240304094950.761233-1-dtatulea@nvidia.com>
+	<20240305190427.757b92b8@kernel.org>
+	<7fc334b847dc4d90af796f84a8663de9f43ede5d.camel@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 06 Mar 2024 05:09:07 PST (-0800), Ard Biesheuvel wrote:
-> On Wed, 6 Mar 2024 at 14:02, Ard Biesheuvel <ardb@kernel.org> wrote:
->>
->> On Wed, 6 Mar 2024 at 13:34, yunhui cui <cuiyunhui@bytedance.com> wrote:
->> >
->> > Hi Ard,
->> >
->> > On Wed, Mar 6, 2024 at 5:36 PM Ard Biesheuvel <ardb@kernel.org> wrote:
->> > >
->> > > On Wed, 6 Mar 2024 at 09:56, Yunhui Cui <cuiyunhui@bytedance.com> wrote:
->> > > >
->> > > > Compared with gcc version 12, gcc version 13 uses the gp
->> > > > register for compilation optimization, but the efistub module
->> > > > does not initialize gp.
->> > > >
->> > > > Signed-off-by: Yunhui Cui <cuiyunhui@bytedance.com>
->> > > > Co-Developed-by: Zhipeng Xu <xuzhipeng.1973@bytedance.com>
->> > >
->> > > This needs a sign-off, and your signoff needs to come after.
->> > >
->> > > > ---
->> > > >  arch/riscv/kernel/efi-header.S | 11 ++++++++++-
->> > > >  1 file changed, 10 insertions(+), 1 deletion(-)
->> > > >
->> > > > diff --git a/arch/riscv/kernel/efi-header.S b/arch/riscv/kernel/efi-header.S
->> > > > index 515b2dfbca75..fa17c08c092a 100644
->> > > > --- a/arch/riscv/kernel/efi-header.S
->> > > > +++ b/arch/riscv/kernel/efi-header.S
->> > > > @@ -40,7 +40,7 @@ optional_header:
->> > > >         .long   __pecoff_data_virt_end - __pecoff_text_end      // SizeOfInitializedData
->> > > >  #endif
->> > > >         .long   0                                       // SizeOfUninitializedData
->> > > > -       .long   __efistub_efi_pe_entry - _start         // AddressOfEntryPoint
->> > > > +       .long   _efistub_entry - _start         // AddressOfEntryPoint
->> > > >         .long   efi_header_end - _start                 // BaseOfCode
->> > > >  #ifdef CONFIG_32BIT
->> > > >         .long  __pecoff_text_end - _start               // BaseOfData
->> > > > @@ -121,4 +121,13 @@ section_table:
->> > > >
->> > > >         .balign 0x1000
->> > > >  efi_header_end:
->> > > > +
->> > > > +       .global _efistub_entry
->> > > > +_efistub_entry:
->> > >
->> > > This should go into .text or .init.text, not the header.
->> > >
->> > > > +       /* Reload the global pointer */
->> > > > +       load_global_pointer
->> > > > +
->> > >
->> > > What is supposed to happen here if CONFIG_SHADOW_CALL_STACK=y? The EFI
->> > > stub Makefile removes the SCS CFLAGS, so the stub will be built
->> > > without shadow call stack support, which I guess means that it might
->> > > use GP as a global pointer as usual?
->> > >
->> > > > +       call __efistub_efi_pe_entry
->> > > > +       ret
->> > > > +
->> > >
->> > > You are returning to the firmware here, but after modifying the GP
->> > > register. Shouldn't you restore it to its old value?
->> > There is no need to restore the value of the gp register. Where gp is
->> > needed, the gp register must first be initialized. And here is the
->> > entry.
->> >
->>
->> But how should the firmware know that GP was corrupted after calling
->> the kernel's EFI entrypoint? The EFI stub can return to the firmware
->> if it encounters any errors while still running in the EFI boot
->> services.
->>
->
-> Actually, I wonder if GP can be modified at all before
-> ExitBootServices(). The EFI timer interrupt is still live at this
-> point, and so the firmware is being called behind your back, and might
-> rely on GP retaining its original value.
+On Wed, 6 Mar 2024 13:05:14 +0000 Dragos Tatulea wrote:
+> On Tue, 2024-03-05 at 19:04 -0800, Jakub Kicinski wrote:
+> > On Mon, 4 Mar 2024 11:48:52 +0200 Dragos Tatulea wrote: =20
+> > > When the skb is reorganized during esp_output (!esp->inline), the pag=
+es
+> > > coming from the original skb fragments are supposed to be released ba=
+ck
+> > > to the system through put_page. But if the skb fragment pages are
+> > > originating from a page_pool, calling put_page on them will trigger a
+> > > page_pool leak which will eventually result in a crash. =20
+> >=20
+> > So it just does: skb_shinfo(skb)->nr_frags =3D 1;
+> > and assumes that's equivalent to owning a page ref on all the frags?
+> >  =20
+> My understanding is different: it sets nr_frags to 1 because it's swappin=
+g out
+> the old page frag in fragment 0 with the new xfrag page frag and will use=
+ this
+> "new" skb from here. It does take a page reference for the xfrag page fra=
+g.
 
-[A few of us are talking on IRC as I'm writing this...]
+Same understanding, I'm just bad at explaining :)
 
-The UEFI spec says "UEFI firmware must neither trust the
-values of tp and gp nor make an assumption of owning the write access to 
-these register in any circumstances".  It's kind of vague what "UEFI 
-firmware" means here, but I think it's reasonable to assume that the 
-kernel (and thus the EFI stub) is not included there.
+> > Fix looks more or less good, we would need a new wrapper to avoid
+> > build issues without PAGE_POOL,=C2=A0
+> >  =20
+> Ack. Which component would be best location for this wrapper: page_pool?
 
-So under that interpretation, the kernel (including the EFI stub) would 
-be allowed to overwrite GP with whatever it wants.
+Hm, that's a judgment call.
+Part of me wants to put it next to napi_frag_unref(), since we
+basically need to factor out the insides of this function.
+When you post the patch the page pool crowd will give us
+their opinions.
 
-[We're still talking on IRC, though]
+> > but I wonder if we wouldn't be better
+> > off changing the other side. Instead of "cutting off" the frags -
+> > walking them and dealing with various page types. Because Mina and co.
+> > will step onto this landmine as well. =20
+> The page frags are still stored and used in the sg scatterlist. If we rel=
+ease
+> them at the moment when the skb is "cut off", the pages in the sg will be
+> invalid. At least that's my understanding.
+
+I was thinking something along the lines of:
+
+	for each frag()
+		if (is_pp_page()) {
+			get_page();
+			page_pool_unref_page(1);
+		}
+
+so that it's trivial to insert another check for "is this a zero-copy"
+page in there, and error our. But on reflection the zero copy check may
+be better placed in __skb_to_sgvec(), so ignore this. Just respin
+what you got with a new helper.
 
