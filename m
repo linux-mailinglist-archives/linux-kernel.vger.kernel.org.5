@@ -1,109 +1,174 @@
-Return-Path: <linux-kernel+bounces-94607-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94609-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33B7687420F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 22:35:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 717C2874216
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 22:36:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9F781B20F5E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 21:35:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B756CB2304D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 21:36:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AAE01B94D;
-	Wed,  6 Mar 2024 21:34:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C3ED1AADA;
+	Wed,  6 Mar 2024 21:36:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="WnGdPuGj"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="zCzyRXE1"
+Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58B1C1B59C;
-	Wed,  6 Mar 2024 21:34:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 395301B7F7
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 21:36:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709760888; cv=none; b=hRKQu+/dRObGg5JhSUh5jQfQ17wyd5Zw0ckxFYYrZl8kng9PtuwG8ivw0ZHTA1Mn1FEoTnkiQcA1mB/SvnptbOuAgbAClRPOszlRv9c9DaEDSEs7BJyBWm07gnVJXwmtxrhB/VVDoeZALc/OZVjxgX/WprNouawjIROfp+kZtTo=
+	t=1709760973; cv=none; b=c7/2u5a2VP0/db7WHOsT5Toc375DVmaIyi85uQ6kxQ1YxG/2jAJeej6Olrsp3yUALuGAGO0sHw8qKt1haz0t06DtVVNdg2Z5QGqwiMKIcDXy18BHT047LkSb4N6oeG1QuMaFcs/bX8mhtEyz0Jc/BcCuKp/5FvnExRBMqyiIXDU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709760888; c=relaxed/simple;
-	bh=EENCLqG5V3ac8guut1rXuephqedDKNfSA+GEUUm2Ldc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JvGu2waQrdDdT1k39KKMJWdGVOtf8bEw6f2tXLI+r3hu8X9ARbY50pSMhGyCqsFReMaprWQ7uzTJMuZWKHBtCdsr2OfEDSuP+UEHRney6mKyeesfIyLVJ7r5CLgnew8FjUBdx8U01DxlBsctNRqs0zlNyNusSoDHdvXhQzb2UQI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=WnGdPuGj; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=Pnrclyp8qd04tGL+paauReWhMqljiQ5BhKgBB0WcrGc=; b=WnGdPuGjK0DJWslO+RClJS5y4I
-	5B8C5YAmXsTC55hIAo8YMFhw2q8p4bch0h7B8wC2w9wScUcSlicDw2Ngd+HVnDWZ6M2t62VKOQr3g
-	xa19j5fyo9dOSgZvD1Tt3Ne44oT/0bK1MLvxnP257sEIFzNoQntAvUhfGNCF6rV7A0jhQNMkdPwew
-	tUYo716dQGB0rZx09USyxW2Kdi0cFIyWXhsw3MTC4w9MJnsAXxPFCd64pW7Yt4RekRpDZwzegFOyr
-	2fOR7osn7I78XruxsHsT6Hd7MBR3Uhc6sFCu0yxbe1ZAbILzWusyPeZ/Ainmpv63ADEiA/z79WTyH
-	IjW4rvbQ==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rhyuO-00000001xdj-0ljc;
-	Wed, 06 Mar 2024 21:34:40 +0000
-Date: Wed, 6 Mar 2024 13:34:40 -0800
-From: Luis Chamberlain <mcgrof@kernel.org>
-To: Calvin Owens <jcalvinowens@gmail.com>, Song Liu <song@kernel.org>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Mike Rapoport <rppt@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Naveen N Rao <naveen.n.rao@linux.ibm.com>,
-	Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-	David S Miller <davem@davemloft.net>,
-	Thomas Gleixner <tglx@linutronix.de>, bpf@vger.kernel.org,
-	linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC][PATCH 0/4] Make bpf_jit and kprobes work with
- CONFIG_MODULES=n
-Message-ID: <ZejhcP_r5QJZcS6j@bombadil.infradead.org>
-References: <cover.1709676663.git.jcalvinowens@gmail.com>
+	s=arc-20240116; t=1709760973; c=relaxed/simple;
+	bh=YlaGW5DIfQikcv1Ey1OaeroVdJnLORWMXlwJte/PfRc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=E0n/ZwbXQY+6jjCQ+vYH1BzW1pQo/GWdM3U5dLzkZh00TX5bUXjgQc1EuvHTmG9HAC6VjBbKtGQ14N++HHgdDe3d5o0XwOgNZR4JlqJ+NUdKikAv8nQkHkiCyOlUOBZyCiyJFM43odpOUpb2GKX6XHIX8U5jY3do+H5Se+r2PlQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=zCzyRXE1; arc=none smtp.client-ip=209.85.160.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-428405a0205so16631cf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 13:36:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709760971; x=1710365771; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PuRty+lhYaNXcOtehTNWQ8+EoEDd7pkrwovTsDUb2fg=;
+        b=zCzyRXE1Zr7e75wrVh48ChI+p1UJOMsk9luj9Tyz+QO/gUDqTZfG0an1k0tQw3ntgI
+         xj/Fj/1VpxCFslkqhmUY521Xs1CeslrMW51VNH3JuJju3saRWa+iArhICPb8PO13FTe8
+         KM4VENUeaG2kaS49iB4yH4yY3OySGQs/3mA8sNnURBMTS7SqNnvf+dhEvl4cNJ5Fduqy
+         XN4VdWB3/WiyN3I4D4Hd+3pSX6BsW9Wtva35sk76483Yob2ekAEbPV6MvFPs3js2Jwul
+         8wODDKlThoDfOckOxB+l0h/3VVZw7QktB9CNhSRL6byZyb2KyBf/YTZdEmllJdZQufGp
+         XeBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709760971; x=1710365771;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PuRty+lhYaNXcOtehTNWQ8+EoEDd7pkrwovTsDUb2fg=;
+        b=KFpj+yMtsIPGv5kCrfFG66EJ3yUAWajXAIvSp17MA5/sRabSRAXhzvtnt5uF1JLsLX
+         COAAhhDk1mZWvuiB5zyDS3rZwRMWRvS4PdnNS5H6SKfoWE5z8L2vGe+UkWZJ+7mWPxyC
+         ZzkD9AtQDbVx7jwfQHb0Ykj+g6jOMw9n5aN/ZQCkrzaY8p9hnOMi0aR6JSHL+W8MCKUr
+         wcS+9iTyJqHty3FumBiqNBw4BVX7aEGmYFKJO9temQ/mq2ph47g8GbcdeccLZWGNEnoI
+         m41Lkdyj2wQunluraTGNlWloyr6DKHslCwcNeoITXR11oEP+5TWl1niEURwmXfFIk6mT
+         Aa3w==
+X-Forwarded-Encrypted: i=1; AJvYcCV0QTJIem2U4A7dGX3JDlBiu/NKwJwW/ubPFK0sXUO1Zb6FDbTGRvmr5JWXAyZM9DGWwmqA4aQtZD/UTGuAwPncJGkU+1VJkvlySXan
+X-Gm-Message-State: AOJu0YxzPjbGqlM/kr8SdOG3b4835jitURQfFWfBAO3WjtMKRlDAp8Jj
+	YsgaGpFiJiF18di7uUsf3M5/1oCeiDJ9JS5OMl2jVnMCVY9ugenBklkuEIlTbRksJ+XjdGkGX9R
+	Eh3ac5Nv5kPmFqXzUYS34eZEaBRONXxvXBt4G
+X-Google-Smtp-Source: AGHT+IHlc4s/s/55ElUaUz3cVLVdAQgf0cVgD2Lgnr2hgoE30sFPrSs46+Kf7Q5rU7kI/xgLWqRerx7iktLxcbQX/no=
+X-Received: by 2002:ac8:5f4c:0:b0:42f:a3c:2d51 with SMTP id
+ y12-20020ac85f4c000000b0042f0a3c2d51mr132826qta.18.1709760970984; Wed, 06 Mar
+ 2024 13:36:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1709676663.git.jcalvinowens@gmail.com>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+References: <20240306085007.169771-1-herve.codina@bootlin.com> <20240306085007.169771-3-herve.codina@bootlin.com>
+In-Reply-To: <20240306085007.169771-3-herve.codina@bootlin.com>
+From: Saravana Kannan <saravanak@google.com>
+Date: Wed, 6 Mar 2024 13:35:31 -0800
+Message-ID: <CAGETcx9RFS7Z61FeCYXMxRSDXnMYhg_y96dgtbHp-3t_9x8+SA@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] of: dynamic: Synchronize of_changeset_destroy()
+ with the devlink removals
+To: Herve Codina <herve.codina@bootlin.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>, 
+	Lizhi Hou <lizhi.hou@amd.com>, Max Zhen <max.zhen@amd.com>, 
+	Sonal Santan <sonal.santan@amd.com>, Stefano Stabellini <stefano.stabellini@xilinx.com>, 
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>, linux-kernel@vger.kernel.org, 
+	devicetree@vger.kernel.org, Allan Nielsen <allan.nielsen@microchip.com>, 
+	Horatiu Vultur <horatiu.vultur@microchip.com>, 
+	Steen Hegelund <steen.hegelund@microchip.com>, Luca Ceresoli <luca.ceresoli@bootlin.com>, 
+	Nuno Sa <nuno.sa@analog.com>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+	stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 06, 2024 at 12:05:07PM -0800, Calvin Owens wrote:
-> Hello all,
-> 
-> This patchset makes it possible to use bpftrace with kprobes on kernels
-> built without loadable module support.
+On Wed, Mar 6, 2024 at 12:51=E2=80=AFAM Herve Codina <herve.codina@bootlin.=
+com> wrote:
+>
+> In the following sequence:
+>   1) of_platform_depopulate()
+>   2) of_overlay_remove()
+>
+> During the step 1, devices are destroyed and devlinks are removed.
+> During the step 2, OF nodes are destroyed but
+> __of_changeset_entry_destroy() can raise warnings related to missing
+> of_node_put():
+>   ERROR: memory leak, expected refcount 1 instead of 2 ...
+>
+> Indeed, during the devlink removals performed at step 1, the removal
+> itself releasing the device (and the attached of_node) is done by a job
+> queued in a workqueue and so, it is done asynchronously with respect to
+> function calls.
+> When the warning is present, of_node_put() will be called but wrongly
+> too late from the workqueue job.
+>
+> In order to be sure that any ongoing devlink removals are done before
+> the of_node destruction, synchronize the of_changeset_destroy() with the
+> devlink removals.
+>
+> Fixes: 80dd33cf72d1 ("drivers: base: Fix device link removal")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+> ---
+>  drivers/of/dynamic.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>
+> diff --git a/drivers/of/dynamic.c b/drivers/of/dynamic.c
+> index 3bf27052832f..169e2a9ae22f 100644
+> --- a/drivers/of/dynamic.c
+> +++ b/drivers/of/dynamic.c
+> @@ -9,6 +9,7 @@
+>
+>  #define pr_fmt(fmt)    "OF: " fmt
+>
+> +#include <linux/device.h>
+>  #include <linux/of.h>
+>  #include <linux/spinlock.h>
+>  #include <linux/slab.h>
+> @@ -667,6 +668,12 @@ void of_changeset_destroy(struct of_changeset *ocs)
+>  {
+>         struct of_changeset_entry *ce, *cen;
+>
+> +       /*
+> +        * Wait for any ongoing device link removals before destroying so=
+me of
+> +        * nodes.
+> +        */
 
-This is a step in the right direction for another reason: clearly the
-module_alloc() is not about modules, and we have special reasons for it
-now beyond modules. The effort to share a generalize a huge page for
-these things is also another reason for some of this but that is more
-long term.
+Not going to ask you to revise this patch just for this, but this
+comment isn't very useful. It's telling what you are doing. Not why.
+And the function name is already clear on what you are doing.
 
-I'm all for minor changes here so to avoid regressions but it seems a
-rename is in order -- if we're going to all this might as well do it
-now. And for that I'd just like to ask you paint the bikeshed with
-Song Liu as he's been the one slowly making way to help us get there
-with the "module: replace module_layout with module_memory",
-and Mike Rapoport as he's had some follow up attempts [0]. As I see it,
-the EXECMEM stuff would be what we use instead then. Mike kept the
-module_alloc() and the execmem was just a wrapper but your move of the
-arch stuff makes sense as well and I think would complement his series
-nicely.
+Maybe something like this would be better at describing the "why"?
+Free free to reword it.
 
-If you're gonna split code up to move to another place, it'd be nice
-if you can add copyright headers as was done with the kernel/module.c
-split into kernel/module/*.c
+When a device is deleted, the device links to/from it are also queued
+for deletion. Until these device links are freed, the devices
+themselves aren't freed. If the device being deleted is due to an
+overlay change, this device might be holding a reference to a device
+node that will be freed. So, wait until all already pending device
+links are deleted before freeing a device node. This ensures we don't
+free any device node that has a non-zero reference count.
 
-Can we start with some small basic stuff we can all agree on?
+Reviewed-by: Saravana Kannan <saravanak@google.com>
 
-[0] https://lwn.net/Articles/944857/
+-Saravana
 
-  Luis
+> +       device_link_wait_removal();
+> +
+>         list_for_each_entry_safe_reverse(ce, cen, &ocs->entries, node)
+>                 __of_changeset_entry_destroy(ce);
+>  }
+> --
+> 2.43.0
+>
 
