@@ -1,156 +1,127 @@
-Return-Path: <linux-kernel+bounces-93820-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93824-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C12787352A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 11:58:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27B8D873536
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 11:59:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 77E901F21460
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:58:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 592561C216C4
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:59:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE86B77F3F;
-	Wed,  6 Mar 2024 10:57:21 +0000 (UTC)
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B18060DFC;
+	Wed,  6 Mar 2024 10:59:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OLNoQeRd"
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA0F777F10
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 10:57:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 904DE6089A;
+	Wed,  6 Mar 2024 10:59:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709722641; cv=none; b=cECwDUn51E9EgHEQxD/b4xvcIwnGGiaJGjqGvMPdy2FcZT9I/2GZl9NimgvZF7zL08/TJUDDq8nMg0lrY3DugSigeZRFZV9n+uSpYeDzbnfAS2eWvoBRXHa9kN6FnzkiYinycCLu9DpQWIUXmToCSj0tY4Sb1cH2BsE5W01kLXQ=
+	t=1709722744; cv=none; b=c3R6CYVT+/WlUndbwYRpuM5v6/1QIt6XWbTY0axOgQkz8OrLrtWe4rTGd5ls+InLu3mtRNUzrTdqKCdAH51649ZyDN0h+ROl7lNrJj9/dRejIGPjyjWsj/9o/MgnpTCn6oHNdJc4h/fsgnBuH9TyODr51sWnScbajenFXQmFGvA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709722641; c=relaxed/simple;
-	bh=NcwDt28WD1YEa1pUSgc8ylFJjluAMhWyX8PCK+tuF6k=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=OBy5gE+QyN2Gek1oqY/1bpSIkhDJN98C24nb4Vo0sGzPNe2FI4Q6kk+TmTmU14rRVm3m0PuV9lznLRUxNdeDWcqJwdLkfY7Ih4O5sBcUlxL3jtpZBdUdFIO8ibCZRkHLFUoL+JjsUAaDbd6RZ15m7KhigqTYH4qBXMUec/mvF98=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7c83b729ba5so78799639f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 02:57:19 -0800 (PST)
+	s=arc-20240116; t=1709722744; c=relaxed/simple;
+	bh=9irRIG0KFERmL3sNKB1GcQ9JLqgiQH8nptVh6vPu5mg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VliGbM4R5bT6kmJCKDGBFN9zRmNdu1Yqhqk6Nx9aBLG9QJDlYT32/zn14V/HzNvDuBbpZlgo3t4wK68eSAr+aRXI6kCAcKf8AbzrBAuTxMU2zhIzrCKOwe0EH3zHqYNSNhXvXCn7FYI1Uujh9By4j1sgRjnZ42Yx04rB7KQtKno=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OLNoQeRd; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a45c006ab82so48093266b.3;
+        Wed, 06 Mar 2024 02:59:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709722741; x=1710327541; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=e5Z0N03v/ohpTjWPfQRgP/mEBY6xf/mkdG3hCpH/bMQ=;
+        b=OLNoQeRdmYFCi95vmYODy9EeMtLhKh0hrbhqiLnsRjh2hLjXjak/QSF719cR1lKRdk
+         tsSHBcKiLOjjpxLB6ZzNfEA8mzVvDsjojSW5/qb6LiUgwxrXR8zubekDPJH3k97hxlGi
+         i1d2l1p+u9h+8ydVAxPPWM2lSGXmKUxmeYOXI+PcmhqR75HeC55qSV4wfjDKqIVRu/9L
+         e/ISVoOd8Jq9J60xa+XUHAS0LXD/2ZVXdcJCxwtXltt4oFGUUeE2YR1WcqOPSEkZfLrs
+         L6H8zEMkP32OrKmTe10FlO896R/9TVPD6Mkx8grxndR13SXpOV/AsDerLtEhksXQvmzo
+         aEng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709722639; x=1710327439;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8qXxCetncWmf0GqFMx7p5lJmRGpeOCkuynw+Qj5Z8c0=;
-        b=sHiu8j0TGrQKYX0Ovu8luhpnCbh52xon7QcfHG4CNVIC7AMXPoM5Ew5jkXYy6IQ60E
-         UnalczFSvsA+zz6lTL7dgV+vFQDHL8SVIz8DDr3j8cilHy5GzbiI5YGKrvA9e3s+1sQX
-         ZGVvWMR0baU1e5m/U/JC2ogEzrgpd5VLaJh/Ya48r+0KV4aeMOkA8PiAYgVbggt+1lYI
-         qcVJ4UBXhaDVMfztcTvIclXTy65ZW5zyhCrp6GzbbcLM7NRwGec9PNIhhWdH+u50+1Q8
-         6LrKmcD6lUTM+w2GCrFUYGipCa+AgNRZIvdAuKlbCEb8HeKkqZwYIag2DXvtSCQ77SNa
-         lWrw==
-X-Forwarded-Encrypted: i=1; AJvYcCUqK48+ZrWD14szgp+xanKkqdVjKZHGEvltqPyFXhua/x9ybLA+JnWpmprZkdLYTEozleUsV/8jOzteRR84nMoh2Wozq7/MJy+VidPQ
-X-Gm-Message-State: AOJu0YwqDxaAtyINiiC7J8bd83zHMFL8oMbLvRM7oZIUql6XORfWd5Kn
-	Juas3B6cWSxDbhwbdK0Y3fNEFoJEAPnkbiY5j+7X8v8Forhu44KwrGK2VQ8dZPVwEIWSK7P72GC
-	71cUii+I/R+hB72CBkGRo3IkC7Fk1fcVYkOgIIoG0caFv8Dn/uTLlR+E=
-X-Google-Smtp-Source: AGHT+IH6YLEGFgRiGIyEjvD7BFJjeOW+RjgB6wkTjfNiPoIvfnN6/JBkaHbXIRzGSOOU+E5tyT9m6Q7Yz4Hx6VF9w13dlbTQP5tN
+        d=1e100.net; s=20230601; t=1709722741; x=1710327541;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=e5Z0N03v/ohpTjWPfQRgP/mEBY6xf/mkdG3hCpH/bMQ=;
+        b=nEF++5i84TkhByeDUxp7jJyyp+Ustq+bp7bNoIDGIaugWvsATdv5DEyVr5QzKNyzAP
+         X+wH3uFxBheeYjYKSFmp0iTgCfUt9e8YXNyp50J1W4pp4+4AHfW2cO1GjTfNc+4hRJt6
+         whnzM/n/czQZaqrkrDhJWdaWPPz+n7U0+yegBmelQbbQElyo6Ni2BzxENI1jfeNS/T0t
+         5I/TlN07MxaT44CKHP1w7K3dkmYscGtygaOGcQYmhDyKo2FwWWeC55TI3lNl6+Bgbz/l
+         Ans4aHOnXylX4svykQc1lxgURSdqqx9GxI4YPq+W8IhrPjO+EGuMLyROLGaiaubYjQEp
+         08/g==
+X-Forwarded-Encrypted: i=1; AJvYcCWF4rqL9eNRaFhc75g9Wke9kSkA+l65bvtCy1FhCfNjjcJ6P5zzLXNIlfBesmdS4//BVGZ7wwTXFHnibu3sFKBcoYjFkl2l1uAaGBdVDWPS6OBcywWFLLzFwKh3tpGS0pKJg77nQDO1rHz9rk2w9kLl3X4Fbo1EfSO2R1Bwz9fRxd0NlQQ=
+X-Gm-Message-State: AOJu0YxI6P/JbQCHcGd6CnDBetaZu2d0Aq4UGmJJHotAK9pUPo5PPtX4
+	ujM6m93VlIRf5hlyomoHXLmQQQR4ODygn9gOUfGRhKGu7wqTvzycmZD3yicGZe3sJW8sguqLTNm
+	odM0LjDSIoIZM4oRxvEh35TPGZyo=
+X-Google-Smtp-Source: AGHT+IFR/RKGlCn3Fh34/aH2tzfQC9FgfHtJe362qDydqHz8e5ZEJGTvks01Qy+NFLTjVu8vZdi1vIdnJoYGzqQGu6I=
+X-Received: by 2002:a17:907:20b9:b0:a43:6cd2:7a27 with SMTP id
+ pw25-20020a17090720b900b00a436cd27a27mr9255436ejb.19.1709722740894; Wed, 06
+ Mar 2024 02:59:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:3784:b0:474:d7bf:64ed with SMTP id
- w4-20020a056638378400b00474d7bf64edmr706584jal.6.1709722639017; Wed, 06 Mar
- 2024 02:57:19 -0800 (PST)
-Date: Wed, 06 Mar 2024 02:57:19 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009033c40612fbd20f@google.com>
-Subject: [syzbot] [jfs?] INFO: task hung in __get_metapage (2)
-From: syzbot <syzbot+72feb48a17265d9bf496@syzkaller.appspotmail.com>
-To: jfs-discussion@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, shaggy@kernel.org, 
-	syzkaller-bugs@googlegroups.com
+References: <20240305035853.916430-1-chris.packham@alliedtelesis.co.nz>
+ <20240305035853.916430-2-chris.packham@alliedtelesis.co.nz>
+ <CAMuHMdXF+12PHa5A7WeyPMfvsGcJN13WaPuCbTmJU52Huq=osA@mail.gmail.com>
+ <Zecy1RsSfpmH-cvG@smile.fi.intel.com> <216eb75d-5384-4654-9e86-4a9856494ad0@alliedtelesis.co.nz>
+In-Reply-To: <216eb75d-5384-4654-9e86-4a9856494ad0@alliedtelesis.co.nz>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Wed, 6 Mar 2024 12:58:24 +0200
+Message-ID: <CAHp75Vdi8K2mf2JSCG=e4vX+18CuNyaH-U5Q8-NGvihhyrJBJg@mail.gmail.com>
+Subject: Re: [PATCH v4 1/3] auxdisplay: Add 7-segment LED display driver
+To: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+Cc: Andy Shevchenko <andy@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, 
+	"robh+dt@kernel.org" <robh+dt@kernel.org>, 
+	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>, 
+	"conor+dt@kernel.org" <conor+dt@kernel.org>, "andrew@lunn.ch" <andrew@lunn.ch>, 
+	"gregory.clement@bootlin.com" <gregory.clement@bootlin.com>, 
+	"sebastian.hesselbarth@gmail.com" <sebastian.hesselbarth@gmail.com>, "lee@kernel.org" <lee@kernel.org>, 
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, 
+	"linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+On Wed, Mar 6, 2024 at 12:34=E2=80=AFAM Chris Packham
+<Chris.Packham@alliedtelesis.co.nz> wrote:
+> On 6/03/24 03:57, Andy Shevchenko wrote:
+> > On Tue, Mar 05, 2024 at 09:23:07AM +0100, Geert Uytterhoeven wrote:
+> >> On Tue, Mar 5, 2024 at 4:59=E2=80=AFAM Chris Packham
+> >> <chris.packham@alliedtelesis.co.nz> wrote:
 
-syzbot found the following issue on:
+..
 
-HEAD commit:    9910665503b3 Merge branch 'for-next/core' into for-kernelci
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=12413316180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2402d46ab3c7e581
-dashboard link: https://syzkaller.appspot.com/bug?extid=72feb48a17265d9bf496
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=129fb526180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12c40bba180000
+> >>> +       priv->segment_gpios =3D devm_gpiod_get_array(dev, "segment", =
+GPIOD_OUT_LOW);
+> >>> +       if (IS_ERR(priv->segment_gpios))
+> >>> +               return PTR_ERR(priv->segment_gpios);
+> >> This needs some validation of priv->segment_gpios->ndescs, else the
+> >> call to gpiod_set_array_value_cansleep() in seg_led_update() may
+> >> trigger an out-of-bounds access of the values bitmap.
+> > Alternatively we can call gpiod_count() beforehand and check its result=
+.
+> Unless there are any objections I think I'll go with the ndescs check as
+> it'll be easier to update to the subnode style in the future.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/16059f53446c/disk-99106655.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/7fc6c7c495d5/vmlinux-99106655.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/d8b0ce53ea33/Image-99106655.gz.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/1d3700eeba9f/mount_0.gz
+Either works for me.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+72feb48a17265d9bf496@syzkaller.appspotmail.com
-
-INFO: task jfsCommit:94 blocked for more than 143 seconds.
-      Not tainted 6.8.0-rc6-syzkaller-g9910665503b3 #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:jfsCommit       state:D stack:0     pid:94    tgid:94    ppid:2      flags:0x00000008
-Call trace:
- __switch_to+0x314/0x560 arch/arm64/kernel/process.c:553
- context_switch kernel/sched/core.c:5400 [inline]
- __schedule+0x1498/0x24b4 kernel/sched/core.c:6727
- __schedule_loop kernel/sched/core.c:6802 [inline]
- schedule+0xb8/0x19c kernel/sched/core.c:6817
- io_schedule+0x8c/0x12c kernel/sched/core.c:9023
- __lock_metapage+0x1cc/0x458 fs/jfs/jfs_metapage.c:50
- lock_metapage fs/jfs/jfs_metapage.c:64 [inline]
- __get_metapage+0x96c/0x1050 fs/jfs/jfs_metapage.c:639
- diIAGRead+0xe4/0x14c fs/jfs/jfs_imap.c:2669
- diFree+0x800/0x2648 fs/jfs/jfs_imap.c:956
- jfs_evict_inode+0x2d0/0x3f4 fs/jfs/inode.c:156
- evict+0x260/0x68c fs/inode.c:665
- iput_final fs/inode.c:1739 [inline]
- iput+0x734/0x818 fs/inode.c:1765
- txUpdateMap+0x73c/0x8e4 fs/jfs/jfs_txnmgr.c:2367
- txLazyCommit fs/jfs/jfs_txnmgr.c:2664 [inline]
- jfs_lazycommit+0x3a4/0x98c fs/jfs/jfs_txnmgr.c:2733
- kthread+0x288/0x310 kernel/kthread.c:388
- ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:860
-
-Showing all locks held in the system:
-1 lock held by khungtaskd/29:
- #0: ffff80008ee73f40 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire+0xc/0x44 include/linux/rcupdate.h:297
-2 locks held by jfsCommit/94:
- #0: ffff0000d8558920 (&(imap->im_aglock[index])){+.+.}-{3:3}, at: diFree+0x2cc/0x2648 fs/jfs/jfs_imap.c:886
- #1: ffff0000ddd3a638 (&jfs_ip->rdwrlock/1){.+.+}-{3:3}, at: diFree+0x2e0/0x2648 fs/jfs/jfs_imap.c:891
-2 locks held by getty/5932:
- #0: ffff0000d35540a0 (&tty->ldisc_sem){++++}-{0:0}, at: ldsem_down_read+0x3c/0x4c drivers/tty/tty_ldsem.c:340
- #1: ffff800094f722f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x41c/0x1228 drivers/tty/n_tty.c:2201
-3 locks held by syz-executor149/7710:
-
-=============================================
+> It does
+> mean there will be some extra allocations/frees (handled via the devm_
+> APIs) in the error case.
 
 
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+--=20
+With Best Regards,
+Andy Shevchenko
 
