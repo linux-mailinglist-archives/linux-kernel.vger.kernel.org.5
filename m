@@ -1,98 +1,102 @@
-Return-Path: <linux-kernel+bounces-94346-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94347-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54546873DB2
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 18:46:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBF80873DB7
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 18:47:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CF9B5B22CED
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:46:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE1D31C22651
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:47:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2A2F13BAF9;
-	Wed,  6 Mar 2024 17:46:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CB7513BAFE;
+	Wed,  6 Mar 2024 17:47:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="LtT7u0aU"
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GjdImPow"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFE58135A5B;
-	Wed,  6 Mar 2024 17:46:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A730D13BADD;
+	Wed,  6 Mar 2024 17:47:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709747177; cv=none; b=lv3meiuCj0p9BugBFjOI4EI6btyxHcQVKZlmsB+yPUQJlMkoJN7iRjcWt7fhsoeec2h/zlnHaFX4FPlneo6FrP1HpiiyzNhL4YePY4NZqSECW76PS8n55M9DDEPViAPb55dnPnoP5PVbgVh53uyDaJisqEeBStlvnrp3toZ/rEE=
+	t=1709747239; cv=none; b=UE+2i5nc47soEdLKa3p3DO+Fr8nkOmvSCP2IBSN/fS7/i8Z4Uk5ARfSma+AChqkUeK4imG6M/fEQEU9apOk8qiSC/J84Qcxt9tGPrN6YVZoxQA3l9lsNMy09i5WqSR+5gd29eQzh/K3CwZooBJwc2uMRTTucYHbcbvtfTXrq7yE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709747177; c=relaxed/simple;
-	bh=VTEgi30FbwNlL4FbYg7JVPoXMEZ94IoTaaIvVhCiH2k=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=mvmSkOMg8FQLcuX9Uh2bVj99FpblqyBb3u1jeanzzdgPbWWGmILxWD4KCj/qAZJ6PiH3nih2GwBAJu0J62BUSVQSB80+aVKuWYfx7G3AypnolKEK6x6iCXWNthuzBau/AjWS3fElN9MpuebT/wMYddmvk+ONS2w9TQDsBSJwCUY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=LtT7u0aU; arc=none smtp.client-ip=217.70.183.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 7D73E60004;
-	Wed,  6 Mar 2024 17:46:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709747173;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Idele/8qXZRgSYp7F56voFjVrzpXCoT8VmNU5ueySCU=;
-	b=LtT7u0aUPYz/2P00L0hev/DeNZRJtF/aa0hlfQMSIWJ/xJLluah5IUILkRiNVDobjxMZz2
-	k19P5OupxpbdBocA4PFC/v6s4bDyhZc6EEh3qhk4BmQ8R66nPFINNs5T9T8JbKwnclj9dX
-	RL+4C8hpZgDDTvR51xwjWZuKp+GzK2//sbDwhcRJLDY+yhfk7q8EV8cvnSK5whU0Hoqhu6
-	VH1+bU9iG8o2foDne+gB8PI9RRwR3GhetzDj/+DLcATkoFC1Soh18En8d9N79SpS+dTq8K
-	ynJJh1sZpzRSSlYEVYn3hfss4fs+82d2lmgEYox1qUqyy1QqsMKMco7wO+TFRQ==
-Date: Wed, 6 Mar 2024 18:46:11 +0100
-From: Herve Codina <herve.codina@bootlin.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Ratheesh Kannoth <rkannoth@marvell.com>, "netdev@vger.kernel.org"
- <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: Re: [EXTERNAL] Re: [PATCH v6 1/5] net: wan: Add support for QMC
- HDLC
-Message-ID: <20240306184611.0cea20af@bootlin.com>
-In-Reply-To: <20240306082230.7ecf207b@kernel.org>
-References: <20240306080726.167338-2-herve.codina@bootlin.com>
-	<20240306105651.1210286-1-rkannoth@marvell.com>
-	<20240306143743.5732b298@bootlin.com>
-	<MWHPR1801MB191837C8907B39F67893F0BBD3212@MWHPR1801MB1918.namprd18.prod.outlook.com>
-	<20240306082230.7ecf207b@kernel.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
+	s=arc-20240116; t=1709747239; c=relaxed/simple;
+	bh=M3Qnc0kB0MnG72TbxAy6mHm1CxTe6WFO/XsmSNzWFVw=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=Dt+CzhIBJOdmvomL4kneLl2qNG4vDSuqc5vSrdoX2VF1EeOCfSmn/sxeprYvDm0CWInXNB3Y1rUnVXpsykEIMLZvWYtuvnBz5UCdczjFRz3nW/M574K+ahVsadtHR3g5+B25SloE1BtaIJCyZCgHNa1pN991SnqLoB4+SGvThSs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GjdImPow; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58894C433C7;
+	Wed,  6 Mar 2024 17:47:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709747239;
+	bh=M3Qnc0kB0MnG72TbxAy6mHm1CxTe6WFO/XsmSNzWFVw=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=GjdImPowRYEm7/pn8xhSYm8k0V/sHqvsew0j9xUc57MReIzjVdqeWmCsWzYmlMySF
+	 CfBySFrHga5H2Qf6vt/zyUDw8zd8d0Ohh5YXjI8GhdHCMIQ3nvLP4W937LbOdHqNPG
+	 Z14JCvmc7QSTew/N6rNuK+331Zh62FjZoJBbqaFj6yExTn2Umgykb57TjpErB2h/x7
+	 0kUTvb0Yk4tZ1IN2ZWJNOLBO1oIlUfGBLwbJutYSPZDKX5cpp7bD54VlSzDZard27D
+	 EbABchSyftcWpB2WAWozeCp7rVKXdTktq08MkNwYfrRuvWMGYRK93YDuBboviG3f2c
+	 zWvA0oEYqASXw==
+From: Vinod Koul <vkoul@kernel.org>
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Andrzej Hajda <andrzej.hajda@intel.com>, 
+ Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>, 
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+ Johan Hovold <johan+linaro@kernel.org>
+Cc: Jonas Karlman <jonas@kwiboo.se>, 
+ Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
+ Jernej Skrabec <jernej.skrabec@gmail.com>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, 
+ Kishon Vijay Abraham I <kishon@kernel.org>, 
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+ Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
+ Kuogee Hsieh <quic_khsieh@quicinc.com>, freedreno@lists.freedesktop.org, 
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+ linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org
+In-Reply-To: <20240217150228.5788-1-johan+linaro@kernel.org>
+References: <20240217150228.5788-1-johan+linaro@kernel.org>
+Subject: Re: (subset) [PATCH 0/6] soc: qcom: pmic_glink_altmode: fix drm
+ bridge use-after-free
+Message-Id: <170974723198.898356.8197875205136329255.b4-ty@kernel.org>
+Date: Wed, 06 Mar 2024 23:17:11 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.3
 
-Hi Jakub,
 
-On Wed, 6 Mar 2024 08:22:30 -0800
-Jakub Kicinski <kuba@kernel.org> wrote:
-
-> On Wed, 6 Mar 2024 16:01:48 +0000 Ratheesh Kannoth wrote:
-> > > > > +	struct qmc_hdlc_desc *desc = context;
-> > > > > +	struct net_device *netdev = desc->netdev;
-> > > > > +	struct qmc_hdlc *qmc_hdlc = netdev_to_qmc_hdlc(netdev);    
-> > > > Reverse xmas tree    
-> > > 
-> > > The reverse xmas tree order cannot be used here.
-> > > qmc_hdlc depends on netdev, netdev depends on desc.
-> > >     
-> > ACK. Usually I get comments to split declaration and assignment for
-> > my patches in upstream.   
+On Sat, 17 Feb 2024 16:02:22 +0100, Johan Hovold wrote:
+> Starting with 6.8-rc1 the internal display sometimes fails to come up on
+> machines like the Lenovo ThinkPad X13s and the logs indicate that this
+> is due to a regression in the DRM subsystem [1].
 > 
-> Yup, that's our general preference, to split the init out of 
-> the definition.
+> This series fixes a race in the pmic_glink_altmode driver which was
+> exposed / triggered by the transparent DRM bridges rework that went into
+> 6.8-rc1 and that manifested itself as a bridge failing to attach and
+> sometimes triggering a NULL-pointer dereference.
+> 
+> [...]
 
-Does it mean that I need to update in a next iteration ?
+Applied, thanks!
+
+[5/6] phy: qcom-qmp-combo: fix drm bridge registration
+      commit: d2d7b8e88023b75320662c2305d61779ff060950
+[6/6] phy: qcom-qmp-combo: fix type-c switch registration
+      commit: 47b412c1ea77112f1148b4edd71700a388c7c80f
 
 Best regards,
-Hervé
+-- 
+~Vinod
+
+
 
