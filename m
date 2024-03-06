@@ -1,242 +1,158 @@
-Return-Path: <linux-kernel+bounces-94004-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94006-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF22E87382B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:55:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35B0E873830
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:56:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B0D771C20B96
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:55:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0E58282EBD
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:56:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83D5B13174E;
-	Wed,  6 Mar 2024 13:55:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CE9E132C0D;
+	Wed,  6 Mar 2024 13:55:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="W0IRwmaK"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zufErZF2"
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F05A130E4A
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 13:55:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7549131749
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 13:55:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709733333; cv=none; b=V13Mwy/RIUEPWWsEPTJdlaqQtCrqEwiAdC276J1tlW+szAwZr694FiLvjRTKw4pKhcUdHQVUeav22cuIB2iajYrX+3QP45k7dYx8J67GV9lcu5M7k7w6s0QgjECRKzt4XtVl8os9p2aS2ShB9o7OjpXvYhfVjBbAsssiB7iyBDo=
+	t=1709733350; cv=none; b=ubrJh6hZcdrs3hhlpXVwpQJOvZX6B3+5MQyjk1zrAW1Eu0l7fqjsIc38eY1T7sHIk1sVUckYjR/5/2mfrhOYJwYorIpwL+4cgdtSKA4Sb3Z8EQ70m6EMM1epZ4fyadtDFg6994h4MYEbgIcWHWkPcBA5CK2NmNE9GLh8Ti1HVcM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709733333; c=relaxed/simple;
-	bh=FDHDbMkueElepj6CmPwUCfRz0jklGor2baIcAzKQadE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uLTY75W20MVzjIPCMN9sI2A04RBsc/wQ3AExdcSbMjBPbWgUwDfTp7eTVbFePh6zBpyi2rMtScP2bkDi/yuvJyYJfxQwEAU6UPeLNVPjQRyLs7JRKnt5RiItgdtRR5mFrJrgOPiIrq5GgaiVGxHakiBy+kO2dwYi0nWJu9Ss1s8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=W0IRwmaK; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709733331;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VS0cZXpWU84KGIQ0BKcm27vCqjgjrA0pw8rcYtG8Uos=;
-	b=W0IRwmaKzLmtVSRk3BRS6R4JAjqLWIAC/4p6xRGU8ueBCqWsDtq6SzIWgKOAJ3cJ4Z+zfs
-	btmA6Vc3LPUXqdrHMTKb5OgEjMfyowuWgxs+qtUhM1Bk4792ZoKfAFrtMwfbY88eA+GhFF
-	IE7LcCT/3OwflHSjIBF0sd1HzDLnV6Y=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-70-mpRM26vHPxCGp_nstlCdhQ-1; Wed, 06 Mar 2024 08:55:27 -0500
-X-MC-Unique: mpRM26vHPxCGp_nstlCdhQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 322298007AB;
-	Wed,  6 Mar 2024 13:55:27 +0000 (UTC)
-Received: from localhost (unknown [10.72.116.15])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 7D1C4C04121;
-	Wed,  6 Mar 2024 13:55:26 +0000 (UTC)
-Date: Wed, 6 Mar 2024 21:55:22 +0800
-From: Baoquan He <bhe@redhat.com>
-To: rulinhuang <rulin.huang@intel.com>
-Cc: urezki@gmail.com, akpm@linux-foundation.org, colin.king@intel.com,
-	hch@infradead.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	lstoakes@gmail.com, tianyou.li@intel.com, tim.c.chen@intel.com,
-	wangyang.guo@intel.com, zhiguo.zhou@intel.com
-Subject: Re: [PATCH v7 2/2] mm/vmalloc: Eliminated the lock contention from
- twice to once
-Message-ID: <Zeh1yuUq3jb+B6Tx@MiWiFi-R3L-srv>
-References: <20240301155417.1852290-1-rulin.huang@intel.com>
- <20240301155417.1852290-3-rulin.huang@intel.com>
+	s=arc-20240116; t=1709733350; c=relaxed/simple;
+	bh=Esvwv4GmKkRGzYN48ZvM7fQdZPibiAf4YX9bG9qSQJs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Mvcdjd12I7BSxw4Go/6wX4zth4qWCB0bIhaovP2KH+BYxNx61PsbhJ6qbB0tUrwNd0dcD/4xAwWXiudhVVuOqf1wlmwwiflPmIlIhvdra/0aMPjW+smW3ohe6kO1pQxISr+hhXtV6fshy5OISM1cgDZGtkGtxdkeGoqeygnfGgc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zufErZF2; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-412f67bc6d0so4395105e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 05:55:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709733347; x=1710338147; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zqeQcb2lk7Isbti9CqhzC6h0iZhvy2vGvXInpl28c0M=;
+        b=zufErZF2tckoyq2AJn+Jhh32JfCRaH7dxfdp/d7WuBIyHqGS1Wb4XdQaV2wNvkA5rg
+         hfwdDh1YFyoXCUBepvATNtKyisE3x293UJhq56VjStj1wv40TO+AJbUaKyWhkTbgczfM
+         94R6KyNawHfCxVnav5RzBMk83ZgRjRx3RXZXl6A9JAVm8sfizxyz9ahqjCxPD4L5jUpn
+         fUx7p1tLW4EQR6QavWnJ8I27lpRwLGL6Kq6TKCNa1KBem9Q9vr9cpkkkAzPBQhou5yZv
+         rPeMwyqTt2lofjHwZ4WWslT2Ktf3TkTZRQdCl0++WAR8v4ZNUeVqQhaf+8DhpK5g36/E
+         mrAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709733347; x=1710338147;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zqeQcb2lk7Isbti9CqhzC6h0iZhvy2vGvXInpl28c0M=;
+        b=ZQVHUllUm4SuOhZ9r+K/1LqXytlov0bzphp78O34sbCdbADzCY3sBAax1uXSQFXOzp
+         5YpuUnxiD7bgpYtpngLOJYDF59VAKSpPFDAlj04A5QeHFitH6hzOO2eVIlvK64Xfdbvk
+         vMAYbKi0MfqU0lCOpvSjQRyywETFklF1CfzZbYRF01zdnAtHhrL3z3o0UuL2PHEIrx3v
+         wC0fskRLKkK98Bf7TvDYAUHQP9xr9jCCe5VWy8W1WpFrt/VTLodpoS7sIpf+7uUj+biJ
+         mCqMHyuG0j+a6JXJOXoubwib7dsJ60YPstWjlidRm+VZr9d9CtBC/uyg8nTuucSON931
+         LhgQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU6Mb0g4hqu/y5n/GqRSheBcFpJMzXlz2W3qGY69/tzcsOEPf9UYX0FXf37nkqFzFCYbYjxHVKNwJUlWPBii10+YU4yUO4SRSta5iIE
+X-Gm-Message-State: AOJu0Yy5pUufAGTgZ00WC/hE41NApyAzzDEFtcgfM1tTErQ91dYK4+YP
+	0nn+h34IKwm64DVjFOFgFtnDybOD/rH4JcNf/yGA0ld12ACb8I0nyLmyRgf6oho=
+X-Google-Smtp-Source: AGHT+IGOBEiwkCooM4Sxrm8AQUC8qi0kWf3U4eptBtTlJ4YxKa+a3fBbBRdx4QqI2Cc2S6bVl3jE4g==
+X-Received: by 2002:a05:600c:358c:b0:412:b10d:27da with SMTP id p12-20020a05600c358c00b00412b10d27damr11333800wmq.1.1709733347321;
+        Wed, 06 Mar 2024 05:55:47 -0800 (PST)
+Received: from [192.168.0.102] ([176.61.106.68])
+        by smtp.gmail.com with ESMTPSA id da8-20020a056000196800b0033b87c2725csm17548409wrb.104.2024.03.06.05.55.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Mar 2024 05:55:47 -0800 (PST)
+Message-ID: <4817a5b0-5407-4437-b94a-fc8a1bfcd25d@linaro.org>
+Date: Wed, 6 Mar 2024 13:55:45 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240301155417.1852290-3-rulin.huang@intel.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4/5] clk: qcom: Add camera clock controller driver for
+ SM8150
+Content-Language: en-US
+To: "Satya Priya Kakitapalli (Temp)" <quic_skakitap@quicinc.com>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Abhishek Sahu <absahu@codeaurora.org>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: Stephen Boyd <sboyd@codeaurora.org>, linux-arm-msm@vger.kernel.org,
+ linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, Ajit Pandey <quic_ajipan@quicinc.com>,
+ Imran Shaik <quic_imrashai@quicinc.com>, Taniya Das <quic_tdas@quicinc.com>,
+ Jagadeesh Kona <quic_jkona@quicinc.com>
+References: <20240229-camcc-support-sm8150-v1-0-8c28c6c87990@quicinc.com>
+ <20240229-camcc-support-sm8150-v1-4-8c28c6c87990@quicinc.com>
+ <18567989-fb60-49ae-92e6-94e1bc2fa1c7@linaro.org>
+ <83fd1995-a06e-b76a-d91b-de1c1a6ab0ea@quicinc.com>
+From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <83fd1995-a06e-b76a-d91b-de1c1a6ab0ea@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On 03/01/24 at 10:54am, rulinhuang wrote:
-> When allocating a new memory area where the mapping address range is
-> known, it is observed that the vmap_node->busy.lock is acquired twice.
+On 06/03/2024 08:30, Satya Priya Kakitapalli (Temp) wrote:
+>>
+>> Anyway I suspect the right thing to do is to define a 
+>> titan_top_gdsc_clk with shared ops to "park" the GDSC clock to 19.2 
+>> MHz instead of turning it off.
+>>
+>> You can get rid of the hard-coded always-on and indeed represent the 
+>> clock in /sysfs - which is preferable IMO to just whacking registers 
+>> to keep clocks always-on in probe anyway.
+>>
+>> Please try to define the titan_top_gdsc_clk as a shared_ops clock 
+>> instead of hard coding to always on.
+>>
 > 
-> The first acquisition occurs in the alloc_vmap_area() function when
-> inserting the vm area into the vm mapping red-black tree. The second
-> acquisition occurs in the setup_vmalloc_vm() function when updating the
-> properties of the vm, such as flags and address, etc.
-> 
-> Combine these two operations together in alloc_vmap_area(), which
-> improves scalability when the vmap_node->busy.lock is contended.
-> By doing so, the need to acquire the lock twice can also be eliminated
-> to once.
-> 
-> With the above change, tested on intel sapphire rapids
-> platform(224 vcpu), a 4% performance improvement is
-> gained on stress-ng/pthread(https://github.com/ColinIanKing/stress-ng),
-> which is the stress test of thread creations.
-> 
-> Co-developed-by: "Chen, Tim C" <tim.c.chen@intel.com>
-> Signed-off-by: "Chen, Tim C" <tim.c.chen@intel.com>
-> Co-developed-by: "King, Colin" <colin.king@intel.com>
-> Signed-off-by: "King, Colin" <colin.king@intel.com>
-> Signed-off-by: rulinhuang <rulin.huang@intel.com>
-> ---
-> V1 -> V2: Avoided the partial initialization issue of vm and
-> separated insert_vmap_area() from alloc_vmap_area()
-> V2 -> V3: Rebased on 6.8-rc5
-> V3 -> V4: Rebased on mm-unstable branch
-> V4 -> V5: Canceled the split of alloc_vmap_area()
-> and keep insert_vmap_area()
-> V5 -> V6: Added bug_on
-> V6 -> V7: Adjusted the macros
-> ---
->  mm/vmalloc.c | 52 ++++++++++++++++++++++++----------------------------
->  1 file changed, 24 insertions(+), 28 deletions(-)
+> Defining the gdsc clk allows consumers to control it, we do not want 
+> this clock to be disabled/controlled from consumers. Hence it is better 
+> to not model this clock and just keep it always on from probe.
 
-LGTM,
+Not if you mark it critical
 
-Reviewed-by: Baoquan He <bhe@redhat.com>
+static struct clk_branch cam_cc_gdsc_clk = {
+         .halt_reg = 0xc1e4,
+         .halt_check = BRANCH_HALT,
+         .clkr = {
+                 .enable_reg = 0xc1e4,
+                 .enable_mask = BIT(0),
+                 .hw.init = &(struct clk_init_data){
+                         .name = "cam_cc_gdsc_clk",
+                         .parent_hws = (const struct clk_hw*[]){
+                                 &cam_cc_xo_clk_src.clkr.hw
+                         },
+                         .num_parents = 1,
+                         .flags = CLK_IS_CRITICAL | CLK_SET_RATE_PARENT,
+                         .ops = &clk_branch2_ops,
+                 },
+         },
+};
 
-> 
-> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> index fc027a61c12e..5b7c9156d8da 100644
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -1972,15 +1972,26 @@ node_alloc(unsigned long size, unsigned long align,
->  	return va;
->  }
->  
-> +static inline void setup_vmalloc_vm(struct vm_struct *vm,
-> +	struct vmap_area *va, unsigned long flags, const void *caller)
-> +{
-> +	vm->flags = flags;
-> +	vm->addr = (void *)va->va_start;
-> +	vm->size = va->va_end - va->va_start;
-> +	vm->caller = caller;
-> +	va->vm = vm;
-> +}
-> +
->  /*
->   * Allocate a region of KVA of the specified size and alignment, within the
-> - * vstart and vend.
-> + * vstart and vend. If vm is passed in, the two will also be bound.
->   */
->  static struct vmap_area *alloc_vmap_area(unsigned long size,
->  				unsigned long align,
->  				unsigned long vstart, unsigned long vend,
->  				int node, gfp_t gfp_mask,
-> -				unsigned long va_flags)
-> +				unsigned long va_flags, struct vm_struct *vm,
-> +				unsigned long flags, const void *caller)
->  {
->  	struct vmap_node *vn;
->  	struct vmap_area *va;
-> @@ -2043,6 +2054,11 @@ static struct vmap_area *alloc_vmap_area(unsigned long size,
->  	va->vm = NULL;
->  	va->flags = (va_flags | vn_id);
->  
-> +	if (vm) {
-> +		BUG_ON(va_flags & VMAP_RAM);
-> +		setup_vmalloc_vm(vm, va, flags, caller);
-> +	}
-> +
->  	vn = addr_to_node(va->va_start);
->  
->  	spin_lock(&vn->busy.lock);
-> @@ -2486,7 +2502,8 @@ static void *new_vmap_block(unsigned int order, gfp_t gfp_mask)
->  	va = alloc_vmap_area(VMAP_BLOCK_SIZE, VMAP_BLOCK_SIZE,
->  					VMALLOC_START, VMALLOC_END,
->  					node, gfp_mask,
-> -					VMAP_RAM|VMAP_BLOCK);
-> +					VMAP_RAM|VMAP_BLOCK, NULL,
-> +					0, NULL);
->  	if (IS_ERR(va)) {
->  		kfree(vb);
->  		return ERR_CAST(va);
-> @@ -2843,7 +2860,8 @@ void *vm_map_ram(struct page **pages, unsigned int count, int node)
->  		struct vmap_area *va;
->  		va = alloc_vmap_area(size, PAGE_SIZE,
->  				VMALLOC_START, VMALLOC_END,
-> -				node, GFP_KERNEL, VMAP_RAM);
-> +				node, GFP_KERNEL, VMAP_RAM,
-> +				NULL, 0, NULL);
->  		if (IS_ERR(va))
->  			return NULL;
->  
-> @@ -2946,26 +2964,6 @@ void __init vm_area_register_early(struct vm_struct *vm, size_t align)
->  	kasan_populate_early_vm_area_shadow(vm->addr, vm->size);
->  }
->  
-> -static inline void setup_vmalloc_vm_locked(struct vm_struct *vm,
-> -	struct vmap_area *va, unsigned long flags, const void *caller)
-> -{
-> -	vm->flags = flags;
-> -	vm->addr = (void *)va->va_start;
-> -	vm->size = va->va_end - va->va_start;
-> -	vm->caller = caller;
-> -	va->vm = vm;
-> -}
-> -
-> -static void setup_vmalloc_vm(struct vm_struct *vm, struct vmap_area *va,
-> -			      unsigned long flags, const void *caller)
-> -{
-> -	struct vmap_node *vn = addr_to_node(va->va_start);
-> -
-> -	spin_lock(&vn->busy.lock);
-> -	setup_vmalloc_vm_locked(vm, va, flags, caller);
-> -	spin_unlock(&vn->busy.lock);
-> -}
-> -
->  static void clear_vm_uninitialized_flag(struct vm_struct *vm)
->  {
->  	/*
-> @@ -3002,14 +3000,12 @@ static struct vm_struct *__get_vm_area_node(unsigned long size,
->  	if (!(flags & VM_NO_GUARD))
->  		size += PAGE_SIZE;
->  
-> -	va = alloc_vmap_area(size, align, start, end, node, gfp_mask, 0);
-> +	va = alloc_vmap_area(size, align, start, end, node, gfp_mask, 0, area, flags, caller);
->  	if (IS_ERR(va)) {
->  		kfree(area);
->  		return NULL;
->  	}
->  
-> -	setup_vmalloc_vm(area, va, flags, caller);
-> -
->  	/*
->  	 * Mark pages for non-VM_ALLOC mappings as accessible. Do it now as a
->  	 * best-effort approach, as they can be mapped outside of vmalloc code.
-> @@ -4584,7 +4580,7 @@ struct vm_struct **pcpu_get_vm_areas(const unsigned long *offsets,
->  
->  		spin_lock(&vn->busy.lock);
->  		insert_vmap_area(vas[area], &vn->busy.root, &vn->busy.head);
-> -		setup_vmalloc_vm_locked(vms[area], vas[area], VM_ALLOC,
-> +		setup_vmalloc_vm(vms[area], vas[area], VM_ALLOC,
->  				 pcpu_get_vm_areas);
->  		spin_unlock(&vn->busy.lock);
->  	}
-> -- 
-> 2.43.0
-> 
+and then add this to your camss clocks
 
+<&clock_camcc CAM_CC_GDSC_CLK>;
+
+The practice we have of just whacking clocks always-on in the probe() of 
+the clock driver feels lazy to me, leaving the broken cleanups we have 
+aside.
+
+As a user of the system I'd rather see correct/complete data in 
+/sys/kernel/debug/clk/clk_summary
+
+Anyway I'm fine with setting the clock always on, I can always send out 
+a series to address this bug-bear myself.
+
+So yeah just fix the cleanup and then please feel free to add my
+
+Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 
