@@ -1,166 +1,174 @@
-Return-Path: <linux-kernel+bounces-93898-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93899-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D04FB87367D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:32:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28F7B873684
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:33:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 481231F24707
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:32:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D8E1C289851
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:33:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B309F8563E;
-	Wed,  6 Mar 2024 12:31:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAD9A130AC6;
+	Wed,  6 Mar 2024 12:32:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="zkKuuijP";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Yol0huDH";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="zkKuuijP";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Yol0huDH"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="HItIfRhZ"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CED384FC4
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 12:31:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E58B812FF67
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 12:32:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709728273; cv=none; b=paVdTgyoMoRUal3Eua8iHjCoZjLeVu9DCmfNhm+CXvxWM+fc9uGrPIFVsgxfjHNVOAXBqFt5waBlW5NOMoFv1d2A0lDQ/DdkvojLxgDH/xZZFnNk49Uuj+pkRULxGYqQnL+NY4kdb11KSC6fFMdwU/K2fXDxWWU5mQi0Bp+6aAc=
+	t=1709728373; cv=none; b=Z+j2O3BmEYSatHoFFOTqYSh8u+vod0rTJaKCnVX/OfK0QpAdojMKG3Pu1iUKApS+1PHCvl6t0BFuPiQx4cJ4To6LW0UIb51sPXWA2uuq1u/0yDNEJi5NzZ/VOImcLNYnhxRLIYkM16eK1WDy8hq1Zymf9lAnpdcF88dludzBSWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709728273; c=relaxed/simple;
-	bh=pkGnmJQ/2pBzk5rj4EVaNuLlwwgXwzwrSPkoY4ScGjQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QtnotkYL99ewY4a1yVpm5K7cUXBrfU0AwUmp6q0qB/JcJ3a04BTyjki/agNcie6sqjcm6+NNrtiS6+9WpOKQwlo9Wx6VUOeTj1G78HTTKRJJ0cF0QWIw8bME80Sh5JHgZAa60XsPQpBrPc5R5+C2RZ/vh1AzKC6SbQ2MI7g40Yw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=zkKuuijP; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Yol0huDH; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=zkKuuijP; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Yol0huDH; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	s=arc-20240116; t=1709728373; c=relaxed/simple;
+	bh=0Tc0hQYDtt48jZhh0NYn8h+kJpBxzpBz3yqZS60Ykn0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Qwo7UO8QCQKT+Yr742kRPic77tIYilQvV+Mr7JT1nr8Ra+j5YJBR8KIz3RT9Zy3eHkR2JfkW/XIIV5ZoKS5KH7cG7UdM9PfWQXJt/rjDrRm/MXMk7SBlP0t8OAftN6MFoh+qkh4HyuDrtTXuWC3y5QkReBvfAOIbsq698LamQRM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=HItIfRhZ; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 369DB40E01A8;
+	Wed,  6 Mar 2024 12:32:48 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id Vl3CpBHFptTT; Wed,  6 Mar 2024 12:32:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1709728365; bh=PAp1bf6qrMiX4CQWZNcoZnKRC6rV4wKaDkhIHyk1xsA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=HItIfRhZ6cmgWXlbyxVTiOHumC88/3sDgSLBtHKgyUFgjAE84Rsu2wYWymQQ5Scsx
+	 gxiRW4FytlI4qiEp0RIsxvHRV5R8HMU9vOnvRY7xCDpDu+edKrKtdmwCzI9kOWq7jZ
+	 E1aQ2zCtrRe4Dg8g4+V+JatJ4bLyXJgVJNEPPg9aphRdOF6g9JbQV1w0GAE4OKsCij
+	 ws0CpIZTPqOluyt3L7PYKsajN53koEtEOdJ3bEq7m85jAm08fm048WIl1JFVHOJUsg
+	 pXvf9tGqCpNcsM86Sal7uM3g3Em2Oc5UWbZMQNKnPzegiUq5MZTR1Tmvsn1rx18qDS
+	 ykI8B1zfQsPV7TaLgp69P0sfOt/dJroPDLyzaqmamUq9/kRP7bA3cfxB3TAt7MxIQL
+	 ohN3kmjdMmNfNGOd8ctUkqqoEWMajnb8z4Mwcau+k/ucMmQ8Yoi5q/SdbeYPMMxkab
+	 fYE5ukc3eIn8mhGxJfCVNTz09jbjsArowojq6NDF3TmL9OqA08fVoRCD+M5kgbhQn7
+	 Sn/Fihhz35zHcvAI7uRzO6boVPcRjx9R7nRguXenPw+RiOMJ3nLW3GLnvlGr3VuhCm
+	 m71Ys7HxdXJw1lRX6ji+Km6XzZxzPCG4qUCLKBjh28SmiNalJ0bvlqqcSpyAVmO6Xn
+	 lpfzutfmuXg5buYpiHkJdpNQ=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id BF4A0759C3;
-	Wed,  6 Mar 2024 12:31:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1709728269; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OMF4QDA/BIIwL+kdUSy1E5oYvYlaroCGSWt9+J3am6I=;
-	b=zkKuuijPtkX3+HRHmbSvRGQBMjgF+6ket/HA3Smww4iLnhtgAZlQQfuL/JJ/dWrE+xXjRu
-	QCZAg7b1kMx1Yu/WNaMSka4dNR7vLJhPP7jtJ1jzpP1pcoJOxXo4aj5rUxN0j8UEJG/KuC
-	K7tJ6dXo3m5zI7bzctnDO4tUtU5CxWo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1709728269;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OMF4QDA/BIIwL+kdUSy1E5oYvYlaroCGSWt9+J3am6I=;
-	b=Yol0huDHb0VY+oMPN3hvChYMwd7AcGe8W7vBXgQ6s67q9g2lDhCyf5oZTlfcoho+IhYlmX
-	LW/dNK8fE0YGPuDA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1709728269; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OMF4QDA/BIIwL+kdUSy1E5oYvYlaroCGSWt9+J3am6I=;
-	b=zkKuuijPtkX3+HRHmbSvRGQBMjgF+6ket/HA3Smww4iLnhtgAZlQQfuL/JJ/dWrE+xXjRu
-	QCZAg7b1kMx1Yu/WNaMSka4dNR7vLJhPP7jtJ1jzpP1pcoJOxXo4aj5rUxN0j8UEJG/KuC
-	K7tJ6dXo3m5zI7bzctnDO4tUtU5CxWo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1709728269;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OMF4QDA/BIIwL+kdUSy1E5oYvYlaroCGSWt9+J3am6I=;
-	b=Yol0huDHb0VY+oMPN3hvChYMwd7AcGe8W7vBXgQ6s67q9g2lDhCyf5oZTlfcoho+IhYlmX
-	LW/dNK8fE0YGPuDA==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 302E71377D;
-	Wed,  6 Mar 2024 12:31:09 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id AJEaCQ1i6GUaTwAAn2gu4w
-	(envelope-from <osalvador@suse.de>); Wed, 06 Mar 2024 12:31:09 +0000
-From: Oscar Salvador <osalvador@suse.de>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	Michal Hocko <mhocko@suse.com>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Marco Elver <elver@google.com>,
-	Andrey Konovalov <andreyknvl@gmail.com>,
-	Alexander Potapenko <glider@google.com>,
-	Oscar Salvador <osalvador@suse.de>
-Subject: [PATCH 2/2] mm,page_owner: Drop unnecesary check
-Date: Wed,  6 Mar 2024 13:32:17 +0100
-Message-ID: <20240306123217.29774-3-osalvador@suse.de>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240306123217.29774-1-osalvador@suse.de>
-References: <20240306123217.29774-1-osalvador@suse.de>
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 65CD340E0185;
+	Wed,  6 Mar 2024 12:32:37 +0000 (UTC)
+Date: Wed, 6 Mar 2024 13:32:30 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: "Liang, Kan" <kan.liang@linux.intel.com>, x86-ml <x86@kernel.org>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Alexander Antonov <alexander.antonov@linux.intel.com>,
+	lkml <linux-kernel@vger.kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: unchecked MSR access error: WRMSR to 0xd84 (tried to write
+ 0x0000000000010003) at rIP: 0xffffffffa025a1b8
+ (snbep_uncore_msr_init_box+0x38/0x60 [intel_uncore])
+Message-ID: <20240306123230.GCZehiXhHIZwi2zU1_@fat_crate.local>
+References: <20240304201233.GDZeYrMc9exmV21PFB@fat_crate.local>
+ <87sf15ugsz.ffs@tglx>
+ <20240305121014.GCZecLppQTzWmpI_yR@fat_crate.local>
+ <87a5nbvccx.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: 0.98
-X-Spamd-Result: default: False [0.98 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 R_MISSING_CHARSET(2.50)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 MIME_GOOD(-0.10)[text/plain];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_SEVEN(0.00)[9];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,suse.com,suse.cz,google.com,gmail.com,suse.de];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-2.72)[98.78%]
-X-Spam-Flag: NO
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <87a5nbvccx.ffs@tglx>
 
-stackdepot only saves stack_records which size is greather than 0,
-so we cannot possibly have empty stack_records.
-Drop the check.
+On Wed, Mar 06, 2024 at 12:17:02PM +0100, Thomas Gleixner wrote:
+> On Tue, Mar 05 2024 at 13:10, Borislav Petkov wrote:
+> > I guess ship it but we'll pay attention to what else ends up
+> > complaining.
+> 
+> Here is an updated version which handles it in the topology core code so
+> that MPPARSE is covered as well.
+> 
+> Thanks,
+> 
+>         tglx
+> ---
+> Subject: x86/topology: Ignore non-present APIC IDs in a present package
+> From: Thomas Gleixner <tglx@linutronix.de>
+> Date: Tue, 05 Mar 2024 10:57:26 +0100
+> 
+> Borislav reported that one of his systems has a broken MADT table which
+> advertises eight present APICs and 24 non-present APICs in the same
+> package.
+> 
+> The non-present ones are considered hot-pluggable by the topology
+> evaluation code, which is obviously bogus as there is no way to hot-plug
+> within the same package.
+> 
+> As the topology evaluation code accounts for hot-pluggable CPUs in a
+> package, the maximum number of cores per package is computed wrong, which
+> in turn causes the uncore performance counter driver to access non-existing
+> MSRs. It will probably confuse other entities which rely on the maximum
+> number of cores and threads per package too.
+> 
+> Cure this by ignoring hot-pluggable APIC IDs within a present package.
+> 
+> In theory it would be reasonable to just do this unconditionally, but then
+> there is this thing called reality^Wvirtualization which ruins
+> everything. Virtualization is the only existing user of "physical" hotplug
+> and the virtualization tools allow the above scenario. Whether that is
+> actually in use or not is unknown.
+> 
+> As it can be argued that the virtualization case is not affected by the
+> issues which exposed the reported problem, allow the bogosity if the kernel
+> determined that it is running in a VM for now.
+> 
+> Reported-by: Borislav Petkov (AMD) <bp@alien8.de>
+> Fixes: 89b0f15f408f ("x86/cpu/topology: Get rid of cpuinfo::x86_max_cores")
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>  arch/x86/kernel/cpu/topology.c |   38 +++++++++++++++++++++++++++++---------
+>  1 file changed, 29 insertions(+), 9 deletions(-)
+> 
+> --- a/arch/x86/kernel/cpu/topology.c
+> +++ b/arch/x86/kernel/cpu/topology.c
 
-Signed-off-by: Oscar Salvador <osalvador@suse.de>
----
- mm/page_owner.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+#include <asm/hypervisor.h>
 
-diff --git a/mm/page_owner.c b/mm/page_owner.c
-index 7163a1c44ccf..e7139952ffd9 100644
---- a/mm/page_owner.c
-+++ b/mm/page_owner.c
-@@ -865,8 +865,7 @@ static int stack_print(struct seq_file *m, void *v)
- 	entries = stack_record->entries;
- 	stack_count = refcount_read(&stack_record->count) - 1;
- 
--	if (!nr_entries || nr_entries < 0 || stack_count < 1 ||
--	    stack_count < page_owner_stack_threshold)
-+	if (stack_count < 1 || stack_count < page_owner_stack_threshold)
- 		return 0;
- 
- 	for (i = 0; i < nr_entries; i++)
+at the top here.
+
+With that, relevant new lines from dmesg:
+
++CPU topo: Ignoring hot-pluggable APIC ID 8 in present package.
+
+and
+
+@@ -129,9 +130,10 @@ CPU topo: Max. logical packages:   1
+ CPU topo: Max. logical dies:       1
+ CPU topo: Max. dies per package:   1
+ CPU topo: Max. threads per core:   2
+-CPU topo: Num. cores per package:    16
+-CPU topo: Num. threads per package:  32
+-CPU topo: Allowing 8 present CPUs plus 24 hotplug CPUs
++CPU topo: Num. cores per package:     4
++CPU topo: Num. threads per package:   8
++CPU topo: Allowing 8 present CPUs plus 0 hotplug CPUs
++CPU topo: Rejected CPUs 24
+
+AFAIC, ship it.
+
+Tested-by: Borislav Petkov (AMD) <bp@alien8.de>
+
+Thx.
+
 -- 
-2.44.0
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
 
