@@ -1,169 +1,242 @@
-Return-Path: <linux-kernel+bounces-94005-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94004-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD4D987382D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:55:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BF22E87382B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:55:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C62F1C2347A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:55:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B0D771C20B96
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:55:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15516131E51;
-	Wed,  6 Mar 2024 13:55:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83D5B13174E;
+	Wed,  6 Mar 2024 13:55:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aVIko+LR"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="W0IRwmaK"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26E4E13174A;
-	Wed,  6 Mar 2024 13:55:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F05A130E4A
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 13:55:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709733349; cv=none; b=oiX9LTI+7ZLUejir9YQTZjEZLpgnGjuvH17jhkQROrk/SOoG4oDrUFSsiRvqZdAQktb39NZBZvsupQk810u2l97sb0ZVRCVlu1iDYMSwzGR6N1BQxhxtEzB+3YEo0xySX3ioTU+4ExTwqIm+NN2qPKlTUvkZbGWbedfdZl1vfOQ=
+	t=1709733333; cv=none; b=V13Mwy/RIUEPWWsEPTJdlaqQtCrqEwiAdC276J1tlW+szAwZr694FiLvjRTKw4pKhcUdHQVUeav22cuIB2iajYrX+3QP45k7dYx8J67GV9lcu5M7k7w6s0QgjECRKzt4XtVl8os9p2aS2ShB9o7OjpXvYhfVjBbAsssiB7iyBDo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709733349; c=relaxed/simple;
-	bh=jLiY1VyOnlLZFwOuXhMvVv7YYk/BquLiS8Ez9vTbB7E=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ohoqcj8oNEEUbhhjsXT79L2i9nMiMGYkRuqvbjcEu5JZaNEYW9U3r6hidSYpRZWPSOTENO/+y4UUR05zLdGXp6zvCHVgv2fbOMBgDzwaZLy6cOIFVLG0JirZWFQq3EtaO4PdY6i48H+0tRmDkxJ99KEbItM7hLmFN/u9NWIKDVk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aVIko+LR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95DB4C433C7;
-	Wed,  6 Mar 2024 13:55:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709733348;
-	bh=jLiY1VyOnlLZFwOuXhMvVv7YYk/BquLiS8Ez9vTbB7E=;
-	h=From:To:Cc:Subject:Date:From;
-	b=aVIko+LRnJWRKTsU6ERuKAewIihmA9wCBTzehUj8BL7QCKMIDGKDC0BoXsjghJ0sH
-	 yb6XEEiwcZdoZtn9lCMTZ44hPPuVWz7OnzLAPbnAQqM8D+8KrOZNix6cuQ94p57sDg
-	 hcFna7PQf17xKVoXvrRgkdtL4Vu9djlEOl52Klm8ie5zorLPhmNmWxIqJe8sAWn+vg
-	 tK7FCrfCX5ekWAJsLeRHWrdZDhLFLP/Sk7AeZvbr+SP1H7vMVD67uolo4EDn+BTGp2
-	 uWL1m09Fh7eZz64UuVn72W6wycdAs8Y/1nEtFfyRZJLYWzO22rjOCXUta+r3QvHR24
-	 CdJrIQgxX4Uhw==
-From: Georgi Djakov <djakov@kernel.org>
-To: gregkh@linuxfoundation.org
-Cc: linux-pm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	djakov@kernel.org
-Subject: [GIT PULL] interconnect changes for 6.9
-Date: Wed,  6 Mar 2024 15:55:16 +0200
-Message-Id: <20240306135516.510557-1-djakov@kernel.org>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1709733333; c=relaxed/simple;
+	bh=FDHDbMkueElepj6CmPwUCfRz0jklGor2baIcAzKQadE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uLTY75W20MVzjIPCMN9sI2A04RBsc/wQ3AExdcSbMjBPbWgUwDfTp7eTVbFePh6zBpyi2rMtScP2bkDi/yuvJyYJfxQwEAU6UPeLNVPjQRyLs7JRKnt5RiItgdtRR5mFrJrgOPiIrq5GgaiVGxHakiBy+kO2dwYi0nWJu9Ss1s8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=W0IRwmaK; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709733331;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VS0cZXpWU84KGIQ0BKcm27vCqjgjrA0pw8rcYtG8Uos=;
+	b=W0IRwmaKzLmtVSRk3BRS6R4JAjqLWIAC/4p6xRGU8ueBCqWsDtq6SzIWgKOAJ3cJ4Z+zfs
+	btmA6Vc3LPUXqdrHMTKb5OgEjMfyowuWgxs+qtUhM1Bk4792ZoKfAFrtMwfbY88eA+GhFF
+	IE7LcCT/3OwflHSjIBF0sd1HzDLnV6Y=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-70-mpRM26vHPxCGp_nstlCdhQ-1; Wed, 06 Mar 2024 08:55:27 -0500
+X-MC-Unique: mpRM26vHPxCGp_nstlCdhQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 322298007AB;
+	Wed,  6 Mar 2024 13:55:27 +0000 (UTC)
+Received: from localhost (unknown [10.72.116.15])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 7D1C4C04121;
+	Wed,  6 Mar 2024 13:55:26 +0000 (UTC)
+Date: Wed, 6 Mar 2024 21:55:22 +0800
+From: Baoquan He <bhe@redhat.com>
+To: rulinhuang <rulin.huang@intel.com>
+Cc: urezki@gmail.com, akpm@linux-foundation.org, colin.king@intel.com,
+	hch@infradead.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	lstoakes@gmail.com, tianyou.li@intel.com, tim.c.chen@intel.com,
+	wangyang.guo@intel.com, zhiguo.zhou@intel.com
+Subject: Re: [PATCH v7 2/2] mm/vmalloc: Eliminated the lock contention from
+ twice to once
+Message-ID: <Zeh1yuUq3jb+B6Tx@MiWiFi-R3L-srv>
+References: <20240301155417.1852290-1-rulin.huang@intel.com>
+ <20240301155417.1852290-3-rulin.huang@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240301155417.1852290-3-rulin.huang@intel.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
 
-Hello Greg,
+On 03/01/24 at 10:54am, rulinhuang wrote:
+> When allocating a new memory area where the mapping address range is
+> known, it is observed that the vmap_node->busy.lock is acquired twice.
+> 
+> The first acquisition occurs in the alloc_vmap_area() function when
+> inserting the vm area into the vm mapping red-black tree. The second
+> acquisition occurs in the setup_vmalloc_vm() function when updating the
+> properties of the vm, such as flags and address, etc.
+> 
+> Combine these two operations together in alloc_vmap_area(), which
+> improves scalability when the vmap_node->busy.lock is contended.
+> By doing so, the need to acquire the lock twice can also be eliminated
+> to once.
+> 
+> With the above change, tested on intel sapphire rapids
+> platform(224 vcpu), a 4% performance improvement is
+> gained on stress-ng/pthread(https://github.com/ColinIanKing/stress-ng),
+> which is the stress test of thread creations.
+> 
+> Co-developed-by: "Chen, Tim C" <tim.c.chen@intel.com>
+> Signed-off-by: "Chen, Tim C" <tim.c.chen@intel.com>
+> Co-developed-by: "King, Colin" <colin.king@intel.com>
+> Signed-off-by: "King, Colin" <colin.king@intel.com>
+> Signed-off-by: rulinhuang <rulin.huang@intel.com>
+> ---
+> V1 -> V2: Avoided the partial initialization issue of vm and
+> separated insert_vmap_area() from alloc_vmap_area()
+> V2 -> V3: Rebased on 6.8-rc5
+> V3 -> V4: Rebased on mm-unstable branch
+> V4 -> V5: Canceled the split of alloc_vmap_area()
+> and keep insert_vmap_area()
+> V5 -> V6: Added bug_on
+> V6 -> V7: Adjusted the macros
+> ---
+>  mm/vmalloc.c | 52 ++++++++++++++++++++++++----------------------------
+>  1 file changed, 24 insertions(+), 28 deletions(-)
 
-This is the pull request with interconnect changes for the v6.9-rc1 merge
-window. It contains new drivers and clean-ups. As always, the summary is
-in the signed tag.
+LGTM,
 
-All patches have been in linux-next for a week with no reported issues.
-Please pull into char-misc-next when possible.
+Reviewed-by: Baoquan He <bhe@redhat.com>
 
-Thanks,
-Georgi
+> 
+> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> index fc027a61c12e..5b7c9156d8da 100644
+> --- a/mm/vmalloc.c
+> +++ b/mm/vmalloc.c
+> @@ -1972,15 +1972,26 @@ node_alloc(unsigned long size, unsigned long align,
+>  	return va;
+>  }
+>  
+> +static inline void setup_vmalloc_vm(struct vm_struct *vm,
+> +	struct vmap_area *va, unsigned long flags, const void *caller)
+> +{
+> +	vm->flags = flags;
+> +	vm->addr = (void *)va->va_start;
+> +	vm->size = va->va_end - va->va_start;
+> +	vm->caller = caller;
+> +	va->vm = vm;
+> +}
+> +
+>  /*
+>   * Allocate a region of KVA of the specified size and alignment, within the
+> - * vstart and vend.
+> + * vstart and vend. If vm is passed in, the two will also be bound.
+>   */
+>  static struct vmap_area *alloc_vmap_area(unsigned long size,
+>  				unsigned long align,
+>  				unsigned long vstart, unsigned long vend,
+>  				int node, gfp_t gfp_mask,
+> -				unsigned long va_flags)
+> +				unsigned long va_flags, struct vm_struct *vm,
+> +				unsigned long flags, const void *caller)
+>  {
+>  	struct vmap_node *vn;
+>  	struct vmap_area *va;
+> @@ -2043,6 +2054,11 @@ static struct vmap_area *alloc_vmap_area(unsigned long size,
+>  	va->vm = NULL;
+>  	va->flags = (va_flags | vn_id);
+>  
+> +	if (vm) {
+> +		BUG_ON(va_flags & VMAP_RAM);
+> +		setup_vmalloc_vm(vm, va, flags, caller);
+> +	}
+> +
+>  	vn = addr_to_node(va->va_start);
+>  
+>  	spin_lock(&vn->busy.lock);
+> @@ -2486,7 +2502,8 @@ static void *new_vmap_block(unsigned int order, gfp_t gfp_mask)
+>  	va = alloc_vmap_area(VMAP_BLOCK_SIZE, VMAP_BLOCK_SIZE,
+>  					VMALLOC_START, VMALLOC_END,
+>  					node, gfp_mask,
+> -					VMAP_RAM|VMAP_BLOCK);
+> +					VMAP_RAM|VMAP_BLOCK, NULL,
+> +					0, NULL);
+>  	if (IS_ERR(va)) {
+>  		kfree(vb);
+>  		return ERR_CAST(va);
+> @@ -2843,7 +2860,8 @@ void *vm_map_ram(struct page **pages, unsigned int count, int node)
+>  		struct vmap_area *va;
+>  		va = alloc_vmap_area(size, PAGE_SIZE,
+>  				VMALLOC_START, VMALLOC_END,
+> -				node, GFP_KERNEL, VMAP_RAM);
+> +				node, GFP_KERNEL, VMAP_RAM,
+> +				NULL, 0, NULL);
+>  		if (IS_ERR(va))
+>  			return NULL;
+>  
+> @@ -2946,26 +2964,6 @@ void __init vm_area_register_early(struct vm_struct *vm, size_t align)
+>  	kasan_populate_early_vm_area_shadow(vm->addr, vm->size);
+>  }
+>  
+> -static inline void setup_vmalloc_vm_locked(struct vm_struct *vm,
+> -	struct vmap_area *va, unsigned long flags, const void *caller)
+> -{
+> -	vm->flags = flags;
+> -	vm->addr = (void *)va->va_start;
+> -	vm->size = va->va_end - va->va_start;
+> -	vm->caller = caller;
+> -	va->vm = vm;
+> -}
+> -
+> -static void setup_vmalloc_vm(struct vm_struct *vm, struct vmap_area *va,
+> -			      unsigned long flags, const void *caller)
+> -{
+> -	struct vmap_node *vn = addr_to_node(va->va_start);
+> -
+> -	spin_lock(&vn->busy.lock);
+> -	setup_vmalloc_vm_locked(vm, va, flags, caller);
+> -	spin_unlock(&vn->busy.lock);
+> -}
+> -
+>  static void clear_vm_uninitialized_flag(struct vm_struct *vm)
+>  {
+>  	/*
+> @@ -3002,14 +3000,12 @@ static struct vm_struct *__get_vm_area_node(unsigned long size,
+>  	if (!(flags & VM_NO_GUARD))
+>  		size += PAGE_SIZE;
+>  
+> -	va = alloc_vmap_area(size, align, start, end, node, gfp_mask, 0);
+> +	va = alloc_vmap_area(size, align, start, end, node, gfp_mask, 0, area, flags, caller);
+>  	if (IS_ERR(va)) {
+>  		kfree(area);
+>  		return NULL;
+>  	}
+>  
+> -	setup_vmalloc_vm(area, va, flags, caller);
+> -
+>  	/*
+>  	 * Mark pages for non-VM_ALLOC mappings as accessible. Do it now as a
+>  	 * best-effort approach, as they can be mapped outside of vmalloc code.
+> @@ -4584,7 +4580,7 @@ struct vm_struct **pcpu_get_vm_areas(const unsigned long *offsets,
+>  
+>  		spin_lock(&vn->busy.lock);
+>  		insert_vmap_area(vas[area], &vn->busy.root, &vn->busy.head);
+> -		setup_vmalloc_vm_locked(vms[area], vas[area], VM_ALLOC,
+> +		setup_vmalloc_vm(vms[area], vas[area], VM_ALLOC,
+>  				 pcpu_get_vm_areas);
+>  		spin_unlock(&vn->busy.lock);
+>  	}
+> -- 
+> 2.43.0
+> 
 
-The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
-
-  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/djakov/icc.git tags/icc-6.9-rc1
-
-for you to fetch changes up to d1c16491134c726a78dd6936034f117acdc57185:
-
-  Merge branch 'icc-sm7150' into icc-next (2024-02-29 22:43:01 +0200)
-
-----------------------------------------------------------------
-interconnect changes for 6.9
-
-This pull request contains the interconnect changes for the 6.9-rc1 merge
-window. The highlights are below:
-
-Core changes:
-- Constify the of_phandle_args in xlate functions.
-
-Driver changes:
-- New interconnect driver for the MSM8909 platform.
-- New interconnect driver for the SM7150 platform.
-- Clean-up and removal of unused resources in drivers.
-- Constify some pointers to structs.
-
-Signed-off-by: Georgi Djakov <djakov@kernel.org>
-
-----------------------------------------------------------------
-Adam Skladowski (2):
-      dt-bindings: interconnect: Add Qualcomm MSM8909 DT bindings
-      interconnect: qcom: Add MSM8909 interconnect provider driver
-
-Danila Tikhonov (2):
-      dt-bindings: interconnect: Add Qualcomm SM7150 DT bindings
-      interconnect: qcom: Add SM7150 driver support
-
-Georgi Djakov (3):
-      Merge branch 'icc-msm8909' into icc-next
-      Merge branch 'icc-cleanup' into icc-next
-      Merge branch 'icc-sm7150' into icc-next
-
-Jeffrey Hugo (1):
-      dt-bindings: interconnect: qcom,rpmh: Fix bouncing @codeaurora address
-
-Konrad Dybcio (3):
-      interconnect: qcom: sm8550: Remove bogus per-RSC BCMs and nodes
-      dt-bindings: interconnect: Remove bogus interconnect nodes
-      interconnect: qcom: x1e80100: Remove bogus per-RSC BCMs and nodes
-
-Krzysztof Kozlowski (7):
-      interconnect: qcom: msm8909: constify pointer to qcom_icc_node
-      interconnect: qcom: sa8775p: constify pointer to qcom_icc_node
-      interconnect: qcom: sm8250: constify pointer to qcom_icc_node
-      interconnect: qcom: sm6115: constify pointer to qcom_icc_node
-      interconnect: qcom: sa8775p: constify pointer to qcom_icc_bcm
-      interconnect: qcom: x1e80100: constify pointer to qcom_icc_bcm
-      interconnect: constify of_phandle_args in xlate
-
- Documentation/devicetree/bindings/interconnect/qcom,rpm.yaml   |    3 +
- Documentation/devicetree/bindings/interconnect/qcom,rpmh.yaml  |    2 +-
- .../devicetree/bindings/interconnect/qcom,sm7150-rpmh.yaml     |   84 +
- drivers/interconnect/core.c                                    |    4 +-
- drivers/interconnect/qcom/Kconfig                              |   18 +
- drivers/interconnect/qcom/Makefile                             |    4 +
- drivers/interconnect/qcom/icc-common.c                         |    3 +-
- drivers/interconnect/qcom/icc-common.h                         |    3 +-
- drivers/interconnect/qcom/msm8909.c                            | 1329 ++++++
- drivers/interconnect/qcom/sa8775p.c                            |   56 +-
- drivers/interconnect/qcom/sm6115.c                             |   12 +-
- drivers/interconnect/qcom/sm7150.c                             | 1754 ++++++++
- drivers/interconnect/qcom/sm7150.h                             |  140 +
- drivers/interconnect/qcom/sm8250.c                             |    2 +-
- drivers/interconnect/qcom/sm8550.c                             |  574 ---
- drivers/interconnect/qcom/sm8550.h                             |  284 +-
- drivers/interconnect/qcom/x1e80100.c                           |  327 +-
- drivers/interconnect/samsung/exynos.c                          |    2 +-
- drivers/memory/tegra/mc.c                                      |    2 +-
- drivers/memory/tegra/tegra124-emc.c                            |    2 +-
- drivers/memory/tegra/tegra124.c                                |    2 +-
- drivers/memory/tegra/tegra186-emc.c                            |    2 +-
- drivers/memory/tegra/tegra20-emc.c                             |    2 +-
- drivers/memory/tegra/tegra20.c                                 |    2 +-
- drivers/memory/tegra/tegra30-emc.c                             |    2 +-
- drivers/memory/tegra/tegra30.c                                 |    2 +-
- include/dt-bindings/interconnect/qcom,msm8909.h                |   93 +
- include/dt-bindings/interconnect/qcom,sm7150-rpmh.h            |  150 +
- include/dt-bindings/interconnect/qcom,x1e80100-rpmh.h          |   24 -
- include/linux/interconnect-provider.h                          |   11 +-
- include/soc/tegra/mc.h                                         |    7 +-
- 31 files changed, 3764 insertions(+), 1138 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/interconnect/qcom,sm7150-rpmh.yaml
- create mode 100644 drivers/interconnect/qcom/msm8909.c
- create mode 100644 drivers/interconnect/qcom/sm7150.c
- create mode 100644 drivers/interconnect/qcom/sm7150.h
- create mode 100644 include/dt-bindings/interconnect/qcom,msm8909.h
- create mode 100644 include/dt-bindings/interconnect/qcom,sm7150-rpmh.h
 
