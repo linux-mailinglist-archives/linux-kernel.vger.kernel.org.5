@@ -1,165 +1,166 @@
-Return-Path: <linux-kernel+bounces-93949-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93951-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0682E87375F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:09:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 948BC873765
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:11:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 381861C217C0
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:09:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4AA19284116
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:11:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E689130ACC;
-	Wed,  6 Mar 2024 13:09:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2020131731;
+	Wed,  6 Mar 2024 13:11:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XwIWtSoL"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="XDZSj4MI"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A1E13E48E;
-	Wed,  6 Mar 2024 13:09:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BE39130E5A;
+	Wed,  6 Mar 2024 13:11:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709730560; cv=none; b=u7mDY1U/zsrlBYH5LN5x720imFm0rvPyGKGtydsrLZr6JNWLxzBqMzXBIMoZIKxQ5DRLOv0zwhpd9Q1ZDEKUbdIoflFZBWjKaWFJwGENZbQqRrhIBtwyzNat79QQJk6a23YoV1A4tjoyyD1um2PpAMJoLwssmt0hx0v/lohnkGs=
+	t=1709730690; cv=none; b=cH/xjK+vh7af0bqpZA4kr2vEiy5kgpxWlepAVWHeQ8wcWovjO5eb8B6FlY3egPowlDcPyoNooyL2+/QbDnxyvM3cMXVEapOdS6FKxJ1NboeMEy5/vJ48IzQm5mfg1xknuR1bEB5tiPWHWPxhXZ5zOdgUX9JXTPREK5lFPe72jFI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709730560; c=relaxed/simple;
-	bh=Qya9yJoMGG3fudaQfNFX/s/AVyf3oZ2gxPRqZT8uKeQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kANJCCwwg2ZfqFVaoLc6gMKIM9xFgm6r+X/ocKQmY+BsmmLez5ulf3xAIvpQdCJ1ntdxpm5IMZIhvc31eWrN9GPtXvDUBp6LNvngmPbKJ8nw8R55d4xoURAqbDl7OyN0coYx8Bbgm0Q3prx5QRFUB96GACmz1Q9YmfI6otgIXFU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XwIWtSoL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11A81C43394;
-	Wed,  6 Mar 2024 13:09:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709730560;
-	bh=Qya9yJoMGG3fudaQfNFX/s/AVyf3oZ2gxPRqZT8uKeQ=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=XwIWtSoLbvEa9MhGORRYxc8QnVHeSBZx51PTtbZB7fxTEPlXUS7zchMwigINxmwsA
-	 wlfRa6xgG6jV03x8bk2o775DNydGMGIs/5jy8VjXh/b+hEGuIMZmIrl1LByAylEzxc
-	 M107S7flaE0Vn6O8d7JyrGLEJGBsL2JRo2F0P+mFOo9IilxDJGb93Xu1QapTYWbu9n
-	 m+1tqmU19+hh5m9BrZMpgfxNHfzLfqriMxqcVZ7jb/N5DB1i2IauttaxwQsh4Z8Moz
-	 cD9irKSGJxR4SqWaEsVEFyyQMeN675D1FVNS1cDQSAttQcW6ijiqdeeyLYCagIsnmr
-	 zQ4j9FjGDjNYQ==
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-513181719easo4934382e87.3;
-        Wed, 06 Mar 2024 05:09:19 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWY1k/V2fxsgR0PNHcvhlfTpIu923aEmPq2MQr5iBhSqXB8/RChAhK2m3qSRuKtUGP0CNB5iTMa6c9Y+U1IRttC7+rwIxj8uPTEdH9wDE/0+Zt11RX+KFSd6OODSiP0zEwVUrqtYu/d
-X-Gm-Message-State: AOJu0YyfOdz2LAQ1LmP2WvwQar8BfW96QP5gJzN1ltiGIL0iR7BelBm+
-	cLLjjuSLoRpa57RQeykikQo18griwhJJRrN0Md5/5QQ8krPP6A418wk8jc0pIQqosVv1L2SFNjj
-	Pez0B9r4VuGUasNPmApKDZ48+doo=
-X-Google-Smtp-Source: AGHT+IG1umg2a74pIqVk/gcNbcCB3wjXo/3Jy5oVRf6N2X3k6Avjv/4LBUAamkxwcSjo41Byn67QX79jDAeUuBJqscs=
-X-Received: by 2002:a05:6512:3b0e:b0:513:57af:2416 with SMTP id
- f14-20020a0565123b0e00b0051357af2416mr3635734lfv.42.1709730558218; Wed, 06
- Mar 2024 05:09:18 -0800 (PST)
+	s=arc-20240116; t=1709730690; c=relaxed/simple;
+	bh=eRzr15zzkKLVQLaXWePd28hOMNIbG9iTc6oNCPSa59g=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=MP7GvXQZtAY7R+mneXh1/106nyHibKC8HDiw0Bv7Y4C3x6IDhxErnjZSuMnNSKs3USSyrOhKKETG7967caYx5jiHkirQy35bSSPIXltwI4kNMnEPFSoaUog0QrzttOK0bh+xcTFjcN0zih/PGJbjh3K2Pt9+xF5PewG0FC5Gq7c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=qualcomm.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=XDZSj4MI; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 426CPihh001569;
+	Wed, 6 Mar 2024 13:11:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id; s=qcppdkim1; bh=9+sWLPYVN5M6
+	BOe2ZCbASqp6MUFhVnfnocABlSvSYs0=; b=XDZSj4MI1Rj2WqV5FD+h5IWmn2LB
+	ZZWAhAZrgVUJVVDC2tIGyV8ZxGBygDJUBfdNxy0IYJQ2Jj+R2dh0iNN2bOgkMFEj
+	uaESYN3eZ2yn/rUVlcUOwZQ6Ursl52wyeJa1MNBMQgQUYp9dFnn//6YuKz+nmi5Z
+	FIRiyL1bzD43AmdD95fz0Ner+3eNnP/8xLZ3PTEvKFZTbCRw4NYRKCgdxhZt7S8b
+	HAJmJv3UsBOJFfxs+1WOfZnamPEFO9W8eOfpQ8CbK5NdxQKdsJkNz1yUjvSsaqxv
+	TJDhF1hhlC+ShVUSjigo1nFhwQ/Aaq+wewzThmYzxiBxc1acpwF/q57rcg==
+Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wpjy3rtd0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 06 Mar 2024 13:11:19 +0000 (GMT)
+Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+	by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 426DBGev019074;
+	Wed, 6 Mar 2024 13:11:16 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3wp0608qkb-1;
+	Wed, 06 Mar 2024 13:11:16 +0000
+Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 426DBGsv019069;
+	Wed, 6 Mar 2024 13:11:16 GMT
+Received: from hu-sgudaval-hyd.qualcomm.com (hu-msarkar-hyd.qualcomm.com [10.213.111.194])
+	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 426DBGtd019068;
+	Wed, 06 Mar 2024 13:11:16 +0000
+Received: by hu-sgudaval-hyd.qualcomm.com (Postfix, from userid 3891782)
+	id 1482B26B8; Wed,  6 Mar 2024 18:41:15 +0530 (+0530)
+From: Mrinmay Sarkar <quic_msarkar@quicinc.com>
+To: andersson@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, konrad.dybcio@linaro.org,
+        manivannan.sadhasivam@linaro.org, robh@kernel.org
+Cc: quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com,
+        quic_ramkri@quicinc.com, quic_nayiluri@quicinc.com,
+        quic_krichai@quicinc.com, quic_vbadigan@quicinc.com,
+        quic_schintav@quicinc.com, Mrinmay Sarkar <quic_msarkar@quicinc.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Subject: [PATCH v6 0/3] arm64: qcom: sa8775p: add cache coherency support for SA8775P
+Date: Wed,  6 Mar 2024 18:41:09 +0530
+Message-Id: <1709730673-6699-1-git-send-email-quic_msarkar@quicinc.com>
+X-Mailer: git-send-email 2.7.4
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: nrc6TKXXHQ8UKOExaGgtpOfVK_wjkBqE
+X-Proofpoint-ORIG-GUID: nrc6TKXXHQ8UKOExaGgtpOfVK_wjkBqE
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-06_08,2024-03-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 impostorscore=0
+ adultscore=0 priorityscore=1501 lowpriorityscore=0 mlxlogscore=999
+ suspectscore=0 phishscore=0 malwarescore=0 mlxscore=0 spamscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2403060105
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240306085622.87248-1-cuiyunhui@bytedance.com>
- <20240306085622.87248-3-cuiyunhui@bytedance.com> <CAMj1kXEjjFAeVAVwiDO22RJECSM=L=0q6J=zog7JR38rUZpLGQ@mail.gmail.com>
- <CAEEQ3w=2pX+pjwoz=hNFpR4thD+d6o9OmBob8LMzZ8BbKZ=pqg@mail.gmail.com> <CAMj1kXFG=y_XXiaBHZOXDApZiCb48i0U5pX+GBRO2KAUom52VA@mail.gmail.com>
-In-Reply-To: <CAMj1kXFG=y_XXiaBHZOXDApZiCb48i0U5pX+GBRO2KAUom52VA@mail.gmail.com>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Wed, 6 Mar 2024 14:09:07 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXH1oMbONoHFMPaatfaqrHNE2ryfrG7kw-7J-eFsuXkK-Q@mail.gmail.com>
-Message-ID: <CAMj1kXH1oMbONoHFMPaatfaqrHNE2ryfrG7kw-7J-eFsuXkK-Q@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH 3/3] efistub: fix missed the initialization
- of gp
-To: yunhui cui <cuiyunhui@bytedance.com>
-Cc: paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, 
-	xuzhipeng.1973@bytedance.com, alexghiti@rivosinc.com, samitolvanen@google.com, 
-	bp@alien8.de, xiao.w.wang@intel.com, jan.kiszka@siemens.com, 
-	kirill.shutemov@linux.intel.com, nathan@kernel.org, 
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-efi@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, 6 Mar 2024 at 14:02, Ard Biesheuvel <ardb@kernel.org> wrote:
->
-> On Wed, 6 Mar 2024 at 13:34, yunhui cui <cuiyunhui@bytedance.com> wrote:
-> >
-> > Hi Ard,
-> >
-> > On Wed, Mar 6, 2024 at 5:36=E2=80=AFPM Ard Biesheuvel <ardb@kernel.org>=
- wrote:
-> > >
-> > > On Wed, 6 Mar 2024 at 09:56, Yunhui Cui <cuiyunhui@bytedance.com> wro=
-te:
-> > > >
-> > > > Compared with gcc version 12, gcc version 13 uses the gp
-> > > > register for compilation optimization, but the efistub module
-> > > > does not initialize gp.
-> > > >
-> > > > Signed-off-by: Yunhui Cui <cuiyunhui@bytedance.com>
-> > > > Co-Developed-by: Zhipeng Xu <xuzhipeng.1973@bytedance.com>
-> > >
-> > > This needs a sign-off, and your signoff needs to come after.
-> > >
-> > > > ---
-> > > >  arch/riscv/kernel/efi-header.S | 11 ++++++++++-
-> > > >  1 file changed, 10 insertions(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/arch/riscv/kernel/efi-header.S b/arch/riscv/kernel/efi=
--header.S
-> > > > index 515b2dfbca75..fa17c08c092a 100644
-> > > > --- a/arch/riscv/kernel/efi-header.S
-> > > > +++ b/arch/riscv/kernel/efi-header.S
-> > > > @@ -40,7 +40,7 @@ optional_header:
-> > > >         .long   __pecoff_data_virt_end - __pecoff_text_end      // =
-SizeOfInitializedData
-> > > >  #endif
-> > > >         .long   0                                       // SizeOfUn=
-initializedData
-> > > > -       .long   __efistub_efi_pe_entry - _start         // AddressO=
-fEntryPoint
-> > > > +       .long   _efistub_entry - _start         // AddressOfEntryPo=
-int
-> > > >         .long   efi_header_end - _start                 // BaseOfCo=
-de
-> > > >  #ifdef CONFIG_32BIT
-> > > >         .long  __pecoff_text_end - _start               // BaseOfDa=
-ta
-> > > > @@ -121,4 +121,13 @@ section_table:
-> > > >
-> > > >         .balign 0x1000
-> > > >  efi_header_end:
-> > > > +
-> > > > +       .global _efistub_entry
-> > > > +_efistub_entry:
-> > >
-> > > This should go into .text or .init.text, not the header.
-> > >
-> > > > +       /* Reload the global pointer */
-> > > > +       load_global_pointer
-> > > > +
-> > >
-> > > What is supposed to happen here if CONFIG_SHADOW_CALL_STACK=3Dy? The =
-EFI
-> > > stub Makefile removes the SCS CFLAGS, so the stub will be built
-> > > without shadow call stack support, which I guess means that it might
-> > > use GP as a global pointer as usual?
-> > >
-> > > > +       call __efistub_efi_pe_entry
-> > > > +       ret
-> > > > +
-> > >
-> > > You are returning to the firmware here, but after modifying the GP
-> > > register. Shouldn't you restore it to its old value?
-> > There is no need to restore the value of the gp register. Where gp is
-> > needed, the gp register must first be initialized. And here is the
-> > entry.
-> >
->
-> But how should the firmware know that GP was corrupted after calling
-> the kernel's EFI entrypoint? The EFI stub can return to the firmware
-> if it encounters any errors while still running in the EFI boot
-> services.
->
+Due to some hardware changes, SA8775P has set the NO_SNOOP attribute
+in its TLP for all the PCIe controllers. NO_SNOOP attribute when set,
+the requester is indicating that no cache coherency issues exist for
+the addressed memory on the host i.e., memory is not cached. But in
+reality, requester cannot assume this unless there is a complete
+control/visibility over the addressed memory on the host.
 
-Actually, I wonder if GP can be modified at all before
-ExitBootServices(). The EFI timer interrupt is still live at this
-point, and so the firmware is being called behind your back, and might
-rely on GP retaining its original value.
+And worst case, if the memory is cached on the host, it may lead to
+memory corruption issues. It should be noted that the caching of memory
+on the host is not solely dependent on the NO_SNOOP attribute in TLP.
+
+So to avoid the corruption, this patch overrides the NO_SNOOP attribute
+by setting the PCIE_PARF_NO_SNOOP_OVERIDE register. This patch is not
+needed for other upstream supported platforms since they do not set
+NO_SNOOP attribute by default.
+
+This series is to enable cache snooping logic in both RC and EP driver
+and add the "dma-coherent" property in dtsi to support cache coherency
+in SA8775P platform.
+
+Dependency
+----------
+
+Depends on:
+https://lore.kernel.org/all/1701432377-16899-1-git-send-email-quic_msarkar@quicinc.com/
+https://lore.kernel.org/all/20240306-dw-hdma-v4-4-9fed506e95be@linaro.org/ [1]
+
+V5 -> V6:
+- updated commit message as per comments
+- added Kdoc comments in patch1
+- change variable name from enable_cache_snoop to
+  override_no_snoop
+- sort reg offset define in patch2
+
+V4 -> V5:
+- Updated commit message in both Patch1 and patch2
+- change variable name from no_snoop_override to
+  enable_cache_snoop
+- rebased patch2 on top of [1]
+
+v3 -> v4:
+- added new cfg(cfg_1_34_0) for SA8775P in both RC and EP driver.
+- populated a flag in the data structures instead of doing
+  of_device_is_compatible() in both RC and EP patch.
+- update commit mesaage and added reveiwed-by tag in commit message
+  in dtsi patch.
+
+v2 -> v3:
+- update commit message(8755 -> 8775).
+
+v1 -> v2:
+- update cover letter with explanation.
+- define each of these bits and ORing at usage time rather than
+  directly writing value in register.
+
+Mrinmay Sarkar (3):
+  PCI: qcom: Override NO_SNOOP attribute for SA8775P RC
+  PCI: qcom-ep: Override NO_SNOOP attribute for SA8775P EP
+  arm64: dts: qcom: sa8775p: Mark PCIe EP controller as cache coherent
+
+ arch/arm64/boot/dts/qcom/sa8775p.dtsi     |  1 +
+ drivers/pci/controller/dwc/pcie-qcom-ep.c | 20 +++++++++++++++++---
+ drivers/pci/controller/dwc/pcie-qcom.c    | 25 ++++++++++++++++++++++++-
+ 3 files changed, 42 insertions(+), 4 deletions(-)
+
+-- 
+2.7.4
+
 
