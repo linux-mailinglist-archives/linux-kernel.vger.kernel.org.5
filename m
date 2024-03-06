@@ -1,205 +1,211 @@
-Return-Path: <linux-kernel+bounces-93597-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93598-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60C4387322E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:13:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F48A873231
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:13:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 177F8288BA3
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:13:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 831801C21228
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:13:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FF0B60889;
-	Wed,  6 Mar 2024 09:05:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D226260EC5;
+	Wed,  6 Mar 2024 09:05:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foundries.io header.i=@foundries.io header.b="ABN90weX"
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VzZJueTL"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B701E5F49A
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 09:05:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 214385F49A;
+	Wed,  6 Mar 2024 09:05:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709715945; cv=none; b=DjySRbI0uT/9ewIGiZQifFjuuZSiAP/7YsCVDzRJ2WqM2XBbv4+XdNrFGOo3/M5O3ZjCV0Qhj7DVmmhrTA36owztTpGrRB0W70khMCmQN9Lay43Ec7668HCY8LvgQOanQykrXjgFmFUJm3K+4A/gxD1CmgAYDZ5MszW2N46H+bs=
+	t=1709715955; cv=none; b=CBX7Qw5+go/yIf0nFp2P77z+1+TsGLW34E+dP+ZBaYtpZZxCr5v5tkkSeHWZKJaIRRvLxpzNYSelhQsW7Qcbae27kypJxo3gbrhvw7uG5qtrvXwZVCBoHbawdn/KiHyg71VGHRyvJ6JyjugFpqQ0KyCLyYbJFsqgBX+3ovVF94k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709715945; c=relaxed/simple;
-	bh=AixO+OZOBnZxCVOMRZd6pfSLiMPnzDGtYaxvFS70ZA4=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CKDT3oC9oLYss4vuk/bkut50gB9JfiGzExubQlcgYkvToPrYmkFb+bPgZ/eRzxSSg317Ffizla5Ktn2uAuyYX1w2+GXASV+rLN7HFDysd+0BKZ2NPD+yqg4jWjSVdyJnius+hNhDzp8c0T6uW3+s2h35Vn+UW20tB/G+FpieF+g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=foundries.io; spf=pass smtp.mailfrom=foundries.io; dkim=pass (2048-bit key) header.d=foundries.io header.i=@foundries.io header.b=ABN90weX; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=foundries.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foundries.io
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-412f1ccf8d8so6086405e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 01:05:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=foundries.io; s=google; t=1709715942; x=1710320742; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=c8ufPezaLKvHMaPm3SqbvV4sbLCYN/FbWjx6XVEqb6s=;
-        b=ABN90weX26uPH1XTzCDaSqZqYA/CNr2m+qHhOhbQ9cdQNQteJydK/2WZN3CarvV0rm
-         BWQNaLqgrJxgs5vkOhZkEngotbg21YgNY3sjpf4kV5avmlpmh7hV7CHpSyjvN7KgxD16
-         TRi8SimqEbugOivkEUqA+78WvWfCC5Ijict9YLdNsVuAxjGfGQS06Xi6AbqKOqc6zJA+
-         bGWgn1LhQ5hirpQ64I0wx7l5giw5cbpd9QCIQEOyh5DwVMML9ySrOSolyk529jrdSDzK
-         gGdzfOYNLmgsNgBFA7V3iYKkDXD1oygOkklouM29PbVkPLkTqxYK9Ug+AKuJPZZJWkLW
-         BwSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709715942; x=1710320742;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=c8ufPezaLKvHMaPm3SqbvV4sbLCYN/FbWjx6XVEqb6s=;
-        b=KdH+hLXi7BS322jZ4Y0GfHdvslcnNRRlmFWbqxBrrxLScPKHqcg+JohQdAU4P/aoxm
-         t0rUqu3nab0M4ZFtsM431EM4Vp+jgyw7PQERnxF2gtFabpZImJBz3R57Aof1gK7WBPq7
-         nCkCOpJokvS+JZ2csc8tDPPhYJZ0wafMnQhvTvhS/d+kRO89XDBJsDvCMPoztz8hkQfc
-         1w3NDxOyzOXxteyLbGBcETDkY3ADzAc8K4HfnwXxwAx6hCOh75bNcxb9Vzo66pWmysZM
-         94T1mq/AELRzK/AZUOwzdKUZ9JQs7FOPgT7P6HPvIJu5xQJDnxlbEIAZyEOQ9So0o0qv
-         n0Rw==
-X-Forwarded-Encrypted: i=1; AJvYcCUZCb0Ql8tCideQqPNuQsg+ZvQOcbKm7yOagAaF2vnZBJJ33aYfA198MtJkbqgQqJgdxFFTjVVmDzjR/A8muor+SzOfWLKMpiV7p8zy
-X-Gm-Message-State: AOJu0Yx7KYQcgg8129gNcEAPlZRoAef+X9IgPL6vSRbXAtjiKjlB9xec
-	5n2RS/tMRS5FC6CqU3l+uR7QqRou5mCO7B/XiTrmEzPXeViYKWH2Ng+lKiRzZUI=
-X-Google-Smtp-Source: AGHT+IEkqDsppvh+9EAAVwqQJkQOpNaPLhsIMxBUqOqRReXWyEUG7A+50+IB/vT3/o3giLHc07mvtA==
-X-Received: by 2002:a5d:594b:0:b0:33d:f30:5689 with SMTP id e11-20020a5d594b000000b0033d0f305689mr9609409wri.30.1709715941926;
-        Wed, 06 Mar 2024 01:05:41 -0800 (PST)
-Received: from trax (132.red-81-38-137.dynamicip.rima-tde.net. [81.38.137.132])
-        by smtp.gmail.com with ESMTPSA id n15-20020a5d484f000000b0033dec836ea6sm17043454wrs.99.2024.03.06.01.05.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Mar 2024 01:05:41 -0800 (PST)
-From: "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>
-X-Google-Original-From: "Jorge Ramirez-Ortiz, Foundries" <JorgeRamirez-Ortiz>
-Date: Wed, 6 Mar 2024 10:05:40 +0100
-To: Dominique Martinet <asmadeus@codewreck.org>
-Cc: Ulf Hansson <ulf.hansson@linaro.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Jorge Ramirez-Ortiz <jorge@foundries.io>, linux-mmc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Dominique Martinet <dominique.martinet@atmark-techno.com>,
-	stable@vger.kernel.org
-Subject: Re: [PATCH] mmc: part_switch: fixes switch on gp3 partition
-Message-ID: <Zegx5PCtg6hs8zyp@trax>
-References: <20240306-mmc-partswitch-v1-1-bf116985d950@codewreck.org>
+	s=arc-20240116; t=1709715955; c=relaxed/simple;
+	bh=aYnahezun73pjCUX2IVGuMCgrwsCOEkGUjelhjR0KAE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jq5tR0zo+BzBihtUphkHqSUwrM73XrJnl9mhN4xdtYlZJFbTwHMuwgrFNtSbHL0hs8AJPzs1cBcjMQVcUqhs4qyAHsLHmulptbi9UAoggOY0ClHpdwz2+gL4Bpp4sQn76u0w2ExVbXMObPoTn9rfFgKwusKgbJxOt9eMcBwkSvY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VzZJueTL; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709715953; x=1741251953;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=aYnahezun73pjCUX2IVGuMCgrwsCOEkGUjelhjR0KAE=;
+  b=VzZJueTLnWKMq1zszGjBRrTpi8fE+7IdOwOveDPoPebjAz5beQMlKy6L
+   Lgbz21VknVoH/UZnkpd3RSLV8g3BRKZDbCFV0UcXHYfM1x6vpMTvcLHIl
+   h3BhIo2Y4e4OR4lznBFb9/3nKC4usUDPttPL2NDblKTGSppQGhHJ6pBvH
+   cPtsFD2pzBvubsgj0g4jKp9Q59HdzUNO6XqvPdlexTPhclO56QtvZqZpn
+   pWiwsLCKe2PRD6/2dup6CJawNTRkZvdqS2Ep5x2jQbtSTmxoCgbr463by
+   N7ccq0Pj04fapyl6sW7CbFYda9apddPCpj65DH7WZpb3WaGP8q4B9L157
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11004"; a="26783873"
+X-IronPort-AV: E=Sophos;i="6.06,207,1705392000"; 
+   d="scan'208";a="26783873"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 01:05:53 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,207,1705392000"; 
+   d="scan'208";a="9665672"
+Received: from sunyi-station.sh.intel.com (HELO ysun46-mobl.sh.intel.com) ([10.239.159.10])
+  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 01:05:49 -0800
+Date: Wed, 6 Mar 2024 17:05:45 +0800
+From: Yi Sun <yi.sun@linux.intel.com>
+To: isaku.yamahata@intel.com, Kai Huang <kai.huang@intel.com>,
+	yi.sun@intel.com
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+	isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
+	erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
+	Sagi Shahar <sagis@google.com>, chen.bo@intel.com,
+	hang.yuan@intel.com, tina.zhang@intel.com,
+	"Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [PATCH v19 005/130] x86/virt/tdx: Export global metadata read
+ infrastructure
+Message-ID: <Zegx6R4W3lVd+5tx@ysun46-mobl.sh.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <eec524e07ee17961a4deb1cc7a1390c91d8708ff.1708933498.git.isaku.yamahata@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20240306-mmc-partswitch-v1-1-bf116985d950@codewreck.org>
+In-Reply-To: <eec524e07ee17961a4deb1cc7a1390c91d8708ff.1708933498.git.isaku.yamahata@intel.com>
 
-On 06/03/24 10:44:38, Dominique Martinet wrote:
-> From: Dominique Martinet <dominique.martinet@atmark-techno.com>
+On 26.02.2024 00:25, isaku.yamahata@intel.com wrote:
+>From: Kai Huang <kai.huang@intel.com>
 >
-> Commit e7794c14fd73 ("mmc: rpmb: fixes pause retune on all RPMB
-> partitions.") added a mask check for 'part_type', but the mask used was
-> wrong leading to the code intended for rpmb also being executed for GP3.
+>KVM will need to read a bunch of non-TDMR related metadata to create and
+>run TDX guests.  Export the metadata read infrastructure for KVM to use.
 >
-> On some MMCs (but not all) this would make gp3 partition inaccessible:
-> armadillo:~# head -c 1 < /dev/mmcblk2gp3
-> head: standard input: I/O error
-> armadillo:~# dmesg -c
-> [  422.976583] mmc2: running CQE recovery
-> [  423.058182] mmc2: running CQE recovery
-> [  423.137607] mmc2: running CQE recovery
-> [  423.137802] blk_update_request: I/O error, dev mmcblk2gp3, sector 0 op 0x0:(READ) flags 0x80700 phys_seg 4 prio class 0
-> [  423.237125] mmc2: running CQE recovery
-> [  423.318206] mmc2: running CQE recovery
-> [  423.397680] mmc2: running CQE recovery
-> [  423.397837] blk_update_request: I/O error, dev mmcblk2gp3, sector 0 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
-> [  423.408287] Buffer I/O error on dev mmcblk2gp3, logical block 0, async page read
+>Specifically, export two helpers:
 >
-> the part_type values of interest here are defined as follow:
-> main  0
-> boot0 1
-> boot1 2
-> rpmb  3
-> gp0   4
-> gp1   5
-> gp2   6
-> gp3   7
+>1) The helper which reads multiple metadata fields to a buffer of a
+>   structure based on the "field ID -> structure member" mapping table.
+>
+>2) The low level helper which just reads a given field ID.
+>
+>The two helpers cover cases when the user wants to cache a bunch of
+>metadata fields to a certain structure and when the user just wants to
+>query a specific metadata field on demand.  They are enough for KVM to
+>use (and also should be enough for other potential users).
+>
+>Signed-off-by: Kai Huang <kai.huang@intel.com>
+>Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+>Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+>---
+> arch/x86/include/asm/tdx.h  | 22 ++++++++++++++++++++++
+> arch/x86/virt/vmx/tdx/tdx.c | 25 ++++++++-----------------
+> 2 files changed, 30 insertions(+), 17 deletions(-)
+>
+>diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
+>index eba178996d84..709b9483f9e4 100644
+>--- a/arch/x86/include/asm/tdx.h
+>+++ b/arch/x86/include/asm/tdx.h
+>@@ -116,6 +116,28 @@ static inline u64 sc_retry(sc_func_t func, u64 fn,
+> int tdx_cpu_enable(void);
+> int tdx_enable(void);
+> const char *tdx_dump_mce_info(struct mce *m);
+>+
+>+struct tdx_metadata_field_mapping {
+>+	u64 field_id;
+>+	int offset;
+>+	int size;
+>+};
+>+
+>+#define TD_SYSINFO_MAP(_field_id, _struct, _member)	\
+>+	{ .field_id = MD_FIELD_ID_##_field_id,		\
+>+	  .offset   = offsetof(_struct, _member),	\
+>+	  .size     = sizeof(typeof(((_struct *)0)->_member)) }
+>+
+>+/*
+>+ * Read multiple global metadata fields to a buffer of a structure
+>+ * based on the "field ID -> structure member" mapping table.
+>+ */
+>+int tdx_sys_metadata_read(const struct tdx_metadata_field_mapping *fields,
+>+			  int nr_fields, void *stbuf);
+>+
+>+/* Read a single global metadata field */
+>+int tdx_sys_metadata_field_read(u64 field_id, u64 *data);
+>+
+> #else
+> static inline void tdx_init(void) { }
+> static inline int tdx_cpu_enable(void) { return -ENODEV; }
+>diff --git a/arch/x86/virt/vmx/tdx/tdx.c b/arch/x86/virt/vmx/tdx/tdx.c
+>index a19adc898df6..dc21310776ab 100644
+>--- a/arch/x86/virt/vmx/tdx/tdx.c
+>+++ b/arch/x86/virt/vmx/tdx/tdx.c
+>@@ -251,7 +251,7 @@ static int build_tdx_memlist(struct list_head *tmb_list)
+> 	return ret;
+> }
+>
+>-static int read_sys_metadata_field(u64 field_id, u64 *data)
+>+int tdx_sys_metadata_field_read(u64 field_id, u64 *data)
+> {
+> 	struct tdx_module_args args = {};
+> 	int ret;
+>@@ -270,6 +270,7 @@ static int read_sys_metadata_field(u64 field_id, u64 *data)
+>
+> 	return 0;
+> }
+>+EXPORT_SYMBOL_GPL(tdx_sys_metadata_field_read);
+>
+> /* Return the metadata field element size in bytes */
+> static int get_metadata_field_bytes(u64 field_id)
+>@@ -295,7 +296,7 @@ static int stbuf_read_sys_metadata_field(u64 field_id,
+> 	if (WARN_ON_ONCE(get_metadata_field_bytes(field_id) != bytes))
+> 		return -EINVAL;
+>
+>-	ret = read_sys_metadata_field(field_id, &tmp);
+>+	ret = tdx_sys_metadata_field_read(field_id, &tmp);
+> 	if (ret)
+> 		return ret;
+>
+>@@ -304,19 +305,8 @@ static int stbuf_read_sys_metadata_field(u64 field_id,
+> 	return 0;
+> }
+>
+>-struct field_mapping {
+>-	u64 field_id;
+>-	int offset;
+>-	int size;
+>-};
+>-
+>-#define TD_SYSINFO_MAP(_field_id, _struct, _member)	\
+>-	{ .field_id = MD_FIELD_ID_##_field_id,		\
+>-	  .offset   = offsetof(_struct, _member),	\
+>-	  .size     = sizeof(typeof(((_struct *)0)->_member)) }
+>-
+>-static int read_sys_metadata(struct field_mapping *fields, int nr_fields,
+>-			     void *stbuf)
+>+int tdx_sys_metadata_read(const struct tdx_metadata_field_mapping *fields,
+>+			  int nr_fields, void *stbuf)
+> {
+> 	int i, ret;
+>
+>@@ -331,6 +321,7 @@ static int read_sys_metadata(struct field_mapping *fields, int nr_fields,
+>
+> 	return 0;
+> }
+>+EXPORT_SYMBOL_GPL(tdx_sys_metadata_read);
+Hi Kai,
 
-right, the patch I originally sent didn't consider anything after GP0 as per
-the definitions below.
+The two helpers can potentially be used by TD guests, as you mentioned.
+It's a good idea to declare it in the header asm/tdx.h.
 
-#define EXT_CSD_PART_CONFIG_ACC_MASK	(0x7)
-#define EXT_CSD_PART_CONFIG_ACC_BOOT0	(0x1)
-#define EXT_CSD_PART_CONFIG_ACC_RPMB	(0x3)
-#define EXT_CSD_PART_CONFIG_ACC_GP0	(0x4)
+However, the function cannot be compiled if its definition remains in the
+vmx/tdx/tdx.c file while disabling the CONFIG_TDX_HOST.
 
-That looked strange as there should be support for 4 GP but this code
-kind of convinced me of the opposite.
+It would be better to move the definition to a shared location,
+allowing the host and guest to share the same code.
 
-	if (idata->rpmb) {
-		/* Support multiple RPMB partitions */
-		target_part = idata->rpmb->part_index;
-		target_part |= EXT_CSD_PART_CONFIG_ACC_RPMB;
-	}
+Thanks
+   --Sun, Yi
 
-So if we apply the fix that you propose, how are multiple RPMB
-partitions (ie, 4) going to be identified as RPMB? Unless there can't be
-more than 3?
-
-But sure, your patch makes sense to me.
-
->
-> so mask with EXT_CSD_PART_CONFIG_ACC_MASK (7) to correctly identify rpmb
->
-> Fixes: e7794c14fd73 ("mmc: rpmb: fixes pause retune on all RPMB partitions.")
-> Cc: stable@vger.kernel.org
-> Cc: Jorge Ramirez-Ortiz <jorge@foundries.io>
-> Signed-off-by: Dominique Martinet <dominique.martinet@atmark-techno.com>
-> ---
-> A couple of notes:
-> - this doesn't fail on all eMMCs, I can still access gp3 on some models
->   but it seems to fail reliably with micron's "G1M15L"
-> - I've encountered this on the 5.10 backport (in 5.10.208), so that'll
->   need to be backported everywhere the fix was taken...
->
-> Thanks!
-> ---
->  drivers/mmc/core/block.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-> index 32d49100dff5..86efa6084696 100644
-> --- a/drivers/mmc/core/block.c
-> +++ b/drivers/mmc/core/block.c
-> @@ -874,10 +874,11 @@ static const struct block_device_operations mmc_bdops = {
->  static int mmc_blk_part_switch_pre(struct mmc_card *card,
->  				   unsigned int part_type)
->  {
-> -	const unsigned int mask = EXT_CSD_PART_CONFIG_ACC_RPMB;
-> +	const unsigned int mask = EXT_CSD_PART_CONFIG_ACC_MASK;
-> +	const unsigned int rpmb = EXT_CSD_PART_CONFIG_ACC_RPMB;
->  	int ret = 0;
->
-> -	if ((part_type & mask) == mask) {
-> +	if ((part_type & mask) == rpmb) {
->  		if (card->ext_csd.cmdq_en) {
->  			ret = mmc_cmdq_disable(card);
->  			if (ret)
-> @@ -892,10 +893,11 @@ static int mmc_blk_part_switch_pre(struct mmc_card *card,
->  static int mmc_blk_part_switch_post(struct mmc_card *card,
->  				    unsigned int part_type)
->  {
-> -	const unsigned int mask = EXT_CSD_PART_CONFIG_ACC_RPMB;
-> +	const unsigned int mask = EXT_CSD_PART_CONFIG_ACC_MASK;
-> +	const unsigned int rpmb = EXT_CSD_PART_CONFIG_ACC_RPMB;
->  	int ret = 0;
->
-> -	if ((part_type & mask) == mask) {
-> +	if ((part_type & mask) == rpmb) {
->  		mmc_retune_unpause(card->host);
->  		if (card->reenable_cmdq && !card->ext_csd.cmdq_en)
->  			ret = mmc_cmdq_enable(card);
->
-> ---
-> base-commit: 5847c9777c303a792202c609bd761dceb60f4eed
-> change-id: 20240306-mmc-partswitch-c3a50b5084ae
->
-> Best regards,
-> --
-> Dominique Martinet | Asmadeus
->
 
