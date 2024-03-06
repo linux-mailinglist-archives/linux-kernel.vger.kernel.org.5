@@ -1,125 +1,182 @@
-Return-Path: <linux-kernel+bounces-93928-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93929-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B11AD87370B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:54:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26B1C87370C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:55:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5CCD4B239B4
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:54:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 56D121C23C17
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:55:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40F5612F5B8;
-	Wed,  6 Mar 2024 12:53:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF7D312C53E;
+	Wed,  6 Mar 2024 12:55:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VZqI+KI9"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="KxfLIW5Z"
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F051A130ADC
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 12:53:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 009D45DF1D;
+	Wed,  6 Mar 2024 12:54:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.152.168
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709729629; cv=none; b=ejBVrLRmYyRtqDrWpvU2P+8iNfN1LJZEoGz9Mq068NkYXDVFQPwXYIinjT2xPUJ4jvG2Oh/Ku9VMIa8MCMacbEk7mtOMZEIVE0WBGipNitQj5GlDl1eLRdMPDLawUER8Cinc2Ru93cU87GKouLSDRXtiF5QJ1Zb57m1viqXcylQ=
+	t=1709729701; cv=none; b=pwYOsRI0bkZdf8YjxwqOKeeB9AX0DvJwd5lf6HAMmLPInAkxqF2di+4JEJwVwmU+iHBUlvHjGaqrcX3Qswu4L9DkKx7sQ+71ghJEjtGcl7p3+WeqL7iTtlqZZTXV5l+JwqIWgrgRAWjMFmx99r+Qla514NQ7ES9b+7XsJyYn5Zw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709729629; c=relaxed/simple;
-	bh=9V/0lspOmb9T32u1RMsAnMxMJ1V06Y8m+bgWinFW7ZQ=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=e6bXr+GN4PyU94rZ+CZVl2Beks4FxEV+6J+m3DBKfk4ixLP50ATWY9ieqGPiW1rRlIDcKO+boXX1YIQDH42whWZkgeRGE36bw6P6GggfvEQ1ZMbizS8S5jrARXtlDfwgU/ao4RBLVUliWTkP3hQr5tfqmg0PW/YVHXWxqrdSXUI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VZqI+KI9; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709729628; x=1741265628;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version:content-transfer-encoding;
-  bh=9V/0lspOmb9T32u1RMsAnMxMJ1V06Y8m+bgWinFW7ZQ=;
-  b=VZqI+KI9RbaHrtIePWkRkh9dCb0Gq8yPord6eqtsUbNJ/epwZRe8H9R+
-   ddxcYzycFuGIHMWpVWI30c1mVdEsX6nygfrs+4UOSx75W+t4pOX2vqxc/
-   VS0GTXiicC13TL8kdr3ykUdzTJX2Gv3+GWM3btpfRMkoI0aNsIn8ypdRa
-   3xrC54LktOFYvDRYy1R85YBqJrtvmj5PtIes4gfhJ2lKyyJSwlJ633NXu
-   9dS+jxdMz6comDOrp3XHO8rFeJhjB1lXED7EXBfXZVDC3d9MsMy6zqGeQ
-   GnJqcxX5vzKTLXcuDWgBX0cS6MMB+WRDAroBUAYoOKzIujHCACGWt9KAY
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11004"; a="4270460"
-X-IronPort-AV: E=Sophos;i="6.06,208,1705392000"; 
-   d="scan'208";a="4270460"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 04:53:47 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,208,1705392000"; 
-   d="scan'208";a="9678012"
-Received: from rjongalo-mobl2.ger.corp.intel.com (HELO localhost) ([10.252.33.211])
-  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 04:53:43 -0800
-From: Jani Nikula <jani.nikula@linux.intel.com>
-To: Hsin-Yi Wang <hsinyi@chromium.org>, Doug Anderson <dianders@chromium.org>
-Cc: Neil Armstrong <neil.armstrong@linaro.org>, Jessica Zhang
- <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, Maarten
- Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
- <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David
- Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, Dmitry
- Baryshkov <dmitry.baryshkov@linaro.org>
-Subject: Re: [PATCH v3 2/4] drm/edid: Add a function to check monitor string
-In-Reply-To: <CAJMQK-hE8sWL2rO-N2WZuyXzPhnXZJN4LUL_TwzKGhq_Ozz6Vw@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20240304195214.14563-1-hsinyi@chromium.org>
- <20240304195214.14563-3-hsinyi@chromium.org> <87a5nd4tsg.fsf@intel.com>
- <CAJMQK-j4wGah=szyUW53hu-v6Q4QjgR7WMLKnspoFaO9oPfaQw@mail.gmail.com>
- <874jdl4k01.fsf@intel.com>
- <CAJMQK-iWHoh6s-hkcNULzZLjMg9UnTuWfjaJ=YfnHU3sQ1NBEg@mail.gmail.com>
- <CAD=FV=UOhTGnhtc9gOQ5C_aAdgVcB+K7NL9RGm4umunF91Wkpg@mail.gmail.com>
- <87y1ax2iu1.fsf@intel.com>
- <CAD=FV=WzLLeEw-b0Kug-Pm-9EYm7eHvmukEUJ8VHnu-4YY3WNQ@mail.gmail.com>
- <CAJMQK-hE8sWL2rO-N2WZuyXzPhnXZJN4LUL_TwzKGhq_Ozz6Vw@mail.gmail.com>
-Date: Wed, 06 Mar 2024 14:53:40 +0200
-Message-ID: <875xxzzfl7.fsf@intel.com>
+	s=arc-20240116; t=1709729701; c=relaxed/simple;
+	bh=czwmuKZynxP030wgUGa8GWEjB9o8Lc2TErJL0actoqk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=HOpXTIdbO8h/5oUIUedfrYeMZ3XgDuZmXpEYUguqnbMU3hSulSqc9JbTvblNRaUeCz55IyYFwNXWPzpwsgSnChF62Xov59a64SEKfZ91cOiK9NYecF+Y72iDMQyBqNcyqNUEiCB28VqhW3bcbiEAarX1tbZpZgvJvsCaZbxSPqY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=KxfLIW5Z; arc=none smtp.client-ip=67.231.152.168
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4268keDm013652;
+	Wed, 6 Mar 2024 06:54:46 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	PODMain02222019; bh=dUnOWEoxp3SnJf2CLLou3NRw4azRYH8sTPSVS7jTw3c=; b=
+	KxfLIW5ZslqURg+L4ZEH6tjKmxwt06qhWECFicj/THLPKjRvstRQgfQ6ki4e5PTf
+	+35OntL91YPaaGaigZAWUN5i5TbjwCHRl25guPLLG2z81RcZ3yiuQUjaCbzCochX
+	bQU8nHv+XY//hCf7NAkmc6MFc3OUw40//e0FS/nIMZsbMJOmTG+pHRq0/wiCS3bw
+	4tN+R8jXnrpzETHN2UA5sVhuBV6POgzb47aptlax+m2xIIjJa8Jew17F/LkL/5BO
+	q2+pJZvF7DHXCvdFa3y1+9K3jj6BoLvyYVEu88oCntCt11sFfKCy90/D/iJtTSJM
+	oVoJuKZTokzobNHXdtxK6w==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3wpn930795-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 06 Mar 2024 06:54:45 -0600 (CST)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 6 Mar 2024
+ 12:54:43 +0000
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1544.4 via Frontend Transport; Wed, 6 Mar 2024 12:54:43 +0000
+Received: from [198.61.64.14] (EDIN4L06LR3.ad.cirrus.com [198.61.64.14])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 7BA69820241;
+	Wed,  6 Mar 2024 12:54:43 +0000 (UTC)
+Message-ID: <fedf6e86-ca14-4236-85c0-64205c63d7f9@opensource.cirrus.com>
+Date: Wed, 6 Mar 2024 12:54:43 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ASoC: soc-card: Fix missing locking in
+ snd_soc_card_get_kcontrol()
+To: Takashi Iwai <tiwai@suse.de>
+CC: <broonie@kernel.org>, <shengjiu.wang@gmail.com>, <Xiubo.Lee@gmail.com>,
+        <linux-sound@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+        <linux-kernel@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
+        <patches@opensource.cirrus.com>
+References: <20240221123710.690224-1-rf@opensource.cirrus.com>
+ <878r33hf81.wl-tiwai@suse.de>
+Content-Language: en-US
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+In-Reply-To: <878r33hf81.wl-tiwai@suse.de>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-GUID: YEs5JGMEo5VD8m1KlprrWBCx10iE2ihb
+X-Proofpoint-ORIG-GUID: YEs5JGMEo5VD8m1KlprrWBCx10iE2ihb
+X-Proofpoint-Spam-Reason: safe
 
-On Tue, 05 Mar 2024, Hsin-Yi Wang <hsinyi@chromium.org> wrote:
-> On Tue, Mar 5, 2024 at 11:25=E2=80=AFAM Doug Anderson <dianders@chromium.=
-org> wrote:
->> Hmm. As Hsin-Yi pointed out to me offline. Somehow we'll need to get
->> the actual panel ID out. Right now in panel-edp.c we have:
+On 29/2/24 08:00, Takashi Iwai wrote:
+> On Wed, 21 Feb 2024 13:37:10 +0100,
+> Richard Fitzgerald wrote:
 >>
->> dev_warn(dev,
->>   "Unknown panel %s %#06x, using conservative timings\n",
->>   vend, product_id);
+>> snd_soc_card_get_kcontrol() must be holding a read lock on
+>> card->controls_rwsem while walking the controls list.
 >>
->> Where "vend" and "product_id" come from the panel ID of a panel that
->> we didn't recognize. For instance:
+>> Compare with snd_ctl_find_numid().
 >>
->>   Unknown panel BOE 0x0731, using conservative timings
+>> The existing function is renamed snd_soc_card_get_kcontrol_locked()
+>> so that it can be called from contexts that are already holding
+>> card->controls_rwsem (for example, control get/put functions).
 >>
->> We need to still be able to print this message for unrecognized
->> panels. Then when we see field reports including this message we know
->> that somehow we ended up shipping an unrecognized panel.
+>> There are few direct or indirect callers of
+>> snd_soc_card_get_kcontrol(), and most are safe. Three require
+>> changes, which have been included in this patch:
 >>
->> Any suggestions on what abstraction you'd like to see to enable us to
->> print that message if everything is opaque?
->
-> Sent v4 here: https://lore.kernel.org/lkml/20240306004347.974304-1-hsinyi=
-@chromium.org/
->
-> Besides that it still keeps drm_edid_get_panel_id() to be used on the
-> kernel warning when no panel is matched, other parts I think are
-> following the comments.
+>> codecs/cs35l45.c:
+>>    cs35l45_activate_ctl() is called from a control put() function so
+>>    is changed to call snd_soc_card_get_kcontrol_locked().
+>>
+>> codecs/cs35l56.c:
+>>    cs35l56_sync_asp1_mixer_widgets_with_firmware() is called from
+>>    control get()/put() functions so is changed to call
+>>    snd_soc_card_get_kcontrol_locked().
+>>
+>> fsl/fsl_xcvr.c:
+>>    fsl_xcvr_activate_ctl() is called from three places, one of which
+>>    already holds card->controls_rwsem:
+>>    1. fsl_xcvr_mode_put(), a control put function, which will
+>>       already be holding card->controls_rwsem.
+>>    2. fsl_xcvr_startup(), a DAI startup function.
+>>    3. fsl_xcvr_shutdown(), a DAI shutdown function.
+>>
+>>    To fix this, fsl_xcvr_activate_ctl() has been changed to call
+>>    snd_soc_card_get_kcontrol_locked() so that it is safe to call
+>>    directly from fsl_xcvr_mode_put().
+>>    The fsl_xcvr_startup() and fsl_xcvr_shutdown() functions have been
+>>    changed to take a read lock on card->controls_rsem() around calls
+>>    to fsl_xcvr_activate_ctl(). While this is not very elegant, it
+>>    keeps the change small, to avoid this patch creating a large
+>>    collateral churn in fsl/fsl_xcvr.c.
+>>
+>> Analysis of other callers of snd_soc_card_get_kcontrol() is that
+>> they do not need any changes, they are not holding card->controls_rwsem
+>> when they call snd_soc_card_get_kcontrol().
+>>
+>> Direct callers of snd_soc_card_get_kcontrol():
+>>    fsl/fsl_spdif.c: fsl_spdif_dai_probe() - DAI probe function
+>>    fsl/fsl_micfil.c: voice_detected_fn() - IRQ handler
+>>
+>> Indirect callers via soc_component_notify_control():
+>>    codecs/cs42l43: cs42l43_mic_shutter() - IRQ handler
+>>    codecs/cs42l43: cs42l43_spk_shutter() - IRQ handler
+>>    codecs/ak4118.c: ak4118_irq_handler() - IRQ handler
+>>    codecs/wm_adsp.c: wm_adsp_write_ctl() - not currently used
+>>
+>> Indirect callers via snd_soc_limit_volume():
+>>    qcom/sc8280xp.c: sc8280xp_snd_init() - DAIlink init function
+>>    ti/rx51.c: rx51_aic34_init() - DAI init function
+>>
+>> I don't have hardware to test the fsl/*, qcom/sc828xp.c, ti/rx51.c
+>> and ak4118.c changes.
+>>
+>> Backport note:
+>> The fsl/, qcom/, cs35l45, cs35l56 and cs42l43 callers were added
+>> since the Fixes commit so won't all be present on older kernels.
+>>
+>> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+>> Fixes: 209c6cdfd283 ("ASoC: soc-card: move snd_soc_card_get_kcontrol() to soc-card")
+>> ---
+>> It would be great if people could test the fsl/, qcom/, ti/rx51 and ak4418
+>> drivers.
+> 
+> This fix itself looks correct, and I merged Mark's PR now.
+> 
+> But in general, it'd be better to use snd_ctl_find_id() and
+> snd_ctl_find_id_unlocked() if possible.  Those standard APIs can use
+> the fast Xarray lookup, and especially for the case like many ASoC
+> drivers that expose hundreds of kcontrols, the performance gain
+> becomes significant.
+> 
+> I see that there is no snd_ctl_find_mixer_id_unlocked() variant, but
+> it should be trivial to add.
+> 
+> 
 
-Yeah we can keep that for now.
+Yes, I'll have a look at that. I was thinking that it would be good
+to have all the code to find controls in one place, instead of a special
+case for ASoC. But I decided to make the bugfix with minimum changes.
 
-BR,
-Jani.
+> thanks,
+> 
+> Takashi
 
-
---=20
-Jani Nikula, Intel
 
