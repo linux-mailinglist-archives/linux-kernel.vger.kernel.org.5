@@ -1,191 +1,148 @@
-Return-Path: <linux-kernel+bounces-94152-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94151-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91981873A9F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:25:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 034B1873A9D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:25:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C78F2841AD
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:25:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 87B6CB20F08
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:25:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2849134733;
-	Wed,  6 Mar 2024 15:25:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 160CE1353E2;
+	Wed,  6 Mar 2024 15:24:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="YnOkUDS+"
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="mjPEfKeZ"
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 391E8131E4B;
-	Wed,  6 Mar 2024 15:25:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5916A131E4B;
+	Wed,  6 Mar 2024 15:24:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709738709; cv=none; b=mDSno6cy8euJmrJRnMWO/EyS/kDnihb4uXCnLleEFRWMuEMSUzlRFaey0fWKyh9rf20RqHP6Oo+TzkrAzET33bWwpjlbed7Fz4ycCJCG2M/i9YGadIn8/XTwDLkOk4mboNs5QbfUXs/0Lp5B56oeaZRdVaMtU+pSM1I9jyPx57E=
+	t=1709738696; cv=none; b=O6P2/0iXnbxRiZTIiSKcnCfEegyXXRgMZXj8ijGqPaGU6krQvfeSeHoVx8O8xitoDRh9pXb60Cs1rO4zA/fDHvkuAg174wEqby2R/PvU1JZXgVzJ18jfyfvY5oO025AT0PAJSf/ZSo6VZLvd5/YU2EhCWDysm5BaWkjIZ4RI3iQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709738709; c=relaxed/simple;
-	bh=EDc76FHAyYlhGhEF+aSjah9SCCYqShQbC/emjwhHXkg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=S4V6EY1tF7E/6JjCckH1dGl9/53OHqS4aDj93D5j4wKliOu1/ppmfMiGvE63Kjs3gtTthN1mXNUuNZe9ftI6m/CUDMJPMdZBgn60LL7IrIwkuPQyBjy63OsGj9xMiwMzghy5NxiLfIBkk1IUYpfzUE6riKMx5QBz5BYslgt7IYM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=YnOkUDS+; arc=none smtp.client-ip=167.114.26.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1709738700;
-	bh=EDc76FHAyYlhGhEF+aSjah9SCCYqShQbC/emjwhHXkg=;
-	h=From:To:Cc:Subject:Date:From;
-	b=YnOkUDS+IHPn0lJQvlN8WhKDbpSlcVQnSJwwRrYueGB8MJ5FDfNDq/oDA0o+70lN3
-	 LcfAMtGAX6z1f7nfCYfjMA25S7XR4VHogs5D9rTA7A/w+agmGTehnpnd6fV3GAJaPZ
-	 PuPCB7QJGjdmiK6wrO6KOgWkL7SXMeryyFy+JTME/f2hSak2hKjx+XkkVTrFVWRBP/
-	 sovfbmGECCbBIhPkzFVee34VLcJ4ZV0ob6ad4GmBVmy2BaaoLQwDVPCXX71ZX13hxN
-	 gfsX3nR9nCyE0DZS38twlXcMNvp2q4xImvYoQoYs2VRuuOqEHtLdiwYjf24sPj7CoS
-	 MT9gE0i++0CnA==
-Received: from thinkos.internal.efficios.com (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4TqbpM6s7RzfyB;
-	Wed,  6 Mar 2024 10:24:59 -0500 (EST)
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To: "levi . yun" <yeoreum.yun@arm.com>
-Cc: linux-kernel@vger.kernel.org,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	stable@vger.kernel.org,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Aaron Lu <aaron.lu@intel.com>
-Subject: [RFC PATCH] sched: Add missing memory barrier in switch_mm_cid
-Date: Wed,  6 Mar 2024 10:24:43 -0500
-Message-Id: <20240306152443.6340-1-mathieu.desnoyers@efficios.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1709738696; c=relaxed/simple;
+	bh=WeLCZdyxH9Jm1/DFqGl++RMaB5Vh55Nxbh+OghW/4M8=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=c4UBA+o9iHi+v5VTx7/pSjnJSRSZZH7kIRYBXuGIqkBFQ0GnQBI+PJ7YHdoh9yTdR9jTd47OGrGKkY6V6XWCwH6ZM/oAud2XMO1JhuR1JvNMkgMKbWsi+0WVlrTGHDkfKymTLBi23ISWpFIvXJu79NfvAmKkbjjhAubvng9BJnY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=mjPEfKeZ; arc=none smtp.client-ip=217.70.183.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id ACE3C240004;
+	Wed,  6 Mar 2024 15:24:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709738691;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ws/U9rXw9hdPUiJEnWGbV1/PZTEyE4ZxFWPvEgZTLpI=;
+	b=mjPEfKeZan85r8q/7mQLKFtDrGbze986rwZdjZ546wwT8wwvmRrmktmmv6jbuMW35W6q0a
+	mcHNCoSlW1oXYlOkOQdhxUmdulbNz93JW0kRce/y5PXqK4C8/LIq/+PTKTt1zWJBJLSRuu
+	Ddk+G0zrsi3pR/ri9jUS2i6Hup4kTY2RsFnvIDsC4jLrcDR2We7kJ5+QVMyX57LZ1aipLB
+	Fyyg5TAZ+tUO01m/IlCIiZuLpK6sA3ws1QxQ+4wjmkA6Goill9XMgFGQw02+5WagbixZao
+	SxMBf2EtZnOBqglKKToQEW4qWd2POOSb7uQKDj7qoIOdwRvFK7zEi66c2i3Kkg==
+Date: Wed, 6 Mar 2024 16:24:47 +0100
+From: Herve Codina <herve.codina@bootlin.com>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Rob Herring
+ <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>, Saravana
+ Kannan <saravanak@google.com>, Lizhi Hou <lizhi.hou@amd.com>, Max Zhen
+ <max.zhen@amd.com>, Sonal Santan <sonal.santan@amd.com>, Stefano Stabellini
+ <stefano.stabellini@xilinx.com>, Jonathan Cameron
+ <Jonathan.Cameron@huawei.com>, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, Allan Nielsen <allan.nielsen@microchip.com>,
+ Horatiu Vultur <horatiu.vultur@microchip.com>, Steen Hegelund
+ <steen.hegelund@microchip.com>, Luca Ceresoli <luca.ceresoli@bootlin.com>,
+ Nuno Sa <nuno.sa@analog.com>, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, stable@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] driver core: Introduce
+ device_link_wait_removal()
+Message-ID: <20240306162447.2a843a11@bootlin.com>
+In-Reply-To: <CAJZ5v0gENrBFfJ3FDJ=m0-veFbue_Bw168+k2cs7v2u9MtCT8Q@mail.gmail.com>
+References: <20240306085007.169771-1-herve.codina@bootlin.com>
+	<20240306085007.169771-2-herve.codina@bootlin.com>
+	<CAJZ5v0gENrBFfJ3FDJ=m0-veFbue_Bw168+k2cs7v2u9MtCT8Q@mail.gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-GND-Sasl: herve.codina@bootlin.com
 
-Many architectures' switch_mm() (e.g. arm64) do not have an smp_mb()
-which the core scheduler code has depended upon since commit:
+Hi Rafael,
 
-    commit 223baf9d17f25 ("sched: Fix performance regression introduced by mm_cid")
+On Wed, 6 Mar 2024 13:48:37 +0100
+"Rafael J. Wysocki" <rafael@kernel.org> wrote:
 
-If switch_mm() doesn't call smp_mb(), sched_mm_cid_remote_clear() can
-unset the activly used cid when it fails to observe active task after it
-sets lazy_put.
+> On Wed, Mar 6, 2024 at 9:51 AM Herve Codina <herve.codina@bootlin.com> wrote:
+> >
+> > The commit 80dd33cf72d1 ("drivers: base: Fix device link removal")
+> > introduces a workqueue to release the consumer and supplier devices used
+> > in the devlink.
+> > In the job queued, devices are release and in turn, when all the
+> > references to these devices are dropped, the release function of the
+> > device itself is called.
+> >
+> > Nothing is present to provide some synchronisation with this workqueue
+> > in order to ensure that all ongoing releasing operations are done and
+> > so, some other operations can be started safely.
+> >
+> > For instance, in the following sequence:
+> >   1) of_platform_depopulate()
+> >   2) of_overlay_remove()
+> >
+> > During the step 1, devices are released and related devlinks are removed
+> > (jobs pushed in the workqueue).
+> > During the step 2, OF nodes are destroyed but, without any
+> > synchronisation with devlink removal jobs, of_overlay_remove() can raise
+> > warnings related to missing of_node_put():
+> >   ERROR: memory leak, expected refcount 1 instead of 2
+> >
+> > Indeed, the missing of_node_put() call is going to be done, too late,
+> > from the workqueue job execution.
+> >
+> > Introduce device_link_wait_removal() to offer a way to synchronize
+> > operations waiting for the end of devlink removals (i.e. end of
+> > workqueue jobs).
+> > Also, as a flushing operation is done on the workqueue, the workqueue
+> > used is moved from a system-wide workqueue to a local one.
+> >
+> > Fixes: 80dd33cf72d1 ("drivers: base: Fix device link removal")  
+> 
+> No, it is not fixed by this patch.
 
-The *is* a memory barrier between storing to rq->curr and _return to
-userspace_ (as required by membarrier), but the rseq mm_cid has stricter
-requirements: the barrier needs to be issued between store to rq->curr
-and switch_mm_cid(), which happens earlier than:
+Was explicitly asked by Saravana on v1 review:
+https://lore.kernel.org/linux-kernel/CAGETcx9uP86EHyKJNifBMd23oCsA+KpMa+e36wJEEnHDve+Avg@mail.gmail.com/
 
-- spin_unlock(),
-- switch_to().
+The commit 80dd33cf72d1 introduces the workqueue and so some asynchronous tasks
+on removal.
+This patch and the next one allows to re-sync execution waiting for jobs in
+the workqueue when it is needed.
 
-So it's fine when the architecture switch_mm happens to have that barrier
-already, but less so when the architecture only provides the full barrier
-in switch_to() or spin_unlock().
+> 
+> In fact, the only possibly observable effect of this patch is the
+> failure when the allocation of device_link_wq fails AFAICS.
+> 
+> > Cc: stable@vger.kernel.org  
+> 
+> So why?
 
-It is a bug in the rseq switch_mm_cid() implementation. All architectures
-that don't have memory barriers in switch_mm(), but rather have the full
-barrier either in finish_lock_switch() or switch_to() have them too late
-for the needs of switch_mm_cid().
+Cc:stable is needed as this patch is a prerequisite of patch 2 (needed
+to fix the asynchronous workqueue task issue).
 
-Introduce a new smp_mb__after_switch_mm(), defined as smp_mb() in the
-generic barrier.h header, and use it in switch_mm_cid() for scheduler
-transitions where switch_mm() is expected to provide a memory barrier.
+Best regards,
+Hervé
 
-Architectures can override smp_mb__after_switch_mm() if their
-switch_mm() implementation provides an implicit memory barrier.
-Override it with a no-op on x86 which implicitly provide this memory
-barrier by writing to CR3.
-
-Reported-by: levi.yun <yeoreum.yun@arm.com>
-Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Fixes: 223baf9d17f2 ("sched: Fix performance regression introduced by mm_cid")
-Cc: <stable@vger.kernel.org> # 6.4.x
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Aaron Lu <aaron.lu@intel.com>
----
- arch/x86/include/asm/barrier.h |  3 +++
- include/asm-generic/barrier.h  |  8 ++++++++
- kernel/sched/sched.h           | 19 +++++++++++++------
- 3 files changed, 24 insertions(+), 6 deletions(-)
-
-diff --git a/arch/x86/include/asm/barrier.h b/arch/x86/include/asm/barrier.h
-index 35389b2af88e..0d5e54201eb2 100644
---- a/arch/x86/include/asm/barrier.h
-+++ b/arch/x86/include/asm/barrier.h
-@@ -79,6 +79,9 @@ do {									\
- #define __smp_mb__before_atomic()	do { } while (0)
- #define __smp_mb__after_atomic()	do { } while (0)
- 
-+/* Writing to CR3 provides a full memory barrier in switch_mm(). */
-+#define smp_mb__after_switch_mm()	do { } while (0)
-+
- #include <asm-generic/barrier.h>
- 
- /*
-diff --git a/include/asm-generic/barrier.h b/include/asm-generic/barrier.h
-index 961f4d88f9ef..5a6c94d7a598 100644
---- a/include/asm-generic/barrier.h
-+++ b/include/asm-generic/barrier.h
-@@ -296,5 +296,13 @@ do {									\
- #define io_stop_wc() do { } while (0)
- #endif
- 
-+/*
-+ * Architectures that guarantee an implicit smp_mb() in switch_mm()
-+ * can override smp_mb__after_switch_mm.
-+ */
-+#ifndef smp_mb__after_switch_mm
-+#define smp_mb__after_switch_mm()	smp_mb()
-+#endif
-+
- #endif /* !__ASSEMBLY__ */
- #endif /* __ASM_GENERIC_BARRIER_H */
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 2e5a95486a42..638ebd355912 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -79,6 +79,8 @@
- # include <asm/paravirt_api_clock.h>
- #endif
- 
-+#include <asm/barrier.h>
-+
- #include "cpupri.h"
- #include "cpudeadline.h"
- 
-@@ -3481,13 +3483,18 @@ static inline void switch_mm_cid(struct rq *rq,
- 		 * between rq->curr store and load of {prev,next}->mm->pcpu_cid[cpu].
- 		 * Provide it here.
- 		 */
--		if (!prev->mm)                          // from kernel
-+		if (!prev->mm) {                        // from kernel
- 			smp_mb();
--		/*
--		 * user -> user transition guarantees a memory barrier through
--		 * switch_mm() when current->mm changes. If current->mm is
--		 * unchanged, no barrier is needed.
--		 */
-+		} else {				// from user
-+			/*
-+			 * user -> user transition relies on an implicit the
-+			 * memory barrier in switch_mm() when current->mm
-+			 * changes. If the architecture switch_mm() does not
-+			 * have an implicit memory barrier, it is emitted here.
-+			 * If current->mm is unchanged, no barrier is needed.
-+			 */
-+			smp_mb__after_switch_mm();
-+		}
- 	}
- 	if (prev->mm_cid_active) {
- 		mm_cid_snapshot_time(rq, prev->mm);
 -- 
-2.39.2
-
+Hervé Codina, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
