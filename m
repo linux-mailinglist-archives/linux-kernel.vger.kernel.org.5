@@ -1,73 +1,39 @@
-Return-Path: <linux-kernel+bounces-93593-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93594-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F7C9873225
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:11:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C814873227
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:12:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 15A751F21DD3
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:11:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9FB981C20B54
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:12:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55E45604BD;
-	Wed,  6 Mar 2024 09:03:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AMf1fJEx"
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FF175FB8E;
-	Wed,  6 Mar 2024 09:03:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04D67605A5;
+	Wed,  6 Mar 2024 09:03:34 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37272604D4;
+	Wed,  6 Mar 2024 09:03:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709715804; cv=none; b=XMSmzphiiV0srLh0ENTUNSC+wkd3HjDcXS8zzMc6ttX7q5iV+sHp1YyawmpslM9uCTvJmmh0xJJFZ9UdPRVYmDY92hYmYspRiD+1RKceacwbqUVE2eOW8MNJSAsr6qXTMHt4/mfGirHZKb4yLxb2cqTgj2Vig63MZYLYcAVJ+4Q=
+	t=1709715813; cv=none; b=I/sZ7j78fB2ybM8CiBJ+nY6dDklEWwzNf0MNj6ft/7dfTHPU3nG0DdCVLp937iTUC4WB797ZNtYW6Bfd/LI0I+bpxGNTns/ETXNX95OljAODyay86GGF+/FGsewzu6jwE8+WlJBjRm4zQ3mI3ASPYZ4wDRZrDjuqxdxCi1qIFCI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709715804; c=relaxed/simple;
-	bh=bhuGP+1KPBJFnljRgP7OPZu2wAtpksJ/+vFr4V0XksY=;
+	s=arc-20240116; t=1709715813; c=relaxed/simple;
+	bh=SkuOt8HDeOXMJqnKoeKpc3t5ONCW9ExudiStGvfLifE=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oFt8C9seYVVzoIBiPFVCkTFryuMf3iohl5UZHW1ko4CNTMgsqV7wFWGoPzHsxlFSHs2Bf3ifYLbtK+RCFh3+oSstgPR1qkWcf+8wvPgaWVGkhuPih7UivaTjpPfu5DWPzdrBsfJ/GHMIghE/qQ7mLMKVenvTgLRtZLfYGNXsMco=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AMf1fJEx; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1dc49b00bdbso59815895ad.3;
-        Wed, 06 Mar 2024 01:03:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709715802; x=1710320602; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xlDITtlvgl4U+B/J92cv6/cTJ0Y0RVmdTfRjOVcQc+4=;
-        b=AMf1fJExrSyLkwgK3bl7NacVsiFHOtnBpoh2AWF6kDfy0n7SIid4u8ckIX3v4YEUw/
-         4sVb+ZpNugsm3JaBQJVu0Idg+2S4uteMEygE8+n24UIdQIP69iZ9n5FJXb1ZL1LJ8ibz
-         dTvA7iydaMO8lGm0tReIr3jd+dkMpD6hPSxg9wSSEKhbffv/4/wEW/7mHmvemRAp2FKL
-         IQ31ewRp40fYTRBOYFzTIjAR6Q3VcaAzOgBIWkDVJNLIG0uiUdiPhUG8Bk5ylDFZAaP+
-         t3dMgQ9V5xVHaULWbQd5KLO76prZqxANQy1W0zhNRyKVVA0NdDUoyb990xnT5ArUUO5R
-         tvEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709715802; x=1710320602;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xlDITtlvgl4U+B/J92cv6/cTJ0Y0RVmdTfRjOVcQc+4=;
-        b=LW+3EBCKwH0c9170Dst8pYh37ptF0+MrZ6gTJHLa5tppmq/FbP9eTr1snZNRRuIYEN
-         U65krs5O3HIrdhsUn3jRjV1wBhyAFMlT7lCeixbRNha9ovsH4/VWAbHqWaQtlVD/PjMj
-         PF/DYATx76b8Ew1W4TlQTldoOEjelgNMoXn9A73+4F2ZjALXXWRwzcw8Ce3gV+OD5Nmo
-         dWn4rJ6DcqIIuaeZR8hv/bdhXcxF80GHafLAxYUat1ttQrUWkdyINIjWfGsQKEkzGyF0
-         P3Wg6+Obb+fJXqdZ37Nxh5JISnJpsuV9zVSqLPEEXih4wvC3JTL73Prd7TiMHC7jrKh7
-         4XXQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVcmrCsLrQQNeVYpHcoGt/QFMZ5rn/3QM9+APZ7dt+Uj7aIBgOPEixdZBepGmnIyQ/huZqG0mjPXoAjKPgly49DgumxVdiezerWQdBZEGXBwIl+P49YAJO2XRPrCb3lH2Ksbmqoi28VxblpXJlxYjVIw1ncJc0UX+jJs51f0NzayEVCzw==
-X-Gm-Message-State: AOJu0YyED5c4go65cKUlCO01iNHcHI/aVEhbW3yMYg28TWxpc1O5mN11
-	cMDhZBQORv3WWoZjOYCwuu6q3Vg1jvwRDRALr/GZaTsuA0r0n+Dd
-X-Google-Smtp-Source: AGHT+IGiW//UQN4r2XqU5QACWeGHLzkXZS+B6PHy7ty9yPr0C6knLVm23dYoF7fBkDjxo/qxzMWmSg==
-X-Received: by 2002:a17:903:230b:b0:1dc:a00c:5442 with SMTP id d11-20020a170903230b00b001dca00c5442mr5462695plh.43.1709715801772;
-        Wed, 06 Mar 2024 01:03:21 -0800 (PST)
-Received: from [192.168.255.10] ([43.132.141.24])
-        by smtp.gmail.com with ESMTPSA id n14-20020a170902e54e00b001d9641003cfsm11041675plf.142.2024.03.06.01.03.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Mar 2024 01:03:21 -0800 (PST)
-Message-ID: <2677739b-bc84-43ee-ba56-a5e243148ceb@gmail.com>
-Date: Wed, 6 Mar 2024 17:03:16 +0800
+	 In-Reply-To:Content-Type; b=sKHU/h1+fDRhziHx/bgEszBCudiTry0rDmPtyIDD8YQraVZ8o6Ok3b1GZooNtAgoyBHa8M4zEKkX+qsx733TFUPuHSoyMGvVCN1Xbo9kMAOInJv67hzX6KBuw1lbZ7bLTcuIVS5ujIEc4NGNNj5VuZyC3j8mrnB0qybH8LThOdQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 85BA31FB;
+	Wed,  6 Mar 2024 01:04:07 -0800 (PST)
+Received: from [10.57.68.241] (unknown [10.57.68.241])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0959F3F762;
+	Wed,  6 Mar 2024 01:03:27 -0800 (PST)
+Message-ID: <86be68f5-546a-422f-8a46-e374d21203f4@arm.com>
+Date: Wed, 6 Mar 2024 09:03:25 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,210 +41,219 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [Patch v3] KVM: x86/pmu: Manipulate FIXED_CTR_CTRL MSR with
- macros
-To: Sean Christopherson <seanjc@google.com>,
- Mingwei Zhang <mizhang@google.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, Kan Liang
- <kan.liang@linux.intel.com>, Like Xu <likexu@tencent.com>,
- kvm@vger.kernel.org, linux-perf-users@vger.kernel.org,
- linux-kernel@vger.kernel.org, Zhenyu Wang <zhenyuw@linux.intel.com>,
- Zhang Xiong <xiong.y.zhang@intel.com>, Lv Zhiyuan <zhiyuan.lv@intel.com>,
- Dapeng Mi <dapeng1.mi@intel.com>, Dapeng Mi <dapeng1.mi@linux.intel.com>
-References: <20230824020546.1108516-1-dapeng1.mi@linux.intel.com>
- <ZeepGjHCeSfadANM@google.com>
-Content-Language: en-US
-From: Like Xu <like.xu.linux@gmail.com>
-In-Reply-To: <ZeepGjHCeSfadANM@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH v1] mm: swap: Fix race between free_swap_and_cache() and
+ swapoff()
+Content-Language: en-GB
+To: "Huang, Ying" <ying.huang@intel.com>, Miaohe Lin <linmiaohe@huawei.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <20240305151349.3781428-1-ryan.roberts@arm.com>
+ <875xy0842q.fsf@yhuang6-desk2.ccr.corp.intel.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <875xy0842q.fsf@yhuang6-desk2.ccr.corp.intel.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 6/3/2024 7:22 am, Sean Christopherson wrote:
-> +Mingwei
+On 06/03/2024 02:52, Huang, Ying wrote:
+> Ryan Roberts <ryan.roberts@arm.com> writes:
 > 
-> On Thu, Aug 24, 2023, Dapeng Mi wrote:
->   diff --git a/arch/x86/kvm/pmu.h b/arch/x86/kvm/pmu.h
->> index 7d9ba301c090..ffda2ecc3a22 100644
->> --- a/arch/x86/kvm/pmu.h
->> +++ b/arch/x86/kvm/pmu.h
->> @@ -12,7 +12,8 @@
->>   					  MSR_IA32_MISC_ENABLE_BTS_UNAVAIL)
->>   
->>   /* retrieve the 4 bits for EN and PMI out of IA32_FIXED_CTR_CTRL */
->> -#define fixed_ctrl_field(ctrl_reg, idx) (((ctrl_reg) >> ((idx)*4)) & 0xf)
->> +#define fixed_ctrl_field(ctrl_reg, idx) \
->> +	(((ctrl_reg) >> ((idx) * INTEL_FIXED_BITS_STRIDE)) & INTEL_FIXED_BITS_MASK)
->>   
->>   #define VMWARE_BACKDOOR_PMC_HOST_TSC		0x10000
->>   #define VMWARE_BACKDOOR_PMC_REAL_TIME		0x10001
->> @@ -165,7 +166,8 @@ static inline bool pmc_speculative_in_use(struct kvm_pmc *pmc)
->>   
->>   	if (pmc_is_fixed(pmc))
->>   		return fixed_ctrl_field(pmu->fixed_ctr_ctrl,
->> -					pmc->idx - INTEL_PMC_IDX_FIXED) & 0x3;
->> +					pmc->idx - INTEL_PMC_IDX_FIXED) &
->> +					(INTEL_FIXED_0_KERNEL | INTEL_FIXED_0_USER);
->>   
->>   	return pmc->eventsel & ARCH_PERFMON_EVENTSEL_ENABLE;
->>   }
->> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
->> index f2efa0bf7ae8..b0ac55891cb7 100644
->> --- a/arch/x86/kvm/vmx/pmu_intel.c
->> +++ b/arch/x86/kvm/vmx/pmu_intel.c
->> @@ -548,8 +548,13 @@ static void intel_pmu_refresh(struct kvm_vcpu *vcpu)
->>   		setup_fixed_pmc_eventsel(pmu);
->>   	}
->>   
->> -	for (i = 0; i < pmu->nr_arch_fixed_counters; i++)
->> -		pmu->fixed_ctr_ctrl_mask &= ~(0xbull << (i * 4));
->> +	for (i = 0; i < pmu->nr_arch_fixed_counters; i++) {
->> +		pmu->fixed_ctr_ctrl_mask &=
->> +			 ~intel_fixed_bits_by_idx(i,
->> +						  INTEL_FIXED_0_KERNEL |
->> +						  INTEL_FIXED_0_USER |
->> +						  INTEL_FIXED_0_ENABLE_PMI);
->> +	}
->>   	counter_mask = ~(((1ull << pmu->nr_arch_gp_counters) - 1) |
->>   		(((1ull << pmu->nr_arch_fixed_counters) - 1) << INTEL_PMC_IDX_FIXED));
->>   	pmu->global_ctrl_mask = counter_mask;
->> @@ -595,7 +600,7 @@ static void intel_pmu_refresh(struct kvm_vcpu *vcpu)
->>   			pmu->reserved_bits &= ~ICL_EVENTSEL_ADAPTIVE;
->>   			for (i = 0; i < pmu->nr_arch_fixed_counters; i++) {
->>   				pmu->fixed_ctr_ctrl_mask &=
->> -					~(1ULL << (INTEL_PMC_IDX_FIXED + i * 4));
+>> There was previously a theoretical window where swapoff() could run and
+>> teardown a swap_info_struct while a call to free_swap_and_cache() was
+>> running in another thread. This could cause, amongst other bad
+>> possibilities, swap_page_trans_huge_swapped() (called by
+>> free_swap_and_cache()) to access the freed memory for swap_map.
+>>
+>> This is a theoretical problem and I haven't been able to provoke it from
+>> a test case. But there has been agreement based on code review that this
+>> is possible (see link below).
+>>
+>> Fix it by using get_swap_device()/put_swap_device(), which will stall
+>> swapoff(). There was an extra check in _swap_info_get() to confirm that
+>> the swap entry was valid. This wasn't present in get_swap_device() so
+>> I've added it. I couldn't find any existing get_swap_device() call sites
+>> where this extra check would cause any false alarms.
+>>
+>> Details of how to provoke one possible issue (thanks to David Hilenbrand
+>> for deriving this):
+>>
+>> --8<-----
+>>
+>> __swap_entry_free() might be the last user and result in
+>> "count == SWAP_HAS_CACHE".
+>>
+>> swapoff->try_to_unuse() will stop as soon as soon as si->inuse_pages==0.
+>>
+>> So the question is: could someone reclaim the folio and turn
+>> si->inuse_pages==0, before we completed swap_page_trans_huge_swapped().
+>>
+>> Imagine the following: 2 MiB folio in the swapcache. Only 2 subpages are
+>> still references by swap entries.
+>>
+>> Process 1 still references subpage 0 via swap entry.
+>> Process 2 still references subpage 1 via swap entry.
+>>
+>> Process 1 quits. Calls free_swap_and_cache().
+>> -> count == SWAP_HAS_CACHE
+>> [then, preempted in the hypervisor etc.]
+>>
+>> Process 2 quits. Calls free_swap_and_cache().
+>> -> count == SWAP_HAS_CACHE
+>>
+>> Process 2 goes ahead, passes swap_page_trans_huge_swapped(), and calls
+>> __try_to_reclaim_swap().
+>>
+>> __try_to_reclaim_swap()->folio_free_swap()->delete_from_swap_cache()->
+>> put_swap_folio()->free_swap_slot()->swapcache_free_entries()->
+>> swap_entry_free()->swap_range_free()->
+>> ...
+>> WRITE_ONCE(si->inuse_pages, si->inuse_pages - nr_entries);
+>>
+>> What stops swapoff to succeed after process 2 reclaimed the swap cache
+>> but before process1 finished its call to swap_page_trans_huge_swapped()?
+>>
+>> --8<-----
 > 
-> OMG, this might just win the award for most obfuscated PMU code in KVM, which is
-> saying something.  The fact that INTEL_PMC_IDX_FIXED happens to be 32, the same
-> bit number as ICL_FIXED_0_ADAPTIVE, is 100% coincidence.  Good riddance.
-> 
-> Argh, and this goofy code helped introduce a real bug.  reprogram_fixed_counters()
-> doesn't account for the upper 32 bits of IA32_FIXED_CTR_CTRL.
-> 
-> Wait, WTF?  Nothing in KVM accounts for the upper bits.  This can't possibly work.
-> 
-> IIUC, because KVM _always_ sets precise_ip to a non-zero bit for PEBS events,
-> perf will _always_ generate an adaptive record, even if the guest requested a
-> basic record.  Ugh, and KVM will always generate adaptive records even if the
-> guest doesn't support them.  This is all completely broken.  It probably kinda
-> sorta works because the Basic info is always stored in the record, and generating
-> more info requires a non-zero MSR_PEBS_DATA_CFG, but ugh.
+> I think that this can be simplified.  Even for a 4K folio, this could
+> happen.
 
-Yep, it works at least on machines with both adaptive and pebs_full features.
-
-I remember one generation of Atom core (? GOLDMONT) that didn't have both
-above PEBS sub-features, so we didn't set x86_pmu.pebs_ept on that platform.
-
-Mingwei or others are encouraged to construct use cases in KUT::pmu_pebs.flat
-that violate guest-pebs rules (e.g., leak host state), as we all recognize that 
-testing
-is the right way to condemn legacy code, not just lengthy emails.
+I'm not so sure...
 
 > 
-> Oh great, and it gets worse.  intel_pmu_disable_fixed() doesn't clear the upper
-> bits either, i.e. leaves ICL_FIXED_0_ADAPTIVE set.  Unless I'm misreading the code,
-> intel_pmu_enable_fixed() effectively doesn't clear ICL_FIXED_0_ADAPTIVE either,
-> as it only modifies the bit when it wants to set ICL_FIXED_0_ADAPTIVE.
+> CPU0                                     CPU1
+> ----                                     ----
 > 
-> *sigh*
+> zap_pte_range
+>   free_swap_and_cache
+>   __swap_entry_free
+>   /* swap count become 0 */
+>                                          swapoff
+>                                            try_to_unuse
+>                                              filemap_get_folio
+>                                              folio_free_swap
+>                                              /* remove swap cache */
+>                                            /* free si->swap_map[] */
 > 
-> I'm _very_ tempted to disable KVM PEBS support for the current PMU, and make it
-> available only when the so-called passthrough PMU is available[*].  Because I
-> don't see how this is can possibly be functionally correct, nor do I see a way
-> to make it functionally correct without a rather large and invasive series.
+>   swap_page_trans_huge_swapped <-- access freed si->swap_map !!!
 
-Considering that I've tried the idea myself, I have no inclination towards
-"passthrough PMU", and I'd like to be able to take the time to review that
-patchset while we all wait for a clear statement from that perf-core man,
-who don't really care about virtualization and don't want to lose control
-of global hardware resources.
+I don't think si->inuse_pages is decremented until __try_to_reclaim_swap() is
+called (per David, above), which is called after swap_page_trans_huge_swapped()
+has executed. So in CPU1, try_to_unuse() wouldn't see si->inuse_pages being zero
+until after CPU0 has completed accessing si->swap_map, so if swapoff starts
+where you have put it, it would get stalled waiting for the PTL which CPU0 has.
 
-Before we actually get to that ideal state you want, we have to deal with
-some intermediate state and face to any users that rely on the current code,
-you had urged to merge in a KVM document for vPMU, not sure how far
-along that part of the work is.
-
-> 
-> Ouch.  And after chatting with Mingwei, who asked the very good question of
-> "can this leak host state?", I am pretty sure that yes, this can leak host state.
-
-The Basic Info has a tsc field, I suspect it's the host-state-tsc.
+I'm sure there are other ways that this could be racy for 4K folios, but I don't
+think this is one of them? e.g. if CPU0 does something with si after it has
+decremented si->inuse_pages, then there is a problem.
 
 > 
-> When PERF_CAP_PEBS_BASELINE is enabled for the guest, i.e. when the guest has
-> access to adaptive records, KVM gives the guest full access to MSR_PEBS_DATA_CFG
+>> Fixes: 7c00bafee87c ("mm/swap: free swap slots in batch")
+>> Closes: https://lore.kernel.org/linux-mm/65a66eb9-41f8-4790-8db2-0c70ea15979f@redhat.com/
+>> Cc: stable@vger.kernel.org
+>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+>> ---
+>>
+>> Applies on top of v6.8-rc6 and mm-unstable (b38c34939fe4).
+>>
+>> Thanks,
+>> Ryan
+>>
+>>  mm/swapfile.c | 14 +++++++++++---
+>>  1 file changed, 11 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/mm/swapfile.c b/mm/swapfile.c
+>> index 2b3a2d85e350..f580e6abc674 100644
+>> --- a/mm/swapfile.c
+>> +++ b/mm/swapfile.c
+>> @@ -1281,7 +1281,9 @@ struct swap_info_struct *get_swap_device(swp_entry_t entry)
+>>  	smp_rmb();
+>>  	offset = swp_offset(entry);
+>>  	if (offset >= si->max)
+>> -		goto put_out;
+>> +		goto bad_offset;
+>> +	if (data_race(!si->swap_map[swp_offset(entry)]))
+>> +		goto bad_free;
+>>
+>>  	return si;
+>>  bad_nofile:
+>> @@ -1289,9 +1291,14 @@ struct swap_info_struct *get_swap_device(swp_entry_t entry)
+>>  out:
+>>  	return NULL;
+>>  put_out:
+>> -	pr_err("%s: %s%08lx\n", __func__, Bad_offset, entry.val);
+>>  	percpu_ref_put(&si->users);
+>>  	return NULL;
+>> +bad_offset:
+>> +	pr_err("%s: %s%08lx\n", __func__, Bad_offset, entry.val);
+>> +	goto put_out;
+>> +bad_free:
+>> +	pr_err("%s: %s%08lx\n", __func__, Unused_offset, entry.val);
+>> +	goto put_out;
+>>  }
 > 
-> 	pmu->pebs_data_cfg_mask = ~0xff00000full;
+> I don't think that it's a good idea to warn for bad free entries.
+> get_swap_device() could be called without enough lock to prevent
+> parallel swap operations on entry.  So, false positive is possible
+> there.  I think that it's good to add more checks in general, for
+> example, in free_swap_and_cache(), we can check more because we are sure
+> the swap entry will not be freed by parallel swap operations.
+
+Yes, agreed. Johannes also reported that he is seeing false alarms due to this.
+I'm going to remove it and add it to free_swap_and_cache() as you suggest. This
+also fits well for the batched version I'm working on where we want to check the
+global si things once, but need to check !free for every entry in the loop
+(aiming to post that this week).
+
+  Just
+> don't put the check in general get_swap_device().  We can add another
+> helper to check that.
 > 
-> which makes sense in a vacuum, because AFAICT the architecture doesn't allow
-> exposing a subset of the four adaptive controls.
+> I found that there are other checks in get_swap_device() already.  I
+> think that we may need to revert,
 > 
-> GPRs and XMMs are always context switched and thus benign, but IIUC, Memory Info
-> provides data that might now otherwise be available to the guest, e.g. if host
-> userspace has disallowed equivalent events via KVM_SET_PMU_EVENT_FILTER.
+> commit 23b230ba8ac3 ("mm/swap: print bad swap offset entry in get_swap_device")
 
-Indeed, KVM_SET_PMU_EVENT_FILTER doesn't work in harmony with
-guest-pebs, and I believe there is a big problem here, especially with the
-lack of targeted testing.
-
-One reason for this is that we don't use this cockamamie API in our
-large-scale production environments, and users of vPMU want to get real
-runtime information about physical cpus, not just virtualised hardware
-architecture interfaces.
-
-> 
-> And unless I'm missing something, LBRs are a full leak of host state.  Nothing
-> in the SDM suggests that PEBS records honor MSR intercepts, so unless KVM is
-> also passing through LBRs, i.e. is context switching all LBR MSRs, the guest can
-> use PEBS to read host LBRs at will.
-
-KVM is also passing through LBRs when guest uses LBR but not at the
-granularity of vm-exit/entry. I'm not sure if the LBR_EN bit is required
-to get LBR information via PEBS, also not confirmed whether PEBS-lbr
-can be enabled at the same time as independent LBR;
-
-I recall that PEBS-assist, per cpu-arch, would clean up this part of the
-record when crossing root/non-root boundaries, or not generate record.
-
-We're looking forward to the tests that will undermine this perception.
-
-There are some devilish details during the processing of vm-exit and
-the generation of host/guest pebs, and those interested can delve into
-the short description in this SDM section "20.9.5 EPT-Friendly PEBS".
+Yes agree this should be reverted.
 
 > 
-> Unless someone chimes in to point out how PEBS virtualization isn't a broken mess,
-> I will post a patch to effectively disable PEBS virtualization.
+> which introduces it.  And add check in appropriate places.
 
-There are two factors that affect the availability of guest-pebs:
+I'm not quite sure what the "appropriate places" are. Looking at the call sites
+for get_swap_device(), it looks like they are all racy except
+free_swap_and_cache() which is called with the PTL. So check should only really
+go there?
 
-1. the technical need to use core-PMU in both host/guest worlds;
-(I don't think Googlers are paying attention to this part of users' needs)
-
-2. guest-pebs is temporarily disabled in the case of cross-mapping counter,
-which reduces the number of performance samples collected by guest;
+But... free_swap_and_cache() is called without the PTL by shmem (in 2 places -
+see shmem_free_swap() wrapper). It looks like in one of those places, the folio
+lock is held, so I guess this has a similar effect to holding the PTL. But the
+other shmem_free_swap() call site doesn't appear to have the folio lock. Am I
+missing something, or does this mean that for this path, free_swap_and_cache()
+is racy and therefore we shouldn't be doing either the `offset >= si->max` or
+the `!swap_map[offset]` in free_swap_and_cache() either?
 
 > 
-> diff --git a/arch/x86/kvm/vmx/capabilities.h b/arch/x86/kvm/vmx/capabilities.h
-> index 41a4533f9989..a2f827fa0ca1 100644
-> --- a/arch/x86/kvm/vmx/capabilities.h
-> +++ b/arch/x86/kvm/vmx/capabilities.h
-> @@ -392,7 +392,7 @@ static inline bool vmx_pt_mode_is_host_guest(void)
->   
->   static inline bool vmx_pebs_supported(void)
->   {
-> -       return boot_cpu_has(X86_FEATURE_PEBS) && kvm_pmu_cap.pebs_ept;
-> +       return false;
-
-As you know, user-space VMM may disable guest-pebs by filtering out the
-MSR_IA32_PERF_CAPABILITIE.PERF_CAP_PEBS_FORMAT or CPUID.PDCM.
-
-In the end, if our great KVM maintainers insist on doing this,
-there is obviously nothing I can do about it.
-
-Hope you have a good day.
-
->   }
->   
->   static inline bool cpu_has_notify_vmexit(void)
+> --
+> Best Regards,
+> Huang, Ying
 > 
+>>  static unsigned char __swap_entry_free(struct swap_info_struct *p,
+>> @@ -1609,13 +1616,14 @@ int free_swap_and_cache(swp_entry_t entry)
+>>  	if (non_swap_entry(entry))
+>>  		return 1;
+>>
+>> -	p = _swap_info_get(entry);
+>> +	p = get_swap_device(entry);
+>>  	if (p) {
+>>  		count = __swap_entry_free(p, entry);
+>>  		if (count == SWAP_HAS_CACHE &&
+>>  		    !swap_page_trans_huge_swapped(p, entry))
+>>  			__try_to_reclaim_swap(p, swp_offset(entry),
+>>  					      TTRS_UNMAPPED | TTRS_FULL);
+>> +		put_swap_device(p);
+>>  	}
+>>  	return p != NULL;
+>>  }
+>> --
+>> 2.25.1
+
 
