@@ -1,269 +1,233 @@
-Return-Path: <linux-kernel+bounces-94051-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94054-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA6EE87391C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:29:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DE4687392D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:31:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 19DA91C210CB
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:29:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 04F03282787
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:31:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DCD7130AC6;
-	Wed,  6 Mar 2024 14:29:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DACF13441B;
+	Wed,  6 Mar 2024 14:31:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=savoirfairelinux.com header.i=@savoirfairelinux.com header.b="k//9SzX+"
-Received: from mail.savoirfairelinux.com (mail.savoirfairelinux.com [208.88.110.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BkUcN0eG"
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7873E130E40;
-	Wed,  6 Mar 2024 14:29:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=208.88.110.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A394128EC;
+	Wed,  6 Mar 2024 14:30:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709735375; cv=none; b=rIydPHIVvGWNJVIgQv4sWbPoCSFLlrjzdWrKNtgeT8T6x0049YCidg1i6HUw2GBTtpIGgfonHGkJ16Vp+bRo3SjTK9w8AqNa0RpVeTgIeZkGH9Rlz0kMKym/qHnaxJCth1L/il+48wgPlpGUGUCbQ2hOaVeLuRksTOH2Umry4fA=
+	t=1709735461; cv=none; b=VhWEmjxD1H9bRk6B36OqaFrsrFXgwNXOtZoGgoYvgnrOgJ9UXJ/xMFCZAT3zPsw9HNHLPAD25aZ/wcCQEWBXZ+OYUN0N3kWZ01W6erU2Anbb5FP6NFb9R6SYjJIV4xEoyk3pVOVgY5fJL7voiVWDgwl8M0v9umqYmYCyZUyQ6nM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709735375; c=relaxed/simple;
-	bh=iUoXceyOBV/ws1djDAITsDI/ZqYvM1zbY4UGkVGQJC8=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 MIME-Version:Content-Type; b=ewafGUwyA8mlR+RNM1JdttL/YD6Pr0XNQ9mMPiCP3nSJtFTF4sZEEboIwVQarx8hNmoUHr6OeVlquSP7eRRhw2wIYvT5sRFpUOQquD2fP7I3nazO0g4V3FwkW+IeN5XE6Yb77RpSDmGAIgKvvqbhnk8QSI2bGNFvctDq7X7wHvk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=savoirfairelinux.com; spf=pass smtp.mailfrom=savoirfairelinux.com; dkim=pass (2048-bit key) header.d=savoirfairelinux.com header.i=@savoirfairelinux.com header.b=k//9SzX+; arc=none smtp.client-ip=208.88.110.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=savoirfairelinux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=savoirfairelinux.com
-Received: from localhost (localhost [127.0.0.1])
-	by mail.savoirfairelinux.com (Postfix) with ESMTP id 27B669C2B79;
-	Wed,  6 Mar 2024 09:29:24 -0500 (EST)
-Received: from mail.savoirfairelinux.com ([127.0.0.1])
- by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavis, port 10032)
- with ESMTP id sHKIN4qoKvzI; Wed,  6 Mar 2024 09:29:22 -0500 (EST)
-Received: from localhost (localhost [127.0.0.1])
-	by mail.savoirfairelinux.com (Postfix) with ESMTP id 386199C3E18;
-	Wed,  6 Mar 2024 09:29:22 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.savoirfairelinux.com 386199C3E18
+	s=arc-20240116; t=1709735461; c=relaxed/simple;
+	bh=c+oW+n9OmJ9otIOsnLXK3dE6Rc448U9Z9kACrJJIO2w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ANbOEJFCbfmiISM1+/VwGO2IVBhwFSEVkqHSxkf37W2sUZ08WcHnvRkoWEaJsBKZHwT7kBAborYakV+wdYG5ErmPPBIkl84uiMed5DAO41+DMZzINQ6rO9g+//sYKf2nBxBAgOw4yeOeBQ2AWo17mexz0R5IlrPVVkxUZYKEcbI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BkUcN0eG; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-33d90dfe73cso606411f8f.0;
+        Wed, 06 Mar 2024 06:30:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=savoirfairelinux.com; s=DFC430D2-D198-11EC-948E-34200CB392D2;
-	t=1709735362; bh=IUKuimCQWhxaM2GiQyc2C+Bt5el/PCO2HoKbdWeZ4MA=;
-	h=Date:From:To:Message-ID:MIME-Version;
-	b=k//9SzX+/1bm3+fQrQam+kxjFWcBs2rftK3gTyAATPGDRqZufHssFZAdPBaymnuQt
-	 ySVm/cveu1EX/ztnx4PVBljDsbJ0PJdpQSJv7+GTydVDs9AMd3NslJVgT1HlCJCV7S
-	 K8VcI7arJOJlubRYbgMxUqhpFYIvoRKG5deMNmIg+Z+Z9dYd5NcMe5Q1uK4gL2gowN
-	 MBr2dUhxTaRDUDJcvQc8zib6qFbXkyZDMS1XHKDlL2/1qt8METOdSf8wdBResA1P4Q
-	 TetqnxPwFI2kCV5JEpMZaPcPulRVQW/p7F9IsLp7kSBbv1Ewx1bkBp8GBPkb+CRwYw
-	 ezj833i0+QEbw==
-X-Virus-Scanned: amavis at mail.savoirfairelinux.com
-Received: from mail.savoirfairelinux.com ([127.0.0.1])
- by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavis, port 10026)
- with ESMTP id xc-8fRViBrWV; Wed,  6 Mar 2024 09:29:22 -0500 (EST)
-Received: from mail.savoirfairelinux.com (mail.savoirfairelinux.com [192.168.48.237])
-	by mail.savoirfairelinux.com (Postfix) with ESMTP id E93BD9C2B79;
-	Wed,  6 Mar 2024 09:29:21 -0500 (EST)
-Date: Wed, 6 Mar 2024 09:29:21 -0500 (EST)
-From: Charles Perry <charles.perry@savoirfairelinux.com>
-To: Xu Yilun <yilun.xu@linux.intel.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
-	yilun xu <yilun.xu@intel.com>, Rob Herring <robh+dt@kernel.org>, 
-	mdf <mdf@kernel.org>, Allen VANDIVER <avandiver@markem-imaje.com>, 
-	Brian CODY <bcody@markem-imaje.com>, hao wu <hao.wu@intel.com>, 
-	Tom Rix <trix@redhat.com>, 
-	krzysztof kozlowski+dt <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, 
-	Michal Simek <michal.simek@amd.com>, 
-	linux-fpga <linux-fpga@vger.kernel.org>, 
-	devicetree <devicetree@vger.kernel.org>, 
-	linux-kernel <linux-kernel@vger.kernel.org>, 
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Message-ID: <1394848790.1570451.1709735361852.JavaMail.zimbra@savoirfairelinux.com>
-In-Reply-To: <ZegW2QpgO0Kk1Iip@yilunxu-OptiPlex-7050>
-References: <20240221195058.1281973-1-charles.perry@savoirfairelinux.com> <20240221195058.1281973-3-charles.perry@savoirfairelinux.com> <4a9f0eef-590b-45df-92bc-b63ad9282e18@linaro.org> <1012793477.1508198.1709486517581.JavaMail.zimbra@savoirfairelinux.com> <cb51aadd-c350-42e2-9684-ac4f7dbf864c@linaro.org> <d377f0ea-2df2-4d4e-b1bc-8a4ca55eec15@linaro.org> <23887452.1534761.1709605624728.JavaMail.zimbra@savoirfairelinux.com> <ZegW2QpgO0Kk1Iip@yilunxu-OptiPlex-7050>
-Subject: Re: [PATCH v4 2/3] dt-bindings: fpga: xlnx,fpga-selectmap: add DT
- schema
+        d=gmail.com; s=20230601; t=1709735458; x=1710340258; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/gPi0O1pSzLWSoH4x6QWh1/CSGMtQOXhMfU653rtclc=;
+        b=BkUcN0eGswL7r3Gyb7iUrTMao72c3aWMjOp2Si5ae3bPuWcqzHEkTv8CPJlLyRm8Ox
+         Sq2ELWHdupgFz7LNmbHsaqrJjZ9oTDizBZZJ67Ub3rOf/rH32S3Pa8vauD2RwT857F3h
+         5dkxdK0vJFyO2hlJdBhe0CcoPixSix5k0nHmdDeuHx/pX0oD6ZwhNqDKpe3IarEQRUaP
+         BznYSGgjsPd0aywg6Csa8y0esKWvbVvCNpYxixoDqoXAGcRAJpBF0Kt7aeYMpY9ZJXnE
+         D/0ESEWfgBI2fVT9bwBMtCnwHbFOl/elYxTDX84+DKV5iXQ2DRYjfwSuH1jaENmY+mID
+         fMRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709735458; x=1710340258;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/gPi0O1pSzLWSoH4x6QWh1/CSGMtQOXhMfU653rtclc=;
+        b=mTtoXOmKXWqs/1COf/peUw78qTPEHEhGX+AVoLdUyZX6VdwHcrPKHuSg3WZpUe28vU
+         TW2qO4UxRH0X9M3Hnyc2h0UujgZhwSltshU3uQZFuWU/CKJI5IuxoOMDc6OetCUif2Gx
+         c28Qfem3kllF3yJdEAgVzJmyFFyYQlXJ/7g7lCDsnclJHJapvWae8LsMNY1O2ol0g9mO
+         8BXWR3xycYDmq0UK/W6GC5K8g2QiMXo82IE7Os85rAITrdsvv+Ch7ujYBc6ObTUjFpEa
+         rZVw0IxqU3ZfKQu5CyPFjNd2x+KnmZV7Vz79crvP1AYkFCm8LhKTIFt0CaB+kn3iMm5K
+         7NmA==
+X-Forwarded-Encrypted: i=1; AJvYcCXwkUMB3lKxpbyoVok6CqIHoGygaeKj2bjXT6relNWY9UUNpCwPqER1AvS4qm2OqM8azU8er/V03sn9MQ7RLmN3Ebesy5QMu4E8f/zFQgjnwLiOXGO25rHZ4+borcCt7xuaJWGu4fOzogod8fa7YobCu/neJ3F80Wm/sAJiOUsTZJK4nZu8zk6HNCX3nJynnXiZTj09PXf2OUe8h0RWclmdFn1Q/Y4ltOFhmeuI3mYN1p0jF9YA00fB3gkLitE0ktM5IlI0Mbjjd3OJzAY35lzNawgP/iqYayx5LGPC0r4o6ufkbT9Rk/zSBQtny52HDn46k61KoxOlZz2aJqCWjTKaVEKyo0ju51GHCf9cSN1SXhPJkrJWlAH1uBIP3ir6En6Am3+xs/e9yPCfCafFmlMJUaAm8lOLC8rhRpU2FlXm9596lt+HdsbZMEuSe8DV9j+N7/yhFFK+4Iy7GRWYsYMI5UT1Oyka/ErInnukVw==
+X-Gm-Message-State: AOJu0YzDV2LJqTBRLrTt2NIUuJFlAwsMOPFkCIZudQzo5uSwJNOEeyqH
+	wL3fG91elIx9Ki3t5eQ9OlM1GaLuxgsbKkOlk4n1SiIV9F5PNDPy
+X-Google-Smtp-Source: AGHT+IEYb/zvAdaoWBUPDQ15vntU0mFqlnMjPDxyUnwJQKR8m4S+14qR/7MrevMi7+m6WnrGgoXePg==
+X-Received: by 2002:adf:f389:0:b0:33e:592c:d7da with SMTP id m9-20020adff389000000b0033e592cd7damr1501141wro.9.1709735457704;
+        Wed, 06 Mar 2024 06:30:57 -0800 (PST)
+Received: from [192.168.8.100] ([85.255.233.174])
+        by smtp.gmail.com with ESMTPSA id cc4-20020a5d5c04000000b0033e45e4f22bsm5982974wrb.73.2024.03.06.06.30.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Mar 2024 06:30:57 -0800 (PST)
+Message-ID: <417f293a-848e-4eb2-b690-c8696079b452@gmail.com>
+Date: Wed, 6 Mar 2024 14:29:56 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Mailer: Zimbra 8.8.15_GA_4581 (ZimbraWebClient - FF123 (Linux)/8.8.15_GA_4581)
-Thread-Topic: dt-bindings: fpga: xlnx,fpga-selectmap: add DT schema
-Thread-Index: KNMsqjL9L9auFXvtX747YpLdEB0org==
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH net-next v6 02/15] net: page_pool: create hooks for
+ custom page providers
+To: Mina Almasry <almasrymina@google.com>, David Wei <dw@davidwei.uk>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org,
+ linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+ sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linux-arch@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
+ Richard Henderson <richard.henderson@linaro.org>,
+ Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner
+ <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+ Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+ Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, David Ahern <dsahern@kernel.org>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ Shuah Khan <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin <linyunsheng@huawei.com>,
+ Shailend Chand <shailend@google.com>,
+ Harshitha Ramamurthy <hramamurthy@google.com>,
+ Jeroen de Borst <jeroendb@google.com>,
+ Praveen Kaligineedi <pkaligineedi@google.com>, shakeel.butt@linux.dev
+References: <20240305020153.2787423-1-almasrymina@google.com>
+ <20240305020153.2787423-3-almasrymina@google.com>
+ <1b57dac2-4b04-4bec-b2d7-d0edb4fcabbc@davidwei.uk>
+ <CAHS8izM5O39mnTQ8mhcQE75amDT4G-3vcgozzjcYsAdd_-he1g@mail.gmail.com>
+Content-Language: en-US
+From: Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <CAHS8izM5O39mnTQ8mhcQE75amDT4G-3vcgozzjcYsAdd_-he1g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
+On 3/5/24 22:36, Mina Almasry wrote:
+> On Tue, Mar 5, 2024 at 1:55 PM David Wei <dw@davidwei.uk> wrote:
+>>
+>> On 2024-03-04 18:01, Mina Almasry wrote:
+>>> +struct memory_provider_ops {
+>>> +     int (*init)(struct page_pool *pool);
+>>> +     void (*destroy)(struct page_pool *pool);
+>>> +     struct page *(*alloc_pages)(struct page_pool *pool, gfp_t gfp);
+>>> +     bool (*release_page)(struct page_pool *pool, struct page *page);
+>>
+>> For ZC Rx we added a scrub() function to memory_provider_ops that is
+>> called from page_pool_scrub(). Does TCP devmem not custom behaviour
+>> waiting for all netmem_refs to return before destroying the page pool?
+>> What happens if e.g. application crashes?
+> 
+> (sorry for the long reply, but he refcounting is pretty complicated to
+> explain and I feel like we need to agree on how things currently work)
+> 
+> Yeah, the addition of the page_pool_scrub() function is a bit of a
+> head scratcher for me. Here is how the (complicated) refcounting works
+> for devmem TCP (assuming the driver is not doing its own recycling
+> logic which complicates things further):
+> 
+> 1. When a netmem_ref is allocated by the page_pool (from dmabuf or
+> page), the netmem_get_pp_ref_count_ref()==1 and belongs to the page
+> pool as long as the netmem is waiting in the pool for driver
+> allocation.
+> 
+> 2. When a netmem is allocated by the driver, no refcounting is
+> changed, but the ownership of the netmem_get_pp_ref_count_ref() is
+> implicitly transferred from the page pool to the driver. i.e. the ref
+> now belongs to the driver until an skb is formed.
+> 
+> 3. When the driver forms an skb using skb_rx_add_frag_netmem(), no
+> refcounting is changed, but the ownership of the
+> netmem_get_pp_ref_count_ref() is transferred from the driver to the
+> TCP stack.
+> 
+> 4. When the TCP stack hands the skb to the application, the TCP stack
+> obtains an additional refcount, so netmem_get_pp_ref_count_ref()==2,
+> and frees the skb using skb_frag_unref(), which drops the
+> netmem_get_pp_ref_count_ref()==1.
+> 
+> 5. When the user is done with the skb, the user calls the
+> DEVMEM_DONTNEED setsockopt which calls napi_pp_put_netmem() which
+> recycles the netmem back to the page pool. This doesn't modify any
+> refcounting, but the refcount ownership transfers from the userspace
+> back to the page pool, and we're back at step 1.
+> 
+> So all in all netmem can belong either to (a) the page pool, or (b)
+> the driver, or (c) the TCP stack, or (d) the application depending on
+> where exactly it is in the RX path.
+> 
+> When an application running devmem TCP crashes, the netmem that belong
+> to the page pool or driver are not touched, because the page pool is
+> not tied to the application in our case really. However, the TCP stack
+> notices the devmem socket of the application close, and when it does,
+> the TCP stack will:
+> 
+> 1. Free all the skbs in the sockets receive queue. This is not custom
+> behavior for devmem TCP, it's just standard for TCP to free all skbs
+> waiting to be received by the application.
+> 2. The TCP stack will free references that belong to the application.
+> Since the application crashed, it will not call the DEVMEM_DONTNEED
+> setsockopt, so we need to free those on behalf of the application.
+> This is done in this diff:
+> 
+> @@ -2498,6 +2498,15 @@ static void tcp_md5sig_info_free_rcu(struct
+> rcu_head *head)
+>   void tcp_v4_destroy_sock(struct sock *sk)
+>   {
+>    struct tcp_sock *tp = tcp_sk(sk);
+> + __maybe_unused unsigned long index;
+> + __maybe_unused void *netmem;
+> +
+> +#ifdef CONFIG_PAGE_POOL
+> + xa_for_each(&sk->sk_user_frags, index, netmem)
+> + WARN_ON_ONCE(!napi_pp_put_page((__force netmem_ref)netmem, false));
+> +#endif
+> +
+> + xa_destroy(&sk->sk_user_frags);
+> 
+>    trace_tcp_destroy_sock(sk);
+> 
+> To be honest, I think it makes sense for the TCP stack to be
+> responsible for putting the references that belong to it and the
+> application. To me, it does not make much sense for the page pool to
+> be responsible for putting the reference that belongs to the TCP stack
+> or driver via a page_pool_scrub() function, as those references do not
+> belong to the page pool really. I'm not sure why there is a diff
+> between our use cases here because I'm not an io_uring expert. Why do
+> you need to scrub all the references on page pool destruction? Don't
+> these belong to non-page pool components like io_uring stack or TCP
+> stack ol otherwise?
 
+That one is about cleaning buffers that are in b/w 4 and 5, i.e.
+owned by the user, which devmem does at sock destruction. io_uring
+could get by without scrub, dropping user refs while unregistering
+ifq, but then it'd need to wait for all requests to finish so there
+is no step 4 in the meantime. Might change, can be useful, but it
+was much easier to hook into the pp release loop.
 
------ On Mar 6, 2024, at 12:10 AM, Xu Yilun yilun.xu@linux.intel.com wrote:
+Another concern is who and when can reset ifq / kill pp outside
+of io_uring/devmem. I assume it can happen on a whim, which is
+hard to handle gracefully.
 
-> On Mon, Mar 04, 2024 at 09:27:04PM -0500, Charles Perry wrote:
->> 
->> 
->> On Mar 4, 2024, at 12:31 AM, Krzysztof Kozlowski krzysztof.kozlowski@linaro.org
->> wrote:
->> 
->> > On 04/03/2024 08:30, Krzysztof Kozlowski wrote:
->> >> On 03/03/2024 18:21, Charles Perry wrote:
->> >>> On Feb 27, 2024, at 3:10 AM, Krzysztof Kozlowski krzysztof.kozlowski@linaro.org
->> >>> wrote:
->> >>>
->> >>>> On 21/02/2024 20:50, Charles Perry wrote:
->> >>>>> Document the SelectMAP interface of Xilinx 7 series FPGA.
->> >>>>>
->> >>>>> Signed-off-by: Charles Perry <charles.perry@savoirfairelinux.com>
->> >>>>> ---
->> >>>>>  .../bindings/fpga/xlnx,fpga-selectmap.yaml    | 86 +++++++++++++++++++
->> >>>>>  1 file changed, 86 insertions(+)
->> >>>>>  create mode 100644
->> >>>>>  Documentation/devicetree/bindings/fpga/xlnx,fpga-selectmap.yaml
->> >>>>>
->> >>>>> diff --git a/Documentation/devicetree/bindings/fpga/xlnx,fpga-selectmap.yaml
->> >>>>> b/Documentation/devicetree/bindings/fpga/xlnx,fpga-selectmap.yaml
->> >>>>> new file mode 100644
->> >>>>> index 0000000000000..08a5e92781657
->> >>>>> --- /dev/null
->> >>>>> +++ b/Documentation/devicetree/bindings/fpga/xlnx,fpga-selectmap.yaml
->> >>>>> @@ -0,0 +1,86 @@
->> >>>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> >>>>> +%YAML 1.2
->> >>>>> +---
->> >>>>> +$id: http://devicetree.org/schemas/fpga/xlnx,fpga-selectmap.yaml#
->> >>>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> >>>>> +
->> >>>>> +title: Xilinx SelectMAP FPGA interface
->> >>>>> +
->> >>>>> +maintainers:
->> >>>>> +  - Charles Perry <charles.perry@savoirfairelinux.com>
->> >>>>> +
->> >>>>> +description: |
->> >>>>> +  Xilinx 7 Series FPGAs support a method of loading the bitstream over a
->> >>>>> +  parallel port named the SelectMAP interface in the documentation. Only
->> >>>>> +  the x8 mode is supported where data is loaded at one byte per rising edge of
->> >>>>> +  the clock, with the MSB of each byte presented to the D0 pin.
->> >>>>> +
->> >>>>> +  Datasheets:
->> >>>>> +
->> >>>>> https://www.xilinx.com/support/documentation/user_guides/ug470_7Series_Config.pdf
->> >>>>> +
->> >>>>> +allOf:
->> >>>>> +  - $ref: /schemas/memory-controllers/mc-peripheral-props.yaml#
->> >>>>> +
->> >>>>> +properties:
->> >>>>> +  compatible:
->> >>>>> +    enum:
->> >>>>> +      - xlnx,fpga-xc7s-selectmap
->> >>>>> +      - xlnx,fpga-xc7a-selectmap
->> >>>>> +      - xlnx,fpga-xc7k-selectmap
->> >>>>> +      - xlnx,fpga-xc7v-selectmap
->> >>>>> +
->> >>>>> +  reg:
->> >>>>> +    description:
->> >>>>> +      At least 1 byte of memory mapped IO
->> >>>>> +    maxItems: 1
->> >>>>> +
->> >>>>> +  prog_b-gpios:
->> >>>>
->> >>>> I commented on this and still see underscore. Nothing in commit msg
->> >>>> explains why this should have underscore. Changelog is also vague -
->> >>>> describes that you brought back underscores, instead of explaining why
->> >>>> you did it.
->> >>>>
->> >>>> So the same comments as usual:
->> >>>>
->> >>>> No underscores in names.
->> >>>>
->> >>>> Best regards,
->> >>>> Krzysztof
->> >>>
->> >>> Hello Krzysztof,
->> >>>
->> >>> Yes, I've gone full circle on that issue. Here's what I tried so far:
->> >> 
->> >> And what part of the commit description allows me to understand this?
->> >> 
->> 
->> I have a changelog in the cover letter:
->> https://lore.kernel.org/all/20240221195058.1281973-1-charles.perry@savoirfairelinux.com/
->> 
->> >>>
->> >>>  1) Reuse the same gpio names: Duplicates errors of the past, Krzysztof
->> >>>     doesn't like it.
->> >>>  2) Different gpio names for new driver only: Makes the driver code
->> >>>     overly complicated, Yilun doesn't like it.
->> >> 
->> >> That's a new driver, right? So what is complicated here? You have new
->> >> code and you take prog-b or prog_b?
->> >> 
->> >>>  3) Change gpio names for both drivers, deprecate the old names: Makes
->> >>>     the DT binding and the driver code overly complicated, Rob doesn't
->> >>>     like it.
->> >> 
->> >> I don't think I proposed changing existing bindings.
->> >> 
->> >>>
->> >>> I think that while the driver code shouldn't be the driving force for
->> >>> the DT spec, it can be a good indication that the spec is unpractical to
->> >>> implement.
->> >> 
->> >> What is impractical in implementing this? You just pass either A or B to
->> >> function requesting GPIO. Just choose proper name.
->> >>
->> 
->> It's not complicated but it requires more code than if "prog_b" had been
->> used.
->>  
->> >>>
->> >>> In this case, there are two interfaces on a chip that uses the same GPIO
->> >>> protocol, it would only make sense that they use the same names, this
->> >>> discards solution #2.
->> >> 
->> >> I don't understand this. You have devm_gpiod_get() in your new code. Why
->> >> is it difficult to use different name?
->> 
->> Yilun asked to avoid changing the names between the two drivers.
->> First comment in this mail:
->> https://lore.kernel.org/all/Zb9GkY6cMtR+4xOX@yilunxu-OptiPlex-7050/
->> 
->> Yilun, let me know if this is something you'd accept as this is a concern
->> for the device tree maintainers.
-> 
-> I agree that deprecated names should not be used for new DT bindings, while
-> keeping backward compatibility to exsiting ones, unless there is other
-> DT side concern.
-> 
-> I'm also good that the driver adapts to the DT binding change.
-> 
-> What I'm concerned is the driver API:
-> 
->  int xilinx_core_probe(struct xilinx_fpga_core *core, struct device *dev,
->		      xilinx_write_func write,
->  -		      xilinx_write_one_dummy_byte_func write_one_dummy_byte)
->  +		      xilinx_write_one_dummy_byte_func write_one_dummy_byte,
->  +		      const char *prog_con_id, const char *init_con_id)
-> 
-> You don't have to make every bus driver input the gpio names.  The core
-> falls back to use old gpio names only for existing devices
-> (.compatible = "xlnx,fpga-slave-serial").  Then the issue could be
-> solved?
-> 
-> Thanks,
-> Yilun
-> 
-
-Ok, thank you for the guidance.
-
-Regards,
-Charles
-
->> 
->> > 
->> > And I forgot to emphasize: none of these is mentioned in commit msg, so
->> > for v5 you will get exactly the same complains. And for every other
->> > patch which repeats the same and does not clarify caveats or exceptions.
->> > 
->> > Best regards,
->> > Krzysztof
->> 
->> Should I keep my changelog in the individual commits? I thought the norm
->> was to put this the cover letter.
->> 
->> Regards,
->> Charles
+-- 
+Pavel Begunkov
 
