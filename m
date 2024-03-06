@@ -1,201 +1,166 @@
-Return-Path: <linux-kernel+bounces-94043-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94044-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AE118738F8
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:26:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DD0E88738F9
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:26:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BEA381F25826
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:26:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 941631F25809
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:26:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79C1E132C1F;
-	Wed,  6 Mar 2024 14:25:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7519132C15;
+	Wed,  6 Mar 2024 14:26:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P74mGS1s"
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="XrN62mpo"
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FF1460895;
-	Wed,  6 Mar 2024 14:25:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 536311BDD3
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 14:26:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709735154; cv=none; b=E8o22rEm2aDYgt+Am4kaaBSYMYVilDQSw3Km6NRcf8DI1jf0YzmZKUhtqzIFSCc1n4NrGEjzAF2cOG0MYRzcXAKx2rY6hKiqcOHKx5zpWD7ZHhumvVMhqi2yll9KO1SxE+zFWCjlm1jwxkVNFF1ox6w8z3yAV04muBydg/870is=
+	t=1709735173; cv=none; b=aXs5c3UkyOl6DQUbu0WVC7igx8q/m3UDk3FPWzhPTKK1IJu9vVb5GxxvdltZGhZXr1Ldhdn5RrRriIHHSqigsFDlqtwuKH6hsUruR1XIFg+PxX8USv6EtVJCGitRvmy3SLxfdOnRhjg/YVE2czlin6TXSuN3kIY3D5SjPQh5f7M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709735154; c=relaxed/simple;
-	bh=sCb5JbyJ/gY7JIM826empmjtqduKbdWZ8F83jb93tPs=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=d/uOSizfUccWr7XyL9D3GFkBEfSAJU/S7/myQbu7sri+STPkTzKVYdlR0i1albxZNx45EX6+btWiRM+wqGci0sPly7LaAMsBKXdnqogbft0DGqarv1oUfyM3SdJpUH3xw1UZTwBB/GQ+p3giYXpsOaZtH2LlhFQR7HPrscJksms=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=P74mGS1s; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6e655a12c81so26503b3a.1;
-        Wed, 06 Mar 2024 06:25:52 -0800 (PST)
+	s=arc-20240116; t=1709735173; c=relaxed/simple;
+	bh=KrW/CZ/APueN64R2bxzAAsZpXWtmKM6iihQbhPlVSsw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bbS9v3o9UDb5IYw1fSiCOgJbLDFJPVodEMBhKlpr/Ta1Jrt1BQte6QMyHvQ5eNbIBGii+jFETF+cMZaIggN0or2DYJ+K4PEI3yILh73Yf+Z3e94zptjQBtCBGTX1S5ywyMcALDCHGjLpTq7jAesldyckb7ytOTA51ilwRbUitpw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=XrN62mpo; arc=none smtp.client-ip=209.85.208.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d382a78c38so50745591fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 06:26:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709735152; x=1710339952; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=divIJxXpF6Kid14aoXB1EYkP0PShY5l++WV1hOmnXrQ=;
-        b=P74mGS1sG/NZGNOX0Gfpj2e+sYTeAWKPjYt672U8kIz2cJ7w5iFwrznUBKHUZYbxkw
-         1k8VwZVDK/yo7JdqtjIqdWEBJnlMFLgZbw09HqrfQXP+dM7Xk+B02nkRV9JNBHxAG7vL
-         IfKGW1C/d7t0QNatHzkvSb+c6x2zaMRvWqBla6Xcjpx1AqHPwkHSmOs3pCrIixt74i/m
-         bvpbzdqAs3qgP0IT8BeRzmYN8MGb9rTLyiTA9a3UNe26k0ddgtxnF+AcpUi2dSC7DBKY
-         TafPYsYu8Ml9kaLczlQHr6OHeI56eMUFse5uBFRsTkSyJ+ihYFiZyR0yv63j+lLA0mgq
-         C/7A==
+        d=linaro.org; s=google; t=1709735169; x=1710339969; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ILaJ1ndBrtJxnoedpR0nNpThqGu/CpGbTx1REHQje5Q=;
+        b=XrN62mpo+B2Xoe0MeYK8c2TQWUbmfF/4le4FjE+ESMRGMk5kX4j86xOZdEwlkwXPXP
+         mINAp/+rVmMsJ3EZjvTWqgmgdY6hjp/d9f/xO9lP0dz/Yf2yTqZcE2ziWdIPhezAknES
+         CvYuXTHUMZcWpZKxOMx64MF/cE8g57JQe5o4HeWpGlTf2we2iQNdHuWFzZukEo0GoOc6
+         kFisBPolurtSmdYY8Q05IuiG+lt/YeXZLR0CkhmtDMklDHSbTq1DFZbxnurhEl4ctxKQ
+         Cb452UyBxbbCZDgcJG+fD3vHFUPcSrG/bUNh7DnRMOjGPhGrIfjMK6u3pBIP61/ILYph
+         Z39A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709735152; x=1710339952;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=divIJxXpF6Kid14aoXB1EYkP0PShY5l++WV1hOmnXrQ=;
-        b=DgczGAb85iX3M1849e0SuSg0XIMDPs1KaGKkKAPtq0FpfbJA5XKhlxvv7esa1yPbGP
-         +0esOmMyXSu3xamvEbRnVbmeUzJeXFX72+76im/R+nCiXCjwzw/WHSxbwIUv6yuIPCiU
-         tA1Bo/Jvl+nBQavp3izj8Ag4gI+4OARkw0KdzF5OsGmVtyqvjj6oxBpvcA3aPq9gquJx
-         DWaneSKS3sGmIblxi+RBlVz5nKZ97PO0AMLyNp+TzMTIFNla5bvbJRWF9MsXi05hXEjH
-         KpxmrKq2asdzk5162QTvstywUkcXpuXiUGI47ytCt9aYgKUL2wwK8PZwdcyoZCXGGtMk
-         +ZCQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXNyTEmNBE3zoV4silMMib8o3pK7l3tCq5em8ODXjehiMz53GKNk+UJi9Ex9lp7xI4ir87ag6J2awuB4kvgG2mnTm8R7/bO9oO4QW9+
-X-Gm-Message-State: AOJu0Yw+EW+Xj3dDcwVrLoavC3oVDBKfB/E6zc1jJFoWnNQF6cLQ2UQb
-	4MWmaIuAu3UU5jK0NRvtEbS+FhVC47VVoip1Zi2w7AGFr/boq92mPOya+8Sj
-X-Google-Smtp-Source: AGHT+IFfDqY0nX6iJgir7qlBpUMzd5vDoMJX2JA3WL0pRGQ8CY4i5as8kXqceJlanehnTl9GwkgQlA==
-X-Received: by 2002:a05:6a20:3954:b0:1a1:4aea:c665 with SMTP id r20-20020a056a20395400b001a14aeac665mr313660pzg.19.1709735152309;
-        Wed, 06 Mar 2024 06:25:52 -0800 (PST)
-Received: from carrot.. (i60-34-119-103.s42.a014.ap.plala.or.jp. [60.34.119.103])
-        by smtp.gmail.com with ESMTPSA id b4-20020aa78704000000b006e5969aa281sm10751433pfo.169.2024.03.06.06.25.50
+        d=1e100.net; s=20230601; t=1709735169; x=1710339969;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ILaJ1ndBrtJxnoedpR0nNpThqGu/CpGbTx1REHQje5Q=;
+        b=BUFtzuyVZ25dT+mpDk/YFf5KrMukqB4DvU6MaNPYGZfcaw99vZUEwCJYnyQj81C8s0
+         TyH2lgPT390OS4EoXb6aSSIIQfmZzdJVZDsHWqWGmZEKhFS7AuNuIOzhSt1Vo5AAGp+a
+         bGOaum8GkrNsphQSoKZcyIhepCLc129+t1iCUfQewilXk4opLC+NTrJNfADGAQFhY8jc
+         HPKrxAOaUwop930vPmAEcBT8mVhvFNMmMUXxQzdXLk6OamVnpxMuxW9V0P3vTb1J1VB+
+         Fwj7jIZWAvTUUHVV/k7jcmLoK5Kj1Gqqx5d3Sln30//Oh559qfpOaG88uONVpotsS18W
+         8UAA==
+X-Forwarded-Encrypted: i=1; AJvYcCX42WNqEY0bLHHgEUyhc/TVwJPotmTZY/k7r/lmtV4OfsY+kPZxYXOvmTw5z464yhM18jJ8hm80Rk9qM19wnjWnPODDgOwmsiV7H0S6
+X-Gm-Message-State: AOJu0YzdvfSMFG9jqnkYGCgvzXDwL/thX06yV+baSdLcx4WswHvJnWMs
+	tnNJV6Y1xlAanM41PAQI7bRoPjLEfBMVFQb9t7XVyLgaKUI3wfBEb9NU+AXKKnk=
+X-Google-Smtp-Source: AGHT+IFaN3MqR0SWCUrtnsqaYb6hwQk83zKUsyA3y/yhWoXR93flI0IncrRaIiKLVUV6LlSrQuFR0Q==
+X-Received: by 2002:ac2:52ac:0:b0:512:98d1:d5e1 with SMTP id r12-20020ac252ac000000b0051298d1d5e1mr3022225lfm.21.1709735169200;
+        Wed, 06 Mar 2024 06:26:09 -0800 (PST)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id m11-20020a05600c4f4b00b00413011933e6sm391818wmq.39.2024.03.06.06.26.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Mar 2024 06:25:51 -0800 (PST)
-From: Ryusuke Konishi <konishi.ryusuke@gmail.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-nilfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] nilfs2: Use div64_ul() instead of do_div()
-Date: Wed,  6 Mar 2024 23:25:47 +0900
-Message-Id: <20240306142547.4612-1-konishi.ryusuke@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Wed, 06 Mar 2024 06:26:08 -0800 (PST)
+Date: Wed, 6 Mar 2024 17:26:05 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Changhuang Liang <changhuang.liang@starfivetech.com>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+	Jack Zhu <jack.zhu@starfivetech.com>, linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: Re: [PATCH v1 5/7] staging: media: starfive: Add ISP raw video device
+Message-ID: <c474bd8f-6c23-4536-a915-efbc197a223e@moroto.mountain>
+References: <20240306093334.9321-1-changhuang.liang@starfivetech.com>
+ <20240306093334.9321-6-changhuang.liang@starfivetech.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240306093334.9321-6-changhuang.liang@starfivetech.com>
 
-From: Thorsten Blum <thorsten.blum@toblux.com>
+I wasn't able to get this patch to apply.  I tried applying the patch
+mentioned in the cover letter first but it didn't help...  It's not
+your fault, but it made reviewing the rest hard so I might have made
+some mistakes.
 
-Fixes Coccinelle/coccicheck warnings reported by do_div.cocci.
+On Wed, Mar 06, 2024 at 01:33:32AM -0800, Changhuang Liang wrote:
+> Add raw video device to capture raw data from ISP.
+> 
+> Signed-off-by: Changhuang Liang <changhuang.liang@starfivetech.com>
+> ---
+>  .../staging/media/starfive/camss/stf-camss.c  | 19 ++++++
+>  .../media/starfive/camss/stf-capture.c        | 58 ++++++++++++++++++-
+>  .../staging/media/starfive/camss/stf-video.h  |  1 +
+>  3 files changed, 77 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/staging/media/starfive/camss/stf-camss.c b/drivers/staging/media/starfive/camss/stf-camss.c
+> index 81fc39f20615..90ac8b67c76e 100644
+> --- a/drivers/staging/media/starfive/camss/stf-camss.c
+> +++ b/drivers/staging/media/starfive/camss/stf-camss.c
+> @@ -126,6 +126,7 @@ static int stfcamss_of_parse_ports(struct stfcamss *stfcamss)
+>  static int stfcamss_register_devs(struct stfcamss *stfcamss)
+>  {
+>  	struct stf_capture *cap_yuv = &stfcamss->captures[STF_CAPTURE_YUV];
+> +	struct stf_capture *cap_raw = &stfcamss->captures[STF_CAPTURE_RAW];
+>  	struct stf_isp_dev *isp_dev = &stfcamss->isp_dev;
+>  	int ret;
+>  
+> @@ -150,8 +151,18 @@ static int stfcamss_register_devs(struct stfcamss *stfcamss)
+>  
+>  	cap_yuv->video.source_subdev = &isp_dev->subdev;
+>  
+> +	ret = media_create_pad_link(&isp_dev->subdev.entity, STF_ISP_PAD_SRC_RAW,
+> +				    &cap_raw->video.vdev.entity, 0, 0);
+> +	if (ret)
+> +		goto err_rm_links0;
+> +
+> +	cap_raw->video.source_subdev = &isp_dev->subdev;
+> +
+>  	return ret;
+>  
+> +err_rm_links0:
+> +	media_entity_remove_links(&isp_dev->subdev.entity);
 
-Compared to do_div(), div64_ul() does not implicitly cast the divisor and
-does not unnecessarily calculate the remainder.
+I don't think this line is correct.  I think we only need to
+remove &cap_yuv->video.vdev.entity.
 
-Link: https://lkml.kernel.org/r/20240229210456.63234-2-thorsten.blum@toblux.com
-Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
-Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
----
-Hi Andrew,
+> +	media_entity_remove_links(&cap_yuv->video.vdev.entity);
+>  err_cap_unregister:
+>  	stf_capture_unregister(stfcamss);
+>  err_isp_unregister:
+> @@ -162,6 +173,14 @@ static int stfcamss_register_devs(struct stfcamss *stfcamss)
+>  
+>  static void stfcamss_unregister_devs(struct stfcamss *stfcamss)
+>  {
+> +	struct stf_capture *cap_yuv = &stfcamss->captures[STF_CAPTURE_YUV];
+> +	struct stf_capture *cap_raw = &stfcamss->captures[STF_CAPTURE_RAW];
+> +	struct stf_isp_dev *isp_dev = &stfcamss->isp_dev;
+> +
+> +	media_entity_remove_links(&isp_dev->subdev.entity);
 
-Could you please add this to the queue for the merge window?
-It's a little late addition, so if this doesn't make it to the
-upcoming merge window, please queue it for the next one.
+I think this line should be deleted.
 
-Thanks,
-Ryusuke Konishi
+> +	media_entity_remove_links(&cap_raw->video.vdev.entity);
+> +	media_entity_remove_links(&cap_yuv->video.vdev.entity);
 
- fs/nilfs2/cpfile.c    | 2 +-
- fs/nilfs2/dat.c       | 2 +-
- fs/nilfs2/ioctl.c     | 4 ++--
- fs/nilfs2/sufile.c    | 2 +-
- fs/nilfs2/super.c     | 2 +-
- fs/nilfs2/the_nilfs.c | 2 +-
- 6 files changed, 7 insertions(+), 7 deletions(-)
+I think this "&cap_yuv" should be submitted by itself as a bugfix patch.
 
-diff --git a/fs/nilfs2/cpfile.c b/fs/nilfs2/cpfile.c
-index 2c57132584de..69a5cced1e84 100644
---- a/fs/nilfs2/cpfile.c
-+++ b/fs/nilfs2/cpfile.c
-@@ -28,7 +28,7 @@ nilfs_cpfile_get_blkoff(const struct inode *cpfile, __u64 cno)
- {
- 	__u64 tcno = cno + NILFS_MDT(cpfile)->mi_first_entry_offset - 1;
- 
--	do_div(tcno, nilfs_cpfile_checkpoints_per_block(cpfile));
-+	tcno = div64_ul(tcno, nilfs_cpfile_checkpoints_per_block(cpfile));
- 	return (unsigned long)tcno;
- }
- 
-diff --git a/fs/nilfs2/dat.c b/fs/nilfs2/dat.c
-index 8f71f8b0e218..180fc8d36213 100644
---- a/fs/nilfs2/dat.c
-+++ b/fs/nilfs2/dat.c
-@@ -460,7 +460,7 @@ ssize_t nilfs_dat_get_vinfo(struct inode *dat, void *buf, unsigned int visz,
- 		kaddr = kmap_local_page(entry_bh->b_page);
- 		/* last virtual block number in this block */
- 		first = vinfo->vi_vblocknr;
--		do_div(first, entries_per_block);
-+		first = div64_ul(first, entries_per_block);
- 		first *= entries_per_block;
- 		last = first + entries_per_block - 1;
- 		for (j = i, n = 0;
-diff --git a/fs/nilfs2/ioctl.c b/fs/nilfs2/ioctl.c
-index cfb6aca5ec38..f1a01c191cf5 100644
---- a/fs/nilfs2/ioctl.c
-+++ b/fs/nilfs2/ioctl.c
-@@ -1111,7 +1111,7 @@ static int nilfs_ioctl_set_alloc_range(struct inode *inode, void __user *argp)
- 	segbytes = nilfs->ns_blocks_per_segment * nilfs->ns_blocksize;
- 
- 	minseg = range[0] + segbytes - 1;
--	do_div(minseg, segbytes);
-+	minseg = div64_ul(minseg, segbytes);
- 
- 	if (range[1] < 4096)
- 		goto out;
-@@ -1120,7 +1120,7 @@ static int nilfs_ioctl_set_alloc_range(struct inode *inode, void __user *argp)
- 	if (maxseg < segbytes)
- 		goto out;
- 
--	do_div(maxseg, segbytes);
-+	maxseg = div64_ul(maxseg, segbytes);
- 	maxseg--;
- 
- 	ret = nilfs_sufile_set_alloc_range(nilfs->ns_sufile, minseg, maxseg);
-diff --git a/fs/nilfs2/sufile.c b/fs/nilfs2/sufile.c
-index abf05dc5750c..6748218be7c5 100644
---- a/fs/nilfs2/sufile.c
-+++ b/fs/nilfs2/sufile.c
-@@ -48,7 +48,7 @@ nilfs_sufile_get_blkoff(const struct inode *sufile, __u64 segnum)
- {
- 	__u64 t = segnum + NILFS_MDT(sufile)->mi_first_entry_offset;
- 
--	do_div(t, nilfs_sufile_segment_usages_per_block(sufile));
-+	t = div64_ul(t, nilfs_sufile_segment_usages_per_block(sufile));
- 	return (unsigned long)t;
- }
- 
-diff --git a/fs/nilfs2/super.c b/fs/nilfs2/super.c
-index 5e630c179a1e..ac24ed109ce9 100644
---- a/fs/nilfs2/super.c
-+++ b/fs/nilfs2/super.c
-@@ -448,7 +448,7 @@ int nilfs_resize_fs(struct super_block *sb, __u64 newsize)
- 
- 	sb2off = NILFS_SB2_OFFSET_BYTES(newsize);
- 	newnsegs = sb2off >> nilfs->ns_blocksize_bits;
--	do_div(newnsegs, nilfs->ns_blocks_per_segment);
-+	newnsegs = div64_ul(newnsegs, nilfs->ns_blocks_per_segment);
- 
- 	ret = nilfs_sufile_resize(nilfs->ns_sufile, newnsegs);
- 	up_write(&nilfs->ns_segctor_sem);
-diff --git a/fs/nilfs2/the_nilfs.c b/fs/nilfs2/the_nilfs.c
-index 71400496ed36..2ae2c1bbf6d1 100644
---- a/fs/nilfs2/the_nilfs.c
-+++ b/fs/nilfs2/the_nilfs.c
-@@ -413,7 +413,7 @@ static u64 nilfs_max_segment_count(struct the_nilfs *nilfs)
- {
- 	u64 max_count = U64_MAX;
- 
--	do_div(max_count, nilfs->ns_blocks_per_segment);
-+	max_count = div64_ul(max_count, nilfs->ns_blocks_per_segment);
- 	return min_t(u64, max_count, ULONG_MAX);
- }
- 
--- 
-2.34.1
+> +
+>  	stf_isp_unregister(&stfcamss->isp_dev);
+>  	stf_capture_unregister(stfcamss);
+>  }
+
+regards,
+dan carpenter
 
 
