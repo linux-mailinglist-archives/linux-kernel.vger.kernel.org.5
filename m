@@ -1,90 +1,182 @@
-Return-Path: <linux-kernel+bounces-94191-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94182-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43F0A873B18
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:48:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CD9B7873AFF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:44:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 230201C21099
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:48:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BAAC21C20F76
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:44:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44A3013540F;
-	Wed,  6 Mar 2024 15:48:43 +0000 (UTC)
-Received: from 9.mo575.mail-out.ovh.net (9.mo575.mail-out.ovh.net [46.105.78.111])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0AC21353F2;
+	Wed,  6 Mar 2024 15:43:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="EHbRTffY"
+Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A873130ADD
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 15:48:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.105.78.111
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6403C136650
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 15:43:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709740122; cv=none; b=pBm48lIR9aTIfIi2xHC3hnMPjWEG907SXW7gZf20h3NNKy84TCkNGpIBBgDRcKNM7jTLDQpJjJrbCLahaTeRJyl8+dUhYsUcQRCPUIaYKMemx0ugjAe/yy42hfN0ZpnThmvpvZ9OMFnNUoR4SvCleLlGaP38otQ1MKlv/8O1Zko=
+	t=1709739813; cv=none; b=cgVqOhP1LZwHVfoNlwP53vTj9t+mzgl70SHzPtzAarnN52tvGDt3xbhVlUYVLK9opkHCa/uRnQ+kMsTp9dmyXbsA5vpjmJzREX1K9vpXPdQxWjlTy6qrrjAFdc7Rov09glwb35vrnZF04YC/Z45MKE78eVgahklS3kQAp83TIa8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709740122; c=relaxed/simple;
-	bh=ddVEZ/hCRRIaQR+Zd4qHp55qWobjMRKrD1xXYor6Njs=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=tfCsT7mnLfo23l0wJh3xGGr8bxRzoPwOY6OxQXp5NIiiZNj3lazSOJnnYthWUJpvu2XvxrSNrEDYC7Y7qNIMtQXhz22oqf94VqAPlvKajFF1khthHpXSf6wWiMAx07/basFyKdO68+Rm+BupIICgoXApfUCvwlFXEzf3eWzDQTA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=etezian.org; arc=none smtp.client-ip=46.105.78.111
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=etezian.org
-Received: from director11.ghost.mail-out.ovh.net (unknown [10.109.148.178])
-	by mo575.mail-out.ovh.net (Postfix) with ESMTP id 4TqcCk08Sdz1Prr
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 15:43:29 +0000 (UTC)
-Received: from ghost-submission-6684bf9d7b-zgt6x (unknown [10.110.113.115])
-	by director11.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 523151FFCE;
-	Wed,  6 Mar 2024 15:43:29 +0000 (UTC)
-Received: from etezian.org ([37.59.142.109])
-	by ghost-submission-6684bf9d7b-zgt6x with ESMTPSA
-	id mCmqCiGP6GXMAwEAjxLk1w
-	(envelope-from <andi@etezian.org>); Wed, 06 Mar 2024 15:43:29 +0000
-Authentication-Results:garm.ovh; auth=pass (GARM-109S003b68dbd3f-2314-40a5-abca-d04c75d496b3,
-                    62DEF991EB217AB86F953B10C2782167B22AFEEB) smtp.auth=andi@etezian.org
-X-OVh-ClientIp:89.217.109.169
-From: Andi Shyti <andi.shyti@kernel.org>
-To: Michal Simek <michal.simek@amd.com>, 
- Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
-Cc: Ley Foon Tan <leyfoon.tan@starfivetech.com>, 
- linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org, 
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240119013326.3405484-1-jisheng.teoh@starfivetech.com>
-References: <20240119013326.3405484-1-jisheng.teoh@starfivetech.com>
-Subject: Re: [PATCH v2 RESEND] i2c: cadence: Add system suspend and resume
- PM support
-Message-Id: <170973980846.1763249.4872045565378143580.b4-ty@kernel.org>
-Date: Wed, 06 Mar 2024 16:43:28 +0100
+	s=arc-20240116; t=1709739813; c=relaxed/simple;
+	bh=pGaDc0TLwfeotZCgvBcO4BGO9qk0bmKODRVmJ9jH1RY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=olqPzeZsyW2DL1Fn8lwVBz5vQsJIIFeLydlLqc1yQp0bJ5yk6MNprZynvGTuCOWr0XPgjRog3AwiZg2ukuEuzQpJiliPa3osuZ4q6P822etWkVU9WPYTzlfFQ3cZy0nw18vlwb4WHzExfFlhCKFQATWvTEBFi9A59HHJLr/BIcI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=EHbRTffY; arc=none smtp.client-ip=209.85.161.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-5a1a069bd16so169910eaf.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 07:43:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1709739810; x=1710344610; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=k1cN5gYBP45I54WCStxe7DUVSwP4yg1UztQaoI/QgCY=;
+        b=EHbRTffYRUPXi/5DH5IevGwnWlcrTDhMcLaL1V7n8fKyTJ3zWc9GzowCcApsqb4F/j
+         OAvS90y7UEP4b6YqKcflqWW3qa+9Cpai4UMVePHbjxruVuIK6Qpvw+95onDilF2IwIYz
+         gzkxxOC+kczjYtmKUDMoOV4dtPdPMkdCIcC0Z2rAD8AIp8thVggKPrA61LG0p/82v8S7
+         HHX0rK4u0RDL59n+x6QuLIprN12eVoVIiAm8geP4mTuO8hkg66lhfAgl9I/sRRkS9z0p
+         OPtl/BDe2lWdfFN+MtXlT70pUOfAog7UHhd9W2RvAXQcH7aWmTVfsVi5orHgjUUAPLDK
+         Qd5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709739810; x=1710344610;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=k1cN5gYBP45I54WCStxe7DUVSwP4yg1UztQaoI/QgCY=;
+        b=J5ygRwk0SrG9QIArS2aDlJUZphDz2rGYdDj2rbAMJeCOI2hXR7pMjSjKmnHqfakVVo
+         eu25KDeqgVY900fX3UQNnnQgq7OCB7qRkc/P0ebSjJ3rL6YBVNyOYY5lXtu6U2dAzhVE
+         Mluq67j6HOeHTZnL3RQoR17ZjMXtu0WU2vagR0Q7jXM5E+50yMOBVY/ybpjpk8NgyKU5
+         oAU+yFla0G6wj+HQFtTqAuptIQiDNr9HxYmy6kQet8dQXMj+cshp5YT/TSU9X2rRDZuK
+         UQi/Xz5cOpMeDs5h5gEsHuahVUkzVtX8cTvy+dztJedTGoVcbBGPfgcIK1pQSchIXKlR
+         Ll4g==
+X-Forwarded-Encrypted: i=1; AJvYcCXPcUWNTsz3zYMfZbqRyRrbm3edPdXh1d2IR+9+6ej2vZp6tt95sPKXRH0u/2IS7sI/ooIa6O1b/5ViIqOaLyW5ULi75roLFJ8LzB/I
+X-Gm-Message-State: AOJu0YzMflcFUfFLGUS3AG7sxXULqf20lRm7HeDX7B6m6HruId7STlaG
+	KIhhSVeJWoLIuTMY2uzUtaj1psAr8NRcECPHq9uu+DjgmjOf+GMLi9hnhTAUSSg=
+X-Google-Smtp-Source: AGHT+IF835JdG2KV+Fg3U6AZj/VvG5X03U44hahvSgMdG82XDPKZTf6weC4/9ghDsNohTNUCXi+btw==
+X-Received: by 2002:a05:6358:78a:b0:17c:1bc7:16d5 with SMTP id n10-20020a056358078a00b0017c1bc716d5mr5567125rwj.5.1709739810357;
+        Wed, 06 Mar 2024 07:43:30 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id j10-20020ae9c20a000000b007871bac855fsm6707680qkg.47.2024.03.06.07.43.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Mar 2024 07:43:29 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1rhtQW-001c2D-PU;
+	Wed, 06 Mar 2024 11:43:28 -0400
+Date: Wed, 6 Mar 2024 11:43:28 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Leon Romanovsky <leon@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+	Chaitanya Kulkarni <chaitanyak@nvidia.com>,
+	Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
+	Keith Busch <kbusch@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
+	Yishai Hadas <yishaih@nvidia.com>,
+	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	=?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
+	iommu@lists.linux.dev, linux-nvme@lists.infradead.org,
+	kvm@vger.kernel.org, linux-mm@kvack.org,
+	Bart Van Assche <bvanassche@acm.org>,
+	Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+	Amir Goldstein <amir73il@gmail.com>,
+	"josef@toxicpanda.com" <josef@toxicpanda.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	"daniel@iogearbox.net" <daniel@iogearbox.net>,
+	Dan Williams <dan.j.williams@intel.com>,
+	"jack@suse.com" <jack@suse.com>, Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: Re: [RFC RESEND 00/16] Split IOMMU DMA mapping operation to two steps
+Message-ID: <20240306154328.GM9225@ziepe.ca>
+References: <cover.1709635535.git.leon@kernel.org>
+ <47afacda-3023-4eb7-b227-5f725c3187c2@arm.com>
+ <20240305122935.GB36868@unreal>
+ <20240306144416.GB19711@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13.0
-X-Ovh-Tracer-Id: 10313524625080715995
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledriedugdejiecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevjghfuffkffggtgfgofesthejredtredtjeenucfhrhhomheptehnughiucfuhhihthhiuceorghnughirdhshhihthhisehkvghrnhgvlhdrohhrgheqnecuggftrfgrthhtvghrnhepffetheduffdvhfdugfffudfgjeejudehheegfeeguefhieeugffhgfeuffdvgfefnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepuddvjedrtddrtddruddpkeelrddvudejrddutdelrdduieelpdefjedrheelrddugedvrddutdelnecuvehluhhsthgvrhfuihiivgepvdenucfrrghrrghmpehinhgvthepuddvjedrtddrtddruddpmhgrihhlfhhrohhmpegrnhguihesvghtvgiiihgrnhdrohhrghdpnhgspghrtghpthhtohepuddprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdpoffvtefjohhsthepmhhoheejhedpmhhouggvpehsmhhtphhouhht
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240306144416.GB19711@lst.de>
 
-Hi
+On Wed, Mar 06, 2024 at 03:44:16PM +0100, Christoph Hellwig wrote:
 
-On Fri, 19 Jan 2024 09:33:26 +0800, Ji Sheng Teoh wrote:
-> Enable device system suspend and resume PM support, and mark the device
-> state as suspended during system suspend to reject any data transfer.
-> 
-> 
+> Except that the flows are fundamentally different for the "can coalesce"
+> vs "can't coalesce" case.  In the former we have one dma_addr_t range,
+> and in the latter as many as there are input vectors (this is ignoring
+> the weird iommu merging case where we we coalesce some but not all
+> segments, but I'd rather not have that in a new API).
 
-Applied to i2c/i2c-host on
+I don't think they are so fundamentally different, at least in our
+past conversations I never came out with the idea we should burden the
+driver with two different flows based on what kind of alignment the
+transfer happens to have.
 
-git://git.kernel.org/pub/scm/linux/kernel/git/andi.shyti/linux.git
+Certainly if we split the API to focus one API on doing only
+page-aligned transfers the aligned part does become a little.
 
-Thank you,
-Andi
+At least the RDMA drivers could productively use just a page aligned
+interface. But I didn't think this would make BIO users happy so never
+even thought about it..
 
-Patches applied
-===============
-[1/1] i2c: cadence: Add system suspend and resume PM support
-      commit: 747bdf912e22732e8de9bd04a2d3e387055604a8
+> The total transfer size should just be passed in by the callers and
+> be known, and there should be no offset.
 
+The API needs the caller to figure out the total number of IOVA pages
+it needs, rounding up the CPU ranges to full aligned pages. That
+becomes the IOVA allocation.
+
+offset is something that arises to support non-aligned transfers.
+
+> So if we want to efficiently be able to handle these cases we need
+> two APIs in the driver and a good framework to switch between them.
+
+But, what does the non-page-aligned version look like? Doesn't it
+still look basically like this?
+
+And what is the actual difference if the input is aligned? The caller
+can assume it doesn't need to provide a per-range dma_addr_t during
+unmap.
+
+It still can't assume the HW programming will be linear due to the P2P
+!ACS support.
+
+And it still has to call an API per-cpu range to actually program the
+IOMMU.
+
+So are they really so different to want different APIs? That strikes
+me as a big driver cost.
+
+> I'd still prefer to wrap it with dma callers to handle things like
+> swiotlb and maybe Xen grant tables and to avoid the type confusion
+> between dma_addr_t and then untyped iova in the iommu layer, but
+> having this layer or not is probably worth a discussion.
+
+I'm surprised by the idea of random drivers reaching past dma-iommu.c
+and into the iommu layer to setup DMA directly on the DMA API's
+iommu_domain?? That seems like completely giving up on the DMA API
+abstraction to me. :(
+
+IMHO, it needs to be wrapped, the wrapper needs to do all the special
+P2P stuff, at a minimum. The wrapper should multiplex to all the
+non-iommu cases for the driver too.
+
+We still need to achieve some kind of abstraction here that doesn't
+bruden every driver with different code paths for each DMA back end!
+Don't we??
+
+Jason
 
