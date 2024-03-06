@@ -1,119 +1,301 @@
-Return-Path: <linux-kernel+bounces-94249-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94250-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F1D7873BF5
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:19:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B8C3873BF6
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:19:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 204C2B24D95
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:19:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4EC621C24399
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:19:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31922137904;
-	Wed,  6 Mar 2024 16:19:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE487135A67;
+	Wed,  6 Mar 2024 16:19:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="w5TNgDer"
-Received: from omta036.useast.a.cloudfilter.net (omta036.useast.a.cloudfilter.net [44.202.169.35])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TAF10WUw"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B08E9133425
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 16:19:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.202.169.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01C271EF1C
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 16:19:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709741945; cv=none; b=Aqd+nUmHc/PWFyUB+4BD5fePoyeVeObt6wkDg3jYeLX0I+lITGBEsfQLvZrD5wtfMioKrymSQONktGnnPhimLXrwr416YzuQmr2PIjy/znZHdUDWa50EvmZ955RgP7swFRSfkOptkOFCOQZbLMkbN9WYiOcIEslOh1q3wPwNRbI=
+	t=1709741979; cv=none; b=NCfjfU7xrWYxyZ6Wfaa/nugdOy2v3ZzLjGDx3vufnp2Fm6huWE3GmNG4XGwdhMkAEs6CoAKAvKaXxhOqvKXWU7dmJoiiDPsCNdV8nxcAhpvm0xJfqHckTXoAOyNZMIx738Fn05zB1Px6jiCE2b3IHduv9ZTJHj+4Rm3w3dAnAsM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709741945; c=relaxed/simple;
-	bh=GvHVYUIICAjaOAWJhNYu3ax4WnZhZi/ldWdGTVyeb5c=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=o0ZFlM6fE2EvosiwuOQuAa+yaaz0lIPAiK1IjMO0vhnPczBh1d2PgLzAUtYMJDnj/WIoY3OyNR56CJjKa2GU/LtxKCKpL44vhwxpJ8LcN6gTpk//vUZ6YkC73ZjNH63lUK0BjQUuJLR8kHyyBRINd/l2/e4jybycpfdY7hbbyaI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=w5TNgDer; arc=none smtp.client-ip=44.202.169.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
-Received: from eig-obgw-5002a.ext.cloudfilter.net ([10.0.29.215])
-	by cmsmtp with ESMTPS
-	id hsGKrGUcJuh6shtywrSN3b; Wed, 06 Mar 2024 16:19:02 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-	by cmsmtp with ESMTPS
-	id htyvrfNONz883htywrL5hf; Wed, 06 Mar 2024 16:19:02 +0000
-X-Authority-Analysis: v=2.4 cv=R6IFG8RX c=1 sm=1 tr=0 ts=65e89776
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=VhncohosazJxI00KdYJ/5A==:17
- a=IkcTkHD0fZMA:10 a=K6JAEmCyrfEA:10 a=wYkD_t78qR0A:10
- a=CEfcKhwxmaDNtT7VeCoA:9 a=QEXdDO2ut3YA:10
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:To:Subject:MIME-Version:Date:Message-ID:Sender:
-	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=GvHVYUIICAjaOAWJhNYu3ax4WnZhZi/ldWdGTVyeb5c=; b=w5TNgDer9Gh3Pg1uMCPC6U4Azk
-	iBJbZRsqcNsrwgzqGZS5ExHsPTxg2p+pXN1pA6U0hymRTv2UE2FBEuooD43q9C1w1ji+x2IdozLRG
-	j98DSEZ2z5+aPB3tCAPRKLawdhcatSmAUhWgV4wYEgKQUbK8ILopk3IP9W/QukMhMYf6TM2SN9pLX
-	VjUJdIoEnhdMLILYws+8kA+bbefw2Iy/YfFI8AaG+qWlBF0gmxdhPNwX7s9M22ErXeLYfcOKpXngW
-	KduVBPEifkU0VlUISavWQr12Zk1Zd4plnZRt+swKX5eYMejgBU1jWWH6uN2LtOwGoXthGA8WbIcuk
-	kHeAbxqQ==;
-Received: from [201.172.172.225] (port=49378 helo=[192.168.15.10])
-	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <gustavo@embeddedor.com>)
-	id 1rhtyv-001RDq-0D;
-	Wed, 06 Mar 2024 10:19:01 -0600
-Message-ID: <6a7854af-a183-4db2-8400-4d9eb0cc4308@embeddedor.com>
-Date: Wed, 6 Mar 2024 10:18:59 -0600
+	s=arc-20240116; t=1709741979; c=relaxed/simple;
+	bh=gP7bOMzRxzfFwYCZyUNdmwtV0myPbRgaFLuAyGqYmVM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Y9tZ4IyZQ35L5JGAxbXeMQlUX8YgFSHMMtYByQKnES4yZMIfzH72dOoFDxeZRTrwYcGRbrPcrhZUU8FGA1hsRiKfwSPFKM4PKH9Zj7ydgq0jKqWHBVSeb0CDCnRZiTtq3YZEjeANoZUV8ViK9rWbr8J7abNc427BfBIwrABe658=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TAF10WUw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFE7DC433F1;
+	Wed,  6 Mar 2024 16:19:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709741978;
+	bh=gP7bOMzRxzfFwYCZyUNdmwtV0myPbRgaFLuAyGqYmVM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=TAF10WUwyPEBKnpM2gZGOUT/QTYcALKLYAYxprza7VjXNi/Ug9b+1JflkPFZBeT6F
+	 okkIpFaAFnNat/TPXPS/+EQjr/2Pf4bH67G22GJ7iTLhcooko+9uE1+Iu7vdV121cH
+	 tzYobxY1/B8sqwhUa1PYTL1E4Im+/Nb8CsBBH1fi8yQCfikJmxpgRaZk6sRx3BX9cI
+	 mc/rfddByNPhV+QsL6ey0S6S3LIOP6HOfBc97/e2TDymyrmVk+Emm2bEfZzgVxfi3L
+	 /JMJuq6IZlnTBg1vvB7OjQyXTRy0qmixHpIw56vSSRZ2PggDRvu3UtNWz9uTZTxKNF
+	 NMCZCLroE7Oaw==
+Date: Wed, 6 Mar 2024 16:19:33 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Charlie Jenkins <charlie@rivosinc.com>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Jisheng Zhang <jszhang@kernel.org>, Evan Green <evan@rivosinc.com>,
+	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
+	Eric Biggers <ebiggers@kernel.org>,
+	Elliot Berman <quic_eberman@quicinc.com>,
+	Charles Lohr <lohr85@gmail.com>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 4/4] riscv: Set unaligned access speed at compile time
+Message-ID: <20240306-bring-gullible-72ec4260fd56@spud>
+References: <20240301-disable_misaligned_probe_config-v6-0-612ebd69f430@rivosinc.com>
+ <20240301-disable_misaligned_probe_config-v6-4-612ebd69f430@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/2][next] firewire: Avoid -Wflex-array-member-not-at-end
- warnings
-Content-Language: en-US
-To: "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- Clemens Ladisch <clemens@ladisch.de>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Kees Cook <keescook@chromium.org>,
- linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
- linux1394-devel@lists.sourceforge.net
-References: <cover.1709658886.git.gustavoars@kernel.org>
- <20240306011030.GA71684@workstation.local>
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <20240306011030.GA71684@workstation.local>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 201.172.172.225
-X-Source-L: No
-X-Exim-ID: 1rhtyv-001RDq-0D
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.15.10]) [201.172.172.225]:49378
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 5
-X-Org: HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfEVGmTjNGYdteUUzbm7vbFbeAEX2SpDCEP3PQCa5TOgQfi3N2kw7f2M9lh6s1qgyfSb7aH6eExinlu3K9gDRfQl6lrfe4pwnBzwPwJeB7QhHJvn4cg8X
- mfTKcf8s5SEBfSYplCKR9WXqPvdO/fDjGRH0gXTAcctYXP6F/GMZUizPlPfmBLnvU6pfjGJcwNdt98F73znfgeHnZw/vxb/jBJIXxshQAGzwSufpCajOG+Y1
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="1QDWyfojMrIhwScQ"
+Content-Disposition: inline
+In-Reply-To: <20240301-disable_misaligned_probe_config-v6-4-612ebd69f430@rivosinc.com>
 
 
-> Thanks for the improvements, however we are mostly at the end of
-> development period for v6.8 kernel. Let me postpone applying the patches
-> until closing the next merge window (for v6.9), since we need the term to
-> evaluate the change. I mean that it goes to v6.10 kernel.
+--1QDWyfojMrIhwScQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Sure, no problem.
+Hey,
 
-Actually, I'll send a v2 with DEFINE_FLEX(), instead.
+On Fri, Mar 01, 2024 at 05:45:35PM -0800, Charlie Jenkins wrote:
+> Introduce Kconfig options to set the kernel unaligned access support.
+> These options provide a non-portable alternative to the runtime
+> unaligned access probe.
+>=20
+> To support this, the unaligned access probing code is moved into it's
+> own file and gated behind a new RISCV_PROBE_UNALIGNED_ACCESS_SUPPORT
+> option.
+>=20
+> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> ---
+>  arch/riscv/Kconfig                         |  58 ++++--
+>  arch/riscv/include/asm/cpufeature.h        |  26 +--
+>  arch/riscv/kernel/Makefile                 |   4 +-
+>  arch/riscv/kernel/cpufeature.c             | 272 -----------------------=
+-----
+>  arch/riscv/kernel/sys_hwprobe.c            |  21 +++
+>  arch/riscv/kernel/traps_misaligned.c       |   2 +
+>  arch/riscv/kernel/unaligned_access_speed.c | 282 +++++++++++++++++++++++=
+++++++
+>  7 files changed, 369 insertions(+), 296 deletions(-)
+>=20
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index bffbd869a068..60b6de35599d 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -688,27 +688,61 @@ config THREAD_SIZE_ORDER
+>  	  affects irq stack size, which is equal to thread stack size.
+> =20
+>  config RISCV_MISALIGNED
+> -	bool "Support misaligned load/store traps for kernel and userspace"
+> +	bool
+>  	select SYSCTL_ARCH_UNALIGN_ALLOW
+> -	default y
+>  	help
+> -	  Say Y here if you want the kernel to embed support for misaligned
+> -	  load/store for both kernel and userspace. When disable, misaligned
+> -	  accesses will generate SIGBUS in userspace and panic in kernel.
+> +	  Embed support for misaligned load/store for both kernel and userspace.
+> +	  When disabled, misaligned accesses will generate SIGBUS in userspace
+> +	  and panic in kernel.
 
-Thanks
---
-Gustavo
+"in the kernel".
+
+> +
+> +choice
+> +	prompt "Unaligned Accesses Support"
+> +	default RISCV_PROBE_UNALIGNED_ACCESS
+> +	help
+
+> +	  This selects the hardware support for unaligned accesses. This
+
+"This determines what level of support for..."
+
+> +	  information is used by the kernel to perform optimizations. It is also
+> +	  exposed to user space via the hwprobe syscall. The hardware will be
+> +	  probed at boot by default.
+> +
+> +config RISCV_PROBE_UNALIGNED_ACCESS
+> +	bool "Probe for hardware unaligned access support"
+> +	select RISCV_MISALIGNED
+> +	help
+> +	  During boot, the kernel will run a series of tests to determine the
+> +	  speed of unaligned accesses. This probing will dynamically determine
+> +	  the speed of unaligned accesses on the boot hardware.
+
+"on the underlying system"?
+
+> The kernel will
+> +	  also check if unaligned memory accesses will trap into the kernel and
+> +	  handle such traps accordingly.
+
+I think I would phrase this to be more understandable to users. I think
+we need to explain why it would trap and what we will do. Maybe
+something like: "if unaligned memory accesses trap into the kernel as
+they are not supported by the system, the kernel will emulate the
+unaligned accesses to preserve the UABI".
+
+> +config RISCV_EMULATED_UNALIGNED_ACCESS
+> +	bool "Assume the system expects emulated unaligned memory accesses"
+> +	select RISCV_MISALIGNED
+> +	help
+> +	  Assume that the system expects unaligned memory accesses to be
+> +	  emulated. The kernel will check if unaligned memory accesses will
+> +	  trap into the kernel and handle such traps accordingly.
+
+I guess the same suggestion applies here, but I think the description
+here isn't quite accurate. This option is basically the same as above,
+but without the speed test, right? It doesn't actually assume emulation
+is required at all, in fact the assumption we make is that if the
+hardware supports unaligned access that access is slow.
+
+I think I'd do:
+```
+boot "Emulate unaligned access where system support is missing"
+help
+  If unaligned accesses trap into the kernel as they are not supported
+  by the system, the kernel will emulate the unaligned accesses to
+  preserve the UABI. When the underlying system does support unaligned
+  accesses, probing at boot is not done and unaligned accesses are
+  assumed to be slow.
+
+> +config RISCV_SLOW_UNALIGNED_ACCESS
+> +	bool "Assume the system supports slow unaligned memory accesses"
+> +	depends on NONPORTABLE
+> +	help
+> +	  Assume that the system supports slow unaligned memory accesses. The
+> +	  kernel may not be able to run at all on systems that do not support
+> +	  unaligned memory accesses.
+
+=2E..and userspace programs cannot use unaligned access either, I think
+that is worth mentioning.
+
+> =20
+>  config RISCV_EFFICIENT_UNALIGNED_ACCESS
+> -	bool "Assume the CPU supports fast unaligned memory accesses"
+> +	bool "Assume the system supports fast unaligned memory accesses"
+>  	depends on NONPORTABLE
+>  	select DCACHE_WORD_ACCESS if MMU
+>  	select HAVE_EFFICIENT_UNALIGNED_ACCESS
+>  	help
+> -	  Say Y here if you want the kernel to assume that the CPU supports
+> -	  efficient unaligned memory accesses.  When enabled, this option
+> -	  improves the performance of the kernel on such CPUs.  However, the
+> -	  kernel will run much more slowly, or will not be able to run at all,
+> -	  on CPUs that do not support efficient unaligned memory accesses.
+> +	  Assume that the system supports fast unaligned memory accesses. When
+> +	  enabled, this option improves the performance of the kernel on such
+> +	  systems.  However, the kernel will run much more slowly, or will not
+> +	  be able to run at all, on systems that do not support efficient
+> +	  unaligned memory accesses.
+> =20
+> -	  If unsure what to do here, say N.
+> +endchoice
+> =20
+>  endmenu # "Platform type"
+
+> +#if defined(CONFIG_RISCV_PROBE_UNALIGNED_ACCESS)
+>  DECLARE_STATIC_KEY_FALSE(fast_unaligned_access_speed_key);
+> =20
+>  static __always_inline bool has_fast_unaligned_accesses(void)
+>  {
+>  	return static_branch_likely(&fast_unaligned_access_speed_key);
+>  }
+> +#elif defined(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS)
+> +static __always_inline bool has_fast_unaligned_accesses(void)
+> +{
+> +	return true;
+> +}
+> +#else
+> +static __always_inline bool has_fast_unaligned_accesses(void)
+> +{
+> +	return false;
+> +}
+> +#endif
+
+These tree could just be one function with if(IS_ENABLED), whatever code
+gets made dead should be optimised out.
+
+> diff --git a/arch/riscv/kernel/sys_hwprobe.c b/arch/riscv/kernel/sys_hwpr=
+obe.c
+> index a7c56b41efd2..dad02f5faec3 100644
+> --- a/arch/riscv/kernel/sys_hwprobe.c
+> +++ b/arch/riscv/kernel/sys_hwprobe.c
+> @@ -147,8 +147,10 @@ static bool hwprobe_ext0_has(const struct cpumask *c=
+pus, unsigned long ext)
+>  	return (pair.value & ext);
+>  }
+> =20
+> +#if defined(CONFIG_RISCV_PROBE_UNALIGNED_ACCESS)
+>  static u64 hwprobe_misaligned(const struct cpumask *cpus)
+>  {
+> +	return RISCV_HWPROBE_MISALIGNED_FAST;
+
+This hack is still here.
+
+>  	int cpu;
+>  	u64 perf =3D -1ULL;
+> =20
+> @@ -169,6 +171,25 @@ static u64 hwprobe_misaligned(const struct cpumask *=
+cpus)
+> =20
+>  	return perf;
+>  }
+
+> +#elif defined(CONFIG_RISCV_EMULATED_UNALIGNED_ACCESS)
+> +static u64 hwprobe_misaligned(const struct cpumask *cpus)
+> +{
+> +	if (unaligned_ctl_available())
+> +		return RISCV_HWPROBE_MISALIGNED_EMULATED;
+> +	else
+> +		return RISCV_HWPROBE_MISALIGNED_SLOW;
+> +}
+> +#elif defined(CONFIG_RISCV_SLOW_UNALIGNED_ACCESS)
+> +static u64 hwprobe_misaligned(const struct cpumask *cpus)
+> +{
+> +	return RISCV_HWPROBE_MISALIGNED_SLOW;
+> +}
+> +#elif defined(CONFIG_RISCV_EFFICIENT_UNALIGNED_ACCESS)
+> +static u64 hwprobe_misaligned(const struct cpumask *cpus)
+> +{
+> +	return RISCV_HWPROBE_MISALIGNED_FAST;
+> +}
+> +#endif
+
+Same applies to these three functions.
+
+Thanks,
+Conor.
+
+--1QDWyfojMrIhwScQ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZeiXlQAKCRB4tDGHoIJi
+0s8pAP92tQidmmZ1PxlRi3m6iX230TX+r0mJ3pkjs9QgmHvmXQEAsOXRxufXjiFD
+X1/e2clg0Gcvsc3mYTgk+QlJZqeYRww=
+=+D5W
+-----END PGP SIGNATURE-----
+
+--1QDWyfojMrIhwScQ--
 
