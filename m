@@ -1,53 +1,54 @@
-Return-Path: <linux-kernel+bounces-94168-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94169-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0317B873ADA
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:38:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27E63873ADC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:38:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B275D2885B0
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:38:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59C191C22062
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:38:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EFFA135A4A;
-	Wed,  6 Mar 2024 15:36:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F29B13664C;
+	Wed,  6 Mar 2024 15:36:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DkjBnEqz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T2Cg0Ta0"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A35CF131E4B;
-	Wed,  6 Mar 2024 15:36:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85ED112FF88;
+	Wed,  6 Mar 2024 15:36:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709739376; cv=none; b=Y+v0mbSZ+Z/iv3huY+VYiqBRBmxiI1l5ALjzV2WsU/1Q9YMlO8jkYVTrJjlsX/JO66m8LC+6j8ZGctN+XO7/RFHgk7JquCE/fHJ/wlveBoDZKXyZGor70IjwGLR5JzbC2tTAhWc1KbLZzteAS3nBmFZXgCyLXnDMKIj22Tr2/Bk=
+	t=1709739385; cv=none; b=u2tnpkXqoPTJ0nQ1U9p1Cq9Xs+PJKC8bO3WrfmmMGnG9+ByCkeFeMEIgRzHIhlKdKzun/zqvqTcofwlWeR5u9Q9qcXvq9CswfGSnkf6KOId2tJvLVnRVdljkwAAsyU9B9UJJ78IfOGz0dXRO5+zi9Nf2fl7Bov32WtNceQYQiqY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709739376; c=relaxed/simple;
-	bh=8VLcXR+jG4hJ5Ep8CpH16PpBp78fHR8nnu1PwOGWd28=;
+	s=arc-20240116; t=1709739385; c=relaxed/simple;
+	bh=Bh5Dp27/tqyItLKHwyKeEmWbTpge2ZVnRBPEZ8Itq3M=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qsXk3ar1t52MZaC5wtR4++6/4szT7qMU3wPkhD2TMmBogE3gsz31xNiw2nonND1rOQOydzbjIvqqoFnmFAa4+vSDP7jo7EIn44gwplVSDOEwTdspwgFJ/Ub1E8MNtynQLz1KPke9gctSjGXRlLU7yaRSReCdWLYj0k1xA3fOLwI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DkjBnEqz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3669FC433C7;
-	Wed,  6 Mar 2024 15:36:16 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=mt39l8ByE56RL4zq72BfMfiPTYU44iEpjdqN8DQAOJooiaproJ4BvFfpNEy+1yXP+/++joCQSUD0wZt6oAiEbwokzKNhxJEDR05Mu95rdi7hav2YjveIf3bEvH04wOJn0NG747IdZW41Q69T3JLtlDjnUtP1cjhCi+Uwt5trPCg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T2Cg0Ta0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00797C433F1;
+	Wed,  6 Mar 2024 15:36:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709739376;
-	bh=8VLcXR+jG4hJ5Ep8CpH16PpBp78fHR8nnu1PwOGWd28=;
+	s=k20201202; t=1709739385;
+	bh=Bh5Dp27/tqyItLKHwyKeEmWbTpge2ZVnRBPEZ8Itq3M=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DkjBnEqz3qWpAmjEq8itGuwqU/UL0ZZWLzEE95rgPnZMbj6trlsg+6ODqL1kxm9HT
-	 yLkS2UEMQYqCOeHcgVD+WXooIk16Zfuih2NDmRQP3skGDg3UWtJBuXG+jxRkMweZiW
-	 5Pfur0hAr1FjoT7er3292OOHFuidKGWqhGobe1uavNP3qXQNFi8C/0I6TW/aalCx+Z
-	 LUcuHrxGtIIRoGCpFi3+07fV8/GUfN6kzp0Mw6/hJBpuzIvni91MgBuWcrZ1qVBfOG
-	 2TL4l2Wq/juXglUjmj7q81vm3jj5fa6rzdEmtJhftL3Xtjk0VRaAEkxShEw4N1UPlc
-	 tQv+5AqPYrLQA==
-Date: Wed, 6 Mar 2024 07:36:15 -0800
+	b=T2Cg0Ta00yUrXeehc7UDXzl+DzKBdm5vDlhzNht5QdJaVU7PyLyIrNrFqrbDl2MLx
+	 SATq9IeRmxZlSCFO5of0MlbhTUQwfK0zSiVp5PgppVoCKfHxXEBTppsWNNk7qncGr/
+	 1teHZ8V9m3uKVTyXP22AdlgG/p8f7NjMecv+MucGbhRcMi7oXtIUjuOWFTXU2XIxmj
+	 lojH5o8xY6MICDuZzBh/XPmtyWGe/oAujETOntqV4W9H9b426KfuQR9/nCtxYRlUzt
+	 nyFZ28Aiiw3TT6bY076xIMvNHLO+1252ccj3jydeSBygCcw09QTAV9/kBdOTDIGO/E
+	 j5GIskJh2KkDQ==
+Date: Wed, 6 Mar 2024 07:36:24 -0800
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 Cc: chandan.babu@oracle.com, linux-xfs@vger.kernel.org,
 	linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>
-Subject: Re: [PATCH v2 1/2] xfs: Remove duplicate include
-Message-ID: <20240306153615.GN1927156@frogsfrogsfrogs>
+Subject: Re: [PATCH v2 2/2] xfs: Remove duplicate include
+Message-ID: <20240306153624.GO1927156@frogsfrogsfrogs>
 References: <20240305024009.52931-1-jiapeng.chong@linux.alibaba.com>
+ <20240305024009.52931-2-jiapeng.chong@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,13 +57,13 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240305024009.52931-1-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <20240305024009.52931-2-jiapeng.chong@linux.alibaba.com>
 
-On Tue, Mar 05, 2024 at 10:40:08AM +0800, Jiapeng Chong wrote:
-> ./fs/xfs/xfs_qm_bhv.c: xfs_mount.h is included more than once.
+On Tue, Mar 05, 2024 at 10:40:09AM +0800, Jiapeng Chong wrote:
+> ./fs/xfs/xfs_trace.c: xfs_bmap.h is included more than once.
 > 
 > Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=8386
+> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=8385
 > Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
 Reviewed-by: Darrick J. Wong <djwong@kernel.org>
@@ -70,21 +71,24 @@ Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 --D
 
 > ---
->  fs/xfs/xfs_qm_bhv.c | 1 -
+> Changes in v2:
+>   -Remove the second #include.
+> 
+>  fs/xfs/xfs_trace.c | 1 -
 >  1 file changed, 1 deletion(-)
 > 
-> diff --git a/fs/xfs/xfs_qm_bhv.c b/fs/xfs/xfs_qm_bhv.c
-> index 271c1021c733..a11436579877 100644
-> --- a/fs/xfs/xfs_qm_bhv.c
-> +++ b/fs/xfs/xfs_qm_bhv.c
-> @@ -11,7 +11,6 @@
->  #include "xfs_trans_resv.h"
->  #include "xfs_mount.h"
->  #include "xfs_quota.h"
-> -#include "xfs_mount.h"
->  #include "xfs_inode.h"
->  #include "xfs_trans.h"
->  #include "xfs_qm.h"
+> diff --git a/fs/xfs/xfs_trace.c b/fs/xfs/xfs_trace.c
+> index 1a963382e5e9..3f253884fe5b 100644
+> --- a/fs/xfs/xfs_trace.c
+> +++ b/fs/xfs/xfs_trace.c
+> @@ -38,7 +38,6 @@
+>  #include "xfs_iomap.h"
+>  #include "xfs_buf_mem.h"
+>  #include "xfs_btree_mem.h"
+> -#include "xfs_bmap.h"
+>  
+>  /*
+>   * We include this last to have the helpers above available for the trace
 > -- 
 > 2.20.1.7.g153144c
 > 
