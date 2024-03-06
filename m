@@ -1,253 +1,112 @@
-Return-Path: <linux-kernel+bounces-94157-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94158-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 549CF873AB6
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:33:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AC2E873ABC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:35:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45A3D1C20ADD
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:33:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA47A2865AE
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:35:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC0B313540E;
-	Wed,  6 Mar 2024 15:33:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05DA21350EF;
+	Wed,  6 Mar 2024 15:35:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Own9pRjq";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="c/78wxCO";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Own9pRjq";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="c/78wxCO"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="yiYpHRKB"
+Received: from mail-io1-f53.google.com (mail-io1-f53.google.com [209.85.166.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D0CB1339B1
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 15:33:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6323B1350D2
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 15:35:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709739185; cv=none; b=Nb1XBkgNDZiRRXo9EbBj2f9wWQ7U9d+OlGDhA0h9y9tLCIMe4+ZaX6lD0VBzmfaGeHwqaj+hgN8Vb1KKSQGg40xQ4Jp87dxZPwOXpFmdYgOiRx+Xhx/I0LDMYLWupnPh6FsLqMJ0nC9VVo+uzRdf5Wy566E7OhJCp0SnIRX7dRI=
+	t=1709739321; cv=none; b=N0rygWw+EXw+5fRDyXA+sRwTAHz6dS6V/q2qdri7fRz5YznAB+EJnPiemxsUWbvKac67xQa5P5PY5oo74V3rMk/tSO4hlf5OX6iNL91WLMVUOlJWiig4tbARnOTVFqPHwV2V6Za3FGk5+A8ikkkcEba5oqOv6BFZHP0/cFgBrg4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709739185; c=relaxed/simple;
-	bh=eQLh1LIvzBhinFxaVbWxJ72/CeKIOKIsOuMihiqOpsU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=G/ap3Hv3ra1ho+mufVcA5KzMPFsyFC6yQ5ZWPYDb3x4/FI+eYpFRP6EFxU0AfHMY7WiZXdnA5vhgzkkoS3ae2yEYNK9o5uHBLo8tB563ZdRmX+MJMkwPMmPg2Bgj3o98of7EniGgquqo82PXACUO1LZn+q4EKxMnsko5CoiFXIw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Own9pRjq; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=c/78wxCO; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Own9pRjq; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=c/78wxCO; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 531F46BA0D;
-	Wed,  6 Mar 2024 15:33:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1709739182; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=aJDMTjbnu33E0L7KdIhD0GcQLjhYKTg+Q7LtwmV6NQ0=;
-	b=Own9pRjqeo5aB8eYdx15qTmVNcw9D2Uw0yUeUOvJ7nClEUjqIG/Fvp9RMARFfI5HYI+DUs
-	uOw58Tgz7ocChRMxtwYoruAqV9Z26Y9RlrpZhg0GUMlWd/idwjnnUE/4pLF7i5fJPTy7ZZ
-	FcZ+eCj3iq6g8IEnHeaS97hkouCcp0E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1709739182;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=aJDMTjbnu33E0L7KdIhD0GcQLjhYKTg+Q7LtwmV6NQ0=;
-	b=c/78wxCOc1LhL73CoNUsRV4A7xhUIj6v0Utm3M61MpzkqhTetGWDimePbEK0IZDgBJ6Zm3
-	JhQe7rxYMacl1mCQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1709739182; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=aJDMTjbnu33E0L7KdIhD0GcQLjhYKTg+Q7LtwmV6NQ0=;
-	b=Own9pRjqeo5aB8eYdx15qTmVNcw9D2Uw0yUeUOvJ7nClEUjqIG/Fvp9RMARFfI5HYI+DUs
-	uOw58Tgz7ocChRMxtwYoruAqV9Z26Y9RlrpZhg0GUMlWd/idwjnnUE/4pLF7i5fJPTy7ZZ
-	FcZ+eCj3iq6g8IEnHeaS97hkouCcp0E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1709739182;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=aJDMTjbnu33E0L7KdIhD0GcQLjhYKTg+Q7LtwmV6NQ0=;
-	b=c/78wxCOc1LhL73CoNUsRV4A7xhUIj6v0Utm3M61MpzkqhTetGWDimePbEK0IZDgBJ6Zm3
-	JhQe7rxYMacl1mCQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id E468413A79;
-	Wed,  6 Mar 2024 15:33:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id 6FUONa2M6GXtegAAn2gu4w
-	(envelope-from <tzimmermann@suse.de>); Wed, 06 Mar 2024 15:33:01 +0000
-Message-ID: <313c3730-10dd-42aa-8bd0-9f0a8627c1bb@suse.de>
-Date: Wed, 6 Mar 2024 16:33:01 +0100
+	s=arc-20240116; t=1709739321; c=relaxed/simple;
+	bh=4XBA7h4gk9kZGoLHOXMtYY2N0kUearBB17+7pA7xfVU=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=qQrj70C0iwFrAqsCTB6mNWTZAdP2YB9vFcvvUFCNFEg4u9rpbuv4m84+XYN6t2Mul0VQpZi3EBa+KT75ZUdOpOPftiPflsFiaau2ZXSd3a3hMMoxtxHB1IkY2aQehpdgM0DzGlw/pGHtxlyrEgMzf8FqR8Es9ue5p0bTPcZyH6A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=yiYpHRKB; arc=none smtp.client-ip=209.85.166.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-io1-f53.google.com with SMTP id ca18e2360f4ac-7c876b9d070so12642439f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 07:35:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1709739318; x=1710344118; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=k+7aPckIbaw56xMg4x5zLxwpAKi5vUALOz1YbOan0kQ=;
+        b=yiYpHRKB8dxaTeWc9yaeQfLV0CfWjyB8SuSfqu83kzipnPId7gRpCul+My1wnfhrW4
+         WeSfOjc1biXB70d9M4Nw+Ml548ypNaxLsqZcGCqzytTtXClHL2XLV6iGUXvQTzXYr4s/
+         cbkP2BhCH3FJEF63wysr9C7zXY8XfR/+ZWClTOxWfXR5i8g7bF6Io9svq0Y1cCjQX5Da
+         mfmzHV9k13U4vQy4eBhOBBQEp6Rlnsjs4aJMJAs2WHM1PJvSLmHx3JGW9Lp4Sa8UMpwI
+         5/6AaD1VIFMMEp5eEtO4w+rXDZZ1p7kFgThU7KGEsU4h65MeP+Ur9GNC5Qy2ya8k8uyz
+         gl5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709739318; x=1710344118;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=k+7aPckIbaw56xMg4x5zLxwpAKi5vUALOz1YbOan0kQ=;
+        b=BVgdX7MFEjlbMZkbKjecSA72+NUv5POBoPKbAMR2ssHkCOc8K6DMgo2sM5yHi/AjJu
+         WaV4dDQzrwhvKa6X5j+UEnmmeANsK6x2hQV4F9J1hjQwoulQEO1Aqo5GEXiInFUfMcnh
+         6q3SNmUJl5yyRWD97UO3+wPdkGxGvNYRyJP+HP47EgY4CSNkLKNA3NRjI1xRqR59DeBd
+         WD2ZD5cIJm1q7tzW4b3ssVmtBcIDyWyiLNiWqreZPwusSFR87VSO7c1tBScSBvGz4jZ9
+         uXmyXnRDjSyBnMswat6IiOOESqSR7GO5L81V8/bNjE/vr5oZ/Fi2zJKcgeQau2BJYo+4
+         XjpQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXNb2dXd2FU2UYhbxGhTmiTg5l2srly5+TQicVfqO7nPsEo/rc3uWRv9d/1G/GxMUd2RB07sVPxzjtzTBFsMoebqKDXoum7oIhr2bKq
+X-Gm-Message-State: AOJu0YzY98yVivH8SekzFoIfLAU7Hzr/KxdtePOlQFTmwJ49XqP/LFOh
+	lBYA0sW3wrN3R9OpMSflwdV3/MlQ0sZEkEiaaCClLAUKgen2Gt02v52sKrFs6KE=
+X-Google-Smtp-Source: AGHT+IE5F3k1D3gik/OwYN8x0TQzZJEWeyfDVo1rW4ITdbpkHe2CQWcwgqeqMBIIK+FUBeWV/a2ZZw==
+X-Received: by 2002:a05:6e02:1c46:b0:365:fe09:6431 with SMTP id d6-20020a056e021c4600b00365fe096431mr3732415ilg.3.1709739318559;
+        Wed, 06 Mar 2024 07:35:18 -0800 (PST)
+Received: from [127.0.0.1] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id t2-20020a92cc42000000b003660612cf73sm324467ilq.49.2024.03.06.07.35.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Mar 2024 07:35:18 -0800 (PST)
+From: Jens Axboe <axboe@kernel.dk>
+To: Tony Battersby <tonyb@cybernetics.com>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
+ Andrew Morton <akpm@linux-foundation.org>, 
+ "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>, 
+ Hugh Dickins <hughd@google.com>, Hannes Reinecke <hare@suse.de>, 
+ Keith Busch <kbusch@kernel.org>, linux-mm <linux-mm@kvack.org>, 
+ linux-block@vger.kernel.org, linux-fsdevel <linux-fsdevel@vger.kernel.org>, 
+ linux-kernel@vger.kernel.org
+In-Reply-To: <86e592a9-98d4-4cff-a646-0c0084328356@cybernetics.com>
+References: <86e592a9-98d4-4cff-a646-0c0084328356@cybernetics.com>
+Subject: Re: [PATCH] block: Fix page refcounts for unaligned buffers in
+ __bio_release_pages()
+Message-Id: <170973931770.23995.2545307873508420124.b4-ty@kernel.dk>
+Date: Wed, 06 Mar 2024 08:35:17 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/udl: Add ARGB8888 as a format
-Content-Language: en-US
-To: Doug Anderson <dianders@chromium.org>
-Cc: dri-devel@lists.freedesktop.org, Rob Clark <robdclark@chromium.org>,
- Javier Martinez Canillas <javierm@redhat.com>,
- Daniel Vetter <daniel@ffwll.ch>, Dave Airlie <airlied@redhat.com>,
- David Airlie <airlied@gmail.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, =?UTF-8?Q?Ma=C3=ADra_Canal?=
- <mcanal@igalia.com>, Sean Paul <sean@poorly.run>,
- =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
- linux-kernel@vger.kernel.org
-References: <20240227141928.1.I24ac8d51544e4624b7e9d438d95880c4283e611b@changeid>
- <60dc7697-d7a0-4bf4-a22e-32f1bbb792c2@suse.de>
- <CAD=FV=VSFEFPzFhvMKwc7D3NBgnDq9qRp6eN1stSuhBCi_HoMQ@mail.gmail.com>
-From: Thomas Zimmermann <tzimmermann@suse.de>
-Autocrypt: addr=tzimmermann@suse.de; keydata=
- xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
- XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
- BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
- hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
- 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
- AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
- AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
- AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
- lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
- U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
- vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
- 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
- j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
- T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
- 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
- GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
- hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
- EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
- C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
- yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
- SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
- Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
- 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
-In-Reply-To: <CAD=FV=VSFEFPzFhvMKwc7D3NBgnDq9qRp6eN1stSuhBCi_HoMQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=Own9pRjq;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="c/78wxCO"
-X-Spamd-Result: default: False [-3.30 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 BAYES_HAM(-3.00)[100.00%];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_TWELVE(0.00)[13];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[lists.freedesktop.org,chromium.org,redhat.com,ffwll.ch,gmail.com,linux.intel.com,kernel.org,igalia.com,poorly.run,vger.kernel.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 531F46BA0D
-X-Spam-Level: 
-X-Spam-Score: -3.30
-X-Spam-Flag: NO
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.5-dev-2aabd
 
-Hi
 
-Am 06.03.24 um 16:05 schrieb Doug Anderson:
-> Hi,
->
-> On Wed, Mar 6, 2024 at 4:07 AM Thomas Zimmermann <tzimmermann@suse.de> wrote:
->> Hi,
->>
->> sorry that I did not see the patch before.
->>
->> Am 27.02.24 um 23:19 schrieb Douglas Anderson:
->>> Even though the UDL driver converts to RGB565 internally (see
->>> pixel32_to_be16() in udl_transfer.c), it advertises XRGB8888 for
->>> compatibility. Let's add ARGB8888 to that list.
->> We had a heated discussion about the emulation of color formats. It was
->> decided that XRGB8888 is the only format to support; and that's only
->> because legacy userspace sometimes expects it. Adding other formats to
->> the list should not be done easily.
-> Sorry! I wasn't aware of the previous discussion and nobody had
-> brought it up till now. As discussed on #dri-devel IRC, I've posted a
-> revert:
->
-> https://lore.kernel.org/r/20240306063721.1.I4a32475190334e1fa4eef4700ecd2787a43c94b5@changeid
->
->
->>> This makes UDL devices work on ChromeOS again after commit
->>> c91acda3a380 ("drm/gem: Check for valid formats"). Prior to that
->>> commit things were "working" because we'd silently treat the ARGB8888
->>> that ChromeOS wanted as XRGB8888.
->> This problem has been caused by userspace. Why can it not be fixed there?
-> I guess the one argument I could make is that the kernel isn't
-> supposed to break userspace. Before the extra format validation patch,
-> AKA commit c91acda3a380 ("drm/gem: Check for valid formats"),
-> userspace worked. Now it doesn't.
->
-> That being said, one can certainly argue that userspace was working in
-> the past simply due to relying on a bug. ...and in such a case fixing
-> the bug in userspace is preferred.
->
-> I don't personally know _how_ to fix userspace but it feels like it
-> should be possible.
->
->
->> And udl is just one driver. Any other driver without ARGB8888, such as
->> simpledrm or ofdrm, would be affected. Do these work?
-> It's the ChromeOS compositor. I can totally believe that those drivers
-> don't work. In this case, though, those drivers aren't needed by a USB
-> peripheral that someone might plug in. ;-)
+On Thu, 29 Feb 2024 13:08:09 -0500, Tony Battersby wrote:
+> Fix an incorrect number of pages being released for buffers that do not
+> start at the beginning of a page.
+> 
+> 
 
-If you can fix to problem in the compositor, that would be the correct 
-solution. If it's really not possible, we'd have to figure out something 
-else.
+Applied, thanks!
 
-We supported various combinations of source and destination formats in 
-the kernel. But that results in state explosion at some point. And we 
-wanted to move conversion code to userspace where possible. So only 
-XRGB8888 was allowed, as it's sometimes necessary to support legacy 
-userspace. (Ironically, one could make that argument for ARGB and the 
-ChromeOS compositor. :) We even have code that works around incorrect 
-ARGB reported by hardware or firmware, so that userspace absolutely does 
-not see ARGB for the primary planes of simpledrm/ofdrm. [1]
+[1/1] block: Fix page refcounts for unaligned buffers in __bio_release_pages()
+      commit: 38b43539d64b2fa020b3b9a752a986769f87f7a6
 
-Best regards
-Thomas
-
-[1] 
-https://elixir.bootlin.com/linux/v6.7/source/drivers/gpu/drm/drm_format_helper.c#L1158
-
->
->
-> -Doug
-
+Best regards,
 -- 
---
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Frankenstrasse 146, 90461 Nuernberg, Germany
-GF: Ivo Totev, Andrew Myers, Andrew McDonald, Boudien Moerman
-HRB 36809 (AG Nuernberg)
+Jens Axboe
+
+
 
 
