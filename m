@@ -1,204 +1,226 @@
-Return-Path: <linux-kernel+bounces-93917-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93918-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ADD328736E0
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:49:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1085E8736EC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:52:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64818284518
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:48:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BBF2328475D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:52:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D46AF12C53C;
-	Wed,  6 Mar 2024 12:48:52 +0000 (UTC)
-Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C83485291;
+	Wed,  6 Mar 2024 12:51:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="TRMsbHf8"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBD4186633;
-	Wed,  6 Mar 2024 12:48:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7EB412C53E
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 12:51:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709729332; cv=none; b=ZWOA8tYFWtrjCZk3+bHy6o+lB3P/srOjTWuiDHz8v7EdW2zAxpqxmgR4D+sfDD5geYPiVjxt5s+K7ZvdmRyuwFs1TuR8aHEu+OlRcbWJlTeo/4az4WRwfW/0L3lfYYWy8C7YV1o8Alk/2DCa+TWcJatN+SoKtQTSzttHmH7z6tk=
+	t=1709729517; cv=none; b=NESZ/6ftfvWCh/JFo7GAZcSHIhfHW+FoYRGrg771MBEa6ODrch/9ijzvbyDeMKkA28mYcgYy6gXXV/2CykV7p6ioA6Q2ZuymBFTbQuySjItOSpPhOUycz5KIM/ZenhipkXM6jNgU0HbJ7t6ZZJbjG/OuWzmh6mNZbn0DB6GiFe8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709729332; c=relaxed/simple;
-	bh=wlGohHDpnBrj0wgpAIDRF+sOdE3Grea/71eoCrrnR7Y=;
+	s=arc-20240116; t=1709729517; c=relaxed/simple;
+	bh=RdX+DSyimaOFGLL/X/PkNBOiu5y8vWHzGkaUio1sOK4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mnWDJjs/i/YsNt4MgtZxYvJH4jfQt8e/X3NbhFA2hSWFzdA1Mol9yNvqJC5DE2eOMagh4Tr4Pco/EKmxtxVJyRoh+GTb/ti1QCHtZF1zL6RRT+DvBW+g1xFBB/FWtYLJBFoAfQGMq6nVTJxkPtEtC4WK0QmEnrDFz11wcexSTAc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-5a12d31d76fso233155eaf.1;
-        Wed, 06 Mar 2024 04:48:50 -0800 (PST)
+	 To:Cc:Content-Type; b=nTHY0T7Vj5NFgcuiJo51HKvIpdyD+x5zl5LiFbyx53he5AJDRPktaxAbJ612VBgNBaSUV9lreXpRlURp738EhwkrM7dVa7seYi/rbkqtVCqc8dMklSngeL7C8cSjxfRBrz3CZBNChaBr1+La7vEBPLnF5qBawy0GtIZiNvRtq5c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=TRMsbHf8; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5654ef0c61fso12713a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 04:51:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709729514; x=1710334314; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NZ53iU6hdRTVPXgb3bO7wAZ+renq+wmZYoXZ3DzIzD0=;
+        b=TRMsbHf8bi7lRPrYccur/RzoR/6TByjI8Lk5ZQOB6mkNxKWV0jt7xJUz5xZYS37Jei
+         kM20drBiHkynuKBUP3iA5Xql3KNH8VgxQmP5qW9d2KBSHX6NhJwkOSZHkZt3yJtDS8jz
+         WhR68MA55IQopWjDcBt/dTtKGOEDdW6Rg24eSX+PcVzro8c8JLQ7pFylkAddHhDlXCt3
+         V+k6XagdGcY3oJONrUzbJ5v6iX/5QaYF78xJAPF4IbhcpJKTUWrn4TsPm5le+1vVq8GV
+         ESt/bhFAL5gG3G6Idz9evRnTybfIuEMqmC5cNQ4Q6SCpOxS++5kgy2aZFlRD58IFpo4X
+         uBTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709729330; x=1710334130;
+        d=1e100.net; s=20230601; t=1709729514; x=1710334314;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=QP/5Ot27QEzL5fa+CifSiDjHjpLcGRPWWefTTWARLbg=;
-        b=dJUUBtkG10i5P5VYXAu1flLrLLB2ORgCVObgAjJ6wpb8hNrNKyor2P41EJFu9b85xO
-         jgci4/q+bD0pwbY7PhtvKxFe1roKnYdYy5fRknEFhyVXJTcANqyS6mCPDmKPj2uh0fgr
-         J9LtqZ0LymPSrMg+rE8R2EQVZKaOyDCiT+vAIonxJC7GlZHz+pno8zbGX0arGrMFsUp6
-         bvgxwA2Vpl2BuNiKVLqY2+htNOy9Y7MTV3UqpVTWvi6qITXMolIgjxmCOp8FQVFSgQdW
-         jtR2Tyw0RJ9hegHtBzucSpF1fUbjl+HN1LkeDre96rGvw0EGg2qZwdEJFX/2MIr1unJy
-         kyuw==
-X-Forwarded-Encrypted: i=1; AJvYcCWOdeq5/lrBFRf2xS15GLSNVdmjaGYiYMt5ybWQVknJDPmkTcf/Sy98sS43jbfn9geEIGD/1vuUbKmDiNroqwdGkgpv4eD7K4IC9bwpjSzdBecPwY33B5mPSDiMaHX3sdoCyPZTGebrgD/GI88t4KuoPYGTQXprQ6VItIOAf08HsA==
-X-Gm-Message-State: AOJu0Yz33PrEwG3fgJTEg3Tld73mveyhlfYRmZVAcKNQsqwCLIF8JbMG
-	iWac3xMDds5q4h2EB2X64+xrDGHCuGvLI3nf1Fc57h2bzXJIJY0eCLBZjgsvbk9LtnBz019qFxb
-	iflg87SrYlJJvD/9ZmQkJY16CMJqyrqCUncY=
-X-Google-Smtp-Source: AGHT+IFOSiOuLUOZQcQo0g8hUxeZFz2G8KiRlGAKh3P8Q5/l8fxKsdIGS4MdnPN9gNEMDjV9oS2Wk039Uekgzgm9piU=
-X-Received: by 2002:a05:6871:a909:b0:220:a82a:a4ef with SMTP id
- wn9-20020a056871a90900b00220a82aa4efmr3894754oab.3.1709729329401; Wed, 06 Mar
- 2024 04:48:49 -0800 (PST)
+        bh=NZ53iU6hdRTVPXgb3bO7wAZ+renq+wmZYoXZ3DzIzD0=;
+        b=u1EQ6Tc1Wm57whUlKYMD+atHrw5UHKOtpQTB67xZvs6n51Xo2Nl1f33MtSDa33Xdts
+         xT8ESvDi7ZsgnrABRNCson/edq1dIsYVdzSwh7mfXToSjuzK/X7Hmueno9zqz1FNetRt
+         eL4Jd83M/ZlEKUHPX76QkuTV3eTsmBJ4IBu22QZBvOhtuqAEEIcKZlVTfvNATJe/gQoa
+         Jl+0tviHlKoIF0BoYCTACyZtXgjPOXj95AWP95swM/rk/VrOoHisfwapXJNClMgP1ca4
+         ppy1d4PRWpche1Nr3ji0ULbVIxw1pOUIveTbjyiW5YXVQmriqQ/bpuCcHmDxW+fIBEkq
+         JUTQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVNeJLHu152roJsIz9mJblh5lmmfhBzaXQSwQH0FJ3C2HVdHKU8pVOcrOAeaGLaKCrHntCw2IEYbDcngn5staSoWUJ1y8CWFNDzrrmJ
+X-Gm-Message-State: AOJu0Yy1QR5x3ggE+vlV66RhAqb2YzbtKTHvrGEw79NNvJ1/6N9HuFUv
+	d23nwquZSZjWennut2SeMWQZoMf1aLgNIuL8pgiIkAuhVvBgzOxpVdOlWSX2SgcMC5rGdgeQUWw
+	lx42gKECQvPThX5QVXL/titDRPR18+0248sC1
+X-Google-Smtp-Source: AGHT+IFtvFD2ZWOokx9QBO0s8NCnSEsCvbB5F7v6PO7oH9hJmXc+UvaqBvlsIWlzux1PjlgPgyqNDGVVrunv73mxrSU=
+X-Received: by 2002:a05:6402:22c4:b0:567:3840:15be with SMTP id
+ dm4-20020a05640222c400b00567384015bemr312577edb.1.1709729513557; Wed, 06 Mar
+ 2024 04:51:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240306085007.169771-1-herve.codina@bootlin.com> <20240306085007.169771-2-herve.codina@bootlin.com>
-In-Reply-To: <20240306085007.169771-2-herve.codina@bootlin.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 6 Mar 2024 13:48:37 +0100
-Message-ID: <CAJZ5v0gENrBFfJ3FDJ=m0-veFbue_Bw168+k2cs7v2u9MtCT8Q@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] driver core: Introduce device_link_wait_removal()
-To: Herve Codina <herve.codina@bootlin.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>, 
-	Saravana Kannan <saravanak@google.com>, Lizhi Hou <lizhi.hou@amd.com>, Max Zhen <max.zhen@amd.com>, 
-	Sonal Santan <sonal.santan@amd.com>, Stefano Stabellini <stefano.stabellini@xilinx.com>, 
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>, linux-kernel@vger.kernel.org, 
-	devicetree@vger.kernel.org, Allan Nielsen <allan.nielsen@microchip.com>, 
-	Horatiu Vultur <horatiu.vultur@microchip.com>, 
-	Steen Hegelund <steen.hegelund@microchip.com>, Luca Ceresoli <luca.ceresoli@bootlin.com>, 
-	Nuno Sa <nuno.sa@analog.com>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
-	stable@vger.kernel.org
+References: <CALkn8kLOozs5UO52SQa9PR-CiKx_mqW8VF9US94qN+ixyqnkdQ@mail.gmail.com>
+ <CANn89iLH5+KryWa3GMs-Fz+sdy9Qs7kJqfBwf0229iwgW65Hxg@mail.gmail.com> <CACHbv+x5732JVEWkO14ogz48cze7_ai_D5TA9C2X6_b97rioEA@mail.gmail.com>
+In-Reply-To: <CACHbv+x5732JVEWkO14ogz48cze7_ai_D5TA9C2X6_b97rioEA@mail.gmail.com>
+From: Eric Dumazet <edumazet@google.com>
+Date: Wed, 6 Mar 2024 13:51:42 +0100
+Message-ID: <CANn89i+CEHApkAO7msUPoQdMgjJsgJ=gNuHcOdYZqbwEdwVrOg@mail.gmail.com>
+Subject: Re: Network performance regression in Linux kernel 6.6 for small
+ socket size test cases
+To: Boon Ang <boon.ang@broadcom.com>
+Cc: Abdul Anshad Azeez <abdul-anshad.azeez@broadcom.com>, davem@davemloft.net, kuba@kernel.org, 
+	pabeni@redhat.com, corbet@lwn.net, dsahern@kernel.org, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, John Savanyo <john.savanyo@broadcom.com>, 
+	Peter Jonasson <peter.jonasson@broadcom.com>, Rajender M <rajender.m@broadcom.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 6, 2024 at 9:51=E2=80=AFAM Herve Codina <herve.codina@bootlin.c=
-om> wrote:
+On Wed, Mar 6, 2024 at 1:43=E2=80=AFPM Boon Ang <boon.ang@broadcom.com> wro=
+te:
 >
-> The commit 80dd33cf72d1 ("drivers: base: Fix device link removal")
-> introduces a workqueue to release the consumer and supplier devices used
-> in the devlink.
-> In the job queued, devices are release and in turn, when all the
-> references to these devices are dropped, the release function of the
-> device itself is called.
+> Hello Eric,
 >
-> Nothing is present to provide some synchronisation with this workqueue
-> in order to ensure that all ongoing releasing operations are done and
-> so, some other operations can be started safely.
+> The choice of socket buffer size is something that  an application can de=
+cide and there many be reasons to keep to smaller sizes.  While high bandwi=
+dth transfers obviously should use larger sizes, a change that regresses th=
+e performance of existing configuration is a regression.  Is there any way =
+to modify your change so that it keeps the benefits while avoiding the degr=
+adation for small socket sizes?
 >
-> For instance, in the following sequence:
->   1) of_platform_depopulate()
->   2) of_overlay_remove()
->
-> During the step 1, devices are released and related devlinks are removed
-> (jobs pushed in the workqueue).
-> During the step 2, OF nodes are destroyed but, without any
-> synchronisation with devlink removal jobs, of_overlay_remove() can raise
-> warnings related to missing of_node_put():
->   ERROR: memory leak, expected refcount 1 instead of 2
->
-> Indeed, the missing of_node_put() call is going to be done, too late,
-> from the workqueue job execution.
->
-> Introduce device_link_wait_removal() to offer a way to synchronize
-> operations waiting for the end of devlink removals (i.e. end of
-> workqueue jobs).
-> Also, as a flushing operation is done on the workqueue, the workqueue
-> used is moved from a system-wide workqueue to a local one.
->
-> Fixes: 80dd33cf72d1 ("drivers: base: Fix device link removal")
 
-No, it is not fixed by this patch.
 
-In fact, the only possibly observable effect of this patch is the
-failure when the allocation of device_link_wq fails AFAICS.
+The kernel limits the amount of memory used by the receive queue.
 
-> Cc: stable@vger.kernel.org
+The problem is that for XXX bytes of payload (what the user application wan=
+ts),
+the metadata overhead is not fixed.
 
-So why?
+Kernel structures change over time, and packets are not always full
+from the remote peer (that we can not control)
 
-> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-> ---
->  drivers/base/core.c    | 26 +++++++++++++++++++++++---
->  include/linux/device.h |  1 +
->  2 files changed, 24 insertions(+), 3 deletions(-)
+1000 bytes of payload might fit in 2KB, or 2MB depending on how the
+bytes are spread over multiple skbs.
+
+This issue has been there forever, the kernel can not put in stone any rule=
+ :
+
+XXXX bytes of payload  --->  YYYY bytes of kernel memory to hold XXXX
+bytes of payload.
+
+It is time that applications setting tiny SO_RCVBUF values get what they wa=
+nt :
+
+Poor TCP performance.
+
+Thanks.
+
+> Thanks
+>   Boon
 >
-> diff --git a/drivers/base/core.c b/drivers/base/core.c
-> index d5f4e4aac09b..48b28c59c592 100644
-> --- a/drivers/base/core.c
-> +++ b/drivers/base/core.c
-> @@ -44,6 +44,7 @@ static bool fw_devlink_is_permissive(void);
->  static void __fw_devlink_link_to_consumers(struct device *dev);
->  static bool fw_devlink_drv_reg_done;
->  static bool fw_devlink_best_effort;
-> +static struct workqueue_struct *device_link_wq;
+> On Wed, Feb 28, 2024 at 12:48=E2=80=AFAM Eric Dumazet <edumazet@google.co=
+m> wrote:
+>>
+>> On Wed, Feb 28, 2024 at 7:43=E2=80=AFAM Abdul Anshad Azeez
+>> <abdul-anshad.azeez@broadcom.com> wrote:
+>> >
+>> > During performance regression workload execution of the Linux
+>> > kernel we observed up to 30% performance decrease in a specific networ=
+king
+>> > workload on the 6.6 kernel compared to 6.5 (details below). The regres=
+sion is
+>> > reproducible in both Linux VMs running on ESXi and bare metal Linux.
+>> >
+>> > Workload details:
+>> >
+>> > Benchmark - Netperf TCP_STREAM
+>> > Socket buffer size - 8K
+>> > Message size - 256B
+>> > MTU - 1500B
+>> > Socket option - TCP_NODELAY
+>> > # of STREAMs - 32
+>> > Direction - Uni-Directional Receive
+>> > Duration - 60 Seconds
+>> > NIC - Mellanox Technologies ConnectX-6 Dx EN 100G
+>> > Server Config - Intel(R) Xeon(R) Gold 6348 CPU @ 2.60GHz & 512G Memory
+>> >
+>> > Bisect between 6.5 and 6.6 kernel concluded that this regression origi=
+nated
+>> > from the below commit:
+>> >
+>> > commit - dfa2f0483360d4d6f2324405464c9f281156bd87 (tcp: get rid of
+>> > sysctl_tcp_adv_win_scale)
+>> > Author - Eric Dumazet <edumazet@google.com>
+>> > Link -
+>> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/com=
+mit/?id=3D
+>> > dfa2f0483360d4d6f2324405464c9f281156bd87
+>> >
+>> > Performance data for (Linux VM on ESXi):
+>> > Test case - TCP_STREAM_RECV Throughput in Gbps
+>> > (for different socket buffer sizes and with constant message size - 25=
+6B):
+>> >
+>> > Socket buffer size - [LK6.5 vs LK6.6]
+>> > 8K - [8.4 vs 5.9 Gbps]
+>> > 16K - [13.4 vs 10.6 Gbps]
+>> > 32K - [19.1 vs 16.3 Gbps]
+>> > 64K - [19.6 vs 19.7 Gbps]
+>> > Autotune - [19.7 vs 19.6 Gbps]
+>> >
+>> > From the above performance data, we can infer that:
+>> > * Regression is specific to lower fixed socket buffer sizes (8K, 16K &=
+ 32K).
+>> > * Increasing the socket buffer size gradually decreases the throughput=
+ impact.
+>> > * Performance is equal for higher fixed socket size (64K) and Autotune=
+ socket
+>> > tests.
+>> >
+>> > We would like to know if there are any opportunities for optimization =
+in
+>> > the test cases with small socket sizes.
+>> >
+>>
+>> Sure, I would suggest not setting small SO_RCVBUF values in 2024,
+>> or you get what you ask for (going back to old TCP performance of year 2=
+010 )
+>>
+>> Back in 2018, we set tcp_rmem[1] to 131072 for a good reason.
+>>
+>> commit a337531b942bd8a03e7052444d7e36972aac2d92
+>> Author: Yuchung Cheng <ycheng@google.com>
+>> Date:   Thu Sep 27 11:21:19 2018 -0700
+>>
+>>     tcp: up initial rmem to 128KB and SYN rwin to around 64KB
+>>
+>>
+>> I can not enforce a minimum in SO_RCVBUF (other than the small one added=
+ in
+>> commit eea86af6b1e18d6fa8dc959e3ddc0100f27aff9f     ("net: sock: adapt
+>> SOCK_MIN_RCVBUF and SOCK_MIN_SNDBUF"))
+>> otherwise many test programs will break, expecting to set a low value.
 >
->  /**
->   * __fwnode_link_add - Create a link between two fwnode_handles.
-> @@ -532,12 +533,26 @@ static void devlink_dev_release(struct device *dev)
->         /*
->          * It may take a while to complete this work because of the SRCU
->          * synchronization in device_link_release_fn() and if the consume=
-r or
-> -        * supplier devices get deleted when it runs, so put it into the =
-"long"
-> -        * workqueue.
-> +        * supplier devices get deleted when it runs, so put it into the
-> +        * dedicated workqueue.
->          */
-> -       queue_work(system_long_wq, &link->rm_work);
-> +       queue_work(device_link_wq, &link->rm_work);
->  }
 >
-> +/**
-> + * device_link_wait_removal - Wait for ongoing devlink removal jobs to t=
-erminate
-> + */
-> +void device_link_wait_removal(void)
-> +{
-> +       /*
-> +        * devlink removal jobs are queued in the dedicated work queue.
-> +        * To be sure that all removal jobs are terminated, ensure that a=
-ny
-> +        * scheduled work has run to completion.
-> +        */
-> +       flush_workqueue(device_link_wq);
-> +}
-> +EXPORT_SYMBOL_GPL(device_link_wait_removal);
-> +
->  static struct class devlink_class =3D {
->         .name =3D "devlink",
->         .dev_groups =3D devlink_groups,
-> @@ -4099,9 +4114,14 @@ int __init devices_init(void)
->         sysfs_dev_char_kobj =3D kobject_create_and_add("char", dev_kobj);
->         if (!sysfs_dev_char_kobj)
->                 goto char_kobj_err;
-> +       device_link_wq =3D alloc_workqueue("device_link_wq", 0, 0);
-> +       if (!device_link_wq)
-> +               goto wq_err;
->
->         return 0;
->
-> + wq_err:
-> +       kobject_put(sysfs_dev_char_kobj);
->   char_kobj_err:
->         kobject_put(sysfs_dev_block_kobj);
->   block_kobj_err:
-> diff --git a/include/linux/device.h b/include/linux/device.h
-> index 1795121dee9a..d7d8305a72e8 100644
-> --- a/include/linux/device.h
-> +++ b/include/linux/device.h
-> @@ -1249,6 +1249,7 @@ void device_link_del(struct device_link *link);
->  void device_link_remove(void *consumer, struct device *supplier);
->  void device_links_supplier_sync_state_pause(void);
->  void device_links_supplier_sync_state_resume(void);
-> +void device_link_wait_removal(void);
->
->  /* Create alias, so I can be autoloaded. */
->  #define MODULE_ALIAS_CHARDEV(major,minor) \
-> --
+> This electronic communication and the information and any files transmitt=
+ed with it, or attached to it, are confidential and are intended solely for=
+ the use of the individual or entity to whom it is addressed and may contai=
+n information that is confidential, legally privileged, protected by privac=
+y laws, or otherwise restricted from disclosure to anyone else. If you are =
+not the intended recipient or the person responsible for delivering the e-m=
+ail to the intended recipient, you are hereby notified that any use, copyin=
+g, distributing, dissemination, forwarding, printing, or copying of this e-=
+mail is strictly prohibited. If you received this e-mail in error, please r=
+eturn the e-mail to the sender, delete it from your computer, and destroy a=
+ny printed copy of it.
 
