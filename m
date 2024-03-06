@@ -1,163 +1,198 @@
-Return-Path: <linux-kernel+bounces-94740-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94741-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8E8C87449C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 00:43:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1A688744A1
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 00:43:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72312282F7A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 23:43:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 301B71F292E2
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 23:43:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97D883D549;
-	Wed,  6 Mar 2024 23:41:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C11FA1CF8F;
+	Wed,  6 Mar 2024 23:42:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="dfxSn7ES"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="nTQiMvLI";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="5gsk486y"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 278023FB16;
-	Wed,  6 Mar 2024 23:41:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709768482; cv=none; b=awTI0mhN82gEeAvB3C3J787toCMnN17gVRfNAI/6d8ty1gvTdw99tqqdM+FJiLvWJfBuq44XKPvr6Ka6E3EG8RZrWTSGzTckap+kZdZxOVf+tIZofMcvKtLUcULVSi78cJpTtV2V4o9nVi6G4p5lolD+HsOkqiL07gSSUrAzdSg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709768482; c=relaxed/simple;
-	bh=dZ6jOLMDzgPZpijPacAiasUg5Crtb+AP4LxE80M2xBA=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=iHuEzZsu/Urn8zldaiQ5j7gzq7GJ0CTbGgp67QIz72WiI+U5gLTWlVlL5x/hkMHlzYSsaA/mHWW497z+fQSp0kyu9Jzw63h7t9EVYEfjScasjKTy5baSAkmsV9DIXOLagUXW9H6/eGvrDEXdd3NUu6o6Al788cDBoF29z2idXTw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=dfxSn7ES; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-	s=201909; t=1709768472;
-	bh=OHx3bVLlXnvaD4Lk/LqRAXihRU8d5iuk+jHowRU57+A=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=dfxSn7ESt9feXa7Ah5VgnrgsTR94t0TrfqG0PcTuTf3mOM2nYClb7KzncEO44oWvJ
-	 z177IwNoKxwaRwuRElWO9dM9vGP1BGgcQEfox5PbPq0mqdcUVphkGszRXScQ0d7mcO
-	 jW4ikoUKpq/rq3DBl50CSj6CPBHJDbwDqtBF6NxW+foiGgFyBpZYE+I728npTZNMg3
-	 1t/2+QbQypMyzr9+0O+l4J8vO9YugJeJGU6R2JxmPiIz07vqQ4qeSoMI/Ta1CVt4Pi
-	 EW9aQ8ONAeTLEZ2I6yd+B+il/wLckJElOl67KFtvN0q8NsP2LkndTztEXc4YygJJsv
-	 te7iy+1YEdhjg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Tqppm50HGz4wcN;
-	Thu,  7 Mar 2024 10:41:04 +1100 (AEDT)
-From: Michael Ellerman <mpe@ellerman.id.au>
-To: Arnd Bergmann <arnd@kernel.org>, Anna-Maria Behnsen
- <anna-maria@linutronix.de>, Thomas Gleixner <tglx@linutronix.de>, Vincenzo
- Frascino <vincenzo.frascino@arm.com>, Kees Cook <keescook@chromium.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Matt Turner <mattst88@gmail.com>, Vineet
- Gupta <vgupta@kernel.org>, Russell King <linux@armlinux.org.uk>, Catalin
- Marinas <catalin.marinas@arm.com>, Guo Ren <guoren@kernel.org>, Brian Cain
- <bcain@quicinc.com>, Huacai Chen <chenhuacai@kernel.org>, Geert
- Uytterhoeven <geert@linux-m68k.org>, Michal Simek <monstr@monstr.eu>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Helge Deller
- <deller@gmx.de>, Christophe Leroy <christophe.leroy@csgroup.eu>, Palmer
- Dabbelt <palmer@dabbelt.com>, John Paul Adrian Glaubitz
- <glaubitz@physik.fu-berlin.de>, Andreas Larsson <andreas@gaisler.com>,
- Richard Weinberger <richard@nod.at>, x86@kernel.org, Max Filippov
- <jcmvbkbc@gmail.com>, Andy Lutomirski <luto@kernel.org>, Jan Kiszka
- <jan.kiszka@siemens.com>, Kieran Bingham <kbingham@kernel.org>, Andrew
- Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
- linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
- linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
- linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
- linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
- linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
- sparclinux@vger.kernel.org, linux-um@lists.infradead.org
-Subject: Re: [PATCH v2 1/3] arch: consolidate existing CONFIG_PAGE_SIZE_*KB
- definitions
-In-Reply-To: <20240306141453.3900574-2-arnd@kernel.org>
-References: <20240306141453.3900574-1-arnd@kernel.org>
- <20240306141453.3900574-2-arnd@kernel.org>
-Date: Thu, 07 Mar 2024 10:41:02 +1100
-Message-ID: <87sf13nd2p.fsf@mail.lhotse>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23FF11CD05;
+	Wed,  6 Mar 2024 23:42:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.153.233
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709768555; cv=fail; b=V1kjlMU37sgNq59o/JdRqZ0Oz7wmnSp18CoIJ9CTUPw7eTMwMDzuNVHL8q0f2FGl+SOsE+/DhmWz/UggBxe0FYW8HohYOJEaF6bkGMZRyuJYyeOF9QCUv0FTVuLRShajAsFia+lSmZXxCZII4YSLgYNtAzGLDtv6459Ll1QewI8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709768555; c=relaxed/simple;
+	bh=qeQJWO2G8/QCKH+z70nTXhj0ecRsQT6f8dSQ1h6/CJY=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=YDIcKsZfj3B+A4p3XZnlGgWIcg0Kma6w0pQgTaYbmc78TstKdg/98Mqmka7w0Hfpy2Ltucgn7njlIwF3AEr4+GgiTXXeuK0WxDseWf+vfouC5ujKwLMIbRle2jhQSknitrfJ2lnb6CY3J4Pr97gRpdEHKpCCXord0WA8mum3nKE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=nTQiMvLI; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=5gsk486y; arc=fail smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1709768553; x=1741304553;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=qeQJWO2G8/QCKH+z70nTXhj0ecRsQT6f8dSQ1h6/CJY=;
+  b=nTQiMvLI3lGyZjOwGuwcpIV+irnYfzynG3zoo/N3Ys4G3vqR3QOVhb28
+   EVZM7TyvX/JbyXd5/iy+Q+YQNlD6b84S7PSYz1iWRqdbR2YC/KfRE4Zop
+   MYREKpcrsLuieu/8TY+ugcsJCbceuDFqqDFf+o2zHwyRm/joBE7FV2Bt9
+   AdP29FHzJeH2NZ4DbSrg9wgDu4mzA5x7+YmNTNzZ6H+tVuyl23EoHC3tJ
+   GWCX4+dgpGD4VwSaEwFLbJEY/Q8N4aU3mChWQNLqn2PvfOuXSizFI5TVb
+   SEaKBzJAA/FuQEtd2QTm42WgiF9ri9vYNTmBH05ubOwxZF3eQxu0djNDN
+   A==;
+X-CSE-ConnectionGUID: dbnFdkp6ShCuS/nAFeXjpA==
+X-CSE-MsgGUID: mdYaFwf3SGaA1UYCA2kZeA==
+X-IronPort-AV: E=Sophos;i="6.06,209,1705388400"; 
+   d="scan'208";a="17317514"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 06 Mar 2024 16:42:32 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 6 Mar 2024 16:42:18 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (10.10.215.250)
+ by email.microchip.com (10.10.87.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 6 Mar 2024 16:42:17 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XnseMIR7sqt7BTOn2NK7jd3ysC/XUy0vD+Y8nkwcmLJRGULNQSAWHUzq8TIuRj1YbCjzLrS+299mdaAlXoxhvXW9KTDT0Pi1z9kpdZCN0lwM+sT4Gfnkr/xswFjrD9/b8sy+sSgYEKoA+IeI79Yqc256Zbp0yFhbno7hI7mGvGNP3u8fx9oeD0ZljQtOMj2FvKbgnSw2uWHMuJLeQXjHDwo+8HS12NyKafJW/q9SNWuPolR0q/0HWUgAY6NN8E7o3LZ5r5NGxQq63oGE9B3NE2WsTilHK8ATQ13537b9tcWdZUueg44LYnbJ0J8a5HBCAYCDbgNITR9GJWA7/k3Qrg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=xKnBnr4q43eTYbi5DRUeoElN8Gt/yKq7V51HN6YRaNU=;
+ b=NItiMwTaXHLOb1WEZWc9XswFDn0DtFtY/+SWqSFh/ClgMml2WZOp90f95V0dYFAbatLP868Igue67XvSIgfObuKOjP1NmOBdcqo0lb1Qt3rcm0Bp62OOGsZE02qLyNK/CQXFQPorEuaY+U/EuGN7L5c0N5dGhduotl4g/Cwx/WSn3fn4VCGWh71IQc9c1zaLnULFwER9qN1SRJwaDOGPDeG0PY+NHJqkmWPEyUCB4D9ODPCt/X63KOFTJiljOKAS4WLxnXd4WH5CFwJbDhsSVFhgfL4mcPVYPk9alDRYy2yGOw1FFm+xuBygNVqndOW+R8naWHrOalSb4dSDVt0MfQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microchip.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xKnBnr4q43eTYbi5DRUeoElN8Gt/yKq7V51HN6YRaNU=;
+ b=5gsk486yGq7ld+iHfZKxe30MbMj+h0IfRQejbiG2WzuWc3Qcfx9nr2syo1YmPSZqE3LjMRpCB4NK13f5kKfBFlgBfpE81u6eYaktACjPCmdF9pCqGLJgdZLunDJuDgg+iJR4nWYHnXN5hGizhn2l2rIiGHIKek0RbakHw6D5zUODyow4/XtiR5SqL2aBRd/BmaLIwj1lT3/0wmJHNeIqB/N4APJ85DYWNPQMp7bzJfiG2/zArZGZlqkCmVJv/dF2WHlxyyVcr5LDqcR77SkJPEm75XtiFNAHMvrdH/LohGR6AmDLThLXPr2nrul1YAOryGPhzSkxcjUWdu4llm6qXw==
+Received: from BL0PR11MB2913.namprd11.prod.outlook.com (2603:10b6:208:79::29)
+ by MN2PR11MB4598.namprd11.prod.outlook.com (2603:10b6:208:26f::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.24; Wed, 6 Mar
+ 2024 23:42:16 +0000
+Received: from BL0PR11MB2913.namprd11.prod.outlook.com
+ ([fe80::dc78:62a2:5ccf:6248]) by BL0PR11MB2913.namprd11.prod.outlook.com
+ ([fe80::dc78:62a2:5ccf:6248%3]) with mapi id 15.20.7362.019; Wed, 6 Mar 2024
+ 23:42:16 +0000
+From: <Woojung.Huh@microchip.com>
+To: <Parthiban.Veerasooran@microchip.com>, <davem@davemloft.net>,
+	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<horms@kernel.org>, <saeedm@nvidia.com>, <anthony.l.nguyen@intel.com>,
+	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, <andrew@lunn.ch>,
+	<corbet@lwn.net>, <linux-doc@vger.kernel.org>, <robh+dt@kernel.org>,
+	<krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+	<devicetree@vger.kernel.org>, <Horatiu.Vultur@microchip.com>,
+	<ruanjinjie@huawei.com>, <Steen.Hegelund@microchip.com>,
+	<vladimir.oltean@nxp.com>
+CC: <UNGLinuxDriver@microchip.com>, <Thorsten.Kummermehr@microchip.com>,
+	<Pier.Beruto@onsemi.com>, <Selvamani.Rajagopal@onsemi.com>,
+	<Nicolas.Ferre@microchip.com>, <benjamin.bigler@bernformulastudent.ch>
+Subject: RE: [PATCH net-next v3 10/12] net: ethernet: oa_tc6: implement
+ mac-phy interrupt
+Thread-Topic: [PATCH net-next v3 10/12] net: ethernet: oa_tc6: implement
+ mac-phy interrupt
+Thread-Index: AQHab6Ob/tWfers5YEGx5SyM6BefPLErX8qw
+Date: Wed, 6 Mar 2024 23:42:16 +0000
+Message-ID: <BL0PR11MB2913A429E53B85ABC67F9657E7212@BL0PR11MB2913.namprd11.prod.outlook.com>
+References: <20240306085017.21731-1-Parthiban.Veerasooran@microchip.com>
+ <20240306085017.21731-11-Parthiban.Veerasooran@microchip.com>
+In-Reply-To: <20240306085017.21731-11-Parthiban.Veerasooran@microchip.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microchip.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BL0PR11MB2913:EE_|MN2PR11MB4598:EE_
+x-ms-office365-filtering-correlation-id: 60f7df91-5319-4fb0-ef20-08dc3e370e4e
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: X5+3JEukKXmqqRl0GhGdTxIwBko2Wk4/vsMloKSWK6rbdwVnkO+mBvJEc0LUTLkHJXhncInqE7HPBLaan8fXOSMMP4aaQHAhFr+NZL7CqE2312DorRB8DsOAF8PRrA+uX4jWo9nArnpfdB+Wzan2aMUB7etivSSdLH5xEvn4tJTIJhGO6YtbMOZWuG1AXRiq565fBX3rPNrkWU39Tz9WjdAcESvw9KQ7pN/T7wWshTLt09+OBMlHuVClcNbYow9qbTJVjgxAOtQYN7lBppewe1L/vw4T4afpjdfAppP4ywgRn50iAQDyekQlvmHRd4TbVtBcPIZelTv8t8f+22+MsJqvaqxzkTxNcY0JpdBQgU8iD+NQPQpFmsmwiBET8O3J5vb3k5YCszgzDLs1pHZ5U6tudGxpObdpkah3uSS19ezIRfDHWhaz6HoG+Llq46nv6hhSH5nPBKbPmLqUSmE1Wx30lFkPmgLAy1xVDDY5G2vPGr00ZrdaDJ+Qo2VxbxImxLvRxTSTl00w//e/wWSI6JIl3Xmn01Bvr4+F/6pHe6a2/GZDxog9Gd01I6zwIyvPVnNz/x9vBmRnhjjp1Wq6zjweZNBRv62ByQ9w0wpqK7ED4eb5TSJsOy+jkpCtoqkp8WrWVPSSbHrWmy3pw8YBwOqNAuuv7y6eReKZQKa2FoJMy/FCnjO1u5YHrRjyKHZ1PxWYGGZbkvcGZumXJKALn9frlpMaapRqNFCMX/DZOSE=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR11MB2913.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(38070700009)(921011);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?5wttjtQUtZvFN9CJMF/TaQBx+u+Y1azyP7qOPrljaexQ6DETwlEE3JFHkw9+?=
+ =?us-ascii?Q?P1Km0uj5uPWCmbVvfaJU+UfUXWZWe1BkEqJbVwOOcTLfVQ1uTIykW2WYnBPl?=
+ =?us-ascii?Q?K/ryQC+uskY566gK+tms1EouAF7gtIxTfy4q9ugmli0dnIW3lH0la+QU2gKA?=
+ =?us-ascii?Q?qvTYM/1rhnWqYQArHzrdz1ROnpis4p5uj8J6ejVXrnH0h0BzLIfxk2MWaYmr?=
+ =?us-ascii?Q?aPOSkyNpVxC/wtf9gAr9yQvKGJNBQg2kVYhtRWlyvpqqI+ou8wEudp0tmSmJ?=
+ =?us-ascii?Q?kUZQ+qU3VsBi7k3zOXjqgKqCpDNAoy88OZtRfQVMXmVqDYs2wxgw0/1PNW89?=
+ =?us-ascii?Q?69VWTORVpwLFm+XB6DWZqYomoux9Crg0V8XT/xeEg730xEK7ino1gpOEBwQE?=
+ =?us-ascii?Q?UJCaDCkitoic7vL6bNv1oDVGp4dkBz1msf3Ry785ZDHxLAh2fa/uocNbGJCf?=
+ =?us-ascii?Q?l9+oL+i7UIUlvw/3BSdsmMvUhc0HXgaX3YPIRuvVRmjIwBIx/srZsFZ1kxcC?=
+ =?us-ascii?Q?LQog5N1uX6BZ7ISAKk4nx11TFz012QDdW2XTn1v46kjqSQkRQkmap5FCV7jB?=
+ =?us-ascii?Q?8wHGjpeZyKUvaeihnl6IKiyFBqGHCX84leXeq/D+gU/WeOxVSGiKbsm+I6AL?=
+ =?us-ascii?Q?D0k0yiCKhZYwD/nRGGJ0I2IutJLWBFlL4yKMHfcIjVGxscJFXTIG00h+QmSv?=
+ =?us-ascii?Q?G+M2vBtk496o3o379HNnMx2e+VunXEBtEC6C22ofF6a71agpahQrVT914fOM?=
+ =?us-ascii?Q?q3Nwf6yp3YVoqJQkllDWttnzQXT+dlepS3em3WdA2qWKaqNQW4F6tLtuIFnB?=
+ =?us-ascii?Q?njP8t2il7l1S8lU/KW61WHZmCkZoFFTqjPd9+IPlmZmGBi4jY31l/FnVdUic?=
+ =?us-ascii?Q?BBlT77zDJhxpBYx6FXCq0pMdQ0KNICRgMZtrnZZNez3XzmRecLwAF6T6i+KT?=
+ =?us-ascii?Q?7RvmIodFqy7ayqHXAemx13WXfSljaT4AFNKleTc5MH6vn1q4IJ36OBz/Fa4A?=
+ =?us-ascii?Q?cyfQK8BwOALyR3OsSIqX7NZPNgYtbnyPa9NLQCr4Vwe5qtwyAZBBYxj27k+p?=
+ =?us-ascii?Q?yelaFw8p7KqqilQDs+hGGrIC9DxVv1NwhhA7edeMJ5FMLORvVu06xSTEBTBf?=
+ =?us-ascii?Q?mZN0Vz1BaD2q7KRu1ZzcVCFqeL1qaqJB9w104T2KGMFICOXOQeey6DZtVYBJ?=
+ =?us-ascii?Q?R+4FLYA1W/+WewIqsctrDVxydd4G+xV51s0FvLPtrYp18CCeveHDP8ASJWV9?=
+ =?us-ascii?Q?Im7JoVfFWwKn9+b19wHCZndr2SiusCnguKz4eiOX8GOHu7QkMhKBVGQ62JGW?=
+ =?us-ascii?Q?GWqE4XN3BtyOcei4qs2UIjIzcCs9EbhstNyiOZ9DJgCHYtYQDI67uESUMuI1?=
+ =?us-ascii?Q?ShHFQ6MgMYYBN2YHDST9wLkxPub8PDywq3mdt1bOWXKWdO3x5CskhC7Hzfyx?=
+ =?us-ascii?Q?eTOtvm0ORgGLl/0Yi4uFIEsvgzslcgldJiQnKB4rsN8DQG69bKPCf3fwWWkn?=
+ =?us-ascii?Q?JKaI3lFHHAvrIkkgJotqLRUNsLz/8Or10ava+x5cHYGnOdpkczjONKHlJp4r?=
+ =?us-ascii?Q?h6yTPTUI9VKSJ3b6GthFWQGg/zNt1p4D+9Yu2m+f?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR11MB2913.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 60f7df91-5319-4fb0-ef20-08dc3e370e4e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Mar 2024 23:42:16.3313
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: YnX9L5d5tHHiaWgtz/WQw9o4IA0xoY1jLoEgTq1qC3pGKXB+EOtOjuU/kW2mYrVS+a5au9T7lwygPyXK6IjQQjJwix4U/lgpQ5yhChN3+AI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB4598
 
-Hi Arnd,
+Hi Parthiban,
 
-Arnd Bergmann <arnd@kernel.org> writes:
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> These four architectures define the same Kconfig symbols for configuring
-> the page size. Move the logic into a common place where it can be shared
-> with all other architectures.
->
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
-> Changes from v1:
->  - improve Kconfig help texts
->  - fix Hexagon Kconfig
->
->  arch/Kconfig                      | 92 ++++++++++++++++++++++++++++++-
->  arch/hexagon/Kconfig              | 24 ++------
->  arch/hexagon/include/asm/page.h   |  6 +-
->  arch/loongarch/Kconfig            | 21 ++-----
->  arch/loongarch/include/asm/page.h | 10 +---
->  arch/mips/Kconfig                 | 58 ++-----------------
->  arch/mips/include/asm/page.h      | 16 +-----
->  arch/sh/include/asm/page.h        | 13 +----
->  arch/sh/mm/Kconfig                | 42 ++++----------
->  9 files changed, 121 insertions(+), 161 deletions(-)
+..
 
-There's a few "help" lines missing, which breaks the build:
+> +static irqreturn_t oa_tc6_macphy_isr(int irq, void *data)
+> +{
+> +	struct oa_tc6 *tc6 =3D data;
+> +
+> +	/* MAC-PHY interrupt can occur for the following reasons.
+> +	 * - availability of tx credits if it was 0 before and not reported
+> in
+> +	 *   the previous rx footer.
 
-  arch/Kconfig:1134: syntax error
-  arch/Kconfig:1133: invalid statement
-  arch/Kconfig:1134: invalid statement
-  arch/Kconfig:1135:warning: ignoring unsupported character '.'
-  arch/Kconfig:1135:warning: ignoring unsupported character '.'
-  arch/Kconfig:1135: invalid statement
-  arch/Kconfig:1136: invalid statement
-  arch/Kconfig:1137:warning: ignoring unsupported character '.'
-  arch/Kconfig:1137: invalid statement
-  arch/Kconfig:1143: syntax error
-  arch/Kconfig:1142: invalid statement
-  arch/Kconfig:1143: invalid statement
-  arch/Kconfig:1144:warning: ignoring unsupported character '.'
-  arch/Kconfig:1144: invalid statement
-  arch/Kconfig:1145: invalid statement
-  arch/Kconfig:1146: invalid statement
-  arch/Kconfig:1147: invalid statement
-  arch/Kconfig:1148:warning: ignoring unsupported character '.'
-  arch/Kconfig:1148: invalid statement
-  make[4]: *** [../scripts/kconfig/Makefile:85: syncconfig] Error 1
+Per description above, it may be typo of "the previous rx footer"
 
-Fixup diff is:
+> +	 * - availability of rx chunks if it was 0 before and not reported
+> in
+> +	 *   the previous rx footer.
+> +	 * - extended status event not reported in the previous rx footer.
+> +	 */
+> +	tc6->int_flag =3D true;
+> +	/* Wake spi kthread to perform spi transfer */
+> +	wake_up_interruptible(&tc6->spi_wq);
+> +
+> +	return IRQ_HANDLED;
+> +}
+> +
 
-diff --git a/arch/Kconfig b/arch/Kconfig
-index 56d45a75f625..f2295fa3b48c 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -1130,6 +1130,7 @@ config PAGE_SIZE_16KB
- config PAGE_SIZE_32KB
-        bool "32KiB pages"
-        depends on HAVE_PAGE_SIZE_32KB
-+       help
-          Using 32KiB page size will result in slightly higher performance
-          kernel at the price of higher memory consumption compared to
-          16KiB pages.  This option is available only on cnMIPS cores.
-@@ -1139,6 +1140,7 @@ config PAGE_SIZE_32KB
- config PAGE_SIZE_64KB
-        bool "64KiB pages"
-        depends on HAVE_PAGE_SIZE_64KB
-+       help
-          Using 64KiB page size will result in slightly higher performance
-          kernel at the price of much higher memory consumption compared to
-          4KiB or 16KiB pages.
-
-
-cheers
 
