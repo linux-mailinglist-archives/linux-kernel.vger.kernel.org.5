@@ -1,237 +1,200 @@
-Return-Path: <linux-kernel+bounces-93252-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93253-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34411872D07
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 03:54:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7911872D11
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 03:55:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0F5FAB25D0C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 02:54:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7DD2428BD09
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 02:55:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DF9CDDA6;
-	Wed,  6 Mar 2024 02:54:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9371511198;
+	Wed,  6 Mar 2024 02:54:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Dwzv+QJu"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="FfspCDPZ"
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D70863AC;
-	Wed,  6 Mar 2024 02:54:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B9EF12E75
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 02:54:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709693652; cv=none; b=nOiFTmCZugd+zZ/FtXqYLS3X/UQv652DV4CX0q+VOyxqJBK4OZTJBOZdafA8GRCS/ODXYqEz4jAc+d7fEG5X02k1lXug/ZX7XOv+VAQaX3l9Fqik6KshZ0ALjIAywmjDz/30knHscf+JbpQclRMk/YLIretxVAQTAB0tTObPI70=
+	t=1709693684; cv=none; b=WrTX9hfOO+DNE6bSI55wa1nHVUEwvTf+U9fKuzaptE4n3ejTnuT0Obrvl9E7Q9oEzWQmQmwTATL8jFpOPwWgbTxBrKXjGJGiwQpDu2yk9plRWV2d8hXb46AEy8RL2sCzP2FoHKxAYDCXA4zfK7KWDvy64CIignNlL70+/VwADI8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709693652; c=relaxed/simple;
-	bh=9WrgAkesKKlHGwX/3AxSFv+lcKYqyxJyA6ePn6zm5sM=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=pO01mB2VIxGaRUP9mUZIPvUlb92MHEc+UShpaIw5ZurcE5Bl9UWbmu0VEnwbCGoQLOLbQl+ite7W3St5OeoganDwEnHuhfEf9L2WPBT49BbssuAvOGMSEZ2g+2flReGKaHenULJ5Xr4+26qqT3RY4OaVP3oOLrchBwVSAa3ccNU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Dwzv+QJu; arc=none smtp.client-ip=192.198.163.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709693651; x=1741229651;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=9WrgAkesKKlHGwX/3AxSFv+lcKYqyxJyA6ePn6zm5sM=;
-  b=Dwzv+QJuMEshAYZ96gthVC6yuj7tnIQk2/qbetpJLb4UiCAIa/ZB91Wa
-   fsh9Og/jv/qFv8pB86Wok2BaI0navPYrSLvS0y7zCaVPDZLl/JNtw9bbg
-   n9gROF59g9YgMRMvv54IEFEVhMvS2OFZDT0Dw7AKsz+I2w9JDWcSwPBqM
-   lIMme8qjobkzDN5MXqjgUvFqXVjkuUOjiw8X2v3kXMyt2FElvdPrNHMv3
-   oHmxOBzoNICIFesasKNj9eXWT+CrO7EM6UvigM8y+GeqyON2Ms1qE/YBj
-   HrUGBYTNAOwKkaDHRpMdxrY4PZqdZ/281rDqe1+/SrUqHVssbJk8a0o6H
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11004"; a="4147264"
-X-IronPort-AV: E=Sophos;i="6.06,207,1705392000"; 
-   d="scan'208";a="4147264"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 18:54:10 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,207,1705392000"; 
-   d="scan'208";a="9686980"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 18:54:08 -0800
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Ryan Roberts <ryan.roberts@arm.com>, Miaohe Lin <linmiaohe@huawei.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,  David Hildenbrand
- <david@redhat.com>,  <linux-mm@kvack.org>,
-  <linux-kernel@vger.kernel.org>,  <stable@vger.kernel.org>
-Subject: Re: [PATCH v1] mm: swap: Fix race between free_swap_and_cache() and
- swapoff()
-In-Reply-To: <20240305151349.3781428-1-ryan.roberts@arm.com> (Ryan Roberts's
-	message of "Tue, 5 Mar 2024 15:13:49 +0000")
-References: <20240305151349.3781428-1-ryan.roberts@arm.com>
-Date: Wed, 06 Mar 2024 10:52:13 +0800
-Message-ID: <875xy0842q.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1709693684; c=relaxed/simple;
+	bh=rCsQQP7xgQocqgJZyTCewEFa4pqWP3bm2r+qfnB/Kdw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nUdWlEFvgC5PBRO5jVcewTpnxXg4zYw/pHPy4UrrfCF8ez4ID89kjHY92kQ6BgqxBUSL58wI6Lcc+ITbqRSWTIEL3B0+8vj7T4bkQJRok3ILwKMOnlPHr1YR5PDKxQx3qsHB5uTJ//Crr2L7eG8q5db6gcbLtCA7V6kyh+aib28=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=FfspCDPZ; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a2f22bfb4e6so195771866b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 18:54:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709693681; x=1710298481; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eS/C6JRe/LZxR5BB0/jvRViDTj3F8vBSe/WWRgNeFIA=;
+        b=FfspCDPZNW8S7Qf7wpydUp7nMkxbIvbEb4ID33aWUPwHOYvxyiL5+xjC/RGuYky5nJ
+         UXbu0gXQCFwnw50zF+4eh5urGT9USQAfcXkEasQoB328Tb8CE77MTWKT72cElYJh0wiU
+         E8M6JwS0IqClv/VPW882Nqjm33OxkixBNmv2B1WPXiL5arG8e00lOAa7AfTo3NB4z5xf
+         jcpIGJ9Llm7DNOCjp3Jw3H51L90Ew0/AcaBWuTDJDOQG4bdnCW1kNOzZmO/JeKseNhq8
+         VZCcpvUcpy7bLKHJluNjLXFu8vbMbxapQ9qoBZgzezbUe/OupdB7FZDjPG1+nCvQ0lcD
+         tgYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709693681; x=1710298481;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eS/C6JRe/LZxR5BB0/jvRViDTj3F8vBSe/WWRgNeFIA=;
+        b=rRwqaKEC9iYLLe+eZ8qqK+cex5ql0adLximc81HEChSIIFY7VP2dHSigp991k4Xr70
+         S7z2LME4KjG4lH8Ah4vc3VYYVrKNG0xh2INEvpXOTYmj+AYxFJqSXO8KWLSKHFP6D1Gg
+         5Ndec1j3HnVJvcAZ6GNrhzyW7Bby/YwFsxbetyHJbBq/y9TemVnvgxnRylrzxZGmASID
+         0441aB/nSLjP3ojVb1PqO55vxYoT/ThA2whCkJjqjKNHjLvixqufUkTd/ty41LyKg6EC
+         wcCIA6jklKuYQr8UktcFWj5oMQZsobmp6W6gYVmYpcOd7FbgqU8EJn1ZjyfRSMJKuMig
+         HvwA==
+X-Forwarded-Encrypted: i=1; AJvYcCXzPVXqJ7l7Q0ETZu5R/3LekfEdGjOApMN3VZU//gxbjwrGFtk+qezMZ/px+4LudDcbvxblzZDTEvGpi1pSLLyahDGP23LbQ8CaWmxh
+X-Gm-Message-State: AOJu0YyG6XPzfYmGkgOoyjMY2zX5MAsEv9aKeLV3IKnStcVOiJNzfuLS
+	GtqWIL4R/6S2LIAMPbKrR9ecskVxlhQ3mtdzkAeDZwxQM3LuOwY+dmW8A4g5Uh7UZwbGUY8Hdqz
+	RZohAnl/dUdNyaqTY8rbqOS/Wfi9I7uW6xa+3
+X-Google-Smtp-Source: AGHT+IEBCHh5at8F+COR4cGDllSpD2J7JpR+ODcNFG7XI5qKLEW8CmG66IZiYQuqBlnDkixdz9i/+yCx3p+Y4GqdUM0=
+X-Received: by 2002:a17:906:4551:b0:a45:270e:3617 with SMTP id
+ s17-20020a170906455100b00a45270e3617mr5771839ejq.27.1709693680497; Tue, 05
+ Mar 2024 18:54:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+References: <20240305020153.2787423-1-almasrymina@google.com>
+ <20240305020153.2787423-10-almasrymina@google.com> <383c4870-167f-4123-bbf3-928db1463e01@davidwei.uk>
+ <CAHS8izP_PzDJVxycwZe_d_x10-SX4=Q-CWpKTjoOQ5dc2NSn3w@mail.gmail.com> <6562b8b0-6cc0-4652-b746-75549801c002@davidwei.uk>
+In-Reply-To: <6562b8b0-6cc0-4652-b746-75549801c002@davidwei.uk>
+From: Mina Almasry <almasrymina@google.com>
+Date: Tue, 5 Mar 2024 18:54:28 -0800
+Message-ID: <CAHS8izOExbcxNSW8b5UUO=Y2se8ypZfaoyoviQvqR-WVZ=7s-g@mail.gmail.com>
+Subject: Re: [RFC PATCH net-next v6 09/15] memory-provider: dmabuf devmem
+ memory provider
+To: David Wei <dw@davidwei.uk>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	linux-arch@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Richard Henderson <richard.henderson@linaro.org>, 
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, David Ahern <dsahern@kernel.org>, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
+	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	Pavel Begunkov <asml.silence@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
+	Yunsheng Lin <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>, 
+	Harshitha Ramamurthy <hramamurthy@google.com>, Jeroen de Borst <jeroendb@google.com>, 
+	Praveen Kaligineedi <pkaligineedi@google.com>, Willem de Bruijn <willemb@google.com>, 
+	Kaiyuan Zhang <kaiyuanz@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Ryan Roberts <ryan.roberts@arm.com> writes:
+On Tue, Mar 5, 2024 at 6:47=E2=80=AFPM David Wei <dw@davidwei.uk> wrote:
+>
+> On 2024-03-05 18:42, Mina Almasry wrote:
+> > On Tue, Mar 5, 2024 at 6:28=E2=80=AFPM David Wei <dw@davidwei.uk> wrote=
+:
+> >>
+> >> On 2024-03-04 18:01, Mina Almasry wrote:
+> >>> +     if (pool->p.queue)
+> >>> +             binding =3D READ_ONCE(pool->p.queue->binding);
+> >>> +
+> >>> +     if (binding) {
+> >>> +             pool->mp_ops =3D &dmabuf_devmem_ops;
+> >>> +             pool->mp_priv =3D binding;
+> >>> +     }
+> >>
+> >> This is specific to TCP devmem. For ZC Rx we will need something more
+> >> generic to let us pass our own memory provider backend down to the pag=
+e
+> >> pool.
+> >>
+> >> What about storing ops and priv void ptr in struct netdev_rx_queue
+> >> instead? Then we can both use it.
+> >
+> > Yes, this is dmabuf specific, I was thinking you'd define your own
+> > member of netdev_rx_queue, and then add something like this to
+> > page_pool_init:
+> >
+> > +       if (pool->p.queue)
+> > +               io_uring_metadata =3D READ_ONCE(pool->p.queue->io_uring=
+_metadata);
+> > +
+> > +       /* We don't support rx-queues that are configured for both
+> > io_uring & dmabuf binding */
+> > +       BUG_ON(io_uring_metadata && binding);
+> > +
+> > +       if (io_uring_metadata) {
+> > +               pool->mp_ops =3D &io_uring_ops;
+> > +               pool->mp_priv =3D io_uring_metadata;
+> > +       }
+> >
+> > I.e., we share the pool->mp_ops and the pool->mp_priv but we don't
+> > really need to share the same netdev_rx_queue member. For me it's a
+> > dma-buf specific data structure (netdev_dmabuf_binding) and for you
+> > it's something else.
+>
+> This adds size to struct netdev_rx_queue and requires checks on whether
+> both are set. There can be thousands of these structs at any one time so
+> if we don't need to add size unnecessarily then that would be best.
+>
+> We can disambiguate by comparing &mp_ops and then cast the void ptr to
+> our impl specific objects.
+>
+> What do you not like about this approach?
+>
 
-> There was previously a theoretical window where swapoff() could run and
-> teardown a swap_info_struct while a call to free_swap_and_cache() was
-> running in another thread. This could cause, amongst other bad
-> possibilities, swap_page_trans_huge_swapped() (called by
-> free_swap_and_cache()) to access the freed memory for swap_map.
->
-> This is a theoretical problem and I haven't been able to provoke it from
-> a test case. But there has been agreement based on code review that this
-> is possible (see link below).
->
-> Fix it by using get_swap_device()/put_swap_device(), which will stall
-> swapoff(). There was an extra check in _swap_info_get() to confirm that
-> the swap entry was valid. This wasn't present in get_swap_device() so
-> I've added it. I couldn't find any existing get_swap_device() call sites
-> where this extra check would cause any false alarms.
->
-> Details of how to provoke one possible issue (thanks to David Hilenbrand
-> for deriving this):
->
-> --8<-----
->
-> __swap_entry_free() might be the last user and result in
-> "count == SWAP_HAS_CACHE".
->
-> swapoff->try_to_unuse() will stop as soon as soon as si->inuse_pages==0.
->
-> So the question is: could someone reclaim the folio and turn
-> si->inuse_pages==0, before we completed swap_page_trans_huge_swapped().
->
-> Imagine the following: 2 MiB folio in the swapcache. Only 2 subpages are
-> still references by swap entries.
->
-> Process 1 still references subpage 0 via swap entry.
-> Process 2 still references subpage 1 via swap entry.
->
-> Process 1 quits. Calls free_swap_and_cache().
-> -> count == SWAP_HAS_CACHE
-> [then, preempted in the hypervisor etc.]
->
-> Process 2 quits. Calls free_swap_and_cache().
-> -> count == SWAP_HAS_CACHE
->
-> Process 2 goes ahead, passes swap_page_trans_huge_swapped(), and calls
-> __try_to_reclaim_swap().
->
-> __try_to_reclaim_swap()->folio_free_swap()->delete_from_swap_cache()->
-> put_swap_folio()->free_swap_slot()->swapcache_free_entries()->
-> swap_entry_free()->swap_range_free()->
-> ...
-> WRITE_ONCE(si->inuse_pages, si->inuse_pages - nr_entries);
->
-> What stops swapoff to succeed after process 2 reclaimed the swap cache
-> but before process1 finished its call to swap_page_trans_huge_swapped()?
->
-> --8<-----
+I was thinking it leaks page_pool specifics into a generic struct
+unrelated to the page pool like netdev_rx_queue. My mental model is
+that the rx-queue just says that it's bound to a dma-buf/io_uring
+unaware of page_pool internals, and the page pool internals figure out
+what to do from there.
 
-I think that this can be simplified.  Even for a 4K folio, this could
-happen.
+Currently netdev_rx_queue.h doesn't include net/page_pool/types.h for
+example because there is no dependency between netdev_rx_queue &
+page_pool, I think this change would add a dependency.
 
-CPU0                                     CPU1
-----                                     ----
+But I concede it does not matter much AFAICT, I can certainly change
+the netdev_rx_queue to hold the mp_priv & mp_ops directly and include
+net/page_pool/types.h if you prefer that. I'll look into applying this
+change in the next iteration if there are no objections.
 
-zap_pte_range
-  free_swap_and_cache
-  __swap_entry_free
-  /* swap count become 0 */
-                                         swapoff
-                                           try_to_unuse
-                                             filemap_get_folio
-                                             folio_free_swap
-                                             /* remove swap cache */
-                                           /* free si->swap_map[] */
+> >
+> > page_pool_init() probably needs to validate that the queue is
+> > configured for dma-buf or io_uring but not both. If it's configured
+> > for both then the user is doing something funky we shouldn't support.
+> >
+> > Perhaps I can make the intention clearer by renaming 'binding' to
+> > something more specific to dma-buf like queue->dmabuf_binding, to make
+> > it clear that this is the dma-buf binding and not some other binding
+> > like io_uring?
+> >
 
-  swap_page_trans_huge_swapped <-- access freed si->swap_map !!!
 
-> Fixes: 7c00bafee87c ("mm/swap: free swap slots in batch")
-> Closes: https://lore.kernel.org/linux-mm/65a66eb9-41f8-4790-8db2-0c70ea15979f@redhat.com/
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
-> ---
->
-> Applies on top of v6.8-rc6 and mm-unstable (b38c34939fe4).
->
-> Thanks,
-> Ryan
->
->  mm/swapfile.c | 14 +++++++++++---
->  1 file changed, 11 insertions(+), 3 deletions(-)
->
-> diff --git a/mm/swapfile.c b/mm/swapfile.c
-> index 2b3a2d85e350..f580e6abc674 100644
-> --- a/mm/swapfile.c
-> +++ b/mm/swapfile.c
-> @@ -1281,7 +1281,9 @@ struct swap_info_struct *get_swap_device(swp_entry_t entry)
->  	smp_rmb();
->  	offset = swp_offset(entry);
->  	if (offset >= si->max)
-> -		goto put_out;
-> +		goto bad_offset;
-> +	if (data_race(!si->swap_map[swp_offset(entry)]))
-> +		goto bad_free;
->
->  	return si;
->  bad_nofile:
-> @@ -1289,9 +1291,14 @@ struct swap_info_struct *get_swap_device(swp_entry_t entry)
->  out:
->  	return NULL;
->  put_out:
-> -	pr_err("%s: %s%08lx\n", __func__, Bad_offset, entry.val);
->  	percpu_ref_put(&si->users);
->  	return NULL;
-> +bad_offset:
-> +	pr_err("%s: %s%08lx\n", __func__, Bad_offset, entry.val);
-> +	goto put_out;
-> +bad_free:
-> +	pr_err("%s: %s%08lx\n", __func__, Unused_offset, entry.val);
-> +	goto put_out;
->  }
 
-I don't think that it's a good idea to warn for bad free entries.
-get_swap_device() could be called without enough lock to prevent
-parallel swap operations on entry.  So, false positive is possible
-there.  I think that it's good to add more checks in general, for
-example, in free_swap_and_cache(), we can check more because we are sure
-the swap entry will not be freed by parallel swap operations.  Just
-don't put the check in general get_swap_device().  We can add another
-helper to check that.
-
-I found that there are other checks in get_swap_device() already.  I
-think that we may need to revert,
-
-commit 23b230ba8ac3 ("mm/swap: print bad swap offset entry in get_swap_device")
-
-which introduces it.  And add check in appropriate places.
-
---
-Best Regards,
-Huang, Ying
-
->  static unsigned char __swap_entry_free(struct swap_info_struct *p,
-> @@ -1609,13 +1616,14 @@ int free_swap_and_cache(swp_entry_t entry)
->  	if (non_swap_entry(entry))
->  		return 1;
->
-> -	p = _swap_info_get(entry);
-> +	p = get_swap_device(entry);
->  	if (p) {
->  		count = __swap_entry_free(p, entry);
->  		if (count == SWAP_HAS_CACHE &&
->  		    !swap_page_trans_huge_swapped(p, entry))
->  			__try_to_reclaim_swap(p, swp_offset(entry),
->  					      TTRS_UNMAPPED | TTRS_FULL);
-> +		put_swap_device(p);
->  	}
->  	return p != NULL;
->  }
-> --
-> 2.25.1
+--=20
+Thanks,
+Mina
 
