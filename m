@@ -1,39 +1,39 @@
-Return-Path: <linux-kernel+bounces-94088-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94086-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83EE28739BE
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:49:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46B9F8739B8
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:48:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 24EE3B20CE2
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:49:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C17E21F25A8E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:48:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05213135A40;
-	Wed,  6 Mar 2024 14:48:31 +0000 (UTC)
-Received: from mx.skole.hr (mx2.hosting.skole.hr [161.53.165.186])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CC1A134CFA;
+	Wed,  6 Mar 2024 14:48:27 +0000 (UTC)
+Received: from mx.skole.hr (mx1.hosting.skole.hr [161.53.165.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05780134721;
-	Wed,  6 Mar 2024 14:48:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.53.165.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47FF0130E3F;
+	Wed,  6 Mar 2024 14:48:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.53.165.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709736510; cv=none; b=BWjAAtWZIFqjEglIy/Lr7NHCoAEZkEy/iKLQXjfeyV1fYVkCS8GI/vnBmo6owJ7z4W6A2pNTBxwFk6+7dXaHFdK2hmsaZSSOZBzd8+sk/lIYyvLXmkNpp6vXaIyS71pUMVroIdcbMn9q4MVafyn328sj4v/On/aNG78nBhiOBDM=
+	t=1709736507; cv=none; b=PV2yt2IJs0zPsL7Gd9yW3/xTAKebIqrIlA5sviADqouA7FCCfLrOnya61rIkawHH14bEWwkBV+dO4X91QJyZe+WYXJpoVCtqg4zicQW+4Lk3L8S3Y//fPBlz7uQKdu42Z3WM6shzj7H3RXTSTmfjzzJYD6Xg9mwBh6J+6sPfhxs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709736510; c=relaxed/simple;
-	bh=vb9lAfGCzgdyZZPDYOO6/i/MkBRkN3itdR6S4zfZ9og=;
+	s=arc-20240116; t=1709736507; c=relaxed/simple;
+	bh=Nolmyvj6Bpjp+71zbiQVcuCZkPXBALrPAzjCQpL9brk=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=iQkBDzzX084p7IuSIC2YsHo5zfzFSbbhwYbUpiR84m3aFB/vA3xu5vGIUiGZUQjQnLAHp7859BrHLLJbyEwblJ/NrSQ9EjCS1W7s/dhqpNeylhKc5sGbxCkRttchKoYkSpjt+EcokZT/TGRXxG3Je0w7JeV5sWdR+oS7ZJkzclY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr; spf=pass smtp.mailfrom=skole.hr; arc=none smtp.client-ip=161.53.165.186
+	 In-Reply-To:To:Cc; b=R/5fZl+7psfr/M6aOJfDZF38b8fURHiQWIdL1AT3dAhf2+WBYvwN8mnphZ3w5U5NoyWHha9fcvaJwBmP3YepR8bgZE/XBt+XI7muUODKiEHVvL9uj8/0epFFto6aBp4i1snttaVAgWMM2EUOppAV5Ry42le9qOnXrTUV0pYJdJs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr; spf=pass smtp.mailfrom=skole.hr; arc=none smtp.client-ip=161.53.165.185
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skole.hr
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=skole.hr
-Received: from mx2.hosting.skole.hr (localhost.localdomain [127.0.0.1])
-	by mx.skole.hr (mx.skole.hr) with ESMTP id 00348859A7;
+Received: from mx1.hosting.skole.hr (localhost.localdomain [127.0.0.1])
+	by mx.skole.hr (mx.skole.hr) with ESMTP id 8388D8452B;
 	Wed,  6 Mar 2024 15:40:23 +0100 (CET)
 From: =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Date: Wed, 06 Mar 2024 15:40:07 +0100
-Subject: [PATCH v3 2/3] dt-bindings: input: imagis: Document touch keys
+Date: Wed, 06 Mar 2024 15:40:08 +0100
+Subject: [PATCH v3 3/3] input: touchscreen: imagis: Add touch key support
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -42,7 +42,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240306-b4-imagis-keys-v3-2-2c429afa8420@skole.hr>
+Message-Id: <20240306-b4-imagis-keys-v3-3-2c429afa8420@skole.hr>
 References: <20240306-b4-imagis-keys-v3-0-2c429afa8420@skole.hr>
 In-Reply-To: <20240306-b4-imagis-keys-v3-0-2c429afa8420@skole.hr>
 To: Markuss Broks <markuss.broks@gmail.com>, 
@@ -55,85 +55,114 @@ Cc: Karel Balej <balejk@matfyz.cz>, ~postmarketos/upstreaming@lists.sr.ht,
  linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, 
  =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1861;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3227;
  i=duje.mihanovic@skole.hr; h=from:subject:message-id;
- bh=vb9lAfGCzgdyZZPDYOO6/i/MkBRkN3itdR6S4zfZ9og=;
- b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBl6IBOMsGu5gvZPCCrxOUcNU6lkDKeASrpyk3a8
- bJ+kKpIQ3CJAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZeiATgAKCRCaEZ6wQi2W
- 4QHpD/0Xs9q3Ree2ZRF15CvMFrp4W65ui7wVR8OwxCLLxJ8rQ9fZkz2UsnfZr1Y4+EJKvypQTyM
- cW7R9Fw38PkdX7BVITCCB4mXmLCmEIoCOdRmhI4PkdBvuFaqgG4anAyrrjhmlY6lNZ+NUmI4oMp
- p6U5sXn/rieWORugLCCS08IerjrA9Pz5swhRlpAVkTwh5GEv/rDDaux7V8IQ4XQ2XHs0GiIuWbi
- K8oE7Ay9NeV4uCaHiq4VJjAdhf9sicu0cA1XaLkYKGXJWUQHL95x5a6erRClpTYPNzOCZnZzV7N
- JNv/PCrnidpoaoAm68aQTWVEfeD8bKs1/hdNqnsuZuLyb1Czm0E/TcUTe0O6L/m+bL3ozqwUjSB
- qMbkQ9b+1tJK3qX2dqi9gZ4+UKo0eVmQejpigf+COWi+sFUSYyYcm9Fsi6yrcNIv6J3quvkuGfB
- ZIErRDWqi0jzc6Cd3Uj3bd1PykY9CnHtjsTZgLabVh1qNbCq46Lq8JMM8LoSUx6wW+1baY7vpCn
- IK4MnSp5WaYwyGxGV1PG8bvNV4mERAy4g18z7j/GzdOeXF5GSIaAYcV/e1BCiqSGlKjMvrrizM6
- AbZohdcMCLFY9PqQTM69ZeEO5voaPkl/Oni5QV17sgwKp3yy5eyFHgwyrlc1k2+6TMhl1iEHxX+
- Zx0WduTMLxlmxkw==
+ bh=Nolmyvj6Bpjp+71zbiQVcuCZkPXBALrPAzjCQpL9brk=;
+ b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBl6IBO9ermR6in0dAPtYRcYTLrUNymtUAkTsnsy
+ 5NwQXVPn7iJAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZeiATgAKCRCaEZ6wQi2W
+ 4Wv2D/4pQuqDgpZI3pAixeniIp8yNCve+TOi6Be2rHj5VnvnI8EUNUiG2tdU5SW1+RqgEDkBlV2
+ /gY8oFL/mJldmnTUfApP6PHp7M9jhodPZp0wVbkUyOpF64apurUrlOEjgg1E7RRbCBEuAjSL3gO
+ txbW9EgWnwRUuPmHfbGiggdBcnJbCjotMUyh6lVIDtQ+6+VitP+hlb/pEchzG+9PT4s3iYq5QH7
+ Qng40r0wjkZo72M4Hsh6r36GTwur/qWYZVLXTthNw+ZE/tUDwdZ7kb7gOtzBFU4psZ1uBRYzmhV
+ fbsziJjpRpWtrl9JZm4P732kvfHT8obh+4fPynsdrHzTKvdZqmDZFEeZaw40ATRaKF4+6Qzk/ki
+ qGQYb27qLQ9nijosWDY38aqbiAX+mngY4NpPqXIZDxd3/6M7Lu5/XUNzj+6DYYxsK7TEFENNEkN
+ BFflWCXLlGxW1L2w/1Nqrwk5jEitXmPYPjfo7x/do22iN1z9IqrKRbG2aoDNYBIQ/7y26wY2p8i
+ 6WP/KfdBGlaIgrHT13mbrSbbZgcLUAJRLVLwMg77wzsmg0sQTGWjIdQcBZr/fra334Jgkuj5sZO
+ iMI0/5L1AUGXiI42Xc0vLDG7COi+Dx275LvHhvxjF8ND7gGTGzPHLelnaDE2M86oL0xOSdWYQW4
+ WdNhyuwsYTYJL+Q==
 X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
  fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
 
-IST3032C (and possibly some other models) has touch keys. Document this.
+IST3032C (and possibly some other models) has touch keys. Add support
+for them to the imagis driver.
 
 Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
 ---
-Changes in v3:
-- Move allOf under additionalProperties and move if under allOf
-- Properly define linux,keycodes
-- Fix linux,keycodes constraint
-- Change maximum number of keycodes to 5 in accordance with the size of
-  the key status field
+ drivers/input/touchscreen/imagis.c | 29 ++++++++++++++++++++++++++++-
+ 1 file changed, 28 insertions(+), 1 deletion(-)
 
-Changes in v2:
-- Allow specifying custom keycodes and document this in binding
----
- .../bindings/input/touchscreen/imagis,ist3038c.yaml   | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/input/touchscreen/imagis,ist3038c.yaml b/Documentation/devicetree/bindings/input/touchscreen/imagis,ist3038c.yaml
-index 2af71cbcc97d..77ba280b3bdc 100644
---- a/Documentation/devicetree/bindings/input/touchscreen/imagis,ist3038c.yaml
-+++ b/Documentation/devicetree/bindings/input/touchscreen/imagis,ist3038c.yaml
-@@ -9,9 +9,6 @@ title: Imagis IST30XXC family touchscreen controller
- maintainers:
-   - Markuss Broks <markuss.broks@gmail.com>
+diff --git a/drivers/input/touchscreen/imagis.c b/drivers/input/touchscreen/imagis.c
+index 4eae98771bd2..625d9287eabe 100644
+--- a/drivers/input/touchscreen/imagis.c
++++ b/drivers/input/touchscreen/imagis.c
+@@ -34,6 +34,7 @@
+ #define IST3038C_AREA_MASK		GENMASK(27, 24)
+ #define IST3038C_FINGER_COUNT_MASK	GENMASK(15, 12)
+ #define IST3038C_FINGER_STATUS_MASK	GENMASK(9, 0)
++#define IST3032C_KEY_STATUS_MASK	GENMASK(20, 16)
  
--allOf:
--  - $ref: touchscreen.yaml#
--
- properties:
-   $nodename:
-     pattern: "^touchscreen@[0-9a-f]+$"
-@@ -34,6 +31,10 @@ properties:
-   vddio-supply:
-     description: Power supply regulator for the I2C bus
+ struct imagis_properties {
+ 	unsigned int interrupt_msg_cmd;
+@@ -41,6 +42,7 @@ struct imagis_properties {
+ 	unsigned int whoami_cmd;
+ 	unsigned int whoami_val;
+ 	bool protocol_b;
++	bool touch_keys_supported;
+ };
  
-+  linux,keycodes:
-+    description: Keycodes for the touch keys
-+    maxItems: 5
+ struct imagis_ts {
+@@ -49,6 +51,8 @@ struct imagis_ts {
+ 	struct input_dev *input_dev;
+ 	struct touchscreen_properties prop;
+ 	struct regulator_bulk_data supplies[2];
++	u32 keycodes[5];
++	int num_keycodes;
+ };
+ 
+ static int imagis_i2c_read_reg(struct imagis_ts *ts,
+@@ -93,7 +97,7 @@ static irqreturn_t imagis_interrupt(int irq, void *dev_id)
+ {
+ 	struct imagis_ts *ts = dev_id;
+ 	u32 intr_message, finger_status;
+-	unsigned int finger_count, finger_pressed;
++	unsigned int finger_count, finger_pressed, key_pressed;
+ 	int i;
+ 	int error;
+ 
+@@ -139,6 +143,11 @@ static irqreturn_t imagis_interrupt(int irq, void *dev_id)
+ 				       FIELD_GET(IST3038C_AREA_MASK, finger_status));
+ 	}
+ 
++	key_pressed = FIELD_GET(IST3032C_KEY_STATUS_MASK, intr_message);
 +
-   touchscreen-size-x: true
-   touchscreen-size-y: true
-   touchscreen-fuzz-x: true
-@@ -44,6 +45,18 @@ properties:
- 
- additionalProperties: false
- 
-+allOf:
-+  - $ref: touchscreen.yaml#
-+  - if:
-+      not:
-+        properties:
-+          compatible:
-+            contains:
-+              const: imagis,ist3032c
-+    then:
-+      properties:
-+        linux,keycodes: false
++	for (int i = 0; i < ts->num_keycodes; i++)
++		input_report_key(ts->input_dev, ts->keycodes[i], (key_pressed & BIT(i)));
 +
- required:
-   - compatible
-   - reg
+ 	input_mt_sync_frame(ts->input_dev);
+ 	input_sync(ts->input_dev);
+ 
+@@ -224,6 +233,23 @@ static int imagis_init_input_dev(struct imagis_ts *ts)
+ 	input_set_capability(input_dev, EV_ABS, ABS_MT_POSITION_X);
+ 	input_set_capability(input_dev, EV_ABS, ABS_MT_POSITION_Y);
+ 	input_set_abs_params(input_dev, ABS_MT_TOUCH_MAJOR, 0, 16, 0, 0);
++	if (ts->tdata->touch_keys_supported) {
++		ts->num_keycodes = of_property_read_variable_u32_array(
++				ts->client->dev.of_node, "linux,keycodes",
++				ts->keycodes, 0, ARRAY_SIZE(ts->keycodes));
++		if (ts->num_keycodes <= 0) {
++			ts->keycodes[0] = KEY_APPSELECT;
++			ts->keycodes[1] = KEY_BACK;
++			ts->num_keycodes = 2;
++		}
++
++		input_dev->keycodemax = ts->num_keycodes;
++		input_dev->keycodesize = sizeof(ts->keycodes[0]);
++		input_dev->keycode = ts->keycodes;
++	}
++
++	for (int i = 0; i < ts->num_keycodes; i++)
++		input_set_capability(input_dev, EV_KEY, ts->keycodes[i]);
+ 
+ 	touchscreen_parse_properties(input_dev, true, &ts->prop);
+ 	if (!ts->prop.max_x || !ts->prop.max_y) {
+@@ -365,6 +391,7 @@ static const struct imagis_properties imagis_3032c_data = {
+ 	.touch_coord_cmd = IST3038C_REG_TOUCH_COORD,
+ 	.whoami_cmd = IST3038C_REG_CHIPID,
+ 	.whoami_val = IST3032C_WHOAMI,
++	.touch_keys_supported = true,
+ };
+ 
+ static const struct imagis_properties imagis_3038b_data = {
 
 -- 
 2.44.0
