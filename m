@@ -1,73 +1,65 @@
-Return-Path: <linux-kernel+bounces-94248-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94249-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1E86873BF4
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:19:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F1D7873BF5
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:19:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E8F41F26410
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:19:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 204C2B24D95
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:19:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F8D5137924;
-	Wed,  6 Mar 2024 16:18:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31922137904;
+	Wed,  6 Mar 2024 16:19:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IV4t6jld"
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="w5TNgDer"
+Received: from omta036.useast.a.cloudfilter.net (omta036.useast.a.cloudfilter.net [44.202.169.35])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F7851361B5
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 16:18:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B08E9133425
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 16:19:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.202.169.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709741931; cv=none; b=Qe31ahL0C2lxIZS7Pf242mSJ7sMLfOVYXmRd2qNfIKsp0Vg8VT0gYz3szKLXiaxkpcACqVJCHVCZiZtBNpbBIhGa1s7voRshAf1WtOqwtZIdURasab61k10EYf2xKch/hidH4YFcNLGi96Yatrjgn83fXkSgSN2iQUWLzaN55Sw=
+	t=1709741945; cv=none; b=Aqd+nUmHc/PWFyUB+4BD5fePoyeVeObt6wkDg3jYeLX0I+lITGBEsfQLvZrD5wtfMioKrymSQONktGnnPhimLXrwr416YzuQmr2PIjy/znZHdUDWa50EvmZ955RgP7swFRSfkOptkOFCOQZbLMkbN9WYiOcIEslOh1q3wPwNRbI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709741931; c=relaxed/simple;
-	bh=4VWeBYARvXlXtxRM3ztD5oedY7YP+mKI+ej/UlpRijk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=P8mOHJ1MKDISPymayzg+p6yP96COriPDhm/WuT7xxJyN/QINBG1stbdeX2zho2OPUV+U8ip61YQPIzs8GjUEph3UCBgkncL2kEX4lXut0OUVavhUXVoiKGUecFJ09g05Ahs6uNOKUgQ0egeyAgT3aWR2etqZ8NJh3yESEKGM2ks=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=IV4t6jld; arc=none smtp.client-ip=209.85.167.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-51326436876so1518145e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 08:18:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709741927; x=1710346727; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Hrydq/RdJikRIfc87umFKTutUZLP8jNuTQIOBJnDlns=;
-        b=IV4t6jldN0Yf3RpFUBlzaFdtPsz6tMrLHX57u0bj4Zs60faOWEnJBjVnFP6mGsgkE+
-         Z5a9FWChfJUbrIo7QMnXJzKUd14ypd8mc38Bv+WeA+1lUVCmj0m9hkkU9yNF+WfaxQN0
-         qJ3Kv0UIRrK14JK4yQjFkpZIViKTqDkJrUptQed8I6ikz/dI2e60AZGqdnavs0smlraN
-         6PF+O0SG3eRFakAUVK2sxCm66kAcCs+v99pANbzCr/EJgIUFcUa42nO2jcH9XMBN8Hy/
-         Fxy5eZDOrMFX2aL0q10HlYZCDVRcX3hc1DMHCrOoBgI2nf48xiQTur36AbFOWBcE3exi
-         GoIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709741927; x=1710346727;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Hrydq/RdJikRIfc87umFKTutUZLP8jNuTQIOBJnDlns=;
-        b=sYp5C3gvnAqH6UIXzeKOXYFqjFItvQDNxiOJLdwCm09Kwuy/CJO+JeschNK4sYvIO1
-         HmE9kIpfxMvXM80NUrlWoNlWVCtgcW/zpuGV2vm4x3LUM4Bst/TFDke05RLwQcxkSzRC
-         ADcI3ZFm6Bpe+2OW+Naw7BdVejLlVdgqhatZs+xZ07eGyXFPq/lTE1HnbUkU26nT2k6u
-         0iViRRaidO2pVgJxWuyF8mVGolxoXDQIhmYxEcvpnmyC6Fwec4fw76KSpaMr2wG1cUE1
-         kEy5s5r2Tz+UdyjgWcy1YyBRSrojdW7+vBvm04kXWy5cN9w198GaEJpQ/izxh0ssHe3h
-         l9xw==
-X-Forwarded-Encrypted: i=1; AJvYcCXw1XENkBvLFzb28G8zVK3qmUP1+ZUB6T2HN3QiwXQmGDI37f/e4Ktb+iRMjcGlWlKSRZXNKEaq8x7/W1mO7uIuq1q4hDHTETj8rqRq
-X-Gm-Message-State: AOJu0YxxNiDaFYWuSoS4yKWcwKFo67D53e2/TDHy6D76J1a7UeJk6uOy
-	nYZevmVgl3m/9suxPMGBARDNEZWg2xh1NLXZxcGqwjN6utGhWapI5aLEltXfdDw=
-X-Google-Smtp-Source: AGHT+IGKdJ4IIIOuKLJDe+yk/Iutux3iHWYuZ2nSTLmqZtFgNnLz9ofothAzyQzmMciLDmY7KjCTUA==
-X-Received: by 2002:a19:e006:0:b0:513:25b9:6cf8 with SMTP id x6-20020a19e006000000b0051325b96cf8mr3681484lfg.19.1709741927501;
-        Wed, 06 Mar 2024 08:18:47 -0800 (PST)
-Received: from [87.246.221.128] (netpanel-87-246-221-128.pol.akademiki.lublin.pl. [87.246.221.128])
-        by smtp.gmail.com with ESMTPSA id u12-20020ac258cc000000b005131941f7e9sm2668396lfo.5.2024.03.06.08.18.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Mar 2024 08:18:47 -0800 (PST)
-Message-ID: <b5ade82e-3a7e-427f-907f-bafe1d203d45@linaro.org>
-Date: Wed, 6 Mar 2024 17:18:44 +0100
+	s=arc-20240116; t=1709741945; c=relaxed/simple;
+	bh=GvHVYUIICAjaOAWJhNYu3ax4WnZhZi/ldWdGTVyeb5c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=o0ZFlM6fE2EvosiwuOQuAa+yaaz0lIPAiK1IjMO0vhnPczBh1d2PgLzAUtYMJDnj/WIoY3OyNR56CJjKa2GU/LtxKCKpL44vhwxpJ8LcN6gTpk//vUZ6YkC73ZjNH63lUK0BjQUuJLR8kHyyBRINd/l2/e4jybycpfdY7hbbyaI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=w5TNgDer; arc=none smtp.client-ip=44.202.169.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
+Received: from eig-obgw-5002a.ext.cloudfilter.net ([10.0.29.215])
+	by cmsmtp with ESMTPS
+	id hsGKrGUcJuh6shtywrSN3b; Wed, 06 Mar 2024 16:19:02 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+	by cmsmtp with ESMTPS
+	id htyvrfNONz883htywrL5hf; Wed, 06 Mar 2024 16:19:02 +0000
+X-Authority-Analysis: v=2.4 cv=R6IFG8RX c=1 sm=1 tr=0 ts=65e89776
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=VhncohosazJxI00KdYJ/5A==:17
+ a=IkcTkHD0fZMA:10 a=K6JAEmCyrfEA:10 a=wYkD_t78qR0A:10
+ a=CEfcKhwxmaDNtT7VeCoA:9 a=QEXdDO2ut3YA:10
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:To:Subject:MIME-Version:Date:Message-ID:Sender:
+	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=GvHVYUIICAjaOAWJhNYu3ax4WnZhZi/ldWdGTVyeb5c=; b=w5TNgDer9Gh3Pg1uMCPC6U4Azk
+	iBJbZRsqcNsrwgzqGZS5ExHsPTxg2p+pXN1pA6U0hymRTv2UE2FBEuooD43q9C1w1ji+x2IdozLRG
+	j98DSEZ2z5+aPB3tCAPRKLawdhcatSmAUhWgV4wYEgKQUbK8ILopk3IP9W/QukMhMYf6TM2SN9pLX
+	VjUJdIoEnhdMLILYws+8kA+bbefw2Iy/YfFI8AaG+qWlBF0gmxdhPNwX7s9M22ErXeLYfcOKpXngW
+	KduVBPEifkU0VlUISavWQr12Zk1Zd4plnZRt+swKX5eYMejgBU1jWWH6uN2LtOwGoXthGA8WbIcuk
+	kHeAbxqQ==;
+Received: from [201.172.172.225] (port=49378 helo=[192.168.15.10])
+	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <gustavo@embeddedor.com>)
+	id 1rhtyv-001RDq-0D;
+	Wed, 06 Mar 2024 10:19:01 -0600
+Message-ID: <6a7854af-a183-4db2-8400-4d9eb0cc4308@embeddedor.com>
+Date: Wed, 6 Mar 2024 10:18:59 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,103 +67,53 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/4] interconnect: qcom: icc-rpmh: Add QoS
- configuration support
+Subject: Re: [PATCH 0/2][next] firewire: Avoid -Wflex-array-member-not-at-end
+ warnings
 Content-Language: en-US
-To: Odelu Kukatla <quic_okukatla@quicinc.com>,
- Bjorn Andersson <andersson@kernel.org>, Georgi Djakov <djakov@kernel.org>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: Kees Cook <keescook@chromium.org>, cros-qcom-dts-watchers@chromium.org,
- "Gustavo A . R . Silva" <gustavoars@kernel.org>,
- linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-hardening@vger.kernel.org, quic_rlaggysh@quicinc.com,
- quic_mdtipton@quicinc.com
-References: <20240306073016.2163-1-quic_okukatla@quicinc.com>
- <20240306073016.2163-2-quic_okukatla@quicinc.com>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20240306073016.2163-2-quic_okukatla@quicinc.com>
+To: "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ Clemens Ladisch <clemens@ladisch.de>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Kees Cook <keescook@chromium.org>,
+ linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+ alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+ linux1394-devel@lists.sourceforge.net
+References: <cover.1709658886.git.gustavoars@kernel.org>
+ <20240306011030.GA71684@workstation.local>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <20240306011030.GA71684@workstation.local>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 201.172.172.225
+X-Source-L: No
+X-Exim-ID: 1rhtyv-001RDq-0D
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.15.10]) [201.172.172.225]:49378
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 5
+X-Org: HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfEVGmTjNGYdteUUzbm7vbFbeAEX2SpDCEP3PQCa5TOgQfi3N2kw7f2M9lh6s1qgyfSb7aH6eExinlu3K9gDRfQl6lrfe4pwnBzwPwJeB7QhHJvn4cg8X
+ mfTKcf8s5SEBfSYplCKR9WXqPvdO/fDjGRH0gXTAcctYXP6F/GMZUizPlPfmBLnvU6pfjGJcwNdt98F73znfgeHnZw/vxb/jBJIXxshQAGzwSufpCajOG+Y1
 
 
+> Thanks for the improvements, however we are mostly at the end of
+> development period for v6.8 kernel. Let me postpone applying the patches
+> until closing the next merge window (for v6.9), since we need the term to
+> evaluate the change. I mean that it goes to v6.10 kernel.
 
-On 3/6/24 08:30, Odelu Kukatla wrote:
-> It adds QoS support for QNOC device and includes support for
-> configuring priority, priority forward disable, urgency forwarding.
-> This helps in priortizing the traffic originating from different
-> interconnect masters at NoC(Network On Chip).
-> 
-> Signed-off-by: Odelu Kukatla <quic_okukatla@quicinc.com>
-> ---
->   drivers/interconnect/qcom/icc-rpmh.c | 105 +++++++++++++++++++++++++++
->   drivers/interconnect/qcom/icc-rpmh.h |  32 ++++++++
->   2 files changed, 137 insertions(+)
-> 
-> diff --git a/drivers/interconnect/qcom/icc-rpmh.c b/drivers/interconnect/qcom/icc-rpmh.c
-> index c1aa265c1f4e..b4681849df80 100644
-> --- a/drivers/interconnect/qcom/icc-rpmh.c
-> +++ b/drivers/interconnect/qcom/icc-rpmh.c
-> @@ -1,19 +1,57 @@
->   // SPDX-License-Identifier: GPL-2.0
->   /*
->    * Copyright (c) 2020, The Linux Foundation. All rights reserved.
-> + * Copyright (c) 2024 Qualcomm Innovation Center, Inc. All rights reserved.
->    */
->   
-> +#include <linux/clk.h>
->   #include <linux/interconnect.h>
->   #include <linux/interconnect-provider.h>
->   #include <linux/module.h>
->   #include <linux/of.h>
->   #include <linux/of_platform.h>
->   #include <linux/slab.h>
-> +#include <linux/bitfield.h>
+Sure, no problem.
 
-Please keep the alphabetical order
+Actually, I'll send a v2 with DEFINE_FLEX(), instead.
 
->   
->   #include "bcm-voter.h"
->   #include "icc-common.h"
->   #include "icc-rpmh.h"
->   
-> +/* QNOC QoS */
-> +#define QOSGEN_MAINCTL_LO(p, qp)	(0x8 + (p->port_offsets[qp]))
-> +#define QOS_SLV_URG_MSG_EN_MASK		BIT_MASK(3)
-
-Mixing BIT_MASK and GENMASK is very confusing..
-
-> +#define QOS_DFLT_PRIO_MASK		GENMASK(6, 4)
-> +#define QOS_DISABLE_MASK		BIT_MASK(24)
-> +
-> +/**
-> + * qcom_icc_set_qos - initialize static QoS configurations
-> + * @qp: qcom icc provider to which @node belongs
-> + * @node: qcom icc node to operate on
-> + */
-> +static void qcom_icc_set_qos(struct qcom_icc_provider *qp,
-> +				struct qcom_icc_node *node)
-> +{
-> +	const struct qcom_icc_qosbox *qos = node->qosbox;
-> +	int port;
-> +
-> +	if (!qp->regmap || !qos)
-> +		return;
-
-This is not possible if you follow the code flow, I think..
-
-[...]
-
-> + * @prio: priority value assigned to requests on the node
-> + * @urg_fwd: whether to forward the urgency promotion issued by master(endpoint), or discard
-
-space before the opening brace, please also wrap to 80 lines
-
-> + * @prio_fwd_disable: whether to forward the priority driven by mster, or override by @prio
-
-typo: mster, please also wrap it
-
-Konrad
+Thanks
+--
+Gustavo
 
