@@ -1,60 +1,73 @@
-Return-Path: <linux-kernel+bounces-93515-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93516-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B3358730E7
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:39:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69DCA8730E8
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:39:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D0651C21CFB
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 08:39:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BE1C3B28A66
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 08:39:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 432645D8FA;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B16855D901;
 	Wed,  6 Mar 2024 08:38:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MYIh9gPa"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="TnLSS4vr"
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8A255D730;
-	Wed,  6 Mar 2024 08:38:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 620435D48E
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 08:38:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709714322; cv=none; b=gaEif7Cm0nVA0BX+NXq7nJp5xCWvtn0apKxulVLDruFRZ9aZwiEZn6KUAtwpTPD7je4iaZbgLESli1nbnjQVqQy4mVsCB3nIE/KRFh88IUg1D8Kabk1LPLOOwF9ticgOD12FOyV9P2zHH6QkvQSQtCY6pfK9ALnx+0mssVp+SD8=
+	t=1709714322; cv=none; b=nE1dA7/XFtid7iu2nNi1/BFxKOlt+OINdC0LKvo7XTFs921/7gEu8SsX4g0wWI4Lxb2KrkywDQCpO5ulgerV/9jEcvFrUwkjJtF7wTUXdhuJHGsw1uP4DZ7xWjarAjCrpArnQJ0Q4HqC5ykvDNjR63tvEcVXhPUXVTB3mYoI8OA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1709714322; c=relaxed/simple;
-	bh=L6Cn4uTVTBHKqlz1yW8rNDu318FD8WsCh6wVNeDEbwk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=py43/CT1vw3kQUJPZ1qpxj7crDRCjN6DJVC/gcqT/b215nkwI7YNjlRwFXdQgSe7UgvpzKRzyQr0GAgpJcNOkJnJjLRWX8uaYoUqwYAPbgh4mRi5hs/z1NftPUHe5enGUe/qq7Jkc7xK5AJug3+x1QTa5+m5ri0O9JN4ZTUGDKY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MYIh9gPa; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709714321; x=1741250321;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=L6Cn4uTVTBHKqlz1yW8rNDu318FD8WsCh6wVNeDEbwk=;
-  b=MYIh9gPa+lsUr9CMkOtLvXf2zJRusP9o/CxLdSbrkexdFrPSxntY4rM6
-   6PP94mIcTQFklmtQ6foJY1K1y1NJHCmCEOv+Rpkj17ZHHpcyaRWq5lfry
-   G9I1nfs5JYsQxV8Zq+xIsmfKOQ/9WhZr3CMYR8Zd/BxHgRAgnBSnouRNu
-   MeAog+Q4B5qnyd6d257cR9cBoSQeiyTUq4E0EgsBVP11AhKRlYEbDulA6
-   Y7iEEVxS/QnnaSUMMmvxisbIdd39ncRj0U5EabLWLl6yycjq+dwrC4+vh
-   njn9QXdTguyvom7O9bkR3HUeJ5bpowj/l7oKiyF3wK9XaryTwT+4vOvO+
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11004"; a="21837365"
-X-IronPort-AV: E=Sophos;i="6.06,207,1705392000"; 
-   d="scan'208";a="21837365"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 00:38:40 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,207,1705392000"; 
-   d="scan'208";a="47210936"
-Received: from naamamex-mobl.ger.corp.intel.com (HELO [10.12.48.215]) ([10.12.48.215])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 00:38:36 -0800
-Message-ID: <3d984c02-0154-4c72-92ee-16fa34d4b537@linux.intel.com>
-Date: Wed, 6 Mar 2024 10:38:33 +0200
+	bh=1j7FVYWOl4e4ea+0P/SG0uIg0cAbesMlIJniqXAFIOw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=ETKa9sVeXjfZkGbXGwtzK5kpRal3QW1g0ERE/mD90tht4BgC2eyU0/TBvG6a9amgZ0s15oKtEASyQefjeCtVbLYfNao6swBb6IZYdqKlH9SrZfR8zWNQOfwOWBM9i/Wm3YGD8iMQpeEjSQo2oYq7AaUIao37NnuxG8poKIb6xCw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=TnLSS4vr; arc=none smtp.client-ip=209.85.208.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-5673b5a356eso1807307a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 00:38:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1709714318; x=1710319118; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=C7AhbRz6OtQJVItGlMtQVOqS/HRoKaHG5JWZSZ3Yc8g=;
+        b=TnLSS4vrdsswQxChnR4LphJAE5fx9KlN4KezKDf0JBM0fMJBM0k82fS87N9l1VTwYe
+         oKZnp5w4D3TEGvXKoEECUco40/9t0UaItp59div/v4U492l1/dUSnPKn9rqKX4afSQ7c
+         JYeTVR+Fhn783sO+6SHGjSQ+VpVfm+5QQEktzZvIaOjd9+TRtNips2vs7jSIQKLWSncC
+         yTJM8s2baLEII1QMfdcEe+nsojYyDxHgEyqANgwXeEp44W//bmR7cMrGIDXX8q9CmZ5d
+         wVsDu7HXg+1ZkiFPlgyWt6cN9DAV0PK8GetBvVn/qTTtIIExGtZyyexgFhsWPoCUXPcs
+         5K7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709714318; x=1710319118;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=C7AhbRz6OtQJVItGlMtQVOqS/HRoKaHG5JWZSZ3Yc8g=;
+        b=vSShlkpS2TCFlOOLDje8KsIqJ001B66c0zKscKsp6MQJUWI8uLZqAzzP4GiMWeYF7F
+         h7SneAcUOyKKGK2dPo354mz+/e7aPfGQYxKDDqrjZkLtCoY4qrlxSGd23Xjcaml9h+R2
+         OQgVRG4b92FQHHTpqxrvty1CPmP70xo1gCxoMIm0XZlxK8nH2VtTVCQVhUXnatvBF0ht
+         ipOlT7hBkL3Q0ZTzoFlp08u6nWRu298blb4WJ0R5RVTTSTjMs2L+GSc6Ltwvf8fv2kzv
+         mzbve+9yFilZCMY6A53RZPPv6A/XEzD2+LUlF16LTQDHb/0Lyhg+7EdQjNqoHmzuU6So
+         +nqw==
+X-Forwarded-Encrypted: i=1; AJvYcCUfmOSkzMm+rmFtVLYeOS77k4WkcQwubTCSjtVr8mr+X15BjMTFay7lfa0yiKKJR+wmdJT01tpq9D8SyL26264NhOl/JAlivgElic0w
+X-Gm-Message-State: AOJu0Yw4waJmsaB6RPbS/Hx7aC42qGKPbBeDGqdI22SxGjWXCGRHW2+L
+	j5W5YGB9omcdcqlmmpcARkbWkYgLqIzS0D1Opr6WBiLXhkWPiHXTFuHnkTwitGc=
+X-Google-Smtp-Source: AGHT+IE2g9PqQGFjWHN2nFj43dtlU1h78UFJwGeGQAKRgBRTVUB8WbBGclSqQnfU7K/3jY0zazqNBg==
+X-Received: by 2002:a17:906:34c9:b0:a45:1d32:ac7 with SMTP id h9-20020a17090634c900b00a451d320ac7mr5749166ejb.42.1709714318517;
+        Wed, 06 Mar 2024 00:38:38 -0800 (PST)
+Received: from [192.168.50.4] ([82.78.167.38])
+        by smtp.gmail.com with ESMTPSA id yk1-20020a17090770c100b00a42f4678c95sm6873403ejb.59.2024.03.06.00.38.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Mar 2024 00:38:38 -0800 (PST)
+Message-ID: <2f5ee8f2-9d07-471a-92e5-d547fdb9454d@tuxon.dev>
+Date: Wed, 6 Mar 2024 10:38:36 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,50 +75,111 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [Intel-wired-lan] [iwl-net v2 1/2] igc: Fix missing time sync
- events
+Subject: Re: [PATCH v4 37/39] ARM: dts: at91: sam9x7: add device tree for SoC
 Content-Language: en-US
-To: Vinicius Costa Gomes <vinicius.gomes@intel.com>,
- intel-wired-lan@lists.osuosl.org
-Cc: sasha.neftin@intel.com, netdev@vger.kernel.org, richardcochran@gmail.com,
- kurt@linutronix.de, jesse.brandeburg@intel.com,
- linux-kernel@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
- anthony.l.nguyen@intel.com, Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- "David S. Miller" <davem@davemloft.net>
-References: <20240220235712.241552-1-vinicius.gomes@intel.com>
- <20240220235712.241552-2-vinicius.gomes@intel.com>
-From: "naamax.meir" <naamax.meir@linux.intel.com>
-In-Reply-To: <20240220235712.241552-2-vinicius.gomes@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Varshini.Rajendran@microchip.com, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ Nicolas.Ferre@microchip.com, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240223171342.669133-1-varshini.rajendran@microchip.com>
+ <20240223173051.673490-1-varshini.rajendran@microchip.com>
+ <9b5cf569-bbff-4520-8815-70b6f4c41625@tuxon.dev>
+ <e4e0aba6-9ee4-45b6-80c5-02c430af9e10@microchip.com>
+From: claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <e4e0aba6-9ee4-45b6-80c5-02c430af9e10@microchip.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 2/21/2024 01:57, Vinicius Costa Gomes wrote:
-> Fix "double" clearing of interrupts, which can cause external events
-> or timestamps to be missed.
-> 
-> The IGC_TSIRC Time Sync Interrupt Cause register can be cleared in two
-> ways, by either reading it or by writing '1' into the specific cause
-> bit. This is documented in section 8.16.1.
-> 
-> The following flow was used:
->   1. read IGC_TSIRC into 'tsicr';
->   2. handle the interrupts present in 'tsirc' and mark them in 'ack';
->   3. write 'ack' into IGC_TSICR;
-> 
-> As both (1) and (3) will clear the interrupt cause, if the same
-> interrupt happens again between (1) and (3) it will be ignored,
-> causing events to be missed.
-> 
-> Remove the extra clear in (3).
-> 
-> Fixes: 2c344ae24501 ("igc: Add support for TX timestamping")
-> Reviewed-by: Kurt Kanzenbach <kurt@linutronix.de>
-> Tested-by: Kurt Kanzenbach <kurt@linutronix.de> # Intel i225
-> Signed-off-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
-> ---
->   drivers/net/ethernet/intel/igc/igc_main.c | 12 +-----------
->   1 file changed, 1 insertion(+), 11 deletions(-)
 
-Tested-by: Naama Meir <naamax.meir@linux.intel.com>
+
+On 04.03.2024 18:33, Varshini.Rajendran@microchip.com wrote:
+> Hi Claudiu,
+> 
+> Thanks for your time in reviewing this patch. I will address all your 
+> comments in the next version. There are some clarifications provided 
+> inline below.
+> 
+> On 03/03/24 5:54 pm, claudiu beznea wrote:
+>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+>>
+>> On 23.02.2024 19:30, Varshini Rajendran wrote:
+>>> Add device tree file for SAM9X7 SoC family.
+>>>
+>>> Co-developed-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+>>> Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+>>> Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
+>>> ---
+>>> Changes in v4:
+>>> - Added pwm node support
+>>> - Added microchip,nr-irqs to the interrupt-controller node for the
+>>>    driver to fetch the NIRQs
+>>> - Dropped USB nodes owing to the discussion here
+>>>   https://lore.kernel.org/linux-devicetree/CAL_JsqJ9PrX6fj-EbffeJce09MXs=B7t+KS_kOinxaRx38=WxA@mail.gmail.com/
+>>> (Explained elaborartely in the cover letter)
+>>> ---
+>>>   arch/arm/boot/dts/microchip/sam9x7.dtsi | 1214 +++++++++++++++++++++++
+>>>   1 file changed, 1214 insertions(+)
+>>>   create mode 100644 arch/arm/boot/dts/microchip/sam9x7.dtsi
+>>>
+>>> diff --git a/arch/arm/boot/dts/microchip/sam9x7.dtsi b/arch/arm/boot/dts/microchip
+
+[ ... ]
+
+>>> +             reset_controller: reset-controller@fffffe00 {
+>>> +                     compatible = "microchip,sam9x7-rstc", "microchip,sam9x60-rstc";
+>>> +                     reg = <0xfffffe00 0x10>;
+>>> +                     clocks = <&clk32k 0>;
+>>> +             };
+>>> +
+>>> +             power_management: power-management@fffffe10 {
+>>
+>> Usually the node name for this is poweroff. Any reason you changed it like
+>> this?
+>>
+> Yes Claudiu. Based on the comment given for the version 2.
+
+I think poweroff fits better. Documentation is also using poweroff for node
+name. The rest of at91 device uses it. And poweroff is what this controller
+does (it is named shutdown controller).
+
+> 
+> https://patches.linaro.org/project/linux-mmc/patch/20230623203056.689705-44-varshini.rajendran@microchip.com/#:~:text=Usually%20power%2Dmanagement%20or%20reset%2Dcontroller%20or%20something%20like%20this.
+> 
+>>> +                     compatible = "microchip,sam9x7-shdwc", "microchip,sam9x60-shdwc";
+>>> +                     reg = <0xfffffe10 0x10>;
+>>> +                     clocks = <&clk32k 0>;
+>>> +                     #address-cells = <1>;
+>>> +                     #size-cells = <0>;
+>>> +                     atmel,wakeup-rtc-timer;
+>>> +                     atmel,wakeup-rtt-timer;
+>>> +                     status = "disabled";
+>>> +             };
+>>> +
+>>> +             rtt: rtc@fffffe20 {
+>>> +                     compatible = "microchip,sam9x7-rtt", "atmel,at91sam9260-rtt";
+>>> +                     reg = <0xfffffe20 0x20>;
+>>> +                     interrupts = <1 IRQ_TYPE_LEVEL_HIGH 7>;
+>>> +                     clocks = <&clk32k 0>;
+>>> +             };
+>>> +
+>>> +             clk32k: sckc@fffffe50 {
+>>
+>> Node name should be generic, e.g. clock-controller
+>>
+>>> +                     compatible = "microchip,sam9x7-sckc", "microchip,sam9x60-sckc";
+>>> +                     reg = <0xfffffe50 0x4>;
+>>> +                     clocks = <&slow_xtal>;
+>>> +                     #clock-cells = <1>;
+>>> +             };
+>>> +
+>>> +             gpbr: syscon@fffffe60 {
+>>> +                     compatible = "microchip,sam9x7-gbpr", "atmel,at91sam9260-gpbr", "syscon";
+>>
+>> microchip,sam9x7-gbpr seems undocummented.
+> 
+> The patch that adds support is already applied.
+> https://lore.kernel.org/linux-arm-kernel/169226306696.928678.2345448260460546641.b4-ty@kernel.org/
+
+Ok, then there is a typo in this patch:
+s/microchip,sam9x7-gbpr/microchip,sam9x7-gpbr
 
