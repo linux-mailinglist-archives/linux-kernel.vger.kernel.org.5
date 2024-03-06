@@ -1,162 +1,224 @@
-Return-Path: <linux-kernel+bounces-93537-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93534-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1E17873124
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:51:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82FD9873118
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:50:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5DCE4B25F28
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 08:51:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ECDB41F21977
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 08:50:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D19445DF24;
-	Wed,  6 Mar 2024 08:51:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E1B95D8F3;
+	Wed,  6 Mar 2024 08:50:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="Qq50eQOr"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="Eatb8Jib"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F4995D750;
-	Wed,  6 Mar 2024 08:51:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD5125D75C;
+	Wed,  6 Mar 2024 08:50:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709715085; cv=none; b=ezcBb4FwjzQHfkypKGq13TG4Zww+z5VyF1Af5Pp6OJQjMuQ1kvu0jctFVgEM1s7/OTqT5bq2we2Oj5KMCz8RE55G2hDm3L0RlSC1U3VeHBRhFYU58EDZXzZoZ+LZREFWLXkPRz+9oZRQ+DkeGzB93+CY6c7pnu9Pjixd54mFkMM=
+	t=1709715015; cv=none; b=Qjlh7lC1V7u4sT2wSblH+n+UM9S7uDQqVLihSasa+AA7wOfufi11Pu8Sllu9OTNvI82vW/hceNjMUeAxAuWZHxt3+VIXhHzS6nusoHLKHdpFxrIG2uZ1cxi0iKEQwpTMK2naURh7fQzO+hXfLNkrAxy0VyYPDhLiRL4WWglMKSM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709715085; c=relaxed/simple;
-	bh=Z5IbOGz8ERh6b3UPw1IPPaGjlmXO5pE5liV0ILfL2IM=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=NKw9+RkmNI96iW2tDG0yc4ROT3R0v8QwKFzAxf2PNXdRGbxK4l5YBIOQ9rue2iIOgFIKn6DeBtSZ1Tv53V3Gu/qPCWx73JDZuRV8SS5IXtqrSaxzZ6Tc9fRrL+oW2QFi7Gv/fbfKMpdjxgdRdYOmN/CkvQCGNqBOb1RCq2/YhvQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=Qq50eQOr; arc=none smtp.client-ip=68.232.153.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1709715083; x=1741251083;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=Z5IbOGz8ERh6b3UPw1IPPaGjlmXO5pE5liV0ILfL2IM=;
-  b=Qq50eQOrva4/goep4y0HR/INYWYeUVo6QVtMf9C4ZPAi7ug7HV+9bGzs
-   1NqpZpJO7ApDs0FilTf742hfPOsKN5NXXOG05la6I7PXv09mkiqkbharx
-   aw7nMJcDugxWJbZrUrpWilOsGwmaVeKVXfrgIZz3AwVcGa6NI/0FArdmI
-   9ihsXHV4djUvKnUzSMVLvOl6aEFKs6cVlGWyLwn6n0botGlnPmKOmojhH
-   2sW0cC6GAc8bkJn7E00fPgIhtGXzlSMk4Rf1IeEB/Jw1M7Sae9rUqb3dH
-   Y/EA5hfwD6bbwCbO7fFWyayRYG9aa6ugzMf98LBggHa3ga4Ai/4zlnZMF
-   A==;
-X-CSE-ConnectionGUID: D37j0VVORIyxmw0YyEEuxg==
-X-CSE-MsgGUID: 4idh1lMLSzWK9wPx70hqtA==
-X-IronPort-AV: E=Sophos;i="6.06,207,1705388400"; 
-   d="scan'208";a="18916098"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 06 Mar 2024 01:51:21 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 6 Mar 2024 01:51:21 -0700
-Received: from CHE-LT-I17164LX.microchip.com (10.10.85.11) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Wed, 6 Mar 2024 01:51:12 -0700
-From: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
-To: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-	<pabeni@redhat.com>, <horms@kernel.org>, <saeedm@nvidia.com>,
-	<anthony.l.nguyen@intel.com>, <netdev@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <andrew@lunn.ch>, <corbet@lwn.net>,
-	<linux-doc@vger.kernel.org>, <robh+dt@kernel.org>,
-	<krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-	<devicetree@vger.kernel.org>, <horatiu.vultur@microchip.com>,
-	<ruanjinjie@huawei.com>, <steen.hegelund@microchip.com>,
-	<vladimir.oltean@nxp.com>
-CC: <UNGLinuxDriver@microchip.com>, <Thorsten.Kummermehr@microchip.com>,
-	<Pier.Beruto@onsemi.com>, <Selvamani.Rajagopal@onsemi.com>,
-	<Nicolas.Ferre@microchip.com>, <benjamin.bigler@bernformulastudent.ch>,
-	Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
-Subject: [PATCH net-next v3 05/12] net: ethernet: oa_tc6: implement error interrupts unmasking
-Date: Wed, 6 Mar 2024 14:20:10 +0530
-Message-ID: <20240306085017.21731-6-Parthiban.Veerasooran@microchip.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240306085017.21731-1-Parthiban.Veerasooran@microchip.com>
-References: <20240306085017.21731-1-Parthiban.Veerasooran@microchip.com>
+	s=arc-20240116; t=1709715015; c=relaxed/simple;
+	bh=HateX3LLeZdB/hmGCbPu2UTVKn/rmhpctmgFXc6UpcY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ayq2UjEBPnyx8n6AAVsgTu7ecuF9QD1QQSgR2JTtWz/7pUPLl/vQO3on2ktF35Y5e3uzZMsBUfoJtpS9Vj/MCZIY7hGqu0EsJYBV1U0cIjJZfm3NI7MIvDBt9NUBupaF/j2p49gyiZmmZpujlFdlG6U0TnHbbuX2ZyRPGKsbaDs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=Eatb8Jib; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709715012;
+	bh=HateX3LLeZdB/hmGCbPu2UTVKn/rmhpctmgFXc6UpcY=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=Eatb8JibbQ25Fe1nNtOgWaSZR8QMC68IIenGsNhQVHyvWG2ygFqPZ1j5xv2zcSNfF
+	 EBn5q2K0SltAHws33YmDk4s2xHIzv0YICGp+WMp2PAcwHREBASOq2xupjYN88k6ThM
+	 EHcf2Gf8NETrkwAzs5zJBQPMTbpvqMNR91DF45uuxZ1QQdwy9nlKMjpQqH3N12EmAj
+	 +TJ0F+BYzMkC6YVmOZQMqvnn9QjHr5TcI5UmD6zf0UtJpEpArgrp2AJw/4XZvjLcOV
+	 5xkxLryihLPLN4H7Kuy250EAROxDScp0XFtCW+Xxqncrl7oGvqJnk0V/FV2QB0rEiI
+	 rK/sEN34+Yynw==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id EDD8B37820D0;
+	Wed,  6 Mar 2024 08:50:10 +0000 (UTC)
+Message-ID: <c55f2c6e-1de8-4248-a52a-d6c9e49b565a@collabora.com>
+Date: Wed, 6 Mar 2024 09:50:10 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] PCI: mediatek-gen3: Assert MAC reset only if PHY reset
+ also present
+To: =?UTF-8?B?Smlhbmp1biBXYW5nICjnjovlu7rlhpsp?= <Jianjun.Wang@mediatek.com>,
+ "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>
+Cc: "linux-mediatek@lists.infradead.org"
+ <linux-mediatek@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "wenst@chromium.org" <wenst@chromium.org>,
+ "kernel@collabora.com" <kernel@collabora.com>,
+ "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+ "robh@kernel.org" <robh@kernel.org>, "kw@linux.com" <kw@linux.com>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ "bhelgaas@google.com" <bhelgaas@google.com>,
+ "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+ "lpieralisi@kernel.org" <lpieralisi@kernel.org>,
+ Ryder Lee <Ryder.Lee@mediatek.com>,
+ "nfraprado@collabora.com" <nfraprado@collabora.com>
+References: <20240229092449.580971-1-angelogioacchino.delregno@collabora.com>
+ <30824df32636dec25b9a5972b1ee8de76b295feb.camel@mediatek.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Content-Language: en-US
+In-Reply-To: <30824df32636dec25b9a5972b1ee8de76b295feb.camel@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
 
-This will unmask the following error interrupts from the MAC-PHY.
-  tx protocol error
-  rx buffer overflow error
-  loss of frame error
-  header error
-The MAC-PHY will signal an error by setting the EXST bit in the receive
-data footer which will then allow the host to read the STATUS0 register
-find the source of the error.
+Il 01/03/24 03:48, Jianjun Wang (王建军) ha scritto:
+> Hi Angelo,
+> 
+> Thanks for your patch.
+> 
+> On Thu, 2024-02-29 at 10:24 +0100, AngeloGioacchino Del Regno wrote:
+>> Some SoCs have two PCI-Express controllers: in the case of MT8195,
+>> one of them is using a dedicated PHY, but the other uses a combo PHY
+>> that is shared with USB and in that case the PHY cannot be reset
+>> from the PCIe driver, or USB functionality will be unable to resume.
+>>
+>> Resetting the PCIe MAC without also resetting the PHY will result in
+>> a full system lockup at PCIe resume time and the only option to
+>> resume operation is to hard reboot the system (with a PMIC cut-off).
+>>
+>> To resolve this issue, check if we've got both a PHY and a MAC reset
+>> and, if not, never assert resets at PM suspend time: in that case,
+>> the link is still getting powered down as both the clocks and the
+>> power domains will go down anyway.
+>>
+>> Fixes: d537dc125f07 ("PCI: mediatek-gen3: Add system PM support")
+>> Signed-off-by: AngeloGioacchino Del Regno <
+>> angelogioacchino.delregno@collabora.com>
+>> ---
+>>
+>> Changes in v2:
+>>   - Rebased over next-20240229
+>>
+>>   drivers/pci/controller/pcie-mediatek-gen3.c | 25 ++++++++++++++-----
+>> --
+>>   1 file changed, 17 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/drivers/pci/controller/pcie-mediatek-gen3.c
+>> b/drivers/pci/controller/pcie-mediatek-gen3.c
+>> index 975b3024fb08..99b5d7a49be1 100644
+>> --- a/drivers/pci/controller/pcie-mediatek-gen3.c
+>> +++ b/drivers/pci/controller/pcie-mediatek-gen3.c
+>> @@ -874,17 +874,26 @@ static int mtk_pcie_power_up(struct
+>> mtk_gen3_pcie *pcie)
+>>   	return err;
+>>   }
+>>   
+>> -static void mtk_pcie_power_down(struct mtk_gen3_pcie *pcie)
+>> +static void mtk_pcie_power_down(struct mtk_gen3_pcie *pcie, bool
+>> is_suspend)
+>>   {
+>> +	bool suspend_reset_supported = pcie->mac_reset && pcie-
+>>> phy_reset;
+>> +
+>>   	clk_bulk_disable_unprepare(pcie->num_clks, pcie->clks);
+>>   
+>>   	pm_runtime_put_sync(pcie->dev);
+>>   	pm_runtime_disable(pcie->dev);
+>> -	reset_control_assert(pcie->mac_reset);
+>> +
+>> +	/*
+>> +	 * Assert MAC reset only if we also got a PHY reset, otherwise
+>> +	 * the system will lockup at PM resume time.
+>> +	 */
+>> +	if (is_suspend && suspend_reset_supported)
+>> +		reset_control_assert(pcie->mac_reset);
+>>   
+>>   	phy_power_off(pcie->phy);
+>>   	phy_exit(pcie->phy);
+>> -	reset_control_assert(pcie->phy_reset);
+>> +	if (is_suspend && suspend_reset_supported)
+>> +		reset_control_assert(pcie->phy_reset);
+>>   }
+>>   
+>>   static int mtk_pcie_setup(struct mtk_gen3_pcie *pcie)
+>> @@ -920,7 +929,7 @@ static int mtk_pcie_setup(struct mtk_gen3_pcie
+>> *pcie)
+>>   	return 0;
+>>   
+>>   err_setup:
+>> -	mtk_pcie_power_down(pcie);
+>> +	mtk_pcie_power_down(pcie, false);
+>>   
+>>   	return err;
+>>   }
+>> @@ -951,7 +960,7 @@ static int mtk_pcie_probe(struct platform_device
+>> *pdev)
+>>   	err = pci_host_probe(host);
+>>   	if (err) {
+>>   		mtk_pcie_irq_teardown(pcie);
+>> -		mtk_pcie_power_down(pcie);
+>> +		mtk_pcie_power_down(pcie, false);
+>>   		return err;
+>>   	}
+>>   
+>> @@ -969,7 +978,7 @@ static void mtk_pcie_remove(struct
+>> platform_device *pdev)
+>>   	pci_unlock_rescan_remove();
+>>   
+>>   	mtk_pcie_irq_teardown(pcie);
+>> -	mtk_pcie_power_down(pcie);
+>> +	mtk_pcie_power_down(pcie, false);
+> 
+> Is there any reason not to reset the MAC and PHY when probe fails and
+> driver removing? Some SoCs may not have MTCMOS to cut off their power,
+> we need to assert the reset signal to save power in that case.
+> 
 
-Signed-off-by: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
----
- drivers/net/ethernet/oa_tc6.c | 31 +++++++++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
+Sorry for the late reply - yes, there is a reason.
 
-diff --git a/drivers/net/ethernet/oa_tc6.c b/drivers/net/ethernet/oa_tc6.c
-index e9ddc4ff7d0d..f8593b793291 100644
---- a/drivers/net/ethernet/oa_tc6.c
-+++ b/drivers/net/ethernet/oa_tc6.c
-@@ -18,6 +18,13 @@
- #define OA_TC6_REG_STATUS0			0x0008
- #define STATUS0_RESETC				BIT(6)	/* Reset Complete */
- 
-+/* Interrupt Mask Register #0 */
-+#define OA_TC6_REG_INT_MASK0			0x000C
-+#define INT_MASK0_HEADER_ERR_MASK		BIT(5)
-+#define INT_MASK0_LOSS_OF_FRAME_ERR_MASK	BIT(4)
-+#define INT_MASK0_RX_BUFFER_OVERFLOW_ERR_MASK	BIT(3)
-+#define INT_MASK0_TX_PROTOCOL_ERR_MASK		BIT(0)
-+
- /* Control command header */
- #define OA_TC6_CTRL_HEADER_DATA_NOT_CTRL	BIT(31)
- #define OA_TC6_CTRL_HEADER_WRITE		BIT(29)
-@@ -324,6 +331,23 @@ static int oa_tc6_sw_reset_macphy(struct oa_tc6 *tc6)
- 	return oa_tc6_write_register(tc6, OA_TC6_REG_STATUS0, regval);
- }
- 
-+static int oa_tc6_unmask_macphy_error_interrupts(struct oa_tc6 *tc6)
-+{
-+	u32 regval;
-+	int ret;
-+
-+	ret = oa_tc6_read_register(tc6, OA_TC6_REG_INT_MASK0, &regval);
-+	if (ret)
-+		return ret;
-+
-+	regval &= ~(INT_MASK0_TX_PROTOCOL_ERR_MASK |
-+		    INT_MASK0_RX_BUFFER_OVERFLOW_ERR_MASK |
-+		    INT_MASK0_LOSS_OF_FRAME_ERR_MASK |
-+		    INT_MASK0_HEADER_ERR_MASK);
-+
-+	return oa_tc6_write_register(tc6, OA_TC6_REG_INT_MASK0, regval);
-+}
-+
- /**
-  * oa_tc6_init - allocates and initializes oa_tc6 structure.
-  * @spi: device with which data will be exchanged.
-@@ -364,6 +388,13 @@ struct oa_tc6 *oa_tc6_init(struct spi_device *spi)
- 		return NULL;
- 	}
- 
-+	ret = oa_tc6_unmask_macphy_error_interrupts(tc6);
-+	if (ret) {
-+		dev_err(&tc6->spi->dev,
-+			"MAC-PHY error interrupts unmask failed: %d\n", ret);
-+		return NULL;
-+	}
-+
- 	return tc6;
- }
- EXPORT_SYMBOL_GPL(oa_tc6_init);
--- 
-2.34.1
+On platforms needing this quirk, resetting at .remove() time will hang the
+machine if the module is reinserted later (hence, .probe() called at a later
+time).
+
+Regards,
+Angelo
+
+> Thanks.
+> 
+>>   }
+>>   
+>>   static void mtk_pcie_irq_save(struct mtk_gen3_pcie *pcie)
+>> @@ -1044,7 +1053,7 @@ static int mtk_pcie_suspend_noirq(struct device
+>> *dev)
+>>   	dev_dbg(pcie->dev, "entered L2 states successfully");
+>>   
+>>   	mtk_pcie_irq_save(pcie);
+>> -	mtk_pcie_power_down(pcie);
+>> +	mtk_pcie_power_down(pcie, true);
+>>   
+>>   	return 0;
+>>   }
+>> @@ -1060,7 +1069,7 @@ static int mtk_pcie_resume_noirq(struct device
+>> *dev)
+>>   
+>>   	err = mtk_pcie_startup_port(pcie);
+>>   	if (err) {
+>> -		mtk_pcie_power_down(pcie);
+>> +		mtk_pcie_power_down(pcie, false);
+>>   		return err;
+>>   	}
+>>   
+
 
 
