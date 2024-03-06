@@ -1,247 +1,225 @@
-Return-Path: <linux-kernel+bounces-93502-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93505-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A358B8730BA
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:31:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0633E8730C5
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:32:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1AC151F22773
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 08:31:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 70FF11F2838D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 08:32:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 194C05D735;
-	Wed,  6 Mar 2024 08:31:20 +0000 (UTC)
-Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3552F5D8F6;
+	Wed,  6 Mar 2024 08:32:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="dPhwLhU0"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD1EB22F1D;
-	Wed,  6 Mar 2024 08:31:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86E802374A;
+	Wed,  6 Mar 2024 08:31:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709713879; cv=none; b=Bs7Ubh3zjMDVr/NBtMK9J/gqNSg7dduEdoLvOf9FMPF50+o9lwyiRLqrNyYa4tJhOfMdmJRZjrObbf3KNs3BEZZnrDRl2+hiOODiqT4wbePTHkjIHCYMkwJKI8E91HTRZe/+MhOx7z85Oc5oSU6msjlayn2TQF1ukkvZVsm9WBQ=
+	t=1709713919; cv=none; b=p0WqknyWE438g3yzBuFiNu3ytK2rdcbTNHHSye5VwKbOhEM4WfjIb/nSb/ZkG6P5hINk7ZGtCIo12C2fk4qu+A0EJ0eLeTIt8qR+xHRLNNdi013Ex/Iy0SucyHraDuqxi/C4eHNuvb01NrEK/rlted3kf9os4H7d7qnFjCaZ7QQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709713879; c=relaxed/simple;
-	bh=S2k4dHHEQpRhP6c+TZy4wKSpHEmoOGsY42HtUH5CMZk=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=KDT/kThFW05W1dlMgICWoFKyl1wjD9cAzSXxm/4Nhc5P19WqxBQ/4T/W8H4rlkdFPucU4EdOP1wnDRUEQJpW3RdRT1V7o2xgf3hHHsGA/bona/WV2RrohntTDY5gtfEfrE2HXSMMovFxc8aJ1Cjr2GXpwa1pvXeU4swwLn/CJu4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.18.186.29])
-	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4TqQGr2sGmz9y4gm;
-	Wed,  6 Mar 2024 16:15:32 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.47])
-	by mail.maildlp.com (Postfix) with ESMTP id 836DC140412;
-	Wed,  6 Mar 2024 16:31:13 +0800 (CST)
-Received: from [127.0.0.1] (unknown [10.204.63.22])
-	by APP1 (Coremail) with SMTP id LxC2BwBHPhfBKehlVBnQAw--.462S2;
-	Wed, 06 Mar 2024 09:31:12 +0100 (CET)
-Message-ID: <720e7d0d55c2a22742ede0104fc884609b2f840d.camel@huaweicloud.com>
-Subject: Re: [PATCH v2 24/25] commoncap: use vfs fscaps interfaces
-From: Roberto Sassu <roberto.sassu@huaweicloud.com>
-To: "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
-Cc: Christian Brauner <brauner@kernel.org>, Serge Hallyn <serge@hallyn.com>,
-  Paul Moore <paul@paul-moore.com>, Eric Paris <eparis@redhat.com>, James
- Morris <jmorris@namei.org>,  Alexander Viro <viro@zeniv.linux.org.uk>, Jan
- Kara <jack@suse.cz>, Stephen Smalley <stephen.smalley.work@gmail.com>,
- Ondrej Mosnacek <omosnace@redhat.com>,  Casey Schaufler
- <casey@schaufler-ca.com>, Mimi Zohar <zohar@linux.ibm.com>, Roberto Sassu
- <roberto.sassu@huawei.com>,  Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
- Eric Snowberg <eric.snowberg@oracle.com>, "Matthew Wilcox (Oracle)"
- <willy@infradead.org>, Jonathan Corbet <corbet@lwn.net>, Miklos Szeredi
- <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>, 
- linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
- linux-security-module@vger.kernel.org, audit@vger.kernel.org, 
- selinux@vger.kernel.org, linux-integrity@vger.kernel.org, 
- linux-doc@vger.kernel.org, linux-unionfs@vger.kernel.org
-Date: Wed, 06 Mar 2024 09:30:54 +0100
-In-Reply-To: <Zed91y4MYugjI1/K@do-x1extreme>
-References: <20240221-idmap-fscap-refactor-v2-0-3039364623bd@kernel.org>
-	 <20240221-idmap-fscap-refactor-v2-24-3039364623bd@kernel.org>
-	 <dcbd9e7869d2fcce69546b53851d694b8ebad54e.camel@huaweicloud.com>
-	 <ZeXpbOsdRTbLsYe9@do-x1extreme>
-	 <a7124afa6bed2fcadcb66efa08e256828cd6f8ab.camel@huaweicloud.com>
-	 <ZeX9MRhU/EGhHkCY@do-x1extreme>
-	 <20240305-fachjargon-abmontieren-75b1d6c67a83@brauner>
-	 <3098aef3e5f924e5717b4ba4a34817d9f22ec479.camel@huaweicloud.com>
-	 <7058e2f93d16f910336a5380877b14a2e069ee9d.camel@huaweicloud.com>
-	 <Zed91y4MYugjI1/K@do-x1extreme>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1709713919; c=relaxed/simple;
+	bh=vTXlzKfVuR7thkMypOhy/ZsOpYaW4JBviEC5G7CKrTw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=JqyzJvJXfJHFmQxIDkUo+Qw+23FmJW1GsMUsmefw2+lRWbmByKW3DY5ENV5PcuMBsU6/05N55niPwf+hpzcWQ8PhxvNwUNR+nlX6vS+5t7XJnieoN7b9q9CiVYcASFP/ROwnlT5KIUl9t1KW6mZArXliGMG2nvdI8x3cD+g+154=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=dPhwLhU0; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4265xoNr020249;
+	Wed, 6 Mar 2024 08:31:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=q86A9onL0rmqEe1iKRvRqZ3S28SROOVGnLJLR6S1sK8=; b=dP
+	hwLhU0DBVyiGKqk04VPPE3RpjYgMykQp1nBuELT+S39/R73q0nIH/igEsvThZiSO
+	75C4Mxr3MajWXQ/bmUYgAGTHkN+esMTKFLrzEp3w0ym+7y72zwkSM65fm6hchiSg
+	e2pOVMioIX1Ak+XlEEPIareL1RyLu8py6MoQ01AbalBFVF6IereriEUcUU583Bmo
+	wNc4o4sBM0R2gYi1NF9eelPoi0QmvuOy3YXOnemh9crMlyJVp0t+U3a4V8nG2Qiv
+	/5W3KyoPcxgx6XOREDD4eLbqS4GpAH9H9KlA0m/Bk9VjggbhZe2MtY00YpXpXb/Q
+	Rnjud3N7N3H7J9xb3yEQ==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wpgdsrhht-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 06 Mar 2024 08:31:20 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4268VJIl012146
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 6 Mar 2024 08:31:19 GMT
+Received: from [10.218.19.46] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 6 Mar
+ 2024 00:31:13 -0800
+Message-ID: <83fd1995-a06e-b76a-d91b-de1c1a6ab0ea@quicinc.com>
+Date: Wed, 6 Mar 2024 14:00:56 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-CM-TRANSID:LxC2BwBHPhfBKehlVBnQAw--.462S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3Ar48Cr1DZFyfCry5ZF17Awb_yoW7CFy5pF
-	W5GFn8Kr4kJr1UAr18tr1UX3WFy3yfJF4UXr1DK34jyr1qkr1ftr4Skr17uF98Cr18Gr1j
-	vr1jy3W3Wr15AwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26r4j6r4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI
-	7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
-	Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY
-	6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1lIxAIcV
-	CF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
-	6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUOlksDUUUU
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAOBF1jj5sG1gABsw
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: [PATCH 4/5] clk: qcom: Add camera clock controller driver for
+ SM8150
+Content-Language: en-US
+To: Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Bjorn Andersson
+	<andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "Michael
+ Turquette" <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Abhishek Sahu <absahu@codeaurora.org>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>
+CC: Stephen Boyd <sboyd@codeaurora.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, Ajit Pandey <quic_ajipan@quicinc.com>,
+        "Imran
+ Shaik" <quic_imrashai@quicinc.com>,
+        Taniya Das <quic_tdas@quicinc.com>,
+        Jagadeesh Kona <quic_jkona@quicinc.com>
+References: <20240229-camcc-support-sm8150-v1-0-8c28c6c87990@quicinc.com>
+ <20240229-camcc-support-sm8150-v1-4-8c28c6c87990@quicinc.com>
+ <18567989-fb60-49ae-92e6-94e1bc2fa1c7@linaro.org>
+From: "Satya Priya Kakitapalli (Temp)" <quic_skakitap@quicinc.com>
+In-Reply-To: <18567989-fb60-49ae-92e6-94e1bc2fa1c7@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 488fqkA63x5DW3xa_wvVr61O3_z7-kd_
+X-Proofpoint-GUID: 488fqkA63x5DW3xa_wvVr61O3_z7-kd_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-06_04,2024-03-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 malwarescore=0
+ lowpriorityscore=0 mlxlogscore=999 impostorscore=0 mlxscore=0 spamscore=0
+ adultscore=0 priorityscore=1501 phishscore=0 suspectscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2402120000
+ definitions=main-2403060067
 
-On Tue, 2024-03-05 at 14:17 -0600, Seth Forshee (DigitalOcean) wrote:
-> On Tue, Mar 05, 2024 at 06:11:45PM +0100, Roberto Sassu wrote:
-> > On Tue, 2024-03-05 at 13:46 +0100, Roberto Sassu wrote:
-> > > On Tue, 2024-03-05 at 10:12 +0100, Christian Brauner wrote:
-> > > > On Mon, Mar 04, 2024 at 10:56:17AM -0600, Seth Forshee (DigitalOcea=
-n) wrote:
-> > > > > On Mon, Mar 04, 2024 at 05:17:57PM +0100, Roberto Sassu wrote:
-> > > > > > On Mon, 2024-03-04 at 09:31 -0600, Seth Forshee (DigitalOcean) =
-wrote:
-> > > > > > > On Mon, Mar 04, 2024 at 11:19:54AM +0100, Roberto Sassu wrote=
-:
-> > > > > > > > On Wed, 2024-02-21 at 15:24 -0600, Seth Forshee (DigitalOce=
-an) wrote:
-> > > > > > > > > Use the vfs interfaces for fetching file capabilities for=
- killpriv
-> > > > > > > > > checks and from get_vfs_caps_from_disk(). While there, up=
-date the
-> > > > > > > > > kerneldoc for get_vfs_caps_from_disk() to explain how it =
-is different
-> > > > > > > > > from vfs_get_fscaps_nosec().
-> > > > > > > > >=20
-> > > > > > > > > Signed-off-by: Seth Forshee (DigitalOcean) <sforshee@kern=
-el.org>
-> > > > > > > > > ---
-> > > > > > > > >  security/commoncap.c | 30 +++++++++++++-----------------
-> > > > > > > > >  1 file changed, 13 insertions(+), 17 deletions(-)
-> > > > > > > > >=20
-> > > > > > > > > diff --git a/security/commoncap.c b/security/commoncap.c
-> > > > > > > > > index a0ff7e6092e0..751bb26a06a6 100644
-> > > > > > > > > --- a/security/commoncap.c
-> > > > > > > > > +++ b/security/commoncap.c
-> > > > > > > > > @@ -296,11 +296,12 @@ int cap_capset(struct cred *new,
-> > > > > > > > >   */
-> > > > > > > > >  int cap_inode_need_killpriv(struct dentry *dentry)
-> > > > > > > > >  {
-> > > > > > > > > -	struct inode *inode =3D d_backing_inode(dentry);
-> > > > > > > > > +	struct vfs_caps caps;
-> > > > > > > > >  	int error;
-> > > > > > > > > =20
-> > > > > > > > > -	error =3D __vfs_getxattr(dentry, inode, XATTR_NAME_CAPS=
-, NULL, 0);
-> > > > > > > > > -	return error > 0;
-> > > > > > > > > +	/* Use nop_mnt_idmap for no mapping here as mapping is =
-unimportant */
-> > > > > > > > > +	error =3D vfs_get_fscaps_nosec(&nop_mnt_idmap, dentry, =
-&caps);
-> > > > > > > > > +	return error =3D=3D 0;
-> > > > > > > > >  }
-> > > > > > > > > =20
-> > > > > > > > >  /**
-> > > > > > > > > @@ -323,7 +324,7 @@ int cap_inode_killpriv(struct mnt_idm=
-ap *idmap, struct dentry *dentry)
-> > > > > > > > >  {
-> > > > > > > > >  	int error;
-> > > > > > > > > =20
-> > > > > > > > > -	error =3D __vfs_removexattr(idmap, dentry, XATTR_NAME_C=
-APS);
-> > > > > > > > > +	error =3D vfs_remove_fscaps_nosec(idmap, dentry);
-> > > > > > > >=20
-> > > > > > > > Uhm, I see that the change is logically correct... but the =
-original
-> > > > > > > > code was not correct, since the EVM post hook is not called=
- (thus the
-> > > > > > > > HMAC is broken, or an xattr change is allowed on a portable=
- signature
-> > > > > > > > which should be not).
-> > > > > > > >=20
-> > > > > > > > For completeness, the xattr change on a portable signature =
-should not
-> > > > > > > > happen in the first place, so cap_inode_killpriv() would no=
-t be called.
-> > > > > > > > However, since EVM allows same value change, we are here.
-> > > > > > >=20
-> > > > > > > I really don't understand EVM that well and am pretty hesitan=
-t to try an
-> > > > > > > change any of the logic around it. But I'll hazard a thought:=
- should EVM
-> > > > > > > have a inode_need_killpriv hook which returns an error in thi=
-s
-> > > > > > > situation?
-> > > > > >=20
-> > > > > > Uhm, I think it would not work without modifying
-> > > > > > security_inode_need_killpriv() and the hook definition.
-> > > > > >=20
-> > > > > > Since cap_inode_need_killpriv() returns 1, the loop stops and E=
-VM would
-> > > > > > not be invoked. We would need to continue the loop and let EVM =
-know
-> > > > > > what is the current return value. Then EVM can reject the chang=
-e.
-> > > > > >=20
-> > > > > > An alternative way would be to detect that actually we are sett=
-ing the
-> > > > > > same value for inode metadata, and maybe not returning 1 from
-> > > > > > cap_inode_need_killpriv().
-> > > > > >=20
-> > > > > > I would prefer the second, since EVM allows same value change a=
-nd we
-> > > > > > would have an exception if there are fscaps.
-> > > > > >=20
-> > > > > > This solves only the case of portable signatures. We would need=
- to
-> > > > > > change cap_inode_need_killpriv() anyway to update the HMAC for =
-mutable
-> > > > > > files.
-> > > > >=20
-> > > > > I see. In any case this sounds like a matter for a separate patch
-> > > > > series.
-> > > >=20
-> > > > Agreed.
-> > >=20
-> > > Christian, how realistic is that we don't kill priv if we are setting
-> > > the same owner?
-> > >=20
-> > > Serge, would we be able to replace __vfs_removexattr() (or now
-> > > vfs_get_fscaps_nosec()) with a security-equivalent alternative?
-> >=20
-> > It seems it is not necessary.
-> >=20
-> > security.capability removal occurs between evm_inode_setattr() and
-> > evm_inode_post_setattr(), after the HMAC has been verified and before
-> > the new HMAC is recalculated (without security.capability).
-> >=20
-> > So, all good.
-> >=20
-> > Christian, Seth, I pushed the kernel and the updated tests (all patches
-> > are WIP):
-> >=20
-> > https://github.com/robertosassu/linux/commits/evm-fscaps-v2/
-> >=20
-> > https://github.com/robertosassu/ima-evm-utils/commits/evm-fscaps-v2/
-> >=20
-> >=20
-> > The tests are passing:
-> >=20
-> > https://github.com/robertosassu/ima-evm-utils/actions/runs/8159877004/j=
-ob/22305521359
->=20
-> Thanks! I probably won't be able to take them exactly as-is due to other
-> changes for the next version (rebasing onto the changes to make IMA and
-> EVM LSMs, forbidding xattr handlers entirely for fscaps), but they will
-> serve as a good road map for what needs to happen.
 
-Welcome. Yes, both ima_inode_set_fscaps() and ima_inode_remove_fscaps()
-will be registered as LSM hooks in ima_appraise.c. It will be probably
-straightforward for you to make those changes, but if you have any
-question, let me know.
+On 3/2/2024 9:43 PM, Bryan O'Donoghue wrote:
+> On 29/02/2024 5:38 a.m., Satya Priya Kakitapalli wrote:
+>> Add support for the camera clock controller for camera clients
+>> to be able to request for camcc clocks on SM8150 platform.
+>>
+>> Signed-off-by: Satya Priya Kakitapalli <quic_skakitap@quicinc.com>
+>> ---
+>
+>> +static int cam_cc_sm8150_probe(struct platform_device *pdev)
+>> +{
+>> +    struct regmap *regmap;
+>> +    int ret;
+>> +
+>> +    ret = devm_pm_runtime_enable(&pdev->dev);
+>> +    if (ret)
+>> +        return ret;
+>> +
+>> +    ret = pm_runtime_resume_and_get(&pdev->dev);
+>> +    if (ret)
+>> +        return ret;
+>> +
+>> +    regmap = qcom_cc_map(pdev, &cam_cc_sm8150_desc);
+>> +    if (IS_ERR(regmap)) {
+>> +        pm_runtime_put(&pdev->dev);
+>> +        return PTR_ERR(regmap);
+>> +    }
+>> +
+>> +    clk_trion_pll_configure(&cam_cc_pll0, regmap, &cam_cc_pll0_config);
+>> +    clk_trion_pll_configure(&cam_cc_pll1, regmap, &cam_cc_pll1_config);
+>> +    clk_regera_pll_configure(&cam_cc_pll2, regmap, 
+>> &cam_cc_pll2_config);
+>> +    clk_trion_pll_configure(&cam_cc_pll3, regmap, &cam_cc_pll3_config);
+>> +    clk_trion_pll_configure(&cam_cc_pll4, regmap, &cam_cc_pll4_config);
+>> +
+>> +    /* Keep the critical clock always-on */
+>> +    qcom_branch_set_clk_en(regmap, 0xc1e4); /* cam_cc_gdsc_clk */
+>
+> Does this clock need to be specified this way ?
+>
 
-Roberto
+Yes, we need this clock to be always on.
 
+
+> drivers/clk/qcom/camcc-sc8280xp.c::camcc_gdsc_clk specifies the gdsc 
+> clock as a shared op clock.
+>
+> Actually it looks to be register compatible, please try defining 
+> titan_top_gdsc as per the example in 8280xp.
+>> +
+>> +    ret = qcom_cc_really_probe(pdev, &cam_cc_sm8150_desc, regmap);
+>> +
+>> +    pm_runtime_put(&pdev->dev);
+>> +
+>> +    return ret;
+>> +}
+>
+> So this is a pattern we keep repeating in the clock probe() functions 
+> which I am writing a series to address. There's no need to continue to 
+> replicate the bug in new code though.
+>
+> Only switch on always-on clocks if probe succeeds.
+>
+>     ret = qcom_cc_really_probe(pdev, &cam_cc_sm8150_desc, regmap);
+>     if (ret)
+>         goto probe_err;
+>
+>     qcom_branch_set_clk_en(regmap, 0xc1e4); /* cam_cc_gdsc_clk */
+>
+>     pm_runtime_put(&pdev->dev);
+>
+>     return 0;
+>
+> probe_err:
+>     pm_runtime_put_sync(&pdev->dev);
+>
+> Alternatively switch on the always-on clocks before the really_probe() 
+> but then roll back in a probe_err: goto
+>
+> probe_err:
+>     remap_bits_update(regmap, 0xc1e4, BIT(0), 0);
+>     pm_runtime_put_sync(&pdev->dev);
+>
+> There may be corner cases where always-on has to happen before 
+> really_probe() I suppose but as a general pattern the above should be 
+> how we go.
+>
+> Anyway I suspect the right thing to do is to define a 
+> titan_top_gdsc_clk with shared ops to "park" the GDSC clock to 19.2 
+> MHz instead of turning it off.
+>
+> You can get rid of the hard-coded always-on and indeed represent the 
+> clock in /sysfs - which is preferable IMO to just whacking registers 
+> to keep clocks always-on in probe anyway.
+>
+> Please try to define the titan_top_gdsc_clk as a shared_ops clock 
+> instead of hard coding to always on.
+>
+
+Defining the gdsc clk allows consumers to control it, we do not want 
+this clock to be disabled/controlled from consumers. Hence it is better 
+to not model this clock and just keep it always on from probe.
+
+
+> If that doesn't work for some reason, then please fix your always-on 
+> logic in probe() to only make the clock fixed on, if really_probe() 
+> succeeds.
+>
+
+Sure I'll do this.
+
+
+> ---
+> bod
 
