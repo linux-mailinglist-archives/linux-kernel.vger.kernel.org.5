@@ -1,137 +1,84 @@
-Return-Path: <linux-kernel+bounces-93704-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93706-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DEC898733A6
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 11:09:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 778E3873398
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 11:07:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E9DFAB2BC19
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:07:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA6DA1C2516F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:07:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B45535F869;
-	Wed,  6 Mar 2024 10:06:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gg5cNgRD"
-Received: from mail-vk1-f181.google.com (mail-vk1-f181.google.com [209.85.221.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82E995F466;
-	Wed,  6 Mar 2024 10:06:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 781595F848;
+	Wed,  6 Mar 2024 10:07:15 +0000 (UTC)
+Received: from mail.nfschina.com (unknown [42.101.60.195])
+	by smtp.subspace.kernel.org (Postfix) with SMTP id 49C275D8FF;
+	Wed,  6 Mar 2024 10:07:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=42.101.60.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709719607; cv=none; b=ox4CvS1HNPUy5GcVT6rXnnXI5g9lZmIeFN6ExL0kkwFtgMF9qREQ2BFfkGkP1cEfN2Ie6r5/Bqs69T7STGqfRLs3+wyHOd9xoaeSjLsnpZrGOWEQSTAKi4voTrYDIRgDnGtBHA66+pYDIKEquMgxjQgjdOrupZwyyx1/JUwI8dY=
+	t=1709719635; cv=none; b=pvlpWLkX91d+Rq6ne6+X4RR4MFFB4+rNah0GKBK+o6Sf450c1R5Pnpz0wBCltkN1cWpKrTq5ObiuhOGGWozRFc/4MSa+B/z07jjLzghdkzyP2jL1ftou2m5jlDk6ivrbac3nihOmcdOjhDzsl5/yL43kY7kpVwkplq9M4puDKB0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709719607; c=relaxed/simple;
-	bh=neda+ll9xMd2T7fw5COkPSMTdIF7ybWsYTL/HbYkMnc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SP3dYvX/26GvFYVmLnsVFBhKFHkGVT16AiOJJMkMSKneS2LYxWd53OKB9ehiFZcLq3hrpdyzcpgJ1k6gbaGCyf3qQWC0Wgaxta72EUyzP7stPA8yG2k7L1zWAjiqjkvPGREq2vuH6F1jV/Nk8MHURDpfiEVgC8GwnneeKLMwQ8c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gg5cNgRD; arc=none smtp.client-ip=209.85.221.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f181.google.com with SMTP id 71dfb90a1353d-4d37e76a3dfso375827e0c.1;
-        Wed, 06 Mar 2024 02:06:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709719604; x=1710324404; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=neda+ll9xMd2T7fw5COkPSMTdIF7ybWsYTL/HbYkMnc=;
-        b=gg5cNgRDskV/qbNPwKWjVRKgEmpA8XYC0f0NNnO+I04z3UCvGqbruyqa+uX9de39Kh
-         JlGNaXbJAKOFqlEUqOpmjO/R15mNCoUAqiyhHyceI8LxMCdWyLWdwt0p20dPFV8obq0u
-         EKzFrr1QDFKgqzUYWd7Eq+/81oMmYiVHXWMRkbzdEzKSBy7D7n6vLfilFvlfZAVOeM4l
-         za6Ppw17NejXY46Sne7vW8d8Lh9P7C18t8j0pLGxFiiiemnf1sMIKtqN2DNB2lADJ1im
-         JtA7Jco47VxgDvb62M29qxVIiGUpYwkN6JLOsusLrUkgbIdMrF+rJpqpEIil9HP3Onx1
-         mB9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709719604; x=1710324404;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=neda+ll9xMd2T7fw5COkPSMTdIF7ybWsYTL/HbYkMnc=;
-        b=gNbISK5lCoKN19JCzQjEaJXpQKTnfyunIQHYd7vrRkFolrDRLZraEJPTaBt7yqER6O
-         O/z1qRwgQKpH7WR2PM0Yz5yzQzaq078TTm5zr5Wo1fVCrJqrESXv/edDKBnJKj8gqhQp
-         IjaHt4Kf8wqsum0rM8YqNlpjcbr9qN43W6J0Bd3QvfBHuh8RKbaATlYiVM4Gcg+Nz27V
-         IcSzONK6lvGFaCLfx5L5fgf6D9LB8LGcWghwvu26B4BWQQfshQsxJ7X96gEuhHs7QwBL
-         5RH15Yeyo3wKXBHXg4QzlyRu+AIvVPDYEsshsuWwyQevB4s8+L19XkBIB5l7T9wL7DEk
-         bEfw==
-X-Forwarded-Encrypted: i=1; AJvYcCXxR6OIWN79UeZZzuwt3IFULTaS3Lf/0+NwlUGb+8xzhdlSxIZ+mxFhEmIfuuGDX+3mfPYFnvrbTJ/VkFDeL8E5Us7QT4+zCB3Z9RAijt6FqjWBEKB6KQxC0VnnIEpwSXt1aV+9fKiFRDyfy9+U0ctCLXsm/mzdYaLalMpqS6gsMJnIipq4L+Ppi9b49e/SKWhKIkc1G1rWkgEcPS3gG01AZYQfjMn2mrNR
-X-Gm-Message-State: AOJu0Yxt7rMUOu/Pj0qui0kQalv0zMF0r7Hq/G58mTEg0effRelMeAIb
-	bsJf962k+IET3kmO84AS5ekeeaNOY//EvnYnDv7yGY3BBYBzbdXek/WPP38x9wjQR6MITgSOSKe
-	rNIxwV8mWwsonIIc1dicqdiEKVz4=
-X-Google-Smtp-Source: AGHT+IENl8z6yKbP3w97g/9zhyS6P5SBkWKWGholQlgyfFQX8+rRE4VE45IFbhVSIFugwVoYDrJ+/QoO8WWuBN125mk=
-X-Received: by 2002:a05:6122:1699:b0:4d3:394b:d997 with SMTP id
- 25-20020a056122169900b004d3394bd997mr3513155vkl.4.1709719604467; Wed, 06 Mar
- 2024 02:06:44 -0800 (PST)
+	s=arc-20240116; t=1709719635; c=relaxed/simple;
+	bh=SPyotqgd+ZQ+ck8sF39EEIx+dSieElGkiTrHdYt1FxE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=kbKeOqwoGzzPcEaOJMLsCq6JBEywpoJgOJnjyIiIC1z27XHFrrd9iehPTPcGE4hpOe0A/to3sIjRNoBLqzMguc6OkCeI0mcAwe0fQFQjBsTcBoCzTuGADQsH7DxcZly2UeFWyzPyI5ffz5iWbGL1aPxkn6p1fyIBg+iMA5CdhYg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nfschina.com; spf=pass smtp.mailfrom=nfschina.com; arc=none smtp.client-ip=42.101.60.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nfschina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nfschina.com
+Received: from localhost.localdomain (unknown [219.141.250.2])
+	by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPA id CDE2060301EE7;
+	Wed,  6 Mar 2024 18:07:06 +0800 (CST)
+X-MD-Sfrom: kunyu@nfschina.com
+X-MD-SrcIP: 219.141.250.2
+From: Li kunyu <kunyu@nfschina.com>
+To: jonathan.derrick@linux.dev,
+	axboe@kernel.dk
+Cc: linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Li kunyu <kunyu@nfschina.com>
+Subject: [PATCH] =?UTF-8?q?sed-opal:=20Remove=20unnecessary=20=E2=80=980?= =?UTF-8?q?=E2=80=99=20values=20from=20ret?=
+Date: Wed,  6 Mar 2024 18:06:59 +0800
+Message-Id: <20240306100659.106521-1-kunyu@nfschina.com>
+X-Mailer: git-send-email 2.18.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240305171600.328699-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdW0MxqxRwULhLsRtnYXYK8NYxq-uU7E2BscbvPh3axYFg@mail.gmail.com>
-In-Reply-To: <CAMuHMdW0MxqxRwULhLsRtnYXYK8NYxq-uU7E2BscbvPh3axYFg@mail.gmail.com>
-From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date: Wed, 6 Mar 2024 10:06:18 +0000
-Message-ID: <CA+V-a8vKo8ADB_R==vgBhVpSH43DOzdeA_NhZ1BCBdNuam3UmQ@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: serial: renesas,scif: Document R9A09G057 support
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Magnus Damm <magnus.damm@gmail.com>, linux-kernel@vger.kernel.org, 
-	linux-serial@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, 
-	Fabrizio Castro <fabrizio.castro.jz@renesas.com>, 
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hi Geert,
+ret is assigned first, so it does not need to initialize the assignment.
 
-On Wed, Mar 6, 2024 at 9:53=E2=80=AFAM Geert Uytterhoeven <geert@linux-m68k=
-org> wrote:
->
-> Hi Prabhakar,
->
-> Thanks for your patch!
->
-> On Tue, Mar 5, 2024 at 6:16=E2=80=AFPM Prabhakar <prabhakar.csengg@gmail.=
-com> wrote:
-> > From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> >
-> > Document support for the Serial Communication Interface with FIFO (SCIF=
-)
-> > available in the Renesas RZ/V2H(P) (R9A09G057) SoC. The SCIF interface =
-in
-> > the Renesas RZ/V2H(P) is similar to that available in the RZ/G2L
-> > (R9A07G044) SoC, with the only difference being that the RZ/V2H(P) SoC =
-has
-> > three additional interrupts: one for Tx end/Rx ready and the other two =
-for
-> > Rx and Tx buffer full, which are edge-triggered.
-> >
-> > No driver changes are required as generic compatible string
-> > "renesas,scif-r9a07g044" will be used as a fallback on RZ/V2H(P) SoC.
->
-> If you declare SCIF on RZ/V2H compatible with SCIF on RZ/G2L, you
-> state that the current driver works fine (but perhaps suboptimal),
-> without adding support for the extra 3 interrupts?
->
-Yes the current driver works without using the extra interrupts on the
-RZ/V2H. The extra interrupts on the RZ/V2H are just sort of duplicate
-ie
-- Transmit End/Data Ready interrupt , for which we we have two
-seperate interrupts already
-- Receive buffer full interrupt (EDGE trigger), for which we already
-have a Level triggered interrupt
-- Transmit buffer empty interrupt (EDGE trigger), for which we already
-have a Level triggered interrupt
+Signed-off-by: Li kunyu <kunyu@nfschina.com>
+---
+ block/sed-opal.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Are you suggesting to not fallback on RZ/G2L and instead make RZ/V2H
-an explicit one so that in future we handle these 3 extra interrupts?
+diff --git a/block/sed-opal.c b/block/sed-opal.c
+index b6887920a84e9..f62b7ee933f7f 100644
+--- a/block/sed-opal.c
++++ b/block/sed-opal.c
+@@ -2576,7 +2576,7 @@ static int opal_get_discv(struct opal_dev *dev, struct opal_discovery *discv)
+ 	const struct opal_step discovery0_step = {
+ 		opal_discovery0, discv
+ 	};
+-	int ret = 0;
++	int ret;
+ 
+ 	mutex_lock(&dev->dev_lock);
+ 	setup_opal_dev(dev);
+@@ -3065,7 +3065,7 @@ bool opal_unlock_from_suspend(struct opal_dev *dev)
+ {
+ 	struct opal_suspend_data *suspend;
+ 	bool was_failure = false;
+-	int ret = 0;
++	int ret;
+ 
+ 	if (!dev)
+ 		return false;
+-- 
+2.18.2
 
-Cheers,
-Prabhakar
 
