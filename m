@@ -1,138 +1,145 @@
-Return-Path: <linux-kernel+bounces-93284-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93285-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 084EE872D7C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 04:24:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F1A1E872D80
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 04:26:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B1ACB1F25FEA
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 03:24:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 751101F26027
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 03:26:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B782E134B0;
-	Wed,  6 Mar 2024 03:24:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3D9C12E75;
+	Wed,  6 Mar 2024 03:26:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UffxNdOv"
-Received: from mail-oa1-f52.google.com (mail-oa1-f52.google.com [209.85.160.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="OgJGzG5u"
+Received: from omta40.uswest2.a.cloudfilter.net (omta40.uswest2.a.cloudfilter.net [35.89.44.39])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FEFADDD8
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 03:24:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1D27DDBC
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 03:26:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.39
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709695467; cv=none; b=GHS24PK169zbbJ9VcBD9dZWMKKQlNAcGjHfRaHqJQSiygOC9WWUhQ+Atr8RJ57qjkC4ktLiJlkZFF0PA+pF0EIZ3dhZM0iVRhljCNDOiCndURHmrcns4AedFFqkILrt6ucfxKxEDxD6VeyWfDs498/wUwm7V8x0HXz81PwaCUys=
+	t=1709695567; cv=none; b=A/wR7DCfjlLkyTCO0VSfACtz9h9zXK/oI1nYbB9HuG3i1E63r0Z3nigQ+9tSS9/Z3/rg0DX5NXjLEQk4O8shQRaTS08FByifT50ROHxOs42c3OgSgN+ArlO98CshO7kxpkfo03E+S3IbpfCzkBsin/iQ5t35fk5eaKECudvYvCU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709695467; c=relaxed/simple;
-	bh=sIgPaakpq0RIE9FvimFLTIqfrslPhHT5y01/qMF8fYk=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Ya90cutpTC8pGqGU2y3YCeQB8XwxoOU0z+P00dMFnhnaT3WwSBxV+/kstML/EWce7THteK20y8ESyFH+Wy7R/dOL+6Yr6w7LUqwk7YQfeY1Z6KZng82oBFQKMsFm6E5DLVMtCLYFGDosaoU1yh1ZLtuXkcosOA+eSGtPaUle/fI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UffxNdOv; arc=none smtp.client-ip=209.85.160.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-21ffac15528so2560518fac.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 19:24:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709695464; x=1710300264; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=YY8pprhlY2hfjI+DczSHGBDtQSXX8a4KHHRyaWkDhB0=;
-        b=UffxNdOvbtq6S5AoQ9bXRBK5PSsQyTa4rzBEBOPaPtI3mv5s+BrvQKMyPu6c+oTu18
-         Gwg2IlCYAURediDsqwTC+0nxU7J9qLKXyo25lBnff090vHHiWVAYA+CFzGDmZF52fUQB
-         GAFpzeXUsMR9Zi9YRMWnyhO7buKMIZXOr5oP6fYfjUhsLowazrM4sOxuJEuaBNWfMCQP
-         Y2/OP1EwPOCQSHiFPXTd0uiWl9SKJ4ZeowJLVf0w2OwSuwj8Ug0fuU6hDu8aD3xmZ2XH
-         l+8SbxMX1RlWQ/xpuCpy84CLiKrOeNEque7exXDoUN1DXSyQ3a4hLsTLkKKtUTU+v+Yj
-         HkpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709695464; x=1710300264;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YY8pprhlY2hfjI+DczSHGBDtQSXX8a4KHHRyaWkDhB0=;
-        b=VG5eXtijTNdNGpLjgd90DS/z0x+gO9MG8NgWajA6bxc2qciJv6+rq4dHo3Xkx+s36F
-         Pzad5uENzE/67X9KtTnFsCqpoPw4J0YGLz/ZATRD6prGHxJwQHvEU6c6RDzJbPwSFHZL
-         Fh5hIMJqO/4/EefTErPwFpxlybsToiPsL09RYt0QMvtcn9BE4DN1fUJPpP0jypMNtaH7
-         J08GHigzUS3lgiHPHlJJjredEirGTlXCju5jsewDKCWuVvZ6LBC7g6OnFrSPWGzGSBnw
-         iL+PXV5YL+osSDzNZFdeo0ylmLEy4SUeMyiDnQGS18mVlZg/RMKwbCHFj/R+R7UIeCw0
-         orlg==
-X-Forwarded-Encrypted: i=1; AJvYcCWQUbFWjXSZEE893bjkMVXikv80Hwu2pawka7fJhMKwe2KfAX2IUzSUG4pbvLp3V4xBEcQ/4Bge2JblzY6eGT5jbQlx8U5z/E/BVlXt
-X-Gm-Message-State: AOJu0YxJWIKB4xb00Vwz06lHdVbTDcHxePrlR4P9Jw2XsONcspG2nNT+
-	WM1AuITB8tKiktUd56Iat6gkACQdnvq+Yj569eeiQAx0vHI7yGhp
-X-Google-Smtp-Source: AGHT+IG/qPbUHBENxg8B/NMPAY+Iva1zLONMjiTm2XMFQUb8yAin0rmXFmVqAKQdmhrKgGpK008ing==
-X-Received: by 2002:a05:6871:2218:b0:21e:e069:5852 with SMTP id sc24-20020a056871221800b0021ee0695852mr4336776oab.55.1709695464513;
-        Tue, 05 Mar 2024 19:24:24 -0800 (PST)
-Received: from kernel.. ([2402:e280:214c:86:d881:224e:f9c2:b24a])
-        by smtp.gmail.com with ESMTPSA id s18-20020a056a0008d200b006e5af565b1dsm1824624pfu.201.2024.03.05.19.24.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Mar 2024 19:24:24 -0800 (PST)
-From: R SUNDAR <prosunofficial@gmail.com>
-To: harry.wentland@amd.com,
-	sunpeng.li@amd.com,
-	Rodrigo.Siqueira@amd.com,
-	alexander.deucher@amd.com,
-	christian.koenig@amd.com,
-	Xinhui.Pan@amd.com,
-	airlied@gmail.com,
-	daniel@ffwll.ch,
-	rdunlap@infradead.org,
-	mario.limonciello@amd.com,
-	mwen@igalia.com,
-	swarupkotikalapudi@gmail.com
-Cc: amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
-	R SUNDAR <prosunofficial@gmail.com>
-Subject: [PATCH] Removed redundant @ symbol to fix kernel-doc warnings in -next repo
-Date: Wed,  6 Mar 2024 08:54:14 +0530
-Message-Id: <20240306032414.18488-1-prosunofficial@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1709695567; c=relaxed/simple;
+	bh=zAReeEU8/qi5a+yFDj7UXBuoBjH1MPHcc7huo3+zByw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qio0doQxK9UgGXqqV4iXC+OhQeEE/RXMwEj7DOSDrpwE3+fIYn02smAIUetmi3mDpGsrFZfw9WlgHOuz4BSAJJ5cl34VD/oUp3j0EtUlXvBT/BGCIPtG4zEJYY++DMfPJHfDRNrHPg060kfkkndluVnNFxSTcgAk2OO34y/wXUI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=OgJGzG5u; arc=none smtp.client-ip=35.89.44.39
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
+Received: from eig-obgw-6008a.ext.cloudfilter.net ([10.0.30.227])
+	by cmsmtp with ESMTPS
+	id hefRraGC7PM1hhhumrLDfQ; Wed, 06 Mar 2024 03:25:56 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+	by cmsmtp with ESMTPS
+	id hhulrMoGeikfchhumrkBNw; Wed, 06 Mar 2024 03:25:56 +0000
+X-Authority-Analysis: v=2.4 cv=A7pqPbWG c=1 sm=1 tr=0 ts=65e7e244
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=VhncohosazJxI00KdYJ/5A==:17
+ a=IkcTkHD0fZMA:10 a=K6JAEmCyrfEA:10 a=wYkD_t78qR0A:10 a=cm27Pg_UAAAA:8
+ a=XVdhlGlpZy0Tqqe4dGwA:9 a=QEXdDO2ut3YA:10 a=xmb-EsYY8bH0VWELuYED:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=hA5anOLDf9hOII6ZL+mpHqZgQ3rs+L/N8KnCrTRwBMY=; b=OgJGzG5urvOSye6X4o/ZpFKHHX
+	TbW58mPd5ZZTTYRrOfSOsYbTltFxdq/haZS2WgK4RzIVvF6vv1E2KwmkmgVoaO8ts84sRaGGGLy4A
+	JpAIy29MWILwYRBPY6ygZJ4Xb6JkMkR0A+20gaC9EyZPjW7qw9J/ld6ZpVB27UL+u2Dci3Tm7caLY
+	5OAiRCHSdvKjD8WrqiQCXOTi3bKUV0622cYY7YWN3zFrPjmKNiCaL6qnNrlGk/iGjnlFYrTqYcKAm
+	wU5U99v5vc0nvjAba/Ymv1j9eur9ovuP/TcwFBetIXAZgib48WQgdySJx0DyGVd/JeGNheFLMa1kv
+	vArK3QuQ==;
+Received: from [201.172.172.225] (port=46818 helo=[192.168.15.14])
+	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <gustavo@embeddedor.com>)
+	id 1rhhuj-001ukg-2u;
+	Tue, 05 Mar 2024 21:25:53 -0600
+Message-ID: <9c2990f0-7407-49c6-9e3a-b92de82ea437@embeddedor.com>
+Date: Tue, 5 Mar 2024 21:25:51 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] overflow: Change DEFINE_FLEX to take __counted_by member
+Content-Language: en-US
+To: Kees Cook <keescook@chromium.org>,
+ Przemek Kitszel <przemyslaw.kitszel@intel.com>
+Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>,
+ Tony Nguyen <anthony.l.nguyen@intel.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+ linux-hardening@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+ linux-kernel@vger.kernel.org
+References: <20240306010746.work.678-kees@kernel.org>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <20240306010746.work.678-kees@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 201.172.172.225
+X-Source-L: No
+X-Exim-ID: 1rhhuj-001ukg-2u
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.15.14]) [201.172.172.225]:46818
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 1
+X-Org: HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfHuanEjSOjq60NWQIdNtYQCVhS/beZKDudcoiAVaokcAoax93F+6W1M8wskADsWkJC6Qr0stdFzPmOJQIaFj6Y9JiSeBqp84rScUN95xFTA3P5jHotBN
+ KCCiqLn627WleIEPkk/NsTJMz21xP6DPjiJLsqlEtPmqIdQgm6NvrIeJxVrsz33Wan8Rn2Bl/f3quDuJYBdDx8u84IMhmQlBrZw7SuxdODl29gEp6RmB86i5
 
-For linux-next repository.
 
-/drivers/gpu/drm/amd/display/dc/inc/hw/hubp.h:1: warning: no structured comments found
-/drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:132: warning: Incorrect use of kernel-doc format:          * @@overlap_only: Whether overlapping of different planes is allowed.
-/drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:132: warning: Incorrect use of kernel-doc format:          * @@overlap_only: Whether overlapping of different planes is allowed.
-/drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:1: warning: no structured comments found
-/drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:132: warning: Incorrect use of kernel-doc format:          * @@overlap_only: Whether overlapping of different planes is allowed.
-/drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:162: warning: Function parameter or struct member 'pre_multiplied_alpha' not described in 'mpcc_blnd_cfg'
 
-Signed-off-by: R SUNDAR <prosunofficial@gmail.com>
----
- drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+On 05/03/24 19:07, Kees Cook wrote:
+> The norm should be flexible array structures with __counted_by
+> annotations, so DEFINE_FLEX() is updated to expect that. Rename
+> the non-annotated version to DEFINE_RAW_FLEX(), and update the few
+> existing users. Additionally add self-tests to validate syntax and
+> size calculations.
+> 
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
 
-diff --git a/drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h b/drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h
-index ba9b942ce09f..34a398f23fc6 100644
---- a/drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h
-+++ b/drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h
-@@ -110,9 +110,8 @@ struct mpcc_blnd_cfg {
- 	 */
- 	enum mpcc_alpha_blend_mode alpha_mode;
- 
--	/***
--	 * @@pre_multiplied_alpha:
--	 *
-+	/**
-+	 * @pre_multiplied_alpha:
- 	 * Whether pixel color values were pre-multiplied by the alpha channel
- 	 * (MPCC_ALPHA_MULTIPLIED_MODE).
- 	 */
-@@ -129,7 +128,7 @@ struct mpcc_blnd_cfg {
- 	int global_alpha;
- 
- 	/**
--	 * @@overlap_only: Whether overlapping of different planes is allowed.
-+	 * @overlap_only: Whether overlapping of different planes is allowed.
- 	 */
- 	bool overlap_only;
- 
--- 
-2.34.1
+[..]
 
+> +/**
+> + * DEFINE_FLEX() - Define an on-stack instance of structure with a trailing
+> + * flexible array member.
+> + *
+> + * @TYPE: structure type name, including "struct" keyword.
+> + * @NAME: Name for a variable to define.
+> + * @COUNTER: Name of the __counted_by member.
+> + * @MEMBER: Name of the array member.
+> + * @COUNT: Number of elements in the array; must be compile-time const.
+> + *
+> + * Define a zeroed, on-stack, instance of @TYPE structure with a trailing
+> + * flexible array member.
+> + * Use __struct_size(@NAME) to get compile-time size of it afterwards.
+> + */
+> +#define DEFINE_FLEX(TYPE, NAME, COUNTER, MEMBER, COUNT)	\
+
+Probably, swapping COUNTER and MEMBER is better?
+
+	DEFINE_FLEX(TYPE, NAME, MEMBER, COUNTER, COUNT)
+
+Thanks
+--
+Gustavo
 
