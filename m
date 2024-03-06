@@ -1,547 +1,107 @@
-Return-Path: <linux-kernel+bounces-94335-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94336-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E110D873D91
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 18:30:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9228E873D93
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 18:36:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 109F21C22AC6
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:30:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D9874B21B5A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:36:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A120413D316;
-	Wed,  6 Mar 2024 17:30:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88A7C13BADE;
+	Wed,  6 Mar 2024 17:36:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="lHZ3wldp"
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Wz/MBBNa"
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05B1E13B7BD
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 17:29:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ED3D135A4C
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 17:36:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709746203; cv=none; b=GYm9O90xW47x3y+l2XXQL/CA6LvZFmsu7YHiikqEznV+kjuSLHnLgq5p3RyatHYNgRNEs+X0KxicgZNBxw7B6wxphhrgHB33S7iEUtLCshZfEPsjvf9x/RdAd0qKjKL83l+47XM8OZsSOYSZ32NLsC142FYv/hhAsj79N1IFURc=
+	t=1709746576; cv=none; b=Or4IvHCYwXgU/fWQT9xvbbS4EOSTYvfGABDvGJ2Oksdp6EYjIleDipC6QoWoeQs76AV+PcBJKJFVgXlWIwsT7EIszR/IsDmqPZZ2xIwK5Y7xtDGxJa/40dFrDWQNaNdablyAGW+Igx1nCN1yT4LQGoX6eqpGuDZTfqPfOpfc+Pk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709746203; c=relaxed/simple;
-	bh=rvFIHK9njgpLnyUXYQRSLdLsOTq7aHWIm4+3rZVvZNY=;
+	s=arc-20240116; t=1709746576; c=relaxed/simple;
+	bh=cUyDcNC/LTkBVNTzTcTw3YOnUioZAJDXkPPFotLuCH0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FGqFcxSL0znt4fVCyrhJtYzZ8QFDwD0IUs2etV2Tq/B9yhkca+xx3Bs+iorU62F8nS+d8wQb7fkTi7qH1Qvgyq1uN9Fg+P8eORopQYZVVUXIj/V2iNtFMv4zgyba9dLr+etm7iGDgpfepUkSIYN/3kET2PjFY8/vDkxmqYXuqPg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=lHZ3wldp; arc=none smtp.client-ip=217.70.183.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id EB8511C0002;
-	Wed,  6 Mar 2024 17:29:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709746198;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=f+LLfhPYfz8XtExdXPJeootyPCE8Jh/+rOrqx0Tg33A=;
-	b=lHZ3wldppPVvICDn/i3C2J+qEb3bV+jYbi2VnQZUfL/lzpdusX+C27y08bspe6M/TJr0hc
-	0wMt5T3Fg5IdQprfD8Fwgl6iUqNavas/e04ZjLy14koe15k3nrUmeC9J5We07y2VILBXST
-	GXXAsdrdfSCIMOodcK//dxu0wP4wY+Ybpmv487Xk2EALkp13xJnmziwv+P0NaYEEeiVOUw
-	o1ab78WIZVqXVos6oSMJ32sZq+9JoamVD11aRMQoU46hrk0biyGfpkQxHH0hd/zDKbVe5B
-	4lqd4HAoABUlClC1uCx6WzSyfkpOlzKYdoX5K45u+ctwdMChv+KHh5wH97PSug==
-Date: Wed, 6 Mar 2024 18:29:54 +0100
-From: Louis Chauvet <louis.chauvet@bootlin.com>
-To: Pekka Paalanen <pekka.paalanen@collabora.com>
-Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
-	Melissa Wen <melissa.srw@gmail.com>,
-	=?iso-8859-1?Q?Ma=EDra?= Canal <mairacanal@riseup.net>,
-	Haneen Mohammed <hamohammed.sa@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, arthurgrillo@riseup.net,
-	Jonathan Corbet <corbet@lwn.net>, dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org, jeremie.dautheribes@bootlin.com,
-	miquel.raynal@bootlin.com, thomas.petazzoni@bootlin.com
-Subject: Re: [PATCH v2 5/9] drm/vkms: Re-introduce line-per-line composition
- algorithm
-Message-ID: <ZeioEgY2z4NofV1-@localhost.localdomain>
-Mail-Followup-To: Pekka Paalanen <pekka.paalanen@collabora.com>,
-	Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
-	Melissa Wen <melissa.srw@gmail.com>,
-	=?iso-8859-1?Q?Ma=EDra?= Canal <mairacanal@riseup.net>,
-	Haneen Mohammed <hamohammed.sa@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, arthurgrillo@riseup.net,
-	Jonathan Corbet <corbet@lwn.net>, dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org, jeremie.dautheribes@bootlin.com,
-	miquel.raynal@bootlin.com, thomas.petazzoni@bootlin.com
-References: <20240223-yuv-v2-0-aa6be2827bb7@bootlin.com>
- <20240223-yuv-v2-5-aa6be2827bb7@bootlin.com>
- <20240226133706.281deb59.pekka.paalanen@collabora.com>
- <Zd35cY6uxP7akjw8@localhost.localdomain>
- <20240229122126.6bdb1d2f.pekka.paalanen@collabora.com>
- <ZeXooXdha4tSGkad@localhost.localdomain>
- <20240305121013.4088dc21.pekka.paalanen@collabora.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=AW5nwhG38oQxU23dzPnnQa6RRy/YpWWED8Cj2F7LPY41BDOFrolu1ucT0ItLZm1ccNeJgHNhOfNe5oAi/1FeR3henQY8gL5dXUC+uMAHA9BEZbEbQN1shiMIkCRni8iJeMJZDcUJyaHv6VBz9Gb61ILAR9EoC+9OTlTyr783RDc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Wz/MBBNa; arc=none smtp.client-ip=209.85.208.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-56781070f38so1965191a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 09:36:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709746573; x=1710351373; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q88pdzkeevTU/Ovl2T1JSrp/SxlpWNguLRggqavLH88=;
+        b=Wz/MBBNaNTY85MfOa80MQOV/lLx3PJ6OOnQz8M3/g/dPJlzuU50MlQe8Tr/w1x7xSp
+         PprNrNk8p8j3ILI3qNIEhrWa80AripKRMJqiYlWG5+4znY9SS+jAv6qhJCT7boS9LZjk
+         dk/yBaOdXkTkmwv3R29XBuOH9Vyu7HDtwGLtKqFBMLnh+VH6NCPBG2Rhp0K5xQZP3Qvm
+         1NjU0NvB1bVQdWtvji/DMUO1+0wcXVfUg/8dzkfTOVMJLcVtCASGKDYck8WBcSPFiQhP
+         xHPt5lQyr5qyNwf0UsCEm9wAK5wbiawkOqmvnJg0rf6MlAlyuGtgR3bNT4EqVzQrAtAp
+         fKEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709746573; x=1710351373;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Q88pdzkeevTU/Ovl2T1JSrp/SxlpWNguLRggqavLH88=;
+        b=TTavBEs9gvSGtUXDPbGfr4hE6sZdpCPK7RKAkxn5NUeHNTvNi4YD+s0qgqqIXi5WmY
+         kOROSSJMDudy+oFUeAKIsAEy5EfbVHgWjvM3sj5Is7sjJpByv/zWNYXvNxqa8sL3aJLg
+         643mfS9VxiZk18BjFZGFWyoOa/uk+NgW1B2o+7TWiINU+SSey1TZR3xn/+5IAX2KUC5J
+         Gj6xJmrEJ1h+OQFyaOpI5iQqHSv9oE7iGF3UkOM4rEzbWhapRsRK78X8TFoIn9HFMsOY
+         VF1xDPcDZMnZVbjtsewS/yRm/g5tY0uxlltK/pJ+9zUVclPL1lpHRm8ajvS8ZKYviZ4G
+         SjVQ==
+X-Gm-Message-State: AOJu0YwmjRzgxnvmGEXNuED0cuk/eEynXrzD447Ys2ovvxwuVQxVzfJv
+	ZYq7+YclVAkg7AcTXRZSrlp2/2g8VMSStiE21rXOP43h41fDnPPG
+X-Google-Smtp-Source: AGHT+IG5XlKHvUi+RmQJQVL7A7olBfvW+6kABQO3o/thrMI8PXTTffkoH5uLonpIwQ4w0Hrvhu2+2w==
+X-Received: by 2002:a17:906:d287:b0:a3f:50f0:7a0a with SMTP id ay7-20020a170906d28700b00a3f50f07a0amr5938498ejb.20.1709746573281;
+        Wed, 06 Mar 2024 09:36:13 -0800 (PST)
+Received: from andrea ([31.189.122.3])
+        by smtp.gmail.com with ESMTPSA id um15-20020a170906cf8f00b00a443e6f9403sm7368635ejb.54.2024.03.06.09.36.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Mar 2024 09:36:12 -0800 (PST)
+Date: Wed, 6 Mar 2024 18:36:09 +0100
+From: Andrea Parri <parri.andrea@gmail.com>
+To: Kenneth-Lee-2012@foxmail.com
+Cc: linux-kernel@vger.kernel.org, stern@rowland.harvard.edu,
+	paulmck@kernel.org
+Subject: Re: Question about PB rule of LKMM
+Message-ID: <ZeipiSVLR01jmM6b@andrea>
+References: <tencent_C5266B7D6F024A916BCA7833FDEA94A74309@qq.com>
+ <Zedd18wiAkK68Lzr@andrea>
+ <tencent_744E0AF832049C200F96FD6582D5114D7F0A@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240305121013.4088dc21.pekka.paalanen@collabora.com>
-X-GND-Sasl: louis.chauvet@bootlin.com
+In-Reply-To: <tencent_744E0AF832049C200F96FD6582D5114D7F0A@qq.com>
 
-Le 05/03/24 - 12:10, Pekka Paalanen a écrit :
-> On Mon, 4 Mar 2024 16:28:33 +0100
-> Louis Chauvet <louis.chauvet@bootlin.com> wrote:
+> > In this sense, the propagation rule (like other "acyclicity"-constraints of
+> > the LKMM) expresses "temporal ordering", and any pb-link is (by definition)
+> > an "execute-before"-link.  The file explanation.txt can provide additional
+> > context/information, based on the (informal) operational model described in
+> > that file, about this matter.
 > 
-> > Le 29/02/24 - 12:21, Pekka Paalanen a écrit :
-> > > On Tue, 27 Feb 2024 16:02:09 +0100
-> > > Louis Chauvet <louis.chauvet@bootlin.com> wrote:
-> > >   
-> > > > [...]
-> > > >   
-> > > > > > -static void pre_mul_alpha_blend(struct vkms_frame_info *frame_info,
-> > > > > > -				struct line_buffer *stage_buffer,
-> > > > > > -				struct line_buffer *output_buffer)
-> > > > > > +static void pre_mul_alpha_blend(
-> > > > > > +	struct line_buffer *stage_buffer,
-> > > > > > +	struct line_buffer *output_buffer,
-> > > > > > +	int x_start,
-> > > > > > +	int pixel_count)
-> > > > > >  {
-> > > > > > -	int x_dst = frame_info->dst.x1;
-> > > > > > -	struct pixel_argb_u16 *out = output_buffer->pixels + x_dst;
-> > > > > > -	struct pixel_argb_u16 *in = stage_buffer->pixels;
-> > > > > > -	int x_limit = min_t(size_t, drm_rect_width(&frame_info->dst),
-> > > > > > -			    stage_buffer->n_pixels);
-> > > > > > -
-> > > > > > -	for (int x = 0; x < x_limit; x++) {
-> > > > > > -		out[x].a = (u16)0xffff;
-> > > > > > -		out[x].r = pre_mul_blend_channel(in[x].r, out[x].r, in[x].a);
-> > > > > > -		out[x].g = pre_mul_blend_channel(in[x].g, out[x].g, in[x].a);
-> > > > > > -		out[x].b = pre_mul_blend_channel(in[x].b, out[x].b, in[x].a);
-> > > > > > +	struct pixel_argb_u16 *out = &output_buffer->pixels[x_start];
-> > > > > > +	struct pixel_argb_u16 *in = &stage_buffer->pixels[x_start];    
-> > > > > 
-> > > > > Input buffers and pointers should be const.    
-> > > > 
-> > > > They will be const in v4.
-> > > >    
-> > > > > > +
-> > > > > > +	for (int i = 0; i < pixel_count; i++) {
-> > > > > > +		out[i].a = (u16)0xffff;
-> > > > > > +		out[i].r = pre_mul_blend_channel(in[i].r, out[i].r, in[i].a);
-> > > > > > +		out[i].g = pre_mul_blend_channel(in[i].g, out[i].g, in[i].a);
-> > > > > > +		out[i].b = pre_mul_blend_channel(in[i].b, out[i].b, in[i].a);
-> > > > > >  	}
-> > > > > >  }    
-> > > > > 
-> > > > > Somehow the hunk above does not feel like it is part of "re-introduce
-> > > > > line-per-line composition algorithm". This function was already running
-> > > > > line-by-line. Would it be easy enough to collect this and directly
-> > > > > related changes into a separate patch?    
-> > > > 
-> > > > It is not directly related to the reintroduction of line-by-line 
-> > > > algorithm, but in the simplification and maintenability effort, I 
-> > > > changed a bit the function to avoid having multiple place computing the 
-> > > > x_start/pixel_count values. I don't see an interrest to extract it, it 
-> > > > will be just a translation of the few lines into the calling place.  
-> > > 
-> > > It does make review more difficult, because it makes the patch bigger
-> > > and is not explained in the commit message. It is a surprise to a
-> > > reviewer, who then needs to think what this means and does it belong
-> > > here.
-> > > 
-> > > If you explain it in the commit message and note it in the commit
-> > > summary line, I think it would become fairly obvious that this patch is
-> > > doing two things rather than one.
-> > > 
-> > > Therefore, *if* it is easy to extract as a separate patch, then it
-> > > would be nice to do so. However, if doing so would require you to write
-> > > a bunch of temporary code that the next patch would just rewrite again,
-> > > then doing so would be counter-productive.
-> > > 
-> > > Patch split is about finding a good trade-off to make things easy for
-> > > reviewers:
-> > > 
-> > > - Smaller patches are better as long as they are self-standing and
-> > >   understandable in isolation, and of course do not regress anything.
-> > > 
-> > > - Rewriting the same thing multiple times in the same series is extra
-> > >   work for a reviewer and therefore best avoided.
-> > > 
-> > > - The simpler the semantic change, the bigger a patch can be and still
-> > >   be easy to review.
-> > > 
-> > > And all the patch writing rules specific to the kernel project that I
-> > > don't know about.  
-> > 
-> > I will extract it in "drm/vkms: Avoid computing blending limits inside the 
-> > blend function". It's not very relevant by itself, but it make the main 
-> > patch easier to read.
-> 
-> Thank you.
-> 
-> 
-> > > > [...]
-> > > >   
-> > > > > > +/**
-> > > > > > + * direction_for_rotation() - Helper to get the correct reading direction for a specific rotation
-> > > > > > + *
-> > > > > > + * @rotation: rotation to analyze    
-> > > > > 
-> > > > > This is KMS plane rotation property, right?
-> > > > > 
-> > > > > So the KMS plane has been rotated by this, and what we want to find is
-> > > > > the read direction on the attached FB so that reading returns pixels in
-> > > > > the CRTC line/scanout order, right?
-> > > > > 
-> > > > > Maybe extend the doc to explain that.    
-> > > > 
-> > > > Is it better?
-> > > > 
-> > > >  * direction_for_rotation() - Get the correct reading direction for a given rotation
-> > > >  *
-> > > >  * This function will use the @rotation parameter to compute the correct reading direction to read
-> > > >  * a line from the source buffer.
-> > > >  * For example, if the buffer is reflected on X axis, the pixel must be read from right to left.
-> > > >  * @rotation: Rotation to analyze. It correspond the the field @frame_info.rotation.  
-> > > 
-> > > I think it is important to define what determines the correct result.
-> > > In this case, we want the reading to produce pixels in the CRTC scanout
-> > > line order, I believe. If you don't say "CRTC", the reader does not
-> > > know what "the correct reading direction" should match to.  
-> > 
-> > Is this a better explanation?
-> > 
-> >  * This function will use the @rotation setting of a source plane to compute the reading
-> >  * direction in this plane which correspond to a left to right writing in the CRTC.
-> >  * For example, if the buffer is reflected on X axis, the pixel must be read from right to left
-> >  * to be written from left to right on the CRTC.
-> 
-> Perfect!
-> 
-> 
-> > 
-> > > > > > + */
-> > > > > > +enum pixel_read_direction direction_for_rotation(unsigned int rotation)
-> > > > > > +{
-> > > > > > +	if (rotation & DRM_MODE_ROTATE_0) {
-> > > > > > +		if (rotation & DRM_MODE_REFLECT_X)
-> > > > > > +			return READ_LEFT;
-> > > > > > +		else
-> > > > > > +			return READ_RIGHT;
-> > > > > > +	} else if (rotation & DRM_MODE_ROTATE_90) {
-> > > > > > +		if (rotation & DRM_MODE_REFLECT_Y)
-> > > > > > +			return READ_UP;
-> > > > > > +		else
-> > > > > > +			return READ_DOWN;
-> > > > > > +	} else if (rotation & DRM_MODE_ROTATE_180) {
-> > > > > > +		if (rotation & DRM_MODE_REFLECT_X)
-> > > > > > +			return READ_RIGHT;
-> > > > > > +		else
-> > > > > > +			return READ_LEFT;
-> > > > > > +	} else if (rotation & DRM_MODE_ROTATE_270) {
-> > > > > > +		if (rotation & DRM_MODE_REFLECT_Y)
-> > > > > > +			return READ_DOWN;
-> > > > > > +		else
-> > > > > > +			return READ_UP;
-> > > > > > +	}
-> > > > > > +	return READ_RIGHT;
-> > > > > > +}
-> > > > > > +
-> > > > > >  /**
-> > > > > >   * blend - blend the pixels from all planes and compute crc
-> > > > > >   * @wb: The writeback frame buffer metadata
-> > > > > > @@ -183,11 +187,11 @@ static void blend(struct vkms_writeback_job *wb,
-> > > > > >  {
-> > > > > >  	struct vkms_plane_state **plane = crtc_state->active_planes;
-> > > > > >  	u32 n_active_planes = crtc_state->num_active_planes;
-> > > > > > -	int y_pos;
-> > > > > >  
-> > > > > >  	const struct pixel_argb_u16 background_color = { .a = 0xffff };
-> > > > > >  
-> > > > > >  	size_t crtc_y_limit = crtc_state->base.crtc->mode.vdisplay;
-> > > > > > +	size_t crtc_x_limit = crtc_state->base.crtc->mode.hdisplay;    
-> > > > > 
-> > > > > Wonder why these were size_t, causing needs to cast below...    
-> > > > 
-> > > > For crtc_x_limit I just copied the crtc_y_limit. I will change both to u16 
-> > > > (the type of h/vdisplay).  
-> > > 
-> > > Don't go unsigned, that can cause unexpected results when mixed in
-> > > computations with signed variables.  
-> > 
-> > I will replace them with int.
-> >  
-> > > Oh, the cast was probably not about size but signedness. Indeed, size_t
-> > > is unsigned.
-> > > 
-> > > I don't see a reason to use a 16-bit size either, it just exposes the
-> > > computations to under/overflows that would then be needed to check for.
-> > > s32 should be as fast as any, and perhaps enough bits to never
-> > > under/overflow in these computations, but please verify that.  
-> > 
-> > I just suggested u16 because it's the type of vdisplay/hdisplay. It was 
-> > not for performance reason.
-> 
-> Right. It's not uncommon store a value in a storage efficient type that
-> may also disallow illegal values, and then use a different type while
-> actually computing with it in order to not provoke too obscure C
-> language rules most people never heard of, to avoid over/underflows, or
-> to just avoid undefined behaviour.
-> 
-> ...
-> 
-> > > > > > +static int get_step_1x1(struct drm_framebuffer *fb, enum pixel_read_direction direction,
-> > > > > > +			int plane_index)
-> > > > > >  {
-> > > > > > -	int x_src = frame_info->src.x1 >> 16;
-> > > > > > -	int y_src = y - frame_info->rotated.y1 + (frame_info->src.y1 >> 16);
-> > > > > > -
-> > > > > > -	return packed_pixels_addr(frame_info, x_src, y_src);
-> > > > > > +	switch (direction) {
-> > > > > > +	default:
-> > > > > > +		DRM_ERROR("Invalid direction for pixel reading: %d\n", direction);
-> > > > > > +		return 0;    
-> > > > > 
-> > > > > What I'd do here is move the default: section outside of the switch
-> > > > > completely. Then the compiler can warn if any enum value is not handled
-> > > > > here. Since every case in the switch is a return statement, falling out
-> > > > > of the switch block is the default case.    
-> > > > 
-> > > > Hoo, I did not know that gcc can warn when using enums, I will definitly 
-> > > > do it for the v4.
-> > > >    
-> > > > > Maybe the enum variable containing an illegal value could be handled
-> > > > > more harshly so that callers could rely on this function always
-> > > > > returning a good value?
-> > > > > 
-> > > > > Just like passing in fb=NULL is handled by the kernel as an OOPS.    
-> > > > 
-> > > > I don't think it's a good idea to OOPS inside a driver.  
-> > > 
-> > > Everyone already do that. Most functions that do not expect to be called
-> > > with NULL never check the arguments for NULL. They just OOPS on
-> > > dereference if someone passes in NULL. And for a good reason: adding
-> > > all those checks is both code churn and it casts doubt: "maybe it is
-> > > legal and expected to call this function with NULL sometimes, what good
-> > > does that do?".  
-> > 
-> > I agree that adding something like 
-> > 
-> > 	if (direction_is_valid) pr_err("Invalid direction")
-> > 
-> > is useless, but as I already have the switch, it cost nothing to warn if 
-> > something gone wrong. I will just replace this simple DRM_ERROR with a 
-> > WARN_ONCE to be more verbose about "it is a bug".
-> 
-> Sounds good to me, and I hope kernel maintainers would agree.
-> 
-> 
-> > > > An error here is 
-> > > > maybe dangerous, but is not fatal to the kernel. Maybe you know how to do 
-> > > > a "local" OOPS to break only this driver and not the whole kernel?  
-> > > 
-> > > I don't know what the best practices are in the kernel.
-> > >  
-> > > > For the v4 I will keep a DRM_ERROR and return 0.  
-> > > 
-> > > Does that require the caller to check for 0? Could the 0 cause
-> > > something else to end up in an endless loop? If it does return 0, how
-> > > should a caller handle this case that "cannot" ever happen? Why have
-> > > code for something that cannot happen?  
-> > 
-> > I have to return something, otherwise the compiler will complain about it.
-> > 
-> > To avoid for future developers surprise, I added this information in the 
-> > comment. This way the user don't have to read the code to understand how 
-> > much he can rely on this value.
-> > 
-> > If the caller can trust his direction, he don't have to worry about this. 
-> > If he can't trust his direction, he know that the returned value can be 
-> > zero, and thus can't be used for a loop variant.
-> 
-> There should not be "untrusted" values to begin with at this point,
-> anything that comes from outside of the kernel should have already been
-> sanitised. This is about kernel bugs though. Bugs cannot be predicted,
-> nor can anyone guarantee to write bug-free code. Hence, the direction
-> value is always "somewhat untrusted". We're being paranoid about bugs
-> that might happen and trying to ensure the kernel can limp along
-> regardless, while also trying to minimise the amount of code that
-> "cannot" ever be reached.
->
-> > The zero is also nice because it does not interfere with the normal 
-> > behavior of this function. If the returned value is not zero, it's the 
-> > correct step to use from one pixel to an other.
-> 
-> If you expect the caller needing to check for the "cannot happen" case,
-> returning a unique error value is fine. If you expect the caller to
-> never need to think of the "cannot happen" case, you should return a
-> value that is "safe", if such value exists. "Safe" here means using it
-> will not result in grave bugs like bad memory access, but it also won't
-> produce expected results unless by accident.
+> So it is just a rule in the sence of mathematics? I think it would be better
+> if there were some explaination in the explaination file. It is
+> descripted in nature language, the reader might not notify it is just a
+> mathematics rule. And you cannot say an action executes before another
+> because they are in the pb link. It becomes a cycling in logic...
 
-That my issue, on my initial draft, I had a `return 1` (so I can use it as 
-a loop variant), but after thinking, if the start pixel is the last 
-of the plane, it will access outside the buffer.
- 
-> This getting perhaps a bit too philosophical, so don't mind about this
-> too much if it feels strange.
+I think you're on to something, explaining mathematical axioms or rules has
+never been an easy task AFAIU.  ;-)  (and that's why feedback is welcome)
 
-Maybe yes, I was a bit paranoid, I can just return 0 and remove the comment.
+The remark could be to continue to consider such rules "generalizations" of
+properties met by several hardware models or other specific contexts, rather
+than (mere) logically-derived facts.
 
-> 
-> > > Of course it's a trade-off between correctness and limping along
-> > > injured, and the kernel tends to strongly lean toward the latter for the
-> > > obvious reasons.
-> > >   
-> > > > > > +	case READ_RIGHT:
-> > > > > > +		return fb->format->char_per_block[plane_index];
-> > > > > > +	case READ_LEFT:
-> > > > > > +		return -fb->format->char_per_block[plane_index];
-> > > > > > +	case READ_DOWN:
-> > > > > > +		return (int)fb->pitches[plane_index];
-> > > > > > +	case READ_UP:
-> > > > > > +		return -(int)fb->pitches[plane_index];
-> > > > > > +	}
-> > > > > >  }
-> > > > > >  
-> > > > > > -static int get_x_position(const struct vkms_frame_info *frame_info, int limit, int x)
-> > > > > > -{
-> > > > > > -	if (frame_info->rotation & (DRM_MODE_REFLECT_X | DRM_MODE_ROTATE_270))
-> > > > > > -		return limit - x - 1;
-> > > > > > -	return x;
-> > > > > > -}
-> > > > > >  
-> > > > > >  /*
-> > > > > > - * The following  functions take pixel data from the buffer and convert them to the format
-> > > > > > + * The following  functions take pixel data (a, r, g, b, pixel, ...), convert them to the format
-> > > > > >   * ARGB16161616 in out_pixel.
-> > > > > >   *
-> > > > > > - * They are used in the `vkms_compose_row` function to handle multiple formats.
-> > > > > > + * They are used in the `read_line`s functions to avoid duplicate work for some pixel formats.
-> > > > > >   */
-> > > > > >  
-> > > > > > -static void ARGB8888_to_argb_u16(u8 *src_pixels, struct pixel_argb_u16 *out_pixel)
-> > > > > > +static void ARGB8888_to_argb_u16(struct pixel_argb_u16 *out_pixel, int a, int r, int g, int b)    
-> > > > > 
-> > > > > The function name ARGB8888_to_argb_u16() is confusing. It's not taking
-> > > > > in ARGB8888 pixels but separate a,r,g,b ints. The only assumption it
-> > > > > needs from the pixel format is the 8888 part.    
-> > > > 
-> > > > I don't realy know how to name it. What I like with ARGB8888 is that it's 
-> > > > clear that the values are 8 bits and in argb format.  
-> > > 
-> > > I could even propose 
-> > > 
-> > > static struct pixel_argb_u16
-> > > argb_u16_from_u8888(int a, int r, int g, int b)
-> > > 
-> > > perhaps. Yes, returning a struct by value. I think it would fit, and
-> > > these are supposed to get fully inlined anyway, too.
-> > > 
-> > > c.f argb_u16_from_u2101010().  
-> > 
-> > I don't find this method, but I got and like the idea, I will change the 
-> > callback to this in the v4.
-> 
-> I mean, there is no support for 10-bpc formats in VKMS yet IIRC, but
-> there should be one day, so thinking about how that would fit in the
-> naming scheme is nice.
-> 
-> > > Not a big deal though, I think I'm getting a little bit too involved to
-> > > see what would be the most intuitively understandable naming scheme for
-> > > someone not familiar with the code.
-> > >  
-> > > > Do you think that `argb_u8_to_argb_u16`, with a new structure 
-> > > > pixel_argb_u8 will be better? (like PATCH 6/9 with pixel_yuv_u8).
-> > > > 
-> > > > If so, I will introduce the argb_u8 structure in an other commit.  
-> > > 
-> > > How would you handle 10-bpc formats? Is there a need for
-> > > proliferation of bit-depth-specific struct types?  
-> > 
-> > No, I don't think it's good to multiply things. I will patch Arthur's 
-> > patches to avoid the pixel_yuv_u8 structure.
-> > 
-> > > > [...]
-> > > >   
-> > > > > > + * The following functions are read_line function for each pixel format supported by VKMS.
-> > > > > >   *
-> > > > > > - * This function composes a single row of a plane. It gets the source pixels
-> > > > > > - * through the y coordinate (see get_packed_src_addr()) and goes linearly
-> > > > > > - * through the source pixel, reading the pixels and converting it to
-> > > > > > - * ARGB16161616 (see the pixel_read() callback). For rotate-90 and rotate-270,
-> > > > > > - * the source pixels are not traversed linearly. The source pixels are queried
-> > > > > > - * on each iteration in order to traverse the pixels vertically.
-> > > > > > + * They read a line starting at the point @x_start,@y_start following the @direction. The result
-> > > > > > + * is stored in @out_pixel and in the format ARGB16161616.
-> > > > > > + *
-> > > > > > + * Those function are very similar, but it is required for performance reason. In the past, some
-> > > > > > + * experiment were done, and with a generic loop the performance are very reduced [1].
-> > > > > > + *
-> > > > > > + * [1]: https://lore.kernel.org/dri-devel/d258c8dc-78e9-4509-9037-a98f7f33b3a3@riseup.net/
-> > > > > >   */
-> > > > > > -void vkms_compose_row(struct line_buffer *stage_buffer, struct vkms_plane_state *plane, int y)
-> > > > > > +
-> > > > > > +static void ARGB8888_read_line(struct vkms_frame_info *frame_info, int x_start, int y_start,
-> > > > > > +			       enum pixel_read_direction direction, int count,
-> > > > > > +			       struct pixel_argb_u16 out_pixel[])
-> > > > > > +{
-> > > > > > +	u8 *src_pixels = packed_pixels_addr(frame_info, x_start, y_start, 0);
-> > > > > > +
-> > > > > > +	int step = get_step_1x1(frame_info->fb, direction, 0);
-> > > > > > +
-> > > > > > +	while (count) {
-> > > > > > +		u8 *px = (u8 *)src_pixels;
-> > > > > > +
-> > > > > > +		ARGB8888_to_argb_u16(out_pixel, px[3], px[2], px[1], px[0]);
-> > > > > > +		out_pixel += 1;
-> > > > > > +		src_pixels += step;
-> > > > > > +		count--;    
-> > > > > 
-> > > > > btw. you could eliminate decrementing 'count' if you computed end
-> > > > > address and used while (out_pixel < end).    
-> > > > 
-> > > > Yes, you are right, but after thinking about it, neither out_pixel < end 
-> > > > and while (count) are conveying "this loop will copy `count` pixels. I 
-> > > > think a for-loop here is more understandable. There is no ambiguity in the 
-> > > > number of pixels written and less error-prone. I will replace
-> > > > 	while (count) 
-> > > > by
-> > > > 	for(int i = 0; i < count; i++)  
-> > > 
-> > > I agree that a for-loop is the most obvious way of saying it, but I
-> > > also think while (out_pixel < end) is very close too, and so is while (count).
-> > > None of those would make me think twice.
-> > >
-> > > However, I'm thinking of performance here. After all, this is the
-> > > hottest code path there is in VKMS. Is the compiler smart enough to
-> > > eliminate count-- or i to reduce the number of CPU cycles?  
-> > 
-> > You are proably right, I will change it to out_pixel < end.
-> 
-> Don't trust my word without benchmarking it. ;-)
-
-I did not notice a change with kms_fb_stress. There is maybe a small 
-improvment, but completly hidden in the DRM overhead.
-
-Kind regards,
-Louis Chauvet
-
-> 
-> Thanks,
-> pq
-
-
-
--- 
-Louis Chauvet, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+  Andrea
 
