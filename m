@@ -1,130 +1,135 @@
-Return-Path: <linux-kernel+bounces-94390-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94403-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1A38873E6F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 19:24:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F64D873EDF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 19:28:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A7A8F1F225BC
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 18:24:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 01B19B20DC3
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 18:28:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E43EF13E7C4;
-	Wed,  6 Mar 2024 18:24:47 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A779513EFFF;
+	Wed,  6 Mar 2024 18:25:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="AxsmY1NC"
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 447B613D309
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 18:24:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 508E1145353
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 18:25:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709749487; cv=none; b=GPVpxIymIuf33eHIsq8LdJWWJ758GLwvQvPSuiE6NzoT1jbkV0i+Zli82v6v0FCfy1TtNFHxncN/xBtiKIRxenS6JiC6PnGum7hLe5Vky8KIngNrh5XtF4RvZ8wMYaR/3ykBXWdX/b+Y/bfqj6lSd3w9mVCO2jVN+ej33KsHmuo=
+	t=1709749512; cv=none; b=lyWO+iQmjhGbgNJ1g8noB8dW9ZIm1/JculBJDTS0vX5749X44d2YCIMAJ/ioN3GYYTgr0gZr8LOwWp9tUQxcu/13F6+Sh03mSi9VPI616KWGTsQM0Sa7YegduLJzuV3GspbNXUI82skvmtqmYNu8xH04/nlGlHS1liuso4bgBW4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709749487; c=relaxed/simple;
-	bh=S2ScsCozofQuFrawqTkDlwj7gQ9QVm172HhbV0jGMhI=;
+	s=arc-20240116; t=1709749512; c=relaxed/simple;
+	bh=6QmO9SZfOYGCQNYv4ZynnxE5IKMUsPX/PaEUiiJ1CpM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pZO9I2tyIFO9gqBHzz20OV0n1QlT9pLDmcF25AFxociHW9fME/y8RUNqmPpBSQag+WnYbjU4h9g+FKok/9h9HDGE1NRuaAVbKxYQQLLI4Fi2xMt4aAN6ywAZs2xwbds+ZIC7JZFfIBXW0bCv8cEWAAJCuQrH7STFCCEIjT8DReg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rhvwW-0002K1-8i; Wed, 06 Mar 2024 19:24:40 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rhvwU-004nUp-V5; Wed, 06 Mar 2024 19:24:38 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rhvwU-000opw-2m;
-	Wed, 06 Mar 2024 19:24:38 +0100
-Date: Wed, 6 Mar 2024 19:24:38 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Thorsten Scherer <T.Scherer@eckelmann.de>, 
-	linux-kernel@vger.kernel.org, Pengutronix Kernel Team <kernel@pengutronix.de>, 
-	"Ricardo B. Marliere" <ricardo@marliere.net>
-Subject: siox patches for next development cycle [Re: [PATCH 0/4] siox: Move
- some complexity into the core]
-Message-ID: <vg5yex3wpnfeibgkwmi33yazdxdz2pbhn4w72mnffqm3qtvjf6@gv3syxj6gsk7>
-References: <cover.1708328466.git.u.kleine-koenig@pengutronix.de>
- <lkgvr2t4wzw4jkfg523zcek6y2v5l7kj6onw77yffvvs7i2gfy@6ectsjpcg64t>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZdB7lGtlNL4v2fI6X7V0EnVNpxwndE4a6MDUjEL+Ako0cVQK+Ps72+DvJWLCvrYA1bijBR9eGhZDU0zPW6gaCqedNC/CEKX6sa8eyRFKpROx/8SfGgOEVURxWYodubw397Owd1SEgTLlcIAHn4aR3bgpyZtfQAIs5AuWRaxoF+Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=AxsmY1NC; arc=none smtp.client-ip=209.85.210.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6e5760eeb7aso15464b3a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 10:25:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1709749509; x=1710354309; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2Y5GuVIgcMEMa1wdjCxyxHdeavu9gb67/KgkXVHvPFs=;
+        b=AxsmY1NC9fuaUQo1Br5pKJHLR38CTsfblqW1GsR4i8zDylW1c0UI3m3754PzQ+2hqW
+         3uQCoP+fvV5ck+lnuWdTfWyrhFq14qC+8ei3NURS7FHfbRWGaacIz9lLYpNB0r+Vipdo
+         5Aowlhr/2xNhjl6alyczQ1DPjillipWYnniZy6ddIZVe8b+ckdmzI8kdf4d4XCG6a4Qd
+         I01SYaBGcOMcvG9zhsobLnw+zDJkWFpujStHW9ijAWES2Q9UFmUHYiL4GeWx2ANHoRo8
+         gsyMhxy3fyhdDDT5HchsVvpe22h/1ZvH9qGeNbSF7szNHWGWUb60tFn0lca1l9/7++lE
+         JIhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709749509; x=1710354309;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2Y5GuVIgcMEMa1wdjCxyxHdeavu9gb67/KgkXVHvPFs=;
+        b=Q/+k0R7LGC4bV4nhc9kX0h4pq+lSBaS94Faqs+9csdYRS7GNaxahn+MQcwAvbehBGq
+         gkRKezakznGGZEAzcjeYmtwCSjluiZkwjl4HSCrmPLqv6VX8QVbOYG2T9RiA+dte5Azr
+         Zt+IeH3zVTI1Kl2QxiEUKp3UStw5f5DdJdJNJ+cfva19Sxp30sA44YpoNQ+6qcE0IBsk
+         K6IMmSis3l2kQtUdyp/hjdLs33axUBaJQgfRwJ+HcxtxdzPzFGjca6CnoAXbC2hWXbOH
+         BU3wREEJoA2IqXOQuwH13RL9bZOKkzUtDXlJf/kong7gqdPdfbr+TBjWAtu/MjJ84lKj
+         IYFw==
+X-Forwarded-Encrypted: i=1; AJvYcCVloCKT1katws2bQOEtvynpJqLbYNckbryFVFatdRaUORTg5Af/ODsF/xNjMIbXsJQ9BMrkHln8kVg4dryQhcYxrufrSy9x6HLbbbVZ
+X-Gm-Message-State: AOJu0YxuJbQHHzFZm+AcHkYaUACrEE3MbnUY8jttObgch17AG+fOF3kM
+	Q4yjaPz86qwo2iVTtZri3F38x6/r2L+hYM+QQqyJO8NImPNtsqUwHDtlCU0kGx8rTFi80VpqvgD
+	kkvo=
+X-Google-Smtp-Source: AGHT+IFzBSLMGaJ08Dnj/BOlVEgA32D3g8w6QsqRlEsrWvsKtK4rYL3jf902EvY1b1GzhFtzX6klyA==
+X-Received: by 2002:a05:6a00:a86:b0:6e6:5374:411a with SMTP id b6-20020a056a000a8600b006e65374411amr1699696pfl.18.1709749509245;
+        Wed, 06 Mar 2024 10:25:09 -0800 (PST)
+Received: from ghost ([2600:1010:b05d:dc52:3fa4:a88f:2bde:e9a])
+        by smtp.gmail.com with ESMTPSA id f17-20020a63e311000000b005dc4da2121fsm11201406pgh.6.2024.03.06.10.25.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Mar 2024 10:25:08 -0800 (PST)
+Date: Wed, 6 Mar 2024 10:25:05 -0800
+From: Charlie Jenkins <charlie@rivosinc.com>
+To: Conor Dooley <conor.dooley@microchip.com>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Jisheng Zhang <jszhang@kernel.org>, Evan Green <evan@rivosinc.com>,
+	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
+	Eric Biggers <ebiggers@kernel.org>,
+	Elliot Berman <quic_eberman@quicinc.com>,
+	Charles Lohr <lohr85@gmail.com>, linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 3/4] riscv: Decouple emulated unaligned accesses from
+ access speed
+Message-ID: <Zei1Ac8RKNJu01Fs@ghost>
+References: <20240301-disable_misaligned_probe_config-v6-0-612ebd69f430@rivosinc.com>
+ <20240301-disable_misaligned_probe_config-v6-3-612ebd69f430@rivosinc.com>
+ <20240306-tactless-decathlon-b0df16517b1b@wendy>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="bpkv3rmlcupjeju3"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <lkgvr2t4wzw4jkfg523zcek6y2v5l7kj6onw77yffvvs7i2gfy@6ectsjpcg64t>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20240306-tactless-decathlon-b0df16517b1b@wendy>
+
+On Wed, Mar 06, 2024 at 01:19:37PM +0000, Conor Dooley wrote:
+> On Fri, Mar 01, 2024 at 05:45:34PM -0800, Charlie Jenkins wrote:
+> 
+> > -void unaligned_emulation_finish(void)
+> > +bool check_unaligned_access_emulated_all_cpus(void)
+> >  {
+> >  	int cpu;
+> >  
+> > -	/*
+> > -	 * We can only support PR_UNALIGN controls if all CPUs have misaligned
+> > -	 * accesses emulated since tasks requesting such control can run on any
+> > -	 * CPU.
+> > -	 */
+> 
+> Why was this comment removed? This patch doesn't change the situations
+> in which PR_UNALIGN is allowed, right?
+
+I'll add it back, that was unintentional. Thank you.
+
+- Charlie
+
+> 
+> > -	for_each_online_cpu(cpu) {
+> > -		if (per_cpu(misaligned_access_speed, cpu) !=
+> > -					RISCV_HWPROBE_MISALIGNED_EMULATED) {
+> > -			return;
+> > -		}
+> > -	}
+> > +	for_each_online_cpu(cpu)
+> > +		if (check_unaligned_access_emulated(cpu))
+> > +			return false;
+> > +
+> >  	unaligned_ctl = true;
+> > +	return true;
+> >  }
+> 
 
 
---bpkv3rmlcupjeju3
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hello,
-
-On Tue, Feb 27, 2024 at 11:21:24AM +0100, Thorsten Scherer wrote:
-> On Mon, Feb 19, 2024 at 08:46:28AM +0100, Uwe Kleine-K=F6nig wrote:
-> The series looks sensible.
->=20
-> Acked-by: Thorsten Scherer <t.scherer@eckelmann.de>
->=20
-> @gregkh: Would you please pick up Uwe's series as well?
-
-There are currently six patches for drivers/siox waiting to be applied.
-(Two by Ricardo and four by me.) Thorsten asked Greg to do so. Greg
-didn't pick these up yet though. So I collected them and put them to a
-branch at:
-
-	https://git.kernel.org/pub/scm/linux/kernel/git/ukleinek/linux.git siox/fo=
-r-next
-
-I'd like to get them in during the next development cycle.
-
-Greg, what is easiest for you? Are they still on your list of open
-patches and we (I) need just a bit more patience? Or should I send a PR
-to Linus when the merge window opens?
-
-Stephen: It would be nice to get this above branch into next, no matter
-if the patches make it in via Greg or me. Could you please add this
-branch to your list for next? If Greg will apply them, I'll empty this
-branch to not get duplicates.
-
-Thanks to all involved people,
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---bpkv3rmlcupjeju3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmXotOUACgkQj4D7WH0S
-/k7Pbgf/doRkYwETs5np5EkPuAdEK52wwa+hbDmORvc3iZmbunxYERLfcM3UAPUn
-BcOVc6THL097ZQAE/8V9zjJz8E9ghABQMztRj64jN4TaKhK7Yn1U7WWQ0WQxNw24
-VtMIVnVZ8WSpvDU5my6ZU4Z7oh/raQHfaSI8aVowAAsrVkIAZWQ9fB7b3mLnrySH
-3vQeEqyjI572sD3rJ8RJAdYfDgZT4GmAeombS2ny6431VFpJicImwq+bmZKM14XW
-GnIFaVpwEbXjYS/1zkK4F9/8i67y4TsEXBeS8t93oIYg2q7cXNqcQG0hncDCvrI0
-LY7s7gvDRpf9ZG4svNg9bRuGBTzGxg==
-=Vuh3
------END PGP SIGNATURE-----
-
---bpkv3rmlcupjeju3--
 
