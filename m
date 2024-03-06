@@ -1,122 +1,164 @@
-Return-Path: <linux-kernel+bounces-94645-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94646-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E20A087429F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 23:22:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6244B8742A0
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 23:22:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 62718281CB5
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 22:22:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3496A1C23019
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 22:22:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF7DB1BC4B;
-	Wed,  6 Mar 2024 22:22:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 347761BDD5;
+	Wed,  6 Mar 2024 22:22:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L8awcRI+"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UsGKdnS5"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2041C1BC22;
-	Wed,  6 Mar 2024 22:22:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C62C01BC2A;
+	Wed,  6 Mar 2024 22:22:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709763721; cv=none; b=lnQz80WiaLpGxe9HbH3QnEHL6ilUnSLRyoEBmV3WOaue7ovylkRTpdSU1vqWCLSETPhQ7vpcBh+zKP62Z7e9bMZV234jiPgraF1WyDmmkqC8dj42OFeloifqEiJreDiPl3/IpF+UB//M3IHXpWc28O90xCuSow9HtTa3Ava1xAs=
+	t=1709763758; cv=none; b=mo/FCPU1P+2yeP86erNuPVnDIm21zzJqyrm3+T6ysdhfCvOK8H8pQhvOSV2jgxOGrp2BJUELnfQbmPWNi2Qi6/MUJ9MxtK9VyfhHkNRGD/0ecxIRDxskkoGB+EFEvXWY51mY+72dcEFvkof0LjLXPZfanOUjhON11R7fDi0oZ8M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709763721; c=relaxed/simple;
-	bh=MlQq2QOH4T5O53iSAeAQzQexenXuj0qdDakJrAMFRSA=;
+	s=arc-20240116; t=1709763758; c=relaxed/simple;
+	bh=gSMvrjqg6OWr7a6MSmXKqgtJStuHqg4PqNfDg92nbTA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lOezdhvDjMZl5cfADo0W3sPEautFxyQQixsNAkkvLQWZTaqActZ4C/uw+cPERFK9VVbNF8eT6Y3jwKKcyT3BRlBrC/ZV5Gx+fJ9zIPLthB1RMFsthLlJlcJqb3CvusMNymMAeHOCAeUqul0K68OQUMfnJleIxPS7i9KQwH3uBHg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L8awcRI+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61A63C433C7;
-	Wed,  6 Mar 2024 22:22:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709763720;
-	bh=MlQq2QOH4T5O53iSAeAQzQexenXuj0qdDakJrAMFRSA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=L8awcRI+cbOQJ4rFYl4bBiukwg9eMMOOdqzZW0bvoWx/Km8dBtRKxJbmMAEjBD0eA
-	 cHZh292AmDPfCHHSfp/bsFgKO3w8qo1JDn8FE10B6L3u5QJxD5Ki9sNyuZCe+fqwlm
-	 TF/8wHBLxGibSw7vZCFZoibS1J6y2wciUYeMf5jWB/EZFqToWqor3YDfefnSKLJSF1
-	 Sp7ZBhJ+hijF9j8mdyDS930GGC9UpabGJlkRruygLYXfvk2M+O3ArV65KDGUC1+w/Z
-	 wTpkVQG/6NzWxcwDLAsmxePOXzQAxwmkEeHHShKaWrmg5LyY9VHesY+c4PiHKH+na1
-	 g3S7Abgc9IMOg==
-Date: Wed, 6 Mar 2024 19:21:57 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org, Andi Kleen <ak@linux.intel.com>
-Subject: Re: [PATCH v2 0/4] perf annotate: Improve memory usage for symbol
- histogram
-Message-ID: <ZejshUg8XiQz5YGa@x1>
-References: <20240304230815.1440583-1-namhyung@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=a55tKWGfuIIUMHlp/vfU/mRJj6D7xtP6xUJZnnkqO/XmLIMQoj5DMpCCi4a0y8nc1i3PdAGnA54KMfsa/q8Wrm+2AjjjzODFGkbBM3cTKLkoicpm1Z1YlnvmAmrq8aoWkw/XSWvt5F0n2C52/QEYXDdQb3uibEzNGsNrGt5zcSU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UsGKdnS5; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709763756; x=1741299756;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=gSMvrjqg6OWr7a6MSmXKqgtJStuHqg4PqNfDg92nbTA=;
+  b=UsGKdnS5Ncf4c7SyhF+9YOHfEmmMZQug76OUKfZiJIUZYVMCXmldiV8c
+   Mn35xXN504bpfE5fhGeFRPUIRMACk/F6iJ718NGzEsPvz8W/ZJ70tDreo
+   Fh3izXBHLuH5X+c39GI2KwUZHiW96ZzuRQ8zji034YJX5r2OI42sSCehy
+   /ADYCLPo7MephQovnZTSikBUGBAujdI12oMkjnR2SpBTCGvQ15Xrmp2a3
+   xyVZFaJKeeuinGTqyq6YDdm5BUhlC8b+tgIQzbELBriQsy6XwL0dXuImz
+   2f1agSftTfMs3MrePwsEQp29XKvAwe2dSKMTEvDDJBeEdz1WM9QWgM6CL
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11005"; a="14980539"
+X-IronPort-AV: E=Sophos;i="6.06,209,1705392000"; 
+   d="scan'208";a="14980539"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 14:22:36 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,209,1705392000"; 
+   d="scan'208";a="9798692"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 14:22:34 -0800
+Date: Wed, 6 Mar 2024 14:22:34 -0800
+From: Isaku Yamahata <isaku.yamahata@linux.intel.com>
+To: Binbin Wu <binbin.wu@linux.intel.com>
+Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+	Sean Christopherson <seanjc@google.com>,
+	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
+	Sean Christopherson <sean.j.christopherson@intel.com>,
+	isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v19 016/130] KVM: x86/mmu: Introduce
+ kvm_mmu_map_tdp_page() for use by TDX
+Message-ID: <20240306222234.GC368614@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <b2b7eeb1bab4cbf5421bf18647357a59b472dabe.1708933498.git.isaku.yamahata@intel.com>
+ <4555c300-5934-4563-a639-3e43d2ce405f@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240304230815.1440583-1-namhyung@kernel.org>
+In-Reply-To: <4555c300-5934-4563-a639-3e43d2ce405f@linux.intel.com>
 
-On Mon, Mar 04, 2024 at 03:08:11PM -0800, Namhyung Kim wrote:
-> Hello,
-> 
-> This is another series of memory optimization in perf annotate.
-> 
-> v2 changes:
->  * fix a bug when offset is bigger than 16 bits
-> 
-> 
-> When perf annotate (or perf report/top with TUI) processes samples, it
-> needs to save the sample period (overhead) at instruction level.  For
-> now, it allocates an array to do that for the whole symbol when it
-> hits any new symbol.  This comes with a lot of waste since samples can
-> be very few and instructions span to multiple bytes.
-> 
-> For example, when a sample hits symbol 'foo' that has size of 100 and
-> that's the only sample falls into the symbol.  Then it needs to
-> allocate a symbol histogram (sym_hist) and the its size would be
-> 
->   16 (header) + 16 (sym_hist_entry) * 100 (symbol_size) = 1616
-> 
-> But actually it just needs 32 (header + sym_hist_entry) bytes.  Things
-> get worse if the symbol size is bigger (and it doesn't have many
-> samples in different places).  Also note that it needs a separate
-> histogram for each event.
-> 
-> Let's split the sym_hist_entry and have it in a hash table so that it
-> can allocate only necessary entries.
-> 
-> No functional change intended.
-> 
-> Thanks,
-> Namhyung
+On Wed, Mar 06, 2024 at 03:13:22PM +0800,
+Binbin Wu <binbin.wu@linux.intel.com> wrote:
 
-No difference before/after on that 'perf annotate --stdio2' for all
-binaries in a perf record of building perf using the default binutils
-objdump disassembler, etc.
+> 
+> 
+> On 2/26/2024 4:25 PM, isaku.yamahata@intel.com wrote:
+> > From: Sean Christopherson <sean.j.christopherson@intel.com>
+> > 
+> > Introduce a helper to directly (pun intended) fault-in a TDP page
+> > without having to go through the full page fault path.  This allows
+> > TDX to get the resulting pfn and also allows the RET_PF_* enums to
+> > stay in mmu.c where they belong.
+> > 
+> > Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> > ---
+> > v19:
+> > - Move up for KVM_MEMORY_MAPPING.
+> > - Add goal_level for the caller to know how many pages are mapped.
+> > 
+> > v14 -> v15:
+> > - Remove loop in kvm_mmu_map_tdp_page() and return error code based on
+> >    RET_FP_xxx value to avoid potential infinite loop.  The caller should
+> >    loop on -EAGAIN instead now.
+> > 
+> > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> > ---
+> >   arch/x86/kvm/mmu.h     |  3 +++
+> >   arch/x86/kvm/mmu/mmu.c | 58 ++++++++++++++++++++++++++++++++++++++++++
+> >   2 files changed, 61 insertions(+)
+> > 
+> > diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
+> > index 60f21bb4c27b..d96c93a25b3b 100644
+> > --- a/arch/x86/kvm/mmu.h
+> > +++ b/arch/x86/kvm/mmu.h
+> > @@ -183,6 +183,9 @@ static inline void kvm_mmu_refresh_passthrough_bits(struct kvm_vcpu *vcpu,
+> >   	__kvm_mmu_refresh_passthrough_bits(vcpu, mmu);
+> >   }
+> > +int kvm_mmu_map_tdp_page(struct kvm_vcpu *vcpu, gpa_t gpa, u64 error_code,
+> > +			 u8 max_level, u8 *goal_level);
+> > +
+> >   /*
+> >    * Check if a given access (described through the I/D, W/R and U/S bits of a
+> >    * page fault error code pfec) causes a permission fault with the given PTE
+> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> > index 61674d6b17aa..ca0c91f14063 100644
+> > --- a/arch/x86/kvm/mmu/mmu.c
+> > +++ b/arch/x86/kvm/mmu/mmu.c
+> > @@ -4615,6 +4615,64 @@ int kvm_tdp_page_fault(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault)
+> >   	return direct_page_fault(vcpu, fault);
+> >   }
+> > +int kvm_mmu_map_tdp_page(struct kvm_vcpu *vcpu, gpa_t gpa, u64 error_code,
+> > +			 u8 max_level, u8 *goal_level)
+> > +{
+> > +	int r;
+> > +	struct kvm_page_fault fault = (struct kvm_page_fault) {
+> > +		.addr = gpa,
+> > +		.error_code = error_code,
+> > +		.exec = error_code & PFERR_FETCH_MASK,
+> > +		.write = error_code & PFERR_WRITE_MASK,
+> > +		.present = error_code & PFERR_PRESENT_MASK,
+> > +		.rsvd = error_code & PFERR_RSVD_MASK,
+> > +		.user = error_code & PFERR_USER_MASK,
+> > +		.prefetch = false,
+> > +		.is_tdp = true,
+> > +		.is_private = error_code & PFERR_GUEST_ENC_MASK,
+> > +		.nx_huge_page_workaround_enabled = is_nx_huge_page_enabled(vcpu->kvm),
+> > +	};
+> > +
+> > +	WARN_ON_ONCE(!vcpu->arch.mmu->root_role.direct);
+> > +	fault.slot = kvm_vcpu_gfn_to_memslot(vcpu, fault.gfn);
+> > +
+> > +	r = mmu_topup_memory_caches(vcpu, false);
+> 
+> Does it need a cache topup here?
+> Both kvm_tdp_mmu_page_fault() and direct_page_fault() will call
+> mmu_topup_memory_caches() when needed.
 
-Reviewed-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-
-- Arnaldo
- 
-> 
-> Namhyung Kim (4):
->   perf annotate: Add a hashmap for symbol histogram
->   perf annotate: Calculate instruction overhead using hashmap
->   perf annotate: Remove sym_hist.addr[] array
->   perf annotate: Add comments in the data structures
-> 
->  tools/perf/ui/gtk/annotate.c |  14 ++++-
->  tools/perf/util/annotate.c   | 116 ++++++++++++++++++++++-------------
->  tools/perf/util/annotate.h   |  86 +++++++++++++++++++++++---
->  3 files changed, 159 insertions(+), 57 deletions(-)
-> 
-> -- 
-> 2.44.0.rc1.240.g4c46232300-goog
+You're right. As the called function has changed, I missed to remove it.
+-- 
+Isaku Yamahata <isaku.yamahata@linux.intel.com>
 
