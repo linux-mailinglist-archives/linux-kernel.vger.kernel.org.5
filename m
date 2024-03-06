@@ -1,165 +1,285 @@
-Return-Path: <linux-kernel+bounces-94135-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94136-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE869873A6A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:12:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B7E0873A6C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:12:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A9844282C47
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:12:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 066571F2C23B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:12:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3E87135A6F;
-	Wed,  6 Mar 2024 15:11:06 +0000 (UTC)
-Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52660134724;
+	Wed,  6 Mar 2024 15:11:47 +0000 (UTC)
+Received: from smtpbg156.qq.com (smtpbg156.qq.com [15.184.82.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72941134CF7;
-	Wed,  6 Mar 2024 15:11:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.14.17.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEE0228EC
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 15:11:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=15.184.82.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709737866; cv=none; b=Qo9sNH2mDkt7pkbLLDfHzij7wBAerhI50FcNSjJ5JS25PRqzeFmZ24tfjFfg4b27ugGhK7HNl+lkfmBcfn48iUXYzUMWNKsmdceq9b0cfRPAiw4SuO6XJBkH/4CSpJsiCEWQ15GF5dsUMiiwcWTvBWxq0Xpy5w+AqEHyY7k1cXg=
+	t=1709737906; cv=none; b=oMGVNv3o38BUuwNmyCyHC14eWXylZTiWw50z07YkWz8jARHLbAuWD9Jg1rs4ttv3uVm4P0cfcB5yzBiPyaXIVlwB9+AikA8aWPcj/ZHhh23lr3dnGyw/KW4nehsQh3tAu1ThYvu3g8JjZGv3EaaIRCdz+w4vXSgabanb8ZsH98M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709737866; c=relaxed/simple;
-	bh=JYpMEoOzZQs3yAFQY3yegUBgCw5BXctmdMIzmY4XVNU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aUg014CLiH4Wbpu3O6+I0fz4aj9thTpibQt/p+o2FKnZ44uK5oXWehmO9ojqTqO8YAiI4mHEgAp/b58zpfXOgTXN0si+8wg8loF0+CPkF5zSne3QedjI/xvj5mc6oOT9QOFrVMxuPxoJOo4nDyt/gD7LRu4CAoYLyQtuzrAeEko=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de; spf=pass smtp.mailfrom=molgen.mpg.de; arc=none smtp.client-ip=141.14.17.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
-Received: from [192.168.0.224] (ip5f5aedd4.dynamic.kabel-deutschland.de [95.90.237.212])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: pmenzel)
-	by mx.molgen.mpg.de (Postfix) with ESMTPSA id 96BB861E5FE01;
-	Wed,  6 Mar 2024 16:10:05 +0100 (CET)
-Message-ID: <f9d3cad9-6d7d-4aa1-9592-79300812dce4@molgen.mpg.de>
-Date: Wed, 6 Mar 2024 16:10:04 +0100
+	s=arc-20240116; t=1709737906; c=relaxed/simple;
+	bh=uKasaggYyymUs6qBZv4V07v1uNFlEBuf7STPeXfV9nc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=GmyC+I7eFllLkHMKcW7O7Pt+emiobtXOVW+YltMoYg5oabGOcVZu58L4rboC6LPUEj3ehcUJMapIFhsUQgXQgQm2BfwzgrvU3HG5paB0+ZS7+g0Q5ii+KT6RQUBGkpE9o2+PSITzBvrooB4uoIgF7nh8ww9pDIEUEE1xg5HOJso=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=15.184.82.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
+X-QQ-mid: bizesmtp90t1709737615t5wfynxx
+X-QQ-Originating-IP: bY9xEtJbLzmEQY5vLSrN13Ffer26Gmy6nNa4BoNZRsU=
+Received: from HX01040022.powercore.com.cn ( [39.144.153.254])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Wed, 06 Mar 2024 23:06:52 +0800 (CST)
+X-QQ-SSF: 01400000000000B0B000000A0000000
+X-QQ-FEAT: SGbEDZt3ZyZPyzccUHOvFC9Mp1nj4kwhx4l6Eis6fDtGrbCYOFxO2r/6il5QT
+	1eEtdSR1ESETfHwFHGWi2/4t8GRz13TUXzV7z4OXUQBFDl1/q0DUxY8gIXYNRX/gCQ+gFbU
+	Ip0RHI0ryTI/36a92YDwmOwCZ0XYkWCNM+QH74eogT4iEdN0l653IFlacPecmSA0W4XHheZ
+	VZuk1E3hHqTmm9EIPmYXxzSWqf817WY6DKHNkTgMcOM8qEttFn2H17kxg/isdWiPofh9UYC
+	jshgM/ijDQzWdHNyhyyxPZ+d+mj44XNx4abBZqEeLCwlMbkdLAps97T9o1H0RpYtn6qxrVx
+	Nob0NFoulsW2eNmCZTg6/KwFbxW0XQLtPmV3Y3CSG+Vv72E5LC0XeHmbw0n7g==
+X-QQ-GoodBg: 2
+X-BIZMAIL-ID: 264853607128593426
+From: "JiaLong.Yang" <jialong.yang@shingroup.cn>
+To: Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>
+Cc: linux-perf-users@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] perf/core: Handle generic events normally instead of trying all pmu
+Date: Wed,  6 Mar 2024 23:10:15 +0800
+Message-Id: <20240306151017.2114-1-jialong.yang@shingroup.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH md-6.8 v2 2/9] md: export helpers to stop sync_thread
-Content-Language: en-US
-To: Yu Kuai <yukuai1@huaweicloud.com>
-Cc: xni@redhat.com, zkabelac@redhat.com, agk@redhat.com, snitzer@kernel.org,
- mpatocka@redhat.com, dm-devel@lists.linux.dev, song@kernel.org,
- heinzm@redhat.com, jbrassow@redhat.com, neilb@suse.de,
- linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
- yi.zhang@huawei.com, yangerkun@huawei.com, yukuai3@huawei.com
-References: <20240305072306.2562024-1-yukuai1@huaweicloud.com>
- <20240305072306.2562024-3-yukuai1@huaweicloud.com>
- <c0e648ea-d73e-4805-a2bb-b02ddd3ca4e2@molgen.mpg.de>
- <9950cb96-ac8b-d7dd-56a0-133709f51b5f@huaweicloud.com>
-From: Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <9950cb96-ac8b-d7dd-56a0-133709f51b5f@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz6a-1
 
-Dear Kuai,
+We have pay more effort on handling generic events. We treat them
+specially caused us paying more. Now time have told us that PMU type
+between 0 and PERF_TYPE_MAX only corresponds to one PMU. So we can
+handle the special when registering PMU not in event opening. And we
+can know which PMU is used to the generic event.
 
+The added capabilities PERF_PMU_CAP_EVENT_HARDWARE and
+PERF_PMU_CAP_EVENT_HW_CACHE will alloc idr for PERF_TYPE_HARDWARE and
+PERF_TYPE_HW_CACHE with same PMU.
 
-Am 05.03.24 um 09:13 schrieb Yu Kuai:
+We'd better handle uncore-task event before calling pmu->event_init().
 
-> 在 2024/03/05 16:08, Paul Menzel 写道:
+The code is compatible with PERF_PMU_TYPE_SHIFT.
+/*
+ * attr.config layout for type PERF_TYPE_HARDWARE and PERF_TYPE_HW_CACHE
+ * PERF_TYPE_HARDWARE:			0xEEEEEEEE000000AA
+ *					AA: hardware event ID
+ *					EEEEEEEE: PMU type ID
+ * PERF_TYPE_HW_CACHE:			0xEEEEEEEE00DDCCBB
+ *					BB: hardware cache ID
+ *					CC: hardware cache op ID
+ *					DD: hardware cache op result ID
+ *					EEEEEEEE: PMU type ID
+ * If the PMU type ID is 0, the PERF_TYPE_RAW will be applied.
+ */
 
->> Am 05.03.24 um 08:22 schrieb Yu Kuai:
->>> From: Yu Kuai <yukuai3@huawei.com>
->>>
->>> The new heleprs will be used in dm-raid in later patches to fix
->>
->> hel*pe*rs
->>
->>> regressions and prevent calling md_reap_sync_thread() directly.
->>
->> Please list the new functions.
->>
->> 1.  md_idle_sync_thread(struct mddev *mddev);
->> 2.  md_frozen_sync_thread(struct mddev *mddev);
->> 3.  md_unfrozen_sync_thread(struct mddev *mddev);
->>
->> I do not like the naming so much. `md_reap_sync_thread()` has the verb 
->> in imperative mood. At least myself, I would not know what the 
->> functions do exactly without looking at the implementation.
->
-> Thanks for the suggestions, I'm not that good at naming :(
-> 
-> Usually I'll send a new version with updated naming, however, we must
-> merge this set ASAP now, perhaps can we live with this for now?
+But the drivers have to give the corresponding capabilities obviously.
 
-Fine by me. Maybe when applying the typo can be fixed, and the naming 
-than later.
+Signed-off-by: JiaLong.Yang <jialong.yang@shingroup.cn>
+---
+ include/linux/perf_event.h |  4 +-
+ kernel/events/core.c       | 83 +++++++++++++++++++++++---------------
+ 2 files changed, 54 insertions(+), 33 deletions(-)
 
+diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+index d2a15c0c6f8a..edf4365ab7cc 100644
+--- a/include/linux/perf_event.h
++++ b/include/linux/perf_event.h
+@@ -290,7 +290,9 @@ struct perf_event_pmu_context;
+ #define PERF_PMU_CAP_ITRACE			0x0020
+ #define PERF_PMU_CAP_NO_EXCLUDE			0x0040
+ #define PERF_PMU_CAP_AUX_OUTPUT			0x0080
+-#define PERF_PMU_CAP_EXTENDED_HW_TYPE		0x0100
++#define PERF_PMU_CAP_EVENT_HARDWARE             0x0100
++#define PERF_PMU_CAP_EVENT_HW_CACHE             0x0200
++#define PERF_PMU_CAP_EXTENDED_HW_TYPE		0x0300
+ 
+ struct perf_output_handle;
+ 
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index f0f0f71213a1..02f14ae09d09 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -11516,6 +11516,7 @@ static struct lock_class_key cpuctx_lock;
+ int perf_pmu_register(struct pmu *pmu, const char *name, int type)
+ {
+ 	int cpu, ret, max = PERF_TYPE_MAX;
++	int cap = pmu->capabilities;
+ 
+ 	mutex_lock(&pmus_lock);
+ 	ret = -ENOMEM;
+@@ -11523,7 +11524,6 @@ int perf_pmu_register(struct pmu *pmu, const char *name, int type)
+ 	if (!pmu->pmu_disable_count)
+ 		goto unlock;
+ 
+-	pmu->type = -1;
+ 	if (WARN_ONCE(!name, "Can not register anonymous pmu.\n")) {
+ 		ret = -EINVAL;
+ 		goto free_pdc;
+@@ -11538,15 +11538,34 @@ int perf_pmu_register(struct pmu *pmu, const char *name, int type)
+ 	if (ret < 0)
+ 		goto free_pdc;
+ 
++	/*
++	 * Ensure one type ([0, PERF_TYPE_MAX)) correspond to one PMU.
++	 */
+ 	WARN_ON(type >= 0 && ret != type);
+ 
+ 	type = ret;
+ 	pmu->type = type;
+ 
++	if ((type != PERF_TYPE_HARDWARE) &&
++	    (cap & PERF_PMU_CAP_EVENT_HARDWARE)) {
++		ret = idr_alloc(&pmu_idr, pmu, PERF_TYPE_HARDWARE,
++				PERF_TYPE_HARDWARE + 1, GFP_KERNEL);
++		if (ret < 0)
++			goto free_idr;
++	}
++
++	if ((type != PERF_TYPE_HW_CACHE) &&
++	    (cap & PERF_PMU_CAP_EVENT_HW_CACHE)) {
++		ret = idr_alloc(&pmu_idr, pmu, PERF_TYPE_HW_CACHE,
++				PERF_TYPE_HW_CACHE + 1, GFP_KERNEL);
++		if (ret < 0)
++			goto free_idr_hw;
++	}
++
+ 	if (pmu_bus_running && !pmu->dev) {
+ 		ret = pmu_dev_alloc(pmu);
+ 		if (ret)
+-			goto free_idr;
++			goto free_idr_hw_cache;
+ 	}
+ 
+ 	ret = -ENOMEM;
+@@ -11604,6 +11623,14 @@ int perf_pmu_register(struct pmu *pmu, const char *name, int type)
+ 		put_device(pmu->dev);
+ 	}
+ 
++free_idr_hw_cache:
++	if (cap & PERF_PMU_CAP_EVENT_HW_CACHE)
++		idr_remove(&pmu_idr, PERF_TYPE_HW_CACHE);
++
++free_idr_hw:
++	if (cap & PERF_PMU_CAP_EVENT_HARDWARE)
++		idr_remove(&pmu_idr, PERF_TYPE_HARDWARE);
++
+ free_idr:
+ 	idr_remove(&pmu_idr, pmu->type);
+ 
+@@ -11648,6 +11675,7 @@ static int perf_try_init_event(struct pmu *pmu, struct perf_event *event)
+ {
+ 	struct perf_event_context *ctx = NULL;
+ 	int ret;
++	bool uncore_pmu = false, extded_pmu = false;
+ 
+ 	if (!try_module_get(pmu->module))
+ 		return -ENODEV;
+@@ -11668,6 +11696,20 @@ static int perf_try_init_event(struct pmu *pmu, struct perf_event *event)
+ 		BUG_ON(!ctx);
+ 	}
+ 
++	if (perf_invalid_context == pmu->task_ctx_nr)
++		uncore_pmu = true;
++
++	if (pmu->capabilities & PERF_PMU_CAP_EXTENDED_HW_TYPE)
++		extded_pmu = true;
++
++	/* Disallow uncore-task events. */
++	if (uncore_pmu && (event->attach_state & PERF_ATTACH_TASK))
++		return -EINVAL;
++
++	/* Ensure pmu not supporting generic events will not be passed such event. */
++	if (!extded_pmu && (event->attr.type & PERF_PMU_CAP_EXTENDED_HW_TYPE))
++		return -EINVAL;
++
+ 	event->pmu = pmu;
+ 	ret = pmu->event_init(event);
+ 
+@@ -11695,7 +11737,6 @@ static int perf_try_init_event(struct pmu *pmu, struct perf_event *event)
+ 
+ static struct pmu *perf_init_event(struct perf_event *event)
+ {
+-	bool extended_type = false;
+ 	int idx, type, ret;
+ 	struct pmu *pmu;
+ 
+@@ -11720,36 +11761,15 @@ static struct pmu *perf_init_event(struct perf_event *event)
+ 	 * are often aliases for PERF_TYPE_RAW.
+ 	 */
+ 	type = event->attr.type;
+-	if (type == PERF_TYPE_HARDWARE || type == PERF_TYPE_HW_CACHE) {
+-		type = event->attr.config >> PERF_PMU_TYPE_SHIFT;
+-		if (!type) {
+-			type = PERF_TYPE_RAW;
+-		} else {
+-			extended_type = true;
+-			event->attr.config &= PERF_HW_EVENT_MASK;
+-		}
+-	}
++	if (type == PERF_TYPE_HARDWARE || type == PERF_TYPE_HW_CACHE)
++		event->attr.config &= PERF_HW_EVENT_MASK;
+ 
+-again:
+ 	rcu_read_lock();
+ 	pmu = idr_find(&pmu_idr, type);
+ 	rcu_read_unlock();
+-	if (pmu) {
+-		if (event->attr.type != type && type != PERF_TYPE_RAW &&
+-		    !(pmu->capabilities & PERF_PMU_CAP_EXTENDED_HW_TYPE))
+-			goto fail;
+ 
+-		ret = perf_try_init_event(pmu, event);
+-		if (ret == -ENOENT && event->attr.type != type && !extended_type) {
+-			type = event->attr.type;
+-			goto again;
+-		}
+-
+-		if (ret)
+-			pmu = ERR_PTR(ret);
+-
+-		goto unlock;
+-	}
++	if (!pmu || perf_try_init_event(pmu, event))
++		goto fail;
+ 
+ 	list_for_each_entry_rcu(pmu, &pmus, entry, lockdep_is_held(&pmus_srcu)) {
+ 		ret = perf_try_init_event(pmu, event);
+@@ -12026,11 +12046,10 @@ perf_event_alloc(struct perf_event_attr *attr, int cpu,
+ 	}
+ 
+ 	/*
+-	 * Disallow uncore-task events. Similarly, disallow uncore-cgroup
+-	 * events (they don't make sense as the cgroup will be different
+-	 * on other CPUs in the uncore mask).
++	 * Disallow uncore-cgroup events (they don't make sense
++	 * as the cgroup will be different on other CPUs in the uncore mask).
+ 	 */
+-	if (pmu->task_ctx_nr == perf_invalid_context && (task || cgroup_fd != -1)) {
++	if (task || cgroup_fd != -1) {
+ 		err = -EINVAL;
+ 		goto err_pmu;
+ 	}
+-- 
+2.25.1
 
-Kind regards,
-
-Paul
-
-
->>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
->>> Signed-off-by: Xiao Ni <xni@redhat.com>
->>> Acked-by: Mike Snitzer <snitzer@kernel.org>
->>> ---
->>>   drivers/md/md.c | 29 +++++++++++++++++++++++++++++
->>>   drivers/md/md.h |  3 +++
->>>   2 files changed, 32 insertions(+)
->>>
->>> diff --git a/drivers/md/md.c b/drivers/md/md.c
->>> index 23f31fd1d024..22e7512a5b1e 100644
->>> --- a/drivers/md/md.c
->>> +++ b/drivers/md/md.c
->>> @@ -4919,6 +4919,35 @@ static void stop_sync_thread(struct mddev 
->>> *mddev, bool locked, bool check_seq)
->>>           mddev_lock_nointr(mddev);
->>>   }
->>> +void md_idle_sync_thread(struct mddev *mddev)
->>> +{
->>> +    lockdep_assert_held(&mddev->reconfig_mutex);
->>> +
->>> +    clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
->>> +    stop_sync_thread(mddev, true, true);
->>> +}
->>> +EXPORT_SYMBOL_GPL(md_idle_sync_thread);
->>> +
->>> +void md_frozen_sync_thread(struct mddev *mddev)
->>> +{
->>> +    lockdep_assert_held(&mddev->reconfig_mutex);
->>> +
->>> +    set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
->>> +    stop_sync_thread(mddev, true, false);
->>> +}
->>> +EXPORT_SYMBOL_GPL(md_frozen_sync_thread);
->>> +
->>> +void md_unfrozen_sync_thread(struct mddev *mddev)
->>> +{
->>> +    lockdep_assert_held(&mddev->reconfig_mutex);
->>> +
->>> +    clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
->>> +    set_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
->>> +    md_wakeup_thread(mddev->thread);
->>> +    sysfs_notify_dirent_safe(mddev->sysfs_action);
->>> +}
->>> +EXPORT_SYMBOL_GPL(md_unfrozen_sync_thread);
->>> +
->>>   static void idle_sync_thread(struct mddev *mddev)
->>>   {
->>>       mutex_lock(&mddev->sync_mutex);
->>> diff --git a/drivers/md/md.h b/drivers/md/md.h
->>> index 8d881cc59799..437ab70ce79b 100644
->>> --- a/drivers/md/md.h
->>> +++ b/drivers/md/md.h
->>> @@ -781,6 +781,9 @@ extern void md_rdev_clear(struct md_rdev *rdev);
->>>   extern void md_handle_request(struct mddev *mddev, struct bio *bio);
->>>   extern int mddev_suspend(struct mddev *mddev, bool interruptible);
->>>   extern void mddev_resume(struct mddev *mddev);
->>> +extern void md_idle_sync_thread(struct mddev *mddev);
->>> +extern void md_frozen_sync_thread(struct mddev *mddev);
->>> +extern void md_unfrozen_sync_thread(struct mddev *mddev);
->>>   extern void md_reload_sb(struct mddev *mddev, int raid_disk);
->>>   extern void md_update_sb(struct mddev *mddev, int force);
 
