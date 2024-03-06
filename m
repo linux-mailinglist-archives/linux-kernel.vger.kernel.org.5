@@ -1,65 +1,91 @@
-Return-Path: <linux-kernel+bounces-94573-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94574-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 737AB874194
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 21:55:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28083874197
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 21:56:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A17901C210E9
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 20:55:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2D79282CCD
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 20:56:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19A01175A7;
-	Wed,  6 Mar 2024 20:55:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96E8B175AB;
+	Wed,  6 Mar 2024 20:56:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mXF5lxxx"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="TIEgxQWG"
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D8F2CA4E;
-	Wed,  6 Mar 2024 20:55:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F05E171B0
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 20:56:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709758527; cv=none; b=irlIoZrAiADSY1xmm7xOGiW0Q5u2kOgGmdSYXROWQYev7F0yIOqV6YAmRtv9oOUMb1Jw9jxERvJ6jC27mYNflLTJTrkqpPjxVfLtpjSnlJu74Nk70rew8rZkg17Ui+lJjdRqTEdKBjSUzPfgZ4zNCtpsLG919AEppA4PlXIDFnY=
+	t=1709758582; cv=none; b=odaOQg0UA9CNhJWvpdxINMETI8FR6DIHck3USOQ4w92wOiTOO8ISKZwDcHMhdc1yX1AtY282GD9if7HDIWOQ+qFjEN/A9vKb39loi/FXBVMB1t5eJaxia3ISXaFDwvTh3t21SxAS7vqccfis7xgg5iC97OnkBoClzaMSy+/qUYo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709758527; c=relaxed/simple;
-	bh=8wpIf1u7ZRpALOfHZ4AX6o9s1PVu3WXuDX1nZ0s4XSc=;
+	s=arc-20240116; t=1709758582; c=relaxed/simple;
+	bh=chMLxuuJhus8RSm2D1A6/5wioNv3E3Jgtwtcd+vx6Hs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kVkjC148brJfJ2RSHsKVr7SalvW2/OjuQFQ7cUsmSd4nHICeK2FM6N4cz8ufufQYLBCgB6BPsIBf2Tqe6vtfhvOg621qifrLNl3DJF058Kp6n+GaJIQJLm++BSOGL6w3zv6YhxR0e/jwJsHYHMoWo7MqRv9iOyNxpGLn5schycE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mXF5lxxx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9114C433F1;
-	Wed,  6 Mar 2024 20:55:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709758526;
-	bh=8wpIf1u7ZRpALOfHZ4AX6o9s1PVu3WXuDX1nZ0s4XSc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mXF5lxxx+5t7+86g9lXRI/nNc8B4ygRS3Pb/kEY2lndTQUNMt4NdY7rUvEMCXmXQl
-	 vxmyt4AOGSH2J4BP3G5owS+NwYYzYVNAi7VZYYC94rGw+DYdQFHddWlgmPeVdHI8e5
-	 TO7VYXRFl7FeITijsC6W/rxrVtrmpB3/n7h3O0uJGKcoF7CRFZnbC5m2BZD+1zwpuh
-	 zt5ZPUwn/ak239yElwk+gNSlGGsBVgGtYpsdxO76K4qrOOJlgOJrZVidGFIn2F+MVm
-	 w0zqPA++4MN6nCQbqOK5WuxVp7d/V16f5iYor8Lvr8kR2Chbaj4VvihYTvX3vsDAx6
-	 hUYzM5k4d/n0Q==
-Date: Wed, 6 Mar 2024 14:55:24 -0600
-From: Rob Herring <robh@kernel.org>
-To: Frank Li <Frank.li@nxp.com>
-Cc: Conor Dooley <conor@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	Shengjiu Wang <shengjiu.wang@nxp.com>, linux-sound@vger.kernel.org,
-	devicetree@vger.kernel.org, imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 3/4] ASoC: dt-bindings: fsl-sai: allow only one
- dma-names
-Message-ID: <20240306205524.GB587561-robh@kernel.org>
-References: <20240305-asrc_8qxp-v4-0-c61b98046591@nxp.com>
- <20240305-asrc_8qxp-v4-3-c61b98046591@nxp.com>
- <20240306-pebble-grope-88fdaa95a87c@spud>
- <ZejDQddMp17RD6Yk@lizhi-Precision-Tower-5810>
+	 Content-Type:Content-Disposition:In-Reply-To; b=e7JqOqZFCJg5KIk6xA7IJqZfyFaENwe5eHrXptbSTeqQRNDnlkhtzis8jvJFvWyhXdR9cCC7ofFDEtWRHUdFtun5dtuz5MPR51dpU/FWGJJ5GYWK9RHWC9sgytaE5VL9L82QdbhC5JQNmTTLx1mnHncvQavlB/HS6UU7xbylkQE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=TIEgxQWG; arc=none smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6e09143c7bdso135326b3a.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 12:56:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709758581; x=1710363381; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=24sGFAKUTMlFkQcWZBTL9mXGCoHWah/p2w8E9U7LrWw=;
+        b=TIEgxQWGUdZcgyAEg02NRIfvaCCwulC7zCXCg1AHb+9YobU/p5rsm/rIo1tasgARhp
+         X/TvboIjVw2DlRcyhTOmRgBNjc9OBvLjIY7Ut4LDiykEE8yoNWDWtQYKrifaADDsh4kz
+         cU+h/mDqjUL5QC3pg30iyxu4dzx/E0WCKKCmMomydBC0jwPPKjqiTmujLTd6+6pgXJy7
+         vPvTio0T4eapBN1yG8a5zV2jkP+ovmRmOYx6tqjmfSh4mSWmg+rIURyB4Ou2x8QGHl1S
+         bG2b2MuR5r2c6/Yrm9nLU9c3xkQY4BcKPSUtljuPQkHiFJwAufLvABh1nyuLZZsf1uMR
+         z5MQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709758581; x=1710363381;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=24sGFAKUTMlFkQcWZBTL9mXGCoHWah/p2w8E9U7LrWw=;
+        b=KsnwMmdKn6Xv1wzRJlfKIeyfVTBP+YzK/eP+wdMfGDIvvU3D/CRFFYpxowAcg2WWji
+         CyGkJUrYprM+6kpXdRBoIZbvXq4FxJkXe1h+nmt6ygh90F/W531BIabtkfg0vn80+BIP
+         DPMFQEQzGX6n43sSDuJo6Ueu0yYRDp22h7eWMHFZyxv/G0jIuqZlWxwh8/49ob8WZ4Yu
+         V9mNtM1+G2xawl+xyRW8P0D2B4wNn4X2IJfgVaBnncYsAHXHlXMuIysouQXyoQ0NicSo
+         MRKsXZ0IXsw/Zi0KY5nU50Y6ZGvfJlIdhLWJaMPo++BGafFiUVH6HS6+PId1SXedH7DP
+         cMfg==
+X-Forwarded-Encrypted: i=1; AJvYcCXdVRmA7XV3wjpZFncw85v6VXJ05UcmWlFpsOFGvMOmYLs2KLPohAPXzc0ISgQxKHsWwRnIL70OFh7RiHiO00kXcBLI+Ekk3UcEop5X
+X-Gm-Message-State: AOJu0YyY6zktg3GTEumMpRY8vgdFKm4PEeDKB7B2vrJ25Ar5i665/xFD
+	OS9jMjGmRvCN2yGZ/HA/s3siEuyI4JNgA13kdaqtkwQQZtXzMcvi7C09XqLbbw==
+X-Google-Smtp-Source: AGHT+IHGAd/L7VB6xNYd1gWzlLG1X1+due696CWjKmT3T0LUK5z6Uf8B1dNIBpiddnRm1LGtygv1Gg==
+X-Received: by 2002:a05:6a00:1915:b0:6e5:584d:8d17 with SMTP id y21-20020a056a00191500b006e5584d8d17mr18776495pfi.15.1709758580424;
+        Wed, 06 Mar 2024 12:56:20 -0800 (PST)
+Received: from google.com ([2620:15c:2c5:13:9a91:c17:53d9:d156])
+        by smtp.gmail.com with ESMTPSA id s16-20020a62e710000000b006e5a6e83f8esm10313892pfh.134.2024.03.06.12.56.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Mar 2024 12:56:20 -0800 (PST)
+Date: Wed, 6 Mar 2024 12:56:15 -0800
+From: Igor Pylypiv <ipylypiv@google.com>
+To: Niklas Cassel <cassel@kernel.org>
+Cc: Damien Le Moal <dlemoal@kernel.org>,
+	John Garry <john.g.garry@oracle.com>,
+	Jason Yan <yanaijie@huawei.com>,
+	"James E.J. Bottomley" <jejb@linux.ibm.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	Jack Wang <jinpu.wang@cloud.ionos.com>,
+	Hannes Reinecke <hare@suse.de>,
+	Xiang Chen <chenxiang66@hisilicon.com>,
+	Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
+	Bart Van Assche <bvanassche@acm.org>,
+	TJ Adams <tadamsjr@google.com>, linux-ide@vger.kernel.org,
+	linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 5/7] scsi: hisi_sas: Add libsas SATA sysfs attributes
+ group
+Message-ID: <ZejYb4ykeF7Qx5a5@google.com>
+References: <20240306012226.3398927-1-ipylypiv@google.com>
+ <20240306012226.3398927-6-ipylypiv@google.com>
+ <ZehLpV06mpHxjecc@ryzen>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,80 +94,80 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZejDQddMp17RD6Yk@lizhi-Precision-Tower-5810>
+In-Reply-To: <ZehLpV06mpHxjecc@ryzen>
 
-On Wed, Mar 06, 2024 at 02:25:53PM -0500, Frank Li wrote:
-> On Wed, Mar 06, 2024 at 06:45:13PM +0000, Conor Dooley wrote:
-> > On Tue, Mar 05, 2024 at 12:33:04PM -0500, Frank Li wrote:
-> > > Some sai only connect one direction dma (rx/tx) in SOC. For example:
-> > > imx8qxp sai5 only connect tx dma channel. So allow only one "rx" or "tx"
-> > > for dma-names.
-> > > 
-> > > Remove description under dmas because no user use index to get dma channel.
-> > > All user use 'dma-names' to get correct dma channel. dma-names already in
-> > > 'required' list.
+On Wed, Mar 06, 2024 at 11:55:33AM +0100, Niklas Cassel wrote:
+> On Tue, Mar 05, 2024 at 05:22:24PM -0800, Igor Pylypiv wrote:
+> > The added sysfs attributes group enables the configuration of NCQ Priority
+> > feature for HBAs that rely on libsas to manage SATA devices.
 > > 
-> > Acked-by: Conor Dooley <conor.dooley@microchip.com>
-> > 
-> > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > > ---
-> > >  Documentation/devicetree/bindings/sound/fsl,sai.yaml | 13 ++++++-------
-> > >  1 file changed, 6 insertions(+), 7 deletions(-)
-> > > 
-> > > diff --git a/Documentation/devicetree/bindings/sound/fsl,sai.yaml b/Documentation/devicetree/bindings/sound/fsl,sai.yaml
-> > > index 2456d958adeef..6f551c68d33db 100644
-> > > --- a/Documentation/devicetree/bindings/sound/fsl,sai.yaml
-> > > +++ b/Documentation/devicetree/bindings/sound/fsl,sai.yaml
-> > > @@ -81,15 +81,14 @@ properties:
-> > >  
-> > >    dmas:
-> > >      minItems: 1
-> > > -    items:
-> > > -      - description: DMA controller phandle and request line for RX
-> > > -      - description: DMA controller phandle and request line for TX
-> > > +    maxItems: 2
-> > >  
-> > >    dma-names:
-> > > -    minItems: 1
-> > > -    items:
-> > > -      - const: rx
-> > > -      - const: tx
-> > > +    oneOf:
-> > > +      - items:
-> > > +          - const: rx
-> > > +          - const: tx
-> > > +      - enum: [ rx, tx ]
-> > 
-> > I'm not entirely sure if this was Rob's suggestion, I got the impression
-> > he was suggesting that in the two items case we'd not care about the
-> > order. But while I think this is different to that suggestion it's also
-> > not wrong.
+> > Reviewed-by: John Garry <john.g.garry@oracle.com>
+> > Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
+> > Reviewed-by: Jason Yan <yanaijie@huawei.com>
+> > Signed-off-by: Igor Pylypiv <ipylypiv@google.com>
+> > ---
+> >  drivers/scsi/hisi_sas/hisi_sas_v2_hw.c | 6 ++++++
+> >  drivers/scsi/hisi_sas/hisi_sas_v3_hw.c | 6 ++++++
 > 
-> I log this at cover-letter. b4 can't support write change log at every
-> patch yet.
+> Is there a reason why you didn't patch:
+> drivers/scsi/hisi_sas/hisi_sas_v1_hw.c ?
+> 
 
-It never will (probably). That's because it doesn't need to. You can 
-just do it with git. When you edit the commit message, then after the 
-tags, Add '---' and put whatever you want after. That works as long as 
-the commit is applied from a patch as 'git am' will drop it. 
+I originally patched hisi_sas_v1_hw.c as well. John Garry pointed out
+that v1 HW doesn't support SATA so I dropped the change.
 
-> Rob's suggest was not work. dt-binding check complain too long
-> if there are two dma-names = "rx", "tx". 
-
-So I'm wrong or you didn't have it correct? No way to tell with your 
-explanation. Let me give you the exact schema:
-
-dma-names:
-  minItems: 1
-  items:
-    - enum: [ rx, tx ]
-    - const: tx
-
-This says we can have 1 or 2 entries. The first entry can be either rx 
-or tx. The 2nd entry must be tx. That's what you want. However, '"tx", 
-"tx"' is allowed with the above, but we enforce items to be unique 
-elsewhere. Or I thought we did, but we relaxed '.*-names$' at some 
-point. I'm going to fix that now.
-
-Rob
+> 
+> >  2 files changed, 12 insertions(+)
+> > 
+> > diff --git a/drivers/scsi/hisi_sas/hisi_sas_v2_hw.c b/drivers/scsi/hisi_sas/hisi_sas_v2_hw.c
+> > index 73b378837da7..b5d379ebe05d 100644
+> > --- a/drivers/scsi/hisi_sas/hisi_sas_v2_hw.c
+> > +++ b/drivers/scsi/hisi_sas/hisi_sas_v2_hw.c
+> > @@ -3544,6 +3544,11 @@ static struct attribute *host_v2_hw_attrs[] = {
+> >  
+> >  ATTRIBUTE_GROUPS(host_v2_hw);
+> >  
+> > +static const struct attribute_group *sdev_groups_v2_hw[] = {
+> > +	&sas_ata_sdev_attr_group,
+> > +	NULL
+> > +};
+> > +
+> >  static void map_queues_v2_hw(struct Scsi_Host *shost)
+> >  {
+> >  	struct hisi_hba *hisi_hba = shost_priv(shost);
+> > @@ -3585,6 +3590,7 @@ static const struct scsi_host_template sht_v2_hw = {
+> >  	.compat_ioctl		= sas_ioctl,
+> >  #endif
+> >  	.shost_groups		= host_v2_hw_groups,
+> > +	.sdev_groups		= sdev_groups_v2_hw,
+> >  	.host_reset		= hisi_sas_host_reset,
+> >  	.map_queues		= map_queues_v2_hw,
+> >  	.host_tagset		= 1,
+> > diff --git a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
+> > index b56fbc61a15a..9b69ea16a1e6 100644
+> > --- a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
+> > +++ b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
+> > @@ -2929,6 +2929,11 @@ static struct attribute *host_v3_hw_attrs[] = {
+> >  
+> >  ATTRIBUTE_GROUPS(host_v3_hw);
+> >  
+> > +static const struct attribute_group *sdev_groups_v3_hw[] = {
+> > +	&sas_ata_sdev_attr_group,
+> > +	NULL
+> > +};
+> > +
+> >  #define HISI_SAS_DEBUGFS_REG(x) {#x, x}
+> >  
+> >  struct hisi_sas_debugfs_reg_lu {
+> > @@ -3340,6 +3345,7 @@ static const struct scsi_host_template sht_v3_hw = {
+> >  	.compat_ioctl		= sas_ioctl,
+> >  #endif
+> >  	.shost_groups		= host_v3_hw_groups,
+> > +	.sdev_groups		= sdev_groups_v3_hw,
+> >  	.tag_alloc_policy	= BLK_TAG_ALLOC_RR,
+> >  	.host_reset             = hisi_sas_host_reset,
+> >  	.host_tagset		= 1,
+> > -- 
+> > 2.44.0.278.ge034bb2e1d-goog
+> > 
 
