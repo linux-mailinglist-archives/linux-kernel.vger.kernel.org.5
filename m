@@ -1,94 +1,133 @@
-Return-Path: <linux-kernel+bounces-93863-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93864-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 155618735FD
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:00:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D32F2873601
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:03:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9BEF9B25A0C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:00:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 959D62869D9
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:03:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5F8880058;
-	Wed,  6 Mar 2024 12:00:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jOnwqT5L"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E19BC80030;
-	Wed,  6 Mar 2024 12:00:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F7CF7FBD4;
+	Wed,  6 Mar 2024 12:02:54 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0122A78B43;
+	Wed,  6 Mar 2024 12:02:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709726428; cv=none; b=TpsDGH5jKP2HPJxXzVulF6DWFZpyEQpAJmlM0EHm3zZ2L6gsSpUXxmy6tUCZe+kfZLkK6E9iuoJYMvmjiu0kC89t9OW+5LJNTEYYhbOrggOKk4rxdIt32AvVDd2Hv+tT/98cmPgD1aLkrlv+RvO9WPB+ooB9q8UKqjqCWMO39Ik=
+	t=1709726573; cv=none; b=ABDxJ24d7A1zNz2d8RVHP//ydVcsNc2F0BcLeoaAcLoxFHCEha4FTE69Nm+1KvpL8yA+9ibNZAKJd6v6+IUlUcs6qOSC/+t787pgw/JDwFOcENR+74aO3K+Of5k28I2hcUsNlXTo2Rh+53BOtpPfIxrvucydNA9sv82YWVV7GjQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709726428; c=relaxed/simple;
-	bh=UlT76hoWI/+CWtKU73Zz9E+7JQ1mESXPZqU9NcgzHsI=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=oi1zIsrV2Cm7QdnbD4g8/Yw22IcGRq9vw6aB0w5HKKB5mDIXBbISX6PvlHdZqaFK893x3OtYs4Y3I/HQZtQ3vHZWzi+ShsHxomJ0ONmiNn81a/n+q8PE1NYne13vKaJ/PLUlqlIPYBG7stGgYxKfDyjeLwjx8XbQSv6GGd0vNSU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jOnwqT5L; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 5E778C43394;
-	Wed,  6 Mar 2024 12:00:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709726427;
-	bh=UlT76hoWI/+CWtKU73Zz9E+7JQ1mESXPZqU9NcgzHsI=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=jOnwqT5LUyu6p3D+KTyuZ0VuTCdLGSl3ybDRgaUsvhTRe+Rlt60mcow47p/Vf/7ZM
-	 huT0AgX8oijp8GX9olmNOtQMGLeOpVPw8nrJngqJe2nRslAImElAn5OH90aOpqwkoA
-	 Dh1Ps+Mpjl9ckhkJ63Rv70HjMfyPTGa+H0hQ0HEKegI2zMVXgZMEXY8X+7VW28mpAA
-	 Lieomfl1Q3J+Nxb7Ean9BvJto7knV7IUF0b/nFbb4OBXTO+NtOCYYgAPPZOSx9SWzK
-	 mIr4yJf2lDvpU92GN8FcVHiUw8d6ocU29mBzb4lD8RJvSD1lazPfV2Ew3EiA9hIlxv
-	 639usfhIfDN7Q==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 46C64D84BDB;
-	Wed,  6 Mar 2024 12:00:27 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1709726573; c=relaxed/simple;
+	bh=yF6gwCEWbGF3pPVi8P+IIvtLpYFThZkXLvepHc0U0MA=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=XC9ZLbHXV/y+n/oYYkxPNAVYr2VPuPTCYMhwJZbr8a1rsm2Bp83uiuT0dxcLMOxWIxlmqwte8XffIU8Dbhv6in6GtJdHm/BXLy4m0p/GasqYsnhhIvSduPXlfWelQcf/688/Ts+eEwObc93A7HK476pyuJcjNyM7OmsOMTv+XPQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 552571FB;
+	Wed,  6 Mar 2024 04:03:27 -0800 (PST)
+Received: from [10.57.67.126] (unknown [10.57.67.126])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1AF433F738;
+	Wed,  6 Mar 2024 04:02:41 -0800 (PST)
+Message-ID: <6af5e7da-08ba-4fc7-8e57-863377182142@arm.com>
+Date: Wed, 6 Mar 2024 12:02:41 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH V2] net/rds: fix WARNING in rds_conn_connect_if_down
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170972642728.4677.2906308095353738542.git-patchwork-notify@kernel.org>
-Date: Wed, 06 Mar 2024 12:00:27 +0000
-References: <tencent_AFA7C146CBD2DFC65989A8EEDAAED20CB106@qq.com>
-In-Reply-To: <tencent_AFA7C146CBD2DFC65989A8EEDAAED20CB106@qq.com>
-To: Edward Adam Davis <eadavis@qq.com>
-Cc: horms@kernel.org, allison.henderson@oracle.com, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, linux-kernel@vger.kernel.org,
- linux-rdma@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com,
- rds-devel@oss.oracle.com, santosh.shilimkar@oracle.com,
- syzbot+d4faee732755bba9838e@syzkaller.appspotmail.com,
- syzkaller-bugs@googlegroups.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 0/7] dma-mapping: Simplify arch_setup_dma_ops()
+Content-Language: en-GB
+From: Robin Murphy <robin.murphy@arm.com>
+To: Joerg Roedel <joro@8bytes.org>, Christoph Hellwig <hch@lst.de>
+Cc: Vineet Gupta <vgupta@kernel.org>, Russell King <linux@armlinux.org.uk>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Lorenzo Pieralisi <lpieralisi@kernel.org>, Hanjun Guo
+ <guohanjun@huawei.com>, Sudeep Holla <sudeep.holla@arm.com>,
+ "K. Y. Srinivasan" <kys@microsoft.com>,
+ Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+ Dexuan Cui <decui@microsoft.com>,
+ Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+ David Woodhouse <dwmw2@infradead.org>, Lu Baolu <baolu.lu@linux.intel.com>,
+ Niklas Schnelle <schnelle@linux.ibm.com>,
+ Matthew Rosato <mjrosato@linux.ibm.com>,
+ Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+ Jean-Philippe Brucker <jean-philippe@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>,
+ Marek Szyprowski <m.szyprowski@samsung.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-acpi@vger.kernel.org, iommu@lists.linux.dev, devicetree@vger.kernel.org
+References: <cover.1707493264.git.robin.murphy@arm.com>
+In-Reply-To: <cover.1707493264.git.robin.murphy@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hello:
+Hi Joerg, Christoph,
 
-This patch was applied to netdev/net.git (main)
-by David S. Miller <davem@davemloft.net>:
-
-On Tue,  5 Mar 2024 08:13:08 +0800 you wrote:
-> If connection isn't established yet, get_mr() will fail, trigger connection after
-> get_mr().
+On 2024-02-09 4:49 pm, Robin Murphy wrote:
+> v2: https://lore.kernel.org/linux-iommu/cover.1702486837.git.robin.murphy@arm.com/
 > 
-> Fixes: 584a8279a44a ("RDS: RDMA: return appropriate error on rdma map failures")
-> Reported-and-tested-by: syzbot+d4faee732755bba9838e@syzkaller.appspotmail.com
-> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+> Hi all,
 > 
-> [...]
+> Here's v3, rebased and fixing the thinko from v2, so unless anything
+> else has changed behind my back I hope it's good to go (via the IOMMU
+> tree, as mentioned before).
 
-Here is the summary with links:
-  - [V2] net/rds: fix WARNING in rds_conn_connect_if_down
-    https://git.kernel.org/netdev/net/c/c055fc00c07b
+Are either of you happy to pick this series up now that we have Hanjun's 
+acks for the IORT parts? As it stands it still applies cleanly to both 
+iommu/next and dma/for-next. I do have some followup IOMMU patches 
+prepared already (continuing to delete more code, yay!), but I don't 
+want to get too far ahead of myself.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Cheers,
+Robin.
 
-
+> 
+> Thanks,
+> Robin.
+> 
+> 
+> Robin Murphy (7):
+>    OF: Retire dma-ranges mask workaround
+>    OF: Simplify DMA range ca1lculations
+>    ACPI/IORT: Handle memory address size limits as limits
+>    dma-mapping: Add helpers for dma_range_map bounds
+>    iommu/dma: Make limit checks self-contained
+>    iommu/dma: Centralise iommu_setup_dma_ops()
+>    dma-mapping: Simplify arch_setup_dma_ops()
+> 
+>   arch/arc/mm/dma.c               |  3 +--
+>   arch/arm/mm/dma-mapping-nommu.c |  3 +--
+>   arch/arm/mm/dma-mapping.c       | 16 +++++++------
+>   arch/arm64/mm/dma-mapping.c     |  5 +---
+>   arch/loongarch/kernel/dma.c     |  9 ++-----
+>   arch/mips/mm/dma-noncoherent.c  |  3 +--
+>   arch/riscv/mm/dma-noncoherent.c |  3 +--
+>   drivers/acpi/arm64/dma.c        | 17 ++++---------
+>   drivers/acpi/arm64/iort.c       | 20 ++++++++--------
+>   drivers/acpi/scan.c             |  7 +-----
+>   drivers/hv/hv_common.c          |  6 +----
+>   drivers/iommu/amd/iommu.c       |  8 -------
+>   drivers/iommu/dma-iommu.c       | 39 ++++++++++++------------------
+>   drivers/iommu/dma-iommu.h       | 14 +++++------
+>   drivers/iommu/intel/iommu.c     |  7 ------
+>   drivers/iommu/iommu.c           | 20 ++++++----------
+>   drivers/iommu/s390-iommu.c      |  6 -----
+>   drivers/iommu/virtio-iommu.c    | 10 --------
+>   drivers/of/device.c             | 42 ++++++---------------------------
+>   include/linux/acpi_iort.h       |  4 ++--
+>   include/linux/dma-direct.h      | 18 ++++++++++++++
+>   include/linux/dma-map-ops.h     |  6 ++---
+>   include/linux/iommu.h           |  7 ------
+>   23 files changed, 89 insertions(+), 184 deletions(-)
+> 
 
