@@ -1,160 +1,121 @@
-Return-Path: <linux-kernel+bounces-93250-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93251-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2F8A872CFA
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 03:48:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 732B8872CFC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 03:48:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 40C9EB26E2D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 02:48:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 095EB28C477
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 02:48:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44F95DDA9;
-	Wed,  6 Mar 2024 02:48:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DE8DDDD4;
+	Wed,  6 Mar 2024 02:48:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mTfJrO2I"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="XiC+SUB4"
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96B1A6117;
-	Wed,  6 Mar 2024 02:48:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C6F8D52E
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 02:48:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709693304; cv=none; b=CDOumlU2c0kp/melMYV0+krVS/P6pNUrmJzXX4pxXpYznvyLI9j3xjtj0Jc7EoYeROf1tZIPx/vPUx825pbuvUB6sqg7WsP7Yb9rjGpSQbF1H7FJfzD74ufgp0lJh0hieaJvtKk9HXBqy4kdtMt5Qr9bCmkI0um2BZR+7WChx40=
+	t=1709693331; cv=none; b=BuAFo4BwWyWJRU1w+jifPnhM1LDs0aqN3+wqg8tOGuXGqHx9oUOCHcBtNs7et/w6DhH0jwe5LIMUsm++hserg/mRZ8R+9wdhWrUoQGzty/tT5iZGzEVuniTZLxBILeN4A0G40LFp0d2yQKw//jk+FQ9KdcOtafRzTyhQD8GULEw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709693304; c=relaxed/simple;
-	bh=hHT9l3jfKJR+AUAfQNpmrgJhnGQrE6S26vFxeGU+PKg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PlANCoX83mLFwHymQpMA3yzUicyM4E1XvlB5B8V+TAZr8HtgKX9yShX0ILwvL/LL2aIUkjfYqP/bA1qDoILGOCmq+H4hSga5IIHUxkSOZxLzkQa8Rz79D6E/TtEZoBaCb7dUBNqDu7Sd+ooqWnT+bHEoMdgKy8is2LLPBbXWovE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mTfJrO2I; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709693302; x=1741229302;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=hHT9l3jfKJR+AUAfQNpmrgJhnGQrE6S26vFxeGU+PKg=;
-  b=mTfJrO2IJFM4Rq+2SKImLv4h29NC4q1TCqRz3nQepKDsEjk/ETmQUGGD
-   f7QlazZWbRTpSz+rw1YeZ5+tOAOgxLVRf6m7oU98RVbc7+1gLyiZrXfOK
-   eyE6OqjMMec3VizSn+HhqtJaWSE+TuCZkzIuNFK6uWinZhG4rFA6Ds9pT
-   Z+WunrR/MJ7Z/siV7Z/SF/Y9aVk8BdPj99lYaqkNaExVEwH1eka84gOZl
-   2twizYDLxRQr6teBFDBI1a61PglvNgPlneN6eK0YkLdmtvF57V2JfcKtY
-   Cxa4Joo+hmh+4gPfpC6gRvIhWlkz9UHyErD5JyXnRn6mH9okPBkLkL+0J
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11004"; a="4456616"
-X-IronPort-AV: E=Sophos;i="6.06,207,1705392000"; 
-   d="scan'208";a="4456616"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 18:48:21 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,207,1705392000"; 
-   d="scan'208";a="40473773"
-Received: from dapengmi-mobl1.ccr.corp.intel.com (HELO [10.124.239.60]) ([10.124.239.60])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 18:48:18 -0800
-Message-ID: <8bb0e8d7-3f1e-48f6-b14b-23b47892dc4b@linux.intel.com>
-Date: Wed, 6 Mar 2024 10:48:15 +0800
+	s=arc-20240116; t=1709693331; c=relaxed/simple;
+	bh=u7eC58xUF/Q9U1FgZ3onEFjqy4ZYgGtENUDsCVzs/c4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=l8gqQtDMcONQpaGmjSwmVFAQlPhj2Pk+TgNhOi1qEwmtBr3HZzTy0Rd3g+zjefa5uF2pDv4V+e4iWl5jgbOo8ScfRMPvQsb/PwS9xC7QxRD+3wI2EyRgJKpH+PvOpPBt00czfTomc949hl7ntAzFu6P8+HlJWE3QcaM+LLoMKRw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=XiC+SUB4; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-564fd9eea75so1812414a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 18:48:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1709693327; x=1710298127; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=+KUQWhEvCJCpfREgFwyV70EN2GKCk/GEezppyY5IN3M=;
+        b=XiC+SUB4XoQpA8SyU5v/1EiUUtvrpjYEMbntdX1Wu3yviupI4zShiZ43OFCSGvXjmW
+         l0NgmTisVOIs2QnF8IDbUeBuBvO6EWnt0C5aDFJ8WyFCj68BvunKGjnpdZOQKSdcDYts
+         pmSEab9PYI2xiFre+pNJmF2KYedzvKT/aR1qo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709693327; x=1710298127;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+KUQWhEvCJCpfREgFwyV70EN2GKCk/GEezppyY5IN3M=;
+        b=nu6vZrm3t8IbHVN+Ho9mrsyjgdsLRfGrLuxNeKegf/Wvdckm2BYOSha6jrG31ScGjE
+         l8ECGO9ccQvoXFL5GXOzb1qsauFLfw0zg+ts2w457u/EqJplvIK+GCNw+zs4YHjXe3dP
+         wJJz5QwIv7QKMg9FsOPNx9J/F0xn7V0vJtrB7CvlSRYhF1iaiuwzkOb65RVMKqhOUwVY
+         wLRWprsiCp4RTFLlcO68yiOYmq6HwODYCq8iibDNkTbBB5KuCuU71fOFiLpdGhLdJ8N9
+         fgtFcU3SMi+iE8xgYV9Gg8FHfhcw/HUGRmtQAqz5lsEvuLdRP8id0IYA2fREAcerfcTO
+         HOIA==
+X-Forwarded-Encrypted: i=1; AJvYcCUnswQPkSn+9e4gIhfkof7NWXkBA4nFvWzt/A7HZPWQaMrcmghzO5pr0pvwlL5qi0MxzOiSVWaSaLMQcW0vdgwCo4pw361f50ACnGNR
+X-Gm-Message-State: AOJu0YwoqXJ/tE5mF3Mee5J5licP5fb16rR74AylwaCSyb7XhYzpy9RT
+	DYgJtqxXGz27JCqWlakuSXYNbze+Juw1BgSJntOu4Goki10utbaxkylUJ8c98kTUWoV58UvrAKx
+	vxHWRxA==
+X-Google-Smtp-Source: AGHT+IGax/4ciiUpqvBUKtPepj5cFB1wirGgKqhCWQbOebeZonhKpk1mZF48IEzaGmnaL+7H/RTyEw==
+X-Received: by 2002:a50:cb83:0:b0:565:7d4a:1d4a with SMTP id k3-20020a50cb83000000b005657d4a1d4amr8170085edi.8.1709693327582;
+        Tue, 05 Mar 2024 18:48:47 -0800 (PST)
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com. [209.85.218.51])
+        by smtp.gmail.com with ESMTPSA id t11-20020aa7d70b000000b005671a5d06d8sm3948237edq.51.2024.03.05.18.48.46
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Mar 2024 18:48:46 -0800 (PST)
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a441d7c6125so146423366b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 18:48:46 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXut03Lf9ttt46aSX8Tl9V70jcFoqMfPtLF1G0pgvDVeSODeiTxMjMwJTCG3I4kSWShFG5dTz0NwAGSnCCqxTWEhECkfwpqsWQfsm6f
+X-Received: by 2002:a17:906:f10d:b0:a45:3792:fac4 with SMTP id
+ gv13-20020a170906f10d00b00a453792fac4mr5217404ejb.69.1709693326381; Tue, 05
+ Mar 2024 18:48:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] KVM: x86/svm/pmu: Set PerfMonV2 global control bits
- correctly
-Content-Language: en-US
-To: Sean Christopherson <seanjc@google.com>
-Cc: Sandipan Das <sandipan.das@amd.com>, Like Xu <like.xu.linux@gmail.com>,
- pbonzini@redhat.com, mizhang@google.com, jmattson@google.com,
- ravi.bangoria@amd.com, nikunj.dadhania@amd.com, santosh.shukla@amd.com,
- manali.shukla@amd.com, babu.moger@amd.com, kvm list <kvm@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20240301075007.644152-1-sandipan.das@amd.com>
- <06061a28-88c0-404b-98a6-83cc6cc8c796@gmail.com>
- <cc8699be-3aae-42aa-9c70-f8b6a9728ee3@amd.com>
- <f5bbe9ac-ca35-4c3e-8cd7-249839fbb8b8@linux.intel.com>
- <ZeYlEGORqeTPLK2_@google.com>
-From: "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
-In-Reply-To: <ZeYlEGORqeTPLK2_@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240306105150.06a456da@canb.auug.org.au>
+In-Reply-To: <20240306105150.06a456da@canb.auug.org.au>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Tue, 5 Mar 2024 18:48:30 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whdTCEDaUPTMHUQXPQHuM8dhBi8yWbNAL11yE_ODqR_uA@mail.gmail.com>
+Message-ID: <CAHk-=whdTCEDaUPTMHUQXPQHuM8dhBi8yWbNAL11yE_ODqR_uA@mail.gmail.com>
+Subject: Re: linux-next: build warning after merge of the vfs-brauner tree
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Christian Brauner <brauner@kernel.org>, Tong Tiangen <tongtiangen@huawei.com>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+	Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-
-On 3/5/2024 3:46 AM, Sean Christopherson wrote:
-> On Mon, Mar 04, 2024, Dapeng Mi wrote:
->> On 3/1/2024 5:00 PM, Sandipan Das wrote:
->>> On 3/1/2024 2:07 PM, Like Xu wrote:
->>>> On 1/3/2024 3:50 pm, Sandipan Das wrote:
->>>>> With PerfMonV2, a performance monitoring counter will start operating
->>>>> only when both the PERF_CTLx enable bit as well as the corresponding
->>>>> PerfCntrGlobalCtl enable bit are set.
->>>>>
->>>>> When the PerfMonV2 CPUID feature bit (leaf 0x80000022 EAX bit 0) is set
->>>>> for a guest but the guest kernel does not support PerfMonV2 (such as
->>>>> kernels older than v5.19), the guest counters do not count since the
->>>>> PerfCntrGlobalCtl MSR is initialized to zero and the guest kernel never
->>>>> writes to it.
->>>> If the vcpu has the PerfMonV2 feature, it should not work the way legacy
->>>> PMU does. Users need to use the new driver to operate the new hardware,
->>>> don't they ? One practical approach is that the hypervisor should not set
->>>> the PerfMonV2 bit for this unpatched 'v5.19' guest.
->>>>
->>> My understanding is that the legacy method of managing the counters should
->>> still work because the enable bits in PerfCntrGlobalCtl are expected to be
->>> set. The AMD PPR does mention that the PerfCntrEn bitfield of PerfCntrGlobalCtl
->>> is set to 0x3f after a system reset. That way, the guest kernel can use either
->> If so, please add the PPR description here as comments.
-> Or even better, make that architectural behavior that's documented in the APM.
+On Tue, 5 Mar 2024 at 15:51, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
 >
->>>>> ---
->>>>>     arch/x86/kvm/svm/pmu.c | 1 +
->>>>>     1 file changed, 1 insertion(+)
->>>>>
->>>>> diff --git a/arch/x86/kvm/svm/pmu.c b/arch/x86/kvm/svm/pmu.c
->>>>> index b6a7ad4d6914..14709c564d6a 100644
->>>>> --- a/arch/x86/kvm/svm/pmu.c
->>>>> +++ b/arch/x86/kvm/svm/pmu.c
->>>>> @@ -205,6 +205,7 @@ static void amd_pmu_refresh(struct kvm_vcpu *vcpu)
->>>>>         if (pmu->version > 1) {
->>>>>             pmu->global_ctrl_mask = ~((1ull << pmu->nr_arch_gp_counters) - 1);
->>>>>             pmu->global_status_mask = pmu->global_ctrl_mask;
->>>>> +        pmu->global_ctrl = ~pmu->global_ctrl_mask;
->> It seems to be more easily understand to calculate global_ctrl firstly and
->> then derive the globol_ctrl_mask (negative logic).
-> Hrm, I'm torn.  On one hand, awful name aside (global_ctrl_mask should really be
-> something like global_ctrl_rsvd_bits), the computation of the reserved bits should
-
-Yeah, same feeling here. global_ctrl_mask is ambiguous and users are 
-hard to get its real meaning just from the name and have to read the all 
-the code. global_ctrl_rsvd_bits looks  to be a better name. There are 
-several other variables with similar name "xxx_mask". Sean, do you think 
-it's a good time to change the name for all these variables? Thanks.
-
-
-> come from the capabilities of the PMU, not from the RESET value.
+> fs/coredump.c: In function 'dump_user_range':
+> fs/coredump.c:923:40: warning: left-hand operand of comma expression has no effect [-Wunused-value]
+>   923 | #define dump_page_copy(src, dst) ((dst), (src))
+>       |                                        ^
+> fs/coredump.c:948:58: note: in expansion of macro 'dump_page_copy'
+>   948 |                         int stop = !dump_emit_page(cprm, dump_page_copy(page, dump_page));
+>       |                                                          ^~~~~~~~~~~~~~
 >
-> On the other hand, setting _all_ non-reserved bits will likely do the wrong thing
-> if AMD ever adds bits in PerfCntGlobalCtl that aren't tied to general purpose
-> counters.  But, that's a future theoretical problem, so I'm inclined to vote for
-> Sandipan's approach.
+> Introduced by commit
 >
->> diff --git a/arch/x86/kvm/svm/pmu.c b/arch/x86/kvm/svm/pmu.c
->> index e886300f0f97..7ac9b080aba6 100644
->> --- a/arch/x86/kvm/svm/pmu.c
->> +++ b/arch/x86/kvm/svm/pmu.c
->> @@ -199,7 +199,8 @@ static void amd_pmu_refresh(struct kvm_vcpu *vcpu)
->> kvm_pmu_cap.num_counters_gp);
->>
->>          if (pmu->version > 1) {
->> -               pmu->global_ctrl_mask = ~((1ull << pmu->nr_arch_gp_counters)
->> - 1);
->> +               pmu->global_ctrl = (1ull << pmu->nr_arch_gp_counters) - 1;
->> +               pmu->global_ctrl_mask = ~pmu->global_ctrl;
->>                  pmu->global_status_mask = pmu->global_ctrl_mask;
->>          }
->>
->>>>>         }
->>>>>           pmu->counter_bitmask[KVM_PMC_GP] = ((u64)1 << 48) - 1;
+>   4630f2caafcd ("coredump: get machine check errors early rather than during iov_iter")
+
+Bah. If comes from that
+
+  #define dump_page_copy(src,dst) ((dst),(src))
+
+and I did it that way because I wanted to avoid *another* warning,
+namely the "dst not used" thing.
+
+But it would have probably been better to either make it an inline
+function, or maybe an explicit cast, eg
+
+  #define dump_page_copy(src,dst) ((void)(dst),(src))
+
+or whatever.
+
+                   Linus
 
