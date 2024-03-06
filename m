@@ -1,329 +1,95 @@
-Return-Path: <linux-kernel+bounces-93155-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93156-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA321872B9E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 01:12:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C102A872BA2
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 01:13:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD96E1C21738
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 00:12:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F2ADE1C216C6
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 00:13:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 382314F8BD;
-	Wed,  6 Mar 2024 00:07:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70A2033EE;
+	Wed,  6 Mar 2024 00:09:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="B5LTLajE"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YtQ+bhiX"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 433F21CFB2
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 00:07:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAEDA817;
+	Wed,  6 Mar 2024 00:09:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709683668; cv=none; b=uMRxbZe12Ez5nhpeeafV64Nd9cc3NwI8T4MvNzuZ7iFwcO9eDS/rywIDfdKT6LZC/N1G0UAB0XGeyohjP9XwKXRXTtOg/enEKW0b93Anh6RW/wgQYoF7PyuhK7Fene91DXRwhm7TcB/wm6sruoYX4YNxdq2lyXv2nbI7LM+cPxA=
+	t=1709683768; cv=none; b=KGodbiE1ivLeWFSpHEH+8sB2DnUb5wzLmKRE0YvtFwPv84r09nkMFwFrXagHyAEEUUVu0FG7mfyRJVdaNSc4SL5MHIfIC8JauddAwBq9JZ7XiMppNLxtKCw0r83QJugSa+CU9fwy5cvQkiT5tx7t/Ia/3eAAlpfzXLsdofr6CS0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709683668; c=relaxed/simple;
-	bh=+YU+DFYa36t0XHlc/+xgZbyWimKd8RtBolX8Ff61bVs=;
+	s=arc-20240116; t=1709683768; c=relaxed/simple;
+	bh=2fa03Fx+MikuXDNEGUr3zWcS95fwkTs88Gg/2cdTurE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=AI4GnLoY9BeiYNa5LEXjkJGMi7TnQ3ZbJ3h2lD/GelYsgf9hgZ4477O/kUAFgq16/qBtn8Vi39+QlGPp8ywEe44rqDzYiKrGDzppe8e1VtLhJIzfBprIrGgirXA93aUr2Cyq+gzDcOKf8jDxokVkIfEvyZ6n32ULL35018f4sJ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=B5LTLajE; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709683665;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=x5jC1ywkJjQJ57JX0r0EDUWxh8r1trMoZVBFATzsPLw=;
-	b=B5LTLajEXlsqIOTdrcbbA7z4Ghff4Lbcy7nZlhHygiAiST/1nfWOMIVXVMe1cx+38pEbw2
-	WHErjIfA2yO0eLtrh1ADiEloeGxq3DQhDFgFBYO9gEcuU8vzABn4/pyGxv55nfjk5HkhMT
-	KKaxj56rXPAIt4z70imt5tmPJ9kYwBA=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-648-tpCmXfo6OMyqAOkqOBwxCQ-1; Tue, 05 Mar 2024 19:07:44 -0500
-X-MC-Unique: tpCmXfo6OMyqAOkqOBwxCQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 863C989C668;
-	Wed,  6 Mar 2024 00:07:43 +0000 (UTC)
-Received: from warthog.procyon.org.com (unknown [10.42.28.114])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 3CC2236FF;
-	Wed,  6 Mar 2024 00:07:42 +0000 (UTC)
-From: David Howells <dhowells@redhat.com>
-To: netdev@vger.kernel.org
-Cc: David Howells <dhowells@redhat.com>,
-	Marc Dionne <marc.dionne@auristor.com>,
-	Simon Horman <horms@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	linux-afs@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v3 21/21] rxrpc: Extract useful fields from a received ACK to skb priv data
-Date: Wed,  6 Mar 2024 00:06:51 +0000
-Message-ID: <20240306000655.1100294-22-dhowells@redhat.com>
-In-Reply-To: <20240306000655.1100294-1-dhowells@redhat.com>
-References: <20240306000655.1100294-1-dhowells@redhat.com>
+	 MIME-Version:Content-Type; b=MTmgUXyr4hSH5oI0xt7m8lzWWnJpJCiLWlw/zfH30G+HgueTFBwKvurGqPnbZrOMaaF66C0KJ/v5MZpcWHzcmFUGaNSSk0qtEGdOY6059dwFwT8HgSOWSLBcFeXXRIBh0/MraaJycBqDjXkol7CzVvk0Y4rXlfygeFMv+4sTN+o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YtQ+bhiX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA51FC433F1;
+	Wed,  6 Mar 2024 00:09:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709683768;
+	bh=2fa03Fx+MikuXDNEGUr3zWcS95fwkTs88Gg/2cdTurE=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=YtQ+bhiXVoEHKwIYSWA1+tfojkSFU+2ViRWsMEekRaUsZ3tJ/JaglwUq5yc1oACYe
+	 tzqC1M6SZqn2XgParwIU3ZqG0a+F1V2GtTg4y5BNThNuxqEV0eo/Ii5LLaLDK3/esT
+	 wcj7/ZuK6RfvKibeDIbOWszBjaKDpV2IPbZ4vhM6uSYxQGQTQ+OVMYyE8XF0KqiZYq
+	 mqDDT5br2zA40qtqM1wAkVKUDmu4ObPQtczwlZTWfr791U0Pk6mK/1AaOjz+a2i71N
+	 aRbAsMnxDCDjR0nsH1mS8+Nz9HTlakoj4KcR/cCmWvuRjBU9boqf69xg8NqQ4K2qsR
+	 xPC8rBknV+1+w==
+From: Conor Dooley <conor@kernel.org>
+To: linux-riscv@lists.infradead.org,
+	Yangyu Chen <cyy@cyyself.name>
+Cc: conor@kernel.org,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	linux-kernel@vger.kernel.org,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Alexandre Ghiti <alex@ghiti.fr>,
+	Rob Herring <robh+dt@kernel.org>,
+	devicetree@vger.kernel.org
+Subject: Re: [PATCH v3] riscv: dts: Move BUILTIN_DTB_SOURCE to common Kconfig
+Date: Wed,  6 Mar 2024 00:09:19 +0000
+Message-ID: <20240306-daringly-exemplary-defc8d51f0b6@spud>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <tencent_88FEE0A2C5E0852436A2F1A1087E6803380A@qq.com>
+References: <tencent_88FEE0A2C5E0852436A2F1A1087E6803380A@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=908; i=conor.dooley@microchip.com; h=from:subject:message-id; bh=NlED+MmuKp0K0tdEJC4UOM/foaT2Vdyi4yXugOQ8erg=; b=owGbwMvMwCFWscWwfUFT0iXG02pJDKnPtxhcONulHshobbr6nGnuZ7V1T/QXNiXWzjcsiJT7v 6T+3fXvHaUsDGIcDLJiiiyJt/tapNb/cdnh3PMWZg4rE8gQBi5OAZjISQGG/7nXVpxIzfvravsx +47UCZkbMx7w7exZVHavZOLZn9dNWD4wMhx5/P+U4KtHjpwH5lQxBYos2vnkfcelMFUBwyUbXf+ 2d/ACAA==
+X-Developer-Key: i=conor.dooley@microchip.com; a=openpgp; fpr=F9ECA03CF54F12CD01F1655722E2C55B37CF380C
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 
-Extract useful fields from a received ACK packet into the skb private data
-early on in the process of parsing incoming packets.  This makes the ACK
-fields available even before we've matched the ACK up to a call and will
-allow us to deal with path MTU discovery probe responses even after the
-relevant call has been completed.
+From: Conor Dooley <conor.dooley@microchip.com>
 
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Marc Dionne <marc.dionne@auristor.com>
-cc: "David S. Miller" <davem@davemloft.net>
-cc: Eric Dumazet <edumazet@google.com>
-cc: Jakub Kicinski <kuba@kernel.org>
-cc: Paolo Abeni <pabeni@redhat.com>
-cc: linux-afs@lists.infradead.org
-cc: netdev@vger.kernel.org
----
- net/rxrpc/ar-internal.h |  7 +++--
- net/rxrpc/call_event.c  |  4 +--
- net/rxrpc/input.c       | 61 ++++++++++++++++++-----------------------
- net/rxrpc/io_thread.c   | 11 ++++++++
- 4 files changed, 45 insertions(+), 38 deletions(-)
+On Wed, 28 Feb 2024 16:52:54 +0800, Yangyu Chen wrote:
+> The BUILTIN_DTB_SOURCE was only configured for K210 before. Since
+> SOC_BUILTIN_DTB_DECLARE was removed at commit d5805af9fe9f ("riscv: Fix
+> builtin DTB handling") from patch [1], the kernel cannot choose one of the
+> dtbs from then on and always take the first one dtb to use. Then, another
+> commit 0ddd7eaffa64 ("riscv: Fix BUILTIN_DTB for sifive and microchip soc")
+> from patch [2] supports BUILTIN_DTB_SOURCE for other SoCs. However, this
+> feature will only work if the Kconfig we use links the dtb we expected in
+> the first place as mentioned in the thread [3]. Thus, a config
+> BUILTIN_DTB_SOURCE is needed for all SoCs to choose one dtb to use.
+> 
+> [...]
 
-diff --git a/net/rxrpc/ar-internal.h b/net/rxrpc/ar-internal.h
-index 21ecac22b51d..08c0a32db8c7 100644
---- a/net/rxrpc/ar-internal.h
-+++ b/net/rxrpc/ar-internal.h
-@@ -198,8 +198,8 @@ struct rxrpc_host_header {
-  * - max 48 bytes (struct sk_buff::cb)
-  */
- struct rxrpc_skb_priv {
--	struct rxrpc_connection *conn;	/* Connection referred to (poke packet) */
- 	union {
-+		struct rxrpc_connection *conn;	/* Connection referred to (poke packet) */
- 		struct {
- 			u16		offset;		/* Offset of data */
- 			u16		len;		/* Length of data */
-@@ -208,9 +208,12 @@ struct rxrpc_skb_priv {
- 		};
- 		struct {
- 			rxrpc_seq_t	first_ack;	/* First packet in acks table */
-+			rxrpc_seq_t	prev_ack;	/* Highest seq seen */
-+			rxrpc_serial_t	acked_serial;	/* Packet in response to (or 0) */
-+			u8		reason;		/* Reason for ack */
- 			u8		nr_acks;	/* Number of acks+nacks */
- 			u8		nr_nacks;	/* Number of nacks */
--		};
-+		} ack;
- 	};
- 	struct rxrpc_host_header hdr;	/* RxRPC packet header from this packet */
- };
-diff --git a/net/rxrpc/call_event.c b/net/rxrpc/call_event.c
-index 6c5e3054209b..7bbb68504766 100644
---- a/net/rxrpc/call_event.c
-+++ b/net/rxrpc/call_event.c
-@@ -93,12 +93,12 @@ void rxrpc_resend(struct rxrpc_call *call, struct sk_buff *ack_skb)
- 		sp = rxrpc_skb(ack_skb);
- 		ack = (void *)ack_skb->data + sizeof(struct rxrpc_wire_header);
- 
--		for (i = 0; i < sp->nr_acks; i++) {
-+		for (i = 0; i < sp->ack.nr_acks; i++) {
- 			rxrpc_seq_t seq;
- 
- 			if (ack->acks[i] & 1)
- 				continue;
--			seq = sp->first_ack + i;
-+			seq = sp->ack.first_ack + i;
- 			if (after(txb->seq, transmitted))
- 				break;
- 			if (after(txb->seq, seq))
-diff --git a/net/rxrpc/input.c b/net/rxrpc/input.c
-index 09cce1d5d605..3dedb8c0618c 100644
---- a/net/rxrpc/input.c
-+++ b/net/rxrpc/input.c
-@@ -710,20 +710,19 @@ static rxrpc_seq_t rxrpc_input_check_prev_ack(struct rxrpc_call *call,
- 					      rxrpc_seq_t seq)
- {
- 	struct sk_buff *skb = call->cong_last_nack;
--	struct rxrpc_ackpacket ack;
- 	struct rxrpc_skb_priv *sp = rxrpc_skb(skb);
- 	unsigned int i, new_acks = 0, retained_nacks = 0;
--	rxrpc_seq_t old_seq = sp->first_ack;
--	u8 *acks = skb->data + sizeof(struct rxrpc_wire_header) + sizeof(ack);
-+	rxrpc_seq_t old_seq = sp->ack.first_ack;
-+	u8 *acks = skb->data + sizeof(struct rxrpc_wire_header) + sizeof(struct rxrpc_ackpacket);
- 
--	if (after_eq(seq, old_seq + sp->nr_acks)) {
--		summary->nr_new_acks += sp->nr_nacks;
--		summary->nr_new_acks += seq - (old_seq + sp->nr_acks);
-+	if (after_eq(seq, old_seq + sp->ack.nr_acks)) {
-+		summary->nr_new_acks += sp->ack.nr_nacks;
-+		summary->nr_new_acks += seq - (old_seq + sp->ack.nr_acks);
- 		summary->nr_retained_nacks = 0;
- 	} else if (seq == old_seq) {
--		summary->nr_retained_nacks = sp->nr_nacks;
-+		summary->nr_retained_nacks = sp->ack.nr_nacks;
- 	} else {
--		for (i = 0; i < sp->nr_acks; i++) {
-+		for (i = 0; i < sp->ack.nr_acks; i++) {
- 			if (acks[i] == RXRPC_ACK_TYPE_NACK) {
- 				if (before(old_seq + i, seq))
- 					new_acks++;
-@@ -736,7 +735,7 @@ static rxrpc_seq_t rxrpc_input_check_prev_ack(struct rxrpc_call *call,
- 		summary->nr_retained_nacks = retained_nacks;
- 	}
- 
--	return old_seq + sp->nr_acks;
-+	return old_seq + sp->ack.nr_acks;
- }
- 
- /*
-@@ -756,10 +755,10 @@ static void rxrpc_input_soft_acks(struct rxrpc_call *call,
- {
- 	struct rxrpc_skb_priv *sp = rxrpc_skb(skb);
- 	unsigned int i, old_nacks = 0;
--	rxrpc_seq_t lowest_nak = seq + sp->nr_acks;
-+	rxrpc_seq_t lowest_nak = seq + sp->ack.nr_acks;
- 	u8 *acks = skb->data + sizeof(struct rxrpc_wire_header) + sizeof(struct rxrpc_ackpacket);
- 
--	for (i = 0; i < sp->nr_acks; i++) {
-+	for (i = 0; i < sp->ack.nr_acks; i++) {
- 		if (acks[i] == RXRPC_ACK_TYPE_ACK) {
- 			summary->nr_acks++;
- 			if (after_eq(seq, since))
-@@ -771,7 +770,7 @@ static void rxrpc_input_soft_acks(struct rxrpc_call *call,
- 				old_nacks++;
- 			} else {
- 				summary->nr_new_nacks++;
--				sp->nr_nacks++;
-+				sp->ack.nr_nacks++;
- 			}
- 
- 			if (before(seq, lowest_nak))
-@@ -832,7 +831,6 @@ static bool rxrpc_is_ack_valid(struct rxrpc_call *call,
- static void rxrpc_input_ack(struct rxrpc_call *call, struct sk_buff *skb)
- {
- 	struct rxrpc_ack_summary summary = { 0 };
--	struct rxrpc_ackpacket ack;
- 	struct rxrpc_skb_priv *sp = rxrpc_skb(skb);
- 	struct rxrpc_acktrailer trailer;
- 	rxrpc_serial_t ack_serial, acked_serial;
-@@ -841,29 +839,24 @@ static void rxrpc_input_ack(struct rxrpc_call *call, struct sk_buff *skb)
- 
- 	_enter("");
- 
--	offset = sizeof(struct rxrpc_wire_header);
--	if (skb_copy_bits(skb, offset, &ack, sizeof(ack)) < 0)
--		return rxrpc_proto_abort(call, 0, rxrpc_badmsg_short_ack);
--	offset += sizeof(ack);
--
--	ack_serial = sp->hdr.serial;
--	acked_serial = ntohl(ack.serial);
--	first_soft_ack = ntohl(ack.firstPacket);
--	prev_pkt = ntohl(ack.previousPacket);
--	hard_ack = first_soft_ack - 1;
--	nr_acks = ack.nAcks;
--	sp->first_ack = first_soft_ack;
--	sp->nr_acks = nr_acks;
--	summary.ack_reason = (ack.reason < RXRPC_ACK__INVALID ?
--			      ack.reason : RXRPC_ACK__INVALID);
-+	offset = sizeof(struct rxrpc_wire_header) + sizeof(struct rxrpc_ackpacket);
-+
-+	ack_serial	= sp->hdr.serial;
-+	acked_serial	= sp->ack.acked_serial;
-+	first_soft_ack	= sp->ack.first_ack;
-+	prev_pkt	= sp->ack.prev_ack;
-+	nr_acks		= sp->ack.nr_acks;
-+	hard_ack	= first_soft_ack - 1;
-+	summary.ack_reason = (sp->ack.reason < RXRPC_ACK__INVALID ?
-+			      sp->ack.reason : RXRPC_ACK__INVALID);
- 
- 	trace_rxrpc_rx_ack(call, ack_serial, acked_serial,
- 			   first_soft_ack, prev_pkt,
- 			   summary.ack_reason, nr_acks);
--	rxrpc_inc_stat(call->rxnet, stat_rx_acks[ack.reason]);
-+	rxrpc_inc_stat(call->rxnet, stat_rx_acks[summary.ack_reason]);
- 
- 	if (acked_serial != 0) {
--		switch (ack.reason) {
-+		switch (summary.ack_reason) {
- 		case RXRPC_ACK_PING_RESPONSE:
- 			rxrpc_complete_rtt_probe(call, skb->tstamp, acked_serial, ack_serial,
- 						 rxrpc_rtt_rx_ping_response);
-@@ -883,7 +876,7 @@ static void rxrpc_input_ack(struct rxrpc_call *call, struct sk_buff *skb)
- 	 * indicates that the client address changed due to NAT.  The server
- 	 * lost the call because it switched to a different peer.
- 	 */
--	if (unlikely(ack.reason == RXRPC_ACK_EXCEEDS_WINDOW) &&
-+	if (unlikely(summary.ack_reason == RXRPC_ACK_EXCEEDS_WINDOW) &&
- 	    first_soft_ack == 1 &&
- 	    prev_pkt == 0 &&
- 	    rxrpc_is_client_call(call)) {
-@@ -896,7 +889,7 @@ static void rxrpc_input_ack(struct rxrpc_call *call, struct sk_buff *skb)
- 	 * indicate a change of address.  However, we can retransmit the call
- 	 * if we still have it buffered to the beginning.
- 	 */
--	if (unlikely(ack.reason == RXRPC_ACK_OUT_OF_SEQUENCE) &&
-+	if (unlikely(summary.ack_reason == RXRPC_ACK_OUT_OF_SEQUENCE) &&
- 	    first_soft_ack == 1 &&
- 	    prev_pkt == 0 &&
- 	    call->acks_hard_ack == 0 &&
-@@ -937,7 +930,7 @@ static void rxrpc_input_ack(struct rxrpc_call *call, struct sk_buff *skb)
- 	call->acks_first_seq = first_soft_ack;
- 	call->acks_prev_seq = prev_pkt;
- 
--	switch (ack.reason) {
-+	switch (summary.ack_reason) {
- 	case RXRPC_ACK_PING:
- 		break;
- 	default:
-@@ -994,7 +987,7 @@ static void rxrpc_input_ack(struct rxrpc_call *call, struct sk_buff *skb)
- 	rxrpc_congestion_management(call, skb, &summary, acked_serial);
- 
- send_response:
--	if (ack.reason == RXRPC_ACK_PING)
-+	if (summary.ack_reason == RXRPC_ACK_PING)
- 		rxrpc_send_ACK(call, RXRPC_ACK_PING_RESPONSE, ack_serial,
- 			       rxrpc_propose_ack_respond_to_ping);
- 	else if (sp->hdr.flags & RXRPC_REQUEST_ACK)
-diff --git a/net/rxrpc/io_thread.c b/net/rxrpc/io_thread.c
-index 4a3a08a0e2cd..0300baa9afcd 100644
---- a/net/rxrpc/io_thread.c
-+++ b/net/rxrpc/io_thread.c
-@@ -124,6 +124,7 @@ static bool rxrpc_extract_header(struct rxrpc_skb_priv *sp,
- 				 struct sk_buff *skb)
- {
- 	struct rxrpc_wire_header whdr;
-+	struct rxrpc_ackpacket ack;
- 
- 	/* dig out the RxRPC connection details */
- 	if (skb_copy_bits(skb, 0, &whdr, sizeof(whdr)) < 0)
-@@ -141,6 +142,16 @@ static bool rxrpc_extract_header(struct rxrpc_skb_priv *sp,
- 	sp->hdr.securityIndex	= whdr.securityIndex;
- 	sp->hdr._rsvd		= ntohs(whdr._rsvd);
- 	sp->hdr.serviceId	= ntohs(whdr.serviceId);
-+
-+	if (sp->hdr.type == RXRPC_PACKET_TYPE_ACK) {
-+		if (skb_copy_bits(skb, sizeof(whdr), &ack, sizeof(ack)) < 0)
-+			return rxrpc_bad_message(skb, rxrpc_badmsg_short_ack);
-+		sp->ack.first_ack	= ntohl(ack.firstPacket);
-+		sp->ack.prev_ack	= ntohl(ack.previousPacket);
-+		sp->ack.acked_serial	= ntohl(ack.serial);
-+		sp->ack.reason		= ack.reason;
-+		sp->ack.nr_acks		= ack.nAcks;
-+	}
- 	return true;
- }
- 
+Applied to riscv-dt-fixes, thanks!
 
+[1/1] riscv: dts: Move BUILTIN_DTB_SOURCE to common Kconfig
+      https://git.kernel.org/conor/c/2672031b20f6
+
+Thanks,
+Conor.
 
