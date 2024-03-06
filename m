@@ -1,176 +1,279 @@
-Return-Path: <linux-kernel+bounces-94053-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94055-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F709873921
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:30:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93671873931
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:31:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D0EA11F21332
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:30:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 47E2A282765
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:31:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DD07133994;
-	Wed,  6 Mar 2024 14:30:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="hKkb9pnT"
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01olkn2058.outbound.protection.outlook.com [40.92.107.58])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DF87133993;
-	Wed,  6 Mar 2024 14:30:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.107.58
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709735426; cv=fail; b=nBKF61b7RloDj1BQhuSUDA+uj1fACcptPLz9XRqgXgm/8DctsLA/7Tvvb1EIG2bXJEXScI25wUpJq7bWwMuVlKzgDt9I1xaaEsDPT7i/MvzyXFloRx40EfGw8bzFtdCPiirKZ+B5eUUE7JZhHgCcr+X+dj2waLF8t6BvHzW4KJ4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709735426; c=relaxed/simple;
-	bh=CFbm+awWMNtL11GzWPbfJZMl8AeCNsCzBjnqUzDK0ek=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=jY9+ARsWmv0i3Ng1j+11QBaZTTLfTXM1Ky855TOX6lXOYKmqhyraicLZREjRSAsUX6+aMwHA/aozevwE7dRzhfztj/ya8LLkFsALt7VAtF9iJ56p1hCu6gQox8ZwwTsiXBpVt6YBsN7amjSIiiMSCPVFevezYnfa1xYzDSgqbxs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=hKkb9pnT; arc=fail smtp.client-ip=40.92.107.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UAX91y6qGiiy2PFP4cIvqmwpPQQKF3BKaFHvYD5Pdg7hVfGixcW2gTDD4QiYGSo8FidQfq472WdHs1yYK+rlpYEywPtygBqBYmlgqNG/jqrDAf9hBIh1lZBRq60h1l7mbvmjhnSNro+6n1LgpCuiqm058pkLDWQBoI1RjS7I073O/ojfG3gjt4ut4Nb0FpXiujetZarxONNBmT41eNjIDHfWhwdT7TE5rQforyvmChd02HTaibNEYZOfkLTJkcwcwAaGb4Nv+rWhghkfWE+smPoNOd6JMKUJ+eq5xJUIr6bfk+zWc8zaGivtV97cngIb7Oa3yRTXpEIOG9SMB8GuHw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WYFNLmpwjJ9yEfDdjdYqAlY6POqhf572KCxz6TWOajY=;
- b=oVJ7tPUDVFOeP+MQeWb10TD5MxBK7uGwI5jFLpwN9+VMXmoDT48zGKK+uJ0/iBBnyQzfVQS1kwVac/KgsJnfS9XDvtk7y9ygpKpFqAmvCYUU9EeYq1eeigsyWfHE9pXiZXyxs7mMGV9WFAqECMyR4rsSSpVDpHrWksRO+9rI+YuOwDxLrJX4rvOEGpwMuit9IAsStW0EWscj5SZI3i8HH8XcgvlSwVwkBGd+4S/3Nl1mTNb1sVJJVhZFjPRhWbzBrlPQPweyzeU8YvlcLM9Z4HZAD9P+49IdnAC66HnSCmjT4SYuK/wLK9IHjI3r7Vo3vrA/aTbqrqomtHQG6HC0Tw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WYFNLmpwjJ9yEfDdjdYqAlY6POqhf572KCxz6TWOajY=;
- b=hKkb9pnTFikCRrq4rZh3WDYz4dWcm8oUfbgbqhiDuqU8m4O0trr6BUn0Ryzgn0bEm+18Mo1c8cuaIQA/RKzffRfMIRmoipTDgMAkTRwRiK+f+dhVDzgjOY79nkeWKjiq1ARPbTrRR8JIhRfItDriNou44uaHgf5nMR/Mrzv6tMplNSsXRML6VZKTYz4aKGXh+kjmfvrU/Dws4BkpAyuWUsJpigsu046AZCANSVnY4j3WdJNCXHZxyKab8/hS5ISLew+Hh3Q2XZ9WLp3EiJ+5srqGnQDL3lT1dN9rpgjfhV/mC6KZuoVysq1CzRPZF849ftH4kIVFrQmQKDvZ8Ekgrw==
-Received: from SEZPR06MB6959.apcprd06.prod.outlook.com (2603:1096:101:1ed::14)
- by SI2PR06MB5044.apcprd06.prod.outlook.com (2603:1096:4:1a7::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.24; Wed, 6 Mar
- 2024 14:30:20 +0000
-Received: from SEZPR06MB6959.apcprd06.prod.outlook.com
- ([fe80::aced:cbb9:4616:96d8]) by SEZPR06MB6959.apcprd06.prod.outlook.com
- ([fe80::aced:cbb9:4616:96d8%2]) with mapi id 15.20.7339.035; Wed, 6 Mar 2024
- 14:30:20 +0000
-Message-ID:
- <SEZPR06MB69595E580354C25A9AE9C16596212@SEZPR06MB6959.apcprd06.prod.outlook.com>
-Date: Wed, 6 Mar 2024 22:30:15 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] clk: set initial best mux parent to current parent
- when determining rate
-Content-Language: en-US
-To: Maxime Ripard <mripard@kernel.org>
-Cc: Michael Turquette <mturquette@baylibre.com>,
- Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240306-mux-v2-0-92a5fa461fd2@outlook.com>
- <20240306-mux-v2-1-92a5fa461fd2@outlook.com>
- <20240306-inescapable-astute-bobcat-20c3e8@houat>
-From: Yang Xiwen <forbidden405@outlook.com>
-In-Reply-To: <20240306-inescapable-astute-bobcat-20c3e8@houat>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TMN: [ZhdQVPzFbshejFEbOcBeLWGv3RO3rTeTXQGG8YiU+EsSKTHTYZiG5GA5hMGfzbI+]
-X-ClientProxiedBy: KL1PR0401CA0008.apcprd04.prod.outlook.com
- (2603:1096:820:f::13) To SEZPR06MB6959.apcprd06.prod.outlook.com
- (2603:1096:101:1ed::14)
-X-Microsoft-Original-Message-ID:
- <734f7efd-f9b9-4be3-b904-b741d12e2e83@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47A9813341E;
+	Wed,  6 Mar 2024 14:31:42 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 152A8131745;
+	Wed,  6 Mar 2024 14:31:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709735501; cv=none; b=fTfDrAMKREGq2UpS77fkKC75yBp0hX1WaTzYc2x3cVpvpjGHuBVgWjLL0qw/DobIGRWL42LPh1XaeEKHUClXKO3S/w2rjD00ahL7gljLZHs2xvgwav1O65L1OP+XM0wb6/u5KIUzG8/ZDeUfIb1w599u7Ykm7MZJYxb/JFayvcc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709735501; c=relaxed/simple;
+	bh=dbnHiZjb/P6UjDEKf3yalHtdTeFWkOkyikyrXGzM5Ro=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=aWHf0b8uL7v9lxyOs88qc7PkfHWGEBVu6URZeGS4uACVehu1XhjqugKv5ph1nsUQ7eJ0y6x16ENBCOMy8DYYnMOWm3PXHiQyQuicGjauDP9pWVWM4EHRheHKv9unOw2gIqKzo9AgmA6B5Cz6ZD3/sn2A4a6B66C3bzU3VeICiOg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 340CB1FB;
+	Wed,  6 Mar 2024 06:32:15 -0800 (PST)
+Received: from [10.57.11.156] (unknown [10.57.11.156])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2F5A23F762;
+	Wed,  6 Mar 2024 06:31:35 -0800 (PST)
+Message-ID: <61095f51-3d74-48e9-96b4-75da4645331e@arm.com>
+Date: Wed, 6 Mar 2024 14:31:47 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SEZPR06MB6959:EE_|SI2PR06MB5044:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9201385d-a096-4503-bfa0-08dc3de9f375
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	vPobl9LDx/sTdKa8IEY74SJ2gnbzISxDOUqnOtye4YNHbn6M2DAd124POoQzwHmJ5G4bicw0YltIe57dmHY1P0NLST3CaPPN7Wg/lHNVhhscdP3ZH9IKIGLO6Bop9FHMn7hxJIKSe8rH/dq1HbJIe1BopPUJwgG3FV6GqUlwquKWsIcXB2Qi56QdCVgu3jInlR2mxYfENtmkT6POhc10cA2vUKhEe2aJ04JRYD9LTusUQsyOkBCH+YKSy05z2GemH38h2njojYw9Rsfe7bhCSUYg4GbeJny/LZ4dhFUpzBvQSSqQE5631XMHL9GvEm1OwbG9koYdzyezyzreqazd7ws42hAqo4tQBKS9ZY5IrxZ3xYKgKD6CDLJ6n22g9FBjGnkPbyIzF0ZxFFX3orDz6Euw21Zc0PtEwpNdG9+QNb4cwFZ4zsMS4Mh6NAU7tjMaPXp5T0ZevV7Q22CWFamb5aj6114qv9mfEfpiK0sr899TTMhjiIFQMYV3Hqko4Zvf69a7AdgNGJboG49+6U9Yll2dqQWEVVmFWHv1ODQsJ09KIsSPUIMhiwKAr1PXH6wY
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?WThqMnVpZ2VTU1ZyZGpGcG5tejVKMjQ4REVHNWFwYi9RY3lYOU03aUh6bjFU?=
- =?utf-8?B?VW9nYWxSbS9ZY1JDa0xoN3V0aGNzRGJiUkJjdTdwSVRsRFA4anBYTmNjWXpa?=
- =?utf-8?B?ODQ2cC9jZUs4UUl4WEh2OTJkUjhNeEk5ZjJIMWhWYjFBd05raXh2ZStBOHoy?=
- =?utf-8?B?ZG13Qnc1WTBRb0pDckRpTUpmcEZJODFXT21UUEJYc2pIcWJDZk9jcGVtWVY3?=
- =?utf-8?B?VURtczEySlBiMHg3TWNIYkVBNUdTdTlNR3duYW55UmhtT1VjTnZUT0l4bGlR?=
- =?utf-8?B?ZXBTY3gzdmxKUUJZeSt2Z29xVUdjc2VqKzNwaG11bnpoQkxLc0NWeDgvTG9X?=
- =?utf-8?B?UVppVHJ1N2tWUlM4ZllHM2t0ZHFkeE1aSzBzdHU0VzNwSkJXR0hicngycUd2?=
- =?utf-8?B?eU90ai9sSlJWL1p1aFA2Vit5MWlGRXFaYVhuZWFPOWtxZ2kwOVZ6blRvOGZC?=
- =?utf-8?B?WDhhTi9RelNkMDBIaXFnL081SU9IMmhpRDBVOTRHdjNXaVRvRS9VcE45dzFr?=
- =?utf-8?B?MWpUZmVIN1ByQzY1ZHFIVDVFc3dOdWdCNjNmUzV3NTZoTGRBVHUxTERUVllw?=
- =?utf-8?B?dTVIZjR3VE5KMUxTQ1Y5aGxxT1FqSGhNYTQ4MldsUDNFeWpITkE0eGRnWG5t?=
- =?utf-8?B?RGdUODRoM2tCckVLYmhSQ0lhczdENTN3cDVTM0h4Ti9NS2dmb2VDcUxUU0dz?=
- =?utf-8?B?ZlZwdWNvMWlIOVFhekFoMGtLUWo0VllBMzNXb2V0ajZhdm5IM25ZcU1OaDI5?=
- =?utf-8?B?ZzV3RVBwTnF1VVhQK3VwRkFRU3ZCcWZBaFdzUU05UG8zZ0Q1S01RdktaSnk5?=
- =?utf-8?B?RlczQjEwbEpXTWh3T3VZSlNISm5ka3MyOEhqN1hFRmJscWFvelBqaGJMbURa?=
- =?utf-8?B?VmdGSzFEYXlUK2ZFRzFwZnd2K2xiL0hNVzZwRWxYZzlJbmY2N3hGU3J0bFZl?=
- =?utf-8?B?emFqRXFTQnF2VE9iQ2FsV0VHNDU1YTNKTTNKNVBUK3BxNk1nblFNN2M3V2NB?=
- =?utf-8?B?YzNraUx4ZjNMR1paWjd1NGNQSk9FUXQ5Tm5ycnVDQURzRGVZTkxmcXBTdGt5?=
- =?utf-8?B?U0NXa01mNGxkMm1nUDk2WUoyYjlsVk0zY0cxUUMvakRTWEoyUjU2MHlkaUFR?=
- =?utf-8?B?NGkrRFVEaDIzWVo3eVRlcWZzNEVxM3o5TnNVWjVTN20vSVJ6YlRlSUtvMWRj?=
- =?utf-8?B?eHc0YTl0TzFzay9SQndYbGVxbFp0S05SQ2lsRVdSdWUrMEhrcm9MN1RkN1dz?=
- =?utf-8?B?YTZDNW96aU96VXJPR2hzQ2pDbmc2YUs2Y2pvRGY2ZGpmM3NGblFwZVhySUlj?=
- =?utf-8?B?elFHcHptZW5LVlBYTjVYYkpvbFk2RkQrZUIwVU1jWDdRdUdSWU1aamdTbVd5?=
- =?utf-8?B?UXpnNzA2NHNld0V2MDdDZytHZjFnUXRmeDlLMmtob0FyUnFpclB3VUNLOVg5?=
- =?utf-8?B?WjBXUnhhUzlWd01PUWd1eGFDMEYyQ2E2cndJbVFMZHhjcEVtSnhVbGZXUmNN?=
- =?utf-8?B?V1AyL0ljUVR6eE83UW9UZmxnVGhYN0YzT3IxOFk1VnVRY0xSYnpEdGlVWUxh?=
- =?utf-8?B?NHRkZHdndlB4UUJndnlJTWMrdnMrUDQzVU1vQVVQVVJRZFRSdDlNdW1Uc0Fr?=
- =?utf-8?B?UFJ5dmkwbUdWNk50WEduMCtoTkM3RG52RjJUVzl5czJvWStSWEtzVUVzaTZS?=
- =?utf-8?B?V2VlOURYaVlVWmJOVU9FSFpud3RaeXBHUk5pZmtnK3lLcjdmZDd2ZnVGTGpD?=
- =?utf-8?Q?ohGUZlWwZI5mnSLRDz+dViF3N87T9G2cGgINPbe?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9201385d-a096-4503-bfa0-08dc3de9f375
-X-MS-Exchange-CrossTenant-AuthSource: SEZPR06MB6959.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Mar 2024 14:30:20.3487
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SI2PR06MB5044
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/1] drm/panfrost: Replace fdinfo's profiling debugfs
+ knob with sysfs
+To: =?UTF-8?Q?Adri=C3=A1n_Larumbe?= <adrian.larumbe@collabora.com>,
+ boris.brezillon@collabora.com, robh@kernel.org, airlied@gmail.com,
+ daniel@ffwll.ch, maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+ tzimmermann@suse.de, corbet@lwn.net
+Cc: kernel@collabora.com, linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-doc@vger.kernel.org
+References: <20240306015819.822128-1-adrian.larumbe@collabora.com>
+ <20240306015819.822128-2-adrian.larumbe@collabora.com>
+Content-Language: en-GB
+From: Steven Price <steven.price@arm.com>
+In-Reply-To: <20240306015819.822128-2-adrian.larumbe@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On 3/6/2024 10:24 PM, Maxime Ripard wrote:
-> Hi,
->
-> On Wed, Mar 06, 2024 at 12:22:23AM +0800, Yang Xiwen via B4 Relay wrote:
->> From: Yang Xiwen <forbidden405@outlook.com>
->>
->> Originally, the initial clock rate is hardcoded to 0, this can lead to
->> some problem when setting a very small rate with CLK_MUX_ROUND_CLOSEST.
->>
->> For example, if the lowest possible rate provided by the mux is 1000Hz,
->> setting a rate below 500Hz will fail, because no clock can provide a
->> better rate than the non-existant 0Hz. But it should succeed with 1000Hz
->> being set.
->>
->> Setting the initial best parent to current parent could solve this bug.
->>
->> Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
-> That patch makes sense to me, but this changes the behaviour of the function.
->
-> Before, if we couldn't find a good configuration for the rate, we were
-> error'ing out. Now, we keep the current configuration. We should
-> document the new behaviour in the function documentation, and we should
-> probably run that through kernelci to make sure we aren't breaking any
-> platform (and from experience, we probably are).
+On 06/03/2024 01:56, Adrián Larumbe wrote:
+> Debugfs isn't always available in production builds that try to squeeze
+> every single byte out of the kernel image, but we still need a way to
+> toggle the timestamp and cycle counter registers so that jobs can be
+> profiled for fdinfo's drm engine and cycle calculations.
+> 
+> Drop the debugfs knob and replace it with a sysfs file that accomplishes
+> the same functionality, and document its ABI in a separate file.
+> 
+> Signed-off-by: Adrián Larumbe <adrian.larumbe@collabora.com>
 
+Reviewed-by: Steven Price <steven.price@arm.com>
 
-We can limit the new behavior to CLK_MUX_ROUND_CLOSEST as well. The 
-current behavior is okay for common muxes i think. Though probably wrong 
-for CLK_MUX_ROUND_CLOSEST.
-
-
->
-> Maxime
-
-
--- 
-Regards,
-Yang Xiwen
+> ---
+>  .../testing/sysfs-driver-panfrost-profiling   | 10 +++++
+>  Documentation/gpu/panfrost.rst                |  9 ++++
+>  drivers/gpu/drm/panfrost/Makefile             |  2 -
+>  drivers/gpu/drm/panfrost/panfrost_debugfs.c   | 21 ----------
+>  drivers/gpu/drm/panfrost/panfrost_debugfs.h   | 14 -------
+>  drivers/gpu/drm/panfrost/panfrost_device.h    |  2 +-
+>  drivers/gpu/drm/panfrost/panfrost_drv.c       | 41 ++++++++++++++++---
+>  drivers/gpu/drm/panfrost/panfrost_job.c       |  2 +-
+>  8 files changed, 57 insertions(+), 44 deletions(-)
+>  create mode 100644 Documentation/ABI/testing/sysfs-driver-panfrost-profiling
+>  delete mode 100644 drivers/gpu/drm/panfrost/panfrost_debugfs.c
+>  delete mode 100644 drivers/gpu/drm/panfrost/panfrost_debugfs.h
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-driver-panfrost-profiling b/Documentation/ABI/testing/sysfs-driver-panfrost-profiling
+> new file mode 100644
+> index 000000000000..1d8bb0978920
+> --- /dev/null
+> +++ b/Documentation/ABI/testing/sysfs-driver-panfrost-profiling
+> @@ -0,0 +1,10 @@
+> +What:		/sys/bus/platform/drivers/panfrost/.../profiling
+> +Date:		February 2024
+> +KernelVersion:	6.8.0
+> +Contact:	Adrian Larumbe <adrian.larumbe@collabora.com>
+> +Description:
+> +		Get/set drm fdinfo's engine and cycles profiling status.
+> +		Valid values are:
+> +		0: Don't enable fdinfo job profiling sources.
+> +		1: Enable fdinfo job profiling sources, this enables both the GPU's
+> +		   timestamp and cycle counter registers.
+> \ No newline at end of file
+> diff --git a/Documentation/gpu/panfrost.rst b/Documentation/gpu/panfrost.rst
+> index b80e41f4b2c5..51ba375fd80d 100644
+> --- a/Documentation/gpu/panfrost.rst
+> +++ b/Documentation/gpu/panfrost.rst
+> @@ -38,3 +38,12 @@ the currently possible format options:
+>  
+>  Possible `drm-engine-` key names are: `fragment`, and  `vertex-tiler`.
+>  `drm-curfreq-` values convey the current operating frequency for that engine.
+> +
+> +Users must bear in mind that engine and cycle sampling are disabled by default,
+> +because of power saving concerns. `fdinfo` users and benchmark applications which
+> +query the fdinfo file must make sure to toggle the job profiling status of the
+> +driver by writing into the appropriate sysfs node::
+> +
+> +    echo <N> > /sys/bus/platform/drivers/panfrost/[a-f0-9]*.gpu/profiling
+> +
+> +Where `N` is either `0` or `1`, depending on the desired enablement status.
+> diff --git a/drivers/gpu/drm/panfrost/Makefile b/drivers/gpu/drm/panfrost/Makefile
+> index 2c01c1e7523e..7da2b3f02ed9 100644
+> --- a/drivers/gpu/drm/panfrost/Makefile
+> +++ b/drivers/gpu/drm/panfrost/Makefile
+> @@ -12,6 +12,4 @@ panfrost-y := \
+>  	panfrost_perfcnt.o \
+>  	panfrost_dump.o
+>  
+> -panfrost-$(CONFIG_DEBUG_FS) += panfrost_debugfs.o
+> -
+>  obj-$(CONFIG_DRM_PANFROST) += panfrost.o
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_debugfs.c b/drivers/gpu/drm/panfrost/panfrost_debugfs.c
+> deleted file mode 100644
+> index 72d4286a6bf7..000000000000
+> --- a/drivers/gpu/drm/panfrost/panfrost_debugfs.c
+> +++ /dev/null
+> @@ -1,21 +0,0 @@
+> -// SPDX-License-Identifier: GPL-2.0
+> -/* Copyright 2023 Collabora ltd. */
+> -/* Copyright 2023 Amazon.com, Inc. or its affiliates. */
+> -
+> -#include <linux/debugfs.h>
+> -#include <linux/platform_device.h>
+> -#include <drm/drm_debugfs.h>
+> -#include <drm/drm_file.h>
+> -#include <drm/panfrost_drm.h>
+> -
+> -#include "panfrost_device.h"
+> -#include "panfrost_gpu.h"
+> -#include "panfrost_debugfs.h"
+> -
+> -void panfrost_debugfs_init(struct drm_minor *minor)
+> -{
+> -	struct drm_device *dev = minor->dev;
+> -	struct panfrost_device *pfdev = platform_get_drvdata(to_platform_device(dev->dev));
+> -
+> -	debugfs_create_atomic_t("profile", 0600, minor->debugfs_root, &pfdev->profile_mode);
+> -}
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_debugfs.h b/drivers/gpu/drm/panfrost/panfrost_debugfs.h
+> deleted file mode 100644
+> index c5af5f35877f..000000000000
+> --- a/drivers/gpu/drm/panfrost/panfrost_debugfs.h
+> +++ /dev/null
+> @@ -1,14 +0,0 @@
+> -/* SPDX-License-Identifier: GPL-2.0 */
+> -/*
+> - * Copyright 2023 Collabora ltd.
+> - * Copyright 2023 Amazon.com, Inc. or its affiliates.
+> - */
+> -
+> -#ifndef PANFROST_DEBUGFS_H
+> -#define PANFROST_DEBUGFS_H
+> -
+> -#ifdef CONFIG_DEBUG_FS
+> -void panfrost_debugfs_init(struct drm_minor *minor);
+> -#endif
+> -
+> -#endif  /* PANFROST_DEBUGFS_H */
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h b/drivers/gpu/drm/panfrost/panfrost_device.h
+> index 62f7e3527385..cffcb0ac7c11 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_device.h
+> +++ b/drivers/gpu/drm/panfrost/panfrost_device.h
+> @@ -130,7 +130,7 @@ struct panfrost_device {
+>  	struct list_head scheduled_jobs;
+>  
+>  	struct panfrost_perfcnt *perfcnt;
+> -	atomic_t profile_mode;
+> +	bool profile_mode;
+>  
+>  	struct mutex sched_lock;
+>  
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/panfrost/panfrost_drv.c
+> index a926d71e8131..9696702800a4 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_drv.c
+> +++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
+> @@ -20,7 +20,6 @@
+>  #include "panfrost_job.h"
+>  #include "panfrost_gpu.h"
+>  #include "panfrost_perfcnt.h"
+> -#include "panfrost_debugfs.h"
+>  
+>  static bool unstable_ioctls;
+>  module_param_unsafe(unstable_ioctls, bool, 0600);
+> @@ -600,10 +599,6 @@ static const struct drm_driver panfrost_drm_driver = {
+>  
+>  	.gem_create_object	= panfrost_gem_create_object,
+>  	.gem_prime_import_sg_table = panfrost_gem_prime_import_sg_table,
+> -
+> -#ifdef CONFIG_DEBUG_FS
+> -	.debugfs_init		= panfrost_debugfs_init,
+> -#endif
+>  };
+>  
+>  static int panfrost_probe(struct platform_device *pdev)
+> @@ -692,6 +687,41 @@ static void panfrost_remove(struct platform_device *pdev)
+>  	drm_dev_put(ddev);
+>  }
+>  
+> +static ssize_t profiling_show(struct device *dev,
+> +			      struct device_attribute *attr, char *buf)
+> +{
+> +	struct panfrost_device *pfdev = dev_get_drvdata(dev);
+> +
+> +	return sysfs_emit(buf, "%d\n", pfdev->profile_mode);
+> +}
+> +
+> +
+> +static ssize_t profiling_store(struct device *dev,
+> +			       struct device_attribute *attr,
+> +			       const char *buf, size_t len)
+> +{
+> +	struct panfrost_device *pfdev = dev_get_drvdata(dev);
+> +	bool value;
+> +	int err;
+> +
+> +	err = kstrtobool(buf, &value);
+> +	if (err)
+> +		return err;
+> +
+> +	pfdev->profile_mode = value;
+> +
+> +	return len;
+> +}
+> +
+> +static DEVICE_ATTR_RW(profiling);
+> +
+> +static struct attribute *panfrost_attrs[] = {
+> +	&dev_attr_profiling.attr,
+> +	NULL,
+> +};
+> +
+> +ATTRIBUTE_GROUPS(panfrost);
+> +
+>  /*
+>   * The OPP core wants the supply names to be NULL terminated, but we need the
+>   * correct num_supplies value for regulator core. Hence, we NULL terminate here
+> @@ -789,6 +819,7 @@ static struct platform_driver panfrost_driver = {
+>  		.name	= "panfrost",
+>  		.pm	= pm_ptr(&panfrost_pm_ops),
+>  		.of_match_table = dt_match,
+> +		.dev_groups = panfrost_groups,
+>  	},
+>  };
+>  module_platform_driver(panfrost_driver);
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_job.c b/drivers/gpu/drm/panfrost/panfrost_job.c
+> index 0c2dbf6ef2a5..a61ef0af9a4e 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_job.c
+> +++ b/drivers/gpu/drm/panfrost/panfrost_job.c
+> @@ -243,7 +243,7 @@ static void panfrost_job_hw_submit(struct panfrost_job *job, int js)
+>  	subslot = panfrost_enqueue_job(pfdev, js, job);
+>  	/* Don't queue the job if a reset is in progress */
+>  	if (!atomic_read(&pfdev->reset.pending)) {
+> -		if (atomic_read(&pfdev->profile_mode)) {
+> +		if (pfdev->profile_mode) {
+>  			panfrost_cycle_counter_get(pfdev);
+>  			job->is_profiled = true;
+>  			job->start_time = ktime_get();
 
 
