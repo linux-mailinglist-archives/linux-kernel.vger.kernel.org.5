@@ -1,232 +1,114 @@
-Return-Path: <linux-kernel+bounces-93388-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93389-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 119A3872EF1
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 07:36:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12D48872EF5
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 07:40:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC0A5289F35
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 06:36:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B2B1EB23DC0
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 06:40:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 602C55B662;
-	Wed,  6 Mar 2024 06:36:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 458C95B67A;
+	Wed,  6 Mar 2024 06:40:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NtmgAmPS"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JD/ENoz0"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9484764A
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 06:36:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B25664A;
+	Wed,  6 Mar 2024 06:40:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709707006; cv=none; b=pWAqRj3gWifQl8lc5jYEyiRVcWFt5A1XUtx5jGFJOicwem8H2Zt3/vzIa11f6i3cvZDpTmxJfo02DJmdy4E1KKhhc6Ev8MKLg9PuwDYG9Nbk1zKaGOrwJF/2jJWJz5QWPToR9198cLh8U8L73TGatNZlKkS+A0qFJotaQYsdOWk=
+	t=1709707205; cv=none; b=omf0fpVSEzgEakeUsKeIgahv4CL/a4bWg5LXgAGmJTDFfZ+FwxZ4zBDX/ze6hIwDk4/HI7Yumpy6bNJnglDm+Wt9JZyChdTE/kqTbV9Hrzk7vgj5tn/JMBLaCcrteg8vW+W5Bat5T73rLDX5nJNFUaDKqzA5NWBrA/hFxZ2GX0g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709707006; c=relaxed/simple;
-	bh=qejD/AKf5341J4gQp//ueMJAwnNH5bDWfrIRnrKMeZY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CZes1jMY6SNyhieH5Ye9txRfqtPMOpyreQyXETweJ1t95bjpw6TlahYbNvYCE8ov5qhe0G5eYDbdTpu4e5fgjyaUh95sRDW+oAQNrsMk0wT9Y+8Idk7OrSstHRaV7Bd8MQgMeiTZng8ll4tQCg54T5ucrB6eUHXbGDVvTfNwqYY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NtmgAmPS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14E48C433F1;
-	Wed,  6 Mar 2024 06:36:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709707005;
-	bh=qejD/AKf5341J4gQp//ueMJAwnNH5bDWfrIRnrKMeZY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NtmgAmPSnnTGquSSBtgnnitKLjtBNKFm004CppR+tHqdKlhGJnP9/ad42nnQPeKDc
-	 NoVzize21yUxJGdFmGVqXTh65b5ZkKHVUrJDRiRL6WLo7FtdPvZXo4XkWcPaaw/3Bb
-	 Wj7H9Re4o72oKQbPbXEou01QYNdI272fCGsTS19gKvCvgy1qEdEqmImdgnLWkCd9fI
-	 ggFsoKkPiGGvwUEkmNgZh59xOuqEE4cjzvGh5fSd9lTsx64nGQnG2T8a11gKyMv8lG
-	 Y5QWo6Xw6Pv2zntlvr5/8DlAC4s9AeyV9SV8uENWWXhV2HDMGmdkjosElKIXt63OYB
-	 v3+6//XOHBFNw==
-Date: Wed, 6 Mar 2024 08:35:52 +0200
-From: Mike Rapoport <rppt@kernel.org>
-To: peterx@redhat.com
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	Christophe Leroy <christophe.leroy@csgroup.eu>, x86@kernel.org,
-	"Kirill A . Shutemov" <kirill@shutemov.name>,
-	Jason Gunthorpe <jgg@nvidia.com>, Yang Shi <shy828301@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linuxppc-dev@lists.ozlabs.org, Muchun Song <muchun.song@linux.dev>
-Subject: Re: [PATCH v3 10/10] mm/treewide: Align up pXd_leaf() retval across
- archs
-Message-ID: <ZegOyFS6aQC7StG_@kernel.org>
-References: <20240305043750.93762-1-peterx@redhat.com>
- <20240305043750.93762-11-peterx@redhat.com>
+	s=arc-20240116; t=1709707205; c=relaxed/simple;
+	bh=HISJxbHriH4GTTn+bHyCKPVqp6pdRvCDgIHrPnLT7t8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hxSqbZwArEN44Q2+MYMuphDSO9J4DxueqPO1QZJe49J7nBTsQKHULRFGJQ1j5gnQdSPyuL1o7XnLIlLIrt2htQe/C/4OJzUQHhOOO7gqbPfCSs05v1W5JX7rYeSLDu2cCncitZ0LWkl1ZXHWwz7Xb30uoqtVhzBZMXjScp5mQoI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JD/ENoz0; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1dc3b4b9b62so4260765ad.1;
+        Tue, 05 Mar 2024 22:40:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709707203; x=1710312003; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=X4b8KDa+7Y7BtH1fZO/uArrcTNHwrzvt5hC9CF6M2Ko=;
+        b=JD/ENoz0PpqOafkxFbc6W+3MQb4MJ1Kjyqng9XQTgul16oae2dNb8nhzJhnMUyLqLF
+         ftAMtRZ81PB5f+mBsaI86o+QQe7nYTr3k3WM4QFya2lpsCAv18Z6iKKgc7cInsuyTrx8
+         p6KKCAO/QRd6uBLQY+LuzsFKZT86N7SLpojfXHwnnoh934dqpyxxVHsmWxi0WaQIi/HT
+         IXPX3XspnwM2z+hjHjfAQ+wWOYes/VUcsnkFDUpSPS1elsUh472FTegUXIoJuh9F7NJG
+         q0VXtD+ybZIOMvURJnlMAErEA5YS1YS5h7S8Qs/u+WpsaR763SHg4lFnaMOb95M/KwUK
+         jdvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709707203; x=1710312003;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=X4b8KDa+7Y7BtH1fZO/uArrcTNHwrzvt5hC9CF6M2Ko=;
+        b=hLrh3so1IGRR+B84yfg7ZraBCA7SvHzoWlDyDE7xTmX8uxOJ7zm8fYCv8dIFd3LpZg
+         fEwERnifgpw74So3fHtISGEhiyj5Wb89hWgfZCGKVpfKju7g4uJiJvnhL2DHvLSyWUJz
+         AcrdQTc/Bh9HiyludaYBRUVC+5Qg39TivUBjvEo3d6oJlDmRcXaAPl7iggJFae8KJQZW
+         n6HC7pS1r6u/reROtdl3S2qXTTxYe7SVq+B+wXu7tZVCzYwNC/Hkag9dAMGAWE1ggbQw
+         6AIXlVuf3aTDMuDl7AK6KTLvEIVDnSNQG1Li0chRmrgnIqZRm6vaO+UXMWL3mWlz5eHJ
+         5BmQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVgMKquPpEwCNja1sX14oEUd6Fr1gb7u1yq8XQyYq4vhHDxKNoCP0KSQpeja/zKdZRJIccDtZaJcCfA3ajpNEE9icYKI1gXxxzGZyU3
+X-Gm-Message-State: AOJu0YzeR/22C1GcopShB5VI2dsiYKLWbX6PDiIinBg6xPoxIjHTqbQX
+	+uVCN12fDH5x9gzKaFdDcY8d3blGXLExuO9zoghpAJeyA7Ts/VocavfiLESoGB4=
+X-Google-Smtp-Source: AGHT+IHdCoZDM2XlYwpSR1f/Djppwn+lkd8AgNHr57+8d4FaxcCTYW4TEL3z7titTZlR5DVdzRH4Eg==
+X-Received: by 2002:a17:902:c946:b0:1dc:f989:3116 with SMTP id i6-20020a170902c94600b001dcf9893116mr4927614pla.18.1709707203462;
+        Tue, 05 Mar 2024 22:40:03 -0800 (PST)
+Received: from [192.168.1.7] ([61.7.133.192])
+        by smtp.googlemail.com with ESMTPSA id z16-20020a170903019000b001d74502d261sm11681281plg.115.2024.03.05.22.40.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Mar 2024 22:40:03 -0800 (PST)
+Message-ID: <160fdf7f-553a-40ed-8493-95a7d31a8b38@gmail.com>
+Date: Wed, 6 Mar 2024 13:39:54 +0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240305043750.93762-11-peterx@redhat.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] USB: serial: option: add Fibocom FM135-GL variants
+Content-Language: en-US
+To: "Bolan Wang(Bolan)" <bolan.wang@fibocom.com>,
+ "johan@kernel.org" <johan@kernel.org>,
+ "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+Cc: "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <KL1PR02MB6283EBD2786A3B3E4E373F0389212@KL1PR02MB6283.apcprd02.prod.outlook.com>
+From: Lars Melin <larsm17@gmail.com>
+In-Reply-To: <KL1PR02MB6283EBD2786A3B3E4E373F0389212@KL1PR02MB6283.apcprd02.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Mar 05, 2024 at 12:37:50PM +0800, peterx@redhat.com wrote:
-> From: Peter Xu <peterx@redhat.com>
+On 2024-03-06 13:18, Bolan Wang(Bolan) wrote:
+>> If the device with pid 0x01a1 only has an mbim interface as you have indicated then why do you add it to the option serial driver?
 > 
-> Even if pXd_leaf() API is defined globally, it's not clear on the retval,
-> and there are three types used (bool, int, unsigned log).
+> Hi Lars:
+>    The pid 0x01a1 may include at, diag ports in different usb modes. Currently, only has the mbim interface.
 > 
-> Always return a boolean for pXd_leaf() APIs.
-> 
-> Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
-> Signed-off-by: Peter Xu <peterx@redhat.com>
+> thanks
+> bolan
 
-Reviewed-by: Mike Rapoport (IBM) <rppt@kernel.org>
+Hi Bolan,
+so you already know that other versions of the card will have the pid 
+0x01a1 and the serial interfaces will be of class ff but you don't
+know what those interfaces will be used for?
+You shall only add driver support for what you know today and not for 
+something that might or might not be implemented in the future.
 
-> ---
->  arch/riscv/include/asm/pgtable-64.h | 2 +-
->  arch/riscv/include/asm/pgtable.h    | 2 +-
->  arch/s390/include/asm/pgtable.h     | 4 ++--
->  arch/sparc/include/asm/pgtable_64.h | 4 ++--
->  arch/x86/include/asm/pgtable.h      | 8 ++++----
->  include/linux/pgtable.h             | 8 ++++----
->  6 files changed, 14 insertions(+), 14 deletions(-)
-> 
-> diff --git a/arch/riscv/include/asm/pgtable-64.h b/arch/riscv/include/asm/pgtable-64.h
-> index b42017d76924..2c7e1661db01 100644
-> --- a/arch/riscv/include/asm/pgtable-64.h
-> +++ b/arch/riscv/include/asm/pgtable-64.h
-> @@ -190,7 +190,7 @@ static inline int pud_bad(pud_t pud)
->  }
->  
->  #define pud_leaf	pud_leaf
-> -static inline int pud_leaf(pud_t pud)
-> +static inline bool pud_leaf(pud_t pud)
->  {
->  	return pud_present(pud) && (pud_val(pud) & _PAGE_LEAF);
->  }
-> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
-> index add5cd30ab34..6839520dbcb1 100644
-> --- a/arch/riscv/include/asm/pgtable.h
-> +++ b/arch/riscv/include/asm/pgtable.h
-> @@ -241,7 +241,7 @@ static inline int pmd_bad(pmd_t pmd)
->  }
->  
->  #define pmd_leaf	pmd_leaf
-> -static inline int pmd_leaf(pmd_t pmd)
-> +static inline bool pmd_leaf(pmd_t pmd)
->  {
->  	return pmd_present(pmd) && (pmd_val(pmd) & _PAGE_LEAF);
->  }
-> diff --git a/arch/s390/include/asm/pgtable.h b/arch/s390/include/asm/pgtable.h
-> index 9e08af5b9247..60950e7a25f5 100644
-> --- a/arch/s390/include/asm/pgtable.h
-> +++ b/arch/s390/include/asm/pgtable.h
-> @@ -706,7 +706,7 @@ static inline int pud_none(pud_t pud)
->  }
->  
->  #define pud_leaf pud_leaf
-> -static inline int pud_leaf(pud_t pud)
-> +static inline bool pud_leaf(pud_t pud)
->  {
->  	if ((pud_val(pud) & _REGION_ENTRY_TYPE_MASK) != _REGION_ENTRY_TYPE_R3)
->  		return 0;
-> @@ -714,7 +714,7 @@ static inline int pud_leaf(pud_t pud)
->  }
->  
->  #define pmd_leaf pmd_leaf
-> -static inline int pmd_leaf(pmd_t pmd)
-> +static inline bool pmd_leaf(pmd_t pmd)
->  {
->  	return (pmd_val(pmd) & _SEGMENT_ENTRY_LARGE) != 0;
->  }
-> diff --git a/arch/sparc/include/asm/pgtable_64.h b/arch/sparc/include/asm/pgtable_64.h
-> index 6ff0a28d5fd1..4d1bafaba942 100644
-> --- a/arch/sparc/include/asm/pgtable_64.h
-> +++ b/arch/sparc/include/asm/pgtable_64.h
-> @@ -681,7 +681,7 @@ static inline unsigned long pte_special(pte_t pte)
->  }
->  
->  #define pmd_leaf pmd_leaf
-> -static inline unsigned long pmd_leaf(pmd_t pmd)
-> +static inline bool pmd_leaf(pmd_t pmd)
->  {
->  	pte_t pte = __pte(pmd_val(pmd));
->  
-> @@ -868,7 +868,7 @@ static inline pmd_t *pud_pgtable(pud_t pud)
->  #define p4d_page(p4d)			NULL
->  
->  #define pud_leaf pud_leaf
-> -static inline unsigned long pud_leaf(pud_t pud)
-> +static inline bool pud_leaf(pud_t pud)
->  {
->  	pte_t pte = __pte(pud_val(pud));
->  
-> diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
-> index cfc84c55d0e6..7621a5acb13e 100644
-> --- a/arch/x86/include/asm/pgtable.h
-> +++ b/arch/x86/include/asm/pgtable.h
-> @@ -252,7 +252,7 @@ static inline unsigned long pgd_pfn(pgd_t pgd)
->  }
->  
->  #define p4d_leaf p4d_leaf
-> -static inline int p4d_leaf(p4d_t p4d)
-> +static inline bool p4d_leaf(p4d_t p4d)
->  {
->  	/* No 512 GiB pages yet */
->  	return 0;
-> @@ -261,7 +261,7 @@ static inline int p4d_leaf(p4d_t p4d)
->  #define pte_page(pte)	pfn_to_page(pte_pfn(pte))
->  
->  #define pmd_leaf pmd_leaf
-> -static inline int pmd_leaf(pmd_t pte)
-> +static inline bool pmd_leaf(pmd_t pte)
->  {
->  	return pmd_flags(pte) & _PAGE_PSE;
->  }
-> @@ -1086,7 +1086,7 @@ static inline pmd_t *pud_pgtable(pud_t pud)
->  #define pud_page(pud)	pfn_to_page(pud_pfn(pud))
->  
->  #define pud_leaf pud_leaf
-> -static inline int pud_leaf(pud_t pud)
-> +static inline bool pud_leaf(pud_t pud)
->  {
->  	return (pud_val(pud) & (_PAGE_PSE | _PAGE_PRESENT)) ==
->  		(_PAGE_PSE | _PAGE_PRESENT);
-> @@ -1413,7 +1413,7 @@ static inline bool pgdp_maps_userspace(void *__ptr)
->  }
->  
->  #define pgd_leaf	pgd_leaf
-> -static inline int pgd_leaf(pgd_t pgd) { return 0; }
-> +static inline bool pgd_leaf(pgd_t pgd) { return false; }
->  
->  #ifdef CONFIG_PAGE_TABLE_ISOLATION
->  /*
-> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-> index a36cf4e124b0..85fc7554cd52 100644
-> --- a/include/linux/pgtable.h
-> +++ b/include/linux/pgtable.h
-> @@ -1777,16 +1777,16 @@ typedef unsigned int pgtbl_mod_mask;
->   * Only meaningful when called on a valid entry.
->   */
->  #ifndef pgd_leaf
-> -#define pgd_leaf(x)	0
-> +#define pgd_leaf(x)	false
->  #endif
->  #ifndef p4d_leaf
-> -#define p4d_leaf(x)	0
-> +#define p4d_leaf(x)	false
->  #endif
->  #ifndef pud_leaf
-> -#define pud_leaf(x)	0
-> +#define pud_leaf(x)	false
->  #endif
->  #ifndef pmd_leaf
-> -#define pmd_leaf(x)	0
-> +#define pmd_leaf(x)	false
->  #endif
->  
->  #ifndef pgd_leaf_size
-> -- 
-> 2.44.0
-> 
-> 
+For the device with pid 0x0115 you have listed an adb interface and adb 
+interfaces should not be in the option driver.
 
--- 
-Sincerely yours,
-Mike.
+thanks
+Lars
+
+
 
