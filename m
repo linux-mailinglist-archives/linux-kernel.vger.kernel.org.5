@@ -1,103 +1,162 @@
-Return-Path: <linux-kernel+bounces-93883-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93886-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D46D87364D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:27:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D65E9873660
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:30:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 07B5C1C23736
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:27:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3E725B22926
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:30:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D88E480618;
-	Wed,  6 Mar 2024 12:27:29 +0000 (UTC)
-Received: from mail-oa1-f53.google.com (mail-oa1-f53.google.com [209.85.160.53])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8D5E80632;
+	Wed,  6 Mar 2024 12:29:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="s7NL1SeH";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="E328/abI";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="URDeu/hI";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="VLzGhH1D"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CCBE605DC;
-	Wed,  6 Mar 2024 12:27:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6308480034;
+	Wed,  6 Mar 2024 12:29:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709728049; cv=none; b=VHOhkRqfVU+0aUVBt6U/GjUJDatqlDZNrWtlGQBhboy/Zx1NxLt85DQmqmNMXXSFPvG2JSN0O/NIEzX4e3jhW3ixveKAAVHzs86INzfIuv4/vEwl0bFm82WFLitTC157ThOQxRgyX+qrzk+8dWZ5tD3Tz5UGnY5xdUehT4qSbZQ=
+	t=1709728186; cv=none; b=JrH7Ft9uaESKRZUbmImCCZJ5JHGKw6MGOVeFalFoqvEKD8A/+WbJ7Y36EmFnSuq6/1bxUuKyMqb680wFDwyM9bj84bgINl8G4dYmgefNVmP4KCQnl73yIaZXjLycVDdQd8hrdzu7zzU5VfCkqylclGQHC3KGvVOJN28w3pafeC8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709728049; c=relaxed/simple;
-	bh=odzYK9sDbtw2mcibUKgzKaZ9I64oqqSJfnvzyoEQ9j4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UGt79zfgwEa1sRAn6hRkzjDpNv7LFNgmkaL/lJLq+54ApUwuEMJ9jcXmx6JaYgK4H5lr9Ecde9yw1tovz1gHTl+l9A9t4IMs9b3pcrmrbCdmkBskWzSaGuZ3Unm3hPymKRuyU2Go/+qCt1L9VtVFq/OsYL//oE/d/eNn/MYG4Dc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.160.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f53.google.com with SMTP id 586e51a60fabf-220ce420472so1286642fac.1;
-        Wed, 06 Mar 2024 04:27:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709728047; x=1710332847;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=k2uwWIvrqigw9U2DmUo/9WpsuuGHJz16WfDDJYpM0GE=;
-        b=Z0/sWuyDdS4UNeM5tnrFwChMo7UOXnnM+6j8V79cFn15b/1spWJIVZJuYSbj3M3d0d
-         JctUpSKJJPqcqgeEC0ZjyXbiNnzU3Ehn8HCYmbK52oujSqLtE5vfx2OeUrIh4LlRunmJ
-         NENWjw84FfttJOcWai5xMtcVXHVrtaN5ksfmJO0rRk96WrkCjBc7vmY0Rw9uDg6q7rLX
-         3NLZgC008RckJGzU2QiZIlYVUbrERtWb1LpPv5sP6+K6+Pn58j6Sr0TXnP7ACp/RBwjG
-         nRRRKT/Dsjmtz/iszjpn9xuk0a9vjIyppY4GfUAIzZ2b/cO5fGHVaepqeFtRXSYegzqE
-         f3Ag==
-X-Forwarded-Encrypted: i=1; AJvYcCXniDR6AcrGNAeRZN57hCI6WOXq7n7AZl3wKdNfvF86SHdFdSVTVtnJ4cUaMC/8HYCMTg4aO2Y23FpOuKZgwuDJ7l036iBAeA35c2aGPOjSOSyxTglfQcSTqBMYWQVVt3R7FiPeXGkGtcm/Kkj6RLoYpBWIEDullf13+DNKlNm2fo37cLURXMA=
-X-Gm-Message-State: AOJu0YySt4s8ltKTUhS10FMnKjbVEyJpKu/r0mUb17OfP6Q+A/Md5h7Y
-	b9FqdPCMweNoigyzIhrm674Jv/IX4RuXO9OBajsfmTmOtl5DRZRNlYyfxs+onmYb9p6++Wf7MZb
-	GsmxajPTsxBMu/dY0zgzyT5F5A+0=
-X-Google-Smtp-Source: AGHT+IEw8QK+9xM0ePQfDuX8Nb/nB70c9hqG08jVgDbSBKLXQ+U/dWyKMZi23KsM5ugJqOEYnOqPtzHiTAFelTx4mk8=
-X-Received: by 2002:a05:6871:60a:b0:221:16e3:8f22 with SMTP id
- w10-20020a056871060a00b0022116e38f22mr3274775oan.5.1709728047162; Wed, 06 Mar
- 2024 04:27:27 -0800 (PST)
+	s=arc-20240116; t=1709728186; c=relaxed/simple;
+	bh=Yt+ho94pR60luKjtRmzjBa884MCPJnkc5KLlQn2SxNQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ca44BzeJEzImJ2ndZBg+vflJ9Mq0Xryt1a41IKYc6+/0XIiSosTV8ybJDhgL9rCYSnigf+bu00uq+Xp6waFBH6Uogj4OOqTN6BOSiuM9dVB1H/4RsxviTSsgdhM5jUW3n1TMzkvUMZnV7PdzjpaXFaSyytT2S73YZrSTMojJKbo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=s7NL1SeH; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=E328/abI; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=URDeu/hI; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=VLzGhH1D; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 8306F4ED40;
+	Wed,  6 Mar 2024 12:29:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1709728182; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=Zluc5pdwJo1X5Y/YYPNxWSl6vvjmlAN09PftLZOSlFU=;
+	b=s7NL1SeHWkF2MbeTlPKqQvm95tz3aoqI2G9lDHzeXkJsnwrnQI7vwvEbFf4QMWaGRWRODx
+	H2FIztmYi2AXTnuSQ9d7Qb3C0A+C/in4mHKsiKKdlnycGTCWnUtg90g/ED7H+j5bml4Cc9
+	s/oCqv7Bqiwo5KhRmdWzGJ8lMrV2uqo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1709728182;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=Zluc5pdwJo1X5Y/YYPNxWSl6vvjmlAN09PftLZOSlFU=;
+	b=E328/abIB3tFTOP6OXZ6hhUDJebGKd7aPjZMUzqkPeuagY2oqMhzDEs6MwbCv3ZE76f+wD
+	J0Idh9PMsta+bgBA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1709728181; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=Zluc5pdwJo1X5Y/YYPNxWSl6vvjmlAN09PftLZOSlFU=;
+	b=URDeu/hI/Zn02IV37ksOM9LCOfTbuQG06F0Hfd3pNkwydo2ILv/fHvjsNKw8m0NEXy0mni
+	2eHlmrB1XiSSWgDOFIan2geuceVjWRykzdaKFw1W81jxIAzMCnx+lpsFsfoh/1aFOqMo0o
+	IiY6p7x18yXLVdEy6xJD3Sm/W/mqti4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1709728181;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=Zluc5pdwJo1X5Y/YYPNxWSl6vvjmlAN09PftLZOSlFU=;
+	b=VLzGhH1DuXcZrVbxUMRIZC6ogdcZerr3MLWzPtHJEV32tN+D/nnh/2wJ9RIaeDOiLAdm2/
+	HCSyZzUc8zdk/+CA==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id B5B661377D;
+	Wed,  6 Mar 2024 12:29:40 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id oRTxKrRh6GWdTgAAn2gu4w
+	(envelope-from <tzimmermann@suse.de>); Wed, 06 Mar 2024 12:29:40 +0000
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: mpe@ellerman.id.au,
+	jani.nikula@intel.com,
+	naresh.kamboju@linaro.org,
+	deller@gmx.de,
+	npiggin@gmail.com,
+	christophe.leroy@csgroup.eu,
+	aneesh.kumar@kernel.org,
+	naveen.n.rao@linux.ibm.com
+Cc: dri-devel@lists.freedesktop.org,
+	linux-fbdev@vger.kernel.org,
+	lkft-triage@lists.linaro.org,
+	linux-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	Thomas Zimmermann <tzimmermann@suse.de>
+Subject: [PATCH v3 0/3] arch/powerpc: Resolve backlight include dependencies
+Date: Wed,  6 Mar 2024 13:28:17 +0100
+Message-ID: <20240306122935.10626-1-tzimmermann@suse.de>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <3332079a-9548-4b19-bba9-69270be115ec@moroto.mountain>
-In-Reply-To: <3332079a-9548-4b19-bba9-69270be115ec@moroto.mountain>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 6 Mar 2024 13:27:15 +0100
-Message-ID: <CAJZ5v0hF_u+_j7ZJHh8ssdGUWMQWEUDa87Y3YLUcJU9zJSUKFw@mail.gmail.com>
-Subject: Re: [PATCH] thermal: core: remove unnecessary check in trip_point_hyst_store()
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, 
-	Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>, linux-pm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [4.19 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com,gmx.de];
+	 R_MISSING_CHARSET(2.50)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 RCPT_COUNT_TWELVE(0.00)[14];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[patchwork.freedesktop.org:url];
+	 FREEMAIL_TO(0.00)[ellerman.id.au,intel.com,linaro.org,gmx.de,gmail.com,csgroup.eu,kernel.org,linux.ibm.com];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.71)[83.48%]
+X-Spam-Level: ****
+X-Spam-Score: 4.19
+X-Spam-Flag: NO
 
-On Wed, Mar 6, 2024 at 6:31=E2=80=AFAM Dan Carpenter <dan.carpenter@linaro.=
-org> wrote:
->
-> This code was shuffled around a bit recently.  We no longer need to
-> check the value of "ret" because we know it's zero.
->
-> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
-> ---
->  drivers/thermal/thermal_sysfs.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/thermal/thermal_sysfs.c b/drivers/thermal/thermal_sy=
-sfs.c
-> index 7c02d35384ce..5b533fa40437 100644
-> --- a/drivers/thermal/thermal_sysfs.c
-> +++ b/drivers/thermal/thermal_sysfs.c
-> @@ -181,7 +181,7 @@ trip_point_hyst_store(struct device *dev, struct devi=
-ce_attribute *attr,
->
->         mutex_unlock(&tz->lock);
->
-> -       return ret ? ret : count;
-> +       return count;
->  }
->
->  static ssize_t
-> --
+After cleaning up <linux/fb.h> in commit 11b4eedfc87d ("fbdev: Do
+not include <linux/backlight.h> in header"), building with
+CONFIG_PMAC_BACKLIGHT=y returns errors about missing declarations.
+Patches 1 and 2 resolve the errors. Patch 1 has been reviewed at [1].
+Patch 3 removes another dependency between backlight and fbdev code.
 
-Good catch, applied.
+Compile tested with ppc6xx_defconfig.
 
-Thanks!
+v3:
+	* add Fixes tag and fix typos in patch 3
+v2:
+	* via-pmu-backlight: fix build errors
+	* powerpc: resolve dependency between fbdev and backlight
+
+[1] https://patchwork.freedesktop.org/series/130661/
+
+Thomas Zimmermann (3):
+  fbdev/chipsfb: Include <linux/backlight.h>
+  macintosh/via-pmu-backlight: Include <linux/backlight.h>
+  arch/powerpc: Remove <linux/fb.h> from backlight code
+
+ arch/powerpc/include/asm/backlight.h        |  5 ++--
+ arch/powerpc/platforms/powermac/backlight.c | 26 ---------------------
+ drivers/macintosh/via-pmu-backlight.c       |  1 +
+ drivers/video/fbdev/chipsfb.c               |  1 +
+ 4 files changed, 4 insertions(+), 29 deletions(-)
+
+-- 
+2.44.0
+
 
