@@ -1,146 +1,100 @@
-Return-Path: <linux-kernel+bounces-94287-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94288-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 829B6873C84
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:45:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CCEB873C88
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:46:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A65661C2163F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:45:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E87A0281CD0
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:46:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E07B137931;
-	Wed,  6 Mar 2024 16:45:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59177137938;
+	Wed,  6 Mar 2024 16:46:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="oT3UjOFp"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VT1otnHn"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E8C81369B7
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 16:45:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A2D5D534;
+	Wed,  6 Mar 2024 16:46:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709743521; cv=none; b=Kl7LFafq0O7o4BfcogLnPapofy8TrQ3eV4cj+wZtSem9tyTfesaRMqnCIZLDxUrlFByPNq2KsW6di09rbGi2T+60RfPTMSO+hsHFfo5xZJTlKgIeYZHLFV4OSN5/ArH4amJyuLkqgah7nUlkQ50ED65l7NDcoj2gP97btow/Wjs=
+	t=1709743581; cv=none; b=bizlp4nXLUaVSuzN0/jXrJ/TqdjhC683Gj5TpHkAEd5eFHK/hKS6+mPSf3+2IW/azi9kLD+KN1c6zI3C4BwrpKUzNKAmkttUaeMSGctijgM1+EN4wivhGYJ35Xe0Y8JUoSVGvD8/xsrNHKuvpI5uC6/3jvFJiQPVA9CSeioffIo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709743521; c=relaxed/simple;
-	bh=4h2+ccgnnm7BOvBn+5jjhRD3CpCSaSxs1q/2EbjETd0=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=K8xxO2oVcCl4SicAhB6AZ8XTawjzdBPYWwlGtm06rXPtkMcOcL10z8PwXIeOG3JzwV/bJsFDPTTA6epilZUBp0FphjF5z/qABt9YVJpnYtCigMVJMoLkX+5CjOUSpn7KF8IcmBa+eMsb+45Z+otttaHrahWjtAjfFH2vu9i43K0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=oT3UjOFp; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-608d6ffc64eso15303127b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 08:45:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709743519; x=1710348319; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=nIsCFmhpWTW8fxuoFcfHLz0Rx4rMwL+WRCdnBbQqrps=;
-        b=oT3UjOFpJPOUZ718+iKA8cKCe106L4rLrqikIiwuKEcJ35Erj9pNoN/puCfWnEnBUq
-         wxSOJfE/5TkCceANj6AqO3W3/A0HbAkV+P4DLPnmfRa1/pBRy3qSoX9kXvznZFwktNZt
-         5rgkG/pUj7kDG/wRDQZ1n1CdG03YxNzTUXXzYfOvYNREqCMfSVVH3Hos24LWpeUy2mJl
-         XuqEnWM6drDAIIuqPhB4/aWqSRMpxgQqIpVGpof/5GzOzAgFEg7df3MY6yUqkWnJBokh
-         6AKN8VPtMQz84hEIbBJlx9YJSEFb5MvG441FfmlAHjN8HpDRQ9vsdpiV3dewjnjUo0WY
-         vJWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709743519; x=1710348319;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nIsCFmhpWTW8fxuoFcfHLz0Rx4rMwL+WRCdnBbQqrps=;
-        b=USnrGkrC84QVlnnuEj76+iyCvVUT6FbgyPHSci2AUy6hO5GbUy9ZUl1G59rcI4IxPd
-         /OV/QI2j+v8SAPR1vIizR8+kHBRSTaydvD0YBj+KxjnuOi8/Ng/ZeMueaRcxlpvWFPWb
-         ixNt9a8JIg6A/DgolDxlEkBfp4wo+wpvjh01uVFCQYKzJuHSyNeTcQUTGTddOY62tGFU
-         3adXMuQCmaQ1CtYikRX76gu31ZmdQx6A0M5mN7fKRzSYqcv4rm6Bq8D3kQedpXx8MAtE
-         24gXNLtmvVWMk98V8ZlA+IEuOcebg3oTACE+YDdIJ7jcDL/sjQdAHntiHBvEGee2+bcA
-         JnYA==
-X-Forwarded-Encrypted: i=1; AJvYcCXH9cYRs7+3S4lXz3vJLuevIP7ND+/o0oWxyVhk1tN186DbOaAm9SWoC2yiCAXcHFu2EHZFC71vNwJoTO6jLw6cgV4wd59O71+dHOE1
-X-Gm-Message-State: AOJu0YwPsCaiCehXMeS6EzveCC49lBzgiazLl+TsV0pr58BwXtacrLkS
-	ulANQVu8JPARwf4SBLqd164tH1bU2O+Zw2yVH+VawiuPsZ7YwWH1+KbtWCFeQupOgrM6CeFOJUT
-	gXA==
-X-Google-Smtp-Source: AGHT+IFjfJotvxJ8vPf8sI+9CDo37YHTT6sLO5DzRvYUKGyGWuNZ8zheCdzzRe+bcWeuAf9lBuohBf98uEg=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:d104:0:b0:609:82e7:c0b with SMTP id
- w4-20020a81d104000000b0060982e70c0bmr1162866ywi.3.1709743519455; Wed, 06 Mar
- 2024 08:45:19 -0800 (PST)
-Date: Wed, 6 Mar 2024 08:45:17 -0800
-In-Reply-To: <76744e4b-361d-43ae-9a52-6a410ed57303@amd.com>
+	s=arc-20240116; t=1709743581; c=relaxed/simple;
+	bh=oqownLCVQSkUoTKT5XoUEGTUrAy5b210q5G72rB5tWc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NVJ5N1K4MeBuRdkUswJGnn83B3tt14dlhN+S3cdPNHOb7/7XOhvefO4uoEwXy/oLRAB6r+PYSRIG2ve2FoMOe7IbsphMWpoo+mY6dO19l9+fb0x8RGdnQE/9yDBGZUtiJ4TS/AegS31cG+/B37aAQNNVEmVaChrUvW+66vNl8Tw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VT1otnHn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8329FC433F1;
+	Wed,  6 Mar 2024 16:46:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709743581;
+	bh=oqownLCVQSkUoTKT5XoUEGTUrAy5b210q5G72rB5tWc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=VT1otnHnPHMfU1px85lS1GHKSvltK8wF1Gr1NN84kawjKasmSPxziz2MLNTf6vZrY
+	 0bv+o2N85zcdczPMarK1iDAyWtSvzODi1G69k/t2pqGzeDhfg2LMk3OdWat/quiAyV
+	 BHRxjMpe3IbM4DepV2TfWoFgHGdC5pLtu5/sinaoZgu3Z5CPqlAT/KAfK+IWe2DYBM
+	 HDmJsZetCujNcqw/HMv4tnq9tNZjqEoHBSRcewfMr5USVVWGjEjMrOmpeX4c6Y2bF3
+	 WAYRW5xfp7A0GX1Z0EyW2W5LaOma2FMdEIuTscfXrf4kj2pW52s4FqMn2URHbwha6h
+	 Fvg2d8i8gvcrA==
+Date: Wed, 6 Mar 2024 16:46:16 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Stuart Henderson <stuarth@opensource.cirrus.com>
+Cc: shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com,
+	patches@opensource.cirrus.com, linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Subject: Re: [PATCH 4/5] ASoC: wm8962: Fix wm8962_set_fll to use source
+ instead of fll_id
+Message-ID: <90fc91ae-0009-4cf1-8dd4-0f711e9c0c74@sirena.org.uk>
+References: <20240306161439.1385643-1-stuarth@opensource.cirrus.com>
+ <20240306161439.1385643-4-stuarth@opensource.cirrus.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <1880816055.4545532.1709260250219.JavaMail.zimbra@sjtu.edu.cn>
- <ZeYK-hNDQz5cFhre@google.com> <edd86a97-b2ef-49e6-aa2b-16b1ef790d96@amd.com>
- <Zee2ogAOl8cR4vNZ@google.com> <76744e4b-361d-43ae-9a52-6a410ed57303@amd.com>
-Message-ID: <ZeidnSrRcRkUe7gh@google.com>
-Subject: Re: [PATCH] KVM:SVM: Flush cache only on CPUs running SEV guest
-From: Sean Christopherson <seanjc@google.com>
-To: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: Zheyun Shen <szy0127@sjtu.edu.cn>, pbonzini@redhat.com, tglx@linutronix.de, 
-	kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="4tZc99IaNMjFZtgq"
+Content-Disposition: inline
+In-Reply-To: <20240306161439.1385643-4-stuarth@opensource.cirrus.com>
+X-Cookie: Have at you!
 
-On Wed, Mar 06, 2024, Tom Lendacky wrote:
-> On 3/5/24 18:19, Sean Christopherson wrote:
-> > On Tue, Mar 05, 2024, Tom Lendacky wrote:
-> > > On 3/4/24 11:55, Sean Christopherson wrote:
-> > > > +Tom
-> > > > 
-> > > > "KVM: SVM:" for the shortlog scope.
-> > > > 
-> > > > On Fri, Mar 01, 2024, Zheyun Shen wrote:
-> > > > > On AMD CPUs without ensuring cache consistency, each memory page reclamation in
-> > > > > an SEV guest triggers a call to wbinvd_on_all_cpus, thereby affecting the
-> > > > > performance of other programs on the host.
-> > > > > 
-> > > > > Typically, an AMD server may have 128 cores or more, while the SEV guest might only
-> > > > > utilize 8 of these cores. Meanwhile, host can use qemu-affinity to bind these 8 vCPUs
-> > > > > to specific physical CPUs.
-> > > > > 
-> > > > > Therefore, keeping a record of the physical core numbers each time a vCPU runs
-> > > > > can help avoid flushing the cache for all CPUs every time.
-> > > > 
-> > > > This needs an unequivocal statement from AMD that flushing caches only on CPUs
-> > > > that do VMRUN is sufficient.  That sounds like it should be obviously correct,
-> > > > as I don't see how else a cache line can be dirtied for the encrypted PA, but
-> > > > this entire non-coherent caches mess makes me more than a bit paranoid.
-> > > 
-> > > As long as the wbinvd_on_all_cpus() related to the ASID flushing isn't
-> > > changed, this should be ok. And the code currently flushes the source pages
-> > > when doing LAUNCH_UPDATE commands and adding encrypted regions, so should be
-> > > good there.
-> > 
-> > Nice, thanks!
-> > 
-> > > Would it make sense to make this configurable, with the current behavior the
-> > > default, until testing looks good for a while?
-> > 
-> > I don't hate the idea, but I'm inclined to hit the "I'm feeling lucky" button.
-> > I would rather we put in effort to all but guarantee we can do a clean revert in
-> > the future, at which point a kill switch doesn't add all that much value.  E.g.
-> > it would allow for a non-disruptive fix, and maybe a slightly faster confirmation
-> > of a bug, but that's about it.
-> > 
-> > And since the fallout from this would be host data corruption, _not_ rebooting
-> > hosts that may have been corrupted is probably a bad idea, i.e. the whole
-> > non-disruptive fix benefit is quite dubious.
-> > 
-> > The other issue is that it'd be extremely difficult to know when we could/should
-> > remove the kill switch.  It might be months or even years before anyone starts
-> > running high volume of SEV/SEV-ES VMs with this optimization.
-> 
-> I can run the next version of the patch through our CI and see if it
-> uncovers anything. I just worry about corner cases... but then that's just
-> me.
 
-Heh, it's definitely not just you, this scares me more than a bit.
+--4tZc99IaNMjFZtgq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Doh, I realize I misread your suggestion (several times).  You're suggesting we
-make this opt-in.  Hmm, that's definitely more valuable than a kill switch, though
-it has the same problem of us having no idea when it's safe to enable by default.
-And I'm not sure I like the idea of having a knob that basically says, "we think
-this works, but we're too scared to enable it by default, so _you_ should totally
-enable it and let us know if we've corrupted your data" :-)
+On Wed, Mar 06, 2024 at 04:14:38PM +0000, Stuart Henderson wrote:
+
+> Previously wm8962_set_fll was using fll_id to configure the source.
+
+Which was a problem because...?
+
+> This change is problematic, but it looks like there's limited
+> users of this driver, and luckily they all seem to be intending to
+> use WM8962_FLL_MCLK as the source which happens to have the same
+> value as WM8962_FLL.
+
+If the change is problematic why make it at all?
+
+--4tZc99IaNMjFZtgq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXondcACgkQJNaLcl1U
+h9CyCgf+PfnqyAIO4He9YKYcqZdFqmX1Y6LWOmcZizuzPlrBkbtVDMjLbJ2RrObb
+gAOrMKGWOgJaZ7BwNS/L2pZ45G77p2OvmRhoT7BRQFt38QgkMhlfDNr1d+jpDzBO
+Xz+t2FL8GVEkYVb7q6C2k1BDfDtguZaB/Ld2zX8PCamgBhnSYU81R91vkc+GHIRh
+bZn6WrnAQ/bmq6Z42NLd9LSNNca4KvQhmOTh9QyGuC21lMpgnC8zdU3P25oMJU/Z
+3sWh08Ws129OzmVpD9kPpazamzH2uBRkOx8LVMgoCUhCtShYgQ5DpsR+wAqPNjoB
+seNWRk1Oev7kctFSAfwUNCrBBZIogg==
+=HNjP
+-----END PGP SIGNATURE-----
+
+--4tZc99IaNMjFZtgq--
 
