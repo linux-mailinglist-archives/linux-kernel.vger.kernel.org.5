@@ -1,176 +1,244 @@
-Return-Path: <linux-kernel+bounces-94474-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94472-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD93F874055
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 20:22:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40D0487404F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 20:21:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79B49284651
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 19:22:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C26F21F28253
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 19:21:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23391142633;
-	Wed,  6 Mar 2024 19:21:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AE7813F014;
+	Wed,  6 Mar 2024 19:21:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qxtxDO+5"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="nitK4iP+"
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2055.outbound.protection.outlook.com [40.107.94.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5448E1420CC;
-	Wed,  6 Mar 2024 19:21:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709752903; cv=none; b=ZMj56J0xa9/tSsIBA+9tYVQE9DQjOeR/jJkamSluBvWq+Q/Y7a1Bu6+SlKp4reEgFs7cL87d5bz9SyeQ+zE/vjqmcaqwBzd6LGVTXzgaQwUMoMRHW/BSi6yQa1bMzfbaGPWbYT0B7BQWgpyGsgBC9Bq0XYTrtg67Y6HXeUx9Qyg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709752903; c=relaxed/simple;
-	bh=A1+zHTfoU9rRBcXeGw4a+56qXArSOHtcWNhad8MSClk=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=O7jlQzaR4vA0tTGtiET2sh2IMpTRIFJcbiG4OOuF31y5z8j1wG14L22o88VzAsVD8f7c/QR7chjy3fovdMhzV06NywTyDJbd0nIt99iwDSiWFj8DOuLZoHb2gNA1QpPMxUXMDESIxxPwzYvJN7tC7yG6s1jsE+aHD6+AW0s2ukw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qxtxDO+5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FC76C433B1;
-	Wed,  6 Mar 2024 19:21:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709752902;
-	bh=A1+zHTfoU9rRBcXeGw4a+56qXArSOHtcWNhad8MSClk=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=qxtxDO+5x1xaoF6gStACvvbzzPbtDNuHvZI736JYeE6FoI+gJ7TdgrsgtIN1vTs7k
-	 /G1MD/5Ovfio7nu6sh3G7jrgLUCSg4+Z5OE3qwyM2H4n1vkineHoQuufClMFOQT+VS
-	 KN9fnNbsbvAhmN206mr6qcmnwm4W9gaLQXbcwO8pKLkiuqiXFsQHhJOK34V7qyep8G
-	 o+txlVfI7/lHY9re3ipTVVVUl9nZ4rLYsCt9uGWuk/B0vu+k/vb/qURStqawxr0XwD
-	 FJlFJDPTFXrEZTz2wXy5bpea2ZvlK3g/jialcGc/4SF/nGPd8ZisroNS7bjnZ/zewu
-	 LqGRjgfDCw3Lg==
-From: Mark Brown <broonie@kernel.org>
-Date: Wed, 06 Mar 2024 19:21:26 +0000
-Subject: [PATCH 2/2] kselftest/tty: Report a consistent test name for the
- one test we run
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24ADF13DBB7
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 19:21:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.55
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709752899; cv=fail; b=cLrzM7hjXx3RNcnJx0sfabBTi7k5zumUx9rDhyt/3tChFMsB+ELEXHTzAbFEq7f7kaAoN/WPDFV4an4qu1PtkQ9P3v02clWZGuRcJTVdbzQblxRyHRIKns86p2rg6Lhp1WUVSIt41BHSY1UgD0EJvALBDHOBFcuuvxiurs6BSys=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709752899; c=relaxed/simple;
+	bh=RQUM8Vcsi8SfZpTJSPWEhmcHCqxdrBbCBJBdMZHUq3U=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=iq0I2I2A6bvARMSub8ZZC8XYQFv9MrM85qFkVtBAp7UutUye7Yx8/ncWvMjBbhyLO54Kqj04NNkV+WxNYH6v8T2aRytxONsqpQAtmRNIG2ydjqk/WqS2bqZznXgPWGWPpa0CMyJ260lMAUFaGB7lSkjdGGH78x6jgsZl70Rkisk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=nitK4iP+; arc=fail smtp.client-ip=40.107.94.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fI+u/3k0xT/FiGI1jhgghXKFpVSFl0LAmITfj3zU3Yoaj7a1h81FxlaG/HLGQAP6AJClIy054uoHuV8ZC/Hh0PNQgp101+r1k6BcQl4BX6ldZ5Ss8xx0MjS3rvjc4dCThuScAg7eGXqwaj8XXKe3bCjs+TbQb26ciMWHVKtHLYMH1hh5w/0cN44USffB/DDJYBgi1TEcYSIhJQqgEGy5LqmfQnhMWl0cbUQ/Rqvauths8XQFcDo4kqxD+G8ot7gUklhwYN3izMgk2vXtAfOOggty42fTGkf8Q7etZ6JRjWp8ERZLiRamZ8wBJK7voIfV58URPeqd0dA6ZJhVcJGzQA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=K7bVEq+6yA5g9tAPm2Z4n+CshDZ+dDAY+Uu5MCtfkHY=;
+ b=MwTZNABy0LUk4tA8+C5hVy2J0un29g+1ByrtkOT4LUrT2Y6aTFFC6atmeVO+yCSTeC517aXPJqZGrvKwoiZ1F6x1FCdo4U6+nclq6rZF20+KM2rF+L2yH9U4DSSvtF6UrQtlQ3CjXFO0chskGlrK5U77sa4r2wHV9bNNOIRO9YjU8IMEf26j1olcJnTO5I4UA4pfU7bA5ItIberLd59hrYmllZ/Kzk8z08eJFCB83HVfuh1L+77+iyK31JjXlxhFr3Qk8ngiYf/BDOdND+SB08aY4VoXADoUis7FppOPMkK1XbQuR+OPrhDwPibY8uEsG2+CPzMaEFgN6z70ie/fTg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=K7bVEq+6yA5g9tAPm2Z4n+CshDZ+dDAY+Uu5MCtfkHY=;
+ b=nitK4iP+gJLloxpDpJK7xMsJ0RfoQDwQUzy73WaIno3HlRm6eCH8xvtmcj4wjQZTMbsKEPdgKA5VJE02DSRpgcZYhtRjB6BHTitfdmnNtNmXawgm3dYjl98nOG9AZ23g7IfsnOkPifack/ccZOoqW4HwZ1OLUncCVRRhnvw8ilA=
+Received: from BL1PR12MB5144.namprd12.prod.outlook.com (2603:10b6:208:316::6)
+ by DM4PR12MB6614.namprd12.prod.outlook.com (2603:10b6:8:bb::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.24; Wed, 6 Mar
+ 2024 19:21:32 +0000
+Received: from BL1PR12MB5144.namprd12.prod.outlook.com
+ ([fe80::b001:1430:f089:47ae]) by BL1PR12MB5144.namprd12.prod.outlook.com
+ ([fe80::b001:1430:f089:47ae%7]) with mapi id 15.20.7362.024; Wed, 6 Mar 2024
+ 19:21:32 +0000
+From: "Deucher, Alexander" <Alexander.Deucher@amd.com>
+To: "Khatri, Sunil" <Sunil.Khatri@amd.com>, "Koenig, Christian"
+	<Christian.Koenig@amd.com>, "Sharma, Shashank" <Shashank.Sharma@amd.com>
+CC: "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Joshi, Mukul"
+	<Mukul.Joshi@amd.com>, "Paneer Selvam, Arunpravin"
+	<Arunpravin.PaneerSelvam@amd.com>, "Khatri, Sunil" <Sunil.Khatri@amd.com>
+Subject: RE: [PATCH] drm/amdgpu: add vm fault information to devcoredump
+Thread-Topic: [PATCH] drm/amdgpu: add vm fault information to devcoredump
+Thread-Index: AQHab/LpDbTvt6jAikuvI23PhvfbNrErFkmg
+Date: Wed, 6 Mar 2024 19:21:32 +0000
+Message-ID:
+ <BL1PR12MB514469F899DD38439EA66CB5F7212@BL1PR12MB5144.namprd12.prod.outlook.com>
+References: <20240306181937.3551648-1-sunil.khatri@amd.com>
+ <20240306181937.3551648-2-sunil.khatri@amd.com>
+In-Reply-To: <20240306181937.3551648-2-sunil.khatri@amd.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+ MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_ActionId=0075563b-7938-4750-a935-760f7b1ee0b7;MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_ContentBits=0;MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_Enabled=true;MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_Method=Privileged;MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_Name=Public-AIP
+ 2.0;MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_SetDate=2024-03-06T19:18:44Z;MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BL1PR12MB5144:EE_|DM4PR12MB6614:EE_
+x-ms-office365-filtering-correlation-id: 7d6381e2-af05-4abd-d3f0-08dc3e12a1fb
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ JMAZfnfiKrz5x1TFwMgTVHcFGcFTkrRaPE5AeLqtGZsm3+zNX/2VSAnL86ILwhyTIPNeUnGvCAXUNhnerk+a50ydgF4q6ldS/13l5lXarcKZCYlvNFLmUPkTtnDBO0+S+XX2Gu4gSWuo3trnmI8sSzRCRtousPU2uyhzroLnjS/LeCcykYaVW/MMlEPOkqUhY90WhJ1hMfu8Xh+Dntth2KOYshfPdK1zf9Kb5qnCMikOHHv1LPIkvmaKF9STQ912CuLUV896PfcNUeq2MZFH5sHVxQC1IanMscniWpMAKlTrckxktKmXIgFr7sTw4JDcJPlVpk7B+kuqr358qDx8Xw69Du7jxm2A6m4q3N5M6Aali66jK7KFPBoX9kTCN/aA5pl6XqwSFKgth4FJrDbX5yo2ioktjVJz3WSoRzFf9ClX2sJm0MZz5A52VN+0N13Oh0qG0tPTYnN5xdoYeFKVwq4lmtF/kXs0okGRfQ/mGQgAV4aVluFZNs/CcOW+v0l2KlkRmDcCyb0KvAuUTFjJ1p13c2KcMtajtcUXMDcO2EOZwFjfsl7eEB91IZjNkhUoNqaAManbnCKDQP+kM1X7d9lsHFArH5CTfIaxEQtKGkJxBuZXANofXSCI6CURVGH4Wx7y+UCC478X2wg6DEz0FxhNVtuaQSGNSx+vY284mRcvTTeW4YdW1S2aAwDl/vLRXL6m4FChTmb8TZ3ueAmNHodPLpn/Vrj1/jaOeCJw5Uk=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5144.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?M2Fcpdj5EFnLhTSqUS330lClK/wEKdun/cUqkPTE66qAu4WzIUu7cH8xNLto?=
+ =?us-ascii?Q?Nxxh2MVYXZSzxm2uDdTaFxA+8KWyyTHocenC/h0dzxzZzBdyjNhtFyrxPWcm?=
+ =?us-ascii?Q?Wg02pndGt0HkFex62OLe3QQOEnSt6YfL/CXLLHZaMgERfVjZUgZn8udohQYo?=
+ =?us-ascii?Q?qJSrmo3jxlbHHSBn81q/gJBaH32f9WXlrzo0WC9MZJDx3PFOfD3l13YjYr7d?=
+ =?us-ascii?Q?L2Gcva/u6s80aD0zibL3SbSVg0FFtR5A+n3o0qAqya7OYKbsmBNElCQykjqs?=
+ =?us-ascii?Q?opnRG+H3Q4L7Q8arjqAwfSBmsPEoHXBk+nJ9xfbPFYaCwz0DrOM8ahxNfVUy?=
+ =?us-ascii?Q?UtZZEavIUJ/qXS0FaoozycUHBKAeXlDqhaky2parL9n4PVLwIygsstXhyvzO?=
+ =?us-ascii?Q?Wd7hs3Il5nv/oJB5X9144y9iN8kmZ/lM1wfChKZ1VSTiv+TrOanxiwl7fepF?=
+ =?us-ascii?Q?LcBnKySbYD0cPGqHHHlwjV2gcklZ+5UN9H0iOwwdkrKBG49J1hpFmnOF4kJG?=
+ =?us-ascii?Q?Bwp3pkqS5UMCKfxk3cqDe3O9WcMnH+wZTpkIcPDvDjnbD9XPH8hd1C0Gboyg?=
+ =?us-ascii?Q?QiNKSW341/wpL5gTDVRJ1i7Gn4FGv36RtEaSC9JWPqS0AvYBnaiJPCfU0jPt?=
+ =?us-ascii?Q?hXALnr8MdNVMUa5IEnCIplDGO1NaCGobV6QNGIJopn6Ive2CJY9L1m2MMzuo?=
+ =?us-ascii?Q?HmRqvzEZadGhCd6dizdQ6xZblX28cU0m4yDhUadazK7dqCypdB1mXwE3dVWc?=
+ =?us-ascii?Q?WdJpUjiEU0jmk5F3EyfbAYdEi+HrWI8fHiE0VACG3Z174jZee9NqHbIlzLw0?=
+ =?us-ascii?Q?lTWx3JUlt2Inex1Fxje4Vydy/vU3eXXlGuGa2IRfDCkKRQbA7YmPqsr3JeOf?=
+ =?us-ascii?Q?DD2ETo2BA+2ehkgC47SXOOLHHWZrZDnNJXzkncrQZ+ZxrrQulFXPVW788lV3?=
+ =?us-ascii?Q?J99TNIyQJvhA73WLPt50Lt934Gjza8cFvwsK5D/W0ZBFOcenbxwqLzrs0zAr?=
+ =?us-ascii?Q?fFse/66R4ay8ROba+RiLj+QevnD+uavcK/4cU9YTzyj0PCbXCWoBt9Pm6VER?=
+ =?us-ascii?Q?f56nruHPEudHN6wd39kONMC2JSJjm4ha7ka9a2Lk3+OtBqfaw5whHoZ4X52L?=
+ =?us-ascii?Q?ilZKXJ99kZFgisg8Bg8D82uplb3F/jaLEUHlWPWkXyTRz8yy6yriX+RTqTvW?=
+ =?us-ascii?Q?L63Dmi8IRk8mfcudsT2iQ/x6yBzeffUJtUjj4yb2qScsv6WiM75shWggYtgm?=
+ =?us-ascii?Q?mu190ZtdM/jIg6Io4Yz7Ozv+doaiZNa0awCzaFrZtd7ivPM5aZVUh5v+5DM8?=
+ =?us-ascii?Q?xuuwqBzBwjE9tLfFcA1xRYCVEFfIfqFEAYpot1/8GPLhOnI7fBnfD2Ocgxht?=
+ =?us-ascii?Q?z3sr0o0Ngi0aZgF8JUiv5yu8VVBpgP9qduwFRQEpo8O9HbxGJhvDuwKTr9Yb?=
+ =?us-ascii?Q?ZKrfacq5+9rmiBz0u4dzzNs0NDkPdGMzjo5VQ4J8WL3wPeMqvDBfupFP/I0j?=
+ =?us-ascii?Q?6iCpxd6AMlGb3vN6Ks8RVyW91xdLuV82SqjXDBNoB/Bytr9rBPQcUZVUhAYD?=
+ =?us-ascii?Q?8u05T3VgYKX8Omfpxzo=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240306-kselftest-tty-tname-v1-2-33505b31629e@kernel.org>
-References: <20240306-kselftest-tty-tname-v1-0-33505b31629e@kernel.org>
-In-Reply-To: <20240306-kselftest-tty-tname-v1-0-33505b31629e@kernel.org>
-To: Shuah Khan <shuah@kernel.org>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- Jiri Slaby <jirislaby@kernel.org>
-Cc: Michal Sekletar <msekleta@redhat.com>, linux-serial@vger.kernel.org, 
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Mark Brown <broonie@kernel.org>
-X-Mailer: b4 0.13-dev-a684c
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3118; i=broonie@kernel.org;
- h=from:subject:message-id; bh=A1+zHTfoU9rRBcXeGw4a+56qXArSOHtcWNhad8MSClk=;
- b=owGbwMvMwMWocq27KDak/QLjabUkhtQXh2w23VKO6uMW/nY1qS590U+b+S9qbiu2reOMinVbvuoA
- 49GLnYzGLAyMXAyyYoosa59lrEoPl9g6/9H8VzCDWJlApjBwcQrARJTN2f/peat13t7icrVtfmM5S9
- S7zVenpfkkiebdy5VVY9qW2/Jtn+97zi6LttS6d9ctamXELuT+6Zsc4MSzpDAvu/Nsw3P7gLtZ8gk7
- Xpy9tdDXI0a0bq1c8ZK5ilFHL+uXhEq/CeGOuZoq7724Zu33FObANxqTHiuuvbV7d9/F3oUCXQaJa5
- u5a7OVdgs7zGr3Vy4JiBXoTt31ukTE+6z8ufZXZS4PrffX3Am/Zsn6LnqOcOGRxvqleewOP88nsf5M
- KHSf+lD/206RJBG5M9Gl29Xlm28+9Fqez7le+OcDCVFTU7m10ssFy9sDZz0tfb1F9GSOO8/dqubWLg
- Hr/U97tDV9JRp3bp5itLtD8FgUAA==
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5144.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7d6381e2-af05-4abd-d3f0-08dc3e12a1fb
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Mar 2024 19:21:32.7274
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: +Cxg+NIYDjvXLlcaZWFGcoSRZSZCtYu61KoKKosMNsMfarRf/l67BjPzcoiuzIcvwpIuB80IdxM7YY4NgYKMRQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6614
 
-Currently the tty_tstamp_update test reports a different exit message
-for every path it can exit via. This can be confusing for automated systems
-as the string that gets logged is interpreted as a test name so if the test
-status changes they can't tell that it's the same test case that was run,
-they can see that the overall status of the test program is a failure but
-it's not clear that it was running the same test.
+[Public]
 
-Change all the messages that are logged to be diagnostic prints and log the
-name of the program as the test name.
+> -----Original Message-----
+> From: Sunil Khatri <sunil.khatri@amd.com>
+> Sent: Wednesday, March 6, 2024 1:20 PM
+> To: Deucher, Alexander <Alexander.Deucher@amd.com>; Koenig, Christian
+> <Christian.Koenig@amd.com>; Sharma, Shashank
+> <Shashank.Sharma@amd.com>
+> Cc: amd-gfx@lists.freedesktop.org; dri-devel@lists.freedesktop.org; linux=
+-
+> kernel@vger.kernel.org; Joshi, Mukul <Mukul.Joshi@amd.com>; Paneer
+> Selvam, Arunpravin <Arunpravin.PaneerSelvam@amd.com>; Khatri, Sunil
+> <Sunil.Khatri@amd.com>
+> Subject: [PATCH] drm/amdgpu: add vm fault information to devcoredump
+>
+> Add page fault information to the devcoredump.
+>
+> Output of devcoredump:
+> **** AMDGPU Device Coredump ****
+> version: 1
+> kernel: 6.7.0-amd-staging-drm-next
+> module: amdgpu
+> time: 29.725011811
+> process_name: soft_recovery_p PID: 1720
+>
+> Ring timed out details
+> IP Type: 0 Ring Name: gfx_0.0.0
+>
+> [gfxhub] Page fault observed for GPU family:143 Faulty page starting at
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- tools/testing/selftests/tty/tty_tstamp_update.c | 48 +++++++++++++++++--------
- 1 file changed, 33 insertions(+), 15 deletions(-)
+I think we should add a separate section for the GPU identification informa=
+tion (family, PCI ids, IP versions, etc.).  For this patch, I think fine to=
+ just print the fault address and status.
 
-diff --git a/tools/testing/selftests/tty/tty_tstamp_update.c b/tools/testing/selftests/tty/tty_tstamp_update.c
-index 0ee97943dccc..9e1a40f5db17 100644
---- a/tools/testing/selftests/tty/tty_tstamp_update.c
-+++ b/tools/testing/selftests/tty/tty_tstamp_update.c
-@@ -47,42 +47,60 @@ int main(int argc, char **argv)
- 	int r;
- 	char tty[PATH_MAX] = {};
- 	struct stat st1, st2;
-+	int result = KSFT_FAIL;
- 
- 	ksft_print_header();
- 	ksft_set_plan(1);
- 
- 	r = readlink("/proc/self/fd/0", tty, PATH_MAX);
--	if (r < 0)
--		ksft_exit_fail_msg("readlink on /proc/self/fd/0 failed: %m\n");
-+	if (r < 0) {
-+		ksft_print_msg("readlink on /proc/self/fd/0 failed: %m\n");
-+		goto out;
-+	}
-+
-+	if (!tty_valid(tty)) {
-+		ksft_print_msg("invalid tty path '%s'\n", tty);
-+		result = KSFT_SKIP;
-+		goto out;
- 
--	if (!tty_valid(tty))
--		ksft_exit_skip("invalid tty path '%s'\n", tty);
-+	}
- 
- 	r = stat(tty, &st1);
--	if (r < 0)
--		ksft_exit_fail_msg("stat failed on tty path '%s': %m\n", tty);
-+	if (r < 0) {
-+		ksft_print_msg("stat failed on tty path '%s': %m\n", tty);
-+		goto out;
-+	}
- 
- 	/* We need to wait at least 8 seconds in order to observe timestamp change */
- 	/* https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fbf47635315ab308c9b58a1ea0906e711a9228de */
- 	sleep(10);
- 
- 	r = write_dev_tty();
--	if (r < 0)
--		ksft_exit_fail_msg("failed to write to /dev/tty: %s\n",
--				   strerror(-r));
-+	if (r < 0) {
-+		ksft_print_msg("failed to write to /dev/tty: %s\n",
-+			       strerror(-r));
-+		goto out;
-+	}
- 
- 	r = stat(tty, &st2);
--	if (r < 0)
--		ksft_exit_fail_msg("stat failed on tty path '%s': %m\n", tty);
-+	if (r < 0) {
-+		ksft_print_msg("stat failed on tty path '%s': %m\n", tty);
-+		goto out;
-+	}
- 
- 	/* We wrote to the terminal so timestamps should have been updated */
- 	if (st1.st_atim.tv_sec == st2.st_atim.tv_sec &&
- 	    st1.st_mtim.tv_sec == st2.st_mtim.tv_sec) {
--		ksft_test_result_fail("tty timestamps not updated\n");
--		ksft_exit_fail();
-+		ksft_print_msg("tty timestamps not updated\n");
-+		goto out;
- 	}
- 
--	ksft_test_result_pass(
-+	ksft_print_msg(
- 		"timestamps of terminal '%s' updated after write to /dev/tty\n", tty);
--	return EXIT_SUCCESS;
-+	result = KSFT_PASS;
-+
-+out:
-+	ksft_test_result_report(result, "tty_tstamp_update\n");
-+
-+	ksft_finished();
- }
+Alex
 
--- 
-2.30.2
+> address 0x0000000000000000 Protection fault status register:0x301031
+>
+> VRAM is lost due to GPU reset!
+>
+> Signed-off-by: Sunil Khatri <sunil.khatri@amd.com>
+> ---
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c | 15 ++++++++++++++-
+> drivers/gpu/drm/amd/amdgpu/amdgpu_reset.h |  1 +
+>  2 files changed, 15 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
+> b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
+> index 147100c27c2d..d7fea6cdf2f9 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
+> @@ -203,8 +203,20 @@ amdgpu_devcoredump_read(char *buffer, loff_t
+> offset, size_t count,
+>                          coredump->ring->name);
+>       }
+>
+> +     if (coredump->fault_info.status) {
+> +             struct amdgpu_vm_fault_info *fault_info =3D &coredump-
+> >fault_info;
+> +
+> +             drm_printf(&p, "\n[%s] Page fault observed for GPU
+> family:%d\n",
+> +                        fault_info->vmhub ? "mmhub" : "gfxhub",
+> +                        coredump->adev->family);
+> +             drm_printf(&p, "Faulty page starting at address 0x%016llx\n=
+",
+> +                        fault_info->addr);
+> +             drm_printf(&p, "Protection fault status register:0x%x\n",
+> +                        fault_info->status);
+> +     }
+> +
+>       if (coredump->reset_vram_lost)
+> -             drm_printf(&p, "VRAM is lost due to GPU reset!\n");
+> +             drm_printf(&p, "\nVRAM is lost due to GPU reset!\n");
+>       if (coredump->adev->reset_info.num_regs) {
+>               drm_printf(&p, "AMDGPU register dumps:\nOffset:
+> Value:\n");
+>
+> @@ -253,6 +265,7 @@ void amdgpu_coredump(struct amdgpu_device
+> *adev, bool vram_lost,
+>       if (job) {
+>               s_job =3D &job->base;
+>               coredump->ring =3D to_amdgpu_ring(s_job->sched);
+> +             coredump->fault_info =3D job->vm->fault_info;
+>       }
+>
+>       coredump->adev =3D adev;
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.h
+> b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.h
+> index 60522963aaca..3197955264f9 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.h
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.h
+> @@ -98,6 +98,7 @@ struct amdgpu_coredump_info {
+>       struct timespec64               reset_time;
+>       bool                            reset_vram_lost;
+>       struct amdgpu_ring                      *ring;
+> +     struct amdgpu_vm_fault_info     fault_info;
+>  };
+>  #endif
+>
+> --
+> 2.34.1
 
 
