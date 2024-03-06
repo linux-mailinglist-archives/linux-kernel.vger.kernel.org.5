@@ -1,147 +1,221 @@
-Return-Path: <linux-kernel+bounces-93328-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93329-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15E59872E10
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 05:41:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45C8E872E11
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 05:43:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B6D81F238F3
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 04:41:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 131F5B25A0D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 04:43:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3420E17BC5;
-	Wed,  6 Mar 2024 04:41:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B81301759F;
+	Wed,  6 Mar 2024 04:43:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="bJ16IoUx"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cmRxlbo9"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3203479E4;
-	Wed,  6 Mar 2024 04:41:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5CB079E4
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 04:43:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709700073; cv=none; b=iK7K7bF9eCfvKFnlIojPrJs/4COCb06GO1o1/EgcDtrbcuVDj73N/jOhr0QR5csCNK0jz0GYiNQj+8ZvK6iNBNurlXQPBPRDmPdPYVHIzasVyks3cPcpQKRc3Oy0OMOq4ysay5jfVFT4uF/5xePd//PvCnaskWmjPB8vRNWlXiw=
+	t=1709700193; cv=none; b=lqnfOQ6Y9SY6qzonUA5y4Yp28Ddb5lh4stYVbkEmkI5waXg8uJa5IB3jFRqyg6+spZxgC5CVL+POShmG9Sf/MKnoXZUFVp+dOreeV0ae2mSfUDmFUC1rwARTTpdlwBBqxLryZG7rNINElmkdlzsqyPQEq6BRuU0IyGc26oJVNLc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709700073; c=relaxed/simple;
-	bh=l1IkUrzW1mx/cl0rRLZCQm8SdUirtVorXIAt/5PbKi0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=mYvWWLwhT2k2wIT2eEXByT2xhTfyRnSccTv7bKxxzevdTSMHSpUxOr2Hl8ptDqAZ5tCu5wygMaGQPjjN5nB8/lAXI0OvAPUOySksCYVxgdCfnfs7UAVHvKXervNb18zLDuOftoSGP2WhsIsmp8x+8ZEdkNgP5tLVtQamTwLWbLw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=bJ16IoUx; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4263fUZH032054;
-	Wed, 6 Mar 2024 04:41:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=b9uw5W43OlRVR4Cue9hE0vrDZHYom0RR5NRmkjne8MI=; b=bJ
-	16IoUxr4tPnyHmlhvxt0VtPN3l8w5cTbSdM23k3hrT8zynb3KgvjuGMBMYVfZ9kC
-	4HxxLB5MXVgKNqM0S6sVU+O/IGL5ZiWbGD6zXeNTX7WVkgTHFAucC59FtwhKCv8N
-	FLdHSPfupu3TCY7MegnvBr2qZPRmBCPywINumkZnP2yl22V3UHWABsYIBeSWl824
-	eAEk3YrX659wKRqQqC6heHbQEM9t0DiJxfeM4Yr2NwbJpvhcmjWWf9XKr+EyjYvi
-	eLn15bRJkN/3ie29FA2PvPxCprCppZWSkZ1Ps2y2uwG+2f3DuBrHPzrG9l81UWhP
-	uTkLn+EPTBcBD3iHLvgw==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wp028adab-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 06 Mar 2024 04:41:06 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4264f6bd023500
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 6 Mar 2024 04:41:06 GMT
-Received: from [10.216.40.128] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 5 Mar
- 2024 20:41:01 -0800
-Message-ID: <c82e4053-4cef-4010-a734-4dc537574201@quicinc.com>
-Date: Wed, 6 Mar 2024 10:10:55 +0530
+	s=arc-20240116; t=1709700193; c=relaxed/simple;
+	bh=CiR77+lZ19i68pey4rjfW+qxBsThcbW1hpUDaNeywZs=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=DjTptCDIZcQkD+aqwDscj+/wSv7kHAoT78dBQPhSzXUh0IQg9M5/2mM94JV+S88OAj0+yK6IkHJxIIkSmKZu8Subcr6CJHfno6NaMl3RQVZR3nFPxlNcm+7fs7DMFd8xZuErZmN67nD1khk38DeDGfpH+xqYN4L4T+0Vlq85rSg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=cmRxlbo9; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709700191; x=1741236191;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=CiR77+lZ19i68pey4rjfW+qxBsThcbW1hpUDaNeywZs=;
+  b=cmRxlbo9oDObfGD31yTueAq4YQMDg9I9M/b/6pu3eQJohFXR+rMfQE+U
+   4Cn2xhcwx7ZlMmy0TQGoKYD+cj0LA8hQG6n+IM/pPEBb7pk8/xVVGYlsY
+   3qzUqCJm/66LvptvvhA829x49Pviyezwf8u7dSe1OIwDEVZ4ycTIoyXWm
+   3epbA78InF0bquz6pKxLZqeJ6kDU/Ebn7c8Gax1EQOYRbl8BATRTqpeqc
+   Ihl8X/yEle4LpWYRUDytmt/YYTns2t82hQ5J6FY9K0s/ao9R2ws4Y29HD
+   GAqV5a1ReVBCStAeYJ0Woc3pQE8Q+NAOSo1A9mPG1dvSGepRGosYK5iCx
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11004"; a="4159690"
+X-IronPort-AV: E=Sophos;i="6.06,207,1705392000"; 
+   d="scan'208";a="4159690"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 20:43:11 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,207,1705392000"; 
+   d="scan'208";a="9487774"
+Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
+  by fmviesa007.fm.intel.com with ESMTP; 05 Mar 2024 20:43:09 -0800
+Received: from kbuild by b21307750695 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rhj7T-0003v1-0M;
+	Wed, 06 Mar 2024 04:43:07 +0000
+Date: Wed, 6 Mar 2024 12:42:24 +0800
+From: kernel test robot <lkp@intel.com>
+To: Tianfei Zhang <tianfei.zhang@intel.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Jakub Kicinski <kuba@kernel.org>,
+	Raghavendra Khadatare <raghavendrax.anand.khadatare@intel.com>,
+	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Subject: WARNING: modpost: "__udelay" [drivers/ptp/ptp_dfl_tod.ko] has no CRC!
+Message-ID: <202403061234.iDDn0x5D-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] cpufreq: qcom-nvmem: add support for IPQ5321
-To: Viresh Kumar <viresh.kumar@linaro.org>
-CC: Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>, Ilia Lin <ilia.lin@kernel.org>,
-        "Rafael J. Wysocki"
-	<rafael@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>
-References: <20240228-ipq5321-sku-support-v1-0-14e4d4715f4b@quicinc.com>
- <20240228-ipq5321-sku-support-v1-3-14e4d4715f4b@quicinc.com>
- <20240304071222.cx3s37mphddk23bv@vireshk-i7>
- <20240305043503.tgy5ahl243or7lm5@vireshk-i7>
-Content-Language: en-US
-From: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
-In-Reply-To: <20240305043503.tgy5ahl243or7lm5@vireshk-i7>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 90V_eyBGKQmCDXZ03aQ0nE73f1tGH7lZ
-X-Proofpoint-ORIG-GUID: 90V_eyBGKQmCDXZ03aQ0nE73f1tGH7lZ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-06_01,2024-03-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- lowpriorityscore=0 mlxlogscore=999 suspectscore=0 phishscore=0 spamscore=0
- malwarescore=0 mlxscore=0 clxscore=1015 bulkscore=0 impostorscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2403060034
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+Hi Tianfei,
 
+First bad commit (maybe != root cause):
 
-On 3/5/2024 10:05 AM, Viresh Kumar wrote:
-> On 04-03-24, 12:42, Viresh Kumar wrote:
->> On 28-02-24, 20:21, Kathiravan Thirumoorthy wrote:
->>> Like all other SoCs in IPQ5332 family, cpufreq for IPQ5321 is also
->>> determined by the eFuse, with the maximum limit of 1.1GHz. Add support
->>> for the same.
->>>
->>> Signed-off-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
->>> ---
->>>   drivers/cpufreq/qcom-cpufreq-nvmem.c | 1 +
->>>   1 file changed, 1 insertion(+)
->>>
->>> diff --git a/drivers/cpufreq/qcom-cpufreq-nvmem.c b/drivers/cpufreq/qcom-cpufreq-nvmem.c
->>> index ea05d9d67490..0a46b5d49d32 100644
->>> --- a/drivers/cpufreq/qcom-cpufreq-nvmem.c
->>> +++ b/drivers/cpufreq/qcom-cpufreq-nvmem.c
->>> @@ -191,6 +191,7 @@ static int qcom_cpufreq_kryo_name_version(struct device *cpu_dev,
->>>   	case QCOM_ID_IPQ5312:
->>>   	case QCOM_ID_IPQ5302:
->>>   	case QCOM_ID_IPQ5300:
->>> +	case QCOM_ID_IPQ5321:
->>>   	case QCOM_ID_IPQ9514:
->>>   	case QCOM_ID_IPQ9550:
->>>   	case QCOM_ID_IPQ9554:
->>
->> Applied. Thanks.
-> 
-> Dropped since the previous commit it required too. Can we get the
-> necessary acks for me to pick those ?
-> 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   5847c9777c303a792202c609bd761dceb60f4eed
+commit: 615927f1a487bd9066425df48d06cec3bb3d8dbb ptp: add ToD device driver for Intel FPGA cards
+date:   11 months ago
+config: sparc-randconfig-r034-20230513 (https://download.01.org/0day-ci/archive/20240306/202403061234.iDDn0x5D-lkp@intel.com/config)
+compiler: sparc-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240306/202403061234.iDDn0x5D-lkp@intel.com/reproduce)
 
-Sorry for not mentioning the dependencies.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202403061234.iDDn0x5D-lkp@intel.com/
 
-patch 1/3 and 2/3 are already has the R-b and A-b tags. But typically 
-those patches will go via qcom tree. Do you want to pick it via your 
-tree? Sorry, I'm not sure on this...
+All warnings (new ones prefixed by >>, old ones prefixed by <<):
 
+Is "__udelay" prototyped in <asm/asm-prototypes.h>?
+WARNING: modpost: EXPORT symbol "__ndelay" [vmlinux] version generation failed, symbol will not be versioned.
+Is "__ndelay" prototyped in <asm/asm-prototypes.h>?
+WARNING: modpost: EXPORT symbol "__ashldi3" [vmlinux] version generation failed, symbol will not be versioned.
+Is "__ashldi3" prototyped in <asm/asm-prototypes.h>?
+WARNING: modpost: EXPORT symbol "__ashrdi3" [vmlinux] version generation failed, symbol will not be versioned.
+Is "__ashrdi3" prototyped in <asm/asm-prototypes.h>?
+WARNING: modpost: EXPORT symbol "bzero_1page" [vmlinux] version generation failed, symbol will not be versioned.
+Is "bzero_1page" prototyped in <asm/asm-prototypes.h>?
+WARNING: modpost: EXPORT symbol "__copy_1page" [vmlinux] version generation failed, symbol will not be versioned.
+Is "__copy_1page" prototyped in <asm/asm-prototypes.h>?
+WARNING: modpost: EXPORT symbol "__divdi3" [vmlinux] version generation failed, symbol will not be versioned.
+Is "__divdi3" prototyped in <asm/asm-prototypes.h>?
+WARNING: modpost: EXPORT symbol "___rw_read_enter" [vmlinux] version generation failed, symbol will not be versioned.
+Is "___rw_read_enter" prototyped in <asm/asm-prototypes.h>?
+WARNING: modpost: EXPORT symbol "___rw_read_exit" [vmlinux] version generation failed, symbol will not be versioned.
+Is "___rw_read_exit" prototyped in <asm/asm-prototypes.h>?
+WARNING: modpost: EXPORT symbol "___rw_read_try" [vmlinux] version generation failed, symbol will not be versioned.
+Is "___rw_read_try" prototyped in <asm/asm-prototypes.h>?
+WARNING: modpost: EXPORT symbol "___rw_write_enter" [vmlinux] version generation failed, symbol will not be versioned.
+Is "___rw_write_enter" prototyped in <asm/asm-prototypes.h>?
+WARNING: modpost: EXPORT symbol "__lshrdi3" [vmlinux] version generation failed, symbol will not be versioned.
+Is "__lshrdi3" prototyped in <asm/asm-prototypes.h>?
+WARNING: modpost: EXPORT symbol "__muldi3" [vmlinux] version generation failed, symbol will not be versioned.
+Is "__muldi3" prototyped in <asm/asm-prototypes.h>?
+WARNING: modpost: "empty_zero_page" [lib/crypto/libchacha20poly1305.ko] has no CRC!
+WARNING: modpost: "__udelay" [lib/test_lockup.ko] has no CRC!
+WARNING: modpost: "__ndelay" [lib/test_lockup.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/phy/cadence/phy-cadence-salvo.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/phy/samsung/phy-exynos5-usbdrd.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/video/fbdev/core/fb_ddc.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/video/fbdev/aty/aty128fb.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/video/fbdev/aty/radeonfb.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/video/fbdev/savage/savagefb.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/video/fbdev/neofb.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/video/fbdev/s3fb.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/video/fbdev/cirrusfb.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/video/fbdev/s1d13xxxfb.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/video/fbdev/sm501fb.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/video/fbdev/carminefb.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/video/fbdev/mb862xx/mb862xxfb.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/char/ipmi/ipmi_si.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/dma/dw/dw_dmac_core.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/regulator/mt6359-regulator.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/regulator/twl-regulator.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/tty/serial/sunsab.ko] has no CRC!
+ERROR: modpost: "ebus_dma_irq_enable" [drivers/parport/parport_pc.ko] undefined!
+ERROR: modpost: "ebus_dma_unregister" [drivers/parport/parport_pc.ko] undefined!
+ERROR: modpost: "ebus_dma_register" [drivers/parport/parport_pc.ko] undefined!
+ERROR: modpost: "ns87303_lock" [drivers/parport/parport_pc.ko] undefined!
+WARNING: modpost: "__udelay" [drivers/misc/cardreader/rtsx_pci.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/misc/dw-xdata-pcie.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/mfd/sm501.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/mfd/axp20x.ko] has no CRC!
+WARNING: modpost: "__ndelay" [drivers/mtd/nand/raw/cafe_nand.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/mtd/nand/raw/cafe_nand.ko] has no CRC!
+WARNING: modpost: "__lshrdi3" [drivers/mtd/nand/raw/diskonchip.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/mtd/nand/raw/diskonchip.ko] has no CRC!
+WARNING: modpost: "__ndelay" [drivers/mtd/nand/raw/diskonchip.ko] has no CRC!
+WARNING: modpost: "__ndelay" [drivers/mtd/nand/raw/gpio.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/mtd/nand/raw/intel-nand-controller.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/firewire/firewire-ohci.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/auxdisplay/ks0108.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/auxdisplay/hd44780.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/sbus/char/uctrl.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/usb/host/isp116x-hcd.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/usb/host/uhci-hcd.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/usb/host/xhci-hcd.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/usb/host/ssb-hcd.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/usb/gadget/udc/net2280.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/usb/gadget/udc/mv_udc.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/usb/gadget/udc/bdc/bdc.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/usb/dwc3/dwc3.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/usb/dwc2/dwc2.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/usb/cdns3/cdns-usb-common.ko] has no CRC!
+WARNING: modpost: "__ndelay" [drivers/usb/c67x00/c67x00.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/usb/serial/keyspan.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/usb/musb/musb_hdrc.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/input/serio/apbps2.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/rtc/rtc-ds2404.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/rtc/rtc-msm6242.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/rtc/rtc-x1205.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/i2c/algos/i2c-algo-pcf.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/i2c/algos/i2c-algo-pca.ko] has no CRC!
+WARNING: modpost: "__ndelay" [drivers/i2c/busses/i2c-pca-platform.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/i2c/busses/i2c-pca-platform.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/i2c/muxes/i2c-arb-gpio-challenge.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/i2c/muxes/i2c-mux-pca9541.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/i3c/master/dw-i3c-master.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/i3c/master/svc-i3c-master.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/media/i2c/adv7604.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/media/i2c/bt819.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/media/i2c/imx274.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/media/i2c/imx296.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/media/i2c/mt9v032.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/media/i2c/ov6650.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/media/tuners/mxl5007t.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/media/pci/saa7134/saa7134.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/media/usb/cx231xx/cx231xx.ko] has no CRC!
+>> WARNING: modpost: "__udelay" [drivers/ptp/ptp_dfl_tod.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/w1/masters/sgi_w1.ko] has no CRC!
+WARNING: modpost: "__ndelay" [drivers/hwmon/sht15.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/hwmon/pmbus/max15301.ko] has no CRC!
+WARNING: modpost: "__ndelay" [drivers/memstick/host/jmb38x_ms.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/leds/leds-bcm6358.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/leds/leds-bd2802.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/leds/leds-is31fl319x.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/rapidio/rapidio.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/rapidio/switches/idt_gen2.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/rapidio/devices/tsi721_mport.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/input/gameport/gameport.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/ssb/ssb.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/iio/accel/mma9551_core.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/iio/adc/adi-axi-adc.ko] has no CRC!
+WARNING: modpost: "__ndelay" [drivers/iio/adc/hx711.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/iio/dac/ad5592r-base.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/iio/potentiometer/ad5272.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/fpga/altera-freeze-bridge.ko] has no CRC!
+WARNING: modpost: "__ndelay" [drivers/siox/siox-bus-gpio.ko] has no CRC!
+WARNING: modpost: "empty_zero_page" [net/ceph/libceph.ko] has no CRC!
 
-Thanks,
-Kathiravan T.
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
