@@ -1,144 +1,110 @@
-Return-Path: <linux-kernel+bounces-93179-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93172-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65FA9872BE1
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 01:44:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEF77872BD0
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 01:39:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B33A1F21C15
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 00:44:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8A349B224F4
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 00:39:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BA0914267;
-	Wed,  6 Mar 2024 00:43:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 479706FBD;
+	Wed,  6 Mar 2024 00:39:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="hbHntp/1"
-Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0euno7dS"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F5B1DDA8
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 00:43:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B86E1870
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 00:39:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709685837; cv=none; b=UjvOOL7KzUufAGWH0c3fymyrt23phbgOElfmq5oabyYsyfMZdSBZB9pcA8Os5Uhcjn62tRLmYOtRK2k+xXEJ98JE4+VnhZp9APiREEfkUejap4fqzbp44vg12bptiVnTWVjrUbOZTUdnzLlLXZCUJXPJ2zcUwiw8cOZz/UhU6wk=
+	t=1709685542; cv=none; b=IVP4YQFc46FJ/UuuhD9ywKIaP+V8us9zQMust6TYaZmxwZW3lcwheQhNYw9dGttqQck7Ho1TZhq8Da4LWsGTTyCx7oXXf2NPZPVisJDxWMRGn9QoXCRNNjmRC6AL7BY3MUL9Nc59CJcqF20d6BwCQf6h8Fle0v28ba8isoOy01U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709685837; c=relaxed/simple;
-	bh=ZB+JxsmgjsLXjT4A8pwUfLxc5wjMafQmYvaibiZNEjI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SS5zVa5uGI7WKkc82EPJNQy1s9rB4uted8gg+3bFYJ2ibbRhpE29c/kltvY4e5AwW1ckMFTFyAkpzcbHFnTRi4kJCgp/+J+Di4QD8PkfKeGmVWgTOTM2YUK8OqZnlyOriERxqElX1GpI6/0JvvNJCjiJTSlXyBSbk4lArafZAaQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=hbHntp/1; arc=none smtp.client-ip=209.85.167.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-3c1ea5e54d3so189247b6e.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 16:43:55 -0800 (PST)
+	s=arc-20240116; t=1709685542; c=relaxed/simple;
+	bh=19srNkeRmKulCVt7yRP8P5lYwBwZ5dAunV44wgovb7g=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=fo7fCQrEeGV5fuOpiD+/rX6SfdH2lir9d32SmNkekbKWNhMux1ig9tEBByo6LB8j2A4F37D9rR5PPbnIKS5dlxVC5juRZlmDpm/Uob1qFeQVrD0+OQgMYjmfeTauqLTRVL54MD17uBf9yQ+Bl1NFU0axNezp5f8pSiPm27hRHE8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=0euno7dS; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc693399655so11587011276.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 16:39:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709685835; x=1710290635; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hYTrgZgcMnGwzTHQ0raTPV6Zr3av/0t0vLxqDGbq+dE=;
-        b=hbHntp/1YrXqW9cbxg90cWvzXqLiYgkFUO4bncJG0w+ndfLEmBcEJXaHUnNSbNR0b/
-         p6quUhsteDsjpZ4k1eWzVZZXrcu5gFmQMIb6YHT7KQJv/0FNZ9ELYE5ehMpjoRDQ9utC
-         AM0FcFdkpBH+5hWm9qNz9B2MKi2/454RGtXws=
+        d=google.com; s=20230601; t=1709685540; x=1710290340; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/i3rfw64O52qXGZ4d4T6bC7gn+jBl0OoygyLhiTiv84=;
+        b=0euno7dS8aC+u17jPskbyw25I+CmThVyNw//SFdM8p0duoJBxvxZmstx0FB3sGNdd5
+         AmpKmqx+ECNlPIyI33oEcJKjWN4v3a3F9I3LIscKFXtS3LEOvggtRWrP/Sx8QeyZ7nK2
+         hCnHuo46js8srw01wQiVSKMQl5kP/DXQPgM8WdVgjq25NuVVRv3yzLfzAOH7VZDagA9P
+         Nciym+UUNNRAl2nRpZH+4PLkM1vHaIlMaZCTgOJuGar1CU7CAeSPdLGGSqcB6lGUVeug
+         wKX7S1uml7E0q6DVf3/7lQxNtvNSlubas+1KlYRO9ziLUVG107V5pCgHeTOzYZ8ap9IR
+         Yp9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709685835; x=1710290635;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hYTrgZgcMnGwzTHQ0raTPV6Zr3av/0t0vLxqDGbq+dE=;
-        b=bw8itGOMuyLm6gtnsSZ6DBWaa6fhhnF2RVDxn+xyFg4hhmmIajneHipVSF64Z8/UvL
-         FnTuFl3nfNezxggPqYjOgUvBhv5HjStTRnfcxLx3IYmnhAcsly1cBwfn12Wuf14mV89X
-         HpI99exSfVWLaYbGQDTPSdAXTGW/ymr3ptW9LEP+UZaTH6H/SUhpT+PxBfSr2SPIz0F6
-         e8PWbLvjelQ47mn0vr2znOg0jVuuPpte3MEnnMJPJoBnsVZMPo0LVxFUBoBBzA+v4Fvd
-         DFA3WEdCV0+xgfXnV2c9YXYnBA3ojfjNnISZ8jB/CUWYuZI1U2eJKpGQvCgUa+GoTien
-         3VRA==
-X-Forwarded-Encrypted: i=1; AJvYcCUBDK+jm8G+ONYrAY/NOwS7f208RArMlngmZylPc3WW8blMpZxrBFpnwzVLaJKEco3kjfiNUrL8/lNo6tW9tM3gStRmoIEHKs08zW/U
-X-Gm-Message-State: AOJu0YxS78eh0l9nTrJKT6Qg8NivAG3vTWsW05YgS1YFG56ozYyF2OLc
-	NacIOb+u2Mxiyz3NEj66HVNqHSE84mhUWeKLmHAoaK8Z/QGndzFYQ4vY+Y8Cqg==
-X-Google-Smtp-Source: AGHT+IEnBwCzfwvZftrY1cUSm8yx44TS6umhWaiFT1TsIPhxo+eKQUM29yFatyjGk7F35NHZ6+gzsQ==
-X-Received: by 2002:a05:6808:9b0:b0:3c1:db6b:aa7c with SMTP id e16-20020a05680809b000b003c1db6baa7cmr3045373oig.1.1709685835241;
-        Tue, 05 Mar 2024 16:43:55 -0800 (PST)
-Received: from hsinyi.sjc.corp.google.com ([2620:15c:9d:2:29bc:b3d:1ba8:cf52])
-        by smtp.gmail.com with ESMTPSA id x37-20020a631725000000b005dc48e56191sm8512885pgl.11.2024.03.05.16.43.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Mar 2024 16:43:54 -0800 (PST)
-From: Hsin-Yi Wang <hsinyi@chromium.org>
-To: Jani Nikula <jani.nikula@linux.intel.com>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Douglas Anderson <dianders@chromium.org>
-Cc: Neil Armstrong <neil.armstrong@linaro.org>,
-	Jessica Zhang <quic_jesszhan@quicinc.com>,
-	Sam Ravnborg <sam@ravnborg.org>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v4 5/5] drm/panel-edp: Fix AUO 0x405c panel naming and add a variant
-Date: Tue,  5 Mar 2024 16:34:05 -0800
-Message-ID: <20240306004347.974304-6-hsinyi@chromium.org>
-X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-In-Reply-To: <20240306004347.974304-1-hsinyi@chromium.org>
-References: <20240306004347.974304-1-hsinyi@chromium.org>
+        d=1e100.net; s=20230601; t=1709685540; x=1710290340;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/i3rfw64O52qXGZ4d4T6bC7gn+jBl0OoygyLhiTiv84=;
+        b=BlwcgHfeF5mdXkHjb359t/jXOEY0lQfpWYW3p4O2neTgSyZgBs/TUqj4o62fCdvjUY
+         KJjWUt7wMfLdOL29szONmVwzzXjNQtI3qMP2oVIVpUvQL428pq7yaDrO1269XXVZBgAI
+         eoHB21kWkise6o286up5tXX0h7eqD98o+qN1zPLpO2/jvzfnaI63gAakkf2UW/JrNjFX
+         mPvbQlhlNxgsnM/rb2V1Sp8MORToRrMcNVE+H0wdckxtDtc09XGeT9DZHxLVfDQv4sBM
+         14on0B60rZcwXamRv+9L8gIHxrYRhWfL8kLaHORs9YZGKGKZRSZfL0zBjLI0162JCNac
+         WRLg==
+X-Forwarded-Encrypted: i=1; AJvYcCVft0nNmha3hqikazHMjj31p3im2ClpfCFv8qr9RIWHDJKir3gcLx6v8QD4UVq7Zpt53L8q+doWpaOfZNPA5ASzOJt2GC6TiZUvg7IU
+X-Gm-Message-State: AOJu0Ywuo29my2UVYa8PM2htGZHJVNiflmc08kJWgb+lIt29IA+DoZ2H
+	wqlv9HdIkfswlCycfYi98MB+1GoFnDHKdneJ+KyJVpETIZqTlZtbz+IfdSMye1C/M/hooU6kVDu
+	KsA==
+X-Google-Smtp-Source: AGHT+IFjhgqkeSA0IBuHXaVbpAtmbjXg8WehUV6+fYD7o5Lypw9IdoQz2wGD2lYjE7lDaFO7denBlZbiDQI=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:dc47:0:b0:dcd:25be:aefb with SMTP id
+ y68-20020a25dc47000000b00dcd25beaefbmr3445801ybe.13.1709685540197; Tue, 05
+ Mar 2024 16:39:00 -0800 (PST)
+Date: Tue, 5 Mar 2024 16:38:58 -0800
+In-Reply-To: <adbcdeaa-a780-49cb-823c-3980a4dfea12@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+References: <20240228024147.41573-1-seanjc@google.com> <20240228024147.41573-10-seanjc@google.com>
+ <adbcdeaa-a780-49cb-823c-3980a4dfea12@intel.com>
+Message-ID: <Zee7IhqAU_UZFToW@google.com>
+Subject: Re: [PATCH 09/16] KVM: x86/mmu: Move private vs. shared check above
+ slot validity checks
+From: Sean Christopherson <seanjc@google.com>
+To: Kai Huang <kai.huang@intel.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Yan Zhao <yan.y.zhao@intel.com>, Isaku Yamahata <isaku.yamahata@intel.com>, 
+	Michael Roth <michael.roth@amd.com>, Yu Zhang <yu.c.zhang@linux.intel.com>, 
+	Chao Peng <chao.p.peng@linux.intel.com>, Fuad Tabba <tabba@google.com>, 
+	David Matlack <dmatlack@google.com>
+Content-Type: text/plain; charset="us-ascii"
 
-There are 2 different AUO panels using the same panel id. One of the
-variants requires using overridden modes to resolve glitching issue as
-described in commit 70e0d5550f5c ("drm/panel-edp: Add auo_b116xa3_mode").
-Other variants should use the modes parsed from EDID.
+On Wed, Mar 06, 2024, Kai Huang wrote:
+> 
+> 
+> On 28/02/2024 3:41 pm, Sean Christopherson wrote:
+> > Prioritize private vs. shared gfn attribute checks above slot validity
+> > checks to ensure a consistent userspace ABI.  E.g. as is, KVM will exit to
+> > userspace if there is no memslot, but emulate accesses to the APIC access
+> > page even if the attributes mismatch.
+> 
+> IMHO, it would be helpful to explicitly say that, in the later case (emulate
+> APIC access page) we still want to report MEMORY_FAULT error first (so that
+> userspace can have chance to fixup, IIUC) instead of emulating directly,
+> which will unlikely work.
 
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
----
-v4->v5: no change
----
- drivers/gpu/drm/panel/panel-edp.c | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
+Hmm, it's not so much that emulating directly won't work, it's that KVM would be
+violating its ABI.  Emulating APIC accesses after userspace converted the APIC
+gfn to private would still work (I think), but KVM's ABI is that emulated MMIO
+is shared-only.
 
-diff --git a/drivers/gpu/drm/panel/panel-edp.c b/drivers/gpu/drm/panel/panel-edp.c
-index fb70e97a2e71..9db04457fb4d 100644
---- a/drivers/gpu/drm/panel/panel-edp.c
-+++ b/drivers/gpu/drm/panel/panel-edp.c
-@@ -1007,6 +1007,19 @@ static const struct panel_desc auo_b101ean01 = {
- 	},
- };
- 
-+static const struct drm_display_mode auo_b116xa3_mode = {
-+	.clock = 70589,
-+	.hdisplay = 1366,
-+	.hsync_start = 1366 + 40,
-+	.hsync_end = 1366 + 40 + 40,
-+	.htotal = 1366 + 40 + 40 + 32,
-+	.vdisplay = 768,
-+	.vsync_start = 768 + 10,
-+	.vsync_end = 768 + 10 + 12,
-+	.vtotal = 768 + 10 + 12 + 6,
-+	.flags = DRM_MODE_FLAG_NVSYNC | DRM_MODE_FLAG_NHSYNC,
-+};
-+
- static const struct drm_display_mode auo_b116xak01_mode = {
- 	.clock = 69300,
- 	.hdisplay = 1366,
-@@ -1966,7 +1979,9 @@ static const struct edp_panel_entry edp_panels[] = {
- 	EDP_PANEL_ENTRY('A', 'U', 'O', 0x239b, &delay_200_500_e50, "B116XAN06.1"),
- 	EDP_PANEL_ENTRY('A', 'U', 'O', 0x255c, &delay_200_500_e50, "B116XTN02.5"),
- 	EDP_PANEL_ENTRY('A', 'U', 'O', 0x403d, &delay_200_500_e50, "B140HAN04.0"),
--	EDP_PANEL_ENTRY('A', 'U', 'O', 0x405c, &auo_b116xak01.delay, "B116XAK01.0"),
-+	EDP_PANEL_ENTRY('A', 'U', 'O', 0x405c, &auo_b116xak01.delay, "B116XAN04.0"),
-+	EDP_PANEL_ENTRY2('A', 'U', 'O', 0x405c, &auo_b116xak01.delay, "B116XAK01.0 ",
-+			 &auo_b116xa3_mode),
- 	EDP_PANEL_ENTRY('A', 'U', 'O', 0x435c, &delay_200_500_e50, "Unknown"),
- 	EDP_PANEL_ENTRY('A', 'U', 'O', 0x582d, &delay_200_500_e50, "B133UAN01.0"),
- 	EDP_PANEL_ENTRY('A', 'U', 'O', 0x615c, &delay_200_500_e50, "B116XAN06.1"),
--- 
-2.44.0.278.ge034bb2e1d-goog
-
+FWIW, I doubt there's a legitmate use case for converting the APIC gfn to private,
+this is purely to ensure KVM has simple, consistent rules for how private vs.
+shared access work.
 
