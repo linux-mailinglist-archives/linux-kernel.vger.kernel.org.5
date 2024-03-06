@@ -1,377 +1,269 @@
-Return-Path: <linux-kernel+bounces-93495-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93497-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AFC1C87309D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:25:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E16D88730A7
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:26:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 702382854C8
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 08:25:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1115C1C241F3
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 08:26:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 022205D486;
-	Wed,  6 Mar 2024 08:24:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TEgDTCu6"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E8EC5D75E;
+	Wed,  6 Mar 2024 08:26:17 +0000 (UTC)
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BEC25CDF6
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 08:24:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B8585C057;
+	Wed,  6 Mar 2024 08:26:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709713498; cv=none; b=d6GAIXclHpBEufLCxHt8RKrIZbfhN5RlkskaSeg1SnrCJcY7jGCl+3IDbkNDsirWkqYNGuRfGcISAQA0hkq3j3NCgTpFLMXpVZDui05rR9vD7VqjNQT8tiEPWMcdoqMdLqiEGorKUvRD5PkV9FlPjn4XcTtNye2KD3qLM8wXJgQ=
+	t=1709713576; cv=none; b=XpVtk8IEmKm6HHMnlh9y8O1SyM5MgQlBVJWF/gI1Yd9fgQqYvJSEHVwOG9GBWCp7fPtH+LrdnoTaraSyf+wxlby0FAPBnHsilTthwh2BvxLohx/wuFEthlrWGlAB5v0Xs7CF4OZffjafSaZ6b+47bZPX2So+WgznxQjbPv5PEaA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709713498; c=relaxed/simple;
-	bh=DOd0e1qjzkpyS4tW500IeyPTqixPd5HrKxj3s3+PnVo=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=XqbWGp4bt/pB2Jn53XX/FVjq1t7cnMiecEcrpAfkCeBQdkpdsK+9/XH2McU7PYw9d3/cKTYf/oTiIlZIanwKQC2ldMq3+cBJEc7CC82/Wll1hltVOpzbHy1mDne6KXTDMmw9XynojwwW7jrRLcgZXV+ZyZ69N2Pkh7KRwf4c1gE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TEgDTCu6; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709713495;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cvBKIBBn0ajnJwbxQfkWgazzuuPofMjnZR/FlSgY4/c=;
-	b=TEgDTCu6RAu+G6A1yjRJd0ZOjp+89gcSb8J/VBaJmgjzesG8M2q1Fm2Y8FcDKW1q96xUyu
-	5NdVfLu3kxJkv1/wFIWol9MbCgx5rK+nNie+kg/j3j2NwJrgFFzhlprRouyLSw4EXlN4ST
-	GjfzfqpdJbsdbawyoSc4c4UWP8Uz8xk=
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
- [209.85.214.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-31-v5SJJup3Ng68slNPQdPwYA-1; Wed, 06 Mar 2024 03:24:53 -0500
-X-MC-Unique: v5SJJup3Ng68slNPQdPwYA-1
-Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-1dbc6ff68ffso7595135ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 00:24:53 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709713492; x=1710318292;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cvBKIBBn0ajnJwbxQfkWgazzuuPofMjnZR/FlSgY4/c=;
-        b=wK9bxIWYPorG2KKgiOOYrsL92JjHfHfWpgyKw9J8VrtTL+EeMzOTBqhdkJrP3ftYSO
-         tlRLTw47sBv9Cpf9zzhtwmAF06z6xIkL+Bf9uxQz+Btj+ZKakYs1nqFyYTbMKRd1JACJ
-         pFXGxYMtsaPfbIeMIhebfVS7LR7DoPjSRs2B/qfy0l6ZsopxHFoJmidv2436YHQ1oDar
-         tMbr/354cus5GD675xfDLFNDSfEoT+74J+MonNJsfnnfyX4ioHuebhA+E/oV1ZfQUkm1
-         BnIAEcWJbf7NapYsvxUXC1QdTzsU8DXW59UJ7aDxduIfVUOKkK4VVUg/elxjJahR7b46
-         OP4Q==
-X-Gm-Message-State: AOJu0YxGY64XbRwUPJdn0IISAIwi7IKSRTC72+e+XrKGmk0Y7ulREB17
-	JUqcPwk7ccYMTqb2hI5Zw6Ww6vi1iIGrMMgAzZkR9bfYncI5ykSD2gad8KcY/8KuZws0YbMYzVn
-	jmL8/jh7ypGLrJL1rQiNoquHQ+bRotoGjrboooihJjzjEqEmg8EOJV+3AySuciw==
-X-Received: by 2002:a17:902:eb82:b0:1dc:f0d7:d8d7 with SMTP id q2-20020a170902eb8200b001dcf0d7d8d7mr5495608plg.41.1709713492522;
-        Wed, 06 Mar 2024 00:24:52 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGIG4JUnFIAwPpLMYuiF/5sLVoJQXWOC0Z7C1a/2buy1bIQVOkgiNpxkDp+VYEoC1+R9xNcaw==
-X-Received: by 2002:a17:902:eb82:b0:1dc:f0d7:d8d7 with SMTP id q2-20020a170902eb8200b001dcf0d7d8d7mr5495595plg.41.1709713492147;
-        Wed, 06 Mar 2024 00:24:52 -0800 (PST)
-Received: from smtpclient.apple ([115.96.30.47])
-        by smtp.gmail.com with ESMTPSA id mq12-20020a170902fd4c00b001dc8f1e06eesm11932415plb.291.2024.03.06.00.24.47
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 06 Mar 2024 00:24:51 -0800 (PST)
-Content-Type: text/plain;
-	charset=utf-8
+	s=arc-20240116; t=1709713576; c=relaxed/simple;
+	bh=IVbVUMXrP0pWnl6Gqzn7NDcqyyzsIK+2/AJi/qKsKYo=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=X3tk3uGjUu7Q8MwKc2un65xVgN9VPDb3VJGXsk42NLIXlnvwptnvt7wAvfX7xFG84hL3sXaoLwc6oQRiUrCqad+JNfutBZPMlTIGGmerOz8rUJSiNz/F1e2VFZ2D0oUeskwglbA6qySc0CYzcUV59Px2xB09xGl9SqI+baQLI6g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.186.29])
+	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4TqQ8z72pQz9xrt5;
+	Wed,  6 Mar 2024 16:10:27 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.27])
+	by mail.maildlp.com (Postfix) with ESMTP id 17A50140416;
+	Wed,  6 Mar 2024 16:26:04 +0800 (CST)
+Received: from [127.0.0.1] (unknown [10.204.63.22])
+	by APP2 (Coremail) with SMTP id GxC2BwBnoCSIKOhlyTjHAw--.13514S2;
+	Wed, 06 Mar 2024 09:26:03 +0100 (CET)
+Message-ID: <1217017cc1928842abfdb40a7fa50bad8ae5e99f.camel@huaweicloud.com>
+Subject: Re: [PATCH v2 24/25] commoncap: use vfs fscaps interfaces
+From: Roberto Sassu <roberto.sassu@huaweicloud.com>
+To: Mimi Zohar <zohar@linux.ibm.com>, Christian Brauner
+ <brauner@kernel.org>,  "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
+Cc: Serge Hallyn <serge@hallyn.com>, Paul Moore <paul@paul-moore.com>, Eric
+ Paris <eparis@redhat.com>, James Morris <jmorris@namei.org>, Alexander Viro
+ <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, Stephen Smalley
+ <stephen.smalley.work@gmail.com>, Ondrej Mosnacek <omosnace@redhat.com>, 
+ Casey Schaufler <casey@schaufler-ca.com>, Roberto Sassu
+ <roberto.sassu@huawei.com>, Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+ Eric Snowberg <eric.snowberg@oracle.com>,  "Matthew Wilcox (Oracle)"
+ <willy@infradead.org>, Jonathan Corbet <corbet@lwn.net>, Miklos Szeredi
+ <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>, 
+ linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+ linux-security-module@vger.kernel.org, audit@vger.kernel.org, 
+ selinux@vger.kernel.org, linux-integrity@vger.kernel.org, 
+ linux-doc@vger.kernel.org, linux-unionfs@vger.kernel.org
+Date: Wed, 06 Mar 2024 09:25:40 +0100
+In-Reply-To: <10773e5b90ec9378cbc69fa9cfeb61a84273edc2.camel@linux.ibm.com>
+References: <20240221-idmap-fscap-refactor-v2-0-3039364623bd@kernel.org>
+	 <20240221-idmap-fscap-refactor-v2-24-3039364623bd@kernel.org>
+	 <dcbd9e7869d2fcce69546b53851d694b8ebad54e.camel@huaweicloud.com>
+	 <ZeXpbOsdRTbLsYe9@do-x1extreme>
+	 <a7124afa6bed2fcadcb66efa08e256828cd6f8ab.camel@huaweicloud.com>
+	 <ZeX9MRhU/EGhHkCY@do-x1extreme>
+	 <20240305-fachjargon-abmontieren-75b1d6c67a83@brauner>
+	 <3098aef3e5f924e5717b4ba4a34817d9f22ec479.camel@huaweicloud.com>
+	 <7058e2f93d16f910336a5380877b14a2e069ee9d.camel@huaweicloud.com>
+	 <10773e5b90ec9378cbc69fa9cfeb61a84273edc2.camel@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.400.31\))
-Subject: Re: [PATCH] hv/hv_kvp_daemon: Handle IPv4 and Ipv6 combination for
- keyfile format
-From: Ani Sinha <anisinha@redhat.com>
-In-Reply-To: <1709297778-20420-1-git-send-email-shradhagupta@linux.microsoft.com>
-Date: Wed, 6 Mar 2024 13:54:36 +0530
-Cc: linux-kernel@vger.kernel.org,
- linux-hyperv@vger.kernel.org,
- "K. Y. Srinivasan" <kys@microsoft.com>,
- Haiyang Zhang <haiyangz@microsoft.com>,
- Wei Liu <wei.liu@kernel.org>,
- Dexuan Cui <decui@microsoft.com>,
- Long Li <longli@microsoft.com>,
- Michael Kelley <mikelley@microsoft.com>,
- Olaf Hering <olaf@aepfle.de>,
- Shradha Gupta <shradhagupta@microsoft.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <AE3A11C5-5EAA-4929-8FE2-BB1B2BDE57CE@redhat.com>
-References: <1709297778-20420-1-git-send-email-shradhagupta@linux.microsoft.com>
-To: Shradha Gupta <shradhagupta@linux.microsoft.com>
-X-Mailer: Apple Mail (2.3774.400.31)
+MIME-Version: 1.0
+X-CM-TRANSID:GxC2BwBnoCSIKOhlyTjHAw--.13514S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3WF4kAr4UGFyxXr45GFWfKrg_yoW7ZF1xpr
+	y5GF4UKr4DJr1UJrn7tr1UX3W0y3yfJF4UXrn8G34UAr1qyr13Gr1xCr17uFyDur18Gr1U
+	Zr1jyFy3Wr1UAwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkmb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
+	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYY7kG6xAYrwCIc40Y0x0E
+	wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JV
+	WxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI
+	42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUguHqUUUUU
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAOBF1jj5sG0gAAs1
 
-
-
-> On 01-Mar-2024, at 18:26, Shradha Gupta =
-<shradhagupta@linux.microsoft.com> wrote:
+On Tue, 2024-03-05 at 21:17 -0500, Mimi Zohar wrote:
+> On Tue, 2024-03-05 at 18:11 +0100, Roberto Sassu wrote:
+> > On Tue, 2024-03-05 at 13:46 +0100, Roberto Sassu wrote:
+> > > On Tue, 2024-03-05 at 10:12 +0100, Christian Brauner wrote:
+> > > > On Mon, Mar 04, 2024 at 10:56:17AM -0600, Seth Forshee (DigitalOcea=
+n)
+> > > > wrote:
+> > > > > On Mon, Mar 04, 2024 at 05:17:57PM +0100, Roberto Sassu wrote:
+> > > > > > On Mon, 2024-03-04 at 09:31 -0600, Seth Forshee (DigitalOcean) =
+wrote:
+> > > > > > > On Mon, Mar 04, 2024 at 11:19:54AM +0100, Roberto Sassu wrote=
+:
+> > > > > > > > On Wed, 2024-02-21 at 15:24 -0600, Seth Forshee (DigitalOce=
+an)
+> > > > > > > > wrote:
+> > > > > > > > > Use the vfs interfaces for fetching file capabilities for
+> > > > > > > > > killpriv
+> > > > > > > > > checks and from get_vfs_caps_from_disk(). While there, up=
+date
+> > > > > > > > > the
+> > > > > > > > > kerneldoc for get_vfs_caps_from_disk() to explain how it =
+is
+> > > > > > > > > different
+> > > > > > > > > from vfs_get_fscaps_nosec().
+> > > > > > > > >=20
+> > > > > > > > > Signed-off-by: Seth Forshee (DigitalOcean) <sforshee@kern=
+el.org>
+> > > > > > > > > ---
+> > > > > > > > >  security/commoncap.c | 30 +++++++++++++-----------------
+> > > > > > > > >  1 file changed, 13 insertions(+), 17 deletions(-)
+> > > > > > > > >=20
+> > > > > > > > > diff --git a/security/commoncap.c b/security/commoncap.c
+> > > > > > > > > index a0ff7e6092e0..751bb26a06a6 100644
+> > > > > > > > > --- a/security/commoncap.c
+> > > > > > > > > +++ b/security/commoncap.c
+> > > > > > > > > @@ -296,11 +296,12 @@ int cap_capset(struct cred *new,
+> > > > > > > > >   */
+> > > > > > > > >  int cap_inode_need_killpriv(struct dentry *dentry)
+> > > > > > > > >  {
+> > > > > > > > > -	struct inode *inode =3D d_backing_inode(dentry);
+> > > > > > > > > +	struct vfs_caps caps;
+> > > > > > > > >  	int error;
+> > > > > > > > > =20
+> > > > > > > > > -	error =3D __vfs_getxattr(dentry, inode, XATTR_NAME_CAPS=
+,
+> > > > > > > > > NULL, 0);
+> > > > > > > > > -	return error > 0;
+> > > > > > > > > +	/* Use nop_mnt_idmap for no mapping here as mapping is
+> > > > > > > > > unimportant */
+> > > > > > > > > +	error =3D vfs_get_fscaps_nosec(&nop_mnt_idmap, dentry,
+> > > > > > > > > &caps);
+> > > > > > > > > +	return error =3D=3D 0;
+> > > > > > > > >  }
+> > > > > > > > > =20
+> > > > > > > > >  /**
+> > > > > > > > > @@ -323,7 +324,7 @@ int cap_inode_killpriv(struct mnt_idm=
+ap
+> > > > > > > > > *idmap, struct dentry *dentry)
+> > > > > > > > >  {
+> > > > > > > > >  	int error;
+> > > > > > > > > =20
+> > > > > > > > > -	error =3D __vfs_removexattr(idmap, dentry,
+> > > > > > > > > XATTR_NAME_CAPS);
+> > > > > > > > > +	error =3D vfs_remove_fscaps_nosec(idmap, dentry);
+> > > > > > > >=20
+> > > > > > > > Uhm, I see that the change is logically correct... but the
+> > > > > > > > original
+> > > > > > > > code was not correct, since the EVM post hook is not called=
+ (thus
+> > > > > > > > the
+> > > > > > > > HMAC is broken, or an xattr change is allowed on a portable
+> > > > > > > > signature
+> > > > > > > > which should be not).
+> > > > > > > >=20
+> > > > > > > > For completeness, the xattr change on a portable signature =
+should
+> > > > > > > > not
+> > > > > > > > happen in the first place, so cap_inode_killpriv() would no=
+t be
+> > > > > > > > called.
+> > > > > > > > However, since EVM allows same value change, we are here.
+> > > > > > >=20
+> > > > > > > I really don't understand EVM that well and am pretty hesitan=
+t to
+> > > > > > > try an
+> > > > > > > change any of the logic around it. But I'll hazard a thought:=
+ should
+> > > > > > > EVM
+> > > > > > > have a inode_need_killpriv hook which returns an error in thi=
+s
+> > > > > > > situation?
+> > > > > >=20
+> > > > > > Uhm, I think it would not work without modifying
+> > > > > > security_inode_need_killpriv() and the hook definition.
+> > > > > >=20
+> > > > > > Since cap_inode_need_killpriv() returns 1, the loop stops and E=
+VM
+> > > > > > would
+> > > > > > not be invoked. We would need to continue the loop and let EVM =
+know
+> > > > > > what is the current return value. Then EVM can reject the chang=
+e.
+> > > > > >=20
+> > > > > > An alternative way would be to detect that actually we are sett=
+ing the
+> > > > > > same value for inode metadata, and maybe not returning 1 from
+> > > > > > cap_inode_need_killpriv().
+> > > > > >=20
+> > > > > > I would prefer the second, since EVM allows same value change a=
+nd we
+> > > > > > would have an exception if there are fscaps.
+> > > > > >=20
+> > > > > > This solves only the case of portable signatures. We would need=
+ to
+> > > > > > change cap_inode_need_killpriv() anyway to update the HMAC for =
+mutable
+> > > > > > files.
+> > > > >=20
+> > > > > I see. In any case this sounds like a matter for a separate patch
+> > > > > series.
+> > > >=20
+> > > > Agreed.
+> > >=20
+> > > Christian, how realistic is that we don't kill priv if we are setting
+> > > the same owner?
+> > >=20
+> > > Serge, would we be able to replace __vfs_removexattr() (or now
+> > > vfs_get_fscaps_nosec()) with a security-equivalent alternative?
+> >=20
+> > It seems it is not necessary.
+> >=20
+> > security.capability removal occurs between evm_inode_setattr() and
+> > evm_inode_post_setattr(), after the HMAC has been verified and before
+> > the new HMAC is recalculated (without security.capability).
+> >=20
+> > So, all good.
+> >=20
+> > Christian, Seth, I pushed the kernel and the updated tests (all patches
+> > are WIP):
+> >=20
+> > https://github.com/robertosassu/linux/commits/evm-fscaps-v2/
 >=20
-> If the network configuration strings are passed as a combination of =
-IPv and
-> IPv6 addresses, the current KVP daemon doesnot handle it for the =
-keyfile
-> configuration format.
-> With these changes, the keyfile config generation logic scans through =
-the
-> list twice to generate IPv4 and IPv6 sections for the configuration =
-files
-> to handle this support.
+> Resetting the IMA status flag is insufficient.  The EVM status needs to b=
+e reset
+> as well.  Stefan's "ima: re-evaluate file integrity on file metadata chan=
+ge"
+> patch does something similar for overlay.
 
-We tried to test this but seems some memory corruption is happening.
-Some more feedbacks follows ...
+Both the IMA and EVM status are reset. The IMA one is reset based on
+the evm_revalidate_status() call, similarly to ACLs.
 
->=20
-> Built-on: Rhel9
-> Tested-on: Rhel9(IPv4 only, IPv6 only, IPv4 and IPv6 combination)
-> Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
-> ---
-> tools/hv/hv_kvp_daemon.c | 152 ++++++++++++++++++++++++++++-----------
-> 1 file changed, 112 insertions(+), 40 deletions(-)
->=20
-> diff --git a/tools/hv/hv_kvp_daemon.c b/tools/hv/hv_kvp_daemon.c
-> index 318e2dad27e0..7e84e40b55fb 100644
-> --- a/tools/hv/hv_kvp_daemon.c
-> +++ b/tools/hv/hv_kvp_daemon.c
-> @@ -76,6 +76,11 @@ enum {
-> DNS
-> };
->=20
-> +enum {
-> + IPV4 =3D 1,
-> + IPV6
-> +};
-> +
-> static int in_hand_shake;
->=20
-> static char *os_name =3D "";
-> @@ -1171,6 +1176,18 @@ static int process_ip_string(FILE *f, char =
-*ip_string, int type)
-> return 0;
-> }
->=20
-> +int ip_version_check(const char *input_addr)
-> +{
-> + struct in6_addr addr;
-> +
-> + if (inet_pton(AF_INET, input_addr, &addr))
-> + return IPV4;
-> + else if (inet_pton(AF_INET6, input_addr, &addr))
-> + return IPV6;
-> + else
-> + return -EINVAL;
-> +}
-> +
-> /*
->  * Only IPv4 subnet strings needs to be converted to plen
->  * For IPv6 the subnet is already privided in plen format
-> @@ -1197,14 +1214,56 @@ static int kvp_subnet_to_plen(char =
-*subnet_addr_str)
-> return plen;
-> }
->=20
-> +static int process_dns_gateway_nm(FILE *f, char *ip_string, int type,
-> +  int ip_sec)
-> +{
-> + char addr[INET6_ADDRSTRLEN], *output_str;
-> + int ip_offset =3D 0, error, ip_ver;
-> + char *param_name;
-> +
-> + output_str =3D malloc(strlen(ip_string));
-> +
-> + if (!output_str)
-> + return 1;
+Roberto
 
-Shouldn=E2=80=99t you be returning -ENOMEM or some such here?
-
-> +
-> + output_str[0] =3D '\0';
-> +
-> + if (type =3D=3D DNS)
-> + param_name =3D "dns";
-> + else
-
-Please be more explicit here and check for type =3D=3D GATEWAY
-
-> + param_name =3D "gateway";
-
-Else, if neither, it should return error.
-
-> +
-> + while (parse_ip_val_buffer(ip_string, &ip_offset, addr,
-> +   (MAX_IP_ADDR_SIZE * 2))) {
-> + ip_ver =3D ip_version_check(addr);
-> +
-> + if ((ip_ver =3D=3D IPV4 && ip_sec =3D=3D IPV4) ||
-> +    (ip_ver =3D=3D IPV6 && ip_sec =3D=3D IPV6)) {
-> + strcat(output_str, addr);
-> + strcat(output_str, ",");
-
-I prefer strncat() here.
-
-> + } else {
-> + continue;
-> + }
-> + }
-> +
-> + if (strlen(output_str)) {
-> + output_str[strlen(output_str) - 1] =3D '\0';
-> + error =3D fprintf(f, "%s=3D%s\n", param_name, output_str);
-
-Please do not forget to free output_str.
-
-> + if (error <  0)
-> + return error;
-> + }
-> +
-> + return 0;
-> +}
-> +
-> static int process_ip_string_nm(FILE *f, char *ip_string, char =
-*subnet,
-> - int is_ipv6)
-> + int ip_sec)
-> {
-> char addr[INET6_ADDRSTRLEN];
-> char subnet_addr[INET6_ADDRSTRLEN];
-> int error, i =3D 0;
-> int ip_offset =3D 0, subnet_offset =3D 0;
-> - int plen;
-> + int plen, ip_ver;
+> Mimi
 >=20
-> memset(addr, 0, sizeof(addr));
-> memset(subnet_addr, 0, sizeof(subnet_addr));
-> @@ -1216,10 +1275,13 @@ static int process_ip_string_nm(FILE *f, char =
-*ip_string, char *subnet,
->       subnet_addr,
->       (MAX_IP_ADDR_SIZE *
-> 2))) {
-> - if (!is_ipv6)
-> + ip_ver =3D ip_version_check(addr);
-> + if (ip_ver =3D=3D IPV4 && ip_sec =3D=3D IPV4)
-> plen =3D kvp_subnet_to_plen((char *)subnet_addr);
-> - else
-> + else if (ip_ver =3D=3D IPV6 && ip_sec =3D=3D IPV6)
-> plen =3D atoi(subnet_addr);
-> + else
-> + continue;
+> https://lore.kernel.org/linux-integrity/20240223172513.4049959-8-stefanb@=
+linux.ibm.com/
 >=20
-> if (plen < 0)
-> return plen;
-> @@ -1242,8 +1304,8 @@ static int kvp_set_ip_info(char *if_name, struct =
-hv_kvp_ipaddr_value *new_val)
-> char if_filename[PATH_MAX];
-> char nm_filename[PATH_MAX];
-> FILE *ifcfg_file, *nmfile;
-> + int ip_sections_count;
-> char cmd[PATH_MAX];
-> - int is_ipv6 =3D 0;
-> char *mac_addr;
-> int str_len;
->=20
-> @@ -1421,52 +1483,62 @@ static int kvp_set_ip_info(char *if_name, =
-struct hv_kvp_ipaddr_value *new_val)
-> if (error)
-> goto setval_error;
->=20
-> - if (new_val->addr_family & ADDR_FAMILY_IPV6) {
-> - error =3D fprintf(nmfile, "\n[ipv6]\n");
-> - if (error < 0)
-> - goto setval_error;
-> - is_ipv6 =3D 1;
-> - } else {
-> - error =3D fprintf(nmfile, "\n[ipv4]\n");
-> - if (error < 0)
-> - goto setval_error;
-> - }
-> -
-> /*
-> - * Now we populate the keyfile format
-> + * The keyfile format expects the IPv6 and IPv4 configuration in
-> + * different sections. Therefore we iterate through the list twice,
-> + * once to populate the IPv4 section and the next time for IPv6
-> */
-> + ip_sections_count =3D 1;
-> + do {
-> + if (ip_sections_count =3D=3D 1) {
-> + error =3D fprintf(nmfile, "\n[ipv4]\n");
-> + if (error < 0)
-> + goto setval_error;
-> + } else {
-> + error =3D fprintf(nmfile, "\n[ipv6]\n");
-> + if (error < 0)
-> + goto setval_error;
-> + }
->=20
-> - if (new_val->dhcp_enabled) {
-> - error =3D kvp_write_file(nmfile, "method", "", "auto");
-> - if (error < 0)
-> - goto setval_error;
-> - } else {
-> - error =3D kvp_write_file(nmfile, "method", "", "manual");
-> + /*
-> + * Now we populate the keyfile format
-> + */
-> +
-> + if (new_val->dhcp_enabled) {
-> + error =3D kvp_write_file(nmfile, "method", "", "auto");
-> + if (error < 0)
-> + goto setval_error;
-> + } else {
-> + error =3D kvp_write_file(nmfile, "method", "", "manual");
-> + if (error < 0)
-> + goto setval_error;
-> + }
-> +
-> + /*
-> + * Write the configuration for ipaddress, netmask, gateway and
-> + * name services
-> + */
-> + error =3D process_ip_string_nm(nmfile, (char *)new_val->ip_addr,
-> +     (char *)new_val->sub_net,
-> +     ip_sections_count);
-> if (error < 0)
-> goto setval_error;
-> - }
->=20
-> - /*
-> - * Write the configuration for ipaddress, netmask, gateway and
-> - * name services
-> - */
-> - error =3D process_ip_string_nm(nmfile, (char *)new_val->ip_addr,
-> -     (char *)new_val->sub_net, is_ipv6);
-> - if (error < 0)
-> - goto setval_error;
-> -
-> - /* we do not want ipv4 addresses in ipv6 section and vice versa */
-> - if (is_ipv6 !=3D is_ipv4((char *)new_val->gate_way)) {
-> - error =3D fprintf(nmfile, "gateway=3D%s\n", (char =
-*)new_val->gate_way);
-> + error =3D process_dns_gateway_nm(nmfile,
-> +       (char *)new_val->gate_way,
-> +       GATEWAY, ip_sections_count);
-> if (error < 0)
-> goto setval_error;
-> - }
->=20
-> - if (is_ipv6 !=3D is_ipv4((char *)new_val->dns_addr)) {
-> - error =3D fprintf(nmfile, "dns=3D%s\n", (char *)new_val->dns_addr);
-> + error =3D process_dns_gateway_nm(nmfile,
-> +       (char *)new_val->dns_addr, DNS,
-> +       ip_sections_count);
-> if (error < 0)
-
-But you return +ve from this function so this will never be true.
-
-> goto setval_error;
-> - }
-> +
-> + ip_sections_count++;
-> + } while (ip_sections_count <=3D 2);
-> +
-> fclose(nmfile);
-> fclose(ifcfg_file);
->=20
-> --=20
-> 2.34.1
+> >=20
+> > https://github.com/robertosassu/ima-evm-utils/commits/evm-fscaps-v2/
+> >=20
+> >=20
+> > The tests are passing:
+> >=20
+> > https://github.com/robertosassu/ima-evm-utils/actions/runs/8159877004/j=
+ob/22305521359
+> >=20
+> > Roberto
+> >=20
+> >=20
 >=20
 
 
