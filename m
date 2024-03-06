@@ -1,190 +1,196 @@
-Return-Path: <linux-kernel+bounces-94343-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94344-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37D1B873DA7
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 18:43:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22266873DAD
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 18:45:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 74206B217CD
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:43:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A3AF1282476
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:45:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 366DA13BAEF;
-	Wed,  6 Mar 2024 17:43:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 813C013BAD7;
+	Wed,  6 Mar 2024 17:45:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="OHqTf0AT"
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11olkn2028.outbound.protection.outlook.com [40.92.18.28])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="MzdXd8Lc"
+Received: from mail-qv1-f43.google.com (mail-qv1-f43.google.com [209.85.219.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7366E80601;
-	Wed,  6 Mar 2024 17:43:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.18.28
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709747026; cv=fail; b=jjkdI9InPZjjaaD5P0N0XV+2z0rczQS78Vu+pS1CFf+qYpuaCBqaq62AdlyXPL3kLkmzvrKjidoY3FnNEOq2qo5LjQrLXMUC3hItxkUB1eFCQ95RQ1MogFo0fJJEoHRMZTs1bNo4k55AeMxIozPCc4ENzN7aiazPFmO5tiCXSSg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709747026; c=relaxed/simple;
-	bh=r0nc4VmAd1GgMbV+9XAHwToToGG9k56Gg7fl3V0X4e8=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=XV+W7J9FF/6zuOWsvRi4Qk+dr4nH5/GOez8bsQ0Rzc27JClhmIkHwUVnxkyACXo9uqWRePRvmCaUzCB/gAdTksM2tBav/NoUBwrK47y+67RylDBtgxWjpu4l8ucESiF/7UT++0GRQUjsO42zYa3rC+kq2RUN3s4vYNDdWniSm0Q=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=OHqTf0AT; arc=fail smtp.client-ip=40.92.18.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=g/aS9N+Z8O37ca5A/A1l214YIBq2NFnhz9L29eRNPWdk8fqP4Y+pMkP2HQSVqZx7lA1bSs7l/YRPyM/ljw8FezQI4gqxZEo+5ArLVzCRr5Wfg4lAeFmvuj63nCO9PNyruHrrOVbZKvYelhaK1gOlzXy15AO7HmsQJkpp4FrXn3kVINQCo4hwgWxIQEs47/JC7Ha+cJpqJBE08Ld2uXD2rDMEF31F4NNhf5ULnwyViQ/n2sEsq40uY27X/4Wb+YKyOXtrGce9UsIaeqCpaIMWgAKI9undGRec5Znu6brx8FCD2Ya+3/k1GtyYLLm4M2MDtY5rCRoRH5g75xT1xXqBOA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VBQynf+cv/c992G73fUo+kv1Z//vQ9oKlM9bdkVPFh4=;
- b=aW8JZ+qryRwqlbH6y5QcFzGu5X4A0ofuF6ix8X+mLsc51hZExGrVzlPMXo9siyC4TcVnPxcCRbyKUpl6m4jyVcIbhff/YJISCylmxtFi5oVjHlTKBnPmJxxznI1L0e8EMBTZgeoTLo28Ky4dikyuyVihctQ53xr1oj7LLjFugV4ms3yojCMOq3i+f5qZfhIpkpMUFf9M1pZo81MmYJtblch1i8DxGNLC6s5PKi+E/DzRktb/I4dpzLahErTtC6/xqXODD6PboeA18ZrRZEjL6NFA5n9vImsqRi+CTDb6SDB/WqxELpmxXFcNNJClbQP/CIQ2WduFOjhZwSznAEhSww==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VBQynf+cv/c992G73fUo+kv1Z//vQ9oKlM9bdkVPFh4=;
- b=OHqTf0AT3LG6FTpeiCkOB0X5JGxFmqbwDHMgK9hxpFjSKRYyi/4hSv7SC1QMBh1j+jkXPa5nLtYB05prViJ1/+zsYL+UhuKU8QChwlyM0NbPGcrdfxw9l8tSXed5M3S02KR9Xse02YhvCEuauWH0CA22mqsCoNvAi4IU81s29z+iHhWPFAbGdQZN3M+36wtEpP2hIb2fwvGCYtq1wwAPvq6cAt6itsbNS25PETyy4N/+jHYfdmguikAsAyBH6a32jwlKyd/LUTJHUWvUOx0DOOG+MPOEuju4X8l4pL8kFM6Os31gfL0TTbylFCjZ/vX0C6SUArxj6SNEhZC089CQAg==
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
- by CH2PR02MB6537.namprd02.prod.outlook.com (2603:10b6:610:69::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.39; Wed, 6 Mar
- 2024 17:43:42 +0000
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::67a9:f3c0:f57b:86dd]) by SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::67a9:f3c0:f57b:86dd%5]) with mapi id 15.20.7339.035; Wed, 6 Mar 2024
- 17:43:42 +0000
-From: Michael Kelley <mhklinux@outlook.com>
-To: "wei.liu@kernel.org" <wei.liu@kernel.org>
-CC: "haiyangz@microsoft.com" <haiyangz@microsoft.com>, "decui@microsoft.com"
-	<decui@microsoft.com>, "tglx@linutronix.de" <tglx@linutronix.de>,
-	"mingo@redhat.com" <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>,
-	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, "hpa@zytor.com"
-	<hpa@zytor.com>, "arnd@arndb.de" <arnd@arndb.de>, "tytso@mit.edu"
-	<tytso@mit.edu>, "Jason@zx2c4.com" <Jason@zx2c4.com>, "x86@kernel.org"
-	<x86@kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-hyperv@vger.kernel.org"
-	<linux-hyperv@vger.kernel.org>, "linux-arch@vger.kernel.org"
-	<linux-arch@vger.kernel.org>, Saurabh Singh Sengar <ssengar@microsoft.com>,
-	Long Li <longli@microsoft.com>
-Subject: RE: [PATCH 1/1] x86/hyperv: Use Hyper-V entropy to seed guest random
- number generator
-Thread-Topic: [PATCH 1/1] x86/hyperv: Use Hyper-V entropy to seed guest random
- number generator
-Thread-Index: AQHaTVXupwvTPY5m0kOclayMSeGBz7ErP/XA
-Date: Wed, 6 Mar 2024 17:43:41 +0000
-Message-ID:
- <SN6PR02MB4157B61CA09C0DAF0BB994E1D4212@SN6PR02MB4157.namprd02.prod.outlook.com>
-References: <20240122160003.348521-1-mhklinux@outlook.com>
-In-Reply-To: <20240122160003.348521-1-mhklinux@outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-tmn: [fYpzzOH95P8VQZ1G+RxN64cqInnGNBfy]
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|CH2PR02MB6537:EE_
-x-ms-office365-filtering-correlation-id: b4d9355c-f76f-4842-1ade-08dc3e04f6ae
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- AIvIwGepn0O54SAZ30wuVeZ3eVmia753Jp1AUWx7hLRAg0HZ36i8hVZGEC27Z585Sit6l9Ty3CboNpLj6ZTq5ykrg3cZHPBM09lR58Ni85gu5GTvuuSlh789TWBuBnXrGK1NI7vRcIgKozbrHE2wxuuqHD6M2DSXY+TTxCkQDPYsrK7dzegoViVt5oGG83uHGLUvREuC+yrPfvmYIHDZ5IPO0vCSjaKfj92v5ZvEPMUniGk8ia9XIpBdKo5aXabZBZ556mCj2gqGyBYDH1Jt3PLvzSG2wTzk3ny+i+DOSwqwbFiY9Lim/vgjEPNBZ5SY088xKYJ+iDmA6joP9NUHThhlgMpo2Xfw92a1gx7chSOZYsR1bD5unTTn3UF7MpG1G0Os30YuBZhFqagbFfbeNmHZxXn1pxLuiZaOpzfgt1Z/YX5+aJs6nI46zNxra+GSz64hGhKKRfN2Ni6f1AAW2jekBtO11dDy1zSdRdeqf3akrdCUbOmYFK1ZXEFZS0YPtnsBLvgmutEmiYHhK+EARA3gOF+CdcVxJl+SfbvwqNYVyMpZNaJacd24o4QDCMgH
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?oXyKs/TTzwlGr+UzVueZsbNZWsFgtLjqUIGfiO75AdrxT72ciJS93OrG+ZHW?=
- =?us-ascii?Q?n7+VmcsmtxJejjgFFHEUxlP+VcY47zcSlQqCA1WOh14AJXsyYdNDD0boBwZw?=
- =?us-ascii?Q?qvbO1FKL58nhsbsDD+fB/vBytQ+sP14eqFf27smV4gJUlZ0zm6fkDl8GyJ6Z?=
- =?us-ascii?Q?s/A6Nt2wuLDoYjAsoeiwM/fzsRF3qNcCASF95Qzq4RgNccxeSmMN/ID/t/kH?=
- =?us-ascii?Q?pEWg3GYoLcer6e06MSqml5GuubOZmDv8gZq4gvTm8QXNkZXIe+7HkF9AlNnP?=
- =?us-ascii?Q?mU737zF6MDrZgnMQEnbZJwObXwjl4xLqcU/dtTm4lcLYC08gXGu+xGeKaEWh?=
- =?us-ascii?Q?GXusU4Wh+bar/Z6b2hnpFkf2ShtHaV01xuCt0F2Tf5YAK71VraIFn9nY93mu?=
- =?us-ascii?Q?1HTcW7u9kYa9sJJEIeTe8NF/uXkzbXUYmfYeWG0EY/PqU8wxG/SGLwKHx3qW?=
- =?us-ascii?Q?ht+jwGH2sHFQZVdp0jcExRP46EVaHlP2IVfuYynBTDOwvr37GxMldI6RriXp?=
- =?us-ascii?Q?p+FO+fZRtL6EhQo9WWTNaXBDGzz7o9sUogwEd6f28RTL1fBUfeaGvBkXwNdK?=
- =?us-ascii?Q?pq2If1+6Hljf2MotF5KRTm99trSAl7x7fo2wfOMeqfKxOj2SfwkL71S9ltLT?=
- =?us-ascii?Q?/G+22sjkG6IMX/Z9Ri94350Z6GygtEDVVtS2PIH/OCD/mInf6ZaCH1NzV/y9?=
- =?us-ascii?Q?zf91d3Tg8dygPMr7+Y3JYSpGnqZeOuUOWhAwLJfJsnxlxgLEKsH9VF39ld/g?=
- =?us-ascii?Q?lk1rz4PLEZPZkzpVRmLyPCR7q/7YqwYPo9nBBjyvyBwPmpyslsuAlkNZ6avr?=
- =?us-ascii?Q?+pK2EgZL6l9v5T+3miUOR5bi1gl8R09HGuxGrYp2N7VIYc/TJB2MBxbSKWbn?=
- =?us-ascii?Q?64SV5PtaK89i9Db2GZu2GuKocvsOYJvEG59rMd02/rRX9Q+/SPjwPEJx3VUR?=
- =?us-ascii?Q?4aowzqnBXNqzysdKgfp0PUvJ+y3L2kQlTuydNX/s2WeZauBu1ypUCdr9tUSq?=
- =?us-ascii?Q?hFXoqfM2m0MzTYGt6G//aBL5tLtFvC2o0TaNSBtjpvFJU3IAZjROaPxTAx/Z?=
- =?us-ascii?Q?Sjf2dQC3qSj0FVZegW2sAMYjJaVJ2bFaXJyBJY91uMJcvtFOEYHGvB67lnio?=
- =?us-ascii?Q?Tm+pZxUJdJZihOlVn8gNbmR9U8UIy5bM1D4fWdvZXQ8v1cRc5nwe+0L81ywU?=
- =?us-ascii?Q?8Tsts3foKY31hajsyiANFlPX6VcKPU0S9xIJ2w=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01DA71426B
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 17:44:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.43
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709747100; cv=none; b=ANZ2H5M81vRUTlpWGbcRtAg4pCAVkHuKHrGD9+tyTuR1ZfwkMYcoYH7y2MDTaOANwNGsra2oZUwWHRGwberXXVV/E1Tyj1VmrDfH/bz5UmQkzaIsSnNbu2WVpdzHgmir0I9xqxpk2kwnuuD3k1pIn3QMJYMeXzcy+S2A4/aAC9I=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709747100; c=relaxed/simple;
+	bh=KgEC8zWw55+Acg7UImx7iG13lc0bEoNvPiGpELvl9iU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EbKTi7H4MjniBsT8srEb5AyJhCClfGX8v2wE5VeGo7MzBhgm1yscjF4lOnnJ24CTTAFhazuck/nLK9n+Tp0lPzsC01gYU7KYUSm8z5KpZkoosiu4m+V1xEtdmQuWpw/SyP9hGKM2n4sW0Bn7dBt3E2q9OCR9OKPVusL5Zl+H7Yc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=MzdXd8Lc; arc=none smtp.client-ip=209.85.219.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qv1-f43.google.com with SMTP id 6a1803df08f44-69012259657so31255266d6.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 09:44:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1709747098; x=1710351898; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FpyRbZ0RdQZQRjC0Rn2UI7ybSBSrjRoc3WCER4LofKQ=;
+        b=MzdXd8LcU01zr9pHMG00oFxvyTq5As1ywDlryOvXF5Skub+P2KTULXRPxMWl2G9ttK
+         Amy8Ix4bPZpZKYozlIIU0pyBS65CgCMN2La54O1Balib3RVF+HMBWdz5Ss6L1QEGw93J
+         Zef5kI9faBP5Lo53x38XQBXB/oV41Cbgq0l/JqoL1095Y+CnLzGPSvtSKAYsmDbDPpWR
+         KNNxkzTfb4Rfic5BNNI8R8PQ06+v0dDNx/lSdIr0pEkz8dYF/8eA+ixANT3aJEAW5V0F
+         RSsvriiGzNJIkKyxyyw76H3NxHYV6Xoe2gVaAUbvlGjro5t9NqURsx6RqRNbF5MAm+Mc
+         nkJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709747098; x=1710351898;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FpyRbZ0RdQZQRjC0Rn2UI7ybSBSrjRoc3WCER4LofKQ=;
+        b=VPuUicLGo1bkZQ5X96JyUVb8DF3myGDGtbEqx+/aLd3Gav/kWDccqn7bV5+qNvSRhn
+         afb/o+r3mkJo84iK/905ybhHxUJ6omUFRU6TTlbMDc9ixRz4gWHwX0KH0nAzWeGFcDBV
+         1T0SbY1N1QSG3RxJRqOEQqM2aK9jFEoAMk8VgUdHH1lYVOmcIbwCppiQzaxOA3dPsfMY
+         FcD/aUvJjOBIo2Rc83PL0+uYx3frqYu1E5/sbmJloPvhm7rjC/cC6XB6yUDcCgtI45ir
+         12B4gKdgJhOUkUmooIRhvYBdAR/L4wbZZW8pVRi/vSr0/3CPGaaDTJeYJ3z8mCgd9pKs
+         ELCg==
+X-Forwarded-Encrypted: i=1; AJvYcCVg/OGTAbYVI8sqeiSWQ41lMDsUavUpXgqG82jpr5tUX0vJ/4BX5p9KK6aZplsGbtChKHVC0BSoOnwi6nW6fpfFaEKHs7+wswi/Xigk
+X-Gm-Message-State: AOJu0Yy7lNXKW46A1r0Yd2dffmo3BC6O56zcp24aMdVrn20+Qzv2O1Ih
+	IJ24X4BCq3Bj+jBx7jOIei/l5M3kUjGQjP1hd5U6iLhSG2SEL65mrg2DgfN6WkP6NGK0uqoLJJS
+	h
+X-Google-Smtp-Source: AGHT+IFPBkf7L5QuuJTJ8Xv6bEQYd424i8376Z5+WOarEDc8ZpU3tKfW4UZ0uYoM0R8xl79r0aNmBg==
+X-Received: by 2002:a05:6214:11b1:b0:690:64e6:33d5 with SMTP id u17-20020a05621411b100b0069064e633d5mr5599360qvv.54.1709747097870;
+        Wed, 06 Mar 2024 09:44:57 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id ol17-20020a0562143d1100b006904e2c9e36sm7228573qvb.116.2024.03.06.09.44.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Mar 2024 09:44:57 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1rhvK4-001uSz-88;
+	Wed, 06 Mar 2024 13:44:56 -0400
+Date: Wed, 6 Mar 2024 13:44:56 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Leon Romanovsky <leon@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+	Chaitanya Kulkarni <chaitanyak@nvidia.com>,
+	Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
+	Keith Busch <kbusch@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
+	Yishai Hadas <yishaih@nvidia.com>,
+	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	=?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
+	iommu@lists.linux.dev, linux-nvme@lists.infradead.org,
+	kvm@vger.kernel.org, linux-mm@kvack.org,
+	Bart Van Assche <bvanassche@acm.org>,
+	Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+	Amir Goldstein <amir73il@gmail.com>,
+	"josef@toxicpanda.com" <josef@toxicpanda.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	"daniel@iogearbox.net" <daniel@iogearbox.net>,
+	Dan Williams <dan.j.williams@intel.com>,
+	"jack@suse.com" <jack@suse.com>, Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: Re: [RFC RESEND 00/16] Split IOMMU DMA mapping operation to two steps
+Message-ID: <20240306174456.GO9225@ziepe.ca>
+References: <cover.1709635535.git.leon@kernel.org>
+ <47afacda-3023-4eb7-b227-5f725c3187c2@arm.com>
+ <20240305122935.GB36868@unreal>
+ <20240306144416.GB19711@lst.de>
+ <20240306154328.GM9225@ziepe.ca>
+ <20240306162022.GB28427@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: b4d9355c-f76f-4842-1ade-08dc3e04f6ae
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Mar 2024 17:43:41.8760
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR02MB6537
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240306162022.GB28427@lst.de>
 
-From: wei.liu@kernel.org @ 2024-03-04  6:57 UTC
->=20
-> > +void __init ms_hyperv_late_init(void)
-> > +{
-> > +	struct acpi_table_header *header;
-> > +	acpi_status status;
-> > +	u8 *randomdata;
-> > +	u32 length, i;
-> > +
-> > +	/*
-> > +	 * Seed the Linux random number generator with entropy provided by
-> > +	 * the Hyper-V host in ACPI table OEM0.  It would be nice to do this
-> > +	 * even earlier in ms_hyperv_init_platform(), but the ACPI subsystem
-> > +	 * isn't set up at that point. Skip if booted via EFI as generic EFI
-> > +	 * code has already done some seeding using the EFI RNG protocol.
-> > +	 */
-> > +	if (!IS_ENABLED(CONFIG_ACPI) || efi_enabled(EFI_BOOT))
-> > +		return;
-> > +
-> > +	status =3D acpi_get_table("OEM0", 0, &header);
-> > +	if (ACPI_FAILURE(status) || !header) {
-> > +		pr_info("Hyper-V: ACPI table OEM0 not found\n");
->=20
-> I would like this to be a pr_debug() instead of pr_info(), considering
-> using the negative case may cause users to think not having this table
-> can be problematic.
->=20
-> Alternatively, we can remove this message here, and then ...
->=20
-> > +		return;
-> > +	}
-> > +
->=20
-> ... add a pr_debug() here to indicate that the table was found.
->=20
-> 	pr_info("Hyper-V: Seeding randomness with data from ACPI table OEM0\n");
+On Wed, Mar 06, 2024 at 05:20:22PM +0100, Christoph Hellwig wrote:
+> On Wed, Mar 06, 2024 at 11:43:28AM -0400, Jason Gunthorpe wrote:
+> > I don't think they are so fundamentally different, at least in our
+> > past conversations I never came out with the idea we should burden the
+> > driver with two different flows based on what kind of alignment the
+> > transfer happens to have.
+> 
+> Then we talked past each other..
 
-You wrote the code as "pr_info()" but your comment suggests "pr_debug()".
-I'm assuming pr_debug() is better because we don't really need any output
-on success or failure. If trying to debug something related to the rng,
-even with no explicit output it's relatively easy to tell whether a Gen1 VM
-picked up any entropy from the OEM0 table.  When it does, this dmesg
-line will appear much earlier than when it does not.
+Well, we never talked to such detail
 
-[    0.000000] random: crng init done
+> > > So if we want to efficiently be able to handle these cases we need
+> > > two APIs in the driver and a good framework to switch between them.
+> > 
+> > But, what does the non-page-aligned version look like? Doesn't it
+> > still look basically like this?
+> 
+> I'd just rather have the non-aligned case for those who really need
+> it be the loop over map single region that is needed for the direct
+> mapping anyway.
 
-I'll spin a v2 with this tweak and your wording comment on the
-commit message.
+There is a list of interesting cases this has to cover:
 
-Michael
+ 1. Direct map. No dma_addr_t at unmap, multiple HW SGLs
+ 2. IOMMU aligned map, no P2P. Only IOVA range at unmap, single HW SGLs
+ 3. IOMMU aligned map, P2P. Only IOVA range at unmap, multiple HW SGLs
+ 4. swiotlb single range. Only IOVA range at unmap, single HW SGL
+ 5. swiotlb multi-range. All dma_addr_t's at unmap, multiple HW SGLs.
+ 6. Unaligned IOMMU. Only IOVA range at unmap, multiple HW SGLs
 
->=20
-> Dexuan, Saurabh, Haiyang and Long, can you give an ack or nack to this
-> patch and help test it?
->=20
-> Thanks,
-> Wei.
+I think we agree that 1 and 2 should be optimized highly as they are
+the common case. That mainly means no dma_addr_t storage in either
+
+5 is the slowest and has the most overhead.
+
+4 is basically the same as 2 from the driver's viewpoint
+
+3 is quite similar to 1, but it has the IOVA range at unmap.
+
+6 doesn't have to be optimal, from the driver perspective it can be
+like 5
+
+That is three basic driver flows 1/3, 2/4 and 5/6
+
+So are you thinking something more like a driver flow of:
+
+  .. extent IO and get # aligned pages and know if there is P2P ..
+  dma_init_io(state, num_pages, p2p_flag)
+  if (dma_io_single_range(state)) {
+       // #2, #4
+       for each io()
+	    dma_link_aligned_pages(state, io range)
+       hw_sgl = (state->iova, state->len)
+  } else {
+       // #1, #3, #5, #6
+       hw_sgls = alloc_hw_sgls(num_ios)
+       if (dma_io_needs_dma_addr_unmap(state))
+	   dma_addr_storage = alloc_num_ios(); // #5 only
+       for each io()
+	    hw_sgl[i] = dma_map_single(state, io range)
+	    if (dma_addr_storage)
+	       dma_addr_storage[i] = hw_sgl[i]; // #5 only
+  }
+
+?
+
+This is not quite what you said, we split the driver flow based on
+needing 1 HW SGL vs need many HW SGL.
+
+> > So are they really so different to want different APIs? That strikes
+> > me as a big driver cost.
+> 
+> To not have to store a dma_address range per CPU range that doesn't
+> actually get used at all.
+
+Right, that is a nice optimization we should reach for.
+
+Jason
 
