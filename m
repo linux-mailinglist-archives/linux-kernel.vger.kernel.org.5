@@ -1,63 +1,37 @@
-Return-Path: <linux-kernel+bounces-94578-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94549-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B9748741B1
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 22:14:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13CDF87413C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 21:13:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C5CE283DDF
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 21:14:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6E297B22172
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 20:13:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70B6F18EB8;
-	Wed,  6 Mar 2024 21:14:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=akamai.com header.i=@akamai.com header.b="MCMBbqGv"
-Received: from mx0a-00190b01.pphosted.com (mx0a-00190b01.pphosted.com [67.231.149.131])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AAD4140E46;
+	Wed,  6 Mar 2024 20:12:56 +0000 (UTC)
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 897DE1400B
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 21:14:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.149.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F6D860250
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 20:12:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709759668; cv=none; b=D+BAEPTpne7Ya86VFQz0ndcp1LkpjUycjSr7Bu2ykhvp328mz3OBuRSh/nZHrF+g3pS+3QJc+yaG65GjFzbHC54Uxy0hOXt1o2vYK70l3FaPUqNzR+njxbGh5UDeKOSW9MzHoYsMTgMfr2gzU6lVcpydgoM4mFzsvBr5QNfMbIY=
+	t=1709755975; cv=none; b=pbRZMjlCRDftfO/ueRS05ueJLBf+chlrNUTSliLTxzJs24GMws3M78dwppVMil8LaN9+TZo4VQWO43vi78Yr1bhNljZaLIl1y9M7AChJAIwyBPfnqoFNGZemkopoQqQRzSapnF9U640KkeDElu2iBoj/MxPoPc7EH/rIokxLoKs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709759668; c=relaxed/simple;
-	bh=ga4zgUFXWs7diRj4vqYeVYM02rIrsgYKm1clvWmkzYg=;
+	s=arc-20240116; t=1709755975; c=relaxed/simple;
+	bh=TX547eTfaPewrf9xdqLu4LWOojF0uMxOHFLW/38Gofg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FaBLPKSNItMN9ZYBLMJSZ6mQ8YUtBBjrL0ATr3fk0ieU9uzhqvu9orcS8k/Da04zdcIRVFjdxqzhbEN+zDlWRZrC/hEniPd1aAIr+C8plbE/Vp3ndWufhHlirJImVWxb4Ma3iS3Zm/Qz8raLvB4Xq4Re/x0kSD8Z5zEflkNlEHk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=akamai.com; spf=pass smtp.mailfrom=akamai.com; dkim=pass (2048-bit key) header.d=akamai.com header.i=@akamai.com header.b=MCMBbqGv; arc=none smtp.client-ip=67.231.149.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=akamai.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=akamai.com
-Received: from pps.filterd (m0122332.ppops.net [127.0.0.1])
-	by mx0a-00190b01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4269jX6H026694;
-	Wed, 6 Mar 2024 20:12:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	jan2016.eng; bh=emefHZakE6HNZ1TpPWmcBXM7ziPm7C6zlzbUYgZW+jU=; b=
-	MCMBbqGv6/9/0Dmqg3neFLdXqR/rsGd4m2XZd2ZibSXwsffSwtp38DnzsEejthNP
-	hgpuIatT/m2dtMbGdp35tmFdury1c2Un+ELhjiNsOqI4OkWmx5z2a9zGmzj+KLZn
-	ktOhAm5WxhfZQT/CMQirDnZXktJ5IN5ZMz0Sg16UNprbRfIYJBxWEHqIF4iXiwP5
-	OUCgHmZp+heZsFQ/XRooFLJdKZOSHOcc5ZdMTs+y3ZYLxhKmuKIQ+XVfTFqEyA0V
-	o0hOZhuyMgSXmYoqCnmv+r4zGuQc/fzPgfeRBhODGnGqBjv1xaUDK/cEKmlbwv+5
-	Eai8c1Ld2hYMu0xau83f0g==
-Received: from prod-mail-ppoint1 (prod-mail-ppoint1.akamai.com [184.51.33.18] (may be forged))
-	by mx0a-00190b01.pphosted.com (PPS) with ESMTPS id 3wnhxwtf17-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 06 Mar 2024 20:12:09 +0000 (GMT)
-Received: from pps.filterd (prod-mail-ppoint1.akamai.com [127.0.0.1])
-	by prod-mail-ppoint1.akamai.com (8.17.1.19/8.17.1.19) with ESMTP id 426Fe5wP007558;
-	Wed, 6 Mar 2024 15:12:07 -0500
-Received: from prod-mail-relay11.akamai.com ([172.27.118.250])
-	by prod-mail-ppoint1.akamai.com (PPS) with ESMTP id 3wm0b238we-1;
-	Wed, 06 Mar 2024 15:12:07 -0500
-Received: from [172.19.35.123] (bos-lpa4700a.bos01.corp.akamai.com [172.19.35.123])
-	by prod-mail-relay11.akamai.com (Postfix) with ESMTP id 4E36F32E9B;
-	Wed,  6 Mar 2024 20:12:07 +0000 (GMT)
-Message-ID: <854e523c-c467-47f6-b977-933cbaadeb62@akamai.com>
-Date: Wed, 6 Mar 2024 15:12:07 -0500
+	 In-Reply-To:Content-Type; b=e8ZLvjzCWPx4rtwpG87wzdzgaT0OOxo1xuhk4ltJd1T52zfbAZr0R0EZbjUW95UPJFi/7ElBQ+Inhdj15ipAJtc+Q+NiSpyPWOBv9s/W22amv9BURW4lg+F9kBQQ4BpfF2gLH6O7RyuVrdxNI6qTKL3xo2HB1MZ8b/9iBzDusgU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr; spf=pass smtp.mailfrom=ghiti.fr; arc=none smtp.client-ip=217.70.183.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ghiti.fr
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 2539120002;
+	Wed,  6 Mar 2024 20:12:50 +0000 (UTC)
+Message-ID: <ca097f2a-59ec-4945-9860-5e380e1665e4@ghiti.fr>
+Date: Wed, 6 Mar 2024 21:12:50 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,110 +39,92 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [Bug] WARNING in static_key_disable_cpuslocked
+Subject: Re: [PATCH] riscv: compat_vdso: install compat_vdso.so.dbg to
+ /lib/modules/*/vdso/
 Content-Language: en-US
-To: Josh Poimboeuf <jpoimboe@kernel.org>, Steven Rostedt <rostedt@goodmis.org>
-Cc: Sam Sun <samsun1006219@gmail.com>, linux-kernel@vger.kernel.org,
-        syzkaller@googlegroups.com, xrivendell7@gmail.com, ardb@kernel.org,
-        peterz@infradead.org, linux-mm@kvack.org, akpm@linux-foundation.org,
-        Paolo Bonzini <pbonzini@redhat.com>
-References: <CAEkJfYNNZftjpYBpnH4tEnm82orKtQ6SQn9i3sg7YNO-Df3tSQ@mail.gmail.com>
- <20240306105420.6a6bea2c@gandalf.local.home>
- <20240306193101.s2g33o4viqi2azf3@treble>
-From: Jason Baron <jbaron@akamai.com>
-In-Reply-To: <20240306193101.s2g33o4viqi2azf3@treble>
+To: Masahiro Yamada <masahiroy@kernel.org>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ linux-riscv@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+References: <20231117125807.1058477-1-masahiroy@kernel.org>
+ <CAK7LNAStoCja1gnoFmsKikbzGZmKTcTu+Vc7v9zg8B9hwsH+iQ@mail.gmail.com>
+ <CAK7LNATVAcj-pa_G-NGBTr9doCACGk1nKCNbxM50-M0mi9q=7w@mail.gmail.com>
+From: Alexandre Ghiti <alex@ghiti.fr>
+In-Reply-To: <CAK7LNATVAcj-pa_G-NGBTr9doCACGk1nKCNbxM50-M0mi9q=7w@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-06_12,2024-03-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0
- malwarescore=0 suspectscore=0 mlxscore=0 spamscore=0 bulkscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2403060162
-X-Proofpoint-GUID: JNqldSr41N-PhmmuRCJXIOHnE4atJn4Q
-X-Proofpoint-ORIG-GUID: JNqldSr41N-PhmmuRCJXIOHnE4atJn4Q
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-06_12,2024-03-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 adultscore=0
- malwarescore=0 lowpriorityscore=0 clxscore=1011 priorityscore=1501
- mlxlogscore=999 impostorscore=0 bulkscore=0 spamscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2402120000
- definitions=main-2403060163
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: alex@ghiti.fr
+
+Hi Masahiro,
+
+On 24/02/2024 04:37, Masahiro Yamada wrote:
+> Ping x 2 ?
+>
+>
+>
+>
+>
+> On Sun, Jan 21, 2024 at 6:48 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>> On Fri, Nov 17, 2023 at 9:58 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>>> 'make vdso_install' installs debug vdso files to /lib/modules/*/vdso/.
+>>>
+>>> Only for the compat vdso on riscv, the installation destination differs;
+>>> compat_vdso.so.dbg is installed to /lib/module/*/compat_vdso/.
+>>>
+>>> To follow the standard install destination and simplify the vdso_install
+>>> logic, change the install destination to standard /lib/modules/*/vdso/.
+>>>
+>>> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+>>> ---
+>>
+>> Ping?
+>> (in case "yet more RISC-V updates" happens)
+>>
+>>
+>>
+>>
+>>>   arch/riscv/Makefile | 2 +-
+>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
+>>> index a74be78678eb..5cbe596345c1 100644
+>>> --- a/arch/riscv/Makefile
+>>> +++ b/arch/riscv/Makefile
+>>> @@ -146,7 +146,7 @@ endif
+>>>   endif
+>>>
+>>>   vdso-install-y                 += arch/riscv/kernel/vdso/vdso.so.dbg
+>>> -vdso-install-$(CONFIG_COMPAT)  += arch/riscv/kernel/compat_vdso/compat_vdso.so.dbg:../compat_vdso/compat_vdso.so
+>>> +vdso-install-$(CONFIG_COMPAT)  += arch/riscv/kernel/compat_vdso/compat_vdso.so.dbg
+>>>
+>>>   ifneq ($(CONFIG_XIP_KERNEL),y)
+>>>   ifeq ($(CONFIG_RISCV_M_MODE)$(CONFIG_ARCH_CANAAN),yy)
+>>> --
+>>> 2.40.1
+>>>
+>>
+>> --
+>> Best Regards
+>> Masahiro Yamada
+>
+>
+> --
+> Best Regards
+> Masahiro Yamada
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
 
-
-On 3/6/24 2:31 PM, Josh Poimboeuf wrote:
-> On Wed, Mar 06, 2024 at 10:54:20AM -0500, Steven Rostedt wrote:
->> Now I guess the question is, why is something trying to disable something
->> that is not enabled? Is the above scenario OK? Or should the users of
->> static_key also prevent this?
-> 
-> Apparently that's an allowed scenario, as the jump label code seems to
-> be actively trying to support it.  Basically the last one "wins".
-> 
-> See for example:
-> 
->    1dbb6704de91 ("jump_label: Fix concurrent static_key_enable/disable()")
-> 
-> Also the purpose of the first atomic_read() is to do a quick test before
-> grabbing the jump lock.  So instead of grabbing the jump lock earlier,
-> it should actually do the first test atomically:
-
-Makes sense but the enable path can also set key->enabled to -1. So I 
-think a concurrent disable could then see the -1 in tmp and still 
-trigger the WARN. So I think we could change the WARN to be:
-WARN_ON_ONCE(tmp != 0 && tmp != -1). And also add a similar check
-for enable if we have enable vs enable racing?
-
-Although it seems like the set key->enabled to -1 while used in the 
-inc/dec API isn't really doing anything in the enable/disable part here?
-But then the key->enabled I think has to move in front of the 
-jump_label_update() to make that part work right...
+Couldn't changing this library install path break some existing 
+application? I mean it kind of breaks where the library is expected to 
+be right?
 
 Thanks,
 
--Jason
+Alex
 
-
-> 
-> diff --git a/kernel/jump_label.c b/kernel/jump_label.c
-> index d9c822bbffb8..f29c47930d46 100644
-> --- a/kernel/jump_label.c
-> +++ b/kernel/jump_label.c
-> @@ -191,11 +191,14 @@ EXPORT_SYMBOL_GPL(static_key_slow_inc);
->   
->   void static_key_enable_cpuslocked(struct static_key *key)
->   {
-> +	int tmp;
-> +
->   	STATIC_KEY_CHECK_USE(key);
->   	lockdep_assert_cpus_held();
->   
-> -	if (atomic_read(&key->enabled) > 0) {
-> -		WARN_ON_ONCE(atomic_read(&key->enabled) != 1);
-> +	tmp = atomic_read(&key->enabled);
-> +	if (tmp != 0) {
-> +		WARN_ON_ONCE(tmp != 1);
->   		return;
->   	}
->   
-> @@ -222,11 +225,14 @@ EXPORT_SYMBOL_GPL(static_key_enable);
->   
->   void static_key_disable_cpuslocked(struct static_key *key)
->   {
-> +	int tmp;
-> +
->   	STATIC_KEY_CHECK_USE(key);
->   	lockdep_assert_cpus_held();
->   
-> -	if (atomic_read(&key->enabled) != 1) {
-> -		WARN_ON_ONCE(atomic_read(&key->enabled) != 0);
-> +	tmp = atomic_read(&key->enabled);
-> +	if (tmp != 1) {
-> +		WARN_ON_ONCE(tmp != 0);
->   		return;
->   	}
->   
 
