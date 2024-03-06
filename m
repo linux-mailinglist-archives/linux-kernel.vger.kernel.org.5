@@ -1,61 +1,64 @@
-Return-Path: <linux-kernel+bounces-93369-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93371-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D910872E9B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 07:12:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 452E4872EA5
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 07:13:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F3FE1F25E47
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 06:12:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0205E285342
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 06:13:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11F071BDD8;
-	Wed,  6 Mar 2024 06:12:50 +0000 (UTC)
-Received: from smtpbg151.qq.com (smtpbg151.qq.com [18.169.211.239])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4AD61BDDC;
+	Wed,  6 Mar 2024 06:13:44 +0000 (UTC)
+Received: from bg1.exmail.qq.com (bg1.exmail.qq.com [114.132.77.159])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0CBC14F68;
-	Wed,  6 Mar 2024 06:12:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.169.211.239
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62DC51B7E5;
+	Wed,  6 Mar 2024 06:13:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.132.77.159
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709705569; cv=none; b=mM/9QKsKw3GXx8Iw7wDgp5j2g/7PI9lTTrR3Ox42mQj1AFl6gmWB1uzd1kRWMlluKW3UBYYIxxzSQqzSkO4a8Mrs8K6uqPNKnqx9WRnJTg+TXsXRx06kalgBE9Y4JQDJRGhLNUMCbptLd/B464cDW6QCrbfW2f98gA/2vZtyGhc=
+	t=1709705624; cv=none; b=j8M2xolPMVs14h3XUm3mkGtRKGTy6QH7nU6pjtxetLeNU896qxjiXULCaBkzyTVkuGuQXfoaaP7ilnPXnat8OERSY6oo2P3zF4Ot2LcSurpWABzPBy7etFa81PjX+cOoWzPX+QRnAb5iNgc+oBQJYOc7l5AnsFNoR0ZFr7qAKr0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709705569; c=relaxed/simple;
-	bh=VTXFrHXqmkOyo2MWZsQ+0ObQpBHSFj83KWXg9ku3l90=;
+	s=arc-20240116; t=1709705624; c=relaxed/simple;
+	bh=tlq2g2nlfO8hH8i4zeibwVPijfkfMjcm2SA6C4dQypI=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=bliq//2l1SEoQu7O+0tIxwCK95E836LFmd1GYuDOJ81wNxc4JIQs8T++Q6eeLyrGGRorewMgGAT9gUCpfO7GpQ4u2YhOG1ajbfXXGdUlXHc04Toi7h9So4E1DH4hoS5gKg1SmMaIdiHibTSf01Q1iHkzdFlDFjowZVIXNkyLfQg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=18.169.211.239
+	 MIME-Version; b=qn+J8DGWq251aRDj55nTmrkoB6nvD/0NDLSwLtYPBlITZ9RMQz/3ML5TunwcRvfDVy3/zEUMPI/lRv0CvkoVFncO+YDKHPX8DFmBgK0T9RxKVsFgne38u8dvBCzynZSgQwpETuVBAt3l3SjG6sECVBfiejeabG/zKlLSBePP2go=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=114.132.77.159
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
-X-QQ-mid: bizesmtp79t1709705535t3g5c5m7
-X-QQ-Originating-IP: pILm192FyR81AYB9KGQnP3T5yfbnc3HdKc3z+35qQyc=
+X-QQ-mid: bizesmtp79t1709705539t7dq31o3
+X-QQ-Originating-IP: NCw4+/Q9USsflDJBmpT7/46+g+hPwy5cB3WlwgYr7sI=
 Received: from HX01040022.powercore.com.cn ( [223.112.234.130])
 	by bizesmtp.qq.com (ESMTP) with 
-	id ; Wed, 06 Mar 2024 14:12:13 +0800 (CST)
+	id ; Wed, 06 Mar 2024 14:12:17 +0800 (CST)
 X-QQ-SSF: 01400000000000B0B000000A0000000
-X-QQ-FEAT: HXiF522FjMi93sTH/OHoeIDVj5X9MbFg3an5BRaoXaBW5rSiIQZ4mrQPgqLb/
-	r6+Y4DP9L4C0ZKrX+qbHSFsCKBuB+8f7sSF+WqaAv7esWQexWB8q5nO/66v01KwO8AzRuB0
-	4PEw3qLwr01WkMzm/PgRk6U6JW59xYO/GDaKZ9NkUsQVWheLHfWQ4BmlXBWPPibUodTrE2J
-	ZcGJSDrBBamYlKaUSnBXAtZCEuX45A2cfdUrJpcAG8m3GnDVRX7fzzxUEA+x+8r8uvFK5E6
-	0FFJB9dWCsqXXvbuv9OoyMBWAN3EOvxZy1o1MpUNT9OOKjHMNiloET90XMDhT/OPyp7nPAE
-	Yx+ZoYLKXmKWCtP51UeP2WP4L0ClJg/vhjJBQQQqHn2yK5+8maV8hRIFJRQdxO3rwbvZL7C
-	9oDSa/AYvh4=
+X-QQ-FEAT: C46Rb8GPIEemHKu/k6HngzPWI4Sro/K2jOZ6+nhYm/itjZ15pS2MBSf9WT4e9
+	mlr6jVRajTCCaJrTk6mFFBVexQeSUTmNuQ83shY+cW57orGqDR+32Hh1BwVkjn4HdY0K89E
+	SuLTWTX/IjLWee5mdFN+7QTiIob62s8kK8OqZjroC+ur2l6NBm7ghXlNVqWInUaI6qR4vNi
+	wTukssOTPrW15glNQGzjr+E0CajIIS02BjBVFUmYOKA8v5zd5wpd7Uu5xDIUozRkn5jZNHP
+	UxBZmdnp6fcRvvlqXJOtasV1zXpAk+zMMX0fbb5DqQMtUdw7rbtcW4pefka4sBC8FwtereT
+	eG/EkLv0NyWx4M1PCxMzF4l0XlKhIAshlk541gwDrfwEuM2VBbPeLa0mNvGB9/HxZkkNv/v
+	5DSkc97eGqhT1WolQksgHhOW3/joQyhM
 X-QQ-GoodBg: 2
-X-BIZMAIL-ID: 1942117647981403500
+X-BIZMAIL-ID: 5249391986606984289
 From: "JiaLong.Yang" <jialong.yang@shingroup.cn>
-To: Rob Herring <robh+dt@kernel.org>,
+To: Jialong Yang <jialong.yang@shingroup.cn>,
+	Will Deacon <will@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Rob Herring <robh+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 	Conor Dooley <conor+dt@kernel.org>
 Cc: shenghui.qu@shingroup.cn,
-	Rob Herring <robh@kernel.org>,
+	linux-arm-kernel@lists.infradead.org,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v3 0/2] dt-bindings: Add HEXIN Technologies Co., Ltd. vendor prefix
-Date: Wed,  6 Mar 2024 14:16:01 +0800
-Message-Id: <f674ec19ce824dfc13258396931256c3d33cd207.1709694173.git.jialong.yang@shingroup.cn>
-In-Reply-To: <cover.1709694173.git.jialong.yang@shingroup.cn>
-References: <cover.1709694173.git.jialong.yang@shingroup.cn>
+Subject: [PATCH v3 1/2] dt-bindings: perf: Support uncore NI-700 PMU
+Date: Wed,  6 Mar 2024 14:16:02 +0800
+Message-Id: <7f2576291e51043b33296a2cd9e21263d16ca077.1709694173.git.jialong.yang@shingroup.cn>
+In-Reply-To: <f674ec19ce824dfc13258396931256c3d33cd207.1709694173.git.jialong.yang@shingroup.cn>
+References: <cover.1709694173.git.jialong.yang@shingroup.cn> <f674ec19ce824dfc13258396931256c3d33cd207.1709694173.git.jialong.yang@shingroup.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,30 +69,108 @@ Content-Transfer-Encoding: 8bit
 X-QQ-SENDSIZE: 520
 Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz6a-1
 
-Update file vendor-prefixes.yaml to include hexin as a vendor prefix
-for "HEXIN Technologies Co., Ltd.".
+Add file corresponding to hx_arm_ni.c introducing ARM NI-700 PMU
+driver for HX.
 
 Signed-off-by: JiaLong.Yang <jialong.yang@shingroup.cn>
 ---
-v1 --> v2: Not changes this file and give warning.
-v2 --> v3: Add this patch to fix the warning.
+v1 --> v2:
+1. Submit dt-bindings file Seperately.
+2. Do some check:
+   ~ #: make dt_binding_check DT_SCHEMA_FILES=perf
+   LINT    Documentation/devicetree/bindings
+   CHKDT   Documentation/devicetree/bindings/processed-schema.json
+   SCHEMA  Documentation/devicetree/bindings/processed-schema.json
+   DTEX    Documentation/devicetree/bindings/perf/hx,c2000-arm-ni.example.dts
+   DTC_CHK Documentation/devicetree/bindings/perf/hx,c2000-arm-ni.example.dtb
 
- Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+v2 --> v3:
+1. Change vendor from hx to hexin.
+2. Submit driver and dt-bindings files together.
+3. Delete pccs-id property. Use alias-id to do this.
+4. There are at least one interrupt line for the hardware and driver
+   for handling counter overflow.
+5. Use 4 spaces for example indentation in yaml file.
 
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index 1a0dc04f1db4..3a82104ac8a7 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -619,6 +619,8 @@ patternProperties:
-     description: HwaCom Systems Inc.
-   "^hxt,.*":
-     description: HXT Semiconductor
-+  "^hexin,.*":
-+    description: HEXIN Technologies Co., Ltd.
-   "^hycon,.*":
-     description: Hycon Technology Corp.
-   "^hydis,.*":
+ .../bindings/perf/hexin,c2000-arm-ni.yaml     | 51 +++++++++++++++++++
+ MAINTAINERS                                   |  6 +++
+ 2 files changed, 57 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/perf/hexin,c2000-arm-ni.yaml
+
+diff --git a/Documentation/devicetree/bindings/perf/hexin,c2000-arm-ni.yaml b/Documentation/devicetree/bindings/perf/hexin,c2000-arm-ni.yaml
+new file mode 100644
+index 000000000000..b2641ee84d60
+--- /dev/null
++++ b/Documentation/devicetree/bindings/perf/hexin,c2000-arm-ni.yaml
+@@ -0,0 +1,51 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/perf/hexin,c2000-arm-ni.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: HX-C2000 NI (Network-on-chip Interconnect) Performance Monitors
++
++maintainers:
++  - Jialong Yang <jialong.yang@shingroup.cn>
++
++properties:
++  compatible:
++    enum:
++      - hexin,c2000-arm-ni
++
++  reg:
++    items:
++      - description: Physical address of the base (PERIPHBASE) and
++          size of the whole NI configuration address space.
++
++  interrupts:
++    minItems: 1
++    items:
++      - description: Overflow interrupt for clock domain 0
++      - description: Overflow interrupt for clock domain 1
++      - description: Overflow interrupt for clock domain 2
++      - description: Generally, one interrupt line for one PMU. But this also
++          support one interrupt line for a NI if merged.
++
++required:
++  - compatible
++  - reg
++  - interrupts
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    aliases {
++        ni-pmu0 = &nipmu0;
++    };
++
++    nipmu0: pmu@23ff0000 {
++        compatible = "hexin,c2000-arm-ni";
++        reg = <0x2b420000 0x10000>;
++        interrupts = <GIC_SPI 80 IRQ_TYPE_LEVEL_HIGH>;
++    };
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 4f298c4187fb..4b664cec98a7 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -18890,6 +18890,12 @@ L:	linux-riscv@lists.infradead.org
+ S:	Maintained
+ F:	arch/riscv/boot/dts/thead/
+ 
++HX ARM-NI-700 PMU DRIVERS
++M:	Jialong Yang <jialong.yang@shingroup.cn>
++S:	Supported
++F:	Documentation/devicetree/bindings/perf/hexin,c2000-arm-ni.yaml
++F:	drivers/perf/hx_arm_ni.c
++
+ RNBD BLOCK DRIVERS
+ M:	Md. Haris Iqbal <haris.iqbal@ionos.com>
+ M:	Jack Wang <jinpu.wang@ionos.com>
 -- 
 2.25.1
 
