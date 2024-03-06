@@ -1,530 +1,126 @@
-Return-Path: <linux-kernel+bounces-94251-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94252-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B30B873BFB
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:20:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 54E62873BFE
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:20:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6DDDF1C24387
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:20:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E94B91C243CD
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:20:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52D1B1361CF;
-	Wed,  6 Mar 2024 16:20:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DD59137915;
+	Wed,  6 Mar 2024 16:20:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="Q5pnNGQm"
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2062.outbound.protection.outlook.com [40.107.93.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LHekgeMm"
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 661627F7D3
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 16:20:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.62
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709742012; cv=fail; b=hnh1D4Ktg3DCJfoONHcJFs6Z1S3+J/yKVPDD+2wKRHDLxEOiIyWJ2w/QmmEE3b6QZC6bPTTfkTl/DRBF1ftPLYdm7mkqhkaoYbLchMBhz4EeQy0XINY6K+ZGhTe6ZET/TnTTt9CmxCjY1TRjI1a7HM6p30Sf+6yzamS9f+6F2h8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709742012; c=relaxed/simple;
-	bh=R2p8Qbck4COBKEQwmPHuNYVxVID238VcKNrshU1Ai0M=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=tjLt8A83eUQxyA2tqG/GMrug/Eq6SMOnEeFrKpteaFZa9wBOz7OevMmy6Mdz4ouxZimoP8x7w7UJYGHJqdHJukY8rHV5PPoAIHwfa6ECiNF/+iNp16ouFKIdgGjqypSp1RtNuGFQp8OFqHjDJEHqlhhe7cRsANHgQ5z7k/yBf3g=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=Q5pnNGQm; arc=fail smtp.client-ip=40.107.93.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=I5zwv4S4zbgj9rkgCUmYxyIj8WGj0TbNS0bLRMkKNbLepxKwbHJImOG2lNzoxhrmCraTPawQmHqqv9NaSFe17GHzOFTldgS5WbfoqbEPIEvvmn4Y+A8Y+mvUvwF6+yPiI9CXapEMoW01e6b44LOHkdDyQPwAh4cKoCthIRvd4Bf9OA4hk6N+1MTEvnnzf7XMvXQoEZ1u294uphUTVamr1AhwDZnmFG1VMAREikmGOPbYlxz8yvpV2Zn4qrzMqSOl43QEM2RVPzdRgpeXwFeZqiFy44d4UtiqBUKzQjKtxtNxV18qRvrPTVKAc8kcuyZA8pZL20vHNluDH50Al8/cwg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hvlFsDXTP2fmSEyBOVOTsjLNPOEZ3QVTSTjmJMViFdU=;
- b=C8FjhJEN3BdmFoeg9Bkl++wlYbGTWCRnn5s05vRlgXptuwhS5M+JCRoTvAxCeovlTBqXoEhqB8z1XL4pDxOBbV9hkUMkMPvdrY0jawzbqu8+3CwBxuAsVSsr6Xr/mIagiPR2UYdazp6ssPEiiUzJiZSB6lfTb71AV+m+bpTXZHIewXIe56egOYlCahCpNKW9ZAqpLF7qBDMIVsnAive7rzdS4k4R6dUg3gNjkm/sXyA9r+//Yqw/z7UAPmS13+LyIkftaZYyA2rZzBdrwbpQoq5lhK5iye0lrAwebI1IXW2To7RTJzv25bQBocAMkuSZrX1iTqLZEgz7SdPe/wcO1g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hvlFsDXTP2fmSEyBOVOTsjLNPOEZ3QVTSTjmJMViFdU=;
- b=Q5pnNGQm6WqSe3bC88r3Zin3otx8wbxQ1wt+FeW/HEOA9jp8KDICq7fdCI9rBfAiBJB+PYz/oiQfV+SE3hzH+2WxAFys4x6wiN0TmvI8mnQqgS/ePgiLjtU1C1iLe4o3jPsqOV8Ion7cu22V8/sInNf5hpQBZagt4wWj6BN5aX8=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
- by PH0PR12MB8050.namprd12.prod.outlook.com (2603:10b6:510:26e::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.39; Wed, 6 Mar
- 2024 16:20:05 +0000
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::f2b6:1034:76e8:f15a]) by PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::f2b6:1034:76e8:f15a%6]) with mapi id 15.20.7339.031; Wed, 6 Mar 2024
- 16:20:05 +0000
-Message-ID: <0be0df75-9794-4b7a-a975-a5ea86b7d3f3@amd.com>
-Date: Wed, 6 Mar 2024 17:19:59 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/amdgpu: cache in more vm fault information
-Content-Language: en-US
-To: "Khatri, Sunil" <sukhatri@amd.com>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
- Alex Deucher <alexdeucher@gmail.com>
-Cc: Sunil Khatri <sunil.khatri@amd.com>,
- Alex Deucher <alexander.deucher@amd.com>,
- Shashank Sharma <shashank.sharma@amd.com>, amd-gfx@lists.freedesktop.org,
- Pan@rtg-sunil-navi33.amd.com, Xinhui <Xinhui.Pan@amd.com>,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- Mukul Joshi <mukul.joshi@amd.com>,
- Arunpravin Paneer Selvam <Arunpravin.PaneerSelvam@amd.com>
-References: <20240306090408.3453152-1-sunil.khatri@amd.com>
- <2f792620-fd8a-412e-9130-e276ba36d5a0@amd.com>
- <5e2899cd-75b4-4ddd-97ff-4e10a2e67fbb@amd.com>
- <66815303-bd9c-4dfc-ae1a-bbdc5d1bb47c@amd.com>
- <17e12147-79dd-44ba-b8ae-b96fb72dcfbd@amd.com>
- <CADnq5_OkeH1x4YgSv6uw0HLb5c-5NOXnzQPJHsDvb=NmEePB-A@mail.gmail.com>
- <e5781df5-5244-465e-b986-c1802e1262db@gmail.com>
- <0df75ff4-ece5-4eaa-93bd-6f03ec31ecfa@amd.com>
- <bfaaad63-a5d7-4ceb-8e1c-d541f76f4037@amd.com>
- <852e4f0e-c743-44c2-a2bb-59f0e8e25e1b@amd.com>
-From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-In-Reply-To: <852e4f0e-c743-44c2-a2bb-59f0e8e25e1b@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: ZR0P278CA0077.CHEP278.PROD.OUTLOOK.COM
- (2603:10a6:910:22::10) To PH7PR12MB5685.namprd12.prod.outlook.com
- (2603:10b6:510:13c::22)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC68E1361DC
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 16:20:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709742016; cv=none; b=sY9Rv39dHN6Y7Eqbw61ALNeFEauWtnipiZOltYbqqojSjUARfPi6Qu8EkzjrQElwfIjZjtWmpzYb/N+c3MjlTE6JsNTkSs5yEr4gjcccg3RSzkFW6CpD8BP6uVsYLcO7oQr2xZanVBG8pjx407F4bGPL2N2UWXd1B+bEOlKKF14=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709742016; c=relaxed/simple;
+	bh=U61Ij+6yIHoX0sWkGhtCLeCXXM4Gtkmuv90V6iCUpQI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Ea2W0CVhZ51jW2HAFDT3Yl17PliW2rd92VgL2Pgl0RbZktjF7aAp8XK/QiaAl+MRUi27BsufZjN7B2U1eVWD7YRBAWjjnTRlyCpiiFMGu2+wa9RA18e+iW2I+soX0InmkJ597HDJ56F/p8bYLTYUXYGNaNmkiuuSQcKumlGjTSo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=LHekgeMm; arc=none smtp.client-ip=209.85.167.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-51321e71673so1209084e87.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 08:20:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709742013; x=1710346813; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=y+9BGaaVGAGFWOR1PbxLVisEHKQDTc6S5yLurq1hQUM=;
+        b=LHekgeMmcQPvbSQkcFvFj6V6c4ARizvJIn7qHkrXkmj3UO3AdgEVHTcfOW3GL1qYFf
+         fF5135vrIj7TyqiwcKOMMkbcfY9uMyl2v/n7+DzZGw4PVc/lHrVyxV8HwkqQR1dkS53Z
+         Nzvx77TMrhrWbD91Zys9Qo6QA3j1F+prNQeaAIEpkQJgOnL5b0/Hp8wo+81Bv71jKl7v
+         vslVB0XN3mcKgB0mhsJC5ISrs+ghp67M88weoDBXxwd2KJAu03HrnpGFDVGyDoxacjJc
+         04sQuEilX7l3r0vLF9F7Eb27z5EcUfTFWlLi6EQlxCmFIj6I5m8lD+74lpLrjHKS9rnS
+         +rIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709742013; x=1710346813;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=y+9BGaaVGAGFWOR1PbxLVisEHKQDTc6S5yLurq1hQUM=;
+        b=blHnwTPJW713D2391QX9EnKZUoG9KLJYT1Xtp+z893MNDH6+g07j/L+C13G+g2x0qQ
+         jefa60FJGVw3RkQoN8M7HUwnKF2rRB6tnuPuIwwLiofKux/y+Zdimjhtf+XwESWeCLWt
+         PPhRICdbOWRjzclxQB32E9S0MpgmRhHLJE79FDEptlf/f/KSXAu/Pu/eXge8x0uox/vi
+         qI9AgIDCypluHTqVT3Giu9bHpMZT7rN897RJ7x5M1Xwnv65PjqUeqznLlcI3vRfTegeH
+         FeOAA48AZ+B7kYm/ecFXbEC07ocErVvXXOlXP1K5np3hVYkT0s/su+7HJh3z87rqOpbh
+         Issw==
+X-Forwarded-Encrypted: i=1; AJvYcCUQpQo4fVJ+gdQPdl4+XT/tRXs1NP3rVVy6tEqFI0/JeE/nLx3kNmJpMp+0FMAx3KCOcv/NB/ECu6VlogTBDT50RhrRa9LVF4aVKtD+
+X-Gm-Message-State: AOJu0Yxh1hJRUWX7HBGDzdyIigM+ipzTINegZuPXfZ1z/pvBb2EbB90J
+	Klbjv+aFNkENKiGSFjA1nxz6I1/FlzcLOFqbI2mDKfN7ZasfJe2R2kIn+8ij1uM=
+X-Google-Smtp-Source: AGHT+IFnD63DLYuxsyRw6MDwHM55KllMc0o5AiDbBG9xpEzbdjGc42Pf9Yc21OU1cgkt/hEWU7kElg==
+X-Received: by 2002:a19:f011:0:b0:512:fe3d:a991 with SMTP id p17-20020a19f011000000b00512fe3da991mr3543283lfc.61.1709742012940;
+        Wed, 06 Mar 2024 08:20:12 -0800 (PST)
+Received: from [87.246.221.128] (netpanel-87-246-221-128.pol.akademiki.lublin.pl. [87.246.221.128])
+        by smtp.gmail.com with ESMTPSA id u12-20020ac258cc000000b005131941f7e9sm2668396lfo.5.2024.03.06.08.20.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Mar 2024 08:20:12 -0800 (PST)
+Message-ID: <21a53796-c4d4-44d0-b62b-52d327784a90@linaro.org>
+Date: Wed, 6 Mar 2024 17:20:11 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|PH0PR12MB8050:EE_
-X-MS-Office365-Filtering-Correlation-Id: 596f2055-0951-4182-02c9-08dc3df948b0
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	u8n7QFRJ6Ng8JbTfs8B/aZvZCVpO3OCw3GAdm4MhbYu3Nazggh6aEzyH04APFAngItLUdLFu3BFVjBAfdS1ojeRXlpz0hOaCfWuQMyOB+Wzh/3xoef9UsGxVN9rdPpidkT6+EXTPj40nf4XIbDwvrjSACTH+KlGzJwK+4yta2j4exHrDbWDfTiVwrzTBJQTbMKZMMyG2dOOaNCQPw65taL0QY2j0vOxHdU9BzDrb02blBXJco4yme1CqOvtLydfbZPpbR7VzFa7GIvPgW8o4C62Fl4gseLzUHVNpUAO7+AswGeQRh7dgfmdGAPRZI+zO1x+xJAEpusei16278HFQ5XCB0QI8Mvig1lJkaq/muI/LrF/h6jeMQnFCwKsAqOZ9ofFoc7hFOPRrztJNDc656hlchHsHK5tkj84WQx+FRb+rIpCuuH54P8biz+NSgux5cx3tavuCeArHgQDiXJFBHwWh1RyY2i+co6/vtBJsgIF6FHLcA1B3jPPevSR0xJeRMQEI3b202StWZDU0+lKmXQn3PfYsofRDEVDCsE9RJdMtOp7LHI50ul9GRKGMbm/8k5U0nnmdiA6etM6lVPwpAk57vJB60X81Of1D78vbLmvl7OWPQF9aWaHlbAtfcoYj
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?a01oVEdQREhkUE9oUTI3RHFCZGk2UzNaODQ3OXBRSG9BdWRwVmJSd2VGeVhK?=
- =?utf-8?B?WmNzMFlHNTdmNGNhbDIrUzBFdlpuYjk1NzB3VmQzSmQ1dDJNbXpXNExFTWM1?=
- =?utf-8?B?VUl5NHBQZEE3TTRieDllbjZoRDM2MTRuczhyc2NKQVBxRitsZ1BkV3ExU0wy?=
- =?utf-8?B?cWpqVElZbHRrTXFtYSs5MUJSdjVDaTgwWVU5QWVzcTF3ZmdIZG5hcnVITU5v?=
- =?utf-8?B?WUZBQlVYbmI2ZnYySTZIdXZhK3lTaGYxK2pvWFphNU53Wmk3TVRBZlR1OUVp?=
- =?utf-8?B?cjBWTXNueXcxYlkweURzVi90NGFkUDZZcWRsRndkNVF1RjdVQTgxU2ZpRG14?=
- =?utf-8?B?VXpvQUZZand5V3Y3ZnhXQU41a0lFdTNtYnZUZ0N4Umw2ZFdRR1hGWUMwTHpL?=
- =?utf-8?B?RG5vb053cWhFUkhRVldBbXZzRW92K3V6NDRCbUp5KzBQeW1jcDBoakNaOXJk?=
- =?utf-8?B?NG1wRDJTeC9uSG9yTlFWUngvWlVqSEFIeCttNTRrV1prcERmTXlKckNGbHZD?=
- =?utf-8?B?eVlyWlRUUDJ4UmNydE40TmpYbEI3bmRTQ3ZQTllGM2VHMjFZYjRGYitqUTU4?=
- =?utf-8?B?eWkrNW9ncXNVSWdPU1J5V2RqeWRWd050STRCY1JOaTJaRWJkOHFqTHJiVWhp?=
- =?utf-8?B?QXk1Mm1oWlRTZjdBeGJYRjExR1E5SU5zWFJqMVkxVmdtQWVYajZuUnU3Z3Vx?=
- =?utf-8?B?M2YwSE5BZHdUbTVGbExhalpDMGlZUzQ3ZEVtVFExRC8zOGF1ekJKM3c4Q0Jo?=
- =?utf-8?B?Zy9wam52YjZzakhjc0k3U1E5emhIVGMxS0w1NXRCRFd3WGhGNHlWQjJxemor?=
- =?utf-8?B?aHRqVW90di9aYkpxS3lSakYreFl5eEdkRFFvV1dVNzZJOTRlME01ZVR2Q2Fa?=
- =?utf-8?B?VmJPRllXZkhvc3Fka2grS1dhdDVETCtJdE0wWUxGQkk3eDVkbEpFRFhDWTk5?=
- =?utf-8?B?T1UxeGpubFppTHVYc0czTndJMHViakUzMDlJa0xHZ3FQK2NMQlpnWHhvLzhZ?=
- =?utf-8?B?TlNxNHowR0h5aGFlVmR4dXRDblZ5MkcvSTRGcWVUMFZGajdsUWU1dmlqWTY5?=
- =?utf-8?B?S3V2cldLZzdReWhtZzF6ZzJHd3psZ2NzV2MyV0NwSkV5QzBLTGEvRjBDdi9R?=
- =?utf-8?B?RExHZkZCNVE0ckR3NllHYW1mUXBDcGJqZmhLVEllRUVhVlZGS24xSXlYdEFR?=
- =?utf-8?B?MjVPUE1JMnBuS0poejE0bHhzYzFDaWdiNW1MUEhkUVgvTFRxajFvM256dHU3?=
- =?utf-8?B?eUV5SUJmTzFoRFlCQzUyNThRZ1M4WFNuK1doNEFnRnBCMU5nN2FXaWZ2bi9u?=
- =?utf-8?B?dVZueU4zNStVOS9HNm9qcllnblBUdERnQzh2dnJLaFR2eE1vS3cwTmNoOExx?=
- =?utf-8?B?WFVaaVNiSXpkSUE3TkxyWlM5TTlmZS83cjVqN0paV0hKVVNmNEN4TCt3R0Jj?=
- =?utf-8?B?RWNESnZHMjlXZ2tEalFTTGNRUkVSNlRCUytsOGkrVzRjK2dNZFJTdlIzWEJq?=
- =?utf-8?B?S093U2RsMTQydkVNekJqaUliU0FTUFlLYXdsZVhpaTg3d2dyaXVVMDhndUxI?=
- =?utf-8?B?MS80engxSDh2ODVxclpvYlB1NGJDdldUSndWRVhTRUZXRjYxTml6WVd6Y1pC?=
- =?utf-8?B?VW9xaTVDOVNXQUYwbGg3Sk5BT2NJNWtpRVZXWkNUZkU0Y0tYMTVFdVBYSjRy?=
- =?utf-8?B?YVhOUXZ3KzVXUE04LzlnU3ZyMXRtK2ZYRXkyWGFJVXYwbm44RGZjOHgzRThF?=
- =?utf-8?B?UStuTms4QmdtdUpnNUhlQlA3bEd3QzFKWmdidHpYRnRMWmU5dkg1ZERvZzJ2?=
- =?utf-8?B?NW9jSmtzNGtSZ3RzWDBjWE1pQk51WXd5WHJ4Y0RGdEpsV0c2WHpRb3M1ZmRn?=
- =?utf-8?B?a1lGWkZoVEhacUg1M3N3emROcG85dUNta29oN2V1VThhbllNZ0RiTEYvMXRo?=
- =?utf-8?B?Q0ZoTjd6NndjbGJRN0paTFp6aVhMVWdyRkF3L2NMZUV5MFVJZ3JNeUdlVHRL?=
- =?utf-8?B?a21IUVJJeVJPWFRYNjVOaW9WVjRTNnIxRE5ubTl0SXZmMWdVQnZVNXJRUFpj?=
- =?utf-8?B?WlVXalcweTUxR0ZvQWI0T3pVSm5YRVMrUzBuanFIckF3aHlOT0psYytzWS9W?=
- =?utf-8?Q?B7/gKaOzIeYxNepI61I2FsIVw?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 596f2055-0951-4182-02c9-08dc3df948b0
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Mar 2024 16:20:05.7158
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xth096icjD3+pIsrIr5KvTwpj+gKN26BGh5kq//17Cb1X1dultIZq8qVFf5KDM70
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB8050
-
-Am 06.03.24 um 17:06 schrieb Khatri, Sunil:
->
-> On 3/6/2024 9:07 PM, Christian König wrote:
->> Am 06.03.24 um 16:13 schrieb Khatri, Sunil:
->>>
->>> On 3/6/2024 8:34 PM, Christian König wrote:
->>>> Am 06.03.24 um 15:29 schrieb Alex Deucher:
->>>>> On Wed, Mar 6, 2024 at 8:04 AM Khatri, Sunil <sukhatri@amd.com> 
->>>>> wrote:
->>>>>>
->>>>>> On 3/6/2024 6:12 PM, Christian König wrote:
->>>>>>> Am 06.03.24 um 11:40 schrieb Khatri, Sunil:
->>>>>>>> On 3/6/2024 3:37 PM, Christian König wrote:
->>>>>>>>> Am 06.03.24 um 10:04 schrieb Sunil Khatri:
->>>>>>>>>> When an  page fault interrupt is raised there
->>>>>>>>>> is a lot more information that is useful for
->>>>>>>>>> developers to analyse the pagefault.
->>>>>>>>> Well actually those information are not that interesting because
->>>>>>>>> they are hw generation specific.
->>>>>>>>>
->>>>>>>>> You should probably rather use the decoded strings here, e.g. 
->>>>>>>>> hub,
->>>>>>>>> client, xcc_id, node_id etc...
->>>>>>>>>
->>>>>>>>> See gmc_v9_0_process_interrupt() an example.
->>>>>>>>> I saw this v9 does provide more information than what v10 and v11
->>>>>>>>> provide like node_id and fault from which die but thats again 
->>>>>>>>> very
->>>>>>>>> specific to IP_VERSION(9, 4, 3)) i dont know why thats 
->>>>>>>>> information
->>>>>>>>> is not there in v10 and v11.
->>>>>>>> I agree to your point but, as of now during a pagefault we are
->>>>>>>> dumping this information which is useful like which client
->>>>>>>> has generated an interrupt and for which src and other information
->>>>>>>> like address. So i think to provide the similar information in the
->>>>>>>> devcoredump.
->>>>>>>>
->>>>>>>> Currently we do not have all this information from either job 
->>>>>>>> or vm
->>>>>>>> being derived from the job during a reset. We surely could add 
->>>>>>>> more
->>>>>>>> relevant information later on as per request but this 
->>>>>>>> information is
->>>>>>>> useful as
->>>>>>>> eventually its developers only who would use the dump file 
->>>>>>>> provided
->>>>>>>> by customer to debug.
->>>>>>>>
->>>>>>>> Below is the information that i dump in devcore and i feel that is
->>>>>>>> good information but new information could be added which could be
->>>>>>>> picked later.
->>>>>>>>
->>>>>>>>> Page fault information
->>>>>>>>> [gfxhub] page fault (src_id:0 ring:24 vmid:3 pasid:32773)
->>>>>>>>> in page starting at address 0x0000000000000000 from client 
->>>>>>>>> 0x1b (UTCL2)
->>>>>>> This is a perfect example what I mean. You record in the patch 
->>>>>>> is the
->>>>>>> client_id, but this is is basically meaningless unless you have 
->>>>>>> access
->>>>>>> to the AMD internal hw documentation.
->>>>>>>
->>>>>>> What you really need is the client in decoded form, in this case
->>>>>>> UTCL2. You can keep the client_id additionally, but the decoded 
->>>>>>> client
->>>>>>> string is mandatory to have I think.
->>>>>>>
->>>>>>> Sure i am capturing that information as i am trying to minimise the
->>>>>>> memory interaction to minimum as we are still in interrupt context
->>>>>>> here that why i recorded the integer information compared to 
->>>>>>> decoding
->>>>>> and writing strings there itself but to postpone till we dump.
->>>>>>
->>>>>> Like decoding to the gfxhub/mmhub based on vmhub/vmid_src and client
->>>>>> string from client id. So are we good to go with the information 
->>>>>> with
->>>>>> the above information of sharing details in devcoredump using the
->>>>>> additional information from pagefault cached.
->>>>> I think amdgpu_vm_fault_info() has everything you need already 
->>>>> (vmhub,
->>>>> status, and addr).  client_id and src_id are just tokens in the
->>>>> interrupt cookie so we know which IP to route the interrupt to. We
->>>>> know what they will be because otherwise we'd be in the interrupt
->>>>> handler for a different IP.  I don't think ring_id has any useful
->>>>> information in this context and vmid and pasid are probably not too
->>>>> useful because they are just tokens to associate the fault with a
->>>>> process.  It would be better to have the process name.
->>>
->>> Just to share context here Alex, i am preparing this for 
->>> devcoredump, my intention was to replicate the information which in 
->>> KMD we are sharing in Dmesg for page faults. If assuming we do not 
->>> add client id specially we would not be able to share enough 
->>> information in devcoredump.
->>> It would be just address and hub(gfxhub/mmhub) and i think that is 
->>> partial information as src id and client id and ip block shares good 
->>> information.
->>>
->>> For process related information we are capturing that information 
->>> part of dump from existing functionality.
->>> **** AMDGPU Device Coredump ****
->>> version: 1
->>> kernel: 6.7.0-amd-staging-drm-next
->>> module: amdgpu
->>> time: 45.084775181
->>> process_name: soft_recovery_p PID: 1780
->>>
->>> Ring timed out details
->>> IP Type: 0 Ring Name: gfx_0.0.0
->>>
->>> Page fault information
->>> [gfxhub] page fault (src_id:0 ring:24 vmid:3 pasid:32773)
->>> in page starting at address 0x0000000000000000 from client 0x1b (UTCL2)
->>> VRAM is lost due to GPU reset!
->>>
->>> Regards
->>> Sunil
->>>
->>>>
->>>> The decoded client name would be really useful I think since the 
->>>> fault handled is a catch all and handles a whole bunch of different 
->>>> clients.
->>>>
->>>> But that should be ideally passed in as const string instead of the 
->>>> hw generation specific client_id.
->>>>
->>>> As long as it's only a pointer we also don't run into the trouble 
->>>> that we need to allocate memory for it.
->>>
->>> I agree but i prefer adding the client id and decoding it in 
->>> devcorecump using soc15_ih_clientid_name[fault_info->client_id]) is 
->>> better else we have to do an sprintf this string to fault_info in 
->>> irq context which is writing more bytes to memory i guess compared 
->>> to an integer:)
->>
->> Well I totally agree that we shouldn't fiddle to much in the 
->> interrupt handler, but exactly what you suggest here won't work.
->>
->> The client_id is hw generation specific, so the only one who has that 
->> is the hw generation specific fault handler. Just compare the defines 
->> here:
->>
->> https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c#L83 
->>
->>
->> and here:
->>
->> https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/amd/amdgpu/gfxhub_v11_5_0.c#L38 
->>
->>
-> Got your point. Let me see but this is a lot of work in irq context. 
-> Either we can drop totally the client id thing as alex is suggesting 
-> here as its always be same client and src id or let me come up with a 
-> patch and see if its acceptable.
-
-Wait a second, I now realized that you are mixing something up here. As 
-Alex said the src_id and client_id in the IV are always the same, e.g. 
-the VMC or the UTCL2.
-
-This is the client_id which send the IV to IH so that the IH can write 
-it into the ring buffer and we end up in the fault handler.
-
-But additional to that we also have a client_id inside the fault and 
-that is the value printed in the logs. This is the client which caused 
-the fault inside the VMC or UTCL2.
-
->
-> Also as Alex pointed we need to decode from status register which kind 
-> of page fault it is (permission, read, write etc) this all is again 
-> family specific and thats all in IRQ context. Not feeling good about 
-> it but let me try to share all that in a new patch.
-
-Yeah, but that is all hw specific. I'm not sure how best to put it into 
-a devcoredump.
-
-Maybe just record the 32bit value and re-design the GMC code to have 
-that decoded into a string for both the system log and the devcoredump.
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/4] arm64: dts: qcom: ipq6018: add 1.2GHz CPU
+ Frequency
+Content-Language: en-US
+To: Chukun Pan <amadeus@jmu.edu.cn>, Bjorn Andersson <andersson@kernel.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Rob Herring <robh@kernel.org>,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org
+References: <20240306140306.876188-1-amadeus@jmu.edu.cn>
+ <20240306140306.876188-2-amadeus@jmu.edu.cn>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20240306140306.876188-2-amadeus@jmu.edu.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
 
->
-> Regards
-> Sunil.
->
->> Regards,
->> Christian.
->>
->>>
->>> We can argue on values like pasid and vmid and ring id to be taken 
->>> off if they are totally not useful.
->>>
->>> Regards
->>> Sunil
->>>
->>>>
->>>> Christian.
->>>>
->>>>>
->>>>> Alex
->>>>>
->>>>>> regards
->>>>>> sunil
->>>>>>
->>>>>>> Regards,
->>>>>>> Christian.
->>>>>>>
->>>>>>>> Regards
->>>>>>>> Sunil Khatri
->>>>>>>>
->>>>>>>>> Regards,
->>>>>>>>> Christian.
->>>>>>>>>
->>>>>>>>>> Add all such information in the last cached
->>>>>>>>>> pagefault from an interrupt handler.
->>>>>>>>>>
->>>>>>>>>> Signed-off-by: Sunil Khatri <sunil.khatri@amd.com>
->>>>>>>>>> ---
->>>>>>>>>>    drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c | 9 +++++++--
->>>>>>>>>>    drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h | 7 ++++++-
->>>>>>>>>>    drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c | 2 +-
->>>>>>>>>>    drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c | 2 +-
->>>>>>>>>>    drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c  | 2 +-
->>>>>>>>>>    drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c  | 2 +-
->>>>>>>>>>    drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c  | 2 +-
->>>>>>>>>>    7 files changed, 18 insertions(+), 8 deletions(-)
->>>>>>>>>>
->>>>>>>>>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
->>>>>>>>>> b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
->>>>>>>>>> index 4299ce386322..b77e8e28769d 100644
->>>>>>>>>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
->>>>>>>>>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
->>>>>>>>>> @@ -2905,7 +2905,7 @@ void amdgpu_debugfs_vm_bo_info(struct
->>>>>>>>>> amdgpu_vm *vm, struct seq_file *m)
->>>>>>>>>>     * Cache the fault info for later use by userspace in 
->>>>>>>>>> debugging.
->>>>>>>>>>     */
->>>>>>>>>>    void amdgpu_vm_update_fault_cache(struct amdgpu_device *adev,
->>>>>>>>>> -                  unsigned int pasid,
->>>>>>>>>> +                  struct amdgpu_iv_entry *entry,
->>>>>>>>>>                      uint64_t addr,
->>>>>>>>>>                      uint32_t status,
->>>>>>>>>>                      unsigned int vmhub)
->>>>>>>>>> @@ -2915,7 +2915,7 @@ void amdgpu_vm_update_fault_cache(struct
->>>>>>>>>> amdgpu_device *adev,
->>>>>>>>>> xa_lock_irqsave(&adev->vm_manager.pasids, flags);
->>>>>>>>>>    -    vm = xa_load(&adev->vm_manager.pasids, pasid);
->>>>>>>>>> +    vm = xa_load(&adev->vm_manager.pasids, entry->pasid);
->>>>>>>>>>        /* Don't update the fault cache if status is 0.  In 
->>>>>>>>>> the multiple
->>>>>>>>>>         * fault case, subsequent faults will return a 0 
->>>>>>>>>> status which is
->>>>>>>>>>         * useless for userspace and replaces the useful fault
->>>>>>>>>> status, so
->>>>>>>>>> @@ -2924,6 +2924,11 @@ void amdgpu_vm_update_fault_cache(struct
->>>>>>>>>> amdgpu_device *adev,
->>>>>>>>>>        if (vm && status) {
->>>>>>>>>>            vm->fault_info.addr = addr;
->>>>>>>>>>            vm->fault_info.status = status;
->>>>>>>>>> +        vm->fault_info.client_id = entry->client_id;
->>>>>>>>>> +        vm->fault_info.src_id = entry->src_id;
->>>>>>>>>> +        vm->fault_info.vmid = entry->vmid;
->>>>>>>>>> +        vm->fault_info.pasid = entry->pasid;
->>>>>>>>>> +        vm->fault_info.ring_id = entry->ring_id;
->>>>>>>>>>            if (AMDGPU_IS_GFXHUB(vmhub)) {
->>>>>>>>>>                vm->fault_info.vmhub = AMDGPU_VMHUB_TYPE_GFX;
->>>>>>>>>>                vm->fault_info.vmhub |=
->>>>>>>>>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h
->>>>>>>>>> b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h
->>>>>>>>>> index 047ec1930d12..c7782a89bdb5 100644
->>>>>>>>>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h
->>>>>>>>>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h
->>>>>>>>>> @@ -286,6 +286,11 @@ struct amdgpu_vm_fault_info {
->>>>>>>>>>        uint32_t    status;
->>>>>>>>>>        /* which vmhub? gfxhub, mmhub, etc. */
->>>>>>>>>>        unsigned int    vmhub;
->>>>>>>>>> +    unsigned int    client_id;
->>>>>>>>>> +    unsigned int    src_id;
->>>>>>>>>> +    unsigned int    ring_id;
->>>>>>>>>> +    unsigned int    pasid;
->>>>>>>>>> +    unsigned int    vmid;
->>>>>>>>>>    };
->>>>>>>>>>      struct amdgpu_vm {
->>>>>>>>>> @@ -605,7 +610,7 @@ static inline void
->>>>>>>>>> amdgpu_vm_eviction_unlock(struct amdgpu_vm *vm)
->>>>>>>>>>    }
->>>>>>>>>>      void amdgpu_vm_update_fault_cache(struct amdgpu_device 
->>>>>>>>>> *adev,
->>>>>>>>>> -                  unsigned int pasid,
->>>>>>>>>> +                  struct amdgpu_iv_entry *entry,
->>>>>>>>>>                      uint64_t addr,
->>>>>>>>>>                      uint32_t status,
->>>>>>>>>>                      unsigned int vmhub);
->>>>>>>>>> diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
->>>>>>>>>> b/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
->>>>>>>>>> index d933e19e0cf5..6b177ce8db0e 100644
->>>>>>>>>> --- a/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
->>>>>>>>>> +++ b/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
->>>>>>>>>> @@ -150,7 +150,7 @@ static int 
->>>>>>>>>> gmc_v10_0_process_interrupt(struct
->>>>>>>>>> amdgpu_device *adev,
->>>>>>>>>>            status = RREG32(hub->vm_l2_pro_fault_status);
->>>>>>>>>> WREG32_P(hub->vm_l2_pro_fault_cntl, 1, ~1);
->>>>>>>>>>    -        amdgpu_vm_update_fault_cache(adev, entry->pasid, 
->>>>>>>>>> addr,
->>>>>>>>>> status,
->>>>>>>>>> +        amdgpu_vm_update_fault_cache(adev, entry, addr, status,
->>>>>>>>>>                             entry->vmid_src ? AMDGPU_MMHUB0(0) :
->>>>>>>>>> AMDGPU_GFXHUB(0));
->>>>>>>>>>        }
->>>>>>>>>>    diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c
->>>>>>>>>> b/drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c
->>>>>>>>>> index 527dc917e049..bcf254856a3e 100644
->>>>>>>>>> --- a/drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c
->>>>>>>>>> +++ b/drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c
->>>>>>>>>> @@ -121,7 +121,7 @@ static int 
->>>>>>>>>> gmc_v11_0_process_interrupt(struct
->>>>>>>>>> amdgpu_device *adev,
->>>>>>>>>>            status = RREG32(hub->vm_l2_pro_fault_status);
->>>>>>>>>> WREG32_P(hub->vm_l2_pro_fault_cntl, 1, ~1);
->>>>>>>>>>    -        amdgpu_vm_update_fault_cache(adev, entry->pasid, 
->>>>>>>>>> addr,
->>>>>>>>>> status,
->>>>>>>>>> +        amdgpu_vm_update_fault_cache(adev, entry, addr, status,
->>>>>>>>>>                             entry->vmid_src ? AMDGPU_MMHUB0(0) :
->>>>>>>>>> AMDGPU_GFXHUB(0));
->>>>>>>>>>        }
->>>>>>>>>>    diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c
->>>>>>>>>> b/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c
->>>>>>>>>> index 3da7b6a2b00d..e9517ebbe1fd 100644
->>>>>>>>>> --- a/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c
->>>>>>>>>> +++ b/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c
->>>>>>>>>> @@ -1270,7 +1270,7 @@ static int 
->>>>>>>>>> gmc_v7_0_process_interrupt(struct
->>>>>>>>>> amdgpu_device *adev,
->>>>>>>>>>        if (!addr && !status)
->>>>>>>>>>            return 0;
->>>>>>>>>>    -    amdgpu_vm_update_fault_cache(adev, entry->pasid,
->>>>>>>>>> +    amdgpu_vm_update_fault_cache(adev, entry,
->>>>>>>>>>                         ((u64)addr) << AMDGPU_GPU_PAGE_SHIFT,
->>>>>>>>>> status, AMDGPU_GFXHUB(0));
->>>>>>>>>>          if (amdgpu_vm_fault_stop == AMDGPU_VM_FAULT_STOP_FIRST)
->>>>>>>>>> diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c
->>>>>>>>>> b/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c
->>>>>>>>>> index d20e5f20ee31..a271bf832312 100644
->>>>>>>>>> --- a/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c
->>>>>>>>>> +++ b/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c
->>>>>>>>>> @@ -1438,7 +1438,7 @@ static int 
->>>>>>>>>> gmc_v8_0_process_interrupt(struct
->>>>>>>>>> amdgpu_device *adev,
->>>>>>>>>>        if (!addr && !status)
->>>>>>>>>>            return 0;
->>>>>>>>>>    -    amdgpu_vm_update_fault_cache(adev, entry->pasid,
->>>>>>>>>> +    amdgpu_vm_update_fault_cache(adev, entry,
->>>>>>>>>>                         ((u64)addr) << AMDGPU_GPU_PAGE_SHIFT,
->>>>>>>>>> status, AMDGPU_GFXHUB(0));
->>>>>>>>>>          if (amdgpu_vm_fault_stop == AMDGPU_VM_FAULT_STOP_FIRST)
->>>>>>>>>> diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
->>>>>>>>>> b/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
->>>>>>>>>> index 47b63a4ce68b..dc9fb1fb9540 100644
->>>>>>>>>> --- a/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
->>>>>>>>>> +++ b/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
->>>>>>>>>> @@ -666,7 +666,7 @@ static int gmc_v9_0_process_interrupt(struct
->>>>>>>>>> amdgpu_device *adev,
->>>>>>>>>>        rw = REG_GET_FIELD(status, 
->>>>>>>>>> VM_L2_PROTECTION_FAULT_STATUS, RW);
->>>>>>>>>>        WREG32_P(hub->vm_l2_pro_fault_cntl, 1, ~1);
->>>>>>>>>>    -    amdgpu_vm_update_fault_cache(adev, entry->pasid, addr,
->>>>>>>>>> status, vmhub);
->>>>>>>>>> +    amdgpu_vm_update_fault_cache(adev, entry, addr, status, 
->>>>>>>>>> vmhub);
->>>>>>>>>>          dev_err(adev->dev,
->>>>>>>>>> "VM_L2_PROTECTION_FAULT_STATUS:0x%08X\n",
->>>>
->>
+On 3/6/24 15:03, Chukun Pan wrote:
+> Some IPQ6000 SoCs have CPU frequencies up to 1.2GHz,
 
+(which ones specifically?)
+
+Konrad
+> so add this frequency.
+> 
+> Signed-off-by: Chukun Pan <amadeus@jmu.edu.cn>
+> ---
+>   arch/arm64/boot/dts/qcom/ipq6018.dtsi | 7 +++++++
+>   1 file changed, 7 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/ipq6018.dtsi b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
+> index 4e29adea570a..7fdb119083a2 100644
+> --- a/arch/arm64/boot/dts/qcom/ipq6018.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
+> @@ -119,6 +119,13 @@ opp-1056000000 {
+>   			clock-latency-ns = <200000>;
+>   		};
+>   
+> +		opp-1200000000 {
+> +			opp-hz = /bits/ 64 <1200000000>;
+> +			opp-microvolt = <850000>;
+> +			opp-supported-hw = <0x4>;
+> +			clock-latency-ns = <200000>;
+> +		};
+
+Looks like said SoC can *only* run the CPUs at 1.2 GHz?
+
+Konrad
 
