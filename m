@@ -1,120 +1,113 @@
-Return-Path: <linux-kernel+bounces-93667-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93668-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14DD987330E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:50:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26FD4873310
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:52:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5526BB260A3
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:50:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2C84284F21
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:52:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CE7D5D903;
-	Wed,  6 Mar 2024 09:50:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D37B5EE70;
+	Wed,  6 Mar 2024 09:52:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=9elements.com header.i=@9elements.com header.b="bXPN6EEK"
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="WWfmFupb"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DD315DF17
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 09:50:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F6875D8F6;
+	Wed,  6 Mar 2024 09:52:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709718616; cv=none; b=OAxlHNp2+SXopDNI3zgAMxl0SX27kmA2KpsyksTDUxGgh3H08sfz76dOdEs4xkfsyNZ7da68GOEQBgXO/w+uzZ/hjV2NefbJszTabs+wRMap8V7sardWfXK3UyXT4DHjGyVdI/R9OlqiB8yFoJPRjSdtBzgnd8+kxe/4ub4KfIQ=
+	t=1709718749; cv=none; b=b5uQJ2w3SMUTD/4HJ1LHh71JZdcymzRs9YfCLdDW0ehk901kAVmIO6ypAMzeUpcC1KzkqjjfLzHNj1jTwy6vQPtp6wy0ozCTELbZYy9NbeUSJq1ep/Cfc48NqhqPNvBuMX5Cm5qkIpk4RWfrt7bTFOgm5m41qEz4u7z9ahy3i2E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709718616; c=relaxed/simple;
-	bh=5wTDv8Pow3ls0hAeMHjkJghWq0FXCqANDCJJgNSwvho=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ceANhjdDOjCdFAmlHkLewrXLlO88TEk28DGKWqlJo3yaV7dv0VKXJGk+sBvV9IxtVFrXhChJywiCxjNxddFIwVPsHhnnAgqwgTbgUbaWTLp5v5yPpFPeFHi4pOJFGifK68OLPdFX9MlaF9vw7x/gzvNQ7lLlKh/2769URlipoT0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=9elements.com; spf=pass smtp.mailfrom=9elements.com; dkim=pass (2048-bit key) header.d=9elements.com header.i=@9elements.com header.b=bXPN6EEK; arc=none smtp.client-ip=209.85.216.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=9elements.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=9elements.com
-Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-299a2456948so524607a91.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 01:50:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=9elements.com; s=google; t=1709718614; x=1710323414; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=5wTDv8Pow3ls0hAeMHjkJghWq0FXCqANDCJJgNSwvho=;
-        b=bXPN6EEK8ROtqPXnYOisP9OZv3wXjLA9VoezLbW3CpaUU1dDVxypTELbSobzh3ISeO
-         xeeF+K748SPIMCXb59dhOMK8AOcrwAYrBhvPq0myPnega+hV0+Ig/sQcg8N030py06sk
-         uE049MOvk3W3SPtXR4IO/0+Hj631mWd8R1z3r/9ZfaUaNRgiXWbf+jjzAi09jCuQSX9k
-         4fIyoX1knONzgrM09k7oeU+5dvnWApdAWQjeiDOfqEOPsM2ZwZXs4XiEcPdbj0TeJn+i
-         fGZguCMDj+GG181gxMU3Sznje5Qmiz/t4XbK975eZUMhtA8ATFIqV/rRnjsGnaLNvqPQ
-         db2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709718614; x=1710323414;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5wTDv8Pow3ls0hAeMHjkJghWq0FXCqANDCJJgNSwvho=;
-        b=dWO4ZvOGu64Vo8WxggWqh9wYEuiE5BU3KJ5u3TFpJCeQJWbm/HcusG5FrkXKzmTprP
-         NTjeiuRlu30qvMVFLcjuwMF/6PpMcSY3lbGL41PCMMDKHFJ5zoHs7ugbndvcxM7pTCqn
-         y8lWmjoDYvOeZHZSMD0Gz8nYHlI9qL39p/34sFCAi/zqsAB4mMms5T5Q3wyclJJAXXuR
-         blDlDcT7tQNae9MVmW5vH4XASlViI1FFR4R5eA4igbLJqJe4lgMcGCenhbzMBDkVnV0i
-         SMYbdViMTxkbSeeTnpPBYbPek0QhNiUPsNoPVFdQ//c7xHfJzeunoaClBi0kD+LIiudx
-         qJ8w==
-X-Forwarded-Encrypted: i=1; AJvYcCU9NFfFqnw9SgbNJZGnMA1PJ5NEOFVbD3k9LO1RB6yCMArKgiDl28XfbTKAz6lC4NfS8FT8FqGZQyZ5CmArTD8ziedBFGP0A4DOWX2m
-X-Gm-Message-State: AOJu0Yw/C1ubQZev0OWDg9dhgWrXxiCbS4V0SOihjH+YiRJgFFB+ENGa
-	Y/SVqtVHvv0fcikYAX2NXc/+2to/u39Uk6YmnEtl7pCuwFaeTTbBnCC0cvRJ+1Sg/6jYWjwfmm3
-	KMCTLoq371BHhJI725RxaYQFDIkZcpOcPo7FS0Q==
-X-Google-Smtp-Source: AGHT+IEe5ARYEUNZCsr+iHrFPzLLIKN3FTqKMUPA5r/pRjcydibLKmQbYN0Ni7yeDM2vxSQwE6cGRdoCFy2gruuS/H0=
-X-Received: by 2002:a17:90a:f490:b0:29a:6b5c:33ba with SMTP id
- bx16-20020a17090af49000b0029a6b5c33bamr12644943pjb.5.1709718614426; Wed, 06
- Mar 2024 01:50:14 -0800 (PST)
+	s=arc-20240116; t=1709718749; c=relaxed/simple;
+	bh=7JYD9tHQqkKyAOpDYz8v9QbcUBvbZmg5L8nFtmnhjKU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Avuc7dTZM/ad8p3RUHFqynko/95DGpmg8TMBeYtL/g90PE7/fDFjubIEMQIjjmV15PvbA4MGVCcnJGlh3QpE9UuULxULd6345TGGCzgOsDMvcHmY2KrrMkLRHoFhd/kYdX8b3ghI3lRIbewqy029qy3VBG4vvlXvm3trplS6tzc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=WWfmFupb; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=+UHTxiMOCWmnYGbzdr3xdIdiyFhD3trL1IlYn9sx2Ik=; b=WWfmFupbS1FWFYcVIBHqaTAfFo
+	JT81TSIj80enOhfKIvYWxZw2DEVGtf4L9tMGSmq37QOCWbTSsD8kIrIUvSTE9rWsdUOqXl0V6BGWU
+	TJ2WCLM+C8qogGo1lg7ZCilq7+J90LxSkB5Edb57G/utb42hdwtLn8ODtjpuTt6vrYiX+uaixttSq
+	ghFAnCsyprG0PesBYJK3+disNSjK5IECAHw/kA3E82iLCy9xQR2dH/gh8oVQ3ZmQtZSyMxctVu9w1
+	dnzTrvFqipnX7KbNMpsBLt+s25yM35D5l8kg7nTWo9cuzc4Nkxi+joj6DaPglnJJltC6Sk0yIGL46
+	HmeZKelQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:37134)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rhnwU-00089f-0i;
+	Wed, 06 Mar 2024 09:52:06 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rhnwQ-0006GG-1M; Wed, 06 Mar 2024 09:52:02 +0000
+Date: Wed, 6 Mar 2024 09:52:01 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Josh Poimboeuf <jpoimboe@kernel.org>
+Cc: Jiangfeng Xiao <xiaojiangfeng@huawei.com>,
+	Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>,
+	gustavoars@kernel.org, akpm@linux-foundation.org,
+	peterz@infradead.org, dave.hansen@linux.intel.com,
+	kirill.shutemov@linux.intel.com, linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org, linux-mm@kvack.org,
+	nixiaoming@huawei.com, kepler.chenxin@huawei.com,
+	wangbing6@huawei.com, wangfangpeng1@huawei.com,
+	douzhaolei@huawei.com, linux-arm-kernel@lists.infradead.org,
+	Ard Biesheuvel <ardb@kernel.org>
+Subject: Re: [PATCH] usercopy: delete __noreturn from usercopy_abort
+Message-ID: <Zeg8wRYFemMjcCxG@shell.armlinux.org.uk>
+References: <1709516385-7778-1-git-send-email-xiaojiangfeng@huawei.com>
+ <CAG48ez1h9X7Qv-5OR6hAhwnSOng6_PSXBaR6cT7xrk2Wzu39Yg@mail.gmail.com>
+ <202403040938.D770633@keescook>
+ <77bb0d81-f496-7726-9495-57088a4c0bfc@huawei.com>
+ <202403050129.5B72ACAA0D@keescook>
+ <b274b545-9439-7ff8-e3ed-604a9ac81f65@huawei.com>
+ <20240305175846.qnyiru7uaa7itqba@treble>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240305210747.1377506-1-naresh.solanki@9elements.com> <a32a2655-7561-4339-8521-bc2558e0bdb1@linaro.org>
-In-Reply-To: <a32a2655-7561-4339-8521-bc2558e0bdb1@linaro.org>
-From: Naresh Solanki <naresh.solanki@9elements.com>
-Date: Wed, 6 Mar 2024 15:20:02 +0530
-Message-ID: <CABqG17hYK8MFMPVNXxZ6JT4TW00PPt48q1qZBzS=gJrpC--iTg@mail.gmail.com>
-Subject: Re: [PATCH v3] dt-bindings: hwmon: tda38640: Add interrupt &
- regulator properties
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	mazziesaccount@gmail.com, linux-hwmon@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240305175846.qnyiru7uaa7itqba@treble>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-Hi Krzysztof,
+On Tue, Mar 05, 2024 at 09:58:46AM -0800, Josh Poimboeuf wrote:
+> This is an off-by-one bug which is common in unwinders, due to the fact
+> that the address on the stack points to the return address rather than
+> the call address.
+> 
+> So, for example, when the last instruction of a function is a function
+> call (e.g., to a noreturn function), it can cause the unwinder to
+> incorrectly try to unwind from the function *after* the callee.
 
+I suppose this can only happen in __noreturn functions because that
+can be:
 
-On Wed, 6 Mar 2024 at 12:44, Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> On 05/03/2024 22:07, Naresh Solanki wrote:
-> > Add properties for interrupt & regulator.
-> > Also update example.
->
-> Nothing improved.
-Yes, Just aligned the regulator node name in this revision.
-I missed aligning the commit message.
+foo:
+..
+	bl	bar
+.. end of function and thus next function ...
 
-I'll fix in next revision & update commit message as:
+which results in LR pointing into the next function.
 
-tda38640 has a single regulator output along with
-CAT_FAULT# pin to report internal events.
-Hence add properties for regulator & interrupt.
+Would it make better sense to lookup the LR value winding it back by
+one instruction like ORC on x86 does (as you mention) rather than
+the patch you proposed which looks rather large and complicated?
 
-Let me know if any others changes needed.
-
-Regards,
-Naresh
-
->
-> Broken record. You got the same comment 3rd or 4th time!
->
-> NAK
->
-> Best regards,
-> Krzysztof
->
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
