@@ -1,149 +1,152 @@
-Return-Path: <linux-kernel+bounces-93907-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93908-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9B708736B7
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:39:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA6278736B9
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:40:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 06F541C2365C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:39:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7729C281FB4
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:40:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A8AC1272A4;
-	Wed,  6 Mar 2024 12:39:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FFE812F5A2;
+	Wed,  6 Mar 2024 12:40:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="WcGASoc1"
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aJXYphWX"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D3FB1E519
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 12:39:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36F3D1DA4C
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 12:40:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709728768; cv=none; b=uzMlHPw8MSwSC5RiI9L0YzJQY9OwBtgpLrJf3eA36NLTG7ht49nnBoEpGVb/sF6bIME+2hVsp/e/kPibus14mQKgVY+Z9VGXt4DJBVDJN+3Zpxwynb/p2DyB4meol3IKkuOiEqygOj2gCoIbsEEEuiWl1vbapm2FnMgTslFRLBM=
+	t=1709728809; cv=none; b=e7XUk6gX6jnNua3IT6XGVnDz2NEgJ0xg0YgqRD08U/Z4RmHu15B1r3CWSs6RHqbGMA8H61AKSXRxz3dgXwjr2GNIcriP4I7Uo87QPEBQFGoNP3MzfeyPSnTmx7LFwyK73hAkfTWNWcZaAlNxet58bM0DCCUsnFMGL7vfpyMOVoQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709728768; c=relaxed/simple;
-	bh=DyNIMG5zL0ui6GMf73JDrA/3Viho9HpORxGOnZWybHY=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=B1Qc9duhgHR+V0q/+Bv/QXvS2rJiw/BlzTf48SXWOS3hN2TlRFv1xkkfEP+25iz5gZrCQwz5oFNUcH20t4bmJDnDfMQ6jZwzk+oHdeGSRvI7V/crwYwe9b3AbGP6WuZk4/gAgfjP4e3cWHT+Y2xzd5RL8miLwU7RR+bMZnHld7o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=WcGASoc1; arc=none smtp.client-ip=217.70.183.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 4E34940008;
-	Wed,  6 Mar 2024 12:39:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709728764;
+	s=arc-20240116; t=1709728809; c=relaxed/simple;
+	bh=s0RgG9vqq135wgTU/3tFpTGeNbkjasrCrM+BcD67+KA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=K6/AIAtuuPi4lCNcdT1aRZ1+BvTCJS0YqRkBfdi+Vw+ZeexJRBRFCcVPKMwrLRfUwsz4NNKOE2F+A6k5Sm4gP6sgk2S1dYJySiHCqys2+bxiq4b1EUb3UCz/onika+6vfOdIMlr8cv5KO5/DSVELQhOaVmsDsfsznbHMeAyrWqc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aJXYphWX; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709728806;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=elkd8DsFZS5LmKpv07wv9/YlAnCVft4QUXCwGUZen9k=;
-	b=WcGASoc1KG0VbPwmMfiT95+0rpCtDVoXHW6AJ82VN7BMBrhC0n0M0ft/A5ZE91It8UhKsr
-	4PEuag7MjK0qJjoCnqoUEcGAL8eF0axOME4/bJe2SaiTDeM/tnPn+jlow/uN37ta/sNlkz
-	MsCKorGBGR/SrP8+FZm5Y386BgqIQn9G44GIPw6O9OxPMjBcPHashdFxBOJWN/ohM06hrl
-	4iwT+Q//4XCfbzPAvkGllT6wcFxkiB1d7dxy2MlXIuER/KnArACdYph/Ac787FvLyqRy9Y
-	YZ9Rg5C5piEiVvjvIsoit5FmWw7TsvEasEvOHVmmd4OOHoNVQyUhROBxEiqE4g==
-From: Luca Ceresoli <luca.ceresoli@bootlin.com>
-Date: Wed, 06 Mar 2024 13:39:20 +0100
-Subject: [PATCH] Revert "drm/bridge: ti-sn65dsi83: Fix enable error path"
+	 in-reply-to:in-reply-to:references:references;
+	bh=s0RgG9vqq135wgTU/3tFpTGeNbkjasrCrM+BcD67+KA=;
+	b=aJXYphWXfop9UiGl+p0OdRwmjxcbNa/fukz84U12GR9uskK61buoEseqGbiZU1kA0Pddn9
+	S1mfc/p9EW6n0tsBBvwabz01yi25Ib8NzBh+PkkOgrll1PWTdRRSYwn8sB6W4RZEPp5vFO
+	bUfgRxsyUIRqNY5+LGgdA36Au4Pj0yE=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-94-imIt-QsRMe6oVa_gVW9eCg-1; Wed, 06 Mar 2024 07:40:04 -0500
+X-MC-Unique: imIt-QsRMe6oVa_gVW9eCg-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-33d8d208be9so4230602f8f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 04:40:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709728803; x=1710333603;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=s0RgG9vqq135wgTU/3tFpTGeNbkjasrCrM+BcD67+KA=;
+        b=nrKARVVlrjxIe9TuBgzsbnjkNykLSCIuNoQHkAtU/ZbJyDEfOpg08+rZ3n4SCz82OX
+         WAfEeKFrgQwlCqFkunKK7atB+28D58/glXoXuoxoiV72hV/rvIEFzsoUZHNhob4AefWz
+         SqXk3lwqyFNGL7qyrG3xNLgVKfzT1vHP68Q8AbwtBvi9of5AQ4Uti8RITY15/q8PSVZW
+         hXVtH94SqG9gTsQdj1A+AWY4UwYdLOfLzeYFGPdjbkRzramttwfPTnsNam/9wnneYN84
+         OFAWCYRxxA8GtBrrTElXRpd07hFYmOBw1aLw+ZuM5j7ABcqpXD6BRpCqAVm6NT3sfbBg
+         y6zg==
+X-Forwarded-Encrypted: i=1; AJvYcCXfLg9H+0a2FyoppliU45I4tfWj/oxmMcVQlKNOHAT53R4223Rvs/kAPv5LPRAWkfpG9Ot++2VuPjtw3kNHYJZv8TOO6Iv6donax4S3
+X-Gm-Message-State: AOJu0YxW3a4yoDqUJ2lD6SqGzZAlVh8Lc+i88qwkeHfwWQC/mrPkRjik
+	fjVM/Rj9G0qa+SOCNJ+u4GeyxDl69L42BkEa76l2qNUl5aCpcViHc9Dv005cxEvYMHnBXb/kjCK
+	6OFD/PxrKxSGfd0fgAUVjh3kAr/vBYkxcx0pzVTfh3fCeUMsrXRwoJ0/HtWjfvg==
+X-Received: by 2002:a5d:4dc3:0:b0:33e:1a96:2be7 with SMTP id f3-20020a5d4dc3000000b0033e1a962be7mr10229341wru.11.1709728803299;
+        Wed, 06 Mar 2024 04:40:03 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IE+IGBdm6R5QstlgXd6ZKEAdg48EKt2mibrn0E+a72ARgbuLLefhc1N0Jrjhjq8vX7cVKF5Nw==
+X-Received: by 2002:a5d:4dc3:0:b0:33e:1a96:2be7 with SMTP id f3-20020a5d4dc3000000b0033e1a962be7mr10229315wru.11.1709728802693;
+        Wed, 06 Mar 2024 04:40:02 -0800 (PST)
+Received: from localhost ([2a01:e0a:b25:f902::ff])
+        by smtp.gmail.com with ESMTPSA id bt12-20020a056000080c00b0033e3a110d7fsm9196110wrb.71.2024.03.06.04.40.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Mar 2024 04:40:02 -0800 (PST)
+Date: Wed, 6 Mar 2024 13:40:01 +0100
+From: Maxime Ripard <mripard@redhat.com>
+To: Mimi Zohar <zohar@linux.ibm.com>
+Cc: Dmitry Kasatkin <dmitry.kasatkin@gmail.com>, 
+	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, 
+	"Serge E. Hallyn" <serge@hallyn.com>, Coiby Xu <coxu@redhat.com>, linux-integrity@vger.kernel.org, 
+	itrymybest80@protonmail.com, Eric Snowberg <eric.snowberg@oracle.com>, 
+	Jarkko Sakkinen <jarkko@kernel.org>, 
+	"open list:SECURITY SUBSYSTEM" <linux-security-module@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] integrity: eliminate unnecessary "Problem loading
+ X.509 certificate" msg
+Message-ID: <20240306-large-lush-catfish-e75cb2@houat>
+References: <20231227044156.166009-1-coxu@redhat.com>
+ <20240109002429.1129950-1-coxu@redhat.com>
+ <20240306-humongous-nuthatch-of-science-00e58b@houat>
+ <a677a9cd8eda40e5529094ba2a6ad2f7c0c927fa.camel@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240306-ti-sn65dsi83-regulator-imbalance-v1-1-a3cea5f3e5b3@bootlin.com>
-X-B4-Tracking: v=1; b=H4sIAPdj6GUC/x3NwQqDMAyA4VeRnBdI202HrzI8dG3UgKuSuDEQ3
- 31lx+/y/wcYq7BB3xyg/BGTtVS4SwNpjmVilFwNnvyVArW4C1ppb9nkHlB5ei9xXxXl9YxLLIn
- REXvXjTmQT1Azm/Io3//iMZznDzvwTRRyAAAA
-To: Andrzej Hajda <andrzej.hajda@intel.com>, 
- Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>, 
- Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
- Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
- Alexander Stein <alexander.stein@ew.tq-group.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
- Luca Ceresoli <luca.ceresoli@bootlin.com>
-X-Mailer: b4 0.13.0
-X-GND-Sasl: luca.ceresoli@bootlin.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="2lpkp2cicuwnndoz"
+Content-Disposition: inline
+In-Reply-To: <a677a9cd8eda40e5529094ba2a6ad2f7c0c927fa.camel@linux.ibm.com>
 
-This reverts commit 8a91b29f1f50ce7742cdbe5cf11d17f128511f3f.
 
-The regulator_disable() added by the original commit solves one kind of
-regulator imbalance but adds another one as it allows the regulator to be
-disabled one more time than it is enabled in the following scenario:
+--2lpkp2cicuwnndoz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
- 1. Start video pipeline -> sn65dsi83_atomic_pre_enable -> regulator_enable
- 2. PLL lock fails -> regulator_disable
- 3. Stop video pipeline -> sn65dsi83_atomic_disable -> regulator_disable
+On Wed, Mar 06, 2024 at 06:55:00AM -0500, Mimi Zohar wrote:
+> On Wed, 2024-03-06 at 11:57 +0100, Maxime Ripard wrote:
+> > Hi Dmitry, Eric, James, Mimi, Paul, Serge,
+> >=20
+> > On Tue, Jan 09, 2024 at 08:24:28AM +0800, Coiby Xu wrote:
+> > > Currently when the kernel fails to add a cert to the .machine keyring,
+> > > it will throw an error immediately in the function integrity_add_key.
+> > >=20
+> > > Since the kernel will try adding to the .platform keyring next or thr=
+ow
+> > > an error (in the caller of integrity_add_key i.e. add_to_machine_keyr=
+ing),
+> > > so there is no need to throw an error immediately in integrity_add_ke=
+y.
+> > >=20
+> > > Reported-by: itrymybest80@protonmail.com
+> > > Closes: https://bugzilla.redhat.com/show_bug.cgi?id=3D2239331
+> > > Fixes: d19967764ba8 ("integrity: Introduce a Linux keyring called mac=
+hine")
+> > > Reviewed-by: Eric Snowberg <eric.snowberg@oracle.com>
+> > > Signed-off-by: Coiby Xu <coxu@redhat.com>
+> >=20
+> > Any chance this patch can be merged? This is breaking (at least) Fedora
+> > at the moment.
+>=20
+> https://git.kernel.org/torvalds/c/29cd507cbec282e13dcf8f38072a100af96b2bb7
 
-The reason is clear from the code flow, which looks like this (after
-removing unrelated code):
+Oh, awesome, we missed it.
 
-  static void sn65dsi83_atomic_pre_enable()
-  {
-      regulator_enable(ctx->vcc);
+Thanks!
+Maxime
 
-      if (PLL failed locking) {
-          regulator_disable(ctx->vcc);  <---- added by patch being reverted
-          return;
-      }
-  }
+--2lpkp2cicuwnndoz
+Content-Type: application/pgp-signature; name="signature.asc"
 
-  static void sn65dsi83_atomic_disable()
-  {
-      regulator_disable(ctx->vcc);
-  }
+-----BEGIN PGP SIGNATURE-----
 
-The use case for introducing the additional regulator_disable() was
-removing the module for debugging (see link below for the discussion). If
-the module is removed after a .atomic_pre_enable, i.e. with an active
-pipeline from the DRM point of view, .atomic_disable is not called and thus
-the regulator would not be disabled.
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZehkIQAKCRDj7w1vZxhR
+xY7WAQCnEqMeBo12XOqakTVapFgeJkCAw0LKLelyqoAfjYH10wEAna6Y24H2p/uZ
+IHeuKetyVMuIur4tt+g9va7Xh70iYAk=
+=yOKe
+-----END PGP SIGNATURE-----
 
-According to the discussion however there is no actual use case for
-removing the module with an active pipeline, except for
-debugging/development.
-
-On the other hand, the occurrence of a PLL lock failure is possible due to
-any physical reason (e.g. a temporary hardware failure for electrical
-reasons) so handling it gracefully should be supported. As there is no way
-for .atomic[_pre]_enable to report an error to the core, the only clean way
-to support it is calling regulator_disabled() only in .atomic_disable,
-unconditionally, as it was before.
-
-Link: https://lore.kernel.org/all/15244220.uLZWGnKmhe@steina-w/
-Fixes: 8a91b29f1f50 ("drm/bridge: ti-sn65dsi83: Fix enable error path")
-Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
----
-Many thanks to Alexander for the discussion.
----
- drivers/gpu/drm/bridge/ti-sn65dsi83.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi83.c b/drivers/gpu/drm/bridge/ti-sn65dsi83.c
-index e3501608aef9..12fb22d4cd23 100644
---- a/drivers/gpu/drm/bridge/ti-sn65dsi83.c
-+++ b/drivers/gpu/drm/bridge/ti-sn65dsi83.c
-@@ -499,7 +499,6 @@ printk(KERN_ERR "%s: LVDS in fallback (24/SPWG)\n", __func__);
- 		dev_err(ctx->dev, "failed to lock PLL, ret=%i\n", ret);
- 		/* On failure, disable PLL again and exit. */
- 		regmap_write(ctx->regmap, REG_RC_PLL_EN, 0x00);
--		regulator_disable(ctx->vcc);
- 		return;
- 	}
- 
-
----
-base-commit: a71e4adac20bfe852d269addfef340923ce23a4c
-change-id: 20240306-ti-sn65dsi83-regulator-imbalance-10e217fd302c
-
-Best regards,
--- 
-Luca Ceresoli <luca.ceresoli@bootlin.com>
+--2lpkp2cicuwnndoz--
 
 
