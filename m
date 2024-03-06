@@ -1,113 +1,134 @@
-Return-Path: <linux-kernel+bounces-94738-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94739-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35211874491
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 00:42:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22DC8874493
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 00:43:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 671131C20886
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 23:42:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D5491C21D3C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 23:43:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8F7E2577C;
-	Wed,  6 Mar 2024 23:36:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4BAD25763;
+	Wed,  6 Mar 2024 23:41:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xRbB9T79"
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B+meUeFi"
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 992051F932
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 23:36:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF7E11B299
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 23:41:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709768212; cv=none; b=IBjngEPAzls3yVuezfejgRO63iKp9bsdaQU+JBQFFwc5m5xdcYVtn2R1r/Qfm2tw86yRLI1iwJbM04PzW/HK8Omi1JJqt5AeT97mLdnGUXpPxfx4h6O2Gww4XkC3O+G+39Wfw3cQfX0wM/JLfWc/ehyTbJVPDbT8HKUbUkJXUec=
+	t=1709768467; cv=none; b=FQlWDlch8XOaE6WhBwEFcWjq/hO6+sk/E81dyNl4wRQr/8SUvcW4t3JGjsNkjuWIcUEIlz8wJ3lMQtluOgo2QmsJXIUZUsh1qvuJmuuzQLHNoYCush6EGdVwrKjA70u9+yzAo1hu1JDBtihwJ0Tm/Ip6/64pHz+oL7BuJpobcMM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709768212; c=relaxed/simple;
-	bh=+Nx50Rnz3/XlK68LVUNUHXjbzKpSnQZRHmH74zypZtI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NCmXRsokp0PL7+rWMFddJHu8SuVdjF2cWytu1jvxjvnKFHwAHwokvF4W4+9Jg4BqGHLHlIEVQgucTQ/MnJoMLAk3di0gBiIZtlB/qTUCWj9x8/S7JPoeoaDZAN3nT9UN5bZ6+aun2hSZpREIHaMlkvRzXqYs1uD2D2mKYAUrLlk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=xRbB9T79; arc=none smtp.client-ip=209.85.219.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-dc23bf7e5aaso279192276.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 15:36:50 -0800 (PST)
+	s=arc-20240116; t=1709768467; c=relaxed/simple;
+	bh=8uBNJFXGEq/RaNLJaLovCAz+X7zBRcy9HZQL83ofgho=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ILkM8aCc/FnTiA+asknvPiKOi8+2xnnpiPXFcSDWKAcuAnve1fL1oGVpvVdrcPC6dzAQwAMnNM6ekweCgp4FCkfUfQxLH8w4AT02W2Z6BnaqAaso5I4Ply8+Wv4fgKjdf2RUWvvJxa+ynTAl3UG/W62/NbCiySDUSMOiBWI5Fqc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B+meUeFi; arc=none smtp.client-ip=209.85.208.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d2505352e6so2798691fa.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 15:41:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709768209; x=1710373009; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wpPCiCH5cmwsa/faM+4qtvxNPZ93fb+FSCJztY7spGA=;
-        b=xRbB9T79BbpD9HOviY1Quww4okCcuL94pvvt1yRqSUbCq2LdN1Y59BDikmtnPLSCaC
-         EGMMn/5SVmMC9AwyUClYCN0bZQiqVJW7iA+yWGzVMdo8e+Uy34b3tY1MjgrIU1e27lqy
-         ZCOFgsTltPAv8QLlE2hMlB/fKBefdoQCOZoQhPV/hvU63F+6O4FaCXZUJ7l+4dlz+utS
-         neYtxU3cpeIBfxktl0XvlygATJ5zpBR33IEQTd9Xsx+3tENo8RhfdxSB1nTeGl+T+xbp
-         PBJ2BhreOP2XKXBacoT2Fb8Y1ZRBJksZxZxei7pyQxjXnFZxieRYhyNZTtVysTsobtpZ
-         7Gqg==
+        d=gmail.com; s=20230601; t=1709768463; x=1710373263; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=jUeLclwrqZxiuoy0yMMLFuLZrmcp0qpm1t1UxC0wgKw=;
+        b=B+meUeFi66cGRMQA3PAiSuqMoOMj42XrgbtiZVPvJRJHFoWG7nUj1delTQhTQGvfKm
+         V9eadTpR9tiP/J6I+h3AXxwFLyAjTu44VarUZUlieHYkqGnvfH3aM+hqvwC1AUej70iL
+         oUGjLayWRNsOijfVa7dOg35Gpk4xjSt72hlMgBOYuotZF1zUEx6FLjKBqeeQKaX7mosB
+         SW0ZC3BncuwX2mDmvJv4W9rnCxJspvYhiVNCnrueKfT34Nx+pjN8Rc59DZXYrwnOEAma
+         R9NSfmWqYzArTXHdhVqJLKDWfBc6HE/huhRErNxswLw9SOf6mTh9XgmBPinSuKin9lxV
+         wGkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709768209; x=1710373009;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wpPCiCH5cmwsa/faM+4qtvxNPZ93fb+FSCJztY7spGA=;
-        b=PCy1OBjfJSeN6KXQWcF3vq5G56OIvLzSewAz5GMu52LXDaq9mLagP3HOAJEoWYiOuc
-         QocAb6ebq8XNoCYkcfuRUdbVVuaWghGP6BAs3g/fUneNUEfpE0sJnwxpk/lL/LAKmCOc
-         ewGj82oGKKFwwf2xk5o5rnag+Td7BBRs4wRPRBfLvMOOxRah3NGINxlCXE4UG/MAs/lT
-         vZQIR21Mkc97eBKLRpxPequmT/9XLfF3kiYinXKei9kc/zQHZCo1NTiHoHw9HUcMY+KQ
-         fz8cIdYpa6IzL07n36JU4fUJy23oX+hf+biXkkhtManEEYFBEUP8uLGMfWStStEcjMna
-         xlog==
-X-Forwarded-Encrypted: i=1; AJvYcCUctccooSjkcqXrx7cFdwtIDRHcUXxXEV6QeqIdH59mZQI2Wsv5OnCOje8LARtFIvyNEDGMKXRU7O6EhRCtbddiXcLQVeXQFYbCwZEJ
-X-Gm-Message-State: AOJu0YxlbL1MuzuF43tmLNHN58Y5mYU+eT77BSc/DwYLA/f67XF1Rjwx
-	pFmbWVGEOeeKzXa/PDvuhk47nPDPTqAjvMy0es68Wy5yJ+xguNyzTjClDUoMfwRn6sK9TLArioo
-	c096MZuHRiBae3aYY9YM/iTm0bM2ADkQGVN/rvQ==
-X-Google-Smtp-Source: AGHT+IHxdBBSeU/FWJXQoU5bYG6J5Znkxe2V8jpauvmmd8v3jfVHkDn5L/goLsRDrRyEdQX+qgOtS/LXCu5NgOFa8hs=
-X-Received: by 2002:a25:f30f:0:b0:dcd:6dea:5d34 with SMTP id
- c15-20020a25f30f000000b00dcd6dea5d34mr14988569ybs.36.1709768209672; Wed, 06
- Mar 2024 15:36:49 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709768463; x=1710373263;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jUeLclwrqZxiuoy0yMMLFuLZrmcp0qpm1t1UxC0wgKw=;
+        b=qrsattZ0EBHGyFSHL5sh0UsplYom+4zHCwdEk5i9ywnnUzWVdTszfYnPANYT4OlUsv
+         qdwevsHKBnB/MaKbYZxbo/nMt671k9jPVJJms4NpyEV0bpwF8G2JZGG97d/wEUL3bJDO
+         qAiXm5yNBOhTVAA9Zxv4lMcNQpTae/m1H7Mo+kCUIGWP8smCbP7UIY9mtmY8UNxr5elb
+         3GUd73shISbv7fo6OTnjVPPvuia28ldxIuQSbk6XICB59+YiJcxf76CzYzbQae+IQg7A
+         Rrr60ZNAQ352gUhTVOEVsfjTnxRTsQgn5gVe2Dzg1KDSodGvi+zTSUM9/dxCvRgkoptT
+         gUBQ==
+X-Gm-Message-State: AOJu0Yz127Zh/Mw863VuXV4t6velkbIwWYRtVyN+a95JKjj+UsRTlGv4
+	l4Ky8uQo5MhJK34rO7/LwWiW0Ab5xh6CsA+QFZcMzChs7CV6uPk4U4o9OunR6Qkp9w==
+X-Google-Smtp-Source: AGHT+IFU6AmbshSxwC6wamLAoP3Hu+M4ecA42KRmUt/NiRNwZmNRzNXhPNSaWvppyRKw3IXVOONw2Q==
+X-Received: by 2002:a2e:8186:0:b0:2d3:ecf7:dbd with SMTP id e6-20020a2e8186000000b002d3ecf70dbdmr293058ljg.0.1709768463391;
+        Wed, 06 Mar 2024 15:41:03 -0800 (PST)
+Received: from localhost.localdomain (109-252-14-191.nat.spd-mgts.ru. [109.252.14.191])
+        by smtp.gmail.com with ESMTPSA id b41-20020a05651c0b2900b002d40303b8d1sm366319ljr.115.2024.03.06.15.41.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Mar 2024 15:41:02 -0800 (PST)
+From: Maxim Moskalets <maximmosk4@gmail.com>
+X-Google-Original-From: Maxim Moskalets <Maxim.Moskalets@kaspersky.com>
+To: linux-kernel@vger.kernel.org
+Cc: Maxim.Moskalets@kaspersky.com,
+	bristot@redhat.com,
+	bsegall@google.com,
+	dietmar.eggemann@arm.com,
+	juri.lelli@redhat.com,
+	mgorman@suse.de,
+	mingo@redhat.com,
+	peterz@infradead.org,
+	rostedt@goodmis.org,
+	vincent.guittot@linaro.org,
+	vschneid@redhat.com
+Subject: [PATCH RESEND] kernel/sched: use seq_putc instead of seq_puts
+Date: Thu,  7 Mar 2024 02:41:00 +0300
+Message-Id: <20240306234100.10356-1-Maxim.Moskalets@kaspersky.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CA+G9fYtddf2Fd3be+YShHP6CmSDNcn0ptW8qg+stUKW+Cn0rjQ@mail.gmail.com>
- <d5c07950-6f42-4ac9-b0d8-776d444252ae@app.fastmail.com> <CAPLW+4=T1eGrWQcEJWvOcHgq9tnRhfi=AH_=qj1022k2WHmEhA@mail.gmail.com>
- <CAPLW+4mVTvPBW0hd9pV6AsSezxPAhwPByq3WmGpprtseTgy-wg@mail.gmail.com>
-In-Reply-To: <CAPLW+4mVTvPBW0hd9pV6AsSezxPAhwPByq3WmGpprtseTgy-wg@mail.gmail.com>
-From: Sam Protsenko <semen.protsenko@linaro.org>
-Date: Wed, 6 Mar 2024 17:36:38 -0600
-Message-ID: <CAPLW+4n=7ND_Jijfxzi018QwACGhJe4UX2VAuDUd1tuO97OHfw@mail.gmail.com>
-Subject: Re: WinLink E850-96: WARNING: at block/blk-settings.c:204 blk_validate_limits
-To: Arnd Bergmann <arnd@arndb.de>, Jaehoon Chung <jh80.chung@samsung.com>, 
-	Christoph Hellwig <hch@lst.de>
-Cc: Naresh Kamboju <naresh.kamboju@linaro.org>, linux-block <linux-block@vger.kernel.org>, 
-	lkft-triage@lists.linaro.org, open list <linux-kernel@vger.kernel.org>, 
-	Jens Axboe <axboe@kernel.dk>, Christian Brauner <brauner@kernel.org>, 
-	Ulf Hansson <ulf.hansson@linaro.org>, Dan Carpenter <dan.carpenter@linaro.org>, 
-	Anders Roxell <anders.roxell@linaro.org>, linux-mmc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, Mar 1, 2024 at 3:18=E2=80=AFPM Sam Protsenko <semen.protsenko@linar=
-o.org> wrote:
->
+Using seq_putc for newline characters is faster and more appropriate
+than seq_puts, since only one character is passed and there is no need
+to use a more powerful and less fast function
 
-[snip]
+Signed-off-by: Maxim Moskalets <Maxim.Moskalets@kaspersky.com>
+---
+ kernel/sched/cpuacct.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
->
-> Sorry, just noticed I commented on the wrong line. Here is the change I m=
-ade:
->
-> -               mmc->max_seg_size =3D 0x1000;
-> +               mmc->max_seg_size =3D PAGE_SIZE;
->
-> for (host->use_dma =3D=3D TRANS_MODE_IDMAC) case.
->
+diff --git a/kernel/sched/cpuacct.c b/kernel/sched/cpuacct.c
+index 0de9dda09949..54d9dd68f517 100644
+--- a/kernel/sched/cpuacct.c
++++ b/kernel/sched/cpuacct.c
+@@ -217,7 +217,7 @@ static int __cpuacct_percpu_seq_show(struct seq_file *m,
+ 		percpu = cpuacct_cpuusage_read(ca, i, index);
+ 		seq_printf(m, "%llu ", (unsigned long long) percpu);
+ 	}
+-	seq_printf(m, "\n");
++	seq_putc(m, '\n');
+ 	return 0;
+ }
+ 
+@@ -245,14 +245,14 @@ static int cpuacct_all_seq_show(struct seq_file *m, void *V)
+ 	seq_puts(m, "cpu");
+ 	for (index = 0; index < CPUACCT_STAT_NSTATS; index++)
+ 		seq_printf(m, " %s", cpuacct_stat_desc[index]);
+-	seq_puts(m, "\n");
++	seq_putc(m, '\n');
+ 
+ 	for_each_possible_cpu(cpu) {
+ 		seq_printf(m, "%d", cpu);
+ 		for (index = 0; index < CPUACCT_STAT_NSTATS; index++)
+ 			seq_printf(m, " %llu",
+ 				   cpuacct_cpuusage_read(ca, cpu, index));
+-		seq_puts(m, "\n");
++		seq_putc(m, '\n');
+ 	}
+ 	return 0;
+ }
+-- 
+2.34.1
 
-Just submitted the fix [1]. Please review.
-
-[1] https://lore.kernel.org/all/20240306232052.21317-1-semen.protsenko@lina=
-ro.org/T/#u
-
-> > [snip]
 
