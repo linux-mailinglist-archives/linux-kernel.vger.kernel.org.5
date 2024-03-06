@@ -1,374 +1,181 @@
-Return-Path: <linux-kernel+bounces-93943-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93944-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7574887374C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:04:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B862E873751
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:05:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 053C01F283C5
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:04:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B921B1C21AB2
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:05:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2AE3130AC3;
-	Wed,  6 Mar 2024 13:04:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D0F4130ACC;
+	Wed,  6 Mar 2024 13:05:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="n+3kKKdf"
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2043.outbound.protection.outlook.com [40.107.93.43])
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="PEjDqaJC"
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 755C17FBAF
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 13:04:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B235E3E48E;
+	Wed,  6 Mar 2024 13:05:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.40
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709730281; cv=fail; b=vBwGv38r77rkCSCpb44QC46AFsVg8NvckVXbz0WuK1u+xT7jtV6pNJV1e45nB9jFgxOTHgZgojnSsClToruyl8erbo62cE2As3LULhSYEXeZHFkMVY6yImibEcIRr3w3Cv9/o5yxVMBSdsq4apfdrG3/M9schLFuaXLQ0yXrTGc=
+	t=1709730320; cv=fail; b=pNl/lsWbsyJ26aQ37qZsPL59e5Cl01MF/jFMlaaQTFI0wcG5U+9wHQkAv2N49mgi0QorkfVA9ded/pVf78QvL7xnIcSuU2vtH9K4l/tNFbjg29oyT40qN9x/ytPDo+rmrsdD9IBxBo/ZA9tfp1mem1WURsbk3XDX1ec3+LR3Rbg=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709730281; c=relaxed/simple;
-	bh=N0ddlX+IpqbR0oSzFjIUYzn6MkvDcWOzwwI9Q2vU5y4=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=tWsHVe9fkSuKDBGD56/9M1OA6w3fXbEka83/QjfLGj42bfMPiPhLoXx46ddsehzWVe2fw5j8EXYJ4bXHR/HTWq18vXdO29g/15xbUZGFukIvP4CNeLwGK88wdf9VUhCiOtcwrZocCcC/O46ovrbPnEc2eIQoiRiDU364pEezvng=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=n+3kKKdf; arc=fail smtp.client-ip=40.107.93.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+	s=arc-20240116; t=1709730320; c=relaxed/simple;
+	bh=99/cXbGK8H66CXp1ntcaeMHhfgMmS4M9FfBBYjS+qDs=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=cmX8Yf1QpzszsboceFIqBARlIpP8IWnh7+Y0OJxEy1b5KXhMAhIh7iMTK/iZP/GZnoKRvnQlzXKBQZua7BJdY422rTPEPEDOoNsGc2bitb6WzVQLSyqu6ulpxAoCfOvRtsIV+EeqJ8Bn17WMqGdipWrT2rvqwQa7wVilFgWjWTk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=PEjDqaJC; arc=fail smtp.client-ip=40.107.236.40
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=c0oiE8px5M8sBbKe9Ao66UO26+ncAl2/4ZbKLKIE0bf3Yb3/Zj//txSz20fZ31ZI9oIbmOb8RqW0NNZ9HlxGBzfV36/yJdePOE2FXmeqRx2FWdeBHSTa/AZeKjPvBe/BKKVQ4XBz1Uj0QkasjGX4KUf9f6sMYgkRA9xhssYSOj2JG1m93fJjZBFsOGZfsyngqOZDp5eV0k7qyenIdrlVP39vsJOJgJ9w7mwMNghbiZfLt/r4AA/6bHzOPF4Z2tRz/g8pMs2BSpCIgWw/Uk1NDLNNU7EKD02gMoEglDMuQbJclzzo12xS2isyCzzx6ihKt0yWi2A5bP3+JxMT3eDwaQ==
+ b=VyRt6guFb46Pm/cQpSSLAMiCDJFG5WWv89N7zpop+QdGd74folhA8huzXmVeCMk3Lb4zld5DWtdd1DpnVd4thcPlDQl8/EwMhppKDVlmt1GznB5aqcYlWFKmn7QF6VptEN+AtNUTiowUJQEfgFwjPvg6DQHu/YGnPflgGCmaDDi7IyQzaT0zkYV4sthWsa5EBwHAv1RsWmt8QxBGX8U6uHms4MC6SSNt6ZgWISB15Hpxtef3s4z+TmES5KKgO92/jwEa/CE30rVclb8op7IEdASIOkYa7Glnc0iggx1a7Q4xtcp2jyRiZUkyLNf7SziqO0BrV3ixOeyoPRZdWczOaw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+8ZvxiDDF2ushAf3pXIh0WAnMis2+xn3ScgLtbWeN6g=;
- b=Zd6I4dz1uyEEvzLbG2ybziYyAgORNJAXEb/iU47pWFgTWH13mx3eChDt9KbREoEl1exbh3pmoHqVzOkhG8MOsrAHhd3jT5O7AdHVn0UJdbTd/GBXatkAkWtdQ77csQ6hbaY74e6uGBfk6ALUnhgnYkvAmKiDetWXevjY+vsB5z23ydCE45nBU9ug4RkYQ+XN+uGs7yDxZMFJvYcF0MM8S100IuFQPn7zUD2MpEm6kD7C1y0BNlYlmR7Oo2Ntl5KhirYDu8yQVm9NBkBesLW0hVWXcgJtfwvnNbGNRHlJeplz9ac/f1JBhUyAC/OaOsB9SWWN5sAjRCVGNYe5fzHeKg==
+ bh=99/cXbGK8H66CXp1ntcaeMHhfgMmS4M9FfBBYjS+qDs=;
+ b=gL4mskHM0+5rbiHpX5hVTEH5T0Fxgnwrf+qBX50wSFjjqc65EvYOa8fBHbzIRtMsmwGT0WosILEUczaMm4uCtjnN0q3X/mUztbYPeQQKs+0xu1skz8XbS3QWmAo+QYKvawlTS+a6fs+ORd52hpDJAv/X0aQOQRhe9sz/RqTT+55jTHXb69ovAkAoW78+yPZ10ojkfsQpy7z8M7ozO+BUuxPtBn7wlTU0hT2xbCn24gQ22oCxkHwNmvpUjjNwyrHc7m3vdr/B33Z/IIjeCDxi40ra5ReAv18dN9fo5Gsf0PwUd12pbFkniA68tCOmqwe3vm+CnbaiFLBNgSLS7d4VPg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+8ZvxiDDF2ushAf3pXIh0WAnMis2+xn3ScgLtbWeN6g=;
- b=n+3kKKdf0jX+u6dpSV6dXtHd+N0yKQI1Unrdh6asyRN0KUUmbotJ2HPWul3yyDeog7h2MVqZh1BG+bn3dH6SlXgGrhsMRjJHTFPisCvrnsBXkIjQQvZX4YOf2uUFXF2oWWjo1EgHzzS8o4zWWdm/tF8offc3ftzFRupfKhT6U8M=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH7PR12MB5596.namprd12.prod.outlook.com (2603:10b6:510:136::13)
- by SA1PR12MB7294.namprd12.prod.outlook.com (2603:10b6:806:2b8::19) with
+ bh=99/cXbGK8H66CXp1ntcaeMHhfgMmS4M9FfBBYjS+qDs=;
+ b=PEjDqaJC39yjtvC6WPiX0kL10LkkbbxB5du/ou3JJdBUUwONH/p1qgpuMFYT3jK7FC+EEGB0fqwqXZLbxeWlyoZk1k6o8C10DGT24UctnwJuMIoK25/6/Ybbebfa0/vYhHi4+X1Ehasr4Y1v5ZpiWh58wqam9dj5+FkYAJnW5kYwo4K+glYVBZGNUbL2oW8D6mHP2Dzvx518O5wH0F7kVaECz8kTFyx+e9HzK1Xs7nakkwYXtOXZEQBfD/C/H41P9GO246kVYJWO8Mxwnh/doP2dCymdQnYC1tdsbwMOQw45rRNVKVL/plJW9CycKuNuKB3A8UH4CpxHrPZWVlZOLw==
+Received: from DM6PR12MB5565.namprd12.prod.outlook.com (2603:10b6:5:1b6::13)
+ by IA0PR12MB8423.namprd12.prod.outlook.com (2603:10b6:208:3dc::15) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.38; Wed, 6 Mar
- 2024 13:04:35 +0000
-Received: from PH7PR12MB5596.namprd12.prod.outlook.com
- ([fe80::6f48:e3f1:6ff9:75bd]) by PH7PR12MB5596.namprd12.prod.outlook.com
- ([fe80::6f48:e3f1:6ff9:75bd%4]) with mapi id 15.20.7362.019; Wed, 6 Mar 2024
- 13:04:35 +0000
-Message-ID: <17e12147-79dd-44ba-b8ae-b96fb72dcfbd@amd.com>
-Date: Wed, 6 Mar 2024 18:34:25 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/amdgpu: cache in more vm fault information
-To: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Sunil Khatri <sunil.khatri@amd.com>, Alex Deucher
- <alexander.deucher@amd.com>, Shashank Sharma <shashank.sharma@amd.com>
-Cc: amd-gfx@lists.freedesktop.org, Pan@rtg-sunil-navi33.amd.com,
- Xinhui <Xinhui.Pan@amd.com>, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, Mukul Joshi <mukul.joshi@amd.com>,
- Arunpravin Paneer Selvam <Arunpravin.PaneerSelvam@amd.com>
-References: <20240306090408.3453152-1-sunil.khatri@amd.com>
- <2f792620-fd8a-412e-9130-e276ba36d5a0@amd.com>
- <5e2899cd-75b4-4ddd-97ff-4e10a2e67fbb@amd.com>
- <66815303-bd9c-4dfc-ae1a-bbdc5d1bb47c@amd.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.24; Wed, 6 Mar
+ 2024 13:05:14 +0000
+Received: from DM6PR12MB5565.namprd12.prod.outlook.com
+ ([fe80::bfce:51e5:6c7b:98ae]) by DM6PR12MB5565.namprd12.prod.outlook.com
+ ([fe80::bfce:51e5:6c7b:98ae%3]) with mapi id 15.20.7362.024; Wed, 6 Mar 2024
+ 13:05:14 +0000
+From: Dragos Tatulea <dtatulea@nvidia.com>
+To: "kuba@kernel.org" <kuba@kernel.org>
+CC: "almasrymina@google.com" <almasrymina@google.com>, "davem@davemloft.net"
+	<davem@davemloft.net>, "herbert@gondor.apana.org.au"
+	<herbert@gondor.apana.org.au>, Gal Pressman <gal@nvidia.com>,
+	"dsahern@kernel.org" <dsahern@kernel.org>, "steffen.klassert@secunet.com"
+	<steffen.klassert@secunet.com>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, Leon Romanovsky <leonro@nvidia.com>,
+	"pabeni@redhat.com" <pabeni@redhat.com>, "edumazet@google.com"
+	<edumazet@google.com>, "ian.kumlien@gmail.com" <ian.kumlien@gmail.com>,
+	"Anatoli.Chechelnickiy@m.interpipe.biz"
+	<Anatoli.Chechelnickiy@m.interpipe.biz>, "netdev@vger.kernel.org"
+	<netdev@vger.kernel.org>
+Subject: Re: [RFC] net: esp: fix bad handling of pages from page_pool
+Thread-Topic: [RFC] net: esp: fix bad handling of pages from page_pool
+Thread-Index: AQHabhlPr1Jip1r+TESj3iFnglf1YrEqCc2AgACn2oA=
+Date: Wed, 6 Mar 2024 13:05:14 +0000
+Message-ID: <7fc334b847dc4d90af796f84a8663de9f43ede5d.camel@nvidia.com>
+References: <20240304094950.761233-1-dtatulea@nvidia.com>
+	 <20240305190427.757b92b8@kernel.org>
+In-Reply-To: <20240305190427.757b92b8@kernel.org>
+Accept-Language: en-US
 Content-Language: en-US
-From: "Khatri, Sunil" <sukhatri@amd.com>
-In-Reply-To: <66815303-bd9c-4dfc-ae1a-bbdc5d1bb47c@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: PN2PR01CA0236.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:eb::20) To PH7PR12MB5596.namprd12.prod.outlook.com
- (2603:10b6:510:136::13)
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DM6PR12MB5565:EE_|IA0PR12MB8423:EE_
+x-ms-office365-filtering-correlation-id: 3a72334a-af97-4ee2-e11a-08dc3dde1045
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ LpCRhJmX6NwSFXAX1Oqe8otIMfU4kwfbwMoCQPPimBZuzrPTYI0J/wU+xPZu9VFnU1gmJBvxQ4VB7vK6DAlT7rwvjO3P9fw9JMwkZeMLcBuhB9fN1aoAa4BJUUueqWy5j5/qNGta3N7a/f/MTqNY9y9LT+ZRntXL92/R1MHuGe152W6WtS81zbcYvsfBo8poufeFtSWgW4tKB0iuny63MYpPj8IZ5x2BoIOTNeCmaMJ2dnVOugo6no967Lqm6DKB5XC+0atDGiN+yWc32uVSt2N3Xas8unzZGO+iXeAPHADAhVzKrJK7rwGeGb02Y87cIMLNl/SRpNZlZP10jrS/fYq/ssb0LYf74d5g1apImmEooU77moFRvsFu8KkuHkpiROHPOcjQNeh8XcNy6oaqhA5RLFf7/X3zh79uLPsY5OxO6l18W6LkU+Ehuy/p3f7bu7pM3LxCmYm83uEjFgWcIzEOIpv3pwXOibY6vCLBOGA6cqPPAgCh5ahXecXcDIR4oJEZDq49Elgy6MVcXSyQ0BbZrvebbA0grjJTjmJDQDmKtpsfsBASPc8ndBtCuHXUznJiQ7noaAUKqOll5BHY93yBdcEoMfKtIcjH0+z7FHSiJlkbX5SO1Ana1H3klps2K/W2omuG5ImIGietXXp+UoRo5Tu//FKVlAh+hg+9+/KveZ+/g5l1MMxwhfDvvXV29aYpR1sVKG8x9bC/JyLmLrFT3IDvKYsi3qWuO9Zih2U=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB5565.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?eVVuOENpTkVMbWNLU0l6WTJTTE5wb3RURUZTR0FlL25CUEdybDJxM0lUd0dw?=
+ =?utf-8?B?OEdjRndNY2xPeGU1MzhUL2ZuaFZIVGw2Y0pIdmdlemk5N1JTUzdtNkpuMkt0?=
+ =?utf-8?B?ZUlrK20yeC80RTBFMEE5eVc0OEVld0RVdG1na0VSenZjemZxZldlb3hDZ1ZE?=
+ =?utf-8?B?aXVhWmlLRFNSbnNZdFhnT294ZkYyUHlhbC8xUEJLemtHaWNaRUhCSkxWanA5?=
+ =?utf-8?B?aWNJaVVpenRzVkllRUJPVkUyRDVYZWFCbkt5Mm5VcXBVZUV2OFhFUWdPcStz?=
+ =?utf-8?B?bXlRdmNrWlQyVW85YmxHWkZCNXhoa1Z0YWlwMTRJR01GYkFJdENvL2RwNTlN?=
+ =?utf-8?B?bEx3QzVJVFJOeUhTcTVSeDVOT0pYRnZoZGFkTGZvK3MvR3gybW5GY0JOU0tF?=
+ =?utf-8?B?YnEvQ2xUdFJad0VRd0tneXBPTVQ0U2FEZ1BRbHFxRmFlMVhPUFZGY3NTWWhX?=
+ =?utf-8?B?d2I1d1pnYmdKTjZWYitXaHg1L1dpd1hGdzMxV3o5UlJHOGRtM3hLU05rRS9w?=
+ =?utf-8?B?QXJkUUkrT1RVWGxPMFlBN2tKc2UrZWNzME9mT2t3ZWVZTzl3T1l3amRNMENq?=
+ =?utf-8?B?WVlRd1B6UjRmeDRqV21QL1hUVVlPWVJnMTVEOEEzQ2RUaEZ0dHFNQjlRNU5l?=
+ =?utf-8?B?R01nWDc5Z2ozNWdldVFQQndiRzAxMGJwbE1DaGN5ZWtUQnBVOHFCNXBJNWVF?=
+ =?utf-8?B?QzdFOSt5aVB3ZFFpb1owY0VUbFhobm5MenpnQWtwUzhNL0wzdVhqMUlzWTNR?=
+ =?utf-8?B?NlJFU0ZZTXhGNjVSR1B2RzRYb3ByZDVvangxQW03T0lMQkZ1bUp6SEwvNkF1?=
+ =?utf-8?B?cjBtY25HL05ndHNUeE4zYnFGUjhLUWVMNjRPRDdtYWxnZWl2aWRvdlFKTmk4?=
+ =?utf-8?B?T0Nuc0J3WVJnLzFWQkZaRkhCTW0vY3o1eGFaaEtpSnRkSGpVM0pZNnljdVlF?=
+ =?utf-8?B?WHRRbGdTaXFTbnR3d29CMmZFcWxJc3hWSzNYMXRleCtLSTZXdDdPaWhMMWNG?=
+ =?utf-8?B?a3V0YXNYa0RzdjBFdzcvMW5BZmk1SFZtOSt3Y0phRUcwRmtQb1hhZFc1d0gr?=
+ =?utf-8?B?ZjNURWE4dzFkUmFEazNMRXJ0Vm80MDRpVVVCbmMrWEJsVE1zM0p2Zm9vYUZh?=
+ =?utf-8?B?WXNBbXVvdHBGQlcza2ZJK2dDMndZTGhPNlFaQXorQldPWnFJL3NnU0ZMNU1M?=
+ =?utf-8?B?cWMrQ1JGemh0bGlOaDBjU2pDUmgrbmlGV25QbzN1cTllMXNId2lTUEh3b2dT?=
+ =?utf-8?B?SFV1T2p1U1hodlZraDFuM1NaeXJrQ2ZaYnp4MHpUSWMyVWFYbnJ3MEZnVGhB?=
+ =?utf-8?B?MmNIRW9EbEJsSUhYMHR6NDlDYitxMUJGLzd5b0xJa2VyOW9ubmVWOExrY1JX?=
+ =?utf-8?B?dWkyWWlrMWZpYjNLTUlrVHVnSzJhRGlSNlBhZ3lJMG01SGlHM3UxdjJXK0J4?=
+ =?utf-8?B?WWgrS3RkRjc5OGdJUHZrUGZtc0pORkErMDJBcjRuSlYxTHowV3pyUFAyZ1BC?=
+ =?utf-8?B?RFYwancrQStRSTFzeGxIM1N2VXFHdlY5QkQxbXVtVEFKTzVXVzY0U0pqRVFm?=
+ =?utf-8?B?RlViSThHaTVqTWlZeVVVU2E5UW5LWkhSNUh1LzhlYWk2OGNuOFJOUkc0T1E2?=
+ =?utf-8?B?WlFLbjk0RlpyN3BMcVNVcXVrc3NFOVVkejdod3dTQUxhUjNUN1pqU2xyc0p4?=
+ =?utf-8?B?UCt0MzNqeUptV3djSnZXajFqMU1yY3lrOFVKQmRBUS9CSWgybTJTaGhLTGJp?=
+ =?utf-8?B?SlpUU0xFQk0zcGJZcE1TQTByMnFoSThweHFxZzgxMnFEcGZ6SnMrNUpGQWdX?=
+ =?utf-8?B?MU5BZ3RnalVFN1U1eHlnZzFLdVZBUXFIZEJxOEc3TTJFS293ZmRTakZvelVv?=
+ =?utf-8?B?TUpCZlUrbXpDdzV1VGdCTlZoc3hsb1o2R1I3MUhsL3R1WjBMN3B4NEdLUTBo?=
+ =?utf-8?B?QmFGcnMyWWxDY2gxNnB1T1NJSk4zektGbmZrS2Z1UHk0RjE4NTNRdThJSXhH?=
+ =?utf-8?B?eWhoSUtFZTIwMTNkSEl0UzhnZWxQTlZSSGdZb1Z5cU1kU3hYNlVQd2JONm5R?=
+ =?utf-8?B?WExZSE0rK2VkYTRaeFZJNEZoaU54MGJOeFdVYUpoQTNaVFRMV2prY1lGdThF?=
+ =?utf-8?B?Q0dQMVg1VHd1N05yNGg3UnVMNTNwVjZpc0JIV2ZiR0x6VGlHUWg5YUp3Nm9O?=
+ =?utf-8?Q?9BBkZhiZkuqRt9j3LDCRJoOjOpc464MzosHVGK1F8ny7?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <6C74CB93C43CCB49A5DDE6B86AE13070@namprd12.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB5596:EE_|SA1PR12MB7294:EE_
-X-MS-Office365-Filtering-Correlation-Id: 019a838e-8ac9-418d-5cf3-08dc3dddf8fd
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	mdYAYBzLBDdTw6C20ZCuoyRd379DNU6S76rHk36GU2w42lLau3wv797VrH2bIC3R+WJsOMA9O3pxUqHEBDQympD2ZiA/hHrbyYXZ09WE2fS2Ngv35v9Ogcrof5aG5rQnUPDl4MUTTcSB6op5VrDVD3EMoBniVLFmJUb+12pNI8woxydUO62NiNAZfQe2zGE6Bmv445sI27381tD9M9aSr4pPVdvOJAgu5iTZF6gRCwz5342+gSPYBZgPAUNTvilV5OePCq9ZREfJmM6GfOcL+1qBQWRDiQkByCvFKzyq/3+bFq0Q78sysy/Z0a5nwyE3AMV2N/IPI7GeVToqxnWcwDX0+FhGEbJa7eXOEXJ4eysGUEZzC1vFWYWmlHEV8bfEy1mP1c3ok3wQ91kxHGL2Wx18f0UDTa98+SIasqrlwQQP2bUWdRjwghk38hpp5hNlUiTRgk5QBlmI1SlCidfUtqHbBfoKijG8QwcZYvJoPB01Y2EuOS36qJ8CL5HlA5Ct0irEkiJS2DhMIFqmQKuGySrJr7fIBMmjKlaP2OAM5f5f21hZXqS50etwntTTy20fvkoOZDoa9dB07NkvTSeHepqmrarygLbp1KSm2jENSDIP/LdzEyXqTt4QzQoLUyaKk8miO7126X1lCnluB+ea++nPq84HEcsjerUMtF704ow=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5596.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?a2hZVTNpQmNrSjdaVkNaUVV4ak1CMEZueTFEN04xQk0xQlZyVDFQS1BrN0l6?=
- =?utf-8?B?WFdIOFdjOFFra2YydmZveklqWkJGRGI5dTBsY0pERHFsR1B3TFowSG5CemtQ?=
- =?utf-8?B?YnkzTTlPbXBwY29yNlhaeXNyT2E3b1VMR3E0WDZvV1kzUXhiTGRLQmxPbFUv?=
- =?utf-8?B?QlQ5RHhpeWVlMVIwdkZXVk41SVZaTlVFTC94Tm9RWHR4a2w4TjMxd1lyeVJI?=
- =?utf-8?B?YWF4cXhpMSs5SVQzbk13NUtzUEhQOWhJemZoWjJGTDZYdTBCTjRKb25EMEUx?=
- =?utf-8?B?WTlKOVUwbzM1dkpZRlhVQnh2c0RoaEFneTRrRUwzV083Z0tBU29Kb0kycUtB?=
- =?utf-8?B?Q3hkbnRtQlBVei91SXZKV1paS2VFeGhnNEZxTGEyU045enZSRXllbVNJQnpx?=
- =?utf-8?B?M3R6eFdsMVlKdy92VmxCWjJQZmd1NCtnNWNFRHNPNWVjUS9yWmlqRG9JN0hR?=
- =?utf-8?B?a0RSc3hYQWlIU1pQcGVQUTlBaGI4MXltN2EyVEp6WmtraTVNMXprRzEzN1pO?=
- =?utf-8?B?QkI2cGpCM0tBVFNYYTlFb0NTdHBBSDNFWXFIQktmNlNLZVdPNm11UU5QREEy?=
- =?utf-8?B?S2dGbTRWWUFZYVIzd1VVY0Y5cmczSTRwK3VPNUYzd01jejFOczExQXd4RTZC?=
- =?utf-8?B?TnlwZzBXUHROZ1o5endUUzdUY3JleFp1dFhqblFRQnNwUURVNU1LRFZQWVNl?=
- =?utf-8?B?cmlUNVNCZFJwcWV0VGNLVVJJODZLelhuRlRzR01tMCtBSDcySUprS1E0WjJu?=
- =?utf-8?B?SjhYd2dSZmVMMGI4NmlPNXF1bUZCZW5hRlRqVXNVVkZKWHZZU2VibXZ4ZWIv?=
- =?utf-8?B?VSt2TEQ5c21QTkl1K2lsenRDdWs0UUlDUUk5TVZKT1ZEQ2pKMklKU004ZzJl?=
- =?utf-8?B?MkVMS2sramtKcU5JTXJ3ZjZIbXR2c2w1MVlGeWFmYTZiaDdVSXVOVXpmOExP?=
- =?utf-8?B?aHAydlFRWmF0TVRnSG4wTnRjc0RxWW9rcjZHSlhvZ25GcEtjYVVMN0tOa2V1?=
- =?utf-8?B?VTZzMzdrZEFDV08xT1ZYMXNJa0tVTTVuc3orbHpKOFY3N016OHpkTm54OHZ3?=
- =?utf-8?B?MkU5ZWpLdytsMkhTWUtMTHJUY2hSVE9MRkphZm5JeDNYU1hVT1lSbjBuNzVs?=
- =?utf-8?B?ZTRONGRWWS8yTy90bnBESk16WjlKZjBHNXJBTGE4c1drWTRRSlVMcUtZeVBz?=
- =?utf-8?B?L3dKUTVleUFvd0MrbnlJZERjWHB4ZWc4WGNLdG5JTGhveFpVeUNHVWR6YTVk?=
- =?utf-8?B?dlZWNkp0NGsyZ2k4eGIya0Z4SUsvTWZYUFlWRGlXRmhSbXZTUnRkeFluZVVp?=
- =?utf-8?B?NFNScmp3cW1Ib1B0b1Y2UEZGaWxGZGFSeWpCU2xyMGNpaWZkclhKT0lQT0tD?=
- =?utf-8?B?M3gyb213ei9QYjZUZ2Jya3RPN0tFS2dPc3dJdHdiRDBGNjl0MEVudWxOUTBX?=
- =?utf-8?B?NW4wOGNjdXM4eXRMd0Z0dHlWZXBpWnIwa242Z0pkN1VTcWgxc2djNlZmR0gx?=
- =?utf-8?B?ZWZWNWtnK1I2WnMvNjRsMkpjZmFHeWZHWmIrWlRPQlVSQmpUVno5Mis1cHVU?=
- =?utf-8?B?d213MDd2ZUwxajBpZitvRXd6WEdDUzltb3AvcUg4UFVnZWdibGhMbTNaZ3Fk?=
- =?utf-8?B?UWw3bVNsdXhVZlBRaVpwL3d1ZDFCZXF6aXN6WWw4aURBV3owZ1dCeG4wRy9P?=
- =?utf-8?B?Nmw5K0lQMzVYUjd1VlNaMjBYWkVtbmI2NzhsaXVHeWZLcytQaWo2aVJCeGlk?=
- =?utf-8?B?N1hTZ1BCb3BDVDZGUUp1em1pYWpaUjNJVDl6SnBwWEtwME1oeFloYkhqeE1w?=
- =?utf-8?B?QTBrYW5LVWdyWnFhSVlaUjdOK0JxeUhxUFRHN2dGSytiTXpSYTE4OTduN3Jv?=
- =?utf-8?B?L0JMQjJXeHZ2TENEUklaanZocnZtdFROUjg2ZElWM0tMUVFaQ05QUE9MSkNr?=
- =?utf-8?B?czdtVFQ4VXZ5TFBGMjVXTi9QZEdtUWZ1Q2VWb2VZcXJQYnBYK0JUNzZudy91?=
- =?utf-8?B?SXpBY09IcU1WaXBYTFdTbFlnaHhON2RpUmlPeHJaS1Bia3hnOWc3dmlub01E?=
- =?utf-8?B?dzkrMXZDZ1RXbXp4ZThkZWJTT3kwZmttUmZsVjRyUmpGQjNHdmEwelI0REJo?=
- =?utf-8?Q?lV9g+rP7ayaQtCtDSUbPGpD9f?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 019a838e-8ac9-418d-5cf3-08dc3dddf8fd
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5596.namprd12.prod.outlook.com
+X-OriginatorOrg: Nvidia.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Mar 2024 13:04:35.5399
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB5565.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3a72334a-af97-4ee2-e11a-08dc3dde1045
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Mar 2024 13:05:14.4464
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: TRw1xtC9bcSc/3MjPF1pKmyI+TewqpZJerE2/yIfIENNfMTw2PpxUc34uq/HLRQyV2xEI8K71pOmUEW21eihpQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB7294
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: kjyfcKhxzBQznsgehONOIJIEOWevAf2dJVH037takYBUAchYCfq0y4+BOOsWweAT1YmcNbnEstWsezmW6OIhUg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB8423
 
-
-On 3/6/2024 6:12 PM, Christian König wrote:
-> Am 06.03.24 um 11:40 schrieb Khatri, Sunil:
->>
->> On 3/6/2024 3:37 PM, Christian König wrote:
->>> Am 06.03.24 um 10:04 schrieb Sunil Khatri:
->>>> When an  page fault interrupt is raised there
->>>> is a lot more information that is useful for
->>>> developers to analyse the pagefault.
->>>
->>> Well actually those information are not that interesting because 
->>> they are hw generation specific.
->>>
->>> You should probably rather use the decoded strings here, e.g. hub, 
->>> client, xcc_id, node_id etc...
->>>
->>> See gmc_v9_0_process_interrupt() an example.
->>> I saw this v9 does provide more information than what v10 and v11 
->>> provide like node_id and fault from which die but thats again very 
->>> specific to IP_VERSION(9, 4, 3)) i dont know why thats information 
->>> is not there in v10 and v11.
->>
->> I agree to your point but, as of now during a pagefault we are 
->> dumping this information which is useful like which client
->> has generated an interrupt and for which src and other information 
->> like address. So i think to provide the similar information in the 
->> devcoredump.
->>
->> Currently we do not have all this information from either job or vm 
->> being derived from the job during a reset. We surely could add more 
->> relevant information later on as per request but this information is 
->> useful as
->> eventually its developers only who would use the dump file provided 
->> by customer to debug.
->>
->> Below is the information that i dump in devcore and i feel that is 
->> good information but new information could be added which could be 
->> picked later.
->>
->>> Page fault information
->>> [gfxhub] page fault (src_id:0 ring:24 vmid:3 pasid:32773)
->>> in page starting at address 0x0000000000000000 from client 0x1b (UTCL2)
->
-> This is a perfect example what I mean. You record in the patch is the 
-> client_id, but this is is basically meaningless unless you have access 
-> to the AMD internal hw documentation.
->
-> What you really need is the client in decoded form, in this case 
-> UTCL2. You can keep the client_id additionally, but the decoded client 
-> string is mandatory to have I think.
->
-> Sure i am capturing that information as i am trying to minimise the 
-> memory interaction to minimum as we are still in interrupt context 
-> here that why i recorded the integer information compared to decoding
-and writing strings there itself but to postpone till we dump.
-
-Like decoding to the gfxhub/mmhub based on vmhub/vmid_src and client 
-string from client id. So are we good to go with the information with 
-the above information of sharing details in devcoredump using the 
-additional information from pagefault cached.
-
-regards
-sunil
-
->
-> Regards,
-> Christian.
->
->>
->> Regards
->> Sunil Khatri
->>
->>>
->>> Regards,
->>> Christian.
->>>
->>>>
->>>> Add all such information in the last cached
->>>> pagefault from an interrupt handler.
->>>>
->>>> Signed-off-by: Sunil Khatri <sunil.khatri@amd.com>
->>>> ---
->>>>   drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c | 9 +++++++--
->>>>   drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h | 7 ++++++-
->>>>   drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c | 2 +-
->>>>   drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c | 2 +-
->>>>   drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c  | 2 +-
->>>>   drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c  | 2 +-
->>>>   drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c  | 2 +-
->>>>   7 files changed, 18 insertions(+), 8 deletions(-)
->>>>
->>>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c 
->>>> b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
->>>> index 4299ce386322..b77e8e28769d 100644
->>>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
->>>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
->>>> @@ -2905,7 +2905,7 @@ void amdgpu_debugfs_vm_bo_info(struct 
->>>> amdgpu_vm *vm, struct seq_file *m)
->>>>    * Cache the fault info for later use by userspace in debugging.
->>>>    */
->>>>   void amdgpu_vm_update_fault_cache(struct amdgpu_device *adev,
->>>> -                  unsigned int pasid,
->>>> +                  struct amdgpu_iv_entry *entry,
->>>>                     uint64_t addr,
->>>>                     uint32_t status,
->>>>                     unsigned int vmhub)
->>>> @@ -2915,7 +2915,7 @@ void amdgpu_vm_update_fault_cache(struct 
->>>> amdgpu_device *adev,
->>>>         xa_lock_irqsave(&adev->vm_manager.pasids, flags);
->>>>   -    vm = xa_load(&adev->vm_manager.pasids, pasid);
->>>> +    vm = xa_load(&adev->vm_manager.pasids, entry->pasid);
->>>>       /* Don't update the fault cache if status is 0.  In the multiple
->>>>        * fault case, subsequent faults will return a 0 status which is
->>>>        * useless for userspace and replaces the useful fault 
->>>> status, so
->>>> @@ -2924,6 +2924,11 @@ void amdgpu_vm_update_fault_cache(struct 
->>>> amdgpu_device *adev,
->>>>       if (vm && status) {
->>>>           vm->fault_info.addr = addr;
->>>>           vm->fault_info.status = status;
->>>> +        vm->fault_info.client_id = entry->client_id;
->>>> +        vm->fault_info.src_id = entry->src_id;
->>>> +        vm->fault_info.vmid = entry->vmid;
->>>> +        vm->fault_info.pasid = entry->pasid;
->>>> +        vm->fault_info.ring_id = entry->ring_id;
->>>>           if (AMDGPU_IS_GFXHUB(vmhub)) {
->>>>               vm->fault_info.vmhub = AMDGPU_VMHUB_TYPE_GFX;
->>>>               vm->fault_info.vmhub |=
->>>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h 
->>>> b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h
->>>> index 047ec1930d12..c7782a89bdb5 100644
->>>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h
->>>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h
->>>> @@ -286,6 +286,11 @@ struct amdgpu_vm_fault_info {
->>>>       uint32_t    status;
->>>>       /* which vmhub? gfxhub, mmhub, etc. */
->>>>       unsigned int    vmhub;
->>>> +    unsigned int    client_id;
->>>> +    unsigned int    src_id;
->>>> +    unsigned int    ring_id;
->>>> +    unsigned int    pasid;
->>>> +    unsigned int    vmid;
->>>>   };
->>>>     struct amdgpu_vm {
->>>> @@ -605,7 +610,7 @@ static inline void 
->>>> amdgpu_vm_eviction_unlock(struct amdgpu_vm *vm)
->>>>   }
->>>>     void amdgpu_vm_update_fault_cache(struct amdgpu_device *adev,
->>>> -                  unsigned int pasid,
->>>> +                  struct amdgpu_iv_entry *entry,
->>>>                     uint64_t addr,
->>>>                     uint32_t status,
->>>>                     unsigned int vmhub);
->>>> diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c 
->>>> b/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
->>>> index d933e19e0cf5..6b177ce8db0e 100644
->>>> --- a/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
->>>> +++ b/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
->>>> @@ -150,7 +150,7 @@ static int gmc_v10_0_process_interrupt(struct 
->>>> amdgpu_device *adev,
->>>>           status = RREG32(hub->vm_l2_pro_fault_status);
->>>>           WREG32_P(hub->vm_l2_pro_fault_cntl, 1, ~1);
->>>>   -        amdgpu_vm_update_fault_cache(adev, entry->pasid, addr, 
->>>> status,
->>>> +        amdgpu_vm_update_fault_cache(adev, entry, addr, status,
->>>>                            entry->vmid_src ? AMDGPU_MMHUB0(0) : 
->>>> AMDGPU_GFXHUB(0));
->>>>       }
->>>>   diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c 
->>>> b/drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c
->>>> index 527dc917e049..bcf254856a3e 100644
->>>> --- a/drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c
->>>> +++ b/drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c
->>>> @@ -121,7 +121,7 @@ static int gmc_v11_0_process_interrupt(struct 
->>>> amdgpu_device *adev,
->>>>           status = RREG32(hub->vm_l2_pro_fault_status);
->>>>           WREG32_P(hub->vm_l2_pro_fault_cntl, 1, ~1);
->>>>   -        amdgpu_vm_update_fault_cache(adev, entry->pasid, addr, 
->>>> status,
->>>> +        amdgpu_vm_update_fault_cache(adev, entry, addr, status,
->>>>                            entry->vmid_src ? AMDGPU_MMHUB0(0) : 
->>>> AMDGPU_GFXHUB(0));
->>>>       }
->>>>   diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c 
->>>> b/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c
->>>> index 3da7b6a2b00d..e9517ebbe1fd 100644
->>>> --- a/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c
->>>> +++ b/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c
->>>> @@ -1270,7 +1270,7 @@ static int gmc_v7_0_process_interrupt(struct 
->>>> amdgpu_device *adev,
->>>>       if (!addr && !status)
->>>>           return 0;
->>>>   -    amdgpu_vm_update_fault_cache(adev, entry->pasid,
->>>> +    amdgpu_vm_update_fault_cache(adev, entry,
->>>>                        ((u64)addr) << AMDGPU_GPU_PAGE_SHIFT, 
->>>> status, AMDGPU_GFXHUB(0));
->>>>         if (amdgpu_vm_fault_stop == AMDGPU_VM_FAULT_STOP_FIRST)
->>>> diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c 
->>>> b/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c
->>>> index d20e5f20ee31..a271bf832312 100644
->>>> --- a/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c
->>>> +++ b/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c
->>>> @@ -1438,7 +1438,7 @@ static int gmc_v8_0_process_interrupt(struct 
->>>> amdgpu_device *adev,
->>>>       if (!addr && !status)
->>>>           return 0;
->>>>   -    amdgpu_vm_update_fault_cache(adev, entry->pasid,
->>>> +    amdgpu_vm_update_fault_cache(adev, entry,
->>>>                        ((u64)addr) << AMDGPU_GPU_PAGE_SHIFT, 
->>>> status, AMDGPU_GFXHUB(0));
->>>>         if (amdgpu_vm_fault_stop == AMDGPU_VM_FAULT_STOP_FIRST)
->>>> diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c 
->>>> b/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
->>>> index 47b63a4ce68b..dc9fb1fb9540 100644
->>>> --- a/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
->>>> +++ b/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
->>>> @@ -666,7 +666,7 @@ static int gmc_v9_0_process_interrupt(struct 
->>>> amdgpu_device *adev,
->>>>       rw = REG_GET_FIELD(status, VM_L2_PROTECTION_FAULT_STATUS, RW);
->>>>       WREG32_P(hub->vm_l2_pro_fault_cntl, 1, ~1);
->>>>   -    amdgpu_vm_update_fault_cache(adev, entry->pasid, addr, 
->>>> status, vmhub);
->>>> +    amdgpu_vm_update_fault_cache(adev, entry, addr, status, vmhub);
->>>>         dev_err(adev->dev,
->>>>           "VM_L2_PROTECTION_FAULT_STATUS:0x%08X\n",
->>>
->
+T24gVHVlLCAyMDI0LTAzLTA1IGF0IDE5OjA0IC0wODAwLCBKYWt1YiBLaWNpbnNraSB3cm90ZToN
+Cj4gT24gTW9uLCA0IE1hciAyMDI0IDExOjQ4OjUyICswMjAwIERyYWdvcyBUYXR1bGVhIHdyb3Rl
+Og0KPiA+IFdoZW4gdGhlIHNrYiBpcyByZW9yZ2FuaXplZCBkdXJpbmcgZXNwX291dHB1dCAoIWVz
+cC0+aW5saW5lKSwgdGhlIHBhZ2VzDQo+ID4gY29taW5nIGZyb20gdGhlIG9yaWdpbmFsIHNrYiBm
+cmFnbWVudHMgYXJlIHN1cHBvc2VkIHRvIGJlIHJlbGVhc2VkIGJhY2sNCj4gPiB0byB0aGUgc3lz
+dGVtIHRocm91Z2ggcHV0X3BhZ2UuIEJ1dCBpZiB0aGUgc2tiIGZyYWdtZW50IHBhZ2VzIGFyZQ0K
+PiA+IG9yaWdpbmF0aW5nIGZyb20gYSBwYWdlX3Bvb2wsIGNhbGxpbmcgcHV0X3BhZ2Ugb24gdGhl
+bSB3aWxsIHRyaWdnZXIgYQ0KPiA+IHBhZ2VfcG9vbCBsZWFrIHdoaWNoIHdpbGwgZXZlbnR1YWxs
+eSByZXN1bHQgaW4gYSBjcmFzaC4NCj4gDQo+IFNvIGl0IGp1c3QgZG9lczogc2tiX3NoaW5mbyhz
+a2IpLT5ucl9mcmFncyA9IDE7DQo+IGFuZCBhc3N1bWVzIHRoYXQncyBlcXVpdmFsZW50IHRvIG93
+bmluZyBhIHBhZ2UgcmVmIG9uIGFsbCB0aGUgZnJhZ3M/DQo+IA0KTXkgdW5kZXJzdGFuZGluZyBp
+cyBkaWZmZXJlbnQ6IGl0IHNldHMgbnJfZnJhZ3MgdG8gMSBiZWNhdXNlIGl0J3Mgc3dhcHBpbmcg
+b3V0DQp0aGUgb2xkIHBhZ2UgZnJhZyBpbiBmcmFnbWVudCAwIHdpdGggdGhlIG5ldyB4ZnJhZyBw
+YWdlIGZyYWcgYW5kIHdpbGwgdXNlIHRoaXMNCiJuZXciIHNrYiBmcm9tIGhlcmUuIEl0IGRvZXMg
+dGFrZSBhIHBhZ2UgcmVmZXJlbmNlIGZvciB0aGUgeGZyYWcgcGFnZSBmcmFnLg0KDQo+IEZpeCBs
+b29rcyBtb3JlIG9yIGxlc3MgZ29vZCwgd2Ugd291bGQgbmVlZCBhIG5ldyB3cmFwcGVyIHRvIGF2
+b2lkDQo+IGJ1aWxkIGlzc3VlcyB3aXRob3V0IFBBR0VfUE9PTCzCoA0KPiANCkFjay4gV2hpY2gg
+Y29tcG9uZW50IHdvdWxkIGJlIGJlc3QgbG9jYXRpb24gZm9yIHRoaXMgd3JhcHBlcjogcGFnZV9w
+b29sPw0KDQo+IGJ1dCBJIHdvbmRlciBpZiB3ZSB3b3VsZG4ndCBiZSBiZXR0ZXINCj4gb2ZmIGNo
+YW5naW5nIHRoZSBvdGhlciBzaWRlLiBJbnN0ZWFkIG9mICJjdXR0aW5nIG9mZiIgdGhlIGZyYWdz
+IC0NCj4gd2Fsa2luZyB0aGVtIGFuZCBkZWFsaW5nIHdpdGggdmFyaW91cyBwYWdlIHR5cGVzLiBC
+ZWNhdXNlIE1pbmEgYW5kIGNvLg0KPiB3aWxsIHN0ZXAgb250byB0aGlzIGxhbmRtaW5lIGFzIHdl
+bGwuDQpUaGUgcGFnZSBmcmFncyBhcmUgc3RpbGwgc3RvcmVkIGFuZCB1c2VkIGluIHRoZSBzZyBz
+Y2F0dGVybGlzdC4gSWYgd2UgcmVsZWFzZQ0KdGhlbSBhdCB0aGUgbW9tZW50IHdoZW4gdGhlIHNr
+YiBpcyAiY3V0IG9mZiIsIHRoZSBwYWdlcyBpbiB0aGUgc2cgd2lsbCBiZQ0KaW52YWxpZC4gQXQg
+bGVhc3QgdGhhdCdzIG15IHVuZGVyc3RhbmRpbmcuDQoNClRoYW5rcywNCkRyYWdvcw0K
 
