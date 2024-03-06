@@ -1,207 +1,99 @@
-Return-Path: <linux-kernel+bounces-94636-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94634-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 473AC874274
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 23:09:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35320874271
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 23:08:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5BEE91C20DB9
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 22:09:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C91091F256CD
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 22:08:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6CED1B968;
-	Wed,  6 Mar 2024 22:09:13 +0000 (UTC)
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78B991BDE2;
+	Wed,  6 Mar 2024 22:08:31 +0000 (UTC)
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 799421B81B
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 22:09:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A31F1B946
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 22:08:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709762953; cv=none; b=Jh7LyuXaC6qqEV7dBcRMbEjG37SJ2FxTU7O2NuMelMWEgEDFd93bz08Do4Z/YxAZr17VIIhLg66Iaprj+edB/OHneSwBO5y/1oKjIeTspvNCa7n95VykFciangymGu37unxmTlUGf+L5TzD2LPGgHB74kOPjOUQDSHAGp74BO/U=
+	t=1709762911; cv=none; b=KNBXQweXLwIuWLurXC+A9pA6Fk7IdUsKTF7/MkTAmXYLDoA9AJpEDs9fCcTOxXhCpT33HZEP4Mt3x3kfo41oH6RN6gF9w9yZHeuIwSK2feAOBINhfTcLLRczOIs7W7Iz0FGf8pX6k1eu5bu5oBa7qolsPUPUOHRp4r3tf/2/8jY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709762953; c=relaxed/simple;
-	bh=OpHLrbf/wbZWGKlWzHZkTRSdUAQZaURp4dx3plJlmz0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OnxTFTS/lZJDo80OAdzB2y2YaG+8kCuz8IELpR7FlJ/RnLXKQG7gceDDJZtnQW6/fmKDz3d9uwVzt1d0VA6yotf4DntOtOY3iO/jWXZbcEoBFMIr+5iIyJHCdP/RmsP8I36Bd4ige6monOxzQC/cExfOkGhoR9PIWG8/BHHlTmQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
-Received: from fsav119.sakura.ne.jp (fsav119.sakura.ne.jp [27.133.134.246])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 426M8EaB071013;
-	Thu, 7 Mar 2024 07:08:14 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav119.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav119.sakura.ne.jp);
- Thu, 07 Mar 2024 07:08:14 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav119.sakura.ne.jp)
-Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 426M8DcQ071009
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Thu, 7 Mar 2024 07:08:13 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <9692c93d-1482-4750-a8fc-0ff060028675@I-love.SAKURA.ne.jp>
-Date: Thu, 7 Mar 2024 07:08:13 +0900
+	s=arc-20240116; t=1709762911; c=relaxed/simple;
+	bh=aLqD1qqrg4H5cW6Sta4E4emtGDDwylkjtBqP6jN8U8A=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=cTU48EK7VZuwIrS8fDQROp3utCLZAv8pf6nlDBMzV2oeIotkDJZvo+Cw7AvKN/8nN0/8vFLX+7TJ6b9N3kcyi8QtTNmPPR+nkfcAR1Ip4xiToXsy4vl5N63X59SMYr7B2K97HIUxC63bfxlHoPNnLvNYRpOz2c9XAYlL6vWBjw0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7c874fb29a3so32077239f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 14:08:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709762908; x=1710367708;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9ydl/05qviZ59DUb0+tYjcpB6jNkUerBbrbnghjwTq8=;
+        b=reveCmW64LTu7XXbm2t2KqoIg4PzrF7Yhhdx8N8QArlwraY5ZXosg6uMMzN4adg5NU
+         PVcdOvwTLes/oSFUxivSIKVfwYsgvKLH+JkQc8EbH2a4B5CgDUiDXDhKPzgjixiV9SYn
+         us4/f4gVDLfOdXOrJW0/IMaTHjPyqUhkd5bGdxAUr8g3HnfgrUQwKJYLKfdSn0aX1X7r
+         diEOCx0PYhetejBcQHS/7Enm3zoPH3Db2T+L3kjT5mKFFpFn2CDHwn26CLDDYH2S1uMr
+         SRkbZZ5sIvyF16v+j3Q30xbrFspvqCP2bW8uzFuaaZZML9wecPi6HFvqSI3+UKewNPRG
+         a1Xg==
+X-Forwarded-Encrypted: i=1; AJvYcCWtGmKaeohhXKoPNGrnT4YZyWcEekowoEKderKrI4CWCoBPEUMqBBL09mOZe5jmB7tfeQ11hxsJZvpQ5p156QSLqLfJLJcmMP3GQrjH
+X-Gm-Message-State: AOJu0Yydl0NtmO2ldUemO3bpc8tihBy7NkCV6L+j6qsHb6XCQheax/4c
+	BGq/Oude9IzWr5KYFnyHwIqsEKU8vsJ+nneoKq10P+2Kxwv7XiT1zFnhMGpjzXsq334SBbgnEqE
+	2REVWAlMehsX+SweVGg2yyRRm5pluAr1ok1yCyZX+pJ9WTxKvbMmFjAk=
+X-Google-Smtp-Source: AGHT+IHR5Fsp+gGDp4OcyRnoO0IK33EA0UpUzzcluBuUVwW4wDXOTe81M5JhSUqqlYaFC9Jb17KkZBZ1+SYYbowiauDgOoKSai0W
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] x86: disable non-instrumented version of copy_mc when
- KMSAN is enabled
-Content-Language: en-US
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>, Dmitry Vyukov <dvyukov@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Cc: LKML <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-References: <3b7dbd88-0861-4638-b2d2-911c97a4cadf@I-love.SAKURA.ne.jp>
- <06c11112-db64-40ed-bb96-fa02b590a432@I-love.SAKURA.ne.jp>
- <CAHk-=whGn2hDpHDrgHEzGdicXLZMTgFq8iaH8p+HnZVWj32_VQ@mail.gmail.com>
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-In-Reply-To: <CAHk-=whGn2hDpHDrgHEzGdicXLZMTgFq8iaH8p+HnZVWj32_VQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6638:4818:b0:474:dc73:2aa4 with SMTP id
+ cp24-20020a056638481800b00474dc732aa4mr576597jab.3.1709762908799; Wed, 06 Mar
+ 2024 14:08:28 -0800 (PST)
+Date: Wed, 06 Mar 2024 14:08:28 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d4506f06130532c6@google.com>
+Subject: [syzbot] Monthly exfat report (Mar 2024)
+From: syzbot <syzbot+listfd275f6d56fcfac99f4b@syzkaller.appspotmail.com>
+To: linkinjeon@kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, sj1557.seo@samsung.com, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Thank you for explanation.
+Hello exfat maintainers/developers,
 
-On 2024/03/06 2:57, Linus Torvalds wrote:
-> I think the KMSAN people need to tell us how to tell kmsan that it's a
-> memcpy (and about the "I'm going to touch this part of memory", needed
-> for the "copy_mv_to_user" side).
-> 
-> So somebody needs to abstract out that
-> 
->         depot_stack_handle_t origin;
-> 
->         if (!kmsan_enabled || kmsan_in_runtime())
->                 return;
-> 
->         kmsan_enter_runtime();
->         /* Using memmove instead of memcpy doesn't affect correctness. */
->         kmsan_internal_memmove_metadata(dst, (void *)src, n);
->         kmsan_leave_runtime();
-> 
->         set_retval_metadata(shadow, origin);
-> 
-> kind of thing, and expose it as a helper function for "I did something
-> that looks like a memory copy", the same way that we currently have
-> kmsan_copy_page_meta()
+This is a 31-day syzbot report for the exfat subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/exfat
 
-Something like below one? Can we assume that 0 <= ret <= len is always true?
+During the period, 0 new issues were detected and 0 were fixed.
+In total, 3 issues are still open and 14 have been fixed so far.
 
-diff --git a/arch/x86/lib/copy_mc.c b/arch/x86/lib/copy_mc.c
-index 6e8b7e600def..6858f80fc9a2 100644
---- a/arch/x86/lib/copy_mc.c
-+++ b/arch/x86/lib/copy_mc.c
-@@ -61,12 +61,18 @@ unsigned long copy_mc_enhanced_fast_string(void *dst, const void *src, unsigned
-  */
- unsigned long __must_check copy_mc_to_kernel(void *dst, const void *src, unsigned len)
- {
--	if (copy_mc_fragile_enabled)
--		return copy_mc_fragile(dst, src, len);
--	if (static_cpu_has(X86_FEATURE_ERMS))
--		return copy_mc_enhanced_fast_string(dst, src, len);
--	memcpy(dst, src, len);
--	return 0;
-+	unsigned long ret;
-+
-+	if (copy_mc_fragile_enabled) {
-+		ret = copy_mc_fragile(dst, src, len);
-+	} else if (static_cpu_has(X86_FEATURE_ERMS)) {
-+		ret = copy_mc_enhanced_fast_string(dst, src, len);
-+	} else {
-+		memcpy(dst, src, len);
-+		ret = 0;
-+	}
-+	kmsan_memmove(dst, src, len - ret);
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(copy_mc_to_kernel);
- 
-@@ -78,15 +84,13 @@ unsigned long __must_check copy_mc_to_user(void __user *dst, const void *src, un
- 		__uaccess_begin();
- 		ret = copy_mc_fragile((__force void *)dst, src, len);
- 		__uaccess_end();
--		return ret;
--	}
--
--	if (static_cpu_has(X86_FEATURE_ERMS)) {
-+	} else if (static_cpu_has(X86_FEATURE_ERMS)) {
- 		__uaccess_begin();
- 		ret = copy_mc_enhanced_fast_string((__force void *)dst, src, len);
- 		__uaccess_end();
--		return ret;
-+	} else {
-+		ret = copy_user_generic((__force void *)dst, src, len);
- 	}
--
--	return copy_user_generic((__force void *)dst, src, len);
-+	kmsan_copy_to_user(dst, src, len, ret);
-+	return ret;
- }
-diff --git a/include/linux/kmsan-checks.h b/include/linux/kmsan-checks.h
-index c4cae333deec..4c2a614dab2d 100644
---- a/include/linux/kmsan-checks.h
-+++ b/include/linux/kmsan-checks.h
-@@ -61,6 +61,17 @@ void kmsan_check_memory(const void *address, size_t size);
- void kmsan_copy_to_user(void __user *to, const void *from, size_t to_copy,
- 			size_t left);
- 
-+/**
-+ * kmsan_memmove() - Notify KMSAN about a data copy within kernel.
-+ * @to:   destination address in the kernel.
-+ * @from: source address in the kernel.
-+ * @size: number of bytes to copy.
-+ *
-+ * Invoked after non-instrumented version (e.g. implemented using assembly
-+ * code) of memmove()/memcpy() is called, in order to copy KMSAN's metadata.
-+ */
-+void kmsan_memmove(void *to, const void *from, size_t size);
-+
- #else
- 
- static inline void kmsan_poison_memory(const void *address, size_t size,
-@@ -77,6 +88,9 @@ static inline void kmsan_copy_to_user(void __user *to, const void *from,
- 				      size_t to_copy, size_t left)
- {
- }
-+static inline void kmsan_memmove(void *to, const void *from, size_t size)
-+{
-+}
- 
- #endif
- 
-diff --git a/mm/kmsan/hooks.c b/mm/kmsan/hooks.c
-index 5d6e2dee5692..364f778ee226 100644
---- a/mm/kmsan/hooks.c
-+++ b/mm/kmsan/hooks.c
-@@ -285,6 +285,17 @@ void kmsan_copy_to_user(void __user *to, const void *from, size_t to_copy,
- }
- EXPORT_SYMBOL(kmsan_copy_to_user);
- 
-+void kmsan_memmove(void *to, const void *from, size_t size)
-+{
-+	if (!kmsan_enabled || kmsan_in_runtime())
-+		return;
-+
-+	kmsan_enter_runtime();
-+	kmsan_internal_memmove_metadata(to, (void *)from, size);
-+	kmsan_leave_runtime();
-+}
-+EXPORT_SYMBOL(kmsan_memmove);
-+
- /* Helper function to check an URB. */
- void kmsan_handle_urb(const struct urb *urb, bool is_out)
- {
+Some of the still happening issues:
 
+Ref Crashes Repro Title
+<1> 362     No    INFO: task hung in exfat_sync_fs
+                  https://syzkaller.appspot.com/bug?extid=205c2644abdff9d3f9fc
+<2> 59      Yes   INFO: task hung in exfat_write_inode
+                  https://syzkaller.appspot.com/bug?extid=2f73ed585f115e98aee8
+<3> 43      Yes   INFO: task hung in lookup_slow (3)
+                  https://syzkaller.appspot.com/bug?extid=7cfc6a4f6b025f710423
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
+
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
 
