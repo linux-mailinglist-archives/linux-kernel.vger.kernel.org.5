@@ -1,172 +1,107 @@
-Return-Path: <linux-kernel+bounces-94235-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94238-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D371E873BCF
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:14:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F58D873BD9
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:15:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 038861C239BC
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:14:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 509D8284D0F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:15:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 872BF1361DC;
-	Wed,  6 Mar 2024 16:14:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF61F13790B;
+	Wed,  6 Mar 2024 16:15:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="dQoI+oX2"
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="MvRn+r6F"
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC53C135A52
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 16:14:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68A2760912;
+	Wed,  6 Mar 2024 16:15:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.152.168
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709741657; cv=none; b=j2N1velKMgkB+tOaBuGnUNTN6MO6xkEMhSyF02t+kj3VY8xsu6hvlpCrRUTAM4zK8TylyXOwI6vTbINIZccK5fSo1A7Bge3anSZzS9bPMgjt2LJ/77y8/EB20CdCL49CBlPFGAdvD15OGdeJniNS6IQwxHGOeLH+yS+cBzGYNlk=
+	t=1709741707; cv=none; b=q1mgbtwNksvRGsymlqZGY/aMmawfahpVhEYLt4MLPTn8N4UxgZpmNi8eBrjrYH9WBuG/hKEFyIjxipxxnA7bkmlEAQWHkhFZGoHOrObl6vHqTDflCotsxy+AY0dNQMqADM48Rwc9uUCFwkD8QYLnvWABN1+Z5cte8Bb6oqEfSG4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709741657; c=relaxed/simple;
-	bh=FAmUSAr/tUjgOJFJPsKagQNrdFZY+PTJrBMOjrEUAwM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=d+YiIuFG0lplL6YymQMwaXDHeFIO7jqRgkjkOL3mM5c2wMPnJr5Gn1yvyZe3FJ+KDnHgVxCLp78mbsZtfUn5RNJlZ5ZDwI2VboNR+hyEDXSQbSiVaGeOD85+jFOSg94Q3arQXL4U6UVn1+wLSAWmXXMLK6C59lTtiUX6DLnNmL8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=dQoI+oX2; arc=none smtp.client-ip=209.85.208.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2d23114b19dso89748521fa.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 08:14:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1709741654; x=1710346454; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GTnAQDpq/xXZDrrZFKVdG9h0DRt+PLoYidl8F6FoQRM=;
-        b=dQoI+oX2FYrb9jcpiQm1eIHUrS3tYVHX4xOe2M/qG8xeak7Tzr6g4i7C0mUDYAEaR2
-         JjOYCwD0xM3a6/XHDOX6GkmTLa6NXWxyBslPQ4G8d0Ygrtq0B1621eLxepHfJ4hqnJdC
-         U0g9W0YXuj0GJthNJW+DTOBoE6eIbcyXEXuvb9nK0Fq93qkFAp1u4/aja4tb8Pq4J6qT
-         i/V5cME3EQr7H17vxmekDnn4rtngDi74UPxRjkHNk3DErz7F95qj4t3HAsg1cTyLKEzJ
-         jYEhZA9Q74toUwx5TpLaqg5b/DIjKiwP6qnBgLei9v82wUg32l4cCpZ6g+uI2lISx1ah
-         F3AQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709741654; x=1710346454;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GTnAQDpq/xXZDrrZFKVdG9h0DRt+PLoYidl8F6FoQRM=;
-        b=HqbprvpocY3+XOw64NCybiIS9YEpudGojGszSgwDmdQyV54fCknyLgSCbPLwHNe1WL
-         Ot5m9fnCpovq0MlJuJ8NtRYVMB0M88+EbnZIU9YdncGMK2ABXi9GPluAGfGNz3bLWPlD
-         sDZHILhEZ873NI5Ybs9f02X7j489XiPwP6N1wrzk8JVlUvBa9mRHyhD+wdZP25tI/dBk
-         nFv0n4miwcK5MRq/3Ux+S+qg3Sw9cLRf/rwHYoKhpMGpUcivxkHmLawZZjnBY4l0jsCQ
-         I9RUEpabJXo8mYDgZV1PDm21j10wiyoUU7yO3d6HqsUI7csMs/cRz/sWcErxvxsITU9L
-         wn6w==
-X-Forwarded-Encrypted: i=1; AJvYcCWzJkyTPiNK8OLtkbyYmTOrVRNkd+JwU122a8Cncmk/Pm1rkDI8XYvQhwBG2RDoiFYcF1gSE6uGeklMB3DBCw455MvGl2cwLixWdnJJ
-X-Gm-Message-State: AOJu0YyOo/+DereW3coMv2ycikjfIJGDA9Uz6I63HerSM2uBodsScgTS
-	ymiPYs4pabgUL41iOqG6uG4MXPJEMMK9e4Y+MAW6Z3rci5HrBkXaaju4D2Hem5oDMLMFf8L3YjG
-	S0/a8Oq3leGa+R94+Ul7rp3GSwE+kp21GL9x1RA==
-X-Google-Smtp-Source: AGHT+IELUwkYn/nZDGmR9FqLyW9RWybu2772azYRtKpDnvK+Il12l2oNP+rIy5t2jdacBPwh32NxT8ptyeHUgLVAp1Y=
-X-Received: by 2002:a05:6512:402a:b0:513:6f0c:e075 with SMTP id
- br42-20020a056512402a00b005136f0ce075mr694446lfb.24.1709741653768; Wed, 06
- Mar 2024 08:14:13 -0800 (PST)
+	s=arc-20240116; t=1709741707; c=relaxed/simple;
+	bh=N1y4nbPYklUfzjtuyH7rOVJRAsLNFjOy8FvLbQ54CR8=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Eb9f4IavwZXhQ2CV7ZxPby3/+8hqQFUgf4JxWwVmgR9KoF6/t/DoxbWT0EA8iEnfnIzj7kmqepowDbFej4W6sZbkUcoP8wian83OPT10VzTUnoBXuZt44Ksld7nnmuf8KzHWyKWvpLH9aZphmyzI3QEkXnYCXDkKuDZmBoBNn4w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=MvRn+r6F; arc=none smtp.client-ip=67.231.152.168
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4268kYKD013643;
+	Wed, 6 Mar 2024 10:14:58 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=PODMain02222019; bh=v
+	EFvDlU/FVBigkdVQeaMuHEzdd7fO0uiPL0OTGnPJUI=; b=MvRn+r6FpAX4yJkdK
+	qabSUFdmuX0BCK+QCx3ifQk15WVXIRdIUiM/hmUC4gdVt1wloLNiuSnRW4rQRbr6
+	AiDBUf8F1677Xxq3qmDaQHb/JEhoCnPDheNip2dLi9JgomUeUMUoFJpk+85SzTLb
+	5gT3hZaI6zf3w8v6mCQPiMmep4XzCiRWrtg69qWl/Q/nqKgWKZMvdnBg3meA4DLI
+	F1lsPtrRfRqEx0SVUeXEIRDrJajYo3ivIchfgKYw7P0yqRDDKei7Kdfs8RrfzsvX
+	JhrL81Em74UBcSFiuChOB9I3QK7utOFPpj4QAoZU3eVF2Fy9VPxOeNVSg7N8PzsZ
+	e0Lig==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3wpn930g9e-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 06 Mar 2024 10:14:58 -0600 (CST)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 6 Mar 2024
+ 16:14:56 +0000
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4
+ via Frontend Transport; Wed, 6 Mar 2024 16:14:56 +0000
+Received: from ediswws08.ad.cirrus.com (ediswws08.ad.cirrus.com [198.90.208.13])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id AF89F820243;
+	Wed,  6 Mar 2024 16:14:56 +0000 (UTC)
+From: Stuart Henderson <stuarth@opensource.cirrus.com>
+To: <broonie@kernel.org>, <shengjiu.wang@gmail.com>, <Xiubo.Lee@gmail.com>
+CC: <patches@opensource.cirrus.com>, <linux-sound@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+        "Stuart
+ Henderson" <stuarth@opensource.cirrus.com>
+Subject: [PATCH 1/5] ASoC: wm8962: Enable oscillator if selecting WM8962_FLL_OSC
+Date: Wed, 6 Mar 2024 16:14:35 +0000
+Message-ID: <20240306161439.1385643-1-stuarth@opensource.cirrus.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240226040746.1396416-1-apatel@ventanamicro.com>
- <20240226040746.1396416-9-apatel@ventanamicro.com> <87y1avbboj.fsf@all.your.base.are.belong.to.us>
-In-Reply-To: <87y1avbboj.fsf@all.your.base.are.belong.to.us>
-From: Anup Patel <apatel@ventanamicro.com>
-Date: Wed, 6 Mar 2024 21:44:01 +0530
-Message-ID: <CAK9=C2Ud+CJzWfY0Lp97OMt9QvJBFX=hHJidn_90XY5cEB9LHw@mail.gmail.com>
-Subject: Re: [PATCH v15 08/10] irqchip/riscv-aplic: Add support for MSI-mode
-To: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Frank Rowand <frowand.list@gmail.com>, 
-	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org, 
-	Saravana Kannan <saravanak@google.com>, Marc Zyngier <maz@kernel.org>, Anup Patel <anup@brainfault.org>, 
-	linux-kernel@vger.kernel.org, Atish Patra <atishp@atishpatra.org>, 
-	linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
-	Andrew Jones <ajones@ventanamicro.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: l_UbqcPDYUusJtVyLRYriK-0E3ybHfBm
+X-Proofpoint-ORIG-GUID: l_UbqcPDYUusJtVyLRYriK-0E3ybHfBm
+X-Proofpoint-Spam-Reason: safe
 
-On Wed, Mar 6, 2024 at 9:22=E2=80=AFPM Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.=
-org> wrote:
->
-> Anup Patel <apatel@ventanamicro.com> writes:
->
-> > diff --git a/drivers/irqchip/irq-riscv-aplic-msi.c b/drivers/irqchip/ir=
-q-riscv-aplic-msi.c
-> > new file mode 100644
-> > index 000000000000..b2a25e011bb2
-> > --- /dev/null
-> > +++ b/drivers/irqchip/irq-riscv-aplic-msi.c
-> > +static void aplic_msi_write_msg(struct irq_data *d, struct msi_msg *ms=
-g)
-> > +{
-> > +     unsigned int group_index, hart_index, guest_index, val;
-> > +     struct aplic_priv *priv =3D irq_data_get_irq_chip_data(d);
-> > +     struct aplic_msicfg *mc =3D &priv->msicfg;
-> > +     phys_addr_t tppn, tbppn, msg_addr;
-> > +     void __iomem *target;
-> > +
-> > +     /* For zeroed MSI, simply write zero into the target register */
-> > +     if (!msg->address_hi && !msg->address_lo && !msg->data) {
-> > +             target =3D priv->regs + APLIC_TARGET_BASE;
-> > +             target +=3D (d->hwirq - 1) * sizeof(u32);
-> > +             writel(0, target);
->
-> Is the fence needed here (writel_relaxed())...
+Signed-off-by: Stuart Henderson <stuarth@opensource.cirrus.com>
+---
+ sound/soc/codecs/wm8962.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-The pci_write_msg_msix() (called via pci_msi_domain_write_msg())
-uses writel() hence taking inspiration from that we use writel() over here
-as well.
+diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+index fb90ae6a8a34..6d7bb696b135 100644
+--- a/sound/soc/codecs/wm8962.c
++++ b/sound/soc/codecs/wm8962.c
+@@ -2914,8 +2914,12 @@ static int wm8962_set_fll(struct snd_soc_component *component, int fll_id, int s
+ 	switch (fll_id) {
+ 	case WM8962_FLL_MCLK:
+ 	case WM8962_FLL_BCLK:
++		fll1 |= (fll_id - 1) << WM8962_FLL_REFCLK_SRC_SHIFT;
++		break;
+ 	case WM8962_FLL_OSC:
+ 		fll1 |= (fll_id - 1) << WM8962_FLL_REFCLK_SRC_SHIFT;
++		snd_soc_component_update_bits(component, WM8962_PLL2,
++					      WM8962_OSC_ENA, WM8962_OSC_ENA);
+ 		break;
+ 	case WM8962_FLL_INT:
+ 		snd_soc_component_update_bits(component, WM8962_FLL_CONTROL_1,
+-- 
+2.39.2
 
-If that's wrong then pci_write_msg_msix() must be fixed as well.
-
->
-> > +             return;
-> > +     }
-> > +
-> > +     /* Sanity check on message data */
-> > +     WARN_ON(msg->data > APLIC_TARGET_EIID_MASK);
-> > +
-> > +     /* Compute target MSI address */
-> > +     msg_addr =3D (((u64)msg->address_hi) << 32) | msg->address_lo;
-> > +     tppn =3D msg_addr >> APLIC_xMSICFGADDR_PPN_SHIFT;
-> > +
-> > +     /* Compute target HART Base PPN */
-> > +     tbppn =3D tppn;
-> > +     tbppn &=3D ~APLIC_xMSICFGADDR_PPN_HART(mc->lhxs);
-> > +     tbppn &=3D ~APLIC_xMSICFGADDR_PPN_LHX(mc->lhxw, mc->lhxs);
-> > +     tbppn &=3D ~APLIC_xMSICFGADDR_PPN_HHX(mc->hhxw, mc->hhxs);
-> > +     WARN_ON(tbppn !=3D mc->base_ppn);
-> > +
-> > +     /* Compute target group and hart indexes */
-> > +     group_index =3D (tppn >> APLIC_xMSICFGADDR_PPN_HHX_SHIFT(mc->hhxs=
-)) &
-> > +                  APLIC_xMSICFGADDR_PPN_HHX_MASK(mc->hhxw);
-> > +     hart_index =3D (tppn >> APLIC_xMSICFGADDR_PPN_LHX_SHIFT(mc->lhxs)=
-) &
-> > +                  APLIC_xMSICFGADDR_PPN_LHX_MASK(mc->lhxw);
-> > +     hart_index |=3D (group_index << mc->lhxw);
-> > +     WARN_ON(hart_index > APLIC_TARGET_HART_IDX_MASK);
-> > +
-> > +     /* Compute target guest index */
-> > +     guest_index =3D tppn & APLIC_xMSICFGADDR_PPN_HART(mc->lhxs);
-> > +     WARN_ON(guest_index > APLIC_TARGET_GUEST_IDX_MASK);
-> > +
-> > +     /* Update IRQ TARGET register */
-> > +     target =3D priv->regs + APLIC_TARGET_BASE;
-> > +     target +=3D (d->hwirq - 1) * sizeof(u32);
-> > +     val =3D FIELD_PREP(APLIC_TARGET_HART_IDX, hart_index);
-> > +     val |=3D FIELD_PREP(APLIC_TARGET_GUEST_IDX, guest_index);
-> > +     val |=3D FIELD_PREP(APLIC_TARGET_EIID, msg->data);
-> > +     writel(val, target);
->
-> ...and here?
-
-Same as above.
-
-Regards,
-Anup
 
