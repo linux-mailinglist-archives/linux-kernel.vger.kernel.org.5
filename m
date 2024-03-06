@@ -1,108 +1,136 @@
-Return-Path: <linux-kernel+bounces-93965-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93968-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F2B5873795
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:19:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CDFD68737A1
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:21:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 237131F2130F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:19:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A5C0286CC3
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:21:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C098130E2D;
-	Wed,  6 Mar 2024 13:19:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B82E012D743;
+	Wed,  6 Mar 2024 13:21:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="DZ9HSJKp"
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="B1Unxr3x"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D0A112D742
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 13:19:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3885D12D1FC
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 13:21:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709731174; cv=none; b=h/WYg04lkxMPMynlbRfQLEiG1QGb/CNi9MO7Et57GaNIzPtSVaLNY+wW9NsFAOttLJwkTiXfznepsnOBKOCPGm8sBlVB65a+mg0P1cYQM0iZISZ1GmsEMxBrVWB4HFoOMfWydVj8Vs5cWuGjFVhHmb5zTpt9tGE+UsObtXQcWT8=
+	t=1709731298; cv=none; b=uPLPAjeorzVkfBvFXpxFgDnRsILXEAONwHDY+4F9G9JaqEWbId5feIlfMacR5sEVOL9LY1JRVkd0HJoBTHoGdOyMLP7uffZh+B78gGjLS1QHjajcv+A/uoZ/c+orP3U503v8Tbvh85F5TyHFS3pVSZu7Qz0FslpXwQLq0Iu4oiw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709731174; c=relaxed/simple;
-	bh=+1UnuQnf/LyqbBxxuD32IaDzT1t4IRlkFzEvr8mcnvE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NH6kcdbvBRV9c0rp1SI6/Pen3HuohqNUaDlZ3UjDkn3wr3Rf/LZsyvT853etGCQ1EwBNVnUMaN2vQKRS3J33dFBDUZqlIN65Hmi66DgzEQbL1ZH9FDj7kmPju/PHQVm1Zx/VmoDkp4DuW0FeePc+28/Q3E63O0ypjE6LoKM1ip4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=DZ9HSJKp; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-412f692be21so4018535e9.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 05:19:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709731171; x=1710335971; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=f5cNrhfZq9pdhzlYdh0TnEQMMStZp8mSh+S72NM+w1E=;
-        b=DZ9HSJKpwDpiPaWokcT2Wv27Xan2794lpkNJy0gdiOSwUvJeWPMj74Ru8UOwtJRNbJ
-         kTxEuHMW8n0JmVxGDL5gPlNhLIZNQwxr+wOqhbbOlozAhaZ1C2GfE+h4y9lUWU9QXBFS
-         esegUvNg4D9ewwo5cY3AS/LGuIAsArbJM1sBUgF/SfNBhyjNITpoTOYQxbwrg3DTeUhd
-         rY8cXCrhJEo4SazBLh/MVmfLz0zujOAlWHPPK8yyhmDVSlPRm8N8lAp7yPzpggNDqZzT
-         7k1Q/QBPu3iSuXB2V7+d8S1KMLELPVcOAIIaGVJlzrL6V+hdNFa4EoAmy47UjetoSV3P
-         dTdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709731171; x=1710335971;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=f5cNrhfZq9pdhzlYdh0TnEQMMStZp8mSh+S72NM+w1E=;
-        b=xCyxtbFEfVjZN24Tl6xiNcLLwB5x7IdaVh4qhRAaoui401vTb37xAC+UAIId5V3RP4
-         5XCjhq8vPkB8uiUQD0iZGnhM5BF6TqCjUtKsG6KvhaqULS/gC+GtT7XwIsDU+K8E/5fY
-         xtjvWmj307o1RzHdz81zak+dfkt0bnkk+mB2OPPruC3j+1Dc8/0qyWPMN3x8BrDSFBhi
-         +xCgkOwvFXDCizm2Vp+meZccmhzmYleF6JMVO0h/X7aif+6pRs7/IL1IA+MHOfRkd1wc
-         GvCPZQfxPzpAspoZhi00SmvfjBXIRSFPwHT7lGJGdIkCOXjHvWov8/b7xrdVSJQtAXF6
-         NKeQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUxv3dbaD74k0B68N6G8lHPBMYHpr7In7zwMlRyXi69YlpqmeibnSv72f7K6Flz8I78Zdl/vTo/RRzYYdgWCenUVLm4qTSNS2OKpWRD
-X-Gm-Message-State: AOJu0YweGWuVQxozgh3RC6498Vazpfwrj/6ZDLVPYT/by8ugSpZOBjc7
-	E4QGbVQFpkPtSuwbFkPE1pS43m/KX1ueWiG/xYs3g3i9Ada5dzFS1b2WS2+C7LM=
-X-Google-Smtp-Source: AGHT+IGXrx3fxcNvDo/dCTnXE23sKVj53w6gS0mbDdpoUEKKWG4Jh7EN/sGvulC9XnL8uUGbmWo1sA==
-X-Received: by 2002:a05:600c:4749:b0:413:410:1642 with SMTP id w9-20020a05600c474900b0041304101642mr13628wmo.10.1709731171651;
-        Wed, 06 Mar 2024 05:19:31 -0800 (PST)
-Received: from [192.168.0.102] ([176.61.106.68])
-        by smtp.gmail.com with ESMTPSA id a6-20020a05600c348600b00412f778c4e3sm1544564wmq.23.2024.03.06.05.19.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Mar 2024 05:19:31 -0800 (PST)
-Message-ID: <6cfda2b5-b5c9-4d03-87a6-1c31013ecacd@linaro.org>
-Date: Wed, 6 Mar 2024 13:19:30 +0000
+	s=arc-20240116; t=1709731298; c=relaxed/simple;
+	bh=x6saRHVg0VfK1dnvwUWzELfx+mRt+YMbrULENEEZOVE=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=X+x9hmqmza3MLpsdSBgzFur9pnDuPiuLeKUqHFNXIOnswQpckolZ+/EjDBkX/uFSiJkH0/w3SjWCyBNl3TXIqitzySagFxy+LMFcfs8FYM9nKg8TmqyXqwR47Ho2R4bNFk93kMr8dMZKauCL+3CRWWTBrQcw6vl2+dt3wViNE50=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=B1Unxr3x; arc=none smtp.client-ip=68.232.154.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1709731296; x=1741267296;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=x6saRHVg0VfK1dnvwUWzELfx+mRt+YMbrULENEEZOVE=;
+  b=B1Unxr3xXjDV5DhfWfZnKy6D7Qju88Q/LT77u6dVZuaCNwgAivVA+4tg
+   O682kneFWX9vXFzKLDDWkRshR26O4UNtLQ0yqZJZRGC46/nRfz/hHNCW9
+   YknOSXYSGTh8FBCyHGoDK0lRYEktqHzY19jKnEiJmh9gCVCIdyBjp3WHa
+   zOXsXVFSTinqG5x1oJxBd33mYLU42qUuJeb5QYPN7QP0V+y5HEaCIrSZU
+   ASJ5aXdcWmVIS3U1HRYSr6sKfXRoEFdVVaZqTFQ9WGG71uAZ6d93uB/jL
+   PN9O8Es2s4XBWJ8lbhD9BHRIiaLwFftqQlM7qUyFpbMvQqdCTXENrfi8O
+   A==;
+X-CSE-ConnectionGUID: MbkuSMWuTa2dMHhEfXhTsQ==
+X-CSE-MsgGUID: 7mh+FgpZTSy/sDRKCR9T0A==
+X-IronPort-AV: E=Sophos;i="6.06,208,1705388400"; 
+   d="asc'?scan'208";a="184556607"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 06 Mar 2024 06:21:34 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 6 Mar 2024 06:20:24 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex02.mchp-main.com (10.10.85.144)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
+ Transport; Wed, 6 Mar 2024 06:20:21 -0700
+Date: Wed, 6 Mar 2024 13:19:37 +0000
+From: Conor Dooley <conor.dooley@microchip.com>
+To: Charlie Jenkins <charlie@rivosinc.com>
+CC: Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+	<palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Jisheng Zhang
+	<jszhang@kernel.org>, Evan Green <evan@rivosinc.com>,
+	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>, Eric Biggers
+	<ebiggers@kernel.org>, Elliot Berman <quic_eberman@quicinc.com>, Charles Lohr
+	<lohr85@gmail.com>, <linux-riscv@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 3/4] riscv: Decouple emulated unaligned accesses from
+ access speed
+Message-ID: <20240306-tactless-decathlon-b0df16517b1b@wendy>
+References: <20240301-disable_misaligned_probe_config-v6-0-612ebd69f430@rivosinc.com>
+ <20240301-disable_misaligned_probe_config-v6-3-612ebd69f430@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 11/20] media: venus: core: Use GENMASK for dma_mask
-Content-Language: en-US
-To: Konrad Dybcio <konrad.dybcio@linaro.org>,
- Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
- Vikash Garodia <quic_vgarodia@quicinc.com>,
- Bryan O'Donoghue <bryan.odonoghue@linaro.org>, Andy Gross
- <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Dikshita Agarwal <quic_dikshita@quicinc.com>,
- Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Marijn Suijten <marijn.suijten@somainline.org>,
- Stanimir Varbanov <stanimir.varbanov@linaro.org>,
- Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
- linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20230911-topic-mars-v2-0-3dac84b88c4b@linaro.org>
- <20230911-topic-mars-v2-11-3dac84b88c4b@linaro.org>
-From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <20230911-topic-mars-v2-11-3dac84b88c4b@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="0+iLppiDSyfXGqPN"
+Content-Disposition: inline
+In-Reply-To: <20240301-disable_misaligned_probe_config-v6-3-612ebd69f430@rivosinc.com>
 
-On 09/02/2024 21:09, Konrad Dybcio wrote:
-> The raw literals mean very little. Substitute it with more telling
-> bitops macros.
-> 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> ---
+--0+iLppiDSyfXGqPN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+On Fri, Mar 01, 2024 at 05:45:34PM -0800, Charlie Jenkins wrote:
+
+> -void unaligned_emulation_finish(void)
+> +bool check_unaligned_access_emulated_all_cpus(void)
+>  {
+>  	int cpu;
+> =20
+> -	/*
+> -	 * We can only support PR_UNALIGN controls if all CPUs have misaligned
+> -	 * accesses emulated since tasks requesting such control can run on any
+> -	 * CPU.
+> -	 */
+
+Why was this comment removed? This patch doesn't change the situations
+in which PR_UNALIGN is allowed, right?
+
+> -	for_each_online_cpu(cpu) {
+> -		if (per_cpu(misaligned_access_speed, cpu) !=3D
+> -					RISCV_HWPROBE_MISALIGNED_EMULATED) {
+> -			return;
+> -		}
+> -	}
+> +	for_each_online_cpu(cpu)
+> +		if (check_unaligned_access_emulated(cpu))
+> +			return false;
+> +
+>  	unaligned_ctl =3D true;
+> +	return true;
+>  }
+
+
+--0+iLppiDSyfXGqPN
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZehtaQAKCRB4tDGHoIJi
+0nqQAP9qDs9BXRRIcemNZkKQPjQ7O1zObSc+rYvFSFXl5n2dCgD+LIqa+Incg/HH
+X0NiaSTSjXLgY8Y3hcOJ/2aMZ1V8dQA=
+=VVCG
+-----END PGP SIGNATURE-----
+
+--0+iLppiDSyfXGqPN--
 
