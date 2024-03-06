@@ -1,143 +1,137 @@
-Return-Path: <linux-kernel+bounces-93614-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93615-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CEA787325A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:19:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 454BE873262
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:20:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE95D1C2234F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:18:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 74B571C2234F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:20:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FD3B5D91A;
-	Wed,  6 Mar 2024 09:18:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60AA55C5E9;
+	Wed,  6 Mar 2024 09:20:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AewuDwmD"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gUGI+jie"
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34A925C05F
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 09:18:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EBA05C05F
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 09:19:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709716715; cv=none; b=GpEZ4Q1kR+nCpg7owVsfaPvACuZuEA2SexDmVFm7aY2M2vzbxdQOu9HA4zO/L3J9t/dc3lejt0B0ifnYh9LqG/3zu8P5XHEsPZe9FVX+rekZZQOcCbweB3Cudy8K6P3P3RisCNU59jnQepX6fm0t5GxnTfsSc9YQ+epplF1mxYs=
+	t=1709716799; cv=none; b=EiArhd379I8GFgowjboOCzMcFHZOpiaVWCczmaHhnwsL5wt22d1bAzJIy5Ng6QFaIuhW9KonW8qtb/yUCXET5hGToXR91XYFKfaYs6zWKIu/CCprTzruNdbAdmDKKXHnwORslIA4kd/bv9WLDuYK3mDoWEfkpopnbqGHHAti+Z8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709716715; c=relaxed/simple;
-	bh=D34rJ2jpo3Sm8BQKBLjmFR9WHBkOQ9Sy3+mtZWb4xy4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=BjOLbGASb3zgJvTjZ/GxezoKUrDiSWKAzkslTxFMYBwRunoEjHFY8OZ1NbS13C+mNwf0QvYlDLdHF1QwSD7zjb5F8h2d7h17aqL986ymdUmxsCsrQu+SUq5VVFmD1s3sTB9yMlVrwNwlQV3tRXPejfzg5b+THaH/JZcOBz9Rrrg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AewuDwmD; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709716714; x=1741252714;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=D34rJ2jpo3Sm8BQKBLjmFR9WHBkOQ9Sy3+mtZWb4xy4=;
-  b=AewuDwmDTN8N66Y5R9SfgUesvMF2OWWwrHQD+FcWoKG6zc6cmlxJ7WXV
-   1fr6bz5XZ3TiQy9sbNbjmKy5kMkodpXAkUiWCclLGrhz7/0FWKcA7UFG8
-   XBaK9vXAL2f/oDfsBsaACEFv7xS1G7MN03L3VpAY2M2bP8T7MuMaYFSRx
-   EdIFvtwy06QMYllmo6gblY8t41zF3IwQWBBH+PfRvLlck9MFVwfqXwPAc
-   tXa6nZTWcmso0z6dx3ielzu/y3bhVzrB23W1Co2trOYwxag9GqxwkXmSC
-   /oGaoP/avBMjD+h5eXZlGvXNwuISDCjyumLZv8ZsshYO05J2VGjpX4Ftn
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11004"; a="7260803"
-X-IronPort-AV: E=Sophos;i="6.06,207,1705392000"; 
-   d="scan'208";a="7260803"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 01:18:33 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,207,1705392000"; 
-   d="scan'208";a="40677436"
-Received: from rjongalo-mobl2.ger.corp.intel.com (HELO localhost) ([10.252.33.211])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 01:18:29 -0800
-From: Jani Nikula <jani.nikula@linux.intel.com>
-To: Hsin-Yi Wang <hsinyi@chromium.org>, Dmitry Baryshkov
- <dmitry.baryshkov@linaro.org>, Douglas Anderson <dianders@chromium.org>
-Cc: Neil Armstrong <neil.armstrong@linaro.org>, Jessica Zhang
- <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, Maarten
- Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
- <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David
- Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 3/5] drm/edid: Match edid quirks with identity
-In-Reply-To: <20240306004347.974304-4-hsinyi@chromium.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20240306004347.974304-1-hsinyi@chromium.org>
- <20240306004347.974304-4-hsinyi@chromium.org>
-Date: Wed, 06 Mar 2024 11:18:26 +0200
-Message-ID: <87plw7zpjx.fsf@intel.com>
+	s=arc-20240116; t=1709716799; c=relaxed/simple;
+	bh=wnA4PSgiocDkaO9a9fgbw4GvaFZtLsr3ns0/Zd4EM9A=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kURnju0crKtqzfYN1HpDK6MIdhdhJT8kZWX26M2WJclLMmn5wzf493H/PozSqxw0uA5ymzhxcKtm6oEKf/roQv2dE5PAY7DRB051ukJdPiEAOtNGZWCHRVqqOc99Bi7IYb1KXfEH56d440nCxl9VwfzQE8ARkNyJCJQCU5H+yh0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=gUGI+jie; arc=none smtp.client-ip=209.85.128.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-6096ab005c0so62488267b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 01:19:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709716797; x=1710321597; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=aiSYTBBix3pZDJn7hX0hlhePaaHKbsR/+LCZ9GmLewo=;
+        b=gUGI+jieFYCwkisnrcpYvaN1JhmccfRORCE2xKGr8QWipN+Cz/gl2MMHhuYtIW1gIt
+         gqDr4W/d18XnBLY6nW85KhlyxMLb11m1X9roYK+KlgGwCF446cjE9VeEGkV/rz0appLJ
+         MKrKLRjDLjDz5UzpizsTJWVUNhvpBMU5OZbhJJTlYsfZkNRF2OU7/ax7wQZrDZUoQcys
+         sSP7m8gBHJpWLy1ixNieTeRFLiZQTc5hBn7nUecObxXENwTrqoDmRGCON8sD3l6SoDp7
+         mJ/0u0ZGjzY6RYHb+ZAZqqQeo4B4aR5esijQmCMz5JN1L+bB/KW+mKDyCZ4b6esXsWkV
+         e0/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709716797; x=1710321597;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=aiSYTBBix3pZDJn7hX0hlhePaaHKbsR/+LCZ9GmLewo=;
+        b=WLCwVlnpB0WPhEzsrgTL3l+LhpbqN+yB2XED6ED7d9rHhl42ASPOwo+P5UCxFWDDhI
+         ScPtpbonvjjPWSdejhS0dxS2UaD0Kdbs8VGhXPxzwyGOrzq5dPuOjncW4/eA7MV3jlCr
+         a30zRh4gJKRqC4vp9G+HD4KAlj5MhpnbOXfP1lOqjXV1+GbgYkNPBYtBfiionWg5/vMI
+         104jZiaETaBgPSyUO2Zg2ZH1afax5qh0DFo10wmDE2tpRa0YtvVY3I4cDSNDhxsEYutL
+         RH+BHH1V1piOffe/Z3xne7w4rBYip0NBTVg3i1WzGv77aJlY141DJd+s6jnQTONDUZLG
+         Y3rw==
+X-Forwarded-Encrypted: i=1; AJvYcCUVjgLc6+K1ERLv6bazN39Y5Wb57vBBJCEuU2kq6QRhZeVPa9eze/ombjCVeKaDnNcCHhxLcuM1C10IPRT6bNzik6qwNPJ0oNkx5/nU
+X-Gm-Message-State: AOJu0Yw57DHpZ3yhymJyw3biyYPMp6sCs1kFXlL14BGc36QnXumCDI5N
+	zK03aYTEcL2s6vRehOBpxZm4YSfZz4sqlp+IzV2AJ40yVGI6XCmMoQK94dEFijHCQyflfUAcJ8S
+	JkF8hrKTvfaY7Go/xWND67Z0jcZk54rez9R/gMOtdOE6P1GJM
+X-Google-Smtp-Source: AGHT+IHyeYsmYRCqKOcgrD9TZYmlyF8yBHb/OxI5zro2IrJ1SSYv3q/VJtz9XdZp/Tg8ip3W3ePtZ58gw3pMgY9V8Yw=
+X-Received: by 2002:a81:83ce:0:b0:608:4e7a:abc7 with SMTP id
+ t197-20020a8183ce000000b006084e7aabc7mr14193190ywf.29.1709716797169; Wed, 06
+ Mar 2024 01:19:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20240305081105.11912-1-johan+linaro@kernel.org>
+ <20240306063302.GA4129@thinkpad> <ZegZMNWxCnLbHDxP@hovoldconsulting.com>
+ <20240306083925.GB4129@thinkpad> <CAA8EJppsbX=YXf1Z6Ud+YMnp2XnutN1hcb1T0KdAAWXFREVxXg@mail.gmail.com>
+ <Zegzf_QKbr8yA6Vw@hovoldconsulting.com>
+In-Reply-To: <Zegzf_QKbr8yA6Vw@hovoldconsulting.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Wed, 6 Mar 2024 11:19:45 +0200
+Message-ID: <CAA8EJprsZz08Otk8hUxu3tQLXen2a3xeW58HLbNSSm=d2OAWkQ@mail.gmail.com>
+Subject: Re: [PATCH v3 00/10] arm64: dts: qcom: sc8280xp: PCIe fixes and GICv3
+ ITS enable
+To: Johan Hovold <johan@kernel.org>
+Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, 
+	Johan Hovold <johan+linaro@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, 
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Lorenzo Pieralisi <lpieralisi@kernel.org>, =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org, 
+	linux-pci@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, 05 Mar 2024, Hsin-Yi Wang <hsinyi@chromium.org> wrote:
-> Currently edid quirks are matched by panel id only.
+On Wed, 6 Mar 2024 at 11:12, Johan Hovold <johan@kernel.org> wrote:
 >
-> Modify it to match with identity so it's easier to be extended
-> for more complex matching if required.
+> On Wed, Mar 06, 2024 at 10:48:30AM +0200, Dmitry Baryshkov wrote:
+> > On Wed, 6 Mar 2024 at 10:39, Manivannan Sadhasivam
+> > <manivannan.sadhasivam@linaro.org> wrote:
+> > > On Wed, Mar 06, 2024 at 08:20:16AM +0100, Johan Hovold wrote:
+> > > > On Wed, Mar 06, 2024 at 12:03:02PM +0530, Manivannan Sadhasivam wrote:
 >
-> Suggested-by: Jani Nikula <jani.nikula@linux.intel.com>
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> > > > > Just received confirmation from Qcom that L0s is not supported for any of the
+> > > > > PCIe instances in sc8280xp (and its derivatives). Please move the property to
+> > > > > SoC dtsi.
+>
+> > > > Ok, thanks for confirming. But then the devicetree property is not the
+> > > > right way to handle this, and we should disable L0s based on the
+> > > > compatible string instead.
+>
+> > > Hmm. I checked further and got the info that there is no change in the IP, but
+> > > the PHY sequence is not tuned correctly for L0s (as I suspected earlier). So
+> > > there will be AERs when L0s is enabled on any controller instance. And there
+> > > will be no updated PHY sequence in the future also for this chipset.
+> >
+> > Why? If it is a bug in the PHY driver, it should be fixed there
+> > instead of adding workarounds.
+>
+> ASPM L0s is currently broken on these platforms and, as far as I
+> understand, both under Windows and Linux. Since Qualcomm hasn't been
+> able to come up with the necessary PHY init sequences for these
+> platforms yet, I doubt they will suddenly appear in the near future.
 
-Reviewed-by: Jani Nikula <jani.nikula@intel.com>
+I see. Ok, I retract my comment.
 
-> ---
-> v4: new
-> Per discussion https://lore.kernel.org/lkml/87a5nd4tsg.fsf@intel.com/
-> ---
->  drivers/gpu/drm/drm_edid.c | 13 ++++++++-----
->  1 file changed, 8 insertions(+), 5 deletions(-)
 >
-> diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
-> index 5e7e69e0e345..93a49b262dbe 100644
-> --- a/drivers/gpu/drm/drm_edid.c
-> +++ b/drivers/gpu/drm/drm_edid.c
-> @@ -114,13 +114,15 @@ struct drm_edid_ident_closure {
->  
->  #define EDID_QUIRK(vend_chr_0, vend_chr_1, vend_chr_2, product_id, _quirks) \
->  { \
-> -	.panel_id = drm_edid_encode_panel_id(vend_chr_0, vend_chr_1, vend_chr_2, \
-> -					     product_id), \
-> +	.ident = { \
-> +		.panel_id = drm_edid_encode_panel_id(vend_chr_0, vend_chr_1, \
-> +						     vend_chr_2, product_id), \
-> +	}, \
->  	.quirks = _quirks \
->  }
->  
->  static const struct edid_quirk {
-> -	u32 panel_id;
-> +	const struct drm_edid_ident ident;
->  	u32 quirks;
->  } edid_quirk_list[] = {
->  	/* Acer AL1706 */
-> @@ -2921,16 +2923,17 @@ EXPORT_SYMBOL(drm_edid_duplicate);
->   * @drm_edid: EDID to process
->   *
->   * This tells subsequent routines what fixes they need to apply.
-> + *
-> + * Return: A u32 represents the quirks to apply.
->   */
->  static u32 edid_get_quirks(const struct drm_edid *drm_edid)
->  {
-> -	u32 panel_id = edid_extract_panel_id(drm_edid->edid);
->  	const struct edid_quirk *quirk;
->  	int i;
->  
->  	for (i = 0; i < ARRAY_SIZE(edid_quirk_list); i++) {
->  		quirk = &edid_quirk_list[i];
-> -		if (quirk->panel_id == panel_id)
-> +		if (drm_edid_match_identity(drm_edid, &quirk->ident))
->  			return quirk->quirks;
->  	}
+> So we need to disable L0s for now. If an updated PHY init sequence later
+> appears, we can always enable it again.
+>
+> > > So yeah, let's disable it in the driver instead.
+>
+> Johan
+
+
 
 -- 
-Jani Nikula, Intel
+With best wishes
+Dmitry
 
