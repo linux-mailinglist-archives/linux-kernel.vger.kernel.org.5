@@ -1,118 +1,180 @@
-Return-Path: <linux-kernel+bounces-93900-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93901-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56E6D873687
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:33:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D9A9873689
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:34:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 134082894C6
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:33:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2AEFE1F212CE
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:34:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD2F8130E4B;
-	Wed,  6 Mar 2024 12:32:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95C357FBC0;
+	Wed,  6 Mar 2024 12:34:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="b3msKupl"
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="S79WCtKD"
+Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86318130E2F
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 12:32:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BD501DA4C
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 12:34:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709728379; cv=none; b=oJWeQaF6rj8U/XCtE/Y/PiYj4gpBcdLaBDiduS0S9I680yJiUq9oCo2C9uk5qthOTKZ9uXM39SoRfmJ58CXywSqVp2LqYpJBoPVmPVadeZn5AUk/pOoagwdvtMl5X8Da0eOF1c6UKVKicyEF2LWH0LHaa/e/xHhSBU/ZhI4bUx8=
+	t=1709728474; cv=none; b=oGrX3sV965HwrbG2791X57H9iK12WBRlmYU/y6jNysQMKof1cxXh4kh8Pj0peAjlLeFVj5H0rUS3CYJpTttWXLMVvZxsGhjw8n2bTkVL2kbQiW+NR66ys4FXLh3k2XdmuLKPcQiEE0I2RdD6sIG1KWxbPYU0s4EmWS/MSQy+4UI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709728379; c=relaxed/simple;
-	bh=8wvd3gt3M/oXf0kj888CTRPdhQLqnel9BUfji3e//qY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=O5s24ZxVRDkWXiEubAdW0GgToeSfECRxa5jmatwE8f27rLxgk76ePBQXBZesqcjns97NYyG+8gjF4ALEYiyRcQ/+MpfO2WHl1cmZTbJDeHeKADs7UOcAVmppnoIHB/VzCW0WIcgo5HoO5P6b1j05E276n1ZuHFULunWXPHuI8WA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=b3msKupl; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-412f0655d81so9594085e9.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 04:32:57 -0800 (PST)
+	s=arc-20240116; t=1709728474; c=relaxed/simple;
+	bh=lOmHXFV1q2SkSccnYTkh8HGuSJYGo1dzQ6tvcIEPcCo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=tDrkUDnlGCR9Xe82L0vyh5i+uPomT11F2RUq3F+Eax+dCBAtV8+ldkGXOkEH6l+twn42FiyVjcDyxUzx9cdfAXv4rTocjSkNItpSTWrHlwAp+NvOxD6cw0WeL5cyRKqWCrcqRBH824mVSV2QnmC/HOjcYuAguJmo/PC1QxIVwig=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=S79WCtKD; arc=none smtp.client-ip=209.85.167.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-oi1-f181.google.com with SMTP id 5614622812f47-3c1a7d51fb5so4864699b6e.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 04:34:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709728376; x=1710333176; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3P65RJ0ScisBLyG1I2ooEc4j5/yHla4aIpipvPFtxpw=;
-        b=b3msKuplfiimQt57VzIso0Zet0BT3pj79PPsftWyS2E7vejPkWIA8kRH1hHxu0AZkW
-         1yJ75Gj/R5bCgxlVbXzIfEBaML4+I86LpNwx9rCPXEKHOkj8rgh2ZSso8P8EuXbfUUnR
-         i5lmGZFxjJfXj69nHZe0URn/vqebocBeHBj2HXJskcDS6wbBlwdlSwpkrhXZDxMJF20p
-         HrN76eOtfo7JkkgErLOUvMHGVpkg1Rh/ReY8ohnNKMoM25NKUfX05TE7XqaV7MWdenup
-         Rt+yBfN5+D1kictUecbDAoIqA3MQpaVKiOMcjq+tKFHRFKsRE+oEoaFzQXk/yc6MloYB
-         crDA==
+        d=bytedance.com; s=google; t=1709728472; x=1710333272; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MBGRXmGCAD/uVlbKtB45vlqVQka6EkYD3kJejOBpkfw=;
+        b=S79WCtKDScbaBeFmt1Ss0CwynTLXHrzSgKqEp4shWDY+Si9OnNybthD07qlKCBpYBP
+         V48e+NAPuqDz0hhOwp8NvqpZkhYzpRYrPM7jBxyaMR6mn7aQXjl/poPeeXMQdjoPYWY6
+         nUnQHP/tUKl7ephrlfa2SYcx3TBxCgfmAChAiOJCjpcWCGeC8JyrWsLTiwZIbdTe99lw
+         Qn3f8m4z4OfLWknarloOyiIZeydsEGz3g9u41rqITxiMlEp4SEDnpdISCVE/6Wv3VC7Z
+         koGcL2mIinUaWqswSJ7/ek2cLefXy5+e/NBp9KVhezaQ/x8X2MZeFfIO7QVdeBBqAET2
+         dpOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709728376; x=1710333176;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3P65RJ0ScisBLyG1I2ooEc4j5/yHla4aIpipvPFtxpw=;
-        b=wFE7pwx5ewMUo5vc399Q3U+Ca2h5IB3uwhXOu4ZSnVAIg19e5YGLcVzQP9R+idH7SO
-         XHmUAQF36oz/hVMZF6CMdEFsWX+NWovVRIxFNSnB13MhhF+WR3tIfTRKufaQ2UW9JOgf
-         63BcnGcznQAVhoeB4U1KEc51bQ7PBlVXZh3vHCWfjMN8dvokMQwGJud93lGWHusVndXx
-         6+reaXFnDVHIeNq7ADJ9syZXCbfy5C3apI0Ww9OgJSE+B0fw3bN6JlLYocT4DKjpR/th
-         Zd5zttR2odHn17gcSNGFAxcRpW1Pj2bBcuT6Bx+qJ65/ZGfeNfpZ/c8PGi5yaVmPfbp2
-         brcQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUy6lHwH7gR2qoFCodfq53w3usF7mLWbb4lfzqTkw7g7QV7FE5e5erHm9CBzK0jeHmunmQqQHDz1Ep8DsC9dLm5QeTXp5v2UHXJigPZ
-X-Gm-Message-State: AOJu0Yx6wImp5l9z84DMTDbMYO5nlm89VSYOupT2ljYDOoyyKobec88a
-	muEmlGzEsWzK59q/qLvYsQW7rlH2a3SGS2wg/d/PLuLHWGBSEnCxgb1TF6md5p6lAIF4FYyBj3E
-	Y
-X-Google-Smtp-Source: AGHT+IERkLljOFqEG/0zM4LPhgeyclm7KvDT1K/I2YSz6yw0l4JvHTg8n1dNAx0KmP7Lx5Rt0FoGeg==
-X-Received: by 2002:a05:600c:4f4d:b0:412:eb6e:1fdb with SMTP id m13-20020a05600c4f4d00b00412eb6e1fdbmr3309269wmq.40.1709728375902;
-        Wed, 06 Mar 2024 04:32:55 -0800 (PST)
-Received: from [192.168.0.102] ([176.61.106.68])
-        by smtp.gmail.com with ESMTPSA id t14-20020a05600c198e00b00412f02bff2csm3466711wmq.37.2024.03.06.04.32.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Mar 2024 04:32:55 -0800 (PST)
-Message-ID: <da824ab8-a9a6-4f07-a5c5-8cd38e01844b@linaro.org>
-Date: Wed, 6 Mar 2024 12:32:54 +0000
+        d=1e100.net; s=20230601; t=1709728472; x=1710333272;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MBGRXmGCAD/uVlbKtB45vlqVQka6EkYD3kJejOBpkfw=;
+        b=q33T5gIi6HsPuXeHd8Q1yIG8+Aa0TtCq+t1DTF8HTURv+regLucrOhSlRPEuuIcUci
+         NraCCVVuiNtHZhojqyra8vjI7LalCo5hl6BFofoWnKsaZ99a6fFWCGcNbeOPDBBwZICi
+         x/xVtodMQWr31uPMLVFkdagtlUob/zRpOYH+zXk0ItO8f+f2ExE8vLyrEll7sB+4gCZ1
+         hN75AiuipTrJzmd2bT6+cAIBIzwMFuAsmUegfH16A9f83Lk92lOrCJNrJ313yClDORFX
+         UeAfz63mli8QoJrBPFWL9WWGyeq+RM3vydW7Xk8/VjCq9eI66TXV8we03FoEj9+K7hrk
+         xd0g==
+X-Forwarded-Encrypted: i=1; AJvYcCWHgXATFv/5G5jHZW3b5RPsC5m7AAQyd6dWMol4j0BdASGFc1H8FNGVOv+MsaQjdisiU1LS+JP4ATtzYVQabQBRMSyQBRi96T89/i6T
+X-Gm-Message-State: AOJu0YyM1j5anX80lzhNdR+qYxgqmTmz3p5yqolEKpHhiI+8lEenXiWM
+	IAjircK+92wdjfUC+3tM5aO1a6bEcwh9m1NUlmGcIV63x92mc4YpQr/YsHdC9noSZ2MET03h5/Q
+	wvDO1VD5T4IuSIrEzo3yXFQfVSyG/Q6oTPBRmSQ==
+X-Google-Smtp-Source: AGHT+IEKZchaHuxM+IkeNKMSoR23Mk/EGmhIpibhcWiKs7wVibMip+LebNngnKtOjIhBOtdjNHUw+nGKFWAgS+qZ5g4=
+X-Received: by 2002:a05:6870:c192:b0:21f:dc6e:e4f9 with SMTP id
+ h18-20020a056870c19200b0021fdc6ee4f9mr5153338oad.1.1709728472158; Wed, 06 Mar
+ 2024 04:34:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 10/20] media: venus: core: Drop cache properties in
- resource struct
-Content-Language: en-US
-To: Konrad Dybcio <konrad.dybcio@linaro.org>,
- Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
- Vikash Garodia <quic_vgarodia@quicinc.com>,
- Bryan O'Donoghue <bryan.odonoghue@linaro.org>, Andy Gross
- <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Dikshita Agarwal <quic_dikshita@quicinc.com>,
- Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Marijn Suijten <marijn.suijten@somainline.org>,
- Stanimir Varbanov <stanimir.varbanov@linaro.org>,
- Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
- linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20230911-topic-mars-v2-0-3dac84b88c4b@linaro.org>
- <20230911-topic-mars-v2-10-3dac84b88c4b@linaro.org>
-From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <20230911-topic-mars-v2-10-3dac84b88c4b@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240306085622.87248-1-cuiyunhui@bytedance.com>
+ <20240306085622.87248-3-cuiyunhui@bytedance.com> <CAMj1kXEjjFAeVAVwiDO22RJECSM=L=0q6J=zog7JR38rUZpLGQ@mail.gmail.com>
+In-Reply-To: <CAMj1kXEjjFAeVAVwiDO22RJECSM=L=0q6J=zog7JR38rUZpLGQ@mail.gmail.com>
+From: yunhui cui <cuiyunhui@bytedance.com>
+Date: Wed, 6 Mar 2024 20:34:21 +0800
+Message-ID: <CAEEQ3w=2pX+pjwoz=hNFpR4thD+d6o9OmBob8LMzZ8BbKZ=pqg@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH 3/3] efistub: fix missed the initialization
+ of gp
+To: Ard Biesheuvel <ardb@kernel.org>
+Cc: paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, 
+	xuzhipeng.1973@bytedance.com, alexghiti@rivosinc.com, samitolvanen@google.com, 
+	bp@alien8.de, xiao.w.wang@intel.com, jan.kiszka@siemens.com, 
+	kirill.shutemov@linux.intel.com, nathan@kernel.org, 
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	linux-efi@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 09/02/2024 21:09, Konrad Dybcio wrote:
-> Currently VMEM/OCMEM/LLCC is disabled on all platforms.
-> 
-> Make it unconditional to save on space.
-> 
-> These caches will not be enabled until the Venus driver can reference
-> them as chunks of SRAM (they're modelled as separate devices) to avoid
-> hardcoding magic addresses and rougely accessing the hardware,
-> bypassing the normal accessors.
-> 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Hi Ard,
 
-Agreed, this is dead code.
+On Wed, Mar 6, 2024 at 5:36=E2=80=AFPM Ard Biesheuvel <ardb@kernel.org> wro=
+te:
+>
+> On Wed, 6 Mar 2024 at 09:56, Yunhui Cui <cuiyunhui@bytedance.com> wrote:
+> >
+> > Compared with gcc version 12, gcc version 13 uses the gp
+> > register for compilation optimization, but the efistub module
+> > does not initialize gp.
+> >
+> > Signed-off-by: Yunhui Cui <cuiyunhui@bytedance.com>
+> > Co-Developed-by: Zhipeng Xu <xuzhipeng.1973@bytedance.com>
+>
+> This needs a sign-off, and your signoff needs to come after.
+>
+> > ---
+> >  arch/riscv/kernel/efi-header.S | 11 ++++++++++-
+> >  1 file changed, 10 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/arch/riscv/kernel/efi-header.S b/arch/riscv/kernel/efi-hea=
+der.S
+> > index 515b2dfbca75..fa17c08c092a 100644
+> > --- a/arch/riscv/kernel/efi-header.S
+> > +++ b/arch/riscv/kernel/efi-header.S
+> > @@ -40,7 +40,7 @@ optional_header:
+> >         .long   __pecoff_data_virt_end - __pecoff_text_end      // Size=
+OfInitializedData
+> >  #endif
+> >         .long   0                                       // SizeOfUninit=
+ializedData
+> > -       .long   __efistub_efi_pe_entry - _start         // AddressOfEnt=
+ryPoint
+> > +       .long   _efistub_entry - _start         // AddressOfEntryPoint
+> >         .long   efi_header_end - _start                 // BaseOfCode
+> >  #ifdef CONFIG_32BIT
+> >         .long  __pecoff_text_end - _start               // BaseOfData
+> > @@ -121,4 +121,13 @@ section_table:
+> >
+> >         .balign 0x1000
+> >  efi_header_end:
+> > +
+> > +       .global _efistub_entry
+> > +_efistub_entry:
+>
+> This should go into .text or .init.text, not the header.
+>
+> > +       /* Reload the global pointer */
+> > +       load_global_pointer
+> > +
+>
+> What is supposed to happen here if CONFIG_SHADOW_CALL_STACK=3Dy? The EFI
+> stub Makefile removes the SCS CFLAGS, so the stub will be built
+> without shadow call stack support, which I guess means that it might
+> use GP as a global pointer as usual?
+>
+> > +       call __efistub_efi_pe_entry
+> > +       ret
+> > +
+>
+> You are returning to the firmware here, but after modifying the GP
+> register. Shouldn't you restore it to its old value?
+There is no need to restore the value of the gp register. Where gp is
+needed, the gp register must first be initialized. And here is the
+entry.
 
-Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Regarding your first two comments above, I plan to make the following
+changes in v2,
+efi_header_end:
++
++       __INIT
++       .global _efistub_entry
++_efistub_entry:
++       /* Reload the global pointer */
++.option push
++.option norelax
++       la gp, __global_pointer$
++.option pop
++
++       call __efistub_efi_pe_entry
++       ret
++       __HEAD
++
+        .endm
 
+what do you think?
+
+Thanks,
+Yunhui
 
