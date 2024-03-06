@@ -1,206 +1,155 @@
-Return-Path: <linux-kernel+bounces-94565-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94567-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD29687417E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 21:40:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49504874181
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 21:42:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3CD401F25CF2
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 20:40:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 03C4E2831B5
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 20:42:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B648F1757A;
-	Wed,  6 Mar 2024 20:40:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EF1517736;
+	Wed,  6 Mar 2024 20:42:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T8/ws5qM"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="QpgO+716"
+Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com [209.85.219.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E15E9175B7;
-	Wed,  6 Mar 2024 20:40:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30FF714006
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 20:42:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709757639; cv=none; b=F8c+7fgCuE8qLFrY/e7WqWzNJnSKJ5197MZZqLx9f9lA5gMQk3RzdTK/wmGURVzMD7eQvaMgq2jhG28QFzHtwrvkuU1ROdc/DUOR6VLFy0hOgiG0rSykEh3R/dyhSUbjtSE5OTnlGZVV/WTuAtW5ktODdUu5WyR+TGfXuPK4Go0=
+	t=1709757738; cv=none; b=Q1XGDE5aMOS9Rs7gdgfBst0I2cA/DcBzNqpOyO7kMwYjpI/eBZXzux/M41GJaILMbGU4KynwiMyJW8lUBYZ+RkIkvTNx5sRw/5yfM5CUo/VQT4glZjb+s7+Mhnzz6qpMNK0wMMQW+lFsMW2xSopIedjfoUqKmhr6KpO2ZwhL5Uo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709757639; c=relaxed/simple;
-	bh=sswSikc9379ND8q2IbxyQfnO0n1h0QcZWhVJ5y3cvaU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hmCmm5ZPp05VsJ8IYQhXhyrwMvvKjkX0OA5SlztUfZ0+scG4vKNcxlNC4wivGDt0sPTElG2ufnb/EjeepICzekyqLm5LhvKxXIDR5u2iSNrNwceI525mCx0a6y6Lph4pYXKDvu/XVNxDTwg+hhtMXFdi7rp6mKBGQHBiXXNYuV0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T8/ws5qM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8170AC43390;
-	Wed,  6 Mar 2024 20:40:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709757638;
-	bh=sswSikc9379ND8q2IbxyQfnO0n1h0QcZWhVJ5y3cvaU=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=T8/ws5qMT2ZeTSc51b1Eib/zZP0Bic95ObfOLhmnFI6WWEkBsyEl8vGvsLXcfyAKo
-	 eXOSRIunkpWWaW13DDe+UuAfMmdbbMhe3bXf355jRYlAu+9T2GL4TfXSQIB5H+MIts
-	 cY7T0qhxeeu88XgXRTGgW8DV8nvGQKu0/t1SoWJZenI1I5imZpyKQpurVBR6tTR/eq
-	 Aa2xSbiYR3EfIt1RPVDci+rUsIwoyuofq8zXyd5zv8kq16/cioamSKHrtUSzGaYBqT
-	 qISnREjX/vWwbF7CkvbsqrnJzQOfg0VptWhIBORmtijTeo9YqXhEdryLecBqroaD0e
-	 IjELyvAiHZOlQ==
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d26227d508so724531fa.2;
-        Wed, 06 Mar 2024 12:40:38 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWTrubUlMl8+4Xy57LcTOHtvWrLa7p1K/wWdiBLitBirO6NUKYslyz6+yCY9a0myeLIlnl7MsiaDDatEczBBVStvP0mKOkae4GizfzqG35xaH6QANTA6KesS1ZHS8hm7vtUQFut5gtzhF3MgYki3WEmD6TLUGDuNtY+PA3I/+I4nhwsIg==
-X-Gm-Message-State: AOJu0YymRRr7Kuimx0M6EF1tbMIXzAdurJ4vTt/LbETW7TVG4pLBmAQN
-	QVVJW0gHC9anRtHsX+kdmhZqwGXmS2Eg3lEhe6Ckt2lFt41J6DgnMbZ2SXjm/JlpOk4D4M6vEie
-	gnAZ+HGRdbofW1Cy7JcVn0wepQw==
-X-Google-Smtp-Source: AGHT+IH8UTdel4s/VRNesdS4qceNJhsOkk+LDnUl/yDAojAV9TkPDtsy3/Q6DOzm2AeEjlXIQ6cPB2Jm2nQ7JJv7G7M=
-X-Received: by 2002:a2e:7c17:0:b0:2d2:ca54:707b with SMTP id
- x23-20020a2e7c17000000b002d2ca54707bmr83492ljc.38.1709757636588; Wed, 06 Mar
- 2024 12:40:36 -0800 (PST)
+	s=arc-20240116; t=1709757738; c=relaxed/simple;
+	bh=cYX1beKtszcOqBiG4dZyOQlR1F7E+GSotuZxX/m5OJw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=p6FuSlHbyz+Eh1gpOdx3h16qfk8W1qCq8Ox6armhsFe6LJTZ1Or9RG8GUXfnjDheY5xvbW61xzXCpR1O04svbDZtHFs8aPFPKUpALXFR0WyGjm+p0atW5mz7d9H5kT3MR5b2wfqT/4LB1xspoZ2WE4/Jl6Id5onRX3Wsgs+ngXQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=QpgO+716; arc=none smtp.client-ip=209.85.219.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+Received: by mail-qv1-f49.google.com with SMTP id 6a1803df08f44-6907ab22f47so660496d6.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 12:42:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1709757736; x=1710362536; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=n5XEfRywm5pe7dMN3IUl6f6i+3v4HajOdA+bk3NTouk=;
+        b=QpgO+716xhhLVLGPD4pM9uAfoHb85HfxC3aJwQMBDC91e/ZSmRN4hUU52TyNYTPswu
+         8Yu9hRIIJxYUVfau4K2/Dgw6w2EiCuNGOl+rwQtWhiizwhMjS44+o6jZ8m//Q13z8Kpg
+         xrsqn3LIy6hxKSHr4ZEgyMl2JeNoEs8VlCinA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709757736; x=1710362536;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=n5XEfRywm5pe7dMN3IUl6f6i+3v4HajOdA+bk3NTouk=;
+        b=MSh6YuHfEV9V9Dm5pV9qGxK0Eh8/Qi2oMxbGF0QkeHWN3nhkdAHUnBj0g+ACsB1ZBW
+         GlJVZERU8x1HkQN82s5Unc83KcSkXg8EVzbzzaQwDBUWgJG6nzFPMwB7rK3xyKaGpaR/
+         8G/WexOaxUINLX18Buk0tpJ6ueLQh/iHLF8WCW9QV1JZOuxvlLuFA+u0Q8yj7XS/Yi4k
+         E2YbAv6koo+dXCcUbJMg8sVOLpWfGocbAuVVZELZwOm4O/eweIAcMcifqQHoSpylTXeE
+         2sDldrRabItlaTQYQoMXRQ2V+8sl4B/gEZdg4VG2cAMH21HQLRtcwmiz4jbTFqxlpScF
+         9teA==
+X-Gm-Message-State: AOJu0YxZjXoBXhkZd+NVYCLMld3710LuOA45gWvLu20mXeF7q3GeWsLF
+	LLSJQ4z/8OmLi8Nb0Ki5B0hqMn6m3v1Lqw3RdvosXGyceR1Ap3oRC16d6UjVS+I=
+X-Google-Smtp-Source: AGHT+IFRpUbmAquh6H46LFTcKsuQMbE9hWKICs+SxImokJG19sxmvO1Yw45fjpe4ejO4LtNoWrJ/rg==
+X-Received: by 2002:a05:6214:114d:b0:68f:6410:99d7 with SMTP id b13-20020a056214114d00b0068f641099d7mr5963128qvt.64.1709757735626;
+        Wed, 06 Mar 2024 12:42:15 -0800 (PST)
+Received: from [10.5.0.2] ([91.196.69.189])
+        by smtp.gmail.com with ESMTPSA id pc16-20020a056214489000b006904d5bf148sm7450111qvb.134.2024.03.06.12.42.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Mar 2024 12:42:14 -0800 (PST)
+Message-ID: <12a20651-5429-43df-88d7-9d01ff6212c6@joelfernandes.org>
+Date: Wed, 6 Mar 2024 15:42:10 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240229-8ulp_edma-v2-0-9d12f883c8f7@nxp.com> <20240229-8ulp_edma-v2-4-9d12f883c8f7@nxp.com>
- <20240304164423.GA626742-robh@kernel.org> <ZeZZyTU8FWACW9aj@lizhi-Precision-Tower-5810>
-In-Reply-To: <ZeZZyTU8FWACW9aj@lizhi-Precision-Tower-5810>
-From: Rob Herring <robh@kernel.org>
-Date: Wed, 6 Mar 2024 14:40:23 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqKU=Qay75i1zaasaNHCV2jkseX94fzfe-4AwrV093NOLA@mail.gmail.com>
-Message-ID: <CAL_JsqKU=Qay75i1zaasaNHCV2jkseX94fzfe-4AwrV093NOLA@mail.gmail.com>
-Subject: Re: [PATCH v2 4/5] dt-bindings: dma: fsl-edma: add fsl,imx8ulp-edma
- compatible string
-To: Frank Li <Frank.li@nxp.com>
-Cc: Vinod Koul <vkoul@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Peng Fan <peng.fan@nxp.com>, imx@lists.linux.dev, dmaengine@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
-	Joy Zou <joy.zou@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 26/30] sched: handle preempt=voluntary under PREEMPT_AUTO
+Content-Language: en-US
+To: Ankur Arora <ankur.a.arora@oracle.com>
+Cc: linux-kernel@vger.kernel.org, tglx@linutronix.de, peterz@infradead.org,
+ torvalds@linux-foundation.org, paulmck@kernel.org,
+ akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+ dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+ juri.lelli@redhat.com, vincent.guittot@linaro.org, willy@infradead.org,
+ mgorman@suse.de, jpoimboe@kernel.org, mark.rutland@arm.com, jgross@suse.com,
+ andrew.cooper3@citrix.com, bristot@kernel.org,
+ mathieu.desnoyers@efficios.com, geert@linux-m68k.org,
+ glaubitz@physik.fu-berlin.de, anton.ivanov@cambridgegreys.com,
+ mattst88@gmail.com, krypton@ulrich-teichert.org, rostedt@goodmis.org,
+ David.Laight@aculab.com, richard@nod.at, mjguzik@gmail.com,
+ jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
+ boris.ostrovsky@oracle.com, konrad.wilk@oracle.com
+References: <20240213055554.1802415-1-ankur.a.arora@oracle.com>
+ <20240213055554.1802415-27-ankur.a.arora@oracle.com>
+ <65e3cd87.050a0220.bc052.7a29@mx.google.com> <87frx514jz.fsf@oracle.com>
+From: Joel Fernandes <joel@joelfernandes.org>
+In-Reply-To: <87frx514jz.fsf@oracle.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Mar 4, 2024 at 5:31=E2=80=AFPM Frank Li <Frank.li@nxp.com> wrote:
->
-> On Mon, Mar 04, 2024 at 10:44:23AM -0600, Rob Herring wrote:
-> > On Thu, Feb 29, 2024 at 03:58:10PM -0500, Frank Li wrote:
-> > > From: Joy Zou <joy.zou@nxp.com>
-> > >
-> > > Introduce the compatible string 'fsl,imx8ulp-edma' to enable support =
-for
-> > > the i.MX8ULP's eDMA, alongside adjusting the clock numbering. The i.M=
-X8ULP
-> > > eDMA architecture features one clock for each DMA channel and an addi=
-tional
-> > > clock for the core controller. Given a maximum of 32 DMA channels, th=
-e
-> > > maximum clock number consequently increases to 33.
-> > >
-> > > Signed-off-by: Joy Zou <joy.zou@nxp.com>
-> > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > > ---
-> > >  .../devicetree/bindings/dma/fsl,edma.yaml          | 26 ++++++++++++=
-++++++++--
-> > >  1 file changed, 24 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/dma/fsl,edma.yaml b/Do=
-cumentation/devicetree/bindings/dma/fsl,edma.yaml
-> > > index aa51d278cb67b..55cce79c759f8 100644
-> > > --- a/Documentation/devicetree/bindings/dma/fsl,edma.yaml
-> > > +++ b/Documentation/devicetree/bindings/dma/fsl,edma.yaml
-> > > @@ -23,6 +23,7 @@ properties:
-> > >            - fsl,imx7ulp-edma
-> > >            - fsl,imx8qm-adma
-> > >            - fsl,imx8qm-edma
-> > > +          - fsl,imx8ulp-edma
-> > >            - fsl,imx93-edma3
-> > >            - fsl,imx93-edma4
-> > >            - fsl,imx95-edma5
-> > > @@ -53,11 +54,11 @@ properties:
-> > >
-> > >    clocks:
-> > >      minItems: 1
-> > > -    maxItems: 2
-> > > +    maxItems: 33
-> > >
-> > >    clock-names:
-> > >      minItems: 1
-> > > -    maxItems: 2
-> > > +    maxItems: 33
-> > >
-> > >    big-endian:
-> > >      description: |
-> > > @@ -108,6 +109,7 @@ allOf:
-> > >        properties:
-> > >          clocks:
-> > >            minItems: 2
-> > > +          maxItems: 2
-> > >          clock-names:
-> > >            items:
-> > >              - const: dmamux0
-> > > @@ -136,6 +138,7 @@ allOf:
-> > >        properties:
-> > >          clock:
-> > >            minItems: 2
-> > > +          maxItems: 2
-> > >          clock-names:
-> > >            items:
-> > >              - const: dma
-> > > @@ -151,6 +154,25 @@ allOf:
-> > >          dma-channels:
-> > >            const: 32
-> > >
-> > > +  - if:
-> > > +      properties:
-> > > +        compatible:
-> > > +          contains:
-> > > +            const: fsl,imx8ulp-edma
-> > > +    then:
-> > > +      properties:
-> > > +        clock:
-> >
-> > clocks
-> >
-> > > +          maxItems: 33
-> >
-> > That is already the max. I think you want 'minItems: 33' here.
-> >
-> > > +        clock-names:
-> > > +          items:
-> > > +            - const: dma
-> > > +            - pattern: "^CH[0-31]-clk$"
-> >
-> > '-clk' is redundant. [0-31] is not how you do a range of numbers with
-> > regex.
-> >
-> > This doesn't cover clocks 3-33. Not a great way to express in
-> > json-schema, but this should do it:
-> >
-> > allOf:
-> >   - items:
-> >       - const: dma
-> >   - items:
-> >       oneOf:
-> >         - const: dma
-> >         - pattern: "^ch([0-9]|[1-2][0-9]|[3[01])$"
->
-> I understand pattern is wrong. But I don't understand why need 'allOf'.
+Hi Ankur,
 
-The first 'items' says the 1st entry must be 'dma'. (It might need a
-'maxItems: 33' too now that I look at it.) The 2nd 'items' says all
-entries must be either 'dma' or the CHn pattern.
+On 3/5/2024 3:11 AM, Ankur Arora wrote:
+> 
+> Joel Fernandes <joel@joelfernandes.org> writes:
+> 
+[..]
+>> IMO, just kill 'voluntary' if PREEMPT_AUTO is enabled. There is no
+>> 'voluntary' business because
+>> 1. The behavior vs =none is to allow higher scheduling class to preempt, it
+>> is not about the old voluntary.
+> 
+> What do you think about folding the higher scheduling class preemption logic
+> into preempt=none? As Juri pointed out, prioritization of at least the leftmost
+> deadline task needs to be done for correctness.
+> 
+> (That'll get rid of the current preempt=voluntary model, at least until
+> there's a separate use for it.)
 
-> 8ulp need clock 'dma" and "ch*". I think
->
-> items:
->     - const: dma
->     - pattern: "^CH[0-31]-clk$"
->
-> should be enough.
+Yes I am all in support for that. Its less confusing for the user as well, and
+scheduling higher priority class at the next tick for preempt=none sounds good
+to me. That is still an improvement for folks using SCHED_DEADLINE for whatever
+reason, with a vanilla CONFIG_PREEMPT_NONE=y kernel. :-P. If we want a new mode
+that is more aggressive, it could be added in the future.
 
-If it was, then I would not have said anything. If you don't believe
-me see if this passes validation:
+>> 2. you are also planning to remove cond_resched()s via this series and leave
+>> it to the scheduler right?
+> 
+> Yeah, under PREEMPT_AUTO, cond_resched() will /almost/ be not there. Gets
+> defined to:
+> 
+> static inline int _cond_resched(void)
+> {
+>         klp_sched_try_switch();
+>         return 0;
+> }
+> 
+> Right now, we need cond_resched() to make timely forward progress while
+> doing live-patching.
 
-clock-names =3D "dma", "CH0", "foobar";
+Cool, got it!
 
-> If you means put on top allOf, other platform use clock name such as
-> 'dmamux0'.
+>> Or call it preempt=higher, or something? No one is going to understand the
+>> meaning of voluntary the way it is implied here IMHO.
+> 
+> I don't think there's enough to make it worth adding a new model. For
+> now I'm tending towards moving the correctness parts to preempt=none and
+> making preempt=voluntary identical to preempt=none.
 
-What? It's under an if/then schema.
+Got it, sounds good.
 
-Rob
+> Thanks for the review.
+
+Sure! Thanks for this work. Looking forward to the next series,
+
+ - Joel
+
 
