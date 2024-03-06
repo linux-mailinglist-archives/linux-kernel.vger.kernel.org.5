@@ -1,117 +1,91 @@
-Return-Path: <linux-kernel+bounces-93415-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93417-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 485AF872F74
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 08:20:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DB3F9872F79
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 08:20:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7992D1C22049
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 07:20:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 192041C22970
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 07:20:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03FAF5BACE;
-	Wed,  6 Mar 2024 07:20:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 004575C8EB;
+	Wed,  6 Mar 2024 07:20:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k5r5V81E"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ire0JjbT"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3806F5BAD4;
-	Wed,  6 Mar 2024 07:20:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D5695C5F9;
+	Wed,  6 Mar 2024 07:20:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709709610; cv=none; b=M6bKL1x+hIO0mAD9T6PWsx69ICj2p42s2+F9DHwQ7BsuARI6uKzxhbJmnDjwFIPi6q2E1pvYdSRKs6/ti6V/QnWul5xl75m9YIxSGir/lxq2lOQOJCGlk7xYf5cOyxuSRg0vfKnZhX7APu30djRH6775GT4WEla96C8iRfhE7ik=
+	t=1709709632; cv=none; b=Tf6CXJuW/dusJ1Np6FrscgXOOjOu+R/AY67gJdQxTXdci+BaarRyqRI3LDdiUVqsSmY0W3/aiRLP3VOCgn9Fs8ubwEyvxA3nZfXhnfuNFfZQiFkjrZ4a3bh2x4o5/h5rJXUeon+1LPz/q31si2RaSFYYiuj375ICG4MIwDxqnYs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709709610; c=relaxed/simple;
-	bh=7e0GVHgO/NR/ITDXSFCFIpgdS6eMgQdfekTQKe26Z6o=;
+	s=arc-20240116; t=1709709632; c=relaxed/simple;
+	bh=Qugb/thylVBs/11++xQrE7py/hfjgS+7cmnTqZ6Npk0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=H3wUEZTENNBuK5bvcdDIHi/WJvFHtOTBMp9BUAVnvaEtdcT3sypn7g7ENrhHYFFE69E7BwYM0vV8llzSBHL2jlptDzuCci3fhj1dvjU6zBcYw0LAMZ3Rp4O4dL4DtQci45lj4SMwvIjAeFF2PhgZXsSKDQYB4spZA0K6CTTko6g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k5r5V81E; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0AC8C43390;
-	Wed,  6 Mar 2024 07:20:09 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=lyzH6YF1I9cFnX4ggfv272jcqIChrQ/aHZ6z7ETrrLjNAqX+boPa7kqGeklRZB4sLFeej3yVADMqnUdJ8A1XDW4zVBKDWcBd0WHrHWpvdixzPLMOPNveWR8XLo8XXS1ZJzVZ+8t+AUfigpPaeThpJhkyyjtLC9BEHdGlXJTRdVg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ire0JjbT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DEAA5C433C7;
+	Wed,  6 Mar 2024 07:20:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709709609;
-	bh=7e0GVHgO/NR/ITDXSFCFIpgdS6eMgQdfekTQKe26Z6o=;
+	s=k20201202; t=1709709630;
+	bh=Qugb/thylVBs/11++xQrE7py/hfjgS+7cmnTqZ6Npk0=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=k5r5V81EhuBe6LjOo3DLR4LJFl+7dNzzIISuOk/XIYakZFh6e6G5M3ObQxSKKkiw/
-	 bgN5f9Hr0Id6WHlCwrOxGH1CUt7N78xGPxA1KNUnnkmt31lDwDVKZPjtx3eitjNSTW
-	 ouJm2Og3CB6PSiuQkdcQaFmAbVth8JAFPH5grOXzTLVaM9M2qKBluY8DbkuCXBngYM
-	 dTPQkJGPb/lPQ1Ev55bp+vZ1P/3rfRLlU+tj0DPtQzX3+Bsb7ZLVkMYL4bNslfXzS2
-	 TCkdKyxtTjHvbkRptE6vkoxnsjH6cc+ZREHX7rZREMzP0/x8MTHiMTXG5lP+QzjUZF
-	 kxYDGbw0UgreQ==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1rhlZY-0000000053i-20wI;
-	Wed, 06 Mar 2024 08:20:16 +0100
-Date: Wed, 6 Mar 2024 08:20:16 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Johan Hovold <johan+linaro@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
-	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 00/10] arm64: dts: qcom: sc8280xp: PCIe fixes and
- GICv3 ITS enable
-Message-ID: <ZegZMNWxCnLbHDxP@hovoldconsulting.com>
-References: <20240305081105.11912-1-johan+linaro@kernel.org>
- <20240306063302.GA4129@thinkpad>
+	b=ire0JjbTk37nJ8nW8ILDF6ozjTHy+9PDRACslzZH2SKcNTUuUi7a7ClpUtyz6ADno
+	 rtyc7cVI9D3yxR/B8zMEJhFsYPCZKimE7U/KgrQyMPXq6hJKHUGUuh5IBYsyW6GnhB
+	 WBV0qIVBxQlY+hkqyQ5WzrU+tPCZ+noTIbjfrtDPPozUfil+4/10xE3xY6IRXX3eW6
+	 roaePgsJUluqivsZn+2gPvHaMwqJPWAHdjvkpUd8t6udNueYP1UG0gBEd2VHp4lWDK
+	 rCYy18ssfJtM4HgvMfuFk/CKCk9Cz2TFPp5pt97Sj6BAFudLNevCpDufEgav9qBoFJ
+	 fvRlzsARGWpSg==
+Date: Wed, 6 Mar 2024 08:20:27 +0100
+From: Andi Shyti <andi.shyti@kernel.org>
+To: Rob Herring <robh@kernel.org>
+Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, linux-i2c@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: i2c: mux: i2c-demux-pinctrl: Drop
+ i2c-mux.yaml reference
+Message-ID: <e6cuggewnewxp2tf4g45jkazu46pgiffooo6gdwi2ge44itsps@njsz64u5vjyr>
+References: <20240124190552.1551929-1-robh@kernel.org>
+ <Zb6nBYTkZmXZ0G2X@shikoro>
+ <Zdxq4GnRyjC07EH8@shikoro>
+ <CAL_JsqLnCzXMsyeAHZUx2_oF5dqvLOWBvoj2Bb_Go6VimCxCoA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240306063302.GA4129@thinkpad>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAL_JsqLnCzXMsyeAHZUx2_oF5dqvLOWBvoj2Bb_Go6VimCxCoA@mail.gmail.com>
 
-On Wed, Mar 06, 2024 at 12:03:02PM +0530, Manivannan Sadhasivam wrote:
-> On Tue, Mar 05, 2024 at 09:10:55AM +0100, Johan Hovold wrote:
-> > This series addresses a few problems with the sc8280xp PCIe
-> > implementation.
-> > 
-> > The DWC PCIe controller can either use its internal MSI controller or an
-> > external one such as the GICv3 ITS. Enabling the latter allows for
-> > assigning affinity to individual interrupts, but results in a large
-> > amount of Correctable Errors being logged on both the Lenovo ThinkPad
-> > X13s and the sc8280xp-crd reference design.
-> > 
-> > It turns out that these errors are always generated, but for some yet to
-> > be determined reason, the AER interrupts are never received when using
-> > the internal MSI controller, which makes the link errors harder to
-> > notice.
+Hi Rob,
 
-> > Enabling AER error reporting on sc8280xp could similarly also reveal
-> > existing problems with the related sa8295p and sa8540p platforms as they
-> > share the base dtsi.
-> > 
-> > After discussing this with Bjorn Andersson at Qualcomm we have decided
-> > to go ahead and disable L0s for all controllers on the CRD and the
-> > X13s.
- 
-> Just received confirmation from Qcom that L0s is not supported for any of the
-> PCIe instances in sc8280xp (and its derivatives). Please move the property to
-> SoC dtsi.
+On Tue, Mar 05, 2024 at 12:06:05PM -0600, Rob Herring wrote:
+> On Mon, Feb 26, 2024 at 4:48 AM Wolfram Sang
+> > On Sat, Feb 03, 2024 at 09:50:13PM +0100, Wolfram Sang wrote:
+> > > On Wed, Jan 24, 2024 at 01:05:50PM -0600, Rob Herring wrote:
+> > > > The I2C de-mux is different than an I2C mux, so i2c-mux.yaml is not
+> > > > relevant and shouldn't be referenced.
+> > > >
+> > > > Signed-off-by: Rob Herring <robh@kernel.org>
+> > >
+> > > Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> >
+> > Andi, can you pick these up?
+> 
+> I already did since you gave your reviewed-by and they hadn't
+> otherwise been picked up.
 
-Ok, thanks for confirming. But then the devicetree property is not the
-right way to handle this, and we should disable L0s based on the
-compatible string instead.
+Oh... I had them in my test branch and was waiting for some more
+tests before sending the notification.
 
-> > As we are now at 6.8-rc7, I've rebased this series on the Qualcomm PCIe
-> > binding rework in linux-next so that the whole series can be merged for
-> > 6.9 (the 'aspm-no-l0s' support and devicetree fixes are all marked for
-> > stable backport anyway).
+Shall I remove them from my list?
 
-I'll respin the series. Looks like we've already missed the chance to
-enable ITS in 6.9 anyway.
-
-Johan
+Andi
 
