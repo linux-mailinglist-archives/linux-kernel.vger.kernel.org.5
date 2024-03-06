@@ -1,169 +1,178 @@
-Return-Path: <linux-kernel+bounces-93629-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93630-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E718987328F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:31:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC5A7873292
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:31:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3C33BB25EE6
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:30:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A2981C26361
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:31:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A9CC5F489;
-	Wed,  6 Mar 2024 09:30:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Q4KzraUf"
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B2D05DF14;
-	Wed,  6 Mar 2024 09:30:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32A455DF2B;
+	Wed,  6 Mar 2024 09:31:08 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A52D1B7E3;
+	Wed,  6 Mar 2024 09:31:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709717418; cv=none; b=G7fbuRihZh04BddtCPjGjHnzn7qhJ3XSivHL+O415HDiqEDrQckcZIcYGBD0MtcePCOzO7N+/9Li+zvFABYBoAKswpx6TNZlmZU06x6U28YdpfIUcpK5PGpF4ESrin62+AFSUtU4oysbGgoOvEFREH16+V3yy8LqMJDJP2llpSU=
+	t=1709717467; cv=none; b=ksppRSttvGleJAR7vd0DsujJUcLOKUv5Av2xl4l4aE8YvUUt1hCZi2qoMibxBDP/iuSwmuccCjzeDY34cucDlzENWchNhdIcWsTjnGbcuj4I1VAAu2jnQZtHiCacPdfBqHaEK5NTc4WFYtB+Fu0bRPffvvCnfqGzoRkLoMBwhfc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709717418; c=relaxed/simple;
-	bh=cTefToFtwVhAQ8i3dFPgBPjlikGLUDhBO/cbOnwlNP8=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=qv1/SrQOJ38yY6ZtU3RZhfzd9UkX6qRQzxGBgSuPrZbB1lVrASxLih2xGzaNPeSKNItJZBwTUJ8DG3mWTCz6Ns+mCWTJ3V7l+EW2N8fU2QuPA4h+zsLAJPkZJ2jSCgdMicua7naczT+z0zsNloolwPdGQMgZiBVu3PsIJJmfDkQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Q4KzraUf; arc=none smtp.client-ip=217.70.183.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 7C9FA1C0008;
-	Wed,  6 Mar 2024 09:30:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709717409;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CQ3VHuLfhnfTcsfgCprSG/Jx5UxR5Py4OUyE2oFEY7o=;
-	b=Q4KzraUfQuzhH0i5kczTZn1IU4kllu6HVuILq8u8bXcIrCiAtcQi6yZa80emo4MBRiFdqv
-	Xlscq1RBGfOrcEjQNK9q5liHgCs//res/hsNUrtnJF+bueLkHEV23Xjh58zWYY0L0ueNoR
-	kmjG9UI957MwbdlHZatHKiz34mUJBYqUDfpIlIK9roBbP2V4+Q166fOVc3m/64mvTrTk+J
-	WQ73sLX8Jzq2Ynl9LS1gu4B3tgvqHfGHOkjbRX3toUtybarxPgbU50vQ6nb9ONBLHiBHYY
-	B0HTvTHAfbQk9k06yAtHwjcvtaJHNNHWRHEba7Qm65KhDdjtzPJwAATtzbwwaQ==
-From: Luca Ceresoli <luca.ceresoli@bootlin.com>
-Date: Wed, 06 Mar 2024 10:30:01 +0100
-Subject: [PATCH 2/2] ASoC: trace: add event to snd_soc_dapm trace events
+	s=arc-20240116; t=1709717467; c=relaxed/simple;
+	bh=7TVwWAITfTzss3r7zBS+JIIczj4t9ScDlXpSvhDyjFs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=a/mkKSn7JqfgInIcLCgZyKmh3P30nBlTahgybHL+Ay/yu8aUUZ7Il/1Wmw058T648oSfz2kghOfwZEynKtIdDJKiytz12Bi5Migg34rnfsaMrNFHuImTqHzlrfYKo1YxTfP5L+nHFNraB6ItLVN5iAquWEm8XzfzUaCN4v6X+sM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 86C1D1FB;
+	Wed,  6 Mar 2024 01:31:41 -0800 (PST)
+Received: from [10.57.68.241] (unknown [10.57.68.241])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 26E643F762;
+	Wed,  6 Mar 2024 01:31:02 -0800 (PST)
+Message-ID: <af11bbca-3f6a-4db5-916c-b0d5b942352b@arm.com>
+Date: Wed, 6 Mar 2024 09:31:01 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] mm: swap: Fix race between free_swap_and_cache() and
+ swapoff()
+Content-Language: en-GB
+To: Miaohe Lin <linmiaohe@huawei.com>, "Huang, Ying" <ying.huang@intel.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <20240305151349.3781428-1-ryan.roberts@arm.com>
+ <875xy0842q.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <c8fe62d0-78b8-527a-5bef-ee663ccdc37a@huawei.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <c8fe62d0-78b8-527a-5bef-ee663ccdc37a@huawei.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240306-improve-asoc-trace-events-v1-2-edb252bbeb10@bootlin.com>
-References: <20240306-improve-asoc-trace-events-v1-0-edb252bbeb10@bootlin.com>
-In-Reply-To: <20240306-improve-asoc-trace-events-v1-0-edb252bbeb10@bootlin.com>
-To: Steven Rostedt <rostedt@goodmis.org>, 
- Masami Hiramatsu <mhiramat@kernel.org>, 
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
- linux-sound@vger.kernel.org, Luca Ceresoli <luca.ceresoli@bootlin.com>
-X-Mailer: b4 0.13.0
-X-GND-Sasl: luca.ceresoli@bootlin.com
 
-Add the event value to the snd_soc_dapm_start and snd_soc_dapm_done trace
-events to make them more informative.
+On 06/03/2024 08:51, Miaohe Lin wrote:
+> On 2024/3/6 10:52, Huang, Ying wrote:
+>> Ryan Roberts <ryan.roberts@arm.com> writes:
+>>
+>>> There was previously a theoretical window where swapoff() could run and
+>>> teardown a swap_info_struct while a call to free_swap_and_cache() was
+>>> running in another thread. This could cause, amongst other bad
+>>> possibilities, swap_page_trans_huge_swapped() (called by
+>>> free_swap_and_cache()) to access the freed memory for swap_map.
+>>>
+>>> This is a theoretical problem and I haven't been able to provoke it from
+>>> a test case. But there has been agreement based on code review that this
+>>> is possible (see link below).
+>>>
+>>> Fix it by using get_swap_device()/put_swap_device(), which will stall
+>>> swapoff(). There was an extra check in _swap_info_get() to confirm that
+>>> the swap entry was valid. This wasn't present in get_swap_device() so
+>>> I've added it. I couldn't find any existing get_swap_device() call sites
+>>> where this extra check would cause any false alarms.
+>>>
+>>> Details of how to provoke one possible issue (thanks to David Hilenbrand
+>>> for deriving this):
+>>>
+>>> --8<-----
+>>>
+>>> __swap_entry_free() might be the last user and result in
+>>> "count == SWAP_HAS_CACHE".
+>>>
+>>> swapoff->try_to_unuse() will stop as soon as soon as si->inuse_pages==0.
+>>>
+>>> So the question is: could someone reclaim the folio and turn
+>>> si->inuse_pages==0, before we completed swap_page_trans_huge_swapped().
+>>>
+>>> Imagine the following: 2 MiB folio in the swapcache. Only 2 subpages are
+>>> still references by swap entries.
+>>>
+>>> Process 1 still references subpage 0 via swap entry.
+>>> Process 2 still references subpage 1 via swap entry.
+>>>
+>>> Process 1 quits. Calls free_swap_and_cache().
+>>> -> count == SWAP_HAS_CACHE
+>>> [then, preempted in the hypervisor etc.]
+>>>
+>>> Process 2 quits. Calls free_swap_and_cache().
+>>> -> count == SWAP_HAS_CACHE
+>>>
+>>> Process 2 goes ahead, passes swap_page_trans_huge_swapped(), and calls
+>>> __try_to_reclaim_swap().
+>>>
+>>> __try_to_reclaim_swap()->folio_free_swap()->delete_from_swap_cache()->
+>>> put_swap_folio()->free_swap_slot()->swapcache_free_entries()->
+>>> swap_entry_free()->swap_range_free()->
+>>> ...
+>>> WRITE_ONCE(si->inuse_pages, si->inuse_pages - nr_entries);
+>>>
+>>> What stops swapoff to succeed after process 2 reclaimed the swap cache
+>>> but before process1 finished its call to swap_page_trans_huge_swapped()?
+>>>
+>>> --8<-----
+>>
+>> I think that this can be simplified.  Even for a 4K folio, this could
+>> happen.
+>>
+>> CPU0                                     CPU1
+>> ----                                     ----
+>>
+>> zap_pte_range
+>>   free_swap_and_cache
+>>   __swap_entry_free
+>>   /* swap count become 0 */
+>>                                          swapoff
+>>                                            try_to_unuse
+>>                                              filemap_get_folio
+>>                                              folio_free_swap
+>>                                              /* remove swap cache */
+>>                                            /* free si->swap_map[] */
+>>
+>>   swap_page_trans_huge_swapped <-- access freed si->swap_map !!!
+> 
+> Sorry for jumping the discussion here. IMHO, free_swap_and_cache is called with pte lock held.
 
-Trace before:
+I don't beleive it has the PTL when called by shmem.
 
-           aplay-229   [000]   250.140309: snd_soc_dapm_start:   card=vscn-2046
-           aplay-229   [000]   250.167531: snd_soc_dapm_done:    card=vscn-2046
-           aplay-229   [000]   251.169588: snd_soc_dapm_start:   card=vscn-2046
-           aplay-229   [000]   251.195245: snd_soc_dapm_done:    card=vscn-2046
+> So synchronize_rcu (called by swapoff) will wait zap_pte_range to release the pte lock. So this
+> theoretical problem can't happen. Or am I miss something?
 
-Trace after:
+For Huang Ying's example, I agree this can't happen because try_to_unuse() will
+be waiting for the PTL (see the reply I just sent).
 
-           aplay-214   [000]   693.290612: snd_soc_dapm_start:   card=vscn-2046 event=1
-           aplay-214   [000]   693.315508: snd_soc_dapm_done:    card=vscn-2046 event=1
-           aplay-214   [000]   694.537349: snd_soc_dapm_start:   card=vscn-2046 event=2
-           aplay-214   [000]   694.563241: snd_soc_dapm_done:    card=vscn-2046 event=2
+> 
+> CPU0                                     CPU1
+> ----                                     ----
+> 
+> zap_pte_range
+>   pte_offset_map_lock -- spin_lock is held.
+>   free_swap_and_cache
+>    __swap_entry_free
+>    /* swap count become 0 */
+>                                          swapoff
+>                                            try_to_unuse
+>                                              filemap_get_folio
+>                                              folio_free_swap
+>                                              /* remove swap cache */
+> 					    percpu_ref_kill(&p->users);
+>    swap_page_trans_huge_swapped
+>   pte_unmap_unlock -- spin_lock is released.
+> 					    synchronize_rcu();  --> Will wait pte_unmap_unlock to be called?
 
-Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
----
- include/trace/events/asoc.h | 16 +++++++++-------
- sound/soc/soc-dapm.c        |  4 ++--
- 2 files changed, 11 insertions(+), 9 deletions(-)
+Perhaps you can educate me here; I thought that synchronize_rcu() will only wait
+for RCU critical sections to complete. The PTL is a spin lock, so why would
+synchronize_rcu() wait for the PTL to become unlocked?
 
-diff --git a/include/trace/events/asoc.h b/include/trace/events/asoc.h
-index b7ac7f100bb4..4eed9028bb11 100644
---- a/include/trace/events/asoc.h
-+++ b/include/trace/events/asoc.h
-@@ -57,34 +57,36 @@ DEFINE_EVENT(snd_soc_dapm, snd_soc_bias_level_done,
- 
- DECLARE_EVENT_CLASS(snd_soc_dapm_basic,
- 
--	TP_PROTO(struct snd_soc_card *card),
-+	TP_PROTO(struct snd_soc_card *card, int event),
- 
--	TP_ARGS(card),
-+	TP_ARGS(card, event),
- 
- 	TP_STRUCT__entry(
- 		__string(	name,	card->name	)
-+		__field(	int,	event		)
- 	),
- 
- 	TP_fast_assign(
- 		__assign_str(name, card->name);
-+		__entry->event = event;
- 	),
- 
--	TP_printk("card=%s", __get_str(name))
-+	TP_printk("card=%s event=%d", __get_str(name), (int)__entry->event)
- );
- 
- DEFINE_EVENT(snd_soc_dapm_basic, snd_soc_dapm_start,
- 
--	TP_PROTO(struct snd_soc_card *card),
-+	TP_PROTO(struct snd_soc_card *card, int event),
- 
--	TP_ARGS(card)
-+	TP_ARGS(card, event)
- 
- );
- 
- DEFINE_EVENT(snd_soc_dapm_basic, snd_soc_dapm_done,
- 
--	TP_PROTO(struct snd_soc_card *card),
-+	TP_PROTO(struct snd_soc_card *card, int event),
- 
--	TP_ARGS(card)
-+	TP_ARGS(card, event)
- 
- );
- 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 7e8a2a5312f5..ad8ba8fbbaee 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -1963,7 +1963,7 @@ static int dapm_power_widgets(struct snd_soc_card *card, int event)
- 
- 	snd_soc_dapm_mutex_assert_held(card);
- 
--	trace_snd_soc_dapm_start(card);
-+	trace_snd_soc_dapm_start(card, event);
- 
- 	for_each_card_dapms(card, d) {
- 		if (dapm_idle_bias_off(d))
-@@ -2088,7 +2088,7 @@ static int dapm_power_widgets(struct snd_soc_card *card, int event)
- 		"DAPM sequencing finished, waiting %dms\n", card->pop_time);
- 	pop_wait(card->pop_time);
- 
--	trace_snd_soc_dapm_done(card);
-+	trace_snd_soc_dapm_done(card, event);
- 
- 	return 0;
- }
 
--- 
-2.34.1
+>                                            /* free si->swap_map[] */
+> 
+> Thanks.
+> 
+> 
 
 
