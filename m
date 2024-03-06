@@ -1,154 +1,1421 @@
-Return-Path: <linux-kernel+bounces-93528-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93529-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BE84873106
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:45:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48AF787310A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:46:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0DCD7B25786
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 08:45:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E3421C2502C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 08:46:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A42815D8EE;
-	Wed,  6 Mar 2024 08:45:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 861F65D8F9;
+	Wed,  6 Mar 2024 08:46:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fibocomcorp.onmicrosoft.com header.i=@fibocomcorp.onmicrosoft.com header.b="nNRwse2e"
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2114.outbound.protection.outlook.com [40.107.117.114])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Q7fQ2Nj4"
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C2372E641;
-	Wed,  6 Mar 2024 08:45:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.117.114
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709714738; cv=fail; b=k4/0QuaSKARde0VmFxBq0jlNaLA4zY2HIgpbD+Rw7p8JYAomAqsLoPpqnlY9LuomEG1ylhVDYzQc3nwBZsLU9MBsRCRsZYystbUj/g0xSOjJ6uOni+fBw3Km2LajRyEUdIkSvHjufcGI+0RX+Z+Nn3udLkI9jJw32WeBu5m2m94=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709714738; c=relaxed/simple;
-	bh=ob2otnfSPAmYzfdkvYKAXFO7sUsIIZKqKkhLZvm9428=;
-	h=From:To:CC:Subject:Date:Message-ID:Content-Type:MIME-Version; b=tBCudxp4vHibyX+FYmMpF9MSaJ++Qt3uPb0oYLd62RXNlIQtgfHI83joB3ggzpQ2mLMwDZkO0RuM8+cNtz/ywHgh3/G3PYYvtW7mgGRCm093KZczG7R9lkkEfwYsUEyyaZnZGFiKftAQxVHY0PAm6/29GgNlYmWXDvZd8Hf+4zM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fibocom.com; spf=pass smtp.mailfrom=fibocom.com; dkim=pass (1024-bit key) header.d=fibocomcorp.onmicrosoft.com header.i=@fibocomcorp.onmicrosoft.com header.b=nNRwse2e; arc=fail smtp.client-ip=40.107.117.114
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fibocom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fibocom.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JFi61XI6p20rMLP1EDqKtQn5O4yWpEiaKDvPM/kuR7ec4RNVNqoYHCYsEsp7IiF0AtkohGLs+liGgwk+ELlLwv1oQYU1R8aRbYsdNJ5nSfF7jyZ4ZP4i+tdVcfkSLj4j0AsG0ZCKyb0Ffc7Y9wNP3EhgHqpiFuCq554V146+/KdqnUKFGYaXv88b7cAxW8uhDKmmnlaNpT5v+4rm4zgQlGY7/7ImKGaBIGC3Ezo5carYQmawyXc4CGBqkBewbD79doBA68Qs1XHQGhfNYKIt6lFevklSE262y00qtSFyHiwfaZxkTWNks7wMgDORj9FBDzHPcKFl/e7MgAk3cJ7z/w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ob2otnfSPAmYzfdkvYKAXFO7sUsIIZKqKkhLZvm9428=;
- b=jDu08MI7QImbKnlK0+m2OhxvNIshOXz75FYAMi5sJTMxWNzhIORH6CzyYsmobUdSxd8SUIFEs/lYPkFMxch5xbYnjsv8RC8u2iCu83wSN/JauZEJyfhOojgpeSgtH1oc5kslDR+PN1DU3EsUvPdMxEeRimKCiEKXX54tyieCHz3hVUMp/sv89SOoYiPbIXQ68vAQlq+zYNglUaCJnw6/upx78bHEPwRwGhjKyy3nNqOxc/mHRToqDB22P0YPp2EzP7Xk7U/mBwro9HQQ1n0LfLEVPvc/Pg9DuxWOi7xMnGEHYpjRYAtb9aVSgJb9qqHrF4rOxymBklup5LHuzw8Jng==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fibocom.com; dmarc=pass action=none header.from=fibocom.com;
- dkim=pass header.d=fibocom.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7C93433B9
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 08:46:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709714770; cv=none; b=IJ5N3jM+R+b3pVB8LOzkIlNBbNW6p8F5yItGMAkk+5dC0PN1G2ux11poxf4qlx1BDUqqs0nxSJHbMHhI4RYCxvmkaJUrw/XSc87g7qNX8Vs/mEV4LdeGn4UNuv9CjQB9SNdp6n3DUzFRg7QItHHl73+x6Zze1SYs3BHdYUrnh8M=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709714770; c=relaxed/simple;
+	bh=WZ5QWaUGozVJ8ytUqUbrYrimDXEqJpfu8iwzrJUMHD8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mX2i/2hq3tAOml3yP/ebV/em4bdwnzQPFL0PV9lRe0Ygt24WInPersDsSg4Us/tnWMarmSYEBs+8HEXSd9BRrN0qiDE7iGoI5NddmDNOSSffLFw+lo3AHfYhcEWJWIda97qvQJwUZYz1MY/rFk1jj27qnvo0Awjn/hjYbjDcM2I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Q7fQ2Nj4; arc=none smtp.client-ip=209.85.128.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-608ceccb5f4so43631777b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 00:46:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=fibocomcorp.onmicrosoft.com; s=selector1-fibocomcorp-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ob2otnfSPAmYzfdkvYKAXFO7sUsIIZKqKkhLZvm9428=;
- b=nNRwse2eITAK+PefKkly/pglfU9Y15GrUOrzg5F+fvg9nlFEPhre/00QolcR699atOrFqJ6ZQWKTtdU69zkIEN8I6K9cmQIKcTglGZq/Wrj6HvgMgdkAZRk07IsIAI3koe+uJ93Z5n/4LZKYUYqYK71kKJNL0CslQk30uujUcb8=
-Received: from KL1PR02MB6283.apcprd02.prod.outlook.com (2603:1096:820:dc::11)
- by TYZPR02MB7289.apcprd02.prod.outlook.com (2603:1096:405:45::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.38; Wed, 6 Mar
- 2024 08:45:31 +0000
-Received: from KL1PR02MB6283.apcprd02.prod.outlook.com
- ([fe80::87a8:fbd4:757d:2f75]) by KL1PR02MB6283.apcprd02.prod.outlook.com
- ([fe80::87a8:fbd4:757d:2f75%7]) with mapi id 15.20.7316.023; Wed, 6 Mar 2024
- 08:45:31 +0000
-From: "Bolan Wang(Bolan)" <bolan.wang@fibocom.com>
-To: Lars Melin <larsm17@gmail.com>, "johan@kernel.org" <johan@kernel.org>,
-	"gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-CC: "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] USB: serial: option: add Fibocom FM135-GL variants
-Thread-Topic: [PATCH] USB: serial: option: add Fibocom FM135-GL variants
-Thread-Index: AdpvoTys3NfocRUQSaSnRRCqeB1ziQ==
-Date: Wed, 6 Mar 2024 08:45:31 +0000
-Message-ID:
- <KL1PR02MB628382F4B33785C080A9ECA089212@KL1PR02MB6283.apcprd02.prod.outlook.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=fibocom.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: KL1PR02MB6283:EE_|TYZPR02MB7289:EE_
-x-ms-office365-filtering-correlation-id: b8c7a8bf-4a6a-4461-a60d-08dc3db9c805
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- 4n8wZkL2zUgPegFtJii05L/c0M1Y1WzWk4RICci+fxzcl7b5olpPg+Kbsr7/q2E44OkKz6e1/ur42KPTwGykcThxxFJ6G2gsGfmMZ0YR/8bb+GkvObwicPcaq9aQ6XHcUb31w8IyXtWhEgSlOmg9uoxgzHXf6xj9JqLee4j7cr2AEvj4V5HDAPINWe7W2MqFBbjEjDlLANQp8Yfhj/cpi7TRtiuD+3+WZkJgVUX9IHEmYV0Y6qaocRFsawgJ2Yu+MC8fQXdrhVpiOYXjyD6gc4iM0FxRouHxVzFxjOd5tvZJ4b4cAgqOsLqLHy6zZK+eeEzh7OT+gGH22rx0tUOxDR5sD5D/u3alBs4dgFi9QCrnpomO1CqU+dkx0TiAw8cJrP8mxKaECtZp+dZphmoGPwrF/aTwNwxFnu4mmKFyQeXfcw7Tf2Nca5N7tXPU12V4L56hyoLcI+KtQtMYR4jvBfRRdWk0G7h+LlXNxfuohlpIgY5Ow5SYwVL++0r0KPHnXLoIFnsfY8hN5eseR9uycK21oMFiOpnXG2VzAFmbb23VTKW+/cUrn8p/cYfRtLd6zp7oUao5iXWrRrFla6IbgA/PlU8os+69FWv7jfyWSqDL4E5MEG5OE4JED1VTJfLa5PH1G7dACDcaCzgRIRvf43SDMzGQ4O7OdWZZluKtM2W6smyxlrgrN/fkRjJfiEkkxMrt2PlFQfCPwCzwoWWwBTWzXN/DWqL5B0CpFMUbNVw=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:zh-cn;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:KL1PR02MB6283.apcprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?WEFLcEhES05CL1FNckozWGlxMVZNK2Q1dXdITTVhZVFjN3pJYUpkcWR1ZVU4?=
- =?utf-8?B?SjZtTVJ1ekVkUEU3MmRZWGt4U2liN0RiZkhYQUJINlF6N3dMVGRJUFRjTWk1?=
- =?utf-8?B?bE50d2RyV09qU0owVGlUL0l4WFQ0T2h3eGFHZ2FUV0lrT2lXVWtzeDlWYkdZ?=
- =?utf-8?B?R09ZVDJDSUhOckFtQ0pMdHl4V1EybVhMMk5CS0NUWDhleTREdjE2T3ZCbVYr?=
- =?utf-8?B?RGpuaFcwbGFVWmlndG5xVDZ0bm13RDF0VktkUW5icnp6U1pEeVNiNmVCanhB?=
- =?utf-8?B?cjBVcWlpb3F2WUEvWGRpbm5HaVBPckNIY3dYdFp4dXo1OFVtRDIxbUxsZmVF?=
- =?utf-8?B?ZklpVDlwZ3BuNEZoSHg2ZFhweXZ3bHk3TTNOdENVb2dDMnhWcW9pY094WXF1?=
- =?utf-8?B?dy9id1A1ZGVxQmc3ZkdLTTNvOWJ2NnQzMGVWWnN4QlRjSEl4TUFVRjU1VFVD?=
- =?utf-8?B?cldZTmZlZi9nUU9XdzZMbUE1ZmhyN2xlaVh1V0ZaUlQ3eWVlS1JNcmNZSTg3?=
- =?utf-8?B?Ylhsc1ZrRHF4cE1vRDRCbTNGMVExU1dwUUwya1FWMXN4T0R0MUtyMEVhVkNQ?=
- =?utf-8?B?djBIT0J5dklNNE5seUVudzQ5b0hRMG9iS090OHdZKzhPSjVnVXplVk9taEU2?=
- =?utf-8?B?OStwZlY1MHhnVUtNNitwZkc3QlVLaXM4MWIwOGFTZ0hEcEloU2hqWjNNV1Z1?=
- =?utf-8?B?ZG03MS9BeDRIVjNWUThjcW9HN1UwcGRzTmVsYitZU1RyZ1M3YUpRZFZuQUlp?=
- =?utf-8?B?RHI3eDYwT2tGQ1BnRlp1TTJRdHAvZzBNZ0VrR0VzanR2MnlhYkpMV3U1RHdB?=
- =?utf-8?B?cVpmSWp5WnJmc09uUlZ1RXlJdDRvWTZRd3ZBaTFsMHJlQXV5OWlxTWJuUURr?=
- =?utf-8?B?ZjZTVGNvajNDTUI3cDJ4R1BrUHFxeHRzWWhGcGFsRDJ4NHNpUDFmRXBHd2tv?=
- =?utf-8?B?bncvMmc0b2ZUUWQ5QXhxeFJ5WFNiT1dUWC9ZdkREZXBJZTFyR09IaDJOMXIw?=
- =?utf-8?B?dzBqSDBaVk9FcHplZlV2WlMxdHZsWlJ0WEVQd1pjSUtTQ1U3ejl6NGVKYnFx?=
- =?utf-8?B?ZXJDSmcrRituQkJ1QW5JUkd5dnFSRnBRSHJUamxrZ3hKaFZCb2lKTVpNS1Q2?=
- =?utf-8?B?bTZIVWN0T1oxQnpQUmRpTFVLWVFFOFN0L3BITUo0Q0pYWDdPeVVvSjYxNDNm?=
- =?utf-8?B?bTlQRTFNcU83c0w4Y1czT2xrUURVNmJjN3pkdlkzTFJwMVlWZUxiaXYwWExF?=
- =?utf-8?B?Y3NGUytubzFHMDVRWFhWY2pCR3NWbEFQYVB6cllKVGFoendZZ25XZmtYbmJl?=
- =?utf-8?B?bDNCVlUyZUpWUEdVQ2FCeVJOSzUvZ0ZsZlBqRjVYazR5ODQ3NEdrcXNSdzho?=
- =?utf-8?B?TklzcjV4QWtBa3FwSG1EWXFrQ09FcUtnUGh0Slh4UDI1SDhPSnBHN2RRUElo?=
- =?utf-8?B?MTJVUURxRGxQTFVVVWhYcG9hT3BLOGQrM3FDTnUzTXViMGhRWnFoMzdXT0Zo?=
- =?utf-8?B?dmdPWWp2cGVzMHVCL200UjUxeTM0WnJUYUIrRGFocjBSTVdJZVBuYTNNdUpi?=
- =?utf-8?B?OGpuNmQvRTBOL3RQWDV0ZjBPeFZsbVN3ZVhGYzNhaStSUWxLTm9WL2c4RE9x?=
- =?utf-8?B?Zzl6S1NuNkZibWVlU1drWkJSVW9CS3p3QzgzTkpwdFlrc3dMZTJPbG9DdVZq?=
- =?utf-8?B?MjhlWW5qZVlqZWRVUHNmbGVSYnZhV2dpYitweHhxL2kvcnByWHhCVUdoWVcz?=
- =?utf-8?B?ZEF6U2VmajRDT09RMjdNSDFGUG81MWtMSDQyWENvdzBmZVFpa1daWXU5U2hM?=
- =?utf-8?B?c2YyaXJrMXpuN3VQNDJIRVZOZEV3SlRDTm11d20xZXFMSVdQTkpsY2xPcEta?=
- =?utf-8?B?ZW9SMk83N0orM01STE54ZWordy9mRVIrWkJVTjlOS3U0eU9SRy95NVdTUEl4?=
- =?utf-8?B?U3ZyZS9hK0VRblJJTU93cnVmbXlSMjZscDJvOVhLQ2p4T2NabXZkVy8rQmlo?=
- =?utf-8?B?QWRvZ0lDbXowcHhLcko4RUc5eEFQcWY1OEp1bTBsUVJ4OHJJVWxuMlY3SG8x?=
- =?utf-8?B?VTRsUERmcnE4V1d2NW1SdWZ5V0paNWZaNDd6ejFCL1JXZy9CVDZmRjZXZHpa?=
- =?utf-8?Q?/L8E2W9xYWZJXfddLalU/EjR9?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        d=linaro.org; s=google; t=1709714764; x=1710319564; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=GZ8J6OviUeTpQm6dGP0Uxk1HK+9lM/907YSJzRo6fBo=;
+        b=Q7fQ2Nj4EFWJDi5AEWVV8tWzCr4V7F74LhuueO+wNUWEEbR4BhULmJhtjrTFfao+WC
+         S65nNp60GU9D4Ji0rkENwQElysP9P4HDQHP6rjuNqL8JAwHjR1O8Wx+INYvf2BhSCK0K
+         qqGlFTj4yAp6W1T9qHksJwyUJc8rzK0YLCwgT6Cb6dMugk9Z+cY5gGmioIK+qZ2v4lO9
+         /pCV8NdKdLhSyV2z7OEGISbWf/ZpaEL0RSlvzqBimPC9WCySu8HheTT/8yQnHShFXKUI
+         0WRKPZidYm3Mw/XZGt5obE1ovj5/ix3qHvb4bOgF+EYhQ21OXF3I0+/+uzCePsdQO7YV
+         bwcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709714764; x=1710319564;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GZ8J6OviUeTpQm6dGP0Uxk1HK+9lM/907YSJzRo6fBo=;
+        b=mAx23FWEfYjbDPGxuHClX0O3fn/Tzc0HzHjjSNMsK353KhDtVWI7hYGhx3aeyqFa+P
+         kTn1oYHGJRW3V3ihZIKohg7AI+tLZ+8SXay1jQZYHq0/aLqfAEmK77bwWyjPA1xCMgis
+         SWmg16n5ak8uAbko8mR72pbjmy02BQFFo8TavCXT//9EFPd9qRb3KYdWJWXQSwWOydhJ
+         me2pApPnLkEV9JQwj7CQ4XlfYA9S3TJN3g04jW7MjT4pDfwcUhcS7/4WZDX58VtcxYr6
+         UHFEjC541HF+B7UoXfOg+jzUBqLE1HHp+EsnWXeGKicFFeHvAX/lUIzzzQVhRMR2aRJU
+         thuQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU/Pe3S52xfZk+tirNFjXQbVQPF0kueNecd8ORUECbA1CPw+zgqrY1N1iYmZs3WgFw/iuEmWYOyRALCyJFSdhlVXzruIdgnKH8VCulj
+X-Gm-Message-State: AOJu0YzbSLw5yLU/dzrlOWit+xuyZi3brzySUla5ElZ4fvIFNHvqfk2V
+	12ulcTAPPi3CIStMr6InYc8LCAVS2ipT9MrKBX3jCOgh8ys9nxMEM3BxvSVZrMKlDGojhVKnnrD
+	uXjHe7gCK4VrU86C7PkRgoxQ+Mk70b3ondPprlg==
+X-Google-Smtp-Source: AGHT+IHgK5ktzU0hIDw+cg2BlFwP4ErvqHs/4Ga8gvuEeKpVGdumpMC0Oev4zHBVsIK/5WTTrIxaOX6xIufivN/bwEo=
+X-Received: by 2002:a81:9a09:0:b0:609:da4d:b2f with SMTP id
+ r9-20020a819a09000000b00609da4d0b2fmr880038ywg.5.1709714764353; Wed, 06 Mar
+ 2024 00:46:04 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: fibocom.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: KL1PR02MB6283.apcprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b8c7a8bf-4a6a-4461-a60d-08dc3db9c805
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Mar 2024 08:45:31.3598
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 889bfe61-8c21-436b-bc07-3908050c8236
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: jvwJg21kUzXy0+34ObEkM6ApzxOCxfL4t3ZqStqvw0fr19GefTcB5hcRevUI8qT9jCFPePWPUCQxRILCk8UUew==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR02MB7289
+References: <1709657858-8563-1-git-send-email-quic_sriramd@quicinc.com> <1709657858-8563-3-git-send-email-quic_sriramd@quicinc.com>
+In-Reply-To: <1709657858-8563-3-git-send-email-quic_sriramd@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Wed, 6 Mar 2024 10:45:52 +0200
+Message-ID: <CAA8EJpoi0T-riqxbTzVymHwZmBHg5xO_Rwqy0ck-7cvGy291_A@mail.gmail.com>
+Subject: Re: [RFC 2/3] USB: dwc3: qcom: Add support for firmware managed resources
+To: Sriram Dash <quic_sriramd@quicinc.com>
+Cc: andersson@kernel.org, konrad.dybcio@linaro.org, vkoul@kernel.org, 
+	kishon@kernel.org, robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, 
+	conor+dt@kernel.org, gregkh@linuxfoundation.org, quic_wcheng@quicinc.com, 
+	Thinh.Nguyen@synopsys.com, p.zabel@pengutronix.de, 
+	linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-usb@vger.kernel.org, quic_psodagud@quicinc.com, quic_nkela@quicinc.com, 
+	manivannan.sadhasivam@linaro.org, ulf.hansson@linaro.org, 
+	sudeep.holla@arm.com, quic_shazhuss@quicinc.com
+Content-Type: text/plain; charset="UTF-8"
 
-DQo+IFRoZSBvcHRpb24gZHJpdmVyIHdpbGwgYmluZCBiZWNhdXNlIHlvdSBoYXZlIG1hdGNoZWQg
-b25seSBvbiBDbGFzcyBmZiAieyBVU0JfREVWSUNFX0lOVEVSRkFDRV9DTEFTUygweDJjYjcsIDB4
-MDFhMSwgMHhmZikgfSINCj4gVGhlcmUgYXJlIG90aGVyIG1hY3JvcyB0aGF0IHlvdSBjb3VsZCBw
-b3NzaWJseSB1c2UgYnV0IEkgY2FuJ3QgdGVsbCB5b3Ugd2hpY2ggc2luY2UgeW91IGhhdmUgbm90
-IHNob3duIGFuIHVzYi1kZXZpY2UgbGlzdGluZyBmb3IgdGhlIGRldmljZS4NCj4gWW91IGNhbiBh
-bHNvIGJsYWNrbGlzdCBhbiBpbnRlcmZhY2UgKFJTVikuIFRoZSBvcHRpb24gZHJpdmVyIHNvdXJj
-ZSBpcyBmdWxsIG9mIGV4YW1wbGVzIG9mIG1hY3JvIHVzZSBhbmQgY29tYmluYXRpb25zLg0KDQoN
-CkhpIExhcnM6DQoNClRoZSBJbnRlcmZhY2VOdW1iZXIgb2YgdGhlIGFkYiBpbnRlcmZhY2UgaXMg
-MDUsIHNvIHRoZSBmb2xsb3dpbmcgY29kZSBjYW4gYmxhY2tsaXN0IGFuIGludGVyZmFjZSAoUlNW
-KT8gSXMgdGhpcyBhcHByb3ByaWF0ZSBmb3IgYWRiIGludGVyZmFjZT8NCg0KKwl7IFVTQl9ERVZJ
-Q0VfSU5URVJGQUNFX0NMQVNTKDB4MmNiNywgMHgwMTE1LCAweGZmKSwNCiAuZHJpdmVyX2luZm8g
-PSBSU1ZEKDUpICB9LAkJCS8qIEZpYm9jb20gRk0xMzUgKGxhcHRvcCBNQklNKSAqLw0KDQoNCnRo
-YW5rcw0KYm9sYW4NCg==
+On Tue, 5 Mar 2024 at 18:59, Sriram Dash <quic_sriramd@quicinc.com> wrote:
+>
+> Some target systems allow multiple resources to be managed by firmware.
+> On these targets, tasks related to clocks, regulators, resets, and
+> interconnects can be delegated to the firmware, while the remaining
+> responsibilities are handled by Linux.
+>
+> The driver is responsible for managing multiple power domains and
+> linking them to consumers as needed. Incase there is only single
+> power domain, it is considered to be a standard GDSC hooked on to
+> the qcom dt node which is read and assigned to device structure
+> (by genpd framework) before the driver probe even begins.
+>
+> This differentiation logic allows the driver to determine whether
+> device resources are managed by Linux or firmware, ensuring
+> backward compatibility.
+>
+> Furthermore, minor cleanup is performed for the private data of
+> the SNPS Femto PHY. However, ACPI handling is omitted due to the
+> absence of clients on the ACPI side.
+>
+> Signed-off-by: Sriram Dash <quic_sriramd@quicinc.com>
+> ---
+>  drivers/phy/qualcomm/phy-qcom-qmp-usb.c       | 290 ++++++++++++++++++++------
+>  drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c | 213 +++++++++++++++----
+>  drivers/usb/dwc3/dwc3-qcom.c                  | 259 +++++++++++++++++------
+
+Thank you for mixing three different drivers in a single patch. This
+saves us from sending two more letters. In future please abstain from
+doing that and group your changes logically and atomically. Although
+QMP and SNPS PHYs are maintained within the same subsystem, changing
+them are two separate patches, as the changes are similar but
+unrelated.
+
+>  3 files changed, 594 insertions(+), 168 deletions(-)
+>
+> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-usb.c b/drivers/phy/qualcomm/phy-qcom-qmp-usb.c
+> index 8525393..1ac1b50 100644
+> --- a/drivers/phy/qualcomm/phy-qcom-qmp-usb.c
+> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-usb.c
+> @@ -21,6 +21,9 @@
+>
+>  #include "phy-qcom-qmp-common.h"
+>
+> +#include <linux/pm_opp.h>
+> +#include <linux/pm_domain.h>
+> +
+>  #include "phy-qcom-qmp.h"
+>  #include "phy-qcom-qmp-pcs-misc-v3.h"
+>  #include "phy-qcom-qmp-pcs-misc-v4.h"
+> @@ -1212,6 +1215,9 @@ struct qmp_phy_cfg {
+>         unsigned int pcs_usb_offset;
+>  };
+>
+> +#define DOMAIN_GENPD_TRANSFER                  0
+> +#define DOMAIN_GENPD_CORE                      1
+
+Why do you need them defined on a global level if later you copy
+necessary data away from the list?
+
+> +
+>  struct qmp_usb {
+>         struct device *dev;
+>
+> @@ -1236,6 +1242,19 @@ struct qmp_usb {
+>         struct phy *phy;
+>
+>         struct clk_fixed_rate pipe_clk_fixed;
+> +
+> +       struct dev_pm_domain_list *pd_list;
+> +       struct device *genpd_core;
+> +       struct device *genpd_transfer;
+> +
+> +       bool fw_managed;
+> +       /* separate resource management for fw_managed vs locally managed devices */
+> +       struct qmp_usb_device_ops {
+
+Do you see nested structure definitions in this file? I don't think so.
+
+> +               int (*bus_resume_resource)(struct qmp_usb *qmp);
+> +               int (*runtime_resume_resource)(struct qmp_usb *qmp);
+> +               int (*bus_suspend_resource)(struct qmp_usb *qmp);
+> +               int (*runtime_suspend_resource)(struct qmp_usb *qmp);
+> +       } qmp_usb_device_ops;
+
+Just ops, pm_ops or bus_pm_ops.
+
+>  };
+>
+>  static inline void qphy_setbits(void __iomem *base, u32 offset, u32 val)
+> @@ -1598,6 +1617,41 @@ static const struct qmp_phy_cfg x1e80100_usb3_uniphy_cfg = {
+>         .regs                   = qmp_v7_usb3phy_regs_layout,
+>  };
+>
+> +static void qmp_fw_managed_domain_remove(struct qmp_usb *qmp)
+> +{
+> +       dev_pm_domain_detach_list(qmp->pd_list);
+
+This looks like a candidate for devm_add_action_or_reset
+
+> +}
+> +
+> +static int qmp_fw_managed_domain_init(struct qmp_usb *qmp)
+> +{
+> +       struct device *dev = qmp->dev;
+> +       struct dev_pm_domain_attach_data pd_data = {
+> +               .pd_flags       = PD_FLAG_NO_DEV_LINK,
+> +               .pd_names       = (const char*[]) { "usb_transfer", "usb_core" },
+> +               .num_pd_names   = 2,
+> +       };
+
+Can you pass an empty list instead? Or instead call
+dev_pm_domain_attach twice, if you are not using the pd_list later on?
+
+> +       int ret = 0;
+> +
+> +       if (!dev->pm_domain) {
+> +               ret = dev_pm_domain_attach_list(dev, &pd_data, &qmp->pd_list);
+> +               if (ret < 0) {
+> +                       dev_err(dev, "domain attach failed %d)\n", ret);
+> +                       return ret;
+> +               }
+> +
+> +               qmp->genpd_transfer = qmp->pd_list->pd_devs[DOMAIN_GENPD_TRANSFER];
+> +               qmp->genpd_core = qmp->pd_list->pd_devs[DOMAIN_GENPD_CORE];
+> +
+> +
+> +               dev_dbg(dev, "domains attached successfully\n");
+> +       } else {
+> +               dev_dbg(dev, "domain attach fail\n");
+> +               return -ENODEV;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+>  static int qmp_usb_serdes_init(struct qmp_usb *qmp)
+>  {
+>         const struct qmp_phy_cfg *cfg = qmp->cfg;
+> @@ -1610,11 +1664,20 @@ static int qmp_usb_serdes_init(struct qmp_usb *qmp)
+>         return 0;
+>  }
+>
+> -static int qmp_usb_init(struct phy *phy)
+> +static int fw_managed_ssphy_bus_init(struct qmp_usb *qmp)
+
+Please take a look around. All functions have a common naming
+structure, which you are not following. Please do not do that _ever_.
+
+> +{
+> +       int ret = 0;
+> +
+> +       ret = pm_runtime_get_sync(qmp->genpd_core);
+> +       if (ret < 0)
+> +               dev_err(qmp->dev, "Failed to enable fw managed resources");
+> +
+> +       return ret;
+> +}
+> +
+> +static int locally_managed_ssphy_bus_init(struct qmp_usb *qmp)
+>  {
+> -       struct qmp_usb *qmp = phy_get_drvdata(phy);
+>         const struct qmp_phy_cfg *cfg = qmp->cfg;
+> -       void __iomem *pcs = qmp->pcs;
+>         int ret;
+>
+>         ret = regulator_bulk_enable(cfg->num_vregs, qmp->vregs);
+> @@ -1639,8 +1702,11 @@ static int qmp_usb_init(struct phy *phy)
+>         if (ret)
+>                 goto err_assert_reset;
+>
+> -       qphy_setbits(pcs, cfg->regs[QPHY_PCS_POWER_DOWN_CONTROL], SW_PWRDN);
+> -
+> +       ret = clk_prepare_enable(qmp->pipe_clk);
+> +       if (ret) {
+> +               dev_err(qmp->dev, "pipe_clk enable failed err=%d\n", ret);
+> +               return ret;
+> +       }
+
+Here (and further in the file) you are changing the order of SW_PWRDN
+bit toggling and pipe_clk enablement / disablement. Is this a safe
+change?
+Have you tested it? If so, on which platforms?
+
+>         return 0;
+>
+>  err_assert_reset:
+> @@ -1651,11 +1717,22 @@ static int qmp_usb_init(struct phy *phy)
+>         return ret;
+>  }
+>
+> -static int qmp_usb_exit(struct phy *phy)
+> +static int fw_managed_ssphy_bus_exit(struct qmp_usb *qmp)
+> +{
+> +       int ret = 0;
+> +
+> +       ret = pm_runtime_put_sync(qmp->genpd_core);
+> +       if (ret < 0)
+> +               dev_err(qmp->dev, "Failed to disable fw managed resources");
+> +
+> +       return 0;
+> +}
+> +
+> +static int locally_managed_ssphy_bus_exit(struct qmp_usb *qmp)
+>  {
+> -       struct qmp_usb *qmp = phy_get_drvdata(phy);
+>         const struct qmp_phy_cfg *cfg = qmp->cfg;
+>
+> +       clk_disable_unprepare(qmp->pipe_clk);
+>         reset_control_bulk_assert(qmp->num_resets, qmp->resets);
+>
+>         clk_bulk_disable_unprepare(qmp->num_clks, qmp->clks);
+> @@ -1677,13 +1754,9 @@ static int qmp_usb_power_on(struct phy *phy)
+>         unsigned int val;
+>         int ret;
+>
+> -       qmp_usb_serdes_init(qmp);
+> +       qphy_setbits(pcs, cfg->regs[QPHY_PCS_POWER_DOWN_CONTROL], SW_PWRDN);
+>
+> -       ret = clk_prepare_enable(qmp->pipe_clk);
+> -       if (ret) {
+> -               dev_err(qmp->dev, "pipe_clk enable failed err=%d\n", ret);
+> -               return ret;
+> -       }
+> +       qmp_usb_serdes_init(qmp);
+>
+>         /* Tx, Rx, and PCS configurations */
+>         qmp_configure_lane(tx, cfg->tx_tbl, cfg->tx_tbl_num, 1);
+> @@ -1708,15 +1781,10 @@ static int qmp_usb_power_on(struct phy *phy)
+>                                  PHY_INIT_COMPLETE_TIMEOUT);
+>         if (ret) {
+>                 dev_err(qmp->dev, "phy initialization timed-out\n");
+> -               goto err_disable_pipe_clk;
+> +               return ret;
+>         }
+>
+>         return 0;
+> -
+> -err_disable_pipe_clk:
+> -       clk_disable_unprepare(qmp->pipe_clk);
+> -
+> -       return ret;
+>  }
+>
+>  static int qmp_usb_power_off(struct phy *phy)
+> @@ -1724,8 +1792,6 @@ static int qmp_usb_power_off(struct phy *phy)
+>         struct qmp_usb *qmp = phy_get_drvdata(phy);
+>         const struct qmp_phy_cfg *cfg = qmp->cfg;
+>
+> -       clk_disable_unprepare(qmp->pipe_clk);
+> -
+>         /* PHY reset */
+>         qphy_setbits(qmp->pcs, cfg->regs[QPHY_SW_RESET], SW_RESET);
+>
+> @@ -1742,27 +1808,30 @@ static int qmp_usb_power_off(struct phy *phy)
+>
+>  static int qmp_usb_enable(struct phy *phy)
+>  {
+> +       struct qmp_usb *qmp = phy_get_drvdata(phy);
+>         int ret;
+>
+> -       ret = qmp_usb_init(phy);
+> +       ret = qmp->qmp_usb_device_ops.bus_resume_resource(qmp);
+>         if (ret)
+>                 return ret;
+>
+>         ret = qmp_usb_power_on(phy);
+>         if (ret)
+> -               qmp_usb_exit(phy);
+> +               qmp->qmp_usb_device_ops.bus_suspend_resource(qmp);
+>
+>         return ret;
+>  }
+>
+>  static int qmp_usb_disable(struct phy *phy)
+>  {
+> +       struct qmp_usb *qmp = phy_get_drvdata(phy);
+>         int ret;
+>
+>         ret = qmp_usb_power_off(phy);
+>         if (ret)
+>                 return ret;
+> -       return qmp_usb_exit(phy);
+> +
+> +       return qmp->qmp_usb_device_ops.bus_suspend_resource(qmp);
+>  }
+>
+>  static int qmp_usb_set_mode(struct phy *phy, enum phy_mode mode, int submode)
+> @@ -1828,6 +1897,25 @@ static void qmp_usb_disable_autonomous_mode(struct qmp_usb *qmp)
+>         qphy_clrbits(pcs_usb, cfg->regs[QPHY_PCS_LFPS_RXTERM_IRQ_CLEAR], IRQ_CLEAR);
+>  }
+>
+> +static int locally_managed_ssphy_runtime_exit(struct qmp_usb *qmp)
+> +{
+> +       clk_disable_unprepare(qmp->pipe_clk);
+> +       clk_bulk_disable_unprepare(qmp->num_clks, qmp->clks);
+> +
+> +       return 0;
+> +}
+> +
+> +static int fw_managed_ssphy_runtime_exit(struct qmp_usb *qmp)
+> +{
+> +       int ret = 0;
+> +
+> +       ret = pm_runtime_put_sync(qmp->genpd_transfer);
+> +       if (ret < 0)
+> +               dev_err(qmp->dev, "Failed to disable fw managed resources");
+> +
+> +       return 0;
+> +}
+> +
+>  static int __maybe_unused qmp_usb_runtime_suspend(struct device *dev)
+>  {
+>         struct qmp_usb *qmp = dev_get_drvdata(dev);
+> @@ -1841,16 +1929,44 @@ static int __maybe_unused qmp_usb_runtime_suspend(struct device *dev)
+>
+>         qmp_usb_enable_autonomous_mode(qmp);
+>
+> -       clk_disable_unprepare(qmp->pipe_clk);
+> -       clk_bulk_disable_unprepare(qmp->num_clks, qmp->clks);
+> +       qmp->qmp_usb_device_ops.runtime_suspend_resource(qmp);
+>
+>         return 0;
+>  }
+>
+> +static int locally_managed_ssphy_runtime_init(struct qmp_usb *qmp)
+> +{
+> +       int ret = 0;
+> +
+> +       ret = clk_bulk_prepare_enable(qmp->num_clks, qmp->clks);
+> +       if (ret)
+> +               return ret;
+> +
+> +       ret = clk_prepare_enable(qmp->pipe_clk);
+> +       if (ret) {
+> +               dev_err(qmp->dev, "pipe_clk enable failed, err=%d\n", ret);
+> +               clk_bulk_disable_unprepare(qmp->num_clks, qmp->clks);
+> +               return ret;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static int fw_managed_ssphy_runtime_init(struct qmp_usb *qmp)
+> +{
+> +       int ret = 0;
+> +
+> +       ret = pm_runtime_get_sync(qmp->genpd_transfer);
+> +       if (ret < 0)
+> +               dev_err(qmp->dev, "Failed to enable fw managed resources");
+> +
+> +       return ret;
+> +}
+> +
+>  static int __maybe_unused qmp_usb_runtime_resume(struct device *dev)
+>  {
+> +       int ret;
+>         struct qmp_usb *qmp = dev_get_drvdata(dev);
+> -       int ret = 0;
+>
+>         dev_vdbg(dev, "Resuming QMP phy, mode:%d\n", qmp->mode);
+>
+> @@ -1859,17 +1975,10 @@ static int __maybe_unused qmp_usb_runtime_resume(struct device *dev)
+>                 return 0;
+>         }
+>
+> -       ret = clk_bulk_prepare_enable(qmp->num_clks, qmp->clks);
+> +       ret = qmp->qmp_usb_device_ops.runtime_resume_resource(qmp);
+>         if (ret)
+>                 return ret;
+>
+> -       ret = clk_prepare_enable(qmp->pipe_clk);
+> -       if (ret) {
+> -               dev_err(dev, "pipe_clk enable failed, err=%d\n", ret);
+> -               clk_bulk_disable_unprepare(qmp->num_clks, qmp->clks);
+> -               return ret;
+> -       }
+> -
+>         qmp_usb_disable_autonomous_mode(qmp);
+>
+>         return 0;
+> @@ -2059,22 +2168,24 @@ static int qmp_usb_parse_dt_legacy(struct qmp_usb *qmp, struct device_node *np)
+>                 qmp->pcs_misc = NULL;
+>         }
+>
+> -       qmp->pipe_clk = devm_get_clk_from_child(dev, np, NULL);
+> -       if (IS_ERR(qmp->pipe_clk)) {
+> -               return dev_err_probe(dev, PTR_ERR(qmp->pipe_clk),
+> -                                    "failed to get pipe clock\n");
+> -       }
+> +       if (!qmp->fw_managed) {
+> +               qmp->pipe_clk = devm_get_clk_from_child(dev, np, NULL);
+> +               if (IS_ERR(qmp->pipe_clk)) {
+> +                       return dev_err_probe(dev, PTR_ERR(qmp->pipe_clk),
+> +                                            "failed to get pipe clock\n");
+> +               }
+>
+> -       ret = devm_clk_bulk_get_all(qmp->dev, &qmp->clks);
+> -       if (ret < 0)
+> -               return ret;
+> +               ret = devm_clk_bulk_get_all(qmp->dev, &qmp->clks);
+> +               if (ret < 0)
+> +                       return ret;
+>
+> -       qmp->num_clks = ret;
+> +               qmp->num_clks = ret;
+>
+> -       ret = qmp_usb_reset_init(qmp, usb3phy_legacy_reset_l,
+> -                                ARRAY_SIZE(usb3phy_legacy_reset_l));
+> -       if (ret)
+> -               return ret;
+> +               ret = qmp_usb_reset_init(qmp, usb3phy_legacy_reset_l,
+> +                                        ARRAY_SIZE(usb3phy_legacy_reset_l));
+> +               if (ret)
+> +                       return ret;
+> +       }
+>
+>         return 0;
+>  }
+> @@ -2104,21 +2215,23 @@ static int qmp_usb_parse_dt(struct qmp_usb *qmp)
+>         qmp->tx = base + offs->tx;
+>         qmp->rx = base + offs->rx;
+>
+> -       ret = qmp_usb_clk_init(qmp);
+> -       if (ret)
+> -               return ret;
+> -
+> -       qmp->pipe_clk = devm_clk_get(dev, "pipe");
+> -       if (IS_ERR(qmp->pipe_clk)) {
+> -               return dev_err_probe(dev, PTR_ERR(qmp->pipe_clk),
+> -                                    "failed to get pipe clock\n");
+> +       if (!qmp->fw_managed) {
+> +               ret = qmp_usb_clk_init(qmp);
+> +               if (ret)
+> +                       return ret;
+> +
+> +               qmp->pipe_clk = devm_clk_get(dev, "pipe");
+> +               if (IS_ERR(qmp->pipe_clk)) {
+> +                       return dev_err_probe(dev, PTR_ERR(qmp->pipe_clk),
+> +                                            "failed to get pipe clock\n");
+> +               }
+> +
+> +               ret = qmp_usb_reset_init(qmp, usb3phy_reset_l,
+> +                                        ARRAY_SIZE(usb3phy_reset_l));
+> +               if (ret)
+> +                       return ret;
+>         }
+>
+> -       ret = qmp_usb_reset_init(qmp, usb3phy_reset_l,
+> -                                ARRAY_SIZE(usb3phy_reset_l));
+> -       if (ret)
+> -               return ret;
+> -
+>         return 0;
+>  }
+>
+> @@ -2140,9 +2253,36 @@ static int qmp_usb_probe(struct platform_device *pdev)
+>         if (!qmp->cfg)
+>                 return -EINVAL;
+>
+> -       ret = qmp_usb_vreg_init(qmp);
+> -       if (ret)
+> -               return ret;
+> +       qmp->fw_managed  = device_property_read_bool(dev, "qmp,fw-managed");
+> +       if (qmp->fw_managed) {
+> +               ret = qmp_fw_managed_domain_init(qmp);
+> +               if (ret) {
+> +                       dev_err(dev, "Failed to init domains. Bail out");
+> +                       return ret;
+> +               }
+> +
+> +               qmp->qmp_usb_device_ops.bus_resume_resource =
+> +                                               fw_managed_ssphy_bus_init;
+> +               qmp->qmp_usb_device_ops.runtime_resume_resource =
+> +                                               fw_managed_ssphy_runtime_init;
+> +               qmp->qmp_usb_device_ops.bus_suspend_resource =
+> +                                               fw_managed_ssphy_bus_exit;
+> +               qmp->qmp_usb_device_ops.runtime_suspend_resource =
+> +                                               fw_managed_ssphy_runtime_exit;
+
+Use a pointer to ops and constant data instead of setting function
+pointers manually.
+
+> +       } else {
+> +               ret = qmp_usb_vreg_init(qmp);
+> +               if (ret)
+> +                       return ret;
+> +
+> +               qmp->qmp_usb_device_ops.bus_resume_resource =
+> +                                               locally_managed_ssphy_bus_init;
+> +               qmp->qmp_usb_device_ops.runtime_resume_resource =
+> +                                               locally_managed_ssphy_runtime_init;
+> +               qmp->qmp_usb_device_ops.bus_suspend_resource =
+> +                                               locally_managed_ssphy_bus_exit;
+> +               qmp->qmp_usb_device_ops.runtime_suspend_resource =
+> +                                               locally_managed_ssphy_runtime_exit;
+> +       }
+>
+>         /* Check for legacy binding with child node. */
+>         np = of_get_next_available_child(dev->of_node, NULL);
+> @@ -2165,9 +2305,11 @@ static int qmp_usb_probe(struct platform_device *pdev)
+>          */
+>         pm_runtime_forbid(dev);
+>
+> -       ret = phy_pipe_clk_register(qmp, np);
+> -       if (ret)
+> -               goto err_node_put;
+> +       if (!qmp->fw_managed) {
+> +               ret = phy_pipe_clk_register(qmp, np);
+> +               if (ret)
+> +                       goto err_node_put;
+
+pipe_clk is an input to the GCC. If you are not registering it here,
+how would GCC get it?
+
+> +       }
+>
+>         qmp->phy = devm_phy_create(dev, np, &qmp_usb_phy_ops);
+>         if (IS_ERR(qmp->phy)) {
+> @@ -2186,9 +2328,22 @@ static int qmp_usb_probe(struct platform_device *pdev)
+>
+>  err_node_put:
+>         of_node_put(np);
+> +       if (qmp->fw_managed)
+> +               qmp_fw_managed_domain_remove(qmp);
+>         return ret;
+>  }
+>
+> +static void qmp_usb_remove(struct platform_device *pdev)
+> +{
+> +       struct qmp_usb *qmp = platform_get_drvdata(pdev);
+> +
+> +       if (qmp->fw_managed) {
+> +               pm_runtime_put_sync(qmp->genpd_core);
+> +               qmp_fw_managed_domain_remove(qmp);
+> +       }
+> +}
+> +
+> +
+>  static const struct of_device_id qmp_usb_of_match_table[] = {
+>         {
+>                 .compatible = "qcom,ipq6018-qmp-usb3-phy",
+> @@ -2239,6 +2394,7 @@ MODULE_DEVICE_TABLE(of, qmp_usb_of_match_table);
+>
+>  static struct platform_driver qmp_usb_driver = {
+>         .probe          = qmp_usb_probe,
+> +       .remove_new     = qmp_usb_remove,
+>         .driver = {
+>                 .name   = "qcom-qmp-usb-phy",
+>                 .pm     = &qmp_usb_pm_ops,
+> diff --git a/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c b/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
+> index eb0b0f6..9a1377f 100644
+> --- a/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
+> +++ b/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
+> @@ -17,6 +17,9 @@
+>  #include <linux/reset.h>
+>  #include <linux/slab.h>
+>
+> +#include <linux/pm_opp.h>
+> +#include <linux/pm_domain.h>
+> +
+>  #define USB2_PHY_USB_PHY_UTMI_CTRL0            (0x3c)
+>  #define SLEEPM                                 BIT(0)
+>  #define OPMODE_MASK                            GENMASK(4, 3)
+> @@ -89,7 +92,7 @@ struct override_param {
+>         u8      reg_val;
+>  };
+>
+> -struct override_param_map {
+> +struct snps_femto_v2_priv_data {
+>         const char *prop_name;
+>         const struct override_param *param_table;
+>         u8 table_size;
+> @@ -106,6 +109,9 @@ struct phy_override_seq {
+>
+>  #define NUM_HSPHY_TUNING_PARAMS        (9)
+>
+> +#define DOMAIN_GENPD_TRANSFER                  0
+> +#define DOMAIN_GENPD_CORE                      1
+
+You guessed it, see my comments for the QMP PHY changes.
+
+> +
+>  /**
+>   * struct qcom_snps_hsphy - snps hs phy attributes
+>   *
+> @@ -136,8 +142,54 @@ struct qcom_snps_hsphy {
+>         bool phy_initialized;
+>         enum phy_mode mode;
+>         struct phy_override_seq update_seq_cfg[NUM_HSPHY_TUNING_PARAMS];
+> +
+> +       struct dev_pm_domain_list *pd_list;
+> +       struct device *genpd_core;
+> +       struct device *genpd_transfer;
+> +
+> +       bool fw_managed;
+> +       /* separate resource management for fw_managed vs locally managed devices */
+> +       struct snps_femto_v2_device_ops {
+> +               int (*resume_resource)(struct qcom_snps_hsphy *hsphy);
+> +               int (*suspend_resource)(struct qcom_snps_hsphy *hsphy);
+> +       } snps_femto_v2_device_ops;
+> +
+>  };
+>
+> +static void hsphy_fw_managed_domain_remove(struct qcom_snps_hsphy *hsphy)
+
+qcom_snps_hsphy_ prefix.
+
+> +{
+> +       dev_pm_domain_detach_list(hsphy->pd_list);
+> +}
+> +
+> +static int hsphy_fw_managed_domain_init(struct qcom_snps_hsphy *hsphy)
+> +{
+> +       struct device *dev = hsphy->dev;
+> +       struct dev_pm_domain_attach_data pd_data = {
+> +               .pd_flags       = PD_FLAG_NO_DEV_LINK,
+> +               .pd_names       = (const char*[]) { "usb_transfer", "usb_core" },
+> +               .num_pd_names   = 2,
+> +       };
+> +       int ret = 0;
+> +
+> +       if (!dev->pm_domain) {
+> +               ret = dev_pm_domain_attach_list(dev, &pd_data, &hsphy->pd_list);
+> +               if (ret < 0) {
+> +                       dev_err(dev, "domain attach failed %d)\n", ret);
+> +                       return ret;
+> +               }
+> +
+> +               hsphy->genpd_transfer = hsphy->pd_list->pd_devs[DOMAIN_GENPD_TRANSFER];
+> +               hsphy->genpd_core = hsphy->pd_list->pd_devs[DOMAIN_GENPD_CORE];
+> +
+> +               dev_dbg(dev, "domains attached successfully\n");
+> +       } else {
+> +               dev_dbg(dev, "domain attach fail\n");
+> +               return -ENODEV;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+>  static int qcom_snps_hsphy_clk_init(struct qcom_snps_hsphy *hsphy)
+>  {
+>         struct device *dev = hsphy->dev;
+> @@ -316,27 +368,27 @@ static const struct override_param ls_fs_output_impedance_sc7280[] = {
+>         { 1310, 0 },
+>  };
+>
+> -static const struct override_param_map sc7280_snps_7nm_phy[] = {
+> +static const struct snps_femto_v2_priv_data sc7280_snps_7nm_phy[] = {
+
+What does this have in common with the clocks / regulators being
+fw-managed or not?
+
+>         {
+>                 "qcom,hs-disconnect-bp",
+>                 hs_disconnect_sc7280,
+>                 ARRAY_SIZE(hs_disconnect_sc7280),
+>                 USB2_PHY_USB_PHY_HS_PHY_OVERRIDE_X0,
+> -               HS_DISCONNECT_MASK
+> +               HS_DISCONNECT_MASK,
+
+Why? Does it require to be changed?
+
+>         },
+>         {
+>                 "qcom,squelch-detector-bp",
+>                 squelch_det_threshold_sc7280,
+>                 ARRAY_SIZE(squelch_det_threshold_sc7280),
+>                 USB2_PHY_USB_PHY_HS_PHY_OVERRIDE_X0,
+> -               SQUELCH_DETECTOR_MASK
+> +               SQUELCH_DETECTOR_MASK,
+>         },
+>         {
+>                 "qcom,hs-amplitude-bp",
+>                 hs_amplitude_sc7280,
+>                 ARRAY_SIZE(hs_amplitude_sc7280),
+>                 USB2_PHY_USB_PHY_HS_PHY_OVERRIDE_X1,
+> -               HS_AMPLITUDE_MASK
+> +               HS_AMPLITUDE_MASK,
+>         },
+>         {
+>                 "qcom,pre-emphasis-duration-bp",
+> @@ -357,14 +409,14 @@ static const struct override_param_map sc7280_snps_7nm_phy[] = {
+>                 hs_rise_fall_time_sc7280,
+>                 ARRAY_SIZE(hs_rise_fall_time_sc7280),
+>                 USB2_PHY_USB_PHY_HS_PHY_OVERRIDE_X2,
+> -               HS_RISE_FALL_MASK
+> +               HS_RISE_FALL_MASK,
+>         },
+>         {
+>                 "qcom,hs-crossover-voltage-microvolt",
+>                 hs_crossover_voltage_sc7280,
+>                 ARRAY_SIZE(hs_crossover_voltage_sc7280),
+>                 USB2_PHY_USB_PHY_HS_PHY_OVERRIDE_X2,
+> -               HS_CROSSOVER_VOLTAGE_MASK
+> +               HS_CROSSOVER_VOLTAGE_MASK,
+>         },
+>         {
+>                 "qcom,hs-output-impedance-micro-ohms",
+> @@ -383,12 +435,31 @@ static const struct override_param_map sc7280_snps_7nm_phy[] = {
+>         {},
+>  };
+>
+> -static int qcom_snps_hsphy_init(struct phy *phy)
+> +static int fw_managed_hsphy_init(struct qcom_snps_hsphy *hsphy)
+>  {
+> -       struct qcom_snps_hsphy *hsphy = phy_get_drvdata(phy);
+> -       int ret, i;
+> +       int ret = 0;
+
+Why do you need a value here if later on you set it again?
+
+>
+> -       dev_vdbg(&phy->dev, "%s(): Initializing SNPS HS phy\n", __func__);
+> +       ret = pm_runtime_get_sync(hsphy->genpd_core);
+> +       if (ret < 0)
+> +               dev_err(hsphy->dev, "Failed to enable fw managed resources");
+> +
+> +       return ret;
+> +}
+> +
+> +static int fw_managed_hsphy_exit(struct qcom_snps_hsphy *hsphy)
+> +{
+> +       int ret = 0;
+> +
+> +       ret = pm_runtime_put_sync(hsphy->genpd_core);
+> +       if (ret < 0)
+> +               dev_err(hsphy->dev, "Failed to disable fw managed resources");
+> +
+> +       return 0;
+> +}
+> +
+> +static int locally_managed_hsphy_init(struct qcom_snps_hsphy *hsphy)
+> +{
+> +       int ret;
+>
+>         ret = regulator_bulk_enable(ARRAY_SIZE(hsphy->vregs), hsphy->vregs);
+>         if (ret)
+> @@ -396,13 +467,13 @@ static int qcom_snps_hsphy_init(struct phy *phy)
+>
+>         ret = clk_bulk_prepare_enable(hsphy->num_clks, hsphy->clks);
+>         if (ret) {
+> -               dev_err(&phy->dev, "failed to enable clocks, %d\n", ret);
+> +               dev_err(hsphy->dev, "failed to enable clocks, %d\n", ret);
+>                 goto poweroff_phy;
+>         }
+>
+>         ret = reset_control_assert(hsphy->phy_reset);
+>         if (ret) {
+> -               dev_err(&phy->dev, "failed to assert phy_reset, %d\n", ret);
+> +               dev_err(hsphy->dev, "failed to assert phy_reset, %d\n", ret);
+>                 goto disable_clks;
+>         }
+>
+> @@ -410,10 +481,42 @@ static int qcom_snps_hsphy_init(struct phy *phy)
+>
+>         ret = reset_control_deassert(hsphy->phy_reset);
+>         if (ret) {
+> -               dev_err(&phy->dev, "failed to de-assert phy_reset, %d\n", ret);
+> +               dev_err(hsphy->dev, "failed to de-assert phy_reset, %d\n", ret);
+>                 goto disable_clks;
+>         }
+>
+> +       return 0;
+> +
+> +disable_clks:
+> +       clk_bulk_disable_unprepare(hsphy->num_clks, hsphy->clks);
+> +poweroff_phy:
+> +       regulator_bulk_disable(ARRAY_SIZE(hsphy->vregs), hsphy->vregs);
+> +
+> +       return ret;
+> +}
+> +
+> +static int locally_managed_hsphy_exit(struct qcom_snps_hsphy *hsphy)
+> +{
+> +       reset_control_assert(hsphy->phy_reset);
+> +       clk_bulk_disable_unprepare(hsphy->num_clks, hsphy->clks);
+> +       regulator_bulk_disable(ARRAY_SIZE(hsphy->vregs), hsphy->vregs);
+> +
+> +       return 0;
+> +}
+> +
+> +static int qcom_snps_hsphy_init(struct phy *phy)
+> +{
+> +       struct qcom_snps_hsphy *hsphy = phy_get_drvdata(phy);
+> +       int ret, i;
+> +
+> +       dev_vdbg(&phy->dev, "%s(): Initializing SNPS HS phy\n", __func__);
+> +
+> +       ret = hsphy->snps_femto_v2_device_ops.resume_resource(hsphy);
+> +       if (ret) {
+> +               dev_err(&phy->dev, "Error resumeing hsphy resources %d\n", ret);
+> +               return ret;
+> +       }
+> +
+>         qcom_snps_hsphy_write_mask(hsphy->base, USB2_PHY_USB_PHY_CFG0,
+>                                         UTMI_PHY_CMN_CTRL_OVERRIDE_EN,
+>                                         UTMI_PHY_CMN_CTRL_OVERRIDE_EN);
+> @@ -467,22 +570,19 @@ static int qcom_snps_hsphy_init(struct phy *phy)
+>         hsphy->phy_initialized = true;
+>
+>         return 0;
+> -
+> -disable_clks:
+> -       clk_bulk_disable_unprepare(hsphy->num_clks, hsphy->clks);
+> -poweroff_phy:
+> -       regulator_bulk_disable(ARRAY_SIZE(hsphy->vregs), hsphy->vregs);
+> -
+> -       return ret;
+>  }
+>
+>  static int qcom_snps_hsphy_exit(struct phy *phy)
+>  {
+>         struct qcom_snps_hsphy *hsphy = phy_get_drvdata(phy);
+> +       int ret = 0;
+> +
+> +       ret = hsphy->snps_femto_v2_device_ops.suspend_resource(hsphy);
+> +       if (ret) {
+> +               dev_err(&phy->dev, "Error suspending hsphy resources %d\n", ret);
+> +               return ret;
+> +       }
+>
+> -       reset_control_assert(hsphy->phy_reset);
+> -       clk_bulk_disable_unprepare(hsphy->num_clks, hsphy->clks);
+> -       regulator_bulk_disable(ARRAY_SIZE(hsphy->vregs), hsphy->vregs);
+>         hsphy->phy_initialized = false;
+>
+>         return 0;
+> @@ -497,7 +597,8 @@ static const struct phy_ops qcom_snps_hsphy_gen_ops = {
+>
+>  static const struct of_device_id qcom_snps_hsphy_of_match_table[] = {
+>         { .compatible   = "qcom,sm8150-usb-hs-phy", },
+> -       { .compatible   = "qcom,usb-snps-hs-5nm-phy", },
+> +       { .compatible   = "qcom,sa8775p-usb-hs-phy", },
+> +       { .compatible   = "qcom,sc8280xp-usb-hs-phy", },
+
+WTF? Please keep the fallback entry in place. It looks to me that
+somebody didn't read documentation on the OF device matching. Please
+read the code first.
+
+>         {
+>                 .compatible     = "qcom,usb-snps-hs-7nm-phy",
+>                 .data           = &sc7280_snps_7nm_phy,
+> @@ -513,7 +614,7 @@ static const struct dev_pm_ops qcom_snps_hsphy_pm_ops = {
+>  };
+>
+>  static void qcom_snps_hsphy_override_param_update_val(
+> -                       const struct override_param_map map,
+> +                       const struct snps_femto_v2_priv_data map,
+>                         s32 dt_val, struct phy_override_seq *seq_entry)
+>  {
+>         int i;
+> @@ -541,7 +642,7 @@ static void qcom_snps_hsphy_read_override_param_seq(struct device *dev)
+>         s32 val;
+>         int ret, i;
+>         struct qcom_snps_hsphy *hsphy;
+> -       const struct override_param_map *cfg = of_device_get_match_data(dev);
+> +       const struct snps_femto_v2_priv_data *cfg = of_device_get_match_data(dev);
+>
+>         if (!cfg)
+>                 return;
+> @@ -580,24 +681,39 @@ static int qcom_snps_hsphy_probe(struct platform_device *pdev)
+>         if (IS_ERR(hsphy->base))
+>                 return PTR_ERR(hsphy->base);
+>
+> -       ret = qcom_snps_hsphy_clk_init(hsphy);
+> -       if (ret)
+> -               return dev_err_probe(dev, ret, "failed to initialize clocks\n");
+>
+> -       hsphy->phy_reset = devm_reset_control_get_exclusive(&pdev->dev, NULL);
+> -       if (IS_ERR(hsphy->phy_reset)) {
+> -               dev_err(dev, "failed to get phy core reset\n");
+> -               return PTR_ERR(hsphy->phy_reset);
+> -       }
+> +       hsphy->fw_managed  = device_property_read_bool(dev, "hsphy,fw-managed");
+> +       if (hsphy->fw_managed) {
+> +               ret = hsphy_fw_managed_domain_init(hsphy);
+> +               if (ret) {
+> +                       dev_err(dev, "Failed to init domains. Bail out");
+> +                       return ret;
+> +               }
+>
+> -       num = ARRAY_SIZE(hsphy->vregs);
+> -       for (i = 0; i < num; i++)
+> -               hsphy->vregs[i].supply = qcom_snps_hsphy_vreg_names[i];
+> +               hsphy->snps_femto_v2_device_ops.resume_resource = fw_managed_hsphy_init;
+> +               hsphy->snps_femto_v2_device_ops.suspend_resource = fw_managed_hsphy_exit;
+> +       } else {
+> +               ret = qcom_snps_hsphy_clk_init(hsphy);
+> +               if (ret)
+> +                       return dev_err_probe(dev, ret, "failed to initialize clocks\n");
+>
+> -       ret = devm_regulator_bulk_get(dev, num, hsphy->vregs);
+> -       if (ret)
+> -               return dev_err_probe(dev, ret,
+> -                                    "failed to get regulator supplies\n");
+> +               hsphy->phy_reset = devm_reset_control_get_exclusive(&pdev->dev, NULL);
+> +               if (IS_ERR(hsphy->phy_reset)) {
+> +                       dev_err(dev, "failed to get phy core reset\n");
+> +                       return PTR_ERR(hsphy->phy_reset);
+> +               }
+> +
+> +               num = ARRAY_SIZE(hsphy->vregs);
+> +               for (i = 0; i < num; i++)
+> +                       hsphy->vregs[i].supply = qcom_snps_hsphy_vreg_names[i];
+> +
+> +               ret = devm_regulator_bulk_get(dev, num, hsphy->vregs);
+> +               if (ret)
+> +                       return dev_err_probe(dev, ret,
+> +                                            "failed to get regulator supplies\n");
+> +               hsphy->snps_femto_v2_device_ops.resume_resource = locally_managed_hsphy_init;
+> +               hsphy->snps_femto_v2_device_ops.suspend_resource = locally_managed_hsphy_exit;
+> +       }
+>
+>         pm_runtime_set_active(dev);
+>         pm_runtime_enable(dev);
+> @@ -609,6 +725,8 @@ static int qcom_snps_hsphy_probe(struct platform_device *pdev)
+>
+>         generic_phy = devm_phy_create(dev, NULL, &qcom_snps_hsphy_gen_ops);
+>         if (IS_ERR(generic_phy)) {
+> +               if (hsphy->fw_managed)
+> +                       hsphy_fw_managed_domain_remove(hsphy);
+>                 ret = PTR_ERR(generic_phy);
+>                 dev_err(dev, "failed to create phy, %d\n", ret);
+>                 return ret;
+> @@ -628,8 +746,19 @@ static int qcom_snps_hsphy_probe(struct platform_device *pdev)
+>         return PTR_ERR_OR_ZERO(phy_provider);
+>  }
+>
+> +static void qcom_snps_hsphy_remove(struct platform_device *pdev)
+> +{
+> +       struct qcom_snps_hsphy *hsphy = platform_get_drvdata(pdev);
+> +
+> +       if (hsphy->fw_managed) {
+> +               pm_runtime_put_sync(hsphy->genpd_core);
+> +               hsphy_fw_managed_domain_remove(hsphy);
+> +       }
+> +}
+> +
+>  static struct platform_driver qcom_snps_hsphy_driver = {
+>         .probe          = qcom_snps_hsphy_probe,
+> +       .remove_new     = qcom_snps_hsphy_remove,
+>         .driver = {
+>                 .name   = "qcom-snps-hs-femto-v2-phy",
+>                 .pm = &qcom_snps_hsphy_pm_ops,
+> diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
+> index dbd6a5b..aea11d0 100644
+> --- a/drivers/usb/dwc3/dwc3-qcom.c
+> +++ b/drivers/usb/dwc3/dwc3-qcom.c
+> @@ -22,6 +22,8 @@
+>  #include <linux/iopoll.h>
+>  #include <linux/usb/hcd.h>
+>  #include <linux/usb.h>
+> +#include <linux/pm_opp.h>
+> +#include <linux/pm_domain.h>
+>  #include "core.h"
+>
+>  /* USB QSCRATCH Hardware registers */
+> @@ -53,6 +55,9 @@
+>  #define APPS_USB_AVG_BW 0
+>  #define APPS_USB_PEAK_BW MBps_to_icc(40)
+>
+> +#define DOMAIN_GENPD_TRANSFER                  0
+> +#define DOMAIN_GENPD_CORE                      1
+
+Same comments as before
+
+> +
+>  struct dwc3_acpi_pdata {
+>         u32                     qscratch_base_offset;
+>         u32                     qscratch_base_size;
+> @@ -91,8 +96,54 @@ struct dwc3_qcom {
+>         bool                    pm_suspended;
+>         struct icc_path         *icc_path_ddr;
+>         struct icc_path         *icc_path_apps;
+> +
+> +       struct dev_pm_domain_list *pd_list;
+> +       struct device *genpd_core;
+> +       struct device *genpd_transfer;
+> +
+> +       bool                    fw_managed;
+> +       /* separate resource management for fw_managed vs locally managed devices */
+> +       struct qcom_dwc3_device_ops {
+> +               int (*resume_resource)(struct dwc3_qcom *qcom);
+> +               void (*suspend_resource)(struct dwc3_qcom *qcom);
+> +               void (*exit_resource)(struct dwc3_qcom *qcom);
+> +       } qcom_dwc3_device_ops;
+>  };
+>
+> +static void dwc3_qcom_fw_managed_domain_remove(struct dwc3_qcom *qcom)
+> +{
+> +       dev_pm_domain_detach_list(qcom->pd_list);
+> +}
+> +
+> +static int dwc3_qcom_fw_managed_domain_init(struct dwc3_qcom *qcom)
+> +{
+> +       struct device *dev = qcom->dev;
+> +       struct dev_pm_domain_attach_data pd_data = {
+> +               .pd_flags       = PD_FLAG_NO_DEV_LINK,
+> +               .pd_names       = (const char*[]) { "usb_transfer", "usb_core" },
+> +               .num_pd_names   = 2,
+> +       };
+> +       int ret = 0;
+> +
+> +       if (!dev->pm_domain) {
+> +               ret = dev_pm_domain_attach_list(dev, &pd_data, &qcom->pd_list);
+> +               if (ret < 0) {
+> +                       dev_err(dev, "domain attach failed %d)\n", ret);
+> +                       return ret;
+> +               }
+> +
+> +               qcom->genpd_transfer = qcom->pd_list->pd_devs[DOMAIN_GENPD_TRANSFER];
+> +               qcom->genpd_core = qcom->pd_list->pd_devs[DOMAIN_GENPD_CORE];
+> +
+> +               dev_dbg(dev, "domains attached successfully\n");
+> +       } else {
+> +               dev_dbg(dev, "domain attach fail\n");
+> +               return -ENODEV;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+>  static inline void dwc3_qcom_setbits(void __iomem *base, u32 offset, u32 val)
+>  {
+>         u32 reg;
+> @@ -417,10 +468,87 @@ static void dwc3_qcom_enable_interrupts(struct dwc3_qcom *qcom)
+>         dwc3_qcom_enable_wakeup_irq(qcom->ss_phy_irq, 0);
+>  }
+>
+> +static void locally_managed_exit_resource(struct dwc3_qcom *qcom)
+> +{
+> +       int i;
+> +
+> +       for (i = qcom->num_clocks - 1; i >= 0; i--) {
+> +               clk_disable_unprepare(qcom->clks[i]);
+> +               clk_put(qcom->clks[i]);
+> +       }
+> +       qcom->num_clocks = 0;
+> +
+> +       dwc3_qcom_interconnect_exit(qcom);
+> +       reset_control_assert(qcom->resets);
+> +}
+> +
+> +static void fw_managed_exit_resource(struct dwc3_qcom *qcom)
+> +{
+> +       int ret = 0;
+> +
+> +       ret = pm_runtime_put_sync(qcom->genpd_core);
+> +
+> +       if (ret < 0)
+> +               dev_err(qcom->dev, "Failed to disable fw managed resources");
+> +
+> +       dwc3_qcom_fw_managed_domain_remove(qcom);
+> +}
+> +
+> +static int locally_managed_resume_resource(struct dwc3_qcom *qcom)
+> +{
+> +       int ret, i;
+> +
+> +       for (i = 0; i < qcom->num_clocks; i++) {
+> +               ret = clk_prepare_enable(qcom->clks[i]);
+> +               if (ret < 0) {
+> +                       while (--i >= 0)
+> +                               clk_disable_unprepare(qcom->clks[i]);
+> +                       return ret;
+> +               }
+> +       }
+> +
+> +       ret = dwc3_qcom_interconnect_enable(qcom);
+> +       if (ret)
+> +               dev_warn(qcom->dev, "failed to enable interconnect: %d\n", ret);
+> +
+> +       return 0;
+> +}
+> +
+> +static int fw_managed_resume_resource(struct dwc3_qcom *qcom)
+> +{
+> +       int ret = 0;
+> +
+> +       ret = pm_runtime_get_sync(qcom->genpd_transfer);
+> +       if (ret < 0)
+> +               dev_err(qcom->dev, "Failed to enable fw managed resources");
+> +
+> +       return ret;
+> +}
+> +
+> +static void locally_managed_suspend_resource(struct dwc3_qcom *qcom)
+> +{
+> +       int i, ret;
+> +
+> +       for (i = qcom->num_clocks - 1; i >= 0; i--)
+> +               clk_disable_unprepare(qcom->clks[i]);
+> +
+> +       ret = dwc3_qcom_interconnect_disable(qcom);
+> +       if (ret)
+> +               dev_warn(qcom->dev, "failed to disable interconnect: %d\n", ret);
+> +}
+> +
+> +static void fw_managed_suspend_resource(struct dwc3_qcom *qcom)
+> +{
+> +       int ret = 0;
+> +
+> +       ret = pm_runtime_put_sync(qcom->genpd_transfer);
+> +       if (ret < 0)
+> +               dev_err(qcom->dev, "Failed to disable fw managed resources");
+> +}
+> +
+>  static int dwc3_qcom_suspend(struct dwc3_qcom *qcom, bool wakeup)
+>  {
+>         u32 val;
+> -       int i, ret;
+>
+>         if (qcom->is_suspended)
+>                 return 0;
+> @@ -429,12 +557,7 @@ static int dwc3_qcom_suspend(struct dwc3_qcom *qcom, bool wakeup)
+>         if (!(val & PWR_EVNT_LPM_IN_L2_MASK))
+>                 dev_err(qcom->dev, "HS-PHY not in L2\n");
+>
+> -       for (i = qcom->num_clocks - 1; i >= 0; i--)
+> -               clk_disable_unprepare(qcom->clks[i]);
+> -
+> -       ret = dwc3_qcom_interconnect_disable(qcom);
+> -       if (ret)
+> -               dev_warn(qcom->dev, "failed to disable interconnect: %d\n", ret);
+> +       qcom->qcom_dwc3_device_ops.suspend_resource(qcom);
+
+Does SCMI manage interconnects too?
+
+>
+>         /*
+>          * The role is stable during suspend as role switching is done from a
+> @@ -453,7 +576,6 @@ static int dwc3_qcom_suspend(struct dwc3_qcom *qcom, bool wakeup)
+>  static int dwc3_qcom_resume(struct dwc3_qcom *qcom, bool wakeup)
+>  {
+>         int ret;
+> -       int i;
+>
+>         if (!qcom->is_suspended)
+>                 return 0;
+> @@ -461,18 +583,9 @@ static int dwc3_qcom_resume(struct dwc3_qcom *qcom, bool wakeup)
+>         if (dwc3_qcom_is_host(qcom) && wakeup)
+>                 dwc3_qcom_disable_interrupts(qcom);
+>
+> -       for (i = 0; i < qcom->num_clocks; i++) {
+> -               ret = clk_prepare_enable(qcom->clks[i]);
+> -               if (ret < 0) {
+> -                       while (--i >= 0)
+> -                               clk_disable_unprepare(qcom->clks[i]);
+> -                       return ret;
+> -               }
+> -       }
+> -
+> -       ret = dwc3_qcom_interconnect_enable(qcom);
+> -       if (ret)
+> -               dev_warn(qcom->dev, "failed to enable interconnect: %d\n", ret);
+> +       ret = qcom->qcom_dwc3_device_ops.resume_resource(qcom);
+> +       if (ret < 0)
+> +               return ret;
+>
+>         /* Clear existing events from PHY related to L2 in/out */
+>         dwc3_qcom_setbits(qcom->qscratch_base, PWR_EVNT_IRQ_STAT_REG,
+> @@ -833,30 +946,54 @@ static int dwc3_qcom_probe(struct platform_device *pdev)
+>                 }
+>         }
+>
+> -       qcom->resets = devm_reset_control_array_get_optional_exclusive(dev);
+> -       if (IS_ERR(qcom->resets)) {
+> -               return dev_err_probe(&pdev->dev, PTR_ERR(qcom->resets),
+> -                                    "failed to get resets\n");
+> -       }
+> +       qcom->fw_managed  = device_property_read_bool(dev, "qcom,fw-managed");
+> +       if (qcom->fw_managed) {
+> +               ret = dwc3_qcom_fw_managed_domain_init(qcom);
+> +               if (ret) {
+> +                       dev_err(dev, "Failed to init domains. Bail out\n");
+> +                       return ret;
+> +               }
+> +               ret = pm_runtime_resume_and_get(qcom->genpd_core);
+> +               if (ret < 0) {
+> +                       dev_err(qcom->dev, "Failed to enable %s", __func__);
+> +                       dwc3_qcom_fw_managed_domain_remove(qcom);
+> +                       return ret;
+> +               }
+>
+> -       ret = reset_control_assert(qcom->resets);
+> -       if (ret) {
+> -               dev_err(&pdev->dev, "failed to assert resets, err=%d\n", ret);
+> -               return ret;
+> -       }
+> +               qcom->qcom_dwc3_device_ops.resume_resource = fw_managed_resume_resource;
+> +               qcom->qcom_dwc3_device_ops.exit_resource = fw_managed_exit_resource;
+> +               qcom->qcom_dwc3_device_ops.suspend_resource = fw_managed_suspend_resource;
+> +       } else {
+> +               qcom->resets = devm_reset_control_array_get_optional_exclusive(dev);
+> +               if (IS_ERR(qcom->resets)) {
+> +                       return dev_err_probe(&pdev->dev, PTR_ERR(qcom->resets),
+> +                                            "failed to get resets\n");
+> +               }
+>
+> -       usleep_range(10, 1000);
+> +               ret = reset_control_assert(qcom->resets);
+> +               if (ret) {
+> +                       dev_err(&pdev->dev, "failed to assert resets, err=%d\n", ret);
+> +                       return ret;
+> +               }
+>
+> -       ret = reset_control_deassert(qcom->resets);
+> -       if (ret) {
+> -               dev_err(&pdev->dev, "failed to deassert resets, err=%d\n", ret);
+> -               goto reset_assert;
+> -       }
+> +               usleep_range(10, 1000);
+>
+> -       ret = dwc3_qcom_clk_init(qcom, of_clk_get_parent_count(np));
+> -       if (ret) {
+> -               dev_err_probe(dev, ret, "failed to get clocks\n");
+> -               goto reset_assert;
+> +               ret = reset_control_deassert(qcom->resets);
+> +               if (ret) {
+> +                       dev_err(&pdev->dev, "failed to deassert resets, err=%d\n", ret);
+> +                       goto reset_assert;
+> +               }
+> +
+> +               ret = dwc3_qcom_clk_init(qcom, of_clk_get_parent_count(np));
+> +               if (ret) {
+> +                       dev_err_probe(dev, ret, "failed to get clocks\n");
+> +                       goto reset_assert;
+> +               }
+> +
+> +               //Map the functions here for suspend resume
+> +               qcom->qcom_dwc3_device_ops.resume_resource = locally_managed_resume_resource;
+> +               qcom->qcom_dwc3_device_ops.exit_resource = locally_managed_exit_resource;
+> +               qcom->qcom_dwc3_device_ops.suspend_resource = locally_managed_suspend_resource;
+>         }
+>
+>         res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> @@ -916,9 +1053,11 @@ static int dwc3_qcom_probe(struct platform_device *pdev)
+>                 goto free_urs;
+>         }
+>
+> -       ret = dwc3_qcom_interconnect_init(qcom);
+> -       if (ret)
+> -               goto depopulate;
+> +       if (!qcom->fw_managed) {
+> +               ret = dwc3_qcom_interconnect_init(qcom);
+> +               if (ret)
+> +                       goto depopulate;
+> +       }
+>
+>         qcom->mode = usb_get_dr_mode(&qcom->dwc3->dev);
+>
+> @@ -928,8 +1067,12 @@ static int dwc3_qcom_probe(struct platform_device *pdev)
+>
+>         /* register extcon to override sw_vbus on Vbus change later */
+>         ret = dwc3_qcom_register_extcon(qcom);
+> -       if (ret)
+> -               goto interconnect_exit;
+> +       if (ret) {
+> +               if (!qcom->fw_managed)
+> +                       goto interconnect_exit;
+> +               else
+> +                       goto depopulate;
+> +       }
+>
+>         wakeup_source = of_property_read_bool(dev->of_node, "wakeup-source");
+>         device_init_wakeup(&pdev->dev, wakeup_source);
+> @@ -956,13 +1099,19 @@ static int dwc3_qcom_probe(struct platform_device *pdev)
+>         if (qcom->urs_usb)
+>                 dwc3_qcom_destroy_urs_usb_platdev(qcom->urs_usb);
+>  clk_disable:
+> -       for (i = qcom->num_clocks - 1; i >= 0; i--) {
+> -               clk_disable_unprepare(qcom->clks[i]);
+> -               clk_put(qcom->clks[i]);
+> +       if (!qcom->fw_managed) {
+> +               for (i = qcom->num_clocks - 1; i >= 0; i--) {
+> +                       clk_disable_unprepare(qcom->clks[i]);
+> +                       clk_put(qcom->clks[i]);
+> +               }
+
+Please stick to a single style. Either have ops and functions or
+fw_managed checks through the code. Mixing both of them doesn't look
+good.
+
+>         }
+>  reset_assert:
+> -       reset_control_assert(qcom->resets);
+> -
+> +       if (qcom->fw_managed) {
+> +               pm_runtime_put_sync(qcom->genpd_core);
+> +               dwc3_qcom_fw_managed_domain_remove(qcom);
+> +       } else {
+> +               reset_control_assert(qcom->resets);
+> +       }
+>         return ret;
+>  }
+>
+> @@ -971,7 +1120,6 @@ static void dwc3_qcom_remove(struct platform_device *pdev)
+>         struct dwc3_qcom *qcom = platform_get_drvdata(pdev);
+>         struct device_node *np = pdev->dev.of_node;
+>         struct device *dev = &pdev->dev;
+> -       int i;
+>
+>         if (np) {
+>                 of_platform_depopulate(&pdev->dev);
+> @@ -984,14 +1132,7 @@ static void dwc3_qcom_remove(struct platform_device *pdev)
+>         if (qcom->urs_usb)
+>                 dwc3_qcom_destroy_urs_usb_platdev(qcom->urs_usb);
+>
+> -       for (i = qcom->num_clocks - 1; i >= 0; i--) {
+> -               clk_disable_unprepare(qcom->clks[i]);
+> -               clk_put(qcom->clks[i]);
+> -       }
+> -       qcom->num_clocks = 0;
+> -
+> -       dwc3_qcom_interconnect_exit(qcom);
+> -       reset_control_assert(qcom->resets);
+> +       qcom->qcom_dwc3_device_ops.exit_resource(qcom);
+>
+>         pm_runtime_allow(dev);
+>         pm_runtime_disable(dev);
+> --
+> 2.7.4
+>
+>
+
+
+-- 
+With best wishes
+Dmitry
 
