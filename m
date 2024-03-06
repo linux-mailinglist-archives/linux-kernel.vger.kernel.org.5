@@ -1,279 +1,178 @@
-Return-Path: <linux-kernel+bounces-94055-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94056-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93671873931
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:31:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A5FB873933
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:32:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 47E2A282765
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:31:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7A3DBB230B0
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:32:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47A9813341E;
-	Wed,  6 Mar 2024 14:31:42 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 152A8131745;
-	Wed,  6 Mar 2024 14:31:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709735501; cv=none; b=fTfDrAMKREGq2UpS77fkKC75yBp0hX1WaTzYc2x3cVpvpjGHuBVgWjLL0qw/DobIGRWL42LPh1XaeEKHUClXKO3S/w2rjD00ahL7gljLZHs2xvgwav1O65L1OP+XM0wb6/u5KIUzG8/ZDeUfIb1w599u7Ykm7MZJYxb/JFayvcc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709735501; c=relaxed/simple;
-	bh=dbnHiZjb/P6UjDEKf3yalHtdTeFWkOkyikyrXGzM5Ro=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aWHf0b8uL7v9lxyOs88qc7PkfHWGEBVu6URZeGS4uACVehu1XhjqugKv5ph1nsUQ7eJ0y6x16ENBCOMy8DYYnMOWm3PXHiQyQuicGjauDP9pWVWM4EHRheHKv9unOw2gIqKzo9AgmA6B5Cz6ZD3/sn2A4a6B66C3bzU3VeICiOg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 340CB1FB;
-	Wed,  6 Mar 2024 06:32:15 -0800 (PST)
-Received: from [10.57.11.156] (unknown [10.57.11.156])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2F5A23F762;
-	Wed,  6 Mar 2024 06:31:35 -0800 (PST)
-Message-ID: <61095f51-3d74-48e9-96b4-75da4645331e@arm.com>
-Date: Wed, 6 Mar 2024 14:31:47 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E77C0133402;
+	Wed,  6 Mar 2024 14:32:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=manguebit.com header.i=@manguebit.com header.b="PDOM8VVm"
+Received: from mx.manguebit.com (mx.manguebit.com [167.235.159.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEC215B03B;
+	Wed,  6 Mar 2024 14:32:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=167.235.159.17
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709735523; cv=pass; b=K68HsiiXL4o0hQNp0vp4tlcGqeKKfYPrLizYxI6zV2dIC2WyeQAgnfbvDCoI/2fTb9tvZEloSxtYB+YNZwPoRnE/uDuC/HzBuF3SAtxSShG/KQdbikXT8KQi5sWkXFj/O/kn21UdW7Crcg5SjEs0EFJFH+79Yf6GDgg4tAwiexY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709735523; c=relaxed/simple;
+	bh=O5o5/OA7JuN94HF72oh+BTl554LZzCHZf0lK5td3uKg=;
+	h=Message-ID:From:To:Cc:Subject:In-Reply-To:References:Date:
+	 MIME-Version:Content-Type; b=rYG0F6wL8q+j4K30+bV/RGjTIVOduJcVRV3WfVhhdokhPmjbYYK+R9oaz5iT4hdz/Ddk3iZfcGrBLdMD+BWsK9LY5BL6XmFhSu0b11mNMaTqpNFEGwe3izM5vjJWi3NJj5ehnORyYoQt00XN/eEMlVOLv/f2evjbatjda1CcCes=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manguebit.com; spf=pass smtp.mailfrom=manguebit.com; dkim=pass (2048-bit key) header.d=manguebit.com header.i=@manguebit.com header.b=PDOM8VVm; arc=pass smtp.client-ip=167.235.159.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manguebit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manguebit.com
+Message-ID: <8e729f88f285fefaa8a089da09484ed2@manguebit.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manguebit.com;
+	s=dkim; t=1709735512;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZUsDDiQHbmberqEw7P+uyxdapk5dWId2FXk+DJYvkNo=;
+	b=PDOM8VVmK+dA94QTLqGKu5HQNdyoDZErJzR4z7BH4pTmZ1yls9Ef78Gy0tQbhx3wki0jMQ
+	bKokoSi01Z5mW5+5npMKEMmL0WZ2BXLqUzVtixzhKlIaTG/6daAvCPpmyZCdUzvKv096an
+	E5nVjODhM1IV2Nj7xOHezrYDj7JYs7TJ176FaOep9KcdqmCqyJXUJk3jHXQpDE6YBbnmjm
+	yTh9WA1WYxM0jOgAoPgeF/BiKlR5XQSoYDSomHj0XXFyFHf+igRb1DJeWtqfFK5gxzhP+p
+	LAJnqx6n5v/4ZGyc2ootXMchCbwgsagaNJuIpw9Z6adcZGJ+v18d7ba6RZrojQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=manguebit.com;
+	s=dkim; t=1709735512; h=from:from:sender:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZUsDDiQHbmberqEw7P+uyxdapk5dWId2FXk+DJYvkNo=;
+	b=o5+1wqzA4JcV+8ZVNtYjv0YS4jgozP0rk2FmEEtvkCbIX+6I5KxzyoS6kdfdkq5f+sFPjV
+	l88XrkPm3hsmJXYRuC6RjbV39UTceTvFamOOmOoSJ3S8LdaRtpA5kyYZsESRM/NDKp4C8v
+	atWWKd7i79vwnbFUBIepSFpBpikNnevsweRs/FkAEIAlxpd/m3j/ZajNeYUlpgWEpmql6g
+	aaWREcA+9Di4/3Oaw9/RPplBcIyNa/U6jQXA33vPL/SyWGAOd+gpqler5reNbE+CgwbXaW
+	ub8v72Q45Pr2KSEgf9C42sUcj5Blf+AttPO8PhqR2If4eA3ShcHsVXykn1iEjg==
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.mailfrom=pc@manguebit.com
+ARC-Seal: i=1; s=dkim; d=manguebit.com; t=1709735512; a=rsa-sha256;
+	cv=none;
+	b=YkDDd74Db54F3nw6gr6hbVWeVbLjw2J9WdH4c/S63RZD/5XHDeCurWAsYCE1ub+oVbj+66
+	orSjB9xLepIurz0hXubtrpXUy/75HvO3DuFxmdrxWTVgZVu38uOZd9HJiZmHqzRxwt2fVO
+	H59SBZ0pZvUkJkCiNrsmw+2uJq2bDESP69FetvZfwCxQr5XHVYmO/va3sg+pj6V+SDx5ue
+	C2oI3Uut6zn1b/IfKU8lC2iUwVU10ENmMR6ZlAYSfw/iy94SBW62KvsK/JvmbdaZ77NAed
+	fSyIECGDUY+LholIRUbqnNvJnVOYZnzkOGx9hcaW6NFGm7PUeAPdw/9eydtFQQ==
+From: Paulo Alcantara <pc@manguebit.com>
+To: meetakshisetiyaoss@gmail.com, sfrench@samba.org,
+ ronniesahlberg@gmail.com, sprasad@microsoft.com, nspmangalore@gmail.com,
+ tom@talpey.com, linux-cifs@vger.kernel.org, linux-kernel@vger.kernel.org,
+ samba-technical@lists.samba.org, bharathsm.hsk@gmail.com
+Cc: Meetakshi Setiya <msetiya@microsoft.com>
+Subject: Re: [PATCH 2/3] smb: client: do not defer close open handles to
+ deleted files
+In-Reply-To: <20240306034353.190039-2-meetakshisetiyaoss@gmail.com>
+References: <20240306034353.190039-1-meetakshisetiyaoss@gmail.com>
+ <20240306034353.190039-2-meetakshisetiyaoss@gmail.com>
+Date: Wed, 06 Mar 2024 11:31:48 -0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/1] drm/panfrost: Replace fdinfo's profiling debugfs
- knob with sysfs
-To: =?UTF-8?Q?Adri=C3=A1n_Larumbe?= <adrian.larumbe@collabora.com>,
- boris.brezillon@collabora.com, robh@kernel.org, airlied@gmail.com,
- daniel@ffwll.ch, maarten.lankhorst@linux.intel.com, mripard@kernel.org,
- tzimmermann@suse.de, corbet@lwn.net
-Cc: kernel@collabora.com, linux-kernel@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linux-doc@vger.kernel.org
-References: <20240306015819.822128-1-adrian.larumbe@collabora.com>
- <20240306015819.822128-2-adrian.larumbe@collabora.com>
-Content-Language: en-GB
-From: Steven Price <steven.price@arm.com>
-In-Reply-To: <20240306015819.822128-2-adrian.larumbe@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-On 06/03/2024 01:56, Adrián Larumbe wrote:
-> Debugfs isn't always available in production builds that try to squeeze
-> every single byte out of the kernel image, but we still need a way to
-> toggle the timestamp and cycle counter registers so that jobs can be
-> profiled for fdinfo's drm engine and cycle calculations.
-> 
-> Drop the debugfs knob and replace it with a sysfs file that accomplishes
-> the same functionality, and document its ABI in a separate file.
-> 
-> Signed-off-by: Adrián Larumbe <adrian.larumbe@collabora.com>
+meetakshisetiyaoss@gmail.com writes:
 
-Reviewed-by: Steven Price <steven.price@arm.com>
+> diff --git a/fs/smb/client/file.c b/fs/smb/client/file.c
+> index b75282c204da..46951f403d31 100644
+> --- a/fs/smb/client/file.c
+> +++ b/fs/smb/client/file.c
+> @@ -483,6 +483,7 @@ struct cifsFileInfo *cifs_new_fileinfo(struct cifs_fid *fid, struct file *file,
+>  	cfile->uid = current_fsuid();
+>  	cfile->dentry = dget(dentry);
+>  	cfile->f_flags = file->f_flags;
+> +	cfile->status_file_deleted = false;
 
-> ---
->  .../testing/sysfs-driver-panfrost-profiling   | 10 +++++
->  Documentation/gpu/panfrost.rst                |  9 ++++
->  drivers/gpu/drm/panfrost/Makefile             |  2 -
->  drivers/gpu/drm/panfrost/panfrost_debugfs.c   | 21 ----------
->  drivers/gpu/drm/panfrost/panfrost_debugfs.h   | 14 -------
->  drivers/gpu/drm/panfrost/panfrost_device.h    |  2 +-
->  drivers/gpu/drm/panfrost/panfrost_drv.c       | 41 ++++++++++++++++---
->  drivers/gpu/drm/panfrost/panfrost_job.c       |  2 +-
->  8 files changed, 57 insertions(+), 44 deletions(-)
->  create mode 100644 Documentation/ABI/testing/sysfs-driver-panfrost-profiling
->  delete mode 100644 drivers/gpu/drm/panfrost/panfrost_debugfs.c
->  delete mode 100644 drivers/gpu/drm/panfrost/panfrost_debugfs.h
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-driver-panfrost-profiling b/Documentation/ABI/testing/sysfs-driver-panfrost-profiling
-> new file mode 100644
-> index 000000000000..1d8bb0978920
-> --- /dev/null
-> +++ b/Documentation/ABI/testing/sysfs-driver-panfrost-profiling
-> @@ -0,0 +1,10 @@
-> +What:		/sys/bus/platform/drivers/panfrost/.../profiling
-> +Date:		February 2024
-> +KernelVersion:	6.8.0
-> +Contact:	Adrian Larumbe <adrian.larumbe@collabora.com>
-> +Description:
-> +		Get/set drm fdinfo's engine and cycles profiling status.
-> +		Valid values are:
-> +		0: Don't enable fdinfo job profiling sources.
-> +		1: Enable fdinfo job profiling sources, this enables both the GPU's
-> +		   timestamp and cycle counter registers.
-> \ No newline at end of file
-> diff --git a/Documentation/gpu/panfrost.rst b/Documentation/gpu/panfrost.rst
-> index b80e41f4b2c5..51ba375fd80d 100644
-> --- a/Documentation/gpu/panfrost.rst
-> +++ b/Documentation/gpu/panfrost.rst
-> @@ -38,3 +38,12 @@ the currently possible format options:
+This is unnecessary as @cfile is kzalloc()'d.
+
+>  	cfile->invalidHandle = false;
+>  	cfile->deferred_close_scheduled = false;
+>  	cfile->tlink = cifs_get_tlink(tlink);
+> @@ -1085,7 +1086,7 @@ int cifs_close(struct inode *inode, struct file *file)
+>  		if ((cifs_sb->ctx->closetimeo && cinode->oplock == CIFS_CACHE_RHW_FLG)
+>  		    && cinode->lease_granted &&
+>  		    !test_bit(CIFS_INO_CLOSE_ON_LOCK, &cinode->flags) &&
+> -		    dclose) {
+> +		    dclose && !(cfile->status_file_deleted)) {
+>  			if (test_and_clear_bit(CIFS_INO_MODIFIED_ATTR, &cinode->flags)) {
+>  				inode_set_mtime_to_ts(inode,
+>  						      inode_set_ctime_current(inode));
+> diff --git a/fs/smb/client/inode.c b/fs/smb/client/inode.c
+> index 3073eac989ea..3242e3b74386 100644
+> --- a/fs/smb/client/inode.c
+> +++ b/fs/smb/client/inode.c
+> @@ -893,6 +893,9 @@ cifs_get_file_info(struct file *filp)
+>  	struct cifsFileInfo *cfile = filp->private_data;
+>  	struct cifs_tcon *tcon = tlink_tcon(cfile->tlink);
+>  	struct TCP_Server_Info *server = tcon->ses->server;
+> +	struct dentry *dentry = filp->f_path.dentry;
+> +	void *page = alloc_dentry_path();
+> +	const unsigned char *path;
 >  
->  Possible `drm-engine-` key names are: `fragment`, and  `vertex-tiler`.
->  `drm-curfreq-` values convey the current operating frequency for that engine.
-> +
-> +Users must bear in mind that engine and cycle sampling are disabled by default,
-> +because of power saving concerns. `fdinfo` users and benchmark applications which
-> +query the fdinfo file must make sure to toggle the job profiling status of the
-> +driver by writing into the appropriate sysfs node::
-> +
-> +    echo <N> > /sys/bus/platform/drivers/panfrost/[a-f0-9]*.gpu/profiling
-> +
-> +Where `N` is either `0` or `1`, depending on the desired enablement status.
-> diff --git a/drivers/gpu/drm/panfrost/Makefile b/drivers/gpu/drm/panfrost/Makefile
-> index 2c01c1e7523e..7da2b3f02ed9 100644
-> --- a/drivers/gpu/drm/panfrost/Makefile
-> +++ b/drivers/gpu/drm/panfrost/Makefile
-> @@ -12,6 +12,4 @@ panfrost-y := \
->  	panfrost_perfcnt.o \
->  	panfrost_dump.o
->  
-> -panfrost-$(CONFIG_DEBUG_FS) += panfrost_debugfs.o
-> -
->  obj-$(CONFIG_DRM_PANFROST) += panfrost.o
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_debugfs.c b/drivers/gpu/drm/panfrost/panfrost_debugfs.c
-> deleted file mode 100644
-> index 72d4286a6bf7..000000000000
-> --- a/drivers/gpu/drm/panfrost/panfrost_debugfs.c
-> +++ /dev/null
-> @@ -1,21 +0,0 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> -/* Copyright 2023 Collabora ltd. */
-> -/* Copyright 2023 Amazon.com, Inc. or its affiliates. */
-> -
-> -#include <linux/debugfs.h>
-> -#include <linux/platform_device.h>
-> -#include <drm/drm_debugfs.h>
-> -#include <drm/drm_file.h>
-> -#include <drm/panfrost_drm.h>
-> -
-> -#include "panfrost_device.h"
-> -#include "panfrost_gpu.h"
-> -#include "panfrost_debugfs.h"
-> -
-> -void panfrost_debugfs_init(struct drm_minor *minor)
-> -{
-> -	struct drm_device *dev = minor->dev;
-> -	struct panfrost_device *pfdev = platform_get_drvdata(to_platform_device(dev->dev));
-> -
-> -	debugfs_create_atomic_t("profile", 0600, minor->debugfs_root, &pfdev->profile_mode);
-> -}
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_debugfs.h b/drivers/gpu/drm/panfrost/panfrost_debugfs.h
-> deleted file mode 100644
-> index c5af5f35877f..000000000000
-> --- a/drivers/gpu/drm/panfrost/panfrost_debugfs.h
-> +++ /dev/null
-> @@ -1,14 +0,0 @@
-> -/* SPDX-License-Identifier: GPL-2.0 */
-> -/*
-> - * Copyright 2023 Collabora ltd.
-> - * Copyright 2023 Amazon.com, Inc. or its affiliates.
-> - */
-> -
-> -#ifndef PANFROST_DEBUGFS_H
-> -#define PANFROST_DEBUGFS_H
-> -
-> -#ifdef CONFIG_DEBUG_FS
-> -void panfrost_debugfs_init(struct drm_minor *minor);
-> -#endif
-> -
-> -#endif  /* PANFROST_DEBUGFS_H */
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h b/drivers/gpu/drm/panfrost/panfrost_device.h
-> index 62f7e3527385..cffcb0ac7c11 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_device.h
-> +++ b/drivers/gpu/drm/panfrost/panfrost_device.h
-> @@ -130,7 +130,7 @@ struct panfrost_device {
->  	struct list_head scheduled_jobs;
->  
->  	struct panfrost_perfcnt *perfcnt;
-> -	atomic_t profile_mode;
-> +	bool profile_mode;
->  
->  	struct mutex sched_lock;
->  
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/panfrost/panfrost_drv.c
-> index a926d71e8131..9696702800a4 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_drv.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
-> @@ -20,7 +20,6 @@
->  #include "panfrost_job.h"
->  #include "panfrost_gpu.h"
->  #include "panfrost_perfcnt.h"
-> -#include "panfrost_debugfs.h"
->  
->  static bool unstable_ioctls;
->  module_param_unsafe(unstable_ioctls, bool, 0600);
-> @@ -600,10 +599,6 @@ static const struct drm_driver panfrost_drm_driver = {
->  
->  	.gem_create_object	= panfrost_gem_create_object,
->  	.gem_prime_import_sg_table = panfrost_gem_prime_import_sg_table,
-> -
-> -#ifdef CONFIG_DEBUG_FS
-> -	.debugfs_init		= panfrost_debugfs_init,
-> -#endif
->  };
->  
->  static int panfrost_probe(struct platform_device *pdev)
-> @@ -692,6 +687,41 @@ static void panfrost_remove(struct platform_device *pdev)
->  	drm_dev_put(ddev);
+>  	if (!server->ops->query_file_info)
+>  		return -ENOSYS;
+
+You're leaking @page if above condition is true.
+
+> @@ -907,7 +910,14 @@ cifs_get_file_info(struct file *filp)
+>  			data.symlink = true;
+>  			data.reparse.tag = IO_REPARSE_TAG_SYMLINK;
+>  		}
+> +		path = build_path_from_dentry(dentry, page);
+> +		if (IS_ERR(path)) {
+> +			free_dentry_path(page);
+> +			return PTR_ERR(path);
+
+Now you're leaking @data and @fid if above condition is true.
+
+> +		}
+>  		cifs_open_info_to_fattr(&fattr, &data, inode->i_sb);
+> +		if (fattr.cf_flags & CIFS_FATTR_DELETE_PENDING)
+> +			cifs_mark_open_handles_for_deleted_file(inode, path);
+>  		break;
+>  	case -EREMOTE:
+>  		cifs_create_junction_fattr(&fattr, inode->i_sb);
+> @@ -937,6 +947,7 @@ cifs_get_file_info(struct file *filp)
+>  	rc = cifs_fattr_to_inode(inode, &fattr);
+>  cgfi_exit:
+>  	cifs_free_open_info(&data);
+> +	free_dentry_path(page);
+>  	free_xid(xid);
+>  	return rc;
 >  }
+> @@ -1075,6 +1086,7 @@ static int reparse_info_to_fattr(struct cifs_open_info_data *data,
+>  	struct kvec rsp_iov, *iov = NULL;
+>  	int rsp_buftype = CIFS_NO_BUFFER;
+>  	u32 tag = data->reparse.tag;
+> +	struct inode *inode = NULL;
+>  	int rc = 0;
 >  
-> +static ssize_t profiling_show(struct device *dev,
-> +			      struct device_attribute *attr, char *buf)
-> +{
-> +	struct panfrost_device *pfdev = dev_get_drvdata(dev);
-> +
-> +	return sysfs_emit(buf, "%d\n", pfdev->profile_mode);
-> +}
-> +
-> +
-> +static ssize_t profiling_store(struct device *dev,
-> +			       struct device_attribute *attr,
-> +			       const char *buf, size_t len)
-> +{
-> +	struct panfrost_device *pfdev = dev_get_drvdata(dev);
-> +	bool value;
-> +	int err;
-> +
-> +	err = kstrtobool(buf, &value);
-> +	if (err)
-> +		return err;
-> +
-> +	pfdev->profile_mode = value;
-> +
-> +	return len;
-> +}
-> +
-> +static DEVICE_ATTR_RW(profiling);
-> +
-> +static struct attribute *panfrost_attrs[] = {
-> +	&dev_attr_profiling.attr,
-> +	NULL,
-> +};
-> +
-> +ATTRIBUTE_GROUPS(panfrost);
-> +
->  /*
->   * The OPP core wants the supply names to be NULL terminated, but we need the
->   * correct num_supplies value for regulator core. Hence, we NULL terminate here
-> @@ -789,6 +819,7 @@ static struct platform_driver panfrost_driver = {
->  		.name	= "panfrost",
->  		.pm	= pm_ptr(&panfrost_pm_ops),
->  		.of_match_table = dt_match,
-> +		.dev_groups = panfrost_groups,
->  	},
->  };
->  module_platform_driver(panfrost_driver);
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_job.c b/drivers/gpu/drm/panfrost/panfrost_job.c
-> index 0c2dbf6ef2a5..a61ef0af9a4e 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_job.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_job.c
-> @@ -243,7 +243,7 @@ static void panfrost_job_hw_submit(struct panfrost_job *job, int js)
->  	subslot = panfrost_enqueue_job(pfdev, js, job);
->  	/* Don't queue the job if a reset is in progress */
->  	if (!atomic_read(&pfdev->reset.pending)) {
-> -		if (atomic_read(&pfdev->profile_mode)) {
-> +		if (pfdev->profile_mode) {
->  			panfrost_cycle_counter_get(pfdev);
->  			job->is_profiled = true;
->  			job->start_time = ktime_get();
+>  	if (!tag && server->ops->query_reparse_point) {
+> @@ -1114,8 +1126,12 @@ static int reparse_info_to_fattr(struct cifs_open_info_data *data,
+>  
+>  	if (tcon->posix_extensions)
+>  		smb311_posix_info_to_fattr(fattr, data, sb);
+> -	else
+> +	else {
+>  		cifs_open_info_to_fattr(fattr, data, sb);
+> +		inode = cifs_iget(sb, fattr);
+> +		if (inode && fattr->cf_flags & CIFS_FATTR_DELETE_PENDING)
 
+You shouldn't ignore if cifs_iget() failed.  Return -ENOMEM instead.
+
+Besides, calling cifs_iget() here looks wrong as @fattr is not fully
+set, yet.  Why can't you use @inode from cifs_get_fattr() or do above
+check right after cifs_get_fattr() in cifs_get_inode_info{,_unix}()?
 
