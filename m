@@ -1,143 +1,118 @@
-Return-Path: <linux-kernel+bounces-93823-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93828-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E2EF873533
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 11:59:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D51F873543
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:02:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0970A28BA3D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:59:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 592F5287556
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 11:02:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 788C460B84;
-	Wed,  6 Mar 2024 10:58:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A71647316F;
+	Wed,  6 Mar 2024 11:02:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lXbW1vYN"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=t-argos.ru header.i=@t-argos.ru header.b="C9t6H1Fi"
+Received: from mx1.t-argos.ru (mx1.t-argos.ru [109.73.34.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B94263A262;
-	Wed,  6 Mar 2024 10:58:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 053575FDDC;
+	Wed,  6 Mar 2024 11:02:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=109.73.34.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709722716; cv=none; b=tbbDuuhJ/UhUkQLyvj9Cz0UaKfrOPbCMsASY+lR8iF0yZN84mvwcU3fFIgo0DHfv2jPp9Dki7JxiRaoPgtpNsYzDCktvtPjJmQPDJrdFOkEvGFHxy+T67SIro0lFf3+L/QZ8nvowtEnCZKT8PvDTYKooBrigyuarvCnwSigd49E=
+	t=1709722948; cv=none; b=i+dmJoq40fEYAVY5iKg3vxjn9pMgfpJtkvLrMBwW9nJJHxLtWTq6hFtpz2oIoKj61opfFQT+6VFzM2UlCRDWV+31QrKkEJxHxqmHYs3hhnSqIcYlQLBtrAlhIEFcpCHR6iepaxY2b+Ym6tw6W+mWqOCBAYIUIc19+FPdd3NDYxs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709722716; c=relaxed/simple;
-	bh=54s2DjrDdCI7US7oHXkWWWhCfQrI4Vrohb9IHY8B5/w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=l/pkYrdhzSnnSETdbv1aI3i8pxDtfB0ha0vVKXVA3g/JLoLt9+zwAcI6x6l4QjupUB6U4BkscnT9efg/vajp3VGOwPoQPj4EYZ2fvVI2O7yunmrk1TDWxoeI4IHhHhCn6sFoFzr96k8clOsR1YK/8S6w8Qws6xVK2p6//8frqXQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lXbW1vYN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8820CC433C7;
-	Wed,  6 Mar 2024 10:58:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709722716;
-	bh=54s2DjrDdCI7US7oHXkWWWhCfQrI4Vrohb9IHY8B5/w=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lXbW1vYNG9Z12VkEy7Xav1MM+Gp+xVRLoLqVJOK6HfmlnDcACeD3KLR/1TPKMyaKb
-	 pXmOVhOyY2GfTfpwvsYtl+8pdGCoIbO7j0d5k7ieVDtkhwQjkyUc5Blg+C2fC+PO68
-	 zYEttzgUL/PteFCoalotN3BFLOK58A2gz+Kb61BzUKuqYGUOUCGVwAvj9JqWaH2O92
-	 B/8eHqYRyqHqohvMIKMZpZxYSdDrNs/Wz8hIJJPwZIceJIZkha7vQsTzjdLlOQ8na5
-	 PNx/JMf8RXeEb1gVJf1ZRyIh49KW9bNFBu67iqZDMlC2ojO+SQ7wjl93mX/PDq1tkv
-	 +k8pvTa+yJpAw==
-Date: Wed, 6 Mar 2024 11:58:32 +0100
-From: Alejandro Colomar <alx@kernel.org>
-To: Oliver Crumrine <ozlinuxc@gmail.com>
-Cc: linux-man@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ip.7: Add not supported by SOCK_STREAM to socket options
-Message-ID: <ZehMWQ0LkemsTHAC@debian>
-References: <hxiq3upwxs3j5mc5arwlx4jriqm7fq5z54wroc4h4kqcq4gq7m@uwnoq2vnkhup>
- <ZeXzuWVmC9AnsECt@debian>
- <7ubz52rfdl2i76sotvd3s4thv6jvbfao6zct3sywqus2owlvkx@wpbeqqdvipo4>
+	s=arc-20240116; t=1709722948; c=relaxed/simple;
+	bh=ygeqKWDT5AUJTASqGDnzwYh7qL3fkE+eprFpeq8/5qE=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=LfkGlGSYz3vRnZZhveBbqE09uu/toyJa7b8csisLXLGzGn6Z2Kh8E5tkNeHEyImHP9hk3r/wJtIMGpZCDprTLCoZqLsZHxSuP+SFbIx1gWDFmSpobcJqVbmK7Jhwq4bDgQWkjD6Hl+w5Tgta9gc480PKZVQ/96/G9meNlL9aJbA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=t-argos.ru; spf=pass smtp.mailfrom=t-argos.ru; dkim=pass (2048-bit key) header.d=t-argos.ru header.i=@t-argos.ru header.b=C9t6H1Fi; arc=none smtp.client-ip=109.73.34.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=t-argos.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=t-argos.ru
+Received: from mx1.t-argos.ru (localhost [127.0.0.1])
+	by mx1.t-argos.ru (Postfix) with ESMTP id 78EF5100003;
+	Wed,  6 Mar 2024 14:01:58 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=t-argos.ru; s=mail;
+	t=1709722918; bh=GrRSzn9Rpz5WKnpCUHJQlFPcoyVDSZorDUnPZWrVOLk=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
+	b=C9t6H1FiPnk/xI3wNj1felIYHPoyg5MAhnESLm9uEPMj6EWA6homM1qDxruIkVjKe
+	 aPAMwCB61MU++fPi/5/7XYFGsT+O1+Uusrih1Ofqh6mG/vttndwTyxn/wppgdLXIqH
+	 bmNm1b16k5uHfsu4ulmu1RI/YlRdNLf2rSWFnzkGAHbehpQoeG57KTB2bmTKMm6Qil
+	 cto0U56VhDkFG0qtDTaIe5+BIx+kFmQfSovlyPovn1xkAppbNeYtXkrAhydOEMAgxh
+	 UPXAuLlzizRDN9OnVsb1gXjNPVYLK7VDM1QEvYmLSRXjXewnJaS0Se88/W7gwWg27u
+	 XoHLmWjwtEXMQ==
+Received: from mx1.t-argos.ru.ru (mail.t-argos.ru [172.17.13.212])
+	by mx1.t-argos.ru (Postfix) with ESMTP;
+	Wed,  6 Mar 2024 14:01:13 +0300 (MSK)
+Received: from localhost.localdomain (172.17.215.6) by ta-mail-02
+ (172.17.13.212) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 6 Mar 2024
+ 14:00:48 +0300
+From: Aleksandr Mishin <amishin@t-argos.ru>
+To: Herbert Xu <herbert@gondor.apana.org.au>
+CC: Aleksandr Mishin <amishin@t-argos.ru>, "David S. Miller"
+	<davem@davemloft.net>, Steve Lin <steven.lin1@broadcom.com>, Rob Rice
+	<rob.rice@broadcom.com>, <linux-crypto@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>
+Subject: [PATCH] crypto: bcm/spu2
+Date: Wed, 6 Mar 2024 14:00:22 +0300
+Message-ID: <20240306110022.21574-1-amishin@t-argos.ru>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="2l9L6u35RRDmYlsD"
-Content-Disposition: inline
-In-Reply-To: <7ubz52rfdl2i76sotvd3s4thv6jvbfao6zct3sywqus2owlvkx@wpbeqqdvipo4>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: ta-mail-02.ta.t-argos.ru (172.17.13.212) To ta-mail-02
+ (172.17.13.212)
+X-KSMG-Rule-ID: 1
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 183989 [Mar 06 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.3
+X-KSMG-AntiSpam-Envelope-From: amishin@t-argos.ru
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 9 0.3.9 e923e63e431b6489f12901471775b2d1b59df0ba, {Tracking_from_domain_doesnt_match_to}, t-argos.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;mx1.t-argos.ru.ru:7.1.1, FromAlignment: s
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2024/03/06 10:26:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2024/03/06 07:15:00 #24010220
+X-KSMG-AntiVirus-Status: Clean, skipped
 
+In spu2_dump_omd() value of ptr is increased by ciph_key_len
+instead of hash_iv_len which could lead to going beyond the
+buffer boundaries.
 
---2l9L6u35RRDmYlsD
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Date: Wed, 6 Mar 2024 11:58:32 +0100
-From: Alejandro Colomar <alx@kernel.org>
-To: Oliver Crumrine <ozlinuxc@gmail.com>
-Cc: linux-man@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ip.7: Add not supported by SOCK_STREAM to socket options
+Fix this bug by changing ciph_key_len to hash_iv_len.
 
-Hi Oliver,
+Fixes: 9d12ba86f818 ("crypto: brcm - Add Broadcom SPU driver")
 
-On Tue, Mar 05, 2024 at 02:31:48PM -0500, Oliver Crumrine wrote:
-> Hi Alex,
-> I have attached two programs in the form of C source code below. No
-> special compilation options required. To change between the three
-> different socket options outlined in my patch, there are two options on
-> line 16 and 18 with a comment above them explaining how to use the
-> fields.
->=20
-> Here's how to use the programs:
-> 0. Make sure you have netcat installed.
-> 1. Compile the dgram one.
-> 2. Run it.
-> 3. Run nc localhost 8888 -u (in a seperate terminal window or tab)
-> 4. Type whatever into netcat and press enter
-> 5. Observe that there is a control message recieved, and there is a byte
-> printed, which is the first byte of the data in the control message.
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-Can't reproduce this.  The terminal running nc(1) isn't printing
-anything.
+Signed-off-by: Aleksandr Mishin <amishin@t-argos.ru>
+---
+ drivers/crypto/bcm/spu2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-alx@debian:~$ which nc
-/usr/bin/nc
-alx@debian:~$ which nc | xargs realpath
-/usr/bin/nc.openbsd
-alx@debian:~$ dpkg -S /bin/nc.openbsd
-netcat-openbsd: /bin/nc.openbsd
+diff --git a/drivers/crypto/bcm/spu2.c b/drivers/crypto/bcm/spu2.c
+index 07989bb8c220..3fdc64b5a65e 100644
+--- a/drivers/crypto/bcm/spu2.c
++++ b/drivers/crypto/bcm/spu2.c
+@@ -495,7 +495,7 @@ static void spu2_dump_omd(u8 *omd, u16 hash_key_len, u16 ciph_key_len,
+ 	if (hash_iv_len) {
+ 		packet_log("  Hash IV Length %u bytes\n", hash_iv_len);
+ 		packet_dump("  hash IV: ", ptr, hash_iv_len);
+-		ptr += ciph_key_len;
++		ptr += hash_iv_len;
+ 	}
+ 
+ 	if (ciph_iv_len) {
+-- 
+2.30.2
 
-> 6. You may repeat this for the three different socket options.
-> 7. Repeat for the stream one, but use nc localhost 8888 (without the -u)
-> for #5.
-> 8. Observe that there are no control messages recieved with the stream on=
-e,
-> and byte is 00, which is the initial value of the variable, before it has
-> a value assigned when the control messages (of which there are none) are =
-read.
->=20
-> Thanks,
-> Oliver
-
-Have a lovely day!
-Alex
-
---=20
-<https://www.alejandro-colomar.es/>
-Looking for a remote C programming job at the moment.
-
---2l9L6u35RRDmYlsD
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmXoTFgACgkQnowa+77/
-2zLA3w//Wb7uRoWE1TV+WmMQ2qhh3r9jVVsJ3OEZ3N1P6bRXT15V5Zeew7CoN08d
-nckxUcFwGwDXDsw/pAwwCjDWjgT91m9VWaheWRAQvT50Gv5AIZc2B9anMMuHNieD
-e/kBXzqIVaoUyT+cuXhn0ad0MPdKStp9MvNPSE69rLyFVKlmS5/t7opFEKqSWbnQ
-HZTA3RjNrl90STwT02h9GTtQtAb2Ni3KTEL4TN5fy5OSgYeqDAgzIazAn4jYhRLy
-9q6GcP744iKPbqU2Rastds6epO2vlq4s6D8uSP+BBnJ3TTEd/+A973iOZVoRQis7
-IX2A24AGYH4tq1mZ65/RVcd4eI1wcLU/J5fewwzQViMZFufF1y3Hc2oPyy8H4Ojj
-MZySW7uPIJMd0hKQT1gFj+U97V9PLkyI+zfIetbBh0bGbEb+GogGEC5nsnMyzkbG
-1aE+l5C2rj1D7MrksNpZyIsSY965i/TQy04lVyB6W+t5mqyeBp9FsfiloL0vMXJu
-IqsmOaoVAWMO+PpxThg2m/8PiidKRojT9GlHxP8Shn3FPlUpG2CkwFLZFvPulwvG
-90KUrr7fxeDa30RPdVMm8B+BNfdoXYSFHc3VLigD3arCrjUrasyhgPMHb4mHVsUd
-1hpXdeGxHlQiF8bwvvDpxKLEv2v0lWVRTomWK93NEYVLtKk218w=
-=UkIi
------END PGP SIGNATURE-----
-
---2l9L6u35RRDmYlsD--
 
