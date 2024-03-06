@@ -1,214 +1,167 @@
-Return-Path: <linux-kernel+bounces-93985-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93987-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15C598737D7
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:38:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E0A78737DB
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:38:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B4F0F1F2742A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:38:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B8920B21E03
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:38:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2A93131722;
-	Wed,  6 Mar 2024 13:37:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Ak1d3DZC"
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83875131E25;
+	Wed,  6 Mar 2024 13:37:56 +0000 (UTC)
+Received: from mail.actia.se (mail.actia.se [212.181.117.226])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06745130AD5;
-	Wed,  6 Mar 2024 13:37:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E554C130ADC;
+	Wed,  6 Mar 2024 13:37:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.181.117.226
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709732275; cv=none; b=Whf0BBRLhepVwm+VbERXK9aAHpelNLnfaXkNp6d/LJURVfLUD8gxsGpMVap19kQcRuWKkOLjSqdDhhvYAB1Wt02k3zsB7fiqUpB1ePvOp5wps4V8GXElhMuKoVRHznGd1+Hnd3Y7/V57yJZnbB9/ZzSxMJa1JwOe8+RyX9HaXlA=
+	t=1709732276; cv=none; b=CXEFmKTslAKc7oEzHcOMuXZXpHOdkcnc0YetlAW6IHKKX2sCNJkrW3H+XEZl89q7oD6Q0A7Xf1uHI2Zmin7MVH8xjWXWe46Hx9k/aZC3XrMBPpREIgoNGpoCE0NoP7GIGsqbHckD4RLunv/LBM7/y5y6+8qdPGJtvJIVlKxW9mo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709732275; c=relaxed/simple;
-	bh=FT0CuWap6zBzxhbKjuZ6jvoFoUhW89ZJUGjASGAUnVU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Ni6HPf/j/8/WFVCux/9KdNk5NeePW3LP4NTty/u3ISjyMIyav2EDDgfAZ9qep69CjWc9Fcd/74mhwplceHx4Md3XErXlXZJ7yOJ/tSCQ5vtrMD28o+GBD38peNMskP/o6hEK2MKH+Bp22bu61gC10vG+UPsW1drAHyGu9bUEn+0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Ak1d3DZC; arc=none smtp.client-ip=217.70.183.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 45A8DE000C;
-	Wed,  6 Mar 2024 13:37:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709732264;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Sy4JIC0/Wgrgbb/8vwfGd+8uG9N2YnNcKef9emZ4Q+Y=;
-	b=Ak1d3DZCv1iDyVKudR877bHXBTN+ZKzEpLvMLpUYS11rNFGWn6QCz7Y4vKvg+VsttQFOcy
-	EUOJU0z6mFdEMaK3Vn5svoJHos2RJh6c2Y3baSL56GP/WIm48IPKJ5292crTJFgKn+t8kX
-	04QLU26nKbvY6BX4Ueqx4qqpcOs6iVBck8F5wLN0CJmR4hDDcVnh1Gea1XBpcS6cgra9Na
-	iMAeecizJVBlkQ54fG6izl8hN/Vkmk4tu5NL41zOxg2p3xnxW/Eq2QyCfeeaGXockMMf4H
-	B4GZe0coskS+BlgYcUneK34x7mZiTp10lNI71kqub4nXH1vlRIO8TjDI+bwndw==
-Date: Wed, 6 Mar 2024 14:37:43 +0100
-From: Herve Codina <herve.codina@bootlin.com>
-To: Ratheesh Kannoth <rkannoth@marvell.com>
-Cc: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v6 1/5] net: wan: Add support for QMC HDLC
-Message-ID: <20240306143743.5732b298@bootlin.com>
-In-Reply-To: <20240306105651.1210286-1-rkannoth@marvell.com>
-References: <20240306080726.167338-2-herve.codina@bootlin.com>
-	<20240306105651.1210286-1-rkannoth@marvell.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
+	s=arc-20240116; t=1709732276; c=relaxed/simple;
+	bh=uLxSxO5hAwNk8FrVWMsRzI5JmztxPkdioRJyZ8+FlIM=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=EMAPS26QsRpHc2XBYO8kV+7mAWKONr4AE6W7hwGpnR7WBouPn5cBYDDFe/4YAptOCgSL0APISrkAtEvnyv+zBNyg9y0OKpMtAOcLKIWyGYkB/iOy7GdZLAbVj3XGdpT/TqMeKS2pi72EGWY2VapnA9Z2U3TV3vEVYdQvAHjhtjc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=actia.se; spf=pass smtp.mailfrom=actia.se; arc=none smtp.client-ip=212.181.117.226
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=actia.se
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=actia.se
+Received: from S036ANL.actianordic.se (10.12.31.117) by S035ANL.actianordic.se
+ (10.12.31.116) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 6 Mar
+ 2024 14:37:45 +0100
+Received: from S036ANL.actianordic.se ([fe80::e13e:1feb:4ea6:ec69]) by
+ S036ANL.actianordic.se ([fe80::e13e:1feb:4ea6:ec69%4]) with mapi id
+ 15.01.2507.035; Wed, 6 Mar 2024 14:37:45 +0100
+From: John Ernberg <john.ernberg@actia.se>
+To: Wei Fang <wei.fang@nxp.com>
+CC: Shenwei Wang <shenwei.wang@nxp.com>, Clark Wang <xiaoning.wang@nxp.com>,
+	NXP Linux Team <linux-imx@nxp.com>, "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, "Paolo
+ Abeni" <pabeni@redhat.com>, Heiner Kallweit <hkallweit1@gmail.com>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, John Ernberg
+	<john.ernberg@actia.se>
+Subject: [PATCH net v3 1/2] net: fec: Set mac_managed_pm during probe
+Thread-Topic: [PATCH net v3 1/2] net: fec: Set mac_managed_pm during probe
+Thread-Index: AQHab8t45Eo7PpKcikKmtUVR9yzd+A==
+Date: Wed, 6 Mar 2024 13:37:45 +0000
+Message-ID: <20240306133734.4144808-2-john.ernberg@actia.se>
+References: <20240306133734.4144808-1-john.ernberg@actia.se>
+In-Reply-To: <20240306133734.4144808-1-john.ernberg@actia.se>
+Accept-Language: en-US, sv-SE
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-mailer: git-send-email 2.43.0
+x-esetresult: clean, is OK
+x-esetid: 37303A2921D72955627162
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
 
-Hi Ratheesh
+From: Wei Fang <wei.fang@nxp.com>
 
-On Wed, 6 Mar 2024 16:26:51 +0530
-Ratheesh Kannoth <rkannoth@marvell.com> wrote:
+Setting mac_managed_pm during interface up is too late.
 
-..
+In situations where the link is not brought up yet and the system suspends
+the regular PHY power management will run. Since the FEC ETHEREN control
+bit is cleared (automatically) on suspend the controller is off in resume.
+When the regular PHY power management resume path runs in this context it
+will write to the MII_DATA register but nothing will be transmitted on the
+MDIO bus.
 
-> > +static void qmc_hcld_recv_complete(void *context, size_t length, unsigned int flags)
-> > +{
-> > +	struct qmc_hdlc_desc *desc = context;
-> > +	struct net_device *netdev = desc->netdev;
-> > +	struct qmc_hdlc *qmc_hdlc = netdev_to_qmc_hdlc(netdev);  
-> Reverse xmas tree
+This can be observed by the following log:
 
-The reverse xmas tree order cannot be used here.
-qmc_hdlc depends on netdev, netdev depends on desc.
+    fec 5b040000.ethernet eth0: MDIO read timeout
+    Microchip LAN87xx T1 5b040000.ethernet-1:04: PM: dpm_run_callback(): md=
+io_bus_phy_resume+0x0/0xc8 returns -110
+    Microchip LAN87xx T1 5b040000.ethernet-1:04: PM: failed to resume: erro=
+r -110
 
-..
-> > +static void qmc_hdlc_xmit_complete(void *context)
-> > +{
-> > +	struct qmc_hdlc_desc *desc = context;
-> > +	struct net_device *netdev = desc->netdev;
-> > +	struct qmc_hdlc *qmc_hdlc = netdev_to_qmc_hdlc(netdev);
-> > +	struct sk_buff *skb;  
-> Reverse xmas tree
+The data written will however remain in the MII_DATA register.
 
-Ditto
+When the link later is brought up it will trigger a call to fec_restart()
+which will restore the MII_SPEED register. This triggers the quirk
+explained in f166f890c8f0 ("net: ethernet: fec: Replace interrupt driven
+MDIO with polled IO") causing a MII_EVENT storm.
 
-> > +
-> > +	scoped_guard(spinlock_irqsave, &qmc_hdlc->tx_lock) {
-> > +		dma_unmap_single(qmc_hdlc->dev, desc->dma_addr, desc->dma_size, DMA_TO_DEVICE);
-> > +		skb = desc->skb;
-> > +		desc->skb = NULL; /* Release the descriptor */
-> > +		if (netif_queue_stopped(netdev))
-> > +			netif_wake_queue(netdev);
-> > +	}
-> > +
-> > +	netdev->stats.tx_packets++;
-> > +	netdev->stats.tx_bytes += skb->len;
-> > +
-> > +	dev_consume_skb_any(skb);
-> > +}
-> > +
-..
-> > +
-> > +static netdev_tx_t qmc_hdlc_xmit(struct sk_buff *skb, struct net_device *netdev)
-> > +{
-> > +	struct qmc_hdlc *qmc_hdlc = netdev_to_qmc_hdlc(netdev);
-> > +	struct qmc_hdlc_desc *desc;
-> > +	int err;
-> > +
-> > +	guard(spinlock_irqsave)(&qmc_hdlc->tx_lock);
-> > +
-> > +	desc = &qmc_hdlc->tx_descs[qmc_hdlc->tx_out];
-> > +	if (WARN_ONCE(desc->skb, "No tx descriptors available\n")) {
-> > +		/* Should never happen.
-> > +		 * Previous xmit should have already stopped the queue.
-> > +		 */
-> > +		netif_stop_queue(netdev);
-> > +		return NETDEV_TX_BUSY;
-> > +	}
-> > +
-> > +	desc->netdev = netdev;
-> > +	desc->dma_size = skb->len;
-> > +	desc->skb = skb;
-> > +	err = qmc_hdlc_xmit_queue(qmc_hdlc, desc);
-> > +	if (err) {
-> > +		desc->skb = NULL; /* Release the descriptor */
-> > +		if (err == -EBUSY) {
-> > +			netif_stop_queue(netdev);
-> > +			return NETDEV_TX_BUSY;
-> > +		}
-> > +		dev_kfree_skb(skb);
-> > +		netdev->stats.tx_dropped++;
-> > +		return NETDEV_TX_OK;
-> > +	}
-> > +
-> > +	qmc_hdlc->tx_out = (qmc_hdlc->tx_out + 1) % ARRAY_SIZE(qmc_hdlc->tx_descs);
-> > +
-> > +	if (qmc_hdlc->tx_descs[qmc_hdlc->tx_out].skb)  
-> wont it race if tx completion and this function context run in different cpu ?
+This event storm causes all the MDIO register reads to read as 0 because
+fec_enet_mdio_wait() returns too early.
 
-We are protected by the qmc_hdlc->tx_lock spinlock.
+When a Microchip LAN8700R PHY is connected to the FEC, the 0 reads causes
+the PHY to be initialized incorrectly and the PHY will not transmit any
+ethernet signal in this state. It cannot be brought out of this state
+without a power cycle of the PHY.
 
-guard() call in this function and scoped_guard() call in qmc_hdlc_xmit_complete().
+Fixes: 557d5dc83f68 ("net: fec: use mac-managed PHY PM")
+Closes: https://lore.kernel.org/netdev/1f45bdbe-eab1-4e59-8f24-add177590d27=
+@actia.se/
+Signed-off-by: Wei Fang <wei.fang@nxp.com>
+[jernberg: commit message]
+Signed-off-by: John Ernberg <john.ernberg@actia.se>
+---
 
-What is the race you thought of ?
+v3:
+ - No changes
 
-> 
-> > +		netif_stop_queue(netdev);
-> > +
-> > +	return NETDEV_TX_OK;
-> > +}
-> > +
-..
-> > +	/* Queue as many recv descriptors as possible */
-> > +	for (i = 0; i < ARRAY_SIZE(qmc_hdlc->rx_descs); i++) {
-> > +		desc = &qmc_hdlc->rx_descs[i];
-> > +
-> > +		desc->netdev = netdev;
-> > +		ret = qmc_hdlc_recv_queue(qmc_hdlc, desc, chan_param.hdlc.max_rx_buf_size);
-> > +		if (ret == -EBUSY && i != 0)
-> > +			break; /* We use all the QMC chan capability */
-> > +		if (ret)
-> > +			goto free_desc;
-> > +	}
-> > +
-> > +	ret = qmc_chan_start(qmc_hdlc->qmc_chan, QMC_CHAN_ALL);
-> > +	if (ret) {
-> > +		dev_err(qmc_hdlc->dev, "qmc chan start failed (%d)\n", ret);
-> > +		goto free_desc;
-> > +	}
-> > +
-> > +	netif_start_queue(netdev);
-> > +
-> > +	return 0;
-> > +
-> > +free_desc:
-> > +	qmc_chan_reset(qmc_hdlc->qmc_chan, QMC_CHAN_ALL);
-> > +	while (i--) {  
-> Double free ? i'th descriptor skb is freed in qmc_hdlc_recv_queue() function's error handler itself.
-> Should we be predecrement of i ?
+v2:
+ - New patch. Big thanks to Wei for the help on this issue.
+---
+ drivers/net/ethernet/freescale/fec_main.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-Suppose a failure on i = 5. The item 5 is already cleaned (done by 
-qmc_hdlc_recv_queue() itself).
-The 'while (i--)' set i to 4 and operations are performed with i = 4, 3, 2, 1 and 0.
-
-Where is the double free ?
-Do I miss something ?
-
-> 
-> > +		desc = &qmc_hdlc->rx_descs[i];
-> > +		dma_unmap_single(qmc_hdlc->dev, desc->dma_addr, desc->dma_size,
-> > +				 DMA_FROM_DEVICE);
-> > +		kfree_skb(desc->skb);
-> > +		desc->skb = NULL;
-> > +	}
-> > +hdlc_close:
-> > +	hdlc_close(netdev);
-> > +	return ret;
-> > +}
-> > +
-> > +
-
-Best regards,
-Hervé
+diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethern=
+et/freescale/fec_main.c
+index 432523b2c789..8decb1b072c5 100644
+--- a/drivers/net/ethernet/freescale/fec_main.c
++++ b/drivers/net/ethernet/freescale/fec_main.c
+@@ -2406,8 +2406,6 @@ static int fec_enet_mii_probe(struct net_device *ndev=
+)
+ 	fep->link =3D 0;
+ 	fep->full_duplex =3D 0;
+=20
+-	phy_dev->mac_managed_pm =3D true;
+-
+ 	phy_attached_info(phy_dev);
+=20
+ 	return 0;
+@@ -2419,10 +2417,12 @@ static int fec_enet_mii_init(struct platform_device=
+ *pdev)
+ 	struct net_device *ndev =3D platform_get_drvdata(pdev);
+ 	struct fec_enet_private *fep =3D netdev_priv(ndev);
+ 	bool suppress_preamble =3D false;
++	struct phy_device *phydev;
+ 	struct device_node *node;
+ 	int err =3D -ENXIO;
+ 	u32 mii_speed, holdtime;
+ 	u32 bus_freq;
++	int addr;
+=20
+ 	/*
+ 	 * The i.MX28 dual fec interfaces are not equal.
+@@ -2536,6 +2536,13 @@ static int fec_enet_mii_init(struct platform_device =
+*pdev)
+ 		goto err_out_free_mdiobus;
+ 	of_node_put(node);
+=20
++	/* find all the PHY devices on the bus and set mac_managed_pm to true */
++	for (addr =3D 0; addr < PHY_MAX_ADDR; addr++) {
++		phydev =3D mdiobus_get_phy(fep->mii_bus, addr);
++		if (phydev)
++			phydev->mac_managed_pm =3D true;
++	}
++
+ 	mii_cnt++;
+=20
+ 	/* save fec0 mii_bus */
+--=20
+2.43.0
 
