@@ -1,118 +1,92 @@
-Return-Path: <linux-kernel+bounces-93828-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93825-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D51F873543
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:02:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42EED87354B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:04:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 592F5287556
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 11:02:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D19E8B23146
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 11:01:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A71647316F;
-	Wed,  6 Mar 2024 11:02:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE7225FDDC;
+	Wed,  6 Mar 2024 11:01:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=t-argos.ru header.i=@t-argos.ru header.b="C9t6H1Fi"
-Received: from mx1.t-argos.ru (mx1.t-argos.ru [109.73.34.58])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GJQarYuB"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 053575FDDC;
-	Wed,  6 Mar 2024 11:02:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=109.73.34.58
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09EBE604A7;
+	Wed,  6 Mar 2024 11:01:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709722948; cv=none; b=i+dmJoq40fEYAVY5iKg3vxjn9pMgfpJtkvLrMBwW9nJJHxLtWTq6hFtpz2oIoKj61opfFQT+6VFzM2UlCRDWV+31QrKkEJxHxqmHYs3hhnSqIcYlQLBtrAlhIEFcpCHR6iepaxY2b+Ym6tw6W+mWqOCBAYIUIc19+FPdd3NDYxs=
+	t=1709722886; cv=none; b=G8n6o7p2xbc0rvUc8rB6bGIOda0GltK8GIqsc/+Ogn6oc8T2B8CMiL9pHcEbm4iBTtHqH/4SBIHwcP/g5OsTtMR4BT3EtY/1KzKCYj4ZCEl9ogiOSl5C78zCdkyoCoRrKLGQV2n9unhOvgz+lwf/98QlA6zMUUHLaShfAGHiPec=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709722948; c=relaxed/simple;
-	bh=ygeqKWDT5AUJTASqGDnzwYh7qL3fkE+eprFpeq8/5qE=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=LfkGlGSYz3vRnZZhveBbqE09uu/toyJa7b8csisLXLGzGn6Z2Kh8E5tkNeHEyImHP9hk3r/wJtIMGpZCDprTLCoZqLsZHxSuP+SFbIx1gWDFmSpobcJqVbmK7Jhwq4bDgQWkjD6Hl+w5Tgta9gc480PKZVQ/96/G9meNlL9aJbA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=t-argos.ru; spf=pass smtp.mailfrom=t-argos.ru; dkim=pass (2048-bit key) header.d=t-argos.ru header.i=@t-argos.ru header.b=C9t6H1Fi; arc=none smtp.client-ip=109.73.34.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=t-argos.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=t-argos.ru
-Received: from mx1.t-argos.ru (localhost [127.0.0.1])
-	by mx1.t-argos.ru (Postfix) with ESMTP id 78EF5100003;
-	Wed,  6 Mar 2024 14:01:58 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=t-argos.ru; s=mail;
-	t=1709722918; bh=GrRSzn9Rpz5WKnpCUHJQlFPcoyVDSZorDUnPZWrVOLk=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	b=C9t6H1FiPnk/xI3wNj1felIYHPoyg5MAhnESLm9uEPMj6EWA6homM1qDxruIkVjKe
-	 aPAMwCB61MU++fPi/5/7XYFGsT+O1+Uusrih1Ofqh6mG/vttndwTyxn/wppgdLXIqH
-	 bmNm1b16k5uHfsu4ulmu1RI/YlRdNLf2rSWFnzkGAHbehpQoeG57KTB2bmTKMm6Qil
-	 cto0U56VhDkFG0qtDTaIe5+BIx+kFmQfSovlyPovn1xkAppbNeYtXkrAhydOEMAgxh
-	 UPXAuLlzizRDN9OnVsb1gXjNPVYLK7VDM1QEvYmLSRXjXewnJaS0Se88/W7gwWg27u
-	 XoHLmWjwtEXMQ==
-Received: from mx1.t-argos.ru.ru (mail.t-argos.ru [172.17.13.212])
-	by mx1.t-argos.ru (Postfix) with ESMTP;
-	Wed,  6 Mar 2024 14:01:13 +0300 (MSK)
-Received: from localhost.localdomain (172.17.215.6) by ta-mail-02
- (172.17.13.212) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 6 Mar 2024
- 14:00:48 +0300
-From: Aleksandr Mishin <amishin@t-argos.ru>
-To: Herbert Xu <herbert@gondor.apana.org.au>
-CC: Aleksandr Mishin <amishin@t-argos.ru>, "David S. Miller"
-	<davem@davemloft.net>, Steve Lin <steven.lin1@broadcom.com>, Rob Rice
-	<rob.rice@broadcom.com>, <linux-crypto@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>
-Subject: [PATCH] crypto: bcm/spu2
-Date: Wed, 6 Mar 2024 14:00:22 +0300
-Message-ID: <20240306110022.21574-1-amishin@t-argos.ru>
-X-Mailer: git-send-email 2.30.2
+	s=arc-20240116; t=1709722886; c=relaxed/simple;
+	bh=QnEU6jhwX7i1ZB/3pShjxSETQ3xsLNz0r4DdTZhkXTo=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=sYI0gf+o6Oscij8/HCaFDtvpvu5BBoQYp+T38AGNn4E7pEbRIKAg68S9go21xsKbUacMmrv2DVq5pXVxxU37siBgNHmKdWFfZngckjop8/TO0p12qT2dxtdS/8Qi7+gymEsDvWcWAi8YJ3uK59gq4RQT0cLRoK+nYBCiRjFAqQ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GJQarYuB; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709722884; x=1741258884;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=QnEU6jhwX7i1ZB/3pShjxSETQ3xsLNz0r4DdTZhkXTo=;
+  b=GJQarYuBT2EZ8Y84EQn/LWtWpuGgMtkh+cA6cW0M2QD/1hzhXkhs4B93
+   pwQYqUtsqs0X9e+Wr2ltTtNZ6DO1Vf/lZtrxPezxnkrZLqmSjNDaro3Ai
+   Wzy1bCFClr/TliLg0xAleI3Fub/uRo28pPdRfzSPom4Htab/p3KP20Khy
+   SNkQgdvtIzjkodZvITttECrmyoR3eIqRE+unAGfYLCKCfR0vy404bge7v
+   hFAnF7UOVT3YRp0D/YxKMawUBgFwkkMnk13lLa2XdUcUkx7FgetMDX/8i
+   EuXPAP8Ok6MOZuMaVnORI9hRdNN/kEq70CYUy+ZWn2yM5VorhdnfYI0c6
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11004"; a="4445296"
+X-IronPort-AV: E=Sophos;i="6.06,208,1705392000"; 
+   d="scan'208";a="4445296"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 03:01:23 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,208,1705392000"; 
+   d="scan'208";a="9594623"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.244.146])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 03:01:20 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Wed, 6 Mar 2024 13:01:14 +0200 (EET)
+To: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+cc: Hans de Goede <hdegoede@redhat.com>, markgross@kernel.org, 
+    Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
+    platform-driver-x86@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, 
+    stable@vger.kernel.org
+Subject: Re: [PATCH] platform/x86/intel/tpmi: Change vsec offset to u64
+In-Reply-To: <20240305194644.2077867-1-srinivas.pandruvada@linux.intel.com>
+Message-ID: <3a97f188-3998-866d-6a23-e0f4559c673d@linux.intel.com>
+References: <20240305194644.2077867-1-srinivas.pandruvada@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: ta-mail-02.ta.t-argos.ru (172.17.13.212) To ta-mail-02
- (172.17.13.212)
-X-KSMG-Rule-ID: 1
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 183989 [Mar 06 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.3
-X-KSMG-AntiSpam-Envelope-From: amishin@t-argos.ru
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 9 0.3.9 e923e63e431b6489f12901471775b2d1b59df0ba, {Tracking_from_domain_doesnt_match_to}, t-argos.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;mx1.t-argos.ru.ru:7.1.1, FromAlignment: s
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean, bases: 2024/03/06 10:26:00
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2024/03/06 07:15:00 #24010220
-X-KSMG-AntiVirus-Status: Clean, skipped
+Content-Type: text/plain; charset=US-ASCII
 
-In spu2_dump_omd() value of ptr is increased by ciph_key_len
-instead of hash_iv_len which could lead to going beyond the
-buffer boundaries.
+On Tue, 5 Mar 2024, Srinivas Pandruvada wrote:
 
-Fix this bug by changing ciph_key_len to hash_iv_len.
+> The vsec offset can be 64 bit long depending on the PFS start. So change
+> type to u64. Also use 64 bit formatting for seq_printf.
+> 
+> Fixes: 47731fd2865f ("platform/x86/intel: Intel TPMI enumeration driver")
+> Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+> Cc: <stable@vger.kernel.org> # v6.3+
+> ---
+> This is a forward looking change. There is no platform with this issue.
+> This can go through regular cycle.
 
-Fixes: 9d12ba86f818 ("crypto: brcm - Add Broadcom SPU driver")
+I've applied this to review-ilpo.
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
-
-Signed-off-by: Aleksandr Mishin <amishin@t-argos.ru>
----
- drivers/crypto/bcm/spu2.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/crypto/bcm/spu2.c b/drivers/crypto/bcm/spu2.c
-index 07989bb8c220..3fdc64b5a65e 100644
---- a/drivers/crypto/bcm/spu2.c
-+++ b/drivers/crypto/bcm/spu2.c
-@@ -495,7 +495,7 @@ static void spu2_dump_omd(u8 *omd, u16 hash_key_len, u16 ciph_key_len,
- 	if (hash_iv_len) {
- 		packet_log("  Hash IV Length %u bytes\n", hash_iv_len);
- 		packet_dump("  hash IV: ", ptr, hash_iv_len);
--		ptr += ciph_key_len;
-+		ptr += hash_iv_len;
- 	}
- 
- 	if (ciph_iv_len) {
 -- 
-2.30.2
+ i.
 
 
