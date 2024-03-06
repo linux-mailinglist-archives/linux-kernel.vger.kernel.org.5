@@ -1,122 +1,171 @@
-Return-Path: <linux-kernel+bounces-94278-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94279-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA9CE873C69
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:40:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D152B873C6B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:40:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 083891C217AB
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:40:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A99C287595
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:40:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B03FA137914;
-	Wed,  6 Mar 2024 16:40:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3A8D137914;
+	Wed,  6 Mar 2024 16:40:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l2//RLvO"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="eotKCtCl"
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0DA360882;
-	Wed,  6 Mar 2024 16:39:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 459D2134CE3
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 16:40:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709743200; cv=none; b=A9j8yj4IvexJYZTJv+pAJ4TV4cRDjEaFqVlI5fc9d+8cqmyOKa6uDiOAlH7jHnxdq4XTn1uIYGOuNKd5kPXhGaXM4IkgXBE2V4sEjUAr2UiltlyEgzhBqtRRxvJDt/hSUzz6aapQQFDPLXTu4KF55TxJ3947XUf6xEmpdEgISd4=
+	t=1709743222; cv=none; b=uxMjO2sp5YKNm9wxNae1JaN6l415kyxM+oYPS0NMKruTTKYeiVCvwUHpbYinJlFr644A49Z002MhxwpFnIJsq8zOPQt6KQnAtgmM2N5fsKWLJB1qfy9zNnIrWtcaZiKpE7Dvx1v44ubWcMZY+ELySb9ZEMm85Eq3SyuLjG1FWc0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709743200; c=relaxed/simple;
-	bh=f2HncGmBSaycsoO1hVr4ckiuD3QmlN8sKiSzANUFi4s=;
+	s=arc-20240116; t=1709743222; c=relaxed/simple;
+	bh=Yegp3wOSPvL1W7YR800iskMPmhja07Aw33gkny63/R4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LquKz55gSZrHXG7RppXZzpQHY/RHTc3mNM/7Y2OF/PMPjOwXGIzEAcT7dQ5GhgAADPZr/X4o0XJ+wHEgMq//vWl9leG8nifjfBASkvFGHZG9xXPb3vleNcJBKxt439Y+SZ6I83PBNB+46E6Kg3XFswn/TreNWJU2OAfy+ke94do=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l2//RLvO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A31B7C433B1;
-	Wed,  6 Mar 2024 16:39:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709743199;
-	bh=f2HncGmBSaycsoO1hVr4ckiuD3QmlN8sKiSzANUFi4s=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=l2//RLvO+FP5yOMMBdksci8jS3e1c3vrbsnRNekaD60yrh9AO1oKZUk8wryDw8ibS
-	 +GHbDMPAXZu3PtuD3PzTQrDjE4SLTsVbHie5UPNKjHQ9k0vMM/vhONh9+YeeJsMSRw
-	 IV5tVZn502X++dVY0R2em9HNPNBnUBp/xr1sJi1/pATeikwsb+fQ83GiAOXNZyMaJp
-	 9UbW9lJVyfmmDhSiZKmtdKve7OPpraCEdgQZEcubdBw/VABDBuv7gT4SD3H2FaTUcU
-	 D4U/LFOYiX4BGjhbfGoxeeRR6aEIQFTNHpYIRYkcNi3f/fKHcs/gypxHCLRQ5H/5tk
-	 NKZKhPIKrGRvg==
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-51320ca689aso8618156e87.2;
-        Wed, 06 Mar 2024 08:39:59 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCV6/PceRJe/Gf+QIQaw9b52yvEjBex1nwybh+BbvQ2D1Wc/0CygDnQfx/id/fyZ3xwv8gtzhG9BS9hqGTW9Xo6Y5ASW15rLwOStUcch7Gi+CRd+qMqGjIGLsIWDsEqKKQ9SaPOJ++HUqQ==
-X-Gm-Message-State: AOJu0Ywg330imPKoiJezqqUs1Gm4QTaqHaLmnVwLNEOvQl6+CmpCZi7a
-	I3w+0w63b1TpSeNzx0C+0CQ9SQKiJyDludZPZ3HizNwGjNBHYrZmw2ZCY5HzcVQi9etGPA3Vkj6
-	rTKY7zcIV+R1cw6GMoNufmC0zcB8=
-X-Google-Smtp-Source: AGHT+IGwwONob6k6UH3ndcbEHIe+4OP8oSPbZ3RrDc/odjWz6ggdxosj2uvVJehSNDacTwM3tomgiciaJXqEBTtXc1Y=
-X-Received: by 2002:a05:6512:48c3:b0:512:a9b7:c637 with SMTP id
- er3-20020a05651248c300b00512a9b7c637mr3568369lfb.29.1709743197678; Wed, 06
- Mar 2024 08:39:57 -0800 (PST)
+	 To:Cc:Content-Type; b=kyAAgmwOL0GlDckGidVAAAnieuvBbNb4jL6kDzxsA1pDQtZktO4WWwdgZTOPS1lIxV2HxI5p7DKEN2/iNv6WGxLsEHbJ4XenzeA1FoLEZtSmNHxeiRZo0r6M6M7NxPMtyH3alkLoso2V9B04j3nk3EvzwurX7TfOQSDRPIn6Lx0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=eotKCtCl; arc=none smtp.client-ip=209.85.218.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a3f893ad5f4so1027973566b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 08:40:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709743219; x=1710348019; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EjlGkktx8405hHF5yhBJ78WUMqlW3sHOtv1UsXx/Tng=;
+        b=eotKCtClQjby+TlKa1BqftSG9J4OuD8acB51YpBT58FKSzg1ZLX3qEU5kyxjQvJkei
+         Z/eEtvXS0RfBj+oVcZZta/yOLSIHYmZR37leN9xqZ56iARrpjQrepZh0bDULODWYKVFr
+         aSgfr0IJxTu/BIhskDYqgHV+o/gkdsyjyaKBI0z2kS3r8xiTw/yiVlthr56aVdUdPg83
+         fOPcYNGsbN2ZFCqXPMReCrxHKSrQ5b5V9jz9FXiaqQ/5cWa8aasDNaJ1+A0qJryiANS3
+         oZV+wh50QnhPj+10yqYJaGlWqJo2sMZdf9q78DiuxygUcKaMsyeXIJYMbH16sgOxqsUN
+         EgaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709743219; x=1710348019;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EjlGkktx8405hHF5yhBJ78WUMqlW3sHOtv1UsXx/Tng=;
+        b=eJ8v5wWlGI6t+H/nDhg/f9XhO6a43R0R762jG4Pzsbf3LSBEPlzkma/PT6SUpncogH
+         JmucEv9h9G9QiacbzatxyfoN1eM4D9Y1xgKMEK2G33eD3NIQbRrC3huFCgXQsm1BQuO0
+         2Ev0EQ7rjiBm0daZyPAZztg2id/Nh9F9na/IjSa2Np8XS1FoUZjjreBtXZpxCgYM+Sng
+         TD4E+MPVA9mLQKuc94dKTQJ7srtr+3m57sch8gO9Rg6xW9XWNB7ZMYnLCSl2NChFI66p
+         EeJuB7bKEHDcKly3fq7V9EdD31yQFKSDMxkUlzeoLjv1zHGpOFO4L7YuYcY28QBPhmPC
+         er0Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUdCgFjl+Hm2VU1PBUZSaw+lK7z/GgmKu+xN7/ZV5Dau41aJtU1WCztarB4sZAJOaSidWTz/Jnrkx9AXFpVaugcyjVtIzFyg87GQJAA
+X-Gm-Message-State: AOJu0YwV4IS9lc4rWmfoorGU3b48jWL5PQyOoPdi4NPth6ufKDEanfK9
+	16934xTGTGcsLO45VLtzxV1P5aBETvvU0Up4z/dd93TY1ymz5u+c5Gk98FXWJlxsSpynJR7fKLv
+	gPZS7o1xiWTqohLAR4qZg+UyvMjaRfedYvA/e
+X-Google-Smtp-Source: AGHT+IEYIFPLuidYagpc6h1Pc4i7Rm1xE1UUat5OYul8fQF42ujHnTo6FRnkomzB3xZgNd8pXEwxcFKrtDPvo6gGLQs=
+X-Received: by 2002:a17:906:f8d6:b0:a45:2e21:c779 with SMTP id
+ lh22-20020a170906f8d600b00a452e21c779mr6965186ejb.4.1709743218198; Wed, 06
+ Mar 2024 08:40:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240305072306.2562024-1-yukuai1@huaweicloud.com>
- <20240305072306.2562024-3-yukuai1@huaweicloud.com> <c0e648ea-d73e-4805-a2bb-b02ddd3ca4e2@molgen.mpg.de>
- <9950cb96-ac8b-d7dd-56a0-133709f51b5f@huaweicloud.com> <f9d3cad9-6d7d-4aa1-9592-79300812dce4@molgen.mpg.de>
-In-Reply-To: <f9d3cad9-6d7d-4aa1-9592-79300812dce4@molgen.mpg.de>
-From: Song Liu <song@kernel.org>
-Date: Wed, 6 Mar 2024 08:39:45 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW5KC1Xnz1xkN8A+beu_j+Qumf3f+d9eA2pFzd4WAsMdyw@mail.gmail.com>
-Message-ID: <CAPhsuW5KC1Xnz1xkN8A+beu_j+Qumf3f+d9eA2pFzd4WAsMdyw@mail.gmail.com>
-Subject: Re: [PATCH md-6.8 v2 2/9] md: export helpers to stop sync_thread
-To: Paul Menzel <pmenzel@molgen.mpg.de>
-Cc: Yu Kuai <yukuai1@huaweicloud.com>, xni@redhat.com, zkabelac@redhat.com, 
-	agk@redhat.com, snitzer@kernel.org, mpatocka@redhat.com, 
-	dm-devel@lists.linux.dev, heinzm@redhat.com, jbrassow@redhat.com, 
-	neilb@suse.de, linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org, 
-	yi.zhang@huawei.com, yangerkun@huawei.com, yukuai3@huawei.com
+References: <20240304094950.761233-1-dtatulea@nvidia.com> <20240305190427.757b92b8@kernel.org>
+ <7fc334b847dc4d90af796f84a8663de9f43ede5d.camel@nvidia.com>
+ <20240306072225.4a61e57c@kernel.org> <320ef2399e48ba0a8a11a3b258b7ad88384f42fb.camel@nvidia.com>
+ <20240306080931.2e24101b@kernel.org>
+In-Reply-To: <20240306080931.2e24101b@kernel.org>
+From: Mina Almasry <almasrymina@google.com>
+Date: Wed, 6 Mar 2024 08:40:04 -0800
+Message-ID: <CAHS8izMw_hxdoNDoCZs8T7c5kmX=0Lwqw_dboSj7z1LqtS-WKA@mail.gmail.com>
+Subject: Re: [RFC] net: esp: fix bad handling of pages from page_pool
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Dragos Tatulea <dtatulea@nvidia.com>, "davem@davemloft.net" <davem@davemloft.net>, 
+	"herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>, "dsahern@kernel.org" <dsahern@kernel.org>, 
+	Gal Pressman <gal@nvidia.com>, 
+	"steffen.klassert@secunet.com" <steffen.klassert@secunet.com>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Leon Romanovsky <leonro@nvidia.com>, 
+	"pabeni@redhat.com" <pabeni@redhat.com>, "edumazet@google.com" <edumazet@google.com>, 
+	"Anatoli.Chechelnickiy@m.interpipe.biz" <Anatoli.Chechelnickiy@m.interpipe.biz>, 
+	"ian.kumlien@gmail.com" <ian.kumlien@gmail.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Paul,
-
-Thanks for reviewing the patch!
-
-On Wed, Mar 6, 2024 at 7:10=E2=80=AFAM Paul Menzel <pmenzel@molgen.mpg.de> =
-wrote:
+On Wed, Mar 6, 2024 at 8:09=E2=80=AFAM Jakub Kicinski <kuba@kernel.org> wro=
+te:
 >
-> Dear Kuai,
->
->
-> Am 05.03.24 um 09:13 schrieb Yu Kuai:
->
-> > =E5=9C=A8 2024/03/05 16:08, Paul Menzel =E5=86=99=E9=81=93:
->
-> >> Am 05.03.24 um 08:22 schrieb Yu Kuai:
-> >>> From: Yu Kuai <yukuai3@huawei.com>
-> >>>
-> >>> The new heleprs will be used in dm-raid in later patches to fix
-> >>
-> >> hel*pe*rs
-> >>
-> >>> regressions and prevent calling md_reap_sync_thread() directly.
-> >>
-> >> Please list the new functions.
-> >>
-> >> 1.  md_idle_sync_thread(struct mddev *mddev);
-> >> 2.  md_frozen_sync_thread(struct mddev *mddev);
-> >> 3.  md_unfrozen_sync_thread(struct mddev *mddev);
-> >>
-> >> I do not like the naming so much. `md_reap_sync_thread()` has the verb
-> >> in imperative mood. At least myself, I would not know what the
-> >> functions do exactly without looking at the implementation.
+> On Wed, 6 Mar 2024 16:00:46 +0000 Dragos Tatulea wrote:
+> > > Hm, that's a judgment call.
+> > > Part of me wants to put it next to napi_frag_unref(), since we
+> > > basically need to factor out the insides of this function.
+> > > When you post the patch the page pool crowd will give us
+> > > their opinions.
 > >
-> > Thanks for the suggestions, I'm not that good at naming :(
-> >
-> > Usually I'll send a new version with updated naming, however, we must
-> > merge this set ASAP now, perhaps can we live with this for now?
+> > Why not have napi_pp_put_page simply return false if CONFIG_PAGE_POOL i=
+s not
+> > set?
 >
-> Fine by me. Maybe when applying the typo can be fixed, and the naming
-> than later.
+> Without LTO it may still be a function call.
+> Plus, subjectively, I think that it's a bit too much logic to encode in
+> the caller (you must also check skb->pp_recycle, AFAIU)
+> Maybe we should make skb_pp_recycle() take struct page and move it to
+> skbuff.h ? Rename it to skb_page_unref() ?
+>
 
-Yes, I did exactly this when applying the patches, but forgot to mention it
-here.
+Does the caller need to check skb->pp_recycle? pp_recycle seems like a
+redundant bit. We can tell whether the page is pp by checking
+is_pp_page(page). the pages in the frag must be pp pages when
+skb->pp_recycle is set and must be non pp pages when the
+skb->pp_recycle is not set, so it all seems redundant to me.
 
-Song
+My fix would be something like:
+
+diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+index d577e0bee18d..cc737b7b9860 100644
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -3507,17 +3507,25 @@ int skb_cow_data_for_xdp(struct page_pool
+*pool, struct sk_buff **pskb,
+ bool napi_pp_put_page(struct page *page, bool napi_safe);
+
+ static inline void
+-napi_frag_unref(skb_frag_t *frag, bool recycle, bool napi_safe)
++napi_page_unref(struct page *page, bool napi_safe)
+ {
+-       struct page *page =3D skb_frag_page(frag);
+-
+ #ifdef CONFIG_PAGE_POOL
+-       if (recycle && napi_pp_put_page(page, napi_safe))
++       if (napi_pp_put_page(page, napi_safe))
+                return;
+ #endif
+        put_page(page);
+ }
+
++static inline void
++napi_frag_unref(skb_frag_t *frag, bool recycle, bool napi_safe)
++{
++       struct page *page =3D skb_frag_page(frag);
++
++       DEBUG_NET_WARN_ON(recycle !=3D is_pp_page(page));
++
++       napi_page_unref(page);
++}
++
+
+And then use napi_page_unref() in the callers to handle page pool &
+non-page pool gracefully without leaking page pool internals to the
+callers.
+
+> > Regarding stable would I need to send a separate fix that does the raw =
+pp page
+> > check without the API?
+>
+> You can put them in one patch, I reckon.
+
+
+
+--
+Thanks,
+Mina
 
