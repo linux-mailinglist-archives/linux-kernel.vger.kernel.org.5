@@ -1,145 +1,123 @@
-Return-Path: <linux-kernel+bounces-93830-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93831-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2F3F87354E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:06:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C4F0873552
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:07:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D40E31C23011
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 11:06:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E00491F25916
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 11:07:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A0C5745CB;
-	Wed,  6 Mar 2024 11:06:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BC5176029;
+	Wed,  6 Mar 2024 11:07:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IXFNjAth"
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="bwroREav"
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A7DF2907;
-	Wed,  6 Mar 2024 11:05:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE3896CDCD;
+	Wed,  6 Mar 2024 11:07:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709723160; cv=none; b=DzkclYgO67zciOG8FVlq3v+evQfk2WtkDWLJDtbgnQURpAph5kV8daqOGMFzZDFsRruLYZq3MFvx1dm/0MSUNU5YycLSTEtAnfP4MT53EqRFVqktqXGX+gd2if1R0vQagyMFutxdgMmhi+NYv0FTBY+iQKoImV11JruKoRf5Rs0=
+	t=1709723240; cv=none; b=FVqw/itcLsc8QHtHaPY6hByQt+7vSuLLPSu+ry/NGqerepL1jB4iIY5LQ6Nvhimn61dnsKm9Ler07HvtD1xagMqi1M2GzEaBZx+8htmYhzuQ7ERDaq4PGxz7KpOdvCfdOrwRDCTFhvuHa9HV/7Umca1z7+zqnXVZKKehxnPsqjc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709723160; c=relaxed/simple;
-	bh=OS+oXHg7aIgyD5o++PSkxmSkn2TsWCyQ/F4rAy+jmpY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oEyZdl11Tk+tiQ5wtedlwyLgPpJauWaF3ICs5whqznprusSEg9XCwRVdaK4kT1fx5yq8bs6/ss7W/PVE20bKxAlou2bH3ZOsocvMy9SjxRjgKjApjD5BM84FxmUmWwZtAoctdndpifHxBjPDGOIQasUHju6iPFD3/typjuMO9Kc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IXFNjAth; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6e6419cd4ddso1294224b3a.2;
-        Wed, 06 Mar 2024 03:05:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709723158; x=1710327958; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=eENTc/nxZKDpcMdBkEdykK0etKdeqpDZmOKe+tsPiU0=;
-        b=IXFNjAth8SuEdrGnbavCZCrioFohy1PJYMKhJmiz0hM8g2+11xjTErsVsHZFWSFVDM
-         F0tiavxOS7LSOujQpcnsldj9wuHf3e4AdwhWZdK6D76KLB865H5pyS6gIagCufvR4INt
-         zoTOhXzJQpqCmXf7M3VnQKVqeDeMFVW3hNAG6omjQHstJEB+iM+qDBTrzn5nTLZTod8D
-         pDuEM07/OZkIL3HY+ceEkI7uFybOKk6KrGCB0cxu1zp3r2V+V+lYnD+cotdr/6RpjhBB
-         e2O1iD5j7EGjwKuMJ+PjZyFJpcECKqhLyk3wZXdTIFlqSHH3Qjk1oHrAIhgL6/icoPMl
-         /5yA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709723158; x=1710327958;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eENTc/nxZKDpcMdBkEdykK0etKdeqpDZmOKe+tsPiU0=;
-        b=QJTXLOru/lD7Le1ua+MUCENHutziFhjpn20FjF6jq85EHs9n7hw5tZljitwx/xPhZF
-         kzBBpFpFNqURiJoDKaDrvgiJeWSFb2yK1kf9ZAMAaN6CbaoLkjN3Q9QuVikbNaq109rG
-         E2lDUy/VR82qC2FxsofSC49gku4+3CShADm4HqnMvBUnwxToHyYeaN3CUJkhSPwXBTqV
-         W3ZRnCUgPPllGRTJzWmrhyxhgwvZekLmxOYVtM8TYOt5X3bR4GSA0+hISVg0Y/VOfV8i
-         S29n3HPM48rJ+c3fyGTKGfc3jI3YHR2+gMT0abJ14BM4z2RhRQx8Bq8iy9hFef8Usp1g
-         UaGg==
-X-Forwarded-Encrypted: i=1; AJvYcCXkvTVxI63dw5FW3hlzVSN8ts3W+bRd3nvI5V011UzNURM4XNwbRsq9zKwr+0HlR5UfO12rNCQ9kQOKGWLszAH1VnTJDN+HK6MoISW4gHzFhYyi6BbmaPtG/BzoQpx60Phr
-X-Gm-Message-State: AOJu0YwVhL7xvfvVUrDnesH4ha7+oYk500x5y2QZdJDe4HYnJbSJctpk
-	9E8AL+Ny8nHLtNeV0pKm5yiBw7Ui9h6JhnBRbs5LlKvtmpBnE92OKFCsC+MzSyneeA==
-X-Google-Smtp-Source: AGHT+IECYfeEfp2OiYGuDm/MEkbQ8cA4xsrb8XYKOoFlSJy2hf7HkSygK6o8CLzD+enHyL2n5m3+kQ==
-X-Received: by 2002:a05:6a00:99c:b0:6e6:16b5:2eaa with SMTP id u28-20020a056a00099c00b006e616b52eaamr9567404pfg.7.1709723158290;
-        Wed, 06 Mar 2024 03:05:58 -0800 (PST)
-Received: from [192.168.255.10] ([43.132.141.24])
-        by smtp.gmail.com with ESMTPSA id a3-20020aa78643000000b006e0debc1b75sm10725468pfo.90.2024.03.06.03.05.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Mar 2024 03:05:58 -0800 (PST)
-Message-ID: <302ef225-7a45-4153-acd1-a0066b652da2@gmail.com>
-Date: Wed, 6 Mar 2024 19:05:53 +0800
+	s=arc-20240116; t=1709723240; c=relaxed/simple;
+	bh=TeypHYztStanyeG63312ZYZhlqpeV7uIu2AEyXDDxv4=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=IX4DPwwbc9OSN2pF0M2pKPA28hrG8gWPIjkaY+N5XibBMq2x6puQsRAUQekF8NlUAr5fqKb42D/EIZv730yUbIKN2G0kHC8gppoXKRMk0Jw/XsAXQCCum79FyChisvUUf4IePPoXl+rSsoK9btMxbBf8q7pP18s/xpQSclTcG+Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=bwroREav; arc=none smtp.client-ip=217.70.183.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 56A6F1BF208;
+	Wed,  6 Mar 2024 11:07:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709723236;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZIfGVlbA1FFow5uYZDJCt17nXjkwv9ja0Xnzy8zYKwg=;
+	b=bwroREavWNoesHITsTtxo5nGKtTkiEl3iUl3Cgs62Z7ke4ai6/wPmPA1ZB3KJL3PJbRZKN
+	dvHRenJRQkqLszi4TQfOpR9kdW1jIVnwuQtR0ha5IkfBwdA++v1/mOTq5I+hj6QhfhCFSm
+	Y1HSZuwqLSRSHlqaqYZx3IsAhhyKpJ2EYUinnXulj/t3KLPikY0FyNx1uiDxCJ0L043opQ
+	M+EwRgyF2V9ZQ0CBkRe/U3Z2V+N+uqcf7swidw+dAx2Nrh9b7SHnAgO7ZccdEnEOY98KhH
+	wNmwLz3go2zkv8/PvQ5j63ftEWzVUIwDo63qIGBCqPqHfdcsnLDYXhvoebp6zQ==
+Date: Wed, 6 Mar 2024 12:07:13 +0100
+From: Luca Ceresoli <luca.ceresoli@bootlin.com>
+To: Herve Codina <herve.codina@bootlin.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki"
+ <rafael@kernel.org>, Rob Herring <robh+dt@kernel.org>, Frank Rowand
+ <frowand.list@gmail.com>, Saravana Kannan <saravanak@google.com>, Lizhi Hou
+ <lizhi.hou@amd.com>, Max Zhen <max.zhen@amd.com>, Sonal Santan
+ <sonal.santan@amd.com>, Stefano Stabellini <stefano.stabellini@xilinx.com>,
+ Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Allan Nielsen
+ <allan.nielsen@microchip.com>, Horatiu Vultur
+ <horatiu.vultur@microchip.com>, Steen Hegelund
+ <steen.hegelund@microchip.com>, Nuno Sa <nuno.sa@analog.com>, Thomas
+ Petazzoni <thomas.petazzoni@bootlin.com>, stable@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] driver core: Introduce
+ device_link_wait_removal()
+Message-ID: <20240306120713.6d7b9344@booty>
+In-Reply-To: <20240306085007.169771-2-herve.codina@bootlin.com>
+References: <20240306085007.169771-1-herve.codina@bootlin.com>
+	<20240306085007.169771-2-herve.codina@bootlin.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 00/73] KVM: x86/PVM: Introduce a new hypervisor
-Content-Language: en-US
-To: Lai Jiangshan <jiangshanlai@gmail.com>
-Cc: Lai Jiangshan <jiangshan.ljs@antgroup.com>,
- Sean Christopherson <seanjc@google.com>, Borislav Petkov <bp@alien8.de>,
- kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>, x86@kernel.org,
- Hou Wenlong <houwenlong.hwl@antgroup.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20240226143630.33643-1-jiangshanlai@gmail.com>
-From: Like Xu <like.xu.linux@gmail.com>
-In-Reply-To: <20240226143630.33643-1-jiangshanlai@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-GND-Sasl: luca.ceresoli@bootlin.com
 
-Hi Jiangshan,
+On Wed,  6 Mar 2024 09:50:02 +0100
+Herve Codina <herve.codina@bootlin.com> wrote:
 
-On 26/2/2024 10:35 pm, Lai Jiangshan wrote:
-> Performance drawback
-> ====================
-> The most significant drawback of PVM is shadowpaging. Shadowpaging
-> results in very bad performance when guest applications frequently
-> modify pagetable, including excessive processes forking.
-
-Some numbers are needed here to show how bad this RFC virt-pvm version
-without SPT optimization is in terms of performance. Compared to L2-VM
-based on nested EPT-on-EPT, the following benchmarks show a significant
-performance loss in PVM-based L2-VM (per pvm-get-started-with-kata.md):
-
-- byte/UnixBench-shell1: -67%
-- pts/sysbench-1.1.0 [Test: RAM / Memory]: -55%
-- Mmap Latency [lmbench]: -92%
-- Context switching [lmbench]: -83%
-- syscall_get_pid_latency: -77%
-
-Not sure if these performance conclusions are reproducible on your VM,
-but it reveals the concern of potential users that there is not a strong
-enough incentive to offload the burden of maintaining kvm-pvm.ko to the
-upstream community until there is a public available SPT optimization
-based on your or any state-of-art MMU-PV-ops impl. brought to the ring.
-
-There are other kernel technologies used by PVM that have user scenarios
-outside of PVM (e.g. unikernel/kernel-level sandbox), and it seems to me
-that there's opportunities for all of them to be absorbed by upstream
-individually and sequentially, but getting the KVM community to take
-kvm-pvm.ko seriously may be more dependent on how much room there can
-be for performance optimization based on your "Parallel Page fault for SPT
-and Paravirtualized MMU Optimization" implementation, and the optimizing
-space developers can squeeze out of legacy EPT-on-EPT solution.
-
+> The commit 80dd33cf72d1 ("drivers: base: Fix device link removal")
+> introduces a workqueue to release the consumer and supplier devices used
+> in the devlink.
+> In the job queued, devices are release and in turn, when all the
+> references to these devices are dropped, the release function of the
+> device itself is called.
 > 
-> However, many long-running cloud services, such as Java, modify
-> pagetables less frequently and can perform very well with shadowpaging.
-> In some cases, they can even outperform EPT since they can avoid EPT TLB
-> entries. Furthermore, PVM can utilize host PCIDs for guest processes,
-> providing a finer-grained approach compared to VPID/ASID.
+> Nothing is present to provide some synchronisation with this workqueue
+> in order to ensure that all ongoing releasing operations are done and
+> so, some other operations can be started safely.
 > 
-> To mitigate the performance problem, we designed several optimizations
-> for the shadow MMU (not included in the patchset) and also planning to
-> build a shadow EPT in L0 for L2 PVM guests.
+> For instance, in the following sequence:
+>   1) of_platform_depopulate()
+>   2) of_overlay_remove()
 > 
-> See the paper for more optimizations and the performance details.
+> During the step 1, devices are released and related devlinks are removed
+> (jobs pushed in the workqueue).
+> During the step 2, OF nodes are destroyed but, without any
+> synchronisation with devlink removal jobs, of_overlay_remove() can raise
+> warnings related to missing of_node_put():
+>   ERROR: memory leak, expected refcount 1 instead of 2
 > 
-> Future plans
-> ============
-> Some optimizations are not covered in this series now.
+> Indeed, the missing of_node_put() call is going to be done, too late,
+> from the workqueue job execution.
 > 
-> - Parallel Page fault for SPT and Paravirtualized MMU Optimization.
+> Introduce device_link_wait_removal() to offer a way to synchronize
+> operations waiting for the end of devlink removals (i.e. end of
+> workqueue jobs).
+> Also, as a flushing operation is done on the workqueue, the workqueue
+> used is moved from a system-wide workqueue to a local one.
+> 
+> Fixes: 80dd33cf72d1 ("drivers: base: Fix device link removal")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+
+Tested-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
+
+-- 
+Luca Ceresoli, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
