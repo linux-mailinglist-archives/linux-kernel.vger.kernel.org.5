@@ -1,391 +1,256 @@
-Return-Path: <linux-kernel+bounces-93767-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93768-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13265873495
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 11:43:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64B71873450
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 11:33:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CECB8B21A69
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:32:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E1979283CE7
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:33:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78306604D7;
-	Wed,  6 Mar 2024 10:32:38 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C5041C698;
-	Wed,  6 Mar 2024 10:32:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CF75604D6;
+	Wed,  6 Mar 2024 10:33:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="C0PU2SIA"
+Received: from mail-vs1-f43.google.com (mail-vs1-f43.google.com [209.85.217.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22AA05FDAF
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 10:33:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709721157; cv=none; b=Ff1ZPndrG5sgNcsIuG7EA8PU3tfiBDZxGZ3gjl3nhivZ2y21rMHft4rOBdTadXgQLbnaKLEbjaLLL8GpXk9aqs88cGK00zOjYFQJn/s+EBVIesdeSDt9udvYZ/FxcmL1wTXlq9M9Nj8ddWf+yIlFPPnhs++m8brLMpZSbj4JvCg=
+	t=1709721205; cv=none; b=Te5XBTJ8YxGJNhUPHYyt5uUUqCm1bjf+qJk8PK4Dgcd90hRDVGfErzljc+3yHxol8TOZDq3lbUrIcKp/QlN4PMHTUyYk8KCAzmzXUixUz5c6fZ/UpuFQrzYCAHbNNEa597NfH0Hncza193gCL6t+WoH3vc+r3IJVUnjsmyBCNiQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709721157; c=relaxed/simple;
-	bh=vGURN8ljkUjtK10jRBtjaPsD3xfO5n/LBIuXF2KwDDc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=pIlBU5APsazO6Llw2YS0zPD+6ocMskWCLXnPAgHyMgCfvAXuyQJdqgPHccSTp0p5KMlC4Ry+tD9dGy3c7JPcARG/B0S+zivg723/MkfPFXl1ScqOOnqP/ADDXMFw3WtsWI2RqlLCFeJVtq05Xn1pEU9++q5A/hKtwWk+qKZnDWQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6B3A31FB;
-	Wed,  6 Mar 2024 02:33:10 -0800 (PST)
-Received: from [10.57.14.142] (unknown [10.57.14.142])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D491B3F738;
-	Wed,  6 Mar 2024 02:32:30 -0800 (PST)
-From: Balint Dobszay <balint.dobszay@arm.com>
-To: Sumit Garg <sumit.garg@linaro.org>
-Cc: op-tee@lists.trustedfirmware.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- jens.wiklander@linaro.org, corbet@lwn.net, sudeep.holla@arm.com,
- rdunlap@infradead.org, krzk@kernel.org, gyorgy.szing@arm.com
-Subject: Re: [PATCH v3 2/4] tee: optee: Move pool_op helper functions
-Date: Wed, 06 Mar 2024 11:32:28 +0100
-X-Mailer: MailMate (1.14r5937)
-Message-ID: <4C606A28-D681-4F5D-AEFC-882F0E96EBD1@arm.com>
-In-Reply-To: <CAFA6WYMt1GNzrdkGc6_AU_KSOVaMFK4MONHwmWchzNb97GJWvg@mail.gmail.com>
-References: <20240305101745.213933-1-balint.dobszay@arm.com>
- <20240305101745.213933-3-balint.dobszay@arm.com>
- <CAFA6WYMt1GNzrdkGc6_AU_KSOVaMFK4MONHwmWchzNb97GJWvg@mail.gmail.com>
+	s=arc-20240116; t=1709721205; c=relaxed/simple;
+	bh=r8I7d25oS9grIAnDMBNqKWHgDV8KDouDSkKqAk9Cgqw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WqGjJhJA6QLCHWr+NZvkpAIsYeGVRRzEX6BztUIRzSyvKPbpjIBNdPno4AIDwQN6Ru1q6NJoNLJzUSTdoRCpEGUdeqtzpYHfcg5FAWDPCoHSRMI1l8pBYDhZxyoMZQfCgVqd28dabiqUSuNQIv/K9/+c8nzXqrzX7G77YYR2ao4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=C0PU2SIA; arc=none smtp.client-ip=209.85.217.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-vs1-f43.google.com with SMTP id ada2fe7eead31-472640aba12so1544763137.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 02:33:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709721203; x=1710326003; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EFkaMIm1obtudGJ1kf1EFFHAyCZ7GxqkHja4nTwRsKA=;
+        b=C0PU2SIA3qaEwyrBdfLuRX5MBjFNkJ/xqs3aZufVTsXCaoxBVcNnPjnkRLZRkaU78f
+         L/iU9qDQiNMj24lg5aZPdma/srV1UaulmY2Ifp3/LcHTu6zuOV3pLWG2Jwc/rJE/iYIn
+         WDPytyAa8tbbt2icPrCMzgo8eBOnd/+MgkCijzxEx54uOVWhBcKNHZk7QyJCp6cD/VGc
+         5CiUJE2tRI+YKJD/vRduNffdjaUryUReCOgWmP/Cwg9D93ZQFvMfiPeks/cDACjwvssV
+         SyYr8+1B5Y2Ypaxfi3fWZTeXNU3ItOzk8otfvly/LD9DlgJRsoCKgub/AtpJqKunuu0d
+         IyrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709721203; x=1710326003;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EFkaMIm1obtudGJ1kf1EFFHAyCZ7GxqkHja4nTwRsKA=;
+        b=soFQDQqEGXJYTfo4KNuStxK0tcOwM+hDxugespwMY1cxHP9eHcimCDtuDA5g31Hys/
+         1LoklE4kHE3EAIVIQisDGjUomHJEDG4VFlP9ECj14kVKcDeV48RqRVzQL/mC3pigBIaF
+         eRO2MYv9gL/hvWJ2W+NOgMYgXcFiiunzOeob88rQYe3r25rvcS34fROV6oNU2KKHO5Wn
+         qKrG+tPum5ghk1+9F1hvtNbham7Dmv3v99hFH4qLo+u0+q+tEx9T1W09GjYUy9ibsnSH
+         4bvfQRQrsNWJLVIPEktztPOuiNdGQO2pHsWtUM1UhbQnxYcWZ2uxnmRo06kojgON71pv
+         mFuw==
+X-Forwarded-Encrypted: i=1; AJvYcCXNM9M5er2EPZgULiS2hMiub/JnqN+YekwdBSdu7Vvu9XATsXxBG7mPmvPyIHcKTpx6PiSxmK+RSyfR9RZT9lVuqnpRvcrqb2YfqpPM
+X-Gm-Message-State: AOJu0YxU7UGiZh0DKj1uCtgLY+2+eaNp90sqCuumxgLgY1BApCArvz9H
+	v7ZTiB81sbVkSM9mobUAkHpmIyAfZkkqrNVAQxFf7F0tZIGTmJWyGWqIQPX8KRvDnY0c+OJCGtL
+	gEwl0HQoJSCTnDDAv7RtMdHFjCln9XkD44dCXGw==
+X-Google-Smtp-Source: AGHT+IE0x77S84TtLxcOdVNEf09H8CAh/J0+qhX6uQO+4pPNNBGqMdIxF9axcvTED4L7HLfrhT+Eebw3d0oNaEqcLAk=
+X-Received: by 2002:a67:fd8b:0:b0:471:e8d5:8c8c with SMTP id
+ k11-20020a67fd8b000000b00471e8d58c8cmr4596459vsq.26.1709721202759; Wed, 06
+ Mar 2024 02:33:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20240304211556.993132804@linuxfoundation.org>
+In-Reply-To: <20240304211556.993132804@linuxfoundation.org>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Wed, 6 Mar 2024 16:03:11 +0530
+Message-ID: <CA+G9fYvcS6gy_-pbiqwFoJh=s_ocLGh0TSZR-zNiTSh9smZWfg@mail.gmail.com>
+Subject: Re: [PATCH 6.1 000/215] 6.1.81-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
+	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On 6 Mar 2024, at 8:22, Sumit Garg wrote:
-
-> On Tue, 5 Mar 2024 at 15:49, Balint Dobszay <balint.dobszay@arm.com> wr=
-ote:
->>
->> Move the pool alloc and free helper functions from the OP-TEE driver t=
-o
->> the TEE subsystem, since these could be reused in other TEE drivers.
->> This patch is not supposed to change behavior, it's only reorganizing
->> the code.
->>
->> Suggested-by: Jens Wiklander <jens.wiklander@linaro.org>
->> Signed-off-by: Balint Dobszay <balint.dobszay@arm.com>
->> ---
->>  drivers/tee/optee/core.c          | 64 ------------------------------=
--
->>  drivers/tee/optee/ffa_abi.c       |  6 +--
->>  drivers/tee/optee/optee_private.h | 12 ------
->>  drivers/tee/optee/smc_abi.c       |  9 ++---
->>  drivers/tee/tee_shm.c             | 64 ++++++++++++++++++++++++++++++=
-+
->>  include/linux/tee_core.h          | 10 +++++
->>  6 files changed, 81 insertions(+), 84 deletions(-)
->>
+On Tue, 5 Mar 2024 at 03:13, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
+> This is the start of the stable review cycle for the 6.1.81 release.
+> There are 215 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 06 Mar 2024 21:15:26 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
+6.1.81-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-6.1.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Thanks for the review. I'll add your tag for the next version.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Regards,
-Balint
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
->> diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
->> index f762e3a25119..39e688d4e974 100644
->> --- a/drivers/tee/optee/core.c
->> +++ b/drivers/tee/optee/core.c
->> @@ -9,7 +9,6 @@
->>  #include <linux/crash_dump.h>
->>  #include <linux/errno.h>
->>  #include <linux/io.h>
->> -#include <linux/mm.h>
->>  #include <linux/module.h>
->>  #include <linux/slab.h>
->>  #include <linux/string.h>
->> @@ -17,69 +16,6 @@
->>  #include <linux/types.h>
->>  #include "optee_private.h"
->>
->> -int optee_pool_op_alloc_helper(struct tee_shm_pool *pool, struct tee_=
-shm *shm,
->> -                              size_t size, size_t align,
->> -                              int (*shm_register)(struct tee_context =
-*ctx,
->> -                                                  struct tee_shm *shm=
-,
->> -                                                  struct page **pages=
-,
->> -                                                  size_t num_pages,
->> -                                                  unsigned long start=
-))
->> -{
->> -       size_t nr_pages =3D roundup(size, PAGE_SIZE) / PAGE_SIZE;
->> -       struct page **pages;
->> -       unsigned int i;
->> -       int rc =3D 0;
->> -
->> -       /*
->> -        * Ignore alignment since this is already going to be page ali=
-gned
->> -        * and there's no need for any larger alignment.
->> -        */
->> -       shm->kaddr =3D alloc_pages_exact(nr_pages * PAGE_SIZE,
->> -                                      GFP_KERNEL | __GFP_ZERO);
->> -       if (!shm->kaddr)
->> -               return -ENOMEM;
->> -
->> -       shm->paddr =3D virt_to_phys(shm->kaddr);
->> -       shm->size =3D nr_pages * PAGE_SIZE;
->> -
->> -       pages =3D kcalloc(nr_pages, sizeof(*pages), GFP_KERNEL);
->> -       if (!pages) {
->> -               rc =3D -ENOMEM;
->> -               goto err;
->> -       }
->> -
->> -       for (i =3D 0; i < nr_pages; i++)
->> -               pages[i] =3D virt_to_page((u8 *)shm->kaddr + i * PAGE_=
-SIZE);
->> -
->> -       shm->pages =3D pages;
->> -       shm->num_pages =3D nr_pages;
->> -
->> -       if (shm_register) {
->> -               rc =3D shm_register(shm->ctx, shm, pages, nr_pages,
->> -                                 (unsigned long)shm->kaddr);
->> -               if (rc)
->> -                       goto err;
->> -       }
->> -
->> -       return 0;
->> -err:
->> -       free_pages_exact(shm->kaddr, shm->size);
->> -       shm->kaddr =3D NULL;
->> -       return rc;
->> -}
->> -
->> -void optee_pool_op_free_helper(struct tee_shm_pool *pool, struct tee_=
-shm *shm,
->> -                              int (*shm_unregister)(struct tee_contex=
-t *ctx,
->> -                                                    struct tee_shm *s=
-hm))
->> -{
->> -       if (shm_unregister)
->> -               shm_unregister(shm->ctx, shm);
->> -       free_pages_exact(shm->kaddr, shm->size);
->> -       shm->kaddr =3D NULL;
->> -       kfree(shm->pages);
->> -       shm->pages =3D NULL;
->> -}
->> -
->>  static void optee_bus_scan(struct work_struct *work)
->>  {
->>         WARN_ON(optee_enumerate_devices(PTA_CMD_GET_DEVICES_SUPP));
->> diff --git a/drivers/tee/optee/ffa_abi.c b/drivers/tee/optee/ffa_abi.c=
+## Build
+* kernel: 6.1.81-rc1
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-6.1.y
+* git commit: cf578ac947cbb5bb72cbaa7a166d0f92318c3126
+* git describe: v6.1.79-411-gcf578ac947cb
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.1.y/build/v6.1.7=
+9-411-gcf578ac947cb
 
->> index cee8ccb84cb8..3235e1c719e8 100644
->> --- a/drivers/tee/optee/ffa_abi.c
->> +++ b/drivers/tee/optee/ffa_abi.c
->> @@ -374,14 +374,14 @@ static int optee_ffa_shm_unregister_supp(struct =
-tee_context *ctx,
->>  static int pool_ffa_op_alloc(struct tee_shm_pool *pool,
->>                              struct tee_shm *shm, size_t size, size_t =
-align)
->>  {
->> -       return optee_pool_op_alloc_helper(pool, shm, size, align,
->> -                                         optee_ffa_shm_register);
->> +       return tee_dyn_shm_alloc_helper(shm, size, align,
->> +                                       optee_ffa_shm_register);
->>  }
->>
->>  static void pool_ffa_op_free(struct tee_shm_pool *pool,
->>                              struct tee_shm *shm)
->>  {
->> -       optee_pool_op_free_helper(pool, shm, optee_ffa_shm_unregister)=
-;
->> +       tee_dyn_shm_free_helper(shm, optee_ffa_shm_unregister);
->>  }
->>
->>  static void pool_ffa_op_destroy_pool(struct tee_shm_pool *pool)
->> diff --git a/drivers/tee/optee/optee_private.h b/drivers/tee/optee/opt=
-ee_private.h
->> index a0698ac18993..429cc20be5cc 100644
->> --- a/drivers/tee/optee/optee_private.h
->> +++ b/drivers/tee/optee/optee_private.h
->> @@ -283,18 +283,6 @@ int optee_cancel_req(struct tee_context *ctx, u32=
- cancel_id, u32 session);
->>  int optee_enumerate_devices(u32 func);
->>  void optee_unregister_devices(void);
->>
->> -int optee_pool_op_alloc_helper(struct tee_shm_pool *pool, struct tee_=
-shm *shm,
->> -                              size_t size, size_t align,
->> -                              int (*shm_register)(struct tee_context =
-*ctx,
->> -                                                  struct tee_shm *shm=
-,
->> -                                                  struct page **pages=
-,
->> -                                                  size_t num_pages,
->> -                                                  unsigned long start=
-));
->> -void optee_pool_op_free_helper(struct tee_shm_pool *pool, struct tee_=
-shm *shm,
->> -                              int (*shm_unregister)(struct tee_contex=
-t *ctx,
->> -                                                    struct tee_shm *s=
-hm));
->> -
->> -
->>  void optee_remove_common(struct optee *optee);
->>  int optee_open(struct tee_context *ctx, bool cap_memref_null);
->>  void optee_release(struct tee_context *ctx);
->> diff --git a/drivers/tee/optee/smc_abi.c b/drivers/tee/optee/smc_abi.c=
+## Test Regressions (compared to v6.1.79)
 
->> index 9c296b887dc1..734c484ed0f6 100644
->> --- a/drivers/tee/optee/smc_abi.c
->> +++ b/drivers/tee/optee/smc_abi.c
->> @@ -592,19 +592,18 @@ static int pool_op_alloc(struct tee_shm_pool *po=
-ol,
->>          * to be registered with OP-TEE.
->>          */
->>         if (shm->flags & TEE_SHM_PRIV)
->> -               return optee_pool_op_alloc_helper(pool, shm, size, ali=
-gn, NULL);
->> +               return tee_dyn_shm_alloc_helper(shm, size, align, NULL=
-);
->>
->> -       return optee_pool_op_alloc_helper(pool, shm, size, align,
->> -                                         optee_shm_register);
->> +       return tee_dyn_shm_alloc_helper(shm, size, align, optee_shm_re=
-gister);
->>  }
->>
->>  static void pool_op_free(struct tee_shm_pool *pool,
->>                          struct tee_shm *shm)
->>  {
->>         if (!(shm->flags & TEE_SHM_PRIV))
->> -               optee_pool_op_free_helper(pool, shm, optee_shm_unregis=
-ter);
->> +               tee_dyn_shm_free_helper(shm, optee_shm_unregister);
->>         else
->> -               optee_pool_op_free_helper(pool, shm, NULL);
->> +               tee_dyn_shm_free_helper(shm, NULL);
->>  }
->>
->>  static void pool_op_destroy_pool(struct tee_shm_pool *pool)
->> diff --git a/drivers/tee/tee_shm.c b/drivers/tee/tee_shm.c
->> index 96a45c817427..5bf76c35cd9e 100644
->> --- a/drivers/tee/tee_shm.c
->> +++ b/drivers/tee/tee_shm.c
->> @@ -202,6 +202,70 @@ struct tee_shm *tee_shm_alloc_priv_buf(struct tee=
-_context *ctx, size_t size)
->>  }
->>  EXPORT_SYMBOL_GPL(tee_shm_alloc_priv_buf);
->>
->> +int tee_dyn_shm_alloc_helper(struct tee_shm *shm, size_t size, size_t=
- align,
->> +                            int (*shm_register)(struct tee_context *c=
-tx,
->> +                                                struct tee_shm *shm,
->> +                                                struct page **pages,
->> +                                                size_t num_pages,
->> +                                                unsigned long start))=
+## Metric Regressions (compared to v6.1.79)
 
->> +{
->> +       size_t nr_pages =3D roundup(size, PAGE_SIZE) / PAGE_SIZE;
->> +       struct page **pages;
->> +       unsigned int i;
->> +       int rc =3D 0;
->> +
->> +       /*
->> +        * Ignore alignment since this is already going to be page ali=
-gned
->> +        * and there's no need for any larger alignment.
->> +        */
->> +       shm->kaddr =3D alloc_pages_exact(nr_pages * PAGE_SIZE,
->> +                                      GFP_KERNEL | __GFP_ZERO);
->> +       if (!shm->kaddr)
->> +               return -ENOMEM;
->> +
->> +       shm->paddr =3D virt_to_phys(shm->kaddr);
->> +       shm->size =3D nr_pages * PAGE_SIZE;
->> +
->> +       pages =3D kcalloc(nr_pages, sizeof(*pages), GFP_KERNEL);
->> +       if (!pages) {
->> +               rc =3D -ENOMEM;
->> +               goto err;
->> +       }
->> +
->> +       for (i =3D 0; i < nr_pages; i++)
->> +               pages[i] =3D virt_to_page((u8 *)shm->kaddr + i * PAGE_=
-SIZE);
->> +
->> +       shm->pages =3D pages;
->> +       shm->num_pages =3D nr_pages;
->> +
->> +       if (shm_register) {
->> +               rc =3D shm_register(shm->ctx, shm, pages, nr_pages,
->> +                                 (unsigned long)shm->kaddr);
->> +               if (rc)
->> +                       goto err;
->> +       }
->> +
->> +       return 0;
->> +err:
->> +       free_pages_exact(shm->kaddr, shm->size);
->> +       shm->kaddr =3D NULL;
->> +       return rc;
->> +}
->> +EXPORT_SYMBOL_GPL(tee_dyn_shm_alloc_helper);
->> +
->> +void tee_dyn_shm_free_helper(struct tee_shm *shm,
->> +                            int (*shm_unregister)(struct tee_context =
-*ctx,
->> +                                                  struct tee_shm *shm=
-))
->> +{
->> +       if (shm_unregister)
->> +               shm_unregister(shm->ctx, shm);
->> +       free_pages_exact(shm->kaddr, shm->size);
->> +       shm->kaddr =3D NULL;
->> +       kfree(shm->pages);
->> +       shm->pages =3D NULL;
->> +}
->> +EXPORT_SYMBOL_GPL(tee_dyn_shm_free_helper);
->> +
->>  static struct tee_shm *
->>  register_shm_helper(struct tee_context *ctx, struct iov_iter *iter, u=
-32 flags,
->>                     int id)
->> diff --git a/include/linux/tee_core.h b/include/linux/tee_core.h
->> index d9b3ba8e8fa9..efd16ed52315 100644
->> --- a/include/linux/tee_core.h
->> +++ b/include/linux/tee_core.h
->> @@ -232,6 +232,16 @@ void *tee_get_drvdata(struct tee_device *teedev);=
+## Test Fixes (compared to v6.1.79)
 
->>   */
->>  struct tee_shm *tee_shm_alloc_priv_buf(struct tee_context *ctx, size_=
-t size);
->>
->> +int tee_dyn_shm_alloc_helper(struct tee_shm *shm, size_t size, size_t=
- align,
->> +                            int (*shm_register)(struct tee_context *c=
-tx,
->> +                                                struct tee_shm *shm,
->> +                                                struct page **pages,
->> +                                                size_t num_pages,
->> +                                                unsigned long start))=
-;
->> +void tee_dyn_shm_free_helper(struct tee_shm *shm,
->> +                            int (*shm_unregister)(struct tee_context =
-*ctx,
->> +                                                  struct tee_shm *shm=
-));
->> +
->>  /**
->>   * tee_shm_is_dynamic() - Check if shared memory object is of the dyn=
-amic kind
->>   * @shm:       Shared memory handle
->> --
->> 2.34.1
->>
+## Metric Fixes (compared to v6.1.79)
+
+## Test result summary
+total: 142733, pass: 122117, fail: 2309, skip: 18166, xfail: 141
+
+## Build Summary
+* arc: 5 total, 5 passed, 0 failed
+* arm: 139 total, 139 passed, 0 failed
+* arm64: 41 total, 41 passed, 0 failed
+* i386: 31 total, 31 passed, 0 failed
+* mips: 26 total, 26 passed, 0 failed
+* parisc: 4 total, 4 passed, 0 failed
+* powerpc: 36 total, 34 passed, 2 failed
+* riscv: 11 total, 11 passed, 0 failed
+* s390: 16 total, 16 passed, 0 failed
+* sh: 10 total, 10 passed, 0 failed
+* sparc: 8 total, 8 passed, 0 failed
+* x86_64: 37 total, 37 passed, 0 failed
+
+## Test suites summary
+* boot
+* kselftest-android
+* kselftest-arm64
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers-dma-buf
+* kselftest-efivarfs
+* kselftest-exec
+* kselftest-filesystems
+* kselftest-filesystems-binderfs
+* kselftest-filesystems-epoll
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-ftrace
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mm
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-net-forwarding
+* kselftest-net-mptcp
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-user_events
+* kselftest-vDSO
+* kselftest-watchdog
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libgpiod
+* log-parser-boot
+* log-parser-test
+* ltp-cap_bounds
+* ltp-commands
+* ltp-containers
+* ltp-controllers
+* ltp-cpuhotplug
+* ltp-crypto
+* ltp-cve
+* ltp-dio
+* ltp-fcntl-locktests
+* ltp-filecaps
+* ltp-fs
+* ltp-fs_bind
+* ltp-fs_perms_simple
+* ltp-hugetlb
+* ltp-io
+* ltp-ipc
+* ltp-math
+* ltp-mm
+* ltp-nptl
+* ltp-pty
+* ltp-sched
+* ltp-securebits
+* ltp-smoke
+* ltp-smoketest
+* ltp-syscalls
+* ltp-tracing
+* perf
+* rcutorture
+
+--
+Linaro LKFT
+https://lkft.linaro.org
 
