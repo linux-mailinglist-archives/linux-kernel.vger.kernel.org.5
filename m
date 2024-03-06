@@ -1,86 +1,82 @@
-Return-Path: <linux-kernel+bounces-94158-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94159-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AC2E873ABC
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:35:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BEC4873AC1
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:35:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA47A2865AE
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:35:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D76F1C21B4E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:35:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05DA21350EF;
-	Wed,  6 Mar 2024 15:35:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B93E135A41;
+	Wed,  6 Mar 2024 15:35:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="yiYpHRKB"
-Received: from mail-io1-f53.google.com (mail-io1-f53.google.com [209.85.166.53])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="H5SUS/g+"
+Received: from mail-il1-f181.google.com (mail-il1-f181.google.com [209.85.166.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6323B1350D2
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 15:35:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AEFB135A44
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 15:35:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709739321; cv=none; b=N0rygWw+EXw+5fRDyXA+sRwTAHz6dS6V/q2qdri7fRz5YznAB+EJnPiemxsUWbvKac67xQa5P5PY5oo74V3rMk/tSO4hlf5OX6iNL91WLMVUOlJWiig4tbARnOTVFqPHwV2V6Za3FGk5+A8ikkkcEba5oqOv6BFZHP0/cFgBrg4=
+	t=1709739324; cv=none; b=N2nXg3un4NZbhbxCRdi80+UhI4ZHgcXxKeN+b9GCKQFfAXdJMJyoS8YZaDU3akZ8ytuzNgmUO1gdu6i6iH5ERu98IcgspEczVIhAGxsHwLLQhsZMHl10lbPfvoyIGN6G8fsYvypu3iCku46cAYWP9SSrtT8VV78Kz2pivq3QwVg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709739321; c=relaxed/simple;
-	bh=4XBA7h4gk9kZGoLHOXMtYY2N0kUearBB17+7pA7xfVU=;
+	s=arc-20240116; t=1709739324; c=relaxed/simple;
+	bh=rZpxuwz3LtTU5NHXBZeKwLPaPRSDpUa9gidInfsm+Dg=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=qQrj70C0iwFrAqsCTB6mNWTZAdP2YB9vFcvvUFCNFEg4u9rpbuv4m84+XYN6t2Mul0VQpZi3EBa+KT75ZUdOpOPftiPflsFiaau2ZXSd3a3hMMoxtxHB1IkY2aQehpdgM0DzGlw/pGHtxlyrEgMzf8FqR8Es9ue5p0bTPcZyH6A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=yiYpHRKB; arc=none smtp.client-ip=209.85.166.53
+	 MIME-Version:Content-Type; b=WasFXmAUX0Q99dJ/I1G/5BLROwvSiOviUAu26xt17yqDdLRzFACXgFZbRPZRF+jCUnRKu+1ruD0G9NmTKoVogTECnoX+xlInU6KvxCCY/ZY3c9xU/VNOe5Asuv0xIOM/qt0Swp8LCmSgZ/SU9kj0ckREtr/gdjEGeypF7qVYtcg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=H5SUS/g+; arc=none smtp.client-ip=209.85.166.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f53.google.com with SMTP id ca18e2360f4ac-7c876b9d070so12642439f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 07:35:19 -0800 (PST)
+Received: by mail-il1-f181.google.com with SMTP id e9e14a558f8ab-35d374bebe3so5646105ab.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 07:35:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1709739318; x=1710344118; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1709739322; x=1710344122; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:date:message-id:subject
          :references:in-reply-to:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=k+7aPckIbaw56xMg4x5zLxwpAKi5vUALOz1YbOan0kQ=;
-        b=yiYpHRKB8dxaTeWc9yaeQfLV0CfWjyB8SuSfqu83kzipnPId7gRpCul+My1wnfhrW4
-         WeSfOjc1biXB70d9M4Nw+Ml548ypNaxLsqZcGCqzytTtXClHL2XLV6iGUXvQTzXYr4s/
-         cbkP2BhCH3FJEF63wysr9C7zXY8XfR/+ZWClTOxWfXR5i8g7bF6Io9svq0Y1cCjQX5Da
-         mfmzHV9k13U4vQy4eBhOBBQEp6Rlnsjs4aJMJAs2WHM1PJvSLmHx3JGW9Lp4Sa8UMpwI
-         5/6AaD1VIFMMEp5eEtO4w+rXDZZ1p7kFgThU7KGEsU4h65MeP+Ur9GNC5Qy2ya8k8uyz
-         gl5Q==
+        bh=jPnOpQ+uVuzgVW6jQ9U/EyPoqkoAsFyQMeCbhRPBdV0=;
+        b=H5SUS/g+FiFJM5MtNcX+d8FPTHSB1Fp/3jc89NuGJ7aTdzCbTkdFyXlrRWXi3aFJqF
+         pOl0wXQeToNrA8UjTLjEN6ZLkjc1yiuAxpOavbUpycphsZmMOi8oehYo1embiwnEFkjS
+         8Sacs3942EMWPtcNMtmVHNecu4qsfDdftD+zudtglM1fNQnh+I1/6p3vvq1Rlba72fvC
+         ukxpXHLGEBrW54Nor/kYl4IiMRGsiYY8zzyUoIGglJUadBAtvv2+Gc1w216LzWqt17tV
+         W8eEbeDc3+N/d2y3LilWHsl3NJf5KSgJR5n866joUVahq0IfisUgmwrkH5PKc5y3t7oT
+         7XjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709739318; x=1710344118;
+        d=1e100.net; s=20230601; t=1709739322; x=1710344122;
         h=content-transfer-encoding:mime-version:date:message-id:subject
          :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=k+7aPckIbaw56xMg4x5zLxwpAKi5vUALOz1YbOan0kQ=;
-        b=BVgdX7MFEjlbMZkbKjecSA72+NUv5POBoPKbAMR2ssHkCOc8K6DMgo2sM5yHi/AjJu
-         WaV4dDQzrwhvKa6X5j+UEnmmeANsK6x2hQV4F9J1hjQwoulQEO1Aqo5GEXiInFUfMcnh
-         6q3SNmUJl5yyRWD97UO3+wPdkGxGvNYRyJP+HP47EgY4CSNkLKNA3NRjI1xRqR59DeBd
-         WD2ZD5cIJm1q7tzW4b3ssVmtBcIDyWyiLNiWqreZPwusSFR87VSO7c1tBScSBvGz4jZ9
-         uXmyXnRDjSyBnMswat6IiOOESqSR7GO5L81V8/bNjE/vr5oZ/Fi2zJKcgeQau2BJYo+4
-         XjpQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXNb2dXd2FU2UYhbxGhTmiTg5l2srly5+TQicVfqO7nPsEo/rc3uWRv9d/1G/GxMUd2RB07sVPxzjtzTBFsMoebqKDXoum7oIhr2bKq
-X-Gm-Message-State: AOJu0YzY98yVivH8SekzFoIfLAU7Hzr/KxdtePOlQFTmwJ49XqP/LFOh
-	lBYA0sW3wrN3R9OpMSflwdV3/MlQ0sZEkEiaaCClLAUKgen2Gt02v52sKrFs6KE=
-X-Google-Smtp-Source: AGHT+IE5F3k1D3gik/OwYN8x0TQzZJEWeyfDVo1rW4ITdbpkHe2CQWcwgqeqMBIIK+FUBeWV/a2ZZw==
-X-Received: by 2002:a05:6e02:1c46:b0:365:fe09:6431 with SMTP id d6-20020a056e021c4600b00365fe096431mr3732415ilg.3.1709739318559;
-        Wed, 06 Mar 2024 07:35:18 -0800 (PST)
+        bh=jPnOpQ+uVuzgVW6jQ9U/EyPoqkoAsFyQMeCbhRPBdV0=;
+        b=Z4d1OpPqB4Zo4vub/T+5Sf7WP6v7pVS6JCymUjSwali4M2xSC/gvo5LV5fQ4vSRXIh
+         fK20rooXZ6OyNCEkb9s/WojL4EDr9JH/aZGYRKpGJrj1ss6rCBWRPMLkOjtZLw3kxZXi
+         EWZUF+9kDZ53RIG0s7+Hh84mK7vcgOrvVf0vnxCpmPauyv1dipP6v2dd+iD5QqDFUnTH
+         pZL7bQnkwW9zYl9AWJkmJWLMh7sCi5qfOIUMM3vXU5nssuPVXJNYPWC9lUcBe9Ph9PGO
+         SDjnhSnEluCu5GflyRZpyqzu0JPzVo4BjfQpFne+wwdbUWPi3HezHSPKDc4f5Y5bg0lc
+         Fzow==
+X-Forwarded-Encrypted: i=1; AJvYcCUaekV496szvVxYKF/NyUGBaG40waJnM7GnR9Ep+3QCLjg/DCo8eWutsM5cNKdBV4ututnYZ9H33IPHbd6j67x8jXpdBrK0uCCr+bgr
+X-Gm-Message-State: AOJu0Ywy2mBIUN7xYWZNSz/Jlbzrp5hYbXzF8IyZzU9mTO5NlLmNbuUR
+	tSes3nvpTTlVBfL7/sBKy382iZaKmJ52RDkdyx6L2XyAvyWBmQg2EE3J2/tQ/oFqpeNGXzAAKpF
+	7
+X-Google-Smtp-Source: AGHT+IHyoCbyv7XAo5hqqIlsB6w5AWsYnu1/UcFdT85mx4kpoOSiwoFaZeyodXeNK3tjPnmdQP+04A==
+X-Received: by 2002:a05:6e02:219e:b0:365:5dbd:ba43 with SMTP id j30-20020a056e02219e00b003655dbdba43mr3895559ila.1.1709739322355;
+        Wed, 06 Mar 2024 07:35:22 -0800 (PST)
 Received: from [127.0.0.1] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id t2-20020a92cc42000000b003660612cf73sm324467ilq.49.2024.03.06.07.35.17
+        by smtp.gmail.com with ESMTPSA id t2-20020a92cc42000000b003660612cf73sm324467ilq.49.2024.03.06.07.35.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Mar 2024 07:35:18 -0800 (PST)
+        Wed, 06 Mar 2024 07:35:20 -0800 (PST)
 From: Jens Axboe <axboe@kernel.dk>
-To: Tony Battersby <tonyb@cybernetics.com>
-Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
- Andrew Morton <akpm@linux-foundation.org>, 
- "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>, 
- Hugh Dickins <hughd@google.com>, Hannes Reinecke <hare@suse.de>, 
- Keith Busch <kbusch@kernel.org>, linux-mm <linux-mm@kvack.org>, 
- linux-block@vger.kernel.org, linux-fsdevel <linux-fsdevel@vger.kernel.org>, 
- linux-kernel@vger.kernel.org
-In-Reply-To: <86e592a9-98d4-4cff-a646-0c0084328356@cybernetics.com>
-References: <86e592a9-98d4-4cff-a646-0c0084328356@cybernetics.com>
-Subject: Re: [PATCH] block: Fix page refcounts for unaligned buffers in
- __bio_release_pages()
-Message-Id: <170973931770.23995.2545307873508420124.b4-ty@kernel.dk>
-Date: Wed, 06 Mar 2024 08:35:17 -0700
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ "Rafael J. Wysocki" <rafael@kernel.org>, 
+ "Ricardo B. Marliere" <ricardo@marliere.net>
+Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240305-class_cleanup-block-v1-1-130bb27b9c72@marliere.net>
+References: <20240305-class_cleanup-block-v1-1-130bb27b9c72@marliere.net>
+Subject: Re: [PATCH] block: make block_class constant
+Message-Id: <170973932052.23995.16086522563288140276.b4-ty@kernel.dk>
+Date: Wed, 06 Mar 2024 08:35:20 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -92,16 +88,20 @@ Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.12.5-dev-2aabd
 
 
-On Thu, 29 Feb 2024 13:08:09 -0500, Tony Battersby wrote:
-> Fix an incorrect number of pages being released for buffers that do not
-> start at the beginning of a page.
+On Tue, 05 Mar 2024 16:32:16 -0300, Ricardo B. Marliere wrote:
+> Since commit 43a7206b0963 ("driver core: class: make class_register() take
+> a const *"), the driver core allows for struct class to be in read-only
+> memory, so move the block_class structure to be declared at build time
+> placing it into read-only memory, instead of having to be dynamically
+> allocated at boot time.
 > 
 > 
+> [...]
 
 Applied, thanks!
 
-[1/1] block: Fix page refcounts for unaligned buffers in __bio_release_pages()
-      commit: 38b43539d64b2fa020b3b9a752a986769f87f7a6
+[1/1] block: make block_class constant
+      commit: f8c7511db009d42e2c24e48eeb04e3f1b67ab209
 
 Best regards,
 -- 
