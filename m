@@ -1,147 +1,192 @@
-Return-Path: <linux-kernel+bounces-93842-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93843-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D18F873578
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:16:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19C6987357C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:17:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A13231F265BF
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 11:16:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 95D081F26C79
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 11:17:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4514E779F3;
-	Wed,  6 Mar 2024 11:16:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F8097641F;
+	Wed,  6 Mar 2024 11:17:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fastmail.fm header.i=@fastmail.fm header.b="vOcqFhqR";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="cvPGn+Yb"
-Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Ow+cs96j";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="eaL8lOUs"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 980AA2907;
-	Wed,  6 Mar 2024 11:16:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2213B60B86
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 11:17:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709723768; cv=none; b=jjNiJ1vVPIMBqB6w2J8Glp1B+M/IMmDDgUTdSCNIWRWa7F2evPjq07cOSqsYFnt6WoLmVHMrjfAer4ambqRoNH+V4piumR83RwZi2u8nI9XJT/yA4QQ5boM15lpZyeu9pWxVwS5Y+ylLKrNdUEsOUcTg92c6wuwlDUn2+HpGyJk=
+	t=1709723826; cv=none; b=ElNEet0F5IOSE9j9YP1cfEy+UvIHsmIQ3ZuNg+Z6fXDbtNGRkYpbE474+/PuwkYSA+sq43xZkOukCafCEjbQI0whUlGQ3iA0K/8e7IIzE9Ng7c8/MjwmPhv8jF5QqGThyQ6wx2ndz5jQ5NxWVFdngjHWHtw5Sohk6VDNSQyZHfk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709723768; c=relaxed/simple;
-	bh=Lz0bsq08ymHzHXiwDFFXePeWEE/vJs9dusHDjJSFuew=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cmdA+IzGdQF4koBZt2LQXPWdtWFRJYPHRdoTjLs/vbFBevQCDP0Nn9cNN+TFybA56foeFSCERPua3RBVkw4jq9W7yHgzhJhAKksknFqE5895V1H39K+09ZWwuQy3iIs6Dhx9QRhJT959efjRCnlICi0uksFiQmYeOGTbuFNWp7E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fastmail.fm; spf=pass smtp.mailfrom=fastmail.fm; dkim=pass (2048-bit key) header.d=fastmail.fm header.i=@fastmail.fm header.b=vOcqFhqR; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=cvPGn+Yb; arc=none smtp.client-ip=64.147.123.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fastmail.fm
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastmail.fm
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailout.west.internal (Postfix) with ESMTP id 57B6B320010B;
-	Wed,  6 Mar 2024 06:16:04 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Wed, 06 Mar 2024 06:16:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.fm; h=
-	cc:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1709723763;
-	 x=1709810163; bh=euRAQTDYQadFcgoxjxByg2C0UZ4sLTe5P2pud1Ie/DY=; b=
-	vOcqFhqRoZi6VCBg71kCWd5yXw49z77iXT4BD8RidA4Fy99KfFapYS9kwXH2aWIs
-	i1TlQymqnHcBe+qYSOHtR9fxkRLCqjgJbRnByev/ptB2Hb9tS69I8onIoRRE5eOL
-	R8T+MVH5I4RebPvP5uxVk/NTakk0ClRfQg6DfKxce9w1JuFm67VVV6mbx70NFpSl
-	HAJrnsYEyBQYT3/NB0uHkT0SUO2lfUm/vLhwqjV5gP27VXNN5V/vN/yi0/uDHLvu
-	Unue6QZCyi6bjAbW/gRh8iQRpsd0E61ZTSATSJfiIYQNW20o9njTfKBfUr4N/BOE
-	jY6xTVxatUu3Jc5ur0GoxQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1709723763; x=
-	1709810163; bh=euRAQTDYQadFcgoxjxByg2C0UZ4sLTe5P2pud1Ie/DY=; b=c
-	vPGn+Yb9/85TeZ1uskigiMUgXxGHTygcN2p0b0pHIPdXvwkATbdQjyvRyFcibRyp
-	wlM6sY1krTlA5Px6kS8MrPy7VavYr/nJG04Z5EbDhjI3Onjjt6ssYd2nPbgFkj66
-	IoMlgKpTtySS8T+EeICVktwk5eVam49pnG9mIyU9nYe3VuiYCSy2RqPCJNRkkY5X
-	Kh8aLMpnlUWLslW9xKcGVbhJCVYsOmSJghV2jXXWJtvD2tpyAuyI0h2FWsGHbSnZ
-	25hatWDp+ABgyg1D5UWRKPd0M2Rp6WyxouJ1LSqz8SZESDATLQoR5xrjPcTJQTsd
-	AcM+GOdk6hrdYNUnp9ydw==
-X-ME-Sender: <xms:c1DoZZM_5zIWN_smJQWJnoNsnhb1vh6OY-BlmDu5Cikzxmu2icNPZA>
-    <xme:c1DoZb8_Ds11WMtZQXpqML8f_xBGfTU6QdzXpfq_K214vz4bWRnRbFmKoq_3Lg0Uk
-    LPNKg9OCZlOn6JH>
-X-ME-Received: <xmr:c1DoZYQWy3lWujEcFjKq-XcYyyi-RssklwkivN0EVELmHjpRr_gSV67R0XCD5znDZQkxUfdtdFV2vjx-i1uWEYxwb1Bpdp4-fjnAGBDVtmp2Pg2ugxql>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledriedugddvgecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefkffggfgfuvfevfhfhjggtgfesthejredttddvjeenucfhrhhomhepuegvrhhn
-    ugcuufgthhhusggvrhhtuceosggvrhhnugdrshgthhhusggvrhhtsehfrghsthhmrghilh
-    drfhhmqeenucggtffrrghtthgvrhhnpedtudeggfejfeektdeghfehgedvtdefjeehheeu
-    ueffhfefleefueehteefuddtieenucffohhmrghinhepghhithhhuhgsrdgtohhmnecuve
-    hluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsggvrhhnugdr
-    shgthhhusggvrhhtsehfrghsthhmrghilhdrfhhm
-X-ME-Proxy: <xmx:c1DoZVuaRtCrAO0YU9nEyt4A5R9BQ_ZKV16nStpxDC_TMG6dnBcX7w>
-    <xmx:c1DoZRc_5Y5IYXzJzFiOCPd6R4SNnNMVCssWjDNpuXbsISVg8QiCOw>
-    <xmx:c1DoZR0jZWpm2NXXlhVIqAU80IugBHBqdK4mHR41iRPh6k6aagkBOg>
-    <xmx:c1DoZV7vsYNq8rvkRk6jv9HOPon_gpqQoG_5if7ly6sEHHRnZBPJ6w>
-Feedback-ID: id8a24192:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 6 Mar 2024 06:16:03 -0500 (EST)
-Message-ID: <a77853da-31e3-4a7c-9e1c-580a8136c3bf@fastmail.fm>
-Date: Wed, 6 Mar 2024 12:16:00 +0100
+	s=arc-20240116; t=1709723826; c=relaxed/simple;
+	bh=yPhu6vsgw7QHRremDIPX3LuWb6KtRig10SaljRpXJkY=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=KmJH/vqHU8OHFwarVDvMvq8H5YNz7+rQP+nQehw4BIa/0bSU/+O7fbg0U5ju8H7hBuKlN4q9+2K6D+Q95TIZzb+eQyhYT1cxykMn/0OYtN3nZgWqJqXZU97oiwLxvZNk/iyWsxDXYV967urGmMzBCpbwbTdvxiriPxOzHEANCOY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Ow+cs96j; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=eaL8lOUs; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1709723823;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wHW7H+NnnbWVk08yTAlKOKjJd2SCypABbCCbkHaG7Vo=;
+	b=Ow+cs96j/6gNiW7ugoO8KIHrlmdKEYATkv3Qp2J1cAYRQGeeZuDDo4ZB6TjBcUHc5CClse
+	IsUzkr7wRRxAqqnRdL6OcDTwn4cJkxl/CDEy0JTo8WqVCMSR72h42WAH3FEoPqmdEdFxwc
+	5YYMOlUIN6ptqqejEJegduqvqlyZbIJr3WiMJRxGQ7ReIc2mJMCtWJ4cp1tg4psQDk3lTW
+	P8hliVjJbYl0iU44fZbfcfdfbIGIAHPKO+2HUTZpt6XpHb7MagRr0jIGzh4aFdaHxJT7EM
+	arnVMC0qC5efS/DbrjhERNKbP85lUqxKf8n+tW+k9iKWwVBv/wdqPuLtFajzlg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1709723823;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wHW7H+NnnbWVk08yTAlKOKjJd2SCypABbCCbkHaG7Vo=;
+	b=eaL8lOUs19jzuN8LRnhhQqMAae254/4Yl5w46eEg77gAgLRMNLdWaZMaZyZ9QJUJtx14l5
+	Ib6lkP/D8EZmCtAQ==
+To: Borislav Petkov <bp@alien8.de>
+Cc: "Liang, Kan" <kan.liang@linux.intel.com>, x86-ml <x86@kernel.org>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>, Adrian Hunter
+ <adrian.hunter@intel.com>, Alexander Antonov
+ <alexander.antonov@linux.intel.com>, lkml <linux-kernel@vger.kernel.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: unchecked MSR access error: WRMSR to 0xd84 (tried to write
+ 0x0000000000010003) at rIP: 0xffffffffa025a1b8
+ (snbep_uncore_msr_init_box+0x38/0x60 [intel_uncore])
+In-Reply-To: <20240305121014.GCZecLppQTzWmpI_yR@fat_crate.local>
+References: <20240304201233.GDZeYrMc9exmV21PFB@fat_crate.local>
+ <87sf15ugsz.ffs@tglx> <20240305121014.GCZecLppQTzWmpI_yR@fat_crate.local>
+Date: Wed, 06 Mar 2024 12:17:02 +0100
+Message-ID: <87a5nbvccx.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] fs/fuse: Fix missing FOLL_PIN for direct-io
-To: Miklos Szeredi <miklos@szeredi.hu>, Lei Huang <lei.huang@linux.intel.com>
-Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-References: <1693334193-7733-1-git-send-email-lei.huang@linux.intel.com>
- <CAJfpegtX_XAHhHS4XN1-=cOHy0ZUSxuA_OQO5tdujLVJdE1EdQ@mail.gmail.com>
-Content-Language: en-US, de-DE, fr
-From: Bernd Schubert <bernd.schubert@fastmail.fm>
-In-Reply-To: <CAJfpegtX_XAHhHS4XN1-=cOHy0ZUSxuA_OQO5tdujLVJdE1EdQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 
+On Tue, Mar 05 2024 at 13:10, Borislav Petkov wrote:
+> I guess ship it but we'll pay attention to what else ends up
+> complaining.
 
-
-On 3/6/24 11:01, Miklos Szeredi wrote:
-> On Tue, 29 Aug 2023 at 20:37, Lei Huang <lei.huang@linux.intel.com> wrote:
->>
->> Our user space filesystem relies on fuse to provide POSIX interface.
->> In our test, a known string is written into a file and the content
->> is read back later to verify correct data returned. We observed wrong
->> data returned in read buffer in rare cases although correct data are
->> stored in our filesystem.
->>
->> Fuse kernel module calls iov_iter_get_pages2() to get the physical
->> pages of the user-space read buffer passed in read(). The pages are
->> not pinned to avoid page migration. When page migration occurs, the
->> consequence are two-folds.
->>
->> 1) Applications do not receive correct data in read buffer.
->> 2) fuse kernel writes data into a wrong place.
->>
->> Using iov_iter_extract_pages() to pin pages fixes the issue in our
->> test.
->>
->> An auxiliary variable "struct page **pt_pages" is used in the patch
->> to prepare the 2nd parameter for iov_iter_extract_pages() since
->> iov_iter_get_pages2() uses a different type for the 2nd parameter.
->>
->> Signed-off-by: Lei Huang <lei.huang@linux.intel.com>
-> 
-> Applied, with a modification to only unpin if
-> iov_iter_extract_will_pin() returns true.
-
-Hi Miklos,
-
-do you have an idea if this needs to be back ported and to which kernel
-version?
-I had tried to reproduce data corruption with 4.18 - Lei wrote that he
-could see issues with older kernels as well, but I never managed to
-trigger anything on 4.18-RHEL. Typically I use ql-fstest
-(https://github.com/bsbernd/ql-fstest) and even added random DIO as an
-option - nothing report with weeks of run time. I could try again with
-more recent kernels that have folios.
+Here is an updated version which handles it in the topology core code so
+that MPPARSE is covered as well.
 
 Thanks,
-Bernd
+
+        tglx
+---
+Subject: x86/topology: Ignore non-present APIC IDs in a present package
+From: Thomas Gleixner <tglx@linutronix.de>
+Date: Tue, 05 Mar 2024 10:57:26 +0100
+
+Borislav reported that one of his systems has a broken MADT table which
+advertises eight present APICs and 24 non-present APICs in the same
+package.
+
+The non-present ones are considered hot-pluggable by the topology
+evaluation code, which is obviously bogus as there is no way to hot-plug
+within the same package.
+
+As the topology evaluation code accounts for hot-pluggable CPUs in a
+package, the maximum number of cores per package is computed wrong, which
+in turn causes the uncore performance counter driver to access non-existing
+MSRs. It will probably confuse other entities which rely on the maximum
+number of cores and threads per package too.
+
+Cure this by ignoring hot-pluggable APIC IDs within a present package.
+
+In theory it would be reasonable to just do this unconditionally, but then
+there is this thing called reality^Wvirtualization which ruins
+everything. Virtualization is the only existing user of "physical" hotplug
+and the virtualization tools allow the above scenario. Whether that is
+actually in use or not is unknown.
+
+As it can be argued that the virtualization case is not affected by the
+issues which exposed the reported problem, allow the bogosity if the kernel
+determined that it is running in a VM for now.
+
+Reported-by: Borislav Petkov (AMD) <bp@alien8.de>
+Fixes: 89b0f15f408f ("x86/cpu/topology: Get rid of cpuinfo::x86_max_cores")
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+ arch/x86/kernel/cpu/topology.c |   38 +++++++++++++++++++++++++++++---------
+ 1 file changed, 29 insertions(+), 9 deletions(-)
+
+--- a/arch/x86/kernel/cpu/topology.c
++++ b/arch/x86/kernel/cpu/topology.c
+@@ -157,6 +157,20 @@ static __init bool check_for_real_bsp(u3
+ 	return true;
+ }
+ 
++static unsigned int topo_unit_count(u32 lvlid, enum x86_topology_domains at_level,
++				    unsigned long *map)
++{
++	unsigned int id, end, cnt = 0;
++
++	/* Calculate the exclusive end */
++	end = lvlid + (1U << x86_topo_system.dom_shifts[at_level]);
++
++	/* Unfortunately there is no bitmap_weight_range() */
++	for (id = find_next_bit(map, end, lvlid); id < end; id = find_next_bit(map, end, ++id))
++		cnt++;
++	return cnt;
++}
++
+ static __init void topo_register_apic(u32 apic_id, u32 acpi_id, bool present)
+ {
+ 	int cpu, dom;
+@@ -178,6 +192,20 @@ static __init void topo_register_apic(u3
+ 		cpuid_to_apicid[cpu] = apic_id;
+ 		topo_set_cpuids(cpu, apic_id, acpi_id);
+ 	} else {
++		u32 pkgid = topo_apicid(apic_id, TOPO_PKG_DOMAIN);
++
++		/*
++		 * Check for present APICs in the same package when running
++		 * on bare metal. Allow the bogosity in a guest.
++		 */
++		if (hypervisor_is_type(X86_HYPER_NATIVE) &&
++		    topo_unit_count(pkgid, TOPO_PKG_DOMAIN, phys_cpu_present_map)) {
++			pr_info_once("Ignoring hot-pluggable APIC ID %x in present package.\n",
++				     apic_id);
++			topo_info.nr_rejected_cpus++;
++			return;
++		}
++
+ 		topo_info.nr_disabled_cpus++;
+ 	}
+ 
+@@ -280,7 +308,6 @@ unsigned int topology_unit_count(u32 api
+ {
+ 	/* Remove the bits below @at_level to get the proper level ID of @apicid */
+ 	unsigned int lvlid = topo_apicid(apicid, at_level);
+-	unsigned int id, end, cnt = 0;
+ 
+ 	if (lvlid >= MAX_LOCAL_APIC)
+ 		return 0;
+@@ -290,14 +317,7 @@ unsigned int topology_unit_count(u32 api
+ 		return 0;
+ 	if (which_units == at_level)
+ 		return 1;
+-
+-	/* Calculate the exclusive end */
+-	end = lvlid + (1U << x86_topo_system.dom_shifts[at_level]);
+-	/* Unfortunately there is no bitmap_weight_range() */
+-	for (id = find_next_bit(apic_maps[which_units].map, end, lvlid);
+-	     id < end; id = find_next_bit(apic_maps[which_units].map, end, ++id))
+-		cnt++;
+-	return cnt;
++	return topo_unit_count(lvlid, at_level, apic_maps[which_units].map);
+ }
+ 
+ #ifdef CONFIG_ACPI_HOTPLUG_CPU
 
