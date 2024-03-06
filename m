@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-93550-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93551-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B12F0873163
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:56:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCF83873172
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:56:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2D399B29DEC
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 08:55:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 576041F2157F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 08:56:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B493E5F561;
-	Wed,  6 Mar 2024 08:52:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CB295F869;
+	Wed,  6 Mar 2024 08:53:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="gM8Wsnz9"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="vuL/ruha"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 254565DF06;
-	Wed,  6 Mar 2024 08:52:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFA435D8EA;
+	Wed,  6 Mar 2024 08:53:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709715157; cv=none; b=GXEZ7CSaapXMFdV5QkiEUV4OTCbfG4AceC++qtnYpZFLY3AB57lbIZeKqB12Rx7RcKQlxjFEVA2HFHfqlsU+BeGEldV0G7pPy5hx7fOOIWK7KFetuUeC1LEH0+1YGm1hhTUQcToqwFK/s05Ui56PIlSTa7T8On/oYJo8EIJVMu0=
+	t=1709715182; cv=none; b=Ut7s9Eei0MS3jnEyZOgE5pAGYln3/5SlOS7ti3segBT1Av1OX5CrxMbHejVP+KMsmCQiX5HIH2OSCSrYFblWFT/KVHl4ugbbwF9wMeerj6iD2h/KFOS0oERDs4gnY6Qfsa9FibdV+Qh20QrCRqo842myvLcpu1RcpXwGysEjwDg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709715157; c=relaxed/simple;
-	bh=u8RNfQJSfBD4CTcSoHRc57cRo+AIbvV0rFYkwscolfE=;
+	s=arc-20240116; t=1709715182; c=relaxed/simple;
+	bh=0V+FdkudyMrb9hsJWXPvgznXHBT+oKQDh+0RKZgsok4=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=uMjhI7oCQ7EdvY6AiX23BUrokq8oOdDeBrB7DwHe5dd9TJLmAiCyc+LMEahqV5w+lKrH0eSFmyb71HX9F/MZrCTk1omYYud/BTICjSqN+zw6e+/CnfMfC30iW0eABAFJ88Ef1vdAk5t9AbJVsrcJNA1Q+dKRp9oS4CmKJue3ToM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=gM8Wsnz9; arc=none smtp.client-ip=68.232.154.123
+	 MIME-Version:Content-Type; b=VXE7EFTJzaOsdBCeY1aiRxRBi1UXAzvkJrI92OEIUMgYHm3YdTdNDtN/d3kj21gd4pFcUu7XTfzWFkfpCIU/SOukKPBzINZNm3TRFHbYR0xaeYs6pzC5naaTvtQm0lbqqsBiRtoVQKDIJ+IvcwGjXiQiNuCgQKdqA9UpkIXHhVA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=vuL/ruha; arc=none smtp.client-ip=68.232.153.233
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1709715156; x=1741251156;
+  t=1709715180; x=1741251180;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=u8RNfQJSfBD4CTcSoHRc57cRo+AIbvV0rFYkwscolfE=;
-  b=gM8Wsnz9RAbFLt+8fmkL19ZYgMJujmOS7lWma4tNQTgTT+OfQdi2mzbY
-   bQ2/NhEEtD8bSP3eHKmYXaIo2/2NnUhssR4Ek1bDkyeLuRL2H0s73lPia
-   9Vr6nbPcEuuXDMnhBcasCKygJ6KSc/x1Ax1Yt0OgCiINpuwoDFu/Q4VuB
-   aXFFpoOaahTaVn083kjTLZe6iqgbGZt1icS8SiRJRdZ0FQzEAoBNX0b+a
-   ACx/l6ItTt+Hc0Jc4dZU/DC1W/ujd9cS4c1Yt7AoiH0MZXYQRFDdS9mTm
-   sNFn7f2pLt01JxqEBpGHY5xIFvNSGXqcrFejwLHJVbLMaL+y/Lg6lZg9l
-   g==;
-X-CSE-ConnectionGUID: XrZwrAXjR6uEKFj3VAoGjA==
-X-CSE-MsgGUID: y7hBojv4Q6KY7bpIS5iDzA==
+  bh=0V+FdkudyMrb9hsJWXPvgznXHBT+oKQDh+0RKZgsok4=;
+  b=vuL/ruhaUEk4A72Cm9PBAhaYYKdOMnSHvIHDNq3HG46NEk79mKCTqalk
+   5VlXt5zn30Hxq1HSAxoZc57ayRBuDtTpUsiXlfrDSye7PpLKg8L6DHsMa
+   1LgMTGNBRS0fyFtbAC5RRpmIglWSLKZHJC3hb9bInIlNTadPyh46sjH8R
+   PQmS2ckV24CAIFWvhOEEnH62gmyDog+/9QGjgM5XP6G51h8Cwh/gZWmv4
+   pN5IYlRXo8ix3mWmn3oN5pTYIaaCXirImLbidoShiUdHe5PoFRRtoQxXE
+   WClyvCl1UxwxcnqqFZqnjgp+iCzxWODG9R3bxIeZVwwVhSdsQ4YgHMnwl
+   Q==;
+X-CSE-ConnectionGUID: cO76qCGVTh6esswCB3LBdA==
+X-CSE-MsgGUID: 2VoiqRHsRl+BHBBtBnF3TQ==
 X-IronPort-AV: E=Sophos;i="6.06,207,1705388400"; 
-   d="scan'208";a="17813767"
+   d="scan'208";a="18916180"
 X-Amp-Result: SKIPPED(no attachment in message)
 Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 06 Mar 2024 01:52:35 -0700
+  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 06 Mar 2024 01:52:59 -0700
 Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 6 Mar 2024 01:52:09 -0700
+ 15.1.2507.35; Wed, 6 Mar 2024 01:52:19 -0700
 Received: from CHE-LT-I17164LX.microchip.com (10.10.85.11) by
  chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Wed, 6 Mar 2024 01:52:00 -0700
+ 15.1.2507.35 via Frontend Transport; Wed, 6 Mar 2024 01:52:10 -0700
 From: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
 To: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
 	<pabeni@redhat.com>, <horms@kernel.org>, <saeedm@nvidia.com>,
@@ -71,9 +71,9 @@ CC: <UNGLinuxDriver@microchip.com>, <Thorsten.Kummermehr@microchip.com>,
 	<Pier.Beruto@onsemi.com>, <Selvamani.Rajagopal@onsemi.com>,
 	<Nicolas.Ferre@microchip.com>, <benjamin.bigler@bernformulastudent.ch>,
 	Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
-Subject: [PATCH net-next v3 10/12] net: ethernet: oa_tc6: implement mac-phy interrupt
-Date: Wed, 6 Mar 2024 14:20:15 +0530
-Message-ID: <20240306085017.21731-11-Parthiban.Veerasooran@microchip.com>
+Subject: [PATCH net-next v3 11/12] microchip: lan865x: add driver support for Microchip's LAN865X MAC-PHY
+Date: Wed, 6 Mar 2024 14:20:16 +0530
+Message-ID: <20240306085017.21731-12-Parthiban.Veerasooran@microchip.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240306085017.21731-1-Parthiban.Veerasooran@microchip.com>
 References: <20240306085017.21731-1-Parthiban.Veerasooran@microchip.com>
@@ -86,114 +86,468 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 
-The MAC-PHY interrupt is asserted when the following conditions are met.
+The LAN8650/1 is designed to conform to the OPEN Alliance 10BASE-T1x
+MAC-PHY Serial Interface specification, Version 1.1. The IEEE Clause 4
+MAC integration provides the low pin count standard SPI interface to any
+microcontroller therefore providing Ethernet functionality without
+requiring MAC integration within the microcontroller. The LAN8650/1
+operates as an SPI client supporting SCLK clock rates up to a maximum of
+25 MHz. This SPI interface supports the transfer of both data (Ethernet
+frames) and control (register access).
 
-Receive chunks available - This interrupt is asserted when the previous
-data footer had no receive data chunks available and once the receive
-data chunks become available for reading. On reception of the first data
-header this interrupt will be deasserted.
-
-Transmit chunk credits available - This interrupt is asserted when the
-previous data footer indicated no transmit credits available and once the
-transmit credits become available for transmitting transmit data chunks.
-On reception of the first data header this interrupt will be deasserted.
-
-Extended status event - This interrupt is asserted when the previous data
-footer indicated no extended status and once the extended event become
-available. In this case the host should read status #0 register to know
-the corresponding error/event. On reception of the first data header this
-interrupt will be deasserted.
+By default, the chunk data payload is 64 bytes in size. The Ethernet
+Media Access Controller (MAC) module implements a 10 Mbps half duplex
+Ethernet MAC, compatible with the IEEE 802.3 standard. 10BASE-T1S
+physical layer transceiver integrated is into the LAN8650/1. The PHY and
+MAC are connected via an internal Media Independent Interface (MII).
 
 Signed-off-by: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
 ---
- drivers/net/ethernet/oa_tc6.c | 44 +++++++++++++++++++++++++++++++++--
- 1 file changed, 42 insertions(+), 2 deletions(-)
+ MAINTAINERS                                   |   6 +
+ drivers/net/ethernet/microchip/Kconfig        |   1 +
+ drivers/net/ethernet/microchip/Makefile       |   1 +
+ .../net/ethernet/microchip/lan865x/Kconfig    |  19 +
+ .../net/ethernet/microchip/lan865x/Makefile   |   6 +
+ .../net/ethernet/microchip/lan865x/lan865x.c  | 350 ++++++++++++++++++
+ 6 files changed, 383 insertions(+)
+ create mode 100644 drivers/net/ethernet/microchip/lan865x/Kconfig
+ create mode 100644 drivers/net/ethernet/microchip/lan865x/Makefile
+ create mode 100644 drivers/net/ethernet/microchip/lan865x/lan865x.c
 
-diff --git a/drivers/net/ethernet/oa_tc6.c b/drivers/net/ethernet/oa_tc6.c
-index 93b9afafdf9c..e8c1bd7ba3a5 100644
---- a/drivers/net/ethernet/oa_tc6.c
-+++ b/drivers/net/ethernet/oa_tc6.c
-@@ -118,6 +118,7 @@ struct oa_tc6 {
- 	u16 tx_credits;
- 	u8 rx_chunks_available;
- 	bool rx_buf_overflow;
-+	bool int_flag;
- };
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 603528948f61..f41b7f2257d2 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -14374,6 +14374,12 @@ L:	netdev@vger.kernel.org
+ S:	Maintained
+ F:	drivers/net/ethernet/microchip/lan743x_*
  
- enum oa_tc6_header_type {
-@@ -981,6 +982,14 @@ static int oa_tc6_try_spi_transfer(struct oa_tc6 *tc6)
- 		if (tc6->rx_chunks_available)
- 			spi_length = oa_tc6_prepare_spi_tx_buf_for_rx_chunks(tc6, spi_length);
- 
-+		if (tc6->int_flag) {
-+			tc6->int_flag = false;
-+			if (spi_length == 0) {
-+				oa_tc6_add_empty_chunks_to_spi_buf(tc6, 1);
-+				spi_length = OA_TC6_CHUNK_SIZE;
-+			}
-+		}
++MICROCHIP LAN8650/1 10BASE-T1S MACPHY ETHERNET DRIVER
++M:	Parthiban Veerasooran <parthiban.veerasooran@microchip.com>
++L:	netdev@vger.kernel.org
++S:	Maintained
++F:	drivers/net/ethernet/microchip/lan865x/lan865x.c
 +
- 		if (spi_length == 0)
- 			break;
+ MICROCHIP LAN87xx/LAN937x T1 PHY DRIVER
+ M:	Arun Ramadoss <arun.ramadoss@microchip.com>
+ R:	UNGLinuxDriver@microchip.com
+diff --git a/drivers/net/ethernet/microchip/Kconfig b/drivers/net/ethernet/microchip/Kconfig
+index 43ba71e82260..06ca79669053 100644
+--- a/drivers/net/ethernet/microchip/Kconfig
++++ b/drivers/net/ethernet/microchip/Kconfig
+@@ -56,6 +56,7 @@ config LAN743X
+ 	  To compile this driver as a module, choose M here. The module will be
+ 	  called lan743x.
  
-@@ -1018,8 +1027,10 @@ static int oa_tc6_spi_thread_handler(void *data)
- 	int ret;
++source "drivers/net/ethernet/microchip/lan865x/Kconfig"
+ source "drivers/net/ethernet/microchip/lan966x/Kconfig"
+ source "drivers/net/ethernet/microchip/sparx5/Kconfig"
+ source "drivers/net/ethernet/microchip/vcap/Kconfig"
+diff --git a/drivers/net/ethernet/microchip/Makefile b/drivers/net/ethernet/microchip/Makefile
+index bbd349264e6f..15dfbb321057 100644
+--- a/drivers/net/ethernet/microchip/Makefile
++++ b/drivers/net/ethernet/microchip/Makefile
+@@ -9,6 +9,7 @@ obj-$(CONFIG_LAN743X) += lan743x.o
  
- 	while (likely(!kthread_should_stop())) {
--		/* This kthread will be waken up if there is a tx skb */
--		wait_event_interruptible(tc6->spi_wq,
-+		/* This kthread will be waken up if there is a tx skb or mac-phy
-+		 * interrupt to perform spi transfer with tx chunks.
-+		 */
-+		wait_event_interruptible(tc6->spi_wq, tc6->int_flag ||
- 					 !skb_queue_empty(&tc6->tx_skb_q) ||
- 					 kthread_should_stop());
- 		ret = oa_tc6_try_spi_transfer(tc6);
-@@ -1050,6 +1061,24 @@ static int oa_tc6_update_buffer_status_from_register(struct oa_tc6 *tc6)
- 	return 0;
- }
+ lan743x-objs := lan743x_main.o lan743x_ethtool.o lan743x_ptp.o
  
-+static irqreturn_t oa_tc6_macphy_isr(int irq, void *data)
++obj-$(CONFIG_LAN865X) += lan865x/
+ obj-$(CONFIG_LAN966X_SWITCH) += lan966x/
+ obj-$(CONFIG_SPARX5_SWITCH) += sparx5/
+ obj-$(CONFIG_VCAP) += vcap/
+diff --git a/drivers/net/ethernet/microchip/lan865x/Kconfig b/drivers/net/ethernet/microchip/lan865x/Kconfig
+new file mode 100644
+index 000000000000..f3d60d14e202
+--- /dev/null
++++ b/drivers/net/ethernet/microchip/lan865x/Kconfig
+@@ -0,0 +1,19 @@
++# SPDX-License-Identifier: GPL-2.0-only
++#
++# Microchip LAN865x Driver Support
++#
++
++if NET_VENDOR_MICROCHIP
++
++config LAN865X
++	tristate "LAN865x support"
++	depends on SPI
++	depends on OA_TC6
++	help
++	  Support for the Microchip LAN8650/1 Rev.B1 MACPHY Ethernet chip. It
++	  uses OPEN Alliance 10BASE-T1x Serial Interface specification.
++
++	  To compile this driver as a module, choose M here. The module will be
++	  called lan865x.
++
++endif # NET_VENDOR_MICROCHIP
+diff --git a/drivers/net/ethernet/microchip/lan865x/Makefile b/drivers/net/ethernet/microchip/lan865x/Makefile
+new file mode 100644
+index 000000000000..9f5dd89c1eb8
+--- /dev/null
++++ b/drivers/net/ethernet/microchip/lan865x/Makefile
+@@ -0,0 +1,6 @@
++# SPDX-License-Identifier: GPL-2.0-only
++#
++# Makefile for the Microchip LAN865x Driver
++#
++
++obj-$(CONFIG_LAN865X) += lan865x.o
+diff --git a/drivers/net/ethernet/microchip/lan865x/lan865x.c b/drivers/net/ethernet/microchip/lan865x/lan865x.c
+new file mode 100644
+index 000000000000..8f265227f75a
+--- /dev/null
++++ b/drivers/net/ethernet/microchip/lan865x/lan865x.c
+@@ -0,0 +1,350 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * Microchip's LAN865x 10BASE-T1S MAC-PHY driver
++ *
++ * Author: Parthiban Veerasooran <parthiban.veerasooran@microchip.com>
++ */
++
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include <linux/phy.h>
++#include <linux/oa_tc6.h>
++
++#define DRV_NAME			"lan865x"
++
++/* MAC Network Control Register */
++#define LAN865X_REG_MAC_NET_CTL		0x00010000
++#define MAC_NET_CTL_TXEN		BIT(3) /* Transmit Enable */
++#define MAC_NET_CTL_RXEN		BIT(2) /* Receive Enable */
++
++#define LAN865X_REG_MAC_NET_CFG		0x00010001 /* MAC Network Configuration Reg */
++#define MAC_NET_CFG_PROMISCUOUS_MODE	BIT(4)
++#define MAC_NET_CFG_MULTICAST_MODE	BIT(6)
++#define MAC_NET_CFG_UNICAST_MODE	BIT(7)
++
++#define LAN865X_REG_MAC_L_HASH		0x00010020 /* MAC Hash Register Bottom */
++#define LAN865X_REG_MAC_H_HASH		0x00010021 /* MAC Hash Register Top */
++#define LAN865X_REG_MAC_L_SADDR1	0x00010022 /* MAC Specific Addr 1 Bottom Reg */
++#define LAN865X_REG_MAC_H_SADDR1	0x00010023 /* MAC Specific Addr 1 Top Reg */
++
++struct lan865x_priv {
++	struct work_struct multicast_work;
++	struct net_device *netdev;
++	struct spi_device *spi;
++	struct oa_tc6 *tc6;
++};
++
++static int lan865x_set_hw_macaddr_low_bytes(struct oa_tc6 *tc6, const u8 *mac)
 +{
-+	struct oa_tc6 *tc6 = data;
++	u32 regval;
 +
-+	/* MAC-PHY interrupt can occur for the following reasons.
-+	 * - availability of tx credits if it was 0 before and not reported in
-+	 *   the previous rx footer.
-+	 * - availability of rx chunks if it was 0 before and not reported in
-+	 *   the previous rx footer.
-+	 * - extended status event not reported in the previous rx footer.
-+	 */
-+	tc6->int_flag = true;
-+	/* Wake spi kthread to perform spi transfer */
-+	wake_up_interruptible(&tc6->spi_wq);
++	regval = (mac[3] << 24) | (mac[2] << 16) | (mac[1] << 8) | mac[0];
 +
-+	return IRQ_HANDLED;
++	return oa_tc6_write_register(tc6, LAN865X_REG_MAC_L_SADDR1, regval);
 +}
 +
- /**
-  * oa_tc6_start_xmit - function for sending the tx skb which consists ethernet
-  * frame.
-@@ -1168,8 +1197,19 @@ struct oa_tc6 *oa_tc6_init(struct spi_device *spi, struct net_device *netdev)
- 
- 	sched_set_fifo(tc6->spi_thread);
- 
-+	ret = devm_request_irq(&tc6->spi->dev, tc6->spi->irq, oa_tc6_macphy_isr,
-+			       IRQF_TRIGGER_FALLING, dev_name(&tc6->spi->dev),
-+			       tc6);
-+	if (ret) {
-+		dev_err(&tc6->spi->dev, "Failed to request macphy isr %d\n",
-+			ret);
-+		goto kthread_stop;
++static int lan865x_set_hw_macaddr(struct lan865x_priv *priv, const u8 *mac)
++{
++	int restore_ret;
++	u32 regval;
++	int ret;
++
++	/* Configure MAC address low bytes */
++	ret = lan865x_set_hw_macaddr_low_bytes(priv->tc6, mac);
++	if (ret)
++		return ret;
++
++	/* Prepare and configure MAC address high bytes */
++	regval = (mac[5] << 8) | mac[4];
++	ret = oa_tc6_write_register(priv->tc6, LAN865X_REG_MAC_H_SADDR1, regval);
++	if (!ret)
++		return 0;
++
++	/* Restore the old MAC address low bytes from netdev if the new MAC
++	 * address high bytes setting failed.
++	 */
++	restore_ret = lan865x_set_hw_macaddr_low_bytes(priv->tc6,
++						       priv->netdev->dev_addr);
++	if (restore_ret)
++		return restore_ret;
++
++	return ret;
++}
++
++static void
++lan865x_get_drvinfo(struct net_device *netdev, struct ethtool_drvinfo *info)
++{
++	strscpy(info->driver, DRV_NAME, sizeof(info->driver));
++	strscpy(info->bus_info, dev_name(netdev->dev.parent),
++		sizeof(info->bus_info));
++}
++
++static const struct ethtool_ops lan865x_ethtool_ops = {
++	.get_drvinfo        = lan865x_get_drvinfo,
++	.get_link_ksettings = phy_ethtool_get_link_ksettings,
++	.set_link_ksettings = phy_ethtool_set_link_ksettings,
++};
++
++static int lan865x_set_mac_address(struct net_device *netdev, void *addr)
++{
++	struct lan865x_priv *priv = netdev_priv(netdev);
++	struct sockaddr *address = addr;
++	int ret;
++
++	ret = eth_prepare_mac_addr_change(netdev, addr);
++	if (ret < 0)
++		return ret;
++
++	if (ether_addr_equal(address->sa_data, netdev->dev_addr))
++		return 0;
++
++	ret = lan865x_set_hw_macaddr(priv, address->sa_data);
++	if (ret)
++		return ret;
++
++	eth_hw_addr_set(netdev, address->sa_data);
++
++	return 0;
++}
++
++static u32 lan865x_hash(u8 addr[ETH_ALEN])
++{
++	return (ether_crc(ETH_ALEN, addr) >> 26) & GENMASK(5, 0);
++}
++
++static void lan865x_set_specific_multicast_addr(struct net_device *netdev)
++{
++	struct lan865x_priv *priv = netdev_priv(netdev);
++	struct netdev_hw_addr *ha;
++	u32 hash_lo = 0;
++	u32 hash_hi = 0;
++
++	netdev_for_each_mc_addr(ha, netdev) {
++		u32 bit_num = lan865x_hash(ha->addr);
++		u32 mask = BIT(bit_num);
++
++		/* 5th bit of the 6 bits hash value is used to determine which
++		 * bit to set in either a high or low hash register.
++		 */
++		if (bit_num & BIT(5))
++			hash_hi |= mask;
++		else
++			hash_lo |= mask;
 +	}
 +
- 	return tc6;
- 
-+kthread_stop:
-+	kthread_stop(tc6->spi_thread);
- phy_exit:
- 	oa_tc6_phy_exit(tc6);
- 	return NULL;
++	/* Enabling specific multicast addresses */
++	if (oa_tc6_write_register(priv->tc6, LAN865X_REG_MAC_H_HASH, hash_hi)) {
++		netdev_err(netdev, "Failed to write reg_hashh");
++		return;
++	}
++
++	if (oa_tc6_write_register(priv->tc6, LAN865X_REG_MAC_L_HASH, hash_lo))
++		netdev_err(netdev, "Failed to write reg_hashl");
++}
++
++static void lan865x_multicast_work_handler(struct work_struct *work)
++{
++	struct lan865x_priv *priv = container_of(work, struct lan865x_priv,
++						 multicast_work);
++	u32 regval = 0;
++
++	if (priv->netdev->flags & IFF_PROMISC) {
++		/* Enabling promiscuous mode */
++		regval |= MAC_NET_CFG_PROMISCUOUS_MODE;
++		regval &= (~MAC_NET_CFG_MULTICAST_MODE);
++		regval &= (~MAC_NET_CFG_UNICAST_MODE);
++	} else if (priv->netdev->flags & IFF_ALLMULTI) {
++		/* Enabling all multicast mode */
++		regval &= (~MAC_NET_CFG_PROMISCUOUS_MODE);
++		regval |= MAC_NET_CFG_MULTICAST_MODE;
++		regval &= (~MAC_NET_CFG_UNICAST_MODE);
++	} else if (!netdev_mc_empty(priv->netdev)) {
++		lan865x_set_specific_multicast_addr(priv->netdev);
++		regval &= (~MAC_NET_CFG_PROMISCUOUS_MODE);
++		regval &= (~MAC_NET_CFG_MULTICAST_MODE);
++		regval |= MAC_NET_CFG_UNICAST_MODE;
++	} else {
++		/* enabling local mac address only */
++		if (oa_tc6_write_register(priv->tc6, LAN865X_REG_MAC_H_HASH,
++					  regval)) {
++			netdev_err(priv->netdev, "Failed to write reg_hashh");
++			return;
++		}
++		if (oa_tc6_write_register(priv->tc6, LAN865X_REG_MAC_L_HASH,
++					  regval)) {
++			netdev_err(priv->netdev, "Failed to write reg_hashl");
++			return;
++		}
++	}
++	if (oa_tc6_write_register(priv->tc6, LAN865X_REG_MAC_NET_CFG, regval))
++		netdev_err(priv->netdev,
++			   "Failed to enable promiscuous/multicast/normal mode");
++}
++
++static void lan865x_set_multicast_list(struct net_device *netdev)
++{
++	struct lan865x_priv *priv = netdev_priv(netdev);
++
++	schedule_work(&priv->multicast_work);
++}
++
++static netdev_tx_t lan865x_send_packet(struct sk_buff *skb,
++				       struct net_device *netdev)
++{
++	struct lan865x_priv *priv = netdev_priv(netdev);
++
++	return oa_tc6_start_xmit(priv->tc6, skb);
++}
++
++static int lan865x_hw_disable(struct lan865x_priv *priv)
++{
++	u32 regval;
++
++	if (oa_tc6_read_register(priv->tc6, LAN865X_REG_MAC_NET_CTL, &regval))
++		return -ENODEV;
++
++	regval &= ~(MAC_NET_CTL_TXEN | MAC_NET_CTL_RXEN);
++
++	if (oa_tc6_write_register(priv->tc6, LAN865X_REG_MAC_NET_CTL, regval))
++		return -ENODEV;
++
++	return 0;
++}
++
++static int lan865x_net_close(struct net_device *netdev)
++{
++	struct lan865x_priv *priv = netdev_priv(netdev);
++	int ret;
++
++	netif_stop_queue(netdev);
++	phy_stop(netdev->phydev);
++	ret = lan865x_hw_disable(priv);
++	if (ret) {
++		netdev_err(netdev, "Failed to disable the hardware: %d\n", ret);
++		return ret;
++	}
++
++	return 0;
++}
++
++static int lan865x_hw_enable(struct lan865x_priv *priv)
++{
++	u32 regval;
++
++	if (oa_tc6_read_register(priv->tc6, LAN865X_REG_MAC_NET_CTL, &regval))
++		return -ENODEV;
++
++	regval |= MAC_NET_CTL_TXEN | MAC_NET_CTL_RXEN;
++
++	if (oa_tc6_write_register(priv->tc6, LAN865X_REG_MAC_NET_CTL, regval))
++		return -ENODEV;
++
++	return 0;
++}
++
++static int lan865x_net_open(struct net_device *netdev)
++{
++	struct lan865x_priv *priv = netdev_priv(netdev);
++	int ret;
++
++	ret = lan865x_hw_enable(priv);
++	if (ret) {
++		netdev_err(netdev, "Failed to enable hardware: %d\n", ret);
++		return ret;
++	}
++
++	phy_start(netdev->phydev);
++
++	return 0;
++}
++
++static const struct net_device_ops lan865x_netdev_ops = {
++	.ndo_open		= lan865x_net_open,
++	.ndo_stop		= lan865x_net_close,
++	.ndo_start_xmit		= lan865x_send_packet,
++	.ndo_set_rx_mode	= lan865x_set_multicast_list,
++	.ndo_set_mac_address	= lan865x_set_mac_address,
++};
++
++static int lan865x_probe(struct spi_device *spi)
++{
++	struct net_device *netdev;
++	struct lan865x_priv *priv;
++	int ret;
++
++	netdev = alloc_etherdev(sizeof(struct lan865x_priv));
++	if (!netdev)
++		return -ENOMEM;
++
++	priv = netdev_priv(netdev);
++	priv->netdev = netdev;
++	priv->spi = spi;
++	spi_set_drvdata(spi, priv);
++	INIT_WORK(&priv->multicast_work, lan865x_multicast_work_handler);
++
++	priv->tc6 = oa_tc6_init(spi, netdev);
++	if (!priv->tc6) {
++		ret = -ENODEV;
++		goto free_netdev;
++	}
++
++	/* Get the MAC address from the SPI device tree node */
++	if (device_get_ethdev_address(&spi->dev, netdev))
++		eth_hw_addr_random(netdev);
++
++	ret = lan865x_set_hw_macaddr(priv, netdev->dev_addr);
++	if (ret) {
++		dev_err(&spi->dev, "Failed to configure MAC");
++		goto oa_tc6_exit;
++	}
++
++	netdev->if_port = IF_PORT_10BASET;
++	netdev->irq = spi->irq;
++	netdev->netdev_ops = &lan865x_netdev_ops;
++	netdev->ethtool_ops = &lan865x_ethtool_ops;
++
++	ret = register_netdev(netdev);
++	if (ret) {
++		dev_err(&spi->dev, "Register netdev failed (ret = %d)", ret);
++		goto oa_tc6_exit;
++	}
++
++	return 0;
++
++oa_tc6_exit:
++	oa_tc6_exit(priv->tc6);
++free_netdev:
++	free_netdev(priv->netdev);
++	return ret;
++}
++
++static void lan865x_remove(struct spi_device *spi)
++{
++	struct lan865x_priv *priv = spi_get_drvdata(spi);
++
++	cancel_work_sync(&priv->multicast_work);
++	unregister_netdev(priv->netdev);
++	oa_tc6_exit(priv->tc6);
++	free_netdev(priv->netdev);
++}
++
++static const struct of_device_id lan865x_dt_ids[] = {
++	{ .compatible = "microchip,lan8650" },
++	{ .compatible = "microchip,lan8651" },
++	{ /* Sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, lan865x_dt_ids);
++
++static struct spi_driver lan865x_driver = {
++	.driver = {
++		.name = DRV_NAME,
++		.of_match_table = lan865x_dt_ids,
++	 },
++	.probe = lan865x_probe,
++	.remove = lan865x_remove,
++};
++module_spi_driver(lan865x_driver);
++
++MODULE_DESCRIPTION(DRV_NAME " 10Base-T1S MACPHY Ethernet Driver");
++MODULE_AUTHOR("Parthiban Veerasooran <parthiban.veerasooran@microchip.com>");
++MODULE_LICENSE("GPL");
 -- 
 2.34.1
 
