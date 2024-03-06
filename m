@@ -1,131 +1,155 @@
-Return-Path: <linux-kernel+bounces-93867-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93868-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA7B7873607
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:05:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E33B87360C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:06:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 39B47B21C2B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:05:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A8E91F241EE
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:06:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D03B7FBD1;
-	Wed,  6 Mar 2024 12:05:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E9317F7E6;
+	Wed,  6 Mar 2024 12:05:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b="ZxmTINy2"
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="fCgebXBY"
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2C0D78B43
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 12:05:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B7097FBC1
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 12:05:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709726732; cv=none; b=Kdf8fuavEPlbX3uPkaWJh0gceaAE5MGqA2jL9SdYBNAx924nqOeCg+PrRKwlOHEUG9AQB1YO58m5YKn4EdZdogwxt0MFXNmKooC94kFGbFl8NTghbt8cHZInUKmiA2LZ0s4uRLD4QxL4OzRFJflMq1ALgkvpTLyvy+qhF7UjqYs=
+	t=1709726749; cv=none; b=Wt76Jk0WB0VO2qO6R9aF0IG47lrvoWLfTtLFab4s0h/S70esUOgeL1BSyWvbyNTIUOTNLr3UMNVIP7s8NfXFi4S6E0nUorv9GQ9zwb9iEg3BkVO8Ab7qLgrrMLnNNUGgHe+oIsJ5UxVK80dQFMw0VYs1eTHbmI/VCf+0sLq25gc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709726732; c=relaxed/simple;
-	bh=mQQs1EFIy6cUXGKjJECkP040wa7X/nRY4hPc2rW/q60=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tS68l6aK/FLRbt40VYqMBDDq/0oWfjWahumFdJ9PojL5298RyxPNSoFpoF9w83yyvMWNmVVU08WirJbJuwtOEeRbK7pHAE8jqyB7+INvbjFLGZcwIzG51OpaWkMJuR3NadIqQfdIMDBKJh00dYqkLr+ClhFFx3JiHr7HguVvpeQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu; spf=pass smtp.mailfrom=szeredi.hu; dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b=ZxmTINy2; arc=none smtp.client-ip=209.85.218.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=szeredi.hu
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a45bdf6e9c2so55287166b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 04:05:30 -0800 (PST)
+	s=arc-20240116; t=1709726749; c=relaxed/simple;
+	bh=G2h6GxpF5//h2blrI86hP/+PhlQEWBbGNRiIcqGjf/8=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mFuNQ7WRmb5tJmXYSbNchVtcvmwUfrGq1y/vAEPibP+PX0fV0dtsQVtKGdzlCqDmUFULUprD37Al2jIn+nnBYDXfx5mqY2XMqzcp7DonivgrwiXhHGgDP1qAHueIY8fKiMGKscgQdUfB1GDW3MJU4ICrNkc3+5CbBimvEAhjbf0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=fCgebXBY; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a44e3176120so498569466b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 04:05:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google; t=1709726729; x=1710331529; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=XY+7Za+1aql30Pw2upIoYUaonhwvVoEqAX4whkFzjIQ=;
-        b=ZxmTINy22PjukoxlJh+xu2YsT8XpdR/E1RqaQP89dENQIrKxcUW+um5xwwtmJ4QWe9
-         uudcNLrqYgfQaeceZU3BdVREbEtVFNfuyF2kllGLznaKuik5ISDl45dzlpiyRbYMKjBo
-         dGeVqdbBVeAbY4eynlFGvlNHqoCP6PBAV0MOA=
+        d=google.com; s=20230601; t=1709726746; x=1710331546; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=vQBd6ohf0amX1OsSt75FPx0/Dj4ojSvbJw4UdMmdjuQ=;
+        b=fCgebXBYJimHJMxp00O/23sjiuNFitpMjZsaJr+t6q6WsXMP4XPGS4Lz5IjYEjB7kN
+         c2DnCATa1OzElDPifJZjjvufaKVJfGOqdwNRU2CeOaZdYCWzzCMlsIQ8ajx1TuxKI+fQ
+         ev65ybWNwJUFOE3Yh24ECvFK24u4ebuM/duhXeVoKxLSjWXIkRn2cMx6QcMxGV8WEYpj
+         TS/nLoCvrcxajaNtl83q3/2ebk3YVBA3Dlc1+V/QTIr2CZXSkP9y1Rek5NtWM+kp9Au5
+         3qkdO2btEyrw5IdlG6zugk3VnzNKpr2CxlGi1yrL83W6XGhbIGsWdt+FQpdbtvjPhoMY
+         ZJkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709726729; x=1710331529;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XY+7Za+1aql30Pw2upIoYUaonhwvVoEqAX4whkFzjIQ=;
-        b=ibnqeRNPv+sYwRqsshq8M2EOC4wuDvetRPVGeQaF8Z6t+VqBKgLk/B10LkPCeb5+/0
-         CxptcPNhH+D3sC9jLDsfb+AQE+2YmyEwZM41ciyVG4ZxMk9/T/CNI4VJeI45RpEUbXCJ
-         sAXcFxJGAb1mRK2GQMqBEvlXbwpzAVAW++Lgr/fMYaOSfs+i4Tbuq1kudjHlARhXkczA
-         EhzR0BgLNkF0GfwN1qfNzCoCGJkgxG7wqgmGEWEMkUfInHnyCGhrQd9WSvp+cPefvRFk
-         6uB+YPQc/IB03rdnEPTph5RUCpytK7nQF96gPhEZesWOtwN+4UivzyBY9ylpqtK0o3wP
-         IEzg==
-X-Forwarded-Encrypted: i=1; AJvYcCWjqP9+34tjevPavUJwizvJQR66XFPhPfo12WGQXE4zyHvHA3se0TrW5PHfr6U/TKsw8kv43somj/UFtMvqw9bm2jKPx3Cbbr4w8Sdg
-X-Gm-Message-State: AOJu0YzLx4dFt+5MFh1vXzvFaXF/uonInNt4mQVIiWo85yb2LEnPTrK2
-	TkbtCjCBIVQlFTf38wnOF+a/Gildu+5qU3OqxJ6LpN1O+yRsd9Cj2DIMBPf+WzbOiG/CXnaoPmS
-	x5b0K3ixON1pZXatoFwRaNz9zWeJbIGIaZn9BcT+7I//R55AL
-X-Google-Smtp-Source: AGHT+IEqSap/dVxgYDi4Ef/ajNPQzeDWKChZuy6Wwjo82aRv3qQnIGU342V/AljMYll2seVjEJOSE2pw7cL48nK3T9k=
-X-Received: by 2002:a17:906:fb93:b0:a45:9347:e3d6 with SMTP id
- lr19-20020a170906fb9300b00a459347e3d6mr2516460ejb.66.1709726729015; Wed, 06
- Mar 2024 04:05:29 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709726746; x=1710331546;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vQBd6ohf0amX1OsSt75FPx0/Dj4ojSvbJw4UdMmdjuQ=;
+        b=RYf9opSZCF0pi48X5fQO1sfGhjUQudBO62ObGJuEKIxhkb2DoIFIP1vRAUbJ9i/lSP
+         p62stmCVhQy95Cg43Yiwj8gAKJPUkXcudeBf0r7/WfIhTlaHhrWBVsBaSPSIY/5rnmFh
+         LeyES8dpp6uonPlJH5QVeUyv+fUc/sEpzzn/C22rqP+EmM+1qSTp0YpWI44+N3Id8XjJ
+         HfiAZrDDfjsV6WTA94cPFb6uiTXtOCb98iTNJY49bqRW0DoTc30BSRL7mm532TGa3pxA
+         Bb3sHp+HdzcflKvdv+al9RNuDkeVHAh6gjq5OJM4WuB7enPtTqKeCoxEm1uEi45pGmDk
+         fi2A==
+X-Forwarded-Encrypted: i=1; AJvYcCVtsmvB3U/Sl4idmlwQFFu3GZXfKhwFZJtbyxjO5IwP2/k9bJAg+wLOOSHQFkBqdBgKtfVXoUKT7JDXIX6gKOeiU5BuV2chZZie4P5n
+X-Gm-Message-State: AOJu0YwWqHmyWno6QdurbeRxKYfd1+0P0NR3E99Yy0Dor81ocuFAhs+e
+	aCeWj9KVN3El4+UKizMuDY5nG5f8W2+4i6ZQtjUkOsPoWJDf58JKIRmAzRCAJw==
+X-Google-Smtp-Source: AGHT+IENvyQtE8JoTg5kWVbQtkdALMsWYIyvhW3MrnxD6N4yBhPGZfzqW1SSMI9IG01/r9t2iOYJ8Q==
+X-Received: by 2002:a17:906:b850:b0:a45:ad29:72e7 with SMTP id ga16-20020a170906b85000b00a45ad2972e7mr2827372ejb.36.1709726746372;
+        Wed, 06 Mar 2024 04:05:46 -0800 (PST)
+Received: from google.com (64.227.90.34.bc.googleusercontent.com. [34.90.227.64])
+        by smtp.gmail.com with ESMTPSA id h20-20020a170906591400b00a3d5efc65e0sm7072616ejq.91.2024.03.06.04.05.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Mar 2024 04:05:45 -0800 (PST)
+Date: Wed, 6 Mar 2024 12:05:38 +0000
+From: Quentin Perret <qperret@google.com>
+To: Christoph Hellwig <hch@infradead.org>, Will Deacon <will@kernel.org>,
+	Chris Goldsworthy <quic_cgoldswo@quicinc.com>,
+	Android KVM <android-kvm@google.com>,
+	Patrick Daly <quic_pdaly@quicinc.com>,
+	Alex Elder <elder@linaro.org>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Murali Nalajal <quic_mnalajal@quicinc.com>,
+	Trilok Soni <quic_tsoni@quicinc.com>,
+	Srivatsa Vaddagiri <quic_svaddagi@quicinc.com>,
+	Carl van Schaik <quic_cvanscha@quicinc.com>,
+	Philip Derrin <quic_pderrin@quicinc.com>,
+	Prakruthi Deepak Heragu <quic_pheragu@quicinc.com>,
+	Jonathan Corbet <corbet@lwn.net>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	Fuad Tabba <tabba@google.com>,
+	Sean Christopherson <seanjc@google.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-arm-msm@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org
+Subject: Re: Re: Re: Re: [PATCH v17 19/35] arch/mm: Export direct {un,}map
+ functions
+Message-ID: <ZehcEqvC3Y9YytNi@google.com>
+References: <20240222-gunyah-v17-0-1e9da6763d38@quicinc.com>
+ <20240222-gunyah-v17-19-1e9da6763d38@quicinc.com>
+ <ZdhEtH7xzbzdhS2j@infradead.org>
+ <20240223071006483-0800.eberman@hu-eberman-lv.qualcomm.com>
+ <ZeXIWBLVWzVycm0r@google.com>
+ <20240304094828133-0800.eberman@hu-eberman-lv.qualcomm.com>
+ <Zec6shyjblcZvTG0@google.com>
+ <20240305093131473-0800.eberman@hu-eberman-lv.qualcomm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1693334193-7733-1-git-send-email-lei.huang@linux.intel.com>
- <CAJfpegtX_XAHhHS4XN1-=cOHy0ZUSxuA_OQO5tdujLVJdE1EdQ@mail.gmail.com> <a77853da-31e3-4a7c-9e1c-580a8136c3bf@fastmail.fm>
-In-Reply-To: <a77853da-31e3-4a7c-9e1c-580a8136c3bf@fastmail.fm>
-From: Miklos Szeredi <miklos@szeredi.hu>
-Date: Wed, 6 Mar 2024 13:05:17 +0100
-Message-ID: <CAJfpeguuRXO01hdmEr5ffMUNDyp5VPTYToOENjacYNAd1nu6Rw@mail.gmail.com>
-Subject: Re: [PATCH v1] fs/fuse: Fix missing FOLL_PIN for direct-io
-To: Bernd Schubert <bernd.schubert@fastmail.fm>
-Cc: Lei Huang <lei.huang@linux.intel.com>, linux-kernel@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240305093131473-0800.eberman@hu-eberman-lv.qualcomm.com>
 
-On Wed, 6 Mar 2024 at 12:16, Bernd Schubert <bernd.schubert@fastmail.fm> wrote:
->
->
->
-> On 3/6/24 11:01, Miklos Szeredi wrote:
-> > On Tue, 29 Aug 2023 at 20:37, Lei Huang <lei.huang@linux.intel.com> wrote:
-> >>
-> >> Our user space filesystem relies on fuse to provide POSIX interface.
-> >> In our test, a known string is written into a file and the content
-> >> is read back later to verify correct data returned. We observed wrong
-> >> data returned in read buffer in rare cases although correct data are
-> >> stored in our filesystem.
-> >>
-> >> Fuse kernel module calls iov_iter_get_pages2() to get the physical
-> >> pages of the user-space read buffer passed in read(). The pages are
-> >> not pinned to avoid page migration. When page migration occurs, the
-> >> consequence are two-folds.
-> >>
-> >> 1) Applications do not receive correct data in read buffer.
-> >> 2) fuse kernel writes data into a wrong place.
-> >>
-> >> Using iov_iter_extract_pages() to pin pages fixes the issue in our
-> >> test.
-> >>
-> >> An auxiliary variable "struct page **pt_pages" is used in the patch
-> >> to prepare the 2nd parameter for iov_iter_extract_pages() since
-> >> iov_iter_get_pages2() uses a different type for the 2nd parameter.
-> >>
-> >> Signed-off-by: Lei Huang <lei.huang@linux.intel.com>
-> >
-> > Applied, with a modification to only unpin if
-> > iov_iter_extract_will_pin() returns true.
->
-> Hi Miklos,
->
-> do you have an idea if this needs to be back ported and to which kernel
-> version?
-> I had tried to reproduce data corruption with 4.18 - Lei wrote that he
-> could see issues with older kernels as well, but I never managed to
-> trigger anything on 4.18-RHEL. Typically I use ql-fstest
-> (https://github.com/bsbernd/ql-fstest) and even added random DIO as an
-> option - nothing report with weeks of run time. I could try again with
-> more recent kernels that have folios.
+On Tuesday 05 Mar 2024 at 12:26:59 (-0800), Elliot Berman wrote:
+> I still disagree that this is a Gunyah-specific problem. As far as we
+> can tell, Arm doesn't specify how EL2 can tell EL1 its S2 page tables
+> couldn't give a validation translation of the IPA from stage 1. IMO,
+> downstream/Android pKVM is violating spec for ESR_EL1 by using the
+> S1PTW bit (which is res0 for everyone except EL2 [1]) and this means
+> that guests need to be pKVM-enlightened.
 
-I don't think that corruption will happen in real life.  So I'm not
-sure we need to bother with backporting, and definitely not before
-when the infrastructure was introduced.
+Not really, in pKVM we have a very clear distinction between host Linux
+and guests, and only the host needs to be enlightened. But luckily,
+since pKVM is part of Linux, this is pretty much an internal kernel
+thing, so we're very flexible and if the S1PTW trick ever conflicts
+with something else (e.g. NV) we can fairly easily switch to another
+approach. We can tolerate non-architectural tricks like that between
+pKVM and host Linux because that is not ABI, but we certainly can't do
+that for guests.
+
+> If we are adding pKVM
+> enlightment in the exception handlers, can we add Gunyah enlightment to
+> handle the same?
+
+If you mean extending the Linux SEA handler so it does what Gunyah
+wants, then I'm personally not supportive of that idea since the
+'contract' between Linux and Gunyah _is_ the architecture.
+
+The only ways I could see Gunyah delegate stage-2 fault handling to
+Linux cleanly is:
+
+ - either talk to Arm to introduce a new ESR specifically for this,
+   which doesn't sound entirely crazy to me;
+
+ - or have Gunyah and Linux negotiate in software the location of the
+   handlers. That probably means SDEI or equivalent which is a can of
+   worm in itself I presume, and I'm not sure how feasible it would be
+   for this handler to live in the Gunyah driver (that too probably
+   requires exporting kernel symbols we don't want to export).
 
 Thanks,
-Miklos
+Quentin
 
