@@ -1,74 +1,73 @@
-Return-Path: <linux-kernel+bounces-93622-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93643-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A0DC87327A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:23:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D66618732C2
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:41:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE5101C24251
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:23:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C71C8B254D2
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:40:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7B105DF2E;
-	Wed,  6 Mar 2024 09:23:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B62225DF31;
+	Wed,  6 Mar 2024 09:40:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Zhv+RRBJ"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="DNO8QwTP"
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE7EE5DF16
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 09:23:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1ED15DF05
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 09:40:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.244.123.138
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709717028; cv=none; b=UEZfmBxfEH8PBC0+FRi8lR4+vKB3FBbnGD08eNiDuoo4zFVyZjS36k/n4NvrvOLC1b4ckGvj33atF9k8BQlw67xwRSeq7ndMAwQZKRWogoIkcO6maElFF5x8BRDTHprNNe9759uEUWZJumFtr3Eo4ulmS3XN/noeYrZBjetEsgM=
+	t=1709718035; cv=none; b=lUIEAwMLfnzlVYLgaJxQsw/We086BZhhjf19LjLQ14KyQj2bUdy0QEwI0HqVdKjezsegSGceoFkDdFM5l+TYcTdvJtdCeLwLiN5VRCwztT9LlMrjP7v3JnJ5S6OgSYB60d9M/koIkntDNIZSIEEpGlPfcQfScp9At371G+rClVI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709717028; c=relaxed/simple;
-	bh=8azOrkKOqGN52FwT3QPVf8+BwT58YaCcbX8PIF4gYek=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=IAFgCN7HLiTVEgr1yegXSQFFyZoJxxxy7y0R3feoQ8PemSc551oAngvOGZVuDQpHw55RrqPQ5cmqhdnqCJqZHY+QAIo5zRKyDqHnYipOJo66zpZLdlgaNtOu6MKtRoLdtveBfx38vrv3hn2vBRuhu4Fo0TkN2yMj1ERaZkt0mF4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Zhv+RRBJ; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709717028; x=1741253028;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=8azOrkKOqGN52FwT3QPVf8+BwT58YaCcbX8PIF4gYek=;
-  b=Zhv+RRBJ++jFZCskWTbxZGrjbVFzJg05q/jXT0l0ZdFMkMO3U+h3P2XX
-   1YIGL2HL+pJ6U2RlqhtQlrAiZ8fDEl4kQGSz4MpACDiQX97sw3mrvFssD
-   NGAVUkL0tetdVkX/SKm/Er+juVq0eV/ps34ko3wxsYaoemV+n/V0zgkx7
-   azBcAaeBJTtY5fhvjfEXHtZbwpqaE9QNTn1gjFpM9rCwAM+2UxMKMHRJu
-   sc4QokcQ0Ng02Fc/62FUgXMovMzc3wuV1dkxmNFVTuWUdL+FaGyASMy80
-   oPkqOCQkabBqVYUnfvyuCb20le1a34aKuTb/L4tZc9ZN1RtcMwZWaGSuY
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11004"; a="8135416"
-X-IronPort-AV: E=Sophos;i="6.06,207,1705392000"; 
-   d="scan'208";a="8135416"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 01:23:47 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,207,1705392000"; 
-   d="scan'208";a="9635982"
-Received: from rjongalo-mobl2.ger.corp.intel.com (HELO localhost) ([10.252.33.211])
-  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 01:23:41 -0800
-From: Jani Nikula <jani.nikula@linux.intel.com>
-To: Hsin-Yi Wang <hsinyi@chromium.org>, Dmitry Baryshkov
- <dmitry.baryshkov@linaro.org>, Douglas Anderson <dianders@chromium.org>
-Cc: Neil Armstrong <neil.armstrong@linaro.org>, Jessica Zhang
- <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, Maarten
- Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
- <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David
- Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 4/5] drm/panel-edp: Match edp_panels with panel identity
-In-Reply-To: <20240306004347.974304-5-hsinyi@chromium.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20240306004347.974304-1-hsinyi@chromium.org>
- <20240306004347.974304-5-hsinyi@chromium.org>
-Date: Wed, 06 Mar 2024 11:23:37 +0200
-Message-ID: <87msrbzpba.fsf@intel.com>
+	s=arc-20240116; t=1709718035; c=relaxed/simple;
+	bh=yAmwTThFElfEUXuzDwez7+utuY3FM973SAHJmZYL1KY=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=hPsppFK8mTFvACwGaW/S9TpUGD/BbZea69JEDDesxiNMhZeUOzRfbq+WEJyYvV7egPykCqs2NQyebShHMn6y5cDIWkRBXSz+69TIKqNfHDld8aiFfN7R7QSwVsnn1BHxj4MXG425aIedPkGzV5NeXDgplqObJfYte9uQ5TjpqfQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=DNO8QwTP; arc=none smtp.client-ip=60.244.123.138
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: 90b6474edb9d11eeb8927bc1f75efef4-20240306
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=ekRAdx9PacrM+v9N8B7aPw62g80zVfoirlx+37NhmtQ=;
+	b=DNO8QwTPESmv3TC7DhSCetbJHh8NTV5szUqFOiz29AZ1rDP0131XamuPaU9zpHM+8zMp82ffHL2lvL3fCSGo9fcuSK3XhIF11aMiuq+uLww+ah7nBVCkdU0nowZgXR5C52PVvWEqWFImev05cJfZoNCcvr0ohPZLg8ECFbyw2so=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.37,REQID:3b8956a1-6c99-408c-ab7f-263a0ce9db75,IP:0,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:0
+X-CID-META: VersionHash:6f543d0,CLOUDID:7a4f1590-e2c0-40b0-a8fe-7c7e47299109,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:11|1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES
+	:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
+X-UUID: 90b6474edb9d11eeb8927bc1f75efef4-20240306
+Received: from mtkmbs11n1.mediatek.inc [(172.21.101.185)] by mailgw01.mediatek.com
+	(envelope-from <chunhui.li@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 887273234; Wed, 06 Mar 2024 17:40:27 +0800
+Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Wed, 6 Mar 2024 17:40:25 +0800
+Received: from mbjsdccf07.gcn.mediatek.inc (10.15.20.246) by
+ mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Wed, 6 Mar 2024 17:40:24 +0800
+From: Chunhui Li <chunhui.li@mediatek.com>
+To: Petr Mladek <pmladek@suse.com>, Steven Rostedt <rostedt@goodmis.org>, John
+ Ogness <john.ogness@linutronix.de>, Sergey Senozhatsky
+	<senozhatsky@chromium.org>, Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+CC: <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>, Chunhui Li
+	<chunhui.li@mediatek.com>
+Subject: [PATCH] printk: fix _entry_ptr build warning
+Date: Wed, 6 Mar 2024 17:26:47 +0800
+Message-ID: <20240306092647.16010-1-chunhui.li@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,146 +75,48 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain
+X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-AS-Result: No-10--0.708200-8.000000
+X-TMASE-MatchedRID: Z2f9DQPf1tkE7MuQrZP2o5dc7I2df+ms75oFMklhrnhGL0g1nVmkYVO4
+	BD7nLMxnlTJXKqh1ne2/LclmUK1hkobzTO6asfbjyDp+jSvEtWv0O7M3lSnTW5soi2XrUn/Jn6K
+	dMrRsL14qtq5d3cxkNRqXnrxrKCOXFcwn/U1iS4dD30h1PAU6P6/GTBhLbUgDqhGWfuPUaq93ob
+	md2bsjHipWuuOW0EtOvAgHKzqJDgOL28eWhdXbLK92atjiJrAoF0aD5ljt43pMcHZD6gqu7wxMj
+	fifIXfowkvVoA11Twp+3BndfXUhXQ==
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--0.708200-8.000000
+X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-SNTS-SMTP: 1CE3B773FBAD0C22075C8D3E0E295523F7348289C887245A523E5D76D60A61202000:8
+X-MTK: N
 
-On Tue, 05 Mar 2024, Hsin-Yi Wang <hsinyi@chromium.org> wrote:
-> It's found that some panels have variants that they share the same panel id
-> although their EDID and names are different. When matching generic edp
-> panels, we should first match with both panel identity, which contains both
-> panel id and panel name. If not found, match with panel id only.
+We build with Werror and suffer build error when
+enable CONFIG_PRINTK_INDEX, such as
+gfp.h:223:2: error: unused variable '_entry_ptr'
+ratelimit.h:31:3: error: unused variable '_entry_ptr'
+kallsyms.h:172:2: error: unused variable '_entry_ptr'
+[-Werror,-Wunused-variable]
 
-Do you want to start matching also with name, for all panels? That's
-totally up to you, but that's the big functional change here.
+Fix the warning by appending __attribute__((unused)).
 
-BR,
-Jani.
+Signed-off-by: Chunhui Li <chunhui.li@mediatek.com>
+---
+ include/linux/printk.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> ---
-> v3->v4: combine name and id to identity.
-> ---
->  drivers/gpu/drm/panel/panel-edp.c | 45 ++++++++++++++++---------------
->  1 file changed, 24 insertions(+), 21 deletions(-)
->
-> diff --git a/drivers/gpu/drm/panel/panel-edp.c b/drivers/gpu/drm/panel/panel-edp.c
-> index d094cfc43da8..fb70e97a2e71 100644
-> --- a/drivers/gpu/drm/panel/panel-edp.c
-> +++ b/drivers/gpu/drm/panel/panel-edp.c
-> @@ -210,15 +210,12 @@ struct panel_desc {
->   * struct edp_panel_entry - Maps panel ID to delay / panel name.
->   */
->  struct edp_panel_entry {
-> -	/** @panel_id: 32-bit ID for panel, encoded with drm_edid_encode_panel_id(). */
-> -	u32 panel_id;
-> +	/** @ident: edid identity used for panel matching. */
-> +	const struct drm_edid_ident ident;
->  
->  	/** @delay: The power sequencing delays needed for this panel. */
->  	const struct panel_delay *delay;
->  
-> -	/** @name: Name of this panel (for printing to logs). */
-> -	const char *name;
-> -
->  	/** @override_edid_mode: Override the mode obtained by edid. */
->  	const struct drm_display_mode *override_edid_mode;
->  };
-> @@ -691,7 +688,7 @@ static int detected_panel_show(struct seq_file *s, void *data)
->  	else if (!p->detected_panel)
->  		seq_puts(s, "HARDCODED\n");
->  	else
-> -		seq_printf(s, "%s\n", p->detected_panel->name);
-> +		seq_printf(s, "%s\n", p->detected_panel->ident.name);
->  
->  	return 0;
->  }
-> @@ -761,7 +758,7 @@ static void panel_edp_parse_panel_timing_node(struct device *dev,
->  		dev_err(dev, "Reject override mode: No display_timing found\n");
->  }
->  
-> -static const struct edp_panel_entry *find_edp_panel(u32 panel_id);
-> +static const struct edp_panel_entry *find_edp_panel(u32 panel_id, const struct drm_edid *edid);
->  
->  static int generic_edp_panel_probe(struct device *dev, struct panel_edp *panel)
->  {
-> @@ -799,7 +796,6 @@ static int generic_edp_panel_probe(struct device *dev, struct panel_edp *panel)
->  	base_block = drm_edid_read_base_block(panel->ddc);
->  	if (base_block) {
->  		panel_id = drm_edid_get_panel_id(base_block);
-> -		drm_edid_free(base_block);
->  	} else {
->  		dev_err(dev, "Couldn't identify panel via EDID\n");
->  		ret = -EIO;
-> @@ -807,7 +803,9 @@ static int generic_edp_panel_probe(struct device *dev, struct panel_edp *panel)
->  	}
->  	drm_edid_decode_panel_id(panel_id, vend, &product_id);
->  
-> -	panel->detected_panel = find_edp_panel(panel_id);
-> +	panel->detected_panel = find_edp_panel(panel_id, base_block);
-> +
-> +	drm_edid_free(base_block);
->  
->  	/*
->  	 * We're using non-optimized timings and want it really obvious that
-> @@ -840,7 +838,7 @@ static int generic_edp_panel_probe(struct device *dev, struct panel_edp *panel)
->  		panel->detected_panel = ERR_PTR(-EINVAL);
->  	} else {
->  		dev_info(dev, "Detected %s %s (%#06x)\n",
-> -			 vend, panel->detected_panel->name, product_id);
-> +			 vend, panel->detected_panel->ident.name, product_id);
->  
->  		/* Update the delay; everything else comes from EDID */
->  		desc->delay = *panel->detected_panel->delay;
-> @@ -1930,17 +1928,21 @@ static const struct panel_delay delay_200_500_e50_po2e200 = {
->  
->  #define EDP_PANEL_ENTRY(vend_chr_0, vend_chr_1, vend_chr_2, product_id, _delay, _name) \
->  { \
-> -	.name = _name, \
-> -	.panel_id = drm_edid_encode_panel_id(vend_chr_0, vend_chr_1, vend_chr_2, \
-> -					     product_id), \
-> +	.ident = { \
-> +		.name = _name, \
-> +		.panel_id = drm_edid_encode_panel_id(vend_chr_0, vend_chr_1, vend_chr_2, \
-> +						     product_id), \
-> +	}, \
->  	.delay = _delay \
->  }
->  
->  #define EDP_PANEL_ENTRY2(vend_chr_0, vend_chr_1, vend_chr_2, product_id, _delay, _name, _mode) \
->  { \
-> -	.name = _name, \
-> -	.panel_id = drm_edid_encode_panel_id(vend_chr_0, vend_chr_1, vend_chr_2, \
-> -					     product_id), \
-> +	.ident = { \
-> +		.name = _name, \
-> +		.panel_id = drm_edid_encode_panel_id(vend_chr_0, vend_chr_1, vend_chr_2, \
-> +						     product_id), \
-> +	}, \
->  	.delay = _delay, \
->  	.override_edid_mode = _mode \
->  }
-> @@ -2087,15 +2089,16 @@ static const struct edp_panel_entry edp_panels[] = {
->  	{ /* sentinal */ }
->  };
->  
-> -static const struct edp_panel_entry *find_edp_panel(u32 panel_id)
-> +static const struct edp_panel_entry *find_edp_panel(u32 panel_id, const struct drm_edid *edid)
->  {
->  	const struct edp_panel_entry *panel;
->  
-> -	if (!panel_id)
-> -		return NULL;
-> +	for (panel = edp_panels; panel->ident.panel_id; panel++)
-> +		if (drm_edid_match_identity(edid, &panel->ident))
-> +			return panel;
->  
-> -	for (panel = edp_panels; panel->panel_id; panel++)
-> -		if (panel->panel_id == panel_id)
-> +	for (panel = edp_panels; panel->ident.panel_id; panel++)
-> +		if (panel->ident.panel_id == panel_id)
->  			return panel;
->  
->  	return NULL;
-
+diff --git a/include/linux/printk.h b/include/linux/printk.h
+index 8ef499ab3c1e..749c1c4257f1 100644
+--- a/include/linux/printk.h
++++ b/include/linux/printk.h
+@@ -392,7 +392,7 @@ struct pi_entry {
+ 				.level = __builtin_constant_p(_level) ? (_level) : NULL, \
+ 				.subsys_fmt_prefix = _subsys_fmt_prefix,\
+ 			};						\
+-			static const struct pi_entry *_entry_ptr	\
++			static const struct pi_entry *_entry_ptr __attribute__((unused)) \
+ 			__used __section(".printk_index") = &_entry;	\
+ 		}							\
+ 	} while (0)
 -- 
-Jani Nikula, Intel
+2.18.0
+
 
