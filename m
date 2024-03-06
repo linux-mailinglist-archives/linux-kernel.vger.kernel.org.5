@@ -1,356 +1,132 @@
-Return-Path: <linux-kernel+bounces-93912-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93913-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DADA8736CC
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:42:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 185E78736D0
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:43:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 72BBEB20B2B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:42:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7148284F54
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 12:43:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87F7B83A17;
-	Wed,  6 Mar 2024 12:42:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F5F512C52C;
+	Wed,  6 Mar 2024 12:43:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="2G+hm+jj"
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2052.outbound.protection.outlook.com [40.107.94.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ZblSekCi"
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 693FB604A7
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 12:42:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.52
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709728957; cv=fail; b=lga1X6QLJ2UVI4SQbn0aKCcwnZZNO6sZY6Vdu1BQKii9E/jJYNZSwzZxO0NUC8Weq9Sw8ev2Iqxggzxxrf/ldSGsK1z2IA6zZYME5IkrJY3zeiAE3Mc4c1SYrOvY9oDWb+LdXqg+d5rRi0xrx/sOHw111Bon5aWo/Vp0lyk83RE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709728957; c=relaxed/simple;
-	bh=N1rjFr1oqCrcwOnDiMUrx22Wp5ilTsGSFdZnH1Zkkg8=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=er6RiOn/xWiedfgfIHg/QwnFh0jzo7zMUA7EDRxoawKQfnabExir/nhQViRIv2IWZ8C1AF47kNc9h9j8TvbJiprAkj5cUwkdSv4OCLQcPsULw3gIbpqUZ3IzK4TXCJ9+JyjCdwGEusMskYRsrtbdMNjmx57G7wDVT3b8PEFxUj4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=2G+hm+jj; arc=fail smtp.client-ip=40.107.94.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CKCdMPaHQsR00wj8L5vR68IhKxm4LpHqrn+yBu6RQeA8UuXGXPOA/yqKTwb7lKOCSKHnJlR6x9ymbjfp+O12Y2Hys7LKKK8oEA7kmmvuVDSj5TFw34jV9ZrvYRilBfmKIyf2u/LFLKFt6eK+eLhHxIoeDvUjSALvPI8JImiSQFNLj3wphoo9y82YDNiFx0Cz3JbmrI7tjXhsinupMeMYRiz9vBh6xZ6zeCI+5BPaj4ccGi4L9X4e4skQg/Gwcs/rq58br8HkqJaLwXatLpWuyrrli8uU2BK/axjS8LwLrYBfOjN0F1xtghrpUoo0ghP8SC770+AA6WTjZPfC5s+1lA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=F8u215UfrGbBiJ45pbvBZ0WTkv5oVETt5ZO0AGOuC9k=;
- b=PSRy/ShlKCJWMJhTchk026s18mUSk5iHHy8aQaW47THHjYk103WuORbY4Ie8TG7lmW9fgeIY1o5GOHy5T2wec1qbmmA3UCKhr0w1u//DOa3ppo0fHh25KMBY4YKxh+/SzlOPYcSx2LfHewZAAkZebyvfoq36HkYbfZzmIb+D4I15cnPfsuy0qtgBnRqzFxx5uFYZd29HM1JtSt3z/dRNg697I5y9OnQsY8OGV3Fs/qI8cRZyxBtt/m6TSoZVvk8al0dYxCIOxmesiCpsuYlfJIYIdkB0FjrUfd5UYf2pIeHeT9ijn2JUB6XwauFY4xXSImNJugejHWRpBu5S/sPbMw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=F8u215UfrGbBiJ45pbvBZ0WTkv5oVETt5ZO0AGOuC9k=;
- b=2G+hm+jjns9c6VgE/urC7CLriem1A79vfko6NzV6GPjIetNvw7eW4+IgVpRn+ZWFTry8Fch/QdxhZd5jfLPxyBm/k6sX/jmNUAobxb9Ge/nvYPpYm6uUS1r/wLdJWiS/ONhUam65I+tfFJLwomb8t6eicBslBMAyoTA9DwgR6U4=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
- by CY5PR12MB6153.namprd12.prod.outlook.com (2603:10b6:930:27::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.24; Wed, 6 Mar
- 2024 12:42:31 +0000
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::f2b6:1034:76e8:f15a]) by PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::f2b6:1034:76e8:f15a%6]) with mapi id 15.20.7339.031; Wed, 6 Mar 2024
- 12:42:25 +0000
-Message-ID: <66815303-bd9c-4dfc-ae1a-bbdc5d1bb47c@amd.com>
-Date: Wed, 6 Mar 2024 13:42:19 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/amdgpu: cache in more vm fault information
-Content-Language: en-US
-To: "Khatri, Sunil" <sukhatri@amd.com>, Sunil Khatri <sunil.khatri@amd.com>,
- Alex Deucher <alexander.deucher@amd.com>,
- Shashank Sharma <shashank.sharma@amd.com>
-Cc: amd-gfx@lists.freedesktop.org, Pan@rtg-sunil-navi33.amd.com,
- Xinhui <Xinhui.Pan@amd.com>, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, Mukul Joshi <mukul.joshi@amd.com>,
- Arunpravin Paneer Selvam <Arunpravin.PaneerSelvam@amd.com>
-References: <20240306090408.3453152-1-sunil.khatri@amd.com>
- <2f792620-fd8a-412e-9130-e276ba36d5a0@amd.com>
- <5e2899cd-75b4-4ddd-97ff-4e10a2e67fbb@amd.com>
-From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-In-Reply-To: <5e2899cd-75b4-4ddd-97ff-4e10a2e67fbb@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: FR3P281CA0134.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:94::18) To PH7PR12MB5685.namprd12.prod.outlook.com
- (2603:10b6:510:13c::22)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEFAC8289A
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 12:43:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709728985; cv=none; b=PF/IWxETn47Oemra10/OokpB65DYl14hPe1VhkFzxv8GzssVnbB3+dMBiJQBlKCMD68luVUr0sNxaL4FIMxERYLyTeRma+KLXcd+pM2EgymCAfnagw2Ea56Rf5sVg3G/Sg3UZVOrxAOyGZkjnjxNiQnCH/4oRau51l4V0pejX78=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709728985; c=relaxed/simple;
+	bh=AoFFsxNxs2b1QYeOyo1rzJ6JZmtqFsJq//ksRON85ms=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=p22QoUWOQVB5G8KPnGUjLrdCSnCoWFaua2Ja/jM4gbt8oSnFYekCzndvhAPBfItJoKkdp+68OAdRbPNtwON7yYprzmrDaFp2dqQwJb93LG7JPLabqIs7ZuVppJgfph8LGxp59NXpMheEd3bZbw8FK0B5n5bDvIwQsWXNst9hAKM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ZblSekCi; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-33e2774bdc7so4553120f8f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 04:43:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709728982; x=1710333782; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6/Pxq6YNE5VeN9FYLxBDdkxwUgy87TjbvzecOQbWEbY=;
+        b=ZblSekCiQK272FL2BzrD5/m8uLICy6+xyFjg0URJhBRVXp9n3+kXjHeUzYipQmAjev
+         /7mVjn9NCqSrQ+2ZVknNQqiQhM71QWCxt3HpBFcPWkX85EN8l5qGFRin3s+BiDW+8sga
+         2bBNwOMMWx0cxdOaIR/PaDMma0H5iNjK37w1IoFHaHgTRWwjMx5qG/Dor5PbXerHbEGJ
+         +VYXwWn6Sm038KxED3RG2HuThWpxH9aZB+PYrK/XuKOYNm7kw/ZeSRvW6f/TYGc009XD
+         ot8HZY0v3rOw5wuJkDTz5koERq7W9xbG5IeRGs8XW0VzaG2Hc90fEGsTqMG1fLRu1RLv
+         YLPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709728982; x=1710333782;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6/Pxq6YNE5VeN9FYLxBDdkxwUgy87TjbvzecOQbWEbY=;
+        b=lsTC9/IMbcLlGAuLnMPigQcEKa1350VRq2IM9tCnh453Y6Zeat3ZiW85K6lb2QTpvg
+         Wc4wwKoxbN+VpQDaPd4SQIhpwiQ2dZfPkU0HFSmhnSmDCFDXrrdTzNGaE/S8yOXCJMex
+         Adb57V82d2NfE5uegFyxBwO4tYWIf4+rX0Tfq0JJUOsUWIykm6A+8ghU+7T4t3AYEjK8
+         vXEedAYs/Zfa/J4ruBXDX2mTSa+IkS7V+N18NInytj4GJQAbApJ3VWouE4j1KNlE/ABI
+         UiPkkqZ0HOQmbLc1CLm05H9fk+o/SLWXIkReua9mU4yESvWOu390IXeam9s4klYYH+2i
+         jgww==
+X-Forwarded-Encrypted: i=1; AJvYcCW/Va9CeakqTUmS10rJl6A4q3v3nbiru8EdtjNBhN3fhvi39uLnfINgMqWmwLxWbqOjdBACoQeB3fjosUJbK9Z19o8fKe3AZIHT2gpW
+X-Gm-Message-State: AOJu0YwBwRx7BeXG8TinUigSCKnknpSEQvDtp1alecgmlhs8yMAecgwE
+	tZGr6A1koXCbk30U/tNxiYgWZm01tiB/oBdbCynQ/gD7XC6BR4lzG9A7pmIIonI=
+X-Google-Smtp-Source: AGHT+IF2ySjqtfkI1PQ3MbdrNUXKYUlwGx2tDc7otolcdge0Vus0SWl7qjL9/CZbIt2509kq8ZkXYQ==
+X-Received: by 2002:adf:e310:0:b0:33d:b627:c3ec with SMTP id b16-20020adfe310000000b0033db627c3ecmr11586557wrj.44.1709728981970;
+        Wed, 06 Mar 2024 04:43:01 -0800 (PST)
+Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
+        by smtp.googlemail.com with ESMTPSA id cl5-20020a5d5f05000000b0033ce727e728sm5050782wrb.94.2024.03.06.04.43.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Mar 2024 04:43:01 -0800 (PST)
+Message-ID: <14651d5b-0f67-4bff-b699-2cd1601b4fb2@linaro.org>
+Date: Wed, 6 Mar 2024 13:43:00 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|CY5PR12MB6153:EE_
-X-MS-Office365-Filtering-Correlation-Id: f4a4bbed-5395-4988-485c-08dc3ddae064
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	sjcFQetWfXc72OQv4XI5nzx8JQldchNNub+8HFxWVv6FoGDhoy5Qfsffjh99IfIQJRc4Y59/8KJOMFRS83zG6/78mCYNMpZEy9uyzBaY/EuiDIBfPs2VCq1Ca6OVgH+1ptuOF6ee4Lzt1UCqyE70OsV0IYwtys5wJVfBv6zxa0jo/MWhUCz6fZunaNIh7iHrOSEv5M7ZzUb1KSXkG0Mke99fe5G4ghjhU4fqsZFM4P3dM+hYoVEBuANpHNy3ldKRXP6jogfKDAio/FT4iqOlW6FbMX7PZZjRfitJbWHEGKXvWhKhI0qWZXwItGuPhZa7fm7Imx6NS5QJ4fvMcyPS9JNtRzbqo6imf09vkdZ6e5OCpLs1kaslEIou460NNa4J5K4lMVjCr/DlYkF680/v7N+1GxjyyUYcli9WuJMW5gYH+ew9zSaRJEbNJDEWEdKMKB0hW9fC+bvkxCUU56X+FUBDofvJTJfUR4+0d3KAi+4hieSswfhvRSrENNaa4ak2DPd+3VcVzspba4Vd8uRrtIzhr3ZpALbXrL/zGEMaOxI+8JlLPDYKt4TtOVyrKAspRr++sShrvINq9DtlJ9ceP9HDNZpUHktlopt9eEYJgzznVl605qFVVnjViuXpVK2/i8gJ4kIim48kLXePrh6k40vPfaJBhoZCmTNHDFJFfmE=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?elRTUVUrRW5HRGg0SXdvVUV6WmduTXJCTG8xMi9hZ3NUdUVpejBGN2Q0K1FO?=
- =?utf-8?B?bDNTRGlJbGUvaDljS2JNYmYwZm9JRGtTekZmRFZHOGJVU0RqYVB2T2llL04v?=
- =?utf-8?B?M05Jcy9NSE1XZi9ybEtDZjMxd2xDWWsrZnhSUFluSFpPVkc2alJZUGI2U3dp?=
- =?utf-8?B?OFNRdVFWMFZsZm5zVGVLQ2FiNlhFY21YLy9uQ0NWYWFtUnFudmpWOXVmWlUv?=
- =?utf-8?B?NzlVU3JvdlpXVFZadWg2UDFjK25TZW5YMWF1Y3NGVGRoWDhkWkRkM0NBb01V?=
- =?utf-8?B?eWg4WU0xNnl0My9ieFEyaHhmMXBSQnRSc0djT3lRZDR2VjBvcDRoMDB1S2xY?=
- =?utf-8?B?eHdRVmpORGdYOFJrdVA1UUlNWkU2V1pocEtBclptN00xbEUxQTc0SFErK2J6?=
- =?utf-8?B?SkhZaFQ5bDg2c0FYbC83VTV6VkdCeUtsZXZYL0lwZ3pnZ04ydXNZd3FZZXNk?=
- =?utf-8?B?Y1E0UlZ4Zm8vekx1UmdNeEljU1kzSlhrZXVlV25ZdWxnOEx5WmgrdEpjV2o1?=
- =?utf-8?B?ejRHT21YKy9yOWRWTWpjbG92REI2ZTkyRGJ0aDFZRnZsR0RuZG1rOHg2SWhQ?=
- =?utf-8?B?djlIaTliNlRuQlgrU1VZMkl0eGluZ1A3MGhnb2xXckF5Tk5nekdIcjFKUW0y?=
- =?utf-8?B?Tng0WmJ2YllXVDExR0FrYzVtWDIyTWpRYlhFMUFJeDVqYWtQWitzeUkvOFBj?=
- =?utf-8?B?bkhndkQ4bngvWUFkRnppSVJVSzRaa3JlV3prYUhKcEoreGdaSlNhV2EybVBm?=
- =?utf-8?B?U1ZPQmplUGVrNC9LM3hBT2k0SGtOWEN5alFicHFTQlcycjkzaWFSTzdxc1RN?=
- =?utf-8?B?T1pzQ3R6Zzd5ejZ0VHhOUVJuUkY3ZGxWTS8vdE5JSUpoaC9vTXlUcDRWaHJi?=
- =?utf-8?B?Q3JvYWZ4ZGRTeStNZVQ4bkFLeHNJdVp2cnBiQ2dRR0pEZGRXckl3M05reXZi?=
- =?utf-8?B?VWhGQ245UmtPVjZCSEg3QkQzU2YwK0V5di9LMklXRnN1eUhqZE9hV0drQnVO?=
- =?utf-8?B?U3VmWUhEM2QxOFEyM1BSQi9qVDNVR0hKbmFtQ09KWW16d2IwMGJTeUVldnJF?=
- =?utf-8?B?bmdYSTVGdHpBQ0VlYS9lS2hFbU4zeURCcmZMMGVGcENBT2d6ZVlybXFMZDVv?=
- =?utf-8?B?Ui8wcjZHOWNkZmdjZnFoMkVkZlVSRE5BMXZhVFpFNUx3aUJqd2hkZkI4ZFFv?=
- =?utf-8?B?MFZjVEJsZW12akxZRFBBU1JINmVVL090SUNpQ3MyYWNCNUZGMkFleE5OOTht?=
- =?utf-8?B?b0tyU29GZ1RQNDBPblFFYVdrZWVxQTA5V1Z2ZEZsSUdkSHRxVHFHazV1NEgz?=
- =?utf-8?B?ZnBaeFJROGJmTlRqTFBHRzhXb1paOVorS29Ca3Z2UEN0TVlua1VZbGsrTlRX?=
- =?utf-8?B?d2hKMVdyMGFGT25uNDhmcE1CVHNkajdoNnZZRzdDL1NqN05RZ0VYbkI5ZkNS?=
- =?utf-8?B?NFUwaXJ1aGswVUxPRk9YMlZGclhiUTZkdDdINkFLMjJ2SmpHdmtJcVVyVitt?=
- =?utf-8?B?dlZDOXVsSHl6TENQOER0MGhNV1BhdzZoSFdmYXBENjFmaWlkUThrQmlVMWVn?=
- =?utf-8?B?c0pFMUpaN05xTlFkc1ZSU20zWTcvUFpnRXdEbWk2SnBvclQxb0EwUlVXZ1Bj?=
- =?utf-8?B?MEdjeXVYaWxCU0QwR0hpSXJoNGo2dzlkVGVibUJIZFVtZGRiUzFoSWNvZlJY?=
- =?utf-8?B?ZFdNVDdSQXdCZW5DenNvVGl3b01NUnM4Ky9CSFlYSkpMQnIrYmRpZW5INUtT?=
- =?utf-8?B?ZS9NWmRNc3YxMHEwSTFVSkdsVm1NMDZCRStDZG4xVThtbm54N2pzbHIzTHd2?=
- =?utf-8?B?YlozVXcvbTVoZVpYWU12S1YycjF0V3VsZ2ZOZ1RFN3lDYkJhVTdlYnpQSjV0?=
- =?utf-8?B?ZFZwTmpwU0NIaWRwbGJYYjVoYjVJYU51RTJ2WnJIakVpWUU0NFJnWlF2cnFu?=
- =?utf-8?B?ODFTT05wVlJVdzk2dU4rVVdlT0MzQ0loZlEvRTdHUnd5c29OeVc5a2VvSFRU?=
- =?utf-8?B?QmRzeTZaYzFVRmRWaGt6UVdrbXAxUzZ2dGNkNjA5aEtBUEQwWGFRUmZkak52?=
- =?utf-8?B?aTdTdUpQeGNaR3JGTXRka3hQNWNYSy9wbnRCRnFjYnJwZ1JGQ0RacHVOclBm?=
- =?utf-8?Q?oY/LTwX8f4c130U3XMa4Tmtsq?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f4a4bbed-5395-4988-485c-08dc3ddae064
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Mar 2024 12:42:25.8402
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: cVKvJHYr+0xZGHXl4Gd8FXhlioXl8oI0qL2jvRZpdabphzIf30x3A/eLVr5ytHzq
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6153
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH] thermal/core: Fix trip point crossing events ordering
+Content-Language: en-US
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: rjw@rjwysocki.net, linux-kernel@vger.kernel.org,
+ Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>,
+ "open list:THERMAL" <linux-pm@vger.kernel.org>
+References: <20240306085428.88011-1-daniel.lezcano@linaro.org>
+ <CAJZ5v0jAn2F-GH=fguX0+3bG38vyAxfufadtFiBUfg=EjTBh6Q@mail.gmail.com>
+From: Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <CAJZ5v0jAn2F-GH=fguX0+3bG38vyAxfufadtFiBUfg=EjTBh6Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Am 06.03.24 um 11:40 schrieb Khatri, Sunil:
->
-> On 3/6/2024 3:37 PM, Christian König wrote:
->> Am 06.03.24 um 10:04 schrieb Sunil Khatri:
->>> When an  page fault interrupt is raised there
->>> is a lot more information that is useful for
->>> developers to analyse the pagefault.
->>
->> Well actually those information are not that interesting because they 
->> are hw generation specific.
->>
->> You should probably rather use the decoded strings here, e.g. hub, 
->> client, xcc_id, node_id etc...
->>
->> See gmc_v9_0_process_interrupt() an example.
->> I saw this v9 does provide more information than what v10 and v11 
->> provide like node_id and fault from which die but thats again very 
->> specific to IP_VERSION(9, 4, 3)) i dont know why thats information is 
->> not there in v10 and v11.
->
-> I agree to your point but, as of now during a pagefault we are dumping 
-> this information which is useful like which client
-> has generated an interrupt and for which src and other information 
-> like address. So i think to provide the similar information in the 
-> devcoredump.
->
-> Currently we do not have all this information from either job or vm 
-> being derived from the job during a reset. We surely could add more 
-> relevant information later on as per request but this information is 
-> useful as
-> eventually its developers only who would use the dump file provided by 
-> customer to debug.
->
-> Below is the information that i dump in devcore and i feel that is 
-> good information but new information could be added which could be 
-> picked later.
->
->> Page fault information
->> [gfxhub] page fault (src_id:0 ring:24 vmid:3 pasid:32773)
->> in page starting at address 0x0000000000000000 from client 0x1b (UTCL2)
+On 06/03/2024 13:02, Rafael J. Wysocki wrote:
 
-This is a perfect example what I mean. You record in the patch is the 
-client_id, but this is is basically meaningless unless you have access 
-to the AMD internal hw documentation.
+[ ... ]
 
-What you really need is the client in decoded form, in this case UTCL2. 
-You can keep the client_id additionally, but the decoded client string 
-is mandatory to have I think.
+>> +#define for_each_trip_reverse(__tz, __trip)    \
+>> +       for (__trip = &__tz->trips[__tz->num_trips - 1]; __trip >= __tz->trips ; __trip--)
+>> +
+>>   void __thermal_zone_set_trips(struct thermal_zone_device *tz);
+>>   int thermal_zone_trip_id(const struct thermal_zone_device *tz,
+>>                           const struct thermal_trip *trip);
+>> --
+> 
+> Generally speaking, this is a matter of getting alignment on the
+> expectations between the kernel and user space.
+> 
+> It looks like user space expects to get the notifications in the order
+> of either growing or falling temperatures, depending on the direction
+> of the temperature change.  Ordering the trips in the kernel is not
+> practical, but the notifications can be ordered in principle.  Is this
+> what you'd like to do?
 
-Regards,
-Christian.
+Yes
 
->
-> Regards
-> Sunil Khatri
->
->>
->> Regards,
->> Christian.
->>
->>>
->>> Add all such information in the last cached
->>> pagefault from an interrupt handler.
->>>
->>> Signed-off-by: Sunil Khatri <sunil.khatri@amd.com>
->>> ---
->>>   drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c | 9 +++++++--
->>>   drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h | 7 ++++++-
->>>   drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c | 2 +-
->>>   drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c | 2 +-
->>>   drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c  | 2 +-
->>>   drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c  | 2 +-
->>>   drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c  | 2 +-
->>>   7 files changed, 18 insertions(+), 8 deletions(-)
->>>
->>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c 
->>> b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
->>> index 4299ce386322..b77e8e28769d 100644
->>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
->>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
->>> @@ -2905,7 +2905,7 @@ void amdgpu_debugfs_vm_bo_info(struct 
->>> amdgpu_vm *vm, struct seq_file *m)
->>>    * Cache the fault info for later use by userspace in debugging.
->>>    */
->>>   void amdgpu_vm_update_fault_cache(struct amdgpu_device *adev,
->>> -                  unsigned int pasid,
->>> +                  struct amdgpu_iv_entry *entry,
->>>                     uint64_t addr,
->>>                     uint32_t status,
->>>                     unsigned int vmhub)
->>> @@ -2915,7 +2915,7 @@ void amdgpu_vm_update_fault_cache(struct 
->>> amdgpu_device *adev,
->>>         xa_lock_irqsave(&adev->vm_manager.pasids, flags);
->>>   -    vm = xa_load(&adev->vm_manager.pasids, pasid);
->>> +    vm = xa_load(&adev->vm_manager.pasids, entry->pasid);
->>>       /* Don't update the fault cache if status is 0.  In the multiple
->>>        * fault case, subsequent faults will return a 0 status which is
->>>        * useless for userspace and replaces the useful fault status, so
->>> @@ -2924,6 +2924,11 @@ void amdgpu_vm_update_fault_cache(struct 
->>> amdgpu_device *adev,
->>>       if (vm && status) {
->>>           vm->fault_info.addr = addr;
->>>           vm->fault_info.status = status;
->>> +        vm->fault_info.client_id = entry->client_id;
->>> +        vm->fault_info.src_id = entry->src_id;
->>> +        vm->fault_info.vmid = entry->vmid;
->>> +        vm->fault_info.pasid = entry->pasid;
->>> +        vm->fault_info.ring_id = entry->ring_id;
->>>           if (AMDGPU_IS_GFXHUB(vmhub)) {
->>>               vm->fault_info.vmhub = AMDGPU_VMHUB_TYPE_GFX;
->>>               vm->fault_info.vmhub |=
->>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h 
->>> b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h
->>> index 047ec1930d12..c7782a89bdb5 100644
->>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h
->>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h
->>> @@ -286,6 +286,11 @@ struct amdgpu_vm_fault_info {
->>>       uint32_t    status;
->>>       /* which vmhub? gfxhub, mmhub, etc. */
->>>       unsigned int    vmhub;
->>> +    unsigned int    client_id;
->>> +    unsigned int    src_id;
->>> +    unsigned int    ring_id;
->>> +    unsigned int    pasid;
->>> +    unsigned int    vmid;
->>>   };
->>>     struct amdgpu_vm {
->>> @@ -605,7 +610,7 @@ static inline void 
->>> amdgpu_vm_eviction_unlock(struct amdgpu_vm *vm)
->>>   }
->>>     void amdgpu_vm_update_fault_cache(struct amdgpu_device *adev,
->>> -                  unsigned int pasid,
->>> +                  struct amdgpu_iv_entry *entry,
->>>                     uint64_t addr,
->>>                     uint32_t status,
->>>                     unsigned int vmhub);
->>> diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c 
->>> b/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
->>> index d933e19e0cf5..6b177ce8db0e 100644
->>> --- a/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
->>> +++ b/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
->>> @@ -150,7 +150,7 @@ static int gmc_v10_0_process_interrupt(struct 
->>> amdgpu_device *adev,
->>>           status = RREG32(hub->vm_l2_pro_fault_status);
->>>           WREG32_P(hub->vm_l2_pro_fault_cntl, 1, ~1);
->>>   -        amdgpu_vm_update_fault_cache(adev, entry->pasid, addr, 
->>> status,
->>> +        amdgpu_vm_update_fault_cache(adev, entry, addr, status,
->>>                            entry->vmid_src ? AMDGPU_MMHUB0(0) : 
->>> AMDGPU_GFXHUB(0));
->>>       }
->>>   diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c 
->>> b/drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c
->>> index 527dc917e049..bcf254856a3e 100644
->>> --- a/drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c
->>> +++ b/drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c
->>> @@ -121,7 +121,7 @@ static int gmc_v11_0_process_interrupt(struct 
->>> amdgpu_device *adev,
->>>           status = RREG32(hub->vm_l2_pro_fault_status);
->>>           WREG32_P(hub->vm_l2_pro_fault_cntl, 1, ~1);
->>>   -        amdgpu_vm_update_fault_cache(adev, entry->pasid, addr, 
->>> status,
->>> +        amdgpu_vm_update_fault_cache(adev, entry, addr, status,
->>>                            entry->vmid_src ? AMDGPU_MMHUB0(0) : 
->>> AMDGPU_GFXHUB(0));
->>>       }
->>>   diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c 
->>> b/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c
->>> index 3da7b6a2b00d..e9517ebbe1fd 100644
->>> --- a/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c
->>> +++ b/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c
->>> @@ -1270,7 +1270,7 @@ static int gmc_v7_0_process_interrupt(struct 
->>> amdgpu_device *adev,
->>>       if (!addr && !status)
->>>           return 0;
->>>   -    amdgpu_vm_update_fault_cache(adev, entry->pasid,
->>> +    amdgpu_vm_update_fault_cache(adev, entry,
->>>                        ((u64)addr) << AMDGPU_GPU_PAGE_SHIFT, status, 
->>> AMDGPU_GFXHUB(0));
->>>         if (amdgpu_vm_fault_stop == AMDGPU_VM_FAULT_STOP_FIRST)
->>> diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c 
->>> b/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c
->>> index d20e5f20ee31..a271bf832312 100644
->>> --- a/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c
->>> +++ b/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c
->>> @@ -1438,7 +1438,7 @@ static int gmc_v8_0_process_interrupt(struct 
->>> amdgpu_device *adev,
->>>       if (!addr && !status)
->>>           return 0;
->>>   -    amdgpu_vm_update_fault_cache(adev, entry->pasid,
->>> +    amdgpu_vm_update_fault_cache(adev, entry,
->>>                        ((u64)addr) << AMDGPU_GPU_PAGE_SHIFT, status, 
->>> AMDGPU_GFXHUB(0));
->>>         if (amdgpu_vm_fault_stop == AMDGPU_VM_FAULT_STOP_FIRST)
->>> diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c 
->>> b/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
->>> index 47b63a4ce68b..dc9fb1fb9540 100644
->>> --- a/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
->>> +++ b/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
->>> @@ -666,7 +666,7 @@ static int gmc_v9_0_process_interrupt(struct 
->>> amdgpu_device *adev,
->>>       rw = REG_GET_FIELD(status, VM_L2_PROTECTION_FAULT_STATUS, RW);
->>>       WREG32_P(hub->vm_l2_pro_fault_cntl, 1, ~1);
->>>   -    amdgpu_vm_update_fault_cache(adev, entry->pasid, addr, 
->>> status, vmhub);
->>> +    amdgpu_vm_update_fault_cache(adev, entry, addr, status, vmhub);
->>>         dev_err(adev->dev,
->>>           "VM_L2_PROTECTION_FAULT_STATUS:0x%08X\n",
->>
+> Or can user space be bothered with recognizing that it may get the
+> notifications for different trips out of order?
+
+IMO it is a bad information if the trip points events are coming 
+unordered. The temperature signal is a time related measurements, the 
+userspace should receive thermal information from this signal in the 
+right order. It sounds strange to track the temperature signal in the 
+kernel, then scramble the information, pass it to the userspace and 
+except it to apply some kind of logic to unscramble it.
+
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
 
 
