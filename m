@@ -1,212 +1,291 @@
-Return-Path: <linux-kernel+bounces-93386-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93387-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12EC8872EEE
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 07:33:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2ECB872EEF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 07:35:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6C21BB24F91
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 06:33:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82D2F289E70
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 06:35:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EFBB5B67A;
-	Wed,  6 Mar 2024 06:33:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7788B5B662;
+	Wed,  6 Mar 2024 06:35:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="O+vTxwX8"
-Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bAjNfent"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD36758AC3
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 06:33:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95B7664A
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 06:35:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709706794; cv=none; b=oEFz3/jKwaGfFKQJ3TQMKk8hd99DYQTJJofQ/umOsa24i0FW2GIM18bTmFCtkKZqzeNgsn3+djMApmjsFHpp1gFM3b5IbLnjsW6vsb542/Ukwo+S7r/eNI5QqIT8nuU5KKfQG9IMRMEKFF6Yk6JWXk0osMW+hKcE/JFm9U8ctrU=
+	t=1709706928; cv=none; b=pgWs51Z3HbFdsA7r9gIbL5A9ki/qkndnIkbfpEDSWjSrA9h9sCn8snM8pLjXaavch4niW69vx7c3gaPBFFgb3nVMHI3fwadjXpCxt+8KdtlpeFnYuYE4Rr2SGf0IY5aBkMJCC00rhOiWEhUHBEdux8CfzELRoFDXcU+svCJryS0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709706794; c=relaxed/simple;
-	bh=lnj04D8zBAmypP6j2POjy3y/xNsAC09Cm+3BIi+/VRE=;
+	s=arc-20240116; t=1709706928; c=relaxed/simple;
+	bh=AkqGeSCbOkMjmEjMN58b39D1ek/Y+Xn4vMztXVmtzMA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jx51hjG+hQOj2sNquZyd+WfGGqrdcabyJeTcS46ftFGIwp1FH8/Zkpox1mEx1L4QbrqnYu4UgH5lnCxT1n706reKmpnz3odZ4DOcfg/NgTsdYdzf04YubPWShcKlvpPOtHKMJg6zs67nU2V1pabpoocmQqpFxGwA5B6O3OmJiRI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=O+vTxwX8; arc=none smtp.client-ip=209.85.222.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-788303f317eso64375985a.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 22:33:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709706790; x=1710311590; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=PzzqnLQBHpN+9urj8XiH2dFm2U46R6xFzTYOnXW2Hvs=;
-        b=O+vTxwX8jPbg+fbjLrM2yUfgSznPFlGhGMSzaiwFimqk/+kGzC57CuV4OllfUxr/pk
-         fO15Y3K9PFb7EzF7zfjt/yfE68/yaPvccu06Vu1yyxviXrjtfvlSVeFKNvls9g2qT9Uf
-         bbGGIBbsWbvrDT6tJsPWuJGgcEIcf2XJkJDeqxMYrdubRdRrttik+Li8RnYVPkOYH4Oz
-         Kv0AHQ9oHBiZMPkAsvUOhNFfKRwj70IK/uU8xlgaR7XHcFcch2gEwxxBTxe2iLufIGSX
-         3iJFvXhSwmfAXYIS7hkcrUl8xX57izNy3vsrbNfyxlyjyhUZygV9R7V87HT4VkONPPG5
-         /reA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709706790; x=1710311590;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PzzqnLQBHpN+9urj8XiH2dFm2U46R6xFzTYOnXW2Hvs=;
-        b=c0Fx4I6mfoSyVCPgzmG8rdetIF1qkzpHpJbwj8y+kGL7ayF3me5pqTpyMWfxOkZQk4
-         v5fA8zZvLuLjgku4esOH74pKPgWlc6M8mO8YmCdaG/KqMylAU1C8NE3eMUhoOB214LPj
-         L5WOdfQ51CLuFUsJ1riNDwOafHkddYR/ytgQuVBWfTz82FV1mbGFkufP2ftibyrhXk6e
-         TfUG9XfMI2n1WB0ub4kyuZy9vN7PnONLesDnjtq5mu+jBztmZHGfU+OSu9hE5vdBX8nQ
-         NdG+DzTwqfuNVOw7vXioYEHY1oVIsIpYKbl+v5iN33EpbtJK8IjVSZmyMObXP5qBXS0k
-         P2aw==
-X-Forwarded-Encrypted: i=1; AJvYcCUNwcuEsH4VboIC44/bHKNEakBaU6VxIKSs34ws3aWQlKEVkZdSl2fq2E9ackK7cyJz74S3CCiMsjH5cEjX4MCXTu5Sm3B+Vo1AHSdB
-X-Gm-Message-State: AOJu0YzsZKmTJEnA3RP9bYay8UiLHT1ecfo/yd2cuSrVNjm/V2Yysl6O
-	dkpOArqV/XcwYv/Y4VaOzXEMcUxflsOH3qaDU+2z3Qqx0/Sn+7NWap/ulTxxyg==
-X-Google-Smtp-Source: AGHT+IFLka1W5sBQpiugLgmQG2wEsLa+Bvr76ZGfB5U9MeSgecbtI+9k8NDXeMjSLd+eRIFfWofSjg==
-X-Received: by 2002:a05:620a:6120:b0:788:3c4e:b84f with SMTP id oq32-20020a05620a612000b007883c4eb84fmr1755223qkn.35.1709706790464;
-        Tue, 05 Mar 2024 22:33:10 -0800 (PST)
-Received: from thinkpad ([117.248.1.99])
-        by smtp.gmail.com with ESMTPSA id p14-20020ae9f30e000000b0078825e2c57dsm3109737qkg.76.2024.03.05.22.33.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Mar 2024 22:33:10 -0800 (PST)
-Date: Wed, 6 Mar 2024 12:03:02 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Johan Hovold <johan+linaro@kernel.org>
-Cc: Bjorn Helgaas <bhelgaas@google.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
-	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 00/10] arm64: dts: qcom: sc8280xp: PCIe fixes and
- GICv3 ITS enable
-Message-ID: <20240306063302.GA4129@thinkpad>
-References: <20240305081105.11912-1-johan+linaro@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=naFxOom/0M0GUgOzvSMxzpwyl2I2IK0efWJj8Bp6xGDHLyJqineCMTRBuqhse1VhcEKLExYVjklSXMIfXBWZnmxFGcJ0UPLzACxsQIvG/a3+yvlDSSK7MzYyJnHNHo6+qT+aWU2BZEUTvRFyF+YUWFTnmfEsFbPWbA4GdgRbDtU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bAjNfent; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98586C433F1;
+	Wed,  6 Mar 2024 06:35:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709706928;
+	bh=AkqGeSCbOkMjmEjMN58b39D1ek/Y+Xn4vMztXVmtzMA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bAjNfentksW5IBwcqdR2CUFKXyp35TuVTau+fIG66JkxSeGh1Di933CcGYONg8lA2
+	 kuAcfDOe3S1L/j4Kn200rLcN9mlAzW6a12lAKe1zmSdhdo8Tl5HDhh34P6WoH0xaiK
+	 k8H3dCa3gf4LajnlpBV14oo0/IyXbEayUQahpBRAi+C3vZWSUfPEnMTsdD1ul5paUK
+	 QFl/Mz0uQhm00r/y/VhMyka89QVNgjFnuQNkY5Y6ZoLSf7DHiKYIC5PvSfaQG1eGKX
+	 0+my/6FwLLrYJdbNaEXXJHjtLs3rsz7hTso34bZH6kzJIB/yEqITaR7+QyD/eJZaa9
+	 FGHbodbbP4YFg==
+Date: Wed, 6 Mar 2024 08:34:35 +0200
+From: Mike Rapoport <rppt@kernel.org>
+To: peterx@redhat.com
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	Christophe Leroy <christophe.leroy@csgroup.eu>, x86@kernel.org,
+	"Kirill A . Shutemov" <kirill@shutemov.name>,
+	Jason Gunthorpe <jgg@nvidia.com>, Yang Shi <shy828301@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linuxppc-dev@lists.ozlabs.org, Muchun Song <muchun.song@linux.dev>
+Subject: Re: [PATCH v3 09/10] mm/treewide: Drop pXd_large()
+Message-ID: <ZegOe5XEsLl9vu3E@kernel.org>
+References: <20240305043750.93762-1-peterx@redhat.com>
+ <20240305043750.93762-10-peterx@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240305081105.11912-1-johan+linaro@kernel.org>
+In-Reply-To: <20240305043750.93762-10-peterx@redhat.com>
 
-On Tue, Mar 05, 2024 at 09:10:55AM +0100, Johan Hovold wrote:
-> This series addresses a few problems with the sc8280xp PCIe
-> implementation.
+On Tue, Mar 05, 2024 at 12:37:49PM +0800, peterx@redhat.com wrote:
+> From: Peter Xu <peterx@redhat.com>
 > 
-> The DWC PCIe controller can either use its internal MSI controller or an
-> external one such as the GICv3 ITS. Enabling the latter allows for
-> assigning affinity to individual interrupts, but results in a large
-> amount of Correctable Errors being logged on both the Lenovo ThinkPad
-> X13s and the sc8280xp-crd reference design.
+> They're not used anymore, drop all of them.
 > 
-> It turns out that these errors are always generated, but for some yet to
-> be determined reason, the AER interrupts are never received when using
-> the internal MSI controller, which makes the link errors harder to
-> notice.
-> 
-> On the X13s, there is a large number of errors generated when bringing
-> up the link on boot. This is related to the fact that UEFI firmware has
-> already enabled the Wi-Fi PCIe link at Gen2 speed and restarting the
-> link at Gen3 generates a massive amount of errors until the Wi-Fi
-> firmware is restarted. This has now also been shown to cause the Wi-Fi
-> to sometimes not start at all on boot for some users.
-> 
-> A recent commit enabling ASPM on certain Qualcomm platforms introduced
-> further errors when using the Wi-Fi on the X13s as well as when
-> accessing the NVMe on the CRD. The exact reason for this has not yet
-> been identified, but disabling ASPM L0s makes the errors go away. This
-> could suggest that either the current ASPM implementation is incomplete
-> or that L0s is not supported with these devices.
-> 
-> Note that the X13s and CRD use the same Wi-Fi controller, but the errors
-> are only generated on the X13s. The NVMe controller on my X13s does not
-> support L0s so there are no issues there, unlike on the CRD which uses a
-> different controller. The modem on the CRD does not generate any errors,
-> but both the NVMe and modem keeps bouncing in and out of L0s/L1 also
-> when not used, which could indicate that there are bigger problems with
-> the ASPM implementation. I don't have a modem on my X13s so I have not
-> been able to test whether L0s causes any trouble there.
-> 
-> Enabling AER error reporting on sc8280xp could similarly also reveal
-> existing problems with the related sa8295p and sa8540p platforms as they
-> share the base dtsi.
-> 
-> After discussing this with Bjorn Andersson at Qualcomm we have decided
-> to go ahead and disable L0s for all controllers on the CRD and the
-> X13s.
-> 
+> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+> Signed-off-by: Peter Xu <peterx@redhat.com>
 
-Just received confirmation from Qcom that L0s is not supported for any of the
-PCIe instances in sc8280xp (and its derivatives). Please move the property to
-SoC dtsi.
+Reviewed-by: Mike Rapoport (IBM) <rppt@kernel.org>
 
-- Mani
-
-> Note that disabling ASPM L0s for the X13s Wi-Fi does not seem to have a
-> significant impact on the power consumption (and there are indications
-> that this applies generally for L0s on these platforms).
+> ---
+>  arch/arm/include/asm/pgtable-2level.h        |  1 -
+>  arch/arm/include/asm/pgtable-3level.h        |  1 -
+>  arch/loongarch/kvm/mmu.c                     |  2 +-
+>  arch/powerpc/include/asm/book3s/64/pgtable.h |  4 +---
+>  arch/powerpc/include/asm/pgtable.h           |  4 ----
+>  arch/s390/include/asm/pgtable.h              |  8 ++++----
+>  arch/sparc/include/asm/pgtable_64.h          |  8 ++++----
+>  arch/x86/include/asm/pgtable.h               | 19 +++++++------------
+>  arch/x86/kvm/mmu/mmu.c                       |  2 +-
+>  9 files changed, 18 insertions(+), 31 deletions(-)
 > 
-> ***
-> 
-> As we are now at 6.8-rc7, I've rebased this series on the Qualcomm PCIe
-> binding rework in linux-next so that the whole series can be merged for
-> 6.9 (the 'aspm-no-l0s' support and devicetree fixes are all marked for
-> stable backport anyway).
-> 
-> The DT bindings and PCI patch are expected to go through the PCI tree,
-> while Bjorn A takes the devicetree updates through the Qualcomm tree.
-> 
-> Johan
-> 
-> 
-> Changes in v3
->  - drop the two wifi link speed patches which have been picked up for
->    6.8
->  - rebase on binding rework in linux-next and add the properties also to
->    the new qcom,pcie-common.yaml
->    - https://lore.kernel.org/linux-pci/20240126-dt-bindings-pci-qcom-split-v3-0-f23cda4d74c0@linaro.org/
->  - fix an 'L0s' typo in one commit message
-> 
-> Changes in v2
->  - drop RFC from ASPM patches and add stable tags
->  - reorder patches and move ITS patch last
->  - fix s/GB/MB/ typo in Gen2 speed commit messages
->  - fix an incorrect Fixes tag
->  - amend commit message X13 wifi link speed patch after user
->    confirmation that this fixes the wifi startup issue
->  - disable L0s also for modem and wifi on CRD
->  - disable L0s also for nvme and modem on X13s
-> 
-> 
-> Johan Hovold (10):
->   dt-bindings: PCI: qcom: Allow 'required-opps'
->   dt-bindings: PCI: qcom: Do not require 'msi-map-mask'
->   dt-bindings: PCI: qcom: Allow 'aspm-no-l0s'
->   PCI: qcom: Add support for disabling ASPM L0s in devicetree
->   arm64: dts: qcom: sc8280xp: add missing PCIe minimum OPP
->   arm64: dts: qcom: sc8280xp-crd: disable ASPM L0s for NVMe
->   arm64: dts: qcom: sc8280xp-crd: disable ASPM L0s for modem and Wi-Fi
->   arm64: dts: qcom: sc8280xp-x13s: disable ASPM L0s for Wi-Fi
->   arm64: dts: qcom: sc8280xp-x13s: disable ASPM L0s for NVMe and modem
->   arm64: dts: qcom: sc8280xp: enable GICv3 ITS for PCIe
-> 
->  .../bindings/pci/qcom,pcie-common.yaml        |  6 +++++-
->  .../devicetree/bindings/pci/qcom,pcie.yaml    |  6 +++++-
->  arch/arm64/boot/dts/qcom/sc8280xp-crd.dts     |  5 +++++
->  .../qcom/sc8280xp-lenovo-thinkpad-x13s.dts    |  5 +++++
->  arch/arm64/boot/dts/qcom/sc8280xp.dtsi        | 17 +++++++++++++++-
->  drivers/pci/controller/dwc/pcie-qcom.c        | 20 +++++++++++++++++++
->  6 files changed, 56 insertions(+), 3 deletions(-)
-> 
+> diff --git a/arch/arm/include/asm/pgtable-2level.h b/arch/arm/include/asm/pgtable-2level.h
+> index ce543cd9380c..b0a262566eb9 100644
+> --- a/arch/arm/include/asm/pgtable-2level.h
+> +++ b/arch/arm/include/asm/pgtable-2level.h
+> @@ -213,7 +213,6 @@ static inline pmd_t *pmd_offset(pud_t *pud, unsigned long addr)
+>  
+>  #define pmd_pfn(pmd)		(__phys_to_pfn(pmd_val(pmd) & PHYS_MASK))
+>  
+> -#define pmd_large(pmd)		(pmd_val(pmd) & 2)
+>  #define pmd_leaf(pmd)		(pmd_val(pmd) & 2)
+>  #define pmd_bad(pmd)		(pmd_val(pmd) & 2)
+>  #define pmd_present(pmd)	(pmd_val(pmd))
+> diff --git a/arch/arm/include/asm/pgtable-3level.h b/arch/arm/include/asm/pgtable-3level.h
+> index 71c3add6417f..4b1d9eb3908a 100644
+> --- a/arch/arm/include/asm/pgtable-3level.h
+> +++ b/arch/arm/include/asm/pgtable-3level.h
+> @@ -118,7 +118,6 @@
+>  						 PMD_TYPE_TABLE)
+>  #define pmd_sect(pmd)		((pmd_val(pmd) & PMD_TYPE_MASK) == \
+>  						 PMD_TYPE_SECT)
+> -#define pmd_large(pmd)		pmd_sect(pmd)
+>  #define pmd_leaf(pmd)		pmd_sect(pmd)
+>  
+>  #define pud_clear(pudp)			\
+> diff --git a/arch/loongarch/kvm/mmu.c b/arch/loongarch/kvm/mmu.c
+> index 50a6acd7ffe4..a556cff35740 100644
+> --- a/arch/loongarch/kvm/mmu.c
+> +++ b/arch/loongarch/kvm/mmu.c
+> @@ -723,7 +723,7 @@ static int host_pfn_mapping_level(struct kvm *kvm, gfn_t gfn,
+>  	/*
+>  	 * Read each entry once.  As above, a non-leaf entry can be promoted to
+>  	 * a huge page _during_ this walk.  Re-reading the entry could send the
+> -	 * walk into the weeks, e.g. p*d_large() returns false (sees the old
+> +	 * walk into the weeks, e.g. p*d_leaf() returns false (sees the old
+>  	 * value) and then p*d_offset() walks into the target huge page instead
+>  	 * of the old page table (sees the new value).
+>  	 */
+> diff --git a/arch/powerpc/include/asm/book3s/64/pgtable.h b/arch/powerpc/include/asm/book3s/64/pgtable.h
+> index 3e99e409774a..df66dce8306f 100644
+> --- a/arch/powerpc/include/asm/book3s/64/pgtable.h
+> +++ b/arch/powerpc/include/asm/book3s/64/pgtable.h
+> @@ -1437,17 +1437,15 @@ static inline bool is_pte_rw_upgrade(unsigned long old_val, unsigned long new_va
+>  }
+>  
+>  /*
+> - * Like pmd_huge() and pmd_large(), but works regardless of config options
+> + * Like pmd_huge(), but works regardless of config options
+>   */
+>  #define pmd_leaf pmd_leaf
+> -#define pmd_large pmd_leaf
+>  static inline bool pmd_leaf(pmd_t pmd)
+>  {
+>  	return !!(pmd_raw(pmd) & cpu_to_be64(_PAGE_PTE));
+>  }
+>  
+>  #define pud_leaf pud_leaf
+> -#define pud_large pud_leaf
+>  static inline bool pud_leaf(pud_t pud)
+>  {
+>  	return !!(pud_raw(pud) & cpu_to_be64(_PAGE_PTE));
+> diff --git a/arch/powerpc/include/asm/pgtable.h b/arch/powerpc/include/asm/pgtable.h
+> index e6edf1cdbc5b..239709a2f68e 100644
+> --- a/arch/powerpc/include/asm/pgtable.h
+> +++ b/arch/powerpc/include/asm/pgtable.h
+> @@ -101,10 +101,6 @@ void poking_init(void);
+>  extern unsigned long ioremap_bot;
+>  extern const pgprot_t protection_map[16];
+>  
+> -#ifndef pmd_large
+> -#define pmd_large(pmd)		0
+> -#endif
+> -
+>  /* can we use this in kvm */
+>  unsigned long vmalloc_to_phys(void *vmalloc_addr);
+>  
+> diff --git a/arch/s390/include/asm/pgtable.h b/arch/s390/include/asm/pgtable.h
+> index a5f16a244a64..9e08af5b9247 100644
+> --- a/arch/s390/include/asm/pgtable.h
+> +++ b/arch/s390/include/asm/pgtable.h
+> @@ -705,16 +705,16 @@ static inline int pud_none(pud_t pud)
+>  	return pud_val(pud) == _REGION3_ENTRY_EMPTY;
+>  }
+>  
+> -#define pud_leaf	pud_large
+> -static inline int pud_large(pud_t pud)
+> +#define pud_leaf pud_leaf
+> +static inline int pud_leaf(pud_t pud)
+>  {
+>  	if ((pud_val(pud) & _REGION_ENTRY_TYPE_MASK) != _REGION_ENTRY_TYPE_R3)
+>  		return 0;
+>  	return !!(pud_val(pud) & _REGION3_ENTRY_LARGE);
+>  }
+>  
+> -#define pmd_leaf	pmd_large
+> -static inline int pmd_large(pmd_t pmd)
+> +#define pmd_leaf pmd_leaf
+> +static inline int pmd_leaf(pmd_t pmd)
+>  {
+>  	return (pmd_val(pmd) & _SEGMENT_ENTRY_LARGE) != 0;
+>  }
+> diff --git a/arch/sparc/include/asm/pgtable_64.h b/arch/sparc/include/asm/pgtable_64.h
+> index 652af9d63fa2..6ff0a28d5fd1 100644
+> --- a/arch/sparc/include/asm/pgtable_64.h
+> +++ b/arch/sparc/include/asm/pgtable_64.h
+> @@ -680,8 +680,8 @@ static inline unsigned long pte_special(pte_t pte)
+>  	return pte_val(pte) & _PAGE_SPECIAL;
+>  }
+>  
+> -#define pmd_leaf	pmd_large
+> -static inline unsigned long pmd_large(pmd_t pmd)
+> +#define pmd_leaf pmd_leaf
+> +static inline unsigned long pmd_leaf(pmd_t pmd)
+>  {
+>  	pte_t pte = __pte(pmd_val(pmd));
+>  
+> @@ -867,8 +867,8 @@ static inline pmd_t *pud_pgtable(pud_t pud)
+>  /* only used by the stubbed out hugetlb gup code, should never be called */
+>  #define p4d_page(p4d)			NULL
+>  
+> -#define pud_leaf	pud_large
+> -static inline unsigned long pud_large(pud_t pud)
+> +#define pud_leaf pud_leaf
+> +static inline unsigned long pud_leaf(pud_t pud)
+>  {
+>  	pte_t pte = __pte(pud_val(pud));
+>  
+> diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
+> index 9db7a38a0e9f..cfc84c55d0e6 100644
+> --- a/arch/x86/include/asm/pgtable.h
+> +++ b/arch/x86/include/asm/pgtable.h
+> @@ -251,8 +251,8 @@ static inline unsigned long pgd_pfn(pgd_t pgd)
+>  	return (pgd_val(pgd) & PTE_PFN_MASK) >> PAGE_SHIFT;
+>  }
+>  
+> -#define p4d_leaf	p4d_large
+> -static inline int p4d_large(p4d_t p4d)
+> +#define p4d_leaf p4d_leaf
+> +static inline int p4d_leaf(p4d_t p4d)
+>  {
+>  	/* No 512 GiB pages yet */
+>  	return 0;
+> @@ -260,14 +260,14 @@ static inline int p4d_large(p4d_t p4d)
+>  
+>  #define pte_page(pte)	pfn_to_page(pte_pfn(pte))
+>  
+> -#define pmd_leaf	pmd_large
+> -static inline int pmd_large(pmd_t pte)
+> +#define pmd_leaf pmd_leaf
+> +static inline int pmd_leaf(pmd_t pte)
+>  {
+>  	return pmd_flags(pte) & _PAGE_PSE;
+>  }
+>  
+>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> -/* NOTE: when predicate huge page, consider also pmd_devmap, or use pmd_large */
+> +/* NOTE: when predicate huge page, consider also pmd_devmap, or use pmd_leaf */
+>  static inline int pmd_trans_huge(pmd_t pmd)
+>  {
+>  	return (pmd_val(pmd) & (_PAGE_PSE|_PAGE_DEVMAP)) == _PAGE_PSE;
+> @@ -1085,8 +1085,8 @@ static inline pmd_t *pud_pgtable(pud_t pud)
+>   */
+>  #define pud_page(pud)	pfn_to_page(pud_pfn(pud))
+>  
+> -#define pud_leaf	pud_large
+> -static inline int pud_large(pud_t pud)
+> +#define pud_leaf pud_leaf
+> +static inline int pud_leaf(pud_t pud)
+>  {
+>  	return (pud_val(pud) & (_PAGE_PSE | _PAGE_PRESENT)) ==
+>  		(_PAGE_PSE | _PAGE_PRESENT);
+> @@ -1096,11 +1096,6 @@ static inline int pud_bad(pud_t pud)
+>  {
+>  	return (pud_flags(pud) & ~(_KERNPG_TABLE | _PAGE_USER)) != 0;
+>  }
+> -#else
+> -static inline int pud_large(pud_t pud)
+> -{
+> -	return 0;
+> -}
+>  #endif	/* CONFIG_PGTABLE_LEVELS > 2 */
+>  
+>  #if CONFIG_PGTABLE_LEVELS > 3
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 5cb5bc4a72c4..58f5e6b637b4 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -3110,7 +3110,7 @@ static int host_pfn_mapping_level(struct kvm *kvm, gfn_t gfn,
+>  	/*
+>  	 * Read each entry once.  As above, a non-leaf entry can be promoted to
+>  	 * a huge page _during_ this walk.  Re-reading the entry could send the
+> -	 * walk into the weeks, e.g. p*d_large() returns false (sees the old
+> +	 * walk into the weeks, e.g. p*d_leaf() returns false (sees the old
+>  	 * value) and then p*d_offset() walks into the target huge page instead
+>  	 * of the old page table (sees the new value).
+>  	 */
 > -- 
-> 2.43.0
+> 2.44.0
+> 
 > 
 
 -- 
-மணிவண்ணன் சதாசிவம்
+Sincerely yours,
+Mike.
 
