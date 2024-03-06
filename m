@@ -1,185 +1,96 @@
-Return-Path: <linux-kernel+bounces-93661-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93663-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C1C9873301
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:47:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A9F9873305
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:48:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2FDF71C26CE8
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:47:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC34D1C25EF8
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:48:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E4E35FBA3;
-	Wed,  6 Mar 2024 09:45:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="aD2KGCDk"
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E58CA5F841;
+	Wed,  6 Mar 2024 09:47:44 +0000 (UTC)
+Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D58DF5FB87
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 09:45:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8369A5F467;
+	Wed,  6 Mar 2024 09:47:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709718354; cv=none; b=OCD60Jydzn+fM95ECm+wpqVueRX7/tGzfJo0bv8zsrVT7GZ475jDcMFtwmRa/sT1ts+0p+ICHTEvl9udN/fjfvsL5+FZpUSp+y6cFxr0KwaqEBgTW0Sd7DdukgTvgGRrqxd3Cr0Dcugt0pGTeKe+5KMNCTgFiy8/iV1Uw9FWCCQ=
+	t=1709718464; cv=none; b=J2w7ZAw+hfdoeUurUxAjTxJplCPvY8yJvxgR5N56vNRHXlSLOnGkcayyROpM7rhqptPUyDv6vL+CyyLc/kTriOzP3E+EFgzU+V/Cj3IKEv1cBe2XBymNfGRD2XVTFhk70n6Gp8tvirbDZSS/A7Jg+W4guVvxmBEG/kvN4ewurLs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709718354; c=relaxed/simple;
-	bh=CMVF7n8dO5vESzb9IowrOlCjHiKoyt3gqfWtMoJTUa8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HerEtVjJpIIMqmOq7cjKv1p85+fo5rQTrSgE1OhN6cARQOhbLluhmt+opeytC4/cE6OJnl/OxKww9SLCgOzxkdL7zGUDm5VlwRJITSvsdCkGgk7VJm/Z8NBrd0GzuFDNg/aJ00hnb+Dk+8aRlu6Ptvm5BIL60GYa15Vjb/vsoXg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=aD2KGCDk; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1dc0e5b223eso56786515ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 01:45:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709718352; x=1710323152; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=onNOJK5dVb7dHDdyyPmx8REkXT8q/MvLJnZknRgJ6mw=;
-        b=aD2KGCDkwwTN4+n3M2IQxusmQv89GQOnCb2vyldhkkZMMNc9eA92HqO2FGHB7l2V6e
-         zrqHPXcSoaW2Fvdw38zLRQroKE0wwStl+DnDAmff9FWnQFi5OB9anLTz7tmueXUrQbOw
-         7xfz2FsR3Ggnywtk2I5WvW5o0zV5vv1FBEkuRfkbRfH3Xg0uePSAkCZb22R323nRvOgf
-         1yiGU878gTKUhEmzx/jaDjmWuUbjW+z8xXpTMjHc995u+9hwSUNuyMj5+EuvJHNGY0Yf
-         ggTnMUchI7Smx26RRydFqVh4wiF4QZGldJlDA/PJT/0rM7IFCDn89owgP6kPvefCalQj
-         6AhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709718352; x=1710323152;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=onNOJK5dVb7dHDdyyPmx8REkXT8q/MvLJnZknRgJ6mw=;
-        b=IdY4mCfwE5Ak8hFEujiWkQV8b6Nl7VulMHuNNNzs/m0nOppfwO5UZqIN62bWesFUuP
-         lmW6/AuLpnX3zA7MEsDrZ8HowgS+rDK+esFajefdipYibYMOMC3xi1WMgmSwkfs9tueB
-         zaJRP7Sp8N3KibwRwdCg2w0PT3ObIXH2JARhMD926O7SOh7LtKOrWP3YBoGTZO8dc2TP
-         t2qH0+XEoRhzXnhQmLfGtbRQT3aK9Hv3Ec9bhZdzFoMHRRgrnkiWFultNWXYkRXQ/G3B
-         touL1m2dy8n4sfF4g+s4Hml2LUvlU2Vqb9Y27R+ygijkcwzKhFfvPZy7/UEvv82rgw/f
-         /HMw==
-X-Forwarded-Encrypted: i=1; AJvYcCWYKajNf2P/I0n4fBh1NGHcesq4XW0GkQ1nSx9pJayLPyieJevxpaw/vzzUuOGbE/rmzQHlgnj4bkVJCXhN/CR7vErs3Qo4S67L8Yi6
-X-Gm-Message-State: AOJu0YxkojZYHw7aLXOZUTaYgqDaY2TzYapjj6pEFfTM0UJ3h3qhiPdZ
-	c/469OjKedpfPFl+QZ7awgpNB9JFYkzRdK84J7t0spvcuR6bOmTFrkOSLsJwwQ==
-X-Google-Smtp-Source: AGHT+IF5LhL5XIw+P5F6Ztyfbld27LtakrR/VOK8wMDEg3ocAgkdsTAQ2fMWpd9fCfHvlu9oM0q57A==
-X-Received: by 2002:a17:903:24c:b0:1dc:b531:833 with SMTP id j12-20020a170903024c00b001dcb5310833mr4833692plh.63.1709718352039;
-        Wed, 06 Mar 2024 01:45:52 -0800 (PST)
-Received: from thinkpad ([117.248.1.194])
-        by smtp.gmail.com with ESMTPSA id c1-20020a170903234100b001db594c9d17sm12099477plh.254.2024.03.06.01.45.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Mar 2024 01:45:51 -0800 (PST)
-Date: Wed, 6 Mar 2024 15:15:45 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Johan Hovold <johan@kernel.org>, Johan Hovold <johan+linaro@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
-	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 00/10] arm64: dts: qcom: sc8280xp: PCIe fixes and
- GICv3 ITS enable
-Message-ID: <20240306094545.GD4129@thinkpad>
-References: <20240305081105.11912-1-johan+linaro@kernel.org>
- <20240306063302.GA4129@thinkpad>
- <ZegZMNWxCnLbHDxP@hovoldconsulting.com>
- <20240306083925.GB4129@thinkpad>
- <CAA8EJppsbX=YXf1Z6Ud+YMnp2XnutN1hcb1T0KdAAWXFREVxXg@mail.gmail.com>
+	s=arc-20240116; t=1709718464; c=relaxed/simple;
+	bh=l6hUZC8Id6TcIs72184GnXjWFsML70AR2ab+dSEGB4w=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lkx5KLo42NGw/1ozsT1GidRNv7y1bTrKL7BU8Oizl/jGkoqcyqVGH05pcOC8uMrTd1i6KvGddaX2ajrwfpne15gf0QdSXn1vWQIbmEEO4SdqjX5CnscDuWfKMzbte7stMnhfui247Qlo/BSGwIm05lX45U7W6nyIgu+FJ6sMn0s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=144.6.53.87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
+	id 1rhnrw-003ysg-LN; Wed, 06 Mar 2024 17:47:25 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Wed, 06 Mar 2024 17:47:40 +0800
+Date: Wed, 6 Mar 2024 17:47:40 +0800
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Subject: [GIT PULL] Crypto Fixes for 6.8
+Message-ID: <Zeg7vD6GeVHAxYWf@gondor.apana.org.au>
+References: <Y/MDmL02XYfSz8XX@gondor.apana.org.au>
+ <ZEYLC6QsKnqlEQzW@gondor.apana.org.au>
+ <ZJ0RSuWLwzikFr9r@gondor.apana.org.au>
+ <ZOxnTFhchkTvKpZV@gondor.apana.org.au>
+ <ZUNIBcBJ0VeZRmT9@gondor.apana.org.au>
+ <ZZ3F/Pp1pxkdqfiD@gondor.apana.org.au>
+ <ZbstBewmaIfrFocE@gondor.apana.org.au>
+ <ZcRYwZHASH4Cv5Bn@gondor.apana.org.au>
+ <ZdW+GCkO4s3MSeLX@gondor.apana.org.au>
+ <Zd7p36CRWPsYhA2G@gondor.apana.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAA8EJppsbX=YXf1Z6Ud+YMnp2XnutN1hcb1T0KdAAWXFREVxXg@mail.gmail.com>
+In-Reply-To: <Zd7p36CRWPsYhA2G@gondor.apana.org.au>
 
-On Wed, Mar 06, 2024 at 10:48:30AM +0200, Dmitry Baryshkov wrote:
-> On Wed, 6 Mar 2024 at 10:39, Manivannan Sadhasivam
-> <manivannan.sadhasivam@linaro.org> wrote:
-> >
-> > On Wed, Mar 06, 2024 at 08:20:16AM +0100, Johan Hovold wrote:
-> > > On Wed, Mar 06, 2024 at 12:03:02PM +0530, Manivannan Sadhasivam wrote:
-> > > > On Tue, Mar 05, 2024 at 09:10:55AM +0100, Johan Hovold wrote:
-> > > > > This series addresses a few problems with the sc8280xp PCIe
-> > > > > implementation.
-> > > > >
-> > > > > The DWC PCIe controller can either use its internal MSI controller or an
-> > > > > external one such as the GICv3 ITS. Enabling the latter allows for
-> > > > > assigning affinity to individual interrupts, but results in a large
-> > > > > amount of Correctable Errors being logged on both the Lenovo ThinkPad
-> > > > > X13s and the sc8280xp-crd reference design.
-> > > > >
-> > > > > It turns out that these errors are always generated, but for some yet to
-> > > > > be determined reason, the AER interrupts are never received when using
-> > > > > the internal MSI controller, which makes the link errors harder to
-> > > > > notice.
-> > >
-> > > > > Enabling AER error reporting on sc8280xp could similarly also reveal
-> > > > > existing problems with the related sa8295p and sa8540p platforms as they
-> > > > > share the base dtsi.
-> > > > >
-> > > > > After discussing this with Bjorn Andersson at Qualcomm we have decided
-> > > > > to go ahead and disable L0s for all controllers on the CRD and the
-> > > > > X13s.
-> > >
-> > > > Just received confirmation from Qcom that L0s is not supported for any of the
-> > > > PCIe instances in sc8280xp (and its derivatives). Please move the property to
-> > > > SoC dtsi.
-> > >
-> > > Ok, thanks for confirming. But then the devicetree property is not the
-> > > right way to handle this, and we should disable L0s based on the
-> > > compatible string instead.
-> > >
-> >
-> > Hmm. I checked further and got the info that there is no change in the IP, but
-> > the PHY sequence is not tuned correctly for L0s (as I suspected earlier). So
-> > there will be AERs when L0s is enabled on any controller instance. And there
-> > will be no updated PHY sequence in the future also for this chipset.
-> 
-> Why? If it is a bug in the PHY driver, it should be fixed there
-> instead of adding workarounds.
-> 
+Hi Linus:
 
-Fixing the L0s support requires the expertise of the PHY team and they will only
-do if there is any real demand (like in the case of mobile chipsets). For
-compute chipsets, they didn't do because most of the NVMe devices out there in
-the market only support L1 and L1ss.
+The following changes since commit 1c0cf6d19690141002889d72622b90fc01562ce4:
 
-So we have to live with this limitation for now.
+  crypto: arm64/neonbs - fix out-of-bounds access on short input (2024-02-24 08:37:24 +0800)
 
-- Mani
+are available in the Git repository at:
 
-> >
-> > So yeah, let's disable it in the driver instead.
-> >
-> > > > > As we are now at 6.8-rc7, I've rebased this series on the Qualcomm PCIe
-> > > > > binding rework in linux-next so that the whole series can be merged for
-> > > > > 6.9 (the 'aspm-no-l0s' support and devicetree fixes are all marked for
-> > > > > stable backport anyway).
-> > >
-> > > I'll respin the series. Looks like we've already missed the chance to
-> > > enable ITS in 6.9 anyway.
-> > >
-> >
-> > Sounds good, thanks!
-> >
-> > - Mani
-> >
-> > --
-> > மணிவண்ணன் சதாசிவம்
-> >
-> 
-> 
-> -- 
-> With best wishes
-> Dmitry
+  git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git v6.8-p6 
 
+for you to fetch changes up to c0afb6b88fbbc177fa322a835f874be217bffe45:
+
+  crypto: rk3288 - Fix use after free in unprepare (2024-03-01 18:33:29 +0800)
+
+----------------------------------------------------------------
+This push fixes potential use-after-frees in rk3288 and sun8i-ce.
+----------------------------------------------------------------
+
+Andrey Skvortsov (1):
+      crypto: sun8i-ce - Fix use after free in unprepare
+
+Herbert Xu (1):
+      crypto: rk3288 - Fix use after free in unprepare
+
+ .../crypto/allwinner/sun8i-ce/sun8i-ce-cipher.c    | 34 +++++++++++-----------
+ drivers/crypto/rockchip/rk3288_crypto_ahash.c      |  4 +--
+ 2 files changed, 19 insertions(+), 19 deletions(-)
+
+Thanks,
 -- 
-மணிவண்ணன் சதாசிவம்
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
