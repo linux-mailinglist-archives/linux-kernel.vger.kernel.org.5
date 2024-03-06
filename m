@@ -1,241 +1,322 @@
-Return-Path: <linux-kernel+bounces-93945-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93946-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEF3C873754
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:06:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DAF24873757
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:06:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A90A91C21DEF
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:06:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 50C7D1F282ED
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:06:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7FA2130AED;
-	Wed,  6 Mar 2024 13:05:51 +0000 (UTC)
-Received: from mail-oo1-f50.google.com (mail-oo1-f50.google.com [209.85.161.50])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 317F2130AE0;
+	Wed,  6 Mar 2024 13:06:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aLYabXxi"
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 632E812C53E;
-	Wed,  6 Mar 2024 13:05:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9296A5F566;
+	Wed,  6 Mar 2024 13:06:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709730351; cv=none; b=srodtKYwc1L+IqTHSpstMllL0wNI93mH5BVn71F5JAYSJcTIZDfQfYRxNVLCu1rjF/K0Hi49/NNpcqBvFAkhbw5MFbGBQzSanLvbI8cJKiTsU+sR1YWiae0KGkdAuVQw5Fbk397VEE1A6g6mgD7h5UNcgxIxphKFgj9eqdk7qeY=
+	t=1709730377; cv=none; b=cB8oWrHwP303updni9Z5eD3TUd1fvpZEzE+B+jw26hEdAS9RPUFSv3IICzNykymwPUYfF7Xt6ezBaj7UpuIGfnTDzlP3cnKj0b7ef9r5nV9VEGMc+H5FBtmCb/xMaOdU+w3Sx7KLEwSHcIgWXwW05cdMAG7428VG6blrHdhNJ9s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709730351; c=relaxed/simple;
-	bh=8uc1R+slg/97k/IQYzXJlpNpHvL5yYvzn94i0APTfU8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WOhZ8aQprZUVxf+ZF2ZDKhv5ejDpwv6TJH/S1RlQl/X+OPst3bND2aMwIZoo7E+tIK9HIHyJTA2GrYgJyEFP91hJV0IyoNrpr7s+eryRAn3w+3NwM9h3jpjf4HpVKcAUvegXwmrmFGFHxABKX4a6fG5zB6Ul4n/SRjfWhv0ee5k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	s=arc-20240116; t=1709730377; c=relaxed/simple;
+	bh=ZaaYiFoVLdyewEKaT0gopyggjG7/3+GsnvfgJScPf/Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nB6HpQArDr2C81wilUxr5ukH9FRH/ki9dnjb0LNhGltR+Iimj8FJ2wagCkhfytbCaVsKC0aWdp0H8xuH/jtl7y/DTza/Som2CGNhSE4HV2dG3dl1hIDPVHrpb8CoDTMQC+2fvVKmnYntldOxgjOkiFwCgI0YTCFj+Fqniogaa84=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aLYabXxi; arc=none smtp.client-ip=209.85.128.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-5a13ecfb6b8so307169eaf.1;
-        Wed, 06 Mar 2024 05:05:49 -0800 (PST)
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-60978479651so64410407b3.3;
+        Wed, 06 Mar 2024 05:06:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709730374; x=1710335174; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=R0Oi3DIHf6RcVnBQ6jfEGvzGhX4KFvOXX/NtautGKE4=;
+        b=aLYabXxiqWKPvyDsBD4iXIODM7CSwumQ7XGNUf5oBIodirPEg67Xi9yX2pc4pNZ23D
+         OG5vo9pjzauPW2gQhJdMfYCIPPPxphHF4LT6AN6Ffd4IUbacZN9dkOU1JKuXP5R6/SQu
+         YlFIZnnucrNirkgAdZD+G2dV8VTgX7Ev1ll5IiBnX4VToUN3UwZAToqGN30aFXrIrxhp
+         heru7jrthCQgECDt06VRl4TCw0407+toJZzH//aR8dAW4X/brDkrJwE/5jaytmK0nmh9
+         jdoKrxs00KZLY0IPwk7lzEI0aH/OXhlPIJgC416TEBmGC/iFAOGosv+0GgvqAYuKAHmg
+         sNnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709730348; x=1710335148;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YEhriZi3EhlptrvY3zDnSYlGkdTq8xk82JatT/h3VxM=;
-        b=By0rNVn51Ndv7cFzSFFmuxlRocMUFtafXnVmpA5joy3oPRpzk+6vxQdeprDG08hm6M
-         Dk+Xx6jk1j2KbZ3W9WBpq6ZWAybClW+DTN6foQG82zgEgK/B7VH8EBywvLpFQ9NI/rN1
-         UzEQou5sMqWi0L88e8pyS/xG/2IdkCgOEx0I+evnvSN6fZKPMkoP+gw0d/DMVJ/SQZKw
-         EHoLIqNJeiY+Qngegs8TngJNPyy5t648TkvttutRKRri1Lw1h6t2P3FzHX/HVmT8Q9RK
-         0lfCukvteKwLyCCovyE/Ef9S9EvqyN+J8891ORRV1iLopCuTvj/spic6FcY+Dg6jO0uL
-         GApA==
-X-Forwarded-Encrypted: i=1; AJvYcCUrKeLWy5mKcyUPWlPvAwK6xkAWuqB3qH74tg4pfJinVgNHs1jyh4tPcbH0p4hat0gwsYJDAPlWsev8pJA3FQUX893DaAu7D546u1qdfnn8sH7tUW6K+dCiG8Oy7PV3sq/sZamX4bDh3UwLXCqPXjiw6IJFY1Cu83KqK8krRP/yyg==
-X-Gm-Message-State: AOJu0Ywt9DU/BHNPkv+NbYByVSPnCN8vZ6Ia9CxswP5QGvlO4zYMUpp+
-	e6F5gruDUBy39zUmwhayGl5gp5HN0Ik6m5G916qyA+bIz8m6BkrNMrCDX8GQ5st/FU94vvm1Gdb
-	cfltSjcOrTjO+4N0BOU1T1xwxBhA=
-X-Google-Smtp-Source: AGHT+IFI0PZyOmJYzDvNd76NT02uWYi+e3g17uo4elnzoibUKltLzsJf0CvD0b0XCA5BComTmd/+bndxC06NwmpC/bc=
-X-Received: by 2002:a05:6870:d0d3:b0:221:3b96:4e84 with SMTP id
- k19-20020a056870d0d300b002213b964e84mr3529472oaa.5.1709730348309; Wed, 06 Mar
- 2024 05:05:48 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709730374; x=1710335174;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=R0Oi3DIHf6RcVnBQ6jfEGvzGhX4KFvOXX/NtautGKE4=;
+        b=m7/Vi2S8XN00fOwBTPBkY48GqQ+4/zZUfjvQEtMWvMZwgvjZFNkWpsuSsxo2USw+/t
+         1ZhRCKjzznCttN9ucNHIyRGRh8/QeKKxlPQX9zhZV+/iZVDQ73shSs06ewA6W+P1NPO+
+         Yxp0AVBloMpYEeIu7gKGFSPFKg90flIUtvOjNF0kAhGacQwdCwV2Yse4DJrwUU/hZfJE
+         hcW29yUfQzO8qGYWY45U5QecGHdOaAG8fVJYh80JW4xdKE9iE+xe9uw9Vg6u9F0Hrf4N
+         lXl8sOq8s/iE+bBVCPo/ec+sZNqQ/HOlA9y6N+ag7lC7qcitwGfnyMv/3E530xJFeJ59
+         +6Og==
+X-Forwarded-Encrypted: i=1; AJvYcCWags5BwvHwIWrsK6AhRRFSwHb9ABn8+Wivaq08eD69Yg+tbCNS8fBKZfJTccXBvvHq4/PTmiD7splWgno4jA4xZxz7F4DN96jxIHEZ7a6zg5xDPTdUsDqaNxGwscuUEpTaqd37
+X-Gm-Message-State: AOJu0Yx4u8cCPNjStxJx3G/zI7uqwpaKncH3A3l97EbWjjUwhi8lQuAA
+	BZnoyRRIX88NBXG0njRDU6vxexRTa551YIv6eCt+XC7GUjLyzQdm
+X-Google-Smtp-Source: AGHT+IE+aoLOnpZkLP/3EfQ+xyS+L+4GWolxGYGRGD6QvHKeBWbWI3i1ajDfNqpm2ci7qFy0mSU4Mg==
+X-Received: by 2002:a81:5b08:0:b0:609:bd7b:bb55 with SMTP id p8-20020a815b08000000b00609bd7bbb55mr7704201ywb.23.1709730374439;
+        Wed, 06 Mar 2024 05:06:14 -0800 (PST)
+Received: from localhost ([2601:344:8301:57f0:a708:4ac5:2d2f:c5bb])
+        by smtp.gmail.com with ESMTPSA id s123-20020a0de981000000b0060968d94177sm3683591ywe.15.2024.03.06.05.06.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Mar 2024 05:06:13 -0800 (PST)
+Date: Wed, 6 Mar 2024 05:06:12 -0800
+From: Yury Norov <yury.norov@gmail.com>
+To: Herve Codina <herve.codina@bootlin.com>
+Cc: Vadim Fedorenko <vadim.fedorenko@linux.dev>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, Andrew Lunn <andrew@lunn.ch>,
+	Mark Brown <broonie@kernel.org>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v6 4/5] net: wan: fsl_qmc_hdlc: Add runtime timeslots
+ changes support
+Message-ID: <ZehqRMZwtazTf6P6@yury-ThinkPad>
+References: <20240306080726.167338-1-herve.codina@bootlin.com>
+ <20240306080726.167338-5-herve.codina@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240306085007.169771-1-herve.codina@bootlin.com>
- <20240306085007.169771-2-herve.codina@bootlin.com> <1fff8742a13c28dd7e1dda47ad2d6fa8e21e421e.camel@gmail.com>
- <CAJZ5v0gWCo9nDAHkzeD08tTKoE0DE0ocht-Qq4zA7P59y9KeuQ@mail.gmail.com> <ed442b6916016b3a40782dc32538fc517715db6c.camel@gmail.com>
-In-Reply-To: <ed442b6916016b3a40782dc32538fc517715db6c.camel@gmail.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 6 Mar 2024 14:05:36 +0100
-Message-ID: <CAJZ5v0iQNEj6e_L1=uBTPaWn7BqV4pnoWxUq7LRPe5iVWsaifw@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] driver core: Introduce device_link_wait_removal()
-To: =?UTF-8?B?TnVubyBTw6E=?= <noname.nuno@gmail.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Herve Codina <herve.codina@bootlin.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Rob Herring <robh+dt@kernel.org>, 
-	Frank Rowand <frowand.list@gmail.com>, Saravana Kannan <saravanak@google.com>, 
-	Lizhi Hou <lizhi.hou@amd.com>, Max Zhen <max.zhen@amd.com>, 
-	Sonal Santan <sonal.santan@amd.com>, Stefano Stabellini <stefano.stabellini@xilinx.com>, 
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>, linux-kernel@vger.kernel.org, 
-	devicetree@vger.kernel.org, Allan Nielsen <allan.nielsen@microchip.com>, 
-	Horatiu Vultur <horatiu.vultur@microchip.com>, 
-	Steen Hegelund <steen.hegelund@microchip.com>, Luca Ceresoli <luca.ceresoli@bootlin.com>, 
-	Nuno Sa <nuno.sa@analog.com>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
-	stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240306080726.167338-5-herve.codina@bootlin.com>
 
-On Wed, Mar 6, 2024 at 2:01=E2=80=AFPM Nuno S=C3=A1 <noname.nuno@gmail.com>=
- wrote:
->
-> On Wed, 2024-03-06 at 13:43 +0100, Rafael J. Wysocki wrote:
-> > On Wed, Mar 6, 2024 at 10:17=E2=80=AFAM Nuno S=C3=A1 <noname.nuno@gmail=
-com> wrote:
-> > >
-> > > On Wed, 2024-03-06 at 09:50 +0100, Herve Codina wrote:
-> > > > The commit 80dd33cf72d1 ("drivers: base: Fix device link removal")
-> > > > introduces a workqueue to release the consumer and supplier devices=
- used
-> > > > in the devlink.
-> > > > In the job queued, devices are release and in turn, when all the
-> > > > references to these devices are dropped, the release function of th=
-e
-> > > > device itself is called.
-> > > >
-> > > > Nothing is present to provide some synchronisation with this workqu=
-eue
-> > > > in order to ensure that all ongoing releasing operations are done a=
-nd
-> > > > so, some other operations can be started safely.
-> > > >
-> > > > For instance, in the following sequence:
-> > > >   1) of_platform_depopulate()
-> > > >   2) of_overlay_remove()
-> > > >
-> > > > During the step 1, devices are released and related devlinks are re=
-moved
-> > > > (jobs pushed in the workqueue).
-> > > > During the step 2, OF nodes are destroyed but, without any
-> > > > synchronisation with devlink removal jobs, of_overlay_remove() can =
-raise
-> > > > warnings related to missing of_node_put():
-> > > >   ERROR: memory leak, expected refcount 1 instead of 2
-> > > >
-> > > > Indeed, the missing of_node_put() call is going to be done, too lat=
-e,
-> > > > from the workqueue job execution.
-> > > >
-> > > > Introduce device_link_wait_removal() to offer a way to synchronize
-> > > > operations waiting for the end of devlink removals (i.e. end of
-> > > > workqueue jobs).
-> > > > Also, as a flushing operation is done on the workqueue, the workque=
-ue
-> > > > used is moved from a system-wide workqueue to a local one.
-> > > >
-> > > > Fixes: 80dd33cf72d1 ("drivers: base: Fix device link removal")
-> > > > Cc: stable@vger.kernel.org
-> > > > Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-> > > > ---
-> > >
-> > > With the below addressed:
-> > >
-> > > Reviewed-by: Nuno Sa <nuno.sa@analog.com>
-> > >
-> > > >  drivers/base/core.c    | 26 +++++++++++++++++++++++---
-> > > >  include/linux/device.h |  1 +
-> > > >  2 files changed, 24 insertions(+), 3 deletions(-)
-> > > >
-> > > > diff --git a/drivers/base/core.c b/drivers/base/core.c
-> > > > index d5f4e4aac09b..48b28c59c592 100644
-> > > > --- a/drivers/base/core.c
-> > > > +++ b/drivers/base/core.c
-> > > > @@ -44,6 +44,7 @@ static bool fw_devlink_is_permissive(void);
-> > > >  static void __fw_devlink_link_to_consumers(struct device *dev);
-> > > >  static bool fw_devlink_drv_reg_done;
-> > > >  static bool fw_devlink_best_effort;
-> > > > +static struct workqueue_struct *device_link_wq;
-> > > >
-> > > >  /**
-> > > >   * __fwnode_link_add - Create a link between two fwnode_handles.
-> > > > @@ -532,12 +533,26 @@ static void devlink_dev_release(struct device=
- *dev)
-> > > >       /*
-> > > >        * It may take a while to complete this work because of the S=
-RCU
-> > > >        * synchronization in device_link_release_fn() and if the con=
-sumer
-> > > > or
-> > > > -      * supplier devices get deleted when it runs, so put it into =
-the
-> > > > "long"
-> > > > -      * workqueue.
-> > > > +      * supplier devices get deleted when it runs, so put it into =
-the
-> > > > +      * dedicated workqueue.
-> > > >        */
-> > > > -     queue_work(system_long_wq, &link->rm_work);
-> > > > +     queue_work(device_link_wq, &link->rm_work);
-> > > >  }
-> > > >
-> > > > +/**
-> > > > + * device_link_wait_removal - Wait for ongoing devlink removal job=
-s to
-> > > > terminate
-> > > > + */
-> > > > +void device_link_wait_removal(void)
-> > > > +{
-> > > > +     /*
-> > > > +      * devlink removal jobs are queued in the dedicated work queu=
-e.
-> > > > +      * To be sure that all removal jobs are terminated, ensure th=
-at any
-> > > > +      * scheduled work has run to completion.
-> > > > +      */
-> > > > +     flush_workqueue(device_link_wq);
-> > > > +}
-> > > > +EXPORT_SYMBOL_GPL(device_link_wait_removal);
-> > > > +
-> > > >  static struct class devlink_class =3D {
-> > > >       .name =3D "devlink",
-> > > >       .dev_groups =3D devlink_groups,
-> > > > @@ -4099,9 +4114,14 @@ int __init devices_init(void)
-> > > >       sysfs_dev_char_kobj =3D kobject_create_and_add("char", dev_ko=
-bj);
-> > > >       if (!sysfs_dev_char_kobj)
-> > > >               goto char_kobj_err;
-> > > > +     device_link_wq =3D alloc_workqueue("device_link_wq", 0, 0);
-> > > > +     if (!device_link_wq)
-> > > > +             goto wq_err;
-> > > >
-> > >
-> > > I can't still agree with this. Why not doing it in devlink_class_init=
-()?
-> > > This is
-> > > devlink specific so it makes complete sense to me.
-> >
-> > If you do that in devlink_class_init() and it fails, you essentially
-> > cause the creation of every device link to fail.  IOW, you try to live
-> > without device links and pretend that it is all OK.  That won't get
-> > you very far, especially on systems where DT is used.
-> >
-> > Doing it here, if it fails, you prevent the driver model from working
-> > at all (because one of its necessary components is unavailable), which
-> > arguably is a better choice.
->
-> That makes sense but then the only thing I still don't fully get is why w=
-e have
-> a separate devlink_class_init() initcall for registering the devlink clas=
-s
-> (which can also fail)...
+On Wed, Mar 06, 2024 at 09:07:20AM +0100, Herve Codina wrote:
+> QMC channels support runtime timeslots changes but nothing is done at
+> the QMC HDLC driver to handle these changes.
+> 
+> Use existing IFACE ioctl in order to configure the timeslots to use.
+> 
+> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+> Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> Acked-by: Jakub Kicinski <kuba@kernel.org>
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  drivers/net/wan/fsl_qmc_hdlc.c | 151 ++++++++++++++++++++++++++++++++-
+>  1 file changed, 150 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/wan/fsl_qmc_hdlc.c b/drivers/net/wan/fsl_qmc_hdlc.c
+> index 90063a92209e..31c0f32474a3 100644
+> --- a/drivers/net/wan/fsl_qmc_hdlc.c
+> +++ b/drivers/net/wan/fsl_qmc_hdlc.c
+> @@ -10,6 +10,7 @@
+>  #include <linux/array_size.h>
+>  #include <linux/bug.h>
+>  #include <linux/cleanup.h>
+> +#include <linux/bitmap.h>
+>  #include <linux/dma-mapping.h>
+>  #include <linux/device.h>
+>  #include <linux/err.h>
+> @@ -39,6 +40,7 @@ struct qmc_hdlc {
+>  	struct qmc_hdlc_desc tx_descs[8];
+>  	unsigned int tx_out;
+>  	struct qmc_hdlc_desc rx_descs[4];
+> +	u32 slot_map;
+>  };
+>  
+>  static struct qmc_hdlc *netdev_to_qmc_hdlc(struct net_device *netdev)
+> @@ -203,6 +205,144 @@ static netdev_tx_t qmc_hdlc_xmit(struct sk_buff *skb, struct net_device *netdev)
+>  	return NETDEV_TX_OK;
+>  }
+>  
+> +static int qmc_hdlc_xlate_slot_map(struct qmc_hdlc *qmc_hdlc,
+> +				   u32 slot_map, struct qmc_chan_ts_info *ts_info)
+> +{
+> +	DECLARE_BITMAP(ts_mask_avail, 64);
+> +	DECLARE_BITMAP(ts_mask, 64);
+> +	DECLARE_BITMAP(map, 64);
+> +
+> +	/* Tx and Rx available masks must be identical */
+> +	if (ts_info->rx_ts_mask_avail != ts_info->tx_ts_mask_avail) {
+> +		dev_err(qmc_hdlc->dev, "tx and rx available timeslots mismatch (0x%llx, 0x%llx)\n",
+> +			ts_info->rx_ts_mask_avail, ts_info->tx_ts_mask_avail);
+> +		return -EINVAL;
+> +	}
+> +
+> +	bitmap_from_u64(ts_mask_avail, ts_info->rx_ts_mask_avail);
+> +	bitmap_from_u64(map, slot_map);
+> +	bitmap_scatter(ts_mask, map, ts_mask_avail, 64);
 
-Well, I haven't added it. :-)
+We've got a BITMAP_FROM_U64() for this:
 
-> What I take from the above is that we should fail the
-> driver model if one of it's fundamental components fails so I would say w=
-e
-> should merge devlink_class_init() with device_init() otherwise it's a bit
-> confusing (at least to me) and gives the idea that it's ok for the driver=
- model
-> to exist without the links (unless I'm missing some other reason for the =
-devlink
-> init function).
+	DECLARE_BITMAP(ts_mask_avail, 64) = { BITMAP_FROM_U64(ts_info->rx_ts_mask_avail) };
+	DECLARE_BITMAP(map, 64) = { BITMAP_FROM_U64(slot_map) };
 
-+1
+> +
+> +	if (bitmap_weight(ts_mask, 64) != bitmap_weight(map, 64)) {
+> +		dev_err(qmc_hdlc->dev, "Cannot translate timeslots %64pb -> (%64pb, %64pb)\n",
+> +			map, ts_mask_avail, ts_mask);
+> +		return -EINVAL;
+> +	}
+> +
+> +	bitmap_to_arr64(&ts_info->tx_ts_mask, ts_mask, 64);
+> +	ts_info->rx_ts_mask = ts_info->tx_ts_mask;
+> +	return 0;
+> +}
+> +
+> +static int qmc_hdlc_xlate_ts_info(struct qmc_hdlc *qmc_hdlc,
+> +				  const struct qmc_chan_ts_info *ts_info, u32 *slot_map)
+> +{
+> +	DECLARE_BITMAP(ts_mask_avail, 64);
+> +	DECLARE_BITMAP(ts_mask, 64);
+> +	DECLARE_BITMAP(map, 64);
+> +	u32 array32[2];
 
-Feel free to send a patch along these lines, chances are that it will
-be popular. ;-)
+NIT. Bad name. I'd suggest slot_array, or something.
+
+> +	/* Tx and Rx masks and available masks must be identical */
+> +	if (ts_info->rx_ts_mask_avail != ts_info->tx_ts_mask_avail) {
+> +		dev_err(qmc_hdlc->dev, "tx and rx available timeslots mismatch (0x%llx, 0x%llx)\n",
+> +			ts_info->rx_ts_mask_avail, ts_info->tx_ts_mask_avail);
+> +		return -EINVAL;
+> +	}
+> +	if (ts_info->rx_ts_mask != ts_info->tx_ts_mask) {
+> +		dev_err(qmc_hdlc->dev, "tx and rx timeslots mismatch (0x%llx, 0x%llx)\n",
+> +			ts_info->rx_ts_mask, ts_info->tx_ts_mask);
+> +		return -EINVAL;
+> +	}
+> +
+> +	bitmap_from_u64(ts_mask_avail, ts_info->rx_ts_mask_avail);
+> +	bitmap_from_u64(ts_mask, ts_info->rx_ts_mask);
+
+Same as above, can you try using BITMAP_FROM_U64()?
+
+Thanks,
+Yury
+
+> +	bitmap_gather(map, ts_mask, ts_mask_avail, 64);
+> +
+> +	if (bitmap_weight(ts_mask, 64) != bitmap_weight(map, 64)) {
+> +		dev_err(qmc_hdlc->dev, "Cannot translate timeslots (%64pb, %64pb) -> %64pb\n",
+> +			ts_mask_avail, ts_mask, map);
+> +		return -EINVAL;
+> +	}
+> +
+> +	bitmap_to_arr32(array32, map, 64);
+> +	if (array32[1]) {
+> +		dev_err(qmc_hdlc->dev, "Slot map out of 32bit (%64pb, %64pb) -> %64pb\n",
+> +			ts_mask_avail, ts_mask, map);
+> +		return -EINVAL;
+> +	}
+> +
+> +	*slot_map = array32[0];
+> +	return 0;
+> +}
+> +
+> +static int qmc_hdlc_set_iface(struct qmc_hdlc *qmc_hdlc, int if_iface, const te1_settings *te1)
+> +{
+> +	struct qmc_chan_ts_info ts_info;
+> +	int ret;
+> +
+> +	ret = qmc_chan_get_ts_info(qmc_hdlc->qmc_chan, &ts_info);
+> +	if (ret) {
+> +		dev_err(qmc_hdlc->dev, "get QMC channel ts info failed %d\n", ret);
+> +		return ret;
+> +	}
+> +	ret = qmc_hdlc_xlate_slot_map(qmc_hdlc, te1->slot_map, &ts_info);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = qmc_chan_set_ts_info(qmc_hdlc->qmc_chan, &ts_info);
+> +	if (ret) {
+> +		dev_err(qmc_hdlc->dev, "set QMC channel ts info failed %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	qmc_hdlc->slot_map = te1->slot_map;
+> +
+> +	return 0;
+> +}
+> +
+> +static int qmc_hdlc_ioctl(struct net_device *netdev, struct if_settings *ifs)
+> +{
+> +	struct qmc_hdlc *qmc_hdlc = netdev_to_qmc_hdlc(netdev);
+> +	te1_settings te1;
+> +
+> +	switch (ifs->type) {
+> +	case IF_GET_IFACE:
+> +		ifs->type = IF_IFACE_E1;
+> +		if (ifs->size < sizeof(te1)) {
+> +			if (!ifs->size)
+> +				return 0; /* only type requested */
+> +
+> +			ifs->size = sizeof(te1); /* data size wanted */
+> +			return -ENOBUFS;
+> +		}
+> +
+> +		memset(&te1, 0, sizeof(te1));
+> +
+> +		/* Update slot_map */
+> +		te1.slot_map = qmc_hdlc->slot_map;
+> +
+> +		if (copy_to_user(ifs->ifs_ifsu.te1, &te1, sizeof(te1)))
+> +			return -EFAULT;
+> +		return 0;
+> +
+> +	case IF_IFACE_E1:
+> +	case IF_IFACE_T1:
+> +		if (!capable(CAP_NET_ADMIN))
+> +			return -EPERM;
+> +
+> +		if (netdev->flags & IFF_UP)
+> +			return -EBUSY;
+> +
+> +		if (copy_from_user(&te1, ifs->ifs_ifsu.te1, sizeof(te1)))
+> +			return -EFAULT;
+> +
+> +		return qmc_hdlc_set_iface(qmc_hdlc, ifs->type, &te1);
+> +
+> +	default:
+> +		return hdlc_ioctl(netdev, ifs);
+> +	}
+> +}
+> +
+>  static int qmc_hdlc_open(struct net_device *netdev)
+>  {
+>  	struct qmc_hdlc *qmc_hdlc = netdev_to_qmc_hdlc(netdev);
+> @@ -326,12 +466,13 @@ static const struct net_device_ops qmc_hdlc_netdev_ops = {
+>  	.ndo_open       = qmc_hdlc_open,
+>  	.ndo_stop       = qmc_hdlc_close,
+>  	.ndo_start_xmit = hdlc_start_xmit,
+> -	.ndo_siocwandev	= hdlc_ioctl,
+> +	.ndo_siocwandev = qmc_hdlc_ioctl,
+>  };
+>  
+>  static int qmc_hdlc_probe(struct platform_device *pdev)
+>  {
+>  	struct device *dev = &pdev->dev;
+> +	struct qmc_chan_ts_info ts_info;
+>  	struct qmc_hdlc *qmc_hdlc;
+>  	struct qmc_chan_info info;
+>  	hdlc_device *hdlc;
+> @@ -357,6 +498,14 @@ static int qmc_hdlc_probe(struct platform_device *pdev)
+>  		return dev_err_probe(dev, -EINVAL, "QMC chan mode %d is not QMC_HDLC\n",
+>  				     info.mode);
+>  
+> +	ret = qmc_chan_get_ts_info(qmc_hdlc->qmc_chan, &ts_info);
+> +	if (ret)
+> +		return dev_err_probe(dev, ret, "get QMC channel ts info failed\n");
+> +
+> +	ret = qmc_hdlc_xlate_ts_info(qmc_hdlc, &ts_info, &qmc_hdlc->slot_map);
+> +	if (ret)
+> +		return ret;
+> +
+>  	qmc_hdlc->netdev = alloc_hdlcdev(qmc_hdlc);
+>  	if (!qmc_hdlc->netdev)
+>  		return -ENOMEM;
+> -- 
+> 2.43.0
 
