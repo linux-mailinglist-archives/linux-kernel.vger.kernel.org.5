@@ -1,266 +1,118 @@
-Return-Path: <linux-kernel+bounces-94097-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94098-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E49B8739E2
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:55:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F39578739E4
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:56:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B2B061C20FF5
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:55:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 935631F24EFF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:56:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7389C134750;
-	Wed,  6 Mar 2024 14:55:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AE81134CCA;
+	Wed,  6 Mar 2024 14:56:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F4DEFRVV"
-Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="PCA3pxET"
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2418D13440D;
-	Wed,  6 Mar 2024 14:55:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E43613473B
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 14:55:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709736943; cv=none; b=OIAtbHc+fgn/2vvRM/UpKu5OAqr907v1fpDG0t4Li7AjtYKLacrAm1XOYfR2nOvNBHeLsel7qQWi1md/RsZU23Gjl3YWUH+WDHQOsb46rWjnz9zFZBWdraIolmbKjYhfQiWY95WK4WXLFR0bfR5sczhSJ7thGTrvbsJgwdpRLkY=
+	t=1709736959; cv=none; b=h6gzgUdCkVYwR6pq/RCayIQSLerOQIQ9iSb7aUFo9+gKnnCCG4dJT2cJpUVJthg3wCNBMTUJf6JvEuYbWkeeHfI1vAsQl8dE2wEDUvI66hGCYIQy+F4oQchrtoVHmiythnqTkY21GKCNEgj0JFERYZChkm+Tw0Mup0Sr5yY+n78=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709736943; c=relaxed/simple;
-	bh=nfCQ5MUeAnyANkejhBsUcvuz//Jl2DIYQFseasFDrrY=;
+	s=arc-20240116; t=1709736959; c=relaxed/simple;
+	bh=AIQwTTuZb/bkpUI1B93DUztoPtr/cSqg9ygDBJUJ4wg=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=biOZGp3w3dFNmJ89/lJmrqQ3eZ4DIVIsafeErBUzvjDHeL0p/R2m5Q6oPAzENwuRWtrWB+iBe8eKyVv25qKXWN1kierqRCJ5NMy0qopDmCIZd3T0/2fbBxSLJjn9cKPU17sVVsB1hknGXRG/3bwA7pn2CoIgaoSsn0fUPh3bcgk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F4DEFRVV; arc=none smtp.client-ip=209.85.215.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-5c6bd3100fcso5020512a12.3;
-        Wed, 06 Mar 2024 06:55:41 -0800 (PST)
+	 To:Cc:Content-Type; b=BNGUAQ4n4PJWP2efWDmcJbRzeDihk2NBiQ/ZqGhZNtucKHF9c2UHDo5WcK3vqouHW5xohpW6QIq7GuRgNo561rGvn50lUTIc9fUuBFTruMXNzqYVK557V4rXfp8/AFk47kmsIXBJgjGnyiY2cFrGd9vBLonpLPCvaPavztXakg4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=PCA3pxET; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5654ef0c61fso14355a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 06:55:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709736941; x=1710341741; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1709736956; x=1710341756; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Uzzlf6zHmONYejes4XgBv/bY8vZwiwX8uYZEyJ0PkRw=;
-        b=F4DEFRVVseZ3vhDZi0uJkP2V+WcT3vXQmqSF24pYB5zIzIKLAn5s9fzHg+wMkR1U+j
-         3beAgYPaSQJCpH3CHf5cROAY/Kauge/C/yaHwN1CW4u/JoLqdbckBzYu15tIeoMmnSFm
-         Mqdf8ZWortX4TvM8f9L50Hbw9B8vBKEYDylGFGV/5L6DF8Fu+IWanh/UZvt56X7OcN+8
-         FdgQf9GOBFm4kBwMz8WMDIX5/lpnNxZ2iBpCQ89mMY+UU1Nlkiytd0ghsW7Egy+P/VES
-         R31dwaxXsyG6pYytb0El8ljMIDQQIL5Y74cJNCROwP+Iiqg1fx3RTuAbr7uMP8Tjh4Dx
-         yjDw==
+        bh=AIQwTTuZb/bkpUI1B93DUztoPtr/cSqg9ygDBJUJ4wg=;
+        b=PCA3pxETtyhyNcthYqkghg6Y2KQoHBMMzvwveS/aFvk8jlWMAfwxxAFidSZq4HjgAs
+         Zq3t5qhpPcLaz1HYn7A4NMrVmdkowBn/AJiaM2UZtBCKJ2fM63LlfB4y7knxXrjcxapL
+         0M2yquIhHs3qACve6Hw73Jw5UcBLxnWFrTyjuUzfHHHLyBEC7R6v5FIMwidWLqq88mGs
+         qxON+bFaTGzjIOnvGbr3JmR6hA6XK3H309BXhfUmM736Mhl9E44TtXPGnogYTHStBgeY
+         TzVo05octd4cESPwntuZOXdLhJkfx+qdX4k+nGZhOQZE0fuQsyraS+Jmm0jWHsDo9Zwy
+         cahw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709736941; x=1710341741;
+        d=1e100.net; s=20230601; t=1709736956; x=1710341756;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Uzzlf6zHmONYejes4XgBv/bY8vZwiwX8uYZEyJ0PkRw=;
-        b=njUeW0vG3zV+idUDSYfVYE+Pg0pvmfb4M8zRbWiwXzTfTjKwkrhpO9+rCHTqFghko9
-         du2uZE/HgTfGla71JjUD1RZXa0Ws2xnJdKObsaYGpGXM9phyPXjW8sUp6ZLK9HSl0OMq
-         44VL/EnCwFgRtKgZwmSdjBKGs/QLzKYX4TRDZzOJcLRSR+lhivbuhVMBId00D+rxStwh
-         MXESdsfenKJQiKDGC7b/Zx10cIuOP/W5w4kNSEDC8RnPQgT4FKjJXc4oztNG9Cu+vQ3A
-         pCswMToGiDYd87+aMG55JSdz41lVf/s9q8YCLxZDJ3fH1MvoTgiU8NUcDmtTA8MNpOPe
-         DCZQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV5Eh52lyzjjQe0tJ7NtkJ7gOriJQo5VHn6fAYyR1dvuyEWDPh152Xa3JhUcGPd6AIk1IOaGM93D5DkNiGmDtvO/RBSLGCgaQtF8hatUwf1/4MNbTjgPWZvm9jQLMBKOx9di1ec
-X-Gm-Message-State: AOJu0YwYFNFh6Px86yQvf5KvLvjfzKAcHfUk5q6jRyNcUW7OPgpBSTAz
-	lnXKJ7B4zj+Zla68fZVLr4mk/rCEu4H25eg21qkruwF+o7LzoM3WwtPtt6kh24K8cmT/8dpv0Ei
-	q4xlrYXhCIKPFLPXMdxliIzK/qC0=
-X-Google-Smtp-Source: AGHT+IERw1WxNeWmELIwx8V11vsYyqfmJN5GE5CxQaDK3TtTCXLZIwuExnjJRsqXca3sDu7xmW4bOeDKVExzbt7XXVI=
-X-Received: by 2002:a17:90a:f489:b0:29b:4dfc:7d32 with SMTP id
- bx9-20020a17090af48900b0029b4dfc7d32mr7490150pjb.17.1709736941476; Wed, 06
- Mar 2024 06:55:41 -0800 (PST)
+        bh=AIQwTTuZb/bkpUI1B93DUztoPtr/cSqg9ygDBJUJ4wg=;
+        b=BGHJ5W4WajUI4IsI+URTtC9XkbexptqN65oeg/5odJOv1B3HiioYX6IMQG1Nk8opx+
+         CV7b6D3HBrM/gHRDi85h6gxylnzYeGi4k2uPwIhZZmeUhnzqRKKJ9ykeQy54EmCf8Hop
+         5NQhluJFbrw1HpjvGf9I09ZWN+v8gM0wiLrClQ340bWGtbo3ahhPcFNftRngUOFpwaTN
+         xdAydS1CXTTaPthQSbc1dOna7jTYT0d1L5U8w6NIvV9GKs5M0teS5/A3oRpXpJ6Fax6Q
+         w3VRUZqbrJ0PFNz366SqZIa8xe40eoDGbPCU3+HaHOXJPPHDHMpGF5uGCSC64ZZFC3y/
+         Oviw==
+X-Forwarded-Encrypted: i=1; AJvYcCUzSJEKjgGEPOHdYbdkGnZzVz+qZATGEnBwXea/oUo1tbERGTVk64us9rHGOjZZR8w2Hus8YRR5YpTWKuOp0OI6sfy3Wq3WTPhZYsIC
+X-Gm-Message-State: AOJu0YwBWG3ExM5ldkXNnHMR6tGihms+9NO6PLt0xxM5DobbeM1xhbLF
+	TT0LJLfY4tL8j8lrMConLmb2N7/8cYKAn8x3wUTsmk7+suSkSclozs2QhyqZbXFWn69h4UqRDyJ
+	oxBVGxPTtyzu8SVpTXqyiYgEnVBFRDLePAH9q
+X-Google-Smtp-Source: AGHT+IHymXJO0JUCr6GUZP03rcrQSOpK9u+fdHZe7sDeqVpnpCj2Hyv/ZgaXxsHtQjW1ojWdu95kkde6XwSp4tPHO8Y=
+X-Received: by 2002:a05:6402:11ca:b0:567:eb05:6d08 with SMTP id
+ j10-20020a05640211ca00b00567eb056d08mr154089edw.6.1709736956088; Wed, 06 Mar
+ 2024 06:55:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240304211549.876981797@linuxfoundation.org> <CA+G9fYvTnAyEt-Cn7fmXQ2FK3+xLyOULmcxhrk7dMTypckDEsA@mail.gmail.com>
-In-Reply-To: <CA+G9fYvTnAyEt-Cn7fmXQ2FK3+xLyOULmcxhrk7dMTypckDEsA@mail.gmail.com>
-From: Luna Jernberg <droidbittin@gmail.com>
-Date: Wed, 6 Mar 2024 15:55:29 +0100
-Message-ID: <CADo9pHjuCRuj7KyWFK1PDcnT-Y4_JaUCtrBksph0de0UpX63GQ@mail.gmail.com>
-Subject: Re: [PATCH 6.6 000/143] 6.6.21-rc1 review
-To: Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org, 
-	patches@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	torvalds@linux-foundation.org, akpm@linux-foundation.org, linux@roeck-us.net, 
-	shuah@kernel.org, patches@kernelci.org, lkft-triage@lists.linaro.org, 
-	pavel@denx.de, jonathanh@nvidia.com, f.fainelli@gmail.com, 
-	sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de, 
-	conor@kernel.org, allen.lkml@gmail.com
+References: <20240306095430.1782163-1-Ilia.Gavrilov@infotecs.ru>
+ <095ce1d0f2cd6771b30ab1d73ee6aa8e8460c7c8.camel@redhat.com> <CAL+tcoBSkBG0SDnjDOzjqzpSFphrE-_Qyw_DcdcebHcRCU3xgw@mail.gmail.com>
+In-Reply-To: <CAL+tcoBSkBG0SDnjDOzjqzpSFphrE-_Qyw_DcdcebHcRCU3xgw@mail.gmail.com>
+From: Eric Dumazet <edumazet@google.com>
+Date: Wed, 6 Mar 2024 15:55:45 +0100
+Message-ID: <CANn89iJu49jEDS3LAmeZLEx_tfebwORnajyFBk1rx0rdbyaMfw@mail.gmail.com>
+Subject: Re: [PATCH net-next] tcp: fix incorrect parameter validation in the
+ do_tcp_getsockopt() function
+To: Jason Xing <kerneljasonxing@gmail.com>
+Cc: Paolo Abeni <pabeni@redhat.com>, Gavrilov Ilia <Ilia.Gavrilov@infotecs.ru>, 
+	"David S. Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>, 
+	Jakub Kicinski <kuba@kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Tested-by: Luna Jernberg <droidbittin@gmail.com>
+On Wed, Mar 6, 2024 at 12:57=E2=80=AFPM Jason Xing <kerneljasonxing@gmail.c=
+om> wrote:
+>
+> Hello Paolo,
+>
+> On Wed, Mar 6, 2024 at 7:36=E2=80=AFPM Paolo Abeni <pabeni@redhat.com> wr=
+ote:
+> >
+> > On Wed, 2024-03-06 at 09:57 +0000, Gavrilov Ilia wrote:
+> > > The 'len' variable can't be negative because all 'min_t' parameters
+> > > cast to unsigned int, and then the minimum one is chosen.
+> >
+> > The above is incorrect, as the 'len' variable is a signed integer
+>
+> The 'len' variable should be converted to the non-negative value as
+> this sentence:
+>
+> len =3D min_t(unsigned int, len, sizeof(int));
+>
+> See the comments of min_t(): return minimum of two values, using the
+> specified type.
+>
+> After executing the above code, it doesn't make sense to test if 'len
+> < 0', I think.
 
-Den ons 6 mars 2024 kl 13:56 skrev Naresh Kamboju <naresh.kamboju@linaro.or=
-g>:
->
-> On Tue, 5 Mar 2024 at 03:07, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > This is the start of the stable review cycle for the 6.6.21 release.
-> > There are 143 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
-> > Responses should be made by Wed, 06 Mar 2024 21:15:26 +0000.
-> > Anything received after that time might be too late.
-> >
-> > The whole patch series can be found in one patch at:
-> >         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patc=
-h-6.6.21-rc1.gz
-> > or in the git tree and branch at:
-> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git linux-6.6.y
-> > and the diffstat can be found below.
-> >
-> > thanks,
-> >
-> > greg k-h
->
->
-> Results from Linaro=E2=80=99s test farm.
-> No regressions on arm64, arm, x86_64, and i386.
->
-> Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
->
-> ## Build
-> * kernel: 6.6.21-rc1
-> * git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-> * git branch: linux-6.6.y
-> * git commit: 5f9255b6ac459ba1b98dfffa0680a5700447d28c
-> * git describe: v6.6.18-445-g5f9255b6ac45
-> * test details:
-> https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.6.y/build/v6.6=
-18-445-g5f9255b6ac45
->
-> ## Test Regressions (compared to v6.6.18)
->
-> ## Metric Regressions (compared to v6.6.18)
->
-> ## Test Fixes (compared to v6.6.18)
->
-> ## Metric Fixes (compared to v6.6.18)
->
-> ## Test result summary
-> total: 168781, pass: 145491, fail: 2395, skip: 20734, xfail: 161
->
-> ## Build Summary
-> * arc: 5 total, 5 passed, 0 failed
-> * arm: 135 total, 132 passed, 3 failed
-> * arm64: 43 total, 41 passed, 2 failed
-> * i386: 35 total, 30 passed, 5 failed
-> * mips: 26 total, 23 passed, 3 failed
-> * parisc: 4 total, 4 passed, 0 failed
-> * powerpc: 36 total, 28 passed, 8 failed
-> * riscv: 18 total, 18 passed, 0 failed
-> * s390: 13 total, 13 passed, 0 failed
-> * sh: 10 total, 10 passed, 0 failed
-> * sparc: 8 total, 8 passed, 0 failed
-> * x86_64: 39 total, 34 passed, 5 failed
->
-> ## Test suites summary
-> * boot
-> * kselftest-android
-> * kselftest-arm64
-> * kselftest-breakpoints
-> * kselftest-capabilities
-> * kselftest-cgroup
-> * kselftest-clone3
-> * kselftest-core
-> * kselftest-cpu-hotplug
-> * kselftest-cpufreq
-> * kselftest-drivers-dma-buf
-> * kselftest-efivarfs
-> * kselftest-exec
-> * kselftest-filesystems
-> * kselftest-filesystems-binderfs
-> * kselftest-filesystems-epoll
-> * kselftest-firmware
-> * kselftest-fpu
-> * kselftest-ftrace
-> * kselftest-futex
-> * kselftest-gpio
-> * kselftest-intel_pstate
-> * kselftest-ipc
-> * kselftest-ir
-> * kselftest-kcmp
-> * kselftest-kexec
-> * kselftest-kvm
-> * kselftest-lib
-> * kselftest-livepatch
-> * kselftest-membarrier
-> * kselftest-memfd
-> * kselftest-memory-hotplug
-> * kselftest-mincore
-> * kselftest-mm
-> * kselftest-mount
-> * kselftest-mqueue
-> * kselftest-net
-> * kselftest-net-forwarding
-> * kselftest-net-mptcp
-> * kselftest-netfilter
-> * kselftest-nsfs
-> * kselftest-openat2
-> * kselftest-pid_namespace
-> * kselftest-pidfd
-> * kselftest-proc
-> * kselftest-pstore
-> * kselftest-ptrace
-> * kselftest-rseq
-> * kselftest-rtc
-> * kselftest-seccomp
-> * kselftest-sigaltstack
-> * kselftest-size
-> * kselftest-splice
-> * kselftest-static_keys
-> * kselftest-sync
-> * kselftest-sysctl
-> * kselftest-tc-testing
-> * kselftest-timens
-> * kselftest-timers
-> * kselftest-tmpfs
-> * kselftest-tpm2
-> * kselftest-user
-> * kselftest-user_events
-> * kselftest-vDSO
-> * kselftest-watchdog
-> * kselftest-x86
-> * kselftest-zram
-> * kunit
-> * kvm-unit-tests
-> * libgpiod
-> * libhugetlbfs
-> * log-parser-boot
-> * log-parser-test
-> * ltp-cap_bounds
-> * ltp-commands
-> * ltp-containers
-> * ltp-controllers
-> * ltp-cpuhotplug
-> * ltp-crypto
-> * ltp-cve
-> * ltp-dio
-> * ltp-fcntl-locktests
-> * ltp-filecaps
-> * ltp-fs
-> * ltp-fs_bind
-> * ltp-fs_perms_simple
-> * ltp-hugetlb
-> * ltp-io
-> * ltp-ipc
-> * ltp-math
-> * ltp-mm
-> * ltp-nptl
-> * ltp-pty
-> * ltp-sched
-> * ltp-securebits
-> * ltp-smoke
-> * ltp-smoketest
-> * ltp-syscalls
-> * ltp-tracing
-> * perf
-> * rcutorture
->
-> --
-> Linaro LKFT
-> https://lkft.linaro.org
->
+This is essentially dead (defensive ?) code.
+
+Most compilers optimize this completely, no big deal.
 
