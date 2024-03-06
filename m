@@ -1,113 +1,139 @@
-Return-Path: <linux-kernel+bounces-94440-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94442-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD5F3873FD7
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 19:42:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16E47873FE5
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 19:44:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 792E3287465
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 18:42:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 553AEB23A30
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 18:44:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8924D13E7F3;
-	Wed,  6 Mar 2024 18:41:50 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49FF113E7FE;
+	Wed,  6 Mar 2024 18:43:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="unknown key version" (0-bit key) header.d=smtpservice.net header.i=@smtpservice.net header.b="hmE1A4X1";
+	dkim=pass (2048-bit key) header.d=fjasle.eu header.i=@fjasle.eu header.b="C52ZWhLc";
+	dkim=pass (1024-bit key) header.d=fjasle.eu header.i=@fjasle.eu header.b="NuqjY41F"
+Received: from e2i652.smtp2go.com (e2i652.smtp2go.com [103.2.142.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F62C13E7C5
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 18:41:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1821136647
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 18:43:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.2.142.140
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709750510; cv=none; b=P/A1ABuMKsnklXwGoEMSOSlvjodTJDcHUR1f/n228Ab+KR5vZgP8lXxtkudaz6cMoQfNbsloe7pmG6+R/5kq4Dk0fe0BeYZIDs0Z7oNny/T89AtrdjPMo7gKmkOInywaCkNYG4qQeHRgr8uNh87P0VXP/joGbBzgCKEmjj/UPYs=
+	t=1709750622; cv=none; b=AWjZyfqcjAVLdp8Rb7IRkq9pZDRIWUblGSV9+qyUWfs98zPMQEgxVeA6rr+40m6rW+9JkbWmslPJV/knv4bRCBOKv8Nx1qA08U6y8sr4rXQxnKo8Am7fYzNz0svM5LzbA1v4lAr5e7NaG7WQYEEY7I/H22uVbG/q1yGlifj9qYo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709750510; c=relaxed/simple;
-	bh=M32KOXv/AFVR6xfmKfYjkG0waeE8jfIiCibplogrfB4=;
-	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=gHHZipvNYuqWQbS+ZI6+9WoFI2by2g15n68C8TrRvKvOOABJGvVTYCz9vNivEoKYvVdc6g/231qKALbw7VDxicSYpvXp2kAbmXLkWFtBq1w+/66NRJKLjyw5GUPdq/dj6Yhw0NtNwhKs7qEvUNcpmz+yKXeJh71xndo4m74mR1M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AFC45C43390;
-	Wed,  6 Mar 2024 18:41:49 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.97)
-	(envelope-from <rostedt@goodmis.org>)
-	id 1rhwEw-00000000YAi-3uCp;
-	Wed, 06 Mar 2024 13:43:42 -0500
-Message-ID: <20240306184342.788071416@goodmis.org>
-User-Agent: quilt/0.67
-Date: Wed, 06 Mar 2024 13:42:47 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: linux-kernel@vger.kernel.org
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [for-linus][PATCH 3/3] tracing: Limit trace_marker writes to just 4K
-References: <20240306184244.754263547@goodmis.org>
+	s=arc-20240116; t=1709750622; c=relaxed/simple;
+	bh=lqf5F5/wynUuLQMyXci5UgqCurfaGt/bCOCumtuezvc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=U/LUPxE0wbP9ytKB/8cd4in31Hc5gcwCv7cYfGep5fOtbRp5nV9OQ3nLZO/ubzgvMsLgG/2OQWryDHXFrQq9k46kHwcldpX0lj1uVrcctxVMC9itFhJf8rGn2tO0wrjfsk7k5d+XTSDhHLw0+hF1GzYXDI3F+wKq9SGOsk0NNKs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fjasle.eu; spf=pass smtp.mailfrom=em1174286.fjasle.eu; dkim=fail (0-bit key) header.d=smtpservice.net header.i=@smtpservice.net header.b=hmE1A4X1 reason="unknown key version"; dkim=pass (2048-bit key) header.d=fjasle.eu header.i=@fjasle.eu header.b=C52ZWhLc; dkim=pass (1024-bit key) header.d=fjasle.eu header.i=@fjasle.eu header.b=NuqjY41F; arc=none smtp.client-ip=103.2.142.140
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fjasle.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=em1174286.fjasle.eu
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=smtpservice.net; s=mp6320.a1-4.dyn; x=1709751508; h=Feedback-ID:
+	X-Smtpcorp-Track:Message-ID:Subject:To:From:Date:Reply-To:Sender:
+	List-Unsubscribe; bh=lqf5F5/wynUuLQMyXci5UgqCurfaGt/bCOCumtuezvc=; b=hmE1A4X1
+	JPcv0ECUaSk4h8+r1arnpv5JpCB+tzj3nJhKKF2tdFBM0XxaGAEqzB4PDZq2ut60mT/nJLXWg+hXf
+	wOCZIr7jU0+QpWZw/qTroypWCp0GZCYFIVovwibWKrLopNw9ms03+dERhdNMen/DcYppcBxSbyh7t
+	+hp3z0g7gLnTBLDc1WfoT+RH2ZXf0wTQ/LMRJw9XSaWQfDKX3S1GT9X/PAXfeDboNr8hx5mRz4j7A
+	O27LZ92vTBWdnSHNOUp5nA/nk3cUxeiH82bUsLX4DStUu3MOxCOOsrNYcCVTQBDw2vPWSTzeOQ+ya
+	xQvgwiVl6rvt+vhP4h8nOery3g==;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fjasle.eu;
+ i=@fjasle.eu; q=dns/txt; s=s1174286; t=1709750608; h=from : subject :
+ to : message-id : date;
+ bh=lqf5F5/wynUuLQMyXci5UgqCurfaGt/bCOCumtuezvc=;
+ b=C52ZWhLcp7BvxLk/oPPuFgpaXkOMt62joR7w+cY90wlhfyTmv1tQwoAjtmSKklP3nW3gp
+ BtsLcdFprYINNGOrIBKBwuc8XeYXW3ORwW+z46Yw18HkzautLoceD/9jAaXO/8JeblWOzt/
+ g0x/4rh3ET+XRS7nHcJ47jCnosiQGk4sdVToqcQt9I/mwVfYAzpoYWlQmeO2xoLVuB/0wgv
+ KB9WFBJ3vsdN+LAU8qihbnSJHnwDD0J9nPgGiS6CjVSXjX5fPe8STiHhjGwfH6VWi9cxn/S
+ RaexZPESfKswkS72ynnNW/Epz0isJ7n+BFs3GORbgDz3aI75JfAChXcviASQ==
+Received: from [10.139.162.187] (helo=SmtpCorp) by smtpcorp.com with esmtpsa
+ (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+ (Exim 4.94.2-S2G) (envelope-from <nicolas@fjasle.eu>)
+ id 1rhwEA-qt4Bqe-MD; Wed, 06 Mar 2024 18:42:54 +0000
+Received: from [10.85.249.164] (helo=leknes.fjasle.eu)
+ by smtpcorp.com with esmtpsa
+ (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+ (Exim 4.96.1-S2G) (envelope-from <nicolas@fjasle.eu>)
+ id 1rhwEA-4XqxWs-0M; Wed, 06 Mar 2024 18:42:54 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fjasle.eu; s=mail;
+ t=1709750568; bh=lqf5F5/wynUuLQMyXci5UgqCurfaGt/bCOCumtuezvc=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=NuqjY41FDI9SwfMB+XzOfXEdDX0enZGk62Jg5uU4RsZTkqUAV4ctou70R32bmz7rB
+ lvhK7kECnrGI/CfyB40ReKlq/LJJhJhbhgJexqPBqI+BFBtoHWPBmh3/chnh+KfbEQ
+ CDtLm2modjfUgR/5SYNdpNH4O0rCkilLrr/UfzJc=
+Received: by leknes.fjasle.eu (Postfix, from userid 1000)
+ id D3B3E3C401; Wed,  6 Mar 2024 19:42:47 +0100 (CET)
+Date: Wed, 6 Mar 2024 19:42:47 +0100
+From: Nicolas Schier <nicolas@fjasle.eu>
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] kbuild: unexport abs_srctree and abs_objtree
+Message-ID: <Zei5J7aU1Yd720Po@fjasle.eu>
+References: <20240306104222.308473-1-masahiroy@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-
-Limit the max print event of trace_marker to just 4K string size. This must
-also be less than the amount that can be held by a trace_seq along with
-the text that is before the output (like the task name, PID, CPU, state,
-etc). As trace_seq is made to handle large events (some greater than 4K).
-Make the max size of a trace_marker write event be 4K which is guaranteed
-to fit in the trace_seq buffer.
-
-Link: https://lore.kernel.org/linux-trace-kernel/20240304223433.4ba47dff@gandalf.local.home
-
-Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- kernel/trace/trace.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 8198bfc54b58..d16b95ca58a7 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -7293,6 +7293,8 @@ tracing_free_buffer_release(struct inode *inode, struct file *filp)
- 	return 0;
- }
- 
-+#define TRACE_MARKER_MAX_SIZE		4096
-+
- static ssize_t
- tracing_mark_write(struct file *filp, const char __user *ubuf,
- 					size_t cnt, loff_t *fpos)
-@@ -7320,6 +7322,9 @@ tracing_mark_write(struct file *filp, const char __user *ubuf,
- 	if ((ssize_t)cnt < 0)
- 		return -EINVAL;
- 
-+	if (cnt > TRACE_MARKER_MAX_SIZE)
-+		cnt = TRACE_MARKER_MAX_SIZE;
-+
- 	meta_size = sizeof(*entry) + 2;  /* add '\0' and possible '\n' */
-  again:
- 	size = cnt + meta_size;
-@@ -7328,11 +7333,6 @@ tracing_mark_write(struct file *filp, const char __user *ubuf,
- 	if (cnt < FAULTED_SIZE)
- 		size += FAULTED_SIZE - cnt;
- 
--	if (size > TRACE_SEQ_BUFFER_SIZE) {
--		cnt -= size - TRACE_SEQ_BUFFER_SIZE;
--		goto again;
--	}
--
- 	buffer = tr->array_buffer.buffer;
- 	event = __trace_buffer_lock_reserve(buffer, TRACE_PRINT, size,
- 					    tracing_gen_ctx());
--- 
-2.43.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="QvLgz0ZfwNfKstKB"
+Content-Disposition: inline
+In-Reply-To: <20240306104222.308473-1-masahiroy@kernel.org>
+X-Smtpcorp-Track: 1rhwEj4bqxWs0u.6GktAVmgQOdvo
+Feedback-ID: 1174286m:1174286a9YXZ7r:1174286smcNLppFyP
+X-Report-Abuse: Please forward a copy of this message, including all headers,
+ to <abuse-report@smtp2go.com>
 
 
+--QvLgz0ZfwNfKstKB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Mar 06, 2024 at 07:42:22PM +0900 Masahiro Yamada wrote:
+> Commit 25b146c5b8ce ("kbuild: allow Kbuild to start from any directory")
+> exported abs_srctree and abs_objtree to avoid recomputation after the
+> sub-make. However, this approach turned out to be fragile.
+>=20
+> Commit 5fa94ceb793e ("kbuild: set correct abs_srctree and abs_objtree
+> for package builds") moved them above "ifneq ($(sub_make_done),1)",
+> eliminating the need for exporting them.
+>=20
+> These are only needed in the top Makefile. If an absolute path is
+> required in sub-directories, you can use $(abspath ) or $(realpath )
+> as needed.
+>=20
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+
+Thanks, I appreciate that abs_* is only used in top-level Makefile.
+
+Reviewed-by: Nicolas Schier <nicolas@fjasle.eu>
+
+--QvLgz0ZfwNfKstKB
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEh0E3p4c3JKeBvsLGB1IKcBYmEmkFAmXouR0ACgkQB1IKcBYm
+Emkexg//YCqubDBQYOUGXOKDWZ4Biw/QL+kh6UNDM76LouVyCapjebmlag3VD3pm
+ArbuWKInK1qc+aBp0XY7G3+MqJP6hdFVGxHZ+oyNHKAWtXJ3QiZtsUY5GL006t0p
+19OfoVnk2T0zlu93GQZc74Q1l3ZScOdichEZc5b5mTsc3PH+4pkETyJLTOeS4hLV
+WcYnUIrV2h8W021j9/xGByQlWfE707croysbSCAW5loB7u1rW2Y8E6NU4F7zjXf4
+a4Z7alQybcmYYosvhkEAR8PHnXb3Q9jP5ZehH+9yw2JGUZAvep65qOe6vGAOK9g1
+r1nWOTVgnOb0tbr8a0tYlfV/iWx/LI1jd79xQkRpmt7hJ36R2m+nqcoAwza6dd2B
+njUISzuxDTJRNU7yBY6X6+tiAMI5G4+UPAqFtcCYnYcIZ6pZSFGBeH+S+C7OGuEW
+k/eAaqSWZ7vbyio6utJCY7PH1OmEjzTOQKvsYr8CVmUiMix5fz8o/Kv7WZ6EQm2q
+BPX0e6rGYjurOnMplAIR6x3u/c75Wj/V38GnLkl4It7g6+ypaN3pAvsWc10H8Jt7
+l+kampFC+1BBilJw4nq384Exhkr0q1vWvDsDO/L1NGCWDUMsy+c0CZaHYD78lFAi
+GzYVdP7cXFP2Ho+VrQzjbKTEa/K0yisJIghPFJVUbiK9oC1GyU4=
+=21AF
+-----END PGP SIGNATURE-----
+
+--QvLgz0ZfwNfKstKB--
 
