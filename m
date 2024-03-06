@@ -1,189 +1,137 @@
-Return-Path: <linux-kernel+bounces-93419-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93420-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F404872F7E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 08:21:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8495E872F7F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 08:21:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B141C1F213A8
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 07:21:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 40F30281C4E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 07:21:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6E005C8EB;
-	Wed,  6 Mar 2024 07:20:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Et1cWynJ"
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 083305C900;
+	Wed,  6 Mar 2024 07:20:59 +0000 (UTC)
+Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C7A65CDC3;
-	Wed,  6 Mar 2024 07:20:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BD075C8FB;
+	Wed,  6 Mar 2024 07:20:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709709650; cv=none; b=WPpJUCIz5HwtqmkdzQquqcjGdJy8vVR6kTnoHkM6uB1alxyxlMkqkr6Z7fpqUyq5FClTotUBEJKtNfxmGke9KsJVr2Y1o2HKkSEz95Ymb56Tgp4FFlXhduWZtd2C6o5wL16WvftPLu1PcegdL5Fzl8DW5RvWji/Qs7pn0PG2nsU=
+	t=1709709658; cv=none; b=MVthmyQ0Up3liCWOImwQR6FzvIu21k6NBLJYTueMjJkFMduNw5kzSR6BqNXO7HzevB+I1n/gUVeKJRnaABsh4yulozzTZeoPajA/Skt7CROm2EO7407hfNeGfpDtc51ZuIcV8qv+4gPKNgo0iiWHmQkYLaYKlPH0UC3YL/PraB4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709709650; c=relaxed/simple;
-	bh=pFoV/VguqY/NSp1xnqNqe6GOvN0JgkhoKCuylStQfD0=;
+	s=arc-20240116; t=1709709658; c=relaxed/simple;
+	bh=L5mJ15rIwi4rFnSttjgMuyaksPH2SXNe2fdObsvQezc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AV3L2VgGDHcegQK9Pawv6KwqBju79xS1sGulb1OP5kEwDbkhBNdMXzguNeeUih0Qx9HCV06m+1ZrKIr/SiJKPKjfDizVdBh4vLu77imP53776ERht2Kwz3p/a2bxo+59ntzWk+P8y1K6KfRuewNt7zenZ1cGrz4wNWNRdgMNkBQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Et1cWynJ; arc=none smtp.client-ip=209.85.208.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	 To:Cc:Content-Type; b=lyEvd4Onu92Mr/wiZf/6JIVNmc/aPe4J4GswSVJbCnp3VRfLBWCLj5hJpTib+wgLFoQj8NGKaVpFu6X2QqM6yls+voqcnAZAOf7icPLpPXguUMT1+XhP7lSYMC2EPWe3wFHKOQiTKwNaKq0fudhwPVndct5aQAXqUgKupG5xP9Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2d28051376eso89326871fa.0;
-        Tue, 05 Mar 2024 23:20:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709709646; x=1710314446; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6Q29JTqGy0mFIQJdxfat2AsoxuWRo7RMedizkOOPFqY=;
-        b=Et1cWynJC502XEYxomT6stinrGUQZzuVB4MtEHkOSBAv3fEz91ORQDnLbBqumDjIgV
-         AixtdtLo6hbMnnpHtG4nxXfrFcjtOM5siVLGrVQUw+gnoZPDR67Wd9pRGpRs0CkRClQ9
-         lYjjfRWBuLSuc2PiCf/ZEiIzr9xEr17LsQ24fww5d8KEu0f+yLSJ9c9eH1SKq1V9Vtsf
-         v6gMLgZA9UINjLVqglvfU6jbWe4RZlqEdYxARwkqeHSeYLvTEORlyQabhBA9RLu/hfbY
-         cE/n7GI1JERMJI7//0WQ8OJ83uWbd5nGGFrT7NJXw23WWH9HHDZJtf7nWBNt4+I2RTjE
-         n1wg==
+Received: by mail-oi1-f182.google.com with SMTP id 5614622812f47-3c1e6c32a55so2141047b6e.2;
+        Tue, 05 Mar 2024 23:20:56 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709709646; x=1710314446;
+        d=1e100.net; s=20230601; t=1709709656; x=1710314456;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6Q29JTqGy0mFIQJdxfat2AsoxuWRo7RMedizkOOPFqY=;
-        b=JV1pMc+Rbn/fuNsSKr0SxXftM64dyoCxdhxMGpV8ivuzCD96FNPV1zC0Z7nw91P+5C
-         lirvMyScOtzfgT8J4EGdxqf1yQBX94oXClskU0Q7bSOmlOoMlzMhs2sOf3zy//4v/Py0
-         flYTo5XMgpWgfz/cXCNMBK6OMotD2mFLyT29MO/HDAMU82LBwbV/Q0dfMa1jxSw/FXL3
-         eZUTYYTnkRDRVfBqDs2uV6sMULK4JwC1tT38ArvBTprgOtgbZ3Rt6SCz2CNfYVThwiXs
-         gtt4a1q+0OhR+DgLkN1dDJ8+n66ViUaaR773q5GlwE06RSMjwaNmmv/R58S4nzokE0LC
-         Zx+w==
-X-Forwarded-Encrypted: i=1; AJvYcCWQD06fqilXq7CCG0vTw39RAGvrJRX6qzam1GwkIZK15Xmv/FBlIxSKQ41CsVjABwfxL6blCGqv3RYU+oztniaiB93RGVjkHwyBXjltzpAqA6p6LpZR+wTQZW36MVgthiKfLtzNmajor3g+nBR8xWAc3/b3sp8HRPnqepSG0jo6FHgsu5t/xAtK
-X-Gm-Message-State: AOJu0YxCSPzpUPnfqJ7ael2kHg9C80ZO/Yo/6qg7UHpgO7nJD768n9Pq
-	0aO9bRxzxkRULeq6GQdOliswhCm1BW7jXG5VUwHEuBaTCeZofR90WWNDA095VwEnWgTQtRyGJf7
-	KBOQY93UFfieOreN1YTlPKEuYfkI=
-X-Google-Smtp-Source: AGHT+IFM6US1C9y949dv+pLB538wUYBhybQPr8OT5Rxcw/ngdS0UAvRzxwIo7rLNcuY+P11NmgdGuJIfm60z8qg4ZOc=
-X-Received: by 2002:a2e:834c:0:b0:2d2:9f41:2fc4 with SMTP id
- l12-20020a2e834c000000b002d29f412fc4mr2733482ljh.27.1709709645981; Tue, 05
- Mar 2024 23:20:45 -0800 (PST)
+        bh=tQuWM38UhwK25qNu10dyRUtuaAMUFqlAh3c+JZ+R14g=;
+        b=suhcAnIDXoZR8kRqFKLz2CqYpRKuP1td9+nQBDhhNsAUda3e5yCxoFnNu6X6ZvJgnA
+         Mcn5ErsoYP833Orxs4shxao6zZ6XfjQ9qxnapE5ZIbyjit5zkRXmTB5VvMCD/RRRZcId
+         fav8IqqD6EzSrT0b62nfKOYgl2wOJRqpJ5jnGvSuaJj0Ne78Z9V8FuoJmUWBSwUB1x0k
+         RBmgO9FEtqQuVEAHsrbPq3nbyoohQW4XeCcMjFyJLwDbI188aWDNNJn6fTzxS9HQKqQa
+         WXRx4Osjrfp+8q+Vn5tAWa277pn3n8wVEhKmFs6QZEHZpz5aqbieRIBwMumdS7LtFZLE
+         /Mdg==
+X-Forwarded-Encrypted: i=1; AJvYcCXAVvH2/1oAc33bXJtgdXYDowV2Tb/RUxgZCr8OLsoBM4AP6t7r7SYW+I1bcJGEZsdOwV9ngY8TqfQypJppD7+FoXBrLFOmR42DaIPUSJhMF2sr3Ey6Nq6VkPn2J2njVC887/spyaa4aYR9sQj3Iw==
+X-Gm-Message-State: AOJu0Yx6DIbsUsFIusCGWsKK0SbLmJ2RJYYlkIFhCuneEHuu5PGIFfb0
+	Bvma0dx4xfnGPq/r7nC0bav9NWp16l8dsaZz8LeXPhHPb0PjsWgrr9Q+Z6U3n3rsJSG9D1q0fcb
+	NMUuP57tQ5sAuyIf59N1Yz+EnOeY=
+X-Google-Smtp-Source: AGHT+IEQu81YATsoQvFr1ILkfjqyKIrNCHr3xlQen+zHHAtM0aU+9He5ISMOWb2a4SUuaI0u49syb3WlnXCmwhWwrvk=
+X-Received: by 2002:a05:6808:2817:b0:3c2:1944:e39b with SMTP id
+ et23-20020a056808281700b003c21944e39bmr1579254oib.17.1709709656039; Tue, 05
+ Mar 2024 23:20:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CABOYnLz8V-CMiZK0Gzz=eXf2G3E-psemp2pMZwZ_XJG53GawgA@mail.gmail.com>
- <CAKFNMomdU5RHVMt2CCXYMAb5oyjDwOVRitNM+XGGC65TQs1ECQ@mail.gmail.com> <CABOYnLxE86iTqTA3BOMLPHX5SeB--46S_4nec7H18H7B4oEi3w@mail.gmail.com>
-In-Reply-To: <CABOYnLxE86iTqTA3BOMLPHX5SeB--46S_4nec7H18H7B4oEi3w@mail.gmail.com>
-From: Ryusuke Konishi <konishi.ryusuke@gmail.com>
-Date: Wed, 6 Mar 2024 16:20:29 +0900
-Message-ID: <CAKFNMomM0i1mOwkFsBta4rO+gDB1_LjSF_mENkB=PGF6a-tW-A@mail.gmail.com>
-Subject: Re: [syzbot] [nilfs?] KMSAN: uninit-value in nilfs_add_checksums_on_logs
- (2)
-To: xingwei lee <xrivendell7@gmail.com>
-Cc: syzbot+47a017c46edb25eff048@syzkaller.appspotmail.com, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-nilfs@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <20240302005950.2847058-1-irogers@google.com> <20240302005950.2847058-6-irogers@google.com>
+In-Reply-To: <20240302005950.2847058-6-irogers@google.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Tue, 5 Mar 2024 23:20:44 -0800
+Message-ID: <CAM9d7cjVE=gH8A4zzsUFwLibgHy=3C71UnFe5SEu-RDFTOWkDw@mail.gmail.com>
+Subject: Re: [PATCH v2 05/12] perf jevents: Support parsing negative exponents
+To: Ian Rogers <irogers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, John Garry <john.g.garry@oracle.com>, 
+	Kan Liang <kan.liang@linux.intel.com>, Jing Zhang <renyu.zj@linux.alibaba.com>, 
+	Thomas Richter <tmricht@linux.ibm.com>, James Clark <james.clark@arm.com>, 
+	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
+	Andi Kleen <ak@linux.intel.com>, Kajol Jain <kjain@linux.ibm.com>, 
+	Sandipan Das <sandipan.das@amd.com>, Ravi Bangoria <ravi.bangoria@amd.com>, 
+	Perry Taylor <perry.taylor@intel.com>, Samantha Alt <samantha.alt@intel.com>, 
+	Caleb Biggers <caleb.biggers@intel.com>, Weilin Wang <weilin.wang@intel.com>, 
+	Edward Baker <edward.baker@intel.com>, Stephane Eranian <eranian@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 6, 2024 at 4:07=E2=80=AFPM xingwei lee wrote:
-> On 3 Mar 2024, at 20:45, Ryusuke Konishi <konishi.ryusuke@gmail.com> wrot=
+On Fri, Mar 1, 2024 at 5:00=E2=80=AFPM Ian Rogers <irogers@google.com> wrot=
 e:
 >
-> Hi, sorry for the delayed response.
+> Support negative exponents when parsing from a json metric string by
+> making the numbers after the 'e' optional in the 'Event' insertion fix
+> up.
 >
-> I test my reproducer in the linux 6.8-rc4 with KMSAN kernel config for on=
-e hours, it doesn=E2=80=99t trigger any crash or report as follows:
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/pmu-events/metric.py      | 2 +-
+>  tools/perf/pmu-events/metric_test.py | 4 ++++
+>  2 files changed, 5 insertions(+), 1 deletion(-)
 >
-> [  315.607028][   T37] audit: type=3D1804 audit(1709708422.469:31293): pi=
-d=3D86478 uid=3D0 auid=3D0 ses=3D1 subj=3Dunconfined op=3Dinvalid_pcr cause=
-=3D0
-> [  315.608038][T86480] 884-0[86480]: segfault at 5c7ade ip 00000000005c7a=
-de sp 00000000200001f8 error 14 likely on CPU 2 (core 2, socke)
-> [  315.611270][T86480] Code: Unable to access opcode bytes at 0x5c7ab4.
-> [  320.575680][   T37] kauditd_printk_skb: 1253 callbacks suppressed
-> [  320.575689][   T37] audit: type=3D1804 audit(1709708427.439:32130): pi=
-d=3D88573 uid=3D0 auid=3D0 ses=3D1 subj=3Dunconfined op=3Dinvalid_pcr cause=
-=3D0
-> [  320.576419][T88575] 884-0[88575]: segfault at 5c7ade ip 00000000005c7a=
-de sp 00000000200001f8 error 14
-> [  320.576695][   T37] audit: type=3D1804 audit(1709708427.439:32131): pi=
-d=3D88574 uid=3D0 auid=3D0 ses=3D1 subj=3Dunconfined op=3Dinvalid_pcr cause=
-=3D0
-> [  320.579042][T88575]  likely on CPU 0 (core 0, socket 0)
-> [  320.584184][T88575] Code: Unable to access opcode bytes at 0x5c7ab4.
-> [  320.593832][   T37] audit: type=3D1804 audit(1709708427.459:32132): pi=
-d=3D88578 uid=3D0 auid=3D0 ses=3D1 subj=3Dunconfined op=3Dinvalid_pcr cause=
-=3D0
-> [  320.594549][T88580] 884-0[88580]: segfault at 5c7ade ip 00000000005c7a=
-de sp 00000000200001f8 error 14 likely on CPU 1 (core 1, socke)
-> [  320.596256][   T37] audit: type=3D1804 audit(1709708427.459:32133): pi=
-d=3D88579 uid=3D0 auid=3D0 ses=3D1 subj=3Dunconfined op=3Dinvalid_pcr cause=
-=3D0
-> [  320.597901][T88580] Code: Unable to access opcode bytes at 0x5c7ab4.
-> [  320.610954][   T37] audit: type=3D1804 audit(1709708427.479:32134): pi=
-d=3D88583 uid=3D0 auid=3D0 ses=3D1 subj=3Dunconfined op=3Dinvalid_pcr cause=
-=3D0
-> [  320.611700][T88585] 884-0[88585]: segfault at 5c7ade ip 00000000005c7a=
-de sp 00000000200001f8 error 14 likely on CPU 2 (core 2, socke)
-> [  320.613455][   T37] audit: type=3D1804 audit(1709708427.479:32135): pi=
-d=3D88584 uid=3D0 auid=3D0 ses=3D1 subj=3Dunconfined op=3Dinvalid_pcr cause=
-=3D0
-> [  320.615959][T88585] Code: Unable to access opcode bytes at 0x5c7ab4.
-> [  320.628571][   T37] audit: type=3D1804 audit(1709708427.489:32136): pi=
-d=3D88588 uid=3D0 auid=3D0 ses=3D1 subj=3Dunconfined op=3Dinvalid_pcr cause=
-=3D0
-> [  325.582663][   T37] kauditd_printk_skb: 1280 callbacks suppressed
-> [  325.582673][   T37] audit: type=3D1804 audit(1709708432.449:32990): pi=
-d=3D90727 uid=3D0 auid=3D0 ses=3D1 subj=3Dunconfined op=3Dinvalid_pcr cause=
-=3D0
-> [  325.583320][T90729] 884-0[90729]: segfault at 5c7ade ip 00000000005c7a=
-de sp 00000000200001f8 error 14
-> [  325.583460][   T37] audit: type=3D1804 audit(1709708432.449:32991): pi=
-d=3D90728 uid=3D0 auid=3D0 ses=3D1 subj=3Dunconfined op=3Dinvalid_pcr cause=
-=3D0
-> [  325.585838][T90729]  likely on CPU 1 (core 1, socket 0)
-> [  325.590985][T90729] Code: Unable to access opcode bytes at 0x5c7ab4.
-> [  325.599620][   T37] audit: type=3D1804 audit(1709708432.459:32992): pi=
-d=3D90732 uid=3D0 auid=3D0 ses=3D1 subj=3Dunconfined op=3Dinvalid_pcr cause=
-=3D0
-> [  325.601818][T90734] 884-0[90734]: segfault at 5c7ade ip 00000000005c7a=
-de sp 00000000200001f8 error 14
-> [  325.601827][   T37] audit: type=3D1804 audit(1709708432.459:32993): pi=
-d=3D90733 uid=3D0 auid=3D0 ses=3D1 subj=3Dunconfined op=3Dinvalid_pcr cause=
-=3D0
-> [  325.603945][T90734]  likely on CPU 2 (core 2, socket 0)
-> [  325.607037][T90734] Code: Unable to access opcode bytes at 0x5c7ab4.
-> [  325.617928][   T37] audit: type=3D1804 audit(1709708432.479:32994): pi=
-d=3D90737 uid=3D0 auid=3D0 ses=3D1 subj=3Dunconfined op=3Dinvalid_pcr cause=
-=3D0
-> [  325.618862][T90739] 884-0[90739]: segfault at 5c7ade ip 00000000005c7a=
-de sp 00000000200001f8 error 14
-> [  325.620190][   T37] audit: type=3D1804 audit(1709708432.479:32995): pi=
-d=3D90738 uid=3D0 auid=3D0 ses=3D1 subj=3Dunconfined op=3Dinvalid_pcr cause=
-=3D0
-> [  325.623238][T90739]  likely on CPU 0 (core 0, socket 0)
-> [  325.623803][T90739] Code: Unable to access opcode bytes at 0x5c7ab4.
-> [  325.632693][   T37] audit: type=3D1804 audit(1709708432.499:32996): pi=
-d=3D90742 uid=3D0 auid=3D0 ses=3D1 subj=3Dunconfined op=3Dinvalid_pcr cause=
-=3D0
->
-> It=E2=80=99s seems this issue have been fixed.
->
-> I'd like to isolate that the issue is still not fixed with the latest
-> fixes, but I need to do some trial and error to reestablish a testable
-> (bootable) KMSAN-enabled kernel config.
->
-> Thanks,
-> Ryusuke Konishi
->
->
-> I hope it helps.
-> Best regards
-> xingwei Lee
+> diff --git a/tools/perf/pmu-events/metric.py b/tools/perf/pmu-events/metr=
+ic.py
+> index 847b614d40d5..31eea2f45152 100644
+> --- a/tools/perf/pmu-events/metric.py
+> +++ b/tools/perf/pmu-events/metric.py
+> @@ -573,7 +573,7 @@ def ParsePerfJson(orig: str) -> Expression:
+>    # a double by the Bison parser
+>    py =3D re.sub(r'0Event\(r"[xX]([0-9a-fA-F]*)"\)', r'Event("0x\1")', py=
+)
+>    # Convert accidentally converted scientific notation constants back
+> -  py =3D re.sub(r'([0-9]+)Event\(r"(e[0-9]+)"\)', r'\1\2', py)
+> +  py =3D re.sub(r'([0-9]+)Event\(r"(e[0-9]*)"\)', r'\1\2', py)
 
-Thank you!
-That helps a lot.
+I don't understand how it can handle negative numbers.
+Why isn't it like Event\(r"(e-?[0-9]+)"\) ?
 
-Regards,
-Ryusuke Konishi
+Thanks,
+Namhyung
+
+
+>    # Convert all the known keywords back from events to just the keyword
+>    keywords =3D ['if', 'else', 'min', 'max', 'd_ratio', 'source_count', '=
+has_event', 'strcmp_cpuid_str']
+>    for kw in keywords:
+> diff --git a/tools/perf/pmu-events/metric_test.py b/tools/perf/pmu-events=
+/metric_test.py
+> index ee22ff43ddd7..8acfe4652b55 100755
+> --- a/tools/perf/pmu-events/metric_test.py
+> +++ b/tools/perf/pmu-events/metric_test.py
+> @@ -61,6 +61,10 @@ class TestMetricExpressions(unittest.TestCase):
+>      after =3D before
+>      self.assertEqual(ParsePerfJson(before).ToPerfJson(), after)
+>
+> +    before =3D r'a + 3e-12 + b'
+> +    after =3D before
+> +    self.assertEqual(ParsePerfJson(before).ToPerfJson(), after)
+> +
+>    def test_IfElseTests(self):
+>      # if-else needs rewriting to Select and back.
+>      before =3D r'Event1 if #smt_on else Event2'
+> --
+> 2.44.0.278.ge034bb2e1d-goog
+>
 
