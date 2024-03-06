@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-93795-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93796-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2A868734A2
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 11:44:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B05EB873501
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 11:55:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 016FC1C21C01
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:44:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C6B6FB2DB26
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:44:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B804860DE6;
-	Wed,  6 Mar 2024 10:43:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FE7960871;
+	Wed,  6 Mar 2024 10:43:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Hxj1hNGx"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JNbaM2i1"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04EC660B92
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 10:43:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 661C16086E
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 10:43:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709721798; cv=none; b=GRxAxaZl/qhJ88R5YsiACRSFYGSFopd8sBOn9kmfdD5Tc0juIiq7CQ1QunUe9vwiAsNurYhM2694/78l2XqGLVMaAi2beY/jrq45r7xOu86qBnv2e/mQrDmbLvuoKr/d1y5lGM5ExvMBfjcufz15SMGOMRP7DeGMbyl2dXD8c9c=
+	t=1709721804; cv=none; b=c1ye8KYpcGvgvBbg4WhSoxYyLO7bS73wcIdrkU19X6ryx/5AuI/eUu4Tzd7HRdV75brginYEmxO1g6SfzQNm6Uarss+KFo1xrmi1cPZZA5ZwzQwP2ns+NmH/jBz1UzMxeQgWLQcNtruGJvSvoyDupbCt5TcVmRG1WxdofJxeA68=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709721798; c=relaxed/simple;
-	bh=X5eBBmskEGNOVvFH7lA9BrgRznTJLWM2S1lsxZlH7is=;
+	s=arc-20240116; t=1709721804; c=relaxed/simple;
+	bh=G6OxanI3sTRxSNp5lhYS2YR/ic0+r3tVkIbUpPCZPlE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oACt4dtxERGfCMEiHAQCrwlnD/ooAcZzWCXGeTsl4IHLrYlLVHMyrK4q+gca2aBZhBvXw3H4JZjprDSpF4fVF8XDbo3qzxC+7JmZIKlHzfHVjAeAQ8crVXbfK+C9VXyi5I5alxR1YONNWG4iE5fgI47+UnRCjvTOizNMKOvFgVM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Hxj1hNGx; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version; b=GJqM0OFlrZQKt+JNgZMfDlexAtjBhAD1IJ7khsmQNBQv6vWcxG9gNn8wotpLrEUH/zl5HhubSqBnU9+xKr321yOchKUrezq+Nz3EjXoXVBDncSQyxMpu9zgfyrcIev4kA5y6IAt+MosksPgdvtvafXCrw7uKz15IkryuBZzmits=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JNbaM2i1; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709721795;
+	s=mimecast20190719; t=1709721802;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Kmh1r8OzIBeRtjZdwvZUDbG8Rg7aEeeC8h0p+1IZUgI=;
-	b=Hxj1hNGxRJMETCCA/wKYgwPWC62Y01gSGws7iVKQMmo/HFJ2L9Q/ZlSdPNX0UCTQtjYruY
-	2UsmBkLvN8NQqc90axY12YNUI40w+XqamrN5YLJRlb5ZezPlfsMNvmjaxIr2tLtKjmrNvz
-	NcPE5Ys0c0SxG6PSqMqvMdycpl9EEHM=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-132-28RiKZlpPQu-76jARwQEkw-1; Wed, 06 Mar 2024 05:43:10 -0500
-X-MC-Unique: 28RiKZlpPQu-76jARwQEkw-1
+	bh=e0nyH5cfLKLNUyYVewKsf1JegzIgt6HCOMbuZo9oALU=;
+	b=JNbaM2i1mcgLCyvO2kCMCRyCWI3woMUGWJnRkU2x0mnKRh3LqRsXgdx7TaFuMdCLguPIye
+	tB8myjg3ibFFBEbgSTYk0vXTKgWgVk7u5qvzztyI8pEb8b1WUOfsQFr5JF1hRRJBSZgA+p
+	DzfK9R1Nb848u5Gm2PiJi4ZgC7GcfzI=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-459-Hl-hIAJEPjGHPHHTtG8PNw-1; Wed,
+ 06 Mar 2024 05:43:17 -0500
+X-MC-Unique: Hl-hIAJEPjGHPHHTtG8PNw-1
 Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 13B1C8007A7;
-	Wed,  6 Mar 2024 10:43:10 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 21BBC1C0513A;
+	Wed,  6 Mar 2024 10:43:17 +0000 (UTC)
 Received: from x1n.redhat.com (unknown [10.72.116.8])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 294B5111DD03;
-	Wed,  6 Mar 2024 10:43:01 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTP id D539F111DCFF;
+	Wed,  6 Mar 2024 10:43:10 +0000 (UTC)
 From: peterx@redhat.com
 To: linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org
@@ -67,14 +67,10 @@ Cc: linuxppc-dev@lists.ozlabs.org,
 	Christophe Leroy <christophe.leroy@csgroup.eu>,
 	x86@kernel.org,
 	sparclinux@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
-Subject: [PATCH RFC 09/13] mm/powerpc: Redefine pXd_huge() with pXd_leaf()
-Date: Wed,  6 Mar 2024 18:41:43 +0800
-Message-ID: <20240306104147.193052-10-peterx@redhat.com>
+	linux-arm-kernel@lists.infradead.org
+Subject: [PATCH RFC 10/13] mm/gup: Merge pXd huge mapping checks
+Date: Wed,  6 Mar 2024 18:41:44 +0800
+Message-ID: <20240306104147.193052-11-peterx@redhat.com>
 In-Reply-To: <20240306104147.193052-1-peterx@redhat.com>
 References: <20240306104147.193052-1-peterx@redhat.com>
 Precedence: bulk
@@ -88,59 +84,48 @@ X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
 From: Peter Xu <peterx@redhat.com>
 
-PowerPC book3s 4K mostly has the same definition on both, except pXd_huge()
-constantly returns 0 for hash MMUs.  AFAICT that is fine to be removed,
-because pXd_huge() reflects a hugetlb entry, while it's own hugetlb pgtable
-lookup function (__find_linux_pte() shared by all powerpc code) already use
-pXd_leaf() irrelevant of the MMU type.  It means pXd_leaf() should work all
-fine with hash MMU pgtables or something could already went wrong.
+Huge mapping checks in GUP are slightly redundant and can be simplified.
 
-The goal should be that we will have one API pXd_leaf() to detect all kinds
-of huge mappings.  AFAICT we need to use the pXd_leaf() impl (rather than
-pXd_huge() ones) to make sure ie. THPs on hash MMU will also return true.
+pXd_huge() now is the same as pXd_leaf().  pmd_trans_huge() and
+pXd_devmap() should both imply pXd_leaf(). Time to merge them into one.
 
-This helps to simplify a follow up patch to drop pXd_huge() treewide.
-
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Nicholas Piggin <npiggin@gmail.com>
-Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>
-Cc: "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
-Cc: linuxppc-dev@lists.ozlabs.org
 Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
- arch/powerpc/include/asm/book3s/64/pgtable-4k.h | 14 ++------------
- 1 file changed, 2 insertions(+), 12 deletions(-)
+ mm/gup.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/arch/powerpc/include/asm/book3s/64/pgtable-4k.h b/arch/powerpc/include/asm/book3s/64/pgtable-4k.h
-index 48f21820afe2..92545981bb49 100644
---- a/arch/powerpc/include/asm/book3s/64/pgtable-4k.h
-+++ b/arch/powerpc/include/asm/book3s/64/pgtable-4k.h
-@@ -8,22 +8,12 @@
- #ifdef CONFIG_HUGETLB_PAGE
- static inline int pmd_huge(pmd_t pmd)
- {
--	/*
--	 * leaf pte for huge page
--	 */
--	if (radix_enabled())
--		return !!(pmd_raw(pmd) & cpu_to_be64(_PAGE_PTE));
--	return 0;
-+	return pmd_leaf(pmd);
- }
+diff --git a/mm/gup.c b/mm/gup.c
+index f87a7d90f2ae..de7188d2af86 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -3005,8 +3005,7 @@ static int gup_pmd_range(pud_t *pudp, pud_t pud, unsigned long addr, unsigned lo
+ 		if (!pmd_present(pmd))
+ 			return 0;
  
- static inline int pud_huge(pud_t pud)
- {
--	/*
--	 * leaf pte for huge page
--	 */
--	if (radix_enabled())
--		return !!(pud_raw(pud) & cpu_to_be64(_PAGE_PTE));
--	return 0;
-+	return pud_leaf(pud);
- }
- 
- /*
+-		if (unlikely(pmd_trans_huge(pmd) || pmd_huge(pmd) ||
+-			     pmd_devmap(pmd))) {
++		if (unlikely(pmd_leaf(pmd))) {
+ 			/* See gup_pte_range() */
+ 			if (pmd_protnone(pmd))
+ 				return 0;
+@@ -3043,7 +3042,7 @@ static int gup_pud_range(p4d_t *p4dp, p4d_t p4d, unsigned long addr, unsigned lo
+ 		next = pud_addr_end(addr, end);
+ 		if (unlikely(!pud_present(pud)))
+ 			return 0;
+-		if (unlikely(pud_huge(pud) || pud_devmap(pud))) {
++		if (unlikely(pud_leaf(pud))) {
+ 			if (!gup_huge_pud(pud, pudp, addr, next, flags,
+ 					  pages, nr))
+ 				return 0;
+@@ -3096,7 +3095,7 @@ static void gup_pgd_range(unsigned long addr, unsigned long end,
+ 		next = pgd_addr_end(addr, end);
+ 		if (pgd_none(pgd))
+ 			return;
+-		if (unlikely(pgd_huge(pgd))) {
++		if (unlikely(pgd_leaf(pgd))) {
+ 			if (!gup_huge_pgd(pgd, pgdp, addr, next, flags,
+ 					  pages, nr))
+ 				return;
 -- 
 2.44.0
 
