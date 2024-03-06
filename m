@@ -1,193 +1,110 @@
-Return-Path: <linux-kernel+bounces-93947-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93948-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E3A7873759
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:06:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E48287375D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:08:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 322251C24A11
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:06:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9D596B24563
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:08:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47409130AEB;
-	Wed,  6 Mar 2024 13:06:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C07AE130AC7;
+	Wed,  6 Mar 2024 13:08:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p9NrWTTt"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="fbQCBMgz"
+Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C30512D743;
-	Wed,  6 Mar 2024 13:06:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78D563E48E
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 13:08:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709730395; cv=none; b=rcqXo1tYLxrQAUIRFJOBZXoRswvp2QRrluT61yas9a/50NGvENxs2BoI7KuRjV6pm8kYtKZ8nIt1fNTviw8hiHtKYgvafAsTHfkxoxX2wwjT8EuSWOkH0M0GRLkHSwc5i9P4Vr2jLQ/a1lkIzp7lgi56NwWWix9SD54OAG1TLyY=
+	t=1709730484; cv=none; b=WRv5m5lPOwsTvmM0fsFrpk2Kq7iavaMVpBpz24qW5xz9z0HTSbP4wYAbhWtk9YMT0+69wa+u3o6UlvElr7PWFLtM5ni2RkbyLXiD+z1psFHzBnoajRGwrbHh6y1a+KU9fB6OStakASzX0n0CvY9gVdCF7qBtGmffpUa23gnL8GI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709730395; c=relaxed/simple;
-	bh=tVPYOqEf/BMupl31Fq6WbwWC0XQISuwiP322VIiaoYg=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=Q0R0RFK7T5YabmfuA05M5dbJNjUWa9jwq3iKunGBPue+IfzCmycQ+Uttw8Z4zJ6U4Fh8FHtHPgmHcZiW54JjM0PLOZTpEE2iXVM5c+Hyi8iMbbaiMmBgVeDLMqQl+rDqX1l6gMTn/2tL3bq5VHs7225P1cl3XalHa6iBdK2AP2M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p9NrWTTt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B660C433C7;
-	Wed,  6 Mar 2024 13:06:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709730395;
-	bh=tVPYOqEf/BMupl31Fq6WbwWC0XQISuwiP322VIiaoYg=;
-	h=Date:From:To:Cc:Subject:From;
-	b=p9NrWTTtJhWnN7aijaYw/i7mctmNAnupV50TR//sAugSCZDggENjpRMWIwhYy9FxO
-	 LNvs31LyTJ6+AY4UFaBdpseJDLsqEOqB0+aYyCZ0JzP78iBq8cMwoh1nY1RcU132pW
-	 3j5EFhvsRq+2L4aVZ78ETXbhHS9EUQi0ni7Xbu4FWpL/Dv4G68Ch9gROiVsN9iMDaz
-	 gAMzPjoyet7We5UEzS2W1eQu1vWfgRDx9Jsxmashc94YYRPhnFhP7QHEEZ94HlHxng
-	 Y7bzVbbTwPV9jzEcNNAQM+9dcdn9v96Y8xStiyTStZGFAafu7//mpD+PIYVOR9SERe
-	 eu0lckQ5lCI6Q==
-Date: Wed, 6 Mar 2024 10:06:30 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Mike Galbraith <efault@gmx.de>, Peter Zijlstra <peterz@infradead.org>,
-	Marco Elver <elver@google.com>, linux-rt-users@vger.kernel.org,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Clark Williams <williams@redhat.com>,
-	Alessandro Carminati <acarmina@redhat.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Artem Savkov <asavkov@redhat.com>
-Subject: Re: 'perf test sigtrap' failing on PREEMPT_RT_FULL
-Message-ID: <ZdZOYnIkjqkyfo5P@x1>
+	s=arc-20240116; t=1709730484; c=relaxed/simple;
+	bh=8grmpMo6kXaCL1FNx9R2bfmPydXiA0rq201Ykmbj6XM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=AibQZ9yixYXmZV8wVfFf3aeS+4VJJrHCTpCO00JbWqtolOmLB559WfISICedN3BeYbLuSvM7COjU78nL9DrRRundxhoJsezd8kWajj/ICblm0f5HbAquICUmYNwDWyDY73j2+gCMTJGX4uKqMFYIydXnkB/3G6eDy7OZ2pCTTEw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=fbQCBMgz; arc=none smtp.client-ip=209.85.167.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-oi1-f181.google.com with SMTP id 5614622812f47-3c19aaedfdaso4163740b6e.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 05:08:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1709730481; x=1710335281; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8grmpMo6kXaCL1FNx9R2bfmPydXiA0rq201Ykmbj6XM=;
+        b=fbQCBMgzk+KAhLBzDal/E+VtkZn2t0bkvgJ74igvKt0UouOqhflnAMtCtEeTa4x44A
+         BXigzOKFFi1nBu9+40pZxylv8/flfrBd76v2Qe9Zxr8vcUVsyMIhdgCL6Q/AnZz2Z0Ct
+         96MrRmmx/PYoWzPlZVrBQcQGCK05aRL3weJaGvsBsGwC+iGNi/GvwoEWPpLqXvroCi06
+         KjV28Edvht5eTJ4JRLrgNanDd0QtuhNNnbbxAIFECAPgQeUQ9cvl9TkAZ3MhVOrQ73Zd
+         yuaFgEwF4U/YFs6r2P7De4tthxG8nal3Hfe0+KEPPG3ZdOzmX39uAot1Uc57MEUKI8D1
+         CUlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709730481; x=1710335281;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8grmpMo6kXaCL1FNx9R2bfmPydXiA0rq201Ykmbj6XM=;
+        b=GDO7i3kYbnXuHBPTRytAKZapjd3ZVhBe/o4ZZFskEsNjKD9F5Fv4PcqRgPPTnOCs1L
+         FYuiVgS2Bi15HC869mys0mPVcknMM3BSyWV6QuYLeuSZiFvOwyFeA6+Ef8I7ZRMVuHsD
+         7IBFmbiiT9WF91qg7PMpb0cY1POJPOACudpIK3vwasacyUVHCCg1TpnXypPBxKuMTfZo
+         mCiahX4QLj+XbsCiiB9koOsDQ8/qXNBy0Bbfs7FxhxZZZZrL+IeOrOfH8wmzO1m3BJTy
+         j5OSN6d/B0TjWByEEVwTjNMBUSaJH6pco+7F7cjWY1dYagBsX6RWLF4i4qZnj7K0OwBj
+         kSZA==
+X-Forwarded-Encrypted: i=1; AJvYcCV9WJ+4kF02N69hL69iXi51fWLQa7vpiUFcLyhL8V4CPQ+zOfIYyIjShGlLgfqIBiAfSh0yV1QBp/qFupgie/wJx2AC6T2iGo5GvQwm
+X-Gm-Message-State: AOJu0YwPmWWfzYNpQUyxCf5o301+H2+uvEULattep48qKuQ7NvqfkOV7
+	VAJUoiugTqnUqMts8R/hhxtzLJzZf7g2Tyvhvg4R3SI8Xpd6njjbEV2KjxZ3nQMTe/MesrH/XBZ
+	91+XGcfLjFSMZWTw4EkvZAyFYL+yixs0lligUrw==
+X-Google-Smtp-Source: AGHT+IHApjo0FyHz0+mTNfy8Jycj2LxiGFq4dH+7d3CKS9BmX1BulHze6m5Tp4NLWckeoTdAQ7+7m9r34TwCA9Uv4iY=
+X-Received: by 2002:a05:6870:a99f:b0:220:88b7:5145 with SMTP id
+ ep31-20020a056870a99f00b0022088b75145mr4894851oab.41.1709730481594; Wed, 06
+ Mar 2024 05:08:01 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Url: http://acmel.wordpress.com
+References: <20240306085622.87248-1-cuiyunhui@bytedance.com> <26f3e99c-8f57-4779-a679-2085e469d9cd@siemens.com>
+In-Reply-To: <26f3e99c-8f57-4779-a679-2085e469d9cd@siemens.com>
+From: yunhui cui <cuiyunhui@bytedance.com>
+Date: Wed, 6 Mar 2024 21:07:50 +0800
+Message-ID: <CAEEQ3wnDKdhCH4yz+MY+Xks21jLnuFiyx-xxa7CFczokG2shvQ@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH 1/3] Revert "riscv/efistub: Ensure
+ GP-relative addressing is not used"
+To: Jan Kiszka <jan.kiszka@siemens.com>
+Cc: paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, 
+	ardb@kernel.org, xuzhipeng.1973@bytedance.com, alexghiti@rivosinc.com, 
+	samitolvanen@google.com, bp@alien8.de, xiao.w.wang@intel.com, 
+	kirill.shutemov@linux.intel.com, nathan@kernel.org, 
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	linux-efi@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> In Thu, 4 Jan 2024 19:35:57 -0300, Arnaldo Carvalho de Melo wrote:
-> > +++ b/kernel/events/core.c
-> > @@ -6801,7 +6801,7 @@ static void perf_pending_task(struct callback_head *head)
-> >         * If we 'fail' here, that's OK, it means recursion is already disabled
-> >         * and we won't recurse 'further'.
-> >         */
-> >-       preempt_disable_notrace();
-> >+       migrate_disable();
-> >        rctx = perf_swevent_get_recursion_context();
- 
-> Pardon my ignorance, is it safe to call preempt_count() with preemption
-> enabled on PREEMPT_RT, or at least in the context being discussed here?
- 
-> Because:
- 
-> 	 perf_swevent_get_recursion_context()
-> 	     get_recursion_context()
->                  interrupt_context_level()
->                      preempt_count()	
- 
-> And:
- 
-> int perf_swevent_get_recursion_context(void)
-> {
->         struct swevent_htable *swhash = this_cpu_ptr(&swevent_htable);
-> 
->         return get_recursion_context(swhash->recursion);
-> }
+Hi Jan,
 
-Seems to be enough because perf_pending_task is a irq_work callback and
-that is guaranteed not to reentry?
+On Wed, Mar 6, 2024 at 8:52=E2=80=AFPM Jan Kiszka <jan.kiszka@siemens.com> =
+wrote:
+>
+> On 06.03.24 09:56, Yunhui Cui wrote:
+> > This reverts commit afb2a4fb84555ef9e61061f6ea63ed7087b295d5.
+> >
+>
+> This comes without a reason - which is likely something around "will fix
+> this properly later". But then you regress first and only fix
+> afterwards. Can't that be done the other way around?
 
-Artem's tests with a RHEL kernel seems to indicate that, ditto for my,
-will test with upstream linux-6.8.y-rt.
+Sorry, I don't quite understand what you mean. Can you help explain it
+more clearly? Do you mean "delete mno-relax instead of revert
+directly?"
 
-But there is a lot more happening in perf_sigtrap and I'm not sure if
-the irq_work callback gets preempted we would not race with something
-else.
 
-Marco, Mike, ideas?
-
-- Arnaldo
- 
-> >         if (event->pending_work) {
-> > @@ -6812,7 +6812,7 @@ static void perf_pending_task(struct callback_head *head)
->  
-> >        if (rctx >= 0)
-> >                 perf_swevent_put_recursion_context(rctx);
-> > -       preempt_enable_notrace();
-> > +       migrate_enable();
->  
-> >         put_event(event);
-> >  }
-> > [acme@nine linux]$ uname -a
-> > Linux nine 6.7.0-rc5-rt5.sigtrap-fix-dirty #2 SMP PREEMPT_RT Thu Jan  4 18:11:44 -03 2024 x86_64 x86_64 x86_64 GNU/Linux
-> > [acme@nine linux]$ sudo su -
-> > [sudo] password for acme: 
-> > [root@nine ~]# 
-> > [root@nine ~]# perf test sigtrap
-> >  68: Sigtrap                                                         : Ok
-> > [root@nine ~]# 
-> > [root@nine ~]# perf probe -L perf_pending_task
-> > <perf_pending_task@/home/acme/git/linux/kernel/events/core.c:0>
-> >       0  static void perf_pending_task(struct callback_head *head)
-> >          {
-> >       2         struct perf_event *event = container_of(head, struct perf_event, pending_task);
-> >       3         int rctx;
->        
-> >                 /*
-> >                  * If we 'fail' here, that's OK, it means recursion is already disabled
-> >                  * and we won't recurse 'further'.
-> >                  */
-> >                 migrate_disable();
-> >      10         rctx = perf_swevent_get_recursion_context();
-> >         
-> >      12         if (event->pending_work) {
-> >      13                 event->pending_work = 0;
-> >      14                 perf_sigtrap(event);
-> >      15                 local_dec(&event->ctx->nr_pending);
-> >                 }
-> >         
-> >      18         if (rctx >= 0)
-> >      19                 perf_swevent_put_recursion_context(rctx);
-> >      20         migrate_enable();
->      
-> >      22         put_event(event);
-> >          }
->          
-> >          #ifdef CONFIG_GUEST_PERF_EVENTS
-> 
-> > [root@nine ~]# perf probe perf_pending_task
-> > Added new event:
-> >   probe:perf_pending_task (on perf_pending_task)
-> 
-> > You can now use it in all perf tools, such as:
-> 
-> > 	perf record -e probe:perf_pending_task -aR sleep 1
-> 
-> > [root@nine ~]# perf trace --max-events=1 -e probe:perf_pending_task/max-stack=6/ perf test sigtrap 
-> >  68: Sigtrap                                                         : Ok
-> >      0.000 :9608/9608 probe:perf_pending_task(__probe_ip: -2064408784)
-> >                                        perf_pending_task ([kernel.kallsyms])
-> >                                        task_work_run ([kernel.kallsyms])
-> >                                        exit_to_user_mode_loop ([kernel.kallsyms])
-> >                                        exit_to_user_mode_prepare ([kernel.kallsyms])
-> >                                        irqentry_exit_to_user_mode ([kernel.kallsyms])
-> >                                        asm_sysvec_irq_work ([kernel.kallsyms])
-> > [root@nine ~]#
-> 
-> > [root@nine ~]# head -5 /etc/os-release
-> > NAME="Red Hat Enterprise Linux"
-> > VERSION="9.2 (Plow)"
-> > ID="rhel"
-> > ID_LIKE="fedora"
-> > VERSION_ID="9.2"
-> > [root@nine ~]#
-> 
-> > I did the test without the above patch and the original problem is
-> > reproduced.
->  
-> > > This is also used in perf_pending_irq() and on PREEMPT_RT this is
-> > > invoked from softirq context which is preemptible.
-> 
-> Humm, and then when going thru perf_pending_irq() we don't hit that
-> scheduling on atomic.
-> 
-> - Arnaldo
+Thanks,
+Yunhui
 
