@@ -1,89 +1,89 @@
-Return-Path: <linux-kernel+bounces-94737-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94714-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10DFA87448D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 00:42:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C795E8743E4
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 00:30:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7A8721F27A10
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 23:42:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 67FF11F220F7
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 23:30:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EB3B1D54D;
-	Wed,  6 Mar 2024 23:35:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5B1A1CA8E;
+	Wed,  6 Mar 2024 23:30:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Wcex9lJa"
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Stewac8y"
+Received: from mail-oo1-f45.google.com (mail-oo1-f45.google.com [209.85.161.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4B911D546
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 23:35:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 762CC1C6B9
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 23:30:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709768154; cv=none; b=WbqhsQKKsYnmBP6OmXu9IQyrOTPATNkBunUPSVlEqrXzxKtu0APYT5E8kmPYTvXN8d5ZIUSy42ODI+yIb6wJDSEyRcJ9DcagggNkWOY5+lpSLJDtysilNN85rOVYmch/ZD5ynp2G9CuATyPUBxWQdDp6BpFFqy1q5Y8L2mgI5hs=
+	t=1709767818; cv=none; b=qeuENL0HlXWFV1q0D+IKlUew6JalJwMpBPyWKiGkdSI2WeMXEJbinvvksyAjarlpmry9V4eHuynmJL+VTILyMy3iOybix5V+2Sy5CwOk/CRFje6zDaV+SVdBlV/UnRYVyR90foSrTvtW2JNavFbe55TWeCDd7AMfQFNSCZXWEx8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709768154; c=relaxed/simple;
-	bh=bpCYm7lk/Zt2nlVqJJ9jqReyYUgSKztCBgaYlIlkBmQ=;
+	s=arc-20240116; t=1709767818; c=relaxed/simple;
+	bh=sPhd2KQA/avd1ni9YV51bTSXQMhTze2MYbIU247grTc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=iAdY5fDJ6PCPFF/2tdai9QN0KZfEQm61Ac3JnazukBhn44xPA80lxcMTaRLRtDVN4ZBxturuJSnCuPyjM5A5qKDvrzU4NYxKaPJsIpW8kt6U/f0J+cdTtJVIcCn5olbXCXna/WhMSx751rrXVpA3c67XNT4L6vhHF9Kq65LAdMc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Wcex9lJa; arc=none smtp.client-ip=209.85.214.182
+	 To:Cc:Content-Type; b=jPhEGLjTfC2ioMhdUy3wKeKPxjNY9fugxAWhss7XQ57jBan9tYWCdNBUGIIGgxnr8P3R0q97c/3xp7iGoWIaXzucBUQuTEanB1xnJ/Zv0kIdAg7GmYABqPTrtpMNx2QwynYtNcq8uJfLyvNuCWbqP6c5+WtAlKV8+JJaqn+p0rU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Stewac8y; arc=none smtp.client-ip=209.85.161.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1dca3951ad9so2283855ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 15:35:52 -0800 (PST)
+Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-5a11ed428c5so126844eaf.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 15:30:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709768151; x=1710372951; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1709767813; x=1710372613; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=PJPa29UemqkJNoNGTKdfNViJ5FBTYfS9WvG9ykZmeu8=;
-        b=Wcex9lJaVQPr8dhdDL1YwJ/BYb/5HFHZwRSCyT1dT41I3KJr2SK5A9vJymiYNeFui9
-         ErcjkebaeOhfUKm+UEiLFoLgZyYQyJ9f9v7+Amxq2GOdexfnKUfuRPyG7VuK3zp3wuMG
-         0XSODgl/FuCXmInKbJ8HfAhsp0wjXwEMC62mA=
+        bh=8uphQrob++9Iti6sZOTD0y0JTDAZhZm8PP0VwpFINJk=;
+        b=Stewac8yap7KWNHXrP0Tw3qyxxJSt1Njcg91nhbT5UOs15f64dWkWP5nqjDSLMphbv
+         L2W3urS0Y3zA9FbmEwBV7EhonCqfzq3movN69+7CJSYrzKKhhbA733BpSGdJiiGDRvG9
+         jzLEX6PcMUNreTu/zw+Z+PE2MUkrmC2zUXxVY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709768151; x=1710372951;
+        d=1e100.net; s=20230601; t=1709767813; x=1710372613;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=PJPa29UemqkJNoNGTKdfNViJ5FBTYfS9WvG9ykZmeu8=;
-        b=bf8YU7KE3jxHM5nYsQ9Ah9RHaI9Ue28y9G9JEVWWU3dLd1hudBtWCCvKwLNC0X96cQ
-         DRREqlfviJQTsgqc2a5NBevEePt5iswswh+OSCJmq+NM+e2QPRnl1kr9/POQbJahk+Og
-         dRmHEAHO+LMsx58zv5iGWUEBJa1DDBrSIJv0tSc8nToEy0nvm5pb6RFFChj0JstFbQsL
-         Idr+LuSTOqwh4VWRNJ7duY+IditXzrE4AHcbkprreJOWFpBEm9mzeP2gPWzPGunTZGMU
-         BozAUaHoz+yUS6eX31pKuxQ24aMjO9zITVWoOTn0WUTtHaEN3e0AX8SkwOQX97P4Ss+v
-         mAUA==
-X-Forwarded-Encrypted: i=1; AJvYcCUQdCetgxRsbnSFbLvA9anpgiNDfbsKJhD25kkaRSDiPp0sCHJldRA7/gZY3yvXo4rXduKPxQ0gtX/004JIFQRIE+XwmY506ycKNV2G
-X-Gm-Message-State: AOJu0YzoTvRvqvpjNw8dokaLk0bwZzccG5JqzKaQbA13uCz8/fBWxQ73
-	7f6MATp1vIcK+lnFGJl2wrObolN62dKJB8JoL0hh86vgbvJB0FtSIzwkPCtICy4FpN7wY1hTphY
+        bh=8uphQrob++9Iti6sZOTD0y0JTDAZhZm8PP0VwpFINJk=;
+        b=cFkRs3O0s6+yVQfI6nGGTTymkjF+IZQyhsY6gkQH2ttnC04uoF3kQlJa35fX98GjDD
+         W8fNeXRegGzGhi12teb2NhAmfzT18pn9KOAvc679QPnH2I1fHxlIkrkUdRYYA1pgF77F
+         5KNpcaht8nykIz3Vr7mOoWNrvdGnk0ItvOIsqITX3vuojqmTt6ag5RohLv1nQoHV/Zu5
+         UnbBPX+EOd7JROTVu3Z1VgVlMPzTls2mDjWmieHudUNJSGidpmLYqV837BECDBF8yclb
+         PeXTOCpZteQ/6kA7cqSlKTh7nDTrWzmsphNTHuU4hepV73U0+227dDrJGHue/wyEngvy
+         /PZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUXXb7Q3SPTu674dkEaeC64ezx0lWzibdi7y0yKTY+8P0zHj2PL7Y2yUB4Ub17jPdGjVix1biaXeJNF2KqPhLYMj2iryt0Yjbo+oYJe
+X-Gm-Message-State: AOJu0YyZp28LtErv/jt5V1JCMwk+G/JufXDBj8fBE5HCHXkTT7nLkUya
+	61vvK4xfGnIwkTwpgKYL2tsaQ8I4GQbfRGrPamRIo8gExA/AXvcDlS+kwtblifqE97ebcyzhBeU
 	=
-X-Google-Smtp-Source: AGHT+IGxmjI3HnqTiHMNFI+XFCCi6WXLxPukpdJuxbNF5IZ3qw/8U/7BZQ5vRcM/uXNE2xi4tctEkw==
-X-Received: by 2002:a17:902:930c:b0:1dc:334:a87b with SMTP id bc12-20020a170902930c00b001dc0334a87bmr6646098plb.20.1709768151477;
-        Wed, 06 Mar 2024 15:35:51 -0800 (PST)
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com. [209.85.214.177])
-        by smtp.gmail.com with ESMTPSA id j6-20020a170903024600b001db608107ecsm13102971plh.167.2024.03.06.15.35.51
+X-Google-Smtp-Source: AGHT+IGALZ1o9Tv8havUqFe1rw+oNlOwGzkAUIA4VoBYYD7sTLrt/wjbMIvjZNsBzWoWP3ua0Fy3ew==
+X-Received: by 2002:a05:6358:885:b0:17c:a67:3579 with SMTP id m5-20020a056358088500b0017c0a673579mr6699307rwj.1.1709767813360;
+        Wed, 06 Mar 2024 15:30:13 -0800 (PST)
+Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com. [209.85.160.172])
+        by smtp.gmail.com with ESMTPSA id t20-20020a05620a0b1400b007881ed0f87dsm4730561qkg.65.2024.03.06.15.30.10
         for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Mar 2024 15:35:51 -0800 (PST)
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1dcd07252d9so36565ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 15:35:51 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUbgzClu2YbuZOoRAFRYH28xLn4Q7rlMU1/UWld12HnhSvarTd7yTcfppB40wG6PCoHIS6FzITsd37GJ8yTKYHFMqs17GRXo5ywmrCi
-X-Received: by 2002:ac8:5ad3:0:b0:42e:dced:d36c with SMTP id
- d19-20020ac85ad3000000b0042edcedd36cmr86231qtd.29.1709767796260; Wed, 06 Mar
- 2024 15:29:56 -0800 (PST)
+        Wed, 06 Mar 2024 15:30:10 -0800 (PST)
+Received: by mail-qt1-f172.google.com with SMTP id d75a77b69052e-428405a0205so55251cf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 15:30:10 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXzfYZO98eXFSpyKSdexj3Yb5zmtf34voLQULmuyNvAOyYxPv9QPstXL42IOrBpONafg6J7UPougEZJDVggjK81lCfnipWbVSBRp+Y6
+X-Received: by 2002:a05:622a:590:b0:42e:e077:3ee1 with SMTP id
+ c16-20020a05622a059000b0042ee0773ee1mr104034qtb.3.1709767809742; Wed, 06 Mar
+ 2024 15:30:09 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240306200353.1436198-1-hsinyi@chromium.org> <20240306200353.1436198-4-hsinyi@chromium.org>
-In-Reply-To: <20240306200353.1436198-4-hsinyi@chromium.org>
+References: <20240306200353.1436198-1-hsinyi@chromium.org> <20240306200353.1436198-5-hsinyi@chromium.org>
+In-Reply-To: <20240306200353.1436198-5-hsinyi@chromium.org>
 From: Doug Anderson <dianders@chromium.org>
-Date: Wed, 6 Mar 2024 15:29:44 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=W2CKoOyhN49RBU0FdzcRC6SEwvVQYdJRnBBK16Lp-=FQ@mail.gmail.com>
-Message-ID: <CAD=FV=W2CKoOyhN49RBU0FdzcRC6SEwvVQYdJRnBBK16Lp-=FQ@mail.gmail.com>
-Subject: Re: [PATCH v5 3/6] drm/edid: Add a function to match EDID with identity
+Date: Wed, 6 Mar 2024 15:29:51 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=X66sW-zcnZbv1ecnZ733AKJh1LbjGNVWLjggT_x1sxGw@mail.gmail.com>
+Message-ID: <CAD=FV=X66sW-zcnZbv1ecnZ733AKJh1LbjGNVWLjggT_x1sxGw@mail.gmail.com>
+Subject: Re: [PATCH v5 4/6] drm/edid: Match edid quirks with identity
 To: Hsin-Yi Wang <hsinyi@chromium.org>
 Cc: Jani Nikula <jani.nikula@linux.intel.com>, 
 	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Neil Armstrong <neil.armstrong@linaro.org>, 
@@ -99,70 +99,19 @@ Hi,
 On Wed, Mar 6, 2024 at 12:04=E2=80=AFPM Hsin-Yi Wang <hsinyi@chromium.org> =
 wrote:
 >
-> +static void
-> +match_identity(const struct detailed_timing *timing, void *data)
-> +{
-> +       struct drm_edid_match_closure *closure =3D data;
-> +       unsigned int i;
-> +       const char *name =3D closure->ident->name;
-> +       unsigned int name_len =3D strlen(name);
-> +       const char *desc =3D timing->data.other_data.data.str.str;
-> +       unsigned int desc_len =3D ARRAY_SIZE(timing->data.other_data.data=
-str.str);
-> +
-> +       if (name_len > desc_len ||
-> +           !(is_display_descriptor(timing, EDID_DETAIL_MONITOR_NAME) ||
-> +             is_display_descriptor(timing, EDID_DETAIL_MONITOR_STRING)))
-> +               return;
-> +
-> +       if (strncmp(name, desc, name_len))
-> +               return;
-> +
-> +       /* Allow trailing white spaces and \0. */
-> +       for (i =3D name_len; i < desc_len; i++) {
-> +               if (desc[i] =3D=3D '\n')
-> +                       break;
-> +               if (!isspace(desc[i]) && !desc[i])
-> +                       return;
-> +       }
-
-If my code analysis is correct, I think you'll reject the case where:
-
-name =3D "foo"
-desc[13] =3D "foo \0zzzzzzzz"
-
-..but you'll accept these cases:
-
-desc[13] =3D "foo \nzzzzzzzz"
-desc[13] =3D "foo \0\0\0\0\0\0\0\0\0"
-
-It somehow seems weird to me that a '\n' terminates the string but not a '\=
-0'.
-
-I would have done:
-
-      for (i =3D name_len; i < desc_len; i++) {
-              /* Consider \n or \0 to terminate the string */
-              if (desc[i] =3D=3D '\n' || desc[i] =3D=3D '\0')
-                      break;
-              /* OK for spaces at the end, but non-space is a fail */
-              if (!isspace(desc[i]))
-                      return;
-      }
-
-
-> @@ -367,6 +367,12 @@ struct edid {
->         u8 checksum;
->  } __attribute__((packed));
+> Currently edid quirks are matched by panel id only.
 >
-> +/* EDID matching */
-> +struct drm_edid_ident {
-> +       u32 panel_id;
-> +       const char *name;
+> Modify it to match with identity so it's easier to be extended
+> for more complex matching if required.
+>
+> Suggested-by: Jani Nikula <jani.nikula@linux.intel.com>
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> Reviewed-by: Jani Nikula <jani.nikula@intel.com>
+> ---
+> v5: no change
+> ---
+>  drivers/gpu/drm/drm_edid.c | 13 ++++++++-----
+>  1 file changed, 8 insertions(+), 5 deletions(-)
 
-Might not hurt to have a comment for panel_id saying that it's encoded
-by drm_edid_encode_panel_id() so it's obvious what this random u32 is.
-
-
--Doug
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
 
