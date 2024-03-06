@@ -1,123 +1,125 @@
-Return-Path: <linux-kernel+bounces-93732-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93748-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3200B873420
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 11:27:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B0FB3873491
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 11:42:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 91802B2CB2C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:19:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7F072B285FF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:26:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1AF45F862;
-	Wed,  6 Mar 2024 10:18:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="xz9DwYt0"
-Received: from bee.tesarici.cz (unknown [77.93.223.253])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B14A160259;
+	Wed,  6 Mar 2024 10:25:12 +0000 (UTC)
+Received: from out187-18.us.a.mail.aliyun.com (out187-18.us.a.mail.aliyun.com [47.90.187.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA4E85FB9C;
-	Wed,  6 Mar 2024 10:18:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=77.93.223.253
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E732E5FDC8
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 10:25:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=47.90.187.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709720292; cv=none; b=nm56Z1YVPGWr15cbAbX5f+cfAVSuOh+zXXw1tC5l/np7/Ppk+hX2n2aFyWSlou4YXwflctW66NMyeD4SJhXLOagJ9U8RlVqOEqDvihvUKVTp7vOpEwxtCPurvQa/gfsTLoFjrPZXOnL8P+bFLkGhseSJmGY23z4fDT7Ex+gLqzc=
+	t=1709720712; cv=none; b=ruzISdTa0IcHsIYHFq1rj4N47PcWtFQSkfX3MObcQMiX0yv/xXnB2OBijFEszS93w9E9IUx2PT9WWZLbtvrajq/LfsG+8u81Hkepf48If6NZNCmnTeFrT2uCj70IlTiYv68xq1EHUUAy/d+mXlSDZCYDVZ/2SJXZhSoLYsn1Je0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709720292; c=relaxed/simple;
-	bh=pNAiBPk3+b7TPFffKjUIflh60HluCNFIEoK2TZcYEHU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=i1bMKp0CgTlE80orCRAMAbrT6Brv1dBxn+tlEnhTeGmg7e4/4iOQYqoTlh08WyAY3U74M3hT2MEF69jQt0KzIeLgjLDphjsBdRkqOhjgEaIRYLPIQGNdkFD12wnZdUfQdd641NRuz04NtJAkZr0LNX8fI3LpmOc3tZfc5xTtzbI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz; spf=pass smtp.mailfrom=tesarici.cz; dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b=xz9DwYt0; arc=none smtp.client-ip=77.93.223.253
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tesarici.cz
-Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by bee.tesarici.cz (Postfix) with ESMTPSA id F1E351C8E6D;
-	Wed,  6 Mar 2024 11:18:06 +0100 (CET)
-Authentication-Results: mail.tesarici.cz; dmarc=fail (p=quarantine dis=none) header.from=tesarici.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tesarici.cz; s=mail;
-	t=1709720287; bh=tZVIOy/Hp11PencpyFqREitSnYQ8zBVbq1ZDzko0Mso=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=xz9DwYt0kbyxrHiLd35ZroeRrU56YfxcIS95juX6a3sJNRGlr6hxomuN94ADEIfFX
-	 WfJqz/qBeBIQfsk1ZyHs44s+3QyXTorCgBk1ySC8IF6dwu2tSk5ndnsg9SYCvUmjZ/
-	 lmNmEoBgLnVOVz2oKUpdnsAEuNSIsI3ZUUtU0tn23DxVzgg+8PaJxgsABoq4RCQrZk
-	 fO7xfZJefPs+oAEkAkX4lmyTVtgw7CeUjwo0VgHL8LY0blH7U0kNTl5xpoFN1BnLcf
-	 hfunt4wOXlNUMV/VaJzF0GbvNeTB7fUsIyw0wAnaCgrT275zbfPhrDE7wtZPIrLNT6
-	 9K1sFTuFWF/IA==
-Date: Wed, 6 Mar 2024 11:18:05 +0100
-From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
-To: Thorsten Leemhuis <linux@leemhuis.info>
-Cc: Jonathan Corbet <corbet@lwn.net>, regressions@lists.linux.dev,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, Bagas Sanjaya
- <bagasdotme@gmail.com>
-Subject: Re: [PATCH v1] docs: verify/bisect: fixes, finetuning, and support
- for Arch
-Message-ID: <20240306111805.382fd341@meshulam.tesarici.cz>
-In-Reply-To: <6592c9ef4244faa484b4113f088dbc1beca61015.1709716794.git.linux@leemhuis.info>
-References: <6592c9ef4244faa484b4113f088dbc1beca61015.1709716794.git.linux@leemhuis.info>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-suse-linux-gnu)
+	s=arc-20240116; t=1709720712; c=relaxed/simple;
+	bh=oOu1pkOWoktHS4cvFVRB8OTOFr1IdzINy46KO6Q5sFo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=M4Elo8Z0JnLQIAGhbteLiSv+QoJBdOSuCemX3y9X0uB4mu9axMmKnn/sKnUjVjsrKKhibzG5w2130Zx0G2PeKkcgPZDD0L6tedm63MopeT3Nfh32EUhV0ww1rZs6zSuVp0MQuNfEJ7kcpsxxfxmAy2WJiuZuPAFE3myfIoSBOwc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=antgroup.com; spf=pass smtp.mailfrom=antgroup.com; arc=none smtp.client-ip=47.90.187.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=antgroup.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=antgroup.com
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047205;MF=tiwei.btw@antgroup.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---.Wgbn-I5_1709720375;
+Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.Wgbn-I5_1709720375)
+          by smtp.aliyun-inc.com;
+          Wed, 06 Mar 2024 18:19:40 +0800
+From: "Tiwei Bie" <tiwei.btw@antgroup.com>
+To: richard@nod.at,
+	anton.ivanov@cambridgegreys.com,
+	johannes@sipsolutions.net
+Cc:  <jani.nikula@intel.com>,
+   <linux-um@lists.infradead.org>,
+   <linux-kernel@vger.kernel.org>,
+   <intel-xe@lists.freedesktop.org>,
+  "Tiwei Bie" <tiwei.btw@antgroup.com>
+Subject: [PATCH v3 0/9] um: Minor fixes and cleanups
+Date: Wed, 06 Mar 2024 18:19:16 +0800
+Message-Id: <20240306101925.1088870-1-tiwei.btw@antgroup.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Wed,  6 Mar 2024 10:21:12 +0100
-Thorsten Leemhuis <linux@leemhuis.info> wrote:
+A series of minor fixes and cleanups for UML.
 
-> Assorted changes for the recently added document.
-> 
-> Improvements:
-> 
-> * Add instructions for installing required software on Arch Linux.
-> 
-> Fixes:
-> 
-> * Move a 'git remote add -t master stable [...]' from a totally wrong
->   to the right place.
-> 
-> * Fix two anchors.
-> 
-> * Add two required packages to the openSUSE install instructions.
-> 
-> Fine tuning:
-> 
-> * Improve the reference section about downloading Linux mainline sources
->   to make it more obvious that those are alternatives.
-> 
-> * Include the full instructions for git bundles to ensure the remote
->   gets the right name; that way the text also works stand alone.
-> 
-> * Install ncurses and qt headers for use of menuconfig and xconfig by
->   default, but tell users that they are free to omit them.
-> 
-> * Mention ahead of time which version number are meant as example in
->   commands used during the step-by-step guide.
-> 
-> * Mention that 'kernel-install remove' might do a incomplete job.
-> 
-> Signed-off-by: Thorsten Leemhuis <linux@leemhuis.info>
-> ---
-> 
-> Lo! A quick note reg "mention ahead of time which version numbers are
-> meant as example in commands used during the step-by-step guide". I did
-> that, as I've seen someone following the guide without replacing the
-> version numbers, so pointing this out with a few words seemed wise. But
-> I'm not sure if the way I did it was the best; if someone has a better
-> idea how to do that, please let me know. Ciao, Thorsten
+Most changes in this series are very straightforward. Please consider
+picking this series for v6.9.
 
+There are still some remaining -Wmissing-prototypes warnings. I plan to
+send a followup RFC series first to fix those warnings.
 
-If you want to make 100% sure that nobody can follow the guide blindly
-without replacing the version numbers, use e.g. 2.8...
+Feedbacks on this series would be appreciated. Thanks!
 
-Then again, this could also confuse some other folks...
+Changes since v2:
+https://lore.kernel.org/lkml/20240205114708.25235-1-tiwei.btw@antgroup.com/
+- Add "um: Move declarations to proper headers";
+- Add "um: Fix -Wmissing-prototypes warnings for text_poke*";
+- Add "um: Fix -Wmissing-prototypes warnings for __warp_* and foo";
+- Make do_set_thread_area() static;
+- Add the missing header for calibrate_delay_is_known;
 
-The idea is probably not better.
+Tiwei Bie (9):
+  um: Make local functions and variables static
+  um: Fix the declaration of vfree
+  um: Remove unused functions
+  um: Fix the return type of __switch_to
+  um: Add missing headers
+  um: Stop tracking host PID in cpu_tasks
+  um: Move declarations to proper headers
+  um: Fix -Wmissing-prototypes warnings for text_poke*
+  um: Fix -Wmissing-prototypes warnings for __warp_* and foo
 
-Petr T
+ arch/um/drivers/pcap_kern.c                |  4 +-
+ arch/um/drivers/ubd_user.c                 |  2 +-
+ arch/um/include/asm/ptrace-generic.h       |  3 ++
+ arch/um/include/shared/as-layout.h         |  1 -
+ arch/um/include/shared/kern_util.h         |  1 +
+ arch/um/include/shared/um_malloc.h         |  2 +-
+ arch/um/kernel/kmsg_dump.c                 |  2 +-
+ arch/um/kernel/mem.c                       |  2 +
+ arch/um/kernel/physmem.c                   |  3 +-
+ arch/um/kernel/process.c                   | 48 +++++-----------------
+ arch/um/kernel/ptrace.c                    |  3 --
+ arch/um/kernel/reboot.c                    |  1 +
+ arch/um/kernel/skas/mmu.c                  |  1 +
+ arch/um/kernel/skas/process.c              |  5 +--
+ arch/um/kernel/time.c                      |  7 ++--
+ arch/um/kernel/tlb.c                       |  7 +---
+ arch/um/kernel/um_arch.c                   |  1 +
+ arch/um/kernel/um_arch.h                   |  2 +
+ arch/um/os-Linux/drivers/ethertap_kern.c   |  2 +-
+ arch/um/os-Linux/drivers/tuntap_kern.c     |  2 +-
+ arch/um/os-Linux/main.c                    |  5 +++
+ arch/um/os-Linux/signal.c                  |  4 +-
+ arch/um/os-Linux/start_up.c                |  1 +
+ arch/x86/um/asm/ptrace.h                   |  6 +++
+ arch/x86/um/bugs_32.c                      |  1 +
+ arch/x86/um/bugs_64.c                      |  1 +
+ arch/x86/um/elfcore.c                      |  1 +
+ arch/x86/um/fault.c                        |  1 +
+ arch/x86/um/os-Linux/mcontext.c            |  1 +
+ arch/x86/um/os-Linux/registers.c           |  2 +-
+ arch/x86/um/os-Linux/tls.c                 |  1 +
+ arch/x86/um/ptrace_32.c                    |  2 -
+ arch/x86/um/shared/sysdep/kernel-offsets.h |  3 ++
+ arch/x86/um/tls_32.c                       |  2 +-
+ arch/x86/um/user-offsets.c                 |  3 ++
+ 35 files changed, 63 insertions(+), 70 deletions(-)
+
+-- 
+2.34.1
+
 
