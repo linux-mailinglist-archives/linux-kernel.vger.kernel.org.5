@@ -1,70 +1,52 @@
-Return-Path: <linux-kernel+bounces-94353-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94355-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13A92873DD8
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 18:57:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9ACF873DDB
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 18:58:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C3E26284408
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:57:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 33A521F25615
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:58:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A458613C9C9;
-	Wed,  6 Mar 2024 17:57:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A05813DB99;
+	Wed,  6 Mar 2024 17:58:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="OVO+pVEx"
-Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="EjTVU2c1"
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2320C5D48F
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 17:57:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04480136987;
+	Wed,  6 Mar 2024 17:57:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709747851; cv=none; b=bzM+xUa0VmYUV9MaL0S8nWJFImAU8j/LAkkzbvpmpZ9dQxAFJyJh9/DR/PmkyZmvRJDN/Vi8YMe3iIl+4WOdMpySVdeAj05fqSjMeM6qTIslrFEjW4TE3YyD3Z/I0Qv1v65L6Y1S0hsLPxB3ddKZrPX86rJB/HwIroqRZDuavzo=
+	t=1709747879; cv=none; b=T7tAG/I8lvpCFhVSxAr++pwa5bSH1uLXF3dXanYZutKDCNwW1088+i6L3sP28fCCltM3Bpihs1qxeL/LBg5UCvV72RhpbqAvUmMG87ZhIwFCmQPRYScP4uabPH5AXyBhKNELO+V7II1Mz5T9zPxkHgMwxrGwBDJNYNfKRTUdd3A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709747851; c=relaxed/simple;
-	bh=DoLZ73UQ2sYr922EjiFb/8hKJ/WS5OtlQihqq3Ilgks=;
+	s=arc-20240116; t=1709747879; c=relaxed/simple;
+	bh=QUqisBiS7xXNdRUk3IDGMEjPq5qEk9BBlwz6y0jfWus=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=r57sTr+lJnLJlkg+WSL4VYy8dm5bcn1f8VEjZQkpVvE+ZYNUJVigMsUUcmqW8ClgXVBQxvQyKICfBox4aBu5n6AYMaOOICBiQR13P80N8QeG460zrfeBtbMJcusgb2n0eF9PTt6hMsZwaJW1C0ezli+aL/GddWhJo91yytN0iJI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=OVO+pVEx; arc=none smtp.client-ip=209.85.222.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
-Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-788451c9b39so120285a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 09:57:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1709747848; x=1710352648; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=HxvsCK9smmdnLvgdOu7MnGblD5Q3xTi7tR97NRw7gKg=;
-        b=OVO+pVExAxY1bM9+5hREGAwF86HaujtYA0evK8xlQMfLwjb/cAZqhG7wjpPzNpuYJk
-         dobuQ1WoddvHZcr+xRDyIaTdM73vRE0BGgGA8KAZE8KSHLp11zmfKMQEvTLKyQ3VvJkA
-         T9wp0tqHXkTPedv0lf1DV4CGZfUjM94TOCfYk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709747848; x=1710352648;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HxvsCK9smmdnLvgdOu7MnGblD5Q3xTi7tR97NRw7gKg=;
-        b=LWZ0opiJ5Nkg48J9PbAlF4VbzWWu7lxuAFXXfSBIzNmPZDPD37CK72PmW6cu7ko8tF
-         eNq5BkWv4OlFGim2OS7ryfU3JMLS4S7+QF50wmJiE5N5IjImuKsoff2vsyrV7Eo2myiT
-         SidoiLOlE5K0KDGKnLwkgUSaXfU/9zRrBaL+xRTUTQBCWz/e7Ktr4IIlUSml6DdJBBQX
-         PUCZzUh919BWeT8wJj2fCbL1ErdnJyVDJTrnlECycbIvPLM4cssLCCtLQNpE0ZoBCy2v
-         uiFu6QD1ii05wK8sdMhtFLbGqPAz9MtUJs4pGyZX0GD3nH/+NCVJTkPVKdOi78Q3CCMl
-         HUGA==
-X-Forwarded-Encrypted: i=1; AJvYcCWF3s1agyEVTGDbwcnFrkD0XG7i3VIqH0TOjz5/Ch2iQx9/yWImkbh4Hk/HT0MbrhL77A1VxYSxMCxMTctghc5SVjnUs8KoFCuDLXsW
-X-Gm-Message-State: AOJu0Yx4Xepd8+APnglUT7oQZA4fLRfGwB+G4WXZWr9qskt5l0hwMkWR
-	6d635sNKv35w9lIhki+9ydpB4oOV1AsorQXtcWzMNRKPNlWvk/gYUAF0RL0yGto=
-X-Google-Smtp-Source: AGHT+IHZ/f852118jg9L107pjZpuQhswgcnlCoZ5h6KU543SroWPfn4eMaDEOJNVNfW29yzzJ2cQbQ==
-X-Received: by 2002:ae9:f709:0:b0:788:2ab7:2a62 with SMTP id s9-20020ae9f709000000b007882ab72a62mr5216638qkg.77.1709747847911;
-        Wed, 06 Mar 2024 09:57:27 -0800 (PST)
-Received: from [10.5.0.2] ([91.196.69.189])
-        by smtp.gmail.com with ESMTPSA id az17-20020a05620a171100b007882b4cecf8sm3123212qkb.57.2024.03.06.09.57.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Mar 2024 09:57:27 -0800 (PST)
-Message-ID: <ae0475d7-fcfa-4d6f-9bb0-03479e6bf83b@joelfernandes.org>
-Date: Wed, 6 Mar 2024 12:57:25 -0500
+	 In-Reply-To:Content-Type; b=J3Ml31/gQxb3hWJPZkHNlM0FMGmZLH6KHVtTt1BeVKzGoXw77WxnpX9q5G0GYIHh4vUVn6lOMl4gI4rPw2RD2ciAk/t0whxp7Mti3aidfWC6QUSXlj+QKP/d34+BR6ajcbt1560eyzhvwDVmakGXzfY5zY+DljdMhsVZq/XToX0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=EjTVU2c1; arc=none smtp.client-ip=212.227.15.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+	t=1709747856; x=1710352656; i=w_armin@gmx.de;
+	bh=QUqisBiS7xXNdRUk3IDGMEjPq5qEk9BBlwz6y0jfWus=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=EjTVU2c1ilxIWoNULS+lLzo5/HzE5sR15i7oYbdNd/UYKmx2O9mwQ5N30oW5c23C
+	 51EIiFkmN4gFFUOuaTqH97jIVGBrAFcBoHAkc564gDDJtH5EDtYTzgYrpzCK+yleA
+	 BQVWP2yg3zLoQEO2lRg2qMfqvdarOuKmFJFSfL+taIf8bDuGmQXKazB+NStpVJSpK
+	 9TyDn1eoPQPqPjpjhpNc3VEouLPznWRP0lAxDcXnSJZv3x8JyYnT0Q1qJS2uVVNi2
+	 JZVKB4Waop1cITF+XhEjvjFu52/Kuc55NrVJvKyf3STv4qtWWp524xX2NvobYo1bJ
+	 jl2EiHLZQiUSCowIEA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [141.30.226.129] ([141.30.226.129]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1McpJg-1r98fS2LgI-00ZzTj; Wed, 06
+ Mar 2024 18:57:36 +0100
+Message-ID: <bac77347-1308-49a1-b02a-19c6b7a5a31b@gmx.de>
+Date: Wed, 6 Mar 2024 18:57:27 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -72,77 +54,127 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] rcu: Allocate WQ with WQ_MEM_RECLAIM bit set
+Subject: Re: [PATCH 1/2] platform/x86: wmi: Support reading/writing 16 bit EC
+ values
+To: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc: Hans de Goede <hdegoede@redhat.com>, platform-driver-x86@vger.kernel.org,
+ LKML <linux-kernel@vger.kernel.org>, "Rafael J. Wysocki"
+ <rafael@kernel.org>, Len Brown <lenb@kernel.org>
+References: <20240304221732.39272-1-W_Armin@gmx.de>
+ <ffb87c8f-3d6d-c96c-71e9-2abccfe68405@linux.intel.com>
 Content-Language: en-US
-To: Uladzislau Rezki <urezki@gmail.com>, Z qiang <qiang.zhang1211@gmail.com>
-Cc: "Paul E . McKenney" <paulmck@kernel.org>, RCU <rcu@vger.kernel.org>,
- Neeraj upadhyay <Neeraj.Upadhyay@amd.com>, Boqun Feng
- <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
- LKML <linux-kernel@vger.kernel.org>,
- Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
- Frederic Weisbecker <frederic@kernel.org>
-References: <20240305195720.42687-1-urezki@gmail.com>
- <20240305195720.42687-2-urezki@gmail.com>
- <CALm+0cWiOfKR=Gci0dj=z4gT4vSbZ=ZzMfo+CxLZCFQzL1bjfQ@mail.gmail.com>
- <ZehZ7Ef3DW2mT9fc@pc636>
-From: Joel Fernandes <joel@joelfernandes.org>
-In-Reply-To: <ZehZ7Ef3DW2mT9fc@pc636>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+From: Armin Wolf <W_Armin@gmx.de>
+In-Reply-To: <ffb87c8f-3d6d-c96c-71e9-2abccfe68405@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:feF8vV7gQon9C5KSS4hdaK1sHZXtm5Yw+8fO7Sw8qDZmNeP2y/c
+ ktWpEAuIjQZaM+YXCc3AFfCF4wEGcpYIKmn63v2kMxjxSJG09ELyV1xzoFqssDp4Hk45r6T
+ KjxwbtzGqO+9ek/1CeWbrgm30RTPPfJPA+qXw0kybQrGC/P8nym40IsLYMLV6N9UR4tEKkC
+ T2APgm5BTTUYfDW7pgVbw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:PwLHHy9sUMw=;TA1kQu+WXeJuNKAPVKA2+2uoFIG
+ VQE3tQsOtJqSL8gdHWA95rWsSM89K6db6K1NOGuS9rya72twymnhsAGlGPcmvDa4OrmnwF6u7
+ VsWeQNhOGgeonat/8TqlywIsEiRNjB7h5iL+5ROjNfmXC4+v6VrTyRr0WKVk0DNGqSke3dR/5
+ j48gsRD0VBf2zhaOCwVxKcNYpYBmGmBGeG3DyOs/qv6W22zuRoIUEl7WERkLAA48MQbXZ27/+
+ ntUzG6JN1OWjK1sTssE/haIUJoWcw4h7nhfSYwRAwKqQqemWOt2hjK7ptImNWOTjwMo47Qf1N
+ e3M/Nfrk4ubvTGiuRhaZ4QAY9tD9TFQpH58MOlE/zs8pcftfQPUsFNLVR8nV87X+kpgIbPAKS
+ mRzwmm1AMsh2Yd/5Pg3krQvdoLw1MsdvIzsmpIxREiDk0b7fiZd19eHCA1OasfeJoEtzgf1iM
+ kwfabf5BIj/UQYRhoS52WPgIWteXfQ2KD37hbHzCxCNL0iiRAvnU/d0k6+sfTBd8JSWe/zVc0
+ qCMihghA+IUpi8nUj8Ps45/R1kY6vT+oKNx5EFa8QCVH8d94LgSqZG0z9yP5j4ZCsBtS8BHeA
+ WjT4jtkAb705/6G//q0xlIuVjXWTVuj4dQu4wC2sNTCUHG2b7mQnjZ2xoDRKrMm4flrnywzpz
+ RlYPm1H3pRSkXji3+wo79ZJCwwF7+fLFqiGHbOO/3wz657ZuNkDvmIOn5WrJPxn7z7e/OTUwk
+ tdtRrqqcOxBryM4HeBuTIoHCtXZHe/s5i1dFFD60PVlP0X8n3fRhP2ZlEXU84ehgEkFJSPJ+V
+ 1nIsEgbcTxi6OuZGF038vNtXn2SVRkhFAIGJCXdKY/XLY=
 
+Am 06.03.24 um 11:19 schrieb Ilpo J=C3=A4rvinen:
 
-
-On 3/6/2024 6:56 AM, Uladzislau Rezki wrote:
-> On Wed, Mar 06, 2024 at 10:15:44AM +0800, Z qiang wrote:
->>>
->>> synchronize_rcu() users have to be processed regardless
->>> of memory pressure so our private WQ needs to have at least
->>> one execution context what WQ_MEM_RECLAIM flag guarantees.
->>>
->>> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
->>> ---
->>>  kernel/rcu/tree.c | 6 +++++-
->>>  1 file changed, 5 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
->>> index 475647620b12..59881a68dd26 100644
->>> --- a/kernel/rcu/tree.c
->>> +++ b/kernel/rcu/tree.c
->>> @@ -1581,6 +1581,7 @@ static void rcu_sr_put_wait_head(struct llist_node *node)
->>>  /* Disabled by default. */
->>>  static int rcu_normal_wake_from_gp;
->>>  module_param(rcu_normal_wake_from_gp, int, 0644);
->>> +static struct workqueue_struct *sync_wq;
->>>
->>>  static void rcu_sr_normal_complete(struct llist_node *node)
->>>  {
->>> @@ -1679,7 +1680,7 @@ static void rcu_sr_normal_gp_cleanup(void)
->>>          * of outstanding users(if still left) and releasing wait-heads
->>>          * added by rcu_sr_normal_gp_init() call.
->>>          */
->>> -       queue_work(system_highpri_wq, &rcu_state.srs_cleanup_work);
->>> +       queue_work(sync_wq, &rcu_state.srs_cleanup_work);
->>>  }
->>>
->>>  /*
->>> @@ -5584,6 +5585,9 @@ void __init rcu_init(void)
->>>         rcu_gp_wq = alloc_workqueue("rcu_gp", WQ_MEM_RECLAIM, 0);
->>>         WARN_ON(!rcu_gp_wq);
->>>
->>> +       sync_wq = alloc_workqueue("sync_wq", WQ_MEM_RECLAIM, 0);
+> On Mon, 4 Mar 2024, Armin Wolf wrote:
+>
+>> The ACPI EC address space handler currently only supports
+>> reading/writing 8 bit values. Some firmware implementations however
+>> want to access for example 16 bit values, which is prefectly legal
+>> according to the ACPI spec.
 >>
->> Why was WQ_HIGHPRI removed?
+>> Add support for reading/writing such values.
 >>
-> I would like to check perf. figures with it and send out it as a
-> separate patch if it is worth it.
+>> Tested on a Dell Inspiron 3505 and a Asus Prime B650-Plus.
+>>
+>> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
+>> ---
+>>   drivers/platform/x86/wmi.c | 44 +++++++++++++++++++++++++++++--------=
+-
+>>   1 file changed, 34 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
+>> index 1920e115da89..900e0e52a5fa 100644
+>> --- a/drivers/platform/x86/wmi.c
+>> +++ b/drivers/platform/x86/wmi.c
+>> @@ -1153,6 +1153,32 @@ static int parse_wdg(struct device *wmi_bus_dev,=
+ struct platform_device *pdev)
+>>   	return 0;
+>>   }
+>>
+>> +static int ec_read_multiple(u8 address, u8 *buffer, size_t bytes)
+>> +{
+>> +	int i, ret;
+>> +
+>> +	for (i =3D 0; i < bytes; i++) {
+>> +		ret =3D ec_read(address + i, &buffer[i]);
+>> +		if (ret < 0)
+>> +			return ret;
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int ec_write_multiple(u8 address, u8 *buffer, size_t bytes)
+>> +{
+>> +	int i, ret;
+>> +
+>> +	for (i =3D 0; i < bytes; i++) {
+>> +		ret =3D ec_write(address + i, buffer[i]);
+>> +		if (ret < 0)
+>> +			return ret;
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +
+>>   /*
+>>    * WMI can have EmbeddedControl access regions. In which case, we jus=
+t want to
+>>    * hand these off to the EC driver.
+>> @@ -1162,27 +1188,25 @@ acpi_wmi_ec_space_handler(u32 function, acpi_ph=
+ysical_address address,
+>>   			  u32 bits, u64 *value,
+>>   			  void *handler_context, void *region_context)
+>>   {
+>> -	int result =3D 0;
+>> -	u8 temp =3D 0;
+>> +	int bytes =3D bits / 8;
+> I'm a quite hesitant about this. IMO, it should do DIV_ROUND_UP(bits,
+> BITS_PER_BYTE) or return AE_BAD_PARAMETER when bits is not divisable by =
+8.
+> And if you choose the round up approach, I'm not sure what the write
+> should do with the excess bits.
+>
+> In any case, 8 -> BITS_PER_BYTE.
 
-I guess one thing to note is that there are also other RCU-related WQ which have
-WQ_MEM_RECLAIM but not WQ_HIGHPRI (such as for expedited RCU, at least some
-configs). So for consistency, this makes sense to me.
+After taking a look at acpi_ex_access_region(), which invokes the address =
+space handler,
+i think the number of bits are always divisible by 8.
 
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org).
+I CCed the maintainers of the ACPI EC driver, so that we can clarify if th=
+is is indeed
+always the case.
 
-thanks,
+Thanks,
+Armin Wolf
 
- - Joel
+>> +	int ret;
+>>
+>> -	if ((address > 0xFF) || !value)
+>> +	if (address > 0xFF || !value)
+> This should takes bytes into account to not overflow the u8 address?
+>
 
