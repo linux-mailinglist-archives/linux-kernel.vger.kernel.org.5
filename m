@@ -1,211 +1,127 @@
-Return-Path: <linux-kernel+bounces-94017-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94020-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEB80873863
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:07:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB0CF873886
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:09:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 65BF9282C8E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:07:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED3A61C20F24
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:09:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF0A6131757;
-	Wed,  6 Mar 2024 14:07:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DD5D133993;
+	Wed,  6 Mar 2024 14:08:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="YRgm1kv2";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="yII/aw7G"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="NoRK5Vms"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4535612FB0F;
-	Wed,  6 Mar 2024 14:07:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0ADF133408;
+	Wed,  6 Mar 2024 14:08:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709734050; cv=none; b=dAXfqjUxObJlkQmVkEXT5vkFeA0SgQwjLVD7anaub5lpN2OkeBHN4c/o+Wp6IUt0Vo6Gl7BIvx4eWF15sbeHIFQUtcSWcj6QgW+/SBAfnUGdsWXML0oylCmwFSYTOgm0CJLqHIVEBm2wQLrJiXfSDj/+IG68mqI2noQmyNTx/ew=
+	t=1709734131; cv=none; b=UNdJ3oUhdF5o4TZl24AcTSwvVv5MA/RovOrkk1wKvqn50GBmIAfIl/homM1Tb0dCEXl0NdrJctqrVuE+65hKZc3kbBuJOwaFKBTga+yu64rsotjRyy+xYKvwgafCrHDNfFCn9pwBP/DGzEHEmeoqmdcYeIOkxO/9zbcpMp2Pfcs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709734050; c=relaxed/simple;
-	bh=9Lhxtpg5G50oKTpp0MbbL/2Egq5R9jqv5aa+7pmY/cc=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=q+mwxXAP40RgPogOmN/naZSog+QXC3fTKR5BRQzZQ3s3RUE0ROy6Hss0fJAwU7z7AR9Q5MzKpL4Ticc7/enorSF2orD/DGdqwVyNZ2y/isU6fL+kB9Lvw3N4IDfu4V5gdKH/PULkXPgDfWVTT2E5eKHPi7ezLl2jHMG/zwAg39k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=YRgm1kv2; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=yII/aw7G; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Wed, 06 Mar 2024 14:07:25 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1709734046;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0iklUqAt2hVpZsWeOoiF0VFmtNuHMivKSsp9yM7nk2Y=;
-	b=YRgm1kv2jTgqakDJHL9+z944metfOA5KfPRQU4hPJGzCrV+bIk1xPi4HglfiPTEieOVTrG
-	17w7qUDDyep7qGt7GCUc2FulfsHnlUii96wyxaiQsBP7OM+KIM7dQgeoz46wYfu92t1wzG
-	SjXS7snA81hqYd/VjwDce3AVMG6zVhP8oI8IhP6B73RVxulQ0gmxX/7X23tbElHCRGqYqW
-	UElpNHaRQWFr2zr5ROk1QGR0igChopjD2BN166WBVMlTmGzAYyITSALkbNIFqWWcVi4j25
-	6r4dnvIEdStfVCY4y9i2+3gQfROUfEOR80OKs0kOL0flWI1pXSznWeCGdNDtHw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1709734046;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0iklUqAt2hVpZsWeOoiF0VFmtNuHMivKSsp9yM7nk2Y=;
-	b=yII/aw7Gd2qYX3IIffJdTDZytduSrJVIxQxm8+526x/m7kAnTGB1UmdMgSK+c4enI7vMoO
-	y7yCE66sM6C39PAg==
-From: "tip-bot2 for Frederic Weisbecker" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject:
- [tip: timers/core] timer/migration: Fix quick check reporting late expiry
-Cc: Frederic Weisbecker <frederic@kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240305002822.18130-1-frederic@kernel.org>
-References: <20240305002822.18130-1-frederic@kernel.org>
+	s=arc-20240116; t=1709734131; c=relaxed/simple;
+	bh=rQQprYlvCLY+uWlXs27IWcw5ML66a9FSDvv4EotIk4Q=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mDAgGtylAZZ/7Swe6TH2fJpIKXzX+oUN2jyozDdaACfpF4Y7f8MuKkDI9rAhLxeVoR4s1OUfDhVQFJ2BY6LhmDA5+bAq+1+WvnXIdtwqOU0QAYB2tqJv6hfD83wxtFzSYO8ELr3xxLtDAvnElguis8Z+zK5SxQFmkU+MnVTXXmQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=NoRK5Vms; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 426E2IoD026691;
+	Wed, 6 Mar 2024 14:08:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=vSa5NR8/68M2tBeNu9nV4un6LsWPbo2+W5p6FaoDmvE=;
+ b=NoRK5VmsI6V/ySsVki+/AneRAbpY7xMFa0/8felElbR6X8QVPe0hBZ9b8IHjveMwKTbr
+ 593vL39lQvJD7INvfdrnlgBOBzN031GHvCarCi+srnoKQ6zp7RnNbI3vYzaIfDEcuE9D
+ +oZsoU1xkhsWgkP7PHklBpZD9lfcqXsgLwlTsiGCMq0XNJJPyFcXlwBff6RjHDnH0xL7
+ qAirieI2zJ+ttWONiYbZgtuRJ62kvAfN/0oP30D6MFTu5u1n3WFlHHgi/jB3vs7UaUF8
+ Uh7+co9NGyz0/8ruuUnKS2PhGtKuMJzYqNDfW6syABsGeS0so3BlIk5EAPwCkE/AtJAu qA== 
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wpsw30cyq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 06 Mar 2024 14:08:49 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 426CCtR5006045;
+	Wed, 6 Mar 2024 14:08:48 GMT
+Received: from smtprelay02.wdc07v.mail.ibm.com ([172.16.1.69])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wmeet7b28-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 06 Mar 2024 14:08:48 +0000
+Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
+	by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 426E8igu47448560
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 6 Mar 2024 14:08:46 GMT
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 6F87258052;
+	Wed,  6 Mar 2024 14:08:44 +0000 (GMT)
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id DA99C58070;
+	Wed,  6 Mar 2024 14:08:43 +0000 (GMT)
+Received: from jason-laptop.home.arpa (unknown [9.61.164.86])
+	by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Wed,  6 Mar 2024 14:08:43 +0000 (GMT)
+From: "Jason J. Herne" <jjherne@linux.ibm.com>
+To: linux-s390@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, pasic@linux.ibm.com, akrowiak@linux.ibm.com,
+        borntraeger@de.ibm.com, agordeev@linux.ibm.com, gor@linux.ibm.com
+Subject: [PATCH v2 0/5] s390/vfio-ap: queue_configuration sysfs attribute for mdevctl automation
+Date: Wed,  6 Mar 2024 09:08:38 -0500
+Message-ID: <20240306140843.10782-1-jjherne@linux.ibm.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170973404551.398.9744367892734721294.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: SCFIm59sZEgB6Jw2rCIa-t5HuSh8qbHs
+X-Proofpoint-ORIG-GUID: SCFIm59sZEgB6Jw2rCIa-t5HuSh8qbHs
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-06_08,2024-03-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
+ clxscore=1015 lowpriorityscore=0 suspectscore=0 bulkscore=0
+ impostorscore=0 adultscore=0 spamscore=0 priorityscore=1501 mlxscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2403060113
 
-The following commit has been merged into the timers/core branch of tip:
+Mdevctl requires a way to atomically query and atomically update a vfio-ap
+mdev's current state. This patch set creates the queue_configuration sysfs
+attribute.  This new attribute allows reading and writing an mdev's entire
+state in one go. If a newly written state is invalid for any reason the entire
+state is rejected and the target mdev remains unchanged.
 
-Commit-ID:     8ca1836769d758e4fbf5851bb81e181c52193f5d
-Gitweb:        https://git.kernel.org/tip/8ca1836769d758e4fbf5851bb81e181c52193f5d
-Author:        Frederic Weisbecker <frederic@kernel.org>
-AuthorDate:    Tue, 05 Mar 2024 01:28:22 +01:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Wed, 06 Mar 2024 15:02:09 +01:00
+Changelog
+==========
+v2
+  - Rebased patched on top of latest master
+  - Reworked code to fit changes introduced by f848cba767e59
+      s390/vfio-ap: reset queues filtered from the guest's AP config
+  - Moved docs changes to separate patch
 
-timer/migration: Fix quick check reporting late expiry
+Jason J. Herne (5):
+  s390/ap: Externalize AP bus specific bitmap reading function
+  s390/vfio-ap: Add sysfs attr, queue_configuration, to export mdev
+    state
+  s390/vfio-ap: Ignore duplicate link requests in
+    vfio_ap_mdev_link_queue
+  s390/vfio-ap: Add write support to sysfs attr ap_config
+  s390: doc: Update doc
 
-When a CPU is the last active in the hierarchy and it tries to enter
-into idle, the quick check looking up the next event towards cpuidle
-heuristics may report a too late expiry, such as in the following
-scenario:
+ Documentation/arch/s390/vfio-ap.rst   |  27 ++++
+ drivers/s390/crypto/ap_bus.c          |  13 +-
+ drivers/s390/crypto/ap_bus.h          |  22 +++
+ drivers/s390/crypto/vfio_ap_ops.c     | 206 ++++++++++++++++++++++++--
+ drivers/s390/crypto/vfio_ap_private.h |   6 +-
+ 5 files changed, 245 insertions(+), 29 deletions(-)
 
-                        [GRP1:0]
-                     migrator = NONE
-                     active   = NONE
-                     nextevt  = T0:0, T0:1
-                     /              \
-          [GRP0:0]                  [GRP0:1]
-       migrator = NONE           migrator = NONE
-       active   = NONE           active   = NONE
-       nextevt  = T0, T1         nextevt  = T2
-       /         \                /         \
-      0           1              2           3
-    idle       idle           idle         idle
+-- 
+2.41.0
 
-0) The whole system is idle, and CPU 0 was the last migrator. CPU 0 has
-a timer (T0), CPU 1 has a timer (T1) and CPU 2 has a timer (T2). The
-expire order is T0 < T1 < T2.
-
-                        [GRP1:0]
-                     migrator = GRP0:0
-                     active   = GRP0:0
-                     nextevt  = T0:0(i), T0:1
-                   /              \
-          [GRP0:0]                  [GRP0:1]
-       migrator = CPU0           migrator = NONE
-       active   = CPU0           active   = NONE
-       nextevt  = T0(i), T1      nextevt  = T2
-       /         \                /         \
-      0           1              2           3
-    active       idle           idle         idle
-
-1) CPU 0 becomes active. The (i) means a now ignored timer.
-
-                        [GRP1:0]
-                     migrator = GRP0:0
-                     active   = GRP0:0
-                     nextevt  = T0:1
-                     /              \
-          [GRP0:0]                  [GRP0:1]
-       migrator = CPU0           migrator = NONE
-       active   = CPU0           active   = NONE
-       nextevt  = T1             nextevt  = T2
-       /         \                /         \
-      0           1              2           3
-    active       idle           idle         idle
-
-2) CPU 0 handles remote. No timer actually expired but ignored timers
-   have been cleaned out and their sibling's timers haven't been
-   propagated. As a result the top level's next event is T2 and not T1.
-
-3) CPU 0 tries to enter idle without any global timer enqueued and calls
-   tmigr_quick_check(). The expiry of T2 is returned instead of the
-   expiry of T1.
-
-When the quick check returns an expiry that is too late, the cpuidle
-governor may pick up a C-state that is too deep. This may be result into
-undesired CPU wake up latency if the next timer is actually close enough.
-
-Fix this with assuming that expiries aren't sorted top-down while
-performing the quick check. Pick up instead the earliest encountered one
-while walking up the hierarchy.
-
-7ee988770326 ("timers: Implement the hierarchical pull model")
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20240305002822.18130-1-frederic@kernel.org
-
----
- kernel/time/timer_migration.c | 24 +++++++++++++++---------
- 1 file changed, 15 insertions(+), 9 deletions(-)
-
-diff --git a/kernel/time/timer_migration.c b/kernel/time/timer_migration.c
-index d85aa2a..8f49b6b 100644
---- a/kernel/time/timer_migration.c
-+++ b/kernel/time/timer_migration.c
-@@ -1385,11 +1385,11 @@ u64 tmigr_cpu_deactivate(u64 nextexp)
-  *			  single group active on the way to top level)
-  * * nextevt		- when CPU is offline and has to handle timer on his own
-  *			  or when on the way to top in every group only a single
-- *			  child is active and but @nextevt is before next_expiry
-- *			  of top level group
-- * * next_expiry (top)	- value of top level group, when on the way to top in
-- *			  every group only a single child is active and @nextevt
-- *			  is after this value active child.
-+ *			  child is active but @nextevt is before the lowest
-+ *			  next_expiry encountered while walking up to top level.
-+ * * next_expiry	- value of lowest expiry encountered while walking groups
-+ *			  if only a single child is active on each and @nextevt
-+ *			  is after this lowest expiry.
-  */
- u64 tmigr_quick_check(u64 nextevt)
- {
-@@ -1408,10 +1408,16 @@ u64 tmigr_quick_check(u64 nextevt)
- 	do {
- 		if (!tmigr_check_lonely(group)) {
- 			return KTIME_MAX;
--		} else if (!group->parent) {
--			u64 first_global = READ_ONCE(group->next_expiry);
--
--			return min_t(u64, nextevt, first_global);
-+		} else {
-+			/*
-+			 * Since current CPU is active, events may not be sorted
-+			 * from bottom to the top because the CPU's event is ignored
-+			 * up to the top and its sibling's events not propagated upwards.
-+			 * Thus keep track of the lowest observed expiry.
-+			 */
-+			nextevt = min_t(u64, nextevt, READ_ONCE(group->next_expiry));
-+			if (!group->parent)
-+				return nextevt;
- 		}
- 		group = group->parent;
- 	} while (group);
 
