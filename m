@@ -1,101 +1,135 @@
-Return-Path: <linux-kernel+bounces-94236-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94242-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5151873BD5
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:15:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9B96873BDD
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:15:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 51638B21F2A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:15:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 668DB284C85
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 16:15:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 895A2137752;
-	Wed,  6 Mar 2024 16:14:48 +0000 (UTC)
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7871B137930;
+	Wed,  6 Mar 2024 16:15:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="WRxLoTK3"
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39A37134733;
-	Wed,  6 Mar 2024 16:14:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F18E1361CF;
+	Wed,  6 Mar 2024 16:15:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.149.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709741688; cv=none; b=L7TJNPk3lEIESSUKTD6LPna9mehxaQxAm2Mkt1oMhTdfS20ojxx3t4EfYuLzUzIk3lBz2W3Zp5NtDhhLUMEa+ONyTnwJxFBx2YZw27WZuWEdV+E/A4xDj7cK2f3iK0OPP2Bye/gpHx3pOIkV5lWpf0y0evkFhqjnrRXEu4cftqM=
+	t=1709741716; cv=none; b=kSJdWCN1vh20OJM/YczvyXTymBnnGOR9OkKK0lyNMAsksE4okC3P+RquvCdoP1JfTXPlnOErJQt7/PQob9Qkh+vi0Al+Xz2KGXpRquGE9HRxEIuNR0h/EeKVx8F3F72EcygTir0S+fCefoMbhVj8TzL7BsLIutxYmuMVAldDQyM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709741688; c=relaxed/simple;
-	bh=ph4wOA/W80emziteg+Lwe4Qh5uu+xg9ATnw4VSdVs0s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cKgaNcSvYN4Sks/GOTe7Vrb+MaJub+wA+xUk8qxDetNO5/H688N8Bqf8noezxhPSl63a5ved1axvwJPDxO6vcXalf/5inTckEZ8yRNkkQw1bHdj9/J8/JIpPQBuZFt8mqL25ZarhZLI/SgZqq6YOBrQyq2DxG4PFsN6d9uk0Ktw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id 339E968C4E; Wed,  6 Mar 2024 17:14:39 +0100 (CET)
-Date: Wed, 6 Mar 2024 17:14:38 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Christoph Hellwig <hch@lst.de>, Keith Busch <kbusch@kernel.org>,
-	Leon Romanovsky <leon@kernel.org>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-	Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-	Chaitanya Kulkarni <kch@nvidia.com>,
-	Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
-	Sagi Grimberg <sagi@grimberg.me>, Yishai Hadas <yishaih@nvidia.com>,
-	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-	iommu@lists.linux.dev, linux-nvme@lists.infradead.org,
-	kvm@vger.kernel.org, linux-mm@kvack.org,
-	Bart Van Assche <bvanassche@acm.org>,
-	Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-	Amir Goldstein <amir73il@gmail.com>,
-	"josef@toxicpanda.com" <josef@toxicpanda.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	"daniel@iogearbox.net" <daniel@iogearbox.net>,
-	Dan Williams <dan.j.williams@intel.com>,
-	"jack@suse.com" <jack@suse.com>,
-	Leon Romanovsky <leonro@nvidia.com>,
-	Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [RFC RESEND 16/16] nvme-pci: use blk_rq_dma_map() for NVMe SGL
-Message-ID: <20240306161438.GA28427@lst.de>
-References: <cover.1709635535.git.leon@kernel.org> <016fc02cbfa9be3c156a6f74df38def1e09c08f1.1709635535.git.leon@kernel.org> <Zec_nAQn1Ft_ZTHH@kbusch-mbp.dhcp.thefacebook.com> <20240306143321.GA19711@lst.de> <20240306150518.GL9225@ziepe.ca>
+	s=arc-20240116; t=1709741716; c=relaxed/simple;
+	bh=NL/0kJLMNB3af/nPrZVGA4zsieNtor+zdkiPluqcrOw=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Kyo8kvWkze1F0XgkgBar4mAQ4AevLmrBl7IBsMYvv/v4QHHVz/CXwPOvR4SNUYTgcQjXBeonzfDkNvW0a0/RS8s6nlNMYf79M7ONrIwP8efu3quqZoboc71QkE/kBQS3bIIFQ5ICXxeRSY47s6W3xzDixpK158lwmkOoj9N+OTg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=WRxLoTK3; arc=none smtp.client-ip=67.231.149.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4265UZQk010435;
+	Wed, 6 Mar 2024 10:15:08 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	from:to:cc:subject:date:message-id:in-reply-to:references
+	:mime-version:content-transfer-encoding:content-type; s=
+	PODMain02222019; bh=VZNrVFRkfXL9w5uIYi/FRwxU+dWrhc/p57PfZFvalls=; b=
+	WRxLoTK3l9ZH4Y7a6CbeC65EN2kWfgDWIcKEW6+y020QvLT7GRYPUFUSme9nDEKH
+	nBBs9inOwKpGCm5Sc6CFVq6xX01GJYesK56CGjb4kvQ+t8HHsqpuA7+eRlN2TMeF
+	NdjqrSZQK3Sx50M0gBK1/902hf+AhiUXH9xPmHryZe46N6/EQoLu0ATKhu8+HZrt
+	rIfzqDESazRjC18IOLhN2B97Pc9bzZ3Zw2UPchcXCzKZ1ww7sn9zAAn6m6wu+rQr
+	53OOan5DC7EMuXLy8+zNBtOK67ohdPAd6w56owdnq4nLlWEra15HEni6gSQIXHa3
+	tmzMm28SY+VqGCQbOyyffQ==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3wm2d2mwg1-3
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 06 Mar 2024 10:15:08 -0600 (CST)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 6 Mar 2024
+ 16:15:08 +0000
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4
+ via Frontend Transport; Wed, 6 Mar 2024 16:15:08 +0000
+Received: from ediswws08.ad.cirrus.com (ediswws08.ad.cirrus.com [198.90.208.13])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id EB68082024D;
+	Wed,  6 Mar 2024 16:15:07 +0000 (UTC)
+From: Stuart Henderson <stuarth@opensource.cirrus.com>
+To: <broonie@kernel.org>, <shengjiu.wang@gmail.com>, <Xiubo.Lee@gmail.com>
+CC: <patches@opensource.cirrus.com>, <linux-sound@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+        "Stuart
+ Henderson" <stuarth@opensource.cirrus.com>
+Subject: [PATCH 4/5] ASoC: wm8962: Fix wm8962_set_fll to use source instead of fll_id
+Date: Wed, 6 Mar 2024 16:14:38 +0000
+Message-ID: <20240306161439.1385643-4-stuarth@opensource.cirrus.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240306161439.1385643-1-stuarth@opensource.cirrus.com>
+References: <20240306161439.1385643-1-stuarth@opensource.cirrus.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240306150518.GL9225@ziepe.ca>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: fpMeca3XnbrZ1u6BZ8CozMD4xQPnsanN
+X-Proofpoint-GUID: fpMeca3XnbrZ1u6BZ8CozMD4xQPnsanN
+X-Proofpoint-Spam-Reason: safe
 
-On Wed, Mar 06, 2024 at 11:05:18AM -0400, Jason Gunthorpe wrote:
-> > Yes.  And this whole proposal also seems clearly confused (not just
-> > because of the gazillion reposts) but because it mixes up the case
-> > where we can coalesce CPU regions into a single dma_addr_t range
-> > (iommu and maybe in the future swiotlb) and one where we need a
-> 
-> I had the broad expectation that the DMA API user would already be
-> providing a place to store the dma_addr_t as it has to feed that into
-> the HW. That memory should simply last up until we do dma unmap and
-> the cases that need dma_addr_t during unmap can go get it from there.
+Previously wm8962_set_fll was using fll_id to configure the source.
+This change is problematic, but it looks like there's limited
+users of this driver, and luckily they all seem to be intending to
+use WM8962_FLL_MCLK as the source which happens to have the same
+value as WM8962_FLL.
 
-Well.  The dma_addr_t needs to be fed into the hardware somehow
-obviously.  But for a the coalesced case we only need one such
-field, not Nranges.
+Signed-off-by: Stuart Henderson <stuarth@opensource.cirrus.com>
+---
+ sound/soc/codecs/wm8962.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-> We can't do much on the map side as single range doesn't imply
-> contiguous range, P2P and alignment create discontinuities in the
-> dma_addr_t that still have to be delt with.
+diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+index 2256cc0a37eb..24bd818c3345 100644
+--- a/sound/soc/codecs/wm8962.c
++++ b/sound/soc/codecs/wm8962.c
+@@ -2890,6 +2890,14 @@ static int wm8962_set_fll(struct snd_soc_component *component, int fll_id, int s
+ 	int ret;
+ 	int fll1 = 0;
+ 
++	switch (fll_id) {
++	case WM8962_FLL:
++		break;
++	default:
++		dev_err(component->dev, "Unknown FLL ID %d\n", fll_id);
++		return -EINVAL;
++	}
++
+ 	/* Any change? */
+ 	if (source == wm8962->fll_src && Fref == wm8962->fll_fref &&
+ 	    Fout == wm8962->fll_fout)
+@@ -2916,13 +2924,13 @@ static int wm8962_set_fll(struct snd_soc_component *component, int fll_id, int s
+ 	/* Parameters good, disable so we can reprogram */
+ 	snd_soc_component_update_bits(component, WM8962_FLL_CONTROL_1, WM8962_FLL_ENA, 0);
+ 
+-	switch (fll_id) {
++	switch (source) {
+ 	case WM8962_FLL_MCLK:
+ 	case WM8962_FLL_BCLK:
+-		fll1 |= (fll_id - 1) << WM8962_FLL_REFCLK_SRC_SHIFT;
++		fll1 |= (source - 1) << WM8962_FLL_REFCLK_SRC_SHIFT;
+ 		break;
+ 	case WM8962_FLL_OSC:
+-		fll1 |= (fll_id - 1) << WM8962_FLL_REFCLK_SRC_SHIFT;
++		fll1 |= (source - 1) << WM8962_FLL_REFCLK_SRC_SHIFT;
+ 		snd_soc_component_update_bits(component, WM8962_PLL2,
+ 					      WM8962_OSC_ENA, WM8962_OSC_ENA);
+ 		break;
+-- 
+2.39.2
 
-For alignment the right answer is almost always to require the
-upper layers to align to the iommu granularity.  We've been a bit
-lax about that due to the way scatterlists are designed, but
-requiring the proper alignment actually benefits everyone.
 
