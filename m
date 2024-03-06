@@ -1,134 +1,198 @@
-Return-Path: <linux-kernel+bounces-93225-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93226-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73AC1872C80
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 03:02:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B924872C83
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 03:02:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A3E591C20C6D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 02:02:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BBFD9285CE0
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 02:02:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5597DDA5;
-	Wed,  6 Mar 2024 02:02:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F550D29B;
+	Wed,  6 Mar 2024 02:02:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="utogkRrk"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eUfvk2ar"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A957CD517
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 02:02:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5CF46FBD
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 02:02:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709690529; cv=none; b=r6uLLHopQAQYkMWVPanz9I5mXl155ixzXImtkFIi+09dOPTGMBL5xtsbVMY1RmX8qaIuNl4bdjYX6CPw4wxTquJePrv/a8IeztjbJHUEKkEDwYZJDWVmztgA55QbRqWKKBxD2esp/zkiewt8950/WtG0fHbMF2bNAW9geiyq/1Y=
+	t=1709690533; cv=none; b=dDO5wyJERIaNK/hB9TSKpJYlENIHGJE6Nlv5mLWBpewk9cukb3mD3vQ6qbmoJdrenbhylWV6Gusm9pvc5yQlN4YxHypbp0ZIpVoMBwnDASp+9/bqBogZrY9wDg06hUfOv58JfSOV0TDgu909lM5qVkFdrs+jb/FGM9kKa6b6NHo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709690529; c=relaxed/simple;
-	bh=sj3Ndp8Opn8SFftC+mF5wy9/jACmHxqK0vbq4I+R76A=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=aHbsHaqxeFxNyWNn9wKGNAQzx9f2bHoj6fjphr+9r0BP5bep2R+0Mjm6lZgTMa6PNnaGIBKuSGY0Skx/OFMbYC0rLWfDEX49rBlKtQcTnDg5uhwNgb1xYHrwaQ3elupFwguREWXRdoDLDbPteI9puc9BBBmp/+kZCGhbSPul3MY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=utogkRrk; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc746178515so762361276.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 18:02:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709690527; x=1710295327; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=cgtE41l9iCbMAdWAWVcpbmBmFwz/dS6MgbuAWiL0tj0=;
-        b=utogkRrkPApnUcTlU5sBTWWEi9jelbMAGtB3RUoH1WJMrjjqedIvdnsRkjQJb0lbmt
-         BBWkoQ4xEbo5QowpV9887J8LvAswGpF8STuRX3la/c5+NbmKVcBuGb3zbV6JtHb//BtQ
-         kclJsnfHuGV+f/gHBckerVpHv7YzUSkh2FhDISZmo7fptBHheYJEMqmqzlvJPkw1DqD5
-         ZcZrkPNPpUYESBFvQNp8Bu794PEC7/AChzf1+uLmIkSd/v0u+L5VcaTbeRu3lMJA0tY2
-         IfD1bK4tmFHwNkXFTZbS+n7jXEsOujxik2o3AgCsJlX3cjvVej97toU7T/BPaD3i2x8S
-         eJow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709690527; x=1710295327;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cgtE41l9iCbMAdWAWVcpbmBmFwz/dS6MgbuAWiL0tj0=;
-        b=XxbqHL0YkD57x1DiWJa5WUvxr5QaVeP0sE9rRnGw+4FH/wuJIrbb2Q8vk/mk7fuhSs
-         xTp2DaOUGI3Nkr/wJnRoP5ODgCGyNGQaKtUr8uqEEod2bvRD/oaIqHiE8p9pdc1LQc1L
-         mAHdw1jJWP3sNx3160GrbpmQzN0aVSHFEv/A+Js0JyH4f5D0drJDqh0dCByT/FbICwqP
-         kT1LzJqXGP7dL4p2K9NTIlwYukP2iiOHB+QzHzXlyf0lKG/q9izhs3dwL6vw5uAdpuEo
-         iHtSmGAlsxalksprvX7y9rUzkPhc9NvGlkz3qdJO1+Xb5HTJkitKtSfj7dRlLlYM3vxg
-         s5Cg==
-X-Forwarded-Encrypted: i=1; AJvYcCU2vO1gMemH9e5JM2fOmT4WG6ymUFsyXDGE6vTebqIjKcYOmyGl8/wzyyiRvMc4zx+4r3yiXqhlFyB78B66Xl5E6YHiTKm2/TUzb+OF
-X-Gm-Message-State: AOJu0Yy/O2cFf020KlDxCcDgU4l9NXeXc74cyI37/EM93HraJpBYWQfB
-	3K3Y8QpLl7QEfzJZdvGEZlR1wsEyKdNoeVqU2eqNgpI7/W6aXEe/79QnHce5vbWtNEKIeIPzH6e
-	P5w==
-X-Google-Smtp-Source: AGHT+IGn5PHRMQ1fMLGmFCBEsBmuNqQ6YcSzb2UmyIjN9D4dI9GcrUinEDDKakjxoexTeFAqPSO0Pvfl2SA=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:2181:b0:dc6:ff54:249f with SMTP id
- dl1-20020a056902218100b00dc6ff54249fmr3435657ybb.8.1709690526675; Tue, 05 Mar
- 2024 18:02:06 -0800 (PST)
-Date: Tue, 5 Mar 2024 18:02:05 -0800
-In-Reply-To: <a8dbea9d-cca7-4720-9193-6dbeaa62bb67@intel.com>
+	s=arc-20240116; t=1709690533; c=relaxed/simple;
+	bh=SqTqs8brnRlrOZ5UQ84OFtXIsP8I8DaSL4YqK61FhFc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BMHeXAlJ0X0ijMrrrJCmRoWcBeR4koeO5fqsgEVcHZ2HaduMgRqFEP3QtSWrZjiINV2LRUC/tVqz6qVDORON71hCVF21ePWvBPFbA0nQAu2E6npWiXUwnj6VcC541ddvUGQeXGx1y/pr/bks7kkQomoavKu6YqpIgVXNHW6M8ZY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eUfvk2ar; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0D2AC43330;
+	Wed,  6 Mar 2024 02:02:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709690533;
+	bh=SqTqs8brnRlrOZ5UQ84OFtXIsP8I8DaSL4YqK61FhFc=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=eUfvk2ar4wNc3wSGfsc6XVaxtcbMnX30g4OKHea/TZ1iPjUum/UDOrmkvPECKTXjZ
+	 QtPl2A4SPSZCnpXx2WhY396QXfCy/dYB9AELjdhcI2WzhGcGjc5lzmLQwc/RItKOEj
+	 JcHIzffzcr1rRPy4cwRosQ1qRvLAVZmWr0OaCK9alQWUSF/OKS4hcGNVrVGye0T0xg
+	 sNa6cP4N0dJohnStgTkb7QkKiRUBeolVbOoL2Te0vRUtFucXVB+WYpt3x0AjgQ/H3D
+	 xRkzY7wdjeupc6wC3SnS5PkHJwm9cCGTZZkKcJ8nfzXmep9av9/A1yYnNDb+nuw51Q
+	 iklqA+dxA1INg==
+Message-ID: <f4bc07b0-a32b-4074-a66e-9388cb1b4461@kernel.org>
+Date: Wed, 6 Mar 2024 10:02:07 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240228024147.41573-1-seanjc@google.com> <20240228024147.41573-10-seanjc@google.com>
- <adbcdeaa-a780-49cb-823c-3980a4dfea12@intel.com> <Zee7IhqAU_UZFToW@google.com>
- <a8dbea9d-cca7-4720-9193-6dbeaa62bb67@intel.com>
-Message-ID: <ZefOnduZJurb9sty@google.com>
-Subject: Re: [PATCH 09/16] KVM: x86/mmu: Move private vs. shared check above
- slot validity checks
-From: Sean Christopherson <seanjc@google.com>
-To: Kai Huang <kai.huang@intel.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Yan Zhao <yan.y.zhao@intel.com>, Isaku Yamahata <isaku.yamahata@intel.com>, 
-	Michael Roth <michael.roth@amd.com>, Yu Zhang <yu.c.zhang@linux.intel.com>, 
-	Chao Peng <chao.p.peng@linux.intel.com>, Fuad Tabba <tabba@google.com>, 
-	David Matlack <dmatlack@google.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] f2fs: compress: fix reserve_cblocks counting error
+ when out of space
+Content-Language: en-US
+To: Xiuhong Wang <xiuhong.wang@unisoc.com>, jaegeuk@kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Cc: hongyu.jin.cn@gmail.com, niuzhiguo84@gmail.com, ke.wang@unisoc.com,
+ xiuhong.wang.cn@gmail.com
+References: <20240305084023.3686070-1-xiuhong.wang@unisoc.com>
+ <20240305084023.3686070-2-xiuhong.wang@unisoc.com>
+From: Chao Yu <chao@kernel.org>
+In-Reply-To: <20240305084023.3686070-2-xiuhong.wang@unisoc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Mar 06, 2024, Kai Huang wrote:
+On 2024/3/5 16:40, Xiuhong Wang wrote:
+> When a file only needs one direct_node, performing the following
+> operations will cause the file to be unrepairable:
 > 
+> unisoc # ./f2fs_io compress test.apk
+> unisoc #df -h | grep dm-48
+> /dev/block/dm-48 112G 112G 1.2M 100% /data
 > 
-> On 6/03/2024 1:38 pm, Sean Christopherson wrote:
-> > On Wed, Mar 06, 2024, Kai Huang wrote:
-> > > 
-> > > 
-> > > On 28/02/2024 3:41 pm, Sean Christopherson wrote:
-> > > > Prioritize private vs. shared gfn attribute checks above slot validity
-> > > > checks to ensure a consistent userspace ABI.  E.g. as is, KVM will exit to
-> > > > userspace if there is no memslot, but emulate accesses to the APIC access
-> > > > page even if the attributes mismatch.
-> > > 
-> > > IMHO, it would be helpful to explicitly say that, in the later case (emulate
-> > > APIC access page) we still want to report MEMORY_FAULT error first (so that
-> > > userspace can have chance to fixup, IIUC) instead of emulating directly,
-> > > which will unlikely work.
-> > 
-> > Hmm, it's not so much that emulating directly won't work, it's that KVM would be
-> > violating its ABI.  Emulating APIC accesses after userspace converted the APIC
-> > gfn to private would still work (I think), but KVM's ABI is that emulated MMIO
-> > is shared-only.
+> unisoc # ./f2fs_io release_cblocks test.apk
+> 924
+> unisoc # df -h | grep dm-48
+> /dev/block/dm-48 112G 112G 4.8M 100% /data
 > 
-> But for (at least) TDX guest I recall we _CAN_ allow guest's MMIO to be
-> mapped as private, right?  The guest is supposed to get a #VE anyway?
+> unisoc # dd if=/dev/random of=file4 bs=1M count=3
+> 3145728 bytes (3.0 M) copied, 0.025 s, 120 M/s
+> unisoc # df -h | grep dm-48
+> /dev/block/dm-48 112G 112G 1.8M 100% /data
+> 
+> unisoc # ./f2fs_io reserve_cblocks test.apk
+> F2FS_IOC_RESERVE_COMPRESS_BLOCKS failed: No space left on device
+> 
+> adb reboot
+> unisoc # df -h  | grep dm-48
+> /dev/block/dm-48             112G 112G   11M 100% /data
+> unisoc # ./f2fs_io reserve_cblocks test.apk
+> 0
+> 
+> This is because the file has only one direct_node. After returning
+> to -ENOSPC, reserved_blocks += ret will not be executed. As a result,
+> the reserved_blocks at this time is still 0, which is not the real
+> number of reserved blocks. Therefore, fsck cannot be set to repair
+> the file.
+> 
+> After this patch, the fsck flag will be set to fix this problem.
+> 
+> unisoc # df -h | grep dm-48
+> /dev/block/dm-48             112G 112G  1.8M 100% /data
+> unisoc # ./f2fs_io reserve_cblocks test.apk
+> F2FS_IOC_RESERVE_COMPRESS_BLOCKS failed: No space left on device
+> 
+> adb reboot then fsck will be executed
+> unisoc # df -h  | grep dm-48
+> /dev/block/dm-48             112G 112G   11M 100% /data
+> unisoc # ./f2fs_io reserve_cblocks test.apk
+> 924
+> 
+> Fixes: c75488fb4d82 ("f2fs: introduce F2FS_IOC_RESERVE_COMPRESS_BLOCKS")
+> Signed-off-by: Xiuhong Wang <xiuhong.wang@unisoc.com>
+> Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
+> ---
+>   fs/f2fs/file.c | 17 +++++++++--------
+>   1 file changed, 9 insertions(+), 8 deletions(-)
+> 
+> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+> index 572d7bd4d161..97a7233c7ea7 100644
+> --- a/fs/f2fs/file.c
+> +++ b/fs/f2fs/file.c
+> @@ -3624,10 +3624,10 @@ static int f2fs_release_compress_blocks(struct file *filp, unsigned long arg)
+>   	return ret;
+>   }
+>   
+> -static int reserve_compress_blocks(struct dnode_of_data *dn, pgoff_t count)
+> +static int reserve_compress_blocks(struct dnode_of_data *dn, pgoff_t count,
+> +		unsigned int *reserved_blocks)
+>   {
+>   	struct f2fs_sb_info *sbi = F2FS_I_SB(dn->inode);
+> -	unsigned int reserved_blocks = 0;
+>   	int cluster_size = F2FS_I(dn->inode)->i_cluster_size;
+>   	block_t blkaddr;
+>   	int i;
+> @@ -3691,12 +3691,12 @@ static int reserve_compress_blocks(struct dnode_of_data *dn, pgoff_t count)
+>   
+>   		f2fs_i_compr_blocks_update(dn->inode, compr_blocks, true);
+>   
+> -		reserved_blocks += reserved;
+> +		*reserved_blocks += reserved;
+>   next:
+>   		count -= cluster_size;
+>   	}
+>   
+> -	return reserved_blocks;
+> +	return 0;
+>   }
+>   
+>   static int f2fs_reserve_compress_blocks(struct file *filp, unsigned long arg)
+> @@ -3740,6 +3740,7 @@ static int f2fs_reserve_compress_blocks(struct file *filp, unsigned long arg)
+>   	while (page_idx < last_idx) {
+>   		struct dnode_of_data dn;
+>   		pgoff_t end_offset, count;
+> +		unsigned int tmp_reserved_blocks;
+>   
+>   		set_new_dnode(&dn, inode, NULL, NULL, 0);
+>   		ret = f2fs_get_dnode_of_data(&dn, page_idx, LOOKUP_NODE);
+> @@ -3757,7 +3758,8 @@ static int f2fs_reserve_compress_blocks(struct file *filp, unsigned long arg)
+>   		count = min(end_offset - dn.ofs_in_node, last_idx - page_idx);
+>   		count = round_up(count, F2FS_I(inode)->i_cluster_size);
+>   
+> -		ret = reserve_compress_blocks(&dn, count);
+> +		ret = reserve_compress_blocks(&dn, count, &tmp_reserved_blocks);
 
-Not really.  KVM can't _map_ emulated MMIO as private memory, because S-EPT
-entries can only point at convertible memory.  KVM _could_ emulate in response
-to a !PRESENT EPT violation, but KVM is not going to do that.
+How about passing &reserved_blocks into reserve_compress_blocks()?
 
-https://lore.kernel.org/all/ZcUO5sFEAIH68JIA@google.com
+Thanks,
 
-> Perhaps I am missing something -- I apologize if this has already been
-> discussed.
-> 
-> > 
-> > FWIW, I doubt there's a legitmate use case for converting the APIC gfn to private,
-> > this is purely to ensure KVM has simple, consistent rules for how private vs.
-> > shared access work.
-> 
-> Again I _think_ for TDX APIC gfn can be private?  IIUC virtualizing APIC is
-> done by the TDX module, which injects #VE to guest when emulation is
-> required.
-
-It's a moot point for TDX, as x2APIC is mandatory.
+> +		reserved_blocks += tmp_reserved_blocks;
+>   
+>   		f2fs_put_dnode(&dn);
+>   
+> @@ -3765,13 +3767,12 @@ static int f2fs_reserve_compress_blocks(struct file *filp, unsigned long arg)
+>   			break;
+>   
+>   		page_idx += count;
+> -		reserved_blocks += ret;
+>   	}
+>   
+>   	filemap_invalidate_unlock(inode->i_mapping);
+>   	f2fs_up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
+>   
+> -	if (ret >= 0) {
+> +	if (!ret) {
+>   		clear_inode_flag(inode, FI_COMPRESS_RELEASED);
+>   		inode_set_ctime_current(inode);
+>   		f2fs_mark_inode_dirty_sync(inode, true);
+> @@ -3780,7 +3781,7 @@ static int f2fs_reserve_compress_blocks(struct file *filp, unsigned long arg)
+>   	inode_unlock(inode);
+>   	mnt_drop_write_file(filp);
+>   
+> -	if (ret >= 0) {
+> +	if (!ret) {
+>   		ret = put_user(reserved_blocks, (u64 __user *)arg);
+>   	} else if (reserved_blocks &&
+>   			atomic_read(&F2FS_I(inode)->i_compr_blocks)) {
 
