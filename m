@@ -1,233 +1,176 @@
-Return-Path: <linux-kernel+bounces-94054-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94053-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DE4687392D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:31:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F709873921
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 15:30:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 04F03282787
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:31:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D0EA11F21332
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:30:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DACF13441B;
-	Wed,  6 Mar 2024 14:31:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DD07133994;
+	Wed,  6 Mar 2024 14:30:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BkUcN0eG"
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="hKkb9pnT"
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01olkn2058.outbound.protection.outlook.com [40.92.107.58])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A394128EC;
-	Wed,  6 Mar 2024 14:30:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709735461; cv=none; b=VhWEmjxD1H9bRk6B36OqaFrsrFXgwNXOtZoGgoYvgnrOgJ9UXJ/xMFCZAT3zPsw9HNHLPAD25aZ/wcCQEWBXZ+OYUN0N3kWZ01W6erU2Anbb5FP6NFb9R6SYjJIV4xEoyk3pVOVgY5fJL7voiVWDgwl8M0v9umqYmYCyZUyQ6nM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709735461; c=relaxed/simple;
-	bh=c+oW+n9OmJ9otIOsnLXK3dE6Rc448U9Z9kACrJJIO2w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ANbOEJFCbfmiISM1+/VwGO2IVBhwFSEVkqHSxkf37W2sUZ08WcHnvRkoWEaJsBKZHwT7kBAborYakV+wdYG5ErmPPBIkl84uiMed5DAO41+DMZzINQ6rO9g+//sYKf2nBxBAgOw4yeOeBQ2AWo17mexz0R5IlrPVVkxUZYKEcbI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BkUcN0eG; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-33d90dfe73cso606411f8f.0;
-        Wed, 06 Mar 2024 06:30:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709735458; x=1710340258; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/gPi0O1pSzLWSoH4x6QWh1/CSGMtQOXhMfU653rtclc=;
-        b=BkUcN0eGswL7r3Gyb7iUrTMao72c3aWMjOp2Si5ae3bPuWcqzHEkTv8CPJlLyRm8Ox
-         Sq2ELWHdupgFz7LNmbHsaqrJjZ9oTDizBZZJ67Ub3rOf/rH32S3Pa8vauD2RwT857F3h
-         5dkxdK0vJFyO2hlJdBhe0CcoPixSix5k0nHmdDeuHx/pX0oD6ZwhNqDKpe3IarEQRUaP
-         BznYSGgjsPd0aywg6Csa8y0esKWvbVvCNpYxixoDqoXAGcRAJpBF0Kt7aeYMpY9ZJXnE
-         D/0ESEWfgBI2fVT9bwBMtCnwHbFOl/elYxTDX84+DKV5iXQ2DRYjfwSuH1jaENmY+mID
-         fMRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709735458; x=1710340258;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/gPi0O1pSzLWSoH4x6QWh1/CSGMtQOXhMfU653rtclc=;
-        b=mTtoXOmKXWqs/1COf/peUw78qTPEHEhGX+AVoLdUyZX6VdwHcrPKHuSg3WZpUe28vU
-         TW2qO4UxRH0X9M3Hnyc2h0UujgZhwSltshU3uQZFuWU/CKJI5IuxoOMDc6OetCUif2Gx
-         c28Qfem3kllF3yJdEAgVzJmyFFyYQlXJ/7g7lCDsnclJHJapvWae8LsMNY1O2ol0g9mO
-         8BXWR3xycYDmq0UK/W6GC5K8g2QiMXo82IE7Os85rAITrdsvv+Ch7ujYBc6ObTUjFpEa
-         rZVw0IxqU3ZfKQu5CyPFjNd2x+KnmZV7Vz79crvP1AYkFCm8LhKTIFt0CaB+kn3iMm5K
-         7NmA==
-X-Forwarded-Encrypted: i=1; AJvYcCXwkUMB3lKxpbyoVok6CqIHoGygaeKj2bjXT6relNWY9UUNpCwPqER1AvS4qm2OqM8azU8er/V03sn9MQ7RLmN3Ebesy5QMu4E8f/zFQgjnwLiOXGO25rHZ4+borcCt7xuaJWGu4fOzogod8fa7YobCu/neJ3F80Wm/sAJiOUsTZJK4nZu8zk6HNCX3nJynnXiZTj09PXf2OUe8h0RWclmdFn1Q/Y4ltOFhmeuI3mYN1p0jF9YA00fB3gkLitE0ktM5IlI0Mbjjd3OJzAY35lzNawgP/iqYayx5LGPC0r4o6ufkbT9Rk/zSBQtny52HDn46k61KoxOlZz2aJqCWjTKaVEKyo0ju51GHCf9cSN1SXhPJkrJWlAH1uBIP3ir6En6Am3+xs/e9yPCfCafFmlMJUaAm8lOLC8rhRpU2FlXm9596lt+HdsbZMEuSe8DV9j+N7/yhFFK+4Iy7GRWYsYMI5UT1Oyka/ErInnukVw==
-X-Gm-Message-State: AOJu0YzDV2LJqTBRLrTt2NIUuJFlAwsMOPFkCIZudQzo5uSwJNOEeyqH
-	wL3fG91elIx9Ki3t5eQ9OlM1GaLuxgsbKkOlk4n1SiIV9F5PNDPy
-X-Google-Smtp-Source: AGHT+IEYb/zvAdaoWBUPDQ15vntU0mFqlnMjPDxyUnwJQKR8m4S+14qR/7MrevMi7+m6WnrGgoXePg==
-X-Received: by 2002:adf:f389:0:b0:33e:592c:d7da with SMTP id m9-20020adff389000000b0033e592cd7damr1501141wro.9.1709735457704;
-        Wed, 06 Mar 2024 06:30:57 -0800 (PST)
-Received: from [192.168.8.100] ([85.255.233.174])
-        by smtp.gmail.com with ESMTPSA id cc4-20020a5d5c04000000b0033e45e4f22bsm5982974wrb.73.2024.03.06.06.30.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Mar 2024 06:30:57 -0800 (PST)
-Message-ID: <417f293a-848e-4eb2-b690-c8696079b452@gmail.com>
-Date: Wed, 6 Mar 2024 14:29:56 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DF87133993;
+	Wed,  6 Mar 2024 14:30:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.107.58
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709735426; cv=fail; b=nBKF61b7RloDj1BQhuSUDA+uj1fACcptPLz9XRqgXgm/8DctsLA/7Tvvb1EIG2bXJEXScI25wUpJq7bWwMuVlKzgDt9I1xaaEsDPT7i/MvzyXFloRx40EfGw8bzFtdCPiirKZ+B5eUUE7JZhHgCcr+X+dj2waLF8t6BvHzW4KJ4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709735426; c=relaxed/simple;
+	bh=CFbm+awWMNtL11GzWPbfJZMl8AeCNsCzBjnqUzDK0ek=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=jY9+ARsWmv0i3Ng1j+11QBaZTTLfTXM1Ky855TOX6lXOYKmqhyraicLZREjRSAsUX6+aMwHA/aozevwE7dRzhfztj/ya8LLkFsALt7VAtF9iJ56p1hCu6gQox8ZwwTsiXBpVt6YBsN7amjSIiiMSCPVFevezYnfa1xYzDSgqbxs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=hKkb9pnT; arc=fail smtp.client-ip=40.92.107.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UAX91y6qGiiy2PFP4cIvqmwpPQQKF3BKaFHvYD5Pdg7hVfGixcW2gTDD4QiYGSo8FidQfq472WdHs1yYK+rlpYEywPtygBqBYmlgqNG/jqrDAf9hBIh1lZBRq60h1l7mbvmjhnSNro+6n1LgpCuiqm058pkLDWQBoI1RjS7I073O/ojfG3gjt4ut4Nb0FpXiujetZarxONNBmT41eNjIDHfWhwdT7TE5rQforyvmChd02HTaibNEYZOfkLTJkcwcwAaGb4Nv+rWhghkfWE+smPoNOd6JMKUJ+eq5xJUIr6bfk+zWc8zaGivtV97cngIb7Oa3yRTXpEIOG9SMB8GuHw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=WYFNLmpwjJ9yEfDdjdYqAlY6POqhf572KCxz6TWOajY=;
+ b=oVJ7tPUDVFOeP+MQeWb10TD5MxBK7uGwI5jFLpwN9+VMXmoDT48zGKK+uJ0/iBBnyQzfVQS1kwVac/KgsJnfS9XDvtk7y9ygpKpFqAmvCYUU9EeYq1eeigsyWfHE9pXiZXyxs7mMGV9WFAqECMyR4rsSSpVDpHrWksRO+9rI+YuOwDxLrJX4rvOEGpwMuit9IAsStW0EWscj5SZI3i8HH8XcgvlSwVwkBGd+4S/3Nl1mTNb1sVJJVhZFjPRhWbzBrlPQPweyzeU8YvlcLM9Z4HZAD9P+49IdnAC66HnSCmjT4SYuK/wLK9IHjI3r7Vo3vrA/aTbqrqomtHQG6HC0Tw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WYFNLmpwjJ9yEfDdjdYqAlY6POqhf572KCxz6TWOajY=;
+ b=hKkb9pnTFikCRrq4rZh3WDYz4dWcm8oUfbgbqhiDuqU8m4O0trr6BUn0Ryzgn0bEm+18Mo1c8cuaIQA/RKzffRfMIRmoipTDgMAkTRwRiK+f+dhVDzgjOY79nkeWKjiq1ARPbTrRR8JIhRfItDriNou44uaHgf5nMR/Mrzv6tMplNSsXRML6VZKTYz4aKGXh+kjmfvrU/Dws4BkpAyuWUsJpigsu046AZCANSVnY4j3WdJNCXHZxyKab8/hS5ISLew+Hh3Q2XZ9WLp3EiJ+5srqGnQDL3lT1dN9rpgjfhV/mC6KZuoVysq1CzRPZF849ftH4kIVFrQmQKDvZ8Ekgrw==
+Received: from SEZPR06MB6959.apcprd06.prod.outlook.com (2603:1096:101:1ed::14)
+ by SI2PR06MB5044.apcprd06.prod.outlook.com (2603:1096:4:1a7::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.24; Wed, 6 Mar
+ 2024 14:30:20 +0000
+Received: from SEZPR06MB6959.apcprd06.prod.outlook.com
+ ([fe80::aced:cbb9:4616:96d8]) by SEZPR06MB6959.apcprd06.prod.outlook.com
+ ([fe80::aced:cbb9:4616:96d8%2]) with mapi id 15.20.7339.035; Wed, 6 Mar 2024
+ 14:30:20 +0000
+Message-ID:
+ <SEZPR06MB69595E580354C25A9AE9C16596212@SEZPR06MB6959.apcprd06.prod.outlook.com>
+Date: Wed, 6 Mar 2024 22:30:15 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] clk: set initial best mux parent to current parent
+ when determining rate
+Content-Language: en-US
+To: Maxime Ripard <mripard@kernel.org>
+Cc: Michael Turquette <mturquette@baylibre.com>,
+ Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240306-mux-v2-0-92a5fa461fd2@outlook.com>
+ <20240306-mux-v2-1-92a5fa461fd2@outlook.com>
+ <20240306-inescapable-astute-bobcat-20c3e8@houat>
+From: Yang Xiwen <forbidden405@outlook.com>
+In-Reply-To: <20240306-inescapable-astute-bobcat-20c3e8@houat>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TMN: [ZhdQVPzFbshejFEbOcBeLWGv3RO3rTeTXQGG8YiU+EsSKTHTYZiG5GA5hMGfzbI+]
+X-ClientProxiedBy: KL1PR0401CA0008.apcprd04.prod.outlook.com
+ (2603:1096:820:f::13) To SEZPR06MB6959.apcprd06.prod.outlook.com
+ (2603:1096:101:1ed::14)
+X-Microsoft-Original-Message-ID:
+ <734f7efd-f9b9-4be3-b904-b741d12e2e83@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH net-next v6 02/15] net: page_pool: create hooks for
- custom page providers
-To: Mina Almasry <almasrymina@google.com>, David Wei <dw@davidwei.uk>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org,
- linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
- sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- linux-arch@vger.kernel.org, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
- Richard Henderson <richard.henderson@linaro.org>,
- Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner
- <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
- Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- Ilias Apalodimas <ilias.apalodimas@linaro.org>,
- Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, David Ahern <dsahern@kernel.org>,
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- Shuah Khan <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin <linyunsheng@huawei.com>,
- Shailend Chand <shailend@google.com>,
- Harshitha Ramamurthy <hramamurthy@google.com>,
- Jeroen de Borst <jeroendb@google.com>,
- Praveen Kaligineedi <pkaligineedi@google.com>, shakeel.butt@linux.dev
-References: <20240305020153.2787423-1-almasrymina@google.com>
- <20240305020153.2787423-3-almasrymina@google.com>
- <1b57dac2-4b04-4bec-b2d7-d0edb4fcabbc@davidwei.uk>
- <CAHS8izM5O39mnTQ8mhcQE75amDT4G-3vcgozzjcYsAdd_-he1g@mail.gmail.com>
-Content-Language: en-US
-From: Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <CAHS8izM5O39mnTQ8mhcQE75amDT4G-3vcgozzjcYsAdd_-he1g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SEZPR06MB6959:EE_|SI2PR06MB5044:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9201385d-a096-4503-bfa0-08dc3de9f375
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	vPobl9LDx/sTdKa8IEY74SJ2gnbzISxDOUqnOtye4YNHbn6M2DAd124POoQzwHmJ5G4bicw0YltIe57dmHY1P0NLST3CaPPN7Wg/lHNVhhscdP3ZH9IKIGLO6Bop9FHMn7hxJIKSe8rH/dq1HbJIe1BopPUJwgG3FV6GqUlwquKWsIcXB2Qi56QdCVgu3jInlR2mxYfENtmkT6POhc10cA2vUKhEe2aJ04JRYD9LTusUQsyOkBCH+YKSy05z2GemH38h2njojYw9Rsfe7bhCSUYg4GbeJny/LZ4dhFUpzBvQSSqQE5631XMHL9GvEm1OwbG9koYdzyezyzreqazd7ws42hAqo4tQBKS9ZY5IrxZ3xYKgKD6CDLJ6n22g9FBjGnkPbyIzF0ZxFFX3orDz6Euw21Zc0PtEwpNdG9+QNb4cwFZ4zsMS4Mh6NAU7tjMaPXp5T0ZevV7Q22CWFamb5aj6114qv9mfEfpiK0sr899TTMhjiIFQMYV3Hqko4Zvf69a7AdgNGJboG49+6U9Yll2dqQWEVVmFWHv1ODQsJ09KIsSPUIMhiwKAr1PXH6wY
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?WThqMnVpZ2VTU1ZyZGpGcG5tejVKMjQ4REVHNWFwYi9RY3lYOU03aUh6bjFU?=
+ =?utf-8?B?VW9nYWxSbS9ZY1JDa0xoN3V0aGNzRGJiUkJjdTdwSVRsRFA4anBYTmNjWXpa?=
+ =?utf-8?B?ODQ2cC9jZUs4UUl4WEh2OTJkUjhNeEk5ZjJIMWhWYjFBd05raXh2ZStBOHoy?=
+ =?utf-8?B?ZG13Qnc1WTBRb0pDckRpTUpmcEZJODFXT21UUEJYc2pIcWJDZk9jcGVtWVY3?=
+ =?utf-8?B?VURtczEySlBiMHg3TWNIYkVBNUdTdTlNR3duYW55UmhtT1VjTnZUT0l4bGlR?=
+ =?utf-8?B?ZXBTY3gzdmxKUUJZeSt2Z29xVUdjc2VqKzNwaG11bnpoQkxLc0NWeDgvTG9X?=
+ =?utf-8?B?UVppVHJ1N2tWUlM4ZllHM2t0ZHFkeE1aSzBzdHU0VzNwSkJXR0hicngycUd2?=
+ =?utf-8?B?eU90ai9sSlJWL1p1aFA2Vit5MWlGRXFaYVhuZWFPOWtxZ2kwOVZ6blRvOGZC?=
+ =?utf-8?B?WDhhTi9RelNkMDBIaXFnL081SU9IMmhpRDBVOTRHdjNXaVRvRS9VcE45dzFr?=
+ =?utf-8?B?MWpUZmVIN1ByQzY1ZHFIVDVFc3dOdWdCNjNmUzV3NTZoTGRBVHUxTERUVllw?=
+ =?utf-8?B?dTVIZjR3VE5KMUxTQ1Y5aGxxT1FqSGhNYTQ4MldsUDNFeWpITkE0eGRnWG5t?=
+ =?utf-8?B?RGdUODRoM2tCckVLYmhSQ0lhczdENTN3cDVTM0h4Ti9NS2dmb2VDcUxUU0dz?=
+ =?utf-8?B?ZlZwdWNvMWlIOVFhekFoMGtLUWo0VllBMzNXb2V0ajZhdm5IM25ZcU1OaDI5?=
+ =?utf-8?B?ZzV3RVBwTnF1VVhQK3VwRkFRU3ZCcWZBaFdzUU05UG8zZ0Q1S01RdktaSnk5?=
+ =?utf-8?B?RlczQjEwbEpXTWh3T3VZSlNISm5ka3MyOEhqN1hFRmJscWFvelBqaGJMbURa?=
+ =?utf-8?B?VmdGSzFEYXlUK2ZFRzFwZnd2K2xiL0hNVzZwRWxYZzlJbmY2N3hGU3J0bFZl?=
+ =?utf-8?B?emFqRXFTQnF2VE9iQ2FsV0VHNDU1YTNKTTNKNVBUK3BxNk1nblFNN2M3V2NB?=
+ =?utf-8?B?YzNraUx4ZjNMR1paWjd1NGNQSk9FUXQ5Tm5ycnVDQURzRGVZTkxmcXBTdGt5?=
+ =?utf-8?B?U0NXa01mNGxkMm1nUDk2WUoyYjlsVk0zY0cxUUMvakRTWEoyUjU2MHlkaUFR?=
+ =?utf-8?B?NGkrRFVEaDIzWVo3eVRlcWZzNEVxM3o5TnNVWjVTN20vSVJ6YlRlSUtvMWRj?=
+ =?utf-8?B?eHc0YTl0TzFzay9SQndYbGVxbFp0S05SQ2lsRVdSdWUrMEhrcm9MN1RkN1dz?=
+ =?utf-8?B?YTZDNW96aU96VXJPR2hzQ2pDbmc2YUs2Y2pvRGY2ZGpmM3NGblFwZVhySUlj?=
+ =?utf-8?B?elFHcHptZW5LVlBYTjVYYkpvbFk2RkQrZUIwVU1jWDdRdUdSWU1aamdTbVd5?=
+ =?utf-8?B?UXpnNzA2NHNld0V2MDdDZytHZjFnUXRmeDlLMmtob0FyUnFpclB3VUNLOVg5?=
+ =?utf-8?B?WjBXUnhhUzlWd01PUWd1eGFDMEYyQ2E2cndJbVFMZHhjcEVtSnhVbGZXUmNN?=
+ =?utf-8?B?V1AyL0ljUVR6eE83UW9UZmxnVGhYN0YzT3IxOFk1VnVRY0xSYnpEdGlVWUxh?=
+ =?utf-8?B?NHRkZHdndlB4UUJndnlJTWMrdnMrUDQzVU1vQVVQVVJRZFRSdDlNdW1Uc0Fr?=
+ =?utf-8?B?UFJ5dmkwbUdWNk50WEduMCtoTkM3RG52RjJUVzl5czJvWStSWEtzVUVzaTZS?=
+ =?utf-8?B?V2VlOURYaVlVWmJOVU9FSFpud3RaeXBHUk5pZmtnK3lLcjdmZDd2ZnVGTGpD?=
+ =?utf-8?Q?ohGUZlWwZI5mnSLRDz+dViF3N87T9G2cGgINPbe?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9201385d-a096-4503-bfa0-08dc3de9f375
+X-MS-Exchange-CrossTenant-AuthSource: SEZPR06MB6959.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Mar 2024 14:30:20.3487
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SI2PR06MB5044
 
-On 3/5/24 22:36, Mina Almasry wrote:
-> On Tue, Mar 5, 2024 at 1:55 PM David Wei <dw@davidwei.uk> wrote:
+On 3/6/2024 10:24 PM, Maxime Ripard wrote:
+> Hi,
+>
+> On Wed, Mar 06, 2024 at 12:22:23AM +0800, Yang Xiwen via B4 Relay wrote:
+>> From: Yang Xiwen <forbidden405@outlook.com>
 >>
->> On 2024-03-04 18:01, Mina Almasry wrote:
->>> +struct memory_provider_ops {
->>> +     int (*init)(struct page_pool *pool);
->>> +     void (*destroy)(struct page_pool *pool);
->>> +     struct page *(*alloc_pages)(struct page_pool *pool, gfp_t gfp);
->>> +     bool (*release_page)(struct page_pool *pool, struct page *page);
+>> Originally, the initial clock rate is hardcoded to 0, this can lead to
+>> some problem when setting a very small rate with CLK_MUX_ROUND_CLOSEST.
 >>
->> For ZC Rx we added a scrub() function to memory_provider_ops that is
->> called from page_pool_scrub(). Does TCP devmem not custom behaviour
->> waiting for all netmem_refs to return before destroying the page pool?
->> What happens if e.g. application crashes?
-> 
-> (sorry for the long reply, but he refcounting is pretty complicated to
-> explain and I feel like we need to agree on how things currently work)
-> 
-> Yeah, the addition of the page_pool_scrub() function is a bit of a
-> head scratcher for me. Here is how the (complicated) refcounting works
-> for devmem TCP (assuming the driver is not doing its own recycling
-> logic which complicates things further):
-> 
-> 1. When a netmem_ref is allocated by the page_pool (from dmabuf or
-> page), the netmem_get_pp_ref_count_ref()==1 and belongs to the page
-> pool as long as the netmem is waiting in the pool for driver
-> allocation.
-> 
-> 2. When a netmem is allocated by the driver, no refcounting is
-> changed, but the ownership of the netmem_get_pp_ref_count_ref() is
-> implicitly transferred from the page pool to the driver. i.e. the ref
-> now belongs to the driver until an skb is formed.
-> 
-> 3. When the driver forms an skb using skb_rx_add_frag_netmem(), no
-> refcounting is changed, but the ownership of the
-> netmem_get_pp_ref_count_ref() is transferred from the driver to the
-> TCP stack.
-> 
-> 4. When the TCP stack hands the skb to the application, the TCP stack
-> obtains an additional refcount, so netmem_get_pp_ref_count_ref()==2,
-> and frees the skb using skb_frag_unref(), which drops the
-> netmem_get_pp_ref_count_ref()==1.
-> 
-> 5. When the user is done with the skb, the user calls the
-> DEVMEM_DONTNEED setsockopt which calls napi_pp_put_netmem() which
-> recycles the netmem back to the page pool. This doesn't modify any
-> refcounting, but the refcount ownership transfers from the userspace
-> back to the page pool, and we're back at step 1.
-> 
-> So all in all netmem can belong either to (a) the page pool, or (b)
-> the driver, or (c) the TCP stack, or (d) the application depending on
-> where exactly it is in the RX path.
-> 
-> When an application running devmem TCP crashes, the netmem that belong
-> to the page pool or driver are not touched, because the page pool is
-> not tied to the application in our case really. However, the TCP stack
-> notices the devmem socket of the application close, and when it does,
-> the TCP stack will:
-> 
-> 1. Free all the skbs in the sockets receive queue. This is not custom
-> behavior for devmem TCP, it's just standard for TCP to free all skbs
-> waiting to be received by the application.
-> 2. The TCP stack will free references that belong to the application.
-> Since the application crashed, it will not call the DEVMEM_DONTNEED
-> setsockopt, so we need to free those on behalf of the application.
-> This is done in this diff:
-> 
-> @@ -2498,6 +2498,15 @@ static void tcp_md5sig_info_free_rcu(struct
-> rcu_head *head)
->   void tcp_v4_destroy_sock(struct sock *sk)
->   {
->    struct tcp_sock *tp = tcp_sk(sk);
-> + __maybe_unused unsigned long index;
-> + __maybe_unused void *netmem;
-> +
-> +#ifdef CONFIG_PAGE_POOL
-> + xa_for_each(&sk->sk_user_frags, index, netmem)
-> + WARN_ON_ONCE(!napi_pp_put_page((__force netmem_ref)netmem, false));
-> +#endif
-> +
-> + xa_destroy(&sk->sk_user_frags);
-> 
->    trace_tcp_destroy_sock(sk);
-> 
-> To be honest, I think it makes sense for the TCP stack to be
-> responsible for putting the references that belong to it and the
-> application. To me, it does not make much sense for the page pool to
-> be responsible for putting the reference that belongs to the TCP stack
-> or driver via a page_pool_scrub() function, as those references do not
-> belong to the page pool really. I'm not sure why there is a diff
-> between our use cases here because I'm not an io_uring expert. Why do
-> you need to scrub all the references on page pool destruction? Don't
-> these belong to non-page pool components like io_uring stack or TCP
-> stack ol otherwise?
+>> For example, if the lowest possible rate provided by the mux is 1000Hz,
+>> setting a rate below 500Hz will fail, because no clock can provide a
+>> better rate than the non-existant 0Hz. But it should succeed with 1000Hz
+>> being set.
+>>
+>> Setting the initial best parent to current parent could solve this bug.
+>>
+>> Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
+> That patch makes sense to me, but this changes the behaviour of the function.
+>
+> Before, if we couldn't find a good configuration for the rate, we were
+> error'ing out. Now, we keep the current configuration. We should
+> document the new behaviour in the function documentation, and we should
+> probably run that through kernelci to make sure we aren't breaking any
+> platform (and from experience, we probably are).
 
-That one is about cleaning buffers that are in b/w 4 and 5, i.e.
-owned by the user, which devmem does at sock destruction. io_uring
-could get by without scrub, dropping user refs while unregistering
-ifq, but then it'd need to wait for all requests to finish so there
-is no step 4 in the meantime. Might change, can be useful, but it
-was much easier to hook into the pp release loop.
 
-Another concern is who and when can reset ifq / kill pp outside
-of io_uring/devmem. I assume it can happen on a whim, which is
-hard to handle gracefully.
+We can limit the new behavior to CLK_MUX_ROUND_CLOSEST as well. The 
+current behavior is okay for common muxes i think. Though probably wrong 
+for CLK_MUX_ROUND_CLOSEST.
+
+
+>
+> Maxime
+
 
 -- 
-Pavel Begunkov
+Regards,
+Yang Xiwen
+
 
