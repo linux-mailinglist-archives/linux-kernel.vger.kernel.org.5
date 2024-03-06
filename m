@@ -1,256 +1,202 @@
-Return-Path: <linux-kernel+bounces-93978-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93979-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B26698737BD
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:32:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F3218737BF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 14:32:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D60801C21406
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:32:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3261F1C21209
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 13:32:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FAEC130E49;
-	Wed,  6 Mar 2024 13:32:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9EBF131738;
+	Wed,  6 Mar 2024 13:32:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yJAXNWSl"
-Received: from mail-vk1-f176.google.com (mail-vk1-f176.google.com [209.85.221.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="m30iMKaL"
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A323E130E29
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 13:32:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C1ED130E29;
+	Wed,  6 Mar 2024 13:32:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709731935; cv=none; b=Gju8zeoxqYOXg+q/c7qjByxAE1056QSttP8Uq8y8DegGozkSATirgOn4lFu0Bf4Q1HMRwzPKi3W0u1cd4eov9crfgu8E5gtm3TBP+U7X6ttSpxuYQ/nDx1gVqihRhxfuSAQM9t4Wm9dQghKnqMEZ+v2uY8AmLANM2hFkuOv1jaA=
+	t=1709731942; cv=none; b=DoMgjkmGGZZMFzaufmy2vut0AM+xZZsDN9eRPM4E/Yy9KGd7xz/20hK2P0ffgcXczkgpxB6VrbkqhTndvQ09qGW/AKOEB3b6D2E6keU6a8hurARR5I1id3Zn+OnaV9PXxEVU2pkAagfqZjaHNU5PQOrZ/Ug2mA4ODM2Jrd3Q8X8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709731935; c=relaxed/simple;
-	bh=JShlrHlvSrWcV7xvzKNa8bOyHN6KPV5FA9UCm9W9blc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nF4UNgktwzqFlhiFUDU9shiGmDfYzTbvpEKkUv7Pv2nxcZ4WuVgngpGTW6LqUF5ZKDrm2uggu8gcDMvK6eZWp5648iMcXuGVrRlnWF+d2iigfo/0u21O2DjzwhhpUjepDTTuBqCuhyhS4to3yIAR8LuZePXXYKV5VdsWoz+glAE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=yJAXNWSl; arc=none smtp.client-ip=209.85.221.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-vk1-f176.google.com with SMTP id 71dfb90a1353d-4d34144d710so498858e0c.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 05:32:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709731932; x=1710336732; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2VVJliLDnPnfl5S46gj2IcyJBhJ9oBjofP72vxE2Gys=;
-        b=yJAXNWSlMYhU11RC8qKczN0bcY1z7K3knKS0SFdaPuHEb5cjsNEKs+7V2g7+iVxyYr
-         DAKlJ48qyqC6Irl7+EJEtyZaThOVQfCT1hXK0tnpSwO9dVjM5aMA5YI3LeyHl9P+QIim
-         NWBf3+Yhys92Ys5Aqwigk6Dqiy7USVM/HL1ITr3K6p5ODb+e9bPnpKNTL9ymzq1t2aaS
-         jeFgXof7OA3CHsJ5/tWhGD+7K9amcU7WYtp4hwASAGDbYmVXiepSagss8iTQx1pwiySu
-         KmTTk2ANzn2HjqchFvRYOHOR8qu/CO9p/AiGE4VXclCVmrJeT7kgit5DKjHr3XaaCtyh
-         XRoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709731932; x=1710336732;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2VVJliLDnPnfl5S46gj2IcyJBhJ9oBjofP72vxE2Gys=;
-        b=BS2G7q/mmEHKHiqeoE6ZIPw8P6PgD1p3z7YNYb+Y0jmsJ4Yzf0dnSz0gI0JWUJprzS
-         Q9Gtwio3KpCRl0vGJc9Ntt2DqRgMxQMXZJPG6rhRtfJ6UmAzv0n01ifzmhdogiPRLZSV
-         EJdQglfg1moH78jNgGW+1PUkkm3rr8y3YpJJX5z4Q0zpLxoKLU9CCqows84bjwJxMkoR
-         GNvu7JZP0FKh58ZVgcpiJvOsKgVavCic8N+tKl3OdapAyCv+pye8DE12D1fAc9szKaPh
-         7jCOa6XtYK0eFH/UxZO6+xV6TurLzX8hMy20YyhurAEvo5uY6giKIjg420UGMtiSQjxv
-         OtrA==
-X-Forwarded-Encrypted: i=1; AJvYcCU7jV87TxPrv5hwm5bD3IJRirR3UEEVrgq0gJqgyIPY93muSQQ/eStpVnuAN+RkQ/1Woy1x4FmYR505M7Awjv3MiYldAPf5OxmZBvV5
-X-Gm-Message-State: AOJu0YyipQH1tI9orhVeDJusq1gBcAfVylv6L9wCuNZfLSCfiQph1Au9
-	bq9m2/hFc0oLFwvHdekyr8KilbXMprN63dkA/Q4laTwR37iFMtLHogZUhwHZgrzj6sDM8UpzuoT
-	Qv4R/YqF1EVmnbB+Phup9cn79elSqvGF/msjDaQ==
-X-Google-Smtp-Source: AGHT+IGxrMfsJxszV9jZHqVuSGYENy3aeQ3AbkXLJV/S5S4sAwGbtxZR2+omrhWCMoCVtr2KbHbLbjE8sGzttOREOAk=
-X-Received: by 2002:a05:6122:1c82:b0:4c8:a2c6:c2be with SMTP id
- eu2-20020a0561221c8200b004c8a2c6c2bemr170851vkb.8.1709731932343; Wed, 06 Mar
- 2024 05:32:12 -0800 (PST)
+	s=arc-20240116; t=1709731942; c=relaxed/simple;
+	bh=r3I412SG0b717r5olrqqgvwgsxovk3km8xIxHnC5rS8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=h/7PnRK0Rbobv2w3CINGHasPXwmoZksWCQ8T7srghA5N6QE1InVLUenMAlkzQm8cdaP39PhjycGSzVHu7U9wRvxbruj2bvhqVxSwVioh2oUpsOq4gAdQ8WrU5vo1pQDVtkP5pTNzamiH8kMCwc34q/vIfnXqM2g0sFtFNQHCTX0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=m30iMKaL; arc=none smtp.client-ip=115.124.30.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1709731936; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=h81mR016RoIXcFQc6aGU9aYbZL1VGqlUD1p94No+yqI=;
+	b=m30iMKaL6rZYR39tTnpK7KAxo39if/gn8vky0ONoKv7ks+JSE0AAXRMpy1z/K/i4k8P2tTN/V3P62TmgTw50D1x63jgN/tiNYvrd1UXkH9H/wDOwsLAT/rNB34lUxH+ocSky+7O68ySS/P29rouLHm5ZDMMB8ggg0PXDsJyoolM=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R671e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0W1xohh1_1709731935;
+Received: from 192.168.31.58(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0W1xohh1_1709731935)
+          by smtp.aliyun-inc.com;
+          Wed, 06 Mar 2024 21:32:16 +0800
+Message-ID: <7e79a9fa-99a0-47e5-bc39-107f89852d8d@linux.alibaba.com>
+Date: Wed, 6 Mar 2024 21:32:14 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240305113135.403426564@linuxfoundation.org>
-In-Reply-To: <20240305113135.403426564@linuxfoundation.org>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Wed, 6 Mar 2024 19:02:01 +0530
-Message-ID: <CA+G9fYsAG=7Fx=8JZQPLqnSVWqU02d1DYn-GiajCND0xn_c+BQ@mail.gmail.com>
-Subject: Re: [PATCH 5.15 00/83] 5.15.151-rc2 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
-	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] fuse: increase FUSE_MAX_MAX_PAGES limit
+Content-Language: en-US
+To: Miklos Szeredi <miklos@szeredi.hu>
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ zhangjiachen.jaycee@bytedance.com
+References: <20240124070512.52207-1-jefflexu@linux.alibaba.com>
+ <CAJfpegs10SdtzNXJfj3=vxoAZMhksT5A1u5W5L6nKL-P2UOuLQ@mail.gmail.com>
+ <6e6bef3d-dd26-45ce-bc4a-c04a960dfb9c@linux.alibaba.com>
+ <b4e6b930-ed06-4e0d-b17d-61d05381ac92@linux.alibaba.com>
+ <27b34186-bc7c-4f3c-8818-ee73eb3f82ba@linux.alibaba.com>
+ <CAJfpegvLUrqkCkVc=yTXcjZyNNQEG4Z4c6TONEZHGGmjiQ5X2g@mail.gmail.com>
+From: Jingbo Xu <jefflexu@linux.alibaba.com>
+In-Reply-To: <CAJfpegvLUrqkCkVc=yTXcjZyNNQEG4Z4c6TONEZHGGmjiQ5X2g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, 5 Mar 2024 at 17:02, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.15.151 release.
-> There are 83 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 07 Mar 2024 11:31:11 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.15.151-rc2.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.15.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+On 3/5/24 10:26 PM, Miklos Szeredi wrote:
+> On Mon, 26 Feb 2024 at 05:00, Jingbo Xu <jefflexu@linux.alibaba.com> wrote:
+>>
+>> Hi Miklos,
+>>
+>> On 1/26/24 2:29 PM, Jingbo Xu wrote:
+>>>
+>>>
+>>> On 1/24/24 8:47 PM, Jingbo Xu wrote:
+>>>>
+>>>>
+>>>> On 1/24/24 8:23 PM, Miklos Szeredi wrote:
+>>>>> On Wed, 24 Jan 2024 at 08:05, Jingbo Xu <jefflexu@linux.alibaba.com> wrote:
+>>>>>>
+>>>>>> From: Xu Ji <laoji.jx@alibaba-inc.com>
+>>>>>>
+>>>>>> Increase FUSE_MAX_MAX_PAGES limit, so that the maximum data size of a
+>>>>>> single request is increased.
+>>>>>
+>>>>> The only worry is about where this memory is getting accounted to.
+>>>>> This needs to be thought through, since the we are increasing the
+>>>>> possible memory that an unprivileged user is allowed to pin.
+>>>
+>>> Apart from the request size, the maximum number of background requests,
+>>> i.e. max_background (12 by default, and configurable by the fuse
+>>> daemon), also limits the size of the memory that an unprivileged user
+>>> can pin.  But yes, it indeed increases the number proportionally by
+>>> increasing the maximum request size.
+>>>
+>>>
+>>>>
+>>>>>
+>>>>>
+>>>>>
+>>>>>>
+>>>>>> This optimizes the write performance especially when the optimal IO size
+>>>>>> of the backend store at the fuse daemon side is greater than the original
+>>>>>> maximum request size (i.e. 1MB with 256 FUSE_MAX_MAX_PAGES and
+>>>>>> 4096 PAGE_SIZE).
+>>>>>>
+>>>>>> Be noted that this only increases the upper limit of the maximum request
+>>>>>> size, while the real maximum request size relies on the FUSE_INIT
+>>>>>> negotiation with the fuse daemon.
+>>>>>>
+>>>>>> Signed-off-by: Xu Ji <laoji.jx@alibaba-inc.com>
+>>>>>> Signed-off-by: Jingbo Xu <jefflexu@linux.alibaba.com>
+>>>>>> ---
+>>>>>> I'm not sure if 1024 is adequate for FUSE_MAX_MAX_PAGES, as the
+>>>>>> Bytedance floks seems to had increased the maximum request size to 8M
+>>>>>> and saw a ~20% performance boost.
+>>>>>
+>>>>> The 20% is against the 256 pages, I guess.
+>>>>
+>>>> Yeah I guess so.
+>>>>
+>>>>
+>>>>> It would be interesting to
+>>>>> see the how the number of pages per request affects performance and
+>>>>> why.
+>>>>
+>>>> To be honest, I'm not sure the root cause of the performance boost in
+>>>> bytedance's case.
+>>>>
+>>>> While in our internal use scenario, the optimal IO size of the backend
+>>>> store at the fuse server side is, e.g. 4MB, and thus if the maximum
+>>>> throughput can not be achieved with current 256 pages per request. IOW
+>>>> the backend store, e.g. a distributed parallel filesystem, get optimal
+>>>> performance when the data is aligned at 4MB boundary.  I can ask my folk
+>>>> who implements the fuse server to give more background info and the
+>>>> exact performance statistics.
+>>>
+>>> Here are more details about our internal use case:
+>>>
+>>> We have a fuse server used in our internal cloud scenarios, while the
+>>> backend store is actually a distributed filesystem.  That is, the fuse
+>>> server actually plays as the client of the remote distributed
+>>> filesystem.  The fuse server forwards the fuse requests to the remote
+>>> backing store through network, while the remote distributed filesystem
+>>> handles the IO requests, e.g. process the data from/to the persistent store.
+>>>
+>>> Then it comes the details of the remote distributed filesystem when it
+>>> process the requested data with the persistent store.
+>>>
+>>> [1] The remote distributed filesystem uses, e.g. a 8+3 mode, EC
+>>> (ErasureCode), where each fixed sized user data is split and stored as 8
+>>> data blocks plus 3 extra parity blocks. For example, with 512 bytes
+>>> block size, for each 4MB user data, it's split and stored as 8 (512
+>>> bytes) data blocks with 3 (512 bytes) parity blocks.
+>>>
+>>> It also utilize the stripe technology to boost the performance, for
+>>> example, there are 8 data disks and 3 parity disks in the above 8+3 mode
+>>> example, in which each stripe consists of 8 data blocks and 3 parity
+>>> blocks.
+>>>
+>>> [2] To avoid data corruption on power off, the remote distributed
+>>> filesystem commit a O_SYNC write right away once a write (fuse) request
+>>> received.  Since the EC described above, when the write fuse request is
+>>> not aligned on 4MB (the stripe size) boundary, say it's 1MB in size, the
+>>> other 3MB is read from the persistent store first, then compute the
+>>> extra 3 parity blocks with the complete 4MB stripe, and finally write
+>>> the 8 data blocks and 3 parity blocks down.
+>>>
+>>>
+>>> Thus the write amplification is un-neglectable and is the performance
+>>> bottleneck when the fuse request size is less than the stripe size.
+>>>
+>>> Here are some simple performance statistics with varying request size.
+>>> With 4MB stripe size, there's ~3x bandwidth improvement when the maximum
+>>> request size is increased from 256KB to 3.9MB, and another ~20%
+>>> improvement when the request size is increased to 4MB from 3.9MB.
+> 
+> I sort of understand the issue, although my guess is that this could
+> be worked around in the client by coalescing writes.  This could be
+> done by adding a small delay before sending a write request off to the
+> network.
+> 
+> Would that work in your case?
 
-## Build
-* kernel: 5.15.151-rc2
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-5.15.y
-* git commit: 7466986e020d2a56ac0fd1d1768eb9c01119f652
-* git describe: v5.15.149-331-g7466986e020d
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.15.y/build/v5.15=
-149-331-g7466986e020d
+It's possible but I'm not sure. I've asked my colleagues who working on
+the fuse server and the backend store, though have not been replied yet.
+ But I guess it's not as simple as increasing the maximum FUSE request
+size directly and thus more complexity gets involved.
 
-## Test Regressions (compared to v5.15.149)
+I can also understand the concern that this may increase the risk of
+pinning more memory footprint, and a more generic using scenario needs
+to be considered.  I can make it a private patch for our internal product.
 
-## Metric Regressions (compared to v5.15.149)
+Thanks for the suggestions and discussion.
 
-## Test Fixes (compared to v5.15.149)
 
-## Metric Fixes (compared to v5.15.149)
-
-## Test result summary
-total: 92511, pass: 73909, fail: 2625, skip: 15908, xfail: 69
-
-## Build Summary
-* arc: 5 total, 5 passed, 0 failed
-* arm: 106 total, 106 passed, 0 failed
-* arm64: 34 total, 34 passed, 0 failed
-* i386: 27 total, 27 passed, 0 failed
-* mips: 24 total, 24 passed, 0 failed
-* parisc: 4 total, 4 passed, 0 failed
-* powerpc: 26 total, 26 passed, 0 failed
-* riscv: 11 total, 11 passed, 0 failed
-* s390: 11 total, 11 passed, 0 failed
-* sh: 10 total, 10 passed, 0 failed
-* sparc: 8 total, 8 passed, 0 failed
-* x86_64: 30 total, 30 passed, 0 failed
-
-## Test suites summary
-* boot
-* kselftest-android
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers-dma-buf
-* kselftest-efivarfs
-* kselftest-exec
-* kselftest-filesystems
-* kselftest-filesystems-binderfs
-* kselftest-filesystems-epoll
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-ftrace
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mm
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-forwarding
-* kselftest-net-mptcp
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-user_events
-* kselftest-vDSO
-* kselftest-watchdog
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libgpiod
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-cpuhotplug
-* ltp-crypto
-* ltp-cve
-* ltp-dio
-* ltp-fcntl-locktests
-* ltp-filecaps
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-hugetlb
-* ltp-io
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-securebits
-* ltp-smoke
-* ltp-smoketest
-* ltp-syscalls
-* ltp-tracing
-* perf
-* rcutorture
-
---
-Linaro LKFT
-https://lkft.linaro.org
+-- 
+Thanks,
+Jingbo
 
