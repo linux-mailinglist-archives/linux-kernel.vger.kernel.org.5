@@ -1,232 +1,262 @@
-Return-Path: <linux-kernel+bounces-93678-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93680-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93E1687332A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:55:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0800A873335
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:56:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B7BFD1C23DFF
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:55:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 49A62B288FB
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:56:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A09C5F473;
-	Wed,  6 Mar 2024 09:54:49 +0000 (UTC)
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C25865F866;
+	Wed,  6 Mar 2024 09:55:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="JfdHE1uB"
+Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CCD45F470
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 09:54:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70A145F551;
+	Wed,  6 Mar 2024 09:55:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709718888; cv=none; b=IToAE4re2+ADoo8cCnUTPh91PxbT1Iq1IwimXOjicTZCy5KOkJ9IUmqM8jwU5aibYYx0Mkd2LyjAD9JAEk4+HUZnSNKF9UHpg3SngFzLora1Kjj3QrJJiAb9Nhv+k79FAXnWWSoLtyH9tQX3OAYjMJgEl694zEtr/m7GlQgy0/E=
+	t=1709718905; cv=none; b=tNySFHK79jd5nCjV878pKqKUzrfdWb07QZuPoffYHKDJizL2sWdhvkDu9btsVGC217f8Nmh1rG3Sc+MLrEuRYARRJla2klMT4wMg1+sAAxib/C0xDalGBIg1Pe3YptFVaO3WfpWocLdXD9byJ+pCpXsQ1Cvf86bAoaWJcdrDUbs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709718888; c=relaxed/simple;
-	bh=xh91JLOgR2kNsYKEWZgBzfvf+Kmb4c7kAobQzP3t/90=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=ijkbl9GQVxws0ydkAkAdq1PdjEyYCWXwftY3DdDL8shR3rJzI2NiA9IxMxZ36NxTTthPSeetWaWFVmrS4Ul0FlPLn+wwu/4egen0PdYOjhwrlJnVY5vTVGcA9SOyc020ETdf4FsYkP8zr46EkrrSfNh2LXXUaJJqkvRQRcS8Kvk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TqSRG4rVdz1xqHm;
-	Wed,  6 Mar 2024 17:52:58 +0800 (CST)
-Received: from kwepemm600020.china.huawei.com (unknown [7.193.23.147])
-	by mail.maildlp.com (Postfix) with ESMTPS id 5553D14011A;
-	Wed,  6 Mar 2024 17:54:36 +0800 (CST)
-Received: from [10.174.179.160] (10.174.179.160) by
- kwepemm600020.china.huawei.com (7.193.23.147) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 6 Mar 2024 17:54:35 +0800
-Message-ID: <3f2b71de-6d90-8b9a-cd7c-fea947a8a2ba@huawei.com>
-Date: Wed, 6 Mar 2024 17:54:34 +0800
+	s=arc-20240116; t=1709718905; c=relaxed/simple;
+	bh=2ftyihPbAmkS6J+gl1Y1Ht/NezQ4YW814oVTc/B6SUI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=BphvVXwMc4Djj0OgYWUQCngULqqhdIC0ebK9yYR8qcTf/uWv6EdgxIiZJxejzODywGoXUubhg6lzQIstuotfh4tzse4z5wF3C4HaABrPEL0pmby+vmL6Z/+fRDzNApWcmazkGP4IC1rJhVhr6N35qetFV3MHiDB4vpEaK722TGU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=JfdHE1uB; arc=none smtp.client-ip=93.104.207.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1709718901; x=1741254901;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=xRQdIjIh2u/H09dIqzgYCCAQtjiG9q90vID+o94vTbg=;
+  b=JfdHE1uB9povPjO1clJtyUrTW6fHGIunSfAeP+bTHSgFeVgEuAJlJanh
+   Cpv300HFpl4YRzew+fy5x0WsQDYg+84hX3zSu1NottenXQV04o5e3SwMS
+   ct/vyVvNS7iRmvQdd5Vc8v+hqvWcldhwiMKnt8DTarqhPKNqBvTquVc7e
+   PSb35xxkB2fmjkkT+kbGnZS3rRTTB5awTaxe+bmdm3y6TdSBNURQEms9o
+   bpmEwkcOvQ1WeOkXWl6mOKgY+dBOocc5lCdi81qmyFulDX2g/lB3APb8G
+   vgGBEFO4rit7lsfxb1YaFwWGqwnZRLKBNL9Ouadosawdm8xqRkFV9oP6I
+   Q==;
+X-IronPort-AV: E=Sophos;i="6.06,207,1705359600"; 
+   d="scan'208";a="35759910"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 06 Mar 2024 10:54:58 +0100
+Received: from steina-w.localnet (steina-w.tq-net.de [10.123.53.25])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 018A9280071;
+	Wed,  6 Mar 2024 10:54:58 +0100 (CET)
+From: Alexander Stein <alexander.stein@ew.tq-group.com>
+To: Vinod Koul <vkoul@kernel.org>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>, linux-arm-kernel@lists.infradead.org, Frank Li <Frank.Li@nxp.com>
+Cc: dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, imx@lists.linux.dev, Nicolin Chen <b42378@freescale.com>, Shengjiu Wang <shengjiu.wang@nxp.com>, Joy Zou <joy.zou@nxp.com>, Frank Li <Frank.Li@nxp.com>
+Subject: Re: [PATCH 1/4] dmaengine: imx-sdma: Support allocate memory from internal SRAM (iram)
+Date: Wed, 06 Mar 2024 10:55:00 +0100
+Message-ID: <3280558.aeNJFYEL58@steina-w>
+Organization: TQ-Systems GmbH
+In-Reply-To: <20240303-sdma_upstream-v1-1-869cd0165b09@nxp.com>
+References: <20240303-sdma_upstream-v1-0-869cd0165b09@nxp.com> <20240303-sdma_upstream-v1-1-869cd0165b09@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH v4] filemap: avoid unnecessary major faults in
- filemap_fault()
-Content-Language: en-US
-To: "Huang, Ying" <ying.huang@intel.com>
-CC: <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-	<akpm@linux-foundation.org>, <willy@infradead.org>, <fengwei.yin@intel.com>,
-	<david@redhat.com>, <aneesh.kumar@linux.ibm.com>, <shy828301@gmail.com>,
-	<hughd@google.com>, <wangkefeng.wang@huawei.com>, <sunnanyong@huawei.com>
-References: <20240306083809.1236634-1-zhangpeng362@huawei.com>
- <871q8n926m.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From: "zhangpeng (AS)" <zhangpeng362@huawei.com>
-In-Reply-To: <871q8n926m.fsf@yhuang6-desk2.ccr.corp.intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm600020.china.huawei.com (7.193.23.147)
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 
-On 2024/3/6 16:47, Huang, Ying wrote:
+Hi Frank,
 
-> Peng Zhang <zhangpeng362@huawei.com> writes:
->> From: ZhangPeng <zhangpeng362@huawei.com>
->>
->> The major fault occurred when using mlockall(MCL_CURRENT | MCL_FUTURE)
->> in application, which leading to an unexpected issue[1].
->>
->> This caused by temporarily cleared PTE during a read+clear/modify/write
->> update of the PTE, eg, do_numa_page()/change_pte_range().
->>
->> For the data segment of the user-mode program, the global variable area
->> is a private mapping. After the pagecache is loaded, the private anonymous
->> page is generated after the COW is triggered. Mlockall can lock COW pages
->> (anonymous pages), but the original file pages cannot be locked and may
->> be reclaimed. If the global variable (private anon page) is accessed when
->> vmf->pte is zeroed in numa fault, a file page fault will be triggered.
->> At this time, the original private file page may have been reclaimed.
->> If the page cache is not available at this time, a major fault will be
->> triggered and the file will be read, causing additional overhead.
->>
->> This issue affects our traffic analysis service. The inbound traffic is
->> heavy. If a major fault occurs, the I/O schedule is triggered and the
->> original I/O is suspended. Generally, the I/O schedule is 0.7 ms. If
->> other applications are operating disks, the system needs to wait for
->> more than 10 ms. However, the inbound traffic is heavy and the NIC buffer
->> is small. As a result, packet loss occurs. But the traffic analysis service
->> can't tolerate packet loss.
->>
->> Fix this by holding PTL and rechecking the PTE in filemap_fault() before
->> triggering a major fault. We do this check only if vma is VM_LOCKED to
->> reduce the performance impact in common scenarios.
->>
->> In our product environment, there were 7 major faults every 12 hours.
->> After the patch is applied, no major fault have been triggered.
->>
->> Testing file page read and write page fault performance in ext4 and
->> ramdisk using will-it-scale[2] on a x86 physical machine. The data is
->> the average change compared with the mainline after the patch is applied.
->> The test results are within the range of fluctuation. We do this check
->> only if vma is VM_LOCKED, therefore, no performance regressions is caused
->> for most common cases.
->>
->> The test results are as follows:
->>                            processes processes_idle  threads threads_idle
->> ext4    private file write:  0.22%    0.26%           1.21%  -0.15%
->> ext4    private file  read:  0.03%    1.00%           1.39%   0.34%
->> ext4    shared  file write: -0.50%   -0.02%          -0.14%  -0.02%
->> ramdisk private file write:  0.07%    0.02%           0.53%   0.04%
->> ramdisk private file  read:  0.01%    1.60%          -0.32%  -0.02%
->>
->> [1] https://lore.kernel.org/linux-mm/9e62fd9a-bee0-52bf-50a7-498fa17434ee@huawei.com/
->> [2] https://github.com/antonblanchard/will-it-scale/
->>
->> Suggested-by: "Huang, Ying" <ying.huang@intel.com>
->> Suggested-by: David Hildenbrand <david@redhat.com>
->> Signed-off-by: ZhangPeng <zhangpeng362@huawei.com>
->> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-> LGTM, Thanks!  Feel free to add
->
-> Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
+thanks for the patch.
 
-Thanks ! 😁
+Am Montag, 4. M=E4rz 2024, 05:32:53 CET schrieb Frank Li:
+> From: Nicolin Chen <b42378@freescale.com>
+>=20
+> Allocate memory from SoC internal SRAM to reduce DDR access and keep DDR =
+in
+> lower power state (such as self-referesh) longer.
+>=20
+> Check iram_pool before sdma_init() so that ccb/context could be allocated
+> from iram because DDR maybe in self-referesh in lower power audio case
+> while sdma still running.
+>=20
+> Reviewed-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> Signed-off-by: Nicolin Chen <b42378@freescale.com>
+> Signed-off-by: Joy Zou <joy.zou@nxp.com>
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
+>  drivers/dma/imx-sdma.c | 53 +++++++++++++++++++++++++++++++++++++-------=
+=2D-----
+>  1 file changed, 40 insertions(+), 13 deletions(-)
+>=20
+> diff --git a/drivers/dma/imx-sdma.c b/drivers/dma/imx-sdma.c
+> index 9b42f5e96b1e0..9a6d8f1e9ff63 100644
+> --- a/drivers/dma/imx-sdma.c
+> +++ b/drivers/dma/imx-sdma.c
+> @@ -24,6 +24,7 @@
+>  #include <linux/semaphore.h>
+>  #include <linux/spinlock.h>
+>  #include <linux/device.h>
+> +#include <linux/genalloc.h>
+>  #include <linux/dma-mapping.h>
+>  #include <linux/firmware.h>
+>  #include <linux/slab.h>
+> @@ -516,6 +517,7 @@ struct sdma_engine {
+>  	void __iomem			*regs;
+>  	struct sdma_context_data	*context;
+>  	dma_addr_t			context_phys;
+> +	dma_addr_t			ccb_phys;
+>  	struct dma_device		dma_device;
+>  	struct clk			*clk_ipg;
+>  	struct clk			*clk_ahb;
+> @@ -531,6 +533,7 @@ struct sdma_engine {
+>  	/* clock ratio for AHB:SDMA core. 1:1 is 1, 2:1 is 0*/
+>  	bool				clk_ratio;
+>  	bool                            fw_loaded;
+> +	struct gen_pool			*iram_pool;
+>  };
+> =20
+>  static int sdma_config_write(struct dma_chan *chan,
+> @@ -1358,8 +1361,14 @@ static int sdma_request_channel0(struct sdma_engin=
+e *sdma)
+>  {
+>  	int ret =3D -EBUSY;
+> =20
+> -	sdma->bd0 =3D dma_alloc_coherent(sdma->dev, PAGE_SIZE, &sdma->bd0_phys,
+> -				       GFP_NOWAIT);
+> +	if (sdma->iram_pool)
+> +		sdma->bd0 =3D gen_pool_dma_alloc(sdma->iram_pool,
+> +					sizeof(struct sdma_buffer_descriptor),
+> +					&sdma->bd0_phys);
+> +	else
+> +		sdma->bd0 =3D dma_alloc_coherent(sdma->dev,
+> +					sizeof(struct sdma_buffer_descriptor),
+> +					&sdma->bd0_phys, GFP_NOWAIT);
+>  	if (!sdma->bd0) {
+>  		ret =3D -ENOMEM;
+>  		goto out;
+> @@ -1379,10 +1388,14 @@ static int sdma_request_channel0(struct sdma_engi=
+ne *sdma)
+>  static int sdma_alloc_bd(struct sdma_desc *desc)
+>  {
+>  	u32 bd_size =3D desc->num_bd * sizeof(struct sdma_buffer_descriptor);
+> +	struct sdma_engine *sdma =3D desc->sdmac->sdma;
+>  	int ret =3D 0;
+> =20
+> -	desc->bd =3D dma_alloc_coherent(desc->sdmac->sdma->dev, bd_size,
+> -				      &desc->bd_phys, GFP_NOWAIT);
+> +	if (sdma->iram_pool)
+> +		desc->bd =3D gen_pool_dma_alloc(sdma->iram_pool, bd_size, &desc->bd_ph=
+ys);
+> +	else
+> +		desc->bd =3D dma_alloc_coherent(sdma->dev, bd_size, &desc->bd_phys, GF=
+P_NOWAIT);
+> +
+>  	if (!desc->bd) {
+>  		ret =3D -ENOMEM;
+>  		goto out;
+> @@ -1394,9 +1407,12 @@ static int sdma_alloc_bd(struct sdma_desc *desc)
+>  static void sdma_free_bd(struct sdma_desc *desc)
+>  {
+>  	u32 bd_size =3D desc->num_bd * sizeof(struct sdma_buffer_descriptor);
+> +	struct sdma_engine *sdma =3D desc->sdmac->sdma;
+> =20
+> -	dma_free_coherent(desc->sdmac->sdma->dev, bd_size, desc->bd,
+> -			  desc->bd_phys);
+> +	if (sdma->iram_pool)
+> +		gen_pool_free(sdma->iram_pool, (unsigned long)desc->bd, bd_size);
+> +	else
+> +		dma_free_coherent(desc->sdmac->sdma->dev, bd_size, desc->bd, desc->bd_=
+phys);
+>  }
+> =20
+>  static void sdma_desc_free(struct virt_dma_desc *vd)
+> @@ -2066,8 +2082,8 @@ static int sdma_get_firmware(struct sdma_engine *sd=
+ma,
+> =20
+>  static int sdma_init(struct sdma_engine *sdma)
+>  {
+> +	int ccbsize;
+>  	int i, ret;
+> -	dma_addr_t ccb_phys;
 
->> ---
->> v3->v4:
->> - Update the performance data and commit message
->> - Check PTE without lock firstly per Huang, Ying
->> - Update comments for recheck function per David Hildenbrand
->> - Simply return 0 to make it easier to read per David Hildenbrand
->> - Check !FAULT_FLAG_ORIG_PTE_VALID instead of pmd_none()
->>
->> v2->v3:
->> - Do this check only if vma is VM_LOCKED per David Hildenbrand
->> - Hold PTL and recheck the PTE
->> - Place the recheck code in a new function filemap_fault_recheck_pte()
->>
->> v1->v2:
->> - Add more test results per Huang, Ying
->> - Add more comments before check PTE per Huang, Ying, David Hildenbrand
->>    and Yin Fengwei
->> - Change pte_offset_map_nolock to pte_offset_map as the PTL won't
->>    be used
->>
->> RFC->v1:
->> - Add error handling when ptep == NULL per Huang, Ying and Matthew
->>    Wilcox
->> - Check the PTE without acquiring PTL in filemap_fault(), suggested by
->>    Huang, Ying and Yin Fengwei
->> - Add pmd_none() check before PTE map
->> - Update commit message and add performance test information
->>
->>   mm/filemap.c | 46 ++++++++++++++++++++++++++++++++++++++++++++++
->>   1 file changed, 46 insertions(+)
->>
->> diff --git a/mm/filemap.c b/mm/filemap.c
->> index b4858d89f1b1..31ab455c4537 100644
->> --- a/mm/filemap.c
->> +++ b/mm/filemap.c
->> @@ -3181,6 +3181,48 @@ static struct file *do_async_mmap_readahead(struct vm_fault *vmf,
->>   	return fpin;
->>   }
->>   
->> +static vm_fault_t filemap_fault_recheck_pte_none(struct vm_fault *vmf)
->> +{
->> +	struct vm_area_struct *vma = vmf->vma;
->> +	vm_fault_t ret = 0;
->> +	pte_t *ptep;
->> +
->> +	/*
->> +	 * We might have COW'ed a pagecache folio and might now have an mlocked
->> +	 * anon folio mapped. The original pagecache folio is not mlocked and
->> +	 * might have been evicted. During a read+clear/modify/write update of
->> +	 * the PTE, such as done in do_numa_page()/change_pte_range(), we
->> +	 * temporarily clear the PTE under PT lock and might detect it here as
->> +	 * "none" when not holding the PT lock.
->> +	 *
->> +	 * Not rechecking the PTE under PT lock could result in an unexpected
->> +	 * major fault in an mlock'ed region. Recheck only for this special
->> +	 * scenario while holding the PT lock, to not degrade non-mlocked
->> +	 * scenarios. Recheck the PTE without PT lock firstly, thereby reducing
->> +	 * the number of times we hold PT lock.
->> +	 */
->> +	if (!(vma->vm_flags & VM_LOCKED))
->> +		return 0;
->> +
->> +	if (!(vmf->flags & FAULT_FLAG_ORIG_PTE_VALID))
->> +		return 0;
->> +
->> +	ptep = pte_offset_map(vmf->pmd, vmf->address);
->> +	if (unlikely(!ptep))
->> +		return VM_FAULT_NOPAGE;
->> +
->> +	if (unlikely(!pte_none(ptep_get_lockless(ptep)))) {
->> +		ret = VM_FAULT_NOPAGE;
->> +	} else {
->> +		spin_lock(vmf->ptl);
->> +		if (unlikely(!pte_none(ptep_get(ptep))))
->> +			ret = VM_FAULT_NOPAGE;
->> +		spin_unlock(vmf->ptl);
->> +	}
->> +	pte_unmap(ptep);
->> +	return ret;
->> +}
->> +
->>   /**
->>    * filemap_fault - read in file data for page fault handling
->>    * @vmf:	struct vm_fault containing details of the fault
->> @@ -3236,6 +3278,10 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
->>   			mapping_locked = true;
->>   		}
->>   	} else {
->> +		ret = filemap_fault_recheck_pte_none(vmf);
->> +		if (unlikely(ret))
->> +			return ret;
->> +
->>   		/* No page in the page cache at all */
->>   		count_vm_event(PGMAJFAULT);
->>   		count_memcg_event_mm(vmf->vma->vm_mm, PGMAJFAULT);
+What is the motivation to put ccb_phys to struct sdma_engine? AFAICS
+this is only used in sdma_init. Also the following patches of this series
+are not using the struct member.
 
--- 
-Best Regards,
-Peng
+Best regards,
+Alexander
+
+> =20
+>  	ret =3D clk_enable(sdma->clk_ipg);
+>  	if (ret)
+> @@ -2083,10 +2099,15 @@ static int sdma_init(struct sdma_engine *sdma)
+>  	/* Be sure SDMA has not started yet */
+>  	writel_relaxed(0, sdma->regs + SDMA_H_C0PTR);
+> =20
+> -	sdma->channel_control =3D dma_alloc_coherent(sdma->dev,
+> -			MAX_DMA_CHANNELS * sizeof(struct sdma_channel_control) +
+> -			sizeof(struct sdma_context_data),
+> -			&ccb_phys, GFP_KERNEL);
+> +	ccbsize =3D MAX_DMA_CHANNELS * (sizeof(struct sdma_channel_control)
+> +		  + sizeof(struct sdma_context_data));
+> +
+> +	if (sdma->iram_pool)
+> +		sdma->channel_control =3D gen_pool_dma_alloc(sdma->iram_pool,
+> +							   ccbsize, &sdma->ccb_phys);
+> +	else
+> +		sdma->channel_control =3D dma_alloc_coherent(sdma->dev, ccbsize, &sdma=
+=2D>ccb_phys,
+> +							   GFP_KERNEL);
+> =20
+>  	if (!sdma->channel_control) {
+>  		ret =3D -ENOMEM;
+> @@ -2095,7 +2116,7 @@ static int sdma_init(struct sdma_engine *sdma)
+> =20
+>  	sdma->context =3D (void *)sdma->channel_control +
+>  		MAX_DMA_CHANNELS * sizeof(struct sdma_channel_control);
+> -	sdma->context_phys =3D ccb_phys +
+> +	sdma->context_phys =3D sdma->ccb_phys +
+>  		MAX_DMA_CHANNELS * sizeof(struct sdma_channel_control);
+> =20
+>  	/* disable all channels */
+> @@ -2121,7 +2142,7 @@ static int sdma_init(struct sdma_engine *sdma)
+>  	else
+>  		writel_relaxed(0, sdma->regs + SDMA_H_CONFIG);
+> =20
+> -	writel_relaxed(ccb_phys, sdma->regs + SDMA_H_C0PTR);
+> +	writel_relaxed(sdma->ccb_phys, sdma->regs + SDMA_H_C0PTR);
+> =20
+>  	/* Initializes channel's priorities */
+>  	sdma_set_channel_priority(&sdma->channel[0], 7);
+> @@ -2272,6 +2293,12 @@ static int sdma_probe(struct platform_device *pdev)
+>  			vchan_init(&sdmac->vc, &sdma->dma_device);
+>  	}
+> =20
+> +	if (np) {
+> +		sdma->iram_pool =3D of_gen_pool_get(np, "iram", 0);
+> +		if (sdma->iram_pool)
+> +			dev_info(&pdev->dev, "alloc bd from iram.\n");
+> +	}
+> +
+>  	ret =3D sdma_init(sdma);
+>  	if (ret)
+>  		goto err_init;
+>=20
+>=20
+
+
+=2D-=20
+TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
+Amtsgericht M=FCnchen, HRB 105018
+Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
+http://www.tq-group.com/
+
 
 
