@@ -1,132 +1,202 @@
-Return-Path: <linux-kernel+bounces-93595-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93596-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8714F873229
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:12:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48A1187325C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:19:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D08F283C18
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:12:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9EFE7B26D33
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:12:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DD0760861;
-	Wed,  6 Mar 2024 09:03:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="od7K+B61"
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3623160884;
+	Wed,  6 Mar 2024 09:04:22 +0000 (UTC)
+Received: from rtg-sunil-navi33.amd.com (unknown [165.204.156.251])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BBDD5C8EB
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 09:03:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B85495C8EB
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 09:04:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=165.204.156.251
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709715829; cv=none; b=mwOy2U7nm8e0DCbV//i5Zh64uYhBfmJAIaXXXHdSVQtu0X7dpPiRp7dY4tcTIHWaTsjcvK+E4IjbcaFNXTXt9Ixm0yko1N3CB5n4mgy7OLql133iq1PaCX9v2bDMqap1Qhn93uWULTnUELf9pExptcj+BA2kY8s59P3eJSIBeLw=
+	t=1709715861; cv=none; b=d48zznQV1AYUYmwZcb3RVSfoMiOW0nUOj1hkHXBE03VRoaq1e2Lpuakg90SPVmc2H47iQMs9RyBC/TIXPCyLK7MxNdkyB6FuFWceh7+qGS1MB393prATvNtKPM06SHAg0WYtMXEOjuS28LXrVe6E7KG+tccNzn9cK4bLxOCGuUE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709715829; c=relaxed/simple;
-	bh=MTuT19JZZrNFRbGttqnosgvFkNW3Quab1xPTgUgjTkU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bInrdrBkZfyQ6XrpmLHqOd1UNhjB9lW788gHj0gl6X8RK+DNgkVJVp+GX2NbGTv2cC0ZB5n6mILnR9U65CGBMMbCAonDfZapHF2Le46+eK2fBlZe/LszTojIRG8K+A4Wzv3U5/e8MACSqW25BbtNd/A2dyjwG5GDk7GBf4++2Do=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=od7K+B61; arc=none smtp.client-ip=209.85.128.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-6084e809788so4675497b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 01:03:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709715826; x=1710320626; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DNKZ7A/WJk+lPfE1tZuzbZKiRTIcPzY9aV6hM5q3yvk=;
-        b=od7K+B61ICqiSV2r+bJYXxEjNrAF+U6hf9WGdvO4o/y2SoeykxBk3pEsqkzJrDKHQM
-         VvhGwPjogB93w+LCDhmd1shcwc17iNJ9AB/bXxJisUiYO3RO6C+I65fdoAnqWpYvXOVT
-         2DgSL8lM3jvbrHUOagPAdrakvUpBVVwDn7A8Xd+objgdx2/CKirWUufbvHL+9bkz0G3A
-         +zZ1sZMbSjbKpQPgTQ1PFgoEB1C+vS93icOT1ES4vcTc6/VUct75glOSB7ZOt0jGOJql
-         MgsFywiik3NzNbT3+sJfI5W3Rjza2VFfhU6/1XGaeB7SNwLFnkqQvqiLAZjrxRwqNCVJ
-         a8aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709715826; x=1710320626;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DNKZ7A/WJk+lPfE1tZuzbZKiRTIcPzY9aV6hM5q3yvk=;
-        b=CPSdnbXszhHUGtdbKA643W2om/mysdeUa1ZZHy+ayd6E17YRC5wS4y6tSUdHv8IhAX
-         sicSlXTdE3MOdqW1wSYu5fp8TCDYFEYPl/HnPWfvn4ecKcErJX4+wfolpnSS7JR1W0Fh
-         Wjfxp6HIeQjeHyapJEPdZ6mW3qzU4eDeagwxbIqnwTZGovHWphc3jjI4dN91PCD0sHG6
-         UQVGVdmD8Zth5Kbu96APctDzVJsnAMNK26PyBbOiDuyBvpAX8PJV/oR/aKFFcqeOR3cY
-         gWkC05D5SAKxQNhaPM6TxngAwsLrGohIpR5B+PELQxi4K0XkuFdUAjveNo7N8NmAAGOn
-         sJGw==
-X-Forwarded-Encrypted: i=1; AJvYcCU/Wf9D41+26c8iX7MKdspdQW4Q0T5XGGvDHo4/JdvboU0R+WetaorgAeAeAVEDUAndUPDHlWoElxL2taDYLa1+gMNZNd+VnP98tM7M
-X-Gm-Message-State: AOJu0YwIDoJwj/XooRgS18MbhzLf6vQm7TKHC8VPs9Rq4a8mnKGAixNh
-	aH+JegrSmINyk3Tu6oXtpW2RrJpLeihXVWVKZZu8hqqciL3qpqK6oA5YekVyUAWzw8Fkq/Nkt67
-	kF1O96E2S9/VpjaStfRN2tj9T6aucQvrpv/3xrw==
-X-Google-Smtp-Source: AGHT+IEq0l4q0PGKGt/n9ZV87AxjL59m+ib2AxsDu8+ir/Z6fft6885YjPaR5xoKLN5EeK7eKL/Ps1HmkmZxbVDhpYg=
-X-Received: by 2002:a0d:d894:0:b0:609:e180:5e67 with SMTP id
- a142-20020a0dd894000000b00609e1805e67mr119509ywe.25.1709715826481; Wed, 06
- Mar 2024 01:03:46 -0800 (PST)
+	s=arc-20240116; t=1709715861; c=relaxed/simple;
+	bh=UwSlKwtqtVaCmHsmrNN30TBWPNUuqZE56UeFYKoLeD0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ZjNAQjzf8DgrpY57v+nNdQcFV15L7Io4GZDJKkVvx/bWKQkEhDZnu3CBeZmME8VNf8meAFcSGyDy2Sw1NNOCTeyf9mk3JTVUehN5iWY+nBdyHp4iL6A3qjotCDHdEL0CwLwmQCBn0IPmxnWtU0qbDIc0q61nMpkKmOQLpQPwA/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=amd.com; spf=none smtp.mailfrom=rtg-sunil-navi33.amd.com; arc=none smtp.client-ip=165.204.156.251
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=rtg-sunil-navi33.amd.com
+Received: from rtg-sunil-navi33.amd.com (localhost [127.0.0.1])
+	by rtg-sunil-navi33.amd.com (8.15.2/8.15.2/Debian-22ubuntu3) with ESMTP id 42694Abe3453178;
+	Wed, 6 Mar 2024 14:34:10 +0530
+Received: (from sunil@localhost)
+	by rtg-sunil-navi33.amd.com (8.15.2/8.15.2/Submit) id 42694AtG3453171;
+	Wed, 6 Mar 2024 14:34:10 +0530
+From: Sunil Khatri <sunil.khatri@amd.com>
+To: Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Shashank Sharma <shashank.sharma@amd.com>
+Cc: amd-gfx@lists.freedesktop.org, Pan@rtg-sunil-navi33.amd.com,
+        Xinhui <Xinhui.Pan@amd.com>, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Mukul Joshi <mukul.joshi@amd.com>,
+        Arunpravin Paneer Selvam <Arunpravin.PaneerSelvam@amd.com>,
+        Sunil Khatri <sunil.khatri@amd.com>
+Subject: [PATCH] drm/amdgpu: cache in more vm fault information
+Date: Wed,  6 Mar 2024 14:34:08 +0530
+Message-Id: <20240306090408.3453152-1-sunil.khatri@amd.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240301221641.159542-1-paweldembicki@gmail.com>
- <CACRpkdY1QfeqRfU-doq_qss8VzgWo9jLnULQREGmHPqsgpqWaQ@mail.gmail.com> <51913f10-892e-42b0-b609-c4f56878c473@gmail.com>
-In-Reply-To: <51913f10-892e-42b0-b609-c4f56878c473@gmail.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Wed, 6 Mar 2024 10:03:34 +0100
-Message-ID: <CACRpkdZ7s2kNOFjG0v7U2xBtw8Ri2UTOxhQ2sa6_2KjkFsOA=Q@mail.gmail.com>
-Subject: Re: [PATCH net-next v6 00/16] net: dsa: vsc73xx: Make vsc73xx usable
-To: Florian Fainelli <f.fainelli@gmail.com>
-Cc: Pawel Dembicki <paweldembicki@gmail.com>, netdev@vger.kernel.org, 
-	Simon Horman <horms@kernel.org>, Andrew Lunn <andrew@lunn.ch>, Vladimir Oltean <olteanv@gmail.com>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Claudiu Manoil <claudiu.manoil@nxp.com>, Alexandre Belloni <alexandre.belloni@bootlin.com>, 
-	UNGLinuxDriver@microchip.com, Russell King <linux@armlinux.org.uk>, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Mar 6, 2024 at 12:28=E2=80=AFAM Florian Fainelli <f.fainelli@gmail.=
-com> wrote:
-> On 3/5/24 14:45, Linus Walleij wrote:
-> > On Fri, Mar 1, 2024 at 11:17=E2=80=AFPM Pawel Dembicki <paweldembicki@g=
-mail.com> wrote:
-> >
-> >> This patch series focuses on making vsc73xx usable.
-> >
-> > Can't help to think it is a bit funny regarding how many units
-> > of this chips are shipped in e.g. home routers.
->
-> How many use this particular DSA driver as opposed to an user-space SDK
-> driver though?
+When an  page fault interrupt is raised there
+is a lot more information that is useful for
+developers to analyse the pagefault.
 
-They don't have a userspace driver either, they all have a kernelspace
-hack on kernel 2.6.15 or so :/
+Add all such information in the last cached
+pagefault from an interrupt handler.
 
-https://github.com/linusw/linux-SL3516/blob/SL93512R_v2.6.6/drivers/net/sl_=
-switch.c
+Signed-off-by: Sunil Khatri <sunil.khatri@amd.com>
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c | 9 +++++++--
+ drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h | 7 ++++++-
+ drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c | 2 +-
+ drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c | 2 +-
+ drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c  | 2 +-
+ drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c  | 2 +-
+ drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c  | 2 +-
+ 7 files changed, 18 insertions(+), 8 deletions(-)
 
-> Do you have a list of devices, so I make sure I don't buy those :P?
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+index 4299ce386322..b77e8e28769d 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+@@ -2905,7 +2905,7 @@ void amdgpu_debugfs_vm_bo_info(struct amdgpu_vm *vm, struct seq_file *m)
+  * Cache the fault info for later use by userspace in debugging.
+  */
+ void amdgpu_vm_update_fault_cache(struct amdgpu_device *adev,
+-				  unsigned int pasid,
++				  struct amdgpu_iv_entry *entry,
+ 				  uint64_t addr,
+ 				  uint32_t status,
+ 				  unsigned int vmhub)
+@@ -2915,7 +2915,7 @@ void amdgpu_vm_update_fault_cache(struct amdgpu_device *adev,
+ 
+ 	xa_lock_irqsave(&adev->vm_manager.pasids, flags);
+ 
+-	vm = xa_load(&adev->vm_manager.pasids, pasid);
++	vm = xa_load(&adev->vm_manager.pasids, entry->pasid);
+ 	/* Don't update the fault cache if status is 0.  In the multiple
+ 	 * fault case, subsequent faults will return a 0 status which is
+ 	 * useless for userspace and replaces the useful fault status, so
+@@ -2924,6 +2924,11 @@ void amdgpu_vm_update_fault_cache(struct amdgpu_device *adev,
+ 	if (vm && status) {
+ 		vm->fault_info.addr = addr;
+ 		vm->fault_info.status = status;
++		vm->fault_info.client_id = entry->client_id;
++		vm->fault_info.src_id = entry->src_id;
++		vm->fault_info.vmid = entry->vmid;
++		vm->fault_info.pasid = entry->pasid;
++		vm->fault_info.ring_id = entry->ring_id;
+ 		if (AMDGPU_IS_GFXHUB(vmhub)) {
+ 			vm->fault_info.vmhub = AMDGPU_VMHUB_TYPE_GFX;
+ 			vm->fault_info.vmhub |=
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h
+index 047ec1930d12..c7782a89bdb5 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h
+@@ -286,6 +286,11 @@ struct amdgpu_vm_fault_info {
+ 	uint32_t	status;
+ 	/* which vmhub? gfxhub, mmhub, etc. */
+ 	unsigned int	vmhub;
++	unsigned int	client_id;
++	unsigned int	src_id;
++	unsigned int	ring_id;
++	unsigned int	pasid;
++	unsigned int	vmid;
+ };
+ 
+ struct amdgpu_vm {
+@@ -605,7 +610,7 @@ static inline void amdgpu_vm_eviction_unlock(struct amdgpu_vm *vm)
+ }
+ 
+ void amdgpu_vm_update_fault_cache(struct amdgpu_device *adev,
+-				  unsigned int pasid,
++				  struct amdgpu_iv_entry *entry,
+ 				  uint64_t addr,
+ 				  uint32_t status,
+ 				  unsigned int vmhub);
+diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c b/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
+index d933e19e0cf5..6b177ce8db0e 100644
+--- a/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
+@@ -150,7 +150,7 @@ static int gmc_v10_0_process_interrupt(struct amdgpu_device *adev,
+ 		status = RREG32(hub->vm_l2_pro_fault_status);
+ 		WREG32_P(hub->vm_l2_pro_fault_cntl, 1, ~1);
+ 
+-		amdgpu_vm_update_fault_cache(adev, entry->pasid, addr, status,
++		amdgpu_vm_update_fault_cache(adev, entry, addr, status,
+ 					     entry->vmid_src ? AMDGPU_MMHUB0(0) : AMDGPU_GFXHUB(0));
+ 	}
+ 
+diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c b/drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c
+index 527dc917e049..bcf254856a3e 100644
+--- a/drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c
+@@ -121,7 +121,7 @@ static int gmc_v11_0_process_interrupt(struct amdgpu_device *adev,
+ 		status = RREG32(hub->vm_l2_pro_fault_status);
+ 		WREG32_P(hub->vm_l2_pro_fault_cntl, 1, ~1);
+ 
+-		amdgpu_vm_update_fault_cache(adev, entry->pasid, addr, status,
++		amdgpu_vm_update_fault_cache(adev, entry, addr, status,
+ 					     entry->vmid_src ? AMDGPU_MMHUB0(0) : AMDGPU_GFXHUB(0));
+ 	}
+ 
+diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c b/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c
+index 3da7b6a2b00d..e9517ebbe1fd 100644
+--- a/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c
+@@ -1270,7 +1270,7 @@ static int gmc_v7_0_process_interrupt(struct amdgpu_device *adev,
+ 	if (!addr && !status)
+ 		return 0;
+ 
+-	amdgpu_vm_update_fault_cache(adev, entry->pasid,
++	amdgpu_vm_update_fault_cache(adev, entry,
+ 				     ((u64)addr) << AMDGPU_GPU_PAGE_SHIFT, status, AMDGPU_GFXHUB(0));
+ 
+ 	if (amdgpu_vm_fault_stop == AMDGPU_VM_FAULT_STOP_FIRST)
+diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c b/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c
+index d20e5f20ee31..a271bf832312 100644
+--- a/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c
+@@ -1438,7 +1438,7 @@ static int gmc_v8_0_process_interrupt(struct amdgpu_device *adev,
+ 	if (!addr && !status)
+ 		return 0;
+ 
+-	amdgpu_vm_update_fault_cache(adev, entry->pasid,
++	amdgpu_vm_update_fault_cache(adev, entry,
+ 				     ((u64)addr) << AMDGPU_GPU_PAGE_SHIFT, status, AMDGPU_GFXHUB(0));
+ 
+ 	if (amdgpu_vm_fault_stop == AMDGPU_VM_FAULT_STOP_FIRST)
+diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c b/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
+index 47b63a4ce68b..dc9fb1fb9540 100644
+--- a/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c
+@@ -666,7 +666,7 @@ static int gmc_v9_0_process_interrupt(struct amdgpu_device *adev,
+ 	rw = REG_GET_FIELD(status, VM_L2_PROTECTION_FAULT_STATUS, RW);
+ 	WREG32_P(hub->vm_l2_pro_fault_cntl, 1, ~1);
+ 
+-	amdgpu_vm_update_fault_cache(adev, entry->pasid, addr, status, vmhub);
++	amdgpu_vm_update_fault_cache(adev, entry, addr, status, vmhub);
+ 
+ 	dev_err(adev->dev,
+ 		"VM_L2_PROTECTION_FAULT_STATUS:0x%08X\n",
+-- 
+2.34.1
 
-- StorLink reference design SL93512R (and the rest of them, and later resol=
-d
-  from Cortina Systems). I got this from Imre Kaloz who got it from StorLin=
-k.
-
-- ITian Square One
-  https://dflund.se/~triad/krad/itian-squareone/
-  https://openwrt.org/toh/itian/square_one_sq201
-  (The place where I started this switch support.)
-  using the same hack as above.
-
-HEY! You sent that to me :D
-
-I think a bunch of other random router vendors copied this from the StorLin=
-k
-reference design as well, I just don't have all the Gemini devices.
-
-Yours,
-Linus Walleij
 
