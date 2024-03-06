@@ -1,134 +1,212 @@
-Return-Path: <linux-kernel+bounces-93685-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94358-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D6A6873342
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:59:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7D6B873DE6
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 18:59:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 701AEB251B2
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:58:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 432431F25778
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 17:59:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83BF25FB81;
-	Wed,  6 Mar 2024 09:58:22 +0000 (UTC)
-Received: from mx1.zhaoxin.com (MX1.ZHAOXIN.COM [210.0.225.12])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B051113DB9F;
+	Wed,  6 Mar 2024 17:59:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="XrHjw7j1"
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9232A5C5E9
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 09:58:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.0.225.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B22F13BAF5;
+	Wed,  6 Mar 2024 17:59:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709719102; cv=none; b=AKwrD4SfGRLFWS3rdixK3K/Csrnf0JZcX1rw8dEucBtmCMcaa39roAhReQXCsomBux3WGaV1HYGWbeje5SMw8wXbCmsOZ76LusHgUKGC2Gix/LQAGkgXOjXIus72SP9dPfdGNxESxHateGKYJONji4OT9r7YihbsFqWCF1sCLto=
+	t=1709747972; cv=none; b=MkInxexV3wsehVD6fYaO/jWOmc4ncFmshpXt7Kn0NSDQAMWw7Xx9R6qJDYMJeGSjtugbZjuKC0a2OrpMzpAKUTAaZNp4mcBuv9owfZ1fh2sAACgTwwfHiSbbWKoIxc/vxZFQWuRyS+Oqu5KFPE/B5XFnpfuJav/293nDqc7H1Hg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709719102; c=relaxed/simple;
-	bh=F0VrgEoGn3VKVW7CjuxLe+mN+rspzZTMdmiYktONjv0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=ElU6tM4TrSvlR24aE7C/hcD3VcnY0FwgII2Nf5XFeMZZQDm7wcUQ0mKHXah5KstCh8Ok3b1XacS8zVR0WGdNmPcnzeuPZ0o4CF4WkUv1Ud3tk+PoXR7N28VYOHFFGPucDu5GboxHFfLtIXDAKxBJILnz9gFzs8/vy+/8+1ywpkc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com; spf=pass smtp.mailfrom=zhaoxin.com; arc=none smtp.client-ip=210.0.225.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zhaoxin.com
-X-ASG-Debug-ID: 1709719089-086e23661a01e80001-xx1T2L
-Received: from ZXSHMBX2.zhaoxin.com (ZXSHMBX2.zhaoxin.com [10.28.252.164]) by mx1.zhaoxin.com with ESMTP id s9aSJHPSEpQwNNlP (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO); Wed, 06 Mar 2024 17:58:09 +0800 (CST)
-X-Barracuda-Envelope-From: WeitaoWang-oc@zhaoxin.com
-X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.164
-Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by ZXSHMBX2.zhaoxin.com
- (10.28.252.164) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 6 Mar
- 2024 17:58:08 +0800
-Received: from [10.29.8.21] (10.29.8.21) by zxbjmbx1.zhaoxin.com
- (10.29.252.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 6 Mar
- 2024 17:58:07 +0800
-X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.164
-Message-ID: <3d5254cf-27de-b689-352b-45698e265f5e@zhaoxin.com>
-X-Barracuda-RBL-Trusted-Forwarder: 10.29.8.21
-Date: Thu, 7 Mar 2024 01:58:06 +0800
+	s=arc-20240116; t=1709747972; c=relaxed/simple;
+	bh=7rNmIiJvHZRRcyxK8sahGbJdTPGuTBAHirBOnXT5Ozk=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=gVZE3Nhq2e5oKgIpz5sD8+dn1yCB7NfjL8XuClaIw2x8N0GdxZW/uZEDwS5HqWzWppE9YNGSIotVKQ96gxFGwdXpCHUjkTlMSYP4CqhAnxvM6k+s+R1GoIes1nLK2VvzKlLjRchaxOaOtU0mkoANbPdMC3Q55qH1eG6VjcTDtQc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=XrHjw7j1; arc=none smtp.client-ip=217.70.183.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 6690940002;
+	Wed,  6 Mar 2024 17:59:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709747963;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=feUsser08/oRbJl8T+/+meJYT6wkDGmgBWV/M3Vs1vU=;
+	b=XrHjw7j1yFLFY+SWL4phvU+R0M4qjVf9pCSNLN3GOiFINCKTO6V8tZqhb+X5qiZcr2mclM
+	FZ8SY4jubBSJBqmweKAnFsmx8gHYy+12Skxl9jUT7UCcZt5v6Ovt0bnMi4pRQ9qcObsdSe
+	gA3ptXKBzX0o98XKq41+ouc0xxlO2u12B8woLgVKI3T+tDfc/r7vZ0yyIPcc+FcNfqDSTU
+	dGDk8z9qv2u0826HicHpB1OUaE4v3scJYew4EjFr4yaFtYQByEhTSyH9g5EKX0DYgpIsrL
+	5RM6chw1hCg25gQreIDt1EcOuG6TZTQGHckB02375C26IOA12aYQbHM/WEbe6g==
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Subject: [PATCH v3 00/11] Add Mobileye EyeQ5 support to the Nomadik I2C
+ controller & use hrtimers for timeouts
+Date: Wed, 06 Mar 2024 18:59:20 +0100
+Message-Id: <20240306-mbly-i2c-v3-0-605f866aa4ec@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH v3] USB:UAS:return ENODEV when submit urbs fail with
- device not attached
-Content-Language: en-US
-X-ASG-Orig-Subj: Re: [PATCH v3] USB:UAS:return ENODEV when submit urbs fail with
- device not attached
-To: Greg KH <gregkh@linuxfoundation.org>
-CC: <oneukum@suse.com>, <stern@rowland.harvard.edu>,
-	<linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-scsi@vger.kernel.org>, <usb-storage@lists.one-eyed-alien.net>,
-	<WeitaoWang@zhaoxin.com>, <stable@vger.kernel.org>
-References: <20240229193349.5407-1-WeitaoWang-oc@zhaoxin.com>
- <2024030530-trinity-triangle-c334@gregkh>
-From: "WeitaoWang-oc@zhaoxin.com" <WeitaoWang-oc@zhaoxin.com>
-In-Reply-To: <2024030530-trinity-triangle-c334@gregkh>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: ZXSHCAS2.zhaoxin.com (10.28.252.162) To
- zxbjmbx1.zhaoxin.com (10.29.252.163)
-X-Barracuda-Connect: ZXSHMBX2.zhaoxin.com[10.28.252.164]
-X-Barracuda-Start-Time: 1709719089
-X-Barracuda-Encrypted: ECDHE-RSA-AES128-GCM-SHA256
-X-Barracuda-URL: https://10.28.252.35:4443/cgi-mod/mark.cgi
-X-Virus-Scanned: by bsmtpd at zhaoxin.com
-X-Barracuda-Scan-Msg-Size: 2055
-X-Barracuda-BRTS-Status: 1
-X-Barracuda-Bayes: INNOCENT GLOBAL 0.0000 1.0000 -2.0210
-X-Barracuda-Spam-Score: 1.09
-X-Barracuda-Spam-Status: No, SCORE=1.09 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=9.0 tests=DATE_IN_FUTURE_06_12, DATE_IN_FUTURE_06_12_2
-X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.121736
-	Rule breakdown below
-	 pts rule name              description
-	---- ---------------------- --------------------------------------------------
-	0.01 DATE_IN_FUTURE_06_12   Date: is 6 to 12 hours after Received: date
-	3.10 DATE_IN_FUTURE_06_12_2 DATE_IN_FUTURE_06_12_2
+X-B4-Tracking: v=1; b=H4sIAPiu6GUC/1WMzQ6CMBAGX4Xs2Zru1h/qyfcwHmgpsglQ05JGQ
+ nh3CxfxsIfZfDMzRBfYRbgVMwSXOLIfMqhDAbathpcTXGcGkqQwn+hNNwkmK66WGmMMktYN5Pk
+ 7uIY/W+rxzNxyHH2YtnLC9btGTpLw/IskFFKgrpS6OI21re7G+7Hj4Wh9D2sm0U4lvVMpq0aRq
+ 7G0Upf2X12W5QsnrkFb3QAAAA==
+To: Linus Walleij <linus.walleij@linaro.org>, 
+ Andi Shyti <andi.shyti@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-mips@vger.kernel.org, Gregory Clement <gregory.clement@bootlin.com>, 
+ Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Tawfik Bayouk <tawfik.bayouk@mobileye.com>, 
+ =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>, 
+ Wolfram Sang <wsa+renesas@sang-engineering.com>
+X-Mailer: b4 0.13.0
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-On 2024/3/5 21:25, Greg KH wrote:
-> 
-> 
-> On Fri, Mar 01, 2024 at 03:33:49AM +0800, Weitao Wang wrote:
->> In the scenario of entering hibernation with udisk in the system, if the
->> udisk was gone or resume fail in the thaw phase of hibernation. Its state
->> will be set to NOTATTACHED. At this point, usb_hub_wq was already freezed
->> and can't not handle disconnect event. Next, in the poweroff phase of
->> hibernation, SYNCHRONIZE_CACHE SCSI command will be sent to this udisk
->> when poweroff this scsi device, which will cause uas_submit_urbs to be
->> called to submit URB for sense/data/cmd pipe. However, these URBs will
->> submit fail as device was set to NOTATTACHED state. Then, uas_submit_urbs
->> will return a value SCSI_MLQUEUE_DEVICE_BUSY to the caller. That will lead
->> the SCSI layer go into an ugly loop and system fail to go into hibernation.
->>
->> On the other hand, when we specially check for -ENODEV in function
->> uas_queuecommand_lck, returning DID_ERROR to SCSI layer will cause device
->> poweroff fail and system shutdown instead of entering hibernation.
->>
->> To fix this issue, let uas_submit_urbs to return original generic error
->> when submitting URB failed. At the same time, we need to translate -ENODEV
->> to DID_NOT_CONNECT for the SCSI layer.
->>
->> Suggested-by: Oliver Neukum <oneukum@suse.com>
->> Cc: stable@vger.kernel.org
->> Signed-off-by: Weitao Wang <WeitaoWang-oc@zhaoxin.com>
->> ---
->> v2->v3
->>   - Modify the description of this patch.
->>   - An error is returned directly when submitting URB fails.
-> 
-> This change breaks the build, please be more careful'
-> 
-> drivers/usb/storage/uas.c: In function ‘uas_submit_urbs’:
-> drivers/usb/storage/uas.c:559:21: error: unused variable ‘urb’ [-Werror=unused-variable]
->    559 |         struct urb *urb;
->       |                     ^~~
-> 
+Hi,
 
-I'm sorry for the carelessness. Now, I have removed this unused variable
-and completed the compilation test. I'll resubmit this patch with a new version.
+This series adds two tangent features to the Nomadik I2C controller:
 
-Thanks
-weitao
+ - Add a new compatible to support Mobileye EyeQ5 which uses the same IP
+   block as Nomadik.
+
+   It has two quirks to be handled:
+    - The memory bus only supports 32-bit accesses. Avoid readb() and
+      writeb() calls that might generate byte load/store instructions.
+    - We must write a value into a shared register region (OLB)
+      depending on the I2C bus speed.
+
+ - Allow xfer timeouts below one jiffy by using a waitqueue and hrtimers
+   instead of a completion.
+
+   The situation to be addressed is:
+    - Many devices on the same I2C bus.
+    - One xfer to each device is sent at regular interval.
+    - One device gets stuck and does not answer.
+    - With long timeouts, following devices won't get their message. A
+      shorter timeout ensures we can still talk to the following
+      devices.
+
+   This clashes a bit with the current i2c_adapter timeout field that
+   stores a jiffies amount. We therefore avoid it and store the value
+   in a private struct field, as a µs amount. If the timeout is less
+   than a jiffy duration, we switch from standard jiffies timeout to
+   hrtimers.
+
+About dependencies:
+ - For testing on EyeQ5 hardware and devicetree patches, we need the
+   base platform series from Grégory [0] and its dependency [1]. Both
+   in mips-next [2].
+ - Devicetree commits require the EyeQ5 syscon series [3] that provides
+   the reset controller node.
+
+Have a nice day,
+Théo Lebrun
+
+[0]: https://lore.kernel.org/lkml/20240216174227.409400-1-gregory.clement@bootlin.com/
+[1]: https://lore.kernel.org/linux-mips/20240209-regname-v1-0-2125efa016ef@flygoat.com/
+[2]: https://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/log/
+[3]: https://lore.kernel.org/lkml/20240301-mbly-clk-v9-0-cbf06eb88708@bootlin.com/
+
+To: Linus Walleij <linus.walleij@linaro.org>
+To: Andi Shyti <andi.shyti@kernel.org>
+To: Rob Herring <robh+dt@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+To: Conor Dooley <conor+dt@kernel.org>
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: <linux-arm-kernel@lists.infradead.org>
+Cc: <linux-i2c@vger.kernel.org>
+Cc: <devicetree@vger.kernel.org>
+Cc: <linux-kernel@vger.kernel.org>
+Cc: <linux-mips@vger.kernel.org>
+Cc: Gregory Clement <gregory.clement@bootlin.com>
+Cc: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Cc: Tawfik Bayouk <tawfik.bayouk@mobileye.com>
+Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+
+Changes in v3:
+- dt-bindings:
+  - hwmon: lm75: drop patch taken into hwmon-next.
+  - i2c: nomadik: remove superfluous "The variant found in..." comments.
+- i2c: nomadik:
+  - Add style fixes description in commit message of "rename private
+    struct pointers from dev to priv".
+  - Improve commit message of "simplify IRQ masking logic".
+  - introduce ADR_3MSB_BITS constant to avoid magic GENMASK() in code.
+  - Introduce enum i2c_operating_mode to avoid magic 0b01 in
+    DEFAULT_I2C_REG_CR. Named as in manual, using outdated terms.
+  - i2c_irq_handler(): add newline and split declaration and assignment
+    in I2C_IT_BERR case.
+  - Make timeout_usecs an u32 rather than int; avoid superfluous cast.
+  - nmk_i2c_probe(): remove extraneous debug log.
+  - nmk_i2c_eyeq5_probe():
+    - Straight return error and remove useless handling of NULL. Put
+      dev_err_probe() call in probe().
+    - Add ID value check.
+    - Add enum for speed mode values.
+    - Add static array for masks.
+  - Reorder includes in separate commit from Mobileye support.
+- Take trailers from Andi, Wolfram and Linus.
+- Link to v2: https://lore.kernel.org/r/20240229-mbly-i2c-v2-0-b32ed18c098c@bootlin.com
+
+Changes in v2:
+- dt-bindings: i2c: st,nomadic-i2c:
+  - Drop timeout-usecs property, rely on generic i2c-transfer-timeout-us.
+  - Use phandle to syscon with cell args; remove mobileye,id prop; move
+    mobileye,olb from if-statement to top-level.
+- dt-bindings: hwmon: lm75:
+  - Inherit from hwmon-common.yaml rather than declare generic label property.
+- i2c: nomadik: (ie driver code)
+  - Parse i2c-transfer-timeout-us rather than custom timeout-usecs property.
+  - Introduce readb/writeb helpers with fallback to readl/writel.
+  - Avoid readb() on Mobileye.
+  - Use mobileye,olb cell args to get controller index rather than mobileye,id.
+  - Take 5 Reviewed-by Linus Walleij.
+- MIPS: mobileye: (ie devicetrees)
+  - Use mobileye,olb with cell args rather than mobileye,id.
+  - Squash reset commit.
+  - Add i2c-transfer-timeout-us value of 10ms to all controllers.
+  - Rename LM75 instance from tmp112@48 to temperature-sensor@48.
+- Link to v1: https://lore.kernel.org/r/20240215-mbly-i2c-v1-0-19a336e91dca@bootlin.com
+
+---
+Théo Lebrun (11):
+      dt-bindings: i2c: nomadik: add mobileye,eyeq5-i2c bindings and example
+      i2c: nomadik: rename private struct pointers from dev to priv
+      i2c: nomadik: simplify IRQ masking logic
+      i2c: nomadik: use bitops helpers
+      i2c: nomadik: support short xfer timeouts using waitqueue & hrtimer
+      i2c: nomadik: replace jiffies by ktime for FIFO flushing timeout
+      i2c: nomadik: fetch i2c-transfer-timeout-us property from devicetree
+      i2c: nomadik: support Mobileye EyeQ5 I2C controller
+      i2c: nomadik: sort includes
+      MIPS: mobileye: eyeq5: add 5 I2C controller nodes
+      MIPS: mobileye: eyeq5: add evaluation board I2C temp sensor
+
+ .../devicetree/bindings/i2c/st,nomadik-i2c.yaml    |  49 +-
+ arch/mips/boot/dts/mobileye/eyeq5-epm5.dts         |   8 +
+ arch/mips/boot/dts/mobileye/eyeq5.dtsi             |  75 +++
+ drivers/i2c/busses/i2c-nomadik.c                   | 740 ++++++++++++---------
+ 4 files changed, 558 insertions(+), 314 deletions(-)
+---
+base-commit: 70a29ee8ef53a09ab62b46540c12ccb94a4a8532
+change-id: 20231023-mbly-i2c-7c2fbbb1299f
+
+Best regards,
+-- 
+Théo Lebrun <theo.lebrun@bootlin.com>
+
 
