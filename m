@@ -1,207 +1,278 @@
-Return-Path: <linux-kernel+bounces-94479-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94480-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24B9E874062
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 20:28:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A4AC874065
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 20:28:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 495E61C21657
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 19:28:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51495281DE3
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 19:28:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41AEA14036B;
-	Wed,  6 Mar 2024 19:28:31 +0000 (UTC)
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 171CC14036A;
+	Wed,  6 Mar 2024 19:28:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="R+iKghyo"
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1342D692E6;
-	Wed,  6 Mar 2024 19:28:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEEE813F01A
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 19:28:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709753310; cv=none; b=LXC09vLRyXFAxC8sV2TTKedzNUsAmZ6ecRIOcdkAbig7MjOxCXc9iEevIM7rhn7BwlaZS5mYCr7Ammm2ADlYmcw7VGyNWMiXd9NV8f7658foL+RtAH4T/+tpJNWFR3j3F988RuHEsKkKosGvp5uDgxMqWsIrkl9KNos/vcapjf4=
+	t=1709753333; cv=none; b=FJO6jNIgjcWBnxnwZsJ6wPKwgQK4P2+px7qO/F9zj4MjmKYh57k2uySIKWWVO5D/AQLcV8H0RgKOM9+O0DWx3eAddRukYb8YgVrEo78rfHh33PclXa9vhLXFgJZwXXc6sfo9Nj5vYFesoaDGApUbeD90sjLXJH4NszglBtFWp48=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709753310; c=relaxed/simple;
-	bh=CDUCX+fLbgrh7BbmfBBqG2J+zTPmFsBzl3wcitwg1ZI=;
-	h=From:In-Reply-To:Content-Type:References:Date:Cc:To:MIME-Version:
-	 Message-ID:Subject; b=Fsuf9ZSu6QAa4T/msAaS9/4HfHOutl0Uc6oK34EZ+0oXsjGasDsY36IBlgTvOrfCj6cLuKUydgX5AqlHc7bc7TXa4h8dNhpzkvi4UnUPj+n8ZUZ40/cMY2NNUtTk2uRGbJeAHIX9byIq8lOw9Xf01sXbjvBLILiRUnqRaJqf/6k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-Received: from harlem.collaboradmins.com (harlem.collaboradmins.com [IPv6:2a01:4f8:1c0c:5936::1])
-	by madrid.collaboradmins.com (Postfix) with ESMTP id 4A61337820DA;
-	Wed,  6 Mar 2024 19:28:25 +0000 (UTC)
-From: "Shreeya Patel" <shreeya.patel@collabora.com>
-In-Reply-To: <6040170.44csPzL39Z@diego>
-Content-Type: text/plain; charset="utf-8"
-X-Forward: 127.0.0.1
-References: <20240305123648.8847-1-shreeya.patel@collabora.com>
- <7657358.31r3eYUQgx@diego> <45138-65e76d00-9-580ee380@232156106> <6040170.44csPzL39Z@diego>
-Date: Wed, 06 Mar 2024 19:28:24 +0000
-Cc: mchehab@kernel.org, robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, mturquette@baylibre.com, sboyd@kernel.org, p.zabel@pengutronix.de, jose.abreu@synopsys.com, nelson.costa@synopsys.com, dmitry.osipenko@collabora.com, sebastian.reichel@collabora.com, shawn.wen@rock-chips.com, nicolas.dufresne@collabora.com, hverkuil@xs4all.nl, hverkuil-cisco@xs4all.nl, kernel@collabora.com, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-clk@vger.kernel.org, linux-arm@lists.infradead.org
-To: =?utf-8?q?Heiko_St=C3=BCbner?= <heiko@sntech.de>
+	s=arc-20240116; t=1709753333; c=relaxed/simple;
+	bh=oVbP8h99GUK9lOc/Amw1op4GHOhWRRASuthXoAH1gbE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=R/cZRAGYnhZ34pv44ZajxrW7voBAFfDKKbqXdgYHAwJjqwuXRJoB7mVuSmZn+ClyDRncpg6oZ0AGS7xXM8WKjJDspOHUOxxpHzOAhQplABybgJZTucsIj3saFAwqNSPwwQc4KLBso7u/IREs/9niSF4ye2zFCTmhCWhX/kd/jn4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=R+iKghyo; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6e55731af5cso78207b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 11:28:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709753330; x=1710358130; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=m9++UoKpeeQiFQPK2S6XtFoDKlxqW5vdVso25F8fqUo=;
+        b=R+iKghyoQDh5a92Rgy8ermZReGcTEAJKdfigKeXwTapaAMM65j3r/8br9CS0da04mK
+         G42Wly5B14AX2d4IKQwm57XqpOlWHzQr59zUMqsBZq4obsf/m4t+ddbP5VvBFQBRbNn6
+         wudyd+zRPUZi5zH+ZKi7qaD1g+FemIfgFM76uZnk26aaHHwdrUEYUT9DD54+eGXnLBWL
+         Tytber+V+3spP7Q02UNIODHt47VPM7KFlAvDGcYhtiQ8gDLowaymlBzZfjxsZXCl1rdN
+         N2TWVPQ8oPOuF2rY5CDX766wdf3hF970igQD31DSN/aHOwdqIbvLSp1xWBrULWA/iWGf
+         yxAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709753330; x=1710358130;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=m9++UoKpeeQiFQPK2S6XtFoDKlxqW5vdVso25F8fqUo=;
+        b=Hu5nKv3esonOj2Rjr1AejV8R5t06WhzHunA2a7D9KsBpINUq56MvFy17bKpZRH39hn
+         GAhTo8Xjmpj5lKty+QARWblwl19oBskEboZrvfTg754h/zdtAWxKGza+gm6G2F3dbC+i
+         RDMxR6pL8Kc+wO0LkN8DxmMfzuTw0T/Q/sBAduAq1fIRgA3Ft4Ikequ3bviDxdpG3faP
+         UfZ5wv1oANsA13dVGsu5AryUoKtE11THHWDX+9A3Mw8SuI3ZEZixF2A3Fjfa8IbMhdhd
+         l/MU8EKt1ef1PQXIfILoNb/VliloU67R7VoMiza7tOd7Xd/j0IBfffLNGbNpUW8JgAgd
+         Ykeg==
+X-Forwarded-Encrypted: i=1; AJvYcCXuu8lHqW6/aIibkpP8W9vqp9EvPVIrhM1Hqkd9O0/G6/ImrdNng/C5QuNKl5jL4rc2IswZjHF7EnuCJ68614+t/QjCNtTEy8vEFs3/
+X-Gm-Message-State: AOJu0YwBGHDFAvvj0ma6q8BmwixWE1xceKxRWo8qwXjOZOMRh0+sYY/N
+	ukJb93X82q8QG1WJeynq9AULn3pN1PcoBPaL1IqTEkV5S0+r2LviK63ZVZDjMg==
+X-Google-Smtp-Source: AGHT+IGakAHWNMkzUL4cVU+huFc20UjAENCfOhUHpM8bWIsR6IZeSjD2XDwSligdYZMB5iErYVB1qg==
+X-Received: by 2002:a05:6a20:3d19:b0:1a1:6ee9:336 with SMTP id y25-20020a056a203d1900b001a16ee90336mr137360pzi.15.1709753330036;
+        Wed, 06 Mar 2024 11:28:50 -0800 (PST)
+Received: from google.com ([2620:15c:2c5:13:9a91:c17:53d9:d156])
+        by smtp.gmail.com with ESMTPSA id p41-20020a056a000a2900b006e641fee598sm3260316pfh.141.2024.03.06.11.28.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Mar 2024 11:28:49 -0800 (PST)
+Date: Wed, 6 Mar 2024 11:28:42 -0800
+From: Igor Pylypiv <ipylypiv@google.com>
+To: Niklas Cassel <cassel@kernel.org>, Damien Le Moal <dlemoal@kernel.org>,
+	Hannes Reinecke <hare@suse.de>
+Cc: Damien Le Moal <dlemoal@kernel.org>,
+	John Garry <john.g.garry@oracle.com>,
+	Jason Yan <yanaijie@huawei.com>,
+	"James E.J. Bottomley" <jejb@linux.ibm.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	Jack Wang <jinpu.wang@cloud.ionos.com>,
+	Hannes Reinecke <hare@suse.de>,
+	Xiang Chen <chenxiang66@hisilicon.com>,
+	Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
+	Bart Van Assche <bvanassche@acm.org>,
+	TJ Adams <tadamsjr@google.com>, linux-ide@vger.kernel.org,
+	linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 2/7] scsi: libsas: Define NCQ Priority sysfs
+ attributes for SATA devices
+Message-ID: <ZejD6mYBhYFQ5Xq8@google.com>
+References: <20240306012226.3398927-1-ipylypiv@google.com>
+ <20240306012226.3398927-3-ipylypiv@google.com>
+ <ZehLfEjfOTs2wGZe@ryzen>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <ca099-65e8c400-33-2b230d40@237921438>
-Subject: =?utf-8?q?Re=3A?= [PATCH v2 4/6] =?utf-8?q?arm64=3A?==?utf-8?q?_dts=3A?=
- =?utf-8?q?_rockchip=3A?= Add device tree support for HDMI RX Controller
-User-Agent: SOGoMail 5.10.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZehLfEjfOTs2wGZe@ryzen>
 
-On Wednesday, March 06, 2024 01:50 IST, Heiko St=C3=BCbner <heiko@sntec=
-h.de> wrote:
+On Wed, Mar 06, 2024 at 11:54:52AM +0100, Niklas Cassel wrote:
+> On Tue, Mar 05, 2024 at 05:22:21PM -0800, Igor Pylypiv wrote:
+> > Libata sysfs attributes cannot be used for libsas managed SATA devices
+> > because the ata_port location is different for libsas.
+> > 
+> > Defined sysfs attributes (visible for SATA devices only):
+> > - /sys/block/sda/device/ncq_prio_enable
+> > - /sys/block/sda/device/ncq_prio_supported
+> > 
+> > The newly defined attributes will pass the correct ata_port to libata
+> > helper functions.
+> > 
+> > Reviewed-by: John Garry <john.g.garry@oracle.com>
+> > Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
+> > Reviewed-by: Jason Yan <yanaijie@huawei.com>
+> > Signed-off-by: Igor Pylypiv <ipylypiv@google.com>
+> > ---
+> >  drivers/scsi/libsas/sas_ata.c | 94 +++++++++++++++++++++++++++++++++++
+> >  include/scsi/sas_ata.h        |  6 +++
+> >  2 files changed, 100 insertions(+)
+> > 
+> > diff --git a/drivers/scsi/libsas/sas_ata.c b/drivers/scsi/libsas/sas_ata.c
+> > index 12e2653846e3..04b0bd9a4e01 100644
+> > --- a/drivers/scsi/libsas/sas_ata.c
+> > +++ b/drivers/scsi/libsas/sas_ata.c
+> > @@ -964,3 +964,97 @@ int sas_execute_ata_cmd(struct domain_device *device, u8 *fis, int force_phy_id)
+> >  			       force_phy_id, &tmf_task);
+> >  }
+> >  EXPORT_SYMBOL_GPL(sas_execute_ata_cmd);
+> > +
+> > +static ssize_t sas_ncq_prio_supported_show(struct device *device,
+> > +					   struct device_attribute *attr,
+> > +					   char *buf)
+> > +{
+> > +	struct scsi_device *sdev = to_scsi_device(device);
+> > +	struct domain_device *ddev = sdev_to_domain_dev(sdev);
+> > +	bool supported;
+> > +	int rc;
+> > +
+> > +	/* This attribute shall be visible for SATA devices only */
+> > +	if (WARN_ON_ONCE(!dev_is_sata(ddev)))
+> > +		return -EINVAL;
+> 
+> Like Hannes commented, I don't believe this is needed.
+> 
 
-> Hi again :-)
->=20
-> Am Dienstag, 5. M=C3=A4rz 2024, 20:05:02 CET schrieb Shreeya Patel:
-> > On Tuesday, March 05, 2024 19:41 IST, Heiko St=C3=BCbner <heiko@snt=
-ech.de> wrote:
-> > > Am Dienstag, 5. M=C3=A4rz 2024, 13:36:46 CET schrieb Shreeya Pate=
-l:
-> > > > Add device tree support for Synopsys DesignWare HDMI RX
-> > > > Controller.
-> > > >=20
-> > > > Reviewed-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
-> > > > Tested-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
-> > > > Co-developed-by: Dingxian Wen <shawn.wen@rock-chips.com>
-> > > > Signed-off-by: Dingxian Wen <shawn.wen@rock-chips.com>
-> > > > Signed-off-by: Shreeya Patel <shreeya.patel@collabora.com>
-> > > > ---
-> > > > Changes in v2 :-
-> > > >   - Fix some of the checkpatch errors and warnings
-> > > >   - Rename resets, vo1-grf and HPD
-> > > >   - Move hdmirx=5Fcma node to the rk3588.dtsi file
-> > > >=20
-> > > >  .../boot/dts/rockchip/rk3588-pinctrl.dtsi     | 41 +++++++++++=
-+++
-> > > >  arch/arm64/boot/dts/rockchip/rk3588.dtsi      | 55 +++++++++++=
-++++++++
-> > > >  2 files changed, 96 insertions(+)
-> > >=20
-> > > > diff --git a/arch/arm64/boot/dts/rockchip/rk3588.dtsi b/arch/ar=
-m64/boot/dts/rockchip/rk3588.dtsi
-> > > > index 5519c1430cb7..8adb98b99701 100644
-> > > > --- a/arch/arm64/boot/dts/rockchip/rk3588.dtsi
-> > > > +++ b/arch/arm64/boot/dts/rockchip/rk3588.dtsi
-> > > > @@ -7,6 +7,24 @@
-> > > >  #include "rk3588-pinctrl.dtsi"
-> > > > =20
-> > > >  / {
-> > > > +	reserved-memory {
-> > > > +		#address-cells =3D <2>;
-> > > > +		#size-cells =3D <2>;
-> > > > +		ranges;
-> > >=20
-> > > add blank line here
-> > >=20
-> > > > +		/*
-> > > > +		 * The 4k HDMI capture controller works only with 32bit
-> > > > +		 * phys addresses and doesn't support IOMMU. HDMI RX CMA
-> > > > +		 * must be reserved below 4GB.
-> > > > +		 */
-> > > > +		hdmirx=5Fcma: hdmirx=5Fcma {
-> > >=20
-> > > phandles use "=5F", but node-names "-"
-> > >=20
-> > > > +			compatible =3D "shared-dma-pool";
-> > > > +			alloc-ranges =3D <0x0 0x0 0x0 0xffffffff>;
-> > > > +			size =3D <0x0 (160 * 0x100000)>; /* 160MiB */
-> > >=20
-> > > The comment above that node, could elaborate where the value of 1=
-60MB
-> > > originates from. I assume it is to hold n-times of 4K frames or w=
-hatever,
-> > > but it would be helpful for people to be able to read that.
-> > >=20
-> >=20
-> > right, we did the following calculation to come up with this value =
-:-
-> > 3840 * 2160 * 4 (bytes/pix) * 2 (frames/buffer) / 1000 / 1000 =3D 6=
-6M
-> > and then we do the 2x times of this value to be on the safer side
-> > and support all practical use-cases.
-> >=20
-> > I'll add some more details to the comment in v3.
->=20
-> thanks, that will be helpful for me and everybody reading the dts lat=
-er on
->=20
-> >=20
-> > >=20
-> > > > +			no-map;
-> > > > +			status =3D "disabled";
-> > > > +		};
-> > > > +	};
-> > > > +
-> > > >  	pcie30=5Fphy=5Fgrf: syscon@fd5b8000 {
-> > > >  		compatible =3D "rockchip,rk3588-pcie3-phy-grf", "syscon";
-> > > >  		reg =3D <0x0 0xfd5b8000 0x0 0x10000>;
-> > > > @@ -85,6 +103,38 @@ i2s10=5F8ch: i2s@fde00000 {
-> > > >  		status =3D "disabled";
-> > > >  	};
-> > > > =20
-> > > > +	hdmi=5Freceiver: hdmi-receiver@fdee0000 {
-> > >=20
-> > > Maybe rename the label to "hdmirx:" ... that way in a board enabl=
-ing the
-> > > cma region, both nodes would stay close to each other?
-> > >=20
-> >=20
-> > Umm we already have receiver in the name so I am not sure if adding=
- rx will be
-> > a good idea. I was trying to keep it consistent with the names used=
- in other device tree files.
-> > In case you still feel otherwise then do let me know, I'll make the=
- change.
->=20
-> I'm somewhat partial to the actual name, I was more getting at simila=
-r
-> names to keep things together.
->=20
-> General sorting rules are that &foo phandles are sorted alphabeticall=
-y
-> in board devicetrees.
->=20
-> So having
->=20
-> &hdmirx {
-> 	status =3D "okay";
-> };
->=20
-> &hdmirx=5Fcma {
-> 	status =3D "okay";
-> };
->=20
-> in the board dt, makes them stay together automatically ;-)
->=20
-> So if it's hdmirx + hdmirx=5Fcma or hdmi=5Freceiver + hdmi=5Freceiver=
-=5Fcma
-> doesn't matter that much, just that they share a common basename.
->=20
->=20
-> I really want to stay away from allowing special rules for things as =
-much
-> as possible, because that becomes a neverending story, so it's
-> alphabetical sorting.
->=20
-> But nothing prevents us from naming phandles in an intelligent way ;-=
-) .
->=20
+The intention for the check is to serve as a fail-safe in case 'is_visible()'
+callback gets incorrectly modified and stops hiding the sysfs attributes
+for non-SATA devices.
 
-Makes sense to me, I'll use hdmi=5Freceiver + hdmi=5Freceiver=5Fcma com=
-bination
-to keep it consistent.
+Just want to clarify should I remove the WARN_ON_ONCE and keep the fail-safe
+check or should I get rid of the check completely and trust 'is_visible()'
+to always hide the sysfs attributes for non-SATA devices? 
 
-Thanks,
-Shreeya Patel
-
->=20
-> Thanks
-> Heiko
+> 
+> > +
+> > +	rc = ata_ncq_prio_supported(ddev->sata_dev.ap, sdev, &supported);
+> > +	if (rc)
+> > +		return rc;
+> > +
+> > +	return sysfs_emit(buf, "%d\n", supported);
+> > +}
+> > +
+> 
+> While this is a bit different depending on file, the most common way is to
+> have no blank link before the DEVICE_ATTR().
 >
 
+In "[PATCH 1/3] ata: libata-sata: Factor out NCQ Priority configuration helpers"
+Damien asked to keep the blank link before the DEVICE_ATTR() in libata-sata.c.
+
+Non-prio sysfs attributes in libata-sata.c don't have blank lines
+before DEVICE_ATTR() so I'm more inclined to remove the lines.
+
+I'm fine with either of ways, just want to get a consensus and make it 
+consistent for both libata-sata.c and sas_ata.c.
+ 
+> 
+> > +DEVICE_ATTR(ncq_prio_supported, S_IRUGO, sas_ncq_prio_supported_show, NULL);
+> > +
+> > +static ssize_t sas_ncq_prio_enable_show(struct device *device,
+> > +					struct device_attribute *attr,
+> > +					char *buf)
+> > +{
+> > +	struct scsi_device *sdev = to_scsi_device(device);
+> > +	struct domain_device *ddev = sdev_to_domain_dev(sdev);
+> > +	bool enabled;
+> > +	int rc;
+> > +
+> > +	/* This attribute shall be visible for SATA devices only */
+> > +	if (WARN_ON_ONCE(!dev_is_sata(ddev)))
+> > +		return -EINVAL;
+> > +
+> > +	rc = ata_ncq_prio_enabled(ddev->sata_dev.ap, sdev, &enabled);
+> > +	if (rc)
+> > +		return rc;
+> > +
+> > +	return sysfs_emit(buf, "%d\n", enabled);
+> > +}
+> > +
+> > +static ssize_t sas_ncq_prio_enable_store(struct device *device,
+> > +					 struct device_attribute *attr,
+> > +					 const char *buf, size_t len)
+> > +{
+> > +	struct scsi_device *sdev = to_scsi_device(device);
+> > +	struct domain_device *ddev = sdev_to_domain_dev(sdev);
+> > +	bool enable;
+> > +	int rc;
+> > +
+> > +	/* This attribute shall be visible for SATA devices only */
+> > +	if (WARN_ON_ONCE(!dev_is_sata(ddev)))
+> > +		return -EINVAL;
+> > +
+> > +	rc = kstrtobool(buf, &enable);
+> > +	if (rc)
+> > +		return rc;
+> > +
+> > +	rc = ata_ncq_prio_enable(ddev->sata_dev.ap, sdev, enable);
+> > +	if (rc)
+> > +		return rc;
+> > +
+> > +	return len;
+> > +}
+> > +
+> > +DEVICE_ATTR(ncq_prio_enable, S_IRUGO | S_IWUSR,
+> > +	    sas_ncq_prio_enable_show, sas_ncq_prio_enable_store);
+> > +
+> > +static struct attribute *sas_ata_sdev_attrs[] = {
+> > +	&dev_attr_ncq_prio_supported.attr,
+> > +	&dev_attr_ncq_prio_enable.attr,
+> > +	NULL
+> > +};
+> > +
+> > +static umode_t sas_ata_attr_is_visible(struct kobject *kobj,
+> > +				       struct attribute *attr, int i)
+> > +{
+> > +	struct device *dev = kobj_to_dev(kobj);
+> > +	struct scsi_device *sdev = to_scsi_device(dev);
+> > +	struct domain_device *ddev = sdev_to_domain_dev(sdev);
+> > +
+> > +	if (!dev_is_sata(ddev))
+> > +		return 0;
+> > +
+> > +	return attr->mode;
+> > +}
+> > +
+> > +const struct attribute_group sas_ata_sdev_attr_group = {
+> > +	.attrs = sas_ata_sdev_attrs,
+> > +	.is_visible = sas_ata_attr_is_visible,
+> > +};
+> > +EXPORT_SYMBOL_GPL(sas_ata_sdev_attr_group);
+> > diff --git a/include/scsi/sas_ata.h b/include/scsi/sas_ata.h
+> > index 2f8c719840a6..92e27e7bf088 100644
+> > --- a/include/scsi/sas_ata.h
+> > +++ b/include/scsi/sas_ata.h
+> > @@ -39,6 +39,9 @@ int smp_ata_check_ready_type(struct ata_link *link);
+> >  int sas_discover_sata(struct domain_device *dev);
+> >  int sas_ata_add_dev(struct domain_device *parent, struct ex_phy *phy,
+> >  		    struct domain_device *child, int phy_id);
+> > +
+> > +extern const struct attribute_group sas_ata_sdev_attr_group;
+> > +
+> >  #else
+> >  
+> >  static inline void sas_ata_disabled_notice(void)
+> > @@ -123,6 +126,9 @@ static inline int sas_ata_add_dev(struct domain_device *parent, struct ex_phy *p
+> >  	sas_ata_disabled_notice();
+> >  	return -ENODEV;
+> >  }
+> > +
+> > +#define sas_ata_sdev_attr_group ((struct attribute_group) {})
+> > +
+> >  #endif
+> >  
+> >  #endif /* _SAS_ATA_H_ */
+> > -- 
+> > 2.44.0.278.ge034bb2e1d-goog
+> > 
 
