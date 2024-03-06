@@ -1,229 +1,366 @@
-Return-Path: <linux-kernel+bounces-94690-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94700-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AAC987439B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 00:15:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89E168743BD
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 00:17:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 61132B2188B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 23:15:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3FAAF28290B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 23:17:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDE461C6AF;
-	Wed,  6 Mar 2024 23:15:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B9164F894;
+	Wed,  6 Mar 2024 23:15:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y+0aVbSU"
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DXcD86v+"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BD5A1BF40;
-	Wed,  6 Mar 2024 23:15:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 957EB45034;
+	Wed,  6 Mar 2024 23:15:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709766902; cv=none; b=i+MTXd3Kv6yWE6g71OkV73mXMCZySYVGrzTIxAjnXU9fpWCwc7OIDCgo+EM5JXRmHyRvbQZQCUGxTl/fc9yFb2Pv2U++hMCdqRs5asGK3TStHbckv1fZSdQeRCP67gNp9GGQEN6JYPVOsc7tP+oo2RE3SRk9+g0BBxKeL6fZJKg=
+	t=1709766952; cv=none; b=PO1ySFblyA3kaxRUoASFkNDtEh3N1+KXwvnPz2KmJKTo3d9oMQOcnjQoEhGPW4boaTZNssXnyGNCiFhl12+g4wK8xB184JOik83+POmB7NIZ1yvD3TbUIErXZCQFePJ6oMrvXPcmjyhx8KdGF9w/PO5zXg/yQqqXRwS3P8Pf+dA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709766902; c=relaxed/simple;
-	bh=rmkN/rk1OkUf46sCZEUOz0SAufpmECUZvf/L5nkQh7g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eMbWzEyKGJv8/tF3lpOWyPVey6hwzhXWYsmhdrKmfGG3GQ/35DFqIFgMtWKmSWVLyqxPBXeqUuZXvOvSRW5EaRhvIR7k+nY+mLFdtPA4DXSrhix0zpXhb5eFcuyKiPnHh3nJEUNjxAUjR8AN+H3pmQRXGBX5/HqDuAHmdPuq5A8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y+0aVbSU; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1dcb3e6ff3fso2426865ad.2;
-        Wed, 06 Mar 2024 15:15:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709766900; x=1710371700; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Ijwo7LBOA8/494JdwWuRvnpoOax7lsgpUyAg0JL7Zt8=;
-        b=Y+0aVbSUtXwue3X1AYbQGAUIf1IeaOTWLY8/p/uq3RFVj8PUPCohTcrMdtHvtLkubV
-         jXVZ9fGUwWKAnHpi6qcdAnYncAgB7bHcF54T6bejfENsqw9+uejE8XQooYJ/ej7lNrEH
-         T+Rwb3FFJE9u5TpJyWKyVQFcElZa6iWqnRSHB0ELjJZoWFdFmFnXch7pWCmyLQHPNej7
-         wBYadeLIXYlNtLJVW3Cxm7VirYulBexhznJDLtl+ul5PDFGwJF/4JlfWBmOnhjCxmRNQ
-         aVbulkq6qYNOiC5KT/YKbaJCX3IBuLADTnOVxXoca+3T5z5/FQMSAPELCFEwFCiSH6nb
-         SGcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709766900; x=1710371700;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ijwo7LBOA8/494JdwWuRvnpoOax7lsgpUyAg0JL7Zt8=;
-        b=msPOuPbHY/2/U9WL++1rutmbHtRoEW2Z0bE8Sh6xjbjNUwUZ2aS2GAB65UyZFp381S
-         qx+kEnMRWZVECvPGf8DsUFvDelcwiyTBoj31iOMMO8raCHzJC9Cx4ZgwWjWKSf4KC04c
-         4j3gBDEGmJwe6I8jEoqVbydN2FjLlDMb0D4dPKAp6M3hz1FSPVvAPtzW0tIiLEwsFzEy
-         1JGQxsuUuuMmLYx+xge/J2N8UMkVlg/uMa4tMgfJ8HqKJAmmSxXhImzfoHOGMz4xDfR+
-         PcJEhr5kzNKWa9W6lb3StqmNr4LSK6USOiHwFzC5W0xQUkDTOP75WGuFK4deCo7clWBg
-         AI4A==
-X-Forwarded-Encrypted: i=1; AJvYcCWoETPUAHufgPQORWh6LOa/fVVDieZw+Zeor/KF9SLaAL+B4p8wuO2Ogp5TemTr0xUxhOC/bSorL5mXVAr0zob/9DAoYti8A65xNnoFNwyrWgG9evQBIVICu5Gi9NmQXfqKywXk
-X-Gm-Message-State: AOJu0Yxo+4LoZT/ZWzLUZrC7m+cAKMDiMVE6LcOzsxnI/5w8WG006Xwz
-	Ms0eF8JGFkjnWPFd7SM30sCmBNSKKX8WEjSuXnny9fFwP9R43qKy
-X-Google-Smtp-Source: AGHT+IHn768mdnCZcfQYggj1wAhTHLgcQvY4vWgzFa70/3k0LfKpYtQDPrnDLMq6vSfv7Y477Imupw==
-X-Received: by 2002:a17:902:ecd1:b0:1dc:8c27:9a07 with SMTP id a17-20020a170902ecd100b001dc8c279a07mr7894615plh.31.1709766899654;
-        Wed, 06 Mar 2024 15:14:59 -0800 (PST)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id d15-20020a170903230f00b001dc3c4e7a12sm13163910plh.14.2024.03.06.15.14.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Mar 2024 15:14:59 -0800 (PST)
-Message-ID: <3e17163f-81dd-42e5-9aaa-d92ebc3bd343@gmail.com>
-Date: Wed, 6 Mar 2024 15:14:54 -0800
+	s=arc-20240116; t=1709766952; c=relaxed/simple;
+	bh=fY7XsyGWBCyMThKR5lWJhW/9PqmzwSI9SznLLw/I8/I=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=D335scQ/BMPOeB6q7SM28Fjvz1CDwg5HaPDBFIRL1A7D2kov/TOY+7HbaLzhv3U8d+hHtmXS/V+VR1RQwH18GVqrO6Ydfh8MCGmyqLodFCB5XnYKEAg5UBtpUqDP47ndNZPI2spqlx0stg0fagZmp5hcZ8sWpXaIVM27eyqcbZw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DXcD86v+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64BF2C43330;
+	Wed,  6 Mar 2024 23:15:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709766952;
+	bh=fY7XsyGWBCyMThKR5lWJhW/9PqmzwSI9SznLLw/I8/I=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+	b=DXcD86v+iNqFhP587JqwA1ZOpeibZUf4ZSZyEDDE/v+M3p6qoP7Azkj9cM02HOAYH
+	 eo5ZHVpYP7UEKCvHgoWjg9M1K+zJX2MCiNF2eNdcDzfdM2SIPhFjRApTJlamwEKwQx
+	 DvbYNylj5wB9X4JqLjukN8qYemj4l4CTFEZk9rFEh1AXZxUpEbZoP6VxyF2n43sP0y
+	 66+rnZnHlYfyLaD8QQ2f0fLb9HXPd4LjpL2/Eyd8AYepwlb43XHhMRO5vnEm2n7TTR
+	 DSLkZ2Xsnp3BVZ7NO0LIceCZaqDqBgfNGwsJmybL6u/bg7DspfXKrLrWGllv/2pWFC
+	 4MxtO5NbqRBNw==
+From: Mark Brown <broonie@kernel.org>
+Date: Wed, 06 Mar 2024 23:14:54 +0000
+Subject: [PATCH v5 9/9] kselftest/arm64: Add 2023 DPISA hwcap test coverage
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v6 12/16] net: dsa: vsc73xx: introduce tag 8021q
- for vsc73xx
-Content-Language: en-US
-To: Pawel Dembicki <paweldembicki@gmail.com>, netdev@vger.kernel.org
-Cc: Linus Walleij <linus.walleij@linaro.org>, Simon Horman
- <horms@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
- Vladimir Oltean <olteanv@gmail.com>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Claudiu Manoil <claudiu.manoil@nxp.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- UNGLinuxDriver@microchip.com, Russell King <linux@armlinux.org.uk>,
- linux-kernel@vger.kernel.org
-References: <20240301221641.159542-1-paweldembicki@gmail.com>
- <20240301221641.159542-13-paweldembicki@gmail.com>
-From: Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20240301221641.159542-13-paweldembicki@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+Message-Id: <20240306-arm64-2023-dpisa-v5-9-c568edc8ed7f@kernel.org>
+References: <20240306-arm64-2023-dpisa-v5-0-c568edc8ed7f@kernel.org>
+In-Reply-To: <20240306-arm64-2023-dpisa-v5-0-c568edc8ed7f@kernel.org>
+To: Catalin Marinas <catalin.marinas@arm.com>, 
+ Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>, 
+ Oliver Upton <oliver.upton@linux.dev>, James Morse <james.morse@arm.com>, 
+ Suzuki K Poulose <suzuki.poulose@arm.com>, Jonathan Corbet <corbet@lwn.net>, 
+ Shuah Khan <shuah@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ Dave Martin <Dave.Martin@arm.com>, kvmarm@lists.linux.dev, 
+ linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+ Mark Brown <broonie@kernel.org>
+X-Mailer: b4 0.13-dev-a684c
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6393; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=fY7XsyGWBCyMThKR5lWJhW/9PqmzwSI9SznLLw/I8/I=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBl6PkIPf4xKM6Yu7Jj12VtcoLudg3aXyTrU4sxT1La
+ WsGAUa2JATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZej5CAAKCRAk1otyXVSH0H6+B/
+ 4jaJHK3agkptHz+sTNdoXR2K45V1FnjbIQBTW5YXRbAYn4XTwxGccZjPSQzrSEnJNlHCB/jnKHcPik
+ y1lcowHa9+pxdcrbB/Mxjxv/83xnCLRoENKzqm+qn5zuwvKdmU2Xu/v3TWBfee26zET9kEiprbngzm
+ sA8ZZ9KYl4RmSeQY2BKpcW1P7GPX8UWsfTJoXqaxisYTaiCWnHjD8+xBsdeUS+qsNXqmFrFfQ1/VHW
+ /Dwj68WDajxm3J/6//anbAMOUaOE5yKZ0xKvIViPh87Rg4iMCsRfoI7EK+uwf0D4fqEBtS/gW7xua0
+ 5Iih4evvLo6OgzHFtvVBGhv5JcYj0F
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 
-On 3/1/24 14:16, Pawel Dembicki wrote:
-> This commit introduces a new tagger based on 802.1q tagging.
-> It's designed for the vsc73xx driver. The VSC73xx family doesn't have
-> any tag support for the RGMII port, but it could be based on VLANs.
-> 
-> Signed-off-by: Pawel Dembicki <paweldembicki@gmail.com>
-> ---
-> v6:
->    - added missing MODULE_DESCRIPTION()
-> v5:
->    - removed skb_vlan_tag_present(skb) checking
->    - use 80 characters per line limit
-> v4:
->    - rebase to net-next/main
-> v3:
->    - Introduce a patch after the tagging patch split
-> 
->   include/net/dsa.h           |  2 ++
->   net/dsa/Kconfig             |  6 ++++
->   net/dsa/Makefile            |  1 +
->   net/dsa/tag_vsc73xx_8021q.c | 67 +++++++++++++++++++++++++++++++++++++
->   4 files changed, 76 insertions(+)
->   create mode 100644 net/dsa/tag_vsc73xx_8021q.c
-> 
-> diff --git a/include/net/dsa.h b/include/net/dsa.h
-> index 7c0da9effe4e..b79e136e4c41 100644
-> --- a/include/net/dsa.h
-> +++ b/include/net/dsa.h
-> @@ -56,6 +56,7 @@ struct phylink_link_state;
->   #define DSA_TAG_PROTO_RTL8_4T_VALUE		25
->   #define DSA_TAG_PROTO_RZN1_A5PSW_VALUE		26
->   #define DSA_TAG_PROTO_LAN937X_VALUE		27
-> +#define DSA_TAG_PROTO_VSC73XX_8021Q_VALUE	28
->   
->   enum dsa_tag_protocol {
->   	DSA_TAG_PROTO_NONE		= DSA_TAG_PROTO_NONE_VALUE,
-> @@ -86,6 +87,7 @@ enum dsa_tag_protocol {
->   	DSA_TAG_PROTO_RTL8_4T		= DSA_TAG_PROTO_RTL8_4T_VALUE,
->   	DSA_TAG_PROTO_RZN1_A5PSW	= DSA_TAG_PROTO_RZN1_A5PSW_VALUE,
->   	DSA_TAG_PROTO_LAN937X		= DSA_TAG_PROTO_LAN937X_VALUE,
-> +	DSA_TAG_PROTO_VSC73XX_8021Q	= DSA_TAG_PROTO_VSC73XX_8021Q_VALUE,
->   };
->   
->   struct dsa_switch;
-> diff --git a/net/dsa/Kconfig b/net/dsa/Kconfig
-> index 8e698bea99a3..e59360071c67 100644
-> --- a/net/dsa/Kconfig
-> +++ b/net/dsa/Kconfig
-> @@ -166,6 +166,12 @@ config NET_DSA_TAG_TRAILER
->   	  Say Y or M if you want to enable support for tagging frames at
->   	  with a trailed. e.g. Marvell 88E6060.
->   
-> +config NET_DSA_TAG_VSC73XX_8021Q
-> +	tristate "Tag driver for Microchip/Vitesse VSC73xx family of switches, using VLAN"
-> +	help
-> +	  Say Y or M if you want to enable support for tagging frames with a
-> +	  custom VLAN-based header.
-> +
->   config NET_DSA_TAG_XRS700X
->   	tristate "Tag driver for XRS700x switches"
->   	help
-> diff --git a/net/dsa/Makefile b/net/dsa/Makefile
-> index 8a1894a42552..555c07cfeb71 100644
-> --- a/net/dsa/Makefile
-> +++ b/net/dsa/Makefile
-> @@ -37,6 +37,7 @@ obj-$(CONFIG_NET_DSA_TAG_RTL8_4) += tag_rtl8_4.o
->   obj-$(CONFIG_NET_DSA_TAG_RZN1_A5PSW) += tag_rzn1_a5psw.o
->   obj-$(CONFIG_NET_DSA_TAG_SJA1105) += tag_sja1105.o
->   obj-$(CONFIG_NET_DSA_TAG_TRAILER) += tag_trailer.o
-> +obj-$(CONFIG_NET_DSA_TAG_VSC73XX_8021Q) += tag_vsc73xx_8021q.o
->   obj-$(CONFIG_NET_DSA_TAG_XRS700X) += tag_xrs700x.o
->   
->   # for tracing framework to find trace.h
-> diff --git a/net/dsa/tag_vsc73xx_8021q.c b/net/dsa/tag_vsc73xx_8021q.c
-> new file mode 100644
-> index 000000000000..f7bc0261d54d
-> --- /dev/null
-> +++ b/net/dsa/tag_vsc73xx_8021q.c
-> @@ -0,0 +1,67 @@
-> +// SPDX-License-Identifier: GPL-2.0 OR MIT
-> +/* Copyright (C) 2024 Pawel Dembicki <paweldembicki@gmail.com>
-> + */
-> +#include <linux/dsa/8021q.h>
-> +
-> +#include "tag.h"
-> +#include "tag_8021q.h"
-> +
-> +#define VSC73XX_8021Q_NAME "vsc73xx-8021q"
-> +
-> +static struct sk_buff *
-> +vsc73xx_xmit(struct sk_buff *skb, struct net_device *netdev)
-> +{
-> +	struct dsa_port *dp = dsa_user_to_port(netdev);
-> +	u16 queue_mapping = skb_get_queue_mapping(skb);
-> +	u16 tx_vid = dsa_tag_8021q_standalone_vid(dp);
-> +	u8 pcp;
-> +
-> +	if (skb->offload_fwd_mark) {
-> +		unsigned int bridge_num = dsa_port_bridge_num_get(dp);
-> +		struct net_device *br = dsa_port_bridge_dev_get(dp);
-> +
-> +		if (br_vlan_enabled(br))
-> +			return skb;
-> +
-> +		tx_vid = dsa_tag_8021q_bridge_vid(bridge_num);
-> +	}
-> +
-> +	pcp = netdev_txq_to_tc(netdev, queue_mapping);
-> +
-> +	return dsa_8021q_xmit(skb, netdev, ETH_P_8021Q,
-> +			      ((pcp << VLAN_PRIO_SHIFT) | tx_vid));
-> +}
-> +
-> +static struct sk_buff *
-> +vsc73xx_rcv(struct sk_buff *skb, struct net_device *netdev)
-> +{
-> +	int src_port = -1, switch_id = -1, vbid = -1, vid = -1;
-> +
-> +	dsa_8021q_rcv(skb, &src_port, &switch_id, &vbid, &vid);
-> +
-> +	skb->dev = dsa_tag_8021q_find_user(netdev, src_port, switch_id,
-> +					   vid, vbid);
-> +	if (!skb->dev) {
-> +		netdev_warn(netdev, "Couldn't decode source port\n");
+Add the hwcaps added for the 2023 DPISA extensions to the hwcaps test
+program.
 
-Please remove this message, or rate limit it, with that fixed:
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ tools/testing/selftests/arm64/abi/hwcap.c | 217 ++++++++++++++++++++++++++++++
+ 1 file changed, 217 insertions(+)
 
-Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
+diff --git a/tools/testing/selftests/arm64/abi/hwcap.c b/tools/testing/selftests/arm64/abi/hwcap.c
+index 1189e77c8152..d8909b2b535a 100644
+--- a/tools/testing/selftests/arm64/abi/hwcap.c
++++ b/tools/testing/selftests/arm64/abi/hwcap.c
+@@ -58,11 +58,46 @@ static void cssc_sigill(void)
+ 	asm volatile(".inst 0xdac01c00" : : : "x0");
+ }
+ 
++static void f8cvt_sigill(void)
++{
++	/* FSCALE V0.4H, V0.4H, V0.4H */
++	asm volatile(".inst 0x2ec03c00");
++}
++
++static void f8dp2_sigill(void)
++{
++	/* FDOT V0.4H, V0.4H, V0.5H */
++	asm volatile(".inst 0xe40fc00");
++}
++
++static void f8dp4_sigill(void)
++{
++	/* FDOT V0.2S, V0.2S, V0.2S */
++	asm volatile(".inst 0xe00fc00");
++}
++
++static void f8fma_sigill(void)
++{
++	/* FMLALB V0.8H, V0.16B, V0.16B */
++	asm volatile(".inst 0xec0fc00");
++}
++
++static void faminmax_sigill(void)
++{
++	/* FAMIN V0.4H, V0.4H, V0.4H */
++	asm volatile(".inst 0x2ec01c00");
++}
++
+ static void fp_sigill(void)
+ {
+ 	asm volatile("fmov s0, #1");
+ }
+ 
++static void fpmr_sigill(void)
++{
++	asm volatile("mrs x0, S3_3_C4_C4_2" : : : "x0");
++}
++
+ static void ilrcpc_sigill(void)
+ {
+ 	/* LDAPUR W0, [SP, #8] */
+@@ -95,6 +130,12 @@ static void lse128_sigill(void)
+ 		     : "cc", "memory");
+ }
+ 
++static void lut_sigill(void)
++{
++	/* LUTI2 V0.16B, { V0.16B }, V[0] */
++	asm volatile(".inst 0x4e801000");
++}
++
+ static void mops_sigill(void)
+ {
+ 	char dst[1], src[1];
+@@ -216,6 +257,78 @@ static void smef16f16_sigill(void)
+ 	asm volatile("msr S0_3_C4_C6_3, xzr" : : : );
+ }
+ 
++static void smef8f16_sigill(void)
++{
++	/* SMSTART */
++	asm volatile("msr S0_3_C4_C7_3, xzr" : : : );
++
++	/* FDOT ZA.H[W0, 0], Z0.B-Z1.B, Z0.B-Z1.B */
++	asm volatile(".inst 0xc1a01020" : : : );
++
++	/* SMSTOP */
++	asm volatile("msr S0_3_C4_C6_3, xzr" : : : );
++}
++
++static void smef8f32_sigill(void)
++{
++	/* SMSTART */
++	asm volatile("msr S0_3_C4_C7_3, xzr" : : : );
++
++	/* FDOT ZA.S[W0, 0], { Z0.B-Z1.B }, Z0.B[0] */
++	asm volatile(".inst 0xc1500038" : : : );
++
++	/* SMSTOP */
++	asm volatile("msr S0_3_C4_C6_3, xzr" : : : );
++}
++
++static void smelutv2_sigill(void)
++{
++	/* SMSTART */
++	asm volatile("msr S0_3_C4_C7_3, xzr" : : : );
++
++	/* LUTI4 { Z0.B-Z3.B }, ZT0, { Z0-Z1 } */
++	asm volatile(".inst 0xc08b0000" : : : );
++
++	/* SMSTOP */
++	asm volatile("msr S0_3_C4_C6_3, xzr" : : : );
++}
++
++static void smesf8dp2_sigill(void)
++{
++	/* SMSTART */
++	asm volatile("msr S0_3_C4_C7_3, xzr" : : : );
++
++	/* FDOT Z0.H, Z0.B, Z0.B[0] */
++	asm volatile(".inst 0x64204400" : : : );
++
++	/* SMSTOP */
++	asm volatile("msr S0_3_C4_C6_3, xzr" : : : );
++}
++
++static void smesf8dp4_sigill(void)
++{
++	/* SMSTART */
++	asm volatile("msr S0_3_C4_C7_3, xzr" : : : );
++
++	/* FDOT Z0.S, Z0.B, Z0.B[0] */
++	asm volatile(".inst 0xc1a41C00" : : : );
++
++	/* SMSTOP */
++	asm volatile("msr S0_3_C4_C6_3, xzr" : : : );
++}
++
++static void smesf8fma_sigill(void)
++{
++	/* SMSTART */
++	asm volatile("msr S0_3_C4_C7_3, xzr" : : : );
++
++	/* FMLALB V0.8H, V0.16B, V0.16B */
++	asm volatile(".inst 0xec0fc00");
++
++	/* SMSTOP */
++	asm volatile("msr S0_3_C4_C6_3, xzr" : : : );
++}
++
+ static void sve_sigill(void)
+ {
+ 	/* RDVL x0, #0 */
+@@ -353,6 +466,53 @@ static const struct hwcap_data {
+ 		.cpuinfo = "cssc",
+ 		.sigill_fn = cssc_sigill,
+ 	},
++	{
++		.name = "F8CVT",
++		.at_hwcap = AT_HWCAP2,
++		.hwcap_bit = HWCAP2_F8CVT,
++		.cpuinfo = "f8cvt",
++		.sigill_fn = f8cvt_sigill,
++	},
++	{
++		.name = "F8DP4",
++		.at_hwcap = AT_HWCAP2,
++		.hwcap_bit = HWCAP2_F8DP4,
++		.cpuinfo = "f8dp4",
++		.sigill_fn = f8dp4_sigill,
++	},
++	{
++		.name = "F8DP2",
++		.at_hwcap = AT_HWCAP2,
++		.hwcap_bit = HWCAP2_F8DP2,
++		.cpuinfo = "f8dp4",
++		.sigill_fn = f8dp2_sigill,
++	},
++	{
++		.name = "F8E5M2",
++		.at_hwcap = AT_HWCAP2,
++		.hwcap_bit = HWCAP2_F8E5M2,
++		.cpuinfo = "f8e5m2",
++	},
++	{
++		.name = "F8E4M3",
++		.at_hwcap = AT_HWCAP2,
++		.hwcap_bit = HWCAP2_F8E4M3,
++		.cpuinfo = "f8e4m3",
++	},
++	{
++		.name = "F8FMA",
++		.at_hwcap = AT_HWCAP2,
++		.hwcap_bit = HWCAP2_F8FMA,
++		.cpuinfo = "f8fma",
++		.sigill_fn = f8fma_sigill,
++	},
++	{
++		.name = "FAMINMAX",
++		.at_hwcap = AT_HWCAP2,
++		.hwcap_bit = HWCAP2_FAMINMAX,
++		.cpuinfo = "faminmax",
++		.sigill_fn = faminmax_sigill,
++	},
+ 	{
+ 		.name = "FP",
+ 		.at_hwcap = AT_HWCAP,
+@@ -360,6 +520,14 @@ static const struct hwcap_data {
+ 		.cpuinfo = "fp",
+ 		.sigill_fn = fp_sigill,
+ 	},
++	{
++		.name = "FPMR",
++		.at_hwcap = AT_HWCAP2,
++		.hwcap_bit = HWCAP2_FPMR,
++		.cpuinfo = "fpmr",
++		.sigill_fn = fpmr_sigill,
++		.sigill_reliable = true,
++	},
+ 	{
+ 		.name = "JSCVT",
+ 		.at_hwcap = AT_HWCAP,
+@@ -411,6 +579,13 @@ static const struct hwcap_data {
+ 		.cpuinfo = "lse128",
+ 		.sigill_fn = lse128_sigill,
+ 	},
++	{
++		.name = "LUT",
++		.at_hwcap = AT_HWCAP2,
++		.hwcap_bit = HWCAP2_LUT,
++		.cpuinfo = "lut",
++		.sigill_fn = lut_sigill,
++	},
+ 	{
+ 		.name = "MOPS",
+ 		.at_hwcap = AT_HWCAP2,
+@@ -511,6 +686,48 @@ static const struct hwcap_data {
+ 		.cpuinfo = "smef16f16",
+ 		.sigill_fn = smef16f16_sigill,
+ 	},
++	{
++		.name = "SME F8F16",
++		.at_hwcap = AT_HWCAP2,
++		.hwcap_bit = HWCAP2_SME_F8F16,
++		.cpuinfo = "smef8f16",
++		.sigill_fn = smef8f16_sigill,
++	},
++	{
++		.name = "SME F8F32",
++		.at_hwcap = AT_HWCAP2,
++		.hwcap_bit = HWCAP2_SME_F8F32,
++		.cpuinfo = "smef8f32",
++		.sigill_fn = smef8f32_sigill,
++	},
++	{
++		.name = "SME LUTV2",
++		.at_hwcap = AT_HWCAP2,
++		.hwcap_bit = HWCAP2_SME_LUTV2,
++		.cpuinfo = "smelutv2",
++		.sigill_fn = smelutv2_sigill,
++	},
++	{
++		.name = "SME SF8FMA",
++		.at_hwcap = AT_HWCAP2,
++		.hwcap_bit = HWCAP2_SME_SF8FMA,
++		.cpuinfo = "smesf8fma",
++		.sigill_fn = smesf8fma_sigill,
++	},
++	{
++		.name = "SME SF8DP2",
++		.at_hwcap = AT_HWCAP2,
++		.hwcap_bit = HWCAP2_SME_SF8DP2,
++		.cpuinfo = "smesf8dp2",
++		.sigill_fn = smesf8dp2_sigill,
++	},
++	{
++		.name = "SME SF8DP4",
++		.at_hwcap = AT_HWCAP2,
++		.hwcap_bit = HWCAP2_SME_SF8DP4,
++		.cpuinfo = "smesf8dp4",
++		.sigill_fn = smesf8dp4_sigill,
++	},
+ 	{
+ 		.name = "SVE",
+ 		.at_hwcap = AT_HWCAP,
+
 -- 
-Florian
+2.30.2
 
 
