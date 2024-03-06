@@ -1,108 +1,124 @@
-Return-Path: <linux-kernel+bounces-93504-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93506-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B33BE8730C1
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:32:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 162DA8730CB
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:33:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4D8BBB24ED8
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 08:32:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 81C32B2204B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 08:33:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BEC25D754;
-	Wed,  6 Mar 2024 08:31:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C50985D8E7;
+	Wed,  6 Mar 2024 08:33:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GUNn94dG"
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="E0K8AJR1"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63C935C8F9
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 08:31:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C502B5D474;
+	Wed,  6 Mar 2024 08:33:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709713898; cv=none; b=etc1+wsC7BGOio8PZZqUV0O99ZKfrS0hMijqpcTbWKrKcVJM9ntEA2HVPfggBW5Iuv3FyANRdYq8+Vg40r4ciK/Ww3JrO3yXiy8ebATH09Rt3drvVIv5sjQxpSUF9cTwhmE5poQkI+F4bI905vHQn7OMwNvGM138ccmISKDk1/g=
+	t=1709713985; cv=none; b=TGnNmGXrwohrAQq0iXDEUCTC/S/d7tEyiIn2xOFRbH2dZrtbDNCiS31TTLuEmSpUQdl7VIBSEtQRDwqev3TBnE9+eSxXG2ut/8uHnivRZSUFmIgr6YqMSYic9fzJqzKodhr8kuNisejGKz1GCNWGN5Y7+1w9FeZRaJKcCmLd3H8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709713898; c=relaxed/simple;
-	bh=jyJfCp5OfDLV0vJjPYvgRyGpn9ZGCSUjJg2Lp5gPxbI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SIVuoY00yOaJvnzk3L7jLRrlNgGMxlg6qcGFqKdfFIwH0nOaxTXN7rID9wI3zyFOsNgbf6zpP0UJCu17Gl0TncjjQpiQjP3WcFJOg8jLBok3qO0s8JDElcHW6iUnrkgF13WyQ2SUxrljsOnyrdFV03eam5xcBJmy854RtojRwmI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=GUNn94dG; arc=none smtp.client-ip=209.85.128.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-608c40666e0so62660127b3.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 00:31:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709713896; x=1710318696; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jyJfCp5OfDLV0vJjPYvgRyGpn9ZGCSUjJg2Lp5gPxbI=;
-        b=GUNn94dGRxdMLZdNrtL+U0o1POZRJ8qfYxFDTmVLBLa44TywyCQrj3mvf2vSdb7fUm
-         eZiufHlr0Wsk3K2iAgXsxLBl0XxrtHj9bb5A4LAXVGFoy6GwDt8FHopZc4XoEQ9gdYQf
-         jl/0+90/BMPriCrvUBP+i1SYsuV3fVb9VhUP5xyQbwtwNjJTo7dNBp8g4y5t73ehhKAJ
-         W3skDC/KFTfRiCbqlQZBeuzuvXWkWIWN8VNheZWfwzzY7D4hzAJxST/Vt1R9eD9soFEa
-         FNqoqGNyqUlxMdgstwEI1a8Cx0zTI0UcKO0zdNV2RLgenz33RAF+KgaW+zyZKqvWhVtM
-         RtpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709713896; x=1710318696;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jyJfCp5OfDLV0vJjPYvgRyGpn9ZGCSUjJg2Lp5gPxbI=;
-        b=Ex7Se+e7ks7HRsagtMdDiP1V5DvVCPW65+6LTUdKR/ucAc01VdBnHKQq6tEJDAacYW
-         Tvskd6inBOK/fmnBu1hxa2H0RK5GGCEaQy12T0jDQKLb26WWxbCqiAtEIpyis8l4l5LK
-         7sK1J5+vFEF7EfePWizCJYO4ps5WpL3tu6D0Dm1sL8QOPZd1dh96ZqzlMLslZTdlDA8d
-         Ii30UpTlAy6pB1kdkceUIIKKkuNrE4hyCZwy9EnZ+zYpxTjDgkoiOKY5+r+s43oRoZ1R
-         R33ljvG3wOO9jy2E9rNggsxu3AVstw120SbIk09SSMz/zB3Bfz4d6TFLp6HZH4H/lW1d
-         +BUw==
-X-Forwarded-Encrypted: i=1; AJvYcCUNkPco+OGHsYkxuWHxFBIRD9oO6Gb0KuNSI6MY7PBjOidnMT2mg5BdgvezrHZbmR32RfsT6O3NGFyHk5nGTGhhcJO7yVAa552LZ4Id
-X-Gm-Message-State: AOJu0YyHDrr0/EO9E+BJoxfFetl92nkFUVMhxbGjI+GqLiQSmc+Fdd0O
-	f3nfEhgQiNnRguAG41xOYI1UJ5I+QBdgBEGjHkv3mwAwwk46T4iprrrEz8f2CFt7Ivw1HTbzVgC
-	lCXA33wH4EWTNpzc3TAL0VrnoTFf2Dc4/YaDVWw==
-X-Google-Smtp-Source: AGHT+IFe2cHdjC0zImLtE7dX7CjofAAtqRWjocUz6T7nhpqnCF+/HJ3jk1WHZkdRVj+sVVBs8P7hOIo9q8+hxeZwX9c=
-X-Received: by 2002:a81:ab4e:0:b0:609:356a:7b22 with SMTP id
- d14-20020a81ab4e000000b00609356a7b22mr12125019ywk.22.1709713896313; Wed, 06
- Mar 2024 00:31:36 -0800 (PST)
+	s=arc-20240116; t=1709713985; c=relaxed/simple;
+	bh=UnIKCfpRywsmooXz+n9fMtoH0j9SzJw+eCtg2L2wY+k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=fSsL9ssLHTbh6IsR7IN/mC+gINnzk1bANDmCWwEOwOnGzmomfM1bbjWtrROjlMA9LK4GjrwSq503JhcSqnG516swQGGfo8PMGHGRb/t0f1fTMZ2I+hgTygS1xVCSARZeYslCz0FvFkSUHSoc1hgHVNn2gwTqVPR07l6L+ov0Vg0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=E0K8AJR1; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4266eJpC005782;
+	Wed, 6 Mar 2024 08:32:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=UnIKCfpRywsmooXz+n9fMtoH0j9SzJw+eCtg2L2wY+k=; b=E0
+	K8AJR1jP9x0GVqfJlanI4u24R/W9cCEMcR1sTj6FvajQ5mF/8r2eLfD30vwR+Ujy
+	22g8wnfBBbhlQjlKK7esDLcjvrRd9+6A1U7kZ0DADfzyDcw700EqdtzVw9+vLU1/
+	SOVDfL5Oln6e+BzSsb/bfcq9zjn1IqlxCvTSxKAR6+pAJd36AiLDEJZqru3P64Wg
+	IaxSLbsxLEi6nlxagEPr5i0QA8XHbN6twWsiRuQFJwPSFfEYzJ1sIy68UsuEOUse
+	EylN0R6bluvfsexLDTIXgP0vGCFuoi9o7Rd3EYU+kHLN9uxa8IMS9ai3pBUpnjC+
+	VAYi9VIX9vONXgxR0Z0Q==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wpke387ny-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 06 Mar 2024 08:32:25 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4268WPLn013366
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 6 Mar 2024 08:32:25 GMT
+Received: from [10.218.19.46] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 6 Mar
+ 2024 00:32:19 -0800
+Message-ID: <e98bdda6-3da5-689c-f8fe-7f64131707a8@quicinc.com>
+Date: Wed, 6 Mar 2024 14:02:16 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240301221641.159542-1-paweldembicki@gmail.com> <20240301221641.159542-15-paweldembicki@gmail.com>
-In-Reply-To: <20240301221641.159542-15-paweldembicki@gmail.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Wed, 6 Mar 2024 09:31:24 +0100
-Message-ID: <CACRpkdbUNtQqTADMmLn+RWHvxMakrVCpXtGShz-=2oiz0pLdCA@mail.gmail.com>
-Subject: Re: [PATCH net-next v6 14/16] net: dsa: Define max num of bridges in
- tag8021q implementation
-To: Pawel Dembicki <paweldembicki@gmail.com>
-Cc: netdev@vger.kernel.org, Simon Horman <horms@kernel.org>, 
-	Vladimir Oltean <olteanv@gmail.com>, Florian Fainelli <florian.fainelli@broadcom.com>, 
-	Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Claudiu Manoil <claudiu.manoil@nxp.com>, Alexandre Belloni <alexandre.belloni@bootlin.com>, 
-	UNGLinuxDriver@microchip.com, Russell King <linux@armlinux.org.uk>, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: [PATCH 5/5] arm64: dts: qcom: Add camera clock controller for
+ sm8150
+Content-Language: en-US
+To: Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Bjorn Andersson
+	<andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "Michael
+ Turquette" <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Abhishek Sahu <absahu@codeaurora.org>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>
+CC: Stephen Boyd <sboyd@codeaurora.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, Ajit Pandey <quic_ajipan@quicinc.com>,
+        "Imran
+ Shaik" <quic_imrashai@quicinc.com>,
+        Taniya Das <quic_tdas@quicinc.com>,
+        Jagadeesh Kona <quic_jkona@quicinc.com>
+References: <20240229-camcc-support-sm8150-v1-0-8c28c6c87990@quicinc.com>
+ <20240229-camcc-support-sm8150-v1-5-8c28c6c87990@quicinc.com>
+ <6620b011-933e-40cd-98e1-a4d39cc96346@linaro.org>
+From: "Satya Priya Kakitapalli (Temp)" <quic_skakitap@quicinc.com>
+In-Reply-To: <6620b011-933e-40cd-98e1-a4d39cc96346@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: O8eQnkyqs70RVInPJby50HT0ZqxhjcdH
+X-Proofpoint-GUID: O8eQnkyqs70RVInPJby50HT0ZqxhjcdH
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-06_04,2024-03-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ priorityscore=1501 mlxlogscore=901 phishscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 malwarescore=0 bulkscore=0 suspectscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2403060067
 
-On Fri, Mar 1, 2024 at 11:18=E2=80=AFPM Pawel Dembicki <paweldembicki@gmail=
-com> wrote:
 
-> Max number of bridges in tag8021q implementation is strictly limited
-> by VBID size: 3 bits. But zero is reserved and only 7 values can be used.
+On 3/2/2024 9:45 PM, Bryan O'Donoghue wrote:
+> On 29/02/2024 5:38 a.m., Satya Priya Kakitapalli wrote:
+>> +            clocks = <&gcc GCC_CAMERA_AHB_CLK>, <&rpmhcc RPMH_CXO_CLK>;
 >
-> This patch adds define which describe maximum possible value.
+> <&rpmhcc ..> should go on a separate line
 >
-> Suggested-by: Vladimir Oltean <olteanv@gmail.com>
-> Signed-off-by: Pawel Dembicki <paweldembicki@gmail.com>
-> Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Okay, I'll fix this in v2.
 
-Yours,
-Linus Walleij
+
+> ---
+> bod
 
