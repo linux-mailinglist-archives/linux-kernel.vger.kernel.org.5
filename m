@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-93746-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93774-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDD8F873424
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 11:27:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 310F3873497
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 11:43:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DD555B2AC94
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:25:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 139F2B293D3
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 10:36:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F2D25FBBA;
-	Wed,  6 Mar 2024 10:25:04 +0000 (UTC)
-Received: from out0-209.mail.aliyun.com (out0-209.mail.aliyun.com [140.205.0.209])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0540D605B0;
+	Wed,  6 Mar 2024 10:35:29 +0000 (UTC)
+Received: from out187-18.us.a.mail.aliyun.com (out187-18.us.a.mail.aliyun.com [47.90.187.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 057CC5F566
-	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 10:25:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.205.0.209
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30D7360B8F
+	for <linux-kernel@vger.kernel.org>; Wed,  6 Mar 2024 10:35:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=47.90.187.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709720703; cv=none; b=kXkOaXKfOxYWmkcdJFeEifZInCFeS33F3VBCXzF6hlBFSTke65ss4FyPtF76pLyAv0vImixOjkLpDthe0uiNRygWU3eTUFxPqjDnT34L0VdhSrwFjlvkOwNQs/0yAwTNg6rYJsFPECBG8aU2/8pzJFwqX2GfSyEpXE45TAbavhE=
+	t=1709721328; cv=none; b=eKtPrFoOLTPYFa3ZiqFX/h+Kg0u8ggfmRowQviHBiccPJEc/ZO6MRnCOpNrOA2vj9y7JFsHUejv3LweOiNZA2KeY8hP/tkw1WnXOUPetOk9ftLwDNW1H+tGRdPFy1rNCHFpZV0flwZzhO3bA9CR6c+ONUmGUfBjJrh62+AbI63c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709720703; c=relaxed/simple;
-	bh=IPelaOlLNzUGstOhPXdkzDn7BzmoqqeZFdhJ5KOY6+A=;
+	s=arc-20240116; t=1709721328; c=relaxed/simple;
+	bh=5BvnaK+Q3e30bHwbnZ/Zuza3SgyqFfcHiBGD0cfTfMY=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=WMPHn+u9UvgI1X58zrmJNKgrQ7gTN7QI0t4QAMtEVYWCnrw1mYQmI8fc11dhIHodknn3RZekX6L79k7RPy2rLai7g7dSlJ3K/f/ObWt5ksBi50LdLO8cg6ip5I+aiUJTJvv5GRMWto+OzuxLAqskfDIA1OZ3dLIKR/6igZySN5M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=antgroup.com; spf=pass smtp.mailfrom=antgroup.com; arc=none smtp.client-ip=140.205.0.209
+	 MIME-Version:Content-Type; b=VOAJT2+4EWMaLkAVFGMul6hwp8Rs9GFrG5oOd5eWb0A0NGZia+dJPhhRjA0VvSD2aENyw0vbrCDhX4FNc6UEV6BvFxNKPX0TSWah/AHuae00BwD5pCA0/4lOwuu6jne+1AWaPWKumoT0KzHODCQMPPH/9Z1AswYOMCQA3Tu51k4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=antgroup.com; spf=pass smtp.mailfrom=antgroup.com; arc=none smtp.client-ip=47.90.187.18
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=antgroup.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=antgroup.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R371e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047204;MF=tiwei.btw@antgroup.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---.Wgbn-JZ_1709720381;
-Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.Wgbn-JZ_1709720381)
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R451e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047213;MF=tiwei.btw@antgroup.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---.Wgbn-Jf_1709720382;
+Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.Wgbn-Jf_1709720382)
           by smtp.aliyun-inc.com;
-          Wed, 06 Mar 2024 18:19:41 +0800
+          Wed, 06 Mar 2024 18:19:42 +0800
 From: "Tiwei Bie" <tiwei.btw@antgroup.com>
 To: richard@nod.at,
 	anton.ivanov@cambridgegreys.com,
@@ -41,9 +41,9 @@ Cc:  <jani.nikula@intel.com>,
    <linux-kernel@vger.kernel.org>,
    <intel-xe@lists.freedesktop.org>,
   "Tiwei Bie" <tiwei.btw@antgroup.com>
-Subject: [PATCH v3 2/9] um: Fix the declaration of vfree
-Date: Wed, 06 Mar 2024 18:19:18 +0800
-Message-Id: <20240306101925.1088870-3-tiwei.btw@antgroup.com>
+Subject: [PATCH v3 3/9] um: Remove unused functions
+Date: Wed, 06 Mar 2024 18:19:19 +0800
+Message-Id: <20240306101925.1088870-4-tiwei.btw@antgroup.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240306101925.1088870-1-tiwei.btw@antgroup.com>
 References: <20240306101925.1088870-1-tiwei.btw@antgroup.com>
@@ -53,30 +53,84 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-The definition of vfree has changed since commit b3bdda02aa54
-("vmalloc: add const to void* parameters"). Update the declaration
-of vfree in um_malloc.h to match the latest definition.
+These functions are not used anymore. Removing them will also address
+below -Wmissing-prototypes warnings:
+
+arch/um/kernel/process.c:51:5: warning: no previous prototype for ‘pid_to_processor_id’ [-Wmissing-prototypes]
+arch/um/kernel/process.c:253:5: warning: no previous prototype for ‘copy_to_user_proc’ [-Wmissing-prototypes]
+arch/um/kernel/process.c:263:5: warning: no previous prototype for ‘clear_user_proc’ [-Wmissing-prototypes]
+arch/um/kernel/tlb.c:579:6: warning: no previous prototype for ‘flush_tlb_mm_range’ [-Wmissing-prototypes]
 
 Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
 ---
- arch/um/include/shared/um_malloc.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/um/kernel/process.c | 21 ---------------------
+ arch/um/kernel/tlb.c     |  6 ------
+ 2 files changed, 27 deletions(-)
 
-diff --git a/arch/um/include/shared/um_malloc.h b/arch/um/include/shared/um_malloc.h
-index 13da93284c2c..d25084447c69 100644
---- a/arch/um/include/shared/um_malloc.h
-+++ b/arch/um/include/shared/um_malloc.h
-@@ -12,7 +12,7 @@ extern void *uml_kmalloc(int size, int flags);
- extern void kfree(const void *ptr);
+diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
+index 20f3813143d8..292c8014aaa6 100644
+--- a/arch/um/kernel/process.c
++++ b/arch/um/kernel/process.c
+@@ -48,17 +48,6 @@ static inline int external_pid(void)
+ 	return userspace_pid[0];
+ }
  
- extern void *vmalloc(unsigned long size);
--extern void vfree(void *ptr);
-+extern void vfree(const void *ptr);
+-int pid_to_processor_id(int pid)
+-{
+-	int i;
+-
+-	for (i = 0; i < ncpus; i++) {
+-		if (cpu_tasks[i].pid == pid)
+-			return i;
+-	}
+-	return -1;
+-}
+-
+ void free_stack(unsigned long stack, int order)
+ {
+ 	free_pages(stack, order);
+@@ -250,21 +239,11 @@ char *uml_strdup(const char *string)
+ }
+ EXPORT_SYMBOL(uml_strdup);
  
- #endif /* __UM_MALLOC_H__ */
+-int copy_to_user_proc(void __user *to, void *from, int size)
+-{
+-	return copy_to_user(to, from, size);
+-}
+-
+ int copy_from_user_proc(void *to, void __user *from, int size)
+ {
+ 	return copy_from_user(to, from, size);
+ }
  
+-int clear_user_proc(void __user *buf, int size)
+-{
+-	return clear_user(buf, size);
+-}
+-
+ static atomic_t using_sysemu = ATOMIC_INIT(0);
+ int sysemu_supported;
+ 
+diff --git a/arch/um/kernel/tlb.c b/arch/um/kernel/tlb.c
+index 7d050ab0f78a..70b5e47e9761 100644
+--- a/arch/um/kernel/tlb.c
++++ b/arch/um/kernel/tlb.c
+@@ -576,12 +576,6 @@ void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
+ }
+ EXPORT_SYMBOL(flush_tlb_range);
+ 
+-void flush_tlb_mm_range(struct mm_struct *mm, unsigned long start,
+-			unsigned long end)
+-{
+-	fix_range(mm, start, end, 0);
+-}
+-
+ void flush_tlb_mm(struct mm_struct *mm)
+ {
+ 	struct vm_area_struct *vma;
 -- 
 2.34.1
 
