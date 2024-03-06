@@ -1,119 +1,247 @@
-Return-Path: <linux-kernel+bounces-93501-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93502-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6F9A8730B2
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:30:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A358B8730BA
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 09:31:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B4D0281B58
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 08:30:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1AC151F22773
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 08:31:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 794D03A262;
-	Wed,  6 Mar 2024 08:30:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lcXDCXnI"
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 194C05D735;
+	Wed,  6 Mar 2024 08:31:20 +0000 (UTC)
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71BF45D730;
-	Wed,  6 Mar 2024 08:30:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD1EB22F1D;
+	Wed,  6 Mar 2024 08:31:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709713803; cv=none; b=obPtpQgBXiLSHLOd8XP29y+KOKWB8XoDYLy5r17K+4V9/yEi9VBcPk0tiIn/pApVn8YtXQ9D1RwOptJRqYeFp/Ytxe6yn0XomoaYoRijMJzDK7AYRLWk2CpLZEIZ6xpaEz1XbWKE/TSs1NWPSFBm65ARBjv5MWgCEH7k8D9vIqA=
+	t=1709713879; cv=none; b=Bs7Ubh3zjMDVr/NBtMK9J/gqNSg7dduEdoLvOf9FMPF50+o9lwyiRLqrNyYa4tJhOfMdmJRZjrObbf3KNs3BEZZnrDRl2+hiOODiqT4wbePTHkjIHCYMkwJKI8E91HTRZe/+MhOx7z85Oc5oSU6msjlayn2TQF1ukkvZVsm9WBQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709713803; c=relaxed/simple;
-	bh=DjMvANrFgFvNlIdE1sM6AN8+G0NpuxLckY37WzfXlAo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=upDYAXI9osZBYzlit/6T1uQ5ucG8KXvJdsDSPJ5wZR1AD6eaeDYRweW1hWWrLQ0wIp2b5a9iRBLAv7x6hwkwUouunZDi7bvgnrsNkHC5uRZKr7v2blAGJSYEKbpsvB0sEK9RhGeJuGlJBXrfWs9vYQB1YAaKvVgCLi5jpzHhoa0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lcXDCXnI; arc=none smtp.client-ip=209.85.210.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6e5a50d91b4so6382652b3a.2;
-        Wed, 06 Mar 2024 00:30:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709713802; x=1710318602; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=V6jJFKSb+rris1ipccPGLL2PjrVECDvGnkU4+GtbfFw=;
-        b=lcXDCXnIIknuC8GBu74hpKnR9r7k4U9aHLOIVxBPR3od7wih/wGnvO7VINWFw94dqy
-         56NCN1a5WXDgiijIEBF41g2SxFjIYrn5NlqWxSPayT1XX2eDPlohe3uTQXXJ8K8nSvkd
-         MwxXnujcPLDaJbueuq9gTsG17XEzswA/+UevFCyu+BQ+zAFKEj1RUGKt0Mnihc7jnZdz
-         wLiqaEBcipoSklvkmCsiTpn8niiUyOYcglyzYI/KH3HvEzhGYtca5XFrqOzRaSzxbALY
-         EKOmAWFOl5aF0NnV4JLlXcpmV999h21buaGA/iGSd0Lc6tYxOkqWiMdw2TKbSV6fX/Vy
-         rCpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709713802; x=1710318602;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=V6jJFKSb+rris1ipccPGLL2PjrVECDvGnkU4+GtbfFw=;
-        b=KnE5bJ2WJk8Yz2Jg8F2dZpbuZX77g2Zn2Q/witGOEHKgOrX1z9TbUJSAZgKfe+WdbV
-         KV3kNnp9Vp7dttBiJ3us4u8uD//nymyj13byV1iphcV/nG57fGK32r4InUp+DtPUoeB6
-         5KZfu83h5L78ExBbz1IBed5azC/FjNTTXmKZ/2GncGja1PRnVI57i5FVv3sEdzM8yrJb
-         kWC4ukvQhZ0/r+kVdyKqU6uHAcfR4QQQ1voqnWX37FJsCSCuMzefbiwkDoIn7Y2Cnlc2
-         daMAkN0uMm64ox829OM0kJXrrZvcWN+uNqcuYrNJQ3kvTFMfeAo/isyRo3VVDmPdfizA
-         3+Qg==
-X-Forwarded-Encrypted: i=1; AJvYcCV50kZ2epcHTLPOhKLM1glGIXtHhHZfOF3riD9hysIjYRogiddAL4hTjAg7KghAAi/O8GekohV7FATWYQHQBW/Of1GH2o6hrxOUGnyK
-X-Gm-Message-State: AOJu0YxkNEnl+1fOFK8W188Sv7D+r2Qd41D1y6DyxNWokEdBpUvQ1stV
-	7I+4scvm+XijaSa+/AYXyfzmQqhLfx/CfEMHYqMRiIuQxXn2iovn
-X-Google-Smtp-Source: AGHT+IEUxQN9KsAkJ7POL4yjbqWISpiywQOTZlQQRLmUgtmwOU5W+0e5hOl2U47mWDj0CtEry03Pkg==
-X-Received: by 2002:a05:6a00:139e:b0:6e6:31aa:695d with SMTP id t30-20020a056a00139e00b006e631aa695dmr7401339pfg.30.1709713801594;
-        Wed, 06 Mar 2024 00:30:01 -0800 (PST)
-Received: from [192.168.1.7] ([61.7.133.192])
-        by smtp.googlemail.com with ESMTPSA id h10-20020aa79f4a000000b006e647716b6esm1367472pfr.149.2024.03.06.00.29.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Mar 2024 00:30:01 -0800 (PST)
-Message-ID: <f93317e4-1848-4fa0-85b7-c9a0d303d0fc@gmail.com>
-Date: Wed, 6 Mar 2024 15:29:53 +0700
+	s=arc-20240116; t=1709713879; c=relaxed/simple;
+	bh=S2k4dHHEQpRhP6c+TZy4wKSpHEmoOGsY42HtUH5CMZk=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=KDT/kThFW05W1dlMgICWoFKyl1wjD9cAzSXxm/4Nhc5P19WqxBQ/4T/W8H4rlkdFPucU4EdOP1wnDRUEQJpW3RdRT1V7o2xgf3hHHsGA/bona/WV2RrohntTDY5gtfEfrE2HXSMMovFxc8aJ1Cjr2GXpwa1pvXeU4swwLn/CJu4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.186.29])
+	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4TqQGr2sGmz9y4gm;
+	Wed,  6 Mar 2024 16:15:32 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.47])
+	by mail.maildlp.com (Postfix) with ESMTP id 836DC140412;
+	Wed,  6 Mar 2024 16:31:13 +0800 (CST)
+Received: from [127.0.0.1] (unknown [10.204.63.22])
+	by APP1 (Coremail) with SMTP id LxC2BwBHPhfBKehlVBnQAw--.462S2;
+	Wed, 06 Mar 2024 09:31:12 +0100 (CET)
+Message-ID: <720e7d0d55c2a22742ede0104fc884609b2f840d.camel@huaweicloud.com>
+Subject: Re: [PATCH v2 24/25] commoncap: use vfs fscaps interfaces
+From: Roberto Sassu <roberto.sassu@huaweicloud.com>
+To: "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
+Cc: Christian Brauner <brauner@kernel.org>, Serge Hallyn <serge@hallyn.com>,
+  Paul Moore <paul@paul-moore.com>, Eric Paris <eparis@redhat.com>, James
+ Morris <jmorris@namei.org>,  Alexander Viro <viro@zeniv.linux.org.uk>, Jan
+ Kara <jack@suse.cz>, Stephen Smalley <stephen.smalley.work@gmail.com>,
+ Ondrej Mosnacek <omosnace@redhat.com>,  Casey Schaufler
+ <casey@schaufler-ca.com>, Mimi Zohar <zohar@linux.ibm.com>, Roberto Sassu
+ <roberto.sassu@huawei.com>,  Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+ Eric Snowberg <eric.snowberg@oracle.com>, "Matthew Wilcox (Oracle)"
+ <willy@infradead.org>, Jonathan Corbet <corbet@lwn.net>, Miklos Szeredi
+ <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>, 
+ linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+ linux-security-module@vger.kernel.org, audit@vger.kernel.org, 
+ selinux@vger.kernel.org, linux-integrity@vger.kernel.org, 
+ linux-doc@vger.kernel.org, linux-unionfs@vger.kernel.org
+Date: Wed, 06 Mar 2024 09:30:54 +0100
+In-Reply-To: <Zed91y4MYugjI1/K@do-x1extreme>
+References: <20240221-idmap-fscap-refactor-v2-0-3039364623bd@kernel.org>
+	 <20240221-idmap-fscap-refactor-v2-24-3039364623bd@kernel.org>
+	 <dcbd9e7869d2fcce69546b53851d694b8ebad54e.camel@huaweicloud.com>
+	 <ZeXpbOsdRTbLsYe9@do-x1extreme>
+	 <a7124afa6bed2fcadcb66efa08e256828cd6f8ab.camel@huaweicloud.com>
+	 <ZeX9MRhU/EGhHkCY@do-x1extreme>
+	 <20240305-fachjargon-abmontieren-75b1d6c67a83@brauner>
+	 <3098aef3e5f924e5717b4ba4a34817d9f22ec479.camel@huaweicloud.com>
+	 <7058e2f93d16f910336a5380877b14a2e069ee9d.camel@huaweicloud.com>
+	 <Zed91y4MYugjI1/K@do-x1extreme>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] USB: serial: option: add Fibocom FM135-GL variants
-Content-Language: en-US
-To: "Bolan Wang(Bolan)" <bolan.wang@fibocom.com>,
- "johan@kernel.org" <johan@kernel.org>,
- "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-Cc: "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <KL1PR02MB6283F5203E50CD87F344331689212@KL1PR02MB6283.apcprd02.prod.outlook.com>
-From: Lars Melin <larsm17@gmail.com>
-In-Reply-To: <KL1PR02MB6283F5203E50CD87F344331689212@KL1PR02MB6283.apcprd02.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:LxC2BwBHPhfBKehlVBnQAw--.462S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Ar48Cr1DZFyfCry5ZF17Awb_yoW7CFy5pF
+	W5GFn8Kr4kJr1UAr18tr1UX3WFy3yfJF4UXr1DK34jyr1qkr1ftr4Skr17uF98Cr18Gr1j
+	vr1jy3W3Wr15AwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26r4j6r4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI
+	7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
+	Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY
+	6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1lIxAIcV
+	CF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
+	6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUOlksDUUUU
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAOBF1jj5sG1gABsw
 
-On 2024-03-06 14:41, Bolan Wang(Bolan) wrote:
->> Hi Bolan,
->> so you already know that other versions of the card will have the pid
->> 0x01a1 and the serial interfaces will be of class ff but you don't know what those interfaces will be used for?
->> You shall only add driver support for what you know today and not for something that might or might not be implemented in the future.
-> 
->> For the device with pid 0x0115 you have listed an adb interface and adb interfaces should not be in the option driver.
-> 
-> Hi Lars:
-> 
-> Ok, I will remove 0x01a1 from option serial driver. And the adb listed in pid 0x0115 will also be removed.
-> Actually adb interface info with pid 0x0115 is: Class_ff&SubClass_42&Prot_01, the option driver will not bind it?
-> I will resubmit a new patch, please help review and abandon this.
-> 
-> thanks
-> bolan
-> 
-> 
+On Tue, 2024-03-05 at 14:17 -0600, Seth Forshee (DigitalOcean) wrote:
+> On Tue, Mar 05, 2024 at 06:11:45PM +0100, Roberto Sassu wrote:
+> > On Tue, 2024-03-05 at 13:46 +0100, Roberto Sassu wrote:
+> > > On Tue, 2024-03-05 at 10:12 +0100, Christian Brauner wrote:
+> > > > On Mon, Mar 04, 2024 at 10:56:17AM -0600, Seth Forshee (DigitalOcea=
+n) wrote:
+> > > > > On Mon, Mar 04, 2024 at 05:17:57PM +0100, Roberto Sassu wrote:
+> > > > > > On Mon, 2024-03-04 at 09:31 -0600, Seth Forshee (DigitalOcean) =
+wrote:
+> > > > > > > On Mon, Mar 04, 2024 at 11:19:54AM +0100, Roberto Sassu wrote=
+:
+> > > > > > > > On Wed, 2024-02-21 at 15:24 -0600, Seth Forshee (DigitalOce=
+an) wrote:
+> > > > > > > > > Use the vfs interfaces for fetching file capabilities for=
+ killpriv
+> > > > > > > > > checks and from get_vfs_caps_from_disk(). While there, up=
+date the
+> > > > > > > > > kerneldoc for get_vfs_caps_from_disk() to explain how it =
+is different
+> > > > > > > > > from vfs_get_fscaps_nosec().
+> > > > > > > > >=20
+> > > > > > > > > Signed-off-by: Seth Forshee (DigitalOcean) <sforshee@kern=
+el.org>
+> > > > > > > > > ---
+> > > > > > > > >  security/commoncap.c | 30 +++++++++++++-----------------
+> > > > > > > > >  1 file changed, 13 insertions(+), 17 deletions(-)
+> > > > > > > > >=20
+> > > > > > > > > diff --git a/security/commoncap.c b/security/commoncap.c
+> > > > > > > > > index a0ff7e6092e0..751bb26a06a6 100644
+> > > > > > > > > --- a/security/commoncap.c
+> > > > > > > > > +++ b/security/commoncap.c
+> > > > > > > > > @@ -296,11 +296,12 @@ int cap_capset(struct cred *new,
+> > > > > > > > >   */
+> > > > > > > > >  int cap_inode_need_killpriv(struct dentry *dentry)
+> > > > > > > > >  {
+> > > > > > > > > -	struct inode *inode =3D d_backing_inode(dentry);
+> > > > > > > > > +	struct vfs_caps caps;
+> > > > > > > > >  	int error;
+> > > > > > > > > =20
+> > > > > > > > > -	error =3D __vfs_getxattr(dentry, inode, XATTR_NAME_CAPS=
+, NULL, 0);
+> > > > > > > > > -	return error > 0;
+> > > > > > > > > +	/* Use nop_mnt_idmap for no mapping here as mapping is =
+unimportant */
+> > > > > > > > > +	error =3D vfs_get_fscaps_nosec(&nop_mnt_idmap, dentry, =
+&caps);
+> > > > > > > > > +	return error =3D=3D 0;
+> > > > > > > > >  }
+> > > > > > > > > =20
+> > > > > > > > >  /**
+> > > > > > > > > @@ -323,7 +324,7 @@ int cap_inode_killpriv(struct mnt_idm=
+ap *idmap, struct dentry *dentry)
+> > > > > > > > >  {
+> > > > > > > > >  	int error;
+> > > > > > > > > =20
+> > > > > > > > > -	error =3D __vfs_removexattr(idmap, dentry, XATTR_NAME_C=
+APS);
+> > > > > > > > > +	error =3D vfs_remove_fscaps_nosec(idmap, dentry);
+> > > > > > > >=20
+> > > > > > > > Uhm, I see that the change is logically correct... but the =
+original
+> > > > > > > > code was not correct, since the EVM post hook is not called=
+ (thus the
+> > > > > > > > HMAC is broken, or an xattr change is allowed on a portable=
+ signature
+> > > > > > > > which should be not).
+> > > > > > > >=20
+> > > > > > > > For completeness, the xattr change on a portable signature =
+should not
+> > > > > > > > happen in the first place, so cap_inode_killpriv() would no=
+t be called.
+> > > > > > > > However, since EVM allows same value change, we are here.
+> > > > > > >=20
+> > > > > > > I really don't understand EVM that well and am pretty hesitan=
+t to try an
+> > > > > > > change any of the logic around it. But I'll hazard a thought:=
+ should EVM
+> > > > > > > have a inode_need_killpriv hook which returns an error in thi=
+s
+> > > > > > > situation?
+> > > > > >=20
+> > > > > > Uhm, I think it would not work without modifying
+> > > > > > security_inode_need_killpriv() and the hook definition.
+> > > > > >=20
+> > > > > > Since cap_inode_need_killpriv() returns 1, the loop stops and E=
+VM would
+> > > > > > not be invoked. We would need to continue the loop and let EVM =
+know
+> > > > > > what is the current return value. Then EVM can reject the chang=
+e.
+> > > > > >=20
+> > > > > > An alternative way would be to detect that actually we are sett=
+ing the
+> > > > > > same value for inode metadata, and maybe not returning 1 from
+> > > > > > cap_inode_need_killpriv().
+> > > > > >=20
+> > > > > > I would prefer the second, since EVM allows same value change a=
+nd we
+> > > > > > would have an exception if there are fscaps.
+> > > > > >=20
+> > > > > > This solves only the case of portable signatures. We would need=
+ to
+> > > > > > change cap_inode_need_killpriv() anyway to update the HMAC for =
+mutable
+> > > > > > files.
+> > > > >=20
+> > > > > I see. In any case this sounds like a matter for a separate patch
+> > > > > series.
+> > > >=20
+> > > > Agreed.
+> > >=20
+> > > Christian, how realistic is that we don't kill priv if we are setting
+> > > the same owner?
+> > >=20
+> > > Serge, would we be able to replace __vfs_removexattr() (or now
+> > > vfs_get_fscaps_nosec()) with a security-equivalent alternative?
+> >=20
+> > It seems it is not necessary.
+> >=20
+> > security.capability removal occurs between evm_inode_setattr() and
+> > evm_inode_post_setattr(), after the HMAC has been verified and before
+> > the new HMAC is recalculated (without security.capability).
+> >=20
+> > So, all good.
+> >=20
+> > Christian, Seth, I pushed the kernel and the updated tests (all patches
+> > are WIP):
+> >=20
+> > https://github.com/robertosassu/linux/commits/evm-fscaps-v2/
+> >=20
+> > https://github.com/robertosassu/ima-evm-utils/commits/evm-fscaps-v2/
+> >=20
+> >=20
+> > The tests are passing:
+> >=20
+> > https://github.com/robertosassu/ima-evm-utils/actions/runs/8159877004/j=
+ob/22305521359
+>=20
+> Thanks! I probably won't be able to take them exactly as-is due to other
+> changes for the next version (rebasing onto the changes to make IMA and
+> EVM LSMs, forbidding xattr handlers entirely for fscaps), but they will
+> serve as a good road map for what needs to happen.
 
-The option driver will bind because you have matched only on Class ff 
-"{ USB_DEVICE_INTERFACE_CLASS(0x2cb7, 0x01a1, 0xff) }"
-There are other macros that you could possibly use but I can't tell you 
-which since you have not shown an usb-device listing for the device.
-You can also blacklist an interface (RSV). The option driver source is 
-full of examples of macro use and combinations.
+Welcome. Yes, both ima_inode_set_fscaps() and ima_inode_remove_fscaps()
+will be registered as LSM hooks in ima_appraise.c. It will be probably
+straightforward for you to make those changes, but if you have any
+question, let me know.
 
-thanks
-Lars
+Roberto
+
 
