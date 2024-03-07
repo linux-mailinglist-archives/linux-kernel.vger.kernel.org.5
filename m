@@ -1,91 +1,131 @@
-Return-Path: <linux-kernel+bounces-94766-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94768-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 828218744FF
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 01:05:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D12FD874502
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 01:07:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B41361C21A84
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 00:05:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 71B641F23725
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 00:07:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2C971859;
-	Thu,  7 Mar 2024 00:05:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44EA9800;
+	Thu,  7 Mar 2024 00:07:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="lyaXguPs"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="T9mxWMTe"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5AE9195;
-	Thu,  7 Mar 2024 00:05:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47C0F161;
+	Thu,  7 Mar 2024 00:07:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709769933; cv=none; b=HmuhsL9xNQ2ovOJGzrRE0DNt2Z8I+IqcVmSotoJmuiPndXPJEcT9rUlkNdb6kIPGvPBEoAmqEmiEGQPjY2NcHTaa53YDONB/nwIP8EdkptJp0JZ5D6BiFVODkolHH9Gv3YyayN6VLNjCcGRWPhDwarNTwGM8y1dTbmiviWQ/wBQ=
+	t=1709770044; cv=none; b=qifvx7eaSWUzbW/sHlQhaOd57tPQ1IyPcWr39GVHghCg7Ws6xDz5ZwicafEMFUzyFrxqkVBYECC6nWQfz8y6Ep/ob2+HdtbTnDnBbnsBgG5vUV/eVg9BokPxBpP4Osc3CYBdv2m/PpzQ0UypEhIBUaFt6eAgu1Zpz9MK6u76598=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709769933; c=relaxed/simple;
-	bh=TJ8+IzB+9C90XJ+2dzw39zog9VyaMRkZYRKOTYYvkKY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=sO6QaXp0/9nI5i0dPBloELeqcb7hw4MgUqUGB6cVCJ5uEuDJ7MyIjh1UohvsI6L6iKvIvZofRBD3eKLMyHJwiEQyOQTD8sg7Ilzqtpetoyfv8NjmfBJj17OGqtPqs+ADH6LItiywElHuGBnIdD3VYSL7Y2qPhC4lfeUQtHUn68E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=lyaXguPs; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=DjyHBAlETyyG4Qr9GeB7lOlryT9zi8nmLMiWMox5uDQ=; b=lyaXguPsLdj8TZ3Ge2MrUqrwX9
-	uAWMOQwzGqHTksc6F2yTd06wApmkllMcydlx7jdDm+VgzEeqzd6Yl+4hmgzoIrGWXK39lcXyZDC8m
-	RMcURacG5kWTjEX/C0L3t42mMzuJ1pGKGv/fiSBZgCI143zdmjn/jVWtIGEEkFNkSzHhTlHAIRmhF
-	991xnFaoZ+7kjBxq4zrUbHHU2fbZokIzdGZjN/UMjqtgRXOAiV1G4zk4tbQI3dqRW3g2MnPmdxH6Y
-	gratT+c5yFRb+ik6xBN/5buFp/UyQ6RI49ZasE4mRJAs0SfUl+CWAoLBu1rdcZK0CZyoXyqXhZasb
-	fEzA3ulA==;
-Received: from [50.53.50.0] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ri1GJ-00000002LTs-0N9L;
-	Thu, 07 Mar 2024 00:05:27 +0000
-Message-ID: <cdf0ef59-9a21-45d5-9572-cbf2c63aa083@infradead.org>
-Date: Wed, 6 Mar 2024 16:05:23 -0800
+	s=arc-20240116; t=1709770044; c=relaxed/simple;
+	bh=QTUOXYdMlWgpt+KAVLtO+n1L0FFFbX4fZZbEK/5E49A=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=Lf+7SFLhbZ4rgYx/vFN75qW9Gnoe3JzKCvyeFRxHS5Adp4LPUYk33Ko066DIUDwAMPfXyfMqNqI2rZJfbIddjwDEx8kkGeId9FHou1T8DxVfNC8tauTp6fsq1JvHizyQYcTG6wBTNsMZLp0pMH4MqzJHkch16+GNTHbQbrb7sm8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=T9mxWMTe; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1709770039;
+	bh=3PmXNVGn7XjFoSa3vjVFtQO58cni7AWVMPU81KTSwhY=;
+	h=Date:From:To:Cc:Subject:From;
+	b=T9mxWMTejuEvsuUQ/AoOL5WAyEOgE7M0T0Qe9cmI3sISHMNEcQCJgsfjdqGZwDk0W
+	 mHdZkWkjak5cbMgclMb2ewCd1ZMZur+peczJAsZ7J4PH2wz/t5i6xeYL03Odctj3YD
+	 RPuN1oW79WTNvSdKdmnZ2yBBqAdt523Y8LFduSJl8EhPP3Ci1TxiaHdp5ogrmRegFA
+	 mqRFXbKzr2SGM91mJdDiRAcq3RxMFl8nIItuPz6d4mPno2oEzHLlipt4B1DHmbWXwu
+	 6jQy2ZabSyrk2CmgiubrH3XNDRR1SSwGGrXCZ/hBCIJ6ojvJRkvbk/KzB5eexzkM5O
+	 wxGpCpp9GX+dg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TqqP25c27z4wcC;
+	Thu,  7 Mar 2024 11:07:18 +1100 (AEDT)
+Date: Thu, 7 Mar 2024 11:07:17 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Jan Kara <jack@suse.cz>
+Cc: Winston Wen <wentao@uniontech.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the ext3 tree
+Message-ID: <20240307110717.50b64fe9@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v14 17/19] scripts: add boot policy generation program
-Content-Language: en-US
-To: Fan Wu <wufan@linux.microsoft.com>, corbet@lwn.net, zohar@linux.ibm.com,
- jmorris@namei.org, serge@hallyn.com, tytso@mit.edu, ebiggers@kernel.org,
- axboe@kernel.dk, agk@redhat.com, snitzer@kernel.org, eparis@redhat.com,
- paul@paul-moore.com
-Cc: linux-doc@vger.kernel.org, linux-integrity@vger.kernel.org,
- linux-security-module@vger.kernel.org, linux-fscrypt@vger.kernel.org,
- linux-block@vger.kernel.org, dm-devel@lists.linux.dev,
- audit@vger.kernel.org, linux-kernel@vger.kernel.org,
- Deven Bowers <deven.desai@linux.microsoft.com>
-References: <1709768084-22539-1-git-send-email-wufan@linux.microsoft.com>
- <1709768084-22539-18-git-send-email-wufan@linux.microsoft.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <1709768084-22539-18-git-send-email-wufan@linux.microsoft.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/YV2kPiMrovNC6.nKsM.9alL";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
+--Sig_/YV2kPiMrovNC6.nKsM.9alL
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
 
-On 3/6/24 15:34, Fan Wu wrote:
->  if SECURITY_IPE
-> +config IPE_BOOT_POLICY
-> +	string "Integrity policy to apply on system startup"
-> +	help
-> +	  This option specifies a filepath to a IPE policy that is compiled
+After merging the ext3 tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
 
-	                                      an IPE
+In file included from include/linux/sysctl.h:27,
+                 from include/linux/fanotify.h:5,
+                 from fs/notify/fanotify/fanotify.c:2:
+fs/notify/fanotify/fanotify.c: In function 'fanotify_get_response':
+fs/notify/fanotify/fanotify.c:233:48: error: suggest parentheses around ari=
+thmetic in operand of '|' [-Werror=3Dparentheses]
+  233 |                                   TASK_KILLABLE|TASK_FREEZABLE);
+      |                                                ^
+include/linux/wait.h:283:11: note: in definition of macro '___wait_is_inter=
+ruptible'
+  283 |          (state & (TASK_INTERRUPTIBLE | TASK_WAKEKILL)))
+      |           ^~~~~
+include/linux/wait.h:935:9: note: in expansion of macro '___wait_event'
+  935 |         ___wait_event(wq, condition, state, 0, 0, schedule())
+      |         ^~~~~~~~~~~~~
+include/linux/wait.h:958:25: note: in expansion of macro '__wait_event_stat=
+e'
+  958 |                 __ret =3D __wait_event_state(wq_head, condition, st=
+ate);          \
+      |                         ^~~~~~~~~~~~~~~~~~
+fs/notify/fanotify/fanotify.c:231:15: note: in expansion of macro 'wait_eve=
+nt_state'
+  231 |         ret =3D wait_event_state(group->fanotify_data.access_waitq,
+      |               ^~~~~~~~~~~~~~~~
+cc1: all warnings being treated as errors
 
-> +	  into the kernel. This policy will be enforced until a policy update
-> +	  is deployed via the $securityfs/ipe/policies/$policy_name/active
-> +	  interface.
+Caused by commit
 
--- 
-#Randy
+  3440e7e55ced ("fanotify: allow freeze when waiting response for permissio=
+n events")
+
+Though, I guess, you could argue that the ___wait_is_interruptible macro
+should parenthesise the use of its "state" argument.
+
+I have used the ext3 tree from next-20240306 for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/YV2kPiMrovNC6.nKsM.9alL
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXpBTUACgkQAVBC80lX
+0GyIJgf9EiEsM3leOBeFVLdvpuIv3h7+e66I/TcA2ap4Olkbu4nJq/xLWNjzKBxJ
+AB9+3MLZP51VbsYwaugAPaNwusYakvrLGf3Fywp8tUoMC+xgsc45CTxuHEeB4Aio
+Zj6Qdg4nSOQImUOz6ZJ22sTEs7K9gOHG4PP9L/nG+ztFiH3PsUzl++ZzctOmFHmF
+g9xuVGMzwu4CQ+mhnPwbejMqCjIt3lCjHFEMMiYAafqPXzUD6dScyKMdWA9fp/Qe
+1Q14JefgecpzfmUFZv7jezwTRMzZP8GS22Ri5V7p4CEuq9/2hdfTeTaD8KFjfCkP
+zEQugtbf66R5KxWngQd+vj9Wb1Smww==
+=F2PT
+-----END PGP SIGNATURE-----
+
+--Sig_/YV2kPiMrovNC6.nKsM.9alL--
 
