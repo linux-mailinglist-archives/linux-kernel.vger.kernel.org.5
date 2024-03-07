@@ -1,190 +1,173 @@
-Return-Path: <linux-kernel+bounces-95437-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95436-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18C4F874DA0
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:39:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91F42874D9B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:38:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C4F41C20C96
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:39:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C7BD0B237FB
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:38:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E1DB12AAD4;
-	Thu,  7 Mar 2024 11:37:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE4B4129A77;
+	Thu,  7 Mar 2024 11:36:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="PmShF53T"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="gEy6RMz9"
+Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C2C4126F39;
-	Thu,  7 Mar 2024 11:37:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AAAB12883D
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 11:36:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709811459; cv=none; b=Sscq3cOsue7I1w38+S1ZbfUXTMbh+WU1h4KO8am0cH7ueaJ6UsSYckiMZBADlY+nVTtFpfF0iXr2YdIArsFGjngYKRY+ES+wAjauNfqrsdWqx8yKMO2wwMequmbs7WMxHwsD3BR2xhfGq3Yys/boetmb24qV+dl5+YniJncU9jc=
+	t=1709811388; cv=none; b=Lc7WF5P4mun5ti57pTrWZDqQMuHjuXaoOho7wueOjDRlHw42cqE2oL9YJEkT8zWIYYKsqA2JzU9bHjt4mqDv0xPDObtggZ23EYYpbhjk78I+xm08C9AgAPH3ohVhvgRTTxrDdHyFaGk/dKJsDfygY+D7JzjK40S/baTwbLh6Adc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709811459; c=relaxed/simple;
-	bh=bzo9Wfyr1Xgx6msDtriXR11PddtGvGUYjz6kRXVoZDM=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rNbVp3eBTLuGejWoqluNCYI43HnZgYUOl1YXQTbkuK9ImDQFyyxzzYjDCLBzcnKdANHn6TPWO2UGVWZuGZiq+l3qDuVLGht8eNJ5RY8dY37McMnf5IFaOT47FNK6ytMoFjGO+w3E0WxKo1cI2WGUOWVfG11Pk2GW3f2Uav5K+/g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=PmShF53T; arc=none smtp.client-ip=68.232.154.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1709811457; x=1741347457;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=bzo9Wfyr1Xgx6msDtriXR11PddtGvGUYjz6kRXVoZDM=;
-  b=PmShF53TzEnTKURp0YrmEXQjzMYTWOiKykI0gZ+jO/9nN9Mqv1mpQkbB
-   pBWwxVhJfk84vMxShCTKMBtBPDSI/DykKU8VIIOpdmnbgk6r6fee4rY2f
-   CwwYkn8fXAh2MAAlzUR8anAuGqbbeAl6j736s5Ji0u3k8CSuVPdLYmkJN
-   71P1x4plIfz8e7bGpQmaqt9mDYP//3xg4k9GlrKlMyOZwa1RqPMMiS/oC
-   FZ+3CZq5LRucBvTJvxvmrf1GrU7/0CkeiVYZrwNBlr8jgHx5LjBHa2LqP
-   CSv8Gk8F7wqlKyR7eLiZQUtueoazIPbfButUoMtsCATo7uE23q/QVOJkv
-   w==;
-X-CSE-ConnectionGUID: vGKddyPVT5y+FgobIIh7Vw==
-X-CSE-MsgGUID: kumRBleARg+kz1/1CMIDRA==
-X-IronPort-AV: E=Sophos;i="6.07,211,1708412400"; 
-   d="asc'?scan'208";a="17329607"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 07 Mar 2024 04:37:35 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 7 Mar 2024 04:36:24 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex01.mchp-main.com (10.10.85.143)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
- Transport; Thu, 7 Mar 2024 04:36:22 -0700
-Date: Thu, 7 Mar 2024 11:35:37 +0000
-From: Conor Dooley <conor.dooley@microchip.com>
-To: Stefan Berger <stefanb@linux.ibm.com>
-CC: <mpe@ellerman.id.au>, <linux-integrity@vger.kernel.org>,
-	<linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
-	<jarkko@kernel.org>, <rnsastry@linux.ibm.com>, <peterhuewe@gmx.de>,
-	<viparash@in.ibm.com>
-Subject: Re: [PATCH 2/2] tpm: of: If available Use linux,sml-log to get the
- log and its size
-Message-ID: <20240307-chill-roundup-44a73c50aebc@wendy>
-References: <20240306155511.974517-1-stefanb@linux.ibm.com>
- <20240306155511.974517-3-stefanb@linux.ibm.com>
+	s=arc-20240116; t=1709811388; c=relaxed/simple;
+	bh=Y2kcKWYv5e6eNTplSE0YBXQ5c/C4Tz3gOg7+DUtktVI=;
+	h=From:To:Cc:In-Reply-To:Subject:Date:Message-ID:MIME-Version:
+	 Content-Type:References; b=ugIlRiOpk80Ef0FYHzLT1/2Bxf0Qz7ul0DM/VMoOOf/hl+Pw966Kvg+CDEWi2JAVJMBVgz4qHkaorId179/bSLHWpb0Ae/un0nIPLK9RHoHSblyEVeZCzRNlEBjyYNz2QdIN1uIwYTLIDUtLgj0Uye3QBaNquRYHcok1EIGxkJg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=gEy6RMz9; arc=none smtp.client-ip=203.254.224.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+	by mailout2.samsung.com (KnoxPortal) with ESMTP id 20240307113624epoutp02e872919ceb33b60f04acb506bb6dd578~6eGUxCEaF1885618856epoutp02X
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 11:36:24 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20240307113624epoutp02e872919ceb33b60f04acb506bb6dd578~6eGUxCEaF1885618856epoutp02X
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1709811384;
+	bh=LxEJ8CBILPYnTnqg6+IsyZdTHbi8aif3bwtHVqb81hA=;
+	h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+	b=gEy6RMz9Wp6q8wfPqOwK8PNYZg1+BCaQhLUwWB9GTAOcWIYw5a4n9dnNLAHaH8miQ
+	 dkvdBtCA2Xs3DSo8K/X9UHrZ9vDBxqzWhiuLIMqWov/JL0YLiEAJh5KLS55XD2323e
+	 e5ec2vebg3XwcGfPcYh8dsLESNNllwq8cjifpZF0=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+	epcas1p3.samsung.com (KnoxPortal) with ESMTP id
+	20240307113624epcas1p36d0397d767f282dacfa92ef949b175ca~6eGUiC0ed0318903189epcas1p3G;
+	Thu,  7 Mar 2024 11:36:24 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.38.231]) by
+	epsnrtp3.localdomain (Postfix) with ESMTP id 4Tr6h72PfWz4x9Pt; Thu,  7 Mar
+	2024 11:36:23 +0000 (GMT)
+Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
+	epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+	DA.36.11177.7B6A9E56; Thu,  7 Mar 2024 20:36:23 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+	epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
+	20240307113623epcas1p42a0aea5010c17a3390d30a9a9359f9c4~6eGTYTf7I1827218272epcas1p4j;
+	Thu,  7 Mar 2024 11:36:23 +0000 (GMT)
+Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
+	epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+	20240307113623epsmtrp244182b4e564c6d540bf39b7f41d2948e~6eGTXtEbF2368023680epsmtrp2O;
+	Thu,  7 Mar 2024 11:36:23 +0000 (GMT)
+X-AuditID: b6c32a35-a17ff70000002ba9-fb-65e9a6b71e7e
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+	epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	B9.CE.07368.6B6A9E56; Thu,  7 Mar 2024 20:36:22 +0900 (KST)
+Received: from cw00choi03 (unknown [10.113.111.106]) by epsmtip2.samsung.com
+	(KnoxPortal) with ESMTPA id
+	20240307113622epsmtip2ce0b2ce0442a033c1c9d3594d438cd8e~6eGTMbJBN0402904029epsmtip2n;
+	Thu,  7 Mar 2024 11:36:22 +0000 (GMT)
+From: "Chanwoo Choi" <cw00.choi@samsung.com>
+To: "'Andy Shevchenko'" <andriy.shevchenko@linux.intel.com>, "'Stanley
+ Chang'" <stanley_chang@realtek.com>, <linux-kernel@vger.kernel.org>
+Cc: "'MyungJoo Ham'" <myungjoo.ham@samsung.com>
+In-Reply-To: <20240304174913.1198974-1-andriy.shevchenko@linux.intel.com>
+Subject: RE: [PATCH v1 1/1] extcon: realtek: Remove unused of_gpio.h
+Date: Thu, 7 Mar 2024 20:36:22 +0900
+Message-ID: <000101da7083$ae5d55b0$0b180110$@samsung.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="pGsz+08ahPIBPDcV"
-Content-Disposition: inline
-In-Reply-To: <20240306155511.974517-3-stefanb@linux.ibm.com>
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQG7tkI6tt2s17nzUnp+U++O8oduIwBxDmu9sWYSVkA=
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmphk+LIzCtJLcpLzFFi42LZdlhTT3f7spepBq2zBC16m6YzWVzeNYfN
+	4nbjCjaL67uamR1YPOadDPR4/HYzu0ffllWMHp83yQWwRGXbZKQmpqQWKaTmJeenZOal2yp5
+	B8c7x5uaGRjqGlpamCsp5CXmptoqufgE6Lpl5gBtVFIoS8wpBQoFJBYXK+nb2RTll5akKmTk
+	F5fYKqUWpOQUmBboFSfmFpfmpevlpZZYGRoYGJkCFSZkZ2yat4Wx4DlnxY6d/5gaGJdwdDFy
+	ckgImEh0T7jE2sXIxSEksINR4ubMO2wQzidGicNfFkA53xglji+ZAORwgLVsW6YCEd/LKPFu
+	9UGo9peMEgt6NoMVsQnoSCz4EQoSFxHoYZRovvmGBWQfs4C+xOoPtxlBbE4BT4mJ976B2cIC
+	LhKrJ7WygtgsAioSy7s/soPYvAKWEvuezGeCsAUlTs58AjVHXmL72znMED8oSPx8ugysV0TA
+	SuL7z59sEDUiErM725hBjpAQ+Mku0b7uCyNEg4vEkm8NbBC2sMSr41vYIWwpic/v9rJBNExm
+	lLj4+jVU93pGiY0rW6DWGUvsXzqZCeRNZgFNifW79CG28Um8+9rDCgkiXomONiGIamWJyw/u
+	MkHYkhKL2zuh9npILPvwl3kCo+IsJL/NQvLbLCQ/zEJYtoCRZRWjWGpBcW56arFhgSE8upPz
+	czcxgpOjlukOxolvP+gdYmTiYDzEKMHBrCTCy2LxMlWINyWxsiq1KD++qDQntfgQoykwtCcy
+	S4km5wPTc15JvKGJpYGJmZGxiYWhmaGSOO+ZK2WpQgLpiSWp2ampBalFMH1MHJxSDUxrD0kY
+	KWttYNzbs1On2Eiu9Unw11a5k21H71QsLf/JevOcvQXvnuLsayqfV3/SM09dezrms9gh9UMx
+	M66VWHydd5bvaYZ0YtSJijDLiwv0DhirztHct2vNhfUu7Nxre/6tfbg4S0DM3+pTaWOexZtr
+	gjOm/Wb5efuC5D+99x5hCfoLPj3rFOadNv23e51kwTav0H3zP/Lx+/xJeVDxKLE+ZW+P0Kso
+	K0meI0xTZZcG8/ZFbfqbZfqUZX6lKZN/UNPvrx8vWnD+n6i1W7xhl09s+BqeK0ud/Jwc/B7O
+	Pft48nITh2UumtVNvS/tX+y86ee67mjT33WlEWlPuu0vrrmdMf2a71Yj5xhb7uq+jMdKLMUZ
+	iYZazEXFiQD+gMMsFwQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrBLMWRmVeSWpSXmKPExsWy7bCSvO62ZS9TDVrfWFv0Nk1nsri8aw6b
+	xe3GFWwW13c1MzuweMw7Gejx+O1mdo++LasYPT5vkgtgieKySUnNySxLLdK3S+DK2DRvC2PB
+	c86KHTv/MTUwLuHoYuTgkBAwkdi2TKWLkZNDSGA3o8Tj63EgtoSApMS0i0eZIUqEJQ4fLu5i
+	5AIqec4osaC5lxEkziagI7HgRyhIuYhAH6PE3jdpIDazgL7E6g+3GSFGzmKUONQSBmJzCnhK
+	TLz3DSwuLOAisXpSKyuIzSKgIrG8+yM7iM0rYCmx78l8JghbUOLkzCcsIKuYBfQk2jYyQoyX
+	l9j+dg4zxJUKEj+fLmOFOMFK4vvPn2wQNSISszvbmCcwCs9CMmkWwqRZSCbNQtKxgJFlFaNk
+	akFxbnpusmGBYV5quV5xYm5xaV66XnJ+7iZGcGRoaexgvDf/n94hRiYOxkOMEhzMSiK8LBYv
+	U4V4UxIrq1KL8uOLSnNSiw8xSnOwKInzGs6YnSIkkJ5YkpqdmlqQWgSTZeLglGpgmhg5o5Tf
+	nvmN0MJHi5e+y2StmaHsf3ijgNW7gxw1Wzq/hfnzi+1qyt+Y5alu2qLhq/WwrtBa5//sns2P
+	PSfscT/B031pzSTmwgJH+zcNxhdj9Hfl1r59tIW1QejYGr93PaXby2OsLkk/e7GZf8qzkp5K
+	rm/WbF/fZ7gdjw5USuotmHLu/IKZovvb5h104QgWTHwuL980S+lVq0GA1vZ5mQ3aJbzSsrcE
+	edYqs+9kjZp+ctJH98i4e2+yixRNM2Zqn7Fke/6e303J+NyepB+GGyurgk6lRudPrl0R/krg
+	72lOn/TXvxZtENP4cZ9v2f9FjYE82yyi3cVv5Himcre6BE+fea/O+9u1/8s0Dh5TYinOSDTU
+	Yi4qTgQAVVBzFvsCAAA=
+X-CMS-MailID: 20240307113623epcas1p42a0aea5010c17a3390d30a9a9359f9c4
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20240304174938epcas1p379bfb2a4834ffc255149b5fcaba60534
+References: <CGME20240304174938epcas1p379bfb2a4834ffc255149b5fcaba60534@epcas1p3.samsung.com>
+	<20240304174913.1198974-1-andriy.shevchenko@linux.intel.com>
 
---pGsz+08ahPIBPDcV
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 06, 2024 at 10:55:11AM -0500, Stefan Berger wrote:
-> If linux,sml-log is available use it to get the TPM log rather than the
-> pointer found in linux,sml-base. This resolves an issue on PowerVM and KVM
-> on Power where after a kexec the memory pointed to by linux,sml-base may
-> have been corrupted. Also, linux,sml-log has replaced linux,sml-base and
-> linux,sml-size on these two platforms.
 
-Those two properties are documented, but linux,sml-log is not, nor can I
-find patches on the list documenting it.
-There should be a patch adding this to tmp-common.yaml.
-
-Cheers,
-Conor.
-
-> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+> -----Original Message-----
+> From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Sent: Tuesday, March 5, 2024 2:49 AM
+> To: Stanley Chang <stanley_chang@realtek.com>;
+linux-kernel@vger.kernel.org
+> Cc: MyungJoo Ham <myungjoo.ham@samsung.com>; Chanwoo Choi
+> <cw00.choi@samsung.com>; Andy Shevchenko
+<andriy.shevchenko@linux.intel.com>
+> Subject: [PATCH v1 1/1] extcon: realtek: Remove unused of_gpio.h
+> 
+> of_gpio.h is deprecated and subject to remove.
+> The driver doesn't use it, simply remove the unused header.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > ---
->  drivers/char/tpm/eventlog/of.c | 36 +++++++++++-----------------------
->  1 file changed, 11 insertions(+), 25 deletions(-)
->=20
-> diff --git a/drivers/char/tpm/eventlog/of.c b/drivers/char/tpm/eventlog/o=
-f.c
-> index 930fe43d5daf..e37196e64ef1 100644
-> --- a/drivers/char/tpm/eventlog/of.c
-> +++ b/drivers/char/tpm/eventlog/of.c
-> @@ -54,8 +54,8 @@ int tpm_read_log_of(struct tpm_chip *chip)
->  	const u32 *sizep;
->  	const u64 *basep;
->  	struct tpm_bios_log *log;
-> +	const void *logp;
->  	u32 size;
-> -	u64 base;
-> =20
->  	log =3D &chip->log;
->  	if (chip->dev.parent && chip->dev.parent->of_node)
-> @@ -66,37 +66,23 @@ int tpm_read_log_of(struct tpm_chip *chip)
->  	if (of_property_read_bool(np, "powered-while-suspended"))
->  		chip->flags |=3D TPM_CHIP_FLAG_ALWAYS_POWERED;
-> =20
-> -	sizep =3D of_get_property(np, "linux,sml-size", NULL);
-> -	basep =3D of_get_property(np, "linux,sml-base", NULL);
-> -	if (sizep =3D=3D NULL && basep =3D=3D NULL)
-> -		return tpm_read_log_memory_region(chip);
-> -	if (sizep =3D=3D NULL || basep =3D=3D NULL)
-> -		return -EIO;
-> -
-> -	/*
-> -	 * For both vtpm/tpm, firmware has log addr and log size in big
-> -	 * endian format. But in case of vtpm, there is a method called
-> -	 * sml-handover which is run during kernel init even before
-> -	 * device tree is setup. This sml-handover function takes care
-> -	 * of endianness and writes to sml-base and sml-size in little
-> -	 * endian format. For this reason, vtpm doesn't need conversion
-> -	 * but physical tpm needs the conversion.
-> -	 */
-> -	if (of_property_match_string(np, "compatible", "IBM,vtpm") < 0 &&
-> -	    of_property_match_string(np, "compatible", "IBM,vtpm20") < 0) {
-> +	logp =3D of_get_property(np, "linux,sml-log", &size);
-> +	if (logp =3D=3D NULL) {
-> +		sizep =3D of_get_property(np, "linux,sml-size", NULL);
-> +		basep =3D of_get_property(np, "linux,sml-base", NULL);
-> +		if (sizep =3D=3D NULL && basep =3D=3D NULL)
-> +			return tpm_read_log_memory_region(chip);
-> +		if (sizep =3D=3D NULL || basep =3D=3D NULL)
-> +			return -EIO;
-> +		logp =3D __va(be64_to_cpup((__force __be64 *)basep));
->  		size =3D be32_to_cpup((__force __be32 *)sizep);
-> -		base =3D be64_to_cpup((__force __be64 *)basep);
-> -	} else {
-> -		size =3D *sizep;
-> -		base =3D *basep;
->  	}
-> -
->  	if (size =3D=3D 0) {
->  		dev_warn(&chip->dev, "%s: Event log area empty\n", __func__);
->  		return -EIO;
->  	}
-> =20
-> -	log->bios_event_log =3D devm_kmemdup(&chip->dev, __va(base), size, GFP_=
-KERNEL);
-> +	log->bios_event_log =3D devm_kmemdup(&chip->dev, logp, size, GFP_KERNEL=
-);
->  	if (!log->bios_event_log)
->  		return -ENOMEM;
-> =20
-> --=20
-> 2.43.0
->=20
+>  drivers/extcon/extcon-rtk-type-c.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/extcon/extcon-rtk-type-c.c
+b/drivers/extcon/extcon-rtk-
+> type-c.c
+> index a592bab77538..19a01e663733 100644
+> --- a/drivers/extcon/extcon-rtk-type-c.c
+> +++ b/drivers/extcon/extcon-rtk-type-c.c
+> @@ -13,7 +13,6 @@
+>  #include <linux/of.h>
+>  #include <linux/of_address.h>
+>  #include <linux/of_irq.h>
+> -#include <linux/of_gpio.h>
+>  #include <linux/io.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/syscalls.h>
+> --
+> 2.43.0.rc1.1.gbec44491f096
+> 
 
---pGsz+08ahPIBPDcV
-Content-Type: application/pgp-signature; name="signature.asc"
+Applied it. Thanks.
 
------BEGIN PGP SIGNATURE-----
+Best Regards,
+Chanwoo Choi
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZemmegAKCRB4tDGHoIJi
-0geZAQDRqcSLRqXvICr64TJ1WsNpahDiNbtCA9bLKrnnkQKChwEAqoh88ZpfefYJ
-7KQ6U0WmddS80c0+qFeqxjEqa1WH5gM=
-=oHvc
------END PGP SIGNATURE-----
-
---pGsz+08ahPIBPDcV--
 
