@@ -1,273 +1,200 @@
-Return-Path: <linux-kernel+bounces-95825-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95826-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AF22875380
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 16:41:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5BFF1875384
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 16:41:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 099151F287DE
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:41:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A4C9F1F24078
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:41:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31D2F131E41;
-	Thu,  7 Mar 2024 15:39:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2C0012FB15;
+	Thu,  7 Mar 2024 15:39:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sigma-star.at header.i=@sigma-star.at header.b="sjs3jCdP"
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="PewkiV9M"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEF74130E5A
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 15:39:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A53B12FB02;
+	Thu,  7 Mar 2024 15:39:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709825958; cv=none; b=LGB5+Pq1GrT817pP9CFGPOFzAjDgTLNZfBjg731WHupnVxGShSKnIuw+KLvWmsX1hY03MrBa+HpktE4LdfLc3gIWZr57jlE0bduvgyW2VKIUHwL7JpQsEe6C/vTm99qVaSl1OGsWygANFREBz1ecSkS4Uh3tbYgZA5fj18qZJ7M=
+	t=1709825968; cv=none; b=uvIxnu3FiI5zWUga8Jy3JfxWASx3wRMSz36RtZsJNcYfyhAYXpNTonHYMHvYicQ9cf6uHgQ8ceBkrbkBd5ghzqP9dOoide0xxckeCU9KTrhmNqYWd/9CKm1BAY/Kdq504d5SJgcrAKHy1wfPHlH9PhQbP+YzPC9Nnj4zk6vnKKs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709825958; c=relaxed/simple;
-	bh=FDOPf3xlGpDAEZuAPeTmAaGWnb+6zG3xNnz2qq7Ohj4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OGkj+K7RJ4BWnWTpYpqnhl2SZbaQbk595UCZXmJMWMyQftVOMKEo1Fugfqm2Cx4CH1KGTA4rQ/i0dE6TUdt76b9Wg4W3LCa8LDL9dUKQ5yxDiIfzD1UtslSsYr8jO+T5UV+hmLpAB3QlThSA3KxNLIGnRCnfnam0wgezTLdk4As=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sigma-star.at; spf=pass smtp.mailfrom=sigma-star.at; dkim=pass (2048-bit key) header.d=sigma-star.at header.i=@sigma-star.at header.b=sjs3jCdP; arc=none smtp.client-ip=209.85.208.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sigma-star.at
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sigma-star.at
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-55a179f5fa1so1615187a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 07:39:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sigma-star.at; s=google; t=1709825954; x=1710430754; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=otEyEh5HNjpSjKJb9y7tWHyWPlbFploqEwD1jDd84X0=;
-        b=sjs3jCdP7dH5vpL4YGv9lDljTeNNuXddCY6dq+AreMUQOIXVq2a2TGW9VQI9QxXPsX
-         CjBq0GR/sIjoE1egqdYWZawVDJWfYxfZyluaZppTzqGcpFNGx9ZEmmYNGLTJ/y3ipWm0
-         7ltZI6abJf6ITBdyKM3WCXcTbHElLzwxFi6F2wX6aNNqCFLswee2zjeqvg4lHJsr7Pp6
-         XktHNs4F7lHnxTx6IXiKlVFXcm0oIK+qWmXG9zI708OYFcj1PDZ42C1jZVDbgLCObuVN
-         g9j7lMiM0Iuop1qe7PoRi4Zu6OJF9hRtcN0GtziD+22aXAoDogtK+jD+m+f4t+d82pky
-         x09A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709825954; x=1710430754;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=otEyEh5HNjpSjKJb9y7tWHyWPlbFploqEwD1jDd84X0=;
-        b=N0qzT4Cly9BlBP+zMpJxa/udX+ottduuqGhWNyRKdmDEtt8+WCZ123dLBq+qukPxJ0
-         zuITSojvc9M/fWMQHOaXGwEB/1HCb1nxi2ZLiXWcxgLRvvaomuMFBffq/M9SmXku69aN
-         7DNmR50qM2zlSv3zXOSAOUIHGvaQBcojRnmZGTUnxMK1aif+5BmGfgNSr+Q46OUgjiIb
-         TAg8neCBE1sggFU3EGQjMWFAnsO436kY/tNlBBOzQZEEPBNPND+7DS5+Z0SZjOEKp4z9
-         k1aY45NjYHGJmDzIv84F+0pX6HT5GGbmVYwgccUb9GTRfxjraQU3tVroCqzPAZMvv/rX
-         WvCw==
-X-Forwarded-Encrypted: i=1; AJvYcCWO5tdc1QAwjxfzN07hNacUJ8B2ZLFGeDNhgX2PJz11ec8boALTtoImYxZ+PH2OwU+H5D80WvsJNMIrPFjt0Vz6RBpUJucjRoUFdfrb
-X-Gm-Message-State: AOJu0YwQ9ODjIMPnepppwa9/CoMcZFw9+G6WXj6Mx4elnqRIOXJFTYIT
-	0P4KGgW2X1RgkeLreZ3lqfpU2zHeji3ZEoaVH6Mp5uGRY3BpoX0TnfQxwS78PrE=
-X-Google-Smtp-Source: AGHT+IGsaSLKrDE4I3zR6qIDlCmgXdtrCR2biVKtmdoA2/l2u1GzA6EG7n4kCloBhq5bUg/JUttFCw==
-X-Received: by 2002:a17:906:d215:b0:a3f:1f0b:57d9 with SMTP id w21-20020a170906d21500b00a3f1f0b57d9mr11698671ejz.1.1709825954205;
-        Thu, 07 Mar 2024 07:39:14 -0800 (PST)
-Received: from localhost ([82.150.214.1])
-        by smtp.gmail.com with UTF8SMTPSA id tj10-20020a170907c24a00b00a444526962asm8260070ejc.128.2024.03.07.07.39.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Mar 2024 07:39:13 -0800 (PST)
-From: David Gstir <david@sigma-star.at>
-To: Mimi Zohar <zohar@linux.ibm.com>,
-	James Bottomley <jejb@linux.ibm.com>,
-	Jarkko Sakkinen <jarkko@kernel.org>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>
-Cc: David Gstir <david@sigma-star.at>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Ahmad Fatoum <a.fatoum@pengutronix.de>,
-	sigma star Kernel Team <upstream+dcp@sigma-star.at>,
-	David Howells <dhowells@redhat.com>,
-	Li Yang <leoyang.li@nxp.com>,
-	Paul Moore <paul@paul-moore.com>,
-	James Morris <jmorris@namei.org>,
-	"Serge E. Hallyn" <serge@hallyn.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-	Tejun Heo <tj@kernel.org>,
-	"Steven Rostedt (Google)" <rostedt@goodmis.org>,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-integrity@vger.kernel.org,
-	keyrings@vger.kernel.org,
-	linux-crypto@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-security-module@vger.kernel.org,
-	Richard Weinberger <richard@nod.at>,
-	David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Subject: [PATCH v6 6/6] docs: trusted-encrypted: add DCP as new trust source
-Date: Thu,  7 Mar 2024 16:38:33 +0100
-Message-ID: <20240307153842.80033-7-david@sigma-star.at>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240307153842.80033-1-david@sigma-star.at>
-References: <20240307153842.80033-1-david@sigma-star.at>
+	s=arc-20240116; t=1709825968; c=relaxed/simple;
+	bh=x4fzYeDENcTUx3XNmtUKgesKg5aoTwEyjOQLJxwmdcM=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cSK0lJv5ZxYbMJChAp6YDJUng5NLGdvrpg6EE7tPeI7oEoJ1LUznxZfvrLg4/DcYprMYgRjS2909lvvSJIl+Jb+zxvwREGamsSUW19G6pXWWyXz6qdWy+/eJ2VqIqsWsD8TuzkU2Om26C440wx71O2iuc9cxy4mql8DubtB/bn0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=PewkiV9M; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 427ALcsM012641;
+	Thu, 7 Mar 2024 15:39:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	date:from:to:cc:subject:message-id:reply-to:references
+	:mime-version:content-type:in-reply-to; s=qcppdkim1; bh=5nx7YKDK
+	UKYaf+RGFR3mjyRftZOQ0lMCWnwUnwRPBmQ=; b=PewkiV9MUKDOPYdt6AQXqbcM
+	CMs004tAeFJZVxX1PSIKOzVusi2NbJ1PP8vWYn/s638Ejb7OBClgSVYTu+xdyEOE
+	7cCHzXPt+7hyrRyPupUGIm5GW8SobTJugIWiUe/K4XauBe7EelyzbWWrDEUU5B5y
+	QfNAoFFT7dwk5HhjNq0eAgruJv9ijWSXHu9H6FDzwNb1XqikZrBDew7SA+wqB90B
+	Z7ehefGmy6QMtWR+omkQMe3EwvpSNox2CS2yNeSzzw5t3rpPKCs3IfdByNy00DcT
+	A81S7gBTSHU8ivKjDEEIAK3ZdIGzgu6NXAHBGMDKYpeNYVJtPncmq4WPDe+qnw==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wqbrhse67-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 07 Mar 2024 15:38:56 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 427FcsKI006303
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 7 Mar 2024 15:38:54 GMT
+Received: from quicinc.com (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 7 Mar
+ 2024 07:38:47 -0800
+Date: Thu, 7 Mar 2024 21:08:43 +0530
+From: Srivatsa Vaddagiri <quic_svaddagi@quicinc.com>
+To: Elliot Berman <quic_eberman@quicinc.com>
+CC: Alex Elder <elder@linaro.org>,
+        Srinivas Kandagatla
+	<srinivas.kandagatla@linaro.org>,
+        Murali Nalajal <quic_mnalajal@quicinc.com>,
+        Trilok Soni <quic_tsoni@quicinc.com>,
+        Carl van Schaik
+	<quic_cvanscha@quicinc.com>,
+        Philip Derrin <quic_pderrin@quicinc.com>,
+        Prakruthi Deepak Heragu <quic_pheragu@quicinc.com>,
+        Jonathan Corbet
+	<corbet@lwn.net>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Bjorn Andersson
+	<andersson@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        "Fuad
+ Tabba" <tabba@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "Andrew
+ Morton" <akpm@linux-foundation.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-mm@kvack.org>
+Subject: Re: [PATCH v17 07/35] gunyah: rsc_mgr: Add resource manager RPC core
+Message-ID: <20240307153843.GC1695516@quicinc.com>
+Reply-To: Srivatsa Vaddagiri <quic_svaddagi@quicinc.com>
+References: <20240222-gunyah-v17-0-1e9da6763d38@quicinc.com>
+ <20240222-gunyah-v17-7-1e9da6763d38@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+In-Reply-To: <20240222-gunyah-v17-7-1e9da6763d38@quicinc.com>
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: SAqqeAVAnHjsZR1Kz4QUiMS6P36MU6IS
+X-Proofpoint-ORIG-GUID: SAqqeAVAnHjsZR1Kz4QUiMS6P36MU6IS
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-07_07,2024-03-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 impostorscore=0
+ malwarescore=0 bulkscore=0 phishscore=0 suspectscore=0 lowpriorityscore=0
+ spamscore=0 adultscore=0 mlxlogscore=999 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2402120000
+ definitions=main-2403070084
 
-Update the documentation for trusted and encrypted KEYS with DCP as new
-trust source:
+* Elliot Berman <quic_eberman@quicinc.com> [2024-02-22 15:16:30]:
 
-- Describe security properties of DCP trust source
-- Describe key usage
-- Document blob format
+> The resource manager is a special virtual machine which is always
+> running on a Gunyah system. It provides APIs for creating and destroying
+> VMs, secure memory management, sharing/lending of memory between VMs,
+> and setup of inter-VM communication. Calls to the resource manager are
+> made via message queues.
+> 
+> This patch implements the basic probing and RPC mechanism to make those
+> API calls. Request/response calls can be made with gh_rm_call.
+> Drivers can also register to notifications pushed by RM via
+> gh_rm_register_notifier
+> 
+> Specific API calls that resource manager supports will be implemented in
+> subsequent patches.
+> 
+> Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
 
-Co-developed-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Co-developed-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Signed-off-by: David Gstir <david@sigma-star.at>
----
- .../security/keys/trusted-encrypted.rst       | 85 +++++++++++++++++++
- 1 file changed, 85 insertions(+)
+Left a minor comment below. LGTM otherwise.
 
-diff --git a/Documentation/security/keys/trusted-encrypted.rst b/Documentation/security/keys/trusted-encrypted.rst
-index e989b9802f92..81fb3540bb20 100644
---- a/Documentation/security/keys/trusted-encrypted.rst
-+++ b/Documentation/security/keys/trusted-encrypted.rst
-@@ -42,6 +42,14 @@ safe.
-          randomly generated and fused into each SoC at manufacturing time.
-          Otherwise, a common fixed test key is used instead.
- 
-+     (4) DCP (Data Co-Processor: crypto accelerator of various i.MX SoCs)
-+
-+         Rooted to a one-time programmable key (OTP) that is generally burnt
-+         in the on-chip fuses and is accessible to the DCP encryption engine only.
-+         DCP provides two keys that can be used as root of trust: the OTP key
-+         and the UNIQUE key. Default is to use the UNIQUE key, but selecting
-+         the OTP key can be done via a module parameter (dcp_use_otp_key).
-+
-   *  Execution isolation
- 
-      (1) TPM
-@@ -57,6 +65,12 @@ safe.
- 
-          Fixed set of operations running in isolated execution environment.
- 
-+     (4) DCP
-+
-+         Fixed set of cryptographic operations running in isolated execution
-+         environment. Only basic blob key encryption is executed there.
-+         The actual key sealing/unsealing is done on main processor/kernel space.
-+
-   * Optional binding to platform integrity state
- 
-      (1) TPM
-@@ -79,6 +93,11 @@ safe.
-          Relies on the High Assurance Boot (HAB) mechanism of NXP SoCs
-          for platform integrity.
- 
-+     (4) DCP
-+
-+         Relies on Secure/Trusted boot process (called HAB by vendor) for
-+         platform integrity.
-+
-   *  Interfaces and APIs
- 
-      (1) TPM
-@@ -94,6 +113,11 @@ safe.
- 
-          Interface is specific to silicon vendor.
- 
-+     (4) DCP
-+
-+         Vendor-specific API that is implemented as part of the DCP crypto driver in
-+         ``drivers/crypto/mxs-dcp.c``.
-+
-   *  Threat model
- 
-      The strength and appropriateness of a particular trust source for a given
-@@ -129,6 +153,13 @@ selected trust source:
-      CAAM HWRNG, enable CRYPTO_DEV_FSL_CAAM_RNG_API and ensure the device
-      is probed.
- 
-+  *  DCP (Data Co-Processor: crypto accelerator of various i.MX SoCs)
-+
-+     The DCP hardware device itself does not provide a dedicated RNG interface,
-+     so the kernel default RNG is used. SoCs with DCP like the i.MX6ULL do have
-+     a dedicated hardware RNG that is independent from DCP which can be enabled
-+     to back the kernel RNG.
-+
- Users may override this by specifying ``trusted.rng=kernel`` on the kernel
- command-line to override the used RNG with the kernel's random number pool.
- 
-@@ -231,6 +262,19 @@ Usage::
- CAAM-specific format.  The key length for new keys is always in bytes.
- Trusted Keys can be 32 - 128 bytes (256 - 1024 bits).
- 
-+Trusted Keys usage: DCP
-+-----------------------
-+
-+Usage::
-+
-+    keyctl add trusted name "new keylen" ring
-+    keyctl add trusted name "load hex_blob" ring
-+    keyctl print keyid
-+
-+"keyctl print" returns an ASCII hex copy of the sealed key, which is in format
-+specific to this DCP key-blob implementation.  The key length for new keys is
-+always in bytes. Trusted Keys can be 32 - 128 bytes (256 - 1024 bits).
-+
- Encrypted Keys usage
- --------------------
- 
-@@ -426,3 +470,44 @@ string length.
- privkey is the binary representation of TPM2B_PUBLIC excluding the
- initial TPM2B header which can be reconstructed from the ASN.1 octed
- string length.
-+
-+DCP Blob Format
-+---------------
-+
-+The Data Co-Processor (DCP) provides hardware-bound AES keys using its
-+AES encryption engine only. It does not provide direct key sealing/unsealing.
-+To make DCP hardware encryption keys usable as trust source, we define
-+our own custom format that uses a hardware-bound key to secure the sealing
-+key stored in the key blob.
-+
-+Whenever a new trusted key using DCP is generated, we generate a random 128-bit
-+blob encryption key (BEK) and 128-bit nonce. The BEK and nonce are used to
-+encrypt the trusted key payload using AES-128-GCM.
-+
-+The BEK itself is encrypted using the hardware-bound key using the DCP's AES
-+encryption engine with AES-128-ECB. The encrypted BEK, generated nonce,
-+BEK-encrypted payload and authentication tag make up the blob format together
-+with a version number, payload length and authentication tag::
-+
-+    /*
-+     * struct dcp_blob_fmt - DCP BLOB format.
-+     *
-+     * @fmt_version: Format version, currently being %1
-+     * @blob_key: Random AES 128 key which is used to encrypt @payload,
-+     *            @blob_key itself is encrypted with OTP or UNIQUE device key in
-+     *            AES-128-ECB mode by DCP.
-+     * @nonce: Random nonce used for @payload encryption.
-+     * @payload_len: Length of the plain text @payload.
-+     * @payload: The payload itself, encrypted using AES-128-GCM and @blob_key,
-+     *           GCM auth tag of size AES_BLOCK_SIZE is attached at the end of it.
-+     *
-+     * The total size of a DCP BLOB is sizeof(struct dcp_blob_fmt) + @payload_len +
-+     * AES_BLOCK_SIZE.
-+     */
-+    struct dcp_blob_fmt {
-+            __u8 fmt_version;
-+            __u8 blob_key[AES_KEYSIZE_128];
-+            __u8 nonce[AES_KEYSIZE_128];
-+            __le32 payload_len;
-+            __u8 payload[];
-+    } __packed;
--- 
-2.35.3
+Reviewed-by: Srivatsa Vaddagiri <quic_svaddagi@quicinc.com>
 
+> +static irqreturn_t gunyah_rm_rx(int irq, void *data)
+> +{
+> +	enum gunyah_error gunyah_error;
+> +	struct gunyah_rm_rpc_hdr *hdr;
+> +	struct gunyah_rm *rm = data;
+> +	void *msg = &rm->recv_msg[0];
+> +	size_t len;
+> +	bool ready;
+> +
+> +	do {
+> +		gunyah_error = gunyah_hypercall_msgq_recv(rm->rx_ghrsc.capid,
+> +							  msg,
+> +							  sizeof(rm->recv_msg),
+> +							  &len, &ready);
+> +		if (gunyah_error != GUNYAH_ERROR_OK) {
+> +			if (gunyah_error != GUNYAH_ERROR_MSGQUEUE_EMPTY)
+> +				dev_warn(rm->dev,
+> +					 "Failed to receive data: %d\n",
+> +					 gunyah_error);
+> +			return IRQ_HANDLED;
+> +		}
+> +
+> +		if (len < sizeof(*hdr)) {
+> +			dev_err_ratelimited(
+> +				rm->dev,
+> +				"Too small message received. size=%ld\n", len);
+> +			continue;
+
+In practice we should never hit this condition, in case we do encounter, do you
+see a reason why continue is preferred over simply breaking the loop?
+
+> +		}
+> +
+> +		hdr = msg;
+> +		if (hdr->api != RM_RPC_API) {
+> +			dev_err(rm->dev, "Unknown RM RPC API version: %x\n",
+> +				hdr->api);
+> +			return IRQ_HANDLED;
+> +		}
+> +
+> +		switch (FIELD_GET(RM_RPC_TYPE_MASK, hdr->type)) {
+> +		case RM_RPC_TYPE_NOTIF:
+> +			gunyah_rm_process_notif(rm, msg, len);
+> +			break;
+> +		case RM_RPC_TYPE_REPLY:
+> +			gunyah_rm_process_reply(rm, msg, len);
+> +			break;
+> +		case RM_RPC_TYPE_CONTINUATION:
+> +			gunyah_rm_process_cont(rm, rm->active_rx_message, msg,
+> +					       len);
+> +			break;
+> +		default:
+> +			dev_err(rm->dev,
+> +				"Invalid message type (%lu) received\n",
+> +				FIELD_GET(RM_RPC_TYPE_MASK, hdr->type));
+> +			return IRQ_HANDLED;
+> +		}
+> +	} while (ready);
+> +
+> +	return IRQ_HANDLED;
+> +}
 
