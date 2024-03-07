@@ -1,173 +1,341 @@
-Return-Path: <linux-kernel+bounces-94881-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94880-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE94E874644
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 03:44:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DD73874643
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 03:44:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 46BD71F23F87
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 02:44:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 375CC1C21AD3
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 02:43:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDF7EDDC9;
-	Thu,  7 Mar 2024 02:44:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Aq8vVxWq"
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6304E4C92;
+	Thu,  7 Mar 2024 02:43:32 +0000 (UTC)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C639D63D0
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 02:44:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04BEF4C83
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 02:43:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709779445; cv=none; b=ub/34E7Frlxgq9H5310W9/sfgdCCzI+VEoMGAZrGc366B3EYXiDsoIKgXKPbGAapPwmzjTZJM1jGzeVr2kvXCjeOdhTctJU3qUaSYwauTzsQiYiy6nPMYjT8Wtg6lls3MPurJZgNY2rtj76Wr47UNCVIFzCinIzng2NDJHoABAs=
+	t=1709779411; cv=none; b=bytCDH1OKBBBpJ8vHhBTGYekH5zhbUbLc01SBThIT3oMR6/ctoQFom4FiB3DKcWO5A1OmGZDSDRrjyBVneO4V69nS9hTh2r1Ux/kefymXotHROLCBMcXJ9Uh9ZksRTz/cdjdLs+M9LAZyq+6V82tg8myW1W+9JRYROlNw/KTDes=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709779445; c=relaxed/simple;
-	bh=zV/eWO1YR+/MLdUcmWtn+zHFWG88UIj9WbZI1A7krRA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SqZGyFIiDE95m5hg8oH+KFR3yLhx+/dzNc6TP3w4KAEpSZpLYzaw5irf5XmfvVdma07LjQDLl93l9UJxML8gNJKAOTqEbvQaf6TpNVwz8S9G9c6DkuqxDCOrDLXkwlMtsbkQtQv3XPTVjT9S/pAGZrtiEOCYxf5S7NxPV+AQVAM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=Aq8vVxWq; arc=none smtp.client-ip=209.85.167.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-5132010e5d1so545107e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 18:44:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1709779442; x=1710384242; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=x8aBTmS0uzOVB2zuwBnhmAk7ClNR7ZgZluXdpxoMOVc=;
-        b=Aq8vVxWqGmj9KULj3ewAucEOAXDpTM4Jme1LON/i7Q7bc//Msa9EUBFIK/VdBspxHO
-         dqWHmCZeqPfxlyTx4+IFSD72Ykah0IB4Dz0kPmuhK9Ioa0ylF5wv+LDCYXTZf2z4/m8n
-         SJ1BddWH69PImtgKsmioY6JcKo4Ou9CZz4bJg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709779442; x=1710384242;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=x8aBTmS0uzOVB2zuwBnhmAk7ClNR7ZgZluXdpxoMOVc=;
-        b=gEU7kZrQJGs1b0IBpLn6nGfTY8Q6BgtUv85kb6ITby4D3wp56ROVORbbILVg7efAdW
-         q6EzaMG52l8uAchJD322IImAShiDl5E9XcHO1PuWyVKTT9PrDx+PQAqxDF6wcuuV8sjp
-         nPtQMV5eG2g1eq1l0OCNk31QwuzAl5PeUB1K/bObD7cbElYox2pQopzP6k3fSJA1BWDx
-         0Ky+8RElu80Kx5m5QDnZhY1acLmBqu/tu4nlM08RETd/MbhJzPLRZvmELrTdbXWNU/qH
-         WX3rf11PaZtJpm+23D/YLcaIC6Oxon4mrltZFyU4wteOiKgPneI0g/vfXmq++Sjl88Xa
-         LjOQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUE61mr1mNh422svPn1P39lf18HHhZpFq+UDNcEvc+DQPVJawaaJ9/m9UTRI8xl7/1wTJ7karZXMYVpezXspvSeT3Ky5d5SGE5Z3F2j
-X-Gm-Message-State: AOJu0YxKfSJIvfWTO7e1TWfPnIzyGpWrNxGo7G4L1rNj9rapB/mXICDW
-	3KspvAXykwCbNERaRe/1YuxVtu1gXYjwuVKfsF9WoCV4fe+ptwx8FomBmybzltgbYNRMZsCEqFw
-	R6VHp0A==
-X-Google-Smtp-Source: AGHT+IEKGEyzy5YwO2NEKr6Ae3Ezu3ilj3ncZaSBl5El4Nes1BShvSqscMw0wfGyfJVmZZd1hlQUIw==
-X-Received: by 2002:a05:6512:546:b0:513:5991:1482 with SMTP id h6-20020a056512054600b0051359911482mr483680lfl.35.1709779441640;
-        Wed, 06 Mar 2024 18:44:01 -0800 (PST)
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
-        by smtp.gmail.com with ESMTPSA id m25-20020a194359000000b00512e3924539sm2901979lfj.309.2024.03.06.18.44.00
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Mar 2024 18:44:00 -0800 (PST)
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-513298d6859so358487e87.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 18:44:00 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXIjxtAqd3ufZnSCvKMdH7NUyJ4HUS5Pt/AMgJ8V0cZKeJNTmT8grf0W+HeVd1AVq1ljdKXm/4M9VnXQ0V4hamRF1K/osLPg/MsCU/6
-X-Received: by 2002:a05:6512:3daa:b0:513:6543:d2a8 with SMTP id
- k42-20020a0565123daa00b005136543d2a8mr586305lfv.16.1709779440068; Wed, 06 Mar
- 2024 18:44:00 -0800 (PST)
+	s=arc-20240116; t=1709779411; c=relaxed/simple;
+	bh=IFJcv5OolozBC9RcBgjiB5PcgCxmVMNlt2wVg1YxrU8=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=LoxwURl4idkC43f928afnD7r8NXmuUjJizxNkCXYDJITSWtihKKuBfhDH79tTr3033mqdHwQP5qgccd9SOiry0jpCT/RODvuzozsdgapLENDjDIDS1RH1uZbqQRuiMcMhDtqGlOM4UatPo77fjePcKhQv1IOutr9N8+3neftFTU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4TqtrM0mvxzbcpg;
+	Thu,  7 Mar 2024 10:42:43 +0800 (CST)
+Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
+	by mail.maildlp.com (Postfix) with ESMTPS id C8B4418001D;
+	Thu,  7 Mar 2024 10:43:25 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by dggpeml500021.china.huawei.com
+ (7.185.36.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Thu, 7 Mar
+ 2024 10:43:25 +0800
+From: Baokun Li <libaokun1@huawei.com>
+To: <linux-erofs@lists.ozlabs.org>
+CC: <xiang@kernel.org>, <chao@kernel.org>, <huyue2@coolpad.com>,
+	<jefflexu@linux.alibaba.com>, <linux-kernel@vger.kernel.org>,
+	<yangerkun@huawei.com>, <houtao1@huawei.com>, <yukuai3@huawei.com>,
+	<chengzhihao1@huawei.com>, <libaokun1@huawei.com>
+Subject: [PATCH] erofs: fix lockdep false positives on initializing erofs_pseudo_mnt
+Date: Thu, 7 Mar 2024 10:44:59 +0800
+Message-ID: <20240307024459.883044-1-libaokun1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <f3624f39-bbb1-451d-8161-8518e4108d8e@joelfernandes.org>
- <tencent_9882B228F292088CDD68F10CF1C228742009@qq.com> <20240306103719.1d241b93@gandalf.local.home>
- <27665890-8314-4252-8622-1e019fee27e4@paulmck-laptop> <20240306130103.6da71ddf@gandalf.local.home>
- <CAHk-=wgG6Dmt1JTXDbrbXh_6s2yLjL=9pHo7uv0==LHFD+aBtg@mail.gmail.com>
- <20240306135504.2b3872ef@gandalf.local.home> <CAHk-=wjbDgMKLgxbV+yK4LKZ+2Qj6zVL_sHeb+L9KDia980Q8Q@mail.gmail.com>
- <20240306142738.7b66a716@rorschach.local.home> <CAHk-=wgPAZ4KnCQergqAOUypwinYh=gZ0q4EQbwvuUcJ_8UK+Q@mail.gmail.com>
- <83b47424-e5e0-46de-aa63-d413a5aa6cec@paulmck-laptop>
-In-Reply-To: <83b47424-e5e0-46de-aa63-d413a5aa6cec@paulmck-laptop>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Wed, 6 Mar 2024 18:43:42 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wiX_zF5Mpt8kUm_LFQpYY-mshrXJPOe+wKNwiVhEUcU9g@mail.gmail.com>
-Message-ID: <CAHk-=wiX_zF5Mpt8kUm_LFQpYY-mshrXJPOe+wKNwiVhEUcU9g@mail.gmail.com>
-Subject: Re: [PATCH] rcutorture: Fix rcu_torture_pipe_update_one()/rcu_torture_writer()
- data race and concurrency bug
-To: paulmck@kernel.org
-Cc: Steven Rostedt <rostedt@goodmis.org>, linke li <lilinke99@qq.com>, joel@joelfernandes.org, 
-	boqun.feng@gmail.com, dave@stgolabs.net, frederic@kernel.org, 
-	jiangshanlai@gmail.com, josh@joshtriplett.org, linux-kernel@vger.kernel.org, 
-	mathieu.desnoyers@efficios.com, qiang.zhang1211@gmail.com, 
-	quic_neeraju@quicinc.com, rcu@vger.kernel.org
-Content-Type: multipart/mixed; boundary="0000000000002c51840613090c9d"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
 
---0000000000002c51840613090c9d
-Content-Type: text/plain; charset="UTF-8"
+Lockdep reported the following issue when mounting erofs with a domain_id:
 
-On Wed, 6 Mar 2024 at 18:29, Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> TL;DR:  Those ->rtort_pipe_count increments cannot run concurrently
-> with each other or any other update of that field, so that update-side
-> READ_ONCE() call is unnecessary and the update-side plain C-language
-> read is OK.  The WRITE_ONCE() calls are there for the benefit of the
-> lockless read-side accesses to rtort_pipe_count.
+============================================
+WARNING: possible recursive locking detected
+6.8.0-rc7-xfstests #521 Not tainted
+--------------------------------------------
+mount/396 is trying to acquire lock:
+ffff907a8aaaa0e0 (&type->s_umount_key#50/1){+.+.}-{3:3},
+						at: alloc_super+0xe3/0x3d0
 
-Ahh. Ok. That makes a bit more sense.
+but task is already holding lock:
+ffff907a8aaa90e0 (&type->s_umount_key#50/1){+.+.}-{3:3},
+						at: alloc_super+0xe3/0x3d0
 
-So if that's the case, then the "updating side" should never use
-READ_ONCE, because there's nothing else to protect against.
+other info that might help us debug this:
+ Possible unsafe locking scenario:
 
-Honestly, this all makes me think that we'd be *much* better off
-showing the real "handoff" with smp_store_release() and
-smp_load_acquire().
+       CPU0
+       ----
+  lock(&type->s_umount_key#50/1);
+  lock(&type->s_umount_key#50/1);
 
-IOW, something like this (TOTALLY UNTESTED!) patch, perhaps?
+ *** DEADLOCK ***
 
-And please note that this patch is not only untested, it really is a
-very handwavy patch.
+ May be due to missing lock nesting notation
 
-I'm sending it as a patch just because it's a more precise way of
-saying "I think the writers and readers could use the store-release ->
-load-acquire not just to avoid any worries about accessing things
-once, but also as a way to show the directional 'flow' of the data".
+2 locks held by mount/396:
+ #0: ffff907a8aaa90e0 (&type->s_umount_key#50/1){+.+.}-{3:3},
+			at: alloc_super+0xe3/0x3d0
+ #1: ffffffffc00e6f28 (erofs_domain_list_lock){+.+.}-{3:3},
+			at: erofs_fscache_register_fs+0x3d/0x270 [erofs]
 
-I dunno.
+stack backtrace:
+CPU: 1 PID: 396 Comm: mount Not tainted 6.8.0-rc7-xfstests #521
+Call Trace:
+ <TASK>
+ dump_stack_lvl+0x64/0xb0
+ validate_chain+0x5c4/0xa00
+ __lock_acquire+0x6a9/0xd50
+ lock_acquire+0xcd/0x2b0
+ down_write_nested+0x45/0xd0
+ alloc_super+0xe3/0x3d0
+ sget_fc+0x62/0x2f0
+ vfs_get_super+0x21/0x90
+ vfs_get_tree+0x2c/0xf0
+ fc_mount+0x12/0x40
+ vfs_kern_mount.part.0+0x75/0x90
+ kern_mount+0x24/0x40
+ erofs_fscache_register_fs+0x1ef/0x270 [erofs]
+ erofs_fc_fill_super+0x213/0x380 [erofs]
 
-           Linus
+This is because the file_system_type of both erofs and the pseudo-mount
+point of domain_id is erofs_fs_type, so two successive calls to
+alloc_super() are considered to be using the same lock and trigger the
+warning above.
 
---0000000000002c51840613090c9d
-Content-Type: text/x-patch; charset="US-ASCII"; name="patch.diff"
-Content-Disposition: attachment; filename="patch.diff"
-Content-Transfer-Encoding: base64
-Content-ID: <f_ltgmgj3o0>
-X-Attachment-Id: f_ltgmgj3o0
+Therefore add a nodev file_system_type named erofs_anon_fs_type to
+silence this complaint. In addition, to reduce code coupling, refactor
+out the erofs_anon_init_fs_context() and erofs_kill_pseudo_sb() functions
+and move the erofs_pseudo_mnt related code to fscache.c.
 
-IGtlcm5lbC9yY3UvcmN1dG9ydHVyZS5jIHwgMTEgKysrKystLS0tLS0KIDEgZmlsZSBjaGFuZ2Vk
-LCA1IGluc2VydGlvbnMoKyksIDYgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEva2VybmVsL3Jj
-dS9yY3V0b3J0dXJlLmMgYi9rZXJuZWwvcmN1L3JjdXRvcnR1cmUuYwppbmRleCA3NTY3Y2E4ZTc0
-M2MuLjYwYjc0ZGYzZWFlMiAxMDA2NDQKLS0tIGEva2VybmVsL3JjdS9yY3V0b3J0dXJlLmMKKysr
-IGIva2VybmVsL3JjdS9yY3V0b3J0dXJlLmMKQEAgLTQ2MSwxMiArNDYxLDEyIEBAIHJjdV90b3J0
-dXJlX3BpcGVfdXBkYXRlX29uZShzdHJ1Y3QgcmN1X3RvcnR1cmUgKnJwKQogCQlXUklURV9PTkNF
-KHJwLT5ydG9ydF9jaGtwLCBOVUxMKTsKIAkJc21wX3N0b3JlX3JlbGVhc2UoJnJ0cmNwLT5ydGNf
-cmVhZHksIDEpOyAvLyBQYWlyIHdpdGggc21wX2xvYWRfYWNxdWlyZSgpLgogCX0KLQlpID0gUkVB
-RF9PTkNFKHJwLT5ydG9ydF9waXBlX2NvdW50KTsKKwlpID0gcnAtPnJ0b3J0X3BpcGVfY291bnQ7
-CiAJaWYgKGkgPiBSQ1VfVE9SVFVSRV9QSVBFX0xFTikKIAkJaSA9IFJDVV9UT1JUVVJFX1BJUEVf
-TEVOOwogCWF0b21pY19pbmMoJnJjdV90b3J0dXJlX3djb3VudFtpXSk7Ci0JV1JJVEVfT05DRShy
-cC0+cnRvcnRfcGlwZV9jb3VudCwgaSArIDEpOwotCWlmIChycC0+cnRvcnRfcGlwZV9jb3VudCA+
-PSBSQ1VfVE9SVFVSRV9QSVBFX0xFTikgeworCXNtcF9zdG9yZV9yZWxlYXNlKCZycC0+cnRvcnRf
-cGlwZV9jb3VudCwgKytpKTsKKwlpZiAoaSA+PSBSQ1VfVE9SVFVSRV9QSVBFX0xFTikgewogCQly
-cC0+cnRvcnRfbWJ0ZXN0ID0gMDsKIAkJcmV0dXJuIHRydWU7CiAJfQpAQCAtMTQwOCw4ICsxNDA4
-LDcgQEAgcmN1X3RvcnR1cmVfd3JpdGVyKHZvaWQgKmFyZykKIAkJCWlmIChpID4gUkNVX1RPUlRV
-UkVfUElQRV9MRU4pCiAJCQkJaSA9IFJDVV9UT1JUVVJFX1BJUEVfTEVOOwogCQkJYXRvbWljX2lu
-YygmcmN1X3RvcnR1cmVfd2NvdW50W2ldKTsKLQkJCVdSSVRFX09OQ0Uob2xkX3JwLT5ydG9ydF9w
-aXBlX2NvdW50LAotCQkJCSAgIG9sZF9ycC0+cnRvcnRfcGlwZV9jb3VudCArIDEpOworCQkJc21w
-X3N0b3JlX3JlbGVhc2UoJm9sZF9ycC0+cnRvcnRfcGlwZV9jb3VudCwgKytpKTsKIAogCQkJLy8g
-TWFrZSBzdXJlIHJlYWRlcnMgYmxvY2sgcG9sbGVkIGdyYWNlIHBlcmlvZHMuCiAJCQlpZiAoY3Vy
-X29wcy0+Z2V0X2dwX3N0YXRlICYmIGN1cl9vcHMtPnBvbGxfZ3Bfc3RhdGUpIHsKQEAgLTE5OTEs
-NyArMTk5MCw3IEBAIHN0YXRpYyBib29sIHJjdV90b3J0dXJlX29uZV9yZWFkKHN0cnVjdCB0b3J0
-dXJlX3JhbmRvbV9zdGF0ZSAqdHJzcCwgbG9uZyBteWlkKQogCXJjdV90b3J0dXJlX3JlYWRlcl9k
-b19tYmNoayhteWlkLCBwLCB0cnNwKTsKIAlydHJzcCA9IHJjdXRvcnR1cmVfbG9vcF9leHRlbmQo
-JnJlYWRzdGF0ZSwgdHJzcCwgcnRyc3ApOwogCXByZWVtcHRfZGlzYWJsZSgpOwotCXBpcGVfY291
-bnQgPSBSRUFEX09OQ0UocC0+cnRvcnRfcGlwZV9jb3VudCk7CisJcGlwZV9jb3VudCA9IHNtcF9s
-b2FkX2FjcXVpcmUoJnAtPnJ0b3J0X3BpcGVfY291bnQpOwogCWlmIChwaXBlX2NvdW50ID4gUkNV
-X1RPUlRVUkVfUElQRV9MRU4pIHsKIAkJLyogU2hvdWxkIG5vdCBoYXBwZW4sIGJ1dC4uLiAqLwog
-CQlwaXBlX2NvdW50ID0gUkNVX1RPUlRVUkVfUElQRV9MRU47Cg==
---0000000000002c51840613090c9d--
+Signed-off-by: Baokun Li <libaokun1@huawei.com>
+---
+ fs/erofs/fscache.c  | 48 ++++++++++++++++++++++++++++++++++++++++++++-
+ fs/erofs/internal.h | 10 +++++++++-
+ fs/erofs/super.c    | 37 ++++++++--------------------------
+ 3 files changed, 64 insertions(+), 31 deletions(-)
+
+diff --git a/fs/erofs/fscache.c b/fs/erofs/fscache.c
+index 89a7c2453aae..a346884a2c00 100644
+--- a/fs/erofs/fscache.c
++++ b/fs/erofs/fscache.c
+@@ -4,6 +4,7 @@
+  * Copyright (C) 2022, Bytedance Inc. All rights reserved.
+  */
+ #include <linux/fscache.h>
++#include <linux/fs_context.h>
+ #include "internal.h"
+ 
+ static DEFINE_MUTEX(erofs_domain_list_lock);
+@@ -12,6 +13,51 @@ static LIST_HEAD(erofs_domain_list);
+ static LIST_HEAD(erofs_domain_cookies_list);
+ static struct vfsmount *erofs_pseudo_mnt;
+ 
++static int
++erofs_fc_fill_pseudo_super(struct super_block *sb, struct fs_context *fc)
++{
++	static const struct tree_descr empty_descr = {""};
++
++	return simple_fill_super(sb, EROFS_SUPER_MAGIC, &empty_descr);
++}
++
++static int erofs_fc_anon_get_tree(struct fs_context *fc)
++{
++	return get_tree_nodev(fc, erofs_fc_fill_pseudo_super);
++}
++
++static const struct fs_context_operations erofs_anon_context_ops = {
++	.get_tree	= erofs_fc_anon_get_tree,
++};
++
++static int erofs_anon_init_fs_context(struct fs_context *fc)
++{
++	fc->ops = &erofs_anon_context_ops;
++	return 0;
++}
++
++static void erofs_kill_pseudo_sb(struct super_block *sb)
++{
++	kill_anon_super(sb);
++}
++
++static struct file_system_type erofs_anon_fs_type = {
++	.owner		= THIS_MODULE,
++	.name           = "pseudo_erofs",
++	.init_fs_context = erofs_anon_init_fs_context,
++	.kill_sb        = erofs_kill_pseudo_sb,
++};
++
++int erofs_anon_register_fs(void)
++{
++	return register_filesystem(&erofs_anon_fs_type);
++}
++
++void erofs_anon_unregister_fs(void)
++{
++	unregister_filesystem(&erofs_anon_fs_type);
++}
++
+ struct erofs_fscache_request {
+ 	struct erofs_fscache_request *primary;
+ 	struct netfs_cache_resources cache_resources;
+@@ -381,7 +427,7 @@ static int erofs_fscache_init_domain(struct super_block *sb)
+ 		goto out;
+ 
+ 	if (!erofs_pseudo_mnt) {
+-		struct vfsmount *mnt = kern_mount(&erofs_fs_type);
++		struct vfsmount *mnt = kern_mount(&erofs_anon_fs_type);
+ 		if (IS_ERR(mnt)) {
+ 			err = PTR_ERR(mnt);
+ 			goto out;
+diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
+index 0f0706325b7b..d9e30ccceb39 100644
+--- a/fs/erofs/internal.h
++++ b/fs/erofs/internal.h
+@@ -385,7 +385,6 @@ struct erofs_map_dev {
+ 	unsigned int m_deviceid;
+ };
+ 
+-extern struct file_system_type erofs_fs_type;
+ extern const struct super_operations erofs_sops;
+ 
+ extern const struct address_space_operations erofs_raw_access_aops;
+@@ -507,6 +506,9 @@ static inline int z_erofs_deflate_exit(void) { return 0; }
+ #endif	/* !CONFIG_EROFS_FS_ZIP_DEFLATE */
+ 
+ #ifdef CONFIG_EROFS_FS_ONDEMAND
++int erofs_anon_register_fs(void);
++void erofs_anon_unregister_fs(void);
++
+ int erofs_fscache_register_fs(struct super_block *sb);
+ void erofs_fscache_unregister_fs(struct super_block *sb);
+ 
+@@ -514,6 +516,12 @@ struct erofs_fscache *erofs_fscache_register_cookie(struct super_block *sb,
+ 					char *name, unsigned int flags);
+ void erofs_fscache_unregister_cookie(struct erofs_fscache *fscache);
+ #else
++static inline int erofs_anon_register_fs(void)
++{
++	return 0;
++}
++static inline void erofs_anon_unregister_fs(void) {}
++
+ static inline int erofs_fscache_register_fs(struct super_block *sb)
+ {
+ 	return -EOPNOTSUPP;
+diff --git a/fs/erofs/super.c b/fs/erofs/super.c
+index 9b4b66dcdd4f..a745010e9fe6 100644
+--- a/fs/erofs/super.c
++++ b/fs/erofs/super.c
+@@ -579,13 +579,6 @@ static const struct export_operations erofs_export_ops = {
+ 	.get_parent = erofs_get_parent,
+ };
+ 
+-static int erofs_fc_fill_pseudo_super(struct super_block *sb, struct fs_context *fc)
+-{
+-	static const struct tree_descr empty_descr = {""};
+-
+-	return simple_fill_super(sb, EROFS_SUPER_MAGIC, &empty_descr);
+-}
+-
+ static int erofs_fc_fill_super(struct super_block *sb, struct fs_context *fc)
+ {
+ 	struct inode *inode;
+@@ -712,11 +705,6 @@ static int erofs_fc_fill_super(struct super_block *sb, struct fs_context *fc)
+ 	return 0;
+ }
+ 
+-static int erofs_fc_anon_get_tree(struct fs_context *fc)
+-{
+-	return get_tree_nodev(fc, erofs_fc_fill_pseudo_super);
+-}
+-
+ static int erofs_fc_get_tree(struct fs_context *fc)
+ {
+ 	struct erofs_fs_context *ctx = fc->fs_private;
+@@ -789,20 +777,10 @@ static const struct fs_context_operations erofs_context_ops = {
+ 	.free		= erofs_fc_free,
+ };
+ 
+-static const struct fs_context_operations erofs_anon_context_ops = {
+-	.get_tree       = erofs_fc_anon_get_tree,
+-};
+-
+ static int erofs_init_fs_context(struct fs_context *fc)
+ {
+ 	struct erofs_fs_context *ctx;
+ 
+-	/* pseudo mount for anon inodes */
+-	if (fc->sb_flags & SB_KERNMOUNT) {
+-		fc->ops = &erofs_anon_context_ops;
+-		return 0;
+-	}
+-
+ 	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
+ 	if (!ctx)
+ 		return -ENOMEM;
+@@ -824,12 +802,6 @@ static void erofs_kill_sb(struct super_block *sb)
+ {
+ 	struct erofs_sb_info *sbi;
+ 
+-	/* pseudo mount for anon inodes */
+-	if (sb->s_flags & SB_KERNMOUNT) {
+-		kill_anon_super(sb);
+-		return;
+-	}
+-
+ 	if (erofs_is_fscache_mode(sb))
+ 		kill_anon_super(sb);
+ 	else
+@@ -868,7 +840,7 @@ static void erofs_put_super(struct super_block *sb)
+ 	erofs_fscache_unregister_fs(sb);
+ }
+ 
+-struct file_system_type erofs_fs_type = {
++static struct file_system_type erofs_fs_type = {
+ 	.owner          = THIS_MODULE,
+ 	.name           = "erofs",
+ 	.init_fs_context = erofs_init_fs_context,
+@@ -911,6 +883,10 @@ static int __init erofs_module_init(void)
+ 	if (err)
+ 		goto sysfs_err;
+ 
++	err = erofs_anon_register_fs();
++	if (err)
++		goto anon_err;
++
+ 	err = register_filesystem(&erofs_fs_type);
+ 	if (err)
+ 		goto fs_err;
+@@ -918,6 +894,8 @@ static int __init erofs_module_init(void)
+ 	return 0;
+ 
+ fs_err:
++	erofs_anon_unregister_fs();
++anon_err:
+ 	erofs_exit_sysfs();
+ sysfs_err:
+ 	z_erofs_exit_zip_subsystem();
+@@ -935,6 +913,7 @@ static int __init erofs_module_init(void)
+ static void __exit erofs_module_exit(void)
+ {
+ 	unregister_filesystem(&erofs_fs_type);
++	erofs_anon_unregister_fs();
+ 
+ 	/* Ensure all RCU free inodes / pclusters are safe to be destroyed. */
+ 	rcu_barrier();
+-- 
+2.31.1
+
 
