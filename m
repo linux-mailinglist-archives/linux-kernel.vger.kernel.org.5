@@ -1,119 +1,124 @@
-Return-Path: <linux-kernel+bounces-94821-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94822-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21E8A87459C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 02:20:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1162387459D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 02:23:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 26F931C21F72
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 01:20:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9AED61F244F3
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 01:23:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E98334C61;
-	Thu,  7 Mar 2024 01:20:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 744554C61;
+	Thu,  7 Mar 2024 01:23:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cbU8yZGD"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JUiTTKaK"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA922393
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 01:20:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3CFE29B0
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 01:23:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709774444; cv=none; b=SDy8mFnWSjgj6+cgHxc5IGoJQSJiIs+Br6g1jmua+NKSEKndjSy6HVt6Q3z0GlUZ08dityUEAQ0bRnKliOjdrRyJOVTiUGwioOYEert08BTPYnxBcyX69HpYFQ9XYrfm1PZjUeLy1VAnwYObPjSjaIr3F4+ZGu4kvNuOBQ3WNkk=
+	t=1709774601; cv=none; b=SBDMk19lNqC2kIsgxyHNP3Ed/TERGJhPFd+C36jH3AxTJjMpA5yRYx1dGh66M2r7BL/tuUid/3lOGFR58FI8Pl3BPav9WEOC8HdCoZYiwrlLIDYR1c0WNfiQd1TMfmjG9tC2/pJhhOVAv9BKz9NYrWo6gx5QdbmdbxlbTMizgNk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709774444; c=relaxed/simple;
-	bh=eLWI/ao3cO+GcUymz/JHwZ5W1xR64wB1eu/BGWlakEM=;
+	s=arc-20240116; t=1709774601; c=relaxed/simple;
+	bh=ijfSbCNd0PPf7U4lHgL5ev2Hlx3z2Re8+n9jBncJSrY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eMo9dvMezsN0RR7z4hA5dkOVyQ9+pJEgAeXPcQ2EO2HyhVvuZ/9TtHxc4m1LIUNX4Omwpsyn/J19MRGDmQp4LLS0QPqo5Nbq+W08xdVQNZQnMZqX29ntDmbfCBVChUJeb9P3zkYdq+khRCeXxfWfe8njhdK7qkUP+Dw8rk+JeQc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cbU8yZGD; arc=none smtp.client-ip=170.10.133.124
+	 Content-Type:Content-Disposition:In-Reply-To; b=CBjPYqvGAylxAOp5+FlSS5jcSC0g4pl4Nkipl+XTXeEV2YxCrw8t6l3X7yGmqo/DDhy69cRFondnBZgtIkxpKFmjCGww430L1U+cAvdoaL7qYAotuG9rKBzPt7nO6ob4qoQDB7p+Sxk6wLV6MI/3frx/xvT/vo+VUCO3zpFtZ4o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JUiTTKaK; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709774441;
+	s=mimecast20190719; t=1709774598;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=BhFuQt4q8WAvXMefiMZxpPmveS96SWCF8VHgxXDffSs=;
-	b=cbU8yZGDpz00t5PofV8p/RuozMT8ApC0jPGhj1y/WPA2U3cQtOHnt3btfxWlYE86HdMqKH
-	7TeDQSSqeIddT2eop6YN/s79S+iVO2LBPBol9legQP91Qacyy2FchloLEM3GErV4oIUJ8T
-	aka3vCRqp8ECZ9f+b1466EDEgO5avqA=
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
- [209.85.210.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-190-tE0vB9tHNoWqwnTHTz18Xg-1; Wed, 06 Mar 2024 20:20:40 -0500
-X-MC-Unique: tE0vB9tHNoWqwnTHTz18Xg-1
-Received: by mail-pf1-f200.google.com with SMTP id d2e1a72fcca58-6dbd919aba8so77901b3a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 17:20:39 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709774439; x=1710379239;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BhFuQt4q8WAvXMefiMZxpPmveS96SWCF8VHgxXDffSs=;
-        b=FpT5bUOQYxBhf0J+DEmVctj//UWeXcfSgTRdC1FLfAQVV7RyXLldukPUt35NG0+7t+
-         PUk+oXnV5UNesXcAMCMD3bxnpox/+a3rRHhuFNZ8IDWrhqeJ6r3VVBm8kjE4jD9YQRHC
-         oI7W1xKM+o1+RAj9jbbqQpL0OxHgCtxkDl842EwbndRtbLft2gZU28qy955rR14GSsty
-         jcx5Yl0HUsssK6OUJQDQWJwSAh5QB3VgcJNGsbjO9OdlcQPNHdyYhXpCUL/9ec89fdsh
-         cbZ0JmU3COEWUAtJj9svnev098+9xpAU2BoyToiDs5XA3N4Cvej8NtcNHVF6cExObXtf
-         YBwQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWgo/qXNGHyS+5XC/Jy7Be+20tNOQGxH//qElQWTOgIUI/4X//eEG1fSopIiu42O4x5z+IAuoHLuowj2AQgSKGXyzarKGZ+fZ8Q1Jw6
-X-Gm-Message-State: AOJu0YyMpkttRxxq0JCZCa9AxgYbnczGqDwxHNBDHMCl+MQujHkKbToj
-	NpP15/SlmPxi1uvizgrYTAAdcbf8pPSRjuURQZLR84HIftb4romaICLH5GtOubcZQFSpYadni3V
-	PtFTW7ERsUjJGTBcKZYeLfev2S3R7uEqgusBeU2DqaK62Uhx+hnRl5zPTA0lTRQ==
-X-Received: by 2002:a05:6a20:a895:b0:1a1:4de6:dd5b with SMTP id ca21-20020a056a20a89500b001a14de6dd5bmr686769pzb.2.1709774439106;
-        Wed, 06 Mar 2024 17:20:39 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEwPXix9MbbtJw37hdIIvV8ltPtJesNjs4EOJQCegYjRu+Q7lAtamF2mPHfurRr922mSFeM1Q==
-X-Received: by 2002:a05:6a20:a895:b0:1a1:4de6:dd5b with SMTP id ca21-20020a056a20a89500b001a14de6dd5bmr686764pzb.2.1709774438828;
-        Wed, 06 Mar 2024 17:20:38 -0800 (PST)
-Received: from x1n ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id n39-20020a056a000d6700b006e57defe737sm11481348pfv.76.2024.03.06.17.20.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Mar 2024 17:20:38 -0800 (PST)
-Date: Thu, 7 Mar 2024 09:20:32 +0800
-From: Peter Xu <peterx@redhat.com>
-To: James Houghton <jthoughton@google.com>
-Cc: Axel Rasmussen <axelrasmussen@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mm: Add an explicit smp_wmb() to UFFDIO_CONTINUE
-Message-ID: <ZekWYNPDAwD12EWt@x1n>
-References: <20240307010250.3847179-1-jthoughton@google.com>
+	bh=94mdsQQK95yEtTcufvNh7AUE/lCdC45A/gjJVlEP7/0=;
+	b=JUiTTKaK583VZv6YofwTWXfEnFQkZi7ceBSSnT1lrA4DFfomZz02q4X8UqRyijCwHj341m
+	2JbFiRN3EWcRTencM9UfoTvIR/hIrZQcQC/BkUgCSk0YvhC9fsQJIzbq6KfbWW4TJRjO19
+	sLMg7/IjDF+7g5EktPJ/Rkl/kmxeF8M=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-17-QXrM6ykqP5CSfzd3uoJ3Xg-1; Wed,
+ 06 Mar 2024 20:23:15 -0500
+X-MC-Unique: QXrM6ykqP5CSfzd3uoJ3Xg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C28C73C0EAA1;
+	Thu,  7 Mar 2024 01:23:14 +0000 (UTC)
+Received: from localhost (unknown [10.72.116.15])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id E3D3A40C6CB5;
+	Thu,  7 Mar 2024 01:23:13 +0000 (UTC)
+Date: Thu, 7 Mar 2024 09:23:10 +0800
+From: Baoquan He <bhe@redhat.com>
+To: Uladzislau Rezki <urezki@gmail.com>
+Cc: rulinhuang <rulin.huang@intel.com>, akpm@linux-foundation.org,
+	colin.king@intel.com, hch@infradead.org,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	lstoakes@gmail.com, tianyou.li@intel.com, tim.c.chen@intel.com,
+	wangyang.guo@intel.com, zhiguo.zhou@intel.com
+Subject: Re: [PATCH v7 1/2] mm/vmalloc: Moved macros with no functional
+ change happened
+Message-ID: <ZekW/nGXfTqOlvPZ@MiWiFi-R3L-srv>
+References: <20240301155417.1852290-1-rulin.huang@intel.com>
+ <20240301155417.1852290-2-rulin.huang@intel.com>
+ <Zei9n-VMxtzG8z4Y@pc636>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240307010250.3847179-1-jthoughton@google.com>
+In-Reply-To: <Zei9n-VMxtzG8z4Y@pc636>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-On Thu, Mar 07, 2024 at 01:02:50AM +0000, James Houghton wrote:
-> Users of UFFDIO_CONTINUE may reasonably assume that a write memory
-> barrier is included as part of UFFDIO_CONTINUE. That is, a user may
-> believe that all writes it has done to a page that it is now
-> UFFDIO_CONTINUE'ing are guaranteed to be visible to anyone subsequently
-> reading the page through the newly mapped virtual memory region.
+On 03/06/24 at 08:01pm, Uladzislau Rezki wrote:
+> On Fri, Mar 01, 2024 at 10:54:16AM -0500, rulinhuang wrote:
+.....
 > 
-> Today, such a user happens to be correct. mmget_not_zero(), for example,
-> is called as part of UFFDIO_CONTINUE (and comes before any PTE updates),
-> and it implicitly gives us a write barrier.
+> Sorry for the late answer, i also just noticed this email. It was not in
+> my inbox...
 > 
-> To be resilient against future changes, include an explicit smp_wmb().
-> While we're at it, optimize the smp_wmb() that is already incidentally
-> present for the HugeTLB case.
+> OK, now you move part of the per-cpu allocator on the top and leave
+> another part down making it split. This is just for the:
 > 
-> Merely making a syscall does not generally imply the memory ordering
-> constraints that we need (including on x86).
+> BUG_ON(va_flags & VMAP_RAM);
 > 
-> Signed-off-by: James Houghton <jthoughton@google.com>
+> VMAP_RAM macro. Do we really need this BUG_ON()?
 
-Reviewed-by: Peter Xu <peterx@redhat.com>
+Sorry, I suggested that when reviewing v5:
+https://lore.kernel.org/all/ZdiltpK5fUvwVWtD@MiWiFi-R3L-srv/T/#u
 
--- 
-Peter Xu
+About part of per-cpu kva allocator moving and the split making, I would
+argue that we will have vmap_nodes defintion and basic helper functions
+like addr_to_node_id() etc at top, and leave other part like
+size_to_va_pool(), node_pool_add_va() etc down. These are similar.
+
+While about whether we should add 'BUG_ON(va_flags & VMAP_RAM);', I am
+not sure about it. When I suggested that, I am also hesitant. From the
+current code, alloc_vmap_area() is called in below three functions, only
+__get_vm_area_node() will pass the non-NULL vm. 
+ new_vmap_block()     -|
+ vm_map_ram()         ----> alloc_vmap_area()
+ __get_vm_area_node() -|
+
+It could be wrongly passed in the future? Only checking if vm is
+non-NULL makes me feel a little unsafe. While I am fine if removing the
+BUG_ON, because there's no worry in the current code. We can wait and
+see in the future.
+
+       if (vm) {
+               BUG_ON(va_flags & VMAP_RAM);
+               setup_vmalloc_vm(vm, va, flags, caller);
+       }
+
+Thanks
+Baoquan
 
 
