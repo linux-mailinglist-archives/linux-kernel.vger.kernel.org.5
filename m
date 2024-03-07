@@ -1,127 +1,118 @@
-Return-Path: <linux-kernel+bounces-94786-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94788-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FF0E874538
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 01:41:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0134387453F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 01:44:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 93DA91C23B2D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 00:41:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 82440B21928
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 00:44:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F36CE4689;
-	Thu,  7 Mar 2024 00:41:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6436446BA;
+	Thu,  7 Mar 2024 00:43:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="KU46e9cx"
-Received: from omta036.useast.a.cloudfilter.net (omta036.useast.a.cloudfilter.net [44.202.169.35])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="UslOwuOP"
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88B6B17F0
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 00:41:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.202.169.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 594EB1847
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 00:43:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709772067; cv=none; b=Z8TXDtG0XTCgsHSn4xM+dhmlzQTbPnxbVbL+PI/TRKfTdnhnwvH7Vc6AEIU8atnOZzKWvwpb+yKVXKOrJULwXZUshdSB4ClE3zAKcGeiRabD/nkkqtLywdkIXWGBGxxws8h4oik79EtRBXIbJnpbOVaZ8Qn4v/IM6ImbstDW1gA=
+	t=1709772237; cv=none; b=OJNwZ4wSqKnQPs2x0ZaMjuvoLIhybP3dZGXtOIZ1P0ebbjTE8RDOEaU+9SZipqOTjuupNL+pwuq0Ti0sNeugdSQVfOxZsnFPoxwePjEaFH5vXqDS8YRYNeqUoSUA5y7GABVaabrH87TpHdoJkkW2FGXQzBmwcy7uJCTyY7OSj3s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709772067; c=relaxed/simple;
-	bh=EbCRrC7D836n3/gfVrkt21cUTLd++USvTDfHPhMW0+w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VRneLRgWpxO9xtPfO2gePTrzfWVCGeokQCThd0Jv7lgcPllrxaxfU34ccatVHKKqQuh8j460ZY4tK4ZVL1zu+NIMNU1u3K4AJz7OPvSNQMX5FzKsSQQ1foOp+V2+2XxtvZ/mFZPHZlvyajHY83ooRzXF3aeV5yXOolm3ec2vLSM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=KU46e9cx; arc=none smtp.client-ip=44.202.169.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
-Received: from eig-obgw-5004a.ext.cloudfilter.net ([10.0.29.221])
-	by cmsmtp with ESMTPS
-	id hwyZrHwZsuh6si1omrWm8k; Thu, 07 Mar 2024 00:41:04 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-	by cmsmtp with ESMTPS
-	id i1olrRwfMKt8Mi1omr0noT; Thu, 07 Mar 2024 00:41:04 +0000
-X-Authority-Analysis: v=2.4 cv=dLegmvZb c=1 sm=1 tr=0 ts=65e90d20
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=VhncohosazJxI00KdYJ/5A==:17
- a=IkcTkHD0fZMA:10 a=K6JAEmCyrfEA:10 a=wYkD_t78qR0A:10 a=cm27Pg_UAAAA:8
- a=VwQbUJbxAAAA:8 a=vznqr7mipjY0YkA7v-cA:9 a=QEXdDO2ut3YA:10
- a=xmb-EsYY8bH0VWELuYED:22 a=AjGcO6oz07-iQ99wixmX:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=5BVrUIvBfOEk6nFXkFrEkJGrcbLKTx3N+QLOz2Ii6fA=; b=KU46e9cxXRHxCpm2jlbl/bYAGv
-	3QO4r2zEV4/MVLI/+DgJSKHhOuGD6putlxEfPmr3mE+S72URrEbonRTC5l4C6arewij3hE0bDSYcr
-	4fICckYkdF4Q+Kpk01lNNNSvoot+pNWMwiY5D1Pqv6N0imQAeYgbUXUkAgIBrjW62oGjouS4oAF2h
-	MrWsRiT5oqzyi9wsKutmBFsyQ1V3eBHiFWbqi3qcfloky9O81heGE8bRHZG6b+9PuNTJMCHOuMDa/
-	qre1mj//RwuYb4dnyBSx4HOBF03/5MkX4uimbVSS+FvdB2WI55CEp2IFgRS3zxNmMmBTCfOTALUKv
-	b1fCumUg==;
-Received: from [201.172.172.225] (port=38044 helo=[192.168.15.10])
-	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <gustavo@embeddedor.com>)
-	id 1ri1oj-003fVW-27;
-	Wed, 06 Mar 2024 18:41:01 -0600
-Message-ID: <22b99862-5889-4acb-96e5-7552c06e362b@embeddedor.com>
-Date: Wed, 6 Mar 2024 18:40:59 -0600
+	s=arc-20240116; t=1709772237; c=relaxed/simple;
+	bh=yuOqpNroduXg5pfJXWdF3Zx7nQ75KuKEYW/R0Eoy1uU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qVMus63v1kFxyctNFpeOe47ULdfDoVktjYyEN+AAhhuVfuTm4Rawd0oMpvdytUusluKsmPZDuVY87pu8/o5t3nSgxIfv9fzoTKWgwQgA/s8fnnKB29jBLGPGyBUgXfHFLar+wsRpXftHmRsptvAzP5VgVP18P5QibQ6ElelOanE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=UslOwuOP; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6e5a232fe80so305001b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 16:43:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709772236; x=1710377036; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=7lxAB0mMZcaRnEfPEWC3zgZuIdTrf+kqgAsMWEd34IE=;
+        b=UslOwuOP0m9IiUcEeDBJN1to8Gv5lECLHbsrRxrMRefznoCydZCUIBGn6Zz8Q7KWcs
+         lIWnbdvrSgCiK2ltc6fPIFB/A5VFCqAK0IBvxQWvqdl01TIrHPRivLf1d94LYHbIbff2
+         8IG1+8FEB6bskuqWRN/8Opg7YDZGfHUiG0ULtE45SvWpd1tP9I0LLgX+uX5ZzaFxCSkl
+         VMx/5s3ZvsEpMIT47jQ48AwG2LH9McTjVfcA+4MWmhHvpkG+yozvQrrnQ+9qAgoNBGOI
+         r1Wz3WAWFjIeGtdaqWprgKRhJ1ZB/LJQTxwgvWn7qkwWZdev7LgLquhYrn1lHegb/4zx
+         x3sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709772236; x=1710377036;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7lxAB0mMZcaRnEfPEWC3zgZuIdTrf+kqgAsMWEd34IE=;
+        b=L5c7dQKXKxW3wdOboei9TlIX8yrAyJ4kOuFApmTu/ia6tENlly9XrvufUG88MT+Klr
+         a/C2OEP+huAZkwi/8ystbp816dmSJfwpgPko08gnwBNV/Ao3cXiZaTUWEvULV3LKBLHo
+         sGeyFpRPXUP9EApFLB79iXXRexiuYraZ+FSpLmHeLssSOqR+OWh9uNxN6FRkz5xY90tW
+         5Y9woaBgmsai2f5SGJtwKlFokG2AAgVW1WM469D1sbPi+5pnSDuT4vx2cp/SEsNHYBEq
+         9UGUnal048EhO7zsm45cU5ULdxYBUhLAwQ08OprTr/qQPb/yoSkZDsX8GeUSXuwl1C4E
+         uo4A==
+X-Forwarded-Encrypted: i=1; AJvYcCXQJNhYenO5RNPgKbqXZnf08tR94sw6GxQpehx7J+9Xtv91AgKrOys6PEN0IrgpFlaHFwTmcdaO1NBmfft24rWpQjX7bkRR0qT/VqLn
+X-Gm-Message-State: AOJu0YyBzN3BASAEmVSSr6gjpckaLWQ6U75RMAjTBF7BQUoO3sQUFOOY
+	e+zWB3TD2UOgEONTU9PHrrZAafPSa79mRwU4mhdbPMmIX/EngjLAUDXl0yQQ3Q==
+X-Google-Smtp-Source: AGHT+IEFTRrgkzX0j8hD98rU8k/J1m5xYiNpA8BYWpQ6cPIgu6BWNn+lxUcXKUdUK2yow9CLYGnjFg==
+X-Received: by 2002:a05:6a00:63c7:b0:6e6:5575:f0f8 with SMTP id gi7-20020a056a0063c700b006e65575f0f8mr2208915pfb.5.1709772235563;
+        Wed, 06 Mar 2024 16:43:55 -0800 (PST)
+Received: from google.com (61.139.125.34.bc.googleusercontent.com. [34.125.139.61])
+        by smtp.gmail.com with ESMTPSA id g15-20020a62f94f000000b006e657c72cf8sm366183pfm.148.2024.03.06.16.43.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Mar 2024 16:43:54 -0800 (PST)
+Date: Wed, 6 Mar 2024 16:43:51 -0800
+From: David Matlack <dmatlack@google.com>
+To: isaku.yamahata@intel.com
+Cc: kvm@vger.kernel.org, isaku.yamahata@gmail.com,
+	linux-kernel@vger.kernel.org,
+	Sean Christopherson <seanjc@google.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Michael Roth <michael.roth@amd.com>,
+	Federico Parola <federico.parola@polito.it>
+Subject: Re: [RFC PATCH 1/8] KVM: Document KVM_MAP_MEMORY ioctl
+Message-ID: <ZekNx-WkGNrVfFRD@google.com>
+References: <cover.1709288671.git.isaku.yamahata@intel.com>
+ <c50dc98effcba3ff68a033661b2941b777c4fb5c.1709288671.git.isaku.yamahata@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] overflow: Change DEFINE_FLEX to take __counted_by
- member
-Content-Language: en-US
-To: Kees Cook <keescook@chromium.org>,
- Przemek Kitszel <przemyslaw.kitszel@intel.com>
-Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>,
- Tony Nguyen <anthony.l.nguyen@intel.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
- linux-hardening@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
- linux-kernel@vger.kernel.org
-References: <20240306235128.it.933-kees@kernel.org>
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <20240306235128.it.933-kees@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 201.172.172.225
-X-Source-L: No
-X-Exim-ID: 1ri1oj-003fVW-27
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.15.10]) [201.172.172.225]:38044
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 1
-X-Org: HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfGP3WhXpaybsg2e+WkIEKJYpsgdFbol/24tz7GKnLG+G+DKRCroyfqKKxw3yM81a06uRETzYtxIBDcG1UMP367h+j1vdfuMzBLqDJS/4YijmqbWi+rqq
- zFYCwPH7PRBRsMfm0SLRtC8Uv5Ev2SS8grjKUBVHi90a9CBbu+9JtUrxuyMiBd1xmOknRvGorqA8YYKiJpWe5VCymt+pILMY9jNB+u9ry9BOxbvBzygpTsCR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c50dc98effcba3ff68a033661b2941b777c4fb5c.1709288671.git.isaku.yamahata@intel.com>
 
+On 2024-03-01 09:28 AM, isaku.yamahata@intel.com wrote:
+> From: Isaku Yamahata <isaku.yamahata@intel.com>
+> +
+> +  struct kvm_memory_mapping {
+> +	__u64 base_gfn;
+> +	__u64 nr_pages;
+> +	__u64 flags;
+> +	__u64 source;
+> +  };
+> +
+> +  /* For kvm_memory_mapping:: flags */
+> +  #define KVM_MEMORY_MAPPING_FLAG_WRITE         _BITULL(0)
+> +  #define KVM_MEMORY_MAPPING_FLAG_EXEC          _BITULL(1)
+> +  #define KVM_MEMORY_MAPPING_FLAG_USER          _BITULL(2)
+> +  #define KVM_MEMORY_MAPPING_FLAG_PRIVATE       _BITULL(3)
+> +
+> +KVM_MAP_MEMORY populates guest memory in the underlying mapping. If source is
+> +not zero and it's supported (depending on underlying technology), the guest
+> +memory content is populated with the source.
 
+What does "populated with the source" mean?
 
-On 3/6/24 17:51, Kees Cook wrote:
-> The norm should be flexible array structures with __counted_by
-> annotations, so DEFINE_FLEX() is updated to expect that. Rename
-> the non-annotated version to DEFINE_RAW_FLEX(), and update the
-> few existing users.
-> 
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+> The flags field supports three
+> +flags: KVM_MEMORY_MAPPING_FLAG_WRITE, KVM_MEMORY_MAPPING_FLAG_EXEC, and
+> +KVM_MEMORY_MAPPING_FLAG_USER.
 
-LGTM:
-
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-
-Thanks!
--- 
-Gustavo
+There are 4 flags.
 
