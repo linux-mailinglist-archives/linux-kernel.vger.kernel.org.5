@@ -1,210 +1,247 @@
-Return-Path: <linux-kernel+bounces-94790-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94791-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2867874544
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 01:47:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17D5A874548
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 01:47:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D9113B22F8B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 00:47:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C04D2284867
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 00:47:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B7804A33;
-	Thu,  7 Mar 2024 00:46:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 366151FBB;
+	Thu,  7 Mar 2024 00:47:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LbZx6O4v"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E6961879;
-	Thu,  7 Mar 2024 00:46:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.11
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709772410; cv=fail; b=oSy4CRzxKH4CtP0fflWSC9cL+wROdFXhfLnuZZUUtqwf9D6DbTyZ6JHOIkVAWzRW3q8CYGEQd+56mHKos9D8AmAVdTMkVVmRpS+/HeDdiqcI8B3kK6XgQeQ34egVhLK1/Jfymd5NHNsXXOTu59Ms1gDFNsr3n4uSLtqAXIW014E=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709772410; c=relaxed/simple;
-	bh=Q8Im1+vP9UWH8cNMulXiw+K3KcEDcJWPLqEACo3yBrU=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=sUS+t8YUXUZyh5/Z+mnR98kvrSbIFItvC8JTlxS91YzymbDemG63oYfR3AZ1pT5w7WYaJOMV6Fbg9vXyuRqTXfzl/QNPFf05ZdvdYHTel9Tiuexu1bHmtAUovnlbQC88ZIkhTrPSmUPg6/6Cyop1WwCmDznbhwZMdBCNo28E/yg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LbZx6O4v; arc=fail smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709772408; x=1741308408;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=Q8Im1+vP9UWH8cNMulXiw+K3KcEDcJWPLqEACo3yBrU=;
-  b=LbZx6O4vbdFr0wBQemEiODRhFEV2XbDkKJ4gFxr3+WKAW5Sl65P0U2rI
-   vpEHxdiksnXvh6QS+o/yqtvyj/7QPY8J1ag/xdeR+BT3sQKo05DEpi+7q
-   5nBGG6hcjz0e7vYX+Gv0quuCciv0j6r62d+6N8UJ6nIEExy2sRz9WQMM2
-   DRcpQDHdTpPzGMGq8UNTN8e4ZhrgCOUnrLMZZcMUmRiYp7jNG17+DbqQu
-   s8b5ncJIQiaowK28hIKP75+Ou3eYn3fC2p6qAtNduazRwLzz0JwvzwepP
-   ViXVM6o66MHi8wWVDQtAbvQNKb+66PpBgZj3SHK21holBq7nh6ZUL4srr
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11005"; a="14994281"
-X-IronPort-AV: E=Sophos;i="6.06,209,1705392000"; 
-   d="scan'208";a="14994281"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 16:46:48 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,209,1705392000"; 
-   d="scan'208";a="40915942"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by fmviesa001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 06 Mar 2024 16:46:47 -0800
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 6 Mar 2024 16:46:46 -0800
-Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 6 Mar 2024 16:46:46 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Wed, 6 Mar 2024 16:46:46 -0800
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (104.47.73.41) by
- edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 6 Mar 2024 16:46:46 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=M3AKzHQF6zag0uy6V5YaZYVIhQboXgu4IG0x/zTKNtTKCV8rUPpGvT6VUeCvVfD/Zz3H5TQm3s9j6QMjJ5c9IIM/lhYS19+sMOjbE4DcTERSUwbS/SJSkUoX7s4z9HhbLzyzl/mW7lZnp/Ha9R7CXlA88dgmdWf+pBuxxs4iDuv6G6KG+Y6INHOE9aFupHsfDGYqGQiMhSC+4nQTj71LBSpsyNLFVmp0dg2StUTSvsC0/ZGdHXHyOFM2TNG6oR6NEXaTZsNOW60wl39TYMzOtGY3aUhNrf88AaaGjjtn+cE8L//U51V+f3WQtOCwvkCI5oz/eZaIP79Eeb6iG8lZ9A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=QMaTuKTSWWP4kj7Z8v/f+UK03gQKV8czEWK2Iwrcik4=;
- b=VlGql+su1Ykf5mCQMD5lV56Gd058fkVXRDO3F1Jx5VOKXOVGk+65QlFw9kP8nxcUmrfCsSsm+oZf2kQZeKh4KKY5jCKLNdrf3P8KwTXwIs1/NvrOQlXK3NOEZFWl3zwlaAwuMqaL8XYxfoz5ZCfn50uT3n/OOvA68y17/yVzSkOQNIEcVc1RLsp2w4lpnvFjp5fjlfJR4RXMV+AjKRNwtDh/pQJZu5FfoaGUqnfGCA1N8HeQ3BgsF8FUpOqOEMDgrhZpA+qtceMmn39y6ipz8/te2e+o2ueRPAEeG1XNIgk4uLaTdAeohripEyIjibkcM1SOpImhRzPBsOhLUatv6w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
- by SN7PR11MB6728.namprd11.prod.outlook.com (2603:10b6:806:264::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.24; Thu, 7 Mar
- 2024 00:46:44 +0000
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::ef2c:d500:3461:9b92]) by BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::ef2c:d500:3461:9b92%4]) with mapi id 15.20.7362.019; Thu, 7 Mar 2024
- 00:46:44 +0000
-Message-ID: <6b6f79df-a099-412d-8a84-06692e77f036@intel.com>
-Date: Thu, 7 Mar 2024 13:46:40 +1300
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 15/16] KVM: x86/mmu: Initialize kvm_page_fault's pfn and
- hva to error values
-Content-Language: en-US
-To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini
-	<pbonzini@redhat.com>
-CC: <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Yan Zhao
-	<yan.y.zhao@intel.com>, Isaku Yamahata <isaku.yamahata@intel.com>, "Michael
- Roth" <michael.roth@amd.com>, Yu Zhang <yu.c.zhang@linux.intel.com>, "Chao
- Peng" <chao.p.peng@linux.intel.com>, Fuad Tabba <tabba@google.com>, "David
- Matlack" <dmatlack@google.com>
-References: <20240228024147.41573-1-seanjc@google.com>
- <20240228024147.41573-16-seanjc@google.com>
-From: "Huang, Kai" <kai.huang@intel.com>
-In-Reply-To: <20240228024147.41573-16-seanjc@google.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4PR03CA0139.namprd03.prod.outlook.com
- (2603:10b6:303:8c::24) To BL1PR11MB5978.namprd11.prod.outlook.com
- (2603:10b6:208:385::18)
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="bBBXU/Ng"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB8364C61;
+	Thu,  7 Mar 2024 00:47:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709772460; cv=none; b=SbAqxoaO4JbbgjuUR6w2C0f6KmGLvALjlRs9USBhqdaT159ZE6WIFW8NCL7D//ibC2lG3ZA9E7Ud4/G2EyxhP1KWO/jDNkliKrPCSR4cVR27PbOK6If0A0i0/IZ2AXan9OY/oacjapdLTgb+1xk5dwBIdWCN5jl3nWLEV3cfmuQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709772460; c=relaxed/simple;
+	bh=oOInWFxvhByo2zBfLCcwTpadkEUFfCmGXhrK5+CpyDM=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=toJKKrzBM7yJeHppwmXIVu0zQNyFLVBtsx7ulK8fVi00S58IH/ACTDLgPlwVeTX8dcoSEVveWHIr/zkws2b/S8T/Cw9OIV9qCsYd9TTaL9KaqoGzlci39zyfCSp9Wa90nC6eD2Guwq0QgOlcYtCVYZomgNkPPnsm8vP2J/AI6n4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=bBBXU/Ng; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
+	by linux.microsoft.com (Postfix) with ESMTPSA id 4319D20B74C0;
+	Wed,  6 Mar 2024 16:47:38 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4319D20B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1709772458;
+	bh=pEn/hH9loE4lKfp7HHBXz6sgeltsHbVfRercOCDfPkw=;
+	h=From:To:Cc:Subject:Date:From;
+	b=bBBXU/NgVgP2GrPxc6IXY93e0aerTlX6qVa3q6lw+nwq3rHAAeFwZ+TzkD2WCkFNc
+	 omv1NEbSLhIjUs71y+uLVw/J9H+JfKvntTtE3NJsg/q/FrthImnCgAI1wQHHQhGnES
+	 zQY+luftJ+Y1DJo8fm/hKU+U9Z5m54U+PuNEm7uU=
+From: Nuno Das Neves <nunodasneves@linux.microsoft.com>
+To: linux-hyperv@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: mhkelley58@gmail.com,
+	haiyangz@microsoft.com,
+	mhklinux@outlook.com,
+	kys@microsoft.com,
+	wei.liu@kernel.org,
+	decui@microsoft.com,
+	catalin.marinas@arm.com,
+	tglx@linutronix.de,
+	dave.hansen@linux.intel.com,
+	arnd@arndb.de
+Subject: [PATCH] mshyperv: Introduce hv_get_hypervisor_version function
+Date: Wed,  6 Mar 2024 16:47:34 -0800
+Message-Id: <1709772454-861-1-git-send-email-nunodasneves@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL1PR11MB5978:EE_|SN7PR11MB6728:EE_
-X-MS-Office365-Filtering-Correlation-Id: f23fffc4-c5ce-4f47-cacc-08dc3e400fcf
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: BSprQM0yLrXRiszAO+AJ0gePPA7ZCcnE/vbSZLQGApXgVJlbODsL8LwoCyiUeoBnzcHOzFkwVD9FT4bu2Q64OxO3k9hrhsPIfS8Y5ahFK3H2Yyaq94Bkd2qg7J8+pZDTkZQbXxOvGidZce/Cg0+bv4MvUT8oxYyoY4GAqXc6MHDZ7giWX78PaH15rS6+ZZSUPenWu/HtpLk9j/DFDCuJ5rMK2VF0GvT4Gtkx3CdZh0YJDcpK0r645bDkm/uPsbIIUCwXK0KbWnsBOTmDtxJyP3IiaFNhv8V1t1V8maqcZ0a37P0oLqnCrSNW7RB1PDh8+oVwRu+bsw9LmmAOsr7G/0at21cwKOOdTaO4f8edMbY8kvs2VZVA6zhmZ2sqxWg+oRT5s0R5S/YdvIxmvxa3izrzk9QIDk7z24cHQuVk2aEgcP+ho7TrdWyeczOejUVaiBJggk78xqjfF9epGOG9zVVZkCMUo14UuJ+ZSr2xfI399QfJj2bZwQj15JyXGHLB5AScrkd2C82jt1wM7oFEfMsNctyoGCtumfhWJG8WFU2OUuH0ifRBPg9wndZAwHeE6vl///+csigvqXF+dsOKA+DVQXlRmQilPrOTe9Jc+amm3feJB12S/CXvuVSfXmnAoYw/qPyl+XNEHvL2NXMBSpSGlmaEo1e5ny9kL2sOBWo=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZENIYXVpOUZTbmRkQjFJdm5qdTRuaGdvQjFhRnFXVC9ZQUJIYkdOOWs1empp?=
- =?utf-8?B?WnBzY3ZlUGpFaHlKUCt2MGNWZ1NFU01VWmNhV1FSdVJHcVVmNnJzdDRnb3or?=
- =?utf-8?B?NnVmWjkzZlYwY1lURlJVaVh2RzAwTnhiMTJibEJmVGRDNld0TEQrOTlYakRR?=
- =?utf-8?B?ZTRuQUk2QmRMSHl3OFh1NktqQ1psSWd5UDRybk45bldKWHJpNmx3Vnh3RUtp?=
- =?utf-8?B?Q3pIVWdEWC80enRqSUl4djhmcXNBYncvTG5yNms2NnQ4bGRPQ2p5L3BtSW0v?=
- =?utf-8?B?aXA0TFFOb2VtT2hNYUJMellOVmtYaWNPUFg3ZStmbmhQTDBqM0tTbEhNdFRK?=
- =?utf-8?B?cGl4MWpuRzNvdHhuWmwvMGhNT0RaSWZCUWhFMXJhNkNTNWMraXBqUmRLclkv?=
- =?utf-8?B?QTRWQmVHMHZSTUYrQStZaVVMQjNNSGVXZGQ2eEdQc1hKZEdwM3o0NXhQejNP?=
- =?utf-8?B?Y2pnSlg1V1dMT0VyQzR1TW1zM09RQm96dXp4dkQrSU4zSERkTG9BSjdoR1ho?=
- =?utf-8?B?MDlvVFBqamJ3N0xQOXdWV1VjOHdTVmFuQmREdEFwRmhPNGlZVExoQ2RObWVY?=
- =?utf-8?B?bDE4eGlEdC83NEpZVXlFMm5QMTY4ckpoZVZlVEsyYVI4S0lRY2xZdGhOcVIy?=
- =?utf-8?B?NmlKVlpFVnhKWC9SVlpvMXFpN2g4VElTMW4renJDeW5Qd1pHcFZ6ZC9Cdjdp?=
- =?utf-8?B?WUtyMmh1bHFNZm5rc0ppQ3JYdGdHdEp6Zkx4ejY3bjdkSkUwTzhVaGQ0Y0Iy?=
- =?utf-8?B?SFQ4ZkxCMkdZeEdRbjlkZEF1eklZeE9jdnIvUU4wajZxUkRma2NsaVlMUVQx?=
- =?utf-8?B?d1VtemxnMGM3TmJzbVRsRUFHOFI5Wm9vYmRudHRCZ1dhWnVVUUJNQWdLOUFt?=
- =?utf-8?B?TERvTXFONnlRRmNMdTQ1NkNsZlo3S01zVmp3REVuRGxsenpiajZMVHQxVDBR?=
- =?utf-8?B?QkFWVnRMRzgxbTBTdFpqbi9jZkFmeVRHNlZTc2ZLelR5U3FxRWtmcVNVbDYy?=
- =?utf-8?B?N1g2bEpFKzNXMWZDNkswZEd5ZDBQbFAvWlJUZTdGenY1RU1NbXk2THIxaTFQ?=
- =?utf-8?B?ZTVyODJZNkZLLzkxbFVJUkVCdzc5S0k0a0ZRd01WY2l6MVFXSW5BeVU4Wm92?=
- =?utf-8?B?S2hhSzBpOWdnMkRhTVkvc2QxOVNoUWhuTlJNTjFQVTV5REdEbTNBaUJTUVpX?=
- =?utf-8?B?eGh0UHplYVBtUGg4cU5hNmNPN2crSmFnMHAyVWw1anVsQ2dNWDBQN2tzTlB6?=
- =?utf-8?B?cndqN0xxRWhnSzJMOEppRHdMY2pEVFJiYXJtYU9tY0R2OThoVjNlUTM1UXcz?=
- =?utf-8?B?YUNCQk9qTkRDeEQ5NWFSYTBpcmhUWUEzdnl3czVmQjByRWNkSUxaZk1OVDBm?=
- =?utf-8?B?YWlzUlF0Nk1SSlBYeEsrRS9xaUgzUlF5ZEV2cmZZSmNEeW9LTVVTRVVuaWZy?=
- =?utf-8?B?MFNKSXJ6b01uMXBCb0J5eFdQSytXWDh3azhNSnAzSkFMWk9GTGVielZmZkdY?=
- =?utf-8?B?MlpWa2UwVWtlNlJXZDFYSmtRdWs0aS8zcTNRNFNkNmVFWDQxbXpFcGVuVVlQ?=
- =?utf-8?B?QVJCSjM5NlZYRzlYbHlhWEJXcFE1dXc0YWRyblBtcytjd21wc1dlSnNpTzZo?=
- =?utf-8?B?VjJ4aERQa3ZPNUZKaGpjbUNKd2puU0NGMFIzbnNoaGQ4d2N3dTFuM1FSTjli?=
- =?utf-8?B?Mk9HYUNpVXZNSVFJRXJ0TGlhZVdMQ3ZWcE5UZXZUaUtjVTJTVkpiNm0xNG5h?=
- =?utf-8?B?Z1hGMHlJRVcyTTRPVzJva09yd2J4YlhZYy9McnhpdDZUeW1LOXQ2c0J5d0I3?=
- =?utf-8?B?OGhxNWJzMjA5dmRlK3QyRk56WDgwbEk2VVZsb0JYVkczaytMSVlwVzJ6d3pr?=
- =?utf-8?B?cDd1dmhrZGEwdDRHQUhOU3dtNVFBOGd6dFNQY1o1QVZycnVqb09tMndzUDFw?=
- =?utf-8?B?V1RCT09hZ2JadzE5Z1E0aVVJaHI1bEhCRkM0dGdXY2pteHZtUlcxTkl2SHE1?=
- =?utf-8?B?WURnd0NuSEVrSFlkM0VFenhyMnRycmxmajAwaVF3dWFqS28ydTFMcERFK29B?=
- =?utf-8?B?TzlNSzNLdjRmdkR5OWZFMS9SMlpleFhQaU9heUxSb2lWdTNmWEhhRUEwNWpJ?=
- =?utf-8?Q?b5KmQbelYibWF5ab/EcwvC+ac?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: f23fffc4-c5ce-4f47-cacc-08dc3e400fcf
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Mar 2024 00:46:44.5296
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: JG1Tklyg+vZGr55U1coPXDnPiNpym2emfv6nDnt3I/xBq7jZp///B3nH63qLYBaLxdeKcuOfP96V9xYhEwDP6A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB6728
-X-OriginatorOrg: intel.com
 
+Introduce x86_64 and arm64 functions for getting the hypervisor version
+information and storing it in a structure for simpler parsing.
 
+Use the new function to get and parse the version at boot time. While at
+it, print the version in the same format for each architecture, and move
+the printing code to hv_common_init() so it is not duplicated.
 
-On 28/02/2024 3:41 pm, Sean Christopherson wrote:
-> Explicitly set "pfn" and "hva" to error values in kvm_mmu_do_page_fault()
-> to harden KVM against using "uninitialized" values.  In quotes because the
-> fields are actually zero-initialized, and zero is a legal value for both
-> page frame numbers and virtual addresses.  E.g. failure to set "pfn" prior
-> to creating an SPTE could result in KVM pointing at physical address '0',
-> which is far less desirable than KVM generating a SPTE with reserved PA
-> bits set and thus effectively killing the VM.
-> 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->   arch/x86/kvm/mmu/mmu_internal.h | 3 +++
->   1 file changed, 3 insertions(+)
-> 
-> diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
-> index 74736d517e74..67e32dec9424 100644
-> --- a/arch/x86/kvm/mmu/mmu_internal.h
-> +++ b/arch/x86/kvm/mmu/mmu_internal.h
-> @@ -307,6 +307,9 @@ static inline int kvm_mmu_do_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
->   		.req_level = PG_LEVEL_4K,
->   		.goal_level = PG_LEVEL_4K,
->   		.is_private = err & PFERR_PRIVATE_ACCESS,
-> +
-> +		.pfn = KVM_PFN_ERR_FAULT,
-> +		.hva = KVM_HVA_ERR_BAD,
->   	};
->   	int r;
->   
+Signed-off-by: Nuno Das Neves <nunodasneves@linux.microsoft.com>
+Acked-by: Wei Liu <wei.liu@kernel.org>
+---
+ arch/arm64/hyperv/mshyperv.c      | 19 ++++++++---------
+ arch/x86/kernel/cpu/mshyperv.c    | 35 ++++++++++++++-----------------
+ drivers/hv/hv_common.c            |  9 ++++++++
+ include/asm-generic/hyperv-tlfs.h | 23 ++++++++++++++++++++
+ include/asm-generic/mshyperv.h    |  2 ++
+ 5 files changed, 59 insertions(+), 29 deletions(-)
 
-Reviewed-by: Kai Huang <kai.huang@intel.com>
+diff --git a/arch/arm64/hyperv/mshyperv.c b/arch/arm64/hyperv/mshyperv.c
+index f1b8a04ee9f2..55dc224d466d 100644
+--- a/arch/arm64/hyperv/mshyperv.c
++++ b/arch/arm64/hyperv/mshyperv.c
+@@ -19,10 +19,18 @@
+ 
+ static bool hyperv_initialized;
+ 
++int hv_get_hypervisor_version(union hv_hypervisor_version_info *info)
++{
++	hv_get_vpreg_128(HV_REGISTER_HYPERVISOR_VERSION,
++			 (struct hv_get_vp_registers_output *)info);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(hv_get_hypervisor_version);
++
+ static int __init hyperv_init(void)
+ {
+ 	struct hv_get_vp_registers_output	result;
+-	u32	a, b, c, d;
+ 	u64	guest_id;
+ 	int	ret;
+ 
+@@ -54,15 +62,6 @@ static int __init hyperv_init(void)
+ 		ms_hyperv.features, ms_hyperv.priv_high, ms_hyperv.hints,
+ 		ms_hyperv.misc_features);
+ 
+-	/* Get information about the Hyper-V host version */
+-	hv_get_vpreg_128(HV_REGISTER_HYPERVISOR_VERSION, &result);
+-	a = result.as32.a;
+-	b = result.as32.b;
+-	c = result.as32.c;
+-	d = result.as32.d;
+-	pr_info("Hyper-V: Host Build %d.%d.%d.%d-%d-%d\n",
+-		b >> 16, b & 0xFFFF, a,	d & 0xFFFFFF, c, d >> 24);
+-
+ 	ret = hv_common_init();
+ 	if (ret)
+ 		return ret;
+diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
+index d306f6184cee..03a3445faf7a 100644
+--- a/arch/x86/kernel/cpu/mshyperv.c
++++ b/arch/x86/kernel/cpu/mshyperv.c
+@@ -350,13 +350,25 @@ static void __init reduced_hw_init(void)
+ 	x86_init.irqs.pre_vector_init	= x86_init_noop;
+ }
+ 
++int hv_get_hypervisor_version(union hv_hypervisor_version_info *info)
++{
++	unsigned int hv_max_functions;
++
++	hv_max_functions = cpuid_eax(HYPERV_CPUID_VENDOR_AND_MAX_FUNCTIONS);
++	if (hv_max_functions < HYPERV_CPUID_VERSION) {
++		pr_err("%s: Could not detect Hyper-V version\n", __func__);
++		return -ENODEV;
++	}
++
++	cpuid(HYPERV_CPUID_VERSION, &info->eax, &info->ebx, &info->ecx, &info->edx);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(hv_get_hypervisor_version);
++
+ static void __init ms_hyperv_init_platform(void)
+ {
+ 	int hv_max_functions_eax;
+-	int hv_host_info_eax;
+-	int hv_host_info_ebx;
+-	int hv_host_info_ecx;
+-	int hv_host_info_edx;
+ 
+ #ifdef CONFIG_PARAVIRT
+ 	pv_info.name = "Hyper-V";
+@@ -407,21 +419,6 @@ static void __init ms_hyperv_init_platform(void)
+ 		pr_info("Hyper-V: running on a nested hypervisor\n");
+ 	}
+ 
+-	/*
+-	 * Extract host information.
+-	 */
+-	if (hv_max_functions_eax >= HYPERV_CPUID_VERSION) {
+-		hv_host_info_eax = cpuid_eax(HYPERV_CPUID_VERSION);
+-		hv_host_info_ebx = cpuid_ebx(HYPERV_CPUID_VERSION);
+-		hv_host_info_ecx = cpuid_ecx(HYPERV_CPUID_VERSION);
+-		hv_host_info_edx = cpuid_edx(HYPERV_CPUID_VERSION);
+-
+-		pr_info("Hyper-V: Host Build %d.%d.%d.%d-%d-%d\n",
+-			hv_host_info_ebx >> 16, hv_host_info_ebx & 0xFFFF,
+-			hv_host_info_eax, hv_host_info_edx & 0xFFFFFF,
+-			hv_host_info_ecx, hv_host_info_edx >> 24);
+-	}
+-
+ 	if (ms_hyperv.features & HV_ACCESS_FREQUENCY_MSRS &&
+ 	    ms_hyperv.misc_features & HV_FEATURE_FREQUENCY_MSRS_AVAILABLE) {
+ 		x86_platform.calibrate_tsc = hv_get_tsc_khz;
+diff --git a/drivers/hv/hv_common.c b/drivers/hv/hv_common.c
+index 2f1dd4b07f9a..4d72c528af68 100644
+--- a/drivers/hv/hv_common.c
++++ b/drivers/hv/hv_common.c
+@@ -278,6 +278,15 @@ static void hv_kmsg_dump_register(void)
+ int __init hv_common_init(void)
+ {
+ 	int i;
++	union hv_hypervisor_version_info version;
++
++	/* Get information about the Hyper-V host version */
++	if (hv_get_hypervisor_version(&version) == 0) {
++		pr_info("Hyper-V: Host Build %d.%d.%d.%d-%d-%d\n",
++			version.major_version, version.minor_version,
++			version.build_number, version.service_number,
++			version.service_pack, version.service_branch);
++	}
+ 
+ 	if (hv_is_isolation_supported())
+ 		sysctl_record_panic_msg = 0;
+diff --git a/include/asm-generic/hyperv-tlfs.h b/include/asm-generic/hyperv-tlfs.h
+index 3d1b31f90ed6..32514a870b98 100644
+--- a/include/asm-generic/hyperv-tlfs.h
++++ b/include/asm-generic/hyperv-tlfs.h
+@@ -817,6 +817,29 @@ struct hv_input_unmap_device_interrupt {
+ #define HV_SOURCE_SHADOW_NONE               0x0
+ #define HV_SOURCE_SHADOW_BRIDGE_BUS_RANGE   0x1
+ 
++/*
++ * Version info reported by hypervisor
++ */
++union hv_hypervisor_version_info {
++	struct {
++		u32 build_number;
++
++		u32 minor_version : 16;
++		u32 major_version : 16;
++
++		u32 service_pack;
++
++		u32 service_number : 24;
++		u32 service_branch : 8;
++	};
++	struct {
++		u32 eax;
++		u32 ebx;
++		u32 ecx;
++		u32 edx;
++	};
++};
++
+ /*
+  * The whole argument should fit in a page to be able to pass to the hypervisor
+  * in one hypercall.
+diff --git a/include/asm-generic/mshyperv.h b/include/asm-generic/mshyperv.h
+index 04424a446bb7..452b7c089b71 100644
+--- a/include/asm-generic/mshyperv.h
++++ b/include/asm-generic/mshyperv.h
+@@ -161,6 +161,8 @@ static inline void vmbus_signal_eom(struct hv_message *msg, u32 old_msg_type)
+ 	}
+ }
+ 
++int hv_get_hypervisor_version(union hv_hypervisor_version_info *info);
++
+ void hv_setup_vmbus_handler(void (*handler)(void));
+ void hv_remove_vmbus_handler(void);
+ void hv_setup_stimer0_handler(void (*handler)(void));
+-- 
+2.25.1
+
 
