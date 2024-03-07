@@ -1,104 +1,141 @@
-Return-Path: <linux-kernel+bounces-95743-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95746-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 517198751F7
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:36:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A6B1875203
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:37:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 08C031F2698D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:36:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D59771F26A14
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:37:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F1281EA7C;
-	Thu,  7 Mar 2024 14:36:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="KOwv1gkT"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C59E212F363;
+	Thu,  7 Mar 2024 14:36:45 +0000 (UTC)
+Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCEBD1C6B2
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 14:36:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C72E941C65;
+	Thu,  7 Mar 2024 14:36:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709822171; cv=none; b=KUtLUGPO7oPtIScDi9sxy4Wu1EE+W2KmOUsHzTaBJ3+z4L5gnHOxtDd+HdRgsO6Ii6Xk4NxO/eeTTHGlJ0Q9EYjckAdv1NPq77NDpEohLERSDBPcNZmiDDz4E72Em7dyY1WhVH2YscX1ccJ/FkXe6HNv+mrumyD0FDR9GvOLdpY=
+	t=1709822205; cv=none; b=g7B2k/su1VDiRVUmy1+yzIa55goG7MeKx7TmEB8iFYpcmSrwdw2BKG85w3IV9vgxO+WXysoM9wPa2n9vegO1WNhNtzc1FrojK3t2is0PZNVXpWVrL+RSZNIsMEX7uGb1P0dmGguogzCsYmnvS3AnBlpNptBmDrQAm2xUkvdJyTA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709822171; c=relaxed/simple;
-	bh=5c2pdnlbWCYsX5AL6tAQ6PuzfWITspmp5cYuOF4KTUg=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=uTwbH2IGw69lnMRgpTGXCiyseiqqOs/mn+zO+2Kdq25Kx8UsPCOjOZ8MNDJ8D5PDjiXtyRztfuMDQrBy6OwNcftvoCiX8SmTWskU3M/mqumIpbRPZEsg997FJ6Dn7xA8kMjq7XTseuV5J53jOO477cnOW+lKcb7aMw+RVEWipZI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=KOwv1gkT; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-608ac8c5781so17301897b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 06:36:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709822169; x=1710426969; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=uQkndU5MaQMQimAlXbJ2bKIU8av7qyfvd42xkrItWQQ=;
-        b=KOwv1gkT34HkiFNiGgwW3I7Siwb8jdEV/eEP/tTXJP9R1EhMpAAa5x24qFnk+joyOQ
-         NM7Nc68HZRj6f6PTA2ZE6/M5qQ+2/6r4ULBsTxfVopx/xTGl3L1Os4DXY3S1atmlVWyP
-         2A5X+iYOW4dtgH7TtSnb6cImEhYr9X4abrFmVzITP6O3Pw+h320s8jJa2qs0JakH1tqU
-         qd/DW9Y26PEts76gL5pwfYC21frDGxffWYqvE4jQ6JgVvC76SRBh2mNGqgXGkpfLbC8J
-         xaeMCJcEUyxGuZtwnsm4OAO7ejY+jlAjUiTauthyEVzmirSCVKlXF3c+p1Pl8nIOocnC
-         2LtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709822169; x=1710426969;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uQkndU5MaQMQimAlXbJ2bKIU8av7qyfvd42xkrItWQQ=;
-        b=gY3SM0kIFKSE6GRT6mch3In/qoYN+1A1z/MimH5gyXNC3Pt8WoJ3v+SYr22BQhlF81
-         PhRF+Gn/Q5rIPsnKMTa/qSpx2ukcbIOOuDxbUpEJ+cwGWr3kj/PlO6zRths5gfuIa5Ht
-         eA2SRqgaioVS0hKRX6F6pvaPliQTKKKA3Dw6QRZYXA4KAiUBfpNmkVPzjnvwqZII0WuM
-         nxrRuchj7l84MyrYUjHFq56jzHI/L/M+V0SLHNplAHhMn5OpD9Qxwr8Kco5R9/k/k7/X
-         T1jfst+pbQMpoecwf9Y8v9GCWfF0+e1UWztfCdOrTPU+/5dQoJGgrt0Sd93a66yTCRXc
-         dhDw==
-X-Forwarded-Encrypted: i=1; AJvYcCWTtAwvctnqH11ACrcRJSReaeJeP0lxMsG8PdMyuJTEWpH+WvF8L6remK5VVbXTuh85YTU9tBf8n+sAkiWYVruSlqhQZHzFbiNdAn7k
-X-Gm-Message-State: AOJu0YwN9WX4rcj7ceFv3R9k//yOc3/HvxXQ0+LCXk64f5Wp8AgK3hqD
-	/9fMsn0Dg/4QKK6/+CJfArVrRG5lrZ9rqdtM3X8ZvXqbQlKy9TYV3LoIEN+0omarDi2304R7afl
-	1Sg==
-X-Google-Smtp-Source: AGHT+IFES2CcpL5jNV0bCQu5D8bKAvGmHTylSGvybuc45Nl4UwGQmVKoE4uXkDOBCpzqshSi3hTNjQCdGGY=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:18c7:b0:dcc:6065:2b3d with SMTP id
- ck7-20020a05690218c700b00dcc60652b3dmr4413088ybb.8.1709822168860; Thu, 07 Mar
- 2024 06:36:08 -0800 (PST)
-Date: Thu, 7 Mar 2024 06:36:07 -0800
-In-Reply-To: <ZemDaWzRCzV4Q5ni@yilunxu-OptiPlex-7050>
+	s=arc-20240116; t=1709822205; c=relaxed/simple;
+	bh=fBgd/xX7Uh3OPchqwmFNdogp9X5rg4dHxjtoKMkjoqU=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=ehuXXjYUDTO6ExlxOwqnoxybXWhfB9uOBzfQogqlM8jreWd+CT1NA+3avsyHyv7r0k+pZY1hGdbcLCwzmvPahqpk25N8I7R8pIHrDKBV5KAdO6TdoPsW33yBBkRG7p5/DhqW8tutZkv1Vfmoc30o9s8q4a1HdZaAObGwnPqV9y8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.186.29])
+	by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4TrBFK1KkJz9xFrK;
+	Thu,  7 Mar 2024 22:16:53 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.47])
+	by mail.maildlp.com (Postfix) with ESMTP id 9CC6B14061B;
+	Thu,  7 Mar 2024 22:36:29 +0800 (CST)
+Received: from [127.0.0.1] (unknown [10.204.63.22])
+	by APP1 (Coremail) with SMTP id LxC2BwDHvhfi0OllmZnkAw--.17428S2;
+	Thu, 07 Mar 2024 15:36:29 +0100 (CET)
+Message-ID: <5a08af42118541c87ce0b173d03217c3623adce2.camel@huaweicloud.com>
+Subject: Re: [PATCH] evm: Change vfs_getxattr() with __vfs_getxattr() in
+ evm_calc_hmac_or_hash()
+From: Roberto Sassu <roberto.sassu@huaweicloud.com>
+To: Seth Forshee <sforshee@kernel.org>
+Cc: zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
+ eric.snowberg@oracle.com,  paul@paul-moore.com, jmorris@namei.org,
+ serge@hallyn.com,  linux-integrity@vger.kernel.org,
+ linux-security-module@vger.kernel.org,  linux-kernel@vger.kernel.org,
+ Roberto Sassu <roberto.sassu@huawei.com>,  stable@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, Christian Brauner <brauner@kernel.org>
+Date: Thu, 07 Mar 2024 15:36:14 +0100
+In-Reply-To: <ZenPtCfh6CyD2xz5@do-x1extreme>
+References: <20240307122240.3560688-1-roberto.sassu@huaweicloud.com>
+	 <ZenPtCfh6CyD2xz5@do-x1extreme>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240228024147.41573-1-seanjc@google.com> <20240228024147.41573-6-seanjc@google.com>
- <Zeg6tKA0zNQ+dUpn@yilunxu-OptiPlex-7050> <ZeiBLjzDsEN0UsaW@google.com> <ZemDaWzRCzV4Q5ni@yilunxu-OptiPlex-7050>
-Message-ID: <ZenQ15upgjUGD5tY@google.com>
-Subject: Re: [PATCH 05/16] KVM: x86/mmu: Use synthetic page fault error code
- to indicate private faults
-From: Sean Christopherson <seanjc@google.com>
-To: Xu Yilun <yilun.xu@linux.intel.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Yan Zhao <yan.y.zhao@intel.com>, Isaku Yamahata <isaku.yamahata@intel.com>, 
-	Michael Roth <michael.roth@amd.com>, Yu Zhang <yu.c.zhang@linux.intel.com>, 
-	Chao Peng <chao.p.peng@linux.intel.com>, Fuad Tabba <tabba@google.com>, 
-	David Matlack <dmatlack@google.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+X-CM-TRANSID:LxC2BwDHvhfi0OllmZnkAw--.17428S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7KrWkZFyrZryUuw43ZFy3twb_yoW8tr1fpF
+	WYkanrKrn5Jry5Cas5GF4DAayF93y5Xr4jkrsFv340v3ZrXrn7Zr93Wr13uryF9r1xtwn5
+	tw4qqFyYywnxA3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkYb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI
+	7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
+	Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY
+	6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6x
+	AIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
+	6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7IU1zuWJUUUUU==
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAPBF1jj5cYAAAAs3
 
-On Thu, Mar 07, 2024, Xu Yilun wrote:
-> On Wed, Mar 06, 2024 at 06:45:30AM -0800, Sean Christopherson wrote:
-> > can be switched between private and shared, e.g. will return false for
-> > kvm_arch_has_private_mem().
-> > 
-> > And KVM _can't_ sanely use private/shared memslots for SEV(-ES), because it's
-> > impossible to intercept implicit conversions by the guest, i.e. KVM can't prevent
-> > the guest from encrypting a page that KVM thinks is private, and vice versa.
-> 
-> Is it because there is no #NPF for RMP violation?
+On Thu, 2024-03-07 at 08:31 -0600, Seth Forshee wrote:
+> On Thu, Mar 07, 2024 at 01:22:39PM +0100, Roberto Sassu wrote:
+> > From: Roberto Sassu <roberto.sassu@huawei.com>
+> >=20
+> > Use __vfs_getxattr() instead of vfs_getxattr(), in preparation for
+> > deprecating using the vfs_ interfaces for retrieving fscaps.
+> >=20
+> > __vfs_getxattr() is only used for debugging purposes, to check if kerne=
+l
+> > space and user space see the same xattr value.
+>=20
+> __vfs_getxattr() won't give you the value as seen by userspace though.
+> Userspace goes through vfs_getxattr() -> xattr_getsecurity() ->
+> cap_inode_getsecurity(), which does the conversion to the value
+> userspace sees. __vfs_getxattr() just gives the raw disk data.
+>=20
+> I'm also currently working on changes to my fscaps series that will make
+> it so that __vfs_getxattr() also cannot be used to read fscaps xattrs.
+> I'll fix this and other code in EVM which will be broken by that change
+> as part of the next version too.
 
-Yep, there is no RMP, thus no way for the host to express its view of shared vs.
-private to hardware.  As a result, KVM can't block conversions, and the given
-state of a page is completely unkown at any given time.  E.g. when memory is
-reclaimed from an SEV(-ES) guest, KVM has to assume that the page is encrypted
-and thus needs to be flushed (see sev_guest_memory_reclaimed()).
+You are right, thank you!
+
+Roberto
+
+> >=20
+> > Cc: stable@vger.kernel.org # 5.14.x
+> > Cc: linux-fsdevel@vger.kernel.org
+> > Cc: Christian Brauner <brauner@kernel.org>
+> > Cc: Seth Forshee (DigitalOcean) <sforshee@kernel.org>
+> > Fixes: 907a399de7b0 ("evm: Check xattr size discrepancy between kernel =
+and user")
+> > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> > ---
+> >  security/integrity/evm/evm_crypto.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >=20
+> > diff --git a/security/integrity/evm/evm_crypto.c b/security/integrity/e=
+vm/evm_crypto.c
+> > index b1ffd4cc0b44..168d98c63513 100644
+> > --- a/security/integrity/evm/evm_crypto.c
+> > +++ b/security/integrity/evm/evm_crypto.c
+> > @@ -278,8 +278,8 @@ static int evm_calc_hmac_or_hash(struct dentry *den=
+try,
+> >  		if (size < 0)
+> >  			continue;
+> > =20
+> > -		user_space_size =3D vfs_getxattr(&nop_mnt_idmap, dentry,
+> > -					       xattr->name, NULL, 0);
+> > +		user_space_size =3D __vfs_getxattr(dentry, inode, xattr->name,
+> > +						 NULL, 0);
+> >  		if (user_space_size !=3D size)
+> >  			pr_debug("file %s: xattr %s size mismatch (kernel: %d, user: %d)\n"=
+,
+> >  				 dentry->d_name.name, xattr->name, size,
+> > --=20
+> > 2.34.1
+> >=20
+
 
