@@ -1,33 +1,33 @@
-Return-Path: <linux-kernel+bounces-95791-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95792-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21A868752B3
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 16:05:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B64298752A7
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 16:03:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BF5D6B2871C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:03:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CC6431C2260B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:03:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF3FE12F38C;
-	Thu,  7 Mar 2024 15:03:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38C1412F593;
+	Thu,  7 Mar 2024 15:03:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QUg5kOZn"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FLMn7+z/"
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F9AE12E1DF;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F38D712DDBA;
 	Thu,  7 Mar 2024 15:03:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709823784; cv=none; b=HaE7wTT09WF7UZEg8hpTQWHG6KE+Zl0W/rqrxrZnt5JIyeR9bmxQ5Ua6r00+OHOAoMv/BQf6fwH5qU+GV5T2iCFc/CSoqNKT7SbFD5Npiye5YROiqHb7EuwOvIXfoNCqGPMWye/3/WW3KzCOKIsq6Q+gNzY3eyFuRyT1xYW4CvU=
+	t=1709823784; cv=none; b=gn2kiRQU9rXsZ4p13MhtAwiJBCP7t7cJbOTGOA47U4WI0XOQbS2FWAUSd6vjmA+SdE0HWutMr9Uv+i7XiUHxQMRR8u9y3kalv20lG2hEDOY6kCy1qdjJEhbTF8V0qqTvHM1aYZLnx2M6+AhIMkFe5q0d+5HB96aTjEFQC7xGrak=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1709823784; c=relaxed/simple;
-	bh=P9YTbKPgpDAvqkYJxWhzj7konCfTC4G8/afKB0W4bt4=;
+	bh=Thbo6fqN781SvZRIGgY3Lf5UsS91S+L+RdrRfcust1U=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=f8SfHN5bxvJmaYBwbJc10oqtbyGOdsUbhnHXqb7HSAxPl6b9jcjfMC8cGnlOUE2qKY3UfNf5c64XCaG4ly7a7nlbuVH4PaYz6aPKZs/LCldox6rQSNGfnHGHDRpiR0UKtSkL1TNXTa00fADYlPQPJ+bAqs2JNBvZX2oYaurAJ7o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QUg5kOZn; arc=none smtp.client-ip=192.198.163.19
+	 MIME-Version; b=SZoriGc6wI3AP6chKCCkAWgGEaobaqFgA/AISylLHe1b/5jV99yaS2lRN379S20p6B7tDf+4uZG/wGvTk29mn+fqVHPrqmjuPyHyDEIb6o8QoR5Eu0XDi/An5DCKHMjkqi2nL3gW1zlkZvc7pbARz7d87PuZsTPu3H4bqFUiVMA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FLMn7+z/; arc=none smtp.client-ip=192.198.163.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
@@ -35,35 +35,35 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   t=1709823783; x=1741359783;
   h=from:to:subject:date:message-id:in-reply-to:references:
    mime-version:content-transfer-encoding;
-  bh=P9YTbKPgpDAvqkYJxWhzj7konCfTC4G8/afKB0W4bt4=;
-  b=QUg5kOZn4/el6wGSEmQ0XHq6dKvfahT2yCjEQzlKpuGHzHLgGdirYp3q
-   q3qoBzIpCrdmCvdB9T9T+Cv3+9Z6p3ikWjIypLHAHTIMl0qO3ChdomASq
-   ATNAFYUWh65ezgIr0xp0PWd6Atf+u1QsGai706j8NccdE/f5s+6NeoAVE
-   aALcP6uBIrNH0eHfHrF7PlOQfx2hrhFKH4Nrju89cAU4v4pQvsF9g7Ph7
-   Cf9ApmLCT5BLWo3A+Pbo2WOhdvzytulfY/K80wbSsBYev2Sm7QbJhU9fz
-   gfFjl8MxN3rRCNnUM1crUKF5BfbJ41cTG5BHYshE2AqjQfOFogUDnSJ/I
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="4351048"
+  bh=Thbo6fqN781SvZRIGgY3Lf5UsS91S+L+RdrRfcust1U=;
+  b=FLMn7+z/fo48Ih8mDgW3/hJfzf/6aKShOQqBTwLiVdcuUpu5GoFKaILd
+   R0XUY5u3nF9a2gIqLkGXkan7gq1s/R+5jCZaHOUzjxW9bIBpyWrGiNsXU
+   WmyNtq9YYPE+OglZ6Isb2Q2RoAxdlhdzHsLYt2f97I1i0Wckvj26dkRf0
+   mnUaICjKqNCqUWAD3BD5+MIk6V2No2hYxszvUdnOsf2ilV2qNoTNUAjb6
+   Zf7DWWBOzg5Ml5ZwEyIGJgchCSNL5zhHFD4BdluJPCbrIlcOJ2OnWBgqo
+   Hh9kYJSYxqcds55vOZyq0ViBaf9WHO3nfHGe14N7tC5w8in+oU9xff+jz
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="4351050"
 X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
-   d="scan'208";a="4351048"
+   d="scan'208";a="4351050"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
   by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 07:03:00 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="937046326"
+X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="937046327"
 X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
-   d="scan'208";a="937046326"
+   d="scan'208";a="937046327"
 Received: from black.fi.intel.com ([10.237.72.28])
   by fmsmga001.fm.intel.com with ESMTP; 07 Mar 2024 07:02:59 -0800
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 189B3193; Thu,  7 Mar 2024 17:02:58 +0200 (EET)
+	id 274A54E9; Thu,  7 Mar 2024 17:02:58 +0200 (EET)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Mark Brown <broonie@kernel.org>,
 	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
 	linux-spi@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v1 1/3] spi: Consistently use BIT for cs_index_mask
-Date: Thu,  7 Mar 2024 17:00:59 +0200
-Message-ID: <20240307150256.3789138-2-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 2/3] spi: Fix types of the last chip select storage variables
+Date: Thu,  7 Mar 2024 17:01:00 +0200
+Message-ID: <20240307150256.3789138-3-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 In-Reply-To: <20240307150256.3789138-1-andriy.shevchenko@linux.intel.com>
 References: <20240307150256.3789138-1-andriy.shevchenko@linux.intel.com>
@@ -75,94 +75,63 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Some of the parts related to the chip select are using BIT() macro
-the rest are using plain numbers. Unify all of them to use BIT().
+First of all, last_cs_index_mask should be aligned with the original
+cs_index_mask, which is 16-bit (for now) wide. Use the same pattern
+for the last_cs_index_mask.
 
-While at it, make the (repetitive) comment clearer when assigning
-cs_index_mask during SPI target device enumeration.
+Second, last_cs can be negative and since 'char' is equal to 'unsigned
+char' in the kernel, it's incorrect, strictly speaking, to assign
+signed number to it. Use s8 type as it's done for *_native_cs ones.
+
+With this change, regroup a bit the ordering to avoid too much memory
+space to be wasted due to paddings. Shuffle kernel documentation
+accordignly.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/spi/spi.c | 35 +++++++++++------------------------
- 1 file changed, 11 insertions(+), 24 deletions(-)
+ include/linux/spi/spi.h | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index eb7e3ddf909b..4ab155f698c8 100644
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -1021,7 +1021,7 @@ static inline bool spi_is_last_cs(struct spi_device *spi)
- 	bool last = false;
+diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+index e400d454b3f0..c459809efee4 100644
+--- a/include/linux/spi/spi.h
++++ b/include/linux/spi/spi.h
+@@ -448,9 +448,11 @@ extern struct spi_device *spi_new_ancillary_device(struct spi_device *spi, u8 ch
+  *	the @cur_msg_completion. This flag is used to signal the context that
+  *	is running spi_finalize_current_message() that it needs to complete()
+  * @cur_msg_mapped: message has been mapped for DMA
++ * @fallback: fallback to PIO if DMA transfer return failure with
++ *	SPI_TRANS_FAIL_NO_START.
++ * @last_cs_mode_high: was (mode & SPI_CS_HIGH) true on the last call to set_cs.
+  * @last_cs: the last chip_select that is recorded by set_cs, -1 on non chip
+  *           selected
+- * @last_cs_mode_high: was (mode & SPI_CS_HIGH) true on the last call to set_cs.
+  * @xfer_completion: used by core transfer_one_message()
+  * @busy: message pump is busy
+  * @running: message pump is running
+@@ -527,8 +529,6 @@ extern struct spi_device *spi_new_ancillary_device(struct spi_device *spi, u8 ch
+  *	If the driver does not set this, the SPI core takes the snapshot as
+  *	close to the driver hand-over as possible.
+  * @irq_flags: Interrupt enable state during PTP system timestamping
+- * @fallback: fallback to PIO if DMA transfer return failure with
+- *	SPI_TRANS_FAIL_NO_START.
+  * @queue_empty: signal green light for opportunistically skipping the queue
+  *	for spi_sync transfers.
+  * @must_async: disable all fast paths in the core
+@@ -708,10 +708,10 @@ struct spi_controller {
+ 	bool				rt;
+ 	bool				auto_runtime_pm;
+ 	bool				cur_msg_mapped;
+-	char				last_cs[SPI_CS_CNT_MAX];
+-	char				last_cs_index_mask;
+-	bool				last_cs_mode_high;
+ 	bool                            fallback;
++	bool				last_cs_mode_high;
++	s8				last_cs[SPI_CS_CNT_MAX];
++	u32				last_cs_index_mask : SPI_CS_CNT_MAX;
+ 	struct completion               xfer_completion;
+ 	size_t				max_dma_len;
  
- 	for (idx = 0; idx < SPI_CS_CNT_MAX; idx++) {
--		if ((spi->cs_index_mask >> idx) & 0x01) {
-+		if (spi->cs_index_mask & BIT(idx)) {
- 			if (spi->controller->last_cs[idx] == spi_get_chipselect(spi, idx))
- 				last = true;
- 		}
-@@ -1072,8 +1072,7 @@ static void spi_set_cs(struct spi_device *spi, bool enable, bool force)
- 			 * into account.
- 			 */
- 			for (idx = 0; idx < SPI_CS_CNT_MAX; idx++) {
--				if (((spi->cs_index_mask >> idx) & 0x01) &&
--				    spi_get_csgpiod(spi, idx)) {
-+				if ((spi->cs_index_mask & BIT(idx)) && spi_get_csgpiod(spi, idx)) {
- 					if (has_acpi_companion(&spi->dev))
- 						gpiod_set_value_cansleep(spi_get_csgpiod(spi, idx),
- 									 !enable);
-@@ -2456,14 +2455,10 @@ static int of_spi_parse_dt(struct spi_controller *ctlr, struct spi_device *spi,
- 		spi_set_chipselect(spi, idx, cs[idx]);
- 
- 	/*
--	 * spi->chip_select[i] gives the corresponding physical CS for logical CS i
--	 * logical CS number is represented by setting the ith bit in spi->cs_index_mask
--	 * So, for example, if spi->cs_index_mask = 0x01 then logical CS number is 0 and
--	 * spi->chip_select[0] will give the physical CS.
--	 * By default spi->chip_select[0] will hold the physical CS number so, set
--	 * spi->cs_index_mask as 0x01.
-+	 * By default spi->chip_select[0] will hold the physical CS number,
-+	 * so set bit 0 in spi->cs_index_mask.
- 	 */
--	spi->cs_index_mask = 0x01;
-+	spi->cs_index_mask = BIT(0);
- 
- 	/* Device speed */
- 	if (!of_property_read_u32(nc, "spi-max-frequency", &value))
-@@ -2587,14 +2582,10 @@ struct spi_device *spi_new_ancillary_device(struct spi_device *spi,
- 	ancillary->max_speed_hz = spi->max_speed_hz;
- 	ancillary->mode = spi->mode;
- 	/*
--	 * spi->chip_select[i] gives the corresponding physical CS for logical CS i
--	 * logical CS number is represented by setting the ith bit in spi->cs_index_mask
--	 * So, for example, if spi->cs_index_mask = 0x01 then logical CS number is 0 and
--	 * spi->chip_select[0] will give the physical CS.
--	 * By default spi->chip_select[0] will hold the physical CS number so, set
--	 * spi->cs_index_mask as 0x01.
-+	 * By default spi->chip_select[0] will hold the physical CS number,
-+	 * so set bit 0 in spi->cs_index_mask.
- 	 */
--	ancillary->cs_index_mask = 0x01;
-+	ancillary->cs_index_mask = BIT(0);
- 
- 	WARN_ON(!mutex_is_locked(&ctlr->add_lock));
- 
-@@ -2841,14 +2832,10 @@ struct spi_device *acpi_spi_device_alloc(struct spi_controller *ctlr,
- 	spi->irq		= lookup.irq;
- 	spi->bits_per_word	= lookup.bits_per_word;
- 	/*
--	 * spi->chip_select[i] gives the corresponding physical CS for logical CS i
--	 * logical CS number is represented by setting the ith bit in spi->cs_index_mask
--	 * So, for example, if spi->cs_index_mask = 0x01 then logical CS number is 0 and
--	 * spi->chip_select[0] will give the physical CS.
--	 * By default spi->chip_select[0] will hold the physical CS number so, set
--	 * spi->cs_index_mask as 0x01.
-+	 * By default spi->chip_select[0] will hold the physical CS number,
-+	 * so set bit 0 in spi->cs_index_mask.
- 	 */
--	spi->cs_index_mask	= 0x01;
-+	spi->cs_index_mask	= BIT(0);
- 
- 	return spi;
- }
 -- 
 2.43.0.rc1.1.gbec44491f096
 
