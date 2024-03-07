@@ -1,131 +1,195 @@
-Return-Path: <linux-kernel+bounces-95996-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95997-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3149C8755CE
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:09:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F90F8755D2
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:10:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 62B521C2210E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 18:08:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A09C284EA1
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 18:10:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43045131E31;
-	Thu,  7 Mar 2024 18:08:53 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5967F131E2F;
+	Thu,  7 Mar 2024 18:10:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Rtgi5Y/T"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3761D131E2A
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 18:08:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BE6E161;
+	Thu,  7 Mar 2024 18:09:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709834932; cv=none; b=WbgggNB+avt/0jTZ2H79SPHpXx/SmcWJzCw/eNngWR1WuMAM2rEcwZLGTmY5ossBnR4zUEdCBmUCShKM4YdKvLynk9Er38hjMhss+ca7EkZPc+zdEJdGSeRDnV0lNeS2T2Y/eNyymmXA5F9LkAulHaETisxa9nuAfPa8uAKYCMQ=
+	t=1709834999; cv=none; b=dNZzekNWEoSl8bMnRpV3RlNbD4bu9919lvVU6g+GeMRZItwVQssmbnDg4tsx285Lzkhb6v+i7ykOA8Wt3q8VAqlb/ppAZcsWjI6pj5xWCWZo9hVOsvcTwa86Q7MC+VtGoWpp4qciI+oazo6zpdS58rMS4qAqEM/ffEG2t0nm0wc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709834932; c=relaxed/simple;
-	bh=aToy140gqF3n09AGPZG2SbhqM1wg4qiIdXe7W2yzoUM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=fVSC+9ppqLY7FgTv11Ufo6woDjYkZ/LNkdOU7lopLv38PA6yLxltqF3KFt3B3/MfUu/TldfA+tGWtjG+SM9haxhgTIyuhW98sS0BHk/AsSdeRgcR0NvG3V1bB3ZJKHT+0HDk4Q30XfbZPmtni2z3AQ0OAp21x5WgJSAwnMFdirM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1riIAe-0005Qr-0A; Thu, 07 Mar 2024 19:08:44 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1riIAc-004zYI-RB; Thu, 07 Mar 2024 19:08:42 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1riIAc-001SqJ-2O;
-	Thu, 07 Mar 2024 19:08:42 +0100
-From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Jens Axboe <axboe@kernel.dk>,
-	Hannes Reinecke <hare@suse.de>,
-	Christian Brauner <brauner@kernel.org>,
-	Jack Wang <jinpu.wang@ionos.com>,
-	Phillip Potter <phil@philpotter.co.uk>
-Cc: Guenter Roeck <linux@roeck-us.net>,
-	linux-kernel@vger.kernel.org,
-	kernel@pengutronix.de
-Subject: [PATCH] cdrom: gdrom: Convert to platform remove callback returning void
-Date: Thu,  7 Mar 2024 19:08:37 +0100
-Message-ID: <20240307180837.190626-2-u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1709834999; c=relaxed/simple;
+	bh=kbVZqvLa1aqlyB3vVu8jRk+f0oMHO8cw/P5eYurNs08=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZYOAkS05o3IUCrtmNfhbS9tFjRnpa4NJQNym1BkRaJ8K3tKqcAPJO5E4hOhGRFpx9P+WtZte6p6MoN8n551kuPl/0xuscZq/pty6QDpKyV08m/9jgTe+f8z7DiA3l4QykJyuOBlMUg8Aa473fuI7HBLIEgU+kSux58s+HgkAQpo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Rtgi5Y/T; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D219C433F1;
+	Thu,  7 Mar 2024 18:09:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709834999;
+	bh=kbVZqvLa1aqlyB3vVu8jRk+f0oMHO8cw/P5eYurNs08=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Rtgi5Y/TTHBALriEjOpaxqLTfiGFJpriaiBh9q6KG7N4sl2eDnKIQYwp/KIusV4kh
+	 OxNUpzMTKwVvou90Kd5Ub5QfJkRl/6HNtzX+lSUHLbdDa2/zhy/2WPjHyp6vbNieNS
+	 ds0ZrHO+9x5Xl9hsTOowG1N5UUNQgIBTQ2D3RpwqtKTcJx0HX0wEewnI1djUeVKkK9
+	 CgxOb58kMyJgEtip4eE0SsfxHxLn48sa/jS+kxnVOhyc1NF4KhllClXOm9UKHY55mS
+	 OZpPfvxo6u7hmPYhe1EbRicjRmHN2FgytTqUSoHtlcT+DqU8e+I7o+6+/hM0avoyGp
+	 E+qftcapZ5mfA==
+Date: Thu, 7 Mar 2024 18:09:53 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Prabhakar <prabhakar.csengg@gmail.com>
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Magnus Damm <magnus.damm@gmail.com>, linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org,
+	Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: Re: [PATCH v2] dt-bindings: serial: renesas,scif: Document R9A09G057
+ support
+Message-ID: <20240307-unaired-pawing-7e5183a89c97@spud>
+References: <20240307114731.34953-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1854; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=aToy140gqF3n09AGPZG2SbhqM1wg4qiIdXe7W2yzoUM=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBl6gKlUjORVJ9gghCsgYNWLNes507fpa8GigU4n 6r/NV8YxrWJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZeoCpQAKCRCPgPtYfRL+ TpfqB/9hJfEHJJtSPmcAkDy3a8jtu5yHJPeXczLEM7zvoyW3vCGYhxnQK4dNkKmXC55qUvej/R7 JwdYhkL00XwfrxGpVc38b6Ff/cLvrGFC0IotU6Uaa/en1FEv3GQXu9607B7em1hbrPV1z94zxLP oF8jHHTXxk7nL52NzDH+HC0KCqFuio/YEP7F4ON4veIlZ8FnF6VLluuVgkqQg4h0OZpys1tWyu5 qJ0dRLaHEOdn1xCCV+ghAebWw/gGTGcHoW75lUQvO2OBDPLMjF2fIkilDCZGfgpIY9wxzHlA/dy AUH2FS8gcotkl268N3hbdMd10AU4cvI62xvPGQhuOHGpwJoX
-X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="kqshKBrZL8ASvBWS"
+Content-Disposition: inline
+In-Reply-To: <20240307114731.34953-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-The .remove() callback for a platform driver returns an int which makes
-many driver authors wrongly assume it's possible to do error handling by
-returning an error code. However the value returned is ignored (apart
-from emitting a warning) and this typically results in resource leaks.
 
-To improve here there is a quest to make the remove callback return
-void. In the first step of this quest all drivers are converted to
-remove_new(), which already returns void. Eventually after all drivers
-are converted, .remove_new() will be renamed to .remove().
+--kqshKBrZL8ASvBWS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Trivially convert this driver from always returning zero in the remove
-callback to the void returning variant.
+On Thu, Mar 07, 2024 at 11:47:31AM +0000, Prabhakar wrote:
+> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>=20
+> Document support for the Serial Communication Interface with FIFO (SCIF)
+> available in the Renesas RZ/V2H(P) (R9A09G057) SoC. The SCIF interface in
+> the Renesas RZ/V2H(P) is similar to that available in the RZ/G2L
+> (R9A07G044) SoC, with the only difference being that the RZ/V2H(P) SoC has
+> three additional interrupts: one for Tx end/Rx ready and the other two for
+> Rx and Tx buffer full, which are edge-triggered.
+>=20
+> No driver changes are required as generic compatible string
+> "renesas,scif-r9a07g044" will be used as a fallback on RZ/V2H(P) SoC.
+>=20
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
-Hello,
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-there doesn't seem to exist a dedicated maintainer entry. The last few commits
-were created by Jens.
+Thanks,
+Conor.
 
-Best regards
-Uwe
+> ---
+> v1->v2
+> * Added validation to check interrupts and interrupt-names count
+>=20
+> Note, this patch applies on top of series [0].
+>=20
+> [0] https://patchwork.ozlabs.org/project/devicetree-bindings/cover/202403=
+07114217.34784-1-prabhakar.mahadev-lad.rj@bp.renesas.com/
+> ---
+>  .../bindings/serial/renesas,scif.yaml         | 31 ++++++++++++++++---
+>  1 file changed, 27 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/serial/renesas,scif.yaml b=
+/Documentation/devicetree/bindings/serial/renesas,scif.yaml
+> index 6ba6b6d52208..a9c60334d702 100644
+> --- a/Documentation/devicetree/bindings/serial/renesas,scif.yaml
+> +++ b/Documentation/devicetree/bindings/serial/renesas,scif.yaml
+> @@ -77,6 +77,7 @@ properties:
+>                - renesas,scif-r9a07g043      # RZ/G2UL and RZ/Five
+>                - renesas,scif-r9a07g054      # RZ/V2L
+>                - renesas,scif-r9a08g045      # RZ/G3S
+> +              - renesas,scif-r9a09g057      # RZ/V2H(P)
+>            - const: renesas,scif-r9a07g044   # RZ/G2{L,LC} fallback
+> =20
+>    reg:
+> @@ -91,6 +92,9 @@ properties:
+>        - description: Break interrupt
+>        - description: Data Ready interrupt
+>        - description: Transmit End interrupt
+> +      - description: Transmit End/Data Ready interrupt
+> +      - description: Receive buffer full interrupt (EDGE trigger)
+> +      - description: Transmit buffer empty interrupt (EDGE trigger)
+> =20
+>    interrupt-names:
+>      minItems: 4
+> @@ -101,6 +105,9 @@ properties:
+>        - const: bri
+>        - const: dri
+>        - const: tei
+> +      - const: teidri
+> +      - const: rxi-edge
+> +      - const: txi-edge
+> =20
+>    clocks:
+>      minItems: 1
+> @@ -197,15 +204,31 @@ allOf:
+>          compatible:
+>            contains:
+>              enum:
+> -              - renesas,scif-r7s9210
+> -              - renesas,scif-r9a07g044
+> +              - renesas,scif-r9a09g057
+>      then:
+>        properties:
+>          interrupts:
+> -          minItems: 6
+> +          minItems: 9
+> =20
+>          interrupt-names:
+> -          minItems: 6
+> +          minItems: 9
+> +    else:
+> +      if:
+> +        properties:
+> +          compatible:
+> +            contains:
+> +              enum:
+> +                - renesas,scif-r7s9210
+> +                - renesas,scif-r9a07g044
+> +      then:
+> +        properties:
+> +          interrupts:
+> +            minItems: 6
+> +            maxItems: 6
+> +
+> +          interrupt-names:
+> +            minItems: 6
+> +            maxItems: 6
+> =20
+>  unevaluatedProperties: false
+> =20
+> --=20
+> 2.34.1
+>=20
 
- drivers/cdrom/gdrom.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+--kqshKBrZL8ASvBWS
+Content-Type: application/pgp-signature; name="signature.asc"
 
-diff --git a/drivers/cdrom/gdrom.c b/drivers/cdrom/gdrom.c
-index 9398beeb5d1e..eefdd422ad8e 100644
---- a/drivers/cdrom/gdrom.c
-+++ b/drivers/cdrom/gdrom.c
-@@ -831,7 +831,7 @@ static int probe_gdrom(struct platform_device *devptr)
- 	return err;
- }
- 
--static int remove_gdrom(struct platform_device *devptr)
-+static void remove_gdrom(struct platform_device *devptr)
- {
- 	blk_mq_free_tag_set(&gd.tag_set);
- 	free_irq(HW_EVENT_GDROM_CMD, &gd);
-@@ -842,13 +842,11 @@ static int remove_gdrom(struct platform_device *devptr)
- 	unregister_cdrom(gd.cd_info);
- 	kfree(gd.cd_info);
- 	kfree(gd.toc);
--
--	return 0;
- }
- 
- static struct platform_driver gdrom_driver = {
- 	.probe = probe_gdrom,
--	.remove = remove_gdrom,
-+	.remove_new = remove_gdrom,
- 	.driver = {
- 			.name = GDROM_DEV_NAME,
- 	},
+-----BEGIN PGP SIGNATURE-----
 
-base-commit: 11afac187274a6177a7ac82997f8691c0f469e41
--- 
-2.43.0
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZeoC8QAKCRB4tDGHoIJi
+0r/5APwKFTZsYs6kP59xEaj+Cj1JP9q4vyRIEmkRiuEDlPR3gQD/eC44HjW8j8Yp
+Cbx1d+0Ow5bozd4yQTk1H9WgMNJo8QY=
+=2N9o
+-----END PGP SIGNATURE-----
 
+--kqshKBrZL8ASvBWS--
 
