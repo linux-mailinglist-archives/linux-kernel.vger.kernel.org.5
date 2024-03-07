@@ -1,124 +1,100 @@
-Return-Path: <linux-kernel+bounces-95712-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95713-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A145587519F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:16:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E50A28751A2
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:17:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F7421F2705A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:16:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D22501C23DC3
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:17:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB73C12DDB2;
-	Thu,  7 Mar 2024 14:16:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b="nlLClrEx"
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE9C812DD9C;
+	Thu,  7 Mar 2024 14:17:34 +0000 (UTC)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9488612D778
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 14:16:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A68351D699;
+	Thu,  7 Mar 2024 14:17:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709820976; cv=none; b=MyXmmzXwfHS6Pg9jUaX4jKVBWlWuwvXgRCfUQG18jZpyOy7+ghzn1GT2ThHipz8xEJFaKr1lCA7e+eBeCAmJJRzxD93WCjZxqzW37Hgl/gwr9rfYNK5k4fFfFvrjUMpCvC31Zw5OAHdbJZ04+ofdvTTSgQAc0x3u9IRvbyXZmEo=
+	t=1709821054; cv=none; b=L1bo+EfCTH/joU8jlCf5KbOtAMQECHxTPYtUtpKEqd6/sMD06vTqa7BB3XMSQlp6LEPYK5XKOBlm8BgozypFdznDkr/E9rmekUvdDUADt9OJxuEnqT8TlArF7GP8xgtwGZ33JXEixNRi3m7CvR75+T79RERUi+uABk9BIfORg+g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709820976; c=relaxed/simple;
-	bh=xlFTWjmKTaG1KhSVa69PfGBOQeXT3C6k9vGtFDLXWqI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uLxXXW53p8f+M7HCG4CpFObvTi825+Z3bH8gJ48KVvyL+/4Ib0JiWa+wW4GJId5Z++x513dwHGQvPuzGCHifNqVA0BkM8JaGEehVDHDOskzBDNuQNPEgJSiMswMQuLfE1Rg5Tdmw8xkRnxvqbyxFBb2fyUFxOQXZN+CJZ6W9SW0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu; spf=pass smtp.mailfrom=szeredi.hu; dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b=nlLClrEx; arc=none smtp.client-ip=209.85.167.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=szeredi.hu
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-51323dfce59so877238e87.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 06:16:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google; t=1709820972; x=1710425772; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=UpZfTEQSdYNx5uhaLKw7TjT2VapTSjfAbjuJYLMFCvw=;
-        b=nlLClrExaHPI0MNx4kbO6E3POqTG9+K1tNZ7CjQJWRSR+Xy07nJXNyLBJqYuvikH/G
-         mhuwCABXdI9pO8iVpgYy+ZRNUXhyPO6M0L7cKcC1cYTQWCwLIFiiXzKBHIiosWhvOFGS
-         M3bwEWPWDvUZ0FtKwVb2Nz/i0fSnrWzrByqZI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709820972; x=1710425772;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UpZfTEQSdYNx5uhaLKw7TjT2VapTSjfAbjuJYLMFCvw=;
-        b=qfdYhUHbwgbnqHr65AcTd6GZSuJ2Xdi35CHwwyeHBoQIGBC0sYi0vkqofsLyFMAhIu
-         iBTkJi2nvFlIKvWdbSAYCvcY8NtT6rvQpxTQ562YDdE4Y9wu1AeuSxnEYkXmCP4wvSLM
-         611qbK7nOHDtAEjMLzWToabCQgR7uUEVhRlSop3tM7AqeVp+BLmXC3nCe5gFdTf8sbYo
-         zIM4iMeob+XXcnAzwMeoxdXGrLOqEYnJ1yoWCu9+9SHUVhkBJoq8bXml623kCgDgR6Nq
-         gLRzhjLwpuZqucHECWw5MkxtweB2tbpgISVL79P/jEEssamjAinmsWT1G0lZpWqMX55g
-         apkA==
-X-Forwarded-Encrypted: i=1; AJvYcCVYPKkUdexQuzikPCh7Chqm7VtmZUWVxQLmcgSceb4pSam/M3Y58LTuGSWUahwd8c9mbiSQepOoeMwnLGLvWvLt8jHnpGJhqG/AxtSD
-X-Gm-Message-State: AOJu0Yzx7DIOjHOR8trAWv9AOXH5AtQujl+nYdkJ7KVYrqWRu1PEKM1c
-	eDJF07YeUXAH7CXRdpI0t+LZraUQpyK6vaPH40SkWyqIofnLx0r3KgnoJxA9PsrforHUu7YsDBq
-	Mj/25JrrdBpBoudbaxT8wxultdN0J6Xl2dPBKow==
-X-Google-Smtp-Source: AGHT+IH2cIVIbaKYXKNB2vZEuZPQdGMxbkmqSZeZnvRwgB8uizuvsjvd5fm0tBYz2fKyiQ7jEqAmuqAkCln/OIaGSO4=
-X-Received: by 2002:ac2:511b:0:b0:513:116d:4d9b with SMTP id
- q27-20020ac2511b000000b00513116d4d9bmr1474098lfb.60.1709820971654; Thu, 07
- Mar 2024 06:16:11 -0800 (PST)
+	s=arc-20240116; t=1709821054; c=relaxed/simple;
+	bh=S+Lk8cgQNJ1J514ZKuPD0P9IeeMhDUgmPT9fj7UAJDQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=AcYRNd4PjZ5EOEr0+/Z0dSgh41qmPbuIjzjgqVbZYvDv4Kt8lHWHBY3D/BWv5XQOR+F9ShPQmmalSPCsNcKGb3ZFcMz2c0jnNkbMtN9oIHEGZVrbLy0r9WFSEwhzJJn99G2Pi8MTLb1Ht9Aozi1J8I8275P0t1SGR9osPaPI3zY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TrBD72hn8z1xnfc;
+	Thu,  7 Mar 2024 22:15:51 +0800 (CST)
+Received: from dggpemd100001.china.huawei.com (unknown [7.185.36.94])
+	by mail.maildlp.com (Postfix) with ESMTPS id 564E5140336;
+	Thu,  7 Mar 2024 22:17:30 +0800 (CST)
+Received: from [10.67.120.108] (10.67.120.108) by
+ dggpemd100001.china.huawei.com (7.185.36.94) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Thu, 7 Mar 2024 22:17:30 +0800
+Message-ID: <20979c45-fd36-cc52-8ed1-33750ce68333@huawei.com>
+Date: Thu, 7 Mar 2024 22:17:29 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240306103438.2c0a6f44@canb.auug.org.au>
-In-Reply-To: <20240306103438.2c0a6f44@canb.auug.org.au>
-From: Miklos Szeredi <miklos@szeredi.hu>
-Date: Thu, 7 Mar 2024 15:16:00 +0100
-Message-ID: <CAJfpegstDJ6p42itTiL33tMTcbV8tUiMowpk8y9A-52_Oasvnw@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the fuse tree with Linus' tree
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Al Viro <viro@zeniv.linux.org.uk>, Alessio Balsini <balsini@android.com>, 
-	Amir Goldstein <amir73il@gmail.com>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
-	Linux Next Mailing List <linux-next@vger.kernel.org>, Miklos Szeredi <mszeredi@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.1
+Subject: Re: [PATCH v3 3/3] scsi: libsas: Fix disk not being scanned in after
+ being removed
+Content-Language: en-CA
+To: John Garry <john.g.garry@oracle.com>, <yanaijie@huawei.com>,
+	<jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
+	<damien.lemoal@opensource.wdc.com>
+CC: <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linuxarm@huawei.com>, <prime.zeng@hisilicon.com>,
+	<chenxiang66@hisilicon.com>, <kangfenglong@huawei.com>
+References: <20240307093733.41222-1-yangxingui@huawei.com>
+ <20240307093733.41222-4-yangxingui@huawei.com>
+ <b105b26c-9c0b-4315-beeb-7879de85d240@oracle.com>
+From: yangxingui <yangxingui@huawei.com>
+In-Reply-To: <b105b26c-9c0b-4315-beeb-7879de85d240@oracle.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggpemm100005.china.huawei.com (7.185.36.231) To
+ dggpemd100001.china.huawei.com (7.185.36.94)
 
-On Wed, 6 Mar 2024 at 00:34, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
 
-> diff --cc fs/fuse/inode.c
-> index 516ea2979a90,02869edf72f3..000000000000
-> --- a/fs/fuse/inode.c
-> +++ b/fs/fuse/inode.c
-> @@@ -930,14 -942,6 +942,16 @@@ void fuse_conn_init(struct fuse_conn *f
->   }
->   EXPORT_SYMBOL_GPL(fuse_conn_init);
->
->  +static void delayed_release(struct rcu_head *p)
->  +{
->  +      struct fuse_conn *fc = container_of(p, struct fuse_conn, rcu);
->  +
->  +      put_user_ns(fc->user_ns);
-> ++      if (IS_ENABLED(CONFIG_FUSE_PASSTHROUGH))
-> ++              fuse_backing_files_free(fc);
->  +      fc->release(fc);
->  +}
->  +
+Hi John,
+On 2024/3/7 18:08, John Garry wrote:
+> On 07/03/2024 09:37, Xingui Yang wrote:
+>> As of commit d8649fc1c5e4 ("scsi: libsas: Do discovery on empty PHY to
+>> update PHY info"), do discovery will send a new SMP_DISCOVER and update
+>> phy->phy_change_count. We found that if the disk is reconnected and phy
+>> change_count changes at this time, the disk scanning process will not be
+>> triggered.
+>>
+>> Therefore, call sas_set_ex_phy() to update the PHY info with the 
+>> results of
+>> the last query. And because the previous phy info will be used when 
+>> calling
+>> sas_unregister_devs_sas_addr(), sas_unregister_devs_sas_addr() should be
+>> called before sas_set_ex_phy().
+>>
+>> Fixes: d8649fc1c5e4 ("scsi: libsas: Do discovery on empty PHY to 
+>> update PHY info")
+>> Signed-off-by: Xingui Yang<yangxingui@huawei.com>
+> 
+> I am also ok with a change to revert to allocating the resp memory with 
+> alloc_smp_resp(), but make the changes neat please:
+> Reviewed-by: John Garry <john.g.garry@oracle.com>
+> .
 
-fuse_backing_files_free() doesn't need to be called after an RCU
-delay, so it should be resolved like this:
-
-diff --cc fs/fuse/inode.c
-index 516ea2979a90,02869edf72f3..000000000000
---- a/fs/fuse/inode.c
-+++ b/fs/fuse/inode.c
-@@@ -954,7 -959,9 +966,9 @@@ void fuse_conn_put(struct fuse_conn *fc
-                        WARN_ON(atomic_read(&bucket->count) != 1);
-                        kfree(bucket);
-                }
-+               if (IS_ENABLED(CONFIG_FUSE_PASSTHROUGH))
-+                       fuse_backing_files_free(fc);
- -              fc->release(fc);
- +              call_rcu(&fc->rcu, delayed_release);
-        }
-  }
-  EXPORT_SYMBOL_GPL(fuse_conn_put);
+Thanks for your review, I have updated the version.
 
 Thanks,
-Miklos
+Xingui
 
