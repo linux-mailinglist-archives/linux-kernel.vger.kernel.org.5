@@ -1,46 +1,80 @@
-Return-Path: <linux-kernel+bounces-96129-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96131-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C523875773
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:48:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BCCC5875778
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:49:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23885284871
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:48:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 207BF283109
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:49:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D90F31369B8;
-	Thu,  7 Mar 2024 19:48:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD68C138481;
+	Thu,  7 Mar 2024 19:48:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="Tcz47/e2"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B7C91CABF;
-	Thu,  7 Mar 2024 19:48:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VFiB8Oqn"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F5A9130AD0
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 19:48:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709840925; cv=none; b=O7ZHR7uI3vxUPOOeh30JAFN8z+aq1Q6dDzFdse5DlycBXwO4ehTn/ws3t/86F2H05ML+dRBNt+ho37tybHMIdKJKpVB8aTCWs/iI4R/+V33Xpv7P8WHKFdX/s7Jzx9Tin/pq7fV16h23YtIxy5bR4r0c+zblQM9nKgslXZq1yxk=
+	t=1709840938; cv=none; b=AN2GCN9NhWm69Ez3vX/WPFiaNPr98Xzhyb8vedUftoy1LAinyi1AI2nuqm0WZwuJLqaJuzewwAQtun6IDPhO/zUIii7gS1CwMwriF1SYzRZoNMYC0dKJ3s4nfNFeF5UWCmkcJeq+0koF5VXfs+g8dqdlOs6xJgJ6bkfQPs17ygg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709840925; c=relaxed/simple;
-	bh=WKpE3QWNLfAE8yAu4U59TjMXNMBmXmOW1c/7VEF0eG8=;
+	s=arc-20240116; t=1709840938; c=relaxed/simple;
+	bh=npsV2UnBpjwjw3n2sQuYGauJXDaXVaiq+ae+LqhVGws=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bkP/0fA4pGVouavxXYHIa9SXKSyNGMRgmGtpUI/gQvwfWU4n7grvrWUneWP/NBzWT+/bP2Hd+AIUTzyF6mKSwQoOOAL11lLnaCP6508hMGofR65x4y41xIx0oTzs+GXYsoDAdUQqyDFk8cVaZtq+lMlL7mKAR2R5ovNMJDjl7GI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=Tcz47/e2; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from [10.0.0.114] (c-24-16-32-44.hsd1.wa.comcast.net [24.16.32.44])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 9FE2C20B74C0;
-	Thu,  7 Mar 2024 11:48:42 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 9FE2C20B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1709840922;
-	bh=swZt0WDY7vnvvvY3C7GAziiKELVpLhpEriSn+90f/+0=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Tcz47/e2qRv206ftSQG5rX+c/6bXhw62rZM+vjABMiNjE02sSAoY3jsRRSyqCc2HY
-	 VdrSqT5NvxLK/cBg9uBw/gmXBrv1ZUwdOB0K3IcHhrMR9yyOyQDvtnC8b67myniFkB
-	 Majy/MmluxeyhSAm4nJ/1WhEWf07nvyBWhjTc694=
-Message-ID: <83cf8fa7-c8c7-4d3c-9f6f-6a596644b974@linux.microsoft.com>
-Date: Thu, 7 Mar 2024 11:48:41 -0800
+	 In-Reply-To:Content-Type; b=DniYqu5ZOHW+YecJwHqaDNyj+fgiizj+krlNfSpALD4UqufBFL/ZQbp/AM+NVr9y9mMirUpuf12e39oYtfDvgu8+BCYNwwm6oNn7UiFBXYEHzGDn/EvnhgA53pjAqAa6UCCZsD0qqSW9FRsLJUWxQjVQkjGhVGFsRUL24kKu1I0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VFiB8Oqn; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709840935;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=yiF1okAFqkpwbfTfbV1hW7AP3mO48Id2xuxKBejIZvU=;
+	b=VFiB8OqnmxmG3j+PCpqDQRB5swKm7PVJyyVaSFv2Iz5N7gTM23Jnmq6bB7YUxF0w7/PSrK
+	DRYWyz5UO2Llo4ldY41gcmujCCb/5l2dPoBdaBuKrpf/dNBct5tEiNZJgCoN4Nd6Ta9r+O
+	NR847il+MMGvxNql6SqGNM1Bm0bGyiQ=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-264-uMjwWm9WMmOu-iRh-5QxTg-1; Thu, 07 Mar 2024 14:48:53 -0500
+X-MC-Unique: uMjwWm9WMmOu-iRh-5QxTg-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-33d8d208be9so25120f8f.2
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 11:48:53 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709840932; x=1710445732;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yiF1okAFqkpwbfTfbV1hW7AP3mO48Id2xuxKBejIZvU=;
+        b=HSQLZOFny1LN9sdRuMmtv23JFqcAt2GH/tQOaV70Sb5UdGDSvYp0LvjsfmX3F91m6B
+         tOC+BWEkXPQRKyUQlDFiK9gb61bx0OP9MCeiG+mKU2wGAkr/Eo2RINVn7Ps09k8vW0QZ
+         0j3cycJEolGQCiqjpUJ1o+3jDXt1+z181T6iiUVskxkfl2g0vunzzfTW6h/4Ov17+gJ/
+         bXElVfyha0qikm+3lpsm1bQt/MsEceu2wVVzCKoweDG3GWYTeMwIZUTcisv/2mnFJoMe
+         RVlFZVfgmVIvj4ezm8BnKxmdQlVoRHa1KXPNChjRnP5aKpKv+Uqmd5ND6a1TkHW3xQ1Q
+         /1zQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUwidKNYIy4SpVW663R8+NjYdeUwd5FBv43fMzmQp4ZmZUBFRX/I1GL2gCs1/WClg86u4AeyxjJLNmeueMrvAVn36ZOvkBlrBRd4R83
+X-Gm-Message-State: AOJu0YxpzuZpliyNhbTRmR11vZ+MeX/nT4hgO+WUMheZ4ffUt+dK5one
+	xfW6Os4gRo7zCIBBXZspZ7PPe9Y5oGyiu9EqKKkDCR3epD8De0Juj6rN5NtDXDZ8TT9V6hAOWnf
+	7Y/JmqH7eh/agD/4JPiImz4H/wFC3eZsWbb3soa50zKYD0pk3iBogsG2aEAls4Q==
+X-Received: by 2002:a5d:4561:0:b0:33e:7564:ceb with SMTP id a1-20020a5d4561000000b0033e75640cebmr190557wrc.52.1709840932130;
+        Thu, 07 Mar 2024 11:48:52 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IG60NaZj4aKqWpJsBV5IHQCipxJhupwE33L1I5bt9b5ryojxNViS0E5J9Umw59PkLEQz+Snhg==
+X-Received: by 2002:a5d:4561:0:b0:33e:7564:ceb with SMTP id a1-20020a5d4561000000b0033e75640cebmr190540wrc.52.1709840931665;
+        Thu, 07 Mar 2024 11:48:51 -0800 (PST)
+Received: from ?IPV6:2003:cb:c74d:6400:4867:4ed0:9726:a0c9? (p200300cbc74d640048674ed09726a0c9.dip0.t-ipconnect.de. [2003:cb:c74d:6400:4867:4ed0:9726:a0c9])
+        by smtp.gmail.com with ESMTPSA id u11-20020a056000038b00b0033e456848f4sm9661876wrf.82.2024.03.07.11.48.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Mar 2024 11:48:51 -0800 (PST)
+Message-ID: <6f0c75cd-bbfd-4b7b-b022-75f7aa577ddd@redhat.com>
+Date: Thu, 7 Mar 2024 20:48:50 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -48,270 +82,311 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mshyperv: Introduce hv_get_hypervisor_version function
-To: Michael Kelley <mhklinux@outlook.com>,
- "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc: "mhkelley58@gmail.com" <mhkelley58@gmail.com>,
- "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
- "kys@microsoft.com" <kys@microsoft.com>,
- "wei.liu@kernel.org" <wei.liu@kernel.org>,
- "decui@microsoft.com" <decui@microsoft.com>,
- "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
- "tglx@linutronix.de" <tglx@linutronix.de>,
- "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
- "arnd@arndb.de" <arnd@arndb.de>
-References: <1709772454-861-1-git-send-email-nunodasneves@linux.microsoft.com>
- <SN6PR02MB4157D470D0E46FA9B2ACD8EBD4202@SN6PR02MB4157.namprd02.prod.outlook.com>
-Content-Language: en-CA
-From: Nuno Das Neves <nunodasneves@linux.microsoft.com>
-In-Reply-To: <SN6PR02MB4157D470D0E46FA9B2ACD8EBD4202@SN6PR02MB4157.namprd02.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH v2 1/1] mm/madvise: enhance lazyfreeing with mTHP in
+ madvise_free
+Content-Language: en-US
+To: Barry Song <21cnbao@gmail.com>, Ryan Roberts <ryan.roberts@arm.com>
+Cc: Lance Yang <ioworker0@gmail.com>, Vishal Moola <vishal.moola@gmail.com>,
+ akpm@linux-foundation.org, zokeefe@google.com, shy828301@gmail.com,
+ mhocko@suse.com, fengwei.yin@intel.com, xiehuan09@gmail.com,
+ wangkefeng.wang@huawei.com, songmuchun@bytedance.com, peterx@redhat.com,
+ minchan@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240307061425.21013-1-ioworker0@gmail.com>
+ <CAGsJ_4xcRvZGdpPh1qcFTnTnDUbwz6WreQ=L_UO+oU2iFm9EPg@mail.gmail.com>
+ <CAK1f24k2G_DSEjuqqqPyY0f7+btpYbjfoyMH7btLfP8nkasCTQ@mail.gmail.com>
+ <CAGsJ_4xREM-P1mFqeM-s3-cJ9czb6PXwizb-3hOhwaF6+QM5QA@mail.gmail.com>
+ <03458c20-5544-411b-9b8d-b4600a9b802f@arm.com>
+ <CAGsJ_4zp1MXTjG=4gBO+J3owg7sHDgDJ8Ut51i1RBSnKnK0BfQ@mail.gmail.com>
+ <501c9f77-1459-467a-8619-78e86b46d300@arm.com>
+ <8f84c7d6-982a-4933-a7a7-3f640df64991@redhat.com>
+ <e6bc142e-113d-4034-b92c-746b951a27ed@redhat.com>
+ <d24f8553-33f2-4ae7-a06d-badaf9462d84@arm.com>
+ <CAGsJ_4za-2xpg21phWi2WWLF1iPXhoc1xM__FDTwYYBBKsTPgw@mail.gmail.com>
+ <a07deb2c-49e1-4324-8e70-e897605faa9d@redhat.com>
+ <b1bf4b62-8e9b-470f-a300-d13c24177688@arm.com>
+ <b174d4e1-e1ef-4766-91bc-de822eee30fb@redhat.com>
+ <CAGsJ_4xXS0MsxRVTbf74DY_boQVUE2oP=AP6JmdXZSqsAOZzRQ@mail.gmail.com>
+ <f3b1cb43-cb33-4db4-a3dd-0c787e30b113@arm.com>
+ <CAGsJ_4wGe9SdMvojw_2XchEttrbww3RttoOENoF-O4bLWUd_rw@mail.gmail.com>
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <CAGsJ_4wGe9SdMvojw_2XchEttrbww3RttoOENoF-O4bLWUd_rw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On 3/7/2024 11:22 AM, Michael Kelley wrote:
-> From: Nuno Das Neves <nunodasneves@linux.microsoft.com> Sent: Wednesday, March 6, 2024 4:48 PM
+On 07.03.24 19:54, Barry Song wrote:
+> On Fri, Mar 8, 2024 at 12:31 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
 >>
->> Introduce x86_64 and arm64 functions for getting the hypervisor version
->> information and storing it in a structure for simpler parsing.
+>> On 07/03/2024 12:01, Barry Song wrote:
+>>> On Thu, Mar 7, 2024 at 7:45 PM David Hildenbrand <david@redhat.com> wrote:
+>>>>
+>>>> On 07.03.24 12:42, Ryan Roberts wrote:
+>>>>> On 07/03/2024 11:31, David Hildenbrand wrote:
+>>>>>> On 07.03.24 12:26, Barry Song wrote:
+>>>>>>> On Thu, Mar 7, 2024 at 7:13 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>>>>>>>
+>>>>>>>> On 07/03/2024 10:54, David Hildenbrand wrote:
+>>>>>>>>> On 07.03.24 11:54, David Hildenbrand wrote:
+>>>>>>>>>> On 07.03.24 11:50, Ryan Roberts wrote:
+>>>>>>>>>>> On 07/03/2024 09:33, Barry Song wrote:
+>>>>>>>>>>>> On Thu, Mar 7, 2024 at 10:07 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> On 07/03/2024 08:10, Barry Song wrote:
+>>>>>>>>>>>>>> On Thu, Mar 7, 2024 at 9:00 PM Lance Yang <ioworker0@gmail.com> wrote:
+>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>> Hey Barry,
+>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>> Thanks for taking time to review!
+>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>> On Thu, Mar 7, 2024 at 3:00 PM Barry Song <21cnbao@gmail.com> wrote:
+>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>> On Thu, Mar 7, 2024 at 7:15 PM Lance Yang <ioworker0@gmail.com> wrote:
+>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>> [...]
+>>>>>>>>>>>>>>>>> +static inline bool can_mark_large_folio_lazyfree(unsigned long addr,
+>>>>>>>>>>>>>>>>> +                                                struct folio *folio,
+>>>>>>>>>>>>>>>>> pte_t *start_pte)
+>>>>>>>>>>>>>>>>> +{
+>>>>>>>>>>>>>>>>> +       int nr_pages = folio_nr_pages(folio);
+>>>>>>>>>>>>>>>>> +       fpb_t flags = FPB_IGNORE_DIRTY | FPB_IGNORE_SOFT_DIRTY;
+>>>>>>>>>>>>>>>>> +
+>>>>>>>>>>>>>>>>> +       for (int i = 0; i < nr_pages; i++)
+>>>>>>>>>>>>>>>>> +               if (page_mapcount(folio_page(folio, i)) != 1)
+>>>>>>>>>>>>>>>>> +                       return false;
+>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>> we have moved to folio_estimated_sharers though it is not precise, so
+>>>>>>>>>>>>>>>> we don't do
+>>>>>>>>>>>>>>>> this check with lots of loops and depending on the subpage's mapcount.
+>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>> If we don't check the subpage’s mapcount, and there is a cow folio
+>>>>>>>>>>>>>>> associated
+>>>>>>>>>>>>>>> with this folio and the cow folio has smaller size than this folio,
+>>>>>>>>>>>>>>> should we still
+>>>>>>>>>>>>>>> mark this folio as lazyfree?
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> I agree, this is true. However, we've somehow accepted the fact that
+>>>>>>>>>>>>>> folio_likely_mapped_shared
+>>>>>>>>>>>>>> can result in false negatives or false positives to balance the
+>>>>>>>>>>>>>> overhead.  So I really don't know :-)
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> Maybe David and Vishal can give some comments here.
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>> BTW, do we need to rebase our work against David's changes[1]?
+>>>>>>>>>>>>>>>> [1]
+>>>>>>>>>>>>>>>> https://lore.kernel.org/linux-mm/20240227201548.857831-1-david@redhat.com/
+>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>> Yes, we should rebase our work against David’s changes.
+>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>> +
+>>>>>>>>>>>>>>>>> +       return nr_pages == folio_pte_batch(folio, addr, start_pte,
+>>>>>>>>>>>>>>>>> +                                        ptep_get(start_pte), nr_pages,
+>>>>>>>>>>>>>>>>> flags, NULL);
+>>>>>>>>>>>>>>>>> +}
+>>>>>>>>>>>>>>>>> +
+>>>>>>>>>>>>>>>>>       static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
+>>>>>>>>>>>>>>>>>                                      unsigned long end, struct mm_walk
+>>>>>>>>>>>>>>>>> *walk)
+>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>> @@ -676,11 +690,45 @@ static int madvise_free_pte_range(pmd_t *pmd,
+>>>>>>>>>>>>>>>>> unsigned long addr,
+>>>>>>>>>>>>>>>>>                       */
+>>>>>>>>>>>>>>>>>                      if (folio_test_large(folio)) {
+>>>>>>>>>>>>>>>>>                              int err;
+>>>>>>>>>>>>>>>>> +                       unsigned long next_addr, align;
+>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>> -                       if (folio_estimated_sharers(folio) != 1)
+>>>>>>>>>>>>>>>>> -                               break;
+>>>>>>>>>>>>>>>>> -                       if (!folio_trylock(folio))
+>>>>>>>>>>>>>>>>> -                               break;
+>>>>>>>>>>>>>>>>> +                       if (folio_estimated_sharers(folio) != 1 ||
+>>>>>>>>>>>>>>>>> +                           !folio_trylock(folio))
+>>>>>>>>>>>>>>>>> +                               goto skip_large_folio;
+>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>> I don't think we can skip all the PTEs for nr_pages, as some of them
+>>>>>>>>>>>>>>>> might be
+>>>>>>>>>>>>>>>> pointing to other folios.
+>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>> for example, for a large folio with 16PTEs, you do MADV_DONTNEED(15-16),
+>>>>>>>>>>>>>>>> and write the memory of PTE15 and PTE16, you get page faults, thus PTE15
+>>>>>>>>>>>>>>>> and PTE16 will point to two different small folios. We can only skip
+>>>>>>>>>>>>>>>> when we
+>>>>>>>>>>>>>>>> are sure nr_pages == folio_pte_batch() is sure.
+>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>> Agreed. Thanks for pointing that out.
+>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>> +
+>>>>>>>>>>>>>>>>> +                       align = folio_nr_pages(folio) * PAGE_SIZE;
+>>>>>>>>>>>>>>>>> +                       next_addr = ALIGN_DOWN(addr + align, align);
+>>>>>>>>>>>>>>>>> +
+>>>>>>>>>>>>>>>>> +                       /*
+>>>>>>>>>>>>>>>>> +                        * If we mark only the subpages as lazyfree, or
+>>>>>>>>>>>>>>>>> +                        * cannot mark the entire large folio as
+>>>>>>>>>>>>>>>>> lazyfree,
+>>>>>>>>>>>>>>>>> +                        * then just split it.
+>>>>>>>>>>>>>>>>> +                        */
+>>>>>>>>>>>>>>>>> +                       if (next_addr > end || next_addr - addr !=
+>>>>>>>>>>>>>>>>> align ||
+>>>>>>>>>>>>>>>>> +                           !can_mark_large_folio_lazyfree(addr, folio,
+>>>>>>>>>>>>>>>>> pte))
+>>>>>>>>>>>>>>>>> +                               goto split_large_folio;
+>>>>>>>>>>>>>>>>> +
+>>>>>>>>>>>>>>>>> +                       /*
+>>>>>>>>>>>>>>>>> +                        * Avoid unnecessary folio splitting if the
+>>>>>>>>>>>>>>>>> large
+>>>>>>>>>>>>>>>>> +                        * folio is entirely within the given range.
+>>>>>>>>>>>>>>>>> +                        */
+>>>>>>>>>>>>>>>>> +                       folio_clear_dirty(folio);
+>>>>>>>>>>>>>>>>> +                       folio_unlock(folio);
+>>>>>>>>>>>>>>>>> +                       for (; addr != next_addr; pte++, addr +=
+>>>>>>>>>>>>>>>>> PAGE_SIZE) {
+>>>>>>>>>>>>>>>>> +                               ptent = ptep_get(pte);
+>>>>>>>>>>>>>>>>> +                               if (pte_young(ptent) ||
+>>>>>>>>>>>>>>>>> pte_dirty(ptent)) {
+>>>>>>>>>>>>>>>>> +                                       ptent =
+>>>>>>>>>>>>>>>>> ptep_get_and_clear_full(
+>>>>>>>>>>>>>>>>> +                                               mm, addr, pte,
+>>>>>>>>>>>>>>>>> tlb->fullmm);
+>>>>>>>>>>>>>>>>> +                                       ptent = pte_mkold(ptent);
+>>>>>>>>>>>>>>>>> +                                       ptent = pte_mkclean(ptent);
+>>>>>>>>>>>>>>>>> +                                       set_pte_at(mm, addr, pte,
+>>>>>>>>>>>>>>>>> ptent);
+>>>>>>>>>>>>>>>>> +                                       tlb_remove_tlb_entry(tlb, pte,
+>>>>>>>>>>>>>>>>> addr);
+>>>>>>>>>>>>>>>>> +                               }
+>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>> Can we do this in batches? for a CONT-PTE mapped large folio, you are
+>>>>>>>>>>>>>>>> unfolding
+>>>>>>>>>>>>>>>> and folding again. It seems quite expensive.
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> I'm not convinced we should be doing this in batches. We want the initial
+>>>>>>>>>>>>> folio_pte_batch() to be as loose as possible regarding permissions so
+>>>>>>>>>>>>> that we
+>>>>>>>>>>>>> reduce our chances of splitting folios to the min. (e.g. ignore SW bits
+>>>>>>>>>>>>> like
+>>>>>>>>>>>>> soft dirty, etc). I think it might be possible that some PTEs are RO and
+>>>>>>>>>>>>> other
+>>>>>>>>>>>>> RW too (e.g. due to cow - although with the current cow impl, probably not.
+>>>>>>>>>>>>> But
+>>>>>>>>>>>>> its fragile to assume that). Anyway, if we do an initial batch that ignores
+>>>>>>>>>>>>> all
+>>>>>>>>>>>>
+>>>>>>>>>>>> You are correct. I believe this scenario could indeed occur. For instance,
+>>>>>>>>>>>> if process A forks process B and then unmaps itself, leaving B as the
+>>>>>>>>>>>> sole process owning the large folio.  The current wp_page_reuse() function
+>>>>>>>>>>>> will reuse PTE one by one while the specific subpage is written.
+>>>>>>>>>>>
+>>>>>>>>>>> Hmm - I thought it would only reuse if the total mapcount for the folio
+>>>>>>>>>>> was 1.
+>>>>>>>>>>> And since it is a large folio with each page mapped once in proc B, I thought
+>>>>>>>>>>> every subpage write would cause a copy except the last one? I haven't
+>>>>>>>>>>> looked at
+>>>>>>>>>>> the code for a while. But I had it in my head that this is an area we need to
+>>>>>>>>>>> improve for mTHP.
+>>>>>>>
+>>>>>>> So sad I am wrong again 😢
+>>>>>>>
+>>>>>>>>>>
+>>>>>>>>>> wp_page_reuse() will currently reuse a PTE part of a large folio only if
+>>>>>>>>>> a single PTE remains mapped (refcount == 0).
+>>>>>>>>>
+>>>>>>>>> ^ == 1
+>>>>>>>
+>>>>>>> seems this needs improvement. it is a waste the last subpage can
+>>>>>>
+>>>>>> My take that is WIP:
+>>>>>>
+>>>>>> https://lore.kernel.org/all/20231124132626.235350-1-david@redhat.com/T/#u
+>>>>>>
+>>>>>>> reuse the whole large folio. i was doing it in a quite different way,
+>>>>>>> if the large folio had only one subpage left, i would do copy and
+>>>>>>> released the large folio[1]. and if i could reuse the whole large folio
+>>>>>>> with CONT-PTE, i would reuse the whole large folio[2]. in mainline,
+>>>>>>> we don't have this cont-pte luxury exposed to mm, so i guess we can
+>>>>>>> not do [2] easily, but [1] seems to be an optimization.
+>>>>>>
+>>>>>> Yeah, I had essentially the same idea: just free up the large folio if most of
+>>>>>> the stuff is unmapped. But that's rather a corner-case optimization, so I did
+>>>>>> not proceed with that.
+>>>>>>
+>>>>>
+>>>>> I'm not sure it's a corner case, really? - process forks, then both parent and
+>>>>> child and write to all pages in what was previously a fully & contiguously
+>>>>> mapped large folio?
+>>>>
+>>>> Well, with 2 MiB my assumption was that while it can happen, it's rather
+>>>> rare. With smaller THP it might get more likely, agreed.
+>>>>
+>>>>>
+>>>>> Reggardless, why is it an optimization to do the copy for the last subpage and
+>>>>> syncrhonously free the large folio? It's already partially mapped so is on the
+>>>>> deferred split list and can be split if memory is tight.
+>>>
+>>> we don't want reclamation overhead later. and we want memories immediately
+>>> available to others.
 >>
->> Use the new function to get and parse the version at boot time. While at
->> it, print the version in the same format for each architecture, and move
->> the printing code to hv_common_init() so it is not duplicated.
+>> But by that logic, you also don't want to leave the large folio partially mapped
+>> all the way until the last subpage is CoWed. Surely you would want to reclaim it
+>> when you reach partial map status?
 > 
-> Isn't the format already the same for x86 and ARM64?   A couple of
-> years ago they didn't match.  But that was fixed in commit eeda29db98f4.
-> 
+> To some extent, I agree. But then we will have two many copies. The last
+> subpage is small, and a safe place to copy instead.
 
-You're correct - I will amend the commit message. Thanks!
+Right, it's essentially a simplistic page migration at a point where you 
+know you can safely replace the page (PAE not set, so it cannot be 
+pinned using FOLL_PIN). No rmap walk, no migration entries, no worry 
+about additional page references.
 
->>
->> Signed-off-by: Nuno Das Neves <nunodasneves@linux.microsoft.com>
->> Acked-by: Wei Liu <wei.liu@kernel.org>
->> ---
->>  arch/arm64/hyperv/mshyperv.c      | 19 ++++++++---------
->>  arch/x86/kernel/cpu/mshyperv.c    | 35 ++++++++++++++-----------------
->>  drivers/hv/hv_common.c            |  9 ++++++++
->>  include/asm-generic/hyperv-tlfs.h | 23 ++++++++++++++++++++
->>  include/asm-generic/mshyperv.h    |  2 ++
->>  5 files changed, 59 insertions(+), 29 deletions(-)
->>
->> diff --git a/arch/arm64/hyperv/mshyperv.c
->> b/arch/arm64/hyperv/mshyperv.c
->> index f1b8a04ee9f2..55dc224d466d 100644
->> --- a/arch/arm64/hyperv/mshyperv.c
->> +++ b/arch/arm64/hyperv/mshyperv.c
->> @@ -19,10 +19,18 @@
->>
->>  static bool hyperv_initialized;
->>
->> +int hv_get_hypervisor_version(union hv_hypervisor_version_info *info)
->> +{
->> +	hv_get_vpreg_128(HV_REGISTER_HYPERVISOR_VERSION,
->> +			 (struct hv_get_vp_registers_output *)info);
->> +
->> +	return 0;
->> +}
->> +EXPORT_SYMBOL_GPL(hv_get_hypervisor_version);
-> 
-> I don't think this need to be exported, at least not for the usage in
-> this patch.  The caller in hv_common.c is never part of a module -- it's
-> always built-in. But maybe you are anticipating future use cases
-> from a module?
-> 
+-- 
+Cheers,
 
-Yes, it will be used in a module eventually. Do you think I should remove
-this and the below export until they are actually needed?
-
->> +
->>  static int __init hyperv_init(void)
->>  {
->>  	struct hv_get_vp_registers_output	result;
->> -	u32	a, b, c, d;
->>  	u64	guest_id;
->>  	int	ret;
->>
->> @@ -54,15 +62,6 @@ static int __init hyperv_init(void)
->>  		ms_hyperv.features, ms_hyperv.priv_high, ms_hyperv.hints,
->>  		ms_hyperv.misc_features);
->>
->> -	/* Get information about the Hyper-V host version */
->> -	hv_get_vpreg_128(HV_REGISTER_HYPERVISOR_VERSION, &result);
->> -	a = result.as32.a;
->> -	b = result.as32.b;
->> -	c = result.as32.c;
->> -	d = result.as32.d;
->> -	pr_info("Hyper-V: Host Build %d.%d.%d.%d-%d-%d\n",
->> -		b >> 16, b & 0xFFFF, a,	d & 0xFFFFFF, c, d >> 24);
->> -
->>  	ret = hv_common_init();
->>  	if (ret)
->>  		return ret;
->> diff --git a/arch/x86/kernel/cpu/mshyperv.c
->> b/arch/x86/kernel/cpu/mshyperv.c
->> index d306f6184cee..03a3445faf7a 100644
->> --- a/arch/x86/kernel/cpu/mshyperv.c
->> +++ b/arch/x86/kernel/cpu/mshyperv.c
->> @@ -350,13 +350,25 @@ static void __init reduced_hw_init(void)
->>  	x86_init.irqs.pre_vector_init	= x86_init_noop;
->>  }
->>
->> +int hv_get_hypervisor_version(union hv_hypervisor_version_info *info)
->> +{
->> +	unsigned int hv_max_functions;
->> +
->> +	hv_max_functions = cpuid_eax(HYPERV_CPUID_VENDOR_AND_MAX_FUNCTIONS);
->> +	if (hv_max_functions < HYPERV_CPUID_VERSION) {
->> +		pr_err("%s: Could not detect Hyper-V version\n", __func__);
->> +		return -ENODEV;
->> +	}
->> +
->> +	cpuid(HYPERV_CPUID_VERSION, &info->eax, &info->ebx, &info->ecx, &info->edx);
->> +
->> +	return 0;
->> +}
->> +EXPORT_SYMBOL_GPL(hv_get_hypervisor_version);
-> 
-> Same for this EXPORT.
->>> +
->>  static void __init ms_hyperv_init_platform(void)
->>  {
->>  	int hv_max_functions_eax;
->> -	int hv_host_info_eax;
->> -	int hv_host_info_ebx;
->> -	int hv_host_info_ecx;
->> -	int hv_host_info_edx;
->>
->>  #ifdef CONFIG_PARAVIRT
->>  	pv_info.name = "Hyper-V";
->> @@ -407,21 +419,6 @@ static void __init ms_hyperv_init_platform(void)
->>  		pr_info("Hyper-V: running on a nested hypervisor\n");
->>  	}
->>
->> -	/*
->> -	 * Extract host information.
->> -	 */
->> -	if (hv_max_functions_eax >= HYPERV_CPUID_VERSION) {
->> -		hv_host_info_eax = cpuid_eax(HYPERV_CPUID_VERSION);
->> -		hv_host_info_ebx = cpuid_ebx(HYPERV_CPUID_VERSION);
->> -		hv_host_info_ecx = cpuid_ecx(HYPERV_CPUID_VERSION);
->> -		hv_host_info_edx = cpuid_edx(HYPERV_CPUID_VERSION);
->> -
->> -		pr_info("Hyper-V: Host Build %d.%d.%d.%d-%d-%d\n",
->> -			hv_host_info_ebx >> 16, hv_host_info_ebx & 0xFFFF,
->> -			hv_host_info_eax, hv_host_info_edx & 0xFFFFFF,
->> -			hv_host_info_ecx, hv_host_info_edx >> 24);
->> -	}
->> -
->>  	if (ms_hyperv.features & HV_ACCESS_FREQUENCY_MSRS &&
->>  	    ms_hyperv.misc_features & HV_FEATURE_FREQUENCY_MSRS_AVAILABLE) {
->>  		x86_platform.calibrate_tsc = hv_get_tsc_khz;
->> diff --git a/drivers/hv/hv_common.c b/drivers/hv/hv_common.c
->> index 2f1dd4b07f9a..4d72c528af68 100644
->> --- a/drivers/hv/hv_common.c
->> +++ b/drivers/hv/hv_common.c
->> @@ -278,6 +278,15 @@ static void hv_kmsg_dump_register(void)
->>  int __init hv_common_init(void)
->>  {
->>  	int i;
->> +	union hv_hypervisor_version_info version;
->> +
->> +	/* Get information about the Hyper-V host version */
->> +	if (hv_get_hypervisor_version(&version) == 0) {
-> 
-> The usual idiom would be:
-> 
-> 	if (!hv_get_hypervisor_version(&version)) {
->
-Thanks, I'll change it.
- 
->> +		pr_info("Hyper-V: Host Build %d.%d.%d.%d-%d-%d\n",
->> +			version.major_version, version.minor_version,
->> +			version.build_number, version.service_number,
->> +			version.service_pack, version.service_branch);
->> +	}
->>
->>  	if (hv_is_isolation_supported())
->>  		sysctl_record_panic_msg = 0;
->> diff --git a/include/asm-generic/hyperv-tlfs.h b/include/asm-generic/hyperv-tlfs.h
->> index 3d1b31f90ed6..32514a870b98 100644
->> --- a/include/asm-generic/hyperv-tlfs.h
->> +++ b/include/asm-generic/hyperv-tlfs.h
->> @@ -817,6 +817,29 @@ struct hv_input_unmap_device_interrupt {
->>  #define HV_SOURCE_SHADOW_NONE               0x0
->>  #define HV_SOURCE_SHADOW_BRIDGE_BUS_RANGE   0x1
->>
->> +/*
->> + * Version info reported by hypervisor
->> + */
->> +union hv_hypervisor_version_info {
->> +	struct {
->> +		u32 build_number;
->> +
->> +		u32 minor_version : 16;
->> +		u32 major_version : 16;
->> +
->> +		u32 service_pack;
->> +
->> +		u32 service_number : 24;
->> +		u32 service_branch : 8;
->> +	};
->> +	struct {
->> +		u32 eax;
->> +		u32 ebx;
->> +		u32 ecx;
->> +		u32 edx;
-> 
-> Nit:  These names are x86-isms appearing in the generic portion
-> of hyperv-tlfs.h.  On the ARM64 side I had called the four parts
-> "a", "b", "c", and "d" to be slightly more generic.  But if want to
-> keep the x86 register names, I won't object.
-> > Michael
-> 
-
-Good point. It's worth noting that these are now only used on the x86
-side as arguments to cpuid(), so I might just leave them as-is.
-Another option would be to add an x86-only union for this purpose:
-
-union hv_x86_hypervisor_version_info {
-	struct hv_hypervisor_version_info info;
-	struct {
-		u32 eax;
-		u32 ebx;
-		u32 ecx;
-		u32 edx;
-	};
-};
-
-But that is probably overkill...
-
-Thanks for the comments!
-
-Nuno
-
->> +	};
->> +};
->> +
->>  /*
->>   * The whole argument should fit in a page to be able to pass to the hypervisor
->>   * in one hypercall.
->> diff --git a/include/asm-generic/mshyperv.h b/include/asm-
->> generic/mshyperv.h
->> index 04424a446bb7..452b7c089b71 100644
->> --- a/include/asm-generic/mshyperv.h
->> +++ b/include/asm-generic/mshyperv.h
->> @@ -161,6 +161,8 @@ static inline void vmbus_signal_eom(struct
->> hv_message *msg, u32 old_msg_type)
->>  	}
->>  }
->>
->> +int hv_get_hypervisor_version(union hv_hypervisor_version_info *info);
->> +
->>  void hv_setup_vmbus_handler(void (*handler)(void));
->>  void hv_remove_vmbus_handler(void);
->>  void hv_setup_stimer0_handler(void (*handler)(void));
->> --
->> 2.25.1
->>
+David / dhildenb
 
 
