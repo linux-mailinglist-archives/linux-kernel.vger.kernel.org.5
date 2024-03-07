@@ -1,179 +1,114 @@
-Return-Path: <linux-kernel+bounces-96128-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96138-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56232875771
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:47:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A52587578D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:52:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5CCD1B21410
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:47:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 23CF01C22068
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:52:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53ED71369A6;
-	Thu,  7 Mar 2024 19:47:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6266113A249;
+	Thu,  7 Mar 2024 19:51:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TrQCKxgt"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AvId9bzG"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FDB4136989;
-	Thu,  7 Mar 2024 19:47:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27E0A139566;
+	Thu,  7 Mar 2024 19:51:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709840856; cv=none; b=tmImzljWWREsS5epNfkNf3PfmSmYe95NQitv+THRRN/MQ4NbDX/z/F1SA2jdto+a+iimdWESkNY2b2lKabCkg1eO/6j/i+d+7vukbZnHoSH5yPAFsLerMylI1dKGmO78omlTDpiAmBdWjwX9TMVZsVcxOjLbRSo+xNc3t4VUEX8=
+	t=1709841066; cv=none; b=Sl+zoOcIQDe1gzPUJw9zhHDd+AvwP3hL5O5gMSMAlahb9ejlXUEx8FphMBFPNIpchDAT2CiAOvLK/h8/n9rBrrcr3RPS2T/4ffDZ3QdJ/qJG2QHlOq5CdryNlxrA8yok89hkXJw5jhuSCyItVkn5A8UYESMpGPM14BbQOC379Rg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709840856; c=relaxed/simple;
-	bh=OHMHjrmXLAl+M5prZnWsXYc3CPrx3uhUlRe0pX2R6CM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jSutElqdKNdF3aH1Mc2qO+VLHkhW8T1JSxe/OhJ17g2ulbHph/jhvWDYSEx9CJEj0v8H7FUwhXPaYLQrGYeVyw+9K3GAJEXFVtAHBI0Xn3eQlvdaTugOlgGZ5SdDMjEdRRp/4EC1ZTCUNpT2XwU2Ifj+vHBCBEPQLXqSOpmm8u8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TrQCKxgt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D894FC433C7;
-	Thu,  7 Mar 2024 19:47:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709840855;
-	bh=OHMHjrmXLAl+M5prZnWsXYc3CPrx3uhUlRe0pX2R6CM=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=TrQCKxgt61A6b11OT+EDHqfSLuUFzmlZq9xGRsenob5TEn7/IstinO10wOl6paOnv
-	 GY2tT4Usoc6RQq4Dy8ZPnUDb97YEJuQTClOTvMYvo8KJ/fr4ojm4Pvk4QTMoIa4mgY
-	 SaoWufgDt5RgKinvMUAIKQqTjvec7oVGmT95SdCMYb3RS6RU8tjehGcY+yVt/oUzWp
-	 O0UbBuMkEAI1X97PhfWKWmUr97cmzOl5RtovIJ8sNEVR18wvBwdWRCWa+jRH+MKVLW
-	 G2cbyy3VcX6vnxd2Oat/J5RI/czw0AC/Nn15j4BeLsypo8ULPaUHncmbogr1ah3GWo
-	 Oer+72wTykJFw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 62B50CE0716; Thu,  7 Mar 2024 11:47:35 -0800 (PST)
-Date: Thu, 7 Mar 2024 11:47:35 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	Steven Rostedt <rostedt@goodmis.org>, linke li <lilinke99@qq.com>,
-	joel@joelfernandes.org, boqun.feng@gmail.com, dave@stgolabs.net,
-	frederic@kernel.org, jiangshanlai@gmail.com, josh@joshtriplett.org,
-	linux-kernel@vger.kernel.org, qiang.zhang1211@gmail.com,
-	quic_neeraju@quicinc.com, rcu@vger.kernel.org
-Subject: Re: [PATCH] rcutorture: Fix
- rcu_torture_pipe_update_one()/rcu_torture_writer() data race and concurrency
- bug
-Message-ID: <c1bb35c4-29af-4a84-8ba7-81ba30639a69@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <CAHk-=wgG6Dmt1JTXDbrbXh_6s2yLjL=9pHo7uv0==LHFD+aBtg@mail.gmail.com>
- <20240306135504.2b3872ef@gandalf.local.home>
- <CAHk-=wjbDgMKLgxbV+yK4LKZ+2Qj6zVL_sHeb+L9KDia980Q8Q@mail.gmail.com>
- <20240306142738.7b66a716@rorschach.local.home>
- <CAHk-=wgPAZ4KnCQergqAOUypwinYh=gZ0q4EQbwvuUcJ_8UK+Q@mail.gmail.com>
- <83b47424-e5e0-46de-aa63-d413a5aa6cec@paulmck-laptop>
- <CAHk-=wiX_zF5Mpt8kUm_LFQpYY-mshrXJPOe+wKNwiVhEUcU9g@mail.gmail.com>
- <851dc594-d2ea-4050-b7c6-e33a1cddf3a1@efficios.com>
- <72b14322-78c1-4479-9c4e-b0e11c1f0d53@paulmck-laptop>
- <bebbed4a-ced1-42c5-865c-dc9dc7857b6c@efficios.com>
+	s=arc-20240116; t=1709841066; c=relaxed/simple;
+	bh=4cdULCcytkLeYBiX0rgShPW1BjHtNu+TjxHj/QfFLg4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=re5wSY7Ds1zo2AI7klx1MlS89GIfn00r+W2O8GBcGh1Jn5rtb3CGTFaa2y/qTHLBV9UmyaRs1CHbzSLy57zuRwTCp+phveADiHeX357da/yG9OaeWWe0OGMxeR/xri5USqy7Se41+SkAP5xDAsE0ETWgPNBFlbOCxax/w1WdnJM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AvId9bzG; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709841065; x=1741377065;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=4cdULCcytkLeYBiX0rgShPW1BjHtNu+TjxHj/QfFLg4=;
+  b=AvId9bzGib9DoD1/LRgmMDFX8CiE7FiuuYqO6GU2+Xr5dcIk4efsuhlv
+   zgYVkik8Z8lgFpy2JkS76KkLChkGDGfZh87FXzKLMG5UHxNcXzwy79IgU
+   Rf4vuZQJu8fkJRT/zTCbQ22tWERcex7Rw0P8oSgam5wSnuP/JOsEZqscl
+   e51dJzJRa6r11siXBNC31EilPNKQW9DYaFtnxQxRoRGaNPCucMhV+KPIo
+   MesEV0l3JfVG4Yj39DAnSBFdnmAohKtbb1yP8xRdEi7jQIpLRlKnlwJuA
+   q0FfIwRUat+38KAbEL0WENaQvPkp3bo7+rec+HrhAlWvfrHcGciQjtWHB
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="4457068"
+X-IronPort-AV: E=Sophos;i="6.07,107,1708416000"; 
+   d="scan'208";a="4457068"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 11:51:02 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="937046515"
+X-IronPort-AV: E=Sophos;i="6.07,107,1708416000"; 
+   d="scan'208";a="937046515"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 07 Mar 2024 11:50:59 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id EF780128; Thu,  7 Mar 2024 21:50:57 +0200 (EET)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	linux-spi@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Cc: Mark Brown <broonie@kernel.org>,
+	Daniel Mack <daniel@zonque.org>,
+	Haojian Zhuang <haojian.zhuang@gmail.com>,
+	Robert Jarzmik <robert.jarzmik@free.fr>,
+	Russell King <linux@armlinux.org.uk>
+Subject: [PATCH v3 0/3] spi: pxa2xx: Clean up linux/spi/pxa2xx_spi.h
+Date: Thu,  7 Mar 2024 21:47:44 +0200
+Message-ID: <20240307195056.4059864-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bebbed4a-ced1-42c5-865c-dc9dc7857b6c@efficios.com>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Mar 07, 2024 at 08:53:05AM -0500, Mathieu Desnoyers wrote:
-> On 2024-03-06 22:37, Paul E. McKenney wrote:
-> > On Wed, Mar 06, 2024 at 10:06:21PM -0500, Mathieu Desnoyers wrote:
-> [...]
-> > 
-> > > As far as the WRITE_ONCE(x, READ_ONCE(x) + 1) pattern
-> > > is concerned, the only valid use-case I can think of is
-> > > split counters or RCU implementations where there is a
-> > > single updater doing the increment, and one or more
-> > > concurrent reader threads that need to snapshot a
-> > > consistent value with READ_ONCE().
-> > 
-> [...]
-> > 
-> > So what would you use that pattern for?
-> > 
-> > One possibility is a per-CPU statistical counter in userspace on a
-> > fastpath, in cases where losing the occasional count is OK.  Then learning
-> > your CPU (and possibly being immediately migrated to some other CPU),
-> > READ_ONCE() of the count, increment, and WRITE_ONCE() might (or might not)
-> > make sense.
-> > 
-> > I suppose the same in the kernel if there was a fastpath so extreme you
-> > could not afford to disable preemption.
-> > 
-> > At best, very niche.
-> > 
-> > Or am I suffering a failure of imagination yet again?  ;-)
-> 
-> The (niche) use-cases I have in mind are split-counters and RCU
-> grace period tracking, where precise counters totals are needed
-> (no lost count).
-> 
-> In the kernel, this could be:
+A couple of cleanups against linux/spi/pxa2xx_spi.h.
 
-Thank you for looking into this!
+I'm sending this as v3 to land in the SPI subsystem. Meanwhile I'm
+preparing an update to make linux/spi/pxa2xx_spi.h private to the
+subsystem (PXA2xx driver). But the second part will be presented later
+on (likely after v6.9-rc1). That said, this can be routed either via
+SoC tree or SPI, up to respective maintainers.
 
-> - A per-cpu counter, each counter incremented from thread context with
->   preemption disabled (single updater per counter), read concurrently by
->   other threads. WRITE_ONCE/READ_ONCE is useful to make sure there
->   is no store/load tearing there. Atomics on the update would be stronger
->   than necessary on the increment fast-path.
+In v3:
+- fixed compilation error
+- updated documentation file as well
 
-But if preemption is disabled, the updater can read the value without
-READ_ONCE() without risk of concurrent update.  Or are you concerned about
-interrupt handlers?  This would have to be a read from the interrupt
-handler, given that an updated from the interrupt handler could result
-in a lost count.
+In v2:
+- preserved a comment (Arnd)
+- added tag (Arnd)
+- added new patch to avoid using unneeded header in soc/pxa/ssp.c
 
-> - A per-thread counter (e.g. within task_struct), only incremented by the
->   single thread, read by various threads concurrently.
+Andy Shevchenko (3):
+  spi: pxa2xx: Kill pxa2xx_set_spi_info()
+  spi: pxa2xx: Make num_chipselect 8-bit in the struct
+    pxa2xx_spi_controller
+  spi: pxa2xx: Use proper SSP header in soc/pxa/ssp.c
 
-Ditto.
+ Documentation/spi/pxa2xx.rst   |  2 +-
+ arch/arm/mach-pxa/devices.c    | 18 ------------------
+ arch/arm/mach-pxa/spitz.c      | 14 +++++++++++++-
+ drivers/soc/pxa/ssp.c          |  2 +-
+ include/linux/spi/pxa2xx_spi.h | 10 +---------
+ 5 files changed, 16 insertions(+), 30 deletions(-)
 
-> - A counter which increment happens to be already protected by a lock, read
->   by various threads without taking the lock. (technically doable, but
->   I'm not sure I see a relevant use-case for it)
+-- 
+2.43.0.rc1.1.gbec44491f096
 
-In that case, the lock would exclude concurrent updates, so the lock
-holder would not need READ_ONCE(), correct?
-
-> In user-space:
-> 
-> - The "per-cpu" counter would have to use rseq for increments to prevent
->   inopportune migrations, which needs to be implemented in assembler anyway.
->   The counter reads would have to use READ_ONCE().
-
-Fair enough!
-
-> - The per-thread counter (Thread-Local Storage) incremented by a single
->   thread, read by various threads concurrently, is a good target
->   for WRITE_ONCE()/READ_ONCE() pairing. This is actually what we do in
->   various liburcu implementations which track read-side critical sections
->   per-thread.
-
-Agreed, but do any of these use WRITE_ONCE(x, READ_ONCE(x) + 1) or
-similar?
-
-> - Same as for the kernel, a counter increment protected by a lock which
->   needs to be read from various threads concurrently without taking
->   the lock could be a valid use-case, though I fail to see how it is
->   useful due to lack of imagination on my part. ;-)
-
-In RCU, we have "WRITE_ONCE(*sp, *sp + 1)" for this use case, though
-here we have the WRITE_ONCE() but not the READ_ONCE() because we hold
-the lock excluding any other updates.
-
-> I'm possibly missing other use-cases, but those come to mind as not
-> involving racy counter increments.
-> 
-> I agree that use-cases are so niche that we probably do _not_ want to
-> introduce ADD_SHARED() for that purpose in a common header file,
-> because I suspect that it would then become misused in plenty of
-> scenarios where the updates are actually racy and would be better
-> served by atomics or local-atomics.
-
-I agree that unless or until we have a reasonable number of use cases, we
-should open-code it.  With a big fat comment explaining how it works.  ;-)
-
-							Thanx, Paul
 
