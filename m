@@ -1,124 +1,125 @@
-Return-Path: <linux-kernel+bounces-96151-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96152-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B7208757BE
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:58:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AC948757C4
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:59:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D29F1C211DB
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:58:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 46B45282610
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:59:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 571DE1384AD;
-	Thu,  7 Mar 2024 19:58:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DEEA136995;
+	Thu,  7 Mar 2024 19:59:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="eE96wVP5"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="f3WrWocD"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10408137C36;
-	Thu,  7 Mar 2024 19:58:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C35512DDB6;
+	Thu,  7 Mar 2024 19:59:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709841496; cv=none; b=PduHsLVtCE8pauatNgRDbstglwjX+xB1x4wJvEUM0E3G9NynTCqxG5X1p6PvMv+uMyf+BDO3gtBmkBSIPWpZjyZTuCmtom4oPGYpXnbbHQVybq6+G3yyrq9TihmYd/MpWI/LjEwLWE3lKEbs4dQkYjw8yt+3pOp/eNl0wIZfFYM=
+	t=1709841557; cv=none; b=RzzNJ4ziSd3TND7sBxkvxCecHfzLqr1PJwJAIg4YcrcC4sxNY7IQgKbamJ61UI1F/3qziEKSkyh91y2hUHYUmUTFSYu/ktvXk24JQyVYkODyZKCli9M2FBvB9Ba3fckcdRpWBP8O3+xCrCyYBlSWUbKHGzsyypB8IrDMkCRLceQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709841496; c=relaxed/simple;
-	bh=dVVO80js759j4nvce22wbRDafQcr7cFxiq3JvwZyOYM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=m0wBZvi7DOkgC6Liqo9XyQNKtEu1JPCYQonDiC0HeikS1XPGmr8IFBxe/TyUX6zkdleQxWGRUKqG3L23peIZdbm8TFm/7uDkJzxDWhXxRidLB6nLUw2vTHyO+tlnnn1A4gvALO2PhmW8U3orxw1CiVOzUNhQzNCn+lGnJIjNiDc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=eE96wVP5; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1709841482; x=1710446282; i=w_armin@gmx.de;
-	bh=dVVO80js759j4nvce22wbRDafQcr7cFxiq3JvwZyOYM=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
-	 References;
-	b=eE96wVP5omenyoQ3PEfl82WJTUkbrl16Z+HTy0/MAikyXymwen12ChVAqy5fa5UR
-	 kNm94v1wuvG+f/zFRuStZUAtuUVN7zsnFZ2CQWKE7ImNMExi6TPLCBD7OGDpwITVA
-	 tx/T9AcdcpStnBE4ItYRZp6N1sGcsV2OMJ8Hp/kWRxv9z+k3ClN0/rzroWyWWOrzA
-	 gA1r3kkbwWecRZtnkXJ6oJX6w/eMl4UVb1aXPZzItYzwyNNRCJGCbEkVxeSIiy7Tg
-	 IbzDovkYDVxL59aJ1MeJgP5DJ3XZ92cBtJFhhlVwdXrprRLNQ/3+5F6BMzNRVjgTH
-	 tlqw/qtb8jp5h8HVqQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
- (mrgmx105 [212.227.17.168]) with ESMTPSA (Nemesis) id
- 1MXp9Y-1rLIIA0NPI-00YCrb; Thu, 07 Mar 2024 20:58:02 +0100
-From: Armin Wolf <W_Armin@gmx.de>
-To: hdegoede@redhat.com,
-	ilpo.jarvinen@linux.intel.com
-Cc: rafael@kernel.org,
-	lenb@kernel.org,
-	linux-acpi@vger.kernel.org,
-	platform-driver-x86@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] platform/x86: wmi: Avoid returning AE_OK upon unknown error
-Date: Thu,  7 Mar 2024 20:57:53 +0100
-Message-Id: <20240307195753.2961-2-W_Armin@gmx.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240307195753.2961-1-W_Armin@gmx.de>
-References: <20240307195753.2961-1-W_Armin@gmx.de>
+	s=arc-20240116; t=1709841557; c=relaxed/simple;
+	bh=eH7ts0q5onZGbRT1w1B9IvPr7bH0ysYwVmxguJ8VLyo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=AIfnk2ezrTX/jOYQ1dH83HvGL7Yc/c2ZtErIdSx1tyi4tsEmKY4E/b/W5nNEE9WuJJykLfZ7UKYX0A3s1G2CbC/Y1FmsVR0Qql8ZUplgoQWCqFH+MQqXE0LNkT7zTAYeFrVEqZ4OpMXePD5PQDxPkSh6AGS/9EI3bdZGiONlYIc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=f3WrWocD; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=KVaCyMJy+vYOeUyoSR5Mk9pa+MCPgO2uUL4D5SXL/4U=; b=f3WrWocD0YgDteVxzjrU8D0SOL
+	i6nsddeuB7BsTF/6Bk57YSNGFwHs5xN7nLFK/8A0vEldbFtlRrqHlHBwZXKMbZ/V+lRULmFaGKkP2
+	KmcmYY8ln1CsCtQzN+HNZBkzqQPvRHsl85eew0Cw+l1z7z8R+S0q+3mlnKAIzYdGPXeatqeje8nqo
+	qqxpITt1bjw+UbEfM/hpcJ0+04WQ+YwWc0ItpZUX31hvtv3ihrmMw8UhN2jOiHLs/2uCP9xQpbGGV
+	S31FHRUrFmwa1Qfe20oJaHcxYNP0lu42D9hN2gPZQGm4p5MY87QkeTQhqi1x2geuN6lbb+dW5nC9v
+	APJHYROA==;
+Received: from [50.53.50.0] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1riJtE-00000006Axx-2mZO;
+	Thu, 07 Mar 2024 19:58:52 +0000
+Message-ID: <299be3c9-4cf4-47ce-b53a-c9789af4f5ca@infradead.org>
+Date: Thu, 7 Mar 2024 11:58:49 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 37/37] memprofiling: Documentation
+Content-Language: en-US
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com,
+ vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev,
+ mgorman@suse.de, dave@stgolabs.net, willy@infradead.org,
+ liam.howlett@oracle.com, penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net,
+ void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com,
+ catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de, tglx@linutronix.de,
+ mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org,
+ peterx@redhat.com, david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org,
+ masahiroy@kernel.org, nathan@kernel.org, dennis@kernel.org,
+ jhubbard@nvidia.com, tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org,
+ paulmck@kernel.org, pasha.tatashin@soleen.com, yosryahmed@google.com,
+ yuzhao@google.com, dhowells@redhat.com, hughd@google.com,
+ andreyknvl@gmail.com, keescook@chromium.org, ndesaulniers@google.com,
+ vvvvvv@google.com, gregkh@linuxfoundation.org, ebiggers@google.com,
+ ytcoode@gmail.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+ rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+ vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+ iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+ elver@google.com, dvyukov@google.com, shakeelb@google.com,
+ songmuchun@bytedance.com, jbaron@akamai.com, aliceryhl@google.com,
+ rientjes@google.com, minchan@google.com, kaleshsingh@google.com,
+ kernel-team@android.com, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
+ linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-mm@kvack.org, linux-modules@vger.kernel.org,
+ kasan-dev@googlegroups.com, cgroups@vger.kernel.org
+References: <20240306182440.2003814-1-surenb@google.com>
+ <20240306182440.2003814-38-surenb@google.com>
+ <10a95079-86e4-41bf-8e82-e387936c437d@infradead.org>
+ <CAJuCfpFN3BLsFOWB0huA==LVa2pNYdnf7bT_VXgDtPuJOxvWSQ@mail.gmail.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <CAJuCfpFN3BLsFOWB0huA==LVa2pNYdnf7bT_VXgDtPuJOxvWSQ@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:B1KLFHgvBUA/1PWVazQcA7KyQurIENAqhMXKuSgnGfTB6TKorHW
- ZHwSid6Km3NV7GUhbz1ph8/1TKHVcXB6dD7vBg+jvElCYARMZ/5Hw2x6uBZVlAQy9gk5ZLV
- CJB7GjkAttNvl6v5dD0av9lsONBUZusSw2UnK1Qfkymo3xLd/O32AY70pYV7G+yX8HQ1EV+
- KC9kULR8ir2saG02l0D7A==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:4wi1RJYkdXk=;tRAdEKzXE8V8wR9rPtN9FACtYRW
- lvvlBw1YqPTZH0lUW4DEyOzTKtSXoHo5gHtKNHUCpJjcOooUgQUiKPtHqO6Cw0b2F49w6QBsg
- irzXd/1Hw9t+Hy2uIg7+W+RVukACQ21Z1+cNm7yLCfeWHhULZhUwXvZB1gX7eTnnVk+nVzXdE
- /T4DbBY29eny50i7tDQpJOq80LnLLfzrF25xIfmTY9O646qn5kAFkFwJozqibVSUROUZmGDtz
- qB3A0NdCE7ct8vHnEAOj2ERrFjAykdmDQ+ztfUe8FwriH6FYD/y1jOEhvkQejdBXvKS6CO6xu
- GwnIrkwokIrgYNMOfllTsOeSlxH2uH8p2EXxjgx/Jq0GeeOv9H85exE1vDkHt+64menvGcObA
- Yo59uzSVi1pnMO2R7JBjvfvXXU4uRPXMlU4LiNYVZFgdNWppH8E0Ve4hCDYQJoCxB+PQRhPkL
- KEzLU9ykViOJd0xsyGac+K8g7DKwwBHxhBZ/DmNtBFoREgp7VzFPuCy6NQr+XSVWUpalhwKx6
- QYpNHGptWjet4ggYHxe+OT/FF6cYs58OIRc4leVY87xklcOdfRjbAobM0eDTn+RgI3nv8iqxf
- s1ucSLQ3pA1Jvn6V3mxwsLxF20ARn5vQ3DYNE54xqQASw5VM6WhvsocuqLrfbqnf7+sOjr9ik
- KmAcqtIba1HGpVvluVJfLwixi+Diot2JCvJClmnQWJYSsfmNVaro8TbNraXO1H/Kcjlc8X8kl
- NFzYsvxGsailVgY5FfXyNNpnDCYOMA1Lt/nmz7Yj0A0n9o6Cs68LaC0AQtnEZq99z0iJuFviH
- 8d7VFiTQmNDiaJ0mOyQz6QEzhY4bIlWejT85CQzNKfsUk=
+Content-Transfer-Encoding: 8bit
 
-If an error code other than EINVAL, ENODEV or ETIME is returned
-by ec_read()/ec_write(), then AE_OK is wrongly returned.
 
-Fix this by only returning AE_OK if the return code is 0, and
-return AE_ERROR otherwise.
 
-Tested on a Dell Inspiron 3505 and a Asus Prime B650-Plus.
+On 3/7/24 08:51, Suren Baghdasaryan wrote:
+> On Thu, Mar 7, 2024 at 3:19 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+>>
+>> Hi,
+>> This includes some editing suggestions and some doc build fixes.
+>>
+>>
 
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Reviewed-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
-Signed-off-by: Armin Wolf <W_Armin@gmx.de>
-=2D--
- drivers/platform/x86/wmi.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+[snip]
 
-diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
-index e542aef825a3..ad82a96ed145 100644
-=2D-- a/drivers/platform/x86/wmi.c
-+++ b/drivers/platform/x86/wmi.c
-@@ -1216,8 +1216,10 @@ acpi_wmi_ec_space_handler(u32 function, acpi_physic=
-al_address address,
- 		return AE_NOT_FOUND;
- 	case -ETIME:
- 		return AE_TIME;
--	default:
-+	case 0:
- 		return AE_OK;
-+	default:
-+		return AE_ERROR;
- 	}
- }
+>>
+>>
+>> Finally, there are a number of documentation build warnings in this patch.
+>> I'm no ReST expert, but the attached patch fixes them for me.
+> 
+> Thanks Randy! I'll use your cleaned-up patch in the next submission.
+> Cheers,
+> Suren.
 
-=2D-
-2.39.2
+Hi Suren,
 
+The patch did not include the grammar/punctuation changes, only the
+doc build changes.
+
+I can make a more complete patch if you like.
+
+thanks.
+-- 
+#Randy
 
