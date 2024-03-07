@@ -1,273 +1,394 @@
-Return-Path: <linux-kernel+bounces-95097-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95099-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48A1987492E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:00:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E3D73874930
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:01:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F27DF285E20
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 08:00:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 99F1E285D32
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 08:01:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAFE06312B;
-	Thu,  7 Mar 2024 08:00:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BFBC633FE;
+	Thu,  7 Mar 2024 08:01:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LBvYuw4l"
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="YmkKJGCc"
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 541D063105
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 08:00:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4805B633EB
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 08:01:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709798442; cv=none; b=qk2mLlXPqtnIeMeROzpRb3Ze0qrJByZ5dui62V4Oz1D/wIEppRNFxvQsCFmwQJrleqzgFqn+3RkmaRfVp00QgxKnYlIPBkr62dalDU+Yc43TK3QqQjPfBeGJ/5F+/VERyD1VKuiY8AtNAAPLiI+FhYBY38ngUkaiekCADdnsiNM=
+	t=1709798488; cv=none; b=PrKkGT1kqfeU5hCKWVEVZid2hrI8mrE1V978itfow9nKVKimg5eqoxRL4TbB19RGgFaR2OPVkk7BvatETFcQHrBTAsSkX9K4Qf026OZj297Pky9KiBgjOKLRMqyBfCF0htoBlAMHkSdVWEq6+8jwkNpeUMXKRvU+fkk9v273lZs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709798442; c=relaxed/simple;
-	bh=ATcWJp5z4xOvtZ7AeQbHvr2q4zsC6Z9jHdEupyiLmGQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lwOh8080EKWOnFubBSgei8cZD7Cb+dR9BGI2y5EVjvOky5CK95p/P/0kPAmgMA8l6g9+JIvnC0Rk1ArJaa6sq5UptZrNRwbcklEeBIR82Dijit1njvpw69TgZiPZc6swGNhwD2/aovG31RUlmO+mLEaINYTmeJiD+5qNR725zFw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LBvYuw4l; arc=none smtp.client-ip=209.85.128.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-60974cb1cd7so5888767b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 00:00:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709798440; x=1710403240; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DwyP8Dm0lc4Sbthfzn9A87q7hRvRihfjLXqB9VmL5M0=;
-        b=LBvYuw4lxM3aO+hCVat1VjTQfhE89yoLIDcbvlCkxp3JZTgFeutCMvKOxLA98f0Poh
-         fLvHAUxRbruT6tlYW4Oyaw8RF2T9hdKOBA9QABl8XFO42JU4svbxMx0IcXBVoFaQq6ob
-         /fth3ZJVCdpvCK9tggrDymjaA8jJseAb6PScFXh29pTyL92a4nx9qNTjPhJG6TtKo5Vs
-         j1zSLdkck7kUgHzz/PzfIfiHiYKd9g2kwI4kV/KuEiUaAg+DDkn5Dd+6Bb+f9FlJgH3q
-         sVkFcHzLUOPQQZYdkQWKcN+e7j1deBknhjehEf30sp89WmtXt6wKPl+i0BTVnyHjvPjq
-         /a2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709798440; x=1710403240;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DwyP8Dm0lc4Sbthfzn9A87q7hRvRihfjLXqB9VmL5M0=;
-        b=pascxPNw+S4leTQPGgbAw5CetX/3Xe/ia3ErUlS9/pwoGNhSgID73/cQhfdCdZV/cC
-         UpG/F4hiytTpYnIfzFtu5IlhWoLEqdi1JMuSsEEi7UtJqVWt62j86HNOj0bHv4VpzU1n
-         +aR/PrNzBE2bAOOq5aygWdsYKtvuF84cnTTziXJcjH+BFjH6UQkeVaVeATBW2+YyMFKj
-         hlPOS0LbXIDhq/qw+dXoJUr3TLtW9qNdekUUysNHxZGlZluxs1W7mg/Afj53IjCffQ6D
-         xEbTKqkpu1lEX1r+Zo0mnDPUz2o+/9wwi1BSO5pnmeKgDhGOdOiui2ZttyFxKdHY0IuU
-         620g==
-X-Forwarded-Encrypted: i=1; AJvYcCV2NM/VswWTshTOW85tILjDfCcUVhn9u7MWfNtw98U7edJtJeGVHVckyM8ryxNOy0mK949Dh1kSn6HW25iYqwMRA/3tVpdbJ06NWAaD
-X-Gm-Message-State: AOJu0YwttNP4McO7sZQEYhHt6ZpTHMasqcWUWiATvnAh9AuK0o4Kv5RJ
-	4Ihhy+JbnT0WrPSp3d8PXJyIum0/uLZ34eg/egzV7hsaGY8ysV4R1Jr+rPbjE8K1tb+ceF2g6oK
-	Z5iUAbYBqXbWXv5MD3iWHPcxzBb0=
-X-Google-Smtp-Source: AGHT+IG7m2wyaFgf4jMNTIDNeymu55YnQOUk7Bx9o0bwiNttjvwPt3wSoRc9BpMQkLYtK7Z+uwPEk0+hkGq1asnSiJM=
-X-Received: by 2002:a81:5b8a:0:b0:608:cda9:b735 with SMTP id
- p132-20020a815b8a000000b00608cda9b735mr18176444ywb.39.1709798440191; Thu, 07
- Mar 2024 00:00:40 -0800 (PST)
+	s=arc-20240116; t=1709798488; c=relaxed/simple;
+	bh=tzesMHAmOx75LYEi89Qmp4BCIoBVl1JU6njfPMrrGK0=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=BPmr6rRNCHs8/WPjFoDs9C/jEYMTTiI5/rbZ9x97dVbQPht6jXiMdZyBjgrH1/ERaFGKUJp6un9HF2rAPxTawwhaJUhUcTHUuR54upguTz/0UWzdv5Ib95uNt8EorphjeaEA4SI+alm+v96qVcbecDyBVrnxLAw1oGGxqxZds1M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=YmkKJGCc; arc=none smtp.client-ip=217.70.183.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 03C052000D;
+	Thu,  7 Mar 2024 08:01:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709798483;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6TbWwFetyeMAAeJ0I8eiqd6uybcZNGMNlu7xz629/PM=;
+	b=YmkKJGCc+SB3KiAD7CF9GAFHTyhFCWgrc7r5DYBKunAhd+RKx3phBKY7l3yyxAfZX1qulg
+	SbTbeyyorGrhI45PYEqRnEcrPMFwfYIEAdacS3YVS8TsQZX/bxHo9DvZbQRsgkqV5ZNMAM
+	91UMWP/6Zl9CRXC6Bkm/NnX4S1VhsO/5kNaP4AMyuXHeL3JWWFuUqHpt2PtN0bZ3IWfdLe
+	LEvR+OtLQNNl4N2o0ZvJEWlGGB5MOeU5Pv1x80p+LwJPH0WTaCxibJtDKdNu8nVFKRJ9le
+	0XdWFDajDSl756oaaD0V/D7qYs9QBG/MwuuV0zApHzvbCoVrHsSCT7/wFol9Sg==
+Date: Thu, 7 Mar 2024 09:01:15 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: KR Kim <kr.kim@skyhighmemory.com>
+Cc: richard@nod.at, vigneshr@ti.com, mmkurbanov@salutedevices.com,
+ ddrokosov@sberdevices.ru, gch981213@gmail.com, michael@walle.cc,
+ broonie@kernel.org, mika.westerberg@linux.intel.com,
+ acelan.kao@canonical.com, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, moh.sardi@skyhighmemory.com,
+ changsub.shim@skyhighmemory.com
+Subject: Re:
+Message-ID: <20240307090115.74d36dd9@xps-13>
+In-Reply-To: <20240307060729.565350-1-kr.kim@skyhighmemory.com>
+References: <20240307060729.565350-1-kr.kim@skyhighmemory.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240307061425.21013-1-ioworker0@gmail.com> <CAGsJ_4xcRvZGdpPh1qcFTnTnDUbwz6WreQ=L_UO+oU2iFm9EPg@mail.gmail.com>
-In-Reply-To: <CAGsJ_4xcRvZGdpPh1qcFTnTnDUbwz6WreQ=L_UO+oU2iFm9EPg@mail.gmail.com>
-From: Lance Yang <ioworker0@gmail.com>
-Date: Thu, 7 Mar 2024 16:00:28 +0800
-Message-ID: <CAK1f24k2G_DSEjuqqqPyY0f7+btpYbjfoyMH7btLfP8nkasCTQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] mm/madvise: enhance lazyfreeing with mTHP in madvise_free
-To: Barry Song <21cnbao@gmail.com>
-Cc: akpm@linux-foundation.org, zokeefe@google.com, ryan.roberts@arm.com, 
-	shy828301@gmail.com, david@redhat.com, mhocko@suse.com, fengwei.yin@intel.com, 
-	xiehuan09@gmail.com, wangkefeng.wang@huawei.com, songmuchun@bytedance.com, 
-	peterx@redhat.com, minchan@kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
 
-Hey Barry,
+Hi,
 
-Thanks for taking time to review!
+kr.kim@skyhighmemory.com wrote on Thu,  7 Mar 2024 15:07:29 +0900:
 
-On Thu, Mar 7, 2024 at 3:00=E2=80=AFPM Barry Song <21cnbao@gmail.com> wrote=
-:
->
-> On Thu, Mar 7, 2024 at 7:15=E2=80=AFPM Lance Yang <ioworker0@gmail.com> w=
-rote:
-> >
-[...]
-> > +static inline bool can_mark_large_folio_lazyfree(unsigned long addr,
-> > +                                                struct folio *folio, p=
-te_t *start_pte)
-> > +{
-> > +       int nr_pages =3D folio_nr_pages(folio);
-> > +       fpb_t flags =3D FPB_IGNORE_DIRTY | FPB_IGNORE_SOFT_DIRTY;
-> > +
-> > +       for (int i =3D 0; i < nr_pages; i++)
-> > +               if (page_mapcount(folio_page(folio, i)) !=3D 1)
-> > +                       return false;
->
-> we have moved to folio_estimated_sharers though it is not precise, so
-> we don't do
-> this check with lots of loops and depending on the subpage's mapcount.
+> Feat: Add SkyHigh Memory Patch code
+>=20
+> Add SPI Nand Patch code of SkyHigh Memory
+> - Add company dependent code with 'skyhigh.c'
+> - Insert into 'core.c' so that 'always ECC on'
 
-If we don't check the subpage=E2=80=99s mapcount, and there is a cow folio =
-associated
-with this folio and the cow folio has smaller size than this folio,
-should we still
-mark this folio as lazyfree?
+Patch formatting is still messed up.
 
-> BTW, do we need to rebase our work against David's changes[1]?
-> [1] https://lore.kernel.org/linux-mm/20240227201548.857831-1-david@redhat=
-com/
+> commit 6061b97a830af8cb5fd0917e833e779451f9046a (HEAD -> master)
+> Author: KR Kim <kr.kim@skyhighmemory.com>
+> Date:   Thu Mar 7 13:24:11 2024 +0900
+>=20
+>     SPI Nand Patch code of SkyHigh Momory
+>=20
+>     Signed-off-by: KR Kim <kr.kim@skyhighmemory.com>
+>=20
+> From 6061b97a830af8cb5fd0917e833e779451f9046a Mon Sep 17 00:00:00 2001
+> From: KR Kim <kr.kim@skyhighmemory.com>
+> Date: Thu, 7 Mar 2024 13:24:11 +0900
+> Subject: [PATCH] SPI Nand Patch code of SkyHigh Memory
+>=20
+> ---
+>  drivers/mtd/nand/spi/Makefile  |   2 +-
+>  drivers/mtd/nand/spi/core.c    |   7 +-
+>  drivers/mtd/nand/spi/skyhigh.c | 155 +++++++++++++++++++++++++++++++++
+>  include/linux/mtd/spinand.h    |   3 +
+>  4 files changed, 165 insertions(+), 2 deletions(-)
+>  mode change 100644 =3D> 100755 drivers/mtd/nand/spi/Makefile
+>  mode change 100644 =3D> 100755 drivers/mtd/nand/spi/core.c
+>  create mode 100644 drivers/mtd/nand/spi/skyhigh.c
+>  mode change 100644 =3D> 100755 include/linux/mtd/spinand.h
+>=20
+> diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
+> old mode 100644
+> new mode 100755
+> index 19cc77288ebb..1e61ab21893a
+> --- a/drivers/mtd/nand/spi/Makefile
+> +++ b/drivers/mtd/nand/spi/Makefile
+> @@ -1,4 +1,4 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  spinand-objs :=3D core.o alliancememory.o ato.o esmt.o foresee.o gigadev=
+ice.o macronix.o
+> -spinand-objs +=3D micron.o paragon.o toshiba.o winbond.o xtx.o
+> +spinand-objs +=3D micron.o paragon.o skyhigh.o toshiba.o winbond.o xtx.o
+>  obj-$(CONFIG_MTD_SPI_NAND) +=3D spinand.o
+> diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+> old mode 100644
+> new mode 100755
+> index e0b6715e5dfe..e3f0a7544ba4
+> --- a/drivers/mtd/nand/spi/core.c
+> +++ b/drivers/mtd/nand/spi/core.c
+> @@ -34,7 +34,7 @@ static int spinand_read_reg_op(struct spinand_device *s=
+pinand, u8 reg, u8 *val)
+>  	return 0;
+>  }
+> =20
+> -static int spinand_write_reg_op(struct spinand_device *spinand, u8 reg, =
+u8 val)
+> +int spinand_write_reg_op(struct spinand_device *spinand, u8 reg, u8 val)
 
-Yes, we should rebase our work against David=E2=80=99s changes.
+Please do this in a separate commit.
 
->
-> > +
-> > +       return nr_pages =3D=3D folio_pte_batch(folio, addr, start_pte,
-> > +                                        ptep_get(start_pte), nr_pages,=
- flags, NULL);
-> > +}
-> > +
-> >  static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
-> >                                 unsigned long end, struct mm_walk *walk=
-)
-> >
-> > @@ -676,11 +690,45 @@ static int madvise_free_pte_range(pmd_t *pmd, uns=
-igned long addr,
-> >                  */
-> >                 if (folio_test_large(folio)) {
-> >                         int err;
-> > +                       unsigned long next_addr, align;
-> >
-> > -                       if (folio_estimated_sharers(folio) !=3D 1)
-> > -                               break;
-> > -                       if (!folio_trylock(folio))
-> > -                               break;
-> > +                       if (folio_estimated_sharers(folio) !=3D 1 ||
-> > +                           !folio_trylock(folio))
-> > +                               goto skip_large_folio;
->
->
-> I don't think we can skip all the PTEs for nr_pages, as some of them migh=
-t be
-> pointing to other folios.
->
-> for example, for a large folio with 16PTEs, you do MADV_DONTNEED(15-16),
-> and write the memory of PTE15 and PTE16, you get page faults, thus PTE15
-> and PTE16 will point to two different small folios. We can only skip when=
- we
-> are sure nr_pages =3D=3D folio_pte_batch() is sure.
+>  {
+>  	struct spi_mem_op op =3D SPINAND_SET_FEATURE_OP(reg,
+>  						      spinand->scratchbuf);
+> @@ -196,6 +196,10 @@ static int spinand_init_quad_enable(struct spinand_d=
+evice *spinand)
+>  static int spinand_ecc_enable(struct spinand_device *spinand,
+>  			      bool enable)
+>  {
+> +	/* SHM : always ECC enable */
+> +	if (spinand->flags & SPINAND_ON_DIE_ECC_MANDATORY)
+> +		return 0;
 
-Agreed. Thanks for pointing that out.
+Silently always enabling ECC is not possible. If you cannot disable the
+on-die engine, then:
+- you should prevent any other engine type to be used
+- you should error out if a raw access is requested
+- these chips are broken, IMO
 
->
-> > +
-> > +                       align =3D folio_nr_pages(folio) * PAGE_SIZE;
-> > +                       next_addr =3D ALIGN_DOWN(addr + align, align);
-> > +
-> > +                       /*
-> > +                        * If we mark only the subpages as lazyfree, or
-> > +                        * cannot mark the entire large folio as lazyfr=
-ee,
-> > +                        * then just split it.
-> > +                        */
-> > +                       if (next_addr > end || next_addr - addr !=3D al=
-ign ||
-> > +                           !can_mark_large_folio_lazyfree(addr, folio,=
- pte))
-> > +                               goto split_large_folio;
-> > +
-> > +                       /*
-> > +                        * Avoid unnecessary folio splitting if the lar=
-ge
-> > +                        * folio is entirely within the given range.
-> > +                        */
-> > +                       folio_clear_dirty(folio);
-> > +                       folio_unlock(folio);
-> > +                       for (; addr !=3D next_addr; pte++, addr +=3D PA=
-GE_SIZE) {
-> > +                               ptent =3D ptep_get(pte);
-> > +                               if (pte_young(ptent) || pte_dirty(ptent=
-)) {
-> > +                                       ptent =3D ptep_get_and_clear_fu=
-ll(
-> > +                                               mm, addr, pte, tlb->ful=
-lmm);
-> > +                                       ptent =3D pte_mkold(ptent);
-> > +                                       ptent =3D pte_mkclean(ptent);
-> > +                                       set_pte_at(mm, addr, pte, ptent=
-);
-> > +                                       tlb_remove_tlb_entry(tlb, pte, =
-addr);
-> > +                               }
->
-> Can we do this in batches? for a CONT-PTE mapped large folio, you are unf=
-olding
-> and folding again. It seems quite expensive.
+> +
+>  	return spinand_upd_cfg(spinand, CFG_ECC_ENABLE,
+>  			       enable ? CFG_ECC_ENABLE : 0);
+>  }
+> @@ -945,6 +949,7 @@ static const struct spinand_manufacturer *spinand_man=
+ufacturers[] =3D {
+>  	&macronix_spinand_manufacturer,
+>  	&micron_spinand_manufacturer,
+>  	&paragon_spinand_manufacturer,
+> +	&skyhigh_spinand_manufacturer,
+>  	&toshiba_spinand_manufacturer,
+>  	&winbond_spinand_manufacturer,
+>  	&xtx_spinand_manufacturer,
+> diff --git a/drivers/mtd/nand/spi/skyhigh.c b/drivers/mtd/nand/spi/skyhig=
+h.c
+> new file mode 100644
+> index 000000000000..92e7572094ff
+> --- /dev/null
+> +++ b/drivers/mtd/nand/spi/skyhigh.c
+> @@ -0,0 +1,155 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2022 SkyHigh Memory Limited
+> + *
+> + * Author: Takahiro Kuwano <takahiro.kuwano@infineon.com>
+> + */
+> +
+> +#include <linux/device.h>
+> +#include <linux/kernel.h>
+> +#include <linux/mtd/spinand.h>
+> +
+> +#define SPINAND_MFR_SKYHIGH		0x01
+> +
+> +#define SKYHIGH_STATUS_ECC_1TO2_BITFLIPS	(1 << 4)
+> +#define SKYHIGH_STATUS_ECC_3TO6_BITFLIPS	(2 << 4)
+> +#define SKYHIGH_STATUS_ECC_UNCOR_ERROR  	(3 << 4)
+> +
+> +#define SKYHIGH_CONFIG_PROTECT_EN	BIT(1)
+> +
+> +static SPINAND_OP_VARIANTS(read_cache_variants,
+> +		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 4, NULL, 0),
+> +		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
+> +		SPINAND_PAGE_READ_FROM_CACHE_DUALIO_OP(0, 2, NULL, 0),
+> +		SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
+> +		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
+> +		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
+> +
+> +static SPINAND_OP_VARIANTS(write_cache_variants,
+> +		SPINAND_PROG_LOAD_X4(true, 0, NULL, 0),
+> +		SPINAND_PROG_LOAD(true, 0, NULL, 0));
+> +
+> +static SPINAND_OP_VARIANTS(update_cache_variants,
+> +		SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
+> +		SPINAND_PROG_LOAD(false, 0, NULL, 0));
+> +
+> +static int skyhigh_spinand_ooblayout_ecc(struct mtd_info *mtd, int secti=
+on,
+> +					 struct mtd_oob_region *region)
+> +{
+> +	if (section)
+> +		return -ERANGE;
+> +
+> +	/* SkyHigh's ecc parity is stored in the internal hidden area and is no=
+t needed for them. */
 
-Thanks for your suggestion. I'll do this in batches in v3.
+		     ECC		     an
 
-Thanks again for your time!
+"needed" is wrong here. Just stop after "area"
 
-Best,
-Lance
 
->
-> > +                       }
-> > +                       folio_mark_lazyfree(folio);
-> > +                       goto next_folio;
-> > +
-> > +split_large_folio:
-> >                         folio_get(folio);
-> >                         arch_leave_lazy_mmu_mode();
-> >                         pte_unmap_unlock(start_pte, ptl);
-> > @@ -688,13 +736,28 @@ static int madvise_free_pte_range(pmd_t *pmd, uns=
-igned long addr,
-> >                         err =3D split_folio(folio);
-> >                         folio_unlock(folio);
-> >                         folio_put(folio);
-> > -                       if (err)
-> > -                               break;
-> > -                       start_pte =3D pte =3D
-> > -                               pte_offset_map_lock(mm, pmd, addr, &ptl=
-);
-> > -                       if (!start_pte)
-> > -                               break;
-> > -                       arch_enter_lazy_mmu_mode();
-> > +
-> > +                       /*
-> > +                        * If the large folio is locked or cannot be sp=
-lit,
-> > +                        * we just skip it.
-> > +                        */
-> > +                       if (err) {
-> > +skip_large_folio:
-> > +                               if (next_addr >=3D end)
-> > +                                       break;
-> > +                               pte +=3D (next_addr - addr) / PAGE_SIZE=
-;
-> > +                               addr =3D next_addr;
-> > +                       }
-> > +
-> > +                       if (!start_pte) {
-> > +                               start_pte =3D pte =3D pte_offset_map_lo=
-ck(
-> > +                                       mm, pmd, addr, &ptl);
-> > +                               if (!start_pte)
-> > +                                       break;
-> > +                               arch_enter_lazy_mmu_mode();
-> > +                       }
-> > +
-> > +next_folio:
-> >                         pte--;
-> >                         addr -=3D PAGE_SIZE;
-> >                         continue;
-> > --
-> > 2.33.1
-> >
->
-> Thanks
-> Barry
+> +	region->length =3D 0;
+> +	region->offset =3D mtd->oobsize;
+> +
+> +	return 0;
+> +}
+> +
+> +static int skyhigh_spinand_ooblayout_free(struct mtd_info *mtd, int sect=
+ion,
+> +					  struct mtd_oob_region *region)
+> +{
+> +	if (section)
+> +		return -ERANGE;
+> +
+> +	region->length =3D mtd->oobsize - 2;
+> +	region->offset =3D 2;
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct mtd_ooblayout_ops skyhigh_spinand_ooblayout =3D {
+> +	.ecc =3D skyhigh_spinand_ooblayout_ecc,
+> +	.free =3D skyhigh_spinand_ooblayout_free,
+> +};
+> +
+> +static int skyhigh_spinand_ecc_get_status(struct spinand_device *spinand,
+> +				  u8 status)
+> +{
+> +	/* SHM
+> +	 * 00 : No bit-flip
+> +	 * 01 : 1-2 errors corrected
+> +	 * 10 : 3-6 errors corrected        =20
+> +	 * 11 : uncorrectable
+> +	 */
+
+Thanks for the comment but the switch case looks rather
+straightforward, it is self-sufficient in this case.
+
+> +
+> +	switch (status & STATUS_ECC_MASK) {
+> +	case STATUS_ECC_NO_BITFLIPS:
+> +		return 0;
+> +
+> +	case SKYHIGH_STATUS_ECC_1TO2_BITFLIPS:
+> +		return 2;
+> +
+> + 	case SKYHIGH_STATUS_ECC_3TO6_BITFLIPS:
+> +		return 6;=20
+> +
+> + 	case SKYHIGH_STATUS_ECC_UNCOR_ERROR:
+> +		return -EBADMSG;;
+> +
+> +	default:
+> +		break;
+
+I guess you can directly call return -EINVAL here?
+
+> +	}
+> +
+> +	return -EINVAL;
+> +}
+> +
+> +static const struct spinand_info skyhigh_spinand_table[] =3D {
+> +	SPINAND_INFO("S35ML01G301",
+> +		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x15),
+> +		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
+> +		     NAND_ECCREQ(6, 32),
+> +		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+> +					      &write_cache_variants,
+> +					      &update_cache_variants),
+> +		     SPINAND_ON_DIE_ECC_MANDATORY,
+> +		     SPINAND_ECCINFO(&skyhigh_spinand_ooblayout,
+> +		     		     skyhigh_spinand_ecc_get_status)),
+> +	SPINAND_INFO("S35ML01G300",
+> +		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x14),
+> +		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
+> +		     NAND_ECCREQ(6, 32),
+> +		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+> +					      &write_cache_variants,
+> +					      &update_cache_variants),
+> +		     SPINAND_ON_DIE_ECC_MANDATORY,
+> +		     SPINAND_ECCINFO(&skyhigh_spinand_ooblayout,
+> +		     		     skyhigh_spinand_ecc_get_status)),
+> +	SPINAND_INFO("S35ML02G300",
+> +		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x25),
+> +		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 2, 1, 1),
+> +		     NAND_ECCREQ(6, 32),
+> +		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+> +					      &write_cache_variants,
+> +					      &update_cache_variants),
+> +		     SPINAND_ON_DIE_ECC_MANDATORY,
+> +		     SPINAND_ECCINFO(&skyhigh_spinand_ooblayout,
+> +		     		     skyhigh_spinand_ecc_get_status)),
+> +	SPINAND_INFO("S35ML04G300",
+> +		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x35),
+> +		     NAND_MEMORG(1, 2048, 128, 64, 4096, 80, 2, 1, 1),
+> +		     NAND_ECCREQ(6, 32),
+> +		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+> +					      &write_cache_variants,
+> +					      &update_cache_variants),
+> +		     SPINAND_ON_DIE_ECC_MANDATORY,
+> +		     SPINAND_ECCINFO(&skyhigh_spinand_ooblayout,
+> +		     		     skyhigh_spinand_ecc_get_status)),
+> +};
+> +
+> +static int skyhigh_spinand_init(struct spinand_device *spinand)
+> +{
+> +	return spinand_write_reg_op(spinand, REG_BLOCK_LOCK,
+> +				    SKYHIGH_CONFIG_PROTECT_EN);
+
+Is this really relevant? Isn't there an API for the block lock
+mechanism?
+
+> +}
+> +
+> +static const struct spinand_manufacturer_ops skyhigh_spinand_manuf_ops =
+=3D {
+> +	.init =3D skyhigh_spinand_init,
+> + };
+> +
+> +const struct spinand_manufacturer skyhigh_spinand_manufacturer =3D {
+> +	.id =3D SPINAND_MFR_SKYHIGH,
+> +	.name =3D "SkyHigh",
+> +	.chips =3D skyhigh_spinand_table,
+> +	.nchips =3D ARRAY_SIZE(skyhigh_spinand_table),
+> +	.ops =3D &skyhigh_spinand_manuf_ops,
+> +};
+> diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+> old mode 100644
+> new mode 100755
+> index badb4c1ac079..0e135076df24
+> --- a/include/linux/mtd/spinand.h
+> +++ b/include/linux/mtd/spinand.h
+> @@ -268,6 +268,7 @@ extern const struct spinand_manufacturer gigadevice_s=
+pinand_manufacturer;
+>  extern const struct spinand_manufacturer macronix_spinand_manufacturer;
+>  extern const struct spinand_manufacturer micron_spinand_manufacturer;
+>  extern const struct spinand_manufacturer paragon_spinand_manufacturer;
+> +extern const struct spinand_manufacturer skyhigh_spinand_manufacturer;
+>  extern const struct spinand_manufacturer toshiba_spinand_manufacturer;
+>  extern const struct spinand_manufacturer winbond_spinand_manufacturer;
+>  extern const struct spinand_manufacturer xtx_spinand_manufacturer;
+> @@ -312,6 +313,7 @@ struct spinand_ecc_info {
+> =20
+>  #define SPINAND_HAS_QE_BIT		BIT(0)
+>  #define SPINAND_HAS_CR_FEAT_BIT		BIT(1)
+> +#define SPINAND_ON_DIE_ECC_MANDATORY	BIT(2)	/* SHM */
+
+If we go this route, then "mandatory" is not relevant here, we shall
+convey the fact that the on-die ECC engine cannot be disabled and as
+mentioned above, there are other impacts.
+
+> =20
+>  /**
+>   * struct spinand_ondie_ecc_conf - private SPI-NAND on-die ECC engine st=
+ructure
+> @@ -518,5 +520,6 @@ int spinand_match_and_init(struct spinand_device *spi=
+nand,
+> =20
+>  int spinand_upd_cfg(struct spinand_device *spinand, u8 mask, u8 val);
+>  int spinand_select_target(struct spinand_device *spinand, unsigned int t=
+arget);
+> +int spinand_write_reg_op(struct spinand_device *spinand, u8 reg, u8 val);
+> =20
+>  #endif /* __LINUX_MTD_SPINAND_H */
+
+
+Thanks,
+Miqu=C3=A8l
 
