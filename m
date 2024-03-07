@@ -1,175 +1,316 @@
-Return-Path: <linux-kernel+bounces-94836-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94837-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 769308745C2
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 02:45:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 947148745C3
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 02:51:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02308B21561
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 01:45:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E5F931F237CD
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 01:51:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADB544C98;
-	Thu,  7 Mar 2024 01:45:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 542614C9A;
+	Thu,  7 Mar 2024 01:51:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=permerror (0-bit key) header.d=gentwo.org header.i=@gentwo.org header.b="WRye+pJL"
-Received: from gentwo.org (gentwo.org [62.72.0.81])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CQJYAn61"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E3B22F28
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 01:45:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.72.0.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5209B17FF
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 01:51:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709775913; cv=none; b=RRPl3PuR7l16igxCsqz9ca+QF+qOP83bAFKqgGXtYUvDWypzZwxCGyUkqn9Bm0xAZoha/zkfsn0pvli4oAKAcgJ0d/9XuhRpEZhyhlBvnCrwbix6QZTC/sYhFNT13A8/r7Gf7iOSkVCwsE+6GzwfvIeCvm6P0C+PYPGrWyBEdxQ=
+	t=1709776263; cv=none; b=Zu1DRG2HV5xAxMubQrZUKj6Dj689tPpr9FiqXuPwEEnlwXhKggzJzpThzlE7CUYQMMTyCbna49zvJEZe9/JbK8pQZJII3IofCgitR8HbnCm0pT+haiR0RX86ItuvS01zZV0ENqlMy4tvmZ1rzJK23N0iAe2vJCTcMinDFA5a1uA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709775913; c=relaxed/simple;
-	bh=aWSwUSkgwGQnBYXx/O6wZsg2pJVaxfIK5ZiFu+4pJiM=;
-	h=Date:From:To:cc:Subject:Message-ID:MIME-Version:Content-Type; b=l1VQzacF0BGjidSQLzd3fX+mAYHUMCbqezd6YhKw9oA8wIKQrfq4klWR20RNhBt3SSJVeJwIN5TC+gr2K3CNRbGzlPvBAWgqiuqqgOX92VbTTi0wJW4T7yJ1j3F4hfCbXFm41ZhZMH78sDFph9F5q0bcqCJEpIIxng5ZNrsFwMg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gentwo.org; spf=pass smtp.mailfrom=gentwo.org; dkim=permerror (0-bit key) header.d=gentwo.org header.i=@gentwo.org header.b=WRye+pJL; arc=none smtp.client-ip=62.72.0.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gentwo.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gentwo.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gentwo.org;
-	s=default; t=1709775904;
-	bh=aWSwUSkgwGQnBYXx/O6wZsg2pJVaxfIK5ZiFu+4pJiM=;
-	h=Date:From:To:cc:Subject:From;
-	b=WRye+pJLR+trpFSDcZ4fJaP+w34FsxMv4jhCYGzeYBguKZj9sMfw4npzfW5R8+vbt
-	 ff+pUuLlIOGn02EhmiXQ/u/sL3lpx97bT45tNjeYLGkTxKv82V2Fi3kqErb/hndxF7
-	 y0tOM0LoYWspgM4XpLviFf82ReGKWy1xgMrmBwo0Zy7BTuYlBCEE1s9lYLQHBu4CnW
-	 6E/qupm8E4VN91Y2UBGfOPzeaNqBECudKuo8XTFINnJoaWInraLbRvhJpxZViYel7V
-	 hc73NxJOs8nsNGoBxUHjubsZl13uOqQk0ncgN3THtki13nDyjrWfsGMGEv6Qmezpy1
-	 sd3LWJ9sjRWYQ==
-Received: by gentwo.org (Postfix, from userid 1003)
-	id 3501440A94; Wed,  6 Mar 2024 17:45:04 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-	by gentwo.org (Postfix) with ESMTP id 30B1240789;
-	Wed,  6 Mar 2024 17:45:04 -0800 (PST)
-Date: Wed, 6 Mar 2024 17:45:04 -0800 (PST)
-From: "Christoph Lameter (Ampere)" <cl@gentwo.org>
-To: Mark Rutland <mark.rutland@arm.com>
-cc: catalin.marinas@arm.com, Will Deacon <will@kernel.org>, 
-    Jonathan.Cameron@huawei.com, Matteo.Carlini@arm.com, 
-    Valentin.Schneider@arm.com, akpm@linux-foundation.org, 
-    anshuman.khandual@arm.com, Eric Mackay <eric.mackay@oracle.com>, 
-    dave.kleikamp@oracle.com, linux-arm-kernel@lists.infradead.org, 
-    linux-kernel@vger.kernel.org, linux-mm@kvack.org, linux@armlinux.org.uk, 
-    robin.murphy@arm.com, vanshikonda@os.amperecomputing.com, 
-    yang@os.amperecomputing.com
-Subject: [PATCH v3] ARM64: Dynamically allocate cpumasks and increase supported
- CPUs to 512
-Message-ID: <37099a57-b655-3b3a-56d0-5f7fbd49d7db@gentwo.org>
+	s=arc-20240116; t=1709776263; c=relaxed/simple;
+	bh=R/F1ZSbpZekKrxNMmgsEC5tthbinM6LLxoMhze4B9pg=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=RvmXvv7tPtoV2GD+/A70oDehGg+4rMsW5wSAIxEkRyyCdQ8iQ0yOH1eQQ/pEn2HxQx8v1v8dbJH1bDE4fSN7kj/Kl8mG8aHc+GokT2YpmL+0DxwUTeZMJPv2TRyaN/AUIEwIOUpVhggUTAjon5Fua+b/kXXaIRTG1O3EEx+EXQ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CQJYAn61; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7483C433F1;
+	Thu,  7 Mar 2024 01:51:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709776262;
+	bh=R/F1ZSbpZekKrxNMmgsEC5tthbinM6LLxoMhze4B9pg=;
+	h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+	b=CQJYAn61BKlYlIwGv8Is9yXYj5aZwec5Yk7lGaSAZca500AVqd5Z78/d8WQlG0AKb
+	 OFzJAC8JW0SZ9PTb6MmjxW/PhtnKGx1gKurUlJ4sbSJIhgecsmyM4pjjirrr3p5vtK
+	 djeK51MGCIMIDghgrF5EtuI6iti+e+qs1yVHdWv1oeICk6ZuoFpEnQE1FErujsq0d2
+	 6D6CyEe6WsVkW3kmZVsHKxah23msyrO/IUDOAIWSNtzRZkMvsmItSSZsPkNtj0yqzn
+	 RdhvP8Ow09BMK1EB62LvL+dzJJwrL+HiNYK2abnhvMTtkkunLCY9SW+DiVWgbD2bek
+	 uaC2b8CGvDcbw==
+Date: Wed, 6 Mar 2024 17:50:59 -0800 (PST)
+From: Stefano Stabellini <sstabellini@kernel.org>
+X-X-Sender: sstabellini@ubuntu-linux-20-04-desktop
+To: =?UTF-8?Q?Roger_Pau_Monn=C3=A9?= <roger.pau@citrix.com>
+cc: Stefano Stabellini <sstabellini@kernel.org>, 
+    xen-devel@lists.xenproject.org, Juergen Gross <jgross@suse.com>, 
+    Boris Ostrovsky <boris.ostrovsky@oracle.com>, 
+    Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+    Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
+    x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
+    Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>, 
+    linux-kernel@vger.kernel.org, Jan Beulich <jbeulich@suse.com>, 
+    Andrew Cooper <andrew.cooper3@citrix.com>
+Subject: Re: [PATCH RFC] x86/xen: attempt to inflate the memory balloon on
+ PVH
+In-Reply-To: <Zec_SGeM5bF3DPgj@macbook>
+Message-ID: <alpine.DEB.2.22.394.2403061749190.853156@ubuntu-linux-20-04-desktop>
+References: <20240220174341.56131-1-roger.pau@citrix.com> <alpine.DEB.2.22.394.2402221701190.754277@ubuntu-linux-20-04-desktop> <Zec_SGeM5bF3DPgj@macbook>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset=US-ASCII
+Content-Type: multipart/mixed; boundary="8323329-1275602164-1709776262=:853156"
 
-Currently defconfig selects NR_CPUS=256, but some vendors (e.g. Ampere
-Computing) are planning to ship systems with 512 CPUs. So that all CPUs on
-these systems can be used with defconfig, we'd like to bump NR_CPUS to 512.
-Therefore this patch increases the default NR_CPUS from 256 to 512.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-As increasing NR_CPUS will increase the size of cpumasks, there's a fear that
-this might have a significant impact on stack usage due to code which places
-cpumasks on the stack. To mitigate that concern, we can select
-CPUMASK_OFFSTACK. As that doesn't seem to be a problem today with
-NR_CPUS=256, we only select this when NR_CPUS > 256.
+--8323329-1275602164-1709776262=:853156
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
-CPUMASK_OFFSTACK configures the cpumasks in the kernel to be
-dynamically allocated. This was used in the X86 architecture in the
-past to enable support for larger CPU configurations up to 8k cpus.
+On Tue, 5 Mar 2024, Roger Pau Monné wrote:
+> On Thu, Feb 22, 2024 at 05:16:09PM -0800, Stefano Stabellini wrote:
+> > On Tue, 20 Feb 2024, Roger Pau Monne wrote:
+> > > When running as PVH or HVM Linux will use holes in the memory map as scratch
+> > > space to map grants, foreign domain pages and possibly miscellaneous other
+> > > stuff.  However the usage of such memory map holes for Xen purposes can be
+> > > problematic.  The request of holesby Xen happen quite early in the kernel boot
+> > > process (grant table setup already uses scratch map space), and it's possible
+> > > that by then not all devices have reclaimed their MMIO space.  It's not
+> > > unlikely for chunks of Xen scratch map space to end up using PCI bridge MMIO
+> > > window memory, which (as expected) causes quite a lot of issues in the system.
+> > 
+> > Am I understanding correctly that XEN_BALLOON_MEMORY_HOTPLUG doesn't
+> > help because it becomes available too late in the PVH boot sequence? 
+> 
+> No, not really, the hoptplug mechanism is available as early as the
+> balloon driver requires, the issue is that when Linux starts making
+> use of such unpopulated ranges (for example in order to map the shared
+> info page) many drivers have not yet reserved their MMIO regions, and so it's
+> not uncommon for the balloon driver to end up using address ranges that
+> would otherwise be used by device BARs for example.
+> 
+> This causes havoc, Linux starts to reposition device BARs, sometimes
+> it can manage to re-position them, otherwise some devices are not
+> usable.
 
-With that is becomes possible to dynamically size the allocation of
-the cpu bitmaps depending on the quantity of processors detected on
-bootup. Memory used for cpumasks will increase if the kernel is
-run on a machine with more cores.
-
-Further increases may be needed if ARM processor vendors start
-supporting more processors. Given the current inflationary trends
-in core counts from multiple processor manufacturers this may occur.
-
-There are minor regressions for hackbench. The kernel data size
-for 512 cpus is smaller with offstack than with onstack.
-
-Benchmark results using hackbench average over 10 runs of
-
- 	hackbench -s 512 -l 2000 -g 15 -f 25 -P
-
-on Altra 80 Core
-
-Support for 256 CPUs on stack. Baseline
-
- 	7.8564 sec
-
-Support for 512 CUs on stack.
-
- 	7.8713 sec + 0.18%
-
-512 CPUS offstack
-
- 	7.8916 sec + 0.44%
-
-Kernel size comparison:
-
-    text		   data	    filename				Difference to onstack256 baseline
-25755648	9589248	    vmlinuz-6.8.0-rc4-onstack256
-25755648	9607680	    vmlinuz-6.8.0-rc4-onstack512	+0.19%
-25755648	9603584	    vmlinuz-6.8.0-rc4-offstack512	+0.14%
-
-Tested-by: Eric Mackay <eric.mackay@oracle.com>
-Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-Signed-off-by: Christoph Lameter (Ampere) <cl@linux.com>
----
+OK this is bad
 
 
-Original post: https://www.spinics.net/lists/linux-mm/msg369701.html
-V2: https://lkml.org/lkml/2024/2/7/505
+> > > At least for PVH dom0 we have the possibility of using regions marked as
+> > > UNUSABLE in the e820 memory map.  Either if the region is UNUSABLE in the
+> > > native memory map, or it has been converted into UNUSABLE in order to hide RAM
+> > > regions from dom0, the second stage translation page-tables can populate those
+> > > areas without issues.
+> > > 
+> > > PV already has this kind of logic, where the balloon driver is inflated at
+> > > boot.  Re-use the current logic in order to also inflate it when running as
+> > > PVH.  onvert UNUSABLE regions up to the ratio specified in EXTRA_MEM_RATIO to
+> > > RAM, while reserving them using xen_add_extra_mem() (which is also moved so
+> > > it's no longer tied to CONFIG_PV).
+> > > 
+> > > Signed-off-by: Roger Pau Monné <roger.pau@citrix.com>
+> > > ---
+> > > RFC reasons:
+> > > 
+> > >  * Note that it would be preferred for the hypervisor to provide an explicit
+> > >    range to be used as scratch mapping space, but that requires changes to Xen,
+> > >    and it's not fully clear whether Xen can figure out the position of all MMIO
+> > >    regions at boot in order to suggest a scratch mapping region for dom0.
+> > > 
+> > >  * Should the whole set of xen_{add,del,chk,inv}_extra_mem() functions be moved
+> > >    to a different file?  For the purposes of PVH only xen_add_extra_mem() is
+> > >    moved and the chk and inv ones are PV specific and might not want moving to
+> > >    a separate file just to guard them with CONFIG_PV.
+> > > ---
+> > >  arch/x86/include/asm/xen/hypervisor.h |  1 +
+> > >  arch/x86/platform/pvh/enlighten.c     |  3 ++
+> > >  arch/x86/xen/enlighten.c              | 32 +++++++++++++
+> > >  arch/x86/xen/enlighten_pvh.c          | 68 +++++++++++++++++++++++++++
+> > >  arch/x86/xen/setup.c                  | 44 -----------------
+> > >  arch/x86/xen/xen-ops.h                | 14 ++++++
+> > >  drivers/xen/balloon.c                 |  2 -
+> > >  7 files changed, 118 insertions(+), 46 deletions(-)
+> > > 
+> > > diff --git a/arch/x86/include/asm/xen/hypervisor.h b/arch/x86/include/asm/xen/hypervisor.h
+> > > index a9088250770f..31e2bf8d5db7 100644
+> > > --- a/arch/x86/include/asm/xen/hypervisor.h
+> > > +++ b/arch/x86/include/asm/xen/hypervisor.h
+> > > @@ -62,6 +62,7 @@ void xen_arch_unregister_cpu(int num);
+> > >  #ifdef CONFIG_PVH
+> > >  void __init xen_pvh_init(struct boot_params *boot_params);
+> > >  void __init mem_map_via_hcall(struct boot_params *boot_params_p);
+> > > +void __init xen_reserve_extra_memory(struct boot_params *bootp);
+> > >  #endif
+> > >  
+> > >  /* Lazy mode for batching updates / context switch */
+> > > diff --git a/arch/x86/platform/pvh/enlighten.c b/arch/x86/platform/pvh/enlighten.c
+> > > index 00a92cb2c814..a12117f3d4de 100644
+> > > --- a/arch/x86/platform/pvh/enlighten.c
+> > > +++ b/arch/x86/platform/pvh/enlighten.c
+> > > @@ -74,6 +74,9 @@ static void __init init_pvh_bootparams(bool xen_guest)
+> > >  	} else
+> > >  		xen_raw_printk("Warning: Can fit ISA range into e820\n");
+> > >  
+> > > +	if (xen_guest)
+> > > +		xen_reserve_extra_memory(&pvh_bootparams);
+> > > +
+> > >  	pvh_bootparams.hdr.cmd_line_ptr =
+> > >  		pvh_start_info.cmdline_paddr;
+> > >  
+> > > diff --git a/arch/x86/xen/enlighten.c b/arch/x86/xen/enlighten.c
+> > > index 3c61bb98c10e..a01ca255b0c6 100644
+> > > --- a/arch/x86/xen/enlighten.c
+> > > +++ b/arch/x86/xen/enlighten.c
+> > > @@ -6,6 +6,7 @@
+> > >  #include <linux/console.h>
+> > >  #include <linux/cpu.h>
+> > >  #include <linux/kexec.h>
+> > > +#include <linux/memblock.h>
+> > >  #include <linux/slab.h>
+> > >  #include <linux/panic_notifier.h>
+> > >  
+> > > @@ -350,3 +351,34 @@ void xen_arch_unregister_cpu(int num)
+> > >  }
+> > >  EXPORT_SYMBOL(xen_arch_unregister_cpu);
+> > >  #endif
+> > > +
+> > > +/* Amount of extra memory space we add to the e820 ranges */
+> > > +struct xen_memory_region xen_extra_mem[XEN_EXTRA_MEM_MAX_REGIONS] __initdata;
+> > > +
+> > > +void __init xen_add_extra_mem(unsigned long start_pfn, unsigned long n_pfns)
+> > > +{
+> > > +	unsigned int i;
+> > > +
+> > > +	/*
+> > > +	 * No need to check for zero size, should happen rarely and will only
+> > > +	 * write a new entry regarded to be unused due to zero size.
+> > > +	 */
+> > > +	for (i = 0; i < XEN_EXTRA_MEM_MAX_REGIONS; i++) {
+> > > +		/* Add new region. */
+> > > +		if (xen_extra_mem[i].n_pfns == 0) {
+> > > +			xen_extra_mem[i].start_pfn = start_pfn;
+> > > +			xen_extra_mem[i].n_pfns = n_pfns;
+> > > +			break;
+> > > +		}
+> > > +		/* Append to existing region. */
+> > > +		if (xen_extra_mem[i].start_pfn + xen_extra_mem[i].n_pfns ==
+> > > +		    start_pfn) {
+> > > +			xen_extra_mem[i].n_pfns += n_pfns;
+> > > +			break;
+> > > +		}
+> > > +	}
+> > > +	if (i == XEN_EXTRA_MEM_MAX_REGIONS)
+> > > +		printk(KERN_WARNING "Warning: not enough extra memory regions\n");
+> > > +
+> > > +	memblock_reserve(PFN_PHYS(start_pfn), PFN_PHYS(n_pfns));
+> > > +}
+> > > diff --git a/arch/x86/xen/enlighten_pvh.c b/arch/x86/xen/enlighten_pvh.c
+> > > index ada3868c02c2..c28f073c1df5 100644
+> > > --- a/arch/x86/xen/enlighten_pvh.c
+> > > +++ b/arch/x86/xen/enlighten_pvh.c
+> > > @@ -1,6 +1,7 @@
+> > >  // SPDX-License-Identifier: GPL-2.0
+> > >  #include <linux/acpi.h>
+> > >  #include <linux/export.h>
+> > > +#include <linux/mm.h>
+> > >  
+> > >  #include <xen/hvc-console.h>
+> > >  
+> > > @@ -72,3 +73,70 @@ void __init mem_map_via_hcall(struct boot_params *boot_params_p)
+> > >  	}
+> > >  	boot_params_p->e820_entries = memmap.nr_entries;
+> > >  }
+> > > +
+> > > +/*
+> > > + * Reserve e820 UNUSABLE regions to inflate the memory balloon.
+> > > + *
+> > > + * On PVH dom0 the host memory map is used, RAM regions available to dom0 are
+> > > + * located as the same place as in the native memory map, but since dom0 gets
+> > > + * less memory than the total amount of host RAM the ranges that can't be
+> > > + * populated are converted from RAM -> UNUSABLE.  Use such regions (up to the
+> > > + * ratio signaled in EXTRA_MEM_RATIO) in order to inflate the balloon driver at
+> > > + * boot.  Doing so prevents the guest (even if just temporary) from using holes
+> > > + * in the memory map in order to map grants or foreign addresses, and
+> > > + * hopefully limits the risk of a clash with a device MMIO region.  Ideally the
+> > > + * hypervisor should notify us which memory ranges are suitable for creating
+> > > + * foreign mappings, but that's not yet implemented.
+> > > + */
+> > > +void __init xen_reserve_extra_memory(struct boot_params *bootp)
+> > > +{
+> > > +	unsigned int i, ram_pages = 0, extra_pages;
+> > > +
+> > > +	for (i = 0; i < bootp->e820_entries; i++) {
+> > > +		struct boot_e820_entry *e = &bootp->e820_table[i];
+> > > +
+> > > +		if (e->type != E820_TYPE_RAM)
+> > > +			continue;
+> > > +		ram_pages += PFN_DOWN(e->addr + e->size) - PFN_UP(e->addr);
+> > > +	}
+> > > +
+> > > +	/* Max amount of extra memory. */
+> > > +	extra_pages = EXTRA_MEM_RATIO * ram_pages;
+> > > +
+> > > +	/*
+> > > +	 * Convert UNUSABLE ranges to RAM and reserve them for foreign mapping
+> > > +	 * purposes.
+> > > +	 */
+> > > +	for (i = 0; i < bootp->e820_entries && extra_pages; i++) {
+> > > +		struct boot_e820_entry *e = &bootp->e820_table[i];
+> > > +		unsigned long pages;
+> > > +
+> > > +		if (e->type != E820_TYPE_UNUSABLE)
+> > > +			continue;
+> > > +
+> > > +		pages = min(extra_pages,
+> > > +			PFN_DOWN(e->addr + e->size) - PFN_UP(e->addr));
+> > > +
+> > > +		if (pages != (PFN_DOWN(e->addr + e->size) - PFN_UP(e->addr))) {
+> > > +			struct boot_e820_entry *next;
+> > > +
+> > > +			if (bootp->e820_entries ==
+> > > +			    ARRAY_SIZE(bootp->e820_table))
+> > > +				/* No space left to split - skip region. */
+> > > +				continue;
+> > > +
+> > > +			/* Split entry. */
+> > > +			next = e + 1;
+> > > +			memmove(next, e,
+> > > +				(bootp->e820_entries - i) * sizeof(*e));
+> > > +			bootp->e820_entries++;
+> > > +			next->addr = PAGE_ALIGN(e->addr) + PFN_PHYS(pages);
+> > > +			e->size = next->addr - e->addr;
+> > > +			next->size -= e->size;
+> > 
+> > Is this really worth doing? Can we just skip this range and continue or
+> > simply break out and call it a day? Or even add the whole range instead?
+> > 
+> > The reason I am asking is that I am expecting E820_TYPE_UNUSABLE regions
+> > not to be huge. Splitting one just to cover the few remaining pages out
+> > of extra_pages doesn't seem worth it?
+> 
+> No, they are usually quite huge on PVH dom0, because when building a
+> PVH dom0 the E820_TYPE_RAM ranges that are not made available to dom0
+> because of a dom0_mem option end up being reported as
+> E820_TYPE_UNUSABLE in the e820 provided to dom0.
+> 
+> That's mostly the motivation of the change, to be able to reuse those
+> ranges as scratch space for foreign mappings.
+> 
+> Ideally the hypervisor should somehow report suitable ranges in the
+> address space for domains to create foreign mappings, but this does
+> require an amount of extra work I don't have time to do ATM, hence
+> this stopgap proposal.
 
+I see. We have gained this feature on ARM not long ago for Dom0 and
+Dom0less guests.
 
-V1->V2
-
-- Keep quotation marks
-- Remove whiltespace damage
-- Add tested by
-
-V2->V3:
-- Add test results
-- Rework descriptions
-
-
-  arch/arm64/Kconfig | 16 +++++++++++++++-
-  1 file changed, 15 insertions(+), 1 deletion(-)
-
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index aa7c1d435139..4e767dede47d 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -1427,7 +1427,21 @@ config SCHED_SMT
-  config NR_CPUS
-  	int "Maximum number of CPUs (2-4096)"
-  	range 2 4096
--	default "256"
-+	default "512"
-+
-+#
-+# Determines the placement of cpumasks.
-+#
-+# With CPUMASK_OFFSTACK the cpumasks are dynamically allocated.
-+# Useful for machines with lots of core because it avoids increasing
-+# the size of many of the data structures in the kernel.
-+#
-+# If this is off then the cpumasks have a static sizes and are
-+# embedded within data structures.
-+#
-+	config CPUMASK_OFFSTACK
-+	def_bool y
-+	depends on NR_CPUS > 256
-
-  config HOTPLUG_CPU
-  	bool "Support for hot-pluggable CPUs"
--- 
-2.39.2
-
+All right, I have no reservations. The patch looks OK to me. Juergen?
+--8323329-1275602164-1709776262=:853156--
 
