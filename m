@@ -1,84 +1,191 @@
-Return-Path: <linux-kernel+bounces-95192-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95193-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08AB3874A7A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:14:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 733B3874A7B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:14:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C103E2825F3
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:14:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 29E4C282D29
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:14:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A97184038;
-	Thu,  7 Mar 2024 09:13:30 +0000 (UTC)
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4853B839F1;
+	Thu,  7 Mar 2024 09:14:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="aKASO+2M"
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E934683CCD;
-	Thu,  7 Mar 2024 09:13:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C81BE633EE
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 09:14:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709802809; cv=none; b=aPxE2dNzzulxkgOArb3O5IhGJ0Wildxzx8likAeT6aVvvy5+bgGu//Cus3XG0qYDe4Y2TNASy8Qz//ukFUCYREdgXtLhpL58BeI6jOmh9y5ICaWus5Zh3nuso66xz0cvgyycwzjQ6TRCJDBlnyQFxAWhR4ciAl8zsT6Qct+/3vQ=
+	t=1709802873; cv=none; b=AmB596Dq5Jw6RIcR8b6OwkjhM4mhxJrVQgbrYoWThygrnCKth8plADr5NNNtvm5ZtZ9iAlMRtE/0ymQZEfK5/Iviab7vrbm2192GSUDlqfzLB+3kHCqCQm8Xp49gRUr1kWpWL8ZA1S9FBHOR2rXfruwdqFo1+PkZ4ElU8XvW+FU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709802809; c=relaxed/simple;
-	bh=jWZLNPxBjf1iDqocrMtHXzxTpIiuXDj0iO8oLm45ckg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XpQZBLq/tMO+XBhbvPHmaeqck+5xEtWt6uVnAvDRHQyA2nzct1L+BlzwU1l3AyOzfvn+R/bdKJnLSGoVATT80T3JmZbDZ9QcqRQEL0c5cX7HJsyUc8WbcJ9l4lBpM6c3MqJvGKZTq0mFoQLHSEdR9gzJC8rFlNxFWL0y1KXzIyk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-563c403719cso705970a12.2;
-        Thu, 07 Mar 2024 01:13:27 -0800 (PST)
+	s=arc-20240116; t=1709802873; c=relaxed/simple;
+	bh=Q0slKLIP924PofBfG2UKU9OJDkNEVuHtq9eX84AT2gU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rTx6nZ3IU9+L0CkDsRHL3DZSOEprRBCAt7AaP/OrppL4gfZLhWGguh4nmCpzgWdg4Ea7BLB2yXrrLpqC52Sb6RtHoq16q7bpAPT6Ukg+uZFcAIZaDcLEpTw6iMaWuQqfEGhZOJ9S0C9QJmljyHmAFu2jpdtXUGdKppUvpPfPAc4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=aKASO+2M; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6e5a50d91b4so619601b3a.2
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 01:14:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709802871; x=1710407671; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=setaAaz/66a25J+sReUz5tbD1smBtJUkh29q89x1Cnk=;
+        b=aKASO+2M5+vzFBClimaz6Ng2kC3bNdORLSGe+22FLWqcp3gW42Ml1sgXShM7JeexHC
+         d9DyvS/QmAL9e4YlCZOSHaO7CXmbpXqoLmjMIq8Hcn14ISuTMm8++Vu4BvBtCA2oTIj/
+         vH5CBX7mXsQ25Qh7Uozd4rvRD01tkBKORdRIb+sEBAgYpAe1tVRm8SWMd2+LFZE6UV20
+         J0vnXjHfWx6H9gsgJ3d1xnN1h8xdWSqlGPdXnymnIridKqU4FCiH/2dOKT4AQIWOQPeo
+         kwQpr6oyRh06sKA6/IVbDsvOLYunqM7H7+W7MMNI3gRDcZ+0wI+VayXDKnY/mHpxLr2M
+         x86w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709802806; x=1710407606;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uH8+RgzKMvYC8oEUchqW7a7jrzhsYboIsApSOZ3Ww3o=;
-        b=DGFBlex51I1gIxLk25FfQqDZXHRAnEmiI3KevqCLJ17FS2SrozjN7nvdKVY30lmkvq
-         mFkEyyOn3gBJYJNQQ6DE3peHR4tSLtwEVeP75utXEmGAEDp65n8HOopBxbiHt/wJOjL8
-         koRMRAPhOVoSjAeAnQPMJvrc8Vlj6lIAf18lu69LM+n7KBfQwvDbv51zw7ZmZ1lm4zBH
-         0iA84TK0TDZq+LuJSJ0k2dSQcPncOdBhH08oUy7n+9YSlMA+AlJUyOZVGg1+rxizebUO
-         0veseatvmDrmBRFv36Hq2rA02gqjTutaRtXrhq0eEmgDVY1AJqBrVceYPUfjrt4IQly9
-         f9xA==
-X-Forwarded-Encrypted: i=1; AJvYcCX6OGVlrYUyCtLS6UKyhmhMB1mKhCVu+o7ZBRn9xYDnMPvK9S9FYv2Xe3o8zKN0qMldDfvNbC4lkAncdiqbBnhpq6S3nBLlWNqHy2tu
-X-Gm-Message-State: AOJu0YzYIsEy+XAbE4ZLrODNgp4khCBwtCfUUf/XtSPmJ1/4ZjiVjSui
-	+5uIWDwe9npxf7Bf2I66B6aqYuy37ye7ylvvIILSHQsb0hG8B0fC
-X-Google-Smtp-Source: AGHT+IEPN5KnTTcEF7UqXQ+6g1wmC9CjME+8US/C3E6DC/QD3OirmeB49H/a0JYCnuFwlv4rNitz7w==
-X-Received: by 2002:a05:6402:313a:b0:567:3436:b85b with SMTP id dd26-20020a056402313a00b005673436b85bmr8370127edb.12.1709802806144;
-        Thu, 07 Mar 2024 01:13:26 -0800 (PST)
-Received: from gmail.com (fwdproxy-lla-117.fbsv.net. [2a03:2880:30ff:75::face:b00c])
-        by smtp.gmail.com with ESMTPSA id c6-20020a056402100600b0056536eed484sm7864018edu.35.2024.03.07.01.13.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Mar 2024 01:13:25 -0800 (PST)
-Date: Thu, 7 Mar 2024 01:13:23 -0800
-From: Breno Leitao <leitao@debian.org>
-To: gaoxingwang <gaoxingwang1@huawei.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	liaichun@huawei.com, yanan@huawei.com
-Subject: Re: [PATCH] net: fix print in skb_panic()
-Message-ID: <ZemFM6jds/gN+gEG@gmail.com>
-References: <20240307061143.989505-1-gaoxingwang1@huawei.com>
+        d=1e100.net; s=20230601; t=1709802871; x=1710407671;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=setaAaz/66a25J+sReUz5tbD1smBtJUkh29q89x1Cnk=;
+        b=RwMo8F+MBpLv0K9uktPQiWA4fZZkYWXe0K5H2G7ZUQlO31DtrKNmdEhvnh+QKydWgV
+         J2kB9NNgwqy1gstzehsYHp4nCxSKnkk/ogp4YMxYm2eSWUM1x2qRYOLy00oYDZB5cy/r
+         XjFyL3FnAN3ApTJg9f+jCT6y59m5QJaMKL4nglfIC5OrkFXm/KjL9oLiDBlaSrC9DWpS
+         4TXSKWh9zgPBKAhMt6OOXywbv2Tg307N0m1bHmr9FPE/mgeXj8AqXm/svl9Gae3TcNp1
+         UflzCF++73P4GB5e6DiXzQ9cjFDj70gOshke3ujkqeb4CY8bcVXy4Q9H5q/s8C/b2FJK
+         isQQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWXeBo6H7b60+6F5dR3xLKaOy09jXCne5/3VtNxifDcQ5GuUAQkkNkmEOJiNawJjUf8XtWsBtO8/GAq1gfRTm4oYBpAAg8Nt8dtJSVg
+X-Gm-Message-State: AOJu0YwzfPEKkWQKQoo5nUuUfga9vicLi+h3vMAHYvc48ncLSBGL5ELB
+	oXreF9hd+rSKaVaAy9kx+oHQYMucZ9xoYqvDHEA2Sm/jRt0remW+aSs6DK04eUxNkI6JI8Wcw0P
+	yCoFFppaZvJfx3AqLG8sJ5o9jGHeGyaRXdKpO46MBbLZqmcAr
+X-Google-Smtp-Source: AGHT+IFdPrDGB4UcDhudYcr3d2U/xI+GmhvHyPHuZ/uu/86OJrvitSg2gus2jzqa+T0vL7Vr75f9mfiQNbor7eLE+cw=
+X-Received: by 2002:a05:6a20:c896:b0:1a1:e4b:dffc with SMTP id
+ hb22-20020a056a20c89600b001a10e4bdffcmr9964088pzb.41.1709802871013; Thu, 07
+ Mar 2024 01:14:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240307061143.989505-1-gaoxingwang1@huawei.com>
+References: <20240220225622.2626569-1-qyousef@layalina.io> <20240220225622.2626569-3-qyousef@layalina.io>
+ <d6699c3a-3df6-46a3-98db-e07c8722f106@arm.com> <20240303174416.7m3gv5wywcmedov4@airbuntu>
+ <20240306214704.uditboboedut2lm2@airbuntu>
+In-Reply-To: <20240306214704.uditboboedut2lm2@airbuntu>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Thu, 7 Mar 2024 10:14:19 +0100
+Message-ID: <CAKfTPtBLUkZ0hEd8K=e9wjg+zn9N5jgia-7wwLa3jaeYK+qkCw@mail.gmail.com>
+Subject: Re: [PATCH v6 2/4] sched/fair: Check a task has a fitting cpu when
+ updating misfit
+To: Qais Yousef <qyousef@layalina.io>
+Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>, Ingo Molnar <mingo@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org, 
+	Pierre Gondois <Pierre.Gondois@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Mar 07, 2024 at 02:11:43PM +0800, gaoxingwang wrote:
-> skb->len and sz are printed as negative numbers during the panic:
-> skbuff: skb_under_panic: text:ffffffff8e2d3eac len:-1961180312 put:-1961180408 head:ffff88800b6ac000 data:ffff887f804ffe78 tail:0x1e0 end:0xec0 dev:team0
-> 
-> Use %u to print skb->len and sz,because they are defined as unsigned int.
-> 
-> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> Signed-off-by: gaoxingwang <gaoxingwang1@huawei.com>
+On Wed, 6 Mar 2024 at 22:47, Qais Yousef <qyousef@layalina.io> wrote:
+>
+> On 03/03/24 17:44, Qais Yousef wrote:
+>
+> >       diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> >       index 174687252e1a..b0e60a565945 100644
+> >       --- a/kernel/sched/fair.c
+> >       +++ b/kernel/sched/fair.c
+> >       @@ -8260,6 +8260,8 @@ static void set_task_max_allowed_capacity(struct task_struct *p)
+> >                       cpumask_t *cpumask;
+> >
+> >                       cpumask = cpu_capacity_span(entry);
+> >       +               if (!cpumask_intersects(cpu_active_mask, cpumask))
+> >       +                       continue;
+> >                       if (!cpumask_intersects(p->cpus_ptr, cpumask))
+> >                               continue;
+> >
+> >       @@ -8269,6 +8271,53 @@ static void set_task_max_allowed_capacity(struct task_struct *p)
+> >               rcu_read_unlock();
+> >        }
+> >
+> >       +static void __update_tasks_max_allowed_capacity(unsigned long capacity)
+> >       +{
+> >       +       struct task_struct *g, *p;
+> >       +
+> >       +       for_each_process_thread(g, p) {
+> >       +               if (fair_policy(p->policy) && p->max_allowed_capacity == capacity)
+>
+> This condition actually not good enough. We need to differentiate between going
+> online/offline. I didn't want to call set_task_max_allowed_capacity()
+> unconditionally and make hotplug even slower.
 
-Reviwed-by: Breno Leitao <leitao@debian.org>
+But should we even try to fix this ? hotplugging a cpu is a special
+case and with patch 4 you will not increase lb_interval anymore
+
+>
+> I'm doing more testing and will post v8 once done. I need to cater for a new
+> user when dynamic EM changes capacities too.. Small things can snow ball easily
+> hehe.
+>
+> >       +                       set_task_max_allowed_capacity(p);
+> >       +       }
+> >       +}
+> >       +
+> >       +/*
+> >       + * Handle a cpu going online/offline changing the available capacity levels.
+> >       + */
+> >       +static void update_tasks_max_allowed_capacity(int cpu, bool online)
+> >       +{
+> >       +       struct asym_cap_data *entry;
+> >       +       bool do_update = false;
+> >       +
+> >       +       if (!sched_asym_cpucap_active())
+> >       +               return;
+> >       +
+> >       +       if (cpuhp_tasks_frozen)
+> >       +               return;
+> >       +
+> >       +       rcu_read_lock();
+> >       +       /* Did a capacity level appear/disappear? */
+> >       +       list_for_each_entry_rcu(entry, &asym_cap_list, link) {
+> >       +               unsigned int nr_active;
+> >       +               cpumask_t *cpumask;
+> >       +
+> >       +               cpumask = cpu_capacity_span(entry);
+> >       +
+> >       +               if (!cpumask_test_cpu(cpu, cpumask))
+> >       +                       continue;
+> >       +
+> >       +               nr_active = cpumask_weight_and(cpu_active_mask, cpumask);
+> >       +               if (online)
+> >       +                       do_update = nr_active == 1;
+> >       +               else
+> >       +                       do_update = !nr_active;
+> >       +               break;
+> >       +       }
+> >       +       if (do_update)
+> >       +               __update_tasks_max_allowed_capacity(entry->capacity);
+> >       +       rcu_read_unlock();
+> >       +}
+> >       +
+> >        static void set_cpus_allowed_fair(struct task_struct *p, struct affinity_context *ctx)
+> >        {
+> >               set_cpus_allowed_common(p, ctx);
+> >       @@ -12500,6 +12549,8 @@ static void rq_online_fair(struct rq *rq)
+> >               update_sysctl();
+> >
+> >               update_runtime_enabled(rq);
+> >       +
+> >       +       update_tasks_max_allowed_capacity(cpu_of(rq), true);
+> >        }
+> >
+> >        static void rq_offline_fair(struct rq *rq)
+> >       @@ -12511,6 +12562,8 @@ static void rq_offline_fair(struct rq *rq)
+> >
+> >               /* Ensure that we remove rq contribution to group share: */
+> >               clear_tg_offline_cfs_rqs(rq);
+> >       +
+> >       +       update_tasks_max_allowed_capacity(cpu_of(rq), false);
+> >        }
+> >
+> >        #endif /* CONFIG_SMP */
+> > --
+> > 2.34.1
 
