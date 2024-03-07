@@ -1,102 +1,86 @@
-Return-Path: <linux-kernel+bounces-95766-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95768-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71F4787523D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:47:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72969875247
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:50:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A33791C21C6C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:47:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C126AB233A1
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:50:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED1D4127B7C;
-	Thu,  7 Mar 2024 14:47:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="BwetML2N"
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27D0912BEA6;
+	Thu,  7 Mar 2024 14:50:15 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 035F81E866;
-	Thu,  7 Mar 2024 14:47:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACC951E865;
+	Thu,  7 Mar 2024 14:50:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709822849; cv=none; b=CzhSNNu3G//HmmsL+vKxnMi1gLBYw3FYE0fix9zBlL4ZDuE8r2TLiTg10g6vaH/7LXTrHK07LVbGqkX6ZsMzkhaT45+qX9qajyTJELNHEOcgW0NbEPZB8MlVl0Q3xhu6ffeEp64eRLf3oNwwVG2nFxo3tVgmi2dpNig0Gd4YVgI=
+	t=1709823014; cv=none; b=AIbctfHstqM6s6SlejE/ivSxq004q0kWoDQQg7rDy50NgoWqpo11GV44mQ24x8xrTrRorl5EQfhvg0Zqw/XdikqFj+uh88ikuXFzXTLCU7h15BS1gY0v0NfZZzN9mLEzbzs+k/dVKEEDs5b0a4lZAmsKHe/CNCGPqtmYtb25mP8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709822849; c=relaxed/simple;
-	bh=Km2LqwgcdVVDZyJtk6ImV9GP5lvaIR2i3Xbk0PN+jYk=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:To:From:Subject:
-	 References:In-Reply-To; b=NMTn4I05fLl8FugjmNKC9nFibK8FEkZYPIzvJqKJ08x/jqnMnhChHMy4XshVfRv2Q/CSSQssmeWG4qlIBFMsE+GbWC+7ps6zb2fpVYdcsl0Tfa2gcLO4cggqMp1BSzd2Zh9nMgf4xZde2+tCWlRjfckBUYu7BEs6Z5du0uwiXrE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=BwetML2N; arc=none smtp.client-ip=217.70.183.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 4A8681C000C;
-	Thu,  7 Mar 2024 14:47:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709822843;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Km2LqwgcdVVDZyJtk6ImV9GP5lvaIR2i3Xbk0PN+jYk=;
-	b=BwetML2Nvuxg3humKkkGofoQSPzBvCFAr3106R7KsRbVuH95a8R3iv32qZfqvW3hP1N/bU
-	QftFWxf0kZmTZqAZ14iNng5XmOj46xH7JwF1PGrUQXPa3PRbxTA2yviKPDqxdZIjgAVf6d
-	vgwGwNsamireV7q6t9GjpudPj18/oW6Oo2W70U0MFchAZT1FkTYS4cwnBsyqfurtg5u+fO
-	tpONToan2coljFio+GwUqS/Lckl7HhAbEy6XGEobh52HN67rkgo7C3/mNmSEwDAuIaMzUu
-	zB2kqhqRXi29lyzlGSoeDhfcBpyuk0MNtUtJ4fA9+YGQ1b73Osi+lT56zb5Vpw==
+	s=arc-20240116; t=1709823014; c=relaxed/simple;
+	bh=C/qCrjhoIs3jvOYBesJnb1uSBPlCckrGFa/pt10VT+w=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=UxrW17U1pJYfE9LqtM5uFa8bhVU1u11nyoy+Pd4ptm0AQEGujl13bC5/9MOYgVSqh+PnftUV8wKIof/vWQtODJpgNzZaCBKm06DzafKhxutktFOqvFEGKnsuvOlObAV/ffpY5pCXWGad0EqbRn+HQSjnZhiOWx6TGnsR/6524Io=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB558C433C7;
+	Thu,  7 Mar 2024 14:50:11 +0000 (UTC)
+From: Huacai Chen <chenhuacai@loongson.cn>
+To: Paolo Bonzini <pbonzini@redhat.com>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Tianrui Zhao <zhaotianrui@loongson.cn>,
+	Bibo Mao <maobibo@loongson.cn>
+Cc: kvm@vger.kernel.org,
+	loongarch@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	Xuerui Wang <kernel@xen0n.name>,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>,
+	Huacai Chen <chenhuacai@loongson.cn>
+Subject: [GIT PULL] LoongArch KVM changes for v6.9
+Date: Thu,  7 Mar 2024 22:49:30 +0800
+Message-ID: <20240307144930.3919566-1-chenhuacai@loongson.cn>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 07 Mar 2024 15:47:21 +0100
-Message-Id: <CZNLM1VYID7L.1PVM0H06E6TBO@bootlin.com>
-Cc: "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>,
- =?utf-8?q?Gr=C3=A9gory_Clement?= <gregory.clement@bootlin.com>, "Kevin
- Hilman" <khilman@kernel.org>, "Alan Stern" <stern@rowland.harvard.edu>,
- <linux-usb@vger.kernel.org>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
-To: "Roger Quadros" <rogerq@kernel.org>, "Greg Kroah-Hartman"
- <gregkh@linuxfoundation.org>, "Rob Herring" <robh+dt@kernel.org>,
- "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley"
- <conor+dt@kernel.org>, "Peter Chen" <peter.chen@kernel.org>, "Pawel
- Laszczak" <pawell@cadence.com>, "Nishanth Menon" <nm@ti.com>, "Vignesh
- Raghavendra" <vigneshr@ti.com>, "Tero Kristo" <kristo@kernel.org>
-From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Subject: Re: [PATCH v4 5/9] usb: cdns3-ti: pass auxdata from match data to
- of_platform_populate()
-X-Mailer: aerc 0.15.2
-References: <20240307-j7200-usb-suspend-v4-0-5ec7615431f3@bootlin.com>
- <20240307-j7200-usb-suspend-v4-5-5ec7615431f3@bootlin.com>
- <bc361325-1510-4fe0-a7ee-bc5be0a1b4cc@kernel.org>
-In-Reply-To: <bc361325-1510-4fe0-a7ee-bc5be0a1b4cc@kernel.org>
-X-GND-Sasl: theo.lebrun@bootlin.com
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-Hello,
+The following changes since commit 90d35da658da8cff0d4ecbb5113f5fac9d00eb72:
 
-On Thu Mar 7, 2024 at 1:38 PM CET, Roger Quadros wrote:
->
->
-> On 07/03/2024 11:55, Th=C3=A9o Lebrun wrote:
-> > Allow compatible to pick auxdata given to child platform devices.
-> >=20
-> > No compatible exploits this functionality, just yet.
-> >=20
->
-> This patch could be merged with Patch 7 so we know exactly how auxdata
-> is used?
+  Linux 6.8-rc7 (2024-03-03 13:02:52 -0800)
 
-Indeed. I liked splitting. Previous revision had it as a single patch.
-I can revert.
+are available in the Git repository at:
 
-Regards,
+  git://git.kernel.org/pub/scm/linux/kernel/git/chenhuacai/linux-loongson.git tags/loongarch-kvm-6.9
 
---
-Th=C3=A9o Lebrun, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+for you to fetch changes up to b99f783106ea5b2f8c9d74f4d3b1e2f77af9ec6e:
 
+  LoongArch: KVM: Remove unnecessary CSR register saving during enter guest (2024-03-06 09:12:13 +0800)
+
+----------------------------------------------------------------
+LoongArch KVM changes for v6.9
+
+1. Set reserved bits as zero in CPUCFG.
+2. Start SW timer only when vcpu is blocking.
+3. Do not restart SW timer when it is expired.
+4. Remove unnecessary CSR register saving during enter guest.
+
+KVM PV features are unfortunately missing in v6.9 for some
+implementation controversies, sigh.
+----------------------------------------------------------------
+Bibo Mao (4):
+      LoongArch: KVM: Set reserved bits as zero in CPUCFG
+      LoongArch: KVM: Start SW timer only when vcpu is blocking
+      LoongArch: KVM: Do not restart SW timer when it is expired
+      LoongArch: KVM: Remove unnecessary CSR register saving during enter guest
+
+ arch/loongarch/kvm/switch.S |  6 ------
+ arch/loongarch/kvm/timer.c  | 43 ++++++++++---------------------------------
+ arch/loongarch/kvm/vcpu.c   | 33 ++++++++++++++++++++++++++-------
+ 3 files changed, 36 insertions(+), 46 deletions(-)
 
