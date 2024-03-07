@@ -1,190 +1,131 @@
-Return-Path: <linux-kernel+bounces-95664-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95666-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F68F8750F4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:52:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 206AC8750F7
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:53:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0F3F6B24FA6
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 13:52:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF6DD28C8C3
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 13:53:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 632D312D74C;
-	Thu,  7 Mar 2024 13:52:15 +0000 (UTC)
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69DB712DDA2;
+	Thu,  7 Mar 2024 13:53:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Ib5cTV4W"
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D581512C7E2;
-	Thu,  7 Mar 2024 13:52:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0ED112D765
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 13:53:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709819535; cv=none; b=OIlmJGxaK0nruS/MwNVL9mozXtwSRuK0cOJxtQ/fxf6NIBPnry10wzI+HoQEdewkWf1N6VWqurjpywMgq1VJHmHWSwmpPD82ZAgv/CnnesexXmeuDgOo7BAiwwN8fv6pOw1uD2n7P5G8w3gv+U986rhuWOxFhOl1mxE90uura/w=
+	t=1709819584; cv=none; b=V/T6HdTXXrLV0ZAv5jRZM0KO0foqRHgaxIkn5h6Hpx6KxGGl8sesoR5a3RPK9CRySzZwgtCYtRW/hIpjV5QxpUVjrkok8dCEScYxrz4UphgEj9YGR+aV5a0xP6U42VFTUQKoaZXmY1aFggmIjCGKSKPkEkxTSMcnhX7AOCf03Os=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709819535; c=relaxed/simple;
-	bh=KACBD3FSuJOn9a5+HguwCmiT6CB3AHGw3w1coDABmhk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:CC:From:
-	 In-Reply-To:Content-Type; b=XcmuUsP77kEoqhnIq6z6PQ2EEU3yOxxG2D5+i1Cd4uGah+f72jXr9ze4cFDghk6n5UisCzPGrHL2BFNFoduclj5pibbEfvMYrIKokkVGp0CFausNw64rL11dfQ6VZO7eFR0rTq4TtUyAH7YHxq//ixT/TK2uGJwKD11cZlXZwyY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Tr9fl1hd7zHqfx;
-	Thu,  7 Mar 2024 21:50:23 +0800 (CST)
-Received: from kwepemd100009.china.huawei.com (unknown [7.221.188.135])
-	by mail.maildlp.com (Postfix) with ESMTPS id 941CD140134;
-	Thu,  7 Mar 2024 21:52:02 +0800 (CST)
-Received: from [10.67.109.184] (10.67.109.184) by
- kwepemd100009.china.huawei.com (7.221.188.135) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Thu, 7 Mar 2024 21:52:01 +0800
-Message-ID: <bf44125e-9eeb-49d9-8e7a-82f1676db123@huawei.com>
-Date: Thu, 7 Mar 2024 21:52:01 +0800
+	s=arc-20240116; t=1709819584; c=relaxed/simple;
+	bh=iS/ZnjaK6TRmcPu9aNMP+C8wqkwmDYhlm+2dQy+Pr3c=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RIj/P13DvzvPAcquCHenacDNqqXmvZUlLbScmaL/5yKn03w2X7FBe0UNtXO3yob84TSwXM1m7GpDbaSk5hEiKf8kcgoBChv8XDBICIpG9xkottfR3GVzNv9foIFftqI/rubaO+jQbtsYGnvv/IKNQHB4Gq4Xgl3Evy14ecgi8LY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Ib5cTV4W; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-412e96284b9so7450995e9.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 05:53:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709819581; x=1710424381; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=OFRg8xB5AgYKtJRkOv35muuJJ49OzwPBSX7Kgc4LZhI=;
+        b=Ib5cTV4W/J578+YD7JHYv5shZo+gtyE2wHZyMkZDShl1l9YINlBY/kzWgUHTNR1a1h
+         OrZ7tDS3PsWct1gaWTDbPLmY2Hgv3gxaNb+FON3gyPj5dIBfUZUY+9UOH/YTw8vxHjMt
+         leyFHypkkw11gE8T0fJ+aev65nWg/nn03Yk73r3jEUsVjYXq4UuAleIgLylnZ16M0EeU
+         nTTrOXQn4VA/orTFVXLYHfqLjGvQH7roL/RvoXxRdbKcuDb/di62zOfqq64YW9lwokIs
+         VK5hyZJ32cdUDE7A6fmfPJAUNpILn5uEon+ny8lT4NoGWYFUADFeTpN1OT1e6X+fEKdb
+         2F3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709819581; x=1710424381;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OFRg8xB5AgYKtJRkOv35muuJJ49OzwPBSX7Kgc4LZhI=;
+        b=c4xwvtvKaW8AnoUfWQ6eUpHRhBLQQ7NZdOGGdT9vMnqrJ1H5MuHqv8PCQC9k2b7oDU
+         c0m1LJ8csY3QmXJpx7RLaxeHWdXBaxf4hkTPRMj3altbvV9fZseFQYqGhSEOLFcAea0O
+         6kXYowIwxrwk9w1bxFRqmVASopD01Tk37ngP4ldXO175dO1CWtUEr8Uby1g5syFjAKtE
+         y5Upou+3he6JU5Bmkv2TksBzCgO94q3cQldD3f0GhqvKIYfElpmlH9S5eY6v+gHC6EuG
+         kdbe2IHA82CDI4WC+xpBVvk2sIc7X1TTRhwFLnZ0BgGQhGYLo2Jd+YpFwUNKBSe0akjy
+         gJiA==
+X-Forwarded-Encrypted: i=1; AJvYcCWOmw28Xwowb+ofExt26XbBf0Rgj7+z/4iqJdfjud92qpa50X36m6kNQkpyWp6S/Zvkt+Wca0GpNbwiFoSKHdEIX1FAP3BR38H6SEfd
+X-Gm-Message-State: AOJu0YwBh9WjYrofm9TjbgIWP99nFFGlVhrsxBtv3sXZEw3h448kquU4
+	OCe0he4HhV3wmbvN+MOe/GIO+H5JXLT5Ez40eJZvcUI/UUSYiGkAraIWuPBMygI=
+X-Google-Smtp-Source: AGHT+IF61AYutPgwA+UreNymAxWtde+Fu4g6cP5ZGMQQlNDE95ba8fYYdanfVRTO7jXImAkq32LYRA==
+X-Received: by 2002:a05:600c:3596:b0:411:a94a:1ee with SMTP id p22-20020a05600c359600b00411a94a01eemr15040054wmq.21.1709819581260;
+        Thu, 07 Mar 2024 05:53:01 -0800 (PST)
+Received: from ta2.c.googlers.com.com (110.121.148.146.bc.googleusercontent.com. [146.148.121.110])
+        by smtp.gmail.com with ESMTPSA id l8-20020a05600c4f0800b0041312cf472fsm1112390wmq.25.2024.03.07.05.53.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Mar 2024 05:53:00 -0800 (PST)
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+To: peter.griffin@linaro.org,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org
+Cc: alim.akhtar@samsung.com,
+	linux-arm-kernel@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	andre.draszik@linaro.org,
+	willmcvicker@google.com,
+	kernel-team@android.com,
+	Tudor Ambarus <tudor.ambarus@linaro.org>
+Subject: [PATCH] arm64: dts: exynos: gs101: move serial_0 pinctrl-0/names to dtsi
+Date: Thu,  7 Mar 2024 13:52:48 +0000
+Message-ID: <20240307135248.162752-1-tudor.ambarus@linaro.org>
+X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next] arm64, bpf: Use bpf_prog_pack for arm64 bpf
- trampoline
-Content-Language: en-US
-To: Puranjay Mohan <puranjay12@gmail.com>, <bpf@vger.kernel.org>
-References: <20240304202803.31400-1-puranjay12@gmail.com>
-CC: <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-	<martin.lau@linux.dev>, <song@kernel.org>, <catalin.marinas@arm.com>,
-	<mark.rutland@arm.com>, <kpsingh@kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<xukuohai@huaweicloud.com>
-From: Pu Lehui <pulehui@huawei.com>
-In-Reply-To: <20240304202803.31400-1-puranjay12@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemd100009.china.huawei.com (7.221.188.135)
+Content-Transfer-Encoding: 8bit
 
+The pinctrl nodes are coming from the shared gs101-pinctrl.dtsi,
+thus the pinctrl-0/names shall stay in dtsi. Move them.
 
-On 2024/3/5 4:28, Puranjay Mohan wrote:
-> We used bpf_prog_pack to aggregate bpf programs into huge page to
-> relieve the iTLB pressure on the system. This was merged for ARM64[1]
-> We can apply it to bpf trampoline as well. This would increase the
-> preformance of fentry and struct_ops programs.
-> 
-> [1] https://lore.kernel.org/bpf/20240228141824.119877-1-puranjay12@gmail.com/
-> 
-> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-> ---
->   arch/arm64/net/bpf_jit_comp.c | 55 +++++++++++++++++++++++++++++------
->   1 file changed, 46 insertions(+), 9 deletions(-)
-> 
-> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-> index 5afc7a525eca..c5b461dda438 100644
-> --- a/arch/arm64/net/bpf_jit_comp.c
-> +++ b/arch/arm64/net/bpf_jit_comp.c
-> @@ -2076,7 +2076,7 @@ static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
->   		/* store return value */
->   		emit(A64_STR64I(A64_R(0), A64_SP, retval_off), ctx);
->   		/* reserve a nop for bpf_tramp_image_put */
-> -		im->ip_after_call = ctx->image + ctx->idx;
-> +		im->ip_after_call = ctx->ro_image + ctx->idx;
->   		emit(A64_NOP, ctx);
->   	}
->   
-> @@ -2091,7 +2091,7 @@ static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
->   				run_ctx_off, false);
->   
->   	if (flags & BPF_TRAMP_F_CALL_ORIG) {
-> -		im->ip_epilogue = ctx->image + ctx->idx;
-> +		im->ip_epilogue = ctx->ro_image + ctx->idx;
->   		emit_addr_mov_i64(A64_R(0), (const u64)im, ctx);
->   		emit_call((const u64)__bpf_tramp_exit, ctx);
->   	}
-> @@ -2124,9 +2124,6 @@ static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
->   		emit(A64_RET(A64_R(10)), ctx);
->   	}
->   
-> -	if (ctx->image)
-> -		bpf_flush_icache(ctx->image, ctx->image + ctx->idx);
-> -
->   	kfree(branches);
->   
->   	return ctx->idx;
-> @@ -2169,14 +2166,43 @@ int arch_bpf_trampoline_size(const struct btf_func_model *m, u32 flags,
->   	return ret < 0 ? ret : ret * AARCH64_INSN_SIZE;
->   }
->   
-> -int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image,
-> -				void *image_end, const struct btf_func_model *m,
-> +void *arch_alloc_bpf_trampoline(unsigned int size)
-> +{
-> +	return bpf_prog_pack_alloc(size, jit_fill_hole);
-> +}
-> +
-> +void arch_free_bpf_trampoline(void *image, unsigned int size)
-> +{
-> +	bpf_prog_pack_free(image, size);
-> +}
-> +
-> +void arch_protect_bpf_trampoline(void *image, unsigned int size)
-> +{
-> +}
-> +
-> +void arch_unprotect_bpf_trampoline(void *image, unsigned int size)
-> +{
-> +}
-> +
-> +int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *ro_image,
-> +				void *ro_image_end, const struct btf_func_model *m,
->   				u32 flags, struct bpf_tramp_links *tlinks,
->   				void *func_addr)
->   {
->   	int ret, nregs;
-> +	void *image, *tmp;
-> +	u32 size = ro_image_end - ro_image;
-> +
-> +	/* image doesn't need to be in module memory range, so we can
-> +	 * use kvmalloc.
-> +	 */
-> +	image = kvmalloc(size, GFP_KERNEL);
-> +	if (!image)
-> +		return -ENOMEM;
-> +
->   	struct jit_ctx ctx = {
->   		.image = image,
-> +		.ro_image = ro_image,
->   		.idx = 0,
->   	};
->   
-> @@ -2185,15 +2211,26 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image,
->   	if (nregs > 8)
->   		return -ENOTSUPP;
->   
-> -	jit_fill_hole(image, (unsigned int)(image_end - image));
-> +	jit_fill_hole(image, (unsigned int)(ro_image_end - ro_image));
->   	ret = prepare_trampoline(&ctx, im, tlinks, func_addr, nregs, flags);
->   
-> -	if (ret > 0 && validate_code(&ctx) < 0)
-> +	if (ret > 0 && validate_code(&ctx) < 0) {
->   		ret = -EINVAL;
-> +		goto out;
-> +	}
->   
->   	if (ret > 0)
->   		ret *= AARCH64_INSN_SIZE;
->   
-> +	tmp = bpf_arch_text_copy(ro_image, image, size);
-> +	if (IS_ERR(tmp)) {
-> +		ret = PTR_ERR(tmp);
-> +		goto out;
-> +	}
-> +
-> +	bpf_flush_icache(ro_image, ro_image + size);
-> +out:
-> +	kvfree(image);
->   	return ret;
->   }
->   
+Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+---
+ arch/arm64/boot/dts/exynos/google/gs101-oriole.dts | 2 --
+ arch/arm64/boot/dts/exynos/google/gs101.dtsi       | 2 ++
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Reviewed-by: Pu Lehui <pulehui@huawei.com>
+diff --git a/arch/arm64/boot/dts/exynos/google/gs101-oriole.dts b/arch/arm64/boot/dts/exynos/google/gs101-oriole.dts
+index 6ccade2c8cb4..9dc0f47ef646 100644
+--- a/arch/arm64/boot/dts/exynos/google/gs101-oriole.dts
++++ b/arch/arm64/boot/dts/exynos/google/gs101-oriole.dts
+@@ -103,8 +103,6 @@ key_power: key-power-pins {
+ };
+ 
+ &serial_0 {
+-	pinctrl-names = "default";
+-	pinctrl-0 = <&uart0_bus>;
+ 	status = "okay";
+ };
+ 
+diff --git a/arch/arm64/boot/dts/exynos/google/gs101.dtsi b/arch/arm64/boot/dts/exynos/google/gs101.dtsi
+index 55e6bcb3689e..ee65ed9d2cfc 100644
+--- a/arch/arm64/boot/dts/exynos/google/gs101.dtsi
++++ b/arch/arm64/boot/dts/exynos/google/gs101.dtsi
+@@ -421,6 +421,8 @@ serial_0: serial@10a00000 {
+ 				reg = <0x10a00000 0xc0>;
+ 				interrupts = <GIC_SPI 634
+ 					      IRQ_TYPE_LEVEL_HIGH 0>;
++				pinctrl-names = "default";
++				pinctrl-0 = <&uart0_bus>;
+ 				clocks = <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP1_PCLK_0>,
+ 					 <&cmu_peric0 CLK_GOUT_PERIC0_PERIC0_TOP1_IPCLK_0>;
+ 				clock-names = "uart", "clk_uart_baud0";
+-- 
+2.44.0.278.ge034bb2e1d-goog
+
 
