@@ -1,136 +1,139 @@
-Return-Path: <linux-kernel+bounces-95911-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95913-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 777EF8754DD
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 18:09:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0A228754E4
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 18:11:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32331284C7F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:09:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA16A1F238C3
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:11:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62184130AC4;
-	Thu,  7 Mar 2024 17:09:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6B6F130E44;
+	Thu,  7 Mar 2024 17:10:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="WMld6wYv"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HBnJ+36P"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FD0612FF7C;
-	Thu,  7 Mar 2024 17:09:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37F48130AF8;
+	Thu,  7 Mar 2024 17:10:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709831356; cv=none; b=f4Fc/EuWAc8OoCJsuwRpz1+QYlFYYN9wulZJIKz8EG6pkjgMtENcxC/kCvnYjM9jxpBp6b3B6FB7ChZgxvNHNbM1rV+Aim2HFKmf7xXniWFYKvAvMaFolYHkuZiW9xEGzhGg/uhW7RCt4l9QC+wkDeNcb1w5DUJFdfBHNQMC/TM=
+	t=1709831442; cv=none; b=ES5FJeyD6SwQuMhIr9EjrLBzLxXy/YBg3i1bfnNfQVzOMtQStOd07Ao0tV4m9mrtkrdo8MvWQDM/cHVIycoEIlJeCyQWz54RGbURvZbrDE3ZH2eTJeFUU8x4q37qW8AYbxDXaNU/8PqG6An39fNgzVAmtdo0WBzYbfPcjQLHJFo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709831356; c=relaxed/simple;
-	bh=32IuzPCj0UkQGwwVnuiUmbWNQ5uEirPqYiBDMvrYo18=;
+	s=arc-20240116; t=1709831442; c=relaxed/simple;
+	bh=6CqTY8Cis5LdvB3OJwKtmRzxNEBIBumnzKN3pG/9xm4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QUz6S46ZZYmlLT+SKGUx5K0IsEkcRGe3/+SdJKyjdWd+dLGLo6nt2KmnQ38+KhkBWsdjgyCbortk6doVzYzvVis4rCTYK1tZVCZkBmBmaNBDAIDHlFzgrVqA+kZ/58Pmwm0P1Byhj66RGomq23fegOaWGAdjZQEIvmitiRx2OiY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=WMld6wYv; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id CF38040E01B5;
-	Thu,  7 Mar 2024 17:09:11 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id IpIiJIZkOhQv; Thu,  7 Mar 2024 17:09:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1709831349; bh=VocYFkSZYiIlvx5UjmxfB2VV9eY/7DqMl+HAFYEOhQI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WMld6wYvbF4f183CbcrLcUYI6Yj9Xbn6NtQB3pmIBaP+mmYZrFiTOW+OeH6Du10dh
-	 iScv07jqwR+yfUisYkNGlm/MRQJfXPcj/IO4G8oQ2R3HlzxXvq8uaT8YoBfs+VjOiz
-	 xij8WSJ1Vo0W3Q7wR7dsHJRtcMwm3N6i6NGCjN5satDk41vCigbk1WXNCTyTJ40MW/
-	 UgWhDfiHehUPnuZHgEtLiRl06KYkFCqJ/cCbioAF2noiIgLhBPq00VODxg9jELkUti
-	 9+I4ELXu3i8jCXLpAXiE3nkqEwYRP9AFdzW/8HhywuCLDHzrm0Lk+TyKlmXUbMGULj
-	 Td2BGNTms3cWuM7l3TXjIfKFSjIE73CCvrbEKD5JYf79XDsAMny4FMjIiWf/hkudP9
-	 PFz0wCkljgTEfQjMbIt56F6js5QQ69rG/SEeoKCwe/76uLwiKf7QkCSgCjdoKls0p+
-	 akk5TG3m5HwEpxo2qZ7I2Wf2wcev+fvkPwUSqSvESEJy5xqngydSb59AuqbH+iTiIS
-	 MnQnZodUBYCcCg0IWGBGo1cXLbJbR3DO9uv9RVK7iX00jEHf0E5wjmK8+BvGarB5Q3
-	 H7r7XkxfkdgorO9TKwdCXE3F5AwnN7pcHbh2B4boSOdae3wSil3J4rdp6iihUH7ygo
-	 zv2GOSX8gzi6n55YnrXTi4VI=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8EB3B40E0174;
-	Thu,  7 Mar 2024 17:09:02 +0000 (UTC)
-Date: Thu, 7 Mar 2024 18:09:01 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Sohil Mehta <sohil.mehta@intel.com>
-Cc: Tony Luck <tony.luck@intel.com>, "Naik, Avadhut" <avadnaik@amd.com>,
-	Yazen Ghannam <yazen.ghannam@amd.com>, x86@kernel.org,
-	linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] x86/mce: Dynamically size space for machine check
- records
-Message-ID: <20240307170901.GBZen0re6AvpscLaTM@fat_crate.local>
-References: <20240307000256.34352-1-tony.luck@intel.com>
- <20240307121634.GAZemwIgbKKJGaUVFg@fat_crate.local>
- <3c2afc2b-85d7-4c2b-8a32-1a6b0f225328@intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=G73DAyXEsSh0JNSWRthUYzK166f6cKVWaPRQvKtASf1eOrVG5lJDVYdQE1TrKmvGGy3jcjprMU+LQxWQGwJZP4FTRss+lod0QSaOuFARRAzNDZnFmdvY+tuNC6P1QUB8TbsBK+5sTMCNDTcaKkO8bH4Jj9xZOwJban6LKIvEK5o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HBnJ+36P; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709831440; x=1741367440;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=6CqTY8Cis5LdvB3OJwKtmRzxNEBIBumnzKN3pG/9xm4=;
+  b=HBnJ+36PvEa9E0kGB6zIwPqUd1hxivIB7XOp68QY11qxCBdcfbJaT4v6
+   AMQdbyU8QgHdhBWR/Ohs7d1DtrCOOV+lMx3rig9KLMGn8ZrHi3WA0al6J
+   QMnJZYoVdwhSt9PsTNTxGhhdmSqV+7aK5Y3SsM/WiqkjqEr4s9NqyZen6
+   e80ZALT9EBA5g10OEvgPiEbbZvv2sWLSVGxv9QskUGzYnV0zvPywf7vuV
+   MZL5GkquFn9T3oiovnm5XawHQYtdalCXS2w2a7SBZiF0nJf/r21y8OBQa
+   FFS6H2ZAv9Wp1OGCr8eoVWTALo04ncEhfnjnC9fvTaZrEVqNQDToY7IK7
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="4393828"
+X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
+   d="scan'208";a="4393828"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 09:10:26 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="937046416"
+X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
+   d="scan'208";a="937046416"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 07 Mar 2024 09:10:22 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+	id 85F8A128; Thu,  7 Mar 2024 19:10:21 +0200 (EET)
+Date: Thu, 7 Mar 2024 19:10:21 +0200
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To: "Huang, Kai" <kai.huang@intel.com>
+Cc: Sean Christopherson <seanjc@google.com>, 
+	Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Yan Zhao <yan.y.zhao@intel.com>, Isaku Yamahata <isaku.yamahata@intel.com>, 
+	Michael Roth <michael.roth@amd.com>, Yu Zhang <yu.c.zhang@linux.intel.com>, 
+	Chao Peng <chao.p.peng@linux.intel.com>, Fuad Tabba <tabba@google.com>, 
+	David Matlack <dmatlack@google.com>
+Subject: Re: [PATCH 11/16] KVM: x86/mmu: Explicitly disallow private accesses
+ to emulated MMIO
+Message-ID: <3acw6nkfyre4t46i5gmd4lzxxlveiaksp55hunidfhi6lr6brh@7oqn63pu3flb>
+References: <20240228024147.41573-1-seanjc@google.com>
+ <20240228024147.41573-12-seanjc@google.com>
+ <0a05d5ec-5352-4bab-96ae-2fa35235477c@intel.com>
+ <ZejxqaEBi3q0TU_d@google.com>
+ <5f230626-2738-41cc-875d-ab1a7ef19f64@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3c2afc2b-85d7-4c2b-8a32-1a6b0f225328@intel.com>
+In-Reply-To: <5f230626-2738-41cc-875d-ab1a7ef19f64@intel.com>
 
-On Thu, Mar 07, 2024 at 08:59:53AM -0800, Sohil Mehta wrote:
-> I was about the suggest the same thing and maybe slightly more. By
-> initializing ret when really needed, I find the code a bit easier to
-> follow. No strong preference here.
-
-Except that "really needed" is done this way:
-
-> diff --git a/arch/x86/kernel/cpu/mce/genpool.c
-> b/arch/x86/kernel/cpu/mce/genpool.c
-> index cadf28662a70..83a01d20bbd9 100644
-> --- a/arch/x86/kernel/cpu/mce/genpool.c
-> +++ b/arch/x86/kernel/cpu/mce/genpool.c
-> @@ -118,22 +118,21 @@ int mce_gen_pool_add(struct mce *mce)
+On Thu, Mar 07, 2024 at 11:49:11AM +1300, Huang, Kai wrote:
 > 
->  static int mce_gen_pool_create(void)
->  {
-> -	int mce_numrecords, mce_poolsz, order;
-> +	int mce_numrecords, mce_poolsz, order, ret;
->  	struct gen_pool *tmpp;
-> -	int ret = -ENOMEM;
->  	void *mce_pool;
 > 
-
-	ret = -ENOMEM;
->  	order = order_base_2(sizeof(struct mce_evt_llist));
->  	tmpp = gen_pool_create(order, -1);
->  	if (!tmpp)
-> -		return ret;
-> +		return -ENOMEM;
+> On 7/03/2024 11:43 am, Sean Christopherson wrote:
+> > On Thu, Mar 07, 2024, Kai Huang wrote:
+> > > 
+> > > 
+> > > On 28/02/2024 3:41 pm, Sean Christopherson wrote:
+> > > > Explicitly detect and disallow private accesses to emulated MMIO in
+> > > > kvm_handle_noslot_fault() instead of relying on kvm_faultin_pfn_private()
+> > > > to perform the check.  This will allow the page fault path to go straight
+> > > > to kvm_handle_noslot_fault() without bouncing through __kvm_faultin_pfn().
+> > > > 
+> > > > Signed-off-by: Sean Christopherson <seanjc@google.com>
+> > > > ---
+> > > >    arch/x86/kvm/mmu/mmu.c | 5 +++++
+> > > >    1 file changed, 5 insertions(+)
+> > > > 
+> > > > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> > > > index 5c8caab64ba2..ebdb3fcce3dc 100644
+> > > > --- a/arch/x86/kvm/mmu/mmu.c
+> > > > +++ b/arch/x86/kvm/mmu/mmu.c
+> > > > @@ -3314,6 +3314,11 @@ static int kvm_handle_noslot_fault(struct kvm_vcpu *vcpu,
+> > > >    {
+> > > >    	gva_t gva = fault->is_tdp ? 0 : fault->addr;
+> > > > +	if (fault->is_private) {
+> > > > +		kvm_mmu_prepare_memory_fault_exit(vcpu, fault);
+> > > > +		return -EFAULT;
+> > > > +	}
+> > > > +
+> > > 
+> > > As mentioned in another reply in this series, unless I am mistaken, for TDX
+> > > guest the _first_ MMIO access would still cause EPT violation with MMIO GFN
+> > > being private.
+> > > 
+> > > Returning to userspace cannot really help here because the MMIO mapping is
+> > > inside the guest.
+> > 
+> > That's a guest bug.  The guest *knows* it's a TDX VM, it *has* to know.  Accessing
+> > emulated MMIO and thus taking a #VE before enabling paging is nonsensical.  Either
+> > enable paging and setup MMIO regions as shared, or go straight to TDCALL.
 > 
+> +Kirill,
+> 
+> I kinda forgot the detail, but what I am afraid is there might be bunch of
+> existing TDX guests (since TDX guest code is upstream-ed) using unmodified
+> drivers, which doesn't map MMIO regions as shared I suppose.
 
-	ret = -ENOMEM;
->  	mce_numrecords = max(MCE_MIN_ENTRIES, num_possible_cpus() * MCE_PER_CPU);
->  	mce_poolsz = mce_numrecords * (1 << order);
->  	mce_pool = kmalloc(mce_poolsz, GFP_KERNEL);
->  	if (!mce_pool) {
->  		gen_pool_destroy(tmpp);
-> -		return ret;
-> +		return -ENOMEM;
-
-before each block, so that it is clear what this particular block is
-going to return on error.
-
-But those assignments get redundant so the current way is fine, I'd say.
-
-Thx.
+Unmodified drivers gets their MMIO regions mapped with ioremap() that sets
+shared bit, unless asked explicitly to make it private (encrypted).
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+  Kiryl Shutsemau / Kirill A. Shutemov
 
