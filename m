@@ -1,123 +1,97 @@
-Return-Path: <linux-kernel+bounces-94805-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94815-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DFE5874572
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 02:06:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1ABB8874587
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 02:09:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 42F301F23062
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 01:06:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9032288407
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 01:09:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A924468E;
-	Thu,  7 Mar 2024 01:05:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6075B4C8B;
+	Thu,  7 Mar 2024 01:07:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AWzu/c2I"
-Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jrCNbtB5"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37E7446BA
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 01:05:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 935141391
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 01:07:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709773553; cv=none; b=f6vHW1bZ3jAygva8SChn9ItBc585xOdrOFLo4SkMjKI0zlGbyXGZ0xfHgiViSIPRWrbGMehqtvgFFUyhaIGJVesVblDG63Mcd5aFMcYKvkQvCynb/t9wZSdN+3qE5u8ZL209n/whmOZRRnFITVn4AZGE8/snFXp8CYyaiB6sZ84=
+	t=1709773625; cv=none; b=q5vDzzbQ6aRzzsm65nLRUZ5hfypzHZND+jUAObury+1T6faG5SJj/R7RW36Oefgk7q3DIM+qNNYxQeY4yd+osPlp8QQGSBuQPQxzrmK5RgMi08qmO5VY9SxMuFhnG2cM+fEEnftZW+ZPuK5J/gbl1grq5HOH+6/3TAffRsmQdFk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709773553; c=relaxed/simple;
-	bh=BhjxTn+Iq7ongnZSN/4ZW7KL5W+JZ0r7rY3nLp5JHa4=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=BDqfJlzg8VWCBBLKYR5iYhSiKBRWFs4T7hAK7yRJFlBOeuvIRHleeRwQu0JuMK7hANvOVKhG+R+hvkk7EJa5rSzGP7PJmI65c8P3TZnOlwduYp0ZtQreW7haN2CZvCcFk8Kbje404C++5Ha/WJLunHML81nXVlHkDOOOvRJiUQE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AWzu/c2I; arc=none smtp.client-ip=209.85.222.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f181.google.com with SMTP id af79cd13be357-788450cf12aso20674485a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 17:05:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709773551; x=1710378351; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=eye52Nq6DzbsyvcGLe6F9NZyI7E9KumQ8b0lW6PgSb0=;
-        b=AWzu/c2I6H5kPN5h10s7b8a+UBCvXjpteX2IKjNVNKvvt1xVy/wMvI46jO8wdWpQHa
-         I5mo6QSQtDauRLygIKU8PS05llilJocktZ5bqX8YREGKIskfQ8bRTnA93GYKugo3IR1P
-         FWsIHq0vzWR9joN6kEHPdJBSLKIzsAv+vdetGPNWmDP/FCko2YU2FFWJXPBkOeC3zVhF
-         7c9+vQEg01z8dS8Oin9stbNZJD0TOXklhFrtyHW+0XzFpOm/l74pFgrwq1rreOv4PWBb
-         As5dbof6QFvNPxBXWb5UIJTpZYVFpy311NaXBgE2za/RQlMTBl2j3Whiy6AGuHU+uH7M
-         kX3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709773551; x=1710378351;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eye52Nq6DzbsyvcGLe6F9NZyI7E9KumQ8b0lW6PgSb0=;
-        b=Wn7wcRbYtXOiFoJp2wMqZTdPZlJnSQvS3pIumethglk4wycSpUeWqjxCNjZvpvWcy7
-         wZyEPCpc3ZOjZmevKoHyzgzr31WzQuVsQvG2nH4wPdK64YVaA6bzdGo2OZJONowy1bxt
-         nQBoatYUgGf9wHtr0ScQbLNAmmqBjKYExRK2b3GRgHgc/rMKGuXThZuWZfAFFjI/7fEY
-         CSjbkColCU0lzZOrAk2+nau4Da3S0V7J6cXVSXC54hIeMmVnp3qf0W8N/FiSl0TDs4K1
-         Wmc/rd2Wvm45/5TibNIhPmy8kpkuuPC6JNG+qakW1uTyYx7f+wmFvcDD1zG9KV2xIwkj
-         sRsg==
-X-Forwarded-Encrypted: i=1; AJvYcCVqLvFxX8wEvh87fPti3y7/mnYatf2vt/WS3YGiJocNbNfArcD7/nWsEfoSKJ2ewUGZaua2MfQD3bboU1OkrHplbMsLyU5S/5k/R2ir
-X-Gm-Message-State: AOJu0Yx8FM5QK//jMpW/ppdjac9GfMrpzIQu/OIdwrOYjN7NVoS0x00R
-	6/gIfuRwDXkVQTYsniqOSFLObUsuGJknC2S5XcoK6ocB1IshfBbu
-X-Google-Smtp-Source: AGHT+IGyve37Ve4gfumbpnNvgXbbOC150hHHz+8iZyxrlteaRw4CD9TaTx4Kw/5ypIPliQjHE2M9fA==
-X-Received: by 2002:a05:620a:5627:b0:788:2715:8074 with SMTP id vv7-20020a05620a562700b0078827158074mr7093388qkn.27.1709773550898;
-        Wed, 06 Mar 2024 17:05:50 -0800 (PST)
-Received: from lenb-Intel-NUC8i7HVKVA.intel.com (2603-9000-9f01-67cf-d46e-8590-8b01-6ff9.inf6.spectrum.com. [2603:9000:9f01:67cf:d46e:8590:8b01:6ff9])
-        by smtp.gmail.com with ESMTPSA id vq5-20020a05620a558500b00788242166dbsm4256558qkn.133.2024.03.06.17.05.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Mar 2024 17:05:50 -0800 (PST)
-Sender: Len Brown <lenb417@gmail.com>
-From: Len Brown <lenb@kernel.org>
-To: kbusch@kernel.org,
-	linux-nvme@lists.infradead.org
-Cc: maxg@mellanox.com,
-	axboe@kernel.dk,
-	hch@lst.de,
-	sagi@grimberg.me,
-	linux-kernel@vger.kernel.org,
-	Len Brown <len.brown@intel.com>
-Subject: [PATCH 1/1] nvme: Use pr_dbg, not pr_info, when setting shutdown timeout
-Date: Wed,  6 Mar 2024 20:05:41 -0500
-Message-Id: <49a7c0b667abe23d95d67cf0cf7ea7e193d9f2a1.1709773065.git.len.brown@intel.com>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1709773625; c=relaxed/simple;
+	bh=4bqWptoKbnRgrpqaRERXOF58F2B3DTRxO8EnLm4nMi4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CWzQ4DDSkePy8Pg2CBZHVTP/kvue6smp+WgkwWfAtmbMZ/Y4jfE21NTG6xwxxdVijigJwwkpoVdaoKaPpITP5kJwA7td3/CgE6K/En4dLb4zMbcdM+wJFZVpFksT9AtJza59RxAzdNJGjmyV/fM60qJZO19WloLVXrcr/cEuc3s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jrCNbtB5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F6A7C433F1;
+	Thu,  7 Mar 2024 01:07:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709773625;
+	bh=4bqWptoKbnRgrpqaRERXOF58F2B3DTRxO8EnLm4nMi4=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=jrCNbtB5YcSuEDMNq1BjhKJby+ulYRhhfEgvyaD6HS83j6LLzr4zGgEum1aMRBPuI
+	 bV3ZqX/QGlLYpzAuXjV2syAfOSsMspXu+++FJ6AddCtrWXg1vgtknrlRHyt1MuptGl
+	 DiNEnMUvG54BNfY8Z0CYT2qahjhlM7IcISZHkepKoPMjXPt1M9F4vI9MLCOg/gRbMW
+	 YT3oeSDCQ4AFaUyKpuxJVN1MJib+7weIJLayFbKDCst0gaO6YBVOZup3advBOCUzQo
+	 oOuIsyhSAGkmt8LB4v3bfbDR1rWzpcAEW/kNBL3XcMyxQ8YzzTEbYuZH5Jpm2vb/Fn
+	 wDjmX6zgF4g/A==
+Message-ID: <b3601f0d-c315-4763-bbab-4174fe0af713@kernel.org>
+Date: Thu, 7 Mar 2024 09:07:01 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] erofs: apply proper VMA alignment for memory mapped files
+ on THP
+Content-Language: en-US
+To: Gao Xiang <hsiangkao@linux.alibaba.com>, linux-erofs@lists.ozlabs.org
+Cc: LKML <linux-kernel@vger.kernel.org>
+References: <20240306053138.2240206-1-hsiangkao@linux.alibaba.com>
+ <30300dc7-3063-4e09-bb21-22951ec23a38@linux.alibaba.com>
+From: Chao Yu <chao@kernel.org>
+In-Reply-To: <30300dc7-3063-4e09-bb21-22951ec23a38@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-From: Len Brown <len.brown@intel.com>
+On 2024/3/6 14:51, Gao Xiang wrote:
+> 
+> 
+> On 2024/3/6 13:31, Gao Xiang wrote:
+>> There are mainly two reasons that thp_get_unmapped_area() should be
+>> used for EROFS as other filesystems:
+>>
+>>   - It's needed to enable PMD mappings as a FSDAX filesystem, see
+>>     commit 74d2fad1334d ("thp, dax: add thp_get_unmapped_area for pmd
+>>     mappings");
+>>
+>>   - It's useful together with CONFIG_READ_ONLY_THP_FOR_FS which enables
+>>     THPs for read-only mmapped files (e.g. shared libraries) even without
+>>     FSDAX.  See commit 1854bc6e2420 ("mm/readahead: Align file mappings
+>>     for non-DAX").
+> 
+> Refine this part as
+> 
+>   - It's useful together with large folios and CONFIG_READ_ONLY_THP_FOR_FS
+>     which enable THPs for mmapped files (e.g. shared libraries) even without
+>     ...
+> 
+>>
+>> Fixes: 06252e9ce05b ("erofs: dax support for non-tailpacking regular file")
+> 
+> Fixes: ce529cc25b18 ("erofs: enable large folios for iomap mode")
+> Fixes: be62c5198861 ("erofs: enable large folios for fscache mode")
+> 
+>> Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
 
-Some words are alarming in routine kernel messages.
-"timeout" is one of them...
+Reviewed-by: Chao Yu <chao@kernel.org>
 
-Here NVME is routinely setting a timeout value,
-rather than reporting that a timeout has occurred.
-
-Assuming this message is actually useful to somebody somewhere,
-let's make it DEBUG level...
-
-Fixes: 1a3838d732ea ("nvme: modify the debug level for setting shutdown timeout")
-
-Signed-off-by: Len Brown <len.brown@intel.com>
----
- drivers/nvme/host/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index 0a96362912ce..e361af1953a4 100644
---- a/drivers/nvme/host/core.c
-+++ b/drivers/nvme/host/core.c
-@@ -3205,7 +3205,7 @@ static int nvme_init_identify(struct nvme_ctrl *ctrl)
- 						 shutdown_timeout, 60);
- 
- 		if (ctrl->shutdown_timeout != shutdown_timeout)
--			dev_info(ctrl->device,
-+			dev_dbg(ctrl->device,
- 				 "Shutdown timeout set to %u seconds\n",
- 				 ctrl->shutdown_timeout);
- 	} else
--- 
-2.40.1
-
+Thanks,
 
