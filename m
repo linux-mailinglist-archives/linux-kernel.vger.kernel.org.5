@@ -1,107 +1,96 @@
-Return-Path: <linux-kernel+bounces-94976-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94978-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9F97874775
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 05:45:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6408A87477B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 05:50:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92D77282D2D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 04:45:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0ADA5287A38
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 04:50:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95BA31BC3F;
-	Thu,  7 Mar 2024 04:45:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47EEE1BF2F;
+	Thu,  7 Mar 2024 04:50:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Cu5UtBI+"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lNDPk3CN"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E65481F;
-	Thu,  7 Mar 2024 04:45:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E809125D5;
+	Thu,  7 Mar 2024 04:50:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709786727; cv=none; b=k7UBgyUl5dQmh6sjKsjfLHQR9aVcn7Dhj4phe9R714V4B5/8UCQ0EDq4RsY2dXmoLTduylQy3ZK9itvzmw9HISzbuBXQRN8zJpMmaTN2n9WZdgAGhqtlYtlcOnjdDBLGBQA9UXGfG+atU30dvlIxJMhVe9vu2bPf2GvB7M/60Wg=
+	t=1709787028; cv=none; b=G5by6/2F05LUo9nPW6ECZNTQJA9wGcGDb0OYyM57SzYWoHpv0ndLAeo5cruAZQ5Yvii5wueeku6gPttnL+rofnIair2UxwdaY8l6DHt6qiz/bYazvu6AUWf/zzDLLCJmRImyxEVivgmTBC8VJBVUTHzzgSeclXtOlvOLovFSdq0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709786727; c=relaxed/simple;
-	bh=ILfV+QLUtMLblEU3EmuqMHD8odHprdbiQe9rdJMt+dE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DVMKxzLDZLasbshyYeXc46gIAyDLjrfCIIXiLutZYsRRNZDM0TjubemWAPgDtDBSc+6UD5a5RBIsWWvfyHbNCAXpTD0Xr36kKQcu5hqe/f0Kk3BBjk7ggONYAWg/8DCROjym8mlaujwrrqoV11LvywOwEyyrBoz09WeE+icz2jM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Cu5UtBI+; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=r8w2DNfyKL2/tLJTtAySKLQRqT812RnWeFEltkFTF8c=; b=Cu5UtBI+YyYOWL2AUGLQTNt1FK
-	kGRmBYcZ5LzKErtlKR8XYNMFxZjzP031zLs0ZtzzWdiCk8zS0Z1YfnvNAeLT+1UYi69cFr/k5MT7q
-	8ZHbNNKiTYzCwdnJrOTD1V8pn6V1r79vE3MopVrLyUdNJPu6dr/19HywX3LN9Ac+VrvxspVZdAqtu
-	zAbfZG9+0Sem/3BRus9T0O98YG/B+Qb1G3llp8PxeJCp/CEU4vmQzHAlLoVpbtkX5uZoKMPULH597
-	71xabJgGXVWMg0YA5p5KllDvbcofYVvG1AYoDF1dON1Gz4UwFdJZ+Pt9CpZxksDgjiHvwjcmgIu5b
-	ybLdNwUA==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ri5d9-00000008NNo-3J6E;
-	Thu, 07 Mar 2024 04:45:19 +0000
-Date: Thu, 7 Mar 2024 04:45:19 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: David Howells <dhowells@redhat.com>
-Cc: Christoph Hellwig <hch@lst.de>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
-	Jeff Layton <jlayton@kernel.org>, linux-mm@kvack.org,
-	linux-fsdevel@vger.kernel.org, netfs@lists.linux.dev,
-	v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
-	ceph-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
-	linux-nfs@vger.kernel.org, devel@lists.orangefs.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] mm: Replace ->launder_folio() with flush and wait
-Message-ID: <ZelGX3vVlGfEZm8H@casper.infradead.org>
-References: <1668172.1709764777@warthog.procyon.org.uk>
+	s=arc-20240116; t=1709787028; c=relaxed/simple;
+	bh=728qXOa0GYyTnUAIWAElvi6CSw0RIuoe8mh+TMh/UCY=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=qvKjs3/Qk0NjK27wY9C+nDbE3YMrUJ9JN5El8VQwOxUHSJZjHO6iVe24Vv+zuZTs6XgIZ7RWrHAjqbh5R8h58RTszLyZIWCIP5Zy7frq0jFIiyHqCPvq04GbEvU7THzTqOQM/tqkmj99MlAHJ4ta+y87oWvs3GXOZccjXBO9ldA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lNDPk3CN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id F22E2C43394;
+	Thu,  7 Mar 2024 04:50:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709787028;
+	bh=728qXOa0GYyTnUAIWAElvi6CSw0RIuoe8mh+TMh/UCY=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=lNDPk3CN8ykpil4lCxbnCkeYZGmkpL3zNads34pSOAmSDCJZWATS+itZ5m6f3Qtij
+	 dhX6oRBQORW/moFW9eXldoZFhPB3t/I+j3dsa4h0vPbNkIq7etATkD1AVuB81Xvh9H
+	 VP9Ypy/a82gi/Fdfwkn4+u2d/jfpEv+LH2J/F6DMz+eCKvfRWvhT/y2KAUu4XGO1cT
+	 euRlSRGh+TbaLWwdWuqPC+APXV2tSYJcksOc9AKCS0Aq4Yhn/JjqyNqwXKmUTFs3u6
+	 B0rCJ9u/iqQzuVrrBZcf29t9HWnvFZltMftLU6is/3Sm/bg0+ROMoEN5ACXAeFu/ab
+	 lLVdzRHc9tXWg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D352DD9A4B5;
+	Thu,  7 Mar 2024 04:50:27 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1668172.1709764777@warthog.procyon.org.uk>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v3] net: phy: qca807x: fix compilation when
+ CONFIG_GPIOLIB is not set
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170978702785.12804.17752027810406406175.git-patchwork-notify@kernel.org>
+Date: Thu, 07 Mar 2024 04:50:27 +0000
+References: <20240305142113.795005-1-robimarko@gmail.com>
+In-Reply-To: <20240305142113.795005-1-robimarko@gmail.com>
+To: Robert Marko <robimarko@gmail.com>
+Cc: andersson@kernel.org, konrad.dybcio@linaro.org, andrew@lunn.ch,
+ hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ ansuelsmth@gmail.com, linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, lkp@intel.com
 
-On Wed, Mar 06, 2024 at 10:39:37PM +0000, David Howells wrote:
-> Here's a patch to have a go at getting rid of ->launder_folio().  Since it's
-> failable and cannot guarantee that pages in the range are removed, I've tried
-> to replace laundering with just flush-and-wait, dropping the folio lock around
-> the I/O.
+Hello:
 
-My sense is that ->launder_folio doesn't actually need to be replaced.
+This patch was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-commit e3db7691e9f3dff3289f64e3d98583e28afe03db
-Author: Trond Myklebust <Trond.Myklebust@netapp.com>
-Date:   Wed Jan 10 23:15:39 2007 -0800
+On Tue,  5 Mar 2024 15:20:33 +0100 you wrote:
+> Kernel bot has discovered that if CONFIG_GPIOLIB is not set compilation
+> will fail.
+> 
+> Upon investigation the issue is that qca807x_gpio() is guarded by a
+> preprocessor check but then it is called under
+> if (IS_ENABLED(CONFIG_GPIOLIB)) in the probe call so the compiler will
+> error out since qca807x_gpio() has not been declared if CONFIG_GPIOLIB has
+> not been set.
+> 
+> [...]
 
-    [PATCH] NFS: Fix race in nfs_release_page()
+Here is the summary with links:
+  - [net-next,v3] net: phy: qca807x: fix compilation when CONFIG_GPIOLIB is not set
+    https://git.kernel.org/netdev/net-next/c/1677293ed891
 
-        NFS: Fix race in nfs_release_page()
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-        invalidate_inode_pages2() may find the dirty bit has been set on a page
-        owing to the fact that the page may still be mapped after it was locked.
-        Only after the call to unmap_mapping_range() are we sure that the page
-        can no longer be dirtied.
-        In order to fix this, NFS has hooked the releasepage() method and tries
-        to write the page out between the call to unmap_mapping_range() and the
-        call to remove_mapping(). This, however leads to deadlocks in the page
-        reclaim code, where the page may be locked without holding a reference
-        to the inode or dentry.
 
-        Fix is to add a new address_space_operation, launder_page(), which will
-        attempt to write out a dirty page without releasing the page lock.
-
-    Signed-off-by: Trond Myklebust <Trond.Myklebust@netapp.com>
-
-I don't understand why this couldn't've been solved by page_mkwrite.
-NFS did later add nfs_vm_page_mkwrite in July 2007, and maybe it's just
-not needed any more?  I haven't looked into it enough to make sure,
-but my belief is that we should be able to get rid of it.
 
