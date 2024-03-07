@@ -1,108 +1,118 @@
-Return-Path: <linux-kernel+bounces-95986-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95987-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0151B8755A8
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 18:58:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CB968755AC
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 18:59:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A9ED91F2288C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:58:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AAB85B24340
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:59:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39766131750;
-	Thu,  7 Mar 2024 17:57:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kTa0C0Yx"
-Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6EE8131756;
+	Thu,  7 Mar 2024 17:59:13 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2550C12FB2B;
-	Thu,  7 Mar 2024 17:57:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B5FC1EB41
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 17:59:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709834278; cv=none; b=JGGgDWGO7HdO1t2GsPAuUDk6qCmDGzyHit7VntNk0NLquOR3CG0mWV0q9R3jPzkpeeRGKxPDo3WwVpzUK6ZhNhIrqEM/CNmQR48105inj05LU7zjjM7ATSFav32ho7FAfq2HUxgpYGhbUNBjuIeIs+yFlggGoOiPTdd+2Po2Jt8=
+	t=1709834353; cv=none; b=SPaw0GdX1QcLLbixPer7l8I+zjwgkDy1V3F9PBCUkzWoDWidf33c0rvGiLPwtpzywuMwdIIgymNcZeB2CdsBzGV43QWz6VOdchwisQKAlH/xIJODJfvxmxqq+Y8v9tvom5GfY+5825nmJ/y4WTHyykhy4QVPX7uOupn5oC+RJPU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709834278; c=relaxed/simple;
-	bh=nuK04bZ5oslOthMQ4lVLof11GO1EGLvX/wxmyW7M/nQ=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=hu2o1amLbcduU4XxsQw4hIbG/20IVq+GWLv9/7k8YL3osZku01HDzDkUKgrru4FpZB7Gr4v4C3QP+rssv8Gna7UZNog+qs2EFF6SpvjcEMd+SnniVyh6UNEA7pKA9upSFnu6YzH5+CerM7jC3LYLQoYkIwCnxsVDHNczWyUN0v4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kTa0C0Yx; arc=none smtp.client-ip=209.85.222.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-7883e1e01daso54529585a.3;
-        Thu, 07 Mar 2024 09:57:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709834276; x=1710439076; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sxRjqNnvdF7ZPp1g7/U1YFRgJVDUpSznFhQFeF1O+XU=;
-        b=kTa0C0YxQozUUIZY+1CZGGizLLo8TCVLHYZv8nrcWkwE20rDCeHBtbjU5lOauk6WPa
-         ot/7Z3SyTvIsK1XFR0OVGRQx6ywkNs5klen5FvxvUoxEhsY0whW1bDnr/K0JHavzpfsE
-         Is/t0wwoIwemMTyCCba19KbJIRmMMS/hGPJShrN5sUnC4FQ6DESOtb4HR0jfOr85nKMR
-         7/3wXanS+WsfWTy3aQ2oAuvOiPGK2Xel59lOmiZ1J6Zjsy0lGumRIo8tLPqAC9/XJyt7
-         lhKSlEmvvc+TIFeem+aVgYIw+XChrZN02TM9gFs7l814y3CNPb/86y115kSLbp4ZNudN
-         6/Dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709834276; x=1710439076;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=sxRjqNnvdF7ZPp1g7/U1YFRgJVDUpSznFhQFeF1O+XU=;
-        b=SezbMM8LlOf5dkMSmsWJ0vQb32p+vKaYpQ922QbS6zg2z8bCmcgY6XKwy5hRpWD1JU
-         ViByDSmYKMGR9o9ONw4cd7cZCC/acc9XxUkqU7uzk7tlttVaTOVn7Cnbd6qINr7cQn87
-         0e1S9bQ19NjDUp03HXrjuKHUjSqBi8VAVIYcvKQC0zowEun20tWT9KCOLjttmB2x5I+B
-         89sukBMyNXPmqfROISqdbbbX4JBxKOn3m+CczJE+xV3VqveJiNzPdMSJkEwaN2calk6M
-         4qSN2qLTBmKgsT68jWkSAan5k8Ns9tWUgYRsFPbQpXPL122cEYKCaV4kqfw2DBZE/8wq
-         BLwg==
-X-Forwarded-Encrypted: i=1; AJvYcCWVlHMkI96SOhVf93D05VsB1t3yEcGB0pa2RphXWK/WVGYha+05mKTeFnwIkl1U94MA0J2aHeQvTPZmWfb109Z8W+kKDMWkL4c/x4TFQsDZRd4b/PiV+/ZS54UXHoCkM5soedHv
-X-Gm-Message-State: AOJu0YwOz7UrseuCHiwSrV1yaOPZOgSVIzat75PDeTqFIPEyMXInB6r9
-	hrRj29KSd4t0svf/VJ1QBuOrzlpWjVLnVoKYuaEzBTOKloC+FXjMysXQhtbOsvk=
-X-Google-Smtp-Source: AGHT+IFMyRC8dAbtScVUWoFeeq9w6Lej/+0B1lbzIhd5ZKoDtLsZ65Wgk3qDC1PE1TCtXJMASnvb7Q==
-X-Received: by 2002:a05:620a:4ec:b0:788:2e68:be51 with SMTP id b12-20020a05620a04ec00b007882e68be51mr8851072qkh.11.1709834276049;
-        Thu, 07 Mar 2024 09:57:56 -0800 (PST)
-Received: from localhost (55.87.194.35.bc.googleusercontent.com. [35.194.87.55])
-        by smtp.gmail.com with ESMTPSA id bp9-20020a05620a458900b0078812f8a042sm6307036qkb.90.2024.03.07.09.57.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Mar 2024 09:57:55 -0800 (PST)
-Date: Thu, 07 Mar 2024 12:57:55 -0500
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Marcelo Tosatti <mtosatti@redhat.com>, 
- netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org
-Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
- Jakub Kicinski <kuba@kernel.org>, 
- Eric Dumazet <edumazet@google.com>, 
- Frederic Weisbecker <frederic@kernel.org>, 
- Valentin Schneider <vschneid@redhat.com>, 
- Paolo Abeni <pabeni@redhat.com>
-Message-ID: <65ea00236e921_106619294ea@willemb.c.googlers.com.notmuch>
-In-Reply-To: <Zen126EYArNCxIYz@tpad>
-References: <Zen126EYArNCxIYz@tpad>
-Subject: Re: [PATCH net-next -v5] net/core/dev.c: enable timestamp static key
- if CPU isolation is configured
+	s=arc-20240116; t=1709834353; c=relaxed/simple;
+	bh=/F3L6EUgDhWCdLmZZ9eUNAUZH3WBSnnyUUVDdWplyBA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=mSKruFQ6xPf3ly8uEgJdakKWxmebDm/xvQz+sDrbSJ698ZM7TL/gHc7JErvMNRVkhhXwG242hcA00YlP1jqYv8YsnrRHxHxm2ENgOsXpfEw/tvpjoWOZSTxnSkpWwBDXWKmYMZvbkfHrc34yOg71Kf5FXC0MTeFoDqX1aK5fwZU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1riI1K-0001YB-T9; Thu, 07 Mar 2024 18:59:06 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1riI1K-004zCE-DM; Thu, 07 Mar 2024 18:59:06 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1riI1K-001SWj-13;
+	Thu, 07 Mar 2024 18:59:06 +0100
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Johannes Thumshirn <morbidrsa@gmail.com>
+Cc: linux-kernel@vger.kernel.org,
+	kernel@pengutronix.de
+Subject: [PATCH] mcb: lpc: Convert to platform remove callback returning void
+Date: Thu,  7 Mar 2024 18:59:03 +0100
+Message-ID: <20240307175903.189283-2-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1699; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=/F3L6EUgDhWCdLmZZ9eUNAUZH3WBSnnyUUVDdWplyBA=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBl6gBnjAEgCQKRcr5RVHr0e9nxoys9ODmHFov4v bekggazU0SJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZeoAZwAKCRCPgPtYfRL+ Tso9CACabXtyn6SYLDvA+46dFn/oO/9a3GI7jDyyMv/0JFR8yFhAJ5GDYo80DQRtMDVgDNzZ2BJ rKSauWtrvpR0Q3QBOpCDKmX//uooygJSvuiEBxe0nYdBzy4ZrhX62AcwxVif471y0iz8Tik86Nk GWc4HVpTo171zOCQEjm36WI301/bX86PC/xNuB9NtVDlv8FCg9jOxyw/UJDwf0NnB8jml3UZxX7 8vUnkmBPuwxU3KxEWg2xiYTwpuQWCjJ5acMcGzqujkprtxWSqkLiHMlcqMkBPWIKhYcmfvx/PcG PoaaMzrokc5s8nxryJqoogWz79pR6DefBHF+giSmSpN18ytF
+X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-Marcelo Tosatti wrote:
-> 
-> For systems that use CPU isolation (via nohz_full), creating or destroying
-> a socket with SO_TIMESTAMP, SO_TIMESTAMPNS or SO_TIMESTAMPING with flag
-> SOF_TIMESTAMPING_RX_SOFTWARE will cause a static key to be enabled/disabled.
-> This in turn causes undesired IPIs to isolated CPUs.
-> 
-> So enable the static key unconditionally, if CPU isolation is enabled,
-> thus avoiding the IPIs.
-> 
-> Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
+The .remove() callback for a platform driver returns an int which makes
+many driver authors wrongly assume it's possible to do error handling by
+returning an error code. However the value returned is ignored (apart
+from emitting a warning) and this typically results in resource leaks.
 
-Reviewed-by: Willem de Bruijn <willemb@google.com>
+To improve here there is a quest to make the remove callback return
+void. In the first step of this quest all drivers are converted to
+remove_new(), which already returns void. Eventually after all drivers
+are converted, .remove_new() will be renamed to .remove().
+
+Trivially convert this driver from always returning zero in the remove
+callback to the void returning variant.
+
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+ drivers/mcb/mcb-lpc.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mcb/mcb-lpc.c b/drivers/mcb/mcb-lpc.c
+index a851e0236464..2bec2086ee17 100644
+--- a/drivers/mcb/mcb-lpc.c
++++ b/drivers/mcb/mcb-lpc.c
+@@ -97,13 +97,11 @@ static int mcb_lpc_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
+-static int mcb_lpc_remove(struct platform_device *pdev)
++static void mcb_lpc_remove(struct platform_device *pdev)
+ {
+ 	struct priv *priv = platform_get_drvdata(pdev);
+ 
+ 	mcb_release_bus(priv->bus);
+-
+-	return 0;
+ }
+ 
+ static struct platform_device *mcb_lpc_pdev;
+@@ -140,7 +138,7 @@ static struct platform_driver mcb_lpc_driver = {
+ 		.name = "mcb-lpc",
+ 	},
+ 	.probe		= mcb_lpc_probe,
+-	.remove		= mcb_lpc_remove,
++	.remove_new	= mcb_lpc_remove,
+ };
+ 
+ static const struct dmi_system_id mcb_lpc_dmi_table[] = {
+
+base-commit: 11afac187274a6177a7ac82997f8691c0f469e41
+-- 
+2.43.0
+
 
