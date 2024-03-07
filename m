@@ -1,150 +1,136 @@
-Return-Path: <linux-kernel+bounces-95968-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95969-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1C26875578
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 18:45:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C783787557B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 18:46:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 82BE91F212B3
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:45:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81E61289369
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:46:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB693130E35;
-	Thu,  7 Mar 2024 17:45:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1646E130E5B;
+	Thu,  7 Mar 2024 17:46:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uiCSn3uK"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OjoQWOFC"
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F348B12DDBA;
-	Thu,  7 Mar 2024 17:45:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE578130AE1;
+	Thu,  7 Mar 2024 17:46:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709833537; cv=none; b=ChOYYCKO45IfitYVwrVfSJin17wHUXwFEGpAkgpbFNvKj8IFdWYsyBzqDd67ar4oWBmpNrhwUbwH2iPpkOeYnMfpEQsrBWyZdhUTpc1HIsCXKD6tFIqedw3NDzqVKk6sV6Jl8GYdu9Q5RDbBtoNY95X7C2XPylzzzhGEbMbA6eY=
+	t=1709833596; cv=none; b=UzA5dfhd5EIjktpGjSOJA9I+gPn9SybDQlWVLU/pZwtAR+r0aQWqCV0VyZQhrb9l/ZNf5zwl6Cu8Di06y0fB59MAnEEHGF0WoGcOBnLnc/8/ZJKD/HuTOCiJ463a6bVHB0+/BOmMFirz2WvTeUsk1U74E0X1GMSFg34HDOXNm8s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709833537; c=relaxed/simple;
-	bh=fmex7ycV6097BZ7cnW/vpknMTfZttQAd8IWkJXjDdCU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hAON2q1S79nMPvjr/s/yU8WfgPFoDOs2pecCBYj8e6Vf6iMQ2kCdQCRpIa3CNz7X0pLuS7oE8tWHFcQ9+PNthczQblx9AMiodH1hMVo7oR9tUK5aNli9NQCa87YzYbLPeMt8onHpN+HvIeD1hKzy7zvr2NZDKJJ48NitqEmf9Q4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uiCSn3uK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B64B6C433F1;
-	Thu,  7 Mar 2024 17:45:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709833536;
-	bh=fmex7ycV6097BZ7cnW/vpknMTfZttQAd8IWkJXjDdCU=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=uiCSn3uK2PCOZObe2iBQiz8z8ovbR3APKhEbgSFMsKF+lqN9MRj/o281oUEJsWaAc
-	 tp2ZiipVpH8YuCFs8ZoJ7D9ajIbkOA8Qd5awOXmmEcmhDlULZnDfyj4jSD7fybuyST
-	 2l/+GTSHtx3wCFmJTIv0Bb8/K58F1oCm8ZLx3Ye2vPL/57axVKdR186mG6Sj+zoZo9
-	 hW4lfEgFZdSUsJ30JRV51IR+akc/5QoyUaKfF0fmTbYRpSDuiUFvBv1J284+3ZDRNK
-	 TbmnASiMNsRXGSkA+caxy9I/iYXAPOleFcyCkFSoZoj/j3d40oZClTge5S7QwjRhYQ
-	 Ff8X0vdcoKZsA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 44C51CE0F1D; Thu,  7 Mar 2024 09:45:36 -0800 (PST)
-Date: Thu, 7 Mar 2024 09:45:36 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Stefan Wiehler <stefan.wiehler@nokia.com>
-Cc: Russell King <linux@armlinux.org.uk>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	linux-arm-kernel@lists.infradead.org, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm: smp: Avoid false positive CPU hotplug Lockdep-RCU
- splat
-Message-ID: <49792f54-fa11-4984-8611-84ba640a2b86@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240307160951.3607374-1-stefan.wiehler@nokia.com>
+	s=arc-20240116; t=1709833596; c=relaxed/simple;
+	bh=X59QqX4H8M/10w2nNvVyVuDtckeb/yTabVDkxTaENJU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Xt7ADROPT8UuUqZMe0DA4VGY5vmpenpVkWRzSWk+fTHbV0/upYDJ8pOQ0KWG1LudSXeAg4w4UVv0LfdsMASNjNMJ0gLAhqzwlO55Zq/Tc3SG28WVzkp8S1r/Q1EOYzsXx2dns5/Pet44CJgkD80HCkBW5hAu+owoW+L/+Lh6SI8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OjoQWOFC; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-4131651709bso984445e9.2;
+        Thu, 07 Mar 2024 09:46:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709833593; x=1710438393; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zidrMVgwKZG7PoFFeaVJDkEIlmqOlMqbL//oQj2VMe0=;
+        b=OjoQWOFChxbSpB9AS+JZgmabKUD0mgFo+ChAO+Yfpu0O35hTzuRdEOxzoaqXqHuniD
+         Harn5wFv7i4/BePEsVOLT11XUv+MfTQBrG+A7DE5B+/F3QmGc4pJuE1xdXYkOvHdI5++
+         +j4y6+E9pzYwoq4DPaVMFOp5uBOcrfmPYLgGMcoGZczCPlkrVJTAbRtDHS7YK5WFnTjo
+         UT0azqA10Iw/frSF+dt+be3LcVUOg9BRT0PwUZR/v28+gg74hATTTiqphJygwu1FEsp9
+         p0D5kvOe5mZ1ct9IgSsSkRg7kvmN76w8YNHO9c8QqvMEet1rNYu7rtmtnPDBCSBAkfap
+         RXhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709833593; x=1710438393;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zidrMVgwKZG7PoFFeaVJDkEIlmqOlMqbL//oQj2VMe0=;
+        b=g2IDhh1alMPBc3xqFAD7TikRmgvPZDFajEhfrEM1TW9an4C+fC0cpNRNipNE7xUGtJ
+         Jx7YFA8NI2nQdqeRaSe+L1ltKIYFBnXBAQQO8h1owpcY3bhQfiNtaZz0HExqhLM8xk+b
+         Bl3NqolS6bwZw09NbvVd/Vm7tyf2lo+yPavxBE0zsqpjD4wWbkkLVx+2Hdz1nksxNtzJ
+         Ywi0oQEHNFqG4OrSugnpNwrUjt4zTkaDNojeAmtnCKULq/oXSxHQc42scylKsN9xAvQX
+         P/pAPKjrDUP6oZryZx440wGhA0zKeF1ED+7huRAg8agZ6LYfaAXRbt4crgGMHqwY4av+
+         mI9Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUiy+XYS+P8VdW+9eoebCYrHrd4SQ4meEDmNW85v/9hA+ootf00vaqJf8o4LFd5/pEUFHsP63LnESJdK79MmpgFapv/9Oi+MEwU462zWQD2RCrqwiiLHSB6Vw8pJvgJ2SQyUyeiv93fhqlpP5bBzGBuDbWQiGJi0WWAyPLVL70lAUtoYkxk3hP1
+X-Gm-Message-State: AOJu0YyPpIMEuocm2lq5VPRTBvGoT1n158GxFKV0XM3poSukqiNy7g0y
+	rErOmljzv+TMY7VVtIRt1LQ8fWbWpgxYb5Q6Z+TQHASCfCS9A1iY
+X-Google-Smtp-Source: AGHT+IHetAQpP5/ML/yXLg+SIqzs0WbSWPeIuCRA1d1fNHUAKAT9glKWnCfGjizvnc9rO6jrvLS/0A==
+X-Received: by 2002:a05:600c:46cd:b0:412:dcf0:991a with SMTP id q13-20020a05600c46cd00b00412dcf0991amr10169173wmo.12.1709833592771;
+        Thu, 07 Mar 2024 09:46:32 -0800 (PST)
+Received: from [192.168.0.101] (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.googlemail.com with ESMTPSA id n20-20020a05600c501400b00412ea92f1b4sm3473188wmr.19.2024.03.07.09.46.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Mar 2024 09:46:32 -0800 (PST)
+Message-ID: <7aab696f-6a4f-410d-9769-17fda28f5c4d@gmail.com>
+Date: Thu, 7 Mar 2024 17:46:31 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240307160951.3607374-1-stefan.wiehler@nokia.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH][next] usb: gadget: net2272: remove redundant variable
+ irqflags
+Content-Language: en-US
+To: Alan Stern <stern@rowland.harvard.edu>,
+ =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ linux-usb@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240307105135.1981060-1-colin.i.king@gmail.com>
+ <mywsgq453muhggv5y7pfrsg7zrodtuebcpo5rbc4kus5h2ameo@fhnpemjuntaz>
+ <2b318367-2428-44ba-b4d9-0a452fcb7858@rowland.harvard.edu>
+From: "Colin King (gmail)" <colin.i.king@gmail.com>
+In-Reply-To: <2b318367-2428-44ba-b4d9-0a452fcb7858@rowland.harvard.edu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, Mar 07, 2024 at 05:09:51PM +0100, Stefan Wiehler wrote:
-> With CONFIG_PROVE_RCU_LIST=y and by executing
+On 07/03/2024 17:29, Alan Stern wrote:
+> On Thu, Mar 07, 2024 at 05:51:59PM +0100, Uwe Kleine-König wrote:
+>> On Thu, Mar 07, 2024 at 10:51:35AM +0000, Colin Ian King wrote:
+>>> The variable irqflags is being initialized and being bit-or'd with
+>>> values but it is never read afterwards. The variable is redundant
+>>> and can be removed.
+>>>
+>>> Cleans up clang scan build warning:
+>>> drivers/usb/gadget/udc/net2272.c:2610:15: warning: variable 'irqflags'
+>>> set but not used [-Wunused-but-set-variable]
+>>>
+>>> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+>>
+>> this "problem" exists since the driver was introduced in commit
+>> ceb80363b2ec ("USB: net2272: driver for PLX NET2272 USB device
+>> controller"). Might be worth a Fixes: line.
+>>
+>> I wonder if the better fix would be:
+>>
+>> diff --git a/drivers/usb/gadget/udc/net2272.c b/drivers/usb/gadget/udc/net2272.c
+>> index 12e76bb62c20..19bbc38f3d35 100644
+>> --- a/drivers/usb/gadget/udc/net2272.c
+>> +++ b/drivers/usb/gadget/udc/net2272.c
+>> @@ -2650,7 +2650,7 @@ net2272_plat_probe(struct platform_device *pdev)
+>>   		goto err_req;
+>>   	}
+>>   
+>> -	ret = net2272_probe_fin(dev, IRQF_TRIGGER_LOW);
+>> +	ret = net2272_probe_fin(dev, irqflags);
+>>   	if (ret)
+>>   		goto err_io;
 > 
->   $ echo 0 > /sys/devices/system/cpu/cpu1/online
-> 
-> one can trigger the following Lockdep-RCU splat on ARM:
-> 
->   =============================
->   WARNING: suspicious RCU usage
->   6.8.0-rc7-00001-g0db1d0ed8958 #10 Not tainted
->   -----------------------------
->   kernel/locking/lockdep.c:3762 RCU-list traversed in non-reader section!!
-> 
->   other info that might help us debug this:
-> 
->   RCU used illegally from offline CPU!
->   rcu_scheduler_active = 2, debug_locks = 1
->   no locks held by swapper/1/0.
-> 
->   stack backtrace:
->   CPU: 1 PID: 0 Comm: swapper/1 Not tainted 6.8.0-rc7-00001-g0db1d0ed8958 #10
->   Hardware name: Allwinner sun8i Family
->    unwind_backtrace from show_stack+0x10/0x14
->    show_stack from dump_stack_lvl+0x60/0x90
->    dump_stack_lvl from lockdep_rcu_suspicious+0x150/0x1a0
->    lockdep_rcu_suspicious from __lock_acquire+0x11fc/0x29f8
->    __lock_acquire from lock_acquire+0x10c/0x348
->    lock_acquire from _raw_spin_lock_irqsave+0x50/0x6c
->    _raw_spin_lock_irqsave from check_and_switch_context+0x7c/0x4a8
->    check_and_switch_context from arch_cpu_idle_dead+0x10/0x7c
->    arch_cpu_idle_dead from do_idle+0xbc/0x138
->    do_idle from cpu_startup_entry+0x28/0x2c
->    cpu_startup_entry from secondary_start_kernel+0x11c/0x124
->    secondary_start_kernel from 0x401018a0
-> 
-> The CPU is already reported as offline from RCU perspective in
-> cpuhp_report_idle_dead() before arch_cpu_idle_dead() is invoked. Above
-> RCU-Lockdep splat is then triggered by check_and_switch_context() acquiring the
-> ASID spinlock.
-> 
-> Avoid the false-positive Lockdep-RCU splat by briefly reporting the CPU as
-> online again while the spinlock is held.
-> 
-> Signed-off-by: Stefan Wiehler <stefan.wiehler@nokia.com>
+> I agree, that makes much more sense.
 
-From an RCU perspective, this looks plausible.  One question
-below.
+OK, I'll send a V2, but I can't test it, so I suspect that is a risk, 
+but it is clearly wrong as it stands.
 
-						Thanx, Paul
+Colin
 
-> ---
->  arch/arm/kernel/smp.c | 7 +++++++
->  1 file changed, 7 insertions(+)
 > 
-> diff --git a/arch/arm/kernel/smp.c b/arch/arm/kernel/smp.c
-> index 3431c0553f45..6875e2c5dd50 100644
-> --- a/arch/arm/kernel/smp.c
-> +++ b/arch/arm/kernel/smp.c
-> @@ -319,7 +319,14 @@ void __noreturn arch_cpu_idle_dead(void)
->  {
->  	unsigned int cpu = smp_processor_id();
->  
-> +	/*
-> +	 * Briefly report CPU as online again to avoid false positive
-> +	 * Lockdep-RCU splat when check_and_switch_context() acquires ASID
-> +	 * spinlock.
-> +	 */
-> +	rcutree_report_cpu_starting(cpu);
->  	idle_task_exit();
-> +	rcutree_report_cpu_dead();
->  
->  	local_irq_disable();
+> Alan Stern
 
-Both rcutree_report_cpu_starting() and rcutree_report_cpu_dead() complain
-bitterly via lockdep if interrupts are enabled.  And the call sites have
-interrupts disabled.  So I don't understand what this local_irq_disable()
-is needed for.
 
