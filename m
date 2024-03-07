@@ -1,140 +1,107 @@
-Return-Path: <linux-kernel+bounces-96235-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96236-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F08A487590F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 22:09:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0931875911
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 22:09:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8132DB24220
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 21:09:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D89628645A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 21:09:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 650B513A888;
-	Thu,  7 Mar 2024 21:09:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D12F13AA31;
+	Thu,  7 Mar 2024 21:09:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uphpTuhl"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="X1urbiyQ"
+Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74D7D12BE9A;
-	Thu,  7 Mar 2024 21:09:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 523C4139593
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 21:09:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709845758; cv=none; b=O28tHCZMVKxiyqqtFYUBcbYRWrg2YnWkylHodQ+GxreG+7PSy2H+LstzsETW0URSG9CEw2BdPj+33fmGL/XZOl3EI0OX4iQzNNbK3wvkMZxcwO1VhOxKHPPhDMxROHAepl0JoIGCVbJLIiJ+71wvByx3yfBytzHITAd0es1B92Y=
+	t=1709845769; cv=none; b=nde/02wr23otTbPfKIF6jb3ofvZDavjtWHna+wKAeIasT03G34Zdgiu++DxdCcVtORv838KYwi5lPn1tWFY+J3RlfOdPVMKsk4QAgeBms5+lY3QA3/PLmGRmt86uyZe1L8cVwCRYZ/31tu39jKPXTEewth83EvRGjeFLqX5zRzE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709845758; c=relaxed/simple;
-	bh=x7qhL0+safPdNgJNsRsxVMft7a6MYJn2kbDJJU6030c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pZ1o9mw0qYUio4D1El1vzaqzLAZBBrwkgSn8Hcrsu7znwAmTiB4lznAsiBZCYa2aDbkGJ+u+1wbBni9huYMzRHdBnXxf5KoMI0n271fyanuZLj+Mv84I8SbWyHBYl1pbjhYb2v8lFzEXgEYPYf31vbAc5MBmui7IIVIgA0ySLIM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uphpTuhl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 125A9C433F1;
-	Thu,  7 Mar 2024 21:09:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709845757;
-	bh=x7qhL0+safPdNgJNsRsxVMft7a6MYJn2kbDJJU6030c=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=uphpTuhlD5OPOMRvy9lge5bafam+otT0YytPtZQK/FyriaS55FiTX6G7Nn2qGjvdc
-	 IIWvg5Oo3xznyGBP/6Nk1rgf7lPR0xR7CwV8v3JZq+seM6NIq4XCFwwu8rShA4KbsY
-	 97+Ieb66fBKAEoPbnmBNuY7+LL61FOjf68d1wPnYX8ZsxCxRaMrr4F95CiOfasMtte
-	 JtP0yamORfamOObBNlRnoza4jXckh3dQCjYDHU6zZTOql6um/J7Dgx+UhkxqvT5T1V
-	 IvDgDi2O3QnFnLrLLLSx4azOsqi+b/S7O/ntH6YDYLmskuJPnekIAkbbrWNGLoKD/u
-	 1loGhWdx7fEEw==
-Date: Thu, 7 Mar 2024 22:09:06 +0100
-From: Niklas Cassel <cassel@kernel.org>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Marek Vasut <marek.vasut+renesas@gmail.com>,
-	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Kishon Vijay Abraham I <kishon@ti.com>,
-	Vidya Sagar <vidyas@nvidia.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Richard Zhu <hongxing.zhu@nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Minghuan Lian <minghuan.Lian@nxp.com>,
-	Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
-	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Jesper Nilsson <jesper.nilsson@axis.com>,
-	Srikanth Thokala <srikanth.thokala@intel.com>,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-	linux-arm-kernel@axis.com, Frank Li <Frank.Li@nxp.com>
-Subject: Re: [PATCH v9 07/10] PCI: dwc: ep: Remove "core_init_notifier" flag
-Message-ID: <Zeos8kVxgchH9veF@ryzen>
-References: <20240304-pci-dbi-rework-v9-0-29d433d99cda@linaro.org>
- <20240304-pci-dbi-rework-v9-7-29d433d99cda@linaro.org>
+	s=arc-20240116; t=1709845769; c=relaxed/simple;
+	bh=eMzZuZHHTXZANMsIDx1PTIX01hfAQhyyDCaKkfiYPSc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NFK7gixX1XkM6rP66Vm92V3JWkTq5pDOXyPW4ZYMC04YqTa+9+2Shbqm4WWIjvdoSF3cBviUksn4EOYrREnxcYZtnsrSTmXzKYAZnkg/Tz8hIbIcmWatgselpVJq30sU7IvIuRESk+QvvDR7zmhAGkRVsDlZldLxxlE3hA00+YE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=X1urbiyQ; arc=none smtp.client-ip=95.215.58.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <ce073b95-b8e9-4822-91a2-f2bd15997bc4@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1709845765;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eMzZuZHHTXZANMsIDx1PTIX01hfAQhyyDCaKkfiYPSc=;
+	b=X1urbiyQvTDe4d3wLTYHE+64ojQc+fiEoPMH6lnGK2NakcshMZIMaDRHhBQ55waScQXkq9
+	v4pjIAKBdiuttIF4w+L1hTDS2gYkOAwYB9UnVCrvwCuqJSrAvZrp9OoxbBce5xQR0xgJ/B
+	T+6yjSIZ0HODgqBg3Wo08w2OTwJDTck=
+Date: Fri, 8 Mar 2024 05:09:13 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240304-pci-dbi-rework-v9-7-29d433d99cda@linaro.org>
+Subject: Re: [PATCH v2 1/4] drm/bridge: Add fwnode based helpers to get the
+ next bridge
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Andrzej Hajda <andrzej.hajda@intel.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>,
+ Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+ Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Phong LE <ple@baylibre.com>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org
+References: <20240307172334.1753343-1-sui.jingfeng@linux.dev>
+ <20240307172334.1753343-2-sui.jingfeng@linux.dev>
+ <CAA8EJpp8tsHi0RhsJXG+r6nOsV3AUC_n6jNHL0Cr6Ku2h3NMog@mail.gmail.com>
+ <45f59f31-1f03-4a96-adb6-25c7cdd5e8a1@linux.dev>
+ <CAA8EJpqq1-cEke6wEFZFDnpz4tFBcL6HF3=Qtf-8Q3WbogLS8A@mail.gmail.com>
+ <c84fcdba-af50-4212-a8e3-f492c2b02ce4@linux.dev>
+ <CAA8EJppTcPO3j7GpGcGbKPUjQ=3rTMMOrU1SYR3mtkWLztf2qQ@mail.gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Sui Jingfeng <sui.jingfeng@linux.dev>
+In-Reply-To: <CAA8EJppTcPO3j7GpGcGbKPUjQ=3rTMMOrU1SYR3mtkWLztf2qQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Mar 04, 2024 at 02:52:19PM +0530, Manivannan Sadhasivam wrote:
-> "core_init_notifier" flag is set by the glue drivers requiring refclk from
-> the host to complete the DWC core initialization. Also, those drivers will
-> send a notification to the EPF drivers once the initialization is fully
-> completed using the pci_epc_init_notify() API. Only then, the EPF drivers
-> will start functioning.
-> 
-> For the rest of the drivers generating refclk locally, EPF drivers will
-> start functioning post binding with them. EPF drivers rely on the
-> 'core_init_notifier' flag to differentiate between the drivers.
-> Unfortunately, this creates two different flows for the EPF drivers.
-> 
-> So to avoid that, let's get rid of the "core_init_notifier" flag and follow
-> a single initialization flow for the EPF drivers. This is done by calling
-> the dw_pcie_ep_init_notify() from all glue drivers after the completion of
-> dw_pcie_ep_init_registers() API. This will allow all the glue drivers to
-> send the notification to the EPF drivers once the initialization is fully
-> completed.
-> 
-> Only difference here is that, the drivers requiring refclk from host will
-> send the notification once refclk is received, while others will send it
-> during probe time itself.
-> 
-> Reviewed-by: Frank Li <Frank.Li@nxp.com>
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
-
-You have removed the .core_init_notifier from EPC drivers,
-but the callback in EPF drivers is still called .core_init.
-
-Yes, this was a confusing name even before this patch, but
-after this patch, it is probably even worse :)
-
-The callback should be named from the perspective of EPF drivers IMO.
-core_init sounds like a EPF driver should initialize the core.
-(But that is of course done by the EPC driver.)
-
-The .link_up() callback name is better, the EPF driver is informed
-that the link is up.
-
-Perhaps we could rename .core_init to .core_up ?
-
-It tells the EPF drivers that the core is now up.
-(And the EPF driver can configure the BARs.)
+Hi,
 
 
-Considering that you are not changing the name of the callback,
-and that it was already confusing before this patch:
-Reviewed-by: Niklas Cassel <cassel@kernel.org>
+On 2024/3/8 04:40, Dmitry Baryshkov wrote:
+>>> But really, there is nothing so hard about it:
+>>> - Change of_node to fw_node, apply an automatic patch changing this in
+>>> bridge drivers.
+>>> - Make drm_of_bridge functions convert passed of_node and comp
+>>>
+>>> After this we can start cleaning up bridge drivers to use fw_node API
+>>> natively as you did in your patches 2-4.
+>> Yes, it's not so hard. But I'm a little busy due to other downstream developing
+>> tasks. Sorry, very sorry!
+>>
+>> During the talk with you, I observed that you are very good at fwnode domain.
+>> Are you willing to help the community to do something? For example, currently
+>> the modern drm bridge framework is corrupted by legacy implement, is it possible
+>> for us to migrate them to modern? Instead of rotting there? such as the lontium-lt9611uxc.c
+>> which create a drm connector manually, not modernized yet and it's DT dependent.
+>> So, there are a lot things to do.
+> Actually, lontium-lt9611uxc.c does both of that 😉 It supports
+> creating a connector and it as well supports attaching to a chain
+> without creating a connector. Pretty nice, isn't it?
+
+
+I'm not very sure. But I remember a most experienced told me that
+"Not having anything connector-related in the drm_bridge driver is a canonical design".
+And I think he is right and I believed.
+
 
