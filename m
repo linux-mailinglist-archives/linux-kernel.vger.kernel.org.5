@@ -1,284 +1,212 @@
-Return-Path: <linux-kernel+bounces-95381-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95382-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EC84874D08
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:09:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D75ED874D0A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:10:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DD831B2152D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:09:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EBAFB1C22D23
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:10:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3450912837F;
-	Thu,  7 Mar 2024 11:09:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94DA9128379;
+	Thu,  7 Mar 2024 11:09:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AHZ4oEmv"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	dkim=pass (1024-bit key) header.d=marvell.com header.i=@marvell.com header.b="K9D1v0tA"
+Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63B22127B43;
-	Thu,  7 Mar 2024 11:09:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709809744; cv=none; b=LxhCyt27hUcc6m5GNGh88nZTSzO9Wv4Lh5fWGDVigbAA14IOTb1iY6C/y6Q5+8KXojLM87Co8H/uXTyq2XjHuBQxY6lfWRawIg1/b5Cq2/NYIDs1zhrERMAuIriRkSOeW5C9q+29wZCtWSJxS4CY1TkR0qah6I8icQOtWuFh6b0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709809744; c=relaxed/simple;
-	bh=ouDZ0ujGuKmlj1Z5zELF5CFA2af4msmT0TU1fhL9Md8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Y4MycYDJWUF5dU9C4TFpNapcwY8TfsJ0RHvjNvpwW/4RyLg7/b5OWcqN9V1EusPylM7Sbjgi98LoXAkd9L2H8CqlDXDIhRfoiIqngfdokzgBBYa7D/LoTBcPTSPnt8Jajn+hsa92CpI/ydqsPOEEAzMolKfUYEaqc3C30a+UoxA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AHZ4oEmv; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709809742; x=1741345742;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ouDZ0ujGuKmlj1Z5zELF5CFA2af4msmT0TU1fhL9Md8=;
-  b=AHZ4oEmv7zm2M2jcvGE5X+qdtH21AWdeB/fSB99ilbiDIUsxh9Ch2U5M
-   s2dpW08mr6VHoHOzoTSG1Yj7zpO7ahTstQEsvahzsQHJzVU8uu9RUGfD5
-   XvhEDMHHMjE1TsWFhhlMu7Ex1ufcKlCVfRvJ7HQgNf9ruyIu/b/jbhTPK
-   lCQNOPZ+ypZFN6EBcZxSMefxZo8dPCfeEZvS/mdevc3v5Mfk/ybQkzQBo
-   bcB/8sEUHpmU+roCOKWUGVvoiSaF6aR7ew8W2umUKgmcJ0w5ZvVLb3qNu
-   heU0zbACBHcxTpw252NnXxCfOaPHjtYHwLwo5hb+jeaBq2lpN3e2X57xv
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11005"; a="4329822"
-X-IronPort-AV: E=Sophos;i="6.06,211,1705392000"; 
-   d="scan'208";a="4329822"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 03:09:01 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,211,1705392000"; 
-   d="scan'208";a="10057605"
-Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
-  by orviesa010.jf.intel.com with ESMTP; 07 Mar 2024 03:08:56 -0800
-Received: from kbuild by b21307750695 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1riBcK-00056n-2K;
-	Thu, 07 Mar 2024 11:08:52 +0000
-Date: Thu, 7 Mar 2024 19:08:23 +0800
-From: kernel test robot <lkp@intel.com>
-To: Li Zhijian <lizhijian@fujitsu.com>, linux-kernel@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, y-goto@fujitsu.com,
-	Alison Schofield <alison.schofield@intel.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Linux Memory Management List <linux-mm@kvack.org>,
-	Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Dave Jiang <dave.jiang@intel.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, hpa@zytor.com,
-	Ingo Molnar <mingo@redhat.com>, Ira Weiny <ira.weiny@intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Vishal Verma <vishal.l.verma@intel.com>, linux-cxl@vger.kernel.org,
-	nvdimm@lists.linux.dev, x86@kernel.org, kexec@lists.infradead.org,
-	Li Zhijian <lizhijian@fujitsu.com>
-Subject: Re: [PATCH v3 3/7] nvdimm: pmem: assign a parent resource for
- vmemmap region for the fsdax
-Message-ID: <202403071804.b9EgMxWo-lkp@intel.com>
-References: <20240306102846.1020868-4-lizhijian@fujitsu.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D909DDC9;
+	Thu,  7 Mar 2024 11:09:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.148.174
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709809798; cv=fail; b=JefDGpY0KtoEBFGQN7uW/l61aWJg4gClwhAakNUYmYTpY+d61yO/ioLrme0ECpJ5vYoqHjcQsfNEQLWxdYA6dEkmlWXTMnblIqQWh1t8YuBx6xZahgdokiI1hd/LY2qoEkbfcr9+l9Z0xYafBxupco3DvczmW+rsBWUsW4AtZjg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709809798; c=relaxed/simple;
+	bh=X1uB62Iarnij7sg30LUSbApES93AqYLIXF2IvbDCF48=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=p1GcSipGLOClcWHPYJ1d2bmlNc9cEfUJgPkHZBXyZ6yw2kFF3hXaXnB5QNJ5qtoVC6FohgYxdS86Dol2hWe7i69bpO8JgrO5RsWCW/pL4mCnChThW/N+rIgMXZMNHVED8RznhzUmC7F12Mi2F3wkJZtDe/xMjQzaj4bJ269FNGY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (1024-bit key) header.d=marvell.com header.i=@marvell.com header.b=K9D1v0tA; arc=fail smtp.client-ip=67.231.148.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+	by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4275jvFl008425;
+	Thu, 7 Mar 2024 03:09:42 -0800
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2169.outbound.protection.outlook.com [104.47.55.169])
+	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3wq7q8rw5r-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 07 Mar 2024 03:09:41 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Bjfx0hiI8cldxv+RS8yIE10Oh5bVrbZaN5tf2OUOOtLp+3OtfRNqyKoxWDe27rSNIojuX55iP6olqF3WV1WzNc3pH2RV5qPSUALquk9UjiPnvrav5fSxl1yebspdhGCrmyitudro1+a0t4+iSNB4uC7aswppSY7xULdiS2V/jBZKlnv4qBhUj1aHXFINclrU3zD/hhoD0ZuqtRTHYFKU9ceRvFdjSRel9SMXDZH3KrfwTZ0L8Zy0PN5iBvBSL0EBBi6KFcJQg6DFQL4vOd+zosiBLWwbEfuH+v2KpTmK+jbK/rRuzxYCG7lqkcAEbP5c2n6wNkeGqgGD+plOSYWW6g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=YZA+nrHgi8ZJWbpMwPnU1PCwp+7nK1nNE81dnoAQb4s=;
+ b=nW0sawY6Ty3iBPNIxTa0Yy0z6x70E/3ZzcPD4GZSQYwM4MvbsyeXpscsxnNZHF6XVCUvny+gsXJ6kaopwIViGZkbpRxDlDAxo5fUSI2TJSJAcV8ZewXvzN02d7FGQWxcuSGJTJv0Yy8NXhbZyLM209yaIb0K6x7Q5jlkN/ad5MwBQyffgeyZgFhRYj8rwSfmi3Bdx7RF7gt+KtrBhr2K0qjD5fvKCfvfTm55otBg0rjGfJclGyh4c+hsyoGRGTEkx3E/V+v7nwhojNJU9qY1nHDfiNnvgb6m3jdpu7gumFqQpUuvLOWrMFUBXj7Cj9QJF7iPTtGRqJlRjd34tDAG7A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YZA+nrHgi8ZJWbpMwPnU1PCwp+7nK1nNE81dnoAQb4s=;
+ b=K9D1v0tAcl+oBfFUr/MjWLAtoN4RVNiREq89DZJSAaJ0cdpEQneEsvZ+xl8nn97ZAsnGkeluVwpRr5P7yN/IAcyZ+ZEdaH6hQscL3LP56dIA2UPVErv3RP6mgV1kxH58fJe6BhDfEZyYpxB9ZxdlUPDMArNP+48ZJyxtrgXicVw=
+Received: from BY3PR18MB4737.namprd18.prod.outlook.com (2603:10b6:a03:3c8::7)
+ by IA2PR18MB5852.namprd18.prod.outlook.com (2603:10b6:208:4ad::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.26; Thu, 7 Mar
+ 2024 11:09:39 +0000
+Received: from BY3PR18MB4737.namprd18.prod.outlook.com
+ ([fe80::4c91:458c:d14d:2fa6]) by BY3PR18MB4737.namprd18.prod.outlook.com
+ ([fe80::4c91:458c:d14d:2fa6%6]) with mapi id 15.20.7362.019; Thu, 7 Mar 2024
+ 11:09:39 +0000
+From: Sunil Kovvuri Goutham <sgoutham@marvell.com>
+To: Jijie Shao <shaojijie@huawei.com>,
+        "yisen.zhuang@huawei.com"
+	<yisen.zhuang@huawei.com>,
+        "salil.mehta@huawei.com" <salil.mehta@huawei.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com"
+	<edumazet@google.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>
+CC: "shenjian15@huawei.com" <shenjian15@huawei.com>,
+        "wangjie125@huawei.com"
+	<wangjie125@huawei.com>,
+        "liuyonglong@huawei.com" <liuyonglong@huawei.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH net 8/8] net: hns3: add checking for vf id of mailbox
+Thread-Topic: [PATCH net 8/8] net: hns3: add checking for vf id of mailbox
+Thread-Index: AQHacH/yNUXaOHAlAkWKtgnV1KsXZw==
+Date: Thu, 7 Mar 2024 11:09:39 +0000
+Message-ID: 
+ <BY3PR18MB473795159A7766BFE321B424C6202@BY3PR18MB4737.namprd18.prod.outlook.com>
+References: <20240307010115.3054770-1-shaojijie@huawei.com>
+ <20240307010115.3054770-9-shaojijie@huawei.com>
+In-Reply-To: <20240307010115.3054770-9-shaojijie@huawei.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BY3PR18MB4737:EE_|IA2PR18MB5852:EE_
+x-ms-office365-filtering-correlation-id: 65962d4b-1357-47b6-ced7-08dc3e9714ea
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 
+ rgx8rKQ1M/utXs4kdYk117O7JsPswuavxGq8T5Yh2sRPWkk0pYsmAnBNp3OcQ9j9ka4Y5gzjMgqXfPBojGdATaBNVGoYvbr/wPI84nJ6ID2z7VzCE+P44tuJ8Abjgp51G1G83R+lx1lChQSsIXMgR4Ahh9E6CI6LLwy2NgJtO97hdkcDKvtr2kzFLFROxDPE6eJATiG3Tiq0VyLEjt0a+MAmWrRl1nYZ6Iio0MGb6DQ+ehRw1CugKPW5YihkeE37Mg4MojKNwd1ntJcDbx/gI9XYWQ5dZJySXvzoFGoucDPD/CiL1JheL8s3CvvYEYkHNS2hXkSk/LXwEEUU9J7PAmszijO9O1CBTHCfQJ93BZOIhGzI4xSqZQ82vTTQGTj3kubav6j4vV/2tx83FDXpzkOsOS4ayQM8DS0xV/MW2FPlfofgizemQtpN9JuV/Wkc4kiiDQLZ/kZVBNdbbryDV8HWnVZj2wCEjOwReQ/CNkdB8v84yAnY284CE7A4bzyUFFxyE3i0SborZA2G2nnZEJOGJXGO8toAX9ln2kODvW6kPQw9fo8W4qogfQ/hq354Lu3896pmLmmqsyj/74IAjQo/O9mCzkItxlew5ps7wHBmzv1LY1eur+axsYWBJcDX7dzetRPFnsn9YAKzaf7npa5J+KJxJI9PJz/P6OfC5qo0QGgnUOXyeMdIF4M+37TepSRoMoWIiGF5Sky+dBOQI51CWGMARQbM9dkKLDk09HE=
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY3PR18MB4737.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(38070700009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?us-ascii?Q?zDpmn0ipZHzvnJcEuTS8Y2GkM+vBN7shZ6bM5STmwNijBdWGGVyg0qccwzgj?=
+ =?us-ascii?Q?2ILXG4qjnHed73kQslmjZFsneGV1WPf1qot31Ocur7DaAXYdLFJqsKofXChb?=
+ =?us-ascii?Q?JzLLJx6OVyuXGA08kVM0ZtYjq9ncd3CQ0Z1BvbOttefrmdEnlXOLHsyB1KNu?=
+ =?us-ascii?Q?bQcMKuNQlDM+rIRKprGlUJJE+zrzryLqNMeehZPE8/OsQFivx7kh9rUFI8h2?=
+ =?us-ascii?Q?ngskVhqKvw9FPUOWjhw26kUu+mKV3kS8D65YtAij/uRc2zY2qqvPt6KY+47G?=
+ =?us-ascii?Q?fMMxvdKRCVKYTZuneZpkvpYtqTA1gyJNLbGkNIUEfNNjWINOXnVoZfKAJs6+?=
+ =?us-ascii?Q?CD48qzWfceGh7zZkOw/4tO+WmlY5lXL0bHFftzY12Z+f+o+o+VBoNwwLRlpH?=
+ =?us-ascii?Q?KB8qW+phN0uR7IH2GIbKZnLp5XEW+ZeHP/z0UzsqcAmC/SWkkiTN6jcz9p0L?=
+ =?us-ascii?Q?mYVRxqW43g+Z+dwgHrLme+YJn2fGpnRhtQxOeA/KyFF9WQpBYsP6ofHSZ/I7?=
+ =?us-ascii?Q?gk1DjSp0OJkDTE/0W6CrmMH8qBt0vq//V27jO4v/9eVrvhgESBe1q884b3bu?=
+ =?us-ascii?Q?0ihc3KIomUKOqE+9A/O4+8rzt2Nz+16vg/XxaB4Bf6skeqLMBbq2aqqL4/MA?=
+ =?us-ascii?Q?9E7zAr+BfXvSU5eLde1gr9ADR+vojD4BDK0GKM3yq9Z7abkp8HunFRmaPjO3?=
+ =?us-ascii?Q?NA772SiYG1OdJ82/cbRCPx70hjcmm1FoUxZ9ji1hFHbM/oItAy08fjin9UIK?=
+ =?us-ascii?Q?fAAxzgSJ/DK/12t3g/eDOHNQHScrnL74x3yMZwKUojMElm1CwSoiSFneQLYL?=
+ =?us-ascii?Q?TRrM8wakT21kYDwrLP4h80+zHZm8ICasoxqKckkUsKnv7bd4GsU98fNcYOmd?=
+ =?us-ascii?Q?Q2Dp2KApmfhJd3xYtaCDPD3UAGD7FE7kX4Os3AtrzZS5dTmBSVWLdC0M8cnY?=
+ =?us-ascii?Q?IPIU05F5xfLmpZ/nx9h8Mi9I6KxPNBJiZCrBG3dtBQ5BmQ0q1io524YrqDpc?=
+ =?us-ascii?Q?VcAA5NIeWSsKlr7CirMiVOiDPBMleTIdM+1qrey3ZukPUYBUxcjyx++2m/9l?=
+ =?us-ascii?Q?6r0+mPCmQclDIrLsAktgKffZ/74g7s/USN5s58FYRyLp3Uj99m0nmZo60QJO?=
+ =?us-ascii?Q?3sNDnKOTW90CdsHDtpL76GuVptlEkG4IbYQiRK50zH+jZDHtEjcqHDXiKoCd?=
+ =?us-ascii?Q?RfzRiTivZpAy6DAOeFatgatsRz6NrXCGCKAntf7OYJ/eE4rdDireH9hLUKNI?=
+ =?us-ascii?Q?rpLIIGOmaEhHwSMqRZnR3TChwQwf4j5uNxP7wuJS8+o68VFkj6g6kmpkyoRY?=
+ =?us-ascii?Q?W9Nhd5gkjyCnBKxZL3Y2nLINN40T5YRFgY4B++cjn4d7mZsheO+REEXGbUgz?=
+ =?us-ascii?Q?KLJRIGGgiuPdjmopM0UqjeO6PylOdQw0U6Es8AtFUOd+GM9xhYydsitWqyzo?=
+ =?us-ascii?Q?KZ74KVUkp0J9nyXRp/kwSItOEKKC4VAUJlquZV6Tpu9U8VlHvUwrlsz/eWeR?=
+ =?us-ascii?Q?Jz46cP8IJ5kwT1ze200a0rj3U5dOIoN4iHQkMgfqVlLvcGtGbe9IxhxLUd3k?=
+ =?us-ascii?Q?7f6qjLbw1y/ZWjv/R/i9GeUkZhxF79G6S9b8vgtT?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240306102846.1020868-4-lizhijian@fujitsu.com>
-
-Hi Li,
-
-kernel test robot noticed the following build errors:
-
-[auto build test ERROR on nvdimm/libnvdimm-for-next]
-[also build test ERROR on tip/x86/core linus/master v6.8-rc7]
-[cannot apply to akpm-mm/mm-everything nvdimm/dax-misc next-20240306]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Li-Zhijian/mm-memremap-register-unregister-altmap-region-to-a-separate-resource/20240306-183118
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/nvdimm/nvdimm.git libnvdimm-for-next
-patch link:    https://lore.kernel.org/r/20240306102846.1020868-4-lizhijian%40fujitsu.com
-patch subject: [PATCH v3 3/7] nvdimm: pmem: assign a parent resource for vmemmap region for the fsdax
-config: loongarch-allmodconfig (https://download.01.org/0day-ci/archive/20240307/202403071804.b9EgMxWo-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240307/202403071804.b9EgMxWo-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403071804.b9EgMxWo-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   drivers/nvdimm/pmem.c: In function 'pmem_attach_disk':
->> drivers/nvdimm/pmem.c:501:9: error: implicit declaration of function 'pgmap_parent_resource' [-Werror=implicit-function-declaration]
-     501 |         pgmap_parent_resource(&pmem->pgmap, parent);
-         |         ^~~~~~~~~~~~~~~~~~~~~
-   cc1: some warnings being treated as errors
+X-OriginatorOrg: marvell.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY3PR18MB4737.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 65962d4b-1357-47b6-ced7-08dc3e9714ea
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Mar 2024 11:09:39.1564
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: /+0XiEtzy0KhSEA+9YwaSfhku1Gyd2z1xIPVp3v2wM7z7foN9RmUv3+r6mY7WjVVHW9PplBl5scLT0YEcXo/sA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA2PR18MB5852
+X-Proofpoint-ORIG-GUID: 8OALq4WKtgRU5YdeFiliB9LIHwcOE-Am
+X-Proofpoint-GUID: 8OALq4WKtgRU5YdeFiliB9LIHwcOE-Am
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-07_07,2024-03-06_01,2023-05-22_02
 
 
-vim +/pgmap_parent_resource +501 drivers/nvdimm/pmem.c
 
-   448	
-   449	static int pmem_attach_disk(struct device *dev,
-   450			struct nd_namespace_common *ndns)
-   451	{
-   452		struct nd_namespace_io *nsio = to_nd_namespace_io(&ndns->dev);
-   453		struct nd_region *nd_region = to_nd_region(dev->parent);
-   454		int nid = dev_to_node(dev), fua;
-   455		struct resource *res = &nsio->res, *parent;
-   456		struct range bb_range;
-   457		struct nd_pfn *nd_pfn = NULL;
-   458		struct dax_device *dax_dev;
-   459		struct nd_pfn_sb *pfn_sb;
-   460		struct pmem_device *pmem;
-   461		struct request_queue *q;
-   462		struct gendisk *disk;
-   463		void *addr;
-   464		int rc;
-   465	
-   466		pmem = devm_kzalloc(dev, sizeof(*pmem), GFP_KERNEL);
-   467		if (!pmem)
-   468			return -ENOMEM;
-   469	
-   470		rc = devm_namespace_enable(dev, ndns, nd_info_block_reserve());
-   471		if (rc)
-   472			return rc;
-   473	
-   474		/* while nsio_rw_bytes is active, parse a pfn info block if present */
-   475		if (is_nd_pfn(dev)) {
-   476			nd_pfn = to_nd_pfn(dev);
-   477			rc = nvdimm_setup_pfn(nd_pfn, &pmem->pgmap);
-   478			if (rc)
-   479				return rc;
-   480		}
-   481	
-   482		/* we're attaching a block device, disable raw namespace access */
-   483		devm_namespace_disable(dev, ndns);
-   484	
-   485		dev_set_drvdata(dev, pmem);
-   486		pmem->phys_addr = res->start;
-   487		pmem->size = resource_size(res);
-   488		fua = nvdimm_has_flush(nd_region);
-   489		if (!IS_ENABLED(CONFIG_ARCH_HAS_UACCESS_FLUSHCACHE) || fua < 0) {
-   490			dev_warn(dev, "unable to guarantee persistence of writes\n");
-   491			fua = 0;
-   492		}
-   493	
-   494		parent = devm_request_mem_region(dev, res->start, resource_size(res),
-   495					dev_name(&ndns->dev));
-   496		if (!res) {
-   497			dev_warn(dev, "could not reserve region %pR\n", res);
-   498			return -EBUSY;
-   499		}
-   500	
- > 501		pgmap_parent_resource(&pmem->pgmap, parent);
-   502	
-   503		disk = blk_alloc_disk(nid);
-   504		if (!disk)
-   505			return -ENOMEM;
-   506		q = disk->queue;
-   507	
-   508		pmem->disk = disk;
-   509		pmem->pgmap.owner = pmem;
-   510		pmem->pfn_flags = PFN_DEV;
-   511		if (is_nd_pfn(dev)) {
-   512			pmem->pgmap.type = MEMORY_DEVICE_FS_DAX;
-   513			pmem->pgmap.ops = &fsdax_pagemap_ops;
-   514			addr = devm_memremap_pages(dev, &pmem->pgmap);
-   515			pfn_sb = nd_pfn->pfn_sb;
-   516			pmem->data_offset = le64_to_cpu(pfn_sb->dataoff);
-   517			pmem->pfn_pad = resource_size(res) -
-   518				range_len(&pmem->pgmap.range);
-   519			pmem->pfn_flags |= PFN_MAP;
-   520			bb_range = pmem->pgmap.range;
-   521			bb_range.start += pmem->data_offset;
-   522		} else if (pmem_should_map_pages(dev)) {
-   523			pmem->pgmap.range.start = res->start;
-   524			pmem->pgmap.range.end = res->end;
-   525			pmem->pgmap.nr_range = 1;
-   526			pmem->pgmap.type = MEMORY_DEVICE_FS_DAX;
-   527			pmem->pgmap.ops = &fsdax_pagemap_ops;
-   528			addr = devm_memremap_pages(dev, &pmem->pgmap);
-   529			pmem->pfn_flags |= PFN_MAP;
-   530			bb_range = pmem->pgmap.range;
-   531		} else {
-   532			addr = devm_memremap(dev, pmem->phys_addr,
-   533					pmem->size, ARCH_MEMREMAP_PMEM);
-   534			bb_range.start =  res->start;
-   535			bb_range.end = res->end;
-   536		}
-   537	
-   538		if (IS_ERR(addr)) {
-   539			rc = PTR_ERR(addr);
-   540			goto out;
-   541		}
-   542		pmem->virt_addr = addr;
-   543	
-   544		blk_queue_write_cache(q, true, fua);
-   545		blk_queue_physical_block_size(q, PAGE_SIZE);
-   546		blk_queue_logical_block_size(q, pmem_sector_size(ndns));
-   547		blk_queue_max_hw_sectors(q, UINT_MAX);
-   548		blk_queue_flag_set(QUEUE_FLAG_NONROT, q);
-   549		blk_queue_flag_set(QUEUE_FLAG_SYNCHRONOUS, q);
-   550		if (pmem->pfn_flags & PFN_MAP)
-   551			blk_queue_flag_set(QUEUE_FLAG_DAX, q);
-   552	
-   553		disk->fops		= &pmem_fops;
-   554		disk->private_data	= pmem;
-   555		nvdimm_namespace_disk_name(ndns, disk->disk_name);
-   556		set_capacity(disk, (pmem->size - pmem->pfn_pad - pmem->data_offset)
-   557				/ 512);
-   558		if (devm_init_badblocks(dev, &pmem->bb))
-   559			return -ENOMEM;
-   560		nvdimm_badblocks_populate(nd_region, &pmem->bb, &bb_range);
-   561		disk->bb = &pmem->bb;
-   562	
-   563		dax_dev = alloc_dax(pmem, &pmem_dax_ops);
-   564		if (IS_ERR(dax_dev)) {
-   565			rc = PTR_ERR(dax_dev);
-   566			goto out;
-   567		}
-   568		set_dax_nocache(dax_dev);
-   569		set_dax_nomc(dax_dev);
-   570		if (is_nvdimm_sync(nd_region))
-   571			set_dax_synchronous(dax_dev);
-   572		rc = dax_add_host(dax_dev, disk);
-   573		if (rc)
-   574			goto out_cleanup_dax;
-   575		dax_write_cache(dax_dev, nvdimm_has_cache(nd_region));
-   576		pmem->dax_dev = dax_dev;
-   577	
-   578		rc = device_add_disk(dev, disk, pmem_attribute_groups);
-   579		if (rc)
-   580			goto out_remove_host;
-   581		if (devm_add_action_or_reset(dev, pmem_release_disk, pmem))
-   582			return -ENOMEM;
-   583	
-   584		nvdimm_check_and_set_ro(disk);
-   585	
-   586		pmem->bb_state = sysfs_get_dirent(disk_to_dev(disk)->kobj.sd,
-   587						  "badblocks");
-   588		if (!pmem->bb_state)
-   589			dev_warn(dev, "'badblocks' notification disabled\n");
-   590		return 0;
-   591	
-   592	out_remove_host:
-   593		dax_remove_host(pmem->disk);
-   594	out_cleanup_dax:
-   595		kill_dax(pmem->dax_dev);
-   596		put_dax(pmem->dax_dev);
-   597	out:
-   598		put_disk(pmem->disk);
-   599		return rc;
-   600	}
-   601	
+> -----Original Message-----
+> From: Jijie Shao <shaojijie@huawei.com>
+> Sent: Thursday, March 7, 2024 6:31 AM
+> To: yisen.zhuang@huawei.com; salil.mehta@huawei.com;
+> davem@davemloft.net; edumazet@google.com; kuba@kernel.org;
+> pabeni@redhat.com
+> Cc: shenjian15@huawei.com; wangjie125@huawei.com;
+> liuyonglong@huawei.com; shaojijie@huawei.com; netdev@vger.kernel.org;
+> linux-kernel@vger.kernel.org
+> Subject: [EXTERNAL] [PATCH net 8/8] net: hns3: add checking for vf id of
+> mailbox
+>=20
+> From: Jian Shen <shenjian15@huawei.com>
+>=20
+> Add checking for vf id of mailbox, in order to avoid array out-of-bounds =
+risk.
+>=20
+> Signed-off-by: Jian Shen <shenjian15@huawei.com>
+> Signed-off-by: Jijie Shao <shaojijie@huawei.com>
+> ---
+>  drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c
+> b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c
+> index 4b0d07ca2505..d4a0e0be7a72 100644
+> --- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c
+> +++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c
+> @@ -1123,10 +1123,11 @@ void hclge_mbx_handler(struct hclge_dev
+> *hdev)
+>  		req =3D (struct hclge_mbx_vf_to_pf_cmd *)desc->data;
+>=20
+>  		flag =3D le16_to_cpu(crq->desc[crq->next_to_use].flag);
+> -		if (unlikely(!hnae3_get_bit(flag,
+> HCLGE_CMDQ_RX_OUTVLD_B))) {
+> +		if (unlikely(!hnae3_get_bit(flag,
+> HCLGE_CMDQ_RX_OUTVLD_B) ||
+> +			     req->mbx_src_vfid > hdev->num_req_vfs)) {
+>  			dev_warn(&hdev->pdev->dev,
+> -				 "dropped invalid mailbox message, code =3D
+> %u\n",
+> -				 req->msg.code);
+> +				 "dropped invalid mailbox message, code =3D
+> %u, vfid =3D %u\n",
+> +				 req->msg.code, req->mbx_src_vfid);
+>=20
+>  			/* dropping/not processing this invalid message */
+>  			crq->desc[crq->next_to_use].flag =3D 0;
+> --
+> 2.30.0
+>=20
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Reviewed-by: Sunil Goutham <sgoutham@marvell.com>
 
