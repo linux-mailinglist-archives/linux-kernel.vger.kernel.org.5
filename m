@@ -1,63 +1,59 @@
-Return-Path: <linux-kernel+bounces-96310-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96311-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5135875A07
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 23:12:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D778A875A0B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 23:12:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7DCF7283C6F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 22:12:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 15BFE1C217DE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 22:12:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C514713E7C9;
-	Thu,  7 Mar 2024 22:11:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7480D140360;
+	Thu,  7 Mar 2024 22:12:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bJPgzA6b"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="B/e8h3Xe"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FEE213BAEF;
-	Thu,  7 Mar 2024 22:11:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB28D13BAEF;
+	Thu,  7 Mar 2024 22:12:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709849519; cv=none; b=TYJXmu5YgbpgapZeu8ZRWjbi/d0y09KotYkJgSiH9KctacIppOjp8PBY5I1d1KH2GsnvIZfx75BFfJvKWMO5WKFdDDLoB0ef2uBnIaPspMSVQcdL4I2TcEw+jO35/sJmMWId+YzeYMtacEotpJHBJEbC/e0App38/xhEpLEFxzE=
+	t=1709849526; cv=none; b=bIVCdL0lqUs+2hxlQGHD7MJy8kjUA2bm1vJit8cUrQZjCbP3Ri6wPjiz+xi7CxwzIFHLlkNMn8OHypaO4BnoUcOVIxpIWcIzPoiPLX7T1taQMIf408heeDrzEwQY5rSOPbiGKBbvit8m57AWJQ5Fv4KxiiXmSmfCol5H5coWbSY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709849519; c=relaxed/simple;
-	bh=+zneG3FdnzfKBUdqPSkS788CmRqblVmKTJwqyQBZWXM=;
+	s=arc-20240116; t=1709849526; c=relaxed/simple;
+	bh=qv8+spMNjo+8OovqII5cP9bZdZgkXALJcuSfu6n5vvU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GbVyzaa0DqNSiiXkGBwE0RIkoKiaCq0jYYBrGjAkO49og2fmhWYeB4n13QAG+qSL6Zt3ZOQVJ5MZhQnYISlwLw2peSKZkX7CRWOcyd2FSPteQkDnGY3aMEObxrr0KIoTRY9bE06tMriVb2B5VV8y9bVnSiMd2lEx1jtnzH/Kx4I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bJPgzA6b; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 083FAC433F1;
-	Thu,  7 Mar 2024 22:11:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709849518;
-	bh=+zneG3FdnzfKBUdqPSkS788CmRqblVmKTJwqyQBZWXM=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=UxNDukiFQ1ux6PMr/SNXrIvAQDdL0p/hrvLgALpYfOdCwYvJd2j3PY41tKw2bVi2Hv8V+s6E5tfPWBDt3/IqluRx5fIL/vQ+j2uJIlvcNAJfdN8FTVRzZ1eFkyLvQZ1kkiluUBuaQPJmZ5kg5nnnip7PutWjYlUPNwPte4DapJs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=B/e8h3Xe; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA0EFC433F1;
+	Thu,  7 Mar 2024 22:12:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1709849526;
+	bh=qv8+spMNjo+8OovqII5cP9bZdZgkXALJcuSfu6n5vvU=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=bJPgzA6bfy0LRKBXEx1fGBxpNda0m3pbKJa2Gc/5s1kBIW61PX4+g12a5xuLR+01m
-	 HFRHp+4gmjCJVSVjc4GP6QAvAjQ+mmVXiFNnRAN+ik/qbgqfjp48a8J9UnYkJIpezC
-	 t+aPnQhiE39w2LDTBr1k/ctMq6pSqZF3OcTy5/2MzoON94LwF7YA7CfsgH4vchGNx2
-	 j7XbS2W1NIvOd9i8vlWVoAfUETyZX9Qt4oDcMzwdyuKlVLbHKLGLpBLRIiUO/FgxFd
-	 oYCGLoC+IEyMcuaZ2nIiIsKxX6UrEIr5nKhja4Dqcg7Kd8RcylHWYdWAfTDBueoj9D
-	 Qxc1IkT67hKKg==
-Date: Thu, 7 Mar 2024 16:11:53 -0600
-From: Rob Herring <robh@kernel.org>
-To: Yang Xiwen <forbidden405@outlook.com>
-Cc: Yisen Zhuang <yisen.zhuang@huawei.com>,
-	Salil Mehta <salil.mehta@huawei.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH net-next v9 6/9] dt-bindings: net: hisi-femac: add
- binding for Hi3798MV200 FEMAC core
-Message-ID: <20240307221153.GA3185290-robh@kernel.org>
-References: <20240307-net-v9-0-6e0cf3e6584d@outlook.com>
- <20240307-net-v9-6-6e0cf3e6584d@outlook.com>
+	b=B/e8h3Xe/bwwVojLCUzEbzD1vJb03wkXcvFdwpIN7zgCuL9UzlPe/d/KEog+HT+j0
+	 tmbv+RuNV/k7Cw9fugQCEScWqz65P6+M21SQFmr9SnTeTe7GIpqdMaiZbOBYSt3Ws8
+	 tVs+pGew39WQS5iXbWMdbN3hyri7Vd9PV80y208E=
+Date: Thu, 7 Mar 2024 22:12:04 +0000
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Elizabeth Figura <zfigura@codeweavers.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, Jonathan Corbet <corbet@lwn.net>,
+	Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+	linux-api@vger.kernel.org, wine-devel@winehq.org,
+	=?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
+	Wolfram Sang <wsa@kernel.org>,
+	Arkadiusz Hiler <ahiler@codeweavers.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Andy Lutomirski <luto@kernel.org>, linux-doc@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH v2 02/31] ntsync: Introduce NTSYNC_IOC_CREATE_SEM.
+Message-ID: <2024030721-expletive-repose-0a89@gregkh>
+References: <20240219223833.95710-1-zfigura@codeweavers.com>
+ <20240219223833.95710-3-zfigura@codeweavers.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,37 +62,34 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240307-net-v9-6-6e0cf3e6584d@outlook.com>
+In-Reply-To: <20240219223833.95710-3-zfigura@codeweavers.com>
 
-On Thu, Mar 07, 2024 at 07:34:52PM +0800, Yang Xiwen wrote:
-> HiSilicon FEMAC core is also found on Hi3798MV200 SoC. Document it in
-> binding.
+On Mon, Feb 19, 2024 at 04:38:04PM -0600, Elizabeth Figura wrote:
+> This corresponds to the NT syscall NtCreateSemaphore().
 > 
-> Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
+> Semaphores are one of three types of object to be implemented in this driver,
+> the others being mutexes and events.
 > 
-> # Conflicts:
-> #	Documentation/devicetree/bindings/net/hisilicon,hisi-femac.yaml
+> An NT semaphore contains a 32-bit counter, and is signaled and can be acquired
+> when the counter is nonzero. The counter has a maximum value which is specified
+> at creation time. The initial value of the semaphore is also specified at
+> creation time. There are no restrictions on the maximum and initial value.
+> 
+> Each object is exposed as an file, to which any number of fds may be opened.
+> When all fds are closed, the object is deleted.
+> 
+> Objects hold a pointer to the ntsync_device that created them. The device's
+> reference count is driven by struct file.
+> 
+> Signed-off-by: Elizabeth Figura <zfigura@codeweavers.com>
 
-Need to drop this.
+I want to take these, but I need someone who knows how to review
+locking/sync primitives to give it a review to verify that it is working
+properly within the kernel constraints we have here.
 
-> ---
->  Documentation/devicetree/bindings/net/hisilicon,hisi-femac.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/net/hisilicon,hisi-femac.yaml b/Documentation/devicetree/bindings/net/hisilicon,hisi-femac.yaml
-> index 5cd2331668bc..4f8a07864eb4 100644
-> --- a/Documentation/devicetree/bindings/net/hisilicon,hisi-femac.yaml
-> +++ b/Documentation/devicetree/bindings/net/hisilicon,hisi-femac.yaml
-> @@ -16,6 +16,7 @@ properties:
->    compatible:
->      enum:
->        - hisilicon,hi3516cv300-femac
-> +      - hisilicon,hi3798mv200-femac
->  
->    reg:
->      items:
-> 
-> -- 
-> 2.43.0
-> 
+Anyone want to give it a review?
+
+thanks,
+
+greg k-h
 
