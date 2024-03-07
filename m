@@ -1,139 +1,74 @@
-Return-Path: <linux-kernel+bounces-96263-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96264-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF21A875975
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 22:39:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DF4C875976
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 22:39:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D3471C2174D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 21:39:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49317287E67
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 21:39:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15E9813B7A4;
-	Thu,  7 Mar 2024 21:39:25 +0000 (UTC)
-Received: from bues.ch (bues.ch [80.190.117.144])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 988E713B797;
+	Thu,  7 Mar 2024 21:39:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="EFElUopV"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A951724B33;
-	Thu,  7 Mar 2024 21:39:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.190.117.144
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE780634E4
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 21:39:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709847564; cv=none; b=IzIlt6/orh1d5Sbs8q+BVhiGZKVq8Uit3OdlhpMb9rQvW4wS0Yvn69keD9KTFyrEYt2/P34enHIBl0miVFyFxqbQHNgbquY7G2vOW+I2XzuqE6lDRHgdPEfgUm5muXEe8ROaECjOLnWeiJpzuD7b8hbjvxtx1YjmQsrBlesitcE=
+	t=1709847570; cv=none; b=V2oJaEGBR7uCnYnfU8nVB3SsY24PErhZ1XjBD4dT1+mzhkj3uO9/A3S3Uw3qYVOvjYWHm+qwjvYjLSbZ1QiPxAF6Tc8NNmNlMgEMxVIaUmujvIJVIp6SfZHp93qSYtST71OquNpHDBPIX1Ep00wOyKGtRVZrW5FTdTB9HfwQaAk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709847564; c=relaxed/simple;
-	bh=zd3k2erw2uuk3c3BlzYGox7hufIJkQAw3qdZTOa76Hk=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qrDPW+hkS321ZsjoD2W88bttqneaZaIjL5SKWUp1We0nucPpFWoNVDdae+j5lm6hdMs6hNwWpC11zyV6IWfOhIdKbkte+d9v1WhLeZ7N8L9vUiDo5n5GxMTiQ06xacU7qfax2hzLIILd+SMj66s51AYFe04tej5V2tIjXjTi7NA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bues.ch; spf=pass smtp.mailfrom=bues.ch; arc=none smtp.client-ip=80.190.117.144
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bues.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bues.ch
-Received: by bues.ch with esmtpsa (Exim 4.96)
-	(envelope-from <m@bues.ch>)
-	id 1riLSN-0011K1-2v;
-	Thu, 07 Mar 2024 22:39:15 +0100
-Date: Thu, 7 Mar 2024 22:38:49 +0100
-From: Michael =?UTF-8?B?QsO8c2No?= <m@bues.ch>
-To: Rand Deeb <rand.sec96@gmail.com>
-Cc: deeb.rand@confident.ru, jonas.gorski@gmail.com, khoroshilov@ispras.ru,
- kvalo@kernel.org, linux-kernel@vger.kernel.org,
- linux-wireless@vger.kernel.org, lvc-project@linuxtesting.org,
- voskresenski.stanislav@confident.ru
-Subject: Re: [PATCH v3] ssb: Fix potential NULL pointer dereference in
- ssb_device_uevent
-Message-ID: <20240307223849.13d5b58b@barney>
-In-Reply-To: <20240307211928.170877-1-rand.sec96@gmail.com>
-References: <20240307192405.34aa9841@barney>
- <20240307211928.170877-1-rand.sec96@gmail.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1709847570; c=relaxed/simple;
+	bh=ZpdiJ/sHAU7UYJfeL4YOTYjxPWde8J9YeLVF9YbExFE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Phj2SA6/nVi/Dvni+1LYYmWy2qCoZhYIz3JUelbpyZXJlgkMCysuicF5Nu908nmicONP64NImQU5723CGlKwgnnhLTJfMDjhgBhBol/DGOl23CI5NJocYEDYL22dcUC6ccdU6p0AyL1K1q6XhsPUeRUmBsSqG7rKDvm8gKat4r4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=EFElUopV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E92A9C433F1;
+	Thu,  7 Mar 2024 21:39:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1709847570;
+	bh=ZpdiJ/sHAU7UYJfeL4YOTYjxPWde8J9YeLVF9YbExFE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=EFElUopVweKc9y+fagcMEr553mKX7cx26sPzJzpulDVemWcjZJ83VqbCwwm2ByNII
+	 NWufjEE0ZZZASBQAtxPbdbYnR4dXDn8RVT0m14xq7uut6BatBR0q8+or3SJp7Dz9LJ
+	 8U0cYoBwzk3n1z6kYJEw9/OEWrKonFIBGLMRhiog=
+Date: Thu, 7 Mar 2024 21:39:27 +0000
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Javier Martinez Canillas <javierm@redhat.com>
+Cc: linux-kernel@vger.kernel.org, javier@dowhile0.org,
+	Andrew Halaney <ahalaney@redhat.com>,
+	"Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH v3] driver core: Don't set a deferred probe timeout if
+ modules are disabled
+Message-ID: <2024030722-explicit-juror-9ba7@gregkh>
+References: <20240227231001.648698-1-javierm@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/77_XRhf9eTJBa5tLWZ8j/5.";
- protocol="application/pgp-signature"; micalg=pgp-sha512
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240227231001.648698-1-javierm@redhat.com>
 
---Sig_/77_XRhf9eTJBa5tLWZ8j/5.
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On Wed, Feb 28, 2024 at 12:09:02AM +0100, Javier Martinez Canillas wrote:
+> There is no point to schedule the workqueue to timeout the deferred probe,
+> if all the initcalls are done and modules are not enabled. The default for
+> this case is already 0 but can be overridden by the deferred_probe_timeout
+> parameter. Let's just skip this and avoid queuing work that is not needed.
 
-On Fri,  8 Mar 2024 00:19:28 +0300
-Rand Deeb <rand.sec96@gmail.com> wrote:
+As the option is already there to set the timeout to 0, why confuse
+things by trying to tie this to if modules are enabled or not?  And even
+if you do want to do that, where did you now document this new system
+behavior?
 
-> Yes, I agree, this is not critical code, but what's the point of leaving=
-=20
-> redundant conditions even if they won't make a significant performance=20
-> difference, regardless of the policy (In other words, as a friendly=20
-> discussion) ?
+thanks,
 
-The point is that leaving them in is defensive programming against future c=
-hanges
-or against possible misunderstandings of the situation.
-
-Removing this check would improve nothing.
-
-> I understand and respect your point of view as software engineer but it's=
- a
-> matter of design problems which is not our case here.
-
-No, it very well is.
-
-> Defensive programming is typically applied when there's a potential risk,=
-=20
-
-A NULL pointer dereference is Undefined Behavior.
-It can't get much worse in C.
-
-> If we adopt this
-> approach as a form of defensive programming, we'd find ourselves adding=20
-> similar conditions to numerous functions and parameters.
-
-Not at all.
-Your suggestion was about REMOVING a null pointer check.
-Not about adding one.
-I NAK-ed the REMOVAL of a null pointer check. Not the addition.
-
-> Moreover, this=20
-> would unnecessarily complicate the codebase, especially during reviews.
-
-Absolutely wrong.
-Not having a NULL check complicates reviews.
-Reviewers will have to prove that pointers cannot be NULL, if there is no c=
-heck.
-
-> so would you recommend fix the commit message as Jeff Johnson recommended=
- ?
-> or just keep it as it is ?
-
-I don't care about the commit message.
-I comment on the change itself.
-
---=20
-Michael B=C3=BCsch
-https://bues.ch/
-
---Sig_/77_XRhf9eTJBa5tLWZ8j/5.
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEEihRzkKVZOnT2ipsS9TK+HZCNiw4FAmXqM+kACgkQ9TK+HZCN
-iw7AkhAAtjwrADdXDv3c1cw4PcRMu8bD0Rn9zHyG1fgd3lFsnX2gsBGVSWgLZC8j
-rcNpXm93xPAWZ7scQOjJ26AZ8tD0CIFY7DyAACnTGx99GkEPWV6o5LLxLXXCPkJf
-Xoe8/O4l3mfGSgxRxv9zINuv2zSzHIP3IPFVRdnnKILxvX6fw7fSrkZNCbZ+DSRb
-4Apm1U3jluhvwMca98apidbXM1de7uWKW6SXN3WVxvRtPApIj/9umyDI1snkq/RQ
-GiZicGEmHH2NPLJL49bepMNBHf3YCEDhHp0b1tgkTClN3CtK207ZRdvkuPTTsJsP
-zR/2TPR3eahhqd5ZPMwn6HMt2zQaMElRtExnrlmSviv7wO+ju/PYZPNSsCo7MBpx
-pmjGcNIsAjPqQWsUt6FXgUK4deOt89hEdCIVx+jV1ciL8BhP3wg2lHIeukvAIzK2
-xIFCH2CV5q0V23gf9Ops53qTCRBpHdGmocBs/iSR+e31vhe/rcb6aEEsWDsmtkj1
-6NOyQZUceOuPJhvO6VRNQ+YsfsdbtUCGArtbfHTZbX0iSL3fVL2s2jh6plgK+1ag
-KduC4r0YB2SotyxbCtrXOsnVQz2scppQJs2vRBOxmdcc90MPJlWLzFTtTkimjvmt
-ATb9VgyM1M5E4JLxxXfBANznqYf+ERWRgw+sOqaNd68isFMIWFI=
-=MbLe
------END PGP SIGNATURE-----
-
---Sig_/77_XRhf9eTJBa5tLWZ8j/5.--
+greg k-h
 
