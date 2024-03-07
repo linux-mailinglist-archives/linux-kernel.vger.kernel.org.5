@@ -1,264 +1,263 @@
-Return-Path: <linux-kernel+bounces-95448-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95439-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF55A874DC0
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:42:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 883C5874DA5
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:39:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 76366283A27
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:42:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA2AC1C208A2
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:39:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53E7A12A157;
-	Thu,  7 Mar 2024 11:40:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22305129A87;
+	Thu,  7 Mar 2024 11:39:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="EipTBU0o";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="EGm+QrsX"
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="eQe55MjL"
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 701BC1292EC;
-	Thu,  7 Mar 2024 11:40:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709811616; cv=fail; b=IDow/+CTkTxFvd7DMjb0Iv6hI3ZqJTKaRPMSLv57dYV7jJH0PYWnq0gYqFjlygT18aTHDcmuONOVe8O4ooImTQpajWBzVw6KMZXcVBiPuAZV1A3u4Qu3xRziOEqhzudVs47pIJ3NlqcvMjhVKGma8dFkHKwKUvwpTxZKhsf6WYY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709811616; c=relaxed/simple;
-	bh=B99rGPUvBF835y3khroZlq3xQmn0nO7jXOgzTCdDIIw=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=P0r/NfN7TDWVsSOdXMRmu0UiZEhTlrZF1jrRRT6MEfERSxquqhS0XYHQUPG+/OLwSjM7/oBkV2UW+mhPlF75Eplq56Onk3DXDZvj6HOxpDefrsS4/rnz5S/sFNSatf9cjZyyOIdk68dtviiH5y82qGMSCQ+mtr3FYWfm/cplTSY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=EipTBU0o; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=EGm+QrsX; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4279ndMZ020827;
-	Thu, 7 Mar 2024 11:39:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=mS6was8Y5UUd3IwtIDaMW7u2XxA2L14SO2QPbB+mpCY=;
- b=EipTBU0oGJ/nzgllCsHpiLCrDMw9+wZ73Pz6R1lx/mJEkQ3eTjXn3XZFhKgQtGytcaV9
- jZERZS7/dQA+fVfHR80X1nIzY7bxWq0sE5mj4Cj7P1YkNqtiYZttPslu+QbGtiU0ugbB
- bLYRWEEqvNFoYQ/iQh3z0r3QaE3+XC43TvFgAWhS35hNknxtGUxjQ9Cot4LDKQZMBKX6
- eeGXirMlrxWWYfqDeOt2itfqtFOfuWYCiAHHV1oj3vOmLSwDSHCmoXO4oq0PtxmIhq3O
- L+tIalKIBIWXAg4rnWm3CmWFr4CJeRV66t6irFoWOAPUVGdgfOIYaix991TJ5kNn/A5T Lg== 
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wktq2brwb-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 07 Mar 2024 11:39:37 +0000
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 427BaWeQ040811;
-	Thu, 7 Mar 2024 11:39:35 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2041.outbound.protection.outlook.com [104.47.66.41])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3wktjgvkfk-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 07 Mar 2024 11:39:35 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=m8vA6Hi5RPhhe45q8RA0LsJUkHqIdVnUl7lCC8JO/1ptp5DtESG6Fcoc47EAV73oF+rOS+G1T3bZKOjnL3aIoSV1Szf/PxadM3CCOOhMGpIGpoe3vKRTtsHytySnrtMCQIjwR/Tefv0Dkb1Q3jNRPV6BWwBpRmbitJfvU9F+I7qqPwxA+5qCOJryLWc4R5a5q99jHIp0ZlDU18o6Pjn8N/tJV45NewZuBoqVu9Pw5ibPFmrHegro+X9vEWtasgWUwrixWavfgyHG9nXdTR4tD2Yg1ApEVN6RfObWlaX6JEd1S2IGjT26/qjxsFOGqXOL2XEq/sYgJVq5WRNSRP6VWA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mS6was8Y5UUd3IwtIDaMW7u2XxA2L14SO2QPbB+mpCY=;
- b=XB1EhTMT2JkJIbaJcHklHoNHFqyqWEu+ve09LMYumjvdeyrg4bQczLQwbeK7TLKQxPG7wL3gmKlPvPdKgTNwZm5ynqysH8wuleg8URqdnFgcX1r3LF2MTBUKLyNX9m69DrQdr8yA2A2i/Ss/fAL9seFK50cKyOB0LwlfK6bEQxqsEJpivab/2hp9vpKo3ajxOw6RZU3Ysn/wbNdteoPG9tsUKxCsyclF3PyfW7jnFrViF8wc2mjEobagp3j8dthAG9k9bFxn5sFdRrxPt08Fo6+Una8JWq6rnTVopVKucauMH3yHoIIeXrSvL9fSlqb1OSlIDM0o2e7N/QKVC8mq8w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mS6was8Y5UUd3IwtIDaMW7u2XxA2L14SO2QPbB+mpCY=;
- b=EGm+QrsXi/6jdzgx9M9ntzXvMfgCqUa2I0Fpr56lcwGg60hGSCU7qH0/qHzG0OeOvabFX7wBfskfjoWKg+lXgxdc5kvW8KXphmG+gZyS/7K6DCfKsfoKcJMuoMMsv+BmQJ5WTpX1C8ocATehVebIEU/5Cand/+RE0pHrXIErIYc=
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
- by IA0PR10MB6746.namprd10.prod.outlook.com (2603:10b6:208:43e::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.24; Thu, 7 Mar
- 2024 11:38:59 +0000
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::ae68:7d51:133f:324]) by DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::ae68:7d51:133f:324%4]) with mapi id 15.20.7362.019; Thu, 7 Mar 2024
- 11:38:59 +0000
-Message-ID: <dac177e5-793a-4955-bc82-9838a1ce6dd5@oracle.com>
-Date: Thu, 7 Mar 2024 11:38:54 +0000
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 06/14] fs: xfs: Do not free EOF blocks for forcealign
-Content-Language: en-US
-To: Dave Chinner <david@fromorbit.com>
-Cc: djwong@kernel.org, hch@lst.de, viro@zeniv.linux.org.uk, brauner@kernel.org,
-        jack@suse.cz, chandan.babu@oracle.com, axboe@kernel.dk,
-        martin.petersen@oracle.com, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        tytso@mit.edu, jbongio@google.com, ojaswin@linux.ibm.com,
-        ritesh.list@gmail.com, linux-block@vger.kernel.org
-References: <20240304130428.13026-1-john.g.garry@oracle.com>
- <20240304130428.13026-7-john.g.garry@oracle.com>
- <ZejbFuavNva4ut/3@dread.disaster.area>
-From: John Garry <john.g.garry@oracle.com>
-Organization: Oracle Corporation
-In-Reply-To: <ZejbFuavNva4ut/3@dread.disaster.area>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AM0PR04CA0083.eurprd04.prod.outlook.com
- (2603:10a6:208:be::24) To DM6PR10MB4313.namprd10.prod.outlook.com
- (2603:10b6:5:212::20)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4C01126F39;
+	Thu,  7 Mar 2024 11:39:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709811564; cv=none; b=HSXC3bewoKIBQen4CFKNS6oI7Y/gvHyWiRtONfUi9JzvTcEeuKSlKDeT4rCDWeas70+GFviOz1QWeey8bT9fMLfcRyE6vRFUqwZLpUn7i/po/Lz+fAYJ4jNGT/OQZ1ulsjQ23Z1F6iqfohafS2k4Cc9zm0LXAwfDoj6QkgZSABE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709811564; c=relaxed/simple;
+	bh=lYW4Xvnrb3pnEateFCKn9iC3QBk75W4e7BtlYDke2BM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=fRPJhXEjgam2xjBikcw+XFtVg9n2T799ryStcKHznLnmVyHsq9brUOrWOJCFUW64QIupbHapssH+wTiiw5j5kPH9lMg+RD9M1az1qJWiv3wFMIJJO06hRy8ieljWJMEeQa1GHC3p/dSLC4HZKdN/M/DdK643mxfMhJJhLBRw+tw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=eQe55MjL; arc=none smtp.client-ip=217.70.183.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPA id 5EAFBC0009;
+	Thu,  7 Mar 2024 11:39:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709811559;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=zqCO0royVyl24RgST1chkgBP+oGFft/R1sEvJ3adLr4=;
+	b=eQe55MjLemol9ZFxJckuA3xPRgXf5CICKTgSliL2UVG85qnUbu/LUr/A0w+owyNCdAMIs/
+	GraTGosX04FHUtsaDuffRnDKy9ObAdOj379EVTnTsWLjYHNfmpp6iXjB7R0WwlR4dAVJfg
+	2u/3apcI/+R6upNF3q2d09iWm5NbcRzLwIFK4StMXFpBYBl1lXSAfpHa9gSj4ZLQ21sOt6
+	Czyf9GN9jf+DbDPTIVoa4lwfOULX13VLlVamN6ba4f7yjxTbOidxZx9NHe1Bx8Wjg2X8UF
+	MmqeHRT1Yzp+W6ch+28OGCoXabP3kbZF8FcXj7NHRI122NiDC77EegeHPeLSpg==
+From: Herve Codina <herve.codina@bootlin.com>
+To: Vadim Fedorenko <vadim.fedorenko@linux.dev>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Herve Codina <herve.codina@bootlin.com>,
+	Yury Norov <yury.norov@gmail.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc: linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	Andrew Lunn <andrew@lunn.ch>,
+	Mark Brown <broonie@kernel.org>,
+	Ratheesh Kannoth <rkannoth@marvell.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: [PATCH v7 0/5] Add support for QMC HDLC
+Date: Thu,  7 Mar 2024 12:39:03 +0100
+Message-ID: <20240307113909.227375-1-herve.codina@bootlin.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|IA0PR10MB6746:EE_
-X-MS-Office365-Filtering-Correlation-Id: 30e8b0a3-8602-49d9-d663-08dc3e9b2dfa
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	R8ZRrmAtOuWxigUnnF7qH8gVn9XizHKJOTlYLw72bh5yKMzJ1Hx1ktw6Pgiu586CsoXobz/x1uG4uJxDxFxq3fc2QVcWt5pqb+9op9O83vMzYuDv9lYqHkGJnADt7a0+qQUCyT8B5gcX+YU8tgfJbkQ35DcJhIr7765lsLSRXntONqS4ciyfs1cGSdm+fRXT8c70eBJXMP+Pcc94mVHthQ+CcRS6Zz355oYVgzxaTDiVQlYiCqrvKp7BSZVm0Ja578XOTuWhNrqwfjGdwPuqSiqlH2CTToVq+bR3826uuVc0wNQrVL+N04vnAj7VBgs3Q+jxYzdwdbehWpBNh2x2ZcinQnHWBX+y/89RLZHBEEktkGZ+hdYQdNfcpr/oumyb4NrCeL5NVYupti+FmINFaTyRsx5eBSxn7H+GzpqX7Jk5VUpzKH5tTX7L0eAAWbeOHm6FcsC/VIod4E8VegvkgtDqIRR6KWXs9HQY0O9+RtO0TxZxVy08ERdb9vPDgnRHUaepUWSC1A0JblFdaNEolU3dcbSsThHvrE0GcjYIFjXyn2tmEnaYuFuLPZL/V9c0xmIcsenxId84/YWeIJVmTM6rpU+3lHn+CeGmAlXRIFaJvS2/GEWOPgsFYUM7FE+kRn72R2gk0xfbxLfyU9GtpA==
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?VkdLMTFzV1BDby82am5wYTRHZ3RPYU9nRmJiNEVPdUJVejJtWXMrSFIvbGla?=
- =?utf-8?B?T28xck5vN1ZTVUF2Z0szVzZKSkFFbnRocTdxVWU4MmlHMFBCam5pVmhyWmlI?=
- =?utf-8?B?bkduMlhmTnNVanlQWmErbXRwS3hkQnFRRWpVVG1jZUsvUDg4QkpUY3JvUHNL?=
- =?utf-8?B?N09QSE5pWmdBMzc5Vk51bUwrb0FicUVSNFcva3VhakhCZ0kyZTNXTE5PeE1w?=
- =?utf-8?B?Y2FLZWI4R3hhdjAyVGZrVVkrMlE3bDh6Yk5ONEZTWStZMmJzL043ME1rbk8r?=
- =?utf-8?B?TlhnVWRHTUxwTEtOejZZaVA4Z1hVSk1rcXErMVdYZWFPQXdjZzlKVHBXSVpJ?=
- =?utf-8?B?dm9LeUZSa1g5VE5uWUJEcHh6TlJWd1ZqdFVrTnJKUUZWRzJJUTRoZElHTHg4?=
- =?utf-8?B?Ymd1YmVVdHF1dURWTlJRVGJsbDR5aEhERDFjQXZId1V3WnU1NE1VMXE1R1F2?=
- =?utf-8?B?TUNpcXNMT1BoRUVKcWkxK1hzSnRoamlCOTJ1cWlsdzJkdjg5L3hlSmNKMzVU?=
- =?utf-8?B?MHRQbVJZNStZR0VhcFd4UzVRWDE2cDFlNXIzd0pPeFJuRnNsakg4ZkQ3TTRL?=
- =?utf-8?B?VFFWZitDYmtReGpuaWUvOFlHK3pUVjRyT3hkVi9Dc1JuWHB6b1hkNFJOQmxZ?=
- =?utf-8?B?dXVjQnhPSUowcldkL001ZDBtV0RGRkh5TUc5MkZ5cXl1bWw3eWszcUc1aXJY?=
- =?utf-8?B?b29nSEF6WnJsOHVoQ242WEpLWFJ0Tm0rWWloM3dMVE5laUpCL2RkMFpQUWds?=
- =?utf-8?B?bnhCS1owYVFmb0FqdWZmNkNOYzA4Ylp2em5BdmswTnhuS0RKeEVrcXVJaUtu?=
- =?utf-8?B?alFESmJXSXNpS0lPMXd1VSt3QTlJMVFPNDZHNXdsZ2FxOW44V3p6VlZIRm5o?=
- =?utf-8?B?WGZuc1pnQ1RZdGVPbkpQTVRMeEFKeWtwb09LRnFhZ0Ywampkc2xMS2wzQWli?=
- =?utf-8?B?d1FlWGJuWG1hdjZld0N2ZzN6Zk9SRytuSVVNOGljZ1lTWm5zcWJmUndKWWVw?=
- =?utf-8?B?WFZDMTVVSUsreDdnQlhMbm00WG4ra2lKNi9JQm9nUUgwS3F3Ym5BYmQrYVFa?=
- =?utf-8?B?Y1FMSmFrcTRxZ3Vqa0J1TU11dk9BOTBCcUllaTQraHZGeGwzQzhMZzFTY0V3?=
- =?utf-8?B?Wm1ZZE1ZbHJJSnl2cUV6RkxtZVF1VjZubkFBUm5tZVhVYXl2MVVVbW54MXJE?=
- =?utf-8?B?ck40bFhBNGZ3aTVGUlBvbFRiWUl5T25PVG1XaElYaWN3QjhhdXpaL1VZcjFE?=
- =?utf-8?B?cmxJVUpHZE1CWDNTOHVTRFJJZk9jNG04b1pjcHlmNXozVEcxN3ZRVVJsbXQr?=
- =?utf-8?B?Mmw3MTBqbDdOa1lWVkhSYjF5L1gwdkI2eVUxN3hmQTJqdnM3dXd1Q3FtR25L?=
- =?utf-8?B?VmVjcXlCWHdtYUI2Y2xsQ0V6TWNxZ05PZVJJL3B0c0xFdTdBTjZMRDQ0aytG?=
- =?utf-8?B?N3NmeEhlOURyZysyLzBRbDZuQys1V2d6Y2lrM21HTjFOWWNBMVVobDZnUUxa?=
- =?utf-8?B?bUZJa3Y3V3lvNVpWYk1wNjlLL0o5ZFR1Uy9qYks0M0V5WjNYQXZBOU9WSndr?=
- =?utf-8?B?QkxGeUxISUE2V2E2cUtJaXZVR3FDWGJEVE9oZFBFNE9XMTNTc2J0bDV1QUhP?=
- =?utf-8?B?NmFsckNMU0d1b3N6RXJuejhhR0R1bnI4YXVVMG5aS0xGUEtheXRwaU5ra0Zl?=
- =?utf-8?B?QzhUOUxDUTRMQ0tJcXFMUHJoUzltZmo1bTluNCttK25wMEx0Y1R6MUpuRTNQ?=
- =?utf-8?B?OVdCaXZyWFVaTDJhRHdVVmdYb0psV3hsR2FCRGVlTk5MU3RwenJGQkpPWXdq?=
- =?utf-8?B?MWJhc0tpUUF3Vml5UENVYlFsV2xza2JVQmFOS0FMMXlPaEtueGRDVkEvZU5q?=
- =?utf-8?B?V2p1UjRoRFN4Z0NaZjlNVTNQTUJCaFEvL21XemhmY3QrSlk2YkhIMTVnMGN1?=
- =?utf-8?B?bno1VlArN1labkRyd2dUN2RJWCtqWVdzVEUvRHBHRHNtRy91bW5ZaS9Gd053?=
- =?utf-8?B?aGVXMmRWN2thYnZRaUEwQ2ZYVnRCVHZrK1MrUEFZRFhVemsyaHQrOGUrb21J?=
- =?utf-8?B?Y0Y4VkZEZXgzVUNmaWlVK3VpNi95bWhHYkRKTjE1cWtkMnJpR0JrWnB2aDVu?=
- =?utf-8?B?RURhcHNOTHIxUWs2T2pTd0F5YW4rSjB0amprTURZYXRrNkd0b25oeEZIY0Mz?=
- =?utf-8?B?b3c9PQ==?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	7sfTzB2lXiS0AT71jTFgmvnE2FFMNZHeiAbku8oMJkRsCHTpQjfvAlkbkr0d/Fj5OzDYYhuq94FqEQs3+Lh4qVzx2buogUitrTWQ0ziVzQb0b1wL6l/n57uzTXv/0XkRd+YZqawCDTERK1R3UOetVTGY0GpIkcfmAiRedIMDhHLnSh53dT2poC86RwT1Ta4J5JZWLfSRGvkbaA8/JHVOMw9tfXLs5gEWCxtKX1Jq7iSVI+QDyyA31OXXGk5/+tfdWbrxuxCl6Bz+gCFdz+Gizp/U2nTyw0Le02+g3Gk3omXnjREQd7sPQB3fRzJSxoJznROJHn+31RvMV4+C6M+G88LG3onyLN0NmN3DWVrctzgjSnhTO8fiO8pD14UzrFexpgsswrdEp0mEvH9Hb2ZyuwQaG1/uIrsv9WVQKC/j3MWSDx+GjfEgFoL166IwBcqbzC7/DIuQG4UcGn+vhwx1jgPySfJ3WcfwBxe+Ra2KGY7pGx2ID74RjGlR52BOPP4wzfO0hcFR+matFdFI+Pf+bW795FfMQs5nnvPff9io9pjMR3ffOMBElluToYpijwW4IAQDv7o8V00puth3A/UfihFtyptub+SsBr5G7vu8UT4=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 30e8b0a3-8602-49d9-d663-08dc3e9b2dfa
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Mar 2024 11:38:59.3855
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: FjmtW0MioMQExLSmtLf7FpIFAKhUtW3G2zTXDrs6ae9scKdS9LVGusXlJi+JbWFH5CsflZWxEWqoG62219sS+A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR10MB6746
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-07_08,2024-03-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=999
- adultscore=0 phishscore=0 spamscore=0 mlxscore=0 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2403070087
-X-Proofpoint-GUID: RIgtCKAgnlvoR4xADa97vC1wqfHqMR8u
-X-Proofpoint-ORIG-GUID: RIgtCKAgnlvoR4xADa97vC1wqfHqMR8u
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: herve.codina@bootlin.com
 
+Hi,
 
->>   	 */
->>   	end_fsb = XFS_B_TO_FSB(mp, (xfs_ufsize_t)XFS_ISIZE(ip));
->> -	if (XFS_IS_REALTIME_INODE(ip) && mp->m_sb.sb_rextsize > 1)
->> +
->> +	/* Do not free blocks when forcing extent sizes */
-> 
-> That comment seems wrong - this just rounds up where we start
-> trimming from to be aligned...
+This series introduces the QMC HDLC support.
 
-ok
+Patches were previously sent as part of a full feature series and were
+previously reviewed in that context:
+"Add support for QMC HDLC, framer infrastructure and PEF2256 framer" [1]
 
-> 
->> +	if (xfs_get_extsz(ip) > 1)
->> +		end_fsb = roundup_64(end_fsb, xfs_get_extsz(ip));
->> +	else if (XFS_IS_REALTIME_INODE(ip) && mp->m_sb.sb_rextsize > 1)
->>   		end_fsb = xfs_rtb_roundup_rtx(mp, end_fsb);
-> 
-> I think this would be better written as:
-> 
-> 	/*
-> 	 * Forced extent alignment requires us to round up where we
-> 	 * start trimming from so that result is correctly aligned.
-> 	 */
-> 	if (xfs_inode_forcealign(ip)) {
-> 		if (ip->i_extsize > 1)
-> 			end_fsb = roundup_64(end_fsb, ip->i_extsize);
-> 		else if (XFS_IS_REALTIME_INODE(ip) && mp->m_sb.sb_rextsize > 1)
-> 			end_fsb = xfs_rtb_roundup_rtx(mp, end_fsb);
-> 	}
-> 
-> Because we only want end-fsb alignment when forced alignment is
-> required.
+In order to ease the merge, the full feature series has been split and
+needed parts were merged in v6.8-rc1:
+ - "Prepare the PowerQUICC QMC and TSA for the HDLC QMC driver" [2]
+ - "Add support for framer infrastructure and PEF2256 framer" [3]
 
-But why change current rtvol behaviour?
+This series contains patches related to the QMC HDLC part (QMC HDLC
+driver):
+ - Introduce the QMC HDLC driver (patches 1 and 2)
+ - Add timeslots change support in QMC HDLC (patch 3)
+ - Add framer support as a framer consumer in QMC HDLC (patch 4)
 
-> 
-> Which then makes me wonder: truncate needs this, too, doesn't it?
-> And the various fallocate() ops like hole punching and extent
-> shifting?
-> 
+Compare to the original full feature series, a modification was done on
+patch 3 in order to use a coherent prefix in the commit title.
 
-Yes, I would think so. I quickly checked rtvol for truncate and it does 
-the round up. I would need to check the relevant code for truncate and 
-fallocate for forcealign now.
+I kept the patches unsquashed as they were previously sent and reviewed.
+Of course, I can squash them if needed.
 
-I do also wonder if we could factor out this rounding up code for 
-truncate, facallocate, and whatever else.
+Compared to the previous iteration:
+  https://lore.kernel.org/linux-kernel/20240306080726.167338-1-herve.codina@bootlin.com/
+this v7 series mainly:
+- Rename a variable.
+- Fix reverse xmas tree declarations.
+- Add 'Acked-by' tag.
 
->> diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
->> index 2c439df8c47f..bbb8886f1d32 100644
->> --- a/fs/xfs/xfs_inode.c
->> +++ b/fs/xfs/xfs_inode.c
->> @@ -65,6 +65,20 @@ xfs_get_extsz_hint(
->>   	return 0;
->>   }
->>   
->> +/*
->> + * Helper function to extract extent size. It will return a power-of-2,
->> + * as forcealign requires this.
->> + */
->> +xfs_extlen_t
->> +xfs_get_extsz(
->> +	struct xfs_inode	*ip)
->> +{
->> +	if (xfs_inode_forcealign(ip) && ip->i_extsize)
->> +		return ip->i_extsize;
->> +
->> +	return 1;
->> +}
-> 
-> This can go away - if it is needed elsewhere, then I think it would
-> be better open coded because it better documents what the code is
-> doing...
-> 
+Best regards,
+Hervé
 
-I would rather get rid of xfs_get_extsz() for sure.
+[1]: https://lore.kernel.org/linux-kernel/20231115144007.478111-1-herve.codina@bootlin.com/
+[2]: https://lore.kernel.org/linux-kernel/20231205152116.122512-1-herve.codina@bootlin.com/
+[3]: https://lore.kernel.org/linux-kernel/20231128132534.258459-1-herve.codina@bootlin.com/
 
-Thanks,
-John
+Changes v6 -> v7
+  - Patch 1
+    Fix reverse xmas tree declarations splitting declaration and
+    initialization.
+
+  - Patch 2
+    No changes
+
+  - Patch 3
+    Add 'Acked-by: Yury Norov <yury.norov@gmail.com>'
+
+  - Patch 4
+    Rename array32 variable to slot_array.
+
+  - Patch 5
+    No changes
+
+Changes v5 -> v6
+  - Patch 1
+    Add missing header file inclusion.
+    Rework loop in qmc_hdlc_open() error handler.
+    Add 'Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>'
+
+  - Patch 2
+    No changes.
+
+  - Patch 3
+    Avoid breaking API calls in kernel-doc to improve readability.
+    Remove Andy's credit. Keep only his signed-off-by.
+
+  - Patch 4 and 5
+    Add	'Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>'.
+
+Changes v4 -> v5
+  - Patch 1
+    Update QMC_HDLC_RX_ERROR_FLAGS to improve readability.
+    Display an error message after releasing resources instead of
+    before.
+    Use 'struct device *dev' in probe().
+    Use dev_err_probe() in probe().
+    Do not print a message on -ENOMEM.
+    Use guard() and scoped_guard().
+
+  - Patch 3
+    Use '(). See' constructing in kernel-doc instead of '() (See ...'
+    Add 'Co-developed-by: Herve Codina <herve.codina@bootlin.com>'
+
+  - Patch 4
+    Use 'struct device *dev' in probe().
+    Use dev_err_probe() in probe().
+    Use '%64pb' instead of '%*pb' in printk formats.
+
+  - Patch 5
+    Use 'struct device *dev' in probe().
+    Use guard()
+
+Changes v3 -> v4
+  - Patch 1
+    Remove of.h and of_platform.h includes, add mod_devicetable.h.
+    Add a blank line in the includes list.
+
+  - Path 2
+    No changes.
+
+  - v3 patches 3 and 4 removed
+
+  - Patch 3 (new patch in v4)
+    Introduce bitmap_{scatter,gather}() based on the original patch done
+    by Andy Shevchenko.
+    Address comments already done on the original patch:
+    https://lore.kernel.org/lkml/20230926052007.3917389-3-andriy.shevchenko@linux.intel.com/
+      - Removed the returned values.
+      - Used 'unsigned int' for all indexes.
+      - Added a 'visual' description of the operations in kernel-doc.
+      - Described the relationship between bitmap_scatter() and
+        bitmap_gather().
+      - Moved bitmap_{scatter,gather}() to the bitmap.h file.
+      - Improved bitmap_{scatter,gather}() test.
+      - Reworked the commit log.
+
+  - Patch 4 (v3 patch 5)
+    Use bitmap_{scatter,gather}()
+
+  - Patches 5 (v3 patch 6)
+    No changes.
+
+Changes v2 -> v3
+  - Patch 1
+    Remove 'inline' function specifier from .c file.
+    Fix a bug introduced when added WARN_ONCE(). The warn condition must
+    be desc->skb (descriptor used) instead of !desc->skb.
+    Remove a lock/unlock section locking the entire qmc_hdlc_xmit()
+    function.
+
+  - Patch 5
+    Use bitmap_from_u64() everywhere instead of bitmap_from_arr32() and
+    bitmap_from_arr64().
+
+Changes v1 -> v2
+  - Patch 1
+    Use the same qmc_hdlc initialisation in qmc_hcld_recv_complete()
+    than the one present in qmc_hcld_xmit_complete().
+    Use WARN_ONCE()
+
+  - Patch 3 (new patch in v2)
+    Make bitmap_onto() available to users
+
+  - Patch 4 (new patch in v2)
+    Introduce bitmap_off()
+
+  - Patch 5 (patch 3 in v1)
+    Use bitmap_*() functions
+
+  - Patch 6 (patch 4 in v1)
+    No changes
+
+Changes compare to the full feature series:
+  - Patch 3
+    Use 'net: wan: fsl_qmc_hdlc:' as commit title prefix
+
+Patches extracted:
+  - Patch 1 : full feature series patch 7
+  - Patch 2 : full feature series patch 8
+  - Patch 3 : full feature series patch 20
+  - Patch 4 : full feature series patch 27
+
+Andy Shevchenko (1):
+  lib/bitmap: Introduce bitmap_scatter() and bitmap_gather() helpers
+
+Herve Codina (4):
+  net: wan: Add support for QMC HDLC
+  MAINTAINERS: Add the Freescale QMC HDLC driver entry
+  net: wan: fsl_qmc_hdlc: Add runtime timeslots changes support
+  net: wan: fsl_qmc_hdlc: Add framer support
+
+ MAINTAINERS                    |   7 +
+ drivers/net/wan/Kconfig        |  12 +
+ drivers/net/wan/Makefile       |   1 +
+ drivers/net/wan/fsl_qmc_hdlc.c | 797 +++++++++++++++++++++++++++++++++
+ include/linux/bitmap.h         | 101 +++++
+ lib/test_bitmap.c              |  42 ++
+ 6 files changed, 960 insertions(+)
+ create mode 100644 drivers/net/wan/fsl_qmc_hdlc.c
+
+-- 
+2.43.0
 
 
