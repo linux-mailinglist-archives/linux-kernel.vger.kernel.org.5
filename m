@@ -1,98 +1,79 @@
-Return-Path: <linux-kernel+bounces-95414-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95416-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5190874D59
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:25:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 002F1874D5E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:26:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C4031F25BE6
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:25:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 947991F25A5E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:26:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6E881292F9;
-	Thu,  7 Mar 2024 11:25:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OZ3uKtaj"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C5231292CE;
+	Thu,  7 Mar 2024 11:26:18 +0000 (UTC)
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE1C112882C;
-	Thu,  7 Mar 2024 11:25:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80A23DDC9;
+	Thu,  7 Mar 2024 11:26:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709810715; cv=none; b=HLW72eZt3HhfT+LHBALOqlJE/pPoJm9BgAPNCw8czUXYVHBrqJtEqfq7jIB74aLqHk1XETJrPqX6sfgQ98qQ7E4Oq4Iv/VOumYm2xCZFdrsIcz7v5nwftLObeYCqBuZG5QOiL5d2/dOPSrT34vHBPlBtmYC02XSUdj9BkgAEbAQ=
+	t=1709810778; cv=none; b=Mp0iMOAiV0+iMGN2QxFWZTqVgCAWcho/cI0/x1tVXwcvT8Upv4dm6Rg7Q32zKtHqQU7IYsvUK10gbsa707Rbz6C06q8EPIDnu1M1WF2ZBoVMaPRqEyQ1TSmu7GOacQaycLYuikgaCwvED2ugv0jxzx2aPMFiC7zN4RmwtbHCpwY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709810715; c=relaxed/simple;
-	bh=Z4HVVWAlFYg3PWtT3chRrGJgGum707BJPs2HUlzA5Uo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=FYuKks+0k2Ho/Z2hQZnUIDL7ECWgN8UDT143yJQ0y4KzDASGDm/l/LwPBCOhaqzOLGKOr3oMt7fhXvsMmL4GFAdF/gYTJg5ibatGew907aliwqf82RdUxnc/LjZjnCjUZQjy9t1W0+P8vayhvTnXScOCTcuAgnCcK5liQ3S8eT8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OZ3uKtaj; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709810713; x=1741346713;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=Z4HVVWAlFYg3PWtT3chRrGJgGum707BJPs2HUlzA5Uo=;
-  b=OZ3uKtajGN23jUk3HUKlwXYxUqn4/aYaFNIHPKFuSSJ7DAm8M7ErWZ5j
-   CpnGeaj4A8Yk8jan+YaaWNwecsew5Pi889WQrPcwgAe6poRDP5EP/mnLd
-   v2i1ezWQDFz3k5ExnmqmHuXm55yQGUArdIZslF+JwOHCDC7GyIaPJKatK
-   V002GCUZcxlRXtUlMBRJuzBlVjEA3GCdNWBS/xbsRPwJDBFBTyLjd+Eaf
-   0CXaLYmF3gfvVsXSAK7450iKhEVCwNXkAl3o1Lig0fs4rQXzulC2P3qop
-   qgVfT51YPD3P4Gos4zkQWEin5Ptrat454AYcW7fJssav5sCYT5PWLS79M
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11005"; a="5059845"
-X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
-   d="scan'208";a="5059845"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 03:25:12 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11005"; a="937045837"
-X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
-   d="scan'208";a="937045837"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 07 Mar 2024 03:25:11 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 4F3BA193; Thu,  7 Mar 2024 13:25:10 +0200 (EET)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-usb@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/1] usb: gadget/snps_udc_plat: Remove unused of_gpio.h
-Date: Thu,  7 Mar 2024 13:25:09 +0200
-Message-ID: <20240307112509.3627937-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
+	s=arc-20240116; t=1709810778; c=relaxed/simple;
+	bh=nWpDQmZNg8zKVk12QskQ7NNS05C4fI/JmZBKLdKyu8Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DY6sHoZmK4UHF9iJ9oErclAe0GrPDhAXkeUab3VPEyDgLehfQxDov9CHyVO/I++mGaDqBRLGUEKuBTlmlOG3OPEoFt/8mlV9XVTfyMHeBDZrKuWEEewfzJ9Xv2lyiiT5N5pPmd5ov1/qZ0ieZtoqrVW5zVkqQLNu9acamfwMsAU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-412b30be60dso570235e9.0;
+        Thu, 07 Mar 2024 03:26:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709810775; x=1710415575;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nWpDQmZNg8zKVk12QskQ7NNS05C4fI/JmZBKLdKyu8Q=;
+        b=kGe0IzVgbFLqK6gRlG1ecnzHoOf85s3AuX1S70wsDkFsvufMyeh7KEkmg1SiQMY3v+
+         5D35HhaRnn0Q9RgoFqUcl8ng6VLnkHyS9PkcLNSqXKriFQTCsyzu5C5Pxu+e4PL1DD7T
+         p+XY9bE/1HnYOiCZOvx4E5N8nGW3N6zTSPWNyloaP1HJUnlQEWt+jiMwus8OPizpijRH
+         v9xYDmu7dEzKVI7qPQIrzM8mQYHbd3fb+h4tIojD5AzigkTpu5U/jl12AMjk6sXrakrA
+         cGdmDlMBuHtHkTZi918JLdJtzRgOb7PrNkVQNVG1E5n5fJoHDngXR/uobWlixptJJNlN
+         p5KQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWY7YH594A6nohkFnaRlsPzCLcw2KQT7Doq9ghGHbV1N62IMkRDiVFf0UlFB/r+nfBk9TtQfLFI1H2MHLCI6WmYu4zEdftW7J/nISBM
+X-Gm-Message-State: AOJu0Yx0tJ615rQjWBSoNXzkIdlvLyUmxsesCPJ3blIGgJlchXusCtGW
+	yjmJFHqAY0L1Cs+bM0kajlrhuJ22YDZ1UO0wSnaYr0RbxshA0WLE
+X-Google-Smtp-Source: AGHT+IFm+7MxOu3fDpLkwzIcqHR9cgT2v8ltFU9iczqXmavVdH66t40nMcjz7U95lrybmjK45xN9Ug==
+X-Received: by 2002:a05:600c:1d2a:b0:412:f887:644f with SMTP id l42-20020a05600c1d2a00b00412f887644fmr1205411wms.0.1709810774608;
+        Thu, 07 Mar 2024 03:26:14 -0800 (PST)
+Received: from [10.100.102.74] (46-117-80-176.bb.netvision.net.il. [46.117.80.176])
+        by smtp.gmail.com with ESMTPSA id fb12-20020a05600c520c00b00412f81ba413sm2355351wmb.11.2024.03.07.03.26.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Mar 2024 03:26:14 -0800 (PST)
+Message-ID: <e9fbe206-aac7-470e-9191-1949632e0304@grimberg.me>
+Date: Thu, 7 Mar 2024 13:26:12 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH][next] nvmet-fc: remove unused functions nvmet_fc_iodnum
+ and nvmet_fc_fodnum
+Content-Language: he-IL, en-US
+To: Colin Ian King <colin.i.king@gmail.com>,
+ James Smart <james.smart@broadcom.com>, Christoph Hellwig <hch@lst.de>,
+ Chaitanya Kulkarni <kch@nvidia.com>, linux-nvme@lists.infradead.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240307110158.1981401-1-colin.i.king@gmail.com>
+From: Sagi Grimberg <sagi@grimberg.me>
+In-Reply-To: <20240307110158.1981401-1-colin.i.king@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-of_gpio.h is deprecated and subject to remove.
-The driver doesn't use it, simply remove the unused header.
-
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/usb/gadget/udc/snps_udc_plat.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/usb/gadget/udc/snps_udc_plat.c b/drivers/usb/gadget/udc/snps_udc_plat.c
-index 547af2ed9e5e..ba5a06690507 100644
---- a/drivers/usb/gadget/udc/snps_udc_plat.c
-+++ b/drivers/usb/gadget/udc/snps_udc_plat.c
-@@ -8,7 +8,6 @@
- #include <linux/extcon.h>
- #include <linux/of_address.h>
- #include <linux/of_irq.h>
--#include <linux/of_gpio.h>
- #include <linux/platform_device.h>
- #include <linux/phy/phy.h>
- #include <linux/module.h>
--- 
-2.43.0.rc1.1.gbec44491f096
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
 
 
