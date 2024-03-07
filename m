@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-95826-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95827-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BFF1875384
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 16:41:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC392875387
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 16:42:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A4C9F1F24078
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:41:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5AE632846BB
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:42:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2C0012FB15;
-	Thu,  7 Mar 2024 15:39:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F017012F58A;
+	Thu,  7 Mar 2024 15:39:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="PewkiV9M"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="o1ZNHpUm"
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A53B12FB02;
-	Thu,  7 Mar 2024 15:39:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98CCC12F37A;
+	Thu,  7 Mar 2024 15:39:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709825968; cv=none; b=uvIxnu3FiI5zWUga8Jy3JfxWASx3wRMSz36RtZsJNcYfyhAYXpNTonHYMHvYicQ9cf6uHgQ8ceBkrbkBd5ghzqP9dOoide0xxckeCU9KTrhmNqYWd/9CKm1BAY/Kdq504d5SJgcrAKHy1wfPHlH9PhQbP+YzPC9Nnj4zk6vnKKs=
+	t=1709825992; cv=none; b=Z5pF8maBUE+ACEmAi35NAPCHVeXnRqElO1PMZOSSk1hxFnWLHxPErQTym2Kx8ksC0Wl00WP7XdY6wC9RSCwkOzYBmYTqhgEfOUTtfJJgXYq6M2vkGkOwIqdlVTPNecizqyulcvO6rHGH6TL9z6ie3dO18Y9tiuDhnbcj2hjrvP0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709825968; c=relaxed/simple;
-	bh=x4fzYeDENcTUx3XNmtUKgesKg5aoTwEyjOQLJxwmdcM=;
+	s=arc-20240116; t=1709825992; c=relaxed/simple;
+	bh=zRNrEs5TtW9qcCA2nmW8SXbat4SbAFWzs2r7CLe6aEg=;
 	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cSK0lJv5ZxYbMJChAp6YDJUng5NLGdvrpg6EE7tPeI7oEoJ1LUznxZfvrLg4/DcYprMYgRjS2909lvvSJIl+Jb+zxvwREGamsSUW19G6pXWWyXz6qdWy+/eJ2VqIqsWsD8TuzkU2Om26C440wx71O2iuc9cxy4mql8DubtB/bn0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=PewkiV9M; arc=none smtp.client-ip=205.220.180.131
+	 Content-Type:Content-Disposition:In-Reply-To; b=g5RG55O5cA/+kbmRwh8mdtDX+LE1Mpq2L692oQ2NKvWpimliXhoiQKtelwW/ILy20XL+ciofsGBg94liyxWuAwrXEd0MhTY5PcBpaiuoqZ42HEiKYbbrDgIJvAn4cviuJB7r/k6CLL64D5X7CymQ76kNduwhzjzDP+gSbqn3wz0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=o1ZNHpUm; arc=none smtp.client-ip=205.220.180.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 427ALcsM012641;
-	Thu, 7 Mar 2024 15:39:00 GMT
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 427AL3X8010644;
+	Thu, 7 Mar 2024 15:39:30 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	date:from:to:cc:subject:message-id:reply-to:references
-	:mime-version:content-type:in-reply-to; s=qcppdkim1; bh=5nx7YKDK
-	UKYaf+RGFR3mjyRftZOQ0lMCWnwUnwRPBmQ=; b=PewkiV9MUKDOPYdt6AQXqbcM
-	CMs004tAeFJZVxX1PSIKOzVusi2NbJ1PP8vWYn/s638Ejb7OBClgSVYTu+xdyEOE
-	7cCHzXPt+7hyrRyPupUGIm5GW8SobTJugIWiUe/K4XauBe7EelyzbWWrDEUU5B5y
-	QfNAoFFT7dwk5HhjNq0eAgruJv9ijWSXHu9H6FDzwNb1XqikZrBDew7SA+wqB90B
-	Z7ehefGmy6QMtWR+omkQMe3EwvpSNox2CS2yNeSzzw5t3rpPKCs3IfdByNy00DcT
-	A81S7gBTSHU8ivKjDEEIAK3ZdIGzgu6NXAHBGMDKYpeNYVJtPncmq4WPDe+qnw==
+	:mime-version:content-type:in-reply-to; s=qcppdkim1; bh=+Lt52Grw
+	3semIojBWxsnFO3FccGRgYPSJgUu85p37/o=; b=o1ZNHpUmnPJxcT2gawv/CtTK
+	6xy7sVF7OCK5qxs8/fhcl/Uc5xAMfrx0P+uwfiwF101l0Azwu0XI+NSL1nqOQzn7
+	tkRRNXznYNG9EZuax0XNx2TRj4m1XbpTBR3LjwLGZ1Q8xsXTDeMPd3c/y/YRntGM
+	38ddX7bU+qS5m2hyVGujSCyse13A4RrWo0blE2a3C7P+Ru+heIli/T9l29efFQnb
+	fPVzGvSjW6JU8qoeMZKBUOVCOjRWA2TOpeS0/XNHProkjcwMoVuxIKhc2LzIkdYr
+	xP/a9b9n55j4n5BER/59KegCIAT5/XxQUYwdWzGcuqkdm0YuUFUBqAA3nPO3EA==
 Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wqbrhse67-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wqbqphe9j-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 07 Mar 2024 15:38:56 +0000 (GMT)
+	Thu, 07 Mar 2024 15:39:27 +0000 (GMT)
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 427FcsKI006303
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 427FdPiG006657
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 7 Mar 2024 15:38:54 GMT
+	Thu, 7 Mar 2024 15:39:25 GMT
 Received: from quicinc.com (10.80.80.8) by nalasex01b.na.qualcomm.com
  (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 7 Mar
- 2024 07:38:47 -0800
-Date: Thu, 7 Mar 2024 21:08:43 +0530
+ 2024 07:39:18 -0800
+Date: Thu, 7 Mar 2024 21:09:14 +0530
 From: Srivatsa Vaddagiri <quic_svaddagi@quicinc.com>
 To: Elliot Berman <quic_eberman@quicinc.com>
 CC: Alex Elder <elder@linaro.org>,
@@ -85,11 +85,11 @@ CC: Alex Elder <elder@linaro.org>,
         <linux-arm-msm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>, <linux-mm@kvack.org>
-Subject: Re: [PATCH v17 07/35] gunyah: rsc_mgr: Add resource manager RPC core
-Message-ID: <20240307153843.GC1695516@quicinc.com>
+Subject: Re: [PATCH v17 08/35] gunyah: vm_mgr: Introduce basic VM Manager
+Message-ID: <20240307153914.GA1696249@quicinc.com>
 Reply-To: Srivatsa Vaddagiri <quic_svaddagi@quicinc.com>
 References: <20240222-gunyah-v17-0-1e9da6763d38@quicinc.com>
- <20240222-gunyah-v17-7-1e9da6763d38@quicinc.com>
+ <20240222-gunyah-v17-8-1e9da6763d38@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -98,103 +98,40 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Disposition: inline
-In-Reply-To: <20240222-gunyah-v17-7-1e9da6763d38@quicinc.com>
+In-Reply-To: <20240222-gunyah-v17-8-1e9da6763d38@quicinc.com>
 X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
  nalasex01b.na.qualcomm.com (10.47.209.197)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: SAqqeAVAnHjsZR1Kz4QUiMS6P36MU6IS
-X-Proofpoint-ORIG-GUID: SAqqeAVAnHjsZR1Kz4QUiMS6P36MU6IS
+X-Proofpoint-ORIG-GUID: UVRun7HedOnzctRn7xvXdb-oRUkkxn7c
+X-Proofpoint-GUID: UVRun7HedOnzctRn7xvXdb-oRUkkxn7c
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-07_07,2024-03-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 impostorscore=0
- malwarescore=0 bulkscore=0 phishscore=0 suspectscore=0 lowpriorityscore=0
- spamscore=0 adultscore=0 mlxlogscore=999 classifier=spam adjust=0
+ definitions=2024-03-07_08,2024-03-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 malwarescore=0
+ impostorscore=0 lowpriorityscore=0 mlxscore=0 adultscore=0 bulkscore=0
+ mlxlogscore=680 suspectscore=0 phishscore=0 classifier=spam adjust=0
  reason=mlx scancount=1 engine=8.19.0-2402120000
- definitions=main-2403070084
+ definitions=main-2403070087
 
-* Elliot Berman <quic_eberman@quicinc.com> [2024-02-22 15:16:30]:
+* Elliot Berman <quic_eberman@quicinc.com> [2024-02-22 15:16:31]:
 
-> The resource manager is a special virtual machine which is always
-> running on a Gunyah system. It provides APIs for creating and destroying
-> VMs, secure memory management, sharing/lending of memory between VMs,
-> and setup of inter-VM communication. Calls to the resource manager are
-> made via message queues.
+> Gunyah VM manager is a kernel moduel which exposes an interface to
+> userspace to load, run, and interact with other Gunyah virtual machines.
+> The interface is a character device at /dev/gunyah.
 > 
-> This patch implements the basic probing and RPC mechanism to make those
-> API calls. Request/response calls can be made with gh_rm_call.
-> Drivers can also register to notifications pushed by RM via
-> gh_rm_register_notifier
+> Add a basic VM manager driver. Upcoming patches will add more ioctls
+> into this driver.
 > 
-> Specific API calls that resource manager supports will be implemented in
-> subsequent patches.
-> 
+> Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> Reviewed-by: Alex Elder <elder@linaro.org>
+> Co-developed-by: Prakruthi Deepak Heragu <quic_pheragu@quicinc.com>
+> Signed-off-by: Prakruthi Deepak Heragu <quic_pheragu@quicinc.com>
 > Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
 
-Left a minor comment below. LGTM otherwise.
+LGTM
 
 Reviewed-by: Srivatsa Vaddagiri <quic_svaddagi@quicinc.com>
 
-> +static irqreturn_t gunyah_rm_rx(int irq, void *data)
-> +{
-> +	enum gunyah_error gunyah_error;
-> +	struct gunyah_rm_rpc_hdr *hdr;
-> +	struct gunyah_rm *rm = data;
-> +	void *msg = &rm->recv_msg[0];
-> +	size_t len;
-> +	bool ready;
-> +
-> +	do {
-> +		gunyah_error = gunyah_hypercall_msgq_recv(rm->rx_ghrsc.capid,
-> +							  msg,
-> +							  sizeof(rm->recv_msg),
-> +							  &len, &ready);
-> +		if (gunyah_error != GUNYAH_ERROR_OK) {
-> +			if (gunyah_error != GUNYAH_ERROR_MSGQUEUE_EMPTY)
-> +				dev_warn(rm->dev,
-> +					 "Failed to receive data: %d\n",
-> +					 gunyah_error);
-> +			return IRQ_HANDLED;
-> +		}
-> +
-> +		if (len < sizeof(*hdr)) {
-> +			dev_err_ratelimited(
-> +				rm->dev,
-> +				"Too small message received. size=%ld\n", len);
-> +			continue;
-
-In practice we should never hit this condition, in case we do encounter, do you
-see a reason why continue is preferred over simply breaking the loop?
-
-> +		}
-> +
-> +		hdr = msg;
-> +		if (hdr->api != RM_RPC_API) {
-> +			dev_err(rm->dev, "Unknown RM RPC API version: %x\n",
-> +				hdr->api);
-> +			return IRQ_HANDLED;
-> +		}
-> +
-> +		switch (FIELD_GET(RM_RPC_TYPE_MASK, hdr->type)) {
-> +		case RM_RPC_TYPE_NOTIF:
-> +			gunyah_rm_process_notif(rm, msg, len);
-> +			break;
-> +		case RM_RPC_TYPE_REPLY:
-> +			gunyah_rm_process_reply(rm, msg, len);
-> +			break;
-> +		case RM_RPC_TYPE_CONTINUATION:
-> +			gunyah_rm_process_cont(rm, rm->active_rx_message, msg,
-> +					       len);
-> +			break;
-> +		default:
-> +			dev_err(rm->dev,
-> +				"Invalid message type (%lu) received\n",
-> +				FIELD_GET(RM_RPC_TYPE_MASK, hdr->type));
-> +			return IRQ_HANDLED;
-> +		}
-> +	} while (ready);
-> +
-> +	return IRQ_HANDLED;
-> +}
+- vatsa
 
