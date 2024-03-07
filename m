@@ -1,129 +1,164 @@
-Return-Path: <linux-kernel+bounces-96071-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96076-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9CFD8756C0
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:10:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 529DC8756CC
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:13:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 589C61F2229A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:10:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 841A81C211D6
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:13:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9D12135A75;
-	Thu,  7 Mar 2024 19:08:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DD8213665B;
+	Thu,  7 Mar 2024 19:12:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HJdJRGZy"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="Fj8M2ivZ"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2548D13664E;
-	Thu,  7 Mar 2024 19:08:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0144A12FF8C;
+	Thu,  7 Mar 2024 19:12:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709838484; cv=none; b=j5jKBpmNXUySKeIFtA6KVJSSa6e6uBvqFj8Gz0GMW52+xElwUvKOgp+CUVe/OUisiWN8Vzl54Z7IK2PbDKmJe5KOHOOWLaEUsXxTj+f2zNdr2aK0EIrZpMv43q46a97rIKoS5DIsWsqzVteonqrpElJmp5lqvbrPkKIZOZ+R938=
+	t=1709838770; cv=none; b=OGkcaxq24kqxI29s0AAf+De2PprVYiXiMt+pg/29zXcwlqylKEF0bVL8ZFQoJUkVMplYPTDNIusBL2Cf+sclg7boondxw9nMmRm6U0STDOSj63YTDgKbVoj85CdCRjxjjdLcdV1NP0f6MrcvAqc0J1wJojAZvT6fHe6WP00qRgA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709838484; c=relaxed/simple;
-	bh=yEOL18TbJDjwRAvn0qMrkNVx3ik8b1Q3Htm6MzV8i3g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NaJvuN2L8FuKxuBWqvVjVuFyhaNl/2ybpkTzPjHh1Ud9I+ryXLpoVZAF7BqKrjK2aCUVWTozBeu3Os692X/+6EACrUlXNQJx5zMMk0BAjuHxoWYa+qbXSa8H/BhFQDRg5OG3peA6IyPatgxYviv+SG/1Owv1jacqTNzKWARSzi8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HJdJRGZy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B3B2C433F1;
-	Thu,  7 Mar 2024 19:08:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709838483;
-	bh=yEOL18TbJDjwRAvn0qMrkNVx3ik8b1Q3Htm6MzV8i3g=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=HJdJRGZyCRDcTmI2TLf3a9RuWEcViwOMyY5mYI8cUh4obB220U/FeLuF6A99W6Jvl
-	 IKETLpXHZRcZyURy8yqsf6OmsvNBgr9CIh1JLB/VeNgPsQEepgKeKp1k3KasNIFMTE
-	 gc2nFFC0XmEkQtCT/A0OvPJy6/IexoQ4MTIK77sd644Cr1sWSVuUul7BTX1aYYIqYj
-	 h39f+hu2ko9FYrvSgw9xSofJhBdAVTsn6Ua/Fo18pFWIvke5sk6aRFjpjEwiw4MQE1
-	 YmThMAWMyONtTKEEwJknndwrxu+9UAIh1vuf/BC8wpJhqc7ZGWB1NshLN2yC3qePgF
-	 v0wRqUtJRk/1A==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 21FD9CE0716; Thu,  7 Mar 2024 11:08:03 -0800 (PST)
-Date: Thu, 7 Mar 2024 11:08:03 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc: Stefan Wiehler <stefan.wiehler@nokia.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	linux-arm-kernel@lists.infradead.org, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm: smp: Avoid false positive CPU hotplug Lockdep-RCU
- splat
-Message-ID: <293fbcc5-0c2d-4937-9026-a05236e1fc40@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240307160951.3607374-1-stefan.wiehler@nokia.com>
- <49792f54-fa11-4984-8611-84ba640a2b86@paulmck-laptop>
- <ZeoNbjTCAWYHgi4u@shell.armlinux.org.uk>
+	s=arc-20240116; t=1709838770; c=relaxed/simple;
+	bh=vJ7LaEt7kyqzJ6o9iMWGsli/kZkXe16BjtgLrXPJV/o=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=tlIquDrZ3U1BagQWLAkcYKB/gdgnMZsWyYjNA5zAXJPVeyVDBlZ/WEs2wAfLJjJg6zsudnSyQ5gxB2KyK6v1vgqwCGJ0vw5gWRtOj3tcnoQMDqmTac+Y1jkSksQKNOZLKlyN6nxJ5K1+E+hKzRGPgl+Tm0JDEJjQOGjOHE+TUEI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=Fj8M2ivZ; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709838767;
+	bh=vJ7LaEt7kyqzJ6o9iMWGsli/kZkXe16BjtgLrXPJV/o=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=Fj8M2ivZWby4St/DX80CFQWhvBb8XEXsdZXdK+HyzYXLzxoqeUj/F5b0DAXoRFs1C
+	 PZL6KI60zJYPQc6qOJ8cPEAH1m7dz9n7sdPYZkU4eegrbPMdkgw/wgs76HiU859JRK
+	 iLMTN0mgUtyhYXqvPmJJffk56mwG2sWdexAUIoL75CN5UOZ3SXSqKdZIUOd4sGNT6T
+	 OXGKW104wIpAxxC2BdTdUEWEtGfGcrmmnqIX7C3aTfdi/WGSINAPemTqzLOVbuk9SO
+	 XZ21Tdp1lUs38FXlSZmL6tH0oA1G2JoeT3zv2DhGQPYpdE+YA3U/XsYTWC5sL/an/e
+	 o5whbniC5z57g==
+Received: from localhost.localdomain (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: dwlsalmeida)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 2E8E037802F2;
+	Thu,  7 Mar 2024 19:12:43 +0000 (UTC)
+From: Daniel Almeida <daniel.almeida@collabora.com>
+To: wedsonaf@gmail.com,
+	ojeda@kernel.org,
+	mchehab@kernel.org,
+	hverkuil@xs4all.nl
+Cc: Daniel Almeida <daniel.almeida@collabora.com>,
+	rust-for-linux@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-media@vger.kernel.org,
+	kernel@collabora.com
+Subject: [RFC PATCH v2 0/2] Rewrite parts of rkvdec driver and the VP9 codec library in Rust
+Date: Thu,  7 Mar 2024 16:08:14 -0300
+Message-ID: <20240307190841.10260-1-daniel.almeida@collabora.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240227215146.46487-1-daniel.almeida@collabora.com>
+References: <20240227215146.46487-1-daniel.almeida@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZeoNbjTCAWYHgi4u@shell.armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Mar 07, 2024 at 06:54:38PM +0000, Russell King (Oracle) wrote:
-> On Thu, Mar 07, 2024 at 09:45:36AM -0800, Paul E. McKenney wrote:
-> > > diff --git a/arch/arm/kernel/smp.c b/arch/arm/kernel/smp.c
-> > > index 3431c0553f45..6875e2c5dd50 100644
-> > > --- a/arch/arm/kernel/smp.c
-> > > +++ b/arch/arm/kernel/smp.c
-> > > @@ -319,7 +319,14 @@ void __noreturn arch_cpu_idle_dead(void)
-> > >  {
-> > >  	unsigned int cpu = smp_processor_id();
-> > >  
-> > > +	/*
-> > > +	 * Briefly report CPU as online again to avoid false positive
-> > > +	 * Lockdep-RCU splat when check_and_switch_context() acquires ASID
-> > > +	 * spinlock.
-> > > +	 */
-> > > +	rcutree_report_cpu_starting(cpu);
-> > >  	idle_task_exit();
-> > > +	rcutree_report_cpu_dead();
-> > >  
-> > >  	local_irq_disable();
-> > 
-> > Both rcutree_report_cpu_starting() and rcutree_report_cpu_dead() complain
-> > bitterly via lockdep if interrupts are enabled.  And the call sites have
-> > interrupts disabled.  So I don't understand what this local_irq_disable()
-> > is needed for.
-> 
-> I think that's a question for this commit:
-> 
-> commit e78a7614f3876ac649b3df608789cb6ef74d0480
-> Author: Peter Zijlstra <peterz@infradead.org>
-> Date:   Wed Jun 5 07:46:43 2019 -0700
-> 
-> Before this commit, arch_cpu_idle_dead() was called with IRQs enabled.
-> This commit moved the local_irq_disable() before calling
-> arch_cpu_idle_dead() but it seems no one looked at the various arch
-> implementations to clean those up. Quite how arch people are supposed
-> to spot this and clean up after such a commit, I'm not sure.
+Hi Mauro, Hans,
 
-Telepathy?  ;-)
+While working on v1 for this patchset, I realized that we can go further by
+converting the error-prone sections of our codec drivers to Rust. This also
+does not need any bindings in order to work.
 
-> The local_irq_disable() that you're asking about has been there ever
-> since the inception of SMP on 32-bit ARM in this commit:
-> 
-> commit a054a811597a17ffbe92bc4db04a4dc2f1b1ea55
-> Author: Russell King <rmk@dyn-67.arm.linux.org.uk>
-> Date:   Wed Nov 2 22:24:33 2005 +0000
-> 
-> Where cpu_die() was later renamed to arch_cpu_idle_dead(). So it's
-> purely a case of a change being made to core code and arch code not
-> receiving any fixups for it.
+As yet another proof-of-concept, I have converted parts of the rkvdec driver.
+Refer to instructions in v1 to test this.
 
-Thank you for the info!
+Notice how:
 
-							Thanx, Paul
+1) many problematic memcpy's go away, these become a simple assignment in Rust.
+
+2) it can interop seamlessly with the code in rkvdec-vp9.c that was already
+converted in v1 of this series.
+
+3) it can use the Rust version of `seg_feat_enabled` directly in vp9.rs, while
+also using the C APIs from the v4l2-vp9-rs library in rkvdec-vp9.c
+
+4) more modern things become available for the programmer, like iterators and
+their methods without a performance penalty.
+
+I want to propose the following:
+
+Let's merge a non-RFC version of this series and gate it behind some kconfigs
+so that we can switch between the C and Rust implementations. Users get the C
+version by default, while we continuously test the Rust components on a CI for
+a few months. This will hopefully be enough time until the next Media Summit.
+
+My aim is to eventually deprecate the C parts once we're confident that the
+Rust code is stable enough. I will keep my own tree, and send PRs to the media
+tree if a rebase or fix is needed.
+
+I believe this will not be disruptive nor require any extra work from anyone
+but me.
+
+-- Daniel
+
+
+Again, applies on top of:
+
+commit d9c1fae3e5b225f2e45e0bca519f9a2967cd1062
+Author: Alice Ryhl <aliceryhl@google.com>
+Date:   Fri Feb 9 11:18:22 2024 +0000
+
+    rust: file: add abstraction for `poll_table`
+
+For those looking for a branch instead: https://gitlab.collabora.com/dwlsalmeida/for-upstream/-/tree/vp9-rs-rkvdec?ref_type=heads
+
+Daniel Almeida (2):
+  v4l2-core: rewrite the VP9 library in Rust
+  media: rkvdec: rewrite parts of the driver in Rust
+
+ drivers/media/platform/verisilicon/Kconfig    |    2 +-
+ .../platform/verisilicon/hantro_g2_vp9_dec.c  |   38 +-
+ .../media/platform/verisilicon/hantro_hw.h    |    8 +-
+ drivers/media/v4l2-core/Kconfig               |    5 +
+ drivers/staging/media/rkvdec/Kconfig          |    3 +-
+ drivers/staging/media/rkvdec/Makefile         |    2 +-
+ drivers/staging/media/rkvdec/cbindgen.toml    |   36 +
+ drivers/staging/media/rkvdec/common.rs        |   19 +
+ drivers/staging/media/rkvdec/regs.rs          |  237 ++
+ drivers/staging/media/rkvdec/rkvdec-vp9.c     |  607 +----
+ drivers/staging/media/rkvdec/rkvdec_rs.h      |  125 +
+ drivers/staging/media/rkvdec/rkvdec_rs.rs     |   14 +
+ drivers/staging/media/rkvdec/vp9.rs           |  636 +++++
+ include/media/v4l2-vp9-rs.h                   |   99 +
+ rust/bindings/bindings_helper.h               |    1 +
+ rust/helpers.c                                |    7 +
+ rust/kernel/lib.rs                            |    2 +
+ rust/kernel/media.rs                          |    5 +
+ rust/kernel/media/v4l2_core.rs                |    6 +
+ rust/kernel/media/v4l2_core/cbindgen.toml     |   26 +
+ rust/kernel/media/v4l2_core/vp9.rs            | 2053 +++++++++++++++++
+ 21 files changed, 3415 insertions(+), 516 deletions(-)
+ create mode 100644 drivers/staging/media/rkvdec/cbindgen.toml
+ create mode 100644 drivers/staging/media/rkvdec/common.rs
+ create mode 100644 drivers/staging/media/rkvdec/regs.rs
+ create mode 100644 drivers/staging/media/rkvdec/rkvdec_rs.h
+ create mode 100644 drivers/staging/media/rkvdec/rkvdec_rs.rs
+ create mode 100644 drivers/staging/media/rkvdec/vp9.rs
+ create mode 100644 include/media/v4l2-vp9-rs.h
+ create mode 100644 rust/kernel/media.rs
+ create mode 100644 rust/kernel/media/v4l2_core.rs
+ create mode 100644 rust/kernel/media/v4l2_core/cbindgen.toml
+ create mode 100644 rust/kernel/media/v4l2_core/vp9.rs
+
+-- 
+2.43.0
+
 
