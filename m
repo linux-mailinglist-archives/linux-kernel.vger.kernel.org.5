@@ -1,163 +1,127 @@
-Return-Path: <linux-kernel+bounces-96159-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96160-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B703F8757E8
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 21:05:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66CF88757EC
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 21:06:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D189287D2D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:05:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E3F5BB24C28
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:06:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CDD01384BC;
-	Thu,  7 Mar 2024 20:05:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B0C913848C;
+	Thu,  7 Mar 2024 20:05:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="LhTi2+K9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FLKfRRvo"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43323138499
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 20:05:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB72A1369B9;
+	Thu,  7 Mar 2024 20:05:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709841901; cv=none; b=OrvYO6M0YnLj/JFzzcABXfNuECWK0gB6R2fI+StYZV8vT8IHvJHzMfxGdo1zmWNHX2FAU8ES6UNRWCanKigsPr1s5X9a5DrHI2tTBAVAGs9VYNH2QLS1DLB8sO+suEXJnhxoBKqIwz9ZVwEMopgMMOUwt3x4ve1Gqbz34Dfv5Z4=
+	t=1709841950; cv=none; b=L4sDlatTZUSPuB78uKD8O5kET++yD5AKVlXvX70MRLFr+05kUmCEigt4RXuQ3l607Wsf7jt9yb7WVdZIQ1blmqhp0tqek7jR+Z3FJxldyCDiiauIajpzLKMbgXGv0+jQjfih5bsB0dZxkFHioxxMoJ/F3aw1z2vtx23r1TdV8WY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709841901; c=relaxed/simple;
-	bh=hnbb6tUdjXB7TFFgnyS5gUqhC9Bse+zKkY4XzKdzfjk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SWqfQ5bLAWtggZJlpE01aCUP7Oc+KY0olRfMtrpG1YFbYqrj9rwqiVLlfNrTuAbkVOuilutcmYa/Pc4CkixxogXzNrlYXlHXWt+WwPhkvvNnXy1WwR5wvdshJA7+m83qu4SPPxTu1Wc8ZmZrLS7Vn3mwaTZxh/2yA8/5S0tBfT4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=LhTi2+K9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5346CC43394;
-	Thu,  7 Mar 2024 20:05:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1709841900;
-	bh=hnbb6tUdjXB7TFFgnyS5gUqhC9Bse+zKkY4XzKdzfjk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LhTi2+K9cC+v9o03ho/S+VdmBn1iN/6YX/2Hl8pSg4oziRBcxb9zGiwnpEaf+H784
-	 3y42sfnPmi9DIg2ftZOTG+EmLtaibUMLdiwbu9Oncmii2vxuzjkZnFXRa4bHr5MQdv
-	 W7FRFSQJDLdxcxmm/pxewb5OyxZDAmUoakwNI/WI=
-Date: Thu, 7 Mar 2024 20:04:57 +0000
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Michal Hocko <mhocko@suse.com>, cve@kernel.org,
-	linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
-Subject: Re: CVE-2023-52592: libbpf: Fix NULL pointer dereference in
- bpf_object__collect_prog_relos
-Message-ID: <2024030725-amicably-squishier-0d6b@gregkh>
-References: <2024030645-CVE-2023-52592-4693@gregkh>
- <ZemPuxhM_ZZ-khTh@tiehlicka>
- <2024030706-unscathed-wilt-e310@gregkh>
- <CAEf4BzbvmwmAmZMvzo9gxyUwy9SQvC_2gFQ1wO-Zvw=9BT=J2g@mail.gmail.com>
+	s=arc-20240116; t=1709841950; c=relaxed/simple;
+	bh=78Rsj3O/7ufaekATx69zosteYwT6oeClJL8QONwmeTE=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=Or+yr7mN76eyfvpDRZJtd2vuTfwWlA9UVezZEQ9dGnfG+yE/EDZpzdvIYWyjLRkktK1gMzdZkug6sU7eGy28SDSdBxzPCPE7MiM4XE3oGl4IxEvaMkWyPgXJvRLxXZfzR5HF8Jy5+LQqQdGq+r1nuCwxCfhZFFKEQrnEZMQYRCk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FLKfRRvo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72F44C433C7;
+	Thu,  7 Mar 2024 20:05:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709841950;
+	bh=78Rsj3O/7ufaekATx69zosteYwT6oeClJL8QONwmeTE=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=FLKfRRvo1oaqVmm36Ci4l/y+mhDJg2A7ME0Dvc2Lr4Vzr5i1i/EtQhRsHG+18jAIj
+	 rvG97J3ZSzhlgBLxNPyqlmEoLSRAtgyOAsoyBBX593XX3XsMnfKMc/A4iJmaXdAiCd
+	 AhaqCOHmB0WfvTwNXEMCiwEHw2laOSaY5mduW5GGDuR+6XOG/CvXhHSNoy99snTzSR
+	 uAC0xy9XWijo6rbgHMyhoK6YQYokkscw96oG/We7m2+kNq9a3nRCWcptWmyYYndU3B
+	 wx+hGU92xPgcifhXHZNnvUvlpS6127tTgb5tpb9vlfheiDq2RgYjztgLKYBV33ILKD
+	 0OjpLYYxwyOiw==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzbvmwmAmZMvzo9gxyUwy9SQvC_2gFQ1wO-Zvw=9BT=J2g@mail.gmail.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Thu, 07 Mar 2024 22:05:46 +0200
+Message-Id: <CZNSDUEJ4P9S.235D7ZCOV738N@kernel.org>
+Cc: <peterhuewe@gmx.de>, <LinoSanfilippo@gmx.de>,
+ <p.rosenberger@kunbus.com>, <lukas@wunner.de>, <jgg@ziepe.ca>,
+ <linux-integrity@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <stable@vger.kernel.org>
+Subject: Re: [PATCH] tpm,tpm_tis: Avoid warning splat at shutdown
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Paul Menzel" <pmenzel@molgen.mpg.de>, "Lino Sanfilippo"
+ <l.sanfilippo@kunbus.com>
+X-Mailer: aerc 0.17.0
+References: <20240201113646.31734-1-l.sanfilippo@kunbus.com>
+ <84dd5c01-906c-4e13-9d8c-e5350f718d56@molgen.mpg.de>
+In-Reply-To: <84dd5c01-906c-4e13-9d8c-e5350f718d56@molgen.mpg.de>
 
-On Thu, Mar 07, 2024 at 09:50:38AM -0800, Andrii Nakryiko wrote:
-> On Thu, Mar 7, 2024 at 5:16 AM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Thu, Mar 07, 2024 at 10:58:19AM +0100, Michal Hocko wrote:
-> > > On Wed 06-03-24 06:45:50, Greg KH wrote:
-> > > > Description
-> > > > ===========
-> > > >
-> > > > In the Linux kernel, the following vulnerability has been resolved:
-> > > >
-> > > > libbpf: Fix NULL pointer dereference in bpf_object__collect_prog_relos
-> > > >
-> > > > An issue occurred while reading an ELF file in libbpf.c during fuzzing:
-> > > >
-> > > >     Program received signal SIGSEGV, Segmentation fault.
-> > > >     0x0000000000958e97 in bpf_object.collect_prog_relos () at libbpf.c:4206
-> > > >     4206 in libbpf.c
-> > > >     (gdb) bt
-> > > >     #0 0x0000000000958e97 in bpf_object.collect_prog_relos () at libbpf.c:4206
-> > > >     #1 0x000000000094f9d6 in bpf_object.collect_relos () at libbpf.c:6706
-> > > >     #2 0x000000000092bef3 in bpf_object_open () at libbpf.c:7437
-> > > >     #3 0x000000000092c046 in bpf_object.open_mem () at libbpf.c:7497
-> > > >     #4 0x0000000000924afa in LLVMFuzzerTestOneInput () at fuzz/bpf-object-fuzzer.c:16
-> > > >     #5 0x000000000060be11 in testblitz_engine::fuzzer::Fuzzer::run_one ()
-> > > >     #6 0x000000000087ad92 in tracing::span::Span::in_scope ()
-> > > >     #7 0x00000000006078aa in testblitz_engine::fuzzer::util::walkdir ()
-> > > >     #8 0x00000000005f3217 in testblitz_engine::entrypoint::main::{{closure}} ()
-> > > >     #9 0x00000000005f2601 in main ()
-> > > >     (gdb)
-> > > >
-> > > > scn_data was null at this code(tools/lib/bpf/src/libbpf.c):
-> > > >
-> > > >     if (rel->r_offset % BPF_INSN_SZ || rel->r_offset >= scn_data->d_size) {
-> > > >
-> > > > The scn_data is derived from the code above:
-> > > >
-> > > >     scn = elf_sec_by_idx(obj, sec_idx);
-> > > >     scn_data = elf_sec_data(obj, scn);
-> > > >
-> > > >     relo_sec_name = elf_sec_str(obj, shdr->sh_name);
-> > > >     sec_name = elf_sec_name(obj, scn);
-> > > >     if (!relo_sec_name || !sec_name)// don't check whether scn_data is NULL
-> > > >             return -EINVAL;
-> > > >
-> > > > In certain special scenarios, such as reading a malformed ELF file,
-> > > > it is possible that scn_data may be a null pointer
-> > > >
-> > > > The Linux kernel CVE team has assigned CVE-2023-52592 to this issue.
-> > >
-> > > OK, so this one is quite interesting. This is a userspace tooling
-> > > gaining a kernel CVE. Is this just an omission or is this really
-> > > expected.
-> >
-> > "omission"?  I don't understand the question.
-> >
-> > We are responsible for assigning CVEs to stuff that is in the "Linux
-> > kernel source tree" (some have tried to get us to assign CVEs to
-> > programs like git that are just hosted on kernel.org), so for now, yes,
-> > this includes libbpf as well as stuff like perf.
-> >
-> > > Also what is the security threat model here? If a malformed ELF file is
-> > > loaded then the process gets SEGV which is perfectly reasonable thing to
-> > > do.
-> >
-> > Again, we do not do "threat modeling", we do "does this fix a weakness",
-> > and I think this does as causing SEGV might not be a good thing, right?
-> >
-> > But we'll defer to the libbpf maintainers on this, if they feel this is
-> > just a "normal bugfix" then we can revoke this (added them to the cc:
-> > here.)
-> 
-> Libbpf isn't meant to be fed untrusted ELF files, as it's normally
-> used under root to perform BPF operations. So we generally treat these
-> issues of malformed ELF crashing libbpf as just normal bugs, not as a
-> security vulnerability. We even had issues where libelf crashed before
-> libbpf could do anything at all. But this happens only for
-> fuzzer-generated artificial test cases. In practice compilers produce
-> valid ELFs and that's what real world applications are ever going to
-> use.
-> 
-> Also note, in-kernel libbpf sources are only used for kernel
-> build-time tooling (resolve_btfids) and for running BPF selftests. In
-> both cases incoming ELF files are valid and created in a controlled
-> environment. All the out-of-kernel users are supposed to use Github
-> mirror of libbpf ([0]), which is used for packing libbpf in distros.
-> 
-> tl;dr: I wouldn't assign CVE for such issues, thanks.
+On Tue Mar 5, 2024 at 5:43 PM EET, Paul Menzel wrote:
+> Dear Lino,
+>
+>
+> Thank you for the patch.
+>
+> Am 01.02.24 um 12:36 schrieb Lino Sanfilippo:
+> > If interrupts are not activated the work struct 'free_irq_work' is not
+> > initialized. This results in a warning splat at module shutdown.
+> >=20
+> > Fix this by always initializing the work regardless of whether interrup=
+ts
+> > are activated or not.
+> >=20
+> > cc: stable@vger.kernel.org
+> > Fixes: 481c2d14627d ("tpm,tpm_tis: Disable interrupts after 1000 unhand=
+led IRQs")
+> > Reported-by: Jarkko Sakkinen <jarkko@kernel.org>
+> > Closes: https://lore.kernel.org/all/CX32RFOMJUQ0.3R4YCL9MDCB96@kernel.o=
+rg/
+> > Signed-off-by: Lino Sanfilippo <l.sanfilippo@kunbus.com>
+> > ---
+> >   drivers/char/tpm/tpm_tis_core.c | 3 +--
+> >   1 file changed, 1 insertion(+), 2 deletions(-)
+> >=20
+> > diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis=
+_core.c
+> > index 1b350412d8a6..64c875657687 100644
+> > --- a/drivers/char/tpm/tpm_tis_core.c
+> > +++ b/drivers/char/tpm/tpm_tis_core.c
+> > @@ -919,8 +919,6 @@ static int tpm_tis_probe_irq_single(struct tpm_chip=
+ *chip, u32 intmask,
+> >   	int rc;
+> >   	u32 int_status;
+> >  =20
+> > -	INIT_WORK(&priv->free_irq_work, tpm_tis_free_irq_func);
+> > -
+> >   	rc =3D devm_request_threaded_irq(chip->dev.parent, irq, NULL,
+> >   				       tis_int_handler, IRQF_ONESHOT | flags,
+> >   				       dev_name(&chip->dev), chip);
+> > @@ -1132,6 +1130,7 @@ int tpm_tis_core_init(struct device *dev, struct =
+tpm_tis_data *priv, int irq,
+> >   	priv->phy_ops =3D phy_ops;
+> >   	priv->locality_count =3D 0;
+> >   	mutex_init(&priv->locality_count_mutex);
+> > +	INIT_WORK(&priv->free_irq_work, tpm_tis_free_irq_func);
+> >  =20
+> >   	dev_set_drvdata(&chip->dev, priv);
+>
+> This is commit d6fb14208e22 in jarkko/next.
+>
+> I tested this patch on top of Linux 6.8-rc7 on a Dell OptiPlex 5055 [1]=
+=20
+> and it fixes the issue there too.
 
-Ok, thanks, I'll go revoke this and we'll figure out a way to add the
-libbpf stuff to our filters to not assign stuff in the future.
+Thanks!
 
-greg k-h
+If you don't mind I'll add your tested-by to the commit before I send
+my next pull request to Linus?
+
+BR, Jarkko
 
