@@ -1,90 +1,147 @@
-Return-Path: <linux-kernel+bounces-95500-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95559-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78A27874E66
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:57:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51865874F76
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 13:52:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA68F1C235FA
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:57:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0BC4C28209A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:52:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C837B1292F2;
-	Thu,  7 Mar 2024 11:57:36 +0000 (UTC)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4472512BEB1;
+	Thu,  7 Mar 2024 12:52:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d8l6/5Ae"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA3BE83CBB;
-	Thu,  7 Mar 2024 11:57:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8086E5F86B;
+	Thu,  7 Mar 2024 12:52:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709812656; cv=none; b=TFiiM6KgT1awwfzdQzezJAUWdQENKbqLInfQBEiGqnZz5u+18sJepME8DEObNA+FNvqfzNmd+7OZPxojBfFV9WlKySMbPK81XbuuRq56jTkw9SBNR1x6ljD5ZaJqcNFBrey1Hjk15YlCUTtkx6223nskrK5ySqDDGNwQPejkM6o=
+	t=1709815936; cv=none; b=oG2PTmGin7OpEsZx/7EK7ylhv0QehUhojIIfGHcYWwxOHkMnRoU9MXRhyzRH8z0bkSAY1NdeKK8w/rdlx/shxLDe6TWpekRthR6VLS5zJS/44YsL/ujfpR2eJ0vyU+Q6fN7WBrpNI2iTPn+tFqq3iIZ75+hGWZleiZ5wUQbe5xs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709812656; c=relaxed/simple;
-	bh=IJzK0lL+HEy35FuIvy8l6UaUj1238JQWdpdC7XIA37s=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=VdW4wTc8+Sn8HtkzL/6XGEBPGY6orEdfJ08nBh69OQBOMBXC3DSdhM77ib3nVp6Pktj/HmV8NpoE2D7tP/0yacStv1M6Tz/ugj42712dWizYcicqsjdLjEns5GFZ5Op4pfs34KFOfvUa4OXgz+gb0zF+jPX+Z5+3u3RSD1XmJlI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Tr75t0pjwzwPFH;
-	Thu,  7 Mar 2024 19:55:14 +0800 (CST)
-Received: from dggpemd200004.china.huawei.com (unknown [7.185.36.141])
-	by mail.maildlp.com (Postfix) with ESMTPS id BED06140134;
-	Thu,  7 Mar 2024 19:57:32 +0800 (CST)
-Received: from huawei.com (10.175.113.32) by dggpemd200004.china.huawei.com
- (7.185.36.141) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.28; Thu, 7 Mar
- 2024 19:57:32 +0800
-From: Liu Shixin <liushixin2@huawei.com>
-To: Matthew Wilcox <willy@infradead.org>, Andrew Morton
-	<akpm@linux-foundation.org>, Sasha Levin <sashal@kernel.org>, Dan Williams
-	<dan.j.williams@intel.com>, Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>
-CC: <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-	<stable@vger.kernel.org>, Liu Shixin <liushixin2@huawei.com>
-Subject: [PATCH stable-4.19] mm/memory-failure: fix an incorrect use of tail pages
-Date: Thu, 7 Mar 2024 20:51:50 +0800
-Message-ID: <20240307125150.2849068-1-liushixin2@huawei.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1709815936; c=relaxed/simple;
+	bh=MblaJ/xBbyAlKSi+e0NY+oob1/RL+llTsv1GcmbHug4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KsT1a+L66yP6Ypq2aKND9d4sWQRnBYAlwUkC7N12to2nZTWMqC8mhwSmx0MXjBnLykvBGBY5rtnmmS3JVBCeKb4EmvOyntUAKQ2xFs5HLFqJTczMOFQ9RYA0KdaLbR6hNP0TcYSOP0B7iDQ6Ob09vpGiFCitbhaOVJahWSmjqXM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d8l6/5Ae; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB771C433F1;
+	Thu,  7 Mar 2024 12:52:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709815936;
+	bh=MblaJ/xBbyAlKSi+e0NY+oob1/RL+llTsv1GcmbHug4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=d8l6/5Ae9Jc8Q5gtpYdqmVO7Bn5xYa/nI0y/WNBC7lZ9A+7MTGoERrSyeZLKuj2JQ
+	 MQ4hySceKJxRI2PnSYBmJI+xBMeN6Z7LeijVfT6/2KKfAE6LPJoN8Jvqott/Ropt1l
+	 N/lu9QrVbR2yUVmeivDKG1K2LzanzlGxPC1tvzK2MzGwKTwbjpQNOYpd2vuv3FWP6+
+	 a6reH1zjT7H1D7+CqpY85CGl07Vbq4nAyVopneT7QIakgnNou0w58+YUuV3IXFAKMz
+	 QP4g9QfkUKAqgpI4zlGj8VYJLTA4Unq8fPewhuYw8pcZMoCHDsisUguS31qfQ9a/7+
+	 XkMn4AbGjMIcw==
+Date: Thu, 7 Mar 2024 12:52:10 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Xingyu Wu <xingyu.wu@starfivetech.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+	Jaroslav Kysela <perex@perex.cz>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Walker Chen <walker.chen@starfivetech.com>,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
+Subject: Re: [PATCH v1 2/2] ASoC: starfive: Add PDM controller support
+Message-ID: <fddca901-273c-4b06-ad59-d156941920d6@sirena.org.uk>
+References: <20240307033708.139535-1-xingyu.wu@starfivetech.com>
+ <20240307033708.139535-3-xingyu.wu@starfivetech.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemd200004.china.huawei.com (7.185.36.141)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="OMuJ0wTIjHrUHwqT"
+Content-Disposition: inline
+In-Reply-To: <20240307033708.139535-3-xingyu.wu@starfivetech.com>
+X-Cookie: Been Transferred Lately?
 
-When backport commit c79c5a0a00a9 to 4.19-stable, there is a mistake change.
-The head page instead of tail page should be passed to try_to_unmap(),
-otherwise unmap will failed as follows.
 
- Memory failure: 0x121c10: failed to unmap page (mapcount=1)
- Memory failure: 0x121c10: recovery action for unmapping failed page: Ignored
+--OMuJ0wTIjHrUHwqT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Fixes: c6f50413f2aa ("mm/memory-failure: check the mapcount of the precise page")
-Signed-off-by: Liu Shixin <liushixin2@huawei.com>
----
- mm/memory-failure.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Thu, Mar 07, 2024 at 11:37:08AM +0800, Xingyu Wu wrote:
 
-diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-index c971d5e11f93..5fce5df0fe35 100644
---- a/mm/memory-failure.c
-+++ b/mm/memory-failure.c
-@@ -1033,7 +1033,7 @@ static bool hwpoison_user_mappings(struct page *p, unsigned long pfn,
- 	if (kill)
- 		collect_procs(hpage, &tokill, flags & MF_ACTION_REQUIRED);
- 
--	unmap_success = try_to_unmap(p, ttu);
-+	unmap_success = try_to_unmap(hpage, ttu);
- 	if (!unmap_success)
- 		pr_err("Memory failure: %#lx: failed to unmap page (mapcount=%d)\n",
- 		       pfn, page_mapcount(p));
--- 
-2.25.1
+> +static const struct snd_kcontrol_new jh8100_pdm_snd_controls[] = {
+> +	SOC_SINGLE("DC compensation Control", JH8100_PDM_DMIC_CTRL0, 30, 1, 0),
+> +	SOC_SINGLE("High Pass Filter Control", JH8100_PDM_DMIC_CTRL0, 28, 1, 0),
+> +	SOC_SINGLE("Left Channel Volume Control", JH8100_PDM_DMIC_CTRL0, 23, 1, 0),
+> +	SOC_SINGLE("Right Channel Volume Control", JH8100_PDM_DMIC_CTRL0, 22, 1, 0),
+> +	SOC_SINGLE_TLV("Volume", JH8100_PDM_DMIC_CTRL0, 16, 0x3F, 1, volume_tlv),
+> +	SOC_SINGLE("Data MSB Shift", JH8100_PDM_DMIC_CTRL0, 1, 7, 0),
+> +	SOC_SINGLE("SCALE", JH8100_PDM_DC_SCALE0, 0, 0x3F, 0),
+> +	SOC_SINGLE("DC offset", JH8100_PDM_DC_SCALE0, 8, 0xFFFFF, 0),
+> +};
 
+Simple on/off switches should have names ending in Switch, volumes
+should end in Volume as per control-names.rst.  Please for the next
+version you post show the output of running mixer-test on a system with
+this device, it will identify these and other issues.
+
+> +static int jh8100_pdm_component_probe(struct snd_soc_component *component)
+> +{
+> +	struct jh8100_pdm_priv *priv = snd_soc_component_get_drvdata(component);
+> +
+> +	snd_soc_component_init_regmap(component, priv->regmap);
+> +	snd_soc_add_component_controls(component, jh8100_pdm_snd_controls,
+> +				       ARRAY_SIZE(jh8100_pdm_snd_controls));
+
+You can just specify the controls in the snd_soc_compoenent_driver.
+
+> +#ifdef CONFIG_PM
+> +static int jh8100_pdm_runtime_suspend(struct device *dev)
+> +{
+> +	struct jh8100_pdm_priv *priv = dev_get_drvdata(dev);
+> +
+> +	clk_disable_unprepare(priv->icg_clk);
+> +	return 0;
+> +}
+> +
+> +static int jh8100_pdm_runtime_resume(struct device *dev)
+> +{
+> +	struct jh8100_pdm_priv *priv = dev_get_drvdata(dev);
+> +
+> +	return jh8100_pdm_crg_enable(priv);
+> +}
+> +#endif
+
+It's weird that the runtime suspend and resume are not symmetric - why
+do we need to bring the device out of reset but not put it into reset?
+
+> +	if (!device_property_read_u8(&pdev->dev, "starfive,pdm-modulex", &using_modulex))
+> +		if (using_modulex == 1)
+> +			base += JH8100_PDM_MODULEX_SHIFT; /* Use module 1 */
+
+This really looks like you've got one hardware block with two devices in
+it, either the address ranges registered for the devices in DT should be
+separate and you shouldn't need this property or you should have one
+component registering both PDM interfaces.
+
+--OMuJ0wTIjHrUHwqT
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXpuHoACgkQJNaLcl1U
+h9Bj5Af/R9ushCNRKrPb78ikXIhM0zTjHfChPI6K6mCQsquHeplDYjw97T1NMXpF
+t3mQJVASZqIIv4ve6aaaObvoNYMNfQHF1qxI7fw8TL2RR1nqo2MI6b7+hZEMcFLo
+iW9+/SHL1mFHQ+gSdRIgDBj/ym9Plcryy1ajxFom8gqitvA/o0kZJHez6EpW2t0I
+avPYFO3iHOTB77FSG6YcwY+RKqrluLRgVAuNXIay1P9+VKW0Zx4gFo7ZRcd2s1xz
+5bGuh2cqhWCOwJXiKYjNUZPs8usGcGDEc6TtluNXKACrtzRPCymY1YYpVWEPkK6C
+5X21iVfOR/nJ0+kRIKeGzk57bmvIBA==
+=W35A
+-----END PGP SIGNATURE-----
+
+--OMuJ0wTIjHrUHwqT--
 
