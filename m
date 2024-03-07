@@ -1,120 +1,106 @@
-Return-Path: <linux-kernel+bounces-94838-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94839-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98E538745C4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 02:52:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 733188745C8
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 02:55:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA7361C21B09
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 01:52:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 725641C22EC5
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 01:55:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6A47525D;
-	Thu,  7 Mar 2024 01:51:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B7D9522A;
+	Thu,  7 Mar 2024 01:55:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lrZLVNs1"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PI/bVbYE"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BABD74C7C;
-	Thu,  7 Mar 2024 01:51:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EEDF2F37
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 01:55:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709776316; cv=none; b=Y4ukDZyZCNlShpvzeS01T6oi7MLADPyvZkmV1DLmuJlbK+zEfbuZLjUZ5marnTeL2ay2GZEp8M8WxYfj6pGNb6B8TrgBG1hWQ6VZJ4vEUsbP/kUbMMWUL9gkap/2TgFt8tNz9RAHwIgv/SW7HC/7XbKZstVaE84nSdiXRHusnq4=
+	t=1709776501; cv=none; b=GsIHOMN7OulrurYlwFhHikSFm61AHtCPvHxGeti1zFLU4nTf12H8n6dRR6vSvpqQIrW7ne9a7//MMa7cL5Si8QTjzC/NZweQpCks5e1SAt4xu2fP+BnilNn9fie+vNPiYJ3XJGjRUwLlRJ361zU/MrQxCPwuB3uVxmXWUn3lbDE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709776316; c=relaxed/simple;
-	bh=iIB6+wE9OpkB3gzRbWGFl0PRdQ4qvk9fQg0LbRlU6xA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dVUOVm20hfq+m4EazIpcTP7vYU11bxav5upz4wWzWY5k6bYctFdL78jXca6AeQU7HSGpSBwCYetVrVImwJ8ybUZsPe4ua7Yom4T4yZo5+fk0bS+tTb/UFEHyeWPMBSiDZawfBDiWNcNRCKWwIHC5XIZqfp0h2seDtJVGZqtsoK4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lrZLVNs1; arc=none smtp.client-ip=198.175.65.19
+	s=arc-20240116; t=1709776501; c=relaxed/simple;
+	bh=5WFadBJ053HVtxwSAi8UYcspvQWJ8KI5l/JwPFHYq1w=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=lSga4CbZPODQupyIa9TUTWFpT9EWrDIaDmotXvIAa9YTQHQk6kI487MmdEl4WmIzEJejgWN/VPTNFbyXGTQM86SoE47Z+W6oSCAC/KMfqWMcdqThvYLN691BBvbSdQSj4FMNJA/0xpcCYfAqHTF20JfNNgUR/Ve/rMnDj+IxBJ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PI/bVbYE; arc=none smtp.client-ip=198.175.65.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709776315; x=1741312315;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=iIB6+wE9OpkB3gzRbWGFl0PRdQ4qvk9fQg0LbRlU6xA=;
-  b=lrZLVNs1L96cfvybam7+VY4mJnJTdcARvyllKsb3d32F5MPisJSs+sCA
-   zBoidn0h8gQvJHMFaE5DdsKcUF4gI4+13YUgsKd9+hGt8VRlwZOnayKkd
-   EQms1ymf5iy9kAu9rNa5Tr+NEWkH0x/xBdVzCegA6QIHsCV1wv3JCFLJG
-   N7bgkqAwssPxcXgw9IVeZ2fPqV5Hv1OKcHgJDAYjAOS7duBI9rLh1LTLb
-   juUuz5ZX3VhubaUeEW4s7Iyaq04IS+csgCvm1zo8FD//8nzI67iZcRcDB
-   d1Sug8ixvp5nBxban7vcJrG5DbxY8z3GcABDu9RjMEaRisTmmM4tosv99
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11005"; a="4284879"
+  t=1709776500; x=1741312500;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=5WFadBJ053HVtxwSAi8UYcspvQWJ8KI5l/JwPFHYq1w=;
+  b=PI/bVbYEDahAZr+cbvPJJ/UX+kWgOSrZPakTzTKo+r5jNMWWICCcsAbz
+   6Lg133uDJd80+nRjOt+dv8pjUEZpDl2s05kdEKzkHYGgrdHPe3tXFVb0R
+   hGID5yRgTD9Zbslfh8UMlUMXkvo1eFYttVcxPSYqy2g6ej9Uj1mNleVcJ
+   XV/q5SUHvxFcR0n2QiV97LyfRBAUUguzjzm2U9L9P9ovvPaHfNbbO84Wt
+   iV1VVGsCnAfueGz5yIciZXBqzCA/lW1lpmwBbS+ylueG8JQpIMcEqQJS/
+   oo3BzOSQ1w2Uwo7fbr0MoqkZy76TxXfuaW9v1hlez+eGINBklU5wzv+7D
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11005"; a="4311265"
 X-IronPort-AV: E=Sophos;i="6.06,209,1705392000"; 
-   d="scan'208";a="4284879"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 17:51:54 -0800
+   d="scan'208";a="4311265"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 17:54:59 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.06,209,1705392000"; 
-   d="scan'208";a="10379250"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 17:51:53 -0800
-Date: Wed, 6 Mar 2024 17:51:51 -0800
-From: Isaku Yamahata <isaku.yamahata@linux.intel.com>
-To: David Matlack <dmatlack@google.com>
-Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org, isaku.yamahata@gmail.com,
-	linux-kernel@vger.kernel.org,
-	Sean Christopherson <seanjc@google.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Michael Roth <michael.roth@amd.com>,
-	Federico Parola <federico.parola@polito.it>,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [RFC PATCH 6/8] KVM: x86: Implement kvm_arch_{,
- pre_}vcpu_map_memory()
-Message-ID: <20240307015151.GF368614@ls.amr.corp.intel.com>
-References: <cover.1709288671.git.isaku.yamahata@intel.com>
- <66a957f4ec4a8591d2ff2550686e361ec648b308.1709288671.git.isaku.yamahata@intel.com>
- <ZekKwlLdf6vm5e5u@google.com>
- <CALzav=dHNYP02q_CJncwk-JdL9OSB=613v4+siBm1Cp2rmxLLw@mail.gmail.com>
+   d="scan'208";a="14510975"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.213.185]) ([10.254.213.185])
+  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 17:54:56 -0800
+Message-ID: <74d6f11a-9415-48e5-a165-7b9f5b87873d@linux.intel.com>
+Date: Thu, 7 Mar 2024 09:54:53 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CALzav=dHNYP02q_CJncwk-JdL9OSB=613v4+siBm1Cp2rmxLLw@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Cc: baolu.lu@linux.intel.com, Kevin Tian <kevin.tian@intel.com>,
+ Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+ Robin Murphy <robin.murphy@arm.com>,
+ Jean-Philippe Brucker <jean-philippe@linaro.org>,
+ Nicolin Chen <nicolinc@nvidia.com>, Yi Liu <yi.l.liu@intel.com>,
+ Jacob Pan <jacob.jun.pan@linux.intel.com>,
+ Joel Granados <j.granados@samsung.com>, iommu@lists.linux.dev,
+ virtualization@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 5/8] iommufd: Associate fault object with
+ iommufd_hw_pgtable
+To: Jason Gunthorpe <jgg@ziepe.ca>, Zhangfei Gao <zhangfei.gao@linaro.org>
+References: <20240122073903.24406-1-baolu.lu@linux.intel.com>
+ <20240122073903.24406-6-baolu.lu@linux.intel.com>
+ <CABQgh9FwOVsFe3+5VG0_rDruJVW0ueHTcsnxUcVAvFqrF4Vz6Q@mail.gmail.com>
+ <CABQgh9G5yFZ_p+tfvnJqOQo+Be62rMDatsEX1rhD_oTiXDaw5w@mail.gmail.com>
+ <20240306160120.GN9225@ziepe.ca>
+Content-Language: en-US
+From: Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <20240306160120.GN9225@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Mar 06, 2024 at 04:36:25PM -0800,
-David Matlack <dmatlack@google.com> wrote:
+On 2024/3/7 0:01, Jason Gunthorpe wrote:
+> On Wed, Mar 06, 2024 at 11:15:50PM +0800, Zhangfei Gao wrote:
+>> Double checked, this does not send flags, 0 is OK,
+>> Only domain_alloc_user in iommufd_hwpt_paging_alloc requires flags.
+>>
+>> In my debug, I need this patch, otherwise NULL pointer errors happen
+>> since SVA is not set.
+> This is some driver bug, we need to get rid of these
+> iommu_dev_enable_feature() requirements.
 
-> On Wed, Mar 6, 2024 at 4:31 PM David Matlack <dmatlack@google.com> wrote:
-> >
-> > On 2024-03-01 09:28 AM, isaku.yamahata@intel.com wrote:
-> > >
-> > > +     if (IS_ALIGNED(mapping->base_gfn, KVM_PAGES_PER_HPAGE(PG_LEVEL_1G)) &&
-> > > +         mapping->nr_pages >= KVM_PAGES_PER_HPAGE(PG_LEVEL_1G))
-> > > +             max_level = PG_LEVEL_1G;
-> > > +     else if (IS_ALIGNED(mapping->base_gfn, KVM_PAGES_PER_HPAGE(PG_LEVEL_2M)) &&
-> > > +              mapping->nr_pages >= KVM_PAGES_PER_HPAGE(PG_LEVEL_2M))
-> > > +             max_level = PG_LEVEL_2M;
-> > > +     else
-> > > +             max_level = PG_LEVEL_4K;
-> >
-> > Is there a requirement that KVM must not map memory outside of the
-> > requested region?
-> 
-> And if so, what if the requested region is already mapped with a larger page?
+Yes. Especially iopf should be independent of SVA.
 
-Yes. We'd like to map exact gpa range for SNP or TDX case. We don't want to map
-zero at around range.  For SNP or TDX, we map page to GPA, it's one time
-operation.  It updates measurement.
+The problem in the arm smmu v3 driver is that enabling iopf is actually
+done in the enabling SVA path, while the enabling iopf path does nothing
+except for some checks. It doesn't matter if iopf is tied with SVA, but
+when it comes to delivering iopf to user space, we need to decouple it.
 
-Say, we'd like to populate GPA1 and GPA2 with initial guest memory image.  And
-they are within same 2M range.  Map GPA1 first. If GPA2 is also mapped with zero
-with 2M page, the following mapping of GPA2 fails.  Even if mapping of GPA2
-succeeds, measurement may be updated when mapping GPA1. 
-
-It's user space VMM responsibility to map GPA range only once at most for SNP or
-TDX.  Is this too strict requirement for default VM use case to mitigate KVM
-page fault at guest boot up?  If so, what about a flag like EXACT_MAPPING or
-something?
--- 
-Isaku Yamahata <isaku.yamahata@linux.intel.com>
+Best regards,
+baolu
 
