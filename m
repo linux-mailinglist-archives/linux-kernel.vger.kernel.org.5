@@ -1,235 +1,128 @@
-Return-Path: <linux-kernel+bounces-95353-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95354-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9BBC874CA5
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:47:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4460C874CA9
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:47:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4100C1F22EF8
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:47:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D92B8B227CC
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:47:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6808585632;
-	Thu,  7 Mar 2024 10:46:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C589A85643;
+	Thu,  7 Mar 2024 10:47:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BzRtYR+a"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	dkim=pass (2048-bit key) header.d=savoirfairelinux.com header.i=@savoirfairelinux.com header.b="x8FGPlKd"
+Received: from mail.savoirfairelinux.com (mail.savoirfairelinux.com [208.88.110.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FA35839F6
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 10:46:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43A50839F6;
+	Thu,  7 Mar 2024 10:47:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=208.88.110.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709808418; cv=none; b=tgtWxHUovhHtvgU2JRGcGdur85cxMXuK90rDJnOJEV4Y75VEV6RGD4vtTzAXvdET0FdEkj14RqGXPGwbDbrzjSfj5+PSUsn5DD5tOxnSmRcQMImw+uESFCWlRM0cpYB+o+k+wprPgWjHEfRGtDoRSyOfN/2wH/qQEun2PJUE0No=
+	t=1709808451; cv=none; b=tg4uKQpDlGox6xvMvJo+TgCmWmqF1gmHE+EcsiYXiGXX3xmE8goVMXdE5D9apa7a/SkRAgXQxmb9JNECqyT4gspe1bFFEt1Qxeyrs0QOxrN7KZd1AHzeBPispv3wSuk3iS46DUn2T1vcL1otknj0woa9ZfflPoLYva/NbnHsXck=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709808418; c=relaxed/simple;
-	bh=tFjzmVY3UHOXlTHGyj2zTBpg2JOGLKAb/xsC7aF1Apw=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=aLmxP8eG5sk+lgs2y7sVV+qXjiqYWqI3r8kxxZek+bel0ftREcACqslkOajBmto6TNyDVjpsG4/gIYhFufRZZKTNOS2grWhCYGmDVGvIFiMJU9K3PxsXRxP50+bfMWjYnELyM+H0s9tqrmRTRHqj5TLpz8iqVF3bxXXQBeLP4yc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BzRtYR+a; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709808417; x=1741344417;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=tFjzmVY3UHOXlTHGyj2zTBpg2JOGLKAb/xsC7aF1Apw=;
-  b=BzRtYR+alk4as0ihrD6XMn3efXISgVtGbclILzwUBD4014uT+/vYFPqP
-   vcewtyyLdx/O+r/Hl+AqqTKB8ThTJ+HwMi792J+wAX8qB+IlyHHHAt+IZ
-   wNwgMhDiQGba6nHGbw7RfvKrz/sr9bv8YI0uDyy64pT9INFmzd3VX3N3f
-   TTGUGuLcItqcNp5sitQuFAzraudHMt0iPF2wv1C7Bscym9Bei0I7MNqtC
-   fQZneaUOl8oSV868sWt/AnLRSQjHVfWXLH1OAKURIP9Ji9ZAIThJ9iqnq
-   k7ptydbD1LjEmBK8p2+6sqQ4vxZc4aD56a1/C9vDxGGkawoaEZCOY0msG
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11005"; a="4327585"
-X-IronPort-AV: E=Sophos;i="6.06,211,1705392000"; 
-   d="scan'208";a="4327585"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 02:46:56 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,211,1705392000"; 
-   d="scan'208";a="9970271"
-Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
-  by fmviesa009.fm.intel.com with ESMTP; 07 Mar 2024 02:46:54 -0800
-Received: from kbuild by b21307750695 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1riBH2-00055x-0p;
-	Thu, 07 Mar 2024 10:46:52 +0000
-Date: Thu, 7 Mar 2024 18:46:34 +0800
-From: kernel test robot <lkp@intel.com>
-To: Niklas Cassel <niklas.cassel@wdc.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Damien Le Moal <damien.lemoal@opensource.wdc.com>
-Subject: WARNING: modpost: "__ashldi3" [drivers/ata/libahci.ko] has no CRC!
-Message-ID: <202403071842.ZJDlnRjb-lkp@intel.com>
+	s=arc-20240116; t=1709808451; c=relaxed/simple;
+	bh=i0lDZeGH5UKbhkAAP9E9Zdgf2J/oVw2oSwdfminksT8=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 MIME-Version:Content-Type; b=WZHNIpnAlL8fWXQlvFigSgz8TOPEnBpMZwN1vfyL/wzJGBYY8d/Q56WDL84mgl7HJbYU5GxdpVK7meHa0+QQsYunKVhAOHR6WTq/UTyg6jNOx8d43Rgi0sya/NQtGjimA2tCsgXrJ9mVmj1Xcz8GywSsFg6wLynWo6zRojvYuus=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=savoirfairelinux.com; spf=pass smtp.mailfrom=savoirfairelinux.com; dkim=pass (2048-bit key) header.d=savoirfairelinux.com header.i=@savoirfairelinux.com header.b=x8FGPlKd; arc=none smtp.client-ip=208.88.110.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=savoirfairelinux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=savoirfairelinux.com
+Received: from localhost (localhost [127.0.0.1])
+	by mail.savoirfairelinux.com (Postfix) with ESMTP id 05ED59C47A0;
+	Thu,  7 Mar 2024 05:47:24 -0500 (EST)
+Received: from mail.savoirfairelinux.com ([127.0.0.1])
+ by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavis, port 10032)
+ with ESMTP id MvV_bMyc-VL5; Thu,  7 Mar 2024 05:47:22 -0500 (EST)
+Received: from localhost (localhost [127.0.0.1])
+	by mail.savoirfairelinux.com (Postfix) with ESMTP id 573869C4AC5;
+	Thu,  7 Mar 2024 05:47:22 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.savoirfairelinux.com 573869C4AC5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=savoirfairelinux.com; s=DFC430D2-D198-11EC-948E-34200CB392D2;
+	t=1709808442; bh=i0lDZeGH5UKbhkAAP9E9Zdgf2J/oVw2oSwdfminksT8=;
+	h=Date:From:To:Message-ID:MIME-Version;
+	b=x8FGPlKdSLDTGimD+q+tiLvLOHVYUfy192hnbF6NpAfKaUWV2r0/2YTvTYbcf1UFm
+	 5rDSosOSRAqKpPa3YKQE+RJxPI3Uo527ch9oL+U8sh82+nd7qumxVv0v80JtMwi6lt
+	 A5mgwT9tC9kb4yZCcnyffV+ZrSdzkJx1K7MW/o96nKSMR4xjC422agbjfqZuErWqNZ
+	 Ah0/irhD1QKH5UsnoY2/o9NxfYpRedszlmqq40BgznNSGOgaPUCDFDjonda0AaTjcP
+	 jjJqw13BHkiWH9TPSAynknE75mZY+guPG+C6zZJfIlpRFPN/UoBz8tMhceuGHE6NlV
+	 5R0DOgH5bOK8w==
+X-Virus-Scanned: amavis at mail.savoirfairelinux.com
+Received: from mail.savoirfairelinux.com ([127.0.0.1])
+ by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavis, port 10026)
+ with ESMTP id WUO1xUb3eM7u; Thu,  7 Mar 2024 05:47:22 -0500 (EST)
+Received: from mail.savoirfairelinux.com (mail.savoirfairelinux.com [192.168.48.237])
+	by mail.savoirfairelinux.com (Postfix) with ESMTP id 2C5BA9C47A0;
+	Thu,  7 Mar 2024 05:47:22 -0500 (EST)
+Date: Thu, 7 Mar 2024 05:47:22 -0500 (EST)
+From: =?utf-8?Q?K=C3=A9vin_L=27h=C3=B4pital?= <kevin.lhopital@savoirfairelinux.com>
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc: Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>, 
+	"David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, Dan Murphy <dmurphy@ti.com>, 
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Enguerrand de Ribaucourt <enguerrand.de-ribaucourt@savoirfairelinux.com>
+Message-ID: <1992141776.1592829.1709808442035.JavaMail.zimbra@savoirfairelinux.com>
+In-Reply-To: <ZemOp4MGP/UK31wq@shell.armlinux.org.uk>
+References: <20240307085254.183905-1-kevin.lhopital@savoirfairelinux.com> <ZemOp4MGP/UK31wq@shell.armlinux.org.uk>
+Subject: Re: [PATCH] net: phy: fix phy_get_internal_delay accessing an empty
+ array
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Zimbra 8.8.15_GA_4581 (ZimbraWebClient - FF123 (Linux)/8.8.15_GA_4581)
+Thread-Topic: fix phy_get_internal_delay accessing an empty array
+Thread-Index: juNkTQ67iC3rqV83oDhFVEulGn7U9A==
 
-Hi Niklas,
 
-First bad commit (maybe != root cause):
+----- Le 7 Mar 24, =C3=A0 10:53, Russell King (Oracle) linux@armlinux.org.u=
+k a =C3=A9crit :
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   67be068d31d423b857ffd8c34dbcc093f8dfff76
-commit: 93c4aa449b88196c7d56a556cb6a2aad21ad8a7a ata: libata: read the shared status for successful NCQ commands once
-date:   1 year, 2 months ago
-config: sparc-randconfig-r062-20230821 (https://download.01.org/0day-ci/archive/20240307/202403071842.ZJDlnRjb-lkp@intel.com/config)
-compiler: sparc-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240307/202403071842.ZJDlnRjb-lkp@intel.com/reproduce)
+> On Thu, Mar 07, 2024 at 09:52:54AM +0100, K=C3=A9vin L'h=C3=B4pital wrote=
+:
+>> The phy_get_internal_delay function could try to access to an empty
+>> array in the case that the driver is calling phy_get_internal_delay
+>> without defining delay_values and rx-internal-delay-ps or
+>> tx-internal-delay-ps is defined to 0 in the device-tree.
+>> This will lead to "unable to handle kernel NULL pointer dereference at
+>> virtual address 0". To avoid this kernel oops, the test should be delay
+>> >=3D 0. As there is already delay < 0 test just before, the test could
+>> only be size =3D=3D 0.
+>>=20
+>> Fixes: 92252eec913b ("net: phy: Add a helper to return the index for of =
+the
+>> internal delay")
+>> Signed-off-by: K=C3=A9vin L'h=C3=B4pital <kevin.lhopital@savoirfairelinu=
+x.com>
+>> Signed-off-by: Enguerrand de Ribaucourt
+>> <enguerrand.de-ribaucourt@savoirfairelinux.com>
+>=20
+> The sign-offs look wrong to me. They indicate the path that the patch is
+> taking to be merged into mainline. Who is the author of this patch and
+> who is passing it along? If it's co-development, then there is a specific
+> tag for that.
+>=20
+> For the actual patch itself:
+>=20
+> Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+>=20
+> Thanks!
+>=20
+> --
+> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+> FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403071842.ZJDlnRjb-lkp@intel.com/
+I will send a V2 fixing this, thank you.
 
-All warnings (new ones prefixed by >>, old ones prefixed by <<):
+K=C3=A9vin L'h=C3=B4pital=20
 
-WARNING: modpost: "__ashrdi3" [drivers/mtd/chips/cfi_cmdset_0001.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/mtd/nand/onenand/onenand.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/mtd/nand/onenand/onenand.ko] has no CRC!
-WARNING: modpost: "__ashrdi3" [drivers/mtd/nand/onenand/onenand.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/mtd/nand/raw/nand.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/mtd/nand/raw/nand.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [drivers/mtd/nand/raw/nand.ko] has no CRC!
-WARNING: modpost: "__ashrdi3" [drivers/mtd/nand/raw/nand.ko] has no CRC!
-WARNING: modpost: "__ndelay" [drivers/mtd/nand/raw/nand.ko] has no CRC!
-WARNING: modpost: "__ndelay" [drivers/mtd/nand/raw/ams-delta.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [drivers/mtd/nand/raw/diskonchip.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/mtd/nand/raw/diskonchip.ko] has no CRC!
-WARNING: modpost: "__ndelay" [drivers/mtd/nand/raw/diskonchip.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/mtd/nand/raw/nandsim.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/mtd/nand/raw/nandsim.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [drivers/mtd/nand/raw/nandsim.ko] has no CRC!
-WARNING: modpost: "__ndelay" [drivers/mtd/nand/raw/gpio.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/mtd/nand/raw/cadence-nand-controller.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [drivers/mtd/mtdoops.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/mtd/spi-nor/spi-nor.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/spi/spi-loopback-test.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/spi/spi-lm70llp.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/firewire/firewire-core.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [drivers/firewire/firewire-core.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/sbus/char/uctrl.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/input/serio/i8042.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/input/rmi4/rmi_core.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/rtc/rtc-ds2404.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/rtc/rtc-msm6242.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/rtc/rtc-r7301.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/rtc/rtc-rs5c348.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/i2c/muxes/i2c-mux-ltc4306.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/i2c/muxes/i2c-mux-pca9541.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/i2c/muxes/i2c-mux-pca954x.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/i3c/i3c.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/i3c/master/i3c-master-cdns.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/i3c/master/dw-i3c-master.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/i3c/master/svc-i3c-master.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/i3c/master/svc-i3c-master.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/media/i2c/et8ek8/et8ek8.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/media/i2c/imx274.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/media/i2c/mt9t112.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/media/i2c/mt9v032.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/media/i2c/ov6650.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/media/tuners/mt20xx.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/media/tuners/tuner-simple.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/media/tuners/tda18271.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [drivers/media/v4l2-core/videodev.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/media/radio/tea575x.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/media/radio/wl128x/fm_drv.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/ptp/ptp_idt82p33.ko] has no CRC!
-WARNING: modpost: "__ndelay" [drivers/watchdog/mena21_wdt.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/md/dm-bufio.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [drivers/md/dm-bufio.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/md/dm-crypt.ko] has no CRC!
-WARNING: modpost: "empty_zero_page" [drivers/md/dm-crypt.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [drivers/md/dm-crypt.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/md/dm-thin-pool.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [drivers/md/dm-thin-pool.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/md/dm-verity.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [drivers/md/dm-verity.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/md/dm-integrity.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [drivers/md/dm-integrity.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [drivers/md/dm-writecache.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/md/dm-writecache.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/mmc/host/sdhci.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/mmc/host/sdhci-pci.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/mmc/host/sdhci-milbeaut.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/mmc/host/alcor.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/mmc/host/cb710-mmc.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/mmc/host/toshsd.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/mmc/host/rtsx_pci_sdmmc.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/mmc/host/sdhci-omap.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/mmc/core/pwrseq_emmc.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/mmc/core/mmc_block.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/ufs/core/ufshcd-core.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/leds/leds-bcm6358.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/leds/leds-bd2802.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/leds/flash/leds-rt8515.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/staging/vt6655/vt6655_stage.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/staging/vt6655/vt6655_stage.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/iio/accel/adxl345_core.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/iio/accel/mma9551_core.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [drivers/iio/adc/ad7793.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/iio/adc/ad7793.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/iio/adc/hi8435.ko] has no CRC!
-WARNING: modpost: "__ndelay" [drivers/iio/adc/hx711.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/iio/adc/max11410.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/iio/adc/palmas_gpadc.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/iio/adc/ti-ads124s08.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/iio/afe/iio-rescale.ko] has no CRC!
-WARNING: modpost: "__ndelay" [drivers/iio/dac/ad5766.ko] has no CRC!
-WARNING: modpost: "__ashrdi3" [drivers/iio/dac/dpot-dac.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/iio/frequency/ad9523.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/iio/potentiometer/ad5272.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/iio/proximity/ping.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/iio/proximity/srf04.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/iio/resolver/ad2s1200.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/vdpa/vdpa.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/ata/libata.ko] has no CRC!
->> WARNING: modpost: "__ashldi3" [drivers/ata/libahci.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/ata/libahci.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/spmi/hisi-spmi-controller.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/input/gameport/gameport.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/hwmon/ad7418.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/hwmon/lochnagar-hwmon.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [drivers/hwmon/lochnagar-hwmon.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/hwmon/lm93.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/hwmon/ltc2947-core.ko] has no CRC!
-WARNING: modpost: "__ashrdi3" [drivers/hwmon/ltc2947-core.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/hwmon/powr1220.ko] has no CRC!
-WARNING: modpost: "__ndelay" [drivers/hwmon/sht15.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/hwmon/pmbus/pmbus_core.ko] has no CRC!
-WARNING: modpost: "__ashrdi3" [drivers/hwmon/pmbus/pmbus_core.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/hwmon/pmbus/max15301.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/hwmon/pmbus/zl6100.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/bluetooth/btmrvl_sdio.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/bluetooth/virtio_bt.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/comedi/comedi.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/ntb/hw/idt/ntb_hw_idt.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/ntb/hw/epf/ntb_hw_epf.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/ntb/test/ntb_pingpong.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [drivers/ntb/test/ntb_pingpong.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [drivers/ntb/test/ntb_tool.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/ntb/test/ntb_tool.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/ntb/ntb_transport.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [drivers/ntb/ntb_transport.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/fpga/altera-pr-ip-core.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/fpga/altera-freeze-bridge.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/fsi/fsi-master-aspeed.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [drivers/fsi/fsi-master-gpio.ko] has no CRC!
-WARNING: modpost: "__ndelay" [drivers/fsi/fsi-master-gpio.ko] has no CRC!
-WARNING: modpost: "__udelay" [drivers/fsi/fsi-master-gpio.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [drivers/fsi/fsi-master-gpio.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [net/wireless/cfg80211.ko] has no CRC!
-WARNING: modpost: "__ashldi3" [net/mac80211/mac80211.ko] has no CRC!
-WARNING: modpost: "__lshrdi3" [net/mac80211/mac80211.ko] has no CRC!
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
