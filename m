@@ -1,172 +1,240 @@
-Return-Path: <linux-kernel+bounces-95012-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95008-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88988874820
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 07:24:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14BDD87480F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 07:23:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3D2C3B231FE
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 06:24:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 64694B22E4A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 06:23:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13ED92E41F;
-	Thu,  7 Mar 2024 06:22:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 923F322626;
+	Thu,  7 Mar 2024 06:22:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="HsDo8UPh"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="eDBsA1hQ"
+Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C80431F94C;
-	Thu,  7 Mar 2024 06:22:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E4AA1BF31
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 06:21:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709792559; cv=none; b=f8FiAyGxHMTh3ICgC2uN7JT46AHWbu7xy7+hw1LLUcmLAU9fliloJu+jJ+c+BEsFJxSCQL9SLV1c9vIFS5MDZT+vaaKbaE+EymXTo3jQL6BC5Io889gvvHKWyrGjDNCMBBggaFoGFx4vXlEtw7jf1Phhh5gQyrn6QpVUv/rZQGI=
+	t=1709792519; cv=none; b=oWCq2wGti3ppyyHUQIeH4xKNjOdhmv4iKbKHwLAoph6uubBkPigSw3KaOqN8e5zMeCiKFOm+LNBXJOMmLxSg05y5//XDTxZAclQOux1AXQytTOJcMiytLGp+zIfF0Plwuz4vFMZDsuxm0V1LGvUUrNr4XkV37kAwBtfy1+rBD3Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709792559; c=relaxed/simple;
-	bh=+0kpsGkeX6uxJ4O5RgdQaq/byz8xHlLjfEe5Mauzd2o=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qOw1E0Ia2XtXxpwyG/gHywGtW1xPTKEgrMfVl2ozFJRX8ssf9/b3s5HEln7c62EWz6UvdLQcRQsnC4cjGwfgQvOEqLuWNk2TmAjzhXHwCT2/HcfpSPs7mpcqjNP3C8zQjUBbto04kFUv6YcSKvGV7UdLBqduqfWViw7oleSG1Uw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=HsDo8UPh; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42769xuj024155;
-	Thu, 7 Mar 2024 06:22:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=t/3cHQVkeZtrBKiYoFpyxH5VSjGkCQf9zp1xi+LeNNA=; b=Hs
-	Do8UPhOWzGvt2bDUSiixe3e7B4Cj8orknbgZl3TWzeWRYmp4iYhDyJPlYcFwbdrn
-	r8/h499C5vIOh5dJN6hpDTBZ01OXUHzOOtTo4u1xHuz/OIm3LV+h95jpERDqTi54
-	bOJSktWAOLzsji7PZDW5Mp8LW/9ZVTZdhw3SS2qiPnnGdw2Cm1QCpu92FiPGTwSp
-	t+EXO/WnbuvUgt7kHZ5f+d5OC0BuaXmrIefz7IB9VFQ1qI+Icdy6nKo4dcNDF+9p
-	R++l2KmijSII5Gv0DQy11qeTGXCTH4YfXo6FQYNgmP4BiBBn7NAY//0u8yxjQAaF
-	DF6ky9nRF6ErMKeBPf0A==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wq316gj3s-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 07 Mar 2024 06:22:32 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4276M9l1031508
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 7 Mar 2024 06:22:09 GMT
-Received: from hu-kriskura-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 6 Mar 2024 22:22:04 -0800
-From: Krishna Kurapati <quic_kriskura@quicinc.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring
-	<robh+dt@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Wesley Cheng
-	<quic_wcheng@quicinc.com>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        "Greg
- Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Felipe Balbi
-	<balbi@kernel.org>, Johan Hovold <johan@kernel.org>
-CC: <devicetree@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_ppratap@quicinc.com>, <quic_jackp@quicinc.com>,
-        Krishna Kurapati
-	<quic_kriskura@quicinc.com>
-Subject: [PATCH v16 9/9] usb: dwc3: qcom: Add multiport suspend/resume support for wrapper
-Date: Thu, 7 Mar 2024 11:50:52 +0530
-Message-ID: <20240307062052.2319851-10-quic_kriskura@quicinc.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240307062052.2319851-1-quic_kriskura@quicinc.com>
-References: <20240307062052.2319851-1-quic_kriskura@quicinc.com>
+	s=arc-20240116; t=1709792519; c=relaxed/simple;
+	bh=QKwzNGAsKsvRTs/1Psocg21Y9gPoueC9GIDaUhtN3LU=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=HTpojGnDYJ+K0eJOFgDjrOdrPJfHMDO3JiYBSno9wQ6+AZCgyYzodgXQ/DxGTFJldyMpn67+WJkfNg+9bmfgRo1ulB4vKOSn4hNzeG/46WxParOC3lSezcNcSEgTKOg7TaVp0bRRzW8fCmWIMrzB0pldwhmt0aHjTYzZrixh5JU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=eDBsA1hQ; arc=none smtp.client-ip=209.85.219.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-68f5cdca7a3so13014076d6.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 22:21:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1709792516; x=1710397316; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ImzynJrvqwnXUnHjeXPOvdUqQOzMzF7+CE154eZIXmo=;
+        b=eDBsA1hQHAgEV8aHc0nuN/omxBZnhCJ2t/FIvkHo/ux1o677HRqg/3Xg2BrzdWcik1
+         OnPqASsdrb27SxkgNODcNACzlMAjHwNKRkFuSmmVX2fucXDSBjA5K3HWmEJF1nfXzFUL
+         Fl2ZjvCptujOb0H7EBmSbhq8Fz/QuyUjVbuts=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709792516; x=1710397316;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ImzynJrvqwnXUnHjeXPOvdUqQOzMzF7+CE154eZIXmo=;
+        b=ROfO6wPITTrPJ5Q6XY5z10ePi0ydw9dFpLPyzW9ZFYdISHGASfPtRJMasz8vAfm5RO
+         UdSucABMBzyzhlpPKNbZLp1xUTuO9ta6dhv7J9GAqlGbb3g/86jWBc9pJv1D1BdNPOY4
+         2Lj6C+bKpO5kFoG7SdNzc926Le++f/s3TsE6DLAcKpGleUICBJUX7O8IjlcvoZer9OuN
+         oGTW2JP2qYsieNoiKDLRN3pCFnJtYAJYZZJ9DjRqkp3tTQpna6OqPINEvYjEX43doWzm
+         1RvGtdZhwUgZXl+8gVKfAYQqU+fmVQa4hf0zHVpowG4QITcJOSyaC/oTwFkJIaADVLcy
+         6/4w==
+X-Forwarded-Encrypted: i=1; AJvYcCUABwT6ZCRazrQsTsMyzdvPg7Gxu0e7JEKRRdKczrhOs46CKIXheVFb46VdHrOItbXy4JdZDMzasWsCQuUNc3mXf3PFH4LfeZTvLoED
+X-Gm-Message-State: AOJu0YymrGiJqUSWrQ1UH92NRsT3P4cSOPLr/wB0/WpnAPFP+EsXkNHa
+	x2Xrh8APuU4/CbGTiPHCN8Orjuuc3/sR2H7vXhfwoR3IgMjWM6cC72aoBPIQjUk=
+X-Google-Smtp-Source: AGHT+IEUHmSxAYv6krmrCkWACPHTjZZ0qM1Lexgz4DY/Diu+g2F2ILXdGJS83UruM29x7RqIp5pb2A==
+X-Received: by 2002:a05:6214:5588:b0:690:a672:a107 with SMTP id mi8-20020a056214558800b00690a672a107mr211509qvb.0.1709792516084;
+        Wed, 06 Mar 2024 22:21:56 -0800 (PST)
+Received: from [10.5.0.2] ([91.196.69.189])
+        by smtp.gmail.com with ESMTPSA id lq9-20020a0562145b8900b0069055b05705sm7219808qvb.132.2024.03.06.22.21.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Mar 2024 22:21:55 -0800 (PST)
+Message-ID: <14ab5bd4-d7b8-4233-9389-f21884986671@joelfernandes.org>
+Date: Thu, 7 Mar 2024 01:21:50 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: bPmHffU9aaH-o4IJsfAqPemltRAg1xfy
-X-Proofpoint-ORIG-GUID: bPmHffU9aaH-o4IJsfAqPemltRAg1xfy
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-07_02,2024-03-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- lowpriorityscore=0 bulkscore=0 mlxlogscore=890 suspectscore=0 adultscore=0
- mlxscore=0 clxscore=1015 priorityscore=1501 impostorscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2402120000
- definitions=main-2403070045
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] rcu: Do not release a wait-head from a GP kthread
+Content-Language: en-US
+From: Joel Fernandes <joel@joelfernandes.org>
+To: "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+ "Paul E . McKenney" <paulmck@kernel.org>
+Cc: RCU <rcu@vger.kernel.org>, Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+ Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
+ LKML <linux-kernel@vger.kernel.org>,
+ Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+ Frederic Weisbecker <frederic@kernel.org>
+References: <20240305195720.42687-1-urezki@gmail.com>
+ <a1faf101-c689-4530-a9a5-c7f95b8825d6@joelfernandes.org>
+In-Reply-To: <a1faf101-c689-4530-a9a5-c7f95b8825d6@joelfernandes.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Power event IRQ is used for wakeup in cases:
-a) where the controller is super speed capable and missing an
-ss_phy interrupt.
-b) where the GIC is not capable of detecting DP/DM hs phy irq's.
 
-Power event IRQ stat register indicates whether high speed phy
-entered and exited L2 successfully during suspend and resume.
-Indicate the same for all ports of multiport.
 
-Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
----
- drivers/usb/dwc3/dwc3-qcom.c | 22 +++++++++++++++++-----
- 1 file changed, 17 insertions(+), 5 deletions(-)
+On 3/6/2024 5:31 PM, Joel Fernandes wrote:
+> 
+> 
+> On 3/5/2024 2:57 PM, Uladzislau Rezki (Sony) wrote:
+>> Fix a below race by not releasing a wait-head from the
+>> GP-kthread as it can lead for reusing it whereas a worker
+>> can still access it thus execute newly added callbacks too
+>> early.
+>>
+>> CPU 0                              CPU 1
+>> -----                              -----
+>>
+>> // wait_tail == HEAD1
+>> rcu_sr_normal_gp_cleanup() {
+>>     // has passed SR_MAX_USERS_WAKE_FROM_GP
+>>     wait_tail->next = next;
+>>     // done_tail = HEAD1
+>>     smp_store_release(&rcu_state.srs_done_tail, wait_tail);
+>>     queue_work() {
+>>         test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work)
+>>         __queue_work()
+>>     }
+>> }
+>>
+>>                                set_work_pool_and_clear_pending()
+>>                                rcu_sr_normal_gp_cleanup_work() {
+>> // new GP, wait_tail == HEAD2
+>> rcu_sr_normal_gp_cleanup() {
+>>     // executes all completion, but stop at HEAD1
+>>     wait_tail->next = HEAD1;
+>>     // done_tail = HEAD2
+>>     smp_store_release(&rcu_state.srs_done_tail, wait_tail);
+>>     queue_work() {
+>>         test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work)
+>>         __queue_work()
+>>     }
+>> }
+>>                                  // done = HEAD2
+>>                                  done = smp_load_acquire(&rcu_state.srs_done_tail);
+>>                                  // head = HEAD1
+>>                                  head = done->next;
+>>                                  done->next = NULL;
+>>                                  llist_for_each_safe() {
+>>                                  // completes all callbacks, release HEAD1
+>>                                  }
+>>                                }
+>>                                // Process second queue
+>>                                set_work_pool_and_clear_pending()
+>>                                rcu_sr_normal_gp_cleanup_work() {
+>>                                // done = HEAD2
+>>                                done = smp_load_acquire(&rcu_state.srs_done_tail);
+>>
+>> // new GP, wait_tail == HEAD3
+>> rcu_sr_normal_gp_cleanup() {
+>>     // Finds HEAD2 with ->next == NULL at the end
+>>     rcu_sr_put_wait_head(HEAD2)
+>>     ...
+>>
+>> // A few more GPs later
+>> rcu_sr_normal_gp_init() {
+>>      HEAD2 = rcu_sr_get_wait_head();
+>>      llist_add(HEAD2, &rcu_state.srs_next);
+>>                                // head == rcu_state.srs_next
+>>                                head = done->next;
+>>                                done->next = NULL;
+>>                                llist_for_each_safe() {
+>>                                 // EXECUTE CALLBACKS TOO EARLY!!!
+>>                                 }
+>>                                }
+>>
+>> Reported-by: Frederic Weisbecker <frederic@kernel.org>
+>> Fixes: 05a10b921000 ("rcu: Support direct wake-up of synchronize_rcu() users")
+>> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+>> ---
+>>  kernel/rcu/tree.c | 22 ++++++++--------------
+>>  1 file changed, 8 insertions(+), 14 deletions(-)
+>>
+>> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+>> index 31f3a61f9c38..475647620b12 100644
+>> --- a/kernel/rcu/tree.c
+>> +++ b/kernel/rcu/tree.c
+>> @@ -1656,21 +1656,11 @@ static void rcu_sr_normal_gp_cleanup(void)
+>>  	WARN_ON_ONCE(!rcu_sr_is_wait_head(wait_tail));
+>>  
+>>  	/*
+>> -	 * Process (a) and (d) cases. See an illustration. Apart of
+>> -	 * that it handles the scenario when all clients are done,
+>> -	 * wait-head is released if last. The worker is not kicked.
+>> +	 * Process (a) and (d) cases. See an illustration.
+>>  	 */
+>>  	llist_for_each_safe(rcu, next, wait_tail->next) {
+>> -		if (rcu_sr_is_wait_head(rcu)) {
+>> -			if (!rcu->next) {
+>> -				rcu_sr_put_wait_head(rcu);
+>> -				wait_tail->next = NULL;
+>> -			} else {
+>> -				wait_tail->next = rcu;
+>> -			}
+>> -
+>> +		if (rcu_sr_is_wait_head(rcu))
+>>  			break;
+>> -		}
+>>  
+>>  		rcu_sr_normal_complete(rcu);
+>>  		// It can be last, update a next on this step.
+>> @@ -1684,8 +1674,12 @@ static void rcu_sr_normal_gp_cleanup(void)
+>>  	smp_store_release(&rcu_state.srs_done_tail, wait_tail);
+>>  	ASSERT_EXCLUSIVE_WRITER(rcu_state.srs_done_tail);
+>>  
+>> -	if (wait_tail->next)
+>> -		queue_work(system_highpri_wq, &rcu_state.srs_cleanup_work);
+>> +	/*
+>> +	 * We schedule a work in order to perform a final processing
+>> +	 * of outstanding users(if still left) and releasing wait-heads
+>> +	 * added by rcu_sr_normal_gp_init() call.
+>> +	 */
+>> +	queue_work(system_highpri_wq, &rcu_state.srs_cleanup_work);
+>>  }
 
-diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
-index c0a6de50ec09..365f01a6b581 100644
---- a/drivers/usb/dwc3/dwc3-qcom.c
-+++ b/drivers/usb/dwc3/dwc3-qcom.c
-@@ -52,6 +52,13 @@
- #define APPS_USB_AVG_BW 0
- #define APPS_USB_PEAK_BW MBps_to_icc(40)
- 
-+static const u32 pwr_evnt_irq_stat_reg[DWC3_MAX_PORTS] = {
-+	0x58,
-+	0x1dc,
-+	0x228,
-+	0x238,
-+};
-+
- struct dwc3_qcom_port {
- 	int			qusb2_phy_irq;
- 	int			dp_hs_phy_irq;
-@@ -421,9 +428,11 @@ static int dwc3_qcom_suspend(struct dwc3_qcom *qcom, bool wakeup)
- 	if (qcom->is_suspended)
- 		return 0;
- 
--	val = readl(qcom->qscratch_base + PWR_EVNT_IRQ_STAT_REG);
--	if (!(val & PWR_EVNT_LPM_IN_L2_MASK))
--		dev_err(qcom->dev, "HS-PHY not in L2\n");
-+	for (i = 0; i < qcom->num_ports; i++) {
-+		val = readl(qcom->qscratch_base + pwr_evnt_irq_stat_reg[i]);
-+		if (!(val & PWR_EVNT_LPM_IN_L2_MASK))
-+			dev_err(qcom->dev, "port-%d HS-PHY not in L2\n", i + 1);
-+	}
- 
- 	for (i = qcom->num_clocks - 1; i >= 0; i--)
- 		clk_disable_unprepare(qcom->clks[i]);
-@@ -471,9 +480,12 @@ static int dwc3_qcom_resume(struct dwc3_qcom *qcom, bool wakeup)
- 	if (ret)
- 		dev_warn(qcom->dev, "failed to enable interconnect: %d\n", ret);
- 
-+	for (i = 0; i < qcom->num_ports; i++) {
- 	/* Clear existing events from PHY related to L2 in/out */
--	dwc3_qcom_setbits(qcom->qscratch_base, PWR_EVNT_IRQ_STAT_REG,
--			  PWR_EVNT_LPM_IN_L2_MASK | PWR_EVNT_LPM_OUT_L2_MASK);
-+		dwc3_qcom_setbits(qcom->qscratch_base,
-+				  pwr_evnt_irq_stat_reg[i],
-+				  PWR_EVNT_LPM_IN_L2_MASK | PWR_EVNT_LPM_OUT_L2_MASK);
-+	}
- 
- 	qcom->is_suspended = false;
- 
--- 
-2.34.1
+One question, why do you need to queue_work() if wait_tail->next == NULL?
 
+AFAICS, at this stage if wait_tail->next == NULL, you are in CASE f. so the last
+remaining HEAD stays?  (And llist_for_each_safe() in
+rcu_sr_normal_gp_cleanup_work becomes a NOOP).
+
+Could be something like this, but maybe I missed something:
+
+@@ -1672,7 +1674,7 @@ static void rcu_sr_normal_gp_cleanup_work(struct
+work_struct *work)
+  */
+ static void rcu_sr_normal_gp_cleanup(void)
+ {
+-       struct llist_node *wait_tail, *next, *rcu;
++       struct llist_node *wait_tail, *next = NULL, *rcu = NULL;
+        int done = 0;
+
+        wait_tail = rcu_state.srs_wait_tail;
+@@ -1707,7 +1709,8 @@ static void rcu_sr_normal_gp_cleanup(void)
+         * of outstanding users(if still left) and releasing wait-heads
+         * added by rcu_sr_normal_gp_init() call.
+         */
+-       queue_work(system_highpri_wq, &rcu_state.srs_cleanup_work);
++       if (rcu)
++               queue_work(system_highpri_wq, &rcu_state.srs_cleanup_work);
+ }
+
+ /*
 
