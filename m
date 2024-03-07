@@ -1,120 +1,155 @@
-Return-Path: <linux-kernel+bounces-95541-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95542-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9487874F30
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 13:34:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42F3B874F33
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 13:34:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F2A61F22507
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:34:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 747C51C229B3
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:34:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CFDE12BE9C;
-	Thu,  7 Mar 2024 12:34:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F56712BEA5;
+	Thu,  7 Mar 2024 12:34:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="m2hV8+Uz"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GmpiMxyl"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 678111292CD;
-	Thu,  7 Mar 2024 12:34:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CABBF12881C;
+	Thu,  7 Mar 2024 12:34:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709814854; cv=none; b=q9lnFMreDpziGRypK1KILGcPa70m7PVKWYjypoUs0OGANROERInDPwob40yrAPcLR5cidJ0AzGHwQTLrRyYrVlf93kQ+rs9qy768vv6kr2oq+m6GlT1MWUlkSjz/l2WQi6HfggPXPNrTpB1vW6XICi7oYUT6LtyMU9wvWIsstMU=
+	t=1709814878; cv=none; b=BDe1e9MfVje+ZUK047TMeFww4L70Mrcx6suu3jmSz14EPHjmWqADtXrrLYSF22CU/ln+LsKDkcNCc6T+SAgFL6Ss7FMVMxby1ALWeoJmnrygii6Y0pT3MAtZT8M9Ai5tSxujVKNcM5hkFS47YZVl+pxZ/y/iFiyvPbSDo2iXJK4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709814854; c=relaxed/simple;
-	bh=A8FmQi+nWttuZkN0OHf+hc97YU7oIRy5k7+znlJGMlI=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=fKP66HIDcPfXHGPsU0JkipDg/5RGLq2YWeUE8am3xOhEQu/7tObarZHXNmX707H7b7ua6+apWri1YZrfnza11jgzDfNdBIEoB2kxMnxfepxG0AuCQln3VHbMHw7bi/xswijfy3ymVljb061baJ6QuCgvrh9zznkVtC4aMtBnKh4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=m2hV8+Uz; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-	s=201909; t=1709814848;
-	bh=5GCSx/SWwEQN6H1v+rlc6aQIECBTZdtYZCIuJdaUGZc=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=m2hV8+UzshtbVo1SMQpGCIZAVMu9h2hQvtpDC9CkF6Ead01MUqjonBYL92rbYu9o5
-	 eONdwUL5JV+qzsPtqxYxcbEZTnxik/VNQnkbfcaMbISw7CbDppUAmAH/9P3sku/f8b
-	 i2LMQgXCW1DJms0NeuRTzJ0tBX4bUIMqKowAPBctWZSTjYyNqR0YILGQIfrcB30lQJ
-	 AxLogULtOaYvLPcYayeLz0xu9HzQh3oaG4608ibo49kkmjQLQ5CoPOkqEhC/05rYgX
-	 JxgCpZfY9Df2KdR0oUWson/F66hS7hXm3iPnnhME1f/unkDf0IfUz0QTmy9qELYv1z
-	 htVjJ1WY+KwZQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Tr7yd1VsMz4wc8;
-	Thu,  7 Mar 2024 23:34:01 +1100 (AEDT)
-From: Michael Ellerman <mpe@ellerman.id.au>
-To: Arnd Bergmann <arnd@kernel.org>, Anna-Maria Behnsen
- <anna-maria@linutronix.de>, Thomas Gleixner <tglx@linutronix.de>, Vincenzo
- Frascino <vincenzo.frascino@arm.com>, Kees Cook <keescook@chromium.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Matt Turner <mattst88@gmail.com>, Vineet
- Gupta <vgupta@kernel.org>, Russell King <linux@armlinux.org.uk>, Catalin
- Marinas <catalin.marinas@arm.com>, Guo Ren <guoren@kernel.org>, Brian Cain
- <bcain@quicinc.com>, Huacai Chen <chenhuacai@kernel.org>, Geert
- Uytterhoeven <geert@linux-m68k.org>, Michal Simek <monstr@monstr.eu>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Helge Deller
- <deller@gmx.de>, Christophe Leroy <christophe.leroy@csgroup.eu>, Palmer
- Dabbelt <palmer@dabbelt.com>, John Paul Adrian Glaubitz
- <glaubitz@physik.fu-berlin.de>, Andreas Larsson <andreas@gaisler.com>,
- Richard Weinberger <richard@nod.at>, x86@kernel.org, Max Filippov
- <jcmvbkbc@gmail.com>, Andy Lutomirski <luto@kernel.org>, Jan Kiszka
- <jan.kiszka@siemens.com>, Kieran Bingham <kbingham@kernel.org>, Andrew
- Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
- linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
- linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
- linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
- linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
- linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
- sparclinux@vger.kernel.org, linux-um@lists.infradead.org
-Subject: Re: [PATCH v2 2/3] arch: simplify architecture specific page size
- configuration
-In-Reply-To: <20240306141453.3900574-3-arnd@kernel.org>
-References: <20240306141453.3900574-1-arnd@kernel.org>
- <20240306141453.3900574-3-arnd@kernel.org>
-Date: Thu, 07 Mar 2024 23:34:00 +1100
-Message-ID: <878r2unruv.fsf@mail.lhotse>
+	s=arc-20240116; t=1709814878; c=relaxed/simple;
+	bh=BvAvilTGYuQBuxg/VkWEO98QsQNG4+isNYq/1wZqKww=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CfeK/YvqVxPtaqnKgCcYpSW1y/WAyu+VSfBuRl35hZydb5avW7CmKQ5l9G9U7GxXjx+b0EhHReQP4G0E4EFkEjeisiGPNpvhzmctGsPhiU76xWiJdEtHHOwgkDYLKzzs7wcEX1D8JFSoGWMXDzdjezu3LKHRqg4ghuVMaF4f5AA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GmpiMxyl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80E68C433C7;
+	Thu,  7 Mar 2024 12:34:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709814878;
+	bh=BvAvilTGYuQBuxg/VkWEO98QsQNG4+isNYq/1wZqKww=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=GmpiMxylS6Xl3bIHxxo/gypLff/ee2i+qpEr+hVbvn+Ij7s0G6zQ/rSn/1lqNCPVp
+	 RolkjveZ9nGF2nu+6pvMeK7fuLzayNil6bl5iOZIkIPx0htF7cA1hBXV5bVp90uw+y
+	 COAssc5Spszl9duXjpGMCIlCxLTX7S8j5bPeib11S7SgaVlSFgur0FuySxLWIxph8m
+	 oRwCT4kYk1hYAcjIRGXO7UqSK/TaTId7Koc19FsLxrbKfaXb2OahVJJD3rz3Jf8MbQ
+	 OB+mCtAeSEPPfBZJTPkJbcnpj9wvB40LWoJak4tXQPjg0iQ94WOCgchEahPsWkuqlz
+	 uQ1bBvKC7fz2A==
+Message-ID: <6f9c1ee1-3b3a-44e3-96c6-ae1bef52d51d@kernel.org>
+Date: Thu, 7 Mar 2024 14:34:31 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 4/9] usb: cdns3-ti: support reset-on-resume behavior
+Content-Language: en-US
+To: =?UTF-8?Q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Peter Chen <peter.chen@kernel.org>,
+ Pawel Laszczak <pawell@cadence.com>, Nishanth Menon <nm@ti.com>,
+ Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ =?UTF-8?Q?Gr=C3=A9gory_Clement?= <gregory.clement@bootlin.com>,
+ Kevin Hilman <khilman@kernel.org>, Alan Stern <stern@rowland.harvard.edu>,
+ linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20240307-j7200-usb-suspend-v4-0-5ec7615431f3@bootlin.com>
+ <20240307-j7200-usb-suspend-v4-4-5ec7615431f3@bootlin.com>
+From: Roger Quadros <rogerq@kernel.org>
+In-Reply-To: <20240307-j7200-usb-suspend-v4-4-5ec7615431f3@bootlin.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Arnd Bergmann <arnd@kernel.org> writes:
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> arc, arm64, parisc and powerpc all have their own Kconfig symbols
-> in place of the common CONFIG_PAGE_SIZE_4KB symbols. Change these
-> so the common symbols are the ones that are actually used, while
-> leaving the arhcitecture specific ones as the user visible
-> place for configuring it, to avoid breaking user configs.
->
-> Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu> (powerpc32)
-> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-> Acked-by: Helge Deller <deller@gmx.de> # parisc
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+
+
+On 07/03/2024 11:55, Théo Lebrun wrote:
+> Add match data support, with one boolean to indicate whether the
+> hardware resets after a system-wide suspend. If hardware resets, we
+> force execute ->runtime_resume() at system-wide resume to run the
+> hardware init sequence.
+> 
+> No compatible exploits this functionality, just yet.
+> 
+> Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
 > ---
-> No changes from v1
->
->  arch/arc/Kconfig                  |  3 +++
->  arch/arc/include/uapi/asm/page.h  |  6 ++----
->  arch/arm64/Kconfig                | 29 +++++++++++++----------------
->  arch/arm64/include/asm/page-def.h |  2 +-
->  arch/parisc/Kconfig               |  3 +++
->  arch/parisc/include/asm/page.h    | 10 +---------
->  arch/powerpc/Kconfig              | 31 ++++++-------------------------
->  arch/powerpc/include/asm/page.h   |  2 +-
->  scripts/gdb/linux/constants.py.in |  2 +-
->  scripts/gdb/linux/mm.py           |  2 +-
->  10 files changed, 32 insertions(+), 58 deletions(-)
+>  drivers/usb/cdns3/cdns3-ti.c | 27 +++++++++++++++++++++++++++
+>  1 file changed, 27 insertions(+)
+> 
+> diff --git a/drivers/usb/cdns3/cdns3-ti.c b/drivers/usb/cdns3/cdns3-ti.c
+> index 4c8a557e6a6f..f76327566798 100644
+> --- a/drivers/usb/cdns3/cdns3-ti.c
+> +++ b/drivers/usb/cdns3/cdns3-ti.c
+> @@ -57,9 +57,14 @@ struct cdns_ti {
+>  	unsigned vbus_divider:1;
+>  	struct clk *usb2_refclk;
+>  	struct clk *lpm_clk;
+> +	const struct cdns_ti_match_data *match_data;
+>  	int usb2_refclk_rate_code;
+>  };
+>  
+> +struct cdns_ti_match_data {
+> +	bool reset_on_resume;
+> +};
+> +
+>  static const int cdns_ti_rate_table[] = {	/* in KHZ */
+>  	9600,
+>  	10000,
+> @@ -101,6 +106,7 @@ static int cdns_ti_probe(struct platform_device *pdev)
+>  	platform_set_drvdata(pdev, data);
+>  
+>  	data->dev = dev;
+> +	data->match_data = device_get_match_data(dev);
+>  
+>  	data->usbss = devm_platform_ioremap_resource(pdev, 0);
+>  	if (IS_ERR(data->usbss)) {
+> @@ -220,8 +226,29 @@ static int cdns_ti_runtime_resume(struct device *dev)
+>  	return 0;
+>  }
+>  
+> +static int cdns_ti_suspend(struct device *dev)
+> +{
+> +	struct cdns_ti *data = dev_get_drvdata(dev);
+> +
+> +	if (data->match_data && data->match_data->reset_on_resume)
+> +		return pm_runtime_force_suspend(dev);
+> +	else
+> +		return 0;
+> +}
+> +
+> +static int cdns_ti_resume(struct device *dev)
+> +{
+> +	struct cdns_ti *data = dev_get_drvdata(dev);
+> +
 
-Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+Instead of this just do Reset and re-init here on affected
+platforms.
+This is after you remove reset/re-init code from .runtime_resume().
 
-cheers
+> +	if (data->match_data && data->match_data->reset_on_resume)
+> +		return pm_runtime_force_resume(dev);
+> +	else
+> +		return 0;
+> +}
+> +
+>  static const struct dev_pm_ops cdns_ti_pm_ops = {
+>  	RUNTIME_PM_OPS(NULL, cdns_ti_runtime_resume, NULL)
+> +	SYSTEM_SLEEP_PM_OPS(cdns_ti_suspend, cdns_ti_resume)
+>  };
+>  
+>  static const struct of_device_id cdns_ti_of_match[] = {
+> 
+
+-- 
+cheers,
+-roger
 
