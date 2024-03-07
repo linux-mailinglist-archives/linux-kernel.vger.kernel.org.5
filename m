@@ -1,138 +1,120 @@
-Return-Path: <linux-kernel+bounces-96170-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96171-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6548C875809
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 21:14:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE07C87580C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 21:15:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16E952825EC
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:14:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 27AF8B25C04
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:15:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 250AE1386D0;
-	Thu,  7 Mar 2024 20:14:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S1dNhY9a"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ECE013956D;
+	Thu,  7 Mar 2024 20:14:30 +0000 (UTC)
+Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com [209.85.210.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F8A71DA2F;
-	Thu,  7 Mar 2024 20:14:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C7B61DA2F;
+	Thu,  7 Mar 2024 20:14:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709842462; cv=none; b=etwwWcn3tq5iQzsI5Gt+bDgilRulqbJspRMCFN2jf4xC0Z5GN/H5DlF/ZxnzHS7LTw85dpS/hwaHqDmBrix5SZRZPzykjTgN3PQfI8D4IAhRyrOaO9osa9PjIPVGGNiLi+VypdD3wmVd9il2bQ20O+7vHfpyxFDDzs/ct/wQ0zQ=
+	t=1709842469; cv=none; b=XBhPC2iIfV6f7keCgITHLFtoEWsoo2tr5yobftxyJ3pljzDl1yA5iV55jXzxaoh2Eg8FQudcNy9d3Ns9oxFFyJ5NV9LvK2ySCyNY1B7Qw3NV688QadPZgs7JmNyxHyz8FQmSkMSAB5YFxvG7aI4yvXWFpfy5i9f+509gF9+fdVk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709842462; c=relaxed/simple;
-	bh=9g/TyhNGfCR/iMnSye5VRUmHHWo7BgK2gWR+z27+UT8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Xyc9qKDmF+eApIFmnEh+OGhzjVdhz/jASYINKKggD1Q/eMaUcv0CO5ZArVc7DNsI91CEoK01mAfMI+VmySrPMNn5bDq9yB7wb6IlUolpuiknZwT9H6Ocor3B8syitUEz1QLTxfD5CRUu08nfCo144cg7Bu2y2ey0qlCl/0xWiPI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S1dNhY9a; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 127C2C43601;
-	Thu,  7 Mar 2024 20:14:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709842461;
-	bh=9g/TyhNGfCR/iMnSye5VRUmHHWo7BgK2gWR+z27+UT8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=S1dNhY9aEBZdeLadUrmkw3KVNJC43yd+/r60Z1+72kT3Quyl+APc7qLQipcl8d8EM
-	 JvQPq0542qirZbinHyPb1MB51ltlkKY9VSf1NpLvr2mH+5BZLENnTNqxwv3SWVqo74
-	 5eL6TmB+xGwpyg3kuuG4BfPcOfVVKVsHBtUzhZuhlLGjMBgZyzHkLgTY4rHVzBmyBz
-	 nlbnWNSc2y8wOIANU03Q79If0DyOSBRaFxckaPRk9ZfYfpl5xuryktU/yt2N1KsC1S
-	 o6sZSJtjofvkdBb6rua6VV0NhR+zf7kNk+vsTcB0EHDcvyfS8YpAxOrX3g6kqdjeON
-	 qzNwC7PLd2sNA==
-Date: Thu, 7 Mar 2024 21:14:11 +0100
-From: Niklas Cassel <cassel@kernel.org>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Marek Vasut <marek.vasut+renesas@gmail.com>,
-	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Kishon Vijay Abraham I <kishon@ti.com>,
-	Vidya Sagar <vidyas@nvidia.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Richard Zhu <hongxing.zhu@nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Minghuan Lian <minghuan.Lian@nxp.com>,
-	Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
-	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Jesper Nilsson <jesper.nilsson@axis.com>,
-	Srikanth Thokala <srikanth.thokala@intel.com>,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-	linux-arm-kernel@axis.com, Frank Li <Frank.Li@nxp.com>
-Subject: Re: [PATCH v9 03/10] PCI: dwc: ep: Introduce dw_pcie_ep_cleanup()
- API for drivers supporting PERST#
-Message-ID: <ZeogExV6wbNdpdEA@ryzen>
-References: <20240304-pci-dbi-rework-v9-0-29d433d99cda@linaro.org>
- <20240304-pci-dbi-rework-v9-3-29d433d99cda@linaro.org>
+	s=arc-20240116; t=1709842469; c=relaxed/simple;
+	bh=UGJzzYkfDdKkOjnlty7YFmm4I4PFag7shNz/wSGmHls=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=i1MI9Tr3QmdT0d1BmtH4MxPb9yZYIbnthFxRIlSdZPfxymTmxk+M414qm+urq7fC0sQ6mF5UtQNXb1BALST0F6mUIUjy6yDo85RgdqI2nKsVyadA0Ogeh9NqiFnVDp/JtjVxUX9OpSNK5LJECnr8EklQhc11ncuUFx41/BulKWk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f41.google.com with SMTP id 46e09a7af769-6e2b466d213so253905a34.0;
+        Thu, 07 Mar 2024 12:14:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709842467; x=1710447267;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cQ1nk67dG3LM1VN+vZEbHn5Ol1vo3NNvxceJvm4ef4E=;
+        b=Z7nkiFuQjVNUMjtWMqQXID5DQCXpRc7lxhxjcBzXY/sSzdMS5bjTcdIX3srtkRLQIg
+         wOJkzyy25Ub/Ts1r0B4uSqjJ0Jvi6q3VQvjxm7KFJbNtKEE3n3py5OqUFeM+mulQJ5ZA
+         vnvUtRAG6d+YdnjuQMKT/Bk/cWFQWbvSUr2AKIz/riSrpbTB7nt5H34cvxeIPP/dS0od
+         lB3JUuSFlBu80j9wclvnxfaI7RPM6sNuXWlmDsWFVhkP1jGtJ+9zDXShFqUlOFhPNJqa
+         4Lo7veaw+bSsjhI1WsukdvsF4KogGwu8h1rEJz4YXpD35yi4BoQ6PvaoWckzhb9HiKyz
+         zVUA==
+X-Forwarded-Encrypted: i=1; AJvYcCVNrlrYa7KM/zGk2LEEaoDFgg/IHsdp622bnqrplk0jl1DNpCxOaLCrtYafS/qTN0J0Eb7WCh0auvspxzwJ4GpU4rKYwU8D8mEvcyWLaMjC+gXhEudu5EG0b1gq1iugSvN5bcZfmuE=
+X-Gm-Message-State: AOJu0YzKW6XXLyGLnFEnofQNGMlB+9OabyNInC0qTUdDcb92ey+Czpns
+	au4Kt+bIL2m3cDQ2de2j281+WxUDvWABE7HQrYuM8rrIobfiCF/YkVZ3uZ9wHcmtaqQQHK0VBbz
+	vad7yRwbdhZqqxi/WBlh/O75KZ/XKjbgf
+X-Google-Smtp-Source: AGHT+IE/HMP790FSOKOzWRMjrESdSTJcpXREuN+NywBz976YEv9PMVM63tFwzwuRUFXFPNFgiFVS7v7KQcWFynRuIHM=
+X-Received: by 2002:a4a:c80e:0:b0:5a0:2cbe:43dd with SMTP id
+ s14-20020a4ac80e000000b005a02cbe43ddmr20401ooq.1.1709842467204; Thu, 07 Mar
+ 2024 12:14:27 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240304-pci-dbi-rework-v9-3-29d433d99cda@linaro.org>
+References: <6eeb5f78-a38d-4f00-abca-db417d08d6fe@linuxfoundation.org>
+In-Reply-To: <6eeb5f78-a38d-4f00-abca-db417d08d6fe@linuxfoundation.org>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Thu, 7 Mar 2024 21:14:15 +0100
+Message-ID: <CAJZ5v0i+DOikYLA6ZyfJHptPxpH0UVKzLBT9QGzingYxGZQQ-w@mail.gmail.com>
+Subject: Re: [GIT PULL] cpupower update for Linux 6.9-rc1
+To: Shuah Khan <skhan@linuxfoundation.org>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, shuah <shuah@kernel.org>, 
+	Linux PM <linux-pm@vger.kernel.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Thomas Renninger <trenn@suse.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 04, 2024 at 02:52:15PM +0530, Manivannan Sadhasivam wrote:
-> For DWC glue drivers supporting PERST# (currently Qcom and Tegra194), some
-> of the DWC resources like eDMA should be cleaned up during the PERST#
-> assert time.
-> 
-> So let's introduce a dw_pcie_ep_cleanup() API that could be called by these
-> drivers to cleanup the DWC specific resources. Currently, it just removes
-> eDMA.
-> 
-> Reported-by: Niklas Cassel <cassel@kernel.org>
-> Closes: https://lore.kernel.org/linux-pci/ZWYmX8Y%2F7Q9WMxES@x1-carbon
-> Reviewed-by: Frank Li <Frank.Li@nxp.com>
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
->  drivers/pci/controller/dwc/pcie-designware-ep.c | 11 +++++++++--
->  drivers/pci/controller/dwc/pcie-designware.h    |  5 +++++
->  drivers/pci/controller/dwc/pcie-qcom-ep.c       |  1 +
->  drivers/pci/controller/dwc/pcie-tegra194.c      |  2 ++
->  4 files changed, 17 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
-> index 2b11290aab4c..1205bfba8310 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware-ep.c
-> +++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
-> @@ -564,12 +564,19 @@ int dw_pcie_ep_raise_msix_irq(struct dw_pcie_ep *ep, u8 func_no,
->  	return 0;
->  }
->  
-> -void dw_pcie_ep_deinit(struct dw_pcie_ep *ep)
-> +void dw_pcie_ep_cleanup(struct dw_pcie_ep *ep)
->  {
->  	struct dw_pcie *pci = to_dw_pcie_from_ep(ep);
-> -	struct pci_epc *epc = ep->epc;
->  
->  	dw_pcie_edma_remove(pci);
-> +}
-> +EXPORT_SYMBOL_GPL(dw_pcie_ep_cleanup);
+Hi Shuah,
 
-Since you are not clearing the iATU bits in ep->ib_window_map and
-ep->bar_to_atu, this will "leak" resources, so depending on how many
-inbound iATUs the platform has, by simply the RC toggling PERST,
-will cause an error when calling set_bar() after dw_pcie_ep_init_notify().
+On Wed, Mar 6, 2024 at 9:49=E2=80=AFPM Shuah Khan <skhan@linuxfoundation.or=
+g> wrote:
+>
+> Hi Rafael,
+>
+> Please pull the following cpupower fixes update for Linux 6.9-rc1.
+>
+> This cpupower update for Linux 6.9-rc1 consists of a single fix
+> to a typo in cpupower-frequency-info.1 man page.
+>
+> diff is included.
+>
+> thanks,
+> -- Shuah
+>
+> ----------------------------------------------------------------
+> The following changes since commit b401b621758e46812da61fa58a67c3fd8d91de=
+0d:
+>
+>    Linux 6.8-rc5 (2024-02-18 12:56:25 -0800)
+>
+> are available in the Git repository at:
+>
+>    git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux tags/linux-c=
+pupower-6.9-rc1
+>
+> for you to fetch changes up to a114d9f1f2cf4896d838ab0a9c30a75411736829:
+>
+>    Fix cpupower-frequency-info.1 man page typo (2024-03-06 09:27:57 -0700=
+)
+>
+> ----------------------------------------------------------------
+> linux-cpupower-6.9-rc1
+>
+> This cpupower update for Linux 6.9-rc1 consists of a single fix
+> to a typo in cpupower-frequency-info.1 man page.
+>
+> ----------------------------------------------------------------
+> Jan Kratochvil (1):
+>        Fix cpupower-frequency-info.1 man page typo
+>
+>   tools/power/cpupower/man/cpupower-frequency-info.1 | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> ----------------------------------------------------------------
 
-However, because you have said that you will address this in a follow up
-series:
-Reviewed-by: Niklas Cassel <cassel@kernel.org>
+Pulled and added to the linux-next branch in linux-pm.git, thanks!
 
