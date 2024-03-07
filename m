@@ -1,93 +1,101 @@
-Return-Path: <linux-kernel+bounces-95057-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95058-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C77F68748B4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 08:30:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E22E8748B6
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 08:31:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 606061F22D2B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 07:30:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A2992828DF
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 07:31:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D54D363127;
-	Thu,  7 Mar 2024 07:30:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AF9563106;
+	Thu,  7 Mar 2024 07:31:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="QeWVABOR"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="YhCwdWI5"
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13E3D5FDCC
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 07:30:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43370CA6B;
+	Thu,  7 Mar 2024 07:31:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709796602; cv=none; b=fgVvsJkczgXO/87vM+qV5aSDUavkYHUyTyn8siTRMElRmNzqnN9ayG0xrl7NoMlwkN6YOjHY29Ot/3/vEgjDZSl/gz1vOzhc5EUE8LDU8J76qB3LNxbqWn8GMYJ30F6dn+0aiPjZyqWXHQEJU4/RQpsx9WxCP3t1Fc4ts9Xuh6w=
+	t=1709796674; cv=none; b=VXD22hhE9ENO/YKHNaCqHD9GclmOyN5h0lTKFC5FPvtReT2mugkST4Aps2ckxFwA8j7wHdtvpkBgb3CxPbbXlgCHvLA5ptrG0TsXg7dyd0icJ34NFmkBQnQCnDbfeqda0xFS7lTIHl4/Rb4/VvKQerHIETXA/VWGef97ztx7pEE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709796602; c=relaxed/simple;
-	bh=uOitGMaR+iBTfWK+Kc+1O9pOqzYTokoWTjwf+rP8NSo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=U18XIBiUL7a5TJiHv/na8M7HiGHmPcbGc6v46y5OLcdoAx+tKXZGtzqmZOfVo2EZJrqXdTIgPsqc8KeczZE6Nw7y0dVfHFrI+0SZJCtLI6WlcES6x2Btw9j7hvrXRd3o2g3inx+ruhaklXyOjbgohkSDwXAkGqQ9AlCxMNAlktU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=QeWVABOR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46579C43394;
-	Thu,  7 Mar 2024 07:30:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1709796601;
-	bh=uOitGMaR+iBTfWK+Kc+1O9pOqzYTokoWTjwf+rP8NSo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=QeWVABORKFOidzI5mHG5XtQi90rwT2Z5tX94Bn4bChUoPvGhVVF2o/0XG9l7rTJ8V
-	 0epdg0zohjpLdGlI1w+tBS1hZ+xfUgu/BK+JccgYvkJVuChgX98m5bWC6VxJEyILiB
-	 9nzLn5+Ctl6ohfEocAiQQ/956Jk/78KTz9HmtfQA=
-Date: Thu, 7 Mar 2024 07:29:59 +0000
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: Thorsten Scherer <t.scherer@eckelmann.de>, linux-kernel@vger.kernel.org,
-	Pengutronix Kernel Team <kernel@pengutronix.de>
-Subject: Re: [PATCH 2/4] siox: Provide a devm variant of siox_master_alloc()
-Message-ID: <2024030732-ocean-handbook-161f@gregkh>
-References: <cover.1708328466.git.u.kleine-koenig@pengutronix.de>
- <ad141dd22c7d95ad0bd347f257ce586e1afb22a4.1708328466.git.u.kleine-koenig@pengutronix.de>
- <ftvih5huvc72a76s7fe4zisrqtaax5tcgoukqoi2bkz47zcrq2@4fixszonixgl>
+	s=arc-20240116; t=1709796674; c=relaxed/simple;
+	bh=I6bIZUhwQKeG+UWXTr5lwelfRtaHwJTZkOk3YNZcbpI=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=EGM2YAqI5ucyUNXarwLUewshvhxCeP1iHJlkqgw2bZbKMDAAaNFtP4vxnexvK8jFfMeu/L+3+ideOGqVRSllNF5OFvbkamZk02AYccaoUlYJQl7/+4uC/Wytp6ibMZy49zlMtILQFxxo1bTjcidP5Sb+dFpxPJn6NKIMDCv0p1k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=YhCwdWI5; arc=none smtp.client-ip=217.70.183.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id C9D2560002;
+	Thu,  7 Mar 2024 07:31:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709796670;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=E/G30HQxLWRoFZIvYSd3SRA2snV7wVPADu6RkLNz5Vc=;
+	b=YhCwdWI5VgfWOlO+rdWF7RO2fwNn7lMLmJDNBX2NEAMPZO4OeQ1oh+5NminfFfM95kOzJ+
+	++1G/8FL6lEB+7Kli0tiJSU0cJAP69njWF4/wWjm0GpZKhif+96kfl7Ma8PoekzT/p6JKr
+	yD1kSC9Drw4GrHekHNrkfd0kbH05JYEjak3788Rlb/NuG/7kXO0zD54llmCWfhE2x8ePvP
+	xjhHpIm6yhuub04Bw8n2umzSt8CHcRLlZ84recBGwmnvStlHWQHgyQahpzEtXtusV9D4+Z
+	RO+Z/8frZyD1vM6m+QAggw4I0f0h5K6mOR5uXh8VzPfYP7bh9YMs9cXavpjp/Q==
+Date: Thu, 7 Mar 2024 08:31:07 +0100
+From: Herve Codina <herve.codina@bootlin.com>
+To: Yury Norov <yury.norov@gmail.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Vadim Fedorenko
+ <vadim.fedorenko@linux.dev>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
+ Abeni <pabeni@redhat.com>, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, Andrew Lunn <andrew@lunn.ch>, Mark Brown
+ <broonie@kernel.org>, Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v6 3/5] lib/bitmap: Introduce bitmap_scatter() and
+ bitmap_gather() helpers
+Message-ID: <20240307083107.0fcd940f@bootlin.com>
+In-Reply-To: <Zehx-v7h38TPJWwe@smile.fi.intel.com>
+References: <20240306080726.167338-1-herve.codina@bootlin.com>
+	<20240306080726.167338-4-herve.codina@bootlin.com>
+	<Zehrd/VgW5AnfJEu@yury-ThinkPad>
+	<Zehx-v7h38TPJWwe@smile.fi.intel.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ftvih5huvc72a76s7fe4zisrqtaax5tcgoukqoi2bkz47zcrq2@4fixszonixgl>
+X-GND-Sasl: herve.codina@bootlin.com
 
-On Thu, Mar 07, 2024 at 08:13:55AM +0100, Uwe Kleine-Kˆnig wrote:
-> Hello,
+Hi Yury,
+
+On Wed, 6 Mar 2024 15:39:06 +0200
+Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+
+> On Wed, Mar 06, 2024 at 05:11:19AM -0800, Yury Norov wrote:
+> > On Wed, Mar 06, 2024 at 09:07:19AM +0100, Herve Codina wrote:  
 > 
-> On Mon, Feb 19, 2024 at 08:46:30AM +0100, Uwe Kleine-Kˆnig wrote:
-> > +struct siox_master *devm_siox_master_alloc(struct device *dev,
-> > +					   size_t size)
-> > +{
-> > +	struct siox_master *smaster;
-> > +	int ret;
-> > +
-> > +	smaster = siox_master_alloc(dev, size);
-> > +	if (!smaster)
-> > +		return NULL;
-> > +
-> > +	ret = devm_add_action_or_reset(dev, devm_siox_master_put, smaster);
-> > +	if (ret)
-> > +		return NULL;
-> > +
-> > +	return smaster;
-> > +}
+> ...
 > 
-> Here is missing an EXPORT_SYMBOL_GPL for devm_siox_master_alloc(). I
-> squashed this into to commit I created. Find the fixed commit at
+> > Signed-off-by: Yury Norov <yury.norov@gmail.com>  
 > 
-> 	https://git.kernel.org/pub/scm/linux/kernel/git/ukleinek/linux.git siox/for-next
+> Why? Shouldn't be Acked-by?
+> 
+> > Would you like to move this with the rest of the series? If so please
+> > pull my Sof-by, otherwise I can move it with bitmap-for-next.  
+> 
 
-Can you send me a "real" git pull request so that I can verify it is
-what you say it is (ideally with a signed tag)?
+A new iteration of the series is planned.
+Yury, may I add your Acked-by in the next iteration ?
 
-thanks,
-
-greg k-h
+Best regards,
+Herv√©
 
