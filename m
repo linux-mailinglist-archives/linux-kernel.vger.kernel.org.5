@@ -1,189 +1,157 @@
-Return-Path: <linux-kernel+bounces-96364-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96365-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2A7B875B22
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 00:29:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A696875B24
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 00:33:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 22B711C21326
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 23:29:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 736E91F2206F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 23:33:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 526CB4644F;
-	Thu,  7 Mar 2024 23:29:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FCCD43ADA;
+	Thu,  7 Mar 2024 23:33:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dz/LTjNx"
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="J995aJjG"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D95861E86E;
-	Thu,  7 Mar 2024 23:29:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68C541E86E
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 23:32:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709854184; cv=none; b=n0j6t9IO6vRClPLaGMrT3e6MNQo/RwVhzY9A7SmFDuCCXWF+NySsk8kvHeF25Irt2k3B9xils67tKc0KrfUHdngw7HXdo5V3FbT52FZ6FJBPhadAv48+cGpcBWwkOFhLcbLOXGKoXmgskLxLSql3UEigvcvLFaOWgyMuVOkVMUA=
+	t=1709854377; cv=none; b=T2FYY2ozwGyDNJwO1oxNqzLmrxOM2c5wp2Fl0r4rF9fKlRUWFHu9TFJIK2NdAalJIUBa9nFxlOwdYYYcm7iXoN4rWKKvRxOIvxiCzNYaCm/gr11iAX3p5SMpFVVDXnCi2ntl5E6JknZyH/9IgNU3biiMwnH78F+wn1xSw68HqQk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709854184; c=relaxed/simple;
-	bh=aeHq1OyaXPkgeCtznwopsKLF6LnvI8P90UUePt6+ECg=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Yfjq57ZC/ljXwe64zGbB7oQSAct0+3WKgjz3a2jzMKkEhohnzftaNm9jtXmeIPBYWAiGZRGn4MV8sEsAHGdTU09qyQdO1u/Z5UMOcqiwbqjYIqXtMOmoV1fw0BCVTEfmxw8VSapjfc4pp2F2l560JkYjdRK/+uB5sKgchQHucnM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dz/LTjNx; arc=none smtp.client-ip=209.85.167.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-5131f3fc695so372558e87.1;
-        Thu, 07 Mar 2024 15:29:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709854181; x=1710458981; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gsO3+oD8Cc/lz53BTg7OETqqdWmZVVWf9UF6Y4QPW8A=;
-        b=dz/LTjNxEub9Ed5XuPzoQeoJCGzRjOGoVvnSDkxImkWiiNBbdqt2sK5NpVxIKHuZlG
-         CaPYFGfvdJEBRMEGZ8JBajMlJqSoDLxC/45FIRs5bdhAUs1Ur3sniT3BoZws3ulfJNWd
-         uljLs+aQhqP6++1DmjmNpYjxq16hkf/SFdK+j2sIQlh/58RSfugss5z9szE2FQkkxcTU
-         6q8lM/XxcaMbYYv3mm5AERd97rAYGKOjo26vTGpNdn0P8UMO1jhub+HpISaKlrMaLqS/
-         rkmEmfhXEh3rkzuhRaJyR9v9nDaxAhblM3GOJcEplXtADLpZ34K+LeRUoV8L1nEpRS5n
-         oTmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709854181; x=1710458981;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gsO3+oD8Cc/lz53BTg7OETqqdWmZVVWf9UF6Y4QPW8A=;
-        b=i/2Llac0/N70NwKw3XRVILuLDTdl1tI6ES+ww486l6Gv9d6HCPepeR2NLmrH1suRqU
-         omHj8O8Q08gNIa4see+yF121LNWBjCymlnREHx7IXJZLADImmZcPV6dMYeyCaDAD/4Ts
-         1CVWxNhPrCHFJ3lLA01uIox+cm0XF4pS6ZR+w7fFvZT8ZNrgjtAzqrZOT2clfSge/4iq
-         OxWdV/KnzLeTLEsFicpoCzYNiGpQ760qXAKrpdAhkEUn0fb6Wb9drkJ/5y72uHypFwZk
-         pjpV/5h3uyno26VrG5wetiwYw42+p9YZEJoxxwABpiX9tKNPo2iC02O/0ZDVmH/bKDHw
-         UhiQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXB2y8im7ldKd2sF6mrkt40ONsVjFghRzsb1DDk9S0sg5fkxVnJgfcQ5thstdG/r8ZIprkjeJ5ffymP5GlwWhYI1dEe8Fk1sHDu+6EeChErV53tQH+FWHwQF6Pr5Q3j1gPCqi9cEKM2qNs6wyY=
-X-Gm-Message-State: AOJu0YxTFQshEjs1QCKqZ2T8XZe+zQ4phCZXYl8DJwy4IjeaJNJmHy53
-	/d66yybH/JAl89QNWeD043z84TPGsJh4CICLnbFJ3xAWZce91LOF
-X-Google-Smtp-Source: AGHT+IHGCpQOQdNOKxfYEvGXuyXZFqoTDSIL7IPqeRB3wkKFGN4K/x3zziobvt+uAqfMerT7QcprFA==
-X-Received: by 2002:ac2:46d2:0:b0:513:2c6c:4cc8 with SMTP id p18-20020ac246d2000000b005132c6c4cc8mr2300995lfo.63.1709854180622;
-        Thu, 07 Mar 2024 15:29:40 -0800 (PST)
-Received: from rand-ubuntu-development.dl.local (mail.confident.ru. [85.114.29.218])
-        by smtp.gmail.com with ESMTPSA id c11-20020a056512324b00b00512d2453210sm3247126lfr.101.2024.03.07.15.29.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Mar 2024 15:29:40 -0800 (PST)
-From: Rand Deeb <rand.sec96@gmail.com>
-To: m@bues.ch
-Cc: deeb.rand@confident.ru,
-	jonas.gorski@gmail.com,
-	khoroshilov@ispras.ru,
-	kvalo@kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-wireless@vger.kernel.org,
-	lvc-project@linuxtesting.org,
-	rand.sec96@gmail.com,
-	voskresenski.stanislav@confident.ru,
-	james.dutton@gmail.com
-Subject: Re: [PATCH v3] ssb: Fix potential NULL pointer dereference in ssb_device_uevent
-Date: Fri,  8 Mar 2024 02:29:27 +0300
-Message-Id: <20240307232927.171197-1-rand.sec96@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240307223849.13d5b58b@barney>
-References: <20240307223849.13d5b58b@barney>
+	s=arc-20240116; t=1709854377; c=relaxed/simple;
+	bh=wH1fAGWkx3PuU6bIlC2l6H2WIIxDNfblOEri3RuZAOs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RxRcDQJn3PTWQrX4Piw89q1INORibAeM8Wq6IYCTv2OABASUCWuTvvaDCBKqcpMrVhLsL/5FHh0MPQf25+lEbiUXGTshE7dwWT0MHju7bY1kk0U1mUloYKaDfYyTMZWv5avRfT2Qv7P+CLTu3yhsYpLKkLP4lc6vIFFpMPeNlBM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=J995aJjG; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709854376; x=1741390376;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=wH1fAGWkx3PuU6bIlC2l6H2WIIxDNfblOEri3RuZAOs=;
+  b=J995aJjGfZYD5KhqMy0OJB7zAB9+LZWRhX1Q7m/O+hn0dD9DKuzroabi
+   AJ1WhZk6tf7vL7FsfFIZbGhY1HIaN5yyeh0ZbXxrsBgSfUqlEtv0vmSGl
+   s/zBig2QYnTNNNrDIsaZtgD6R2CHK1YAaHW6Gb6gf+JovYtyJq2+JUb7a
+   Z+fyAvcTteQiam+aISx9oGx6j1EkKpFOn7TdVP3gREwyACvVLWpsU9vR1
+   6wfAKntryf3/RUDThj1GPzz5kPZAhhQam5GDRqvB5gCCL9EwAe69kpmzh
+   LWoA0VjKXtLsMDIHyONXYrxxwR8QXXi5UYNIdiX8Sk0pl3Y1uiHqST4mb
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="4486041"
+X-IronPort-AV: E=Sophos;i="6.07,107,1708416000"; 
+   d="scan'208";a="4486041"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 15:32:55 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,107,1708416000"; 
+   d="scan'208";a="10373761"
+Received: from yuqiangu-mobl.amr.corp.intel.com (HELO [10.209.57.176]) ([10.209.57.176])
+  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 15:32:54 -0800
+Message-ID: <56ea29c2-8545-4689-a418-eb7784613650@intel.com>
+Date: Thu, 7 Mar 2024 15:32:53 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 1/3] x86/mm: fix LAM cr3 mask inconsistency during
+ context switch
+Content-Language: en-US
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Peter Zijlstra <peterz@infradead.org>,
+ Andy Lutomirski <luto@kernel.org>,
+ "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, x86@kernel.org,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240307133916.3782068-1-yosryahmed@google.com>
+ <20240307133916.3782068-2-yosryahmed@google.com>
+ <ba8a51fe-7b22-46b1-be5f-1e4c837d085c@intel.com>
+ <ZeomquHvZs9-BKKK@google.com>
+ <CAJD7tkZMiRDF4jXK6yQh+cZdC7uJsTMfAXrPaC0TkTFQCoe7Tg@mail.gmail.com>
+From: Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <CAJD7tkZMiRDF4jXK6yQh+cZdC7uJsTMfAXrPaC0TkTFQCoe7Tg@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+
+On 3/7/24 15:21, Yosry Ahmed wrote:
+>>> The "set_" naming bugs me in both of the sites that get modified here.
+>>> I'd be with a new name that fits better, if we can think of one.
+>> Is it because it's not clear we are updating cpu_tlbstate (in which case
+>> I think update_cpu_tlbstate_lam() is an improvement), or is it because
+>> the function returns a value now? 
+
+That's part of it.
+
+>> If the latter we can put "return" in the name somewhere, or keep
+>> the function void and pass in an output parameter.
+No, adding a "_return" won't make it better.
+
+> Or we can avoid returning a value from the helper and avoid passing an
+> mm. The callers would be more verbose, they'll have to call
+> mm_lam_cr3_mask() and mm_untag_mask() and pass the results into the
+> helper (set_tlbstate_lam_mode() or update_cpu_tlbstate_lam()). Another
+> advantage of this is that we can move the READ_ONCE to
+> switch_mm_irqs_off() and keep the comment here.
 
 
-On Fri, Mar 8, 2024 at 12:39 AM Michael Büsch <m@bues.ch> wrote:
+One thing I don't like about set_tlbstate_lam_mode() is that it's not
+obvious that it's writing to "cpu_tlbstate" and its right smack in the
+middle of a bunch of other writers to the same thing.
 
-> The point is that leaving them in is defensive programming against future changes
-> or against possible misunderstandings of the situation.
+But I'm also not sure that open-coding it at its three call sites makes
+things better overall.
 
-Dear Michael, I understand your point. It's essential to consider defensive
-programming principles to anticipate and mitigate potential issues in the 
-future. However, it's also crucial to strike a balance and not overburden 
-every function with excessive checks. It's about adopting a mindset of 
-anticipating potential problems while also maintaining code clarity and 
-efficiency.
-
-> > I understand and respect your point of view as software engineer but it's a
-> > matter of design problems which is not our case here.
->
-> No, it very well is.
-
-I'm talking about your phrase "Not having these checks is a big part of why
-security sucks in today's software."
-I think it's a matter of design problem, when you don't have a good design 
-of course you'll need to add so many checks everywhere.
-Let me explain my point of view by example, 
-
-// Good design
-CHECK(x){
-	if x != null && x is a number
-		return true;
-	else return false;
-}
-MULTIPLY(a, b){
-	return a*b;
-}
-SUM(a, b){
-	return a+b;
-}
-...
-MAIN(){
-	// input a, b
-	CHECK(a);
-	CHECK(b);
-	// now do the operations
-	SUM(a, b)
-	MULTIPLY(a, b)
-}
-
-// Bad design
-SUM(x, y){
-	if x != null && x is a number
-		return x+y;
-}
-MULTIPLY(x, y){
-	if x != null && x is a number
-		return x*y;
-}
-..
-
-
-> A NULL pointer dereference is Undefined Behavior.
-> It can't get much worse in C.
-
-Again, If we adopt this approach, we'll find ourselves adding a null check 
-to every function we write, assuming that such changes may occur in the 
-future.
-
-
-> Your suggestion was about REMOVING a null pointer check.
-> Not about adding one.
-> I NAK-ed the REMOVAL of a null pointer check. Not the addition.
-
-My suggestion was to remove a (REDUNDANT) null pointer check, and not a 
-null pointer check, there is a big difference.
-Would you please check the link in the previous comment about a similar 
-situation got accepted and applied.
-
-
-> Absolutely wrong.
-> Not having a NULL check complicates reviews.
-> Reviewers will have to prove that pointers cannot be NULL, if there is no check.
-> Removing this check would improve nothing.
-
-With all due respect, I respectfully disagree with you on this point. In 
-your prior comment, you stated, "it is clearly documented that the pointer 
-can never be NULL" However, if the reviewer encounters this check, they 
-might mistakenly assume that 'dev' could indeed be NULL before the function
-call. Conversely, if they read that 'dev' cannot be NULL, it could lead to 
-confusion, and perhaps they want the actual null check. Removing redundant 
-checks could mitigate confusion and minimize the risk of overlooking the 
-actual null check for example.
-
---
-Best Regards
-Rand Deeb
+I honestly don't have any brilliant suggestions.
 
