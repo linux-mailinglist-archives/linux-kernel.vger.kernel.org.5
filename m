@@ -1,118 +1,130 @@
-Return-Path: <linux-kernel+bounces-95987-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95989-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CB968755AC
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 18:59:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BD6F8755B1
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 18:59:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AAB85B24340
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:59:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 20BEC1F22A94
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:59:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6EE8131756;
-	Thu,  7 Mar 2024 17:59:13 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 097A613328B;
+	Thu,  7 Mar 2024 17:59:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="fwQ/0QDK"
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B5FC1EB41
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 17:59:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5171131E25
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 17:59:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709834353; cv=none; b=SPaw0GdX1QcLLbixPer7l8I+zjwgkDy1V3F9PBCUkzWoDWidf33c0rvGiLPwtpzywuMwdIIgymNcZeB2CdsBzGV43QWz6VOdchwisQKAlH/xIJODJfvxmxqq+Y8v9tvom5GfY+5825nmJ/y4WTHyykhy4QVPX7uOupn5oC+RJPU=
+	t=1709834368; cv=none; b=s480SIWJYdZanR3tPDtSBmAnmKyJfGA7nUC3Dpj9alR6OOqpwaV1MTEllLOpxeGw9GRIfNm3zV3u2VE3Fm7W91gcnhdOc5QB6nR2lttHXGpa2mFu+dkQnlx73jH2uvEqmPwNYlCaYMEETmLZFYHuBN+74/VWekriGF6QU507heU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709834353; c=relaxed/simple;
-	bh=/F3L6EUgDhWCdLmZZ9eUNAUZH3WBSnnyUUVDdWplyBA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=mSKruFQ6xPf3ly8uEgJdakKWxmebDm/xvQz+sDrbSJ698ZM7TL/gHc7JErvMNRVkhhXwG242hcA00YlP1jqYv8YsnrRHxHxm2ENgOsXpfEw/tvpjoWOZSTxnSkpWwBDXWKmYMZvbkfHrc34yOg71Kf5FXC0MTeFoDqX1aK5fwZU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1riI1K-0001YB-T9; Thu, 07 Mar 2024 18:59:06 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1riI1K-004zCE-DM; Thu, 07 Mar 2024 18:59:06 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1riI1K-001SWj-13;
-	Thu, 07 Mar 2024 18:59:06 +0100
-From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Johannes Thumshirn <morbidrsa@gmail.com>
-Cc: linux-kernel@vger.kernel.org,
-	kernel@pengutronix.de
-Subject: [PATCH] mcb: lpc: Convert to platform remove callback returning void
-Date: Thu,  7 Mar 2024 18:59:03 +0100
-Message-ID: <20240307175903.189283-2-u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1709834368; c=relaxed/simple;
+	bh=DOUOkcuf6REntWUk+39dCprquLsjGgsrA9o5nYOuJJw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=A+DmK5olJasxjLgO891AHwlMXii9xJYJYt9SUHkNwkADcmd4kW+TmdjE3qaFnx24Pr/LzI8GuvOi3ES4FTHaVHQCJjQ3LnauRarJDspzK6jbS5wlKyuynCeJK1YuIsa6Xeh+LSZ0gKLz8QFfyHLB/ozA94mJtV0fMWD/0+X7yrc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=fwQ/0QDK; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-568251882d7so738a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 09:59:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709834365; x=1710439165; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2o2Pln6r840e13WOJWTSVZVF4sTC1hDT+VsrrLWTTjQ=;
+        b=fwQ/0QDKdynqm0mcrInYhNelkKAhBVHVYHHEzeigU/oUkYJWcJszYX5LdwNfIUWCQ2
+         japNRTD2DgP0iRatUEPiJO6+HAJxg04LLZ9GyvfLxiY0yj34BbN3LuMA05eCsIOn4OJG
+         o4sI4IHPUiE+csSXFUd8QugHlPygT7T6wmsnqNDykil/rT5+YlwRXGq6G2cZLmQwwPQm
+         o21iZNvQu3JoCfg61VDlx6CErp05nsllyy6fDV5VPcFaemDFQHxSuL5v1H8K1iSAuV/l
+         sWnRzChBWN1lycpwei2FvxS71JgwU/RbIvHTmOoXN5dGv6QSUYdJoHpPguf1etNCVFX0
+         K85A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709834365; x=1710439165;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2o2Pln6r840e13WOJWTSVZVF4sTC1hDT+VsrrLWTTjQ=;
+        b=iUBrn1DtytqdxwiMrK5Jtm59zZYiotER3/8BpYcGC6smF0jKHUUaOQ/rZjxI9+tAR3
+         sf4KC78Rx3+f2Gc+Lbx8sCFY+CZHue7izBNJSOXc760XhuFuAYKiRqPkNSkUI2VUZWyv
+         cXep7hew4wm2BfZ1h6H0u/SH9qZ9IOJYJ7qSaQb/SfGmsHaST3ZUqBc5BjS1yplKIRpP
+         vn5K3fLSDFcGYefDlt37xKidj4ySXtIZu4QxbTU6wTYTOZ+3oGxad7kfqEie1UBZWhLY
+         vqqL9M9av6G/XnrHXvyY76pWhIpvehrb2JXkYiYWCINV63AY991xT1alwUVO9e3cY+5a
+         4m5A==
+X-Forwarded-Encrypted: i=1; AJvYcCWXnnXLVh8bAQ0+eXHMcy13BBrTDsI8kWKClpJGCUmtjjf1pxs9R2hOROTIut0DL4jtghToiDkVy+6CdpWpdulL+9IqdTRvyVtGUNc/
+X-Gm-Message-State: AOJu0Yxcs3T485OQm0snr9EgWwHMAyDOgZvjy/zfoG4oIfCC9WoJbiZL
+	SQ1lXs7aLWW9FdDJTvk1s3obP+CbFw3+ACR3kyVS91O6/sXL59iQCSuQG69z8KoZWgReYnMC4Ry
+	kU7JtJw5BClZ/iA81V5Uo3/eRrtfdwoT1he7v
+X-Google-Smtp-Source: AGHT+IFZzIgjjQB+W6AfKsYHZz4lpE8ZpdiWPzeNLAFZEGTcK+JeSYq4V7wUar3hDsxNIaEiyYfxPN2wpBKMlCM60Y4=
+X-Received: by 2002:aa7:cd42:0:b0:566:b5f5:48cc with SMTP id
+ v2-20020aa7cd42000000b00566b5f548ccmr227535edw.5.1709834364705; Thu, 07 Mar
+ 2024 09:59:24 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1699; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=/F3L6EUgDhWCdLmZZ9eUNAUZH3WBSnnyUUVDdWplyBA=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBl6gBnjAEgCQKRcr5RVHr0e9nxoys9ODmHFov4v bekggazU0SJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZeoAZwAKCRCPgPtYfRL+ Tso9CACabXtyn6SYLDvA+46dFn/oO/9a3GI7jDyyMv/0JFR8yFhAJ5GDYo80DQRtMDVgDNzZ2BJ rKSauWtrvpR0Q3QBOpCDKmX//uooygJSvuiEBxe0nYdBzy4ZrhX62AcwxVif471y0iz8Tik86Nk GWc4HVpTo171zOCQEjm36WI301/bX86PC/xNuB9NtVDlv8FCg9jOxyw/UJDwf0NnB8jml3UZxX7 8vUnkmBPuwxU3KxEWg2xiYTwpuQWCjJ5acMcGzqujkprtxWSqkLiHMlcqMkBPWIKhYcmfvx/PcG PoaaMzrokc5s8nxryJqoogWz79pR6DefBHF+giSmSpN18ytF
-X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <2ce1600b-e733-448b-91ac-9d0ae2b866a4@gmail.com> <2076d2ff-cd17-4ab0-b1db-4875d96bf9a6@gmail.com>
+In-Reply-To: <2076d2ff-cd17-4ab0-b1db-4875d96bf9a6@gmail.com>
+From: Eric Dumazet <edumazet@google.com>
+Date: Thu, 7 Mar 2024 18:59:10 +0100
+Message-ID: <CANn89iKq755tvJ1BZFXG5aX2YNd9AycbKu57taxi8gaSWn5Syw@mail.gmail.com>
+Subject: Re: [PATCH net-next v2 3/4] net: gro: set inner_network_header in
+ receive phase
+To: Richard Gobert <richardbgobert@gmail.com>
+Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com, 
+	willemdebruijn.kernel@gmail.com, dsahern@kernel.org, shuah@kernel.org, 
+	idosch@nvidia.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The .remove() callback for a platform driver returns an int which makes
-many driver authors wrongly assume it's possible to do error handling by
-returning an error code. However the value returned is ignored (apart
-from emitting a warning) and this typically results in resource leaks.
+On Thu, Mar 7, 2024 at 2:28=E2=80=AFPM Richard Gobert <richardbgobert@gmail=
+com> wrote:
+>
+> This patch sets network_header and inner_network_header to their respecti=
+ve
+> values during the receive phase of GRO. This allows us to use
+> inner_network_header later on in GRO. network_header is already set in
+> dev_gro_receive and under encapsulation inner_network_header is set.
+>
 
-To improve here there is a quest to make the remove callback return
-void. In the first step of this quest all drivers are converted to
-remove_new(), which already returns void. Eventually after all drivers
-are converted, .remove_new() will be renamed to .remove().
+> +static inline int skb_gro_network_offset(const struct sk_buff *skb)
+> +{
+> +       const u32 mask =3D NAPI_GRO_CB(skb)->encap_mark - 1;
+> +
+> +       return (skb_network_offset(skb) & mask) | (skb_inner_network_offs=
+et(skb) & ~mask);
 
-Trivially convert this driver from always returning zero in the remove
-callback to the void returning variant.
+Presumably this is not needed.
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
- drivers/mcb/mcb-lpc.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+> +}
+> +
+>  static inline void *skb_gro_network_header(const struct sk_buff *skb)
+>  {
+> +       const int offset =3D skb_gro_network_offset(skb);
+> +
+>         if (skb_gro_may_pull(skb, skb_gro_offset(skb)))
+> -               return skb_gro_header_fast(skb, skb_network_offset(skb));
+> +               return skb_gro_header_fast(skb, offset);
+>
+> -       return skb_network_header(skb);
+> +       return skb->data + offset;
+>  }
 
-diff --git a/drivers/mcb/mcb-lpc.c b/drivers/mcb/mcb-lpc.c
-index a851e0236464..2bec2086ee17 100644
---- a/drivers/mcb/mcb-lpc.c
-+++ b/drivers/mcb/mcb-lpc.c
-@@ -97,13 +97,11 @@ static int mcb_lpc_probe(struct platform_device *pdev)
- 	return ret;
- }
- 
--static int mcb_lpc_remove(struct platform_device *pdev)
-+static void mcb_lpc_remove(struct platform_device *pdev)
- {
- 	struct priv *priv = platform_get_drvdata(pdev);
- 
- 	mcb_release_bus(priv->bus);
--
--	return 0;
- }
- 
- static struct platform_device *mcb_lpc_pdev;
-@@ -140,7 +138,7 @@ static struct platform_driver mcb_lpc_driver = {
- 		.name = "mcb-lpc",
- 	},
- 	.probe		= mcb_lpc_probe,
--	.remove		= mcb_lpc_remove,
-+	.remove_new	= mcb_lpc_remove,
- };
- 
- static const struct dmi_system_id mcb_lpc_dmi_table[] = {
+I would instead add a new offset parameter to this function.
 
-base-commit: 11afac187274a6177a7ac82997f8691c0f469e41
--- 
-2.43.0
+Again, ideally GRO should work without touching any skb->{offset}.
 
+GRO stack should maintain the offsets it needs in its own storage
+(stack parameter, or other storage if needed)
+
+Upper stack can not trust any of these skb fields, otherwise we would
+have some troubles with napi_reuse_skb()
 
