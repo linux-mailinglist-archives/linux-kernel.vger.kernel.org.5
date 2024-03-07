@@ -1,151 +1,193 @@
-Return-Path: <linux-kernel+bounces-96327-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96328-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 381D9875A4A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 23:29:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E1D2A875A4C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 23:29:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CCF901F22A77
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 22:29:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 592171F22916
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 22:29:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D55C313F00A;
-	Thu,  7 Mar 2024 22:29:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41C1413F44E;
+	Thu,  7 Mar 2024 22:29:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Phxz4kMv"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="GzJbUmmp"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD960130AD0
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 22:29:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7E1F13EFE9
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 22:29:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709850574; cv=none; b=MOIBpbnEpNbM9/VrbgFAJIepxX5zd1x3vOywfIFgAkhCrA+0QMXwvpg6BaLZX61M1buM/Ek6rCGfimOJQwqkS8iPUrIMbbQ2dh5jFmKlpDHppsWu4SHbbV94XybkIXTI4I++ltyWnaJnwtGwXyhr+6ca5qmZA2zY+eCqTvMbx0M=
+	t=1709850590; cv=none; b=Zv9HMqjm1f5XTEAcSS9JFan60bsTSvUuHOHRt+zxLkVav/o2S8XZOOnJITK+PcIySN4+9Fkais4lpggfYColP67fG0+OkLtZ993rJtuUerRgf+Ksv37jfuHRmLmuZG85AbnCDf/pOyDWx7ReKxNhUSzDMsCgAOi6ZjpHKjjNERA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709850574; c=relaxed/simple;
-	bh=UzIQYpvi08z5bH3M/h4tHbUssGMu7BM4yagFRVruwyM=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=vDUGWUuCdoYo8aQEFn57JGsCrpD/fGDGCbmQeJZZGXpoQucneS1W121rm0+ImKRvkgRofJ48f02Vggdg5EmGZP9JyH7eNDaoxNIpamanKq4YyiRVcDlUv/UZyfHDBOX6+873u+IWWH34IUlioVHos9546BAA1HnqA+h7MNtBoAM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Phxz4kMv; arc=none smtp.client-ip=209.85.219.202
+	s=arc-20240116; t=1709850590; c=relaxed/simple;
+	bh=gEmG11jU0L7/ddzfdMaATL9VRx/BYQhg0RXSHynkAZA=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=qeMz2ZGUFOvsuxjzpAzXpLy+kDpg5sBM+mUZz/3+qpYsxan69B8hqQ8vT9iIB7JRjb5Z2zvV8alXeVqtzwvogfqJPl1PoPXDXnwQznVpcoQRjR/xT38jn62uj76fG3EixN7RceOxAFlXRzoBfaEDgtTQD9Fy9dDOz4JJ4GqPyOg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--rmoar.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=GzJbUmmp; arc=none smtp.client-ip=209.85.128.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dcd94cc48a1so2399935276.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 14:29:32 -0800 (PST)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--rmoar.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-609f015e386so22859157b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 14:29:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709850572; x=1710455372; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=qDRTlWsJQzO9MrOpDvjMSk7xOJu//0tU48E07HkojKw=;
-        b=Phxz4kMv+YEuyQu0hgx+WTf1Qq5o8q7PUChISJhLP0iqnEYgX/itxTow/lo1aov2nk
-         PoVbLmLgbJhMfzRgC1VuPkqJ9IB7dRqasH7UTvJysDcsfbZE0NeR8UEKfZkGZoxgap01
-         eYEzWIZDfPrkOKew3V15t9mciA22iNeKHjMkMoGENngjTEjIhkFnq5RJ/Gf8MJ2RDDV4
-         QqHmNPfRAuI1tVGU/s4wbnMOJH/s+iabUgDDQCK8QMDwg3r4ST/ijrkMt6+lomCqqbr+
-         zLH4TOp5NaJpRlo2v399YoUNEO/e8vQK6Rj5Ufek1TPnr0Yxc5oesC1jVaPVbhw0vln4
-         6+tg==
+        d=google.com; s=20230601; t=1709850588; x=1710455388; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=5jvYerSg2y6b3uNWs7YolhL0thmeXUJ/864qWYJlblM=;
+        b=GzJbUmmpZ1nIgSdl2QZ66vG5iTLfZQkAaIc7xcX7S6XgTzI5iTg3h5jCzdUOrpQSPM
+         3GKutkKTTAkKxFwCvoxiYf77eC5lc7Q3iDQ5VZg2s7ivUHAfjPZWvriLGYm5A0bTcnMU
+         FBChdwd8XW1qGRIorLsQqmJWVLfMm9QbkApNEQbi6NbIZTERu703yK8jiOlbCq9jKnSD
+         ppr88hbpzrqQCTbOrD7CN9q5CqlEmVJ0j0asE42mBA/64x4vyWbNf4ge6k5j6hIIBVED
+         khG1frTeIzvLvvcpJNcpb7gph2lijIV43YpiLvdQ894ya16iTQ3u6O1L+634u52B+4Am
+         n1Iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709850572; x=1710455372;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qDRTlWsJQzO9MrOpDvjMSk7xOJu//0tU48E07HkojKw=;
-        b=OmTI/eonShA3zBtCnb1hq1BAx2cCC2TvSdg56VMm3Bwg6hswL2CXC8GoPkFFZ03ATA
-         DpJLgbXykxGDrb2COQ0HCJWCNn0uUuoWWgwIDOtnMEbllJT8YKZBj1DjVm5sITSr8kvq
-         dKX8T6JCh1SZp64PUU3Ww4tg2Bz+AZ7iQLu0rsOoYn1vOcIOgWnGxRv/caJuOjefiCcC
-         iEa6oWXbth6NvHxQSdGY0uYTIDC0fhEbJ+TS0eyDpepA/aKkcLv/5K14Q0U8DLpM4ftz
-         pI0DrT7YHxO8yKGqgLiUX5SSZjGcaOiNuTtChPle4XBjZ83NI9ttfVS9fL5g2C0SMaee
-         kvdg==
-X-Forwarded-Encrypted: i=1; AJvYcCXwwj25a5Xm72VJBVUYE7+1glKAkPm7yDnJcNzPzstyNUWZ45D/b3pXd7LAVP4WqF4lcxlfQ+8TR5ZcN3761aecp5oSLJrsbGMPRbWk
-X-Gm-Message-State: AOJu0YxMuqN0HPd3yYrwvr/Sd2KWhDO499/00ChzL3b6x4SBAnPhBMw7
-	GHVM4fg2NJbQ7oBgMfGJM626cPe5tlRNRSa0BwFxrFg0YOlZWPqVRsxRcO2/UeR/FZKA4JFmTnd
-	gmk8U5uBtxKx3jyR18w==
-X-Google-Smtp-Source: AGHT+IHDwl1ajC/sq4yCjvIzRdBW2muKHXy32tYYhISNYzdVAaFxNZRfi+kW14+7gtR/JD5yznJEicQhSCKjcM/p
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a05:6902:1741:b0:dc7:5c0d:f177 with
- SMTP id bz1-20020a056902174100b00dc75c0df177mr4870186ybb.6.1709850571847;
- Thu, 07 Mar 2024 14:29:31 -0800 (PST)
-Date: Thu, 7 Mar 2024 22:29:29 +0000
-In-Reply-To: <cb1aaac1-4800-4cae-8aea-acba6353971c@intel.com>
+        d=1e100.net; s=20230601; t=1709850588; x=1710455388;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5jvYerSg2y6b3uNWs7YolhL0thmeXUJ/864qWYJlblM=;
+        b=i5/9qdytSgIOw7CQHMXO/pZmgHNk1Th5hdm7nm5Enko+80BssMPqKTWdkuu0xs1gG7
+         Gn0TVRKSjKWFUqrestOnzEHce2lhlFKgjCrMZeq2WDzqxDWQWHEaEGfJEn37f0vMVv8V
+         TJntfNWfdVvQ5KbMu4Dwrnrewa0wIk4cd76Rl6ZmkjmnER4iN+zRIKbxuCcYYcm1HEzM
+         lIBg8EzSZJrTtifO81X2vIrjsg/L9gXXZektOy1WnGAgnmuWV2nEoOJ/wp8ezWccom74
+         UJcImYZjzO9c3469351LQH0NvXTpCeZFkx1WesniUDf9fH57H9KF5mR3hO6VhiZiIc59
+         HJMg==
+X-Forwarded-Encrypted: i=1; AJvYcCXygfDoYJpph7QiktNM4qkCTUcNIHe5lTAT2rsvQ+UsqHfBkhQa6F/zAwSFZXmgBD/VfwjgOEAVPlKahh+dDpMq8XAzg4xlD7B7llha
+X-Gm-Message-State: AOJu0YxBj+V+j397WnubW6haijLes1IHRp1H7wLIFVWJncx27uXX/TLU
+	ricWQvqwc+zUTtSRq42IhMe1ZhW0KPPSSsSdKE6FhhvvFs5FUruAG7ALttVscwVSKradtxMe5A=
+	=
+X-Google-Smtp-Source: AGHT+IH1qNdUaKNafX1y9FCIwmCUwilKYGx+wx7m7D9QJnYBcO7J77K+9mttzPOp9XDZyxxx+RBvHnOx7A==
+X-Received: from rmoar-specialist.c.googlers.com ([fda3:e722:ac3:cc00:2b:7d90:c0a8:45d3])
+ (user=rmoar job=sendgmr) by 2002:a05:690c:3385:b0:609:25d1:ea9a with SMTP id
+ fl5-20020a05690c338500b0060925d1ea9amr5829472ywb.9.1709850587771; Thu, 07 Mar
+ 2024 14:29:47 -0800 (PST)
+Date: Thu,  7 Mar 2024 22:29:32 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-References: <20240307133916.3782068-1-yosryahmed@google.com>
- <20240307133916.3782068-3-yosryahmed@google.com> <83b019e2-1b84-491a-b0b9-beb02e45d80c@intel.com>
- <Zeor4DIGj0u6LNIw@google.com> <cb1aaac1-4800-4cae-8aea-acba6353971c@intel.com>
-Message-ID: <Zeo_yUTdGKVed7ff@google.com>
-Subject: Re: [RFC PATCH 2/3] x86/mm: make sure LAM is up-to-date during
- context switching
-From: Yosry Ahmed <yosryahmed@google.com>
-To: Dave Hansen <dave.hansen@intel.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Thomas Gleixner <tglx@linutronix.de>, 
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Peter Zijlstra <peterz@infradead.org>, 
-	Andy Lutomirski <luto@kernel.org>, "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, x86@kernel.org, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
+Message-ID: <20240307222932.584164-1-rmoar@google.com>
+Subject: [PATCH v3] kunit: tool: add ability to parse multiple files
+From: Rae Moar <rmoar@google.com>
+To: shuah@kernel.org, davidgow@google.com, dlatypov@google.com, 
+	brendan.higgins@linux.dev, kevko@google.com
+Cc: linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com, 
+	linux-kernel@vger.kernel.org, Rae Moar <rmoar@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Mar 07, 2024 at 01:39:53PM -0800, Dave Hansen wrote:
-> On 3/7/24 13:04, Yosry Ahmed wrote:
-> > I thought about doing inc_mm_tlb_gen() when LAM is updated, but it felt
-> > hacky and more importantly doesn't make it clear in switch_mm_irqs_off()
-> > that we correctly handle LAM updates. We can certainly add a comment,
-> > but I think an explicit check for CPU LAM vs. mm LAM is much clearer.
-> > 
-> > WDYT?
-> 
-> The mm generations are literally there so that if the mm changes that
-> all the CPUs know they need an update.  Changing LAM enabling is 100%
-> consistent with telling other CPUs that they need an update.
-> 
-> I'd be curious of Andy feels differently though.
+Add ability to parse multiple files. Additionally add the
+ability to parse all results in the KUnit debugfs repository.
 
-The mm generations are TLB-specific and all the code using them implies
-as such (e.g. look at the checks in switch_mm_irqs_off() when prev ==
-next). We can go around and update comments and/or function names to
-make them more generic, but this seems excessive. If we don't, the code
-becomes less clear imo.
+How to parse multiple files:
 
-I agree that the use case here is essentially the same (let other
-CPUs know they need to write CR3), but I still think that since the LAM
-case is just a simple one-time enablement, an explicit check in
-switch_mm_irqs_off() would be clearer.
+/tools/testing/kunit/kunit.py parse results.log results2.log
 
-Just my 2c, let me know what you prefer :)
+How to parse all files in directory:
 
-> 
-> >> Considering how fun this code path is, a little effort at an actual
-> >> reproduction would be really appreciated.
-> > 
-> > I tried reproducing it but gave up quickly. We need a certain sequence
-> > of events to happen:
-> > 
-> > CPU 1					CPU 2
-> > kthread_use_mm()
-> > 					/* user thread enables LAM */
-> > 					context_switch()
-> > context_switch() /* to user thread */
-> 
-> First, it would be fine to either create a new kthread for reproduction
-> purposes or to hack an existing one.  For instance, have have the LAM
-> prctl() take an extra ref on the mm and stick it in a global variable:
-> 
-> 	mmgrab(current->mm);
-> 	global_mm = current->mm;
-> 
-> Then in the kthread, grab the mm and use it:
-> 
-> 	while (!global_mm);
-> 	kthread_use_mm(global_mm);
-> 	... check for the race
-> 	mmdrop(global_mm);
-> 
-> You can also hackily wait for thread to move with a stupid spin loop:
-> 
-> 	while (smp_processor_id() != 1);
-> 
-> and then actually move it with sched_setaffinity() from userspace.  That
-> can make it easier to get that series of events to happen in lockstep.
+/tools/testing/kunit/kunit.py parse directory_path/*
 
-I will take a stab at doing something similar and let you know, thanks.
+How to parse KUnit debugfs repository:
+
+/tools/testing/kunit/kunit.py parse debugfs
+
+For each file, the parser outputs the file name, results, and test
+summary. At the end of all parsing, the parser outputs a total summary
+line.
+
+This feature can be easily tested on the tools/testing/kunit/test_data/
+directory.
+
+Signed-off-by: Rae Moar <rmoar@google.com>
+---
+Changes since v2:
+- Fixed bug with input from command line. I changed this to use
+  input(). Daniel, let me know if this works for you.
+- Add more specific warning messages
+
+ tools/testing/kunit/kunit.py | 56 +++++++++++++++++++++++++-----------
+ 1 file changed, 40 insertions(+), 16 deletions(-)
+
+diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
+index bc74088c458a..1aa3d736d80c 100755
+--- a/tools/testing/kunit/kunit.py
++++ b/tools/testing/kunit/kunit.py
+@@ -511,19 +511,42 @@ def exec_handler(cli_args: argparse.Namespace) -> None:
+ 
+ 
+ def parse_handler(cli_args: argparse.Namespace) -> None:
+-	if cli_args.file is None:
+-		sys.stdin.reconfigure(errors='backslashreplace')  # type: ignore
+-		kunit_output = sys.stdin  # type: Iterable[str]
+-	else:
+-		with open(cli_args.file, 'r', errors='backslashreplace') as f:
+-			kunit_output = f.read().splitlines()
+-	# We know nothing about how the result was created!
+-	metadata = kunit_json.Metadata()
+-	request = KunitParseRequest(raw_output=cli_args.raw_output,
+-					json=cli_args.json)
+-	result, _ = parse_tests(request, metadata, kunit_output)
+-	if result.status != KunitStatus.SUCCESS:
+-		sys.exit(1)
++	parsed_files = cli_args.files # type: List[str]
++	total_test = kunit_parser.Test()
++	total_test.status = kunit_parser.TestStatus.SUCCESS
++	if not parsed_files:
++		parsed_files.append(input("File path: "))
++
++	if parsed_files[0] == "debugfs" and len(parsed_files) == 1:
++		parsed_files.pop()
++		for (root, _, files) in os.walk("/sys/kernel/debug/kunit"):
++			parsed_files.extend(os.path.join(root, f) for f in files if f == "results")
++
++	if not parsed_files:
++		print("No files found.")
++
++	for file in parsed_files:
++		if os.path.isfile(file):
++			print(file)
++			with open(file, 'r', errors='backslashreplace') as f:
++				kunit_output = f.read().splitlines()
++			# We know nothing about how the result was created!
++			metadata = kunit_json.Metadata()
++			request = KunitParseRequest(raw_output=cli_args.raw_output,
++							json=cli_args.json)
++			_, test = parse_tests(request, metadata, kunit_output)
++			total_test.subtests.append(test)
++		elif os.path.isdir(file):
++			print("Ignoring directory ", file)
++		else:
++			print("Could not find ", file)
++
++	if len(parsed_files) > 1: # if more than one file was parsed output total summary
++		print('All files parsed.')
++		if not request.raw_output:
++			stdout.print_with_timestamp(kunit_parser.DIVIDER)
++			kunit_parser.bubble_up_test_results(total_test)
++			kunit_parser.print_summary_line(total_test)
+ 
+ 
+ subcommand_handlers_map = {
+@@ -569,9 +592,10 @@ def main(argv: Sequence[str]) -> None:
+ 					    help='Parses KUnit results from a file, '
+ 					    'and parses formatted results.')
+ 	add_parse_opts(parse_parser)
+-	parse_parser.add_argument('file',
+-				  help='Specifies the file to read results from.',
+-				  type=str, nargs='?', metavar='input_file')
++	parse_parser.add_argument('files',
++				  help='List of file paths to read results from or keyword'
++				  		'"debugfs" to read all results from the debugfs directory.',
++				  type=str, nargs='*', metavar='input_files')
+ 
+ 	cli_args = parser.parse_args(massage_argv(argv))
+ 
+
+base-commit: 806cb2270237ce2ec672a407d66cee17a07d3aa2
+-- 
+2.44.0.278.ge034bb2e1d-goog
+
 
