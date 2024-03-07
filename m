@@ -1,87 +1,90 @@
-Return-Path: <linux-kernel+bounces-96072-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96073-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C35368756C1
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:11:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3309E8756C3
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:11:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B5BE2B21ACE
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:10:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C4C651F217D6
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:11:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13FC2137775;
-	Thu,  7 Mar 2024 19:08:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3392213665B;
+	Thu,  7 Mar 2024 19:10:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SlRJ/CIB"
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="KGGKnv/8"
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A589413664F
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 19:08:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A29A135A7A
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 19:10:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709838534; cv=none; b=Do2QTDeaNJr7YUtxxbGAF+79ZUUazXeUqk1RzGCGKJaw/1cDTZeCHBPxqvkzUQJ/UtFKUgAt2DcK4H5qlr1XDFF2IXmsh51Cqu0GYsF4kpeSYzMPy6iiZrBDHnsSfDfpXSaaCJWueQJyVIJ1yhqV4OOj3vvgy/0+244WqFqOBro=
+	t=1709838650; cv=none; b=CqSOEfiQQxNiUWmsz0XERDC65HRXmDHMGaMmWHJtkC+O6r3yn5+/kIxGu9Wbq9cw46kNyD+B43TTN6TQuWYF3MlpD5+/4T5kp+TR6HtnfNRUaiWEwtgKd/uVbokabKvpDIwWER6BiwRxR9S79/FHqRZEga0PBQnGe8mUjvPdm1g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709838534; c=relaxed/simple;
-	bh=UFyayZ0MeBLKORhw7dQZoLLj9DvK03YvbjRbbZyWTGc=;
+	s=arc-20240116; t=1709838650; c=relaxed/simple;
+	bh=izSH/PMxUOlhLqiqWhtGUMGagmQW6jaoeudrrfnJ9Qo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=esVtu49IN7rtnk4LXQ5JqQlicX8TcYAg9nx3g4GZDU7dWIHpuLc8XMjFYuGbOnOy2qHWZ2RJ8+UKgfoFmYKAoJpymibzcw6T6r8qLVVbSpbylbIUU4xjR68sks7wu3waMkh0l5E0gjTAXbpyalTG2YdYqHwBwBKw+0jn3SeAkJA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SlRJ/CIB; arc=none smtp.client-ip=209.85.218.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a452877ddcaso182036266b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 11:08:52 -0800 (PST)
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ti22Y3pPQYbJ1p2rUdU1q0zRwp7u0kmK7jElfPmaJ3vfRMpslM0//MsG0FOF4cMxQfNKlQ3C2he5bE+M3DkIxwctC0urP1goei8wZ1WE/c/rt81EEO30ylOs8jg8j96c9wZ+oaivKoWtWaFia3lCrJPIEWzv3i9gAWLLU1DyEQk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=KGGKnv/8; arc=none smtp.client-ip=209.85.210.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6e5a232fe80so993939b3a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 11:10:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709838531; x=1710443331; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1709838648; x=1710443448; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WWwNH3sz9yXBSWgT8KL4kcpHYy1BeQvdzHXc1X2rkTs=;
-        b=SlRJ/CIBFd6qnAxqr73uiLHB9xNmpV7SIOkez/a4vuUaQBNykDMxwstsdiI6w/2tEH
-         CxU6mB9gsCrw5tqF17skRsq/Fcp0LoLyNgDdM6AZcatEWxqy44ONB/B4sh41ALAOItEv
-         3GsfOhTIKKBIadpFuVrVWjfEyw1mXVuoDGO8puD+1yjFT+Hlh1k4dI4C7AwmDuIvUP0n
-         vYbV5W9dh5UonZqonD5GCA6x6Z40REdZD9Xy3QfL63F6pzchKHm1iGMLg7rEHPb/NTbh
-         n9udI+FWK+8CMhW86Pct75uHLVfb/ZtwPnwkvXIc5BqFkgO2AhU3NrremjO5+HQ+qAfx
-         T5Aw==
+        bh=q6/jADR/0UePn6YUf/L4DAbrCMU1cm50ZPRMKWLUirY=;
+        b=KGGKnv/8YuctKrGXVQXW8dxWq8ftiGlZx51D84ZxcYEX42nz27+TWRx9Uh8mpm2tVH
+         fnEjkQ28SUetzzWjr0Ouk1OG2F1J30fVbfy4gBafrf+QqGuTb++PJFj/cb6huPtBqXtu
+         +h8BGP8cL6aEqg0eZlsINgnPvumAdxMCYiE4k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709838531; x=1710443331;
+        d=1e100.net; s=20230601; t=1709838648; x=1710443448;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WWwNH3sz9yXBSWgT8KL4kcpHYy1BeQvdzHXc1X2rkTs=;
-        b=gLC1kodp9Q+Nq2MSUxQLclrgzVZAtJ3OaOXeyMuTyWwP/7b3arzxc8ix650ETjE+lc
-         URouBQeI5WXzpjeJPMWSZ3KFixe4GSLOCsOHJzvHpq5tt5/xjpwLa7CGpZc/fsxWqQgt
-         ycWlkb4zxPFfXJXovY20L9wc1o59v3IcwkTpqoiB2YSzq0fFBLsdh+cv/95V6m7tN4mz
-         +bYTpuKNNTJx/MH/Ysx086WLJ+kcd00xz/+/kgM0zyQd2Wev/4n5mG4CEdwM9Chs/Zc/
-         cfu6jiLM7bmUXFlCiF5mhkSiv++5CUH+giBYZq2w4jS302puzjm/QFJYp1oAwCxo0d96
-         3s3g==
-X-Forwarded-Encrypted: i=1; AJvYcCVH/sT1Ue/6hWILeKDa9thcxOubDL0qiLns1c08wqaAjtMhu49u6mz1EuY+vswr2+3xvrhjSl3LcPQsSJXyqKk9N0Ag+G8T+ELYnbwE
-X-Gm-Message-State: AOJu0YyXKKf5VvqhA2JxPuU+ar9e0VB4YGJs9tzPxuvWRh9ovVdQKCCD
-	Idk1S5qvvamzVYu81Rx06K2rN1oWkd2rPieKcGrCBQghu1gcoe6DbnM3+S6t
-X-Google-Smtp-Source: AGHT+IGvGm/gs3UTbz7z/BL7cXpETYIoAIHQwWL1AfD2GlrgYEcWpWqZHFcqXN145tLGoV1f0PGAkA==
-X-Received: by 2002:a17:906:3941:b0:a43:f825:ef57 with SMTP id g1-20020a170906394100b00a43f825ef57mr13149395eje.49.1709838530703;
-        Thu, 07 Mar 2024 11:08:50 -0800 (PST)
-Received: from andrea ([31.189.122.3])
-        by smtp.gmail.com with ESMTPSA id x23-20020a170906135700b00a3e4c47bad1sm8504509ejb.8.2024.03.07.11.08.49
+        bh=q6/jADR/0UePn6YUf/L4DAbrCMU1cm50ZPRMKWLUirY=;
+        b=tYscl5aiOFBrxnzn2L32j5kVs24PsA+XnSRzD5FygRBa2RbE7E227QCMUvODkmv64G
+         7U2JZfndrWEqy5QjqzUXmH3EjaVpliSaIj+Hz3JSsI9AaFnY1R7yxEpYNmAScVORHc6I
+         gHrbz/bbWYJXUsx+Y5SqBtB9oRhGrKHgdiGw9LGoHECaIwoc2wymNA25d5eUDqWYkbWP
+         HA7MzwHVz3v2pR+ZVya2vx8X0WFsAO1rSBRFi1HYCmzg3Z+9zIor6GA+J4p6F13vPIF/
+         +yU/O5+N8dEfSCJHgQsJBGn7LVXYhSiWX48Gk7tboqoMNNbafIesgiJkApviavUVckrX
+         hs9A==
+X-Forwarded-Encrypted: i=1; AJvYcCUTqq2m8/4Sgo9C58IpMEq1HD8VRhcfON4CYUMT9glBJ+jY31/QHvLYo1LTUketeYWU2m6jx1pNtXCs6/2ZE2gFCrLD/7aoWmU9xe5b
+X-Gm-Message-State: AOJu0Yy+109rWwg7UCEqbN5LIiRj3k6efQtwcAzj8AaR8ONi+vZcnukL
+	6Qyw4pwTn9K2uSbaltjHI5+PEOkBURkYq2XK8ihb8HfiZKU/9LvjkaP4ybxdYg==
+X-Google-Smtp-Source: AGHT+IFN6Sz1G8Qiw0tjzpneM1RD2JAmKvXtZLyGSb+PlWyD/N9lVUXVr/U3iktkEiuQ0N39CeDwsA==
+X-Received: by 2002:a05:6a20:5498:b0:1a1:6914:6bc0 with SMTP id i24-20020a056a20549800b001a169146bc0mr3186404pzk.5.1709838648372;
+        Thu, 07 Mar 2024 11:10:48 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id r11-20020a63ec4b000000b005d880b41598sm12872052pgj.94.2024.03.07.11.10.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Mar 2024 11:08:50 -0800 (PST)
-Date: Thu, 7 Mar 2024 20:08:46 +0100
-From: Andrea Parri <parri.andrea@gmail.com>
-To: Alan Stern <stern@rowland.harvard.edu>
-Cc: Kenneth-Lee-2012@foxmail.com, linux-kernel@vger.kernel.org,
-	paulmck@kernel.org
-Subject: Re: Question about PB rule of LKMM
-Message-ID: <ZeoQvj3l6moF9KdQ@andrea>
-References: <tencent_C5266B7D6F024A916BCA7833FDEA94A74309@qq.com>
- <Zedd18wiAkK68Lzr@andrea>
- <tencent_744E0AF832049C200F96FD6582D5114D7F0A@qq.com>
- <ZeipiSVLR01jmM6b@andrea>
- <e05fa6a9-c810-46cb-b033-b91ae7a5c382@rowland.harvard.edu>
- <ZejC+lutRuwXQrMz@andrea>
- <Zenip+8BDM3p+MUh@andrea>
- <eb8f2a21-d388-424d-8504-ccd7bdb53a93@rowland.harvard.edu>
- <ZeoFBkB1BeTdEQsn@andrea>
- <bde188b0-1c5b-4b3b-94de-395a52fc37ce@rowland.harvard.edu>
+        Thu, 07 Mar 2024 11:10:47 -0800 (PST)
+Date: Thu, 7 Mar 2024 11:10:47 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Jeremy Linton <jeremy.linton@arm.com>,
+	linux-arm-kernel@lists.infradead.org,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	"Jason A . Donenfeld" <Jason@zx2c4.com>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mark Brown <broonie@kernel.org>, Guo Hui <guohui@uniontech.com>,
+	Manoj.Iyer@arm.com, linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org, James Yang <james.yang@arm.com>,
+	Shiyou Huang <shiyou.huang@arm.com>
+Subject: Re: [PATCH 1/1] arm64: syscall: Direct PRNG kstack randomization
+Message-ID: <202403071105.C3B038C@keescook>
+References: <20240305221824.3300322-1-jeremy.linton@arm.com>
+ <20240305221824.3300322-2-jeremy.linton@arm.com>
+ <202403051526.0BE26F99E@keescook>
+ <34351804-ad1d-498f-932a-c1844b78589f@app.fastmail.com>
+ <38f9541b-dd88-4d49-af3b-bc7880a4e2f4@arm.com>
+ <f1dd15ce-69af-4315-8d7c-b7a480e541aa@app.fastmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -90,68 +93,26 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <bde188b0-1c5b-4b3b-94de-395a52fc37ce@rowland.harvard.edu>
+In-Reply-To: <f1dd15ce-69af-4315-8d7c-b7a480e541aa@app.fastmail.com>
 
-> > I'd disagree with these premises: certain instructions can and do execute
-> > at the same time.
+On Thu, Mar 07, 2024 at 12:10:34PM +0100, Arnd Bergmann wrote:
+> For the strength, we have at least four options:
 > 
-> Can you give an example?
+> - strong rng, most expensive
+> - your new prng, less strong but somewhat cheaper and/or more
+>   predictable overhead
+> - cycle counter, cheap but probably even less strong,
+>   needs architecture code.
 
-I think I'm starting to see where this is going..., but to address the
-question: really any example where the LKMM doesn't know better, say
+Are the low bits of a cycler counter really less safe than a
+deterministic pRNG?
 
-C test
+> - no rng, no overhead and no protection.
 
-{}
+For the pRNG, why not just add a reseed timer or something that'll
+happen outside the syscall window, if that's the concern about reseeding
+delay? (In which case, why not continue to use the strong rng?)
 
-P0(int *x)
-{
-	*x = 1;
-}
-
-P1(int *x)
-{
-	*x = 2;
-}
-
-
-> >  FWIW, in the formal model, it is not that difficult to
-> > provide examples of "(not F ->xb E) and (not E ->xb F)".
-> 
-> That's because the xb relation in the formal model does not fully 
-> capture our intuitive notion of "executes at the same time" in the 
-> informal operational model.
-> 
-> Also, it's important to distinguish between:
-> 
-> (1)	Two instructions that are forced (say by a dependency) or known 
-> 	(say by an rfe link) to execute in a particular order; versus
-> 
-> (2)	Two instructions that may execute in either order but do execute
-> 	in some particular order during a given run of the program.
-> 
-> The formal xb relation corresponds more to (1), whereas the informal 
-> notion corresponds more to (2).
-
-This appears to be the key observation.  For if, in the operational model,
-(not F ->xb E) implies (E ->xb F) then I'll apologize for the noise.  :-)
-
-
-> > > The new text says the same thing as the original, just in a more 
-> > > condensed way.  It skips the detailed explanation of why E must execute 
-> > > before W propagates to E's CPU, merely saying that it is because "W is 
-> > > coherence-later than E".  I'm not sure this is an improvement; the 
-> > > reader might want to know exactly how this reasoning goes.
-> > 
-> > The current text relies on an argument by contradiction.  A contradiction
-> > is reached by "forcing" (F ->xb E), hence all it can be concluded is that
-> > (not F ->xb E).  Again, AFAICS, this doesn't match the claim in the text.
-> 
-> That's why I suggested adding an extra sentence to the paragraph (which 
-> you did not quote in your reply).  That sentence gave a direct argument.
-
-Well, I read that sentence but stopped at "These contradictions show that"
-for the reason I detailed above.
-
-  Andrea
+-- 
+Kees Cook
 
