@@ -1,75 +1,73 @@
-Return-Path: <linux-kernel+bounces-96049-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96056-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16A94875694
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:05:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DAF48756A3
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:07:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 820E31F2196A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:05:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6A56281415
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:07:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F9071350CD;
-	Thu,  7 Mar 2024 19:05:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E9991386B3;
+	Thu,  7 Mar 2024 19:06:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=risingedge.co.za header.i=@risingedge.co.za header.b="mUCNGpvT"
-Received: from outgoing6.flk.host-h.net (outgoing6.flk.host-h.net [188.40.0.77])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="oHnfl1CB"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C37413665A;
-	Thu,  7 Mar 2024 19:05:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.40.0.77
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14273137C26;
+	Thu,  7 Mar 2024 19:05:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709838327; cv=none; b=A6xFckohsFrRQFLp2Q0+1Bg7upw62qNJE3qNuO6/Fn/i5QLaZq54YllELeDJCsLFKuJ1QGa2roG9nQTE++t9zyKdWxMGdF3bTfPPBIgEqwqnH88HXGEKsi2gl2uiCn8vN6CkBjG7toPBuTg+dIObhYxBI4GpOi8FWt2tyfTe6T4=
+	t=1709838361; cv=none; b=ubDRUV6MqQ0ybhg7Z+Zoyh3f/lt4PneKZKDLs3ciyI2ONrdM4+yHmgy1ImpT4A3I7cdFusZtVudrDbT2+j/0QeuxZHYl/aV7z+HwAvQOxllfiz4+E3ffMuRcVnc4AJ5VNoYLvC1od0to7uympuo3/Nk8KwG8cutK21A6OoRU/lo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709838327; c=relaxed/simple;
-	bh=0bSDzDaPcragNuuI7G2snj1vdIhRxSVcud6qL+D5Z8Q=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=IMFGzFkSB9jH4Ce6a6rgYPHWYDRQegnuHV1IgOWrsMkATajufvHkXlLYibpamIUxuXNJ5r34MR/xdSKI2eRYhMRXUv08KrK1V8BDyAVj0vRYeh4EPA5tongBe9MGU41L/ft5JN0tnDKnNXkOBX7AQepIKN78ATAMquoaC1Gxaxw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=risingedge.co.za; spf=pass smtp.mailfrom=risingedge.co.za; dkim=pass (2048-bit key) header.d=risingedge.co.za header.i=@risingedge.co.za header.b=mUCNGpvT; arc=none smtp.client-ip=188.40.0.77
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=risingedge.co.za
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=risingedge.co.za
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=risingedge.co.za; s=xneelo; h=Content-Transfer-Encoding:MIME-Version:
-	References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:reply-to:sender:bcc
-	:content-type; bh=Ez2Ui4nIucDQfrXrUr2kn2Bb9T4WdTODcN4mnUnwnSE=; b=mUCNGpvTxTO
-	0MEj9mSuC2nUqUkdsfBTJ/e/NRORxM/avNFeJV7l66urV2zT8UNwN0k5uAcwRfX/nQkW2bGgkeHk0
-	DLEdcscJ/X+6MLOTz7KS+GBK/c7HmyZQifAfrWJsyGVFnZGD+rrs+YG9smpM4c1dk0p9r/NLNG3GM
-	Xb7uDoImJS/FPoqwKey4zOHYI7fDo1DpyA/d0q2w+/V/afDFUjekw5ZHiqaT26LqTWNjEP9ODTM8e
-	VW4REgZDFprLZfHD8KW0wjs/PM0TkcNowc8pAAeX/OVrp2aGQhRGHecb5MTsae/v+aRVmYToxH405
-	zqF+B8LFZbP4ISJgNuHIgrg==;
-Received: from www31.flk1.host-h.net ([188.40.1.173])
-	by antispam2-flk1.host-h.net with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <justin.swartz@risingedge.co.za>)
-	id 1riJ3M-003PpE-DT; Thu, 07 Mar 2024 21:05:19 +0200
-Received: from [41.144.0.96] (helo=localhost.localdomain)
-	by www31.flk1.host-h.net with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <justin.swartz@risingedge.co.za>)
-	id 1riJ3K-0007Za-Jj; Thu, 07 Mar 2024 21:05:15 +0200
-From: Justin Swartz <justin.swartz@risingedge.co.za>
-To: =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>,
-	Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: Justin Swartz <justin.swartz@risingedge.co.za>,
-	linux-mips@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: [PATCH v2 3/3] mips: dts: ralink: mt7621: add serial1 and serial2 nodes
-Date: Thu,  7 Mar 2024 21:04:07 +0200
-Message-Id: <20240307190408.23443-3-justin.swartz@risingedge.co.za>
-In-Reply-To: <20240307190408.23443-1-justin.swartz@risingedge.co.za>
-References: <CAMhs-H_eUKm7C40oCzuKwwEMZAcOJ-g4MghAfkGAmxRM0AXPUw@mail.gmail.com>
- <20240307190408.23443-1-justin.swartz@risingedge.co.za>
+	s=arc-20240116; t=1709838361; c=relaxed/simple;
+	bh=jL+0TE/sTC+jJgISDbUZ+39FzYgDfAvGp+1jjEaOf2o=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=bKMLLb+bLr7BXv/x5MoznLx3cuSah3Ej8nDfZC6XVQjYQR+WlZzd2TukFdRj3NWNEzNt564vc+MB2uU9Qn0Uh2DhJxt6Q7M1Lkb6P0Ppp889sUTiCIsp1+JkFeEfKAEnBdJAlFOmQZheIGo7LhwXs8xsmGLFoS2NtkiGVA5Ep1E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=oHnfl1CB; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 427Fx3x9015930;
+	Thu, 7 Mar 2024 19:05:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=aDyfSt6
+	DL18qcLL2NYzKLrV8n95+Q4a2EksRu1hGb30=; b=oHnfl1CBnKA9YlfyDhltRwz
+	SSOV2TOXBUIBDXWPUcQtNwnhFdMk0Lh0pzwJSNHMa8Nf7fwaayV+txjxGi/wiYyq
+	SozSBJdesPmr5yrCpnn1jt+afH/9A5J3Lq2uKOJzbWWmAMyesuLuaHFAIeO7j1bs
+	p75bRba7LX0qQjYsycAg5QCSrzcR6n8SSvaPVp8Qv1vTWfH9cd8c//1YkdJtwGly
+	ub/LStF6nJNvg2e2UyQ8dWeL/A5W9pdvOtgFXw7bg6SNgabm+waqzCOQvfq+GRnI
+	5JkgKO083pXLzAmLbPRnpJ8R8yBYCer9xpIBKW1wuHouwr15p0IxKAUO8ypA4sw=
+	=
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wq588hrw5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 07 Mar 2024 19:05:44 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 427J5iN3011224
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 7 Mar 2024 19:05:44 GMT
+Received: from hu-c-gdjako-lv.qualcomm.com (10.49.16.6) by
+ nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 7 Mar 2024 11:05:43 -0800
+From: Georgi Djakov <quic_c_gdjako@quicinc.com>
+To: <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <will@kernel.org>, <robin.murphy@arm.com>,
+        <joro@8bytes.org>, <iommu@lists.linux.dev>
+CC: <devicetree@vger.kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robdclark@gmail.com>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <quic_cgoldswo@quicinc.com>,
+        <quic_sukadev@quicinc.com>, <quic_pdaly@quicinc.com>,
+        <quic_sudaraja@quicinc.com>, <djakov@kernel.org>
+Subject: [PATCH v6 0/7] Add support for Translation Buffer Units
+Date: Thu, 7 Mar 2024 11:05:18 -0800
+Message-ID: <20240307190525.395291-1-quic_c_gdjako@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,85 +75,103 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: justin.swartz@risingedge.co.za
-X-Virus-Scanned: Clear
-X-SpamExperts-Domain: risingedge.co.za
-X-SpamExperts-Username: 
-Authentication-Results: host-h.net; auth=pass (login) smtp.auth=@risingedge.co.za
-X-SpamExperts-Outgoing-Class: ham
-X-SpamExperts-Outgoing-Evidence: Combined (0.01)
-X-Recommended-Action: accept
-X-Filter-ID: Pt3MvcO5N4iKaDQ5O6lkdGlMVN6RH8bjRMzItlySaT9wjgR1O6kmAJP01f/YYNjjPUtbdvnXkggZ
- 3YnVId/Y5jcf0yeVQAvfjHznO7+bT5wCPRB8bAzJcv2cv+UqiTTc2+CpNcmBnO4XM3Sck4bwNogU
- WCl1nkLBzZX0KuJ9bXiS85Z42w/+2OBolTNFbPomXFWCX8oNdggW7HE9XDTdSejrkEpbuUvwMvHx
- 3T+KSG//gbuP7hnUK8NQdLwsVWKIFDZRrTGv3rxiw9tFrqFSCFNiLZt/QXQnOBRD+jq1HsKsDh/6
- Srgk2K3gr1VBfJbChkYH6fbrypLNrde+UooQVNLReLErukdelEOHUIpaBbp5GdnsN8+UvimwMinK
- 0+Txhz2u9qvrL2PODYgMZQApJXOjDLkqunZ9NcY2bHZn7CfFscMZZf3sCkN20I5vMh4akiObI7Kj
- vK7X04QEin24qbfMFd8eGjnYW8aSH5qj4ujh/13psIvqSqJFa1CcANErDW/w69saM9prk3jNnHtn
- nuEt/J9wDZeQfiNOYsLDFBdwYt2XtlLzy7G7T4kla0JNnAWQx3FS11bhwUa9HCIwKB+TroNcRY33
- oNmH4nRQzHQazgY7lmveanvOdQzf6IMJ3345q/s6ySNrGnXycmhg3HE3XvkU7twVMm/5tv4KTamC
- n3oZFShGuGVczvnnMQuyLtBcNrQxKZYuPe8bdCyw79zlPbqLQkZr26Lcxdvj8cqI+CogZdOhX7v3
- ClXzrmMENhJLl6MBfhzHVBR0wHQZxzIUka7Uq615Mik1qzcz30/jNv+A51L2swh0gYW0eVWShle6
- F/kpBdN+oWjoATjEFDwcaiz0R34rhTN+GTbl4uS+pZovX9cex7Ac4fawcerGI7TrGXpM/B/M0BZd
- PfIU1BX7pZc1sE3vsz58auH/srM2fgZ9JmgLbj7sqoEiwv7LCxIiAE5ODMnmwjvj2589zjbyZCiM
- WpBpW8YvoIIqmZcWhL/r/eFjMjJnMHeiAPOVAT1rE1/vP68Bb4z3v3h3gCdXrv2+9GnNX30LKqXb
- fwFKgm/rnYBl+Mj5KqOl6Jzub/f3QhLRbOgisvi5VU9eNBtgo6zjiatjNO/pnMCjuIvXs/AyV/Ns
- URB/R+FlEHyAzksgfaRvdgw0WK34QWnzHHMcN6qoXPjenLhIOF1oeRYbjF1Hp647mOWoQlc3hL3c
- AHYPcQ0eIL+UT9voGXmPy/MsG0wqNZRtiScmIYcv9dF4u/m4iBmYb1/LCV4/EuVHup06w3Vwxf9C
- F7D6LKKRTfdjzQ6YC7Heg3Xf7O1TOd6RcY/MXB8eEq3bCN2QohZvyS03iBmgsz450Kmjd3fGVwtr
- xjYR9eesC2d5xiEbj/KpEjEqGaSZFo0P4uPgVyYUIbtf63VNbf0lrvssY+k7AHGi1NevGWTo2+h8
- Lhk4HCeZR7ymlGVRtthBJ2y8A5arx6JItKpFaUNPGMMlvbMX0nyK1NiAJ0y2Qvvn6ds6mor35w4f
- SfHzQbABJfgy21HclcZkPRq7NhoxyMwqi8Q23Rgadfh5T5n5D4OHHpbEIgsllZKWnzc5M5WlNtVJ
- qo05MS+4ayUpOtEhdxekWDmK9g==
-X-Report-Abuse-To: spam@antispamquarantine.host-h.net
+Content-Type: text/plain
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: o2yFfdr-1_NR-ShVIYrOIkH5uuc7kzcv
+X-Proofpoint-ORIG-GUID: o2yFfdr-1_NR-ShVIYrOIkH5uuc7kzcv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-07_14,2024-03-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ mlxlogscore=999 spamscore=0 impostorscore=0 bulkscore=0 mlxscore=0
+ clxscore=1015 priorityscore=1501 suspectscore=0 lowpriorityscore=0
+ adultscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2403070133
 
-Add serial1 and serial2 nodes to define the existence of
-the MT7621's second and third UARTs.
+The TCUs (Translation Control Units) and TBUs (Translation Buffer
+Units) are key components of the MMU-500. Multiple TBUs are connected
+to a single TCU over an interconnect. Each TBU contains a TLB that
+caches page tables. The MMU-500 implements a TBU for each connected
+master, and the TBU is designed, so that it is local to the master.
+A common TBU DT schema is added to describe the TBUs.
 
-Signed-off-by: Justin Swartz <justin.swartz@risingedge.co.za>
----
- arch/mips/boot/dts/ralink/mt7621.dtsi | 28 +++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
+The Qualcomm SDM845 and SC7280 platforms have an implementation of the
+SMMU-500, that has multiple TBUs. A vendor-specific DT schema is added
+to describe the resources for each TBU (register space, power-domains,
+interconnects and clocks).
 
-diff --git a/arch/mips/boot/dts/ralink/mt7621.dtsi b/arch/mips/boot/dts/ralink/mt7621.dtsi
-index 3ad4e2343..5a89f0b8c 100644
---- a/arch/mips/boot/dts/ralink/mt7621.dtsi
-+++ b/arch/mips/boot/dts/ralink/mt7621.dtsi
-@@ -124,6 +124,34 @@ serial0: serial@c00 {
- 			pinctrl-0 = <&uart1_pins>;
- 		};
- 
-+		serial1: serial@d00 {
-+			compatible = "ns16550a";
-+			reg = <0xd00 0x100>;
-+			reg-io-width = <4>;
-+			reg-shift = <2>;
-+			clocks = <&sysc MT7621_CLK_UART2>;
-+			interrupt-parent = <&gic>;
-+			interrupts = <GIC_SHARED 27 IRQ_TYPE_LEVEL_HIGH>;
-+			no-loopback-test;
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&uart2_pins>;
-+			status = "disabled";
-+		};
-+
-+		serial2: serial@e00 {
-+			compatible = "ns16550a";
-+			reg = <0xe00 0x100>;
-+			reg-io-width = <4>;
-+			reg-shift = <2>;
-+			clocks = <&sysc MT7621_CLK_UART3>;
-+			interrupt-parent = <&gic>;
-+			interrupts = <GIC_SHARED 28 IRQ_TYPE_LEVEL_HIGH>;
-+			no-loopback-test;
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&uart3_pins>;
-+			status = "disabled";
-+		};
-+
- 		spi0: spi@b00 {
- 			status = "disabled";
- 
--- 
+The TBU driver will manage the resources and allow the system to
+operate the TBUs during a context fault to obtain details by doing
+s1 inv, software + hardware page table walks etc. This is implemented
+with ATOS/eCATs as the ATS feature is not supported. Being able to
+query the TBUs is useful for debugging various hardware/software
+issues on these platforms.
+
+v6:
+- Use SoC-specific compatibles (Krzysztof)
+- Use additionalProperties: false (Krzysztof)
+- Wrap description text to 80 cols (Krzysztof)
+
+v5: https://lore.kernel.org/r/20240226172218.69486-1-quic_c_gdjako@quicinc.com
+- Drop the common TBU bindings and child nodes. These TBU functionalities
+  are only Qualcomm specific and not generic. In the unmodified ARM MMU-500
+  implementation there are no TBU-specific resources, so just make them
+  standalone DT nodes. (Robin)
+- The "qcom,stream-id-range" DT property now takes a phandle to the smmu
+  and a stream ID range.
+
+v4: https://lore.kernel.org/r/20240201210529.7728-1-quic_c_gdjako@quicinc.com/
+- Create a common TBU schema. Move the vendor-specific properties into
+  a separate schema that references the common one. (Rob)
+- Drop unused DT labels in example, fix regex. (Rob)
+- Properly rebase on latest code.
+
+v3: https://lore.kernel.org/r/20231220060236.18600-1-quic_c_gdjako@quicinc.com
+- Having a TBU is not Qualcomm specific, so allow having TBU child
+  nodes with no specific constraints on properties. For some of the
+  vendor compatibles however, add a schema to describe specific
+  properties and allow validation. (Rob)
+- Drop the useless reg-names DT property on TBUs. (Rob)
+- Make the stream-id-range DT property a common one. (Rob)
+- Fix the DT example. (Rob)
+- Minor fixes on the TBU driver.
+- Add support for SC7280 platforms.
+
+v2: https://lore.kernel.org/r/20231118042730.2799-1-quic_c_gdjako@quicinc.com
+- Improve DT binding description, add full example. (Konrad)
+- Drop Qcom specific stuff from the generic binding. (Rob)
+- Unconditionally try to populate subnodes. (Konrad)
+- Improve TBU driver commit text, remove memory barriers. (Bjorn)
+- Move TBU stuff into separate file. Make the driver builtin.
+- TODO: Evaluate whether to keep TBU support as a separate driver
+  or just instantiate things from qcom_smmu_impl_init()
+
+v1: https://lore.kernel.org/r/20231019021923.13939-1-quic_c_gdjako@quicinc.com
+
+Georgi Djakov (7):
+  dt-bindings: iommu: Add Qualcomm TBU
+  iommu/arm-smmu-qcom-tbu: Add Qualcomm TBU driver
+  iommu/arm-smmu: Allow using a threaded handler for context interrupts
+  iommu/arm-smmu-qcom: Use a custom context fault handler for sdm845
+  arm64: dts: qcom: sdm845: Add DT nodes for the TBUs
+  iommu/arm-smmu-qcom: Use the custom fault handler on more platforms
+  arm64: dts: qcom: sc7280: Add DT nodes for the TBUs
+
+ .../devicetree/bindings/iommu/qcom,tbu.yaml   |  69 +++
+ arch/arm64/boot/dts/qcom/sc7280.dtsi          |  89 ++++
+ arch/arm64/boot/dts/qcom/sdm845.dtsi          |  70 +++
+ drivers/iommu/Kconfig                         |   9 +
+ drivers/iommu/arm/arm-smmu/Makefile           |   1 +
+ .../iommu/arm/arm-smmu/arm-smmu-qcom-tbu.c    | 496 ++++++++++++++++++
+ drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c    |   8 +
+ drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h    |   2 +
+ drivers/iommu/arm/arm-smmu/arm-smmu.c         |  12 +-
+ drivers/iommu/arm/arm-smmu/arm-smmu.h         |   3 +
+ 10 files changed, 757 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/iommu/qcom,tbu.yaml
+ create mode 100644 drivers/iommu/arm/arm-smmu/arm-smmu-qcom-tbu.c
 
 
