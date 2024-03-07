@@ -1,269 +1,133 @@
-Return-Path: <linux-kernel+bounces-94915-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94916-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7B908746AC
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 04:20:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42F348746B1
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 04:20:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C9D52873FF
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 03:20:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 75B4D1C20946
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 03:20:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3007DE546;
-	Thu,  7 Mar 2024 03:19:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFA4F125BA;
+	Thu,  7 Mar 2024 03:20:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="NM3a8GuP"
-Received: from mail-oa1-f42.google.com (mail-oa1-f42.google.com [209.85.160.42])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XZ2Wm8Q7"
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 607861B7E4
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 03:19:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48283E576;
+	Thu,  7 Mar 2024 03:20:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709781580; cv=none; b=fMG1YVZkw985vQo/cDgt00s7sRXQdQdhn+gmTG1T6ouUxE2ofLfB/HeVaOQwTnSh82X7XqYUcHPAwH+oWuqDE1XGUReBGfYZj3YEYacUj5JHR5+9EbjcTAwKj/4LLbXvFcAz/aMm5bfcO+hZV4vbZU7BA4qg3n9NgrgLmv770c4=
+	t=1709781634; cv=none; b=dkf9rtLYuj0ps8GbpyUVG1hxX3BUiyow5AVy4o3Th7HWb2nenbfY466HGyOj4Etn5SPDqJr9xfxhqt3AAX1gkvel0Q23X+fITOl3P6RI1BnUIMvyh0MMp978KJxsRcHzVm02e2b+6mQ3rtw5U2QvN8/kwF6+m8x9Tg8jWIWDNHs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709781580; c=relaxed/simple;
-	bh=2C88qV+fxIBbpmK+jFwOWYwyMdx0WzXNpACjvByuKIM=;
+	s=arc-20240116; t=1709781634; c=relaxed/simple;
+	bh=Ti6YAh/NMgGQsnsVPl5LkxAkyP+ZOzDYD3+Aqwls+Fg=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=a89zURXOi+FTI27UK7Djvd8O2RlepdWHt9UYVBgyjgf4D4vRC6Pp3jZS0/4bdxvJtdxS7YxleUOJDYlbkiH+Q3tkYieeT7SXHDMk/jZjm3RaR2JlU3E9QPIqXTDoOq1pMh6N3CTnawdLM6rP4K8uk7zemHawZ4MaD5SMQY9EyIY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=NM3a8GuP; arc=none smtp.client-ip=209.85.160.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-oa1-f42.google.com with SMTP id 586e51a60fabf-21ffac15528so150811fac.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 19:19:38 -0800 (PST)
+	 To:Cc:Content-Type; b=Ddl7aPBXrA6oKdsulsNHwXqGZZYo8HPkFW1DH6TJuIJOON+aA4RwXOP1BBsStyAX4jlfedTrMeSb7GEArsGQaD/0UI4hoty5pWWwAUGi2GGTRUbeGJRyvGncZB+nI6RHi5oPomaZqGMKs1UJLbI+Wb1JqnfG5lWgtEwBV5a7sq0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XZ2Wm8Q7; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-33e122c8598so175362f8f.1;
+        Wed, 06 Mar 2024 19:20:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1709781577; x=1710386377; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1709781630; x=1710386430; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=XJGvA1f7vKRh3tCkcbglNtzIq8rFLROAN/5bMKhQkTg=;
-        b=NM3a8GuPQexXnH1MDHNTmkR95OocXfh7kWDccrmC6v6ozCc5/8B/uvOYDnl06J++gg
-         GbJwgpY7jQ7ePmv/sHbZDugLhX4cZyuaf5KLNGriGytoSs4rAt/ogrt8pj2ab6/W6IsH
-         GEQyNJbpovEkF28rA9vSOshBE2ptTNnJnOlg9qyD6GPNl1SH3G4MhFFIHbtBVzc7Bk5D
-         6vmNQHgkJGstMhn+lM3pMek342D3L8D6PSiyuqZzfqpGWnegGAZQlMtdv4Gwd/H16Jg6
-         sHDwSBbntV0r42kUzrnqFF0ipTxXSPIqTLKjktvt+gR5SNep/gYDMx3Aqh45Zfy/6qKs
-         /7/w==
+        bh=08ZvxkU8o27HBaf+3etQV0wPvLqge6KNPGX713iuBK8=;
+        b=XZ2Wm8Q7VcruMaGFm5oy5wbv7NBKD3/50G49ys5PEh5dcVBNF2fdtW5C3V8ZU0bJH6
+         ZtEHUf2SPqhyZ1tHZzTrHl4HXzMrwNZoM9bJTc9aBZBVrmCsB/iB2fvKb8t4mEv9VIzS
+         rmu5Y66a3Lm2O+QX60ARSqdEZ+Hmpe+/RBOoxdVLKYsfoDxT5S0bH8ggU+Uh0cpxSpKx
+         S4vWSs7rSZVJOEo//DPd3zJ649oRiIpZE26J4RW89lFQ/cFuKCE9ASp7FTGVJr1gS3no
+         NjKNHTUbTk2UMDdPVnmqnbyIxsJ6NGJO+/trLLeufVeV0ugH/sEbRlknBZPPYIUe3EJJ
+         dCcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709781577; x=1710386377;
+        d=1e100.net; s=20230601; t=1709781630; x=1710386430;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=XJGvA1f7vKRh3tCkcbglNtzIq8rFLROAN/5bMKhQkTg=;
-        b=SPni+wcJGsIvuSn2JcPmiWDqEiBpO8nNw5eUJB4rGaHysmUU6I2+50NeNxcRLYh7H8
-         eIGjiVKQ3ZmY/KUHE5cux7pDB4+SBpTqsHeq9GVLdL/CX2Ww5pZMHAecO7yrDPftj8VX
-         +wauEhQlR+zteEUhSioiiZ/zEypd11A2cLLLPwGvh+jrJFVbnWO9la11jtV6QpgtIoQW
-         MlLHuDTVxfMrc1r/mR/WSquw7833KpcvZa4adXbrB5xONJOllsHUaeeTARQXlg0lErcZ
-         4gaeAuHlwYj/7Mn1ido1NGc7/5r/2yP2JnefwFgyBQBGaushTt4S5/patZIJN1V3f24Q
-         vnQw==
-X-Forwarded-Encrypted: i=1; AJvYcCWwNm1dDvD0Hoiq62VwqAZlQCpJjmDaLGlaW6hlELwVh4Mo5OTXdFXXlHLwWaj3MidFoaSOOK5cG1ObQNx/eFIipd7lDQLtY7AwoHNv
-X-Gm-Message-State: AOJu0YzEIOqwsDsS71JW7wRFwtTSp8UwXTeamZQwPG2GYtIWPvOJ1Zr2
-	RO4VbSloJHWHvkAFDtElJpWpeglRfbEDLyTe5z5lcBiPoYuvyMkOs6hLBJWNm9aM8ALy9kFd1cT
-	9NGtiHAupaRFN9E3zjwSJFfPoTgfPvXiZqeuovA==
-X-Google-Smtp-Source: AGHT+IFY13j0u68bFIORwkMkdH6ODO/zQ9SH+109GglozC611Ks1AmA61dWksvu8K9ufjtIT4F4LCd6h7ApZ15aRObk=
-X-Received: by 2002:a05:6870:4181:b0:220:8c16:fe1b with SMTP id
- y1-20020a056870418100b002208c16fe1bmr7006609oac.40.1709781577510; Wed, 06 Mar
- 2024 19:19:37 -0800 (PST)
+        bh=08ZvxkU8o27HBaf+3etQV0wPvLqge6KNPGX713iuBK8=;
+        b=WK/EscbNUGyCwdz6ANeBtmrfqlRXHXghXDr4FPntKGjWsjwC12GrqSt0bgnnKKqKK9
+         dGylglCetK6zi28AzHpcGejVyzef2gTqt6yyMxWUfV8T2MiyyP9oK4pKyAD1xRsT3mVP
+         EtjgkUtW2ci8Tyypx1MP/w0Fb9Bs/YihJMP1UFdRvS4pUnZKnDWRhNCDybtBj/ZSkQmZ
+         2Vx0RfpPIOmHNfckLa5gWfwEHasQw49/c+BYuE1NDsF3BwTnC5rhgKkEXvthv/NfGjVC
+         4SfGPFMWRxBnY1FgNRFFQQKJ/TAYoOxmefD7NsB6mkCANUJksv3qhNUMkh1w7ZlazWa/
+         txeQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUzAVSrwv1AjpbJYwzuSS1tV65g2rISQPhNppilU2aP6N2V4oy0p8YJpNaRGljiv77fj9lBT3sffyZyp7PikFRKljGvciCImDViU8GhJzDqynDwy/hLSqWAa24PlPUJZJdHzhQWtQHssejAlNi1JJ6kbfFW/jEiYxXXviJInm8kd5pcDlnSeyEVKFg6SeFO1K0QZKGnhw==
+X-Gm-Message-State: AOJu0YwRRu+KF5XYOnM64+Svn0cmn0D1Ue/5kUayufVwW2FcJtCBJJQR
+	IFAJcjo8BvEaKSNvtKVnlXjO+vfYuydJ4I77WdSZnXaBq4Ruiw6T6NN76MLQb9PSLjGR0S3PNwF
+	LadhFMOjuUtNc4K2SV0+i6MzBzB/wvoct
+X-Google-Smtp-Source: AGHT+IFjaP2GBdB8DtmUnLCZsfrF61QII3WlzmZDWuRLmnC1wDfvWJwkerifgTREyQcvLifYGD6e/slTjJWDNkjIPMA=
+X-Received: by 2002:adf:b643:0:b0:33d:7385:d929 with SMTP id
+ i3-20020adfb643000000b0033d7385d929mr14853839wre.0.1709781630370; Wed, 06 Mar
+ 2024 19:20:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAMj1kXH1oMbONoHFMPaatfaqrHNE2ryfrG7kw-7J-eFsuXkK-Q@mail.gmail.com>
- <mhng-c53211c1-4708-459a-bdc5-6e013c2adaee@palmer-ri-x1c9>
- <CAMj1kXEFqMx8qUHQEbg=OqbG-H0Zpj-nWu=a6qhhvNEZPO7f4Q@mail.gmail.com> <CAMj1kXG4SXsBfNqWMRUJ+AVv=6trWUAow-f8Mk5oKCpO=WueFg@mail.gmail.com>
-In-Reply-To: <CAMj1kXG4SXsBfNqWMRUJ+AVv=6trWUAow-f8Mk5oKCpO=WueFg@mail.gmail.com>
-From: yunhui cui <cuiyunhui@bytedance.com>
-Date: Thu, 7 Mar 2024 11:19:26 +0800
-Message-ID: <CAEEQ3wkN3HDUuPDfWTn4kTxKH03OaRxBTFru3jJzZgW+BVhABg@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH 3/3] efistub: fix missed the initialization
- of gp
-To: Ard Biesheuvel <ardb@kernel.org>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu, 
-	xuzhipeng.1973@bytedance.com, alexghiti@rivosinc.com, samitolvanen@google.com, 
-	bp@alien8.de, xiao.w.wang@intel.com, jan.kiszka@siemens.com, 
-	kirill.shutemov@linux.intel.com, nathan@kernel.org, 
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-efi@vger.kernel.org, Conor Dooley <conor@kernel.org>, 
-	Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+References: <20240307123619.159f1c4c@canb.auug.org.au>
+In-Reply-To: <20240307123619.159f1c4c@canb.auug.org.au>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 6 Mar 2024 19:20:19 -0800
+Message-ID: <CAADnVQKy848BOi42kJh5dDpFsVuyktAgFds3byptANGpOkbXZw@mail.gmail.com>
+Subject: Re: linux-next: manual merge of the bpf-next tree with the mm-stable tree
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Networking <netdev@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+	Linux Next Mailing List <linux-next@vger.kernel.org>, "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Ard,
+On Wed, Mar 6, 2024 at 5:36=E2=80=AFPM Stephen Rothwell <sfr@canb.auug.org.=
+au> wrote:
+>
+> Hi all,
+>
+> Today's linux-next merge of the bpf-next tree got a conflict in:
+>
+>   mm/vmalloc.c
+>
+> between commit:
+>
+>   8e1d743f2c26 ("mm: vmalloc: support multiple nodes in vmallocinfo")
+>
+> from the mm-stable tree and commit:
+>
+>   e6f798225a31 ("mm: Introduce VM_SPARSE kind and vm_area_[un]map_pages()=
+")
+>
+> from the bpf-next tree.
+>
+> I fixed it up (I think - see below) and can carry the fix as necessary.
+> This is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
 
-On Thu, Mar 7, 2024 at 12:15=E2=80=AFAM Ard Biesheuvel <ardb@kernel.org> wr=
-ote:
->
-> On Wed, 6 Mar 2024 at 16:44, Ard Biesheuvel <ardb@kernel.org> wrote:
-> >
-> > On Wed, 6 Mar 2024 at 16:21, Palmer Dabbelt <palmer@dabbelt.com> wrote:
-> > >
-> > > On Wed, 06 Mar 2024 05:09:07 PST (-0800), Ard Biesheuvel wrote:
-> > > > On Wed, 6 Mar 2024 at 14:02, Ard Biesheuvel <ardb@kernel.org> wrote=
-:
-> > > >>
-> > > >> On Wed, 6 Mar 2024 at 13:34, yunhui cui <cuiyunhui@bytedance.com> =
-wrote:
-> > > >> >
-> > > >> > Hi Ard,
-> > > >> >
-> > > >> > On Wed, Mar 6, 2024 at 5:36=E2=80=AFPM Ard Biesheuvel <ardb@kern=
-el.org> wrote:
-> > > >> > >
-> > > >> > > On Wed, 6 Mar 2024 at 09:56, Yunhui Cui <cuiyunhui@bytedance.c=
-om> wrote:
-> > > >> > > >
-> > > >> > > > Compared with gcc version 12, gcc version 13 uses the gp
-> > > >> > > > register for compilation optimization, but the efistub modul=
-e
-> > > >> > > > does not initialize gp.
-> > > >> > > >
-> > > >> > > > Signed-off-by: Yunhui Cui <cuiyunhui@bytedance.com>
-> > > >> > > > Co-Developed-by: Zhipeng Xu <xuzhipeng.1973@bytedance.com>
-> > > >> > >
-> > > >> > > This needs a sign-off, and your signoff needs to come after.
-> > > >> > >
-> > > >> > > > ---
-> > > >> > > >  arch/riscv/kernel/efi-header.S | 11 ++++++++++-
-> > > >> > > >  1 file changed, 10 insertions(+), 1 deletion(-)
-> > > >> > > >
-> > > >> > > > diff --git a/arch/riscv/kernel/efi-header.S b/arch/riscv/ker=
-nel/efi-header.S
-> > > >> > > > index 515b2dfbca75..fa17c08c092a 100644
-> > > >> > > > --- a/arch/riscv/kernel/efi-header.S
-> > > >> > > > +++ b/arch/riscv/kernel/efi-header.S
-> > > >> > > > @@ -40,7 +40,7 @@ optional_header:
-> > > >> > > >         .long   __pecoff_data_virt_end - __pecoff_text_end  =
-    // SizeOfInitializedData
-> > > >> > > >  #endif
-> > > >> > > >         .long   0                                       // S=
-izeOfUninitializedData
-> > > >> > > > -       .long   __efistub_efi_pe_entry - _start         // A=
-ddressOfEntryPoint
-> > > >> > > > +       .long   _efistub_entry - _start         // AddressOf=
-EntryPoint
-> > > >> > > >         .long   efi_header_end - _start                 // B=
-aseOfCode
-> > > >> > > >  #ifdef CONFIG_32BIT
-> > > >> > > >         .long  __pecoff_text_end - _start               // B=
-aseOfData
-> > > >> > > > @@ -121,4 +121,13 @@ section_table:
-> > > >> > > >
-> > > >> > > >         .balign 0x1000
-> > > >> > > >  efi_header_end:
-> > > >> > > > +
-> > > >> > > > +       .global _efistub_entry
-> > > >> > > > +_efistub_entry:
-> > > >> > >
-> > > >> > > This should go into .text or .init.text, not the header.
-> > > >> > >
-> > > >> > > > +       /* Reload the global pointer */
-> > > >> > > > +       load_global_pointer
-> > > >> > > > +
-> > > >> > >
-> > > >> > > What is supposed to happen here if CONFIG_SHADOW_CALL_STACK=3D=
-y? The EFI
-> > > >> > > stub Makefile removes the SCS CFLAGS, so the stub will be buil=
-t
-> > > >> > > without shadow call stack support, which I guess means that it=
- might
-> > > >> > > use GP as a global pointer as usual?
-> > > >> > >
-> > > >> > > > +       call __efistub_efi_pe_entry
-> > > >> > > > +       ret
-> > > >> > > > +
-> > > >> > >
-> > > >> > > You are returning to the firmware here, but after modifying th=
-e GP
-> > > >> > > register. Shouldn't you restore it to its old value?
-> > > >> > There is no need to restore the value of the gp register. Where =
-gp is
-> > > >> > needed, the gp register must first be initialized. And here is t=
-he
-> > > >> > entry.
-> > > >> >
-> > > >>
-> > > >> But how should the firmware know that GP was corrupted after calli=
-ng
-> > > >> the kernel's EFI entrypoint? The EFI stub can return to the firmwa=
-re
-> > > >> if it encounters any errors while still running in the EFI boot
-> > > >> services.
-> > > >>
-> > > >
-> > > > Actually, I wonder if GP can be modified at all before
-> > > > ExitBootServices(). The EFI timer interrupt is still live at this
-> > > > point, and so the firmware is being called behind your back, and mi=
-ght
-> > > > rely on GP retaining its original value.
-> > >
-> > > [A few of us are talking on IRC as I'm writing this...]
-> > >
-> > > The UEFI spec says "UEFI firmware must neither trust the
-> > > values of tp and gp nor make an assumption of owning the write access=
- to
-> > > these register in any circumstances".  It's kind of vague what "UEFI
-> > > firmware" means here, but I think it's reasonable to assume that the
-> > > kernel (and thus the EFI stub) is not included there.
-> > >
-> > > So under that interpretation, the kernel (including the EFI stub) wou=
-ld
-> > > be allowed to overwrite GP with whatever it wants.
-> > >
-> >
-> > OK, so even if the UEFI spec seems to suggest that using GP in EFI
-> > applications such as the Linux EFI stub should be safe, I'd still like
-> > to understand why this change is necessary. The patches you are
-> > reverting are supposed to ensure that a) the compiler does not
-> > generate references that can be relaxed to GP based ones, and b) no
-> > R_RISCV_RELAX relocations are present in any of the code that runs in
-> > the context of the EFI firmware.
-> >
-> > Are you still seeing GP based symbol references? Is there C code that
-> > gets pulled into the EFI stub that uses GP based relocations perhaps?
-> > (see list below). If any of those are implemented in C, they should
-> > not be used by the EFI stub directly unless they are guaranteed to be
-> > uninstrumented and callable at arbitrary offsets other than the one
-> > they were linked to run at.
-> >
-> >
-> > __efistub_memcmp         =3D memcmp;
-> > __efistub_memchr         =3D memchr;
-> > __efistub_memcpy         =3D memcpy;
-> > __efistub_memmove        =3D memmove;
-> > __efistub_memset         =3D memset;
-> > __efistub_strlen         =3D strlen;
-> > __efistub_strnlen        =3D strnlen;
-> > __efistub_strcmp         =3D strcmp;
-> > __efistub_strncmp        =3D strncmp;
-> > __efistub_strrchr        =3D strrchr;
-> > __efistub___memcpy       =3D memcpy;
-> > __efistub___memmove      =3D memmove;
-> > __efistub___memset       =3D memset;
-> > __efistub__start         =3D _start;
-> > __efistub__start_kernel  =3D _start_kernel;
-> >
-> > (from arch/riscv/kernel/image-vars.h)
->
-> Uhm never mind - these are all gone now, I was looking at a v6.1
-> kernel source tree.
->
-> So that means that, as far as I can tell, the only kernel C code that
-> executes in the context of the EFI firmware is built with -mno-relax
-> and is checked for the absence of R_RISCV_RELAX relocations. So I fail
-> to see why these changes are needed.
->
-> Yunhui, could you please explain the reason for this series?
+..
 
-From the logic of binutils, if "__global_pointer$" exists, it is
-possible to use GP for optimization. For RISC-V, "__global_pointer$"
-was introduced in commit "fbe934d69eb7e". Therefore, for the system as
-a whole, we should keep using GP uniformly. The root cause of this
-problem is that GP is not loaded, rather than "On RISC-V, we also
-avoid GP based relocations..." as commit "d2baf8cc82c17" said. We need
-to address problems head-on, rather than avoid them.
+>
+>  -      if (v->flags & VM_USERMAP)
+>  -              seq_puts(m, " user");
+>  +                      if (v->flags & VM_IOREMAP)
+>  +                              seq_puts(m, " ioremap");
+>
+>  -      if (v->flags & VM_DMA_COHERENT)
+>  -              seq_puts(m, " dma-coherent");
+> ++                      if (v->flags & VM_SPARSE)
+> ++                              seq_puts(m, " sparse");
+> +
 
-Thanks,
-Yunhui
+Indent change across the loop makes the conflict look big,
+but it's actually trivial and resolution looks correct.
+
+Thanks!
 
