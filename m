@@ -1,188 +1,96 @@
-Return-Path: <linux-kernel+bounces-95943-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95944-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F6D8875535
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 18:32:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FEFC875538
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 18:32:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 58786B21F4F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:32:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 005291F22CBA
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:32:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23905130E53;
-	Thu,  7 Mar 2024 17:31:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AC19131E2F;
+	Thu,  7 Mar 2024 17:31:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="JXWx3fcS"
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="I0YUjJL9"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39861130AF1;
-	Thu,  7 Mar 2024 17:31:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83CC4130E46
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 17:31:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709832706; cv=none; b=RRnSRX1waA97wAXiTMwUvE7ST/2XdbaQq2u7kSnEBfmhjbp/X20ZUm6oQTvTi7ml22mI5DTKHEFM0W4tWhwHeYXI6aFQLMsz5l4NyzSor1O0+8VxO9URrpjJmlAKM4e99tI30deVh84bOkzTcM35nz8OYYBrZDDdV6ZLKLQhaRY=
+	t=1709832712; cv=none; b=MkhBgtpwPPhsB9IVKLQJt3zAdAXw7FQCiWJgiZVXZK5l8PyR0MXcu2S9zGqS1HR63rCZlnPHPU/Hr1s3XTnU3GmclFWz4o5fXh6F8A2iQSEx/CmaSew+Nq0tMFP+dV2Zn/CHArCqiA1sg/1e4Holhk5RW0T5goeFIuzk0jwitug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709832706; c=relaxed/simple;
-	bh=Pw1wjnfdkstP4sMjq/SqSIfAkxHM4ROpPhW1adlHMZI=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=MDWyNvEjUmqvPxv7Uaq5B2Vz3L76Z4uIx5LL6iFzhA/P/jST/DGfDUVj2d6oVCo463fCad9k7jifgRkBum7kL7BaJaVM1MTlACkNz1cQofWGYkzaXe9vF/XOYeaJVUTKxgwyzyrH/xV1fECr/YkISD2KrQE3DQ2Jsz7ubFuZcw4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=JXWx3fcS; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=6GKHuULFobI/veCzO71hJuFZMvHW2DBWIwJthjIFZt0=; b=JXWx3fcSvqEd2usjf0tQN1DMCi
-	vSO6xR4WJptmR2KKeHQgwZrwN8Kcxo2SsAwQYU3GqG1uUhHegfI3SUUIcj3xuPPVcnq4qvvd9Z59E
-	QEXIJexwsh/xmTHCzcD+vFT4djVEoZUoeVEOEWDbhnGjDhNOexCanK8oqtsXqubWrWGy58R7eCA5a
-	KMkwOmTd6RBHYUW7MOdrUMkaxa0IBDN9EMKZ1xegBgTvPlxJM2R9eO51SJIrfnnNNvBIZE0Kisxb1
-	7MM1fiEoUnsAibMICY+p3wL4QPlBDDx84amzwvLXj1OsBgSDB7e/8IGpBSO57JhZs1rwQ14crw6Zx
-	jCusX5Yw==;
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1riHZL-000J8N-R9; Thu, 07 Mar 2024 18:30:11 +0100
-Received: from [77.58.94.13] (helo=localhost.localdomain)
-	by sslproxy03.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1riHZI-0034Od-1I;
-	Thu, 07 Mar 2024 18:30:08 +0100
-Subject: Re: [PATCH bpf-next RESEND v2 1/2] bpf: Take return from
- set_memory_ro() into account with bpf_prog_lock_ro()
-To: Christophe Leroy <christophe.leroy@csgroup.eu>,
- Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Russell King <linux@armlinux.org.uk>,
- Puranjay Mohan <puranjay12@gmail.com>, Tiezhu Yang <yangtiezhu@loongson.cn>,
- Hengqi Chen <hengqi.chen@gmail.com>, Huacai Chen <chenhuacai@kernel.org>,
- WANG Xuerui <kernel@xen0n.name>,
- Johan Almbladh <johan.almbladh@anyfinetworks.com>,
- Paul Burton <paulburton@kernel.org>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
- Helge Deller <deller@gmx.de>, Ilya Leoshkevich <iii@linux.ibm.com>,
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Sven Schnelle <svens@linux.ibm.com>, "David S. Miller"
- <davem@davemloft.net>, David Ahern <dsahern@kernel.org>,
- Wang YanQing <udknight@gmail.com>, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
- Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
- "H. Peter Anvin" <hpa@zytor.com>
-Cc: bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, loongarch@lists.linux.dev,
- linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
- linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
- netdev@vger.kernel.org,
- "linux-hardening @ vger . kernel . org" <linux-hardening@vger.kernel.org>,
- Kees Cook <keescook@chromium.org>
-References: <8f3b3823cce2177e5912ff5f2f11381a16db07db.1709279661.git.christophe.leroy@csgroup.eu>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <093da237-50c1-5898-1637-7a9a84e1076c@iogearbox.net>
-Date: Thu, 7 Mar 2024 18:30:06 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	s=arc-20240116; t=1709832712; c=relaxed/simple;
+	bh=vzADUwGQeVvOM48WKXm4UNqLNwBN9ej4gnBvU/nQcbU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uqx+UhsMN3LnX/wH1fmuWkcQxOsRA1RzjOH7Rf498D3psNEIInE9It9+yxBv6o6SgvBrlmLl3JKUJUsQD7VqGl9NY6ht0JBkVQ5yko6JJZbPvFJktmCepueRSUCNXsiMxb8FFNccGhoSnbi/WJb7r7RdtHERNQu/SV1s1OwFmOQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=I0YUjJL9; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709832711; x=1741368711;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=vzADUwGQeVvOM48WKXm4UNqLNwBN9ej4gnBvU/nQcbU=;
+  b=I0YUjJL9q425t3L8LmQFCI9qTawf/Z0swLZzDwA8GtqaoBp/kDSM3MAk
+   +9lRwnwTrgYk/FQmehr6vMggyeg1sXBXCGqgSg1GyYF+RzyWsxJ3YJfax
+   JBixwS8kDEihVpLEEMhDHh7U7ly6ohdHJNUhSvBKrdRycA0A+50goFaxW
+   MoGVak/jehpAzkzclXewbf7IJgXDrJ42FjNou9B5UQ64cb0NNvFy43idS
+   PoFKuOQHx/kaT4dFv0FP0DRfuOqytjT8Q4qEapqbGu2e/xv/DtDHwzdAs
+   xXkoHL9soDl2ddMgpvpKor0NAseDPsBdMf0tatjOr6wtHC3qrGm847QiW
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="26987286"
+X-IronPort-AV: E=Sophos;i="6.07,107,1708416000"; 
+   d="scan'208";a="26987286"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 09:31:48 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="937046429"
+X-IronPort-AV: E=Sophos;i="6.07,107,1708416000"; 
+   d="scan'208";a="937046429"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 07 Mar 2024 09:31:45 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+	id 8B8BB128; Thu,  7 Mar 2024 19:31:44 +0200 (EET)
+Date: Thu, 7 Mar 2024 19:31:44 +0200
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Andy Lutomirski <luto@kernel.org>, x86@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 3/3] x86/mm: cleanup prctl_enable_tagged_addr()
+ nr_bits error checking
+Message-ID: <j3zncd7dxc6kzk5sdytqulkk76cluq6zctklpasa3y4ig3vwku@ibabr336aqv6>
+References: <20240307133916.3782068-1-yosryahmed@google.com>
+ <20240307133916.3782068-4-yosryahmed@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <8f3b3823cce2177e5912ff5f2f11381a16db07db.1709279661.git.christophe.leroy@csgroup.eu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27207/Thu Mar  7 10:27:12 2024)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240307133916.3782068-4-yosryahmed@google.com>
 
-On 3/1/24 8:57 AM, Christophe Leroy wrote:
-> set_memory_ro() can fail, leaving memory unprotected.
+On Thu, Mar 07, 2024 at 01:39:16PM +0000, Yosry Ahmed wrote:
+> In prctl_enable_tagged_addr(), we check that nr_bits is in the correct
+> range, but we do so in a twisted if/else block where the correct case is
+> sandwiched between two error cases doing exactly the same thing.
 > 
-> Check its return and take it into account as an error.
-> 
-> Link: https://github.com/KSPP/linux/issues/7
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> Cc: linux-hardening@vger.kernel.org <linux-hardening@vger.kernel.org>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> ---
-> Sorry for the resend, I forgot to flag patch 2 as bpf-next
-> 
-> Note: next patch is autonomous, it is sent as a follow-up of this one to minimize risk of conflict on filter.h because the two changes are too close to each other.
-> 
-> v2: No modification (Just added link in patch message), patchwork discarded this series due to failed test of s390 but it seems unrelated, see https://lore.kernel.org/bpf/wvd5gzde5ejc2rzsbrtwqyof56uw5ea3rxntfrxtkdabzcuwt6@w7iczzhmay2i/T/#m2e61446f42d5dc3d78f2e0e8b7a783f15cfb109d
-> ---
->   include/linux/filter.h | 5 +++--
->   kernel/bpf/core.c      | 4 +++-
->   kernel/bpf/verifier.c  | 4 +++-
->   3 files changed, 9 insertions(+), 4 deletions(-)
-> 
-> diff --git a/include/linux/filter.h b/include/linux/filter.h
-> index 36cc29a2934c..7dd59bccaeec 100644
-> --- a/include/linux/filter.h
-> +++ b/include/linux/filter.h
-> @@ -884,14 +884,15 @@ bpf_ctx_narrow_access_offset(u32 off, u32 size, u32 size_default)
->   
->   #define bpf_classic_proglen(fprog) (fprog->len * sizeof(fprog->filter[0]))
->   
-> -static inline void bpf_prog_lock_ro(struct bpf_prog *fp)
-> +static inline int __must_check bpf_prog_lock_ro(struct bpf_prog *fp)
->   {
->   #ifndef CONFIG_BPF_JIT_ALWAYS_ON
->   	if (!fp->jited) {
->   		set_vm_flush_reset_perms(fp);
-> -		set_memory_ro((unsigned long)fp, fp->pages);
-> +		return set_memory_ro((unsigned long)fp, fp->pages);
->   	}
->   #endif
-> +	return 0;
->   }
->   
->   static inline void bpf_jit_binary_lock_ro(struct bpf_binary_header *hdr)
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index 71c459a51d9e..c49619ef55d0 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -2392,7 +2392,9 @@ struct bpf_prog *bpf_prog_select_runtime(struct bpf_prog *fp, int *err)
->   	}
->   
->   finalize:
-> -	bpf_prog_lock_ro(fp);
-> +	*err = bpf_prog_lock_ro(fp);
-> +	if (*err)
-> +		return fp;
->   
->   	/* The tail call compatibility check can only be done at
->   	 * this late stage as we need to determine, if we deal
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 1c34b91b9583..6ec134f76a11 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -19096,7 +19096,9 @@ static int jit_subprogs(struct bpf_verifier_env *env)
->   	 * bpf_prog_load will add the kallsyms for the main program.
->   	 */
->   	for (i = 1; i < env->subprog_cnt; i++) {
-> -		bpf_prog_lock_ro(func[i]);
-> +		err = bpf_prog_lock_ro(func[i]);
-> +		if (err)
-> +			goto out_free;
+> Simplify the if condition and pull the correct case outside with the
+> rest of the success code path.
 
-How does the error path take out the subprogs from kallsyms in your case? Suppose some of
-the loop iterations succeed before we hit an error. I believe the subprogs still exist in
-kallsyms here.
+I'm okay either way.
 
->   		bpf_prog_kallsyms_add(func[i]);
->   	}
->   
-> 
+I structured the code this way as I had separate patch that adds also
+LAM_U48. But it is unlikely to get upstreamed.
 
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
 
