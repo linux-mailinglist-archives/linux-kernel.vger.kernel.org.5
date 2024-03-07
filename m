@@ -1,170 +1,194 @@
-Return-Path: <linux-kernel+bounces-95249-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95250-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CBEF874B43
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:50:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E9F1874B47
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:51:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22C0E282127
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:50:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 21D881F21E51
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:51:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 800DF84FB9;
-	Thu,  7 Mar 2024 09:50:05 +0000 (UTC)
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 736E984FBF;
+	Thu,  7 Mar 2024 09:51:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="FW9oejdN"
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E98482D9C
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 09:50:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B728183CAF
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 09:51:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709805005; cv=none; b=A5H8t9szvhms+gdxT/P/5NwAEnwuoc2ccuurYhOkjaUYClYPBjpgmq2fPpqVP8T2oEcY+QoMtG7e7Vk4K+8+lMhVl4pXD+9ajWMouX7S8lsjty7Gyh4wnpu2EENdRp2H1Wrr4g73UJ7k4B4eRSf5/gv58AyT1mQB6KjAjIwV+80=
+	t=1709805076; cv=none; b=t1qxCMSDPKiWL5QhNZknO3R+q/Fn/cC/qF93TScUhlYj55BuT5WHC9fwv9YF7v1s3rSN5/D39S+DppKRWKmIrBXrDZSEOi261S0Zg6KfSOaCsVaiJeOiS9aiirzpsHz/Qr52/vOPSFFYZOjFD1PnyXXN0T6KwAF5G1x5KzicTEI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709805005; c=relaxed/simple;
-	bh=slnB0VkPCmYRjEMKYGVTvhGjXrhDQHvvukoTVT6e47A=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=dVPlB3ICe12u/lsHLq8vFmwRM43RaUVRS9YilRw7vSQT8HInwR3YK0r0Dgd5CrdHT0Tyj+amgSHYMC12swSlMi/0tX/HF7Cuj9VLvgW1c4f6BnOTL+jf9mWu1/IlQZBztZQcSl4zVKmJNniOTZFOVotbO2Z6i1cEE3xwW9Op7Tk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-36541324e57so5078795ab.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 01:50:03 -0800 (PST)
+	s=arc-20240116; t=1709805076; c=relaxed/simple;
+	bh=6MGNA+aNGv2EFlpGWvJii5ukhWSrrxb47XaWbWrLnq4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qUdrpAv5YtGIsvilRO/DtxyVL1IoF254kjJJhWnbIT55Ft/q/dywIUXbaIDuyvZrKlj7oxMXVBVIVc75IE/X4Lz7pIZHbtjY9Zm3cp7UF9UF2nhe/WQCAzWr+LMJa6udUKUD+WRN7xeEiQC+iqs+I5nVBnIvq/SxfRdDTC3UWTU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=FW9oejdN; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a293f2280c7so115065666b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 01:51:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709805073; x=1710409873; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vPuG1GgZCZFh8L6eE5OaizmSSuRrqZZSqC4gJdbUVd4=;
+        b=FW9oejdNUbXLSjW9fDu8aGAeF9BpUx2yzIGvcx4jvM/5jyWwNSgX2rOWVPWm0BUTut
+         vJaQo2SNrNqz1kvnE42EslnxHl4wC+TqIJ5NFDG06rcpdkPbeY4Dt9FDJBZWV7MkRiEv
+         GGiZOMGP4Z8Up5qg5iznhoRolT0DQ+OLQtsrWCnXZbj17CU7xeYu43eOzOT+VXUkYVVI
+         LuiRLKuDGowK0vuPDywSZOXSOjplLR0EeAY/pVF4YVf2jHhHjpbh2ivt7DaRPTonTq8o
+         +rLj+cPWUzrf62qQxX+oz8s7kDIZk9E6Xi/9D1zBcvpSkciNInlfcimKGW+XWAdYnOmN
+         cKHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709805002; x=1710409802;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
+        d=1e100.net; s=20230601; t=1709805073; x=1710409873;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=50bHIWv34gOWuzWRTJWazDpYdtTy9+axEClGHGpCYuA=;
-        b=tvj6B4oZ8nNlXmAxk5HnC4yWuKzQF/dmElQgqhMF3hSRHkERDrHUvNGnx2sn3x6BZ9
-         F00lB7i0pC1aswkuemkHL2C5/dPEpJXo/ZoLFQxoigAhuEAQrXSpTpMVoy7TsU5q9uHM
-         7SnUzdr6RzhAKsDNMt2Oiz7vuKKb94izfuPwwriOjsmTZ+yXkh5RUrPez8LWG4GICnLU
-         ZHENOH8gfpXNhxVgyaPZe29m3bqGmQP3uNQlpbn3hT2nuDvUTsvQ348ho41yALdWobk/
-         onO0Dy3cg00z7Qz5fnkNU0yKp1Gl46wSPIDxILynk4opoWxp3teJKb67mt7YDqLI+cfK
-         ZL5Q==
-X-Forwarded-Encrypted: i=1; AJvYcCU26+fabm7wIHz+1pabWVYUfQArTGckPVkh26OIqMJuWUcHi6YS0ShV67+4kkusCbm5Ij1wEwrU12gSZTm6xOQwroTmPvXIePKRfdGk
-X-Gm-Message-State: AOJu0YwR/AMqLpKcLos+NkqfFPotO1N6SczMlEq6doR+o2GlIPQziPxX
-	AJU3PbVw96ruI92xGcIJgr01qCuAu8kZ3qJroGFJ/e+3DueMLPgbV9AGZ8UZlHBYW597+vPfYUG
-	V2qHC1kAmkyTL75ormXpQilYtCeMfa1U7KPcjJcNFx0k/fPavVJpMuGI=
-X-Google-Smtp-Source: AGHT+IGhM9mrbJuSzTA1W5jR6v4ssyHW5Eyc6A5pBae3PyR2kXjDqjjaRzZOla370YKuRoNJkPdJYPY0Xzo5qrKpi7NIFT0a7Ymz
+        bh=vPuG1GgZCZFh8L6eE5OaizmSSuRrqZZSqC4gJdbUVd4=;
+        b=TVdohMkx67/6OqV5763QgRVTJpw/PpQx3iHF3ovwADmrCFjZFzqCJs/NF0qSJZjavz
+         BnuDt8TXLLvCWij+LMXBWC+2Ab7RljsGm3gQLlfumP2TfNWVdW+xuVV+GZ7WSqP3paQu
+         tOSZ15qNXsO+3Q+jxGasyMkPE//USGPybQTj7CNL+ncjh3y/KOrhgIM3wuqfDbPawxUf
+         xvRKoEMHy5UD7zjJxuDfHrZaaYp8HSlxvJz4yCZSi3JriMFPOD+IbY7lRFMyhRhaz9ri
+         fRrQBR7XvXYrdzNarJCrBCmDCPweU0yRRljpYcNYUxtMb7D4KY7KFOlSmZ87HTqpd8un
+         PvDw==
+X-Gm-Message-State: AOJu0YzCZZjbBwU6O6Jpotl6IrGvjvRmNP6cm64+7e+ZN5DDDpkqdK2A
+	lf+L3GRAoa04C+PetL+qaOBGrFWniqWXIAPYFcDLgClRF15fHWtnos70qVf3vEg=
+X-Google-Smtp-Source: AGHT+IFHoEIYEY6Ted4o99jFpLoI6E6AiXbzaCg7PxEgSzdZVkiHHcoYyQETNrILK0qH5rs2aftcIg==
+X-Received: by 2002:a17:907:b9d8:b0:a45:c294:6e46 with SMTP id xa24-20020a170907b9d800b00a45c2946e46mr2688505ejc.64.1709805073038;
+        Thu, 07 Mar 2024 01:51:13 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id f26-20020a17090624da00b00a45c2b4f228sm1189911ejb.43.2024.03.07.01.51.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Mar 2024 01:51:12 -0800 (PST)
+Message-ID: <d20fca4d-486c-4139-a43f-3375e0ec5110@linaro.org>
+Date: Thu, 7 Mar 2024 10:51:10 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1a68:b0:365:366f:b652 with SMTP id
- w8-20020a056e021a6800b00365366fb652mr977138ilv.1.1709805002501; Thu, 07 Mar
- 2024 01:50:02 -0800 (PST)
-Date: Thu, 07 Mar 2024 01:50:02 -0800
-In-Reply-To: <tencent_11DF52D0864289AB2EC56EE80C82E7EA0606@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000cf41ca06130effb3@google.com>
-Subject: Re: [syzbot] [net?] possible deadlock in team_port_change_check (2)
-From: syzbot <syzbot+3c47b5843403a45aef57@syzkaller.appspotmail.com>
-To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] dt-bindings: serial: renesas,scif: Move ref for
+ serial.yaml at the end
+Content-Language: en-US
+To: Prabhakar <prabhakar.csengg@gmail.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Jiri Slaby <jirislaby@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Magnus Damm <magnus.damm@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
+ Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+References: <20240306231007.13622-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20240306231007.13622-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240306231007.13622-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hello,
+On 07/03/2024 00:10, Prabhakar wrote:
+> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> 
+> In preparation for adding more validation checks move the ref for
+> 'serial.yaml' to the end and also move reset check in 'allOf' block.
+> 
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> ---
+>  .../bindings/serial/renesas,scif.yaml         | 30 +++++++++----------
+>  1 file changed, 15 insertions(+), 15 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/serial/renesas,scif.yaml b/Documentation/devicetree/bindings/serial/renesas,scif.yaml
+> index 4610a5bd580c..af72c3420453 100644
+> --- a/Documentation/devicetree/bindings/serial/renesas,scif.yaml
+> +++ b/Documentation/devicetree/bindings/serial/renesas,scif.yaml
+> @@ -9,9 +9,6 @@ title: Renesas Serial Communication Interface with FIFO (SCIF)
+>  maintainers:
+>    - Geert Uytterhoeven <geert+renesas@glider.be>
+>  
+> -allOf:
+> -  - $ref: serial.yaml#
+> -
+>  properties:
+>    compatible:
+>      oneOf:
+> @@ -160,18 +157,21 @@ required:
+>    - clock-names
+>    - power-domains
+>  
+> -if:
+> -  properties:
+> -    compatible:
+> -      contains:
+> -        enum:
+> -          - renesas,rcar-gen2-scif
+> -          - renesas,rcar-gen3-scif
+> -          - renesas,rcar-gen4-scif
+> -          - renesas,scif-r9a07g044
+> -then:
+> -  required:
+> -    - resets
+> +allOf:
+> +  - $ref: serial.yaml#
+> +
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-possible deadlock in team_port_change_check
+Yeah, that's why usually we ask to put '$ref' and 'if' in allOf: block -
+saves you one syntax reindent which will confuse git blame.
 
-veth0_vlan: left promiscuous mode
-veth0_vlan: entered promiscuous mode
-team0: Device veth0_vlan failed to register rx_handler
-============================================
-WARNING: possible recursive locking detected
-6.8.0-rc7-syzkaller-00051-g67be068d31d4-dirty #0 Not tainted
---------------------------------------------
-syz-executor.0/5487 is trying to acquire lock:
-ffff88802dce4d00 (team->team_lock_key){+.+.}-{3:3}, at: team_port_change_check+0x51/0x1e0 drivers/net/team/team.c:2999
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-but task is already holding lock:
-ffff88802dce4d00 (team->team_lock_key){+.+.}-{3:3}, at: team_port_add drivers/net/team/team.c:1217 [inline]
-ffff88802dce4d00 (team->team_lock_key){+.+.}-{3:3}, at: team_add_slave+0x9bb/0x2710 drivers/net/team/team.c:1977
-
-other info that might help us debug this:
- Possible unsafe locking scenario:
-
-       CPU0
-       ----
-  lock(team->team_lock_key);
-  lock(team->team_lock_key);
-
- *** DEADLOCK ***
-
- May be due to missing lock nesting notation
-
-2 locks held by syz-executor.0/5487:
- #0: ffffffff8f375d88 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:79 [inline]
- #0: ffffffff8f375d88 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x82c/0x1040 net/core/rtnetlink.c:6614
- #1: ffff88802dce4d00 (team->team_lock_key){+.+.}-{3:3}, at: team_port_add drivers/net/team/team.c:1217 [inline]
- #1: ffff88802dce4d00 (team->team_lock_key){+.+.}-{3:3}, at: team_add_slave+0x9bb/0x2710 drivers/net/team/team.c:1977
-
-stack backtrace:
-CPU: 1 PID: 5487 Comm: syz-executor.0 Not tainted 6.8.0-rc7-syzkaller-00051-g67be068d31d4-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2e0 lib/dump_stack.c:106
- check_deadlock kernel/locking/lockdep.c:3062 [inline]
- validate_chain+0x15c0/0x58e0 kernel/locking/lockdep.c:3856
- __lock_acquire+0x1345/0x1fd0 kernel/locking/lockdep.c:5137
- lock_acquire+0x1e3/0x530 kernel/locking/lockdep.c:5754
- __mutex_lock_common kernel/locking/mutex.c:608 [inline]
- __mutex_lock+0x136/0xd70 kernel/locking/mutex.c:752
- team_port_change_check+0x51/0x1e0 drivers/net/team/team.c:2999
- team_device_event+0x161/0x5b0 drivers/net/team/team.c:3025
- notifier_call_chain+0x18f/0x3b0 kernel/notifier.c:93
- call_netdevice_notifiers_extack net/core/dev.c:2004 [inline]
- call_netdevice_notifiers net/core/dev.c:2018 [inline]
- dev_close_many+0x33c/0x4c0 net/core/dev.c:1559
- vlan_device_event+0x18b7/0x1de0 net/8021q/vlan.c:449
- notifier_call_chain+0x18f/0x3b0 kernel/notifier.c:93
- call_netdevice_notifiers_extack net/core/dev.c:2004 [inline]
- call_netdevice_notifiers net/core/dev.c:2018 [inline]
- dev_close_many+0x33c/0x4c0 net/core/dev.c:1559
- dev_close+0x1c0/0x2c0 net/core/dev.c:1581
- team_port_add drivers/net/team/team.c:1314 [inline]
- team_add_slave+0x1ac5/0x2710 drivers/net/team/team.c:1977
- do_set_master net/core/rtnetlink.c:2707 [inline]
- do_setlink+0xe58/0x41c0 net/core/rtnetlink.c:2913
- rtnl_setlink+0x40d/0x5a0 net/core/rtnetlink.c:3209
- rtnetlink_rcv_msg+0x885/0x1040 net/core/rtnetlink.c:6617
- netlink_rcv_skb+0x1e3/0x430 net/netlink/af_netlink.c:2543
- netlink_unicast_kernel net/netlink/af_netlink.c:1341 [inline]
- netlink_unicast+0x7ea/0x980 net/netlink/af_netlink.c:1367
- netlink_sendmsg+0xa3b/0xd70 net/netlink/af_netlink.c:1908
- sock_sendmsg_nosec net/socket.c:730 [inline]
- __sock_sendmsg+0x221/0x270 net/socket.c:745
- sock_write_iter+0x2dd/0x400 net/socket.c:1160
- do_iter_readv_writev+0x46c/0x640
- vfs_writev+0x395/0xbb0 fs/read_write.c:971
- do_writev+0x1b1/0x350 fs/read_write.c:1018
- do_syscall_64+0xf9/0x240
- entry_SYSCALL_64_after_hwframe+0x6f/0x77
-RIP: 0033:0x7f19b167dda9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f19b247f0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000014
-RAX: ffffffffffffffda RBX: 00007f19b17abf80 RCX: 00007f19b167dda9
-RDX: 0000000000000001 RSI: 0000000020000040 RDI: 0000000000000004
-RBP: 00007f19b16ca47a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f19b17abf80 R15: 00007ffdad2a3d88
- </TASK>
-
-
-Tested on:
-
-commit:         67be068d Merge tag 'vfs-6.8-release.fixes' of git://gi..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=16f71336180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c11c5c676adb61f0
-dashboard link: https://syzkaller.appspot.com/bug?extid=3c47b5843403a45aef57
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=15998cea180000
+Best regards,
+Krzysztof
 
 
