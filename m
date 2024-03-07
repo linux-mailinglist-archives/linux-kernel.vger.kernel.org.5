@@ -1,214 +1,168 @@
-Return-Path: <linux-kernel+bounces-95067-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95068-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71B9E8748DB
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 08:37:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76CE58748E2
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 08:38:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 94FB71C21B3C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 07:37:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2FAC328205E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 07:38:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7BB56310C;
-	Thu,  7 Mar 2024 07:37:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DC1663117;
+	Thu,  7 Mar 2024 07:38:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="S8Z9whF4"
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h1TZAGW/"
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86F6763105
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 07:37:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7404A629EE;
+	Thu,  7 Mar 2024 07:38:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709797050; cv=none; b=W3VlQ3QqLMUsQe0QS1YlPats4gxzwWFJlh8u0eNBXJGzJwoQa8VcyI7l1nUEoKKArcBw7BEYhS4XiDdUp/+2LrILcaebgo20pdE9lPsWdeGa6l9Rr6ZiJABxe/enGQKY4xZ6ZyXGkXTS52OCL2A9XVIVst0/BN3YqCzA0TfC3Ho=
+	t=1709797125; cv=none; b=AtnNFzBUXfx/PuV8PCQv2c7nkAVmr35HivtXhFktlqCvpNTO/RWbgAyrCTBwF0YKywXE5JvbYkV2DAH18YX85rVeQUkCERF2riMoPTgQhwHPpqxwCJbqdmgqOUhjRCmw0e5IYQFYUDhMNWsWXlrg/FWVzlqgGHsm9eBak/3ymxo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709797050; c=relaxed/simple;
-	bh=wMor+BeQBq5zWjjzqH7OTa0oyJ4srZyiumVjhOHw774=;
+	s=arc-20240116; t=1709797125; c=relaxed/simple;
+	bh=QZDtxWtiWsaXzVEJuIGs8nppd+BP0qnH+cZoDsvDnkc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FxI/eHvnYPAPhAVZDCLsMWgPdfP7yIOp/CBPhyMdR3sbePWGK1Y6dd4uvnqC5Kby3EX54uZ6urJWfLrMSCiON4YI60yrdMDXUD/RyxJldpr7s9gUVH0teLryuhADcOQeWLVr/3pMhLlrp0J/YT59bK6Zawb3Xn5OVFMIMvExQQE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=S8Z9whF4; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-563d56ee65cso663868a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 23:37:28 -0800 (PST)
+	 To:Cc:Content-Type; b=QXISXR9zk8p/qxZjc1lQgTZxHuHviPjgpOtOTjljghOUPWwsbbdprvQXIhXqk3yxwSIX3ECnGOY2gD+uWhrOl+sqk8+cz4/JaBFdIn+T1k/47+VCB6zfUO8Bgo9un3f0Sud+lKwukLJX1gbU3/yCcfm4QK7su9+PXooausE/yHI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=h1TZAGW/; arc=none smtp.client-ip=209.85.215.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-5cdbc4334edso360513a12.3;
+        Wed, 06 Mar 2024 23:38:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709797047; x=1710401847; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1kw0N/eOAnZk7gfPXfHIs1qJP19DGGStl8rmjj+wRpo=;
-        b=S8Z9whF4gX8tIeB5a72SW7XXBayxFUWB44j/V2pLHFzKbWHDxUo7vH5Sbrdr0Odi28
-         H/jzAwSI8+E4ujcG+IqwWVGQBejLg8bs/3RKz0Eq4QvFD+WGYEKTS1lEdYEbP7KB2qYb
-         E6C+vFXDfOKFdLPuj/8bgPKUssFmmdrkfNsjfyuEFX/n/7vixE/MyQUI7EB+uIwWZQH0
-         aDTqPrTlgx5IgBsL14GDzllLebA9Qauq7ePx33oYQs7id28wJvEfYSbu6rZHs2RI2eOp
-         MY4HazJQteiDS2NaLBjDns7TTM/TlwPwsGt4DwB7oDUb6zdYiJ0Bkia3nYK/cpE3CxLJ
-         GqLQ==
+        d=gmail.com; s=20230601; t=1709797124; x=1710401924; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=fo4W1rjQGY32ECPDHzMWRRX2lcPya1jBNNol53n/HhM=;
+        b=h1TZAGW/cXTzolnzbmjNDFAiZ+wgA6YD6P5XhEeu9CZ0ViXGzVNxxLNs+eafBepX8W
+         WoYtjjo+yHH8wrEBrxXkcTUF141W7MiCbBCRfFSTEraKqvVqqrOzbAr2ODWjV+Yx13hY
+         qlgwH0auPG4huYPSWr/K0PzsPcNgQfvCLN8QfqZ7RLXDo1UdHCdZMpXVw9S888GZbi2B
+         knH3DWGQVCnoihgw8RVc8ktF3/4HW0BGY7vISfaOwliaIT19kZ/0Dzpr4DJdw8Woyp/M
+         ZDpGRccnGy1dPTiuGe3cvsFl4cHU8m+MvEX4GmolXWuK3a1c+vL1NaI1h81zyMPgaqWN
+         45VA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709797047; x=1710401847;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1kw0N/eOAnZk7gfPXfHIs1qJP19DGGStl8rmjj+wRpo=;
-        b=iQzi5vcoxQN12tAZph6rW9iugZiCmfk6ejT1X1IJXD+WNTv3bbbSvnyw/kpW8uWPg5
-         Zy81Du6rOq5uutqPQXZcIfwuhvkCz7QbeE91FyClZdd7THmoYcEljKCPAJ19qO5rUJTQ
-         lrldn7zfNFYVu37qTm4TPYGNNqTOHo5TlInRkZNLjaKRp+nZ+SvRDIcpyT+pB2w0oBbb
-         fd5ERScb4+fyjReuxcvQgnC5+5RkaMlt6eOB91pXrmAbOBgCXxIe3jh1BnCLUx+qVWyZ
-         iRFGozOucUVtZH91zq9tbIE/V2KfxdIUwnUTrvmzVZ4AWmKqgTiE4kzZNNznXiuxzQ+p
-         Z6SQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUA48NXzdha2B7D+XmTlJiEuZi1y334WQzPPxygb5Yq0s65k6PN2nBY3AZ1Oq40xEJkikUlE0BBO/NTXiXfE58wH867+FBVeFSHYXId
-X-Gm-Message-State: AOJu0Yz6b5pkzEXXmKlYbt19XUIucq1dD23+T1GrDFBwk0mo5HgN+VyK
-	te7cvu/2T+cjyrr0ROS/TDfXtpLdxU2hbssg9ozpgGqntZF6Lv3FVACIQqv7fDFl+G/v78XSy+O
-	NlmVDosStOVx4FHl0zOs8jIqGmAmz6Da78uvbYw==
-X-Google-Smtp-Source: AGHT+IEanJhlxrJ0m3zCL0/FeuJM7oxCf5rvMMCu8nSAcar4vS1rMrFlRHpWwKJ8Ocvgn+dG5rIRCHc9Y5rV3Z2n5EY=
-X-Received: by 2002:a05:6402:1ec9:b0:568:316:2616 with SMTP id
- g9-20020a0564021ec900b0056803162616mr1744389edg.15.1709797046953; Wed, 06 Mar
- 2024 23:37:26 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709797124; x=1710401924;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fo4W1rjQGY32ECPDHzMWRRX2lcPya1jBNNol53n/HhM=;
+        b=nq8W0Ydx2ob9YRP/INA5nvawlRS9ovHgZbmD1X5IniWKAb4jafi6ZywfLTx298XCX5
+         iflNkdlQVYJhGHs+6MqiW+vgwzUf8jG5zVFZeV74ppjfOtJoyQk/dxW0cdI/pyeasz9i
+         Z5GvhhUTm1hNH+rvXw2Zs8Yo6xTxRDYub88hEJTB2l6nj146ZrjgTWkE4xrQPOADwQ2k
+         Xqfm8Wr0WiFpMWnloo4LbalcaMeGs/lnqSqWVYYMNZtAklKp/Z0QigkFz1sn6AZpiKn1
+         qR5Xt3MaaMdYDcX9KU8/yU9TBLt+fdsaga8fWjK+QdDdqmRfZswwPbryZaWMBO55WXNw
+         VS1Q==
+X-Forwarded-Encrypted: i=1; AJvYcCW9F+yxrSFkJAKx1iKM+y2giE0fwSsVNwEtwVLJsMwTZwjn5Uj2Avlq1votCiC6FtstxY1iDepffqHApVBB/AS+CbXK3ZAeYk5gnnukDkSU5pngf6tnisXyMYdr9gbmNeIH6kef8butLoZYcDC7aqlrqWumgjsm7v+12jWZTm/bSdMjkIuvCWM=
+X-Gm-Message-State: AOJu0YwI5ShLfrBf4Bb6zS4d6nMSplOsGZbJq1FZY9FA1Vqp4r0XVl4c
+	80ZiUI9Zeg1SzvsXVwIVbp4XXK9VP2nk8Zx4Y8Zj/LVhkdGnKXIt+Zk+PJTMQS8Ye6qHpeEISwb
+	pHbV1YWn4X1PPkbrIBulxLoQHFGW6fVVv
+X-Google-Smtp-Source: AGHT+IEvUKFBal6PUczVHRGMvlQIQ73Nr8uvACXWiA6RWIcpIsYoKHXkxXIevneLi2tpY6K5uVUQ9HexoaPjAILo7yU=
+X-Received: by 2002:a05:6a20:c222:b0:1a1:42fb:af59 with SMTP id
+ bt34-20020a056a20c22200b001a142fbaf59mr6256789pzb.37.1709797123726; Wed, 06
+ Mar 2024 23:38:43 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240305-class_cleanup-drm-v1-0-94f82740525a@marliere.net>
- <20240305-class_cleanup-drm-v1-4-94f82740525a@marliere.net> <CABdmKX0VGyBdTo8gzEocyz2HFcqEtu_31PYVjWzioBdCbnXW6w@mail.gmail.com>
-In-Reply-To: <CABdmKX0VGyBdTo8gzEocyz2HFcqEtu_31PYVjWzioBdCbnXW6w@mail.gmail.com>
-From: Sumit Semwal <sumit.semwal@linaro.org>
-Date: Thu, 7 Mar 2024 13:07:15 +0530
-Message-ID: <CAO_48GH_RyeTkUsZ9Ad=o2D+Poh3DVQnXiOmyApuWy2Ycn5P5w@mail.gmail.com>
-Subject: Re: [PATCH RESEND drm-misc 4/4] dma-buf: heaps: make dma_heap_class constant
-To: "T.J. Mercier" <tjmercier@google.com>
-Cc: "Ricardo B. Marliere" <ricardo@marliere.net>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Hans de Goede <hdegoede@redhat.com>, Helge Deller <deller@gmx.de>, 
-	Benjamin Gaignard <benjamin.gaignard@collabora.com>, Brian Starkey <Brian.Starkey@arm.com>, 
-	John Stultz <jstultz@google.com>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, dri-devel@lists.freedesktop.org, 
-	linux-kernel@vger.kernel.org, linux-fbdev@vger.kernel.org, 
-	linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
+References: <20240306123006.724934-1-amadeus@jmu.edu.cn> <20240306123006.724934-2-amadeus@jmu.edu.cn>
+ <CAA8EJpqYjutM1Kh6QxysB6XNAmXywtOtRJ7KP0LbY5E36kCPvA@mail.gmail.com>
+ <78b1a1a2-a9fa-4b28-9d96-d65bb5517199@gmail.com> <CAA8EJppJBOQh19r4A-igsh5znDE_R6mDNy+ao5ximx7vtsZZvA@mail.gmail.com>
+In-Reply-To: <CAA8EJppJBOQh19r4A-igsh5znDE_R6mDNy+ao5ximx7vtsZZvA@mail.gmail.com>
+From: Robert Marko <robimarko@gmail.com>
+Date: Thu, 7 Mar 2024 08:38:32 +0100
+Message-ID: <CAOX2RU4W-zV3A8eW0A+1V838Fm=tUkXY=Bs3j4VJ8Jo9mxrOAw@mail.gmail.com>
+Subject: Re: [PATCH v5 1/1] arm64: dts: qcom: ipq6018: add sdhci node
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Chukun Pan <amadeus@jmu.edu.cn>, Bjorn Andersson <andersson@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Rob Herring <robh@kernel.org>, linux-arm-msm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-Hello Ricardo,
-
-On Tue, 5 Mar 2024 at 22:37, T.J. Mercier <tjmercier@google.com> wrote:
+On Thu, 7 Mar 2024 at 08:28, Dmitry Baryshkov
+<dmitry.baryshkov@linaro.org> wrote:
 >
-> On Tue, Mar 5, 2024 at 3:34=E2=80=AFAM Ricardo B. Marliere <ricardo@marli=
-ere.net> wrote:
+> On Wed, 6 Mar 2024 at 22:35, Robert Marko <robimarko@gmail.com> wrote:
 > >
-> > Since commit 43a7206b0963 ("driver core: class: make class_register() t=
-ake
-> > a const *"), the driver core allows for struct class to be in read-only
-> > memory, so move the dma_heap_class structure to be declared at build ti=
-me
-> > placing it into read-only memory, instead of having to be dynamically
-> > allocated at boot time.
 > >
-> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
-> > ---
-> >  drivers/dma-buf/dma-heap.c | 26 ++++++++++++++------------
-> >  1 file changed, 14 insertions(+), 12 deletions(-)
-> >
-> > diff --git a/drivers/dma-buf/dma-heap.c b/drivers/dma-buf/dma-heap.c
-> > index 84ae708fafe7..bcca6a2bbce8 100644
-> > --- a/drivers/dma-buf/dma-heap.c
-> > +++ b/drivers/dma-buf/dma-heap.c
-> > @@ -43,10 +43,18 @@ struct dma_heap {
-> >         struct cdev heap_cdev;
-> >  };
-> >
-> > +static char *dma_heap_devnode(const struct device *dev, umode_t *mode)
-> > +{
-> > +       return kasprintf(GFP_KERNEL, "dma_heap/%s", dev_name(dev));
-> > +}
-> > +
-> >  static LIST_HEAD(heap_list);
-> >  static DEFINE_MUTEX(heap_list_lock);
-> >  static dev_t dma_heap_devt;
-> > -static struct class *dma_heap_class;
-> > +static struct class dma_heap_class =3D {
-> > +       .name =3D DEVNAME,
-> > +       .devnode =3D dma_heap_devnode,
-> > +};
-> >  static DEFINE_XARRAY_ALLOC(dma_heap_minors);
-> >
-> >  static int dma_heap_buffer_alloc(struct dma_heap *heap, size_t len,
-> > @@ -261,7 +269,7 @@ struct dma_heap *dma_heap_add(const struct dma_heap=
-_export_info *exp_info)
-> >                 goto err1;
-> >         }
-> >
-> > -       dev_ret =3D device_create(dma_heap_class,
-> > +       dev_ret =3D device_create(&dma_heap_class,
-> >                                 NULL,
-> >                                 heap->heap_devt,
-> >                                 NULL,
-> > @@ -291,7 +299,7 @@ struct dma_heap *dma_heap_add(const struct dma_heap=
-_export_info *exp_info)
-> >         return heap;
-> >
-> >  err3:
-> > -       device_destroy(dma_heap_class, heap->heap_devt);
-> > +       device_destroy(&dma_heap_class, heap->heap_devt);
-> >  err2:
-> >         cdev_del(&heap->heap_cdev);
-> >  err1:
-> > @@ -301,11 +309,6 @@ struct dma_heap *dma_heap_add(const struct dma_hea=
-p_export_info *exp_info)
-> >         return err_ret;
-> >  }
-> >
-> > -static char *dma_heap_devnode(const struct device *dev, umode_t *mode)
-> > -{
-> > -       return kasprintf(GFP_KERNEL, "dma_heap/%s", dev_name(dev));
-> > -}
-> > -
-> >  static int dma_heap_init(void)
-> >  {
-> >         int ret;
-> > @@ -314,12 +317,11 @@ static int dma_heap_init(void)
-> >         if (ret)
-> >                 return ret;
-> >
-> > -       dma_heap_class =3D class_create(DEVNAME);
-> > -       if (IS_ERR(dma_heap_class)) {
-> > +       ret =3D class_register(&dma_heap_class);
-> > +       if (ret) {
-> >                 unregister_chrdev_region(dma_heap_devt, NUM_HEAP_MINORS=
-);
-> > -               return PTR_ERR(dma_heap_class);
-> > +               return ret;
-> >         }
-> > -       dma_heap_class->devnode =3D dma_heap_devnode;
-> >
-> >         return 0;
-> >  }
-> >
-> > --
-> > 2.43.0
+> > On 06. 03. 2024. 20:43, Dmitry Baryshkov wrote:
+> > > On Wed, 6 Mar 2024 at 14:31, Chukun Pan <amadeus@jmu.edu.cn> wrote:
+> > >> Add node to support mmc controller inside of IPQ6018.
+> > >> This controller supports both eMMC and SD cards.
+> > >>
+> > >> Tested with:
+> > >>    eMMC (HS200)
+> > >>    SD Card (SDR50/SDR104)
+> > >>
+> > >> Signed-off-by: Chukun Pan <amadeus@jmu.edu.cn>
+> > >> ---
+> > >>   arch/arm64/boot/dts/qcom/ipq6018.dtsi | 19 +++++++++++++++++++
+> > >>   1 file changed, 19 insertions(+)
+> > >>
+> > >> diff --git a/arch/arm64/boot/dts/qcom/ipq6018.dtsi b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
+> > >> index 322eced0b876..420c192bccd9 100644
+> > >> --- a/arch/arm64/boot/dts/qcom/ipq6018.dtsi
+> > >> +++ b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
+> > >> @@ -441,6 +441,25 @@ dwc_1: usb@7000000 {
+> > >>                          };
+> > >>                  };
+> > >>
+> > >> +               sdhc: mmc@7804000 {
+> > >> +                       compatible = "qcom,ipq6018-sdhci", "qcom,sdhci-msm-v5";
+> > >> +                       reg = <0x0 0x07804000 0x0 0x1000>,
+> > >> +                             <0x0 0x07805000 0x0 0x1000>;
+> > >> +                       reg-names = "hc", "cqhci";
+> > >> +
+> > >> +                       interrupts = <GIC_SPI 123 IRQ_TYPE_LEVEL_HIGH>,
+> > >> +                                    <GIC_SPI 138 IRQ_TYPE_LEVEL_HIGH>;
+> > >> +                       interrupt-names = "hc_irq", "pwr_irq";
+> > >> +
+> > >> +                       clocks = <&gcc GCC_SDCC1_AHB_CLK>,
+> > >> +                                <&gcc GCC_SDCC1_APPS_CLK>,
+> > >> +                                <&xo>;
+> > >> +                       clock-names = "iface", "core", "xo";
+> > >> +                       resets = <&gcc GCC_SDCC1_BCR>;
+> > >> +                       max-frequency = <192000000>;
+> > > If I understand correctly, GCC_SDCC1_APPS_CLK support frequencies up
+> > > to 384 MHz, but here you are limiting it to 192 MHz. Why is it so?
+> > >
+> > > I am not sure that 384MHz is actually supported as IPQ6018 datasheet
+> > > clearly indicates that HS400 mode is not supported.
 >
-> Reviewed-by: T.J. Mercier <tjmercier@google.com>
+> I didn't check the datasheet, I opened the gcc-ipq6018.c
 
+I understand that, I just pointed it out, it wouldn't surprise me if
+the frequency table
+was just copy/pasted from IPQ8074.
 
-FWIW, please free to add my
-Acked-by: Sumit Semwal <sumit.semwal@linaro.org>
-
+Regards,
+Robert
+>
+> > >
+> > > Regards,
+> > > Robert
+> > >
+> > >> +                       status = "disabled";
+> > >> +               };
+> > >> +
+> > >>                  blsp_dma: dma-controller@7884000 {
+> > >>                          compatible = "qcom,bam-v1.7.0";
+> > >>                          reg = <0x0 0x07884000 0x0 0x2b000>;
+> > >> --
+> > >> 2.25.1
+> > >>
+> > >>
+> > >
 >
 >
-> Is this really a resend? I don't see anything on lore and I can't
-> recall seeing this patch in my inbox before.
-
-
-Best,
-Sumit.
-
---=20
-Thanks and regards,
-
-Sumit Semwal (he / him)
-Tech Lead - LCG, Vertical Technologies
-Linaro.org =E2=94=82 Open source software for ARM SoCs
+>
+> --
+> With best wishes
+> Dmitry
 
