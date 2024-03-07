@@ -1,78 +1,115 @@
-Return-Path: <linux-kernel+bounces-95954-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95958-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 847FF875551
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 18:39:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D966875559
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 18:40:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B5D4C1C230A2
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:39:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AEFBF1C23495
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:40:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AECC130E44;
-	Thu,  7 Mar 2024 17:39:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBA08130E35;
+	Thu,  7 Mar 2024 17:40:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nRsdZ59d"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="R/vsGspl"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACFD374262;
-	Thu,  7 Mar 2024 17:39:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CE3612FF6C
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 17:40:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709833142; cv=none; b=B4ygva9Es8BaQWSmex35mxuI+3OfAK9zQyQCP4MCFZDr3PuLfPyTOTxUK0UlY6wwyAdN50byi6SwDR4AZA/plw2mzTNq/aMIkkwZXFOovC9D/P/TKxtB3Dt6Kgu+YQQWaiDUDwB+DgcoeBhLyAbGoxr4i3QdLqBNxg5pd0SJZ/0=
+	t=1709833226; cv=none; b=WRexZd6QsgojZIgcWNywRRLrRJ4CGOXdVDLDxuDtgMQot1wubuMR4JUeWljTTdqRQy2GGQt+GzFXLiRvIyt0vo6c5RSWymFbFcMiIEYwdRtqzkngJyPiFcoKFepBByUN29gVD85472HdTyCWhKIb94+4+UyJ3SNT+sTfaKI56iQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709833142; c=relaxed/simple;
-	bh=hr92BOMDZVDn+AD/0IRZy/Gi/tOEZPuEgX7n0alB/Wc=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=q7LzcnJyq/ZtkFrB3/G+s3dOmHDuaqxbvJuAgt5FbbVXVutKpPH9Ad9fMjk/ssTy/BEmu8P9joIdHt3fe/+ZfEsasNMVU7jI2bFDFz8SlwDVN/b8KB+4iwjaYa9cod3Yd78SQFxtP04ELODTN/MNZL6SfT9Z84a5YdD0bsL+RBk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nRsdZ59d; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 82711C433F1;
-	Thu,  7 Mar 2024 17:39:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709833142;
-	bh=hr92BOMDZVDn+AD/0IRZy/Gi/tOEZPuEgX7n0alB/Wc=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=nRsdZ59d9dWwYxnwWTP8KXaCy3VhNlj/7m25bUZBU+ILfXiwGaULgl4Evfb3oBE1f
-	 eTQFVq5bf8gZvSehzy+DpMQhZ1rlOeVCHMQQaCb/pPVtImjKoR8USWbBdblh2UDn2E
-	 IgiV31ntJJbuOKi17lDNeMiJ0rEizqyKuam7fBUlGgLW1kCLCfPLX7SkiU+b1KNvub
-	 gGy0pAwtw3copgKzGONwLog44IgCpQnIPsW32XbZRd5hPWWIvJJi/o5s1BqSko4GNK
-	 we0a8PNLKZghk+fq+6v88LPkr960VNnkttEuUWxraqwVeilIaTtXVOFYM9WXHG0yEv
-	 IygFBR55QXfwQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 70A22C3274B;
-	Thu,  7 Mar 2024 17:39:02 +0000 (UTC)
-Subject: Re: [GIT PULL] Networking for v6.8-rc8
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <20240307130604.485199-1-pabeni@redhat.com>
-References: <20240307130604.485199-1-pabeni@redhat.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20240307130604.485199-1-pabeni@redhat.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-6.8-rc8
-X-PR-Tracked-Commit-Id: ba18deddd6d502da71fd6b6143c53042271b82bd
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: df4793505abd5df399bc6d9a4d8fe81761f557cd
-Message-Id: <170983314244.22258.3329669996541695126.pr-tracker-bot@kernel.org>
-Date: Thu, 07 Mar 2024 17:39:02 +0000
-To: Paolo Abeni <pabeni@redhat.com>
-Cc: torvalds@linux-foundation.org, kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+	s=arc-20240116; t=1709833226; c=relaxed/simple;
+	bh=E3FbZVS+5W3wbr+dJuJyj/1HOsmFrMm/1IuvFUVVRH0=;
+	h=Date:Message-Id:Mime-Version:Subject:From:To:Content-Type; b=W/oH51vLUdQPLsFcd9nU3VEW2cst2Rs+OjQkFrcLerDrZhjKzT7vtlBMSJjczZ3aAbT39vAdUhjFABtq9vTDRgXS4MwcoxLOUcwex3D29AIovz55xtsDfln326YannI0fn0yD9q5K4SCYEwl3jm3I0aI02e+kwgt3VGS/BdT+LI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=R/vsGspl; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-609f2920b53so14180817b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 09:40:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709833223; x=1710438023; darn=vger.kernel.org;
+        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=bbbX1TG2BWH8q29heBgqTmsbGlvHWc4NiRRO0gtZGa8=;
+        b=R/vsGsplAP1XeaKUaGssGFV3Jf/w9ffek3jYJuqxpMC4zVJ19bJA/rUezCKcVs9WGC
+         1biXVidEdXIlbaq4LJLgwaKzwIK1XoG7fc5pOqUkYhK5umWgxyffY8UwIoGW9JVF8iBy
+         vMza7ML4zNx7kpBhx1Bem8qj+4FkFzR+5et/iWu/0rAC6wPgnpvuTHK2FrG+t+0dYkdk
+         LW9SyLopXx54FpFS9a1bof4LwufHYoXBD0WFYMVWuSKVfM/dyUEKIpH5ow/0sZtTt0ZL
+         /4nPtYpbD+zEv9rti9ww7JNY98MUtmGf4Fff+i+AV1+rS5quNJntwRSyzgTYewLjpkdX
+         yfxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709833223; x=1710438023;
+        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bbbX1TG2BWH8q29heBgqTmsbGlvHWc4NiRRO0gtZGa8=;
+        b=baZE0kLSy/OzKv9Zs0zuZ34Rke7l7Lp+dLyrsQwzEeAhYce2q4AN3GFDocK3VAPj/P
+         ucDKzP70mlxvyiyw3ZfoKsePOlVrY53Oc1HSL2BQpzhCbp/8G0nHZ5JhYuWWy2YsQyJi
+         YM+cZPuXtPMLqjhbwp719vAWYUC3f20R4QPriie3ikT3/sl+CTEq6OpHGvN2D2QBcqmm
+         Hq+rtTyEAuzJVB+j8iEAvU8DYEyHc4gx/pfZb39LxxpB/z/QGhK17ikifXRc/bRl6kjs
+         NIaWY2t1QuZ9SdlWW0AYCgeA/6rHYz+SL+C5sqlO3tYf02vHFU8OlKjV7/PnD2OMlRWV
+         A3vg==
+X-Forwarded-Encrypted: i=1; AJvYcCVBLeU/1KuF8niBmhkP4thRhOh2hdDS5EpvuKqps3wGSLFDr46Fyy/2R8IU8M6KDRuq43HF5XUNugblsE/3o0Xbu5R2GeFTbcMIsXPw
+X-Gm-Message-State: AOJu0YxX1UACRtyWamgGorTZSM2u0MkRcxPL8pL7FqKwqQ1dj8L4K/pq
+	VYslVnXJLV0KvHpx9eXMWOOvNox2OVy4FAZy6BuZoIEdodmpzVTd7HUpoIFDJRAn07Dl32Jzeq/
+	jh1LUPg==
+X-Google-Smtp-Source: AGHT+IHUl58MW/cUd9uCSmHmzkjs13fm14Tb3sqkIFHwDcPvVmTVkoCqoONHriLNYdM1AH7uH9UBW2dY5WQp
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:47d6:1de1:237a:6728])
+ (user=irogers job=sendgmr) by 2002:a05:6902:18d3:b0:dc7:865b:22c6 with SMTP
+ id ck19-20020a05690218d300b00dc7865b22c6mr762132ybb.8.1709833222401; Thu, 07
+ Mar 2024 09:40:22 -0800 (PST)
+Date: Thu,  7 Mar 2024 09:39:49 -0800
+Message-Id: <20240307173955.3982040-1-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
+Subject: [PATCH v2 0/6] Extra verbose/perf-list details
+From: Ian Rogers <irogers@google.com>
+To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Yang Jihong <yangjihong1@huawei.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	James Clark <james.clark@arm.com>, Ravi Bangoria <ravi.bangoria@amd.com>, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-The pull request you sent on Thu,  7 Mar 2024 14:06:04 +0100:
+Add more encoding detail and raw event details in perf list. Add PMU
+name and reverse lookup from config to event name to
+perf_event_attr_fprintf. This makes the verbose output easier to read,
+and the perf list information more specific.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-6.8-rc8
+v2. Address feedback from Kan Liang, "Raw hardware event descriptor"
+    becomes "Raw event descriptor" add assert to keep term numbers in
+    sync, fix a commit message.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/df4793505abd5df399bc6d9a4d8fe81761f557cd
+Ian Rogers (6):
+  perf list: Add tracepoint encoding to detailed output
+  perf pmu: Drop "default_core" from alias names
+  perf list: Allow wordwrap to wrap on commas
+  perf list: Give more details about raw event encodings
+  perf tools: Use pmus to describe type from attribute
+  perf tools: Add/use PMU reverse lookup from config to name
 
-Thank you!
+ tools/perf/builtin-list.c                 | 21 ++++-
+ tools/perf/util/perf_event_attr_fprintf.c | 26 +++++--
+ tools/perf/util/pmu.c                     | 83 +++++++++++++++++++-
+ tools/perf/util/pmu.h                     |  4 +
+ tools/perf/util/pmus.c                    | 94 +++++++++++++++++++++++
+ tools/perf/util/pmus.h                    |  1 +
+ tools/perf/util/print-events.c            | 55 +++++++------
+ 7 files changed, 243 insertions(+), 41 deletions(-)
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.44.0.278.ge034bb2e1d-goog
+
 
