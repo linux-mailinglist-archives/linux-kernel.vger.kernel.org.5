@@ -1,98 +1,120 @@
-Return-Path: <linux-kernel+bounces-94809-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94801-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BC0987457C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 02:07:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06244874568
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 02:01:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CDFB21C218B7
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 01:07:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 76D69283639
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 01:01:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 119F411CAF;
-	Thu,  7 Mar 2024 01:06:24 +0000 (UTC)
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B58AC4A28;
+	Thu,  7 Mar 2024 01:01:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="22oIZVTw"
+Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 669C54689;
-	Thu,  7 Mar 2024 01:06:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B37451879
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 01:01:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709773583; cv=none; b=mZNgo4Dlha8vQEpzzaTYlJU+qE3gDjIvbSyfYJUhCyGmoQmiSZT7jbCm3sPiKgnklCqsEPmqKlt6b3to/B0J71oUtDnBgO4JlW+ic/w1gCP3LfsHzlONAS0SLOworzAVgtAxico3w+xfVa59zUYL1AZ0ApdK22OSHtqNV6UlqEE=
+	t=1709773288; cv=none; b=M+cw3qWzl7hyA7IV6Ei20qBE2/ZswONi1iolGtJH+Fpz+NdT7GD3i+cgztu6EIdccDVgONBh2DZkray2+CnqwonzOAeByqtijj1p6W6IY3vL/krt9qdxNTz9kQDNtHtwHM7MCRRWmiw6VrJgxLgL3d3+HO/Ye2mAEw1uQQiR844=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709773583; c=relaxed/simple;
-	bh=asqUl2zK5gi5IDYq3bhuT50zBVPJICKW9k0bXYg8Jak=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=uZMvMoX+VY5brQ59ym+DZKVMdsi4RuqdVtbt1A3GMn+i3eEQRKWAek4iD/r1gp/2U/m6MXKVAwS5oRbKtwsqhHBfLR11M9uP/nXQ34x6NW0zTSG2YEKsZbLVuALz3n+R+RoK8tXhlaki3VFSKv2Cp0nolZDvTFBcGmBlWOwTTT8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4TqrgD1XC9zNlsk;
-	Thu,  7 Mar 2024 09:04:40 +0800 (CST)
-Received: from kwepemm600007.china.huawei.com (unknown [7.193.23.208])
-	by mail.maildlp.com (Postfix) with ESMTPS id 015CA18007D;
-	Thu,  7 Mar 2024 09:06:19 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.2) by
- kwepemm600007.china.huawei.com (7.193.23.208) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 7 Mar 2024 09:06:18 +0800
-From: Jijie Shao <shaojijie@huawei.com>
-To: <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
-	<davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-	<pabeni@redhat.com>
-CC: <shenjian15@huawei.com>, <wangjie125@huawei.com>,
-	<liuyonglong@huawei.com>, <shaojijie@huawei.com>, <netdev@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: [PATCH net 8/8] net: hns3: add checking for vf id of mailbox
-Date: Thu, 7 Mar 2024 09:01:15 +0800
-Message-ID: <20240307010115.3054770-9-shaojijie@huawei.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20240307010115.3054770-1-shaojijie@huawei.com>
-References: <20240307010115.3054770-1-shaojijie@huawei.com>
+	s=arc-20240116; t=1709773288; c=relaxed/simple;
+	bh=Y4kUrnue3EZY1EGSrXHEbnh72bjZS/mb0XRvJStSWHk=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=mROTTm0tl2Xim8ChZejb8SrN8rFZwTMUY2JAu9VozkWjuzOxXzwqnmCBQ6eeLGSFb468aENTm4JbzyrK3J0KPoI+hNjQg2Msn85CdhX4J3LLHylsajjmoBM2MTWtcAV7UUKhyE+vV0ybEOwRa/c48EFG9bDaB7pOGe4HtU9+DA8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=22oIZVTw; arc=none smtp.client-ip=209.85.215.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-5dc4ffda13fso1232054a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 17:01:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709773286; x=1710378086; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=KZlgJYygJYHQHiDndRSnH1C84bNZnosw6HlMLsiapoI=;
+        b=22oIZVTwZNHaderoffRMGD4E3P14UYiw0RRPDhIPcBmuSK/V/JFWHi0iMCSVhbztJo
+         WhclS+alqgwyj4NjHX0Rru+nMLyNyJzs1KZ7v8WTybNgqrkrEHSAiQoMBLmyFBPjVPKi
+         Rmg2WNsqrclOA7MHDKOslRHJecJRJisBiH6j2FgMwQ3VZ5AnR7VqQ0IZCFnVnxbTflb7
+         mlRCVnsEkKo/qEC4bBC1rrkTBMxnRuzRuNLGFMyNV/1mVzheCnnN1H98UQbBh00KegyI
+         2p6xbKzjwO+5aEjyQ1vwTdulII0CPyZ4xO3V8+pQa+QOJ2SDDmO2J2n4/HivsiFVNu11
+         IccA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709773286; x=1710378086;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KZlgJYygJYHQHiDndRSnH1C84bNZnosw6HlMLsiapoI=;
+        b=X+W2QT0P2RoKC0ZTMDm8hTfIHujNN9Eoq1CSnDXyDE91BFcbKrJMyk5Rhgfg7Euaxj
+         VBPizGmsH+b20eQZdOGLOlLIwlRxCRz13sXhNW0frVVsMgYdEKTxpNCDA35EQmfsKYh/
+         Rt+L31y5wrKfa+s2dPmfm6YFgH9OMau2XMJpP0/0SI6Ti52YZH1soVnokxuB4uBszDZ8
+         QXd2Eqz4U4zExAOecDNONa9tBMXqU7u9dUca6Bt/S+4w+LlUDUN31lH9VkWe3YtM2g50
+         bDqDKlHrX3DcYb2oEKjC8cVhCHND7gST2iF5dN37qH5xdKUcvccCeRDPzsU5sArpLz69
+         coVg==
+X-Forwarded-Encrypted: i=1; AJvYcCVXLVWzdtUfuZ3dE2LCMlbTCKQ7M1t1CtcVv4OLCIxS+ytjhPiQnq1i4/MFkI5vBW7kKZWriwhieZ301qEyhIHWuD2EdrcUjNbqriuM
+X-Gm-Message-State: AOJu0YybvXzBbZIdC9LK6vq+Cc/U5llWy5OBCdJZ4fgIlNifBEn72MGu
+	ya7+oIEZBf+u/Ks6XItijBgsAy/OEjse+i1JlFRP424/lUS6/VAxyjMYDu0SCKL//KP9P5T4dlZ
+	DVw==
+X-Google-Smtp-Source: AGHT+IF1rh6o5D7ewPymuDgv6YF26aXud0lJlwQ5o2IVgcmib3JwNZW0YZx8b6H85dAZdVuKAqrGWoI3EtE=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:90b:1809:b0:29b:312b:fbf5 with SMTP id
+ lw9-20020a17090b180900b0029b312bfbf5mr0pjb.2.1709773284070; Wed, 06 Mar 2024
+ 17:01:24 -0800 (PST)
+Date: Wed, 6 Mar 2024 17:01:22 -0800
+In-Reply-To: <57e68a47-42fb-4029-a46a-c81d1522f7ff@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600007.china.huawei.com (7.193.23.208)
+Mime-Version: 1.0
+References: <20240228024147.41573-1-seanjc@google.com> <20240228024147.41573-15-seanjc@google.com>
+ <57e68a47-42fb-4029-a46a-c81d1522f7ff@intel.com>
+Message-ID: <ZekR4j-hsXDFD6K2@google.com>
+Subject: Re: [PATCH 14/16] KVM: x86/mmu: Set kvm_page_fault.hva to
+ KVM_HVA_ERR_BAD for "no slot" faults
+From: Sean Christopherson <seanjc@google.com>
+To: Kai Huang <kai.huang@intel.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Yan Zhao <yan.y.zhao@intel.com>, Isaku Yamahata <isaku.yamahata@intel.com>, 
+	Michael Roth <michael.roth@amd.com>, Yu Zhang <yu.c.zhang@linux.intel.com>, 
+	Chao Peng <chao.p.peng@linux.intel.com>, Fuad Tabba <tabba@google.com>, 
+	David Matlack <dmatlack@google.com>
+Content-Type: text/plain; charset="us-ascii"
 
-From: Jian Shen <shenjian15@huawei.com>
+On Thu, Mar 07, 2024, Kai Huang wrote:
+> 
+> 
+> On 28/02/2024 3:41 pm, Sean Christopherson wrote:
+> > Explicitly set fault->hva to KVM_HVA_ERR_BAD when handling a "no slot"
+> > fault to ensure that KVM doesn't use a bogus virtual address, e.g. if
+> > there *was* a slot but it's unusable (APIC access page), or if there
+> > really was no slot, in which case fault->hva will be '0' (which is a
+> > legal address for x86).
+> > 
+> > Signed-off-by: Sean Christopherson <seanjc@google.com>
+> > ---
+> >   arch/x86/kvm/mmu/mmu.c | 1 +
+> >   1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> > index 4dee0999a66e..43f24a74571a 100644
+> > --- a/arch/x86/kvm/mmu/mmu.c
+> > +++ b/arch/x86/kvm/mmu/mmu.c
+> > @@ -3325,6 +3325,7 @@ static int kvm_handle_noslot_fault(struct kvm_vcpu *vcpu,
+> >   	fault->slot = NULL;
+> >   	fault->pfn = KVM_PFN_NOSLOT;
+> >   	fault->map_writable = false;
+> > +	fault->hva = KVM_HVA_ERR_BAD;
+> >   	/*
+> >   	 * If MMIO caching is disabled, emulate immediately without
+> 
+> Not sure why this cannot be merged to the previous one?
 
-Add checking for vf id of mailbox, in order to avoid array
-out-of-bounds risk.
-
-Signed-off-by: Jian Shen <shenjian15@huawei.com>
-Signed-off-by: Jijie Shao <shaojijie@huawei.com>
----
- drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c
-index 4b0d07ca2505..d4a0e0be7a72 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c
-@@ -1123,10 +1123,11 @@ void hclge_mbx_handler(struct hclge_dev *hdev)
- 		req = (struct hclge_mbx_vf_to_pf_cmd *)desc->data;
- 
- 		flag = le16_to_cpu(crq->desc[crq->next_to_use].flag);
--		if (unlikely(!hnae3_get_bit(flag, HCLGE_CMDQ_RX_OUTVLD_B))) {
-+		if (unlikely(!hnae3_get_bit(flag, HCLGE_CMDQ_RX_OUTVLD_B) ||
-+			     req->mbx_src_vfid > hdev->num_req_vfs)) {
- 			dev_warn(&hdev->pdev->dev,
--				 "dropped invalid mailbox message, code = %u\n",
--				 req->msg.code);
-+				 "dropped invalid mailbox message, code = %u, vfid = %u\n",
-+				 req->msg.code, req->mbx_src_vfid);
- 
- 			/* dropping/not processing this invalid message */
- 			crq->desc[crq->next_to_use].flag = 0;
--- 
-2.30.0
-
+Purely because (before the previous patch) kvm_faultin_pfn() only paved over pfn,
+slot, and map_writable.  I highly doubt clobbering hva will break anything, but
+just in case...
 
