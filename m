@@ -1,114 +1,107 @@
-Return-Path: <linux-kernel+bounces-95752-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95744-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5647187520A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:38:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4ACA68751FC
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:36:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 081AA1F26E18
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:38:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7BF7C1C221B6
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:36:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81C3A12FB3E;
-	Thu,  7 Mar 2024 14:36:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 568E112E1DF;
+	Thu,  7 Mar 2024 14:36:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="brYIkjx0"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ggwxNMml"
+Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56D6C12E1D1
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 14:36:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37A511DFC6
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 14:36:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709822214; cv=none; b=ZWQsGs0s3ddOLB7Lza3jifip8sWYktrhbtiFe0k3e/bZH9P4m/B8R2C4QU1+Y+5ibLQMdAUOAJUdR2J/2rc4SbEBLlKGQPv5QqJVjopdF6Pp9tIiC+Zeyv2+4ZRR/1dcofTXZ6HK73dFQbN3NS3gKX6znpnfq34Ctsz7pQ6T6YY=
+	t=1709822172; cv=none; b=s0mgOYTsJHc7zWJcGiJCWVNTWScokKX+pweI4JaDIIYbIqATCYWwfbqZzRcpQUeQDS+98mFcW3RWjo7mQd7l+o+JP8nVTRu5BCQ85U4OD+T5o33lGxWA0QRg+3edXwzjBcty1JwTlQHYT1vkRE0sTX6GC2/GCG4KfQSN1JBsUtg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709822214; c=relaxed/simple;
-	bh=SpbU5y5jpGRsktvmR80O+qDRedvzwa1iegimEO+Vkgc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=t1rwrM2VSMEPvWcX5FKp2w5IovZCirtwXkxNTBNsaPKb3SP/GaZ4k/Z3n9kdyxkamaJlqFTgz9fzgvkIZW/DeKjWKOdPEl1vQi8tTqwJGfHr77/mFu0nm5jLZbqTNIqlJ5IIN+IijPbA2QdK0tlxxRrROmGZ8XBJmT3EiJj3nfk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=brYIkjx0; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709822213; x=1741358213;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=SpbU5y5jpGRsktvmR80O+qDRedvzwa1iegimEO+Vkgc=;
-  b=brYIkjx0+HGXBdkbZHRcIxrvMta8Odti92TCalZ6V9m7qdm4O6jio/4S
-   2sQSFWqAEBO09637Sb9jzkuIEV2PiDWAwbnRl2HX9FNalkoXFtJetKoOF
-   txo2OM23O2DuzimRFSALxRwfQoHVvj+uTVWVLKXf2a71ysydw6gDde6bQ
-   2XiWAtpBkJAKk0SHLsogKlESUNhcGJMKOZmdQOAKb93fYtfRuqNhR03vz
-   GVXn4hBSVuiDDTjvV8dkLAn21TeUh221+8e+gFtT7bazfMxgBgZkDWIvO
-   mJS/s8ARTMfHgcJthm0w9P6HHiYFGNvL+z2r2JnHnVj6Q3Gfei9olX8GQ
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="4348220"
-X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
-   d="scan'208";a="4348220"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 06:36:50 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="937046244"
-X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
-   d="scan'208";a="937046244"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 07 Mar 2024 06:36:49 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 2FE3374C; Thu,  7 Mar 2024 16:36:46 +0200 (EET)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	linux-kernel@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 5/5] w1: gpio: Don't use "proxy" headers
-Date: Thu,  7 Mar 2024 16:35:51 +0200
-Message-ID: <20240307143644.3787260-6-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
-In-Reply-To: <20240307143644.3787260-1-andriy.shevchenko@linux.intel.com>
-References: <20240307143644.3787260-1-andriy.shevchenko@linux.intel.com>
+	s=arc-20240116; t=1709822172; c=relaxed/simple;
+	bh=x02DuFFFXqezeMPeX7N/K3LTJ7TADryYv7HqzE4nsfQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WtTL4BT1T7fwS6TukifsvRRVEZYj3haVLhky5WVE06VM0rnbkSEyMxOs3d+ZQFa6RTS8ykWa//C0KtWg755tXfOLkR2KdTfA9vkp4Ua4frazcyvv5uwE4nUOXE17a9xthVEpD3muRao9kjaBPV4ZW7BeZiW+YaAe4Wp94AU1Oj4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ggwxNMml; arc=none smtp.client-ip=209.85.160.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-428405a0205so295161cf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 06:36:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709822169; x=1710426969; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=t6cjTaPA3JGO0htGi6Pjtb9XftoGgbKI0J0q9NK3+w4=;
+        b=ggwxNMmlVtIUpeUHoktMGiJt6NHEuOQM92GBz/UjBrcqAbPZLSV+lcvUX5vsIDLle4
+         Rpr4J9fD1HtjBPgMylJbxOHmZQVoHVsQqINPQlNrSvHajj/yos4lsrA/vjnvom048meu
+         pG91huk7uC+PjD+3hqOSoGZFxGRDqopuTYDzFLp8alN71qJ9OicVc1eOcD7PfkMtsSm+
+         piukZftKQTn6WFx6U4wQU3oqAWLmMpVIWdGhpRsAnF+v3QdgU+AQuO592Wam7FYcwPr+
+         US2rwNwN9TBdAmIzmggJ/B5KNS0wJ+yo264fpVdQd8Se4FRf9qMvFMTs/hMGpIQZITQK
+         wKIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709822169; x=1710426969;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=t6cjTaPA3JGO0htGi6Pjtb9XftoGgbKI0J0q9NK3+w4=;
+        b=WBsvJppMiT/kY5ss8Y5X2YvP1h4+LlJJUJLQYHFtgAvkhKiUYaZX4aeGvhX+dcXJmz
+         mx++ESFvwTOqLZqiELTFAsJUf/iw9hXcXh+yQb0qBAWJAocY/Ohw9pJWgQ1O+RrsRt0I
+         N7EdKRl/lOnSN2lxsHC0iL02ggTO16dUmOR2Y8dsRRTvYCEJXATZUTTCk1UBV+mT1cN2
+         74tbY+VWxYKbkiv60iGao1e1Hc474ZqbA9jt1R+d+rjnt2rRVNJgaxgRSIMFYc8oW/7M
+         9HRbuyS+th/wHAVwRpZRObSqsgrisOh+JeNwyPa0Wbtk0rCWSV4ir0UIPA44oP5Q+l0+
+         xgFA==
+X-Forwarded-Encrypted: i=1; AJvYcCUrU7xxSFFLnT0Xds3JI9UyedqNOqM4FQVCLdO8QBAFHu63mLajaw1om8ovZd+Yr9qvUA0O7c3tcpFem8m1YEGbiGZMHBU7XNxm+Pu1
+X-Gm-Message-State: AOJu0Yy+v+husz2RP3+0ThZ3LMrnKg0r21pd9yEOLMKOLdWDjKUx1D9P
+	mLbWvGOCh9fUf/4OcYZps6osAxX+sNzDdr72o+7HmRzj3o7uK7BJYpg73uU7q2fcmFGYoKjlOtD
+	0tCEh3q/ClYNRvb2oLkfQSf3Mws/WsgjCt+Jl
+X-Google-Smtp-Source: AGHT+IFTbUYTdln+HN5bHEZragkgBfryVrLW7yxjMefRnXhcn7EKiTuuupTzwNyjjzX/gNPojrKZtcxTSe69tmWWdIE=
+X-Received: by 2002:a05:622a:1c8:b0:42f:a3c:2d4e with SMTP id
+ t8-20020a05622a01c800b0042f0a3c2d4emr266044qtw.15.1709822168971; Thu, 07 Mar
+ 2024 06:36:08 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240307094433.3440431-1-xuxinxiong@huaqin.corp-partner.google.com>
+In-Reply-To: <20240307094433.3440431-1-xuxinxiong@huaqin.corp-partner.google.com>
+From: Doug Anderson <dianders@google.com>
+Date: Thu, 7 Mar 2024 06:35:53 -0800
+Message-ID: <CAD=FV=U8wdT_5k-yrLVpmh=q4k18LntqujK7Mw88TdweBXCPgg@mail.gmail.com>
+Subject: Re: [PATCH] drm/panel-edp: Add several generic edp panels
+To: Xuxin Xiong <xuxinxiong@huaqin.corp-partner.google.com>
+Cc: sam@ravnborg.org, neil.armstrong@linaro.org, daniel@ffwll.ch, 
+	hsinyi@google.com, dri-devel@lists.freedesktop.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Update header inclusions to follow IWYU (Include What You Use)
-principle.
+Hi,
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/w1/masters/w1-gpio.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+On Thu, Mar 7, 2024 at 1:44=E2=80=AFAM Xuxin Xiong
+<xuxinxiong@huaqin.corp-partner.google.com> wrote:
+>
+> Add support for the following 2 panels:
+> 1. BOE NT116WHM-N44
+> 2. CMN N116BCA-EA1
+>
+> Signed-off-by: Xuxin Xiong <xuxinxiong@huaqin.corp-partner.google.com>
+> ---
+>  drivers/gpu/drm/panel/panel-edp.c | 2 ++
+>  1 file changed, 2 insertions(+)
 
-diff --git a/drivers/w1/masters/w1-gpio.c b/drivers/w1/masters/w1-gpio.c
-index 8fd9fedd8c56..a39fa8bf866a 100644
---- a/drivers/w1/masters/w1-gpio.c
-+++ b/drivers/w1/masters/w1-gpio.c
-@@ -5,15 +5,15 @@
-  * Copyright (C) 2007 Ville Syrjala <syrjala@sci.fi>
-  */
- 
--#include <linux/init.h>
-+#include <linux/delay.h>
-+#include <linux/device.h>
-+#include <linux/err.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/mod_devicetable.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/property.h>
--#include <linux/slab.h>
--#include <linux/gpio/consumer.h>
--#include <linux/err.h>
--#include <linux/delay.h>
-+#include <linux/types.h>
- 
- #include <linux/w1.h>
- 
--- 
-2.43.0.rc1.1.gbec44491f096
+The patch looks OK, but please resend with a more unique subject. I
+think we've already landed more than one patch with the subject "Add
+several generic edp panels". Since this is just two panels, maybe just
 
+drm/panel-edp: Add BOE NT116WHM-N44 and CMN N116BCA-EA1
+
+-Doug
 
