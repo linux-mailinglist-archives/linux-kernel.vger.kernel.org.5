@@ -1,116 +1,136 @@
-Return-Path: <linux-kernel+bounces-96240-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96243-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 867B287591C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 22:15:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B975875926
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 22:20:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 414A72860F3
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 21:15:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2179F28646D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 21:20:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 426F913B783;
-	Thu,  7 Mar 2024 21:15:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7099B13BAC3;
+	Thu,  7 Mar 2024 21:20:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="R5PcvpdB";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="LN/7fdgE"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mzfx1bGr"
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CFA213B2A8
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 21:15:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08F1F20B38;
+	Thu,  7 Mar 2024 21:20:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709846123; cv=none; b=C8mgAK8blOuFNsOLGPluU5MfHba8kfJZhIcVKYLa1GaSMQwN6ux6EC72tQj7zOfgDaft/uQpa3aHUNHR40g/tLPJMo5lJkRXilvxOMO7MOHys3G1eiW1RP2lt+KxRqVDP969TUhUvtLGzJOKnqVYX+eZvc1ayxP6HlrznXgSsV8=
+	t=1709846405; cv=none; b=qVidbC0ycN7l8Fr3vB1s+dGRFn2Fqg5Jxuu4imlyypYtZz7QzOINbHTq58p9ItBSn/247Q1ogZNJgEMqfqEsIWzf2zxvOsC8K3kW4mJl+HHEjjBPGzNQdMztAJ0ANA+xWiyXDNgdBD1KzSHb5yVMmC8m0UkKX8cMuhbZ1kzIFQ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709846123; c=relaxed/simple;
-	bh=uHALnd92rxoOGlPKL7M9tlu3O3dJwMeBTQGHchr9R54=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=XMm1CroWTWF9eh4c85mOCFlOhAQLgwfHpDtj8HQY7EzQF8HfVW7vmyBO1RzOR8iuD/h/xiOvwWG9s5VBkP5NdOAU3OcyxgmzbmYrvjWxCPd6aVmTQ/nPS7BDvVUJqN3zHjxhX0/GlM1jscSvBHj4kj+uGTVwciKxgffW8ocfjC4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=R5PcvpdB; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=LN/7fdgE; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1709846120;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=t64qr7Csu0YwoaJV3ZkiF7k9jXyu8u7PLpXFQ/EeP+0=;
-	b=R5PcvpdBaWXBuHHCDbeqcUlSjYLQBB/OaWBMGJzbyCHdPjyifO/k/hKmcw9Bllskan7w1F
-	G1WersPGEXEMzrFxchUeHSv7h7hRnW6li0CA8W9kB9HD5L+ptc5npNt4WRrLvFk1owwpLr
-	o8iiplcd/aUF4Bgef9sR7bm9cMKoxN6WqlzWiL8NXIeGPKuH2o1DN7degUwTQQ3wSl8L9d
-	k7WSR7KZFtoqXq1jyZNwxMIrXanksXAvwD7nEE9ydC757stQiMsiLOp0udVbD1RtyMp7U2
-	ujb/ExwLJuCa7xff0JeLpCxgYniwD/3ysQWMEt1R3t7u1toc7Xmmx0BwVKmAzQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1709846120;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=t64qr7Csu0YwoaJV3ZkiF7k9jXyu8u7PLpXFQ/EeP+0=;
-	b=LN/7fdgEtEk/NwmrcN483lvhjFS/QDe22SLvFM6W0t4bgmXOodIVM7czSihu7xbcIZI1gL
-	f79jUmpFc7/R1tDQ==
-To: linke li <lilinke99@qq.com>
-Cc: lilinke99@qq.com, Frederic Weisbecker <frederic@kernel.org>, Ingo Molnar
- <mingo@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tick: use READ_ONCE() to read jiffies in concurrent
- environment
-In-Reply-To: <tencent_8B422629CF388976D1303D2C5B0720089305@qq.com>
-References: <lilinke99@qq.com>
- <tencent_8B422629CF388976D1303D2C5B0720089305@qq.com>
-Date: Thu, 07 Mar 2024 22:15:20 +0100
-Message-ID: <877cidu4k7.ffs@tglx>
+	s=arc-20240116; t=1709846405; c=relaxed/simple;
+	bh=xdHld3fsdtPljdPCL66D7ZTvMhGAvf9JeorKbStlTFc=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=fSnBsd5EPVmanC3THMK9A9Mu+kRguFFXyRky6O/srSLhFr4RF1riRXTYjioyfsTn0nvGO4PX67ewLf8oLUGz89Rk4YvmcGypNXZhknIARqXDCCirymf3yrOCtSeN5De/LVakiEQgVA/8n/0OTmVDDacxi9mCemCqn3QFBmsUV34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mzfx1bGr; arc=none smtp.client-ip=209.85.208.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2d2ab9c5e83so12647021fa.2;
+        Thu, 07 Mar 2024 13:20:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709846402; x=1710451202; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FxAW6z2fWfFSrmQ+Ro+a/GGTy69KREURq9bDQwEnpUQ=;
+        b=mzfx1bGrhYz2GwofGg1ERFd0Fp9t9E+3F1285u5KQR8S5DyYRblfOcJddEVu9C5KuQ
+         SUclPS89Snducnc6TxjDqpz7H76GzF8WvLvBUWdjxLViqkxRiAIK4l9zCqTDF8S3W+oa
+         rpkR24oXir0u24ajeXWqbQLQjzj3YVhIIlvQ+P7PCPFlHS1eofveYkQDTvBe7sZMmm8B
+         qam+CtKcDUOk6NXY6IacmAMXV0H28NfttQwjkxfoAX7x1iP7Hup9pT3JMX1tYhv2eT0Y
+         hQ1XAYakkNpi2HRUfBT3xTQeJGWnCcSeCLME1YhOKrENQ5BaUMbYg9UVRYOO3DtDyK3D
+         6Ggg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709846402; x=1710451202;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FxAW6z2fWfFSrmQ+Ro+a/GGTy69KREURq9bDQwEnpUQ=;
+        b=HocPm4WzauENdLfuzGr2ku04nNmM+EjlNpEgshDftsCq7r6H0GzEDkDPFiH9hnfvrt
+         SW2yEu9NI+4cPM/sDyh3OSNX/aCxPDcCj08hJUjBcuRJuR/Yfwo2QE1yhigES+SK+JDl
+         071/3xzJbTV2RJKjTbeTyQpKXLgvWl1cVoA5zdFgNJYJQwcoodQdYuiR+nMGKOePh7ng
+         maxpepb07wnDNwsmjJcMrBxn1ycNWJtDk7t0kJ8J3/YwnKxYW+PjE7jDRgYuitb8W6Rv
+         3gxsKNC8MqzhAPuHMtpMXGM5H/hcgEwV4p0flODuHbbuoc6MO0iEzBh+GBiEatIO8cYr
+         DZZg==
+X-Forwarded-Encrypted: i=1; AJvYcCXRr89fcBYuO7Y1Fq4cUdojPR3NAOJ3Bvl8SLAInLilsKOyAhhwewMFa3jDFDdPE6bPlUyUUrDq7oq6ofpV18vscVZPLRclAS9C9+0ZAH31MRJH4ZHVScYz+iI0R2RUm4nQ027p4rpiflGQkCg=
+X-Gm-Message-State: AOJu0Yy67OzBSavPitxKFo0cpXs+Igh+b+AXbBOE5DaAclpVCo6iZATW
+	sGcrnuaJ39J1FNtDwKn9iyTMImwgdZQI6hFO+p5tEIYHhwNJKHAwhjUNhEReY/TA7Q==
+X-Google-Smtp-Source: AGHT+IH4bFWXliiFPy8OHDFILE3C+glH0nxYOHkaYl1BFf/+aSDidJoTSbKkVKKKkIOqYDJAmqHxqg==
+X-Received: by 2002:a05:651c:204d:b0:2d3:28b3:d9e0 with SMTP id t13-20020a05651c204d00b002d328b3d9e0mr2110144ljo.40.1709846401462;
+        Thu, 07 Mar 2024 13:20:01 -0800 (PST)
+Received: from rand-ubuntu-development.dl.local (mail.confident.ru. [85.114.29.218])
+        by smtp.gmail.com with ESMTPSA id k20-20020a2e8894000000b002d2d7f4ac11sm3232995lji.0.2024.03.07.13.20.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Mar 2024 13:20:01 -0800 (PST)
+From: Rand Deeb <rand.sec96@gmail.com>
+To: m@bues.ch
+Cc: deeb.rand@confident.ru,
+	jonas.gorski@gmail.com,
+	khoroshilov@ispras.ru,
+	kvalo@kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-wireless@vger.kernel.org,
+	lvc-project@linuxtesting.org,
+	rand.sec96@gmail.com,
+	voskresenski.stanislav@confident.ru
+Subject: Re: [PATCH v3] ssb: Fix potential NULL pointer dereference in ssb_device_uevent
+Date: Fri,  8 Mar 2024 00:19:28 +0300
+Message-Id: <20240307211928.170877-1-rand.sec96@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240307192405.34aa9841@barney>
+References: <20240307192405.34aa9841@barney>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Sun, Feb 25 2024 at 11:12, linke li wrote:
-> In function tick_sched_do_timer(), jiffies is read using READ_ONCE()
-> in line 224, while read directly in line 217
+
+On Thu, Mar 7, 2024 at 9:24 PM Michael Büsch <m@bues.ch> wrote:
+
+> There is only one reason to eliminate NULL checks:
+> In extremely performance critical code, if it improves performance
+> significantly and it is clearly documented that the pointer can never be NULL.
 >
-> 217	if (ts->last_tick_jiffies != jiffies) {
-> 218		ts->stalled_jiffies = 0;
-> 219		ts->last_tick_jiffies = READ_ONCE(jiffies);
-> 220	} else {
-> 221		if (++ts->stalled_jiffies == MAX_STALLED_JIFFIES) {
-> 222			tick_do_update_jiffies64(now);
-> 223			ts->stalled_jiffies = 0;
-> 224			ts->last_tick_jiffies = READ_ONCE(jiffies);
-> 225		}
-> 226	}
+> This is not that case here. This is not critical code.
 
-Please do not paste the code which is changed by the patch into the
-changelog. Describe the problem you are trying to solve.
+Hi Michael, thank you for your collaboration and feedback.
+Yes, I agree, this is not critical code, but what's the point of leaving 
+redundant conditions even if they won't make a significant performance 
+difference, regardless of the policy (In other words, as a friendly 
+discussion) ?
+Please take a look at https://git.kernel.org/netdev/net-next/c/92fc97ae9cfd
+same situation but it has been applied ! why ?
 
-> There is patch similar to this. commit c1c0ce31b242 ("r8169: fix the
-> KCSAN reported data-race in rtl_tx() while reading tp->cur_tx")
 
-The other patch has absolutely nothing to do with this code and . Describe
-the problem and the solution.
+> Having NULL checks is defensive programming.
+> Removing NULL checks is a hazard.
+> Not having these checks is a big part of why security sucks in today's software.
 
-> This patch find two read of same variable while one is protected, another
-> is not. And READ_ONCE() is added to protect.
+I understand and respect your point of view as software engineer but it's a
+matter of design problems which is not our case here.
+Defensive programming is typically applied when there's a potential risk, 
+but in our scenario, it's impossible for 'dev' to be NULL. If we adopt this
+approach as a form of defensive programming, we'd find ourselves adding 
+similar conditions to numerous functions and parameters. Moreover, this 
+would unnecessarily complicate the codebase, especially during reviews. For
+instance, encountering such a condition might lead one to assume that 'dev'
+could indeed be NULL before reaching this function. That's my viewpoint.
 
-This patch finds nothing. Explain it correctly why it matters that the
-first read is not marked READ_ONCE(). Is this solving a correctness
-problem or are you adding it just to shut up the KCSAN warning?
+> V3 shall be applied, because it fixes a clear bug. Whether this bug can actually
+> be triggered or not in today's kernel doesn't matter.
 
-> @@ -214,7 +214,7 @@ static void tick_sched_do_timer(struct tick_sched *ts, ktime_t now)
->  	 * If the jiffies update stalled for too long (timekeeper in stop_machine()
->  	 * or VMEXIT'ed for several msecs), force an update.
->  	 */
-> -	if (ts->last_tick_jiffies != jiffies) {
-> +	if (ts->last_tick_jiffies != READ_ONCE(jiffies)) {
->  		ts->stalled_jiffies = 0;
->  		ts->last_tick_jiffies = READ_ONCE(jiffies);
->  	} else {
+so would you recommend fix the commit message as Jeff Johnson recommended ?
+or just keep it as it is ?
 
-Thanks,
-
-        tglx
+--
+Best Regards
+Rand Deeb
 
