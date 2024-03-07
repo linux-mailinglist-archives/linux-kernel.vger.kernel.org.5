@@ -1,333 +1,208 @@
-Return-Path: <linux-kernel+bounces-95276-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95301-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9779A874BA1
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:00:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AB9A874BF4
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:09:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A924284A82
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:00:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F7BF2839ED
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:09:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0906F12D1F9;
-	Thu,  7 Mar 2024 09:56:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15E1D84FD7;
+	Thu,  7 Mar 2024 10:06:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="BrHgl4oH"
-Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
+	dkim=pass (1024-bit key) header.d=nic.cz header.i=@nic.cz header.b="U0oRVyb/"
+Received: from mail.nic.cz (mail.nic.cz [217.31.204.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B42512CDA5;
-	Thu,  7 Mar 2024 09:56:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.98
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 004F184FCD;
+	Thu,  7 Mar 2024 10:06:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.31.204.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709805370; cv=none; b=jdOpZaBRUwM27a47Ob5dfOFhiJF7LhDny/LQ5whCQXR//64CJR3l1bNvKotWuXIwqgkU0w9EqAbwN7HDZGVloB45tcodypn2OcrBPcGIYUtdioKtHHanoI/YHZbYWW4l/TPr+Q4fV6vDEf8DLHO7v0Q6bFrUXXZJVTr9lxqPrGc=
+	t=1709806012; cv=none; b=frdj3+6OP4Lrs4drnbU/enbnoOXvcqRnvMN2ZNwZpL/m61pqqMSCnW4iBwlPfm4i+C6BKZC+fEqX4SHckzBMfx8UbLyS5Z1hK5gdXC/x9LcwghWFlOFZ2rXdFc+5pztIA7Utvhn0eE0PbJ1BmHVXhNPrquk99uLfHTQy9LXvg3M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709805370; c=relaxed/simple;
-	bh=r9ynUyNwuaAraBQrB6g6AiLMJHHVsRdHoISqka/UdYE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=dsOBEE2U7D+0E2FA2iaoID8MxQEwr0PkE31tZwQMO6GFi29wsgcQFtJqfWZiKlUEjAOjXVcQ0uTJcwrvwTdmgKfswXvQkP6RrChVS4uP+g3Vvj+72Xhw7gAUmuHKsCHKoIQ7p7y83kkrsYwbWnPLvUlBbxxhonIjhRVdxCSNXdc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=BrHgl4oH; arc=none smtp.client-ip=115.124.30.98
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1709805365; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=57tNxaCG7lrGDX+5Lxm1v4EurawfrxZMeQiUcDOKJSg=;
-	b=BrHgl4oHMaEqt9ZQD7IC4UnWFxAh4ErehCrIaLE5Uz2xD8D6qh1KXJw19c2hSwiz8gZtoBFeA31LPE29PNVXGT1RCR2l4BMvfj0Mr0TyJf8e9PD0hZFn8VkhJ2T4Xu6PWNut9Wwi/o/FbtJfA+btkAgS23Uo+JM4Bx97Yr7hmhk=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R781e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0W2-Ke2X_1709805363;
-Received: from localhost(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0W2-Ke2X_1709805363)
-          by smtp.aliyun-inc.com;
-          Thu, 07 Mar 2024 17:56:04 +0800
-From: Wen Gu <guwen@linux.alibaba.com>
-To: wintera@linux.ibm.com,
-	twinkler@linux.ibm.com,
-	hca@linux.ibm.com,
-	gor@linux.ibm.com,
-	agordeev@linux.ibm.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	wenjia@linux.ibm.com,
-	jaka@linux.ibm.com
-Cc: borntraeger@linux.ibm.com,
-	svens@linux.ibm.com,
-	alibuda@linux.alibaba.com,
-	tonylu@linux.alibaba.com,
-	guwen@linux.alibaba.com,
-	linux-kernel@vger.kernel.org,
-	linux-s390@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH net-next v2 11/11] net/smc: implement DMB-merged operations of loopback-ism
-Date: Thu,  7 Mar 2024 17:55:36 +0800
-Message-Id: <20240307095536.29648-12-guwen@linux.alibaba.com>
-X-Mailer: git-send-email 2.32.0.3.g01195cf9f
-In-Reply-To: <20240307095536.29648-1-guwen@linux.alibaba.com>
-References: <20240307095536.29648-1-guwen@linux.alibaba.com>
+	s=arc-20240116; t=1709806012; c=relaxed/simple;
+	bh=76Jo3UVwHUPVJ1Mxh3dPGM0nxOmpEeJydflFioZTAPQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=D6XtNifx1zOqSpGtzOpY2x7msCV/0e6XlXGxoi59zmDy6pgQ2Cs9ATXePtUUHn465yAIe+iTK4vnx3/NDdjcjPhPQugX/mjm4ZH2hjw1WMvVQc2CN6sM8phKdtaiu5nHmLHEQdSlvzME5kvuhl9xjQz8hYOm6AvMD+U4jgjI87I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nic.cz; spf=pass smtp.mailfrom=nic.cz; dkim=pass (1024-bit key) header.d=nic.cz header.i=@nic.cz header.b=U0oRVyb/; arc=none smtp.client-ip=217.31.204.67
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nic.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nic.cz
+Received: from kandell (unknown [172.20.6.140])
+	by mail.nic.cz (Postfix) with ESMTPS id A3B251C035F;
+	Thu,  7 Mar 2024 10:56:58 +0100 (CET)
+Authentication-Results: mail.nic.cz;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nic.cz; s=default;
+	t=1709805421; bh=76Jo3UVwHUPVJ1Mxh3dPGM0nxOmpEeJydflFioZTAPQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From:Reply-To:
+	 Subject:To:Cc;
+	b=U0oRVyb/byvyZefng+g9v35ujBi7vq6aYkmzvkKCrDxKkrm4GdejErIA4KhO0xVnT
+	 WUqRgmcFvpZBesK2q11bJeZP+NENK/F4uNa1T0zLPva3uD4Ifw484KchmjTu7f5Ttu
+	 hIwK7zAsQ5g2CzFLPtjyTUvjxJV5Q6v7IBTxzfwg=
+Date: Thu, 7 Mar 2024 10:56:58 +0100
+From: Marek =?utf-8?B?QmVow7pu?= <marek.behun@nic.cz>
+To: George Stark <gnstark@salutedevices.com>
+Cc: andy.shevchenko@gmail.com, pavel@ucw.cz, lee@kernel.org,
+	vadimp@nvidia.com, mpe@ellerman.id.au, npiggin@gmail.com,
+	christophe.leroy@csgroup.eu, hdegoede@redhat.com,
+	mazziesaccount@gmail.com, peterz@infradead.org, mingo@redhat.com,
+	will@kernel.org, longman@redhat.com, boqun.feng@gmail.com,
+	nikitos.tr@gmail.com, kabel@kernel.org, linux-leds@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	kernel@salutedevices.com
+Subject: Re: [PATCH v5 02/10] locking/mutex: introduce devm_mutex_init
+Message-ID: <20240307095639.b6utkbzr36liuu3p@kandell>
+References: <20240307024034.1548605-1-gnstark@salutedevices.com>
+ <20240307024034.1548605-3-gnstark@salutedevices.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240307024034.1548605-3-gnstark@salutedevices.com>
+X-Virus-Scanned: clamav-milter 0.103.10 at mail
+X-Virus-Status: Clean
+X-Rspamd-Queue-Id: A3B251C035F
+X-Rspamd-Pre-Result: action=no action;
+	module=multimap;
+	Matched map: WHITELISTED_IP
+X-Spamd-Result: default: False [-0.10 / 20.00];
+	MIME_GOOD(-0.10)[text/plain];
+	WHITELISTED_IP(0.00)[172.20.6.140];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	ARC_NA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com]
+X-Rspamd-Action: no action
+X-Spamd-Bar: /
+X-Rspamd-Server: mail
 
-This implements operations related to merging sndbuf with peer DMB in
-loopback-ism. The DMB won't be freed until no sndbuf is attached to it.
+On Thu, Mar 07, 2024 at 05:40:26AM +0300, George Stark wrote:
+> Using of devm API leads to a certain order of releasing resources.
+> So all dependent resources which are not devm-wrapped should be deleted
+> with respect to devm-release order. Mutex is one of such objects that
+> often is bound to other resources and has no own devm wrapping.
+> Since mutex_destroy() actually does nothing in non-debug builds
+> frequently calling mutex_destroy() is just ignored which is safe for now
+> but wrong formally and can lead to a problem if mutex_destroy() will be
+> extended so introduce devm_mutex_init()
+> 
+> Signed-off-by: George Stark <gnstark@salutedevices.com>
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+>  Hello Christophe. Hope you don't mind I put you SoB tag because you helped alot
+>  to make this patch happen.
+> 
+>  include/linux/mutex.h        | 13 +++++++++++++
+>  kernel/locking/mutex-debug.c | 22 ++++++++++++++++++++++
+>  2 files changed, 35 insertions(+)
+> 
+> diff --git a/include/linux/mutex.h b/include/linux/mutex.h
+> index f7611c092db7..9bcf72cb941a 100644
+> --- a/include/linux/mutex.h
+> +++ b/include/linux/mutex.h
+> @@ -22,6 +22,8 @@
+>  #include <linux/cleanup.h>
+>  #include <linux/mutex_types.h>
+> 
+> +struct device;
+> +
+>  #ifdef CONFIG_DEBUG_LOCK_ALLOC
+>  # define __DEP_MAP_MUTEX_INITIALIZER(lockname)			\
+>  		, .dep_map = {					\
+> @@ -115,10 +117,21 @@ do {							\
+> 
+>  #ifdef CONFIG_DEBUG_MUTEXES
+> 
+> +int devm_mutex_init(struct device *dev, struct mutex *lock);
+>  void mutex_destroy(struct mutex *lock);
+> 
+>  #else
+> 
+> +static inline int devm_mutex_init(struct device *dev, struct mutex *lock)
+> +{
+> +	/*
+> +	 * since mutex_destroy is nop actually there's no need to register it
+> +	 * in devm subsystem.
+> +	 */
+> +	mutex_init(lock);
+> +	return 0;
+> +}
+> +
+>  static inline void mutex_destroy(struct mutex *lock) {}
+> 
+>  #endif
+> diff --git a/kernel/locking/mutex-debug.c b/kernel/locking/mutex-debug.c
+> index bc8abb8549d2..c9efab1a8026 100644
+> --- a/kernel/locking/mutex-debug.c
+> +++ b/kernel/locking/mutex-debug.c
+> @@ -19,6 +19,7 @@
+>  #include <linux/kallsyms.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/debug_locks.h>
+> +#include <linux/device.h>
+> 
+>  #include "mutex.h"
+> 
+> @@ -104,3 +105,24 @@ void mutex_destroy(struct mutex *lock)
+>  }
+> 
+>  EXPORT_SYMBOL_GPL(mutex_destroy);
+> +
+> +static void devm_mutex_release(void *res)
+> +{
+> +	mutex_destroy(res);
+> +}
+> +
+> +/**
+> + * devm_mutex_init - Resource-managed mutex initialization
+> + * @dev:	Device which lifetime mutex is bound to
+> + * @lock:	Pointer to a mutex
+> + *
+> + * Initialize mutex which is automatically destroyed when the driver is detached.
+> + *
+> + * Returns: 0 on success or a negative error code on failure.
+> + */
+> +int devm_mutex_init(struct device *dev, struct mutex *lock)
+> +{
+> +	mutex_init(lock);
+> +	return devm_add_action_or_reset(dev, devm_mutex_release, lock);
+> +}
+> +EXPORT_SYMBOL_GPL(devm_mutex_init);
 
-Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
----
- net/smc/smc_loopback.c | 136 +++++++++++++++++++++++++++++++++++------
- net/smc/smc_loopback.h |   3 +
- 2 files changed, 119 insertions(+), 20 deletions(-)
+Hi George,
 
-diff --git a/net/smc/smc_loopback.c b/net/smc/smc_loopback.c
-index 6828e0ad3e90..7e772f3772de 100644
---- a/net/smc/smc_loopback.c
-+++ b/net/smc/smc_loopback.c
-@@ -21,6 +21,7 @@
- 
- #if IS_ENABLED(CONFIG_SMC_LO)
- #define SMC_LO_V2_CAPABLE	0x1 /* loopback-ism acts as ISMv2 */
-+#define SMC_LO_SUPPORT_NOCOPY	0x1
- #define SMC_DMA_ADDR_INVALID	(~(dma_addr_t)0)
- 
- static const char smc_lo_dev_name[] = "loopback-ism";
-@@ -82,6 +83,7 @@ static int smc_lo_register_dmb(struct smcd_dev *smcd, struct smcd_dmb *dmb,
- 		goto err_node;
- 	}
- 	dmb_node->dma_addr = SMC_DMA_ADDR_INVALID;
-+	refcount_set(&dmb_node->refcnt, 1);
- 
- again:
- 	/* add new dmb into hash table */
-@@ -95,6 +97,7 @@ static int smc_lo_register_dmb(struct smcd_dev *smcd, struct smcd_dmb *dmb,
- 	}
- 	hash_add(ldev->dmb_ht, &dmb_node->list, dmb_node->token);
- 	write_unlock(&ldev->dmb_ht_lock);
-+	atomic_inc(&ldev->dmb_cnt);
- 
- 	dmb->sba_idx = dmb_node->sba_idx;
- 	dmb->dmb_tok = dmb_node->token;
-@@ -111,13 +114,29 @@ static int smc_lo_register_dmb(struct smcd_dev *smcd, struct smcd_dmb *dmb,
- 	return rc;
- }
- 
-+static void __smc_lo_unregister_dmb(struct smc_lo_dev *ldev,
-+				    struct smc_lo_dmb_node *dmb_node)
-+{
-+	/* remove dmb from hash table */
-+	write_lock(&ldev->dmb_ht_lock);
-+	hash_del(&dmb_node->list);
-+	write_unlock(&ldev->dmb_ht_lock);
-+
-+	clear_bit(dmb_node->sba_idx, ldev->sba_idx_mask);
-+	kvfree(dmb_node->cpu_addr);
-+	kfree(dmb_node);
-+
-+	if (atomic_dec_and_test(&ldev->dmb_cnt))
-+		wake_up(&ldev->ldev_release);
-+}
-+
- static int smc_lo_unregister_dmb(struct smcd_dev *smcd, struct smcd_dmb *dmb)
- {
- 	struct smc_lo_dmb_node *dmb_node = NULL, *tmp_node;
- 	struct smc_lo_dev *ldev = smcd->priv;
- 
--	/* remove dmb from hash table */
--	write_lock(&ldev->dmb_ht_lock);
-+	/* find dmb from hash table */
-+	read_lock(&ldev->dmb_ht_lock);
- 	hash_for_each_possible(ldev->dmb_ht, tmp_node, list, dmb->dmb_tok) {
- 		if (tmp_node->token == dmb->dmb_tok) {
- 			dmb_node = tmp_node;
-@@ -125,16 +144,76 @@ static int smc_lo_unregister_dmb(struct smcd_dev *smcd, struct smcd_dmb *dmb)
- 		}
- 	}
- 	if (!dmb_node) {
--		write_unlock(&ldev->dmb_ht_lock);
-+		read_unlock(&ldev->dmb_ht_lock);
- 		return -EINVAL;
- 	}
--	hash_del(&dmb_node->list);
--	write_unlock(&ldev->dmb_ht_lock);
-+	read_unlock(&ldev->dmb_ht_lock);
- 
--	clear_bit(dmb_node->sba_idx, ldev->sba_idx_mask);
--	kfree(dmb_node->cpu_addr);
--	kfree(dmb_node);
-+	if (refcount_dec_and_test(&dmb_node->refcnt))
-+		__smc_lo_unregister_dmb(ldev, dmb_node);
-+	return 0;
-+}
-+
-+static int smc_lo_support_dmb_nocopy(struct smcd_dev *smcd)
-+{
-+	return SMC_LO_SUPPORT_NOCOPY;
-+}
-+
-+static int smc_lo_attach_dmb(struct smcd_dev *smcd, struct smcd_dmb *dmb)
-+{
-+	struct smc_lo_dmb_node *dmb_node = NULL, *tmp_node;
-+	struct smc_lo_dev *ldev = smcd->priv;
- 
-+	/* find dmb_node according to dmb->dmb_tok */
-+	read_lock(&ldev->dmb_ht_lock);
-+	hash_for_each_possible(ldev->dmb_ht, tmp_node, list, dmb->dmb_tok) {
-+		if (tmp_node->token == dmb->dmb_tok) {
-+			dmb_node = tmp_node;
-+			break;
-+		}
-+	}
-+	if (!dmb_node) {
-+		read_unlock(&ldev->dmb_ht_lock);
-+		return -EINVAL;
-+	}
-+	read_unlock(&ldev->dmb_ht_lock);
-+
-+	if (!refcount_inc_not_zero(&dmb_node->refcnt))
-+		/* the dmb is being unregistered, but has
-+		 * not been removed from the hash table.
-+		 */
-+		return -EINVAL;
-+
-+	/* provide dmb information */
-+	dmb->sba_idx = dmb_node->sba_idx;
-+	dmb->dmb_tok = dmb_node->token;
-+	dmb->cpu_addr = dmb_node->cpu_addr;
-+	dmb->dma_addr = dmb_node->dma_addr;
-+	dmb->dmb_len = dmb_node->len;
-+	return 0;
-+}
-+
-+static int smc_lo_detach_dmb(struct smcd_dev *smcd, u64 token)
-+{
-+	struct smc_lo_dmb_node *dmb_node = NULL, *tmp_node;
-+	struct smc_lo_dev *ldev = smcd->priv;
-+
-+	/* find dmb_node according to dmb->dmb_tok */
-+	read_lock(&ldev->dmb_ht_lock);
-+	hash_for_each_possible(ldev->dmb_ht, tmp_node, list, token) {
-+		if (tmp_node->token == token) {
-+			dmb_node = tmp_node;
-+			break;
-+		}
-+	}
-+	if (!dmb_node) {
-+		read_unlock(&ldev->dmb_ht_lock);
-+		return -EINVAL;
-+	}
-+	read_unlock(&ldev->dmb_ht_lock);
-+
-+	if (refcount_dec_and_test(&dmb_node->refcnt))
-+		__smc_lo_unregister_dmb(ldev, dmb_node);
- 	return 0;
- }
- 
-@@ -170,8 +249,22 @@ static int smc_lo_move_data(struct smcd_dev *smcd, u64 dmb_tok,
- {
- 	struct smc_lo_dmb_node *rmb_node = NULL, *tmp_node;
- 	struct smc_lo_dev *ldev = smcd->priv;
--
--	read_lock(&ldev->dmb_ht_lock);
-+	struct smc_connection *conn;
-+
-+	if (!sf)
-+		/* since sndbuf is merged with peer DMB, there is
-+		 * no need to copy data from sndbuf to peer DMB.
-+		 */
-+		return 0;
-+
-+	/* read_lock_bh() is used here just to make lockdep
-+	 * happy, because spin_(un)lock_bh(&conn->send_lock) wraps
-+	 * smc_lo_move_data() and if we use read_lock() here, lockdep
-+	 * will complain about SOFTIRQ-safe -> SOFTIRQ-unsafe lock
-+	 * order detected, but in fact ldev->dmb_ht_lock will never
-+	 * be held in bh context.
-+	 */
-+	read_lock_bh(&ldev->dmb_ht_lock);
- 	hash_for_each_possible(ldev->dmb_ht, tmp_node, list, dmb_tok) {
- 		if (tmp_node->token == dmb_tok) {
- 			rmb_node = tmp_node;
-@@ -182,19 +275,14 @@ static int smc_lo_move_data(struct smcd_dev *smcd, u64 dmb_tok,
- 		read_unlock(&ldev->dmb_ht_lock);
- 		return -EINVAL;
- 	}
--	read_unlock(&ldev->dmb_ht_lock);
-+	read_unlock_bh(&ldev->dmb_ht_lock);
- 
- 	memcpy((char *)rmb_node->cpu_addr + offset, data, size);
- 
--	if (sf) {
--		struct smc_connection *conn =
--			smcd->conn[rmb_node->sba_idx];
--
--		if (conn && !conn->killed)
--			smcd_cdc_rx_handler(conn);
--		else
--			return -EPIPE;
--	}
-+	conn = smcd->conn[rmb_node->sba_idx];
-+	if (!conn || conn->killed)
-+		return -EPIPE;
-+	smcd_cdc_rx_handler(conn);
- 	return 0;
- }
- 
-@@ -226,6 +314,9 @@ static const struct smcd_ops lo_ops = {
- 	.query_remote_gid = smc_lo_query_rgid,
- 	.register_dmb = smc_lo_register_dmb,
- 	.unregister_dmb = smc_lo_unregister_dmb,
-+	.support_dmb_nocopy = smc_lo_support_dmb_nocopy,
-+	.attach_dmb = smc_lo_attach_dmb,
-+	.detach_dmb = smc_lo_detach_dmb,
- 	.add_vlan_id = smc_lo_add_vlan_id,
- 	.del_vlan_id = smc_lo_del_vlan_id,
- 	.set_vlan_required = smc_lo_set_vlan_required,
-@@ -304,12 +395,17 @@ static int smc_lo_dev_init(struct smc_lo_dev *ldev)
- 	smc_lo_generate_id(ldev);
- 	rwlock_init(&ldev->dmb_ht_lock);
- 	hash_init(ldev->dmb_ht);
-+	atomic_set(&ldev->dmb_cnt, 0);
-+	init_waitqueue_head(&ldev->ldev_release);
-+
- 	return smcd_lo_register_dev(ldev);
- }
- 
- static void smc_lo_dev_exit(struct smc_lo_dev *ldev)
- {
- 	smcd_lo_unregister_dev(ldev);
-+	if (atomic_read(&ldev->dmb_cnt))
-+		wait_event(ldev->ldev_release, !atomic_read(&ldev->dmb_cnt));
- }
- 
- static void smc_lo_dev_release(struct device *dev)
-diff --git a/net/smc/smc_loopback.h b/net/smc/smc_loopback.h
-index 24ab9d747613..9156a6c37e65 100644
---- a/net/smc/smc_loopback.h
-+++ b/net/smc/smc_loopback.h
-@@ -30,6 +30,7 @@ struct smc_lo_dmb_node {
- 	u32 sba_idx;
- 	void *cpu_addr;
- 	dma_addr_t dma_addr;
-+	refcount_t refcnt;
- };
- 
- struct smc_lo_dev {
-@@ -37,9 +38,11 @@ struct smc_lo_dev {
- 	struct device dev;
- 	u16 chid;
- 	struct smcd_gid local_gid;
-+	atomic_t dmb_cnt;
- 	rwlock_t dmb_ht_lock;
- 	DECLARE_BITMAP(sba_idx_mask, SMC_LO_MAX_DMBS);
- 	DECLARE_HASHTABLE(dmb_ht, SMC_LO_DMBS_HASH_BITS);
-+	wait_queue_head_t ldev_release;
- };
- #endif
- 
--- 
-2.32.0.3.g01195cf9f
+look at
+https://lore.kernel.org/lkml/7013bf9e-2663-4613-ae61-61872e81355b@redhat.com/
+where Matthew and Hans explain that devm_mutex_init needs to be a macro
+because of the static lockdep key. 
 
+so this should be something like:
+
+static inline int __devm_mutex_init(struct device *dev, struct mutex *mutex,
+				    const char *name,
+				    struct lock_class_key *key)
+{
+	__mutex_init(mutex, name, key);
+	return devm_add_action_or_reset(dev, devm_mutex_release, mutex);
+}
+
+#define devm_mutex_init(dev, mutex)				\
+do {								\
+	static struct lock_class_key __key;			\
+								\
+	__devm_mutex_init(dev, (mutex), #mutex, &__key);	\
+} while (0);
+
+
+Marek
 
