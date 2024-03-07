@@ -1,202 +1,305 @@
-Return-Path: <linux-kernel+bounces-96239-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96241-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 995FC87591A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 22:14:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C2EB87591E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 22:15:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4FF98285E74
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 21:14:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02B38285E6B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 21:15:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33E8013B780;
-	Thu,  7 Mar 2024 21:14:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 320FA13B795;
+	Thu,  7 Mar 2024 21:15:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UShJ4tHY"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="lOGkYfyf"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59BAF64AAA;
-	Thu,  7 Mar 2024 21:14:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.20
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709846081; cv=fail; b=hKGw7u5Na91GL9zNiFuKewosjX+VtLgIFoO5tXlEiGWLaZ5PGuWTsnzmDz0NWeypG1wMc3mLn23yruqpS8FM9ZCfScQrbi0c+TWzAGI5KmGU6epVgN5mDGyf58UO3dgrgMYMgqEE7ZiVPvjEJlJI8xpgg3nzSo0Gigm1gW5ltT0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709846081; c=relaxed/simple;
-	bh=qvQ0rIWipOKuL+O4x5/sU3khSjAJ7i0JC91m6Xd87MU=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=a7d+ry1cXUjmb0xkhmIG3jB0MtI0Cf/Pbnt7iU1mhct76V8mab5cLapANuvi9/ukbQ0UmAfxVyUkSWqZOxvIpYIyhuTwUFkhp45Hjz8bbEd0vwMs36MYjsHIiAsC/PnDx62Yjm29dv2AC1S2wQXR/3iew1mFUfGNa5XNw8eeuQ8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UShJ4tHY; arc=fail smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709846079; x=1741382079;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=qvQ0rIWipOKuL+O4x5/sU3khSjAJ7i0JC91m6Xd87MU=;
-  b=UShJ4tHYoghkU9GFkBx8emnr+J9VrePixrIrpHfoZ8bQZ2Sdn6prTSFN
-   szKNCCglxrXcDJAUENNsyXGfAw1b/ogaafOczPwYw6GBllgr7MjEvhbhn
-   cCRamK49QmMljpg/dqZGJhcfoJAKOWcIY4LeTsKZYRaGTKYh6Lp1SdNcZ
-   yN+igOjeBVj3WfEeK+T0gvohe5rZq6fn96M/DiR8Vs16XeYNB09cW2ijV
-   FCSPgqKTgm2d6zcRVwEYPOD790e0OF0hgBi0HzUbDy/vBjUh9fOH7aIvi
-   ng5hU0rw8DJhrtwZ3a8FCLlqjAPW2ZTa5XWmKpVjAToeZBJXr/uERbc9c
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="4422842"
-X-IronPort-AV: E=Sophos;i="6.07,107,1708416000"; 
-   d="scan'208";a="4422842"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 13:14:39 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,107,1708416000"; 
-   d="scan'208";a="41219431"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmviesa001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 07 Mar 2024 13:14:38 -0800
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 7 Mar 2024 13:14:38 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 7 Mar 2024 13:14:37 -0800
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 7 Mar 2024 13:14:37 -0800
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.169)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 7 Mar 2024 13:14:37 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JvYFiPA3H0niZMvwjv2noVE8bNqErrhjcB+tOt0uJNx7qDi8hgqJmkuCyZh8KkHo+eitlv0URG6VgPH6WpxESkovLSLL8gGPZGJeCqm64vQY9/Cp+CkDPOxAMmjEArlKeu4jvJ2BeAEqnAZx3EFrJmdy2j71WGOPrTa/DaTybNvLbk7czJdlyOxQ+cF0ttOlwab6T5Nv4upEJW7THCETDMpx+33G554zP/kRqM9wSEoVSLYWBKx+/ETpPSg/61Ah9xaJmL6rL6yAb60L1HD/MpJHXdCpltC7r4d2ezCUSSUL2D4Ug1Jbp+pfQcn4Q/Cf3WoLN7yZWirTk8H9e6bldg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=qvQ0rIWipOKuL+O4x5/sU3khSjAJ7i0JC91m6Xd87MU=;
- b=IrDSmLCl0OQj4/Kldfgrhoca6tzflw1zDTyvVMnmKtsUv//HPslY910uD/qFOHIXKe8KF+CKff6RtuyOtsuW+OtxpCgEyMgYVpuwwui8p9Xd9hwzJKmiFssWj2JHYjLdkb2JK94uHcd8mFEhROKOjhWzrztvkK2A4hC0LC4OdUcc/09/XlTI65gDXnRcGz2KXXzuBd9vf8sne2K0LEUDLmONxZZbqw8BKARYI+aKDlOGxGWe+rMdaqQ9raQHUUY+hV7ss+qnYFbzAILcRpWswB5ghfk94rnWysLpWUNkS3gH1oH+aEMp2G5qrP5+D3+uWqcIjwqaG21AT3bleUoRsA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from SJ1PR11MB6083.namprd11.prod.outlook.com (2603:10b6:a03:48a::9)
- by SN7PR11MB7993.namprd11.prod.outlook.com (2603:10b6:806:2e5::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.8; Thu, 7 Mar
- 2024 21:14:35 +0000
-Received: from SJ1PR11MB6083.namprd11.prod.outlook.com
- ([fe80::d5ce:2b6c:458:3ca9]) by SJ1PR11MB6083.namprd11.prod.outlook.com
- ([fe80::d5ce:2b6c:458:3ca9%7]) with mapi id 15.20.7362.019; Thu, 7 Mar 2024
- 21:14:35 +0000
-From: "Luck, Tony" <tony.luck@intel.com>
-To: "Chatre, Reinette" <reinette.chatre@intel.com>, "Wieczor-Retman, Maciej"
-	<maciej.wieczor-retman@intel.com>
-CC: "Yu, Fenghua" <fenghua.yu@intel.com>, Shuah Khan <shuah@kernel.org>,
-	"james.morse@arm.com" <james.morse@arm.com>, "ilpo.jarvinen@linux.intel.com"
-	<ilpo.jarvinen@linux.intel.com>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-kselftest@vger.kernel.org"
-	<linux-kselftest@vger.kernel.org>
-Subject: RE: [PATCH 4/4] selftests/resctrl: Adjust SNC support messages
-Thread-Topic: [PATCH 4/4] selftests/resctrl: Adjust SNC support messages
-Thread-Index: AQHab7KwshA04b3b7kGAda4tCZ9C1LErPGXQgADHEoCAAIKhUIAAB+aAgAABPhCAACNlgIAAEarA
-Date: Thu, 7 Mar 2024 21:14:35 +0000
-Message-ID: <SJ1PR11MB6083AACB10645E41DD3F9639FC202@SJ1PR11MB6083.namprd11.prod.outlook.com>
-References: <cover.1709721159.git.maciej.wieczor-retman@intel.com>
- <8a158ada92f06b97a4679721e84e787e94b94647.1709721159.git.maciej.wieczor-retman@intel.com>
- <SJ1PR11MB608310C72D7189C139EA6302FC212@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <o6va7b7rc3q46olsbscav7pla4hxot2g6xhctflhmf64pj5hpx@56vtbg3yyquy>
- <SJ1PR11MB60830E546B3D575B01D37104FC202@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <159474e6-ef11-4769-a182-86483efcf2a6@intel.com>
- <SJ1PR11MB60832DAD58E864F99A16FCC4FC202@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <0393c4ce-7e41-4dcc-940a-a6bea9437970@intel.com>
-In-Reply-To: <0393c4ce-7e41-4dcc-940a-a6bea9437970@intel.com>
-Accept-Language: en-US
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13DD813B2B8;
+	Thu,  7 Mar 2024 21:15:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709846125; cv=none; b=VDn4Ly5SYPvOJPDLd0BMlPIv3y9sUvCcXAXhKYw1AUF4enBEjhT4s3I/Jf2x4VrHqqYHth4V8NQiyg8fknQR6VgyrmAz9dVPanwAz4Jm40HB5z2ctRqF1ZOcEpXszUseih6jzcOtV920tEiAwyMxMP8MzshL9n6YLlTZAecW5b8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709846125; c=relaxed/simple;
+	bh=nSLhgT6yIqzvkbLmU8qphm6E1RZ1RfUS07IbmoTT038=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=T+3SF0WGUVUqWsKjILKJUAVkHdsl8UqNFgP42vnqp++PoSv4BhPiC9ELvCvqUUinZtT63UuGq+dYjgURXqQ1pusjsB78K8x5FAM2zPFaekKjPGvUw5h2NnSu6N2tnwxp9D6gulY1pT9MmsivIYi1Rll5qxwYLYqxFTumR23jD8k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=lOGkYfyf; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 427L3200009140;
+	Thu, 7 Mar 2024 21:15:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=Mmxn/HvJJCpUllyW82EMz/8d3Nc40g5qmcrckDCRmRI=;
+ b=lOGkYfyf20dOIiMl8LR1xduKzHdTUkKmL/lMKf1AIFVjLUtiVnprujfe839z4/IdnsT3
+ 4YyOUxsPZgclLPeiVninKeD7i+q5Aq+DpEV49TODo+Kxnt+Uxc/moNIwVu1f9ELqbRBO
+ 09phazcYWc0mbqZ8JdD9tZOShFiy0nPbEnd4q8FkVzS/swIF6ZnNuUSfLfSPtFzDavNX
+ PDxjxjqFSe/P5gmecoMA2Dv5b7/SSkoe1AG/SExefKfbmw/LZl6iGYDaI7Z/FI1WnHa7
+ a89XI5qoOAzObMWpuWHvmxi9fPkYouPwcsDbkpGbRY7cK1T7snRSQFI36lQeSAKcpT2O Kw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wqn59r5u7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 07 Mar 2024 21:15:08 +0000
+Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 427LB0LV029916;
+	Thu, 7 Mar 2024 21:15:07 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wqn59r5tv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 07 Mar 2024 21:15:07 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 427KmJFs031554;
+	Thu, 7 Mar 2024 21:15:07 GMT
+Received: from smtprelay07.dal12v.mail.ibm.com ([172.16.1.9])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wmgnkfw83-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 07 Mar 2024 21:15:07 +0000
+Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com [10.39.53.232])
+	by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 427LF4nP20906368
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 7 Mar 2024 21:15:06 GMT
+Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 092D758066;
+	Thu,  7 Mar 2024 21:15:04 +0000 (GMT)
+Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id A94DC58043;
+	Thu,  7 Mar 2024 21:15:02 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+	by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Thu,  7 Mar 2024 21:15:02 +0000 (GMT)
+Message-ID: <71c151b2-b03a-49a7-87b9-fc902b0cf328@linux.ibm.com>
+Date: Thu, 7 Mar 2024 16:15:01 -0500
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] powerpc/prom_init: Replace linux,sml-base/sml-size
+ with linux,sml-log
 Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ1PR11MB6083:EE_|SN7PR11MB7993:EE_
-x-ms-office365-filtering-correlation-id: 6708558d-1917-4344-fc49-08dc3eeb973e
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: tFBMwIyuTR+ASpnOySJKf6YfpomEvLdh8p+C/DlpDIWqG0NVXdD5gdQ4DMjcsjgCcERix9Q8Gtc4ybomsdS+Zb11CnxNSEBwO5bRlWPi7ilfUniwS7UB9THeUSo07pgfIDkkaDY52poWPXDqiBXs0UMXahH1kHQ1CNzyr9tm5mE8+NGMk5ExJocsduTwzX48i6o9QnlXwdvOfTVEfLDKqXbmQ15LmWtB/fO7AYBHe5GrDr45zv5sN22yfYBUvmPm/q+Tr9G+wgnFV6mZS0RjAjvF52iegF56JPRVlifIQhZyrkZZFVo0lTNnh/73Mu4xfesV5pDEmU/FhSIiYMu4VpEXhp6KWWO02qxMJqIZ6v1a8NNDaRi3HTB2DZmuvurXFt5XodfXTZhLleETOIIKnhaG4+gNvYxtLK01DR9eRJWr7XEuBwPnJP0QfPiyMVGV6wnuY0CJ6L3bgOd82hiAl+n2yS8POz1OERaD4CN3hSfXfxL71Y/924WLDqzAF6/HustbaERAANJ6SQJ1vrb8TE96thDQdA+mVQa5+ytsoIU3AHs/FrqSuPy645XN3orMFefLIQEKgdLkO+4o8BMF1QHrs4kyGXhaZ9/AyFRylbH30VTZl14YQDgBTBXU9lfbPtubYpTa+JwEkctord3ZsXeeiwvzEF2kXG0DRmfs5r1PMUz7NIMqzoPf4Ex2luecY30wdMg1jTx/QXtJHP1avtNfcxu0DLHrSunJpI8FugM=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ1PR11MB6083.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?a1FJTlhpbk1jOXB6K3BGYlpReFcxV3hWZm5QT1hPcTdVY00raFdRWHFuaCtP?=
- =?utf-8?B?RU14MEpqYXQ4NVJmWUl3QW1QQTBLUS9iYWJFL3RxYlBYT09wZ0E4NjlLZHky?=
- =?utf-8?B?cFNuTi90R216clJsdndhOGdETG8vNExIWWVpaGhYSGZ1V08wWHhWWXNmQjVZ?=
- =?utf-8?B?MTZPMDJaQ0d2Ri9PWndOQko5cmhacDc5SEhINTEyYTFUbFFIUVFKSEM5czEx?=
- =?utf-8?B?TmszdlNhMUFDMnNxNnVwYWNadkhra3lLTTAzOWM0RmdZd2MzMUpmMlR3RWtT?=
- =?utf-8?B?TktNanJ3UmJodnhJNUtsbWhKVUJITW5mRVl5RmNlWGgwNngrTlhwNEN6Ti83?=
- =?utf-8?B?T0FqNWs3N0RnQm5sWS85MTVQbmwzOFBIeXdLcUxMdXJhYUwxN3dYUFhXOVp0?=
- =?utf-8?B?MVlpOS9sUDhHbkhoSC9hZnVyWGhuUzBLWUJzS1p3MmJBNXNWWTZaZkcxUmpm?=
- =?utf-8?B?RFBEQkZKdmVPOFEwbVJvRzMwQ01Ed3hRK1NUZGdPRmVFbHBZeWFPNktZaG9w?=
- =?utf-8?B?bVEzQ1o5L0gyZE8wL3RBcW9nZ05qNkw1eXdGOSt6LzJqVExuYkRWbGIvRHBv?=
- =?utf-8?B?aHhaejZqZEdDQnl2eFhPWk55L1krbmZ4NU5hdXBJeWJlaW52Qk9CZkZVOHRz?=
- =?utf-8?B?M2k4NmxxcXhIeVNZYTlhbnVXZzVqZmg1VVJmVElKeU9pa0dueEhRc3EyZDE0?=
- =?utf-8?B?R2pLRy8vaDVkTS91ejk4ZVZLanBseGpNeWk4QmR3aWtPY0xhcUY4NGF6bGEr?=
- =?utf-8?B?ZzZCN2pXS0toVDNYWisxKzF1cjZjbzBzZDlmYlRoQ3owZDcyRHRVYkZyRnN3?=
- =?utf-8?B?ZTVncXVDNjV3d3JqeU9OempLcm51UGZVam93NzdYN0xDaWRSaFBwZXF6UXJR?=
- =?utf-8?B?emNmWFU4STNPdXRuVjZLV1JLU3dxdTVhUUFWSVdDb1pHSEdhTnBXenlNb00x?=
- =?utf-8?B?a0JDcW16aTkwV2tQM01HTlF3VDB0NE9uS2ExU3VpMmd6M0cyQmJTU0tGc2wz?=
- =?utf-8?B?VUtva3FiMkx6T3dyS01RZTNLSnpMVlhydUdySitUU0RGNjZHNWk4L20wbzlS?=
- =?utf-8?B?SHpUK0o2b0lQUlAvWUc2RENHZmxVclIvQ0ZDR1QyeWlGaHZIYU5KYnE1NVRv?=
- =?utf-8?B?OXNpbGtnTmQrM1F0RGlNK0F4VWF1b2VVb2ZCZjhRbmxXZVhBY2E5cmxzMkkx?=
- =?utf-8?B?TEJxUGdTVk9ZQ3ArdnA2d1o0Q3F0NzNFM2p2SDNVeGYrcE8vWGRVLzUvbXpR?=
- =?utf-8?B?Zk94MktaZThEUy9zcm1SRnVkeVpUMlVwTXJMK0FkTDNBYjNlR3kyODJEbXdz?=
- =?utf-8?B?VVlkV2hFejkwS1dqWEU5ckJhVEw1eDdRQnExUHNNUlZsV0VKQXU5dUZpUVgy?=
- =?utf-8?B?S2NWYkMrUmxkM2VaUGhBOWVvL1I4dE5UNkR0NDQzWE1tUVh0VGQrbW9PSjly?=
- =?utf-8?B?aGNIaUNVL2MxckRiWGl1dXpJVWxvMUs5V1BqYWRCcmwxWlA2cTNreE1NeE5v?=
- =?utf-8?B?L1FvSldCZ3ZHK1lKZ0ZCMmNqRC9rYTZZdmJTeWw3TnVXUkY4TkxxRldZMHA5?=
- =?utf-8?B?STVGakd4UllydVNKRjJuYkJEQisyUWVUVm91YXBhd240dVU1OWJTNE40Rmx4?=
- =?utf-8?B?OGZ6bW05M2hoWkoxbnNZN2p3TkkwRGl5L3NmNGc1dFJEa0VWVTFid29Qdnl1?=
- =?utf-8?B?RU9rQmU2UEFRdjA1d25mbFllbEZENzA0ejRVSWZVeHh3T3hxaStncUtkd21Z?=
- =?utf-8?B?eUM1S1lBaVVRVVZ5bVlWam8vQmV0VU1CSmNuUGJqZFNFVThmY09VbWtNNnMz?=
- =?utf-8?B?VC9VT1o4UU1uVThnUTN3aGxJQTMvV05Cc2lDYlhNUkF2VEpnMmRBN2l1QzIv?=
- =?utf-8?B?Sk9PRU1lT3VoelFjRG53bnVBS1EweGdKaDhRRktJUUVUcG5oM1JZWnp6UDhR?=
- =?utf-8?B?cWhqblpuUldsSHkwQjdyR0l1K2JsbGZTWjlyaW1vUytYd3RTWExzQSs4bkRv?=
- =?utf-8?B?Qzc3SWRrYTFCM0pTdXlXSE8wb0s4US9qMjB5UkduSzBTUE5PVHVhbEQ5cnlR?=
- =?utf-8?B?aUxucEJlT01TTGhJMGxGUmpQaTkvdnFuSFBHNkl3OXJWVG9oTE9IdWRoQkJK?=
- =?utf-8?Q?HRfS9nWM5VIdtos8D9RyguaSJ?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+To: Conor Dooley <conor@kernel.org>
+Cc: Michael Ellerman <mpe@ellerman.id.au>, linux-integrity@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, conor.dooley@microchip.com,
+        nayna@linux.ibm.com, Lukas Wunner <lukas@wunner.de>,
+        linux-kernel@vger.kernel.org, jarkko@kernel.org,
+        rnsastry@linux.ibm.com, peterhuewe@gmx.de, viparash@in.ibm.com
+References: <20240306155511.974517-1-stefanb@linux.ibm.com>
+ <20240306155511.974517-2-stefanb@linux.ibm.com> <87jzmenx2c.fsf@mail.lhotse>
+ <768fc5f1-3919-477e-a8e6-16a7e8536add@linux.ibm.com>
+ <20240307-cytoplasm-compare-6656aae737ac@spud>
+From: Stefan Berger <stefanb@linux.ibm.com>
+In-Reply-To: <20240307-cytoplasm-compare-6656aae737ac@spud>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Gdpm0QswGA8oNLuW9vLW8I1m8Aw4LAcC
+X-Proofpoint-ORIG-GUID: pvP8SegNeIzXP_1tgZnv0ven_wP8V5ZH
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ1PR11MB6083.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6708558d-1917-4344-fc49-08dc3eeb973e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Mar 2024 21:14:35.5264
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: qRb/cQjxb6LoaaDuNrU4NiTwrsEOV4vXcinPPtA+o/7/Jcco3L+Rnf1gUBGaPok5NNDGoD8NUhYwUpLVcV8HKA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB7993
-X-OriginatorOrg: intel.com
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-07_16,2024-03-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
+ lowpriorityscore=0 spamscore=0 mlxlogscore=999 adultscore=0 malwarescore=0
+ mlxscore=0 bulkscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311290000 definitions=main-2403070150
 
-PiBUaGlua2luZyBhYm91dCBpdCBldmVuIGRpZmZlcmVudGx5LiBUaGUgZ29hbCBpcyB0byBnaXZl
-IGluZm9ybWF0aW9uDQo+IHRvIHVzZXJzcGFjZSBzbyB3ZSBuZWVkIHRvIHRoaW5rIGFib3V0IHdo
-YXQgd291bGQgaGVscCB1c2VyIHNwYWNlPw0KPiBGb3IgZXhhbXBsZSwgd2hhdCBpZiB0aGVyZSBp
-cyBhIGZpbGUgaW4gaW5mbyB0aGF0IHNob3dzIA0KPiB3aGljaCBDUFVzIGFyZSBhc3NvY2lhdGVk
-IHdpdGggZWFjaCBkb21haW4/DQoNClJlaW5ldHRlLA0KDQpJbnRlcmVzdGluZyBpZGVhLiBUaGF0
-IHdvdWxkIHNhdmUgdXNlcnMgZnJvbSBoYXZpbmcgdG8gY2hhc2UgdGhyb3VnaA0KL3N5cy9kZXZp
-Y2VzL3N5c3RlbS9jcHUvY3B1Ki9jYWNoZS9pbmRleD8vKiB0byBmaWd1cmUgb3V0IHdoYXQgdGhl
-IGRvbWFpbg0KbnVtYmVycyBpbiBzY2hlbWF0YSBmaWxlcyBhbmQgdGhlIG1vbl9kYXRhL21vbl9M
-M19YWCB2YWx1ZXMgbWVhbi4NCg0KTWF5IGJlIGV4dHJhIHVzZWZ1bCBmb3IgQVJNIHdoaWNoIHNl
-ZW1zIHRvIGhhdmUgYmlnIHJhbmRvbS1sb29raW5nIG51bWJlcnMNCmZvciBkb21haW5zIHRoYXQg
-Y2FtZSBvdXQgb2YgQUNQSSB0YWJsZXMuDQoNCkZvciBTTkMgaXQgd291bGQgZ2V0IHRoZSB1c2Vy
-IGRpcmVjdGx5IHRvIHdoYXQgdGhleSBwcm9iYWJseSBjYXJlIGFib3V0DQood2hpY2ggQ1BVcyBh
-cmUgaW4gd2hpY2ggZG9tYWluKS4NCg0KU28gc29tZXRoaW5nIGxpa2UgdGhpcyBmb3IgYW4gU05D
-IDIgc3lzdGVtOg0KDQokIGNhdCAvc3lzL2ZzL3Jlc2N0cmwvaW5mby9MMy9jcHVzDQowOiAwLTM1
-LDcyLTEwNw0KMTogMzYtNzEsMTA4LTE0Mw0KDQokIGNhdCAvc3lzL2ZzL3Jlc2N0cmwvaW5mby9M
-M19NT04vY3B1cw0KMDogMC0xNyw3Mi04OQ0KMTogMTgtMzUsOTAtMTA3DQoyOiAzNi01MywxMDgt
-MTI1DQozOiA1NC03MSwxMjYtMTQzDQoNClttYXliZSB0aGVyZSBpcyBhIGJldHRlciBuYW1lIHRo
-YW4gImNwdXMiIGZvciB0aGlzIGZpbGU/XQ0KDQotVG9ueQ0K
+
+
+On 3/7/24 15:39, Conor Dooley wrote:
+> On Thu, Mar 07, 2024 at 10:11:03AM -0500, Stefan Berger wrote:
+>> On 3/7/24 05:41, Michael Ellerman wrote:
+>>> Stefan Berger <stefanb@linux.ibm.com> writes:
+> 
+>>>
+>> diff --git a/Documentation/devicetree/bindings/tpm/tpm-common.yaml
+>> b/Documentation/devicetree/bindings/tpm/tpm-common.yaml
+>> index 3c1241b2a43f..591c48f8cb74 100644
+>> --- a/Documentation/devicetree/bindings/tpm/tpm-common.yaml
+>> +++ b/Documentation/devicetree/bindings/tpm/tpm-common.yaml
+>> @@ -30,6 +30,11 @@ properties:
+>>         size of reserved memory allocated for firmware event log
+>>       $ref: /schemas/types.yaml#/definitions/uint32
+>>
+>> +  linux,sml-log:
+>> +    description:
+>> +      firmware event log
+> 
+> Can you provide a more complete description here please as to what the
+> different between this and the other property? If I was populating a DT
+> I would have absolutely no idea whether or not to use this or the other
+> property, nor how to go about actually populating it.
+> The "log" in your example doesn't look like an actual log of any sort,
+> but I know nothing about TPMs so I'll take your word for it that that's
+> what a TPM log looks like.
+
+In the example I cannot give a log but only a part of it. The log is in 
+binary format and in case of TPM 2.0 starts with a header followed by 
+log entries about what was measured. I don't think it's necessary to 
+even give the full log header here. You do need some TPM specific 
+knowledge about the 'firmware even log'.
+
+
+The existing properties are described like this:
+
+   linux,sml-base:
+     description:
+       base address of reserved memory allocated for firmware event log
+     $ref: /schemas/types.yaml#/definitions/uint64
+
+   linux,sml-size:
+     description:
+       size of reserved memory allocated for firmware event log
+     $ref: /schemas/types.yaml#/definitions/uint32
+
+Would this describe the new property 'better' by prefixing it with 
+'embedded'?
+
+   linux,sml-log:
+     description:
+       embedded firmware event log
+     $ref: /schemas/types.yaml#/definitions/uint8-array
+
+
+> 
+>> +    $ref: /schemas/types.yaml#/definitions/uint8-array
+>> +
+>>     memory-region:
+>>       description: reserved memory allocated for firmware event log
+>>       maxItems: 1
+>>
+>>
+>> Is my patch missing something?
+> 
+> I think you also need the dependantSchema stuff you had in your original
+> snippet that makes the linux,* properties mutually exclusive with
+> memory-region (or at least something like that).
+> 
+I modified my new example now like this:
+
+..
+             ibm,loc-code = "U9080.HEX.134CA08-V7-C3";
+             linux,sml-log = <00 00 00 00 03 00 00>;
+             linux,sml-size = <0xbce10200>;   <-- added
+
+The check fails like this:
+
+# make dt_binding_check dtbs_check DT_SCHEMA_FILES=tpm/ibm,vtpm.yaml
+   LINT    Documentation/devicetree/bindings
+   CHKDT   Documentation/devicetree/bindings/processed-schema.json
+   SCHEMA  Documentation/devicetree/bindings/processed-schema.json
+   DTEX    Documentation/devicetree/bindings/tpm/ibm,vtpm.example.dts
+   DTC_CHK Documentation/devicetree/bindings/tpm/ibm,vtpm.example.dtb
+/root/linux/Documentation/devicetree/bindings/tpm/ibm,vtpm.example.dtb: 
+tpm@30000003: 'linux,sml-base' is a dependency of 'linux,sml-size'
+         from schema $id: http://devicetree.org/schemas/tpm/tpm-common.yaml#
+/root/linux/Documentation/devicetree/bindings/tpm/ibm,vtpm.example.dtb: 
+tpm@30000003: 'linux,sml-base' is a dependency of 'linux,sml-size'
+         from schema $id: http://devicetree.org/schemas/tpm/ibm,vtpm.yaml#
+/root/linux/Documentation/devicetree/bindings/tpm/ibm,vtpm.example.dtb: 
+tpm@30000003: Unevaluated properties are not allowed ('interrupts', 
+'linux,sml-log', 'linux,sml-size' were unexpected)
+         from schema $id: http://devicetree.org/schemas/tpm/ibm,vtpm.yaml#
+
+
+
+When I modify the existing example like this:
+
+             ibm,loc-code = "U8286.41A.10082DV-V3-C3";
+             linux,sml-base = <0xc60e 0x0>;
+             linux,sml-size = <0xbce10200>;
+             linux,sml-log = <00 00 00 00 03 00 00>;   <- added
+
+The check fails like this:
+
+# make dt_binding_check dtbs_check DT_SCHEMA_FILES=tpm/ibm,vtpm.yaml
+   LINT    Documentation/devicetree/bindings
+   CHKDT   Documentation/devicetree/bindings/processed-schema.json
+   SCHEMA  Documentation/devicetree/bindings/processed-schema.json
+   DTEX    Documentation/devicetree/bindings/tpm/ibm,vtpm.example.dts
+   DTC_CHK Documentation/devicetree/bindings/tpm/ibm,vtpm.example.dtb
+/root/linux/Documentation/devicetree/bindings/tpm/ibm,vtpm.example.dtb: 
+tpm@30000003: More than one condition true in oneOf schema:
+         {'$filename': 
+'/root/linux/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml',
+          '$id': 'http://devicetree.org/schemas/tpm/ibm,vtpm.yaml#',
+          '$schema': 'http://devicetree.org/meta-schemas/core.yaml#',
+          'allOf': [{'$ref': 'tpm-common.yaml#'}],
+          'oneOf': [{'required': ['linux,sml-base', 'linux,sml-size']},
+                    {'required': ['linux,sml-log']}],
+          'patternProperties': {'pinctrl-[0-9]+': True},
+          'properties': {'$nodename': True,
+                         'bootph-all': True,
+                         'bootph-pre-ram': True,
+                         'bootph-pre-sram': True,
+                         'bootph-some-ram': True,
+                         'bootph-verify': True,
+                         'compatible': {'items': [{'enum': ['IBM,vtpm',
+                                                            'IBM,vtpm20']}],
+                                        'maxItems': 1,
+                                        'minItems': 1,
+                                        'type': 'array'},
+                         'device_type': {'items': [{'enum': ['IBM,vtpm',
+ 
+'IBM,vtpm20']}],
+                                         'maxItems': 1,
+                                         'minItems': 1,
+                                         'type': 'array'},
+                         'ibm,#dma-address-cells': {'$ref': 
+'/schemas/types.yaml#/definitions/uint32-array'},
+                         'ibm,#dma-size-cells': {'$ref': 
+'/schemas/types.yaml#/definitions/uint32-array'},
+                         'ibm,loc-code': {'$ref': 
+'/schemas/types.yaml#/definitions/string'},
+                         'ibm,my-dma-window': {'$ref': 
+'/schemas/types.yaml#/definitions/uint32-array',
+                                               'items': {'maxItems': 5,
+                                                         'minItems': 5},
+                                               'maxItems': 1,
+                                               'type': 'array'},
+                         'ibm,my-drc-index': {'$ref': 
+'/schemas/types.yaml#/definitions/uint32'},
+                         'phandle': True,
+                         'pinctrl-names': True,
+                         'reg': {'maxItems': 1, 'minItems': 1},
+                         'secure-status': True,
+                         'status': True},
+          'required': ['compatible',
+                       'device_type',
+                       'reg',
+                       'interrupts',
+                       'ibm,#dma-address-cells',
+                       'ibm,#dma-size-cells',
+                       'ibm,my-dma-window',
+                       'ibm,my-drc-index',
+                       'ibm,loc-code'],
+          'select': {'properties': {'compatible': {'contains': {'enum': 
+['IBM,vtpm',
+ 
+'IBM,vtpm20']}}},
+                     'required': ['compatible']},
+          'title': 'IBM Virtual Trusted Platform Module (vTPM)',
+          'type': 'object',
+          'unevaluatedProperties': False}
+         from schema $id: http://devicetree.org/schemas/tpm/ibm,vtpm.yaml#
+
+
+It errors out on bad examples, which is good.
+
+
+> Please make sure you CC the DT maintainers and list on the v2 and Lukas
+> Wunner too.
+
+Yes, I have them already cc'ed here.
+
+> 
+> Thanks,
+> Conor.
 
