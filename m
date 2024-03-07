@@ -1,75 +1,83 @@
-Return-Path: <linux-kernel+bounces-96100-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96101-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EA9C875717
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:25:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5A06875718
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:26:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CAB9F1F24B6F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:25:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 05C1B1C211F1
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:26:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DDD6136664;
-	Thu,  7 Mar 2024 19:25:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9693013665A;
+	Thu,  7 Mar 2024 19:26:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="lfzr0luF"
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BP9Vp/Sj"
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F2DA13664F
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 19:25:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD8432574B
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 19:26:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709839509; cv=none; b=Qxn7xW5zzcb+CVaNtspcf7sMsphCZhrSZKtVzk2RYMQkrPAm5B9wVaVj2AhuX9HGOHVS3gcMnDlIJZYxgCS9K2VrZh+7BvcppW79s/4S3LOUF36E9bvWNMAKpMaBfxT9TL7TQNeiR7YyjNNszajYd8HQpWRHWmL/L833FK2CIN0=
+	t=1709839577; cv=none; b=SLojYgG1iFd6fNyYkrNKXLbTpooEZ6cb/2g3RcJT7R7uQ0JXLR1aDNwUnmJSo/ZdEzJNH20JiCnKAgY80P74X22pXvr8U0fLuKnXhNNkqknfE85HSJzbO6Bc2tK8R6bKgQAiieVFFjSgtM18IqoMi7flOYcBKRPSA0RB7e1ym9g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709839509; c=relaxed/simple;
-	bh=oEjMPJubQwQ+yWGuBB6rWcBvplbsprHnS4lKv/UZf2I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GWO09XNaWlcOof881RBcIB+F8/T3BFwqePJa1I4A3SmCpSk6N6ohE3K1zzsCpTK8bibJOkAWpxTyXxHC9sRNqS/ru4Uh6iUNCjKyOCNPvwmF2lRAcbknaFxlGukwLcoQ2uWvihCB8p8NlNzh7kT2vKI3/pEFMnPBpe4M1SwUpb4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=lfzr0luF; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1dc3b4b9b62so9817625ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 11:25:08 -0800 (PST)
+	s=arc-20240116; t=1709839577; c=relaxed/simple;
+	bh=vl/7CX10XaEjtfxjgYniZhszRKdGJJTOG6AODuVHJiM=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tFY4pkx1/PqjuWf4ZLPIS2PS22nQL1iklqvDGmYUamvQvv+rACd3kzEZaHnvbQXYMy0kDmxfCPhdKuEahDYWF8P8+WOnmtd/pQWPGOX7rOInPogKdaA3iq918H4nyioJElm2Pu3n0+PK4Pe25vCtRG/gxQ3KVPuobn4tvkyj3dw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BP9Vp/Sj; arc=none smtp.client-ip=209.85.167.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-5131c0691feso1710261e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 11:26:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709839508; x=1710444308; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1709839574; x=1710444374; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=j5DlqCDcPf8EWWXtnaR5E80+mf1MXP/hKxTNVmmfHrg=;
-        b=lfzr0luF6IMg2BdP2uO75Y/EXFfucKeCJ9+VM+UngEgzn7e8goRDaHqfmovCwGocHl
-         xqtG6WPoi73ek60KiEI23luRE3EhXFTzsMQ//OTvEhXCd2hdVUhjo/HLk/JGO3egLLG7
-         9dBsMzuheTmKfWY/VSzqdSk4LudOuiYbS7xbU=
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=JvAHrOWgvGZRpeE0nYshgsb1o+/iRGWu+GmckAg1TGw=;
+        b=BP9Vp/SjqYDxDw3+pLRvEUPd1lxNQnF7Bn2F72LXtMvL0c/X4JrZb/j//dfFAGDekY
+         jnAGGUJvyYTK61XiG2VzF4huHNcUpdZbr7fqS12uPkcO4uQufFCXIyEQ4R36JkK4/CbS
+         tfFH5xMVaENybd8eRYzoJPD1BnH1xE0vfzKmvOtwEvBKxcuICS0jfBD9eOA0kpFTEncY
+         FSkmXV8jV8vV3XV7HxVmv+glAnNH+lC5sY8NP2qLGo++V82snd06MS+61KI1C8H1FEpY
+         zL1dtG+DP3kLsNHlSQp3mx86FEDxFbfr/stTJQBoGUTK7akP6r/8jp272VdVMwwNWgTM
+         6ntQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709839508; x=1710444308;
+        d=1e100.net; s=20230601; t=1709839574; x=1710444374;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=j5DlqCDcPf8EWWXtnaR5E80+mf1MXP/hKxTNVmmfHrg=;
-        b=ti5lM0z9ntgulhRD3o4isVun6TRRb/V5EMsEYBhsZKJcOcciMYJFcwRGDTStzVktDU
-         NbJZAfiOc8IukUxg2W24LMUQl8rblwCOlJhKvRZMoL+mUEPnB9lc+xim4mLsOM3ObZrc
-         gOOfEetbjmWtPcihqVrBLzT0LynyBnsRxKOr4OIPIqvEANxnFA4J41QLnbJxjaV70myO
-         jETtaZqMQBWwX8uEgx7p1+AMGtpls3DnZ15xnDWSfCWxYnuFfsXX3D/gT2/OHZBDTe2j
-         eBK+hx8c1IpwjL9kYtlQzwDiTF0VM+RbkcK+7e0Kozwh/VulFu8pyN9G3RnYY7DD4yoi
-         1Xvg==
-X-Gm-Message-State: AOJu0YxDTcsSagHaUv3W/Vb8089WaFapB17JEb6KW2MvoGFRakjxNzaQ
-	W94v/ThKXXLbV31AD8lmJSEet0QtoteIVKA0YgQeLOHfL6zuQ3skKJ6n+a3CdXoKgT4DCJ/1w38
-	=
-X-Google-Smtp-Source: AGHT+IHo7EsASiOmxXFqs8Zb1/yv8lcNgfCtRpzQ8cUgN7QpnZcXS9cPD0omc0MWoR4KVtDZ3FWjVw==
-X-Received: by 2002:a17:903:1c5:b0:1dd:66e6:ec81 with SMTP id e5-20020a17090301c500b001dd66e6ec81mr76517plh.18.1709839507714;
-        Thu, 07 Mar 2024 11:25:07 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id n2-20020a170902d2c200b001dc2d1bd4d6sm15050839plc.77.2024.03.07.11.25.07
+        bh=JvAHrOWgvGZRpeE0nYshgsb1o+/iRGWu+GmckAg1TGw=;
+        b=SXam2mTf7D+MAdnJ/oEFaprjWmBdyewBLVKwgtfDPRnrmsdeUvWfsZWg8E1HBIIfwg
+         kZi7Be3EMRL+Ah9xL4pCFBAR52lqy8LcGfTvkZLJuOiAQiNACvIe6mvUw9DADdRHqj/a
+         myeNZf3brFXNDkKim4HsQKgm8JdFUGL6/vy/7R1hD25LlaW8ay1cg/NXQgMheyyPOfUy
+         /PoGiT9hximDG7Sz5+I7PTaB1fTbkmiiEAfWM12iLxpMpdCQpgX4BwmnpaA9jmiFBD4C
+         7kXycrVuG1jbirua3yD8YSGqfRp810S1oBHuB3dO84ol0Z2RlJ/0ta9O5BtDboaOU9+b
+         D+kA==
+X-Forwarded-Encrypted: i=1; AJvYcCWWIeX55GS82CdMzy1oNe+KO7tqC4AhlwWbJVgGh7BBoo6iQUMcH8+WoG/2kpHqYZoV+vfbKE27NgFtqcUNVKIgc2IDNpxwHPvs5u1b
+X-Gm-Message-State: AOJu0YxKvckAwcXWNXpUHHTqWBx52GVdb9L6GTDVQmiPuHt5ZfUXRCWZ
+	hTlTyg0HkIgeLpVJ+nZiWoHXYRYlbigLsRs2K8du0GUsYwyUgPXu
+X-Google-Smtp-Source: AGHT+IFVesYlnh2MUChG4BNtHkcE1KeNphAvXWmFLdB2RFMXl2iUKqcB9uDCRtxJMm6DxJAWl4SESA==
+X-Received: by 2002:a19:7717:0:b0:513:2b24:7599 with SMTP id s23-20020a197717000000b005132b247599mr2104689lfc.46.1709839573570;
+        Thu, 07 Mar 2024 11:26:13 -0800 (PST)
+Received: from pc638.lan (host-185-121-47-193.sydskane.nu. [185.121.47.193])
+        by smtp.gmail.com with ESMTPSA id i12-20020ac2522c000000b0051321ac86bcsm3134641lfl.290.2024.03.07.11.26.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Mar 2024 11:25:07 -0800 (PST)
-Date: Thu, 7 Mar 2024 11:25:06 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the kspp tree
-Message-ID: <202403071124.36DC2B617A@keescook>
-References: <20240307171603.45e9c8b2@canb.auug.org.au>
+        Thu, 07 Mar 2024 11:26:13 -0800 (PST)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date: Thu, 7 Mar 2024 20:26:11 +0100
+To: rulinhuang <rulin.huang@intel.com>
+Cc: urezki@gmail.com, bhe@redhat.com, akpm@linux-foundation.org,
+	colin.king@intel.com, hch@infradead.org,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	lstoakes@gmail.com, tianyou.li@intel.com, tim.c.chen@intel.com,
+	wangyang.guo@intel.com, zhiguo.zhou@intel.com
+Subject: Re: [PATCH v8] mm/vmalloc: Eliminated the lock contention from twice
+ to once
+Message-ID: <ZeoU05VSPJQd0Vnc@pc638.lan>
+References: <20240307021440.64967-1-rulin.huang@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,23 +86,170 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240307171603.45e9c8b2@canb.auug.org.au>
+In-Reply-To: <20240307021440.64967-1-rulin.huang@intel.com>
 
-On Thu, Mar 07, 2024 at 05:16:03PM +1100, Stephen Rothwell wrote:
-> Hi all,
+On Wed, Mar 06, 2024 at 09:14:40PM -0500, rulinhuang wrote:
+> When allocating a new memory area where the mapping address range is
+> known, it is observed that the vmap_node->busy.lock is acquired twice.
 > 
-> After merging the kspp tree, today's linux-next build (htmldocs) produced
-> this warning:
+> The first acquisition occurs in the alloc_vmap_area() function when
+> inserting the vm area into the vm mapping red-black tree. The second
+> acquisition occurs in the setup_vmalloc_vm() function when updating the
+> properties of the vm, such as flags and address, etc.
 > 
-> include/linux/overflow.h:408: warning: Excess function parameter 'initializer...' description in '_DEFINE_FLEX'
+> Combine these two operations together in alloc_vmap_area(), which
+> improves scalability when the vmap_node->busy.lock is contended.
+> By doing so, the need to acquire the lock twice can also be eliminated
+> to once.
 > 
-> Introduced by commit
+> With the above change, tested on intel sapphire rapids
+> platform(224 vcpu), a 4% performance improvement is
+> gained on stress-ng/pthread(https://github.com/ColinIanKing/stress-ng),
+> which is the stress test of thread creations.
 > 
->   014dc22af922 ("overflow: Change DEFINE_FLEX to take __counted_by member")
+> Co-developed-by: "Chen, Tim C" <tim.c.chen@intel.com>
+> Signed-off-by: "Chen, Tim C" <tim.c.chen@intel.com>
+> Co-developed-by: "King, Colin" <colin.king@intel.com>
+> Signed-off-by: "King, Colin" <colin.king@intel.com>
+> Signed-off-by: rulinhuang <rulin.huang@intel.com>
+> ---
+> V1 -> V2: Avoided the partial initialization issue of vm and
+> separated insert_vmap_area() from alloc_vmap_area()
+> V2 -> V3: Rebased on 6.8-rc5
+> V3 -> V4: Rebased on mm-unstable branch
+> V4 -> V5: Canceled the split of alloc_vmap_area()
+> and keep insert_vmap_area()
+> V5 -> V6: Added bug_on
+> V6 -> V7: Adjusted the macros
+> V7 -> V8: Removed bugs_on and adjustion of macros
+> ---
+>  mm/vmalloc.c | 50 ++++++++++++++++++++++----------------------------
+>  1 file changed, 22 insertions(+), 28 deletions(-)
+> 
+> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> index 25a8df497255..f933a62fef50 100644
+> --- a/mm/vmalloc.c
+> +++ b/mm/vmalloc.c
+> @@ -1841,15 +1841,26 @@ node_alloc(unsigned long size, unsigned long align,
+>  	return va;
+>  }
+>  
+> +static inline void setup_vmalloc_vm(struct vm_struct *vm,
+> +	struct vmap_area *va, unsigned long flags, const void *caller)
+> +{
+> +	vm->flags = flags;
+> +	vm->addr = (void *)va->va_start;
+> +	vm->size = va->va_end - va->va_start;
+> +	vm->caller = caller;
+> +	va->vm = vm;
+> +}
+> +
+>  /*
+>   * Allocate a region of KVA of the specified size and alignment, within the
+> - * vstart and vend.
+> + * vstart and vend. If vm is passed in, the two will also be bound.
+>   */
+>  static struct vmap_area *alloc_vmap_area(unsigned long size,
+>  				unsigned long align,
+>  				unsigned long vstart, unsigned long vend,
+>  				int node, gfp_t gfp_mask,
+> -				unsigned long va_flags)
+> +				unsigned long va_flags, struct vm_struct *vm,
+> +				unsigned long flags, const void *caller)
+>  {
+>  	struct vmap_node *vn;
+>  	struct vmap_area *va;
+> @@ -1912,6 +1923,9 @@ static struct vmap_area *alloc_vmap_area(unsigned long size,
+>  	va->vm = NULL;
+>  	va->flags = (va_flags | vn_id);
+>  
+> +	if (vm)
+> +		setup_vmalloc_vm(vm, va, flags, caller);
+> +
+>  	vn = addr_to_node(va->va_start);
+>  
+>  	spin_lock(&vn->busy.lock);
+> @@ -2486,7 +2500,8 @@ static void *new_vmap_block(unsigned int order, gfp_t gfp_mask)
+>  	va = alloc_vmap_area(VMAP_BLOCK_SIZE, VMAP_BLOCK_SIZE,
+>  					VMALLOC_START, VMALLOC_END,
+>  					node, gfp_mask,
+> -					VMAP_RAM|VMAP_BLOCK);
+> +					VMAP_RAM|VMAP_BLOCK, NULL,
+> +					0, NULL);
+>  	if (IS_ERR(va)) {
+>  		kfree(vb);
+>  		return ERR_CAST(va);
+> @@ -2843,7 +2858,8 @@ void *vm_map_ram(struct page **pages, unsigned int count, int node)
+>  		struct vmap_area *va;
+>  		va = alloc_vmap_area(size, PAGE_SIZE,
+>  				VMALLOC_START, VMALLOC_END,
+> -				node, GFP_KERNEL, VMAP_RAM);
+> +				node, GFP_KERNEL, VMAP_RAM,
+> +				NULL, 0, NULL);
+>  		if (IS_ERR(va))
+>  			return NULL;
+>  
+> @@ -2946,26 +2962,6 @@ void __init vm_area_register_early(struct vm_struct *vm, size_t align)
+>  	kasan_populate_early_vm_area_shadow(vm->addr, vm->size);
+>  }
+>  
+> -static inline void setup_vmalloc_vm_locked(struct vm_struct *vm,
+> -	struct vmap_area *va, unsigned long flags, const void *caller)
+> -{
+> -	vm->flags = flags;
+> -	vm->addr = (void *)va->va_start;
+> -	vm->size = va->va_end - va->va_start;
+> -	vm->caller = caller;
+> -	va->vm = vm;
+> -}
+> -
+> -static void setup_vmalloc_vm(struct vm_struct *vm, struct vmap_area *va,
+> -			      unsigned long flags, const void *caller)
+> -{
+> -	struct vmap_node *vn = addr_to_node(va->va_start);
+> -
+> -	spin_lock(&vn->busy.lock);
+> -	setup_vmalloc_vm_locked(vm, va, flags, caller);
+> -	spin_unlock(&vn->busy.lock);
+> -}
+> -
+>  static void clear_vm_uninitialized_flag(struct vm_struct *vm)
+>  {
+>  	/*
+> @@ -3002,14 +2998,12 @@ static struct vm_struct *__get_vm_area_node(unsigned long size,
+>  	if (!(flags & VM_NO_GUARD))
+>  		size += PAGE_SIZE;
+>  
+> -	va = alloc_vmap_area(size, align, start, end, node, gfp_mask, 0);
+> +	va = alloc_vmap_area(size, align, start, end, node, gfp_mask, 0, area, flags, caller);
+>  	if (IS_ERR(va)) {
+>  		kfree(area);
+>  		return NULL;
+>  	}
+>  
+> -	setup_vmalloc_vm(area, va, flags, caller);
+> -
+>  	/*
+>  	 * Mark pages for non-VM_ALLOC mappings as accessible. Do it now as a
+>  	 * best-effort approach, as they can be mapped outside of vmalloc code.
+> @@ -4584,7 +4578,7 @@ struct vm_struct **pcpu_get_vm_areas(const unsigned long *offsets,
+>  
+>  		spin_lock(&vn->busy.lock);
+>  		insert_vmap_area(vas[area], &vn->busy.root, &vn->busy.head);
+> -		setup_vmalloc_vm_locked(vms[area], vas[area], VM_ALLOC,
+> +		setup_vmalloc_vm(vms[area], vas[area], VM_ALLOC,
+>  				 pcpu_get_vm_areas);
+>  		spin_unlock(&vn->busy.lock);
+>  	}
+> 
+> base-commit: f4239a5d7acc1b5ff9bac4d5471000b952279ef0
+> -- 
+> 2.43.0
+> 
+Thank you to be patient and thank you for your work!
 
-Thanks! I've fixed this now. (Weird that kern-doc will take "..." as an
-argument name, but "foo..." becomes "foo" not "foo...", but okay.)
+Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 
--- 
-Kees Cook
+--
+Uladzislau Rezki
 
