@@ -1,147 +1,227 @@
-Return-Path: <linux-kernel+bounces-95559-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95705-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51865874F76
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 13:52:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60C27875183
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:11:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0BC4C28209A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:52:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 13A5E283D07
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:11:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4472512BEB1;
-	Thu,  7 Mar 2024 12:52:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD76112D775;
+	Thu,  7 Mar 2024 14:09:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d8l6/5Ae"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="PKX94h8/";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Q7rlOwPG";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="PKX94h8/";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Q7rlOwPG"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8086E5F86B;
-	Thu,  7 Mar 2024 12:52:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B55AE12C7EA
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 14:09:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709815936; cv=none; b=oG2PTmGin7OpEsZx/7EK7ylhv0QehUhojIIfGHcYWwxOHkMnRoU9MXRhyzRH8z0bkSAY1NdeKK8w/rdlx/shxLDe6TWpekRthR6VLS5zJS/44YsL/ujfpR2eJ0vyU+Q6fN7WBrpNI2iTPn+tFqq3iIZ75+hGWZleiZ5wUQbe5xs=
+	t=1709820556; cv=none; b=oeYyuhnrKPSn9dDwoe1bOVi4sJkigG2WvSSomM0yt04vG6DyGw2kiB/5Ked3xTVtDt3zjKw27BzuwVyxg6AvPHNn/O/NaybL3RECNzFsmoQsPVedYoNeVPA/pglwlk1keXAm27qQeznoLUA2y7W7lBbtRLG3k6ptB74F74FE5AM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709815936; c=relaxed/simple;
-	bh=MblaJ/xBbyAlKSi+e0NY+oob1/RL+llTsv1GcmbHug4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KsT1a+L66yP6Ypq2aKND9d4sWQRnBYAlwUkC7N12to2nZTWMqC8mhwSmx0MXjBnLykvBGBY5rtnmmS3JVBCeKb4EmvOyntUAKQ2xFs5HLFqJTczMOFQ9RYA0KdaLbR6hNP0TcYSOP0B7iDQ6Ob09vpGiFCitbhaOVJahWSmjqXM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d8l6/5Ae; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB771C433F1;
-	Thu,  7 Mar 2024 12:52:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709815936;
-	bh=MblaJ/xBbyAlKSi+e0NY+oob1/RL+llTsv1GcmbHug4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=d8l6/5Ae9Jc8Q5gtpYdqmVO7Bn5xYa/nI0y/WNBC7lZ9A+7MTGoERrSyeZLKuj2JQ
-	 MQ4hySceKJxRI2PnSYBmJI+xBMeN6Z7LeijVfT6/2KKfAE6LPJoN8Jvqott/Ropt1l
-	 N/lu9QrVbR2yUVmeivDKG1K2LzanzlGxPC1tvzK2MzGwKTwbjpQNOYpd2vuv3FWP6+
-	 a6reH1zjT7H1D7+CqpY85CGl07Vbq4nAyVopneT7QIakgnNou0w58+YUuV3IXFAKMz
-	 QP4g9QfkUKAqgpI4zlGj8VYJLTA4Unq8fPewhuYw8pcZMoCHDsisUguS31qfQ9a/7+
-	 XkMn4AbGjMIcw==
-Date: Thu, 7 Mar 2024 12:52:10 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Xingyu Wu <xingyu.wu@starfivetech.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
-	Jaroslav Kysela <perex@perex.cz>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Walker Chen <walker.chen@starfivetech.com>,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
-Subject: Re: [PATCH v1 2/2] ASoC: starfive: Add PDM controller support
-Message-ID: <fddca901-273c-4b06-ad59-d156941920d6@sirena.org.uk>
-References: <20240307033708.139535-1-xingyu.wu@starfivetech.com>
- <20240307033708.139535-3-xingyu.wu@starfivetech.com>
+	s=arc-20240116; t=1709820556; c=relaxed/simple;
+	bh=aMmHWuaGRqxU5/1X5Y6gGUwm6ESR75LQ1vvzoD4R0qQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pEeyhSyukinc/29vttH4BXmXSk0M6Rw5dFhDBSpgJiuw18Y/i/sErKk8VW/1dSp8ERoh1S7JXJ8sdR83Dj7JtwSVwWL/uDGbluissFsh6m6rG56RkR30nnwnptxCXs4y6AaWe8Nu70WKtjeByUhfidMmH8xTQKtAfmH21C9TpCk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=PKX94h8/; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Q7rlOwPG; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=PKX94h8/; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Q7rlOwPG; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 613F925777;
+	Thu,  7 Mar 2024 12:52:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1709815947; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FVsqeuZCf7wP7oVic4Vlb7w78aI5HGS6viBQbHD00pw=;
+	b=PKX94h8/ylHaLrooR/zNzCol34chrap/nqQjlVaJ5M3Je5EkJjm2a4WySqV9Nf+wgatZPr
+	f+W4mW8FYAj+pdXQF9apCuKqqWGeoVk8xyq4LcAnEfzneMaUtVIBIPLTPuhtH+eUVkmTOs
+	M+BhBdFDCsHfnzOo5/GtKh4jKdPGG2g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1709815947;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FVsqeuZCf7wP7oVic4Vlb7w78aI5HGS6viBQbHD00pw=;
+	b=Q7rlOwPGwpmbTUitNvR2Iu2rgVU2wW6L51zpGaoecFPJRY6jVrPrfxSCyWH1utl5bnrLMA
+	quzrAe1fChUtXVCQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1709815947; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FVsqeuZCf7wP7oVic4Vlb7w78aI5HGS6viBQbHD00pw=;
+	b=PKX94h8/ylHaLrooR/zNzCol34chrap/nqQjlVaJ5M3Je5EkJjm2a4WySqV9Nf+wgatZPr
+	f+W4mW8FYAj+pdXQF9apCuKqqWGeoVk8xyq4LcAnEfzneMaUtVIBIPLTPuhtH+eUVkmTOs
+	M+BhBdFDCsHfnzOo5/GtKh4jKdPGG2g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1709815947;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FVsqeuZCf7wP7oVic4Vlb7w78aI5HGS6viBQbHD00pw=;
+	b=Q7rlOwPGwpmbTUitNvR2Iu2rgVU2wW6L51zpGaoecFPJRY6jVrPrfxSCyWH1utl5bnrLMA
+	quzrAe1fChUtXVCQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3FC40136BA;
+	Thu,  7 Mar 2024 12:52:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id dhkXD4q46WUlTQAAD6G6ig
+	(envelope-from <hare@suse.de>); Thu, 07 Mar 2024 12:52:26 +0000
+Message-ID: <b23a5c7c-a877-4cde-acd4-50c21c3ef1fc@suse.de>
+Date: Thu, 7 Mar 2024 13:52:25 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="OMuJ0wTIjHrUHwqT"
-Content-Disposition: inline
-In-Reply-To: <20240307033708.139535-3-xingyu.wu@starfivetech.com>
-X-Cookie: Been Transferred Lately?
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 0/2] nvme-fabrics: short-circuit connect retries
+Content-Language: en-US
+To: Sagi Grimberg <sagi@grimberg.me>, Daniel Wagner <dwagner@suse.de>,
+ James Smart <james.smart@broadcom.com>
+Cc: Keith Busch <kbusch@kernel.org>, Christoph Hellwig <hch@lst.de>,
+ linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20240305080005.3638-1-dwagner@suse.de>
+ <22b01fb4-b543-43b2-949c-1873105dc343@grimberg.me>
+ <72c1d3a8-14ad-43e8-a68a-25be903698c4@suse.de>
+ <432a39d5-6d08-4d38-a357-7c8d9123189a@grimberg.me>
+ <08f3d804-f94b-4a2f-897b-7fee3411e6fc@suse.de>
+ <b02588cb-6fbc-4116-86d6-173c115f50c5@grimberg.me>
+From: Hannes Reinecke <hare@suse.de>
+In-Reply-To: <b02588cb-6fbc-4116-86d6-173c115f50c5@grimberg.me>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -4.28
+X-Spamd-Result: default: False [-4.28 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.19)[-0.929];
+	 RCPT_COUNT_SEVEN(0.00)[7];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[]
+X-Spam-Flag: NO
 
+On 3/7/24 13:14, Sagi Grimberg wrote:
+> 
+> 
+> On 07/03/2024 13:45, Hannes Reinecke wrote:
+>> On 3/7/24 12:30, Sagi Grimberg wrote:
+>>>
+[ .. ]
+>>>
+>>> Where is this retried today, I don't see where connect failure is 
+>>> retried, outside of a periodic reconnect.
+>>> Maybe I'm missing where what is the actual failure here.
+>>
+>> static void nvme_tcp_reconnect_ctrl_work(struct work_struct *work)
+>> {
+>>         struct nvme_tcp_ctrl *tcp_ctrl =
+>>                         container_of(to_delayed_work(work),
+>>                         struct nvme_tcp_ctrl, connect_work);
+>>         struct nvme_ctrl *ctrl = &tcp_ctrl->ctrl;
+>>
+>>         ++ctrl->nr_reconnects;
+>>
+>>         if (nvme_tcp_setup_ctrl(ctrl, false))
+>>                 goto requeue;
+>>
+>>         dev_info(ctrl->device, "Successfully reconnected (%d attempt)\n",
+>>                         ctrl->nr_reconnects);
+>>
+>>         ctrl->nr_reconnects = 0;
+>>
+>>         return;
+>>
+>> requeue:
+>>         dev_info(ctrl->device, "Failed reconnect attempt %d\n",
+>>
+>> and nvme_tcp_setup_ctrl() returns either a negative errno or an NVMe 
+>> status code (which might include the DNR bit).
+> 
+> I thought this is about the initialization. yes today we ignore the 
+> status in re-connection assuming that whatever
+> happened, may (or may not) resolve itself. The basis for this assumption 
+> is that if we managed to connect the first
+> time there is no reason to assume that connecting again should fail 
+> persistently.
+> 
+And that is another issue where I'm not really comfortable with.
+While it would make sense to have the connect functionality to be
+one-shot, and let userspace retry if needed, the problem is that we
+don't have a means of transporting that information to userspace.
+The only thing which we can transport is an error number, which
+could be anything and mean anything.
+If we had a defined way stating: 'This is a retryable, retry with the 
+same options.' vs 'This is retryable error, retry with modified 
+options.' vs 'This a non-retryable error, don't bother.' I'd be
+fine with delegating retries to userspace.
+But currently we don't.
 
---OMuJ0wTIjHrUHwqT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> If there is a consensus that we should not assume it, its a valid 
+> argument. I didn't see where this happens with respect
+> to authentication though.
 
-On Thu, Mar 07, 2024 at 11:37:08AM +0800, Xingyu Wu wrote:
+nvmf_connect_admin_queue():
 
-> +static const struct snd_kcontrol_new jh8100_pdm_snd_controls[] = {
-> +	SOC_SINGLE("DC compensation Control", JH8100_PDM_DMIC_CTRL0, 30, 1, 0),
-> +	SOC_SINGLE("High Pass Filter Control", JH8100_PDM_DMIC_CTRL0, 28, 1, 0),
-> +	SOC_SINGLE("Left Channel Volume Control", JH8100_PDM_DMIC_CTRL0, 23, 1, 0),
-> +	SOC_SINGLE("Right Channel Volume Control", JH8100_PDM_DMIC_CTRL0, 22, 1, 0),
-> +	SOC_SINGLE_TLV("Volume", JH8100_PDM_DMIC_CTRL0, 16, 0x3F, 1, volume_tlv),
-> +	SOC_SINGLE("Data MSB Shift", JH8100_PDM_DMIC_CTRL0, 1, 7, 0),
-> +	SOC_SINGLE("SCALE", JH8100_PDM_DC_SCALE0, 0, 0x3F, 0),
-> +	SOC_SINGLE("DC offset", JH8100_PDM_DC_SCALE0, 8, 0xFFFFF, 0),
-> +};
+             /* Authentication required */
+             ret = nvme_auth_negotiate(ctrl, 0);
+             if (ret) {
+                     dev_warn(ctrl->device,
+                              "qid 0: authentication setup failed\n");
+                     ret = NVME_SC_AUTH_REQUIRED;
+                     goto out_free_data;
+             }
+             ret = nvme_auth_wait(ctrl, 0);
+             if (ret)
+                     dev_warn(ctrl->device,
+                              "qid 0: authentication failed\n");
+             else
+                     dev_info(ctrl->device,
+                              "qid 0: authenticated\n");
 
-Simple on/off switches should have names ending in Switch, volumes
-should end in Volume as per control-names.rst.  Please for the next
-version you post show the output of running mixer-test on a system with
-this device, it will identify these and other issues.
+The first call to 'nvme_auth_negotiate()' is just for setting up
+the negotiation context and start the protocol. So if we get
+an error here it's pretty much non-retryable as it's completely
+controlled by the fabrics options.
+nvme_auth_wait(), OTOH, contains the actual result from the negotiation,
+so there we might or might not retry, depending on the value of 'ret'.
 
-> +static int jh8100_pdm_component_probe(struct snd_soc_component *component)
-> +{
-> +	struct jh8100_pdm_priv *priv = snd_soc_component_get_drvdata(component);
-> +
-> +	snd_soc_component_init_regmap(component, priv->regmap);
-> +	snd_soc_add_component_controls(component, jh8100_pdm_snd_controls,
-> +				       ARRAY_SIZE(jh8100_pdm_snd_controls));
+Cheers,
 
-You can just specify the controls in the snd_soc_compoenent_driver.
+Hannes
 
-> +#ifdef CONFIG_PM
-> +static int jh8100_pdm_runtime_suspend(struct device *dev)
-> +{
-> +	struct jh8100_pdm_priv *priv = dev_get_drvdata(dev);
-> +
-> +	clk_disable_unprepare(priv->icg_clk);
-> +	return 0;
-> +}
-> +
-> +static int jh8100_pdm_runtime_resume(struct device *dev)
-> +{
-> +	struct jh8100_pdm_priv *priv = dev_get_drvdata(dev);
-> +
-> +	return jh8100_pdm_crg_enable(priv);
-> +}
-> +#endif
-
-It's weird that the runtime suspend and resume are not symmetric - why
-do we need to bring the device out of reset but not put it into reset?
-
-> +	if (!device_property_read_u8(&pdev->dev, "starfive,pdm-modulex", &using_modulex))
-> +		if (using_modulex == 1)
-> +			base += JH8100_PDM_MODULEX_SHIFT; /* Use module 1 */
-
-This really looks like you've got one hardware block with two devices in
-it, either the address ranges registered for the devices in DT should be
-separate and you shouldn't need this property or you should have one
-component registering both PDM interfaces.
-
---OMuJ0wTIjHrUHwqT
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXpuHoACgkQJNaLcl1U
-h9Bj5Af/R9ushCNRKrPb78ikXIhM0zTjHfChPI6K6mCQsquHeplDYjw97T1NMXpF
-t3mQJVASZqIIv4ve6aaaObvoNYMNfQHF1qxI7fw8TL2RR1nqo2MI6b7+hZEMcFLo
-iW9+/SHL1mFHQ+gSdRIgDBj/ym9Plcryy1ajxFom8gqitvA/o0kZJHez6EpW2t0I
-avPYFO3iHOTB77FSG6YcwY+RKqrluLRgVAuNXIay1P9+VKW0Zx4gFo7ZRcd2s1xz
-5bGuh2cqhWCOwJXiKYjNUZPs8usGcGDEc6TtluNXKACrtzRPCymY1YYpVWEPkK6C
-5X21iVfOR/nJ0+kRIKeGzk57bmvIBA==
-=W35A
------END PGP SIGNATURE-----
-
---OMuJ0wTIjHrUHwqT--
 
