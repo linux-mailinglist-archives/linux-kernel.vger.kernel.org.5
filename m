@@ -1,149 +1,126 @@
-Return-Path: <linux-kernel+bounces-95369-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95370-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64E4B874CCD
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:57:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3501874CD0
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:58:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E8F3BB20E73
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:57:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 161031C227D3
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:58:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53571126F3E;
-	Thu,  7 Mar 2024 10:57:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54406126F3C;
+	Thu,  7 Mar 2024 10:57:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="Tr7xuXde"
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="potKs36F"
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3357B125DC;
-	Thu,  7 Mar 2024 10:57:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.148.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E70A163411
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 10:57:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709809027; cv=none; b=X9ml+BxO846GxEtp0sZIIx1KTDOF0JeIKoiaToopa7dLFO4L1h6/IeKXNR+pbJij1c+aQjHeLSGsSdNRz7k5vDAVhgt9A/30fnl7RX+CkMGHSyGGd3b5dThqB5jUKZ7Be2HcA2UR3JuDVbHT3Vzf8BvNeOtn8yKLg2ClpIECqyw=
+	t=1709809075; cv=none; b=exQeCY8wruphAwpHZTJGfonX7C7+u0I8C5Yrn8u44MPp7UK6ZXkk4FKxsIiVK9F1ZNPQUEVlfCmZR0t4KuFT6lURi0Y5iSvVYPaJkv8+vaFcb3xfuvp2UzDMUmN/4Q/PkhoSC8ogEbvE2zd/2aSEA/im+6BjnrZ3Pj47XQUefd0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709809027; c=relaxed/simple;
-	bh=WM12WLtYAz2cxFua0kfokyW2yT1caSiNtxTO/r91NvY=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=S4t35sYIxy9oaMX4cDsMoHSO4SLPYaZOHDzRHvOTKOW+7Djoz33edfHKtMwA/2JDdZj7+wjL4h7p6i2sCjsitehlmhdhG1X6aKGtcYCqEmE/WuWAPQc33UGQzO85sKT0STxNz2D10Ra7ZQjJhm4OWmYH0jdt1J45m2nTA+3m83c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=Tr7xuXde; arc=none smtp.client-ip=67.231.148.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-	by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4275jbOD008239;
-	Thu, 7 Mar 2024 02:56:58 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=pfpt0220; bh=3BqF1EAT
-	OqrJt33ZWiXXxcwocmc1ljkbIFVDyslFIyU=; b=Tr7xuXdeg+rnUJzwKY9nMzXp
-	L4l3o8YQV7IG2E264x6uPkPy4RlOTaInL8BKtFxlwj3B+dzfRrHoymwjwryKFe8H
-	V9QesUG63+yYbRaYZCVaoxsWDuHRvKEvhw+nWu7j3YrXgGbtC3ecSKUXYfxOGafv
-	wPlic/edeUr+sDsjRSxGOknSERvbXdQLNfpETmCv9vi3Qq+ar8xGjCflCKvIdeDs
-	/UY3TR0kKpjV5hhZjUrBZXbhPeo8OAbSqUi3zS/bkCSSwooXpJsqKimtAFyFs7Lv
-	xiSmT/53srabsgrc7FTNJN2fhhTInhQVrue6XHyy/hIyHYeZAdUgHt1VqKtCBw==
-Received: from dc5-exch05.marvell.com ([199.233.59.128])
-	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3wq7q8ruux-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 07 Mar 2024 02:56:58 -0800 (PST)
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH05.marvell.com
- (10.69.176.209) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Thu, 7 Mar
- 2024 02:56:57 -0800
-Received: from DC5-EXCH05.marvell.com (10.69.176.209) by
- DC5-EXCH02.marvell.com (10.69.176.39) with Microsoft SMTP Server (TLS) id
- 15.0.1497.48; Thu, 7 Mar 2024 02:56:36 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH05.marvell.com
- (10.69.176.209) with Microsoft SMTP Server id 15.2.1258.12 via Frontend
- Transport; Thu, 7 Mar 2024 02:56:36 -0800
-Received: from hyd1425.marvell.com (unknown [10.29.37.83])
-	by maili.marvell.com (Postfix) with ESMTP id B17A03F7055;
-	Thu,  7 Mar 2024 02:56:32 -0800 (PST)
-From: Sai Krishna <saikrishnag@marvell.com>
-To: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <sgoutham@marvell.com>,
-        <lcherian@marvell.com>, <jerinj@marvell.com>, <gakula@marvell.com>,
-        <hkelam@marvell.com>, <sbhatta@marvell.com>
-CC: Sai Krishna <saikrishnag@marvell.com>
-Subject: [net PATCH] octeontx2-af: Fix devlink params
-Date: Thu, 7 Mar 2024 16:26:23 +0530
-Message-ID: <20240307105623.474757-1-saikrishnag@marvell.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1709809075; c=relaxed/simple;
+	bh=/fiBZaDVI8D+68biIo4CAt/ib/Y3X7aN1Tu1p+7XeA4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=egSMAeDqOv5sbB0OvxP2YbV7amd7BAp/6OxAW0gUodiwrtBkdIrmiTdV+2nxyTrquAwgf3Z4sdkahVhanM1Ff7lMvGUCSIxB3nSho7U/0jQHbs70yQfwYjPjQJdE/mxz6gUFOzkV35/WAgdNBfwa0OBnvl6Uh31mJ/AvDvmrutY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=potKs36F; arc=none smtp.client-ip=209.85.128.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-6096ff3e4abso6664037b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 02:57:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709809073; x=1710413873; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZNxbMXYwIPnmt8O7zwgRdhBxxDwkUuvEtABz+BytD3g=;
+        b=potKs36FdQiGFwxfytailT+Lu0noLufeLXha3aRGfKtkhnTwieaGFB/pg9SlT7GznM
+         MyDgILKuOCzHPja4SkFVZ2cl0GrK+Rg6mSAiTs6MZ2z/F6t8AibQyoqSkP2PnEVgfZQu
+         kc18sRW6RjvQNMMQ1kVg7uk50bKDEu6lldroabwit4Jgs/i0ZVwM7muRepVtTV8u6134
+         LRYRhaCrWpQlin94RwpuoyV5/pvCjwGDXLkSWjkw7rInz/utmy2IdES9+0qdIT6U+/Kp
+         adV4ctS6miq3eOX5NOUNz697Um8mRklyV7uzqZ+tb7v9CpWSdj2fOHhrUOOkMIRVQdug
+         Lxbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709809073; x=1710413873;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZNxbMXYwIPnmt8O7zwgRdhBxxDwkUuvEtABz+BytD3g=;
+        b=w5enOpHlcEQlddzCssATFrdZAZk+Z5GTxptlG4gPra/YETDcqfFyMF2SMZsajrbcOg
+         EFT2vniQuSo7tW00xfP/qKVpN05Q6rQSix6hD7dWAQq6h6KX+26FdYHQZSSgngusQCuI
+         7OW1sMMw691r48eYdJ0LPKAe0sVa4T8ElgBLMjGumnFwTX5VmwQIYbkk9OqkmVSs+5fa
+         7IQEHDWc+j3d4qkpzfCUTjnea4Al4/JTWnsSrJG8u7Am/58N2M+CIdQ9inl1VU19KhcR
+         jew0HmfwApCrG3SH1BlvuZe89W37yqgYcSNpUYFjt6Tl249YhUD1D/M1BXBCfVI3qAja
+         hcvg==
+X-Forwarded-Encrypted: i=1; AJvYcCW2tzxMWxXl1V4dKYEu2/gflpKRBBhbcH+ABuj6k2n2+JbiJ8k46mVJAM7n83j55sBiiJOagfcdu03+3+l3heOLz/P+IBoGnxj7iwv8
+X-Gm-Message-State: AOJu0Yz0JekY5VunRtnmcO96V+hEFpUZsKYpO4oVi8kXe5KWaHN76tj4
+	c9vjz9LAovlqprExnuj+0ugx1jWrZft41TodF63pqkQOTvollw1KMrGRSnla8rFTIYmVFeb8T+W
+	dZEdOeWzriwOwl7tpgyh4JHxlhAIoEfJuyZ3wEg==
+X-Google-Smtp-Source: AGHT+IEI8kispC//A1bCKjmVv5onGnRwEMCzuKG8Vfr/1UKLJdm/uHCFvoMXjzgrc6VtDDnVDrYtTnGU/SyINCrOfrc=
+X-Received: by 2002:a25:83cd:0:b0:dd0:453b:485e with SMTP id
+ v13-20020a2583cd000000b00dd0453b485emr9701343ybm.58.1709809072881; Thu, 07
+ Mar 2024 02:57:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: ygj9CeR1aXefL178zpeNV2lhtwcXiihr
-X-Proofpoint-GUID: ygj9CeR1aXefL178zpeNV2lhtwcXiihr
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-07_07,2024-03-06_01,2023-05-22_02
+References: <20240307085135.16245-1-amishin@t-argos.ru>
+In-Reply-To: <20240307085135.16245-1-amishin@t-argos.ru>
+From: Ulf Hansson <ulf.hansson@linaro.org>
+Date: Thu, 7 Mar 2024 11:57:16 +0100
+Message-ID: <CAPDyKFoYRT=P+4L+5ciNPxEHcS7hoXPef__NQoodxkSy=39Teg@mail.gmail.com>
+Subject: Re: [PATCH] mmc: dw_mmc: Fix potential null pointer risk
+To: Aleksandr Mishin <amishin@t-argos.ru>
+Cc: Jaehoon Chung <jh80.chung@samsung.com>, Wen Zhiwei <wenzhiwei@kylinos.cn>, 
+	linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	lvc-project@linuxtesting.org
+Content-Type: text/plain; charset="UTF-8"
 
-From: Sunil Goutham <sgoutham@marvell.com>
+On Thu, 7 Mar 2024 at 09:53, Aleksandr Mishin <amishin@t-argos.ru> wrote:
+>
+> In dw_mci_runtime_resume() 'host->slot' could be null, but check is not cover all corresponding code.
+> Fix this bug by changing check place.
 
-Devlink param for adjusting NPC MCAM high zone
-area is in wrong param list and is not getting
-activated on CN10KA silicon.
-That patch fixes this issue.
+In fact host->slot can never be NULL in dw_mci_runtime_resume() or in
+dw_mci_runtime_suspend().
 
-Fixes: dd7842878633 ("octeontx2-af: Add new devlink param to configure maximum usable NIX block LFs")
-Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
-Signed-off-by: Sai Krishna <saikrishnag@marvell.com>
----
- .../marvell/octeontx2/af/rvu_devlink.c        | 20 +++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+A better fix would thus be to remove the redundant checks.
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_devlink.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_devlink.c
-index 1e6fbd98423d..96c04f7d93f8 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_devlink.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_devlink.c
-@@ -1235,8 +1235,8 @@ static int rvu_af_dl_dwrr_mtu_get(struct devlink *devlink, u32 id,
- enum rvu_af_dl_param_id {
- 	RVU_AF_DEVLINK_PARAM_ID_BASE = DEVLINK_PARAM_GENERIC_ID_MAX,
- 	RVU_AF_DEVLINK_PARAM_ID_DWRR_MTU,
--	RVU_AF_DEVLINK_PARAM_ID_NPC_EXACT_FEATURE_DISABLE,
- 	RVU_AF_DEVLINK_PARAM_ID_NPC_MCAM_ZONE_PERCENT,
-+	RVU_AF_DEVLINK_PARAM_ID_NPC_EXACT_FEATURE_DISABLE,
- 	RVU_AF_DEVLINK_PARAM_ID_NIX_MAXLF,
- };
- 
-@@ -1434,15 +1434,6 @@ static const struct devlink_param rvu_af_dl_params[] = {
- 			     BIT(DEVLINK_PARAM_CMODE_RUNTIME),
- 			     rvu_af_dl_dwrr_mtu_get, rvu_af_dl_dwrr_mtu_set,
- 			     rvu_af_dl_dwrr_mtu_validate),
--};
--
--static const struct devlink_param rvu_af_dl_param_exact_match[] = {
--	DEVLINK_PARAM_DRIVER(RVU_AF_DEVLINK_PARAM_ID_NPC_EXACT_FEATURE_DISABLE,
--			     "npc_exact_feature_disable", DEVLINK_PARAM_TYPE_STRING,
--			     BIT(DEVLINK_PARAM_CMODE_RUNTIME),
--			     rvu_af_npc_exact_feature_get,
--			     rvu_af_npc_exact_feature_disable,
--			     rvu_af_npc_exact_feature_validate),
- 	DEVLINK_PARAM_DRIVER(RVU_AF_DEVLINK_PARAM_ID_NPC_MCAM_ZONE_PERCENT,
- 			     "npc_mcam_high_zone_percent", DEVLINK_PARAM_TYPE_U8,
- 			     BIT(DEVLINK_PARAM_CMODE_RUNTIME),
-@@ -1457,6 +1448,15 @@ static const struct devlink_param rvu_af_dl_param_exact_match[] = {
- 			     rvu_af_dl_nix_maxlf_validate),
- };
- 
-+static const struct devlink_param rvu_af_dl_param_exact_match[] = {
-+	DEVLINK_PARAM_DRIVER(RVU_AF_DEVLINK_PARAM_ID_NPC_EXACT_FEATURE_DISABLE,
-+			     "npc_exact_feature_disable", DEVLINK_PARAM_TYPE_STRING,
-+			     BIT(DEVLINK_PARAM_CMODE_RUNTIME),
-+			     rvu_af_npc_exact_feature_get,
-+			     rvu_af_npc_exact_feature_disable,
-+			     rvu_af_npc_exact_feature_validate),
-+};
-+
- /* Devlink switch mode */
- static int rvu_devlink_eswitch_mode_get(struct devlink *devlink, u16 *mode)
- {
--- 
-2.25.1
+Kind regards
+Uffe
 
+>
+> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+>
+> Fixes: 4a835afd808a (mmc: dw_mmc: Fix potential null pointer risk)
+> Signed-off-by: Aleksandr Mishin <amishin@t-argos.ru>
+> ---
+>  drivers/mmc/host/dw_mmc.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/mmc/host/dw_mmc.c b/drivers/mmc/host/dw_mmc.c
+> index 829af2c98a44..a4f124452abc 100644
+> --- a/drivers/mmc/host/dw_mmc.c
+> +++ b/drivers/mmc/host/dw_mmc.c
+> @@ -3570,8 +3570,10 @@ int dw_mci_runtime_resume(struct device *dev)
+>                    DW_MCI_ERROR_FLAGS);
+>         mci_writel(host, CTRL, SDMMC_CTRL_INT_ENABLE);
+>
+> +       if (!host->slot)
+> +               goto err;
+>
+> -       if (host->slot && host->slot->mmc->pm_flags & MMC_PM_KEEP_POWER)
+> +       if (host->slot->mmc->pm_flags & MMC_PM_KEEP_POWER)
+>                 dw_mci_set_ios(host->slot->mmc, &host->slot->mmc->ios);
+>
+>         /* Force setup bus to guarantee available clock output */
+> --
+> 2.30.2
+>
+>
 
