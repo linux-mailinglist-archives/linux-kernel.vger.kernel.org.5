@@ -1,101 +1,178 @@
-Return-Path: <linux-kernel+bounces-95024-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95025-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2160E874852
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 07:48:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99DF5874853
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 07:50:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 133F0B21FB9
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 06:48:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F9E01F21922
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 06:50:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EA581CFBB;
-	Thu,  7 Mar 2024 06:48:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="KdsoL8I1"
-Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E7561CD3C;
+	Thu,  7 Mar 2024 06:50:16 +0000 (UTC)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 956B9CA6B;
-	Thu,  7 Mar 2024 06:48:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5881A1CD1E;
+	Thu,  7 Mar 2024 06:50:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709794096; cv=none; b=OCZEsJ1ZnElOCNTdkeiX9KT3cq4Qd3JbN5pfEGUgYl8pfyPNhEFz5TqfGKKR6k5+IDx/dlf74JTjHs0HtGqfcoXtdAk/8QKaHuUfVu/qtiZMw3j+y9hjkKOREvFrpDYdthav3P4+3MQWU+jlB5SAh4yGDOWHve950ExKUvCCO0I=
+	t=1709794215; cv=none; b=p49IqJ51SHbsjPfnIFJix5TAM8D7pyNkKdnFhc/u1WeDBku+U0pc5pii16cL+I5DBI+nQlShspRHSGAAV4n8j3Rw9vqf6bcvEH2xEZnAoQ9AG3YOqpyzYr6RCfj3n4pSfXv5lbaM26QEQBFvx426/5fjlArce6syZnX2Pw4CW5Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709794096; c=relaxed/simple;
-	bh=CmO2257QuqH44nTghzgymkCgYXXj6YJ5RsIdSqMmr2U=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=PEYlLGlSqjaGzqSntreRB8FO7AG6AvEtkpCPKtMgkDaipY8GLPQgbmIKM01bJYV9OXUy5gc8+G8tELoaGz2wHrl1+Kn1dCwIGZHmdxXJ2HwMG/87QV/An/uztN/x9RugIB7/Z05ERue/Sf0xAcig6ScdTBtD2fgtbgaLMLmy/Fc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=KdsoL8I1; arc=none smtp.client-ip=115.124.30.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1709794085; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=hwLsWVyYaQavvqdTHFAohjNoKhfPvj0KlLidtOHVrZA=;
-	b=KdsoL8I1UAkNvTF1FWI48UGLE1d8sSJIQ2ypwfE7A4D+IxMeqZvKBKBMGLZt9mi4j7wZ4jqpOstYDSRotOgZ5PNcs9cc3fjMuY/DBkevjYMbCd8afgurGT5+saCs2NVUzmQhkY+aKMOMeVuQDXhVFpvc9qYN+QHxadtdSOOh/WM=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R471e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0W1zkUQf_1709794074;
-Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0W1zkUQf_1709794074)
-          by smtp.aliyun-inc.com;
-          Thu, 07 Mar 2024 14:48:04 +0800
-From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To: clm@fb.com
-Cc: josef@toxicpanda.com,
-	dsterba@suse.com,
-	linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-	Abaci Robot <abaci@linux.alibaba.com>
-Subject: [PATCH] btrfs: clean up some inconsistent indenting
-Date: Thu,  7 Mar 2024 14:47:53 +0800
-Message-Id: <20240307064753.36780-1-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1.7.g153144c
+	s=arc-20240116; t=1709794215; c=relaxed/simple;
+	bh=WjOKDtWtq6KPKpBQTVOLs/jXW/CjvsdOj1acGN6vb44=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=FOyMyWZmZqa5gxo722Jr2BLO1Te564Y53Gk8/D3rrMr+BTUB7fPfBcOrjFbMxh6c+AWhJ3azvvJ26YohTq0yPG8zlxu90d4dF2k48e5cP6B377ex5eOXn+EYXMy4KGQVDgplYYs91r/zk5609+rZwnZzETd3XcS8AdMDjmDtk3s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Tr0J02G86z1xqPp;
+	Thu,  7 Mar 2024 14:48:32 +0800 (CST)
+Received: from canpemm500002.china.huawei.com (unknown [7.192.104.244])
+	by mail.maildlp.com (Postfix) with ESMTPS id E94B91402CE;
+	Thu,  7 Mar 2024 14:50:10 +0800 (CST)
+Received: from [10.173.135.154] (10.173.135.154) by
+ canpemm500002.china.huawei.com (7.192.104.244) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 7 Mar 2024 14:50:10 +0800
+Subject: Re: [PATCH v1] mm: swap: Fix race between free_swap_and_cache() and
+ swapoff()
+To: "Huang, Ying" <ying.huang@intel.com>
+CC: Ryan Roberts <ryan.roberts@arm.com>, Andrew Morton
+	<akpm@linux-foundation.org>, David Hildenbrand <david@redhat.com>,
+	<linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+	<stable@vger.kernel.org>
+References: <20240305151349.3781428-1-ryan.roberts@arm.com>
+ <875xy0842q.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <c8fe62d0-78b8-527a-5bef-ee663ccdc37a@huawei.com>
+ <af11bbca-3f6a-4db5-916c-b0d5b942352b@arm.com>
+ <ff6aec00-f939-b7ba-c127-b133c4d95ee5@huawei.com>
+ <87bk7q7ffp.fsf@yhuang6-desk2.ccr.corp.intel.com>
+From: Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <0925807f-d226-7f08-51d1-ab771b1a6c24@huawei.com>
+Date: Thu, 7 Mar 2024 14:50:10 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <87bk7q7ffp.fsf@yhuang6-desk2.ccr.corp.intel.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ canpemm500002.china.huawei.com (7.192.104.244)
 
-No functional modification involved.
+On 2024/3/7 13:56, Huang, Ying wrote:
+> Miaohe Lin <linmiaohe@huawei.com> writes:
+> 
+>> On 2024/3/6 17:31, Ryan Roberts wrote:
+>>> On 06/03/2024 08:51, Miaohe Lin wrote:
+>>>> On 2024/3/6 10:52, Huang, Ying wrote:
+>>>>> Ryan Roberts <ryan.roberts@arm.com> writes:
+>>>>>
+>>>>>> There was previously a theoretical window where swapoff() could run and
+>>>>>> teardown a swap_info_struct while a call to free_swap_and_cache() was
+>>>>>> running in another thread. This could cause, amongst other bad
+>>>>>> possibilities, swap_page_trans_huge_swapped() (called by
+>>>>>> free_swap_and_cache()) to access the freed memory for swap_map.
+>>>>>>
+>>>>>> This is a theoretical problem and I haven't been able to provoke it from
+>>>>>> a test case. But there has been agreement based on code review that this
+>>>>>> is possible (see link below).
+>>>>>>
+>>>>>> Fix it by using get_swap_device()/put_swap_device(), which will stall
+>>>>>> swapoff(). There was an extra check in _swap_info_get() to confirm that
+>>>>>> the swap entry was valid. This wasn't present in get_swap_device() so
+>>>>>> I've added it. I couldn't find any existing get_swap_device() call sites
+>>>>>> where this extra check would cause any false alarms.
+>>>>>>
+>>>>>> Details of how to provoke one possible issue (thanks to David Hilenbrand
+>>>>>> for deriving this):
+>>>>>>
+>>>>>> --8<-----
+>>>>>>
+>>>>>> __swap_entry_free() might be the last user and result in
+>>>>>> "count == SWAP_HAS_CACHE".
+>>>>>>
+>>>>>> swapoff->try_to_unuse() will stop as soon as soon as si->inuse_pages==0.
+>>>>>>
+>>>>>> So the question is: could someone reclaim the folio and turn
+>>>>>> si->inuse_pages==0, before we completed swap_page_trans_huge_swapped().
+>>>>>>
+>>>>>> Imagine the following: 2 MiB folio in the swapcache. Only 2 subpages are
+>>>>>> still references by swap entries.
+>>>>>>
+>>>>>> Process 1 still references subpage 0 via swap entry.
+>>>>>> Process 2 still references subpage 1 via swap entry.
+>>>>>>
+>>>>>> Process 1 quits. Calls free_swap_and_cache().
+>>>>>> -> count == SWAP_HAS_CACHE
+>>>>>> [then, preempted in the hypervisor etc.]
+>>>>>>
+>>>>>> Process 2 quits. Calls free_swap_and_cache().
+>>>>>> -> count == SWAP_HAS_CACHE
+>>>>>>
+>>>>>> Process 2 goes ahead, passes swap_page_trans_huge_swapped(), and calls
+>>>>>> __try_to_reclaim_swap().
+>>>>>>
+>>>>>> __try_to_reclaim_swap()->folio_free_swap()->delete_from_swap_cache()->
+>>>>>> put_swap_folio()->free_swap_slot()->swapcache_free_entries()->
+>>>>>> swap_entry_free()->swap_range_free()->
+>>>>>> ...
+>>>>>> WRITE_ONCE(si->inuse_pages, si->inuse_pages - nr_entries);
+>>>>>>
+>>>>>> What stops swapoff to succeed after process 2 reclaimed the swap cache
+>>>>>> but before process1 finished its call to swap_page_trans_huge_swapped()?
+>>>>>>
+>>>>>> --8<-----
+>>>>>
+>>>>> I think that this can be simplified.  Even for a 4K folio, this could
+>>>>> happen.
+>>>>>
+>>>>> CPU0                                     CPU1
+>>>>> ----                                     ----
+>>>>>
+>>>>> zap_pte_range
+>>>>>   free_swap_and_cache
+>>>>>   __swap_entry_free
+>>>>>   /* swap count become 0 */
+>>>>>                                          swapoff
+>>>>>                                            try_to_unuse
+>>>>>                                              filemap_get_folio
+>>>>>                                              folio_free_swap
+>>>>>                                              /* remove swap cache */
+>>>>>                                            /* free si->swap_map[] */
+>>>>>
+>>>>>   swap_page_trans_huge_swapped <-- access freed si->swap_map !!!
+>>>>
+>>>> Sorry for jumping the discussion here. IMHO, free_swap_and_cache is called with pte lock held.
+>>>
+>>> I don't beleive it has the PTL when called by shmem.
+>>
+>> In the case of shmem, folio_lock is used to guard against the race.
+> 
+> I don't find folio is lock for shmem.  find_lock_entries() will only
+> lock the folio if (!xa_is_value()), that is, not swap entry.  Can you
+> point out where the folio is locked for shmem?
 
-fs/btrfs/volumes.c:770 device_list_add() warn: inconsistent indenting.
-fs/btrfs/volumes.c:1373 btrfs_scan_one_device() warn: inconsistent indenting.
+You're right, folio is locked if not swap entry. That's my mistake. But it seems above race is still nonexistent.
+shmem_unuse() will first be called to read all the shared memory data that resides in the swap device back into
+memory when doing swapoff. In that case, all the swapped pages are moved to page cache thus there won't be any
+xa_is_value(folio) cases when calling shmem_undo_range(). free_swap_and_cache() even won't be called from
+shmem_undo_range() after shmem_unuse(). Or am I miss something?
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=8453
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- fs/btrfs/volumes.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+Thanks.
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index a2d07fa3cfdf..caa3e83b0d6c 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -767,7 +767,7 @@ static noinline struct btrfs_device *device_list_add(const char *path,
- 		if (same_fsid_diff_dev) {
- 			generate_random_uuid(fs_devices->fsid);
- 			fs_devices->temp_fsid = true;
--		pr_info("BTRFS: device %s (%d:%d) using temp-fsid %pU\n",
-+			pr_info("BTRFS: device %s (%d:%d) using temp-fsid %pU\n",
- 				path, MAJOR(path_devt), MINOR(path_devt),
- 				fs_devices->fsid);
- 		}
-@@ -1370,8 +1370,9 @@ struct btrfs_device *btrfs_scan_one_device(const char *path, blk_mode_t flags,
- 		else
- 			btrfs_free_stale_devices(devt, NULL);
- 
--	pr_debug("BTRFS: skip registering single non-seed device %s (%d:%d)\n",
--			path, MAJOR(devt), MINOR(devt));
-+		pr_debug("BTRFS: skip registering single non-seed device %s (%d:%d)\n",
-+			 path, MAJOR(devt), MINOR(devt));
-+
- 		device = NULL;
- 		goto free_disk_super;
- 	}
--- 
-2.20.1.7.g153144c
-
+> 
+> --
+> Best Regards,
+> Huang, Ying
+> 
 
