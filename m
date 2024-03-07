@@ -1,255 +1,227 @@
-Return-Path: <linux-kernel+bounces-95535-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95536-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4ABC874F0A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 13:29:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AC0E5874F0F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 13:30:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E7AB1F24747
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:29:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2127E1F24784
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:30:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BA2912B14C;
-	Thu,  7 Mar 2024 12:29:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A807812BE84;
+	Thu,  7 Mar 2024 12:30:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FeaVX8Pz"
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gMoyjo6R"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C624B12AAE5;
-	Thu,  7 Mar 2024 12:29:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709814564; cv=none; b=BKgLETGatcfaBI6FMMER5iQAoCRT5aCib29DMlJFlqdCGpskyb7Tx9fxfnuauX/uwh5qJO/DZKM/sbl3G8A42lLv24/f7ZZaCTak8NuqinOEJKGjIMaIXB5kzOTW4o4S6haKhVN3p6fInJV9df0iK9KBYd/7CZC5P9IYl4ryyOU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709814564; c=relaxed/simple;
-	bh=TXEiZlFrI3O3jEy5Fg8AeV6L0c2a37TvABNwO3/ujww=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=NSvqJ4L5IhlPg/DnngGLgm7LACPGqOz2b4IaASKGGlNQfzJZ6SZ5qYmsiiDQvGUZ5/dezUdCsBb4y2ZYdcvGRrrRLUBzCcku7MHCKAUJfhO5dw6K/A0mZm6QOoxvrq1D/ZCCC0CZfTgnGVp+YLt+XXokfiG+7HiLV+bRNVP10qM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FeaVX8Pz; arc=none smtp.client-ip=209.85.167.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-512b3b04995so608215e87.3;
-        Thu, 07 Mar 2024 04:29:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709814561; x=1710419361; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=i63ZUY7XKpQyXAHueT3y2cbAVNLsMRCCki1KAQkz850=;
-        b=FeaVX8Pz2z86Zd8UN4Yk9VOBSa/if4g0MSQf7eaD6o/VOSjOOXC0TwVRGw91GkERsr
-         Cd+hdo10vB8JQ5+lVDI1VKhC99uHqqzRJK3iFQLD2KNRJ2CD0fgEjCrtSpNoREFIJ3rb
-         Ku83GZxlEphqNHAvn/vsJfsJwhI1PZCqd1HPjOsx/g4L4Flb+ZYlBHdRB0xFsoAI9stp
-         6BQze9SSWch2iSIkO/Ff2j+RPNKqwmSY69O7lyCH41hchTHfzge92niYarpjS0qIApR1
-         pfGnK5oF7TQONZWxXo6EqGQYe/6UYY+YpV10lkcY8iE95jTR5eFwhXPWlC7mDOG34k82
-         sO2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709814561; x=1710419361;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=i63ZUY7XKpQyXAHueT3y2cbAVNLsMRCCki1KAQkz850=;
-        b=UyKny6NVnIkhNtYU2DJRUU820tgmXAjoaYBVW6aVH4YDxW5JSHp0Y7Y4sMW+wtTXvU
-         IHDifZ2LLRIXCQhAXLeOdc1NCa1kGqJ7jFW6rg4C5UmAv5Vm/kNapfmT6s4fydFYnmzz
-         Q/BStMnNzMMU3X7+4LjtFPCVXWjM98XZ0/pO84KLEN7NgfDy1pvrblLVJfHPMXxrrPOz
-         u51bHsFtSTUWDCC/ItX0QnD+NI2wtAbjFFeTCJVzK/T3DnIUSOJfvEPpbr+q0w8VSvlo
-         u0qWj1htXc/haKlF+pFnvY4d9jjvLOWnfMZ7OCWh3KmJmCP8RuQHwxeyM8lA3SxTBBzd
-         CN5g==
-X-Forwarded-Encrypted: i=1; AJvYcCVddjhySDUqtRyVqzRXuGS1mLIQD/pYxUQ9InnNpd1AR/lxFEF8xmTOBj+YTQWMtPWIlDow5xrt60TTpR7Cqf9D2E8vYkOnjQ/b5UrmSd0v+NRRPRq70QsiX/S9i/2GIsw2FwQuSh/VNkhz6QiTJE0LJzb3wHB8krauEw9PMcBhtA==
-X-Gm-Message-State: AOJu0Yy2Pb0kIkMhamoCvQR4OoEDYlnpSmCLuxm87XcuznW1c5ZnIQmc
-	PV45iyMdayTzbbvpRPAzHlEu8rMwTuPaQsuAWNQshUa01YBczuBp
-X-Google-Smtp-Source: AGHT+IHelcR5ZOyVmkbwCwQ8QjJfDVtAw8aDRRZ7Hsnxo1rdcGIXHa1CI9IXIdmB4PvykPUvOGmiQA==
-X-Received: by 2002:a05:6512:484e:b0:513:5eb5:625f with SMTP id ep14-20020a056512484e00b005135eb5625fmr1204005lfb.31.1709814560578;
-        Thu, 07 Mar 2024 04:29:20 -0800 (PST)
-Received: from ?IPv6:2001:a61:343e:8301:d737:22b0:7431:8d01? ([2001:a61:343e:8301:d737:22b0:7431:8d01])
-        by smtp.gmail.com with ESMTPSA id lo2-20020a170906fa0200b00a45a687b52asm2925721ejb.213.2024.03.07.04.29.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Mar 2024 04:29:20 -0800 (PST)
-Message-ID: <c0f7ea40a2b1abc22242a892e162e4511a7c99f1.camel@gmail.com>
-Subject: Re: [PATCH v5 1/2] driver core: Introduce device_link_wait_removal()
-From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To: Herve Codina <herve.codina@bootlin.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki"
- <rafael@kernel.org>, Rob Herring <robh+dt@kernel.org>, Frank Rowand
- <frowand.list@gmail.com>, Saravana Kannan <saravanak@google.com>, Lizhi Hou
- <lizhi.hou@amd.com>, Max Zhen <max.zhen@amd.com>, Sonal Santan
- <sonal.santan@amd.com>, Stefano Stabellini <stefano.stabellini@xilinx.com>,
-  Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Allan Nielsen
- <allan.nielsen@microchip.com>, Horatiu Vultur
- <horatiu.vultur@microchip.com>, Steen Hegelund
- <steen.hegelund@microchip.com>, Luca Ceresoli <luca.ceresoli@bootlin.com>,
- Nuno Sa <nuno.sa@analog.com>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>,  stable@vger.kernel.org
-Date: Thu, 07 Mar 2024 13:29:19 +0100
-In-Reply-To: <20240307131623.467e1def@bootlin.com>
-References: <20240307111036.225007-1-herve.codina@bootlin.com>
-	 <20240307111036.225007-2-herve.codina@bootlin.com>
-	 <94997e8720bc0a68afa85be3ef521c8844d0f0a0.camel@gmail.com>
-	 <20240307131623.467e1def@bootlin.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21F72846C;
+	Thu,  7 Mar 2024 12:30:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.21
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709814610; cv=fail; b=XkOWqnDUajCpo55SZtkelV6cFqgAiaSCWIJo776g5q80PrpdmWp2RDVg1Gwj4OaYRF4EHYbtwWIqEt45cea53IcDHgrFZjzGe6jvST79fTVt91fZWjtB63f8qTzwEjU0zsIDP9iqiIAU0V1T36cjpsz9GvsoPxabdpAuzTfolB4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709814610; c=relaxed/simple;
+	bh=rik+6+4z2BM8YkqH3+O/aGSK/GJZxVI4ZUCpgp+trz8=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=p3vZsK7+n8ryHyhiru7DK+EYdXfEUXuAvx1Hj/mcBsuUKMNffvCpwXV9Twk1QmSEGAfod0k4ylb9n13ORzG5Sb+Pfk9MdcW0nKiQfDfoyn1dy1h3G1nfDBb/1sqEapjmtjtYdt9B1VtrbJRT7vjYzxpvfwIQoVyOHy4pYxHhJWI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gMoyjo6R; arc=fail smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709814608; x=1741350608;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=rik+6+4z2BM8YkqH3+O/aGSK/GJZxVI4ZUCpgp+trz8=;
+  b=gMoyjo6R6GrB3++o+OlrxHlB36D0ghsXZsjw9sThEmGplXWk7P2mwqBG
+   jxpcixi7cJkjOKVDr3sx2ovU9rITH4O50beUiiiJjhcUC10b1L3yeGWKl
+   tZYxvcHGVpVhPO26bstjPEDKpChBukPP9geemni990o1+HPkFstELhGth
+   YREBAscPodSfSoDOWmXt6Nf/jHm26Lrxy1Bg2RdFmdf/o1zDY1H89E88y
+   tXGn1pdtENO8nrJdtNQiTAgzTrCJ1ztYwB8a2HPAIqmpvx6vCNXspcepQ
+   WF0JW3FVGywjkFVjH6RDBHW+HEX1cDJ0Adk0LxlrJqK8TsjvD9j0h4Z2i
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11005"; a="4409054"
+X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
+   d="scan'208";a="4409054"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 04:30:08 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
+   d="scan'208";a="14696753"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmviesa004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 07 Mar 2024 04:30:07 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 7 Mar 2024 04:30:06 -0800
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Thu, 7 Mar 2024 04:30:06 -0800
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.40) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 7 Mar 2024 04:30:06 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=l3NbHPj1HKs0ro/sUfGhOziPJm+oLI0I74yvZLUn+WliqpQwpZ6aK69ZJD/Ppu6Gwv9Vdh8hHP+zoDdDPloWYSArgxNhGbgrDnT7IAehRVkxxGCQTpd8XCRog0YGBO/6hd14bk++JyK5qBxKQHaRz9ltpC1z4ZmFPGtUu/Vm/elN0HBqTchOd8/skzG7qkmxeMbNPfP/ggetuXP4z45nRSp3u0Ty+vRSQVb/mhM6q9KHA2XGHEoXHjZPZfXpFzmYmpvT2PAdCa/lEfgTfvWV2KUF5wIaksR7COYilBLJx6mxIxTibHnURuMPMdQMuu29QJFcHj7dKbcHts/6mw9PmQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=rik+6+4z2BM8YkqH3+O/aGSK/GJZxVI4ZUCpgp+trz8=;
+ b=NsoLUJrqD7c1zVy4G+Kh5wvumYok7GPpKkldXw6EOhg60zZiqOfJXXX6q+333hjLaMghgzBT/Rb6QjuXcXDCqTbsskOd6Lvx1BLYQNNvn8BoDK8p0gwW/njGGwRIhh+xg7XSC2FIckAwtRMvHGAW6bBORFcc9zX89FgBRKK1+rVAml1//MH/qDpUmoOkawfl3vTFo1g9101agkw9RyZmPcDEd6yE7i8lxmqaFJQGrE62a3njzuTk7hSjDtmyekGMWAjzyyxO08u37lefFNEP0awB1uZfVnYy2ApahKRPsYZh9sH9mFwa9fA5Hlsl+hed7bY4WkL9RtdX72N4JqmJKg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
+ by PH0PR11MB5077.namprd11.prod.outlook.com (2603:10b6:510:3b::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.6; Thu, 7 Mar
+ 2024 12:30:04 +0000
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::ef2c:d500:3461:9b92]) by BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::ef2c:d500:3461:9b92%4]) with mapi id 15.20.7362.019; Thu, 7 Mar 2024
+ 12:30:04 +0000
+From: "Huang, Kai" <kai.huang@intel.com>
+To: "kvm@vger.kernel.org" <kvm@vger.kernel.org>, "Yamahata, Isaku"
+	<isaku.yamahata@intel.com>
+CC: "federico.parola@polito.it" <federico.parola@polito.it>,
+	"pbonzini@redhat.com" <pbonzini@redhat.com>, "dmatlack@google.com"
+	<dmatlack@google.com>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "isaku.yamahata@gmail.com"
+	<isaku.yamahata@gmail.com>, "michael.roth@amd.com" <michael.roth@amd.com>,
+	"seanjc@google.com" <seanjc@google.com>
+Subject: Re: [RFC PATCH 1/8] KVM: Document KVM_MAP_MEMORY ioctl
+Thread-Topic: [RFC PATCH 1/8] KVM: Document KVM_MAP_MEMORY ioctl
+Thread-Index: AQHaa/4rmsaNLqB4SE290Rjzl3NphrEsPlsA
+Date: Thu, 7 Mar 2024 12:30:04 +0000
+Message-ID: <9f8d8e3b707de3cd879e992a30d646475c608678.camel@intel.com>
+References: <cover.1709288671.git.isaku.yamahata@intel.com>
+	 <c50dc98effcba3ff68a033661b2941b777c4fb5c.1709288671.git.isaku.yamahata@intel.com>
+In-Reply-To: <c50dc98effcba3ff68a033661b2941b777c4fb5c.1709288671.git.isaku.yamahata@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Evolution 3.50.3 (3.50.3-1.fc39) 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BL1PR11MB5978:EE_|PH0PR11MB5077:EE_
+x-ms-office365-filtering-correlation-id: bd71f19f-b246-4bf1-9970-08dc3ea2512b
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: BP9V+CJx0Sb7U3itCy9sGltB06ifs/AOJaRE6KbDGEaQnA5Pa3Lkv3Pg/OW4/HEWV9F0zJ5+lJTxl6z6cyHuBfy7cNYdqTMV7XjxcSFQ3ARWqhXWaAiLcg1rVuRq3WzmwASRX9w5j47DAYuWelQSjRX/Ir3nPYGw9+53JCmZDE8Im+te0VA92ARcUxCfOyqO3bMIfhgkz8BiaRqeEP/D9dVa1j4unntdSwe0n5thclrU6Snl5vbUZt0DiW8h2U2eg19klb7fhBSuc0TEPD9xBXtKmvQ6/kVFr4QZTrnJl6AeSSfJh6wDaJN/tE+1oKf9C/qjOjhyWZi55/qg/lK0BLF4wzRv9NDJ/UotZBjmeHfnKh0uzRNaWZLk3nQkAhvDTI0gbfAPGZE7dXSD/W+zu6iAftVfRpPfq4TN/1JqU6FYsDKEDTtI7i9lseJBHah79M/hWC2DLH2lRDQHzxfU8pRAL6JNmgOAwzCT1ZK7UEu6VEbsEVpHGr6eYpKtZHjLT1xutX5iiqvpC3xT/Q7c4JAceL3tF0vAFsAAhkxwV9U/+3km6k6ISy2uwL+dss03NbjXQFhI2BPnLtRW4Sw9RIu9aDwa6zujijICKhqRgXA/zYu9alJCdApNdWlvi1fPDz6tHMix5v9e49gDtdNmGvn18ormXSMcrfBXz2nwc88HHNooYGWHcKWqiE8ZPqhLq3EcLN1tjSyi4i4BoF4vkczxiUaiqKbMsETydSBubHA=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?bHFJRlZGQUdqV1hHS3hiak15SlFEazVrdC8xNHBQQzQrbWQ3dFdwcW03dy9w?=
+ =?utf-8?B?NEx0bCt1UjQ0ekZCL2ZqTTlMTkQ3cTFqMmZQWnJXNXBJUW1UaTFaa2Y4STBQ?=
+ =?utf-8?B?aE1DbTJmRVlDcGNkOE0rVGNTY2hoRHBsN0o0cWVnbTNSL0E3SXZOMVVTUXFK?=
+ =?utf-8?B?OTZJTkJQTGpBRTZvcnVNeXZlbklicVI4cWNwemJmazZ4TDIzZWhvWFN2c0Vi?=
+ =?utf-8?B?MU01amNFOCs2Z2ZvODlOMEZSRld4ZUQxcE9vQnNQakpMY0lYZXdLWnMyc2JV?=
+ =?utf-8?B?SkprQ2VralNJaU9FS3VIUXE4MCtZLy9kajVodGRGcjdCajhTOGNWSE5DalNF?=
+ =?utf-8?B?cmxGTWFDL1lGMFB4SDRSU2F3S291NlBETkoyN0ZWdUxsOFhvb1ZRVjRvWWd0?=
+ =?utf-8?B?U1RpSzBIaFJ2bWxqbHJMQ01PRE5LZ2h2TnJpbm1WakFodm9mbkNQdzJCTHdw?=
+ =?utf-8?B?NFB2TDBlMXRVZTY1b04xR3BYRzd0WFZiOTE1VzJ0bjBCQVFQMUdXVDZNQWxE?=
+ =?utf-8?B?NzdGd29BRFlPcmx3ZWhBNFBhTzlvY1pxZGJlcTRBWDdJMG1sR2VtV1Z2S0pT?=
+ =?utf-8?B?eUdjV0VOUHZxZWRyMmRLTVJodS9oU1RxQmlnRW9TMjZTMWNLYkQweEI1L0VX?=
+ =?utf-8?B?WlJVUFI4T0NGMUFkbTl0Tk1qNVlVZE13UGt5S01BSnphRkNMYzdhemowbmJW?=
+ =?utf-8?B?bk5YRHY2NkVmSy9qOWN1S2FscXpZRTdmcFY2enplVDYzanBNYWpKQjR6c1Ji?=
+ =?utf-8?B?YytLVEhETlNLWVZkQnMwUVpiOWo1ZnRPM1hNK3JrYUxnakVHNjY0dStHcHJo?=
+ =?utf-8?B?aUY5TkY3dUdveHhjNW5QcVhNNzhaTWpMUzN5dHJjU3JpaitVaHk3QUtsNTc0?=
+ =?utf-8?B?ckg1ckhWd3IrbTU2WVg2aUo2dUYzakFOcUR0MWRyMW45MW5zVG9rd3J5T01J?=
+ =?utf-8?B?TGF0Ym9tNzROVHNWMlY0eVpZS0daQ3psSXAyNGx3a09ZemljT1lEOFFweGk3?=
+ =?utf-8?B?OWpvZDJYOTc3a2RZSEdxdGFlRC9IV21Sa01ZSmkyZ0YwT0hvWTQ1WUdFaHVv?=
+ =?utf-8?B?SmZta0hPQS8vUGFyM2VnZjIzZmRPOHIrdFI1TTFoSkFMMWp1OEFHOHg3dzZH?=
+ =?utf-8?B?a0VXTkhuNzRDY2NPS1JmdFB6NFhNT09NOEhSVkJnMW1wc0ttOXVCd2tCeWpk?=
+ =?utf-8?B?SEVsckN0YklYZCt2UzJhcUJPRlNuV001U2tvMTg5ckJQSURvNmpqcXJQZUJ6?=
+ =?utf-8?B?V3Fwc0U1Nk1mVjVSOUc4YUVqT3V4UHZjZWdBMHRrRlE2cThYNmkrRkFVN1Vm?=
+ =?utf-8?B?QWI2bi85Uk9vS3VxeFkyOVZZRy9tTXJ6ZnpGRVR3a3ZWbFdvb1J4SDBtUEdV?=
+ =?utf-8?B?R0VQVDMwZVg3OUdjK2ZlWjJkM21OeVZjeXJOZzRuZ0pkZG15RTdWdlJ5aGhx?=
+ =?utf-8?B?MEd5cEtZWllJMG9BbTRId0lHeDBOVGdOMmhYUU9Dd3lQWis5OVBJUjNPT2o4?=
+ =?utf-8?B?MW5uLzRVaWp4QmhnTDJwUzdPYmRPUVlUUlZ6ZEpOcURYdFRHbDg5VjQ2Z1lX?=
+ =?utf-8?B?dUtLUHNsOUZMbGl0c3oyV2ZGVHVHalFGYTZ3MEoyL2tkN0JOQThFcWZtZGo3?=
+ =?utf-8?B?UDBIOEVUdXNJRUhCc1pMNmNDNnpGTDlkdGdSUStXeStKSjZuQ1lMTVFFOWNx?=
+ =?utf-8?B?aEFrVzF1dWVPVjN6S1RkaUJkeSs5a0d3ZHRMbUhDdlpiek1HUFc3bDBSNmVa?=
+ =?utf-8?B?Qkd0WFdvNUsvaHZJdVpBQ1pERUdoVUhxMnBPZE5iVFZyY2NZZG9FRkV5b0l3?=
+ =?utf-8?B?V2htWXBLR256b09jb2dCM1lJVmZUd0ZpeW0zaTh6L3BSTDd5akI3bVhrSlNX?=
+ =?utf-8?B?bnFPYzdMOHMvTnZZRkJuNG1HWVpFYWFUQUJBOHVoc3VjMlZtQTdPY0RZT2RQ?=
+ =?utf-8?B?OC9ydUg5dUxKdk1lVDRrTlBreVEyaWNCUjc3Y0V3bE94ZHlVWGI2SkcvY0JX?=
+ =?utf-8?B?UVAzK29tbWJkbXIxL0NrWXdHMEFHWjdaTEJBZXpWVXovdnpVWjh0Q1hpcCtX?=
+ =?utf-8?B?SStKS3lMOTQwcFFsbHJHK3IwZFQ3c2RGMWtabFNLSDJheFpwREVxRzFiMVoy?=
+ =?utf-8?B?MFRJR3hrY2hqUkRTK092eEtQQzJiWFY2QzFlVytaUXJWaW5SZmcxWStjbmhZ?=
+ =?utf-8?B?VkE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <C5AB8AB506A1DF47BB64ED7A0A0A6090@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bd71f19f-b246-4bf1-9970-08dc3ea2512b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Mar 2024 12:30:04.6701
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: /gsZOcLmEcFYNppjP15bLKea+j1PLlMywMo1CYNaoUJctJFYpWwWWEw2fw99BiD69FlicCjt4tkWMqNMJVk70Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5077
+X-OriginatorOrg: intel.com
 
-On Thu, 2024-03-07 at 13:16 +0100, Herve Codina wrote:
-> Hi Nuno,
->=20
-> On Thu, 07 Mar 2024 12:50:52 +0100
-> Nuno S=C3=A1 <noname.nuno@gmail.com> wrote:
->=20
-> > Hi Herve,
-> >=20
-> >=20
-> > On Thu, 2024-03-07 at 12:10 +0100, Herve Codina wrote:
-> > > The commit 80dd33cf72d1 ("drivers: base: Fix device link removal")
-> > > introduces a workqueue to release the consumer and supplier devices u=
-sed
-> > > in the devlink.
-> > > In the job queued, devices are release and in turn, when all the
-> > > references to these devices are dropped, the release function of the
-> > > device itself is called.
-> > >=20
-> > > Nothing is present to provide some synchronisation with this workqueu=
-e
-> > > in order to ensure that all ongoing releasing operations are done and
-> > > so, some other operations can be started safely.
-> > >=20
-> > > For instance, in the following sequence:
-> > > =C2=A0 1) of_platform_depopulate()
-> > > =C2=A0 2) of_overlay_remove()
-> > >=20
-> > > During the step 1, devices are released and related devlinks are remo=
-ved
-> > > (jobs pushed in the workqueue).
-> > > During the step 2, OF nodes are destroyed but, without any
-> > > synchronisation with devlink removal jobs, of_overlay_remove() can ra=
-ise
-> > > warnings related to missing of_node_put():
-> > > =C2=A0 ERROR: memory leak, expected refcount 1 instead of 2
-> > >=20
-> > > Indeed, the missing of_node_put() call is going to be done, too late,
-> > > from the workqueue job execution.
-> > >=20
-> > > Introduce device_link_wait_removal() to offer a way to synchronize
-> > > operations waiting for the end of devlink removals (i.e. end of
-> > > workqueue jobs).
-> > > Also, as a flushing operation is done on the workqueue, the workqueue
-> > > used is moved from a system-wide workqueue to a local one.
-> > >=20
-> > > Cc: stable@vger.kernel.org
-> > > Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-> > > Tested-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
-> > > Reviewed-by: Nuno Sa <nuno.sa@analog.com>
-> > > ---
-> > > =C2=A0drivers/base/core.c=C2=A0=C2=A0=C2=A0 | 26 ++++++++++++++++++++=
-+++---
-> > > =C2=A0include/linux/device.h |=C2=A0 1 +
-> > > =C2=A02 files changed, 24 insertions(+), 3 deletions(-)
-> > >=20
-> > > diff --git a/drivers/base/core.c b/drivers/base/core.c
-> > > index d5f4e4aac09b..48b28c59c592 100644
-> > > --- a/drivers/base/core.c
-> > > +++ b/drivers/base/core.c
-> > > @@ -44,6 +44,7 @@ static bool fw_devlink_is_permissive(void);
-> > > =C2=A0static void __fw_devlink_link_to_consumers(struct device *dev);
-> > > =C2=A0static bool fw_devlink_drv_reg_done;
-> > > =C2=A0static bool fw_devlink_best_effort;
-> > > +static struct workqueue_struct *device_link_wq;
-> > > =C2=A0
-> > > =C2=A0/**
-> > > =C2=A0 * __fwnode_link_add - Create a link between two fwnode_handles=
-.
-> > > @@ -532,12 +533,26 @@ static void devlink_dev_release(struct device *=
-dev)
-> > > =C2=A0	/*
-> > > =C2=A0	 * It may take a while to complete this work because of the SR=
-CU
-> > > =C2=A0	 * synchronization in device_link_release_fn() and if the cons=
-umer or
-> > > -	 * supplier devices get deleted when it runs, so put it into the
-> > > "long"
-> > > -	 * workqueue.
-> > > +	 * supplier devices get deleted when it runs, so put it into the
-> > > +	 * dedicated workqueue.
-> > > =C2=A0	 */
-> > > -	queue_work(system_long_wq, &link->rm_work);
-> > > +	queue_work(device_link_wq, &link->rm_work);
-> > > =C2=A0}
-> > > =C2=A0
-> > > +/**
-> > > + * device_link_wait_removal - Wait for ongoing devlink removal jobs =
-to
-> > > terminate
-> > > + */
-> > > +void device_link_wait_removal(void)
-> > > +{
-> > > +	/*
-> > > +	 * devlink removal jobs are queued in the dedicated work queue.
-> > > +	 * To be sure that all removal jobs are terminated, ensure that any
-> > > +	 * scheduled work has run to completion.
-> > > +	 */
-> > > +	flush_workqueue(device_link_wq);
-> > > +}
-> > > +EXPORT_SYMBOL_GPL(device_link_wait_removal);
-> > > +
-> > > =C2=A0static struct class devlink_class =3D {
-> > > =C2=A0	.name =3D "devlink",
-> > > =C2=A0	.dev_groups =3D devlink_groups,
-> > > @@ -4099,9 +4114,14 @@ int __init devices_init(void)
-> > > =C2=A0	sysfs_dev_char_kobj =3D kobject_create_and_add("char", dev_kob=
-j);
-> > > =C2=A0	if (!sysfs_dev_char_kobj)
-> > > =C2=A0		goto char_kobj_err;
-> > > +	device_link_wq =3D alloc_workqueue("device_link_wq", 0, 0);=C2=A0=
-=20
-> >=20
-> > My rb tag was with the assumption this is moved into devlink_class_init=
-(). IIUC,
-> > Saravana also agreed with that [1]. But it looks like he missed that we=
- are
-> > allocating the queue in devices_init() and not in devlink_class_init().
-> >=20
-> > I'm also not sure if this is in line with what Rafael wanted for ccing =
-stable.
-> > How do
-> > we know the next patch depends on this one?
-> >=20
-> > [1]:
-> > https://lore.kernel.org/lkml/CAGETcx_gNWOTsSZMaZu+XU1-5Z60WEcMhw08t4Sn_=
--YgkCCUmA@mail.gmail.com/
-> >=20
->=20
-> We discussed that point and I understood that you were ok to do that on y=
-our
-> side:
-> =C2=A0
-> https://lore.kernel.org/linux-kernel/f42ceee61ddb8b50c347589649d4131476ab=
-5d81.camel@gmail.com/
->=20
-> Sorry if I misunderstood.
-
-Oh, yeah, I can do that. But given Saravana reply I thought the expectation=
- is to
-have the queue already allocated in devlink_class_init().
-
->=20
-> I am going to wait for other comments on this current series before re-se=
-nding
-> with our 'Reviewed-by' removed if needed. Let me know.
->=20
-
-Anyways, if your expectation was for me to do it later, fine. No need to re=
-move the
-tag. Sorry for the noise.
-
-- Nuno S=C3=A1
->=20
-
+T24gRnJpLCAyMDI0LTAzLTAxIGF0IDA5OjI4IC0wODAwLCBpc2FrdS55YW1haGF0YUBpbnRlbC5j
+b20gd3JvdGU6DQo+IEZyb206IElzYWt1IFlhbWFoYXRhIDxpc2FrdS55YW1haGF0YUBpbnRlbC5j
+b20+DQo+IA0KPiBBZGRzIGRvY3VtZW50YXRpb24gb2YgS1ZNX01BUF9NRU1PUlkgaW9jdGwuDQo+
+IA0KPiBJdCBwcmUtcG9wdWxhdGVzIGd1ZXN0IG1lbW9yeS4gQW5kIHBvdGVudGlhbGx5IGRvIGlu
+aXRpYWxpemVkIG1lbW9yeQ0KPiBjb250ZW50cyB3aXRoIGVuY3J5cHRpb24gYW5kIG1lYXN1cmVt
+ZW50IGRlcGVuZGluZyBvbiB1bmRlcmx5aW5nDQo+IHRlY2hub2xvZ3kuDQo+IA0KPiBTdWdnZXN0
+ZWQtYnk6IFNlYW4gQ2hyaXN0b3BoZXJzb24gPHNlYW5qY0Bnb29nbGUuY29tPg0KPiBTaWduZWQt
+b2ZmLWJ5OiBJc2FrdSBZYW1haGF0YSA8aXNha3UueWFtYWhhdGFAaW50ZWwuY29tPg0KPiAtLS0N
+Cj4gIERvY3VtZW50YXRpb24vdmlydC9rdm0vYXBpLnJzdCB8IDM2ICsrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysNCj4gIDEgZmlsZSBjaGFuZ2VkLCAzNiBpbnNlcnRpb25zKCspDQo+
+IA0KPiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi92aXJ0L2t2bS9hcGkucnN0IGIvRG9jdW1l
+bnRhdGlvbi92aXJ0L2t2bS9hcGkucnN0DQo+IGluZGV4IDBiNWEzM2VlNzFlZS4uMzNkMmI2M2Y3
+ZGJmIDEwMDY0NA0KPiAtLS0gYS9Eb2N1bWVudGF0aW9uL3ZpcnQva3ZtL2FwaS5yc3QNCj4gKysr
+IGIvRG9jdW1lbnRhdGlvbi92aXJ0L2t2bS9hcGkucnN0DQo+IEBAIC02MzUyLDYgKzYzNTIsNDIg
+QEAgYSBzaW5nbGUgZ3Vlc3RfbWVtZmQgZmlsZSwgYnV0IHRoZSBib3VuZCByYW5nZXMgbXVzdCBu
+b3Qgb3ZlcmxhcCkuDQo+ICANCj4gIFNlZSBLVk1fU0VUX1VTRVJfTUVNT1JZX1JFR0lPTjIgZm9y
+IGFkZGl0aW9uYWwgZGV0YWlscy4NCj4gIA0KPiArNC4xNDMgS1ZNX01BUF9NRU1PUlkNCj4gKy0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KPiArDQo+ICs6Q2FwYWJpbGl0eTogS1ZNX0NBUF9NQVBf
+TUVNT1JZDQo+ICs6QXJjaGl0ZWN0dXJlczogbm9uZQ0KPiArOlR5cGU6IHZjcHUgaW9jdGwNCg0K
+SSB0aGluayAidmNwdSBpb2N0bCIgbWVhbnMgdGhlb3JldGljYWxseSBpdCBjYW4gYmUgY2FsbGVk
+IG9uIG11bHRpcGxlIHZjcHVzLg0KDQpXaGF0IGhhcHBlbnMgaW4gdGhhdCBjYXNlPw0KDQo+ICs6
+UGFyYW1ldGVyczogc3RydWN0IGt2bV9tZW1vcnlfbWFwcGluZyhpbi9vdXQpDQo+ICs6UmV0dXJu
+czogMCBvbiBzdWNjZXNzLCA8MCBvbiBlcnJvcg0KPiArDQo+ICtLVk1fTUFQX01FTU9SWSBwb3B1
+bGF0ZXMgZ3Vlc3QgbWVtb3J5IHdpdGhvdXQgcnVubmluZyB2Y3B1Lg0KPiArDQo+ICs6Og0KPiAr
+DQo+ICsgIHN0cnVjdCBrdm1fbWVtb3J5X21hcHBpbmcgew0KPiArCV9fdTY0IGJhc2VfZ2ZuOw0K
+PiArCV9fdTY0IG5yX3BhZ2VzOw0KPiArCV9fdTY0IGZsYWdzOw0KPiArCV9fdTY0IHNvdXJjZTsN
+Cj4gKyAgfTsNCj4gKw0KPiArICAvKiBGb3Iga3ZtX21lbW9yeV9tYXBwaW5nOjogZmxhZ3MgKi8N
+Cj4gKyAgI2RlZmluZSBLVk1fTUVNT1JZX01BUFBJTkdfRkxBR19XUklURSAgICAgICAgIF9CSVRV
+TEwoMCkNCj4gKyAgI2RlZmluZSBLVk1fTUVNT1JZX01BUFBJTkdfRkxBR19FWEVDICAgICAgICAg
+IF9CSVRVTEwoMSkNCj4gKyAgI2RlZmluZSBLVk1fTUVNT1JZX01BUFBJTkdfRkxBR19VU0VSICAg
+ICAgICAgIF9CSVRVTEwoMikNCg0KSSBhbSBub3Qgc3VyZSB3aGF0J3MgdGhlIGdvb2Qgb2YgaGF2
+aW5nICJGTEFHX1VTRVIiPw0KDQpUaGlzIGlvY3RsIGlzIGNhbGxlZCBmcm9tIHVzZXJzcGFjZSwg
+dGh1cyBJIHRoaW5rIHdlIGNhbiBqdXN0IHRyZWF0IHRoaXMgYWx3YXlzDQphcyB1c2VyLWZhdWx0
+Pw0KDQo+ICsgICNkZWZpbmUgS1ZNX01FTU9SWV9NQVBQSU5HX0ZMQUdfUFJJVkFURSAgICAgICBf
+QklUVUxMKDMpDQo+ICsNCj4gK0tWTV9NQVBfTUVNT1JZIHBvcHVsYXRlcyBndWVzdCBtZW1vcnkg
+aW4gdGhlIHVuZGVybHlpbmcgbWFwcGluZy4gSWYgc291cmNlIGlzDQo+ICtub3QgemVybyBhbmQg
+aXQncyBzdXBwb3J0ZWQgKGRlcGVuZGluZyBvbiB1bmRlcmx5aW5nIHRlY2hub2xvZ3kpLCB0aGUg
+Z3Vlc3QNCj4gK21lbW9yeSBjb250ZW50IGlzIHBvcHVsYXRlZCB3aXRoIHRoZSBzb3VyY2UuICBU
+aGUgZmxhZ3MgZmllbGQgc3VwcG9ydHMgdGhyZWUNCj4gK2ZsYWdzOiBLVk1fTUVNT1JZX01BUFBJ
+TkdfRkxBR19XUklURSwgS1ZNX01FTU9SWV9NQVBQSU5HX0ZMQUdfRVhFQywgYW5kDQo+ICtLVk1f
+TUVNT1JZX01BUFBJTkdfRkxBR19VU0VSLiAgV2hpY2ggY29ycmVzcG9uZHMgdG8gZmF1bHQgY29k
+ZSBmb3Iga3ZtIHBhZ2UNCj4gK2ZhdWx0IHRvIHBvcHVsYXRlIGd1ZXN0IG1lbW9yeS4gd3JpdGUg
+ZmF1bHQsIGZldGNoIGZhdWx0IGFuZCB1c2VyIGZhdWx0Lg0KPiArV2hlbiBpdCByZXR1cm5lZCwg
+dGhlIGlucHV0IGlzIHVwZGF0ZWQuICBJZiBucl9wYWdlcyBpcyBsYXJnZSwgaXQgbWF5DQo+ICty
+ZXR1cm4gLUVBR0FJTiBhbmQgdXBkYXRlIHRoZSB2YWx1ZXMgKGJhc2VfZ2ZuIGFuZCBucl9wYWdl
+cy4gc291cmNlIGlmIG5vdCB6ZXJvKQ0KPiArdG8gcG9pbnQgdGhlIHJlbWFpbmluZyByYW5nZS4N
+Cj4gKw0KPiAgNS4gVGhlIGt2bV9ydW4gc3RydWN0dXJlDQo+ICA9PT09PT09PT09PT09PT09PT09
+PT09PT0NCj4gIA0KDQo=
 
