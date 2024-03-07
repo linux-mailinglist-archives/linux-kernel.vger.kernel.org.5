@@ -1,197 +1,173 @@
-Return-Path: <linux-kernel+bounces-96065-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96048-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B70BC8756B3
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:09:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 229B6875691
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:05:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2821C1F218EE
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:09:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5463F1C20EBF
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:05:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2323D13B293;
-	Thu,  7 Mar 2024 19:06:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C99CA135A73;
+	Thu,  7 Mar 2024 19:05:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="fEyCQvhZ"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HhXvj25f"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F3A213AA36;
-	Thu,  7 Mar 2024 19:06:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F187F84A2B;
+	Thu,  7 Mar 2024 19:05:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709838370; cv=none; b=oq2NCXG+oGkrIKg1b5r8LjHGcXfXX7Y6uebaJ+9Q2As5ypn4GfXQtlcKIu1c+GdnY1L3nCC0nHeA/xboYwASL0XNqFGpCbB3j6eugFMoWtyNxjtbd6jT+pOl9wmNHkFtN7TrE+BEK5bvuUAosnzdB8cy3lpfUGsd9jP47ZkUmek=
+	t=1709838325; cv=none; b=jr9MC8eSAi5nSMJDaYsN25QeSEh6cqRU99Ahm6CEPUSvAdwiR5Ktu8JXZL8LV0SlmxuPYpInISW9pwBZ+M4pqlfhZ2s07h11Bg0brsYzWXginLDKR7oVWfGnVFrdC5ZStmZnLEYWWnaeS4v9WAQb86Pl7wkX3+E8efPyGwH6Tmo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709838370; c=relaxed/simple;
-	bh=LguhZzpJmc2AKBeuTASls661QnFobgdUb0WsToqUKus=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=MgasqXPGSkw7Ky/Rp4bbqwOjh4kFB8Ugeud5BOCLk57JTnLwuc5PSKZ5UivCilpkxF/z93CK+Wsm4l9SZcKHjHnuDpu5a/zhSP7a3ml5z/vw20JycPGcjB9rhcBb8g4hwyPGBua8uMYwEXfsE4F84ZD/f+4imHN6DgH3cWRlKIo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=fEyCQvhZ; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 427IQm5c023752;
-	Thu, 7 Mar 2024 19:05:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=RtIv9z0MOmoj5lHluiO/X/ko6/nS/jkD4AEWSes3YOs=; b=fE
-	yCQvhZr3XWfexBhEbchXMr6Z78ioyPRWmJGAdYCHFrlxPeUU4CmjhTsSCuRI79af
-	ZtJ5y47qKvR12wrcxCCaJyHZco/LFph+Q87U/BKy+Fc9Aty8cV8feUBMNgRql2PS
-	J+JayBWT6g4rPOEq2Z+ZI+kFleyx/Wjy13uSLaIqTKsoa2jl3TWfQvsrwuqycdnG
-	u0U+jSinjCDzHN+kmCNjpDzqImzXMaedycuXrHI8mIuNpvHFjlDDYWFK/sOsbSe4
-	XxNVVPNsO+NxoYeu/DZulnoSV1++og6Rwb4WH5hZg+7+FuadBnxpE/5JDZrxi1d0
-	6TPAyXjTrNCbEcmj/xkA==
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wq588hrwb-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 07 Mar 2024 19:05:47 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 427J5kSG007362
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 7 Mar 2024 19:05:46 GMT
-Received: from hu-c-gdjako-lv.qualcomm.com (10.49.16.6) by
- nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 7 Mar 2024 11:05:45 -0800
-From: Georgi Djakov <quic_c_gdjako@quicinc.com>
-To: <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <will@kernel.org>, <robin.murphy@arm.com>,
-        <joro@8bytes.org>, <iommu@lists.linux.dev>
-CC: <devicetree@vger.kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robdclark@gmail.com>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <quic_cgoldswo@quicinc.com>,
-        <quic_sukadev@quicinc.com>, <quic_pdaly@quicinc.com>,
-        <quic_sudaraja@quicinc.com>, <djakov@kernel.org>
-Subject: [PATCH v6 5/7] arm64: dts: qcom: sdm845: Add DT nodes for the TBUs
+	s=arc-20240116; t=1709838325; c=relaxed/simple;
+	bh=Dtyj/GEZbV1QYd6flisdfcwGNJw92gSRNVc1xTEnhKU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CIT/gqPaZpDukHqb6QQQLSxzu9I6bPo7TrRLoPXOtEYl4VCAvyz57GKuSOdF8/bLp2OPbixAlCYe0eWACkQNV5JHbNZ3T36GFP47s4wrhNgVaC7FJ7ngh/wPIxQ6m3Z5zd84V/uIJMT1DfkeHUw0+hTcZ1+glRh7ouG45pMmwb8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HhXvj25f; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 717CAC43390;
+	Thu,  7 Mar 2024 19:05:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709838324;
+	bh=Dtyj/GEZbV1QYd6flisdfcwGNJw92gSRNVc1xTEnhKU=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=HhXvj25fMOdgLTomS8Ug+BuZkYoRha981swQiZamm7uDuI7C1B5r048m7kk6uarOG
+	 Ww4Sc7af/0777HOCMR29aiiJuFJ/xmHdeS5pAqHRmiJemOh13om8iQPuKeb2bmN5FT
+	 yl47t2Na/Kvt36R1NWKccp4Ctr//cvS/sY4UsTmdFjXi6rzeEbRKc0dGGIbr5NUvpS
+	 CwFsGRUaH9SyCnf0BqCpsG95LSl8F2BUc7m8eVyhJ4QW+Hg97NMuwD5EjQykgdAp7Y
+	 2myjFRGJ/fPsgGQ+Q1QVjHL+uqtME9vHTk4rpa51ZrPQRWnlT2pDYhBph9tsZzyGSs
+	 X+0Bk/Uh+TSaQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 026D8CE0716; Thu,  7 Mar 2024 11:05:23 -0800 (PST)
 Date: Thu, 7 Mar 2024 11:05:23 -0800
-Message-ID: <20240307190525.395291-6-quic_c_gdjako@quicinc.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240307190525.395291-1-quic_c_gdjako@quicinc.com>
-References: <20240307190525.395291-1-quic_c_gdjako@quicinc.com>
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Joel Fernandes <joel@joelfernandes.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Steven Rostedt <rostedt@goodmis.org>, linke li <lilinke99@qq.com>,
+	boqun.feng@gmail.com, dave@stgolabs.net, frederic@kernel.org,
+	jiangshanlai@gmail.com, josh@joshtriplett.org,
+	linux-kernel@vger.kernel.org, qiang.zhang1211@gmail.com,
+	quic_neeraju@quicinc.com, rcu@vger.kernel.org
+Subject: Re: [PATCH] rcutorture: Fix
+ rcu_torture_pipe_update_one()/rcu_torture_writer() data race and concurrency
+ bug
+Message-ID: <09fa751c-db5a-4c86-8e68-572bc9c107f6@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <CAHk-=wgG6Dmt1JTXDbrbXh_6s2yLjL=9pHo7uv0==LHFD+aBtg@mail.gmail.com>
+ <20240306135504.2b3872ef@gandalf.local.home>
+ <CAHk-=wjbDgMKLgxbV+yK4LKZ+2Qj6zVL_sHeb+L9KDia980Q8Q@mail.gmail.com>
+ <20240306142738.7b66a716@rorschach.local.home>
+ <CAHk-=wgPAZ4KnCQergqAOUypwinYh=gZ0q4EQbwvuUcJ_8UK+Q@mail.gmail.com>
+ <83b47424-e5e0-46de-aa63-d413a5aa6cec@paulmck-laptop>
+ <CAHk-=wiX_zF5Mpt8kUm_LFQpYY-mshrXJPOe+wKNwiVhEUcU9g@mail.gmail.com>
+ <851dc594-d2ea-4050-b7c6-e33a1cddf3a1@efficios.com>
+ <72b14322-78c1-4479-9c4e-b0e11c1f0d53@paulmck-laptop>
+ <30b8966b-b31b-41d2-823e-11e60378cfd7@joelfernandes.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 8OREPso_o_T3bJOfrxXB6FVIj_yyTkzK
-X-Proofpoint-ORIG-GUID: 8OREPso_o_T3bJOfrxXB6FVIj_yyTkzK
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-07_14,2024-03-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- mlxlogscore=999 spamscore=0 impostorscore=0 bulkscore=0 mlxscore=0
- clxscore=1015 priorityscore=1501 suspectscore=0 lowpriorityscore=0
- adultscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2403070133
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <30b8966b-b31b-41d2-823e-11e60378cfd7@joelfernandes.org>
 
-Add the device-tree nodes for the TBUs (translation buffer units) that
-are present on the sdm845 platforms. The TBUs can be used debug the
-kernel and provide additional information when a context faults occur.
+On Thu, Mar 07, 2024 at 12:44:39AM -0500, Joel Fernandes wrote:
+> 
+> 
+> On 3/6/2024 10:37 PM, Paul E. McKenney wrote:
+> > On Wed, Mar 06, 2024 at 10:06:21PM -0500, Mathieu Desnoyers wrote:
+> >> On 2024-03-06 21:43, Linus Torvalds wrote:
+> >> [...]
+> >>>
+> >>> Honestly, this all makes me think that we'd be *much* better off
+> >>> showing the real "handoff" with smp_store_release() and
+> >>> smp_load_acquire().
+> >>
+> >> We've done something similar in liburcu (userspace code) to allow
+> >> Thread Sanitizer to understand the happens-before relationships
+> >> within the RCU implementations and lock-free data structures.
+> >>
+> >> Moving to load-acquire/store-release (C11 model in our case)
+> >> allowed us to provide enough happens-before relationship for
+> >> Thread Sanitizer to understand what is happening under the
+> >> hood in liburcu and perform relevant race detection of user
+> >> code.
+> > 
+> > Good point!
+> > 
+> > In the kernel, though, KCSAN understands the Linux-kernel memory model,
+> > and so we don't get that sort of false positive.
+> > 
+> >> As far as the WRITE_ONCE(x, READ_ONCE(x) + 1) pattern
+> >> is concerned, the only valid use-case I can think of is
+> >> split counters or RCU implementations where there is a
+> >> single updater doing the increment, and one or more
+> >> concurrent reader threads that need to snapshot a
+> >> consistent value with READ_ONCE().
+> > 
+> > It is wrong here.  OK, not wrong from a functional viewpoint, but it
+> > is at best very confusing.  I am applying patches to fix this.  I will
+> > push out a new "dev" branch on -rcu that will make this function appear
+> > as shown below.
+> > 
+> > So what would you use that pattern for?
+> > 
+> > One possibility is a per-CPU statistical counter in userspace on a
+> > fastpath, in cases where losing the occasional count is OK.  Then learning
+> > your CPU (and possibly being immediately migrated to some other CPU),
+> > READ_ONCE() of the count, increment, and WRITE_ONCE() might (or might not)
+> > make sense.
+> > 
+> > I suppose the same in the kernel if there was a fastpath so extreme you
+> > could not afford to disable preemption.
+> > 
+> > At best, very niche.
+> > 
+> > Or am I suffering a failure of imagination yet again?  ;-)
+> > 
+> > 							Thanx, Paul
+> > 
+> > ------------------------------------------------------------------------
+> > 
+> > static bool
+> > rcu_torture_pipe_update_one(struct rcu_torture *rp)
+> > {
+> > 	int i;
+> > 	struct rcu_torture_reader_check *rtrcp = READ_ONCE(rp->rtort_chkp);
+> > 
+> > 	if (rtrcp) {
+> > 		WRITE_ONCE(rp->rtort_chkp, NULL);
+> > 		smp_store_release(&rtrcp->rtc_ready, 1); // Pair with smp_load_acquire().
+> > 	}
+> > 	i = rp->rtort_pipe_count;
+> > 	if (i > RCU_TORTURE_PIPE_LEN)
+> > 		i = RCU_TORTURE_PIPE_LEN;
+> > 	atomic_inc(&rcu_torture_wcount[i]);
+> > 	WRITE_ONCE(rp->rtort_pipe_count, i + 1);
+> > 	ASSERT_EXCLUSIVE_WRITER(rp->rtort_pipe_count);
+> 
+> I was going to say to add a comment here for the future reader, that update-side
+> ->rtort_pipe_count READ/WRITE are already mutually exclusive, but this ASSERT
+> already documents it ;-)
 
-Describe the all registers, clocks, interconnects and power-domain
-resources that are needed for each of the TBUs.
+Plus KCSAN is way better at repeatedly inspecting code for this sort of
+issue than I am.  ;-)
 
-Signed-off-by: Georgi Djakov <quic_c_gdjako@quicinc.com>
----
- arch/arm64/boot/dts/qcom/sdm845.dtsi | 70 ++++++++++++++++++++++++++++
- 1 file changed, 70 insertions(+)
+> Also FWIW I confirmed after starting at code that indeed only one update-side
+> access is possible at a time! Thanks,
+> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-index 2f20be99ee7e..381537f03fae 100644
---- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-@@ -15,6 +15,7 @@
- #include <dt-bindings/dma/qcom-gpi.h>
- #include <dt-bindings/firmware/qcom,scm.h>
- #include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/interconnect/qcom,icc.h>
- #include <dt-bindings/interconnect/qcom,osm-l3.h>
- #include <dt-bindings/interconnect/qcom,sdm845.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
-@@ -5085,6 +5086,75 @@ apps_smmu: iommu@15000000 {
- 				     <GIC_SPI 343 IRQ_TYPE_LEVEL_HIGH>;
- 		};
- 
-+		anoc_1_tbu: tbu@150c5000 {
-+			compatible = "qcom,sdm845-tbu";
-+			reg = <0x0 0x150c5000 0x0 0x1000>;
-+			interconnects = <&system_noc MASTER_GNOC_SNOC QCOM_ICC_TAG_ACTIVE_ONLY
-+					 &config_noc SLAVE_IMEM_CFG QCOM_ICC_TAG_ACTIVE_ONLY>;
-+			power-domains = <&gcc HLOS1_VOTE_AGGRE_NOC_MMU_TBU1_GDSC>;
-+			qcom,stream-id-range = <&apps_smmu 0x0 0x400>;
-+		};
-+
-+		anoc_2_tbu: tbu@150c9000 {
-+			compatible = "qcom,sdm845-tbu";
-+			reg = <0x0 0x150c9000 0x0 0x1000>;
-+			interconnects = <&system_noc MASTER_GNOC_SNOC QCOM_ICC_TAG_ACTIVE_ONLY
-+					 &config_noc SLAVE_IMEM_CFG QCOM_ICC_TAG_ACTIVE_ONLY>;
-+			power-domains = <&gcc HLOS1_VOTE_AGGRE_NOC_MMU_TBU2_GDSC>;
-+			qcom,stream-id-range = <&apps_smmu 0x400 0x400>;
-+		};
-+
-+		mnoc_hf_0_tbu: tbu@150cd000 {
-+			compatible = "qcom,sdm845-tbu";
-+			reg = <0x0 0x150cd000 0x0 0x1000>;
-+			interconnects = <&mmss_noc MASTER_MDP0 QCOM_ICC_TAG_ACTIVE_ONLY
-+					 &mmss_noc SLAVE_MNOC_HF_MEM_NOC QCOM_ICC_TAG_ACTIVE_ONLY>;
-+			qcom,stream-id-range = <&apps_smmu 0x800 0x400>;
-+		};
-+
-+		mnoc_hf_1_tbu: tbu@150d1000 {
-+			compatible = "qcom,sdm845-tbu";
-+			reg = <0x0 0x150d1000 0x0 0x1000>;
-+			interconnects = <&mmss_noc MASTER_MDP0 QCOM_ICC_TAG_ACTIVE_ONLY
-+					 &mmss_noc SLAVE_MNOC_HF_MEM_NOC QCOM_ICC_TAG_ACTIVE_ONLY>;
-+			qcom,stream-id-range = <&apps_smmu 0xc00 0x400>;
-+		};
-+
-+		mnoc_sf_0_tbu: tbu@150d5000 {
-+			compatible = "qcom,sdm845-tbu";
-+			reg = <0x0 0x150d5000 0x0 0x1000>;
-+			interconnects = <&mmss_noc MASTER_CAMNOC_SF QCOM_ICC_TAG_ACTIVE_ONLY
-+					 &mmss_noc SLAVE_MNOC_SF_MEM_NOC QCOM_ICC_TAG_ACTIVE_ONLY>;
-+			qcom,stream-id-range = <&apps_smmu 0x1000 0x400>;
-+		};
-+
-+		compute_dsp_tbu: tbu@150d9000 {
-+			compatible = "qcom,sdm845-tbu";
-+			reg = <0x0 0x150d9000 0x0 0x1000>;
-+			interconnects = <&system_noc MASTER_GNOC_SNOC QCOM_ICC_TAG_ACTIVE_ONLY
-+					 &config_noc SLAVE_IMEM_CFG QCOM_ICC_TAG_ACTIVE_ONLY>;
-+			qcom,stream-id-range = <&apps_smmu 0x1400 0x400>;
-+		};
-+
-+		adsp_tbu: tbu@150dd000 {
-+			compatible = "qcom,sdm845-tbu";
-+			reg = <0x0 0x150dd000 0x0 0x1000>;
-+			interconnects = <&system_noc MASTER_GNOC_SNOC QCOM_ICC_TAG_ACTIVE_ONLY
-+					 &config_noc SLAVE_IMEM_CFG QCOM_ICC_TAG_ACTIVE_ONLY>;
-+			power-domains = <&gcc HLOS1_VOTE_AGGRE_NOC_MMU_AUDIO_TBU_GDSC>;
-+			qcom,stream-id-range = <&apps_smmu 0x1800 0x400>;
-+		};
-+
-+		anoc_1_pcie_tbu: tbu@150e1000 {
-+			compatible = "qcom,sdm845-tbu";
-+			reg = <0x0 0x150e1000 0x0 0x1000>;
-+			clocks = <&gcc GCC_AGGRE_NOC_PCIE_TBU_CLK>;
-+			interconnects = <&system_noc MASTER_GNOC_SNOC QCOM_ICC_TAG_ACTIVE_ONLY
-+					 &config_noc SLAVE_IMEM_CFG QCOM_ICC_TAG_ACTIVE_ONLY>;
-+			power-domains = <&gcc HLOS1_VOTE_AGGRE_NOC_MMU_PCIE_TBU_GDSC>;
-+			qcom,stream-id-range = <&apps_smmu 0x1c00 0x400>;
-+		};
-+
- 		lpasscc: clock-controller@17014000 {
- 			compatible = "qcom,sdm845-lpasscc";
- 			reg = <0 0x17014000 0 0x1f004>, <0 0x17300000 0 0x200>;
+Thank you very much!  I will apply your Reviewed-by to these commits
+on my next rebase:
+
+28455c73b620 ("rcutorture: ASSERT_EXCLUSIVE_WRITER() for ->rtort_pipe_count updates")
+b0b99e7db12e ("rcutorture: Remove extraneous rcu_torture_pipe_update_one() READ_ONCE()")
+
+							Thanx, Paul
 
