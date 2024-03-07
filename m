@@ -1,196 +1,169 @@
-Return-Path: <linux-kernel+bounces-95345-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95391-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45B3C874C82
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:36:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D87A874D20
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:12:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A653F1F22732
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:36:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 89E771F2396B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:12:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C93D08529C;
-	Thu,  7 Mar 2024 10:36:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D709D1292DE;
+	Thu,  7 Mar 2024 11:11:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CZRrB0zA"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="1PNcKul5";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="HRUK/dSw";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="1PNcKul5";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="HRUK/dSw"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19F05EAEB
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 10:36:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CE241292C0
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 11:11:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709807797; cv=none; b=hq6xuhYCc3yClzmFAliz/dqZJA6J4ZfEbg39NleHpqncIvl4r4QZ2anw3s43OYBHqumumNbGNO9ZOIsXj5GG/kJuSu3PiqA9GSvAGDvT8uHnDtMJ/k6S6BQ+cs7EAsZMDiddst0D3Ga+H+RK5/9SV8SnVgXRPO/JSgisK97ozB0=
+	t=1709809886; cv=none; b=TLcmApUV2Cy+l+a758nNdx66Fhg993rcAE/wY9W/qqBDpNw1og210CQwplkz9iMRe88yBQgngIRrGZCXsp2w/cLhem6a/lolfqxgEIoSrWSPEItWr82Jl/Os/MzlCh7m4Ptwz4Phc9py3oc/SNqb2dFVnV/ZbMbkeATfXvYK5As=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709807797; c=relaxed/simple;
-	bh=oSvpQF78OH2SIBcN2hrMJ6J8dbzBxbdEOqWa3QXaon8=;
-	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
-	 Content-Type:Date:Message-ID; b=OhdICG91ko767L8hQXtZgpp+ZHlsM3dS5UsyLjZXFxnfGGBuAS6s+c8RYharzxWnTpFrHAaj9ri0Mde13t3PKfcxr4OyfJVYdRyjJPimI4mLxKXIUgfOaxnMOWH3LCkaV6f33jK92fJ/WDhfOXCAVgbxcIsBCUEoAv8VpuC6LFE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CZRrB0zA; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709807794;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	s=arc-20240116; t=1709809886; c=relaxed/simple;
+	bh=RaFxg+VMDKY8p5la2igQKbXDARffGvjf3CSB6hBiqq4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=IBf7xfWFUq9WIM0K/uTmLWzM72yVeMZM0ZJZ9iKlH8IAIMn1H/XZqhfaN/E7kk7X0sGoGMHhte1M+Ln0KhvSmcBxBV/2VvLzW70s08P5cWuqcZhIMtEf4XVqebW+7C4DGRgyuDDciP9q7++NQK38Fo9yX9GLu/Wbff0SNasE08Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=1PNcKul5; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=HRUK/dSw; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=1PNcKul5; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=HRUK/dSw; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 4FAEA8C697;
+	Thu,  7 Mar 2024 10:37:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1709807829; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=rD9pKOLlJMagBhvvso8urKdJzEY4DWr9MOofjPhNFFA=;
-	b=CZRrB0zA78RUduIO0smpVmRzUhPqgq+DsC9itHwWXuhRsQ0im+GgnjgNDbe8x+21JqQdRU
-	rpyZ1cbQa+76eaKXXoy85+T5zzHU4WCCj2kXFqDEjBwWj3kvI1MbOzQr5abUQltFvp8z8x
-	WmPtt/2cdBej1xOxEeeFGZzq4dykbRM=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-358-zJKFNu4oMJWt0JTIEUyesQ-1; Thu,
- 07 Mar 2024 05:36:33 -0500
-X-MC-Unique: zJKFNu4oMJWt0JTIEUyesQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+	bh=6U1HXfrC2xy0RBFUQxcEQNC0CB7CZr+Cp8pvfKVmy5k=;
+	b=1PNcKul5pYqaLADNEX7AzDdtYPvuKZjN7bfPn0t8vcwv0YCGYCALhebIjgPoY9/HjsdUCd
+	s3uYpkl1rrrnkSDR+d6qZJwsswO5GSqv8MDW95dt6MKM+MPhZwBLD0yad9DkENaFXHSEzU
+	8s1cGSJvNrpbgTJHG+Fp4Oo7lxfVZOA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1709807829;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6U1HXfrC2xy0RBFUQxcEQNC0CB7CZr+Cp8pvfKVmy5k=;
+	b=HRUK/dSwa271duD6NAMCoOoIjSh2k/RNqOf0VFq2STc1x41C6DNlW8dcHe9PDbcvAgLpiS
+	AAM2OE3T93YwEfCQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1709807829; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6U1HXfrC2xy0RBFUQxcEQNC0CB7CZr+Cp8pvfKVmy5k=;
+	b=1PNcKul5pYqaLADNEX7AzDdtYPvuKZjN7bfPn0t8vcwv0YCGYCALhebIjgPoY9/HjsdUCd
+	s3uYpkl1rrrnkSDR+d6qZJwsswO5GSqv8MDW95dt6MKM+MPhZwBLD0yad9DkENaFXHSEzU
+	8s1cGSJvNrpbgTJHG+Fp4Oo7lxfVZOA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1709807829;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6U1HXfrC2xy0RBFUQxcEQNC0CB7CZr+Cp8pvfKVmy5k=;
+	b=HRUK/dSwa271duD6NAMCoOoIjSh2k/RNqOf0VFq2STc1x41C6DNlW8dcHe9PDbcvAgLpiS
+	AAM2OE3T93YwEfCQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6F4E329AC020;
-	Thu,  7 Mar 2024 10:36:32 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.114])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 23538C01600;
-	Thu,  7 Mar 2024 10:36:29 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <ZelGX3vVlGfEZm8H@casper.infradead.org>
-References: <ZelGX3vVlGfEZm8H@casper.infradead.org> <1668172.1709764777@warthog.procyon.org.uk>
-To: Matthew Wilcox <willy@infradead.org>,
-    Trond Myklebust <trond.myklebust@hammerspace.com>,
-    Miklos Szeredi <miklos@szeredi.hu>, Christoph Hellwig <hch@lst.de>
-Cc: dhowells@redhat.com, Andrew Morton <akpm@linux-foundation.org>,
-    Alexander Viro <viro@zeniv.linux.org.uk>,
-    Christian Brauner <brauner@kernel.org>,
-    Jeff Layton <jlayton@kernel.org>, linux-mm@kvack.org,
-    linux-fsdevel@vger.kernel.org, netfs@lists.linux.dev,
-    v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
-    ceph-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
-    linux-nfs@vger.kernel.org, devel@lists.orangefs.org,
-    linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] mm: Replace ->launder_folio() with flush and wait
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 32678136BA;
+	Thu,  7 Mar 2024 10:37:09 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id pHnZC9WY6WUGKwAAD6G6ig
+	(envelope-from <hare@suse.de>); Thu, 07 Mar 2024 10:37:09 +0000
+Message-ID: <72c1d3a8-14ad-43e8-a68a-25be903698c4@suse.de>
+Date: Thu, 7 Mar 2024 11:37:08 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1831808.1709807788.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date: Thu, 07 Mar 2024 10:36:28 +0000
-Message-ID: <1831809.1709807788@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 0/2] nvme-fabrics: short-circuit connect retries
+Content-Language: en-US
+To: Sagi Grimberg <sagi@grimberg.me>, Daniel Wagner <dwagner@suse.de>,
+ James Smart <james.smart@broadcom.com>
+Cc: Keith Busch <kbusch@kernel.org>, Christoph Hellwig <hch@lst.de>,
+ linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20240305080005.3638-1-dwagner@suse.de>
+ <22b01fb4-b543-43b2-949c-1873105dc343@grimberg.me>
+From: Hannes Reinecke <hare@suse.de>
+In-Reply-To: <22b01fb4-b543-43b2-949c-1873105dc343@grimberg.me>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [-1.26 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 BAYES_HAM(-1.17)[88.85%];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 RCPT_COUNT_SEVEN(0.00)[7];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[]
+X-Spam-Score: -1.26
+X-Spam-Flag: NO
 
-Matthew Wilcox <willy@infradead.org> wrote:
+On 3/7/24 09:00, Sagi Grimberg wrote:
+> 
+> On 05/03/2024 10:00, Daniel Wagner wrote:
+>> I've picked up Hannes' DNR patches. In short the make the transports 
+>> behave the same way when the DNR bit set on a re-connect attempt. We
+>> had a discussion this
+>> topic in the past and if I got this right we all agreed is that the 
+>> host should honor the DNR bit on a connect attempt [1]
+> Umm, I don't recall this being conclusive though. The spec ought to be 
+> clearer here I think.
 
-> On Wed, Mar 06, 2024 at 10:39:37PM +0000, David Howells wrote:
-> > Here's a patch to have a go at getting rid of ->launder_folio().  Sinc=
-e it's
-> > failable and cannot guarantee that pages in the range are removed, I'v=
-e tried
-> > to replace laundering with just flush-and-wait, dropping the folio loc=
-k around
-> > the I/O.
-> =
+I've asked the NVMexpress fmds group, and the response was pretty 
+unanimous that the DNR bit on connect should be evaluated.
 
-> My sense is that ->launder_folio doesn't actually need to be replaced.
-> =
+>>
+>> The nvme/045 test case (authentication tests) in blktests is a good 
+>> test case for this after extending it slightly. TCP and RDMA try to
+>> reconnect with an
+>> invalid key over and over again, while loop and FC stop after the 
+>> first fail.
+> 
+> Who says that invalid key is a permanent failure though?
+> 
+See the response to the other patchset.
+'Invalid key' in this context means that the _client_ evaluated the key 
+as invalid, ie the key is unusable for the client.
+As the key is passed in via the commandline there is no way the client
+can ever change the value here, and no amount of retry will change 
+things here. That's what we try to fix.
 
-> commit e3db7691e9f3dff3289f64e3d98583e28afe03db
-> Author: Trond Myklebust <Trond.Myklebust@netapp.com>
-> Date:   Wed Jan 10 23:15:39 2007 -0800
-> =
+The controller surely can return an invalid key, but that's part of
+the authenticaion protocol and will be evaluated differently.
 
->     [PATCH] NFS: Fix race in nfs_release_page()
-> =
+Cheers,
 
->         NFS: Fix race in nfs_release_page()
-> =
-
->         invalidate_inode_pages2() may find the dirty bit has been set on=
- a page
->         owing to the fact that the page may still be mapped after it was=
- locked.
->         Only after the call to unmap_mapping_range() are we sure that th=
-e page
->         can no longer be dirtied.
->         In order to fix this, NFS has hooked the releasepage() method an=
-d tries
->         to write the page out between the call to unmap_mapping_range() =
-and the
->         call to remove_mapping(). This, however leads to deadlocks in th=
-e page
->         reclaim code, where the page may be locked without holding a ref=
-erence
->         to the inode or dentry.
-> =
-
->         Fix is to add a new address_space_operation, launder_page(), whi=
-ch will
->         attempt to write out a dirty page without releasing the page loc=
-k.
-> =
-
->     Signed-off-by: Trond Myklebust <Trond.Myklebust@netapp.com>
-> =
-
-> I don't understand why this couldn't've been solved by page_mkwrite.
-> NFS did later add nfs_vm_page_mkwrite in July 2007, and maybe it's just
-> not needed any more?  I haven't looked into it enough to make sure,
-> but my belief is that we should be able to get rid of it.
-
-Okay, it's slightly more complex than I thought - and I'm not sure all cal=
-lers
-are actually using it correctly.  There are some additional interesting ca=
-ses
-I've found, beyond the pre-/post-DIO case:
-
- (1) NFS relies on it to retry the write before stripping the pages in the
-     case where a writeback error occurs.  I think this can probably be de=
-alt
-     with by sticking a filemap_fdatawrite() call before the invalidation.
-     I'm not sure if this would incur the deadlock with the page reclaim c=
-ode
-     of which Trond speaks.
-
- (2) invalidate_inode_pages2() is used in some places to effect invalidati=
-on
-     of the pagecache in the case where the server tells us that a third p=
-arty
-     modified the server copy of a file.  What the right behaviour should =
-be
-     here, I'm not sure, but at the moment, any dirty data will get launde=
-red
-     back to the server.  Possibly it should be simply invalidated locally=
- or
-     the user asked how they want to handle the divergence.
-
-     Some filesystems use invalidate_remote_inode() instead which seems to
-     leave the dirty pages in place locally.
-
-     If it is desirous to save the dirty data, then filemap_fdatawrite()
-     could be deployed before invalidating the pages.
-
- (3) Fuse uses invalidate_inode_pages2() in fuse_do_setattr() to strip all=
- the
-     pages from an inode that has had its size changed, laundering any pag=
-e
-     that's still dirty.  This would seem to be excessive, but maybe Miklo=
-s
-     had a reason for doing it that way.
-
-There are some places that should perhaps be using kiocb_invalidate_pages(=
-)
-and kiocb_invalidate_post_direct_write() instead - assuming Christoph has =
-no
-objection to the latter function being exported.
-
-David
+Hannes
 
 
