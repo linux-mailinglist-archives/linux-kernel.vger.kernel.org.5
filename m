@@ -1,92 +1,159 @@
-Return-Path: <linux-kernel+bounces-95578-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95579-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42B6D874FB5
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:13:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CE1F874FB8
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:13:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D86B21F23617
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 13:13:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DCB1328337D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 13:13:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E676E129A98;
-	Thu,  7 Mar 2024 13:13:29 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A22CD12C532;
+	Thu,  7 Mar 2024 13:13:38 +0000 (UTC)
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 505943233
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 13:13:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9841512B141;
+	Thu,  7 Mar 2024 13:13:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709817209; cv=none; b=HQ5bdxG2mo6nSKZyaM+VX3XdJ4YeyYbouhx3MiPLsxHa6YzlX2nOLyogMoa5FcNjsCZFOjvJEl+OQGEe/x8W0500oQ3U4GVCiqD6oGs+IktkhRXuvKGMQFDWBfTFZJGCW5v3eHveX6QYIIyblWcdlYKDuxEwE2zVTs2XbWCD2u0=
+	t=1709817218; cv=none; b=IY5ibmESVsy3ashKTcC58hHvr+5sTlBVorvZB2YoaJv7bOePfa48HSr0na/tFH4wEbcK8R1Cym/rU40uQPU+s9/oNWq0Egl5+yqqmQPoo867NMic1pXTULJHKIR5qHRiXQA9uI833xpTnViFiMAgaa6w1pr59WG1T6lvr7Mi+0w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709817209; c=relaxed/simple;
-	bh=xrAHyxhBVNZyegD3Y3xng5QLg6iSzIQ41xzs5c1Z93E=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=dKaKdVRiRqfmJxjfoJI05gx6y0QlbebxAAhhV8qkVYkSS7FpKQzIXfMNvtzwm0bWcLaDYjLYPGaekecORxrIe3uShjUiDvFubC00dgOWgVoUXgCVsN07W9A5jN6oCnmXKS6vAfAvRc0Xthl5LrXwQSN/YaNf+HupJOUCgV1K0SY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 08dc2675490e4bbc92606375eac1b6fb-20240307
-X-CID-O-RULE: Release_Ham
-X-CID-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.37,REQID:e712c678-b423-4227-9a7a-709d12c7680c,IP:25,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:10
-X-CID-INFO: VERSION:1.1.37,REQID:e712c678-b423-4227-9a7a-709d12c7680c,IP:25,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:10
-X-CID-META: VersionHash:6f543d0,CLOUDID:ae793b81-4f93-4875-95e7-8c66ea833d57,B
-	ulkID:240307211317NCOVBWQY,BulkQuantity:0,Recheck:0,SF:44|66|24|17|19|102,
-	TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:ni
-	l,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: 08dc2675490e4bbc92606375eac1b6fb-20240307
-X-User: gehao@kylinos.cn
-Received: from localhost.localdomain [(116.128.244.171)] by mailgw
-	(envelope-from <gehao@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 1133455212; Thu, 07 Mar 2024 21:13:13 +0800
-From: Hao Ge <gehao@kylinos.cn>
-To: akpm@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org,
-	gehao618@613.com,
-	Hao Ge <gehao@kylinos.cn>
-Subject: [PATCH] mm/page-flags: make PageMappingFlags return bool
-Date: Thu,  7 Mar 2024 21:13:04 +0800
-Message-Id: <20240307131304.169859-1-gehao@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1709817218; c=relaxed/simple;
+	bh=5565Dl57cUrtcvE9uRHrmU1SUVCRFojaEHMTPf6ehto=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JxZsAv8c7VMvAFflhVAQRuKGqqYudjhun6LKUmSTbEDs0gL8avciWz0Apzybiv6P4hv6uE/RaEgwzOZhXBnQ/ZCBBzIVnavZB2Sme9mTUWguFOHUjHb4KSqcIo1i5isqvNGeJJhnpQ57cYe+sxMBBW/G6FzjTWaGIKEXulcYGJ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-60982a6d8a7so10532737b3.0;
+        Thu, 07 Mar 2024 05:13:36 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709817215; x=1710422015;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oIkBiPAlFe5WfWAAKfD9w/ivCRZtGTgbavVJepP7P3Q=;
+        b=IMcIyqumTpG2CEoTd0NLWrHP8fSXeWBv0u9vhBdcUQDTrpUaDLR+oIkbv+vln7ub47
+         msF5Ybh9ytke3LIB9/uSMvF0Gb5hUwUgU66OLAF1baLnz4Nc7ETcthmBOejNKnPoWYuE
+         BCdR2mJPcWpjfTZseEy2TpxWfQCbF4AnBQXds82jhcitvnjih1eVPTQYP6f30wpArSb6
+         21KyQnpYTpFMsT+GSJ5NhVVhHfn6oLNn5xQEMxT4vu4MfiHKPFx5wv1gG1ghXqKmcqOP
+         Jh11lU+3sq4Lb8CLX0yPUKaasaxB5IS+FGrRxPy/KQ3jIHCcai/5PTa9S2I6HdpYaPgc
+         zdMw==
+X-Forwarded-Encrypted: i=1; AJvYcCXWYssGN5hg973UmvQv5mrx+WODmrotZjd9m81pmk8Cx7KF3h8ugJ8y4IgOxxtXDOxCL+lWz8tX5pv4yz8Yynb2vP6hXQIVwUXBywPiVH2Tcwkdi+Yj7U844+XYwqasQrYBiZGMugtEwNcusn62FEw781eQBkmS4075E/s0Hz+EGQn3dE8=
+X-Gm-Message-State: AOJu0Yx7hirkQJYgdlEI7wTik6gd4BLAarCklCRG08ADJ/PaFeUThvJD
+	9/JhfrEsZYqE+FAE0KrYNAdV4hmZSujBlUJbMr+E1gomM45/24+oY4fXLj5KLto=
+X-Google-Smtp-Source: AGHT+IGHiVGamju10vzgpEvuZje9ogx2PyvIVlq4+da5Hty/BYKt1BH2B3idGMFpJDKoXxh1QxGRYw==
+X-Received: by 2002:a0d:f207:0:b0:609:33d2:c70d with SMTP id b7-20020a0df207000000b0060933d2c70dmr18143021ywf.37.1709817215224;
+        Thu, 07 Mar 2024 05:13:35 -0800 (PST)
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com. [209.85.128.179])
+        by smtp.gmail.com with ESMTPSA id u84-20020a814757000000b0060784b3bba8sm4229039ywa.35.2024.03.07.05.13.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Mar 2024 05:13:35 -0800 (PST)
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-60982a6d8a7so10532417b3.0;
+        Thu, 07 Mar 2024 05:13:35 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXJTWMH3zo2k71nLgNuTCN4eVyUTRkWRyG9N6cQzOT2mvMoQqNgXWbMNbOZftUXD1+YSfpKhGi0PVBmnYU+xOU032TFdNUcvgVEQBawG50hybLPjP0m0t2NvGbAt/dwRsaCRPUvx/IQVramxMJBOrkzKAUgM3Xu4SIMJ+MjMiM+dv4KCJ0=
+X-Received: by 2002:a81:5ec6:0:b0:609:82d7:a280 with SMTP id
+ s189-20020a815ec6000000b0060982d7a280mr19545880ywb.11.1709817214857; Thu, 07
+ Mar 2024 05:13:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240306235021.976083-1-chris.packham@alliedtelesis.co.nz> <20240306235021.976083-2-chris.packham@alliedtelesis.co.nz>
+In-Reply-To: <20240306235021.976083-2-chris.packham@alliedtelesis.co.nz>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 7 Mar 2024 14:13:23 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUzrkRk_07SfQoZoe8b+bxkX+fLH_f5tVqbUZu23=DN_Q@mail.gmail.com>
+Message-ID: <CAMuHMdUzrkRk_07SfQoZoe8b+bxkX+fLH_f5tVqbUZu23=DN_Q@mail.gmail.com>
+Subject: Re: [PATCH v5 1/3] auxdisplay: Add 7-segment LED display driver
+To: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc: andy@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, 
+	conor+dt@kernel.org, andrew@lunn.ch, gregory.clement@bootlin.com, 
+	sebastian.hesselbarth@gmail.com, lee@kernel.org, linux-leds@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-make PageMappingFlags return bool like folio_mapping_flags
+Hi Chris,
 
-Signed-off-by: Hao Ge <gehao@kylinos.cn>
----
- include/linux/page-flags.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Thu, Mar 7, 2024 at 12:50=E2=80=AFAM Chris Packham
+<chris.packham@alliedtelesis.co.nz> wrote:
+> Add a driver for a 7-segment LED display. At the moment only one
+> character is supported but it should be possible to expand this to
+> support more characters and/or 14-segment displays in the future.
+>
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> ---
+>
+> Notes:
+>     Changes in v5:
+>     - Add depends on GPIOLIB || COMPILE_TEST
+>     - Validate that we get enough GPIOs
 
-diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
-index 735cddc13d20..30740304059f 100644
---- a/include/linux/page-flags.h
-+++ b/include/linux/page-flags.h
-@@ -642,7 +642,7 @@ static __always_inline bool folio_mapping_flags(struct folio *folio)
- 	return ((unsigned long)folio->mapping & PAGE_MAPPING_FLAGS) != 0;
- }
- 
--static __always_inline int PageMappingFlags(struct page *page)
-+static __always_inline bool PageMappingFlags(struct page *page)
- {
- 	return ((unsigned long)page->mapping & PAGE_MAPPING_FLAGS) != 0;
- }
--- 
-2.25.1
+Thanks for the update!
 
+> --- /dev/null
+> +++ b/drivers/auxdisplay/seg-led-gpio.c
+
+> +static void seg_led_update(struct work_struct *work)
+> +{
+> +       struct seg_led_priv *priv =3D container_of(work, struct seg_led_p=
+riv, work.work);
+> +       struct linedisp *linedisp =3D &priv->linedisp;
+> +       struct linedisp_map *map =3D linedisp->map;
+> +       DECLARE_BITMAP(values, 8) =3D { 0 };
+> +
+> +       bitmap_set_value8(values, map_to_seg7(&map->map.seg7, linedisp->b=
+uf[0]), 0);
+> +
+> +       gpiod_set_array_value_cansleep(priv->segment_gpios->ndescs, priv-=
+>segment_gpios->desc,
+> +                                      priv->segment_gpios->info, values)=
+;
+
+This may still cause an out-of-bounds access of values if ndescs > 8.
+
+> +}
+
+> +static int seg_led_probe(struct platform_device *pdev)
+> +{
+> +       struct seg_led_priv *priv;
+> +       struct device *dev =3D &pdev->dev;
+> +
+> +       priv =3D devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+> +       if (!priv)
+> +               return -ENOMEM;
+> +
+> +       platform_set_drvdata(pdev, priv);
+> +
+> +       priv->segment_gpios =3D devm_gpiod_get_array(dev, "segment", GPIO=
+D_OUT_LOW);
+> +       if (IS_ERR(priv->segment_gpios))
+> +               return PTR_ERR(priv->segment_gpios);
+> +
+> +       if (priv->segment_gpios->ndescs < 7)
+
+|| priv->segment_gpios->ndescs > 8
+
+> +               return -EINVAL;
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
