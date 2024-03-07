@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-96066-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96064-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A25268756B7
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:09:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55E478756B4
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:09:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D5F8281D10
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:09:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 88EE02812C6
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:09:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DC5813B795;
-	Thu,  7 Mar 2024 19:06:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A64B13B29D;
+	Thu,  7 Mar 2024 19:06:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Uypve7XR"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="AwkdKYxI"
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B87B213665A;
-	Thu,  7 Mar 2024 19:06:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F3F013AA37;
+	Thu,  7 Mar 2024 19:06:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709838371; cv=none; b=EPJcp5/QohbQ5dwLjw6PT8ErMeVfncco6Etn7zJbQOK8zdsg+VmJpCcvAss27IK3BV1QDijh1FbZqvNlqAbqubFmcZVWehwt6AGk0R0M4HVrk6WEvk+zcMfnzVbEXulqQ3jumi1+H+KqzQPoKGOFX7qg7kx3P/tF6SEUXFk7pMo=
+	t=1709838370; cv=none; b=nEHc5MxSAlz4eeX4wh2SPViLCEWHhuRrTPFN2yC3d5Mrmrn8GxgH5I5s//QzHq/Q7QPcRpHmWHsGM3dvN9UmFwV+aRFLrM0pi9pVQSOc624Ql1AlUujLhPg3nAPMDIdtBbU0R7NPcna7v5GtY+Vnyn6QWrc78+XqI+X+mYIYVG8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709838371; c=relaxed/simple;
-	bh=ndoVGcEPZTeW65Jpuo0QNLQhBOiAh4hrgmZGAAZ/Um0=;
+	s=arc-20240116; t=1709838370; c=relaxed/simple;
+	bh=/zkTE/zzvzqe6XiR3mOeQqTOotqx4uagmm3Drc1iXSY=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=kXd/piphzM8SKw8mShsMF+acBRh3h8u4Pq6wIPtPxWPlM2QjuK3bXRxjXtqmkY+bi1vaOMFIaCl1ohNFdG7O33t1FjhCzDuPC4yObLF2KgMagvNz3Tu6RD6Qo2I5K2F4VWvdyYIDHpAU0A6sLNwOhjtB3vWdu4qFBX4cpWyJDEM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Uypve7XR; arc=none smtp.client-ip=205.220.168.131
+	 MIME-Version:Content-Type; b=ti0TYGaqhMh7F8H1SJSFIIszJR1TVLgK3e1oIB8YH4xHyJbXX4JJB8ImVi77QwgHeoAxPax3KTDoSYc2pJEj7iw8fGm3l1/nogAGLWSRqwFQoma6Z8JxPO+1hQdnsYj3kkObrwo1lIZr+d/iI5/pq1pciwE9wFjQV6d1NSKFMFM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=AwkdKYxI; arc=none smtp.client-ip=205.220.168.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
 Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 427FxeUs020087;
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 427FxeUt020087;
 	Thu, 7 Mar 2024 19:05:49 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=jqzwN1vuCFLLJR0ky4qG5pZmihPpcc82QgRh0kKcLxI=; b=Uy
-	pve7XRoyVqstRdYn8wkOgsoXCh1x4hD2YgWbwhCgCfIsSK1eCQp8KIxVtiX8KCfc
-	hqKlltm5aPFl3X3yg0qMf4J/a1cTKjdZrmmgDz9+qez/8AMO8qeB2vvll171ajII
-	GI2zbQI3sndMbr4aSQC+GBnl1gE2BXWlx0wDVQRWXaZBLv1SJeslYjEV4rhALVa+
-	MMLaAYKSz1RUsCD2HveVRv0Xt/6LMN2ZUVSzl9QVGy9WUkT08DUpNGJOs6mPPAIQ
-	pqmuWcH8olYZluWy5N5DG3Snn11i813xDBAlmBqyNmbBrTpPclFFfVIteSZrOs8q
-	E07zNTgIEpo+bvpEr4jw==
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wq7husfgc-1
+	qcppdkim1; bh=+bUzszJsY1F6wSWzpC0p4NQTeDs9k/xPSLileOx9bz4=; b=Aw
+	kdKYxI7hpsWWekcmp5ETixTHrAVrqJOcFLicYN6fun34HF69LO2rkjGrxvmio/kX
+	t8igIk9/HMiRj3f4ni6T46H+IETdwjGJpc7cq6aAGlQ2xsX4pK8INTV25GUbhwC6
+	6VFV6p9Lm2uw83XIfbBK9WZ3e/EXt7AyRn1FlmlpuO+YFdUrnRdOZfzN8NCXzFwZ
+	J2DIHB0WraaO5QgUJrNMGNSwIHEJKWWB+sBv0aMWEM+8zcrZbPaBDhGXb1ukOSU7
+	FQ9Hjo8aIOzChZDh2l6GY7XaFaiLtCuwCTyC1O/K68AOu+Avi9ejLEn6ij5Yj2Ru
+	y+GXun/DWiGS7zSwxxdw==
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wq7husfgd-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Thu, 07 Mar 2024 19:05:48 +0000 (GMT)
 Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 427J5lUL028098
+	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 427J5mu9004609
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 7 Mar 2024 19:05:47 GMT
+	Thu, 7 Mar 2024 19:05:48 GMT
 Received: from hu-c-gdjako-lv.qualcomm.com (10.49.16.6) by
  nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 7 Mar 2024 11:05:46 -0800
+ 15.2.1118.40; Thu, 7 Mar 2024 11:05:47 -0800
 From: Georgi Djakov <quic_c_gdjako@quicinc.com>
 To: <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
         <conor+dt@kernel.org>, <will@kernel.org>, <robin.murphy@arm.com>,
@@ -65,9 +65,9 @@ CC: <devicetree@vger.kernel.org>, <andersson@kernel.org>,
         <linux-arm-msm@vger.kernel.org>, <quic_cgoldswo@quicinc.com>,
         <quic_sukadev@quicinc.com>, <quic_pdaly@quicinc.com>,
         <quic_sudaraja@quicinc.com>, <djakov@kernel.org>
-Subject: [PATCH v6 6/7] iommu/arm-smmu-qcom: Use the custom fault handler on more platforms
-Date: Thu, 7 Mar 2024 11:05:24 -0800
-Message-ID: <20240307190525.395291-7-quic_c_gdjako@quicinc.com>
+Subject: [PATCH v6 7/7] arm64: dts: qcom: sc7280: Add DT nodes for the TBUs
+Date: Thu, 7 Mar 2024 11:05:25 -0800
+Message-ID: <20240307190525.395291-8-quic_c_gdjako@quicinc.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240307190525.395291-1-quic_c_gdjako@quicinc.com>
 References: <20240307190525.395291-1-quic_c_gdjako@quicinc.com>
@@ -83,40 +83,134 @@ X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
  nasanex01a.na.qualcomm.com (10.52.223.231)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 8k0mZPwDEQVrlJ1exsBc7JoywBNsOFg_
-X-Proofpoint-ORIG-GUID: 8k0mZPwDEQVrlJ1exsBc7JoywBNsOFg_
+X-Proofpoint-GUID: JIDtZ9KZKJF01MwaKIUmdoPrheqNUEny
+X-Proofpoint-ORIG-GUID: JIDtZ9KZKJF01MwaKIUmdoPrheqNUEny
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-03-07_14,2024-03-06_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
- clxscore=1015 phishscore=0 priorityscore=1501 mlxlogscore=999 mlxscore=0
+ clxscore=1015 phishscore=0 priorityscore=1501 mlxlogscore=938 mlxscore=0
  spamscore=0 malwarescore=0 impostorscore=0 lowpriorityscore=0
  suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.19.0-2402120000 definitions=main-2403070133
 
-The TBU support is now available, so let's allow it to be used on other
-platforms that have the Qualcomm SMMU-500 implementation with TBUs. This
-will allow the context fault handler to query the TBUs when a context
-fault occurs.
+Add the device-tree nodes for the TBUs (translation buffer units) that
+are present on the sc7280 platforms. The TBUs can be used debug the
+kernel and provide additional information when a context faults occur.
+
+Describe the all registers, clocks, interconnects and power-domain
+resources that are needed for each of the TBUs.
 
 Signed-off-by: Georgi Djakov <quic_c_gdjako@quicinc.com>
 ---
- drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ arch/arm64/boot/dts/qcom/sc7280.dtsi | 89 ++++++++++++++++++++++++++++
+ 1 file changed, 89 insertions(+)
 
-diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-index 7a58b1b96bca..08e0ad325bab 100644
---- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-+++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-@@ -413,6 +413,10 @@ static const struct arm_smmu_impl qcom_smmu_500_impl = {
- 	.reset = arm_mmu500_reset,
- 	.write_s2cr = qcom_smmu_write_s2cr,
- 	.tlb_sync = qcom_smmu_tlb_sync,
-+#ifdef CONFIG_ARM_SMMU_QCOM_TBU
-+	.context_fault = qcom_smmu_context_fault,
-+	.context_fault_needs_threaded_irq = true,
-+#endif
- };
+diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+index 7e7f0f0fb41b..5d8aa182e3a9 100644
+--- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+@@ -2970,6 +2970,18 @@ adreno_smmu: iommu@3da0000 {
+ 			dma-coherent;
+ 		};
  
- static const struct arm_smmu_impl sdm845_smmu_500_impl = {
++		gfx_0_tbu: tbu@3dd9000 {
++			compatible = "qcom,sc7280-tbu";
++			reg = <0x0 0x3dd9000 0x0 0x1000>;
++			qcom,stream-id-range = <&adreno_smmu 0x0 0x400>;
++		};
++
++		gfx_1_tbu: tbu@3ddd000 {
++			compatible = "qcom,sc7280-tbu";
++			reg = <0x0 0x3ddd000 0x0 0x1000>;
++			qcom,stream-id-range = <&adreno_smmu 0x400 0x400>;
++		};
++
+ 		remoteproc_mpss: remoteproc@4080000 {
+ 			compatible = "qcom,sc7280-mpss-pas";
+ 			reg = <0 0x04080000 0 0x10000>;
+@@ -5778,6 +5790,83 @@ apps_smmu: iommu@15000000 {
+ 				     <GIC_SPI 408 IRQ_TYPE_LEVEL_HIGH>;
+ 		};
+ 
++		anoc_1_tbu: tbu@151dd000 {
++			compatible = "qcom,sc7280-tbu";
++			reg = <0x0 0x151dd000 0x0 0x1000>;
++			interconnects = <&gem_noc MASTER_APPSS_PROC QCOM_ICC_TAG_ACTIVE_ONLY
++					 &cnoc3 SLAVE_TCU QCOM_ICC_TAG_ACTIVE_ONLY>;
++			qcom,stream-id-range = <&apps_smmu 0x0 0x400>;
++		};
++
++		anoc_2_tbu: tbu@151e1000 {
++			compatible = "qcom,sc7280-tbu";
++			reg = <0x0 0x151e1000 0x0 0x1000>;
++			interconnects = <&gem_noc MASTER_APPSS_PROC QCOM_ICC_TAG_ACTIVE_ONLY
++					 &cnoc3 SLAVE_TCU QCOM_ICC_TAG_ACTIVE_ONLY>;
++			qcom,stream-id-range = <&apps_smmu 0x400 0x400>;
++		};
++
++		mnoc_hf_0_tbu: tbu@151e5000 {
++			compatible = "qcom,sc7280-tbu";
++			reg = <0x0 0x151e5000 0x0 0x1000>;
++			interconnects = <&mmss_noc MASTER_MDP0 QCOM_ICC_TAG_ACTIVE_ONLY
++					 &mc_virt SLAVE_EBI1 QCOM_ICC_TAG_ACTIVE_ONLY>;
++			power-domains = <&gcc HLOS1_VOTE_MMNOC_MMU_TBU_HF0_GDSC>;
++			qcom,stream-id-range = <&apps_smmu 0x800 0x400>;
++		};
++
++		mnoc_hf_1_tbu: tbu@151e9000 {
++			compatible = "qcom,sc7280-tbu";
++			reg = <0x0 0x151e9000 0x0 0x1000>;
++			interconnects = <&mmss_noc MASTER_MDP0 QCOM_ICC_TAG_ACTIVE_ONLY
++					 &mc_virt SLAVE_EBI1 QCOM_ICC_TAG_ACTIVE_ONLY>;
++			power-domains = <&gcc HLOS1_VOTE_MMNOC_MMU_TBU_HF1_GDSC>;
++			qcom,stream-id-range = <&apps_smmu 0xc00 0x400>;
++		};
++
++		compute_dsp_0_tbu: tbu@151ed000 {
++			compatible = "qcom,sc7280-tbu";
++			reg = <0x0 0x151ed000 0x0 0x1000>;
++			interconnects = <&nsp_noc MASTER_CDSP_PROC QCOM_ICC_TAG_ACTIVE_ONLY
++					 &mc_virt SLAVE_EBI1 QCOM_ICC_TAG_ACTIVE_ONLY>;
++			power-domains = <&gcc HLOS1_VOTE_TURING_MMU_TBU1_GDSC>;
++			qcom,stream-id-range = <&apps_smmu 0x1000 0x400>;
++		};
++
++		compute_dsp_1_tbu: tbu@151f1000 {
++			compatible = "qcom,sc7280-tbu";
++			reg = <0x0 0x151f1000 0x0 0x1000>;
++			interconnects = <&nsp_noc MASTER_CDSP_PROC QCOM_ICC_TAG_ACTIVE_ONLY
++					 &mc_virt SLAVE_EBI1 QCOM_ICC_TAG_ACTIVE_ONLY>;
++			power-domains = <&gcc HLOS1_VOTE_TURING_MMU_TBU0_GDSC>;
++			qcom,stream-id-range = <&apps_smmu 0x1400 0x400>;
++		};
++
++		adsp_tbu: tbu@151f5000 {
++			compatible = "qcom,sc7280-tbu";
++			reg = <0x0 0x151f5000 0x0 0x1000>;
++			interconnects = <&gem_noc MASTER_APPSS_PROC QCOM_ICC_TAG_ACTIVE_ONLY
++					 &lpass_ag_noc SLAVE_LPASS_CORE_CFG QCOM_ICC_TAG_ACTIVE_ONLY>;
++			qcom,stream-id-range = <&apps_smmu 0x1800 0x400>;
++		};
++
++		anoc_1_pcie_tbu: tbu@151f9000 {
++			compatible = "qcom,sc7280-tbu";
++			reg = <0x0 0x151f9000 0x0 0x1000>;
++			interconnects = <&gem_noc MASTER_APPSS_PROC QCOM_ICC_TAG_ACTIVE_ONLY
++					 &cnoc3 SLAVE_TCU QCOM_ICC_TAG_ACTIVE_ONLY>;
++			qcom,stream-id-range = <&apps_smmu 0x1c00 0x400>;
++		};
++
++		mnoc_sf_0_tbu: tbu@151fd000 {
++			compatible = "qcom,sc7280-tbu";
++			reg = <0x0 0x151fd000 0x0 0x1000>;
++			interconnects = <&mmss_noc MASTER_CAMNOC_SF QCOM_ICC_TAG_ACTIVE_ONLY
++					 &mc_virt SLAVE_EBI1 QCOM_ICC_TAG_ACTIVE_ONLY>;
++			power-domains = <&gcc HLOS1_VOTE_MMNOC_MMU_TBU_SF0_GDSC>;
++			qcom,stream-id-range = <&apps_smmu 0x2000 0x400>;
++		};
++
+ 		intc: interrupt-controller@17a00000 {
+ 			compatible = "arm,gic-v3";
+ 			reg = <0 0x17a00000 0 0x10000>,     /* GICD */
 
