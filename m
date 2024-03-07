@@ -1,124 +1,139 @@
-Return-Path: <linux-kernel+bounces-94822-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94823-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1162387459D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 02:23:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 626C487459E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 02:29:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9AED61F244F3
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 01:23:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D6971C21DEE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 01:29:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 744554C61;
-	Thu,  7 Mar 2024 01:23:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E67764C92;
+	Thu,  7 Mar 2024 01:29:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JUiTTKaK"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="l/tX6S8n"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3CFE29B0
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 01:23:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 834F91391;
+	Thu,  7 Mar 2024 01:29:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709774601; cv=none; b=SBDMk19lNqC2kIsgxyHNP3Ed/TERGJhPFd+C36jH3AxTJjMpA5yRYx1dGh66M2r7BL/tuUid/3lOGFR58FI8Pl3BPav9WEOC8HdCoZYiwrlLIDYR1c0WNfiQd1TMfmjG9tC2/pJhhOVAv9BKz9NYrWo6gx5QdbmdbxlbTMizgNk=
+	t=1709774978; cv=none; b=G3tuKw+i8+KSsQCJDxzPL1maWy2N5+VkdDu1biI91V8UuSuc+18ko+3nfvff3FL5fx18zAJMAMsYwgvrV/pVvA+vlsDugK3+zm3z5eamlrYGFukCyEN/kK4UT4uGAjoJgUmGdfqkBoLth9dRa/FcK3Z/xeD2uhDWV/2mHdWgXD0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709774601; c=relaxed/simple;
-	bh=ijfSbCNd0PPf7U4lHgL5ev2Hlx3z2Re8+n9jBncJSrY=;
+	s=arc-20240116; t=1709774978; c=relaxed/simple;
+	bh=+G3P5fZ1KtJkD5uP1P0r4wxS61wLtCc7RBBUY4HZWBM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CBjPYqvGAylxAOp5+FlSS5jcSC0g4pl4Nkipl+XTXeEV2YxCrw8t6l3X7yGmqo/DDhy69cRFondnBZgtIkxpKFmjCGww430L1U+cAvdoaL7qYAotuG9rKBzPt7nO6ob4qoQDB7p+Sxk6wLV6MI/3frx/xvT/vo+VUCO3zpFtZ4o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JUiTTKaK; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709774598;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=94mdsQQK95yEtTcufvNh7AUE/lCdC45A/gjJVlEP7/0=;
-	b=JUiTTKaK583VZv6YofwTWXfEnFQkZi7ceBSSnT1lrA4DFfomZz02q4X8UqRyijCwHj341m
-	2JbFiRN3EWcRTencM9UfoTvIR/hIrZQcQC/BkUgCSk0YvhC9fsQJIzbq6KfbWW4TJRjO19
-	sLMg7/IjDF+7g5EktPJ/Rkl/kmxeF8M=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-17-QXrM6ykqP5CSfzd3uoJ3Xg-1; Wed,
- 06 Mar 2024 20:23:15 -0500
-X-MC-Unique: QXrM6ykqP5CSfzd3uoJ3Xg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C28C73C0EAA1;
-	Thu,  7 Mar 2024 01:23:14 +0000 (UTC)
-Received: from localhost (unknown [10.72.116.15])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id E3D3A40C6CB5;
-	Thu,  7 Mar 2024 01:23:13 +0000 (UTC)
-Date: Thu, 7 Mar 2024 09:23:10 +0800
-From: Baoquan He <bhe@redhat.com>
-To: Uladzislau Rezki <urezki@gmail.com>
-Cc: rulinhuang <rulin.huang@intel.com>, akpm@linux-foundation.org,
-	colin.king@intel.com, hch@infradead.org,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	lstoakes@gmail.com, tianyou.li@intel.com, tim.c.chen@intel.com,
-	wangyang.guo@intel.com, zhiguo.zhou@intel.com
-Subject: Re: [PATCH v7 1/2] mm/vmalloc: Moved macros with no functional
- change happened
-Message-ID: <ZekW/nGXfTqOlvPZ@MiWiFi-R3L-srv>
-References: <20240301155417.1852290-1-rulin.huang@intel.com>
- <20240301155417.1852290-2-rulin.huang@intel.com>
- <Zei9n-VMxtzG8z4Y@pc636>
+	 Content-Type:Content-Disposition:In-Reply-To; b=gPVSNNGXBawPoroOzNFcuH96XnEhbh19Ft0ZZk3is8QuN0GqGnrD8kGo/3lE+YATgfXjUBdaRmJ04bpsKhqiSrSk6/Y+TL6M5BPFULMinf92cuK5QcQs7e6F9Aig0qtdLgJ9aUo+KEGWKcKpaFFQ04yjET7xDWBovol0YAH6bUA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=l/tX6S8n; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709774977; x=1741310977;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=+G3P5fZ1KtJkD5uP1P0r4wxS61wLtCc7RBBUY4HZWBM=;
+  b=l/tX6S8nvIWkr6/VOLeSEvfF3KCA2JkqEMqCbL4zwR2rmjFYmkH4qKdw
+   tmnp3IXwDyX09Bjww0Av1J3HMry4c6MpaYbb18+s/+ifNAycvjgqGYnPx
+   ZbdshZw7O+OMcLOKsImsSmpPYJ3P1sM92gJM3Fu/uDkTkcb4qjuhmIH+O
+   pVCCL+F83Nm5ASBEB1FwsmOK8LhjH/aauSlvRyI+nhQ6TqOVcLUG45X7e
+   2jeDHc7dcw3hJPrO4GKlewLQ0wXceIJjUyiSCQfZkwBet4U/61WujN4jw
+   OfSd8i/LqG3gxnhlHfV1yUS/e3i3B8tUCcJlQ/zqQL5CNb4T50kRYF/pM
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11005"; a="15147516"
+X-IronPort-AV: E=Sophos;i="6.06,209,1705392000"; 
+   d="scan'208";a="15147516"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 17:29:35 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,209,1705392000"; 
+   d="scan'208";a="14533859"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 17:29:35 -0800
+Date: Wed, 6 Mar 2024 17:29:34 -0800
+From: Isaku Yamahata <isaku.yamahata@linux.intel.com>
+To: David Matlack <dmatlack@google.com>
+Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org, isaku.yamahata@gmail.com,
+	linux-kernel@vger.kernel.org,
+	Sean Christopherson <seanjc@google.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Michael Roth <michael.roth@amd.com>,
+	Federico Parola <federico.parola@polito.it>,
+	isaku.yamahata@linux.intel.com
+Subject: Re: [RFC PATCH 1/8] KVM: Document KVM_MAP_MEMORY ioctl
+Message-ID: <20240307012934.GD368614@ls.amr.corp.intel.com>
+References: <cover.1709288671.git.isaku.yamahata@intel.com>
+ <c50dc98effcba3ff68a033661b2941b777c4fb5c.1709288671.git.isaku.yamahata@intel.com>
+ <ZekNx-WkGNrVfFRD@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <Zei9n-VMxtzG8z4Y@pc636>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
+In-Reply-To: <ZekNx-WkGNrVfFRD@google.com>
 
-On 03/06/24 at 08:01pm, Uladzislau Rezki wrote:
-> On Fri, Mar 01, 2024 at 10:54:16AM -0500, rulinhuang wrote:
-.....
+On Wed, Mar 06, 2024 at 04:43:51PM -0800,
+David Matlack <dmatlack@google.com> wrote:
+
+> On 2024-03-01 09:28 AM, isaku.yamahata@intel.com wrote:
+> > From: Isaku Yamahata <isaku.yamahata@intel.com>
+> > +
+> > +  struct kvm_memory_mapping {
+> > +	__u64 base_gfn;
+> > +	__u64 nr_pages;
+> > +	__u64 flags;
+> > +	__u64 source;
+> > +  };
+> > +
+> > +  /* For kvm_memory_mapping:: flags */
+> > +  #define KVM_MEMORY_MAPPING_FLAG_WRITE         _BITULL(0)
+> > +  #define KVM_MEMORY_MAPPING_FLAG_EXEC          _BITULL(1)
+> > +  #define KVM_MEMORY_MAPPING_FLAG_USER          _BITULL(2)
+> > +  #define KVM_MEMORY_MAPPING_FLAG_PRIVATE       _BITULL(3)
+> > +
+> > +KVM_MAP_MEMORY populates guest memory in the underlying mapping. If source is
+> > +not zero and it's supported (depending on underlying technology), the guest
+> > +memory content is populated with the source.
 > 
-> Sorry for the late answer, i also just noticed this email. It was not in
-> my inbox...
+> What does "populated with the source" mean?
+
+source is user pointer and the memory contents of source is copied into
+base_gfn. (and it will encrypted.)
+
+
+> > The flags field supports three
+> > +flags: KVM_MEMORY_MAPPING_FLAG_WRITE, KVM_MEMORY_MAPPING_FLAG_EXEC, and
+> > +KVM_MEMORY_MAPPING_FLAG_USER.
 > 
-> OK, now you move part of the per-cpu allocator on the top and leave
-> another part down making it split. This is just for the:
-> 
-> BUG_ON(va_flags & VMAP_RAM);
-> 
-> VMAP_RAM macro. Do we really need this BUG_ON()?
+> There are 4 flags.
 
-Sorry, I suggested that when reviewing v5:
-https://lore.kernel.org/all/ZdiltpK5fUvwVWtD@MiWiFi-R3L-srv/T/#u
+Oops. Let me update it.
 
-About part of per-cpu kva allocator moving and the split making, I would
-argue that we will have vmap_nodes defintion and basic helper functions
-like addr_to_node_id() etc at top, and leave other part like
-size_to_va_pool(), node_pool_add_va() etc down. These are similar.
 
-While about whether we should add 'BUG_ON(va_flags & VMAP_RAM);', I am
-not sure about it. When I suggested that, I am also hesitant. From the
-current code, alloc_vmap_area() is called in below three functions, only
-__get_vm_area_node() will pass the non-NULL vm. 
- new_vmap_block()     -|
- vm_map_ram()         ----> alloc_vmap_area()
- __get_vm_area_node() -|
+KVM_MAP_MEMORY populates guest memory at the specified range (`base_gfn`,
+`nr_pages`) in the underlying mapping. `source` is an optional user pointer. If
+`source` is not NULL and the underlying technology supports it, the memory
+contents of `source` are copied into the guest memory. The backend may encrypt
+it.
 
-It could be wrongly passed in the future? Only checking if vm is
-non-NULL makes me feel a little unsafe. While I am fine if removing the
-BUG_ON, because there's no worry in the current code. We can wait and
-see in the future.
+The `flags` field supports four flags: KVM_MEMORY_MAPPING_FLAG_WRITE,
+KVM_MEMORY_MAPPING_FLAG_EXEC, KVM_MEMORY_MAPPING_FLAG_USER, and
+KVM_MEMORY_MAPPING_FLAGS_PRIVATE. The first three correspond to the fault code
+for the KVM page fault to populate guest memory.  write fault, fetch fault, and
+user fault.  KVM_MEMORY_MAPPING_FLAGS_PRIVATE is applicable only for guest
+memory with guest_memfd.  It is to populate guest memory with the memory
+attribute of KVM_MEMORY_ATTRIBUTE_PRIVATE set.
 
-       if (vm) {
-               BUG_ON(va_flags & VMAP_RAM);
-               setup_vmalloc_vm(vm, va, flags, caller);
-       }
+When the ioctl returns, the input values are updated.  If `nr_pages` is large,
+it may return -EAGAIN and update the values (`base_gfn` and `nr_pages`. `source`
+if not zero) to point to the remaining range.
 
-Thanks
-Baoquan
-
+-- 
+Isaku Yamahata <isaku.yamahata@linux.intel.com>
 
