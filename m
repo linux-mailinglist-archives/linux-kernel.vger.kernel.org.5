@@ -1,210 +1,154 @@
-Return-Path: <linux-kernel+bounces-96333-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96335-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15004875A58
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 23:36:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B212875A60
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 23:39:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0EEFC1C20BE4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 22:36:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D9865B21E29
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 22:39:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AFFE3399F;
-	Thu,  7 Mar 2024 22:36:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 914863839C;
+	Thu,  7 Mar 2024 22:38:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FxdUKHDe"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	dkim=pass (2048-bit key) header.d=risingedge.co.za header.i=@risingedge.co.za header.b="DlRT/qdV"
+Received: from outgoing1.flk.host-h.net (outgoing1.flk.host-h.net [188.40.0.86])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14C731E86E
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 22:36:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76722F4FC;
+	Thu,  7 Mar 2024 22:38:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.40.0.86
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709850983; cv=none; b=K0D5e5r6dxx6gX0alTt109gq2XlMyaGsxp77TtzMiHa+U6/7kfkci9ekCKrA/brvW+ftkgwld1xJZAZg+bhgHzHV6lp1MLRZaB+rtN/6rTgIh/AcDzmAIfACnmUtXBkRWvwCCobGZQDCWjpMOdt9AXT4N5e0xYbxtgnnWDOgSTg=
+	t=1709851138; cv=none; b=HU/peiDOFTbBjfes4gdQNPQMPuz0D+CNBu1rm+VVDbAoNQ1KB0u+RWosf+UsHD9QhsKyynmwGvsrAz39UphOpw/rd2rIqvL7Lbx6FN6WK02UEO82O25U6zljExvECEShUEQHTA0Vgj6KNUh9rEmaqHfXp8GCPEB5GEF6RhIL+qo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709850983; c=relaxed/simple;
-	bh=o+0H5vuiH0oRSMJ1IHCrSxVI4KRF4Ypwjqb7Qvd5Qis=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=mmeo6HCxqpxHaAZRY4rtatrGmqW0x8hAoebpNRIwafELB3Cof0ftMkcbTv+HBa5Cczi4Ktw41EcyKnggS0q4n/VOsYOH3bJ1QaNQYHfa7SVQz5pXVyJpwYxXlctqLinqSf0De1Ubu4KHNArkZc+PGG40IEqrXKpS33ryl5B1smQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FxdUKHDe; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709850981; x=1741386981;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version:content-transfer-encoding;
-  bh=o+0H5vuiH0oRSMJ1IHCrSxVI4KRF4Ypwjqb7Qvd5Qis=;
-  b=FxdUKHDeVM3bq0Tt+nVJZbhmGVHoEPZ54O2UWPKBCbHbwHhoEov70p0E
-   HESI9Qve32JxSNd810T7+7I2boNoCKyUkKgLGZj5nixBMHyo9Xf6rShgL
-   +UkeZvjIgsPw/gubFn8po7VFKoi+Iq4pD0L4iS+zvKprivagGWN/Cxhb8
-   NgHd317BmAr6ImLmqvm2xpDkn5wn2cdJklEj7kfbmGx9GFBR3EDVZy4y4
-   qhm5L2Ud57RnZ/66YUj0S9IHmP2Rs6B9laZPpxZY0Npfnm6HKiVitsAQz
-   H1UPWI1utq7e8wZKgaJSNE8tXiHvQTomHH/wtzqRrLSBTYYjeYcE5+jkd
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="4480935"
-X-IronPort-AV: E=Sophos;i="6.07,107,1708416000"; 
-   d="scan'208";a="4480935"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 14:36:21 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,107,1708416000"; 
-   d="scan'208";a="10362122"
-Received: from tofferse-mobl.ger.corp.intel.com (HELO localhost) ([10.252.33.212])
-  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 14:36:16 -0800
-From: Jani Nikula <jani.nikula@linux.intel.com>
-To: Hsin-Yi Wang <hsinyi@chromium.org>
-Cc: Doug Anderson <dianders@chromium.org>, Dmitry Baryshkov
- <dmitry.baryshkov@linaro.org>, Neil Armstrong <neil.armstrong@linaro.org>,
- Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg
- <sam@ravnborg.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann
- <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter
- <daniel@ffwll.ch>, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 3/6] drm/edid: Add a function to match EDID with
- identity
-In-Reply-To: <CAJMQK-igm-OXa=L-Bb0hdm5+KL98sk9UAznvAR7SptP9iwWAoA@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20240306200353.1436198-1-hsinyi@chromium.org>
- <20240306200353.1436198-4-hsinyi@chromium.org>
- <CAD=FV=W2CKoOyhN49RBU0FdzcRC6SEwvVQYdJRnBBK16Lp-=FQ@mail.gmail.com>
- <CAJMQK-i=0COuMGW+PGv3zT4+JgwJc_Qj9oQHva6EQys_n3xoHA@mail.gmail.com>
- <CAD=FV=VHaU4HZHGp6tSoVuJRbYD9nrMZfNdnOait=ApRcvcmug@mail.gmail.com>
- <87r0gmw544.fsf@intel.com>
- <CAJMQK-igm-OXa=L-Bb0hdm5+KL98sk9UAznvAR7SptP9iwWAoA@mail.gmail.com>
-Date: Fri, 08 Mar 2024 00:36:11 +0200
-Message-ID: <87plw5vfdw.fsf@intel.com>
+	s=arc-20240116; t=1709851138; c=relaxed/simple;
+	bh=wL4NyZZE9y5hpECyPu4zMJgWgfdbyPA7hO9wu+MDuuY=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=Si7vrrJqFMCT/Sj3tsAYcCFJS+0sG+PLZuDz1IuaD/7lyr1UBwBxqtA4Jx53+/1TRH1Az3DvW1JicDOKAP76Mud86dzJWbhrYcSJQnpnSv1xlSMwu/6V0uVNWHnpAjEuRJOBmFaLxEEfUjER0QCiHg7AkdJyPB+mJ59uVwLUQPU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=risingedge.co.za; spf=pass smtp.mailfrom=risingedge.co.za; dkim=pass (2048-bit key) header.d=risingedge.co.za header.i=@risingedge.co.za header.b=DlRT/qdV; arc=none smtp.client-ip=188.40.0.86
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=risingedge.co.za
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=risingedge.co.za
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=risingedge.co.za; s=xneelo; h=Content-Transfer-Encoding:MIME-Version:
+	References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:reply-to:sender:bcc
+	:content-type; bh=4c3qgpikoPrAL+mWZEwmjcnn4NWwsri0mLkHjgl7PRM=; b=DlRT/qdVEMA
+	Qj39H2GPQb4ofFgfIMQTCj+Xt+qf58ee5LyeA/UW4vQYZdISWVhvIQoBYlnCfZRfqUeHr/nDAUogG
+	PT717D8eTx0yc8FZU/GEcFxCYx1V8/XcciEZdNS6CWgxfWtV83nuz78PNltMuJukVt/DBTOokZ2KD
+	gpLS+bm5r7NARjDxQt5FDsKSBkW+Z4hKE9kEq2tcb5lC+FLoeEE5aJabsBf95jhsLctC2YnWFNkLV
+	AKejbrYb5Xcumk+MyNQgJmMoo9DpUdKsZ5NTT/l9iZzwmp8bgC20QfYwKIRvKdpUW0gVwXx4iGyAP
+	k+VtLHy4YymNUSExqdCMtyA==;
+Received: from www31.flk1.host-h.net ([188.40.1.173])
+	by antispam3-flk1.host-h.net with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <justin.swartz@risingedge.co.za>)
+	id 1riMNx-00EJC0-0y; Fri, 08 Mar 2024 00:38:47 +0200
+Received: from [41.144.0.96] (helo=localhost.localdomain)
+	by www31.flk1.host-h.net with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <justin.swartz@risingedge.co.za>)
+	id 1riMNv-00063S-5w; Fri, 08 Mar 2024 00:38:43 +0200
+From: Justin Swartz <justin.swartz@risingedge.co.za>
+To: =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>,
+	Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: Justin Swartz <justin.swartz@risingedge.co.za>,
+	linux-mips@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: [PATCH v2] mips: dts: ralink: mt7621: add cell count properties to usb
+Date: Fri,  8 Mar 2024 00:37:55 +0200
+Message-Id: <20240307223756.31643-1-justin.swartz@risingedge.co.za>
+In-Reply-To: <0001-mips-dts-ralink-mt7621-add-cell-count-properties-to-.patch>
+References: <0001-mips-dts-ralink-mt7621-add-cell-count-properties-to-.patch>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: justin.swartz@risingedge.co.za
+X-Virus-Scanned: Clear
+X-SpamExperts-Domain: risingedge.co.za
+X-SpamExperts-Username: 
+Authentication-Results: host-h.net; auth=pass (login) smtp.auth=@risingedge.co.za
+X-SpamExperts-Outgoing-Class: ham
+X-SpamExperts-Outgoing-Evidence: Combined (0.03)
+X-Recommended-Action: accept
+X-Filter-ID: Pt3MvcO5N4iKaDQ5O6lkdGlMVN6RH8bjRMzItlySaT+ShUxo1lZhr/4810rqkDy2PUtbdvnXkggZ
+ 3YnVId/Y5jcf0yeVQAvfjHznO7+bT5wCPRB8bAzJcv2cv+UqiTTc2+CpNcmBnO4XM3Sck4bwNogU
+ WCl1nkLBzZX0KuJ9bXiS85Z42w/+2OBolTNFbPomXFWCX8oNdggW7HE9XDTdSejrkEpbuUvwMvHx
+ 3T+KSG//gbuP7hnUK8NQdLwsVWKIFDZRrTGv3rxiw9tFrqFSCFNiLZt/QXQnOBRD+jq1HsKsDh/6
+ Srgk2K3gr1VBfJbChkYH6fbrypLNrde+UooQVNLReLErukdelEOHUIpaBbp5GdnsN8+UvimwMinK
+ 0+Txhz2u9qvrL2PODYgMZQApJXOjDLkqunZ9NcY2bHZn7CfFscMZZf3sCkN20I5vMh4akiObI7Kj
+ vK7X04QEin24qbfMFd8eGjnYW8aSH5qj4ujh/13psIvqSqJFa1CcANErDW/w69saM9prk3jNnHtn
+ nuEt/J9wDZeQfiNOYsLDFBdwYt2XtlLzy7G7T4kla0JNnAWQx3FS11bhwUa9HCIwKB+TroNcRY33
+ oNmH4nRQzHQazgY7lmveanvOdQzf6IMJ3345q/s6ySNrGnXycmhg3JnjXMk6WVt2DdYZpaI7YoqC
+ n3oZFShGuGVczvnnMQuyLtBcNrQxKZYuPe8bdCyw79zlPbqLQkZr26Lcxdvj8cqI+CogZdOhX7v3
+ ClXzrmMENhJLl6MBfhzHVBR0wHQZxzIUka7Uq615Mik1qzcz30+tdk6yIuh9K7v+Nq0Cm3JVhle6
+ F/kpBdN+oWjoATjEFDwcaiz0R34rhTN+GTbl4uS+pZovX9cex7Ac4fawcerGI7TrGXpM/B/M0BZd
+ PfIU1BX7pZc1sE3vsz58auH/srM2fgZ9JmgLbj7sqoEiwv7LCxIiAE5ODMnmwjvj2589zjbyZCiM
+ WpBpW8YvoIIqmZcWhL/r/eFjMjJnMHeiAPOVAT1rE1/vP68Bb4z3v3h3gCdXrv2+9GnNX30LKqXb
+ fwFKgm/rnYBl+Mj5KqOl6Jzub/f3QhLRbOgisvi5VU9eNBtgo6zjiatjNO/pnMCjuIvXs/AyV/Ns
+ URB/R+FlEHyAzksgfaRvdgw0WK34QWnzHHMcN6qoXPjenLhIOF1oeRYbjF1Hp647mOWoQlc3hL3c
+ dBMSQgQtiTUcJp5roVy0accKGd6B3Bcq0EWwerTw3MB4u/m4iBmYb1/LCV4/EuVHup06w3Vwxf9C
+ F7D6LKKRTfdjzQ6YC7Heg3Xf7O1TOd6RcY/MXB8eEq3bCN2QohZvyS03iBmgsz450Kmjd3fGV6Vl
+ lQvK5SVFh0jOtrkFCxJXdkkgrbJ9PcBIysKIgfarIbtf63VNbf0lrvssY+k7AHGi1NevGWTo2+h8
+ Lhk4HCeZR7ymlGVRtthBJ2y8A5arx6JItKpFaUNPGMMlvbMX0nyK1NiAJ0y2Qvvn6ds6mor35w4f
+ SfHzQbABJfgy21HclcZkPRq7NhoxyMwqi8Q23Rgadfh5T5n5D4OHHpbEIgsllZKWnzc5M5WlNtVJ
+ qo05MS+4ayUpOtEhdxekWDmK9g==
+X-Report-Abuse-To: spam@antispamquarantine.host-h.net
 
-On Thu, 07 Mar 2024, Hsin-Yi Wang <hsinyi@chromium.org> wrote:
-> On Thu, Mar 7, 2024 at 5:20=E2=80=AFAM Jani Nikula <jani.nikula@linux.int=
-el.com> wrote:
->>
->> On Wed, 06 Mar 2024, Doug Anderson <dianders@chromium.org> wrote:
->> > Hi,
->> >
->> > On Wed, Mar 6, 2024 at 4:20=E2=80=AFPM Hsin-Yi Wang <hsinyi@chromium.o=
-rg> wrote:
->> >>
->> >> On Wed, Mar 6, 2024 at 3:30=E2=80=AFPM Doug Anderson <dianders@chromi=
-um.org> wrote:
->> >> >
->> >> > Hi,
->> >> >
->> >> > On Wed, Mar 6, 2024 at 12:04=E2=80=AFPM Hsin-Yi Wang <hsinyi@chromi=
-um.org> wrote:
->> >> > >
->> >> > > +static void
->> >> > > +match_identity(const struct detailed_timing *timing, void *data)
->> >> > > +{
->> >> > > +       struct drm_edid_match_closure *closure =3D data;
->> >> > > +       unsigned int i;
->> >> > > +       const char *name =3D closure->ident->name;
->> >> > > +       unsigned int name_len =3D strlen(name);
->> >> > > +       const char *desc =3D timing->data.other_data.data.str.str;
->> >> > > +       unsigned int desc_len =3D ARRAY_SIZE(timing->data.other_d=
-ata.data.str.str);
->> >> > > +
->> >> > > +       if (name_len > desc_len ||
->> >> > > +           !(is_display_descriptor(timing, EDID_DETAIL_MONITOR_N=
-AME) ||
->> >> > > +             is_display_descriptor(timing, EDID_DETAIL_MONITOR_S=
-TRING)))
->> >> > > +               return;
->> >> > > +
->> >> > > +       if (strncmp(name, desc, name_len))
->> >> > > +               return;
->> >> > > +
->> >> > > +       /* Allow trailing white spaces and \0. */
->> >> > > +       for (i =3D name_len; i < desc_len; i++) {
->> >> > > +               if (desc[i] =3D=3D '\n')
->> >> > > +                       break;
->> >> > > +               if (!isspace(desc[i]) && !desc[i])
->> >> > > +                       return;
->> >> > > +       }
->> >> >
->> >> > If my code analysis is correct, I think you'll reject the case wher=
-e:
->> >> >
->> >> > name =3D "foo"
->> >> > desc[13] =3D "foo \0zzzzzzzz"
->> >> >
->> >> > ...but you'll accept these cases:
->> >> >
->> >> > desc[13] =3D "foo \nzzzzzzzz"
->> >> > desc[13] =3D "foo \0\0\0\0\0\0\0\0\0"
->> >> >
->> >> > It somehow seems weird to me that a '\n' terminates the string but =
-not a '\0'.
->> >>
->> >> I'm also not sure about \0... based on
->> >> https://git.linuxtv.org/edid-decode.git/tree/parse-base-block.cpp#n49=
-3,
->> >> they use \n as terminator. Maybe we should also reject \0 before\n?
->> >> Since it's not printable.
->> >
->> > Ah, OK. I guess the EDID spec simply doesn't allow for '\0' in there.
->> > I guess in that case I'd prefer simply removing the code to handle
->> > '\0' instead of treating it like space until we see some actual need
->> > for it. So just get rid of the "!desc[i]" case?
->>
->> The spec text, similar for both EDID_DETAIL_MONITOR_NAME and
->> EDID_DETAIL_MONITOR_STRING:
->>
->>         Up to 13 alphanumeric characters (using ASCII codes) may be used
->>         to define the model name of the display product. The data shall
->>         be sequenced such that the 1st byte (ASCII code) =3D the 1st
->>         character, the 2nd byte (ASCII code) =3D the 2nd character,
->>         etc. If there are less than 13 characters in the string, then
->>         terminate the display product name string with ASCII code =E2=80=
-=980Ah=E2=80=99
->>         (line feed) and pad the unused bytes in the field with ASCII
->>         code =E2=80=9820h=E2=80=99 (space).
->>
->> In theory, only checking for '\n' for termination should be enough, and
->> this is what drm_edid_get_monitor_name() does. If there's a space
->> *before* that, it should be considered part of the name, and not
->> ignored. (So my suggestion in reply to the previous version is wrong.)
->>
->> However, since the match name uses NUL termination, maybe we should
->> ignore NULs *before* '\n'? Like so:
->>
->> for (i =3D name_len; i < desc_len; i++) {
->>         if (desc[i] =3D=3D '\n')
->>                 break;
->>         if (!desc[i])
->>                 return;
->> }
->>
-> Allow trailing white spaces so we don't need to add the trailing white
-> space in edp_panel_entry.
+Add default #address-cells and #size-cells properties to the
+usb node, which should be suitable for hubs and devices without
+explicitly declared interface nodes, as:
 
-Just so it's clear here too: Agreed.
+  "#address-cells":
+    description: should be 1 for hub nodes with device nodes,
+      should be 2 for device nodes with interface nodes.
+    enum: [1, 2]
 
->
-> https://lore.kernel.org/lkml/CAA8EJpr7LHvqeGXhbFQ8KNn0LGDuv19cw0i04qVUz51=
-TJeSQrA@mail.gmail.com/
->
->>
->> BR,
->> Jani.
->>
->>
->> >
->> > -Doug
->>
->> --
->> Jani Nikula, Intel
+  "#size-cells":
+    const: 0
 
---=20
-Jani Nikula, Intel
+-- Documentation/devicetree/bindings/usb/usb-device.yaml
+
+This version of the patch places the properties according to
+the order recommended by:
+
+   Documentation/devicetree/bindings/dts-coding-style.rst
+
+Signed-off-by: Justin Swartz <justin.swartz@risingedge.co.za>
+---
+ arch/mips/boot/dts/ralink/mt7621.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/mips/boot/dts/ralink/mt7621.dtsi b/arch/mips/boot/dts/ralink/mt7621.dtsi
+index 5a89f0b8c..7532e17dd 100644
+--- a/arch/mips/boot/dts/ralink/mt7621.dtsi
++++ b/arch/mips/boot/dts/ralink/mt7621.dtsi
+@@ -289,10 +289,10 @@ usb: usb@1e1c0000 {
+ 		reg = <0x1e1c0000 0x1000
+ 		       0x1e1d0700 0x0100>;
+ 		reg-names = "mac", "ippc";
+-
++		#address-cells = <1>;
++		#size-cells = <0>;
+ 		clocks = <&sysc MT7621_CLK_XTAL>;
+ 		clock-names = "sys_ck";
+-
+ 		interrupt-parent = <&gic>;
+ 		interrupts = <GIC_SHARED 22 IRQ_TYPE_LEVEL_HIGH>;
+ 	};
+-- 
+
 
