@@ -1,142 +1,123 @@
-Return-Path: <linux-kernel+bounces-95129-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95128-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74149874989
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:25:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FB31874987
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:24:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30D6028247B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 08:25:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C424B1C21402
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 08:24:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0065633E6;
-	Thu,  7 Mar 2024 08:25:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6088563408;
+	Thu,  7 Mar 2024 08:24:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="Ni1iXQ5g"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fj6R8WLM"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E8F956447
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 08:25:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DBD76306D;
+	Thu,  7 Mar 2024 08:24:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709799943; cv=none; b=BOmbAWV/boFXOXbDfnDfGqRWIE69Pzp+N7WRff4rJhO80BwbyOtJcDeXGRbC2hWM+P4yT+e2Nw6AOGZ1DY8tinRWn8ajYCx3SzoOGjqhR/0TYJc5abGS4yAQt46yKVzE6TScjUxte9vzkmGeZzCAsuez/JhS35TkuLQ2RpBGPmc=
+	t=1709799890; cv=none; b=SgGr4aVaheXNFFgvj6JsPWeErgIRBFkCAfza/16uBgSd62dzeEqmnkEh3BehkmSdCX6zZov1EQddSJOECFZtnj1osLsCEZAzs9kJ0JVOHi81/m23TKQ6s41zKjiSCaB7LFhr9Fnrrcip5QdlAoeC/bNO8BLPZxk8QNkMDDwooKA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709799943; c=relaxed/simple;
-	bh=enCse7dbdQXNzTOxJ1nbIU4FpLfhxhz5LWnaFVXaicE=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=khHQ4bBJDXLqtWbjkVm+RqacFCuM+YzEjY28/4uu89fvlN8SvF+ZvuU4b5k7n5ggH9XzDQHw6vHDEa+92Zb4wtkxWVU3nfQxByedSE73yXpQfWDy9ac1WMdxiJjKp8AKX4UBbwuhJXiFD7T9MgJR58crHJq7774J2wkddMdJ9CU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=Ni1iXQ5g; arc=none smtp.client-ip=68.232.153.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1709799941; x=1741335941;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=enCse7dbdQXNzTOxJ1nbIU4FpLfhxhz5LWnaFVXaicE=;
-  b=Ni1iXQ5guegWf+m/xnRo98cHaT1chKVhLq/QxCpM55G5mc3329b3E5uw
-   QKYKX2Q/kFozDXsmxTKZgK0tp3U4hFvGYlFt91iPCZm3VlQ2ZcJoYb+/6
-   SCHCX7Cp+1ZWXISfuD2kiczYigJ/SGsz1k3fIsSnjQZlCxhwRnQUiqH7R
-   FAR+QbEbh5ZuXuDDYE1Eh5SgijIZaKYP2roJForlbujIqaSUVDXBYmsPA
-   r7ExOxgBxvNlbyhYqBngsMagB7SOTD+hQmEh+9MOWGXjijz4TXRXyPzja
-   lx9+NW6v+mnUd95YjxuIyZOeMnUULxG9cg7yymM2guqTs7GTnYe9bIiNP
-   g==;
-X-CSE-ConnectionGUID: kAZEeyzJTe2x8LD+/3TGaw==
-X-CSE-MsgGUID: sdgDN0UeSoumQpAx3OOG4Q==
-X-IronPort-AV: E=Sophos;i="6.06,210,1705388400"; 
-   d="asc'?scan'208";a="18986441"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 07 Mar 2024 01:25:40 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 7 Mar 2024 01:25:23 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex04.mchp-main.com (10.10.85.152)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
- Transport; Thu, 7 Mar 2024 01:25:21 -0700
-Date: Thu, 7 Mar 2024 08:24:37 +0000
-From: Conor Dooley <conor.dooley@microchip.com>
-To: Charlie Jenkins <charlie@rivosinc.com>
-CC: Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
-	<palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Jisheng Zhang
-	<jszhang@kernel.org>, Evan Green <evan@rivosinc.com>,
-	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>, Eric Biggers
-	<ebiggers@kernel.org>, Elliot Berman <quic_eberman@quicinc.com>, Charles Lohr
-	<lohr85@gmail.com>, <linux-riscv@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7 4/4] riscv: Set unaligned access speed at compile time
-Message-ID: <20240307-defraud-antonym-407fc29261d1@wendy>
-References: <20240306-disable_misaligned_probe_config-v7-0-6c90419e7a96@rivosinc.com>
- <20240306-disable_misaligned_probe_config-v7-4-6c90419e7a96@rivosinc.com>
+	s=arc-20240116; t=1709799890; c=relaxed/simple;
+	bh=JRjeMOhVcUoYGH5wfYDmdc5dmJuRXe0e+FF4nl515X8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZZ9Ggl+XHPhIkELcBRz7z/aqya34Og27Ak/t5coDkmR3k9XVcdqrvOLxr/MbG5AUfXVzLZ2BFNfaSJGNYWjQXG27ensZBj4aIGF1kiy033URRAHnaxsgs+OzHAdxSnuWPqP0WFuB30LGUzN5nztUWcYMgTJwFPdbv+nG8Y/XeBU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fj6R8WLM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22855C433C7;
+	Thu,  7 Mar 2024 08:24:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709799890;
+	bh=JRjeMOhVcUoYGH5wfYDmdc5dmJuRXe0e+FF4nl515X8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=fj6R8WLMvU4vNlTsx9EwZdiYvlgld0IKGoYwsXRN7lt26LFlNozeCNsZCMu6q6snW
+	 dkRzRdJ7qC3lbWwlw+f/k2Ja47hvf1S5Y0Qbcuoz7NXShSt02131HvjQhoOS595ym+
+	 OIQm8c9WjBXYB41k18jIYfXqfCbZrY/dA/Vyyk5G9om8CWk89cyKsKUWoMUK6PoEwr
+	 ZK2AVPRPUCKFJfSY4wthKxbziOMLIyV7HnuXa7w8S4F24O6qwJvGIruCuv6xvW7KCO
+	 DXkz9CEWTZDjt6Oid68kZylr0kXblDnTn7tbYjA9IzX0+BUN2P4GWF2Mtu5eWjYnx+
+	 vfDIhVCi4/w2Q==
+Date: Thu, 7 Mar 2024 08:24:45 +0000
+From: Lee Jones <lee@kernel.org>
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Duje =?utf-8?Q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the backlight tree
+Message-ID: <20240307082445.GK86322@google.com>
+References: <20240226132828.7524baec@canb.auug.org.au>
+ <20240305111634.57e84398@canb.auug.org.au>
+ <20240305091737.GB5206@google.com>
+ <20240306095539.0da4e342@canb.auug.org.au>
+ <20240306140427.4cb24a5e@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="iUWIDEsf5AaiYg6s"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240306-disable_misaligned_probe_config-v7-4-6c90419e7a96@rivosinc.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240306140427.4cb24a5e@canb.auug.org.au>
 
---iUWIDEsf5AaiYg6s
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Wed, 06 Mar 2024, Stephen Rothwell wrote:
 
-On Wed, Mar 06, 2024 at 12:00:04PM -0800, Charlie Jenkins wrote:
-> +static u64 hwprobe_misaligned(const struct cpumask *cpus)
-> +{
-> +	if (IS_ENABLED(CONFIG_RISCV_EMULATED_UNALIGNED_ACCESS))
-> +		if (unaligned_ctl_available())
-> +			return RISCV_HWPROBE_MISALIGNED_EMULATED;
-> +		else
-> +			return RISCV_HWPROBE_MISALIGNED_SLOW;
-> +	else if (IS_ENABLED(CONFIG_RISCV_SLOW_UNALIGNED_ACCESS))
-> +		return RISCV_HWPROBE_MISALIGNED_SLOW;
-> +	else if (IS_ENABLED(CONFIG_RISCV_EFFICIENT_UNALIGNED_ACCESS))
-> +		return RISCV_HWPROBE_MISALIGNED_FAST;
-> +}
-> +#endif
+> Hi Lee,
+> 
+> On Wed, 6 Mar 2024 09:55:39 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> >
+> > On Tue, 5 Mar 2024 09:17:37 +0000 Lee Jones <lee@kernel.org> wrote:
+> > > On Tue, 05 Mar 2024, Stephen Rothwell wrote:  
+> > > > On Mon, 26 Feb 2024 13:28:28 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:    
+> > > > >
+> > > > > After merging the backlight tree, today's linux-next build (x86_64
+> > > > > allmodconfig) failed like this:
+> > > > > 
+> > > > > drivers/video/backlight/ktd2801-backlight.c:8:10: fatal error: linux/leds-expresswire.h: No such file or directory
+> > > > >     8 | #include <linux/leds-expresswire.h>
+> > > > >       |          ^~~~~~~~~~~~~~~~~~~~~~~~~~
+> > > > > 
+> > > > > Caused by commit
+> > > > > 
+> > > > >   48749e2f14e3 ("backlight: Add Kinetic KTD2801 backlight support")
+> > > > > 
+> > > > > I have used the backlight tree from next-20240223 for today.    
+> > > > 
+> > > > I am still getting this failure.    
+> > > 
+> > > I just pushed a bunch of patches.  
+> > 
+> > I saw only 3 new ones (forgot to push?) none of which addressed this
+> > problem.
+> > 
+> > > Please let me know if this is still an issue tomorrow.  
+> > 
+> > The problem is that after Feb 23, you rebased your tree and dropped commit
+> > 
+> >   25ae5f5f4168 ("leds: Introduce ExpressWire library")
+> > 
+> > which (added the leds-expresswire.h header), but kept commit
+> > 
+> >   48749e2f14e3 ("backlight: Add Kinetic KTD2801 backlight support")
+> > 
+> > which uses it.
+> 
+> Now I see what happened.  I have 2 trees from you, the backlight tree
+> (git://git.kernel.org/pub/scm/linux/kernel/git/lee/backlight.git#for-backlight-next)
+> and the leds-lj tree
+> (git://git.kernel.org/pub/scm/linux/kernel/git/lee/leds.git#for-leds-next)
+> and the former implicitly depends on the latter (and I merge the
+> backlight tree first).  You should make that dependency explicit by
+> merging (part of) the latter into the former (or something).
 
-Isn't this just
-static u64 hwprobe_misaligned(const struct cpumask *cpus)
-{
-	if (IS_ENABLED(CONFIG_RISCV_EFFICIENT_UNALIGNED_ACCESS))
-		return RISCV_HWPROBE_MISALIGNED_FAST;
+Right.  So you build each tree as its merged?
 
-	if (IS_ENABLED(CONFIG_RISCV_EMULATED_UNALIGNED_ACCESS) && unaligned_ctl_available())
-		return RISCV_HWPROBE_MISALIGNED_EMULATED;
+My assumption was that all things come together in -next?
 
-	return RISCV_HWPROBE_MISALIGNED_SLOW;
-
-}
-?
-Otherwise,
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-
-The kconfig stuff looks ~good to me, I wanted to make one comment about
-the wording of a sentence I wrote being pretty meh, but I think it's
-time to let go there...
-
-
-Cheers,
-Conor.
-
---iUWIDEsf5AaiYg6s
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZel5xQAKCRB4tDGHoIJi
-0pPlAPwKe8nxyNXBCUxArQriqoMFYmNKeb0YDkPKt4MH66EXlAD7BfOP6iDRPpa/
-qDkpTdHvENUdrS09wUiH9vE93smHeww=
-=xXdV
------END PGP SIGNATURE-----
-
---iUWIDEsf5AaiYg6s--
+-- 
+Lee Jones [李琼斯]
 
