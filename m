@@ -1,85 +1,109 @@
-Return-Path: <linux-kernel+bounces-94993-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95019-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 004E98747E2
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 07:07:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5756B87483D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 07:38:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E9AC1F228FA
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 06:07:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AB3C3B23489
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 06:38:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 342D81BDF4;
-	Thu,  7 Mar 2024 06:07:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 666661CD2D;
+	Thu,  7 Mar 2024 06:37:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=skyhighmemory.onmicrosoft.com header.i=@skyhighmemory.onmicrosoft.com header.b="r5ScxiOG"
-Received: from KOR01-SL2-obe.outbound.protection.outlook.com (mail-sl2kor01on2050.outbound.protection.outlook.com [40.107.129.50])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nk7QPH/x"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D4D51BC56
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 06:07:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.129.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72D181848;
+	Thu,  7 Mar 2024 06:37:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.19
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709791669; cv=fail; b=Jj4LGh3AxR/bPRRErvmB+9XR4dIDv7QJsV2Z+onVTz35MMVcn/QH7LZGazyUffv7So5PAUMRFr22q/UJcHVForkvR2mW6h3KJnLCr6NJUaNeZKNsD6BWJJkVI6va+qEf5D2dqCEZKV5o0LyvLWezU21Kgx5HOiSqYum+p3NqEII=
+	t=1709793474; cv=fail; b=kbOoYdbHtoS8MH1MNi4/7ULxF9eVmhSrKaEwo1MweYsT5jgY4e29yOMYLWwYP+1lKiR0WqRBhmWpJmpdG2/B0W5BCS/4xa4sUVMZaL+7RwpZnMOpVR7EaJ7+fwcHi7ZZH34LJja4b3hk62lV/+uKQaZNa8oLB/ucukmhPtxw+AY=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709791669; c=relaxed/simple;
-	bh=D7nKzAivMPZjHYlUbkHnOZQo37gfTKN4oQsYMXBU+AI=;
-	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=SCcOsdFqgE3822XMHEVL3Ytl6ZcEwduZgU6FNH4+7CAToKovyDpnhM0/KIzWlDcF6wHlCSGO51WjqiP+lLky7/5ZV2i/RjdPefb6KVG2fbonuB2OqSqIFqSOZH9Tv1GNF9vHYpyKqLv4CnQaZn9MiNLsdmVPtFll6FK6ovDy53w=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skyhighmemory.com; spf=pass smtp.mailfrom=skyhighmemory.com; dkim=pass (2048-bit key) header.d=skyhighmemory.onmicrosoft.com header.i=@skyhighmemory.onmicrosoft.com header.b=r5ScxiOG; arc=fail smtp.client-ip=40.107.129.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=skyhighmemory.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=skyhighmemory.com
+	s=arc-20240116; t=1709793474; c=relaxed/simple;
+	bh=2TZZ0kEVPva8FlKcEYihZ2r+1hDu/+OBoJ8BZlWpZTo=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=ofzhCP9dm9Nhi2PbUFSX7mlGb84O68kRjbEtSaLtW6losvFmthA7yntoaBGKkHXBg8B8di8LM7PK+4/H+mEgMJGAdT9C4BR2RTM4vitWFKj0yK/GLU3sHZjzqY3Cw0bQt9f79IeMy8b63kqb6ng8mDb+qxRhxDAe2GPU8MmtAj8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nk7QPH/x; arc=fail smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709793472; x=1741329472;
+  h=date:from:to:cc:subject:message-id:reply-to:references:
+   in-reply-to:mime-version;
+  bh=2TZZ0kEVPva8FlKcEYihZ2r+1hDu/+OBoJ8BZlWpZTo=;
+  b=nk7QPH/xYc6UVDRVlFfqwDI7axriFVryGpL9xTB3YaafE6P6vxZrqyXA
+   f5TFqvEmIZehvE8vhsxI0X74krIVNaFehE+BOS2dpicnuHYBLtpUzfSFg
+   8Pb1GvmAoZ+12u2kvQHyBSv5e52LG3otiuKoAipkywASfyngVGAC6cYF8
+   Y6U/1dxLSQMML6SBq6z9fp4Q3NamR5pv3UWMmFmmKHnS3pSVLKl4DnpiH
+   Ll83aUspus8pII6yK0mCsi+stldLMlnY1yEfw7y2fvSmyCpcl4wrr2Omm
+   biadx5JZnog5cjKsemygsqAyRkk0nDMaoCTlarvLfOoUYB+sl9eoEicnS
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11005"; a="4304282"
+X-IronPort-AV: E=Sophos;i="6.06,210,1705392000"; 
+   d="scan'208";a="4304282"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 22:37:52 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,210,1705392000"; 
+   d="scan'208";a="9902978"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmviesa009.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 06 Mar 2024 22:37:51 -0800
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 6 Mar 2024 22:37:51 -0800
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 6 Mar 2024 22:37:51 -0800
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.41) by
+ edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 6 Mar 2024 22:37:50 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Pcz7FSW2UyGjNit/jg71qt/H9oahpZ8AL2+xZLEwxtuhV1iaSp+JpilCfLvhZSeYq+jwgHE6JXyfb57zpzm4M+EZM4DH9Ataw7zEg7s50WR0jprda2qodahFsUEw0euLJkINmqxBua4E4ueTKhcuL37cvev3lBkxp87oygKq5gK9ifC0OADABS8MuOuNPjl7n5ylU3x9JFNrb0EjwAWvR0Qos7zQP5gUQ1a6UacTc+rjIgpi+vPxTBfQXV6LLvmWshgcaa8HKbcYBUOmmpt8OloMf6NgjfYCa4tZnsL05LOzQUBBhR2nj/yfghQzWSRHq6x70ULYuodE50i33CuApg==
+ b=Jk2SWLLvrvW+e0Up0WeziogDB/eluSINdVpnsvNsqCU5Ys61RG/RvToVIpON51dFN3GbQxN9VYzazjy3HFjTN8rSP3kS1I0aP7LA9qtSS+RFcZcof8Zaga5lYblFGvICdd4xkPIc9jVwgc/4TwunfjYhee1ELJRKsv9R///SBx35LeaHX38Oe34hAx/p9FeHXwcQRnNV39G6uVRijUDOOdF0QRCt/OD8Hxy87vEK8E+NiEFoomoUXs8vIu3NkYxjNx4d+4RYOnOj0o293Q97399eR8x0FDOCuIgvM24bd8XJx/sM8Ms440ePtHh7jV8lk/UzqAYIxbNFwVh7HOE5WA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=r40ZYECq7ig4QT1XxTnAglAn1yiQU+U3ekqsIycGcfo=;
- b=SLMFOlPFtPwZwL5aokl67G/EYEf23O/AxoAGT05LcOCufepeRdRt6dW7MTY4iXnv7tJtlERBjNquVdKArWHf9psbwO4kl603E4F1yzckWbKx9pq3Z8/NfiN5UmNc7qkpvMov9ES6xofVqvuJ1eL4mOizQjIMb8GQoDxmMUxh/5Iy9aRWHR5LBfQwsoRPvhdFKF7zKZrxxktxdYZAU4v6G2KIaKJfocUiAKOz7fQHZwNxlQyLuN0KvQHBJNmmcmSbO/41GYT9eO9uvW9ks9XFDZN/Yfm01vEQctHoONwew4X8QK49F9QVZNmq4S4IzVEKFUCfAkjVSZJDQ2M65JtJgA==
+ bh=wglsISMDwn0qgab1Fogy1upX1pYnmQWRNqHkUQuOjTw=;
+ b=UBFgWVDaEL/y1v+7O+yU4n4vEr5X+OR6odu4SRfXccYQeKljpjk3/5JD6CX0QLDKYPxCNohEZ9EvDX8I5Oq7qW3ACzg2dCMB5T9Y8cHOmmehF8+LnRshRGLDXnjlF8KMkQVAJvkDXW1ITk/kKOWXinLzzI/JKSSyWrBrD2IqLyU5TlshgMEjxpawbGemX2JtRg2GfKHOF/nuojsfuW48jWgYUAnQXSBN8KGJOwZRYsSh95iRw/fiyBtM/0D2gczWC64uwdKk95Vvmr03F8PbwT3ifNiucjih9mNUYYgxMLiG1ECjfCo4rV3yA2g2CHt55gDoarpMrOk1CvM1dpSfxQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=skyhighmemory.com; dmarc=pass action=none
- header.from=skyhighmemory.com; dkim=pass header.d=skyhighmemory.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=skyhighmemory.onmicrosoft.com; s=selector1-skyhighmemory-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=r40ZYECq7ig4QT1XxTnAglAn1yiQU+U3ekqsIycGcfo=;
- b=r5ScxiOGGGy7xvClGuQymMmgw0zKgdi1sAa3Bbd2d23M7y8WMrWk0ADKDc7F9m8SNG7y0gd2S5lw8Jk0Z07w0fkocjkzGUWcLzm32GBdZV8Et+eCZyc4Gv+bpA1gJQEsyArAe45XC1ZwQ7T1di4KwVZ9maaAz+cqvA1DWXuZWIFLdHihNoYTLq88uoWqTMaRKLHQo5eHyrUzUEI+B27eU7Mrp5Om/6BF8nrHwoDpzKGbQyjRlgutM3BCnH3Fahk5AmaZUik9/4/BHvCL3u2bI+nviQmd4cW8YjAMEPDg55byjwBttCokSnvIa62FEB2ufNRiiiTfgmHsd4ewcV0kAA==
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=skyhighmemory.com;
-Received: from SE2P216MB2102.KORP216.PROD.OUTLOOK.COM (2603:1096:101:11b::5)
- by SE1P216MB1512.KORP216.PROD.OUTLOOK.COM (2603:1096:101:28::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.26; Thu, 7 Mar
- 2024 06:07:43 +0000
-Received: from SE2P216MB2102.KORP216.PROD.OUTLOOK.COM
- ([fe80::6bad:dd98:cdca:c48d]) by SE2P216MB2102.KORP216.PROD.OUTLOOK.COM
- ([fe80::6bad:dd98:cdca:c48d%3]) with mapi id 15.20.7362.024; Thu, 7 Mar 2024
- 06:07:43 +0000
-From: KR Kim <kr.kim@skyhighmemory.com>
-To: miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	mmkurbanov@salutedevices.com,
-	ddrokosov@sberdevices.ru,
-	gch981213@gmail.com
-Cc: kr.kim@skyhighmemory.com,
-	michael@walle.cc,
-	broonie@kernel.org,
-	mika.westerberg@linux.intel.com,
-	acelan.kao@canonical.com,
-	linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	moh.sardi@skyhighmemory.com,
-	changsub.shim@skyhighmemory.com
-Subject:
-Date: Thu,  7 Mar 2024 15:07:29 +0900
-Message-Id: <20240307060729.565350-1-kr.kim@skyhighmemory.com>
-X-Mailer: git-send-email 2.34.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SL2P216CA0156.KORP216.PROD.OUTLOOK.COM
- (2603:1096:101:35::7) To SE2P216MB2102.KORP216.PROD.OUTLOOK.COM
- (2603:1096:101:11b::5)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DS7PR11MB5966.namprd11.prod.outlook.com (2603:10b6:8:71::6) by
+ CO1PR11MB4850.namprd11.prod.outlook.com (2603:10b6:303:9c::7) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7362.24; Thu, 7 Mar 2024 06:37:49 +0000
+Received: from DS7PR11MB5966.namprd11.prod.outlook.com
+ ([fe80::55f1:8d0:2fa1:c7af]) by DS7PR11MB5966.namprd11.prod.outlook.com
+ ([fe80::55f1:8d0:2fa1:c7af%5]) with mapi id 15.20.7362.019; Thu, 7 Mar 2024
+ 06:37:49 +0000
+Date: Thu, 7 Mar 2024 14:07:59 +0800
+From: Yan Zhao <yan.y.zhao@intel.com>
+To: Sean Christopherson <seanjc@google.com>
+CC: Paolo Bonzini <pbonzini@redhat.com>, Andrei Vagin <avagin@google.com>,
+	<linux-kernel@vger.kernel.org>, <x86@kernel.org>, <kvm@vger.kernel.org>,
+	Zhenyu Wang <zhenyuw@linux.intel.com>, Zhi Wang <zhi.a.wang@intel.com>,
+	Yongwei Ma <yongwei.ma@intel.com>
+Subject: Re: [PATCH v3] kvm/x86: allocate the write-tracking metadata
+ on-demand
+Message-ID: <ZelZv6/aXaViwkwd@yzhao56-desk.sh.intel.com>
+Reply-To: Yan Zhao <yan.y.zhao@intel.com>
+References: <20240213192340.2023366-1-avagin@google.com>
+ <170906349657.3809281.8603439312604083486.b4-ty@google.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <170906349657.3809281.8603439312604083486.b4-ty@google.com>
+X-ClientProxiedBy: SG2PR06CA0235.apcprd06.prod.outlook.com
+ (2603:1096:4:ac::19) To DS7PR11MB5966.namprd11.prod.outlook.com
+ (2603:10b6:8:71::6)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -87,324 +111,58 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SE2P216MB2102:EE_|SE1P216MB1512:EE_
-X-MS-Office365-Filtering-Correlation-Id: b47f1769-1eda-4914-4424-08dc3e6ce6eb
+X-MS-TrafficTypeDiagnostic: DS7PR11MB5966:EE_|CO1PR11MB4850:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0b9b8275-2207-483e-3065-08dc3e711b74
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	frCoiDm8NbQehBf1rIDH5XLMou5suy7LxPh3TCUkM+AZ9cM6FLF3fJttwT38PtPZoBMRqwsKhkjKFIsaxT2a7KbWzPfpRTXjB6SDfymygzHAni7Zmh2eFI9XLTRwt79QovSoYgAukt/y1828+fhROwwaGpFlFFF5qNUhIzG9YF6kdFo/tVdspHXadzv3VsKs/i4gDimNKXw5vWMx+bDUdazJGx3V5bQzi6O6O+tB5vbwg83qZYF9refizuVAyNJqOUXMAyQJH/3bJ9lvUU6P0GPUbIwaOkM6TCmIBDSosWxqJNol2pxDYxbViKsVBxH1cixWK9cJS3qP/X7LOM/hlXvKbH/sErGEjBn4yQowK61G+tyY9XDVSjR0dGtRfX+O1DXrvM6tPTXqxzo5r/ScrPV7vC8PUBa44hwJA7khmCxBnmNlwv6+I/gvcnMEriTt6rsDctcJKtz2uue8YtxYCofJ39W+4aV2rDsoUNeZMnEbop9ngCOsilslis96PQKdpbDX6lpwEFw6mAned+NXWIfnjJMcZM0ZJx/NsMjX2LrniUoZDqJrBVtf/kDpEzr0gfpd1mN9CrH5cqiI1i4rjyb6kzWdEXiGQhGRwFHrRcWLtrFb3OlX3MFRzrlvUFXZzBlxmqv4K73Al4BfDcL83CvFnF0hLgUtXiABpacdtlZPpWGwnm2HA0k7IqCCK0Q/ropQBJRAn83Ojlxk6aP4hlXbX+JmxZ9gpTqysff0CGc=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SE2P216MB2102.KORP216.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(376005)(38350700005);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: 0SdaankcVvjvhatezqyONnrCwbnbF/W0aaJyNtNQn2jNShBzC3vbPJeaXyqHeYTf4U+zaYxJhdX1O0mDiK4hsWP8b6nmhZBERAN7CE22lnutWmaQt9SDZO2Jn+RadsTlccmz4u+ZOhlrJq8Xu1z7AWXFgjyFgvwczzxvDkwa6Jd3Ttyh/hDIQsyf/eoBHaVekbH6mFZXhQZH+kM9W9W5t/uCZwh/PYR26qaNj18IlpZgMkYkl5jWvnlfm7RKi1UuAuwy/06b0CrQTfhLZi/yPEjyeRYqClOc+EkfAqscSNcG8DnoyK3Sg7NuDZrxzMQL5UK4O6gVRfdjaxYnLAU1wcbIY7Z5/j2EENIQ45qHD/SS5O6BJZ/ptzT2XJNNNc9IWQE9xvc3Su+sNF4ivIdezzkgpGniUqrfejnLFnjC3oAV9pqGrk2zrvqDRRvuhsdQ2HkJhShk1UdgkDbSJdJZFrw5VdZH6pOo7VWlq/OG/y5EH1Q59LQ5cSiyr5HHA6nfAFZ+euFY9A2ghyq9oOzJHugvL6R1d5/GVm9qwHmKuv+KtagLIxxkAv1IP77dZJttPm+lqN2wTvsbA9YNWUo6G4eCw0nuZOYCUwtsJph+SbU1dYHZgdQGcuRYZMipZ2iGEw9k3Qtv2hwJ8sbSKgiR8vhEWXiNskwuuEL2OSjD02I=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR11MB5966.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?PSpB/zd/ptmCc9aB0TpBiLDeSEJ/xu7L5LxAAxE+SdNIo7VlvYFzaH9/ItDg?=
- =?us-ascii?Q?A7mX4MaHk8gJR5ekHBmQh8DQBaBJrZ07k3d9oOH7isXgJ3emCxzuYNXiaOjj?=
- =?us-ascii?Q?hadIH0dxcES4LNO7TYEOw7ZuBezVlhHfNiKJ6ytDPj/meXeLHfgjWcTWoJFP?=
- =?us-ascii?Q?F0Gpf4Goq35iGuU80hXyCL+Hr2O5RxrEiQt0g/maTTgi3NXoBQkEx5eKPx1l?=
- =?us-ascii?Q?/lxZCi8Xa6jtyywhW8kYB+yaoyhpMiA+90V7wZDum8zafeCyTf4sVYUvJdhT?=
- =?us-ascii?Q?CU5AO1TKD+E7kgodwnZyG3zN/qUcdod8pJw3MjWXMTMGTa3iOuCHWTO6djWG?=
- =?us-ascii?Q?u2QY2U266Kd3eVurpZc1zmQsZE6N1XVb9lrvgrmrDl87RrM7yAbImfqTYq+W?=
- =?us-ascii?Q?loYWSO7EXTs2mY7rXuCNaEl9p+3cly2Ed5gI7PsFGk7566mYBNfkygYKb23b?=
- =?us-ascii?Q?8MyWQA4UzsUsMmxEOolXzEiM5F02C1lHljbhrwGQQZu6TmM4wgeocCJBZPUK?=
- =?us-ascii?Q?BmgNLh1mKK1G29oEmuWzOic0tGb6rgQ/ZCmQhJgO2ZyWTZsieZkj1I/G/FYZ?=
- =?us-ascii?Q?3/kD3RgxnERqO0hgCD9qRykkEpvqOuhpHY/JSFwwJjOFcFYvHrcO+cPs4S9e?=
- =?us-ascii?Q?xMYbBkODt/APm+CUGixU8nxhPM8UUYR6Xy1ekqxLCdDOMtIikLbmRL3ZDNMl?=
- =?us-ascii?Q?YUN1i9lGhq0aNpSRLlG32+fhvQj+MDwZZNAzkMm2bfYAQQdp+NoLvwoScX9q?=
- =?us-ascii?Q?VgORGDkoNkmRgC8y91TAonj8XNZk8OyUah/GQmntKDs1/f9yPfUphwY9POGA?=
- =?us-ascii?Q?k9p9P2iUq0rSCfiaYKItUPorPoPcMlnIlsDPr0utTuuj/tiSjfjZXfn5zTb0?=
- =?us-ascii?Q?jDGgI8K3Jvq1xYZ4D6g17L3leTu7Fs8l1i8sp9F8v1ADK/eFZLSvAluKJc0H?=
- =?us-ascii?Q?crxLFjEZYcF6uug+o/i2M7B3CLNdWFfRvW5KE+JbwhGOapMMkJgkXE7KOW6y?=
- =?us-ascii?Q?K/HjMwfroWkLI+4fjFR4dKecJ/mBTw7VH2AfzQtaXhQSO+ChAs7+bHlwsJLd?=
- =?us-ascii?Q?e6VF9y4JR8z2ROFx7hyjItTkQISjWrbexpbVWI/OaRe4ZDvWz/n5EZIO5bpj?=
- =?us-ascii?Q?I7ByZm54/fkrFfILn/oNbAqJUwBCW2y9midg5bToMxZ5q4U50DwGKSTVPAz0?=
- =?us-ascii?Q?+06RyTa+YXJY8EsfA2k4cur5eINFPMMqJe02rIIUxI7T76bYoj0LaMFRkds4?=
- =?us-ascii?Q?x1xh6jmTWdQ+HlLXlP2uCxOKsDdDtpTUGX4ja1lNK3uB68MyFr6643Qj2IAm?=
- =?us-ascii?Q?FxR2LirVHO8AlUlvNm/7TT0w6UDIzz4l+cvkcARWZbFmdekPUoKS+yhoU4JO?=
- =?us-ascii?Q?Ag3kusPAWE9j6prGYPTFdAfCKwsLPqiNwLGMIIkv1JU2hnKNFoQWuCGJ4Hdc?=
- =?us-ascii?Q?peB7+xzwYcM7iuVh9SeGQi3Hl6YYQXyNRk+JkR7hHh5d4h+dvhk5KDalwA5K?=
- =?us-ascii?Q?mBrWNvblCcqPCXo4zXX9H+Jb82vKsvY5572WJ6EDzRETu7+57CgFjoRqezf+?=
- =?us-ascii?Q?Ws9jK1QtCVSTN0LOheLf3/ZrswEmksVuNZGXXruRzx86IvMp2XK6SgpA14Xz?=
- =?us-ascii?Q?Mg=3D=3D?=
-X-OriginatorOrg: skyhighmemory.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b47f1769-1eda-4914-4424-08dc3e6ce6eb
-X-MS-Exchange-CrossTenant-AuthSource: SE2P216MB2102.KORP216.PROD.OUTLOOK.COM
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?TPR9SEywBViDQaVCUKEszywBQkgifaaTC2qgVkLi5Td6y7yrFtUEfhojduTn?=
+ =?us-ascii?Q?eOLJrhmDbHq08H20qZbvvwIqe0n3k/yaeOLiDWcigAYXijVfbGzMgl/boRWr?=
+ =?us-ascii?Q?feMO66aNJAQkshgfrNrR3F2pcgqS0ozlrle5eG5p38vwYt93GZvSaIvJI2Bh?=
+ =?us-ascii?Q?bQFFTbZZanGymoD1UDKND+03whvaeeZXZsJKaxyYlWy0x9LkdNXmSA9mkAiO?=
+ =?us-ascii?Q?OorqJMvMnU9wsYDGAeaVZSqvqVvGlSnhp3zoHG0cNuVH79vaGSQ49V1WzGUn?=
+ =?us-ascii?Q?nWZKzSI5mHghTl3dy1/UPqOtp8VLcPXkerCRsdeBSI4gLaV93PquiDMjNEOn?=
+ =?us-ascii?Q?cNBmn17E9oVprFEnPinlYHRbS4uB/K6YkTA7sHs2+RxrSLbcorPQYtW3NpJH?=
+ =?us-ascii?Q?O2OBUWJ1joJu98qlQsghinjdPiFuknUDirJkpZvcA6YcVmuK3yhx/t9AfkP7?=
+ =?us-ascii?Q?4QEysTOw8eAY2q3I1g07ShFqWTN9YiBhi8I9JAcSlCWU6iEXqeY5BJg8DfQH?=
+ =?us-ascii?Q?dyKr21QCfceWdmyP+YtHCe2fp3QeDHufhNt1tFXhxW9pwiI0rz3YHOSpHJFY?=
+ =?us-ascii?Q?u+cbgnKtPwoiASkYfXY7nk/hpGwRwE6MKkGbuUUb1g2MGzXou+6/eNZmWpip?=
+ =?us-ascii?Q?ADQju/7gTCkv9tj6OkfXCeLf2kwpffRdGX83+bav2n36CyyTBd4pTQK2blWb?=
+ =?us-ascii?Q?M1htDlCqDlfJkcCzWiqMA9PsYGRUw/DyIb24JuAQl38FOnv1LGGIZczyvgJ4?=
+ =?us-ascii?Q?h+aNmej1kzL7BcBFT8idy53eIlCe2OTEs9T7y4u3vBP0JnjGGVt3Vr+g/0qR?=
+ =?us-ascii?Q?oAF9C8G5F/Si8oPgAPFu12BtiG9LiReOl8LjJbJ61trLstfqSaYNemA6dJIA?=
+ =?us-ascii?Q?J8Sn1L56zsrojjnSylU8ltQpKRmDcjKDz14r2Ee/90MIrUbijGPKcdyA3slv?=
+ =?us-ascii?Q?ywIEdtycKnicSZecp28Bx/rI1E/xKfs2BFYDA3sAV12tHrmuXUqTvHsb5Vy3?=
+ =?us-ascii?Q?d/xFg7x2vjuPPzdKFKIO3l8oEBOsv+Lf4cYM+Ksry5w8B1gmy7HwGNFcK/w+?=
+ =?us-ascii?Q?tyHkL2MK22sYkk2NVg5lZg1TMnDy76DxqxKIkuuP8rz4YNb1+Qi9AsgYwTku?=
+ =?us-ascii?Q?h+xseckItHcJFRkFdjYn8xb1tKLxug4QxpIyRqTCctBScOS/fzgU/ept3hN+?=
+ =?us-ascii?Q?OOhAb3MGznm1EP9m8JGnq64NleDJdqzp+sGeuEctXWk8Rtuui+X81F5/0zll?=
+ =?us-ascii?Q?IP+frZbjEx/+1fGmY1QWo1EzkCkRAzphxoAHX0JUamMXOHj5AwTd7Ig6tNN/?=
+ =?us-ascii?Q?JbtWpdtcnxZu0HhzcA2Juxx4pCCfOn3pr0i+c0V/QDJwzO7+5rv70Zd22aFE?=
+ =?us-ascii?Q?6U/LdQwR6z2sPT9BjcmCFblFs519e+/Swudp0NuYz3B5M/LgkhVsC/iBtfFv?=
+ =?us-ascii?Q?7TCzjfmznhKVmYWwPhTk549ZFIAAE2/wOzWDADSSrxIvJLZizKQbJdwO35MG?=
+ =?us-ascii?Q?p7MmVwnxGpSikApoEQ++0xEg6m5n+JVlKHBR9HAv9dhthQ99WvV5TG7JIV+1?=
+ =?us-ascii?Q?sGNaVRhu7uCwnfIxJI+xAwuEz9jzXyA2nKML5eTc?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0b9b8275-2207-483e-3065-08dc3e711b74
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR11MB5966.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Mar 2024 06:07:43.2063
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Mar 2024 06:37:49.3748
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 39b82b34-0966-49dc-81a7-5bcab7ea53c0
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HCXYbM0CYKXNf1XJ+X+vtwP7WolPtg/86cukRTIefvUpLqdvl5WuuJRNsIwQWXCl7VjRh7ep0lUIYH8ckUus3IxPtNqFNRDOGiE1ATwK7lU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SE1P216MB1512
+X-MS-Exchange-CrossTenant-UserPrincipalName: ZdjQPmssng0Wi32ouCmd29rf+CbrkUmBlE50oYZMaP2wH9nclvlN5yV0IgLYp/nhieq/I9jQWDggG3T6u3wGGw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB4850
+X-OriginatorOrg: intel.com
 
-Feat: Add SkyHigh Memory Patch code
-
-Add SPI Nand Patch code of SkyHigh Memory
-- Add company dependent code with 'skyhigh.c'
-- Insert into 'core.c' so that 'always ECC on'
-
-commit 6061b97a830af8cb5fd0917e833e779451f9046a (HEAD -> master)
-Author: KR Kim <kr.kim@skyhighmemory.com>
-Date:   Thu Mar 7 13:24:11 2024 +0900
-
-    SPI Nand Patch code of SkyHigh Momory
-
-    Signed-off-by: KR Kim <kr.kim@skyhighmemory.com>
-
-From 6061b97a830af8cb5fd0917e833e779451f9046a Mon Sep 17 00:00:00 2001
-From: KR Kim <kr.kim@skyhighmemory.com>
-Date: Thu, 7 Mar 2024 13:24:11 +0900
-Subject: [PATCH] SPI Nand Patch code of SkyHigh Memory
-
----
- drivers/mtd/nand/spi/Makefile  |   2 +-
- drivers/mtd/nand/spi/core.c    |   7 +-
- drivers/mtd/nand/spi/skyhigh.c | 155 +++++++++++++++++++++++++++++++++
- include/linux/mtd/spinand.h    |   3 +
- 4 files changed, 165 insertions(+), 2 deletions(-)
- mode change 100644 => 100755 drivers/mtd/nand/spi/Makefile
- mode change 100644 => 100755 drivers/mtd/nand/spi/core.c
- create mode 100644 drivers/mtd/nand/spi/skyhigh.c
- mode change 100644 => 100755 include/linux/mtd/spinand.h
-
-diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
-old mode 100644
-new mode 100755
-index 19cc77288ebb..1e61ab21893a
---- a/drivers/mtd/nand/spi/Makefile
-+++ b/drivers/mtd/nand/spi/Makefile
-@@ -1,4 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0
- spinand-objs := core.o alliancememory.o ato.o esmt.o foresee.o gigadevice.o macronix.o
--spinand-objs += micron.o paragon.o toshiba.o winbond.o xtx.o
-+spinand-objs += micron.o paragon.o skyhigh.o toshiba.o winbond.o xtx.o
- obj-$(CONFIG_MTD_SPI_NAND) += spinand.o
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-old mode 100644
-new mode 100755
-index e0b6715e5dfe..e3f0a7544ba4
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -34,7 +34,7 @@ static int spinand_read_reg_op(struct spinand_device *spinand, u8 reg, u8 *val)
- 	return 0;
- }
- 
--static int spinand_write_reg_op(struct spinand_device *spinand, u8 reg, u8 val)
-+int spinand_write_reg_op(struct spinand_device *spinand, u8 reg, u8 val)
- {
- 	struct spi_mem_op op = SPINAND_SET_FEATURE_OP(reg,
- 						      spinand->scratchbuf);
-@@ -196,6 +196,10 @@ static int spinand_init_quad_enable(struct spinand_device *spinand)
- static int spinand_ecc_enable(struct spinand_device *spinand,
- 			      bool enable)
- {
-+	/* SHM : always ECC enable */
-+	if (spinand->flags & SPINAND_ON_DIE_ECC_MANDATORY)
-+		return 0;
-+
- 	return spinand_upd_cfg(spinand, CFG_ECC_ENABLE,
- 			       enable ? CFG_ECC_ENABLE : 0);
- }
-@@ -945,6 +949,7 @@ static const struct spinand_manufacturer *spinand_manufacturers[] = {
- 	&macronix_spinand_manufacturer,
- 	&micron_spinand_manufacturer,
- 	&paragon_spinand_manufacturer,
-+	&skyhigh_spinand_manufacturer,
- 	&toshiba_spinand_manufacturer,
- 	&winbond_spinand_manufacturer,
- 	&xtx_spinand_manufacturer,
-diff --git a/drivers/mtd/nand/spi/skyhigh.c b/drivers/mtd/nand/spi/skyhigh.c
-new file mode 100644
-index 000000000000..92e7572094ff
---- /dev/null
-+++ b/drivers/mtd/nand/spi/skyhigh.c
-@@ -0,0 +1,155 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2022 SkyHigh Memory Limited
-+ *
-+ * Author: Takahiro Kuwano <takahiro.kuwano@infineon.com>
-+ */
-+
-+#include <linux/device.h>
-+#include <linux/kernel.h>
-+#include <linux/mtd/spinand.h>
-+
-+#define SPINAND_MFR_SKYHIGH		0x01
-+
-+#define SKYHIGH_STATUS_ECC_1TO2_BITFLIPS	(1 << 4)
-+#define SKYHIGH_STATUS_ECC_3TO6_BITFLIPS	(2 << 4)
-+#define SKYHIGH_STATUS_ECC_UNCOR_ERROR  	(3 << 4)
-+
-+#define SKYHIGH_CONFIG_PROTECT_EN	BIT(1)
-+
-+static SPINAND_OP_VARIANTS(read_cache_variants,
-+		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 4, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_DUALIO_OP(0, 2, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
-+
-+static SPINAND_OP_VARIANTS(write_cache_variants,
-+		SPINAND_PROG_LOAD_X4(true, 0, NULL, 0),
-+		SPINAND_PROG_LOAD(true, 0, NULL, 0));
-+
-+static SPINAND_OP_VARIANTS(update_cache_variants,
-+		SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
-+		SPINAND_PROG_LOAD(false, 0, NULL, 0));
-+
-+static int skyhigh_spinand_ooblayout_ecc(struct mtd_info *mtd, int section,
-+					 struct mtd_oob_region *region)
-+{
-+	if (section)
-+		return -ERANGE;
-+
-+	/* SkyHigh's ecc parity is stored in the internal hidden area and is not needed for them. */
-+	region->length = 0;
-+	region->offset = mtd->oobsize;
-+
-+	return 0;
-+}
-+
-+static int skyhigh_spinand_ooblayout_free(struct mtd_info *mtd, int section,
-+					  struct mtd_oob_region *region)
-+{
-+	if (section)
-+		return -ERANGE;
-+
-+	region->length = mtd->oobsize - 2;
-+	region->offset = 2;
-+
-+	return 0;
-+}
-+
-+static const struct mtd_ooblayout_ops skyhigh_spinand_ooblayout = {
-+	.ecc = skyhigh_spinand_ooblayout_ecc,
-+	.free = skyhigh_spinand_ooblayout_free,
-+};
-+
-+static int skyhigh_spinand_ecc_get_status(struct spinand_device *spinand,
-+				  u8 status)
-+{
-+	/* SHM
-+	 * 00 : No bit-flip
-+	 * 01 : 1-2 errors corrected
-+	 * 10 : 3-6 errors corrected         
-+	 * 11 : uncorrectable
-+	 */
-+
-+	switch (status & STATUS_ECC_MASK) {
-+	case STATUS_ECC_NO_BITFLIPS:
-+		return 0;
-+
-+	case SKYHIGH_STATUS_ECC_1TO2_BITFLIPS:
-+		return 2;
-+
-+ 	case SKYHIGH_STATUS_ECC_3TO6_BITFLIPS:
-+		return 6; 
-+
-+ 	case SKYHIGH_STATUS_ECC_UNCOR_ERROR:
-+		return -EBADMSG;;
-+
-+	default:
-+		break;
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+static const struct spinand_info skyhigh_spinand_table[] = {
-+	SPINAND_INFO("S35ML01G301",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x15),
-+		     NAND_MEMORG(1, 2048, 64, 64, 1024, 20, 1, 1, 1),
-+		     NAND_ECCREQ(6, 32),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     SPINAND_ON_DIE_ECC_MANDATORY,
-+		     SPINAND_ECCINFO(&skyhigh_spinand_ooblayout,
-+		     		     skyhigh_spinand_ecc_get_status)),
-+	SPINAND_INFO("S35ML01G300",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x14),
-+		     NAND_MEMORG(1, 2048, 128, 64, 1024, 20, 1, 1, 1),
-+		     NAND_ECCREQ(6, 32),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     SPINAND_ON_DIE_ECC_MANDATORY,
-+		     SPINAND_ECCINFO(&skyhigh_spinand_ooblayout,
-+		     		     skyhigh_spinand_ecc_get_status)),
-+	SPINAND_INFO("S35ML02G300",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x25),
-+		     NAND_MEMORG(1, 2048, 128, 64, 2048, 40, 2, 1, 1),
-+		     NAND_ECCREQ(6, 32),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     SPINAND_ON_DIE_ECC_MANDATORY,
-+		     SPINAND_ECCINFO(&skyhigh_spinand_ooblayout,
-+		     		     skyhigh_spinand_ecc_get_status)),
-+	SPINAND_INFO("S35ML04G300",
-+		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x35),
-+		     NAND_MEMORG(1, 2048, 128, 64, 4096, 80, 2, 1, 1),
-+		     NAND_ECCREQ(6, 32),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     SPINAND_ON_DIE_ECC_MANDATORY,
-+		     SPINAND_ECCINFO(&skyhigh_spinand_ooblayout,
-+		     		     skyhigh_spinand_ecc_get_status)),
-+};
-+
-+static int skyhigh_spinand_init(struct spinand_device *spinand)
-+{
-+	return spinand_write_reg_op(spinand, REG_BLOCK_LOCK,
-+				    SKYHIGH_CONFIG_PROTECT_EN);
-+}
-+
-+static const struct spinand_manufacturer_ops skyhigh_spinand_manuf_ops = {
-+	.init = skyhigh_spinand_init,
-+ };
-+
-+const struct spinand_manufacturer skyhigh_spinand_manufacturer = {
-+	.id = SPINAND_MFR_SKYHIGH,
-+	.name = "SkyHigh",
-+	.chips = skyhigh_spinand_table,
-+	.nchips = ARRAY_SIZE(skyhigh_spinand_table),
-+	.ops = &skyhigh_spinand_manuf_ops,
-+};
-diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-old mode 100644
-new mode 100755
-index badb4c1ac079..0e135076df24
---- a/include/linux/mtd/spinand.h
-+++ b/include/linux/mtd/spinand.h
-@@ -268,6 +268,7 @@ extern const struct spinand_manufacturer gigadevice_spinand_manufacturer;
- extern const struct spinand_manufacturer macronix_spinand_manufacturer;
- extern const struct spinand_manufacturer micron_spinand_manufacturer;
- extern const struct spinand_manufacturer paragon_spinand_manufacturer;
-+extern const struct spinand_manufacturer skyhigh_spinand_manufacturer;
- extern const struct spinand_manufacturer toshiba_spinand_manufacturer;
- extern const struct spinand_manufacturer winbond_spinand_manufacturer;
- extern const struct spinand_manufacturer xtx_spinand_manufacturer;
-@@ -312,6 +313,7 @@ struct spinand_ecc_info {
- 
- #define SPINAND_HAS_QE_BIT		BIT(0)
- #define SPINAND_HAS_CR_FEAT_BIT		BIT(1)
-+#define SPINAND_ON_DIE_ECC_MANDATORY	BIT(2)	/* SHM */
- 
- /**
-  * struct spinand_ondie_ecc_conf - private SPI-NAND on-die ECC engine structure
-@@ -518,5 +520,6 @@ int spinand_match_and_init(struct spinand_device *spinand,
- 
- int spinand_upd_cfg(struct spinand_device *spinand, u8 mask, u8 val);
- int spinand_select_target(struct spinand_device *spinand, unsigned int target);
-+int spinand_write_reg_op(struct spinand_device *spinand, u8 reg, u8 val);
- 
- #endif /* __LINUX_MTD_SPINAND_H */
--- 
-2.34.1
-
+On Tue, Feb 27, 2024 at 01:28:18PM -0800, Sean Christopherson wrote:
+> Added a few more KVM-GT folks.  FYI, this changes KVM to allocate metadata for
+> write-tracking on-demand, i.e. when KVM-GT first registers with KVM.  I tested
+> by hacking in usage of the external APIs, to register/unregister a node on every
+> vCPU before/after vcpu_run(), so I am fairly confident that it's functionally
+> correct.  But just in case you see issues in linux-next... :-)
+I tested in my environment with KVMGT and found no issues :)
 
