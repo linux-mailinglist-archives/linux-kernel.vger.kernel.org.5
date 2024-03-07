@@ -1,217 +1,184 @@
-Return-Path: <linux-kernel+bounces-94799-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94800-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94858874560
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 01:58:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17A33874562
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 01:58:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A326283568
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 00:58:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 81BAA1F230BC
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 00:58:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A96FE4A28;
-	Thu,  7 Mar 2024 00:58:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9DFA4A28;
+	Thu,  7 Mar 2024 00:58:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="atOiC4YC"
-Received: from mail-il1-f174.google.com (mail-il1-f174.google.com [209.85.166.174])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="GFmJmBEV"
+Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F82F1879;
-	Thu,  7 Mar 2024 00:58:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7532B525D
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 00:58:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709773107; cv=none; b=llKALxWZEuXFmtXzhuVcN5n3p/DzhFRCHsF521CqslgarS6lSQmZAZvCNzG6Jm/1z7Nj80EgkaZhNcn9L1cremBfWjcG+nyCihtGCsH6957Wmg5+tmsz8s1wf2enUOD5Ix635SHhmPV/A13N5VU9kRlfMpg36poG0YZ+cf+uwY0=
+	t=1709773117; cv=none; b=IIwlVhMIYLNlgoEx+JNfzabHBgsrNMZT2olXzOV1r4vZ8Mt1LPbp/uWrzZ0EABlepfh66NHhMj/rKBuGQFEV0JGpXq10VcdaPom/PM8VV/4huCHgGWPL0TKc0ypwzED35jzcqpiUweYe81F9TNxnWrpiwHCg0GheLh7lC5DoqYA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709773107; c=relaxed/simple;
-	bh=kcrybf8ZhbcxqaAvPY50XSlMpT/BCUl5Chgg2NgPmw8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mi2a8iAih8caHXeZEh81uZ0pM3vhA8BlWB7eYci2Xb2NtMP7nstNAkG8sU9IDmdIJPUmtFagOVaIK2VahWxd5haPnuWg+R2QQRc/Ebc7cSKRVzHMXTR3LY+R+VDwZNM6qm4urAVULbCmho2tqnxKr/qg+aT+hs/N84Q9o0qy4i4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=atOiC4YC; arc=none smtp.client-ip=209.85.166.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f174.google.com with SMTP id e9e14a558f8ab-364f794f237so1219695ab.1;
-        Wed, 06 Mar 2024 16:58:26 -0800 (PST)
+	s=arc-20240116; t=1709773117; c=relaxed/simple;
+	bh=MZ06/FnKdpF7EpHBWXvXS06dDQwjud1EBOqxLUdR4v8=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=iLBZ9QsCbZkmibkxQNPW7MVjrwERANF/9YRDTs/YTBCtM8kgN9tm/mcNN/ikCez4Zd2LtFNXcCYprFVpom3Fj97c0f0wuo747OMK1DkBl7mESaRc0O83XBxc2uRpBKArk3fb31HXpEGRw91d2z2PEz70pPs1L1klSnKaNDhvyF4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=GFmJmBEV; arc=none smtp.client-ip=209.85.210.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-6e5d234fb2bso348034b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 16:58:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709773105; x=1710377905; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jOXetrYB7FG7uPFK9qD35tNyUTXHX53MKHAyDztq5IU=;
-        b=atOiC4YCp5iQIf8ccWpi+RvhF9CuGIax0Jk5Bvj8IToXC/9e4lDgHHr0w2p9urtWfp
-         UbDsKWcsJObyG1uCY2SdM3GDw4WjBuNBETyo1QdwBynYRyKhBLevuFQucPx2fzfPC7Wr
-         utCJqClt1U/yQgaLK4jjiij4UKqLUAc0dDE5lvb2RgDJqDH89TT2CzEM/z8sye2QdAK3
-         izF4Cod0kiFaXiaxQkX2gmTdRbpw2tOIQkuq/EDPyF8eSMynayiAdX/rTw81gYX1RqU6
-         +4rDKW/XYHe/f8u9bowqT7Eujbt5C91/31eSPBa/WiE84gI8k3VYwzWfbVwrl2RZdUFU
-         NEbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709773105; x=1710377905;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=google.com; s=20230601; t=1709773116; x=1710377916; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=jOXetrYB7FG7uPFK9qD35tNyUTXHX53MKHAyDztq5IU=;
-        b=gAemivJzAYIn5tY5lb03AW5bKDzHPKHnNWQ/ycij3c3jxOzsrXwNkk5YIZ7lRWkr5p
-         uWomOeSRMlodpl4Ud7GecozlfwElUir8mbAPtd7LqC9Gg+cLRk96OKCCAXtGNZmBZzOd
-         xRvuqOXwxeh8ZeN33VyEE82mXxNrURCxlTuhv3wAi/ceqVjJBNXXjvZ2ETo159/i3ROi
-         sfCH6d1A2jZwSFPVaxI77VAfHnnBIe9YfzeJ8TURYp4qlxBB+jq/55mvItpaIxVbXgUn
-         es0ILTRZV6MxO+vw4gXbxsyfUu/HQd2CBC2iGrrmbbsvxnX2Jzwi3B3gR2vcPK8ISckr
-         HwEw==
-X-Forwarded-Encrypted: i=1; AJvYcCWhU6dS0jCyzeE2MIDeGSQPkcbEtNVKJXu8KzIGxM3/fe5JXqalajEbSAuwXtIRi2UaIv3M0CndtiXknKVnmebkP37H5TSpVZJacABYPUivTM0wd/+nid1rP0LcBXrqRGjbE1KRUWD8s539SiI0NgVp0ChJI/At37WFlovL6GgARVjPKEuZQwsFmxoWMTmG/oX05tgVJAvkUGHtTU4nHFBg
-X-Gm-Message-State: AOJu0Yx5pXx66EM75nJjPyPU0cWoNpmX/9GXP7QZsRsE0EBtw5HCv81L
-	gD8377kubMY4DXz2B9FcxWqJ7uk7Mo/E/HhTRjw0Mb6i7ya2NqFmCqnjmeZ+FtjnjXOEPhaGIan
-	sYYVAAhqOBxaDkGHE1RC0XVSwoF8=
-X-Google-Smtp-Source: AGHT+IG8PjRaZLt/Q5CiEttvyPNHeWicHW61mnLg89xliS1+pm55W9W/fIsDsAuZF8ItOHUpgqY7hQ7MZ2R9HfODMxs=
-X-Received: by 2002:a05:6e02:19c8:b0:365:cac8:87a9 with SMTP id
- r8-20020a056e0219c800b00365cac887a9mr20930302ill.6.1709773105301; Wed, 06 Mar
- 2024 16:58:25 -0800 (PST)
+        bh=MmRQNGCRtnjmRvh6sRQ5xEu1hAgcZnkmkF6J3pyfr1U=;
+        b=GFmJmBEV3ZEPtkpYrHWVhNG6TXewl8jULZut3OJ97/r/8tgTRWxkbp71gqecYsla92
+         oAWPa7gnU5+z1/V39f8fXyFpbzZ0QFDAP77B1cbMTbh4FbDGV9Sdl0YT+XRItz9qNwud
+         3OenFIbT/ylF68oFWNyZbMjN9O5URynnJ4IUD/UPPJ0mXblzjx/ox+zWUBc8lPg39GHr
+         1qJ8xmZxH/6VahjFEoVXqaSdnAYCfP3DgwmCYcUrBR92OdGcE+FB4zlIwJF/kkSEoi7P
+         UZNzWNdWsCEn8mUVI93wJmIs1ftliQY0m7uL49KjGGdbJCvM8jG518ncdXJFyD053FAZ
+         GVmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709773116; x=1710377916;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MmRQNGCRtnjmRvh6sRQ5xEu1hAgcZnkmkF6J3pyfr1U=;
+        b=Ix4N/HNdZvmA5c6Rg7Q17GGSVepd6VyCil2xI2hFNHr0KScw/R8Vrw9JB+r2yxxJ8+
+         rK8MxgNRjHyfEl7Cm02QvJSCfTKcVX54hdj4AsLPaeZFDu6dyBG9wno0FsxGi28xWJ3B
+         AUSbEmZEBJlBv2yGcYNjg68itR6pt6jQemwjCFco0GhlW1qLtTlzC62uYIb5zfFDMHBE
+         66cyxgJdFiQGLbpgK9awDjLYkaIgVwcQ7uTNBeTf7BF3dp9wyOm5K0sznkSGw9UILtNj
+         WT4NfSmVZ90o452W46tpizfh0B/vbMowdttHc2yj5N1ektpZg0pWJmwSfaQAu3Kuxf4H
+         EzKQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVtRYndrmOGRG9BmVbPzp4H5WDBAvpGBLXMFBwOs+fRSE0J/Yzpa+iEHOZ1pyJ+5p5KMYOUkd1nM2jPCDAsje8Qqa267qJpUi/+/0SN
+X-Gm-Message-State: AOJu0Ywjn1xCLBCilPxHAnPVMjDQg9iS4AhiFPq99C4DEpO5srRkBl1t
+	t91ty8IsyEH6r56zVheho1+3TTlAfgxiAad7HOX3YB5cajlP69kO14DOGcDioHTrwh1Hgl5tNcY
+	Rsg==
+X-Google-Smtp-Source: AGHT+IGIG+GBlQTENCyrDeP5/bdimzYYp6TGnKTwGmCTJ2ir6tHwOlEgRf5XNTZcp18EgHSc03M+AlwZBP0=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:1808:b0:6e5:9a0a:b66a with SMTP id
+ y8-20020a056a00180800b006e59a0ab66amr786472pfa.3.1709773115641; Wed, 06 Mar
+ 2024 16:58:35 -0800 (PST)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date: Wed,  6 Mar 2024 16:58:33 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240227005606.1107203-1-kcfeng0@nuvoton.com> <20240227005606.1107203-4-kcfeng0@nuvoton.com>
- <62f38808-7d5f-4466-a65e-b6a64b2e7c01@molgen.mpg.de> <4b06d535-6739-47b5-ad1e-0ff94322620e@roeck-us.net>
- <e2b0b8e3-9b39-4621-9e43-d7de02286a27@molgen.mpg.de> <24ee4bf3-aa91-483d-a9be-5c47e5c37ed7@roeck-us.net>
- <35dcecdd-ee19-40d6-80ab-5eed9718e639@molgen.mpg.de>
-In-Reply-To: <35dcecdd-ee19-40d6-80ab-5eed9718e639@molgen.mpg.de>
-From: Ban Feng <baneric926@gmail.com>
-Date: Thu, 7 Mar 2024 08:58:14 +0800
-Message-ID: <CALz278a4zoje8ZL5REY==fGmowO5EJnRT8rGXaDnSvDK+aROdg@mail.gmail.com>
-Subject: Re: Commit messages (was: [PATCH v4 3/3] hwmon: Driver for Nuvoton NCT7363Y)
-To: Paul Menzel <pmenzel@molgen.mpg.de>
-Cc: Guenter Roeck <linux@roeck-us.net>, jdelvare@suse.com, robh+dt@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, corbet@lwn.net, 
-	linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org, kcfeng0@nuvoton.com, 
-	kwliu@nuvoton.com, openbmc@lists.ozlabs.org, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, DELPHINE_CHIU@wiwynn.com, 
-	naresh.solanki@9elements.com, billy_tsai@aspeedtech.com
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
+Message-ID: <20240307005833.827147-1-seanjc@google.com>
+Subject: [PATCH] KVM: x86/pmu: Disable support for adaptive PEBS
+From: Sean Christopherson <seanjc@google.com>
+To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Like Xu <like.xu.linux@gmail.com>, Mingwei Zhang <mizhang@google.com>, 
+	Zhenyu Wang <zhenyuw@linux.intel.com>, Zhang Xiong <xiong.y.zhang@intel.com>, 
+	Lv Zhiyuan <zhiyuan.lv@intel.com>, Dapeng Mi <dapeng1.mi@intel.com>, 
+	Jim Mattson <jmattson@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-Hi Paul and Guenter,
+Drop support for virtualizing adaptive PEBS, as KVM's implementation is
+architecturally broken without an obvious/easy path forward, and because
+exposing adaptive PEBS can leak host LBRs to the guest, i.e. can leak
+host kernel addresses to the guest.
 
-Appreciate your valuable comments, and I'll add some commit messages
-to describe this chip for pwm and fan.
+Bug #1 is that KVM doesn't doesn't account for the upper 32 bits of
+IA32_FIXED_CTR_CTRL when (re)programming fixed counters, e.g
+fixed_ctrl_field() drops the upper bits, reprogram_fixed_counters()
+stores local variables as u8s and truncates the upper bits too, etc.
 
-Thanks,
-Ban
+Bug #2 is that, because KVM _always_ sets precise_ip to a non-zero value
+for PEBS events, perf will _always_ generate an adaptive record, even if
+the guest requested a basic record.  Note, KVM will also enable adaptive
+PEBS in individual *counter*, even if adaptive PEBS isn't exposed to the
+guest, but this is benign as MSR_PEBS_DATA_CFG is guaranteed to be zero,
+i.e. the guest will only ever see Basic records.
 
-On Thu, Feb 29, 2024 at 12:25=E2=80=AFAM Paul Menzel <pmenzel@molgen.mpg.de=
-> wrote:
->
-> Dear Guenter,
->
->
-> Thank you for your reply.
->
-> Am 28.02.24 um 17:03 schrieb Guenter Roeck:
-> > On 2/28/24 03:03, Paul Menzel wrote:
->
-> >> Am 28.02.24 um 10:03 schrieb Guenter Roeck:
-> >>> On 2/27/24 23:57, Paul Menzel wrote:
-> >>
-> >>>> Am 27.02.24 um 01:56 schrieb baneric926@gmail.com:
-> >>>>> From: Ban Feng <kcfeng0@nuvoton.com>
-> >>>>>
-> >>>>> NCT7363Y is an I2C based hardware monitoring chip from Nuvoton.
-> >>>>
-> >>>> Please reference the datasheet.
-> >>>
-> >>> Note that something like
-> >>>
-> >>> Datasheet: Available from Nuvoton upon request
-> >>>
-> >>> is quite common for hardware monitoring chips and acceptable.
-> >>
-> >> Yes, it would be nice to document it though. (And finally for vendors
-> >> to just make them available for download.)
-> >
-> > Nuvoton is nice enough and commonly makes datasheets available on reque=
-st.
-> > The only exception I have seen so far is where they were forced into an=
- NDA
-> > by a large chip and board vendor, which prevented them from publishing =
-a
-> > specific datasheet.
->
-> Nice, that they are better in this regard than others.
->
-> > Others are much worse. Many PMIC vendors don't publish their datasheets=
- at
-> > all, and sometimes chips don't even officially exist (notorious for chi=
-ps
-> > intended for the automotive market). Just look at the whole discussion
-> > around MAX31335.
-> >
-> > Anyway, there are lots of examples in Documentation/hwmon/. I don't see
-> > the need to add further documentation, and I specifically don't want to
-> > make it official that "Datasheet not public" is acceptable as well.
-> > We really don't have a choice unless we want to exclude a whole class
-> > of chips from the kernel, but that doesn't make it better.
->
-> I know folks figure it out eventually, but I found it helpful to have
-> the datesheet name in the commit message to know what to search for, ask
-> for, or in case of difference between datasheet revision what to compare
-> against.
->
-> >>>> Could you please give a high level description of the driver design?
-> >>>
-> >>> Can you be more specific ? I didn't have time yet to look into detail=
-s,
-> >>> but at first glance this looks like a standard hardware monitoring
-> >>> driver.
-> >>> One could argue that the high level design of such drivers is describ=
-ed
-> >>> in Documentation/hwmon/hwmon-kernel-api.rst.
-> >>>
-> >>> I don't usually ask for a additional design information for hwmon dri=
-vers
-> >>> unless some chip interaction is unusual and needs to be explained,
-> >>> and then I prefer to have it explained in the code. Given that, I am
-> >>> quite curious and would like to understand what you are looking for.
-> >> For a 10+ lines commit, in my opinion the commit message should say
-> >> something about the implementation. Even it is just, as you wrote, a
-> >> note, that it follows the standard design.
-> >
-> > Again, I have not looked into the submission, but usually we ask for th=
-at
-> > to be documented in Documentation/hwmon/. I find that much better than
-> > a soon-to-be-forgotten commit message. I don't mind something like
-> > "The NCT7363Y is a fan controller with up to 16 independent fan input
-> >   monitors and up to 16 independent PWM outputs. It also supports up
-> >   to 16 GPIO pins"
-> > or in other words a description of the chip, not the implementation.
-> > That a driver hwmon driver uses the hardware monitoring API seems to be
-> > obvious to me, so I don't see the value of adding it to the commit
-> > description. I would not mind having something there, but I don't
-> > see it as mandatory.
-> >
-> > On the  other side, granted, that is just _my_ personal opinion.
-> > Do we have a common guideline for what exactly should be in commit
-> > descriptions for driver submissions ? I guess I should look that up.
->
-> `Documentation/hwmon/submitting-patches.rst` refers to
-> `Documentation/process/submitting-patches.rst`, and there *Describe your
-> changes* seems to have been written for documenting bug fixes or
-> enhancements and not new additions. It for example contains:
->
-> > Once the problem is established, describe what you are actually doing
-> > about it in technical detail.  It's important to describe the change
-> > in plain English for the reviewer to verify that the code is behaving
-> > as you intend it to.
->
-> I agree with your description, but I am also convinced if you write 500
-> lines of code, that you can write ten lines of commit messages giving a
-> broad overview. In this case, saying that it follows the standard driver
-> model would be good enough for me.
->
-> Also, at least for me, often having to bisect stuff and using `git
-> blame` to look at old commits, commit messages are very valuable to me,
-> and not =E2=80=9Cforgotten=E2=80=9D. ;-)
->
->
-> Kind regards,
->
-> Paul
+Bug #3 is in perf.  intel_pmu_disable_fixed() doesn't clear the upper
+bits either, i.e. leaves ICL_FIXED_0_ADAPTIVE set, and
+intel_pmu_enable_fixed() effectively doesn't clear ICL_FIXED_0_ADAPTIVE
+either.  I.e. perf _always_ enables ADAPTIVE counters, regardless of what
+KVM requests.
+
+Bug #4 is that adaptive PEBS *might* effectively bypass event filters set
+by the host, as "Updated Memory Access Info Group" records information
+that might be disallowed by userspace via KVM_SET_PMU_EVENT_FILTER.
+
+Bug #5 is that KVM doesn't ensure LBR MSRs hold guest values (or at least
+zeros) when entering a vCPU with adaptive PEBS, which allows the guest
+to read host LBRs, i.e. host RIPs/addresses, by enabling "LBR Entries"
+records.
+
+Disable adaptive PEBS support as an immediate fix due to the severity of
+the LBR leak in particular, and because fixing all of the bugs will be
+non-trivial, e.g. not suitable for backporting to stable kernels.
+
+Note!  This will break live migration, but trying to make KVM play nice
+with live migration would be quite complicated, wouldn't be guaranteed to
+work (i.e. KVM might still kill/confuse the guest), and it's not clear
+that there are any publicly available VMMs that support adaptive PEBS,
+let alone live migrate VMs that support adaptive PEBS, e.g. QEMU doesn't
+support PEBS in any capacity.
+
+Link: https://lore.kernel.org/all/20240306230153.786365-1-seanjc@google.com
+Link: https://lore.kernel.org/all/ZeepGjHCeSfadANM@google.com
+Fixes: c59a1f106f5c ("KVM: x86/pmu: Add IA32_PEBS_ENABLE MSR emulation for extended PEBS")
+Cc: stable@vger.kernel.org
+Cc: Like Xu <like.xu.linux@gmail.com>
+Cc: Mingwei Zhang <mizhang@google.com>
+Cc: Zhenyu Wang <zhenyuw@linux.intel.com>
+Cc: Zhang Xiong <xiong.y.zhang@intel.com>
+Cc: Lv Zhiyuan <zhiyuan.lv@intel.com>
+Cc: Dapeng Mi <dapeng1.mi@intel.com>
+Cc: Jim Mattson <jmattson@google.com>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+ arch/x86/kvm/vmx/vmx.c | 24 ++++++++++++++++++++++--
+ 1 file changed, 22 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 7a74388f9ecf..641a7d5bf584 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -7864,8 +7864,28 @@ static u64 vmx_get_perf_capabilities(void)
+ 
+ 	if (vmx_pebs_supported()) {
+ 		perf_cap |= host_perf_cap & PERF_CAP_PEBS_MASK;
+-		if ((perf_cap & PERF_CAP_PEBS_FORMAT) < 4)
+-			perf_cap &= ~PERF_CAP_PEBS_BASELINE;
++
++		/*
++		 * Disallow adaptive PEBS as it is functionally broken, can be
++		 * used by the guest to read *host* LBRs, and can be used to
++		 * bypass userspace event filters.  To correctly and safely
++		 * support adaptive PEBS, KVM needs to:
++		 *
++		 * 1. Account for the ADAPTIVE flag when (re)programming fixed
++		 *    counters.
++		 *
++		 * 2. Gain support from perf (or take direct control of counter
++		 *    programming) to support events without adaptive PEBS
++		 *    enabled for the hardware counter.
++		 *
++		 * 3. Ensure LBR MSRs cannot hold host data on VM-Entry with
++		 *    adaptive PEBS enabled and MSR_PEBS_DATA_CFG.LBRS=1.
++		 *
++		 * 4. Document which PMU events are effectively exposed to the
++		 *    guest via adaptive PEBS, and make adaptive PEBS mutually
++		 *    exclusive with KVM_SET_PMU_EVENT_FILTER if necessary.
++		 */
++		perf_cap &= ~PERF_CAP_PEBS_BASELINE;
+ 	}
+ 
+ 	return perf_cap;
+
+base-commit: 0c64952fec3ea01cb5b09f00134200f3e7ab40d5
+-- 
+2.44.0.278.ge034bb2e1d-goog
+
 
