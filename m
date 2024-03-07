@@ -1,58 +1,58 @@
-Return-Path: <linux-kernel+bounces-95776-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95680-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 788C2875266
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:53:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A543C875138
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:04:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 739751C22D27
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:53:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 36557B267FD
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:04:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D61812DDBE;
-	Thu,  7 Mar 2024 14:53:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 965B712F37F;
+	Thu,  7 Mar 2024 14:03:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="7Qje3O6A"
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="AHrVBjk8"
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 078141E897;
-	Thu,  7 Mar 2024 14:53:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.207.212.93
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4890912EBFC;
+	Thu,  7 Mar 2024 14:03:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.132.182.106
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709823227; cv=none; b=KIo+AxLphXoACaiDSyjOhP3NK9pL2tEwDbZk2xJXanvxYW3WlkdkqB5CtXsWiRCMU3ugFPx2Y3L7D3KuH9oFk1oz7PGe9sHAKHK360U2yXrCcHipchGsffnr1FABVVfbqlkud40z0ROAlKhHOXGp7/FIAMuWvfURja1l5rKlfs0=
+	t=1709820183; cv=none; b=KqeyhOtR+XtfTesgZaZ/vZdJ1VQUDar3pJAPKQZiseGY+g95NNmRlGFdFY1FPEl/2eBsCDHy4vAQkqw4KY0b5oSBBI1FChdAjZ5MrcAnqBT1Sjsj8JwcKzHoO8qxo8PH9UadzHVaotJtV92IK8e5n5t42+adwCsJi6QoKv11WeA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709823227; c=relaxed/simple;
-	bh=WLANAWtK+kltLWAp09rwz3rT8nwKydISAtfzrzERU+4=;
+	s=arc-20240116; t=1709820183; c=relaxed/simple;
+	bh=86pJV1of4eM2VTTxab9EqQyEzctfxjuUT6v9b5ZaRR4=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=G+TCN34/PJNaKMKxXkfga1QhwrHQXZCH9aLTcGIeKAsJLjkJRwnjS0ULEXzomrwXL2Fzz/rcHzd8vFJ5ENTaumUweKxncOptPn5K7yUkXyQlEmL539/ZhD9MacqxffOTVyvBhqj7Xi2hHNMNNkA/rVipqmfAsEMO0jGnFzDaL3U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=7Qje3O6A; arc=none smtp.client-ip=91.207.212.93
+	 MIME-Version:Content-Type; b=RVksOPDDDYyzy3mZoAXN8S2Kx99AvOpK9ZuvJt9dUgZjx8EkUoPlGZkn2486rFM5qAMks3uIfV+3R5It40yAhyLiU8cYH0O4/OV0YugB4Tzv3e+a0Sz4OmI1O294aXEGYIPvj6isoFFPXxWKG7mWouPrfIB02PgS+r+Q+e3UFx4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=AHrVBjk8; arc=none smtp.client-ip=185.132.182.106
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 427CoW1W021280;
-	Thu, 7 Mar 2024 15:02:29 +0100
+Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 427A9dg7015304;
+	Thu, 7 Mar 2024 15:02:24 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	selector1; bh=i8siADNRHhW+zwunZPKxpBLNdWU5Ljbute+iXFO1D8w=; b=7Q
-	je3O6A5TNWR2VMHtzzfv7pT0wFWFIwhed3oWiYnhaqiOyPRerAVrSJjLVruT6+8h
-	24zzcyoJT4+/9ZviT11RAy16IsFtG5r5KC9+qW5r4pzfgv+mwaTuTp+Pn7inokGu
-	WgUrWKmi9P1rrcXeBJNET7ZNa3LBSMJk5S7ifNA2CDFy/dp7W51Xqs2uzpnQ9Nv6
-	gPpyEKz3TdsRfVbbgG5qiMgfbXoz6KhMuEY9xx3SY83xD+/6zgrUqKQBMA0Vvyhf
-	G3G9EG8fW3N/y4F/uV+JRMfj+RjXyHqT1aTOJXiWXr3EORDiHiaa/YbjvJku6U27
-	Z1Glh7CzjP2CcUY/teTQ==
+	selector1; bh=sMzsSSzo2PkJfpYCCdg9znEVD7Q6RBjU2TnjYoyuVdM=; b=AH
+	rVBjk8rM7YTS+jgI8EJcNLY95q+DL53Va4M/AfVEGPrcZgliQNbbgZeEiPfJOXnx
+	QFbqvJTlwvX93fGOqh+ewdbpxFcM2ZBujetMGbMu+sL+2QIBzZIwBGmlvj9LzDmg
+	yqulRMWT1xPJjfTuDk4BVlMesNMGjPS8s1NTDesf0CCTwI69/35F5tUwiJWhTeTK
+	VBRRaqKHfSBfmXKphmk5oGRqeHAa3l9PfA4kyYiT5eS3i5dyLZZ4KqfXqTHFYQv/
+	zQmAofOSlyIcoRGfPu4i3pyblcs/7BnxnHxjbZaWX5pESoB32XU5tWhd2tYnISh+
+	vkkVI3mDGEHfmyMr8a7g==
 Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3wqdxmga18-1
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3wmej5dxs5-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 07 Mar 2024 15:02:29 +0100 (CET)
+	Thu, 07 Mar 2024 15:02:24 +0100 (CET)
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 2FE174002D;
-	Thu,  7 Mar 2024 15:02:26 +0100 (CET)
+	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 7CADC40046;
+	Thu,  7 Mar 2024 15:02:21 +0100 (CET)
 Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 22EF227D10D;
-	Thu,  7 Mar 2024 15:01:13 +0100 (CET)
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id CBE4F27D0FF;
+	Thu,  7 Mar 2024 15:01:11 +0100 (CET)
 Received: from localhost (10.201.21.128) by SHFDAG1NODE2.st.com (10.75.129.70)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 7 Mar
@@ -78,9 +78,9 @@ To: "David S . Miller" <davem@davemloft.net>,
 CC: <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-stm32@st-md-mailman.stormreply.com>,
         <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 1/2] dt-bindings: net: add phy-supply property for stm32
-Date: Thu, 7 Mar 2024 14:59:56 +0100
-Message-ID: <20240307135957.303481-2-christophe.roullier@foss.st.com>
+Subject: [PATCH v2 2/2] dt-bindings: net: add new property st,ext-phyclk in documentation for stm32
+Date: Thu, 7 Mar 2024 14:59:57 +0100
+Message-ID: <20240307135957.303481-3-christophe.roullier@foss.st.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240307135957.303481-1-christophe.roullier@foss.st.com>
 References: <20240307135957.303481-1-christophe.roullier@foss.st.com>
@@ -98,25 +98,31 @@ X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-03-07_08,2024-03-06_01,2023-05-22_02
 
-Phandle to a regulator that provides power to the PHY. This
-regulator will be managed during the PHY power on/off sequence.
+Add property st,ext-phyclk to manage cases when PHY have no cristal/quartz
+This property can be used with RMII phy without cristal 50Mhz and when we
+want to select RCC clock instead of ETH_REF_CLK
+Can be used also with RGMII phy with no cristal and we select RCC clock
+instead of ETH_CLK125
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
 ---
- Documentation/devicetree/bindings/net/stm32-dwmac.yaml | 3 +++
- 1 file changed, 3 insertions(+)
+ Documentation/devicetree/bindings/net/stm32-dwmac.yaml | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
 diff --git a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
-index fc8c96b08d7dc..80937b28fa046 100644
+index 80937b28fa046..529665d4fc911 100644
 --- a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
 +++ b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
-@@ -82,6 +82,9 @@ properties:
-       Should be phandle/offset pair. The phandle to the syscon node which
-       encompases the glue register, and the offset of the control register
+@@ -85,6 +85,13 @@ properties:
+   phy-supply:
+     description: PHY regulator
  
-+  phy-supply:
-+    description: PHY regulator
++  st,ext-phyclk:
++    description:
++      set this property in RMII mode when you have PHY without crystal 50MHz and want to
++      select RCC clock instead of ETH_REF_CLK. OR in RGMII mode when you want to select
++      RCC clock instead of ETH_CLK125.
++    type: boolean
 +
    st,eth-clk-sel:
      description:
