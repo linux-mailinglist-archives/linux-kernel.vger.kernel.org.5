@@ -1,145 +1,193 @@
-Return-Path: <linux-kernel+bounces-95971-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95972-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 593FC875583
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 18:49:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A563875584
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 18:49:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F28A1F218D8
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:49:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBAA41C2260B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:49:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51C9913173E;
-	Thu,  7 Mar 2024 17:49:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L9eY9P8G"
-Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F5DB12FB2B;
-	Thu,  7 Mar 2024 17:49:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3EA2130E55;
+	Thu,  7 Mar 2024 17:49:22 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE65C12FB2B
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 17:49:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709833743; cv=none; b=QlUPijXGlEAuY8A1xdq7h5pvGNMrOjxQuSRAwZBF4r3Nno8fWJAmHOzFKFzCIkkxCxPcvpPOk/+8JcesXM7TedJs+tjlko5uR7oy6j0F3cYWNj1zJjVtmIPrTQW608ZUQjizrhMOpFl5uu2TFP+bUtWPJLreZWL+NkO0gKRzzno=
+	t=1709833762; cv=none; b=OkPQP9GStsw4Rz5Q0767MrQ+W02mPyouHfJMNDYN1JfaCmvTh/dosLyjEGd7CC/yW9/iXIs3dh9xotnF7k2pIjhy4mziQb777fkkmB6gjXSVKesAaaashzNGejiMXkDHVLkE/nCcRTlW5JgzeOsBqC2deuHag+XsNi2YYEeLbeA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709833743; c=relaxed/simple;
-	bh=SWaaB0XQCIhzAS6EmdUMQf+lLQWEmTzrwTE2/ASS73A=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AbUPgOgRq8h8XoeitHtziEpt2PIMU7lJdmLHyB1OIcsCJO3T9WJuUsbBJ2hxyiCekXw6wi8yhbO+im0qDh5gBN+Gfhp9kwBgrYJKGABW0uPZbGTk8kfnjT1UEESmQ+MerDOLhC0cU2F22E0x/AFq3cLozCNeMkaY1sLmsZ9XCTs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L9eY9P8G; arc=none smtp.client-ip=209.85.160.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-42ee7fa077bso5066731cf.3;
-        Thu, 07 Mar 2024 09:49:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709833741; x=1710438541; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3azFskcK1Kr594pn4cAjp31V8LFrQG4+hgU7A9RDIXk=;
-        b=L9eY9P8GPvIGZ/1AOuhnZEwuBhpYq56SeoWY1rLiw87s+jgS3BBHoi7yJvP1jgb++y
-         s8vK3J4LizPptbc+OgZ/o0E+xHvH9rcCNXde+hMRqFjdtj4DGF+ep+iMSkxkbXXEFxrv
-         AeqYtGINbZrwyeExt2bzwDETTVUsYViEI7umLKHjQgX7HjdwSPLgVBDpT7vTFOp6s//T
-         GdlGxEwbma+TjI5bN+Lk+5kVfM+bSO//fP77Deq8RLZGaUulVp1PQX8r3amZ5r7hKNza
-         vzDYa/aRVSrgDwq5/nE7sWvgswRUcqiHnUzisfEnKRUgGN+aSoS60hafHd3GBrmkVK5O
-         Ju5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709833741; x=1710438541;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3azFskcK1Kr594pn4cAjp31V8LFrQG4+hgU7A9RDIXk=;
-        b=EhxOCExzdQjIEW+Qq6EiHvdRQgACrBDPsGyaSNEsr63ZoHkzjFWvTqK5bqvoQfF1sQ
-         L3aLA60Td+5iPW6lzWk/dGWEb89fUbv9OvHN4izFRTkXtLKfyxZjgkTVtyu7A509tTD1
-         8A9jzC8kePe/p7kmMxm0CRNl0YrD8mP+Lhf44bUyA0jacMMerpwYLUg0MmRqBZqDBlft
-         rW8/2M3pcFAKFGcf7+VbEwuxD2qlyeQT9WVM/GAqAO08aEeYphQtPOcfW/71LiSvUuo2
-         bmfGCMXwfx+e3vZ88NcPdyMO1uvq2hUHEIST94xZ+i1UrmS1OpiohIOo3Mu1EMPtrjwk
-         Y1Xw==
-X-Forwarded-Encrypted: i=1; AJvYcCVrXTwBU+83xKFF1EzF8veIrgJ/zYBqEbjN0csQXidimZay5WRidUowZ3mI/VEEEq4fv5l7+fuf7L7CAsOFnoMrCUMY/dpCwbbu8fuSGywDGHxVwNly91p4AiYjleNHThsUD370jkmqTrX/U1w3b52MHyM9mBKoPpAp
-X-Gm-Message-State: AOJu0YxMIw2eZhgdYm9nZ+2rZKeKYMmuXVr+linQ4Rit+DfOhKSMqs63
-	BIrikzMJeF2hyZ4qSXFVxxM52MVmeNAVJe2pNiOfnpGN6U16GYeb4QN7GWWI17lrWawSg+2Z9Zu
-	xOYlXzemiM/WbeoPzaYjTQ8SkPKksMU1OLV3fGw==
-X-Google-Smtp-Source: AGHT+IFtJCet5o1lyZnRcTyn4EgVIYVJsxWpjc8YqORCDIgVR49weziOGhMcQg3AfHy5K2m4sfmNZwGAEqxGK2ey/9E=
-X-Received: by 2002:a05:622a:15d6:b0:42e:da48:fbb3 with SMTP id
- d22-20020a05622a15d600b0042eda48fbb3mr8812751qty.41.1709833740937; Thu, 07
- Mar 2024 09:49:00 -0800 (PST)
+	s=arc-20240116; t=1709833762; c=relaxed/simple;
+	bh=e8DkOM8yTrydErY5KdZRvraYd3NqQqH7PbG2WVUjR6U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=d9eBFNpa4+HJHPjV0Du6HfjNMAD2njcNcSWfOnIfe439QphNnpmroUWPFzZ6n9aVnIubZo53BwjwqHUKDDj0L/R1j64IAoNRpHVlKn3t00TtuPL/SINB7Zk2QxHDpny0pZPKPUpCXteqVxVAnmMWgEu3xq+4mlCJqzS0ksmCnPQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BCCF11FB;
+	Thu,  7 Mar 2024 09:49:55 -0800 (PST)
+Received: from FVFF77S0Q05N (unknown [10.57.69.155])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D7D073F762;
+	Thu,  7 Mar 2024 09:49:15 -0800 (PST)
+Date: Thu, 7 Mar 2024 17:49:12 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: "Christoph Lameter (Ampere)" <cl@gentwo.org>, catalin.marinas@arm.com
+Cc: Will Deacon <will@kernel.org>, Jonathan.Cameron@huawei.com,
+	Matteo.Carlini@arm.com, Valentin.Schneider@arm.com,
+	akpm@linux-foundation.org, anshuman.khandual@arm.com,
+	Eric Mackay <eric.mackay@oracle.com>, dave.kleikamp@oracle.com,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, linux@armlinux.org.uk, robin.murphy@arm.com,
+	vanshikonda@os.amperecomputing.com, yang@os.amperecomputing.com
+Subject: Re: [PATCH v3] ARM64: Dynamically allocate cpumasks and increase
+ supported CPUs to 512
+Message-ID: <Zen-GAeTXKTpm4JQ@FVFF77S0Q05N>
+References: <37099a57-b655-3b3a-56d0-5f7fbd49d7db@gentwo.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZeiNxaq3jzloO9l6@boxer> <20240307142402.906681-1-dgouarin@gmail.com>
- <ZenidKFF/gQefijz@boxer>
-In-Reply-To: <ZenidKFF/gQefijz@boxer>
-From: david gouarin <dgouarin@gmail.com>
-Date: Thu, 7 Mar 2024 18:48:50 +0100
-Message-ID: <CAH3uZAwOBeuV9FQpFJ5-S-j5HDWpxR5vvXKzUoq_UTOenz6=XQ@mail.gmail.com>
-Subject: Re: [PATCH net v2] dpaa_eth: fix XDP queue index
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc: david.gouarin@thalesgroup.com, Madalin Bucur <madalin.bucur@nxp.com>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Camelia Groza <camelia.groza@nxp.com>, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <37099a57-b655-3b3a-56d0-5f7fbd49d7db@gentwo.org>
 
-Le jeu. 7 mars 2024 =C3=A0 16:51, Maciej Fijalkowski
-<maciej.fijalkowski@intel.com> a =C3=A9crit :
->
-> On Thu, Mar 07, 2024 at 03:24:02PM +0100, David Gouarin wrote:
-> > Make it possible to bind a XDP socket to a queue id.
-> > The DPAA FQ Id was passed to the XDP program in the XDP packet metadata
-> > which made it unusable with bpf_map_redirect.
->
-> I think that referring to a member from xdp_rxq_info struct as 'packet
-> metadata' is confusing. I was trying to find a place where you are
-> actually storing this id at xdp_buff::data_meta. This is not happening
-> AFAICT. Thing is that xsk_rcv_check() picks xdp->rxq->queue_index which
-> holds fqid which is not related to queue number, right?
+Hi Christoph,
 
-Correct. I have used the term xdp metadata because that is the terminology
-used in the xdp program (struct xdp_md).
-I should have said instead :
-The DPAA FQ Id was passed to the XDP program in the xdp_rxq_info->queue_ind=
-ex
-instead of the queue number [...]
+On Wed, Mar 06, 2024 at 05:45:04PM -0800, Christoph Lameter (Ampere) wrote:
+> Currently defconfig selects NR_CPUS=256, but some vendors (e.g. Ampere
+> Computing) are planning to ship systems with 512 CPUs. So that all CPUs on
+> these systems can be used with defconfig, we'd like to bump NR_CPUS to 512.
+> Therefore this patch increases the default NR_CPUS from 256 to 512.
+> 
+> As increasing NR_CPUS will increase the size of cpumasks, there's a fear that
+> this might have a significant impact on stack usage due to code which places
+> cpumasks on the stack. To mitigate that concern, we can select
+> CPUMASK_OFFSTACK. As that doesn't seem to be a problem today with
+> NR_CPUS=256, we only select this when NR_CPUS > 256.
+> 
+> CPUMASK_OFFSTACK configures the cpumasks in the kernel to be
+> dynamically allocated. This was used in the X86 architecture in the
+> past to enable support for larger CPU configurations up to 8k cpus.
+> 
+> With that is becomes possible to dynamically size the allocation of
+> the cpu bitmaps depending on the quantity of processors detected on
+> bootup. Memory used for cpumasks will increase if the kernel is
+> run on a machine with more cores.
+> 
+> Further increases may be needed if ARM processor vendors start
+> supporting more processors. Given the current inflationary trends
+> in core counts from multiple processor manufacturers this may occur.
+> 
+> There are minor regressions for hackbench. The kernel data size
+> for 512 cpus is smaller with offstack than with onstack.
+> 
+> Benchmark results using hackbench average over 10 runs of
+> 
+> 	hackbench -s 512 -l 2000 -g 15 -f 25 -P
+> 
+> on Altra 80 Core
+> 
+> Support for 256 CPUs on stack. Baseline
+> 
+> 	7.8564 sec
+> 
+> Support for 512 CUs on stack.
+> 
+> 	7.8713 sec + 0.18%
+> 
+> 512 CPUS offstack
+> 
+> 	7.8916 sec + 0.44%
+> 
+> Kernel size comparison:
+> 
+>    text		   data	    filename				Difference to onstack256 baseline
+> 25755648	9589248	    vmlinuz-6.8.0-rc4-onstack256
+> 25755648	9607680	    vmlinuz-6.8.0-rc4-onstack512	+0.19%
+> 25755648	9603584	    vmlinuz-6.8.0-rc4-offstack512	+0.14%
 
-Maciej please forgive me for the double send and formatting mistakes,
-kernel mailing lists are new to me.
+Thanks for this data; I think that's a strong justification that this isn't
+likely to cause a big problem for us, and so I thing it makes sense to go with
+this.
 
->
-> > Instead of the DPAA FQ Id, initialise the XDP rx queue with the channel=
- id.
-> >
-> > Fixes: d57e57d0cd04 ("dpaa_eth: add XDP_TX support")
-> >
-> > Signed-off-by: David Gouarin <dgouarin@gmail.com>
-> > ---
-> > v2: add Fixes: in description
-> > ---
-> >  drivers/net/ethernet/freescale/dpaa/dpaa_eth.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c b/drivers/n=
-et/ethernet/freescale/dpaa/dpaa_eth.c
-> > index dcbc598b11c6..988dc9237368 100644
-> > --- a/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
-> > +++ b/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
-> > @@ -1154,7 +1154,7 @@ static int dpaa_fq_init(struct dpaa_fq *dpaa_fq, =
-bool td_enable)
-> >       if (dpaa_fq->fq_type =3D=3D FQ_TYPE_RX_DEFAULT ||
-> >           dpaa_fq->fq_type =3D=3D FQ_TYPE_RX_PCD) {
-> >               err =3D xdp_rxq_info_reg(&dpaa_fq->xdp_rxq, dpaa_fq->net_=
-dev,
-> > -                                    dpaa_fq->fqid, 0);
-> > +                                    dpaa_fq->channel, 0);
-> >               if (err) {
-> >                       dev_err(dev, "xdp_rxq_info_reg() =3D %d\n", err);
-> >                       return err;
-> > --
-> > 2.34.1
-> >
+I have two minor comments below.
+
+> Tested-by: Eric Mackay <eric.mackay@oracle.com>
+> Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+> Signed-off-by: Christoph Lameter (Ampere) <cl@linux.com>
+> ---
+> 
+> 
+> Original post: https://www.spinics.net/lists/linux-mm/msg369701.html
+> V2: https://lkml.org/lkml/2024/2/7/505
+> 
+> 
+> V1->V2
+> 
+> - Keep quotation marks
+> - Remove whiltespace damage
+> - Add tested by
+> 
+> V2->V3:
+> - Add test results
+> - Rework descriptions
+> 
+> 
+>  arch/arm64/Kconfig | 16 +++++++++++++++-
+>  1 file changed, 15 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index aa7c1d435139..4e767dede47d 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -1427,7 +1427,21 @@ config SCHED_SMT
+>  config NR_CPUS
+>  	int "Maximum number of CPUs (2-4096)"
+>  	range 2 4096
+> -	default "256"
+> +	default "512"
+> +
+> +#
+> +# Determines the placement of cpumasks.
+> +#
+> +# With CPUMASK_OFFSTACK the cpumasks are dynamically allocated.
+> +# Useful for machines with lots of core because it avoids increasing
+> +# the size of many of the data structures in the kernel.
+> +#
+> +# If this is off then the cpumasks have a static sizes and are
+> +# embedded within data structures.
+> +#
+> +	config CPUMASK_OFFSTACK
+> +	def_bool y
+> +	depends on NR_CPUS > 256
+
+As before, can we please delete the comment? That's the general semantic of
+CPUMASK_OFFSTACK, not why we're selecting it.
+
+That aside, this config option is defined in lib/Kconfig, so we should select
+it rather than redefining it. i.e. this should be:
+
+	select CPUMASK_OFFSTACK if NR_CPUS > 256
+
+Sorry for not spotting that before.
+
+With those changes:
+
+Acked-by: Mark Rutland <mark.rutland@arm.com>
+
+Catalin, are you happy to fix that up when applying?
+
+Mark.
+
+> 
+>  config HOTPLUG_CPU
+>  	bool "Support for hot-pluggable CPUs"
+> -- 
+> 2.39.2
+> 
 
