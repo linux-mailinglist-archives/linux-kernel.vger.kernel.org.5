@@ -1,81 +1,84 @@
-Return-Path: <linux-kernel+bounces-96112-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96113-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF3E6875748
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:32:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E012F87574B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:33:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 57116B22389
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:32:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D5A71C21286
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:33:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D13E6137C37;
-	Thu,  7 Mar 2024 19:32:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC796137C42;
+	Thu,  7 Mar 2024 19:32:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="H35LTl9r"
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="gw2zGA57"
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78A83136997
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 19:32:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B72D713699B
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 19:32:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709839948; cv=none; b=hLTtVMAPBSlKFVGIrDp4ePGoqqSmUc2hHDLcCcf8jWc72IawPHYcvIkPVcBbqOwTyeHm9SUSIsR8lSitTLFG6013MmbIok3cfYWgV1g6idE9/5WlYRmwT9dCTFMrRGiUoYPU1WDHzqnr7JLrHU+eL+Uar9Y5lK9ie22sc37CnAU=
+	t=1709839964; cv=none; b=oExceViYTMalxa//fLmxgynYSVtwlOrXGZxegHNmJKMbq/XvbHU8XWs9q3qpoESKxlQK7Md83nSaQ96/vlfK+XOw/2DAccd1ZMD79z62LH79T0HigbNiVcoM4xp5f5u+eRD56j8yZIu/dGbX93/L+PUBB5MRLm7PWZiDeIp+d7M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709839948; c=relaxed/simple;
-	bh=7GcxakZLq2oKSdXj+ofXzEBmRC7bzIxUkfqgxs8FG00=;
+	s=arc-20240116; t=1709839964; c=relaxed/simple;
+	bh=5OZyAdHUAPw3oC7IW6omY8gpyxLtveQWTOhptQtmJ1s=;
 	h=From:Date:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=EcHs/qPJ+2GL8geBCrseoJDc6EIcrKwjbHuNHZLZpiVW/9HBPP/ahznl9xG67lK6cCzWblBvIj8ix3/WVTIxNeEIGRRydKHoM3/aTxokdEfB4xMQ+c2pV4A7wIvHV6FRK1yj+h7nPbD6/fEAa9heJHkocp8aUGkMjHIRDpHNyfE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=H35LTl9r; arc=none smtp.client-ip=209.85.215.171
+	 Content-Disposition; b=U/15VWDVON5AWsHiUXNwqzim7LTy6Q4K5vHR+Eo0A4cdpI3b4UpOpiNKlGtmPgPmNeYjROYFXv9fmkYpTgah/Y9bDrMt79IWCvssjQ6hTKwdWdgbNwVd2YDaKoZjng+ACvO4hfVyE68v/tSmLIarK40phOI+UYanZoHg1ZzBpas=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=gw2zGA57; arc=none smtp.client-ip=209.85.210.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-5d3907ff128so1027423a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 11:32:26 -0800 (PST)
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6e09143c7bdso1063387b3a.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 11:32:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709839946; x=1710444746; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1709839962; x=1710444762; darn=vger.kernel.org;
         h=content-disposition:mime-version:message-id:subject:cc:to:date:from
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=N9qoSXzYZPN9ruMFhEGa01LS4BMnI7rAvWb4nFTzmXc=;
-        b=H35LTl9rrbmwdPzJ9BEr5gsW4yRvPb0B1ueFvVOAbbFCM1oOUGvMzXBIBjTaInzwOZ
-         p1FgntUUc1QUgw45r9wD1UyX3tBagKyGJDc7/EqCUuAgNBWsLfkyFwlJiabT7weDLDb+
-         NjOG3U5WmJKpZcGN2Mft/gDtzpUx7IA18poQE=
+        bh=Y7tFAO5LyLvnL3+HqT9Xq5HyhhJG+8Hgt83qwkFfBN8=;
+        b=gw2zGA57c6SnchTFQMga1rz3QlyMVdFY5Xo/Y25UzDX3T0Te7nRHQQpR6ia4AOc0CE
+         /IRi8dJ0h5QWKPuJakL9KWqV+NZ94HvwdG5XWEM4FOqfnlEWtlqFGeq0CpDNM7Gb2Xd/
+         8IHRDhsVRTcKUCfdyCwdu/+ZIFllhW7ppx6Dk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709839946; x=1710444746;
+        d=1e100.net; s=20230601; t=1709839962; x=1710444762;
         h=content-disposition:mime-version:message-id:subject:cc:to:date:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=N9qoSXzYZPN9ruMFhEGa01LS4BMnI7rAvWb4nFTzmXc=;
-        b=ZrODtJ/YDY5sUyv8SxkUxPNlSA026iM5n3SYV+gMXV9ThXq7JLzIaDTNdWBpli8qVG
-         dvL6rqU2U8J8EKzklwr3NdpNc1gqZMNwOWw/Eoj1gbIxoEcoUpgw+9iQbtiGX3wCWh3S
-         bS9TuOBerQiNqp3vpkvE6ufzRw09cnwFxz/ycNBTLIjatN88Xrgcrwqc3r+VOLin0oXT
-         UcdWf9hYo7sRnFQYiCjRvoE+1mnxT46OO/npFGi14UBuuLwLJ0mHbZI70XWJ2EcfZoue
-         fUXWHiPTqU29q1MnLuOy0e8IGyI0E9eIbtZfssx5C+Ynj7Z7pcG/Y44M7aGsgZr1Sj0b
-         /Izg==
-X-Forwarded-Encrypted: i=1; AJvYcCU1YiYAOxyMHGuYZ8F1F5j+ap5kG8NlffYsnIuDUFYEMXyIl12XBJgmAksCbVsAryncSL6E43FIWNyGW8XeQ9rJ1Ux3ra365tmo/IAi
-X-Gm-Message-State: AOJu0YxuDCXKZijM6A1Su0Wav+OV+9nPLBbPdDcO+Rro0S43vUfWLBqw
-	/hpFGjmVS2xTa0G4fGUJNeqcfy4fTlG+PYNB7TVk+PkSwCUzn00pLqCDwuZnJg==
-X-Google-Smtp-Source: AGHT+IGOLBi4Qz9QnVx9qVdy304kZfGTtm1ed+Ruod8ne2tyM8cAlmd20ukwkMkoXTBqPPYmDqQq1w==
-X-Received: by 2002:a17:90b:24d:b0:29b:9c8f:5ea2 with SMTP id fz13-20020a17090b024d00b0029b9c8f5ea2mr1766760pjb.40.1709839945732;
-        Thu, 07 Mar 2024 11:32:25 -0800 (PST)
+        bh=Y7tFAO5LyLvnL3+HqT9Xq5HyhhJG+8Hgt83qwkFfBN8=;
+        b=itTAPtjmISBlixX2RTRQ/fmQhx5m1AnIwf+92XoUMLIbI0Ir0aYkhz7t232HyQ+E0F
+         opTNCiXa8Bd7WadiG8IexSuz9iEjN9TofrcUjwfrQ8PhbEgQgStWqPq0dLC+csLjmt8O
+         9q9cFf2HSBZBa6LBv6z3fYDZ1gzLhJZB6xmz+mZ/9yM4myUm038UmLAWvj/Vd0oaoI/A
+         0TBClsuf8RblLl/omHvVIZOVGlHEtW5JkUzSMkXnUJOaqJYf9aCrvzXlxT/4QH8My7Qn
+         p5bMJoEq53hgNSN7AdAKS5A1cO2OlDrW9796AaafboaByHFrPyUn8b9G7rTByfZE97Dt
+         69+g==
+X-Forwarded-Encrypted: i=1; AJvYcCXiTJmnamiEYrhmPqZiFc/elpqT7dR9r8iaxKXwSXjHh56d9xa2c5YgdoPVpW4+nztd3BLTKDy02mrAzTFMMgRH5wcC3wwoVahcqxu5
+X-Gm-Message-State: AOJu0Yz6hX3fzRISnFCviLqyy4+DjNicvcqWxH+Te9fYi5K1yNAhLooj
+	jvg05KPvSy9wGCsS2UWRvFPwEaCh72VcElfOYtDpD6aB69XFsmxRiHY92ceCWg==
+X-Google-Smtp-Source: AGHT+IEXA1GnqxDeU9jnlIUs1LLr1HCKc49pvwZhgKzU/0L/Llfntwa/OA4IWFglH8mIi9V2Pf//fw==
+X-Received: by 2002:a05:6a00:3cca:b0:6e5:9342:f0fb with SMTP id ln10-20020a056a003cca00b006e59342f0fbmr21379242pfb.14.1709839961147;
+        Thu, 07 Mar 2024 11:32:41 -0800 (PST)
 Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id h24-20020a17090adb9800b0029a849e7268sm1908119pjv.28.2024.03.07.11.32.25
+        by smtp.gmail.com with ESMTPSA id x20-20020a056a000bd400b006e65d66bb3csm1526541pfu.21.2024.03.07.11.32.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Mar 2024 11:32:25 -0800 (PST)
+        Thu, 07 Mar 2024 11:32:40 -0800 (PST)
 From: coverity-bot <keescook@chromium.org>
 X-Google-Original-From: coverity-bot <keescook+coverity-bot@chromium.org>
-Date: Thu, 7 Mar 2024 11:32:24 -0800
-To: Edward Adam Davis <eadavis@qq.com>
-Cc: linux-rdma@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-	syzbot+d4faee732755bba9838e@syzkaller.appspotmail.com,
-	"David S. Miller" <davem@davemloft.net>,
-	Allison Henderson <allison.henderson@oracle.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	rds-devel@oss.oracle.com,
+Date: Thu, 7 Mar 2024 11:32:40 -0800
+To: Matthew Brost <matthew.brost@intel.com>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Matt Roper <matthew.d.roper@intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas =?iso-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, intel-xe@lists.freedesktop.org,
+	Oded Gabbay <ogabbay@kernel.org>, Daniel Vetter <daniel@ffwll.ch>,
+	dri-devel@lists.freedesktop.org,
+	Lucas De Marchi <lucas.demarchi@intel.com>,
+	linux-kernel@vger.kernel.org,
 	"Gustavo A. R. Silva" <gustavo@embeddedor.com>,
 	linux-next@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Coverity: __rds_rdma_map(): Null pointer dereferences
-Message-ID: <202403071132.37BBF46E@keescook>
+Subject: Coverity: xe_gt_tlb_invalidation_ggtt(): Error handling issues
+Message-ID: <202403071132.198D11C@keescook>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -94,27 +97,27 @@ https://scan.coverity.com/projects/linux-next-weekly-scan
 You're getting this email because you were associated with the identified
 lines of code (noted below) that were touched by commits:
 
-  Wed Mar 6 11:58:42 2024 +0000
-    c055fc00c07b ("net/rds: fix WARNING in rds_conn_connect_if_down")
+  Tue Mar 5 16:48:55 2024 -0800
+    27ee413bbc0b ("drm/xe: Do not grab forcewakes when issuing GGTT TLB invalidation via GuC")
 
 Coverity reported the following:
 
-*** CID 1584247:  Null pointer dereferences  (FORWARD_NULL)
-net/rds/rdma.c:306 in __rds_rdma_map()
-300     			unpin_user_pages(pages, nr_pages);
-301     			kfree(sg);
-302     		}
-303     		ret = PTR_ERR(trans_private);
-304     		/* Trigger connection so that its ready for the next retry */
-305     		if (ret == -ENODEV)
-vvv     CID 1584247:  Null pointer dereferences  (FORWARD_NULL)
-vvv     Dereferencing null pointer "cp".
-306     			rds_conn_connect_if_down(cp->cp_conn);
-307     		goto out;
-308     	}
-309
-310     	mr->r_trans_private = trans_private;
-311
+*** CID 1584246:  Error handling issues  (CHECKED_RETURN)
+drivers/gpu/drm/xe/xe_gt_tlb_invalidation.c:250 in xe_gt_tlb_invalidation_ggtt()
+244     		seqno = xe_gt_tlb_invalidation_guc(gt);
+245     		if (seqno <= 0)
+246     			return seqno;
+247
+248     		xe_gt_tlb_invalidation_wait(gt, seqno);
+249     	} else if (xe_device_uc_enabled(xe)) {
+vvv     CID 1584246:  Error handling issues  (CHECKED_RETURN)
+vvv     Calling "xe_force_wake_get" without checking return value (as is done elsewhere 15 out of 16 times).
+250     		xe_force_wake_get(gt_to_fw(gt), XE_FW_GT);
+251     		if (xe->info.platform == XE_PVC || GRAPHICS_VER(xe) >= 20) {
+252     			xe_mmio_write32(gt, PVC_GUC_TLB_INV_DESC1,
+253     					PVC_GUC_TLB_INV_DESC1_INVALIDATE);
+254     			xe_mmio_write32(gt, PVC_GUC_TLB_INV_DESC0,
+255     					PVC_GUC_TLB_INV_DESC0_VALID);
 
 If this is a false positive, please let us know so we can mark it as
 such, or teach the Coverity rules to be smarter. If not, please make
@@ -122,8 +125,8 @@ sure fixes get into linux-next. :) For patches fixing this, please
 include these lines (but double-check the "Fixes" first):
 
 Reported-by: coverity-bot <keescook+coverity-bot@chromium.org>
-Addresses-Coverity-ID: 1584247 ("Null pointer dereferences")
-Fixes: c055fc00c07b ("net/rds: fix WARNING in rds_conn_connect_if_down")
+Addresses-Coverity-ID: 1584246 ("Error handling issues")
+Fixes: 27ee413bbc0b ("drm/xe: Do not grab forcewakes when issuing GGTT TLB invalidation via GuC")
 
 Thanks for your attention!
 
