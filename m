@@ -1,161 +1,152 @@
-Return-Path: <linux-kernel+bounces-96020-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96021-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8025087562B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:36:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C62087562D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:36:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 03A3C1F23229
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 18:36:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5DD4B1C20FCF
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 18:36:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B393E133408;
-	Thu,  7 Mar 2024 18:35:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACCED1332B5;
+	Thu,  7 Mar 2024 18:36:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="jo3kuQ5w"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="PbskTq7s"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7725912F5A5
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 18:35:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 648AA12DDA2;
+	Thu,  7 Mar 2024 18:36:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709836559; cv=none; b=hCGh2rZY1JdfIJ+Zf1A7tSsOv9d6rYmdjCYWCP4gIGhd0ZyH5JjrYbfkFTXQJffdecnA0UVvrnOc84bHrVILDqBbrWFQPaMRh5wEIfyGbQ3VpM0LjCinwwRdYb7QrZSOqUc1B4PHY/JIe78QoR4vo24RMEOXLBj1MpaJkHIGKZg=
+	t=1709836607; cv=none; b=EIsQq/BZK5mz4WVB5VH3oaYa99+M+13WZo7q2L40LwemBVMGQ1FaprzL74YJDi5ukImYeleAIwjQrdnp4VFPcUmoE4QOSKvFnhitLDdZrQ5OJwB7Pn7AKGD4aIUZFAaKO+fInCRGXzV7SGbVauK/V0XwJ+muOMbkZJpcc9lmiyg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709836559; c=relaxed/simple;
-	bh=iEEp31JydCDbDDWUypoDZzp7A7ngZJq4AsyQqSmOJcQ=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=TovNFvWBR2Ug8KrmXKT4ck+I2fc7Uc7oQrz8SF64XFzm/ke5qzxNpTxP1k0iY4IJDlyTpH1f2uMtO2Xc6B1kcKJe7LxJ75p9dDIvOZkrfjwD9erMVFKlx46tOTKc6oWnsJrILpT/dLskaLYUz7fuBBE9+CACAC2iaNt6QVmVcHY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=jo3kuQ5w; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-5f38d676cecso29277597b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 10:35:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709836556; x=1710441356; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=6gcB7rs/ZShkZQFSJOEoG/IHLW4vs94Ivr+W9yFak8E=;
-        b=jo3kuQ5wbdX/qCJSNc2SUfUcCL8no5pI9za0iS5c5rznTyUPsWskbhr5hWtZ1Cg5h1
-         yGDB/dPRvw3ECkaDmPO+P1twDgLMSnk35kj0VR8TKYRIvcC1h8gyv3/vOxyPxXEHaMcl
-         6aKvofj9YvbY0ER8y8XzYFvdbHnr4yYEDK0Wvdme9mAjHoVrYxEvcjyMYFejVC9gRuY7
-         6AbOYloTfqq2PavZ+j2o2XigebgUZ0TvlFKO5rbaSvoIG0gm4R19BxTmkZ1OzpucFl41
-         FOl3xdxq7xyHes2BfBGVEdXN6D8RWVrnvq0Bhl8qKyLr8I1UFsl8e0uBlA0hTxr3Hxt4
-         2o+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709836556; x=1710441356;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6gcB7rs/ZShkZQFSJOEoG/IHLW4vs94Ivr+W9yFak8E=;
-        b=fFohtISNSolT5gxus+N6atX6/XvHf0fIm7jbtLL0nV4nvpoNd4g9dBVeibHzmIVCUH
-         vnOITJX7EpZ6boyzH0JY5tzy+KaxQerIiBEOMqjyAw8Jfuneviv9mRKh3XuFc78yXtC8
-         mzF3Ew64YRVn7HwkcjOnDyTZRnVPMerv69YypYkYMaXEKmPJKJgzCIM/HrgeEZZMwiI+
-         cZuHdwP8TGXUUafZ/2EYBLkotgvmzWp4HCbTR03AbS/aGnpu6NPHaz2ARI/vQh/M6cP8
-         n4a618XolIDKKLm+lBJhWlL4zY5c4QYmcm2uBMuIVaIIpHwi4eXowMuSWK0YV3syetVy
-         +KNA==
-X-Forwarded-Encrypted: i=1; AJvYcCUu09DyWw2vHOYHNcVeO8wqQC2KDJ4PGc1+w/YLjgeje6VwqV4rs8Y67FMYV//P+gEt55Y3Zp20AJRA+uYvR8+JTSX2AtdD7BKkNXOS
-X-Gm-Message-State: AOJu0YwfzFCSncIFIt6J6f8nLB0+eIzvFBgsrNXX/nHbKkh6bARjsc+L
-	5U2vHvjHDvjvkER6Dt6afETBRNZAHbQGRoOuy8aOSnxYK/txJSczOaZNhwCGD1Y47XVzoqdqmYU
-	zmA==
-X-Google-Smtp-Source: AGHT+IHhc6mNz1ANHVaB8ZUkzXjf7omeklnG6f34tO4A4cjqMQbKxS6N5ItrFCgNVIFlWJO4BMBghA0Z8Wk=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:3a03:0:b0:dc7:463a:46d2 with SMTP id
- h3-20020a253a03000000b00dc7463a46d2mr49728yba.0.1709836556326; Thu, 07 Mar
- 2024 10:35:56 -0800 (PST)
-Date: Thu, 7 Mar 2024 10:35:54 -0800
-In-Reply-To: <23a1af5f-e08d-4cf6-b4bd-8cfb6266f441@amd.com>
+	s=arc-20240116; t=1709836607; c=relaxed/simple;
+	bh=s9ZMRgsps8xV9aF1ouJT2BympJlLSJgQ9oA0+90tMxk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=XdqxH8vgBts5Ih58uua50iB0F7g8Q94qdc9G9cah/HuLN0fukXISaWhpEgaKtLi4S8Jn3RmrFstBYklKg2puF6VZ6V4kVVclV/xsY7tpWDiZ+We/T3r0sXLGMs+j9yr6Iad97nqs7FLEhMIThjFmOxHLZ4YwD+6+cTwL//ocQlc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=PbskTq7s; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709836603;
+	bh=s9ZMRgsps8xV9aF1ouJT2BympJlLSJgQ9oA0+90tMxk=;
+	h=From:To:Cc:Subject:Date:From;
+	b=PbskTq7sP2K0cTFWbqdr8FsMTtMZ9EhqwsyB6ekP/FBoZw1ITRpPA0evAd06xraou
+	 vB0YNi00wa8vF131ctJ0j2K2JnjIgkG5YXLyu4/4AmkHhVI9JJoHIdG+ihFepeAUXU
+	 GKLqTf8jaNRXBfe8Z7l4LvTRyxoIaKSvkmi59IDzpFw3Xxw/qodwkRTkk76Wv07E6o
+	 +i4UTvuUO2+6O2oy7kPEWG5sOx56z0l9B6BGW/ArD9zV9cV5nSiFF1hc+zazJupaO2
+	 MpNnHI2oZGTAeFlDrCTKSzdAwN/uMZrF7fNR/dHomIws7OKvZUlqJV9oWNeqcvYJsb
+	 lckwIcpGzjNcQ==
+Received: from localhost.localdomain (broslavsky.collaboradmins.com [68.183.210.73])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id E002B378134F;
+	Thu,  7 Mar 2024 18:36:41 +0000 (UTC)
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+To: Shuah Khan <shuah@kernel.org>,
+	Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc: kernel@collabora.com,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] selftests: x86: conform test to TAP format output
+Date: Thu,  7 Mar 2024 23:37:06 +0500
+Message-Id: <20240307183708.2857513-1-usama.anjum@collabora.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240301074423.643779-1-sandipan.das@amd.com> <CALMp9eRbOQpVsKkZ9N1VYTyOrKPWCmvi0B5WZCFXAPsSkShmEA@mail.gmail.com>
- <ZeYz7zPGcIQSH_NI@google.com> <23a1af5f-e08d-4cf6-b4bd-8cfb6266f441@amd.com>
-Message-ID: <ZeoJCrx7K_FLGLNA@google.com>
-Subject: Re: [PATCH] KVM: x86: Do not mask LVTPC when handling a PMI on AMD platforms
-From: Sean Christopherson <seanjc@google.com>
-To: Sandipan Das <sandipan.das@amd.com>
-Cc: Jim Mattson <jmattson@google.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
-	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
-	mlevitsk@redhat.com, vkuznets@redhat.com, mizhang@google.com, 
-	tao1.su@linux.intel.com, andriy.shevchenko@linux.intel.com, 
-	ravi.bangoria@amd.com, ananth.narayan@amd.com, nikunj.dadhania@amd.com, 
-	santosh.shukla@amd.com, manali.shukla@amd.com
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Thu, Mar 07, 2024, Sandipan Das wrote:
-> On 3/5/2024 2:19 AM, Sean Christopherson wrote:
-> The following are excerpts from some changes that I have been working on. Instead
-> of a boolean flag, this saves the compatible vendor in kvm_vcpu_arch and tries
-> to match it against X86_VENDOR_* values. The goal is to replace
-> guest_cpuid_is_{intel,amd_or_hygon}() with
-> guest_vendor_is_compatible(vcpu, X86_VENDOR_{INTEL,AMD}). Is this viable?
-> 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index d271ba20a0b2..c4ada5b12fc3 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1042,6 +1042,7 @@ struct kvm_vcpu_arch {
->  #if IS_ENABLED(CONFIG_HYPERV)
->         hpa_t hv_root_tdp;
->  #endif
-> +       u8 compat_vendor;
+Conform the layout, informational and status messages to TAP. No
+functional change is intended other than the layout of output messages.
 
-Ooh, clever, much better than my idea of using multiple booleans.
+Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+---
+ tools/testing/selftests/x86/vdso_restorer.c | 29 +++++++++------------
+ 1 file changed, 12 insertions(+), 17 deletions(-)
 
-One potential flaw though: the vCPU structure is zero-allocated, and so this will
-get a false positive on X86_VENDOR_INTEL if userspace never sets guest CPUID.
+diff --git a/tools/testing/selftests/x86/vdso_restorer.c b/tools/testing/selftests/x86/vdso_restorer.c
+index fe99f24341554..f621167424a9c 100644
+--- a/tools/testing/selftests/x86/vdso_restorer.c
++++ b/tools/testing/selftests/x86/vdso_restorer.c
+@@ -21,6 +21,7 @@
+ #include <unistd.h>
+ #include <syscall.h>
+ #include <sys/syscall.h>
++#include "../kselftest.h"
+ 
+ /* Open-code this -- the headers are too messy to easily use them. */
+ struct real_sigaction {
+@@ -44,17 +45,19 @@ static void handler_without_siginfo(int sig)
+ 
+ int main()
+ {
+-	int nerrs = 0;
+ 	struct real_sigaction sa;
+ 
++	ksft_print_header();
++	ksft_set_plan(2);
++
+ 	void *vdso = dlopen("linux-vdso.so.1",
+ 			    RTLD_LAZY | RTLD_LOCAL | RTLD_NOLOAD);
+ 	if (!vdso)
+ 		vdso = dlopen("linux-gate.so.1",
+ 			      RTLD_LAZY | RTLD_LOCAL | RTLD_NOLOAD);
+ 	if (!vdso) {
+-		printf("[SKIP]\tFailed to find vDSO.  Tests are not expected to work.\n");
+-		return 0;
++		ksft_print_msg("[SKIP]\tFailed to find vDSO. Tests are not expected to work.\n");
++		return KSFT_SKIP;
+ 	}
+ 
+ 	memset(&sa, 0, sizeof(sa));
+@@ -62,21 +65,16 @@ int main()
+ 	sa.flags = SA_SIGINFO;
+ 	sa.restorer = NULL;	/* request kernel-provided restorer */
+ 
+-	printf("[RUN]\tRaise a signal, SA_SIGINFO, sa.restorer == NULL\n");
++	ksft_print_msg("Raise a signal, SA_SIGINFO, sa.restorer == NULL\n");
+ 
+ 	if (syscall(SYS_rt_sigaction, SIGUSR1, &sa, NULL, 8) != 0)
+ 		err(1, "raw rt_sigaction syscall");
+ 
+ 	raise(SIGUSR1);
+ 
+-	if (handler_called) {
+-		printf("[OK]\tSA_SIGINFO handler returned successfully\n");
+-	} else {
+-		printf("[FAIL]\tSA_SIGINFO handler was not called\n");
+-		nerrs++;
+-	}
++	ksft_test_result(handler_called, "SA_SIGINFO handler returned\n");
+ 
+-	printf("[RUN]\tRaise a signal, !SA_SIGINFO, sa.restorer == NULL\n");
++	ksft_print_msg("Raise a signal, !SA_SIGINFO, sa.restorer == NULL\n");
+ 
+ 	sa.flags = 0;
+ 	sa.handler = handler_without_siginfo;
+@@ -86,10 +84,7 @@ int main()
+ 
+ 	raise(SIGUSR1);
+ 
+-	if (handler_called) {
+-		printf("[OK]\t!SA_SIGINFO handler returned successfully\n");
+-	} else {
+-		printf("[FAIL]\t!SA_SIGINFO handler was not called\n");
+-		nerrs++;
+-	}
++	ksft_test_result(handler_called, "SA_SIGINFO handler returned\n");
++
++	ksft_finished();
+ }
+-- 
+2.39.2
 
-That might actually be desirable though?  E.g. it's closer to KVM's current
-behavior.  Maybe.  I dunno :-)
-
-Anyways, KVM *does* need to be consistent, i.e. the default needs to yield the
-same behavior as guest CPUID without entry 0x0 so that setting *other* CPUID
-entries doesn't change from INTEL=>UNKNOWN.  More below.
-
->  };
-> 
->  struct kvm_lpage_info {
-> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> index adba49afb5fe..00170762e72a 100644
-> --- a/arch/x86/kvm/cpuid.c
-> +++ b/arch/x86/kvm/cpuid.c
-> @@ -376,6 +376,13 @@ static void kvm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
->         kvm_hv_set_cpuid(vcpu, kvm_cpuid_has_hyperv(vcpu->arch.cpuid_entries,
->                                                     vcpu->arch.cpuid_nent));
-> 
-> +       if (guest_cpuid_is_intel_compatible(vcpu))
-> +               vcpu->arch.compat_vendor = X86_VENDOR_INTEL;
-> +       else if (guest_cpuid_is_amd_or_hygon(vcpu))
-> +               vcpu->arch.compat_vendor = X86_VENDOR_AMD;
-> +       else
-> +               vcpu->arch.compat_vendor = X86_VENDOR_UNKNOWN;
-
-I would prefer to provide a helper for just getting the compat vendor.  E.g.
-
-static u8 kvm_vcpu_get_compat_vendor(struct kvm_vcpu *vcpu)
-{
-	struct kvm_cpuid_entry2 *best;
-
-	best = kvm_find_cpuid_entry(vcpu, 0);
-	if (!best)
-		return ???;
-
-	if (is_guest_vendor_intel(best->ebx, best->ecx, best->edx) ||     
-	    is_guest_vendor_centaur(best->ebx, best->ecx, best->edx) ||   
-	    is_guest_vendor_zhaoxin(best->ebx, best->ecx, best->edx))
-		return X86_VENDOR_INTEL;
-
-	if (is_guest_vendor_amd(best->ebx, best->ecx, best->edx) ||
-	    is_guest_vendor_hygon(best->ebx, best->ecx, best->edx))
-		return X86_VENDOR_AMD;
-
-	return X86_VENDOR_UNKNOWN;
-}
-
-and then a follow-up patch can remove guest_cpuid_is_amd_or_hygon() once all
-users are converted to guest_vendor_is_compatible().	
 
