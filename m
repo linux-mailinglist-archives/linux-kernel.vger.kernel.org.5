@@ -1,134 +1,210 @@
-Return-Path: <linux-kernel+bounces-95060-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95064-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A389E8748BD
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 08:33:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECE528748CC
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 08:36:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3596CB222D4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 07:33:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D2741C21A31
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 07:36:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E86E463101;
-	Thu,  7 Mar 2024 07:33:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB6866310C;
+	Thu,  7 Mar 2024 07:36:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yRZaeLCe"
-Received: from mail-vs1-f50.google.com (mail-vs1-f50.google.com [209.85.217.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EP0k/ibn"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 510AA63103
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 07:33:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 667DE4A31;
+	Thu,  7 Mar 2024 07:36:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709796802; cv=none; b=NAA/rSLokVUbTHMWcbrWmByOJG1BJcptojBoh/XjjjhFuEZdJ8HPBjCt2hVR+QUNiA0RIKQ4aLxfu0AdpwbNt32WeykCs9iXHrP1DXW/HUAlXhK3Q+rQaKpWaQ9K4ZSXpqPyLSVBz7PRwAfLp3mlKBA9Sufzs9O9HfBFMKkywyA=
+	t=1709797001; cv=none; b=BcNFSoqGGo8PBFFb7wwiKJKcmJua+SGLFrOibzaOFXDLEwvQ04hMye+8ypnJ4qLDpV9ZpLbyNXWGNil5FCxuO8f1eBua0LNJ5lhzqOHLjON45TLUbjzVHSMoAsbBIzmU7hbk+8moHfIEsUTo+cjxh5cqta1uPRdh6eEYvgMmuD8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709796802; c=relaxed/simple;
-	bh=4lyRma1uLd4YSSr31ZCXdxndtYtwYTtWos3+LVAQ/aU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=K8BUyovlDQAg14Y45qY70ircVKa9aDQEMCsJn3EuVaBIEg63EpS9+o70I1lF0tGjfQMuS/abqsxTgfhfyKOq4Wn0SkEB+n4O8toCMl1UGPhKdlGyGEIiyr/frd69gMKEG6+BBgIFimgNO+PfXyDHDfpJnb1UZyh0w4BMUDI3rhQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=yRZaeLCe; arc=none smtp.client-ip=209.85.217.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-vs1-f50.google.com with SMTP id ada2fe7eead31-47259486a1fso126204137.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 23:33:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709796799; x=1710401599; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=P+NdDsuxIrkXv5XnsTlmmzQGzW5mgIhW3Bs7pzDi3m8=;
-        b=yRZaeLCeDpGZ0AbnmueHb+/SfvFgfAwsElLidb3M6ku0GHkvDXhy39dLavjcFmDM/a
-         vyxDVxFAzUUhR94rd6AsQA4aMGQJVxyjYKAfwS6VdtBKVzyViwZfFg1YdTqLCzWL4VrD
-         GtiM1ds4b95qx4PjOScnAAM69Ke+JZ0BCw2KYzj8U0QxDzLs3Dj37iCHKnAZ5uNl1bgV
-         Z0SbdQAEfuoy8ZIV/9EhQuY9Qtv9/MqJZCi4/6Y73rzNT28kqP7OMc9BNFu3VkhrcGo6
-         24qtjo4Jrl2Bp/nKYxWY3nOTSsr/6lF19U5f7aAMI/8EuN1LPuTh2SrhEHLS7ay3CDbv
-         v4wA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709796799; x=1710401599;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=P+NdDsuxIrkXv5XnsTlmmzQGzW5mgIhW3Bs7pzDi3m8=;
-        b=serwKimQ4NbEjLD1e+gd/f9VkyErkRdljfbWWlzJ1eMhwFWL4Sdomm6+MpnclWQuFN
-         EynnCKsdUhIKbJ84DA/zPDNPzXGRmRSMzEp1n/qvPQ97RYB0tc+hJCaHqMSJTVLfiel2
-         KRxPqydhssJTy7vL+qoXVNnXUl21by9X52HB3QvgKNql2w2Gq/catCHP6QaNBaxt3trK
-         ar+ivl55/xalJNeZ9+uco5uxQwkaPgWjMXz8Mo7M6KFjuOy8YG5jzW835yJyzAyad4Ng
-         eCWVHeLS8kiB0JKAg9VTE8cA7N6mepQcnUFTGNYntQlkgV17BJIsseACqxTM0piKdgll
-         5Oeg==
-X-Forwarded-Encrypted: i=1; AJvYcCUzIJu7f7EWfU0OLrJTwpkN3hrEv4CboDNjXeCXA6WSshuZ/DqawwANqcSxD4HW74Ecm/DVk6TpxGlOjtIvPptlCOZ9plw7/na5BsO5
-X-Gm-Message-State: AOJu0Yw6XqYuHmw+B3764c9tIj30ax8qaULo0Za92HJv9aOSOwHqXzkl
-	6wsZkkewTaVgoUUf1JhRQMsbGJ2mfGbPvo9aGEros/1xqUQLG8fVVpUders7wUtHIFhl7sO/KbV
-	spa7DYdpNIkAZRqTKjIY7F0ZswzG7do9emSfrzg==
-X-Google-Smtp-Source: AGHT+IErqhjT7m+g7AMO2yjp+bi5cLjRTdmlc2HXNLwm44fPoWslO51y1z0/0q+kUXwgX1Mk0XXHS+XW920Jap5xRdw=
-X-Received: by 2002:a05:6102:1994:b0:472:ee5f:9124 with SMTP id
- jm20-20020a056102199400b00472ee5f9124mr3979019vsb.19.1709796799107; Wed, 06
- Mar 2024 23:33:19 -0800 (PST)
+	s=arc-20240116; t=1709797001; c=relaxed/simple;
+	bh=0kfFQ3v5nLN2q6UY/69rGMRfdWI+zcCCjuvpf3DZH9M=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=iyanZCceEyPOQ1w6refM5scF9dgSos+jAh4H0+SaYdHV8ZLwkRxTffdiJFefcHI4SORfzm+MPjOCeTyGmXBp+No5GU3P9odkHGYBxPw4YOi+t5bcUm8oF6aqkhaMJwtQHbYVEVONPtCdtwBYQIeLfLbkzHsrsjRl7d4+gjIDlfw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=EP0k/ibn; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709797000; x=1741333000;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=0kfFQ3v5nLN2q6UY/69rGMRfdWI+zcCCjuvpf3DZH9M=;
+  b=EP0k/ibnhARYa+vxr6fVHa4p/7iRIhMigb6Edt04DvzvHHjMO3EGKhmC
+   Ds78Vtan2n49cgrAEy+iR7PcrPwWNnnf8ekhTmDgFbGsO2iRnLXO/ewrE
+   6BRsVMsnLFGGqydBtLOZwxBkEsMYHj6hI72qAJZDC6MZnjzvP0ES5/kQN
+   nj55/jjJNYBLM9+deMS8WZpGHwC7WrBAtDroqQFjqvWHeykTiqA9T2hYJ
+   NErGmGa+Z0KQnLaTVXZ7zRcryLCOb9RPr/dKU1WqxkkJ3zcp5pdV2fMMW
+   g2EfpzJjIQoOhShgQbTQbpnZqI4WBIr/eln/h4uDuDp7eV6Oeg4De4X5a
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11005"; a="15174116"
+X-IronPort-AV: E=Sophos;i="6.06,210,1705392000"; 
+   d="scan'208";a="15174116"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 23:36:39 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,210,1705392000"; 
+   d="scan'208";a="9930329"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 23:36:36 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Ryan Roberts <ryan.roberts@arm.com>,  Andrew Morton
+ <akpm@linux-foundation.org>,  David Hildenbrand <david@redhat.com>,
+  <linux-mm@kvack.org>,  <linux-kernel@vger.kernel.org>,
+  <stable@vger.kernel.org>
+Subject: Re: [PATCH v1] mm: swap: Fix race between free_swap_and_cache() and
+ swapoff()
+In-Reply-To: <0925807f-d226-7f08-51d1-ab771b1a6c24@huawei.com> (Miaohe Lin's
+	message of "Thu, 7 Mar 2024 14:50:10 +0800")
+References: <20240305151349.3781428-1-ryan.roberts@arm.com>
+	<875xy0842q.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<c8fe62d0-78b8-527a-5bef-ee663ccdc37a@huawei.com>
+	<af11bbca-3f6a-4db5-916c-b0d5b942352b@arm.com>
+	<ff6aec00-f939-b7ba-c127-b133c4d95ee5@huawei.com>
+	<87bk7q7ffp.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<0925807f-d226-7f08-51d1-ab771b1a6c24@huawei.com>
+Date: Thu, 07 Mar 2024 15:34:42 +0800
+Message-ID: <8734t27awd.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240306200910.2732835-1-volodymyr_babchuk@epam.com> <CAA8EJppNopEF0DmgjCAJyxe8HRebD26Q8heKKLKbPstdfBOv6A@mail.gmail.com>
-In-Reply-To: <CAA8EJppNopEF0DmgjCAJyxe8HRebD26Q8heKKLKbPstdfBOv6A@mail.gmail.com>
-From: Sumit Garg <sumit.garg@linaro.org>
-Date: Thu, 7 Mar 2024 13:03:08 +0530
-Message-ID: <CAFA6WYMvtNbAMb5bAuH=as01wxACbjs5XcyPrvcSH4YpGGHhpA@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: qcom: sm8150: add reset name for ethernet node
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Volodymyr Babchuk <Volodymyr_Babchuk@epam.com>, Bjorn Andersson <andersson@kernel.org>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	"linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>, 
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=ascii
 
-On Thu, 7 Mar 2024 at 12:40, Dmitry Baryshkov
-<dmitry.baryshkov@linaro.org> wrote:
->
-> On Thu, 7 Mar 2024 at 00:22, Volodymyr Babchuk
-> <Volodymyr_Babchuk@epam.com> wrote:
-> >
-> > Add reset-names property to the ethernet@20000 node. This patch does
-> > not change behavior on Linux, but it is needed for U-Boot, as it tries
-> > to find the reset by name, not by index.
-> >
-> > Signed-off-by: Volodymyr Babchuk <volodymyr_babchuk@epam.com>
-> > ---
-> >  arch/arm64/boot/dts/qcom/sm8150.dtsi | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-> > index 761a6757dc26f..c2e65d6a2ac62 100644
-> > --- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
-> > +++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-> > @@ -951,6 +951,7 @@ ethernet: ethernet@20000 {
-> >
-> >                         power-domains = <&gcc EMAC_GDSC>;
-> >                         resets = <&gcc GCC_EMAC_BCR>;
-> > +                       resets-names = "emac";
->
-> According to the snps,dwmac.yaml schema the "emac" is invalid here.
-> Only "stmmaceth" and / or "ahb" are permitted here.
+Miaohe Lin <linmiaohe@huawei.com> writes:
 
-Okay, it looks like earlier the Linux kernel on Qcom SoCs always
-assumed that the EMAC reset signal is deserted by prior boot stages.
-So I suppose we can reuse "stmmaceth" here instead of "emac" with a
-corresponding change to U-Boot driver as well.
+> On 2024/3/7 13:56, Huang, Ying wrote:
+>> Miaohe Lin <linmiaohe@huawei.com> writes:
+>> 
+>>> On 2024/3/6 17:31, Ryan Roberts wrote:
+>>>> On 06/03/2024 08:51, Miaohe Lin wrote:
+>>>>> On 2024/3/6 10:52, Huang, Ying wrote:
+>>>>>> Ryan Roberts <ryan.roberts@arm.com> writes:
+>>>>>>
+>>>>>>> There was previously a theoretical window where swapoff() could run and
+>>>>>>> teardown a swap_info_struct while a call to free_swap_and_cache() was
+>>>>>>> running in another thread. This could cause, amongst other bad
+>>>>>>> possibilities, swap_page_trans_huge_swapped() (called by
+>>>>>>> free_swap_and_cache()) to access the freed memory for swap_map.
+>>>>>>>
+>>>>>>> This is a theoretical problem and I haven't been able to provoke it from
+>>>>>>> a test case. But there has been agreement based on code review that this
+>>>>>>> is possible (see link below).
+>>>>>>>
+>>>>>>> Fix it by using get_swap_device()/put_swap_device(), which will stall
+>>>>>>> swapoff(). There was an extra check in _swap_info_get() to confirm that
+>>>>>>> the swap entry was valid. This wasn't present in get_swap_device() so
+>>>>>>> I've added it. I couldn't find any existing get_swap_device() call sites
+>>>>>>> where this extra check would cause any false alarms.
+>>>>>>>
+>>>>>>> Details of how to provoke one possible issue (thanks to David Hilenbrand
+>>>>>>> for deriving this):
+>>>>>>>
+>>>>>>> --8<-----
+>>>>>>>
+>>>>>>> __swap_entry_free() might be the last user and result in
+>>>>>>> "count == SWAP_HAS_CACHE".
+>>>>>>>
+>>>>>>> swapoff->try_to_unuse() will stop as soon as soon as si->inuse_pages==0.
+>>>>>>>
+>>>>>>> So the question is: could someone reclaim the folio and turn
+>>>>>>> si->inuse_pages==0, before we completed swap_page_trans_huge_swapped().
+>>>>>>>
+>>>>>>> Imagine the following: 2 MiB folio in the swapcache. Only 2 subpages are
+>>>>>>> still references by swap entries.
+>>>>>>>
+>>>>>>> Process 1 still references subpage 0 via swap entry.
+>>>>>>> Process 2 still references subpage 1 via swap entry.
+>>>>>>>
+>>>>>>> Process 1 quits. Calls free_swap_and_cache().
+>>>>>>> -> count == SWAP_HAS_CACHE
+>>>>>>> [then, preempted in the hypervisor etc.]
+>>>>>>>
+>>>>>>> Process 2 quits. Calls free_swap_and_cache().
+>>>>>>> -> count == SWAP_HAS_CACHE
+>>>>>>>
+>>>>>>> Process 2 goes ahead, passes swap_page_trans_huge_swapped(), and calls
+>>>>>>> __try_to_reclaim_swap().
+>>>>>>>
+>>>>>>> __try_to_reclaim_swap()->folio_free_swap()->delete_from_swap_cache()->
+>>>>>>> put_swap_folio()->free_swap_slot()->swapcache_free_entries()->
+>>>>>>> swap_entry_free()->swap_range_free()->
+>>>>>>> ...
+>>>>>>> WRITE_ONCE(si->inuse_pages, si->inuse_pages - nr_entries);
+>>>>>>>
+>>>>>>> What stops swapoff to succeed after process 2 reclaimed the swap cache
+>>>>>>> but before process1 finished its call to swap_page_trans_huge_swapped()?
+>>>>>>>
+>>>>>>> --8<-----
+>>>>>>
+>>>>>> I think that this can be simplified.  Even for a 4K folio, this could
+>>>>>> happen.
+>>>>>>
+>>>>>> CPU0                                     CPU1
+>>>>>> ----                                     ----
+>>>>>>
+>>>>>> zap_pte_range
+>>>>>>   free_swap_and_cache
+>>>>>>   __swap_entry_free
+>>>>>>   /* swap count become 0 */
+>>>>>>                                          swapoff
+>>>>>>                                            try_to_unuse
+>>>>>>                                              filemap_get_folio
+>>>>>>                                              folio_free_swap
+>>>>>>                                              /* remove swap cache */
+>>>>>>                                            /* free si->swap_map[] */
+>>>>>>
+>>>>>>   swap_page_trans_huge_swapped <-- access freed si->swap_map !!!
+>>>>>
+>>>>> Sorry for jumping the discussion here. IMHO, free_swap_and_cache is called with pte lock held.
+>>>>
+>>>> I don't beleive it has the PTL when called by shmem.
+>>>
+>>> In the case of shmem, folio_lock is used to guard against the race.
+>> 
+>> I don't find folio is lock for shmem.  find_lock_entries() will only
+>> lock the folio if (!xa_is_value()), that is, not swap entry.  Can you
+>> point out where the folio is locked for shmem?
+>
+> You're right, folio is locked if not swap entry. That's my mistake. But it seems above race is still nonexistent.
+> shmem_unuse() will first be called to read all the shared memory data that resides in the swap device back into
+> memory when doing swapoff. In that case, all the swapped pages are moved to page cache thus there won't be any
+> xa_is_value(folio) cases when calling shmem_undo_range(). free_swap_and_cache() even won't be called from
+> shmem_undo_range() after shmem_unuse(). Or am I miss something?
 
--Sumit
+I think the following situation is possible.  Right?
 
->
-> >
-> >                         iommus = <&apps_smmu 0x3c0 0x0>;
-> >
-> > --
-> > 2.43.0
-> >
->
->
-> --
-> With best wishes
-> Dmitry
+CPU0                               CPU1
+----                               ----
+shmem_undo_range
+  shmem_free_swap
+    xa_cmpxchg_irq
+    free_swap_and_cache
+      __swap_entry_free
+      /* swap count become 0 */
+                                   swapoff
+                                     try_to_unuse
+                                       shmem_unuse /* cannot find swap entry */
+                                       find_next_to_unuse
+                                       filemap_get_folio
+                                       folio_free_swap
+                                       /* remove swap cache */
+                                       /* free si->swap_map[] */
+      swap_page_trans_huge_swapped <-- access freed si->swap_map !!!
+
+shmem_undo_range can run earlier.
+
+--
+Best Regards,
+Huang, Ying
 
