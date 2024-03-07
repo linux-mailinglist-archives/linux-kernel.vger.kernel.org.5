@@ -1,113 +1,138 @@
-Return-Path: <linux-kernel+bounces-95121-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95122-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0328874969
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:18:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75A1887496F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:20:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5FE081F21270
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 08:18:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A7BA21C212CB
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 08:20:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63B016340A;
-	Thu,  7 Mar 2024 08:18:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 884B763417;
+	Thu,  7 Mar 2024 08:19:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=rasmusvillemoes.dk header.i=@rasmusvillemoes.dk header.b="MXkkll7o"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c7hYvPur"
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2E1D63108
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 08:18:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2513851C54;
+	Thu,  7 Mar 2024 08:19:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709799502; cv=none; b=iOJlZk86Op4TkqJ/2MFj8yezFcNOSFQwkOWplgcoCAlFbDoMYhg9D0fG8pWO6HfCsDXF0Lb4R9Cv/QJxSWKBOqBRyYRoh0FO72x7VvWMB43UU+yfZurD0fH6MVwtKxOH5kMXJn2UFtdqIj41JmztnfBLWhqpXqEaDxmNT67oSGQ=
+	t=1709799596; cv=none; b=i8/xsjhWPlKwXLwc1TV9psAf0gD/NOMlI9wdgHt6dHQqb338+GtIuTRWeEcc2MgqUdZcVfuonFQRzsq/t3JoTpZNJaV0wpP0WmFV0eV95ZSHGpAeK+qI+PggjGi7bINHaXeT8ANOWiJrlpJjLzTrHftOBI1OtYEYDNVbpd7Jq/I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709799502; c=relaxed/simple;
-	bh=TYqpgTDuSv3SX5G0RXnA4YBOuaNXUw37znpbGnBjBA4=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=g0BJ0o2dx8HE9D23JxzWlYcbS2yGMHqQE+rhxb/U+/H4Ff6WFwWjyebdrYkp2ufKDSC+1nEaY/WVSxJDzKWGFCoHk8kojc9UBVrmjabWmgejQMuxdCSV7Au9tBlng70vz/MlS4MNvY6eOVE6KrYYYQ3JWGh7O37nYTUjMkxwC7U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rasmusvillemoes.dk; spf=pass smtp.mailfrom=rasmusvillemoes.dk; dkim=pass (1024-bit key) header.d=rasmusvillemoes.dk header.i=@rasmusvillemoes.dk header.b=MXkkll7o; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rasmusvillemoes.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rasmusvillemoes.dk
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-567fbbd7658so554114a12.2
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 00:18:20 -0800 (PST)
+	s=arc-20240116; t=1709799596; c=relaxed/simple;
+	bh=8FP38S7OrZ+MpTjf4w+My1/hNKejVVNsZfh22HhsIUI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=DYOjrfq2chQnrFqexlbuFei0KrHgsRcIaQrFDD2iGMk8OBwiQjbM2qyBeENB4flhCnZqJ818Q0Z4gJZtD76gHrr0L/aycMF/Nl3cXskti+kpFxo6DS3F18tSaCAyN/xNjSi9VhWJ40NI7wwXTe18/ebO7PimkqywA9ckFj9TtdA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c7hYvPur; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-412fe981ef1so3301645e9.1;
+        Thu, 07 Mar 2024 00:19:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google; t=1709799499; x=1710404299; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dSltyiSz6QzizDadpF6t+PXwLaV699fb9KhpCjpuKpM=;
-        b=MXkkll7o5VmeClXkpxfLx8CNFdKDphA9e3mrzRTO20T85DDE03HE5O6ak69lcKmT2K
-         G5tlrrwqMq8iFkrYmzmr6vi1vnBCfbcv6df2WN0wkpZIcLIDFI+Aec+KkVHL7mbpZEo7
-         D59JHo/8pMQ3iL8cXu346+nngF7vLFtl6i5ZA=
+        d=gmail.com; s=20230601; t=1709799593; x=1710404393; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q3cfeh/qgTCzNyqJWZG5K1iEv2VogtsczNtBj4FEYbc=;
+        b=c7hYvPurgYXZGHx8zWUSDfdQtxiAKaKw6r3bd69EIKDeliNnstLdYr70aU0xynM9/N
+         DvyFY/khAEpJH4RLLbglYqzErnhnjRSCXtKmyGKVH9b0w+HOcXEOLk3SMKXevGAVn5KC
+         i9wqPSaQiVO/JRDyD7M29frCmYo2jyJ5A2sY6sJgpl10HJQPCkHqq6/gIhzEvzvbzgSc
+         a3oh3GQGownVWjnCM6nUNhQe6/luU/lDRIMXnWBmYE8oPemxw5DBKfRMPZPENF501pli
+         zMbKcE8bX8FRAFvgVjHZ+Qyv7siJcVZFnGsAujoP1cSlXwaROX/7+Ev2xzK0HSq1hJgq
+         h5kg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709799499; x=1710404299;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dSltyiSz6QzizDadpF6t+PXwLaV699fb9KhpCjpuKpM=;
-        b=LPlBHmnwhXysQKvoG18hutiWn4jVfRIS8jAn1oAy2QUd126P/7HanYShGJLc8Z6hyt
-         79NhXj8hcSXGTq2uhtT/y8am/yU+4XLlRPjEvysxzn1hWrhMbG9TogCskD0MgLXz9Nfv
-         V5fygXVz+//PKyBNMVQvrcvu29EYfozR9vCK6PsklC+UEPt58mWgy/FakFfPsxEHVdDf
-         6Z8cAe3SDRsvzOFntVj0/MsheRBm7Hb7PufBQ/Dcl0MUOjOD4baWW0R81t94FNBq/jc/
-         PN1UsOJ+XEZPyvuxme7qN7eYVthq0lPlV7fjjkIN3eYHXZijqdrj+0S0w9L8LrRjdC8g
-         gb5w==
-X-Forwarded-Encrypted: i=1; AJvYcCWGYnCALuSw+8j6vmYd/RW5CoZPNGRjmoALerD1DiP8RuLK6DQ536WGCdSJ9NUK/d5Ovy8EuD2C8DwJTpUeBT9gvujdo1lrc/U6Rl0z
-X-Gm-Message-State: AOJu0YwE4O34JhDDwDE2i7Q8UsI6AKM4Op2MqGAVVvRjcYgKnKArtDUD
-	hK5SBmbnQ+GMLBzRnp2kblpdM31CS3xgAIlzvtntVdv1AACjyDbFe7M6cJ+wwBnPJ8hJ2w+ECHz
-	Mm9o=
-X-Google-Smtp-Source: AGHT+IE5+saef5qFZIJd7/AEveuJaiL0S5ePCy1yPoEQhNLpJLEw3L6knMS2MoZ/K3muVYt5lsLMow==
-X-Received: by 2002:a50:9fa7:0:b0:568:14e3:fe75 with SMTP id c36-20020a509fa7000000b0056814e3fe75mr843322edf.5.1709799499152;
-        Thu, 07 Mar 2024 00:18:19 -0800 (PST)
-Received: from [172.16.11.116] ([81.216.59.226])
-        by smtp.gmail.com with ESMTPSA id ig10-20020a056402458a00b005657eefa8e9sm7832112edb.4.2024.03.07.00.18.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Mar 2024 00:18:18 -0800 (PST)
-Message-ID: <40914a69-d4b7-4fdd-bc58-cf9b28271ac3@rasmusvillemoes.dk>
-Date: Thu, 7 Mar 2024 09:18:17 +0100
+        d=1e100.net; s=20230601; t=1709799593; x=1710404393;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Q3cfeh/qgTCzNyqJWZG5K1iEv2VogtsczNtBj4FEYbc=;
+        b=PQq9m0BpU3LZkE/mTi7LObQpJBlccaqRY25aJMwvtwoK+Y8kDceaTacL1hv+Ykz9ql
+         DZM6ErBqrEXsIe9WaBIqahjE6Z/s7mnuvdl5MwNGjQdLWOvo3D7QpkGM2QFBzGWJS4mO
+         J23oTHmqRt7LYXGuq/EyoOZWhwvQd2TI8jq/gDNYdvcjQqFNBRV6Tlkef2L555vm9ahQ
+         V6+EOZfKUspdQ2egClIg3QwWcqGocJ7w65ZUaKkRXvqaDd8TJOSLebwLIc1w70tdXzT0
+         DZJYyKW+F/MBGrT9rDfxhXHhRCRZjMNSofUJg6emtKntF07s0Vjl3utxLfpglNwG2dO2
+         x3Ig==
+X-Forwarded-Encrypted: i=1; AJvYcCW/bgG3OSYgQ+GE5XZKqrbQhfV1/yTAkia8akWV8fySBmkbqOYUl6rYjkkcCDfNpQOZYIFdhAHUOkC8PQL0bRqTiXkZuzjG3XXPpLBFURLb48J/s9Ft9Kr2osQtp7su4U1XtF21rirhDfFgyUAAjyXKq+0OKzp8X/3r/4Bf0zQdHtit
+X-Gm-Message-State: AOJu0YxAMkmopqviI9j/rIQhoY6UB6YlZVir/CLX3OTYGUobUPWdZC5Y
+	clqm6a5YdCAH2L3gme2nJ+Cr3ZFtPpk8pAUnoOU/8mGXiLWBJuKz
+X-Google-Smtp-Source: AGHT+IHxp22ZICjNl26x1Qf0pwp3S9ZJz469LBsA59Wew3XXWy7W/Otp9bwAH8nrbisN+qEZRG5Xig==
+X-Received: by 2002:a05:600c:4f91:b0:413:119:33e2 with SMTP id n17-20020a05600c4f9100b00413011933e2mr701067wmq.14.1709799593095;
+        Thu, 07 Mar 2024 00:19:53 -0800 (PST)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id fb12-20020a05600c520c00b00412f81ba413sm1788954wmb.11.2024.03.07.00.19.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Mar 2024 00:19:52 -0800 (PST)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: Marc Zyngier <maz@kernel.org>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Anup Patel <anup@brainfault.org>,
+	Atish Patra <atishp@atishpatra.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	linux-arm-kernel@lists.infradead.org,
+	kvmarm@lists.linux.dev,
+	kvm@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	kvm-riscv@lists.infradead.org,
+	linux-riscv@lists.infradead.org
+Cc: kernel-janitors@vger.kernel.org
+Subject: [PATCH][next] KVM: selftests: Fix spelling mistake "trigged" -> "triggered"
+Date: Thu,  7 Mar 2024 08:19:51 +0000
+Message-Id: <20240307081951.1954830-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] bootconfig: do not put quotes on cmdline items unless
- necessary
-Content-Language: en-US, da
-From: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, linux-kernel@vger.kernel.org
-References: <20240306122452.1664709-1-linux@rasmusvillemoes.dk>
- <20240306124211.b490ea3c2372d89cff8c287c@linux-foundation.org>
- <e1075345-ea35-4b39-a158-a0d165314a14@rasmusvillemoes.dk>
-In-Reply-To: <e1075345-ea35-4b39-a158-a0d165314a14@rasmusvillemoes.dk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On 07/03/2024 09.10, Rasmus Villemoes wrote:
+There are spelling mistakes in __GUEST_ASSERT messages. Fix them.
 
->>> +static int has_space(const char *v)
->>> +{
->>> +	for (; *v; v++)
->>> +		if (isspace(*v))
->>> +			return 1;
->>> +	return 0;
->>> +}
->>
->> Do we already have something which does this?
-> 
-> Well, 'value[strcspn(value, " \t\r\n")] ? "\"" : ""' would be a
-> oneliner, but not particularly readable. Also that list of characters
-> doesn't necessarily match isspace(), see below.
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ tools/testing/selftests/kvm/aarch64/arch_timer.c | 2 +-
+ tools/testing/selftests/kvm/riscv/arch_timer.c   | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-I didn't look close enough. We do have strpbrk(), so strpbrk(value, "
-\t\r\n") ? .. : .. , but that still leaves the question of just what set
-of characters to search for. But there's no harm in just making it "
-\t\n\v\f\r\xa0" except it requires a comment saying "these are precisely
-the isspace() characters in the kernel's ctype".
-
-Rasmus
+diff --git a/tools/testing/selftests/kvm/aarch64/arch_timer.c b/tools/testing/selftests/kvm/aarch64/arch_timer.c
+index ddba2c2fb5de..16ac74d07d68 100644
+--- a/tools/testing/selftests/kvm/aarch64/arch_timer.c
++++ b/tools/testing/selftests/kvm/aarch64/arch_timer.c
+@@ -136,7 +136,7 @@ static void guest_run_stage(struct test_vcpu_shared_data *shared_data,
+ 		irq_iter = READ_ONCE(shared_data->nr_iter);
+ 		__GUEST_ASSERT(config_iter + 1 == irq_iter,
+ 				"config_iter + 1 = 0x%lx, irq_iter = 0x%lx.\n"
+-				"  Guest timer interrupt was not trigged within the specified\n"
++				"  Guest timer interrupt was not triggered within the specified\n"
+ 				"  interval, try to increase the error margin by [-e] option.\n",
+ 				config_iter + 1, irq_iter);
+ 	}
+diff --git a/tools/testing/selftests/kvm/riscv/arch_timer.c b/tools/testing/selftests/kvm/riscv/arch_timer.c
+index e22848f747c0..0f9cabd99fd4 100644
+--- a/tools/testing/selftests/kvm/riscv/arch_timer.c
++++ b/tools/testing/selftests/kvm/riscv/arch_timer.c
+@@ -60,7 +60,7 @@ static void guest_run(struct test_vcpu_shared_data *shared_data)
+ 		irq_iter = READ_ONCE(shared_data->nr_iter);
+ 		__GUEST_ASSERT(config_iter + 1 == irq_iter,
+ 				"config_iter + 1 = 0x%x, irq_iter = 0x%x.\n"
+-				"  Guest timer interrupt was not trigged within the specified\n"
++				"  Guest timer interrupt was not triggered within the specified\n"
+ 				"  interval, try to increase the error margin by [-e] option.\n",
+ 				config_iter + 1, irq_iter);
+ 	}
+-- 
+2.39.2
 
 
