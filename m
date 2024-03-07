@@ -1,119 +1,66 @@
-Return-Path: <linux-kernel+bounces-96172-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96173-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A852387580F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 21:16:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF1C0875811
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 21:16:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 964BFB23AE2
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:16:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3D54EB23DA4
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:16:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6081A1386BF;
-	Thu,  7 Mar 2024 20:16:14 +0000 (UTC)
-Received: from cae.in-ulm.de (cae.in-ulm.de [217.10.14.231])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66A581384A3;
-	Thu,  7 Mar 2024 20:16:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.10.14.231
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49D5E1384A6;
+	Thu,  7 Mar 2024 20:16:38 +0000 (UTC)
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A103412F593;
+	Thu,  7 Mar 2024 20:16:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.133.224.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709842573; cv=none; b=fIwrZj/N6R7OdhdbamGQbLo5bOQdWiPefJBAB9KcJOiI8dxwY1G12jV6TuTezuLs3Rw//uwqwcD4ET33xZ/f+xv7LhRlhW0A3bAHNa2kOENWYhtAd/KHruPc477AtsgkNASXpi4LbapVbOZk6OAZRO1qEM3oHchRosySLp+wdyY=
+	t=1709842597; cv=none; b=sdvcQWX4L+g/NFqetYIdgDC4XoSPDpuxbo8WczDSOykOcUOtJE72JYoCNbaWTuG1/CJqJGCa6tzTVjEfaCJ+ZVsvu2W1SN8Jl0sHAYR7jUAwvAPU3nMcQD0TYz31iAs05oFzxc0BM4t+P67Oek1AuwPV3HN/Kjh2IVVi7jZ55rw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709842573; c=relaxed/simple;
-	bh=A4ojRm1yac8P8+7JjT9Co/kkOIRrumYEoOESGZHp/gA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EGlYyeYNP6Lw9YX3bwoWZNXnbIZUw9P45dBC5JBsrdE4U88CwUeFOqIlxhcdDTGLBkawoE2SAoMyULd4Q8n87S2pv3QFN8wXg5sna+ZJvdYKGyfST0CcMKP1LWegsBBVlOK+ac4pPiTR/sTPUsTXhGsu2eRpyGgta8jBCafu5DQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c--e.de; spf=pass smtp.mailfrom=c--e.de; arc=none smtp.client-ip=217.10.14.231
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c--e.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=c--e.de
-Received: by cae.in-ulm.de (Postfix, from userid 1000)
-	id 8CB3B14053E; Thu,  7 Mar 2024 21:16:00 +0100 (CET)
-Date: Thu, 7 Mar 2024 21:16:00 +0100
-From: "Christian A. Ehrhardt" <lk@c--e.de>
-To: coverity-bot <keescook@chromium.org>
-Cc: Jameson Thies <jthies@google.com>, Hans de Goede <hdegoede@redhat.com>,
-	Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	linux-usb@vger.kernel.org, Benson Leung <bleung@chromium.org>,
-	Saranya Gopal <saranya.gopal@intel.com>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-	Prashant Malani <pmalani@chromium.org>,
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	linux-kernel@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-	linux-next@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: Coverity: ucsi_check_cable(): Null pointer dereferences
-Message-ID: <ZeoggIXSLy+lVHP1@cae.in-ulm.de>
-References: <202403071134.7C7C077655@keescook>
+	s=arc-20240116; t=1709842597; c=relaxed/simple;
+	bh=8gmRJm83mDNGqmsZS6yqSG0sCWwT7f8vYOopRnfrElA=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=d6q8uC2z7XghedQodU2j2qKnDQmCJBt7CvEzB8nIWSmU8HB4qaQJi92PybTyNPKWX8BjptNXJ3QE/y2kW1jHleHOJhjnadGVpgeHspdn3ztFieZbA45qZ2C1mg9jHgcDCC8DhA2Y1G61DzMlJ9adRyYCgskTdkWUJ62cff3A/Ig=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk; spf=none smtp.mailfrom=orcam.me.uk; arc=none smtp.client-ip=78.133.224.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+	id C618992009C; Thu,  7 Mar 2024 21:16:26 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by angie.orcam.me.uk (Postfix) with ESMTP id BF00892009B;
+	Thu,  7 Mar 2024 20:16:26 +0000 (GMT)
+Date: Thu, 7 Mar 2024 20:16:26 +0000 (GMT)
+From: "Maciej W. Rozycki" <macro@orcam.me.uk>
+To: Andreas Larsson <andreas@gaisler.com>
+cc: sam@ravnborg.org, sparclinux@vger.kernel.org, 
+    Randy Dunlap <rdunlap@infradead.org>, 
+    Miquel Raynal <miquel.raynal@bootlin.com>, 
+    linux-parport@lists.infradead.org, "David S. Miller" <davem@davemloft.net>, 
+    Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org, 
+    Arvind Yadav <arvind.yadav.cs@gmail.com>
+Subject: Re: [PATCH v2 7/7] sparc32: Fix section mismatch in leon_pci_grpci
+In-Reply-To: <c5654b69-209e-4406-ac70-9a4547adfc36@gaisler.com>
+Message-ID: <alpine.DEB.2.21.2403072015010.29359@angie.orcam.me.uk>
+References: <20240224-sam-fix-sparc32-all-builds-v2-0-1f186603c5c4@ravnborg.org> <20240224-sam-fix-sparc32-all-builds-v2-7-1f186603c5c4@ravnborg.org> <b62d0ae6-c2cb-4f2c-b792-2dba52a44e35@gaisler.com> <c5654b69-209e-4406-ac70-9a4547adfc36@gaisler.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202403071134.7C7C077655@keescook>
+Content-Type: text/plain; charset=US-ASCII
 
+On Thu, 7 Mar 2024, Andreas Larsson wrote:
 
-Hi,
+> I'll pick up the whole series apart for the ZONE_DMA removal, so there
+> is no other need for a v3. I can add the Fixes lines to this one, if it
+> is ok with you Sam, or take it as is.
 
-On Thu, Mar 07, 2024 at 11:34:21AM -0800, coverity-bot wrote:
-> Hello!
-> 
-> This is an experimental semi-automated report about issues detected by
-> Coverity from a scan of next-20240307 as part of the linux-next scan project:
-> https://scan.coverity.com/projects/linux-next-weekly-scan
-> 
-> You're getting this email because you were associated with the identified
-> lines of code (noted below) that were touched by commits:
-> 
->   Tue Mar 5 13:11:08 2024 +0000
->     f896d5e8726c ("usb: typec: ucsi: Register SOP/SOP' Discover Identity Responses")
-> 
-> Coverity reported the following:
-> 
-> *** CID 1584245:  Null pointer dereferences  (FORWARD_NULL)
-> drivers/usb/typec/ucsi/ucsi.c:1136 in ucsi_check_cable()
-> 1130     	}
-> 1131
-> 1132     	ret = ucsi_register_cable(con);
-> 1133     	if (ret < 0)
-> 1134     		return ret;
-> 1135
-> vvv     CID 1584245:  Null pointer dereferences  (FORWARD_NULL)
-> vvv     Passing "con" to "ucsi_get_cable_identity", which dereferences null "con->cable".
-> 1136     	ret = ucsi_get_cable_identity(con);
-> 1137     	if (ret < 0)
-> 1138     		return ret;
-> 1139
-> 1140     	ret = ucsi_register_plug(con);
-> 1141     	if (ret < 0)
-> 
-> If this is a false positive, please let us know so we can mark it as
-> such, or teach the Coverity rules to be smarter. If not, please make
-> sure fixes get into linux-next. :) For patches fixing this, please
-> include these lines (but double-check the "Fixes" first):
+ Can I have the spelling of my name fixed though (which was supposed to be 
+included with v3)?
 
-This looks like a false positive to me. The code looks like this:
-
-	if (con->cable)
-		return 0;
-	[ ... ]
-	ret = ucsi_register_cable(con)
-	if (ret < 0)
-		return ret;
-	ret = ucsi_get_cable_identity(con);
-	[ ... ]
-
-From the con->cable check coverity concludes that con->cable is
-initially NULL. Later ucsi_register_cable() initializes con->cable
-if successful. Coverity seems to miss this and still thinks that
-con->cable is NULL. Then converity correctly notices that
-ucsi_get_cable_identity() dereferences con->cable and complains.
-
-     regards  Christian
-
+  Maciej
 
