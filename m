@@ -1,906 +1,370 @@
-Return-Path: <linux-kernel+bounces-95850-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95851-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 931E7875408
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:16:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C435E875411
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:18:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B71351C2517E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 16:16:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7ACAE2825D2
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 16:18:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B90DF12FB32;
-	Thu,  7 Mar 2024 16:15:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B49412FB1B;
+	Thu,  7 Mar 2024 16:18:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hlV3ivO9"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="Lud09GyV"
+Received: from SJ2PR03CU001.outbound.protection.outlook.com (mail-westusazon11020002.outbound.protection.outlook.com [52.101.85.2])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68CD312FB25
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 16:15:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709828156; cv=none; b=ojlPAoqUTivK+Afrpm4X5lE2b51tK5zwXfspcRZGJ5vzMvcYOiM6J1kmSZm3Swrxg2kg9qZGyxI+cQY2dN3E0byJGbBEEz3D6dlva+SNY+PbD7+q4UCyWhJFC87anjRv2srifauC8GDRqFIJWHYjSfCm8WyPmkNx+yFhmaxY0h0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709828156; c=relaxed/simple;
-	bh=OF3gy9SzyOaeI2t/bY+jBGdJdan/1bfw9NrDzOw0hWI=;
-	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
-	 Content-Type:Date:Message-ID; b=I9KmErwr5QSHaP+yHgDwQnndMrmEQ210Z0pAM8rMmx1cuKqEgu/0C5mngkBbyeO+e04ziGA9KGLBtVs2Bchr6yjH8HgLQS0tQdY+bKYuLNyrJ+Kuc1S528jpHOzQhb/fYh/JCEqEDPRprRtu7GtemnIzkAP1SVuyJZtZcSlXvSA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hlV3ivO9; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709828152;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Et76IymZiZsyfFbZyBv4jwcv2zyo3UBKmPaoFDfXMXo=;
-	b=hlV3ivO9x9Q59HexHk5WXy5zyv4jhxJPHNTJks+hgKY/GV229VvWlD8bblJRokP7cg6WwG
-	tu7QMM/hfP8PxgPoSFBsC87M46imYicDks9VzRCZkFBQRZwiKgbo8C1sqPktbjE54wo1e4
-	ZCAz7NSkISpLC/nWHAJjels2jhPbZ/k=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-74-u7GkFLqyNkerzYs9G-jYLw-1; Thu, 07 Mar 2024 11:15:49 -0500
-X-MC-Unique: u7GkFLqyNkerzYs9G-jYLw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0149081B8BE;
-	Thu,  7 Mar 2024 16:15:48 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.114])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 5591B37FC;
-	Thu,  7 Mar 2024 16:15:45 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <1668172.1709764777@warthog.procyon.org.uk>
-References: <1668172.1709764777@warthog.procyon.org.uk>
-To: Matthew Wilcox <willy@infradead.org>,
-    Trond Myklebust <trond.myklebust@hammerspace.com>
-Cc: dhowells@redhat.com, Christoph Hellwig <hch@lst.de>,
-    Andrew Morton <akpm@linux-foundation.org>,
-    Alexander Viro <viro@zeniv.linux.org.uk>,
-    Christian Brauner <brauner@kernel.org>,
-    Jeff Layton <jlayton@kernel.org>, linux-mm@kvack.org,
-    linux-fsdevel@vger.kernel.org, netfs@lists.linux.dev,
-    v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
-    ceph-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
-    linux-nfs@vger.kernel.org, devel@lists.orangefs.org,
-    linux-kernel@vger.kernel.org
-Subject: [RFC PATCH v2] mm: Kill ->launder_folio()
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76EFD12EBE0;
+	Thu,  7 Mar 2024 16:18:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.85.2
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709828284; cv=fail; b=X6+lXGLoxMICd7/AtBtKXqoMZqLNvm+7867n//mb8tJxzrQB4CN1Eyywuad0lAVgMRRluD7oce/dQDOmOCn0ZRGej29kw5Xnd7MISZMBPBppN/ccobmlYHh7olvrKE1N/LhT3q4aI8sGHcdFhzdetN9XeAGKQcBA1c+kUzwOTjs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709828284; c=relaxed/simple;
+	bh=6KDMTSNkMGMvTOYHuqcySlnbmtBPZYIGoLY+b5kCCgg=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=Tw5JYj7H64MxqehpcS+SMebFz5Ba28S2L0KM1aMqUMd0YGY1gLU5vpZWIwXQ3V3LrU6WGBRTQmXqHIVopEdfYgeXzcWk6b2RjyW4n4pEhl2JknIk+mnrATxvoOU41rY2uB8dzblwsRNehOqCOsS9/yrJx/x9GXwZZAN/dQwb4jI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=Lud09GyV; arc=fail smtp.client-ip=52.101.85.2
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CIo0qocbM6PfV9C4jk7ZwwZTC+kWS1WVgvqmzXqnzGMkhVE211WC3sj9d+MA5IrSjBNylM93IftQTgRC9VNORP3XN8RMf/7Yiu8qpq6vfbUCs+yDu0xWjQkqjImV5yWJASCw4G9ImDJcX173kNA2RIe3JfTao5e8HaV33kzciv/QlCBiSaIpvZR9Pxl+V3NECwDgwg304TNsYp9UZClp1dKCf415WLTnQoaQHNrxthEY8jHYuZxi89UxvF1mctZIVsl4KdEthbul6n/0IhNd9hTWI8Jje2A7R2aNHgHF3g4MYTwRqG2WTt0OYDOWYncMTJUeIcG1VtYZEhwvBxzmBw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=EKEu9GUBiU/PCd6VFfhUCFU6ObzaEpPJxuzl4mQ5To0=;
+ b=JiSJaffqlMKTgc70rAfTiSFPtANwlld9YS7PYDK+PaMb7gL4rtTZ+xh85qzQhOiEYGrQsjOGDG9Rc0LdgtUNSea/oLR9g3GPCkGcs1nzbw8kHHpK287NSXF7/rBV21jAk+aCKj+qpkN97dZHkVqiFxwMvqVN+OE2PNEKLy6ZMp8gkhXUVsC5K5Csnb9U79iArBMB2b89t24gsSw7TrYd03aQCJ9Qes8+5z2sZxPHvuKT90LiesVeqmBPM3Nr0JGSGKcuRx7yoKnDw5qnijtVr37W+5/wzY1D4wg0gTHpoG3jrga5IRrOQW9k97OIcuocdVR5Lmtbsw3Nsg5lKteJdw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EKEu9GUBiU/PCd6VFfhUCFU6ObzaEpPJxuzl4mQ5To0=;
+ b=Lud09GyVfUeEToIsrlODjWXUw3FfP0RJ9ehOXDUo5F9E12ZP4xCP9yp7ZZeAMJPNmtnBP5CxRO50fF2rH3ZRkPhmNAnwsyEHEm0X9fNy3MHHStw5p3JvPvd0N40ldoKsgIYla84OQeGX2QE5dJDp1GnTUnJ7nTEWlDQbddyuMY4=
+Received: from DM6PR21MB1481.namprd21.prod.outlook.com (2603:10b6:5:22f::8) by
+ PH7PR21MB4043.namprd21.prod.outlook.com (2603:10b6:510:208::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7386.9; Thu, 7 Mar 2024 16:17:59 +0000
+Received: from DM6PR21MB1481.namprd21.prod.outlook.com
+ ([fe80::e352:f8b9:4805:c9da]) by DM6PR21MB1481.namprd21.prod.outlook.com
+ ([fe80::e352:f8b9:4805:c9da%7]) with mapi id 15.20.7386.006; Thu, 7 Mar 2024
+ 16:17:59 +0000
+From: Haiyang Zhang <haiyangz@microsoft.com>
+To: Shradha Gupta <shradhagupta@linux.microsoft.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>
+CC: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>, Leon Romanovsky <leon@kernel.org>, Thomas
+ Gleixner <tglx@linutronix.de>, Sebastian Andrzej Siewior
+	<bigeasy@linutronix.de>, KY Srinivasan <kys@microsoft.com>, Wei Liu
+	<wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>, Long Li
+	<longli@microsoft.com>, Shradha Gupta <shradhagupta@microsoft.com>
+Subject: RE: [PATCH] net :mana : Add per-cpu stats for MANA device
+Thread-Topic: [PATCH] net :mana : Add per-cpu stats for MANA device
+Thread-Index: AQHacJ8N8LLwvYYKc0y/h+tCzJvDjrEsctXQ
+Date: Thu, 7 Mar 2024 16:17:59 +0000
+Message-ID:
+ <DM6PR21MB1481E60F25B7A379FE8AFC75CA202@DM6PR21MB1481.namprd21.prod.outlook.com>
+References:
+ <1709823132-22411-1-git-send-email-shradhagupta@linux.microsoft.com>
+In-Reply-To:
+ <1709823132-22411-1-git-send-email-shradhagupta@linux.microsoft.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=6909631d-84c7-43bd-bd96-3c3f2658feff;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2024-03-07T16:10:57Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DM6PR21MB1481:EE_|PH7PR21MB4043:EE_
+x-ms-office365-filtering-correlation-id: 9f4d481d-3f83-4649-9377-08dc3ec227d3
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ 7u4nQuFeANry/UnU/Yz8kAeHtZvQYzdLWViJlOSMyE1oBhQQMG42ejh0rkRCvG0Yzs3aollpApCmz5qDrwkAVqFB8CRQV/+aMn7uNWo3xYlHt4QYnj4MiLSISfz6RlWxqK+F1cKyxhm33jA78spEPngqycOGChgVsAhRaZb/iQUicUzu99WQaClCsGB5KyS7Oesl7Ne9QX52r30IeEEeYh8oY1X7cGutUtHXZpqxcW3b4wcgyvuagVyUOPUMUC/SU5H0khZLbHuBObKxYBaHdQCWhJySST27/WzSFkDFbmgc89ETmZVSHbC1G3/t5apIX8p7D6Q61XG4xrXWE7TCbueCKAsxHngYSH8V6z6BQyenaNavUBxe7JVhK3qN8K9xVg3fDkAQr4SlIaxLuBK5aUyg2SnpKIzaYAN7my/gZgauP91isQoucOVljmsRsAIDEfKXuGorH0TQfOWmgNKxR5k83Pry1vf+Tnc71SmzzOfFajX7t6/MroqctH5erozK2c2HV5Sekx0o4THajFJOEFQWRnWqFM/cZKiS7UCoDR2WT/5b+jogZ7dX9rVzcT4I56mrVD77ZwuPbtWwBx0BUZB1WQq91tjz7RPWO+mxdHCq/DGdfxgwLUeYpbFklwKAN1dr5VzasK+lL6Pcs7Vnp/FvvAgbzekoSFGHTbgR9aXBl18wKMYayieILgVRLYPmFD08PIA/OWo4L8lit9MhEQ==
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR21MB1481.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(38070700009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?75u+gOYjoAb/pUglTqsg8OLNW5hSS1DlbyfzPYdVuJdeuATnPACVKw8oVhq+?=
+ =?us-ascii?Q?CxHNBqXKBz2dNF+ONfmZQpy5rN4vb7P4gkmH8lJzAW4zh/mGFWtba8HqRHop?=
+ =?us-ascii?Q?vwcK2mVS9VF47xSgn30uCNe43E4HugGwlCN0DDgViVSTmXRE65qEWycui8pe?=
+ =?us-ascii?Q?APE29pAriWVWTL7C5XCwwtw0Z7KXEPMMd2o/6KI8vx3z3nVJpTbTSqGL+8HW?=
+ =?us-ascii?Q?Fn7LgxltcFdqogzT6wZg5ctzWCWoD0zHhN5xBlybTAVSBzvHNdoiR5EJfZsh?=
+ =?us-ascii?Q?4hhEdU/4NJZoGnhA4NRwc42bJ/2/K1lA8wuJIiTVN4JK/jOJIt9ykbHdvPBY?=
+ =?us-ascii?Q?LBqWrxbmds7RUYTQSarlZiM7lcCgWe2z35TuqJOEDJ3dSjJVJ8od87P4fw7s?=
+ =?us-ascii?Q?M3mwRCssKoQlYo67kGTWJ9UHnazlCoxP0y0JVW9hK2vizI48GQdKk7erx8dk?=
+ =?us-ascii?Q?3Gi61HkvXvXQpXDKs81SQvbC04a5vJxSqB/Vzff6mstOo4K8T6/7zfe88Pcb?=
+ =?us-ascii?Q?dX1rDqRecTYysQKZE/ZrDRBkZv3uh9q+4L2BQQroDCW1v6gH15SW9iIdC4dz?=
+ =?us-ascii?Q?cEpAa/irYjdY2xoG1YE99AVII88cfEpXmcFWqzal5Xra7+zFqAO++UCCRMTY?=
+ =?us-ascii?Q?TAhRaf1C22Bk2P5W5E9mUm98/+dFMc1RKAEVrs0hVBesLQiifE6Fu1/oPB3A?=
+ =?us-ascii?Q?mhBYducz08fI89wsPMvPk0aOgIXZ3UR3G3fi08Ly6MImnBuwE67Dy43+rSI+?=
+ =?us-ascii?Q?4+L2y/SiEcBdD3cHWNdAI+ZYnsyTgJ6uPsdM4iHOO7wIdyRceo6ck3mxZ4uS?=
+ =?us-ascii?Q?UAQex/ZO6GtkgF+WRrDoOo7X7vAq0QD/2SYzABk6xOfvTNdv6Z1ekAlX/kwt?=
+ =?us-ascii?Q?GdZJvYUSduS6Ilmgcup0FssAlNrtbGb+wQdRpEgmEST/BtzSBqqpJtymFUSs?=
+ =?us-ascii?Q?hyuUIqT8a93bMAwYLQSIqex7SCokju7C5a+eJj3tZq3ImxvBH2YLH1MMN0f/?=
+ =?us-ascii?Q?sSgfRn/eoJ3GfqWm1zIWpdUhxvB0dmHVObbYPp+TxLfNrSukKdvA9iTNcHGi?=
+ =?us-ascii?Q?nTxXOhSi8gto49Jo92kx3WraLNk9QbByeMrXzXQiKJ2y/dkYAWIssB6ECfg9?=
+ =?us-ascii?Q?SjSMfRHRn9YH8cvP2/BOTsb03coB85g+Q7shU8J4ns5VRjMGDAV3j9ZkYPaR?=
+ =?us-ascii?Q?dvH3G8Xht6pB6laLFDdMz0pAb2R3jA3CCmGLlEz7PMgi5EGad2X8N6v6pTHh?=
+ =?us-ascii?Q?Mihdcb7uV2Hsv5st0QdRJYQBbz/gNQ/M97qlJe21GWu7TaAJKfDZ2qbGgy5A?=
+ =?us-ascii?Q?gFfeEL+7zCQF3xh8yOhWCXXfFw6hXlEqzp+oTM6deGpjV6WBS20yRIDPqKJ4?=
+ =?us-ascii?Q?xEH0YAuNLq/+JoUmbBQ7ttfSTqcfp0ze1dxSEKHXvOa13a78Mfk7ib+4YNlY?=
+ =?us-ascii?Q?GKpzG75PG6sxI9C/ZDvbKUwMYuhUJjlpMXJlBt4QyCe22hpbl609L/Yfhtl/?=
+ =?us-ascii?Q?cerrnBL3zR51Kv+2ctFJ9cweq2mXhiHHWqzyD/AuZ3A1Xm6U+lEssZay7tkM?=
+ =?us-ascii?Q?p2Bt6hCaQM23I2Nxzv5R0hJf0BqeZL05IXi9nEwg?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1941113.1709828144.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date: Thu, 07 Mar 2024 16:15:44 +0000
-Message-ID: <1941114.1709828144@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR21MB1481.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9f4d481d-3f83-4649-9377-08dc3ec227d3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Mar 2024 16:17:59.2380
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: nKLWLLPkGaMWEu63oIVnnSVABf76t3UYlqr7ib7J1YRE/XbZkgA545+oahn3dqkXNKsR1DV11XLy6Lic3ckvNw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR21MB4043
 
-invalidate_inode_pages2_range() and its wrappers are frequently used to
-invalidate overlapping folios prior to and after doing direct I/O.  This
-calls ->launder_folio() to flush dirty folios out to the backing store,
-keeping the folio lock across the I/O - presumably to prevent the folio
-from being redirtied and thereby prevent it from being removed.
 
-However...  If we're doing this prior to doing DIO on a file, there may be
-nothing preventing an mmapped write from recreating and redirtying the
-folio the moment it is removed from the mapping lest the kernel deadlock o=
-n
-doing DIO to/from a buffer mmapped from the target file.
 
-Further, invalidate_inode_pages2_range() is permitted to fail - and half
-the callers don't even check to see if it *did* fail, probably not
-unreasonably.
+> -----Original Message-----
+> From: Shradha Gupta <shradhagupta@linux.microsoft.com>
+> Sent: Thursday, March 7, 2024 9:52 AM
+> To: linux-kernel@vger.kernel.org; linux-hyperv@vger.kernel.org; linux-
+> rdma@vger.kernel.org; netdev@vger.kernel.org
+> Cc: Shradha Gupta <shradhagupta@linux.microsoft.com>; Eric Dumazet
+> <edumazet@google.com>; Jakub Kicinski <kuba@kernel.org>; Paolo Abeni
+> <pabeni@redhat.com>; Ajay Sharma <sharmaajay@microsoft.com>; Leon
+> Romanovsky <leon@kernel.org>; Thomas Gleixner <tglx@linutronix.de>;
+> Sebastian Andrzej Siewior <bigeasy@linutronix.de>; KY Srinivasan
+> <kys@microsoft.com>; Haiyang Zhang <haiyangz@microsoft.com>; Wei Liu
+> <wei.liu@kernel.org>; Dexuan Cui <decui@microsoft.com>; Long Li
+> <longli@microsoft.com>; Michael Kelley <mikelley@microsoft.com>; Shradha
+> Gupta <shradhagupta@microsoft.com>
+> Subject: [PATCH] net :mana : Add per-cpu stats for MANA device
+>=20
+> Extend 'ethtool -S' output for mana devices to include per-CPU packet
+> stats
+>=20
+> Built-on: Ubuntu22
+> Tested-on: Ubuntu22
+> Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
+> ---
+>  drivers/net/ethernet/microsoft/mana/mana_en.c | 22 ++++++++++
+>  .../ethernet/microsoft/mana/mana_ethtool.c    | 40 ++++++++++++++++++-
+>  include/net/mana/mana.h                       | 12 ++++++
+>  3 files changed, 72 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c
+> b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> index 59287c6e6cee..b27ee6684936 100644
+> --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
+> +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> @@ -224,6 +224,7 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb,
+> struct net_device *ndev)
+>  	int gso_hs =3D 0; /* zero for non-GSO pkts */
+>  	u16 txq_idx =3D skb_get_queue_mapping(skb);
+>  	struct gdma_dev *gd =3D apc->ac->gdma_dev;
+> +	struct mana_pcpu_stats *pcpu_stats;
+>  	bool ipv4 =3D false, ipv6 =3D false;
+>  	struct mana_tx_package pkg =3D {};
+>  	struct netdev_queue *net_txq;
+> @@ -234,6 +235,8 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb,
+> struct net_device *ndev)
+>  	struct mana_cq *cq;
+>  	int err, len;
+>=20
+> +	pcpu_stats =3D this_cpu_ptr(apc->pcpu_stats);
+> +
+>  	if (unlikely(!apc->port_is_up))
+>  		goto tx_drop;
+>=20
+> @@ -412,6 +415,12 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb,
+> struct net_device *ndev)
+>  	tx_stats->bytes +=3D len;
+>  	u64_stats_update_end(&tx_stats->syncp);
+>=20
+> +	/* Also update the per-CPU stats */
+> +	u64_stats_update_begin(&pcpu_stats->syncp);
+> +	pcpu_stats->tx_packets++;
+> +	pcpu_stats->tx_bytes +=3D len;
+> +	u64_stats_update_end(&pcpu_stats->syncp);
+> +
+>  tx_busy:
+>  	if (netif_tx_queue_stopped(net_txq) && mana_can_tx(gdma_sq)) {
+>  		netif_tx_wake_queue(net_txq);
+> @@ -425,6 +434,9 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb,
+> struct net_device *ndev)
+>  	kfree(pkg.sgl_ptr);
+>  tx_drop_count:
+>  	ndev->stats.tx_dropped++;
+> +	u64_stats_update_begin(&pcpu_stats->syncp);
+> +	pcpu_stats->tx_dropped++;
+> +	u64_stats_update_end(&pcpu_stats->syncp);
+>  tx_drop:
+>  	dev_kfree_skb_any(skb);
+>  	return NETDEV_TX_OK;
+> @@ -1505,6 +1517,8 @@ static void mana_rx_skb(void *buf_va, bool
+> from_pool,
+>  	struct mana_stats_rx *rx_stats =3D &rxq->stats;
+>  	struct net_device *ndev =3D rxq->ndev;
+>  	uint pkt_len =3D cqe->ppi[0].pkt_len;
+> +	struct mana_pcpu_stats *pcpu_stats;
+> +	struct mana_port_context *apc;
+>  	u16 rxq_idx =3D rxq->rxq_idx;
+>  	struct napi_struct *napi;
+>  	struct xdp_buff xdp =3D {};
+> @@ -1512,6 +1526,9 @@ static void mana_rx_skb(void *buf_va, bool
+> from_pool,
+>  	u32 hash_value;
+>  	u32 act;
+>=20
+> +	apc =3D netdev_priv(ndev);
+> +	pcpu_stats =3D this_cpu_ptr(apc->pcpu_stats);
+> +
+>  	rxq->rx_cq.work_done++;
+>  	napi =3D &rxq->rx_cq.napi;
+>=20
+> @@ -1570,6 +1587,11 @@ static void mana_rx_skb(void *buf_va, bool
+> from_pool,
+>  		rx_stats->xdp_tx++;
+>  	u64_stats_update_end(&rx_stats->syncp);
+>=20
+> +	u64_stats_update_begin(&pcpu_stats->syncp);
+> +	pcpu_stats->rx_packets++;
+> +	pcpu_stats->rx_bytes +=3D pkt_len;
+> +	u64_stats_update_end(&pcpu_stats->syncp);
+> +
+>  	if (act =3D=3D XDP_TX) {
+>  		skb_set_queue_mapping(skb, rxq_idx);
+>  		mana_xdp_tx(skb, ndev);
+> diff --git a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+> b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+> index ab2413d71f6c..e3aa47ead601 100644
+> --- a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+> +++ b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+> @@ -83,8 +83,9 @@ static int mana_get_sset_count(struct net_device *ndev,
+> int stringset)
+>  	if (stringset !=3D ETH_SS_STATS)
+>  		return -EINVAL;
+>=20
+> -	return ARRAY_SIZE(mana_eth_stats) + num_queues *
+> -				(MANA_STATS_RX_COUNT + MANA_STATS_TX_COUNT);
+> +	return ARRAY_SIZE(mana_eth_stats) +
+> +	       (num_queues * (MANA_STATS_RX_COUNT + MANA_STATS_TX_COUNT)) +
+> +	       (num_present_cpus() * (MANA_STATS_RX_PCPU +
+> MANA_STATS_TX_PCPU));
+>  }
+>=20
+>  static void mana_get_strings(struct net_device *ndev, u32 stringset, u8
+> *data)
+> @@ -139,6 +140,19 @@ static void mana_get_strings(struct net_device
+> *ndev, u32 stringset, u8 *data)
+>  		sprintf(p, "tx_%d_mana_map_err", i);
+>  		p +=3D ETH_GSTRING_LEN;
+>  	}
+> +
+> +	for (i =3D 0; i < num_present_cpus(); i++) {
+> +		sprintf(p, "cpu%d_rx_packets", i);
+> +		p +=3D ETH_GSTRING_LEN;
+> +		sprintf(p, "cpu%d_rx_bytes", i);
+> +		p +=3D ETH_GSTRING_LEN;
+> +		sprintf(p, "cpu%d_tx_packets", i);
+> +		p +=3D ETH_GSTRING_LEN;
+> +		sprintf(p, "cpu%d_tx_bytes", i);
+> +		p +=3D ETH_GSTRING_LEN;
+> +		sprintf(p, "cpu%d_tx_dropped", i);
+> +		p +=3D ETH_GSTRING_LEN;
+> +	}
+>  }
+>=20
+>  static void mana_get_ethtool_stats(struct net_device *ndev,
+> @@ -222,6 +236,28 @@ static void mana_get_ethtool_stats(struct net_device
+> *ndev,
+>  		data[i++] =3D csum_partial;
+>  		data[i++] =3D mana_map_err;
+>  	}
+> +
+> +	for_each_possible_cpu(q) {
+> +		const struct mana_pcpu_stats *pcpu_stats =3D
+> +				per_cpu_ptr(apc->pcpu_stats, q);
+> +		u64 rx_packets, rx_bytes, tx_packets, tx_bytes, tx_dropped;
+> +		unsigned int start;
+> +
+> +		do {
+> +			start =3D u64_stats_fetch_begin(&pcpu_stats->syncp);
+> +			rx_packets =3D pcpu_stats->rx_packets;
+> +			tx_packets =3D pcpu_stats->tx_packets;
+> +			rx_bytes =3D pcpu_stats->rx_bytes;
+> +			tx_bytes =3D pcpu_stats->tx_bytes;
+> +			tx_dropped =3D pcpu_stats->tx_dropped;
+> +		} while (u64_stats_fetch_retry(&pcpu_stats->syncp, start));
+> +
+> +		data[i++] =3D rx_packets;
+> +		data[i++] =3D rx_bytes;
+> +		data[i++] =3D tx_packets;
+> +		data[i++] =3D tx_bytes;
+> +		data[i++] =3D tx_dropped;
+> +	}
+>  }
+>=20
+>  static int mana_get_rxnfc(struct net_device *ndev, struct ethtool_rxnfc
+> *cmd,
+> diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
+> index 76147feb0d10..9a2414ee7f02 100644
+> --- a/include/net/mana/mana.h
+> +++ b/include/net/mana/mana.h
+> @@ -51,6 +51,8 @@ enum TRI_STATE {
+>  /* Update this count whenever the respective structures are changed */
+>  #define MANA_STATS_RX_COUNT 5
+>  #define MANA_STATS_TX_COUNT 11
+> +#define MANA_STATS_RX_PCPU 2
+> +#define MANA_STATS_TX_PCPU 3
+>=20
+>  struct mana_stats_rx {
+>  	u64 packets;
+> @@ -386,6 +388,15 @@ struct mana_ethtool_stats {
+>  	u64 rx_cqe_unknown_type;
+>  };
+>=20
+> +struct mana_pcpu_stats {
+> +	u64 rx_packets;
+> +	u64 rx_bytes;
+> +	u64 tx_packets;
+> +	u64 tx_bytes;
+> +	u64 tx_dropped;
+> +	struct u64_stats_sync syncp;
+> +};
+> +
+>  struct mana_context {
+>  	struct gdma_dev *gdma_dev;
+>=20
+> @@ -449,6 +460,7 @@ struct mana_port_context {
+>  	bool port_st_save; /* Saved port state */
+>=20
+>  	struct mana_ethtool_stats eth_stats;
+> +	struct mana_pcpu_stats __percpu *pcpu_stats;
 
-In which case, there's no point doing the laundry there; better to call
-something like filemap_fdatawrite() beforehand.  If mmap is going to
-interfere, we can't stop it.
+Where are pcpu_stats alloc-ed?
+Seems I cannot see any alloc in the patch.
 
-There are some other cases in which this is used:
-
- (1) In fuse_do_setattr(), when the size of a file is changed.  Calling
-     invalidate_inode_pages2() here is probably the wrong thing to do as
-     the preceding truncate_pagecache() should do the appropriate page
-     trimming and this would just seem to reduce performance for no good
-     reason.
-
- (2) In some network filesystems, when the server informs the client of a
-     third-party modification to a file, the local pagecache is zapped wit=
-h
-     invalidate_inode_pages2() rather than invalidate_remote_inode().  The
-     former writes back the dirty data whereas the latter retains it plus
-     surrounding obsolete data in the same folio.  Maybe this should be
-     done by filemap_fdatawrite() followed by invalidate_inode_pages2().
-
-     Possibly, ->page_mkwrite() could be used to hold off mmap writes unti=
-l
-     remote invalidation-induced writeback is achieved.
-
- (3) In NFS, this is used to attempt to save the data when some sort of
-     fatal error occurs.  It may be sufficient to do a filemap_fdatawrite(=
-)
-     before calling invalidate_inode_pages2().  nfs_writepages() can
-     observe the error state and do the laundering thing.  Again, maybe,
-     ->page_mkwrite() could be used to hold off mmap writes until the
-     pagecache has been invalidated.
-
-Note that this only affects 9p, afs, cifs, fuse, nfs and orangefs.
-
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Trond Myklebust <trond.myklebust@hammerspace.com>
-cc: Matthew Wilcox <willy@infradead.org>
-cc: Christoph Hellwig <hch@lst.de>
-cc: Andrew Morton <akpm@linux-foundation.org>
-cc: Alexander Viro <viro@zeniv.linux.org.uk>
-cc: Christian Brauner <brauner@kernel.org>
-cc: Jeff Layton <jlayton@kernel.org>
-cc: linux-mm@kvack.org
-cc: linux-fsdevel@vger.kernel.org
-cc: netfs@lists.linux.dev
-cc: v9fs@lists.linux.dev
-cc: linux-afs@lists.infradead.org
-cc: ceph-devel@vger.kernel.org
-cc: linux-cifs@vger.kernel.org
-cc: linux-nfs@vger.kernel.org
-cc: devel@lists.orangefs.org
----
- Documentation/filesystems/locking.rst |    8 --
- Documentation/filesystems/vfs.rst     |    6 -
- fs/9p/vfs_addr.c                      |    2 =
-
- fs/afs/file.c                         |    1 =
-
- fs/afs/internal.h                     |    1 =
-
- fs/afs/write.c                        |   10 --
- fs/ceph/file.c                        |    6 -
- fs/fuse/file.c                        |   16 ----
- fs/netfs/buffered_write.c             |   74 --------------------
- fs/netfs/main.c                       |    1 =
-
- fs/nfs/file.c                         |   23 ------
- fs/nfs/inode.c                        |    4 -
- fs/nfs/nfstrace.h                     |    1 =
-
- fs/orangefs/inode.c                   |    1 =
-
- fs/smb/client/file.c                  |  122 ----------------------------=
-------
- include/linux/fs.h                    |    1 =
-
- include/linux/netfs.h                 |    2 =
-
- include/trace/events/netfs.h          |    3 =
-
- mm/truncate.c                         |   25 +-----
- 19 files changed, 14 insertions(+), 293 deletions(-)
-
-diff --git a/Documentation/filesystems/locking.rst b/Documentation/filesys=
-tems/locking.rst
-index d5bf4b6b7509..139554d1ab51 100644
---- a/Documentation/filesystems/locking.rst
-+++ b/Documentation/filesystems/locking.rst
-@@ -262,7 +262,6 @@ prototypes::
- 	int (*direct_IO)(struct kiocb *, struct iov_iter *iter);
- 	int (*migrate_folio)(struct address_space *, struct folio *dst,
- 			struct folio *src, enum migrate_mode);
--	int (*launder_folio)(struct folio *);
- 	bool (*is_partially_uptodate)(struct folio *, size_t from, size_t count)=
-;
- 	int (*error_remove_folio)(struct address_space *, struct folio *);
- 	int (*swap_activate)(struct swap_info_struct *sis, struct file *f, secto=
-r_t *span)
-@@ -288,7 +287,6 @@ release_folio:		yes
- free_folio:		yes
- direct_IO:
- migrate_folio:		yes (both)
--launder_folio:		yes
- is_partially_uptodate:	yes
- error_remove_folio:	yes
- swap_activate:		no
-@@ -394,12 +392,6 @@ try_to_free_buffers().
- ->free_folio() is called when the kernel has dropped the folio
- from the page cache.
- =
-
--->launder_folio() may be called prior to releasing a folio if
--it is still found to be dirty. It returns zero if the folio was successfu=
-lly
--cleaned, or an error value if not. Note that in order to prevent the foli=
-o
--getting mapped back in and redirtied, it needs to be kept locked
--across the entire operation.
--
- ->swap_activate() will be called to prepare the given file for swap.  It
- should perform any validation and preparation necessary to ensure that
- writes can be performed with minimal memory allocation.  It should call
-diff --git a/Documentation/filesystems/vfs.rst b/Documentation/filesystems=
-/vfs.rst
-index eebcc0f9e2bc..b2af9ee6515a 100644
---- a/Documentation/filesystems/vfs.rst
-+++ b/Documentation/filesystems/vfs.rst
-@@ -818,7 +818,6 @@ cache in your filesystem.  The following members are d=
-efined:
- 		ssize_t (*direct_IO)(struct kiocb *, struct iov_iter *iter);
- 		int (*migrate_folio)(struct mapping *, struct folio *dst,
- 				struct folio *src, enum migrate_mode);
--		int (*launder_folio) (struct folio *);
- =
-
- 		bool (*is_partially_uptodate) (struct folio *, size_t from,
- 					       size_t count);
-@@ -1012,11 +1011,6 @@ cache in your filesystem.  The following members ar=
-e defined:
- 	folio to this function.  migrate_folio should transfer any private
- 	data across and update any references that it has to the folio.
- =
-
--``launder_folio``
--	Called before freeing a folio - it writes back the dirty folio.
--	To prevent redirtying the folio, it is kept locked during the
--	whole operation.
--
- ``is_partially_uptodate``
- 	Called by the VM when reading a file through the pagecache when
- 	the underlying blocksize is smaller than the size of the folio.
-diff --git a/fs/9p/vfs_addr.c b/fs/9p/vfs_addr.c
-index 047855033d32..5a943c122d83 100644
---- a/fs/9p/vfs_addr.c
-+++ b/fs/9p/vfs_addr.c
-@@ -89,7 +89,6 @@ static int v9fs_init_request(struct netfs_io_request *rr=
-eq, struct file *file)
- 	bool writing =3D (rreq->origin =3D=3D NETFS_READ_FOR_WRITE ||
- 			rreq->origin =3D=3D NETFS_WRITEBACK ||
- 			rreq->origin =3D=3D NETFS_WRITETHROUGH ||
--			rreq->origin =3D=3D NETFS_LAUNDER_WRITE ||
- 			rreq->origin =3D=3D NETFS_UNBUFFERED_WRITE ||
- 			rreq->origin =3D=3D NETFS_DIO_WRITE);
- =
-
-@@ -141,7 +140,6 @@ const struct address_space_operations v9fs_addr_operat=
-ions =3D {
- 	.dirty_folio		=3D netfs_dirty_folio,
- 	.release_folio		=3D netfs_release_folio,
- 	.invalidate_folio	=3D netfs_invalidate_folio,
--	.launder_folio		=3D netfs_launder_folio,
- 	.direct_IO		=3D noop_direct_IO,
- 	.writepages		=3D netfs_writepages,
- };
-diff --git a/fs/afs/file.c b/fs/afs/file.c
-index ef2cc8f565d2..dfd8f60f5e1f 100644
---- a/fs/afs/file.c
-+++ b/fs/afs/file.c
-@@ -54,7 +54,6 @@ const struct address_space_operations afs_file_aops =3D =
-{
- 	.read_folio	=3D netfs_read_folio,
- 	.readahead	=3D netfs_readahead,
- 	.dirty_folio	=3D netfs_dirty_folio,
--	.launder_folio	=3D netfs_launder_folio,
- 	.release_folio	=3D netfs_release_folio,
- 	.invalidate_folio =3D netfs_invalidate_folio,
- 	.migrate_folio	=3D filemap_migrate_folio,
-diff --git a/fs/afs/internal.h b/fs/afs/internal.h
-index 6ce5a612937c..b93aa026daa4 100644
---- a/fs/afs/internal.h
-+++ b/fs/afs/internal.h
-@@ -916,7 +916,6 @@ struct afs_operation {
- 			loff_t	pos;
- 			loff_t	size;
- 			loff_t	i_size;
--			bool	laundering;	/* Laundering page, PG_writeback not set */
- 		} store;
- 		struct {
- 			struct iattr	*attr;
-diff --git a/fs/afs/write.c b/fs/afs/write.c
-index 74402d95a884..1bc26466eb72 100644
---- a/fs/afs/write.c
-+++ b/fs/afs/write.c
-@@ -75,8 +75,7 @@ static void afs_store_data_success(struct afs_operation =
-*op)
- 	op->ctime =3D op->file[0].scb.status.mtime_client;
- 	afs_vnode_commit_status(op, &op->file[0]);
- 	if (!afs_op_error(op)) {
--		if (!op->store.laundering)
--			afs_pages_written_back(vnode, op->store.pos, op->store.size);
-+		afs_pages_written_back(vnode, op->store.pos, op->store.size);
- 		afs_stat_v(vnode, n_stores);
- 		atomic_long_add(op->store.size, &afs_v2net(vnode)->n_store_bytes);
- 	}
-@@ -91,8 +90,7 @@ static const struct afs_operation_ops afs_store_data_ope=
-ration =3D {
- /*
-  * write to a file
-  */
--static int afs_store_data(struct afs_vnode *vnode, struct iov_iter *iter,=
- loff_t pos,
--			  bool laundering)
-+static int afs_store_data(struct afs_vnode *vnode, struct iov_iter *iter,=
- loff_t pos)
- {
- 	struct afs_operation *op;
- 	struct afs_wb_key *wbk =3D NULL;
-@@ -123,7 +121,6 @@ static int afs_store_data(struct afs_vnode *vnode, str=
-uct iov_iter *iter, loff_t
- 	op->file[0].modification =3D true;
- 	op->store.pos =3D pos;
- 	op->store.size =3D size;
--	op->store.laundering =3D laundering;
- 	op->flags |=3D AFS_OPERATION_UNINTR;
- 	op->ops =3D &afs_store_data_operation;
- =
-
-@@ -168,8 +165,7 @@ static void afs_upload_to_server(struct netfs_io_subre=
-quest *subreq)
- 	       subreq->rreq->debug_id, subreq->debug_index, subreq->io_iter.coun=
-t);
- =
-
- 	trace_netfs_sreq(subreq, netfs_sreq_trace_submit);
--	ret =3D afs_store_data(vnode, &subreq->io_iter, subreq->start,
--			     subreq->rreq->origin =3D=3D NETFS_LAUNDER_WRITE);
-+	ret =3D afs_store_data(vnode, &subreq->io_iter, subreq->start);
- 	netfs_write_subrequest_terminated(subreq, ret < 0 ? ret : subreq->len,
- 					  false);
- }
-diff --git a/fs/ceph/file.c b/fs/ceph/file.c
-index abe8028d95bf..6af96c154f81 100644
---- a/fs/ceph/file.c
-+++ b/fs/ceph/file.c
-@@ -1450,11 +1450,9 @@ ceph_direct_read_write(struct kiocb *iocb, struct i=
-ov_iter *iter,
- =
-
- 		ceph_fscache_invalidate(inode, true);
- =
-
--		ret2 =3D invalidate_inode_pages2_range(inode->i_mapping,
--					pos >> PAGE_SHIFT,
--					(pos + count - 1) >> PAGE_SHIFT);
-+		ret2 =3D kiocb_invalidate_pages(iocb, count);
- 		if (ret2 < 0)
--			doutc(cl, "invalidate_inode_pages2_range returned %d\n",
-+			doutc(cl, "kiocb_invalidate_pages returned %d\n",
- 			      ret2);
- =
-
- 		flags =3D /* CEPH_OSD_FLAG_ORDERSNAP | */ CEPH_OSD_FLAG_WRITE;
-diff --git a/fs/fuse/file.c b/fs/fuse/file.c
-index 148a71b8b4d0..43411f0d3ce1 100644
---- a/fs/fuse/file.c
-+++ b/fs/fuse/file.c
-@@ -2393,21 +2393,6 @@ static int fuse_write_end(struct file *file, struct=
- address_space *mapping,
- 	return copied;
- }
- =
-
--static int fuse_launder_folio(struct folio *folio)
--{
--	int err =3D 0;
--	if (folio_clear_dirty_for_io(folio)) {
--		struct inode *inode =3D folio->mapping->host;
--
--		/* Serialize with pending writeback for the same page */
--		fuse_wait_on_page_writeback(inode, folio->index);
--		err =3D fuse_writepage_locked(&folio->page);
--		if (!err)
--			fuse_wait_on_page_writeback(inode, folio->index);
--	}
--	return err;
--}
--
- /*
-  * Write back dirty data/metadata now (there may not be any suitable
-  * open files later for data)
-@@ -3227,7 +3212,6 @@ static const struct address_space_operations fuse_fi=
-le_aops  =3D {
- 	.readahead	=3D fuse_readahead,
- 	.writepage	=3D fuse_writepage,
- 	.writepages	=3D fuse_writepages,
--	.launder_folio	=3D fuse_launder_folio,
- 	.dirty_folio	=3D filemap_dirty_folio,
- 	.bmap		=3D fuse_bmap,
- 	.direct_IO	=3D fuse_direct_IO,
-diff --git a/fs/netfs/buffered_write.c b/fs/netfs/buffered_write.c
-index 9a0d32e4b422..4bdd427035de 100644
---- a/fs/netfs/buffered_write.c
-+++ b/fs/netfs/buffered_write.c
-@@ -1181,77 +1181,3 @@ int netfs_writepages(struct address_space *mapping,
- 	return ret;
- }
- EXPORT_SYMBOL(netfs_writepages);
--
--/*
-- * Deal with the disposition of a laundered folio.
-- */
--static void netfs_cleanup_launder_folio(struct netfs_io_request *wreq)
--{
--	if (wreq->error) {
--		pr_notice("R=3D%08x Laundering error %d\n", wreq->debug_id, wreq->error=
-);
--		mapping_set_error(wreq->mapping, wreq->error);
--	}
--}
--
--/**
-- * netfs_launder_folio - Clean up a dirty folio that's being invalidated
-- * @folio: The folio to clean
-- *
-- * This is called to write back a folio that's being invalidated when an =
-inode
-- * is getting torn down.  Ideally, writepages would be used instead.
-- */
--int netfs_launder_folio(struct folio *folio)
--{
--	struct netfs_io_request *wreq;
--	struct address_space *mapping =3D folio->mapping;
--	struct netfs_folio *finfo =3D netfs_folio_info(folio);
--	struct netfs_group *group =3D netfs_folio_group(folio);
--	struct bio_vec bvec;
--	unsigned long long i_size =3D i_size_read(mapping->host);
--	unsigned long long start =3D folio_pos(folio);
--	size_t offset =3D 0, len;
--	int ret =3D 0;
--
--	if (finfo) {
--		offset =3D finfo->dirty_offset;
--		start +=3D offset;
--		len =3D finfo->dirty_len;
--	} else {
--		len =3D folio_size(folio);
--	}
--	len =3D min_t(unsigned long long, len, i_size - start);
--
--	wreq =3D netfs_alloc_request(mapping, NULL, start, len, NETFS_LAUNDER_WR=
-ITE);
--	if (IS_ERR(wreq)) {
--		ret =3D PTR_ERR(wreq);
--		goto out;
--	}
--
--	if (!folio_clear_dirty_for_io(folio))
--		goto out_put;
--
--	trace_netfs_folio(folio, netfs_folio_trace_launder);
--
--	_debug("launder %llx-%llx", start, start + len - 1);
--
--	/* Speculatively write to the cache.  We have to fix this up later if
--	 * the store fails.
--	 */
--	wreq->cleanup =3D netfs_cleanup_launder_folio;
--
--	bvec_set_folio(&bvec, folio, len, offset);
--	iov_iter_bvec(&wreq->iter, ITER_SOURCE, &bvec, 1, len);
--	__set_bit(NETFS_RREQ_UPLOAD_TO_SERVER, &wreq->flags);
--	ret =3D netfs_begin_write(wreq, true, netfs_write_trace_launder);
--
--out_put:
--	folio_detach_private(folio);
--	netfs_put_group(group);
--	kfree(finfo);
--	netfs_put_request(wreq, false, netfs_rreq_trace_put_return);
--out:
--	folio_wait_fscache(folio);
--	_leave(" =3D %d", ret);
--	return ret;
--}
--EXPORT_SYMBOL(netfs_launder_folio);
-diff --git a/fs/netfs/main.c b/fs/netfs/main.c
-index 5e77618a7940..dd4bbdc1a4d0 100644
---- a/fs/netfs/main.c
-+++ b/fs/netfs/main.c
-@@ -33,7 +33,6 @@ static const char *netfs_origins[nr__netfs_io_origin] =3D=
- {
- 	[NETFS_READ_FOR_WRITE]		=3D "RW",
- 	[NETFS_WRITEBACK]		=3D "WB",
- 	[NETFS_WRITETHROUGH]		=3D "WT",
--	[NETFS_LAUNDER_WRITE]		=3D "LW",
- 	[NETFS_UNBUFFERED_WRITE]	=3D "UW",
- 	[NETFS_DIO_READ]		=3D "DR",
- 	[NETFS_DIO_WRITE]		=3D "DW",
-diff --git a/fs/nfs/file.c b/fs/nfs/file.c
-index 8577ccf621f5..6efe0af3ba80 100644
---- a/fs/nfs/file.c
-+++ b/fs/nfs/file.c
-@@ -484,28 +484,6 @@ static void nfs_check_dirty_writeback(struct folio *f=
-olio,
- 		*dirty =3D true;
- }
- =
-
--/*
-- * Attempt to clear the private state associated with a page when an erro=
-r
-- * occurs that requires the cached contents of an inode to be written bac=
-k or
-- * destroyed
-- * - Called if either PG_private or fscache is set on the page
-- * - Caller holds page lock
-- * - Return 0 if successful, -error otherwise
-- */
--static int nfs_launder_folio(struct folio *folio)
--{
--	struct inode *inode =3D folio->mapping->host;
--	int ret;
--
--	dfprintk(PAGECACHE, "NFS: launder_folio(%ld, %llu)\n",
--		inode->i_ino, folio_pos(folio));
--
--	folio_wait_fscache(folio);
--	ret =3D nfs_wb_folio(inode, folio);
--	trace_nfs_launder_folio_done(inode, folio, ret);
--	return ret;
--}
--
- static int nfs_swap_activate(struct swap_info_struct *sis, struct file *f=
-ile,
- 						sector_t *span)
- {
-@@ -564,7 +542,6 @@ const struct address_space_operations nfs_file_aops =3D=
- {
- 	.invalidate_folio =3D nfs_invalidate_folio,
- 	.release_folio =3D nfs_release_folio,
- 	.migrate_folio =3D nfs_migrate_folio,
--	.launder_folio =3D nfs_launder_folio,
- 	.is_dirty_writeback =3D nfs_check_dirty_writeback,
- 	.error_remove_folio =3D generic_error_remove_folio,
- 	.swap_activate =3D nfs_swap_activate,
-diff --git a/fs/nfs/inode.c b/fs/nfs/inode.c
-index ebb8d60e1152..898f65784fae 100644
---- a/fs/nfs/inode.c
-+++ b/fs/nfs/inode.c
-@@ -1162,8 +1162,10 @@ void nfs_file_clear_open_context(struct file *filp)
- 		 * We fatal error on write before. Try to writeback
- 		 * every page again.
- 		 */
--		if (ctx->error < 0)
-+		if (ctx->error < 0) {
-+			filemap_fdatawrite(inode->i_mapping);
- 			invalidate_inode_pages2(inode->i_mapping);
-+		}
- 		filp->private_data =3D NULL;
- 		put_nfs_open_context_sync(ctx);
- 	}
-diff --git a/fs/nfs/nfstrace.h b/fs/nfs/nfstrace.h
-index afedb449b54f..f0e8c0fb9447 100644
---- a/fs/nfs/nfstrace.h
-+++ b/fs/nfs/nfstrace.h
-@@ -1039,7 +1039,6 @@ DEFINE_NFS_FOLIO_EVENT(nfs_writeback_folio);
- DEFINE_NFS_FOLIO_EVENT_DONE(nfs_writeback_folio_done);
- =
-
- DEFINE_NFS_FOLIO_EVENT(nfs_invalidate_folio);
--DEFINE_NFS_FOLIO_EVENT_DONE(nfs_launder_folio_done);
- =
-
- TRACE_EVENT(nfs_aop_readahead,
- 		TP_PROTO(
-diff --git a/fs/orangefs/inode.c b/fs/orangefs/inode.c
-index 085912268442..d78876d08175 100644
---- a/fs/orangefs/inode.c
-+++ b/fs/orangefs/inode.c
-@@ -626,7 +626,6 @@ static const struct address_space_operations orangefs_=
-address_operations =3D {
- 	.invalidate_folio =3D orangefs_invalidate_folio,
- 	.release_folio =3D orangefs_release_folio,
- 	.free_folio =3D orangefs_free_folio,
--	.launder_folio =3D orangefs_launder_folio,
- 	.direct_IO =3D orangefs_direct_IO,
- };
- =
-
-diff --git a/fs/smb/client/file.c b/fs/smb/client/file.c
-index f391c9b803d8..f5d5efeba5e9 100644
---- a/fs/smb/client/file.c
-+++ b/fs/smb/client/file.c
-@@ -2561,64 +2561,6 @@ struct cifs_writedata *cifs_writedata_alloc(work_fu=
-nc_t complete)
- 	return wdata;
- }
- =
-
--static int cifs_partialpagewrite(struct page *page, unsigned from, unsign=
-ed to)
--{
--	struct address_space *mapping =3D page->mapping;
--	loff_t offset =3D (loff_t)page->index << PAGE_SHIFT;
--	char *write_data;
--	int rc =3D -EFAULT;
--	int bytes_written =3D 0;
--	struct inode *inode;
--	struct cifsFileInfo *open_file;
--
--	if (!mapping || !mapping->host)
--		return -EFAULT;
--
--	inode =3D page->mapping->host;
--
--	offset +=3D (loff_t)from;
--	write_data =3D kmap(page);
--	write_data +=3D from;
--
--	if ((to > PAGE_SIZE) || (from > to)) {
--		kunmap(page);
--		return -EIO;
--	}
--
--	/* racing with truncate? */
--	if (offset > mapping->host->i_size) {
--		kunmap(page);
--		return 0; /* don't care */
--	}
--
--	/* check to make sure that we are not extending the file */
--	if (mapping->host->i_size - offset < (loff_t)to)
--		to =3D (unsigned)(mapping->host->i_size - offset);
--
--	rc =3D cifs_get_writable_file(CIFS_I(mapping->host), FIND_WR_ANY,
--				    &open_file);
--	if (!rc) {
--		bytes_written =3D cifs_write(open_file, open_file->pid,
--					   write_data, to - from, &offset);
--		cifsFileInfo_put(open_file);
--		/* Does mm or vfs already set times? */
--		simple_inode_init_ts(inode);
--		if ((bytes_written > 0) && (offset))
--			rc =3D 0;
--		else if (bytes_written < 0)
--			rc =3D bytes_written;
--		else
--			rc =3D -EFAULT;
--	} else {
--		cifs_dbg(FYI, "No writable handle for write page rc=3D%d\n", rc);
--		if (!is_retryable_error(rc))
--			rc =3D -EIO;
--	}
--
--	kunmap(page);
--	return rc;
--}
--
- /*
-  * Extend the region to be written back to include subsequent contiguousl=
-y
-  * dirty pages if possible, but don't sleep while doing so.
-@@ -3001,47 +2943,6 @@ static int cifs_writepages(struct address_space *ma=
-pping,
- 	return ret;
- }
- =
-
--static int
--cifs_writepage_locked(struct page *page, struct writeback_control *wbc)
--{
--	int rc;
--	unsigned int xid;
--
--	xid =3D get_xid();
--/* BB add check for wbc flags */
--	get_page(page);
--	if (!PageUptodate(page))
--		cifs_dbg(FYI, "ppw - page not up to date\n");
--
--	/*
--	 * Set the "writeback" flag, and clear "dirty" in the radix tree.
--	 *
--	 * A writepage() implementation always needs to do either this,
--	 * or re-dirty the page with "redirty_page_for_writepage()" in
--	 * the case of a failure.
--	 *
--	 * Just unlocking the page will cause the radix tree tag-bits
--	 * to fail to update with the state of the page correctly.
--	 */
--	set_page_writeback(page);
--retry_write:
--	rc =3D cifs_partialpagewrite(page, 0, PAGE_SIZE);
--	if (is_retryable_error(rc)) {
--		if (wbc->sync_mode =3D=3D WB_SYNC_ALL && rc =3D=3D -EAGAIN)
--			goto retry_write;
--		redirty_page_for_writepage(wbc, page);
--	} else if (rc !=3D 0) {
--		SetPageError(page);
--		mapping_set_error(page->mapping, rc);
--	} else {
--		SetPageUptodate(page);
--	}
--	end_page_writeback(page);
--	put_page(page);
--	free_xid(xid);
--	return rc;
--}
--
- static int cifs_write_end(struct file *file, struct address_space *mappin=
-g,
- 			loff_t pos, unsigned len, unsigned copied,
- 			struct page *page, void *fsdata)
-@@ -4858,27 +4759,6 @@ static void cifs_invalidate_folio(struct folio *fol=
-io, size_t offset,
- 	folio_wait_fscache(folio);
- }
- =
-
--static int cifs_launder_folio(struct folio *folio)
--{
--	int rc =3D 0;
--	loff_t range_start =3D folio_pos(folio);
--	loff_t range_end =3D range_start + folio_size(folio);
--	struct writeback_control wbc =3D {
--		.sync_mode =3D WB_SYNC_ALL,
--		.nr_to_write =3D 0,
--		.range_start =3D range_start,
--		.range_end =3D range_end,
--	};
--
--	cifs_dbg(FYI, "Launder page: %lu\n", folio->index);
--
--	if (folio_clear_dirty_for_io(folio))
--		rc =3D cifs_writepage_locked(&folio->page, &wbc);
--
--	folio_wait_fscache(folio);
--	return rc;
--}
--
- void cifs_oplock_break(struct work_struct *work)
- {
- 	struct cifsFileInfo *cfile =3D container_of(work, struct cifsFileInfo,
-@@ -5057,7 +4937,6 @@ const struct address_space_operations cifs_addr_ops =
-=3D {
- 	.release_folio =3D cifs_release_folio,
- 	.direct_IO =3D cifs_direct_io,
- 	.invalidate_folio =3D cifs_invalidate_folio,
--	.launder_folio =3D cifs_launder_folio,
- 	.migrate_folio =3D filemap_migrate_folio,
- 	/*
- 	 * TODO: investigate and if useful we could add an is_dirty_writeback
-@@ -5080,6 +4959,5 @@ const struct address_space_operations cifs_addr_ops_=
-smallbuf =3D {
- 	.dirty_folio =3D netfs_dirty_folio,
- 	.release_folio =3D cifs_release_folio,
- 	.invalidate_folio =3D cifs_invalidate_folio,
--	.launder_folio =3D cifs_launder_folio,
- 	.migrate_folio =3D filemap_migrate_folio,
- };
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 1fbc72c5f112..ded54555ab30 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -432,7 +432,6 @@ struct address_space_operations {
- 	 */
- 	int (*migrate_folio)(struct address_space *, struct folio *dst,
- 			struct folio *src, enum migrate_mode);
--	int (*launder_folio)(struct folio *);
- 	bool (*is_partially_uptodate) (struct folio *, size_t from,
- 			size_t count);
- 	void (*is_dirty_writeback) (struct folio *, bool *dirty, bool *wb);
-diff --git a/include/linux/netfs.h b/include/linux/netfs.h
-index 100cbb261269..7bd2aeccb299 100644
---- a/include/linux/netfs.h
-+++ b/include/linux/netfs.h
-@@ -232,7 +232,6 @@ enum netfs_io_origin {
- 	NETFS_READ_FOR_WRITE,		/* This read is to prepare a write */
- 	NETFS_WRITEBACK,		/* This write was triggered by writepages */
- 	NETFS_WRITETHROUGH,		/* This write was made by netfs_perform_write() */
--	NETFS_LAUNDER_WRITE,		/* This is triggered by ->launder_folio() */
- 	NETFS_UNBUFFERED_WRITE,		/* This is an unbuffered write */
- 	NETFS_DIO_READ,			/* This is a direct I/O read */
- 	NETFS_DIO_WRITE,		/* This is a direct I/O write */
-@@ -410,7 +409,6 @@ int netfs_unpin_writeback(struct inode *inode, struct =
-writeback_control *wbc);
- void netfs_clear_inode_writeback(struct inode *inode, const void *aux);
- void netfs_invalidate_folio(struct folio *folio, size_t offset, size_t le=
-ngth);
- bool netfs_release_folio(struct folio *folio, gfp_t gfp);
--int netfs_launder_folio(struct folio *folio);
- =
-
- /* VMA operations API. */
- vm_fault_t netfs_page_mkwrite(struct vm_fault *vmf, struct netfs_group *n=
-etfs_group);
-diff --git a/include/trace/events/netfs.h b/include/trace/events/netfs.h
-index 447a8c21cf57..57ed767f0230 100644
---- a/include/trace/events/netfs.h
-+++ b/include/trace/events/netfs.h
-@@ -25,7 +25,6 @@
- =
-
- #define netfs_write_traces					\
- 	EM(netfs_write_trace_dio_write,		"DIO-WRITE")	\
--	EM(netfs_write_trace_launder,		"LAUNDER  ")	\
- 	EM(netfs_write_trace_unbuffered_write,	"UNB-WRITE")	\
- 	EM(netfs_write_trace_writeback,		"WRITEBACK")	\
- 	E_(netfs_write_trace_writethrough,	"WRITETHRU")
-@@ -36,7 +35,6 @@
- 	EM(NETFS_READ_FOR_WRITE,		"RW")		\
- 	EM(NETFS_WRITEBACK,			"WB")		\
- 	EM(NETFS_WRITETHROUGH,			"WT")		\
--	EM(NETFS_LAUNDER_WRITE,			"LW")		\
- 	EM(NETFS_UNBUFFERED_WRITE,		"UW")		\
- 	EM(NETFS_DIO_READ,			"DR")		\
- 	E_(NETFS_DIO_WRITE,			"DW")
-@@ -131,7 +129,6 @@
- 	EM(netfs_folio_trace_end_copy,		"end-copy")	\
- 	EM(netfs_folio_trace_filled_gaps,	"filled-gaps")	\
- 	EM(netfs_folio_trace_kill,		"kill")		\
--	EM(netfs_folio_trace_launder,		"launder")	\
- 	EM(netfs_folio_trace_mkwrite,		"mkwrite")	\
- 	EM(netfs_folio_trace_mkwrite_plus,	"mkwrite+")	\
- 	EM(netfs_folio_trace_read_gaps,		"read-gaps")	\
-diff --git a/mm/truncate.c b/mm/truncate.c
-index 725b150e47ac..dab17b926991 100644
---- a/mm/truncate.c
-+++ b/mm/truncate.c
-@@ -561,10 +561,10 @@ static int invalidate_complete_folio2(struct address=
-_space *mapping,
- 					struct folio *folio)
- {
- 	if (folio->mapping !=3D mapping)
--		return 0;
-+		return -EBUSY;
- =
-
- 	if (!filemap_release_folio(folio, GFP_KERNEL))
--		return 0;
-+		return -EBUSY;
- =
-
- 	spin_lock(&mapping->host->i_lock);
- 	xa_lock_irq(&mapping->i_pages);
-@@ -579,20 +579,11 @@ static int invalidate_complete_folio2(struct address=
-_space *mapping,
- 	spin_unlock(&mapping->host->i_lock);
- =
-
- 	filemap_free_folio(mapping, folio);
--	return 1;
-+	return 0;
- failed:
- 	xa_unlock_irq(&mapping->i_pages);
- 	spin_unlock(&mapping->host->i_lock);
--	return 0;
--}
--
--static int folio_launder(struct address_space *mapping, struct folio *fol=
-io)
--{
--	if (!folio_test_dirty(folio))
--		return 0;
--	if (folio->mapping !=3D mapping || mapping->a_ops->launder_folio =3D=3D =
-NULL)
--		return 0;
--	return mapping->a_ops->launder_folio(folio);
-+	return -EBUSY;
- }
- =
-
- /**
-@@ -657,12 +648,8 @@ int invalidate_inode_pages2_range(struct address_spac=
-e *mapping,
- 				unmap_mapping_folio(folio);
- 			BUG_ON(folio_mapped(folio));
- =
-
--			ret2 =3D folio_launder(mapping, folio);
--			if (ret2 =3D=3D 0) {
--				if (!invalidate_complete_folio2(mapping, folio))
--					ret2 =3D -EBUSY;
--			}
--			if (ret2 < 0)
-+			ret2 =3D invalidate_complete_folio2(mapping, folio);
-+			if (ret2)
- 				ret =3D ret2;
- 			folio_unlock(folio);
- 		}
-
+Thanks,
+- Haiyang
 
