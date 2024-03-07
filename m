@@ -1,144 +1,198 @@
-Return-Path: <linux-kernel+bounces-95205-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95206-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A32B874AA8
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:20:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id ADFA6874AAB
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:20:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B41002870D1
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:20:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64CFD2836C5
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:20:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9797E83CA6;
-	Thu,  7 Mar 2024 09:20:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B71EF83CDA;
+	Thu,  7 Mar 2024 09:20:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kV/mipkr"
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="jOWC3ehH"
+Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A203633FB;
-	Thu,  7 Mar 2024 09:20:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD350823C4
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 09:20:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709803207; cv=none; b=ArBgPwg77hDMR41fjH08/lcRUXXMoQOtH9fhNpZyIUjG5d7Msc0b3xjK+pA0RumZkHzTbKsTqgkAgWBgdG8NtYoAurr1uUvVZMjMSa1/nsMgK3/FgGBFG8FePQXLl0Wp8eIMY9iI1Gx/0Jd4oeJvExbBupj8WDnsHWTrpWnvygg=
+	t=1709803213; cv=none; b=FJKEUYJmAz/EZrGEHROfYI5uVscEtLUDwYwEaAkZOcrvPWQYUwKJgi1FiYGpnItknaR2o1ut+y+UCT3Ymuvk7QcblkCylxGXq6dPEjE1vDuKF5XTuk76ufuDXl9KIvD71SHYWseo+ScGmqdnDpSaRrJW6iaXYar8pW7ypZU9dcU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709803207; c=relaxed/simple;
-	bh=4Gs0ALlJoow9J74owFD4al5jtj3RvYpvgtJMBToY1hY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aVpR+xM69WcYGy8Ruq9lPnIuMuWjVJ5hkbJ0VwOLN/bMQZ2WHxUzBKb0SR5nFOLm1x2Y+WMcQdF8nCpRoPT5Mpy4CULkO7QEHQWFpOBcsdaTazdiAKIrkN7IsHgTxLGME/sZxuEN1vBQa7FyVvTwFbDe7NH3qMbb1aCe+KtQIeg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kV/mipkr; arc=none smtp.client-ip=209.85.167.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-51381021af1so376736e87.0;
-        Thu, 07 Mar 2024 01:20:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709803204; x=1710408004; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=80RTQxeG1HoYvnNvzrKo401rks3qN8X2iKrIw4d9yaQ=;
-        b=kV/mipkrJ5hGtmUOqBOilJsp80PTP1Zhbj94lAJVLxiMqJDECww2Ojf9OwJPDODbQm
-         KIZe+hz49wjhUkyF3uORUpvpg+Y+dO0Y9ZiCFP4C3G5Mp+pe7a8yh+bKH5EM9P0OxEi1
-         XJz1VwXfLYfUy97ZpehHjg0fgNZGzbKCUvje1KHgb1HWvhWMOYbTALP2DXnD7eEOC4X/
-         94RwO1gjV64RxPC0igFbk14XJd8OfsF/OOrpU0Qju+3WUM2z+kF66ZK/0A59lS8qiNrA
-         l+GKV5AD7cWx/gbqG0nHqGPkOGyNUipANNjZ18nGJOhaPgjvOuMJ4wTKPaKmuYGbUiGd
-         1lNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709803204; x=1710408004;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=80RTQxeG1HoYvnNvzrKo401rks3qN8X2iKrIw4d9yaQ=;
-        b=pPnnftxM7ywgT41qh+yVjlYAj5FwHl1GBzdODfN5sc56kNruLMVW/f0gN1LP8XABjb
-         cFYmSS63EpWhgHawirx/stC2L74Or0lWWA1GERpal4gIBSkRn0RAPf3sJXzMByzt2EQm
-         l1DY0eZiCZ5OuT3j9RvruCQoPnbDOqpCXC9c2lYJzS+eeWr6qUI3swlEcArxsCPgwGKI
-         umKwENyGQ/yofR2a+j/qUWbJWbaNV3M3EJZLZPqs2lU9++hs+EkEYn106g+SH2QO+8VL
-         KKPsjBPrItl+ZNrAU1eYIRQSA6awLnExNOKRfP4Xbau3lNnanu8HPhAOhJ53vmFiMYJg
-         njPg==
-X-Forwarded-Encrypted: i=1; AJvYcCWCb5zDG/qIxMWBNY9DqdR/NW4t3+OIGjvKoEdIc8FX1b1DvOHRAOBZWFq4B7nSjL+FQSwxAH5YDZpcHksvhb6FeFhK4W6v+h2gs3zQZgUYcKPaFW7AGFID3L/G6TbspGoA3ccn4xU+cQ==
-X-Gm-Message-State: AOJu0Yx3STOP4VRn8H0trZf91HvZrBGO+7BQFl1M/l1gfV6mXgMS1H2/
-	NJa/eOScDJD+5x1h7e/4aICHjHblOQq03qn98twiK0vQMluxqSOMyQ4V2EX3bUkDQE2r9Z+CB6x
-	1L49EAroaQ1VrF5CWPGZsSDnIuxA=
-X-Google-Smtp-Source: AGHT+IEe43Gp9xWf88EuXib+ywhG0E+gf0UnlcztjMhnwdiDupBKxPSSYhqii6oCxJLhS0kHoQOREXn5DPA0iSZD7b0=
-X-Received: by 2002:ac2:5f87:0:b0:513:6632:2f62 with SMTP id
- r7-20020ac25f87000000b0051366322f62mr1049502lfe.7.1709803203752; Thu, 07 Mar
- 2024 01:20:03 -0800 (PST)
+	s=arc-20240116; t=1709803213; c=relaxed/simple;
+	bh=YT/FbZZyceAX2Mb3Zbme+x0madJmou1w+qr8J8YUkXs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Kl9leYnXlq7j3wHZWGYUB31jd4PzBkdWtYsyA3NxvM8tNnlxN/VXz6hsoxY2qUuSaor3K67j8MC35Rz6o3WBX9/k6k+PUr6exCIyR5bI/NTFl7bWA+CcRnwWF4o88AiJGD+PQOYwgZV1U6v25viHdaEl2fBi9mW33MtlPddVS6M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=jOWC3ehH; arc=none smtp.client-ip=115.124.30.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1709803208; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=4QBG2QheUKTY1OnbPSDP0o85jjGq1EgwtF8LIisWhmc=;
+	b=jOWC3ehHqZBqbsl4W/bne15gfu/A7M+oN6I81ScxnJZygUKMNow+S1yDE12cuh+LKFEGyvO9S2a8yu/1gKv8rD1MSAPLNDec0RsZDGgdpCqoHhDIEBGPbPBWp3HENZ13vSWBSsm2edSddzBiDk+AHTN7jnPVwusdG+UhyxEF6W8=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R411e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0W2-5tED_1709803206;
+Received: from 30.97.48.224(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0W2-5tED_1709803206)
+          by smtp.aliyun-inc.com;
+          Thu, 07 Mar 2024 17:20:07 +0800
+Message-ID: <50205009-07e6-4e7e-9ac5-e6d04e12e62d@linux.alibaba.com>
+Date: Thu, 7 Mar 2024 17:20:06 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1709780590.git.haibo1.xu@intel.com> <f23da383a8fdbee15acd41fdcd38ef3a89045a43.1709780590.git.haibo1.xu@intel.com>
- <c9e9da9f-ff81-48eb-beec-4f54921cd268@app.fastmail.com>
-In-Reply-To: <c9e9da9f-ff81-48eb-beec-4f54921cd268@app.fastmail.com>
-From: Haibo Xu <xiaobo55x@gmail.com>
-Date: Thu, 7 Mar 2024 17:19:52 +0800
-Message-ID: <CAJve8o=BsR1SG0k_7mb61Jj1fb+9rc4V9Y=MMX004fpAWE4vjg@mail.gmail.com>
-Subject: Re: [PATCH v2 5/6] ACPI: NUMA: Remove ARCH depends option in
- ACPI_NUMA Kconfig
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Haibo Xu <haibo1.xu@intel.com>, Alison Schofield <alison.schofield@intel.com>, 
-	Jisheng Zhang <jszhang@kernel.org>, "Rafael J . Wysocki" <rafael@kernel.org>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>, 
-	"Conor.Dooley" <conor.dooley@microchip.com>, guoren <guoren@kernel.org>, 
-	Zong Li <zong.li@sifive.com>, James Morse <james.morse@arm.com>, 
-	linux-riscv@lists.infradead.org, Ard Biesheuvel <ardb@kernel.org>, 
-	Baoquan He <bhe@redhat.com>, acpica-devel@lists.linux.dev, 
-	Robert Moore <robert.moore@intel.com>, linux-acpi@vger.kernel.org, 
-	Sami Tolvanen <samitolvanen@google.com>, Greentime Hu <greentime.hu@sifive.com>, 
-	Dan Williams <dan.j.williams@intel.com>, Len Brown <lenb@kernel.org>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alexghiti@rivosinc.com>, 
-	Charlie Jenkins <charlie@rivosinc.com>, Chen Jiahao <chenjiahao16@huawei.com>, 
-	Yuntao Wang <ytcoode@gmail.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	=?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>, 
-	Anup Patel <apatel@ventanamicro.com>, Tony Luck <tony.luck@intel.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org, 
-	Samuel Holland <samuel.holland@sifive.com>, Evan Green <evan@rivosinc.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Andrew Jones <ajones@ventanamicro.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] erofs: fix lockdep false positives on initializing
+ erofs_pseudo_mnt
+To: Christian Brauner <brauner@kernel.org>
+Cc: Jingbo Xu <jefflexu@linux.alibaba.com>, Baokun Li <libaokun1@huawei.com>,
+ linux-erofs@lists.ozlabs.org, xiang@kernel.org, chao@kernel.org,
+ huyue2@coolpad.com, linux-kernel@vger.kernel.org, yangerkun@huawei.com,
+ houtao1@huawei.com, yukuai3@huawei.com, chengzhihao1@huawei.com,
+ Al Viro <viro@zeniv.linux.org.uk>
+References: <20240307024459.883044-1-libaokun1@huawei.com>
+ <f9e30004-6691-4171-abc5-7e286d9ccec6@linux.alibaba.com>
+ <7e262242-d90d-4f61-a217-f156219eaa4d@linux.alibaba.com>
+ <38934cc4-58da-47b4-a120-00a2f3a56836@linux.alibaba.com>
+ <20240307-segmentieren-sitzkissen-5086f5e1f99f@brauner>
+From: Gao Xiang <hsiangkao@linux.alibaba.com>
+In-Reply-To: <20240307-segmentieren-sitzkissen-5086f5e1f99f@brauner>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, Mar 7, 2024 at 4:44=E2=80=AFPM Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Thu, Mar 7, 2024, at 09:47, Haibo Xu wrote:
-> > x86/arm64/loongarch would select ACPI_NUMA by default and riscv
-> > would do the same thing, so the dependency is no longer needed
-> > since these are the four architectures that support ACPI.
-> >
-> > Suggested-by: Arnd Bergmann <arnd@arndb.de>
-> > Suggested-by: Sunil V L <sunilvl@ventanamicro.com>
-> > Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
-> > ---
-> >  drivers/acpi/numa/Kconfig | 1 -
-> >  1 file changed, 1 deletion(-)
-> >
-> > diff --git a/drivers/acpi/numa/Kconfig b/drivers/acpi/numa/Kconfig
-> > index 849c2bd820b9..2bf47ad1ec9b 100644
-> > --- a/drivers/acpi/numa/Kconfig
-> > +++ b/drivers/acpi/numa/Kconfig
-> > @@ -2,7 +2,6 @@
-> >  config ACPI_NUMA
-> >       bool "NUMA support"
-> >       depends on NUMA
-> > -     depends on (X86 || ARM64 || LOONGARCH)
-> >       default y if ARM64
->
-> Can we remove the prompt as well and make this a
-> hidden option? I think this is now always selected
-> when it can be used anyway.
->
-> If we make it
->
->       def_bool NUMA && !X86
->
-> then the select statements except for the X86_64_ACPI_NUMA
-> can also go away.
->
+Hi Christian,
 
-Good idea!
-Shall we include the ACPI in the def_bool definition?
+On 2024/3/7 17:17, Christian Brauner wrote:
+> On Thu, Mar 07, 2024 at 12:18:52PM +0800, Gao Xiang wrote:
+>> Hi,
+>>
+>> (try to +Cc Christian and Al here...)
+>>
+>> On 2024/3/7 11:41, Jingbo Xu wrote:
+>>> Hi Baokun,
+>>>
+>>> Thanks for catching this!
+>>>
+>>>
+>>> On 3/7/24 10:52 AM, Gao Xiang wrote:
+>>>> Hi Baokun,
+>>>>
+>>>> On 2024/3/7 10:44, Baokun Li wrote:
+>>>>> Lockdep reported the following issue when mounting erofs with a
+>>>>> domain_id:
+>>>>>
+>>>>> ============================================
+>>>>> WARNING: possible recursive locking detected
+>>>>> 6.8.0-rc7-xfstests #521 Not tainted
+>>>>> --------------------------------------------
+>>>>> mount/396 is trying to acquire lock:
+>>>>> ffff907a8aaaa0e0 (&type->s_umount_key#50/1){+.+.}-{3:3},
+>>>>>                           at: alloc_super+0xe3/0x3d0
+>>>>>
+>>>>> but task is already holding lock:
+>>>>> ffff907a8aaa90e0 (&type->s_umount_key#50/1){+.+.}-{3:3},
+>>>>>                           at: alloc_super+0xe3/0x3d0
+>>>>>
+>>>>> other info that might help us debug this:
+>>>>>     Possible unsafe locking scenario:
+>>>>>
+>>>>>           CPU0
+>>>>>           ----
+>>>>>      lock(&type->s_umount_key#50/1);
+>>>>>      lock(&type->s_umount_key#50/1);
+>>>>>
+>>>>>     *** DEADLOCK ***
+>>>>>
+>>>>>     May be due to missing lock nesting notation
+>>>>>
+>>>>> 2 locks held by mount/396:
+>>>>>     #0: ffff907a8aaa90e0 (&type->s_umount_key#50/1){+.+.}-{3:3},
+>>>>>               at: alloc_super+0xe3/0x3d0
+>>>>>     #1: ffffffffc00e6f28 (erofs_domain_list_lock){+.+.}-{3:3},
+>>>>>               at: erofs_fscache_register_fs+0x3d/0x270 [erofs]
+>>>>>
+>>>>> stack backtrace:
+>>>>> CPU: 1 PID: 396 Comm: mount Not tainted 6.8.0-rc7-xfstests #521
+>>>>> Call Trace:
+>>>>>     <TASK>
+>>>>>     dump_stack_lvl+0x64/0xb0
+>>>>>     validate_chain+0x5c4/0xa00
+>>>>>     __lock_acquire+0x6a9/0xd50
+>>>>>     lock_acquire+0xcd/0x2b0
+>>>>>     down_write_nested+0x45/0xd0
+>>>>>     alloc_super+0xe3/0x3d0
+>>>>>     sget_fc+0x62/0x2f0
+>>>>>     vfs_get_super+0x21/0x90
+>>>>>     vfs_get_tree+0x2c/0xf0
+>>>>>     fc_mount+0x12/0x40
+>>>>>     vfs_kern_mount.part.0+0x75/0x90
+>>>>>     kern_mount+0x24/0x40
+>>>>>     erofs_fscache_register_fs+0x1ef/0x270 [erofs]
+>>>>>     erofs_fc_fill_super+0x213/0x380 [erofs]
+>>>>>
+>>>>> This is because the file_system_type of both erofs and the pseudo-mount
+>>>>> point of domain_id is erofs_fs_type, so two successive calls to
+>>>>> alloc_super() are considered to be using the same lock and trigger the
+>>>>> warning above.
+>>>>>
+>>>>> Therefore add a nodev file_system_type named erofs_anon_fs_type to
+>>>>> silence this complaint. In addition, to reduce code coupling, refactor
+>>>>> out the erofs_anon_init_fs_context() and erofs_kill_pseudo_sb() functions
+>>>>> and move the erofs_pseudo_mnt related code to fscache.c.
+>>>>>
+>>>>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+>>>>
+>>>> IMHO, in the beginning, I'd like to avoid introducing another fs type
+>>>> for erofs to share (meta)data between filesystems since it will cause
+>>>> churn, could we use some alternative way to resolve this?
+>>>
+>>> Yeah as Gao Xiang said, this is initially intended to avoid introducing
+>>> anothoer file_system_type, say erofs_anon_fs_type.
+>>>
+>>> What we need is actually a method of allocating anonymous inode as a
+>>> sentinel identifying each blob.  There is indeed a global mount, i.e.
+>>> anon_inode_mnt, for allocating anonymous inode/file specifically.  At
+>>> the time the share domain feature is introduced, there's only one
+>>> anonymous inode, i.e. anon_inode_inode, and all the allocated anonymous
+>>> files are bound to this single anon_inode_inode.  Thus we decided to
+>>> implement a erofs internal pseudo mount for this usage.
+>>>
+>>> But I noticed that we can now allocate unique anonymous inodes from
+>>> anon_inode_mnt since commit e7e832c ("fs: add LSM-supporting anon-inode
+>>> interface"), though the new interface is initially for LSM usage.
+>>
+>> Yes, as summary, EROFS now maintains a bunch of anon inodes among
+>> all different filesystem instances, so that like
+>>
+>> blob sharing or
+>> page cache sharing across filesystems can be done.
+>>
+>> In brief, I think the following patch is a good idea but it
+>> hasn't been landed until now:
+>> https://lore.kernel.org/r/20210309155348.974875-3-hch@lst.de
+>>
+>> Other than that, is it a good idea to introduce another fs type
+>> (like erofs_anon_fs_type) for such usage?
+> 
+> It depends. If you're allocating a lot of inodes then having a separate
+> filesystem type for erofs makes sense. If it's just a few then it
+> probably doesn't matter. If you need custom inode operations for these
+> anonymous inodes then it also makes sense to have a separate filesystem
+> type.
 
->       Arnd
+Yeah, I think some time this year we will finish a formal
+page cache sharing design and implementation for both bdev
+and fscache mode.
+
+So a separate filesystem type seems more reasonable in the
+future,  thanks for your confirmation!
+
+Thanks,
+Gao Xiang
 
