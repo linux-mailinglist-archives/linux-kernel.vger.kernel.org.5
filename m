@@ -1,225 +1,364 @@
-Return-Path: <linux-kernel+bounces-94902-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94910-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 896DA87467F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 04:04:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 804B8874691
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 04:11:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 13D081F22113
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 03:04:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3624E282AB9
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 03:11:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC3CA12E4D;
-	Thu,  7 Mar 2024 03:03:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E89EDDA0;
+	Thu,  7 Mar 2024 03:11:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="n/gZzU+8"
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2066.outbound.protection.outlook.com [40.107.243.66])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YRTcnn0q"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18D65EAD5;
-	Thu,  7 Mar 2024 03:03:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.66
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709780634; cv=fail; b=br/CsO/YbOQ1WvgeqZqKsIzmHMBEtieDUodkNgsNVF2wjbBbe9s0Ih9QSjYQfaLwgxscGoV2LxgI/HEg4f/LAOtW3KBBNO6YyEGxqX90dgupMw8qm11A+3JuXCBnEZkqgzZ7oaHUlc6i6sxYz8MdGtqdq45k7bqNL+WTp8fxzlA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709780634; c=relaxed/simple;
-	bh=lxPVqKIafHhoY8LmcgLm8pklPHxie30HoUAZmAKqINE=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ZuLLsVgO7Cu0FuoEjFdPnS1FbzeP2D7AzNbMB/JXq2Auhy3it0yukcRd+V0EUE2QQwRKvdcZgZ5v+X4gaNjpyu0SoMayPNzJFYerAWBbDKQD67ipZJrlr49sMBikS1fkclKrXZFtBYSFggrTI+7S5TbAcQyhIFCpsU2TWWwQazM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=n/gZzU+8; arc=fail smtp.client-ip=40.107.243.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Pg+hBz20SsmMRPOnOsLLecFMoRgLhA1D84AmuiXB8EqGvzCbS9IJkYBuBGzvrnzFgZnfq3/KDhf5kmE7GRGZMKlIcglQouzw/gdJfDaIT+V1IImnaANJEJOWL552HGsqr9QPl0Ju+XTKjPwPKQQlLHxJnoOm0fr78SQO5Bi1P1x7dg/c1BKy+EvPl9OAd8pwH3GVajCVvoYZ3kTwey20Bs62/2LHYhZQmlSHksCt6mKwNKWZBvuSvCGHRpp4i174uCa32K+GuYvl9siPwZV1B60VIFMb8ldXrPqEXQBe4FIvLeq1PilRvCONz5meFPXJ52fhV5CWgoCB2d9HeStoxQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=eqT6OVr3rf/KIUEPDk87qjqO3uja75xloQCTYQDw7BY=;
- b=gASwEeJ2N253jwEQtQPB9V7HzSaPXW09K7j6Jyjlj983biH2IT/Ix/BbDYhgfUF3TVmAgXehgxwSfQB4wvUxgkQzWPqTp54weYLiJtfRXkkeVMXmFwy1zEOe1AFReFKwfKHSWlPoOALoSxq/nP32cSANVt9ZhZ845rumI3mMwoIfzTCIy1CCH/tdYi5KF4CwZX7dKfZGbpXtZ4wEvZE6jIjDpSu4zNKz8JsXTcKn4WuQl0+MOQFKUmusWvb3QyuvkKxY7jEYehhF7rixDc6q8/zo4ozwOc4omG9gL3W/ESjXYYZEgFVdEjZeW9w8vepK+HyXqVmuF7/WkP5Gtym/gA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=gmail.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eqT6OVr3rf/KIUEPDk87qjqO3uja75xloQCTYQDw7BY=;
- b=n/gZzU+8/x+arKpkfOxlJxTV8c7RIWxgm4NQ5xQ49jLIsGQGGoyFxNxjVLfIyfrl9YURbp4JSqBpxZlrnHYtpeB7dFEtljDxd9BNGGhsnfDtHrvgk6vCyUVYaqRZ1wrG0tCUmfiroy007khzU+CFnWEzNurlZ26h24xcmYpcjin37oKIn27IktfSmE+8VdWfMJ7oLSU3AjXQLfwU8yZ+kPbMmpJdzQQkr9IZsYgLi2PsbWj4AvR7DKMVmmARO6Hn8UzzrAMKI/ryzq4sR3OFcoee/RV88Kl5bZp1BKUfgQGAQad+KGbMqsAnukSPQ1dKPzxYas8cJo0RjRXXPXF1XQ==
-Received: from MW4P220CA0005.NAMP220.PROD.OUTLOOK.COM (2603:10b6:303:115::10)
- by CH3PR12MB7666.namprd12.prod.outlook.com (2603:10b6:610:152::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.38; Thu, 7 Mar
- 2024 03:03:50 +0000
-Received: from CO1PEPF000042A8.namprd03.prod.outlook.com
- (2603:10b6:303:115:cafe::5e) by MW4P220CA0005.outlook.office365.com
- (2603:10b6:303:115::10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.26 via Frontend
- Transport; Thu, 7 Mar 2024 03:03:50 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- CO1PEPF000042A8.mail.protection.outlook.com (10.167.243.37) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7362.11 via Frontend Transport; Thu, 7 Mar 2024 03:03:50 +0000
-Received: from rnnvmail204.nvidia.com (10.129.68.6) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 6 Mar 2024
- 19:03:38 -0800
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail204.nvidia.com
- (10.129.68.6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.12; Wed, 6 Mar
- 2024 19:03:38 -0800
-Received: from waynec-Precision-5760.nvidia.com (10.127.8.13) by
- mail.nvidia.com (10.129.68.9) with Microsoft SMTP Server id 15.2.1258.12 via
- Frontend Transport; Wed, 6 Mar 2024 19:03:35 -0800
-From: Wayne Chang <waynec@nvidia.com>
-To: <waynec@nvidia.com>, <jonathanh@nvidia.com>, <thierry.reding@gmail.com>,
-	<jckuo@nvidia.com>, <vkoul@kernel.org>, <kishon@kernel.org>,
-	<gregkh@linuxfoundation.org>
-CC: <linux-phy@lists.infradead.org>, <linux-tegra@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-	<stable@vger.kernel.org>
-Subject: [PATCH v2 2/2] usb: gadget: tegra-xudc: Fix USB3 PHY retrieval logic
-Date: Thu, 7 Mar 2024 11:03:28 +0800
-Message-ID: <20240307030328.1487748-3-waynec@nvidia.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240307030328.1487748-1-waynec@nvidia.com>
-References: <20240307030328.1487748-1-waynec@nvidia.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B78693D71
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 03:11:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709781065; cv=none; b=DuUO2c8ymEV1/dglBSbt5QTjDdW1XbmjaDSa+HBPb75bfX3i9gP9nnhcAaFWCRfLf4uXPBkKrz/426XNyoBd4Q+433swP5X9bBMi1cU/LvzEJ8x9worC9K2szAXtDRK+jzgcIK0jFGngVxNEwlOjLrzd77Ux7QMKAGombXEB1/4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709781065; c=relaxed/simple;
+	bh=aTfnNVOzuTStvs0tdoETXdWCW8y9BVUMXLGNAwHRpZg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DKBEj1+t5M4WjwlGpcmAKD6UnFjfU4ZLQLR0BalCJ9gEja0ET0M5RYz5exnNkxvQBS16Np1SDO8M2qaZixK6EppLNgRPnwpMMe2sIjiwNqQkk1kA5+xcCrZ5oapVSQpmj29aDOMQayNTK1L3duieYuAuQEjRDkY1PYFZ5FUcG48=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YRTcnn0q; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709781059;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PkR96+oCUTcXVjSNgBM5A0Wxc2Bmtn+g3wn0Jg6Nemc=;
+	b=YRTcnn0q5L0aUsLotbTTqhUCsG/hJyjQjt8om/mnqNDz2hPJ/LCbDWjYqdxiNPFeOXeb0B
+	ZY/cr1XuCJRPa6HuXgBgEtWgKhi49muYfrEj+gkpFPuLWvQKItyAY2uKD37+G07KIHZkqy
+	szXSsxNmPKn+tTc9ZwAc6c04MdJVxDw=
+Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
+ [209.85.210.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-124-Rkch0yRaNGaWiJBXJnd_vA-1; Wed, 06 Mar 2024 22:10:57 -0500
+X-MC-Unique: Rkch0yRaNGaWiJBXJnd_vA-1
+Received: by mail-pf1-f198.google.com with SMTP id d2e1a72fcca58-6e644dcdc0dso32401b3a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 19:10:57 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709780736; x=1710385536;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PkR96+oCUTcXVjSNgBM5A0Wxc2Bmtn+g3wn0Jg6Nemc=;
+        b=uoaqtNEX/0uC0aM6NAujtCLAWTwug65SseDQjgG+wNjekTNGLQVOmN9bEPesmQ5qeH
+         hB2NvPUchXtndFs1ElimaEpp61NCPjtRf/9+WTZRTXbLYtApI3sbQPPBvw+KhIFWgcu3
+         I5q5YqYoTTb/Ht+Zc2UszWnMeT+wc75PbyyHV+Ca8f37onaq9JdiLn75hVqexnDp4lgj
+         LlIgb+lyC4uHhF5iiB32f5tMjz17g3aIfjnBRnYIAUOf+aMdynpd4yAJLY4d5///TriS
+         AI8nZErtCHXWhtyYADrCiPGzAxRN0aZBff4ji2CvUnO5wmHySmQdxAlZXi7ik6t+PrCe
+         ke1A==
+X-Forwarded-Encrypted: i=1; AJvYcCWvYmX6nTeDyPzCbHHR7SdAEdSd9SRF6/20b1A1wEd6mMy4+BgrIP3aqPCiEmtCT+Cii6biwKStUrnpMVZeJFgJso5LvHahehcOcvD4
+X-Gm-Message-State: AOJu0YxG2svYGAsc1gZjyWv3kxTGA/Ou2Htrlx27oARSbDyNWrimwXrj
+	F6BJDGyPsqtYqZR+ZVvC5994fZHosz+62f4ECK1hBJq/Myk5Ztcvr1KW3x5FNzNL2/tYL5D4Y33
+	vQAgBZaZoMcCldH10acvlRc7C0Vro2oBjqcMaIVCnOvrutQLymgPokoX/XmUWjA==
+X-Received: by 2002:a05:6a00:cce:b0:6e6:c6f:dc7e with SMTP id b14-20020a056a000cce00b006e60c6fdc7emr1026105pfv.3.1709780736632;
+        Wed, 06 Mar 2024 19:05:36 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEkCBHVN9ZAc+1XyRReKazlag268zheivJJl2EtGptHK/Yo1IMFuR7cjV0MKh9sysGGci92ug==
+X-Received: by 2002:a05:6a00:cce:b0:6e6:c6f:dc7e with SMTP id b14-20020a056a000cce00b006e60c6fdc7emr1026089pfv.3.1709780736228;
+        Wed, 06 Mar 2024 19:05:36 -0800 (PST)
+Received: from x1n ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id n11-20020a056a000d4b00b006e65720e892sm568324pfv.94.2024.03.06.19.05.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Mar 2024 19:05:35 -0800 (PST)
+Date: Thu, 7 Mar 2024 11:05:21 +0800
+From: Peter Xu <peterx@redhat.com>
+To: Michael Ellerman <mpe@ellerman.id.au>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Muchun Song <muchun.song@linux.dev>,
+	Jason Gunthorpe <jgg@nvidia.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Mike Rapoport <rppt@kernel.org>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>, x86@kernel.org,
+	sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	Nicholas Piggin <npiggin@gmail.com>,
+	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
+Subject: Re: [PATCH RFC 09/13] mm/powerpc: Redefine pXd_huge() with pXd_leaf()
+Message-ID: <Zeku8SsorvytLJGe@x1n>
+References: <20240306104147.193052-1-peterx@redhat.com>
+ <20240306104147.193052-10-peterx@redhat.com>
+ <87v85zo6w7.fsf@mail.lhotse>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-NVConfidentiality: public
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000042A8:EE_|CH3PR12MB7666:EE_
-X-MS-Office365-Filtering-Correlation-Id: 689066f5-5ca2-44cf-a26c-08dc3e5336ec
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	KoGLjQSJiH5KCXSZQbcW53pfnFP8sg+p26eWZqBCvEw4PiUFjSMSyKvdfQvwj6qZsrkAhKJMS3tGQnXyxtGTFk6/F0hgypmA8/HGpgQLxV/ibHw+s1X2zqQAIRSSuOn0kb67vj6bv/QVUtkrr5ukR5/5MkiDzLo6XIgOFlLVE4ZbxrYeh9YqPtJsEASXKoGItottR9Sl5DBAYAOzMLorgFj2Tb0GFjK172j3lnZQ+RlA9me2o36Ah9HB/cxWFhM/04diVmjKTYWoYFHuxQggu+U0TrnCMU14XCR959FaPZvGiUy7gCafOQ27yj7tAfM4HiQc2wqk1W3T6gGhymkikCkb/N6XJOHgNjWGRTPmTRCAcy6kkIQZQh6t9zuFaHFXJrRMZRg8umKgD+uj/eAOxyxF6FthrmmyC5l6k9CEzkKYfyoTvF0yk6LwEMeNF+6+2in468qsYdowD1AsIk58MQsn3VSJc/DoOYUqLkpmN1Ads44PpYDavhKF1FeSVD+/EdSubKhOTOzTRdFCryb1IfrKks0Fdvhl01OBOquoCUjqfFrVi0qEATJYXaQ9cslK0DpKyu39pJ152xy0crcI+/Kz33Mf8ddVTUYsuWs5yBWl5KG0tfMxV+umjzri20qgDs8ijxvTeuXuaZtPFFDZ/7109Dh6WS0VHutWi7rJh7EIoBG0it8dz/XpCCEpmP0pApMh61hIC3vmEp7BuyC0gBjVHg/cqdz+j8Vc0i7fy7P4PSuMk2oAcZl5vAq3fhAk
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(36860700004)(376005)(82310400014);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Mar 2024 03:03:50.3671
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 689066f5-5ca2-44cf-a26c-08dc3e5336ec
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CO1PEPF000042A8.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB7666
+In-Reply-To: <87v85zo6w7.fsf@mail.lhotse>
 
-This commit resolves an issue in the tegra-xudc USB gadget driver that
-incorrectly fetched USB3 PHY instances. The problem stemmed from the
-assumption of a one-to-one correspondence between USB2 and USB3 PHY
-names and their association with physical USB ports in the device tree.
+On Wed, Mar 06, 2024 at 11:56:56PM +1100, Michael Ellerman wrote:
+> peterx@redhat.com writes:
+> > From: Peter Xu <peterx@redhat.com>
+> >
+> > PowerPC book3s 4K mostly has the same definition on both, except pXd_huge()
+> > constantly returns 0 for hash MMUs.  AFAICT that is fine to be removed,
+> > because pXd_huge() reflects a hugetlb entry, while it's own hugetlb pgtable
+> > lookup function (__find_linux_pte() shared by all powerpc code) already use
+> > pXd_leaf() irrelevant of the MMU type.  It means pXd_leaf() should work all
+> > fine with hash MMU pgtables or something could already went wrong.
+> 
+> Yes I think that's correct.
+> 
+> 4K Hash MMU doesn't support any hugepage size at PMD or PUD level (the
+> geometry is wrong), so pmd/pud_huge() were written with that in mind,
+> ie. they are hard coded to return false.
+> 
+> But it should be OK to use pmd/pud_leaf(), they will actually look for
+> _PAGE_PTE, but it should never be set for 4K Hash.
+> 
+> See eg. arch/powerpc/include/asm/book3s/64/hash-4k.h:
+> 
+> static inline pmd_t hash__pmd_mkhuge(pmd_t pmd)
+> {
+> 	BUG();
+> 	return pmd;
+> }
 
-Previously, the driver associated USB3 PHY names directly with the USB3
-instance number, leading to mismatches when mapping the physical USB
-ports. For instance, if using USB3-1 PHY, the driver expect the
-corresponding PHY name as 'usb3-1'. However, the physical USB ports in
-the device tree were designated as USB2-0 and USB3-0 as we only have
-one device controller, causing a misalignment.
+Good to get confirmation on this, thanks, Michael.  These explanations also
+look better than what I wrote, I'll amend the commit message.
 
-This commit rectifies the issue by adjusting the PHY naming logic.
-Now, the driver correctly correlates the USB2 and USB3 PHY instances,
-allowing the USB2-0 and USB3-1 PHYs to form a physical USB port pair
-while accurately reflecting their configuration in the device tree by
-naming them USB2-0 and USB3-0, respectively.
+> 
+> > The goal should be that we will have one API pXd_leaf() to detect all kinds
+> > of huge mappings.  AFAICT we need to use the pXd_leaf() impl (rather than
+> > pXd_huge() ones) to make sure ie. THPs on hash MMU will also return true.
+> >
+> > This helps to simplify a follow up patch to drop pXd_huge() treewide.
+> >
+> > Cc: Michael Ellerman <mpe@ellerman.id.au>
+> > Cc: Nicholas Piggin <npiggin@gmail.com>
+> > Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+> > Cc: "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>
+> > Cc: "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
+> > Cc: linuxppc-dev@lists.ozlabs.org
+> > Signed-off-by: Peter Xu <peterx@redhat.com>
+> > ---
+> >  arch/powerpc/include/asm/book3s/64/pgtable-4k.h | 14 ++------------
+> >  1 file changed, 2 insertions(+), 12 deletions(-)
+> >
+> > diff --git a/arch/powerpc/include/asm/book3s/64/pgtable-4k.h b/arch/powerpc/include/asm/book3s/64/pgtable-4k.h
+> > index 48f21820afe2..92545981bb49 100644
+> > --- a/arch/powerpc/include/asm/book3s/64/pgtable-4k.h
+> > +++ b/arch/powerpc/include/asm/book3s/64/pgtable-4k.h
+> > @@ -8,22 +8,12 @@
+> >  #ifdef CONFIG_HUGETLB_PAGE
+> >  static inline int pmd_huge(pmd_t pmd)
+> >  {
+> > -	/*
+> > -	 * leaf pte for huge page
+> > -	 */
+> > -	if (radix_enabled())
+> > -		return !!(pmd_raw(pmd) & cpu_to_be64(_PAGE_PTE));
+> > -	return 0;
+> > +	return pmd_leaf(pmd);
+> >  }
+> >  
+> >  static inline int pud_huge(pud_t pud)
+> >  {
+> > -	/*
+> > -	 * leaf pte for huge page
+> > -	 */
+> > -	if (radix_enabled())
+> > -		return !!(pud_raw(pud) & cpu_to_be64(_PAGE_PTE));
+> > -	return 0;
+> > +	return pud_leaf(pud);
+> >  }
+> 
+> This doesn't actually compile though.
+> 
+>   arch/powerpc/include/asm/book3s/64/pgtable-4k.h:11:16: error: implicit declaration of function ‘pmd_leaf’; did you mean ‘pgd_clear’? [-Werror=implicit-function-declaration]
+> 
+> etc.
+> 
+> To make it compile we'd need to relocate the pmd/pud_leaf() definitions:
+> 
+> diff --git a/arch/powerpc/include/asm/book3s/64/pgtable.h b/arch/powerpc/include/asm/book3s/64/pgtable.h
+> index df66dce8306f..fd7180fded75 100644
+> --- a/arch/powerpc/include/asm/book3s/64/pgtable.h
+> +++ b/arch/powerpc/include/asm/book3s/64/pgtable.h
+> @@ -262,6 +262,18 @@ extern unsigned long __kernel_io_end;
+> 
+>  extern struct page *vmemmap;
+>  extern unsigned long pci_io_base;
+> +
+> +#define pmd_leaf pmd_leaf
+> +static inline bool pmd_leaf(pmd_t pmd)
+> +{
+> +       return !!(pmd_raw(pmd) & cpu_to_be64(_PAGE_PTE));
+> +}
+> +
+> +#define pud_leaf pud_leaf
+> +static inline bool pud_leaf(pud_t pud)
+> +{
+> +       return !!(pud_raw(pud) & cpu_to_be64(_PAGE_PTE));
+> +}
+>  #endif /* __ASSEMBLY__ */
+> 
+>  #include <asm/book3s/64/hash.h>
+> @@ -1436,20 +1448,5 @@ static inline bool is_pte_rw_upgrade(unsigned long old_val, unsigned long new_va
+>         return false;
+>  }
+> 
+> -/*
+> - * Like pmd_huge(), but works regardless of config options
+> - */
+> -#define pmd_leaf pmd_leaf
+> -static inline bool pmd_leaf(pmd_t pmd)
+> -{
+> -       return !!(pmd_raw(pmd) & cpu_to_be64(_PAGE_PTE));
+> -}
+> -
+> -#define pud_leaf pud_leaf
+> -static inline bool pud_leaf(pud_t pud)
+> -{
+> -       return !!(pud_raw(pud) & cpu_to_be64(_PAGE_PTE));
+> -}
+> -
+>  #endif /* __ASSEMBLY__ */
+>  #endif /* _ASM_POWERPC_BOOK3S_64_PGTABLE_H_ */
 
-The change ensures that the PHY and PHY names align appropriately,
-resolving the mismatch between physical USB ports and their associated
-names in the device tree.
+Thanks for the help, I'll fix that.  I'm wondering when syzbot will start
+to feed my series into the testers; I do still rely on those feedbacks on
+compilation issues with such treewide changes, but so far I didn't yet
+receive any reports.
 
-Fixes: b4e19931c98a ("usb: gadget: tegra-xudc: Support multiple device modes")
-Cc: stable@vger.kernel.org
-Signed-off-by: Wayne Chang <waynec@nvidia.com>
+I've also attached the new patch directly here in case of any further
+comment.
+
+Thanks,
+
+==========8<===========
+From 9e75aef2141170f241577e7786aaa4bbbfd93360 Mon Sep 17 00:00:00 2001
+From: Peter Xu <peterx@redhat.com>
+Date: Wed, 6 Mar 2024 14:49:48 +0800
+Subject: [PATCH] mm/powerpc: Redefine pXd_huge() with pXd_leaf()
+
+PowerPC book3s 4K mostly has the same definition on both, except pXd_huge()
+constantly returns 0 for hash MMUs.  As Michael Ellerman pointed out [1],
+it is safe to check _PAGE_PTE on hash MMUs, as the bit will never be set so
+it will keep returning false.
+
+As a reference, __p[mu]d_mkhuge() will trigger a BUG_ON trying to create
+such huge mappings for 4K hash MMUs.  Meanwhile, the major powerpc hugetlb
+pgtable walker __find_linux_pte(), already used pXd_leaf() to check hugetlb
+mappings.
+
+The goal should be that we will have one API pXd_leaf() to detect all kinds
+of huge mappings.  AFAICT we need to use the pXd_leaf() impl (rather than
+pXd_huge() ones) to make sure ie. THPs on hash MMU will also return true.
+
+This helps to simplify a follow up patch to drop pXd_huge() treewide.
+
+NOTE: *_leaf() definition need to be moved before the inclusion of
+asm/book3s/64/pgtable-4k.h, which defines pXd_huge() with it.
+
+[1] https://lore.kernel.org/r/87v85zo6w7.fsf@mail.lhotse
+
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Nicholas Piggin <npiggin@gmail.com>
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>
+Cc: "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
+Cc: linuxppc-dev@lists.ozlabs.org
+Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
-V1 -> V2:no change
- drivers/usb/gadget/udc/tegra-xudc.c | 39 ++++++++++++++++++-----------
- 1 file changed, 25 insertions(+), 14 deletions(-)
+ .../include/asm/book3s/64/pgtable-4k.h        | 14 ++--------
+ arch/powerpc/include/asm/book3s/64/pgtable.h  | 27 +++++++++----------
+ 2 files changed, 14 insertions(+), 27 deletions(-)
 
-diff --git a/drivers/usb/gadget/udc/tegra-xudc.c b/drivers/usb/gadget/udc/tegra-xudc.c
-index cb85168fd00c..7aa46d426f31 100644
---- a/drivers/usb/gadget/udc/tegra-xudc.c
-+++ b/drivers/usb/gadget/udc/tegra-xudc.c
-@@ -3491,8 +3491,8 @@ static void tegra_xudc_device_params_init(struct tegra_xudc *xudc)
- 
- static int tegra_xudc_phy_get(struct tegra_xudc *xudc)
+diff --git a/arch/powerpc/include/asm/book3s/64/pgtable-4k.h b/arch/powerpc/include/asm/book3s/64/pgtable-4k.h
+index 48f21820afe2..92545981bb49 100644
+--- a/arch/powerpc/include/asm/book3s/64/pgtable-4k.h
++++ b/arch/powerpc/include/asm/book3s/64/pgtable-4k.h
+@@ -8,22 +8,12 @@
+ #ifdef CONFIG_HUGETLB_PAGE
+ static inline int pmd_huge(pmd_t pmd)
  {
--	int err = 0, usb3;
--	unsigned int i;
-+	int err = 0, usb3_companion_port;
-+	unsigned int i, j;
+-	/*
+-	 * leaf pte for huge page
+-	 */
+-	if (radix_enabled())
+-		return !!(pmd_raw(pmd) & cpu_to_be64(_PAGE_PTE));
+-	return 0;
++	return pmd_leaf(pmd);
+ }
  
- 	xudc->utmi_phy = devm_kcalloc(xudc->dev, xudc->soc->num_phys,
- 					   sizeof(*xudc->utmi_phy), GFP_KERNEL);
-@@ -3520,7 +3520,7 @@ static int tegra_xudc_phy_get(struct tegra_xudc *xudc)
- 		if (IS_ERR(xudc->utmi_phy[i])) {
- 			err = PTR_ERR(xudc->utmi_phy[i]);
- 			dev_err_probe(xudc->dev, err,
--				      "failed to get usb2-%d PHY\n", i);
-+				"failed to get PHY for phy-name usb2-%d\n", i);
- 			goto clean_up;
- 		} else if (xudc->utmi_phy[i]) {
- 			/* Get usb-phy, if utmi phy is available */
-@@ -3539,19 +3539,30 @@ static int tegra_xudc_phy_get(struct tegra_xudc *xudc)
- 		}
+ static inline int pud_huge(pud_t pud)
+ {
+-	/*
+-	 * leaf pte for huge page
+-	 */
+-	if (radix_enabled())
+-		return !!(pud_raw(pud) & cpu_to_be64(_PAGE_PTE));
+-	return 0;
++	return pud_leaf(pud);
+ }
  
- 		/* Get USB3 phy */
--		usb3 = tegra_xusb_padctl_get_usb3_companion(xudc->padctl, i);
--		if (usb3 < 0)
-+		usb3_companion_port = tegra_xusb_padctl_get_usb3_companion(xudc->padctl, i);
-+		if (usb3_companion_port < 0)
- 			continue;
+ /*
+diff --git a/arch/powerpc/include/asm/book3s/64/pgtable.h b/arch/powerpc/include/asm/book3s/64/pgtable.h
+index df66dce8306f..fd7180fded75 100644
+--- a/arch/powerpc/include/asm/book3s/64/pgtable.h
++++ b/arch/powerpc/include/asm/book3s/64/pgtable.h
+@@ -262,6 +262,18 @@ extern unsigned long __kernel_io_end;
  
--		snprintf(phy_name, sizeof(phy_name), "usb3-%d", usb3);
--		xudc->usb3_phy[i] = devm_phy_optional_get(xudc->dev, phy_name);
--		if (IS_ERR(xudc->usb3_phy[i])) {
--			err = PTR_ERR(xudc->usb3_phy[i]);
--			dev_err_probe(xudc->dev, err,
--				      "failed to get usb3-%d PHY\n", usb3);
--			goto clean_up;
--		} else if (xudc->usb3_phy[i])
--			dev_dbg(xudc->dev, "usb3-%d PHY registered", usb3);
-+		for (j = 0; j < xudc->soc->num_phys; j++) {
-+			snprintf(phy_name, sizeof(phy_name), "usb3-%d", j);
-+			xudc->usb3_phy[i] = devm_phy_optional_get(xudc->dev, phy_name);
-+			if (IS_ERR(xudc->usb3_phy[i])) {
-+				err = PTR_ERR(xudc->usb3_phy[i]);
-+				dev_err_probe(xudc->dev, err,
-+					"failed to get PHY for phy-name usb3-%d\n", j);
-+				goto clean_up;
-+			} else if (xudc->usb3_phy[i]) {
-+				int usb2_port =
-+					tegra_xusb_padctl_get_port_number(xudc->utmi_phy[i]);
-+				int usb3_port =
-+					tegra_xusb_padctl_get_port_number(xudc->usb3_phy[i]);
-+				if (usb3_port == usb3_companion_port) {
-+					dev_dbg(xudc->dev, "USB2 port %d is paired with USB3 port %d for device mode port %d\n",
-+					 usb2_port, usb3_port, i);
-+					break;
-+				}
-+			}
-+		}
- 	}
+ extern struct page *vmemmap;
+ extern unsigned long pci_io_base;
++
++#define pmd_leaf pmd_leaf
++static inline bool pmd_leaf(pmd_t pmd)
++{
++	return !!(pmd_raw(pmd) & cpu_to_be64(_PAGE_PTE));
++}
++
++#define pud_leaf pud_leaf
++static inline bool pud_leaf(pud_t pud)
++{
++	return !!(pud_raw(pud) & cpu_to_be64(_PAGE_PTE));
++}
+ #endif /* __ASSEMBLY__ */
  
- 	return err;
+ #include <asm/book3s/64/hash.h>
+@@ -1436,20 +1448,5 @@ static inline bool is_pte_rw_upgrade(unsigned long old_val, unsigned long new_va
+ 	return false;
+ }
+ 
+-/*
+- * Like pmd_huge(), but works regardless of config options
+- */
+-#define pmd_leaf pmd_leaf
+-static inline bool pmd_leaf(pmd_t pmd)
+-{
+-	return !!(pmd_raw(pmd) & cpu_to_be64(_PAGE_PTE));
+-}
+-
+-#define pud_leaf pud_leaf
+-static inline bool pud_leaf(pud_t pud)
+-{
+-	return !!(pud_raw(pud) & cpu_to_be64(_PAGE_PTE));
+-}
+-
+ #endif /* __ASSEMBLY__ */
+ #endif /* _ASM_POWERPC_BOOK3S_64_PGTABLE_H_ */
 -- 
-2.25.1
+2.44.0
+
+-- 
+Peter Xu
 
 
