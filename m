@@ -1,325 +1,128 @@
-Return-Path: <linux-kernel+bounces-95409-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95410-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 525A8874D4E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:23:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFF30874D4D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:22:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D3F531F257F4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:23:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F199C1C23564
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:22:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E377E1292EC;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A305B1292DE;
 	Thu,  7 Mar 2024 11:22:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="mDONUzRs"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HYBZWY6C"
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 128E6128378;
-	Thu,  7 Mar 2024 11:22:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D9995DF09;
+	Thu,  7 Mar 2024 11:22:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709810561; cv=none; b=EYR/zLna6rGxyAmTy7FyKs5iiTlYPbA5XFuFfid0cGu0sgxYFmJmpeci8DQWsGV3GNrG3oca29wDNsCHGkCqGQ86z9Fpbe4CgbWT3hI+GpdJMjdpOYmcAsZjbAsnwPLQW4lbXqHu8IrG+e58WT+fqw3DrkdYJ2b24DypiJupKbI=
+	t=1709810562; cv=none; b=gXFS93gjTd5TlqnkN9ap7cYtbbR7YbsYa4awWqXuitg5UarxkPa2fFlf685+CRrqn87uNX6tVodn+3QFG6KxEc2IhyFDSkiLllJcZU0WQ51AhMolvnBda1Ebx2iWb/N96nHQDJ/X5Rvc7yAbYfrSq13r7Vb9jVEv6JAURTU2DnQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709810561; c=relaxed/simple;
-	bh=aOnhWOVnEvZ2ycyiEsOeRE4tcDyIEgqZ90ugpgoKzbg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BmKh9sBBtOAbmjwU0dFDy/v0NaoX0M0ZNXoXcSCiYksTN6yMoERTT+VM0NoyyHawUFxvX/qrHPbmH3hqLF1KJTca3V6/EQdjA1eVgDa05lO1Ib5KDSm+BqjQFf6Q1i5jBcq63lexPsd2/aCM+mlnhtKHL+wCUu32yqE5KUKN0S0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=mDONUzRs; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1709810558;
-	bh=aOnhWOVnEvZ2ycyiEsOeRE4tcDyIEgqZ90ugpgoKzbg=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=mDONUzRsaBEIRbjaAg0Wb171uCQpeRJ0LxkBAUeO2ahj0e95ZV13ElkqDRkEULEko
-	 Lm9jPu6agR8gF/szQDKyD4+PYVBoKGyqPb0zG35xpm/r1Ieqa54JflizEBTV42SFaN
-	 6ps8856Tb8CVymaAE0G9ll1MOiGRFBdqz4FV0YbCuB3Iox0xWPgO1evC0I4qY4MH1K
-	 tlWlow61Y1YCtpVJGbGroUabGWcTmx2D30c/OObtp6abPw3X//th5EhDtsFc5xNXaL
-	 6zBjfQZ2OLw8MqQCSnB3VzJV9ikgLOSY7Dp+k7lG2VIpd/cy5tFHF+RVdgXO5q0ZVm
-	 k2nh4rr2M0CKg==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 92B2E37820EA;
-	Thu,  7 Mar 2024 11:22:37 +0000 (UTC)
-Message-ID: <90f3f4e2-ced5-4fae-b765-5b802f4895c8@collabora.com>
-Date: Thu, 7 Mar 2024 12:22:36 +0100
+	s=arc-20240116; t=1709810562; c=relaxed/simple;
+	bh=QbBoznELF4RPIIGSlVT8QW/K0ipqkCyskhj6N/Qsj+c=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=W0gt3L0HhAIwlf0Zn6DO4waqTR0XcAsnkBijHq/ZK/h8kov8Q5DpMAip5KGZ2YloBLwkbtRwZ4adnCiY9yfbOiwRe7ULcqVmyi1Y8QxB+iENHHMcXhi8YdBAoygAKQas/KuRevKHcTYbZ6mQA9lHejIKS1d4BTzV/Co0zELSWPc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HYBZWY6C; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4131285a72cso2419195e9.2;
+        Thu, 07 Mar 2024 03:22:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709810559; x=1710415359; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Kzug+Af3jxeyGuDs+eE9TEatkps3KOh95GMDpEu1psM=;
+        b=HYBZWY6CkGlBkurqKYXC/g5q4apsglzBwpBU/5wNLVlBEHcRoEVD8IlZGZylhhh+ri
+         MckiSooRgIFBAjPxim+qICxpPM1Rs3WXkMT2egs0fCztz7Msvu/aCWV68yfOZJbbk3RB
+         qWQQhOjEWS21KX6Ws2DskScgYFu3mMmdrhhWCTc47MbKyVcEHCRWDF70+6RXNsYukaq1
+         Ye2zIT75mbnLF736mUSLfwPK7hWitTCqFQGwM05XhfK1InXakqL4bi+KrKmuob+egDW8
+         UZOno+mc4NFcoWjAMnatU+mkixcGdmpGIiozs7gr4Q7a/n+GyPaQMiRJzgwUW0s2nXcW
+         dVNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709810559; x=1710415359;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Kzug+Af3jxeyGuDs+eE9TEatkps3KOh95GMDpEu1psM=;
+        b=SaNsLTcrG3Un6Q6aVXiZqrgQxu+qarhpcxZcxlR1crDPNJ9vXwTocRwAQOINxpu0fg
+         6BjJsp2R9FCSnyZpgDgHBl3Sh7VG9wdkVR4cG/VPRj5T5P92fCAtcOg/t+f7SS03DVVE
+         v+x/1sV94nIH4VBRpIj95sc8X1YXlcgheaagkIaIqSYEOrxk9bwrwYo82R+VrdNZA9gJ
+         A4TDGN23T2KItJGVerNPbH5BRSKubTBR04ddKwFOgb1Ftc9n1LE6YiA8whN8mJ15ROJq
+         gexyTuqaO0ix3LOzzX+xXqN8jhY8um8yGRnsHEST5iGN3Zn3HfdM7eA667nF8tRJHyP3
+         ksPQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVDM06Fm2lbQ2ezow2apETYZVEHS9AE2xeJwgyMeq09Bai3KL/5oW/ebld7TDlY+ZMlqC2rBXqYWMRwkFkid3Mycc49hm3IdSbxkZiYsL1YiG9eqjhkQ980ojUZHhAG3tRg/HBb
+X-Gm-Message-State: AOJu0Yy3MTmaJWirotcd958fVawdylzaVSwB4rsD0VxEvK9ScJSeBm/D
+	yHM7qI+7WbSXE1RxALmQ8c/FuWJ+dpRfNOZQiS8MWfbxFqvDIU/r
+X-Google-Smtp-Source: AGHT+IHP9mjOmo+Y5z7Nt0QwEqGpxU+etrc6rWvzibYekbrqyKDH7cagDUHjeXocMYBUtc3AQAROug==
+X-Received: by 2002:a05:600c:4705:b0:412:bfa1:fc0 with SMTP id v5-20020a05600c470500b00412bfa10fc0mr13800295wmo.8.1709810558618;
+        Thu, 07 Mar 2024 03:22:38 -0800 (PST)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id i20-20020a05600c355400b00413079f9065sm2369892wmq.8.2024.03.07.03.22.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Mar 2024 03:22:38 -0800 (PST)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: "David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	netdev@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH][next] net: chelsio: remove unused function calc_tx_descs
+Date: Thu,  7 Mar 2024 11:22:37 +0000
+Message-Id: <20240307112237.1982789-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/2] clk: mediatek: Introduce need_pm_runtime to
- mtk_clk_desc
-Content-Language: en-US
-To: Pin-yen Lin <treapking@chromium.org>, Chen-Yu Tsai <wenst@chromium.org>
-Cc: Michael Turquette <mturquette@baylibre.com>,
- Stephen Boyd <sboyd@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
- Weiyi Lu <weiyi.lu@mediatek.com>, linux-kernel@vger.kernel.org,
- linux-clk@vger.kernel.org, linux-mediatek@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
-References: <20240108081834.408403-1-treapking@chromium.org>
- <CAGXv+5EnBt+7WrNb-QyziEaCihvjhFVf2tpzk=XyAoeELqucaw@mail.gmail.com>
- <e0e6febf-1045-49f8-a200-8bc095b0fa50@collabora.com>
- <CAGXv+5F5YFRKjaXu_XbXrUhqKL0NSRyt6tniQYfhRh+fsaxqmg@mail.gmail.com>
- <cc74422d-962f-4da5-867b-158a71db1a7b@collabora.com>
- <CAGXv+5EyRROsh_=J1Fg4K+ZgfkERF4dh4R6WoGw9MnTBMNUCgQ@mail.gmail.com>
- <dfdc6a65-3ccf-463c-95df-093f3c2fefd3@collabora.com>
- <CAEXTbpcPfWQr4iuD2U0zgJUi+BF-rLfyF4iDDiQYBrrv9U=6Xg@mail.gmail.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <CAEXTbpcPfWQr4iuD2U0zgJUi+BF-rLfyF4iDDiQYBrrv9U=6Xg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-Il 07/03/24 12:10, Pin-yen Lin ha scritto:
-> Hi Angelo and Chen-yu,
-> 
-> I tried enabling the runtime PM regardless of the .need_pm_runtime
-> flag, and my MT8183 device works well with that with no obvious boot
-> regression.
-> 
-> Should I send out another patch that always enables runtime PM in
-> __mtk_clk_simple_probe()? Or is there anything I should test?
-> 
+The inlined helper function calc_tx_descs is not used and is redundant.
+Remove it.
 
-Hello Pin-yen,
+Cleans up clang scan build warning:
+drivers/net/ethernet/chelsio/cxgb4/sge.c:814:28: warning: unused
+function 'calc_tx_descs' [-Wunused-function]
 
-as I discussed with Chen-Yu - yes, we must make sure that this does not
-create any regression on machines running on other SoC models.
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ drivers/net/ethernet/chelsio/cxgb4/sge.c | 14 --------------
+ 1 file changed, 14 deletions(-)
 
-I think it's unlikely that it does, but since the HW is available, being
-extremely careful with validating this change is a good idea :-)
-
-If you can/want to test before we do, sure, please send the new patch and,
-when you do, please say that you tested it and on which SoCs; as long as
-it's not just one SoC, that'll be good enough for me.
-
-P.S.: Please don't top-post!
-
-Cheers,
-Angelo
-
-> Regards,
-> Pin-yen
-> 
-> On Thu, Feb 29, 2024 at 6:36 PM AngeloGioacchino Del Regno
-> <angelogioacchino.delregno@collabora.com> wrote:
->>
->> Il 29/02/24 11:34, Chen-Yu Tsai ha scritto:
->>> On Thu, Feb 29, 2024 at 5:45 PM AngeloGioacchino Del Regno
->>> <angelogioacchino.delregno@collabora.com> wrote:
->>>>
->>>> Il 29/02/24 08:17, Chen-Yu Tsai ha scritto:
->>>>> On Mon, Feb 26, 2024 at 7:16 PM AngeloGioacchino Del Regno
->>>>> <angelogioacchino.delregno@collabora.com> wrote:
->>>>>>
->>>>>> Il 23/02/24 05:27, Chen-Yu Tsai ha scritto:
->>>>>>> On Mon, Jan 8, 2024 at 4:18 PM Pin-yen Lin <treapking@chromium.org> wrote:
->>>>>>>>
->>>>>>>> Introduce a new need_pm_runtime variable to mtk_clk_desc to indicate
->>>>>>>> this clock controller needs runtime PM for its operations.
->>>>>>>> Also do a runtime PM get on the clock controller during the
->>>>>>>> probing stage to workaround a possible deadlock.
->>>>>>>>
->>>>>>>> Signed-off-by: Pin-yen Lin <treapking@chromium.org>
->>>>>>>
->>>>>>> Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
->>>>>>>
->>>>>>> The patch itself looks fine.
->>>>>>>
->>>>>>> Besides the MT8183 MFG clock issues, we do actually need this for the
->>>>>>> MT8192 ADSP clock. Its power domain is not enabled by default.
->>>>>>>
->>>>>>
->>>>>> ...but on MT8195 the ADSP clock works - because the ADSP node exists.
->>>>>
->>>>> That's an indirect dependency that should not be relied on. Say the clock
->>>>> driver probed but the ADSP hasn't, and you try to read out the current
->>>>> status. What would happen?
->>>>>
->>>>> - Read out works fine, because the power domain is default on, and hasn't
->>>>>      been turned off by late cleanup
->>>>> - Read out is bogus (but you can't tell)
->>>>> - Read out hangs.
->>>>>
->>>>> The third is what happens on MT8192. There's still some issues on that
->>>>> front, as even after I applied the ADSP power domain patches from MediaTek,
->>>>> the readout was still hanging.
->>>>>
->>>>
->>>> That MT8192 lockup story is getting crazy in my head... anyway, besides that,
->>>> I get the point - I was somehow ignoring the fact that kernel modules do exist.
->>>>
->>>> Eh, sorry about that :-)
->>>>
->>>>>> This poses a question: should we make clock controllers depend on power domains,
->>>>>> or should we keep everything powered off (hence clocks down - no power consumption)
->>>>>> *unless* the user exists?
->>>>>
->>>>> That's a policy discussion separate from actual hardware dependencies.
->>>>> *If* the clock controller needs the power domain to be active for the
->>>>> registers to be accessed, the clock controller *must* have a direct
->>>>> dependency on the power domain.
->>>>>
->>>>
->>>> I admit I should've worded that better.
->>>>
->>>> "should we make clock controllers depend on power domains" was actually implying
->>>> "IF those need one" :-)
->>>>
->>>> I really wonder if - at this point - it's simply a better idea to not restrict
->>>> the call to devm_pm_runtime_enable/resume_and_get to `need_runtime_pm == true`.
->>>>
->>>> Do we really need to exclude that on other clock controllers that don't have
->>>> any power domain dependency? Any side effect?
->>>>
->>>> Saying this because if we can avoid yet another per-SoC flag I'm really happy,
->>>> as readability is also impacted and besides - if we ever find out that one of
->>>> those need a power domain in the future, we'll need just one commit and just
->>>> only in the devicetree, instead of enabling a flag in driver X as well as that,
->>>> avoiding some (potentially unnecessary) noise... I guess.
->>>>
->>>> P.S.: I just noticed that the return value for the devm_pm_runtime_enable() call
->>>>          is not being checked!
->>>>
->>>> .......
->>>>
->>>> In short....
->>>>
->>>> Chen-Yu, at this point, do you have any reason why we wouldn't be able and/or it
->>>> wouldn't be a good idea to just avoid adding the `need_runtime_pm` flag (meaning
->>>> that we perform pm_runtime calls for all clock drivers unconditionally)?
->>>>
->>>> If this is about longer boot time, I don't think that it's going to be more than
->>>> a millisecond or two, so that should be completely ignorable.
->>>
->>> I think it's just more of a "don't enable features you don't need" thing.
->>> We already ran into a weird deadlock, which is why the devm_pm_runtime_enable()
->>> call has that comment.
->>>
->>> I don't think anyone has actually looked at it. As you said it shouldn't be
->>> much, at least during boot time. It's one call per clock controller.
->>>
->>>> Can you please do a test for that, or should I?
->>>
->>> The earliest I can work on it would be some time next week. Does that work
->>> for you?
->>>
->>
->> The earliest I'd be able to work on this myself would be at the end of next
->> week if not later.. so yes, please take your time, no worries.
->>
->> Thank you!
->>
->>> ChenYu
->>>
->>>> Cheers
->>>> Angelo
->>>>
->>>>>> For the second one, this means that the *device* gets the power domain (adsp), and
->>>>>> not the clock controller (which clocks are effectively useless if there's no user).
->>>>>
->>>>> No. See my previous paragraph.
->>>>>
->>>>> ChenYu
->>>>>
->>>>>> Angelo
->>>>>>
->>>>>>>> ---
->>>>>>>>
->>>>>>>> Changes in v3:
->>>>>>>> - Update the commit message and the comments before runtime PM call
->>>>>>>>
->>>>>>>> Changes in v2:
->>>>>>>> - Fix the order of error handling
->>>>>>>> - Update the commit message and add a comment before the runtime PM call
->>>>>>>>
->>>>>>>>      drivers/clk/mediatek/clk-mtk.c | 19 +++++++++++++++++++
->>>>>>>>      drivers/clk/mediatek/clk-mtk.h |  2 ++
->>>>>>>>      2 files changed, 21 insertions(+)
->>>>>>>>
->>>>>>>> diff --git a/drivers/clk/mediatek/clk-mtk.c b/drivers/clk/mediatek/clk-mtk.c
->>>>>>>> index 2e55368dc4d8..ba1d1c495bc2 100644
->>>>>>>> --- a/drivers/clk/mediatek/clk-mtk.c
->>>>>>>> +++ b/drivers/clk/mediatek/clk-mtk.c
->>>>>>>> @@ -13,6 +13,7 @@
->>>>>>>>      #include <linux/of.h>
->>>>>>>>      #include <linux/of_address.h>
->>>>>>>>      #include <linux/platform_device.h>
->>>>>>>> +#include <linux/pm_runtime.h>
->>>>>>>>      #include <linux/slab.h>
->>>>>>>>
->>>>>>>>      #include "clk-mtk.h"
->>>>>>>> @@ -494,6 +495,18 @@ static int __mtk_clk_simple_probe(struct platform_device *pdev,
->>>>>>>>                             return IS_ERR(base) ? PTR_ERR(base) : -ENOMEM;
->>>>>>>>             }
->>>>>>>>
->>>>>>>> +
->>>>>>>> +       if (mcd->need_runtime_pm) {
->>>>>>>> +               devm_pm_runtime_enable(&pdev->dev);
->>>>>>>> +               /*
->>>>>>>> +                * Do a pm_runtime_resume_and_get() to workaround a possible
->>>>>>>> +                * deadlock between clk_register() and the genpd framework.
->>>>>>>> +                */
->>>>>>>> +               r = pm_runtime_resume_and_get(&pdev->dev);
->>>>>>>> +               if (r)
->>>>>>>> +                       return r;
->>>>>>>> +       }
->>>>>>>> +
->>>>>>>>             /* Calculate how many clk_hw_onecell_data entries to allocate */
->>>>>>>>             num_clks = mcd->num_clks + mcd->num_composite_clks;
->>>>>>>>             num_clks += mcd->num_fixed_clks + mcd->num_factor_clks;
->>>>>>>> @@ -574,6 +587,9 @@ static int __mtk_clk_simple_probe(struct platform_device *pdev,
->>>>>>>>                             goto unregister_clks;
->>>>>>>>             }
->>>>>>>>
->>>>>>>> +       if (mcd->need_runtime_pm)
->>>>>>>> +               pm_runtime_put(&pdev->dev);
->>>>>>>> +
->>>>>>>>             return r;
->>>>>>>>
->>>>>>>>      unregister_clks:
->>>>>>>> @@ -604,6 +620,9 @@ static int __mtk_clk_simple_probe(struct platform_device *pdev,
->>>>>>>>      free_base:
->>>>>>>>             if (mcd->shared_io && base)
->>>>>>>>                     iounmap(base);
->>>>>>>> +
->>>>>>>> +       if (mcd->need_runtime_pm)
->>>>>>>> +               pm_runtime_put(&pdev->dev);
->>>>>>>>             return r;
->>>>>>>>      }
->>>>>>>>
->>>>>>>> diff --git a/drivers/clk/mediatek/clk-mtk.h b/drivers/clk/mediatek/clk-mtk.h
->>>>>>>> index 22096501a60a..c17fe1c2d732 100644
->>>>>>>> --- a/drivers/clk/mediatek/clk-mtk.h
->>>>>>>> +++ b/drivers/clk/mediatek/clk-mtk.h
->>>>>>>> @@ -237,6 +237,8 @@ struct mtk_clk_desc {
->>>>>>>>
->>>>>>>>             int (*clk_notifier_func)(struct device *dev, struct clk *clk);
->>>>>>>>             unsigned int mfg_clk_idx;
->>>>>>>> +
->>>>>>>> +       bool need_runtime_pm;
->>>>>>>>      };
->>>>>>>>
->>>>>>>>      int mtk_clk_pdev_probe(struct platform_device *pdev);
->>>>>>>> --
->>>>>>>> 2.43.0.472.g3155946c3a-goog
->>>>>>>>
->>>>>>
->>>>>>
->>>>>>
->>>>
->>>>
->>>>
->>
-
-
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/sge.c b/drivers/net/ethernet/chelsio/cxgb4/sge.c
+index b5ff2e1a9975..49d5808b7d11 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/sge.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/sge.c
+@@ -803,20 +803,6 @@ static inline unsigned int calc_tx_flits(const struct sk_buff *skb,
+ 	return flits;
+ }
+ 
+-/**
+- *	calc_tx_descs - calculate the number of Tx descriptors for a packet
+- *	@skb: the packet
+- *	@chip_ver: chip version
+- *
+- *	Returns the number of Tx descriptors needed for the given Ethernet
+- *	packet, including the needed WR and CPL headers.
+- */
+-static inline unsigned int calc_tx_descs(const struct sk_buff *skb,
+-					 unsigned int chip_ver)
+-{
+-	return flits_to_desc(calc_tx_flits(skb, chip_ver));
+-}
+-
+ /**
+  *	cxgb4_write_sgl - populate a scatter/gather list for a packet
+  *	@skb: the packet
+-- 
+2.39.2
 
 
