@@ -1,54 +1,57 @@
-Return-Path: <linux-kernel+bounces-96068-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96070-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D76F48756BB
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:10:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 411238756BF
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:10:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 153FB1C213FA
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:10:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E0C071F22181
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:10:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46993136986;
-	Thu,  7 Mar 2024 19:06:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE46F1369AD;
+	Thu,  7 Mar 2024 19:07:13 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 921AF136675;
-	Thu,  7 Mar 2024 19:06:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76534135A75
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 19:07:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709838390; cv=none; b=XaMB+x2QD21bXoJ/5qH69oABF4HNfT+Opy21nTdmVlzB453AVyz325O/vN0LSOq7DTS1ep6Cv9SndERgSVleabqev4VXs0kngdS0nkVyehVjOZW45uxHjbgnrkxcUrCz891/lKKruRhmyFn/a6sB7bRb8Guryt6xSpGANgmNz1g=
+	t=1709838433; cv=none; b=jkm+Ow3s/LAMnCptH9SMR6KwH2iyktKRTmUaRm0tq7GGzF8DJupwnjdyTYXHqNAaArxN+WUumSd1S9/+jtJfrukP5zXEJkS643ZrzrgBMKRxkWwAwj83z23z9VVIDpTU37NMq9/4OvwVGGdtA4qlr8eNxZReVUPQUZGNZs6NHAE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709838390; c=relaxed/simple;
-	bh=/aVycPzQGuUIJyeAnfbKezN/GZbL5wsOs/DnCoWd/cQ=;
+	s=arc-20240116; t=1709838433; c=relaxed/simple;
+	bh=Lyu7iqd37tK2KplVnInLMebFUrfTWMiG+GzPElQoE3A=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=BV4Nujf2MzFzicz3mzItniqk+n/syhB7XfVN+i1n2qDAThdauOpwmGTFulvho8qtKOHvbW3ccpSr0vHf7vtxgJRM++0kJNUR23DNfAOWZCwBRxCa+3qNHji7PnEqx3PaoY41ebFc9PsW91CUbUB+rRu0UBzCr4H1Fd7ceYSwPGU=
+	 MIME-Version:Content-Type; b=D8c6rM9G7BUwypT0QXQWuDfpoJutGnE16yI4vL8P0cpcV/O59T8yE0Wsrsv5yumwk42LcT4HT7lC1kaGGkM7iMs5mLktaq+1aFjvBRHxrURKE0Sodxr+o4ACyklN37V7pEfJ9a4ebv41VCHlwKm/e3SNvypL++vgmpZkZnHz6Sc=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70ED0C433F1;
-	Thu,  7 Mar 2024 19:06:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84DB9C43390;
+	Thu,  7 Mar 2024 19:07:09 +0000 (UTC)
 From: Catalin Marinas <catalin.marinas@arm.com>
-To: Will Deacon <will@kernel.org>,
-	Marc Zyngier <maz@kernel.org>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Shuah Khan <shuah@kernel.org>,
-	Mark Brown <broonie@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org,
+To: Mark Rutland <mark.rutland@arm.com>,
+	"Christoph Lameter (Ampere)" <cl@gentwo.org>
+Cc: Will Deacon <will@kernel.org>,
+	Jonathan.Cameron@huawei.com,
+	Matteo.Carlini@arm.com,
+	akpm@linux-foundation.org,
+	anshuman.khandual@arm.com,
+	Eric Mackay <eric.mackay@oracle.com>,
+	dave.kleikamp@oracle.com,
+	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
-	Dave Martin <Dave.Martin@arm.com>,
-	kvmarm@lists.linux.dev,
-	linux-doc@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v5 0/9] arm64: Support for 2023 DPISA extensions
-Date: Thu,  7 Mar 2024 19:06:25 +0000
-Message-Id: <170983837968.1825324.3417487578888141721.b4-ty@arm.com>
+	linux-mm@kvack.org,
+	linux@armlinux.org.uk,
+	robin.murphy@arm.com,
+	vanshikonda@os.amperecomputing.com,
+	yang@os.amperecomputing.com,
+	Valentin Schneider <vschneid@redhat.com>
+Subject: Re: [PATCH v3] ARM64: Dynamically allocate cpumasks and increase supported CPUs to 512
+Date: Thu,  7 Mar 2024 19:07:07 +0000
+Message-Id: <170983839495.1825460.8461454086733296317.b4-ty@arm.com>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240306-arm64-2023-dpisa-v5-0-c568edc8ed7f@kernel.org>
-References: <20240306-arm64-2023-dpisa-v5-0-c568edc8ed7f@kernel.org>
+In-Reply-To: <37099a57-b655-3b3a-56d0-5f7fbd49d7db@gentwo.org>
+References: <37099a57-b655-3b3a-56d0-5f7fbd49d7db@gentwo.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,36 +61,27 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-On Wed, 06 Mar 2024 23:14:45 +0000, Mark Brown wrote:
-> This series enables support for the data processing extensions in the
-> newly released 2023 architecture, this is mainly support for 8 bit
-> floating point formats.  Most of the extensions only introduce new
-> instructions and therefore only require hwcaps but there is a new EL0
-> visible control register FPMR used to control the 8 bit floating point
-> formats, we need to manage traps for this and context switch it.
+On Wed, 06 Mar 2024 17:45:04 -0800, Christoph Lameter (Ampere) wrote:
+> Currently defconfig selects NR_CPUS=256, but some vendors (e.g. Ampere
+> Computing) are planning to ship systems with 512 CPUs. So that all CPUs on
+> these systems can be used with defconfig, we'd like to bump NR_CPUS to 512.
+> Therefore this patch increases the default NR_CPUS from 256 to 512.
+> 
+> As increasing NR_CPUS will increase the size of cpumasks, there's a fear that
+> this might have a significant impact on stack usage due to code which places
+> cpumasks on the stack. To mitigate that concern, we can select
+> CPUMASK_OFFSTACK. As that doesn't seem to be a problem today with
+> NR_CPUS=256, we only select this when NR_CPUS > 256.
 > 
 > [...]
 
-Applied to arm64 (for-next/dpisa), thanks!
+Applied to arm64 (for-next/misc), thanks!
 
-[1/9] arm64/cpufeature: Hook new identification registers up to cpufeature
-      https://git.kernel.org/arm64/c/cc9f69a3dad3
-[2/9] arm64/fpsimd: Enable host kernel access to FPMR
-      https://git.kernel.org/arm64/c/b6c0b424cb91
-[3/9] arm64/fpsimd: Support FEAT_FPMR
-      https://git.kernel.org/arm64/c/203f2b95a882
-[4/9] arm64/signal: Add FPMR signal handling
-      https://git.kernel.org/arm64/c/8c46def44409
-[5/9] arm64/ptrace: Expose FPMR via ptrace
-      https://git.kernel.org/arm64/c/4035c22ef7d4
-[6/9] arm64/hwcap: Define hwcaps for 2023 DPISA features
-      https://git.kernel.org/arm64/c/c1932cac7902
-[7/9] kselftest/arm64: Handle FPMR context in generic signal frame parser
-      https://git.kernel.org/arm64/c/f4dcccdda586
-[8/9] kselftest/arm64: Add basic FPMR test
-      https://git.kernel.org/arm64/c/7bcebadda045
-[9/9] kselftest/arm64: Add 2023 DPISA hwcap test coverage
-      https://git.kernel.org/arm64/c/44d10c27bd75
+I dropped the config entry and comment, replaced it with a select as per
+Mark's suggestion.
+
+[1/1] ARM64: Dynamically allocate cpumasks and increase supported CPUs to 512
+      https://git.kernel.org/arm64/c/0499a78369ad
 
 -- 
 Catalin
