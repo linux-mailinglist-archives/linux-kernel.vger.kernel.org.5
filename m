@@ -1,52 +1,52 @@
-Return-Path: <linux-kernel+bounces-95429-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95432-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 585DC874D8E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:35:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3050A874D97
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:37:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B0251C20A7A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:35:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 620191C20A14
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:37:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0DEA12B142;
-	Thu,  7 Mar 2024 11:34:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A21912CD80;
+	Thu,  7 Mar 2024 11:34:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="on9m/SjU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cGV7TXmf"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5A331292CE;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3028129A67;
 	Thu,  7 Mar 2024 11:34:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709811289; cv=none; b=dgo31IK7PogLlJpj/zVzAZRvFML/MDGPyyoX5BSpJoisvf3DXKn2AsO9iVk56qqmqkXt/te8lveZvJUtdKlFgVmvy3AQqY/9YTuMzK0yeZHi1XBpEefo6rgtKO2XsUxJH3bh/P1p8IWRQlMwiyATqEvegHrIEuYVXfbzCLTxUP0=
+	t=1709811290; cv=none; b=CWnt47hodPI5Usu1GIh3i853X2kt9M65Q2HwuPlXjjpK4FFwTnbMHDYp9YT0mKidlXY+x9LWLDqf9hbMC6gHF2L0Kgqu5uXhqCKFZicTiQhxxOfYjYvtI0qhBaRH01+LZk5XVyPHJpqFV0EYV9OooFmgBZ74krmppzDUj2EcmDA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709811289; c=relaxed/simple;
-	bh=c01HggYsG7UVeihptCV7G01V4aTHo04UjLf74pTqkvQ=;
+	s=arc-20240116; t=1709811290; c=relaxed/simple;
+	bh=S/doFh+gAKWZAIIBgfTAfdC4/d/iX9a1igOHcKDtz+w=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=auz8SwcYzlXl4h0o/D3fkTeBy2/ubdRDfX80tjTwGCr8W2YAN07+YxGY8KTfypak73eSBRtSA0/pbczRPLZVfuUskIz1eb56PIgQ0R+dRnAOOVeTiCktSNp9rdXZyJypr/la1p3OXjNshJLu17lPsCVXgI24ufujLdMtRWfON/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=on9m/SjU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 6FB42C43330;
+	 In-Reply-To:To:Cc; b=WE3dr6riBjq31uCbn32NYjrLsnHyjtroX7LcMynDbpR4B6OhS+j5aAukVZ4QYUjzIvBD7pIn+la1vC6YRocNctay/0tdoAO3y5t98Vp4Bsm8OhjK7ARG3sIkru4WJi+yIKeaeroeSxEFL8QY92Zv9TGQ5Wv3Dh5MTysuc8mnn+k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cGV7TXmf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 78409C43609;
 	Thu,  7 Mar 2024 11:34:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1709811289;
-	bh=c01HggYsG7UVeihptCV7G01V4aTHo04UjLf74pTqkvQ=;
+	bh=S/doFh+gAKWZAIIBgfTAfdC4/d/iX9a1igOHcKDtz+w=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=on9m/SjUODPRzPD8K+bdgJWPTmavAHeTFgNWE2BYja2WkJELSOVGJD/m/mwBMMeWs
-	 7TZNSvtFXQZleWAe0ilXBjRbwuPSVxW2XyuJk5AnlRsq+g3a2rX/kxrrBbeGAQqvkx
-	 myLI/KpHU7zFJi3bpPtQh0fi67QRRgikvf1PllWFGfsgIWWgzTY73cUhY573JilSJa
-	 W5iZ4tcY6RwnOz/KM9Jnw7Jue7XT/6TyPpgOHQ4sh8pQGYb3rLLpl0L+O/BCrtF8V4
-	 ZaN74DXljr0X65kGb4KSYvQdPYlRN+VZuube6KcPEtxuW39Kjb39M6HN505YGNJh2m
-	 6BsUXndJDoI2w==
+	b=cGV7TXmfBXZ/jusmM4qoE+iGY/ncftIuvMgz734AYJVYJt7qTNhGMHegP0pGxjlKw
+	 5aoK3KdSpwW6O147hyefhg9ZhpA6OWrMi1AE+CVdPtA0TCPuLV22QGKymUxkgQK4LE
+	 CiZ3wa4MkgFDliRbh9lPtXHWneQKD0mJWGkVuH+7+IlWjx99jnOQvyLK6PCHmo7a3X
+	 qUuX494RIuGdMklq35PDBjkbke9xcUAAeQce9fAZrBHapNvgNfLDkxpexcCssif5o5
+	 8YZ/d3Hoc/0GAvCeFvUZrdbqHN2PWpF5umI7l/3BLIgy2DD7UtEbjwMejUfGF4KJMC
+	 MmxOiBX8J1gRA==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 57D02C54E5C;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 62C30C54E49;
 	Thu,  7 Mar 2024 11:34:49 +0000 (UTC)
 From: Yang Xiwen via B4 Relay <devnull+forbidden405.outlook.com@kernel.org>
-Date: Thu, 07 Mar 2024 19:34:50 +0800
-Subject: [PATCH net-next v9 4/9] dt-bindings: net: convert hisi-femac.txt
- to YAML
+Date: Thu, 07 Mar 2024 19:34:51 +0800
+Subject: [PATCH net-next v9 5/9] dt-bindings: net: hisi-femac: add
+ mandatory MDIO bus subnode
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,7 +55,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240307-net-v9-4-6e0cf3e6584d@outlook.com>
+Message-Id: <20240307-net-v9-5-6e0cf3e6584d@outlook.com>
 References: <20240307-net-v9-0-6e0cf3e6584d@outlook.com>
 In-Reply-To: <20240307-net-v9-0-6e0cf3e6584d@outlook.com>
 To: Yisen Zhuang <yisen.zhuang@huawei.com>, 
@@ -68,13 +68,14 @@ To: Yisen Zhuang <yisen.zhuang@huawei.com>,
  Heiner Kallweit <hkallweit1@gmail.com>, 
  Russell King <linux@armlinux.org.uk>
 Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
- devicetree@vger.kernel.org, Yang Xiwen <forbidden405@outlook.com>
+ devicetree@vger.kernel.org, Yang Xiwen <forbidden405@outlook.com>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1709811287; l=5220;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1709811287; l=2289;
  i=forbidden405@outlook.com; s=20230724; h=from:subject:message-id;
- bh=uiezMY2DCteYHM0P+l+HGnsL5XUDuLgoCSyIIdl/Lc4=;
- b=HummQZy6B+cyoBBY2k7pxtBhG3NUCeUvMyaTQZH7zi6VlZzwUpUI1Arv15UsVOfXy0JeFfyzr
- yQkZhqgAvAPAxd3CuOGzQWzaIIjflUr72W+IHJaxkno1RuHY8vtcJCW
+ bh=4fkGrr79J0kJPETyUJ+upr3jatyv9l4bbxNa0d6pOpo=;
+ b=yF6Gx/oIFBH+QWLXV0eN7Eef9X95SzYrHB731UFAKoOQnbjbgNaCe+fXI+uRjCXp7glRixFZN
+ 3QSQL+2OC/pASE+rIGPMuKRZgXLYqZw+Mwg+uRt8K3mN8wt6vNyS3po
 X-Developer-Key: i=forbidden405@outlook.com; a=ed25519;
  pk=qOD5jhp891/Xzc+H/PZ8LWVSWE3O/XCQnAg+5vdU2IU=
 X-Endpoint-Received:
@@ -84,160 +85,79 @@ Reply-To: <forbidden405@outlook.com>
 
 From: Yang Xiwen <forbidden405@outlook.com>
 
-Convert the old text binding to new YAML.
+FEMAC core always has an integrated MDIO bus mapped in its address
+space. Add required properties '#address-cells', 'size-cells', 'ranges'
+and MDIO bus subnode.
 
-While at it, make some changes to the binding:
-- The version numbers are not documented publicly. The version also does
-not change programming interface. Remove it until it's really needed.
-- A few clocks are missing in old binding file. Add them to match the real
-hardware.
-
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
 ---
- .../bindings/net/hisilicon,hisi-femac.yaml         | 87 ++++++++++++++++++++++
- .../devicetree/bindings/net/hisilicon-femac.txt    | 41 ----------
- 2 files changed, 87 insertions(+), 41 deletions(-)
+ .../bindings/net/hisilicon,hisi-femac.yaml         | 30 ++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
 diff --git a/Documentation/devicetree/bindings/net/hisilicon,hisi-femac.yaml b/Documentation/devicetree/bindings/net/hisilicon,hisi-femac.yaml
-new file mode 100644
-index 000000000000..3344d3bfefb8
---- /dev/null
+index 3344d3bfefb8..5cd2331668bc 100644
+--- a/Documentation/devicetree/bindings/net/hisilicon,hisi-femac.yaml
 +++ b/Documentation/devicetree/bindings/net/hisilicon,hisi-femac.yaml
-@@ -0,0 +1,87 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/hisilicon,hisi-femac.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Hisilicon Fast Ethernet MAC controller
-+
-+maintainers:
-+  - Yang Xiwen <forbidden405@foxmail.com>
-+
-+allOf:
-+  - $ref: ethernet-controller.yaml
-+
-+properties:
-+  compatible:
-+    enum:
-+      - hisilicon,hi3516cv300-femac
-+
-+  reg:
-+    items:
-+      - description: The first region is the MAC core register base and size.
-+      - description: The second region is the global MAC control register.
-+
-+  interrupts:
+@@ -22,6 +22,15 @@ properties:
+       - description: The first region is the MAC core register base and size.
+       - description: The second region is the global MAC control register.
+ 
++  ranges:
 +    maxItems: 1
 +
-+  clocks:
-+    items:
-+      - description: MAC main clock
-+      - description: MAC bus interface clock
-+      - description: PHY clock
++  '#address-cells':
++    const: 1
 +
-+  clock-names:
-+    items:
-+      - const: mac
-+      - const: macif
-+      - const: phy
++  '#size-cells':
++    const: 1
 +
-+  resets:
-+    items:
-+      - description: MAC reset signal
-+      - description: PHY reset signal
+   interrupts:
+     maxItems: 1
+ 
+@@ -57,9 +66,16 @@ properties:
+       - description: reset pulse for PHY
+       - description: post-reset delay for PHY
+ 
++patternProperties:
++  'mdio@[0-9a-f]+':
++    $ref: hisilicon,hisi-femac-mdio.yaml#
 +
-+  reset-names:
-+    items:
-+      - const: mac
-+      - const: phy
+ required:
+   - compatible
+   - reg
++  - ranges
++  - '#address-cells'
++  - '#size-cells'
+   - interrupts
+   - clocks
+   - resets
+@@ -75,6 +91,9 @@ examples:
+     ethernet@10090000 {
+         compatible = "hisilicon,hi3516cv300-femac";
+         reg = <0x10090000 0x1000>, <0x10091300 0x200>;
++        ranges = <0x0 0x10090000 0x10000>;
++        #address-cells = <1>;
++        #size-cells = <1>;
+         interrupts = <12>;
+         clocks = <&clk_femac>, <&clk_femacif>, <&clk_fephy>;
+         clock-names = "mac", "macif", "phy";
+@@ -84,4 +103,15 @@ examples:
+         phy-mode = "mii";
+         phy-handle = <&fephy>;
+         hisilicon,phy-reset-delays-us = <10000 20000 20000>;
 +
-+  hisilicon,phy-reset-delays-us:
-+    description: PHY reset timing requirement (in micro seconds).
-+      The integrated PHY usually have a special reset timing sequence and must
-+      interact with MAC controller to accomplish the entire reset procedure. So
-+      these properties belong to MAC controller, not PHY.
-+    items:
-+      - description: pre-reset delay for PHY
-+      - description: reset pulse for PHY
-+      - description: post-reset delay for PHY
++        mdio@1100 {
++            compatible = "hisilicon,hisi-femac-mdio";
++            reg = <0x1100 0x20>;
++            #address-cells = <1>;
++            #size-cells = <0>;
 +
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - resets
-+  - reset-names
-+  - phy-mode
-+  - phy-handle
-+  - hisilicon,phy-reset-delays-us
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    ethernet@10090000 {
-+        compatible = "hisilicon,hi3516cv300-femac";
-+        reg = <0x10090000 0x1000>, <0x10091300 0x200>;
-+        interrupts = <12>;
-+        clocks = <&clk_femac>, <&clk_femacif>, <&clk_fephy>;
-+        clock-names = "mac", "macif", "phy";
-+        resets = <&crg 0xec 0>, <&crg 0xec 3>;
-+        reset-names = "mac", "phy";
-+        mac-address = [00 00 00 00 00 00];
-+        phy-mode = "mii";
-+        phy-handle = <&fephy>;
-+        hisilicon,phy-reset-delays-us = <10000 20000 20000>;
-+    };
-diff --git a/Documentation/devicetree/bindings/net/hisilicon-femac.txt b/Documentation/devicetree/bindings/net/hisilicon-femac.txt
-deleted file mode 100644
-index 5f96976f3cea..000000000000
---- a/Documentation/devicetree/bindings/net/hisilicon-femac.txt
-+++ /dev/null
-@@ -1,41 +0,0 @@
--Hisilicon Fast Ethernet MAC controller
--
--Required properties:
--- compatible: should contain one of the following version strings:
--	* "hisilicon,hisi-femac-v1"
--	* "hisilicon,hisi-femac-v2"
--	and the soc string "hisilicon,hi3516cv300-femac".
--- reg: specifies base physical address(s) and size of the device registers.
--  The first region is the MAC core register base and size.
--  The second region is the global MAC control register.
--- interrupts: should contain the MAC interrupt.
--- clocks: A phandle to the MAC main clock.
--- resets: should contain the phandle to the MAC reset signal(required) and
--	the PHY reset signal(optional).
--- reset-names: should contain the reset signal name "mac"(required)
--	and "phy"(optional).
--- phy-mode: see ethernet.txt [1].
--- phy-handle: see ethernet.txt [1].
--- hisilicon,phy-reset-delays-us: triplet of delays if PHY reset signal given.
--	The 1st cell is reset pre-delay in micro seconds.
--	The 2nd cell is reset pulse in micro seconds.
--	The 3rd cell is reset post-delay in micro seconds.
--
--The MAC address will be determined using the optional properties
--defined in ethernet.txt[1].
--
--[1] Documentation/devicetree/bindings/net/ethernet.txt
--
--Example:
--	hisi_femac: ethernet@10090000 {
--		compatible = "hisilicon,hi3516cv300-femac","hisilicon,hisi-femac-v2";
--		reg = <0x10090000 0x1000>,<0x10091300 0x200>;
--		interrupts = <12>;
--		clocks = <&crg HI3518EV200_ETH_CLK>;
--		resets = <&crg 0xec 0>,<&crg 0xec 3>;
--		reset-names = "mac","phy";
--		mac-address = [00 00 00 00 00 00];
--		phy-mode = "mii";
--		phy-handle = <&phy0>;
--		hisilicon,phy-reset-delays-us = <10000 20000 20000>;
--	};
++            phy@1 {
++                reg = <1>;
++            };
++        };
+     };
 
 -- 
 2.43.0
