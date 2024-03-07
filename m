@@ -1,299 +1,404 @@
-Return-Path: <linux-kernel+bounces-95510-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95504-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D6C4874E91
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 13:05:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAE27874E7B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 13:02:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5DE121C21484
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:05:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D991283F0B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:02:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CCAD129A8B;
-	Thu,  7 Mar 2024 12:05:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15FB11292F3;
+	Thu,  7 Mar 2024 12:02:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=imgtec.com header.i=@imgtec.com header.b="QrJuxX1m";
-	dkim=pass (1024-bit key) header.d=IMGTecCRM.onmicrosoft.com header.i=@IMGTecCRM.onmicrosoft.com header.b="jkdfk571"
-Received: from mx08-00376f01.pphosted.com (mx08-00376f01.pphosted.com [91.207.212.86])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PkJb82vd"
+Received: from mail-vk1-f175.google.com (mail-vk1-f175.google.com [209.85.221.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4B5B1292CA;
-	Thu,  7 Mar 2024 12:05:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=91.207.212.86
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709813136; cv=fail; b=nk3po3hnxiM6C/J/Ojrxty+tRMMqCjqQRCWdnyfkFu+0zFjVfJhYV9bEJQ8YIGrQkuxn1+m9SlsX89/Pcv6HdSxf6STkcrSb1KPm39rpgUmvZ0XRIvdKpnBB4u9Jx/3/dbG8UbzybBvKEb1t0uKbLxdEXEf4EFyiLFqXpRsdTus=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709813136; c=relaxed/simple;
-	bh=W/dBLOg4bDmJCyY3rQVuW3tplQoFLU6LHuylGJR3N+8=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=NJSlA6ekCRU8jAVMO6ZcPqjDjgZDNoL3oS4fAp9k4HcvroLeD3HDOVxFOfpBYTllORNAg9y+yegobylNMcGInBSG/u49LX1GU7gTya1cSvQu+HW/BMizr1+u8XbB2Y8jqGyx+Grze8o1HaEaDj/NyJawqvIle0gArXQArRtHkqg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=imgtec.com; spf=pass smtp.mailfrom=imgtec.com; dkim=pass (2048-bit key) header.d=imgtec.com header.i=@imgtec.com header.b=QrJuxX1m; dkim=pass (1024-bit key) header.d=IMGTecCRM.onmicrosoft.com header.i=@IMGTecCRM.onmicrosoft.com header.b=jkdfk571; arc=fail smtp.client-ip=91.207.212.86
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=imgtec.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=imgtec.com
-Received: from pps.filterd (m0168888.ppops.net [127.0.0.1])
-	by mx08-00376f01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4278A66D017177;
-	Thu, 7 Mar 2024 12:01:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=imgtec.com; h=
-	from:to:cc:subject:date:message-id:references:in-reply-to
-	:content-type:content-id:content-transfer-encoding:mime-version;
-	 s=dk201812; bh=W/dBLOg4bDmJCyY3rQVuW3tplQoFLU6LHuylGJR3N+8=; b=
-	QrJuxX1mRrpe65ciKjKetYP7kJRL5ttosY1wR+oGgfRv+CW4y6i6ruErsajc11qZ
-	hp/CgsfjpVUutQHfcqdIRj6nWNaPcG/miE1MdT2wcgbyh9TJK9T0+pYFdcA9/Z6N
-	GwTYNtMgDW8zLKcJNfK8PDrW10smCxs/pHkZHLmKrDxtP1ro2ND490/1cR20c2Nw
-	aywHNlrd0J5ajzGjYX9x+s2hoVEshAIx5wUx89gVkZjEto6BRkUwkHq3oCgM+5Qf
-	/DBYHyjMZ4H30h0JqiDWRawONtHr6By3IVJO/0zMBDmxHhHvd2bgjGnPH8n7PxRR
-	FWttFqQSv1nNI6KEUwBENg==
-Received: from hhmail04.hh.imgtec.org ([217.156.249.195])
-	by mx08-00376f01.pphosted.com (PPS) with ESMTPS id 3wku8sym54-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-	Thu, 07 Mar 2024 12:01:52 +0000 (GMT)
-Received: from HHMAIL04.hh.imgtec.org (10.100.10.119) by
- HHMAIL04.hh.imgtec.org (10.100.10.119) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 7 Mar 2024 12:01:51 +0000
-Received: from GBR01-CWX-obe.outbound.protection.outlook.com (104.47.85.41) by
- email.imgtec.com (10.100.10.121) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
- Transport; Thu, 7 Mar 2024 12:01:51 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZzY73qHbR/vWRHRJjhRTdz50iULYeeRMBU5Y1x13qMqxF9RlPCqPGDv/Rvd8cAW8xv8VGdIWiTEPSznQW42rojLD6vUfYBuXUxZsauEXQz+1+V8kgTWZfvBzAqLmkPu+yndwzc3RUNakdF/If+prAM2Y4GZJ8cp2tO5HFQyvusAVZClL9sVWEo7mG/YAF8Rh+dIbq0IUdpxga6+0SmppQQbDkECi9n4NbUK4rXvzeJ+1vmUCFy0E/rgPFAZW+sse9w7hhawvYX1DSobOedTldyYsojfbjUvYlbD6HeTyoysfiDSsncIrNSCKSBi/wGqVQwTcKDIM4YVAYiuqxN3wWg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=W/dBLOg4bDmJCyY3rQVuW3tplQoFLU6LHuylGJR3N+8=;
- b=WOgJNd6ehwav/2k7Km3A/C1rz/7gA/eL8yR2GXKUutVZ23z1mKSvOR1tFVPJSMsRVsn6Zallm5joS4s81RXlUMDjjeqzqEUJJUZtsK5Qf00cTkco6TQeG/G/Q0eZtjhhOnRN8v7oGEO+09TjV4j9Hs7sf603HjwAu5d7gkS7ThuBLxeJra7inzl/ErTPQbYoNpcXHCegs/hmdlU53cRUFZfhFXpIstuXQFIfCxN4xCXRI/FxSL/7Xgs6099pLjeR/JVNdz2OS1oHvYqjg3uXlAcM4sUK+VYgS36fpGLPweXuqSNf2owA2X0PUqxO76OiZWE2RpDCDVBMZDR+/TcGaw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=imgtec.com; dmarc=pass action=none header.from=imgtec.com;
- dkim=pass header.d=imgtec.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DAA7128378
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 12:02:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.175
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709812926; cv=none; b=a7GVTZUvcxtsAwgNIO5MtQ8JR8mhhSBx9j7In3gVA1tDxSz5Qczpv3V5iHlGZz0NPGQD0+NCldiYQyQ24Tf+oCcEA5PjjS6iR0DMXRYpCQIFfRi2uybrSph7b/92sghsvEqlO/5CSHvHAIekmQ40KAXYuZS5Ymqamlzw0RvPllM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709812926; c=relaxed/simple;
+	bh=WCiVFaCGQBloZhn7fg80Wd2TCYW4jklCLafPsC/TH2A=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=H8aYk/QgjoF0lCYLMlI+fIEUuEF9fJZ07ZomQf/uED4w5E7Qg9IdRCaV9kYIJbgG+LZenAQhV9pLctJ/rUtpHyc8kRt5LXA6JRXiVWrqDH1ekKNUgJ3w3PQZO44m7c4U5DlHl5H/nezSdIz/tVLc+JTZYKjCniOXpZD8lSsnO5c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PkJb82vd; arc=none smtp.client-ip=209.85.221.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f175.google.com with SMTP id 71dfb90a1353d-4d346e4242fso315205e0c.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 04:02:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=IMGTecCRM.onmicrosoft.com; s=selector2-IMGTecCRM-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=W/dBLOg4bDmJCyY3rQVuW3tplQoFLU6LHuylGJR3N+8=;
- b=jkdfk571st7tL2/5cNXIDidHbjLPhR0et5SgzWg6hwKbAgTGlrm3qhZgSSEkCZ3wDvjHIjgTGdQ8vqPXFzmczUjCBSLyxcaGP1RrppKf5rTJydS8WjbFPAMwVLmM8bDS7EavlKlLkT7VGuTDeecVRPH8ZQRrijIDz+5i+5TnRn0=
-Received: from LO6P265MB6032.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:2a5::14)
- by LO4P265MB6187.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:279::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.24; Thu, 7 Mar
- 2024 12:01:49 +0000
-Received: from LO6P265MB6032.GBRP265.PROD.OUTLOOK.COM
- ([fe80::870c:5e6e:be56:c732]) by LO6P265MB6032.GBRP265.PROD.OUTLOOK.COM
- ([fe80::870c:5e6e:be56:c732%4]) with mapi id 15.20.7362.024; Thu, 7 Mar 2024
- 12:01:49 +0000
-From: Frank Binns <Frank.Binns@imgtec.com>
-To: Matt Coster <Matt.Coster@imgtec.com>,
-        "geert@linux-m68k.org"
-	<geert@linux-m68k.org>
-CC: "robh@kernel.org" <robh@kernel.org>,
-        "aford@beaconembedded.com"
-	<aford@beaconembedded.com>,
-        "krzysztof.kozlowski+dt@linaro.org"
-	<krzysztof.kozlowski+dt@linaro.org>,
-        "tzimmermann@suse.de"
-	<tzimmermann@suse.de>,
-        "mripard@kernel.org" <mripard@kernel.org>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org"
-	<dri-devel@lists.freedesktop.org>,
-        "conor+dt@kernel.org"
-	<conor+dt@kernel.org>,
-        "aford173@gmail.com" <aford173@gmail.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>,
-        "maarten.lankhorst@linux.intel.com" <maarten.lankhorst@linux.intel.com>,
-        "geert+renesas@glider.be" <geert+renesas@glider.be>,
-        "magnus.damm@gmail.com"
-	<magnus.damm@gmail.com>,
-        "airlied@gmail.com" <airlied@gmail.com>
-Subject: Re: [PATCH 2/6] arm64: dts: renesas: r8a774a1: Enable GPU
-Thread-Topic: [PATCH 2/6] arm64: dts: renesas: r8a774a1: Enable GPU
-Thread-Index: AQHacIc8pvVr4axcM0KRhQuvK3UiIg==
-Date: Thu, 7 Mar 2024 12:01:49 +0000
-Message-ID: <2cdbd8b216a37727c1996440f88229be05ee7efc.camel@imgtec.com>
-References: <20240227034539.193573-1-aford173@gmail.com>
-	 <20240227034539.193573-3-aford173@gmail.com>
-	 <39aead3b-b809-4c9c-8a5d-c0be2b36ea47@imgtec.com>
-	 <CAMuHMdW5vWg=tpB9PCRXmdBmLtt0wNN9dOEN1Lp_N7R68jz0tA@mail.gmail.com>
-In-Reply-To: <CAMuHMdW5vWg=tpB9PCRXmdBmLtt0wNN9dOEN1Lp_N7R68jz0tA@mail.gmail.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.36.5-0ubuntu1 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: LO6P265MB6032:EE_|LO4P265MB6187:EE_
-x-ms-office365-filtering-correlation-id: acb35a49-4535-4073-3304-08dc3e9e5ecc
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Spr+TfTOTrG37IxLQw7JQMHSH+JsB+CZhfrPJi4DnT5tQMotUV5JBVM66x/gZKwK4+6ZsiwhPN6gKZ7CaRx0JCERW4dei6iz+kFr4MeqRUIuUrSPeg8Ugbh31AkYuO+lLh1fKGz2wlhPOBq9Q5chSnNUfRC7Yp3cxoMSYGptGBgcwlj3wY05PmmGEK/iz65jwRL0iE6ill3dXtBhZJfHf/EIyeyqmk4wgdRxXOBbiKbrIwUX3UNgQTjJZDXj8w9N4rT2ezIKctf62KPxEWEJ/yxwoPyD59CPKOOG1uJvzp0jS7uYTWqHouQPzTeVin1cSqU7guawYmwQxJ3+BaZkMgYh7C3zgOUuXnXhDD/gNosRynJWD1DASipw3ktoHPgjPd1GeuJX7JbS6iq/GE5yxiUixnH/6A2kUYWrbsAseDHg4q7OzPGblDdWAXHKHTJsBxG7Obz8W+I92NcSuAxEvZDEFQAWagH10FgxOZX/LWbmfEFo0z2IK6yTARyukKTHcJm9fAAhzl1r9qPVDIrk2rW7r1oqQdK3qvZHNPaXI3Yty+uJkyT/48eud4dZx0I1ac9hkcx9uS5TRY0sRBEj7eytCBjoIAgRn3xNTcagUACY7FEbhfPOVVrk1B1M6iUZYKq61PlSjpZ6RKhcs2+SD8VQSHXMacvO8KKkKWIjfUU=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LO6P265MB6032.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(376005)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Zjhya0gyT3J6SHhtdTRQdXVsQzkxTGVtWWVXeXoxVlZsdVV0M0txV2lVTzBQ?=
- =?utf-8?B?Q2VsdmdyUTNkUDNRdVBtdTlEQzQvdERyOXZCZXBiMXE0U3NHWkMxTXd2TzlQ?=
- =?utf-8?B?YzRPQ3d3NlBVeGQzaWc0RCt0NUpLOVhoa2JWNEd4S01Wc2tFdG1oa2lXUnNy?=
- =?utf-8?B?TlNZamRLWjlSU1k1ZDJRSHBkNU5zZ2lzVTh2T3N2aEhKUnJZU1g1aXZQYWZF?=
- =?utf-8?B?K0Q5V0FtN2JCbTl2NmkvWEtoYkp0MEViKythdDkvaWNIaTVwLzFBNHI0bjlO?=
- =?utf-8?B?OHhwK2t0Rjh1UlYxRWZnMjFieWkyTm1WWVo3NlNEVzBadzk4NG5jOEJ0a2RB?=
- =?utf-8?B?R1Z6cHFGbGJEQWtrVlZJZ1ZRTHBpK0dhLzlBaUZOZ3hWeCtPdFVrZkpyTW1h?=
- =?utf-8?B?WEJlYU41MEIzZzNPelJ3SExjVUw5Zm84ajBJcTZkeFg2bnJYdy9UUW9NSllX?=
- =?utf-8?B?TDc3NGhmRU9WRmVvNUozcGhPT2c1djJOY0plZVNJeFd3SkxPdkYrVUN4VmIr?=
- =?utf-8?B?ZUM3WU9BNUw1Z1Ayb3lDaEVnZzJIdlc2Q05Ea0VLNWtiOW1JVTlBaFZPNmRx?=
- =?utf-8?B?Yks0Z2MxRTZQNWt1Mlg5UUQ3bXNQN1F4a3ZUcnREOWsxY25WOTcxZ2I2Tmkw?=
- =?utf-8?B?TTVTYm83TFRwSTlxZU5NNFlxQnJDMytXK0s0VVF0SEw4emM0OFZiVmNaWXBV?=
- =?utf-8?B?TzhZY2Ura1oyZ2R6MXdGR2FCUVJneldWWjhySzBsYTY1TThSM1FvMy9oUnd6?=
- =?utf-8?B?aGx0TEYvZUZoUGhIa3owY08yYS9MKzlMZ3lvZlliRWF1dTRjLytrU2NMNTc4?=
- =?utf-8?B?SCs3bGF0S3M2amlFWGRrWkYxUnFsOHNiYlI5YTJsSFFSTHVOVU1KSkt5M2Zo?=
- =?utf-8?B?UHJUMUlEUGlYS0tQbGpqVVZmQ1NIQkFFbnFLbFc3Z09XaGxneXJ3NWhqaXFj?=
- =?utf-8?B?cExuSHNpUXBtVllOb2dMcnB2UnpzdXo0cERsTFJRdGI5VSt3Y2pNK3pjSTJi?=
- =?utf-8?B?WU9yZTlvYVdyeHZEVXhlb0Vhd1c4SEVzOERmUHNkaVlHWFRDZWxKVkJIOS8w?=
- =?utf-8?B?aXlrZlFFSEEzS0M2eGIweTQ4THQwQzJ3ZDZYMGE3MlI3YUJ2U3c0YWxvVzZ1?=
- =?utf-8?B?d290bWxNdE1CcnRwZlFTaHhsZUxTRlBuS3ovN1RhcCtEM0Z1TmRZcTEyVXRT?=
- =?utf-8?B?MXIwYjVEd3UxcjNzeXgyVjNFejdLTmpHdDYweXlkVW9Oc3lYSE9OaUZRazNS?=
- =?utf-8?B?MlZHQjcxMlFFa2ZVa000YlRZMjNFRUFHVmE4dE1QTnBFL1lJempHVWFPK3Vx?=
- =?utf-8?B?SlVROTkzWUtJZVZIcGlyb29BQXozb3NhZWxQZnBiMDVtYm5DTHAyYjdJRXVt?=
- =?utf-8?B?d3hXVng3ZUpMOFZsaklPNE0vOFE3V2h0TXBMSUd4RC9FNVoraE9Td0w2bC9G?=
- =?utf-8?B?aGFtUCt5aGc0MGtxOUh0K0s5eFM3RU1oY05OcnhoQlFMbG43K3VQM2QwTHZa?=
- =?utf-8?B?aHMrMzQyeU1ldHFNODNJMGV5TXNjQTdiYWJ0NUZweWpWVnNDQ25BQXpOclg0?=
- =?utf-8?B?VHpGbSsvTklRcE04WFNWckhRTVdvUi9YVUw0SW9jRnhDYVZBQzJDUkx6OVBu?=
- =?utf-8?B?S2pSaGIreDJkOVhOOFl6SnBjQXBBOFYxRnF2YXhRc3lUQmRRUytQR3VieTBD?=
- =?utf-8?B?TFNwMjI5MHc4dEtGQk1EOFc1WEttcnF5WnEyK0U0MGp4a1BvYTFRQXdHV2ov?=
- =?utf-8?B?eHdkUW9oalJLaGhIYjlpTkl5d01ZUTZTM1BGbC84RmZVWUQzTG40SHBjVHM3?=
- =?utf-8?B?cm9Damw4OEVoOHBMdG5veDgwczlFUEFDZnVJdlhyNlNrY1ZuSDZLVjBZUCti?=
- =?utf-8?B?M0hBQjdLZUVGS3UyWTBzUGI3YitPaFMwMUM2Z0p0MlNFRXE0SStGL0R6SnRv?=
- =?utf-8?B?N3A0dlptbUNXYTg1MElVUktvVDFTemFqeGFzdWMzQWIrM2JkZW1DM0lLMktt?=
- =?utf-8?B?MkJ3QUxUZG85UHNaa1FuWG1WMVdla2dpNndOOC9QNnZTYkkzUUNZVnVhTTJ6?=
- =?utf-8?B?NEhvYzJkVzNrZEM5OTFhelZKakJCK0x5U05ncmRCd0tjQVhDRTZPY29nVW9o?=
- =?utf-8?B?R0N1dzZCeFc2SUxpWHZ1UzlncmQ0RjMxTmJENGhoYk1DcDA5ZWd1L1NFeEZu?=
- =?utf-8?B?RHc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <0268ED04CDAE2A4CB6B18730425771AA@GBRP265.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+        d=gmail.com; s=20230601; t=1709812923; x=1710417723; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yiRVLLKTXZwQKsZIjiQH5O7OCbSj9iMZpcubEGTHRPU=;
+        b=PkJb82vd1JGJjWHWATtEAtCZTRFzmNNv+0DGfer3XnGP9xCsuQJt/x9kwxGiS7nD+f
+         iypS3lpvZnEJUJZdqv1CcGANUMJtq/MwgyH1TrLKFtcShZlL3fSB8PEx9IYO74iXtby7
+         vy648W70JI8NxNLmPpxrfDiddskny5/XSde7p+YK5q7k58HsqFsn+MSge1/IPofj8Llb
+         uHUofsujAljMpQhGvBLUbGKUvkmyP9V1VCEykT6jG1FyqvC7+56Z7CVklUre4cKAtY23
+         AqBNucWKfXQB9ZK1Jyz2cOhzp9ZiS3eBzEeo33wM+oeuUZ6Nc4OkaIGqGoi+1ilzFUbR
+         b0ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709812923; x=1710417723;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yiRVLLKTXZwQKsZIjiQH5O7OCbSj9iMZpcubEGTHRPU=;
+        b=TkgD9VW9HHWbhmdVkPznjSB5bTFNGGtz4bYeD3V8rCnvGZ0PHXiyBaPfKPW0axYzgW
+         a0I6QuelFk9dczxQp9rXR8YPWg2uv7XQg3sNolLYDt/35GyHfvZ11dT36H8FdCJmrlOX
+         iNa28CqEJgJVQL/qMlp/fQfmQWMCb80Zv22bBVIMuMz8FCCNSm1vzLXeZOPv2TqZlNWJ
+         BvtimF7SeFfAKurCRosLGdZjhCELWXarNl3lE5ZUz/4PUws6O1m4SWQAEohWVkxrGW3c
+         5CPHMy/VrJgtyLl9mAO+oo7G2I2IEBrbAEUp1Y5yMd6kNf5JyazsVkYsdaa8JdWjveIg
+         sxJA==
+X-Forwarded-Encrypted: i=1; AJvYcCVITMT1zLpXCp3F/7SFkNyt1BJMZlWBhlpFZ+ypCYnrOvZ/GHbQp1cBMqMrLcicPvBA2Aol7m+lSXRMgs6pLoxkE1u2sky6NmgzlQHw
+X-Gm-Message-State: AOJu0YwyawmLS9ZIecSgiBrz7oLVrpdT4G1BAmRqcFRtBemjVSdOhgzu
+	hXdjYBiXLszUL8DceSe0PLdauW0uEuIizexxMojFmeHXN9jLdpoedyYC1+G5xu4txLkomohPyKd
+	7U+BImD/HPALiMvL4EAh2Ge4kcBQ=
+X-Google-Smtp-Source: AGHT+IE56D95vkcppYlIaSiMWmuIKbFmdc2jgyWmasyu8Vr8sUr86KEcUK/2DCaU+6D4jFwZiI93hxtcs7gn9xnTs+s=
+X-Received: by 2002:a05:6122:17a7:b0:4c9:75c3:e79b with SMTP id
+ o39-20020a05612217a700b004c975c3e79bmr8433911vkf.6.1709812922947; Thu, 07 Mar
+ 2024 04:02:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: LO6P265MB6032.GBRP265.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: acb35a49-4535-4073-3304-08dc3e9e5ecc
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Mar 2024 12:01:49.5287
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 0d5fd8bb-e8c2-4e0a-8dd5-2c264f7140fe
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 6OIxj4z+BW3m6DIXXG4EH48UT6ElEWfHXpC6N2YWIuzyaDuAuXRJ3APkQ4DlJVFFofM+skuV8leQvz1G7UXGFA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LO4P265MB6187
-X-OriginatorOrg: imgtec.com
-X-EXCLAIMER-MD-CONFIG: 15a78312-3e47-46eb-9010-2e54d84a9631
-X-Proofpoint-GUID: co7iiM8In7b-1-rsf-eHqLwX_w5X_4xP
-X-Proofpoint-ORIG-GUID: co7iiM8In7b-1-rsf-eHqLwX_w5X_4xP
+References: <20240307061425.21013-1-ioworker0@gmail.com> <CAGsJ_4xcRvZGdpPh1qcFTnTnDUbwz6WreQ=L_UO+oU2iFm9EPg@mail.gmail.com>
+ <CAK1f24k2G_DSEjuqqqPyY0f7+btpYbjfoyMH7btLfP8nkasCTQ@mail.gmail.com>
+ <CAGsJ_4xREM-P1mFqeM-s3-cJ9czb6PXwizb-3hOhwaF6+QM5QA@mail.gmail.com>
+ <03458c20-5544-411b-9b8d-b4600a9b802f@arm.com> <CAGsJ_4zp1MXTjG=4gBO+J3owg7sHDgDJ8Ut51i1RBSnKnK0BfQ@mail.gmail.com>
+ <501c9f77-1459-467a-8619-78e86b46d300@arm.com> <8f84c7d6-982a-4933-a7a7-3f640df64991@redhat.com>
+ <e6bc142e-113d-4034-b92c-746b951a27ed@redhat.com> <d24f8553-33f2-4ae7-a06d-badaf9462d84@arm.com>
+ <CAGsJ_4za-2xpg21phWi2WWLF1iPXhoc1xM__FDTwYYBBKsTPgw@mail.gmail.com>
+ <a07deb2c-49e1-4324-8e70-e897605faa9d@redhat.com> <b1bf4b62-8e9b-470f-a300-d13c24177688@arm.com>
+ <b174d4e1-e1ef-4766-91bc-de822eee30fb@redhat.com>
+In-Reply-To: <b174d4e1-e1ef-4766-91bc-de822eee30fb@redhat.com>
+From: Barry Song <21cnbao@gmail.com>
+Date: Thu, 7 Mar 2024 20:01:51 +0800
+Message-ID: <CAGsJ_4xXS0MsxRVTbf74DY_boQVUE2oP=AP6JmdXZSqsAOZzRQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] mm/madvise: enhance lazyfreeing with mTHP in madvise_free
+To: David Hildenbrand <david@redhat.com>
+Cc: Ryan Roberts <ryan.roberts@arm.com>, Lance Yang <ioworker0@gmail.com>, 
+	Vishal Moola <vishal.moola@gmail.com>, akpm@linux-foundation.org, zokeefe@google.com, 
+	shy828301@gmail.com, mhocko@suse.com, fengwei.yin@intel.com, 
+	xiehuan09@gmail.com, wangkefeng.wang@huawei.com, songmuchun@bytedance.com, 
+	peterx@redhat.com, minchan@kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-SGkgR2VlcnQsDQoNCk9uIFR1ZSwgMjAyNC0wMi0yNyBhdCAxMjowNCArMDEwMCwgR2VlcnQgVXl0
-dGVyaG9ldmVuIHdyb3RlOg0KPiBIaSBNYXR0LA0KPiANCj4gT24gVHVlLCBGZWIgMjcsIDIwMjQg
-YXQgMTA6MzHigK9BTSBNYXR0IENvc3RlciA8TWF0dC5Db3N0ZXJAaW1ndGVjLmNvbT4gd3JvdGU6
-DQo+ID4gSGkgQWRhbSwNCj4gPiANCj4gPiBUaGFua3MgZm9yIHRoZXNlIHBhdGNoZXMhIEknbGwg
-anVzdCByZXBseSB0byB0aGlzIG9uZSBwYXRjaCwgYnV0IG15DQo+ID4gY29tbWVudHMgYXBwbHkg
-dG8gdGhlbSBhbGwuDQo+ID4gDQo+ID4gT24gMjcvMDIvMjAyNCAwMzo0NSwgQWRhbSBGb3JkIHdy
-b3RlOg0KPiA+ID4gVGhlIEdQVSBvbiB0aGUgUlovRzJNIGlzIGEgUm9ndWUgR1g2MjUwIHdoaWNo
-IHVzZXMgZmlybXdhcmUNCj4gPiA+IHJvZ3VlXzQuNDUuMi41OF92MS5mdyBhdmFpbGFibGUgZnJv
-bSBJbWFnaW5hdGlvbi4NCj4gPiA+IA0KPiA+ID4gV2hlbiBlbnVtZXJhdGVkLCBpdCBhcHBlYXJz
-IGFzOg0KPiA+ID4gICBwb3dlcnZyIGZkMDAwMDAwLmdwdTogW2RybV0gbG9hZGVkIGZpcm13YXJl
-IHBvd2VydnIvcm9ndWVfNC40NS4yLjU4X3YxLmZ3DQo+ID4gPiAgIHBvd2VydnIgZmQwMDAwMDAu
-Z3B1OiBbZHJtXSBGVyB2ZXJzaW9uIHYxLjAgKGJ1aWxkIDY1MTMzMzYgT1MpDQo+ID4gDQo+ID4g
-VGhlc2UgbWVzc2FnZXMgYXJlIHByaW50ZWQgYWZ0ZXIgdmVyaWZ5aW5nIHRoZSBmaXJtd2FyZSBi
-bG9i4oCZcyBoZWFkZXJzLA0KPiA+ICpiZWZvcmUqIGF0dGVtcHRpbmcgdG8gdXBsb2FkIGl0IHRv
-IHRoZSBkZXZpY2UuIEp1c3QgYmVjYXVzZSB0aGV5IGFwcGVhcg0KPiA+IGluIGRtZXNnIGRvZXMg
-Km5vdCogaW1wbHkgdGhlIGRldmljZSBpcyBmdW5jdGlvbmFsIGJleW9uZCB0aGUgaGFuZGZ1bCBv
-Zg0KPiA+IHJlZ2lzdGVyIHJlYWRzIGluIHB2cl9sb2FkX2dwdV9pZCgpLg0KPiA+IA0KPiA+IFNp
-bmNlIE1lc2EgZG9lcyBub3QgeWV0IGhhdmUgc3VwcG9ydCBmb3IgdGhpcyBHUFUsIHRoZXJl4oCZ
-cyBub3QgYSBsb3QNCj4gPiB0aGF0IGNhbiBiZSBkb25lIHRvIGFjdHVhbGx5IHRlc3QgdGhlc2Ug
-YmluZGluZ3MuDQo+IA0KPiBPSy4NCj4gDQo+ID4gV2hlbiB3ZSBhZGRlZCB1cHN0cmVhbSBzdXBw
-b3J0IGZvciB0aGUgZmlyc3QgR1BVICh0aGUgQVhFIGNvcmUgaW4gVEnigJlzDQo+ID4gQU02Miks
-IHdlIG9wdGVkIHRvIHdhaXQgdW50aWwgdXNlcnNwYWNlIHdhcyBzdWZmaWNpZW50bHkgcHJvZ3Jl
-c3NlZCB0bw0KPiA+IHRoZSBwb2ludCBpdCBjb3VsZCBiZSB1c2VkIGZvciB0ZXN0aW5nLiBUaGlz
-IHRob3VnaHQgcHJvY2VzcyBzdGlsbA0KPiA+IGFwcGxpZXMgd2hlbiBhZGRpbmcgbmV3IEdQVXMu
-DQo+ID4gDQo+ID4gT3VyIG1haW4gY29uY2VybiBpcyB0aGF0IGFkZGluZyBiaW5kaW5ncyBmb3Ig
-R1BVcyBpbXBsaWVzIGEgbGV2ZWwgb2YNCj4gPiBzdXBwb3J0IHRoYXQgY2Fubm90IGJlIHRlc3Rl
-ZC4gVGhhdCBpbiB0dXJuIG1heSBtYWtlIGl0IGNoYWxsZW5naW5nIHRvDQo+ID4ganVzdGlmeSBV
-QVBJIGNoYW5nZXMgaWYvd2hlbiB0aGV54oCZcmUgbmVlZGVkIHRvIGFjdHVhbGx5IG1ha2UgdGhl
-c2UgR1BVcw0KPiA+IGZ1bmN0aW9uYWwuDQo+IA0KPiBJIGd1ZXNzIHRoYXQgYXBwbGllcyB0byAi
-W1BBVENIIDAwLzExXSBEZXZpY2UgdHJlZSBzdXBwb3J0IGZvcg0KPiBJbWFnaW5hdGlvbiBTZXJp
-ZXM1IEdQVSIsIHRvbywgd2hpY2ggaGFzIGJlZW4gaW4gbGludXgtbmV4dCBmb3IgYWJvdXQNCj4g
-YSBtb250aD8NCj4gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvYWxsLzIwMjQwMTA5MTcxOTUwLjMx
-MDEwLTEtYWZkQHRpLmNvbS8NCj4gDQoNClRoZSBjb25jZXJuIE1hdHQgaGFzIGV4cHJlc3NlZCBp
-cyBtb3N0bHkgcmlnaHQuIEhvd2V2ZXIsIGFkZGluZyBEVCBiaW5kaW5ncw0KZG9lc24ndCBwcmV2
-ZW50IHVzIGZyb20gbWFraW5nIFVBUEkgY2hhbmdlcy4gVGhlIHRoaW5nIHRoYXQgd291bGQgcHJl
-dmVudCB0aGlzDQppcyBhZGRpbmcgdGhlIGNvbXBhdGlibGUocykgdG8gdGhlIGRyaXZlcidzIGBz
-dHJ1Y3Qgb2ZfZGV2aWNlX2lkYCB0YWJsZSwgc28gdGhpcw0KaXMgd2hhdCB3ZSBuZWVkIHRvIGF2
-b2lkIGRvaW5nIHVudGlsIHN1ZmZpY2llbnQgdGVzdGluZyBoYXMgYmVlbiBkb25lLg0KDQo+ID4g
-PiBTaWduZWQtb2ZmLWJ5OiBBZGFtIEZvcmQgPGFmb3JkMTczQGdtYWlsLmNvbT4NCj4gPiA+IA0K
-PiA+ID4gZGlmZiAtLWdpdCBhL2FyY2gvYXJtNjQvYm9vdC9kdHMvcmVuZXNhcy9yOGE3NzRhMS5k
-dHNpIGIvYXJjaC9hcm02NC9ib290L2R0cy9yZW5lc2FzL3I4YTc3NGExLmR0c2kNCj4gPiA+IGlu
-ZGV4IGE4YTQ0ZmU1ZTgzYi4uODkyM2Q5NjI0YjM5IDEwMDY0NA0KPiA+ID4gLS0tIGEvYXJjaC9h
-cm02NC9ib290L2R0cy9yZW5lc2FzL3I4YTc3NGExLmR0c2kNCj4gPiA+ICsrKyBiL2FyY2gvYXJt
-NjQvYm9vdC9kdHMvcmVuZXNhcy9yOGE3NzRhMS5kdHNpDQo+ID4gPiBAQCAtMjM1Miw2ICsyMzUy
-LDE2IEBAIGdpYzogaW50ZXJydXB0LWNvbnRyb2xsZXJAZjEwMTAwMDAgew0KPiA+ID4gICAgICAg
-ICAgICAgICAgICAgICAgIHJlc2V0cyA9IDwmY3BnIDQwOD47DQo+ID4gPiAgICAgICAgICAgICAg
-IH07DQo+ID4gPiANCj4gPiA+ICsgICAgICAgICAgICAgZ3B1OiBncHVAZmQwMDAwMDAgew0KPiA+
-ID4gKyAgICAgICAgICAgICAgICAgICAgIGNvbXBhdGlibGUgPSAicmVuZXNhcyxyOGE3NzRhMS1n
-cHUiLCAiaW1nLGltZy1heGUiOw0KPiA+IA0KPiA+IFRoZSBHWDYyNTAgaXMgKm5vdCogYW4gQVhF
-IGNvcmUgLSBpdCBzaG91bGRu4oCZdCBiZSBsaXN0ZWQgYXMgY29tcGF0aWJsZQ0KPiA+IHdpdGgg
-b25lLiBGb3IgcHJpb3IgYXJ0LCBzZWUgWzFdIHdoZXJlIHdlIGFkZGVkIHN1cHBvcnQgZm9yIHRo
-ZSBNVDgxNzMNCj4gPiBmb3VuZCBpbiBFbG0gQ2hyb21lYm9va3MgUjEzIChhbHNvIGEgU2VyaWVz
-NlhUIEdQVSkuDQo+IA0KPiBJQy4gQW5kIHRoZSBiaW5kaW5ncyBpbiBbMl0uDQo+IA0KPiA+ID4g
-KyAgICAgICAgICAgICAgICAgICAgIHJlZyA9IDwwIDB4ZmQwMDAwMDAgMCAweDIwMDAwPjsNCj4g
-PiA+ICsgICAgICAgICAgICAgICAgICAgICBjbG9ja3MgPSA8JmNwZyBDUEdfTU9EIDExMj47DQo+
-ID4gPiArICAgICAgICAgICAgICAgICAgICAgY2xvY2stbmFtZXMgPSAiY29yZSI7DQo+ID4gDQo+
-ID4gU2VyaWVzNlhUIGNvcmVzIGhhdmUgdGhyZWUgY2xvY2tzIChzZWUgWzFdIGFnYWluKS4gSSBk
-b27igJl0IGhhdmUgYQ0KPiA+IFJlbmVzYXMgVFJNIHRvIGhhbmQg4oCTIGRvIHlvdSBrbm93IGlm
-IHRoZWlyIGRvY3MgZ28gaW50byBkZXRhaWwgb24gdGhlDQo+ID4gR1BVIGludGVncmF0aW9uPw0K
-PiANCj4gTm90IHJlYWxseS4gVGhlIGRpYWdyYW0gaW4gdGhlIEhhcmR3YXJlIFVzZXIncyBNYW51
-YWwganVzdCBzaG93cyB0aGUNCj4gZm9sbG93aW5nIGNsb2NrIGlucHV0czoNCj4gICAtIENsb2Nr
-IChaR8+VKSBmcm9tIENQRywNCj4gICAtIENsb2NrIChTM0Qxz5UpIGZyb20gQ1BHLA0KPiAgIC0g
-TVNUUCAoU1QxMTIpIGZyb20gQ1BHLg0KPiANCj4gWkcgaXMgdGhlIG1haW4gKHByb2dyYW1tYWJs
-ZSkgM0RHRSBjbG9jaywgcnVubmluZyBhdCB1cCB0byA2MDAgTUh6Lg0KPiBTM0QxIGlzIHRoZSBm
-aXhlZCAyNjYgTUh6IEFYSSBidXMgY2xvY2suDQo+IE1TVFAxMTIgaXMgdGhlIGdhdGVhYmxlIG1v
-ZHVsZSBjbG9jayAocGFydCBvZiB0aGUgU1lTQy9DUEcgY2xvY2sNCj4gZG9tYWluKSwgYW5kIGl0
-cyBwYXJlbnQgaXMgWkcuDQo+IA0KPiBBY2NvcmRpbmcgdG8gdGhlIHNvdXJjZXM6DQo+ICAgLSAi
-Y29yZSIgaXMgdGhlIHByaW1hcnkgY2xvY2sgdXNlZCBieSB0aGUgZW50aXJlIEdQVSBjb3JlLCBz
-byB3ZSB1c2UNCj4gICAgIE1TVFAxMTIgZm9yIHRoYXQuDQo+ICAgLSAic3lzIiBpcyB0aGUgb3B0
-aW9uYWwgc3lzdGVtIGJ1cyBjbG9jaywgc28gdGhhdCBjb3VsZCBiZSBTM0QxLA0KPiAgIC0gIm1l
-bSIgaXMgdGhlIG9wdGlvbmFsIG1lbW9yeSBjbG9jaywgbm8gaWRlYSB3aGF0IHRoYXQgd291bGQg
-bWFwIHRvLg0KPiANCg0KVGhlIHN5cyBhbmQgbWVtIGNsb2NrcyBhcmUgb3B0aW9uYWwgaW4gdGhl
-IGRyaXZlciBhcyBBWEUgY2FuIGJlIGNvbmZpZ3VyZWQgYXQNCmludGVncmF0aW9uIHRpbWUgdG8g
-b3BlcmF0ZSB3aXRoIGEgc2luZ2xlIGNsb2NrICgiY29yZSIpIG9yIHRocmVlIGNsb2Nrcw0KKCJj
-b3JlIiwgInN5cyIgYW5kICJtZW0pLiBTZXJpZXM2WFQgZG9lc24ndCBoYXZlIHRoaXMgY29uZmln
-dXJhYmlsaXR5IGFuZA0KZXhwZWN0cyBhbGwgdGhyZWUgY2xvY2tzLg0KDQo+IEJ1dCBJTUhPIHRo
-ZSB0d28gb3B0aW9uYWwgY2xvY2tzIGRvIG5vdCBtYXR0ZXIgYXQgYWxsICh0aGUgZHJpdmVyDQo+
-IGRvZXNuJ3QgY2FyZSBhYm91dCB0aGVpciByYXRlcywgYW5kIGp1c3QgZW5hYmxlcyB0aGVtIHRv
-Z2V0aGVyIHdpdGgNCj4gdGhlIGNvcmUgY2xvY2spLCBhbmQgUzNEMSBpcyBhbHdheXMtb24sIHNv
-IEknZCBqdXN0IGxpbWl0IGNsb2NrcyB0bw0KPiBhIHNpbmdsZSBpdGVtLg0KPiANCg0KVGhleSBt
-YXR0ZXIgaW4gdGhhdCwgaWYgcHJlc2VudCwgd2UgbWF5IGJlIGFibGUgdG8gbWFrZSBhZGRpdGlv
-bmFsIHBvd2VyDQpzYXZpbmdzLiBUaGUgZHJpdmVyIGRvZXNuJ3QgYXR0ZW1wdCB0byB0YWtlIGFk
-dmFudGFnZSBvZiB0aGlzIGF0IHByZXNlbnQgKGFuZA0KY2FuJ3QgZm9yIEFNNjJ4IGFueXdheSks
-IGJ1dCB0aGlzIHNob3VsZG4ndCBpbmZsdWVuY2UgdGhlIERUIGJpbmRpbmdzLg0KDQo+IEp1c3Qg
-d29uZGVyaW5nOiBpcyB0aGUgYXZhaWxhYmlsaXR5IG9mIDEgY2xvY2sgc3BlY2lmaWMgdG8gQVhF
-LCBvciB0bw0KPiB0aGUgQVhFIGludGVncmF0aW9uIG9uIEFNNjJ4Pw0KPiANCg0KVGhpcyBpcyBz
-b21ldGhpbmcgVEkgaGF2ZSBjb25maWd1cmVkIGFzIHBhcnQgb2YgdGhlaXIgaW50ZWdyYXRpb24g
-Zm9yIEFNNjJ4Lg0KDQpUaGFua3MNCkZyYW5rDQoNCj4gPiArICAgICAgICAgICAgICAgICAgICAg
-aW50ZXJydXB0cyA9IDxHSUNfU1BJIDExOSBJUlFfVFlQRV9MRVZFTF9ISUdIPjsNCj4gPiArICAg
-ICAgICAgICAgICAgICAgICAgcG93ZXItZG9tYWlucyA9IDwmc3lzYyBSOEE3NzRBMV9QRF8zREdf
-Qj47DQo+ID4gKyAgICAgICAgICAgICAgICAgICAgIHJlc2V0cyA9IDwmY3BnIDExMj47DQo+ID4g
-KyAgICAgICAgICAgICB9Ow0KPiA+IFsxXTogaHR0cHM6Ly9naXRsYWIuZnJlZWRlc2t0b3Aub3Jn
-L2ltYWdpbmF0aW9uL2xpbnV4Ly0vYmxvYi9iMzUwNmI4YmM0NWVkNmQ0MDA1ZWIzMmE5OTRkZjBl
-MzNkNjYxM2YxL2FyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ4MTczLmR0c2kjTDk5My0x
-MDA2DQo+IA0KPiBbMl0gaHR0cHM6Ly9naXRsYWIuZnJlZWRlc2t0b3Aub3JnL2ltYWdpbmF0aW9u
-L2xpbnV4Ly0vYmxvYi9iMzUwNmI4YmM0NWVkNmQ0MDA1ZWIzMmE5OTRkZjBlMzNkNjYxM2YxL0Rv
-Y3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9ncHUvaW1nLHBvd2VydnIueWFtbA0KPiAN
-Cj4gDQo+IEdye29ldGplLGVldGluZ31zLA0KPiANCj4gICAgICAgICAgICAgICAgICAgICAgICAg
-R2VlcnQNCj4gDQo+IC0tDQo+IEdlZXJ0IFV5dHRlcmhvZXZlbiAtLSBUaGVyZSdzIGxvdHMgb2Yg
-TGludXggYmV5b25kIGlhMzIgLS0gZ2VlcnRAbGludXgtbTY4ay5vcmcNCj4gDQo+IEluIHBlcnNv
-bmFsIGNvbnZlcnNhdGlvbnMgd2l0aCB0ZWNobmljYWwgcGVvcGxlLCBJIGNhbGwgbXlzZWxmIGEg
-aGFja2VyLiBCdXQNCj4gd2hlbiBJJ20gdGFsa2luZyB0byBqb3VybmFsaXN0cyBJIGp1c3Qgc2F5
-ICJwcm9ncmFtbWVyIiBvciBzb21ldGhpbmcgbGlrZSB0aGF0Lg0KPiAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgIC0tIExpbnVzIFRvcnZhbGRzDQo=
+On Thu, Mar 7, 2024 at 7:45=E2=80=AFPM David Hildenbrand <david@redhat.com>=
+ wrote:
+>
+> On 07.03.24 12:42, Ryan Roberts wrote:
+> > On 07/03/2024 11:31, David Hildenbrand wrote:
+> >> On 07.03.24 12:26, Barry Song wrote:
+> >>> On Thu, Mar 7, 2024 at 7:13=E2=80=AFPM Ryan Roberts <ryan.roberts@arm=
+com> wrote:
+> >>>>
+> >>>> On 07/03/2024 10:54, David Hildenbrand wrote:
+> >>>>> On 07.03.24 11:54, David Hildenbrand wrote:
+> >>>>>> On 07.03.24 11:50, Ryan Roberts wrote:
+> >>>>>>> On 07/03/2024 09:33, Barry Song wrote:
+> >>>>>>>> On Thu, Mar 7, 2024 at 10:07=E2=80=AFPM Ryan Roberts <ryan.rober=
+ts@arm.com> wrote:
+> >>>>>>>>>
+> >>>>>>>>> On 07/03/2024 08:10, Barry Song wrote:
+> >>>>>>>>>> On Thu, Mar 7, 2024 at 9:00=E2=80=AFPM Lance Yang <ioworker0@g=
+mail.com> wrote:
+> >>>>>>>>>>>
+> >>>>>>>>>>> Hey Barry,
+> >>>>>>>>>>>
+> >>>>>>>>>>> Thanks for taking time to review!
+> >>>>>>>>>>>
+> >>>>>>>>>>> On Thu, Mar 7, 2024 at 3:00=E2=80=AFPM Barry Song <21cnbao@gm=
+ail.com> wrote:
+> >>>>>>>>>>>>
+> >>>>>>>>>>>> On Thu, Mar 7, 2024 at 7:15=E2=80=AFPM Lance Yang <ioworker0=
+@gmail.com> wrote:
+> >>>>>>>>>>>>>
+> >>>>>>>>>>> [...]
+> >>>>>>>>>>>>> +static inline bool can_mark_large_folio_lazyfree(unsigned =
+long addr,
+> >>>>>>>>>>>>> +                                                struct fol=
+io *folio,
+> >>>>>>>>>>>>> pte_t *start_pte)
+> >>>>>>>>>>>>> +{
+> >>>>>>>>>>>>> +       int nr_pages =3D folio_nr_pages(folio);
+> >>>>>>>>>>>>> +       fpb_t flags =3D FPB_IGNORE_DIRTY | FPB_IGNORE_SOFT_=
+DIRTY;
+> >>>>>>>>>>>>> +
+> >>>>>>>>>>>>> +       for (int i =3D 0; i < nr_pages; i++)
+> >>>>>>>>>>>>> +               if (page_mapcount(folio_page(folio, i)) !=
+=3D 1)
+> >>>>>>>>>>>>> +                       return false;
+> >>>>>>>>>>>>
+> >>>>>>>>>>>> we have moved to folio_estimated_sharers though it is not pr=
+ecise, so
+> >>>>>>>>>>>> we don't do
+> >>>>>>>>>>>> this check with lots of loops and depending on the subpage's=
+ mapcount.
+> >>>>>>>>>>>
+> >>>>>>>>>>> If we don't check the subpage=E2=80=99s mapcount, and there i=
+s a cow folio
+> >>>>>>>>>>> associated
+> >>>>>>>>>>> with this folio and the cow folio has smaller size than this =
+folio,
+> >>>>>>>>>>> should we still
+> >>>>>>>>>>> mark this folio as lazyfree?
+> >>>>>>>>>>
+> >>>>>>>>>> I agree, this is true. However, we've somehow accepted the fac=
+t that
+> >>>>>>>>>> folio_likely_mapped_shared
+> >>>>>>>>>> can result in false negatives or false positives to balance th=
+e
+> >>>>>>>>>> overhead.  So I really don't know :-)
+> >>>>>>>>>>
+> >>>>>>>>>> Maybe David and Vishal can give some comments here.
+> >>>>>>>>>>
+> >>>>>>>>>>>
+> >>>>>>>>>>>> BTW, do we need to rebase our work against David's changes[1=
+]?
+> >>>>>>>>>>>> [1]
+> >>>>>>>>>>>> https://lore.kernel.org/linux-mm/20240227201548.857831-1-dav=
+id@redhat.com/
+> >>>>>>>>>>>
+> >>>>>>>>>>> Yes, we should rebase our work against David=E2=80=99s change=
+s.
+> >>>>>>>>>>>
+> >>>>>>>>>>>>
+> >>>>>>>>>>>>> +
+> >>>>>>>>>>>>> +       return nr_pages =3D=3D folio_pte_batch(folio, addr,=
+ start_pte,
+> >>>>>>>>>>>>> +                                        ptep_get(start_pte=
+), nr_pages,
+> >>>>>>>>>>>>> flags, NULL);
+> >>>>>>>>>>>>> +}
+> >>>>>>>>>>>>> +
+> >>>>>>>>>>>>>      static int madvise_free_pte_range(pmd_t *pmd, unsigned=
+ long addr,
+> >>>>>>>>>>>>>                                     unsigned long end, stru=
+ct mm_walk
+> >>>>>>>>>>>>> *walk)
+> >>>>>>>>>>>>>
+> >>>>>>>>>>>>> @@ -676,11 +690,45 @@ static int madvise_free_pte_range(pmd=
+_t *pmd,
+> >>>>>>>>>>>>> unsigned long addr,
+> >>>>>>>>>>>>>                      */
+> >>>>>>>>>>>>>                     if (folio_test_large(folio)) {
+> >>>>>>>>>>>>>                             int err;
+> >>>>>>>>>>>>> +                       unsigned long next_addr, align;
+> >>>>>>>>>>>>>
+> >>>>>>>>>>>>> -                       if (folio_estimated_sharers(folio) =
+!=3D 1)
+> >>>>>>>>>>>>> -                               break;
+> >>>>>>>>>>>>> -                       if (!folio_trylock(folio))
+> >>>>>>>>>>>>> -                               break;
+> >>>>>>>>>>>>> +                       if (folio_estimated_sharers(folio) =
+!=3D 1 ||
+> >>>>>>>>>>>>> +                           !folio_trylock(folio))
+> >>>>>>>>>>>>> +                               goto skip_large_folio;
+> >>>>>>>>>>>>
+> >>>>>>>>>>>>
+> >>>>>>>>>>>> I don't think we can skip all the PTEs for nr_pages, as some=
+ of them
+> >>>>>>>>>>>> might be
+> >>>>>>>>>>>> pointing to other folios.
+> >>>>>>>>>>>>
+> >>>>>>>>>>>> for example, for a large folio with 16PTEs, you do MADV_DONT=
+NEED(15-16),
+> >>>>>>>>>>>> and write the memory of PTE15 and PTE16, you get page faults=
+, thus PTE15
+> >>>>>>>>>>>> and PTE16 will point to two different small folios. We can o=
+nly skip
+> >>>>>>>>>>>> when we
+> >>>>>>>>>>>> are sure nr_pages =3D=3D folio_pte_batch() is sure.
+> >>>>>>>>>>>
+> >>>>>>>>>>> Agreed. Thanks for pointing that out.
+> >>>>>>>>>>>
+> >>>>>>>>>>>>
+> >>>>>>>>>>>>> +
+> >>>>>>>>>>>>> +                       align =3D folio_nr_pages(folio) * P=
+AGE_SIZE;
+> >>>>>>>>>>>>> +                       next_addr =3D ALIGN_DOWN(addr + ali=
+gn, align);
+> >>>>>>>>>>>>> +
+> >>>>>>>>>>>>> +                       /*
+> >>>>>>>>>>>>> +                        * If we mark only the subpages as =
+lazyfree, or
+> >>>>>>>>>>>>> +                        * cannot mark the entire large fol=
+io as
+> >>>>>>>>>>>>> lazyfree,
+> >>>>>>>>>>>>> +                        * then just split it.
+> >>>>>>>>>>>>> +                        */
+> >>>>>>>>>>>>> +                       if (next_addr > end || next_addr - =
+addr !=3D
+> >>>>>>>>>>>>> align ||
+> >>>>>>>>>>>>> +                           !can_mark_large_folio_lazyfree(=
+addr, folio,
+> >>>>>>>>>>>>> pte))
+> >>>>>>>>>>>>> +                               goto split_large_folio;
+> >>>>>>>>>>>>> +
+> >>>>>>>>>>>>> +                       /*
+> >>>>>>>>>>>>> +                        * Avoid unnecessary folio splittin=
+g if the
+> >>>>>>>>>>>>> large
+> >>>>>>>>>>>>> +                        * folio is entirely within the giv=
+en range.
+> >>>>>>>>>>>>> +                        */
+> >>>>>>>>>>>>> +                       folio_clear_dirty(folio);
+> >>>>>>>>>>>>> +                       folio_unlock(folio);
+> >>>>>>>>>>>>> +                       for (; addr !=3D next_addr; pte++, =
+addr +=3D
+> >>>>>>>>>>>>> PAGE_SIZE) {
+> >>>>>>>>>>>>> +                               ptent =3D ptep_get(pte);
+> >>>>>>>>>>>>> +                               if (pte_young(ptent) ||
+> >>>>>>>>>>>>> pte_dirty(ptent)) {
+> >>>>>>>>>>>>> +                                       ptent =3D
+> >>>>>>>>>>>>> ptep_get_and_clear_full(
+> >>>>>>>>>>>>> +                                               mm, addr, p=
+te,
+> >>>>>>>>>>>>> tlb->fullmm);
+> >>>>>>>>>>>>> +                                       ptent =3D pte_mkold=
+(ptent);
+> >>>>>>>>>>>>> +                                       ptent =3D pte_mkcle=
+an(ptent);
+> >>>>>>>>>>>>> +                                       set_pte_at(mm, addr=
+, pte,
+> >>>>>>>>>>>>> ptent);
+> >>>>>>>>>>>>> +                                       tlb_remove_tlb_entr=
+y(tlb, pte,
+> >>>>>>>>>>>>> addr);
+> >>>>>>>>>>>>> +                               }
+> >>>>>>>>>>>>
+> >>>>>>>>>>>> Can we do this in batches? for a CONT-PTE mapped large folio=
+, you are
+> >>>>>>>>>>>> unfolding
+> >>>>>>>>>>>> and folding again. It seems quite expensive.
+> >>>>>>>>>
+> >>>>>>>>> I'm not convinced we should be doing this in batches. We want t=
+he initial
+> >>>>>>>>> folio_pte_batch() to be as loose as possible regarding permissi=
+ons so
+> >>>>>>>>> that we
+> >>>>>>>>> reduce our chances of splitting folios to the min. (e.g. ignore=
+ SW bits
+> >>>>>>>>> like
+> >>>>>>>>> soft dirty, etc). I think it might be possible that some PTEs a=
+re RO and
+> >>>>>>>>> other
+> >>>>>>>>> RW too (e.g. due to cow - although with the current cow impl, p=
+robably not.
+> >>>>>>>>> But
+> >>>>>>>>> its fragile to assume that). Anyway, if we do an initial batch =
+that ignores
+> >>>>>>>>> all
+> >>>>>>>>
+> >>>>>>>> You are correct. I believe this scenario could indeed occur. For=
+ instance,
+> >>>>>>>> if process A forks process B and then unmaps itself, leaving B a=
+s the
+> >>>>>>>> sole process owning the large folio.  The current wp_page_reuse(=
+) function
+> >>>>>>>> will reuse PTE one by one while the specific subpage is written.
+> >>>>>>>
+> >>>>>>> Hmm - I thought it would only reuse if the total mapcount for the=
+ folio
+> >>>>>>> was 1.
+> >>>>>>> And since it is a large folio with each page mapped once in proc =
+B, I thought
+> >>>>>>> every subpage write would cause a copy except the last one? I hav=
+en't
+> >>>>>>> looked at
+> >>>>>>> the code for a while. But I had it in my head that this is an are=
+a we need to
+> >>>>>>> improve for mTHP.
+> >>>
+> >>> So sad I am wrong again =F0=9F=98=A2
+> >>>
+> >>>>>>
+> >>>>>> wp_page_reuse() will currently reuse a PTE part of a large folio o=
+nly if
+> >>>>>> a single PTE remains mapped (refcount =3D=3D 0).
+> >>>>>
+> >>>>> ^ =3D=3D 1
+> >>>
+> >>> seems this needs improvement. it is a waste the last subpage can
+> >>
+> >> My take that is WIP:
+> >>
+> >> https://lore.kernel.org/all/20231124132626.235350-1-david@redhat.com/T=
+/#u
+> >>
+> >>> reuse the whole large folio. i was doing it in a quite different way,
+> >>> if the large folio had only one subpage left, i would do copy and
+> >>> released the large folio[1]. and if i could reuse the whole large fol=
+io
+> >>> with CONT-PTE, i would reuse the whole large folio[2]. in mainline,
+> >>> we don't have this cont-pte luxury exposed to mm, so i guess we can
+> >>> not do [2] easily, but [1] seems to be an optimization.
+> >>
+> >> Yeah, I had essentially the same idea: just free up the large folio if=
+ most of
+> >> the stuff is unmapped. But that's rather a corner-case optimization, s=
+o I did
+> >> not proceed with that.
+> >>
+> >
+> > I'm not sure it's a corner case, really? - process forks, then both par=
+ent and
+> > child and write to all pages in what was previously a fully & contiguou=
+sly
+> > mapped large folio?
+>
+> Well, with 2 MiB my assumption was that while it can happen, it's rather
+> rare. With smaller THP it might get more likely, agreed.
+>
+> >
+> > Reggardless, why is it an optimization to do the copy for the last subp=
+age and
+> > syncrhonously free the large folio? It's already partially mapped so is=
+ on the
+> > deferred split list and can be split if memory is tight.
+
+we don't want reclamation overhead later. and we want memories immediately
+available to others. reclamation will always cause latency and affect User
+experience. split_folio is not cheap :-) if the number of this kind of
+large folios
+is huge, the waste can be huge for some while.
+
+it is not a corner case for large folio swap-in. while someone writes
+one subpage, I swap-in a large folio, wp_reuse will immediately
+be called. This can cause waste quite often. One outcome of this
+discussion is that I realize I should investigate this issue immediately
+in the swap-in series as my off-tree code has optimized reuse but
+mainline hasn't.
+
+>
+> At least for 2 MiB THP, it might make sense to make that large folio
+> available immediately again, even without memory pressure. Even
+> compaction would not compact it.
+
+It is also true for 64KiB. as we want other processes to allocate
+64KiB successfully as much as possible, and reduce the rate of
+falling back to small folios. by releasing 64KiB directly to buddy
+rather than splitting and returning 15*4KiB in shrinker, we reduce
+buddy fragmentation too.
+
+>
+> --
+> Cheers,
+>
+> David / dhildenb
+>
+
+Thanks
+Barry
 
