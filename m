@@ -1,222 +1,449 @@
-Return-Path: <linux-kernel+bounces-95018-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95020-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23721874839
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 07:34:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57272874841
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 07:40:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7627BB213D0
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 06:34:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6FAF284963
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 06:40:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA9801CD09;
-	Thu,  7 Mar 2024 06:34:05 +0000 (UTC)
-Received: from smtpbgbr2.qq.com (smtpbgbr2.qq.com [54.207.22.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00FB21CF89;
+	Thu,  7 Mar 2024 06:40:45 +0000 (UTC)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4726DDC9;
-	Thu,  7 Mar 2024 06:33:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.207.22.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8526D304;
+	Thu,  7 Mar 2024 06:40:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709793245; cv=none; b=W4co+dC4+JmEHlHeatDlnIecA7TAOKNGkhZfgjoRkqZVutAY6XvamqZhuItGcYLf47B47KOU/B9nQGXNvl+OB2m2aQulAlSuR1CrStXBswEO+XPO+pv11LFG1u1PPHyStAblqyMAhDKyD8YaHTPrGm3Cr++DMgIVoPNV+zhZYXg=
+	t=1709793644; cv=none; b=E6QBE36w6OY3UDRdp0s7cIQjzdmeL+kFCSlWjSuWWpfoqQagSuKOByXXVWKzoWSNQlE1KL2UUbOxuDy8qufbFJfjRWdp5Nm+dnaGq7JhHNmaogiGoRiVFDx4XYNg5NZnkx1gw/gJ95tUCh7a1EO4ZRfFOi8M3DSV1pjc0AmCuxw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709793245; c=relaxed/simple;
-	bh=oFK8GPKzEFobqtEf4MAuTP757DML8r6JRq7tpUItZ8U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Jd6CkVggCnHcyS9TylaplKqBmzuqtJfvnDpgem8/gCzS13+0q/TUgkB4XESxEJl8TkccS5+iUOjqr02c7El3l5aMJ1AyxlUdpo+R6vfKbr97ClOpv2RaYHQmtoLK5YVwkLIMGoCxRO7w7rBbVXg1BFPWU7s2XGFRfVd84+oRkKs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=54.207.22.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
-X-QQ-mid: bizesmtp85t1709793182tujdeesz
-X-QQ-Originating-IP: AI4d7leqGTROiTbd83gq6iTXH3y2/ecS+TzgiSBY+Eo=
-Received: from [127.0.0.1] ( [223.112.234.130])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Thu, 07 Mar 2024 14:33:00 +0800 (CST)
-X-QQ-SSF: 00400000000000B0B000000A0000000
-X-QQ-FEAT: C46Rb8GPIEcRpnFVLA74bpmpIbS/J/k/EPLIGHxpBmuaZe2xrro+ZMxlF+a/x
-	gmUkTfrmuJbXZ1XUoMuEPjPJQ18W1FduaoOSqaOEes4TBhwj/+1cTzm0CHqFNbUXsJUxlY/
-	f38OvExuYimS/PEPmXAHaho4FEn5BxEyXzkfGA4+zpD8B2HI/1wG7Oh7+Km+fkjHicjQNb3
-	JPlmK6zNtXXUn+F6GQ95MMgLWG0c/X6zdQ4oh/F1n457t21FqvWi4rFaImJYQUjBU1mgySo
-	8XpK2gauQNs/b37wKyvuOqPOlzs1174m76Mhz33s430X6YK0ZZEuWypp3LbfcyyBljOAt9h
-	0bvACCw8drK2Kkrml+KJ9//TRmQA9Tdr0jzsUo33xyU9dscp/7+UH8FmrUm9da/iwmGjwEi
-	iYLzZR8YZ6f2tl2thxTDQg==
-X-QQ-GoodBg: 2
-X-BIZMAIL-ID: 17887917072289545076
-Message-ID: <09CB11C098C9BD27+6a0b4632-9886-4677-9e16-671ef457ee4f@shingroup.cn>
-Date: Thu, 7 Mar 2024 14:33:00 +0800
+	s=arc-20240116; t=1709793644; c=relaxed/simple;
+	bh=HNx9q8SnKI+B5Ngx3oTnnSFOAGUJzeeBgkM/wDpNCiU=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=UnA9EdfWbwPsx4uCGG/VbFWC3Jq49c2Se90Si8hckY0nRmJS2GE9hl49l35ve0KVcEXnenQDkRPwtUY/nuBn20snaRz4Xn2+Yde07cki6bN4810kKlwXQpXURn7O4+3wkxaB6ko7u69awS6Kv1UWT04kvuF70a4oIi1DtSqJrWQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Tr04B5PgvzwPFR;
+	Thu,  7 Mar 2024 14:38:18 +0800 (CST)
+Received: from kwepemm600005.china.huawei.com (unknown [7.193.23.191])
+	by mail.maildlp.com (Postfix) with ESMTPS id 2830A180068;
+	Thu,  7 Mar 2024 14:40:37 +0800 (CST)
+Received: from huawei.com (10.50.165.33) by kwepemm600005.china.huawei.com
+ (7.193.23.191) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Thu, 7 Mar
+ 2024 14:40:36 +0800
+From: Longfang Liu <liulongfang@huawei.com>
+To: <alex.williamson@redhat.com>, <jgg@nvidia.com>,
+	<shameerali.kolothum.thodi@huawei.com>, <jonathan.cameron@huawei.com>
+CC: <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linuxarm@openeuler.org>, <liulongfang@huawei.com>
+Subject: [PATCH v3 3/4] hisi_acc_vfio_pci: register debugfs for hisilicon migration driver
+Date: Thu, 7 Mar 2024 14:36:07 +0800
+Message-ID: <20240307063608.26729-1-liulongfang@huawei.com>
+X-Mailer: git-send-email 2.24.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/2] dt-bindings: perf: Support uncore NI-700 PMU
-Content-Language: en-US
-To: Rob Herring <robh@kernel.org>
-Cc: Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, shenghui.qu@shingroup.cn,
- linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <cover.1709694173.git.jialong.yang@shingroup.cn>
- <f674ec19ce824dfc13258396931256c3d33cd207.1709694173.git.jialong.yang@shingroup.cn>
- <7f2576291e51043b33296a2cd9e21263d16ca077.1709694173.git.jialong.yang@shingroup.cn>
- <20240306214613.GA716904-robh@kernel.org>
-From: =?UTF-8?B?WWFuZyBKaWFsb25nIOadqOS9s+m+mQ==?= <jialong.yang@shingroup.cn>
-In-Reply-To: <20240306214613.GA716904-robh@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz6a-1
+Content-Type: text/plain
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemm600005.china.huawei.com (7.193.23.191)
 
+On the debugfs framework of VFIO, if the CONFIG_VFIO_DEBUGFS macro is
+enabled, the debug function is registered for the live migration driver
+of the HiSilicon accelerator device.
 
+After registering the HiSilicon accelerator device on the debugfs
+framework of live migration of vfio, a directory file "hisi_acc"
+of debugfs is created, and then three debug function files are
+created in this directory:
 
-在 2024/3/7 5:46, Rob Herring 写道:
-> On Wed, Mar 06, 2024 at 02:16:02PM +0800, JiaLong.Yang wrote:
->> Add file corresponding to hx_arm_ni.c introducing ARM NI-700 PMU
->> driver for HX.
->>
->> Signed-off-by: JiaLong.Yang <jialong.yang@shingroup.cn>
->> ---
->> v1 --> v2:
->> 1. Submit dt-bindings file Seperately.
->> 2. Do some check:
->>     ~ #: make dt_binding_check DT_SCHEMA_FILES=perf
->>     LINT    Documentation/devicetree/bindings
->>     CHKDT   Documentation/devicetree/bindings/processed-schema.json
->>     SCHEMA  Documentation/devicetree/bindings/processed-schema.json
->>     DTEX    Documentation/devicetree/bindings/perf/hx,c2000-arm-ni.example.dts
->>     DTC_CHK Documentation/devicetree/bindings/perf/hx,c2000-arm-ni.example.dtb
->>
->> v2 --> v3:
->> 1. Change vendor from hx to hexin.
->> 2. Submit driver and dt-bindings files together.
->> 3. Delete pccs-id property. Use alias-id to do this.
->> 4. There are at least one interrupt line for the hardware and driver
->>     for handling counter overflow.
->> 5. Use 4 spaces for example indentation in yaml file.
->>
->>   .../bindings/perf/hexin,c2000-arm-ni.yaml     | 51 +++++++++++++++++++
->>   MAINTAINERS                                   |  6 +++
->>   2 files changed, 57 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/perf/hexin,c2000-arm-ni.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/perf/hexin,c2000-arm-ni.yaml b/Documentation/devicetree/bindings/perf/hexin,c2000-arm-ni.yaml
->> new file mode 100644
->> index 000000000000..b2641ee84d60
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/perf/hexin,c2000-arm-ni.yaml
->> @@ -0,0 +1,51 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/perf/hexin,c2000-arm-ni.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: HX-C2000 NI (Network-on-chip Interconnect) Performance Monitors
->> +
->> +maintainers:
->> +  - Jialong Yang <jialong.yang@shingroup.cn>
->> +
->> +properties:
->> +  compatible:
->> +    enum:
->> +      - hexin,c2000-arm-ni
-> 
-> As this seems to be Arm IP, I'd expect arm,ni-700-pmu or something.
-> 
-> Are there Hexin modifications to it?
+   vfio
+    |
+    +---<dev_name1>
+    |    +---migration
+    |        +--state
+    |        +--hisi_acc
+    |            +--attr
+    |            +--data
+    |            +--save
+    |            +--cmd_state
+    |
+    +---<dev_name2>
+         +---migration
+             +--state
+             +--hisi_acc
+                 +--attr
+                 +--data
+                 +--save
+                 +--cmd_state
 
-Maybe only the employee of Hexin wrote it and it was written for a 
-product named c2000... But in hardware layer, there is almost no difference.
-Chould below?
-enum:
-	- hexin,c2000-ni-pmu
-	- arm,ni-700-pmu
+data file: used to get the migration data from the driver
+attr file: used to get device attributes parameters from the driver
+save file: used to read the data of the live migration device and save
+it to the driver.
+cmd_state: used to get the cmd channel state for the device.
 
-> 
->> +
->> +  reg:
->> +    items:
->> +      - description: Physical address of the base (PERIPHBASE) and
->> +          size of the whole NI configuration address space.
-> 
-> Just 'maxItems: 1' if there is only 1 entry.
++----------------+        +--------------+       +---------------+
+| migration dev  |        |   src  dev   |       |   dst  dev    |
++-------+--------+        +------+-------+       +-------+-------+
+        |                        |                       |
+        |                        |                       |
+        |                        |                       |
+        |                        |                       |
+  save  |                 +------v-------+       +-------v-------+
+        |                 |  saving_mif  |       | resuming_migf |
+        |                 |     file     |       |     file      |
+        |                 +------+-------+       +-------+-------+
+        |                        |                       |
+        |        mutex           |                       |
++-------v--------+               |                       |
+|                |               |                       |
+| debug_migf file<---------------+-----------------------+
+|                |             copy
++-------+--------+
+        |
+   cat  |
+        |
++-------v--------+
+|     user       |
++----------------+
 
-OK.
+In debugfs scheme. The driver creates a separate debug_migf file.
+It is completely separated from the two files of live migration,
+thus preventing debugfs data from interfering with migration data.
+Moreover, it only performs read operations on the device.
 
-> 
->> +
->> +  interrupts:
->> +    minItems: 1
->> +    items:
->> +      - description: Overflow interrupt for clock domain 0
->> +      - description: Overflow interrupt for clock domain 1
->> +      - description: Overflow interrupt for clock domain 2
->> +      - description: Generally, one interrupt line for one PMU. But this also
->> +          support one interrupt line for a NI if merged.
-> 
-> I don't understand this last entry.
+For serialization of debugfs:
+First, it only writes data when performing a debugfs save operation.
+Second, it is only copied from the file on the migration device
+when the live migration is complete.
+These two operations are mutually exclusive through mutex.
 
-Specially, one NI could have many PMUs with many interupt numbers.
-The last entry means that the driver supports merging interrupts into 
-one if hardware layer merged them.
+Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+---
+ .../vfio/pci/hisilicon/hisi_acc_vfio_pci.c    | 204 ++++++++++++++++++
+ .../vfio/pci/hisilicon/hisi_acc_vfio_pci.h    |  11 +
+ 2 files changed, 215 insertions(+)
 
-> 
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +  - interrupts
->> +
->> +additionalProperties: false
->> +
->> +examples:
->> +  - |
->> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
->> +    #include <dt-bindings/interrupt-controller/irq.h>
->> +
->> +    aliases {
->> +        ni-pmu0 = &nipmu0;
-> 
-> Drop. Please don't make up your own alias names.
-
-Here I need a index to differ more than one NI node. Last version I used 
-a custom property. Krzysztof Kozlowski advised me to use IDR, DT
-aliases or something else.
-Here I can use which one?...
-It's my fault to forget writing the change in changelog.
-
-> 
->> +    };
->> +
->> +    nipmu0: pmu@23ff0000 {
->> +        compatible = "hexin,c2000-arm-ni";
->> +        reg = <0x2b420000 0x10000>;
->> +        interrupts = <GIC_SPI 80 IRQ_TYPE_LEVEL_HIGH>;
->> +    };
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index 4f298c4187fb..4b664cec98a7 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -18890,6 +18890,12 @@ L:	linux-riscv@lists.infradead.org
->>   S:	Maintained
->>   F:	arch/riscv/boot/dts/thead/
->>   
->> +HX ARM-NI-700 PMU DRIVERS
->> +M:	Jialong Yang <jialong.yang@shingroup.cn>
->> +S:	Supported
->> +F:	Documentation/devicetree/bindings/perf/hexin,c2000-arm-ni.yaml
->> +F:	drivers/perf/hx_arm_ni.c
->> +
->>   RNBD BLOCK DRIVERS
->>   M:	Md. Haris Iqbal <haris.iqbal@ionos.com>
->>   M:	Jack Wang <jinpu.wang@ionos.com>
->> -- 
->> 2.25.1
->>
-> 
+diff --git a/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c b/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c
+index 1881f3fa9266..fe954b2a0701 100644
+--- a/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c
++++ b/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c
+@@ -15,6 +15,7 @@
+ #include <linux/anon_inodes.h>
+ 
+ #include "hisi_acc_vfio_pci.h"
++#include "../../vfio.h"
+ 
+ /* Return 0 on VM acc device ready, -ETIMEDOUT hardware timeout */
+ static int qm_wait_dev_not_ready(struct hisi_qm *qm)
+@@ -611,6 +612,22 @@ hisi_acc_check_int_state(struct hisi_acc_vf_core_device *hisi_acc_vdev)
+ 	}
+ }
+ 
++static void hisi_acc_vf_migf_save(struct hisi_acc_vf_core_device *hisi_acc_vdev,
++	struct hisi_acc_vf_migration_file *src_migf)
++{
++	struct hisi_acc_vf_migration_file *dst_migf = hisi_acc_vdev->debug_migf;
++
++	if (!dst_migf)
++		return;
++
++	mutex_lock(&hisi_acc_vdev->enable_mutex);
++	dst_migf->disabled = src_migf->disabled;
++	dst_migf->total_length = src_migf->total_length;
++	memcpy(&dst_migf->vf_data, &src_migf->vf_data,
++		    sizeof(struct acc_vf_data));
++	mutex_unlock(&hisi_acc_vdev->enable_mutex);
++}
++
+ static void hisi_acc_vf_disable_fd(struct hisi_acc_vf_migration_file *migf)
+ {
+ 	mutex_lock(&migf->lock);
+@@ -623,12 +640,14 @@ static void hisi_acc_vf_disable_fd(struct hisi_acc_vf_migration_file *migf)
+ static void hisi_acc_vf_disable_fds(struct hisi_acc_vf_core_device *hisi_acc_vdev)
+ {
+ 	if (hisi_acc_vdev->resuming_migf) {
++		hisi_acc_vf_migf_save(hisi_acc_vdev, hisi_acc_vdev->resuming_migf);
+ 		hisi_acc_vf_disable_fd(hisi_acc_vdev->resuming_migf);
+ 		fput(hisi_acc_vdev->resuming_migf->filp);
+ 		hisi_acc_vdev->resuming_migf = NULL;
+ 	}
+ 
+ 	if (hisi_acc_vdev->saving_migf) {
++		hisi_acc_vf_migf_save(hisi_acc_vdev, hisi_acc_vdev->saving_migf);
+ 		hisi_acc_vf_disable_fd(hisi_acc_vdev->saving_migf);
+ 		fput(hisi_acc_vdev->saving_migf->filp);
+ 		hisi_acc_vdev->saving_migf = NULL;
+@@ -1137,6 +1156,7 @@ static int hisi_acc_vf_qm_init(struct hisi_acc_vf_core_device *hisi_acc_vdev)
+ 	if (!vf_qm->io_base)
+ 		return -EIO;
+ 
++	mutex_init(&hisi_acc_vdev->enable_mutex);
+ 	vf_qm->fun_type = QM_HW_VF;
+ 	vf_qm->pdev = vf_dev;
+ 	mutex_init(&vf_qm->mailbox_lock);
+@@ -1287,6 +1307,181 @@ static long hisi_acc_vfio_pci_ioctl(struct vfio_device *core_vdev, unsigned int
+ 	return vfio_pci_core_ioctl(core_vdev, cmd, arg);
+ }
+ 
++static int hisi_acc_vf_debug_check(struct seq_file *seq, struct vfio_device *vdev)
++{
++	struct hisi_acc_vf_core_device *hisi_acc_vdev = hisi_acc_get_vf_dev(vdev);
++	struct hisi_acc_vf_migration_file *migf = hisi_acc_vdev->debug_migf;
++	struct hisi_qm *vf_qm = &hisi_acc_vdev->vf_qm;
++	int ret;
++
++	if (!vdev->mig_ops || !migf) {
++		seq_printf(seq, "%s\n", "device does not support live migration!");
++		return -EINVAL;
++	}
++
++	/**
++	 * When the device is not opened, the io_base is not mapped.
++	 * The driver cannot perform device read and write operations.
++	 */
++	if (hisi_acc_vdev->dev_opened != DEV_OPEN) {
++		seq_printf(seq, "%s\n", "device not opened!");
++		return -EINVAL;
++	}
++
++	ret = qm_wait_dev_not_ready(vf_qm);
++	if (ret) {
++		seq_printf(seq, "%s\n", "VF device not ready!");
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int hisi_acc_vf_debug_cmd(struct seq_file *seq, void *data)
++{
++	struct device *vf_dev = seq->private;
++	struct vfio_pci_core_device *core_device = dev_get_drvdata(vf_dev);
++	struct vfio_device *vdev = &core_device->vdev;
++	struct hisi_acc_vf_core_device *hisi_acc_vdev = hisi_acc_get_vf_dev(vdev);
++	struct hisi_qm *vf_qm = &hisi_acc_vdev->vf_qm;
++	u64 value;
++	int ret;
++
++	mutex_lock(&hisi_acc_vdev->enable_mutex);
++	ret = hisi_acc_vf_debug_check(seq, vdev);
++	if (ret) {
++		mutex_unlock(&hisi_acc_vdev->enable_mutex);
++		return 0;
++	}
++
++	value = readl(vf_qm->io_base + QM_MB_CMD_SEND_BASE);
++	mutex_unlock(&hisi_acc_vdev->enable_mutex);
++	seq_printf(seq, "%s:0x%llx\n", "mailbox cmd channel state is OK", value);
++
++	return 0;
++}
++
++static int hisi_acc_vf_debug_save(struct seq_file *seq, void *data)
++{
++	struct device *vf_dev = seq->private;
++	struct vfio_pci_core_device *core_device = dev_get_drvdata(vf_dev);
++	struct vfio_device *vdev = &core_device->vdev;
++	struct hisi_acc_vf_core_device *hisi_acc_vdev = hisi_acc_get_vf_dev(vdev);
++	struct hisi_acc_vf_migration_file *migf = hisi_acc_vdev->debug_migf;
++	struct acc_vf_data *vf_data = &migf->vf_data;
++	int ret;
++
++	mutex_lock(&hisi_acc_vdev->enable_mutex);
++	ret = hisi_acc_vf_debug_check(seq, vdev);
++	if (ret) {
++		mutex_unlock(&hisi_acc_vdev->enable_mutex);
++		return 0;
++	}
++
++	vf_data->vf_qm_state = QM_READY;
++	ret = vf_qm_read_data(&hisi_acc_vdev->vf_qm, vf_data);
++	if (ret) {
++		mutex_unlock(&hisi_acc_vdev->enable_mutex);
++		seq_printf(seq, "%s\n", "failed to save device data!");
++		return 0;
++	}
++
++	migf->total_length = sizeof(struct acc_vf_data);
++	mutex_unlock(&hisi_acc_vdev->enable_mutex);
++	seq_printf(seq, "%s\n", "successful to save device data!");
++
++	return 0;
++}
++
++static int hisi_acc_vf_data_read(struct seq_file *seq, void *data)
++{
++	struct device *vf_dev = seq->private;
++	struct vfio_pci_core_device *core_device = dev_get_drvdata(vf_dev);
++	struct vfio_device *vdev = &core_device->vdev;
++	struct hisi_acc_vf_core_device *hisi_acc_vdev = hisi_acc_get_vf_dev(vdev);
++	struct hisi_acc_vf_migration_file *debug_migf = hisi_acc_vdev->debug_migf;
++	size_t vf_data_sz = offsetofend(struct acc_vf_data, padding);
++
++	if (debug_migf && debug_migf->total_length)
++		seq_hex_dump(seq, "Mig Data:", DUMP_PREFIX_OFFSET, 16, 1,
++				(unsigned char *)&debug_migf->vf_data,
++				vf_data_sz, false);
++	else
++		seq_printf(seq, "%s\n", "device not migrated!");
++
++	return 0;
++}
++
++static int hisi_acc_vf_attr_read(struct seq_file *seq, void *data)
++{
++	struct device *vf_dev = seq->private;
++	struct vfio_pci_core_device *core_device = dev_get_drvdata(vf_dev);
++	struct vfio_device *vdev = &core_device->vdev;
++	struct hisi_acc_vf_core_device *hisi_acc_vdev = hisi_acc_get_vf_dev(vdev);
++	struct hisi_acc_vf_migration_file *debug_migf = hisi_acc_vdev->debug_migf;
++
++	if (debug_migf && debug_migf->total_length) {
++		seq_printf(seq,
++			 "acc device:\n"
++			 "device  state: %d\n"
++			 "device  ready: %u\n"
++			 "data    valid: %d\n"
++			 "data     size: %lu\n",
++			 hisi_acc_vdev->mig_state,
++			 hisi_acc_vdev->vf_qm_state,
++			 debug_migf->disabled,
++			 debug_migf->total_length);
++	} else {
++		seq_printf(seq, "%s\n", "device not migrated!");
++	}
++
++	return 0;
++}
++
++static int hisi_acc_vfio_debug_init(struct hisi_acc_vf_core_device *hisi_acc_vdev)
++{
++	struct vfio_device *vdev = &hisi_acc_vdev->core_device.vdev;
++	struct dentry *vfio_dev_migration = NULL;
++	struct dentry *vfio_hisi_acc = NULL;
++	struct device *dev = vdev->dev;
++	void *migf = NULL;
++
++	if (!debugfs_initialized())
++		return 0;
++
++	migf = kzalloc(sizeof(struct hisi_acc_vf_migration_file), GFP_KERNEL);
++	if (!migf)
++		return -ENOMEM;
++	hisi_acc_vdev->debug_migf = migf;
++
++	vfio_dev_migration = debugfs_lookup("migration", vdev->debug_root);
++	if (!vfio_dev_migration) {
++		kfree(migf);
++		dev_err(dev, "failed to lookup migration debugfs file!\n");
++		return -ENODEV;
++	}
++
++	vfio_hisi_acc = debugfs_create_dir("hisi_acc", vfio_dev_migration);
++	debugfs_create_devm_seqfile(dev, "data", vfio_hisi_acc,
++				  hisi_acc_vf_data_read);
++	debugfs_create_devm_seqfile(dev, "attr", vfio_hisi_acc,
++				  hisi_acc_vf_attr_read);
++	debugfs_create_devm_seqfile(dev, "cmd_state", vfio_hisi_acc,
++				  hisi_acc_vf_debug_cmd);
++	debugfs_create_devm_seqfile(dev, "save", vfio_hisi_acc,
++				  hisi_acc_vf_debug_save);
++
++	return 0;
++}
++
++static void hisi_acc_vf_debugfs_exit(struct hisi_acc_vf_core_device *hisi_acc_vdev)
++{
++	if (!debugfs_initialized())
++		return;
++
++	kfree(hisi_acc_vdev->debug_migf);
++}
++
+ static int hisi_acc_vfio_pci_open_device(struct vfio_device *core_vdev)
+ {
+ 	struct hisi_acc_vf_core_device *hisi_acc_vdev = hisi_acc_get_vf_dev(core_vdev);
+@@ -1304,9 +1499,11 @@ static int hisi_acc_vfio_pci_open_device(struct vfio_device *core_vdev)
+ 			return ret;
+ 		}
+ 		hisi_acc_vdev->mig_state = VFIO_DEVICE_STATE_RUNNING;
++		hisi_acc_vdev->dev_opened = DEV_OPEN;
+ 	}
+ 
+ 	vfio_pci_core_finish_enable(vdev);
++
+ 	return 0;
+ }
+ 
+@@ -1315,7 +1512,10 @@ static void hisi_acc_vfio_pci_close_device(struct vfio_device *core_vdev)
+ 	struct hisi_acc_vf_core_device *hisi_acc_vdev = hisi_acc_get_vf_dev(core_vdev);
+ 	struct hisi_qm *vf_qm = &hisi_acc_vdev->vf_qm;
+ 
++	hisi_acc_vdev->dev_opened = DEV_CLOSE;
++	mutex_lock(&hisi_acc_vdev->enable_mutex);
+ 	iounmap(vf_qm->io_base);
++	mutex_unlock(&hisi_acc_vdev->enable_mutex);
+ 	vfio_pci_core_close_device(core_vdev);
+ }
+ 
+@@ -1406,6 +1606,9 @@ static int hisi_acc_vfio_pci_probe(struct pci_dev *pdev, const struct pci_device
+ 	ret = vfio_pci_core_register_device(&hisi_acc_vdev->core_device);
+ 	if (ret)
+ 		goto out_put_vdev;
++
++	if (ops == &hisi_acc_vfio_pci_migrn_ops)
++		hisi_acc_vfio_debug_init(hisi_acc_vdev);
+ 	return 0;
+ 
+ out_put_vdev:
+@@ -1418,6 +1621,7 @@ static void hisi_acc_vfio_pci_remove(struct pci_dev *pdev)
+ 	struct hisi_acc_vf_core_device *hisi_acc_vdev = hisi_acc_drvdata(pdev);
+ 
+ 	vfio_pci_core_unregister_device(&hisi_acc_vdev->core_device);
++	hisi_acc_vf_debugfs_exit(hisi_acc_vdev);
+ 	vfio_put_device(&hisi_acc_vdev->core_device.vdev);
+ }
+ 
+diff --git a/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.h b/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.h
+index 7a9dc87627cd..3a20d81d105c 100644
+--- a/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.h
++++ b/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.h
+@@ -52,6 +52,11 @@
+ #define QM_EQC_DW0		0X8000
+ #define QM_AEQC_DW0		0X8020
+ 
++enum acc_dev_state {
++	DEV_CLOSE = 0x0,
++	DEV_OPEN,
++};
++
+ struct acc_vf_data {
+ #define QM_MATCH_SIZE offsetofend(struct acc_vf_data, qm_rsv_state)
+ 	/* QM match information */
+@@ -114,5 +119,11 @@ struct hisi_acc_vf_core_device {
+ 	int vf_id;
+ 	struct hisi_acc_vf_migration_file *resuming_migf;
+ 	struct hisi_acc_vf_migration_file *saving_migf;
++
++	/* To make sure the device is enabled */
++	struct mutex enable_mutex;
++	bool dev_opened;
++	/* For debugfs */
++	struct hisi_acc_vf_migration_file *debug_migf;
+ };
+ #endif /* HISI_ACC_VFIO_PCI_H */
+-- 
+2.24.0
 
 
