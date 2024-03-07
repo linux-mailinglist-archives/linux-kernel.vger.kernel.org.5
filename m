@@ -1,95 +1,165 @@
-Return-Path: <linux-kernel+bounces-95223-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95217-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E253874AE1
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:31:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B7CCC874ACD
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:27:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC083287F4E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:31:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 20FC2281B06
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:27:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2899383A0B;
-	Thu,  7 Mar 2024 09:31:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D71FE839FD;
+	Thu,  7 Mar 2024 09:26:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="sTJtoRut"
-Received: from out162-62-57-49.mail.qq.com (out162-62-57-49.mail.qq.com [162.62.57.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Zryh4i7G";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="bjSGKP6w"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE2BD83A14
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 09:31:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 530AA1CD29;
+	Thu,  7 Mar 2024 09:26:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709803887; cv=none; b=Ff4dkwP+pdmJ4IUsXOWWa1ZnqrEJWOjCsHd4s6NtLNOOMGmjy4hNFo+nD3gSBXjIc+36+40HzF1vlNvXTZlMADnF48idu1KPDVKu+xV23P5zXn1nVMn2OenRuUZ3heTTvm/OabCQDP+dapZFny6jBLKAQACX0HS841ducnRyPsg=
+	t=1709803619; cv=none; b=I8ihgzJMjJ+lpL2oVQSqYY1CZWcCMBGo220psWmbOvC+SauFF4p9wDZQVJSxOX2Fl+NmYK4U0mHANyEk9huN4ZHbXcHU5KuIt6RqE9k55+FEA7A/Gyd6ol0z6GdpoHqLfz4FpU2ZiTNQtrKASGnNVeRE2LiP20JCvIabT3C8esE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709803887; c=relaxed/simple;
-	bh=CYHiZKkDoPsJzfs65WAiQvs1WtzRsSvj65+4bNbaALQ=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=c/ccaXVOE5qbUN7iVdkzydIKonl9FyCjGUgRqJJje1v0f8+ZGmW7p485ufbmXJohDYQ9JgkyZRcnTmbYFtT2Uc4cVKbj6BDg8VkqpmupB6GANyxdaGMNQpWOIMdf42H3ST9J2Bvfubx0/7BE+Xj1J7wcWb/6a/57hZAcs12tuJo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=sTJtoRut; arc=none smtp.client-ip=162.62.57.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1709803579; bh=rr/tMbcEktlPmy+7OAbx4X+bXXLxmest/fGA0BS7Zes=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=sTJtoRutQLgxvEeC3Bq5RtQdk2Cs7wKJg7WhF7WuxVRE7J01QKGs+M/okccGOi79z
-	 mFQyb5jKCDOMj2liOaZ+KSjMZZeMSJnCdmKFdJj1W4sP+vVL41y53eki6n6VvSiGnD
-	 Ez00ZraX7vjotsEi2PVl2Oe9a5tJyw9toxU2AJ1o=
-Received: from pek-lxu-l1.wrs.com ([2408:8409:c90:315:7d1b:6e30:5639:5d6c])
-	by newxmesmtplogicsvrszb9-0.qq.com (NewEsmtp) with SMTP
-	id 69107A41; Thu, 07 Mar 2024 17:26:17 +0800
-X-QQ-mid: xmsmtpt1709803577t0cy356vf
-Message-ID: <tencent_11DF52D0864289AB2EC56EE80C82E7EA0606@qq.com>
-X-QQ-XMAILINFO: MQ+wLuVvI2LQhx4bsLYeD9MBjvMm1UoM4n3alo0EHfscbFc7v12R8Z2U42hHT/
-	 gjeV9TLr6T72cS//4xYR/EtOp9c2761ZeZuZHVR8zwPtPSVxSDHywL4vMB06z/YMYCTshVN2O8Xd
-	 qw8comxCdgYLZ1YOnvO61Br0/I9j/ju4FPZwFKekG1NI1wzCuLP7JLmQ+D1YhY0Vttr2S03aIEME
-	 b1okn3dXog/rsJn64Grkgck+/GSDBpX0RhlULllpjVQiSzZkoidkap/hkWY3wjT24bl7SY0YIhDE
-	 8xyk5I4RXX6xI7n3I9TBGYLZ3+EYe/BZFSZoxoc2rwb3RF0fhU0dA46ICSn5RcqNaQ9DtTmJwgWD
-	 goAkAU5kPRQsXX0oOcqPfUoh9mMbXwm7+673OuSK1m+3tKoSX6otIhh3eD8QBukCNEcMVc7f1lbg
-	 3CN51bojOKBUbbrbCxfMyOt65p/XbBCVxfr8axZ4LQWIiWUoAaz70DABnkh3cY3NUudnf0mrxmof
-	 C3/Ivz0xn4Sk1ZcaW2JfXDFQbwV73b1JVP0I9w3IcbmDM9VRDFpOwRP1tQD+z0JfcHAXp5gKj92A
-	 vE11dxhZLJ6PjSaxCjcl6ospDY2yTs+hS11bZoN60r2AprJmHuTzACL30SfTbQelPbm1aXxRBq0Z
-	 CB8k8YwiX+pmOrPS3uM3LunlXMsKeTarfEp9kPFUyNm9hjx2dJkD+iQNnnXgGLkjhCpzZ/m4bG1e
-	 rUmcMf0SyrtpOe/+am6seSvvvgIyAAZEckqTceLctGHEmn3wcLjQMpIYSQ4A+KFYZgIyf/kH5mp4
-	 JhKD3gTaaN38l6XIziGFZ/5VGI+VgzBipdsUiS6butIPLTUK6yxhQEhC99JYpud0eEEz9jvLLBNb
-	 FUnnbSkaaS/nV04in87ramuZoMzmiKmu9W9c0fQty60B8ncLq9wFJUfazWA3Qyj0mM9tNnVaZc
-X-QQ-XMRINFO: M/715EihBoGSf6IYSX1iLFg=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+3c47b5843403a45aef57@syzkaller.appspotmail.com
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [net?] possible deadlock in team_port_change_check (2)
-Date: Thu,  7 Mar 2024 17:26:17 +0800
-X-OQ-MSGID: <20240307092616.940471-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <0000000000004af86e0612f195c7@google.com>
-References: <0000000000004af86e0612f195c7@google.com>
+	s=arc-20240116; t=1709803619; c=relaxed/simple;
+	bh=fSVUIcKgmY6DvtXx3zD+ih7OZ3jvAza2NIYm6Zb4Enk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rZBENRBTDCryGKO+JnSaHm1BBU6cSHCduEW0155+dl9kGSjVZ2kMtj5eyzfWHwY2RFhRXi6JUxFpZiFxmSqbVKgiJFDdblOfxstik7SM9g3jJvX/QRJoMAyMVXeeyS+rxhQam25l78nAiG8ntUYAms6CJ0kMtNzi3ymT2Hv8iMo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Zryh4i7G; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=bjSGKP6w; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id A92A13EB89;
+	Thu,  7 Mar 2024 09:26:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1709803588; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=49eI9FsfEc0os9WuNfnd5K+4CQXJgYzosIDjRsUtlwQ=;
+	b=Zryh4i7GQWJaae+0LvHwuuEXcojnHFGrRwQ6bIjfVfe/yjuT7YrMDQ5Jd1mlZaXID9jD79
+	b6KRE0KDDhqJyUrrmKvGqwgDJfPNTmTQ3EIOYZEE/ZolmQ4Kxo8qqDOVNfxR8mf0reFFcy
+	etSQf4Ci4ZkKrvcx6ReBFrgt08EDF6M=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1709803587; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=49eI9FsfEc0os9WuNfnd5K+4CQXJgYzosIDjRsUtlwQ=;
+	b=bjSGKP6wJyNQzALLKtdz6JeZvDQ4XpOaszh2ul11+k2G2wP9pWsgTI4dKY7izI9m06Ge0t
+	9MGtZkCCYsPDw0Kk9/A+8kU6jUUrkYgMNoK4ldUAbUcQkcR+qNMKxs1+qSENqy1QYs+rAg
+	o7yxPV6C8R/smpbn56Vx6J78+jCcEtU=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 81CFC12FC5;
+	Thu,  7 Mar 2024 09:26:27 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id S+uwHEOI6WXgGQAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Thu, 07 Mar 2024 09:26:27 +0000
+Date: Thu, 7 Mar 2024 10:26:18 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Bixuan Cui <cuibixuan@vivo.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, akpm@linux-foundation.org,
+	mhiramat@kernel.org, mathieu.desnoyers@efficios.com,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	linux-mm@kvack.org, opensource.kernel@vivo.com
+Subject: Re: [PATCH -next v6 0/2] Make memory reclamation measurable
+Message-ID: <ZemIOtbIoMYqcf-V@tiehlicka>
+References: <20240105013607.2868-1-cuibixuan@vivo.com>
+ <fac8d079-100e-4b8d-9a35-db8219b28b51@vivo.com>
+ <20240220212202.59ddc123@gandalf.local.home>
+ <3d4f44ee-f533-446f-a9e6-7f58afc78d65@vivo.com>
+ <ZdWpyN_8Z6dvDQ48@tiehlicka>
+ <a32030f0-b6f6-4bd6-8284-bb762ccf9205@vivo.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a32030f0-b6f6-4bd6-8284-bb762ccf9205@vivo.com>
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=bjSGKP6w
+X-Spamd-Result: default: False [-1.81 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DWL_DNSWL_MED(-2.00)[suse.com:dkim];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 DKIM_TRACE(0.00)[suse.com:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[9];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.00)[38.88%]
+X-Spam-Score: -1.81
+X-Rspamd-Queue-Id: A92A13EB89
+X-Spam-Flag: NO
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 
-please test dl in team_port_change_check
+On Thu 07-03-24 15:40:29, Bixuan Cui wrote:
+[...]
+> Currently, with the help of kernel trace events or tools like Perfetto, we
+> can only see that kswapd is competing for CPU and the frequency of memory
+> reclamation triggers, but we do not have detailed information or metrics
+> about memory reclamation, such as the duration and amount of each
+> reclamation, or who is releasing memory (super_cache, f2fs, ext4), etc. This
+> makes it impossible to locate the above problems.
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+I am not sure I agree with you here. We do provide insight into LRU and
+shrinkers reclaim. Why isn't that enough. In general I would advise you
+to focus more on describing why the existing infrastructure is
+insuficient (having examples would be really appreciated).
 
-diff --git a/drivers/net/team/team.c b/drivers/net/team/team.c
-index f575f225d417..ecce44b16e4f 100644
---- a/drivers/net/team/team.c
-+++ b/drivers/net/team/team.c
-@@ -1212,7 +1212,9 @@ static int team_port_add(struct team *team, struct net_device *port_dev,
- 		goto err_port_enter;
- 	}
- 
-+	mutex_unlock(&team->lock);
- 	err = dev_open(port_dev, extack);
-+	mutex_lock(&team->lock);
- 	if (err) {
- 		netdev_dbg(dev, "Device %s opening failed\n",
- 			   portname);
+> Currently this patch helps us solve 2 actual performance problems (kswapd
+> preempts the CPU causing game delay)
+> 1. The increased memory allocation in the game (across different versions)
+> has led to the degradation of kswapd.
+>     This is found by calculating the total amount of Reclaim(page) during
+> the game startup phase.
+> 
+> 2. The adoption of a different file system in the new system version has
+> resulted in a slower reclamation rate.
+>     This is discovered through the OBJ_NAME change. For example, OBJ_NAME
+> changes from super_cache_scan to ext4_es_scan.
+> 
+> Subsequently, it is also possible to calculate the memory reclamation rate
+> to evaluate the memory performance of different versions.
 
+Why cannot you achive this with existing tracing or /proc/vmstat
+infrastructure?
+
+> The main reasons for adding static tracepoints are:
+> 1. To subdivide the time spent in the shrinker->count_objects() and
+> shrinker->scan_objects() functions within the do_shrink_slab function. Using
+> BPF kprobe, we can only track the time spent in the do_shrink_slab function.
+> 2. When tracing frequently called functions, static tracepoints (BPF
+> tp/tracepoint) have lower performance impact compared to dynamic tracepoints
+> (BPF kprobe).
+
+You can track the time process has been preempted by other means, no? We
+have context switching tracepoints in place. Have you considered that
+option?
+-- 
+Michal Hocko
+SUSE Labs
 
