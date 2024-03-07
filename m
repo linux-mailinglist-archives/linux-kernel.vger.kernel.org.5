@@ -1,200 +1,202 @@
-Return-Path: <linux-kernel+bounces-95838-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95839-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B1158753B4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 16:52:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DCE18753BA
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 16:56:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 40FD428770E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:52:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A166F1F22E1E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:56:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B64E12F586;
-	Thu,  7 Mar 2024 15:52:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B83AB12F591;
+	Thu,  7 Mar 2024 15:56:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nI0fegb0"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GejtSiM1"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0536312F379
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 15:52:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.16
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709826754; cv=fail; b=B21hRSj5kYmh/S3rpkoDaYCPZpwoLZPEV0uwkZP1P5w0Xjf+m9P7oQXz/4X02vWfj0q2qjesAXW8MC1YPC7nv256Pehi3o3TTLZ6ZApqMyUBYeG2QWJ0JY8iAi+q+ASXgQPYwY2IWcozjTUrKJfxd8DJlrxpKoOhNwNhnJ7ATg8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709826754; c=relaxed/simple;
-	bh=BN7W+lDjbORC/x+4tOnjMeIvbSf5ptYxR5bCds5SWUg=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=Q5WVVbFYFCDPWsCdqI37b+Yy9YJMz7VnLgYvND2vhktjGod2I/eqklknUPea3JX9/pjzx2LIymeOaDCB2NOANea+LNSKlJdQCbbVoDvj3Ee/tXvQW0R2u9OLv8W+haHAJmbt/w0GytNTGPi73Bleg/1xuaF5bgm6tnDl0IP10KE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nI0fegb0; arc=fail smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 625FA12F385
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 15:56:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709826967; cv=none; b=fr+73D1CnPgDzSvregIqn79PpxnVRrzF40LstLyy1U44SGnuP3zy0m4JsMeDfO0tfDPxgPdWUWDV00SaGLqMyTKHfpBUEbmAtx+nJRHkelk716wl7FRT3MWX+QSkS2I3Z9YP70pzymKPbRR2T2n/Hy0pEVHnS9hWtxcrrBsPwhc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709826967; c=relaxed/simple;
+	bh=C97P1YtElo3JLtKjB9OGWqTuuFxMbHJ54++v1vIY3Tg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dAdOFO4XkZO+vvdn/n9B5kGeemvPnHALH6RZn1KIHK76jNdx3H3CrYe9btCkGMve/DzHV1mmtXeIS6ng6FI+6r9gNUtwdp5HLb0+qWlXcxylo1fUWcQjGOkaIk1M6MJYYcJ3Gs7ybD1FHzG1E18jBf7coYP+K7XUOD97jCjqAWE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GejtSiM1; arc=none smtp.client-ip=192.198.163.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709826753; x=1741362753;
+  t=1709826965; x=1741362965;
   h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=BN7W+lDjbORC/x+4tOnjMeIvbSf5ptYxR5bCds5SWUg=;
-  b=nI0fegb0+AxOSH82YVzb8luL2xPmQ9ThD+SXenXIVJh3C/BXVAEHVuvz
-   O3HbabqCYcZnZudWZgi+vu3E6RJFJZso0WOkzQ6Ol9coW1sIPE31CQ6Q3
-   27EBry2rVoAmvhysTfX8FJ2IolFDlGczDHNI8OpNbPoYw93bC96LuJQir
-   kHR9AMq0TOZzoWTqfH0oJhjd/cHJEEujH3Zr2yYjncY6wAKaeLh/dHA0l
-   Be9lF/sc4Shp+KhpVJj3rhKxPRO4DNOLeyffAAgSkbq48fpm6s2AACnob
-   p0/gLa6xodV4x0qUQDuXfBsYyf39DDbjwD7A6v3dJffcQqqNO3//RE/VT
+   mime-version:in-reply-to;
+  bh=C97P1YtElo3JLtKjB9OGWqTuuFxMbHJ54++v1vIY3Tg=;
+  b=GejtSiM1TA9/oGn1/yuFTu2tUdnwuRXMHKaaoj0y39blTMGYyV+eHF1M
+   r0RAGfc8aVkKPtTBT3Ieu9aLOHlzDfWQBj9n9uB2aiX72Vx9ab2t14nE5
+   hiE25EiJsLeVbIKtEmX11WJfnsmj9PmVU/B/se0XYACNg0XRa+rlNVKrE
+   hmfWRBtF1HgkQlpHxBRa89X3X2U4HJ3+3LwpDI3Gk6snfcnW0CHnkJLQw
+   fgd+mtX+r5gIEvEWpIwL2jpMmzQ2ZR6epRJqrdXIrRTV/CuKwztM/hzU8
+   QVGFC0YYkSudhrQPlVLCqR0U9WFwbjf326tdPXhEPx56RJVpdHOMqP+He
    w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="4622172"
+X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="15148084"
 X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
-   d="scan'208";a="4622172"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 07:52:32 -0800
+   d="scan'208";a="15148084"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 07:56:05 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
-   d="scan'208";a="10299913"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by fmviesa006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 07 Mar 2024 07:52:31 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 7 Mar 2024 07:52:31 -0800
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 7 Mar 2024 07:52:31 -0800
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.168)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 7 Mar 2024 07:52:31 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MOFOKqrH1RmSmHQFFGX3VWVMjnMC2Fcm2KuFiyMUiUWUDtuA+84FVRBQWr72YyjQwFNbFyUrbbCp9hzep8O4nKvySOghTC+lXXnOKYbCbofDEC2vsiGGtrMtEwOcepRo5Z+dcp8ZTPvLQMDpLwWCg8eKToGZ0Ircl+BM2geippAMrGGL/W83ALC58CuMz6dAd76XWllkLNa/0PBxHUuUNjfgAFZLpk7U6rxfAb3dXh8fBSptqRShT3T7jyiKEgFoc3D+DqGaUpxZY//ZgZsjcPgT9peaqxk6DqAED9Nb/DdWzVNv2sZrguEP6h9nM7GZQ8xNUi7noNne6NflQ/XUEw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=P+EyhHRdGq44kF1Mtyr8VYyFEvTg9lZMGZAbdZI15yA=;
- b=VqTLubaYogd83XbPMN+N0z99ByPYxu0eLgaUCuuPYL9oESOEL2ydWchyx3fg6N21Yw2jglQoaYaij7mj1tZIoYT87WjePl/tjkt4NDD0fCQs0Qs9Ccge2V+7g8deidN5LA4B2LVr+9q29qraMYH/F0BGrtrDNPSPh3uoqvAx4cra+uCJrYssPfaen3Ey7O50RHjdU0+hL3UDz5+C0XBipJ71/PTmbWU9Wg8tRxahgOz2E4YUHCD2MFqeok8doiz+HpJflro2JvEL/ET//kRmIErUxtKbx6KAYL+bNRX82xdrWbwH5cfi2EAvrj+flrakwDaUtJnTJn3I3vyUsLANDQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CY5PR11MB6139.namprd11.prod.outlook.com (2603:10b6:930:29::17)
- by MN0PR11MB6087.namprd11.prod.outlook.com (2603:10b6:208:3cd::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.27; Thu, 7 Mar
- 2024 15:52:28 +0000
-Received: from CY5PR11MB6139.namprd11.prod.outlook.com
- ([fe80::e9dd:320:976f:e257]) by CY5PR11MB6139.namprd11.prod.outlook.com
- ([fe80::e9dd:320:976f:e257%4]) with mapi id 15.20.7386.006; Thu, 7 Mar 2024
- 15:52:28 +0000
-Date: Thu, 7 Mar 2024 09:52:19 -0600
-From: Lucas De Marchi <lucas.demarchi@intel.com>
-To: Dawei Li <dawei.li@shingroup.cn>
-CC: <ogabbay@kernel.org>, <thomas.hellstrom@linux.intel.com>,
-	<maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
-	<tzimmermann@suse.de>, <airlied@gmail.com>, <daniel@ffwll.ch>,
-	<intel-xe@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
-	<linux-kernel@vger.kernel.org>, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] drm/xe: Declare __xe_lrc_*_ggtt_addr with __maybe__unused
-Message-ID: <yrzae6eo4byb7sc663omlxchtjz2ydhqaffzgzbrxchutgrnhe@pcliqh2atxvn>
-References: <20240204062324.3548268-1-dawei.li@shingroup.cn>
- <1543D46042445CE9+ZeZ6X5Ng2rq3swoo@centos8>
-Content-Type: text/plain; charset="us-ascii"; format=flowed
-Content-Disposition: inline
-In-Reply-To: <1543D46042445CE9+ZeZ6X5Ng2rq3swoo@centos8>
-X-ClientProxiedBy: SJ0PR13CA0139.namprd13.prod.outlook.com
- (2603:10b6:a03:2c6::24) To CY5PR11MB6139.namprd11.prod.outlook.com
- (2603:10b6:930:29::17)
+   d="scan'208";a="41049480"
+Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
+  by orviesa002.jf.intel.com with ESMTP; 07 Mar 2024 07:56:02 -0800
+Received: from kbuild by b21307750695 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1riG6B-0005JO-38;
+	Thu, 07 Mar 2024 15:55:59 +0000
+Date: Thu, 7 Mar 2024 23:55:09 +0800
+From: kernel test robot <lkp@intel.com>
+To: Max Kellermann <max.kellermann@ionos.com>, akpm@linux-foundation.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, willy@infradead.org,
+	sfr@canb.auug.org.au, Max Kellermann <max.kellermann@ionos.com>
+Subject: Re: [PATCH v3 06/14] linux/mm.h: move folio_size(), ... to
+ mm/folio_size.h
+Message-ID: <202403072311.1a9jXzWI-lkp@intel.com>
+References: <20240305085919.1601395-7-max.kellermann@ionos.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY5PR11MB6139:EE_|MN0PR11MB6087:EE_
-X-MS-Office365-Filtering-Correlation-Id: a0137b82-0575-4fb5-f580-08dc3ebe9702
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 3jQwiImXUL/9klrYjbzH11YHIgOMRQeTtai2kidRzOR5MKlbBu+4AwWQyt+Jv1mHnsXCCC+spmtCC/LMEzGmwCEiyBb1Dw40eDBHiIiPfLOwgwhGWmMowBNDW6ozrzUpHxMyVpbLahn/tTWKQmfF8QGHLuLDm5W2CBo8GHGSI1PW45DqLkP228dQWzijZT8oi9fdc/WXhXCGebsMXW3MK56YdmX/V/tL6LO/7TPi/8cTJoo0IBIduBVa2SAPXQvXvVtsbaT4ujFJ/ZRMUhjsY/ltryiED7Q08EgNv37nd9eTEyIAywNo5VFcF0F/bonU9nIMrb4jTnjddyIeQtMKZToZyTV57A+z2cxRro7c4nP0rL9mgoqSFL2jrZNceBqWFeCcEZZ3X4cGF6rZfCxc+T78nXHeCj9UM1Lod3sU0I5kRle4oG3jux3mDyCgjRbZO1xpv+LxB9DPhISETPZvM1jwCDZnArRbGpLzpeeSvh/13xLGS4DWyncz/MM0Th1rexhTwGilVrFou0CF/lROztlmPQmI5DCGLkiGZ0Nv4LSK15jXkzJRbPCiOm5Ds2qkrAXFJdZM3nS6eyTF6XFAdU3oqa8eXWKANIpBJXakAy0=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6139.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?cdotVx9NozZ3JNS3xVrDN7mnuFRIpsOR3rAUhMYfJ5M4q5wTgOAqqPrRyQic?=
- =?us-ascii?Q?SGVJNcxWSbwvtiQZ8rCQOlBpLFTGOVZzvBUsg3MEJ25EAcfbFB9EzT4AprZP?=
- =?us-ascii?Q?hpUbD0QLrkAGsJL1ZvJAO9aC/Kvc+ENVjhJI1yBD8/6s7QNQPxQlvv4EZaN5?=
- =?us-ascii?Q?DWT99dxOGnVdh2uhxkH35/ebtlIO86+F8+TZ1Lpc8sucoyc4tqJiqlY970LF?=
- =?us-ascii?Q?rvpGJ+QPet7dt70Fz7vaxrhUOnPaTIFgjw6DQ+wKUXtio9uO2Bn3McauvGch?=
- =?us-ascii?Q?yBKTHoufLiwzRnd+6iWtaUURM91OspzLKNkCZGYqAtOxNr9nX26ECLQ41On3?=
- =?us-ascii?Q?j7Nfwgv7oHFsuXqNWIZXgCjVvTJfdU/C83/zAJ7KzOCTZ3N9KUk4DCMOV27l?=
- =?us-ascii?Q?bWB2ZE9v0iFtfTJOnufwZhXPqypzsrg6NL3T2qCF8BDBwyG9pbIB+QxE9bG3?=
- =?us-ascii?Q?cS7TtUNpSWyKe73CIKk7Z1bm2unYlOS49Xdms3F0vrOp5vE8EubKUr3LsICI?=
- =?us-ascii?Q?rxJdLXcP5W1285+HOjIKks3YXJdu+lx7TnrExG02+AZ1LKRs/MwhqUct2ah5?=
- =?us-ascii?Q?QUEEkixrlOztIK1U/fel+OJe04TgCI8y8h2JkkNtcZbR5w2S34+KWOuQ17fd?=
- =?us-ascii?Q?sa010Ck9Co9Z7lKqbZhJVnLOCSoeRQvhq09kxShbHsnb3cm4Og9yt141aC5M?=
- =?us-ascii?Q?QL0YJyyeoQtoreY0XGNGlkFoj0zKY7SEq9cVCWbQb4E06iHuNw4JqqSr22w6?=
- =?us-ascii?Q?MIyiODeys+yAVXLk3PVzQa0ZL9vlBhUNv19AcF0aW19ctD0shVUQe3b7ZovH?=
- =?us-ascii?Q?ToWg90fQfsTUWBdZpPp+RYvY+XMU6p3VK2tjiPGdbL62F3RlZAVZlDVtkcPU?=
- =?us-ascii?Q?bYdhdhjUDFLkUvwDBpkhDtw2Bb/hE4MYlPgXluY+KoCmFeB1qsMELnhnIjF4?=
- =?us-ascii?Q?2jIJ97HCJ7bbiKB77VAQstJ1E/vN9KJIyo6Gy2+9Qo4FC7QMG2qdG78kntCB?=
- =?us-ascii?Q?PFMNTuHUOLUTEGDNJ/ABZrBdqgJsQgsdt2VbE5tFUsudhU14EMiGydGxxqiL?=
- =?us-ascii?Q?QXn5/FWIcQ01poiZsKuVIJJgavkynk4tr29JbhgReXM+usRHLTKpGdb83S7J?=
- =?us-ascii?Q?imjpJzG8HNBIgrlkC1jc8PBhHJbSPmwM4pT28nToqeFYjHM4QlrIwj/K1k7L?=
- =?us-ascii?Q?AcI1WHNyG1Dls8lD+s+5WZzvb0b8h6rlOmUi0rxp1T+TFgngKyuoZSzSEsq3?=
- =?us-ascii?Q?kpRQzPg5Pe8PGqxZPGUlws3jeuhe2w60H8s/8P1BzxOS1opHCnZYbeB6Gklj?=
- =?us-ascii?Q?G2FxYkefEj0DAK2bKT7QTEAk99Kdq8SFJRhWsXr9ojHT1OANBSKPMrZnBnFA?=
- =?us-ascii?Q?nIoNbd3kSMD9rfApJD0whmqFBnLCp1DVxFH3vZVnPN5wIO04iYQwebOGX7jp?=
- =?us-ascii?Q?n/I2h8gNSttLqpt+OgM3OIVI3f111E6n0dFAa49ey8rc1ZpiUOIx64Vd71V1?=
- =?us-ascii?Q?+0hC1VejUJeQdd7hfoplSbzWPS3aGXztdid5DEkuA54x+tfJKWFS58ENTv3H?=
- =?us-ascii?Q?lzwqB0przMf+l5BioPRWOi636dQc3dJtQK+2NJBprmhIGO6utVxnVSp8QfXL?=
- =?us-ascii?Q?zA=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: a0137b82-0575-4fb5-f580-08dc3ebe9702
-X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6139.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Mar 2024 15:52:27.9828
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: o+iEJ60fYeOIUQ2Lw3jT4SXaJf3BdRGMo+AUm/YF+1PKhzRKjzylyOdMYRPJc8EZDKPchhxjzpmekeXTzHgGhzouXrUYgNh8HNOhNRqEoHs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR11MB6087
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240305085919.1601395-7-max.kellermann@ionos.com>
 
-On Tue, Mar 05, 2024 at 09:50:23AM +0800, Dawei Li wrote:
->Hi,
->
->On Sun, Feb 04, 2024 at 02:23:24PM +0800, Dawei Li wrote:
->> Kernel test robot reports building error:
->>
->> drivers/gpu/drm/xe/xe_lrc.c:544:1: error: unused function
->> '__xe_lrc_regs_ggtt_addr' [-Werror,-Wunused-function]
->> 544 | DECL_MAP_ADDR_HELPERS(regs)
->>     | ^~~~~~~~~~~~~~~~~~~~~~~~~~~
->>
->> drivers/gpu/drm/xe/xe_lrc.c:536:19: note: expanded from macro
->> 'DECL_MAP_ADDR_HELPERS'
->> 536 | static inline u32 __xe_lrc_##elem##_ggtt_addr(struct xe_lrc *lrc) \
->>     |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~
->>
->> <scratch space>:54:1: note: expanded from here
->> 54 | __xe_lrc_regs_ggtt_addr
->>    | ^~~~~~~~~~~~~~~~~~~~~~~
->>
->> 1 error generated.
->>
->> Declare __xe_lrc_*_ggtt_addr with __maybe_unused to address it.
->>
->> Reported-by: kernel test robot <lkp@intel.com>
->> Closes: https://lore.kernel.org/oe-kbuild-all/202402010928.g3j2aSBL-lkp@intel.com/
->> Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
->> ---
->>  drivers/gpu/drm/xe/xe_lrc.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->
->Just a gentle ping.
+Hi Max,
+
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on next-20240305]
+[cannot apply to akpm-mm/mm-everything char-misc/char-misc-testing char-misc/char-misc-next char-misc/char-misc-linus joro-iommu/next broonie-spi/for-next powerpc/next powerpc/fixes linus/master v6.8-rc7 v6.8-rc6 v6.8-rc5 v6.8-rc7]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Max-Kellermann/drivers-add-missing-includes-on-linux-mm-h-and-others/20240305-170312
+base:   next-20240305
+patch link:    https://lore.kernel.org/r/20240305085919.1601395-7-max.kellermann%40ionos.com
+patch subject: [PATCH v3 06/14] linux/mm.h: move folio_size(), ... to mm/folio_size.h
+config: loongarch-defconfig (https://download.01.org/0day-ci/archive/20240307/202403072311.1a9jXzWI-lkp@intel.com/config)
+compiler: loongarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240307/202403072311.1a9jXzWI-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202403072311.1a9jXzWI-lkp@intel.com/
+
+All error/warnings (new ones prefixed by >>):
+
+   In file included from include/linux/mm/folio_size.h:8,
+                    from include/linux/mm.h:5,
+                    from arch/loongarch/include/asm/vdso.h:10,
+                    from arch/loongarch/vdso/vgetcpu.c:6:
+>> include/linux/page-flags.h:202:1: warning: data definition has no type or storage class
+     202 | DECLARE_STATIC_KEY_FALSE(hugetlb_optimize_vmemmap_key);
+         | ^~~~~~~~~~~~~~~~~~~~~~~~
+>> include/linux/page-flags.h:202:1: error: type defaults to 'int' in declaration of 'DECLARE_STATIC_KEY_FALSE' [-Werror=implicit-int]
+>> include/linux/page-flags.h:202:1: warning: parameter names (without types) in function declaration
+   In file included from include/linux/mm/folio_size.h:8,
+                    from include/linux/mm.h:5,
+                    from arch/loongarch/include/asm/vdso.h:10,
+                    from arch/loongarch/include/asm/vdso/vdso.h:11,
+                    from arch/loongarch/include/asm/vdso/gettimeofday.h:13,
+                    from include/vdso/datapage.h:151,
+                    from lib/vdso/gettimeofday.c:5,
+                    from <command-line>:
+>> include/linux/page-flags.h:202:1: warning: data definition has no type or storage class
+     202 | DECLARE_STATIC_KEY_FALSE(hugetlb_optimize_vmemmap_key);
+         | ^~~~~~~~~~~~~~~~~~~~~~~~
+>> include/linux/page-flags.h:202:1: error: type defaults to 'int' in declaration of 'DECLARE_STATIC_KEY_FALSE' [-Werror=implicit-int]
+>> include/linux/page-flags.h:202:1: warning: parameter names (without types) in function declaration
+   include/linux/page-flags.h: In function 'page_fixed_fake_head':
+>> include/linux/page-flags.h:210:14: error: implicit declaration of function 'static_branch_unlikely' [-Werror=implicit-function-declaration]
+     210 |         if (!static_branch_unlikely(&hugetlb_optimize_vmemmap_key))
+         |              ^~~~~~~~~~~~~~~~~~~~~~
+   include/linux/page-flags.h: In function 'page_fixed_fake_head':
+>> include/linux/page-flags.h:210:14: error: implicit declaration of function 'static_branch_unlikely' [-Werror=implicit-function-declaration]
+     210 |         if (!static_branch_unlikely(&hugetlb_optimize_vmemmap_key))
+         |              ^~~~~~~~~~~~~~~~~~~~~~
+>> include/linux/page-flags.h:210:38: error: 'hugetlb_optimize_vmemmap_key' undeclared (first use in this function)
+     210 |         if (!static_branch_unlikely(&hugetlb_optimize_vmemmap_key))
+         |                                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/page-flags.h:210:38: note: each undeclared identifier is reported only once for each function it appears in
+>> include/linux/page-flags.h:210:38: error: 'hugetlb_optimize_vmemmap_key' undeclared (first use in this function)
+     210 |         if (!static_branch_unlikely(&hugetlb_optimize_vmemmap_key))
+         |                                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/page-flags.h:210:38: note: each undeclared identifier is reported only once for each function it appears in
+   cc1: some warnings being treated as errors
+   cc1: some warnings being treated as errors
+   make[3]: *** [scripts/Makefile.build:244: arch/loongarch/vdso/vgetcpu.o] Error 1
+   make[3]: *** [scripts/Makefile.build:244: arch/loongarch/vdso/vgettimeofday.o] Error 1
+   make[3]: Target 'include/generated/vdso-offsets.h' not remade because of errors.
+   make[2]: *** [arch/loongarch/Makefile:163: vdso_prepare] Error 2
+   make[2]: Target 'prepare' not remade because of errors.
+   make[1]: *** [Makefile:240: __sub-make] Error 2
+   make[1]: Target 'prepare' not remade because of errors.
+   make: *** [Makefile:240: __sub-make] Error 2
+   make: Target 'prepare' not remade because of errors.
 
 
-I tweaked the commit message a little bit and applied to drm-xe-next.
-Thanks.
+vim +202 include/linux/page-flags.h
 
-Lucas De Marchi
+9223b4190fa129 Christoph Lameter 2008-04-28  200  
+47010c040dec8a Muchun Song       2022-04-28  201  #ifdef CONFIG_HUGETLB_PAGE_OPTIMIZE_VMEMMAP
+cf5472e5611338 Muchun Song       2022-06-28 @202  DECLARE_STATIC_KEY_FALSE(hugetlb_optimize_vmemmap_key);
+a6b40850c442bf Muchun Song       2022-03-22  203  
+e7d324850bfcb3 Muchun Song       2022-03-22  204  /*
+838691a1c0ec44 Muchun Song       2022-06-28  205   * Return the real head page struct iff the @page is a fake head page, otherwise
+838691a1c0ec44 Muchun Song       2022-06-28  206   * return the @page itself. See Documentation/mm/vmemmap_dedup.rst.
+e7d324850bfcb3 Muchun Song       2022-03-22  207   */
+e7d324850bfcb3 Muchun Song       2022-03-22  208  static __always_inline const struct page *page_fixed_fake_head(const struct page *page)
+e7d324850bfcb3 Muchun Song       2022-03-22  209  {
+cf5472e5611338 Muchun Song       2022-06-28 @210  	if (!static_branch_unlikely(&hugetlb_optimize_vmemmap_key))
+e7d324850bfcb3 Muchun Song       2022-03-22  211  		return page;
+e7d324850bfcb3 Muchun Song       2022-03-22  212  
+e7d324850bfcb3 Muchun Song       2022-03-22  213  	/*
+e7d324850bfcb3 Muchun Song       2022-03-22  214  	 * Only addresses aligned with PAGE_SIZE of struct page may be fake head
+e7d324850bfcb3 Muchun Song       2022-03-22  215  	 * struct page. The alignment check aims to avoid access the fields (
+e7d324850bfcb3 Muchun Song       2022-03-22  216  	 * e.g. compound_head) of the @page[1]. It can avoid touch a (possibly)
+e7d324850bfcb3 Muchun Song       2022-03-22  217  	 * cold cacheline in some cases.
+e7d324850bfcb3 Muchun Song       2022-03-22  218  	 */
+e7d324850bfcb3 Muchun Song       2022-03-22  219  	if (IS_ALIGNED((unsigned long)page, PAGE_SIZE) &&
+e7d324850bfcb3 Muchun Song       2022-03-22  220  	    test_bit(PG_head, &page->flags)) {
+e7d324850bfcb3 Muchun Song       2022-03-22  221  		/*
+e7d324850bfcb3 Muchun Song       2022-03-22  222  		 * We can safely access the field of the @page[1] with PG_head
+e7d324850bfcb3 Muchun Song       2022-03-22  223  		 * because the @page is a compound page composed with at least
+e7d324850bfcb3 Muchun Song       2022-03-22  224  		 * two contiguous pages.
+e7d324850bfcb3 Muchun Song       2022-03-22  225  		 */
+e7d324850bfcb3 Muchun Song       2022-03-22  226  		unsigned long head = READ_ONCE(page[1].compound_head);
+e7d324850bfcb3 Muchun Song       2022-03-22  227  
+e7d324850bfcb3 Muchun Song       2022-03-22  228  		if (likely(head & 1))
+e7d324850bfcb3 Muchun Song       2022-03-22  229  			return (const struct page *)(head - 1);
+e7d324850bfcb3 Muchun Song       2022-03-22  230  	}
+e7d324850bfcb3 Muchun Song       2022-03-22  231  	return page;
+e7d324850bfcb3 Muchun Song       2022-03-22  232  }
+e7d324850bfcb3 Muchun Song       2022-03-22  233  #else
+e7d324850bfcb3 Muchun Song       2022-03-22  234  static inline const struct page *page_fixed_fake_head(const struct page *page)
+e7d324850bfcb3 Muchun Song       2022-03-22  235  {
+e7d324850bfcb3 Muchun Song       2022-03-22  236  	return page;
+e7d324850bfcb3 Muchun Song       2022-03-22  237  }
+e7d324850bfcb3 Muchun Song       2022-03-22  238  #endif
+e7d324850bfcb3 Muchun Song       2022-03-22  239  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
