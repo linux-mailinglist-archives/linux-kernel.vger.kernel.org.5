@@ -1,150 +1,138 @@
-Return-Path: <linux-kernel+bounces-96478-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95860-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBEAB875CB3
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 04:27:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 060DA875432
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:32:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A19A1C21293
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 03:27:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3A104B22CB4
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 16:32:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C4762C1A3;
-	Fri,  8 Mar 2024 03:27:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C8AC12F5B3;
+	Thu,  7 Mar 2024 16:32:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="nocBvkjm";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="OK+uAUHW";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="nocBvkjm";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="OK+uAUHW"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="dZ+7Sd3G";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="KXkoNNq4"
+Received: from wfout1-smtp.messagingengine.com (wfout1-smtp.messagingengine.com [64.147.123.144])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D86795C99;
-	Fri,  8 Mar 2024 03:27:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C066347A2;
+	Thu,  7 Mar 2024 16:32:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.144
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709868455; cv=none; b=epM+qvyeyKDnZdovUmTApbkzSEKZt6tY2cKkigw5TwKuGcvCYlJnOiT70gdGdGZsi8cDvctpzMJur3sSFuFw7BJXKRJs9HbLN5UPhKA2+kbdWmGdfO25rDPYuSqfc+2//izlGwPXWnixXwDMgX1vmKsf8BGi4MqAdG2I7PoPvmA=
+	t=1709829165; cv=none; b=KCFSRAao0/tQGBwMFRhfu3JYtpmY97SFNPF/wCoagWOlRwhDNhlFGPYe0Mcv2r1o5dh1Bc5f9ZeFGFgksEWg0u1VROG5MK1SSk7xxVxHS/a9cqq2wD2DBNyRLaAJDEGIFGRf31BAtXyE/aOzA1NGLtOf4O6fLwmVEoe1UIDZi5c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709868455; c=relaxed/simple;
-	bh=uT5NxCosrcGa0uMON5obvvuAZK/yHU43ALWlFYP0uko=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jmcsgcmrb18/V+F0qHSiR3ufex7mttOsHVKiLGkoVdJ3IWk/PmZ5EdsMJhnu9ZHgr1DzNehj839SxWAaom6B1u8VXtlnTFaQLzrkMJ2RVKyu78PYK00HyJk/URPU6CDHewa89ULZlIB290Rhc42kl0lnB9296uOKqIrpCXqBTBE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=nocBvkjm; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=OK+uAUHW; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=nocBvkjm; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=OK+uAUHW; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 0FFBD8CDF0;
-	Thu,  7 Mar 2024 16:28:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1709828938; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TcYB3THyLEHAGqQD5ulPE5CsY6vdqyT5FGwSx8tObPQ=;
-	b=nocBvkjmC+2+qVgS3MNjA0sKHbC4JjTj4jfMJbFYOqa22+/6IYkFqvQYqkLj/unUB1RjTD
-	D4v3p+Og9hgVt8YtKUDGOyJxhX9TAj9Dt0PoR+6lj0b4pNNTvmNsaWxFwaPVEb0jFtYMbs
-	yfGhWAa8ytoquW6HvtOxv5lB4yBZ1lU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1709828938;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TcYB3THyLEHAGqQD5ulPE5CsY6vdqyT5FGwSx8tObPQ=;
-	b=OK+uAUHWj2F47iM2fqT6RBehlSwP2l3ejUIllxfehNfG9arsaydRyRtLMlhgyHZRjaEdMm
-	JJI4p/ejf4XpQSDA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1709828938; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TcYB3THyLEHAGqQD5ulPE5CsY6vdqyT5FGwSx8tObPQ=;
-	b=nocBvkjmC+2+qVgS3MNjA0sKHbC4JjTj4jfMJbFYOqa22+/6IYkFqvQYqkLj/unUB1RjTD
-	D4v3p+Og9hgVt8YtKUDGOyJxhX9TAj9Dt0PoR+6lj0b4pNNTvmNsaWxFwaPVEb0jFtYMbs
-	yfGhWAa8ytoquW6HvtOxv5lB4yBZ1lU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1709828938;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TcYB3THyLEHAGqQD5ulPE5CsY6vdqyT5FGwSx8tObPQ=;
-	b=OK+uAUHWj2F47iM2fqT6RBehlSwP2l3ejUIllxfehNfG9arsaydRyRtLMlhgyHZRjaEdMm
-	JJI4p/ejf4XpQSDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CCCC3136C7;
-	Thu,  7 Mar 2024 16:28:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Mgz6L0nr6WULegAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Thu, 07 Mar 2024 16:28:57 +0000
-Date: Thu, 07 Mar 2024 17:28:57 +0100
-Message-ID: <87le6uxaye.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc: <tiwai@suse.com>,
-	<linux-sound@vger.kernel.org>,
-	<alsa-devel@alsa-project.org>,
-	<linux-kernel@vger.kernel.org>,
-	<patches@opensource.cirrus.com>
-Subject: Re: [PATCH 1/2] ALSA: hda: hda_component: Add missing #include guards
-In-Reply-To: <20240307111216.45053-1-rf@opensource.cirrus.com>
-References: <20240307111216.45053-1-rf@opensource.cirrus.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	s=arc-20240116; t=1709829165; c=relaxed/simple;
+	bh=iElcAMRHWg3AIENdNnS8XqLOBLe79zitIgveRh8WpWY=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=MP1/emsnrknZ6lH3mUGXvvysI4TwNqyVOLJVBATL2+Q87a85wW7k7dv3OFlAlFKjCnmvltUC+REDPhidn1j+iNIq6jQwLzp9ImQsVZficaGBF6s/euD4NHoiOLqCegOZuvKTnHA/E5900FBbGK1piC8SIvw4fpKpaRBnBGhPGY8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=dZ+7Sd3G; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=KXkoNNq4; arc=none smtp.client-ip=64.147.123.144
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfout.west.internal (Postfix) with ESMTP id E462D1C0009A;
+	Thu,  7 Mar 2024 11:32:41 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Thu, 07 Mar 2024 11:32:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1709829161; x=1709915561; bh=s69aR939oj
+	uP89aqvaOQNMGjfx31Iz5HIu+XZvWaPE8=; b=dZ+7Sd3GH+r3i4XsbhfgnLMlNQ
+	KlwummQ/Jv1W5SKwyB30yWWzklGHzT41WWiG7MP6jAZYqvl5QkSbD6vZccGY3hoP
+	Ut/mUdzCQcbFcHkJZ8srivb2rZLypc87vpzFPf3Mg/QeDbfY7XRqPbvm1xvgzEZP
+	k13O5Quz9EZAQKXWF/ZzTiupqnyS5wy5xPwMPSYtOKLcYCyieD44q1IKm2vy36Pp
+	y3RUyKgOSz5Ry6EldgPjgG7UenETdmMYltzaR8n8BukzP1G2TvG6rx9yP19MYwYe
+	q2oFwAoQj2rrxwC9AWqyXa3gMiMfgdh6uurX19qUNqvH2Ou1oxk83eXPeH1Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1709829161; x=1709915561; bh=s69aR939ojuP89aqvaOQNMGjfx31
+	Iz5HIu+XZvWaPE8=; b=KXkoNNq4idoMiFT8pEyHJZ5I3q6dF6IMS/+exQuoDqNu
+	N5cxAtelIWGM7UyPaeCPfyGifKY6eqMmggq2Fx4hKX6nJHMIQ4YebmPXLR1BDdU+
+	Yj4sOQIDeaYrQ102PfKRyqVLwmJ6LpqFcVhsze88ZyAQuDwxE0lIwl6iKbV2wqtj
+	wH+CQ5bQwdFXgsp1tmvBnyFQ+leJDZiGJ1uENO+nbl9lVras299fWV/mcA4kjJuU
+	q3tI9yHawhzCRM+m5oLG9t3His6N5XQFdu8dlbNN9MUuiePPiYja5c4tCcODsEHM
+	nTxdTIWW83Ro5o/P7FlHoLptP8Pm+3D7Frl7nP1h5w==
+X-ME-Sender: <xms:KOzpZX02MBIn5ry0MasiApi4wW_emEnrIeI3Z0cPuJls3Q3lSfDukA>
+    <xme:KOzpZWGdrfi_vCBEvKTvcSMvaZtRZHo7T9v2IeVLG5EeD8crBDtj0Ks4VrOMvVcFQ
+    Sx9L9tMdCH3aZbEUQM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrieefgdeklecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
+    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
+    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
+    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
+    hnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:KezpZX6AHQhWEHpnQEbSvY1WoT7YhPN-aRzPoMz4otV3vJhMlIAYVQ>
+    <xmx:KezpZc1VDPMNUuRd5w7WQ3yP15WRpcZ9ExrAPW_bs3DO1gn1zI25ZQ>
+    <xmx:KezpZaF6lqxbmv1spvU5ih3cCPNAiPNJKxb9wRbFdc72yw94-R4l6g>
+    <xmx:KezpZYaERftISt1-s7qkBQgOmprFu43_9YTQjmA7S-Nmn-tpIZmRLkRE2Lc>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id D56ABB60092; Thu,  7 Mar 2024 11:32:40 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-251-g8332da0bf6-fm-20240305.001-g8332da0b
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spamd-Bar: /
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=nocBvkjm;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=OK+uAUHW
-X-Spamd-Result: default: False [-0.34 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCPT_COUNT_FIVE(0.00)[6];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-1.03)[87.49%]
-X-Spam-Level: 
-X-Spam-Score: -0.34
-X-Rspamd-Queue-Id: 0FFBD8CDF0
-X-Spam-Flag: NO
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+MIME-Version: 1.0
+Message-Id: <1e2581ba-f7ce-43ad-8e32-c62601c8f5c9@app.fastmail.com>
+In-Reply-To: <20240307160823.3800932-2-andriy.shevchenko@linux.intel.com>
+References: <20240307160823.3800932-1-andriy.shevchenko@linux.intel.com>
+ <20240307160823.3800932-2-andriy.shevchenko@linux.intel.com>
+Date: Thu, 07 Mar 2024 17:30:10 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org
+Cc: "Daniel Mack" <daniel@zonque.org>,
+ "Haojian Zhuang" <haojian.zhuang@gmail.com>,
+ "Robert Jarzmik" <robert.jarzmik@free.fr>,
+ "Russell King" <linux@armlinux.org.uk>, "Mark Brown" <broonie@kernel.org>
+Subject: Re: [PATCH v1 1/2] spi: pxa2xx: Kill pxa2xx_set_spi_info()
+Content-Type: text/plain
 
-On Thu, 07 Mar 2024 12:12:15 +0100,
-Richard Fitzgerald wrote:
+On Thu, Mar 7, 2024, at 17:07, Andy Shevchenko wrote:
+> There is the only one user of the pxa2xx_set_spi_info(). Unexport it
+> and inline to the actual user.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+I have no idea why you care about this, but it's a nice cleanup,
+so I'm happy to see this get merged through the spi tree if
+that helps. Let me know if I should take it through the soc
+tree instead.
+
+> -/* pxa2xx-spi platform-device ID equals respective SSP platform-device ID + 1 */
+
+This comment might still be useful.
+
+> @@ -592,7 +595,15 @@ static void __init spitz_spi_init(void)
 > 
-> Add the conventional include guards around the content of the
-> hda_component.h header file. This prevents double-declaration of
-> struct hda_component if the header gets included multiple times.
-> 
-> This isn't causing any problems with current code, so no need to
-> backport to older kernels.
-> 
-> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+>  	gpiod_add_lookup_table(&spitz_ads7846_gpio_table);
+>  	gpiod_add_lookup_table(&spitz_spi_gpio_table);
+> -	pxa2xx_set_spi_info(2, &spitz_spi_info);
+> +
+> +	pd = platform_device_alloc("pxa2xx-spi", id);
+> +	if (pd == NULL) {
+> +		pr_err("pxa2xx-spi: failed to allocate device id %d\n", id);
+> +	} else {
+> +		pd->dev.platform_data = info;
+> +		platform_device_add(pd);
+> +	}
+> +
+>  	spi_register_board_info(ARRAY_AND_SIZE(spitz_spi_devices));
 
-Applied both patches now.  Thanks.
+I think the normal interface these days would be
+platform_device_register_data(), which does it all in one step.
 
-
-Takashi
+      Arnd
 
