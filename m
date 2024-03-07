@@ -1,262 +1,106 @@
-Return-Path: <linux-kernel+bounces-94941-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94942-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA0998746F6
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 04:51:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 183908746FC
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 04:54:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 902052846B4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 03:51:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 76B92B21C77
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 03:54:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD328134B1;
-	Thu,  7 Mar 2024 03:51:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3FC514AB2;
+	Thu,  7 Mar 2024 03:54:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NLKl13xC"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NpIiOPLI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 811D94C6D;
-	Thu,  7 Mar 2024 03:51:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1D6C17EF;
+	Thu,  7 Mar 2024 03:54:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709783510; cv=none; b=OrfEMqdIoiupj+fIVYbfbpqUHv9FnEeuhBx+xFNIG60hqfjT733YOzMMH8swCCzpERTQaXbVMRSKhclbkaYJIoMrBqgGlU7A8aDbwawIp1+tBWt3dvBqRbDYce5lRaOY8xchHKTZ19hVBJqvfvVVoHvtkJ6174pcno8KBWyq2bs=
+	t=1709783642; cv=none; b=jzsuN1X3RJXhLIno9uzzqXl0Fm8tXI0MqQI6s7hHa2j8Bcv/3Hmqvk4Z6HksR+249FbF44h0MZNnTC1q3hbFdsu3/9KIgvbrovuwxqMO5BQuomHUWB+bm+WPZGAC+JqIloMNL530EgBXUfRSZlau8Ug5UEmW1v3ZqtEKimqtmrw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709783510; c=relaxed/simple;
-	bh=qHETVGmABCOv5h0hlnwqLErCUvhtOVNNegiNhI6aBxI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ngma7cgAw4DOXrXyNIYRVWEMmaotQwpEkwejlMTuRbjkj2vUenraLm52ZQulbn48woCcmb65snb8sstQEMkC83xJao2mEqg7WAfm/A8pB9LeOyICUmOD9Mo/Y54qxjE3ROU7yijlw4L5Ci5R+3ietCkJb0Y4qFuRchWZVRIpBQU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NLKl13xC; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709783509; x=1741319509;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=qHETVGmABCOv5h0hlnwqLErCUvhtOVNNegiNhI6aBxI=;
-  b=NLKl13xCM/XestgAMCd2C+6xBvS3RdDEwTj44tNI4MR3JF9wJLCglY/y
-   4eNNQZAzkrtiab2Na9JNBYK+gop52xI2AvdH8iYv3bGAwVvKT0ZEv4LRz
-   tp4et2lcC7k/gGp/eaeL90rRd6HEleELo+qebVu+KwZJgUwlmF0oi+kS+
-   +SjDiEltmnuHdbI/dJhYMQzzVLy5yUXKdOWlTWVLFCNppyTk3gQvXsa0Q
-   dpJAgOp4q0+lX38pKaA8a5kcMyKkMdeJ4FgOZ4iQkHGU5u5OgDEb/mWpM
-   MRfIZDj8RzQEVeQ90JXrXzGKeQvNNMqDJBaf4vlmUq+O7adReJuQ461Nd
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11005"; a="26907504"
-X-IronPort-AV: E=Sophos;i="6.06,209,1705392000"; 
-   d="scan'208";a="26907504"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 19:51:48 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,209,1705392000"; 
-   d="scan'208";a="10399324"
-Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
-  by orviesa006.jf.intel.com with ESMTP; 06 Mar 2024 19:51:43 -0800
-Received: from kbuild by b21307750695 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1ri4nE-0004ll-0U;
-	Thu, 07 Mar 2024 03:51:40 +0000
-Date: Thu, 7 Mar 2024 11:51:16 +0800
-From: kernel test robot <lkp@intel.com>
-To: Chancel Liu <chancel.liu@nxp.com>, shengjiu.wang@gmail.com,
-	Xiubo.Lee@gmail.com, festevam@gmail.com, nicoleotsuka@gmail.com,
-	lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-	tiwai@suse.com, shawnguo@kernel.org, s.hauer@pengutronix.de,
-	kernel@pengutronix.de, linux-imx@nxp.com,
-	alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
-	linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	Chancel Liu <chancel.liu@nxp.com>
-Subject: Re: [PATCH 3/4] ASoC: fsl: Let imx-audio-rpmsg register platform
- device for card
-Message-ID: <202403071138.bdVPDO4p-lkp@intel.com>
-References: <20240306075510.535963-4-chancel.liu@nxp.com>
+	s=arc-20240116; t=1709783642; c=relaxed/simple;
+	bh=iSpHqEag2Fld1WLfW4PXYjSa646zc+x1ABtd6XNLjsU=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=H6D6UIi7IPuXa5cBwYPoZtVszo/A+ordgVP5hZhX/BLOjDdwpjI+l2hMikeCQH95fGa8LkkCuPx5dY0896p8khqAfoEEr2tvvFOg5PQCs4W9gVcQulybPJvLohh02zup7J5fxkIxKydzR48zvws35ljOOJNnVIClNnvkdjYmDy4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NpIiOPLI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2CABC433C7;
+	Thu,  7 Mar 2024 03:54:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709783641;
+	bh=iSpHqEag2Fld1WLfW4PXYjSa646zc+x1ABtd6XNLjsU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=NpIiOPLI/8nsHeQhmmwcc6IgmuKb/seG+hgs5nmxnNsIaX8JeS0rW7/fzwPSOK+tO
+	 r2amgOahfzA9gG9tDDHCffVjSjI4XJurNCxyxqxMMn8HoC4A/4vaZy+0t3HJwEkMhk
+	 UPQM/VcK3PFuT/G+6itsuu0V0L2QYzzWmq1GkbafHtDaqcDX15EGC3afepvt0gT8vs
+	 XQ7HXyl/8sXobX5PpbbYtRzrPmeTxag8y0dNwcbI+kQaAz8tstVuE+ppweiFmUdF9K
+	 I0I6fWZu2OVkEsI3UZ0qP0t9ALRFE0y8nbzJfF0D+TvlvcJu4n5zQx1Kstq7h4LE1q
+	 g/MawhybuI/kQ==
+Date: Wed, 6 Mar 2024 19:53:59 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Dragos Tatulea <dtatulea@nvidia.com>
+Cc: "davem@davemloft.net" <davem@davemloft.net>,
+ "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
+ "dsahern@kernel.org" <dsahern@kernel.org>, "steffen.klassert@secunet.com"
+ <steffen.klassert@secunet.com>, "pabeni@redhat.com" <pabeni@redhat.com>,
+ "edumazet@google.com" <edumazet@google.com>, "almasrymina@google.com"
+ <almasrymina@google.com>, Leon Romanovsky <leonro@nvidia.com>, Gal Pressman
+ <gal@nvidia.com>, "Anatoli.Chechelnickiy@m.interpipe.biz"
+ <Anatoli.Chechelnickiy@m.interpipe.biz>, "ian.kumlien@gmail.com"
+ <ian.kumlien@gmail.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH v2] net: esp: fix bad handling of pages from
+ page_pool
+Message-ID: <20240306195359.1afb26d2@kernel.org>
+In-Reply-To: <9ac9ffa9d11907dcb4a300bf4e81545b7acc40d6.camel@nvidia.com>
+References: <20240306190822.390086-1-dtatulea@nvidia.com>
+	<9ac9ffa9d11907dcb4a300bf4e81545b7acc40d6.camel@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240306075510.535963-4-chancel.liu@nxp.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hi Chancel,
+On Wed, 6 Mar 2024 19:09:58 +0000 Dragos Tatulea wrote:
+> > Changes in v2:
+> > - Added napi_page_unref api based on discussion in v1 [0].
+> > 
+> > [0]https://lore.kernel.org/netdev/CAHS8izOoO-EovwMwAm9tLYetwikNPxC0FKyVGu1TPJWSz4bGoA@mail.gmail.com/T/#t
+> >   
+> Jakub, are you sure that it is ok to have all this in a single patch?
 
-kernel test robot noticed the following build errors:
+Yup.
 
-[auto build test ERROR on shawnguo/for-next]
-[also build test ERROR on broonie-sound/for-next linus/master v6.8-rc7 next-20240306]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> > ---
+> >  include/linux/skbuff.h | 10 +++++++---
+> >  net/ipv4/esp4.c        | 16 ++++++++++------
+> >  net/ipv6/esp6.c        | 16 ++++++++++------
+> >  3 files changed, 27 insertions(+), 15 deletions(-)
+> > 
+> > diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+> > index 696e7680656f..009603db2a43 100644
+> > --- a/include/linux/skbuff.h
+> > +++ b/include/linux/skbuff.h
+> > @@ -3453,10 +3453,8 @@ int skb_cow_data_for_xdp(struct page_pool *pool, struct sk_buff **pskb,
+> >  bool napi_pp_put_page(struct page *page, bool napi_safe);
+> >  
+> >  static inline void
+> > -napi_frag_unref(skb_frag_t *frag, bool recycle, bool napi_safe)
+> > +napi_page_unref(struct page *page, bool recycle, bool napi_safe)
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Chancel-Liu/ASoC-fsl-imx_pcm_rpmsg-Register-component-with-rpmsg-channel-name/20240306-155945
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/shawnguo/linux.git for-next
-patch link:    https://lore.kernel.org/r/20240306075510.535963-4-chancel.liu%40nxp.com
-patch subject: [PATCH 3/4] ASoC: fsl: Let imx-audio-rpmsg register platform device for card
-config: s390-allmodconfig (https://download.01.org/0day-ci/archive/20240307/202403071138.bdVPDO4p-lkp@intel.com/config)
-compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project 325f51237252e6dab8e4e1ea1fa7acbb4faee1cd)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240307/202403071138.bdVPDO4p-lkp@intel.com/reproduce)
+I'd call it skb_page_unref()
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403071138.bdVPDO4p-lkp@intel.com/
+The napi_ prefix will just confuse people, because we don't have to be
+in NAPI context at all when calling this. As long as "napi_safe" is
+correctly set to false.  So let's use skb_ as the prefix.
 
-All errors (new ones prefixed by >>):
-
-   In file included from include/linux/elf.h:6:
-   In file included from arch/s390/include/asm/elf.h:173:
-   In file included from arch/s390/include/asm/mmu_context.h:11:
-   In file included from arch/s390/include/asm/pgalloc.h:18:
-   In file included from include/linux/mm.h:2188:
-   include/linux/vmstat.h:508:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
-     508 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
-     509 |                            item];
-         |                            ~~~~
-   include/linux/vmstat.h:515:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
-     515 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
-     516 |                            NR_VM_NUMA_EVENT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/vmstat.h:522:36: warning: arithmetic between different enumeration types ('enum node_stat_item' and 'enum lru_list') [-Wenum-enum-conversion]
-     522 |         return node_stat_name(NR_LRU_BASE + lru) + 3; // skip "nr_"
-         |                               ~~~~~~~~~~~ ^ ~~~
-   include/linux/vmstat.h:527:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
-     527 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
-     528 |                            NR_VM_NUMA_EVENT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/vmstat.h:536:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
-     536 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
-     537 |                            NR_VM_NUMA_EVENT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~~
-   In file included from sound/soc/fsl/imx-audio-rpmsg.c:6:
-   In file included from sound/soc/fsl/imx-pcm-rpmsg.h:278:
-   In file included from include/sound/dmaengine_pcm.h:11:
-   In file included from include/sound/soc.h:21:
-   In file included from include/linux/regmap.h:20:
-   In file included from include/linux/iopoll.h:14:
-   In file included from include/linux/io.h:13:
-   In file included from arch/s390/include/asm/io.h:78:
-   include/asm-generic/io.h:547:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     547 |         val = __raw_readb(PCI_IOBASE + addr);
-         |                           ~~~~~~~~~~ ^
-   include/asm-generic/io.h:560:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     560 |         val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
-         |                                                         ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/big_endian.h:37:59: note: expanded from macro '__le16_to_cpu'
-      37 | #define __le16_to_cpu(x) __swab16((__force __u16)(__le16)(x))
-         |                                                           ^
-   include/uapi/linux/swab.h:102:54: note: expanded from macro '__swab16'
-     102 | #define __swab16(x) (__u16)__builtin_bswap16((__u16)(x))
-         |                                                      ^
-   In file included from sound/soc/fsl/imx-audio-rpmsg.c:6:
-   In file included from sound/soc/fsl/imx-pcm-rpmsg.h:278:
-   In file included from include/sound/dmaengine_pcm.h:11:
-   In file included from include/sound/soc.h:21:
-   In file included from include/linux/regmap.h:20:
-   In file included from include/linux/iopoll.h:14:
-   In file included from include/linux/io.h:13:
-   In file included from arch/s390/include/asm/io.h:78:
-   include/asm-generic/io.h:573:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     573 |         val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
-         |                                                         ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/big_endian.h:35:59: note: expanded from macro '__le32_to_cpu'
-      35 | #define __le32_to_cpu(x) __swab32((__force __u32)(__le32)(x))
-         |                                                           ^
-   include/uapi/linux/swab.h:115:54: note: expanded from macro '__swab32'
-     115 | #define __swab32(x) (__u32)__builtin_bswap32((__u32)(x))
-         |                                                      ^
-   In file included from sound/soc/fsl/imx-audio-rpmsg.c:6:
-   In file included from sound/soc/fsl/imx-pcm-rpmsg.h:278:
-   In file included from include/sound/dmaengine_pcm.h:11:
-   In file included from include/sound/soc.h:21:
-   In file included from include/linux/regmap.h:20:
-   In file included from include/linux/iopoll.h:14:
-   In file included from include/linux/io.h:13:
-   In file included from arch/s390/include/asm/io.h:78:
-   include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     584 |         __raw_writeb(value, PCI_IOBASE + addr);
-         |                             ~~~~~~~~~~ ^
-   include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     594 |         __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
-         |                                                       ~~~~~~~~~~ ^
-   include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     604 |         __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
-         |                                                       ~~~~~~~~~~ ^
-   include/asm-generic/io.h:692:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     692 |         readsb(PCI_IOBASE + addr, buffer, count);
-         |                ~~~~~~~~~~ ^
-   include/asm-generic/io.h:700:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     700 |         readsw(PCI_IOBASE + addr, buffer, count);
-         |                ~~~~~~~~~~ ^
-   include/asm-generic/io.h:708:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     708 |         readsl(PCI_IOBASE + addr, buffer, count);
-         |                ~~~~~~~~~~ ^
-   include/asm-generic/io.h:717:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     717 |         writesb(PCI_IOBASE + addr, buffer, count);
-         |                 ~~~~~~~~~~ ^
-   include/asm-generic/io.h:726:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     726 |         writesw(PCI_IOBASE + addr, buffer, count);
-         |                 ~~~~~~~~~~ ^
-   include/asm-generic/io.h:735:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     735 |         writesl(PCI_IOBASE + addr, buffer, count);
-         |                 ~~~~~~~~~~ ^
->> sound/soc/fsl/imx-audio-rpmsg.c:107:8: error: use of undeclared label 'fail'
-     107 |                 goto fail;
-         |                      ^
-   17 warnings and 1 error generated.
-
-
-vim +/fail +107 sound/soc/fsl/imx-audio-rpmsg.c
-
-    74	
-    75	static int imx_audio_rpmsg_probe(struct rpmsg_device *rpdev)
-    76	{
-    77		struct imx_audio_rpmsg *data;
-    78		int ret = 0;
-    79	
-    80		dev_info(&rpdev->dev, "new channel: 0x%x -> 0x%x!\n",
-    81			 rpdev->src, rpdev->dst);
-    82	
-    83		data = devm_kzalloc(&rpdev->dev, sizeof(*data), GFP_KERNEL);
-    84		if (!data)
-    85			return -ENOMEM;
-    86	
-    87		dev_set_drvdata(&rpdev->dev, data);
-    88	
-    89		/* Register platform driver for rpmsg routine */
-    90		data->rpmsg_pdev = platform_device_register_data(&rpdev->dev,
-    91								 rpdev->id.name,
-    92								 PLATFORM_DEVID_NONE,
-    93								 NULL, 0);
-    94		if (IS_ERR(data->rpmsg_pdev)) {
-    95			dev_err(&rpdev->dev, "failed to register rpmsg platform.\n");
-    96			ret = PTR_ERR(data->rpmsg_pdev);
-    97		}
-    98	
-    99		data->card_pdev = platform_device_register_data(&rpdev->dev,
-   100								"imx-audio-rpmsg",
-   101								PLATFORM_DEVID_AUTO,
-   102								rpdev->id.name,
-   103								strlen(rpdev->id.name));
-   104		if (IS_ERR(data->card_pdev)) {
-   105			dev_err(&rpdev->dev, "failed to register rpmsg card.\n");
-   106			ret = PTR_ERR(data->card_pdev);
- > 107			goto fail;
-   108		}
-   109	
-   110		return ret;
-   111	}
-   112	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+And I'd pass skb to this, not "bool recycle" so that the caller doesn't
+have to know the weird details..
 
