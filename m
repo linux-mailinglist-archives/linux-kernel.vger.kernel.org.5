@@ -1,196 +1,138 @@
-Return-Path: <linux-kernel+bounces-95581-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95582-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12EB7874FBC
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:14:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 16B37874FC8
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:16:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BBFB3281CC6
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 13:14:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1362281B61
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 13:16:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CBAD12B141;
-	Thu,  7 Mar 2024 13:13:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E350C12C532;
+	Thu,  7 Mar 2024 13:16:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="Tpc+euUg"
-Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="arR+2yp5"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC1DA12C7F3
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 13:13:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 122A912BE94
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 13:16:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709817238; cv=none; b=htygXu8FN4JWwD4kqUVaAPEnflfJanKPIvybq/4CgwilGmqXTEGfJSenFM/OG1Iwg3Gv5VCaEWuIAOeTV9V3Cd+UB3U21iMXlR7svCMG0W+9ZFSOy2rHpw8fcKQz/zJP7C9PBrc1AjD81bz++EesueJU8i2e31bl1ediinv5QSM=
+	t=1709817390; cv=none; b=V+TFo9u7/7f4vinN2vmfT73I4AD698iRkas5Ot7zY0yeoMw2GeLKVhC11ItRXcOG+nVWU1TnFIQSd0AQUNoOASmGJeSxrGWRapcmhPH55nMSoVE0Bqyg5TQu9Ua4sZX5yPz4yRJzer9rtLULQYL6+Qu0CMFXZyYnnbqpLrmguEg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709817238; c=relaxed/simple;
-	bh=YzWo6bZjVi3+CiuwgtPUGT9CqDw4ctevPsNQfN3qsyc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hlBo453ZjggAnLuq9XVTu53uND3DD+chavgUSu4SpBt+hHod/9t1SYMDzVTmRlQq+AlW6oH+2zTGo/RgM3uOh742ZG09oRuy4q/CkjrXk6VdQpDm6GsyOyCPi0ET84QZIFh5geoE3zk9fgiVPJ/lodmTO6cM3FCMOwHTPvMyUyM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=Tpc+euUg; arc=none smtp.client-ip=209.85.160.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
-Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-42a029c8e62so6174161cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 05:13:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1709817236; x=1710422036; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=P1OoTfNZUFTPVlAZ173/fzFLYere8ARWOXdYi1oAk6Q=;
-        b=Tpc+euUgupqAg4oc/pm3AYHSq7yd4ESXgym7zQODCB+TmyyaMdzMUrqPR3cOIzO9x0
-         Xgs7BnzWmBbxVxCavVfqWHgqPijoFIfGKGDQwNujN29dwu4Wnx+PU0CfSBpgjIoGiA9X
-         XQYhvzm2Ko1PqHStHX9+IPCfPk3BdcWtT1zf0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709817236; x=1710422036;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=P1OoTfNZUFTPVlAZ173/fzFLYere8ARWOXdYi1oAk6Q=;
-        b=RrVYI80X3X5e+oL5euT7KVRCsA2uZKfFzi/f4F3WaDtDygkxeAwrDnU+2S1CAg6SuQ
-         9h6DiAB5Bw/IpVR+2zPtY8z4exT9krOFrj4yhB5ky085+DISC6ios7pLf8YnuyD1WoCQ
-         A3VvmjeWGqFbbQ8DzwDsLX9mVCETeEQbCS/P338Ivv7Wj+nmUS+G30UUtFu2LRx5oXN1
-         QNUd70Ego5foKgLNaPoMD00UG/VHGCsW/IzaJnSLpQNLNebFBvLi9Mm9OHzJNfQD2Uvq
-         dUfL/8d8vT4ZHuP8wn72mJgogYskVi2IFQCb+YrcQR+WQ4ChhnP4CMe3y8MZrc+iFyt4
-         hxnA==
-X-Forwarded-Encrypted: i=1; AJvYcCV3cCACKVecYAGcyqX4GGjccEP5E26FAuzK5+GBTQF872DYGjghMArGHzukLPr+8TbK07YR08HDp4NDvzdTJyVkqvN+n/RKBhPklRbS
-X-Gm-Message-State: AOJu0Yw1jSsm3oBI4WtzdjfPBB63DkNBFoKxs+1Ifk+/beMxF1WvCYlq
-	lmnA+3dgNQ+rPyN0gODfkvvU3sK65YwEmxfv+24eifcOOF6ku8yyPykwUoyG2II=
-X-Google-Smtp-Source: AGHT+IFyslsj0MWMhAVKZel/6tXgxls+JSfZUVEILC5yMctnngKd7TorXqNZ5qPd+kV12LpakJ93rA==
-X-Received: by 2002:a05:622a:19a5:b0:42f:20b3:45af with SMTP id u37-20020a05622a19a500b0042f20b345afmr749262qtc.58.1709817235475;
-        Thu, 07 Mar 2024 05:13:55 -0800 (PST)
-Received: from [10.5.0.2] ([91.196.69.189])
-        by smtp.gmail.com with ESMTPSA id f17-20020a05620a15b100b00788287e3430sm4219771qkk.130.2024.03.07.05.13.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Mar 2024 05:13:54 -0800 (PST)
-Message-ID: <7d754498-b22e-456c-a58a-c39d6bdba025@joelfernandes.org>
-Date: Thu, 7 Mar 2024 08:13:53 -0500
+	s=arc-20240116; t=1709817390; c=relaxed/simple;
+	bh=bITik7f0tV0KfNuQDs2gR/X8OuM8n9clFtDD8njHsaM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LfoelS7Qd9LnD7z9C/4JC+BCfOBmV3/kLycres6FN7s6tW47xFzy67GjFbSIoaW7wwtKLYVhO4Wd/KFFnFzSSrAeZ1hCyu7i2qy3lCTbCQuQbBHAyvPND3mKsisodSCmCepihLEJCYe8QGg+LDhmfPehpP78roQ4HxcQWj3o5JY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=arR+2yp5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53923C433F1;
+	Thu,  7 Mar 2024 13:16:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1709817389;
+	bh=bITik7f0tV0KfNuQDs2gR/X8OuM8n9clFtDD8njHsaM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=arR+2yp5ddEX2qGGCa7cSDJ4m+Y6/WmDPiNjDcEqxfg9zWjnscBdlPA+X8da3ebQL
+	 ETHwzMEcwwFp6Dd64u+qGBcJKGPemuxREycWjpFZ1vOlvkfBdylXQrw0ogTMTw+XxD
+	 tNkXgS1usqie1mGt+wzWsmzWDaC7fDCnIw1QdHiU=
+Date: Thu, 7 Mar 2024 13:16:26 +0000
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Michal Hocko <mhocko@suse.com>
+Cc: cve@kernel.org, linux-kernel@vger.kernel.org,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
+Subject: Re: CVE-2023-52592: libbpf: Fix NULL pointer dereference in
+ bpf_object__collect_prog_relos
+Message-ID: <2024030706-unscathed-wilt-e310@gregkh>
+References: <2024030645-CVE-2023-52592-4693@gregkh>
+ <ZemPuxhM_ZZ-khTh@tiehlicka>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] rcu: Do not release a wait-head from a GP kthread
-Content-Language: en-US
-To: Uladzislau Rezki <urezki@gmail.com>
-Cc: "Paul E . McKenney" <paulmck@kernel.org>, RCU <rcu@vger.kernel.org>,
- Neeraj upadhyay <Neeraj.Upadhyay@amd.com>, Boqun Feng
- <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
- LKML <linux-kernel@vger.kernel.org>,
- Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
- Frederic Weisbecker <frederic@kernel.org>
-References: <20240305195720.42687-1-urezki@gmail.com>
- <a1faf101-c689-4530-a9a5-c7f95b8825d6@joelfernandes.org>
- <Zem5pkNiAy-EZdo9@pc636>
-From: Joel Fernandes <joel@joelfernandes.org>
-In-Reply-To: <Zem5pkNiAy-EZdo9@pc636>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZemPuxhM_ZZ-khTh@tiehlicka>
 
-
-
-On 3/7/2024 7:57 AM, Uladzislau Rezki wrote:
-> On Wed, Mar 06, 2024 at 05:31:31PM -0500, Joel Fernandes wrote:
->>
->>
->> On 3/5/2024 2:57 PM, Uladzislau Rezki (Sony) wrote:
->>> Fix a below race by not releasing a wait-head from the
->>> GP-kthread as it can lead for reusing it whereas a worker
->>> can still access it thus execute newly added callbacks too
->>> early.
->>>
->>> CPU 0                              CPU 1
->>> -----                              -----
->>>
->>> // wait_tail == HEAD1
->>> rcu_sr_normal_gp_cleanup() {
->>>     // has passed SR_MAX_USERS_WAKE_FROM_GP
->>>     wait_tail->next = next;
->>>     // done_tail = HEAD1
->>>     smp_store_release(&rcu_state.srs_done_tail, wait_tail);
->>>     queue_work() {
->>>         test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work)
->>>         __queue_work()
->>>     }
->>> }
->>>
->>>                                set_work_pool_and_clear_pending()
->>>                                rcu_sr_normal_gp_cleanup_work() {
-[..]
->>>
->>> Reported-by: Frederic Weisbecker <frederic@kernel.org>
->>> Fixes: 05a10b921000 ("rcu: Support direct wake-up of synchronize_rcu() users")
->>> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
->>> ---
->>>  kernel/rcu/tree.c | 22 ++++++++--------------
->>>  1 file changed, 8 insertions(+), 14 deletions(-)
->>>
->>> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
->>> index 31f3a61f9c38..475647620b12 100644
->>> --- a/kernel/rcu/tree.c
->>> +++ b/kernel/rcu/tree.c
->>> @@ -1656,21 +1656,11 @@ static void rcu_sr_normal_gp_cleanup(void)
->>>  	WARN_ON_ONCE(!rcu_sr_is_wait_head(wait_tail));
->>>  
->>>  	/*
->>> -	 * Process (a) and (d) cases. See an illustration. Apart of
->>> -	 * that it handles the scenario when all clients are done,
->>> -	 * wait-head is released if last. The worker is not kicked.
->>> +	 * Process (a) and (d) cases. See an illustration.
->>>  	 */
->>>  	llist_for_each_safe(rcu, next, wait_tail->next) {
->>> -		if (rcu_sr_is_wait_head(rcu)) {
->>> -			if (!rcu->next) {
->>> -				rcu_sr_put_wait_head(rcu);
->>> -				wait_tail->next = NULL;
->>> -			} else {
->>> -				wait_tail->next = rcu;
->>> -			}
->>> -
->>> +		if (rcu_sr_is_wait_head(rcu))
->>>  			break;
->>> -		}
->>>  
->>>  		rcu_sr_normal_complete(rcu);
->>>  		// It can be last, update a next on this step.
->>> @@ -1684,8 +1674,12 @@ static void rcu_sr_normal_gp_cleanup(void)
->>>  	smp_store_release(&rcu_state.srs_done_tail, wait_tail);
->>>  	ASSERT_EXCLUSIVE_WRITER(rcu_state.srs_done_tail);
->>>  
->>> -	if (wait_tail->next)
->>> -		queue_work(system_highpri_wq, &rcu_state.srs_cleanup_work);
->>> +	/*
->>> +	 * We schedule a work in order to perform a final processing
->>> +	 * of outstanding users(if still left) and releasing wait-heads
->>> +	 * added by rcu_sr_normal_gp_init() call.
->>> +	 */
->>> +	queue_work(system_highpri_wq, &rcu_state.srs_cleanup_work);
->>>  }
->>
->> Ah, nice. So instead of allocating/freeing in GP thread and freeing in worker,
->> you allocate heads only in GP thread and free them only in worker, thus
->> essentially fixing the UAF that Frederick found.
->>
->> AFAICS, this fixes the issue.
->>
->> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
->>
-> Thank you for the review-by!
+On Thu, Mar 07, 2024 at 10:58:19AM +0100, Michal Hocko wrote:
+> On Wed 06-03-24 06:45:50, Greg KH wrote:
+> > Description
+> > ===========
+> > 
+> > In the Linux kernel, the following vulnerability has been resolved:
+> > 
+> > libbpf: Fix NULL pointer dereference in bpf_object__collect_prog_relos
+> > 
+> > An issue occurred while reading an ELF file in libbpf.c during fuzzing:
+> > 
+> > 	Program received signal SIGSEGV, Segmentation fault.
+> > 	0x0000000000958e97 in bpf_object.collect_prog_relos () at libbpf.c:4206
+> > 	4206 in libbpf.c
+> > 	(gdb) bt
+> > 	#0 0x0000000000958e97 in bpf_object.collect_prog_relos () at libbpf.c:4206
+> > 	#1 0x000000000094f9d6 in bpf_object.collect_relos () at libbpf.c:6706
+> > 	#2 0x000000000092bef3 in bpf_object_open () at libbpf.c:7437
+> > 	#3 0x000000000092c046 in bpf_object.open_mem () at libbpf.c:7497
+> > 	#4 0x0000000000924afa in LLVMFuzzerTestOneInput () at fuzz/bpf-object-fuzzer.c:16
+> > 	#5 0x000000000060be11 in testblitz_engine::fuzzer::Fuzzer::run_one ()
+> > 	#6 0x000000000087ad92 in tracing::span::Span::in_scope ()
+> > 	#7 0x00000000006078aa in testblitz_engine::fuzzer::util::walkdir ()
+> > 	#8 0x00000000005f3217 in testblitz_engine::entrypoint::main::{{closure}} ()
+> > 	#9 0x00000000005f2601 in main ()
+> > 	(gdb)
+> > 
+> > scn_data was null at this code(tools/lib/bpf/src/libbpf.c):
+> > 
+> > 	if (rel->r_offset % BPF_INSN_SZ || rel->r_offset >= scn_data->d_size) {
+> > 
+> > The scn_data is derived from the code above:
+> > 
+> > 	scn = elf_sec_by_idx(obj, sec_idx);
+> > 	scn_data = elf_sec_data(obj, scn);
+> > 
+> > 	relo_sec_name = elf_sec_str(obj, shdr->sh_name);
+> > 	sec_name = elf_sec_name(obj, scn);
+> > 	if (!relo_sec_name || !sec_name)// don't check whether scn_data is NULL
+> > 		return -EINVAL;
+> > 
+> > In certain special scenarios, such as reading a malformed ELF file,
+> > it is possible that scn_data may be a null pointer
+> > 
+> > The Linux kernel CVE team has assigned CVE-2023-52592 to this issue.
 > 
->> There might a way to prevent queuing new work as fast-path optimization, incase
->> the CBs per GP will always be < SR_MAX_USERS_WAKE_FROM_GP but I could not find a
->> workqueue API that helps there, and work_busy() has comments saying not to use that.
->>
-> This is not really critical but yes, we can think of it.
-> 
+> OK, so this one is quite interesting. This is a userspace tooling
+> gaining a kernel CVE. Is this just an omission or is this really
+> expected.
 
-Thanks, I have a patch that does that. I could not help but write it as soon as
-I woke up in the morning, ;-). It passes torture and I will push it for further
-review after some more testing.
+"omission"?  I don't understand the question.
+
+We are responsible for assigning CVEs to stuff that is in the "Linux
+kernel source tree" (some have tried to get us to assign CVEs to
+programs like git that are just hosted on kernel.org), so for now, yes,
+this includes libbpf as well as stuff like perf.
+
+> Also what is the security threat model here? If a malformed ELF file is
+> loaded then the process gets SEGV which is perfectly reasonable thing to
+> do.
+
+Again, we do not do "threat modeling", we do "does this fix a weakness",
+and I think this does as causing SEGV might not be a good thing, right?
+
+But we'll defer to the libbpf maintainers on this, if they feel this is
+just a "normal bugfix" then we can revoke this (added them to the cc:
+here.)
 
 thanks,
 
- - Joel
+greg k-h
 
