@@ -1,180 +1,214 @@
-Return-Path: <linux-kernel+bounces-95085-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95086-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9DC3874913
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 08:50:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A44D5874919
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 08:53:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2173FB21428
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 07:50:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F6A12855B7
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 07:53:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 872726312B;
-	Thu,  7 Mar 2024 07:50:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79B006312F;
+	Thu,  7 Mar 2024 07:52:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="aPXUc351"
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="O67iqBrZ";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="S2cjqQWy"
+Received: from wfout3-smtp.messagingengine.com (wfout3-smtp.messagingengine.com [64.147.123.146])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A9BE1BF3A
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 07:50:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 943B06310B;
+	Thu,  7 Mar 2024 07:52:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.146
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709797831; cv=none; b=PoxzcGpAWPpVdkxdu/TGx8CKfvMk9BnN9TkjlLOkEGBvNopOoXOVGuMeB1lIHjjLAW2CssyG/cGA/G4K/p4lvWGav2ioIMjjAutPf0THTZnbsJwI8TVSVaisPJSshvKFNlP4wBsqWt5xjGeEFaiGo1Rw49ZjVcWhdcv82yMi1w0=
+	t=1709797978; cv=none; b=nbL/wYOzqPspGAbhJyagmYxezPzrY7Orxc13fYaRguDzvaONrHvzdgRZFmxGVgTe9H3eesr+rcO12B6u8SMaQ16fEM6AWW97Fk8F3EWU8enRfzkNdiNaZEnA5AuTLkVXLnaN6frT16Ynlov+16Tyr9VGZRuGS7ia/zBfMiXAMeE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709797831; c=relaxed/simple;
-	bh=obiCLTXc9AtSTZAokHiOqHN8TgdotsLfNQ198pkoL7I=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AhIk+4ZpYBd8yN/K/rATRX/kxY6k0+X3ZpTPzrrxD+ac9uGumdKFT/MAm/VBKASkkbDrjVTBrD5bFNtjXmcnZIbyGRzCZX9EmMLplGYMSeTrPE27cAgu0sYxgbl8JKIj2wqHkYFRdmZS1+J8p/G1MVgx3P1EvkNeZdFKUp2DN/c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=aPXUc351; arc=none smtp.client-ip=209.85.219.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dc25e12cc63so1666524276.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 23:50:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709797828; x=1710402628; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ah0ukiTsKA1pY9lznY+1jzvEeB+m6H6B1R6XwmhrPB0=;
-        b=aPXUc351/Aoy6e4tGorPE8vtqwU1567VlOfS4cK7aoPyV7Pk8ief4q7LrR9kS01mtg
-         XgnUz7LVT87nVbGZfUWPhlh528KJuQSD0ZLhRMIGvLb4efBqjWg2Bu90sMXtrqLPDTQo
-         e4OX4eqcZXclRsDLJ5rx9FsOAYKrFnUKRo1/EliMTCR+gIOUt2RIHA+yHfrM64AuiiJm
-         Uuh+eAjKkDAENcpnf1aLpIINwC6Q/pKfs9suSXAHWLSzZw5wZn+gL6glNqBehNyJ5y61
-         4yShUAJmLkpI+U62ZFkzYBGKjdRgjh6h05w44SosJ1Wp5gsZANkeo7WbbiVxYLhfPGbx
-         w+KQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709797828; x=1710402628;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Ah0ukiTsKA1pY9lznY+1jzvEeB+m6H6B1R6XwmhrPB0=;
-        b=Lgwi+97sXqVL237J+y8aAIs+uEN/iQea1zbzxYk3nkTJTbWoZBtcWf/qZbgAhtWhJK
-         ByR369XE9hU+xhSYEiUXPP91R7W7wviy9o+1fD4sANEdhPaHwLptNx4MFQhiew9ZS8xH
-         TfG8+aQJtzk0Nfcg6T2da02JN/0aX9Q+0jufSjJm8UTLceW5bSt6i+d6U7tEVg7YDUw6
-         9VDh8XrwWpCFrHNZ7oNNLHdIwQtq1pTY9TpdpVotuk5b+L2KsubUA8aJnFo3mNTRDQLK
-         zEzWtmIau9YstEDcI/enBGbbQcdVdQ4AWotjcdkHvOoxsQn/67s7f/0gxhhu8AfBl/qB
-         sLeQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVsLEg1bx8WvbHNiDoMKgY5UcVTvvnHOo+8ihuZF0MjL6DB5D1a5liz4Fa7EXakqVIPqhK4ZjLwAF1WYY314glK9DlHfqIfgH+ubir2
-X-Gm-Message-State: AOJu0YzZSfzuM9s0DWSDovNrrVQHA6GC61zvyEdZH81O9OwzJnkwNQ8Q
-	fm1CcdaWhOvU7+npxpjQVTiVhvPdOr8ZMBnk2mW7SsJ9U4hi7RBGU6KjLvYUy25Bbu/mgtKFORo
-	ux41X0/WtgPSuiy+O7TF7TKgXd42Ey5gQIt4M/w==
-X-Google-Smtp-Source: AGHT+IFa/n55GR6mweEkfWDnqnH5Zm3qCZemeRU4pQouRAgZQOwh4xDQqFnwc99qBUSN19+gM9VcCOj7gor0L/AOjZI=
-X-Received: by 2002:a25:1ed5:0:b0:dcd:9a9b:8d7e with SMTP id
- e204-20020a251ed5000000b00dcd9a9b8d7emr377200ybe.9.1709797828227; Wed, 06 Mar
- 2024 23:50:28 -0800 (PST)
+	s=arc-20240116; t=1709797978; c=relaxed/simple;
+	bh=2fjs0v2lhXf14YMF73sZlJKN1KHNF0BScIknj0t3qLY=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=EsxNCSoj0W4zuRbqJUcf0BdZv5JZVw5EdduOqjZgw1Ur44/3+PcdrUqO5Had3HBb8TsDC7bGlxnwWLhjLSTXu0kuImiz73Zh4N/inI8M6V4KwSxvVYQSu91CT16MsUaQF0KEecDz3hkyluPGatdMwPEeikc8zAgOEhQnWK77mus=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=O67iqBrZ; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=S2cjqQWy; arc=none smtp.client-ip=64.147.123.146
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfout.west.internal (Postfix) with ESMTP id 46B471C0005B;
+	Thu,  7 Mar 2024 02:52:54 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Thu, 07 Mar 2024 02:52:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1709797973; x=1709884373; bh=afyLY/l9R7
+	0gs9c2KrRiUpws6jfz5mx+nYl8UbTp5B8=; b=O67iqBrZKpaHV9f/a0eC5OlCA0
+	kvni3QdUEAKVVe49BScYaENsrH2cr0ILUtEbLWtwItOaWdbJblTaesgY9AHlQ/95
+	y8oI0WINk+NBdahQDvNEGkPZU1+CGSeIIaXYLEGCtpdZKApnTdZ+/4kyfY4kt/k0
+	5RAG2PbqLlJ65xtBsAUCpk84uBcQ9HpNaRukIRnurUTYiHs/Eu3EwftCOHQlP9DD
+	jnuYLZZCqOM4wIoGMZviymtb5Xl4LPsbcKqtoX+aT9FVpfeRSFSVz1aVZc8NCZvc
+	IvdkvpAoQWPYnJFwVf/U71/Xmrtu+Yg8Jla/5bIloQ5L1dCoiOpr5KJ3hgnw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1709797973; x=1709884373; bh=afyLY/l9R70gs9c2KrRiUpws6jfz
+	5mx+nYl8UbTp5B8=; b=S2cjqQWyS0Z1vUaCffjTUB4Af2LcwLMQ7UgF1khKCljU
+	pi/W0f58t5OKenZmRPdONVXFqjC+U6GrIbrEfxbg3LNA+wzcEmCHMLs8FvMV0I6Q
+	I1PGAMVhL8QT6Mr7dy/UcPJ1p9NkX2UWLKssTrAa4Bvj8ZBD/VPQ9QxWgnJdJLkD
+	6ZA8l0a0eoev7HliGWgpHGlKsO8C9Gg9rn6hhIam9wDVoSvt3JeUES8ogBHYGg5X
+	F2Y8z6+/vsJ/Kb4fkOL1IPshidNsbQORjiBaf+mH9O0v4jRa4+cp3/NX/HrYWIK/
+	xGRmNQEl/oZ89qsO7AyeqT7QT4j6ugA/UUQ5PhaHAQ==
+X-ME-Sender: <xms:VHLpZd67YGruW1Bk9nU_QnbfKrNMW43go98P3uV1LrB_EEqChHtdeA>
+    <xme:VHLpZa6NlzCjV-v276oagp-PJRYdhbZAAgLAK6C-6VDwedRSa4-7UUF7nF7MinW-8
+    9vyPUQWMysqZrqPgXw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledriedvgdduudduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:VHLpZUf_mVG7eglPqsXPeRpiRs4l4Amse2apiXIb5OApW0gNP5VgHg>
+    <xmx:VHLpZWLnQkaqTHWNduucbgPZr_IbCK13YEyIeetiALQOCdJChSLD-w>
+    <xmx:VHLpZRJV-ozFC3xj3XF-Q5SW0cRy1YKofRek_6VA71mWTzRPsXnEHg>
+    <xmx:VXLpZa6uxoGRkGneynLHOLw9bClFEiDKqksPaqouNdWlCTu2vCJhC34ogSI>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 91795B6008D; Thu,  7 Mar 2024 02:52:52 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-251-g8332da0bf6-fm-20240305.001-g8332da0b
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240306123006.724934-1-amadeus@jmu.edu.cn> <20240306123006.724934-2-amadeus@jmu.edu.cn>
- <CAA8EJpqYjutM1Kh6QxysB6XNAmXywtOtRJ7KP0LbY5E36kCPvA@mail.gmail.com>
- <78b1a1a2-a9fa-4b28-9d96-d65bb5517199@gmail.com> <CAA8EJppJBOQh19r4A-igsh5znDE_R6mDNy+ao5ximx7vtsZZvA@mail.gmail.com>
- <CAOX2RU4W-zV3A8eW0A+1V838Fm=tUkXY=Bs3j4VJ8Jo9mxrOAw@mail.gmail.com>
-In-Reply-To: <CAOX2RU4W-zV3A8eW0A+1V838Fm=tUkXY=Bs3j4VJ8Jo9mxrOAw@mail.gmail.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Thu, 7 Mar 2024 09:50:16 +0200
-Message-ID: <CAA8EJpq=-r4XhnFJset0=X=YO5QNUpuw+e1r6DTsPvzNAZCyNw@mail.gmail.com>
-Subject: Re: [PATCH v5 1/1] arm64: dts: qcom: ipq6018: add sdhci node
-To: Robert Marko <robimarko@gmail.com>
-Cc: Chukun Pan <amadeus@jmu.edu.cn>, Bjorn Andersson <andersson@kernel.org>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Rob Herring <robh@kernel.org>, linux-arm-msm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Message-Id: <8896bcc5-09b1-4886-9081-c8ce0afc1c40@app.fastmail.com>
+In-Reply-To: <20240306232052.21317-1-semen.protsenko@linaro.org>
+References: <20240306232052.21317-1-semen.protsenko@linaro.org>
+Date: Thu, 07 Mar 2024 08:52:31 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Sam Protsenko" <semen.protsenko@linaro.org>,
+ "Jaehoon Chung" <jh80.chung@samsung.com>,
+ "Ulf Hansson" <ulf.hansson@linaro.org>, "Christoph Hellwig" <hch@lst.de>
+Cc: "Chris Ball" <cjb@laptop.org>, "Will Newton" <will.newton@gmail.com>,
+ "Matt Fleming" <matt@console-pimps.org>,
+ "Christian Brauner" <brauner@kernel.org>, "Jens Axboe" <axboe@kernel.dk>,
+ "Sumit Semwal" <sumit.semwal@linaro.org>,
+ "Dan Carpenter" <dan.carpenter@linaro.org>,
+ "Anders Roxell" <anders.roxell@linaro.org>,
+ "Naresh Kamboju" <naresh.kamboju@linaro.org>,
+ "linux-mmc @ vger . kernel . org" <linux-mmc@vger.kernel.org>,
+ linux-block <linux-block@vger.kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mmc: dw_mmc: Fix IDMAC operation with pages bigger than 4K
+Content-Type: text/plain
 
-On Thu, 7 Mar 2024 at 09:38, Robert Marko <robimarko@gmail.com> wrote:
+On Thu, Mar 7, 2024, at 00:20, Sam Protsenko wrote:
+> Commit 616f87661792 ("mmc: pass queue_limits to blk_mq_alloc_disk") [1]
+> revealed the long living issue in dw_mmc.c driver, existing since the
+> time when it was first introduced in commit f95f3850f7a9 ("mmc: dw_mmc:
+> Add Synopsys DesignWare mmc host driver."), also making kernel boot
+> broken on platforms using dw_mmc driver with 16K or 64K pages enabled,
+> with this message in dmesg:
 >
-> On Thu, 7 Mar 2024 at 08:28, Dmitry Baryshkov
-> <dmitry.baryshkov@linaro.org> wrote:
-> >
-> > On Wed, 6 Mar 2024 at 22:35, Robert Marko <robimarko@gmail.com> wrote:
-> > >
-> > >
-> > > On 06. 03. 2024. 20:43, Dmitry Baryshkov wrote:
-> > > > On Wed, 6 Mar 2024 at 14:31, Chukun Pan <amadeus@jmu.edu.cn> wrote:
-> > > >> Add node to support mmc controller inside of IPQ6018.
-> > > >> This controller supports both eMMC and SD cards.
-> > > >>
-> > > >> Tested with:
-> > > >>    eMMC (HS200)
-> > > >>    SD Card (SDR50/SDR104)
-> > > >>
-> > > >> Signed-off-by: Chukun Pan <amadeus@jmu.edu.cn>
-> > > >> ---
-> > > >>   arch/arm64/boot/dts/qcom/ipq6018.dtsi | 19 +++++++++++++++++++
-> > > >>   1 file changed, 19 insertions(+)
-> > > >>
-> > > >> diff --git a/arch/arm64/boot/dts/qcom/ipq6018.dtsi b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-> > > >> index 322eced0b876..420c192bccd9 100644
-> > > >> --- a/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-> > > >> +++ b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-> > > >> @@ -441,6 +441,25 @@ dwc_1: usb@7000000 {
-> > > >>                          };
-> > > >>                  };
-> > > >>
-> > > >> +               sdhc: mmc@7804000 {
-> > > >> +                       compatible = "qcom,ipq6018-sdhci", "qcom,sdhci-msm-v5";
-> > > >> +                       reg = <0x0 0x07804000 0x0 0x1000>,
-> > > >> +                             <0x0 0x07805000 0x0 0x1000>;
-> > > >> +                       reg-names = "hc", "cqhci";
-> > > >> +
-> > > >> +                       interrupts = <GIC_SPI 123 IRQ_TYPE_LEVEL_HIGH>,
-> > > >> +                                    <GIC_SPI 138 IRQ_TYPE_LEVEL_HIGH>;
-> > > >> +                       interrupt-names = "hc_irq", "pwr_irq";
-> > > >> +
-> > > >> +                       clocks = <&gcc GCC_SDCC1_AHB_CLK>,
-> > > >> +                                <&gcc GCC_SDCC1_APPS_CLK>,
-> > > >> +                                <&xo>;
-> > > >> +                       clock-names = "iface", "core", "xo";
-> > > >> +                       resets = <&gcc GCC_SDCC1_BCR>;
-> > > >> +                       max-frequency = <192000000>;
-> > > > If I understand correctly, GCC_SDCC1_APPS_CLK support frequencies up
-> > > > to 384 MHz, but here you are limiting it to 192 MHz. Why is it so?
-> > > >
-> > > > I am not sure that 384MHz is actually supported as IPQ6018 datasheet
-> > > > clearly indicates that HS400 mode is not supported.
-> >
-> > I didn't check the datasheet, I opened the gcc-ipq6018.c
+>     mmcblk: probe of mmc0:0001 failed with error -22
 >
-> I understand that, I just pointed it out, it wouldn't surprise me if
-> the frequency table
-> was just copy/pasted from IPQ8074.
-
-Then it might be fixed instead, making the max-frequency property unnecessary.
-
+> That's happening because mmc_blk_probe() fails when it calls
+> blk_validate_limits() consequently, which returns the error due to
+> failed max_segment_size check in this code:
 >
-> Regards,
-> Robert
-> >
-> > > >
-> > > > Regards,
-> > > > Robert
-> > > >
-> > > >> +                       status = "disabled";
-> > > >> +               };
-> > > >> +
-> > > >>                  blsp_dma: dma-controller@7884000 {
-> > > >>                          compatible = "qcom,bam-v1.7.0";
-> > > >>                          reg = <0x0 0x07884000 0x0 0x2b000>;
-> > > >> --
-> > > >> 2.25.1
-> > > >>
-> > > >>
-> > > >
-> >
-> >
-> >
-> > --
-> > With best wishes
-> > Dmitry
+>     /*
+>      * The maximum segment size has an odd historic 64k default that
+>      * drivers probably should override.  Just like the I/O size we
+>      * require drivers to at least handle a full page per segment.
+>      */
+>     ...
+>     if (WARN_ON_ONCE(lim->max_segment_size < PAGE_SIZE))
+>         return -EINVAL;
+>
+> In case when IDMAC (Internal DMA Controller) is used, dw_mmc.c always
+> sets .max_seg_size to 4 KiB:
+>
+>     mmc->max_seg_size = 0x1000;
+>
+> The comment in the code above explains why it's incorrect. Arnd
+> suggested setting .max_seg_size to .max_req_size to fix it, which is
+> also what some other drivers are doing:
+>
+>    $ grep -rl 'max_seg_size.*=.*max_req_size' drivers/mmc/host/ | \
+>      wc -l
+>    18
 
+Nice summary!
 
+> This change is not only fixing the boot with 16K/64K pages, but also
+> leads to a better MMC performance. The linear write performance was
+> tested on E850-96 board (eMMC only), before commit [1] (where it's
+> possible to boot with 16K/64K pages without this fix, to be able to do
+> a comparison). It was tested with this command:
+>
+>     # dd if=/dev/zero of=somefile bs=1M count=500 oflag=sync
+>
+> Test results are as follows:
+>
+>   - 4K pages,  .max_seg_size = 4 KiB:                   94.2 MB/s
+>   - 4K pages,  .max_seg_size = .max_req_size = 512 KiB: 96.9 MB/s
+>   - 16K pages, .max_seg_size = 4 KiB:                   126 MB/s
+>   - 16K pages, .max_seg_size = .max_req_size = 2 MiB:   128 MB/s
+>   - 64K pages, .max_seg_size = 4 KiB:                   138 MB/s
+>   - 64K pages, .max_seg_size = .max_req_size = 8 MiB:   138 MB/s
 
--- 
-With best wishes
-Dmitry
+Thanks for sharing these results. From what I can see here, the
+performance changes significantly with the page size, but barely
+with the max_seg_size, so this does not have the effect I was
+hoping for. On a more positive note this likely means that we
+don't have to urgently backport your fix.
+
+This could mean that either there is not much coalescing across
+pages after all, or that the bottleneck is somewhere else.
+
+> diff --git a/drivers/mmc/host/dw_mmc.c b/drivers/mmc/host/dw_mmc.c
+> index 8e2d676b9239..cccd5633ff40 100644
+> --- a/drivers/mmc/host/dw_mmc.c
+> +++ b/drivers/mmc/host/dw_mmc.c
+> @@ -2951,8 +2951,8 @@ static int dw_mci_init_slot(struct dw_mci *host)
+>  	if (host->use_dma == TRANS_MODE_IDMAC) {
+>  		mmc->max_segs = host->ring_size;
+>  		mmc->max_blk_size = 65535;
+> -		mmc->max_seg_size = 0x1000;
+> -		mmc->max_req_size = mmc->max_seg_size * host->ring_size;
+> +		mmc->max_req_size = DW_MCI_DESC_DATA_LENGTH * host->ring_size;
+> +		mmc->max_seg_size = mmc->max_req_size;
+
+The change looks good to me.
+
+I see that the host->ring_size depends on PAGE_SIZE as well:
+
+#define DESC_RING_BUF_SZ        PAGE_SIZE
+host->ring_size = DESC_RING_BUF_SZ / sizeof(struct idmac_desc_64addr);
+host->sg_cpu = dmam_alloc_coherent(host->dev,
+               DESC_RING_BUF_SZ, &host->sg_dma, GFP_KERNEL);
+
+I don't see any reason for the ring buffer size to be tied to
+PAGE_SIZE at all, it was probably picked as a reasonable
+default in the initial driver but isn't necessarily ideal.
+
+From what I can see, the number of 4KB elements in the
+ring can be as small as 128 (4KB pages, 64-bit addresses)
+or as big as 4096 (64KB pages, 32-bit addresses), which is
+quite a difference. If you are still motivated to drill
+down into this, could you try changing DESC_RING_BUF_SZ
+to a fixed size of either 4KB or 64KB and test again
+with the opposite page size, to see if that changes the
+throughput?
+
+If a larger ring buffer gives us significantly better
+throughput, we may want to always use a higher number
+independent of page size. On the other hand, if the
+64KB number (the 138MB/s) does not change with a smaller
+ring, we may as well reduce that in order to limit the
+maximum latency that is caused by a single I/O operation.
+
+     Arnd
 
