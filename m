@@ -1,198 +1,156 @@
-Return-Path: <linux-kernel+bounces-95840-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96031-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0745D8753CA
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:02:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC9EC875657
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:48:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5A2BEB236AD
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 16:02:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 09F781C21484
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 18:48:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 283BE12F380;
-	Thu,  7 Mar 2024 16:02:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33F71135A68;
+	Thu,  7 Mar 2024 18:48:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=thorsis.com header.i=@thorsis.com header.b="E+e5my4E"
-Received: from mail.thorsis.com (mail.thorsis.com [92.198.35.195])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="MrdGbSdY";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="8sNY0uT3";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="MrdGbSdY";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="8sNY0uT3"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D277B1EEEA
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 16:02:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=92.198.35.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8851A12FF9D;
+	Thu,  7 Mar 2024 18:48:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709827347; cv=none; b=suYJyhQMofOk7PY0nhq9uK93z2wpFO1qikKGayeo4A5yF6hygrI4hRlxDwVaYynS2OlIsDrFFHJIi6dm0xniynedcg5BKukk5awc6sEqmBDPOxdjpD/6RQn7LAiB51Unq3MExrqZu3L+T6JKoYyN2tZpAr648yEIJTchlKPwnQg=
+	t=1709837302; cv=none; b=kffx9FQ56oekNBUdqo4UHGNRynlXfoVTp32QNuPMQEbzWRmDK1FanOqUsvoyWJGKfa5DeDSCH8wGHKrMPQN01xbbJYd0KJk62UKhjsKGDXzqH9yw/xQsQ8VE+5S4aCGf6Dy7QmtbbN4tTQHL1d21ezuraoR6f98nGvS5/QD175Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709827347; c=relaxed/simple;
-	bh=KnOCTDumG/A9/5/SUytK/rT0ZUv7KFO9BrmC1LlkoEw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To; b=A6Q8NDgOmJALsuKjyWrwgMGOy2tCQw/TAoQ6Kp7iXkTSLlQg8Py9DfgLa5t7MASSbL9aLM7wMzGBxPlk7xwMNsyN4iLfOflsRgp/ikl6/i/x0ycXqo72M3nKc6b874TVs5nMi5yDnw930UFL15F8i54IvZiSvPV/YlzUL1MmQNI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=thorsis.com; spf=pass smtp.mailfrom=thorsis.com; dkim=pass (2048-bit key) header.d=thorsis.com header.i=@thorsis.com header.b=E+e5my4E; arc=none smtp.client-ip=92.198.35.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=thorsis.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=thorsis.com
-Date: Thu, 7 Mar 2024 17:02:16 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=thorsis.com; s=default;
-	t=1709827335;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:content-type:content-type:in-reply-to:in-reply-to:
-	 references:references; bh=qNHy0ey9Rh5SkT/53hLFdIyIDdFiIk0IR0E13PdFioI=;
-	b=E+e5my4E7F4awvZ2mTvJztGmw9kmA5Znr5n03/FWxR0jS5qXRXTTys4QY6IsLuVIFV26pM
-	08Y/Nlif9P6prtPxiiXob2ffH7N7K/hXIi1+A1DuQOeslZivL4UoQuZ474fK4r7M5ptgeI
-	fSvjhUYED8Or2XoRjIxvCA+KlIpIG6F3WlXAml3J7DxJhP39HSys5QDM4zVdybs5rmm3M7
-	qMVnH7zzVgSsH2R0YWAKkv46TTFB3GDjgnOP5qtAgvzwKv04E1FNj4y2m7WF/+X9mAF1eV
-	juvo/if/vvrMB6Tiz16qew6OgVwWqVbgTwtVeH7eA4PZ1eBjBGlZLoLnIjTrgA==
-From: Alexander Dahl <ada@thorsis.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Alexander Dahl <ada@thorsis.com>, linux-mtd@lists.infradead.org,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org
-Subject: Re: mtd: nand: raw: Possible bug in nand_onfi_detect()?
-Message-ID: <20240307-pantry-deceit-78ce20f47899@thorsis.com>
-Mail-Followup-To: Miquel Raynal <miquel.raynal@bootlin.com>,
-	linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org
-References: <20240306-shaky-bunion-d28b65ea97d7@thorsis.com>
- <20240306164831.29eed907@xps-13>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240306164831.29eed907@xps-13>
+	s=arc-20240116; t=1709837302; c=relaxed/simple;
+	bh=C2VOgxDNF3z54szP1T9vL+C7fWDnK2058X2DEohiKhU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=d9jm71gDUxON4WXL+zoFY+KyHZ+4wPF9HFHwoWecKwHb2Ogm0JeDMDTcSxFCy7axcHSaiO//+SrJSrf4G+wo61onx7yHYoUJXgqW/RHwBwmGCCfJYxo/rul3L2gcdCAvsEVx4wGvtjNQmfXj//AYjTsDSRBYkV9adAf1iD5CX3I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=MrdGbSdY; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=8sNY0uT3; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=MrdGbSdY; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=8sNY0uT3; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id C0DCB4D8F9;
+	Thu,  7 Mar 2024 16:02:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1709827350; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=ErBHnKWtRFqvNw55T9rkkKbdxBMzIaYWMEOU702WcoQ=;
+	b=MrdGbSdY2GSUUSwxlyzK0gmdXBNHgWiGVODtKopkFRKuDc9hNu97IxwVo8foiDJf+vb5tV
+	UXFcob7Vv84VC/sbdecp+uxYSKy6j9C0H1gAUBeOSMEH2bs3SZRl4gzBNaTOJbJdd3Z4ya
+	rpK4i0QUmzHhPcoiqpA2C90fIPyIogg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1709827350;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=ErBHnKWtRFqvNw55T9rkkKbdxBMzIaYWMEOU702WcoQ=;
+	b=8sNY0uT3kN45SMpk172hGSS+n5QRIhY8gYJ7uQx9kriStHmAhQ/UdAk9oBPlNuihuv0qA7
+	3AmTcOQ31f8th9Cg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1709827350; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=ErBHnKWtRFqvNw55T9rkkKbdxBMzIaYWMEOU702WcoQ=;
+	b=MrdGbSdY2GSUUSwxlyzK0gmdXBNHgWiGVODtKopkFRKuDc9hNu97IxwVo8foiDJf+vb5tV
+	UXFcob7Vv84VC/sbdecp+uxYSKy6j9C0H1gAUBeOSMEH2bs3SZRl4gzBNaTOJbJdd3Z4ya
+	rpK4i0QUmzHhPcoiqpA2C90fIPyIogg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1709827350;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=ErBHnKWtRFqvNw55T9rkkKbdxBMzIaYWMEOU702WcoQ=;
+	b=8sNY0uT3kN45SMpk172hGSS+n5QRIhY8gYJ7uQx9kriStHmAhQ/UdAk9oBPlNuihuv0qA7
+	3AmTcOQ31f8th9Cg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F0E2712FC5;
+	Thu,  7 Mar 2024 16:02:29 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id qu2ENxXl6WXtcwAAD6G6ig
+	(envelope-from <lhenriques@suse.de>); Thu, 07 Mar 2024 16:02:29 +0000
+Received: from localhost (brahms.olymp [local])
+	by brahms.olymp (OpenSMTPD) with ESMTPA id 90e11876;
+	Thu, 7 Mar 2024 16:02:29 +0000 (UTC)
+From: Luis Henriques <lhenriques@suse.de>
+To: Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	Jan Kara <jack@suse.cz>,
+	Miklos Szeredi <miklos@szeredi.hu>,
+	Amir Goldstein <amir73il@gmail.com>
+Cc: linux-ext4@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-unionfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Luis Henriques <lhenriques@suse.de>
+Subject: [PATCH v2 0/3] fs_parser: handle parameters that can be empty and don't have a value
+Date: Thu,  7 Mar 2024 16:02:22 +0000
+Message-ID: <20240307160225.23841-1-lhenriques@suse.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: ****
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [4.90 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 R_MISSING_CHARSET(2.50)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 RCVD_COUNT_THREE(0.00)[4];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 RCPT_COUNT_TWELVE(0.00)[12];
+	 MID_CONTAINS_FROM(1.00)[];
+	 FREEMAIL_TO(0.00)[mit.edu,dilger.ca,zeniv.linux.org.uk,kernel.org,suse.cz,szeredi.hu,gmail.com];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_LAST(0.00)[];
+	 BAYES_HAM(-0.00)[18.80%]
+X-Spam-Score: 4.90
+X-Spam-Flag: NO
 
-Hello Miquel,
+While investigating an ext4/053 fstest failure, I realised that there was
+an issue when the flag 'fs_param_can_be_empty' is set in a parameter and it
+doesn't have a value
 
-thanks for looking into this, see my remarks below.
+After an initial attempt to fix the issue, Christian suggested a different
+approach and the following patches are based in his suggestion.
 
-Am Wed, Mar 06, 2024 at 04:48:31PM +0100 schrieb Miquel Raynal:
-> Hi Alexander,
-> 
-> ada@thorsis.com wrote on Wed, 6 Mar 2024 15:36:04 +0100:
-> 
-> > Hello everyone,
-> > 
-> > I think I found a bug in nand_onfi_detect() which was introduced with
-> > commit c27842e7e11f ("mtd: rawnand: onfi: Adapt the parameter page
-> > read to constraint controllers") back in 2020.
-> 
-> Interesting. I don't think this patch did broke anything, as
-> constrained controllers would just not support the read_data_op() call
-> anyway.
-> 
-> That being said, I don't see why the atmel controller would
-> refuse this operation, as it is supposed to support all
-> operations without limitation. This is one of the three issues
-> you have, that probably needs fixing.
+Another change that I'm introducing in this v2 is the change of parameter
+'test_dummy_encryption' to also use the new helper introduced by the first
+patch in this series.
 
-I found a flaw in my debug messages hiding the underlying issue for
-this.  I'm afraid this is another bug introduced by you with commit
-9f820fc0651c ("mtd: rawnand: Check the data only read pattern only
-once").  See this line in rawnand_check_data_only_read_support():
+Finally, I'd like to ask someone to look closer at the overlayfs patch as
+I don't think there were any fstests to validate the case where 'lowerdir'
+is empty.
 
-    if (!nand_read_data_op(chip, NULL, SZ_512, true, true))
+Luis Henriques (3):
+  fs_parser: add helper to define parameters with string and flag types
+  ext4: fix the parsing of empty string mount parameters
+  ovl: fix the parsing of empty string mount parameters
 
-This leads to nand_read_data_op() returning -EINVAL, because it checks
-if its second argument is non-NULL.
-
-I guess not only the atmel nand controller is affected here, but _all_
-nand controllers?  The flag can never be set, and so use_datain is
-false here?
-
-> > Background on how I found this: I'm currently struggling getting raw
-> > nand flash access to fly with an at91 sam9x60 SoC and a S34ML02G1
-> > Spansion SLC raw NAND flash on a custom board.  The setup is
-> > comparable to the sam9x60 curiosity board and can be reproduced with
-> > that one.
-> > 
-> > NAND flash on sam9x60 curiosity board works fine with what is in
-> > mainline Linux kernel.  However after removing the line 'rb-gpios =
-> > <&pioD 5 GPIO_ACTIVE_HIGH>;' from at91-sam9x60_curiosity.dts all data
-> > read from the flash appears to be zeros only.  (I did not add that
-> > line to the dts of my custom board first, this is how I stumbled over
-> > this.)
-> > 
-> > I have no explanation for that behaviour, it should work without R/B#
-> > by reading the status register, maybe we investigate that
-> > in depth later.
-> 
-> I don't see why at a first look. The default is "no RB" if no property
-> is given in the DT so it should work.
-
-Correct, nand_soft_waitrdy() is used in that case.
-
-> Tracing the wait ready function calls might help.
-
-Did that already.  On each call here the status register read contains
-E0h and nand_soft_waitrdy() returns without error, because the
-NAND_STATUS_READY flag is set.  It just looks fine, although it is
-not afterwards.
-
-> >  However those all zeros data reads happens when
-> > reading the ONFI param page as well es data read from OOB/spare area
-> > later and I bet it's the same with usual data.
-> 
-> Reading data without observing tWB + tR may lead to this.
-
-I already suspected some timing issue.  Deeper investigation will have
-to wait until we soldered some wires to the chip and connect a logic
-analyzer however.  At least that's the plan, but this will have to
-wait some days until after I finished some other tasks.
-
-> > This read error reveals a bug in nand_onfi_detect().  After setting
-> > up some things there's this for loop:
-> > 
-> >     for (i = 0; i < ONFI_PARAM_PAGES; i++) {
-> > 
-> > For i = 0 nand_read_param_page_op() is called and in my case all zeros
-> > are returned and thus the CRC calculated does not match the all zeros
-> > CRC read.  So the usual break on successful reading the first page is
-> > skipped and for reading the second page nand_change_read_column_op()
-> > is called.  I think that one always fails on this line:
-> > 
-> >     if (offset_in_page + len > mtd->writesize + mtd->oobsize) {
-> > 
-> > Those variables contain the following values:
-> > 
-> >     offset_in_page: 256
-> >     len: 256
-> >     mtd->writesize: 0
-> >     mtd->oobsize: 0
-> 
-> Indeed. We probably need some kind of extra check that does not perform
-> the if clause above if !mtd->writesize.
-> 
-> > The condition is true and nand_change_read_column_op() returns with
-> > -EINVAL, because mtd->writesize and mtd->oobsize are not set yet in
-> > that code path.  Those are probably initialized later, maybe with
-> > parameters read from that ONFI param page?
-> > 
-> > Returning with error from nand_change_read_column_op() leads to
-> > jumping out of nand_onfi_detect() early, and no ONFI param page is
-> > evaluated at all, although the second or third page could be intact.
-> > 
-> > I guess this would also fail with any other reason for not matching
-> > CRCs in the first page, but I have not faulty NAND flash chip to
-> > confirm that.
-> 
-> Thanks for the whole report, it is interesting and should lead to fixes:
-> - why does the controller refuses the datain op?
-
-See above.
-
-> - why nand_soft_waitrdy is not enough?
-
-I don't know.  That's one reason I asked here.
-
-> - changing the condition in nand_change_read_column_op()
-> 
-> Can you take care of these?
-
-The last one probably after in depth reading of the code again, unsure
-for the other two.
-
-Greets
-Alex
+ fs/ext4/super.c           | 25 ++++++++++---------------
+ fs/overlayfs/params.c     | 13 +++++--------
+ include/linux/fs_parser.h |  8 ++++++++
+ 3 files changed, 23 insertions(+), 23 deletions(-)
 
 
