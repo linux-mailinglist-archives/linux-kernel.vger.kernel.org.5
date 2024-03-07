@@ -1,216 +1,174 @@
-Return-Path: <linux-kernel+bounces-96064-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96051-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55E478756B4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:09:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60D39875698
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:06:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 88EE02812C6
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:09:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 163B1281ED4
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:06:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A64B13B29D;
-	Thu,  7 Mar 2024 19:06:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA8F7135A68;
+	Thu,  7 Mar 2024 19:05:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="AwkdKYxI"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="aw6Zzbmb"
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F3F013AA37;
-	Thu,  7 Mar 2024 19:06:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2C4084A2B
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 19:05:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709838370; cv=none; b=nEHc5MxSAlz4eeX4wh2SPViLCEWHhuRrTPFN2yC3d5Mrmrn8GxgH5I5s//QzHq/Q7QPcRpHmWHsGM3dvN9UmFwV+aRFLrM0pi9pVQSOc624Ql1AlUujLhPg3nAPMDIdtBbU0R7NPcna7v5GtY+Vnyn6QWrc78+XqI+X+mYIYVG8=
+	t=1709838355; cv=none; b=X+3S0BPyuKI5CSmrIp0K20rT4D/k3VJl38JG6cepAnBWscgnRJfYCBYqK/eiWwfHZhneqHTkht8OMcMtRrGbZBEYpw60DADu1nyQB9An8qQHbQsRCkRJVpz7Nlo/0AhX2EcMJFycE5S+VXqrZJO+VWr4UYCWKQ4j/VCz7BKSGCQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709838370; c=relaxed/simple;
-	bh=/zkTE/zzvzqe6XiR3mOeQqTOotqx4uagmm3Drc1iXSY=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ti0TYGaqhMh7F8H1SJSFIIszJR1TVLgK3e1oIB8YH4xHyJbXX4JJB8ImVi77QwgHeoAxPax3KTDoSYc2pJEj7iw8fGm3l1/nogAGLWSRqwFQoma6Z8JxPO+1hQdnsYj3kkObrwo1lIZr+d/iI5/pq1pciwE9wFjQV6d1NSKFMFM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=AwkdKYxI; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 427FxeUt020087;
-	Thu, 7 Mar 2024 19:05:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=+bUzszJsY1F6wSWzpC0p4NQTeDs9k/xPSLileOx9bz4=; b=Aw
-	kdKYxI7hpsWWekcmp5ETixTHrAVrqJOcFLicYN6fun34HF69LO2rkjGrxvmio/kX
-	t8igIk9/HMiRj3f4ni6T46H+IETdwjGJpc7cq6aAGlQ2xsX4pK8INTV25GUbhwC6
-	6VFV6p9Lm2uw83XIfbBK9WZ3e/EXt7AyRn1FlmlpuO+YFdUrnRdOZfzN8NCXzFwZ
-	J2DIHB0WraaO5QgUJrNMGNSwIHEJKWWB+sBv0aMWEM+8zcrZbPaBDhGXb1ukOSU7
-	FQ9Hjo8aIOzChZDh2l6GY7XaFaiLtCuwCTyC1O/K68AOu+Avi9ejLEn6ij5Yj2Ru
-	y+GXun/DWiGS7zSwxxdw==
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wq7husfgd-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 07 Mar 2024 19:05:48 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 427J5mu9004609
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 7 Mar 2024 19:05:48 GMT
-Received: from hu-c-gdjako-lv.qualcomm.com (10.49.16.6) by
- nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 7 Mar 2024 11:05:47 -0800
-From: Georgi Djakov <quic_c_gdjako@quicinc.com>
-To: <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <will@kernel.org>, <robin.murphy@arm.com>,
-        <joro@8bytes.org>, <iommu@lists.linux.dev>
-CC: <devicetree@vger.kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robdclark@gmail.com>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <quic_cgoldswo@quicinc.com>,
-        <quic_sukadev@quicinc.com>, <quic_pdaly@quicinc.com>,
-        <quic_sudaraja@quicinc.com>, <djakov@kernel.org>
-Subject: [PATCH v6 7/7] arm64: dts: qcom: sc7280: Add DT nodes for the TBUs
-Date: Thu, 7 Mar 2024 11:05:25 -0800
-Message-ID: <20240307190525.395291-8-quic_c_gdjako@quicinc.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240307190525.395291-1-quic_c_gdjako@quicinc.com>
-References: <20240307190525.395291-1-quic_c_gdjako@quicinc.com>
+	s=arc-20240116; t=1709838355; c=relaxed/simple;
+	bh=0lxp9fgkMSqXRqet6QDcLrjZVWsznGOp1aCABxqMD9Y=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=ePp1Ztqmyb7uynhhJusIOKPLxxx//6GTGAjAZKO4v4qUf3Lw8AFoZhSdK6XDl4rscAIt61uGQBUfgbg4omr9znIxvrqZXWYIzR6Bz4jK8rFwIESPv+YUfEwKWdciZCPW/tmQ+AIAcGqFaK2mHQysQbJam1N7MIxWqXm65hgS6to=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=aw6Zzbmb; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1dca3951ad9so10108235ad.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 11:05:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1709838353; x=1710443153; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=CjtJhyRDCpI19Ewh14cBKwZVOZbV4kYbTUkGrdqq6Zk=;
+        b=aw6ZzbmbRWCKxlit4GmKrPJKorpkEaA4aEPfKlsxTS3Al1H7rPZcN0uWKYdPFH1QCr
+         RW+T2F6IuhGgVbE/ih1qrdaVVv7IdXwBa1HACFtzr0R+L3F7RoYU5RsHNIByMCCpH3NO
+         A5DElP+rqq6dIHI632tkfLWh2eJqvteXjYGrLJ3zjhAWIY1EEB6IDWWqByHJ4i/TwVoj
+         uDd/25//QcjzHaTdkgraoM9YY5w+4Y4KaTgbMMrm7R4raOmf7KrBTdKCwV3u/hSrWd9o
+         czowbPGHspKt9hHKrsSylrKm1OkbM5rp5HMMwexe27UTm3fQPtSlY/BXO9R1xufMgfGr
+         gryQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709838353; x=1710443153;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CjtJhyRDCpI19Ewh14cBKwZVOZbV4kYbTUkGrdqq6Zk=;
+        b=AKWUxQTEbSdsLAq2XRXsgdgUW7Mc8FSdnVH8+gh4WeAxJHLG7pyxkMxDZWhFHCTrL/
+         TZn22O8QyqRsWDM5PFe7176w0JEaR6NAuProR1zHkGfOBP0Fc2Gl/bKzAw77fqjwHFG8
+         ailkNE8/EuyJ5b2u3VZyIXZbtqJy6igKSQsliEY0078wLvsa04E1+nWquSgQq1Avh9e+
+         Re1z/8JtmAjkRmTOFrah99soMzv/aVO1uCbxYU/HIc5smIHPts9tyT+ARLHM0f5zM+7S
+         8dmADL20NDXLKJgkG7Z5QELCvTqYw5mB3NzpkAe6eCJYKKu05ju+oTaOV9UjLdXcBgPy
+         pgIA==
+X-Forwarded-Encrypted: i=1; AJvYcCXbYNLP8tTaaJy2fFByr1xrkaCHTnzHnYNH8BC37aCupaT78GKji3Ugl9n+8Tg0FX10oYhx4NYvAQGB5PTiyv5eOh8/hNv83E4L7T/E
+X-Gm-Message-State: AOJu0YwsQjf6EaI5mE+GPxVW92WyFu5oE2hyiiVLO5qBG9Sb5rtI4swj
+	BX912h/EoMZuZxmPBJf3NzJOWQRvfgMZzYCVVYQdOYxBz2udfh/6HOAUDB3pmB4=
+X-Google-Smtp-Source: AGHT+IE5B0hugsWDTp99p7N7xEvh7wJEMxFLgTSlvpzLfPeOAcoxplC7fkr6cxVl+tPmkAbvsbASVw==
+X-Received: by 2002:a17:903:41d0:b0:1dc:a837:7e1b with SMTP id u16-20020a17090341d000b001dca8377e1bmr10394525ple.63.1709838352986;
+        Thu, 07 Mar 2024 11:05:52 -0800 (PST)
+Received: from charlie.ba.rivosinc.com ([64.71.180.162])
+        by smtp.gmail.com with ESMTPSA id h3-20020a170902680300b001dd526af36csm1747338plk.295.2024.03.07.11.05.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Mar 2024 11:05:52 -0800 (PST)
+From: Charlie Jenkins <charlie@rivosinc.com>
+Subject: [PATCH v8 0/4] riscv: Use Kconfig to set unaligned access speed
+Date: Thu, 07 Mar 2024 11:05:44 -0800
+Message-Id: <20240307-disable_misaligned_probe_config-v8-0-55d696cb398b@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: JIDtZ9KZKJF01MwaKIUmdoPrheqNUEny
-X-Proofpoint-ORIG-GUID: JIDtZ9KZKJF01MwaKIUmdoPrheqNUEny
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-07_14,2024-03-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
- clxscore=1015 phishscore=0 priorityscore=1501 mlxlogscore=938 mlxscore=0
- spamscore=0 malwarescore=0 impostorscore=0 lowpriorityscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2403070133
+X-B4-Tracking: v=1; b=H4sIAAkQ6mUC/43Qy2rDMBAF0F8JWtdF70dW/Y9SjB4jR5BYQSqmJ
+ fjfK2cTUwz2arizOJeZB6pQElR0Pj1QgSnVlMcW9NsJ+YsdB+hSaBlRTDkmjHQhVeuu0N/avKZ
+ hhNDfS3bQ+zzGNHSYMwuWKRENQ025F4jp59nw+dXyJdXvXH6fhRNZtsftiXS4MzoQIcD4YPVHS
+ VOuafTvPt/Qwk/0RVJ8gKSNVMozqR0E5egGydYk3SdZIz3n0ZCImXNyg+Qrksh9kjcyeExAaOK
+ x9RukWJFU7ZOikU5qwTSXQJXdIOWLZEd+KRspCQUXpImc4Q1SrckDh6uF9AZzYkBZ8/+X8zz/A
+ XP2u9vDAgAA
+To: Paul Walmsley <paul.walmsley@sifive.com>, 
+ Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
+ Jisheng Zhang <jszhang@kernel.org>, Evan Green <evan@rivosinc.com>, 
+ =?utf-8?q?Cl=C3=A9ment_L=C3=A9ger?= <cleger@rivosinc.com>, 
+ Eric Biggers <ebiggers@kernel.org>, 
+ Elliot Berman <quic_eberman@quicinc.com>, Charles Lohr <lohr85@gmail.com>, 
+ Conor Dooley <conor.dooley@microchip.com>
+Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ Charlie Jenkins <charlie@rivosinc.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1709838351; l=3215;
+ i=charlie@rivosinc.com; s=20231120; h=from:subject:message-id;
+ bh=0lxp9fgkMSqXRqet6QDcLrjZVWsznGOp1aCABxqMD9Y=;
+ b=ljet3jnYOUaIeYRX4kKRcuKAcFbCR+qmASHc8JBY/3sVQhg+/D60OJTG4tT8zR6/GM3X2ycqJ
+ cpnoVXVWNDaCOX8QArrIwQCTUsSTsixQc0rdIuiAJgBeuLDO3pIBxMR
+X-Developer-Key: i=charlie@rivosinc.com; a=ed25519;
+ pk=t4RSWpMV1q5lf/NWIeR9z58bcje60/dbtxxmoSfBEcs=
 
-Add the device-tree nodes for the TBUs (translation buffer units) that
-are present on the sc7280 platforms. The TBUs can be used debug the
-kernel and provide additional information when a context faults occur.
+If the hardware unaligned access speed is known at compile time, it is
+possible to avoid running the unaligned access speed probe to speedup
+boot-time.
 
-Describe the all registers, clocks, interconnects and power-domain
-resources that are needed for each of the TBUs.
-
-Signed-off-by: Georgi Djakov <quic_c_gdjako@quicinc.com>
+Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
 ---
- arch/arm64/boot/dts/qcom/sc7280.dtsi | 89 ++++++++++++++++++++++++++++
- 1 file changed, 89 insertions(+)
+Changes in v8:
+- Minor commit message changes (Conor)
+- Clean up hwprobe_misaligned() (Conor)
+- Link to v7: https://lore.kernel.org/r/20240306-disable_misaligned_probe_config-v7-0-6c90419e7a96@rivosinc.com
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index 7e7f0f0fb41b..5d8aa182e3a9 100644
---- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -2970,6 +2970,18 @@ adreno_smmu: iommu@3da0000 {
- 			dma-coherent;
- 		};
- 
-+		gfx_0_tbu: tbu@3dd9000 {
-+			compatible = "qcom,sc7280-tbu";
-+			reg = <0x0 0x3dd9000 0x0 0x1000>;
-+			qcom,stream-id-range = <&adreno_smmu 0x0 0x400>;
-+		};
-+
-+		gfx_1_tbu: tbu@3ddd000 {
-+			compatible = "qcom,sc7280-tbu";
-+			reg = <0x0 0x3ddd000 0x0 0x1000>;
-+			qcom,stream-id-range = <&adreno_smmu 0x400 0x400>;
-+		};
-+
- 		remoteproc_mpss: remoteproc@4080000 {
- 			compatible = "qcom,sc7280-mpss-pas";
- 			reg = <0 0x04080000 0 0x10000>;
-@@ -5778,6 +5790,83 @@ apps_smmu: iommu@15000000 {
- 				     <GIC_SPI 408 IRQ_TYPE_LEVEL_HIGH>;
- 		};
- 
-+		anoc_1_tbu: tbu@151dd000 {
-+			compatible = "qcom,sc7280-tbu";
-+			reg = <0x0 0x151dd000 0x0 0x1000>;
-+			interconnects = <&gem_noc MASTER_APPSS_PROC QCOM_ICC_TAG_ACTIVE_ONLY
-+					 &cnoc3 SLAVE_TCU QCOM_ICC_TAG_ACTIVE_ONLY>;
-+			qcom,stream-id-range = <&apps_smmu 0x0 0x400>;
-+		};
-+
-+		anoc_2_tbu: tbu@151e1000 {
-+			compatible = "qcom,sc7280-tbu";
-+			reg = <0x0 0x151e1000 0x0 0x1000>;
-+			interconnects = <&gem_noc MASTER_APPSS_PROC QCOM_ICC_TAG_ACTIVE_ONLY
-+					 &cnoc3 SLAVE_TCU QCOM_ICC_TAG_ACTIVE_ONLY>;
-+			qcom,stream-id-range = <&apps_smmu 0x400 0x400>;
-+		};
-+
-+		mnoc_hf_0_tbu: tbu@151e5000 {
-+			compatible = "qcom,sc7280-tbu";
-+			reg = <0x0 0x151e5000 0x0 0x1000>;
-+			interconnects = <&mmss_noc MASTER_MDP0 QCOM_ICC_TAG_ACTIVE_ONLY
-+					 &mc_virt SLAVE_EBI1 QCOM_ICC_TAG_ACTIVE_ONLY>;
-+			power-domains = <&gcc HLOS1_VOTE_MMNOC_MMU_TBU_HF0_GDSC>;
-+			qcom,stream-id-range = <&apps_smmu 0x800 0x400>;
-+		};
-+
-+		mnoc_hf_1_tbu: tbu@151e9000 {
-+			compatible = "qcom,sc7280-tbu";
-+			reg = <0x0 0x151e9000 0x0 0x1000>;
-+			interconnects = <&mmss_noc MASTER_MDP0 QCOM_ICC_TAG_ACTIVE_ONLY
-+					 &mc_virt SLAVE_EBI1 QCOM_ICC_TAG_ACTIVE_ONLY>;
-+			power-domains = <&gcc HLOS1_VOTE_MMNOC_MMU_TBU_HF1_GDSC>;
-+			qcom,stream-id-range = <&apps_smmu 0xc00 0x400>;
-+		};
-+
-+		compute_dsp_0_tbu: tbu@151ed000 {
-+			compatible = "qcom,sc7280-tbu";
-+			reg = <0x0 0x151ed000 0x0 0x1000>;
-+			interconnects = <&nsp_noc MASTER_CDSP_PROC QCOM_ICC_TAG_ACTIVE_ONLY
-+					 &mc_virt SLAVE_EBI1 QCOM_ICC_TAG_ACTIVE_ONLY>;
-+			power-domains = <&gcc HLOS1_VOTE_TURING_MMU_TBU1_GDSC>;
-+			qcom,stream-id-range = <&apps_smmu 0x1000 0x400>;
-+		};
-+
-+		compute_dsp_1_tbu: tbu@151f1000 {
-+			compatible = "qcom,sc7280-tbu";
-+			reg = <0x0 0x151f1000 0x0 0x1000>;
-+			interconnects = <&nsp_noc MASTER_CDSP_PROC QCOM_ICC_TAG_ACTIVE_ONLY
-+					 &mc_virt SLAVE_EBI1 QCOM_ICC_TAG_ACTIVE_ONLY>;
-+			power-domains = <&gcc HLOS1_VOTE_TURING_MMU_TBU0_GDSC>;
-+			qcom,stream-id-range = <&apps_smmu 0x1400 0x400>;
-+		};
-+
-+		adsp_tbu: tbu@151f5000 {
-+			compatible = "qcom,sc7280-tbu";
-+			reg = <0x0 0x151f5000 0x0 0x1000>;
-+			interconnects = <&gem_noc MASTER_APPSS_PROC QCOM_ICC_TAG_ACTIVE_ONLY
-+					 &lpass_ag_noc SLAVE_LPASS_CORE_CFG QCOM_ICC_TAG_ACTIVE_ONLY>;
-+			qcom,stream-id-range = <&apps_smmu 0x1800 0x400>;
-+		};
-+
-+		anoc_1_pcie_tbu: tbu@151f9000 {
-+			compatible = "qcom,sc7280-tbu";
-+			reg = <0x0 0x151f9000 0x0 0x1000>;
-+			interconnects = <&gem_noc MASTER_APPSS_PROC QCOM_ICC_TAG_ACTIVE_ONLY
-+					 &cnoc3 SLAVE_TCU QCOM_ICC_TAG_ACTIVE_ONLY>;
-+			qcom,stream-id-range = <&apps_smmu 0x1c00 0x400>;
-+		};
-+
-+		mnoc_sf_0_tbu: tbu@151fd000 {
-+			compatible = "qcom,sc7280-tbu";
-+			reg = <0x0 0x151fd000 0x0 0x1000>;
-+			interconnects = <&mmss_noc MASTER_CAMNOC_SF QCOM_ICC_TAG_ACTIVE_ONLY
-+					 &mc_virt SLAVE_EBI1 QCOM_ICC_TAG_ACTIVE_ONLY>;
-+			power-domains = <&gcc HLOS1_VOTE_MMNOC_MMU_TBU_SF0_GDSC>;
-+			qcom,stream-id-range = <&apps_smmu 0x2000 0x400>;
-+		};
-+
- 		intc: interrupt-controller@17a00000 {
- 			compatible = "arm,gic-v3";
- 			reg = <0 0x17a00000 0 0x10000>,     /* GICD */
+Changes in v7:
+- Fix check_unaligned_access_emulated_all_cpus to return false when any
+  cpu has emulated accesses
+- Fix wording in Kconfig (Conor)
+- Link to v6: https://lore.kernel.org/r/20240301-disable_misaligned_probe_config-v6-0-612ebd69f430@rivosinc.com
+
+Changes in v6:
+- Consolidate Kconfig into 4 options (probe, emulated, slow,
+  efficient)
+- Change the behavior of "emulated" to allow hwprobe to return "slow" if
+  unaligned accesses are not emulated by the kernel
+- With this consolidation, check_unaligned_access_emulated is able to be
+  moved back into the original file (traps_misaligned.c)
+- Link to v5: https://lore.kernel.org/r/20240227-disable_misaligned_probe_config-v5-0-b6853846e27a@rivosinc.com
+
+Changes in v5:
+- Clarify Kconfig options from Conor's feedback
+- Use "unaligned" instead of "misaligned" in introduced file/function.
+  This is a bit hard to standardize because the riscv manual says
+  "misaligned" but the existing Linux configs say "unaligned".
+- Link to v4: https://lore.kernel.org/r/20240216-disable_misaligned_probe_config-v4-0-dc01e581c0ac@rivosinc.com
+
+Changes in v4:
+- Add additional Kconfig options for the other unaligned access speeds
+- Link to v3: https://lore.kernel.org/r/20240202-disable_misaligned_probe_config-v3-0-c44f91f03bb6@rivosinc.com
+
+Changes in v3:
+- Revert change to csum (Eric)
+- Change ifndefs for ifdefs (Eric)
+- Change config in Makefile (Elliot/Eric)
+- Link to v2: https://lore.kernel.org/r/20240201-disable_misaligned_probe_config-v2-0-77c368bed7b2@rivosinc.com
+
+Changes in v2:
+- Move around definitions to reduce ifdefs (Clément)
+- Make RISCV_MISALIGNED depend on !HAVE_EFFICIENT_UNALIGNED_ACCESS
+  (Clément)
+- Link to v1: https://lore.kernel.org/r/20240131-disable_misaligned_probe_config-v1-0-98d155e9cda8@rivosinc.com
+
+---
+Charlie Jenkins (4):
+      riscv: lib: Introduce has_fast_unaligned_access()
+      riscv: Only check online cpus for emulated accesses
+      riscv: Decouple emulated unaligned accesses from access speed
+      riscv: Set unaligned access speed at compile time
+
+ arch/riscv/Kconfig                         |  60 ++++--
+ arch/riscv/include/asm/cpufeature.h        |  31 ++--
+ arch/riscv/kernel/Makefile                 |   4 +-
+ arch/riscv/kernel/cpufeature.c             | 255 --------------------------
+ arch/riscv/kernel/sys_hwprobe.c            |  13 ++
+ arch/riscv/kernel/traps_misaligned.c       |  17 +-
+ arch/riscv/kernel/unaligned_access_speed.c | 282 +++++++++++++++++++++++++++++
+ arch/riscv/lib/csum.c                      |   7 +-
+ 8 files changed, 376 insertions(+), 293 deletions(-)
+---
+base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+change-id: 20240131-disable_misaligned_probe_config-043aea375f93
+-- 
+- Charlie
+
 
