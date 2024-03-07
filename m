@@ -1,255 +1,286 @@
-Return-Path: <linux-kernel+bounces-95654-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95655-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F54E8750C5
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:49:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3AA78750D1
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:50:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 53B311C23EE5
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 13:49:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9AA8B289ABE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 13:50:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A22712F593;
-	Thu,  7 Mar 2024 13:43:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 227DD12E1CE;
+	Thu,  7 Mar 2024 13:46:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Pzcaxk+C"
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2075.outbound.protection.outlook.com [40.107.94.75])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="FC00/Pio"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86F0812D771;
-	Thu,  7 Mar 2024 13:43:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.75
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709819016; cv=fail; b=Q5CQfWFQWlA2SUzQcVztWntrHeDojlT70PeOIXAMSjrIovdcqM/xfhuJ8K5qu7QuaNalDCxrHPoDusr0RBsGao5v1Nt4TEK1HGSP7j7BpA/3zAKxrWDh+bKdUtUcZCEgZDm6IJ0OGsj3BxLrUQsokACM4qLbzNyZW5lXlZnJZdA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709819016; c=relaxed/simple;
-	bh=tlofsSQv0wMwn4oIuXduGtieug46O3svXesTc3pqKIM=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=oxZTW4vvqyOIPgHGIWLEr9vtEGBL9Zr5iWjRIb7Kq4GC2KVToP/vqiUN8CrhjnfyNi68fY/SsQtfAV0ErPk/ggpIoTU2bSvM+61Nl68nXPNcHCTuKpKhOxyIMSRt0BGDQQbrmJ666mS2meLc4c0qy5rAVhJBhpIrsYXvhOhhxJw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Pzcaxk+C; arc=fail smtp.client-ip=40.107.94.75
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=i03S2iMITA1pgGGyh9r0pgbd1GOT7YlfWtA3u/kDTsAYVxf36K1GUnX7xJwUi1N9ef0OAcV0dWyCy9UYxJvGQ0ekMw4M6ApfdbpepILsAMI5AV5D718naDD3agJdyrkzuBpfFrh3hsP9fcNSsk4DnsDSHtgXfCELJdlPIQSXYyo5AkV9M0JMlxSUWJrLLA1GNuzNGIs8WCpNb6nk8f8/gBOXUX7ZFvSsc8L27PRnBH6S9XzxHOnfQqxIi8S2qKugwiL72x4Rpzp9jjYju+IPopHQFiMBLENtEMlIMgCVwjU5YXzeiCLh4tOTVdcvtFg2ZYFp8a3BS5jE8H65B4wG4g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0VaZmkKjTHK7c/b6rZpQaT+UkHvXjkBXmA5tADF4OYE=;
- b=HrnrAZ89y5xJRBu/9Gw+Qw2JUv5BQFPobiZ0t2N/AQGdIyf+Pgn+dbWI91uUviKfnCiNoos9wcwKStecNN2OYExUEutqbxW30O42HZeqCMO8aX6RSI26q7pmFLH7HBxEnKDHG6RtshslmOMdqU1cQrsZSrC3fXJ1FUOmEKpRv4btvz8aOOcd3TrCO/LWXYkuRYVlFuyv4bXFSosX12IOky0Kw2xXFCHtS3ZZos/+EshEC6njpTJwv/kLtOjR/r6wsJn51CPxDNQlR99xjeLP4BhoP9pM7qoem8JU1bDFlFdaXSc2JS9w9YM6A0XsDHQTMdluaOsMo1hIY58yJN5NUg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0VaZmkKjTHK7c/b6rZpQaT+UkHvXjkBXmA5tADF4OYE=;
- b=Pzcaxk+CVrcmWt1BSDVI+xw+EQOjElgL9JprJ8PbSGMEfCzWVDIKAbG+KUXo/lZn5A1wktSoiAcFo34xZQMwgK6JpQ8IeYEVBKqcurz97cNZGFNC3RxPah/vxN1E0Gj6dXKcYrKH5ExqKDYg8kAQ0czOFEEt9HP2hfSLQYoJyZWrAHdCUnKm4teDEqtZgTyHswrnn51z4xNApmm0bRumF2br5Brp6DB3zvOzmtnH2oN+qA65+exoL8/CeBiQw1E2/Yef+nR75OdO/YiHbT7TXRp33TPjtunytqoEBNogahfY4BetJR/Xdbc9er3vE5RkbmGzhAZgIM6miBwHtT9aBw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from CO6PR12MB5444.namprd12.prod.outlook.com (2603:10b6:5:35e::8) by
- IA0PR12MB8349.namprd12.prod.outlook.com (2603:10b6:208:407::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.26; Thu, 7 Mar
- 2024 13:43:30 +0000
-Received: from CO6PR12MB5444.namprd12.prod.outlook.com
- ([fe80::a98d:ee51:7f8:7df1]) by CO6PR12MB5444.namprd12.prod.outlook.com
- ([fe80::a98d:ee51:7f8:7df1%4]) with mapi id 15.20.7316.037; Thu, 7 Mar 2024
- 13:43:30 +0000
-Message-ID: <bcf94732-34c2-4889-b550-76d27bd969bc@nvidia.com>
-Date: Thu, 7 Mar 2024 13:43:28 +0000
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] usb: gadget: tegra-xudc: Fix USB3 PHY retrieval
- logic
-Content-Language: en-US
-To: Wayne Chang <waynec@nvidia.com>, thierry.reding@gmail.com,
- jckuo@nvidia.com, vkoul@kernel.org, kishon@kernel.org,
- gregkh@linuxfoundation.org
-Cc: linux-phy@lists.infradead.org, linux-tegra@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
- stable@vger.kernel.org
-References: <20240307030328.1487748-1-waynec@nvidia.com>
- <20240307030328.1487748-3-waynec@nvidia.com>
-From: Jon Hunter <jonathanh@nvidia.com>
-In-Reply-To: <20240307030328.1487748-3-waynec@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LNXP265CA0028.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:5c::16) To CO6PR12MB5444.namprd12.prod.outlook.com
- (2603:10b6:5:35e::8)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DED012D1E6;
+	Thu,  7 Mar 2024 13:46:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709819215; cv=none; b=A1rdE2H6uqRMo8wgOL474F/nsqAz6sT4aDBlNHFH0wVZHRVI74mG2XFQKw1iPJtAIg0kY4EfYFCuED3FkBEzUF9zJsz8eFALg130/lypGfYH1+/XhxOY7QvIkjberEFoWcCceTF9jxif3h2EEkzaA5hTsH627zUBN66peUUT4kc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709819215; c=relaxed/simple;
+	bh=LvDDUJcuh9lOI51Hm9zXPRHi6wPpMpPSRU9uKm/7ezo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=L/QUVtX91MdSA6L9IsUbqa2s/5j+uLW9Wyd3VfuYLwqKvMWOHCEdJQgKVvSTKsmLoG2js0OfjH6ByGzuhiZgkPBFD4oTHo00Co7TN8HnFn73Ww/j6ww6Sb53Gr3bR7ZDpLTZ5lfo06evv8kyZffji0JosmDc82qkQ7t0f305YkU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=FC00/Pio; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 427AMNSG014242;
+	Thu, 7 Mar 2024 13:46:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=O6BItZKsvkNfUMe75xwZHuQfuHT5/c4cjIiBka/InFg=; b=FC
+	00/PiojC65hOoL66BFGTkujXfPidxDL0a6PplpcT1obt5qLLIExmkCLpMlY0IX+A
+	eg3YgY7HQu/76p96uMrjHgMXWJ5IN9IJQj6d+A9sx2SZ+fzmF1IniR7q9rAZeJXM
+	Br0VcNBZMNqGdXMStKWLL9SSBD85qC3jh0kqfWyRPXuPj1dTwDBudohYfIvA3dG2
+	8TEIfE15TU1kyFIL4TsCZJV3aIqsnEQ0b/iSPjL72eB58z/qnFr0/fcosidP+2X/
+	XpsWVxEk7R1BIOUqidRlsCbnyrc9LBsRUJTvUZ63O4XcebrDPplMBUDHHWcXpfSq
+	ZYfyMCwpM2epSiaEzXKg==
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wqbrhrv5f-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 07 Mar 2024 13:46:47 +0000 (GMT)
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 427DkkT0013346
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 7 Mar 2024 13:46:46 GMT
+Received: from [10.216.46.193] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 7 Mar
+ 2024 05:46:42 -0800
+Message-ID: <25ec87af-c911-46b7-87c9-b21065d70f9f@quicinc.com>
+Date: Thu, 7 Mar 2024 19:16:39 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO6PR12MB5444:EE_|IA0PR12MB8349:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1f74a938-5342-49dc-70b0-08dc3eac934a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	IOZC0RVQ8F1yX4bFhxY8z2VhV3i3eZqkQLk9jPwqBnz6PMesw82HkQ7C5/VfJgMDKzv1evi4pMdC7yLaOrFVEjxKbKxNZSKBcJjVCvJVQJNKft/UWBR0GbZEhzUhD497jx4hYmh+j4DSURqTuFulXb/auG4OOivH5oIv2o3oNAYJZQGyrM8WOITMp7FRn/hYiBAublQoUKhQweShBIWIQS0CdD/dJC1PaJ3FFFl4VpbiHgX3jlUCwxxxlwexBNYmdtrxUqS3eyX6RyHcYnft8vZoBscLrQ18jWXrnP/1HNBXRdR4x7vDasIgc0suZrgF5bVDhOC18JFJyLMfrox5IBUzVFw3ON+XD+Oo9UWm7ovM3zoerLtYvagix97poxZu0sNCymlHX6zLcJSsKXxe7naYJKRTLrtUYDJU0czN9sIrH2+tZlXe+knJARatDpK9R2Xa8ctdPp3ZZEHujdNnNyKVMQLzENd28olMr2CdSIQsUx9BzOjvYJGGS5ajOoJNhK91DwTLMT/a9pc+sdCPDqOQnLIGFQQe5GpdOCoX/o0a3g7y11Zz0A4KVQK8XPV64KQ/BSPYmN8uIj9a36bwLSbgfN5Em2n4mm4zvCwFkd7aESW1GU/q+fLuq3L8Y1+O/YVEYTs++gsma2zVMpWtgJnq0Ag+zwW54BJCGCWi7PI=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR12MB5444.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?YkVFNXI2OWJzbGNSREFLcVJVSCt3WEZUaERCNTFaUms1K3hCSUkwRS9PeFZH?=
- =?utf-8?B?dmJMcHZ5UkNYQWJEMWtVSmdBL082WDBBakpDdmM3UE1mY2c4ZHlzb0hRbFNs?=
- =?utf-8?B?OGIxYWNZQmp2UDdYNlVYc3Eya1A4dlpFanJ1L01vVjdyUWNzdnpKblkxbGFT?=
- =?utf-8?B?VFRYMERzS2ZRUjlqRUxzWHVsNUZKa1lIZFR6M1ZMek95dHpsUzVZbmFtYUZp?=
- =?utf-8?B?RkFBQ3VQdUZ1Y1F0TmdPOVZldFBGNEt0OW1hVUhzMTF1QzdlR21pY1cxN0Jq?=
- =?utf-8?B?TUZYZU1pRW95MTlQVm1DbytxYUwyb3pTQTc2WkpCVTNjK0NrTngrYXIzRFRq?=
- =?utf-8?B?QmUrMmNaYzZTWXdkR2pjampTS2R6VE44ek42d3VnQ3VlYnBKcktmNzNEeGRE?=
- =?utf-8?B?YmJwU1pzeHlWZ3ZxaHhucXFKd1JXY3F4dk9ncms2SzhHM0RETzJnTFI5VldS?=
- =?utf-8?B?N1NjamU0dmlIZTNCWUxZMnJLRVBHaDBJaWpWOWNLUlE4ZVhIZm9HNHYvcDNI?=
- =?utf-8?B?VFROZVFIVjFIa0JoRUFKM1RMT3BKTUl1bW53Rmp1cnhkWGs0VHZlQitXSW9R?=
- =?utf-8?B?OURhYnhQWVorclFqTUdQVkh6ZkpKMm04cy9aQ3ZYbE1ORFZsREc3VHR1djRy?=
- =?utf-8?B?YTV4aGFOU1hTaEpUY2RBNFNueW1kOHNCVHE5ck5qTUVWcHBjWnlXcXF4VkZL?=
- =?utf-8?B?TEtUSUY3aXpWbktqUjBkcnZ3d2gyaVBtTE0wem1zKzZHejQ4c1FOeGhkdWhL?=
- =?utf-8?B?NVdQTVNWSStmT2I2VHBoL0d6S0IzTm9qRkQrd1dvank5RXRMU1JXaFFuV2ll?=
- =?utf-8?B?RkUyamdXbDJtUjFsNlVkbVB5aUZIRXd3MHhVSURtWERpQjhMWE9ORDJYc3dI?=
- =?utf-8?B?NDh0WHNSM3FKZ2U1TGRVc0h0MDk4NnptTGNzL0VCb293a084Z1pSSGtGL3pk?=
- =?utf-8?B?Tmk0UlRMWEw3VG9zSkloeWFIb0kyWjRkNE9rVitBbkd2MmhrQWtKSVBadkVI?=
- =?utf-8?B?b2ZtekRHT1lZZG5vcjh2cUF0U2dsQVlhZHRrUTRMZDdJcUZVc3NJZ3ZXQkxE?=
- =?utf-8?B?aEpsTE1aZHNqd2x1OGtQRmtuZXNadTRZMk43aWtobmV2bFJsR2pyOWRmQU9l?=
- =?utf-8?B?Y2ZsWW43aG9VY3pYMzUxT01uM1paUVE3Y2Uza09QK1NWQVZ4UFF0cVpoSXV2?=
- =?utf-8?B?MXQwWkhIYmw4Q1VmcmRqU1Ayb3kwMXIrdkZXQkkxVk1xemdPTVQvcEQyTFdC?=
- =?utf-8?B?UWJ0b21oV2RDeUpLdzNkdkhYR0E3Rmpwd2ZsMnc2cjFXNmFKbDFOS3BJRU9H?=
- =?utf-8?B?VkE0L3laT1hIVDBlYzBDbkh0UnNVUFVCN1BHR0htWXp0WU5OUHAxVkRhNThC?=
- =?utf-8?B?ZlFjZlRLUnp0VFZ6bkc3ZGIxcWtGUE5QemlEWis5eXZzMVZHdnl0aDdBMS9Q?=
- =?utf-8?B?WjdMdlhRSFZFZWNaQzV0UFBPaXpHdEtPRTJDSU1GWDZJOWg0YW5RbVBXUDJO?=
- =?utf-8?B?RWtOOVAydXArZ2tYZE5FeE01UUJORFQ1cGR5eUpvV1E5WWsyc2tNUXNjcDZr?=
- =?utf-8?B?T1JXZW10TzZkdXNveUVuZnRVZGwvS2ZwY1hHbUp5MzRhYXpLU0xId252VCtR?=
- =?utf-8?B?WEFzeGVIQUZ3R0FQUW9JZ3ZBakVweVFiZFZESHBHSWdwT3VDaUxNN0JLR3ZL?=
- =?utf-8?B?ZGVDS1NkKzJFSTZPUXQwOXVSa1ZYWWNZRkphbCtmSkFNSzNPbzJkQmRvZkRw?=
- =?utf-8?B?NnQ0NDJjdndDR3JSV0Z0QTlSMlhFOVJEcHpMUUx6LzZvT0VLSE5CTmhoQ1Vp?=
- =?utf-8?B?UzY4UEhRL3RSRVV6a3FjZjkwRzdUWnZ0T2dVNi9CbCtwSVJqQjVLdzFSM3pl?=
- =?utf-8?B?UklpYXdIYmFIWk5XVGcycGJESzNEVGRHaWZzc3pyK2xKVlRXcWNzVjBSQ2to?=
- =?utf-8?B?REhZOE5VWnBJSEorZHNwVG5oUjJzTmU1VDlQTDlvTTdFNThXNG00c3NZZTFE?=
- =?utf-8?B?RTEyL2ZEZ3hhWDZjZW1BT01OSUFlM1cra1AydzFudXJXNC9McEhYME1ucXJt?=
- =?utf-8?B?dk95dHlSTlNzY0h5SkdyWEppeVRiT2JwZ09ESERPaXhHTktkMU90VlF5cmlD?=
- =?utf-8?Q?EdkJr9jomewE0RQ3XFRTl+XZI?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1f74a938-5342-49dc-70b0-08dc3eac934a
-X-MS-Exchange-CrossTenant-AuthSource: CO6PR12MB5444.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Mar 2024 13:43:30.8341
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 69vYFYAmSIUuWblyHUX1DFgtfCjdjuMmovn3HqKaZfvEyHbiEQq926U1XDFA+7ezzDr4f9EckW/mmoiePhu7pQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB8349
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] i2c: i2c-qcom-geni: Parse Error correctly in i2c GSI
+ mode
+Content-Language: en-US
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC: <konrad.dybcio@linaro.org>, <bjorn.andersson@linaro.org>,
+        <vkoul@kernel.org>, <andi.shyti@kernel.org>, <wsa@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <dmaengine@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
+        <quic_vdadhani@quicinc.com>
+References: <20240307093605.4142639-1-quic_msavaliy@quicinc.com>
+ <CAA8EJprndszVSjAVs_UzAjhb+x1B1Of4JCkygZ=8kgzuY2RwCQ@mail.gmail.com>
+From: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
+In-Reply-To: <CAA8EJprndszVSjAVs_UzAjhb+x1B1Of4JCkygZ=8kgzuY2RwCQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: zi_FN4ymsGKQWjFTYVYkX6aX0z4HK0w_
+X-Proofpoint-ORIG-GUID: zi_FN4ymsGKQWjFTYVYkX6aX0z4HK0w_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-07_07,2024-03-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1011
+ priorityscore=1501 spamscore=0 mlxscore=0 impostorscore=0 malwarescore=0
+ bulkscore=0 phishscore=0 lowpriorityscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2402120000
+ definitions=main-2403070084
 
 
-On 07/03/2024 03:03, Wayne Chang wrote:
-> This commit resolves an issue in the tegra-xudc USB gadget driver that
-> incorrectly fetched USB3 PHY instances. The problem stemmed from the
-> assumption of a one-to-one correspondence between USB2 and USB3 PHY
-> names and their association with physical USB ports in the device tree.
+
+
+On 3/7/2024 3:23 PM, Dmitry Baryshkov wrote:
+> On Thu, 7 Mar 2024 at 11:36, Mukesh Kumar Savaliya
+> <quic_msavaliy@quicinc.com> wrote:
+>>
+>> We are seeing transfer failure instead of NACK error for simple
+>> device scan test.Ideally it should report exact error like NACK
+>> if device is not present.
+>>
+>> We may also expect errors like BUS_PROTO or ARB_LOST, hence we are
+>> adding such error support in GSI mode and reporting it accordingly
+>> by adding respective error logs.
 > 
-> Previously, the driver associated USB3 PHY names directly with the USB3
-> instance number, leading to mismatches when mapping the physical USB
-> ports. For instance, if using USB3-1 PHY, the driver expect the
-> corresponding PHY name as 'usb3-1'. However, the physical USB ports in
-> the device tree were designated as USB2-0 and USB3-0 as we only have
-> one device controller, causing a misalignment.
+> Please take a look at the
+> Documentation/process/submitting-patches.rst. This is not the expected
+> style of commit messages.
 > 
-> This commit rectifies the issue by adjusting the PHY naming logic.
-> Now, the driver correctly correlates the USB2 and USB3 PHY instances,
-> allowing the USB2-0 and USB3-1 PHYs to form a physical USB port pair
-> while accurately reflecting their configuration in the device tree by
-> naming them USB2-0 and USB3-0, respectively.
+
+Thanks Dmitry ! Gone through the link and tried to align to the 
+guidance. I will be adding into the actual upload in V3.
+
+When we run scan test for i2c devices, we see transfer failures instead
+of NACK. This is wrong because there is no data transfer failure but 
+it's a slave response to the i2c master controller.
+
+This change correctly identifies NACK error. Also adds support for other
+protocol errors like BUS_PROTO and ARB_LOST. This helps to exactly know
+the response on the bus.
+
+Function geni_i2c_gpi_xfer() gets called for any i2c GSI mode transfer
+and waits for the response as success OR failure. If slave is not 
+present OR NACKing, GSI generates an error interrupt which calls ISR and 
+it further calls gpi_process_xfer_compl_event(). Now 
+dmaengine_desc_callback_invoke() will call i2c_gpi_cb_result() where we 
+have added parsing status parameters to identify respective errors.
+
+>>
+>> During geni_i2c_gpi_xfer(), we should expect callback param as a
+>> transfer result. For that we have added a new structure named
+>> gpi_i2c_result, which will store xfer result.
+>>
+>> Upon receiving an interrupt, gpi_process_xfer_compl_event() will
+>> store transfer result into status variable and then call the
+>> dmaengine_desc_callback_invoke(). Hence i2c_gpi_cb_result() can
+>> parse the respective errors.
+>>
+>> while parsing error from the status param, use FIELD_GET with the
 > 
-> The change ensures that the PHY and PHY names align appropriately,
-> resolving the mismatch between physical USB ports and their associated
-> names in the device tree.
+> Sentences start with the uppercase letter.
+
+Sure, will do while/While change. Will take care in next patch.
+
 > 
-> Fixes: b4e19931c98a ("usb: gadget: tegra-xudc: Support multiple device modes")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Wayne Chang <waynec@nvidia.com>
-> ---
-> V1 -> V2:no change
->   drivers/usb/gadget/udc/tegra-xudc.c | 39 ++++++++++++++++++-----------
->   1 file changed, 25 insertions(+), 14 deletions(-)
+>> mask instead of multiple shifting operations for each error.
 > 
-> diff --git a/drivers/usb/gadget/udc/tegra-xudc.c b/drivers/usb/gadget/udc/tegra-xudc.c
-> index cb85168fd00c..7aa46d426f31 100644
-> --- a/drivers/usb/gadget/udc/tegra-xudc.c
-> +++ b/drivers/usb/gadget/udc/tegra-xudc.c
-> @@ -3491,8 +3491,8 @@ static void tegra_xudc_device_params_init(struct tegra_xudc *xudc)
->   
->   static int tegra_xudc_phy_get(struct tegra_xudc *xudc)
->   {
-> -	int err = 0, usb3;
-> -	unsigned int i;
-> +	int err = 0, usb3_companion_port;
-> +	unsigned int i, j;
->   
->   	xudc->utmi_phy = devm_kcalloc(xudc->dev, xudc->soc->num_phys,
->   					   sizeof(*xudc->utmi_phy), GFP_KERNEL);
-> @@ -3520,7 +3520,7 @@ static int tegra_xudc_phy_get(struct tegra_xudc *xudc)
->   		if (IS_ERR(xudc->utmi_phy[i])) {
->   			err = PTR_ERR(xudc->utmi_phy[i]);
->   			dev_err_probe(xudc->dev, err,
-> -				      "failed to get usb2-%d PHY\n", i);
-> +				"failed to get PHY for phy-name usb2-%d\n", i);
->   			goto clean_up;
->   		} else if (xudc->utmi_phy[i]) {
->   			/* Get usb-phy, if utmi phy is available */
-> @@ -3539,19 +3539,30 @@ static int tegra_xudc_phy_get(struct tegra_xudc *xudc)
->   		}
->   
->   		/* Get USB3 phy */
-> -		usb3 = tegra_xusb_padctl_get_usb3_companion(xudc->padctl, i);
-> -		if (usb3 < 0)
-> +		usb3_companion_port = tegra_xusb_padctl_get_usb3_companion(xudc->padctl, i);
-> +		if (usb3_companion_port < 0)
->   			continue;
->   
-> -		snprintf(phy_name, sizeof(phy_name), "usb3-%d", usb3);
-> -		xudc->usb3_phy[i] = devm_phy_optional_get(xudc->dev, phy_name);
-> -		if (IS_ERR(xudc->usb3_phy[i])) {
-> -			err = PTR_ERR(xudc->usb3_phy[i]);
-> -			dev_err_probe(xudc->dev, err,
-> -				      "failed to get usb3-%d PHY\n", usb3);
-> -			goto clean_up;
-> -		} else if (xudc->usb3_phy[i])
-> -			dev_dbg(xudc->dev, "usb3-%d PHY registered", usb3);
-> +		for (j = 0; j < xudc->soc->num_phys; j++) {
-> +			snprintf(phy_name, sizeof(phy_name), "usb3-%d", j);
-> +			xudc->usb3_phy[i] = devm_phy_optional_get(xudc->dev, phy_name);
-> +			if (IS_ERR(xudc->usb3_phy[i])) {
-> +				err = PTR_ERR(xudc->usb3_phy[i]);
-> +				dev_err_probe(xudc->dev, err,
-> +					"failed to get PHY for phy-name usb3-%d\n", j);
-> +				goto clean_up;
-> +			} else if (xudc->usb3_phy[i]) {
-> +				int usb2_port =
-> +					tegra_xusb_padctl_get_port_number(xudc->utmi_phy[i]);
-> +				int usb3_port =
-> +					tegra_xusb_padctl_get_port_number(xudc->usb3_phy[i]);
-> +				if (usb3_port == usb3_companion_port) {
-> +					dev_dbg(xudc->dev, "USB2 port %d is paired with USB3 port %d for device mode port %d\n",
-> +					 usb2_port, usb3_port, i);
-> +					break;
-> +				}
-> +			}
-> +		}
->   	}
->   
->   	return err;
+> 
+>>
+>> Fixes: d8703554f4de ("i2c: qcom-geni: Add support for GPI DMA")
+>> Co-developed-by: Viken Dadhaniya <quic_vdadhani@quicinc.com>
+>> Signed-off-by: Viken Dadhaniya <quic_vdadhani@quicinc.com>
+>> Signed-off-by: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
+>> ---
+>> ---
+Sorry, i Missed to add V1 -> V2 : will add into next patch upload.
+>> - Commit log changed we->We.
+>> - Explained the problem that we are not detecing NACK error.
+>> - Removed Heap based memory allocation and hence memory leakage issue.
+>> - Used FIELD_GET and removed shiting and masking every time as suggested by Bjorn.
+>> - Changed commit log to reflect the code changes done.
+>> - Removed adding anything into struct gpi_i2c_config and created new structure
+>>    for error status as suggested by Bjorn.
+>> ---
+>>   drivers/dma/qcom/gpi.c             | 12 +++++++++++-
+>>   drivers/i2c/busses/i2c-qcom-geni.c | 19 +++++++++++++++----
+>>   include/linux/dma/qcom-gpi-dma.h   | 10 ++++++++++
+>>   3 files changed, 36 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/drivers/dma/qcom/gpi.c b/drivers/dma/qcom/gpi.c
+>> index 1c93864e0e4d..e3508d51fdc9 100644
+>> --- a/drivers/dma/qcom/gpi.c
+>> +++ b/drivers/dma/qcom/gpi.c
+>> @@ -1076,7 +1076,17 @@ static void gpi_process_xfer_compl_event(struct gchan *gchan,
+>>          dev_dbg(gpii->gpi_dev->dev, "Residue %d\n", result.residue);
+>>
+>>          dma_cookie_complete(&vd->tx);
+>> -       dmaengine_desc_get_callback_invoke(&vd->tx, &result);
+>> +       if (gchan->protocol == QCOM_GPI_I2C) {
+>> +               struct dmaengine_desc_callback cb;
+>> +               struct gpi_i2c_result *i2c;
+>> +
+>> +               dmaengine_desc_get_callback(&vd->tx, &cb);
+>> +               i2c = cb.callback_param;
+>> +               i2c->status = compl_event->status;
+>> +               dmaengine_desc_callback_invoke(&cb, &result);
+>> +       } else {
+>> +               dmaengine_desc_get_callback_invoke(&vd->tx, &result);
+> 
+> Is there such error reporting for SPI or UART protocols?
+> 
 
+Such errors are not there for SPI or UART because 
+NACK/BUS_PROTO/ARB_LOST errors are protocol specific errors. These error 
+comes in
+middle of the transfers. As these are like expected protocol errors 
+depending on the slave device/s response.
 
-Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
-Tested-by: Jon Hunter <jonathanh@nvidia.com>
-
-Thanks!
-
-Jon
-
--- 
-nvpublic
+>> +       }
+>>
+>>   gpi_free_desc:
+>>          spin_lock_irqsave(&gchan->vc.lock, flags);
+>> diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-qcom-geni.c
+>> index da94df466e83..36a7c0c0ff54 100644
+>> --- a/drivers/i2c/busses/i2c-qcom-geni.c
+>> +++ b/drivers/i2c/busses/i2c-qcom-geni.c
+>> @@ -66,6 +66,7 @@ enum geni_i2c_err_code {
+>>          GENI_TIMEOUT,
+>>   };
+>>
+>> +#define I2C_DMA_TX_IRQ_MASK    GENMASK(12, 5)
+>>   #define DM_I2C_CB_ERR          ((BIT(NACK) | BIT(BUS_PROTO) | BIT(ARB_LOST)) \
+>>                                                                          << 5)
+>>
+>> @@ -99,6 +100,7 @@ struct geni_i2c_dev {
+>>          struct dma_chan *rx_c;
+>>          bool gpi_mode;
+>>          bool abort_done;
+>> +       struct gpi_i2c_result i2c_result;
+>>   };
+>>
+>>   struct geni_i2c_desc {
+>> @@ -484,9 +486,18 @@ static int geni_i2c_tx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
+>>
+>>   static void i2c_gpi_cb_result(void *cb, const struct dmaengine_result *result)
+>>   {
+>> -       struct geni_i2c_dev *gi2c = cb;
+>> -
+>> -       if (result->result != DMA_TRANS_NOERROR) {
+>> +       struct gpi_i2c_result *i2c_res = cb;
+>> +       struct geni_i2c_dev *gi2c = container_of(i2c_res, struct geni_i2c_dev, i2c_result);
+>> +       u32 status;
+>> +
+>> +       status = FIELD_GET(I2C_DMA_TX_IRQ_MASK, i2c_res->status);
+>> +       if (status == BIT(NACK)) {
+>> +               geni_i2c_err(gi2c, NACK);
+>> +       } else if (status == BIT(BUS_PROTO)) {
+>> +               geni_i2c_err(gi2c, BUS_PROTO);
+>> +       } else if (status == BIT(ARB_LOST)) {
+>> +               geni_i2c_err(gi2c, ARB_LOST);
+>> +       } else if (result->result != DMA_TRANS_NOERROR) {
+>>                  dev_err(gi2c->se.dev, "DMA txn failed:%d\n", result->result);
+>>                  gi2c->err = -EIO;
+>>          } else if (result->residue) {
+>> @@ -568,7 +579,7 @@ static int geni_i2c_gpi(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
+>>          }
+>>
+>>          desc->callback_result = i2c_gpi_cb_result;
+>> -       desc->callback_param = gi2c;
+>> +       desc->callback_param = &gi2c->i2c_result;
+>>
+>>          dmaengine_submit(desc);
+>>          *buf = dma_buf;
+>> diff --git a/include/linux/dma/qcom-gpi-dma.h b/include/linux/dma/qcom-gpi-dma.h
+>> index 6680dd1a43c6..f585c6a35e51 100644
+>> --- a/include/linux/dma/qcom-gpi-dma.h
+>> +++ b/include/linux/dma/qcom-gpi-dma.h
+>> @@ -80,4 +80,14 @@ struct gpi_i2c_config {
+>>          bool multi_msg;
+>>   };
+>>
+>> +/**
+>> + * struct gpi_i2c_result - i2c transfer status result in GSI mode
+>> + *
+>> + * @status: store txfer status value as part of callback
+>> + *
+>> + */
+>> +struct gpi_i2c_result {
+>> +       u32 status;
+>> +};
+>> +
+>>   #endif /* QCOM_GPI_DMA_H */
+>> --
+>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+>> a Linux Foundation Collaborative Project
+>>
+>>
+> 
+> 
 
