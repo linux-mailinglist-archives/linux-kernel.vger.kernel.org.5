@@ -1,167 +1,255 @@
-Return-Path: <linux-kernel+bounces-95257-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95254-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFC67874B5E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:54:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07278874B56
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:53:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DCD4E1C21676
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:54:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 869CE1F226F4
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:53:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 752A385295;
-	Thu,  7 Mar 2024 09:54:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3053B657DA;
+	Thu,  7 Mar 2024 09:53:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dM+7awZx"
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qrCADoz2"
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D48FB42047
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 09:54:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55B9580632
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 09:53:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709805250; cv=none; b=DjV4js2Dr/e7CuPoiDyK9TKdzD+2+D7IBpMQ8yAoZcCJ0VUt3cW/Q4fVvcxm9JOmD0I5wfkcERgIuGYfHFJDkIC9icUbomhZbfDflZKxhWmCwwk1ERkPxqYJYQyB5xq5CnfAlG2u2a9b7soLlFUDXmJC0A+Lbi+MlOAMJSg78Co=
+	t=1709805226; cv=none; b=nk1m1XGdgNOt4jxIvkkvZ145CcGhfEDxJMqfO1WlloYSLBxsRN3vZgLaLG/BaKYUpZDxXwv5QP/KAndAJvkUk7dLgVBeITgCzQbAQXzC9XznPAGzJrYnOHgUGX8vO1ivBxAYQCuwCHFEUHgMBOJMYTu7MWpiK9/W4CLs1IVWRYU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709805250; c=relaxed/simple;
-	bh=MCTAdOE5qQKLVvKWiaFrEiQ/HXb5XPaLK7RVUm9LgIA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=SVD+oVHfNCBAa9Gbq8A16cXtQrMVQO62ZAcZg4562Q+By/9EMVbdMYcvNsEC7o8dL2aahXVH7nVjuTlk2ZDkOLjMt0Qnlsrq0II3IS0D2FqR6QMjOFnOETIR6QKHB5lqg/+mQ77hScO3Difc3UleqrRZJOUViOFBow4+4pbjp7U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dM+7awZx; arc=none smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5673b5a356eso744441a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 01:54:08 -0800 (PST)
+	s=arc-20240116; t=1709805226; c=relaxed/simple;
+	bh=6lCQPmC2NLod8HFgbwnwGugG2aNAAhdLirkMnWiyG6E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=uulJYH1bSM7hHNu0YDY2fbFfezk+YQ/Pn/KQ9jvkjofYrv2e8XbOj1wxCgIXOkDQpxiSN7S/A5QY9QvOLnOV6qddZFU/jnHS99GhtoZATExIV/CszZ7Jm9KFwvcVw6rM23SM/3gaVau+k/yL8t+k3R8U3bjckXqLkPBThny/WD0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qrCADoz2; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-56781070f38so3090119a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 01:53:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709805247; x=1710410047; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=I3DIVgIQtbxBFgHYdrkm8qDZTG2wrsK4cDuPuZWRLf8=;
-        b=dM+7awZx44+0OKPpluuHCa5f2RfPTAqrZRnioUA1llxg8CURJU4vKFtnympygfeUBn
-         tMTrWNIIupC42PcowvpNKnXZ9il1ukFo5Z7TSCRu/67dsk/S1q2g6EeNVOIpNQ3EwYzZ
-         NgN0TGE/t4e0gRwbP0XxSAI7BJ1McM4QG86iw4N7pcjM3YjIhpDQJ+/mLOy5/pKmbsuz
-         2dfDJRdddpAwO5kSG5hwszel+fjfkQieSApgpIM0mZfOzeVSYVLk/ed8nhT+iVEToA8n
-         0w/GzKAFbeEr0Eaem6EuLiebszScUmX2OI2ZLeKPc0dXOX3clHHG06YXy3Wl+lgE2q+K
-         VbzA==
+        d=linaro.org; s=google; t=1709805223; x=1710410023; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JjvVVrgXKtdWF6nAiCXymOryFizeDTs65VKbBWYSOnM=;
+        b=qrCADoz2HM4EHlAMEzUERNlgDZKIxY/jEmw4v5S/QNO5gSh3f4uHQGxigXhff/gi2o
+         oUX/xay+dIQJyqstwzUJObszlhrV8/5fel0qM1qSEAjTrnsQhWL9ovh/Z25VZUwcNcKa
+         RK39re87l8p76xUtFUZIpeGdwXYrwA1y29djbbBJqSSpI9ynq+HVojzB8tfnit5vp0By
+         X39r/GJNvEmSzsZJUGaqEN8oLY//A2sFPbcMnSgGfR1NahkEaOQ/VU273CouEwKxxUGR
+         16oT0/6Boyk5vx7CYGEOeRv8R1MjTOkS7tWyjkg34pFQWxs2tjIqRL/YBlFXD7Ad5lHT
+         OC5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709805247; x=1710410047;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=I3DIVgIQtbxBFgHYdrkm8qDZTG2wrsK4cDuPuZWRLf8=;
-        b=WOJJHKv0/X6o72PLPagjkdFDKbnKLSoqvNvfgycoa8nzjlyxRd9Hwbq+8tUUQ6/LxX
-         32F7CbuVUFFYq8lPrhMDcxBsgei0rPSqPnERFBsx68e9EhQ+X8Vb/jkQtyn7+hgIBt85
-         ILkWbg1EjmTtmJyRl+zKgk0xn/yMAgxUckGGXKuJ2+gyXSD7/FPLUgevpysV3VXavSzP
-         HmcESUyHp1oz/1444wBxxy8Uw7ml90YZqbDv7/soFmU/b7uTVOXc5VPWJUgH5RxTNgWa
-         1s4UzE9buhJHQmVY0sqzhta9KZ0PVh5blOvOjrsVOFqoPHYJKk+Z1GVsNHlbyLVJaq0i
-         J3wg==
-X-Forwarded-Encrypted: i=1; AJvYcCW8orklfvI3dCcjLTVFrxCwxXzkP2+fgPz4w0szSgT32UX3FnbOxD44Ul7Fa1pKaMW4z9VNClQLKMrmTfEg149A3KUw0sKdWOFdYE7a
-X-Gm-Message-State: AOJu0YwzfdnzKgiPObbI6vrDZdK9L327mVyQpKbMb46bFLS1EaJS2bMT
-	9R2/wPApq6mnhjRRsrv9GVDThBxloORuI1otnINYqO1uPqt3jXOe
-X-Google-Smtp-Source: AGHT+IFDJOZS/zcttQ6vcsVUUH0Zmr5rEjPzF+lqN6Lwja3v7FlWo2VmnQhf4hz0lp0IoV7IsGnq4w==
-X-Received: by 2002:a05:6402:1d8f:b0:566:ac71:97c5 with SMTP id dk15-20020a0564021d8f00b00566ac7197c5mr10655634edb.18.1709805246915;
-        Thu, 07 Mar 2024 01:54:06 -0800 (PST)
-Received: from A13PC04R.einet.ad.eivd.ch ([193.134.219.72])
-        by smtp.googlemail.com with ESMTPSA id d17-20020a056402517100b005671100145dsm5686202ede.55.2024.03.07.01.54.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Mar 2024 01:54:06 -0800 (PST)
-From: Rick Wertenbroek <rick.wertenbroek@gmail.com>
-To: rick.wertenbroek@heig-vd.ch
-Cc: Rick Wertenbroek <rick.wertenbroek@gmail.com>,
-	Vinod Koul <vkoul@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Heiko Stuebner <heiko@sntech.de>,
-	linux-phy@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-rockchip@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] phy: rockchip: Fix typo in function names
-Date: Thu,  7 Mar 2024 10:53:18 +0100
-Message-Id: <20240307095318.3651498-1-rick.wertenbroek@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        d=1e100.net; s=20230601; t=1709805223; x=1710410023;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JjvVVrgXKtdWF6nAiCXymOryFizeDTs65VKbBWYSOnM=;
+        b=v1BIdMOpEaBCI1hEyD15TLcCE1bvplM22QHcnIxj1hCZuXd3rEh06BXzYIFBtXJBFt
+         KbNkrNZib+RftWC4PHSRieERY3o4Pu9JIpXcpEqFU8mTFTiwJbayceyigGra3+ImpJqF
+         1y+ETtlf9gCkkIuXtBGt0hMX5pTeYTNXJFcZNNt8pWM2vEiM/q5b02lF1/i3rFb5DARg
+         KED126hUiI8ndMFViVpm4eLYbmdU3GTsJx5Vj98hCleqYdna+92HQaAplW9qkjr+yOhp
+         Jzo/3OKC7mdb/BSU0oDptm3K7LO7vx3h01sXTXvUVEmmRtJ9i7rV5d7BepgTBajjC/hI
+         IwBw==
+X-Gm-Message-State: AOJu0Yx+gcz97osGjJGzaXNRAIK7a7SK35mXRwQjoKY+Sl8If1pCRf5+
+	/ERcg2wwUjXOPG5g9CcDCLWUQo1b/RaDQRhNaz3HX/HaWt6Z88zdH2kJq0RIfRQ=
+X-Google-Smtp-Source: AGHT+IE7PaSe32aZfYBX0cdNMhJ4wVwuGlMe3nsz7btnGwIzOieGMfx/IFN8NIDZPg1JqImvfE0Qbw==
+X-Received: by 2002:a17:906:37d8:b0:a45:7936:d09e with SMTP id o24-20020a17090637d800b00a457936d09emr781412ejc.19.1709805222544;
+        Thu, 07 Mar 2024 01:53:42 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id hj12-20020a170906874c00b00a456a97faaesm3891813ejb.86.2024.03.07.01.53.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Mar 2024 01:53:42 -0800 (PST)
+Message-ID: <a3b3ea89-8f4c-4deb-befb-d5219584901e@linaro.org>
+Date: Thu, 7 Mar 2024 10:53:40 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] dt-bindings: serial: renesas,scif: Validate
+ 'interrupts' and 'interrupt-names'
+Content-Language: en-US
+To: Prabhakar <prabhakar.csengg@gmail.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Jiri Slaby <jirislaby@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Magnus Damm <magnus.damm@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
+ Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+References: <20240306231007.13622-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20240306231007.13622-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
+ m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
+ HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
+ XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
+ mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
+ v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
+ cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
+ rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
+ qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
+ aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
+ gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
+ dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
+ NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
+ hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
+ oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
+ H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
+ yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
+ 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
+ 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
+ +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
+ FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
+ 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
+ DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
+ oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
+ 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
+ Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
+ qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
+ /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
+ qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
+ EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
+ KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
+ fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240306231007.13622-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Several functions had "rochchip" instead of "rockchip" in their name.
-Replace "rochchip" by "rockchip".
+On 07/03/2024 00:10, Prabhakar wrote:
+> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> 
+> This commit adds support to validate the 'interrupts' and 'interrupt-names'
+> properties for every supported SoC. This ensures proper handling and
+> configuration of interrupt-related properties across supported platforms.
+> 
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> ---
+>  .../bindings/serial/renesas,scif.yaml         | 117 +++++++++++++-----
+>  1 file changed, 85 insertions(+), 32 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/serial/renesas,scif.yaml b/Documentation/devicetree/bindings/serial/renesas,scif.yaml
+> index af72c3420453..1a5f4568ae4f 100644
+> --- a/Documentation/devicetree/bindings/serial/renesas,scif.yaml
+> +++ b/Documentation/devicetree/bindings/serial/renesas,scif.yaml
+> @@ -82,38 +82,6 @@ properties:
+>    reg:
+>      maxItems: 1
+>  
+> -  interrupts:
 
-Signed-off-By: Rick Wertenbroek <rick.wertenbroek@gmail.com>
----
- drivers/phy/rockchip/phy-rockchip-naneng-combphy.c |  4 ++--
- drivers/phy/rockchip/phy-rockchip-snps-pcie3.c     | 12 ++++++------
- 2 files changed, 8 insertions(+), 8 deletions(-)
+Properties should be defined in top-level block with widest constraints
+(min/maxItems). Your if:then: narrows them per each variant.
 
-diff --git a/drivers/phy/rockchip/phy-rockchip-naneng-combphy.c b/drivers/phy/rockchip/phy-rockchip-naneng-combphy.c
-index 76b9cf417591..35d5c18661a3 100644
---- a/drivers/phy/rockchip/phy-rockchip-naneng-combphy.c
-+++ b/drivers/phy/rockchip/phy-rockchip-naneng-combphy.c
-@@ -245,7 +245,7 @@ static int rockchip_combphy_exit(struct phy *phy)
- 	return 0;
- }
- 
--static const struct phy_ops rochchip_combphy_ops = {
-+static const struct phy_ops rockchip_combphy_ops = {
- 	.init = rockchip_combphy_init,
- 	.exit = rockchip_combphy_exit,
- 	.owner = THIS_MODULE,
-@@ -352,7 +352,7 @@ static int rockchip_combphy_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
--	priv->phy = devm_phy_create(dev, NULL, &rochchip_combphy_ops);
-+	priv->phy = devm_phy_create(dev, NULL, &rockchip_combphy_ops);
- 	if (IS_ERR(priv->phy)) {
- 		dev_err(dev, "failed to create combphy\n");
- 		return PTR_ERR(priv->phy);
-diff --git a/drivers/phy/rockchip/phy-rockchip-snps-pcie3.c b/drivers/phy/rockchip/phy-rockchip-snps-pcie3.c
-index 121e5961ce11..3cdc7625b308 100644
---- a/drivers/phy/rockchip/phy-rockchip-snps-pcie3.c
-+++ b/drivers/phy/rockchip/phy-rockchip-snps-pcie3.c
-@@ -187,7 +187,7 @@ static const struct rockchip_p3phy_ops rk3588_ops = {
- 	.phy_init = rockchip_p3phy_rk3588_init,
- };
- 
--static int rochchip_p3phy_init(struct phy *phy)
-+static int rockchip_p3phy_init(struct phy *phy)
- {
- 	struct rockchip_p3phy_priv *priv = phy_get_drvdata(phy);
- 	int ret;
-@@ -210,7 +210,7 @@ static int rochchip_p3phy_init(struct phy *phy)
- 	return ret;
- }
- 
--static int rochchip_p3phy_exit(struct phy *phy)
-+static int rockchip_p3phy_exit(struct phy *phy)
- {
- 	struct rockchip_p3phy_priv *priv = phy_get_drvdata(phy);
- 
-@@ -219,9 +219,9 @@ static int rochchip_p3phy_exit(struct phy *phy)
- 	return 0;
- }
- 
--static const struct phy_ops rochchip_p3phy_ops = {
--	.init = rochchip_p3phy_init,
--	.exit = rochchip_p3phy_exit,
-+static const struct phy_ops rockchip_p3phy_ops = {
-+	.init = rockchip_p3phy_init,
-+	.exit = rockchip_p3phy_exit,
- 	.set_mode = rockchip_p3phy_set_mode,
- 	.owner = THIS_MODULE,
- };
-@@ -280,7 +280,7 @@ static int rockchip_p3phy_probe(struct platform_device *pdev)
- 		return priv->num_lanes;
- 	}
- 
--	priv->phy = devm_phy_create(dev, NULL, &rochchip_p3phy_ops);
-+	priv->phy = devm_phy_create(dev, NULL, &rockchip_p3phy_ops);
- 	if (IS_ERR(priv->phy)) {
- 		dev_err(dev, "failed to create combphy\n");
- 		return PTR_ERR(priv->phy);
--- 
-2.25.1
+> -    oneOf:
+> -      - items:
+> -          - description: A combined interrupt
+> -      - items:
+> -          - description: Error interrupt
+> -          - description: Receive buffer full interrupt
+> -          - description: Transmit buffer empty interrupt
+> -          - description: Break interrupt
+> -      - items:
+> -          - description: Error interrupt
+> -          - description: Receive buffer full interrupt
+> -          - description: Transmit buffer empty interrupt
+> -          - description: Break interrupt
+> -          - description: Data Ready interrupt
+> -          - description: Transmit End interrupt
+> -
+> -  interrupt-names:
+> -    oneOf:
+> -      - items:
+> -          - const: eri
+> -          - const: rxi
+> -          - const: txi
+> -          - const: bri
+> -      - items:
+> -          - const: eri
+> -          - const: rxi
+> -          - const: txi
+> -          - const: bri
+> -          - const: dri
+> -          - const: tei
+
+This probably could be:
+
+        minItems: 4
+        items:
+          - const: eri
+          - const: rxi
+          - const: txi
+          - const: bri
+          - const: dri
+          - const: tei
+
+> -
+>    clocks:
+>      minItems: 1
+>      maxItems: 4
+> @@ -173,6 +141,91 @@ allOf:
+>        required:
+>          - resets
+>  
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - renesas,scif-r8a7742
+> +              - renesas,scif-r8a7743
+> +              - renesas,scif-r8a7744
+> +              - renesas,scif-r8a7745
+> +              - renesas,scif-r8a77470
+> +              - renesas,scif-r8a774a1
+> +              - renesas,scif-r8a774b1
+> +              - renesas,scif-r8a774c0
+> +              - renesas,scif-r8a774e1
+> +              - renesas,scif-r8a7778
+> +              - renesas,scif-r8a7779
+> +              - renesas,scif-r8a7790
+> +              - renesas,scif-r8a7791
+> +              - renesas,scif-r8a7792
+> +              - renesas,scif-r8a7793
+> +              - renesas,scif-r8a7794
+> +              - renesas,scif-r8a7795
+> +              - renesas,scif-r8a7796
+> +              - renesas,scif-r8a77961
+> +              - renesas,scif-r8a77965
+> +              - renesas,scif-r8a77970
+> +              - renesas,scif-r8a77980
+> +              - renesas,scif-r8a77990
+> +              - renesas,scif-r8a77995
+> +              - renesas,scif-r8a779a0
+> +              - renesas,scif-r8a779f0
+> +              - renesas,scif-r8a779g0
+
+There is no way compatibility strings express it?
+
+
+Best regards,
+Krzysztof
 
 
