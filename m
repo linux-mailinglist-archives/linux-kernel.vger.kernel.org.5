@@ -1,247 +1,111 @@
-Return-Path: <linux-kernel+bounces-95539-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95540-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44D04874F17
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 13:32:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C06C874F1E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 13:32:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C6DCB1F24D79
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:32:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 999382817B7
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:32:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB95912BF03;
-	Thu,  7 Mar 2024 12:31:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EFB612BEB1;
+	Thu,  7 Mar 2024 12:32:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Bzb1l7Zf"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="lBx1+QuJ"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA05741A94;
-	Thu,  7 Mar 2024 12:31:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D78F384FD5;
+	Thu,  7 Mar 2024 12:32:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709814718; cv=none; b=YfnKAe+9LGSc0KP3VnL+b8LQ6VcEOkFuz6nGPSa6w/k3+XTQ8t3WXrqpNhUyNHTkHe1Uxugw6Fu7NGgztWS8qm2TYQGI/xy+V/yP3Nf2CNorIpePJiSMjolr8xf3839XkyTZBWoRXf4n0i5tWncalZl/W+ZpUheFJ7t3rWi2lPw=
+	t=1709814742; cv=none; b=qlrHjZF5gfMHB129LSyAWWqP2IoxSWOf210cWLZpG6im0mcsxbpDRKZ/wH/+4QTofWegGoXm0PSqWYJDQ20yNU069sTvF5x7u2OzfIF9J3u8Fx54earuwfFVlU9Ep75b/KRcRVbzS6RN5tyUW48IHEQlcqYJ0AChMc3b94KyOaY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709814718; c=relaxed/simple;
-	bh=xeHxrSQbO4a/rV3efFhMHDrWz7mv30QQMuGrfJCirxg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hqAz0ueHJyCvAWv3HTRQz4ygo9dRg3dTKzVjZj/jHVgggMRd9C9m6g4ydA5Ri9rAgnb8NZRjUV4/pgKo7Z/9YcNh8HKH/yE5vwsK1I7jYWtM3B4cVJqbggmhv9SopSMT2lB3yCRRsX7ZA/lCR5fhkh2fR7o/LP2TGLxaQpXUvGg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Bzb1l7Zf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 659A6C433F1;
-	Thu,  7 Mar 2024 12:31:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709814718;
-	bh=xeHxrSQbO4a/rV3efFhMHDrWz7mv30QQMuGrfJCirxg=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Bzb1l7ZfrRZ03Pxp/q8/QA+XKV/1P654+rwlFvzSTAU+8Kv3O50Ldl89F5z2bM+fg
-	 9jEc78VtH74Abb1rbfisiEmy5JEdhjKraoAAsm7oEPOqteqZXRyGYoLgIcDiuPmd1B
-	 7HrV1gppyJvIUZqgiRwaxA+xsukIjmMN9eUmRwdphtVFEOlKqWkt4rlNx/n6ZV3RgF
-	 fMwvy9lPzrExXCt2KbjtVhL9g49id+HmQv3+1+5hHM3PdA1kYTbr8Jb6gcWT8tuEiV
-	 QEfjnxEviQEVkQpiOuSLj3k67OK0Fg8owup5ILmPuVKs7KbY3Y+hcg0FvPblY26xkt
-	 wlpeoFFl53PCQ==
-Message-ID: <d1ca5d29-8ef4-4d7f-b1c8-bcb361e6c351@kernel.org>
-Date: Thu, 7 Mar 2024 14:31:51 +0200
+	s=arc-20240116; t=1709814742; c=relaxed/simple;
+	bh=CnKV7YkmwKVN45OVgq9HMp191oP0lkB4cDHb6peK+T4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=qSXw9glSI9pQzgAlZWw01fjMjQRLCoYzV23qVcUHioZC0HVjAXzgiDk9IEn3fvtI04niI/Hp8XJ3kLK8YOx/xl3LthwwB8UvrfrVCjtioVkV7NSWpGB2J32Y6dVJTbGOLtyTmvsS4k7e3p+6CmBWYuyk9U5TOBXTK9pp7uauiK4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=lBx1+QuJ; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+	s=201909; t=1709814736;
+	bh=CnKV7YkmwKVN45OVgq9HMp191oP0lkB4cDHb6peK+T4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=lBx1+QuJTEVHApTpCCDU+EV1Aykxe0USdn1M5qeFxUu86nOmkjduBDq8dT3o7qXpm
+	 oS8/qBbiILsQJC5KQx/qJRP/+1Rtwj+Mvna+PmMaQHKiOOUzj3K4BfsAnCXpYBeO5i
+	 sIHi1sZKR2G1jRkcILr1PE7EJZw85kHZ0/HyQZD5Je+4MUjufb3f6fIkyubjPbz8re
+	 /xYRYrDhHsNlHZi8hwJ5D8xkg2qXwM8ii3IePd37e1Jh7QAPge7a0+jwCSZNdI+ZOe
+	 Y4f3knEgXbFr14hWz3pvmzLU64Pzxk2jZ5fbpD4Fd7BcqwRmHFTOSol/RnqeVlE3F0
+	 mpc6I8Pch7Hkg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Tr7wZ6z4Xz4wc8;
+	Thu,  7 Mar 2024 23:32:14 +1100 (AEDT)
+From: Michael Ellerman <mpe@ellerman.id.au>
+To: Dawei Li <set_pte_at@outlook.com>, Christophe Leroy
+ <christophe.leroy@csgroup.eu>
+Cc: "npiggin@gmail.com" <npiggin@gmail.com>, "linuxppc-dev@lists.ozlabs.org"
+ <linuxppc-dev@lists.ozlabs.org>, "linux-ide@vger.kernel.org"
+ <linux-ide@vger.kernel.org>, "netdev@vger.kernel.org"
+ <netdev@vger.kernel.org>, "linux-wireless@vger.kernel.org"
+ <linux-wireless@vger.kernel.org>, "linux-scsi@vger.kernel.org"
+ <linux-scsi@vger.kernel.org>, "linux-serial@vger.kernel.org"
+ <linux-serial@vger.kernel.org>, "alsa-devel@alsa-project.org"
+ <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3] powerpc: macio: Make remove callback of macio driver
+ void returned
+In-Reply-To: <TYTP286MB356472357994D5EA49E2F5E3CA212@TYTP286MB3564.JPNP286.PROD.OUTLOOK.COM>
+References: <TYCP286MB232391520CB471E7C8D6EA84CAD19@TYCP286MB2323.JPNP286.PROD.OUTLOOK.COM>
+ <3dc29701-239f-4a3b-b571-b9732975bd73@csgroup.eu>
+ <TYTP286MB356472357994D5EA49E2F5E3CA212@TYTP286MB3564.JPNP286.PROD.OUTLOOK.COM>
+Date: Thu, 07 Mar 2024 23:32:14 +1100
+Message-ID: <87bk7qnrxt.fsf@mail.lhotse>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 3/9] usb: cdns3-ti: move reg writes from probe into
- ->runtime_resume()
-Content-Language: en-US
-To: =?UTF-8?Q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Peter Chen <peter.chen@kernel.org>,
- Pawel Laszczak <pawell@cadence.com>, Nishanth Menon <nm@ti.com>,
- Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- =?UTF-8?Q?Gr=C3=A9gory_Clement?= <gregory.clement@bootlin.com>,
- Kevin Hilman <khilman@kernel.org>, Alan Stern <stern@rowland.harvard.edu>,
- linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20240307-j7200-usb-suspend-v4-0-5ec7615431f3@bootlin.com>
- <20240307-j7200-usb-suspend-v4-3-5ec7615431f3@bootlin.com>
-From: Roger Quadros <rogerq@kernel.org>
-In-Reply-To: <20240307-j7200-usb-suspend-v4-3-5ec7615431f3@bootlin.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+Dawei Li <set_pte_at@outlook.com> writes:
+> Hi Christophe,
+>
+> On Tue, Feb 20, 2024 at 04:12:17PM +0000, Christophe Leroy wrote:
+>> Hi Michael,
+>>=20
+>> ping ?
+>>=20
+>> Le 01/02/2023 =C3=A0 15:36, Dawei Li a =C3=A9crit=C2=A0:
+>> > Commit fc7a6209d571 ("bus: Make remove callback return void") forces
+>> > bus_type::remove be void-returned, it doesn't make much sense for any
+>> > bus based driver implementing remove callbalk to return non-void to
+>> > its caller.
+>> >=20
+>> > This change is for macio bus based drivers.
+>> >=20
+>> > Signed-off-by: Dawei Li <set_pte_at@outlook.com>
+>>=20
+>> This patch is Acked , any special reason for not applying it ?
+>>=20
+>> Note that it now conflicts with commit 1535d5962d79 ("wifi: remove=20
+>> orphaned orinoco driver") but resolution is trivial, just drop the=20
+>> changes to that file.
+>
+> Thanks for picking it up, hardly believe that it's been one year.
+>
+> Michael,
+>
+> I will respin V4 if it's needed.
 
-On 07/03/2024 11:55, Théo Lebrun wrote:
-> The hardware initialisation register write sequence is only used at
-> probe. Move it from being done at explicitely at probe to being done
-> implicitely by pm_runtime_get_sync() that calls ->runtime_resume().
+No that's fine, I'll sort it out.
 
-explicitly / implicitly
-
-> 
-> Keep devicetree parsing in probe and add a new field in the private
-> struct to remember the USB2 refclk rate code computation result.
-> 
-> This opens the door to having the init sequence being executed later
-> down the road, at system-wide resume for example. This is NOT currently
-> happening because runtime PM is disabled at suspend without the
-> refcount being affected.
-> 
-> Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
-> ---
->  drivers/usb/cdns3/cdns3-ti.c | 90 +++++++++++++++++++++++++-------------------
->  1 file changed, 52 insertions(+), 38 deletions(-)
-> 
-> diff --git a/drivers/usb/cdns3/cdns3-ti.c b/drivers/usb/cdns3/cdns3-ti.c
-> index 5945c4b1e11f..4c8a557e6a6f 100644
-> --- a/drivers/usb/cdns3/cdns3-ti.c
-> +++ b/drivers/usb/cdns3/cdns3-ti.c
-> @@ -57,6 +57,7 @@ struct cdns_ti {
->  	unsigned vbus_divider:1;
->  	struct clk *usb2_refclk;
->  	struct clk *lpm_clk;
-> +	int usb2_refclk_rate_code;
->  };
->  
->  static const int cdns_ti_rate_table[] = {	/* in KHZ */
-> @@ -90,10 +91,8 @@ static int cdns_ti_probe(struct platform_device *pdev)
->  	struct device *dev = &pdev->dev;
->  	struct device_node *node = pdev->dev.of_node;
->  	struct cdns_ti *data;
-> -	int error;
-> -	u32 reg;
-> -	int rate_code, i;
->  	unsigned long rate;
-> +	int error, i;
->  
->  	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
->  	if (!data)
-> @@ -133,7 +132,9 @@ static int cdns_ti_probe(struct platform_device *pdev)
->  		return -EINVAL;
->  	}
->  
-> -	rate_code = i;
-> +	data->usb2_refclk_rate_code = i;
-> +	data->vbus_divider = device_property_read_bool(dev, "ti,vbus-divider");
-> +	data->usb2_only = device_property_read_bool(dev, "ti,usb2-only");
->  
->  	pm_runtime_enable(dev);
->  	error = pm_runtime_get_sync(dev);
-> @@ -142,40 +143,6 @@ static int cdns_ti_probe(struct platform_device *pdev)
->  		goto err;
->  	}
->  
-> -	/* assert RESET */
-> -	reg = cdns_ti_readl(data, USBSS_W1);
-> -	reg &= ~USBSS_W1_PWRUP_RST;
-> -	cdns_ti_writel(data, USBSS_W1, reg);
-> -
-> -	/* set static config */
-> -	reg = cdns_ti_readl(data, USBSS_STATIC_CONFIG);
-> -	reg &= ~USBSS1_STATIC_PLL_REF_SEL_MASK;
-> -	reg |= rate_code << USBSS1_STATIC_PLL_REF_SEL_SHIFT;
-> -
-> -	reg &= ~USBSS1_STATIC_VBUS_SEL_MASK;
-> -	data->vbus_divider = device_property_read_bool(dev, "ti,vbus-divider");
-> -	if (data->vbus_divider)
-> -		reg |= 1 << USBSS1_STATIC_VBUS_SEL_SHIFT;
-> -
-> -	cdns_ti_writel(data, USBSS_STATIC_CONFIG, reg);
-> -	reg = cdns_ti_readl(data, USBSS_STATIC_CONFIG);
-> -
-> -	/* set USB2_ONLY mode if requested */
-> -	reg = cdns_ti_readl(data, USBSS_W1);
-> -	data->usb2_only = device_property_read_bool(dev, "ti,usb2-only");
-> -	if (data->usb2_only)
-> -		reg |= USBSS_W1_USB2_ONLY;
-> -
-> -	/* set default modestrap */
-> -	reg |= USBSS_W1_MODESTRAP_SEL;
-> -	reg &= ~USBSS_W1_MODESTRAP_MASK;
-> -	reg |= USBSS_MODESTRAP_MODE_NONE << USBSS_W1_MODESTRAP_SHIFT;
-> -	cdns_ti_writel(data, USBSS_W1, reg);
-> -
-> -	/* de-assert RESET */
-> -	reg |= USBSS_W1_PWRUP_RST;
-> -	cdns_ti_writel(data, USBSS_W1, reg);
-> -
->  	error = of_platform_populate(node, NULL, NULL, dev);
->  	if (error) {
->  		dev_err(dev, "failed to create children: %d\n", error);
-> @@ -211,6 +178,52 @@ static void cdns_ti_remove(struct platform_device *pdev)
->  	platform_set_drvdata(pdev, NULL);
->  }
->  
-> +static int cdns_ti_runtime_resume(struct device *dev)
-> +{
-> +	struct cdns_ti *data = dev_get_drvdata(dev);
-> +	u32 reg;
-> +
-> +	/* assert RESET */
-> +	reg = cdns_ti_readl(data, USBSS_W1);
-> +	reg &= ~USBSS_W1_PWRUP_RST;
-> +	cdns_ti_writel(data, USBSS_W1, reg);
-> +
-> +	/* set static config */
-> +	reg = cdns_ti_readl(data, USBSS_STATIC_CONFIG);
-> +	reg &= ~USBSS1_STATIC_PLL_REF_SEL_MASK;
-> +	reg |= data->usb2_refclk_rate_code << USBSS1_STATIC_PLL_REF_SEL_SHIFT;
-> +
-> +	reg &= ~USBSS1_STATIC_VBUS_SEL_MASK;
-> +
-> +	if (data->vbus_divider)
-> +		reg |= 1 << USBSS1_STATIC_VBUS_SEL_SHIFT;
-> +
-> +	cdns_ti_writel(data, USBSS_STATIC_CONFIG, reg);
-> +	reg = cdns_ti_readl(data, USBSS_STATIC_CONFIG);
-> +
-> +	/* set USB2_ONLY mode if requested */
-> +	reg = cdns_ti_readl(data, USBSS_W1);
-> +
-> +	if (data->usb2_only)
-> +		reg |= USBSS_W1_USB2_ONLY;
-> +
-> +	/* set default modestrap */
-> +	reg |= USBSS_W1_MODESTRAP_SEL;
-> +	reg &= ~USBSS_W1_MODESTRAP_MASK;
-> +	reg |= USBSS_MODESTRAP_MODE_NONE << USBSS_W1_MODESTRAP_SHIFT;
-> +	cdns_ti_writel(data, USBSS_W1, reg);
-> +
-> +	/* de-assert RESET */
-> +	reg |= USBSS_W1_PWRUP_RST;
-> +	cdns_ti_writel(data, USBSS_W1, reg);
-
-I don't think USB controller requires a reset and re-init between runtime suspend/resume.
-
-What you need is reset/re-init during system Resume on certain platforms.
-So you should move this part of code into a helper function and call it
-from .probe() and .system_resume()
-
-
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct dev_pm_ops cdns_ti_pm_ops = {
-> +	RUNTIME_PM_OPS(NULL, cdns_ti_runtime_resume, NULL)
-> +};
-> +
->  static const struct of_device_id cdns_ti_of_match[] = {
->  	{ .compatible = "ti,j721e-usb", },
->  	{ .compatible = "ti,am64-usb", },
-> @@ -224,6 +237,7 @@ static struct platform_driver cdns_ti_driver = {
->  	.driver		= {
->  		.name	= "cdns3-ti",
->  		.of_match_table	= cdns_ti_of_match,
-> +		.pm	= pm_ptr(&cdns_ti_pm_ops),
->  	},
->  };
->  
-> 
-
--- 
-cheers,
--roger
+cheers
 
