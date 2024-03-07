@@ -1,97 +1,130 @@
-Return-Path: <linux-kernel+bounces-95767-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95769-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D2C0875244
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:50:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3241287524A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:50:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF68D1C2156A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:50:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 642811C22D87
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:50:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00D4312B144;
-	Thu,  7 Mar 2024 14:49:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 201E912CDB6;
+	Thu,  7 Mar 2024 14:50:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="SIOLXPmq"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="i8djEudV"
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B30711B94D;
-	Thu,  7 Mar 2024 14:49:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 003CC5B1FD;
+	Thu,  7 Mar 2024 14:50:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709822998; cv=none; b=OfELjcdkE6G/wBTcZ2PLx8ac/q/qu+YGJZVcP17TaSjvLW4rQS0g5jCUA4IX4oo3rA3+aPuZuoS9+lulKCm2fXCV2J48xPrjiYUCZ/RGun+NER0tznUw65KMyI8IvZf/T4Uu6p+vINKV/47vhglqiBUXVDrv9KH3K47tUR8ej0k=
+	t=1709823026; cv=none; b=APvAgHFjlWyDNCU4ib8UEj2j9D4ysFBTxG/ed3OWRZIfGSNlJExM9cW7c17pnqGzJzvhfJ77Vi4RhXOCFamSqjPJW/6JwJoz1fC/6uyni30fbKAgsV2PDt5EEWDKb/L5V2XK6Ew3BNzHr/Qw6hAhvprDR8s4I2DjmjelguZnFik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709822998; c=relaxed/simple;
-	bh=m7rJ+0egJzJtARHOsYtJ2DtjkXer4oCX2aD/B5er6ws=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=gDo+rlk38MB0cm36Um08FxHrkmXaMUqFpeFxHU8C2s1XtPrEh2l9fI89+6TTR4XXeI/eT0TVVU7hbx9rmf7YajBWUhrmCIfJq6MUJF5T2aNl9/5lqZjt9lT5qyAA5+cSRQNGaJUIRK62TvoVRHDgu/PJsPbRbzMRZX1nLtaMq9Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=SIOLXPmq; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1709822994;
-	bh=m7rJ+0egJzJtARHOsYtJ2DtjkXer4oCX2aD/B5er6ws=;
-	h=From:To:Cc:Subject:Date:From;
-	b=SIOLXPmqlTB70ND8BsPLGSLGfYA5mqSbmj9DKqb7/LD/nM5YLUUVR3ChCcuYr7Mxt
-	 cfN0gc8t2z6aAJihuUIi4pRI82RNIoCGutJJv6rwVJ1IuMJ71ryILSSLi2lbtIh5vr
-	 RdmsRCDa6/wbO6fhjctv0VIUE2EBNZjFO3lsBTkDO6QRKdKsWwyDTGvJFOsDYjMdK8
-	 iR1MVYmcoNIrx/Jxcjg9MYGrhiPXqN/QxXeQeWrgNEfwjMFBScCwf4LA5t1DbYoot3
-	 SY/sPFn+Agnxz3Z4KVI8Bpt1MH0LxqeOAHtUcr0Uty+jhr/YX16vk7LX5OFiqJ2PHD
-	 yTAkhiFlrVr2g==
-Received: from localhost.localdomain (broslavsky.collaboradmins.com [68.183.210.73])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 4C5FE37820DA;
-	Thu,  7 Mar 2024 14:49:51 +0000 (UTC)
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-To: Jaehoon Chung <jh80.chung@samsung.com>,
-	Ulf Hansson <ulf.hansson@linaro.org>,
-	tianshuliang <tianshuliang@hisilicon.com>,
-	Shawn Guo <shawn.guo@linaro.org>,
-	Jiancheng Xue <xuejiancheng@hisilicon.com>,
-	Shawn Lin <shawn.lin@rock-chips.com>
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
-	kernel@collabora.com,
-	kernel-janitors@vger.kernel.org,
-	linux-mmc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] mmc: dw_mmc: remove unneeded assignment
-Date: Thu,  7 Mar 2024 19:50:13 +0500
-Message-Id: <20240307145013.2721326-1-usama.anjum@collabora.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1709823026; c=relaxed/simple;
+	bh=bMgcq8RI+0U/9suH2RY7GnPRGcioM+SwL8B1CFmqRKI=;
+	h=Mime-Version:Content-Type:Date:Message-Id:From:Subject:Cc:To:
+	 References:In-Reply-To; b=WAVBL5r1Gf4hcMiZr/94v0v9dzBqN/WRox3NW0z7TYY84D3yQ7tp0yWNUnn1wEN7wyjlFFY0SqkUdQqskJhHBG0CwCmgF4K86fkbu1pLIJgtO9CLHsLOXQWiR0++fPs0SuHTY6SCpj3oVq7gSDO9GE1o1aorqb02pNHHyYhZLLs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=i8djEudV; arc=none smtp.client-ip=217.70.183.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 80720E000E;
+	Thu,  7 Mar 2024 14:50:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709823022;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5Np8Esugsr9ZGR7h4Wh+XY5vmJlU7fOGNOduAjb30l0=;
+	b=i8djEudVbUI2ZCGYHvGBtxY00fhEPP/loSQiIlYzcojCGeisT56oYNXXRffq8XtzR/cMoB
+	fPzYUv64iAnrQyLRhVWIpHHVq9nlmg/ubisuFkgTzmnbCm+xuRjPwrb+5Lnl+gV7gIP9Ne
+	E7w7p0jqTFsxRna6XOm6NG0khpDFjY7ehRu7VgHIIy4CleCY652a0Z8n8GOouf7rfU0yKF
+	uRfSaxBxrQKTnZfldzs3GTZM3jLFFC4mPXBgH970EYSifusoqpWTgiAZbI7aRlWhVTtx3o
+	QCQZX0aCv7cCE3iv/Kq362a9icYAN1tIEXJAE+CVOfDwnZg0RYWDtkbsoknnRA==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Thu, 07 Mar 2024 15:50:21 +0100
+Message-Id: <CZNLOCAIE6P7.1BJ23DWJPCSHS@bootlin.com>
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Subject: Re: [PATCH v4 2/9] dt-bindings: usb: ti,j721e-usb: add ti,j7200-usb
+ compatible
+Cc: "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>, "Krzysztof Kozlowski"
+ <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
+ "Roger Quadros" <rogerq@kernel.org>, "Peter Chen" <peter.chen@kernel.org>,
+ "Pawel Laszczak" <pawell@cadence.com>, "Nishanth Menon" <nm@ti.com>,
+ "Vignesh Raghavendra" <vigneshr@ti.com>, "Tero Kristo" <kristo@kernel.org>,
+ "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>,
+ =?utf-8?q?Gr=C3=A9gory_Clement?= <gregory.clement@bootlin.com>, "Kevin
+ Hilman" <khilman@kernel.org>, "Alan Stern" <stern@rowland.harvard.edu>,
+ <linux-usb@vger.kernel.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
+To: "Rob Herring" <robh@kernel.org>
+X-Mailer: aerc 0.15.2
+References: <20240307-j7200-usb-suspend-v4-0-5ec7615431f3@bootlin.com>
+ <20240307-j7200-usb-suspend-v4-2-5ec7615431f3@bootlin.com>
+ <20240307142159.GA2542409-robh@kernel.org>
+In-Reply-To: <20240307142159.GA2542409-robh@kernel.org>
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-The err is being set to 0 and replaced every time after this
-assignment. Remove this assignment as it is extraneous.
+Hello Rob,
 
-Fixes: e382ab741252 ("mmc: dw_mmc: add support for hi3798cv200 specific extensions of dw-mshc")
-Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
----
- drivers/mmc/host/dw_mmc-hi3798cv200.c | 1 -
- 1 file changed, 1 deletion(-)
+On Thu Mar 7, 2024 at 3:21 PM CET, Rob Herring wrote:
+> On Thu, Mar 07, 2024 at 10:55:03AM +0100, Th=C3=A9o Lebrun wrote:
+> > On J7200, the controller & its wrapper are reset on resume. It has the
+> > same behavior as ti,j721e-usb with a different SoC integration.
+> >=20
+> > Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
+> > ---
+> >  Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml | 3 +++
+> >  1 file changed, 3 insertions(+)
+> >=20
+> > diff --git a/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml b/=
+Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
+> > index 653a89586f4e..e8f7e7511483 100644
+> > --- a/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
+> > +++ b/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
+> > @@ -16,6 +16,9 @@ properties:
+> >        - items:
+> >            - const: ti,am64-usb
+> >            - const: ti,j721e-usb
+> > +      - items:
+> > +          - const: ti,j7200-usb
+> > +          - const: ti,j721e-usb
+>
+> Combine this with the previous entry:
+>
+> items:
+>   - enum:
+>       - ti,am64-usb
+>       - ti,j7200-usb
+>   - const: ti,j721e-usb
 
-diff --git a/drivers/mmc/host/dw_mmc-hi3798cv200.c b/drivers/mmc/host/dw_mmc-hi3798cv200.c
-index 61923a5183693..6099756e59b3c 100644
---- a/drivers/mmc/host/dw_mmc-hi3798cv200.c
-+++ b/drivers/mmc/host/dw_mmc-hi3798cv200.c
-@@ -87,7 +87,6 @@ static int dw_mci_hi3798cv200_execute_tuning(struct dw_mci_slot *slot,
- 			goto tuning_out;
- 
- 		prev_err = err;
--		err = 0;
- 	}
- 
- tuning_out:
--- 
-2.39.2
+Makes sense, will do. Full block will become:
+
+	properties:
+	  compatible:
+	    oneOf:
+	      - const: ti,j721e-usb
+	      - items:
+	          - enum:
+	              - const: ti,am64-usb
+	              - const: ti,j7200-usb
+	          - const: ti,j721e-usb
+
+Thanks,
+
+--
+Th=C3=A9o Lebrun, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
 
