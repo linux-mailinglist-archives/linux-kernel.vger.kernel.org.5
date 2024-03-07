@@ -1,191 +1,230 @@
-Return-Path: <linux-kernel+bounces-95488-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95487-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EB54874E3D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:52:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D6639874E38
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:52:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5396E282D60
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:52:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B5CE280E2C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:52:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A870912C52D;
-	Thu,  7 Mar 2024 11:48:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D9C112BF07;
+	Thu,  7 Mar 2024 11:47:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fo+YjDCQ"
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="NYT9CZbD"
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05EF1129A7A;
-	Thu,  7 Mar 2024 11:48:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD8CE1292F1
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 11:47:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709812098; cv=none; b=Ld5FY5YTw5/ieKLmtMDKA3CY/nTIYnpfXCiGpnKF0PIl6S7aeud6efYysotbrcEcsYVtxBLYq/dlqf2gdwbNz8sTlRxWkhnyQ7htpe4Zfy0n0drFAbE2ZXcS3jPRpjAYlQCLnf9N8TB6LmHkpLr/emr2d7eOhMpQGJ0LCAwFdQA=
+	t=1709812073; cv=none; b=kGRtMrzPnpgzapkG6x1EfJtfS6ZzZuxk8pOIj8jK3hOrkrJZh34SXsDenu8RNErbKskA9gQnJ3uBqYTo7w2mCIXqs3rz/OTYAvS5ZC0c4DuV13bKtX2q856OGSHzQxfXHXq7nigU4Nrq+tLKnXj8HUFDyMY6ePzijw5GonyMTdE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709812098; c=relaxed/simple;
-	bh=p1e4tJNMl2RFCMrte2AszGEoRzNHGeM0TnyX8cSFV2M=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=I3luVUeXgTysX4ofa+nCgOtEmZ90910ly9FvltLgsjpHx1nkqucmz4NLQ+QLNYEqdYkvFBYC5tAxzNUiwS8FgTRmpSzLqIkgd/iPTbr8Z50doCtug0k/PhXGuNUZq4s7QU4refu8qlJDG1zWoDe7nU+Eq5K2ck6zyn+rAwlHB+A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Fo+YjDCQ; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-412fe981ef1so4696975e9.1;
-        Thu, 07 Mar 2024 03:48:16 -0800 (PST)
+	s=arc-20240116; t=1709812073; c=relaxed/simple;
+	bh=Vrv0z7gQFMDUOBWY2rKoK6/7cKBL3W4o2tjUetSS3yw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=k6zyeGVIbOy9Stx4fUNloV//Suc3JBDMkFSo44By6/f7+h0CjGFbG5fTdWbX5RYUiGyT1pguZSwyCps63J+oHb2rGj8fQNqxseVm9JOI/eqxFLAgTtwm9bCYRHMmFjVz7emiyBvkaVWXFvn/k/IWTUSjosRSbaSJDZdVa12+4rs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=NYT9CZbD; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a456ab934eeso124321966b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 03:47:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709812095; x=1710416895; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=HdCRMTKRhqynPJO0vr+KIPrYHrZQvMYn+jwShMV7v90=;
-        b=Fo+YjDCQPclstjGrOSppSZvjV9iIVogbbN+yo84E520nvQh44YUC3YnirTwXJHMYdT
-         EC1ipNba7h8nMP1R/0P+By2ti0sEe+Ehs/jFX1CRb7dOEzdbNcUDuDifllO0bLeJigU0
-         HfflVm+p7syr5tx++fwRmIANLLRbJivy4QsPBN7JNxnOGDWITQyALMNZiGg7dO8aZPPy
-         tlB0GpGHCHr+3Ij20uK4nfLaTHxQ03ayMFy7B3fNT99j8xEXcnuCidmex1XV7lJ0JYGg
-         sPtuiEF7kVuozdfUKjWu9X9U81gW32XYLJ2TneFVsuN6RXMT2sQ0hcsB9uDkywSoqVXc
-         wtuA==
+        d=linaro.org; s=google; t=1709812069; x=1710416869; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9iTWvvRreThJbr792gSSUgcVGKkhqTvLaTQ6MbUXeg0=;
+        b=NYT9CZbDiJI1bjs4R0H4GhgAZSS5N7xYTdCMidxcwSld1d8/LrelKEn+ABgezg1oB6
+         Kx0QyA8OpbPFl92An2kaqZXXFpImTW2IX2X0w8q1NYO5pOIkw0VY0EDuQ5LMobAJYwVy
+         75oKjsZum8WEXUX5P1D/yTdAmzCJtAxmDKwLXhCjDanNTH+B1YxbjrgpW2qiNCuYh2S/
+         RteKEnNRocXHFkwCGJt6TJMzRuZbGQDTx0BHrjbxZnN3Re3j3tYB0pYsqmntWsuA9LaA
+         CROPwFUtidvAlK/nFzojkb/kSe54XB99oV15vIj1cpXSxMMYMN97Xf/P+ENn0JsP+Rgh
+         PAUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709812095; x=1710416895;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HdCRMTKRhqynPJO0vr+KIPrYHrZQvMYn+jwShMV7v90=;
-        b=p3jXY5aXK8W15Dtkz1drY6BAaIwX2HK7bCy+clSzgKZBxf3qdxER4NGCEpLnIrKDyS
-         9rXYZVsdr+19W5ILYClUu4jcuKzdXWc7qVnn5gt0zJ9A9CtTGHmh7TiZJekui9fpl9ro
-         wIHD5dw0nDG9S/MGOMknULxUKmTPXrCvOkJE7Hj98vcjqpzwqkbDzO6D9tiIpwN7o1Ja
-         0+PYK3dYYSlC0THPeGGLnb2i5PVzOFFlw8B3K7AWUMpXOeu6hTUEVzzG+WlfpFnvnGeK
-         CvmFdPJrQ08eC7KwEuUndXCIcvkBtOqF8QT2Xe+9mDI7RVESKWzFBZZHGulpkckamLIK
-         kVpg==
-X-Forwarded-Encrypted: i=1; AJvYcCVxQRpgIj2ZziMYiwjwY5ZJ5xIHb6vIMhrsDSCWFQmV+fnMcJbcTqnEwiTlCpTRwTCfeFSK3bQ9qhoaPO4dKcgu0Lpaiaml+O5TUp3pVXS9JRRISYNyyvDNr4dOAF6G/kzh3F09GeraQpJt5koRYNgzBAsjLxyRVP31yHcGY4E5ndFuxEFCgWhMsO5N
-X-Gm-Message-State: AOJu0YzTHxoKSYzmHoPPuDYDEDPmj5MN0LD7Ed6OgGffjm2+r8GAkMp7
-	ZX/PkEKMPG85Ml8IWGylIWNS5QUVmorRHVltz6ELqj1LINRT1how
-X-Google-Smtp-Source: AGHT+IFHgnbyzOxpiE/NPYUNciYRrQC8bvPnKwv7h8vdfmxZdkKUBxJdS+wQAto8IoYEvVYfaahYzw==
-X-Received: by 2002:a05:600c:4f91:b0:413:119:33e2 with SMTP id n17-20020a05600c4f9100b00413011933e2mr1328074wmq.14.1709812094868;
-        Thu, 07 Mar 2024 03:48:14 -0800 (PST)
-Received: from prasmi.home ([2a00:23c8:2500:a01:fef2:3c1d:a816:65f7])
-        by smtp.gmail.com with ESMTPSA id fc20-20020a05600c525400b00412ae4b45b3sm2401616wmb.30.2024.03.07.03.48.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Mar 2024 03:48:14 -0800 (PST)
-From: Prabhakar <prabhakar.csengg@gmail.com>
-X-Google-Original-From: Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To: Geert Uytterhoeven <geert+renesas@glider.be>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Magnus Damm <magnus.damm@gmail.com>
-Cc: linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org,
-	Prabhakar <prabhakar.csengg@gmail.com>,
-	Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH v2] dt-bindings: serial: renesas,scif: Document R9A09G057 support
-Date: Thu,  7 Mar 2024 11:47:31 +0000
-Message-Id: <20240307114731.34953-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1709812069; x=1710416869;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9iTWvvRreThJbr792gSSUgcVGKkhqTvLaTQ6MbUXeg0=;
+        b=ChnDFI401RsE1j5P11fUFkhtmnJSCOkbBGugQyy6JTLZNUZnIB7Rf8SEQ10iCJQe2R
+         +D6TxTjeX+NJJXzdlFTyesFUpfKyGuKvmIycX3TSJk8tGAPMph2DczW8lfaIiRs96gXv
+         UmM39BJSdBFMI9L2/oxFnH7aVBsf2tCWGzGgVwQtu557/dyj5DQLc49vjIAt+ACE8PPi
+         /+bLot6igw2u9/nAqFdXq7FFXkpUW8EVyWbwXUZpX9hBVA3HPqVrvrXLQBKAfA8dDmwi
+         98D5DyFhLayMKj7nnjqh3hlQPSPhYg94aRVeRekYvoDYuY6j0s2J3F0wSno2AuG7Fng1
+         exwA==
+X-Forwarded-Encrypted: i=1; AJvYcCVYAmTEP8GTvyS9XmuEZxOsB9ObQmtKsLDAPh8MlxgsjDgBnMWqflKSodzWoMtqa6xwd6EVFjKVFNSlZzS6PqABWDXQz8qAEUAV8ndS
+X-Gm-Message-State: AOJu0YxTbC+CX5e9XRXnNWpof+3g3yS4J9VzH6DU2WX2i2g3rPyF9ref
+	I0hmEeuqLCFyPgBXMpwzL8XP6gy431REVsKeGBMepKTKZyn0FM8ejneK70zSiac=
+X-Google-Smtp-Source: AGHT+IHRG8/2xC0WFEoGCqSGwJHFifqu4sOFzsxZ+jgZOKt7ZpnspuVHncf/NIbMkXl0Im//GVXc+Q==
+X-Received: by 2002:a17:906:c454:b0:a45:432:cacc with SMTP id ck20-20020a170906c45400b00a450432caccmr9577540ejb.61.1709812068821;
+        Thu, 07 Mar 2024 03:47:48 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id s2-20020a1709060d6200b00a45a73e0be9sm2859806ejh.180.2024.03.07.03.47.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Mar 2024 03:47:48 -0800 (PST)
+Message-ID: <4220eff4-4d77-492f-bdcd-a8e44b9c4f81@linaro.org>
+Date: Thu, 7 Mar 2024 12:47:46 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] i2c: exynos5: Init data before registering interrupt
+ handler
+Content-Language: en-US
+To: Marek Szyprowski <m.szyprowski@samsung.com>,
+ Jesper Nilsson <jesper.nilsson@axis.com>, Andi Shyti
+ <andi.shyti@kernel.org>, Alim Akhtar <alim.akhtar@samsung.com>
+Cc: linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ kernel@axis.com
+References: <CGME20240305105548eucas1p110f1ecf1570ff69a618ca86297eeba89@eucas1p1.samsung.com>
+ <20240305-i2c_exynos5-v3-1-17a749688806@axis.com>
+ <949c82da-f0dc-4824-ac57-bc86ae42d871@samsung.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <949c82da-f0dc-4824-ac57-bc86ae42d871@samsung.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+On 07/03/2024 12:41, Marek Szyprowski wrote:
+> On 05.03.2024 11:50, Jesper Nilsson wrote:
+>> devm_request_irq() is called before we initialize the "variant"
+>> member variable from of_device_get_match_data(), so if an interrupt
+>> is triggered inbetween, we can end up following a NULL pointer
+>> in the interrupt handler.
+>>
+>> This problem was exposed when the I2C controller in question was
+>> (mis)configured to be used in both secure world and Linux.
+>>
+>> That this can happen is also reflected by the existing code that
+>> clears any pending interrupts from "u-boot or misc causes".
+>>
+>> Move the clearing of pending interrupts and the call to
+>> devm_request_irq() to the end of probe.
+>>
+>> Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
+>> Fixes: 218e1496135e ("i2c: exynos5: add support for HSI2C on Exynos5260 SoC")
+>> Signed-off-by: Jesper Nilsson <jesper.nilsson@axis.com>
+>> ---
+>> Changes in v3:
+>> - Avoid multiple assignment
+>> - Link to v2: https://lore.kernel.org/r/20240304-i2c_exynos5-v2-1-7b9c312be719@axis.com
+>>
+>> Changes in v2:
+>> - Use dev_err_probe() instead of open coding it
+>> - Dropped the return failure if we can't find a match in devicetree
+>> - Link to v1: https://lore.kernel.org/r/20240304-i2c_exynos5-v1-1-e91c889d2025@axis.com
+>> ---
+>>   drivers/i2c/busses/i2c-exynos5.c | 29 +++++++++++++++--------------
+>>   1 file changed, 15 insertions(+), 14 deletions(-)
+>>
+>> diff --git a/drivers/i2c/busses/i2c-exynos5.c b/drivers/i2c/busses/i2c-exynos5.c
+>> index 385ef9d9e4d4..8458e22313a7 100644
+>> --- a/drivers/i2c/busses/i2c-exynos5.c
+>> +++ b/drivers/i2c/busses/i2c-exynos5.c
+>> @@ -906,23 +906,9 @@ static int exynos5_i2c_probe(struct platform_device *pdev)
+>>   	i2c->adap.algo_data = i2c;
+>>   	i2c->adap.dev.parent = &pdev->dev;
+>>   
+>> -	/* Clear pending interrupts from u-boot or misc causes */
+>> -	exynos5_i2c_clr_pend_irq(i2c);
+>> -
+>>   	spin_lock_init(&i2c->lock);
+>>   	init_completion(&i2c->msg_complete);
+>>   
+>> -	i2c->irq = ret = platform_get_irq(pdev, 0);
+>> -	if (ret < 0)
+>> -		goto err_clk;
+>> -
+>> -	ret = devm_request_irq(&pdev->dev, i2c->irq, exynos5_i2c_irq,
+>> -			       IRQF_NO_SUSPEND, dev_name(&pdev->dev), i2c);
+>> -	if (ret != 0) {
+>> -		dev_err(&pdev->dev, "cannot request HS-I2C IRQ %d\n", i2c->irq);
+>> -		goto err_clk;
+>> -	}
+>> -
+>>   	i2c->variant = of_device_get_match_data(&pdev->dev);
+>>   
+>>   	ret = exynos5_hsi2c_clock_setup(i2c);
+>> @@ -940,6 +926,21 @@ static int exynos5_i2c_probe(struct platform_device *pdev)
+>>   	clk_disable(i2c->clk);
+>>   	clk_disable(i2c->pclk);
+>>   
+>> +	/* Clear pending interrupts from u-boot or misc causes */
+>> +	exynos5_i2c_clr_pend_irq(i2c);
+> 
+> Just above this call the clocks have been disabled, so any access to the 
+> i2c host registers will result in freeze or external abort (depending on 
+> the soc/cpu).
+> 
+> To make things worse, this patch moved registering the interrupt handler 
+> after the i2c_add_adapter() call. This means that all i2c devices that 
+> will be probbed directly from i2c_add_adapter() won't be able to access 
+> the i2c bus, as the host controller is still not fully functional that 
+> time yet.
+> 
+> This breaks today's linux-next on all Exynos5+ platforms. Has anyone 
+> tested this change?
 
-Document support for the Serial Communication Interface with FIFO (SCIF)
-available in the Renesas RZ/V2H(P) (R9A09G057) SoC. The SCIF interface in
-the Renesas RZ/V2H(P) is similar to that available in the RZ/G2L
-(R9A07G044) SoC, with the only difference being that the RZ/V2H(P) SoC has
-three additional interrupts: one for Tx end/Rx ready and the other two for
-Rx and Tx buffer full, which are edge-triggered.
+I don't think so. So that's the reason my boards fail on today's
+next/master and next/pending-fixes.
 
-No driver changes are required as generic compatible string
-"renesas,scif-r9a07g044" will be used as a fallback on RZ/V2H(P) SoC.
+Untested code should not be send as fixes :/
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
----
-v1->v2
-* Added validation to check interrupts and interrupt-names count
+Thanks for reporting Marek (and saving me some bisecting).
 
-Note, this patch applies on top of series [0].
 
-[0] https://patchwork.ozlabs.org/project/devicetree-bindings/cover/20240307114217.34784-1-prabhakar.mahadev-lad.rj@bp.renesas.com/
----
- .../bindings/serial/renesas,scif.yaml         | 31 ++++++++++++++++---
- 1 file changed, 27 insertions(+), 4 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/serial/renesas,scif.yaml b/Documentation/devicetree/bindings/serial/renesas,scif.yaml
-index 6ba6b6d52208..a9c60334d702 100644
---- a/Documentation/devicetree/bindings/serial/renesas,scif.yaml
-+++ b/Documentation/devicetree/bindings/serial/renesas,scif.yaml
-@@ -77,6 +77,7 @@ properties:
-               - renesas,scif-r9a07g043      # RZ/G2UL and RZ/Five
-               - renesas,scif-r9a07g054      # RZ/V2L
-               - renesas,scif-r9a08g045      # RZ/G3S
-+              - renesas,scif-r9a09g057      # RZ/V2H(P)
-           - const: renesas,scif-r9a07g044   # RZ/G2{L,LC} fallback
- 
-   reg:
-@@ -91,6 +92,9 @@ properties:
-       - description: Break interrupt
-       - description: Data Ready interrupt
-       - description: Transmit End interrupt
-+      - description: Transmit End/Data Ready interrupt
-+      - description: Receive buffer full interrupt (EDGE trigger)
-+      - description: Transmit buffer empty interrupt (EDGE trigger)
- 
-   interrupt-names:
-     minItems: 4
-@@ -101,6 +105,9 @@ properties:
-       - const: bri
-       - const: dri
-       - const: tei
-+      - const: teidri
-+      - const: rxi-edge
-+      - const: txi-edge
- 
-   clocks:
-     minItems: 1
-@@ -197,15 +204,31 @@ allOf:
-         compatible:
-           contains:
-             enum:
--              - renesas,scif-r7s9210
--              - renesas,scif-r9a07g044
-+              - renesas,scif-r9a09g057
-     then:
-       properties:
-         interrupts:
--          minItems: 6
-+          minItems: 9
- 
-         interrupt-names:
--          minItems: 6
-+          minItems: 9
-+    else:
-+      if:
-+        properties:
-+          compatible:
-+            contains:
-+              enum:
-+                - renesas,scif-r7s9210
-+                - renesas,scif-r9a07g044
-+      then:
-+        properties:
-+          interrupts:
-+            minItems: 6
-+            maxItems: 6
-+
-+          interrupt-names:
-+            minItems: 6
-+            maxItems: 6
- 
- unevaluatedProperties: false
- 
--- 
-2.34.1
+Best regards,
+Krzysztof
 
 
