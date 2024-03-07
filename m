@@ -1,84 +1,87 @@
-Return-Path: <linux-kernel+bounces-96196-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96195-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C8DB875868
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 21:31:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44B99875861
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 21:31:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E5270B23251
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:31:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00032281262
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:31:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DFA7651B2;
-	Thu,  7 Mar 2024 20:31:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF4CD5FEE3;
+	Thu,  7 Mar 2024 20:31:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dq1Ij5cb"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="PcZLmtxG"
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 936DF633EB;
-	Thu,  7 Mar 2024 20:31:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD01224B29
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 20:31:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709843483; cv=none; b=mDsZG34JUvftC//7TTbyewgqeR4Kbc9Fuv2ps+9qXORPqixqRTg9+8udhBROwFHf7EwauW3Iqlkq+vjG4g9HizN4hEa0tvXAWh8Qa5zvMCjSnDxf+IppdEICYxX5+ZEE138ZmshplK2zlA3EoX4Ulb1WRPt4YKlG9tRmTbYBBSI=
+	t=1709843481; cv=none; b=Veo/MKV/a1uh20xNbx1UudylsdPl/ihlssD4Lk7BfuvxL6qH7NuJ/BDqp0LY6/Yjo+a57U+npg6zPyorKZSQvHV04NDntmrrJzUZEU9n7z38WmLEf9vIzZn6m4dmWC5ToT/rP2i934FOOL3zHmWp3izGRGJ/5YUpQqdm3ghDqbc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709843483; c=relaxed/simple;
-	bh=SpBFTgDYCZL5HMSP744NvFE2koQBVmNM5L2jWkZki7w=;
+	s=arc-20240116; t=1709843481; c=relaxed/simple;
+	bh=uFkSV3XWA6pSvBdWPTS5Z4D4hTCdELrOUpWgEurePV0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oiFAQp6FQ4Y/ujplG3Glb7YwiXmjzef5Dm62T8uhQF8Q6q4xrw2A0Cq+wcmvHkt6Wq1Co0qKYs/x6Jl/ohQPXJlIWfjBhnabCjk9YRGWJENSO6wEIb7s0p37qKocNBK8QT1MZwlh43p27DSS6uazkLxDSBQ0K9K+KunooeL65Ho=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Dq1Ij5cb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AF1DC433F1;
-	Thu,  7 Mar 2024 20:31:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709843483;
-	bh=SpBFTgDYCZL5HMSP744NvFE2koQBVmNM5L2jWkZki7w=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Dq1Ij5cbXC/azz2ARqvH18GU6nblsiWGJekKh8qOtyucIW4GqCRnXVbQlQjtTDrOw
-	 /QkuiKcsiHgteS5KrBFnY8QBf7g5BlAInJ5lA75KzFf02hYqh+iJTlYBkAhbD8wmcN
-	 MlcgMIrkMt5PPDeFFLmBWkrNhXZOwrWOTp3JIHIa1DcLWTyDHzHrbHVGosjmEtufOK
-	 o0H+MQGjAzJWkFcK+6eKhq8Yamb1XolFCnSNIjPhVH+lM9CvmbuF3VOGSHWZyqJXCW
-	 Oxl2l5XBcGLAfAFnlpjupMrL2nAN7mCz8/RL4c9k3rUaviU69PmCBCh0FHzrbA6NLs
-	 tlWLEc5gqsSpA==
-Date: Thu, 7 Mar 2024 21:31:12 +0100
-From: Niklas Cassel <cassel@kernel.org>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Marek Vasut <marek.vasut+renesas@gmail.com>,
-	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Kishon Vijay Abraham I <kishon@ti.com>,
-	Vidya Sagar <vidyas@nvidia.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Richard Zhu <hongxing.zhu@nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Minghuan Lian <minghuan.Lian@nxp.com>,
-	Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
-	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Jesper Nilsson <jesper.nilsson@axis.com>,
-	Srikanth Thokala <srikanth.thokala@intel.com>,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-	linux-arm-kernel@axis.com, Frank Li <Frank.Li@nxp.com>
-Subject: Re: [PATCH v9 04/10] PCI: dwc: ep: Fix DBI access failure for
- drivers requiring refclk from host
-Message-ID: <ZeokEJstpRSUPDTL@ryzen>
-References: <20240304-pci-dbi-rework-v9-0-29d433d99cda@linaro.org>
- <20240304-pci-dbi-rework-v9-4-29d433d99cda@linaro.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=OPZjbZqZu6yp/sir6Mc9Tt9tftfXY3Acn3MJ8XWC1OoK+bFPlNIqqN3FGbuUyTpfO+2szOIRQ/xp3yKyGX1KzPR3qrjl/nt9tz7ed0ITJEJ0JvBqjxVJP9A4hvI4XCOC+KTN4ljwI4mxYJT4/NQBx/KD5fEQ9uACIPtRyklY2uc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=PcZLmtxG; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1dc3b4b9b62so10170705ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 12:31:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1709843479; x=1710448279; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=td/qc1v+LcJcAxN8xi3WFcUXSnLHGt1lHwkmw1ZD0As=;
+        b=PcZLmtxGTh7uVIpOoxFb+QeLRCq04OP99KCB1sSGFi0d/uUTcPGVZwkss6BrXiAiUi
+         fhV3wi1KmFHke/EUAggJyb4TDH8uN6X9TWvYkhoFq/2TNkOkurSMCYzZ/OAwgZQkYQx8
+         +JL3tjctLJ3J2e2JwyNP5wJw6MY3H1FSyEZ7U=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709843479; x=1710448279;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=td/qc1v+LcJcAxN8xi3WFcUXSnLHGt1lHwkmw1ZD0As=;
+        b=ESPm1SSz1QGLxe2x5O4ZykXDjpfyOVXALRtjQ0CL8NFlGIJzzq91/qfk2kKfr8EHLp
+         4d9fY+i8hlHd+ftFSC8Wy/Z0GRi5DP5A4SDzvEZfbxzEp928ptF0iy9yW6SWBxWvb0J6
+         VN0t1ch6aCNLqWDiN6Jyvs4tFgH5k0a1JLxmx34z3i5qPONxqCEPDJ7XKjwQI9bqaGCg
+         KFOhu5Ic7ezmFdo9bT7pS6adFI6bBgjvbj9Lwv9tIEGbB1D7Ewi3e3i2j5TAIf8DG77y
+         /WWKKzoVucQODGLqW5xELQM4jeG6GdZOFfRikSDVq0ajnweCPhTLcaYRnD0Jn7VV3j4q
+         EyMQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW+/w5uCXXS+vLoZ//UdFHJ4E5mtJe2mEzRqAxOfG0WvGir4AATIZjEQ2ciD2qIV29TbsvD4fgCH9kZ3Flc9U9f9o2tf35t8qzQTmJl
+X-Gm-Message-State: AOJu0Ywqj8WVSpIe0toBgsjmkVBZv3aqgCcS9OEp1q6/8r6R1XQC+ERc
+	lAL37638oz3W9mWSPu7gypJ9JEFsNOTLmsZvTRpp+BIJXW2OZ43xgT5SC/n1Yg==
+X-Google-Smtp-Source: AGHT+IHhycg/pXareFKjHDwHXtqmeBe85lRVxuPqPrSPkJ5nHJkgXlFDDbM6P1CA4nS+KS/ufBK3GA==
+X-Received: by 2002:a17:903:22cf:b0:1db:9ff1:b59b with SMTP id y15-20020a17090322cf00b001db9ff1b59bmr3493970plg.23.1709843479184;
+        Thu, 07 Mar 2024 12:31:19 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id i9-20020a170902c94900b001dcc09487e8sm15044171pla.50.2024.03.07.12.31.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Mar 2024 12:31:18 -0800 (PST)
+Date: Thu, 7 Mar 2024 12:31:17 -0800
+From: Kees Cook <keescook@chromium.org>
+To: "GONG, Ruiqi" <gongruiqi@huaweicloud.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
+	David Rientjes <rientjes@google.com>,
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+	Xiu Jianfeng <xiujianfeng@huawei.com>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Jann Horn <jannh@google.com>, Matteo Rizzo <matteorizzo@google.com>,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2 0/9] slab: Introduce dedicated bucket allocator
+Message-ID: <202403071227.D29DE5F8C4@keescook>
+References: <20240305100933.it.923-kees@kernel.org>
+ <b5f9f094-51d3-445a-b19b-99fc1cd7cac1@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -87,55 +90,55 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240304-pci-dbi-rework-v9-4-29d433d99cda@linaro.org>
+In-Reply-To: <b5f9f094-51d3-445a-b19b-99fc1cd7cac1@huaweicloud.com>
 
-On Mon, Mar 04, 2024 at 02:52:16PM +0530, Manivannan Sadhasivam wrote:
-> The DWC glue drivers requiring an active reference clock from the PCIe host
-> for initializing their PCIe EP core, set a flag called 'core_init_notifier'
-> to let DWC driver know that these drivers need a special attention during
-> initialization. In these drivers, access to the hw registers (like DBI)
-> before receiving the active refclk from host will result in access failure
-> and also could cause a whole system hang.
+On Wed, Mar 06, 2024 at 09:47:36AM +0800, GONG, Ruiqi wrote:
 > 
-> But the current DWC EP driver doesn't honor the requirements of the drivers
-> setting 'core_init_notifier' flag and tries to access the DBI registers
-> during dw_pcie_ep_init(). This causes the system hang for glue drivers such
-> as Tegra194 and Qcom EP as they depend on refclk from host and have set the
-> above mentioned flag.
 > 
-> To workaround this issue, users of the affected platforms have to maintain
-> the dependency with the PCIe host by booting the PCIe EP after host boot.
-> But this won't provide a good user experience, since PCIe EP is _one_ of
-> the features of those platforms and it doesn't make sense to delay the
-> whole platform booting due to PCIe requiring active refclk.
+> On 2024/03/05 18:10, Kees Cook wrote:
+> > Hi,
+> > 
+> > Repeating the commit logs for patch 4 here:
+> > 
+> >     Dedicated caches are available For fixed size allocations via
+> >     kmem_cache_alloc(), but for dynamically sized allocations there is only
+> >     the global kmalloc API's set of buckets available. This means it isn't
+> >     possible to separate specific sets of dynamically sized allocations into
+> >     a separate collection of caches.
+> > 
+> >     This leads to a use-after-free exploitation weakness in the Linux
+> >     kernel since many heap memory spraying/grooming attacks depend on using
+> >     userspace-controllable dynamically sized allocations to collide with
+> >     fixed size allocations that end up in same cache.
+> > 
+> >     While CONFIG_RANDOM_KMALLOC_CACHES provides a probabilistic defense
+> >     against these kinds of "type confusion" attacks, including for fixed
+> >     same-size heap objects, we can create a complementary deterministic
+> >     defense for dynamically sized allocations.
+> > 
+> >     In order to isolate user-controllable sized allocations from system
+> >     allocations, introduce kmem_buckets_create(), which behaves like
+> >     kmem_cache_create(). (The next patch will introduce kmem_buckets_alloc(),
+> >     which behaves like kmem_cache_alloc().)
 > 
-> So to fix this issue, let's move all the DBI access from
-> dw_pcie_ep_init() in the DWC EP driver to the dw_pcie_ep_init_complete()
-> API. This API will only be called by the drivers setting
-> 'core_init_notifier' flag once refclk is received from host. For the rest
-> of the drivers that gets the refclk locally, this API will be called
-> within dw_pcie_ep_init().
-> 
-> Fixes: e966f7390da9 ("PCI: dwc: Refactor core initialization code for EP mode")
-> Co-developed-by: Vidya Sagar <vidyas@nvidia.com>
-> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
-> Reviewed-by: Frank Li <Frank.Li@nxp.com>
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
+> So can I say the vision here would be to make all the kernel interfaces
+> that handles user space input to use separated caches? Which looks like
+> creating a "grey zone" in the middle of kernel space (trusted) and user
+> space (untrusted) memory. I've also thought that maybe hardening on the
+> "border" could be more efficient and targeted than a mitigation that
+> affects globally, e.g. CONFIG_RANDOM_KMALLOC_CACHES.
 
-I'm not sure if the Fixes tag is stictly correct, since there is
-nothing wrong with the commit that the Fixes-tag is referencing.
+I think it ends up having a similar effect, yes. The more copies that
+move to memdup_user(), the more coverage is created. The main point is to
+just not share caches between different kinds of allocations. The most
+abused version of this is the userspace size-controllable allocations,
+which this targets. The existing caches (which could still be used for
+type confusion attacks when the sizes are sufficiently similar) have a
+good chance of being mitigated by CONFIG_RANDOM_KMALLOC_CACHES already,
+so this proposed change is just complementary, IMO.
 
-What this patch addresses is an additional use-case/feature,
-which allows you to start the EP-side before the RC-side.
+-Kees
 
-However, I'm guessing that you kept the Fixes-tag such that this
-patch will get backported. However, this patch is number 4/10 in
-the patch series. If this is a strict fix that you want backported,
-and it does not depend on any of the previous patches (it doesn't
-seem that way), then I think that you should have put it as patch
-1/10 in the series.
-
-Patch ordering aside:
-Reviewed-by: Niklas Cassel <cassel@kernel.org>
+-- 
+Kees Cook
 
