@@ -1,174 +1,292 @@
-Return-Path: <linux-kernel+bounces-95001-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95002-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B6A88747F6
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 07:20:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2ECFB8747FA
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 07:21:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 184361F2584D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 06:20:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 868CC287D60
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 06:21:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9B7D1BF38;
-	Thu,  7 Mar 2024 06:20:11 +0000 (UTC)
-Received: from smtpbgsg1.qq.com (smtpbgsg1.qq.com [54.254.200.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E510C1C6B0;
+	Thu,  7 Mar 2024 06:21:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Lgt4Gvmb"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B9A4DF55;
-	Thu,  7 Mar 2024 06:20:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.254.200.92
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07AAC107A0;
+	Thu,  7 Mar 2024 06:21:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709792411; cv=none; b=BZWejaFx5AjoqhJJhNEFCMHmcW+zhQhbigUYnv2cFMR/qF05hciHEwQxEtcboapeWEnQvQCl9c4cqmCgWOU/9TDNkXyBBYk5p0ztkrIxv7wDyjftVPse1Pp01IYbG5i3SUAOztB4pij4RVLAwlc3xZutTo6BZr/ZPDzpcpwJaoo=
+	t=1709792478; cv=none; b=Jvf05y/ym9POGrFbOkywPvUczqMx1QzRPZXMcGtkWPIi8wO7W5dK6pvMXsW/WMUF20zv2Pgi7x9euZNV7hUrn/5QIw5/vmsM/KtxzpExrORN2a+Met7BdE5P/msNOOYXvFpnPFFLZYYOoK15HaH8cWFz1nArG3TLddHcnqG6pfM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709792411; c=relaxed/simple;
-	bh=j3yWuejBZBKKlxe3rNUKzA09kOU9/6mpjPimlFDFC5E=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=i+KWAeasaikzF7H9R74BqSx3ffS26gREnuho6/XwkUwoz0OGJkC8XHXPZfGm6k5+rZvA8DL5g4Sukepwdn3gZZaS5Ca5Sfx9nwAHkn01j9YcLvR/zeHUenQzN4MAEZGOuHxRiqp/V710Jt0jHmj+j2KdimEirG6lp87O+ZdEI1Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com; spf=pass smtp.mailfrom=uniontech.com; arc=none smtp.client-ip=54.254.200.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uniontech.com
-X-QQ-mid: bizesmtp89t1709792319t5ocxlui
-X-QQ-Originating-IP: u3EQS7kP8U3VDMCXVn7nsuBT8nJ4UIZUTBPGzRxAsQc=
-Received: from winn-pc ( [113.57.152.160])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Thu, 07 Mar 2024 14:18:38 +0800 (CST)
-X-QQ-SSF: 01400000000000I0I000000A0000000
-X-QQ-FEAT: 5q30pvLz2if4oetgJCutpIv/qq/dnVqK4xyUbWJFUwvV8Cf8vAh+aMwKSMdQ4
-	teTUb4wiFyu8Rzhn/1BfxkvIMD+o6bLVbyyj71OGDR4gM/ohmZHrc8/LsJuhhlIE9QQPgDh
-	U3XIHaKYj5m+yaCBlfSUC9QbaNtTSwHEk+lKGyrh35mAC274FVs27opvAwNadWByaaJnDm+
-	Q8OzEPn+HgyokixphNjKC4+rrzlD4CvDIar64tJCnGn6SavsBfZv3iNClpu0z+UrGC6EQub
-	C++GEBNX2+uPjKOAArZKJbFNenmN2VBbZwk5whT6qs8JVotkxpQLi03Jst6NVWqBkoG4Gm7
-	zSksAHez1GuA4q5ZKBXvjnBGC/zkgyjKJPJExgdd7XFGjpG0GsZYQfWCuSpB4lR9SAeM/RK
-	Tsv3JlIRBTQ=
-X-QQ-GoodBg: 1
-X-BIZMAIL-ID: 6209662112908991544
-Date: Thu, 7 Mar 2024 14:18:37 +0800
-From: Winston Wen <wentao@uniontech.com>
-To: Stephen Rothwell <sfr@canb.auug.org.au>, Jan Kara <jack@suse.cz>, Peter
- Zijlstra <peterz@infradead.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the ext3 tree
-Message-ID: <BB8327439DE51911+20240307141837.3c067e2b@winn-pc>
-In-Reply-To: <20240307110717.50b64fe9@canb.auug.org.au>
-References: <20240307110717.50b64fe9@canb.auug.org.au>
-Organization: Uniontech
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1709792478; c=relaxed/simple;
+	bh=0icvtgE8M58pWa4q1sSV2EJUsQpgcYi4WAyBCV7cpLE=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=MZenm/pUzBz0Lcta/NpxW+ZVf6rXdErkZYxhc6anoCsT2xFQ/qxFUYlktyfbu1vRARxpmcBFHfdgLuziZ8ggeJEMg1qJS9SavoC21ccJd3olulbqp12CdFTLbmycLe5/Lwmxm3iS/egenXHo3WmBw0ek8D8uCPkCd7bj0yFsy4A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Lgt4Gvmb; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4274eKGM020752;
+	Thu, 7 Mar 2024 06:21:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=I4VSkzb
+	yXnOaOWRe/s0Mfawm97Jzf4wpZf3Ejg331aA=; b=Lgt4GvmbgHgMfo7WmXtWp1D
+	pxKl6pxCK/mOzuERBjvMwWJGauC5TSDewiMLLPwgBgbzEdjnyyPziYWwimQ5CP9e
+	xemcZPAunLEh4miHXniOGJu3drdLvFT6UzVwQQgZCzzJpwERYDUNuGJZ9QwBGrSW
+	3MztItG+ibKjkxc1yqnph8hYaTqwpMBzhQ+yw8ix+vyhaV4kZ8BG2xG/dz9w5fUB
+	G40u+ucBrgR7g+81hIu4EKCmQ1VQ/qdbr8VTolTg+cEFMiMiJebS2WIXhouX90AP
+	Qnb1nmp4qGIuTuiorx9EpR+LQwZ78ZkXxN2kNV89ynmkjvo/f5i0/3kJOxlnB0A=
+	=
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wpsxhhutm-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 07 Mar 2024 06:21:09 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4276L8Sn013991
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 7 Mar 2024 06:21:08 GMT
+Received: from hu-kriskura-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 6 Mar 2024 22:21:03 -0800
+From: Krishna Kurapati <quic_kriskura@quicinc.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring
+	<robh+dt@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Wesley Cheng
+	<quic_wcheng@quicinc.com>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "Greg
+ Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Felipe Balbi
+	<balbi@kernel.org>, Johan Hovold <johan@kernel.org>
+CC: <devicetree@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_ppratap@quicinc.com>, <quic_jackp@quicinc.com>,
+        Krishna Kurapati
+	<quic_kriskura@quicinc.com>
+Subject: [PATCH v16 0/9] Add multiport support for DWC3 controllers
+Date: Thu, 7 Mar 2024 11:50:43 +0530
+Message-ID: <20240307062052.2319851-1-quic_kriskura@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="MP_/EEmQMRzKmMSEPIz7proBNED"
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:uniontech.com:qybglogicsvrgz:qybglogicsvrgz6a-1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: bxKyiTn24t_PLKgs0qA4KQZQj-wVbIMk
+X-Proofpoint-ORIG-GUID: bxKyiTn24t_PLKgs0qA4KQZQj-wVbIMk
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-07_02,2024-03-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ lowpriorityscore=0 phishscore=0 adultscore=0 spamscore=0 impostorscore=0
+ mlxlogscore=999 priorityscore=1501 malwarescore=0 clxscore=1015 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2403070044
 
---MP_/EEmQMRzKmMSEPIz7proBNED
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Currently the DWC3 driver supports only single port controller which
+requires at most two PHYs ie HS and SS PHYs. There are SoCs that has
+DWC3 controller with multiple ports that can operate in host mode.
+Some of the port supports both SS+HS and other port supports only HS
+mode.
 
-On Thu, 7 Mar 2024 11:07:17 +1100
-Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+This change primarily refactors the Phy logic in core driver to allow
+multiport support with Generic Phy's.
 
-> Hi all,
-> 
-> After merging the ext3 tree, today's linux-next build (x86_64
-> allmodconfig) failed like this:
-> 
-> In file included from include/linux/sysctl.h:27,
->                  from include/linux/fanotify.h:5,
->                  from fs/notify/fanotify/fanotify.c:2:
-> fs/notify/fanotify/fanotify.c: In function 'fanotify_get_response':
-> fs/notify/fanotify/fanotify.c:233:48: error: suggest parentheses
-> around arithmetic in operand of '|' [-Werror=parentheses] 233 |
->                             TASK_KILLABLE|TASK_FREEZABLE); |
->                                       ^ include/linux/wait.h:283:11:
-> note: in definition of macro '___wait_is_interruptible' 283 |
->  (state & (TASK_INTERRUPTIBLE | TASK_WAKEKILL))) |           ^~~~~
-> include/linux/wait.h:935:9: note: in expansion of macro
-> '___wait_event' 935 |         ___wait_event(wq, condition, state, 0,
-> 0, schedule()) |         ^~~~~~~~~~~~~
-> include/linux/wait.h:958:25: note: in expansion of macro
-> '__wait_event_state' 958 |                 __ret =
-> __wait_event_state(wq_head, condition, state);          \ |
->               ^~~~~~~~~~~~~~~~~~
-> fs/notify/fanotify/fanotify.c:231:15: note: in expansion of macro
-> 'wait_event_state' 231 |         ret =
-> wait_event_state(group->fanotify_data.access_waitq, |
-> ^~~~~~~~~~~~~~~~ cc1: all warnings being treated as errors
-> 
-> Caused by commit
-> 
->   3440e7e55ced ("fanotify: allow freeze when waiting response for
-> permission events")
-> 
-> Though, I guess, you could argue that the ___wait_is_interruptible
-> macro should parenthesise the use of its "state" argument.
-> 
-> I have used the ext3 tree from next-20240306 for today.
-> 
+Changes have been tested on  QCOM SoC SA8295P which has 4 ports (2
+are HS+SS capable and 2 are HS only capable).
 
-Sorry I missed this warning. And agreed! I can add parentheses on the
-call side, but it may be more reasonable to add them in the macro.
+This series depends on removal of ACPI from DWC3 QCOM wrapper [1].
 
+Changes in v16:
+Removing ACPI has simplified the interrupt reading in wrapper. Also
+the logic to find number of ports is based on dp_hs_phy interrupt check
+in DT. Enabling and disabling interrupts is now done per port. Added
+info on power event irq in commit message.
 
-Hey Peter,
+Changes in v15:
+Added minItems property in qcom,dwc3 bindings as suggested by Rob.
+Retained all RB's/ACK's got in v14.
 
-Could you please take a look at the patch attached at your convenience?
-Thanks!
+Changes in v14:
+Moved wrapper binding update to 5th patch in the series as it deals
+with only wakeup and not enumeration. The first part of the series
+deals with enumeration and the next part deals with wakeup.
+Updated commit text for wrapper driver patches.
+Added error checks in get_port_index and setup_irq call which were
+missing in v13.
+Added SOB and CDB tags appropriately for the patches.
+Rebased code on top of latest usb next.
+DT changes have been removed and will be sent as a separate series.
+
+Changes in v13:
+This series is a subset of patches in v11 as the first 3 patches in v11
+have been mereged into usb-next.
+Moved dr_mode property from platform specific files to common sc8280xp DT.
+Fixed function call wrapping, added comments and replaced #defines with
+enum in dwc3-qcom for identifying IRQ index appropriately.
+Fixed nitpicks pointed out in v11 for suspend-resume handling.
+Added reported-by tag for phy refactoring patch as a compile error was
+found by kernel test bot [1].
+Removed reviewed-by tag of maintainer for phy refactoring patch as a minor
+change of increasing phy-names array size by 2-bytes was done to fix
+compilation issue mentioned in [1].
+
+Changes in v12:
+Pushed as a subset of acked but no-yet-merged patches of v11 with intent
+of making rebase of other patches easy. Active reviewers from community
+suggested that it would be better to push the whole series in one go as it
+would give good clarity and context for all the patches in the series.
+So pushed v13 for the same addressing comments received in v11.
+
+Changes in v11:
+Implemented port_count calculation by reading interrupt-names from DT.
+Refactored IRQ handling in dwc3-qcom.
+Moving of macros to xhci-ext-caps.h made as a separate patch.
+Names of interrupts to be displayed on /proc/interrupts set to the ones
+present in DT.
+
+Changes in v10:
+Refactored phy init/exit/power-on/off functions in dwc3 core
+Refactored dwc3-qcom irq registration and handling
+Implemented wakeup for multiport irq's
+Moved few macros from xhci.h to xhci-ext-caps.h
+Fixed nits pointed out in v9
+Fixed Co-developed by and SOB tags in patches 5 and 11
+
+Changes in v9:
+Added IRQ support for DP/DM/SS MP Irq's of SC8280
+Refactored code to read port count by accessing xhci registers
+
+Changes in v8:
+Reorganised code in patch-5
+Fixed nitpicks in code according to comments received on v7
+Fixed indentation in DT patches
+Added drive strength for pinctrl nodes in SA8295 DT
+
+Changes in v7:
+Added power event irq's for Multiport controller.
+Udpated commit text for patch-9 (adding DT changes for enabling first
+port of multiport controller on sa8540-ride).
+Fixed check-patch warnings for driver code.
+Fixed DT binding errors for changes in snps,dwc3.yaml
+Reabsed code on top of usb-next
+
+Changes in v6:
+Updated comments in code after.
+Updated variables names appropriately as per review comments.
+Updated commit text in patch-2 and added additional info as per review
+comments.
+The patch header in v5 doesn't have "PATHCH v5" notation present. Corrected
+it in this version.
+
+Changes in v5:
+Added DT support for first port of Teritiary USB controller on SA8540-Ride
+Added support for reading port info from XHCI Extended Params registers.
+
+Changes in RFC v4:
+Added DT support for SA8295p.
+
+Changes in RFC v3:
+Incase any PHY init fails, then clear/exit the PHYs that
+are already initialized.
+
+Changes in RFC v2:
+Changed dwc3_count_phys to return the number of PHY Phandles in the node.
+This will be used now in dwc3_extract_num_phys to increment num_usb2_phy 
+and num_usb3_phy.
+Added new parameter "ss_idx" in dwc3_core_get_phy_ny_node and changed its
+structure such that the first half is for HS-PHY and second half is for
+SS-PHY.
+In dwc3_core_get_phy, for multiport controller, only if SS-PHY phandle is
+present, pass proper SS_IDX else pass -1.
+
+Tests done:
+
+a) Tested enumeration and wakeup on Tertiary controller of SA8540 Ride
+/ # lsusb
+Bus 001 Device 001: ID 1d6b:0002
+Bus 001 Device 002: ID 03f0:134a
+Bus 002 Device 001: ID 1d6b:0003
+
+/ # dmesg | grep ports
+[    0.326208] xhci-hcd xhci-hcd.0.auto: Host supports USB 3.1 Enhanced SuperSpeed
+[    0.327065] hub 1-0:1.0: 4 ports detected
+[    0.328289] hub 2-0:1.0: 2 ports detected
+
+b) Tested enumeration and working of device mode on SA8450 QRD
+
+c) Interrupts registering properly:
+
+/ # cat /proc/interrupts  |grep phy
+158:  1 0 0 0 0 0 0 0 PDC 127 Edge      dp_hs_phy_1
+159:  0 0 0 0 0 0 0 0 PDC 129 Edge      dp_hs_phy_2
+160:  0 0 0 0 0 0 0 0 PDC 131 Edge      dp_hs_phy_3
+161:  0 0 0 0 0 0 0 0 PDC 133 Edge      dp_hs_phy_4
+162:  2 0 0 0 0 0 0 0 PDC 126 Edge      dm_hs_phy_1
+163:  0 0 0 0 0 0 0 0 PDC  16 Level     ss_phy_1
+164:  0 0 0 0 0 0 0 0 PDC 128 Edge      dm_hs_phy_2
+165:  0 0 0 0 0 0 0 0 PDC  17 Level     ss_phy_2
+166:  0 0 0 0 0 0 0 0 PDC 130 Edge      dm_hs_phy_3
+167:  0 0 0 0 0 0 0 0 PDC 132 Edge      dm_hs_phy_4
+
+[1]: https://lore.kernel.org/all/20240305093216.3814787-1-quic_kriskura@quicinc.com/
+
+Links to previous versions:
+Link to v15: https://lore.kernel.org/all/20240216005756.762712-1-quic_kriskura@quicinc.com/
+Link to v14: https://lore.kernel.org/all/20240206051825.1038685-1-quic_kriskura@quicinc.com/
+Link to v13: https://lore.kernel.org/all/20231007154806.605-1-quic_kriskura@quicinc.com/
+Link to v12: https://lore.kernel.org/all/20231004165922.25642-1-quic_kriskura@quicinc.com/
+Link to v11: https://lore.kernel.org/all/20230828133033.11988-1-quic_kriskura@quicinc.com/
+Link to v10: https://lore.kernel.org/all/20230727223307.8096-1-quic_kriskura@quicinc.com/
+Link to v9: https://lore.kernel.org/all/20230621043628.21485-1-quic_kriskura@quicinc.com/
+Link to v8: https://lore.kernel.org/all/20230514054917.21318-1-quic_kriskura@quicinc.com/
+Link to v7: https://lore.kernel.org/all/20230501143445.3851-1-quic_kriskura@quicinc.com/
+Link to v6: https://lore.kernel.org/all/20230405125759.4201-1-quic_kriskura@quicinc.com/
+Link to v5: https://lore.kernel.org/all/20230310163420.7582-1-quic_kriskura@quicinc.com/
+Link to RFC v4: https://lore.kernel.org/all/20230115114146.12628-1-quic_kriskura@quicinc.com/
+Link to RFC v3: https://lore.kernel.org/all/1654709787-23686-1-git-send-email-quic_harshq@quicinc.com/#r
+Link to RFC v2: https://lore.kernel.org/all/1653560029-6937-1-git-send-email-quic_harshq@quicinc.com/#r
+
+Krishna Kurapati (9):
+  dt-bindings: usb: Add bindings for multiport properties on DWC3
+    controller
+  usb: dwc3: core: Access XHCI address space temporarily to read port
+    info
+  usb: dwc3: core: Skip setting event buffers for host only controllers
+  usb: dwc3: core: Refactor PHY logic to support Multiport Controller
+  dt-bindings: usb: qcom,dwc3: Add bindings for SC8280 Multiport
+  usb: dwc3: qcom: Add helper function to request wakeup interrupts
+  usb: dwc3: qcom: Refactor IRQ handling in glue driver
+  usb: dwc3: qcom: Enable wakeup for applicable ports of multiport
+  usb: dwc3: qcom: Add multiport suspend/resume support for wrapper
+
+ .../devicetree/bindings/usb/qcom,dwc3.yaml    |  34 ++
+ .../devicetree/bindings/usb/snps,dwc3.yaml    |  13 +-
+ drivers/usb/dwc3/core.c                       | 325 +++++++++++++-----
+ drivers/usb/dwc3/core.h                       |  19 +-
+ drivers/usb/dwc3/drd.c                        |  15 +-
+ drivers/usb/dwc3/dwc3-qcom.c                  | 256 +++++++++-----
+ 6 files changed, 487 insertions(+), 175 deletions(-)
 
 -- 
-Thanks,
-Winston
-
---MP_/EEmQMRzKmMSEPIz7proBNED
-Content-Type: text/x-patch
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename=0001-wait-add-parentheses-to-state-argument-in-macro.patch
-
-From 17bdb67492823e90e77f4e3159d631efc4cdd865 Mon Sep 17 00:00:00 2001
-From: Winston Wen <wentao@uniontech.com>
-Date: Thu, 7 Mar 2024 10:59:59 +0800
-Subject: [PATCH 1/2] wait: add parentheses to "state" argument in macro
-
-Now if we use macro wait_event_state() like this:
-
-        wait_event_state(waitq, condition,
-                        TASK_KILLABLE|TASK_FREEZABLE);
-
-we'll get a build warning in __wait_is_interruptible because of:
-
-        ((state) & (TASK_INTERRUPTIBLE | TASK_WAKEKILL)))
-
-Parenthesise the use of "state" argument to avoid this warning as
-it's very common to use "TASK_*|TASK_*" as function parameter in kernel.
-
-Signed-off-by: Winston Wen <wentao@uniontech.com>
----
- include/linux/wait.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/linux/wait.h b/include/linux/wait.h
-index 8aa3372f21a0..a4e57865aded 100644
---- a/include/linux/wait.h
-+++ b/include/linux/wait.h
-@@ -280,7 +280,7 @@ static inline void wake_up_pollfree(struct wait_queue_head *wq_head)
- 
- #define ___wait_is_interruptible(state)						\
- 	(!__builtin_constant_p(state) ||					\
--	 (state & (TASK_INTERRUPTIBLE | TASK_WAKEKILL)))
-+	 ((state) & (TASK_INTERRUPTIBLE | TASK_WAKEKILL)))
- 
- extern void init_wait_entry(struct wait_queue_entry *wq_entry, int flags);
- 
--- 
-2.43.0
-
-
---MP_/EEmQMRzKmMSEPIz7proBNED--
+2.34.1
 
 
