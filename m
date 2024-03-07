@@ -1,76 +1,73 @@
-Return-Path: <linux-kernel+bounces-95926-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95927-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3760D87550B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 18:22:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21FD787550C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 18:23:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E834E284BAA
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:22:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF3951F229F4
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:22:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE121130AF1;
-	Thu,  7 Mar 2024 17:21:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93014130AE3;
+	Thu,  7 Mar 2024 17:22:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="S5vj2t6U"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ew7PLEQC"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41E61130ACC;
-	Thu,  7 Mar 2024 17:21:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AF9F12F5BD
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 17:22:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709832118; cv=none; b=ck0ML+KeBITHnHKxkFaVh9Aq68rbNAkBPBmjcq1XZy4AWelW2vaVC6dCzgE5zp63gdZOoY4ww1jWTQR4M1d4qbUcnvLsGGnH1JnDw/Q8YrssFK86fy2BoTWq8n4NezV1UHCJPmemKmByf00E0/IggB5qeV6AING5t49yZaE+Hfk=
+	t=1709832173; cv=none; b=hAeyYZa83cdxubk9J3LuawAO2M+Us7LGbdAVm2qxPkGURr0roq6OaMosvEsZj1dAvY4i0drmn3PiynUBYD0Wt2lAYuWC6lJQdBoA8/JnZ49yvO1bppOsMayiaKnxraObFWXfRuNAbRoR9xJZBBuF/D6ZBuOJmZDkzGUroEpHv20=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709832118; c=relaxed/simple;
-	bh=YZybhNNI2z9K9HHtsdU1tEnwKmlAkpV4Dy3FViCKkwc=;
+	s=arc-20240116; t=1709832173; c=relaxed/simple;
+	bh=TmbB09GJpy+aCGZ8NeqMnq6ND5GYUdhyNoFR8Mz5HZQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=g7ycX4xOTBalwdvE1hOJPsnKGeZca3d0jUUYzBi4RYc9R/NnBAtJv4rVQSm/fdbu20G+8IeqbxBEzLoD8PUjuYkjVZLIWY20wKSvLLK5RM4LX/IzVVUjOcva+/ZcYicTQcxcWnGxlLdpB7Zl5S4KzLiQiRw0ZGRP8tbYAm8qCfw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=S5vj2t6U; arc=none smtp.client-ip=198.175.65.16
+	 Content-Type:Content-Disposition:In-Reply-To; b=Oj3HRlgewXmHWy15M9QsDnX5+qUqzc9/Mmc+kCHIc3mzb6cJiBPHJhM2WkxpnCeCwzJZzwI3LWqJzRgiDYG6bM5n4fDr2qqvInmYBFf8r8ZdppTYtNROsgL48bDr07d+zWp+zqvdhYyyCJvSwOWVqwb5dPdXmFYiCgd9hQ/8sXA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ew7PLEQC; arc=none smtp.client-ip=198.175.65.9
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709832116; x=1741368116;
+  t=1709832172; x=1741368172;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=YZybhNNI2z9K9HHtsdU1tEnwKmlAkpV4Dy3FViCKkwc=;
-  b=S5vj2t6UdOOA3SpNFOaWqxEZYCe5rAx2MYMHZlviYmTgBCahob1RPAs/
-   G76LMGFDoBMLycB9MLkNFKKma1owUFjUZm9Rp6XJDygeHLz0889I/3hsz
-   eETcC5mKC0T7iqvnh7iu3cE+Dm3OoXc+TtkuBkT7o/1aqx2f13MwhbOTS
-   nHFHVUOZ2D7nUcN5DeXclQSSVfcVlzlK2zwIKoJLNLPXbDe/+28SkNF4U
-   oI0wi3QF5U4agPIPpakDNGxy0spZXMOj25ixamOD5blDahTSF2nO6HRk8
-   xjAMvPxmVIcCjC9u05lH80Es0FT92VhteVAfSh/lp/GO4KMh1CiS7dzU+
+  bh=TmbB09GJpy+aCGZ8NeqMnq6ND5GYUdhyNoFR8Mz5HZQ=;
+  b=Ew7PLEQCz3nMPH28UK3vDAgoZSiLCr5Uv361yMtAnoagBxK9rP+2gbFB
+   l1Tuhr4OELGp+dVP0nQRIJRRBT4/sCUbTz6CHvHEEjPkk9vD6EdyIEaUr
+   gLDu8+KgEJxVj7yXTu/a/GwCmYnZQGBuVWfRcTecLydSvOCaYzGvDwD4t
+   8R4ATcwAf1jhetIWn3n8721O8FrIsMv70IsAjeVf8ctYgrKHJXTeZ8XJg
+   K+QR640UCKdiTh99h3mHVRElcJOJi2xOOk2IHpeti5XaYMk3q3opeLBqi
+   /dE5/TM4K1C+RTVEETZC1qdAXts9w6Qs6/TWrcL7dG7muTQ7LubA/i06K
    Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="4636030"
-X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
-   d="scan'208";a="4636030"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 09:21:56 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="914219901"
+X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="26986031"
 X-IronPort-AV: E=Sophos;i="6.07,107,1708416000"; 
-   d="scan'208";a="914219901"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 09:21:53 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1riHRG-0000000Acq4-2QKA;
-	Thu, 07 Mar 2024 19:21:50 +0200
-Date: Thu, 7 Mar 2024 19:21:50 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Arnd Bergmann <arnd@arndb.de>, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
-Cc: Daniel Mack <daniel@zonque.org>,
-	Haojian Zhuang <haojian.zhuang@gmail.com>,
-	Robert Jarzmik <robert.jarzmik@free.fr>,
-	Russell King <linux@armlinux.org.uk>,
-	Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 1/3] spi: pxa2xx: Kill pxa2xx_set_spi_info()
-Message-ID: <Zen3rjXtIJk9dSsO@smile.fi.intel.com>
-References: <20240307170441.3884452-1-andriy.shevchenko@linux.intel.com>
- <20240307170441.3884452-2-andriy.shevchenko@linux.intel.com>
+   d="scan'208";a="26986031"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 09:22:40 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="937046421"
+X-IronPort-AV: E=Sophos;i="6.07,107,1708416000"; 
+   d="scan'208";a="937046421"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 07 Mar 2024 09:22:37 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+	id 3B719128; Thu,  7 Mar 2024 19:22:36 +0200 (EET)
+Date: Thu, 7 Mar 2024 19:22:36 +0200
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Andy Lutomirski <luto@kernel.org>, x86@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 1/3] x86/mm: fix LAM cr3 mask inconsistency during
+ context switch
+Message-ID: <updn6j7jcqdru73vwt3fvxlx4t73rjrlk7h6i6js3lizeueoov@tz7fyrd3a4yi>
+References: <20240307133916.3782068-1-yosryahmed@google.com>
+ <20240307133916.3782068-2-yosryahmed@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -79,20 +76,25 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240307170441.3884452-2-andriy.shevchenko@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20240307133916.3782068-2-yosryahmed@google.com>
 
-On Thu, Mar 07, 2024 at 07:03:15PM +0200, Andy Shevchenko wrote:
+On Thu, Mar 07, 2024 at 01:39:14PM +0000, Yosry Ahmed wrote:
+> In switch_mm_irqs_off(), we read the 'mm->context.lam_cr3_mask' into
+> 'new_lam', which is later passed to load_new_mm_cr3(). However, there is
+> a call to set_tlbstate_lam_mode() in between which will read
+> 'mm->context.lam_cr3_mask' again and set 'cpu_tlbstate.lam' accordingly.
+> If we race with another thread updating 'mm->context.lam_cr3_mask', the
+> value in 'cpu_tlbstate.lam' could end up being different from CR3.
 
-..
+What other thread? LAM can only be enabled when the process has single
+thread. And cannot be disabled. See MM_CONTEXT_LOCK_LAM.
 
-> +		pd->dev.platform_data = info;
+> While we are at it, remove the misguiding comment that states that
+> 'new_lam' may not match tlbstate_lam_cr3_mask() if a race occurs.
 
-Oops, this won't compile :-)
+The comment is indeed misguiding, but for different reason. It is leftover
+from the earlier version of LAM patchset.
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+  Kiryl Shutsemau / Kirill A. Shutemov
 
