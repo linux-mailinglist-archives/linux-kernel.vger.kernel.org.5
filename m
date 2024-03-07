@@ -1,167 +1,238 @@
-Return-Path: <linux-kernel+bounces-94857-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94853-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6DCA8745FA
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 03:14:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A3B8A8745F2
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 03:11:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6605D1F219AA
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 02:14:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 173D21F2144C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 02:11:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADE076139;
-	Thu,  7 Mar 2024 02:14:40 +0000 (UTC)
-Received: from smtp238.sjtu.edu.cn (smtp238.sjtu.edu.cn [202.120.2.238])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB91C5C89;
+	Thu,  7 Mar 2024 02:11:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AqykEe/i"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0DD2EAD5;
-	Thu,  7 Mar 2024 02:14:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.120.2.238
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3AB046AF
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 02:11:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709777680; cv=none; b=gwz0iyN0tRo6LuclYx3Y+N9xMZl92MqwWv1qJ//87TBqRiDtXvPmGXAOsOdURUillxsIkJkZeNG9vWZvLiXxDWSzSB2/KGa+CY5jYMGmxf1OTRp+nrfC4VRDYffbXsoJ0ybC0qeW5Hz5dJKcmBJQA4fIEAyHzlk+bNn8IAoTszE=
+	t=1709777496; cv=none; b=PkCC7t6cE+U9jNhaBugffowfuQxpRQCw56S8yTGwnX9LxuIDBPesJUa3ifbhSd//hDKLr3zbrRIkRWu4upItnPZul+zrk/ckcAdwlC4P46r1EyOh+/feyHWJwx0s7pMQtdkfTHDmpvbsesrOYcwVyTBQrcD1zf0Es0anmo0H5hw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709777680; c=relaxed/simple;
-	bh=zgC/d6cds9XJiQqU/dEwldAPOIfK/79YXy+0W9vHRtE=;
-	h=Date:From:To:Cc:Message-ID:Subject:MIME-Version:Content-Type; b=Dop6LWPTE5XQpfHjWwYkmCkZCuDHKN+8w42hxhWa3pluvOpqQr3dR9qWrowcY9pG400sYRgdiNEMMsPLOzXM6i5tuki2Q0X5wtubN2DWjy7UiEU0AO8Zg+ZufKR3Qzw1L/Vfjx8/C1Spdm0Ol6fQZu+aNTyuTzHUisErJ92QCjU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sjtu.edu.cn; spf=pass smtp.mailfrom=sjtu.edu.cn; arc=none smtp.client-ip=202.120.2.238
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sjtu.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sjtu.edu.cn
-Received: from mta91.sjtu.edu.cn (unknown [10.118.0.91])
-	by smtp238.sjtu.edu.cn (Postfix) with ESMTPS id C5445274D;
-	Thu,  7 Mar 2024 10:14:27 +0800 (CST)
-Received: from mstore135.sjtu.edu.cn (unknown [10.118.0.135])
-	by mta91.sjtu.edu.cn (Postfix) with ESMTP id 7F0C337C8F4;
-	Thu,  7 Mar 2024 10:14:27 +0800 (CST)
-Date: Thu, 7 Mar 2024 10:14:26 +0800 (CST)
-From: Zheyun Shen <szy0127@sjtu.edu.cn>
-To: Sean Christopherson <seanjc@google.com>, 
-	thomas lendacky <thomas.lendacky@amd.com>, 
-	pbonzini <pbonzini@redhat.com>, tglx <tglx@linutronix.de>
-Cc: kvm <kvm@vger.kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>
-Message-ID: <980607740.5109383.1709777666996.JavaMail.zimbra@sjtu.edu.cn>
-Subject: [PATCH v2] KVM:SVM: Flush cache only on CPUs running SEV guest
+	s=arc-20240116; t=1709777496; c=relaxed/simple;
+	bh=rSVzpqAtaP7VsIqGvDvnM7VnZ7HA9GL+hoNyerON4vw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=lQuvexJn1iXL748dag1DMbM/hoRSTs+K/TQZVCxU8R6avDyfd9Bhp67rvAK6XG0ypmM0uCYpdBOUbEbRWNFbI+mdwlgxb2sYuOj7/n+VK9ylrR5Vo3U/PZBeiqCZFxEVW0Jj3NTldP6k9eNZyweFY99L5CujZyk3pSrXh4x5lfE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AqykEe/i; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709777494; x=1741313494;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=rSVzpqAtaP7VsIqGvDvnM7VnZ7HA9GL+hoNyerON4vw=;
+  b=AqykEe/iPYhB8PFnj1dpGbAt/D+WWQ+wH2GTC/25MF5xXg0RktWt2n5g
+   2g8CYXm/OX8cqz0Yh8PA2vnzmyf494Y4awL2WDR7KAqVg+mx6++p4UDM1
+   JxINoDeLhxSQj5sqZXWbZFRpT7uYWjavLQpjCd2z/xv+D0FkIDw0WkQ4H
+   5SRPk9kshwvcKWWaXrQ1QCFNtx/Wa+bKpN/peoB7AF6qYU1EFgy+Url+g
+   3OoUCTJMHVXkKVG206N+YykNEgdtyQCK2yq0JWyPl+zG2nvysVa0B7v/Z
+   vKDN0I6UeTOqFsQGIsGoJzLknclh+JyVYz15fz9XqA4yeEM0KwLIGaNq+
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11005"; a="4594949"
+X-IronPort-AV: E=Sophos;i="6.06,209,1705392000"; 
+   d="scan'208";a="4594949"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 18:11:33 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,209,1705392000"; 
+   d="scan'208";a="9852876"
+Received: from linux-pnp-server-09.sh.intel.com ([10.239.176.190])
+  by fmviesa007.fm.intel.com with ESMTP; 06 Mar 2024 18:11:30 -0800
+From: rulinhuang <rulin.huang@intel.com>
+To: urezki@gmail.com,
+	bhe@redhat.com
+Cc: akpm@linux-foundation.org,
+	colin.king@intel.com,
+	hch@infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	lstoakes@gmail.com,
+	rulin.huang@intel.com,
+	tianyou.li@intel.com,
+	tim.c.chen@intel.com,
+	wangyang.guo@intel.com,
+	zhiguo.zhou@intel.com
+Subject: [PATCH v8] mm/vmalloc: Eliminated the lock contention from twice to once
+Date: Wed,  6 Mar 2024 21:14:40 -0500
+Message-ID: <20240307021440.64967-1-rulin.huang@intel.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=GB2312
-Content-Transfer-Encoding: 7bit
-X-Mailer: Zimbra 10.0.6_GA_4585 (ZimbraWebClient - GC122 (Win)/10.0.6_GA_4585)
-Thread-Index: E3LcEnfndLKXNi/4RoxZJ7buiDAZDw==
-Thread-Topic: Flush cache only on CPUs running SEV guest
+Content-Transfer-Encoding: 8bit
 
-On AMD CPUs without ensuring cache consistency, each memory page 
-reclamation in an SEV guest triggers a call to wbinvd_on_all_cpus(), 
-thereby affecting the performance of other programs on the host.
+When allocating a new memory area where the mapping address range is
+known, it is observed that the vmap_node->busy.lock is acquired twice.
 
-Typically, an AMD server may have 128 cores or more, while the SEV guest 
-might only utilize 8 of these cores. Meanwhile, host can use qemu-affinity 
-to bind these 8 vCPUs to specific physical CPUs.
+The first acquisition occurs in the alloc_vmap_area() function when
+inserting the vm area into the vm mapping red-black tree. The second
+acquisition occurs in the setup_vmalloc_vm() function when updating the
+properties of the vm, such as flags and address, etc.
 
-Therefore, keeping a record of the physical core numbers each time a vCPU 
-runs can help avoid flushing the cache for all CPUs every time.
+Combine these two operations together in alloc_vmap_area(), which
+improves scalability when the vmap_node->busy.lock is contended.
+By doing so, the need to acquire the lock twice can also be eliminated
+to once.
 
-Since the usage of sev_flush_asids() isn't tied to a single VM, we just 
-replace all wbinvd_on_all_cpus() with sev_do_wbinvd() except for that 
-in sev_flush_asids().
+With the above change, tested on intel sapphire rapids
+platform(224 vcpu), a 4% performance improvement is
+gained on stress-ng/pthread(https://github.com/ColinIanKing/stress-ng),
+which is the stress test of thread creations.
 
-Signed-off-by: Zheyun Shen <szy0127@sjtu.edu.cn>
+Co-developed-by: "Chen, Tim C" <tim.c.chen@intel.com>
+Signed-off-by: "Chen, Tim C" <tim.c.chen@intel.com>
+Co-developed-by: "King, Colin" <colin.king@intel.com>
+Signed-off-by: "King, Colin" <colin.king@intel.com>
+Signed-off-by: rulinhuang <rulin.huang@intel.com>
 ---
- arch/x86/kvm/svm/sev.c | 27 +++++++++++++++++++++++----
- arch/x86/kvm/svm/svm.h |  3 +++
- 2 files changed, 26 insertions(+), 4 deletions(-)
+V1 -> V2: Avoided the partial initialization issue of vm and
+separated insert_vmap_area() from alloc_vmap_area()
+V2 -> V3: Rebased on 6.8-rc5
+V3 -> V4: Rebased on mm-unstable branch
+V4 -> V5: Canceled the split of alloc_vmap_area()
+and keep insert_vmap_area()
+V5 -> V6: Added bug_on
+V6 -> V7: Adjusted the macros
+V7 -> V8: Removed bugs_on and adjustion of macros
+---
+ mm/vmalloc.c | 50 ++++++++++++++++++++++----------------------------
+ 1 file changed, 22 insertions(+), 28 deletions(-)
 
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index f760106c3..743931e33 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -215,6 +215,24 @@ static void sev_asid_free(struct kvm_sev_info *sev)
- 	sev->misc_cg = NULL;
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index 25a8df497255..f933a62fef50 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -1841,15 +1841,26 @@ node_alloc(unsigned long size, unsigned long align,
+ 	return va;
  }
  
-+static struct cpumask *sev_get_wbinvd_dirty_mask(struct kvm *kvm)
++static inline void setup_vmalloc_vm(struct vm_struct *vm,
++	struct vmap_area *va, unsigned long flags, const void *caller)
 +{
-+	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
-+
-+	return &sev->wbinvd_dirty_mask;
++	vm->flags = flags;
++	vm->addr = (void *)va->va_start;
++	vm->size = va->va_end - va->va_start;
++	vm->caller = caller;
++	va->vm = vm;
 +}
 +
-+static void sev_do_wbinvd(struct kvm *kvm)
-+{
-+	int cpu;
-+	struct cpumask *dirty_mask = sev_get_wbinvd_dirty_mask(kvm);
-+
-+	for_each_possible_cpu(cpu) {
-+		if (cpumask_test_and_clear_cpu(cpu, dirty_mask))
-+			wbinvd_on_cpu(cpu);
-+	}
-+}
-+
- static void sev_decommission(unsigned int handle)
+ /*
+  * Allocate a region of KVA of the specified size and alignment, within the
+- * vstart and vend.
++ * vstart and vend. If vm is passed in, the two will also be bound.
+  */
+ static struct vmap_area *alloc_vmap_area(unsigned long size,
+ 				unsigned long align,
+ 				unsigned long vstart, unsigned long vend,
+ 				int node, gfp_t gfp_mask,
+-				unsigned long va_flags)
++				unsigned long va_flags, struct vm_struct *vm,
++				unsigned long flags, const void *caller)
  {
- 	struct sev_data_decommission decommission;
-@@ -2048,7 +2066,7 @@ int sev_mem_enc_unregister_region(struct kvm *kvm,
- 	 * releasing the pages back to the system for use. CLFLUSH will
- 	 * not do this, so issue a WBINVD.
- 	 */
--	wbinvd_on_all_cpus();
-+	sev_do_wbinvd(kvm);
+ 	struct vmap_node *vn;
+ 	struct vmap_area *va;
+@@ -1912,6 +1923,9 @@ static struct vmap_area *alloc_vmap_area(unsigned long size,
+ 	va->vm = NULL;
+ 	va->flags = (va_flags | vn_id);
  
- 	__unregister_enc_region_locked(kvm, region);
- 
-@@ -2152,7 +2170,7 @@ void sev_vm_destroy(struct kvm *kvm)
- 	 * releasing the pages back to the system for use. CLFLUSH will
- 	 * not do this, so issue a WBINVD.
- 	 */
--	wbinvd_on_all_cpus();
-+	sev_do_wbinvd(kvm);
- 
- 	/*
- 	 * if userspace was terminated before unregistering the memory regions
-@@ -2343,7 +2361,7 @@ static void sev_flush_encrypted_page(struct kvm_vcpu *vcpu, void *va)
- 	return;
- 
- do_wbinvd:
--	wbinvd_on_all_cpus();
-+	sev_do_wbinvd(vcpu->kvm);
- }
- 
- void sev_guest_memory_reclaimed(struct kvm *kvm)
-@@ -2351,7 +2369,7 @@ void sev_guest_memory_reclaimed(struct kvm *kvm)
- 	if (!sev_guest(kvm))
- 		return;
- 
--	wbinvd_on_all_cpus();
-+	sev_do_wbinvd(kvm);
- }
- 
- void sev_free_vcpu(struct kvm_vcpu *vcpu)
-@@ -2648,6 +2666,7 @@ void pre_sev_run(struct vcpu_svm *svm, int cpu)
- 	sd->sev_vmcbs[asid] = svm->vmcb;
- 	svm->vmcb->control.tlb_ctl = TLB_CONTROL_FLUSH_ASID;
- 	vmcb_mark_dirty(svm->vmcb, VMCB_ASID);
-+	cpumask_set_cpu(get_cpu(), sev_get_wbinvd_dirty_mask(svm->vcpu.kvm));
- }
- 
- #define GHCB_SCRATCH_AREA_LIMIT		(16ULL * PAGE_SIZE)
-diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-index 8ef95139c..de240a9e9 100644
---- a/arch/x86/kvm/svm/svm.h
-+++ b/arch/x86/kvm/svm/svm.h
-@@ -90,6 +90,9 @@ struct kvm_sev_info {
- 	struct list_head mirror_entry; /* Use as a list entry of mirrors */
- 	struct misc_cg *misc_cg; /* For misc cgroup accounting */
- 	atomic_t migration_in_progress;
++	if (vm)
++		setup_vmalloc_vm(vm, va, flags, caller);
 +
-+	/* CPUs invoked VMRUN should do wbinvd after guest memory is reclaimed */
-+	struct cpumask wbinvd_dirty_mask;
- };
+ 	vn = addr_to_node(va->va_start);
  
- struct kvm_svm {
+ 	spin_lock(&vn->busy.lock);
+@@ -2486,7 +2500,8 @@ static void *new_vmap_block(unsigned int order, gfp_t gfp_mask)
+ 	va = alloc_vmap_area(VMAP_BLOCK_SIZE, VMAP_BLOCK_SIZE,
+ 					VMALLOC_START, VMALLOC_END,
+ 					node, gfp_mask,
+-					VMAP_RAM|VMAP_BLOCK);
++					VMAP_RAM|VMAP_BLOCK, NULL,
++					0, NULL);
+ 	if (IS_ERR(va)) {
+ 		kfree(vb);
+ 		return ERR_CAST(va);
+@@ -2843,7 +2858,8 @@ void *vm_map_ram(struct page **pages, unsigned int count, int node)
+ 		struct vmap_area *va;
+ 		va = alloc_vmap_area(size, PAGE_SIZE,
+ 				VMALLOC_START, VMALLOC_END,
+-				node, GFP_KERNEL, VMAP_RAM);
++				node, GFP_KERNEL, VMAP_RAM,
++				NULL, 0, NULL);
+ 		if (IS_ERR(va))
+ 			return NULL;
+ 
+@@ -2946,26 +2962,6 @@ void __init vm_area_register_early(struct vm_struct *vm, size_t align)
+ 	kasan_populate_early_vm_area_shadow(vm->addr, vm->size);
+ }
+ 
+-static inline void setup_vmalloc_vm_locked(struct vm_struct *vm,
+-	struct vmap_area *va, unsigned long flags, const void *caller)
+-{
+-	vm->flags = flags;
+-	vm->addr = (void *)va->va_start;
+-	vm->size = va->va_end - va->va_start;
+-	vm->caller = caller;
+-	va->vm = vm;
+-}
+-
+-static void setup_vmalloc_vm(struct vm_struct *vm, struct vmap_area *va,
+-			      unsigned long flags, const void *caller)
+-{
+-	struct vmap_node *vn = addr_to_node(va->va_start);
+-
+-	spin_lock(&vn->busy.lock);
+-	setup_vmalloc_vm_locked(vm, va, flags, caller);
+-	spin_unlock(&vn->busy.lock);
+-}
+-
+ static void clear_vm_uninitialized_flag(struct vm_struct *vm)
+ {
+ 	/*
+@@ -3002,14 +2998,12 @@ static struct vm_struct *__get_vm_area_node(unsigned long size,
+ 	if (!(flags & VM_NO_GUARD))
+ 		size += PAGE_SIZE;
+ 
+-	va = alloc_vmap_area(size, align, start, end, node, gfp_mask, 0);
++	va = alloc_vmap_area(size, align, start, end, node, gfp_mask, 0, area, flags, caller);
+ 	if (IS_ERR(va)) {
+ 		kfree(area);
+ 		return NULL;
+ 	}
+ 
+-	setup_vmalloc_vm(area, va, flags, caller);
+-
+ 	/*
+ 	 * Mark pages for non-VM_ALLOC mappings as accessible. Do it now as a
+ 	 * best-effort approach, as they can be mapped outside of vmalloc code.
+@@ -4584,7 +4578,7 @@ struct vm_struct **pcpu_get_vm_areas(const unsigned long *offsets,
+ 
+ 		spin_lock(&vn->busy.lock);
+ 		insert_vmap_area(vas[area], &vn->busy.root, &vn->busy.head);
+-		setup_vmalloc_vm_locked(vms[area], vas[area], VM_ALLOC,
++		setup_vmalloc_vm(vms[area], vas[area], VM_ALLOC,
+ 				 pcpu_get_vm_areas);
+ 		spin_unlock(&vn->busy.lock);
+ 	}
+
+base-commit: f4239a5d7acc1b5ff9bac4d5471000b952279ef0
 -- 
-2.34.1
+2.43.0
 
 
