@@ -1,318 +1,264 @@
-Return-Path: <linux-kernel+bounces-96227-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96228-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB8268758ED
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 21:58:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6C568758F6
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 22:01:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2A0FCB24F8C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:58:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA0B51C218C8
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 21:01:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D44413A271;
-	Thu,  7 Mar 2024 20:58:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E19513A888;
+	Thu,  7 Mar 2024 21:01:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="NXVnCLDk"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="Z/DCRVlM"
+Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE39F51C45;
-	Thu,  7 Mar 2024 20:58:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9ABA713A260
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 21:01:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709845086; cv=none; b=jj1i+8u/766mfRK4VhoGTR1zD3QKvDgfr6EjnyvazljRTigEkT44RbyJrgpUAHrhZrZ+UGMgLqQqli7u902wWCwoAay6jfV0rrqYNNKrs++aQ7d0MdEA8sejWwYfiWc9d04LzH9PGeExRX1EahELeF0t93YSQ8OyFE0pSpS3ODo=
+	t=1709845282; cv=none; b=dVJ//aocbMx4ym291VPU7z0W1Exw6RkesA4OzFWhDsGT/F3HrVzwrEW8FYTckJN21TzOfgGVch5nxLE9EaV5XLXhwnq/TluHo/DsUMH+H7Nb2neVHWoqrXfKrLPoYDHsxyYLdx5TeUZ684gDsSdd8EzQjPtjEF6wV8ts+LWQuA8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709845086; c=relaxed/simple;
-	bh=PkpjRf2wsq+rFdjoQ7qm+enWmO9Ga+n1S0TzKJ/xvsI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=E8SY3hTKUvSJbvqmwi5n6iLAd2B9vnw268L8OT42Hx+DFZ7kuo2BAj0+kgT+kIn2oMT2LDHQH7uoE7qLVar+sd73tI8iPuonW7iu4J6n/cKCqU1xKQOmtiBH1E4tFlRpy0oSub99/sktRVZYHNpVaj7v21oyhNDZh1/QGHR0Zdw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=NXVnCLDk; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 427JwJB9009783;
-	Thu, 7 Mar 2024 20:58:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=NVa6LfHIGjlf0zVRyk2PfIrla3w6MGkm/MOArZIJq8g=; b=NX
-	VnCLDkB02p+W/AD+B0TZDm2GxO1+d/6GbCJH11VvjOVFlyAULRDvYCNy9lwjIcYp
-	Pl5O4YqVd7hzSMD9l4vXVokGkw5FxrsPaIbVjVOpeCQbFlSabAUFNNBHZefz/zQi
-	MJtocDAWToYNp2svgKzAV4fQdFGbmvLaIGBytgqY8TAssSzcf2fI0pu1btJlmx7Y
-	hh9PT7f/gbsD2LEXfmLeJtPJ3i0s43Yu85ZN5mpW8oHAjrE/lE09PfxPNu8YZlJR
-	ClCnFj0mm2Oz/1PieNWXmuXbLmtjn7yWuqRqJGiDJk+didzFWzwz8qX01N92QJ88
-	xmxgUd9GisofiKovCOLQ==
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wqf4r19w1-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 07 Mar 2024 20:57:57 +0000 (GMT)
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 427KvuTI029597
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 7 Mar 2024 20:57:56 GMT
-Received: from [10.216.46.193] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 7 Mar
- 2024 12:57:53 -0800
-Message-ID: <eeefab74-1303-470f-bd3c-618d9522d24b@quicinc.com>
-Date: Fri, 8 Mar 2024 02:27:49 +0530
+	s=arc-20240116; t=1709845282; c=relaxed/simple;
+	bh=F39gQbFf5tQqliZeRzBOmtAU/EnGdgFMl0rx4muVbQE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AJyzrf09WQiLD9ds5RTbPGWkyduJMt1Fe/rMB3BGD5g+IqOXr8iXluQzmdN4/L7ES4N2phSlEEj+xL6cdA0YtCUw08fv3oMr2dyk5jzSw/usUqNotMY89UvvREwB08mToqY0/Vf76uW/kCvob62KeTlVoiJgUl58/rsfpAAHOjg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=Z/DCRVlM; arc=none smtp.client-ip=209.85.210.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6e4f874f958so580959a34.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 13:01:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1709845279; x=1710450079; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=B2cqZbDJobgrAlQUN+X6Gc/N/G77Yt6hRBbHc0B6Byw=;
+        b=Z/DCRVlMpmpQcuUzR2NkHT1qn51xzEHPK3zhgcjSc4JoeYM0I7WsfUCBAd3Z4N2Gng
+         t3YZ7UPBpdOAALI+9SxH1JWOTo7sTEVxv7v4PPyDx6JKQaa0+VeOvlYLLz3JRUj9F8Iq
+         xTWIRun60w19TCHVpNqOWsFuGrG69UTKogbpV4SZ4zuIGGsbiqrPSUllOsosDY7gGKxe
+         K0KChnFbH/uomxDgbmSlCXtX90PzwXjBOy3Jzgcn3wRG9RMNxsNFpHDX81UtDO5upRDw
+         hMZdIhbyd2tUsmzgzxP93OBUy+PgLlja3qFZQycaXfOje2VcmPph+cXUWr05FQM0JMVB
+         eskw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709845279; x=1710450079;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=B2cqZbDJobgrAlQUN+X6Gc/N/G77Yt6hRBbHc0B6Byw=;
+        b=irRnDQ5N07wxHZ3T3xdxDIRgLM6oKNZuAGJW/hrDXcqtxPyl9Cqe9YE0LcNgznledC
+         eFgIJRkPL3M7niQa+GjAQFThKEbPjNQLepya6rmycmJEFhh+SgCQcaEFK0uOpLPePH7Z
+         NG+CLA5s9XCfBlljknal92nZ3SuDaF9+TsTrsjU1Ty9nUY9l0F7aRTzK/FNYL3T59lFr
+         TQ02fteaWwb1VJeaMxj4Q3Gbag5qg7BaR4WqFKvVOi49O1spz1o1szHN8dfJxCmUzXFl
+         OcE8Gse9d/jherQrqOn2c+iu4nJefNBnLcN1EJYnDEVmYbt7TiqtkS1UyhqSuYWGUOXL
+         3K7g==
+X-Forwarded-Encrypted: i=1; AJvYcCWlL8lL2GvR8Oc8V6zg9pq1WUJiam1zwtUTfo05qEjed8hOc814jTcvRapzGlt9i4qqJ+TrwUMwPsmKnQIFqB8Pr3eYCWy9HVPISt+x
+X-Gm-Message-State: AOJu0YxTbRVWhHjSlZC8r7kIQ1WpYOWZ+ZUQy2NHdmfAfHlak7b7knnL
+	hzRbhA9OMjn824byuNk4xvYKf29P2hNaaD4D31XjtIGVGtxa5vBvitCt4gmDeCc=
+X-Google-Smtp-Source: AGHT+IHVDDnrRb4IzGsRrjreYb2lzNqXBjfY5dZE5DynfGK6hFbMLsAKifeob/DJ0ED9qSx2chYugA==
+X-Received: by 2002:a05:6870:8a06:b0:21e:a40e:7465 with SMTP id p6-20020a0568708a0600b0021ea40e7465mr1134062oaq.24.1709845279574;
+        Thu, 07 Mar 2024 13:01:19 -0800 (PST)
+Received: from ziepe.ca ([12.97.180.36])
+        by smtp.gmail.com with ESMTPSA id mt9-20020a0568706b0900b00220b0891304sm3660721oab.1.2024.03.07.13.01.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Mar 2024 13:01:18 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1riKrc-004Zwv-Aq;
+	Thu, 07 Mar 2024 17:01:16 -0400
+Date: Thu, 7 Mar 2024 17:01:16 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Leon Romanovsky <leon@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+	Chaitanya Kulkarni <chaitanyak@nvidia.com>,
+	Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
+	Keith Busch <kbusch@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
+	Yishai Hadas <yishaih@nvidia.com>,
+	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	=?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
+	iommu@lists.linux.dev, linux-nvme@lists.infradead.org,
+	kvm@vger.kernel.org, linux-mm@kvack.org,
+	Bart Van Assche <bvanassche@acm.org>,
+	Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+	Amir Goldstein <amir73il@gmail.com>,
+	"josef@toxicpanda.com" <josef@toxicpanda.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	"daniel@iogearbox.net" <daniel@iogearbox.net>,
+	Dan Williams <dan.j.williams@intel.com>,
+	"jack@suse.com" <jack@suse.com>, Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: Re: [RFC RESEND 00/16] Split IOMMU DMA mapping operation to two steps
+Message-ID: <20240307210116.GQ9225@ziepe.ca>
+References: <cover.1709635535.git.leon@kernel.org>
+ <47afacda-3023-4eb7-b227-5f725c3187c2@arm.com>
+ <20240305122935.GB36868@unreal>
+ <20240306144416.GB19711@lst.de>
+ <20240306154328.GM9225@ziepe.ca>
+ <20240306162022.GB28427@lst.de>
+ <20240306174456.GO9225@ziepe.ca>
+ <20240306221400.GA8663@lst.de>
+ <20240307000036.GP9225@ziepe.ca>
+ <20240307150505.GA28978@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] i2c: i2c-qcom-geni: Parse Error correctly in i2c GSI
- mode
-Content-Language: en-US
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC: <konrad.dybcio@linaro.org>, <vkoul@kernel.org>, <andi.shyti@kernel.org>,
-        <wsa@kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-i2c@vger.kernel.org>, <quic_vdadhani@quicinc.com>,
-        Bjorn Andersson
-	<andersson@kernel.org>
-References: <20240307093605.4142639-1-quic_msavaliy@quicinc.com>
- <CAA8EJprndszVSjAVs_UzAjhb+x1B1Of4JCkygZ=8kgzuY2RwCQ@mail.gmail.com>
- <25ec87af-c911-46b7-87c9-b21065d70f9f@quicinc.com>
- <CAA8EJprky=tFjJbGTBL7+9E=kqxQKjxB_RcmzHUt31GqUVfNmQ@mail.gmail.com>
-From: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
-In-Reply-To: <CAA8EJprky=tFjJbGTBL7+9E=kqxQKjxB_RcmzHUt31GqUVfNmQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 3SlBHDU4EwFq4A1RsevlvKk932IVklC8
-X-Proofpoint-ORIG-GUID: 3SlBHDU4EwFq4A1RsevlvKk932IVklC8
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-07_15,2024-03-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
- malwarescore=0 phishscore=0 spamscore=0 mlxlogscore=999 suspectscore=0
- impostorscore=0 bulkscore=0 lowpriorityscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.19.0-2402120000
- definitions=main-2403070148
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240307150505.GA28978@lst.de>
 
+On Thu, Mar 07, 2024 at 04:05:05PM +0100, Christoph Hellwig wrote:
+> On Wed, Mar 06, 2024 at 08:00:36PM -0400, Jason Gunthorpe wrote:
+> > > 
+> > > I don't think you can do without dma_addr_t storage.  In most cases
+> > > your can just store the dma_addr_t in the LE/BE encoded hardware
+> > > SGL, so no extra storage should be needed though.
+> > 
+> > RDMA (and often DRM too) generally doesn't work like that, the driver
+> > copies the page table into the device and then the only reason to have
+> > a dma_addr_t storage is to pass that to the dma unmap API. Optionally
+> > eliminating long term dma_addr_t storage would be a worthwhile memory
+> > savings for large long lived user space memory registrations.
+> 
+> It's just kinda hard to do.  For aligned IOMMU mapping you'd only
+> have one dma_addr_t mappings (or maybe a few if P2P regions are
+> involved), so this probably doesn't matter.  For direct mappings
+> you'd have a few, but maybe the better answer is to use THP
+> more aggressively and reduce the number of segments.
 
+Right, those things have all been done. 100GB of huge pages is still
+using a fair amount of memory for storing dma_addr_t's.
 
-On 3/7/2024 8:15 PM, Dmitry Baryshkov wrote:
-> On Thu, 7 Mar 2024 at 15:46, Mukesh Kumar Savaliya
-> <quic_msavaliy@quicinc.com> wrote:
->>
->>
->>
->>
->> On 3/7/2024 3:23 PM, Dmitry Baryshkov wrote:
->>> On Thu, 7 Mar 2024 at 11:36, Mukesh Kumar Savaliya
->>> <quic_msavaliy@quicinc.com> wrote:
->>>>
->>>> We are seeing transfer failure instead of NACK error for simple
->>>> device scan test.Ideally it should report exact error like NACK
->>>> if device is not present.
->>>>
->>>> We may also expect errors like BUS_PROTO or ARB_LOST, hence we are
->>>> adding such error support in GSI mode and reporting it accordingly
->>>> by adding respective error logs.
->>>
->>> Please take a look at the
->>> Documentation/process/submitting-patches.rst. This is not the expected
->>> style of commit messages.
->>>
->>
->> Thanks Dmitry ! Gone through the link and tried to align to the
->> guidance. I will be adding into the actual upload in V3.
-> 
-> Let me quote the relevant part for you:
-> 
-> Describe your changes in imperative mood, e.g. "make xyzzy do frotz"
-> instead of "[This patch] makes xyzzy do frotz" or "[I] changed xyzzy
-> to do frotz", as if you are giving orders to the codebase to change
-> its behaviour.
-> 
-Ahh, i got it. Thanks ! I hope i could write in an expected imperative 
-mood. Uploaded V3 with the enhanced commit log.
->>
->> When we run scan test for i2c devices, we see transfer failures instead
->> of NACK. This is wrong because there is no data transfer failure but
->> it's a slave response to the i2c master controller.
->>
->> This change correctly identifies NACK error. Also adds support for other
->> protocol errors like BUS_PROTO and ARB_LOST. This helps to exactly know
->> the response on the bus.
->>
->> Function geni_i2c_gpi_xfer() gets called for any i2c GSI mode transfer
->> and waits for the response as success OR failure. If slave is not
->> present OR NACKing, GSI generates an error interrupt which calls ISR and
->> it further calls gpi_process_xfer_compl_event(). Now
->> dmaengine_desc_callback_invoke() will call i2c_gpi_cb_result() where we
->> have added parsing status parameters to identify respective errors.
->>
->>>>
->>>> During geni_i2c_gpi_xfer(), we should expect callback param as a
->>>> transfer result. For that we have added a new structure named
->>>> gpi_i2c_result, which will store xfer result.
->>>>
->>>> Upon receiving an interrupt, gpi_process_xfer_compl_event() will
->>>> store transfer result into status variable and then call the
->>>> dmaengine_desc_callback_invoke(). Hence i2c_gpi_cb_result() can
->>>> parse the respective errors.
->>>>
->>>> while parsing error from the status param, use FIELD_GET with the
->>>
->>> Sentences start with the uppercase letter.
->>
->> Sure, will do while/While change. Will take care in next patch.
->>
->>>
->>>> mask instead of multiple shifting operations for each error.
->>>
->>>
->>>>
->>>> Fixes: d8703554f4de ("i2c: qcom-geni: Add support for GPI DMA")
->>>> Co-developed-by: Viken Dadhaniya <quic_vdadhani@quicinc.com>
->>>> Signed-off-by: Viken Dadhaniya <quic_vdadhani@quicinc.com>
->>>> Signed-off-by: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
->>>> ---
->>>> ---
->> Sorry, i Missed to add V1 -> V2 : will add into next patch upload.
->>>> - Commit log changed we->We.
->>>> - Explained the problem that we are not detecing NACK error.
->>>> - Removed Heap based memory allocation and hence memory leakage issue.
->>>> - Used FIELD_GET and removed shiting and masking every time as suggested by Bjorn.
->>>> - Changed commit log to reflect the code changes done.
->>>> - Removed adding anything into struct gpi_i2c_config and created new structure
->>>>     for error status as suggested by Bjorn.
->>>> ---
->>>>    drivers/dma/qcom/gpi.c             | 12 +++++++++++-
->>>>    drivers/i2c/busses/i2c-qcom-geni.c | 19 +++++++++++++++----
->>>>    include/linux/dma/qcom-gpi-dma.h   | 10 ++++++++++
->>>>    3 files changed, 36 insertions(+), 5 deletions(-)
->>>>
->>>> diff --git a/drivers/dma/qcom/gpi.c b/drivers/dma/qcom/gpi.c
->>>> index 1c93864e0e4d..e3508d51fdc9 100644
->>>> --- a/drivers/dma/qcom/gpi.c
->>>> +++ b/drivers/dma/qcom/gpi.c
->>>> @@ -1076,7 +1076,17 @@ static void gpi_process_xfer_compl_event(struct gchan *gchan,
->>>>           dev_dbg(gpii->gpi_dev->dev, "Residue %d\n", result.residue);
->>>>
->>>>           dma_cookie_complete(&vd->tx);
->>>> -       dmaengine_desc_get_callback_invoke(&vd->tx, &result);
->>>> +       if (gchan->protocol == QCOM_GPI_I2C) {
->>>> +               struct dmaengine_desc_callback cb;
->>>> +               struct gpi_i2c_result *i2c;
->>>> +
->>>> +               dmaengine_desc_get_callback(&vd->tx, &cb);
->>>> +               i2c = cb.callback_param;
->>>> +               i2c->status = compl_event->status;
->>>> +               dmaengine_desc_callback_invoke(&cb, &result);
->>>> +       } else {
->>>> +               dmaengine_desc_get_callback_invoke(&vd->tx, &result);
->>>
->>> Is there such error reporting for SPI or UART protocols?
->>>
->>
->> Such errors are not there for SPI or UART because
->> NACK/BUS_PROTO/ARB_LOST errors are protocol specific errors. These error
->> comes in
->> middle of the transfers. As these are like expected protocol errors
->> depending on the slave device/s response.
-> 
-> Yes, these particular errors are I2C specific. My question was more
-> generic: do we have any similar errors for SPI or UART GENI protocols
-> that we should report from GPI to the corresponding driver?
-> 
+It is hard to do perfectly, but I think it is not so bad if we focus
+on the direct only case and simple systems that can exclude swiotlb
+early on.
 
-Got it. Reviewed and confirming that UART and SPI GENI drivers doesn't 
-have such error bits unlike I2C, it simply reports transfer fail OR
-success.
+> > > > So are you thinking something more like a driver flow of:
+> > > > 
+> > > >   .. extent IO and get # aligned pages and know if there is P2P ..
+> > > >   dma_init_io(state, num_pages, p2p_flag)
+> > > >   if (dma_io_single_range(state)) {
+> > > >        // #2, #4
+> > > >        for each io()
+> > > > 	    dma_link_aligned_pages(state, io range)
+> > > >        hw_sgl = (state->iova, state->len)
+> > > >   } else {
+> > > 
+> > > I think what you have a dma_io_single_range should become before
+> > > the dma_init_io.  If we know we can't coalesce it really just is a
+> > > dma_map_{single,page,bvec} loop, no need for any extra state.
+> > 
+> > I imagine dma_io_single_range() to just check a flag in state.
+> > 
+> > I still want to call dma_init_io() for the non-coalescing cases
+> > because all the flows, regardless of composition, should be about as
+> > fast as dma_map_sg is today.
+> 
+> If all flows includes multiple non-coalesced regions that just makes
+> things very complicated, and that's exactly what I'd want to avoid.
 
->>
->>>> +       }
->>>>
->>>>    gpi_free_desc:
->>>>           spin_lock_irqsave(&gchan->vc.lock, flags);
->>>> diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-qcom-geni.c
->>>> index da94df466e83..36a7c0c0ff54 100644
->>>> --- a/drivers/i2c/busses/i2c-qcom-geni.c
->>>> +++ b/drivers/i2c/busses/i2c-qcom-geni.c
->>>> @@ -66,6 +66,7 @@ enum geni_i2c_err_code {
->>>>           GENI_TIMEOUT,
->>>>    };
->>>>
->>>> +#define I2C_DMA_TX_IRQ_MASK    GENMASK(12, 5)
->>>>    #define DM_I2C_CB_ERR          ((BIT(NACK) | BIT(BUS_PROTO) | BIT(ARB_LOST)) \
->>>>                                                                           << 5)
->>>>
->>>> @@ -99,6 +100,7 @@ struct geni_i2c_dev {
->>>>           struct dma_chan *rx_c;
->>>>           bool gpi_mode;
->>>>           bool abort_done;
->>>> +       struct gpi_i2c_result i2c_result;
->>>>    };
->>>>
->>>>    struct geni_i2c_desc {
->>>> @@ -484,9 +486,18 @@ static int geni_i2c_tx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
->>>>
->>>>    static void i2c_gpi_cb_result(void *cb, const struct dmaengine_result *result)
->>>>    {
->>>> -       struct geni_i2c_dev *gi2c = cb;
->>>> -
->>>> -       if (result->result != DMA_TRANS_NOERROR) {
->>>> +       struct gpi_i2c_result *i2c_res = cb;
->>>> +       struct geni_i2c_dev *gi2c = container_of(i2c_res, struct geni_i2c_dev, i2c_result);
->>>> +       u32 status;
->>>> +
->>>> +       status = FIELD_GET(I2C_DMA_TX_IRQ_MASK, i2c_res->status);
->>>> +       if (status == BIT(NACK)) {
->>>> +               geni_i2c_err(gi2c, NACK);
->>>> +       } else if (status == BIT(BUS_PROTO)) {
->>>> +               geni_i2c_err(gi2c, BUS_PROTO);
->>>> +       } else if (status == BIT(ARB_LOST)) {
->>>> +               geni_i2c_err(gi2c, ARB_LOST);
->>>> +       } else if (result->result != DMA_TRANS_NOERROR) {
->>>>                   dev_err(gi2c->se.dev, "DMA txn failed:%d\n", result->result);
->>>>                   gi2c->err = -EIO;
->>>>           } else if (result->residue) {
->>>> @@ -568,7 +579,7 @@ static int geni_i2c_gpi(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
->>>>           }
->>>>
->>>>           desc->callback_result = i2c_gpi_cb_result;
->>>> -       desc->callback_param = gi2c;
->>>> +       desc->callback_param = &gi2c->i2c_result;
->>>>
->>>>           dmaengine_submit(desc);
->>>>           *buf = dma_buf;
->>>> diff --git a/include/linux/dma/qcom-gpi-dma.h b/include/linux/dma/qcom-gpi-dma.h
->>>> index 6680dd1a43c6..f585c6a35e51 100644
->>>> --- a/include/linux/dma/qcom-gpi-dma.h
->>>> +++ b/include/linux/dma/qcom-gpi-dma.h
->>>> @@ -80,4 +80,14 @@ struct gpi_i2c_config {
->>>>           bool multi_msg;
->>>>    };
->>>>
->>>> +/**
->>>> + * struct gpi_i2c_result - i2c transfer status result in GSI mode
->>>> + *
->>>> + * @status: store txfer status value as part of callback
->>>> + *
->>>> + */
->>>> +struct gpi_i2c_result {
->>>> +       u32 status;
->>>> +};
->>>> +
->>>>    #endif /* QCOM_GPI_DMA_H */
->>>> --
->>>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
->>>> a Linux Foundation Collaborative Project
->>>>
->>>>
->>>
->>>
+I don't see how to avoid it unless we say RDMA shouldn't use this API,
+which is kind of the whole point from my perspective..
+
+I want an API that can handle all the same complexity as dma_map_sg()
+without forcing the use of scatterlist. Instead "bring your own
+datastructure". This is the essence of what we discussed.
+
+An API that is inferior to dma_map_sg() is really problematic to use
+with RDMA.
+
+> > That means we need to always pre-allocate the IOVA in any case where
+> > the IOMMU might be active - even on a non-coalescing flow.
+> > 
+> > IOW, dma_init_io() always pre-allocates IOVA if the iommu is going to
+> > be used and we can't just call today's dma_map_page() in a loop on the
+> > non-coalescing side and pay the overhead of Nx IOVA allocations.
+> > 
+> > In large part this is for RDMA, were a single P2P page in a large
+> > multi-gigabyte user memory registration shouldn't drastically harm the
+> > registration performance by falling down to doing dma_map_page, and an
+> > IOVA allocation, on a 4k page by page basis.
 > 
+> But that P2P page needs to be handled very differently, as with it
+> we can't actually use a single iova range.  So I'm not sure how that
+> is even supposed to work.  If you have
 > 
+>  +-------+-----+-------+
+>  | local | P2P | local |
+>  +-------+-----+-------+
 > 
+> you need at least 3 hw SGL entries, as the IOVA won't be contigous.
+
+Sure, 3 SGL entries is fine, that isn't what I'm pointing at
+
+I'm saying that today if you give such a scatterlist to dma_map_sg()
+it scans it and computes the IOVA space need, allocates one IOVA
+space, then subdivides that single space up into the 3 HW SGLs you
+show.
+
+If you don't preserve that then we are calling, 4k at a time, a
+dma_map_page() which is not anywhere close to the same outcome as what
+dma_map_sg did. I may not get contiguous IOVA, I may not get 3 SGLs,
+and we call into the IOVA allocator a huge number of times.
+
+It needs to work following the same basic structure of dma_map_sg,
+unfolding that logic into helpers so that the driver can provide
+the data structure:
+
+ - Scan the io ranges and figure out how much IOVA needed
+   (dma_io_summarize_range)
+ - Allocate the IOVA (dma_init_io)
+ - Scan the io ranges again generate the final HW SGL
+   (dma_io_link_page)
+ - Finish the iommu batch (dma_io_done_mapping)
+
+And you can make that pattern work for all the other cases too.
+
+So I don't see this as particularly worse, calling some other API
+instead of dma_map_page is not really a complexity on the
+driver. Calling dma_init_io every time is also not a complexity. The
+DMA API side is a bit more, but not substantively different logic from
+what dma_map_sg already does.
+
+Otherwise what is the alternative? How do I keep these complex things
+working in RDMA and remove scatterlist?
+
+> > The other thing that got hand waved here is how does dma_init_io()
+> > know which of the 6 states we are looking at? I imagine we probably
+> > want to do something like:
+> > 
+> >    struct dma_io_summarize summary = {};
+> >    for each io()
+> >         dma_io_summarize_range(&summary, io range)
+> >    dma_init_io(dev, &state, &summary);
+> >    if (state->single_range) {
+> >    } else {
+> >    }
+> >    dma_io_done_mapping(&state); <-- flush IOTLB once
+> 
+> That's why I really just want 2 cases.  If the caller guarantees the
+> range is coalescable and there is an IOMMU use the iommu-API like
+> API, else just iter over map_single/page.
+
+But how does the caller even know if it is coalescable? Other than the
+trivial case of a single CPU range, that is a complicated detail based
+on what pages are inside the range combined with the capability of the
+device doing DMA. I don't see a simple way for the caller to figure
+this out. You need to sweep every page and collect some information on
+it. The above is to abstract that detail.
+
+It was simpler before the confidential compute stuff :(
+
+Jason
 
