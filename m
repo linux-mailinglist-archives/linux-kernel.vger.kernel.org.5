@@ -1,291 +1,336 @@
-Return-Path: <linux-kernel+bounces-95543-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95544-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BB16874F3C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 13:38:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA519874F3F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 13:38:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F021282F8A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:38:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F1CFC1C2438D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:38:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A47212BE93;
-	Thu,  7 Mar 2024 12:37:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83B1312BE96;
+	Thu,  7 Mar 2024 12:38:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=imgtec.com header.i=@imgtec.com header.b="mmllIG0r";
-	dkim=pass (1024-bit key) header.d=IMGTecCRM.onmicrosoft.com header.i=@IMGTecCRM.onmicrosoft.com header.b="lf4s8dtb"
-Received: from mx07-00376f01.pphosted.com (mx07-00376f01.pphosted.com [185.132.180.163])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j1Qt2fzw"
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3481C12A143;
-	Thu,  7 Mar 2024 12:37:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=185.132.180.163
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709815073; cv=fail; b=OwEjyuzWwTG4qvt5sqHA6LWBpMFxHFIeYVsbHrZOv2ftXtotLbS0LwHeEu/+P2i8x7DM+IODIMl9F0uqbBFp7k1LAsNzug4TIYc3GciY13Q+6u3LK+Im1odSYPk+bESyjVLr4npTCwHjb8HpKpweA3gSsjj9YtKCxGjjc4GlhMc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709815073; c=relaxed/simple;
-	bh=twIqIydtf9nTycaI/E9A1jjc0XPeD0n6cEbP63ghuxY=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=FMr1dUmx0sOg4hR7Q1ZDDEMpE8ftuzNZL4ZLmO3TWLew/9SigVjpH7JQmHCp6BL7YmptDc1toYU/CpdttIhgGL3PVIoVUiGE16t2JcaVjmdeYpWRf9M1Kt5HKFxwFzhsct77tT4jfFMOFgLrBw7V5YZqxUQdg2z3YHoaWByw8R8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=imgtec.com; spf=pass smtp.mailfrom=imgtec.com; dkim=pass (2048-bit key) header.d=imgtec.com header.i=@imgtec.com header.b=mmllIG0r; dkim=pass (1024-bit key) header.d=IMGTecCRM.onmicrosoft.com header.i=@IMGTecCRM.onmicrosoft.com header.b=lf4s8dtb; arc=fail smtp.client-ip=185.132.180.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=imgtec.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=imgtec.com
-Received: from pps.filterd (m0168889.ppops.net [127.0.0.1])
-	by mx07-00376f01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4277bS6h009908;
-	Thu, 7 Mar 2024 12:37:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=imgtec.com; h=
-	from:to:cc:subject:date:message-id:references:in-reply-to
-	:content-type:content-id:content-transfer-encoding:mime-version;
-	 s=dk201812; bh=twIqIydtf9nTycaI/E9A1jjc0XPeD0n6cEbP63ghuxY=; b=
-	mmllIG0rhHBmpW/kEruJTbScKLyx+R0Fo75HsOksFHvpt1JI5yBSiK8XpVkRYQIR
-	27gE3FOF5RMYsycRPzI7dIAqLgR9PJBMdgTuxYP3nJJeI+8Q49ayfIUitxnuR1Dz
-	BFWJZCfMnN472v4QopvxrDwPZBtt4/gq1Ue3O9Ij4WskHNQUUqYtbQQdTCDEYw+l
-	P0LFZfRAxoiaEum25aejc9uIrnVTvnzXawqT6hSLyRPlF42arltAyJT6CXrJvQPP
-	aaqRSzdo6vcIyMmT1pswVsHcpSZ8Rv8zBRik5irDHLj86LFtpwodFvIXBlvDTjmX
-	4rhygmf1VywbJgv96StFXw==
-Received: from hhmail04.hh.imgtec.org ([217.156.249.195])
-	by mx07-00376f01.pphosted.com (PPS) with ESMTPS id 3wkw2wr52m-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-	Thu, 07 Mar 2024 12:37:30 +0000 (GMT)
-Received: from HHMAIL04.hh.imgtec.org (10.100.10.119) by
- HHMAIL04.hh.imgtec.org (10.100.10.119) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 7 Mar 2024 12:37:29 +0000
-Received: from GBR01-LO4-obe.outbound.protection.outlook.com (104.47.85.104)
- by email.imgtec.com (10.100.10.121) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 7 Mar 2024 12:37:29 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=leLnaGAiuL4UzAGQDEYcUn11bLIPW4597ndy84w0nJUeB8F3rkQbfNDmlEpKj0oLxZF4V4xIxickAnguINMeDNYapL/N2FRpI1ORCygmc7wjdoW9D3fE95bWv1CqUcnhWfT8KU/bTSStbfy7YPyIuTwiINivUgAnrKrXtaIdXfEUklsdYXHG7fRmU/38YRLObl49xHUoio4jnK7C1/Baau1sJmNRTnFrU41t88cz2kUk2qr8HwrXdOVSz1TmFiWJ0KKizq7Dsle1+lQm1lKyfww9Eg16xq9Txc/yzsAjBw3abSodDWS5mYIx6zDzh5JuWeLy2XWE0Snc7qyJGKS9rQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=twIqIydtf9nTycaI/E9A1jjc0XPeD0n6cEbP63ghuxY=;
- b=mtDk4p+i/F0Epnu9A84Te16lvN8KRFWRYTMlZO49jCgrR6Dxz8/nIXMvZuuRNdmJLt0u4xwJJdPR9aCVdeA5xbUUPcdu1HbWDE2J6YNa1823moZ7UlL7JN4F+AbUL4WVoq+bRiHcGdgrBALddjFHjsxlSCzIvWkEnjbjVWh3AfoXXUZjt6gt/kHwIB4FQT5Qw+ubISZs2Cnsm7ZubfOtgQj/bqw05KAmWXk+ruhkmsc2hFVHspTsGrczj6Y0Nd3kpKl/2Mo+YSy1HqveGtjuphEJLlHzhLnFcDfPMVb3PO897OkXfzSue7GQemlRmR6xwEoPErqFvofbKTeaikV4BA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=imgtec.com; dmarc=pass action=none header.from=imgtec.com;
- dkim=pass header.d=imgtec.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66B803233;
+	Thu,  7 Mar 2024 12:38:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709815120; cv=none; b=oIbZlY4cReV3t16Y1NswgbN/LhcJLg91RqfCasyowdgqr6dkyW03EivN+smUrc4uSeJEjT/oZKAstvTcAa7QnG2jCW/lbnBUSsG47tcjf34KJkMJVcqJf7dg9CwG0s1FYy83ZQwkw48KmFa8yk28unQZ3elR4zx3OolSfjHb6Sc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709815120; c=relaxed/simple;
+	bh=GHG5tKz8t+x8TB3ThH0+zcLMt9MZt5CEGpm9xUMiCPU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=tzPLIjc7BXpcvJl4mYbr3UjTeACTykUC0w5AejNK50mVq+rq/xM9xH4+nbVa6cvHhuo9+yzduN6IFvhJFoblbbULp/2VwLeSx8R0OwBcAV7PcWDj2KKQw1tweDAHW8yP7PCNgBFeWnmXK1NFK7p68zaUgoYv2uBSR3+M1T0/KN8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j1Qt2fzw; arc=none smtp.client-ip=209.85.218.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a293f2280c7so144745666b.1;
+        Thu, 07 Mar 2024 04:38:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=IMGTecCRM.onmicrosoft.com; s=selector2-IMGTecCRM-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=twIqIydtf9nTycaI/E9A1jjc0XPeD0n6cEbP63ghuxY=;
- b=lf4s8dtbc+KJZiZlQlvaG3eLEqacZh8kXZMPA1USKGG6d/P9jtFIW/WfGBpxR8l/usMxIN/8G5/8uyFkGD4ngLIOAuumJV3+0fY3YKgKsjWWzHMTfqAvIhk7oooIc7oG3kP5RPqZCBz+5z7CbkuAaJAQTZ9UhHHM3c04V5oZXDI=
-Received: from LO6P265MB6032.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:2a5::14)
- by CWLP265MB6369.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:1e6::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.24; Thu, 7 Mar
- 2024 12:37:27 +0000
-Received: from LO6P265MB6032.GBRP265.PROD.OUTLOOK.COM
- ([fe80::870c:5e6e:be56:c732]) by LO6P265MB6032.GBRP265.PROD.OUTLOOK.COM
- ([fe80::870c:5e6e:be56:c732%4]) with mapi id 15.20.7362.024; Thu, 7 Mar 2024
- 12:37:27 +0000
-From: Frank Binns <Frank.Binns@imgtec.com>
-To: "aford173@gmail.com" <aford173@gmail.com>,
-        Matt Coster
-	<Matt.Coster@imgtec.com>
-CC: "maarten.lankhorst@linux.intel.com" <maarten.lankhorst@linux.intel.com>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        "tzimmermann@suse.de"
-	<tzimmermann@suse.de>,
-        "mripard@kernel.org" <mripard@kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "robh@kernel.org" <robh@kernel.org>,
-        "linux-renesas-soc@vger.kernel.org"
-	<linux-renesas-soc@vger.kernel.org>,
-        "airlied@gmail.com" <airlied@gmail.com>,
-        "geert+renesas@glider.be" <geert+renesas@glider.be>,
-        "magnus.damm@gmail.com"
-	<magnus.damm@gmail.com>,
-        "devicetree@vger.kernel.org"
-	<devicetree@vger.kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org"
-	<krzysztof.kozlowski+dt@linaro.org>,
-        "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "aford@beaconembedded.com" <aford@beaconembedded.com>
-Subject: Re: [PATCH 2/6] arm64: dts: renesas: r8a774a1: Enable GPU
-Thread-Topic: [PATCH 2/6] arm64: dts: renesas: r8a774a1: Enable GPU
-Thread-Index: AQHacIqosr7f7n14rUSUbqLQjAzCzLEsN1YA
-Date: Thu, 7 Mar 2024 12:37:27 +0000
-Message-ID: <f5eb761e9ec30927657ed02a55e3b91abede90fe.camel@imgtec.com>
-References: <20240227034539.193573-1-aford173@gmail.com>
-	 <20240227034539.193573-3-aford173@gmail.com>
-	 <39aead3b-b809-4c9c-8a5d-c0be2b36ea47@imgtec.com>
-	 <CAHCN7xJnKNdsrs+UMvPqdkN+j8v+8UaoH=zargcKRi7dw0GLNA@mail.gmail.com>
-	 <d959159dac0effce1a80986bc87e18ffd24773b9.camel@imgtec.com>
-In-Reply-To: <d959159dac0effce1a80986bc87e18ffd24773b9.camel@imgtec.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.36.5-0ubuntu1 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: LO6P265MB6032:EE_|CWLP265MB6369:EE_
-x-ms-office365-filtering-correlation-id: 59cc9f88-9f8e-4e04-ee6c-08dc3ea35928
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: d1EwVaHL/45M6IWj3iF8G9gm1laaqsKVBxpkjrMAjKfVi+opCGiVHe7dvqcc99j2RB1bzkXkxgIauxVJnj90KXHCQ4GMwz6Qm9DlEXxwLzYnzlS/LutpuxzITSJSdX3FunuQGi+3QxNMNaXFMtCZdXLXJ1+PL3O8taTfjQ4OP69YHJYn87+demmAp6sG8AnZvrd0cUOglt/ShteuBsJb//Kd3X7MMIL3jjE0+Exh0aSxMDRrmc4bu474+KK52GWvNck48zaFBecjv2j47UQkOqeV1dUOV4Z/HgskYCg0l1rc1rR6BV27POI1XzUF1MzxYa/4APbz0a08rXca5NaOWQgapUnF95cv5ZW5e1vcYyKM4FKBgofhqXmLNKn72Lk9Gon0l5lf+KnDxnqTTU2KfCkIWyJpDzNwuaZtpWUkWJ+tGFObXApHK0x/+hIHpVPae6c15BK7B0BkilBrAGonXER2w14adSRtWwzZxPJlxSvEFwmPvCxDrucAIvh9u6F1K1LE+tmWgcpC7rYK6APpGqrUMtLVBvVNIlNKdP68k9JJ8sLRzkUEMQHpDyw4/8efG+czCJjf7N7/ERy62k1Y2DL/95dIaSZDZqPSMlSxf3WY5o3oC5j3W7aIphtNc4Gd/xKOSayE2B6dHnTWAYIs4iumD18iwg/a2CMJsIF5ENY=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LO6P265MB6032.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(376005)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Mk9HMWFoeHR2M0JrN1hJeG9nN3hnWnNXaUFZaEhvU09KZVpkSkhKUmVhdEh1?=
- =?utf-8?B?eXNjSjYyUzhvMTdlWU5nTHBGUFJCZHp3MWVzLzFRcjVxMUF1RWtQanVhdktK?=
- =?utf-8?B?SlpkNkF4dURhSmlGSGMrMnVTdVN1T3Q2aVNxdkdDYWVHYzhBS2FXTTh3dmdS?=
- =?utf-8?B?aXhRY2RkVk1kVTdUMVJuRDhFUUpyT3BYaEU4TU03b2hrRTBpbkhoNGNuekpT?=
- =?utf-8?B?b2FpYlhqWGVLMUZtcTMzdHNvNmtLOVhLb2lCRWZoZ2tBd1NsN3NmL2JXcC9C?=
- =?utf-8?B?aldzUXQ0czRLS3U5SFd0UnJBcHFxTmFuQmp0KzgrbUpNdlN3bE5WK1kxSVJF?=
- =?utf-8?B?ZDdFTEFGK2NBYzJXTWlLR3QybTJpYU5McWVJZGgxbWdiRzcvdEV5VU1HUm5F?=
- =?utf-8?B?QjRQb2toeVNjbWZncVYrNW5HRzdhS2p1Z2FMNVNreU1rb1RoelN5cG0xdFZJ?=
- =?utf-8?B?TVNVbUJyWTZ2V1lZVGFuRXFSL2ltY2xTdGIrUnVmTm1nSkRHd3hTNkZRSXVP?=
- =?utf-8?B?TDczU2NXVGw4V1VkSk94aWF4ZmhrR2RKbFlTcEVCYnBKRzVjMXRxeGp0V0h1?=
- =?utf-8?B?ZW5IckFJYkdTWHBFMTdUM3VCZzRDRjZJMUM5K0F6a2JvSHNwQTRVNjZBdEhZ?=
- =?utf-8?B?U1JRMDRRT29NeVRDb0dIK3NYcGNFZE5yRkVGdG16VUdnUGNja0pkZEt0OHpL?=
- =?utf-8?B?UWJIV0QrdnJjQndJNjczWmx1a2RRUDltQnUrZ1R3YkVQUkt5ZkhMclM0VWZt?=
- =?utf-8?B?Mmd3NG04Z2hjRVVtcHBvZXU2TU9BSmtyOTZ4anMzZ3Eyc1FRZFdGRjR4RjY4?=
- =?utf-8?B?MlhFSzdyMUVMZDFnOGF0V3JYRUpxVnFSc1h0VnRxVVltRUlIcThQdlZWNlBD?=
- =?utf-8?B?YXN1VUxlMzV3dDlKS3czQjZwQXpWa3JaemNvTy92TXBXdHdjYmVyS2lBS3V1?=
- =?utf-8?B?dS9nMFZ0amlUb0Rud0lST0QxaGx0UE1lanErQi9rZ1QyWWRGWktoV1RIamdL?=
- =?utf-8?B?cnVFT0pMcDVxNVpiQ1VlaDRiZlg5OUQreEpXb2dDdXEwcTJDREw5WGs0MjhU?=
- =?utf-8?B?SFdrd1VhTWJqLzQyYmVrM3BQODRwbC9PUG5pYUp6VmthY2UzVm1ITElLcDJY?=
- =?utf-8?B?cDUzNEZEVElWWGZIeDlYQzhDeEV2RGo5Z05xeXA0WnpsTGdlc0JRR3lHc09P?=
- =?utf-8?B?NTd1RElXVDcxeTZEOWp1MWl3cjc1RE9zcCtxMWZneUFMR2lFbFFUbmhUK3Y2?=
- =?utf-8?B?SUVzUXBUNlZMZFpMdTdwVmx0aGNrTUlvcElzS3hwcnUwVERQeTFvRXhndTdr?=
- =?utf-8?B?b1puK3RYcno3Tks0dytrZHhIRktnMFBERTlmVnhROUUxMmNSNyt6UEZqMWVv?=
- =?utf-8?B?cEEwU1lDNTZDdnRNZXQvLzBvN2psNDRoWVUzdEE0SVM1L3ozbEJCWDZSd3Vy?=
- =?utf-8?B?akFWbFdWVHlSOTNBbDRXeDZCR1EwckJSRjd4bStNVGR2RnRpQWplcTU1d3hn?=
- =?utf-8?B?NlZIQ3YzOThRM2tUNXRPTStJRHUzdVdWeWxXV1R1bnpWN1ZTM0trZXQ4OHVD?=
- =?utf-8?B?ZWp5ZkoveFNhaGZIVEVrN1dXdk56ZlZjWW5NVHdtSG9PT1NBOXREMklSK1lx?=
- =?utf-8?B?RUg2b0lnVUhVZU1xcklNOHZyYTdnVThKRkJYTC9ibFNwSCtFRkRGa2FxMmlx?=
- =?utf-8?B?Z0hKQWxGdjRxMGlOMi9ONVdNbWJmdTlQSHlIZ28yKzNQbG5CNmlNQzZjamF2?=
- =?utf-8?B?QmxUcGNobDJ4L2Nhd2NBTERKV2lLUzZhVm0rMUg1WlhzVUI0M3dzMmJiM3BF?=
- =?utf-8?B?U0V6SC95dHJzWmdCNWNGVFJwOXRJVlhrZ2trYys5dEtQaW9OcDZ5VEU4aTQz?=
- =?utf-8?B?SUJ6d21nYWtnMWd5UEgvSGFUWllHd2ZyOWYrejV5OFNMa2NXbkZzTGdiVHU5?=
- =?utf-8?B?TE4ySzVYeFpiVnBncFNvdzFsSEhQbk1ad25IQndnRFRQZll4bUJiZFN3dWRS?=
- =?utf-8?B?UnVuQlRsOUpqWXFkYjd1anNPRlIyUGR5bVRWSHI1VDRVVU5ZWDk0ZDNzWlUr?=
- =?utf-8?B?S0RYNjFyL0xIR1JSejN3RGl6MmZQRzk3amY4eUlaSlJRZVBsc01TRUhmbFVR?=
- =?utf-8?B?SUxzZGJXNGVxK0s0ZzVNbnRmZS9RWE5SYmtPRE9EejZuU1loQitJWHlHZTBn?=
- =?utf-8?B?Tnc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <AC7A59543CE77646BEAE27DBACB234AB@GBRP265.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+        d=gmail.com; s=20230601; t=1709815117; x=1710419917; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UYEmkHPaO75Pt9X91rpDnDEdVODsoJ/PTraIJQRrksA=;
+        b=j1Qt2fzw2chUCPmvgDduLiR1xn1cing9wwdXVCOeo6W8VZFVELfDC+weSeOPtEnj2U
+         k+X6JEHaVktyyMTLU1SnRNCvM/Ixo98qJHgySEyZCkAqNJ0ghXmYgYSnGkbhWIzV4jyt
+         n2ewYv3O0Oo1x2p5HS2cX5GeQ4xXLleYdIUza7F3AF9xiZlvJ2Cm0gGssp7gL81akpWQ
+         JXFvB8PNew4NyRQP05ZTJkGesZvkPODIEZGsW9uC7D8dPgWqQcl/3o6WI1nDRDFsmTFG
+         ww8txhy5+U+obApz5BUZO359OPPbjy95CA4b97HyEUAoVUbqXfmLAM7YS+ZT4W+TzOnd
+         bOcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709815117; x=1710419917;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UYEmkHPaO75Pt9X91rpDnDEdVODsoJ/PTraIJQRrksA=;
+        b=adfbHeVWEA94mdOWtdNol3JLZRoA6uTWj9nx0Ikw1x2mGoRk5x78oZ0vFtw2+Hb2mc
+         Dded4KLvzjL6OsOmgWMW0MXm2V8VChBxMITQyeSIgg2nY3/nYqFzugJNwdl1XkA4yg9T
+         uNeGG674QSnGghDhbFzdXYouzaw0QYjqDQAkimwtueCLV1wcErlNqd45gsnxPTbo5I6p
+         EwLocr5foqxzruQcnW/hJnfkG/oG8QS4cE4SD3RMD49mircoPvdnUDpeIRev5mgyoAfU
+         a5T0T662xh97aCAf9rjwRzsWka5tAsl1dKkNcZ7+PFWhYfh/UtuU1PhS3yI3+n1lc1U+
+         xUBw==
+X-Forwarded-Encrypted: i=1; AJvYcCUo4QA6JGhQr411vL7792/vnsW7+9HzpH15eykZ0p0C0DqN5+4DV9QBdFWUe8gaCWQN4fUIIEuH84iHixKwYtShUIx9QCam9PbPIGZMpCJ3OjhOsnBWTFuGjdmF6j1wTKmW7IY8pEPQfw==
+X-Gm-Message-State: AOJu0YxFrrMPjC2kC9QIRR9djV5RzBltdVJW1lqB4pMX3Cq6c8qis6uU
+	S9NqCk8QVyj9EJKw4cvIXLMaWs5Wh3TX694+1Sd0Bpr6F9It9XyiCarZFVco4r2wORm/5M+UQiR
+	xsYtRhvTMIMeXSixmdwfspzoE+FE=
+X-Google-Smtp-Source: AGHT+IF9OWLOQr1CkZTFNEjOLwWvF0gmZSA+Yx2B1AROLJTkZXotXL+3NGJITbTGsBRH1MtZm6wwLwP6rX6yZXlJ/RY=
+X-Received: by 2002:a17:907:b9d8:b0:a45:c294:6e46 with SMTP id
+ xa24-20020a170907b9d800b00a45c2946e46mr3010733ejc.64.1709815116204; Thu, 07
+ Mar 2024 04:38:36 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: LO6P265MB6032.GBRP265.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 59cc9f88-9f8e-4e04-ee6c-08dc3ea35928
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Mar 2024 12:37:27.5709
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 0d5fd8bb-e8c2-4e0a-8dd5-2c264f7140fe
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 4W2jUJSfdCEMoaPXkvxF0+yiOq8l3k/f6dskc4TUq+lUKjqW/caC5i+U4Kyf1wOeEMJlObNTlhKzRHYEWFGUpA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWLP265MB6369
-X-OriginatorOrg: imgtec.com
-X-EXCLAIMER-MD-CONFIG: 15a78312-3e47-46eb-9010-2e54d84a9631
-X-Proofpoint-ORIG-GUID: IgWc3nEOpQ6R52-ZWZT0g99mgJrkaDdj
-X-Proofpoint-GUID: IgWc3nEOpQ6R52-ZWZT0g99mgJrkaDdj
+References: <20240229-rk-dts-additions-v3-0-6afe8473a631@gmail.com>
+ <j3krazypdc7gsvnp4kcocaftxsbjrfhj6nr2kf2cieo4bjxbv7@bqdfbirk5tei> <CABjd4Yxs9b0XDXYfdnmT08BQnsJLonRy4X-g73J67yeGw3xL+w@mail.gmail.com>
+In-Reply-To: <CABjd4Yxs9b0XDXYfdnmT08BQnsJLonRy4X-g73J67yeGw3xL+w@mail.gmail.com>
+From: Alexey Charkov <alchark@gmail.com>
+Date: Thu, 7 Mar 2024 16:38:24 +0400
+Message-ID: <CABjd4YzTL=5S7cS8ACNAYVa730WA3iGd5L_wP1Vn9=f83RCORA@mail.gmail.com>
+Subject: Re: [PATCH v3 0/5] RK3588 and Rock 5B dts additions: thermal, OPP and fan
+To: Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc: Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Heiko Stuebner <heiko@sntech.de>, Daniel Lezcano <daniel.lezcano@linaro.org>, 
+	Dragan Simic <dsimic@manjaro.org>, Viresh Kumar <viresh.kumar@linaro.org>, 
+	Chen-Yu Tsai <wens@kernel.org>, devicetree@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-T24gVGh1LCAyMDI0LTAzLTA3IGF0IDEyOjI2ICswMDAwLCBGcmFuayBCaW5ucyB3cm90ZToNCj4g
-T24gVHVlLCAyMDI0LTAyLTI3IGF0IDA1OjUwIC0wNjAwLCBBZGFtIEZvcmQgd3JvdGU6DQo+ID4g
-T24gVHVlLCBGZWIgMjcsIDIwMjQgYXQgMzozMeKAr0FNIE1hdHQgQ29zdGVyIDxNYXR0LkNvc3Rl
-ckBpbWd0ZWMuY29tPiB3cm90ZToNCj4gPiA+IEhpIEFkYW0sDQo+ID4gPiANCj4gPiA+IFRoYW5r
-cyBmb3IgdGhlc2UgcGF0Y2hlcyEgSSdsbCBqdXN0IHJlcGx5IHRvIHRoaXMgb25lIHBhdGNoLCBi
-dXQgbXkNCj4gPiA+IGNvbW1lbnRzIGFwcGx5IHRvIHRoZW0gYWxsLg0KPiA+ID4gDQo+ID4gPiBP
-biAyNy8wMi8yMDI0IDAzOjQ1LCBBZGFtIEZvcmQgd3JvdGU6DQo+ID4gPiA+IFRoZSBHUFUgb24g
-dGhlIFJaL0cyTSBpcyBhIFJvZ3VlIEdYNjI1MCB3aGljaCB1c2VzIGZpcm13YXJlDQo+ID4gPiA+
-IHJvZ3VlXzQuNDUuMi41OF92MS5mdyBhdmFpbGFibGUgZnJvbSBJbWFnaW5hdGlvbi4NCj4gPiA+
-ID4gDQo+ID4gPiA+IFdoZW4gZW51bWVyYXRlZCwgaXQgYXBwZWFycyBhczoNCj4gPiA+ID4gICBw
-b3dlcnZyIGZkMDAwMDAwLmdwdTogW2RybV0gbG9hZGVkIGZpcm13YXJlIHBvd2VydnIvcm9ndWVf
-NC40NS4yLjU4X3YxLmZ3DQo+ID4gPiA+ICAgcG93ZXJ2ciBmZDAwMDAwMC5ncHU6IFtkcm1dIEZX
-IHZlcnNpb24gdjEuMCAoYnVpbGQgNjUxMzMzNiBPUykNCj4gPiA+IA0KPiA+ID4gVGhlc2UgbWVz
-c2FnZXMgYXJlIHByaW50ZWQgYWZ0ZXIgdmVyaWZ5aW5nIHRoZSBmaXJtd2FyZSBibG9i4oCZcyBo
-ZWFkZXJzLA0KPiA+ID4gKmJlZm9yZSogYXR0ZW1wdGluZyB0byB1cGxvYWQgaXQgdG8gdGhlIGRl
-dmljZS4gSnVzdCBiZWNhdXNlIHRoZXkgYXBwZWFyDQo+ID4gPiBpbiBkbWVzZyBkb2VzICpub3Qq
-IGltcGx5IHRoZSBkZXZpY2UgaXMgZnVuY3Rpb25hbCBiZXlvbmQgdGhlIGhhbmRmdWwgb2YNCj4g
-PiA+IHJlZ2lzdGVyIHJlYWRzIGluIHB2cl9sb2FkX2dwdV9pZCgpLg0KPiA+ID4gDQo+ID4gPiBT
-aW5jZSBNZXNhIGRvZXMgbm90IHlldCBoYXZlIHN1cHBvcnQgZm9yIHRoaXMgR1BVLCB0aGVyZeKA
-mXMgbm90IGEgbG90DQo+ID4gPiB0aGF0IGNhbiBiZSBkb25lIHRvIGFjdHVhbGx5IHRlc3QgdGhl
-c2UgYmluZGluZ3MuDQo+ID4gPiANCj4gPiA+IFdoZW4gd2UgYWRkZWQgdXBzdHJlYW0gc3VwcG9y
-dCBmb3IgdGhlIGZpcnN0IEdQVSAodGhlIEFYRSBjb3JlIGluIFRJ4oCZcw0KPiA+ID4gQU02Miks
-IHdlIG9wdGVkIHRvIHdhaXQgdW50aWwgdXNlcnNwYWNlIHdhcyBzdWZmaWNpZW50bHkgcHJvZ3Jl
-c3NlZCB0bw0KPiA+ID4gdGhlIHBvaW50IGl0IGNvdWxkIGJlIHVzZWQgZm9yIHRlc3RpbmcuIFRo
-aXMgdGhvdWdodCBwcm9jZXNzIHN0aWxsDQo+ID4gPiBhcHBsaWVzIHdoZW4gYWRkaW5nIG5ldyBH
-UFVzLg0KPiA+ID4gDQo+ID4gPiBPdXIgbWFpbiBjb25jZXJuIGlzIHRoYXQgYWRkaW5nIGJpbmRp
-bmdzIGZvciBHUFVzIGltcGxpZXMgYSBsZXZlbCBvZg0KPiA+ID4gc3VwcG9ydCB0aGF0IGNhbm5v
-dCBiZSB0ZXN0ZWQuIFRoYXQgaW4gdHVybiBtYXkgbWFrZSBpdCBjaGFsbGVuZ2luZyB0bw0KPiA+
-ID4ganVzdGlmeSBVQVBJIGNoYW5nZXMgaWYvd2hlbiB0aGV54oCZcmUgbmVlZGVkIHRvIGFjdHVh
-bGx5IG1ha2UgdGhlc2UgR1BVcw0KPiA+ID4gZnVuY3Rpb25hbC4NCj4gPiANCj4gPiBJIHdyb25n
-bHkgYXNzdW1lZCB0aGF0IHdoZW4gdGhlIGZpcm13YXJlIHdhcyByZWFkeSwgdGhlcmUgd2FzIHNv
-bWUNCj4gPiBwcmVsaW1pbmFyeSBmdW5jdGlvbmFsaXR5LCBidXQgaXQgc291bmRzIGxpa2Ugd2Ug
-bmVlZCB0byB3b3JrIGZvcg0KPiA+IFNlcmllczZYVCBzdXBwb3J0IHRvIGJlIGFkZGVkIHRvIHRo
-ZSBkcml2ZXIuICBJIG9ubHkgdXNlZCB0aGUgQVhFDQo+ID4gY29tcGF0aWJsZSBzaW5jZSBpdCBh
-cHBlYXJlZCB0byB0aGUgYmUgdGhlIG9ubHkgb25lIGFuZCB0aGUgZXhpc3RpbmcNCj4gPiBiaW5k
-aW5nIGRvY3VtZW50IHN0YXRlZCAibW9kZWwvcmV2aXNpb24gaXMgZnVsbHkgZGlzY292ZXJhYmxl
-IiB3aGljaCBJDQo+ID4gaW50ZXJwcmV0ZWQgdG8gbWVhbiB0aGF0IHRoZSBBWEUgY29tcGF0aWJs
-ZSB3YXMgc3VmZmljaWVudC4NCj4gDQo+IFRoZSBjb21tZW50IGlzIHJlbGF0ZWQgdG8gdGhlcmUg
-YmVpbmcgYSBmZXcgbW9kZWxzL3JldmlzaW9ucyBvZiBBWEUgWzFdWzJdWzNdLA0KPiB3aGljaCB3
-ZSBjYW4gZGlzdGluZ3Vpc2ggYmV0d2VlbiBieSByZWFkaW5nIGEgcmVnaXN0ZXIuDQo+IA0KPiA+
-ID4gPiBTaWduZWQtb2ZmLWJ5OiBBZGFtIEZvcmQgPGFmb3JkMTczQGdtYWlsLmNvbT4NCj4gPiA+
-ID4gDQo+ID4gPiA+IGRpZmYgLS1naXQgYS9hcmNoL2FybTY0L2Jvb3QvZHRzL3JlbmVzYXMvcjhh
-Nzc0YTEuZHRzaSBiL2FyY2gvYXJtNjQvYm9vdC9kdHMvcmVuZXNhcy9yOGE3NzRhMS5kdHNpDQo+
-ID4gPiA+IGluZGV4IGE4YTQ0ZmU1ZTgzYi4uODkyM2Q5NjI0YjM5IDEwMDY0NA0KPiA+ID4gPiAt
-LS0gYS9hcmNoL2FybTY0L2Jvb3QvZHRzL3JlbmVzYXMvcjhhNzc0YTEuZHRzaQ0KPiA+ID4gPiAr
-KysgYi9hcmNoL2FybTY0L2Jvb3QvZHRzL3JlbmVzYXMvcjhhNzc0YTEuZHRzaQ0KPiA+ID4gPiBA
-QCAtMjM1Miw2ICsyMzUyLDE2IEBAIGdpYzogaW50ZXJydXB0LWNvbnRyb2xsZXJAZjEwMTAwMDAg
-ew0KPiA+ID4gPiAgICAgICAgICAgICAgICAgICAgICAgcmVzZXRzID0gPCZjcGcgNDA4PjsNCj4g
-PiA+ID4gICAgICAgICAgICAgICB9Ow0KPiA+ID4gPiANCj4gPiA+ID4gKyAgICAgICAgICAgICBn
-cHU6IGdwdUBmZDAwMDAwMCB7DQo+ID4gPiA+ICsgICAgICAgICAgICAgICAgICAgICBjb21wYXRp
-YmxlID0gInJlbmVzYXMscjhhNzc0YTEtZ3B1IiwgImltZyxpbWctYXhlIjsNCj4gPiA+IA0KPiA+
-ID4gVGhlIEdYNjI1MCBpcyAqbm90KiBhbiBBWEUgY29yZSAtIGl0IHNob3VsZG7igJl0IGJlIGxp
-c3RlZCBhcyBjb21wYXRpYmxlDQo+ID4gPiB3aXRoIG9uZS4gRm9yIHByaW9yIGFydCwgc2VlIFsx
-XSB3aGVyZSB3ZSBhZGRlZCBzdXBwb3J0IGZvciB0aGUgTVQ4MTczDQo+ID4gPiBmb3VuZCBpbiBF
-bG0gQ2hyb21lYm9va3MgUjEzIChhbHNvIGEgU2VyaWVzNlhUIEdQVSkuDQo+ID4gPiANCj4gPiA+
-ID4gKyAgICAgICAgICAgICAgICAgICAgIHJlZyA9IDwwIDB4ZmQwMDAwMDAgMCAweDIwMDAwPjsN
-Cj4gPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgIGNsb2NrcyA9IDwmY3BnIENQR19NT0QgMTEy
-PjsNCj4gPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgIGNsb2NrLW5hbWVzID0gImNvcmUiOw0K
-PiA+ID4gDQo+ID4gPiBTZXJpZXM2WFQgY29yZXMgaGF2ZSB0aHJlZSBjbG9ja3MgKHNlZSBbMV0g
-YWdhaW4pLiBJIGRvbuKAmXQgaGF2ZSBhDQo+ID4gPiBSZW5lc2FzIFRSTSB0byBoYW5kIOKAkyBk
-byB5b3Uga25vdyBpZiB0aGVpciBkb2NzIGdvIGludG8gZGV0YWlsIG9uIHRoZQ0KPiA+ID4gR1BV
-IGludGVncmF0aW9uPw0KPiA+ID4gDQo+ID4gPiA+ICsgICAgICAgICAgICAgICAgICAgICBpbnRl
-cnJ1cHRzID0gPEdJQ19TUEkgMTE5IElSUV9UWVBFX0xFVkVMX0hJR0g+Ow0KPiA+ID4gPiArICAg
-ICAgICAgICAgICAgICAgICAgcG93ZXItZG9tYWlucyA9IDwmc3lzYyBSOEE3NzRBMV9QRF8zREdf
-Qj47DQo+ID4gPiA+ICsgICAgICAgICAgICAgICAgICAgICByZXNldHMgPSA8JmNwZyAxMTI+Ow0K
-PiA+ID4gPiArICAgICAgICAgICAgIH07DQo+ID4gPiA+ICsNCj4gPiA+ID4gICAgICAgICAgICAg
-ICBwY2llYzA6IHBjaWVAZmUwMDAwMDAgew0KPiA+ID4gPiAgICAgICAgICAgICAgICAgICAgICAg
-Y29tcGF0aWJsZSA9ICJyZW5lc2FzLHBjaWUtcjhhNzc0YTEiLA0KPiA+ID4gPiAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICJyZW5lc2FzLHBjaWUtcmNhci1nZW4zIjsNCj4gPiA+
-IA0KPiA+ID4gQXMgeW91IHByb2JhYmx5IGV4cGVjdCBieSB0aGlzIHBvaW50LCBJIGhhdmUgdG8g
-bmFjayB0aGlzIHNlcmllcyBmb3INCj4gPiA+IG5vdy4gSSBhcHByZWNpYXRlIHlvdXIgZWZmb3J0
-IGhlcmUgYW5kIEnigJlsbCBiZSBoYXBweSB0byBoZWxwIHlvdSBsYW5kDQo+ID4gDQo+ID4gSSBn
-ZXQgdGhhdC4gIEkgd2Fzbid0IHN1cmUgaWYgSSBzaG91bGQgaGF2ZSBldmVuIHB1c2hlZCB0aGlz
-LCBidXQgSQ0KPiA+IHdhbnRlZCB0byBnZXQgYSBsaXR0bGUgdHJhY3Rpb24sIGJlY2F1c2UgSSBr
-bm93IHRoZXJlIGFyZSBwZW9wbGUgbGlrZQ0KPiA+IG15c2VsZiB3aG8gd2FudCB0byB1c2UgdGhl
-IDNEIGluIHRoZSBSZW5lc2FzIGJvYXJkcywgYnV0IGRvbid0IHdhbnQgdG8NCj4gPiB1c2UgdGhl
-IGNsb3NlZC1zb3VyY2UgYmxvYnMgdGllZCB0byBFVUxBIGFuZCBOREEgZG9jdW1lbnRzLg0KPiA+
-IA0KPiA+ID4gdGhlc2Ugb25jZSBNZXNhIGdhaW5zIHNvbWUgZm9ybSBvZiB1c2FibGUgc3VwcG9y
-dCB0byBhbGxvdyB0ZXN0aW5nLg0KPiA+IA0KPiA+IElzIHRoZXJlIGEgd2F5IGZvciB5b3VyIGdy
-b3VwIHRvIGFkZCBtZSB0byB0aGUgQ0MgbGlzdCB3aGVuIGZ1dHVyZQ0KPiA+IHVwZGF0ZXMgYXJl
-IHN1Ym1pdHRlZD8gIEknZCBsaWtlIHRvIGZvbGxvdyB0aGlzIGFuZCByZXN1Ym1pdCB3aGVuIGl0
-J3MNCj4gPiByZWFkeS4NCj4gDQo+IFN1cmUsIHdlJ2xsIGtlZXAgeW91IHVwZGF0ZWQgYXMgdGhp
-bmdzIHByb2dyZXNzLg0KPiANCg0KT2gsIEkgZm9yZ290IHRvIGFkZCwgaW4gdGhlIG1lYW50aW1l
-LCB3b3VsZCB5b3UgZmluZCBpdCB1c2VmdWwgZm9yIHVzIHRvIGNyZWF0ZQ0KYSBTZXJpZXM2WFQg
-YnJhbmNoIG9uIEdpdExhYiB3aGVyZSB3ZSBjYW4gaW5jbHVkZSB0aGVzZSBwYXRjaGVzPyBXZSBj
-YW4gY3JlYXRlIGENCmNvcnJlc3BvbmRpbmcgTWVzYSBicmFuY2ggdGhhdCB3ZSdsbCB1cGRhdGUg
-YXMgd2UgcHJvZ3Jlc3Mgc3VwcG9ydCBmb3IgR1g2MjUwLg0KVGhpcyBzaG91bGQgbWFrZSBpdCBl
-YXNpZXIgZm9yIHlvdSAoYW5kIG90aGVycykgdG8gdGVzdCBhbmQgaG9wZWZ1bGx5IG1ha2UgaXQN
-CmVhc2llciBmb3Igb3RoZXJzIHRvIGNvbnRyaWJ1dGUgd2hpbGUgd2Ugd29yayB0byBnZXQgc3Vw
-cG9ydCBpbnRvIGEgZ29vZCBzdGF0ZS4NCg0KPiBUaGFua3MNCj4gRnJhbmsNCj4gDQo+IFsxXSBo
-dHRwczovL3d3dy5pbWFnaW5hdGlvbnRlY2guY29tL3Byb2R1Y3QvaW1nLWF4ZS0xLTE2bS8NCj4g
-WzJdIGh0dHBzOi8vd3d3LmltYWdpbmF0aW9udGVjaC5jb20vcHJvZHVjdC9pbWctYXhlLTEtMTYv
-DQo+IFszXSBodHRwczovL3d3dy5pbWFnaW5hdGlvbnRlY2guY29tL3Byb2R1Y3QvaW1nLWF4ZS0y
-LTE2Lw0KPiANCj4gPiA+IENoZWVycywNCj4gPiA+IE1hdHQNCj4gPiA+IA0KPiA+ID4gWzFdOiBo
-dHRwczovL2dpdGxhYi5mcmVlZGVza3RvcC5vcmcvaW1hZ2luYXRpb24vbGludXgvLS9ibG9iL2Iz
-NTA2YjhiYzQ1ZWQ2ZDQwMDVlYjMyYTk5NGRmMGUzM2Q2NjEzZjEvYXJjaC9hcm02NC9ib290L2R0
-cy9tZWRpYXRlay9tdDgxNzMuZHRzaSNMOTkzLTEwMDYNCg==
+On Tue, Mar 5, 2024 at 12:06=E2=80=AFPM Alexey Charkov <alchark@gmail.com> =
+wrote:
+>
+> Hi Sebastian!
+>
+> On Mon, Mar 4, 2024 at 9:51=E2=80=AFPM Sebastian Reichel
+> <sebastian.reichel@collabora.com> wrote:
+> >
+> > Hi,
+> >
+> > On Thu, Feb 29, 2024 at 11:26:31PM +0400, Alexey Charkov wrote:
+> > > This enables thermal monitoring and CPU DVFS on RK3588(s), as well as
+> > > active cooling on Radxa Rock 5B via the provided PWM fan.
+> > >
+> > > Some RK3588 boards use separate regulators to supply CPUs and their
+> > > respective memory interfaces, so this is handled by coupling those
+> > > regulators in affected boards' device trees to ensure that their
+> > > voltage is adjusted in step.
+> > >
+> > > In this revision of the series I chose to enable TSADC for all boards
+> > > at .dtsi level, because:
+> > >  - The defaults already in .dtsi should work for all users, given tha=
+t
+> > >    the CRU based resets don't need any out-of-chip components, and
+> > >    the CRU vs. PMIC reset is pretty much the only thing a board might
+> > >    have to configure / override there
+> > >  - The boards that have TSADC_SHUT signal wired to the PMIC reset lin=
+e
+> > >    can still choose to override the reset logic in their .dts. Or sta=
+y
+> > >    with CRU based resets, as downstream kernels do anyway
+> > >  - The on-by-default approach helps ensure thermal protections are in
+> > >    place (emergency reset and throttling) for any board even with a
+> > >    rudimentary .dts, and thus lets us introduce CPU DVFS with better
+> > >    peace of mind
+> > >
+> > > Fan control on Rock 5B has been split into two intervals: let it spin
+> > > at the minimum cooling state between 55C and 65C, and then accelerate
+> > > if the system crosses the 65C mark - thanks to Dragan for suggesting.
+> > > This lets some cooling setups with beefier heatsinks and/or larger
+> > > fan fins to stay in the quietest non-zero fan state while still
+> > > gaining potential benefits from the airflow it generates, and
+> > > possibly avoiding noisy speeds altogether for some workloads.
+> > >
+> > > OPPs help actually scale CPU frequencies up and down for both cooling
+> > > and performance - tested on Rock 5B under varied loads. I've split
+> > > the patch into two parts: the first containing those OPPs that seem
+> > > to be no-regret with general consensus during v1 review [2], while
+> > > the second contains OPPs that cause frequency reductions without
+> > > accompanying decrease in CPU voltage. There seems to be a slight
+> > > performance gain in some workload scenarios when using these, but
+> > > previous discussion was inconclusive as to whether they should be
+> > > included or not. Having them as separate patches enables easier
+> > > comparison and partial reversion if people want to test it under
+> > > their workloads, and also enables the first 'no-regret' part to be
+> > > merged to -next while the jury is still out on the second one.
+> > >
+> > > [1] https://lore.kernel.org/linux-rockchip/1824717.EqSB1tO5pr@bagend/=
+T/#ma2ab949da2235a8e759eab22155fb2bc397d8aea
+> > > [2] https://lore.kernel.org/linux-rockchip/CABjd4YxqarUCbZ-a2XLe3TWJ-=
+qjphGkyq=3DwDnctnEhdoSdPPpw@mail.gmail.com/T/#m49d2b94e773f5b532a0bb5d3d766=
+4799ff28cc2c
+> > >
+> > > Signed-off-by: Alexey Charkov <alchark@gmail.com>
+> > > ---
+> > > Changes in v3:
+> > > - Added regulator coupling for EVB1 and QuartzPro64
+> > > - Enabled the TSADC for all boards in .dtsi, not just Rock 5B (thanks=
+ ChenYu)
+> > > - Added comments regarding two passive cooling trips in each zone (th=
+anks Dragan)
+> > > - Fixed active cooling map numbering for Radxa Rock 5B (thanks Dragan=
+)
+> > > - Dropped Daniel's Acked-by tag from the Rock 5B fan patch, as there'=
+s been quite some
+> > >   churn there since the version he acknowledged
+> > > - Link to v2: https://lore.kernel.org/r/20240130-rk-dts-additions-v2-=
+0-c6222c4c78df@gmail.com
+> > >
+> > > Changes in v2:
+> > > - Dropped the rfkill patch which Heiko has already applied
+> > > - Set higher 'polling-delay-passive' (100 instead of 20)
+> > > - Name all cooling maps starting from map0 in each respective zone
+> > > - Drop 'contribution' properties from passive cooling maps
+> > > - Link to v1: https://lore.kernel.org/r/20240125-rk-dts-additions-v1-=
+0-5879275db36f@gmail.com
+> > >
+> > > ---
+> > > Alexey Charkov (5):
+> > >       arm64: dts: rockchip: enable built-in thermal monitoring on RK3=
+588
+> > >       arm64: dts: rockchip: enable automatic active cooling on Rock 5=
+B
+> > >       arm64: dts: rockchip: Add CPU/memory regulator coupling for RK3=
+588
+> > >       arm64: dts: rockchip: Add OPP data for CPU cores on RK3588
+> > >       arm64: dts: rockchip: Add further granularity in RK3588 CPU OPP=
+s
+> > >
+> > >  arch/arm64/boot/dts/rockchip/rk3588-evb1-v10.dts   |  12 +
+> > >  .../arm64/boot/dts/rockchip/rk3588-quartzpro64.dts |  12 +
+> > >  arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts    |  30 +-
+> > >  arch/arm64/boot/dts/rockchip/rk3588s.dtsi          | 385 +++++++++++=
++++++++++-
+> > >  4 files changed, 437 insertions(+), 2 deletions(-)
+> >
+> > I'm too busy to have a detailed review of this series right now, but
+> > I pushed it to our CI and it results in a board reset at boot time:
+> >
+> > https://gitlab.collabora.com/hardware-enablement/rockchip-3588/linux/-/=
+jobs/300950
+> >
+> > I also pushed just the first three patches (i.e. without OPP /
+> > cpufreq) and that boots fine:
+> >
+> > https://gitlab.collabora.com/hardware-enablement/rockchip-3588/linux/-/=
+jobs/300953
+>
+> Thank you for testing these! I've noticed in the boot log that the CI
+> machine uses some u-boot 2023.07 - is that a downstream one? Any
+> chance to compare it to 2023.11 or 2024.01 from your (Collabora)
+> integration tree?
+>
+> I use 2023.11 from your integration tree, with a binary bl31, and I'm
+> not getting those resets even under prolonged heavy load (I rebuild
+> Chromium with 8 concurrent compilation jobs as the stress test -
+> that's 14 hours of heavy CPU, memory and IO use). Would be interesting
+> to understand if it's just a 'lucky' SoC specimen on my side, or if
+> there is some dark magic happening differently on my machine vs. your
+> CI machine.
+>
+> Thinking that maybe if your CI machine uses a downstream u-boot it
+> might be leaving some extra hardware running (PVTM?) which might do
+> weird stuff when TSADC/clocks/voltages get readjusted by the generic
+> cpufreq driver?..
+>
+> > Note, that OPP / cpufreq works on the same boards in the CI when
+> > using the ugly-and-not-for-upstream cpufreq driver:
+> >
+> > https://gitlab.collabora.com/hardware-enablement/rockchip-3588/linux/-/=
+commit/9c90c5032743a0419bf3fd2f914a24fd53101acd
+> >
+> > My best guess right now is, that this is related to the generic
+> > driver obviously not updating the GRF read margin registers.
+>
+> If it was about memory read margins I believe I would have been
+> unlikely to get my machine to work reliably under heavy load with the
+> default ones, but who knows...
+
+Sebastian's report led me to investigate further how all those things
+are organized in the downstream code and in hardware, and what could
+be a pragmatic way forward with upstream enablement. It turned out to
+be quite a rabbit hole frankly, with multiple layers of abstraction
+and intertwined code in different places.
+
+Here's a quick summary for future reference:
+ - CPU clocks on RK3588 are ultimately managed by the ATF firmware,
+which provides an SCMI service to expose them to the kernel
+ - ATF itself doesn't directly set any clock frequencies. Instead, it
+accepts a target frequency via SCMI and converts it into an oscillator
+ring length setting for the PVPLL hardware block (via a fixed table
+lookup). At least that's how it's done in the recently released TF-A
+bl31 code [1] - perhaps the binary bl31 does something similar
+ - U-boot doesn't seem to mess with CPU clocks, PVTM or PVPLL
+ - PVPLL produces a reference clock to feed to the CPUs, which depends
+on the configured oscillator ring length but also on the supply
+voltage, silicon quality and perhaps temperature too. ATF doesn't know
+anything about voltages or temperatures, so it doesn't guarantee that
+the requested frequency is matched by the hardware
+ - PVPLL frequency generation is bypassed for lower-frequency OPPs, in
+which case the target frequency is directly fed by the ATF to the CRU.
+This happens for both big-core and little-core frequencies below 816
+MHz
+ - Given that requesting a particular frequency via SCMI doesn't
+guarantee that it will be what the CPUs end up running at, the vendor
+kernel also does a runtime voltage calibration for the supply
+regulators, by adjusting the supply voltage in minimum regulator steps
+until the frequency reported by PVPLL gets close to the requested one
+[2]. It then overwrites OPP provided voltage values with the
+calibrated ones
+ - There's also some trickery with preselecting OPP voltage sets using
+the "-Lx" suffix based on silicon quality, as measured by a "leakage"
+value stored in an NVMEM cell and/or the PVTM frequency generated at a
+reference "midpoint" OPP [3]. Better performing silicon gets to run at
+lower default supply voltages, thus saving power
+ - Once the OPPs are selected and calibrated, the only remaining
+trickery is the two supply regulators per each CPU cluster (one for
+the CPUs and the other for the memory interface)
+ - Another catch, as Sebastian points out, is that memory read margins
+must be adjusted whenever the memory interface supply voltage crosses
+certain thresholds [4]. This has little to do with CPUs or
+frequencies, and is only tangentially related to them due to the
+dependency chain between the target CPU frequency -> required CPU
+supply voltage -> matching memory interface supply voltage -> required
+read margins
+ - At reset the ATF switches all clocks to the lowest 408 MHz [6], so
+setting it to anything in kernel code (as the downstream driver does)
+seems redundant
+
+All in all, it does indeed sound like Collabora's CI machine boot-time
+resets are most likely caused by the missing memory read margin
+settings in my patch series. Voltage values in the OPPs I used are the
+most conservative defaults of what the downstream DT has, and PVPLL
+should be able to generate reasonable clock speeds with those (albeit
+likely suboptimal, due to them not being tuned to the particular
+silicon specimen). And there is little else to differ frankly.
+
+As for the way forward, it would be great to know the opinions from
+the list. My thinking is as follows:
+ - I can introduce memory read margin updates as the first priority,
+leaving voltage calibration and/or OPP preselection for later (as
+those should not affect system stability at current default values,
+perhaps only power efficiency to a certain extent)
+ - CPUfreq doesn't sound like the right place for those, given that
+they have little to do with either CPU or freq :)
+ - I suggest a custom regulator config helper to plug into the OPP
+layer, as is done for TI OMAP5 [6]. At first, it might be only used
+for looking up and setting the correct memory read margin value
+whenever the cluster supply voltage changes, and later the same code
+can be extended to do voltage calibration. In fact, OMAP code is there
+for a very similar purpose, but in their case optimized voltages are
+pre-programmed in efuses and don't require runtime recalibration
+ - Given that all OPPs in the downstream kernel list identical
+voltages for the memory supply as for the CPU supply, I don't think it
+makes much sense to customize the cpufreq driver per se.
+Single-regulator approach with the generic cpufreq-dt and regulator
+coupling sounds much less invasive and thus lower-maintenance
+
+Best regards,
+Alexey
+
+[1] https://gitlab.collabora.com/hardware-enablement/rockchip-3588/trusted-=
+firmware-a/-/blob/rk3588/plat/rockchip/rk3588/drivers/scmi/rk3588_clk.c?ref=
+_type=3Dheads#L303
+[2] https://github.com/radxa/kernel/blob/c428536281d69aeb2b3480f65b2b227210=
+b61535/drivers/soc/rockchip/rockchip_opp_select.c#L804
+[3] https://github.com/radxa/kernel/blob/c428536281d69aeb2b3480f65b2b227210=
+b61535/drivers/soc/rockchip/rockchip_opp_select.c#L1575
+[4] https://github.com/radxa/kernel/blob/c428536281d69aeb2b3480f65b2b227210=
+b61535/drivers/cpufreq/rockchip-cpufreq.c#L405
+[5] https://gitlab.collabora.com/hardware-enablement/rockchip-3588/trusted-=
+firmware-a/-/blob/rk3588/plat/rockchip/rk3588/drivers/scmi/rk3588_clk.c?ref=
+_type=3Dheads#L2419
+[6] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
+/drivers/opp/ti-opp-supply.c#n275
 
