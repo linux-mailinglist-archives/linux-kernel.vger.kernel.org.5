@@ -1,100 +1,124 @@
-Return-Path: <linux-kernel+bounces-95713-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95714-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E50A28751A2
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:17:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37EA28751A4
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:17:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D22501C23DC3
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:17:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E72E9287163
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:17:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE9C812DD9C;
-	Thu,  7 Mar 2024 14:17:34 +0000 (UTC)
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B275512DD9F;
+	Thu,  7 Mar 2024 14:17:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=infotecs.ru header.i=@infotecs.ru header.b="wEHd8KSC"
+Received: from mx0.infotecs.ru (mx0.infotecs.ru [91.244.183.115])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A68351D699;
-	Thu,  7 Mar 2024 14:17:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B87712BF12;
+	Thu,  7 Mar 2024 14:17:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.244.183.115
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709821054; cv=none; b=L1bo+EfCTH/joU8jlCf5KbOtAMQECHxTPYtUtpKEqd6/sMD06vTqa7BB3XMSQlp6LEPYK5XKOBlm8BgozypFdznDkr/E9rmekUvdDUADt9OJxuEnqT8TlArF7GP8xgtwGZ33JXEixNRi3m7CvR75+T79RERUi+uABk9BIfORg+g=
+	t=1709821065; cv=none; b=j83lBXDdY3YN0QyBv7UmYsuQH6xjNMCg0UCH3bZXRpUGg1V94xOshpmpwUkiW+8Tn7+j+RsHr+FoDqw8HR/W89aFxLcKww7zdD7VycQQ2lQrOKx6SpQySgYd8jpleRPV8dJ8AcMAFT9WBwtQHM+J0Vyy+81Cvmjwq++qPqfYpaE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709821054; c=relaxed/simple;
-	bh=S+Lk8cgQNJ1J514ZKuPD0P9IeeMhDUgmPT9fj7UAJDQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=AcYRNd4PjZ5EOEr0+/Z0dSgh41qmPbuIjzjgqVbZYvDv4Kt8lHWHBY3D/BWv5XQOR+F9ShPQmmalSPCsNcKGb3ZFcMz2c0jnNkbMtN9oIHEGZVrbLy0r9WFSEwhzJJn99G2Pi8MTLb1Ht9Aozi1J8I8275P0t1SGR9osPaPI3zY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TrBD72hn8z1xnfc;
-	Thu,  7 Mar 2024 22:15:51 +0800 (CST)
-Received: from dggpemd100001.china.huawei.com (unknown [7.185.36.94])
-	by mail.maildlp.com (Postfix) with ESMTPS id 564E5140336;
-	Thu,  7 Mar 2024 22:17:30 +0800 (CST)
-Received: from [10.67.120.108] (10.67.120.108) by
- dggpemd100001.china.huawei.com (7.185.36.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Thu, 7 Mar 2024 22:17:30 +0800
-Message-ID: <20979c45-fd36-cc52-8ed1-33750ce68333@huawei.com>
-Date: Thu, 7 Mar 2024 22:17:29 +0800
+	s=arc-20240116; t=1709821065; c=relaxed/simple;
+	bh=BO/sS3iNltEei/NOaZXQFdewmgrTpD5zeAJZ1NGWfVc=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=L/f6jsskll/3xPHwk9Zw9G1cf/9zYvpjIshGSQIEqBgbC8GppYZzOxBZa9+sPPYeCI/+lQN93W9UBJ84zUPayWpDLs6IBZAal9rznSzY0lIBasw5X2tJt1MPWHr6dQhXDaN3yFsSvatrPueEWalqyw2+htU5ePWyUgRwdKUFxOQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=infotecs.ru; spf=pass smtp.mailfrom=infotecs.ru; dkim=pass (1024-bit key) header.d=infotecs.ru header.i=@infotecs.ru header.b=wEHd8KSC; arc=none smtp.client-ip=91.244.183.115
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=infotecs.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=infotecs.ru
+Received: from mx0.infotecs-nt (localhost [127.0.0.1])
+	by mx0.infotecs.ru (Postfix) with ESMTP id 4AB3314B179B;
+	Thu,  7 Mar 2024 17:17:33 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx0.infotecs.ru 4AB3314B179B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=infotecs.ru; s=mx;
+	t=1709821053; bh=BO/sS3iNltEei/NOaZXQFdewmgrTpD5zeAJZ1NGWfVc=;
+	h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+	b=wEHd8KSCg81ZAv5MvDWDScZw7aqC9N4OVbsha0gOod/Qwt6AcZxCxK4DzilNBE2X/
+	 KsanJ5Xp+aU371+MIl20NA1zgbCVOgbe58BXo2IHJYfr66vt0Mrpu0daFfmN+e9t6T
+	 OjfCRo9sXcpfOic2MGthCN9XwgCNQefOmLxMTDvc=
+Received: from msk-exch-01.infotecs-nt (msk-exch-01.infotecs-nt [10.0.7.191])
+	by mx0.infotecs-nt (Postfix) with ESMTP id 480543128A3E;
+	Thu,  7 Mar 2024 17:17:33 +0300 (MSK)
+From: Gavrilov Ilia <Ilia.Gavrilov@infotecs.ru>
+To: Simon Horman <horms@kernel.org>
+CC: Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>,
+	"David S. Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>,
+	Jakub Kicinski <kuba@kernel.org>, "netdev@vger.kernel.org"
+	<netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "lvc-project@linuxtesting.org"
+	<lvc-project@linuxtesting.org>
+Subject: Re: [PATCH net-next] tcp: fix incorrect parameter validation in the
+ do_tcp_getsockopt() function
+Thread-Topic: [PATCH net-next] tcp: fix incorrect parameter validation in the
+ do_tcp_getsockopt() function
+Thread-Index: AQHacGscDaUt7YW/90u+fNTxajGHYrEsIFYA
+Date: Thu, 7 Mar 2024 14:17:32 +0000
+Message-ID: <5c65a5be-ba95-4420-b755-aabc5ae7559b@infotecs.ru>
+References: <20240306095430.1782163-1-Ilia.Gavrilov@infotecs.ru>
+ <095ce1d0f2cd6771b30ab1d73ee6aa8e8460c7c8.camel@redhat.com>
+ <e8b2287f-bf25-4a95-aef2-58067c893b4f@infotecs.ru>
+ <20240307084014.GH281974@kernel.org>
+In-Reply-To: <20240307084014.GH281974@kernel.org>
+Accept-Language: ru-RU, en-US
+Content-Language: ru-RU
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-exclaimer-md-config: 208ac3cd-1ed4-4982-a353-bdefac89ac0a
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <928543079EBFE4409BBDA420FC8CB05C@infotecs.ru>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.1
-Subject: Re: [PATCH v3 3/3] scsi: libsas: Fix disk not being scanned in after
- being removed
-Content-Language: en-CA
-To: John Garry <john.g.garry@oracle.com>, <yanaijie@huawei.com>,
-	<jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-	<damien.lemoal@opensource.wdc.com>
-CC: <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linuxarm@huawei.com>, <prime.zeng@hisilicon.com>,
-	<chenxiang66@hisilicon.com>, <kangfenglong@huawei.com>
-References: <20240307093733.41222-1-yangxingui@huawei.com>
- <20240307093733.41222-4-yangxingui@huawei.com>
- <b105b26c-9c0b-4315-beeb-7879de85d240@oracle.com>
-From: yangxingui <yangxingui@huawei.com>
-In-Reply-To: <b105b26c-9c0b-4315-beeb-7879de85d240@oracle.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggpemm100005.china.huawei.com (7.185.36.231) To
- dggpemd100001.china.huawei.com (7.185.36.94)
+X-KLMS-Rule-ID: 5
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2024/03/07 13:22:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2024/03/07 10:14:00 #24028863
+X-KLMS-AntiVirus-Status: Clean, skipped
 
-
-Hi John,
-On 2024/3/7 18:08, John Garry wrote:
-> On 07/03/2024 09:37, Xingui Yang wrote:
->> As of commit d8649fc1c5e4 ("scsi: libsas: Do discovery on empty PHY to
->> update PHY info"), do discovery will send a new SMP_DISCOVER and update
->> phy->phy_change_count. We found that if the disk is reconnected and phy
->> change_count changes at this time, the disk scanning process will not be
->> triggered.
->>
->> Therefore, call sas_set_ex_phy() to update the PHY info with the 
->> results of
->> the last query. And because the previous phy info will be used when 
->> calling
->> sas_unregister_devs_sas_addr(), sas_unregister_devs_sas_addr() should be
->> called before sas_set_ex_phy().
->>
->> Fixes: d8649fc1c5e4 ("scsi: libsas: Do discovery on empty PHY to 
->> update PHY info")
->> Signed-off-by: Xingui Yang<yangxingui@huawei.com>
-> 
-> I am also ok with a change to revert to allocating the resp memory with 
-> alloc_smp_resp(), but make the changes neat please:
-> Reviewed-by: John Garry <john.g.garry@oracle.com>
-> .
-
-Thanks for your review, I have updated the version.
-
-Thanks,
-Xingui
+DQoNCg0K0KEg0YPQstCw0LbQtdC90LjQtdC8LA0K0JjQu9GM0Y8g0JPQsNCy0YDQuNC70L7Qsg0K
+0JLQtdC00YPRidC40Lkg0L/RgNC+0LPRgNCw0LzQvNC40YHRgg0K0J7RgtC00LXQuyDRgNCw0LfR
+gNCw0LHQvtGC0LrQuA0K0JDQniAi0JjQvdGE0L7QotC10JrQoSIg0LIg0LMuINCh0LDQvdC60YIt
+0J/QtdGC0LXRgNCx0YPRgNCzDQoxMjcyODcsINCzLiDQnNC+0YHQutCy0LAsINCh0YLQsNGA0YvQ
+uSDQn9C10YLRgNC+0LLRgdC60L4t0KDQsNC30YPQvNC+0LLRgdC60LjQuSDQv9GA0L7QtdC30LQs
+INC00L7QvCAxLzIzLCDRgdGC0YAuIDENClQ6ICs3IDQ5NSA3MzctNjEtOTIgKCDQtNC+0LEuIDQ5
+MjEpDQrQpDogKzcgNDk1IDczNy03Mi03OA0KDQoNCklsaWEuR2F2cmlsb3ZAaW5mb3RlY3MucnUN
+Cnd3dy5pbmZvdGVjcy5ydQ0KDQoNCk9uIDMvNy8yNCAxMTo0MCwgU2ltb24gSG9ybWFuIHdyb3Rl
+Og0KPiBPbiBXZWQsIE1hciAwNiwgMjAyNCBhdCAxMTo1NDo0MEFNICswMDAwLCBHYXZyaWxvdiBJ
+bGlhIHdyb3RlOg0KPj4gT24gMy82LzI0IDE0OjM2LCBQYW9sbyBBYmVuaSB3cm90ZToNCj4+PiBU
+aGUgYWJvdmUgaXMgaW5jb3JyZWN0LCBhcyB0aGUgJ2xlbicgdmFyaWFibGUgaXMgYSBzaWduZWQg
+aW50ZWdlcg0KPj4NCj4+IEkgbWVhbiwgaWYgJ2xlbicgaXMgbmVnYXRpdmUgdGhlbiBhZnRlciB0
+aGlzIGV4cHJlc3Npb24NCj4+IGxlbiA9IG1pbl90KHVuc2lnbmVkIGludCwgbGVuLCBzaXplb2Yo
+aW50KSk7DQo+PiB0aGUgJ2xlbicgdmFyaWFibGUgd2lsbCBiZSBlcXVhbCB0byBzaXplb2YoaW50
+KSA9PSA0DQo+PiBhbmQgdGhlIHN0YXRlbWVudA0KPj4gaWYgKGxlbiA8IDApIHJldHVybiAtRUlO
+VkFMOw0KPj4gbWlnaHQgYmUgdW5yZWFjaGFibGUgZHVyaW5nIHByb2dyYW0gZXhlY3V0aW9uLg0K
+Pg0KPiBIaSBHYXZyaWxvdiBhbmQgUGFvbG8sDQo+DQo+IEkgY291bGQgYmUgbWlzc2luZyBzb21l
+dGhpbmcgb2J2aW91cyBidXQgaXQgc2VlbXMgdG8gbWUgdGhhdCB0aGlzIGlzIGNvcnJlY3QuDQo+
+IEFsdGhvdWdoIHBlcmhhcHMgd2UgY291bGQgdHJ5IHJld29yZGluZyB0aGUgcGF0Y2ggZGVzY3Jp
+cHRpb24gdG8NCj4gbWFrZSB0aGluZ3MgYSBiaXQgY2xlYXJlci4gSGVyZSBpcyBteSBhdHRlbXB0
+IGF0IHRoYXQ6DQo+DQo+ICAgICBUaGUgJ2xlbicgdmFyaWFibGUgY2FuJ3QgYmUgbmVnYXRpdmUg
+d2hlbiBhc3NpZ25lZCB0aGUgcmVzdWx0IG9mDQo+ICAgICAnbWluX3QnIGJlY2F1c2UgYWxsICdt
+aW5fdCcgcGFyYW1ldGVycyBhcmUgY2FzdCB0byB1bnNpZ25lZCBpbnQsDQo+ICAgICBhbmQgdGhl
+biB0aGUgbWluaW11bSBvbmUgaXMgY2hvc2VuLg0KPg0KPiAgICAgVG8gZml4IHRoZSBsb2dpYywg
+Y2hlY2sgJ2xlbicgYXMgcmVhZCBmcm9tICdvcHRsZW4nLA0KPiAgICAgd2hlcmUgdGhlIHR5cGVz
+IG9mIHJlbGV2YW50IHZhcmlhYmxlcyBhcmUgKHNpZ25lZCkgaW50Lg0KPg0KPiBGV0lJVywgSSBz
+ZWUgZm91ciBzaW1pbGFyIHBhdGNoZXMgb24gbmV0ZGV2IHRoaXMgbW9ybmluZy4NCj4gSXQgZG9l
+cyBzZWVtIHRvIG1lIHRoYXQgdGhleSBhcmUgYWxsIHZhbGlkIGZpeGVzLg0KPiBCdXQgaWYgdGhl
+eSBuZWVkIHRvIGJlIHJlcG9zdGVkLCBvciB0aGVyZSBhcmUgbW9yZSBjb21pbmcsDQo+IHRoZW4g
+SSB0aGluayBpdCB3b3VsZCBiZSB1c2VmdWwgdG8gYnVuZGxlIHRoZW0gdXAsDQo+IHNheSBpbnRv
+IGJhdGNoZXMgb2YgMTAsIGFuZCBzZW5kIGFzIHBhdGNoLXNldHMuDQo+DQo+IFRoaXMgbWF5IGhl
+bHAgd2l0aCBmcmFnbWVudGF0aW9uIG9mIHJldmlldyBvZiB3aGF0IHNlZW1zDQo+IHRvIGJlIHRo
+ZSBzYW1lIGNoYW5nZSBpbiBtdWx0aXBsZSBwbGFjZXMuDQo+DQo+DQoNCkhpIFNpbW9uLCB0aGFu
+ayB5b3UgZm9yIHlvdXIgYW5zd2VyLg0KDQpJJ2xsIHJld29yZCB0aGUgcGF0Y2ggZGVzY3JpcHRp
+b24gYW5kIHJlcG9zdCBhIHNlcmllcyBvZiBwYXRjaGVzIGluIFYyLg0KSSBhbHNvIGZvdW5kIGEg
+Y291cGxlIG9mIHBsYWNlcyB3aXRoIHRoZSBzYW1lIHByb2JsZW0uDQo=
 
