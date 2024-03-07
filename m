@@ -1,138 +1,114 @@
-Return-Path: <linux-kernel+bounces-95945-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95946-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7B5787553A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 18:32:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DCF487553D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 18:33:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A340E285042
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:32:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 425F11F23E32
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:33:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45C0F130E30;
-	Thu,  7 Mar 2024 17:32:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4E2C13175C;
+	Thu,  7 Mar 2024 17:32:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="cv9Cizq7"
-Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.4])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0587C130AC4;
-	Thu,  7 Mar 2024 17:32:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.4
+	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="A7UbzPwL"
+Received: from 008.lax.mailroute.net (008.lax.mailroute.net [199.89.1.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40470131720;
+	Thu,  7 Mar 2024 17:32:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.1.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709832759; cv=none; b=nNSlRl/nyFD+Y3MM8gzuLC3VVFaK57sFJpO44brnrleMoco85KdrfVFvDtLuSSLU7Dbw7peJS7VQizxIAOz5WEc0Bvmo1Fj30f8ZScBlTbQzrvpqM/25wD1i6JAMVlWPJU5Eir624INA8o2aHCG+dfCojnsrz4SNAURir6FpCl0=
+	t=1709832763; cv=none; b=eMHgw2bc2O3Wvu3f1+O/kAFZUTrZeEIR1uuBvnCHYQv7R+b8rR/TB2+GmiBY/UcxomzMLNGLqpZ7wrrFxhmIZa0pXw67ImnJegO/FYxweLQgf6FMxOUna95bhNEeRBj1rn2g9Lx/VpHIzoPfxsA41t7d93tNocAbphmXaV1xIQ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709832759; c=relaxed/simple;
-	bh=os7MvWdKXLSw9AkDhcPRjA7sgslEH0TCOsCPjkfdKLY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Z1QwIDoKWAQ+EvP2bo5Edwpc8TpGEdqJh5UlUKEPPwFRNvzuwY+0EIMeh+4VQ2lgnnaJ5RC2p1Y0ZopzJabVrOTM5wKGgaEe2XZ4xTdCShcPX8qaZpgZB2Heq+iEUjDu0A6CUhXGwNQ79iiwhPk+A071FrMAvrIMEQjEFgj9ylg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=cv9Cizq7; arc=none smtp.client-ip=117.135.210.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=56j5n
-	tVzigxy+mWlLsPQSN6BzY98TlaoAkW9sN3oqa4=; b=cv9Cizq73AGnBDEaxElb1
-	SZFxJSelIbZILxPmvoaqsKryhbwOIwXTZoBLfvUYRcAlMkhQa+q+ndZtqPxxCdMR
-	VmLW09v9jqlM4Mo15gaeV16a+nVeM0TzUs9JIoAjUVD+Bc0d3eTHCTFaLmDnHw6B
-	PBBQEPqz91uCZdoMOE/8Bg=
-Received: from sc9-mailhost1.vmware.com (unknown [114.250.139.10])
-	by gzga-smtp-mta-g2-0 (Coremail) with SMTP id _____wD3f2Al+ullk2FrAA--.14028S2;
-	Fri, 08 Mar 2024 01:32:22 +0800 (CST)
-From: Dingyan Li <18500469033@163.com>
-To: stern@rowland.harvard.edu,
-	gregkh@linuxfoundation.org
-Cc: linux-usb@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] USB: Use EHCI control transfer pid macros instead of constant values.
-Date: Fri,  8 Mar 2024 01:31:59 +0800
-Message-Id: <20240307173159.318384-1-18500469033@163.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1709832763; c=relaxed/simple;
+	bh=oWPUsnbZDOlxxLdfXs2o8PRtCjbbf+VNBb0sGJ8bFGM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YwJ0L/TmTCwPl7b2/REMBF0hqyDbt6BDBUL92V0L/PdfWsuEWW7IK7YhtIMaRiZN7Zj8ywgexkKDQCvC1VrHK4gRtn82fhMAJQf0u0v4PdzC1Rg+UqYUgTfYdx/BnExBjKrwI7XSY8nIH8FqbvTqxiOodRkhvsu9ONfIDDCPjSw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=A7UbzPwL; arc=none smtp.client-ip=199.89.1.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=acm.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
+Received: from localhost (localhost [127.0.0.1])
+	by 008.lax.mailroute.net (Postfix) with ESMTP id 4TrGbC3SFvz6Cl44X;
+	Thu,  7 Mar 2024 17:32:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
+	content-transfer-encoding:content-type:content-type:in-reply-to
+	:from:from:references:content-language:subject:subject
+	:user-agent:mime-version:date:date:message-id:received:received;
+	 s=mr01; t=1709832754; x=1712424755; bh=moZ9+5orZT+OYhKZAyxdvu5O
+	Nr7RA4cWiHxMkHcHcWU=; b=A7UbzPwLUvI5xkRJAWjK6KVDk6kivCCl0OrlXSZh
+	E13AYaRjteHDMVTKP44VG51CWI8Hj7nROECMWJJoXDzYhVP/FUGmc6YZWRULR4dY
+	9Lrpq0zzOM0ojpCpOUtXtCv1ikC9PhM/9wIrtkPD0cGs0fT6h3pQFptLRSbj3R1O
+	MNFNop1FB4LIWN+ee+kMBgJy3jF/nbLR5xC08y8aoDcvTqUQ8gqFQSziM1n3W34K
+	p6UW7kOEi2IUrbrd58vT0WWmrjpRuHWoTXaIErfZTCPgoeCZyegqrX/6/i61OBU5
+	SPBwphJxvpx1Tf3tQMLcxiyaVA4SFvnGva39x0zc/cG0RQ==
+X-Virus-Scanned: by MailRoute
+Received: from 008.lax.mailroute.net ([127.0.0.1])
+ by localhost (008.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
+ id 1gW_8sGIy35B; Thu,  7 Mar 2024 17:32:34 +0000 (UTC)
+Received: from [100.96.154.173] (unknown [104.132.1.77])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: bvanassche@acm.org)
+	by 008.lax.mailroute.net (Postfix) with ESMTPSA id 4TrGb51T5gz6Cl44Z;
+	Thu,  7 Mar 2024 17:32:33 +0000 (UTC)
+Message-ID: <1181bcdd-1ff4-414b-bc0a-40e513fede08@acm.org>
+Date: Thu, 7 Mar 2024 09:32:31 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wD3f2Al+ullk2FrAA--.14028S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7uF13KF1fAFyfJw47AFWkWFg_yoW5JF15pr
-	W3WF47trWUJr4aqr9rArs5JF1rJw13JFyUKFy7W3y8CF40y3WUGF17KFWfJr9rXry8Gr1Y
-	qF45WryUurs7JFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UE9aPUUUUU=
-X-CM-SenderInfo: jprykiiquwmiitt6il2tof0z/xtbBzxKay2V4IHY5PgABsB
+User-Agent: Mozilla Thunderbird
+Subject: Re: WinLink E850-96: WARNING: at block/blk-settings.c:204
+ blk_validate_limits
+Content-Language: en-US
+To: Christoph Hellwig <hch@lst.de>, Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc: linux-block <linux-block@vger.kernel.org>, lkft-triage@lists.linaro.org,
+ open list <linux-kernel@vger.kernel.org>, Jens Axboe <axboe@kernel.dk>,
+ Christian Brauner <brauner@kernel.org>, Ulf Hansson
+ <ulf.hansson@linaro.org>, Arnd Bergmann <arnd@arndb.de>,
+ Dan Carpenter <dan.carpenter@linaro.org>,
+ Anders Roxell <anders.roxell@linaro.org>
+References: <CA+G9fYtddf2Fd3be+YShHP6CmSDNcn0ptW8qg+stUKW+Cn0rjQ@mail.gmail.com>
+ <20240229142144.GA8348@lst.de>
+From: Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20240229142144.GA8348@lst.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Macros with good names offer better readability. Besides, also move
-the definition to ehci.h.
 
-Signed-off-by: Dingyan Li <18500469033@163.com>
----
- drivers/usb/host/ehci-q.c | 10 +++-------
- drivers/usb/host/ehci.h   |  8 +++++++-
- 2 files changed, 10 insertions(+), 8 deletions(-)
+On 2/29/24 06:21, Christoph Hellwig wrote:
+> On Thu, Feb 29, 2024 at 07:44:01PM +0530, Naresh Kamboju wrote:
+>> The arm64 WinLink E850-96 Board boot failed with 16K and 64K page size builds
+>> Please find the below warning log on Linux next-20240229.
+>> First noticed on the next-20240220 tag.
+>>
+>> This issue arises only when one of these Kconfig options is enabled.
+>>    CONFIG_ARM64_16K_PAGES=y
+>>    CONFIG_ARM64_64K_PAGES=y
+> 
+> That means this device doesn't set a max_segment_size, or one smaller
+> than the page size.  This configurtio has never been supported by
+> Linux (Bart has some patches to try to make it work), but with the
+> new block limits API we now actively catch this and warn.
 
-diff --git a/drivers/usb/host/ehci-q.c b/drivers/usb/host/ehci-q.c
-index 666f5c4db25a..51b46001e344 100644
---- a/drivers/usb/host/ehci-q.c
-+++ b/drivers/usb/host/ehci-q.c
-@@ -27,10 +27,6 @@
- 
- /*-------------------------------------------------------------------------*/
- 
--/* PID Codes that are used here, from EHCI specification, Table 3-16. */
--#define PID_CODE_IN    1
--#define PID_CODE_SETUP 2
--
- /* fill a qtd, returning how much of the buffer we were able to queue up */
- 
- static unsigned int
-@@ -230,7 +226,7 @@ static int qtd_copy_status (
- 			/* fs/ls interrupt xfer missed the complete-split */
- 			status = -EPROTO;
- 		} else if (token & QTD_STS_DBE) {
--			status = (QTD_PID (token) == 1) /* IN ? */
-+			status = (QTD_PID(token) == PID_CODE_IN) /* IN ? */
- 				? -ENOSR  /* hc couldn't read data */
- 				: -ECOMM; /* hc couldn't write data */
- 		} else if (token & QTD_STS_XACT) {
-@@ -606,7 +602,7 @@ qh_urb_transaction (
- 		/* SETUP pid */
- 		qtd_fill(ehci, qtd, urb->setup_dma,
- 				sizeof (struct usb_ctrlrequest),
--				token | (2 /* "setup" */ << 8), 8);
-+				token | (PID_CODE_SETUP << 8), 8);
- 
- 		/* ... and always at least one more pid */
- 		token ^= QTD_TOGGLE;
-@@ -642,7 +638,7 @@ qh_urb_transaction (
- 	}
- 
- 	if (is_input)
--		token |= (1 /* "in" */ << 8);
-+		token |= (PID_CODE_IN << 8);
- 	/* else it's already initted to "out" pid (0 << 8) */
- 
- 	maxpacket = usb_endpoint_maxp(&urb->ep->desc);
-diff --git a/drivers/usb/host/ehci.h b/drivers/usb/host/ehci.h
-index 1441e3400796..dafa6628e134 100644
---- a/drivers/usb/host/ehci.h
-+++ b/drivers/usb/host/ehci.h
-@@ -321,10 +321,16 @@ struct ehci_qtd {
- 	size_t			length;			/* length of buffer */
- } __aligned(32);
- 
-+/* PID Codes that are used here, from EHCI specification, Table 3-16. */
-+/* #define PID_CODE_OUT   0 */
-+#define PID_CODE_IN    1
-+#define PID_CODE_SETUP 2
-+
- /* mask NakCnt+T in qh->hw_alt_next */
- #define QTD_MASK(ehci)	cpu_to_hc32(ehci, ~0x1f)
- 
--#define IS_SHORT_READ(token) (QTD_LENGTH(token) != 0 && QTD_PID(token) == 1)
-+#define IS_SHORT_READ(token) (QTD_LENGTH(token) != 0 && \
-+						QTD_PID(token) == PID_CODE_IN)
- 
- /*-------------------------------------------------------------------------*/
- 
--- 
-2.25.1
+Hi Christoph,
+
+Please let me know if you would like me to repost the patch series that
+adds support to the block layer for DMA segments that are smaller than
+the page size. Despite my requests to not support such hardware in the
+Android kernel, that patch series ended up as an out-of-tree series
+in the Android kernel and will continue to be maintained by the Android
+core team for considerable time.
+
+Thanks,
+
+Bart.
+
 
 
