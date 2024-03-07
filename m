@@ -1,52 +1,53 @@
-Return-Path: <linux-kernel+bounces-95266-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95265-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F9F2874B82
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:57:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C902874B81
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:57:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 068EBB2158D
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE4251C2114D
 	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:57:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 818A112A149;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8739112A14D;
 	Thu,  7 Mar 2024 09:55:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="eDt6wKeW"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Y/Ue+XNx"
 Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A42384FC8;
-	Thu,  7 Mar 2024 09:55:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 689098562A;
+	Thu,  7 Mar 2024 09:55:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709805321; cv=none; b=GIV7M0B6V4vIPDo+MlbKPWnEwLrZ6XxEO6KaG+AzxUVqo8cIHFQkSM+vRhj56vQuDtQPYrlGhR5Fmp7SpX++rkzf3kvIAEakAqHQITIBdezCANKG0XzPLqFZNH+WBYogdoDrNOLeiXtaPC2xhZ6wLnBpI9cTMiL9Rm54T1VoKrg=
+	t=1709805322; cv=none; b=iknBk4yhL4TKkvFoBE2jqHECS7pL42cdrynOo71EBbKsrG7e5vHkAkiQ2Z5oiTdO7SfNWz8Nmk+TMF6G/tLjoAvaQahDQ5mieqz3KEk5WnzRqY+gsf6DOrY4bPg7IvKagw+fq12YcmOJQ+ivRIMHlT8w/oxWJqAsuOABdX2eliQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709805321; c=relaxed/simple;
-	bh=ywTxIisOOTpj+HDN2NsOLT9qLjcBWovcybVHSKaAnsk=;
+	s=arc-20240116; t=1709805322; c=relaxed/simple;
+	bh=DFDQiyzlGF6+kLshWht4zWnnot6KQjotNmJUWDkVAh4=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=lVpa4cShoaSOQPILw+z8iWi/1PnFhRuW1Vpyh4snxwp9rkOysW8jtHYKlBWFnxzo5dVSIg4C3UZJyHiTtRQb71hvKVzeOhzOOY329g/Z/FwGebWIQ+mgKN4JLigGLjxqbe9peKzEptkjtiFU4EFmKJRGOve3faHSKmmGucNWLUs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=eDt6wKeW; arc=none smtp.client-ip=217.70.183.197
+	 In-Reply-To:To:Cc; b=DjwZwbisnVFKaG843/Ng9XGTiVqOt03ZE9DzjAdted+thEfWRbFZhToynrMhgyowdK512vdvfZ5fL1mcF73bqOY3wsXu4wFI9AHLOy2fVYN6jxcUUuLUHFwoTv1732cH910ZD2wX2fWBtn2cP7s/Kw2rCO7HKAmyov5qfCFha98=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Y/Ue+XNx; arc=none smtp.client-ip=217.70.183.197
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id A77021C000C;
-	Thu,  7 Mar 2024 09:55:11 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 72B7C1C0011;
+	Thu,  7 Mar 2024 09:55:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709805312;
+	t=1709805313;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ORK3ooFzTv7MrS/tadWslkKnebORiux/zlJ4WhF6LKM=;
-	b=eDt6wKeW0kg+C/fqGb1QlxB5PIOaEmhPkzdXT1ncVRdX9OLvPmnke2BQSNI4Ll+kWP3Tt0
-	RDQvSJO6++eZVDNwgVvncNk2Wt7HjxvOx3FiANhP95MYHAjx17LNeNtVUFdlGnhWziCrfw
-	IpET2iwG6JPfM6F/i51B+xlKMOZWIGoDB7aZGWZDcGxkDf3d4uzkn1sADVACcvuIvUB7S5
-	pwl9f6lwlwMCP+CKOPA04stLPE6t82LkB5QLIJsnqKjZ/tV6byty9Pc+r7K0c6K8Ji+Uun
-	+Rpz3sz/4Zi6LtXUogCEAO5iA+nRtefKXrLMDzTt6iUwnmVO4CXuDUujRT02ag==
+	bh=/o7zeZi0zs41+v++mktfx9Xs/6T+zXBb880PpMxs3XU=;
+	b=Y/Ue+XNxcZlqlJGaFIwGKKSLD8dA0fGKW3q4L8bEf/bQp7WsSccqGHjhMJNJZB4IOuxkxf
+	qLLvFkravYeg5ilEedkhHHoWaIZ6UUjabBbkHX/6rR5tktrCPpU1H84u6PLbS6mDE3WMez
+	wtSUsgRNFgOUuS7MzC43jX4qrXA1RA5/WIy1IlLk/L8s+/0IfM8IULJeAb+iRwS8Q6hYkx
+	u0cIcknTLkwrzVwLGa/cwkC0tZThreVt6NprIV357IKKQrrdZnM+Rf3EHeCJJoWcSgjZPD
+	S3YSLdAgluojq2+FGTFdd92LG8yAobqPRnAFBwrzxnqsqDG3VaE+OG3Mj/yitw==
 From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Date: Thu, 07 Mar 2024 10:55:05 +0100
-Subject: [PATCH v4 4/9] usb: cdns3-ti: support reset-on-resume behavior
+Date: Thu, 07 Mar 2024 10:55:06 +0100
+Subject: [PATCH v4 5/9] usb: cdns3-ti: pass auxdata from match data to
+ of_platform_populate()
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,7 +56,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240307-j7200-usb-suspend-v4-4-5ec7615431f3@bootlin.com>
+Message-Id: <20240307-j7200-usb-suspend-v4-5-5ec7615431f3@bootlin.com>
 References: <20240307-j7200-usb-suspend-v4-0-5ec7615431f3@bootlin.com>
 In-Reply-To: <20240307-j7200-usb-suspend-v4-0-5ec7615431f3@bootlin.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
@@ -74,75 +75,48 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 X-Mailer: b4 0.13.0
 X-GND-Sasl: theo.lebrun@bootlin.com
 
-Add match data support, with one boolean to indicate whether the
-hardware resets after a system-wide suspend. If hardware resets, we
-force execute ->runtime_resume() at system-wide resume to run the
-hardware init sequence.
+Allow compatible to pick auxdata given to child platform devices.
 
 No compatible exploits this functionality, just yet.
 
 Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
 ---
- drivers/usb/cdns3/cdns3-ti.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+ drivers/usb/cdns3/cdns3-ti.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/usb/cdns3/cdns3-ti.c b/drivers/usb/cdns3/cdns3-ti.c
-index 4c8a557e6a6f..f76327566798 100644
+index f76327566798..29fb24c811b3 100644
 --- a/drivers/usb/cdns3/cdns3-ti.c
 +++ b/drivers/usb/cdns3/cdns3-ti.c
-@@ -57,9 +57,14 @@ struct cdns_ti {
- 	unsigned vbus_divider:1;
- 	struct clk *usb2_refclk;
- 	struct clk *lpm_clk;
-+	const struct cdns_ti_match_data *match_data;
- 	int usb2_refclk_rate_code;
+@@ -62,7 +62,8 @@ struct cdns_ti {
  };
  
-+struct cdns_ti_match_data {
-+	bool reset_on_resume;
-+};
-+
+ struct cdns_ti_match_data {
+-	bool reset_on_resume;
++	bool				reset_on_resume;
++	const struct of_dev_auxdata	*auxdata;
+ };
+ 
  static const int cdns_ti_rate_table[] = {	/* in KHZ */
- 	9600,
- 	10000,
-@@ -101,6 +106,7 @@ static int cdns_ti_probe(struct platform_device *pdev)
- 	platform_set_drvdata(pdev, data);
+@@ -95,6 +96,7 @@ static int cdns_ti_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+ 	struct device_node *node = pdev->dev.of_node;
++	const struct of_dev_auxdata *auxdata = NULL;
+ 	struct cdns_ti *data;
+ 	unsigned long rate;
+ 	int error, i;
+@@ -149,7 +151,9 @@ static int cdns_ti_probe(struct platform_device *pdev)
+ 		goto err;
+ 	}
  
- 	data->dev = dev;
-+	data->match_data = device_get_match_data(dev);
- 
- 	data->usbss = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(data->usbss)) {
-@@ -220,8 +226,29 @@ static int cdns_ti_runtime_resume(struct device *dev)
- 	return 0;
- }
- 
-+static int cdns_ti_suspend(struct device *dev)
-+{
-+	struct cdns_ti *data = dev_get_drvdata(dev);
-+
-+	if (data->match_data && data->match_data->reset_on_resume)
-+		return pm_runtime_force_suspend(dev);
-+	else
-+		return 0;
-+}
-+
-+static int cdns_ti_resume(struct device *dev)
-+{
-+	struct cdns_ti *data = dev_get_drvdata(dev);
-+
-+	if (data->match_data && data->match_data->reset_on_resume)
-+		return pm_runtime_force_resume(dev);
-+	else
-+		return 0;
-+}
-+
- static const struct dev_pm_ops cdns_ti_pm_ops = {
- 	RUNTIME_PM_OPS(NULL, cdns_ti_runtime_resume, NULL)
-+	SYSTEM_SLEEP_PM_OPS(cdns_ti_suspend, cdns_ti_resume)
- };
- 
- static const struct of_device_id cdns_ti_of_match[] = {
+-	error = of_platform_populate(node, NULL, NULL, dev);
++	if (data->match_data)
++		auxdata = data->match_data->auxdata;
++	error = of_platform_populate(node, NULL, auxdata, dev);
+ 	if (error) {
+ 		dev_err(dev, "failed to create children: %d\n", error);
+ 		goto err;
 
 -- 
 2.44.0
