@@ -1,145 +1,82 @@
-Return-Path: <linux-kernel+bounces-96134-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96140-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4954B875784
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:51:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 66F7D875790
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:53:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E0A8F1F22E13
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:51:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 08EFD1F2463B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:53:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFFCA1369BD;
-	Thu,  7 Mar 2024 19:51:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 790FE137C50;
+	Thu,  7 Mar 2024 19:51:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="eRn1cqgT"
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kapLg7TB"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A096E130AD0
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 19:50:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.36.163.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0763137C36
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 19:51:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709841062; cv=none; b=BbLDMekkTIauCpgZw+6TfE0Dw2emKXIdIpvWF9w0Ch5XFumAZOi7iVRrS8uB+2Sp2Do0wJYpRC0iijckGo/9kxK5FAL4d9cHmhVVOE4YuZ7Y/YB3diS4vswXvcI3G2e63J0GtfIOJ3V85JtLqZxMCb975OkS0s692rkAzj2DixM=
+	t=1709841082; cv=none; b=NZK2uru6/HXy2IXv3WOrV4YTiY4TB2+qISuaCFwjgfLOuvwA/olC9TeTqQ0prefVI0OPSYuxAK7m1zn+2WVZPZU5IRoNbN2xBDms7ip0YT1sNnJULm+EeKuN4vu135BfYwWpS33w7dVQQqG6gCyRug/SBCjABpHMUPwGWVlYnG8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709841062; c=relaxed/simple;
-	bh=Fub+Qf4fF34mx+5PYfabuIQTPYpAjthBJi2cEhUl+7U=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=smZ6bmDdsM8+NwRcb3CwegdgoRAcHAuvFsdj3vs6qoc9gnv/Nofxp6zSb6l2a7ZAD2U+dDvVL6P1AhCBqIXBbE8vNnmoqRf3dOSrS73LWd3A73swu5miKm9DLAJ7A7eZBzJsFaFe3F4LiBwTL1e+6aUCTJICNp+vLBPxw1Cww2Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz; spf=pass smtp.mailfrom=alliedtelesis.co.nz; dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b=eRn1cqgT; arc=none smtp.client-ip=202.36.163.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alliedtelesis.co.nz
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 2D9E92C02B2;
-	Fri,  8 Mar 2024 08:50:56 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-	s=mail181024; t=1709841056;
-	bh=f2EpxCUQwV9BoS1rC4W6zzuOSyxVkf/IGbDuI2bHh2I=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=eRn1cqgTNoA0J476R98zDq/U97hHkApSfDVPy7DUjkf77kTjQW7EbD7/aWmGMgGWd
-	 7BG3zGGjZYeyReMqG1h9K/+cXiURaDM8y22US/S0M6Mefcb7Qpqhcgv6pNtUMu2zCP
-	 EhTZygyPuvVaHRgBr+y8T8OXbaijjAHdgPU4QF4ndX8hyvb7PqPvs4KhParHEunCIQ
-	 M2k9fnzii2zAJPh9Thct/XT4//E4lFDr5gAER/G1sf5QUd//kl1vOYCBQDtzFppsvR
-	 /ChxRJhcwAlYHvMTwvS9xYEMXvSAgzEzuZ7P5nIgGx90vuU8boW8MPoDfs1O8VP2oD
-	 O5y8qBnfuRmig==
-Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-	id <B65ea1a9f0004>; Fri, 08 Mar 2024 08:50:55 +1300
-Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.30])
-	by pat.atlnz.lc (Postfix) with ESMTP id C917913EE8E;
-	Fri,  8 Mar 2024 08:50:55 +1300 (NZDT)
-Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
-	id C3D572808A5; Fri,  8 Mar 2024 08:50:55 +1300 (NZDT)
-From: Chris Packham <chris.packham@alliedtelesis.co.nz>
-To: andy@kernel.org,
-	geert@linux-m68k.org,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	andrew@lunn.ch,
-	gregory.clement@bootlin.com,
-	sebastian.hesselbarth@gmail.com,
-	lee@kernel.org
-Cc: linux-leds@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	Chris Packham <chris.packham@alliedtelesis.co.nz>
-Subject: [PATCH v6 3/3] ARM: dts: marvell: Add 7-segment LED display on x530
-Date: Fri,  8 Mar 2024 08:50:53 +1300
-Message-ID: <20240307195053.1320538-4-chris.packham@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <20240307195053.1320538-1-chris.packham@alliedtelesis.co.nz>
-References: <20240307195053.1320538-1-chris.packham@alliedtelesis.co.nz>
+	s=arc-20240116; t=1709841082; c=relaxed/simple;
+	bh=97urD+vBImmdNRQsyW72trebuT9te7c4DAnEjaMVfSw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XCQ5cipNExpHnk9xzTeOdqbUg6WjlR/8E+jV79wtXkCO0ojvaDVEnBDUNwyzXX0Xg6U3LsYu6+lrjgmfEi0oRAGAvHC5LNoTEGdhyqUooBgH+i1E8Hu95XovF/VVIDKHTN1zpfSr20wCCcyTHmIHWiuJ3rNVL6EBVcLUIbJBRVg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kapLg7TB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EACEBC43390;
+	Thu,  7 Mar 2024 19:51:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709841082;
+	bh=97urD+vBImmdNRQsyW72trebuT9te7c4DAnEjaMVfSw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=kapLg7TBtniwoZ0MnEPUDezQYDL9b5LaIdoEn6UhIeM8/TaFTXRYAKl9AN1SBA3LU
+	 etRw0xnEHXOJWqIU+ozysEaGbAHjg+VvQhv0POE/clZFMIjT+6ppNfneS//YL0t/th
+	 LSJMkZvhiFxUb7rSCfJZIUftSWNhzrCBeU2oVK8Q75vfi7VQBG7R/XyhAcc7fxVg6S
+	 fcDM6fp8UN+dKvsBi6/2vySAM8+MfzJBNGTkLu+TdrIpMbk6PyFsM7TuFEzx4YduVV
+	 yhuo5Tkj6w9wPmW+YB4vdCrUCfBZlRJwIS+Rwb5AnajLjNMGg+BIzSobbPVEdKxnO+
+	 IAoiAa4f5R3Nw==
+Date: Thu, 7 Mar 2024 12:51:19 -0700
+From: Keith Busch <kbusch@kernel.org>
+To: Len Brown <lenb@kernel.org>
+Cc: linux-nvme@lists.infradead.org, maxg@mellanox.com, axboe@kernel.dk,
+	hch@lst.de, sagi@grimberg.me, linux-kernel@vger.kernel.org,
+	Len Brown <len.brown@intel.com>
+Subject: Re: [PATCH] nvme: Re-word D3 Entry Latency message
+Message-ID: <Zeoat2z25BXxA7qA@kbusch-mbp>
+References: <63ff4f9aedcb73ec5d8cc7f3e77ec4c72d72b4ae.1709839023.git.len.brown@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-SEG-SpamProfiler-Analysis: v=2.4 cv=BKkQr0QG c=1 sm=1 tr=0 ts=65ea1a9f a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=K6JAEmCyrfEA:10 a=Eze4_Z_RUzIZFoL9sA8A:9 a=3ZKOabzyN94A:10
-X-SEG-SpamProfiler-Score: 0
-x-atlnz-ls: pat
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <63ff4f9aedcb73ec5d8cc7f3e77ec4c72d72b4ae.1709839023.git.len.brown@intel.com>
 
-The Allied Telesis x530 products have a 7-segment LED display which is
-used for node identification when the devices are stacked. Represent
-this as a gpio-7-segment device.
+On Thu, Mar 07, 2024 at 02:17:34PM -0500, Len Brown wrote:
+> From: Len Brown <len.brown@intel.com>
+> 
+> Some words are alarming in routine kernel messages.
+> "timeout" is one of them, so avoid using it.
+> 
+> Fixes: 1a3838d732ea ("nvme: modify the debug level for setting shutdown timeout")
+> 
+> Suggested-by: Keith Busch <kbusch@kernel.org>
+> Signed-off-by: Len Brown <len.brown@intel.com>
 
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
----
+Our messages must have crossed:
 
-Notes:
-    Changes in v6:
-    - None
-    Changes in v5:
-    - group GPIO specifiers
-    Changes in v4:
-    - Use correct compatible name in commit message
-    Changes in v3:
-    - Use compatible =3D "gpio-7-segment" as suggested by Rob
-    Changes in v2:
-    - Use compatible =3D "generic-gpio-7seg" to keep checkpatch.pl happy
+  https://lore.kernel.org/linux-nvme/20240307165933.3718589-1-kbusch@meta.com/T/#u
 
- arch/arm/boot/dts/marvell/armada-385-atl-x530.dts | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+I haven't been receiving random messages from the list lately either. Or
+maybe I cc'ed the wrong email.
 
-diff --git a/arch/arm/boot/dts/marvell/armada-385-atl-x530.dts b/arch/arm=
-/boot/dts/marvell/armada-385-atl-x530.dts
-index 5a9ab8410b7b..2fb7304039be 100644
---- a/arch/arm/boot/dts/marvell/armada-385-atl-x530.dts
-+++ b/arch/arm/boot/dts/marvell/armada-385-atl-x530.dts
-@@ -43,6 +43,17 @@ uart0: serial@12000 {
- 			};
- 		};
- 	};
-+
-+	led-7seg {
-+		compatible =3D "gpio-7-segment";
-+		segment-gpios =3D <&led_7seg_gpio 0 GPIO_ACTIVE_LOW>,
-+				<&led_7seg_gpio 1 GPIO_ACTIVE_LOW>,
-+				<&led_7seg_gpio 2 GPIO_ACTIVE_LOW>,
-+				<&led_7seg_gpio 3 GPIO_ACTIVE_LOW>,
-+				<&led_7seg_gpio 4 GPIO_ACTIVE_LOW>,
-+				<&led_7seg_gpio 5 GPIO_ACTIVE_LOW>,
-+				<&led_7seg_gpio 6 GPIO_ACTIVE_LOW>;
-+	};
- };
-=20
- &pciec {
-@@ -149,7 +160,7 @@ i2c@3 {
- 			#size-cells =3D <0>;
- 			reg =3D <3>;
-=20
--			gpio@20 {
-+			led_7seg_gpio: gpio@20 {
- 				compatible =3D "nxp,pca9554";
- 				gpio-controller;
- 				#gpio-cells =3D <2>;
---=20
-2.43.2
-
+Anyway, we just sent the nvme-6.9 pull request today, so I'll wait a few
+more days before starting the next batch.
 
