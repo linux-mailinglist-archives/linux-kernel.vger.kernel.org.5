@@ -1,221 +1,180 @@
-Return-Path: <linux-kernel+bounces-95084-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95085-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71B87874910
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 08:50:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9DC3874913
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 08:50:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 963911C20B59
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 07:50:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2173FB21428
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 07:50:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 144716311E;
-	Thu,  7 Mar 2024 07:50:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 872726312B;
+	Thu,  7 Mar 2024 07:50:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="CWxXVfGx"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="aPXUc351"
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22F881BF3A
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 07:50:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A9BE1BF3A
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 07:50:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709797818; cv=none; b=owEAi5lWY6HnlwC5C0oCvl88MInBnxikuvyNVTGFcyOLUxAT0UsdJURSNkZ4GDVkOuPnv0nROYuXwPgqvJ1UtBCm1KErR4tnLH+mHZdyDBG3aHNdM3O/0RxeH/2WJ5kxVs+RaP0MzvJtzt7wxuVd1RSQpmhs8z0J4OCZDsdXQZQ=
+	t=1709797831; cv=none; b=PoxzcGpAWPpVdkxdu/TGx8CKfvMk9BnN9TkjlLOkEGBvNopOoXOVGuMeB1lIHjjLAW2CssyG/cGA/G4K/p4lvWGav2ioIMjjAutPf0THTZnbsJwI8TVSVaisPJSshvKFNlP4wBsqWt5xjGeEFaiGo1Rw49ZjVcWhdcv82yMi1w0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709797818; c=relaxed/simple;
-	bh=zaZejvaxya+QcPBAYnl0R1xoXRC+3MKw9yhltV+Izyk=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NPtLKErj6Fx9TRsU+E7jOoszzGWQ9jXejuTQR60PfRou1esHTkou7ISYUzVRlzS7rtqQJlyMtN+KpoEvJ0EviUQbAr3k3WMEK/iD6AbUlW5wUbp/MkAGPxO83/XQbgbjsgOwGNznIF3hXgXPsJxrs+JAinb+zOaJuswmhFZJnbQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=CWxXVfGx; arc=none smtp.client-ip=68.232.154.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1709797816; x=1741333816;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=zaZejvaxya+QcPBAYnl0R1xoXRC+3MKw9yhltV+Izyk=;
-  b=CWxXVfGxL2q+zuAuqnB3zFJZHZEAvV7yM5yqq1T0a7UGDQUgsTiAFGNu
-   5+bqxmhI2jo1k01LWml/r1/rUbmLhGbKOxwEnF5/npPSSiT/8m1igc7Lx
-   wDsvEAkwdZVvSkiBS+z7DdPHMwutknT161nUXOHbjKIV6xDrVmFKHm35E
-   8YvntkJSMuCRjXNc5Lw1ndg8mBdzo652PigUliUPDGyJRQUk1bw7ruhcI
-   n75VDK2AZO+9gJ96yT4cetwH6IesuE8kmMAbG7gILm5sXTKoJ2JvjVfG5
-   oyR3vE6LrzlHKQEZl02I53aE2WitRhYhglI6OuKNitg1WRF84XKPnNfNU
-   Q==;
-X-CSE-ConnectionGUID: GFFPYmVfTf+KMi7QeExFDg==
-X-CSE-MsgGUID: U1mtnhNgTSWbawu19moz/Q==
-X-IronPort-AV: E=Sophos;i="6.06,210,1705388400"; 
-   d="asc'?scan'208";a="184603276"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 07 Mar 2024 00:50:14 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 7 Mar 2024 00:50:03 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex04.mchp-main.com (10.10.85.152)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
- Transport; Thu, 7 Mar 2024 00:50:01 -0700
-Date: Thu, 7 Mar 2024 07:49:17 +0000
-From: Conor Dooley <conor.dooley@microchip.com>
-To: Charlie Jenkins <charlie@rivosinc.com>
-CC: Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
-	<palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Jisheng Zhang
-	<jszhang@kernel.org>, Evan Green <evan@rivosinc.com>,
-	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>, Eric Biggers
-	<ebiggers@kernel.org>, Elliot Berman <quic_eberman@quicinc.com>, Charles Lohr
-	<lohr85@gmail.com>, <linux-riscv@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7 1/4] riscv: lib: Introduce has_fast_unaligned_access
- function
-Message-ID: <20240307-coronary-snagged-cf3409df8f7a@wendy>
-References: <20240306-disable_misaligned_probe_config-v7-0-6c90419e7a96@rivosinc.com>
- <20240306-disable_misaligned_probe_config-v7-1-6c90419e7a96@rivosinc.com>
+	s=arc-20240116; t=1709797831; c=relaxed/simple;
+	bh=obiCLTXc9AtSTZAokHiOqHN8TgdotsLfNQ198pkoL7I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=AhIk+4ZpYBd8yN/K/rATRX/kxY6k0+X3ZpTPzrrxD+ac9uGumdKFT/MAm/VBKASkkbDrjVTBrD5bFNtjXmcnZIbyGRzCZX9EmMLplGYMSeTrPE27cAgu0sYxgbl8JKIj2wqHkYFRdmZS1+J8p/G1MVgx3P1EvkNeZdFKUp2DN/c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=aPXUc351; arc=none smtp.client-ip=209.85.219.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dc25e12cc63so1666524276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 23:50:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709797828; x=1710402628; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ah0ukiTsKA1pY9lznY+1jzvEeB+m6H6B1R6XwmhrPB0=;
+        b=aPXUc351/Aoy6e4tGorPE8vtqwU1567VlOfS4cK7aoPyV7Pk8ief4q7LrR9kS01mtg
+         XgnUz7LVT87nVbGZfUWPhlh528KJuQSD0ZLhRMIGvLb4efBqjWg2Bu90sMXtrqLPDTQo
+         e4OX4eqcZXclRsDLJ5rx9FsOAYKrFnUKRo1/EliMTCR+gIOUt2RIHA+yHfrM64AuiiJm
+         Uuh+eAjKkDAENcpnf1aLpIINwC6Q/pKfs9suSXAHWLSzZw5wZn+gL6glNqBehNyJ5y61
+         4yShUAJmLkpI+U62ZFkzYBGKjdRgjh6h05w44SosJ1Wp5gsZANkeo7WbbiVxYLhfPGbx
+         w+KQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709797828; x=1710402628;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ah0ukiTsKA1pY9lznY+1jzvEeB+m6H6B1R6XwmhrPB0=;
+        b=Lgwi+97sXqVL237J+y8aAIs+uEN/iQea1zbzxYk3nkTJTbWoZBtcWf/qZbgAhtWhJK
+         ByR369XE9hU+xhSYEiUXPP91R7W7wviy9o+1fD4sANEdhPaHwLptNx4MFQhiew9ZS8xH
+         TfG8+aQJtzk0Nfcg6T2da02JN/0aX9Q+0jufSjJm8UTLceW5bSt6i+d6U7tEVg7YDUw6
+         9VDh8XrwWpCFrHNZ7oNNLHdIwQtq1pTY9TpdpVotuk5b+L2KsubUA8aJnFo3mNTRDQLK
+         zEzWtmIau9YstEDcI/enBGbbQcdVdQ4AWotjcdkHvOoxsQn/67s7f/0gxhhu8AfBl/qB
+         sLeQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVsLEg1bx8WvbHNiDoMKgY5UcVTvvnHOo+8ihuZF0MjL6DB5D1a5liz4Fa7EXakqVIPqhK4ZjLwAF1WYY314glK9DlHfqIfgH+ubir2
+X-Gm-Message-State: AOJu0YzZSfzuM9s0DWSDovNrrVQHA6GC61zvyEdZH81O9OwzJnkwNQ8Q
+	fm1CcdaWhOvU7+npxpjQVTiVhvPdOr8ZMBnk2mW7SsJ9U4hi7RBGU6KjLvYUy25Bbu/mgtKFORo
+	ux41X0/WtgPSuiy+O7TF7TKgXd42Ey5gQIt4M/w==
+X-Google-Smtp-Source: AGHT+IFa/n55GR6mweEkfWDnqnH5Zm3qCZemeRU4pQouRAgZQOwh4xDQqFnwc99qBUSN19+gM9VcCOj7gor0L/AOjZI=
+X-Received: by 2002:a25:1ed5:0:b0:dcd:9a9b:8d7e with SMTP id
+ e204-20020a251ed5000000b00dcd9a9b8d7emr377200ybe.9.1709797828227; Wed, 06 Mar
+ 2024 23:50:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="sY3+K8PtRfDhOk5h"
-Content-Disposition: inline
-In-Reply-To: <20240306-disable_misaligned_probe_config-v7-1-6c90419e7a96@rivosinc.com>
+References: <20240306123006.724934-1-amadeus@jmu.edu.cn> <20240306123006.724934-2-amadeus@jmu.edu.cn>
+ <CAA8EJpqYjutM1Kh6QxysB6XNAmXywtOtRJ7KP0LbY5E36kCPvA@mail.gmail.com>
+ <78b1a1a2-a9fa-4b28-9d96-d65bb5517199@gmail.com> <CAA8EJppJBOQh19r4A-igsh5znDE_R6mDNy+ao5ximx7vtsZZvA@mail.gmail.com>
+ <CAOX2RU4W-zV3A8eW0A+1V838Fm=tUkXY=Bs3j4VJ8Jo9mxrOAw@mail.gmail.com>
+In-Reply-To: <CAOX2RU4W-zV3A8eW0A+1V838Fm=tUkXY=Bs3j4VJ8Jo9mxrOAw@mail.gmail.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Thu, 7 Mar 2024 09:50:16 +0200
+Message-ID: <CAA8EJpq=-r4XhnFJset0=X=YO5QNUpuw+e1r6DTsPvzNAZCyNw@mail.gmail.com>
+Subject: Re: [PATCH v5 1/1] arm64: dts: qcom: ipq6018: add sdhci node
+To: Robert Marko <robimarko@gmail.com>
+Cc: Chukun Pan <amadeus@jmu.edu.cn>, Bjorn Andersson <andersson@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Rob Herring <robh@kernel.org>, linux-arm-msm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
---sY3+K8PtRfDhOk5h
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Thu, 7 Mar 2024 at 09:38, Robert Marko <robimarko@gmail.com> wrote:
+>
+> On Thu, 7 Mar 2024 at 08:28, Dmitry Baryshkov
+> <dmitry.baryshkov@linaro.org> wrote:
+> >
+> > On Wed, 6 Mar 2024 at 22:35, Robert Marko <robimarko@gmail.com> wrote:
+> > >
+> > >
+> > > On 06. 03. 2024. 20:43, Dmitry Baryshkov wrote:
+> > > > On Wed, 6 Mar 2024 at 14:31, Chukun Pan <amadeus@jmu.edu.cn> wrote:
+> > > >> Add node to support mmc controller inside of IPQ6018.
+> > > >> This controller supports both eMMC and SD cards.
+> > > >>
+> > > >> Tested with:
+> > > >>    eMMC (HS200)
+> > > >>    SD Card (SDR50/SDR104)
+> > > >>
+> > > >> Signed-off-by: Chukun Pan <amadeus@jmu.edu.cn>
+> > > >> ---
+> > > >>   arch/arm64/boot/dts/qcom/ipq6018.dtsi | 19 +++++++++++++++++++
+> > > >>   1 file changed, 19 insertions(+)
+> > > >>
+> > > >> diff --git a/arch/arm64/boot/dts/qcom/ipq6018.dtsi b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
+> > > >> index 322eced0b876..420c192bccd9 100644
+> > > >> --- a/arch/arm64/boot/dts/qcom/ipq6018.dtsi
+> > > >> +++ b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
+> > > >> @@ -441,6 +441,25 @@ dwc_1: usb@7000000 {
+> > > >>                          };
+> > > >>                  };
+> > > >>
+> > > >> +               sdhc: mmc@7804000 {
+> > > >> +                       compatible = "qcom,ipq6018-sdhci", "qcom,sdhci-msm-v5";
+> > > >> +                       reg = <0x0 0x07804000 0x0 0x1000>,
+> > > >> +                             <0x0 0x07805000 0x0 0x1000>;
+> > > >> +                       reg-names = "hc", "cqhci";
+> > > >> +
+> > > >> +                       interrupts = <GIC_SPI 123 IRQ_TYPE_LEVEL_HIGH>,
+> > > >> +                                    <GIC_SPI 138 IRQ_TYPE_LEVEL_HIGH>;
+> > > >> +                       interrupt-names = "hc_irq", "pwr_irq";
+> > > >> +
+> > > >> +                       clocks = <&gcc GCC_SDCC1_AHB_CLK>,
+> > > >> +                                <&gcc GCC_SDCC1_APPS_CLK>,
+> > > >> +                                <&xo>;
+> > > >> +                       clock-names = "iface", "core", "xo";
+> > > >> +                       resets = <&gcc GCC_SDCC1_BCR>;
+> > > >> +                       max-frequency = <192000000>;
+> > > > If I understand correctly, GCC_SDCC1_APPS_CLK support frequencies up
+> > > > to 384 MHz, but here you are limiting it to 192 MHz. Why is it so?
+> > > >
+> > > > I am not sure that 384MHz is actually supported as IPQ6018 datasheet
+> > > > clearly indicates that HS400 mode is not supported.
+> >
+> > I didn't check the datasheet, I opened the gcc-ipq6018.c
+>
+> I understand that, I just pointed it out, it wouldn't surprise me if
+> the frequency table
+> was just copy/pasted from IPQ8074.
 
-On Wed, Mar 06, 2024 at 12:00:01PM -0800, Charlie Jenkins wrote:
+Then it might be fixed instead, making the max-frequency property unnecessary.
 
-$subject: riscv: lib: Introduce has_fast_unaligned_access function
+>
+> Regards,
+> Robert
+> >
+> > > >
+> > > > Regards,
+> > > > Robert
+> > > >
+> > > >> +                       status = "disabled";
+> > > >> +               };
+> > > >> +
+> > > >>                  blsp_dma: dma-controller@7884000 {
+> > > >>                          compatible = "qcom,bam-v1.7.0";
+> > > >>                          reg = <0x0 0x07884000 0x0 0x2b000>;
+> > > >> --
+> > > >> 2.25.1
+> > > >>
+> > > >>
+> > > >
+> >
+> >
+> >
+> > --
+> > With best wishes
+> > Dmitry
 
-nit - s/ function/()/ & put the () after function names in commit
-messages please.
 
-> Create has_fast_unaligned_access to avoid needing to explicitly check
-> the fast_misaligned_access_speed_key static key.
->=20
-> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> Reviewed-by: Evan Green <evan@rivosinc.com>
 
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-
-Cheers,
-Conor.
-
-> ---
->  arch/riscv/include/asm/cpufeature.h | 11 ++++++++---
->  arch/riscv/kernel/cpufeature.c      |  6 +++---
->  arch/riscv/lib/csum.c               |  7 ++-----
->  3 files changed, 13 insertions(+), 11 deletions(-)
->=20
-> diff --git a/arch/riscv/include/asm/cpufeature.h b/arch/riscv/include/asm=
-/cpufeature.h
-> index 5a626ed2c47a..466e1f591919 100644
-> --- a/arch/riscv/include/asm/cpufeature.h
-> +++ b/arch/riscv/include/asm/cpufeature.h
-> @@ -1,6 +1,6 @@
->  /* SPDX-License-Identifier: GPL-2.0-only */
->  /*
-> - * Copyright 2022-2023 Rivos, Inc
-> + * Copyright 2022-2024 Rivos, Inc
->   */
-> =20
->  #ifndef _ASM_CPUFEATURE_H
-> @@ -53,6 +53,13 @@ static inline bool check_unaligned_access_emulated(int=
- cpu)
->  static inline void unaligned_emulation_finish(void) {}
->  #endif
-> =20
-> +DECLARE_STATIC_KEY_FALSE(fast_unaligned_access_speed_key);
-> +
-> +static __always_inline bool has_fast_unaligned_accesses(void)
-> +{
-> +	return static_branch_likely(&fast_unaligned_access_speed_key);
-> +}
-> +
->  unsigned long riscv_get_elf_hwcap(void);
-> =20
->  struct riscv_isa_ext_data {
-> @@ -135,6 +142,4 @@ static __always_inline bool riscv_cpu_has_extension_u=
-nlikely(int cpu, const unsi
->  	return __riscv_isa_extension_available(hart_isa[cpu].isa, ext);
->  }
-> =20
-> -DECLARE_STATIC_KEY_FALSE(fast_misaligned_access_speed_key);
-> -
->  #endif
-> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeatur=
-e.c
-> index 89920f84d0a3..7878cddccc0d 100644
-> --- a/arch/riscv/kernel/cpufeature.c
-> +++ b/arch/riscv/kernel/cpufeature.c
-> @@ -810,14 +810,14 @@ static void check_unaligned_access_nonboot_cpu(void=
- *param)
->  		check_unaligned_access(pages[cpu]);
->  }
-> =20
-> -DEFINE_STATIC_KEY_FALSE(fast_misaligned_access_speed_key);
-> +DEFINE_STATIC_KEY_FALSE(fast_unaligned_access_speed_key);
-> =20
->  static void modify_unaligned_access_branches(cpumask_t *mask, int weight)
->  {
->  	if (cpumask_weight(mask) =3D=3D weight)
-> -		static_branch_enable_cpuslocked(&fast_misaligned_access_speed_key);
-> +		static_branch_enable_cpuslocked(&fast_unaligned_access_speed_key);
->  	else
-> -		static_branch_disable_cpuslocked(&fast_misaligned_access_speed_key);
-> +		static_branch_disable_cpuslocked(&fast_unaligned_access_speed_key);
->  }
-> =20
->  static void set_unaligned_access_static_branches_except_cpu(int cpu)
-> diff --git a/arch/riscv/lib/csum.c b/arch/riscv/lib/csum.c
-> index af3df5274ccb..7178e0acfa22 100644
-> --- a/arch/riscv/lib/csum.c
-> +++ b/arch/riscv/lib/csum.c
-> @@ -3,7 +3,7 @@
->   * Checksum library
->   *
->   * Influenced by arch/arm64/lib/csum.c
-> - * Copyright (C) 2023 Rivos Inc.
-> + * Copyright (C) 2023-2024 Rivos Inc.
->   */
->  #include <linux/bitops.h>
->  #include <linux/compiler.h>
-> @@ -318,10 +318,7 @@ unsigned int do_csum(const unsigned char *buff, int =
-len)
->  	 * branches. The largest chunk of overlap was delegated into the
->  	 * do_csum_common function.
->  	 */
-> -	if (static_branch_likely(&fast_misaligned_access_speed_key))
-> -		return do_csum_no_alignment(buff, len);
-> -
-> -	if (((unsigned long)buff & OFFSET_MASK) =3D=3D 0)
-> +	if (has_fast_unaligned_accesses() || (((unsigned long)buff & OFFSET_MAS=
-K) =3D=3D 0))
->  		return do_csum_no_alignment(buff, len);
-> =20
->  	return do_csum_with_alignment(buff, len);
->=20
-> --=20
-> 2.43.2
->=20
-
---sY3+K8PtRfDhOk5h
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZelxZAAKCRB4tDGHoIJi
-0hJKAQC2W/fGv9uhQGFJKKVUxs4qVTbkPKTSpM7O//BztxDsbQEAvy0LTEPXat2c
-sWGUnjelciGQEV/dSAdDnYTNHFkXsws=
-=wVOO
------END PGP SIGNATURE-----
-
---sY3+K8PtRfDhOk5h--
+-- 
+With best wishes
+Dmitry
 
