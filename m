@@ -1,153 +1,172 @@
-Return-Path: <linux-kernel+bounces-95517-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95519-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EAD1874EC5
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 13:17:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2317874EC9
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 13:17:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0BAD1C22449
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:17:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 535A52813AC
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:17:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68A6312AADD;
-	Thu,  7 Mar 2024 12:16:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7CCF12A167;
+	Thu,  7 Mar 2024 12:17:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IfdLttA8"
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E4mgcXlI"
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEBC612A167;
-	Thu,  7 Mar 2024 12:16:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5215D129A7D;
+	Thu,  7 Mar 2024 12:17:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709813817; cv=none; b=QHki6XAIHXai2mTYIUvCOZNr7qV1cNNsEGo88DCsSkYqkr7798fY2QenWrnwPnoB0W9BaiiejHzUYIVr9JoT+givW2tHwnyHq178/JlKRHW7yt6SD5dsnT435YFcwZh1YdfWsw87e8iFteFXQx4o3qGmtn2RmK8GmKOcNaqhJ1c=
+	t=1709813857; cv=none; b=fGkst1/z5sQP8yrtJAPXIuzCATni4W1ho2tfgiHBzLZfMGRLX8PAwar41xnnl43+DOKel+jIC/1c3B2AUOFq6SBCsRoRDQTi3SkMejrPbU3XS45X5fjTYRUT8NhnaC1pEbbQOWkiVgpWOw5RHsK7Fo3Qjfc9X2Tq5364zHwhG2k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709813817; c=relaxed/simple;
-	bh=iRKY8wKUk68xCXhEXnEYk1hAgKsjfXk0yjfRyq6eKJw=;
+	s=arc-20240116; t=1709813857; c=relaxed/simple;
+	bh=ABf4sv5AXvxdqXJt9Bfdq/bjZHuwKeMqD/z0tX/Flac=;
 	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=edPuU340BJcbgfWPOsfGRSdy3bnr7r8MVXOjpCPhp3iaJRaLmrdPt1ddJEOVDhi0pjmJwJVwPzH6JC+CxnjynkK3823YEH992DvYtZwTUwa/sl0TXrkuEICQ5QAetfE5iWMlANUj5BFiIdc4c/vhFogZ0Q1YpZ3wDO+J86tAqWU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IfdLttA8; arc=none smtp.client-ip=209.85.167.47
+	 Content-Type:Content-Disposition:In-Reply-To; b=GvneYwC2dKaW4MfNbqEr7u/RrYD8SFvKn20vke1mdELdNwljNyd5HpQstp1r9O44Ro/Q936g4xAP9QfEJtNpnmSNyFzhLbM7rHr81nLm4tgZLzPTXwsWqmBFIy9kN4PjGXVPLx1kRAfwpIrHs6Djv5DhzbfMj72XEUJSDJZGWkk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E4mgcXlI; arc=none smtp.client-ip=209.85.167.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-51380c106d9so541248e87.3;
-        Thu, 07 Mar 2024 04:16:55 -0800 (PST)
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-51331634948so1933388e87.0;
+        Thu, 07 Mar 2024 04:17:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709813813; x=1710418613; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ANChfcOUAyC1oxqb32wfMbdGmCMLOuk7/FLsEGcXcAc=;
-        b=IfdLttA8P30s+BpoJ6bb35XH+MPnJnCz5mk4U0e1qM3GzrjKQEnxw/EgUxzkt+yqJM
-         BEeIVyDbLyxFyhu9COJzKhjVx0pOJEsVy1Lp67ta5YQO4Eesq6cSIbVyQ07/4N475EKm
-         wVyJKrsp88C0VZJLTG++V4ekiLF8umoXGFWrdL28uHhTLVArqSIgbvX4UR36OlKk4HSi
-         f6zBpLvQ56SWhnICJ2wWtvqTT2pacz1834BkRLs5wfg4X8vjYOr1Jx7RAa+LJKF5E+kC
-         XFJ2ykHkbblfjUMSaEp9cEyP6zAg3K+OPd+Auys0+maFJg9akSm8I6Hz7cag7RX9cJSb
-         e34Q==
+        d=gmail.com; s=20230601; t=1709813852; x=1710418652; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=U5SLkjwIQZkkO+zmEpiW/twSUX2B8qPMuIOeh9eW0HI=;
+        b=E4mgcXlIsFJxhujftW619jPawk+QGR9q6NuiDrTVrLn06VDXt5ML50IWLVx3WjwyxN
+         6VnXU9OXrvbyvCpLzatTkDSGB6sJL7XNwmqP8pK3j5kx+hMjtw6FRveDWU+uVU8ThHYq
+         yRl+O47HrW3/RBHesGN1eoniYVUqHMHaGb+cxWPANU5GAAgLKTn7WvCx7uq6Z4TAv3JD
+         WT3NvNP9LbC+AKSctTiqkyA+zUgf0nheKjUNbwt5+EfOuf8rKp7ft1MZrvm1G14ifbTS
+         3OnqrR+5z1MYvb9aK6g6HrjlTqOgt57iJjhOynDG1b48qltejkPs84B9LAKYPUmxJblz
+         8u1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709813813; x=1710418613;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ANChfcOUAyC1oxqb32wfMbdGmCMLOuk7/FLsEGcXcAc=;
-        b=J0Ha2ZHVrPZJm7TzCGz1MehhStBFBeV2R+1GfQWa71a2y4oT+dhulOSIaIsItWmrJc
-         WF2XwwXuCYib36j8qWg+q6HsvoP3pc4cX/3Rheuhtfpm9aMV2a2X8wsJudupPQN4JGtz
-         NtnzqAJxYiW6jrXisJPprSpXOghda4y+4Di8UTnDGOQvLGoH8XokR5KZdEi/78mX/Ylu
-         8BS2SILfFP16jILkZtJcy7uVLrcLDZxfWCjiuqk9HMPYz7GSNo5mEFrHG35vb+1EOz1w
-         XngxIW30dXt9OAsE5LhwGSASEdgfcr/NHXoohm+XbBxEfWYvQ74WlELZ6tgUo+FMOVZW
-         hc/w==
-X-Forwarded-Encrypted: i=1; AJvYcCWWlOYO6gta9ZB3xbyUo6iTBc6XA31ASntofzKUYbnFjO5i9YzdBU03VT4QK2LJMDVYEzCFHe76qcFkKiN0ZnG9YQ4K3gjcjFEZfu+kl6nSWKYkswc/kXEzf3sG0lz7hu45
-X-Gm-Message-State: AOJu0YzOdqeev/7iLoTDZV7wC37G5K1DxDNEgEOkPBEOFWCYCUOmT7LX
-	M6N2embDfhxcwNSSdGFQyr2aLjHzP7N6F+q/Y4vqYXB1u5086sCc
-X-Google-Smtp-Source: AGHT+IG/RiMHXVR2V8E27VB26r9q2Bs5SQecc6B335hPWpfU9UEjaV6P+pTnvMyqSPc/kbiB4/PQPw==
-X-Received: by 2002:ac2:4c41:0:b0:513:5cbe:71f5 with SMTP id o1-20020ac24c41000000b005135cbe71f5mr1592920lfk.0.1709813813140;
-        Thu, 07 Mar 2024 04:16:53 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709813852; x=1710418652;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=U5SLkjwIQZkkO+zmEpiW/twSUX2B8qPMuIOeh9eW0HI=;
+        b=VDSP7Qh93r0haz0YG1EGldgj4vh2gSHU1Qy4RlLQQ/++1uk91KYpZ+Xic/zZUzYLIP
+         Hhu02yR4mU9TTjiN4rtnncMgcqfnGskZ0HyiZ2wpvf/MBLuN6GSVuDWvGhh1PaBv3cc6
+         3XdzFPrI6lxO4rnoCA7HTBM+N5ZBTme3qXzlh/Cx3q4Ud6Lt6n3d5LqFkRC3xtdAEg23
+         eWpDzi3uiGJ1C1YAtRVxnoolvdcB9us4ctmKsrQVL1sCHPtthcqkpVkTLbRS1ZmtB7xT
+         kxvT+6U+8murYmR/x/wweJRyvvvAmLPgjILm4+2pLvq80PNQOnozEjYP/CXCOdGkhlB7
+         159A==
+X-Forwarded-Encrypted: i=1; AJvYcCXNnIgQXAd/V8gY3ekIVC2TAOtWdfG5traGzuZd0LpTBCIDBkEh8Xguh0z7KIXEYpjGsWkKxLJMgqqab+99LrYA8QJjm7TNP0Wo6DiC4/eWwuTqyNtm5ShjGL2sF8bAaF+s
+X-Gm-Message-State: AOJu0YzgWPKfMYMCBh9VqjvrgVDb66UhNZ+H3NkteHK8tHMeLmZkIDRi
+	efMVp4VSojn/3vYgYZ1TSdSDqDq+FT+f7khIcII7A9jp763VIEtl
+X-Google-Smtp-Source: AGHT+IEn5lm2lZdeNwXzulDWNZ5IuGgMyEQiBH2dd3SCFbtHDZ1UuLRATTQ/RZMcrGJ421bYB7OTCw==
+X-Received: by 2002:a19:910d:0:b0:513:5e2f:6510 with SMTP id t13-20020a19910d000000b005135e2f6510mr593523lfd.31.1709813852297;
+        Thu, 07 Mar 2024 04:17:32 -0800 (PST)
 Received: from pc636 (host-90-235-19-15.mobileonline.telia.com. [90.235.19.15])
-        by smtp.gmail.com with ESMTPSA id t12-20020a056512208c00b0051349ce52b3sm1640876lfr.15.2024.03.07.04.16.51
+        by smtp.gmail.com with ESMTPSA id k3-20020a05651c060300b002d4143e96d5sm59192lje.136.2024.03.07.04.17.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Mar 2024 04:16:52 -0800 (PST)
+        Thu, 07 Mar 2024 04:17:30 -0800 (PST)
 From: Uladzislau Rezki <urezki@gmail.com>
 X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Thu, 7 Mar 2024 13:16:50 +0100
-To: Joel Fernandes <joel@joelfernandes.org>
-Cc: Uladzislau Rezki <urezki@gmail.com>,
-	Z qiang <qiang.zhang1211@gmail.com>,
+Date: Thu, 7 Mar 2024 13:17:28 +0100
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
 	"Paul E . McKenney" <paulmck@kernel.org>, RCU <rcu@vger.kernel.org>,
 	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
 	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
 	LKML <linux-kernel@vger.kernel.org>,
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-	Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH 2/2] rcu: Allocate WQ with WQ_MEM_RECLAIM bit set
-Message-ID: <ZemwMo1Ca1BQumQ7@pc636>
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH 1/2] rcu: Do not release a wait-head from a GP kthread
+Message-ID: <ZemwWDBnbtmNjTzK@pc636>
 References: <20240305195720.42687-1-urezki@gmail.com>
- <20240305195720.42687-2-urezki@gmail.com>
- <CALm+0cWiOfKR=Gci0dj=z4gT4vSbZ=ZzMfo+CxLZCFQzL1bjfQ@mail.gmail.com>
- <ZehZ7Ef3DW2mT9fc@pc636>
- <ae0475d7-fcfa-4d6f-9bb0-03479e6bf83b@joelfernandes.org>
+ <ZekEiXZes38y_Rmq@localhost.localdomain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ae0475d7-fcfa-4d6f-9bb0-03479e6bf83b@joelfernandes.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZekEiXZes38y_Rmq@localhost.localdomain>
 
-On Wed, Mar 06, 2024 at 12:57:25PM -0500, Joel Fernandes wrote:
+On Thu, Mar 07, 2024 at 01:04:25AM +0100, Frederic Weisbecker wrote:
+> Le Tue, Mar 05, 2024 at 08:57:19PM +0100, Uladzislau Rezki (Sony) a écrit :
+> > Fix a below race by not releasing a wait-head from the
+> > GP-kthread as it can lead for reusing it whereas a worker
+> > can still access it thus execute newly added callbacks too
+> > early.
+> > 
+> > CPU 0                              CPU 1
+> > -----                              -----
+> > 
+> > // wait_tail == HEAD1
+> > rcu_sr_normal_gp_cleanup() {
+> >     // has passed SR_MAX_USERS_WAKE_FROM_GP
+> >     wait_tail->next = next;
+> >     // done_tail = HEAD1
+> >     smp_store_release(&rcu_state.srs_done_tail, wait_tail);
+> >     queue_work() {
+> >         test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work)
+> >         __queue_work()
+> >     }
+> > }
+> > 
+> >                                set_work_pool_and_clear_pending()
+> >                                rcu_sr_normal_gp_cleanup_work() {
+> > // new GP, wait_tail == HEAD2
+> > rcu_sr_normal_gp_cleanup() {
+> >     // executes all completion, but stop at HEAD1
+> >     wait_tail->next = HEAD1;
+> >     // done_tail = HEAD2
+> >     smp_store_release(&rcu_state.srs_done_tail, wait_tail);
+> >     queue_work() {
+> >         test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work)
+> >         __queue_work()
+> >     }
+> > }
+> >                                  // done = HEAD2
+> >                                  done = smp_load_acquire(&rcu_state.srs_done_tail);
+> >                                  // head = HEAD1
+> >                                  head = done->next;
+> >                                  done->next = NULL;
+> >                                  llist_for_each_safe() {
+> >                                  // completes all callbacks, release HEAD1
+> >                                  }
+> >                                }
+> >                                // Process second queue
+> >                                set_work_pool_and_clear_pending()
+> >                                rcu_sr_normal_gp_cleanup_work() {
+> >                                // done = HEAD2
+> >                                done = smp_load_acquire(&rcu_state.srs_done_tail);
+> > 
+> > // new GP, wait_tail == HEAD3
+> > rcu_sr_normal_gp_cleanup() {
+> >     // Finds HEAD2 with ->next == NULL at the end
+> >     rcu_sr_put_wait_head(HEAD2)
+> >     ...
+> > 
+> > // A few more GPs later
+> > rcu_sr_normal_gp_init() {
+> >      HEAD2 = rcu_sr_get_wait_head();
+> >      llist_add(HEAD2, &rcu_state.srs_next);
+> >                                // head == rcu_state.srs_next
+> >                                head = done->next;
+> >                                done->next = NULL;
+> >                                llist_for_each_safe() {
+> >                                 // EXECUTE CALLBACKS TOO EARLY!!!
+> >                                 }
+> >                                }
+> > 
+> > Reported-by: Frederic Weisbecker <frederic@kernel.org>
+> > Fixes: 05a10b921000 ("rcu: Support direct wake-up of synchronize_rcu() users")
+> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 > 
-> 
-> On 3/6/2024 6:56 AM, Uladzislau Rezki wrote:
-> > On Wed, Mar 06, 2024 at 10:15:44AM +0800, Z qiang wrote:
-> >>>
-> >>> synchronize_rcu() users have to be processed regardless
-> >>> of memory pressure so our private WQ needs to have at least
-> >>> one execution context what WQ_MEM_RECLAIM flag guarantees.
-> >>>
-> >>> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> >>> ---
-> >>>  kernel/rcu/tree.c | 6 +++++-
-> >>>  1 file changed, 5 insertions(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> >>> index 475647620b12..59881a68dd26 100644
-> >>> --- a/kernel/rcu/tree.c
-> >>> +++ b/kernel/rcu/tree.c
-> >>> @@ -1581,6 +1581,7 @@ static void rcu_sr_put_wait_head(struct llist_node *node)
-> >>>  /* Disabled by default. */
-> >>>  static int rcu_normal_wake_from_gp;
-> >>>  module_param(rcu_normal_wake_from_gp, int, 0644);
-> >>> +static struct workqueue_struct *sync_wq;
-> >>>
-> >>>  static void rcu_sr_normal_complete(struct llist_node *node)
-> >>>  {
-> >>> @@ -1679,7 +1680,7 @@ static void rcu_sr_normal_gp_cleanup(void)
-> >>>          * of outstanding users(if still left) and releasing wait-heads
-> >>>          * added by rcu_sr_normal_gp_init() call.
-> >>>          */
-> >>> -       queue_work(system_highpri_wq, &rcu_state.srs_cleanup_work);
-> >>> +       queue_work(sync_wq, &rcu_state.srs_cleanup_work);
-> >>>  }
-> >>>
-> >>>  /*
-> >>> @@ -5584,6 +5585,9 @@ void __init rcu_init(void)
-> >>>         rcu_gp_wq = alloc_workqueue("rcu_gp", WQ_MEM_RECLAIM, 0);
-> >>>         WARN_ON(!rcu_gp_wq);
-> >>>
-> >>> +       sync_wq = alloc_workqueue("sync_wq", WQ_MEM_RECLAIM, 0);
-> >>
-> >> Why was WQ_HIGHPRI removed?
-> >>
-> > I would like to check perf. figures with it and send out it as a
-> > separate patch if it is worth it.
-> 
-> I guess one thing to note is that there are also other RCU-related WQ which have
-> WQ_MEM_RECLAIM but not WQ_HIGHPRI (such as for expedited RCU, at least some
-> configs). So for consistency, this makes sense to me.
-> 
-> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org).
-> 
-Thanks. I will update it with review tag!
+> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+>
+Thank you, I will update with your review-by tag!
 
 --
 Uladzislau Rezki
