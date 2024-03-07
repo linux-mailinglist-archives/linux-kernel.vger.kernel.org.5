@@ -1,46 +1,63 @@
-Return-Path: <linux-kernel+bounces-95577-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95578-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C864C874FB2
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:12:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42B6D874FB5
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:13:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81F552820C4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 13:12:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D86B21F23617
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 13:13:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 120A612BF36;
-	Thu,  7 Mar 2024 13:12:14 +0000 (UTC)
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E676E129A98;
+	Thu,  7 Mar 2024 13:13:29 +0000 (UTC)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FE2912BF0C
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 13:12:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.154.21.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 505943233
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 13:13:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709817133; cv=none; b=JWAvBkWza/eTct2JviML2YS0CYsa4PuP0H2RwxyOwmO3mMy6mnlrUP6ewfjW7JjN0Ee71iOx7JwHIUB0VclVCKFvghyr7+hLz/MtPOG49GLZXp71wpgiP01WZ97McAzGOg5AhCmjaSs4kKh3euVXElvamuT2tSG1CIoCSh7gosc=
+	t=1709817209; cv=none; b=HQ5bdxG2mo6nSKZyaM+VX3XdJ4YeyYbouhx3MiPLsxHa6YzlX2nOLyogMoa5FcNjsCZFOjvJEl+OQGEe/x8W0500oQ3U4GVCiqD6oGs+IktkhRXuvKGMQFDWBfTFZJGCW5v3eHveX6QYIIyblWcdlYKDuxEwE2zVTs2XbWCD2u0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709817133; c=relaxed/simple;
-	bh=4kNmfi5ij31nUuB6kRgFS13SDHOYI7nfHXYm79Gj6gA=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=cqCzgbe+/C7snxuABH1fp/vtHZr2G80xtrxvd1T4UxTX/Oh86scqeXr5oJrez0GAQTG43hQ+h4Eico41y4dyyjeBe63kjcahLQ0pvS0LFXUAb4N9Ig9iAxDKq80fRDkId/5Oheilrm5o0KHGhtycZKnZgIFcre57zBcPIa1J0Wk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru; spf=pass smtp.mailfrom=omp.ru; arc=none smtp.client-ip=90.154.21.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
-Received: from localhost.localdomain (78.37.41.175) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Thu, 7 Mar
- 2024 16:11:59 +0300
-From: Roman Smirnov <r.smirnov@omp.ru>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki"
-	<rafael@kernel.org>
-CC: Roman Smirnov <r.smirnov@omp.ru>, Sergey Shtylyov <s.shtylyov@omp.ru>,
-	Karina Yankevich <k.yankevich@omp.ru>, <linux-kernel@vger.kernel.org>,
-	<lvc-project@linuxtesting.org>
-Subject: [PATCH] drivers: core: prevent dereferencing of a null pointer in device_move()
-Date: Thu, 7 Mar 2024 16:11:41 +0300
-Message-ID: <20240307131141.16668-1-r.smirnov@omp.ru>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1709817209; c=relaxed/simple;
+	bh=xrAHyxhBVNZyegD3Y3xng5QLg6iSzIQ41xzs5c1Z93E=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=dKaKdVRiRqfmJxjfoJI05gx6y0QlbebxAAhhV8qkVYkSS7FpKQzIXfMNvtzwm0bWcLaDYjLYPGaekecORxrIe3uShjUiDvFubC00dgOWgVoUXgCVsN07W9A5jN6oCnmXKS6vAfAvRc0Xthl5LrXwQSN/YaNf+HupJOUCgV1K0SY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 08dc2675490e4bbc92606375eac1b6fb-20240307
+X-CID-O-RULE: Release_Ham
+X-CID-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.37,REQID:e712c678-b423-4227-9a7a-709d12c7680c,IP:25,
+	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:10
+X-CID-INFO: VERSION:1.1.37,REQID:e712c678-b423-4227-9a7a-709d12c7680c,IP:25,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:10
+X-CID-META: VersionHash:6f543d0,CLOUDID:ae793b81-4f93-4875-95e7-8c66ea833d57,B
+	ulkID:240307211317NCOVBWQY,BulkQuantity:0,Recheck:0,SF:44|66|24|17|19|102,
+	TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:ni
+	l,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
+X-UUID: 08dc2675490e4bbc92606375eac1b6fb-20240307
+X-User: gehao@kylinos.cn
+Received: from localhost.localdomain [(116.128.244.171)] by mailgw
+	(envelope-from <gehao@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 1133455212; Thu, 07 Mar 2024 21:13:13 +0800
+From: Hao Ge <gehao@kylinos.cn>
+To: akpm@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org,
+	gehao618@613.com,
+	Hao Ge <gehao@kylinos.cn>
+Subject: [PATCH] mm/page-flags: make PageMappingFlags return bool
+Date: Thu,  7 Mar 2024 21:13:04 +0800
+Message-Id: <20240307131304.169859-1-gehao@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -48,79 +65,28 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 03/07/2024 12:55:06
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 184041 [Mar 07 2024]
-X-KSE-AntiSpam-Info: Version: 6.1.0.3
-X-KSE-AntiSpam-Info: Envelope from: r.smirnov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 9 0.3.9 e923e63e431b6489f12901471775b2d1b59df0ba
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info:
-	127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;78.37.41.175:7.4.1,7.7.3;omp.ru:7.1.1
-X-KSE-AntiSpam-Info: {cloud_iprep_silent}
-X-KSE-AntiSpam-Info: ApMailHostAddress: 78.37.41.175
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 03/07/2024 12:59:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 3/7/2024 10:21:00 AM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
-Parameter new_parent can be equal to NULL. In this case if the 
-drm_order parameter is equal to DRM_ORDER_DEV_AFTER_PARENT or
-DRM_ORDER_PARENT_BEFORE_DEV, a null pointer will be dereferenced.
+make PageMappingFlags return bool like folio_mapping_flags
 
-Found by Linux Verification Center (linuxtesting.org) with Svace.
-
-Signed-off-by: Roman Smirnov <r.smirnov@omp.ru>
-Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+Signed-off-by: Hao Ge <gehao@kylinos.cn>
 ---
- drivers/base/core.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ include/linux/page-flags.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index 9828da9b933c..9af7ccf56f42 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -4593,10 +4593,18 @@ int device_move(struct device *dev, struct device *new_parent,
- 	case DPM_ORDER_NONE:
- 		break;
- 	case DPM_ORDER_DEV_AFTER_PARENT:
-+		if (!new_parent) {
-+			error = -EINVAL;
-+			goto out;
-+		}
- 		device_pm_move_after(dev, new_parent);
- 		devices_kset_move_after(dev, new_parent);
- 		break;
- 	case DPM_ORDER_PARENT_BEFORE_DEV:
-+		if (!new_parent) {
-+			error = -EINVAL;
-+			goto out;
-+		}
- 		device_pm_move_before(new_parent, dev);
- 		devices_kset_move_before(new_parent, dev);
- 		break;
+diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
+index 735cddc13d20..30740304059f 100644
+--- a/include/linux/page-flags.h
++++ b/include/linux/page-flags.h
+@@ -642,7 +642,7 @@ static __always_inline bool folio_mapping_flags(struct folio *folio)
+ 	return ((unsigned long)folio->mapping & PAGE_MAPPING_FLAGS) != 0;
+ }
+ 
+-static __always_inline int PageMappingFlags(struct page *page)
++static __always_inline bool PageMappingFlags(struct page *page)
+ {
+ 	return ((unsigned long)page->mapping & PAGE_MAPPING_FLAGS) != 0;
+ }
 -- 
-2.34.1
+2.25.1
 
 
