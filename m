@@ -1,118 +1,82 @@
-Return-Path: <linux-kernel+bounces-95584-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95585-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 273F0874FD0
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:20:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DA73874FD3
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:20:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D13F128359D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 13:20:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B1EFD1F21FC1
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 13:20:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD44312C7E4;
-	Thu,  7 Mar 2024 13:20:01 +0000 (UTC)
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F2D812C7E6;
+	Thu,  7 Mar 2024 13:20:36 +0000 (UTC)
+Received: from mail-out.aladdin-rd.ru (mail-out.aladdin-rd.ru [91.199.251.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7F3284FD5;
-	Thu,  7 Mar 2024 13:19:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 997EB12C52D;
+	Thu,  7 Mar 2024 13:20:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.199.251.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709817601; cv=none; b=P7Df5xrvmytX2CA9hd/wD/4GkYieMRN/c9D+oQ+atwyRqXWo0yZKnIO8jcL/EZfM2ZLOFm52HmI3J4GHwGdQhjy3eW6QmnlgIyuJfsqGPjf1plqPubOx0KtOBJO+9zsk4YQgIcaqQjj9Vef7jZmBw8Kn7JrzANLQOwONytndDZg=
+	t=1709817636; cv=none; b=MFneFFAtwAxX3ryjrUTBcjY3VyZJGk0XGwJHqC3rJUele1zr7+EMWG7gV3CQ6mkeUqjbQnojRzlYvb+kEHayZbeXWkTW9bfDYplhfZQmcxKMoOR6WabTZ7w6LiEnOu3aZ6/7IV5dpON1mEK4m+qwEGOdQomT9uTyZjPDkSkba8w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709817601; c=relaxed/simple;
-	bh=XdyRbsIb6pG2jeGtOXK+SlTPRnhDtH1vytwJZq+aHgc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ekhNrObNZepMnuSw1LSo06lboi9AbwyFNvN0Ct+FrE1l2Q7NPqp/UCc8+wxCKsmqqUcygLM37hE+4WchAYKhChMvQwvX3ALiBCxW/vauN13BQMw//njshaWkLqGBen6hMa6OKmpmRNvWl2Qrz8/3c5jroKWtfsKizQn/lDMtG8E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-6094a87c4a7so8554177b3.3;
-        Thu, 07 Mar 2024 05:19:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709817598; x=1710422398;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3qMsMQn9F0MZ0xZLxTSXRgknQ2DR10UkoNa/fQj/hno=;
-        b=koh6pa5h2jWksdLJZdozqgPBV7EgBwxT5NSTyM5hIMqIK3XLwbGroRgXbJ1Oz5bVIW
-         A4/MQVET/UtXvHBDHwWtJmRZBZxfih3qQG5zjkhEHnLF4Lo/ZMRTHs+9Osuw3gxaDmMs
-         0Bux8y1j2pzkwfJaWfzXc3T/QkTiaQFL4s4n5+eZiGryIaLkPHj7+xers1yBR++jT9Ky
-         wsLlVYguzt1i7K6SF1ajd47RB5QpliSatfIphbI7Fvco8rRA5UHru8bTEXmSL3vq3myD
-         YwQvmjxtwLwWlJM8FlIeKExwWrLf3toUuzFIthheVZRuayd9kKVn5YG6PHxhXzjVhd2w
-         MYtg==
-X-Forwarded-Encrypted: i=1; AJvYcCWzVX2iM4sqEZiH1PjFnYl2LW2qHH3VdnsXfjLz3/COOszYllOvBDXyqYLhWKj7Cl5pM8PnkWVtRsXtnCG6Xzmo5hUE0fnCOzOHosSB6qLl5TEdUhbhYK+IlQ1vYwW6f8z235P4Rg5O1oThzJ8sRqxss+EKYC+f3Q9/oTdCDffuEV+iH46ZPHdK9MRcmlojOdBrAziAkbxKdKwvqAfJnaXyn8onRdQVswMa
-X-Gm-Message-State: AOJu0YyEfewKC6kLMlclL526WkqYyU1Gcgw+4HN9pONUuwcrU2ZixmLA
-	G3StQ4uGf4FEPAnnpT01pDbCOImhavVOjywjaisAXSyNtuuYZtzsI7nxFUlrbyg=
-X-Google-Smtp-Source: AGHT+IEMG0bt+c+X29KGNewoGCkSaXD9GOn7kZtzf0V38QWQr2nXcx4HN85e1KgBtBwxuUfrrjGZKg==
-X-Received: by 2002:a81:4ac2:0:b0:607:850e:7583 with SMTP id x185-20020a814ac2000000b00607850e7583mr16757549ywa.38.1709817598487;
-        Thu, 07 Mar 2024 05:19:58 -0800 (PST)
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com. [209.85.128.178])
-        by smtp.gmail.com with ESMTPSA id s17-20020a819f11000000b006096e718ed2sm4045497ywn.103.2024.03.07.05.19.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Mar 2024 05:19:58 -0800 (PST)
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-6094a87c4a7so8553967b3.3;
-        Thu, 07 Mar 2024 05:19:58 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWSsiXc7POa7quMc0Vvp/ryn8dg+tenS9drFt074NVwlfbjjZrC6v1j4aIwj9ew8cw3fsSWmXxBLpnZy2WUhJ5PF9+/m+L3+CVx/FOwiqx44oN5hGnSSAiQD7CWHlunuvbL5BBggO6vmX0jR9/NIJcfLOCOtkyUg43vLQGA0KlyIw2yq5NTgCzqdWqaTEtIEWZ8ao/M7pGIxt0AThYWl98U3Gq/+6Eh735z
-X-Received: by 2002:a0d:d645:0:b0:607:d285:4d7a with SMTP id
- y66-20020a0dd645000000b00607d2854d7amr17511039ywd.52.1709817597978; Thu, 07
- Mar 2024 05:19:57 -0800 (PST)
+	s=arc-20240116; t=1709817636; c=relaxed/simple;
+	bh=p0S6TKLtZr54QKpjwWO7mH2N9msbPcid8zVNvisldXE=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=j/QyVidGnbu/NAODMMrdPMtv461xBJB2Kkre7LhEcJGNSK9xmSutcdPyBsP3m0aiWgIgWyyZm+fy4q0EdMmNBuHlPDMpZGqssKrTW31jSE8A24QuiBWnDjx2iEeAXukkFmHNXRC2q0rZVqr2cc8Uo46/RFCEDlolQE/49z8PN5c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=aladdin.ru; spf=pass smtp.mailfrom=aladdin.ru; arc=none smtp.client-ip=91.199.251.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=aladdin.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aladdin.ru
+From: Daniil Dulov <d.dulov@aladdin.ru>
+To: Doug Berger <opendmb@gmail.com>
+CC: Daniil Dulov <d.dulov@aladdin.ru>, Florian Fainelli
+	<florian.fainelli@broadcom.com>, Broadcom internal kernel review list
+	<bcm-kernel-feedback-list@broadcom.com>, Andrew Lunn <andrew@lunn.ch>, Heiner
+ Kallweit <hkallweit1@gmail.com>, Russell King <linux@armlinux.org.uk>, "David
+ S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub
+ Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<lvc-project@linuxtesting.org>
+Subject: [PATCH] net: phy: mdio-bcm-unimac: Cast denominator to unsigned long to avoid overflow
+Date: Thu, 7 Mar 2024 16:19:47 +0300
+Message-ID: <20240307131947.13133-1-d.dulov@aladdin.ru>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240307114217.34784-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20240307114217.34784-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20240307114217.34784-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 7 Mar 2024 14:19:46 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVSYzU6E0cBPmqR+RBk-WFEWQBkyj9KjePJZq-EXJ62og@mail.gmail.com>
-Message-ID: <CAMuHMdVSYzU6E0cBPmqR+RBk-WFEWQBkyj9KjePJZq-EXJ62og@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] dt-bindings: serial: renesas,scif: Validate
- 'interrupts' and 'interrupt-names'
-To: Prabhakar <prabhakar.csengg@gmail.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Magnus Damm <magnus.damm@gmail.com>, linux-kernel@vger.kernel.org, 
-	linux-serial@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, 
-	Fabrizio Castro <fabrizio.castro.jz@renesas.com>, 
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: EXCH-2016-01.aladdin.ru (192.168.1.101) To
+ EXCH-2016-01.aladdin.ru (192.168.1.101)
 
-On Thu, Mar 7, 2024 at 12:43=E2=80=AFPM Prabhakar <prabhakar.csengg@gmail.c=
-om> wrote:
-> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->
-> This commit adds support to validate the 'interrupts' and 'interrupt-name=
-s'
-> properties for every supported SoC. This ensures proper handling and
-> configuration of interrupt-related properties across supported platforms.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> ---
-> v1->v2
-> * Defined the properties in top-level block instead of moving into
->   if/else block for each SoC.
-> * Used Gen specific callback strings instead of each SoC variant
+The expression priv->clk_freq * 2 can lead to overflow that will cause
+a division by zero. So, let's cast it to unsigned long to avoid it.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-Gr{oetje,eeting}s,
+Fixes: b78ac6ecd1b6 ("net: phy: mdio-bcm-unimac: Allow configuring MDIO clock divider")
+Signed-off-by: Daniil Dulov <d.dulov@aladdin.ru>
+---
+ drivers/net/mdio/mdio-bcm-unimac.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-                        Geert
+diff --git a/drivers/net/mdio/mdio-bcm-unimac.c b/drivers/net/mdio/mdio-bcm-unimac.c
+index 68f8ee0ec8ba..055102e6bb6d 100644
+--- a/drivers/net/mdio/mdio-bcm-unimac.c
++++ b/drivers/net/mdio/mdio-bcm-unimac.c
+@@ -192,7 +192,7 @@ static void unimac_mdio_clk_set(struct unimac_mdio_priv *priv)
+ 	else
+ 		rate = clk_get_rate(priv->clk);
+ 
+-	div = (rate / (2 * priv->clk_freq)) - 1;
++	div = (rate / (2 * (unsigned long)priv->clk_freq)) - 1;
+ 	if (div & ~MDIO_CLK_DIV_MASK) {
+ 		pr_warn("Incorrect MDIO clock frequency, ignoring\n");
+ 		return;
+-- 
+2.25.1
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
 
