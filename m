@@ -1,100 +1,154 @@
-Return-Path: <linux-kernel+bounces-95927-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95928-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21FD787550C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 18:23:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF97C87550E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 18:23:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF3951F229F4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:22:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75A02286B91
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:23:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93014130AE3;
-	Thu,  7 Mar 2024 17:22:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92E0E130AE3;
+	Thu,  7 Mar 2024 17:23:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ew7PLEQC"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EXIdf1Ci"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AF9F12F5BD
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 17:22:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 444C812F5A7
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 17:23:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709832173; cv=none; b=hAeyYZa83cdxubk9J3LuawAO2M+Us7LGbdAVm2qxPkGURr0roq6OaMosvEsZj1dAvY4i0drmn3PiynUBYD0Wt2lAYuWC6lJQdBoA8/JnZ49yvO1bppOsMayiaKnxraObFWXfRuNAbRoR9xJZBBuF/D6ZBuOJmZDkzGUroEpHv20=
+	t=1709832183; cv=none; b=VuZpsA9gUxojnq8hQh5n6xBDlVskp4V8Ozhpe+wVDYGHAs587ILT38+9dlrHrMUkiPaitBsCQgL85vsSh+m5If4zYRcO8kMdeCpfzaVz1MBGNYbIwm+GDI4MuqK/EnWNZcIZLJr1JDIUNsoyFozo5kOMqjnVpr1JEd6RfhbXJUo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709832173; c=relaxed/simple;
-	bh=TmbB09GJpy+aCGZ8NeqMnq6ND5GYUdhyNoFR8Mz5HZQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Oj3HRlgewXmHWy15M9QsDnX5+qUqzc9/Mmc+kCHIc3mzb6cJiBPHJhM2WkxpnCeCwzJZzwI3LWqJzRgiDYG6bM5n4fDr2qqvInmYBFf8r8ZdppTYtNROsgL48bDr07d+zWp+zqvdhYyyCJvSwOWVqwb5dPdXmFYiCgd9hQ/8sXA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ew7PLEQC; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709832172; x=1741368172;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=TmbB09GJpy+aCGZ8NeqMnq6ND5GYUdhyNoFR8Mz5HZQ=;
-  b=Ew7PLEQCz3nMPH28UK3vDAgoZSiLCr5Uv361yMtAnoagBxK9rP+2gbFB
-   l1Tuhr4OELGp+dVP0nQRIJRRBT4/sCUbTz6CHvHEEjPkk9vD6EdyIEaUr
-   gLDu8+KgEJxVj7yXTu/a/GwCmYnZQGBuVWfRcTecLydSvOCaYzGvDwD4t
-   8R4ATcwAf1jhetIWn3n8721O8FrIsMv70IsAjeVf8ctYgrKHJXTeZ8XJg
-   K+QR640UCKdiTh99h3mHVRElcJOJi2xOOk2IHpeti5XaYMk3q3opeLBqi
-   /dE5/TM4K1C+RTVEETZC1qdAXts9w6Qs6/TWrcL7dG7muTQ7LubA/i06K
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="26986031"
-X-IronPort-AV: E=Sophos;i="6.07,107,1708416000"; 
-   d="scan'208";a="26986031"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 09:22:40 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="937046421"
-X-IronPort-AV: E=Sophos;i="6.07,107,1708416000"; 
-   d="scan'208";a="937046421"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 07 Mar 2024 09:22:37 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1000)
-	id 3B719128; Thu,  7 Mar 2024 19:22:36 +0200 (EET)
-Date: Thu, 7 Mar 2024 19:22:36 +0200
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Andy Lutomirski <luto@kernel.org>, x86@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 1/3] x86/mm: fix LAM cr3 mask inconsistency during
- context switch
-Message-ID: <updn6j7jcqdru73vwt3fvxlx4t73rjrlk7h6i6js3lizeueoov@tz7fyrd3a4yi>
-References: <20240307133916.3782068-1-yosryahmed@google.com>
- <20240307133916.3782068-2-yosryahmed@google.com>
+	s=arc-20240116; t=1709832183; c=relaxed/simple;
+	bh=0vt9FiXpx4GEdr3Xzqy6R1bArKqRNlv3YXX9M7sl3M0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZICwFQp60xxd57E4g9sbjWne8JtpJYHz4pYP0czg1H/z/l0VVWZvDAYC3lcyDpO3hccGsznRPs0QFTPAcp5OwjtpbjsbMpWmfmeh39YLnOJwUS2vC4NHQYxh6eLHINR+2ukcd4dySGV762G7P7OzdMwi/quUkleTlJdamLuw+MY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EXIdf1Ci; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709832179;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gHud0NIMnubYeYck52m3NRwtUWz1SVAUUQWnc4Gem10=;
+	b=EXIdf1Cixdyn75ZnfZoJG9tcYcFjZiW7LbklU40YDFT/9qltGycqoZRRrUOC58sLohMZ/F
+	u0gN2Cyftu2eRDlVE81JPNJUkbZiwf+VbGZzGUPK2bZ4wGs03nvkUYtOca061cCXE5nWoh
+	oTB6iP7qIunUyNiE0+Tngq6bUpuQH3U=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-149-Fjv6i2ezNv2Xm2qyXv29ng-1; Thu, 07 Mar 2024 12:22:58 -0500
+X-MC-Unique: Fjv6i2ezNv2Xm2qyXv29ng-1
+Received: by mail-lf1-f69.google.com with SMTP id 2adb3069b0e04-51333e20813so973557e87.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 09:22:58 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709832177; x=1710436977;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gHud0NIMnubYeYck52m3NRwtUWz1SVAUUQWnc4Gem10=;
+        b=WvFewAwlSwu5xYVdjJSesf5b0kE3GUP7Jdtu0tMT6D7vJ2l2KlbIq+bKw4Z0uMxX65
+         dd+uNe+Y8+5cgqbw2iTUfL3FIw5tNJdeWDxLyqjNwi8ie2lwmbhoSOx66OeKs7VyrPxU
+         e/c2t7MmmLKgO/k8x7uLHXVyCYBOyQhZtWxGXpWaZM2Bfvs0rajMAy69XD7LpV7hUc1j
+         GFX7Seg1bFHToG6mc8HsTnHeFocbyhcviq0h1+9d/X/sQF9Rgpcf1QNanz5hHHkxkB4C
+         gnW7G/Tixo5Zm/8cy1ULEOAKIaSrY3trcwv/m+Vga3DPX53jGlPvp7BqjmVCz/DGMqWd
+         Eq1A==
+X-Forwarded-Encrypted: i=1; AJvYcCWbP8ljLO4EYwY5+q485BmD7P2YaGI9ChtAoqETJbjqyQR2JdToHHQTEvVA0fGkbrUTZE+YfbQr4yCUA8RqnWx12PGUoETeo+XDilpC
+X-Gm-Message-State: AOJu0YyqdecPTYnhZROeqPhfGXfD52xjARm6HQ625eWMMWwHD5/RBiz3
+	BU7zFyiZCqUGN+ICfZsEcYy9n9+9PhRzvcZbvAgxEdTn88cvcFxAnGWWeKkXNnJ+bsdf/PyFVkU
+	gcbS5tUwFvSHVEiKjWagZggTjAr7vt8c1eligUqsc3W2tDwlWJLScFdEnbZ4qzw==
+X-Received: by 2002:a19:5e52:0:b0:513:3bb2:325f with SMTP id z18-20020a195e52000000b005133bb2325fmr1784287lfi.24.1709832176883;
+        Thu, 07 Mar 2024 09:22:56 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGz5XIN51pm0w0Ds04sX7nTgcZRXzxLF4YKIC4rJgsp3JuYsh1bD2RPfc80ajrhn3Agzucyug==
+X-Received: by 2002:a19:5e52:0:b0:513:3bb2:325f with SMTP id z18-20020a195e52000000b005133bb2325fmr1784268lfi.24.1709832176495;
+        Thu, 07 Mar 2024 09:22:56 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:c:37e0:ced3:55bd:f454:e722? ([2a01:e0a:c:37e0:ced3:55bd:f454:e722])
+        by smtp.gmail.com with ESMTPSA id q13-20020a5d61cd000000b0033e11ff6284sm20037347wrv.12.2024.03.07.09.22.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Mar 2024 09:22:55 -0800 (PST)
+Message-ID: <adeac189-87f8-4b70-9c04-3eaaf2ed7bc5@redhat.com>
+Date: Thu, 7 Mar 2024 18:22:55 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240307133916.3782068-2-yosryahmed@google.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC] How to test panic handlers, without crashing the kernel
+Content-Language: en-US, fr
+To: "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+ Michael Kelley <mhklinux@outlook.com>,
+ John Ogness <john.ogness@linutronix.de>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Daniel Vetter <daniel@ffwll.ch>, Andrew Morton <akpm@linux-foundation.org>,
+ "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+ Josh Poimboeuf <jpoimboe@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+ Kefeng Wang <wangkefeng.wang@huawei.com>, Lukas Wunner <lukas@wunner.de>,
+ Uros Bizjak <ubizjak@gmail.com>, Petr Mladek <pmladek@suse.com>,
+ Daniel Thompson <daniel.thompson@linaro.org>,
+ Douglas Anderson <dianders@chromium.org>
+Cc: "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+ David Airlie <airlied@redhat.com>, Thomas Zimmermann <tzimmermann@suse.de>
+References: <266579a9-fde6-40ff-b13d-fb2312db406c@redhat.com>
+ <87edcpn1l3.fsf@jogness.linutronix.de>
+ <15015345-3068-2fb8-aa38-f32acf27e1d0@igalia.com>
+ <SN6PR02MB4157AF2E765F7ED3B9487351D4222@SN6PR02MB4157.namprd02.prod.outlook.com>
+ <d1d2093c-72a3-4f64-9a8f-9844dc38f0c5@redhat.com>
+ <3d0c4180-aa6d-4519-d6d8-8f16b98587dc@igalia.com>
+From: Jocelyn Falempe <jfalempe@redhat.com>
+In-Reply-To: <3d0c4180-aa6d-4519-d6d8-8f16b98587dc@igalia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Mar 07, 2024 at 01:39:14PM +0000, Yosry Ahmed wrote:
-> In switch_mm_irqs_off(), we read the 'mm->context.lam_cr3_mask' into
-> 'new_lam', which is later passed to load_new_mm_cr3(). However, there is
-> a call to set_tlbstate_lam_mode() in between which will read
-> 'mm->context.lam_cr3_mask' again and set 'cpu_tlbstate.lam' accordingly.
-> If we race with another thread updating 'mm->context.lam_cr3_mask', the
-> value in 'cpu_tlbstate.lam' could end up being different from CR3.
 
-What other thread? LAM can only be enabled when the process has single
-thread. And cannot be disabled. See MM_CONTEXT_LOCK_LAM.
 
-> While we are at it, remove the misguiding comment that states that
-> 'new_lam' may not match tlbstate_lam_cr3_mask() if a race occurs.
+On 05/03/2024 18:50, Guilherme G. Piccoli wrote:
+> On 05/03/2024 13:52, Jocelyn Falempe wrote:
+>> [...]
+>> Or maybe have two lists of panic notifiers, the safe and the destructive
+>> list. So in case of fake panic, we can only call the safe notifiers.
+>>
+> 
+> I tried something like that:
+> https://lore.kernel.org/lkml/20220427224924.592546-1-gpiccoli@igalia.com/
+> 
+> There were many suggestions, a completely refactor of the idea (panic
+> lists are not really seen as reliable things).
 
-The comment is indeed misguiding, but for different reason. It is leftover
-from the earlier version of LAM patchset.
+Thanks for sharing this, so it's much more complex than what I though.
+> 
+> Given that, I'm not really sure splitting in lists gonna fly; maybe
+> restricting the test infrastructure to drm_panic plus some paths of
+> panic would be enough for this debugfs interface, in principle? I mean,
+> to unblock your work on the drm panic stuff.
+
+For drm_panic, I changed the way the debugfs is calling the drm_panic 
+functions in the last version:
+https://patchwork.freedesktop.org/patch/581845/?series=122244&rev=9
+
+It doesn't use the panic notifier list, but create a file for each plane 
+of each device directly.
+It allows to test the panic handler, not in a real panic condition, but 
+that's still better than nothing.
+
+> 
+> Cheers,
+> 
+> 
+> Guilherme
+> 
+
+Best regards,
 
 -- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+
+Jocelyn
+
 
