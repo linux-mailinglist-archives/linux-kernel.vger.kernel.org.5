@@ -1,103 +1,170 @@
-Return-Path: <linux-kernel+bounces-96193-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96194-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49AEC875855
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 21:28:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E7DF875857
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 21:28:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F41A11F21B19
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:28:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BBBA2287BFC
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:28:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC6C81386CB;
-	Thu,  7 Mar 2024 20:27:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2C58137C5A;
+	Thu,  7 Mar 2024 20:28:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gIvHZBzh"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WN6RIMTv"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D85E7130E48
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 20:27:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E0A41384A3
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 20:28:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709843270; cv=none; b=LmNvVuH0wHy1L2gh68e/zrp4bOiSG/Hdy4bCsMS1Y2mhbJqr0gyrFD4AXQwHiJ6pcmdGtAN2viT6+RUYhI5Xui6+09ewmyd6J5tU9ukwDib+bx3fxtPqnPA4fAP3wwX2Y+2Y1yT9vYlBYuWvtB6FzMiITD2s4KvmAUOBzwCqHLg=
+	t=1709843286; cv=none; b=t0ePPik3dTM3EyM88t4cq0etEEOBB5zrNNzezgSsmUGuop/Bg6x9nuQcQHSiDnYlxS0sSuUORSBss4x5Mu5BybpIuJJUeh/JW3DpiJjuEunT5VsNc6C23o4MhZRfNXrP4XmpKprL71pP3ot4AQcAI5JOSQCzWvOVvtaOvcZu1DY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709843270; c=relaxed/simple;
-	bh=PpJyDwWIL2vSG+aCO9RrwWN5pozRht5JZlxyvyX4U10=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=hQNrijQ2gZoOqezzFyk3fWGxbRBL6F8g8hG97Lr76h1tnR/PUsxWNX4kzwIkPqN5LWlJBptlXI6Y8iTkcjLJesx1r66xWwDzDrMCcw1Ii2E4Is7duQwcgyKcaYsOqlNDOOpdFn2+WlPn7h/DtGi5ecQ0aEdbm4IfYU7kQRGha3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=gIvHZBzh; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-609a1063919so24852997b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 12:27:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709843268; x=1710448068; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=chSC2pZv+hcOkTZmm/t1zZxe+FTdRWOu1T96ZyxWt3E=;
-        b=gIvHZBzhTC4J88q7LQ6qDBeaz+k/DCck0wkP/wH3d2Aqu446h16FckxFyhP6DnC+36
-         OkLL+vnVbL1WOfFQI3QEaA9JYq5AbC5zlBI/r2KkTqjKYiBXDKziqGXgFmV1vi/pixm7
-         bGh+N0FtIBs7WxT6jXaKDXT8Z9Z3/XBXkMk+lh5b/L7x67U7FFlgeDk4bZP5mm0oNtYn
-         KSWHEcxw+0HWpXk3kBKzojH1e/igsLWDy9dYXppt9LQZ3/P/z+srRVHcb4+adR5OHWYK
-         DtNKfos4wGIJgG0khJG90mHGDC3lDfoPjreOUM5mqvsQRJcoxtCvF5W0FLXFQNqD7gJE
-         Tgig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709843268; x=1710448068;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=chSC2pZv+hcOkTZmm/t1zZxe+FTdRWOu1T96ZyxWt3E=;
-        b=lC0R3gSGB8OipymjrRp3cTCIwRBESs9j7AL49iUr9KouLS471ViRY9+aOtMwZEJWOJ
-         qcS5C9sk/esZPHh4g7upjU287DLlCOTFmOPbRf4OhvkZHArmnvs6If5f0TYV8MCFrwUa
-         CU09zwgA6XhMfLZxc27Ffb22DyyssJXdugRymz96OpwJUCwumlokCj7ZlR1jCWvAfvoA
-         14CTaRwxmyy4zbfU3byGh+xeqocKujLkf5jGGVNS0D+V0rb3AbR78+lICWrMVqJ62PA9
-         Q0JF/dGFGsi+5MIg1T14HLDP5d2Wovcrxhb+RW1NgwfmRKE3Kt+B507FweA+zHVoQFRC
-         RhSQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUS9fuyxvLHG8lw4Vsgzl8FmmuD44Pt9I9Bh+t5Ymwn15uQdApfMwyL+guaix4or/oELW3EJUgtS6Awc1RilfKrUW5Dcb9VdNy7Kmow
-X-Gm-Message-State: AOJu0YznrT84EETCYdxJhI9PlfbRmR9DqcmGcXssIrJGGy0jn8C08k6o
-	aJZcxaKE4+H7Ncf4vXoQpDU4jayWVJKxiOOoOlAv2oJsQe1T6H8rgHkK3SO+CnruV0x5lgq0zlQ
-	hooFWbHA0XFkFU+LvWg==
-X-Google-Smtp-Source: AGHT+IFTT1OGsSLJa8Haf9ZMonPRGBBE0gN7hzSylYNaonZDzLqJHga59YTrDvVijT48cQtbb9tyXsm2dRp19qFP
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a05:690c:3702:b0:608:1b39:245c with
- SMTP id fv2-20020a05690c370200b006081b39245cmr5389081ywb.9.1709843267801;
- Thu, 07 Mar 2024 12:27:47 -0800 (PST)
-Date: Thu, 7 Mar 2024 20:27:45 +0000
-In-Reply-To: <j3zncd7dxc6kzk5sdytqulkk76cluq6zctklpasa3y4ig3vwku@ibabr336aqv6>
+	s=arc-20240116; t=1709843286; c=relaxed/simple;
+	bh=N9iAxXFSqH7B5Ms78Cze59MmtfuvL/enafxHsGfnODY=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=A/iAYZeFnBC5tHoGFAF80xnU+oowXOBQPnjZ0EZg2LWYqj0ci83vsCNfnU4ItqvX1qV9WdRe8GZRycli52zmkevjmAHsJNTAarGXe5L3h5z9fGid1gmySWq6tFS0bq7W2ts25YqLnOuWHr1MLO1kJlqD/rvFjKDOqq3eCg+PMhU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WN6RIMTv; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709843284; x=1741379284;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version:content-transfer-encoding;
+  bh=N9iAxXFSqH7B5Ms78Cze59MmtfuvL/enafxHsGfnODY=;
+  b=WN6RIMTvKBgZNSUY28ApjzpPyd8a8y0yRJv9VOMwTh1/9pkeAXuZf1kg
+   f9vfZCnt8CPGzv3tr1xeMSZ49sLbU9smWAZ3p699Rk8Pw/ohIu7DQV9+u
+   PcEjMLhKfJJL8NdMSEHOiUoxcG30ksMxcgtrEfhCdqgQ7AhkFLUR88A7O
+   CcDm9BE+Ud2nrJ1suyj7ZK0+A1tqZmr+/oiEG+hQ1kZtgiVXvpsgrvBrr
+   JIWYgZaATQAoNPWEmov7FfYsRNzD7jp1SjNReLCGt4ONbCk9IDEICMLZo
+   MaHymS3wYkSSrqqlKO7W8I8aROQo76YWxtoVMZmWgt6Et0Eu5T9oA0rqI
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="27010944"
+X-IronPort-AV: E=Sophos;i="6.07,107,1708416000"; 
+   d="scan'208";a="27010944"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 12:28:03 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,107,1708416000"; 
+   d="scan'208";a="10215658"
+Received: from tofferse-mobl.ger.corp.intel.com (HELO localhost) ([10.252.33.212])
+  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 12:27:59 -0800
+From: Jani Nikula <jani.nikula@linux.intel.com>
+To: Hsin-Yi Wang <hsinyi@chromium.org>
+Cc: Doug Anderson <dianders@chromium.org>, Dmitry Baryshkov
+ <dmitry.baryshkov@linaro.org>, Neil Armstrong <neil.armstrong@linaro.org>,
+ Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg
+ <sam@ravnborg.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann
+ <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter
+ <daniel@ffwll.ch>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 6/6] drm/panel-edp: Fix AUO 0x405c panel naming and
+ add a variant
+In-Reply-To: <CAJMQK-izRv18V1o7_Q23vWFXQsFgaR74xxZ4Vby0FVtNn21TMg@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20240306200353.1436198-1-hsinyi@chromium.org>
+ <20240306200353.1436198-7-hsinyi@chromium.org>
+ <CAD=FV=VvhKZHVzHQdOO=_p0E5m7ig1LY2s5MZRojRynKHbF1xw@mail.gmail.com>
+ <87msraw4q6.fsf@intel.com>
+ <CAJMQK-izRv18V1o7_Q23vWFXQsFgaR74xxZ4Vby0FVtNn21TMg@mail.gmail.com>
+Date: Thu, 07 Mar 2024 22:27:55 +0200
+Message-ID: <874jdhwzw4.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240307133916.3782068-1-yosryahmed@google.com>
- <20240307133916.3782068-4-yosryahmed@google.com> <j3zncd7dxc6kzk5sdytqulkk76cluq6zctklpasa3y4ig3vwku@ibabr336aqv6>
-Message-ID: <ZeojMwHh8O73bw23@google.com>
-Subject: Re: [RFC PATCH 3/3] x86/mm: cleanup prctl_enable_tagged_addr()
- nr_bits error checking
-From: Yosry Ahmed <yosryahmed@google.com>
-To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Thomas Gleixner <tglx@linutronix.de>, 
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@intel.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Andy Lutomirski <luto@kernel.org>, x86@kernel.org, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 07, 2024 at 07:31:44PM +0200, Kirill A. Shutemov wrote:
-> On Thu, Mar 07, 2024 at 01:39:16PM +0000, Yosry Ahmed wrote:
-> > In prctl_enable_tagged_addr(), we check that nr_bits is in the correct
-> > range, but we do so in a twisted if/else block where the correct case is
-> > sandwiched between two error cases doing exactly the same thing.
-> > 
-> > Simplify the if condition and pull the correct case outside with the
-> > rest of the success code path.
-> 
-> I'm okay either way.
-> 
-> I structured the code this way as I had separate patch that adds also
-> LAM_U48. But it is unlikely to get upstreamed.
+On Thu, 07 Mar 2024, Hsin-Yi Wang <hsinyi@chromium.org> wrote:
+> On Thu, Mar 7, 2024 at 5:28=E2=80=AFAM Jani Nikula <jani.nikula@linux.int=
+el.com> wrote:
+>>
+>> On Wed, 06 Mar 2024, Doug Anderson <dianders@chromium.org> wrote:
+>> > Hi,
+>> >
+>> > On Wed, Mar 6, 2024 at 12:04=E2=80=AFPM Hsin-Yi Wang <hsinyi@chromium.=
+org> wrote:
+>> >>
+>> >> @@ -1009,6 +1009,19 @@ static const struct panel_desc auo_b101ean01 =
+=3D {
+>> >>         },
+>> >>  };
+>> >>
+>> >> +static const struct drm_display_mode auo_b116xa3_mode =3D {
+>> >> +       .clock =3D 70589,
+>> >> +       .hdisplay =3D 1366,
+>> >> +       .hsync_start =3D 1366 + 40,
+>> >> +       .hsync_end =3D 1366 + 40 + 40,
+>> >> +       .htotal =3D 1366 + 40 + 40 + 32,
+>> >> +       .vdisplay =3D 768,
+>> >> +       .vsync_start =3D 768 + 10,
+>> >> +       .vsync_end =3D 768 + 10 + 12,
+>> >> +       .vtotal =3D 768 + 10 + 12 + 6,
+>> >> +       .flags =3D DRM_MODE_FLAG_NVSYNC | DRM_MODE_FLAG_NHSYNC,
+>> >> +};
+>> >> +
+>> >>  static const struct drm_display_mode auo_b116xak01_mode =3D {
+>> >>         .clock =3D 69300,
+>> >>         .hdisplay =3D 1366,
+>> >> @@ -1990,7 +2003,9 @@ static const struct edp_panel_entry edp_panels[=
+] =3D {
+>> >>         EDP_PANEL_ENTRY('A', 'U', 'O', 0x239b, &delay_200_500_e50, "B=
+116XAN06.1"),
+>> >>         EDP_PANEL_ENTRY('A', 'U', 'O', 0x255c, &delay_200_500_e50, "B=
+116XTN02.5"),
+>> >>         EDP_PANEL_ENTRY('A', 'U', 'O', 0x403d, &delay_200_500_e50, "B=
+140HAN04.0"),
+>> >> -       EDP_PANEL_ENTRY('A', 'U', 'O', 0x405c, &auo_b116xak01.delay, =
+"B116XAK01.0"),
+>> >> +       EDP_PANEL_ENTRY('A', 'U', 'O', 0x405c, &auo_b116xak01.delay, =
+"B116XAN04.0"),
+>> >> +       EDP_PANEL_ENTRY2('A', 'U', 'O', 0x405c, &auo_b116xak01.delay,=
+ "B116XAK01.0 ",
+>> >
+>> > Remove the trailing space from the string above now?
+>>
+>> Maybe it actually needs to be considered part of the name; see my other
+>> reply in the earlier patch.
+>>
+> I randomly checked 3 of the AUO panels that I had a datasheet with,
+> and all of them have a white space padding before \n.
+> The descriptor of that field is marked as "Reserved for definition",
+> unlike other characters, representing the name, which are marked with
+> "Manufacture P/N".
+>
+> For this example, do we still want to consider the white space part of
+> the name? I know they didn't follow the spec exactly.
 
-I see, thanks for the context. For now, I think this makes the code a
-little bit clearer.
+If there's one thing that's for sure, EDIDs are full of stuff like this,
+across the board.
+
+Ignoring the whitespace at the end seemed reasonable, initially, to me
+too. But the question is, if we start catering for this, what else
+should we cater for? Do we keep adding "reasonable" interpretations, or
+just go by the spec?
+
+
+BR,
+Jani.
+
+
+>
+>> >
+>> > Aside from that:
+>> >
+>> > Reviewed-by: Douglas Anderson <dianders@chromium.org>
+>>
+>> --
+>> Jani Nikula, Intel
+
+--=20
+Jani Nikula, Intel
 
