@@ -1,48 +1,48 @@
-Return-Path: <linux-kernel+bounces-94972-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94974-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A7C287476A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 05:41:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B09E487476D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 05:42:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DABCEB232B4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 04:41:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 47599281C5F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 04:42:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 363131CAA0;
-	Thu,  7 Mar 2024 04:40:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CCB72421A;
+	Thu,  7 Mar 2024 04:40:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EAWeRYtH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n2Th6j+B"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 587E110A34;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B62AE1BC56;
 	Thu,  7 Mar 2024 04:40:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709786431; cv=none; b=n3Q7bnlROyhd2GTM8z/LeKrvguAnjxLkh3nPoF9cmFFNTHjqRK3WAaH5TY4uIvHyZLxWwlo67kPClhhfe6ade0oLXIez6c8MnOmHKFAO3lfcspLNY1p4fV/hub+iOjF762QRVuDQDBPpHmXX1Oyo2C5/yjylDoLTnyZUyBFp/2A=
+	t=1709786431; cv=none; b=QfT5mGgzlVGh4Fm+NohN3NcDpQ2UoRL8eiSFi/yE0NhKVmwzKzFOdV1ikp2kCN0x0rG1YAqctm3dO7eGpLk2zNe4o53YXF1+vr+I+nU5cE1nP++oRNV7jH9mD3is/t+qql+Vm1LZuvp6L6FSSZyvN/UMnllwYysgH136oeqcor4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1709786431; c=relaxed/simple;
-	bh=OCCGs2R/jfWNK08TVuyK4J+/XOBbfsMRa86WcXYi0c8=;
+	bh=oWQ8k864w4vkTmNo/1e1A064OVjilSU6x9OOmcthMuY=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=aUi2C6vCJr1N0CDcOfkyoructhJqMCdcXY1mLVmUUi93vTqJCqDtspH8BbgUtWR/BfWjBChcYvDSjRWuQCNKy7RhKO4DgSeKoG7rhmVLHuX8T9PeFwB+6FwYvQyrgT37I9S3qFl4JtIEgyApgRIF2F3T5xWkIjG94SoSl2n4v2w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EAWeRYtH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 26D27C3277C;
+	 In-Reply-To:To:Cc; b=JLWT8pPvFVGErY1VCNwUCrZaI5++h1WluUXS19ZUW5ly1uonib47SlFiOgt+YkWHKoJmVe4Xd/Cc2ZskqC1rVliTCg7+CAKsxdtiCuzgL3mQANKkplm/BjFbpLXClZmWadZQNijXwF0gwZSwZ2tqwam11vVckqatozmWKoW2x9E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n2Th6j+B; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 2B73DC41606;
 	Thu,  7 Mar 2024 04:40:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1709786431;
-	bh=OCCGs2R/jfWNK08TVuyK4J+/XOBbfsMRa86WcXYi0c8=;
+	bh=oWQ8k864w4vkTmNo/1e1A064OVjilSU6x9OOmcthMuY=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=EAWeRYtHiSxM1vKulOzWemaUsGKIe8YCKv5l144TbgITqrQYS9xC3PbmlVjxaJDpq
-	 MAVobScQ4UBcdqC438Xzz9OJQii8HFmQSh5qNR34+4aD0DhTrGEciHpEcEWnTJx79d
-	 Ea5l51si7XlFQXMO5xg8afE5za9SoIlh1SyJsKqale9giYyi3PpuUUK3jliPPKru0p
-	 mcjeiuvJFj6x1u8S3HBfI2FcF1DwykPjX++0D51DSSV+PJ12pri42LrTwtvnHM3CI3
-	 Xy213F5Ryaj9PsK/Che/DK0jLaMS+ANAWc/P01tEOT7WLsrir5RyTKfi0IOW0OOhGb
-	 vYFh4avBZ3iUw==
+	b=n2Th6j+BGGCGrFm7Zi7vNUbTWrWuWjzILTLUC+1KTW01BP9KHNhVW1c6Bz8eePbVE
+	 c0zh/KsI4EJLHABIOCLgLEkrvqySve7YSQcQG9ujskKG4UEexiCj5cbxP3+Arujgo2
+	 hYY/CxGkMK5l2KO8UiMi2EcmNCanuN5VSIHSL7Y0ULpA+CNB44VlZYOdTrD1RJT38M
+	 ECCOCh+kWwD7oGuhwyAm8f0QR85+0fE0IWJQrOCO7qQxaj1+6/ojNY+a6pqJGMxnOa
+	 yFAk9mVzX7fl9TseTdJZm8IaPSsK8jVOV/McATqnj2+q7TfczFRN6a5H5BDP8oaKL7
+	 lBuVezuxpgP0g==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id EAB12D88F82;
-	Thu,  7 Mar 2024 04:40:30 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 014A8D88F81;
+	Thu,  7 Mar 2024 04:40:31 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -51,41 +51,42 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] selftests/harness: Fix TEST_F()'s vfork handling
+Subject: Re: [PATCH net-next 0/4] mptcp: some clean-up patches
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <170978643095.7855.10065526694998979631.git-patchwork-notify@kernel.org>
-Date: Thu, 07 Mar 2024 04:40:30 +0000
-References: <20240305201029.1331333-1-mic@digikod.net>
-In-Reply-To: <20240305201029.1331333-1-mic@digikod.net>
-To: =?utf-8?b?TWlja2HDq2wgU2FsYcO8biA8bWljQGRpZ2lrb2QubmV0Pg==?=@codeaurora.org
-Cc: davem@davemloft.net, kuba@kernel.org, keescook@chromium.org,
- broonie@kernel.org, shuah@kernel.org, gnoack@google.com, wad@chromium.org,
- edumazet@google.com, jakub@cloudflare.com, pabeni@redhat.com,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-security-module@vger.kernel.org, netdev@vger.kernel.org
+ <170978643100.7855.15154832484312373588.git-patchwork-notify@kernel.org>
+Date: Thu, 07 Mar 2024 04:40:31 +0000
+References: <20240305-upstream-net-next-20240304-mptcp-misc-cleanup-v1-0-c436ba5e569b@kernel.org>
+In-Reply-To: <20240305-upstream-net-next-20240304-mptcp-misc-cleanup-v1-0-c436ba5e569b@kernel.org>
+To: Matthieu Baerts <matttbe@kernel.org>
+Cc: mptcp@lists.linux.dev, martineau@kernel.org, geliang@kernel.org,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ tanggeliang@kylinos.cn, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 
 Hello:
 
-This patch was applied to netdev/net-next.git (main)
+This series was applied to netdev/net-next.git (main)
 by Jakub Kicinski <kuba@kernel.org>:
 
-On Tue,  5 Mar 2024 21:10:29 +0100 you wrote:
-> Always run fixture setup in the grandchild process, and by default also
-> run the teardown in the same process.  However, this change makes it
-> possible to run the teardown in a parent process when
-> _metadata->teardown_parent is set to true (e.g. in fixture setup).
+On Tue, 05 Mar 2024 12:04:29 +0100 you wrote:
+> Here are some clean-up patches for MPTCP:
 > 
-> Fix TEST_SIGNAL() by forwarding grandchild's signal to its parent.  Fix
-> seccomp tests by running the test setup in the parent of the test
-> thread, as expected by the related test code.  Fix Landlock tests by
-> waiting for the grandchild before processing _metadata.
+> - Patch 1 drops duplicated header inclusions.
+> 
+> - Patch 2 updates PM 'set_flags' interface, to make it more similar to
+>   others.
 > 
 > [...]
 
 Here is the summary with links:
-  - selftests/harness: Fix TEST_F()'s vfork handling
-    https://git.kernel.org/netdev/net-next/c/41cca0542d7c
+  - [net-next,1/4] mptcp: drop duplicate header inclusions
+    https://git.kernel.org/netdev/net-next/c/d5dfbfa2f88e
+  - [net-next,2/4] mptcp: update set_flags interfaces
+    https://git.kernel.org/netdev/net-next/c/6a42477fe449
+  - [net-next,3/4] mptcp: set error messages for set_flags
+    https://git.kernel.org/netdev/net-next/c/a4d68b160240
+  - [net-next,4/4] mptcp: drop lookup_by_id in lookup_addr
+    https://git.kernel.org/netdev/net-next/c/af250c27ea1c
 
 You are awesome, thank you!
 -- 
