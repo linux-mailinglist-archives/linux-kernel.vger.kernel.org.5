@@ -1,106 +1,150 @@
-Return-Path: <linux-kernel+bounces-94942-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94943-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 183908746FC
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 04:54:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C2F78746FE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 04:54:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 76B92B21C77
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 03:54:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C67E1F232CA
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 03:54:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3FC514AB2;
-	Thu,  7 Mar 2024 03:54:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BD0414F78;
+	Thu,  7 Mar 2024 03:54:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NpIiOPLI"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="BKoxBLRk"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1D6C17EF;
-	Thu,  7 Mar 2024 03:54:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 729FC10A34;
+	Thu,  7 Mar 2024 03:54:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709783642; cv=none; b=jzsuN1X3RJXhLIno9uzzqXl0Fm8tXI0MqQI6s7hHa2j8Bcv/3Hmqvk4Z6HksR+249FbF44h0MZNnTC1q3hbFdsu3/9KIgvbrovuwxqMO5BQuomHUWB+bm+WPZGAC+JqIloMNL530EgBXUfRSZlau8Ug5UEmW1v3ZqtEKimqtmrw=
+	t=1709783669; cv=none; b=gWDAgXvmB59b6IoRzAeEvnvXkJQY4z6280JutHqGI6F1b02nvoIdHmY3ZeH8OQLA3M+DLsut01llgUzgcmGKqcGreU1shZ98In+zihouM9gPeqIo32neGIxxiRLxbdIgCRI5aQxIACUGk+5Y45hFkexYpKr+iSKFwZPCFuGzYBI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709783642; c=relaxed/simple;
-	bh=iSpHqEag2Fld1WLfW4PXYjSa646zc+x1ABtd6XNLjsU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=H6D6UIi7IPuXa5cBwYPoZtVszo/A+ordgVP5hZhX/BLOjDdwpjI+l2hMikeCQH95fGa8LkkCuPx5dY0896p8khqAfoEEr2tvvFOg5PQCs4W9gVcQulybPJvLohh02zup7J5fxkIxKydzR48zvws35ljOOJNnVIClNnvkdjYmDy4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NpIiOPLI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2CABC433C7;
-	Thu,  7 Mar 2024 03:54:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709783641;
-	bh=iSpHqEag2Fld1WLfW4PXYjSa646zc+x1ABtd6XNLjsU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=NpIiOPLI/8nsHeQhmmwcc6IgmuKb/seG+hgs5nmxnNsIaX8JeS0rW7/fzwPSOK+tO
-	 r2amgOahfzA9gG9tDDHCffVjSjI4XJurNCxyxqxMMn8HoC4A/4vaZy+0t3HJwEkMhk
-	 UPQM/VcK3PFuT/G+6itsuu0V0L2QYzzWmq1GkbafHtDaqcDX15EGC3afepvt0gT8vs
-	 XQ7HXyl/8sXobX5PpbbYtRzrPmeTxag8y0dNwcbI+kQaAz8tstVuE+ppweiFmUdF9K
-	 I0I6fWZu2OVkEsI3UZ0qP0t9ALRFE0y8nbzJfF0D+TvlvcJu4n5zQx1Kstq7h4LE1q
-	 g/MawhybuI/kQ==
-Date: Wed, 6 Mar 2024 19:53:59 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Dragos Tatulea <dtatulea@nvidia.com>
-Cc: "davem@davemloft.net" <davem@davemloft.net>,
- "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
- "dsahern@kernel.org" <dsahern@kernel.org>, "steffen.klassert@secunet.com"
- <steffen.klassert@secunet.com>, "pabeni@redhat.com" <pabeni@redhat.com>,
- "edumazet@google.com" <edumazet@google.com>, "almasrymina@google.com"
- <almasrymina@google.com>, Leon Romanovsky <leonro@nvidia.com>, Gal Pressman
- <gal@nvidia.com>, "Anatoli.Chechelnickiy@m.interpipe.biz"
- <Anatoli.Chechelnickiy@m.interpipe.biz>, "ian.kumlien@gmail.com"
- <ian.kumlien@gmail.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH v2] net: esp: fix bad handling of pages from
- page_pool
-Message-ID: <20240306195359.1afb26d2@kernel.org>
-In-Reply-To: <9ac9ffa9d11907dcb4a300bf4e81545b7acc40d6.camel@nvidia.com>
-References: <20240306190822.390086-1-dtatulea@nvidia.com>
-	<9ac9ffa9d11907dcb4a300bf4e81545b7acc40d6.camel@nvidia.com>
+	s=arc-20240116; t=1709783669; c=relaxed/simple;
+	bh=qNi91CWOqVKhggynDhBOv3fa1Kp5Iq79QEjC8p3C1gI=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=eqmZxNAUA8LGLhx3tibumNrU4AQYmjpIk9gQYPMeSby1ipUIJiMk1WSHPfrphOFTTL3oK7Szy+XUEp6TJk0ofmXfc7KupaavmiyJmOf69JFlL5FrbTy9gvpyr1uD+LUrUgiSbqzj5m7FO/Bqei+W1JpcYNpsAoUPrCQTiGCfRVs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=BKoxBLRk; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1709783664;
+	bh=W0LESQ9VQRAvUyGzI8xRmeOzSdHn7kffUo4AxhmfFoc=;
+	h=Date:From:To:Cc:Subject:From;
+	b=BKoxBLRkHTELq74eBdnFk1eBb0P2eaO7zGQsBs1au3DmKjeNf9Tn2g1w4B6JVc6gz
+	 tEH4Bl15WfY0/nSot3tGdO24oDkkQQfyNTwmb5GGyEyQCZy6zjNGd6XeR7qzxfRkkO
+	 Q6CmmlJ6aDCyA0R9/K5cXLiTrYt9z1qJIj+GMD4Hv5AB5mq14Jhv7XkTXRofYYTz7i
+	 HmkUaaaeeZWwdusREa7YHJvSIrQ8VMCixOe1oK8Oew07HekTTk8wtzJK7jRwio5NHY
+	 6y1OBUa2TktH7Q8F0VvMvpKl1nYmYOlS+UTlbT/7yc/XjRlJhE+65dnIUUVHXes6/G
+	 rZHBXG7Thtz3Q==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TqwR41067z4wb2;
+	Thu,  7 Mar 2024 14:54:23 +1100 (AEDT)
+Date: Thu, 7 Mar 2024 14:54:22 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Anup Patel <anup@brainfault.org>, Arnaldo Carvalho de Melo
+ <arnaldo.melo@gmail.com>, Namhyung Kim <namhyung@kernel.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>, Masahiro Yamada
+ <masahiroy@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>
+Subject: linux-next: manual merge of the kvm-riscv tree with the perf tree
+Message-ID: <20240307145422.0de43782@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/Gx32OxjYXRynYks=V_TAuA_";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+
+--Sig_/Gx32OxjYXRynYks=V_TAuA_
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 6 Mar 2024 19:09:58 +0000 Dragos Tatulea wrote:
-> > Changes in v2:
-> > - Added napi_page_unref api based on discussion in v1 [0].
-> > 
-> > [0]https://lore.kernel.org/netdev/CAHS8izOoO-EovwMwAm9tLYetwikNPxC0FKyVGu1TPJWSz4bGoA@mail.gmail.com/T/#t
-> >   
-> Jakub, are you sure that it is ok to have all this in a single patch?
+Hi all,
 
-Yup.
+Today's linux-next merge of the kvm-riscv tree got a conflict in:
 
-> > ---
-> >  include/linux/skbuff.h | 10 +++++++---
-> >  net/ipv4/esp4.c        | 16 ++++++++++------
-> >  net/ipv6/esp6.c        | 16 ++++++++++------
-> >  3 files changed, 27 insertions(+), 15 deletions(-)
-> > 
-> > diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-> > index 696e7680656f..009603db2a43 100644
-> > --- a/include/linux/skbuff.h
-> > +++ b/include/linux/skbuff.h
-> > @@ -3453,10 +3453,8 @@ int skb_cow_data_for_xdp(struct page_pool *pool, struct sk_buff **pskb,
-> >  bool napi_pp_put_page(struct page *page, bool napi_safe);
-> >  
-> >  static inline void
-> > -napi_frag_unref(skb_frag_t *frag, bool recycle, bool napi_safe)
-> > +napi_page_unref(struct page *page, bool recycle, bool napi_safe)
+  tools/testing/selftests/kvm/Makefile
 
-I'd call it skb_page_unref()
+between commit:
 
-The napi_ prefix will just confuse people, because we don't have to be
-in NAPI context at all when calling this. As long as "napi_safe" is
-correctly set to false.  So let's use skb_ as the prefix.
+  c2bd08ba20a5 ("treewide: remove meaningless assignments in Makefiles")
 
-And I'd pass skb to this, not "bool recycle" so that the caller doesn't
-have to know the weird details..
+from the perf tree and commit:
+
+  2c5af1c84603 ("selftests/kvm: Fix issues with $(SPLIT_TESTS)")
+
+from the kvm-riscv tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc tools/testing/selftests/kvm/Makefile
+index 14684aeb4b55,426f85798aea..000000000000
+--- a/tools/testing/selftests/kvm/Makefile
++++ b/tools/testing/selftests/kvm/Makefile
+@@@ -267,10 -270,13 +270,13 @@@ TEST_GEN_OBJ =3D $(patsubst %, %.o, $(TES
+  TEST_GEN_OBJ +=3D $(patsubst %, %.o, $(TEST_GEN_PROGS_EXTENDED))
+  TEST_DEP_FILES =3D $(patsubst %.o, %.d, $(TEST_GEN_OBJ))
+  TEST_DEP_FILES +=3D $(patsubst %.o, %.d, $(LIBKVM_OBJS))
+- TEST_DEP_FILES +=3D $(patsubst %.o, %.d, $(SPLIT_TESTS_OBJS))
++ TEST_DEP_FILES +=3D $(patsubst %.o, %.d, $(SPLIT_TEST_GEN_OBJ))
+  -include $(TEST_DEP_FILES)
+ =20
+- $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED): %: %.o
+ -x :=3D $(shell mkdir -p $(sort $(OUTPUT)/$(ARCH_DIR) $(dir $(LIBKVM_C_OBJ=
+) $(LIBKVM_S_OBJ))))
+++$(shell mkdir -p $(sort $(OUTPUT)/$(ARCH_DIR) $(dir $(LIBKVM_C_OBJ) $(LIB=
+KVM_S_OBJ))))
++=20
++ $(filter-out $(SPLIT_TEST_GEN_PROGS), $(TEST_GEN_PROGS)) \
++ $(TEST_GEN_PROGS_EXTENDED): %: %.o
+  	$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(TARGET_ARCH) $< $(LIBKVM_OBJS) =
+$(LDLIBS) -o $@
+  $(TEST_GEN_OBJ): $(OUTPUT)/%.o: %.c
+  	$(CC) $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c $< -o $@
+@@@ -298,8 -305,8 +305,8 @@@ $(LIBKVM_S_OBJ): $(OUTPUT)/%.o: %.S $(G
+  $(LIBKVM_STRING_OBJ): $(OUTPUT)/%.o: %.c
+  	$(CC) $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c -ffreestanding $< -o $@
+ =20
+ -x :=3D $(shell mkdir -p $(sort $(dir $(TEST_GEN_PROGS))))
+ +$(shell mkdir -p $(sort $(dir $(TEST_GEN_PROGS))))
+- $(SPLIT_TESTS_OBJS): $(GEN_HDRS)
++ $(SPLIT_TEST_GEN_OBJ): $(GEN_HDRS)
+  $(TEST_GEN_PROGS): $(LIBKVM_OBJS)
+  $(TEST_GEN_PROGS_EXTENDED): $(LIBKVM_OBJS)
+  $(TEST_GEN_OBJ): $(GEN_HDRS)
+
+--Sig_/Gx32OxjYXRynYks=V_TAuA_
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXpOm4ACgkQAVBC80lX
+0GxEbwf+KsrAfopZtcpVF/CpQQPrYkgw/+fsv10bCa21klhtPpJRDhWMpcAtIFEt
+auCGzr5NGjFVgCCub4QdkaJErQNlDJpRjnUlH9279D8+ua4BJ1h5A8NeJCcXNYr1
+lv1/wUzmKpX6RHhgQhWge/H+D8EImyShZ+ik1Uh9K8MpWitoeB4W4GfC7QDV0sw8
+ulp08rcdjt9szraibkzbNLTvQTaTJh3aqyM4NdvxuZNKdWTmNx0K2m7n8/bU27An
+q/pF/0PhwJ5rOiYzuAlZivwhp1iZEkiogqeELWkV3f/kWAJy8YqCwpWS8ScrK+fl
+niQ9iJLaJNkwnTLPUIa4tSgub0p+6A==
+=Ij9J
+-----END PGP SIGNATURE-----
+
+--Sig_/Gx32OxjYXRynYks=V_TAuA_--
 
