@@ -1,151 +1,287 @@
-Return-Path: <linux-kernel+bounces-95799-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95800-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F7E98752BF
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 16:09:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9521F8752CA
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 16:11:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B42A11F27F4F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:09:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 471FC286077
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:11:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 296DE12EBCF;
-	Thu,  7 Mar 2024 15:09:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05C8512EBE0;
+	Thu,  7 Mar 2024 15:11:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="cH3cDvDb"
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="N8F91ScA"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BFB712D775;
-	Thu,  7 Mar 2024 15:09:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1305112AAE3;
+	Thu,  7 Mar 2024 15:11:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709824189; cv=none; b=UWKu6j9IUMk5VfAznU3XRW7YgEl6Yg/KsAx4avXI/MP3lFVtllVeX37GznpZNmvPJalV3aiHgtiNhxks3KHRCxwbnqOS8xiztqud7WAc6LBsSPHOXhSWnJA/Xh2ldh/lI6Rf/69AttoyZZ2PZaRTXznytki+TUy5nMZi7xDLOlU=
+	t=1709824295; cv=none; b=TYbSxrMLhB2F2EEzQH+cP2tm6pczQQhrBdsebn+RCmia8TfyH+D7CckMGXHnrYIRUvTcLDR1BX/WTfYxCIqn1vdbKp9+AoLRtJQZlqrieZJRAkAGGUyitoaJRtUlL5S0Mm9VwB2wKL5lJ+HecHYxFtO0jHCB00wdAj/ZAeiQDDw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709824189; c=relaxed/simple;
-	bh=TOUq4+BzvbJ03xI0Ru4on6BK0VEShUhAYEA+2ftljxA=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JL+qxiTpjmpZ5109m0bG3sOloGnF+wzV0VOrFwj3ptlvtnz7M41BtF4n9zbrCOXPv2VpmLEi9a3O0Iry+t0z3Y4RsnD7WJ3Y4BcMJYrkEO1biM0Ttr9iaXSlU+zex6te/PNhIBfxniWvsmMrGeESEG6v2BJaO9HMNsXPF/rRgCc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=cH3cDvDb; arc=none smtp.client-ip=217.70.183.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 517A640006;
-	Thu,  7 Mar 2024 15:09:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709824184;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=P2YO5EELAYFm2yHbvmttaH3RlP1nT/5fz22vnvi4dvY=;
-	b=cH3cDvDbgBL0NwR+c5yiG07kGF1VG+NjMPxfv/14+x0dhsSeDGuEwKCeaNb6jdZFkyzY+D
-	La574Nc459V7/R01jXDg65BqvQHSmDykxG1XN8qBEbR7CVyi5obOAsTVQOKGfwbfehbPte
-	Mh0Rc0OW1+VPfm1pV4+gARrMcjXqI+AHkuJweh3vf/IXXHCsEAYopHtavTyWsjxj5Ymp3B
-	qjyrtvBI56L6eAKynWEsBr24gr7YfyTIj8DST6C37GKAqfAlQlB+BAjVOshLXP7/h/36ne
-	9dU5FIm9TCbBW0wYH2ekS1iqQOxe1zEUZ5Iak1MgQMMU5guelZJgniKPbafseA==
-Date: Thu, 7 Mar 2024 16:09:40 +0100
-From: Herve Codina <herve.codina@bootlin.com>
-To: Rob Herring <robh@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, Will Deacon <will@kernel.org>,
- Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
- patches@lists.linux.dev, linux-um@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, kunit-dev@googlegroups.com,
- linux-kselftest@vger.kernel.org, devicetree@vger.kernel.org, Frank Rowand
- <frowand.list@gmail.com>, Catalin Marinas <catalin.marinas@arm.com>, Thomas
- Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v4 5/7] arm64: Unconditionally call
- unflatten_device_tree()
-Message-ID: <20240307160940.6484ef8d@bootlin.com>
-In-Reply-To: <20240228162647.GA4086865-robh@kernel.org>
-References: <20240217010557.2381548-1-sboyd@kernel.org>
- <20240217010557.2381548-6-sboyd@kernel.org>
- <20240223000317.GA3835346-robh@kernel.org>
- <20240223102345.GA10274@willie-the-truck>
- <CAL_JsqJSeSHeWV3YJE9n2NuY+s_iE6f7N5C_oguEJn7jTZ20xA@mail.gmail.com>
- <Zd4dQpHO7em1ji67@FVFF77S0Q05N.cambridge.arm.com>
- <20240228162647.GA4086865-robh@kernel.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
+	s=arc-20240116; t=1709824295; c=relaxed/simple;
+	bh=K6fryOPMFIxmuaNoiVubm4IGiZHmoG1NifVuB3JMmbg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=R5lBgF5gQrdwspB6ztToGitzt8TcEDWlBC2J5cgql77ESph+2xrK4A80OVjTN0kqU0Na2od0q+cyaQZeeI15p9KV5y06t6sUfDizROweog+NjIESgHWK+LNFOkuyW+3o//H8eftu0v+sXUSRhgVpa8q0DvqhDlGim1BKq11C8lI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=N8F91ScA; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 427F1LYx008788;
+	Thu, 7 Mar 2024 15:11:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=euuEeJjXnpV9EfcF+g1Rid2F4dUJ5mf3sXTllA3YfJM=;
+ b=N8F91ScAgemvne6GJtQshOw6+R2JgJWh3z0GkteecEFB9sChgGvo0j52KwvDHSJpEphV
+ aG6RZI1ECJFiX4rD4yj2HZPTdMRGfh59xKzrW5oSqyNHENRYPOvdYVBUgsyDFLbyztA8
+ ky+qM0+bK4Z8c/ZdM6eC8+Xjq0S1jQmbaX1HNaQzPRmD+RQdEpwsRKxA/ptaN70abkg/
+ vXLZ4b8jmSexz6u7dsUGbKGKWmzwNdgjLgl61cOfS1TfBR/Pk9j16SoDOG0Sx45SWaK6
+ jbuV7w9l4MA7CZVNHjHb3HfU1uF86ndBaAEvDeCl6plST/5c/EtMC6YEXNPfTiUvXrXZ ew== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wqfup0gp6-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 07 Mar 2024 15:11:10 +0000
+Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 427F1R5p009217;
+	Thu, 7 Mar 2024 15:11:10 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wqfup0gnh-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 07 Mar 2024 15:11:09 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 427CDSnw031575;
+	Thu, 7 Mar 2024 15:11:09 GMT
+Received: from smtprelay01.wdc07v.mail.ibm.com ([172.16.1.68])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wmgnkdysy-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 07 Mar 2024 15:11:09 +0000
+Received: from smtpav02.wdc07v.mail.ibm.com (smtpav02.wdc07v.mail.ibm.com [10.39.53.229])
+	by smtprelay01.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 427FB52b17891964
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 7 Mar 2024 15:11:07 GMT
+Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 8B16B58067;
+	Thu,  7 Mar 2024 15:11:05 +0000 (GMT)
+Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 415055806C;
+	Thu,  7 Mar 2024 15:11:04 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+	by smtpav02.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Thu,  7 Mar 2024 15:11:04 +0000 (GMT)
+Message-ID: <768fc5f1-3919-477e-a8e6-16a7e8536add@linux.ibm.com>
+Date: Thu, 7 Mar 2024 10:11:03 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] powerpc/prom_init: Replace linux,sml-base/sml-size
+ with linux,sml-log
+Content-Language: en-US
+To: Michael Ellerman <mpe@ellerman.id.au>, linux-integrity@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, conor.dooley@microchip.com,
+        nayna@linux.ibm.com, Lukas Wunner <lukas@wunner.de>
+Cc: linux-kernel@vger.kernel.org, jarkko@kernel.org, rnsastry@linux.ibm.com,
+        peterhuewe@gmx.de, viparash@in.ibm.com
+References: <20240306155511.974517-1-stefanb@linux.ibm.com>
+ <20240306155511.974517-2-stefanb@linux.ibm.com> <87jzmenx2c.fsf@mail.lhotse>
+From: Stefan Berger <stefanb@linux.ibm.com>
+In-Reply-To: <87jzmenx2c.fsf@mail.lhotse>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: WG70hV3g-X3LsEer3ntyisB7PM9L6BHp
+X-Proofpoint-GUID: SN9INhSckFwDHrQ84Ri7zLvgWPujb7qZ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-07_08,2024-03-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
+ lowpriorityscore=0 malwarescore=0 adultscore=0 suspectscore=0 bulkscore=0
+ mlxlogscore=999 phishscore=0 mlxscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2403070087
 
-Hi,
 
-On Wed, 28 Feb 2024 10:26:47 -0600
-Rob Herring <robh@kernel.org> wrote:
 
-..
-> > > 
-> > > Yes, that version unflattened the bootloader passed DT. Now within
-> > > unflatten_devicetree(), the bootloader DT is ignored if ACPI is
-> > > enabled and we unflatten an empty tree. That will prevent the kernel
-> > > getting 2 h/w descriptions if/when a platform does such a thing. Also,
-> > > kexec still uses the bootloader provided DT as before.  
-> > 
-> > That avoids the main instance of my concern, and means that this'll boot
-> > without issue, but IIUC this opens the door to dynamically instantiating DT
-> > devices atop an ACPI base system, which I think in general is something that's
-> > liable to cause more problems than it solves.
-> > 
-> > I understand that's desireable for the selftests, though I still don't believe
-> > it's strictly necessary -- there are plenty of other things that only work if
-> > the kernel is booted in a specific configuration.  
+On 3/7/24 05:41, Michael Ellerman wrote:
+> Stefan Berger <stefanb@linux.ibm.com> writes:
+>> linux,sml-base holds the address of a buffer with the TPM log. This
+>> buffer may become invalid after a kexec and therefore embed the whole TPM
+>> log in linux,sml-log. This helps to protect the log since it is properly
+>> carried across a kexec with both of the kexec syscalls.
+>>
+>> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+>> ---
+>>   arch/powerpc/kernel/prom_init.c | 8 ++------
+>>   1 file changed, 2 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/arch/powerpc/kernel/prom_init.c b/arch/powerpc/kernel/prom_init.c
+>> index e67effdba85c..41268c30de4c 100644
+>> --- a/arch/powerpc/kernel/prom_init.c
+>> +++ b/arch/powerpc/kernel/prom_init.c
+>> @@ -1956,12 +1956,8 @@ static void __init prom_instantiate_sml(void)
+>>   
+>>   	reserve_mem(base, size);
+>>   
+>> -	prom_setprop(ibmvtpm_node, "/vdevice/vtpm", "linux,sml-base",
+>> -		     &base, sizeof(base));
+>> -	prom_setprop(ibmvtpm_node, "/vdevice/vtpm", "linux,sml-size",
+>> -		     &size, sizeof(size));
+>> -
+>> -	prom_debug("sml base     = 0x%llx\n", base);
+>> +	prom_setprop(ibmvtpm_node, "/vdevice/vtpm", "linux,sml-log",
+>> +		     (void *)base, size);
 > 
-> Why add to the test matrix if we don't have to?
+> As we discussed via chat, doing it this way sucks the full content of
+> the log back into Open Firmware.
 > 
-> > Putting the selftests aside, why do we need to do this? Is there any other
-> > reason to enable this?  
+> That relies on OF handling such big properties, and also means more
+> memory will be consumed, which can cause problems early in boot.
 > 
-> See my Plumbers talk...
+> A better solution is to explicitly add the log to the FDT in the
+> flattening phase.
+
+Done.
+
 > 
-> Or in short, there's 3 main usecases:
+> Also adding the new linux,sml-log property should be accompanied by a
+> change to the device tree binding.
+
+
+See my proposal below.
+
 > 
-> - PCI FPGA card with devices instantiated in it 
-> - SoCs which expose their peripherals via a PCI endpoint.
-> - Injecting test devices with QEMU (testing, but not what this series 
->   does. Jonathan Cameron's usecase)
+> The syntax is not very obvious to me, but possibly something like?
 > 
-> In all cases, drivers already exist for the devices, and they often only 
-> support DT. DT overlays is the natural solution for this, and there's 
-> now kernel support for it (dynamically generating PCI DT nodes when they 
-> don't exist). The intent is to do the same thing on ACPI systems.
+> diff --git a/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml b/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml
+> index 50a3fd31241c..cd75037948bc 100644
+> --- a/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml
+> +++ b/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml
+> @@ -74,8 +74,6 @@ required:
+>     - ibm,my-dma-window
+>     - ibm,my-drc-index
+>     - ibm,loc-code
+> -  - linux,sml-base
+> -  - linux,sml-size
+>   
+>   allOf:
+>     - $ref: tpm-common.yaml#
+> diff --git a/Documentation/devicetree/bindings/tpm/tpm-common.yaml b/Documentation/devicetree/bindings/tpm/tpm-common.yaml
+> index 3c1241b2a43f..616604707c95 100644
+> --- a/Documentation/devicetree/bindings/tpm/tpm-common.yaml
+> +++ b/Documentation/devicetree/bindings/tpm/tpm-common.yaml
+> @@ -25,6 +25,11 @@ properties:
+>         base address of reserved memory allocated for firmware event log
+>       $ref: /schemas/types.yaml#/definitions/uint64
+>   
+> +  linux,sml-log:
+> +    description:
+> +      Content of firmware event log
+> +    $ref: /schemas/types.yaml#/definitions/uint8-array
+> +
+>     linux,sml-size:
+>       description:
+>         size of reserved memory allocated for firmware event log
+> @@ -53,15 +58,22 @@ dependentRequired:
+>     linux,sml-base: ['linux,sml-size']
+>     linux,sml-size: ['linux,sml-base']
+>   
+> -# must only have either memory-region or linux,sml-base
+> +# must only have either memory-region or linux,sml-base/size or linux,sml-log
+>   # as well as either resets or reset-gpios
+>   dependentSchemas:
+>     memory-region:
+>       properties:
+>         linux,sml-base: false
+> +      linux,sml-log: false
+>     linux,sml-base:
+>       properties:
+>         memory-region: false
+> +      linux,sml-log: false
+> +  linux,sml-log:
+> +    properties:
+> +      memory-region: false
+> +      linux,sml-base: false
+> +      linux,sml-size: false
+>     resets:
+>       properties:
+>         reset-gpios: false
 > 
-> I don't see another solution other than 'go away, you're crazy'. There's 
-> ACPI overlays, but that's only a debug feature. Also, that would 
-> encourage more of the DT bindings in ACPI which I find worse than this 
-> mixture. There's swnodes, but that's just board files and platform_data 
-> 2.0.
-> 
-> I share the concerns with mixing, but I don't see a better solution. The 
-> scope of what's possible is contained enough to avoid issues.
 > 
 
-I tested on a x86 system.
-My use case is 'SoCs which expose their peripherals via a PCI endpoint'
-described by Rob.
-Indeed, I have a Microchip Lan9662 board (the one mentioned by Rob in his
-Plumbers talk) and the root DT node creation is obviously needed.
+I have been working with this patch here now and it passes the following 
+test:
 
-I have previously used Frank Rowan's patches [1] that did this DT root node
-creation. This series perfectly replace them and the root DT node is successfully
-created.
+make dt_binding_check dtbs_check DT_SCHEMA_FILES=tpm/ibm,vtpm.yaml
 
-Tested-by: Herve Codina <herve.codina@bootlin.com>
 
-[1]: https://lore.kernel.org/all/20230317053415.2254616-1-frowand.list@gmail.com/
+diff --git a/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml 
+b/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml
+index 50a3fd31241c..cacf6c3082de 100644
+--- a/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml
++++ b/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml
+@@ -74,8 +74,12 @@ required:
+    - ibm,my-dma-window
+    - ibm,my-drc-index
+    - ibm,loc-code
+-  - linux,sml-base
+-  - linux,sml-size
++oneOf:
++  - required:
++      - linux,sml-base
++      - linux,sml-size
++  - required:
++      - linux,sml-log
 
-Best regards,
-Hervé Codina
--- 
-Hervé Codina, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+  allOf:
+    - $ref: tpm-common.yaml#
+@@ -102,3 +106,21 @@ examples:
+              linux,sml-size = <0xbce10200>;
+          };
+      };
++  - |
++    soc {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        tpm@30000003 {
++            compatible = "IBM,vtpm";
++            device_type = "IBM,vtpm";
++            reg = <0x30000003>;
++            interrupts = <0xa0003 0x0>;
++            ibm,#dma-address-cells = <0x2>;
++            ibm,#dma-size-cells = <0x2>;
++            ibm,my-dma-window = <0x10000003 0x0 0x0 0x0 0x10000000>;
++            ibm,my-drc-index = <0x30000003>;
++            ibm,loc-code = "U8286.41A.10082DV-V3-C3";
++            linux,sml-log = <00 00 00 00 03 00 00>;
++        };
++    };
+diff --git a/Documentation/devicetree/bindings/tpm/tpm-common.yaml 
+b/Documentation/devicetree/bindings/tpm/tpm-common.yaml
+index 3c1241b2a43f..591c48f8cb74 100644
+--- a/Documentation/devicetree/bindings/tpm/tpm-common.yaml
++++ b/Documentation/devicetree/bindings/tpm/tpm-common.yaml
+@@ -30,6 +30,11 @@ properties:
+        size of reserved memory allocated for firmware event log
+      $ref: /schemas/types.yaml#/definitions/uint32
+
++  linux,sml-log:
++    description:
++      firmware event log
++    $ref: /schemas/types.yaml#/definitions/uint8-array
++
+    memory-region:
+      description: reserved memory allocated for firmware event log
+      maxItems: 1
+
+
+Is my patch missing something?
 
