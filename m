@@ -1,189 +1,224 @@
-Return-Path: <linux-kernel+bounces-94777-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94778-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41BA687451D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 01:23:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D519C874521
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 01:26:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D11A91F25E5E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 00:23:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 363B61F262DB
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 00:26:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6314C800;
-	Thu,  7 Mar 2024 00:23:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E20E139F;
+	Thu,  7 Mar 2024 00:26:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CGCNzgAp"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZMtfdC34"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4D7137E
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 00:23:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3557237E;
+	Thu,  7 Mar 2024 00:26:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709771016; cv=none; b=U+9BQXjIa5EWosJBhrpGDV3ESbOZtRp8J84D+6rxcSBaV0BFgcl9oKuouUj+vOcLWSoMWLIiwTCCQammyoCUHJFwyK/Nl6/idBFtIJTckiVT+enQYHHzdLsPj3oU7f7kH5CW01bRupvz9zMO8iKHA5ZWIFa9BRLzkct/9SSklmY=
+	t=1709771174; cv=none; b=mp4GatTzOLZPwslKIS6ppZSDtAhIkmYXUCBq49xT0CKsHNFHshtI11I1oTlebNTHdsJ6rKzWUYbLK867JyomGXIkUlBt+ACPPmX3StA0CpwqyORd+ulQp9uIm/qEkTqx8mp5kx5H3HMxEF2XKrKEUOo4FPv9+D0yquaHds7sxM4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709771016; c=relaxed/simple;
-	bh=Jy+xLG47s7rT+wQG0iu82UhoDeP2Mj1X5KLh74r33BA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AnXKHnPKcfCnE900+CUDvdIbAQRUKioG71Ql/486NRCXpMIU7YQuTmTWpnuEGly0GxqFmJaGxLxYOzmtGV77BOKlOZt0WfnEqZ3XQRv0gn3hGBcvFPT2RGv+lj3ZuMIxC2z6QuotzOqdAZx+aOAi00WsL7tOYF7TXPrJ5avhfqE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CGCNzgAp; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709771013;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OCES2kaXYWvEX1DXjcfkz3runp0pMNuB+6tHKRWiSvE=;
-	b=CGCNzgApJyZ1Vudx09akenBdY+NvprT7dV4tCSHq16zBlw/guLjUqQWp2vBxIytDmMhsHW
-	F2m6YGpvKTEwU/ImdV6YT/DOUrIT4v7bPzBfuRc1XBx9t8YDGkdwSgHJKOIvk1lnotlUQa
-	vxFWc9BSNzz4RW93+AFjIh5MDuWS3SY=
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
- [209.85.215.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-160-Mp-GgcAhOSuFVKnY21RzLA-1; Wed, 06 Mar 2024 19:23:32 -0500
-X-MC-Unique: Mp-GgcAhOSuFVKnY21RzLA-1
-Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-5c683944ab0so83770a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 16:23:31 -0800 (PST)
+	s=arc-20240116; t=1709771174; c=relaxed/simple;
+	bh=YCJ6CH0a0t3D5gSjseqFCfEhtvti/5UHRPkBNg5lPv4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=c+xNcs4b1m0c1tNeksn/ohAzt40qdcabNUhJrUKNVHr+2iS4WiIWzRQt0VKEHZ1T+pzDsKhLD+DZwmMKCq6rsP+KGb0Jxyk4/Ufmk7IVLYAGePqxygg1KjKqZdovBd7cZ5jn8rljHLNHC4mkhLNiqeRkYwDLKS9cqYPgbsusUR8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZMtfdC34; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-55a179f5fa1so499907a12.0;
+        Wed, 06 Mar 2024 16:26:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709771169; x=1710375969; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UKT1zaj6Eh3egPuYJiO+FIUKO65/GhPQVGH+8wAM2JE=;
+        b=ZMtfdC34g6LGUrifmd/wpmi07eskngIJ9SrQe7kkEEQKiZyTYJxcnjgUMNKPSmEkTm
+         /9MTfKEnMvnjqrCFjDsdpiRNau/ivFb8+pAZYrIPcdWT184sNKn7XYdTfpWpmvLIT+gH
+         j8AKhlQzORFMgF2ypEOjAMSiLvQIpHMoc+BLH4vVVgiXL+WTAfxVFlH/V5k5oqERv/gv
+         0s+JtOWsmeHQS75D+FEk1xBeImft41owv1zPzl81PF1XDGGcWQag9SH3k2GuDg7BYSix
+         AUV6VkeW5Kg3bBIcv9LPwKTH32tsp3gmHtSC4KNAqHsauH9HXoi+kWB11F1ReqoTTbDa
+         40FQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709771011; x=1710375811;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OCES2kaXYWvEX1DXjcfkz3runp0pMNuB+6tHKRWiSvE=;
-        b=bEi/FwJLEieBDhI5oNjiHxdHvEVAxnir0Vpk6Kok2NXubBrivWsqv38sX0vh5co34H
-         i15aZGdU5SNCcJbnYdR+7sqg99mBNE/HzmvzprCwGj2AyGY+RlIf3sH5ucXCFGB8TAdL
-         uJFNUMjxk94ntSjYIdPM8Ubp60F4J4qQzQN7K4GwwtfHDte3pGRrS5LMK6FkfYyjN6g4
-         caOpZSAlbgNC9dl1COEn/76BL7howt8VfU4yF/5vKF6o1V5NxmhDeP46nkD3cqVQm4aK
-         jIaEyi7A3Hcz2Soo18XKAS7f6w+VHLN+ZihuckoTzUXn0BxMBBwm7J+grKUfgK0RjNjP
-         NzJw==
-X-Forwarded-Encrypted: i=1; AJvYcCUZIyndU+vsNn7DYClWqfd6wP42DiQZD7BoDd1n5hV/f4/kl+K57p4ueupMeXXCYdRZCnLvk3XKJMBUXHzNHgoGIEah1pKlvWEhYyVT
-X-Gm-Message-State: AOJu0YyjoOKQvNKv+L4xRpoaGQKZEpwXWGMJAgSWaxPrjpHJbvnOGeHd
-	zd6XDNCf2q1B9Bf/J/zMwwxzxrkB7gTI4njcFuPCsbQ+t+POp2d9e5d/+L5WS6bjUMKsMoVyR99
-	F+ClSs578zy7tOEeJll9kYwQnv7B9I9DS3wT79NxIu6wVjBPnkFZcwj2JdWiaHg==
-X-Received: by 2002:a05:6a00:178e:b0:6e6:5574:17fe with SMTP id s14-20020a056a00178e00b006e6557417femr715257pfg.2.1709771010963;
-        Wed, 06 Mar 2024 16:23:30 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IE29oJb8+FlW3bA6qi0i5kybdj0/VJbREt+Tai6bog6Vub1H9UY05blOcWw9vPqOf2NBpHyeQ==
-X-Received: by 2002:a05:6a00:178e:b0:6e6:5574:17fe with SMTP id s14-20020a056a00178e00b006e6557417femr715237pfg.2.1709771010542;
-        Wed, 06 Mar 2024 16:23:30 -0800 (PST)
-Received: from x1n ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id j1-20020a62b601000000b006e64370ace9sm3065918pff.195.2024.03.06.16.23.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Mar 2024 16:23:30 -0800 (PST)
-Date: Thu, 7 Mar 2024 08:23:23 +0800
-From: Peter Xu <peterx@redhat.com>
-To: James Houghton <jthoughton@google.com>
-Cc: Axel Rasmussen <axelrasmussen@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: Add an explicit smp_wmb() to UFFDIO_CONTINUE
-Message-ID: <ZekI-xKsAje9hvS6@x1n>
-References: <20240306001511.932348-1-jthoughton@google.com>
- <Zefl5mJ32IxxYtaF@x1n>
- <CADrL8HWaeEwoUov9y0weGCTNPffN4nbURDetF_+s2bF+MttKsw@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1709771169; x=1710375969;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UKT1zaj6Eh3egPuYJiO+FIUKO65/GhPQVGH+8wAM2JE=;
+        b=KeTm108HrNeJ4xm7RVzMNplrxm6c3NjDt+64R4YG3dwoSToG+Tfih9/rrk+ZyNOUbJ
+         xv3OUif2/qCVABhUM6fsRqX/XAZryhJEWoRveFqvodCONOhDFQ/f9HZ5iI2FSQO21nNV
+         rK9bSJYSDWS77urn4DMm2J+ZDqFwCTF0W2bfv+sbcFX7R0IkZ2YnzELW0bnwtCaVmaO1
+         0wUT16HvUfgbvT/L60zckiFYqvLDryYek5ESrg2uI6w1/6r5P8q7Z0wGGcwieqKuwhfM
+         ejSE4jcHYB66r8mtWSw7NGaU944quxq6V7XUUnVkr9e04mAgl0qfqDQt8qbXR0w9Yg1z
+         TQfg==
+X-Forwarded-Encrypted: i=1; AJvYcCUQESg2xHmcJ9h5MpgAFDCadhbD+t1ugIERYgxcxHIQQ/5aST/QxenaB+mSvegA3NzZyCgdUK4EIY8qQ9Gu7O9RdG1HVwP3mJx/EW/RA+AB8XKHShdbZ/xkA9UHexPyNY3I45nkn0vYZhmdu5arNXYbstghe+guPUArnI5jjfHp
+X-Gm-Message-State: AOJu0YycSj18i8JLt+AO1m8/UwgEJQjV0rw+s5juN57cpxScRpwVdtar
+	e/pdnBveV/DqHB4WsF0a7rCkbKm3Cr26mB7KNzi2wkx5tBFN03L37vEmtWHo0+oiI/Cm5ecZvpB
+	9/LPWLtepMDeQQzSU4HgJnRkHKp4=
+X-Google-Smtp-Source: AGHT+IHSUuxOAd3FCTfADD0/0f8LI7wH0+oIlX2v8zLpdcMnw4cZbhCbYDbjbWu8kso/7/knQvSx/7EbcxT07EIffnI=
+X-Received: by 2002:a05:6402:40cc:b0:567:1458:caa with SMTP id
+ z12-20020a05640240cc00b0056714580caamr9536026edb.40.1709771169248; Wed, 06
+ Mar 2024 16:26:09 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CADrL8HWaeEwoUov9y0weGCTNPffN4nbURDetF_+s2bF+MttKsw@mail.gmail.com>
+References: <20240301185855.944405-1-thepacketgeek@gmail.com> <8a3ccdc5445d0cfda36418dd50746f13f447bdaa.camel@redhat.com>
+In-Reply-To: <8a3ccdc5445d0cfda36418dd50746f13f447bdaa.camel@redhat.com>
+From: Matthew Wood <thepacketgeek@gmail.com>
+Date: Wed, 6 Mar 2024 16:25:58 -0800
+Message-ID: <CADvopvYwZWsCtx6Vg42VHczexmX=0n5ZN99QAX3S=1aKzMAAWA@mail.gmail.com>
+Subject: Re: [PATCH net-next v3] net: netconsole: Add continuation line prefix
+ to userdata messages
+To: Paolo Abeni <pabeni@redhat.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Breno Leitao <leitao@debian.org>, 
+	netdev@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 06, 2024 at 09:57:17AM -0800, James Houghton wrote:
-> On Tue, Mar 5, 2024 at 7:41 PM Peter Xu <peterx@redhat.com> wrote:
+On Tue, Mar 5, 2024 at 4:14=E2=80=AFAM Paolo Abeni <pabeni@redhat.com> wrot=
+e:
+>
+> On Fri, 2024-03-01 at 10:58 -0800, Matthew Wood wrote:
+> > Add a space (' ') prefix to every userdata line to match docs for
+> > dev-kmsg. To account for this extra character in each userdata entry,
+> > reduce userdata entry names (directory name) from 54 characters to 53.
 > >
-> > On Wed, Mar 06, 2024 at 12:15:10AM +0000, James Houghton wrote:
-> > > I've tried to see if I can legitimately get a user to read stale data,
-> > > and a few attempts with this test[2] have been unsuccessful.
+> > According to the dev-kmsg docs, a space is used for subsequent lines to
+> > mark them as continuation lines.
 > >
-> > AFAICT that won't easily reproduce even if the problem existed, as we
-> > contain so many implict memory barriers here and there.  E.g. right at the
-> > entry of ioctl(), mmget_not_zero() already contains a full ordering
-> > constraint:
+> > > A line starting with ' ', is a continuation line, adding
+> > > key/value pairs to the log message, which provide the machine
+> > > readable context of the message, for reliable processing in
+> > > userspace.
 > >
-> > /**
-> >  * atomic_inc_not_zero() - atomic increment unless zero with full ordering
-> >  * @v: pointer to atomic_t
-> 
-> Oh yes, of course. Thanks for pointing this out. So we definitely
-> don't need a Fixes.
-> 
+> > Testing for this patch::
 > >
-> > I was expecting the syscall routine will guarantee an ordering already but
-> > indeed I can't find any.  I also checked up Intel's spec and SYSCALL inst
-> > document only has one paragraph on ordering:
+> >  cd /sys/kernel/config/netconsole && mkdir cmdline0
+> >  cd cmdline0
+> >  mkdir userdata/test && echo "hello" > userdata/test/value
+> >  mkdir userdata/test2 && echo "hello2" > userdata/test2/value
+> >  echo "message" > /dev/kmsg
 > >
-> >         Instruction ordering. Instructions following a SYSCALL may be
-> >         fetched from memory before earlier instructions complete execution,
-> >         but they will not execute (even speculatively) until all
-> >         instructions prior to the SYSCALL have completed execution (the
-> >         later instructions may execute before data stored by the earlier
-> >         instructions have become globally visible).
+> > Outputs::
 > >
-> > I guess it implies a hardware reordering is indeed possible in this case?
-> 
-> That's my understanding as well.
+> >  6.8.0-rc5-virtme,12,493,231373579,-;message
+> >   test=3Dhello
+> >   test2=3Dhello2
+> >
+> > And I confirmed all testing works as expected from the original patchse=
+t
+> >
+> > Fixes: df03f830d099 ("net: netconsole: cache userdata formatted string =
+in netconsole_target")
+> > Reviewed-by: Breno Leitao <leitao@debian.org>
+>
+> I guess the tag arrived off-list, because I can't see any sign of it on
+> the ML?!?
+>
+> > Signed-off-by: Matthew Wood <thepacketgeek@gmail.com>
+> > ---
+> >
+> > v1 -> v2:
+> > - Calculate 53 byte user data name from: entry length - formatting char=
+s - value length
+> > - Update docs to reflect 53 byte limit for user data name (director)
+> > v2 -> v3:
+> > - Added #define for userdata formatting character length (3)
+> > - Matched all #defines indent level
+> >
+> >  Documentation/networking/netconsole.rst |  8 ++++----
+> >  drivers/net/netconsole.c                | 14 +++++++++-----
+> >  2 files changed, 13 insertions(+), 9 deletions(-)
+> >
+> > diff --git a/Documentation/networking/netconsole.rst b/Documentation/ne=
+tworking/netconsole.rst
+> > index b28c525e5d1e..d55c2a22ec7a 100644
+> > --- a/Documentation/networking/netconsole.rst
+> > +++ b/Documentation/networking/netconsole.rst
+> > @@ -180,7 +180,7 @@ Custom user data can be appended to the end of mess=
+ages with netconsole
+> >  dynamic configuration enabled. User data entries can be modified witho=
+ut
+> >  changing the "enabled" attribute of a target.
+> >
+> > -Directories (keys) under `userdata` are limited to 54 character length=
+, and
+> > +Directories (keys) under `userdata` are limited to 53 character length=
+, and
+> >  data in `userdata/<key>/value` are limited to 200 bytes::
+> >
+> >   cd /sys/kernel/config/netconsole && mkdir cmdline0
+> > @@ -197,8 +197,8 @@ Messages will now include this additional user data=
+::
+> >  Sends::
+> >
+> >   12,607,22085407756,-;This is a message
+> > - foo=3Dbar
+> > - qux=3Dbaz
+> > +  foo=3Dbar
+> > +  qux=3Dbaz
+> >
+> >  Preview the userdata that will be appended with::
+> >
+> > @@ -218,7 +218,7 @@ The `qux` key is omitted since it has no value::
+> >
+> >   echo "This is a message" > /dev/kmsg
+> >   12,607,22085407756,-;This is a message
+> > - foo=3Dbar
+> > +  foo=3Dbar
+> >
+> >  Delete `userdata` entries with `rmdir`::
+> >
+> > diff --git a/drivers/net/netconsole.c b/drivers/net/netconsole.c
+> > index 0de108a1c0c8..8cc28aec59c8 100644
+> > --- a/drivers/net/netconsole.c
+> > +++ b/drivers/net/netconsole.c
+> > @@ -42,12 +42,16 @@ MODULE_AUTHOR("Maintainer: Matt Mackall <mpm@seleni=
+c.com>");
+> >  MODULE_DESCRIPTION("Console driver for network interfaces");
+> >  MODULE_LICENSE("GPL");
+> >
+> > -#define MAX_PARAM_LENGTH     256
+> > -#define MAX_USERDATA_NAME_LENGTH     54
+> > -#define MAX_USERDATA_VALUE_LENGTH    200
+> > +#define MAX_PARAM_LENGTH             256
+> > +/* characters used for formatting each userdata entry line (' ', '=3D'=
+, '\n') */
+> > +#define USERDATA_FORMAT_CHARS                3
+> >  #define MAX_USERDATA_ENTRY_LENGTH    256
+> > +#define MAX_USERDATA_VALUE_LENGTH    200
+> > +#define MAX_USERDATA_NAME_LENGTH     MAX_USERDATA_ENTRY_LENGTH - \
+> > +                                     MAX_USERDATA_VALUE_LENGTH - \
+> > +                                     USERDATA_FORMAT_CHARS
+>
+> AFAICS this is not what Breno asked, and checkpatch complains
+> rightfully. More importantly it's fragile: what will be the result of
+>
+>         MAX_USERDATA_NAME_LENGTH * 2
+>
+> ?
+>
+> At least some brackets are required:
+>
+> #define MAX_USERDATA_NAME_LENGTH        (MAX_USERDATA_ENTRY_LENGTH -
+>                                          MAX_USERDATA_VALUE_LENGTH - \
+>                                          USERDATA_FORMAT_CHARS)
+>
+> Thanks,
+>
+> Paolo
+>
 
-Let's also mention that in the commit message when repost? Just in case
-it'll answer other readers when they read this patch.
-
-> 
-> >
-> > >
-> > > [1]: commit 153132571f02 ("userfaultfd/shmem: support UFFDIO_CONTINUE for shmem")
-> > > [2]: https://gist.github.com/48ca/38d0665b0f1a6319a56507dc73a173f9
-> > >
-> > >  mm/hugetlb.c     | 15 +++++++++------
-> > >  mm/userfaultfd.c | 18 ++++++++++++++++++
-> > >  2 files changed, 27 insertions(+), 6 deletions(-)
-> > >
-> > > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> > > index bb17e5c22759..533bf6b2d94d 100644
-> > > --- a/mm/hugetlb.c
-> > > +++ b/mm/hugetlb.c
-> > > @@ -6779,12 +6779,15 @@ int hugetlb_mfill_atomic_pte(pte_t *dst_pte,
-> > >               }
-> > >       }
-> > >
-> > > -     /*
-> > > -      * The memory barrier inside __folio_mark_uptodate makes sure that
-> > > -      * preceding stores to the page contents become visible before
-> > > -      * the set_pte_at() write.
-> > > -      */
-> > > -     __folio_mark_uptodate(folio);
-> > > +     if (!is_continue) {
-> > > +             /*
-> > > +              * The memory barrier inside __folio_mark_uptodate makes sure
-> > > +              * that preceding stores to the page contents become visible
-> > > +              * before the set_pte_at() write.
-> > > +              */
-> > > +             __folio_mark_uptodate(folio);
-> >
-> > Can we move the comment above the "if", explaining both conditions?
-> 
-> Yes, I'll do that. I think the explanation for
-> WARN_ON_ONCE(!folio_test_uptodate(folio)) is:
-> 
->     We only need to `__folio_mark_uptodate(folio)` if we have
-> allocated a new folio, and HugeTLB pages will always be Uptodate if
-> they are in the pagecache.
-> 
-> We could even drop the WARN_ON_ONCE.
-
-No strong opinions, keeping it still makes sense to me.  Btw, it'll also be
-important to document "how is the ordering guaranteed for CONTINUE", then
-you can reference the new code you add, as readers can get confused on why
-CONTINUE doesn't need such ordering.
-
-Thanks,
-
--- 
-Peter Xu
-
+Thank you Paolo, great points. I will fix the macro and remove the
+Reviewed-by tag so Breno can reply on the ML
 
