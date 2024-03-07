@@ -1,224 +1,229 @@
-Return-Path: <linux-kernel+bounces-96214-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96215-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE1CD8758B8
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 21:42:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC6748758B9
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 21:42:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 65ADD1F24592
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:42:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0CA391C212E9
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:42:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F35F3139589;
-	Thu,  7 Mar 2024 20:42:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48F31139571;
+	Thu,  7 Mar 2024 20:42:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="HxjEVbOd"
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2086.outbound.protection.outlook.com [40.107.223.86])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ZHnJMIFT"
+Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9E6213A24E
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 20:42:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.86
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709844135; cv=fail; b=sGtTQejTMbNCMC/KwZqFzvPxm9DWNSz0XxCjOk+gGzOAIf/JoKc4HfZ2gQbydOgtBvXo/pkilvRzjZeJiPY8E3e/+JD8faBIn/H9yyUaMH+l7GFaQERrlIuwZq9Bl0VE/2fHfyS6hzRYnj1cwmTjaEt11TeLXz55lJ1LWojDApM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709844135; c=relaxed/simple;
-	bh=hRD2P1LWejKMUj2bLxMeeYog+F6d7FEwXEZxgAevQKQ=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=VUJzbORgtU/FWsistC5XQP71bmyvy97mKNAWsxcZhL67TpL7t+OwU3YWcNC4ge8vxbdVeQy2TxJStZDnY1JEBkNmAm7P2adOI6qyxnJAeSd9auw49Ad3y1exvN1oJ9+2x6NvIYlLNWQ1gOGaBttYSdJH8OMoJoOz5cXf+BCinIg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=HxjEVbOd; arc=fail smtp.client-ip=40.107.223.86
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iDCQ8RqZDziTbQ5bvOlq3mVLyNl70FXZmSFUlod0iuXDH6fquuvD9AwyIGYsM8D6Nf+qWGprMqMEjy61pZV5+iEGWvIdWm/6DEyAJAmgpRE0XTLYJTvzjDa4UeSyDO34mQ38f09MLYC6Oua/2WBwQhUjb+ob7Vr3ZX6UtL1v+sUO5q5AbmSXOJHes0IkK53HDg/ldLMHpkHlBN6IPfH3MO+5mEkLGqcoDgd2Ef6Q7m0MsHPVX/b6qW5kz5nkHG0VzlYXL7/1Bdj/QCsH4O4BLPZ04a4plhZHC7KVkpeDxQRCBt+nR8tTpRVMdJhzdKH8ZI6TWw95uRECpbrAnolFEg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EafFfAJCUkpm9n3MlKP6SwM9uuDDa1vDkH3vT6S2czQ=;
- b=BamKVYtXEX04qsWcj7DSqbBa1Tt2Iu+cUP1ptiGEjd2AgNQRZkcD/HBGF27t+57X28JSWbbYHuLClksFuSKbrLZRnrRfmfFoK7HcXjX4HwgJeiq8Cfg8zt5n+TT9k4YEaJbSZpHP2zegZlKX+elMV1czctlXb8Kf5A2Xl6AEVjFYkQHQGZilJkKPPe8H7dy9KpX+VZUSL8K4j5WQQfmKFua/DTQFwb1BprJgi7uMTRg2aMCIgndFY60d/orVCpyZMgmmc/8anXWdHoQtQtc1m0SU6WTOxoW5Z4tFszkpCYl90nAtcZBwzLuItAzzEBeuqQ0hkHyyAISYyMMopIzgpA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EafFfAJCUkpm9n3MlKP6SwM9uuDDa1vDkH3vT6S2czQ=;
- b=HxjEVbOdAHuZOj9ulV0QIFqg3yluuAbk3fCtrk0toDDvej+p4e2PVth7TpvVG9K0sSRwUlcSM9cqYFQTu5h+FdYPGEEawo/dJ1+nvwCUqSmGeC+Z7Xu2Y0XLiAX+ZbUmBStmifr5Xkwrn8eTpSaDjAzBMXP17ucI6o/faW0eldY=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH7PR12MB5596.namprd12.prod.outlook.com (2603:10b6:510:136::13)
- by SN7PR12MB7785.namprd12.prod.outlook.com (2603:10b6:806:346::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.27; Thu, 7 Mar
- 2024 20:42:11 +0000
-Received: from PH7PR12MB5596.namprd12.prod.outlook.com
- ([fe80::6f48:e3f1:6ff9:75bd]) by PH7PR12MB5596.namprd12.prod.outlook.com
- ([fe80::6f48:e3f1:6ff9:75bd%4]) with mapi id 15.20.7362.019; Thu, 7 Mar 2024
- 20:42:11 +0000
-Message-ID: <c33f5ede-19de-491b-8f97-c78db47fdf30@amd.com>
-Date: Fri, 8 Mar 2024 02:12:03 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] drm/amdgpu: add vm fault information to devcoredump
-Content-Language: en-US
-To: Alex Deucher <alexdeucher@gmail.com>, Sunil Khatri <sunil.khatri@amd.com>
-Cc: Alex Deucher <alexander.deucher@amd.com>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Shashank Sharma <shashank.sharma@amd.com>, amd-gfx@lists.freedesktop.org,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- Mukul Joshi <mukul.joshi@amd.com>,
- Arunpravin Paneer Selvam <Arunpravin.PaneerSelvam@amd.com>
-References: <20240307165932.3856952-1-sunil.khatri@amd.com>
- <20240307165932.3856952-3-sunil.khatri@amd.com>
- <CADnq5_OaCRAjCZGOEpd1gTFSUHdNkVbDqDgx_LQKw_JR1Qtv3Q@mail.gmail.com>
-From: "Khatri, Sunil" <sukhatri@amd.com>
-In-Reply-To: <CADnq5_OaCRAjCZGOEpd1gTFSUHdNkVbDqDgx_LQKw_JR1Qtv3Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: PN2PR01CA0154.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:26::9) To PH7PR12MB5596.namprd12.prod.outlook.com
- (2603:10b6:510:136::13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D59E913A255
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 20:42:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709844142; cv=none; b=E42V4cEWld8hK1LkQr0LotlZKpbOxNl6v+SDWn5ALoXX73XUQN2mOMWWVyEQJavkPXOFdH0LYpEBvoCIZ/iq7xMOuVWe6ZSKsHJkS0XLbhvJgs7Shh6x9cYnSW/d+uUkLiE76pfEbn06WngpuOK8IAYOqP4DCKxhvd8cvM4vuYw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709844142; c=relaxed/simple;
+	bh=MRctrYkPSgIQeXMoX8razLFpnd9bab4bZkfsjfKzl30=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=RRmyVH4wKbsXyl1djhn87xpLrEwIGEpAaSlVZImUa0d23KRQp3wnVlISP59ZYQYehrGqRofBSq8kuxYco9EKvXb8LmwgcFnlnJEgno/fqB6gVcrLc3fmc7lDAuug6aj1kqkiX0xHRUaD/a/9fNwGnLHpsjqXLUomZ4Bue7pzLik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ZHnJMIFT; arc=none smtp.client-ip=209.85.214.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
+Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-1dcabe5b779so14900745ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 12:42:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709844140; x=1710448940; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RQdNtN78xJnCksQQbRN+GLBXoPr5M5Y4bjQ8v3llxL0=;
+        b=ZHnJMIFTPkjstc2I6wjhovoxTTRS/mfUcVbMEcJxAkgiPQssTVDdzcqwiKoUVpN1jV
+         W1JuJoAxlgX/X9SvJ2kx/hKBwr1ow6/3y8oxeeDVFytkKjuVaNfuDPZGdyFpKR8Livob
+         HceG22AjBHQiN2wo5LFbwwTz7diXYAUogm2VNy7gzhuzv1OCa5d2Hdgla1PBhfwXBW0T
+         hEeH9Lht0m/RMKJ4KBDmjeFKy5ruM1ZAOTiYDB/E9YzzLsv+WqxxHMoQD+tb1Z8ABS8W
+         ejzFHPekObc3hZF1E+gE0k7sRgNFPwx7OqDEvHdKC0TejBqcPHSmpT7Lo/vzpY7ZTPsL
+         TnFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709844140; x=1710448940;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RQdNtN78xJnCksQQbRN+GLBXoPr5M5Y4bjQ8v3llxL0=;
+        b=HzMghySX7ndnSqB0pEF96Fxi3KRj8amG4jx8hStEZUJprMnmdRcK8MpFIndEIN44mU
+         T3/1clO7C8wgvSrkMO1UevFZRHnZV3F3U8a0DvPxei8Y8XhrlJdPLMxlyMpMQhi0ySe6
+         tpd3pa7oaqMoUYP84PIh5zrs7H6MzV+m1qAKeysol1UbPeay1XE8Hn5QCGmq1GSIdTYw
+         VKGWehS3Wy9pokUGq/DDPIl2gxvV6zC0YpTJYw+vl17O9XKCkzT6LiGwpDEvxirOs+Mm
+         SW/Dz3i805WvcliT+Yw8Ahn3Ik3qsoS337nfH8bHg5ryJlo1ohAAxN+kQSg8veh1UYXN
+         yVNA==
+X-Forwarded-Encrypted: i=1; AJvYcCV7NXCJeiK6m5IkkgpdgLGddVdHqJuMCNkUhaXw0a8esl5uMRTNghSBvJNmg07gMJVlBDFIoS7IOfed+fi2iemIrSOkh3ZAOKSLdZk0
+X-Gm-Message-State: AOJu0Yzl47Oj264gqisEikCiJEYBdYgVelkNmyKfXBldQiZU4iu7Ffb0
+	QrxCT5w4KV/a0bwDuV8tFWYxWLh11wVP7nO4j5HOfQYA5wh5MlTOAjOn86zwG66lUxv+6TAna1U
+	9dSItV1Lf2rIKwXLT3g==
+X-Google-Smtp-Source: AGHT+IHE8t4oN+uf/OQDciimdaaIli2dbKCyNod+F1ML8w/S26BvIeQRNR8rcjQpok9SEW4/QlY+jBrUrmk9QumG
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
+ (user=yosryahmed job=sendgmr) by 2002:a17:902:cec8:b0:1dc:df25:76d4 with SMTP
+ id d8-20020a170902cec800b001dcdf2576d4mr493481plg.11.1709844140048; Thu, 07
+ Mar 2024 12:42:20 -0800 (PST)
+Date: Thu, 7 Mar 2024 20:42:18 +0000
+In-Reply-To: <ba8a51fe-7b22-46b1-be5f-1e4c837d085c@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB5596:EE_|SN7PR12MB7785:EE_
-X-MS-Office365-Filtering-Correlation-Id: dd7beab9-869b-41a2-e16b-08dc3ee7101b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	tb4eEgEqG2nWMV3NQIRzs/NNDIh01XMPqEWkiY8C99Ufh0JX9OxN1hf1DTpluBpJbopqxsdxGcKl9WFvjUIPqeT7Q0qjJl3A3zQdGqbIB3+ywCB13MD303/j1VC65KPllriJS9chJIQSM0wuTovpQJd9I4e6T2EIWx4usI8lVgf5pn2ed2CWxadUJNwbu5FC1D2W0quw/EeFDWwi6f0jL3YNDMfgfNtchM3CY71sd7B33IVVxIXJV29rBO2TgreV6HJCcPGd0kJHIqaoLQ/rLyThwRtUBkIEBe77KzxmIvvDzhI5KZPSYMu0LM+XlEP8g+BpTCxbKn1cVFL06qwvhtM773iOGv6ZF7ARdFuo73Sj84dUzkwoPt+2s3OZNukDwoIOZ9eh32GO/8xusH2a3DcJXcVRjOzu8JAXW73ezepWUNO8+zzO03H5kF+hLvCYOVas6WsuXl1B2aY3j0vkz3nk1SPJiXkWhZe10a2L8eDMv90C6lAjjjv6Wck3FMgIZffa3UPHcVLsKBlNL568mUmkx3xjAvqmAG/dewQh/hBENJXP7WRx0hnqik9wtrZSCRNRKqNkUWVllkObxAaQ7yyAee5oCvTDfz+Y2vxb+/TzUgGbJj8W/dq1iQfLH2C1jdmvd8Cq1Ma4s1CI9poFguT4toPfNP6PFZbsJeIe/9c=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5596.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?YkhabnlVYWtJV0tHYzJlRTZVVGJUZ3lzcFRyb2x1dUZEK0x4byswR2huNmlJ?=
- =?utf-8?B?ZEFWMm9DSFpTUTZWUEw5VlRWak80SVBWYlJFbCtwK1pXQk53NjNoMkEzYU5M?=
- =?utf-8?B?SURXdlNKdDJvZW9KeHlDYXZITjVvcXdFTVpIcGpwcEpKbm9YY0dpMEozTXlN?=
- =?utf-8?B?YkF2RDBWVjU3OXg0VWx2SHdsS3U0ZTRPbm5EeWlyQ2RsRmJBR3BheWVkUzAv?=
- =?utf-8?B?WHpqNzNkcGRZWGZqVTZJOVJsSmVrdUthS3B4SStYaHFrajZqREVmUDVyRWtJ?=
- =?utf-8?B?NDdtc3B3dUJCeGhpNjhjTGVCZU5oVXRkT0FEbWtHQVRzWSszUlczMndUb3Ny?=
- =?utf-8?B?TXBZQ2ZSNGtMb1ljREFuanNIMnNoZTlGWVR1TVRHRFpLb1NXUG5kTkVZaldr?=
- =?utf-8?B?b1lESEorQm9pTE0zSU0vemNUNCsyRm1rdTRSejZxVzVVbWQ2dzRUMDJLdGsy?=
- =?utf-8?B?UlhFMFJiYXY1SFk2bXd4WHV1dkNrRkFaK21WRmwyZHFDWFVTc1RBYXp5SnE4?=
- =?utf-8?B?VVRVMGZtYXg2aVRNUzF0eGNuZ1hvb1lPaVlBVVpFSDBaUDFSTndmU3FHQ3lU?=
- =?utf-8?B?L3lSU25hZUNNOUhXU0c5U2FOZDEyb3o5RVFmd1RHZ3lOUnBSNVZhVFlBeHVx?=
- =?utf-8?B?ZE94VWFSZjRkczU1RlJIQWltWll5MWpBTXRvVU9zb3RXU1dndysxRVp3SCtO?=
- =?utf-8?B?b1RyRXFOUDN5ZkMrVTduN1BITWFxb1Y4eW4zblZZWm5mODI5SFR3cERWbDBz?=
- =?utf-8?B?SDR4bXROUUV1Tm1BazhmOEd0UkRjRHplS2lBeEdBWkhhUHZpY1ZVUEgvUVZS?=
- =?utf-8?B?U0RYbWpyNFM1blIrWEJUYnpCZUhYc0s0R1RqL0M5N1A4WS9xSFUvaWcrWGly?=
- =?utf-8?B?L3NoQkFGenpaQ2c2djIvakdCQTM4MGIrdVZoTE9FMGYyV2NvWXRpd2tiK3hZ?=
- =?utf-8?B?eCtoT1p3K09WRWg0cFF3RDF0WkloRmJxa1FReXBhN2hndGZNUTVybTZzeUF2?=
- =?utf-8?B?cVNrV0RZQUNCcm1RcWNGZURGenpUV2w5THVsNHc2NDhFY3FLTCtLMlNKTm4w?=
- =?utf-8?B?SVZoNEd4M2s2L1lkbjd3MXY0TGFVdXdNRFBGOEhCT3kyWVpNNmorMEQ3ZUZa?=
- =?utf-8?B?Uk5GZlhiVHVUcytsT0JnWWg5NWM1czhDU0YzWW82ZXlYemZVTjV4OE5GbU1H?=
- =?utf-8?B?b0ZNOWg4QUxnMFByNkc0S1ppYVV3ci9NS1hQRXhWRXQzcHhoSHU5eXp1SC9v?=
- =?utf-8?B?SjdIZklONWNGYWNteFRMbjI3SG02K204MlVpbWZzVWtwQnNudWlmNWFlZHB3?=
- =?utf-8?B?YnA1RitTNHlUWTlqZTJrTG9jbFVVOFZIakZJS1JYQTIwTXVBdWJ6K3ZNQ1BQ?=
- =?utf-8?B?cGluU2hJZ3FhZjFhcjZEUW9MRkIwU2FMVWdIUEYwMkxYZHA1QTdzVnJWWndX?=
- =?utf-8?B?MnhjcDVSWUhTVWtCRytOVWthREpFMFlmOGN1K1VoYlE3ZVRZR0FkdE1sWkg2?=
- =?utf-8?B?aHdDdTlQZnNDdS9WNHp0azhoemZKOUpkSlRRWFVCS3JyWnJjd2xnRzBjbDdU?=
- =?utf-8?B?Y2Z6VC9janFRWmhYTDBLZCtrOVBVSThUM3E0elAvTTNzZHEyekNkSWhrYUUr?=
- =?utf-8?B?eDhIYmVMWHFFSk9zekJES1lLejROQlRJcEx3T0ZVRWF1eXBMaStxUGN5RTlt?=
- =?utf-8?B?cGd5M3BJUmx0NGpERFJINTBZT3BOUWNoeTBZMi93STExVVpMRnQzRTVZaEVZ?=
- =?utf-8?B?d0dBcnlpMWVlRlJJeW8xMEkwTUh0TmJRQWdzSnBnV3NqVllkYm1QOTF0d1hG?=
- =?utf-8?B?Y2RqOVdERlZ6bFNNMFJJbC9sc3lFMVRMeCtUd2VRMVJKMktRZUYrTXJlbkt0?=
- =?utf-8?B?SllQNW1haHdVbFRVMFlKWFZncFFBS1ZCQlVXQzdXNWdZSnZZSlZGbDJuZFlT?=
- =?utf-8?B?disxcmVHcG5UK1F4OW54T1pRc0FsUnlscGsyaWJqYzdkb0E5Y3Ewa3dkNStq?=
- =?utf-8?B?TEp3TXN3c0ZxYTJuRFV6Ymp0MGh3MHNGVFRuWXNjWkc0WWhYUElvN1IyeE1x?=
- =?utf-8?B?VllLQzFkNk9SdVA4RVpkdWM1UUVqd0dBSFBHRnQwcWpHejdyMGFJKzFlWk5q?=
- =?utf-8?Q?uJKPxGIvHtlF79giLd0V/8mac?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dd7beab9-869b-41a2-e16b-08dc3ee7101b
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5596.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Mar 2024 20:42:11.1942
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: q5SbrjLq4fbIIqOs4DHmntT4XNs36hF8rWAYOgYR28EZk7YM5EUJYX3ukgwy08l2eeURe3rzEwcDJR08WSijaw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB7785
+Mime-Version: 1.0
+References: <20240307133916.3782068-1-yosryahmed@google.com>
+ <20240307133916.3782068-2-yosryahmed@google.com> <ba8a51fe-7b22-46b1-be5f-1e4c837d085c@intel.com>
+Message-ID: <ZeomquHvZs9-BKKK@google.com>
+Subject: Re: [RFC PATCH 1/3] x86/mm: fix LAM cr3 mask inconsistency during
+ context switch
+From: Yosry Ahmed <yosryahmed@google.com>
+To: Dave Hansen <dave.hansen@intel.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Peter Zijlstra <peterz@infradead.org>, 
+	Andy Lutomirski <luto@kernel.org>, "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, x86@kernel.org, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 
+On Thu, Mar 07, 2024 at 09:36:58AM -0800, Dave Hansen wrote:
+> I know we all have different rules, but any time you could spend absorbing:
+> 
+> 	https://www.kernel.org/doc/html/next/process/maintainer-tip.html
 
-On 3/8/2024 12:44 AM, Alex Deucher wrote:
-> On Thu, Mar 7, 2024 at 12:00 PM Sunil Khatri <sunil.khatri@amd.com> wrote:
->> Add page fault information to the devcoredump.
->>
->> Output of devcoredump:
->> **** AMDGPU Device Coredump ****
->> version: 1
->> kernel: 6.7.0-amd-staging-drm-next
->> module: amdgpu
->> time: 29.725011811
->> process_name: soft_recovery_p PID: 1720
->>
->> Ring timed out details
->> IP Type: 0 Ring Name: gfx_0.0.0
->>
->> [gfxhub] Page fault observed
->> Faulty page starting at address 0x0000000000000000
-> Do you want a : before the address for consistency?
-sure.
->
->> Protection fault status register:0x301031
-> How about a space after the : for consistency?
->
-> For parsability, it may make more sense to just have a list of key value pairs:
-> [GPU page fault]
-> hub:
-> addr:
-> status:
-> [Ring timeout details]
-> IP:
-> ring:
-> name:
->
-> etc.
+Thanks for the quick review and tips.
 
-Sure i agree but till now i was capturing information like we shared in 
-dmesg which is user readable. But surely one we have enough data i could 
-arrange all in key: value pairs like you suggest in a patch later if 
-that works ?
+I didn't know this existed, I will take a look before respinning.
 
->
->> VRAM is lost due to GPU reset!
->>
->> Signed-off-by: Sunil Khatri <sunil.khatri@amd.com>
->> ---
->>   drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c | 14 +++++++++++++-
->>   1 file changed, 13 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
->> index 147100c27c2d..dd39e614d907 100644
->> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
->> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
->> @@ -203,8 +203,20 @@ amdgpu_devcoredump_read(char *buffer, loff_t offset, size_t count,
->>                             coredump->ring->name);
->>          }
->>
->> +       if (coredump->adev) {
->> +               struct amdgpu_vm_fault_info *fault_info =
->> +                       &coredump->adev->vm_manager.fault_info;
->> +
->> +               drm_printf(&p, "\n[%s] Page fault observed\n",
->> +                          fault_info->vmhub ? "mmhub" : "gfxhub");
->> +               drm_printf(&p, "Faulty page starting at address 0x%016llx\n",
->> +                          fault_info->addr);
->> +               drm_printf(&p, "Protection fault status register:0x%x\n",
->> +                          fault_info->status);
->> +       }
->> +
->>          if (coredump->reset_vram_lost)
->> -               drm_printf(&p, "VRAM is lost due to GPU reset!\n");
->> +               drm_printf(&p, "\nVRAM is lost due to GPU reset!\n");
->>          if (coredump->adev->reset_info.num_regs) {
->>                  drm_printf(&p, "AMDGPU register dumps:\nOffset:     Value:\n");
->>
->> --
->> 2.34.1
->>
+> 
+> would be appreciated, especially:
+> 
+> > The condensed patch description in the subject line should start with
+> > a uppercase letter and should be written in imperative tone.
+> 
+> 
+> On 3/7/24 05:39, Yosry Ahmed wrote:
+> > In switch_mm_irqs_off(), we read the 'mm->context.lam_cr3_mask' into
+> > 'new_lam', which is later passed to load_new_mm_cr3(). However, there is
+> > a call to set_tlbstate_lam_mode() in between which will read
+> > 'mm->context.lam_cr3_mask' again and set 'cpu_tlbstate.lam' accordingly.
+> > If we race with another thread updating 'mm->context.lam_cr3_mask', the
+> > value in 'cpu_tlbstate.lam' could end up being different from CR3.
+> 
+> Your description is fine (modulo the we's).  But I slightly reworded it
+> to make it more plainly readable:
+> 
+> LAM can only be enabled when a process is single-threaded.  But _kernel_
+> threads can temporarily use a single-threaded process's mm.  That means
+> that a context-switching kernel thread can race and observe the mm's LAM
+> metadata (mm->context.lam_cr3_mask) change.
+> 
+> The context switch code does two logical things with that metadata:
+> populate CR3 and populate 'cpu_tlbstate.lam'.  If it hits this race,
+> 'cpu_tlbstate.lam' and CR3 can end up out of sync.
+> 
+> This de-synchronization is currently harmless.  But it is confusing and
+> might lead to warnings or real bugs.
+
+Thanks a lot! I will adopt your version moving forward :)
+
+> 
+> --
+> 
+> > Fix the problem by updating set_tlbstate_lam_mode() to return the LAM
+> > mask that was set to 'cpu_tlbstate.lam', and use that mask in
+> > switch_mm_irqs_off() when writing CR3. Use READ_ONCE to make sure we
+> > read the mask once and use it consistenly.
+> 
+> Spell checking is also appreciated.
+
+I did run checkpatch. Did it miss something?
+
+> 
+> ...
+> > -static inline void set_tlbstate_lam_mode(struct mm_struct *mm)
+> > +static inline unsigned long set_tlbstate_lam_mode(struct mm_struct *mm)
+> >  {
+> > -	this_cpu_write(cpu_tlbstate.lam,
+> > -		       mm->context.lam_cr3_mask >> X86_CR3_LAM_U57_BIT);
+> > +	unsigned long lam = READ_ONCE(mm->context.lam_cr3_mask);
+> > +
+> > +	this_cpu_write(cpu_tlbstate.lam, lam >> X86_CR3_LAM_U57_BIT);
+> >  	this_cpu_write(tlbstate_untag_mask, mm->context.untag_mask);
+> > +	return lam;
+> >  }
+> 
+> The comments about races need to be _here_ so that the purpose of the
+> READ_ONCE() is clear.
+> 
+> It would also be nice to call out the rule that this can only
+> meaningfully be called once per context switch.
+
+I wanted the comments in switch_mm_irqs_off() where the races actually
+matter, but I guess I can make the comment more generic and specify that
+the return value is used to write CR3 so we READ_ONCE keeps CR3 and
+tlbstate.lam consistent.
+
+> 
+> > @@ -633,7 +628,12 @@ void switch_mm_irqs_off(struct mm_struct *unused, struct mm_struct *next,
+> >  		barrier();
+> >  	}
+> >  
+> > -	set_tlbstate_lam_mode(next);
+> > +	/*
+> > +	 * Even if we are not actually switching mm's, another thread could have
+> > +	 * updated mm->context.lam_cr3_mask. Make sure tlbstate_lam_cr3_mask()
+> > +	 * and the loaded CR3 use the up-to-date mask.
+> > +	 */
+> 
+> I kinda dislike how the comment talks about the details of what
+> set_tlbstate_lam_mode() does.  It would be much better to put the meat
+> of this comment at the set_tlbstate_lam_mode() definition.
+
+Agreed. I will move most comments to set_tlbstate_lam_mode().
+
+> 
+> > +	new_lam = set_tlbstate_lam_mode(next);
+> >  	if (need_flush) {
+> >  		this_cpu_write(cpu_tlbstate.ctxs[new_asid].ctx_id, next->context.ctx_id);
+> >  		this_cpu_write(cpu_tlbstate.ctxs[new_asid].tlb_gen, next_tlb_gen);
+> 
+> This is less a complaint about your change and more of the existing
+> code, but I wish it was more obvious that set_tlbstate_lam_mode() is
+> logically shuffling data (once) from 'next' into the tlbstate.
+> 
+> The naming makes it sound like it is modifying the tlbstate of 'next'.
+
+We can update the function name to make it more verbose, maybe something
+like update_cpu_tlbstate_lam()? We can also try to put "return"
+somewhere in the name to imply that it returns the LAM mask it sets, but
+I can't make that look pretty.
+
+> 
+> But I don't have any particularly brilliant ideas to fix it either.
+> Maybe just:
+> 
+> 	/* new_lam is effectively cpu_tlbstate.lam */
+> 
+> > @@ -705,7 +705,6 @@ void initialize_tlbstate_and_flush(void)
+> >  
+> >  	/* LAM expected to be disabled */
+> >  	WARN_ON(cr3 & (X86_CR3_LAM_U48 | X86_CR3_LAM_U57));
+> > -	WARN_ON(mm_lam_cr3_mask(mm));
+> >  
+> >  	/*
+> >  	 * Assert that CR4.PCIDE is set if needed.  (CR4.PCIDE initialization
+> > @@ -724,7 +723,7 @@ void initialize_tlbstate_and_flush(void)
+> >  	this_cpu_write(cpu_tlbstate.next_asid, 1);
+> >  	this_cpu_write(cpu_tlbstate.ctxs[0].ctx_id, mm->context.ctx_id);
+> >  	this_cpu_write(cpu_tlbstate.ctxs[0].tlb_gen, tlb_gen);
+> > -	set_tlbstate_lam_mode(mm);
+> > +	WARN_ON(set_tlbstate_lam_mode(mm));
+> 
+> The "set_" naming bugs me in both of the sites that get modified here.
+> I'd be with a new name that fits better, if we can think of one.
+
+Is it because it's not clear we are updating cpu_tlbstate (in which case
+I think update_cpu_tlbstate_lam() is an improvement), or is it because
+the function returns a value now? If the latter we can put "return" in
+the name somewhere, or keep the function void and pass in an output
+parameter.
 
