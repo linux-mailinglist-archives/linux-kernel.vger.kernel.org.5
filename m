@@ -1,166 +1,206 @@
-Return-Path: <linux-kernel+bounces-96119-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96120-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEEB9875759
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:38:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8630A87575D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:40:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64148285DBE
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:38:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7ACAA1C20F24
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:40:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E7E0137C36;
-	Thu,  7 Mar 2024 19:38:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACBCB1369A6;
+	Thu,  7 Mar 2024 19:39:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="ALbIX27y"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="VjIalN1Y"
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F342312DDB6;
-	Thu,  7 Mar 2024 19:38:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B427C1EB56
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 19:39:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709840285; cv=none; b=eo4zO1y2PNugUOlfXEARqIV6Gz4pBkB+wQ6TX6/MONDoc1yVRPyyJJk1lRANFBYdZa1do2ViV/tf3cIVkXtQXZ9/kktSFRSLOqZG/eLCM59z6ici88gxxCWF7UIzPZpdwcrb2C3L7LAzWlKgsc4kg8za9aUYLb35LhJuSRdgRQM=
+	t=1709840397; cv=none; b=qm9yMFiCEoZVv91P5LqB3IDNtvY6YF8pHMt8WGpUrEU8qtrfReexCmj5Li422wYGyjzxkCiCo8JEywsmgGt2iKeaQcFqk9qBwAGP75HzdQF69oqD5oxN57JyPAFCRSIAn0t5IAXI7AYsq81J8cJOUC0yGJAFe0jJZ2BL87EiW5I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709840285; c=relaxed/simple;
-	bh=bVPcBUPBHCjUtBXqcYNbk2Q5PpQ3yErbg+ojpQd8pKM=;
+	s=arc-20240116; t=1709840397; c=relaxed/simple;
+	bh=LqpYgIXeoGYANxQOarNKmK0a8fU42JbAoQUJ3zFEkiI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Wu+KCYvTqjamYW12Y87pZXgiPxsOM61y8om4w97o4t/hangeK7+SmpC4lri2TwGwF3Ej2oR0yraS7yDtFWAZVsf8xeguLSvjNbF0LnMVTuF/JujZ1u/s9oDa3gZ9fs+fElwhj977j7xODkEfFZNX+nvAHpfBmR0iGvxrTwrVAxs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=ALbIX27y; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1709840272; x=1710445072; i=quwenruo.btrfs@gmx.com;
-	bh=bVPcBUPBHCjUtBXqcYNbk2Q5PpQ3yErbg+ojpQd8pKM=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=ALbIX27yhLhyUe1D8hZC+dF/+yxSHxZpgYXYh66wnHdaDuGqqADc8PE/lhb+XQhO
-	 36yUWgX8BnvMA+jmqnkNQgOfd4dnPfi0B4A4IXvajbWMtZkxnAAf2nXsBMcsodaSG
-	 zNiY8uJakVPlP6XyNVZQ9yQZIYRWMdWIXOmABbYSPnB+E/k496E9oPG8tsg04xYDd
-	 456Sb3U2kNuOVri2iV39iGuetyH3vr4pR/kPh6uQ84oFgbY3nFTiXESXeRcAagSug
-	 aqrF1axVvMJHAU0sl/2LcFc9ZXMIjAJ7Hfk6E7INEcNERsJlvKBWVQPRQqxYcSWbq
-	 TWEGUGdG7PCIkgV4RQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MY68T-1rLa3W22dJ-00YT1n; Thu, 07
- Mar 2024 20:37:52 +0100
-Message-ID: <ce12587b-0321-413f-86a8-f362be198a8c@gmx.com>
-Date: Fri, 8 Mar 2024 06:07:46 +1030
+	 In-Reply-To:Content-Type; b=felLI8kn2mhr3obyXaemRJjEgJZEr6zDxP3m/pJkzi38Idth2OZDKwUJ0d9w5PHNZyFqAXgWc0DJJ96gjilOiq11i3nLBymNQtNUkvF5jNisEZIp1w+oxRNq6BqG4396Hx2i7BP/ahwWZfY9dMsYTmzV3vFeHobQlsVnZZqkr4s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=VjIalN1Y; arc=none smtp.client-ip=95.215.58.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <9edaecbc-e6be-4518-b110-a6a574df967a@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1709840393;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Ys8e9p5+eqfoxouq7g7nRJjBibIoxszrfaw3qqFo2uU=;
+	b=VjIalN1Yqh2hQdoHNxx3oiDZCfUrAraw+5VNiW1R1cP0ExjzcHMD4/Oz8nZXkPdxiI90ZX
+	PV0LZGZwSJXGQZQQh3CNFW+UQiJz+rrzvj0fG+Yiqnp6pAMFWbVL2mqCJvA/O4Vd/Zi/Tt
+	91w6RSmjm/82DokulFLAi0+fgTtq8lk=
+Date: Fri, 8 Mar 2024 03:39:43 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: qgroup: delete unnecessary check in
- btrfs_qgroup_check_inherit()
+Subject: Re: [PATCH v2 4/4] drm-bridge: it66121: Use fwnode API to acquire
+ device properties
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Andrzej Hajda <andrzej.hajda@intel.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>,
+ Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+ Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Phong LE <ple@baylibre.com>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org
+References: <20240307172334.1753343-1-sui.jingfeng@linux.dev>
+ <20240307172334.1753343-5-sui.jingfeng@linux.dev>
+ <CAA8EJpqtPRfe1VL_ACYEOSq=iNMkZ03-fwVv3XdVrpTObZFu1w@mail.gmail.com>
 Content-Language: en-US
-To: Dan Carpenter <dan.carpenter@linaro.org>, Chris Mason <clm@fb.com>,
- Qu Wenruo <wqu@suse.com>
-Cc: Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
- linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
- kernel-janitors@vger.kernel.org
-References: <cb21ce67-e9d8-4844-8c70-eb42f6ac4aee@moroto.mountain>
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <cb21ce67-e9d8-4844-8c70-eb42f6ac4aee@moroto.mountain>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Sui Jingfeng <sui.jingfeng@linux.dev>
+In-Reply-To: <CAA8EJpqtPRfe1VL_ACYEOSq=iNMkZ03-fwVv3XdVrpTObZFu1w@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:iJ0PgVN0rG890saSpFETQZWYVzbLjzYjzsUzw4Z4me4iY9CHu7M
- hEomCZpauiDgIZBJAXMr6dbF3uMXphA2RykIHt6j41Dh+WLI2bTXpz+8oa6v65IRGzqzutP
- KJNo9u2UsCYVRvrwdEdfrQS+1WzVaByOxPMeJaAacGb7ESGtiCdSC8ZwLzKNdJeBoKuA8d1
- odXY8jjlDaJLx8nY/LGgg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:C88LjGW30To=;TZCR9syfEDnjp/aJk+SXGMIGY2Z
- lP/g706Yy4gT2EllKUvnUnThtRc/aCru9e8KHBDYdmGj1pYKQN6p3aXqc51b6EF/Vid4CGSeG
- bbDkDnvrfXg8iMQXq7gEEWdRUsy8PT5XzrBV0TH6AQ4CQtx+kF4cOV5fpNlzUENpPPryiVTHp
- Z3dJhU7vY8xY5Q/ldCqjNYIPIvUBkl2vQYj/7eHHYhntBdjPvuCifhFbCwPC/MijU7DRo4SSl
- OnehEBQW4/od6wL/jfr5BJcg2bkZ4hKWTiILeDlRVcwzgXRXLAnoKxkC5mEXSQZc3vuguShzX
- utbHx694ZZ7CRIvZP56XCNK9HMu0TLVpfJ5cxd9nEOk7/NCEjqBKl8oS+9J0kGSrNMAeF6LXq
- wDpFBA2KaMRBArHpA8alCCnPKX7kEtJtN1sDc1/pIJ7/YJ5ZvNPwHyNIc5ol7gBtgu8jKYS6w
- B/1FEZZFC7m/8R897snTGpwq1zZ3UYEXtj7iVxNR07e4fCIyksiSdL5719KcsPmj/p49bSJY+
- o39+hLG2VZxzXF63oXVCK8TpEbtWE8fP7f5XkYfp1zKKTT9TYsGFGgrmSWt43fCukgHcML3Il
- zsD1h3HjEeHEWYXnUbm1qmNky+hTTXPPiXHpHn+Zfok4zTTIsLSkSTVH9ZfLHnwf/mMjxWkyH
- RYfbdOgmW1+jYO3OVhjupnZ5fE9r/nU1K0kxphIJl+vM43Lja4d+mTNT/8FRSONVm4cVSIKSi
- B8Mq6/LX4tTQAbcHrp3lWKoUzW07BEBUc4uGidLz/Fv0i71bvWI98C1FudO9BWzaYRqraSXW/
- GviwC2cNmrH15MkJ6/ZyySu7hRvf3DEun4UordzdrPRY0=
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+
+Hi,
 
 
+On 2024/3/8 03:31, Dmitry Baryshkov wrote:
+> On Thu, 7 Mar 2024 at 19:24, Sui Jingfeng <sui.jingfeng@linux.dev> wrote:
+>> Make this driver less DT-dependent by calling the freshly created helpers,
+>> should be no functional changes for DT based systems. But open the door for
+>> otherwise use cases. Even though there is no user emerged yet, this still
+>> do no harms. In fact, we reduce some boilerplate across drm bridge drivers.
+>>
+>> Signed-off-by: Sui Jingfeng <sui.jingfeng@linux.dev>
+>> ---
+>>   drivers/gpu/drm/bridge/ite-it66121.c | 63 ++++++++++++++++------------
+>>   1 file changed, 36 insertions(+), 27 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/bridge/ite-it66121.c b/drivers/gpu/drm/bridge/ite-it66121.c
+>> index 1c3433b5e366..a2cf2be86065 100644
+>> --- a/drivers/gpu/drm/bridge/ite-it66121.c
+>> +++ b/drivers/gpu/drm/bridge/ite-it66121.c
+>> @@ -15,7 +15,6 @@
+>>   #include <linux/bitfield.h>
+>>   #include <linux/property.h>
+>>   #include <linux/regmap.h>
+>> -#include <linux/of_graph.h>
+>>   #include <linux/gpio/consumer.h>
+>>   #include <linux/pinctrl/consumer.h>
+>>   #include <linux/regulator/consumer.h>
+>> @@ -1480,7 +1479,7 @@ static int it66121_audio_codec_init(struct it66121_ctx *ctx, struct device *dev)
+>>
+>>          dev_dbg(dev, "%s\n", __func__);
+>>
+>> -       if (!of_property_read_bool(dev->of_node, "#sound-dai-cells")) {
+>> +       if (!fwnode_property_present(dev_fwnode(dev), "#sound-dai-cells")) {
+>>                  dev_info(dev, "No \"#sound-dai-cells\", no audio\n");
+>>                  return 0;
+>>          }
+>> @@ -1503,13 +1502,37 @@ static const char * const it66121_supplies[] = {
+>>          "vcn33", "vcn18", "vrf12"
+>>   };
+>>
+>> +static int it66121_read_bus_width(struct fwnode_handle *fwnode, u32 port,
+>> +                                 u32 *bus_width)
+>> +{
+>> +       struct fwnode_handle *endpoint;
+>> +       u32 val;
+>> +       int ret;
+>> +
+>> +       endpoint = fwnode_graph_get_endpoint_by_id(fwnode, port, 0, 0);
+>> +       if (!endpoint)
+>> +               return -EINVAL;
+>> +
+>> +       ret = fwnode_property_read_u32(endpoint, "bus-width", &val);
+>> +       fwnode_handle_put(endpoint);
+>> +       if (ret)
+>> +               return ret;
+>> +
+>> +       if (val != 12 && val != 24)
+>> +               return -EINVAL;
+>> +
+>> +       *bus_width = val;
+>> +
+>> +       return 0;
+>> +}
+>> +
+>>   static int it66121_probe(struct i2c_client *client)
+>>   {
+>>          u32 revision_id, vendor_ids[2] = { 0 }, device_ids[2] = { 0 };
+>> -       struct device_node *ep;
+>>          int ret;
+>>          struct it66121_ctx *ctx;
+>>          struct device *dev = &client->dev;
+>> +       struct fwnode_handle *fwnode = dev_fwnode(dev);
+>>
+>>          if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
+>>                  dev_err(dev, "I2C check functionality failed.\n");
+>> @@ -1520,37 +1543,23 @@ static int it66121_probe(struct i2c_client *client)
+>>          if (!ctx)
+>>                  return -ENOMEM;
+>>
+>> -       ep = of_graph_get_endpoint_by_regs(dev->of_node, 0, 0);
+>> -       if (!ep)
+>> -               return -EINVAL;
+>> -
+>>          ctx->dev = dev;
+>>          ctx->client = client;
+>>          ctx->info = i2c_get_match_data(client);
+>>
+>> -       of_property_read_u32(ep, "bus-width", &ctx->bus_width);
+>> -       of_node_put(ep);
+>> -
+>> -       if (ctx->bus_width != 12 && ctx->bus_width != 24)
+>> -               return -EINVAL;
+>> -
+>> -       ep = of_graph_get_remote_node(dev->of_node, 1, -1);
+>> -       if (!ep) {
+>> -               dev_err(ctx->dev, "The endpoint is unconnected\n");
+>> -               return -EINVAL;
+>> -       }
+>> -
+>> -       if (!of_device_is_available(ep)) {
+>> -               of_node_put(ep);
+>> -               dev_err(ctx->dev, "The remote device is disabled\n");
+>> -               return -ENODEV;
+>> -       }
+>> +       /* Endpoint of port@0 contains the bus-width property */
+>> +       ret = it66121_read_bus_width(fwnode, 0, &ctx->bus_width);
+> There is no need to pass port as an argument to that function.
+>
+>
+Yeah, extremely correct. Because the bus width property should always
+located at the endpoint of the input port(port@0 for it66121).
 
-=E5=9C=A8 2024/3/8 01:23, Dan Carpenter =E5=86=99=E9=81=93:
-> This check "if (inherit->num_qgroups > PAGE_SIZE)" is confusing and
-> unnecessary.
->
-> The problem with the check is that static checkers flag it as a
-> potential mixup of between units of bytes vs number of elements.
-> Fortunately, the check can safely be deleted because the next check is
-> correct and applies an even stricter limit:
->
-> 	if (size !=3D struct_size(inherit, qgroups, inherit->num_qgroups))
-> 		return -EINVAL;
->
-> The "inherit" struct ends in a variable array of __u64 and
-> "inherit->num_qgroups" is the number of elements in the array.  At the
-> start of the function we check that:
->
-> 	if (size < sizeof(*inherit) || size > PAGE_SIZE)
-> 		return -EINVAL;
->
-> Thus, since we verify that the whole struct fits within one page, that
-> means that the number of elements in the inherit->qgroups[] array must
-> be less than PAGE_SIZE.
->
-> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+>> +       if (ret)
+>> +               return ret;
+>>
+>> -       ctx->next_bridge = of_drm_find_bridge(ep);
+>> -       of_node_put(ep);
+>> +       ctx->next_bridge = drm_bridge_find_next_bridge_by_fwnode(fwnode, 1);
+>>          if (!ctx->next_bridge) {
+>>                  dev_dbg(ctx->dev, "Next bridge not found, deferring probe\n");
+>>                  return -EPROBE_DEFER;
+>> +       } else if (IS_ERR(ctx->next_bridge)) {
+>> +               ret = PTR_ERR(ctx->next_bridge);
+>> +               dev_err(dev, "Error in founding the next bridge: %d\n", ret);
+>> +               return ret;
+> Nit: I'd usually expect this part to be in a different order: first
+> check for error, then check for absence. But that's a minor thing.
 
-I'm not 100% sure about the original code either, thanks for confirming
-the existing one has no effect and can be removed.
 
-Thanks,
-Qu
-> ---
->   fs/btrfs/qgroup.c | 3 ---
->   1 file changed, 3 deletions(-)
->
-> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-> index 5f90f0605b12..a8197e25192c 100644
-> --- a/fs/btrfs/qgroup.c
-> +++ b/fs/btrfs/qgroup.c
-> @@ -3067,9 +3067,6 @@ int btrfs_qgroup_check_inherit(struct btrfs_fs_inf=
-o *fs_info,
->   	if (inherit->num_ref_copies > 0 || inherit->num_excl_copies > 0)
->   		return -EINVAL;
->
-> -	if (inherit->num_qgroups > PAGE_SIZE)
-> -		return -EINVAL;
-> -
->   	if (size !=3D struct_size(inherit, qgroups, inherit->num_qgroups))
->   		return -EINVAL;
->
+OK,  fine, will be fixed at the next version if no other objects.
+
 
