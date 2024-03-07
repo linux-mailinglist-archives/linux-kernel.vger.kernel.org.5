@@ -1,43 +1,44 @@
-Return-Path: <linux-kernel+bounces-95853-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95854-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D10B875418
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:22:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BCE387541B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:22:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B91E01F2314E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 16:21:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6BF18B2492A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 16:22:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4829C12F598;
-	Thu,  7 Mar 2024 16:21:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A91012FB25;
+	Thu,  7 Mar 2024 16:21:54 +0000 (UTC)
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E1CF12BF3B;
-	Thu,  7 Mar 2024 16:21:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A67161E878;
+	Thu,  7 Mar 2024 16:21:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709828512; cv=none; b=jenulQo0bgshR0YxH5t6A6Z6IqJrwee++CuztLfdbFSJQaksD2A8H5bHyI7W5VsesjqmVDtB+xfKX0+OJ+gs2DWrMmnd9Z7IFe/DITZN81AB6tPxMpEUE6JqsdGRKAkI9nH7I7FrBWMZA/H4CDTFMvnEc04Ii8+XU33JlZBBWig=
+	t=1709828513; cv=none; b=szWAYOjRimaCdJyMDVn3J00MTd04Pu42UU+YzmST22kBIKXz0cvH6yWbw/58ZVGAjFMuZhQl9v6TwDhTV+NiKAxhcXOykcTwHf/RHawFHNcpZdyI/U8+d0e4FJTAvuPKLYAG5/rq+wZbw1VGb7s9yivYBoqC7kKweqonT4ty32c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709828512; c=relaxed/simple;
-	bh=gdJDe1BXXrgX49DR3AvgGtzBWCMhgn8H6/h82lF6zqY=;
+	s=arc-20240116; t=1709828513; c=relaxed/simple;
+	bh=6IZfI0/bsHGNTFF4mSjGwdRGMcsWxvZOAvoR8ODH7tk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TFmUOFk+nuJsx9llpSjKuKt6CH7whbMqX/Jf31TuqGO/iPy+/GANKCDqzobnmkjx8zH9QM2SjaXEDfNJXWHb2GUwudovLxtQLeB05BPg6sg5YmYv4A3TM6E1GVicVpRrnfh6iJCnKrlBhhaL49fq6W3LmfOKWm1eS52hGUGyk3s=
+	 Content-Type:Content-Disposition:In-Reply-To; b=HG4+QALwu2wSkj2uEnanzn9529e+ILt3pWXh9o80kN2VVlcR/l/A6J4F79izxTFICsnOQidl4lKk7gGxApAPXmOkP2T8BvcAN75zFlKDtwxtqEmpP46MQBkdmqrxX61h2R8ys9nU4bGnaHiXCNktjc/kVU01wA3NqCnMqAzRKWQ=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1riGV3-0003HB-00; Thu, 07 Mar 2024 17:21:41 +0100
+	id 1riGV3-0003H9-00; Thu, 07 Mar 2024 17:21:41 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 4844BC0267; Thu,  7 Mar 2024 17:21:14 +0100 (CET)
-Date: Thu, 7 Mar 2024 17:21:14 +0100
+	id 6D4AEC066F; Thu,  7 Mar 2024 17:21:31 +0100 (CET)
+Date: Thu, 7 Mar 2024 17:21:31 +0100
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: "Ricardo B. Marliere" <ricardo@marliere.net>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH 0/2] mips: constify struct class usage
-Message-ID: <ZenpepiQjc+rNvDS@alpha.franken.de>
-References: <20240305-class_cleanup-mips-v1-0-e93726711468@marliere.net>
+	John Crispin <john@phrozen.org>,
+	Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Subject: Re: [PATCH v1 1/1] MIPS: ralink: Remove unused of_gpio.h
+Message-ID: <Zenpi9mNGJxfTU11@alpha.franken.de>
+References: <20240304175439.1199865-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -46,30 +47,33 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240305-class_cleanup-mips-v1-0-e93726711468@marliere.net>
+In-Reply-To: <20240304175439.1199865-1-andriy.shevchenko@linux.intel.com>
 
-On Tue, Mar 05, 2024 at 10:37:49AM -0300, Ricardo B. Marliere wrote:
-> This is a simple and straight forward cleanup series that aims to make the
-> class structures in mips constant. This has been possible since 2023 [1].
+On Mon, Mar 04, 2024 at 07:54:39PM +0200, Andy Shevchenko wrote:
+> of_gpio.h is deprecated and subject to remove.
+> The driver doesn't use it, simply remove the unused header.
 > 
-> [1]: https://lore.kernel.org/all/2023040248-customary-release-4aec@gregkh/
-> 
-> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > ---
-> Ricardo B. Marliere (2):
->       mips: mt: make mt_class constant
->       mips: sibyte: make tb_class constant
+>  arch/mips/ralink/timer.c | 1 -
+>  1 file changed, 1 deletion(-)
 > 
->  arch/mips/include/asm/mips_mt.h     |  2 +-
->  arch/mips/kernel/mips-mt.c          | 14 ++++----------
->  arch/mips/kernel/rtlx-mt.c          |  8 ++++----
->  arch/mips/sibyte/common/sb_tbprof.c | 21 +++++++++------------
->  4 files changed, 18 insertions(+), 27 deletions(-)
-> ---
-> base-commit: fdf0df8c936c0822570e067009dee6824ff3a2be
-> change-id: 20240305-class_cleanup-mips-a77ae01ea4fc
+> diff --git a/arch/mips/ralink/timer.c b/arch/mips/ralink/timer.c
+> index fc503679a93d..8b485cbe854e 100644
+> --- a/arch/mips/ralink/timer.c
+> +++ b/arch/mips/ralink/timer.c
+> @@ -9,7 +9,6 @@
+>  #include <linux/platform_device.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/timer.h>
+> -#include <linux/of_gpio.h>
+>  #include <linux/clk.h>
+>  
+>  #include <asm/mach-ralink/ralink_regs.h>
+> -- 
+> 2.43.0.rc1.1.gbec44491f096
 
-series applied to mips-next.
+applied to mips-next.
 
 Thomas.
 
