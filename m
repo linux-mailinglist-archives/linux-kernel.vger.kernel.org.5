@@ -1,73 +1,62 @@
-Return-Path: <linux-kernel+bounces-94823-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94824-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 626C487459E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 02:29:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 148B68745A0
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 02:30:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D6971C21DEE
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 01:29:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A9984B22F17
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 01:30:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E67764C92;
-	Thu,  7 Mar 2024 01:29:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37B936AA1;
+	Thu,  7 Mar 2024 01:30:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="l/tX6S8n"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dt3vEybg"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 834F91391;
-	Thu,  7 Mar 2024 01:29:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75E0063B8
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 01:30:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709774978; cv=none; b=G3tuKw+i8+KSsQCJDxzPL1maWy2N5+VkdDu1biI91V8UuSuc+18ko+3nfvff3FL5fx18zAJMAMsYwgvrV/pVvA+vlsDugK3+zm3z5eamlrYGFukCyEN/kK4UT4uGAjoJgUmGdfqkBoLth9dRa/FcK3Z/xeD2uhDWV/2mHdWgXD0=
+	t=1709775012; cv=none; b=ZVHlgR4tehPN4XXpzdjF8LEoeU6WbXFWULAq2X/vE2HMSRHYoOXcswgDiOl2NvDB0JeUB20vaFVhRJsBzuZ/4FLHLprUgXzfw1UPq3wtC+8+6XyxpuSzzbmhbq3lfWXLkcwVVkha/bEekFPGcqI1iO9g+NEPJhOyu+enRlxfWfY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709774978; c=relaxed/simple;
-	bh=+G3P5fZ1KtJkD5uP1P0r4wxS61wLtCc7RBBUY4HZWBM=;
+	s=arc-20240116; t=1709775012; c=relaxed/simple;
+	bh=3iEyCAOIpIr+olvkgpU7l0MpcoipYtMImoe35an3NbM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gPVSNNGXBawPoroOzNFcuH96XnEhbh19Ft0ZZk3is8QuN0GqGnrD8kGo/3lE+YATgfXjUBdaRmJ04bpsKhqiSrSk6/Y+TL6M5BPFULMinf92cuK5QcQs7e6F9Aig0qtdLgJ9aUo+KEGWKcKpaFFQ04yjET7xDWBovol0YAH6bUA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=l/tX6S8n; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709774977; x=1741310977;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=+G3P5fZ1KtJkD5uP1P0r4wxS61wLtCc7RBBUY4HZWBM=;
-  b=l/tX6S8nvIWkr6/VOLeSEvfF3KCA2JkqEMqCbL4zwR2rmjFYmkH4qKdw
-   tmnp3IXwDyX09Bjww0Av1J3HMry4c6MpaYbb18+s/+ifNAycvjgqGYnPx
-   ZbdshZw7O+OMcLOKsImsSmpPYJ3P1sM92gJM3Fu/uDkTkcb4qjuhmIH+O
-   pVCCL+F83Nm5ASBEB1FwsmOK8LhjH/aauSlvRyI+nhQ6TqOVcLUG45X7e
-   2jeDHc7dcw3hJPrO4GKlewLQ0wXceIJjUyiSCQfZkwBet4U/61WujN4jw
-   OfSd8i/LqG3gxnhlHfV1yUS/e3i3B8tUCcJlQ/zqQL5CNb4T50kRYF/pM
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11005"; a="15147516"
-X-IronPort-AV: E=Sophos;i="6.06,209,1705392000"; 
-   d="scan'208";a="15147516"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 17:29:35 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,209,1705392000"; 
-   d="scan'208";a="14533859"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 17:29:35 -0800
-Date: Wed, 6 Mar 2024 17:29:34 -0800
-From: Isaku Yamahata <isaku.yamahata@linux.intel.com>
-To: David Matlack <dmatlack@google.com>
-Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org, isaku.yamahata@gmail.com,
-	linux-kernel@vger.kernel.org,
-	Sean Christopherson <seanjc@google.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Michael Roth <michael.roth@amd.com>,
-	Federico Parola <federico.parola@polito.it>,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [RFC PATCH 1/8] KVM: Document KVM_MAP_MEMORY ioctl
-Message-ID: <20240307012934.GD368614@ls.amr.corp.intel.com>
-References: <cover.1709288671.git.isaku.yamahata@intel.com>
- <c50dc98effcba3ff68a033661b2941b777c4fb5c.1709288671.git.isaku.yamahata@intel.com>
- <ZekNx-WkGNrVfFRD@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=pL1Efp4QJy59q0JtTf6GnMicCL7psT5kZ87KdOHS7o16XbIoWSVU1XzzdZvW35uM+uTOQYlmAAajI6Vy5muh/DmxftWlCd1Nd7hzJb5LUR/CHoiYSTHzVIf+RRTrGbzevsVWXWc65gcacggrlMIPWebZymFxdpS/sP96kb2HxX8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Dt3vEybg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99348C433C7;
+	Thu,  7 Mar 2024 01:30:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709775012;
+	bh=3iEyCAOIpIr+olvkgpU7l0MpcoipYtMImoe35an3NbM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Dt3vEybgbCDhmPIzPNp15wv/LSmpaIdJyanOUje6Kg2JNG0WyAqol6dA5vQqYgSbX
+	 ZfjujaGjut999mzEYrAZKINbQhKWRKT9u1Ca/qh8gEPqbfvVKemiYfUlMwvy2WubHO
+	 CoLqUEZ81VnfsxdDth9a76dSXYtrJkpP+MlSsHJIg+9R4+bMW3fN/fbSSHCmZD/8OD
+	 0QUcGm4WjcS5WRYs8M0URCHkCuZAhEnx5wXD0Glz4lxGX9FnIYo+e7VVuTX8ltJb7E
+	 2teRBj6ORHEXCNejKzyHW7vcqEsVUD5rzQO3iLO5uHXhwb2hHGuK9SHjGjMUGc54mV
+	 yAHYmDdE4bTqg==
+Date: Wed, 6 Mar 2024 17:30:09 -0800
+From: Josh Poimboeuf <jpoimboe@kernel.org>
+To: Jason Baron <jbaron@akamai.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Sam Sun <samsun1006219@gmail.com>,
+	linux-kernel@vger.kernel.org, syzkaller@googlegroups.com,
+	xrivendell7@gmail.com, ardb@kernel.org, peterz@infradead.org,
+	linux-mm@kvack.org, akpm@linux-foundation.org,
+	Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [Bug] WARNING in static_key_disable_cpuslocked
+Message-ID: <20240307013009.erbnug2mopx5yrnf@treble>
+References: <CAEkJfYNNZftjpYBpnH4tEnm82orKtQ6SQn9i3sg7YNO-Df3tSQ@mail.gmail.com>
+ <20240306105420.6a6bea2c@gandalf.local.home>
+ <20240306193101.s2g33o4viqi2azf3@treble>
+ <854e523c-c467-47f6-b977-933cbaadeb62@akamai.com>
+ <20240306221650.sw3lha7kca2quv63@treble>
+ <8f586bd2-c436-4334-92af-762a284e1101@akamai.com>
+ <20240306234253.zporv6cypoc7yihs@treble>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,64 +65,108 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZekNx-WkGNrVfFRD@google.com>
+In-Reply-To: <20240306234253.zporv6cypoc7yihs@treble>
 
-On Wed, Mar 06, 2024 at 04:43:51PM -0800,
-David Matlack <dmatlack@google.com> wrote:
-
-> On 2024-03-01 09:28 AM, isaku.yamahata@intel.com wrote:
-> > From: Isaku Yamahata <isaku.yamahata@intel.com>
-> > +
-> > +  struct kvm_memory_mapping {
-> > +	__u64 base_gfn;
-> > +	__u64 nr_pages;
-> > +	__u64 flags;
-> > +	__u64 source;
-> > +  };
-> > +
-> > +  /* For kvm_memory_mapping:: flags */
-> > +  #define KVM_MEMORY_MAPPING_FLAG_WRITE         _BITULL(0)
-> > +  #define KVM_MEMORY_MAPPING_FLAG_EXEC          _BITULL(1)
-> > +  #define KVM_MEMORY_MAPPING_FLAG_USER          _BITULL(2)
-> > +  #define KVM_MEMORY_MAPPING_FLAG_PRIVATE       _BITULL(3)
-> > +
-> > +KVM_MAP_MEMORY populates guest memory in the underlying mapping. If source is
-> > +not zero and it's supported (depending on underlying technology), the guest
-> > +memory content is populated with the source.
+On Wed, Mar 06, 2024 at 03:42:55PM -0800, Josh Poimboeuf wrote:
+> On Wed, Mar 06, 2024 at 05:40:11PM -0500, Jason Baron wrote:
+> > On 3/6/24 5:16 PM, Josh Poimboeuf wrote:
+> > > On Wed, Mar 06, 2024 at 03:12:07PM -0500, Jason Baron wrote:
+> > > > On 3/6/24 2:31 PM, Josh Poimboeuf wrote:
+> > > > > On Wed, Mar 06, 2024 at 10:54:20AM -0500, Steven Rostedt wrote:
+> > > > > > Now I guess the question is, why is something trying to disable something
+> > > > > > that is not enabled? Is the above scenario OK? Or should the users of
+> > > > > > static_key also prevent this?
+> > > > > 
+> > > > > Apparently that's an allowed scenario, as the jump label code seems to
+> > > > > be actively trying to support it.  Basically the last one "wins".
+> > > > > 
+> > > > > See for example:
+> > > > > 
+> > > > >     1dbb6704de91 ("jump_label: Fix concurrent static_key_enable/disable()")
+> > > > > 
+> > > > > Also the purpose of the first atomic_read() is to do a quick test before
+> > > > > grabbing the jump lock.  So instead of grabbing the jump lock earlier,
+> > > > > it should actually do the first test atomically:
+> > > > 
+> > > > Makes sense but the enable path can also set key->enabled to -1.
+> > > 
+> > > Ah, this code is really subtle :-/
+> > > 
+> > > > So I think a concurrent disable could then see the -1 in tmp and still
+> > > > trigger the WARN.
+> > > 
+> > > I think this shouldn't be possible, for the same reason that
+> > > static_key_slow_try_dec() warns on -1:  key->enabled can only be -1
+> > > during the first enable.  And disable should never be called before
+> > > then.
+> > 
+> > hmm, right but I think in this case the reproducer is writing to a sysfs
+> > file to enable/disable randomly so i'm not sure if there is anything that
+> > would enforce that ordering. I guess you could try the reproducer, I haven't
+> > really looked at it in any detail.
+> > 
+> > The code in question here is in mm/vmscan.c which actually already takes the
+> > local 'state_mutex' for some cases. So that could be extended I think easily
+> > to avoid this warning.
 > 
-> What does "populated with the source" mean?
+> Hm, right... For now I'll just continue to allow "disable before enable"
+> (or "double disable") since it may be harmless and I don't want to
+> introduce any unnecessary constraints, unless we manage to convince
+> ourselves that it's the right thing to do.
 
-source is user pointer and the memory contents of source is copied into
-base_gfn. (and it will encrypted.)
+So, I think we can simplify this nicely by getting rid of the whole -1
+thing altogether:
 
-
-> > The flags field supports three
-> > +flags: KVM_MEMORY_MAPPING_FLAG_WRITE, KVM_MEMORY_MAPPING_FLAG_EXEC, and
-> > +KVM_MEMORY_MAPPING_FLAG_USER.
-> 
-> There are 4 flags.
-
-Oops. Let me update it.
-
-
-KVM_MAP_MEMORY populates guest memory at the specified range (`base_gfn`,
-`nr_pages`) in the underlying mapping. `source` is an optional user pointer. If
-`source` is not NULL and the underlying technology supports it, the memory
-contents of `source` are copied into the guest memory. The backend may encrypt
-it.
-
-The `flags` field supports four flags: KVM_MEMORY_MAPPING_FLAG_WRITE,
-KVM_MEMORY_MAPPING_FLAG_EXEC, KVM_MEMORY_MAPPING_FLAG_USER, and
-KVM_MEMORY_MAPPING_FLAGS_PRIVATE. The first three correspond to the fault code
-for the KVM page fault to populate guest memory.  write fault, fetch fault, and
-user fault.  KVM_MEMORY_MAPPING_FLAGS_PRIVATE is applicable only for guest
-memory with guest_memfd.  It is to populate guest memory with the memory
-attribute of KVM_MEMORY_ATTRIBUTE_PRIVATE set.
-
-When the ioctl returns, the input values are updated.  If `nr_pages` is large,
-it may return -EAGAIN and update the values (`base_gfn` and `nr_pages`. `source`
-if not zero) to point to the remaining range.
-
--- 
-Isaku Yamahata <isaku.yamahata@linux.intel.com>
+diff --git a/kernel/jump_label.c b/kernel/jump_label.c
+index d9c822bbffb8..ef7eda7685b2 100644
+--- a/kernel/jump_label.c
++++ b/kernel/jump_label.c
+@@ -194,20 +194,15 @@ void static_key_enable_cpuslocked(struct static_key *key)
+ 	STATIC_KEY_CHECK_USE(key);
+ 	lockdep_assert_cpus_held();
+ 
+-	if (atomic_read(&key->enabled) > 0) {
+-		WARN_ON_ONCE(atomic_read(&key->enabled) != 1);
++	if (atomic_read(&key->enabled) == 1)
+ 		return;
+-	}
+-
+ 	jump_label_lock();
+-	if (atomic_read(&key->enabled) == 0) {
+-		atomic_set(&key->enabled, -1);
++
++	if (atomic_cmpxchg(&key->enabled, 0, 1) == 0)
+ 		jump_label_update(key);
+-		/*
+-		 * See static_key_slow_inc().
+-		 */
+-		atomic_set_release(&key->enabled, 1);
+-	}
++	else
++		WARN_ON_ONCE(atomic_read(&key->enabled) != 1);
++
+ 	jump_label_unlock();
+ }
+ EXPORT_SYMBOL_GPL(static_key_enable_cpuslocked);
+@@ -225,14 +220,16 @@ void static_key_disable_cpuslocked(struct static_key *key)
+ 	STATIC_KEY_CHECK_USE(key);
+ 	lockdep_assert_cpus_held();
+ 
+-	if (atomic_read(&key->enabled) != 1) {
+-		WARN_ON_ONCE(atomic_read(&key->enabled) != 0);
++	if (atomic_read(&key->enabled) == 0)
+ 		return;
+-	}
+ 
+ 	jump_label_lock();
+-	if (atomic_cmpxchg(&key->enabled, 1, 0))
++
++	if (atomic_cmpxchg(&key->enabled, 1, 0) == 1)
+ 		jump_label_update(key);
++	else
++		WARN_ON_ONCE(atomic_read(&key->enabled) != 0);
++
+ 	jump_label_unlock();
+ }
+ EXPORT_SYMBOL_GPL(static_key_disable_cpuslocked);
 
