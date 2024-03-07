@@ -1,142 +1,137 @@
-Return-Path: <linux-kernel+bounces-95207-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95209-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 253BC874AAC
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:20:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8AE3874AB0
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:21:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CBCFF1F21A42
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:20:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 070701C21F5E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:21:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D336E83A00;
-	Thu,  7 Mar 2024 09:20:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E3Lhb9mF"
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CE71823BF;
-	Thu,  7 Mar 2024 09:20:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6DF5823BF;
+	Thu,  7 Mar 2024 09:21:09 +0000 (UTC)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 520F683CA7;
+	Thu,  7 Mar 2024 09:21:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709803214; cv=none; b=QPy+mFwhIM+rGDWW3Z3YOr2JHChuMzcJiSJTZq+pYeN6d8R3ZlfQgSXs9qJaguhjt+NU63bxqpfUTD6LZFsqLYuJ4od7yzCjJwizBKyIjbMpCSvUqNg4ibvfe3iFKjzBPDonaaZMVdCZ4XoT0H0hms2RDl1tiGFK12Hqc5AU5QE=
+	t=1709803269; cv=none; b=TobuQzwcJsKfdtD8dTBPlG1VV8Z1qdWnRNbK7x2Gayuy2ztzTiPqlWfkFzsJB3iainnlVk1TUlGwWoLA4keXCblAFPzpFWi+h/Ac2FfXTCDdIdd3n9rrXs4XeguqniJabA6rW8U/mqImJhZlC5QqodnmgqzbEXdWm1IRqpUQVNY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709803214; c=relaxed/simple;
-	bh=JExp8xfZdKco+i9aU2Nf94UpagHKLlLHb9vJ2ivtHCM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=pzt3NtnGv6mQZ/Rg1SjNRCVA+xNqOX0K9WIQAs4AJLHWjsMH9tqOE/kd8fAW+we+9ORQw/GB91EQWczfa8iep7EesZcI9gF0xdRmbVeLzEozhD8LpJ2hKfflqjNykQEzApCCWpN04E3f0Coo1QivPzqiiS9Qi8v5f7x+L4Eapy4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E3Lhb9mF; arc=none smtp.client-ip=209.85.221.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-33d568fbf62so299889f8f.3;
-        Thu, 07 Mar 2024 01:20:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709803211; x=1710408011; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=YW0Mqn4ceL/DfI+pL4E21JiugQofGYiHeHUz1OXuJoM=;
-        b=E3Lhb9mFfe4ncEejzXKKPhEgcBMgFRVWy+Q3/UVj5hnFxv8P2OPC+/5rt8s6ix4TuW
-         B5751oRAKOCnxwOQS/Yr2aYlcg5sEA4wDYU217XzKZ/ku2MWzJ9BXvy2dhA2O5E/2aHp
-         lHo9wKeY0vrwrm8No+aI9w/LQg9CwCBZhepNiNWiohdvFSODwtbtcYD43bNgoy/c4Ui7
-         AJSQpV/Jfq6UW2y7PJgo+wr6fTiWVlnkh7Ss3PK9mYpvgF9cCAeVAsQlh+EP33i7NNyd
-         ayYaSe0LFTxxV4koo8C+ycrYbc/o+ehdveYQ4U1aRU+Xdnk5aop44pRyL5vIlI6P87CK
-         PWGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709803211; x=1710408011;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YW0Mqn4ceL/DfI+pL4E21JiugQofGYiHeHUz1OXuJoM=;
-        b=XWVcTyqKnKm7Ax1ApNJ3eX8nk6lmf71P08tp4rvC+4SFgXKSSAObwInAAY5D503dzC
-         8UmfwM0P9siiRWc6a0rcOjsg2WxlS3SVcAw7hCz7p7VTaFIvJXHwQU0oSyiDtY9NEtyF
-         U4Jrfr7yznYGCHpNtq9IeKrvhUb8S0rKvfQzyYjzwjAkPZR15zxD9sWzK4Y6r6ppuYya
-         2creDCFIZw2nFC5QkcmiWlv1bR6/rhUTrleO400s3oxkhskcTWSbYufC6P/zV3mA087C
-         6C5q5+qUBGT1+U+0fAoXVAjk/U5JWj55X8LHMtamyIjgaJ39ipx4WKkjQqLHWjvK8eFj
-         Q09w==
-X-Forwarded-Encrypted: i=1; AJvYcCWQPE3BZVXgoDv0NGpBxZDG5lwUwZyVQ0s7Wl763h0f4j2B//7exvBPu+lmNL83N6HNd7MhXpUc/OTPFiqADmuLqXWO3Ot8ygw1/U5YFfi1oF1jUCTfpUi1IVNKE3x9mUcVpt9ElBsUtbysRA==
-X-Gm-Message-State: AOJu0YxJEH7LHenlCMZIptEtO4AVaDfGjAvvvuTQnH2w/GQivtMB4GvR
-	ZRXgBQi6zazGg3zIcbsXPQq2dwXx1rGY1l6OmWrnCZjYnj409ujj
-X-Google-Smtp-Source: AGHT+IFsxBXURzKqFHcbtOlx9sJQBSH12U2/M37d2BFYrAjIIjZsY3XNHK735iX4oAlq0YZvbc6xew==
-X-Received: by 2002:a05:6000:4026:b0:33e:83a:b4f with SMTP id cp38-20020a056000402600b0033e083a0b4fmr17190412wrb.2.1709803210634;
-        Thu, 07 Mar 2024 01:20:10 -0800 (PST)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id bk15-20020a0560001d8f00b0033b48190e5esm20290113wrb.67.2024.03.07.01.20.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Mar 2024 01:20:10 -0800 (PST)
-From: Colin Ian King <colin.i.king@gmail.com>
-To: Wedson Almeida Filho <walmeida@microsoft.com>,
-	Christian Brauner <brauner@kernel.org>,
-	linux-fsdevel@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org,
-	willy@infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH][next][V2] hfsplus: remove dev_err messages and fix errno values
-Date: Thu,  7 Mar 2024 09:20:09 +0000
-Message-Id: <20240307092009.1975845-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1709803269; c=relaxed/simple;
+	bh=EvwugGIkb2zpwheAiQ8y0YWSKolLwjatKDne0mg74F8=;
+	h=Subject:To:References:Cc:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=Jffw3POd4cNteUukRnnXxj0H3VNYGjZxOz0YCwHm0LkWsGqIw94pGxWpPOEP6QZsJIGLGPS6Yp7Y646lsdmjZ4L+SOA7WIHa9BUjE8LuJYAe1z4p7tN7G6pDpcgBdiQGbcEG7Y9ChR1oSd10+CM/B8ez2lktU4TEgjps/7Av9X8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [113.200.148.30])
+	by gateway (Coremail) with SMTP id _____8Axjuv6hullO8AVAA--.53325S3;
+	Thu, 07 Mar 2024 17:20:58 +0800 (CST)
+Received: from [10.130.0.149] (unknown [113.200.148.30])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8Dxfs31hullHAFQAA--.14257S3;
+	Thu, 07 Mar 2024 17:20:53 +0800 (CST)
+Subject: Re: [PATCH v3 0/2] selftests/vDSO: Fix errors on LoongArch
+To: Andrew Morton <akpm@linux-foundation.org>
+References: <20231213012300.5640-1-yangtiezhu@loongson.cn>
+ <d73d107d-9e04-4250-f467-f6ff7eb92103@loongson.cn>
+ <e64b3529-fb62-3ddf-bde3-b3188f386bc0@loongson.cn>
+ <57438b7e-4188-428b-2456-10cfc10f35f9@loongson.cn>
+Cc: Shuah Khan <shuah@kernel.org>, Shuah Khan <skhan@linuxfoundation.org>,
+ Mark Brown <broonie@kernel.org>, linux-kselftest@vger.kernel.org,
+ loongarch@lists.linux.dev, linux-kernel@vger.kernel.org
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <a6ddf07a-99ac-9787-b879-63c3f318c84d@loongson.cn>
+Date: Thu, 7 Mar 2024 17:20:53 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <57438b7e-4188-428b-2456-10cfc10f35f9@loongson.cn>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:AQAAf8Dxfs31hullHAFQAA--.14257S3
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj93XoW7CrWrJFy5ZrWUAF4fArW5Jwc_yoW8ZrWrpF
+	WfGa15Kr4rtF18tF92gayDZF1av3W5C3W7u3yUJrWkZrn0v3WFqrWxWrW8ua9xXr97ur1Y
+	y3WIqasagayUAFgCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUBFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+	xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
+	AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
+	XVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
+	8JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_
+	Jr0_Gr1l4IxYO2xFxVAFwI0_Jrv_JF1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
+	xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0
+	cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
+	AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E
+	14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07jepB-UUUUU=
 
-While exercising hfsplus with stress-ng with xattr tests the kernel
-log was spammed with many error messages. The need to emit these
-messages is not necessary, so remove them. Also fix the errno returns,
-for XATTR_CREATE errors these should be -EEXIST, and for XATTR_REPLACE
-this should be -ENODATA.
+On 02/29/2024 05:13 PM, Tiezhu Yang wrote:
+> Hi Shuah and Andrew,
+>
+> On 01/29/2024 04:27 PM, Tiezhu Yang wrote:
+>>
+>>
+>> On 12/27/2023 03:55 PM, Tiezhu Yang wrote:
+>>> + Andrew Morton <akpm@linux-foundation.org>
+>>> + Mark Brown <broonie@kernel.org>
+>>>
+>>> On 12/13/2023 09:22 AM, Tiezhu Yang wrote:
+>>>> v3: Rebase on the next branch of linux-kselftest.git,
+>>>>     modify the patch title and update the commit message
+>>>>
+>>>> v2: Rebase on 6.5-rc1 and update the commit message
+>>>>
+>>>> Tiezhu Yang (2):
+>>>>   selftests/vDSO: Fix building errors on LoongArch
+>>>>   selftests/vDSO: Fix runtime errors on LoongArch
+>>>>
+>>>>  tools/testing/selftests/vDSO/vdso_config.h    |  6 ++++-
+>>>>  .../testing/selftests/vDSO/vdso_test_getcpu.c | 16 +++++-------
+>>>>  .../selftests/vDSO/vdso_test_gettimeofday.c   | 26 +++++--------------
+>>>>  3 files changed, 18 insertions(+), 30 deletions(-)
+>>>>
+>>>
+>>> Hi Shuah, Andrew and Mark,
+>>>
+>>> The patches still seem to apply cleanly.
+>>> Could you please review and merge them for the upcoming merge window?
+>>>
+>>> https://lore.kernel.org/lkml/20231213012300.5640-1-yangtiezhu@loongson.cn/
+>>>
+>>>
+>>
+>> Ping, any comments?
+>
+> This series has received Reviewed-by and Tested-by for two months,
+> since the merge window is coming soon, should it take through
+> shuah/linux-kselftest.git or akpm/mm.git?
 
-Kudos to Matthew Wilcox for spotting the need for -EEXIST instead of
--EOPNOTSUPP.
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
+Hi Andrew,
 
-V2: Also remove "cannot replace xattr" message and fix the errno returns
+There is already a tag linux_kselftest-next-6.9-rc1 [1],
+it seems no chance to merge them through kselftest tree,
+would you be able to pick them up through your tree [2]?
 
----
- fs/hfsplus/xattr.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+"If you cannot find a maintainer for the subsystem you are
+working on, Andrew Morton (akpm@linux-foundation.org) serves
+as a maintainer of last resort."
 
-diff --git a/fs/hfsplus/xattr.c b/fs/hfsplus/xattr.c
-index 9c9ff6b8c6f7..f61a9370a233 100644
---- a/fs/hfsplus/xattr.c
-+++ b/fs/hfsplus/xattr.c
-@@ -288,8 +288,7 @@ int __hfsplus_setxattr(struct inode *inode, const char *name,
- 
- 	if (!strcmp_xattr_finder_info(name)) {
- 		if (flags & XATTR_CREATE) {
--			pr_err("xattr exists yet\n");
--			err = -EOPNOTSUPP;
-+			err = -EEXIST;
- 			goto end_setxattr;
- 		}
- 		hfs_bnode_read(cat_fd.bnode, &entry, cat_fd.entryoffset,
-@@ -335,8 +334,7 @@ int __hfsplus_setxattr(struct inode *inode, const char *name,
- 
- 	if (hfsplus_attr_exists(inode, name)) {
- 		if (flags & XATTR_CREATE) {
--			pr_err("xattr exists yet\n");
--			err = -EOPNOTSUPP;
-+			err = -EEXIST;
- 			goto end_setxattr;
- 		}
- 		err = hfsplus_delete_attr(inode, name);
-@@ -347,8 +345,7 @@ int __hfsplus_setxattr(struct inode *inode, const char *name,
- 			goto end_setxattr;
- 	} else {
- 		if (flags & XATTR_REPLACE) {
--			pr_err("cannot replace xattr\n");
--			err = -EOPNOTSUPP;
-+			err = -ENODATA;
- 			goto end_setxattr;
- 		}
- 		err = hfsplus_create_attr(inode, name, value, size);
--- 
-2.39.2
+[1] 
+https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/tag/?h=linux_kselftest-next-6.9-rc1
+[2] https://www.kernel.org/doc/html/latest/process/submitting-patches.html
+
+Thanks,
+Tiezhu
 
 
