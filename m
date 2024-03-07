@@ -1,63 +1,49 @@
-Return-Path: <linux-kernel+bounces-96301-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96302-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65D638759E7
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 23:04:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F1168759E8
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 23:04:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E833828297A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 22:04:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 24EF1282AD2
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 22:04:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95C9D13EFE0;
-	Thu,  7 Mar 2024 22:03:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B0F013BAFA;
+	Thu,  7 Mar 2024 22:04:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nW8L14UC"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="EBZBJUiO"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACFA0131E3C;
-	Thu,  7 Mar 2024 22:03:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9940A1EF13
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 22:04:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709849028; cv=none; b=tvUiO60CqimaQw1hVkf7wCd9bAerbvCIC8o3qshqNsyTh5MKfkny95YowQwFYXGHWTQxJwG/mDgYS0BmitBEOCm590eX/cBu+V/kbD/pgu3UBkKvzWsWATjlteOXjOIQpQ3ue2MeFmGZpcWZ2YfpmVYoYR+gZs5O0rRbPtS8aD0=
+	t=1709849084; cv=none; b=Ex0+kmaViHQ5PMQKjxkMQnmLnOWpTgRV0/E2bIQLNZ/ZUH8s/VqYkTu9MZiT9OLZygdBdAr3+UkPEKzQp9agFKjuqqgcQtIwPF+zY8z9pmt/Eoq+8e/hgLbozz2UIR+U9R1B8X9Asi6yV7VN+rYoTvIC/uiK7j0jKMBFfwsAkz0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709849028; c=relaxed/simple;
-	bh=uXXY5fFvxOrrTcB+iOTkNq6WmKRJCgv3X2iBCtsruYA=;
+	s=arc-20240116; t=1709849084; c=relaxed/simple;
+	bh=Xbx7IeZFMT61R6EmLKA7T0kitwSc6IXVHXZOBHCG0cM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YaWUqAqbDNN9iqmLuku2ug98DqZQmR8BOgyRcQUBwLZSGaG9l8ah1svS4Iqn5L1558HPuqacQ4d5EIRgd7eydbrEZWGyUhcHLdAuqh+VlPnmgG73/gaF4+jszZ6RF50eHa1LScjuZ+qHCZ8qOpaBQp8pt0u14kdxgD9EzSZRLbs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nW8L14UC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF545C433F1;
-	Thu,  7 Mar 2024 22:03:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709849028;
-	bh=uXXY5fFvxOrrTcB+iOTkNq6WmKRJCgv3X2iBCtsruYA=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=gKtSk36okHdUayeGdi2X6QnvZRUxP2iQEmvw+g1owCVJCdE7Z9wh78kxkILGEoFP2ilfuBrV3VLAKkmI3vTjmo01Q+qZx4ycbt4CZ5mC+HwwM0VAOwzzZJKgFBrhVRGBrppdmQToM9sgyuOVELQSPZoKtTvqTzUuLV/PqEcfgFo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=EBZBJUiO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BAE6C433C7;
+	Thu,  7 Mar 2024 22:04:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1709849084;
+	bh=Xbx7IeZFMT61R6EmLKA7T0kitwSc6IXVHXZOBHCG0cM=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nW8L14UCIz1KhLfGfg1HRdnMqy207TaeZAkS0kmZkbcS65xYqBCSPjouX14eZqdxo
-	 LQcvxpT+SWMBn0kbfbkQetayioo4O1WsMJUuDZCz1r4Kx+wLQXhg484FU/LMVtN4Ey
-	 FJdjpXCYzuJocWjzyBvd8iOhZ+xAFYxoQx4xHZ9zhO394dXvWi2pNvu3muug/06E7p
-	 OiY7ZxsacHNzswLLl44n1xjmPN20YFr1XafsLnbziJ2JWRLY+izdp5fxveufB8EAQb
-	 DOgaN7o/xn+YeDd2A80x5FjQ2tGE+YiVhfLcAQ/kS3kESPXE+6LXo5w3pH0GG9/HNb
-	 CTAhLkDThhtQA==
-Date: Thu, 7 Mar 2024 16:03:44 -0600
-From: Rob Herring <robh@kernel.org>
-To: Frank Li <Frank.Li@nxp.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	Shengjiu Wang <shengjiu.wang@nxp.com>, linux-sound@vger.kernel.org,
-	devicetree@vger.kernel.org, imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Conor Dooley <conor.dooley@microchip.com>
-Subject: Re: [PATCH v5 2/4] ASoC: dt-bindings: fsl,imx-asrc: update max
- interrupt numbers
-Message-ID: <20240307220344.GA3133548-robh@kernel.org>
-References: <20240307-asrc_8qxp-v5-0-db363740368d@nxp.com>
- <20240307-asrc_8qxp-v5-2-db363740368d@nxp.com>
+	b=EBZBJUiO2DsgaSao58W+Ejt1lEiKt0afwvQ5dnxxr2m+RP5E5P/MgFOX4cVqQ83c4
+	 Da+OZi7CdR3/D+A9q9lgwA3nqIxv9oW0w+dAXsXeL/D5elUaNNu466eBDgJuifgCet
+	 BIXHOaKlUh09odPml+KVTmPu4DZCa9lvmrW6Daik=
+Date: Thu, 7 Mar 2024 22:04:41 +0000
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] sysfs: make sysfs_emit() return ssize_t
+Message-ID: <2024030713-favorably-liking-2135@gregkh>
+References: <33cd8f96-4b4f-4741-ac05-ef1bd267ce6b@p183>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,41 +52,34 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240307-asrc_8qxp-v5-2-db363740368d@nxp.com>
+In-Reply-To: <33cd8f96-4b4f-4741-ac05-ef1bd267ce6b@p183>
 
-On Thu, Mar 07, 2024 at 02:19:09PM -0500, Frank Li wrote:
-> fsl,imx8qxp-spdif and fsl,imx8qm-spdif have 2 interrupts. Other platforms
-> have 1 interrupt.
+On Mon, Feb 05, 2024 at 01:11:36PM +0300, Alexey Dobriyan wrote:
+> sysfs_emit() is most often found in functions returning ssize_t
+> not int:
 > 
-> Increase max interrupt number to 2 and add restriction for platforms except
-> i.MX8QXP and i.MX8QM.
+> 	static ssize_t oops_count_show(...)
+> 	{
+> 		return sysfs_emit(page, ...);
+> 	}
 > 
-> Acked-by: Conor Dooley <conor.dooley@microchip.com>
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> ---
->  Documentation/devicetree/bindings/sound/fsl,spdif.yaml | 18 +++++++++++++++++-
->  1 file changed, 17 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/fsl,spdif.yaml b/Documentation/devicetree/bindings/sound/fsl,spdif.yaml
-> index 56f8c0c8afdea..7f6590708e1ec 100644
-> --- a/Documentation/devicetree/bindings/sound/fsl,spdif.yaml
-> +++ b/Documentation/devicetree/bindings/sound/fsl,spdif.yaml
-> @@ -31,7 +31,8 @@ properties:
->      maxItems: 1
->  
->    interrupts:
-> -    maxItems: 1
-> +    minItems: 1
-> +    maxItems: 2
+> This pattern results in sign-extension instruction between
+> sysfs_emit() return value (int) and caller return value (which is
+> ssize_t).
 
-I still don't know what the 2 interrupts are (reading this patch). You 
-need something like this:
+Is that a problem?
 
-interrupts:
-  minItems: 1
-  items:
-    - description: Combined or receive interrupt
-    - description: Transmit interrupt
+> But it is better to do sign-extension once inside sysfs_emit()
+> then duplicate it at nearly every call site on 64-bit.
 
-Correct whatever I got wrong in the descriptions...
+Why is that better?  Does this affect code generation?  If so, how much?
+And to what affect?
+
+And the function itself really is dealing with an int, it's up to the
+caller to want to do something with that, not the sysfs_emit() call
+itself.
+
+thanks,
+
+greg k-h
 
