@@ -1,149 +1,255 @@
-Return-Path: <linux-kernel+bounces-95534-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95535-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5F5C874F07
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 13:29:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4ABC874F0A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 13:29:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0B19285CA1
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:29:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E7AB1F24747
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:29:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47D0712BE9A;
-	Thu,  7 Mar 2024 12:29:01 +0000 (UTC)
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BA2912B14C;
+	Thu,  7 Mar 2024 12:29:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FeaVX8Pz"
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22FAE12AACD;
-	Thu,  7 Mar 2024 12:28:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C624B12AAE5;
+	Thu,  7 Mar 2024 12:29:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709814540; cv=none; b=mVsUI2yIbxTepVrcHzJ8w6hCyG9Nl0i1Gj3d1r3aqMADbvhq+J3egyDNp/vVm7JENPTxh4Q+XrZAeVtvhaWuUvOq3WZehv+WwtUB6lfSNauoL01VkT3Q/SCKVfcwrcJbPeplqBnCs+AQ8IuQA89Rcq64AIoncAkveks2NbiwCsU=
+	t=1709814564; cv=none; b=BKgLETGatcfaBI6FMMER5iQAoCRT5aCib29DMlJFlqdCGpskyb7Tx9fxfnuauX/uwh5qJO/DZKM/sbl3G8A42lLv24/f7ZZaCTak8NuqinOEJKGjIMaIXB5kzOTW4o4S6haKhVN3p6fInJV9df0iK9KBYd/7CZC5P9IYl4ryyOU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709814540; c=relaxed/simple;
-	bh=dVNW0oddv3N048br45hJLhMcLswgKfiqOYg11zbnmDY=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=duOmoVWd+uH22Ri9A9KQ+Zqc3JUsBDOQMbY8VWfhHTyxEM5HOU7+fj+DFB2qaJq+U/f/oyGVWoltkzVpP/yLnd4DHKkMtxGHOIHtl+FmUwDUDe7us2LIt+ykRcVN40xavccGLC6qFpvxJdlSGHaltsSKuRrUlRAa2/xGPaFXAnU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Tr7pr2kmCz1xq8c;
-	Thu,  7 Mar 2024 20:27:16 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
-	by mail.maildlp.com (Postfix) with ESMTPS id 43254140336;
-	Thu,  7 Mar 2024 20:28:55 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Thu, 7 Mar
- 2024 20:28:54 +0800
-Subject: Re: [RFC PATCH net-next v1 1/2] net: mirror skb frag ref/unref
- helpers
-To: Mina Almasry <almasrymina@google.com>, <netdev@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>
-CC: Mirko Lindner <mlindner@marvell.com>, Stephen Hemminger
-	<stephen@networkplumber.org>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
-	<pabeni@redhat.com>, Tariq Toukan <tariqt@nvidia.com>, Boris Pismenny
-	<borisp@nvidia.com>, John Fastabend <john.fastabend@gmail.com>, Dragos
- Tatulea <dtatulea@nvidia.com>
-References: <20240306235922.282781-1-almasrymina@google.com>
- <20240306235922.282781-2-almasrymina@google.com>
-From: Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <8ef17e46-3d14-e010-c721-6fca3d57f78f@huawei.com>
-Date: Thu, 7 Mar 2024 20:28:53 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+	s=arc-20240116; t=1709814564; c=relaxed/simple;
+	bh=TXEiZlFrI3O3jEy5Fg8AeV6L0c2a37TvABNwO3/ujww=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=NSvqJ4L5IhlPg/DnngGLgm7LACPGqOz2b4IaASKGGlNQfzJZ6SZ5qYmsiiDQvGUZ5/dezUdCsBb4y2ZYdcvGRrrRLUBzCcku7MHCKAUJfhO5dw6K/A0mZm6QOoxvrq1D/ZCCC0CZfTgnGVp+YLt+XXokfiG+7HiLV+bRNVP10qM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FeaVX8Pz; arc=none smtp.client-ip=209.85.167.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-512b3b04995so608215e87.3;
+        Thu, 07 Mar 2024 04:29:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709814561; x=1710419361; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=i63ZUY7XKpQyXAHueT3y2cbAVNLsMRCCki1KAQkz850=;
+        b=FeaVX8Pz2z86Zd8UN4Yk9VOBSa/if4g0MSQf7eaD6o/VOSjOOXC0TwVRGw91GkERsr
+         Cd+hdo10vB8JQ5+lVDI1VKhC99uHqqzRJK3iFQLD2KNRJ2CD0fgEjCrtSpNoREFIJ3rb
+         Ku83GZxlEphqNHAvn/vsJfsJwhI1PZCqd1HPjOsx/g4L4Flb+ZYlBHdRB0xFsoAI9stp
+         6BQze9SSWch2iSIkO/Ff2j+RPNKqwmSY69O7lyCH41hchTHfzge92niYarpjS0qIApR1
+         pfGnK5oF7TQONZWxXo6EqGQYe/6UYY+YpV10lkcY8iE95jTR5eFwhXPWlC7mDOG34k82
+         sO2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709814561; x=1710419361;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=i63ZUY7XKpQyXAHueT3y2cbAVNLsMRCCki1KAQkz850=;
+        b=UyKny6NVnIkhNtYU2DJRUU820tgmXAjoaYBVW6aVH4YDxW5JSHp0Y7Y4sMW+wtTXvU
+         IHDifZ2LLRIXCQhAXLeOdc1NCa1kGqJ7jFW6rg4C5UmAv5Vm/kNapfmT6s4fydFYnmzz
+         Q/BStMnNzMMU3X7+4LjtFPCVXWjM98XZ0/pO84KLEN7NgfDy1pvrblLVJfHPMXxrrPOz
+         u51bHsFtSTUWDCC/ItX0QnD+NI2wtAbjFFeTCJVzK/T3DnIUSOJfvEPpbr+q0w8VSvlo
+         u0qWj1htXc/haKlF+pFnvY4d9jjvLOWnfMZ7OCWh3KmJmCP8RuQHwxeyM8lA3SxTBBzd
+         CN5g==
+X-Forwarded-Encrypted: i=1; AJvYcCVddjhySDUqtRyVqzRXuGS1mLIQD/pYxUQ9InnNpd1AR/lxFEF8xmTOBj+YTQWMtPWIlDow5xrt60TTpR7Cqf9D2E8vYkOnjQ/b5UrmSd0v+NRRPRq70QsiX/S9i/2GIsw2FwQuSh/VNkhz6QiTJE0LJzb3wHB8krauEw9PMcBhtA==
+X-Gm-Message-State: AOJu0Yy2Pb0kIkMhamoCvQR4OoEDYlnpSmCLuxm87XcuznW1c5ZnIQmc
+	PV45iyMdayTzbbvpRPAzHlEu8rMwTuPaQsuAWNQshUa01YBczuBp
+X-Google-Smtp-Source: AGHT+IHelcR5ZOyVmkbwCwQ8QjJfDVtAw8aDRRZ7Hsnxo1rdcGIXHa1CI9IXIdmB4PvykPUvOGmiQA==
+X-Received: by 2002:a05:6512:484e:b0:513:5eb5:625f with SMTP id ep14-20020a056512484e00b005135eb5625fmr1204005lfb.31.1709814560578;
+        Thu, 07 Mar 2024 04:29:20 -0800 (PST)
+Received: from ?IPv6:2001:a61:343e:8301:d737:22b0:7431:8d01? ([2001:a61:343e:8301:d737:22b0:7431:8d01])
+        by smtp.gmail.com with ESMTPSA id lo2-20020a170906fa0200b00a45a687b52asm2925721ejb.213.2024.03.07.04.29.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Mar 2024 04:29:20 -0800 (PST)
+Message-ID: <c0f7ea40a2b1abc22242a892e162e4511a7c99f1.camel@gmail.com>
+Subject: Re: [PATCH v5 1/2] driver core: Introduce device_link_wait_removal()
+From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+To: Herve Codina <herve.codina@bootlin.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki"
+ <rafael@kernel.org>, Rob Herring <robh+dt@kernel.org>, Frank Rowand
+ <frowand.list@gmail.com>, Saravana Kannan <saravanak@google.com>, Lizhi Hou
+ <lizhi.hou@amd.com>, Max Zhen <max.zhen@amd.com>, Sonal Santan
+ <sonal.santan@amd.com>, Stefano Stabellini <stefano.stabellini@xilinx.com>,
+  Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Allan Nielsen
+ <allan.nielsen@microchip.com>, Horatiu Vultur
+ <horatiu.vultur@microchip.com>, Steen Hegelund
+ <steen.hegelund@microchip.com>, Luca Ceresoli <luca.ceresoli@bootlin.com>,
+ Nuno Sa <nuno.sa@analog.com>, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>,  stable@vger.kernel.org
+Date: Thu, 07 Mar 2024 13:29:19 +0100
+In-Reply-To: <20240307131623.467e1def@bootlin.com>
+References: <20240307111036.225007-1-herve.codina@bootlin.com>
+	 <20240307111036.225007-2-herve.codina@bootlin.com>
+	 <94997e8720bc0a68afa85be3ef521c8844d0f0a0.camel@gmail.com>
+	 <20240307131623.467e1def@bootlin.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240306235922.282781-2-almasrymina@google.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500005.china.huawei.com (7.185.36.74)
 
-On 2024/3/7 7:59, Mina Almasry wrote:
+On Thu, 2024-03-07 at 13:16 +0100, Herve Codina wrote:
+> Hi Nuno,
+>=20
+> On Thu, 07 Mar 2024 12:50:52 +0100
+> Nuno S=C3=A1 <noname.nuno@gmail.com> wrote:
+>=20
+> > Hi Herve,
+> >=20
+> >=20
+> > On Thu, 2024-03-07 at 12:10 +0100, Herve Codina wrote:
+> > > The commit 80dd33cf72d1 ("drivers: base: Fix device link removal")
+> > > introduces a workqueue to release the consumer and supplier devices u=
+sed
+> > > in the devlink.
+> > > In the job queued, devices are release and in turn, when all the
+> > > references to these devices are dropped, the release function of the
+> > > device itself is called.
+> > >=20
+> > > Nothing is present to provide some synchronisation with this workqueu=
+e
+> > > in order to ensure that all ongoing releasing operations are done and
+> > > so, some other operations can be started safely.
+> > >=20
+> > > For instance, in the following sequence:
+> > > =C2=A0 1) of_platform_depopulate()
+> > > =C2=A0 2) of_overlay_remove()
+> > >=20
+> > > During the step 1, devices are released and related devlinks are remo=
+ved
+> > > (jobs pushed in the workqueue).
+> > > During the step 2, OF nodes are destroyed but, without any
+> > > synchronisation with devlink removal jobs, of_overlay_remove() can ra=
+ise
+> > > warnings related to missing of_node_put():
+> > > =C2=A0 ERROR: memory leak, expected refcount 1 instead of 2
+> > >=20
+> > > Indeed, the missing of_node_put() call is going to be done, too late,
+> > > from the workqueue job execution.
+> > >=20
+> > > Introduce device_link_wait_removal() to offer a way to synchronize
+> > > operations waiting for the end of devlink removals (i.e. end of
+> > > workqueue jobs).
+> > > Also, as a flushing operation is done on the workqueue, the workqueue
+> > > used is moved from a system-wide workqueue to a local one.
+> > >=20
+> > > Cc: stable@vger.kernel.org
+> > > Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+> > > Tested-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
+> > > Reviewed-by: Nuno Sa <nuno.sa@analog.com>
+> > > ---
+> > > =C2=A0drivers/base/core.c=C2=A0=C2=A0=C2=A0 | 26 ++++++++++++++++++++=
++++---
+> > > =C2=A0include/linux/device.h |=C2=A0 1 +
+> > > =C2=A02 files changed, 24 insertions(+), 3 deletions(-)
+> > >=20
+> > > diff --git a/drivers/base/core.c b/drivers/base/core.c
+> > > index d5f4e4aac09b..48b28c59c592 100644
+> > > --- a/drivers/base/core.c
+> > > +++ b/drivers/base/core.c
+> > > @@ -44,6 +44,7 @@ static bool fw_devlink_is_permissive(void);
+> > > =C2=A0static void __fw_devlink_link_to_consumers(struct device *dev);
+> > > =C2=A0static bool fw_devlink_drv_reg_done;
+> > > =C2=A0static bool fw_devlink_best_effort;
+> > > +static struct workqueue_struct *device_link_wq;
+> > > =C2=A0
+> > > =C2=A0/**
+> > > =C2=A0 * __fwnode_link_add - Create a link between two fwnode_handles=
+.
+> > > @@ -532,12 +533,26 @@ static void devlink_dev_release(struct device *=
+dev)
+> > > =C2=A0	/*
+> > > =C2=A0	 * It may take a while to complete this work because of the SR=
+CU
+> > > =C2=A0	 * synchronization in device_link_release_fn() and if the cons=
+umer or
+> > > -	 * supplier devices get deleted when it runs, so put it into the
+> > > "long"
+> > > -	 * workqueue.
+> > > +	 * supplier devices get deleted when it runs, so put it into the
+> > > +	 * dedicated workqueue.
+> > > =C2=A0	 */
+> > > -	queue_work(system_long_wq, &link->rm_work);
+> > > +	queue_work(device_link_wq, &link->rm_work);
+> > > =C2=A0}
+> > > =C2=A0
+> > > +/**
+> > > + * device_link_wait_removal - Wait for ongoing devlink removal jobs =
+to
+> > > terminate
+> > > + */
+> > > +void device_link_wait_removal(void)
+> > > +{
+> > > +	/*
+> > > +	 * devlink removal jobs are queued in the dedicated work queue.
+> > > +	 * To be sure that all removal jobs are terminated, ensure that any
+> > > +	 * scheduled work has run to completion.
+> > > +	 */
+> > > +	flush_workqueue(device_link_wq);
+> > > +}
+> > > +EXPORT_SYMBOL_GPL(device_link_wait_removal);
+> > > +
+> > > =C2=A0static struct class devlink_class =3D {
+> > > =C2=A0	.name =3D "devlink",
+> > > =C2=A0	.dev_groups =3D devlink_groups,
+> > > @@ -4099,9 +4114,14 @@ int __init devices_init(void)
+> > > =C2=A0	sysfs_dev_char_kobj =3D kobject_create_and_add("char", dev_kob=
+j);
+> > > =C2=A0	if (!sysfs_dev_char_kobj)
+> > > =C2=A0		goto char_kobj_err;
+> > > +	device_link_wq =3D alloc_workqueue("device_link_wq", 0, 0);=C2=A0=
+=20
+> >=20
+> > My rb tag was with the assumption this is moved into devlink_class_init=
+(). IIUC,
+> > Saravana also agreed with that [1]. But it looks like he missed that we=
+ are
+> > allocating the queue in devices_init() and not in devlink_class_init().
+> >=20
+> > I'm also not sure if this is in line with what Rafael wanted for ccing =
+stable.
+> > How do
+> > we know the next patch depends on this one?
+> >=20
+> > [1]:
+> > https://lore.kernel.org/lkml/CAGETcx_gNWOTsSZMaZu+XU1-5Z60WEcMhw08t4Sn_=
+-YgkCCUmA@mail.gmail.com/
+> >=20
+>=20
+> We discussed that point and I understood that you were ok to do that on y=
+our
+> side:
+> =C2=A0
+> https://lore.kernel.org/linux-kernel/f42ceee61ddb8b50c347589649d4131476ab=
+5d81.camel@gmail.com/
+>=20
+> Sorry if I misunderstood.
 
-..
+Oh, yeah, I can do that. But given Saravana reply I thought the expectation=
+ is to
+have the queue already allocated in devlink_class_init().
 
->  
->  int skb_pp_cow_data(struct page_pool *pool, struct sk_buff **pskb,
-> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> index 1f918e602bc4..6d234faa9d9e 100644
-> --- a/net/core/skbuff.c
-> +++ b/net/core/skbuff.c
-> @@ -1006,6 +1006,21 @@ int skb_cow_data_for_xdp(struct page_pool *pool, struct sk_buff **pskb,
->  EXPORT_SYMBOL(skb_cow_data_for_xdp);
->  
->  #if IS_ENABLED(CONFIG_PAGE_POOL)
-> +bool napi_pp_get_page(struct page *page)
-> +{
-> +
-> +	struct page *head_page;
-> +
-> +	head_page = compound_head(page);
-> +
-> +	if (!is_pp_page(page))
+>=20
+> I am going to wait for other comments on this current series before re-se=
+nding
+> with our 'Reviewed-by' removed if needed. Let me know.
+>=20
 
-I would use the head_page for is_pp_page(), I am not sure it
-matters that much, but I believe it is the precedent.
+Anyways, if your expectation was for me to do it later, fine. No need to re=
+move the
+tag. Sorry for the noise.
 
-Maybe do the below and remove head_page varible:
-page = compound_head(page);
+- Nuno S=C3=A1
+>=20
 
-> +		return false;
-> +
-> +	page_pool_ref_page(head_page);
-> +	return true;
-> +}
-> +EXPORT_SYMBOL(napi_pp_get_page);
-> +
-
-..
-
-> -
->  static void skb_kfree_head(void *head, unsigned int end_offset)
->  {
->  	if (end_offset == SKB_SMALL_HEAD_HEADROOM)
-> @@ -4199,7 +4183,7 @@ int skb_shift(struct sk_buff *tgt, struct sk_buff *skb, int shiftlen)
->  			to++;
->  
->  		} else {
-> -			__skb_frag_ref(fragfrom);
-> +			__skb_frag_ref(fragfrom, skb->pp_recycle);
->  			skb_frag_page_copy(fragto, fragfrom);
->  			skb_frag_off_copy(fragto, fragfrom);
->  			skb_frag_size_set(fragto, todo);
-> @@ -4849,7 +4833,7 @@ struct sk_buff *skb_segment(struct sk_buff *head_skb,
->  			}
->  
->  			*nskb_frag = (i < 0) ? skb_head_frag_to_page_desc(frag_skb) : *frag;
-> -			__skb_frag_ref(nskb_frag);
-> +			__skb_frag_ref(nskb_frag, nskb->pp_recycle);
->  			size = skb_frag_size(nskb_frag);
->  
->  			if (pos < offset) {
-> @@ -5980,10 +5964,8 @@ bool skb_try_coalesce(struct sk_buff *to, struct sk_buff *from,
->  	/* if the skb is not cloned this does nothing
->  	 * since we set nr_frags to 0.
->  	 */
-> -	if (skb_pp_frag_ref(from)) {
-I guess it worth mentioning that skb->pp_recycle is only checked once,
-and skb->pp_recycle is checked for every frag after this patch.
-
-> -		for (i = 0; i < from_shinfo->nr_frags; i++)
-> -			__skb_frag_ref(&from_shinfo->frags[i]);
-> -	}
-> +	for (i = 0; i < from_shinfo->nr_frags; i++)
-> +		__skb_frag_ref(&from_shinfo->frags[i], from->pp_recycle);
->  
->  	to->truesize += delta;
->  	to->len += len;
-> 
 
