@@ -1,41 +1,41 @@
-Return-Path: <linux-kernel+bounces-94963-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94965-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AD3587474D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 05:21:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9050D874753
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 05:22:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 78C0E1F2404D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 04:21:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4CE78284EAC
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 04:21:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0FC6200DE;
-	Thu,  7 Mar 2024 04:19:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 042F71C2A1;
+	Thu,  7 Mar 2024 04:20:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b="mJfe0h+P"
-Received: from m16.mail.126.com (m16.mail.126.com [117.135.210.8])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 376157484;
-	Thu,  7 Mar 2024 04:19:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.8
+	dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b="bdXFwwC+"
+Received: from m16.mail.126.com (m16.mail.126.com [117.135.210.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FE331BC56;
+	Thu,  7 Mar 2024 04:20:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709785190; cv=none; b=U7keh4InqymvtlTV0d7QRb1vXJhMeWK9izB1cbMPaSQMhbhxXGvoa8fQakoex7b/x/84RptIlaVGVMiY/J4e9EEx7VjeaP93CKyYX5dQwLxHgbV5zcgJK6jO7TzgpoXNQ+NGEhygrBlF28CmzPqrLgf4CCkxlbnIwCevsSJMkxo=
+	t=1709785211; cv=none; b=WSsO9IhlQu4xtvRZHd1Qr5dMtv384ivr03f4prJRFTjzAQiByxWh7Pj4cd0I5D3hFbq8Az73l+2Af58rd7uhtZvc7OoDlt3SmVx8H0Lv8JIcpjhZ7/jtEtm473AOtDZZqgUC/qEDRG+lz2/FJ8bG7xBGHEzUn3MhenzUhtqZCCI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709785190; c=relaxed/simple;
-	bh=e2bhHrOwQeDgAKyoVc5WzHKd697WiF5XcMsoy1z5sI8=;
+	s=arc-20240116; t=1709785211; c=relaxed/simple;
+	bh=RVzCBWZL3Fs2lKVuMO+8HdbnbBEx+N+Ja88D9+iMXLI=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=mKgsaL/Ju0OpIZg4DD8j4ZXbzcOW/0PHPaw/RyVFtNcBsbMZneouHrvGL3XRSlvM5mqd3AEQ5hgVAbsC0tBjiAvBopYgfkLQdqL6o6yc1UISk4F62ugUsBfcvAGiW9HJDLFhqBF10W7gELT7hTmRK02Z5m6peJera/r2ZYrLqW4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com; spf=pass smtp.mailfrom=126.com; dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b=mJfe0h+P; arc=none smtp.client-ip=117.135.210.8
+	 MIME-Version; b=E+uveaUxDTgpOPCEIIb5dl9ZWKTBvF+GbQNIVAcX7AEEjGylm6mQWaAsMQYhKuZN6rczkCQ1ccLItUTBqcnmRxPVg8jJo8L7HBD0HSfrnj454jjyw+QT8iWjhFDNSdmLoKbgkfpqYFacjd0pgaWRjdrIiDF1UvSO6K733GeUS/0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com; spf=pass smtp.mailfrom=126.com; dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b=bdXFwwC+; arc=none smtp.client-ip=117.135.210.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=126.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=r/rBM
-	ENEVMoRhNYsxqvtzmdqWbZKq2KJxpW3M0pI9Po=; b=mJfe0h+P2YQjxD5GyXyLj
-	asaK2bP8Utt8vu7m8c2cSuFbsTa4bHcys2GsfJsjKSHAij+6tc+KX1Et3TsrjJIr
-	yvFXoEBLv7HmMoN4mimxKEbanOcR9AMQ8Nu4ML3r7aSCdHOr0+TOvRII/rXI8Jup
-	Cftbtn0orBLySWiFHyYDUU=
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=VJTS0
+	wA0DvHHRitPTm1NT41xy31OCjf26nYLakxJP8U=; b=bdXFwwC+lx4GDms/G4slc
+	jAf0VBcp4OU0LAv6ytfWLXUNBjv23ZyGXndPK+aOhtCO5sY0bZoWUM9KJRgizZGC
+	LExB2L0VK7w5tS8v75AU/nVt6w9ecYDluGqR0TiYFpQ/2quKpF5z02SPlx3RNQ06
+	+fGEp2YrFDbjSA5IYraB0Y=
 Received: from localhost.localdomain (unknown [116.128.244.171])
-	by gzga-smtp-mta-g1-1 (Coremail) with SMTP id _____wBXrmdmP+llh0IFAA--.11885S10;
+	by gzga-smtp-mta-g1-1 (Coremail) with SMTP id _____wBXrmdmP+llh0IFAA--.11885S11;
 	Thu, 07 Mar 2024 12:19:18 +0800 (CST)
 From: Genjian <zhanggenjian@126.com>
 To: stable@vger.kernel.org
@@ -44,12 +44,14 @@ Cc: axboe@kernel.dk,
 	linux-block@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	zhanggenjian123@gmail.com,
-	Martijn Coenen <maco@android.com>,
+	Siddh Raman Pant <code@siddh.me>,
+	syzbot+a8e049cd3abd342936b6@syzkaller.appspotmail.com,
+	Matthew Wilcox <willy@infradead.org>,
 	Christoph Hellwig <hch@lst.de>,
 	Genjian Zhang <zhanggenjian@kylinos.cn>
-Subject: [PATCH linux-5.4.y 6/8] loop: Factor out configuring loop from status
-Date: Thu,  7 Mar 2024 12:14:09 +0800
-Message-Id: <20240307041411.3792061-7-zhanggenjian@126.com>
+Subject: [PATCH linux-5.4.y 7/8] loop: Check for overflow while configuring loop
+Date: Thu,  7 Mar 2024 12:14:10 +0800
+Message-Id: <20240307041411.3792061-8-zhanggenjian@126.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240307041411.3792061-1-zhanggenjian@126.com>
 References: <20240307041411.3792061-1-zhanggenjian@126.com>
@@ -60,182 +62,69 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wBXrmdmP+llh0IFAA--.11885S10
-X-Coremail-Antispam: 1Uf129KBjvJXoWxCF4xZr43Jw1UGr4DXF4kXrb_yoWrtF4rpF
-	sIgFyYyrWFqF4xWF45tw4kWFW5G3Wjk347Cry7J34jkr1jvr9Iq34akryjga97JryDua4Y
-	q390yF1ruryUCFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jtiSLUUUUU=
-X-CM-SenderInfo: x2kd0wxjhqyxldq6ij2wof0z/1tbiHgqafmV2z-5wPQAAsf
+X-CM-TRANSID:_____wBXrmdmP+llh0IFAA--.11885S11
+X-Coremail-Antispam: 1Uf129KBjvJXoW7Zr1xur4Utw4DAF45AFW5Wrg_yoW8Kw18pF
+	43WryUZ3yrKF4UCFsrt34kXry5WanrGFy3G39Fk345u390vrnavry7Cr93urykJry5ZFWS
+	gFn3try8Z3WUZrUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jtR67UUUUU=
+X-CM-SenderInfo: x2kd0wxjhqyxldq6ij2wof0z/1tbiyBqafmWWf4vf8AAAse
 
-From: Martijn Coenen <maco@android.com>
+From: Siddh Raman Pant <code@siddh.me>
 
-[ Upstream commit 0c3796c244598122a5d59d56f30d19390096817f ]
+[ Upstream commit c490a0b5a4f36da3918181a8acdc6991d967c5f3 ]
 
-Factor out this code into a separate function, so it can be reused by
-other code more easily.
+The userspace can configure a loop using an ioctl call, wherein
+a configuration of type loop_config is passed (see lo_ioctl()'s
+case on line 1550 of drivers/block/loop.c). This proceeds to call
+loop_configure() which in turn calls loop_set_status_from_info()
+(see line 1050 of loop.c), passing &config->info which is of type
+loop_info64*. This function then sets the appropriate values, like
+the offset.
 
-Signed-off-by: Martijn Coenen <maco@android.com>
+loop_device has lo_offset of type loff_t (see line 52 of loop.c),
+which is typdef-chained to long long, whereas loop_info64 has
+lo_offset of type __u64 (see line 56 of include/uapi/linux/loop.h).
+
+The function directly copies offset from info to the device as
+follows (See line 980 of loop.c):
+	lo->lo_offset = info->lo_offset;
+
+This results in an overflow, which triggers a warning in iomap_iter()
+due to a call to iomap_iter_done() which has:
+	WARN_ON_ONCE(iter->iomap.offset > iter->pos);
+
+Thus, check for negative value during loop_set_status_from_info().
+
+Bug report: https://syzkaller.appspot.com/bug?id=c620fe14aac810396d3c3edc9ad73848bf69a29e
+
+Reported-and-tested-by: syzbot+a8e049cd3abd342936b6@syzkaller.appspotmail.com
+Cc: stable@vger.kernel.org
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Signed-off-by: Siddh Raman Pant <code@siddh.me>
 Reviewed-by: Christoph Hellwig <hch@lst.de>
+Link: https://lore.kernel.org/r/20220823160810.181275-1-code@siddh.me
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Genjian Zhang <zhanggenjian@kylinos.cn>
 ---
- drivers/block/loop.c | 117 +++++++++++++++++++++++++------------------
- 1 file changed, 67 insertions(+), 50 deletions(-)
+ drivers/block/loop.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/drivers/block/loop.c b/drivers/block/loop.c
-index 54f0f592423d..eadb189be0cc 100644
+index eadb189be0cc..c999eef4e345 100644
 --- a/drivers/block/loop.c
 +++ b/drivers/block/loop.c
-@@ -1258,75 +1258,43 @@ static int loop_clr_fd(struct loop_device *lo)
- 	return __loop_clr_fd(lo, false);
- }
- 
-+/**
-+ * loop_set_status_from_info - configure device from loop_info
-+ * @lo: struct loop_device to configure
-+ * @info: struct loop_info64 to configure the device with
-+ *
-+ * Configures the loop device parameters according to the passed
-+ * in loop_info64 configuration.
-+ */
- static int
--loop_set_status(struct loop_device *lo, const struct loop_info64 *info)
-+loop_set_status_from_info(struct loop_device *lo,
-+			  const struct loop_info64 *info)
- {
- 	int err;
- 	struct loop_func_table *xfer;
- 	kuid_t uid = current_uid();
--	struct block_device *bdev;
--	bool partscan = false;
--	bool size_changed = false;
--
--	err = mutex_lock_killable(&loop_ctl_mutex);
--	if (err)
--		return err;
--	if (lo->lo_encrypt_key_size &&
--	    !uid_eq(lo->lo_key_owner, uid) &&
--	    !capable(CAP_SYS_ADMIN)) {
--		err = -EPERM;
--		goto out_unlock;
--	}
--	if (lo->lo_state != Lo_bound) {
--		err = -ENXIO;
--		goto out_unlock;
--	}
--	if ((unsigned int) info->lo_encrypt_key_size > LO_KEY_SIZE) {
--		err = -EINVAL;
--		goto out_unlock;
--	}
--
--	if (lo->lo_offset != info->lo_offset ||
--	    lo->lo_sizelimit != info->lo_sizelimit) {
--		size_changed = true;
--		sync_blockdev(lo->lo_device);
--		invalidate_bdev(lo->lo_device);
--	}
- 
--	/* I/O need to be drained during transfer transition */
--	blk_mq_freeze_queue(lo->lo_queue);
--
--	if (size_changed && lo->lo_device->bd_inode->i_mapping->nrpages) {
--		/* If any pages were dirtied after invalidate_bdev(), try again */
--		err = -EAGAIN;
--		pr_warn("%s: loop%d (%s) has still dirty pages (nrpages=%lu)\n",
--			__func__, lo->lo_number, lo->lo_file_name,
--			lo->lo_device->bd_inode->i_mapping->nrpages);
--		goto out_unfreeze;
--	}
-+	if ((unsigned int) info->lo_encrypt_key_size > LO_KEY_SIZE)
-+		return -EINVAL;
- 
- 	err = loop_release_xfer(lo);
- 	if (err)
--		goto out_unfreeze;
-+		return err;
- 
- 	if (info->lo_encrypt_type) {
- 		unsigned int type = info->lo_encrypt_type;
- 
--		if (type >= MAX_LO_CRYPT) {
--			err = -EINVAL;
--			goto out_unfreeze;
--		}
-+		if (type >= MAX_LO_CRYPT)
-+			return -EINVAL;
- 		xfer = xfer_funcs[type];
--		if (xfer == NULL) {
--			err = -EINVAL;
--			goto out_unfreeze;
--		}
-+		if (xfer == NULL)
-+			return -EINVAL;
- 	} else
- 		xfer = NULL;
- 
- 	err = loop_init_xfer(lo, xfer, info);
- 	if (err)
--		goto out_unfreeze;
-+		return err;
+@@ -1298,6 +1298,11 @@ loop_set_status_from_info(struct loop_device *lo,
  
  	lo->lo_offset = info->lo_offset;
  	lo->lo_sizelimit = info->lo_sizelimit;
-@@ -1353,6 +1321,55 @@ loop_set_status(struct loop_device *lo, const struct loop_info64 *info)
- 		lo->lo_key_owner = uid;
- 	}
- 
-+	return 0;
-+}
 +
-+static int
-+loop_set_status(struct loop_device *lo, const struct loop_info64 *info)
-+{
-+	int err;
-+	struct block_device *bdev;
-+	kuid_t uid = current_uid();
-+	bool partscan = false;
-+	bool size_changed = false;
++	/* loff_t vars have been assigned __u64 */
++	if (lo->lo_offset < 0 || lo->lo_sizelimit < 0)
++		return -EOVERFLOW;
 +
-+	err = mutex_lock_killable(&loop_ctl_mutex);
-+	if (err)
-+		return err;
-+	if (lo->lo_encrypt_key_size &&
-+	    !uid_eq(lo->lo_key_owner, uid) &&
-+	    !capable(CAP_SYS_ADMIN)) {
-+		err = -EPERM;
-+		goto out_unlock;
-+	}
-+	if (lo->lo_state != Lo_bound) {
-+		err = -ENXIO;
-+		goto out_unlock;
-+	}
-+
-+	if (lo->lo_offset != info->lo_offset ||
-+	    lo->lo_sizelimit != info->lo_sizelimit) {
-+		size_changed = true;
-+		sync_blockdev(lo->lo_device);
-+		invalidate_bdev(lo->lo_device);
-+	}
-+
-+	/* I/O need to be drained during transfer transition */
-+	blk_mq_freeze_queue(lo->lo_queue);
-+
-+	if (size_changed && lo->lo_device->bd_inode->i_mapping->nrpages) {
-+		/* If any pages were dirtied after invalidate_bdev(), try again */
-+		err = -EAGAIN;
-+		pr_warn("%s: loop%d (%s) has still dirty pages (nrpages=%lu)\n",
-+			__func__, lo->lo_number, lo->lo_file_name,
-+			lo->lo_device->bd_inode->i_mapping->nrpages);
-+		goto out_unfreeze;
-+	}
-+
-+	err = loop_set_status_from_info(lo, info);
-+	if (err)
-+		goto out_unfreeze;
-+
- 	if (size_changed) {
- 		loff_t new_size = get_size(lo->lo_offset, lo->lo_sizelimit,
- 					   lo->lo_backing_file);
+ 	memcpy(lo->lo_file_name, info->lo_file_name, LO_NAME_SIZE);
+ 	memcpy(lo->lo_crypt_name, info->lo_crypt_name, LO_NAME_SIZE);
+ 	lo->lo_file_name[LO_NAME_SIZE-1] = 0;
 -- 
 2.25.1
 
