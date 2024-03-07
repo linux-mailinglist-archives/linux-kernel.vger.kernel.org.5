@@ -1,52 +1,74 @@
-Return-Path: <linux-kernel+bounces-95087-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95088-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E850B87491A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 08:54:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E904B87491E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 08:54:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9FC2E2856C6
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 07:54:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 186E41C215A6
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 07:54:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 203EC6312B;
-	Thu,  7 Mar 2024 07:53:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5C5F633FE;
+	Thu,  7 Mar 2024 07:53:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="igrOrrBM"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="EBaLRokM"
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 919A86310B;
-	Thu,  7 Mar 2024 07:53:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17F32633E7
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 07:53:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709798033; cv=none; b=T+XgUOUqMCyQ3Afq9gqNculd4LKz03Boo2NYHgipFTGtwIJzFdsEKnjFBaIA1+MxknxPWHVgTPRhF5WXW5YHPQRwPaUwkIYBLfO1VeqpXJH1LAKm33KYVWEPfgrqs+9NsXj+bFbncrukVfpXPgheN3G3N5l7mxLD+9WfgdAMr3o=
+	t=1709798037; cv=none; b=kURnGq319C2jELTZEKBXwUtqPgjfrfQFLJDgFIv6ZObh4OXStXB0cy3JSayZV5kHO6IHgDzTSTxtvwa1cV5KJNZzhMCOVF2MCNApk/zQFDdxCshIn4YFxIekvlDtkG2Kcb10pvTOOxL0GYuw53kQLFpzvxN0vYHDRUnRWAn7WaI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709798033; c=relaxed/simple;
-	bh=/r9nglCTC2FJFPdLO1PJ8IUnVPMHZHCS6fzCi+JqmGo=;
+	s=arc-20240116; t=1709798037; c=relaxed/simple;
+	bh=J3tfXEyQgDuDYGDYMkJtF7DSa5D0nP5cqXmdWRtGFmc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iYJWrF28MhHp9ExqRkw6er7wesyZcFGcczkjJ5Ar9tjXgk8kRlx/Os445KpnOEW4yEZL6xyk93Rr8fS6t+q1bRWBSatFv2WR/kUTF9x397zHPSqgHcXlT0415UttRZoe5B38Z/V/xOoI8ytzZo+lODAc8J36koBJmeXqK3oxymg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=igrOrrBM; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-	s=s31663417; t=1709798020; x=1710402820; i=quwenruo.btrfs@gmx.com;
-	bh=/r9nglCTC2FJFPdLO1PJ8IUnVPMHZHCS6fzCi+JqmGo=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=igrOrrBMZj065dbt0VOyW9q8qgNnqoi0Ec6T1WmmJOQQWs5ExELzVkgWiYnGZclP
-	 u+Sbx4rUg2F9dNCQKcvqVKQY9w3laQHqs9kZ7Jbz4/fkLZqVmiQqeUznFm38jRsPv
-	 8pQZvE072kppSGX0/lybjPMRgcYK0zwmShGLahxGs5HMZMcPn+xLC9weeA1FGO7ml
-	 ztOOJCfCgCel24sRBajZzKPsmxZ4llA+G+xHARIrMn0uyEuqByJKdBk3fN7+8vFdM
-	 9xBfWnaKP/wNJdtuHgHD+BrXJqyrpeFMjWlacPWuQ0iNYhjXbTP20EtlBxBejlaV+
-	 R9FXuOXbAgBy7uU+kQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MTAFb-1rGp5w3HPr-00UXyj; Thu, 07
- Mar 2024 08:53:40 +0100
-Message-ID: <40b4f295-5539-406e-ba63-384685cb482c@gmx.com>
-Date: Thu, 7 Mar 2024 18:23:34 +1030
+	 In-Reply-To:Content-Type; b=emoCYB0sLH3D1BzQ4djBPGbfDwO0klxrLmrQcg9aRPUbBugmluXnhp/ktmmXvI49Yzw0rzI4IT5fvjgKJ9S+cocanDgsIIvzurwdtSITGvoa2B2LsbqRnZfXbCKMlt8vbJhdV8ez4Z+yhW8W0z1yAXw+yOIUrUHhXDn4Wm1FpK4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=EBaLRokM; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-565d1656c12so1037083a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 23:53:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709798034; x=1710402834; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=HT80H3ZZpOg4fbvSpnNPKvBnPvi5pL+TPSamat71PBY=;
+        b=EBaLRokMwgKROy1Wm648hicO/LVCsTfuDydP46WxlGmlA40uzuQZjy3/sHS6TMfg7R
+         D0cSTQswvHMmk/KmktCiguDkKHq9cLPWgOo3U1ElZ21MLb3LDHyV+Xl9DnnD3T8A07Nt
+         JALFuJoCrNxTJWlylkJv7QoOcLpd3xguTCZeOIQjaMUGUVGYJW5yA7PjJiefFdbJGaS5
+         04CqEROf6nL1+ZOkfn5sEqbRvRmCLlJTEqZA0XrQIPaBhtc7bh081lXCNmwIFWUKLZoZ
+         TfBO5kRbuUK7RA66n98qdDO/KjVYHZFKP29ehjscSCwh4dyRRDWav1cxH+XCBkOu/uk8
+         PjnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709798034; x=1710402834;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=HT80H3ZZpOg4fbvSpnNPKvBnPvi5pL+TPSamat71PBY=;
+        b=Ehdwil/ajwXTLtOeTmFbNAByVX+RR/L4kjtgOqZroa2/e6nir8y8vI1Fg2pKf73PjQ
+         S+PzUkRhyOheEOlvNFTBLowvodU/y/v0ScdQh7MoLwoR9Wr8AnpMly/3iRkcIH4QFk3A
+         TB6qgaZHTi5p4kbBAW/7AuLqSfY6+MAf4bnKO+eDYCBNJRrPUXSaGpOTyI8Uw5ljpGgI
+         Xe1LXO3sWc6y1mF+MppImMt9uwtJX8d90FcyLHorb/6s1avMM+Ry9Fk93JeqPffVZ1f7
+         mGeotrnvUgy624dAgjslTNVYP2xLIMconfkiZPbvzxP7/TBWMEIt169ZT1qGFVu3K6Js
+         1kDQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWeJMgfDwYqYUmRhsmTIZAiIFj/bKFmRq55wvVLHJV5xsOknlqOW8pDB99fsOPaGSUPc88oCuEfQz6zRo5Xu8fXwMZT4gekEWNR4tME
+X-Gm-Message-State: AOJu0YyYG5P1zP4CBFKglQkPB71chRn5/DVJUxLfdOxu2D3hfG7unxMP
+	QPzpletReUYdLNr6RyFRA35EZ+EtgUEs5m/EJf/O1ne0WeEqjw6mNxGuBa6+s/ijSLo+l7yLJLM
+	R
+X-Google-Smtp-Source: AGHT+IH8ZyyUIHLKYdomaJtC1UdB9gLerL27AEW00yFVNkwQaZEnk+B+lKFSSfObTlrMwlSRoDWoeg==
+X-Received: by 2002:a50:ccc2:0:b0:567:e0e:dda5 with SMTP id b2-20020a50ccc2000000b005670e0edda5mr612110edj.17.1709798034412;
+        Wed, 06 Mar 2024 23:53:54 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id ew5-20020a056402538500b005667a11b951sm7746135edb.86.2024.03.06.23.53.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Mar 2024 23:53:53 -0800 (PST)
+Message-ID: <342320a5-ddcb-44aa-b153-aa2a1ac2c657@linaro.org>
+Date: Thu, 7 Mar 2024 08:53:53 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,113 +76,96 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: clean up some inconsistent indenting
+Subject: Re: [PATCH] arm64: dts: qcom: sm8150: add reset name for ethernet
+ node
 Content-Language: en-US
-To: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, clm@fb.com
-Cc: josef@toxicpanda.com, dsterba@suse.com, linux-btrfs@vger.kernel.org,
- linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>
-References: <20240307064753.36780-1-jiapeng.chong@linux.alibaba.com>
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20240307064753.36780-1-jiapeng.chong@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:mFeAy2gujGp0g2bAr+6kqawQava7lQ4s/qQSG9IqWJxZBxmx+c+
- wPNF/xMPmkfWcCO480raZxGqNAF66rhEO5lOrM+JghnHdBoJXcCvM9T05GayzGvqThUQJnS
- NSbYrJAWu643GUPTYRKI6TD59laWkIovM1IFKNsJ5xzDkbKJ9GhM5F7r2pLBU78+xO5FcFG
- BodvWF8vo9ys/8rCxAnJg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:8R6GA3XgJYM=;D/yAHbTuhcunwevULF/I0M85Jo2
- QILqqdFUhOYo8U1cIdPgPKbk+jFXEKq34ZZFWIyXa7gXSQotoU0PGADGu94FBLCiSiFEcHtur
- nNeP5P7HGV0Jd5d/PDP8VHjQt+hCZgBId/LLJS65aaENT5wo4chHczrkucMtYooPgEbLNVQ7Y
- zMuRITvD/dd9uGmWlIEnZmYwhGLy0+QYHltcyzl/jXB7bP5JCa05AAgoyroHvxhi28DFCiTYp
- nai7AOb6oL5hOcx7kPVj0x/7dynR/pyLboOjpg7f7Qf92muIlzrQrMajKTGV14we+XzJrIj+c
- dq4KLgiqtzdJDx5WxVw8qdaGoc6V24B7mk4D254ZgoDTSlBEe6sUCBsYegsOPx3OO1FARS3BU
- kPVh70xCCz2YF3ZCNitYlBUct9LnBb1UbwvtnvXy5DNwJhmphvSDJVKsuHpSXwh8r83eaxdj7
- 0pqJa3JGUhj7FjRQ7/5++jGTH1l03ac8B/l/VvCjnUZJzVHggPX47VXKwtUpTYRukiMXINI6f
- aEQdC4G15faYJmlQ2GLpQ46BYR/CttPF8MwNU+RIrYVe7ZfcbOOc8cVVFaMs5MwwuR539eEwo
- 0AgwdhkT3zVBuUv0GYfo/y9fGKCk8OsVTtO8PmuAxLiZMk8582yzQFdvqN+kOJXdk0BBzXpUv
- jV57Ud5+nsN9btb3Ty56hTa507/2RjSm4J5ymXg7enMMksuRF3IaVrZTvoVXEDu+g17ITXzhA
- hCEoEYe0yq9FFqDJtwrK75o3kVw0vPHSkTSniYKrElkX4xUgioMTkUyyR+iAydBVqQC51hEzr
- uy5E3he/oKYq41mgeJvKUBNYB9B0Usgf9ZdjBiHoYnjaQ=
+To: Volodymyr Babchuk <Volodymyr_Babchuk@epam.com>
+Cc: Sumit Garg <sumit.garg@linaro.org>, Bjorn Andersson
+ <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20240306200910.2732835-1-volodymyr_babchuk@epam.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240306200910.2732835-1-volodymyr_babchuk@epam.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-
-
-=E5=9C=A8 2024/3/7 17:17, Jiapeng Chong =E5=86=99=E9=81=93:
-> No functional modification involved.
->
-> fs/btrfs/volumes.c:770 device_list_add() warn: inconsistent indenting.
-> fs/btrfs/volumes.c:1373 btrfs_scan_one_device() warn: inconsistent inden=
-ting.
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=3D8453
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-
-Can the bot be taught to watch the btrfs development branch
-(https://github.com/btrfs/linux.git for-next) and send feedback directly
-to the btrfs mailing list?
-So that we can catch the problem immediately before reaching mainline.
-
-I strongly doubt sending out such patches would leave any positive
-impression on the bot.
-
-Thanks,
-Qu
+On 06/03/2024 21:09, Volodymyr Babchuk wrote:
+> Add reset-names property to the ethernet@20000 node. This patch does
+> not change behavior on Linux, but it is needed for U-Boot, as it tries
+> to find the reset by name, not by index.
+> 
+> Signed-off-by: Volodymyr Babchuk <volodymyr_babchuk@epam.com>
 > ---
->   fs/btrfs/volumes.c | 7 ++++---
->   1 file changed, 4 insertions(+), 3 deletions(-)
->
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index a2d07fa3cfdf..caa3e83b0d6c 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -767,7 +767,7 @@ static noinline struct btrfs_device *device_list_add=
-(const char *path,
->   		if (same_fsid_diff_dev) {
->   			generate_random_uuid(fs_devices->fsid);
->   			fs_devices->temp_fsid =3D true;
-> -		pr_info("BTRFS: device %s (%d:%d) using temp-fsid %pU\n",
-> +			pr_info("BTRFS: device %s (%d:%d) using temp-fsid %pU\n",
->   				path, MAJOR(path_devt), MINOR(path_devt),
->   				fs_devices->fsid);
->   		}
-> @@ -1370,8 +1370,9 @@ struct btrfs_device *btrfs_scan_one_device(const c=
-har *path, blk_mode_t flags,
->   		else
->   			btrfs_free_stale_devices(devt, NULL);
->
-> -	pr_debug("BTRFS: skip registering single non-seed device %s (%d:%d)\n"=
-,
-> -			path, MAJOR(devt), MINOR(devt));
-> +		pr_debug("BTRFS: skip registering single non-seed device %s (%d:%d)\n=
-",
-> +			 path, MAJOR(devt), MINOR(devt));
-> +
->   		device =3D NULL;
->   		goto free_disk_super;
->   	}
+>  arch/arm64/boot/dts/qcom/sm8150.dtsi | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+> index 761a6757dc26f..c2e65d6a2ac62 100644
+> --- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+> @@ -951,6 +951,7 @@ ethernet: ethernet@20000 {
+>  
+>  			power-domains = <&gcc EMAC_GDSC>;
+>  			resets = <&gcc GCC_EMAC_BCR>;
+> +			resets-names = "emac";
+
+It does not look like you tested the DTS against bindings. Please run
+`make dtbs_check W=1` (see
+Documentation/devicetree/bindings/writing-schema.rst or
+https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
+for instructions).
+
+
+Best regards,
+Krzysztof
+
 
