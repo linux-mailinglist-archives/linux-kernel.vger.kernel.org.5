@@ -1,165 +1,329 @@
-Return-Path: <linux-kernel+bounces-95511-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95509-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CF39874E93
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 13:05:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94EEE874E8E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 13:05:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 85E8CB257BA
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:05:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ECDC7B2471F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:05:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BDD312A167;
-	Thu,  7 Mar 2024 12:05:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C0D8129A95;
+	Thu,  7 Mar 2024 12:05:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mRWhr3gS"
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="b04+cBfa"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28FCB129A8A;
-	Thu,  7 Mar 2024 12:05:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E6B01292CA;
+	Thu,  7 Mar 2024 12:05:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709813139; cv=none; b=W4QnR/YrwdjKe8qTKIeK4YWflhskLyEcjc1NvuVqAYM42j1c1NldKzK9rrUYOBU4zLlq94DOIsXCt55UwAu5JFroFmecJCmJQNWCATXVJKkrlc2P3HNsuO3abOPEezV8VuoDpL+VF2UwzVKYTgEGEHvLqtrFkpxfB2VUrJB0qoI=
+	t=1709813110; cv=none; b=PS8PmbOCwml+hGsX/b9vb9drsUCUAf8RYh/LJsaqtgtU/bfYAN9Arc3HKl4XFQ9+5jmGFFJ+ShXyM8Z5NcBYmi1CkDVCO2azEt30m91hyH01p66zw1HIXsy5SqDSBubwGya1S+JPNKb+MpqZQjTwlDlW2g/P1+ipNkgp0jUhYjE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709813139; c=relaxed/simple;
-	bh=pRGlR9S8GseTKbNcXNNeULK9Vo1gx3e9SYmVGHthJho=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=sZhaQjqtmZbcK/moRPUcmKFo7Mn8olTwsFobEBYDflIRK+Ij0eny1Wu2HGd18upG+ztT8r3tkj78PvmgjFuS5rRUQno6w6mo3B4Odx133c+KCckl5xepmmUp2bu7y6tNUOTNe7n2jEJ72t1dUWlAWdnKiWVxvyLJjrMim7OvZms=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mRWhr3gS; arc=none smtp.client-ip=209.85.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-4130ff11782so4406585e9.2;
-        Thu, 07 Mar 2024 04:05:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709813136; x=1710417936; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=X9fEJLLm0v2I5BjGN6oWEtE7MbEteGlm2M/I0q1BDxg=;
-        b=mRWhr3gSPP5dwevVFTzyupysCp+i/I8CAIfv6oSt5A5W185GHBSQWUj/Ec9MWZZcV8
-         Cibo4qzKtcTqvIiTED1uge/0eoawnfv4s14rg3Ja5HOGDxo1O9qD3GeYKnPVkLCje4vs
-         zMC5OmuxlU43LnxBbuEWWJd1o0iBcJNHkZiMlubgrdQ8R3g3ZWrj5Tgf1XseuFTxKF0x
-         4NjaASpu24vxpQ9Bm1Y5wUQ3BNSBg7HttCNHFJ+9oHt3cbza8NRNpEe7B8SSNhE0LJcC
-         BtGuc6VKLY0/UsAjDVkWCpg8/kToE5LBOXdcIOOPOT+rEsiuhfJ7PzgERAn5nu8Foc/a
-         1bTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709813136; x=1710417936;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=X9fEJLLm0v2I5BjGN6oWEtE7MbEteGlm2M/I0q1BDxg=;
-        b=dZgvcepdc2qyVV/kTP1CW+J0HwsQ3VrkNLplE5rwNowa4g4Z36ezBF9ZDTzj3LbzfL
-         fSySvZfE5tuNU9uCgX1M3NJWm5WNW0cmlWcMkyHbGGjfzsNmrdXfKiPU/psBW5vUUGOw
-         yDKSD+bWkFEW8xwY5556v0Txv9lZSLlWKJEyXIqpnZcuXU1+2vUhGjuwAkHFgS05ZvXF
-         Gr5ViAIRqX5AxTQkOZCp91ANnCaCUQo5Olf3cIeQ3kYM8mjxLyC6o49z+Q50bJN5SG6L
-         CaSNLjFIs8GUlGYWaZUBa7kkXpE85MnYcyB5jdHU0FdgNh+mYhDkTh+Da7jJKkQ+HI6K
-         Yf1w==
-X-Forwarded-Encrypted: i=1; AJvYcCWh13SJAkMylhVYWbOt+tAto+WX7TKRXjx8iHO5lzjqI5yB6Yg6WMHi0gdBi8nuVUDeW9obqNw5Bz09TExUz/sTM6dlEpXWWC/Ne4cpqe3LKOJOtLMQJwDkUKasXksRzGzGnUhM
-X-Gm-Message-State: AOJu0YyAeCWBpChZpiNqNrm4FEuCeEklc+YdWmq8H4vCcAeS39Z4rnn3
-	3MZZBBc5Q3PF8kx2GnHT1u5fwHevwtdymU8/9PqA0mak8pfFzO32HBDfYbHLYfU=
-X-Google-Smtp-Source: AGHT+IEn0ZkjIiOXoABUFYJeq/o21joJb7qmlpflmbLPxEJts8WTpE855VFt+K+VLbSzisGYl1mVmQ==
-X-Received: by 2002:a05:600c:500a:b0:413:678:5482 with SMTP id n10-20020a05600c500a00b0041306785482mr1901251wmr.36.1709813136257;
-        Thu, 07 Mar 2024 04:05:36 -0800 (PST)
-Received: from vitor-nb.. ([2001:8a0:e60f:3100:7ed0:94c4:aa7c:4b29])
-        by smtp.gmail.com with ESMTPSA id gw18-20020a05600c851200b00412a31d2e2asm2489810wmb.32.2024.03.07.04.05.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Mar 2024 04:05:35 -0800 (PST)
-From: Vitor Soares <ivitro@gmail.com>
-To: mkl@pengutronix.de,
-	manivannan.sadhasivam@linaro.org,
-	thomas.kopp@microchip.com
-Cc: wg@grandegger.com,
-	linux-can@vger.kernel,
-	linux-kernel@vger.kernel.org,
-	vitor.soares@toradex.com,
-	stable@vger.kernel.org
-Subject: [PATCH] can: mcp251xfd: fix infinite loop when xmit fails
-Date: Thu,  7 Mar 2024 12:04:42 +0000
-Message-Id: <20240307120442.12262-1-ivitro@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1709813110; c=relaxed/simple;
+	bh=kj4HQyfT3WFQLLlxTNmlTRhaXCYFdnAPE/4QIQ+oOtw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=k/R6QBu2kguH8QLonwJAIjxD08ik3KbZUfiFFEg2W0LMJ84CppANB0O69JUa1M3o5ZKXIR3HXHpZiDIjbgb9tnt0Q0CnMmCLaQSnzoww+1BrXegzNhfR4Cc2aiBX2TKxbZ8GyNcupweVsOmktUMR3PFC4Q41NeIOr9dMzI6nhjs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=b04+cBfa; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709813106;
+	bh=kj4HQyfT3WFQLLlxTNmlTRhaXCYFdnAPE/4QIQ+oOtw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=b04+cBfavTyfpg+DMzBYKNqZO2+p4GDPcOrXeiS/Wx5pttAnWzDEExTD+f4ZVVoA+
+	 5YbC/pyM/voOC1yhmWeKuTqaqMToJavcLcW4ER/1r96EfCYalUCv+bL4s9nlpTTGzE
+	 g59zD7ccM1YdltjA+bgnPx2f916/d7pMzY7pa2p8Arzx61s/DOGIkdpLZBeQzT1P5Y
+	 KdWddg6PBCDfnuEPCJ6lxy2nX8/yJbKJup7wHAJ3ERlMcEEP6WoqRaIny3QPcD8808
+	 1aYr08zIhVz462yLOoz4WhZYYWlGxykAsUKZEAw3PB56F7vL50u4c1Upvq1zNqZIOL
+	 9CF3g2ZW9HoOg==
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: sebastianfricke)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 604AA378148F;
+	Thu,  7 Mar 2024 12:05:06 +0000 (UTC)
+Date: Thu, 7 Mar 2024 13:05:05 +0100
+From: Sebastian Fricke <sebastian.fricke@collabora.com>
+To: Devarsh Thakkar <devarsht@ti.com>
+Cc: mchehab@kernel.org, robh@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, hverkuil-cisco@xs4all.nl,
+	linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, benjamin.gaignard@collabora.com,
+	laurent.pinchart@ideasonboard.com, praneeth@ti.com, nm@ti.com,
+	vigneshr@ti.com, a-bhatia1@ti.com, j-luthra@ti.com, b-brnich@ti.com,
+	detheridge@ti.com, p-mantena@ti.com, vijayp@ti.com,
+	andrzej.p@collabora.com, nicolas@ndufresne.ca, afd@ti.com,
+	milkfafa@gmail.com
+Subject: Re: [PATCH v6 1/3] media: dt-bindings: Add Imagination E5010 JPEG
+ Encoder
+Message-ID: <20240307120505.kkliw7qejzfjhqkg@basti-XPS-13-9310>
+References: <20240228141140.3530612-1-devarsht@ti.com>
+ <20240228141140.3530612-2-devarsht@ti.com>
+ <20240229102623.ihwhbba4qwzvxzzq@basti-XPS-13-9310>
+ <7a83fe91-5afa-6aee-a8a4-44f6e3d713c2@ti.com>
+ <20240229133046.64h2f4n27emvdhnq@basti-XPS-13-9310>
+ <eff7080b-42e9-19ae-6022-bfbcc337b4a0@ti.com>
+ <20240301170611.tknj7ncwvgqjwkx5@basti-XPS-13-9310>
+ <9b4c9321-bc3a-95a2-fe9b-f739b5d12598@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <9b4c9321-bc3a-95a2-fe9b-f739b5d12598@ti.com>
 
-From: Vitor Soares <vitor.soares@toradex.com>
+Hey Devarsh,
 
-When the mcp251xfd_start_xmit() function fails, the driver stops
-processing messages, and the interrupt routine does not return,
-running indefinitely even after killing the running application.
+On 06.03.2024 21:27, Devarsh Thakkar wrote:
+>Hi Sebastian,
+>
+>On 01/03/24 22:36, Sebastian Fricke wrote:
+>> Hey Devarsh,
+>>
+>> On 01.03.2024 22:02, Devarsh Thakkar wrote:
+>>> Hi Sebastian,
+>>>
+>>> On 29/02/24 19:00, Sebastian Fricke wrote:
+>>>> Hey Devarsh,
+>>>>
+>>>> On 29.02.2024 16:50, Devarsh Thakkar wrote:
+>>>>> Hi Sebastian,
+>>>>>
+>>>>> Thanks for the review.
+>>>>>
+>>>>> On 29/02/24 15:56, Sebastian Fricke wrote:
+>>>>>> Hey Devarsh,
+>>>>>>
+>>>>>> On 28.02.2024 19:41, Devarsh Thakkar wrote:
+>>>>>>> Add dt-bindings for Imagination E5010 JPEG Encoder [1] which is implemented
+>>>>>>> as stateful V4L2 M2M driver.
+>>>>>>>
+>>>>>>> The device supports baseline encoding with two different quantization
+>>>>>>> tables and compression ratio as demanded.
+>>>>>>>
+>>>>>>> Minimum resolution supported is 64x64 and Maximum resolution supported is
+>>>>>>> 8192x8192.
+>>>>>>>
+>>>>>>> [1]:  AM62A TRM (Section 7.6 is for JPEG Encoder)
+>>>>>>> Link: https://www.ti.com/lit/pdf/spruj16
+>>>>>>>
+>>>>>>> Co-developed-by: David Huang <d-huang@ti.com>
+>>>>>>> Signed-off-by: David Huang <d-huang@ti.com>
+>>>>>>> Signed-off-by: Devarsh Thakkar <devarsht@ti.com>
+>>>>>>> Reviewed-by: Rob Herring <robh@kernel.org>
+>>>>>>
+>>>>>> hmmm when did Rob give his reviewed by on this patch? (As this is not a
+>>>>>> DT binding I find that odd)
+>>>>>
+>>>>> [PATCH v6 1/3] media: dt-bindings: Add Imagination E5010 JPEG Encoder : This
+>>>>> is indeed the dt-binding patch. Also As shared in version history it is at V4
+>>>>> where Rob Herring added a Reviewed-By as seen here [0]
+>>>>>
+>>>>>> And where is the Reviewed by tag from Benjamin that he provided on V5?
+>>>>>>
+>>>>>
+>>>>> As captured in patch version history here [1] I thought to remove the
+>>>>> Reviewed-By since the Reviewed-By tag was on V5 and with V6 the driver got
+>>>>> updated with some changes to handle reported sparse warnings and so I have
+>>>>> asked Benjamin to check the range-diff and help with a quick review again if
+>>>>> possible.
+>>>>>
+>>>>> Kindly let me know if I missed something or anything needs to be done from
+>>>>> my end.
+>>>>
+>>>> Yes thanks I was a bit too swift to write here, sorry for the noise.
+>>>> We'll have a look.
+>>>>
+>>>
+>>> Sorry for the back and forth, but on the hindsight and re-looking at the
+>>> kernel patch guidelines [0] they suggest that Reviewed-By tag should only be
+>>> removed if substantial changes were made in further revisions.
+>>>
+>>> So looks to me in-fact it was a mistake on my part to remove the Reviewed-by
+>>> considering the change made in the following patch series was not a
+>>> substantial one as seen in the range-diff [1].
+>>>
+>>> Considering this, just wanted to check with you if it's possible for you to
+>>> consider the Reviewed-by tag :
+>>> `Reviewed-by: Benjamin Gaignard <benjamin.gaignard@collabora.com`
+>>> if it helps consolidate things faster to get this series in given we are close
+>>> to final RC's ?
+>>
+>> Yup I think we can keep it as the changes are very minor. Otherwise the
+>> series is pretty much good to go, I'll prepare the PR asap.
+>>
+>
+>Thanks, so I assume this could still make it to 6.9 merge window if it gets
+>pulled in before 6.8 rc8 ? Also do you think it would be possible to pull in
+>https://lore.kernel.org/all/20240305160529.4152865-1-devarsht@ti.com/ as here
+>too nothing much has changed w.r.t initial posting apart from commit message.
 
-Error messages:
-[  441.298819] mcp251xfd spi2.0 can0: ERROR in mcp251xfd_start_xmit: -16
-[  441.306498] mcp251xfd spi2.0 can0: Transmit Event FIFO buffer not empty. (seq=0x000017c7, tef_tail=0x000017cf, tef_head=0x000017d0, tx_head=0x000017d3).
-.. and repeat forever.
+Yes I'd assume so but I sadly got sick this week, I'll get to this as
+soon as I can.
 
-The issue can be triggered when multiple devices share the same
-SPI interface. And there is concurrent access to the bus.
+>
+>Regards
+>Devarsh
 
-The problem occurs because tx_ring->head increments even if
-mcp251xfd_start_xmit() fails. Consequently, the driver skips one
-TX package while still expecting a response in
-mcp251xfd_handle_tefif_one().
+Greetings,
+Sebastian
 
-This patch resolves the issue by decreasing tx_ring->head if
-mcp251xfd_start_xmit() fails. With the fix, if we attempt to trigger
-the issue again, the driver prints an error and discard the message.
-
-Fixes: 55e5b97f003e ("can: mcp25xxfd: add driver for Microchip MCP25xxFD SPI CAN")
-Cc: stable@vger.kernel.org
-Signed-off-by: Vitor Soares <vitor.soares@toradex.com>
----
- drivers/net/can/spi/mcp251xfd/mcp251xfd-tx.c | 27 ++++++++++----------
- 1 file changed, 14 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-tx.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-tx.c
-index 160528d3cc26..a8eb941c1b95 100644
---- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-tx.c
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-tx.c
-@@ -181,25 +181,26 @@ netdev_tx_t mcp251xfd_start_xmit(struct sk_buff *skb,
- 	tx_obj = mcp251xfd_get_tx_obj_next(tx_ring);
- 	mcp251xfd_tx_obj_from_skb(priv, tx_obj, skb, tx_ring->head);
- 
--	/* Stop queue if we occupy the complete TX FIFO */
- 	tx_head = mcp251xfd_get_tx_head(tx_ring);
--	tx_ring->head++;
--	if (mcp251xfd_get_tx_free(tx_ring) == 0)
--		netif_stop_queue(ndev);
--
- 	frame_len = can_skb_get_frame_len(skb);
--	err = can_put_echo_skb(skb, ndev, tx_head, frame_len);
--	if (!err)
--		netdev_sent_queue(priv->ndev, frame_len);
-+	can_put_echo_skb(skb, ndev, tx_head, frame_len);
-+
-+	tx_ring->head++;
- 
- 	err = mcp251xfd_tx_obj_write(priv, tx_obj);
--	if (err)
--		goto out_err;
-+	if (err) {
-+		can_free_echo_skb(ndev, tx_head, NULL);
- 
--	return NETDEV_TX_OK;
-+		tx_ring->head--;
-+
-+		netdev_err(priv->ndev, "ERROR in %s: %d\n", __func__, err);
-+	} else {
-+		/* Stop queue if we occupy the complete TX FIFO */
-+		if (mcp251xfd_get_tx_free(tx_ring) == 0)
-+			netif_stop_queue(ndev);
- 
-- out_err:
--	netdev_err(priv->ndev, "ERROR in %s: %d\n", __func__, err);
-+		netdev_sent_queue(priv->ndev, frame_len);
-+	}
- 
- 	return NETDEV_TX_OK;
- }
--- 
-2.34.1
-
+>
+>> Greetings,
+>> Sebastian
+>>
+>>>
+>>> [0]:
+>>> https://docs.kernel.org/process/submitting-patches.html#using-reported-by-tested-by-reviewed-by-suggested-by-and-fixes:~:text=changed%20substantially
+>>>
+>>> [1]: https://gist.github.com/devarsht/c89180ac2b0d2814614f2b59d0705c19
+>>>
+>>> Regards
+>>> Devarsh
+>>>
+>>>>
+>>>> Greetings,
+>>>> Sebastian
+>>>>
+>>>>>
+>>>>> [0] :
+>>>>> https://lore.kernel.org/all/170716378412.295212.11603162949482063011.robh@kernel.org/
+>>>>> [1] : https://lore.kernel.org/all/20240228141140.3530612-4-devarsht@ti.com/
+>>>>>
+>>>>>
+>>>>> Regards
+>>>>> Devarsh
+>>>>>>> ---
+>>>>>>> V2: No change
+>>>>>>> V3:
+>>>>>>> - Add vendor specific compatible
+>>>>>>> - Update reg names
+>>>>>>> - Update clocks to 1
+>>>>>>> - Fix dts example with proper naming
+>>>>>>> V4:
+>>>>>>> - Use ti-specific compatible ti,am62a-jpeg-enc as secondary one
+>>>>>>> - Update commit message and title
+>>>>>>> - Remove clock-names as only single clock
+>>>>>>> V5:
+>>>>>>> - Add Reviewed-By tag
+>>>>>>> V6:
+>>>>>>> - No change
+>>>>>>>
+>>>>>>> .../bindings/media/img,e5010-jpeg-enc.yaml    | 75 +++++++++++++++++++
+>>>>>>> MAINTAINERS                                   |  5 ++
+>>>>>>> 2 files changed, 80 insertions(+)
+>>>>>>> create mode 100644
+>>>>>>> Documentation/devicetree/bindings/media/img,e5010-jpeg-enc.yaml
+>>>>>>>
+>>>>>>> diff --git
+>>>>>>> a/Documentation/devicetree/bindings/media/img,e5010-jpeg-enc.yaml
+>>>>>>> b/Documentation/devicetree/bindings/media/img,e5010-jpeg-enc.yaml
+>>>>>>> new file mode 100644
+>>>>>>> index 000000000000..085020cb9e61
+>>>>>>> --- /dev/null
+>>>>>>> +++ b/Documentation/devicetree/bindings/media/img,e5010-jpeg-enc.yaml
+>>>>>>> @@ -0,0 +1,75 @@
+>>>>>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>>>>>>> +%YAML 1.2
+>>>>>>> +---
+>>>>>>> +$id: http://devicetree.org/schemas/media/img,e5010-jpeg-enc.yaml#
+>>>>>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>>>>>>> +
+>>>>>>> +title: Imagination E5010 JPEG Encoder
+>>>>>>> +
+>>>>>>> +maintainers:
+>>>>>>> +  - Devarsh Thakkar <devarsht@ti.com>
+>>>>>>> +
+>>>>>>> +description: |
+>>>>>>> +  The E5010 is a JPEG encoder from Imagination Technologies implemented on
+>>>>>>> +  TI's AM62A SoC. It is capable of real time encoding of YUV420 and YUV422
+>>>>>>> +  inputs to JPEG and M-JPEG. It supports baseline JPEG Encoding up to
+>>>>>>> +  8Kx8K resolution.
+>>>>>>> +
+>>>>>>> +properties:
+>>>>>>> +  compatible:
+>>>>>>> +    oneOf:
+>>>>>>> +      - items:
+>>>>>>> +          - const: ti,am62a-jpeg-enc
+>>>>>>> +          - const: img,e5010-jpeg-enc
+>>>>>>> +      - const: img,e5010-jpeg-enc
+>>>>>>> +
+>>>>>>> +  reg:
+>>>>>>> +    items:
+>>>>>>> +      - description: The E5010 core register region
+>>>>>>> +      - description: The E5010 mmu register region
+>>>>>>> +
+>>>>>>> +  reg-names:
+>>>>>>> +    items:
+>>>>>>> +      - const: core
+>>>>>>> +      - const: mmu
+>>>>>>> +
+>>>>>>> +  power-domains:
+>>>>>>> +    maxItems: 1
+>>>>>>> +
+>>>>>>> +  resets:
+>>>>>>> +    maxItems: 1
+>>>>>>> +
+>>>>>>> +  clocks:
+>>>>>>> +    maxItems: 1
+>>>>>>> +
+>>>>>>> +  interrupts:
+>>>>>>> +    maxItems: 1
+>>>>>>> +
+>>>>>>> +required:
+>>>>>>> +  - compatible
+>>>>>>> +  - reg
+>>>>>>> +  - reg-names
+>>>>>>> +  - interrupts
+>>>>>>> +  - clocks
+>>>>>>> +
+>>>>>>> +additionalProperties: false
+>>>>>>> +
+>>>>>>> +examples:
+>>>>>>> +  - |
+>>>>>>> +    #include <dt-bindings/soc/ti,sci_pm_domain.h>
+>>>>>>> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+>>>>>>> +    #include <dt-bindings/interrupt-controller/irq.h>
+>>>>>>> +
+>>>>>>> +    soc {
+>>>>>>> +      #address-cells = <2>;
+>>>>>>> +      #size-cells = <2>;
+>>>>>>> +      jpeg-encoder@fd20000 {
+>>>>>>> +          compatible = "img,e5010-jpeg-enc";
+>>>>>>> +          reg = <0x00 0xfd20000 0x00 0x100>,
+>>>>>>> +                <0x00 0xfd20200 0x00 0x200>;
+>>>>>>> +          reg-names = "core", "mmu";
+>>>>>>> +          clocks = <&k3_clks 201 0>;
+>>>>>>> +          power-domains = <&k3_pds 201 TI_SCI_PD_EXCLUSIVE>;
+>>>>>>> +          interrupts = <GIC_SPI 98 IRQ_TYPE_LEVEL_HIGH>;
+>>>>>>> +      };
+>>>>>>> +    };
+>>>>>>> diff --git a/MAINTAINERS b/MAINTAINERS
+>>>>>>> index e1475ca38ff2..6b34ee8d92b5 100644
+>>>>>>> --- a/MAINTAINERS
+>>>>>>> +++ b/MAINTAINERS
+>>>>>>> @@ -10572,6 +10572,11 @@ S:    Maintained
+>>>>>>> F:    Documentation/devicetree/bindings/auxdisplay/img,ascii-lcd.yaml
+>>>>>>> F:    drivers/auxdisplay/img-ascii-lcd.c
+>>>>>>>
+>>>>>>> +IMGTEC JPEG ENCODER DRIVER
+>>>>>>> +M:    Devarsh Thakkar <devarsht@ti.com>
+>>>>>>> +S:    Supported
+>>>>>>> +F:    Documentation/devicetree/bindings/media/img,e5010-jpeg-enc.yaml
+>>>>>>> +
+>>>>>>> IMGTEC IR DECODER DRIVER
+>>>>>>> S:    Orphan
+>>>>>>> F:    drivers/media/rc/img-ir/
+>>>>>>> -- 
+>>>>>>> 2.39.1
+>>>>>>>
 
