@@ -1,135 +1,112 @@
-Return-Path: <linux-kernel+bounces-95993-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95995-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E782B8755C6
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:06:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 379698755CA
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:08:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A378A284A5F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 18:06:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CDEDFB223B1
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 18:08:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F22F7131E28;
-	Thu,  7 Mar 2024 18:06:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD90813175C;
+	Thu,  7 Mar 2024 18:08:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L6gknGiK"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=gaisler.com header.i=@gaisler.com header.b="g5UATij/"
+Received: from smtp-out3.simply.com (smtp-out3.simply.com [94.231.106.210])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A9A812A15C;
-	Thu,  7 Mar 2024 18:06:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE73612A15C;
+	Thu,  7 Mar 2024 18:08:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=94.231.106.210
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709834779; cv=none; b=RnOXynmqcW8vY4Vs+XMtNWOIrIEl6URbywumtjMw7V6/VI3rukRSOoHOkxiQAGJ35FlcmxZiVMxbhgvsGWMhisxN3N813k69yOVQSLKxNmgTvAbfRrVBmrhP+WTuDze2DbbDG0wNkeXUbRTHp0OHy4IxNxXdunK5G6CEFtyBuhA=
+	t=1709834891; cv=none; b=A2mAa7tzDPN5XETGXo2Lpe1AWOlQge9zzd3+dNd84VSzcTAgKSMOUrJfwyCxxqH+rbttiJVcxBJXJhXkzb9pPShb5XS2+ybVAuKTbrQuWFFOw77SdcoQxuZ1egAUEFSjQdFdxI0XpuEj3MpnK0NPe1h0Z5oGxX9mTIZPrrbl+VM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709834779; c=relaxed/simple;
-	bh=/qMweurkufToMwoadZe649Pm1lLjarPn8VuQ/oC8ncI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=a5Zi6W/OlAtWhK6kLF9PC2n5+5qdsTPwTNaSJrnQELoiINp92tmSnXIk688DT76pDI9nCI9AaxlKqTlODcxwwyG82nb6rKZluZRpj3davsBZ9eDjO0gQhk5vz1CQxgfC8NvFCaqjw7fXtaUYNO1eZS0WjEuVFiyMv/lwSueohjQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L6gknGiK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04474C433C7;
-	Thu,  7 Mar 2024 18:06:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709834778;
-	bh=/qMweurkufToMwoadZe649Pm1lLjarPn8VuQ/oC8ncI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=L6gknGiKUfVSiH36Wno+U/gRqlQxWa4hxGU7U9gID7kxMoztJxP20vaHs1m6jR177
-	 bqMFRJCxHQMgCX5H+x7hyipP0S+W2H0W5bb0PQW9/COve6uqhpK9oETQGc2ZSjk0jT
-	 O9Bfd7uuQaB0IGK6ILJc6EUPAgVacvPz4Ph2rDrmHClaCQZ3uBluNP40UgDvH117KO
-	 UXvXfWKPgAQX8QA2R1RWi46nlhcSwkkMxvihCr5LjyuJmNKooRxTMHtDj80JvCywPs
-	 Fv3q/S33/W7UHE5f9nIGG35UZ3fUIwVLXBTgViIy3njxz21pcdpJsHmG2F+4wWEHAA
-	 mYZiAYeC4sQYw==
-Date: Thu, 7 Mar 2024 18:06:13 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Shengyu Qu <wiagn233@outlook.com>
-Cc: ganboing@gmail.com, kernel@esmil.dk, robh@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu,
-	devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v2] riscv: dts: starfive: Remove PMIC interrupt info for
- Visionfive 2 board
-Message-ID: <20240307-underpaid-anyplace-9fe1241643d3@spud>
-References: <TY3P286MB26116B828A34D614C09F4E8898202@TY3P286MB2611.JPNP286.PROD.OUTLOOK.COM>
+	s=arc-20240116; t=1709834891; c=relaxed/simple;
+	bh=d1LqTxtfR2Y90CoQGt9aHXtXMhcXtM4r5fGeKndr/Q4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=d5B/bihb+e8o/fNQIPc3ce1mcdg+QYqPhB7q5q0DpRIZSEexuxIdpZJNpCWuOiT4Z237sM8TRchk4LlTCAZHOyE6cshYti9vxRkf4M2BofEpd8WPHMs+BfCJSnrfXPrLXy/Jjcl3CVuvCJ9O4XPtrB8vrsk56yMqQdGfpxrmoF4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gaisler.com; spf=pass smtp.mailfrom=gaisler.com; dkim=pass (1024-bit key) header.d=gaisler.com header.i=@gaisler.com header.b=g5UATij/; arc=none smtp.client-ip=94.231.106.210
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gaisler.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gaisler.com
+Received: from localhost (localhost [127.0.0.1])
+	by smtp.simply.com (Simply.com) with ESMTP id 4TrHMx4CLYz687C;
+	Thu,  7 Mar 2024 19:07:57 +0100 (CET)
+Received: from andreas.got.gaisler.com (h-98-128-223-123.NA.cust.bahnhof.se [98.128.223.123])
+	by smtp.simply.com (Simply.com) with ESMTPA id 4TrHMp2C7yz686Q;
+	Thu,  7 Mar 2024 19:07:49 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gaisler.com;
+	s=unoeuro; t=1709834877;
+	bh=hf+Dkq4gendnDFhQL2nsuHPuMRlOr7oIlpwqpMC5s6o=;
+	h=From:To:Cc:Subject:Date;
+	b=g5UATij/BDx1CIuzLzDq2RrfiizCrNNT311KY+fBDxK7k1xUwCpSd1AT8ey0Tc8BG
+	 KuEnNe48tkual/NYHnIZe5JsPqoaJRXZICeoTOkN2VvwHLv6I34VJlYJlGHP0iQ/T9
+	 3Bi58FJ4QPFPvGYcrAvVK2LqHsxkRNC1jQuWiNMk=
+From: Andreas Larsson <andreas@gaisler.com>
+To: sparclinux@vger.kernel.org,
+	"David S. Miller" <davem@davemloft.net>,
+	"Dr. David Alan Gilbert" <linux@treblig.org>
+Cc: linux-kernel@vger.kernel.org,
+	kernel test robot <lkp@intel.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH] lib/fonts: Allow Sparc console 8x16 font for sparc64 early boot text console
+Date: Thu,  7 Mar 2024 19:07:42 +0100
+Message-Id: <20240307180742.900068-1-andreas@gaisler.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="e3+Vcw8nCCVh8dqu"
-Content-Disposition: inline
-In-Reply-To: <TY3P286MB26116B828A34D614C09F4E8898202@TY3P286MB2611.JPNP286.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: 8bit
 
+Allow FONT_SUN8x16 when EARLYFB is enabled for sparc64, even when
+FRAMEBUFFER_CONSOLE is not to avoid the following warning for this case
 
---e3+Vcw8nCCVh8dqu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   WARNING: unmet direct dependencies detected for FONT_SUN8x16
+     Depends on [n]: FONT_SUPPORT [=y] && (FRAMEBUFFER_CONSOLE [=n] && (FONTS [=n] || SPARC [=y]) || BOOTX_TEXT)
+     Selected by [y]:
+     - EARLYFB [=y] && SPARC64 [=y]
 
-On Thu, Mar 07, 2024 at 08:21:12PM +0800, Shengyu Qu wrote:
-> Interrupt line number of the AXP15060 PMIC is not a necessary part of
-> its device tree. And this would cause kernel to try to enable interrupt
-> line 0, which is not expected. So delete this part from device tree.
->=20
-> Cc: stable@vger.kernel.org
-> Reported-by: Bo Gan <ganboing@gmail.com>
-> Link: https://lore.kernel.org/all/c8b6e960-2459-130f-e4e4-7c9c2ebaa6d3@gm=
-ail.com/
-> Signed-off-by: Shengyu Qu <wiagn233@outlook.com>
+by allowing it in the same manner as is done for powerpc in commit
+0ebc7feae79a ("powerpc: Use shared font data").
 
-Thanks for resending. Just to note that I already sent all 6.8 and 6.9
-material, so since this is only something that manifests with that
-"improved" version of OpenSBI I'm gonna pick this up after the merge
-window.
+Signed-off-by: Andreas Larsson <andreas@gaisler.com>
+Fixes: 0f1991949d9b ("sparc: Use shared font data")
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202402241539.epQT43nI-lkp@intel.com/
+Cc: "Dr. David Alan Gilbert" <linux@treblig.org>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Sam Ravnborg <sam@ravnborg.org>
+Cc: Randy Dunlap <rdunlap@infradead.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+---
+The commit this fixes can be found on my for-next branch from
+https://git.kernel.org/pub/scm/linux/kernel/git/alarsson/linux-sparc.git/
+---
+ lib/fonts/Kconfig | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Fixes: 2378341504de ("riscv: dts: starfive: Enable axp15060 pmic for cpufre=
-q")
+diff --git a/lib/fonts/Kconfig b/lib/fonts/Kconfig
+index 7ee468ef21ec6..7e945fdcbf115 100644
+--- a/lib/fonts/Kconfig
++++ b/lib/fonts/Kconfig
+@@ -98,7 +98,8 @@ config FONT_10x18
+ 
+ config FONT_SUN8x16
+ 	bool "Sparc console 8x16 font"
+-	depends on (FRAMEBUFFER_CONSOLE && (FONTS || SPARC)) || BOOTX_TEXT
++	depends on (FRAMEBUFFER_CONSOLE && (FONTS || SPARC)) || \
++		   BOOTX_TEXT || EARLYFB
+ 	help
+ 	  This is the high resolution console font for Sun machines. Say Y.
+ 
 
-And hopefully I remember to re-write the commit message to mention that
-the board doesn't actually connect the interrupt link to a GPIO etc, so
-the original patch was invalid and a hack.
+base-commit: 626db6ee8ee1edac206610db407114aa83b53fd3
+-- 
+2.34.1
 
-I should have rejected it and got the driver fixed at the time to allow
-not having an interrupt, but clearly I didn't register that that zero
-was a plic interrupt, not a GPIO.
-
-Thanks,
-Conor.
-
-> ---
->  arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi | 1 -
->  1 file changed, 1 deletion(-)
->=20
-> diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dt=
-si b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-> index 45b58b6f3df8..7783d464d529 100644
-> --- a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-> +++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-> @@ -238,7 +238,6 @@ &i2c5 {
->  	axp15060: pmic@36 {
->  		compatible =3D "x-powers,axp15060";
->  		reg =3D <0x36>;
-> -		interrupts =3D <0>;
->  		interrupt-controller;
->  		#interrupt-cells =3D <1>;
-> =20
-> --=20
-> 2.39.2
->=20
-
---e3+Vcw8nCCVh8dqu
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZeoCFQAKCRB4tDGHoIJi
-0ps6AQD2oxPKg4y3LidQr++C4Vz9xtSEzczxjTPFfkTwQdm2fAD9GvuuDnBLY6Zh
-NLzH0HrR9oVi/bBt+4DJIiPqHnKywQY=
-=BFh/
------END PGP SIGNATURE-----
-
---e3+Vcw8nCCVh8dqu--
 
