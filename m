@@ -1,119 +1,191 @@
-Return-Path: <linux-kernel+bounces-95520-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95522-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8592D874ECB
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 13:19:26 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4618874ED3
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 13:21:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B43F91C21A60
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:19:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3BDD2B22CB7
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:21:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59FCB12A167;
-	Thu,  7 Mar 2024 12:19:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IyV5mjcO"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5A2412A161;
+	Thu,  7 Mar 2024 12:21:23 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F393782891;
-	Thu,  7 Mar 2024 12:19:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D19C128801
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 12:21:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709813958; cv=none; b=muYLZan/6hTR83yIIEhTeEMeSAv7dhIMARyo3DOcBPQcjhbQWBDHAvGow8jRPcBOL/qyLiyCjUfGbwNMOzTzuNEKJge28nzuabAoEAevH4IHx9wZllve+IfBcfu7YFMip3ownf6JFpmt2AlUhziRbUe7rNTAMSznocHNeNfZ9P4=
+	t=1709814083; cv=none; b=PAWb+uOBLJbqwFVl5BpMMyecZbzMBSfDnJdZcjJlbKZzVnJJEjSqBiNyGtloGAH48q9SEfK8EpVSZNYT6nk4LfCfBng1GR8BuXieFc2FOScbIDRfge6MRS8zliTzoy6mM5xSL/MrG5skLrO9csf+SM1PTa6SY2jAB/frpuOeOBM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709813958; c=relaxed/simple;
-	bh=/+IFJS/KcSf7DigBEvxed/q/2MkAOrk0j7DkIz+cw78=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KR5t1vBdFyNqjxHmIfdweDuMRlX3Ka264z/ckVoBvdP4OG2hMs8GT0EFWsBKamXrDOgCJnKUUuvrhnS8ewUlZTOLVfOaUZ9haBZgL4nmpQRrAA3YHfLs22N4rnYYsa58yY5OQXCnv9pgt1ShaL1ryWfLIbu2i4h42Af8YJ2pjz0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IyV5mjcO; arc=none smtp.client-ip=192.198.163.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709813957; x=1741349957;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=/+IFJS/KcSf7DigBEvxed/q/2MkAOrk0j7DkIz+cw78=;
-  b=IyV5mjcOx+DY33afnUgopBNTdYCTmpLcWOZJNI1Ao3Nx3kP/WDmtRg1m
-   wtEF7X+cv1v/aLn8XTK2el75A7iXJbWfhtgAnTrPVH2ZQ/IE3VNtzORCb
-   NA4Kg0Di6LJU26heAFXomFrmpDn5eNK9w6SD2E9FwDdY4SHV8wMLCgEmt
-   XKj3M3b6TaaUVLRV/fqtuCR7KGUt5YAoq/PN8RW8s9KElZDH/IQEhmxh8
-   PUIY+pPNY9Gwp6/Hqssz6SOiOMkszIO4nJ3M+XXWJIq9cHk8pZ5Me4haF
-   vgvzPLEkV6fMaBj4yG/n1B1TevUlnm2d6/qyPO/EdsBwwUpuHyjePMfsH
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11005"; a="4342809"
-X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
-   d="scan'208";a="4342809"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 04:19:16 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11005"; a="937045962"
-X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
-   d="scan'208";a="937045962"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 07 Mar 2024 04:19:14 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 370B9193; Thu,  7 Mar 2024 14:19:13 +0200 (EET)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Ulf Hansson <ulf.hansson@linaro.org>,
-	linux-mmc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Ben Dooks <ben-linux@fluff.org>,
-	Jaehoon Chung <jh80.chung@samsung.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/1] mmc: sdhci-s3c: Replace deprecated of_get_named_gpio()
-Date: Thu,  7 Mar 2024 14:19:12 +0200
-Message-ID: <20240307121912.3676850-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
+	s=arc-20240116; t=1709814083; c=relaxed/simple;
+	bh=Lkz65xopRFkezQafKKmU9YW0VUXK84Tkn/cr5N1VgbI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VGvIWfI3+BanSyC0lW09XP4CGv/lNng5Pe3gZYlxEqJmU9/tIAlCbKeBSxyezaM6KxvSC6b8IWG4e02ejkpsLXp/DwZLuorKRz6ZzZiWiZNhvEzn8Eo7k3aoy+criMkfFeIbB43f/OJ1KRR7Y+JH+Qx0K6KsuZ3bvKoE4qyG7ow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1riCkI-00035z-6E; Thu, 07 Mar 2024 13:21:10 +0100
+Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1riCkH-004w9H-6v; Thu, 07 Mar 2024 13:21:09 +0100
+Received: from pengutronix.de (unknown [172.20.34.65])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id A50322A0863;
+	Thu,  7 Mar 2024 12:21:08 +0000 (UTC)
+Date: Thu, 7 Mar 2024 13:21:08 +0100
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Vitor Soares <ivitro@gmail.com>
+Cc: manivannan.sadhasivam@linaro.org, thomas.kopp@microchip.com, 
+	wg@grandegger.com, linux-can@vger.kernel, linux-kernel@vger.kernel.org, 
+	vitor.soares@toradex.com, stable@vger.kernel.org
+Subject: Re: [PATCH] can: mcp251xfd: fix infinite loop when xmit fails
+Message-ID: <20240307-drift-hate-0919e82ee341-mkl@pengutronix.de>
+References: <20240307120442.12262-1-ivitro@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="g63t2qxnscz3njvz"
+Content-Disposition: inline
+In-Reply-To: <20240307120442.12262-1-ivitro@gmail.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-It seems the of_get_named_gpio() is solely used to check
-if the GPIO is present in DT as the function can return 0
-if and only if it's present and it becomes in the global
-number space 0. But this quite likely shows that the code
-wasn't ever been tested on the systems when no GPIO is provided.
-In any case, the proper test is just to call of_property_present()
-without any attempts in requesting GPIO (as we haven't saved the
-number or descriptor anywhere in the code).
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/mmc/host/sdhci-s3c.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+--g63t2qxnscz3njvz
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/mmc/host/sdhci-s3c.c b/drivers/mmc/host/sdhci-s3c.c
-index 0e8a8ac14e56..6493b0edba34 100644
---- a/drivers/mmc/host/sdhci-s3c.c
-+++ b/drivers/mmc/host/sdhci-s3c.c
-@@ -17,10 +17,8 @@
- #include <linux/slab.h>
- #include <linux/clk.h>
- #include <linux/io.h>
--#include <linux/gpio.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_gpio.h>
- #include <linux/pm.h>
- #include <linux/pm_runtime.h>
- 
-@@ -446,7 +444,7 @@ static int sdhci_s3c_parse_dt(struct device *dev,
- 		return 0;
- 	}
- 
--	if (of_get_named_gpio(node, "cd-gpios", 0))
-+	if (of_property_present(node, "cd-gpios"))
- 		return 0;
- 
- 	/* assuming internal card detect that will be configured by pinctrl */
--- 
-2.43.0.rc1.1.gbec44491f096
+On 07.03.2024 12:04:42, Vitor Soares wrote:
+> From: Vitor Soares <vitor.soares@toradex.com>
+>=20
+> When the mcp251xfd_start_xmit() function fails, the driver stops
+> processing messages, and the interrupt routine does not return,
+> running indefinitely even after killing the running application.
+>=20
+> Error messages:
+> [  441.298819] mcp251xfd spi2.0 can0: ERROR in mcp251xfd_start_xmit: -16
+> [  441.306498] mcp251xfd spi2.0 can0: Transmit Event FIFO buffer not empt=
+y. (seq=3D0x000017c7, tef_tail=3D0x000017cf, tef_head=3D0x000017d0, tx_head=
+=3D0x000017d3).
+> ... and repeat forever.
+>=20
+> The issue can be triggered when multiple devices share the same
+> SPI interface. And there is concurrent access to the bus.
+>=20
+> The problem occurs because tx_ring->head increments even if
+> mcp251xfd_start_xmit() fails. Consequently, the driver skips one
+> TX package while still expecting a response in
+> mcp251xfd_handle_tefif_one().
+>=20
+> This patch resolves the issue by decreasing tx_ring->head if
+> mcp251xfd_start_xmit() fails. With the fix, if we attempt to trigger
+> the issue again, the driver prints an error and discard the message.
 
+What about returning NETDEV_TX_BUSY, then the networking stack will
+retry.
+
+> Fixes: 55e5b97f003e ("can: mcp25xxfd: add driver for Microchip MCP25xxFD =
+SPI CAN")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Vitor Soares <vitor.soares@toradex.com>
+> ---
+>  drivers/net/can/spi/mcp251xfd/mcp251xfd-tx.c | 27 ++++++++++----------
+>  1 file changed, 14 insertions(+), 13 deletions(-)
+>=20
+> diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-tx.c b/drivers/net/c=
+an/spi/mcp251xfd/mcp251xfd-tx.c
+> index 160528d3cc26..a8eb941c1b95 100644
+> --- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-tx.c
+> +++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-tx.c
+> @@ -181,25 +181,26 @@ netdev_tx_t mcp251xfd_start_xmit(struct sk_buff *sk=
+b,
+>  	tx_obj =3D mcp251xfd_get_tx_obj_next(tx_ring);
+>  	mcp251xfd_tx_obj_from_skb(priv, tx_obj, skb, tx_ring->head);
+> =20
+> -	/* Stop queue if we occupy the complete TX FIFO */
+>  	tx_head =3D mcp251xfd_get_tx_head(tx_ring);
+> -	tx_ring->head++;
+> -	if (mcp251xfd_get_tx_free(tx_ring) =3D=3D 0)
+> -		netif_stop_queue(ndev);
+> -
+>  	frame_len =3D can_skb_get_frame_len(skb);
+> -	err =3D can_put_echo_skb(skb, ndev, tx_head, frame_len);
+> -	if (!err)
+> -		netdev_sent_queue(priv->ndev, frame_len);
+> +	can_put_echo_skb(skb, ndev, tx_head, frame_len);
+> +
+> +	tx_ring->head++;
+> =20
+>  	err =3D mcp251xfd_tx_obj_write(priv, tx_obj);
+> -	if (err)
+> -		goto out_err;
+> +	if (err) {
+> +		can_free_echo_skb(ndev, tx_head, NULL);
+> =20
+> -	return NETDEV_TX_OK;
+> +		tx_ring->head--;
+> +
+
+I'm not sure, if we want an error message for -EBUSY. We could add
+proper ethtool statistics.
+
+> +		netdev_err(priv->ndev, "ERROR in %s: %d\n", __func__, err);
+> +	} else {
+> +		/* Stop queue if we occupy the complete TX FIFO */
+> +		if (mcp251xfd_get_tx_free(tx_ring) =3D=3D 0)
+> +			netif_stop_queue(ndev);
+> =20
+> - out_err:
+> -	netdev_err(priv->ndev, "ERROR in %s: %d\n", __func__, err);
+> +		netdev_sent_queue(priv->ndev, frame_len);
+> +	}
+> =20
+>  	return NETDEV_TX_OK;
+>  }
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+
+--g63t2qxnscz3njvz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEUEC6huC2BN0pvD5fKDiiPnotvG8FAmXpsTAACgkQKDiiPnot
+vG+S3ggAliJL81O5z6GF9c4x5R2wUoT5oWY60OKSo9Z/uEhnEsH2Pt2uaOlXe9LP
+vEXtH8ms8Fj3+91Js3rLGiLEa1xDKlq/u/pbCRQdUGKNpD+AVusB+QEbP0mxhz5P
+1puPong7lP48wzY2FEPzJ//2SyPAwAqJdx0I/7+iKGSJNXVCgyjfD1+vMf11iDDh
+/cT2jxP3TyR/qlcJoSxZathNcHYiPRe1YoJfSa/pAJ15Ahc01+lZ8vRQ/MrUVZ/2
+x4Hghc/+jzkD88JmNYyPI61/G0rjOGhdXEZVLnD4rNscy8YRVCgbbHA4kn/TwEJv
+LQH0RsGzQg9zw2wsOvxQAHdmlbxyWQ==
+=mqKg
+-----END PGP SIGNATURE-----
+
+--g63t2qxnscz3njvz--
 
