@@ -1,140 +1,202 @@
-Return-Path: <linux-kernel+bounces-96369-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96370-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E81A2875B35
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 00:47:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BAF8875B36
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 00:49:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E11B31C212DC
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 23:47:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A5C6F1C2129A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 23:49:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DF0848787;
-	Thu,  7 Mar 2024 23:47:15 +0000 (UTC)
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76D3247F57;
+	Thu,  7 Mar 2024 23:49:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="UqYhQJyU"
+Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com [209.85.222.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DD3B3D3BB;
-	Thu,  7 Mar 2024 23:47:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFC0743ADE
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 23:48:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709855234; cv=none; b=lfiASgz6KUnuDKrlC5vy117d7dIUjhNmh7M4pKRmbpNKbk85ZcUfZcYkDaar8ogiaCSP2NP4iapvu/X7aRIUQ5tnxTFhjRRBuXcKnbTy5uJUSS25lhMmPMEsfdjjTL57PsUK12v0iDTN12Io3sMWw89ONODr2P06ow3px5hTIN0=
+	t=1709855341; cv=none; b=lgD2rkFgD2HvR2avAZ+F4kln0J6P2WhH4boaSePGzyPBNkIHxdZi0VBpWjDnTVBadm+paKSsZXfK9zc30KBmftLMn5q6ROikkr7OxKt1x+m2TxEWB0Wnr+rcfoxZDZf5C5aCeq14skNpw9nuRDlgCGFSpfvK8BqtjBcbBWLP6mo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709855234; c=relaxed/simple;
-	bh=hiSn8SSIe9tegeKwF4wqEjbTESubvyzdJG8DyIQ2F5c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=eeYUKyWAssq/PH17TdZoh610PnCZest8s0i99wfSuBm3p0IF6PglRQsPT4CTI8jzxO3Hw8b7Bl4OTQ5FjS8TSGME7hC7c890ZrGrKgepz2BsfxOY7oMHS6j2IX3HTPpFm+ojg0I1WPaxVl3QPPjbBFPyJNO9/tbaefNh2gqcu2s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6da202aa138so1038511b3a.2;
-        Thu, 07 Mar 2024 15:47:13 -0800 (PST)
+	s=arc-20240116; t=1709855341; c=relaxed/simple;
+	bh=RxrVHpsg2Dx2BK8X3581XvrwOzOq8HuNBnuD6LOVaeg=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=hFSo2jdmfRj+aqHFC0/bpyVaXm2HAgw+bNBvRSRQvcuA2OyZPuM2OLo4u21TYIe5faUR2z1de2mJLy8MF1LjTnseM66NJ78LO6Z0CSWXJMehyffv1NDx/9YDXKkjdWR0bmdM4coTFzCB7OFjwyjcQ7sTOlyL6T3fxpWY4UA+7RM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=UqYhQJyU; arc=none smtp.client-ip=209.85.222.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+Received: by mail-ua1-f49.google.com with SMTP id a1e0cc1a2514c-7dba7098dd8so293868241.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 15:48:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1709855338; x=1710460138; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=oYvliaxZHHBmxRsoWW/yY+ZGpMLYNfkC8wPuph2ba+I=;
+        b=UqYhQJyUXhxEkZLK/rHVtwYhsz2FtravUlbjPH0/ZdC3hlERktMkw7NZNlHbYeMPiL
+         otAvY5uW4OkY8BEY6CWBi1aX/XnfDWD+mCSr4cMzZa9JHNyf5sokwuC6rkxb7Ce1w/TY
+         KDizQH0P9VED4p+M2mGaLy0l9vtYLzWhMcbVY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709855232; x=1710460032;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VRglE+lg+GiCjlWhoic2nCJGJlQoZ9wZneASUD21CRs=;
-        b=TgFBz6bhZ/32RivFypCTKygjGuZ3oo+p25WazFc9QsblTtfbxKUjzIIPoFRgQDikhi
-         /yvPFHCbI1ux8+ClRWPazLDAIZ+HYKghgx+Tomev8Lr2i+XM7rNbHC+i/FrdDL4gAokM
-         XF42pZSvOM3cu4DhahKFJMWzceckE9m0dSvdKqQ5Wf11i7s7UVS5CgHwHG/NnA+PSPiU
-         GN8C60vLg36Wmalz1iI5Mup8/i8Kpwuagf3xRMxfA2YAsF0kjMxxKVEg4ASQVrrGklhM
-         RMpmNoOsuX0iP5LTyT27kweljyNc1a+PTlomOBGHxiMcCgtdUg6ttuLD+LAVtxjLxJnF
-         ++Sw==
-X-Forwarded-Encrypted: i=1; AJvYcCWQzlVVNnr2G02vgUU/+wX8NFr8sp6S5eov9mq95qpWjysgdmpVWEYcZieOhtllCahMMMM+tYwNKW87vJwuEv4hbns2hyDEOi3cnDCuV15Ob1xfyeo94k2tlbKnZXKYkWK11EuVDskzSK+/DcnQGcws8kFoU2RnSsXsTAvDqB7YYszP3A==
-X-Gm-Message-State: AOJu0YwXAWCRmyJyYyaWA3cqooshjpUvhHNSBNsX3R0KOri3NqPhpDn9
-	AAOLJDfk4GsEP3QX3Yu1xLaUwF7JOA42b4sbJC+8a2t/auBT+czGpPyld383ieP9c3mbUcA9Ml/
-	mUxIEl8cVFyukok36zxlJQck4njo=
-X-Google-Smtp-Source: AGHT+IGjnH5Y4f8Xc68LPqBs4yQPZ4Urn7qyiy5Tf+SuqPL2hThvfF428reoLcncH5TvvcXLda4DiyJCHhDBIBQxWys=
-X-Received: by 2002:a05:6a20:a99a:b0:1a0:e187:87c4 with SMTP id
- cc26-20020a056a20a99a00b001a0e18787c4mr8978541pzb.38.1709855232461; Thu, 07
- Mar 2024 15:47:12 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709855338; x=1710460138;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=oYvliaxZHHBmxRsoWW/yY+ZGpMLYNfkC8wPuph2ba+I=;
+        b=FaE8c+VoOrw79PYKmAaYgJ+Mc0TOUvLbuoGB/l3T7HdQnyrXs7WWHlPf9Zx0O5Blq4
+         1BCOF+co17cSVA/9SxAbnGneL3TLMDUkX6bkWfYRo+mAst441nBm0kDZlpZ2/fnCWZUO
+         b4TN6JiMmQwQM83o5a0TO2H/zWhZxKbSHlZDGOoMnyx8jmxK3Ne3uowzWJWgXfb/azhD
+         DVBrxcRjuKOJ4bReh+duDejUsPwPXjr/2ZrLCFpHzoTq0JpicctQbRQ4qUPueFzTlzrV
+         D65nCn6kXz8W9ObzIpelhi2VhA2mYmGhMLpxq8MovbtwxpOmLgvORi408Eqt8Zw0LWSb
+         GtwA==
+X-Gm-Message-State: AOJu0YyxqnciIpqTqyHmiWV+NJ1QHB0Se4RGEE+tDaJrI1/9tdg+ajJ4
+	kQR4ts/9NZh4hK/C9/WrDbtCvBzmDnrwEaihbaG7i92Th4p7SH84ttgsbJmApC+o1D8wJNG1dUM
+	b
+X-Google-Smtp-Source: AGHT+IG80+aEd9lIN5B2HVx0CQ34g6WerPXfDJlUp6/m/zTDrrep9d6Wz39fnLHME4Zb74ahclhAbw==
+X-Received: by 2002:a05:6122:996:b0:4cd:44db:b24b with SMTP id g22-20020a056122099600b004cd44dbb24bmr9607129vkd.5.1709855337543;
+        Thu, 07 Mar 2024 15:48:57 -0800 (PST)
+Received: from joelbox2.. (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
+        by smtp.gmail.com with ESMTPSA id t4-20020ac865c4000000b0042f04d37e89sm2980907qto.10.2024.03.07.15.48.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Mar 2024 15:48:56 -0800 (PST)
+From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To: linux-kernel@vger.kernel.org,
+	frederic@kernel.org,
+	boqun.feng@gmail.com,
+	urezki@gmail.com,
+	neeraj.iitr10@gmail.com,
+	joel@joelfernandes.org,
+	rcu@vger.kernel.org,
+	rostedt@goodmis.org,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>
+Subject: [PATCH] [RFC] rcu/tree: Reduce wake up for synchronize_rcu() common case
+Date: Thu,  7 Mar 2024 18:48:51 -0500
+Message-Id: <20240307234852.2132637-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240202234057.2085863-1-irogers@google.com> <CAP-5=fVjAHqAHHLqE=3v2bP6S6k98psiuZds7TUTFCT7RgMFdQ@mail.gmail.com>
- <CAM9d7ciPYMd4zckrcgnPtradZ_bvaNOHji1tkkYQu_TTF5=eYw@mail.gmail.com>
-In-Reply-To: <CAM9d7ciPYMd4zckrcgnPtradZ_bvaNOHji1tkkYQu_TTF5=eYw@mail.gmail.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Thu, 7 Mar 2024 15:47:00 -0800
-Message-ID: <CAM9d7cgbxHZoaq4ZLCda-6TW5A+b+-8dSrRApk+AjcTVNC5hNA@mail.gmail.com>
-Subject: Re: [PATCH v3 0/8] Clean up libperf cpumap's empty function
-To: Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	James Clark <james.clark@arm.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Suzuki K Poulose <suzuki.poulose@arm.com>, Mike Leach <mike.leach@linaro.org>, 
-	John Garry <john.g.garry@oracle.com>, Will Deacon <will@kernel.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Darren Hart <dvhart@infradead.org>, 
-	Davidlohr Bueso <dave@stgolabs.net>, =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>, 
-	Kan Liang <kan.liang@linux.intel.com>, K Prateek Nayak <kprateek.nayak@amd.com>, 
-	Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, 
-	Kajol Jain <kjain@linux.ibm.com>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
-	Andrew Jones <ajones@ventanamicro.com>, Alexandre Ghiti <alexghiti@rivosinc.com>, 
-	Atish Patra <atishp@rivosinc.com>, "Steinar H. Gunderson" <sesse@google.com>, 
-	Yang Jihong <yangjihong1@huawei.com>, Yang Li <yang.lee@linux.alibaba.com>, 
-	Changbin Du <changbin.du@huawei.com>, Sandipan Das <sandipan.das@amd.com>, 
-	Ravi Bangoria <ravi.bangoria@amd.com>, Paran Lee <p4ranlee@gmail.com>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Huacai Chen <chenhuacai@kernel.org>, 
-	Yanteng Si <siyanteng@loongson.cn>, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, coresight@lists.linaro.org, 
-	linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org, 
-	Leo Yan <leo.yan@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Hi Ian,
+In the synchronize_rcu() common case, we will have less than
+SR_MAX_USERS_WAKE_FROM_GP number of users per GP. Waking up the kworker
+is pointless just to free the last injected wait head since at that point,
+all the users have already been awakened.
 
-Sorry for the late reply.
+Introduce a new counter to track this and prevent the wakeup in the
+common case.
 
-On Fri, Feb 16, 2024 at 5:04=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
-wrote:
->
-> On Wed, Feb 14, 2024 at 2:03=E2=80=AFPM Ian Rogers <irogers@google.com> w=
-rote:
-> >
-> > On Fri, Feb 2, 2024 at 3:41=E2=80=AFPM Ian Rogers <irogers@google.com> =
-wrote:
-> > >
-> > > Rename and clean up the use of libperf CPU map functions particularly
-> > > focussing on perf_cpu_map__empty that may return true for maps
-> > > containing CPUs but also with an "any CPU"/dummy value.
-> > >
-> > > perf_cpu_map__nr is also troubling in that iterating an empty CPU map
-> > > will yield the "any CPU"/dummy value. Reduce the appearance of some
-> > > calls to this by using the perf_cpu_map__for_each_cpu macro.
-> > >
-> > > v3: Address handling of "any" is arm-spe/cs-etm patch.
-> > > v2: 6 patches were merged by Arnaldo. New patch added ensure empty
-> > >     maps are allocated as NULL (suggested by James Clark). Hopefully =
-a
-> > >     fix to "perf arm-spe/cs-etm: Directly iterate CPU maps".
-> > >
-> > > Ian Rogers (8):
-> > >   libperf cpumap: Add any, empty and min helpers
-> > >   libperf cpumap: Ensure empty cpumap is NULL from alloc
-> > >   perf arm-spe/cs-etm: Directly iterate CPU maps
-> > >   perf intel-pt/intel-bts: Switch perf_cpu_map__has_any_cpu_or_is_emp=
-ty
-> > >     use
-> > >   perf cpumap: Clean up use of perf_cpu_map__has_any_cpu_or_is_empty
-> > >   perf arm64 header: Remove unnecessary CPU map get and put
-> > >   perf stat: Remove duplicate cpus_map_matched function
-> > >   perf cpumap: Use perf_cpu_map__for_each_cpu when possible
-> >
-> > Ping. Thanks,
-> > Ian
->
-> Adrian and James, are you ok with this now?
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+---
+ kernel/rcu/tree.c | 36 +++++++++++++++++++++++++++++++-----
+ kernel/rcu/tree.h |  1 +
+ 2 files changed, 32 insertions(+), 5 deletions(-)
 
-I think James is fine now and the Intel-pt part seems straight-forward
-so I'd like to merge this change.  Please tell me if you have any concerns.
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 12978049cb99..cba3a82e9ed9 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -96,6 +96,7 @@ static struct rcu_state rcu_state = {
+ 	.ofl_lock = __ARCH_SPIN_LOCK_UNLOCKED,
+ 	.srs_cleanup_work = __WORK_INITIALIZER(rcu_state.srs_cleanup_work,
+ 		rcu_sr_normal_gp_cleanup_work),
++	.srs_cleanups_pending = ATOMIC_INIT(0),
+ };
+ 
+ /* Dump rcu_node combining tree at boot to verify correct setup. */
+@@ -1641,8 +1642,11 @@ static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
+ 	 * the done tail list manipulations are protected here.
+ 	 */
+ 	done = smp_load_acquire(&rcu_state.srs_done_tail);
+-	if (!done)
++	if (!done) {
++		/* See comments below. */
++		atomic_dec_return_release(&rcu_state.srs_cleanups_pending);
+ 		return;
++	}
+ 
+ 	WARN_ON_ONCE(!rcu_sr_is_wait_head(done));
+ 	head = done->next;
+@@ -1665,6 +1669,9 @@ static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
+ 
+ 		rcu_sr_put_wait_head(rcu);
+ 	}
++
++	/* Order list manipulations with atomic access. */
++	atomic_dec_return_release(&rcu_state.srs_cleanups_pending);
+ }
+ 
+ /*
+@@ -1672,7 +1679,7 @@ static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
+  */
+ static void rcu_sr_normal_gp_cleanup(void)
+ {
+-	struct llist_node *wait_tail, *next, *rcu;
++	struct llist_node *wait_tail, *next = NULL, *rcu = NULL;
+ 	int done = 0;
+ 
+ 	wait_tail = rcu_state.srs_wait_tail;
+@@ -1698,16 +1705,35 @@ static void rcu_sr_normal_gp_cleanup(void)
+ 			break;
+ 	}
+ 
+-	// concurrent sr_normal_gp_cleanup work might observe this update.
+-	smp_store_release(&rcu_state.srs_done_tail, wait_tail);
++	/*
++	 * Fast path, no more users to process. Remove the last wait head
++	 * if no inflight-workers. If there are in-flight workers, let them
++	 * remove the last wait head.
++	 */
++	WARN_ON_ONCE(!rcu);
+ 	ASSERT_EXCLUSIVE_WRITER(rcu_state.srs_done_tail);
+ 
++	if (rcu && rcu_sr_is_wait_head(rcu) && rcu->next == NULL &&
++		/* Order atomic access with list manipulation. */
++		!atomic_read_acquire(&rcu_state.srs_cleanups_pending)) {
++		wait_tail->next = NULL;
++		rcu_sr_put_wait_head(rcu);
++		smp_store_release(&rcu_state.srs_done_tail, wait_tail);
++		return;
++	}
++
++	/* Concurrent sr_normal_gp_cleanup work might observe this update. */
++	smp_store_release(&rcu_state.srs_done_tail, wait_tail);
++
+ 	/*
+ 	 * We schedule a work in order to perform a final processing
+ 	 * of outstanding users(if still left) and releasing wait-heads
+ 	 * added by rcu_sr_normal_gp_init() call.
+ 	 */
+-	queue_work(system_highpri_wq, &rcu_state.srs_cleanup_work);
++	atomic_inc(&rcu_state.srs_cleanups_pending);
++	if (!queue_work(system_highpri_wq, &rcu_state.srs_cleanup_work)) {
++		atomic_dec(&rcu_state.srs_cleanups_pending);
++	}
+ }
+ 
+ /*
+diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+index 2832787cee1d..f162b947c5b6 100644
+--- a/kernel/rcu/tree.h
++++ b/kernel/rcu/tree.h
+@@ -420,6 +420,7 @@ struct rcu_state {
+ 	struct llist_node *srs_done_tail; /* ready for GP users. */
+ 	struct sr_wait_node srs_wait_nodes[SR_NORMAL_GP_WAIT_HEAD_MAX];
+ 	struct work_struct srs_cleanup_work;
++	atomic_t srs_cleanups_pending; /* srs inflight worker cleanups. */
+ };
+ 
+ /* Values for rcu_state structure's gp_flags field. */
+-- 
+2.34.1
 
-Thanks,
-Namhyung
 
