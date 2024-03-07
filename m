@@ -1,100 +1,170 @@
-Return-Path: <linux-kernel+bounces-95074-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95075-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9BA88748F4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 08:43:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EB398748F6
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 08:45:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74C77282938
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 07:43:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA8D51C21657
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 07:45:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0516C6311B;
-	Thu,  7 Mar 2024 07:43:51 +0000 (UTC)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C16D6311D;
+	Thu,  7 Mar 2024 07:45:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="mBsC6urQ"
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2071.outbound.protection.outlook.com [40.107.6.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1FCF38DEF
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 07:43:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709797430; cv=none; b=kD0Vj7RIj+l+4ejU2JtrIvlE/oAgqBAZSNOfhXMw5cCDnYCIaG5551WZwzhok1XOq2DptGLx6VOqoG4kvo9cDCcSeMXeZBH3bn84hZh97L/e8xIVUySfaErry69Znc6cDZj92wFCh7ydCU/aCU8mNKo91tXOsZWYzDQlJE1BB2c=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709797430; c=relaxed/simple;
-	bh=LVAe2E6e0Oz/NDfDpFiSTBjN3xsQ02++UCJW5rUkH+U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=ClAcaUEYE+XjTtl/PpJdTTFNWlg0PJKcZwqvsp+3noTMpSknHeNF7TTBfhhmrzY6m0ch4WCgK7LBy4DnVroyACTlgjIRD95kfZZBM0M/yDTLDyqS7HdZS2dk1fKfOV0jnd3EkbwoIm66cRSsAbgcC7rU07SEQuMbOtPMgNDRUWk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Tr1T261TgzwPHK;
-	Thu,  7 Mar 2024 15:41:26 +0800 (CST)
-Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
-	by mail.maildlp.com (Postfix) with ESMTPS id 4EC5D140410;
-	Thu,  7 Mar 2024 15:43:45 +0800 (CST)
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 7 Mar 2024 15:43:44 +0800
-Message-ID: <bca29c1a-6a4d-e128-b9b5-5c48020d4850@huawei.com>
-Date: Thu, 7 Mar 2024 15:43:44 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23FA31CD20;
+	Thu,  7 Mar 2024 07:45:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.6.71
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709797513; cv=fail; b=mBnAgA1WGGEuO3dIQECTfmAEh2WfdnQQpO/JIHZx0hPrUE0JvkcWvvzSPYGZ7Sukwzz97dzRHpOaoTBN03XQR8tuiFmZXEQDCiY+zu8TyJJTA/+NCeXfEr2Wip2IpCFW23BN9nIeCdkPow7imT1yePihMR9zzm518u5aMGbPHc0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709797513; c=relaxed/simple;
+	bh=vFTFF65bmr2zIQpfcXngGhzcFLtYikp89a/UT136nQo=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=ukgxuxVk6hvKYH9IPqlugRnVUfh/wYH2404CUNW2QohFkfHD2IcEVGP6wNXJXfyQNlvOQA+WBoOGPD5UAR/15f3v5L5jZzbN2wuJUeK3Eh3aTSIIm2IUph/GwJHXqyhfAgaz7cpAlhyehtKj4nI1IwBon0MKlc/WYKCq5xBQt8g=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=mBsC6urQ; arc=fail smtp.client-ip=40.107.6.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AkPEQzH6BHLaAv9UyMR0VJtfknsXQNqSak69xY6LZECvpafySjwf7W2fETFT+vc+z5YIxGEbcvepeLIM5UDGIb2gK6i4+mrlLMRyrl8YAjTBH15H4j+XWk5JVL5N66YM6TRKbZSJXMObz5v+/5Bjag6+aANnLQkROcBDzNCGaXwFsArNw/yvKAR/KGeIhrbWNRpEnLSIGqpDffdcF0Vo5utPQvseoZf4FJse0TgBcEcFMeA7VKm7U6zGQqOTRZVJTit7wXhvoQQYMK55l7MJScjntSZMvcKMlugGcPZJrH0QdSDfhwHuA0pjvXkxwl4Ws4Y8bals//UqjbpKOUpG2Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=oTkHoJbHt2/i5sZ4U4l2Yp+EKGPWKrxmeatbxA3+6cw=;
+ b=laUkV+UN/Cx05aWU1aGVUTYWJBzPzqem88zqhF5PHHQsFKRDFNzim3gCMtLHHaby8cw30fiF4iHQNdWC/rV6akSyKDPW3D+/b54C6i+JuXj/KOrtgXRw76srm5i5jBe4gdSNVTFCK9Y3vKgxUgUfcTuspPhqULdRXka8f9nNTSKyQQjW1xM80fjnXI+ziTfTWg2RWjjWfQzr/5DhFXYAuos6cbH9jv4PgDvP5zupYo+gQ3jBbg21cLpOONoZMFiYRZ0zwPSk7wDGMtwog+RXZJBhTiX3KnfNX7/M1N7ZRbpkZwSIu430BIDPCFnbzBxMNiumD8GoD4FkeihZGxLKOQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oTkHoJbHt2/i5sZ4U4l2Yp+EKGPWKrxmeatbxA3+6cw=;
+ b=mBsC6urQk6tOO9II1j9qelL8CNB89mMRdFXrPphsc0TcJPAR5yj4+N8mOo8O4gBlmOYbgXKJ1qFCcz5GSzsMfftm3+hnojItOn2seohqOpismViEm+mpQJKIH74astSBJXiW2QauOgegQVErm2ZP/39FX0mMascYmE8iia5n16s=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from DB9PR04MB9498.eurprd04.prod.outlook.com (2603:10a6:10:360::21)
+ by PA4PR04MB9464.eurprd04.prod.outlook.com (2603:10a6:102:2ac::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.39; Thu, 7 Mar
+ 2024 07:45:07 +0000
+Received: from DB9PR04MB9498.eurprd04.prod.outlook.com
+ ([fe80::4bee:acb0:401a:3a01]) by DB9PR04MB9498.eurprd04.prod.outlook.com
+ ([fe80::4bee:acb0:401a:3a01%7]) with mapi id 15.20.7362.024; Thu, 7 Mar 2024
+ 07:45:07 +0000
+From: Chancel Liu <chancel.liu@nxp.com>
+To: shengjiu.wang@gmail.com,
+	Xiubo.Lee@gmail.com,
+	festevam@gmail.com,
+	nicoleotsuka@gmail.com,
+	lgirdwood@gmail.com,
+	broonie@kernel.org,
+	perex@perex.cz,
+	tiwai@suse.com,
+	shawnguo@kernel.org,
+	s.hauer@pengutronix.de,
+	kernel@pengutronix.de,
+	linux-imx@nxp.com,
+	alsa-devel@alsa-project.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Cc: Chancel Liu <chancel.liu@nxp.com>
+Subject: [PATCH v2 0/4] ASoC: fsl: Support register and unregister rpmsg sound card through remoteproc
+Date: Thu,  7 Mar 2024 16:44:33 +0900
+Message-ID: <20240307074437.1472593-1-chancel.liu@nxp.com>
+X-Mailer: git-send-email 2.43.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SI1PR02CA0039.apcprd02.prod.outlook.com
+ (2603:1096:4:1f6::9) To DB9PR04MB9498.eurprd04.prod.outlook.com
+ (2603:10a6:10:360::21)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH] erofs: fix lockdep false positives on initializing
- erofs_pseudo_mnt
-Content-Language: en-US
-To: Al Viro <viro@zeniv.linux.org.uk>
-CC: <linux-erofs@lists.ozlabs.org>, <xiang@kernel.org>, <chao@kernel.org>,
-	<huyue2@coolpad.com>, <jefflexu@linux.alibaba.com>,
-	<linux-kernel@vger.kernel.org>, <yangerkun@huawei.com>, <houtao1@huawei.com>,
-	<yukuai3@huawei.com>, <chengzhihao1@huawei.com>, Baokun Li
-	<libaokun1@huawei.com>
-References: <20240307024459.883044-1-libaokun1@huawei.com>
- <20240307050717.GB538574@ZenIV>
- <7e9746db-033e-64d0-a3d5-9d341c66cec7@huawei.com>
- <20240307072112.GC538574@ZenIV>
-From: Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <20240307072112.GC538574@ZenIV>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500021.china.huawei.com (7.185.36.21)
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DB9PR04MB9498:EE_|PA4PR04MB9464:EE_
+X-MS-Office365-Filtering-Correlation-Id: fdf825c0-a702-4601-a67c-08dc3e7a8221
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	9uuW3L8LJtYyOLr7Zdoz0P5Uut3ghQPA1JJrLcQgQ+SInWkTz/t+9Of92BUZVU2lEV8qVjB3jkzAddqDReAoIBem81D4GgjJuFcDg93UI1mCCnUuyrHQLYXbofCo65pZ1UhPGMZpO0hK8rqBAX6a08051LTnNLCMOFxoHZ+CvXN767/SbmI2jyHIa2SNb6VS0A/rZ7ZmM9n80q3xOR9oNifpkANiGOj9a9KWB4uTMgpS6FvNq91/zzFjDDnJhLsyLNUjpauDzXH5/BB9DxnEyXFkD9noQdHzGaHOKOqZOSmGsAi8t1q5Obau7pvkhkwcmdWfx16O37n7Z5Iskp5hbxCY83j/ZBI2rR/2tb5wNcjLOB5+/8/4b2UgVTWn6FpH3AxKjUHKwerj9UfhbKekcVvWOINnNo1puiu+stx76alH7CZscYmRzCtsoa26RqMx9KqHvLrAPHRjYCVIz/3uL7oBF5ACBX5DdfRNsJQvyWJ8dOd8P8awb/tZL+s/Zq28zxEBhWmV89Dx6pHxXUVDwqpDMWp96yCxHO86se/r+4qK4VVdUROHEl/KTTxt64qH9gp2l6GCakD6g6QYop1H0Ec37WA/MGv9rcayxXHJwB8g1D/ZG/WM0co89EgIlIvMkqb6Cf7TkMfrcEBAewAASJ9Bg7SnUZTJCgMoFNDaXbbIdcVYeTRCbPaX2vElRQsse4tREE8D+iRPl1OvgZXv8ZfsRyOE70xFVheisS8IJfw=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB9498.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(38350700005)(921011);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?aP3TVDaWlJHSy2gEQPOhXcokmQZV56deLxPLNkEabk9ju3+r7BjsO2ENN8ZK?=
+ =?us-ascii?Q?K+rIGjCvimF8K28lTjHdArAwzzgVPQFJk4CoKF3181778HDVLvpihj/MzKty?=
+ =?us-ascii?Q?naYWKpCuHc2QbftrbktNqt2T8nrhe0xxQKJFq5KP/wYgYg1xG7foIr20v4A3?=
+ =?us-ascii?Q?zguqkREsdRBH08sCq+/2pODFNFbMBhoicQRkosmPSvWHpJZvm+V5bqPyjwpy?=
+ =?us-ascii?Q?++pdMDxD3feM8+RFMtREfEeGbkmP0b0QPztmcZJbd3DZHdD015z36XuIgAjW?=
+ =?us-ascii?Q?1IQ0gUkf0AhEwZrgjjSNovIObDT+NoTy5laNDtcmpkjU6qx7lZEaQK62pVnX?=
+ =?us-ascii?Q?sNKKDNqProTL4okAWeljZtiRHgVTO87ZpyoHy7m/monyYUB8/Bj9q4skgYQz?=
+ =?us-ascii?Q?bv8m06TGG8S/Usau3HRK0t2xMY/OmVhLQrJw83iZdTvEzukeXcBm6Ty7tpi9?=
+ =?us-ascii?Q?wloFeX1Jjiy9jD6MJGgSUh0WBjhCKu739D1PocDLpumYMy8Ob6F2qPJe8J1z?=
+ =?us-ascii?Q?5RMjKu0mkqBEAuUby2hvZ000R2aSNTpJdxnt7WGr5OycvMcS841Eed5lyK2l?=
+ =?us-ascii?Q?aDIZHEm2yYZsH1AmxtcI/dqRS4GsxSiOzRf36tWEcU2/5xJ/siSEgV/KwxSj?=
+ =?us-ascii?Q?fhxuhYO6qXAU/BxGDaZ0Py02Fv1vZWw2ADU2XZvLPFR7WB1NYNtGCRYScJSR?=
+ =?us-ascii?Q?bbhPGKgsl71O0k47AoGSerIGQEgsnluD4CpxkVZizaXJ+Aahsdowq6nRdOpq?=
+ =?us-ascii?Q?VprIyr9rhKTyl9FMdwTMB7+pv8XOMQ1y2dxXe4kw8CerJG/C0HfpWNOqtQiK?=
+ =?us-ascii?Q?CbKsX7nX9DBALYswhhHGrFbr9IeKgCR42w4d/lhJh0w1+GeYWyWZX76CCCrv?=
+ =?us-ascii?Q?r+hbQBuWHAv70AgEAHCBIYLpMa0uN2/qhF5oZlf6cFsPlB6NeG4lLLb8pAMG?=
+ =?us-ascii?Q?NX8hmZUSVT1BvcRSM1HjGmaufHD0yuGERa/++7Bu4Q8ggWrTnXj6EIFNrEvF?=
+ =?us-ascii?Q?w2xccrXxDeUaanmTE+3FcL/quUWDI9kM2Z5Ve0fZGxBMJEsCE4/gWqnimuih?=
+ =?us-ascii?Q?tlsg0QmdufCLFIvrbfP0FNNHTxnRKaL6lNYLzNlV7RWKB81w0tkDYMFX6hRw?=
+ =?us-ascii?Q?LJrfK5XPcZvQr3DcS5CfzITJszkOtPNn/nNbp1B03Q5asNt7NT9b6v1bVqi+?=
+ =?us-ascii?Q?ndND4JcR+dhkPXW6KGZ2eYDDV5jJpYydovjMYHDnVf4LJIAHhydCgO7pna5m?=
+ =?us-ascii?Q?pK9btGHCiaE841vEFi50E+HjV5/jRsEbMPmOc+S5ni20RHri0R6S4H4lj4A7?=
+ =?us-ascii?Q?ccEYFAWO+jJuEUpSkWivN4FB+kXiTtU0P92Am6Zsayl6Z5h7RjyTPyKAFusn?=
+ =?us-ascii?Q?x7Yi/sF3ZbTEmy1QPjQUO1S1Dad4HJTn92C+qMVhHmBoJ4VyGFoSQa4bRBPk?=
+ =?us-ascii?Q?zC0rWdc7kh9BEw772BJlwE0iKmPESzpSDxBzOyh+q6DCsXksTff5Uy+Opdvb?=
+ =?us-ascii?Q?jLaWuSDQFHltka1T3a52zcHmJCykFEdmlRkvH28moa8zrKszaBNyvgltdusr?=
+ =?us-ascii?Q?NdVdjiGXMCyAd04EJBLpNYzDBJ3V22U3oW/q9Y7e?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fdf825c0-a702-4601-a67c-08dc3e7a8221
+X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB9498.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Mar 2024 07:45:07.2902
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: XELUZzG3qVJll6uHe8eYmKHDcM/QXj5QhfwsUaEU4axJoPa6HWnHyJSq3yEsVnIrCgsZCl1XQMejOxJvB4+ALQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR04MB9464
 
-On 2024/3/7 15:21, Al Viro wrote:
-> On Thu, Mar 07, 2024 at 03:06:49PM +0800, Baokun Li wrote:
->>>> +int erofs_anon_register_fs(void)
->>>> +{
->>>> +	return register_filesystem(&erofs_anon_fs_type);
->>>> +}
->>> What for?  The only thing it gives you is an ability to look it up by
->>> name.  Which is completely pointless, IMO,
->> The helper function here is to avoid extern erofs_anon_fs_type(), because
->> we define it in fscache.c, but also use it in super.c. Moreover, we don't
->> need
->> to register it when CONFIG_EROFS_FS_ONDEMAND is not enabled, so we
-> You don't need to register it at all.
->
-> The one and only effect of register_filesystem() is making file_system_type
-> instance visible to get_fs_type() (and making it show up in /proc/filesystems).
->
-> That's it.  If you want to have it looked up by name (e.g. for userland
-> mounts), you need to register.  If not, you do not need to do that.
->
-> Note that kern_mount() take a pointer to struct file_system_type,
-> not its (string) name.  So all you get from registration is an extra line
-> in /proc/filesystems.  What's the point?
-It's dawning on me, thank you so much for explaining! ღ( ´･ᴗ･` )
+	echo /lib/firmware/fw.elf > /sys/class/remoteproc/remoteproc0/firmware
+(A)	echo start > /sys/class/remoteproc/remoteproc0/state
+(B)	echo stop > /sys/class/remoteproc/remoteproc0/state
 
--- 
-With Best Regards,
-Baokun Li
-.
+The rpmsg sound card is registered in (A) and unregistered in (B).
+After "start", imx-audio-rpmsg registers devices for ASoC platform driver
+and machine driver. Then sound card is registered. After "stop",
+imx-audio-rpmsg unregisters devices for ASoC platform driver and machine
+driver. Then sound card is unregistered.
+
+changes in v2
+- Fix build errors reported by kernel test robot
+
+Chancel Liu (4):
+  ASoC: fsl: imx_pcm_rpmsg: Register component with rpmsg channel name
+  ASoC: fsl: imx-audio-rpmsg: Register device with rpmsg channel name
+  ASoC: fsl: Let imx-audio-rpmsg register platform device for card
+  ASoC: fsl: imx-rpmsg: Update to correct DT node
+
+ sound/soc/fsl/fsl_rpmsg.c       | 11 -----------
+ sound/soc/fsl/imx-audio-rpmsg.c | 21 ++++++++++++++++++---
+ sound/soc/fsl/imx-pcm-rpmsg.c   | 11 ++++++++---
+ sound/soc/fsl/imx-rpmsg.c       | 21 ++++++++++++++++++---
+ 4 files changed, 44 insertions(+), 20 deletions(-)
+
+--
+2.43.0
+
 
