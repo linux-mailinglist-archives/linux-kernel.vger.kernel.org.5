@@ -1,226 +1,106 @@
-Return-Path: <linux-kernel+bounces-95187-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95188-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16519874A68
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:11:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4253874A6B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:11:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 39C9A1C22A9A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:11:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 48D71288BDE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:11:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FA6982D8F;
-	Thu,  7 Mar 2024 09:10:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29D6C839E2;
+	Thu,  7 Mar 2024 09:11:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JvUmQ7+w"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ijDEtdOe"
+Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CFEA633EE;
-	Thu,  7 Mar 2024 09:10:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9F7D745FE;
+	Thu,  7 Mar 2024 09:11:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709802654; cv=none; b=sN9zt/88GwLaCdTk76C+rCLnv81c/iReExnRBMgYRSwHww8rAfbRFS/tWk9EYHoBZ3EBPTA7tHMW0yWwlx21s4HXWCh1ReiN4nrGrLt+ntmeKlXdljL6nTRR7P0A6X8j6hChDVytjRx2w89f4PiPrcfEbD30n4s2n/7EFcxLlZA=
+	t=1709802705; cv=none; b=JxJeVJ6p+y45mQ26ID8M0nV7HjmFw5GrJfFQafjCKGWnMNzji35y9DzgUEfLOgR5eNbQpz9dCeDITA917GvKiF4wVVvZylMNothljKtzgbrvWcAUoyjvPh3QVtZwcHE/T+voKImShQ98cQHOS95Tn/3o2QpK92gzLWijNVOmZCA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709802654; c=relaxed/simple;
-	bh=Sg2sBD2JSi21uxGvBsjrU3hX2XSVJ/v7s5qN/EmsXHI=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version; b=AgTth5xBgDnFDXptUClF6aE3YjUTXmxNhgTjNxDFPKAglODACMfFme8X7y1nQyJbM9mADyh1dHQ6DGjhhakHAy3h4Bxh9Qr/KZASYpFKIWnu8j5+tM6QWxTvMzTf9jAOtbP+uwWbiFw71TdvwGQHyzBXtBP6gk4ktM/ODZY0p7c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JvUmQ7+w; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709802652; x=1741338652;
-  h=from:to:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=Sg2sBD2JSi21uxGvBsjrU3hX2XSVJ/v7s5qN/EmsXHI=;
-  b=JvUmQ7+wzRy78fqEmNibV6OGBdM065w00e3B+RqOslSP/umQIfTG6hS8
-   iu53wjehLHfT+qQfHodPcRhGweZlUm6sST6Ikhp0E1KOcdOXAlRiTAYOd
-   4Qkmeo7APN0LK2MXyJbGSfcjJDmd4PjG0hiNrmrWGvSCi6yorsLBOc4rf
-   fCErlVMUho3XXwRlHcwlsGNsKT/UYPfZuKbI9YUHpqaHW174LqaJVUCUV
-   lKES6xzXDTCwg9PNHYNUXBRH33RA6gNsQKWN2hulveJbN3zfdL5KTNuR3
-   qGlm0SSWa0XVjQXSrEb0i4xoRdrACbjnf65fufyr2ABTCrdub+CEqfy+Z
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11005"; a="5043979"
-X-IronPort-AV: E=Sophos;i="6.06,211,1705392000"; 
-   d="scan'208";a="5043979"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 01:10:52 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,211,1705392000"; 
-   d="scan'208";a="9977833"
-Received: from kkgame1-x299-aorus-gaming-3-pro.itwn.intel.com ([10.225.75.87])
-  by fmviesa010.fm.intel.com with ESMTP; 07 Mar 2024 01:10:49 -0800
-From: Kane Chen <kane.chen@intel.com>
-To: kane.chen@intel.com,
-	linux-kernel@vger.kernel.org,
-	platform-driver-x86@vger.kernel.org,
-	ilpo.jarvinen@linux.intel.com,
-	david.e.box@intel.com,
-	kane.chen@intel.corp-partner.google.com
-Subject: [PATCH 1/1] platform/x86/intel/pmc: Improve PKGC residency counters debug
-Date: Thu,  7 Mar 2024 17:10:11 +0800
-Message-Id: <20240307091011.877921-1-kane.chen@intel.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1709802705; c=relaxed/simple;
+	bh=GqcWhzUq4Dw3rkQz7rWUm08eRDTv4UBtcaaqj6KiMiQ=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=sqsqKWXYXsXZ5pJgYmPCxlBV0irH4/wpsq9UibAXTxQ2WpAClI9klItV8w1l74OVOQ4SfIF5D0P6jL0ib/0W8v9hLD6vI6ycPlI5kDfoL5espcAav3GOpG2gjHI/yBd8um/iviwZmOG09JbGRW7CycPu97PAosYaJYOngINs4i0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ijDEtdOe; arc=none smtp.client-ip=209.85.222.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f181.google.com with SMTP id af79cd13be357-7810827e54eso47896785a.2;
+        Thu, 07 Mar 2024 01:11:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709802702; x=1710407502; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YWbZC5CZoCpm0ayz+A9GPh5eqXUdsbwM1bBGofTxuiw=;
+        b=ijDEtdOeJF2mmC+3wKaq3Kj5U37/YKhRvWWDbcikNl4JavZPTksssRBL8UGvUGryFO
+         5+QSxwSqzbH3Dzx8cFqBQ/OIJ+Q0pDxW/YeuCWSotRgkxms7L3RAz6wc2+yk77ehRZsQ
+         wS0cJ/7dhelwYU41925BCWALR3ZpkrltVUJxPp93ylQp/3nxBCQR1jSZj3liNQ4DBrr8
+         SOrd0Xzq15aS1Zkj/j2hWKOT3Aj7lftd+8Hxcd7CrGrr+FMXsTNLwxP1SX0yUbv76a5I
+         /puagcgCRtD1aeRtpaBfhxUc0D2OTrsQcehbPgSIiWAbNvqc289XP0J7+KfC7AaaBDy0
+         Jqqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709802702; x=1710407502;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=YWbZC5CZoCpm0ayz+A9GPh5eqXUdsbwM1bBGofTxuiw=;
+        b=SHOAzzqPG700XKBAnRCh780zlYA3riY2gRfdWgFpEeVaNanfdf4s9q2L6+/bLoDYO+
+         pfAij1PQt3nhR60jn5tepUw+i8NBjnnjP2c+wtCWt5HoYYyPrpckI7kRxC0HulMgeGKQ
+         JQz/x6QSIZD/5Dr3ETv4/42t/L+JIgq2rlW8IcZscnK3AT+tU5PXw7840JVNgAx7Kh8G
+         IvC6YrMlrHPKuLe/ra9sA6Hj3fkf+oi1+i7YZd53GYD/F1riiC4sO8BZq3FblWjM6hOv
+         5XUw0KCnizDUpWsyRBGS4fRpEh5HBjnnPxpY6079RGVMyog1FoQLWXAXA2DAhHmbmz/5
+         baEw==
+X-Forwarded-Encrypted: i=1; AJvYcCXam/vcvQhrvaM50IMoAwUOyqw+rXr0mscieX5tWXAqxdSUrChFrcTH0zfvYLIt1SXrbv2ZY/5VAYouH0/oLd2Xr13Wydk/DtRPKCa43lYnVN9F0gEd3YF6ouZb+SGHI/1SZsJH
+X-Gm-Message-State: AOJu0YxanWwbsDm1Oym9h4RNGyLqXQBsEDQm7g1OBzSWN6vXahq7f933
+	MmuLuOoCXzaxleMmGjMOR5xw7o5qJVnZVSzAZMl8D2aIfNgdanj1
+X-Google-Smtp-Source: AGHT+IFJQSCJDprsiO3pn3kn1HCcHKfOqzyDpFhlHBGAdRG6WX/Fqb7qCbE/gAVTJNahphESYsTMQg==
+X-Received: by 2002:a05:620a:198c:b0:788:49fc:d74c with SMTP id bm12-20020a05620a198c00b0078849fcd74cmr445453qkb.44.1709802702677;
+        Thu, 07 Mar 2024 01:11:42 -0800 (PST)
+Received: from localhost (55.87.194.35.bc.googleusercontent.com. [35.194.87.55])
+        by smtp.gmail.com with ESMTPSA id u10-20020ae9c00a000000b00788292846besm4044188qkk.89.2024.03.07.01.11.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Mar 2024 01:11:42 -0800 (PST)
+Date: Thu, 07 Mar 2024 04:11:42 -0500
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Gavrilov Ilia <Ilia.Gavrilov@infotecs.ru>, 
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc: "David S. Miller" <davem@davemloft.net>, 
+ David Ahern <dsahern@kernel.org>, 
+ Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, 
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>, 
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+ "lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>
+Message-ID: <65e984ce3175a_f5b79294a8@willemb.c.googlers.com.notmuch>
+In-Reply-To: <20240306095436.1782250-1-Ilia.Gavrilov@infotecs.ru>
+References: <20240306095436.1782250-1-Ilia.Gavrilov@infotecs.ru>
+Subject: Re: [PATCH net-next] udp: fix incorrect parameter validation in the
+ udp_lib_getsockopt() function
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-The current code only prints PKGC-10 residency when the PKGC-10
-is not reached in previous 'freeze' attempt. To debug PKGC-10 issues, we
-also need to know other PKGC residency counters to better triage issues.
-Ex:
-1. When system is stuck in PC2, it can be caused short LTR from device.
-2. When system is stuck in PC8, it can be caused by display engine.
+Gavrilov Ilia wrote:
+> The 'len' variable can't be negative because all 'min_t' parameters
+> cast to unsigned int, and then the minimum one is chosen.
+> 
+> To fix it, move the if statement higher.
+> 
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Signed-off-by: Gavrilov Ilia <Ilia.Gavrilov@infotecs.ru>
 
-To better triage issues, all PKGC residency are needed when issues happens.
-
-Example log:
- CPU did not enter Package C10!!! (Package C10 cnt=0x0)
- Prev Package C2 cnt = 0x2191a325de, Current Package C2 cnt = 0x21aba30724
- Prev Package C3 cnt = 0x0, Current Package C3 cnt = 0x0
- Prev Package C6 cnt = 0x0, Current Package C6 cnt = 0x0
- Prev Package C7 cnt = 0x0, Current Package C7 cnt = 0x0
- Prev Package C8 cnt = 0x0, Current Package C8 cnt = 0x0
- Prev Package C9 cnt = 0x0, Current Package C9 cnt = 0x0
- Prev Package C10 cnt = 0x0, Current Package C10 cnt = 0x0
-
-With this log, we can know whether it's a stuck PC2 issue, and we can
-check whether the short LTR from device causes the issue.
-
-Signed-off-by: Kane Chen <kane.chen@intel.com>
----
- drivers/platform/x86/intel/pmc/core.c | 47 ++++++++++++++++++++-------
- drivers/platform/x86/intel/pmc/core.h |  7 ++--
- 2 files changed, 41 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/platform/x86/intel/pmc/core.c b/drivers/platform/x86/intel/pmc/core.c
-index 8f9c036809c79..b8910b671667e 100644
---- a/drivers/platform/x86/intel/pmc/core.c
-+++ b/drivers/platform/x86/intel/pmc/core.c
-@@ -1389,6 +1389,15 @@ static int pmc_core_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 	pmcdev->pmcs[PMC_IDX_MAIN] = primary_pmc;
- 
-+	/* The last element in msr_map is empty */
-+	pmcdev->num_of_pkgc = ARRAY_SIZE(msr_map) - 1;
-+	pmcdev->pkgc_res_cnt = devm_kcalloc(&pdev->dev,
-+					    pmcdev->num_of_pkgc,
-+					    sizeof(*pmcdev->pkgc_res_cnt),
-+					    GFP_KERNEL);
-+	if (!pmcdev->pkgc_res_cnt)
-+		return -ENOMEM;
-+
- 	/*
- 	 * Coffee Lake has CPU ID of Kaby Lake and Cannon Lake PCH. So here
- 	 * Sunrisepoint PCH regmap can't be used. Use Cannon Lake PCH regmap
-@@ -1432,6 +1441,7 @@ static __maybe_unused int pmc_core_suspend(struct device *dev)
- {
- 	struct pmc_dev *pmcdev = dev_get_drvdata(dev);
- 	struct pmc *pmc = pmcdev->pmcs[PMC_IDX_MAIN];
-+	int i;
- 
- 	if (pmcdev->suspend)
- 		pmcdev->suspend(pmcdev);
-@@ -1440,9 +1450,11 @@ static __maybe_unused int pmc_core_suspend(struct device *dev)
- 	if (pm_suspend_via_firmware())
- 		return 0;
- 
--	/* Save PC10 residency for checking later */
--	if (rdmsrl_safe(MSR_PKG_C10_RESIDENCY, &pmcdev->pc10_counter))
--		return -EIO;
-+	/* Save PKGC residency for checking later */
-+	for (i = 0; i < pmcdev->num_of_pkgc; i++) {
-+		if (rdmsrl_safe(msr_map[i].bit_mask, &pmcdev->pkgc_res_cnt[i]))
-+			return -EIO;
-+	}
- 
- 	/* Save S0ix residency for checking later */
- 	if (pmc_core_dev_state_get(pmc, &pmcdev->s0ix_counter))
-@@ -1451,14 +1463,15 @@ static __maybe_unused int pmc_core_suspend(struct device *dev)
- 	return 0;
- }
- 
--static inline bool pmc_core_is_pc10_failed(struct pmc_dev *pmcdev)
-+static inline bool pmc_core_is_deepest_pkgc_failed(struct pmc_dev *pmcdev)
- {
--	u64 pc10_counter;
-+	u32 deepest_pkgc_msr = msr_map[pmcdev->num_of_pkgc - 1].bit_mask;
-+	u64 deepest_pkgc_residency;
- 
--	if (rdmsrl_safe(MSR_PKG_C10_RESIDENCY, &pc10_counter))
-+	if (rdmsrl_safe(deepest_pkgc_msr, &deepest_pkgc_residency))
- 		return false;
- 
--	if (pc10_counter == pmcdev->pc10_counter)
-+	if (deepest_pkgc_residency == pmcdev->pkgc_res_cnt[pmcdev->num_of_pkgc - 1])
- 		return true;
- 
- 	return false;
-@@ -1497,10 +1510,22 @@ int pmc_core_resume_common(struct pmc_dev *pmcdev)
- 	if (!warn_on_s0ix_failures)
- 		return 0;
- 
--	if (pmc_core_is_pc10_failed(pmcdev)) {
--		/* S0ix failed because of PC10 entry failure */
--		dev_info(dev, "CPU did not enter PC10!!! (PC10 cnt=0x%llx)\n",
--			 pmcdev->pc10_counter);
-+	if (pmc_core_is_deepest_pkgc_failed(pmcdev)) {
-+		/* S0ix failed because of deepest PKGC entry failure */
-+		dev_info(dev, "CPU did not enter %s!!! (%s cnt=0x%llx)\n",
-+			 msr_map[pmcdev->num_of_pkgc - 1].name,
-+			 msr_map[pmcdev->num_of_pkgc - 1].name,
-+			 pmcdev->pkgc_res_cnt[pmcdev->num_of_pkgc - 1]);
-+
-+		for (i = 0; i < pmcdev->num_of_pkgc; i++) {
-+			u64 pc_cnt;
-+
-+			if (!rdmsrl_safe(msr_map[i].bit_mask, &pc_cnt)) {
-+				dev_info(dev, "Prev %s cnt = 0x%llx, Current %s cnt = 0x%llx\n",
-+					 msr_map[i].name, pmcdev->pkgc_res_cnt[i],
-+					 msr_map[i].name, pc_cnt);
-+			}
-+		}
- 		return 0;
- 	}
- 
-diff --git a/drivers/platform/x86/intel/pmc/core.h b/drivers/platform/x86/intel/pmc/core.h
-index 54137faaae2b2..fd7ae76984ac7 100644
---- a/drivers/platform/x86/intel/pmc/core.h
-+++ b/drivers/platform/x86/intel/pmc/core.h
-@@ -385,7 +385,8 @@ struct pmc {
-  * @pmc_xram_read_bit:	flag to indicate whether PMC XRAM shadow registers
-  *			used to read MPHY PG and PLL status are available
-  * @mutex_lock:		mutex to complete one transcation
-- * @pc10_counter:	PC10 residency counter
-+ * @pkgc_res_cnt:	PKGC residency counter
-+ * @num_of_pkgc:	Number of PKGC
-  * @s0ix_counter:	S0ix residency (step adjusted)
-  * @num_lpm_modes:	Count of enabled modes
-  * @lpm_en_modes:	Array of enabled modes from lowest to highest priority
-@@ -403,13 +404,15 @@ struct pmc_dev {
- 	int pmc_xram_read_bit;
- 	struct mutex lock; /* generic mutex lock for PMC Core */
- 
--	u64 pc10_counter;
- 	u64 s0ix_counter;
- 	int num_lpm_modes;
- 	int lpm_en_modes[LPM_MAX_NUM_MODES];
- 	void (*suspend)(struct pmc_dev *pmcdev);
- 	int (*resume)(struct pmc_dev *pmcdev);
- 
-+	u64 *pkgc_res_cnt;
-+	u8 num_of_pkgc;
-+
- 	bool has_die_c6;
- 	u32 die_c6_offset;
- 	struct telem_endpoint *punit_ep;
--- 
-2.34.1
-
+Reviewed-by: Willem de Bruijn <willemb@google.com>
 
