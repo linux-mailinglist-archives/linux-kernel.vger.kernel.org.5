@@ -1,203 +1,343 @@
-Return-Path: <linux-kernel+bounces-95134-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95135-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3760587499E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:29:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A453B8749A0
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:29:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5AEBC1C21FF0
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 08:29:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B01B1F24344
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 08:29:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97854634E1;
-	Thu,  7 Mar 2024 08:29:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C6346340D;
+	Thu,  7 Mar 2024 08:29:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="UwVWBTzW";
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="5Borwc36"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="4awMxTfs"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B48C63108;
-	Thu,  7 Mar 2024 08:29:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.153.233
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709800146; cv=fail; b=Tnim2mK4YfArx2QDionYiPoFxqSJbITTyTkfMSreAfLknba34VcQsXdns1MCP9bvjysX7AsozXksDyo9Vm7SExyPmMptV9Tw6PBXo2+n4SyV7kYjt5ThOi7Dflc4/PFRZGXYomNokKdKN3duA4gXjB8z2aKz2aTLYfGpl5XSQSY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709800146; c=relaxed/simple;
-	bh=ymGNNRh4+hiUopVFxrwoAqG3s/ROdSR4jenadDLs8Iw=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=izNttQwwZ+IS45v56Yt+jL6TDsTJlB4lIvDbG2AU7jtZISvyQGsOCc7if7pZhUh6VOCcZo0ZZD+DQlCir/Q2AoC2nBoFx2eMQVph1vzK/Rmq08g4RbbWiy7SE1fxR+Nnyq5MWiFhG2IwOLFQ4Y0/0gVLBsL1ttsRD3ba3u4ZnTQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=UwVWBTzW; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=5Borwc36; arc=fail smtp.client-ip=68.232.153.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1709800144; x=1741336144;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=ymGNNRh4+hiUopVFxrwoAqG3s/ROdSR4jenadDLs8Iw=;
-  b=UwVWBTzWsmQiAt3H4gP0ebqoGWZsLZBe4ua2BWv0ZEMN2YqdOL8ez3Zy
-   c/ndB1uj7wd/DSntdxNpUt6xEP+VizopyF1P8MsYcgvS87tAB5CHlZEv8
-   v+FcPFm/pExUWUiEaM+EuMZwSgm4VQUfsqmtj2vGhR0rwO8g7bgoQdJnj
-   SQ2n42xLnC72mouzCREAKcrPvsgE/8lbUoAwu4K3PJDItSrf1WI1q4YZY
-   UdwoMhlgwr06MZziYE/Jmh/BbY56abBWD88rJd2UIsESf8thfCNSWLV01
-   Ei681mOFMJtoCveywARsyu5ocymYeaYa4q+LsOOLzANF7uwn07T46HxPz
-   A==;
-X-CSE-ConnectionGUID: 5y1B8dpnQ8ScNkybsBUmtw==
-X-CSE-MsgGUID: UHgM8fAxRbSTGcVS12dW1w==
-X-IronPort-AV: E=Sophos;i="6.06,210,1705388400"; 
-   d="scan'208";a="17337761"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 07 Mar 2024 01:29:03 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 7 Mar 2024 01:29:01 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (10.10.215.250)
- by email.microchip.com (10.10.87.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 7 Mar 2024 01:29:01 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DVm0pnqOgSgZ4ymWjBCcfjI9Sbr82ZXjaZrKYL0oOK7yUIbMdM1vUVKPasQIqxD9dZhq6EuWAiftNPpXZrtTPkHoRa8577w6az536yZr20UqziOhAKs7kWqBz94EiXGoHQmrCXYdwTxJbOkHYGcX0wawMLwNXOeo8tvBXvIOdkser+nUVXOTcr/tq/dZPsHbWj7ryhbZKGRMawp+I3CMxAGlN+iJu7/Ot9vCSmjfni7FjjFxsdzM0a1VmzKf7l4aJss8rTkSx2ORS1IesBnFwfQAG4XEhvOXyxkU7haM7VQRWQY4oqdGMEmC36trRPaMfmeSrQk8+ecoyHsWY4ZUvA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ymGNNRh4+hiUopVFxrwoAqG3s/ROdSR4jenadDLs8Iw=;
- b=ZnJ9IjHGupZssl5j0SvKAB/AVs9/xk54TBRN9mfzMoR385Q6QpQVgs6opeLlhBc7nGn0LDXqS8and0ke+xIPHuH9MQ5WjPDcY2VKRv6lqHYg/wS0d1NNyC1O0y9Dbzfe02hgoSIgimnBt07U5ly56NUsDmdChCzJmOfw3yZsraO2xwfu9LWRjKVEhM6Y4Al0MxCMUrqNgfsP0cv2NWxgffaGVOz2isS9ZG+aO3WFy/QVyhAp8LO7WvSO1wpFf9FmjNP/mz8YpfN/tYDbxbK+RE5HZQMvaN7BtBZq68M9p/5jsnMjho2Z9EwHuzQuAUMe69vpxzcaHZg5jYTMrCrMrA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microchip.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ymGNNRh4+hiUopVFxrwoAqG3s/ROdSR4jenadDLs8Iw=;
- b=5Borwc36ZgwinmSe4YWuNmmo0fuF3UGFSvqY45uitHpah/CHqXmL4a+vF2FM0g/OLSTvg5PNa5WyPxDK01IjUVqTc+BpWoW8eqFQzqjQL7Sx4Oh/pcJ0ExFENPDesoz3TvwD6/PY5OcodUEs8Xj2R9UshTq1ZXNIlx9EKVT9C0gdXCX6AzZOKudVIalVtb0L+fRYp6GioPXSixUvqn1f3WU6XKG2gartvchZ0AkITOx2BSc5DILCEGxGKXn8mK0qT6/OXV0sGD5K5hvAdlsQSjkevHlEJU3Zi5/sa0ja9v/zqI5WTZpI4+p/v+F1jDLBD9D5euUs45QkxvMz+EoZLg==
-Received: from SA1PR11MB8278.namprd11.prod.outlook.com (2603:10b6:806:25b::19)
- by SA1PR11MB8278.namprd11.prod.outlook.com (2603:10b6:806:25b::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.23; Thu, 7 Mar
- 2024 08:28:59 +0000
-Received: from SA1PR11MB8278.namprd11.prod.outlook.com
- ([fe80::f633:b9d4:f539:177d]) by SA1PR11MB8278.namprd11.prod.outlook.com
- ([fe80::f633:b9d4:f539:177d%6]) with mapi id 15.20.7362.019; Thu, 7 Mar 2024
- 08:28:59 +0000
-From: <Parthiban.Veerasooran@microchip.com>
-To: <andrew@lunn.ch>
-CC: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-	<pabeni@redhat.com>, <horms@kernel.org>, <saeedm@nvidia.com>,
-	<anthony.l.nguyen@intel.com>, <netdev@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <corbet@lwn.net>,
-	<linux-doc@vger.kernel.org>, <robh+dt@kernel.org>,
-	<krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-	<devicetree@vger.kernel.org>, <Horatiu.Vultur@microchip.com>,
-	<ruanjinjie@huawei.com>, <Steen.Hegelund@microchip.com>,
-	<vladimir.oltean@nxp.com>, <UNGLinuxDriver@microchip.com>,
-	<Thorsten.Kummermehr@microchip.com>, <Pier.Beruto@onsemi.com>,
-	<Selvamani.Rajagopal@onsemi.com>, <Nicolas.Ferre@microchip.com>,
-	<benjamin.bigler@bernformulastudent.ch>
-Subject: Re: [PATCH net-next v3 05/12] net: ethernet: oa_tc6: implement error
- interrupts unmasking
-Thread-Topic: [PATCH net-next v3 05/12] net: ethernet: oa_tc6: implement error
- interrupts unmasking
-Thread-Index: AQHab6ODhegyEXGdXEqW27P6zJjh0LErccmAgACB7IA=
-Date: Thu, 7 Mar 2024 08:28:59 +0000
-Message-ID: <9f824a6f-a075-405f-b615-75076061a284@microchip.com>
-References: <20240306085017.21731-1-Parthiban.Veerasooran@microchip.com>
- <20240306085017.21731-6-Parthiban.Veerasooran@microchip.com>
- <ea217697-fdb8-4112-ae84-62f566cdc375@lunn.ch>
-In-Reply-To: <ea217697-fdb8-4112-ae84-62f566cdc375@lunn.ch>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microchip.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SA1PR11MB8278:EE_
-x-ms-office365-filtering-correlation-id: f193b1de-45e2-4a05-1ed5-08dc3e80a348
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: XJADpp+Qcap+PajKLbiCGAWg1Atm7hux815P/x6e5pCeY9OYawo/x7yIXBJ/e663oPsfA0UPcwANX8SLUVobQT62vZy2LtDI7XAKSzF5Xxw2zrwuJkx9xQ0FPGLMUdVW1o9cuRdt7bwImNZ/JatPaxZnpoYDer7RpBlb2oP15I2RjiQVDk5WWZWcTN5dmrJjYvWX8HEC7uOP2rBB23KDZOKxAgcd2ZE+n3y7z7AVkXxkJCYoEa0ZmvhGlsIewKewUGUe0kn2GWBh0FKiGo/rP3bcqLn1IQygw1Nrf0vpBOgUbj9yIWn3duoG+b8w6DU+Tr/BqQqSas/MUtAuM5zHVssliGOnFp9AFY0vyiIlE7DJcAGdW20R4WNvivi6WhWpan1lP34QNTeAs5WEeqIi67dlpP1I2TrSvitA+h9DhvOti6cELzNQIlX/LGkliarr5OC708wHlMYYtbQRGtQAXALeL5dTUtVe+dFDFSokx6MQWpvkeCNVVMsLnMgzq55zep5USg4Wb0wZN5LbMUs/CG2V8kYMcqar3adt6UauajjlNZdRtPpZp1zHHRnyGkDOxiYuuUx84KSzoHn+ykLj7cffzE1OQbGPgLYUxhGGAgmNefIrw8GpXmn4Dkj6pzjGn+FH6NPf4iRKO9CYKRHTwWsq6VN6vNAu6C+00rbdJS0cVaBs1h5KOuW224RZZyrxhE0XwS87PVoP4ZyyCk+UQSTcLPhycDcF7c9vyHnLW2E=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB8278.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?NmRHSHF0OWVYTDd6aUpMaUgvejFEVEU2bTZjWHcxcWRoL1pRdUpsSTdUU2xZ?=
- =?utf-8?B?SGV0amVTRERuNDhzZmlVQTdJU3E3ejBiNnl2RXVXNDhTdEFMbTdqUHNlcHBk?=
- =?utf-8?B?azVKOTFOaEZQcVU3TTFONWpQK1lvVHZiR3JWNCtTVEI4S2M2cmg5NjBVb05z?=
- =?utf-8?B?Q1JqRHExSWVid3BlQStlcUFvZlhUK0NIb0FwSWdsQUNCczlRdTQ3dDd5aDJG?=
- =?utf-8?B?TXZrR3JNRFQrT3pEaWdiUXd4VE15U3BRYmtOSnhPVGNSWEd1RG5vUWJiSllz?=
- =?utf-8?B?bXVoWGRmMmx1T0FRY01qcms5RHYrczA0ZlJrazRTa1V0UDN6SUp1cXEySGcy?=
- =?utf-8?B?ZTl1c0dlQUFZVURLYkd5WE15Q05zaEZYTGFWVjdwRTZ3QnBMTCtEUW9LNTkz?=
- =?utf-8?B?aE1mR05mS1RSNCtMbHhRNmZuckVLVlJHZEVIQTVITXdIdkVYdU52SjN4TFdi?=
- =?utf-8?B?NDJXTHFyTm5wK2Era2gzUk96akhWZFh5MVRUZjdIMEFmQk9kZGpFc3lqYjg0?=
- =?utf-8?B?OFdWYmI4R1NtREp6UnhOSml0OHZxSHJZaGduZ0dEN3M5cEZ1SFlNQTVOeHh2?=
- =?utf-8?B?ZWptTXpvQUZNK0t1M2p5ZDFmRThpNDZTYi95QmIrKzRJUlZNYXFqbGNIZnN2?=
- =?utf-8?B?eE5uYy9HVmNFc0ZxamMvWUlsc2tzNHI4dWd1R0MxSk1FZUgvbWUzQWxmWUJQ?=
- =?utf-8?B?bmtXY0oyK1NNZERrSUN2SEJsc3ovcitwUmxod2c4MnIyV2h2UEV6aiswNDRw?=
- =?utf-8?B?NnM4WFZJbXpyelQxNUtxeDBmZDU4ck45YnR0UXI4M0JrWkw5SFBSV2FzN2Yw?=
- =?utf-8?B?VE4yNmtnZzdDb2lYNkZPYUJMekhnNG5hYW1YZjdFMm9qWEkvdm8zSkpXV2sx?=
- =?utf-8?B?bXpCN1dZWWlnU1JVZVZySnJBZ2VlelZKRXY0bmxmbU1rclRQRjc2YW9MSGJk?=
- =?utf-8?B?aGJnWWNMbk9lencxNlI4YmxxQU01cFBDUGkzUFdYdnh1NVFNMTNBVnBMK3dY?=
- =?utf-8?B?YTN1TlhYc1M1SS9BakNaRHliK2FhWW12ZHR5YWpNSkIwQWZiVy9Qa3NVQ0hx?=
- =?utf-8?B?Y3hjTkJKdSt2VVRodU42SVoxVVA2bnB4MjBkdlFITWV3czYyTmhieDBzKzJI?=
- =?utf-8?B?a3ZtK1hKSTdIZ015WmYzU0xHanJRVExKOWtSRytDQU1EdytIQlQ5eGswZVhL?=
- =?utf-8?B?L0pYMmlxN0tFV3hzd253ZUlKMldnbjVrM05ydlM2V3dlUHAzdURGZVdJYzB3?=
- =?utf-8?B?Vml0d3FpS0Y0WFFYT2ZYTTVkb2c1MzVBVzIvVWMxVjFiWkRoM1NhOUt3UU1i?=
- =?utf-8?B?RWxQRGhPK1ZVQk45Y2gvZlU2VUlJN25DdXpqTEpFV3RiQzQ2VVp5Q1phQXI0?=
- =?utf-8?B?ZFNQV1JYSTJ3cFVCa0JrV1dQMk03eUdBcDBhUGhhdklMTUlpMWVsaTE3UjZS?=
- =?utf-8?B?MmxuRjhmRWNsYUIzcWhVSUlXdzJvczBGTjIyc095TWc5cXZFbTI3Ny9qVEhO?=
- =?utf-8?B?VVRRek5nOXJoRkdhZy9FZ3JFV1NmMzVXd3N6VXlaQTBIWTluZldvN0lNRE13?=
- =?utf-8?B?VnlNOEMwaUJGeENSYXV6QkQ0YlkyamtLZlYvL2lJQ1IvV3prcFVPeDFjcW9N?=
- =?utf-8?B?WUdGaDRscXI3ZWxRUTlkeUFGYkljNGkvcUFuSkhtbFk4a1BLeWdTRTFMc0JD?=
- =?utf-8?B?dFRoMmo3bjZUekNEeWE5VlNxNmJDT21wS3lCTUIyakVVOTNvN1dvc2xMQmR2?=
- =?utf-8?B?VkprTGZNOExJTm5BS2kxTk9mZi85czErc3VBdHBscEFubEpFdUtYbm1haVZw?=
- =?utf-8?B?RjFxWlg3aHhEYkVjSW5hODZvbDlieFJ4Z3pzOGI0VFNCbWdXVjRZdUZuK3RN?=
- =?utf-8?B?WXBoSGRQTC9hVkJPbnE1bDl1R2FmcitxUVdZdlFjWE5yVFZCU1JLQXFRSkps?=
- =?utf-8?B?Nk9PNlh2OW43cjJNN0l1b2wxUHhzYWFsVlZoL25aczFFNUhUODVwM3FwRE9R?=
- =?utf-8?B?eVYrK2JBYlhlRytVUU11R3RrajVZNGdIWXMzVkNnRTNKMmd1a0ZySjVjWTho?=
- =?utf-8?B?d1lPSTY0OTROc0M4NTlhMVVZcDZQd0hCWXpjeVVrK0JGaDJXNGtwQVcybnk0?=
- =?utf-8?B?L3pnTSs2aE9nQTRKbklQZDZzNlUzRTlkQ3huOHp6QlQ2cDA4Y0d2QXlvMGgr?=
- =?utf-8?B?ZkE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <5C2A34C7776FD541A6FDB4E1B0EF704B@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7239763408
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 08:29:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709800175; cv=none; b=KdrJFLKUmuihS5MwdAUEmy+xLfFw3pDPQpFwZX4STR2AF9Fuhtr8ISjcfg5Kk4fCxgZQeX0mQ4wbnt4hQ5IF+zQdEfiEi1BUqSYPnezmKKwOvMg6F6hLuEAHJu7ch/UiOc6kR9mf+XIcxf5GD/5XiM6b7FhcHU2HT2hC+Psh0zA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709800175; c=relaxed/simple;
+	bh=NMaQjJv++5pY7h2yzC0y0jCxvdwNmhLrZUnxJWQFy1A=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=E2b9xnn9UrLkXsSHM34wcdx8/p1vaOIzv2Ip3xLFPeGmyu1s9/4VTB0eghi1UivmJWW4vzJ77ffNQoUocoIEK/HnSkZygQdLDZpRzUGatOf7Mf3eJFnIlmAAAxBHK8xz0xZVOrwAQ+L2QoB/a+cqKSb/vkAOrHpG6y1cV0JyFkQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=4awMxTfs; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709800171;
+	bh=NMaQjJv++5pY7h2yzC0y0jCxvdwNmhLrZUnxJWQFy1A=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=4awMxTfsvD/OyC45MNL/d9gtiFOiK6+BiP00ayKwRQAViDDS74zAYOs0qpxE8qkTj
+	 yd5mY2DJF82dViqnW0e6n+nVpsNQnRWeGy7x7HTqvYnxXDbtkpSWUSR5l0C5bwgqL+
+	 MLknvPBad2tCZODaZFLBMx5UFFZzim2X00kHbdJ4phDdXyHPLbkLqDEddgyOR5FbsP
+	 DJm1oAVcVXHkG1oF+2wSb5ZUIUalYOpAPJgcdKPdCyvGHPDZ0dtiX6s8xkjc3d1d/B
+	 wBctY8tF4cyaijQHtf2x5x1aUp8fCkFDvzC6gnRKEjk7Ejc/5El4jA5tB1BWsBJXkI
+	 tm8TU3ehLkkAg==
+Received: from eldfell (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pq)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 98EAD3781FDF;
+	Thu,  7 Mar 2024 08:29:30 +0000 (UTC)
+Date: Thu, 7 Mar 2024 10:29:22 +0200
+From: Pekka Paalanen <pekka.paalanen@collabora.com>
+To: Sebastian Wick <sebastian.wick@redhat.com>
+Cc: Harry Wentland <harry.wentland@amd.com>, Ville =?UTF-8?B?U3lyasOkbMOk?=
+ <ville.syrjala@linux.intel.com>, Xaver Hugl <xaver.hugl@gmail.com>, Maarten
+ Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
+ <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie
+ <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] drm/drm_connector: Document Colorspace property
+ variants
+Message-ID: <20240307102922.0f3701cb.pekka.paalanen@collabora.com>
+In-Reply-To: <20240306164209.GA11561@toolbox>
+References: <20240305135155.231687-1-sebastian.wick@redhat.com>
+	<20240306102721.3c9c3785.pekka.paalanen@collabora.com>
+	<20240306164209.GA11561@toolbox>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB8278.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f193b1de-45e2-4a05-1ed5-08dc3e80a348
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Mar 2024 08:28:59.5832
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: /fo3nAH812hwvPetNzXqNhr1efMmDZ4zXArxlGjKpCIOQq0rJhRmcedlX4t+zhIRp/Y8uMxqA5oGBBpyjpxnDPc/rc8MRbk+8KkgI4YEssk6LB9OoOwpGQROWXq7QWO5
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB8278
+Content-Type: multipart/signed; boundary="Sig_//Cw8w_2vLFiUbjjCx/dX51m";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-SGkgQW5kcmV3LA0KDQpPbiAwNy8wMy8yNCA2OjEzIGFtLCBBbmRyZXcgTHVubiB3cm90ZToNCj4g
-RVhURVJOQUwgRU1BSUw6IERvIG5vdCBjbGljayBsaW5rcyBvciBvcGVuIGF0dGFjaG1lbnRzIHVu
-bGVzcyB5b3Uga25vdyB0aGUgY29udGVudCBpcyBzYWZlDQo+IA0KPiBPbiBXZWQsIE1hciAwNiwg
-MjAyNCBhdCAwMjoyMDoxMFBNICswNTMwLCBQYXJ0aGliYW4gVmVlcmFzb29yYW4gd3JvdGU6DQo+
-PiBUaGlzIHdpbGwgdW5tYXNrIHRoZSBmb2xsb3dpbmcgZXJyb3IgaW50ZXJydXB0cyBmcm9tIHRo
-ZSBNQUMtUEhZLg0KPj4gICAgdHggcHJvdG9jb2wgZXJyb3INCj4+ICAgIHJ4IGJ1ZmZlciBvdmVy
-ZmxvdyBlcnJvcg0KPj4gICAgbG9zcyBvZiBmcmFtZSBlcnJvcg0KPiANCj4gVGhlIHN0YW5kYXJk
-IHNlZW1zIHRvIGNhbGwgaXQgIkxvc3Mgb2YgZnJhbWluZyIuIFRvIG1lIGFzIGEgbmV0d29yaw0K
-PiBwZXJzb24sIGEgZnJhbWUgaXMgYW4gTDIgRXRoZXJuZXQgcGFja2V0LiBIb3dldmVyLCBmcmFt
-aW5nIGlzDQo+IHNvbWV0aGluZyBjb21wbGV0ZWx5IGRpZmZlcmVudCwgYmVpbmcgYWJsZSB0byBz
-eW5jaHJvbmlzZSBhIGJpdHN0cmVhbQ0KPiB3aXRoIHNvbWUgc29ydCBvZiBtYXJrZXJzLCBlLmcu
-IEUxIHRvIGtub3cgd2hlcmUgdGhlIDMyIHNsb3RzIGFyZS4NCj4gDQo+IEluIHRoaXMgY29udGV4
-dCwgd2UgYXJlIG5vdCB0YWxraW5nIGFib3V0IHBhY2tldHMsIGJ1dCB0aGUgU1BJIGJpdA0KPiBz
-dHJlYW0uIFNvIGl0IHdvdWxkIGJlIGdvb2QgdG8gdXNlIGZyYW1pbmcsIG5vdCBmcmFtZS4NClll
-cyB5b3UgYXJlIHJpZ2h0LiBUaGUgc3BlY2lmaWNhdGlvbiBhbHNvIHNheXMgdGhlIHNhbWUgdGhp
-bmcgYXMgeW91IA0Kc2FpZCAiTG9zcyBvZiBGcmFtaW5nIEVycm9yIi4gSSB3aWxsIGNvcnJlY3Qg
-aXQgaW4gdGhlIG5leHQgdmVyc2lvbi4NCg0KQmVzdCByZWdhcmRzLA0KUGFydGhpYmFuIFYNCj4g
-DQo+ICAgICAgICAgIEFuZHJldw0KPiANCg0K
+--Sig_//Cw8w_2vLFiUbjjCx/dX51m
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, 6 Mar 2024 17:42:09 +0100
+Sebastian Wick <sebastian.wick@redhat.com> wrote:
+
+> On Wed, Mar 06, 2024 at 10:27:21AM +0200, Pekka Paalanen wrote:
+> > On Tue,  5 Mar 2024 14:51:49 +0100
+> > Sebastian Wick <sebastian.wick@redhat.com> wrote:
+> >  =20
+> > > The initial idea of the Colorspace prop was that this maps 1:1 to
+> > > InfoFrames/SDP but KMS does not give user space enough information nor
+> > > control over the output format to figure out which variants can be us=
+ed
+> > > for a given KMS commit. At the same time, properties like Broadcast R=
+GB
+> > > expect full range quantization range being produced by user space from
+> > > the CRTC and drivers to convert to the range expected by the sink for
+> > > the chosen output format, mode, InfoFrames, etc.
+> > >=20
+> > > This change documents the reality of the Colorspace property. The
+> > > Default variant unfortunately is very much driver specific and not
+> > > reflected by the EDID. The BT2020 variants are in active use by gener=
+ic
+> > > compositors which have expectations from the driver about the
+> > > conversions it has to do when selecting certain output formats.
+> > >=20
+> > > Everything else is also marked as undefined. Coming up with valid
+> > > behavior that makes it usable from user space and consistent with oth=
+er
+> > > KMS properties for those variants is left as an exercise for whoever
+> > > wants to use them.
+> > >=20
+> > > v2:
+> > >  * Talk about "pixel operation properties" that user space configures
+> > >  * Mention that user space is responsible for checking the EDID for s=
+ink
+> > >    support
+> > >  * Make it clear that drivers can choose between RGB and YCbCr on the=
+ir
+> > >    own
+> > >=20
+> > > Signed-off-by: Sebastian Wick <sebastian.wick@redhat.com>
+> > > ---
+> > >  drivers/gpu/drm/drm_connector.c | 79 +++++++++++++++++++++++++------=
+--
+> > >  include/drm/drm_connector.h     |  8 ----
+> > >  2 files changed, 61 insertions(+), 26 deletions(-)
+> > >=20
+> > > diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_co=
+nnector.c
+> > > index b0516505f7ae..65cdcc7d22db 100644
+> > > --- a/drivers/gpu/drm/drm_connector.c
+> > > +++ b/drivers/gpu/drm/drm_connector.c
+> > > @@ -2147,24 +2147,67 @@ EXPORT_SYMBOL(drm_mode_create_aspect_ratio_pr=
+operty);
+> > >   * DOC: standard connector properties
+> > >   *
+> > >   * Colorspace:
+> > > - *     This property helps select a suitable colorspace based on the=
+ sink
+> > > - *     capability. Modern sink devices support wider gamut like BT20=
+20.
+> > > - *     This helps switch to BT2020 mode if the BT2020 encoded video =
+stream
+> > > - *     is being played by the user, same for any other colorspace. T=
+hereby
+> > > - *     giving a good visual experience to users.
+> > > - *
+> > > - *     The expectation from userspace is that it should parse the ED=
+ID
+> > > - *     and get supported colorspaces. Use this property and switch t=
+o the
+> > > - *     one supported. Sink supported colorspaces should be retrieved=
+ by
+> > > - *     userspace from EDID and driver will not explicitly expose the=
+m.
+> > > - *
+> > > - *     Basically the expectation from userspace is:
+> > > - *      - Set up CRTC DEGAMMA/CTM/GAMMA to convert to some sink
+> > > - *        colorspace
+> > > - *      - Set this new property to let the sink know what it
+> > > - *        converted the CRTC output to.
+> > > - *      - This property is just to inform sink what colorspace
+> > > - *        source is trying to drive.
+> > > + *	This property is used to inform the driver about the color encodi=
+ng
+> > > + *	user space configured the pixel operation properties to produce.
+> > > + *	The variants set the colorimetry, transfer characteristics, and w=
+hich
+> > > + *	YCbCr conversion should be used when necessary.
+> > > + *	The transfer characteristics from HDR_OUTPUT_METADATA takes prece=
+dence
+> > > + *	over this property.
+> > > + *	User space always configures the pixel operation properties to pr=
+oduce
+> > > + *	full quantization range data (see the Broadcast RGB property).
+> > > + *
+> > > + *	Drivers inform the sink about what colorimetry, transfer
+> > > + *	characteristics, YCbCr conversion, and quantization range to expe=
+ct
+> > > + *	(this can depend on the output mode, output format and other
+> > > + *	properties). Drivers also convert the user space provided data to=
+ what
+> > > + *	the sink expects. =20
+> >=20
+> > Hi Sebastian,
+> >=20
+> > should it be more explicit that drivers are allowed to do only
+> > RGB->YCbCr and quantization range conversions, but not TF nor gamut
+> > conversions?
+> >=20
+> > That is, if the driver cannot pick the TF implied by "Colorspace"
+> > property for the sink, then it cannot pick another TF for the sink and
+> > silently convert. It think this should apply to all options including
+> > the undefined ones. Or is that too much to guess? =20
+>=20
+> That's a really good point. I'll add it in the next revision.
+>=20
+> > > + *
+> > > + *	User space has to check if the sink supports all of the possible
+> > > + *	colorimetries that the driver is allowed to pick by parsing the E=
+DID. =20
+> >=20
+> > All? Rather than at least one?
+> >=20
+> > Is this how it has been implemented for BT2020, that userspace picked
+> > colorimetry and driver picked color model and quantization are
+> > completely independent, and drivers do not check the combination
+> > against EDID? =20
+>=20
+> AFAIK the driver exposes all Colorspace variants that it can support in
+> the driver, independent of the sink. That means user space has to make
+> sure that the sink supports all colorimetry variants the driver can
+> pick.
+
+I didn't mean exposing but the driver could reject the atomic commit
+that would lead to a combination not advertised as supported in EDID.
+If drivers reject, then userspace does not need to check for all
+driver-choosable variants, just one would be enough. Theoretically not
+needing all might allow some cases to work that don't support all.
+"Colorspace" property value could direct the driver's choice based on
+what EDID claims to support.
+
+Of course, if drivers don't do that already, then "all" it must be.
+
+
+Thanks,
+pq
+
+> Would be good to get a confirmation from Harry and Ville.
+>=20
+> > If so, "all" it is. Would be good to explain this in the commit message=
+ =20
+>=20
+> Will do.
+>=20
+> > > + *
+> > > + *	For historical reasons this property exposes a number of variants=
+ which
+> > > + *	result in undefined behavior.
+> > > + *
+> > > + *	Default:
+> > > + *		The behavior is driver-specific.
+> > > + *	BT2020_RGB:
+> > > + *	BT2020_YCC:
+> > > + *		User space configures the pixel operation properties to produce
+> > > + *		RGB content with Rec. ITU-R BT.2020 colorimetry, Rec.
+> > > + *		ITU-R BT.2020 (Table 4, RGB) transfer characteristics and full
+> > > + *		quantization range.
+> > > + *		User space can use the HDR_OUTPUT_METADATA property to set the
+> > > + *		transfer characteristics to PQ (Rec. ITU-R BT.2100 Table 4) or
+> > > + *		HLG (Rec. ITU-R BT.2100 Table 5) in which case, user space
+> > > + *		configures pixel operation properties to produce content with
+> > > + *		the respective transfer characteristics.
+> > > + *		User space has to make sure the sink supports Rec.
+> > > + *		ITU-R BT.2020 R'G'B' and Rec. ITU-R BT.2020 Y'C'BC'R
+> > > + *		colorimetry.
+> > > + *		Drivers can configure the sink to use an RGB format, tell the
+> > > + *		sink to expect Rec. ITU-R BT.2020 R'G'B' colorimetry and convert
+> > > + *		to the appropriate quantization range.
+> > > + *		Drivers can configure the sink to use a YCbCr format, tell the
+> > > + *		sink to expect Rec. ITU-R BT.2020 Y'C'BC'R colorimetry, convert
+> > > + *		to YCbCr using the Rec. ITU-R BT.2020 non-constant luminance
+> > > + *		conversion matrix and convert to the appropriate quantization
+> > > + *		range.
+> > > + *		The variants BT2020_RGB and BT2020_YCC are equivalent and the
+> > > + *		driver chooses between RGB and YCbCr on its own.
+> > > + *	SMPTE_170M_YCC:
+> > > + *	BT709_YCC:
+> > > + *	XVYCC_601:
+> > > + *	XVYCC_709:
+> > > + *	SYCC_601:
+> > > + *	opYCC_601:
+> > > + *	opRGB:
+> > > + *	BT2020_CYCC:
+> > > + *	DCI-P3_RGB_D65:
+> > > + *	DCI-P3_RGB_Theater:
+> > > + *	RGB_WIDE_FIXED:
+> > > + *	RGB_WIDE_FLOAT:
+> > > + *	BT601_YCC:
+> > > + *		The behavior is undefined.
+> > >   *
+> > >   * Because between HDMI and DP have different colorspaces,
+> > >   * drm_mode_create_hdmi_colorspace_property() is used for HDMI conne=
+ctor and
+> > > diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
+> > > index fe88d7fc6b8f..02c42b01a3a7 100644
+> > > --- a/include/drm/drm_connector.h
+> > > +++ b/include/drm/drm_connector.h
+> > > @@ -437,14 +437,6 @@ enum drm_privacy_screen_status {
+> > >   *
+> > >   * DP definitions come from the DP v2.0 spec
+> > >   * HDMI definitions come from the CTA-861-H spec
+> > > - *
+> > > - * A note on YCC and RGB variants:
+> > > - *
+> > > - * Since userspace is not aware of the encoding on the wire
+> > > - * (RGB or YCbCr), drivers are free to pick the appropriate
+> > > - * variant, regardless of what userspace selects. E.g., if
+> > > - * BT2020_RGB is selected by userspace a driver will pick
+> > > - * BT2020_YCC if the encoding on the wire is YUV444 or YUV420.
+> > >    *
+> > >   * @DRM_MODE_COLORIMETRY_DEFAULT:
+> > >   *   Driver specific behavior. =20
+> >=20
+> > This looks really good. This also makes me need to revisit the Weston
+> > series I've been brewing that adds "Colorspace" KMS support.
+> >=20
+> > I think the two questions I had may be slightly too much in the
+> > direction of improving rather than just documenting this property, so
+> > I'll already give
+> >=20
+> > Reviewed-by: Pekka Paalanen <pekka.paalanen@collabora.com> =20
+>=20
+> Thanks.
+>=20
+> >=20
+> > Thanks,
+> > pq =20
+>=20
+>=20
+
+
+--Sig_//Cw8w_2vLFiUbjjCx/dX51m
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmXpeuIACgkQI1/ltBGq
+qqeWmQ/8CQNE9BFYBgGexaOt9gvbnwK8jNE8AmNlLZGkKPAFLuqsdNFYAcIiuWPw
+J8yse3Fh3TvA8RYgHc1U26MQmB7Wxa1rOTB9JJAiqo1FqeT1kSVb9JFLjuwVOiQs
+DoilkacjnB/NSAAsL/oOhcAX6WLzoWvV10olByFLutj/BGnzUj9nu0zmvdkqMYBl
+ZYkTJGWB2EvNY4N13QHq3gcRXSDZhbtZneSjLHbJ7mNGqyoEdqjI9Vy0xWy3WvKU
+NBPTspPon89Y/Rkb8A7zNbINoSYG6jEZ2nT0TRAOlv5jLP0guxo97jaafVnN63+I
+QorzUC4FOxF4w5cPZ8v0zM8imd9UZcJpi8BXxBa6LBSUvEHEOTaj70vCzJZXAW3A
+Gex9opNoVOJ19R7p7NLrYQQGts0BFN8PsYKBSESUlnqcjlaZLqdwDnrrnX2xLv1t
+/KzTLg4P4WbuVszm1XKUmHfyN532WcIxpgjvT/b+/dW0UXQJw7BAGNJcpWKKQA3A
+koBwmKcN9aW/Ud+4NSuWqzmXBDDurIaAxyFgIXlrRomn1sDmUuEmUb5yj8KPhOqb
+dE+WLZR9Dq1AeygLECEs1EMSOs1hLZq6QajsdJdTDUVAqexFT7ciKKkRVFhU9tfv
+Jk96yAcxoOEtRHskIjoKGJ9lQd+9ypilOCGZWnq+Egnd4EY71i8=
+=m5KP
+-----END PGP SIGNATURE-----
+
+--Sig_//Cw8w_2vLFiUbjjCx/dX51m--
 
