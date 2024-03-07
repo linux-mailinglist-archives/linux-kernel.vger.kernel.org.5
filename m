@@ -1,325 +1,255 @@
-Return-Path: <linux-kernel+bounces-95859-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95861-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08487875430
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:31:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91112875436
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:34:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B210E284776
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 16:31:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B48DD1C23170
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 16:34:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABC4A12F5B3;
-	Thu,  7 Mar 2024 16:31:49 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 780B912D1F9
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 16:31:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709829108; cv=none; b=DBgPcU526AWEVj6hbc1nBjVgMpvZ+1d1tfxw3fUXum/E0mrhveU+IxOo+ovRINxZLEuCSnfYGg8lCm3Qkon+AVbiYDFwsX8k2oIqd7UQzOZRS5qFYe2jbdcWmUOAWkRwVw9Cer0tBoHVZ+aI3odrQ2u34qEDclkAhZGDjp6QpL4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709829108; c=relaxed/simple;
-	bh=NFvs4zXiWf5E2UpTB4nAoOYaKxaS4DdJ4C/P1YO4Jxc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=soO3NQBCu4wLp0/BAlR1jTFP+SLRdpgzApQfsZK5uifeiCipL2Bo98ui7pR/KUCxZnTC2QVQuiVN0uX90eZP+VST2FWsXpddYfzFjgudgbq3/cbAvxH1/fJo7NHB3RnpXjom/IotESjw1CP0XQS68r9lZi5yP7x0iOLHnJQ93hg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AB9B11FB;
-	Thu,  7 Mar 2024 08:32:22 -0800 (PST)
-Received: from [10.1.25.184] (XHFQ2J9959.cambridge.arm.com [10.1.25.184])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 180403F738;
-	Thu,  7 Mar 2024 08:31:42 -0800 (PST)
-Message-ID: <f3b1cb43-cb33-4db4-a3dd-0c787e30b113@arm.com>
-Date: Thu, 7 Mar 2024 16:31:41 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9465312FB3D;
+	Thu,  7 Mar 2024 16:34:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="oNZ3TVST"
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2085.outbound.protection.outlook.com [40.107.220.85])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A16F12EBEB;
+	Thu,  7 Mar 2024 16:34:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.85
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709829280; cv=fail; b=VRDzwWOTsuDRVm5RcuPCLAIe5TvE3snFgGEO/lkg/yzExCOUMCl0ZB8g0g5bipqD9ICUUlVs2o7xQs5y2/9rMXf0ZjwldqkqgvyPGikTh6jsVKQSYuzeuGxf2IRaNBSXB4vqAqe8AodAvc80GB64gcVEUKfv8sM/7377gltPcDU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709829280; c=relaxed/simple;
+	bh=/d+9daW9Z7ssaMA1b61Bd1Ck/X+XQFe8/J5Z6CI+gTo=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=cfMNva2xwjkwIzVQ6+Q+NrrBmBmDdmssEbn8qk6MYsNYdv7MgIPA/RsuOlax72zjYj2FWJVO5KZC94wXfl9lvomGPk2Z0yImQKZ2TtA1u0wjKaVU04MRBVv+Ava+yaPIuZqnflhZA7Iw7XA7TdkZfLOVOqXbMk2EOjQmCdslCXA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=oNZ3TVST; arc=fail smtp.client-ip=40.107.220.85
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LWYGCunEPtQe0//nZxMBX5DKPRJV4QT1A5XLq87Zc4wZhGwxQZh8yWMN5iBg8XQcO6MGqYzoSPi5ORREyyiYW24/C2VlGgvzoVShBkYHdVsNhVthHbZdtS1W3KvwFREq9HnpYFkE8OKCHZ9VbI1ZQlZtnkom7OumivoCvwu49zXTrpO1HPgvVuHApL9CKK55wKipGld7wY9K57n8Hxhv0So6T0kFF6VyBOSZ2rXGzj/I1VxBlKXIelOK7Bb421DtBcsYPzqI2nsLGcT/0l5Khl6/VAUqr8zMacxs3NV7fk0Ph18Zo3REjbv1cJtHteJwMqLWBZr10kaA0ffQijG5cw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=WOM4P3PrhoDGYQGXO5A/BzCRmnNo4pdIHI1YBzopjT8=;
+ b=SiZT/K0ViCPqqzl2M6HCA/2SF/Gnuor1BXzYHXM4dJDAYczmbCnpINBITiTFjqTPfjkE8XQY6CvOFJ0C1mqzKkAZL5oawCMbG1wJOwjsWxHxt3Ybi/1I385/KGoxPIfkgh6/sLgPRUhoMxj3prcPt+GExpYTaGXIbK+yqMIn0/dcI6YL1WFTQQ47Rs+fXMxPnp22z1I7+4w2dp8YzY2P14OTo35DwVnvv4Tbu2o3+nKgX/GBNltOU+Vo8++qOcHZ3uKS50KvUqwgDJts44K4Ayi70YJlWT2Qe+91DqsGyDd0B+IlpSX/NUOGMSil8PrKTUHZul/5GhsdrCmTjHAQkg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WOM4P3PrhoDGYQGXO5A/BzCRmnNo4pdIHI1YBzopjT8=;
+ b=oNZ3TVSTn1Y37R3Pk0o3a6L1t6uoFfs0DBTJ1CxH/EwxHZDS0YhAGU+1ZeRIbtIBOJPu1ktoX4pvVkFfZd5QQ236p8EKiagYkuco8AZTpS5wjgQ6wFmqOY7TeCmPbKVkWvLkbAquXpGPUaUNB/CWCtJKJfhYT8f4m9jrCoAhUSE=
+Received: from MN0PR12MB5953.namprd12.prod.outlook.com (2603:10b6:208:37c::15)
+ by SN7PR12MB8772.namprd12.prod.outlook.com (2603:10b6:806:341::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.24; Thu, 7 Mar
+ 2024 16:34:36 +0000
+Received: from MN0PR12MB5953.namprd12.prod.outlook.com
+ ([fe80::ca5b:3117:e891:239c]) by MN0PR12MB5953.namprd12.prod.outlook.com
+ ([fe80::ca5b:3117:e891:239c%4]) with mapi id 15.20.7362.024; Thu, 7 Mar 2024
+ 16:34:35 +0000
+From: "Pandey, Radhey Shyam" <radhey.shyam.pandey@amd.com>
+To: "Gupta, Suraj" <Suraj.Gupta2@amd.com>, "davem@davemloft.net"
+	<davem@davemloft.net>, "edumazet@google.com" <edumazet@google.com>,
+	"kuba@kernel.org" <kuba@kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>,
+	"Simek, Michal" <michal.simek@amd.com>, "netdev@vger.kernel.org"
+	<netdev@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "git
+ (AMD-Xilinx)" <git@amd.com>, "Katakam, Harini" <harini.katakam@amd.com>,
+	"Gupta, Suraj" <Suraj.Gupta2@amd.com>
+Subject: RE: [PATCH net-next] net: axienet: Fix kernel doc warnings
+Thread-Topic: [PATCH net-next] net: axienet: Fix kernel doc warnings
+Thread-Index: AQHab6d3NBiMWSRXE0GeVrWLLFvH4LEsetPw
+Date: Thu, 7 Mar 2024 16:34:35 +0000
+Message-ID:
+ <MN0PR12MB59536E9DFE0751049F15C1A6B7202@MN0PR12MB5953.namprd12.prod.outlook.com>
+References: <20240306091921.8665-1-suraj.gupta2@amd.com>
+In-Reply-To: <20240306091921.8665-1-suraj.gupta2@amd.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MN0PR12MB5953:EE_|SN7PR12MB8772:EE_
+x-ms-office365-filtering-correlation-id: 354c654d-db0f-427b-05f9-08dc3ec479df
+x-ld-processed: 3dd8961f-e488-4e60-8e11-a82d994e183d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ UZ5oqwo/R9VjVKbp3mr6OgavGpSSYA4lRnfvPB6TX9fQLXyf91uXO619sHuz/ZaokRp+N5MQ2g/FHmTKyIS9EK2Eood5v3OjvKzjI/DDD1WAppnquKWl1xV14V18TYlNxhW1Qtk69GgAYmm0fXyBSuQKeW9QT290Rj4qCTXqGUYD4yMIwGyFezd06w9fqy6g+qriS7qLc4pPUR91xn2OGtjcyYJwla2qUkRHy9xoHo+ySGAh0cBQob8CCWjwcktVW8hyItLYkasQds0UE+r/1c1jsa7WJdxYSJ6rjRJ+ZSxrZXdU2c9C035pGJaFTz2euVr/mhHc7Tidqr1h3IBO095u7ol+ulSVGtQXmyZ44niss3iWCtpXLOGHxbpUI1kCBCRLI9hWGkPOu3H3prKQtNXfQTvQgtw+LGnHhKlRsxVwwKa5/YjM2AWDN6Rw3KZPPUUUF/Zy67aQqfSPbz4+oAA/40TnxcBc9VujloToWxemMmC/+XIP+OQ/+HV9iBqktQsVwrhPsXoTENAHslliK1FJC1rjrI3A/xe4c+uqAhbuXYN37GS/vaSvR6pbZHIlZtx5g1DQnzEnhYRH6Yam59UaJi5IGe+yxDyx0XpZ9XXDPcV6CFbyRArGxKwV/aMvY2KQuAAMteo8Z5PCXIW+hBW5kk5ap9t4JHxVAUqRozQBYqcfcndpf7b8MgmFKFQXb5S3bKjcyi/6AA3NRI4LwnHPVutZ+tYHh6FpI7zbg+Q=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB5953.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(38070700009)(921011);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?hn8T2u9lgBG9OI1wbXlfAA8vpu2ZzP2vkdGvL07zkXnRhLgpnFIcFI1aOpyL?=
+ =?us-ascii?Q?Aw+jgZsg2YalSJT3B3Mo60h941z4xaViHwKA7VpN1L5+09fFabE9vHidwyO9?=
+ =?us-ascii?Q?5AF3yj3CqMhO7za25zCargyaSjivKHaigHn+MmVyWXxdSKoDxkaASxB+9onf?=
+ =?us-ascii?Q?A1ee8EWxlf/bm9ZFI9rWc35a6X0PWD83tXHBfCZdY7kJapakU7IZXDvQjMuT?=
+ =?us-ascii?Q?5WLiJwoEVDtAxfyhzwv6FBSIJQfQaEEl3IhG4UU0OAyghZi+POIilZDBmVex?=
+ =?us-ascii?Q?pNMfGv0zbFjhrlfpZtqkXCheyuPahS0fPyfEX35Lw74I+BvE4781w0M8hztb?=
+ =?us-ascii?Q?f2nZSu/+7iHDLDqNG1mZqGJU2qJNT5wqlui98Y5yeUBLFK9bgIejdUJRFUqp?=
+ =?us-ascii?Q?6ciuq46fTV8RHjp08RYz0QLOmvyicsaE4jmLIEwzbes6aDC4ksHSPcSdtlEj?=
+ =?us-ascii?Q?6+9lMf/MkIuWFsmG6Qcv1mOO/E0DbRWnZ0eoLRVfIbLoXCy4CeqdRySE2Kae?=
+ =?us-ascii?Q?+T1IJ6VsrTieWrOxzB7/y0jHJa135dWcwMeXpUqx6alVHfFAGjmLlG8xKwHx?=
+ =?us-ascii?Q?SNnzj25gpzdHOw+wqVzBMGe5KCGYCn/szlaLJv8OvTLalgYe8K6dNSKvcOXs?=
+ =?us-ascii?Q?Iab8BuMqiVlJy5WnsdrGAe8E6DhR4ZzqrOuSgxkpfBzlx1KtZngBBVT211do?=
+ =?us-ascii?Q?k8dL0SLm+nAN2jkpeIE7u+oSAZyoldUnDscvxQEaIXiQvqGqYGHIFBPgsof+?=
+ =?us-ascii?Q?nLWFo6qrSDDocUWiz2WFfeTpCbl0We7c6zzzLoqTJFH6s8B4JCQk6deHBBOk?=
+ =?us-ascii?Q?Ftwqd0H2iXVcP5gjiWdq3cVQ+UqF6+Cb+XgFHCcz/HiDnAZR6FirMV7RI7TK?=
+ =?us-ascii?Q?iWpLxJHaySfvCdK5uMeC/956cLedKabxaRAYcCsqovn8aRdrRbDD+TQZpEw5?=
+ =?us-ascii?Q?H2UxU0WNPeVsjCnxWvElBSzujyQUNrlWO1MlVCph/8SoJIRnuCMVwocDlR4r?=
+ =?us-ascii?Q?1XNWCCIFqJEbr5Ho3EX+M8j4Ah2YMbCxL6lMfEv7fFqciMI4rPPGgUlKY/RR?=
+ =?us-ascii?Q?vUucGoQgA/asyRs0tkGD0fLPwdR6syEUvFB4U8NIq6nudHV/l+5Mox32mWCs?=
+ =?us-ascii?Q?zhCej7+JSfq9CT1MjozvFItlItM6MfhFfJ01fDx/KLJ7fSbnAUT4KPEMhk6l?=
+ =?us-ascii?Q?i7Yn9GDgvOAa/e+f5tiQjlwyIt77Zjxc5p4/wo/KdZ2/P9qm7fl45yZogFXt?=
+ =?us-ascii?Q?pnntdS1FKJAkJcmCecue/Fp9QpRnmY5VvWfTRBOq4DqsEjhYP5LgS03TMBZd?=
+ =?us-ascii?Q?D2U4TVP74zXis6lDtomkkQJaBVyBy+cQJjE7wOS8IUJbABCe4PCNljb11kjI?=
+ =?us-ascii?Q?/98Yrh3pas/iTx0/pqjnbGmjKneivdTBI3qrq7zWaH1AmWj2YufqAlCcvRIo?=
+ =?us-ascii?Q?/iFJX5PdP6Hh1rl1nsRP4F8JRHKN8shhsUaQo/h7I9jqgbuMxYBXLctGkn4Z?=
+ =?us-ascii?Q?ZETcgiRaVz0mWwQbEiiIdns4dYxC0E2sEzq2a64FZ/mzqSSdIfJuB6xXasO1?=
+ =?us-ascii?Q?w6HxrSbEajGsWjQJtJM=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/1] mm/madvise: enhance lazyfreeing with mTHP in
- madvise_free
-Content-Language: en-GB
-To: Barry Song <21cnbao@gmail.com>, David Hildenbrand <david@redhat.com>
-Cc: Lance Yang <ioworker0@gmail.com>, Vishal Moola <vishal.moola@gmail.com>,
- akpm@linux-foundation.org, zokeefe@google.com, shy828301@gmail.com,
- mhocko@suse.com, fengwei.yin@intel.com, xiehuan09@gmail.com,
- wangkefeng.wang@huawei.com, songmuchun@bytedance.com, peterx@redhat.com,
- minchan@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20240307061425.21013-1-ioworker0@gmail.com>
- <CAGsJ_4xcRvZGdpPh1qcFTnTnDUbwz6WreQ=L_UO+oU2iFm9EPg@mail.gmail.com>
- <CAK1f24k2G_DSEjuqqqPyY0f7+btpYbjfoyMH7btLfP8nkasCTQ@mail.gmail.com>
- <CAGsJ_4xREM-P1mFqeM-s3-cJ9czb6PXwizb-3hOhwaF6+QM5QA@mail.gmail.com>
- <03458c20-5544-411b-9b8d-b4600a9b802f@arm.com>
- <CAGsJ_4zp1MXTjG=4gBO+J3owg7sHDgDJ8Ut51i1RBSnKnK0BfQ@mail.gmail.com>
- <501c9f77-1459-467a-8619-78e86b46d300@arm.com>
- <8f84c7d6-982a-4933-a7a7-3f640df64991@redhat.com>
- <e6bc142e-113d-4034-b92c-746b951a27ed@redhat.com>
- <d24f8553-33f2-4ae7-a06d-badaf9462d84@arm.com>
- <CAGsJ_4za-2xpg21phWi2WWLF1iPXhoc1xM__FDTwYYBBKsTPgw@mail.gmail.com>
- <a07deb2c-49e1-4324-8e70-e897605faa9d@redhat.com>
- <b1bf4b62-8e9b-470f-a300-d13c24177688@arm.com>
- <b174d4e1-e1ef-4766-91bc-de822eee30fb@redhat.com>
- <CAGsJ_4xXS0MsxRVTbf74DY_boQVUE2oP=AP6JmdXZSqsAOZzRQ@mail.gmail.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <CAGsJ_4xXS0MsxRVTbf74DY_boQVUE2oP=AP6JmdXZSqsAOZzRQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB5953.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 354c654d-db0f-427b-05f9-08dc3ec479df
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Mar 2024 16:34:35.8752
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Hpt6YMrtySoJgqvYWTL6adfcLQLcgU8MYwgb4NbHyXmheVnPxPukYeyGMQIo8Ph6
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB8772
 
-On 07/03/2024 12:01, Barry Song wrote:
-> On Thu, Mar 7, 2024 at 7:45 PM David Hildenbrand <david@redhat.com> wrote:
->>
->> On 07.03.24 12:42, Ryan Roberts wrote:
->>> On 07/03/2024 11:31, David Hildenbrand wrote:
->>>> On 07.03.24 12:26, Barry Song wrote:
->>>>> On Thu, Mar 7, 2024 at 7:13 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>>>>>
->>>>>> On 07/03/2024 10:54, David Hildenbrand wrote:
->>>>>>> On 07.03.24 11:54, David Hildenbrand wrote:
->>>>>>>> On 07.03.24 11:50, Ryan Roberts wrote:
->>>>>>>>> On 07/03/2024 09:33, Barry Song wrote:
->>>>>>>>>> On Thu, Mar 7, 2024 at 10:07 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>>>>>>>>>>
->>>>>>>>>>> On 07/03/2024 08:10, Barry Song wrote:
->>>>>>>>>>>> On Thu, Mar 7, 2024 at 9:00 PM Lance Yang <ioworker0@gmail.com> wrote:
->>>>>>>>>>>>>
->>>>>>>>>>>>> Hey Barry,
->>>>>>>>>>>>>
->>>>>>>>>>>>> Thanks for taking time to review!
->>>>>>>>>>>>>
->>>>>>>>>>>>> On Thu, Mar 7, 2024 at 3:00 PM Barry Song <21cnbao@gmail.com> wrote:
->>>>>>>>>>>>>>
->>>>>>>>>>>>>> On Thu, Mar 7, 2024 at 7:15 PM Lance Yang <ioworker0@gmail.com> wrote:
->>>>>>>>>>>>>>>
->>>>>>>>>>>>> [...]
->>>>>>>>>>>>>>> +static inline bool can_mark_large_folio_lazyfree(unsigned long addr,
->>>>>>>>>>>>>>> +                                                struct folio *folio,
->>>>>>>>>>>>>>> pte_t *start_pte)
->>>>>>>>>>>>>>> +{
->>>>>>>>>>>>>>> +       int nr_pages = folio_nr_pages(folio);
->>>>>>>>>>>>>>> +       fpb_t flags = FPB_IGNORE_DIRTY | FPB_IGNORE_SOFT_DIRTY;
->>>>>>>>>>>>>>> +
->>>>>>>>>>>>>>> +       for (int i = 0; i < nr_pages; i++)
->>>>>>>>>>>>>>> +               if (page_mapcount(folio_page(folio, i)) != 1)
->>>>>>>>>>>>>>> +                       return false;
->>>>>>>>>>>>>>
->>>>>>>>>>>>>> we have moved to folio_estimated_sharers though it is not precise, so
->>>>>>>>>>>>>> we don't do
->>>>>>>>>>>>>> this check with lots of loops and depending on the subpage's mapcount.
->>>>>>>>>>>>>
->>>>>>>>>>>>> If we don't check the subpage’s mapcount, and there is a cow folio
->>>>>>>>>>>>> associated
->>>>>>>>>>>>> with this folio and the cow folio has smaller size than this folio,
->>>>>>>>>>>>> should we still
->>>>>>>>>>>>> mark this folio as lazyfree?
->>>>>>>>>>>>
->>>>>>>>>>>> I agree, this is true. However, we've somehow accepted the fact that
->>>>>>>>>>>> folio_likely_mapped_shared
->>>>>>>>>>>> can result in false negatives or false positives to balance the
->>>>>>>>>>>> overhead.  So I really don't know :-)
->>>>>>>>>>>>
->>>>>>>>>>>> Maybe David and Vishal can give some comments here.
->>>>>>>>>>>>
->>>>>>>>>>>>>
->>>>>>>>>>>>>> BTW, do we need to rebase our work against David's changes[1]?
->>>>>>>>>>>>>> [1]
->>>>>>>>>>>>>> https://lore.kernel.org/linux-mm/20240227201548.857831-1-david@redhat.com/
->>>>>>>>>>>>>
->>>>>>>>>>>>> Yes, we should rebase our work against David’s changes.
->>>>>>>>>>>>>
->>>>>>>>>>>>>>
->>>>>>>>>>>>>>> +
->>>>>>>>>>>>>>> +       return nr_pages == folio_pte_batch(folio, addr, start_pte,
->>>>>>>>>>>>>>> +                                        ptep_get(start_pte), nr_pages,
->>>>>>>>>>>>>>> flags, NULL);
->>>>>>>>>>>>>>> +}
->>>>>>>>>>>>>>> +
->>>>>>>>>>>>>>>      static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
->>>>>>>>>>>>>>>                                     unsigned long end, struct mm_walk
->>>>>>>>>>>>>>> *walk)
->>>>>>>>>>>>>>>
->>>>>>>>>>>>>>> @@ -676,11 +690,45 @@ static int madvise_free_pte_range(pmd_t *pmd,
->>>>>>>>>>>>>>> unsigned long addr,
->>>>>>>>>>>>>>>                      */
->>>>>>>>>>>>>>>                     if (folio_test_large(folio)) {
->>>>>>>>>>>>>>>                             int err;
->>>>>>>>>>>>>>> +                       unsigned long next_addr, align;
->>>>>>>>>>>>>>>
->>>>>>>>>>>>>>> -                       if (folio_estimated_sharers(folio) != 1)
->>>>>>>>>>>>>>> -                               break;
->>>>>>>>>>>>>>> -                       if (!folio_trylock(folio))
->>>>>>>>>>>>>>> -                               break;
->>>>>>>>>>>>>>> +                       if (folio_estimated_sharers(folio) != 1 ||
->>>>>>>>>>>>>>> +                           !folio_trylock(folio))
->>>>>>>>>>>>>>> +                               goto skip_large_folio;
->>>>>>>>>>>>>>
->>>>>>>>>>>>>>
->>>>>>>>>>>>>> I don't think we can skip all the PTEs for nr_pages, as some of them
->>>>>>>>>>>>>> might be
->>>>>>>>>>>>>> pointing to other folios.
->>>>>>>>>>>>>>
->>>>>>>>>>>>>> for example, for a large folio with 16PTEs, you do MADV_DONTNEED(15-16),
->>>>>>>>>>>>>> and write the memory of PTE15 and PTE16, you get page faults, thus PTE15
->>>>>>>>>>>>>> and PTE16 will point to two different small folios. We can only skip
->>>>>>>>>>>>>> when we
->>>>>>>>>>>>>> are sure nr_pages == folio_pte_batch() is sure.
->>>>>>>>>>>>>
->>>>>>>>>>>>> Agreed. Thanks for pointing that out.
->>>>>>>>>>>>>
->>>>>>>>>>>>>>
->>>>>>>>>>>>>>> +
->>>>>>>>>>>>>>> +                       align = folio_nr_pages(folio) * PAGE_SIZE;
->>>>>>>>>>>>>>> +                       next_addr = ALIGN_DOWN(addr + align, align);
->>>>>>>>>>>>>>> +
->>>>>>>>>>>>>>> +                       /*
->>>>>>>>>>>>>>> +                        * If we mark only the subpages as lazyfree, or
->>>>>>>>>>>>>>> +                        * cannot mark the entire large folio as
->>>>>>>>>>>>>>> lazyfree,
->>>>>>>>>>>>>>> +                        * then just split it.
->>>>>>>>>>>>>>> +                        */
->>>>>>>>>>>>>>> +                       if (next_addr > end || next_addr - addr !=
->>>>>>>>>>>>>>> align ||
->>>>>>>>>>>>>>> +                           !can_mark_large_folio_lazyfree(addr, folio,
->>>>>>>>>>>>>>> pte))
->>>>>>>>>>>>>>> +                               goto split_large_folio;
->>>>>>>>>>>>>>> +
->>>>>>>>>>>>>>> +                       /*
->>>>>>>>>>>>>>> +                        * Avoid unnecessary folio splitting if the
->>>>>>>>>>>>>>> large
->>>>>>>>>>>>>>> +                        * folio is entirely within the given range.
->>>>>>>>>>>>>>> +                        */
->>>>>>>>>>>>>>> +                       folio_clear_dirty(folio);
->>>>>>>>>>>>>>> +                       folio_unlock(folio);
->>>>>>>>>>>>>>> +                       for (; addr != next_addr; pte++, addr +=
->>>>>>>>>>>>>>> PAGE_SIZE) {
->>>>>>>>>>>>>>> +                               ptent = ptep_get(pte);
->>>>>>>>>>>>>>> +                               if (pte_young(ptent) ||
->>>>>>>>>>>>>>> pte_dirty(ptent)) {
->>>>>>>>>>>>>>> +                                       ptent =
->>>>>>>>>>>>>>> ptep_get_and_clear_full(
->>>>>>>>>>>>>>> +                                               mm, addr, pte,
->>>>>>>>>>>>>>> tlb->fullmm);
->>>>>>>>>>>>>>> +                                       ptent = pte_mkold(ptent);
->>>>>>>>>>>>>>> +                                       ptent = pte_mkclean(ptent);
->>>>>>>>>>>>>>> +                                       set_pte_at(mm, addr, pte,
->>>>>>>>>>>>>>> ptent);
->>>>>>>>>>>>>>> +                                       tlb_remove_tlb_entry(tlb, pte,
->>>>>>>>>>>>>>> addr);
->>>>>>>>>>>>>>> +                               }
->>>>>>>>>>>>>>
->>>>>>>>>>>>>> Can we do this in batches? for a CONT-PTE mapped large folio, you are
->>>>>>>>>>>>>> unfolding
->>>>>>>>>>>>>> and folding again. It seems quite expensive.
->>>>>>>>>>>
->>>>>>>>>>> I'm not convinced we should be doing this in batches. We want the initial
->>>>>>>>>>> folio_pte_batch() to be as loose as possible regarding permissions so
->>>>>>>>>>> that we
->>>>>>>>>>> reduce our chances of splitting folios to the min. (e.g. ignore SW bits
->>>>>>>>>>> like
->>>>>>>>>>> soft dirty, etc). I think it might be possible that some PTEs are RO and
->>>>>>>>>>> other
->>>>>>>>>>> RW too (e.g. due to cow - although with the current cow impl, probably not.
->>>>>>>>>>> But
->>>>>>>>>>> its fragile to assume that). Anyway, if we do an initial batch that ignores
->>>>>>>>>>> all
->>>>>>>>>>
->>>>>>>>>> You are correct. I believe this scenario could indeed occur. For instance,
->>>>>>>>>> if process A forks process B and then unmaps itself, leaving B as the
->>>>>>>>>> sole process owning the large folio.  The current wp_page_reuse() function
->>>>>>>>>> will reuse PTE one by one while the specific subpage is written.
->>>>>>>>>
->>>>>>>>> Hmm - I thought it would only reuse if the total mapcount for the folio
->>>>>>>>> was 1.
->>>>>>>>> And since it is a large folio with each page mapped once in proc B, I thought
->>>>>>>>> every subpage write would cause a copy except the last one? I haven't
->>>>>>>>> looked at
->>>>>>>>> the code for a while. But I had it in my head that this is an area we need to
->>>>>>>>> improve for mTHP.
->>>>>
->>>>> So sad I am wrong again 😢
->>>>>
->>>>>>>>
->>>>>>>> wp_page_reuse() will currently reuse a PTE part of a large folio only if
->>>>>>>> a single PTE remains mapped (refcount == 0).
->>>>>>>
->>>>>>> ^ == 1
->>>>>
->>>>> seems this needs improvement. it is a waste the last subpage can
->>>>
->>>> My take that is WIP:
->>>>
->>>> https://lore.kernel.org/all/20231124132626.235350-1-david@redhat.com/T/#u
->>>>
->>>>> reuse the whole large folio. i was doing it in a quite different way,
->>>>> if the large folio had only one subpage left, i would do copy and
->>>>> released the large folio[1]. and if i could reuse the whole large folio
->>>>> with CONT-PTE, i would reuse the whole large folio[2]. in mainline,
->>>>> we don't have this cont-pte luxury exposed to mm, so i guess we can
->>>>> not do [2] easily, but [1] seems to be an optimization.
->>>>
->>>> Yeah, I had essentially the same idea: just free up the large folio if most of
->>>> the stuff is unmapped. But that's rather a corner-case optimization, so I did
->>>> not proceed with that.
->>>>
->>>
->>> I'm not sure it's a corner case, really? - process forks, then both parent and
->>> child and write to all pages in what was previously a fully & contiguously
->>> mapped large folio?
->>
->> Well, with 2 MiB my assumption was that while it can happen, it's rather
->> rare. With smaller THP it might get more likely, agreed.
->>
->>>
->>> Reggardless, why is it an optimization to do the copy for the last subpage and
->>> syncrhonously free the large folio? It's already partially mapped so is on the
->>> deferred split list and can be split if memory is tight.
-> 
-> we don't want reclamation overhead later. and we want memories immediately
-> available to others.
+> -----Original Message-----
+> From: Suraj Gupta <suraj.gupta2@amd.com>
+> Sent: Wednesday, March 6, 2024 2:49 PM
+> To: Pandey, Radhey Shyam <radhey.shyam.pandey@amd.com>;
+> davem@davemloft.net; edumazet@google.com; kuba@kernel.org;
+> pabeni@redhat.com; Simek, Michal <michal.simek@amd.com>;
+> netdev@vger.kernel.org; linux-arm-kernel@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org; git (AMD-Xilinx) <git@amd.com>; Katakam=
+,
+> Harini <harini.katakam@amd.com>; Gupta, Suraj <Suraj.Gupta2@amd.com>
+> Subject: [PATCH net-next] net: axienet: Fix kernel doc warnings
+>=20
+> Add description of mdio enable, mdio disable and mdio wait functions.
+> Add description of skb pointer in axidma_bd data structure.
+> Remove 'phy_node' description in axienet local data structure since it is=
+ not a
+> valid struct member.
+> Correct description of struct axienet_option.
+>=20
+> Fix below kernel-doc warnings in drivers/net/ethernet/xilinx/:
+> 1) xilinx_axienet_mdio.c:1: warning: no structured comments found
+> 2) xilinx_axienet.h:379: warning: Function parameter or struct member 'sk=
+b'
+> not described in 'axidma_bd'
+> 3) xilinx_axienet.h:538: warning: Excess struct member 'phy_node'
+> description in 'axienet_local'
+> 4) xilinx_axienet.h:1002: warning: expecting prototype for struct
+> axiethernet_option. Prototype was for struct axienet_option instead
+>=20
+> Signed-off-by: Suraj Gupta <suraj.gupta2@amd.com>
 
-But by that logic, you also don't want to leave the large folio partially mapped
-all the way until the last subpage is CoWed. Surely you would want to reclaim it
-when you reach partial map status?
+Reviewed-by: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
 
-> reclamation will always cause latency and affect User
-> experience. split_folio is not cheap :-) 
-
-But neither is memcpy(4K) I'd imagine. But I get your point.
-
-> if the number of this kind of
-> large folios
-> is huge, the waste can be huge for some while.
-> 
-> it is not a corner case for large folio swap-in. while someone writes
-> one subpage, I swap-in a large folio, wp_reuse will immediately
-> be called. This can cause waste quite often. One outcome of this
-> discussion is that I realize I should investigate this issue immediately
-> in the swap-in series as my off-tree code has optimized reuse but
-> mainline hasn't.
-> 
->>
->> At least for 2 MiB THP, it might make sense to make that large folio
->> available immediately again, even without memory pressure. Even
->> compaction would not compact it.
-> 
-> It is also true for 64KiB. as we want other processes to allocate
-> 64KiB successfully as much as possible, and reduce the rate of
-> falling back to small folios. by releasing 64KiB directly to buddy
-> rather than splitting and returning 15*4KiB in shrinker, we reduce
-> buddy fragmentation too.
-> 
->>
->> --
->> Cheers,
->>
->> David / dhildenb
->>
-> 
-> Thanks
-> Barry
+Thanks!
+> ---
+>  drivers/net/ethernet/xilinx/xilinx_axienet.h  |  4 ++--
+> .../net/ethernet/xilinx/xilinx_axienet_mdio.c | 23 ++++++++++++++++---
+>  2 files changed, 22 insertions(+), 5 deletions(-)
+>=20
+> diff --git a/drivers/net/ethernet/xilinx/xilinx_axienet.h
+> b/drivers/net/ethernet/xilinx/xilinx_axienet.h
+> index 807ead678551..d0d1ae3b4e2c 100644
+> --- a/drivers/net/ethernet/xilinx/xilinx_axienet.h
+> +++ b/drivers/net/ethernet/xilinx/xilinx_axienet.h
+> @@ -359,6 +359,7 @@
+>   * @app2:         MM2S/S2MM User Application Field 2.
+>   * @app3:         MM2S/S2MM User Application Field 3.
+>   * @app4:         MM2S/S2MM User Application Field 4.
+> + * @skb:	  Pointer to SKB transferred using DMA
+>   */
+>  struct axidma_bd {
+>  	u32 next;	/* Physical address of next buffer descriptor */
+> @@ -399,7 +400,6 @@ struct skbuf_dma_descriptor {
+>   * struct axienet_local - axienet private per device data
+>   * @ndev:	Pointer for net_device to which it will be attached.
+>   * @dev:	Pointer to device structure
+> - * @phy_node:	Pointer to device node structure
+>   * @phylink:	Pointer to phylink instance
+>   * @phylink_config: phylink configuration settings
+>   * @pcs_phy:	Reference to PCS/PMA PHY if used
+> @@ -537,7 +537,7 @@ struct axienet_local {  };
+>=20
+>  /**
+> - * struct axiethernet_option - Used to set axi ethernet hardware options
+> + * struct axienet_option - Used to set axi ethernet hardware options
+>   * @opt:	Option to be set.
+>   * @reg:	Register offset to be written for setting the option
+>   * @m_or:	Mask to be ORed for setting the option in the register
+> diff --git a/drivers/net/ethernet/xilinx/xilinx_axienet_mdio.c
+> b/drivers/net/ethernet/xilinx/xilinx_axienet_mdio.c
+> index 2f07fde361aa..9ca2643c921e 100644
+> --- a/drivers/net/ethernet/xilinx/xilinx_axienet_mdio.c
+> +++ b/drivers/net/ethernet/xilinx/xilinx_axienet_mdio.c
+> @@ -20,7 +20,14 @@
+>  #define DEFAULT_MDIO_FREQ	2500000 /* 2.5 MHz */
+>  #define DEFAULT_HOST_CLOCK	150000000 /* 150 MHz */
+>=20
+> -/* Wait till MDIO interface is ready to accept a new transaction.*/
+> +/**
+> + * axienet_mdio_wait_until_ready - MDIO wait function
+> + * @lp:	Pointer to axienet local data structure.
+> + *
+> + * Return :	0 on success, Negative value on errors
+> + *
+> + * Wait till MDIO interface is ready to accept a new transaction.
+> + */
+>  static int axienet_mdio_wait_until_ready(struct axienet_local *lp)  {
+>  	u32 val;
+> @@ -30,14 +37,24 @@ static int axienet_mdio_wait_until_ready(struct
+> axienet_local *lp)
+>  				  1, 20000);
+>  }
+>=20
+> -/* Enable the MDIO MDC. Called prior to a read/write operation */
+> +/**
+> + * axienet_mdio_mdc_enable - MDIO MDC enable function
+> + * @lp:	Pointer to axienet local data structure.
+> + *
+> + * Enable the MDIO MDC. Called prior to a read/write operation  */
+>  static void axienet_mdio_mdc_enable(struct axienet_local *lp)  {
+>  	axienet_iow(lp, XAE_MDIO_MC_OFFSET,
+>  		    ((u32)lp->mii_clk_div | XAE_MDIO_MC_MDIOEN_MASK));
+> }
+>=20
+> -/* Disable the MDIO MDC. Called after a read/write operation*/
+> +/**
+> + * axienet_mdio_mdc_disable - MDIO MDC disable function
+> + * @lp:	Pointer to axienet local data structure.
+> + *
+> + * Disable the MDIO MDC. Called after a read/write operation  */
+>  static void axienet_mdio_mdc_disable(struct axienet_local *lp)  {
+>  	u32 mc_reg;
+> --
+> 2.43.0
 
 
