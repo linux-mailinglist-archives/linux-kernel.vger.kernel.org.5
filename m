@@ -1,133 +1,106 @@
-Return-Path: <linux-kernel+bounces-95148-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95161-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 336108749CA
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:36:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 27923874A18
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:48:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6571D1C21710
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 08:36:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A0821C22604
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 08:48:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB7D982881;
-	Thu,  7 Mar 2024 08:36:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2BAA82D7C;
+	Thu,  7 Mar 2024 08:48:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Jk4CwirG"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Gcet9SrA"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98CFD82885;
-	Thu,  7 Mar 2024 08:36:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E167F224CE;
+	Thu,  7 Mar 2024 08:48:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709800578; cv=none; b=Tu1pkyGZnZe7yquDpcX2I2NhZz/6gtxV/KrC3cRtJkkVbZa64cIt1jZqwav6r8A3ILzdwPmz58wGs82nDgrDgCNLoFA3GRFXegZD58PTVIxWhUeDQ7oR+7Eq3k1kHfLqjWW62KFVCnDJOw4MWYqXNAzTJM9p9DtaVs9roaATneo=
+	t=1709801293; cv=none; b=Jz+tT9PFYyODsUgvSi2Z2PzQ/upoBlnnzR25Z2yUGvr2VgkqHJSj3mxez6UEuWt9F9bThbBZE3B/9XVFbDsNASZgrpU40REQyKPFyukt24qn5QL+6yHbw+PsBoHuxJ01QppGiahreFCoYN82SjkKvPWpu5YxXokwvdJbmHjiPtg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709800578; c=relaxed/simple;
-	bh=u6KLTZtmTIu5DykU16R/5uPB7IyWMKQDWEnAzeiRdU8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=MfCQeXfWljqju5o+YK9hGPNmHoAUVnOGaU20WncO3HwbVypblbRwQV+33tEW0vWXhtF1ALzvzUdvCgVfAJopUTjhL+Wvy2gzk5LmmMq671vZC7FlPjNx1Rg42El4XJYvy2EEfsJpYuxL5AinLFO/niNx1eXb9EB62NNAXHh5Mm0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Jk4CwirG; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709800577; x=1741336577;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=u6KLTZtmTIu5DykU16R/5uPB7IyWMKQDWEnAzeiRdU8=;
-  b=Jk4CwirGcOrTGxwCRxOnHVewOY48k+K1y/9LtKipoS8R9+6L1Ph0btlm
-   RySYvV43aIptACLYTmLrfbhbfYXlkhUsk75anJD/PtQQSYv6LJfE9wFPD
-   xZjFi1FfDGiuD5qMC1YnntjN+hkWQB5NXjV43EDlT+p5EzmtFzXGAq0ny
-   eH4+Z66j7nM0XfFimD9mLCnQAC/5lmJpsKFSGXUFA2Ksmh3z52JC1sFJ8
-   aMfd+kacuwL1znBijGWPqZ7TIWlaooseJWLRjyZM7aIyuHbDVAr4IcGvN
-   IRwdYJ1KgVeymAiMu2EPM3H4r2oJFIwthYmn1WCrN5fDCftmAs8IOtZqR
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11005"; a="4600549"
-X-IronPort-AV: E=Sophos;i="6.06,210,1705392000"; 
-   d="scan'208";a="4600549"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 00:36:16 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,210,1705392000"; 
-   d="scan'208";a="14699817"
-Received: from haibo-optiplex-7090.sh.intel.com ([10.239.159.132])
-  by orviesa004.jf.intel.com with ESMTP; 07 Mar 2024 00:36:06 -0800
-From: Haibo Xu <haibo1.xu@intel.com>
-To: 
-Cc: xiaobo55x@gmail.com,
-	ajones@ventanamicro.com,
-	sunilvl@ventanamicro.com,
-	Haibo Xu <haibo1.xu@intel.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>,
-	Robert Moore <robert.moore@intel.com>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Guo Ren <guoren@kernel.org>,
-	Alexandre Ghiti <alexghiti@rivosinc.com>,
-	Greentime Hu <greentime.hu@sifive.com>,
-	Charlie Jenkins <charlie@rivosinc.com>,
-	Sami Tolvanen <samitolvanen@google.com>,
-	Zong Li <zong.li@sifive.com>,
-	Jisheng Zhang <jszhang@kernel.org>,
-	Baoquan He <bhe@redhat.com>,
-	=?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Chen Jiahao <chenjiahao16@huawei.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	James Morse <james.morse@arm.com>,
-	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-	Evan Green <evan@rivosinc.com>,
-	Samuel Holland <samuel.holland@sifive.com>,
-	Marc Zyngier <maz@kernel.org>,
-	Anup Patel <apatel@ventanamicro.com>,
-	Tony Luck <tony.luck@intel.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Yuntao Wang <ytcoode@gmail.com>,
-	Alison Schofield <alison.schofield@intel.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linux-acpi@vger.kernel.org,
-	acpica-devel@lists.linux.dev
-Subject: [PATCH v2 6/6] ACPI: RISCV: Enable ACPI based NUMA
-Date: Thu,  7 Mar 2024 16:47:58 +0800
-Message-Id: <01cb5780041565784d459cd94a5c4f55eaa87739.1709780590.git.haibo1.xu@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1709780590.git.haibo1.xu@intel.com>
-References: <cover.1709780590.git.haibo1.xu@intel.com>
+	s=arc-20240116; t=1709801293; c=relaxed/simple;
+	bh=VYQLq/Xh4cEXmRYUMYALH3Kg2KpEu/MRK9nSINY8EfQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=f1Pw+dN+oBMBiAge8cwxFj/Yq4ifqv9jffdxPmoLsZrrO8ddr6WCG9ZQQ1utU6PA84bE6gIyLbD/pkSQvgO6Faq1LoD+vCA/CpZZ3HQZsl+Qz3F0/2Zqd1S2OIzdmFBVDWz0EdPRyrPw8nY9tRCRE2+7RWOL7XzE4kIJZLXa+kE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Gcet9SrA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43829C433F1;
+	Thu,  7 Mar 2024 08:48:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709801292;
+	bh=VYQLq/Xh4cEXmRYUMYALH3Kg2KpEu/MRK9nSINY8EfQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Gcet9SrA8Om36a1v2s79XhXp9nnyyclJtFXpJTBO+REiFfOJ0RoIT6VPnHx+Zsif9
+	 LJQ9xFBKgr5WIFAo3AIM9csE3dALFTwdPnPNF4ns7zD8U8BcPIQJoYxciXcqwX0Lzx
+	 TwJ8zH2YjFCf045APMpJdrHYL9GCUE500k6JKrOFZTjP5FjcQmW3WFFea9mzKcPctL
+	 +TfRCe8SqFVmS+gpG2S1crQr46ZQCqlokGyBTU8ACAfIi9Ut8fuGZ683i8ljW0QOKe
+	 hoFNyy3zUiPTQ+IdyAuxSBBQ05+zfcuhb5M/J3Nle2zJjGJ2dsz6u+BKQG2j1Gynct
+	 VqWbn5JIaIbDA==
+Date: Thu, 7 Mar 2024 09:48:09 +0100
+From: Maxime Ripard <mripard@kernel.org>
+To: forbidden405@outlook.com
+Cc: Michael Turquette <mturquette@baylibre.com>, 
+	Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] clk: set initial best mux parent to current parent
+ with CLK_MUX_ROUND_CLOSEST
+Message-ID: <20240307-hot-hummingbird-of-atheism-87503c@houat>
+References: <20240307-mux-v3-1-0885fc1ab2c9@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="pexrprnve3e2bgj4"
+Content-Disposition: inline
+In-Reply-To: <20240307-mux-v3-1-0885fc1ab2c9@outlook.com>
 
-Enable ACPI based NUMA for RISCV in Kconfig.
 
-Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
----
- arch/riscv/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+--pexrprnve3e2bgj4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 0bfcfec67ed5..0fb55f166701 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -447,6 +447,7 @@ config NUMA
- 	select HAVE_SETUP_PER_CPU_AREA
- 	select NEED_PER_CPU_EMBED_FIRST_CHUNK
- 	select NEED_PER_CPU_PAGE_FIRST_CHUNK
-+	select ACPI_NUMA if ACPI
- 	select OF_NUMA
- 	select USE_PERCPU_NUMA_NODE_ID
- 	help
--- 
-2.34.1
+Hi,
 
+On Thu, Mar 07, 2024 at 10:03:50AM +0800, Yang Xiwen via B4 Relay wrote:
+> From: Yang Xiwen <forbidden405@outlook.com>
+>=20
+> Originally, the initial clock rate is hardcoded to 0, this can lead to
+> some problem when setting a very small rate with CLK_MUX_ROUND_CLOSEST.
+>=20
+> For example, if the lowest possible rate provided by the mux is 1000Hz,
+> setting a rate below 500Hz will fail, because no clock can provide a
+> better rate than the non-existant 0Hz. But it should succeed with 1000Hz
+> being set.
+>=20
+> Setting the initial best parent to current parent could solve this bug.
+>=20
+> Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
+
+I don't think it would be the way to go. The biggest issue to me is that
+it's inconsistent, and only changing the behaviour for a given flag
+doesn't solve that.
+
+And again, either way, we should document it. And run it through kernelci.
+
+Maxime
+
+--pexrprnve3e2bgj4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZel/SQAKCRDj7w1vZxhR
+xQWgAQDk9L7KTLmixKOu3mNi4BDn3+1/TKlsTyfhf1yUB9cMXQD+N/nmhK3bQwSR
+T5WItxX0WUk4jnWWQ5qSTWpgsEF0gQE=
+=q0Ro
+-----END PGP SIGNATURE-----
+
+--pexrprnve3e2bgj4--
 
