@@ -1,320 +1,245 @@
-Return-Path: <linux-kernel+bounces-94989-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94988-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FF8D8747C0
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 06:51:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6974F8747BE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 06:50:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AEF70B22E0F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 05:51:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1FD3E281195
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 05:50:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83A761BF20;
-	Thu,  7 Mar 2024 05:50:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A62F31BF20;
+	Thu,  7 Mar 2024 05:50:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KA0rNkjx"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="x08IFgEJ";
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="fGoWFzeO"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 271BA1C6B1;
-	Thu,  7 Mar 2024 05:50:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709790658; cv=none; b=mUVmY4bCbaHgglSMCAiNldg3IXT53Girt4voyzAP0JWnh7/7wlDkvIzZT2HCdnYOyO/+ON7CbihGmj6V0KIpuH/I+I9trCS6wtYwDPFpRjEA4s/i3HWRt6LKRW2/qjigUT8eXNdI7ywSawOejllJYGw6d/NJ7gNlYN2QZsXoE4M=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709790658; c=relaxed/simple;
-	bh=AOYEIx+Z/N5GzUBtJ7PgfpiB0pb8WbmYPgvNTS/BmPc=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=mS8dsYDk9WpL+zZ7d4xs2oH4Xck1OMj7MY1lg1lntWLIeLLaCpdZoMOPpGsaJBhrmo1jDrJwm2SlwSSfIgAas45aj9MgFmGAVmS2HH6WIQJdP6PTbaSHhgeGJXmfsS+DQwg4RYWheiQZodq2D9cSlo0DWv3fdoWAFB/4Cr3QRuo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KA0rNkjx; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 943A01BDC4;
+	Thu,  7 Mar 2024 05:50:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.154.123
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709790647; cv=fail; b=C8vAEKETNN9bZFMFhoLxQUY2xXh1ielopXN0tAvm9l60EoSWKxdm0uM9NwCs7+7lLV5yAlAhoERUcxMq3FZEbVw3B6AfhYJP2dKmqVTpJTGXvVe83gB8Yqa+IxsgMhwO0Wz+yKbXfVcITYpT/IWXkTMAHqKi3/3NEOXFHa/5Pf0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709790647; c=relaxed/simple;
+	bh=lp0vWiLMErDQHDDsVpVKo6TvBomUI+mE99qT0VIwBdE=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=e124fH2Bpe+wcrpkHekX5nUq9UGalTs9nYCmOVRUb1cqUUoyQAiJacvkUzWclDch9m5Evzbmidaut1Hu9ZsapYEgav7rx2wvNbgOgfvZNEjf47ISToYLD5tyn4n0IsiTlfh3Mva5X+w2CuLdUJURTI7lvW9yIvW+/BdHIPnGjxw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=x08IFgEJ; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=fGoWFzeO; arc=fail smtp.client-ip=68.232.154.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709790656; x=1741326656;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=AOYEIx+Z/N5GzUBtJ7PgfpiB0pb8WbmYPgvNTS/BmPc=;
-  b=KA0rNkjxTdPXbiheaPN1Sc4YMi20FLZKJnXcojIcJ6dv+XTLtkymosPP
-   2oKvmxSLwZ51d+BCv/LnXF5PsgbCJb4UPP6c/ZZQFv69U5j/+2+mN97/Z
-   z0pm7e9unRtLfMj0el//+ggd2BSy/L6o4eah1D9kioJu5QWcklJOCK9Ig
-   wUmyXvciUP+abqfA8Hn9PdnoDcHGwjPfISU7+PLaZje4h6jqI8wJNop1x
-   1xMFPmnOhJXlGocToPx56QC/cNpcvI9vm3jVnuZtApn1vo3eBfw9T/SfF
-   PtN8oyVbiPnWRdI+Ljq42b/eDhd/gZGuPQEElSdWQNmlAo+EY2fsYWD8R
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11005"; a="4565130"
-X-IronPort-AV: E=Sophos;i="6.06,210,1705392000"; 
-   d="scan'208";a="4565130"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 21:50:55 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,210,1705392000"; 
-   d="scan'208";a="14692078"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 21:50:54 -0800
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: Miaohe Lin <linmiaohe@huawei.com>,  Andrew Morton
- <akpm@linux-foundation.org>,  David Hildenbrand <david@redhat.com>,
-  <linux-mm@kvack.org>,  <linux-kernel@vger.kernel.org>,
-  <stable@vger.kernel.org>
-Subject: Re: [PATCH v1] mm: swap: Fix race between free_swap_and_cache() and
- swapoff()
-In-Reply-To: <86be68f5-546a-422f-8a46-e374d21203f4@arm.com> (Ryan Roberts's
-	message of "Wed, 6 Mar 2024 09:03:25 +0000")
-References: <20240305151349.3781428-1-ryan.roberts@arm.com>
-	<875xy0842q.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<86be68f5-546a-422f-8a46-e374d21203f4@arm.com>
-Date: Thu, 07 Mar 2024 13:48:59 +0800
-Message-ID: <87frx27fsk.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1709790644; x=1741326644;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=lp0vWiLMErDQHDDsVpVKo6TvBomUI+mE99qT0VIwBdE=;
+  b=x08IFgEJhuFl5gvzYKRbQYEXzy11LlLYTlLP6YAvcGBez2H/uJp5Hy7Z
+   G+GmHIs+3kJgEc3v6vlyMYzNFHVoekIB1BA+We8f2KDf9YxAlWeVYuz2V
+   QJOsIF18C9XK3dg8g1DfvgGX/tGnmfuJbvzbbiSryOoJgfqxBi/KA68Qa
+   Qd2o5l28y7eqODnHFZo4via8eUcA7QkEKioqa7OJbvgRa3OYzU3mx6eXf
+   tEwhlFB1yQfAykfGn0uYoaVRKgLoY9Yaz3wiYDsjIUnqg2AdWGaA4J2aw
+   EXYExvSlHoZ0y7+h9HZ77kRHEI48CkMOdXg8YKYm6aBaX1OjA8JNvjpBV
+   A==;
+X-CSE-ConnectionGUID: ncbopNxESjKpbCEuSSMcww==
+X-CSE-MsgGUID: ag8PegzoQ1OMcCDKXS6xZQ==
+X-IronPort-AV: E=Sophos;i="6.06,210,1705388400"; 
+   d="scan'208";a="17316863"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 06 Mar 2024 22:50:43 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 6 Mar 2024 22:50:27 -0700
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (10.10.215.250)
+ by email.microchip.com (10.10.87.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 6 Mar 2024 22:50:27 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UQlqJNxXkq8V5euN6ui51HS2HxN19h8f/7cBmvEsOcWwBcD0xjMhizm1G3LlkJJjvk5YydUjlPtnzoRjyqb9Bk7Frv8838GjX6WQ/kUYdXiuGwMgONyIiOWJOR4U9HxGGPYMJscfBO6G2AACZ/FRYPRD6yAjkurwx80HpyiiwvafyL8g/7P0uLiHztEpY9RRx0rmT5744IG9UJ4bb80iq6V1NKyyUYVl+DUJxSVRwa/TYD7ZhU7J7htjDVyBWq4kEMjywnOWJiobt2WLS2ox905cfLca7FXqPPJZULOZWOuyzBU5+3YIVv0X/z9TGQpgO+o0M+CHj14aE/USPxO7GA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=lp0vWiLMErDQHDDsVpVKo6TvBomUI+mE99qT0VIwBdE=;
+ b=gc0gl1p88QGFaP+qAagnQtm95ubzs2IITF001ZP0V3YLr7t1Cs2fpM0REtQsZji/MOrjsa9OssqdugCXmLdIzAzX7bmdlnSe79DrofoablLkkF3qCqAzxpUbCuV3LtcyxvMfFz0OsKQp87YQ9Z4qh8SIB5mNJpfr8W8TaWc2qqTEB3jogK0W+xNLiGE3rdgDI5rAn1weu+KX3V2sL9augAgNxLFZ1pcoc35sIvi4AqEBcmkWmh23DytRuw0inEvVc2S3WigovAwN22Q8B79D/KTX4sGI6Xp7PmCKdpGDmZDBYUgvLefY5gV9cqDkeXEA/zHuB+gC08oHhLDcOZw8eg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microchip.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lp0vWiLMErDQHDDsVpVKo6TvBomUI+mE99qT0VIwBdE=;
+ b=fGoWFzeOYC5kDsakeBtpjllhr2MvQJHgh8zPAw1dcqcGtdicR6siSbC9mXPDYZksVeFX/m2kuIDbgBZhG9C0ymADRdWYUe4glyiTJKQ67Zz0Am3RTEiWPV7QSV93maq/STpgTOQ2f1PqgGEQxw1sbXxWBHs84aimI/LMY47UOaTp31s/dyxSl3QQRUJIPi6uvs3Khv+A2Kw7jTrwAeofjsyQP7kULexH2nvwh4itzfAE0v3eMuEF0GNJjVy2m/SQijkSNan6GZ+cTlQqxwc7zV//34aXB8vf0vnIfS1Pxgf6eHmuraeB+UMBw9N6mZsRX+lSopvC5ydqxtwMzygapw==
+Received: from PH7PR11MB6451.namprd11.prod.outlook.com (2603:10b6:510:1f4::16)
+ by IA1PR11MB7755.namprd11.prod.outlook.com (2603:10b6:208:420::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.24; Thu, 7 Mar
+ 2024 05:50:25 +0000
+Received: from PH7PR11MB6451.namprd11.prod.outlook.com
+ ([fe80::c2e8:2ace:1ddf:54dd]) by PH7PR11MB6451.namprd11.prod.outlook.com
+ ([fe80::c2e8:2ace:1ddf:54dd%3]) with mapi id 15.20.7362.019; Thu, 7 Mar 2024
+ 05:50:25 +0000
+From: <Dharma.B@microchip.com>
+To: <Nicolas.Ferre@microchip.com>, <robh@kernel.org>
+CC: <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
+	<tzimmermann@suse.de>, <airlied@gmail.com>, <daniel@ffwll.ch>,
+	<krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+	<alexandre.belloni@bootlin.com>, <claudiu.beznea@tuxon.dev>,
+	<dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3] dt-bindings: display: atmel,lcdc: convert to dtschema
+Thread-Topic: [PATCH v3] dt-bindings: display: atmel,lcdc: convert to dtschema
+Thread-Index: AQHabkCPzXhfZiNH0USPLHqXgkqUkrEoIqEAgAKn3gCAACSggIAA2xCA
+Date: Thu, 7 Mar 2024 05:50:25 +0000
+Message-ID: <9e9122b1-8a04-4c4c-8377-4af0e3a5c39c@microchip.com>
+References: <20240304-lcdc-fb-v3-1-8b616fbb0199@microchip.com>
+ <20240304220154.GA1115739-robh@kernel.org>
+ <d3ae3196-4e8a-4e73-bc36-f53541598ab2@microchip.com>
+ <e6537742-d9be-4745-b457-b36e60ccaa9b@microchip.com>
+In-Reply-To: <e6537742-d9be-4745-b457-b36e60ccaa9b@microchip.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-GB
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microchip.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH7PR11MB6451:EE_|IA1PR11MB7755:EE_
+x-ms-office365-filtering-correlation-id: 08e9a59c-5504-458a-e336-08dc3e6a7c8f
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ikZ1MU2pk765lHGm6IxqdZ0NcN5SsZ+WC6a9LDIhAeFuMG4DlnoFDD5dLabyXGALDCxfPzxT3UbJ8f9nmZTT1o5gpnvSmepJvKOxUdrrVMFb0TTzXhNdKI2XF+0xpyeb5kQ6ARTvAzVb+TrARyhUCR8bj8dDjLGekq0BcTO+WdR6ZP+82K5mjZit/J5NBQ7OUM0cbwE/lFBJS7uLNTi1o3dcCDDA8s+QklApi+8GcgzzzQ2OW3UwjtGWEyZu6teIKfPDBCYybqfoJ+12/5V026BwExcRfbK8RbjNuWDmz4W1BL330H4dlDMztxSg+Re3ttreaZ8fgu9XEECAXGOCyakxV5hxrrj/wDj1nLxkxZZO8kprBI1P29LmUS1ZQea+txEp5pq98SMZPlmO5WfCF0otAGSLSw3/jGgO76MbBPFfwUjm84B2ci6kxb2LGSjzrb6zincC3HWpfMOh0W0js7Ec/LZoTPSKZuTKulToiBsvZVYqAzKfAAsUOTbNkxj72IKHHRaomAbYrFTUMSkKUC823s8r2ScQDcutVvCQurSnshzwK3/4hteXcX8kjG52LbjxTFAMgom1YDT5m1exLadZpFbrExqQ+tVblDZErcYVLIOv8b78kO49cMaKrrqhOeXZa4ULO/0CzgOle1D5HDyekBIrUMqqdHHxGMXkdO+2coKc1Seo+vtSJDk8ZwCE
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR11MB6451.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?ZXcyUUc0amxMY1hKbi9YaDBCeWkxZC9PSVZJaDJGTUhnVHZqQ1lDOWdwbXRR?=
+ =?utf-8?B?MThZZzJNYjZ5S2JiQjgyQ2VGdzRGbWR1WE13S1oxTzFIZThsQnFZeHFRZjN6?=
+ =?utf-8?B?WkdMK2E3QXZoYUFsbDdUeGE4QWkxV3o5U0g3LytuU3J5Z0NUWkJXQUZNMGpW?=
+ =?utf-8?B?T1BWK1dWeDNLcHl6YVNUODFsSmdObVhQZmVSS1JoMGtDQUhodTExczVEUVN6?=
+ =?utf-8?B?cnlrQ1RrMnhDSEhMdCt3dWxPUVBsZFVGaVBKYTVRckwwVXRLMmNBNngrKy9T?=
+ =?utf-8?B?dTZvTUxuWFZOZGRIT2JDdGFIMzRudnBicEhtTStXZUpaak5xRjU4UG1MU2Fz?=
+ =?utf-8?B?VkFIOXJOemlOS0RobFBrcDVFTldGTStuNTJMVkJtSjB4c05FTDh6QlhmK25x?=
+ =?utf-8?B?Ulc1UzFrc0pWRVNjK3F3R0xvVzlUcFYwa0YvcnY2NlVzdnpqVmNSSG9ibUNL?=
+ =?utf-8?B?dHBBM1BsNTduL20vcXRZQnIzbXFJanJxSG4rVUZDRDEwNWRQM2F6UzRwc0wz?=
+ =?utf-8?B?S0JqWDZhNm5YdFZXaSsybWRpOE96MmpyRGsrNFNHYWp3eDdXTUZKZmVLNVpG?=
+ =?utf-8?B?MEJ5bERSemwzRjd0SFNBNDZta05mVVErUWlEdldId3pBbFNuTm5mUFFKUVQ4?=
+ =?utf-8?B?UkV0bjV6Z0tNbUlBNzU0SzVEWG1EZEtWcjdWN3BNaXR2N0tWZW1BS2RtRmxK?=
+ =?utf-8?B?eCtqaDB2UU00ckdJVXcyOElZTzkyR1N4TlBTZXpsaUo2b2xXSGFERkNuaWNi?=
+ =?utf-8?B?d3VUeUNDTEYrb1dXcC9IK1hNVjlFNkVLc2FnYVB1WTl4Y3djdEMwZ1FKY0Va?=
+ =?utf-8?B?SURkMUFZT3BxaU85Y3ZUdHVVKzhiTWFzNitOQnpPb1B5Q2dzNUNwUWszRlNR?=
+ =?utf-8?B?bUliZ0RUNTB0Ym1iakpGWkFBSVZSL1NoTFpwUGI3NVRQcmtscXBQZnkwL2xk?=
+ =?utf-8?B?eFNwRVFZcjRyRXo3SXdYdmQzdVlUQU1NOHFGQUJ2c2d1R01rd3ZUVHFweG40?=
+ =?utf-8?B?VENtTFphdEZiWVJUelpheWVTeHpsWnFzNDB4QlpIV0wzUmRUMTlPZGlaTHpL?=
+ =?utf-8?B?Ulk1ZkQyWVE2K0RBbTVYK1RlY2ZvRndQZWg2WTd5K1ZWaW1HUXJrcy9UeGta?=
+ =?utf-8?B?YlpxV29KMkhxT3hxazY4MG1OeGR5M2did1ZGZ05sdVAzaDJzYmJHd3E4S2Yz?=
+ =?utf-8?B?dm1ZdDhCWEJzOXBROEtVMlkvbURiU3MxY2h5cFpka0VmOFBBd2ZGb3U0TTg3?=
+ =?utf-8?B?eTlJRDVKQzJSYTZKVXU4eGZrdFNxWDRURkFmSEloa0UvVExFTDdsdlFLQzFp?=
+ =?utf-8?B?NVZSQ0E3b1RsU2VIU1JjSzlrSGRrTXZnKytsYkJIMi9mdU5vWUs2Qkl6RG5B?=
+ =?utf-8?B?SXlobGpzWDhaUWNVcEg1aytZSFlHdUNsNk9JOExSbzQ1MHljQk53MnpSK3RV?=
+ =?utf-8?B?TUJodnNhZHZsbjZHRTBKTFpRQURVOW5lL0RkMjhidDNCVVRDY2dCYW5qRmtR?=
+ =?utf-8?B?MHpIdDF6ZDVZVjBVSWxjTzlncUFZazBiVmhGQVR6L2tEVW5JU1pyQS9EemEw?=
+ =?utf-8?B?WFM4YTJhWWgrbDdSYmVXWFAxUDVDT1BJSm01K0JBa0JjaWovbit4OVA0eXRp?=
+ =?utf-8?B?TytWR1BNMTNhbmRDNVc4UUVTK2dVTWQ3Tmk3MVhhWTZmN29kTXhQUGZrc3pH?=
+ =?utf-8?B?eC9hOWZ4MFNaQWZCM0ZYU294ZzgwOWJmZ2VlekRyK25Qbmc0TS9ZNGZKWHVL?=
+ =?utf-8?B?ZWxPNWNVWkZFV084OTYyOUxHRU1qcks4ay9vS3dFMUs0OHR6ejhYa3UxUURV?=
+ =?utf-8?B?SXM1b2MvQTBRVjZGd0FjUEp3WWNLUTNRVkpIdXVmb0liZ0tVQ0ZhR0xub0lV?=
+ =?utf-8?B?ZGNKQndQZi9UVU42VnJ6MTVNcjVUOGpCM21WYXFVY0EzMG9STjd5RDF0NlVH?=
+ =?utf-8?B?YzNBQjJ2cmR4aGJNdythYjFDa21GRnIyWG9JQzFwWnVhUTA1M3FRMEpIN3Iy?=
+ =?utf-8?B?cjZURFZ0cVpWemVHT1pkZjVlTVh4N081SktyVE1lMG45ZFprOUlyb0xxV2pG?=
+ =?utf-8?B?eTY1K2lpUjl5SXNFQTFlN1h4LzNRQ3dhSjZUbnBybUJ3Z2tYdGtwdkZJZkVn?=
+ =?utf-8?Q?S3/ywsdczUtjVM864yLzvQHk5?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <B72FED82651F2646A1F99BC7DD2C53BB@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB6451.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 08e9a59c-5504-458a-e336-08dc3e6a7c8f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Mar 2024 05:50:25.6742
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: MFehSdp5pT69+RqEEDccbcC2iEJW/vJlzrszVZBj63lfPZDTiBthcxuHjrvAisAQhzwFHQfivFv7OEThq7Wejg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB7755
 
-Ryan Roberts <ryan.roberts@arm.com> writes:
-
-> On 06/03/2024 02:52, Huang, Ying wrote:
->> Ryan Roberts <ryan.roberts@arm.com> writes:
->> 
->>> There was previously a theoretical window where swapoff() could run and
->>> teardown a swap_info_struct while a call to free_swap_and_cache() was
->>> running in another thread. This could cause, amongst other bad
->>> possibilities, swap_page_trans_huge_swapped() (called by
->>> free_swap_and_cache()) to access the freed memory for swap_map.
->>>
->>> This is a theoretical problem and I haven't been able to provoke it from
->>> a test case. But there has been agreement based on code review that this
->>> is possible (see link below).
->>>
->>> Fix it by using get_swap_device()/put_swap_device(), which will stall
->>> swapoff(). There was an extra check in _swap_info_get() to confirm that
->>> the swap entry was valid. This wasn't present in get_swap_device() so
->>> I've added it. I couldn't find any existing get_swap_device() call sites
->>> where this extra check would cause any false alarms.
->>>
->>> Details of how to provoke one possible issue (thanks to David Hilenbrand
->>> for deriving this):
->>>
->>> --8<-----
->>>
->>> __swap_entry_free() might be the last user and result in
->>> "count == SWAP_HAS_CACHE".
->>>
->>> swapoff->try_to_unuse() will stop as soon as soon as si->inuse_pages==0.
->>>
->>> So the question is: could someone reclaim the folio and turn
->>> si->inuse_pages==0, before we completed swap_page_trans_huge_swapped().
->>>
->>> Imagine the following: 2 MiB folio in the swapcache. Only 2 subpages are
->>> still references by swap entries.
->>>
->>> Process 1 still references subpage 0 via swap entry.
->>> Process 2 still references subpage 1 via swap entry.
->>>
->>> Process 1 quits. Calls free_swap_and_cache().
->>> -> count == SWAP_HAS_CACHE
->>> [then, preempted in the hypervisor etc.]
->>>
->>> Process 2 quits. Calls free_swap_and_cache().
->>> -> count == SWAP_HAS_CACHE
->>>
->>> Process 2 goes ahead, passes swap_page_trans_huge_swapped(), and calls
->>> __try_to_reclaim_swap().
->>>
->>> __try_to_reclaim_swap()->folio_free_swap()->delete_from_swap_cache()->
->>> put_swap_folio()->free_swap_slot()->swapcache_free_entries()->
->>> swap_entry_free()->swap_range_free()->
->>> ...
->>> WRITE_ONCE(si->inuse_pages, si->inuse_pages - nr_entries);
->>>
->>> What stops swapoff to succeed after process 2 reclaimed the swap cache
->>> but before process1 finished its call to swap_page_trans_huge_swapped()?
->>>
->>> --8<-----
->> 
->> I think that this can be simplified.  Even for a 4K folio, this could
->> happen.
->
-> I'm not so sure...
->
->> 
->> CPU0                                     CPU1
->> ----                                     ----
->> 
->> zap_pte_range
->>   free_swap_and_cache
->>   __swap_entry_free
->>   /* swap count become 0 */
->>                                          swapoff
->>                                            try_to_unuse
->>                                              filemap_get_folio
->>                                              folio_free_swap
->>                                              /* remove swap cache */
->>                                            /* free si->swap_map[] */
->> 
->>   swap_page_trans_huge_swapped <-- access freed si->swap_map !!!
->
-> I don't think si->inuse_pages is decremented until __try_to_reclaim_swap() is
-> called (per David, above), which is called after swap_page_trans_huge_swapped()
-> has executed. So in CPU1, try_to_unuse() wouldn't see si->inuse_pages being zero
-
-try_to_unuse() can decrease si->inuse_pages by itself via the following
-loop,
-
-	while (READ_ONCE(si->inuse_pages) &&
-	       !signal_pending(current) &&
-	       (i = find_next_to_unuse(si, i)) != 0) {
-
-		entry = swp_entry(type, i);
-		folio = filemap_get_folio(swap_address_space(entry), i);
-		if (IS_ERR(folio))
-			continue;
-
-		/*
-		 * It is conceivable that a racing task removed this folio from
-		 * swap cache just before we acquired the page lock. The folio
-		 * might even be back in swap cache on another swap area. But
-		 * that is okay, folio_free_swap() only removes stale folios.
-		 */
-		folio_lock(folio);
-		folio_wait_writeback(folio);
-		folio_free_swap(folio);
-		folio_unlock(folio);
-		folio_put(folio);
-	}
-
-Then it can proceed to swapoff.  But as Miaohe pointed out, PTL to
-prevent swapoff to free data structures later via synchronize_rcu().
-
-> until after CPU0 has completed accessing si->swap_map, so if swapoff starts
-> where you have put it, it would get stalled waiting for the PTL which CPU0 has.
->
-> I'm sure there are other ways that this could be racy for 4K folios, but I don't
-> think this is one of them? e.g. if CPU0 does something with si after it has
-> decremented si->inuse_pages, then there is a problem.
->
->> 
->>> Fixes: 7c00bafee87c ("mm/swap: free swap slots in batch")
->>> Closes: https://lore.kernel.org/linux-mm/65a66eb9-41f8-4790-8db2-0c70ea15979f@redhat.com/
->>> Cc: stable@vger.kernel.org
->>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->>> ---
->>>
->>> Applies on top of v6.8-rc6 and mm-unstable (b38c34939fe4).
->>>
->>> Thanks,
->>> Ryan
->>>
->>>  mm/swapfile.c | 14 +++++++++++---
->>>  1 file changed, 11 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/mm/swapfile.c b/mm/swapfile.c
->>> index 2b3a2d85e350..f580e6abc674 100644
->>> --- a/mm/swapfile.c
->>> +++ b/mm/swapfile.c
->>> @@ -1281,7 +1281,9 @@ struct swap_info_struct *get_swap_device(swp_entry_t entry)
->>>  	smp_rmb();
->>>  	offset = swp_offset(entry);
->>>  	if (offset >= si->max)
->>> -		goto put_out;
->>> +		goto bad_offset;
->>> +	if (data_race(!si->swap_map[swp_offset(entry)]))
->>> +		goto bad_free;
->>>
->>>  	return si;
->>>  bad_nofile:
->>> @@ -1289,9 +1291,14 @@ struct swap_info_struct *get_swap_device(swp_entry_t entry)
->>>  out:
->>>  	return NULL;
->>>  put_out:
->>> -	pr_err("%s: %s%08lx\n", __func__, Bad_offset, entry.val);
->>>  	percpu_ref_put(&si->users);
->>>  	return NULL;
->>> +bad_offset:
->>> +	pr_err("%s: %s%08lx\n", __func__, Bad_offset, entry.val);
->>> +	goto put_out;
->>> +bad_free:
->>> +	pr_err("%s: %s%08lx\n", __func__, Unused_offset, entry.val);
->>> +	goto put_out;
->>>  }
->> 
->> I don't think that it's a good idea to warn for bad free entries.
->> get_swap_device() could be called without enough lock to prevent
->> parallel swap operations on entry.  So, false positive is possible
->> there.  I think that it's good to add more checks in general, for
->> example, in free_swap_and_cache(), we can check more because we are sure
->> the swap entry will not be freed by parallel swap operations.
->
-> Yes, agreed. Johannes also reported that he is seeing false alarms due to this.
-> I'm going to remove it and add it to free_swap_and_cache() as you suggest. This
-> also fits well for the batched version I'm working on where we want to check the
-> global si things once, but need to check !free for every entry in the loop
-> (aiming to post that this week).
->
->   Just
->> don't put the check in general get_swap_device().  We can add another
->> helper to check that.
->> 
->> I found that there are other checks in get_swap_device() already.  I
->> think that we may need to revert,
->> 
->> commit 23b230ba8ac3 ("mm/swap: print bad swap offset entry in get_swap_device")
->
-> Yes agree this should be reverted.
->
->> 
->> which introduces it.  And add check in appropriate places.
->
-> I'm not quite sure what the "appropriate places" are. Looking at the call sites
-> for get_swap_device(), it looks like they are all racy except
-> free_swap_and_cache() which is called with the PTL. So check should only really
-> go there?
->
-> But... free_swap_and_cache() is called without the PTL by shmem (in 2 places -
-> see shmem_free_swap() wrapper). It looks like in one of those places, the folio
-> lock is held, so I guess this has a similar effect to holding the PTL. But the
-> other shmem_free_swap() call site doesn't appear to have the folio lock. Am I
-> missing something, or does this mean that for this path, free_swap_and_cache()
-> is racy and therefore we shouldn't be doing either the `offset >= si->max` or
-> the `!swap_map[offset]` in free_swap_and_cache() either?
-
-In shmem_free_swap(), xa_cmpxchg_irq() is used to get the swap entry and
-clear the original mapping.  So, no other code path can free the swap
-count held by mapping.  But, after dropping the swap count, it appears
-that it's not safe.
-
---
-Best Regards,
-Huang, Ying
-
->> 
->> --
->> Best Regards,
->> Huang, Ying
->> 
->>>  static unsigned char __swap_entry_free(struct swap_info_struct *p,
->>> @@ -1609,13 +1616,14 @@ int free_swap_and_cache(swp_entry_t entry)
->>>  	if (non_swap_entry(entry))
->>>  		return 1;
->>>
->>> -	p = _swap_info_get(entry);
->>> +	p = get_swap_device(entry);
->>>  	if (p) {
->>>  		count = __swap_entry_free(p, entry);
->>>  		if (count == SWAP_HAS_CACHE &&
->>>  		    !swap_page_trans_huge_swapped(p, entry))
->>>  			__try_to_reclaim_swap(p, swp_offset(entry),
->>>  					      TTRS_UNMAPPED | TTRS_FULL);
->>> +		put_swap_device(p);
->>>  	}
->>>  	return p != NULL;
->>>  }
->>> --
->>> 2.25.1
+DQpPbiAwNi8wMy8yNCAxMDoxNiBwbSwgTmljb2xhcyBGZXJyZSAtIE00MzIzOCB3cm90ZToNCj4g
+RGhhcm1hLCBhbGwsDQo+IA0KPiBPbiAwNi8wMy8yMDI0IGF0IDE1OjM1LCBEaGFybWEgQiAtIEk3
+MDg0MyB3cm90ZToNCj4+DQo+PiBPbiAwNS8wMy8yNCAzOjMxIGFtLCBSb2IgSGVycmluZyB3cm90
+ZToNCj4+PiBPbiBNb24sIE1hciAwNCwgMjAyNCBhdCAwODowMDowM1BNICswNTMwLCBEaGFybWEg
+QmFsYXN1YmlyYW1hbmkgd3JvdGU6DQo+Pj4+IENvbnZlcnQgdGhlIGF0bWVsLGxjZGMgYmluZGlu
+Z3MgdG8gRFQgc2NoZW1hLg0KPj4+PiBDaGFuZ2VzIGR1cmluZyBjb252ZXJzaW9uOiBhZGQgbWlz
+c2luZyBjbG9ja3MgYW5kIGNsb2NrLW5hbWVzIA0KPj4+PiBwcm9wZXJ0aWVzLg0KPj4+Pg0KPj4+
+PiBTaWduZWQtb2ZmLWJ5OiBEaGFybWEgQmFsYXN1YmlyYW1hbmkgPGRoYXJtYS5iQG1pY3JvY2hp
+cC5jb20+DQo+Pj4+IC0tLQ0KPj4+PiBUaGlzIHBhdGNoIGNvbnZlcnRzIHRoZSBleGlzdGluZyBs
+Y2RjIGRpc3BsYXkgdGV4dCBiaW5kaW5nIHRvIEpTT04gDQo+Pj4+IHNjaGVtYS4NCj4+Pj4gVGhl
+IGJpbmRpbmcgaXMgc3BsaXQgaW50byB0d28gbmFtZWx5DQo+Pj4+IGxjZGMueWFtbA0KPj4+PiAt
+IEhvbGRzIHRoZSBmcmFtZSBidWZmZXIgcHJvcGVydGllcw0KPj4+PiBsY2RjLWRpc3BsYXkueWFt
+bA0KPj4+PiAtIEhvbGRzIHRoZSBkaXNwbGF5IHBhbmVsIHByb3BlcnRpZXMgd2hpY2ggaXMgYSBw
+aGFuZGxlIHRvIHRoZSBkaXNwbGF5DQo+Pj4+IHByb3BlcnR5IGluIGxjZGMgZmIgbm9kZS4NCj4+
+Pj4NCj4+Pj4gVGhlc2UgYmluZGluZ3MgYXJlIHRlc3RlZCB1c2luZyB0aGUgZm9sbG93aW5nIGNv
+bW1hbmQuDQo+Pj4+ICdtYWtlIERUX0NIRUNLRVJfRkxBR1M9LW0gZHRfYmluZGluZ19jaGVjaycN
+Cj4+Pj4gLS0tDQo+Pj4+IENoYW5nZXMgaW4gdjM6DQo+Pj4+IC0gUmVtb3ZlIHRoZSBnZW5lcmlj
+IHByb3BlcnR5ICJiaXRzLXBlci1waXhlbCINCj4+Pj4gLSBMaW5rIHRvIHYyOiANCj4+Pj4gaHR0
+cHM6Ly9sb3JlLmtlcm5lbC5vcmcvci8yMDI0MDMwNC1sY2RjLWZiLXYyLTEtYTE0YjQ2M2MxNTdh
+QG1pY3JvY2hpcC5jb20NCj4+Pj4NCj4+Pj4gQ2hhbmdlcyBpbiB2MjoNCj4+Pj4gLSBSdW4gY2hl
+Y2twYXRjaCBhbmQgcmVtb3ZlIHdoaXRlc3BhY2UgZXJyb3JzLg0KPj4+PiAtIEFkZCB0aGUgc3Rh
+bmRhcmQgaW50ZXJydXB0IGZsYWdzLg0KPj4+PiAtIFNwbGl0IHRoZSBiaW5kaW5nIGludG8gdHdv
+LCBuYW1lbHkgbGNkYy55YW1sIGFuZCBsY2RjLWRpc3BsYXkueWFtbC4NCj4+Pj4gLSBMaW5rIHRv
+IHYxOiANCj4+Pj4gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvci8yMDI0MDIyMy1sY2RjLWZiLXYx
+LTEtNGM2NGNiNjI3N2RmQG1pY3JvY2hpcC5jb20NCj4+Pj4gLS0tDQo+Pj4+IMKgwqAgLi4uL2Jp
+bmRpbmdzL2Rpc3BsYXkvYXRtZWwsbGNkYy1kaXNwbGF5LnlhbWzCoMKgwqDCoMKgwqAgfCA5NyAN
+Cj4+Pj4gKysrKysrKysrKysrKysrKysrKysrKw0KPj4+PiDCoMKgIC4uLi9kZXZpY2V0cmVlL2Jp
+bmRpbmdzL2Rpc3BsYXkvYXRtZWwsbGNkYy50eHTCoMKgwqDCoCB8IDg3IA0KPj4+PiAtLS0tLS0t
+LS0tLS0tLS0tLS0tDQo+Pj4+IMKgwqAgLi4uL2RldmljZXRyZWUvYmluZGluZ3MvZGlzcGxheS9h
+dG1lbCxsY2RjLnlhbWzCoMKgwqAgfCA3MCANCj4+Pj4gKysrKysrKysrKysrKysrKw0KPj4+PiDC
+oMKgIDMgZmlsZXMgY2hhbmdlZCwgMTY3IGluc2VydGlvbnMoKyksIDg3IGRlbGV0aW9ucygtKQ0K
+Pj4+Pg0KPj4+PiBkaWZmIC0tZ2l0IA0KPj4+PiBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9i
+aW5kaW5ncy9kaXNwbGF5L2F0bWVsLGxjZGMtZGlzcGxheS55YW1sIA0KPj4+PiBiL0RvY3VtZW50
+YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9kaXNwbGF5L2F0bWVsLGxjZGMtZGlzcGxheS55YW1s
+DQo+Pj4+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0DQo+Pj4+IGluZGV4IDAwMDAwMDAwMDAwMC4uNWUw
+YjcwNmQ2OTVkDQo+IA0KPiBbLi5dDQo+IA0KPj4+PiArwqAgYXRtZWwsbGNkLXdpcmluZy1tb2Rl
+Og0KPj4+PiArwqDCoMKgICRyZWY6IC9zY2hlbWFzL3R5cGVzLnlhbWwjL2RlZmluaXRpb25zL25v
+bi11bmlxdWUtc3RyaW5nLWFycmF5DQo+Pj4NCj4+PiBJc24ndCB0aGlzIGp1c3QgYSBzaW5nbGUg
+c3RyaW5nIHJhdGhlciB0aGFuIGFuIGFycmF5Pw0KPj4+DQo+Pj4+ICvCoMKgwqAgZGVzY3JpcHRp
+b246IGxjZCB3aXJpbmcgbW9kZSAiUkdCIiBvciAiQlJHIg0KPj4+DQo+Pj4gZW51bToNCj4+PiDC
+oMKgwqAgLSBSR0INCj4+PiDCoMKgwqAgLSBCUkcNCj4+Pg0KPj4+IE5vIEJHUj8NCj4+DQo+PiBJ
+biB0aGUgY3VycmVudCBkcml2ZXIgaW1wbGVtZW50YXRpb24sIHdlIGhhdmUgaW50ZXJwcmV0ZWQg
+dGhlIHdpcmluZw0KPj4gbW9kZSByZXByZXNlbnRlZCBieSBBVE1FTF9MQ0RDX1dJUklOR19CR1Ig
+YXMgJ0JSRycgaW4gdGhlIGFycmF5DQo+PiBhdG1lbF9sY2RmYl93aXJpbmdfbW9kZXMuIENvbnNp
+ZGVyaW5nIGNvbnZlbnRpb25hbCBjb2xvciByZXByZXNlbnRhdGlvbiwNCj4+IHdvdWxkIGl0IGJl
+IGFwcHJvcHJpYXRlIHRvIGNvbnNpZGVyIG1vZGlmeWluZyB0aGUgZXhpc3RpbmcgZHJpdmVyIHRv
+IHVzZQ0KPj4gdGhlICdCR1InIHN0cmluZyBpbnN0ZWFkIG9mICdCUkcnIGZvciBiZXR0ZXIgYWxp
+Z25tZW50IHdpdGggc3RhbmRhcmQNCj4+IG5hbWluZyBjb252ZW50aW9ucz8NCj4gDQo+IFRoaXMg
+IkJSRyIgdGhpbmcgaXMgZGVmaW5pdGl2ZWx5IGEgdHlwby4gV2UgbmV2ZXIgaGFkIHN1Y2ggdGhp
+bmcgYXMgYSANCj4gQlJHIGNvbG9yIHdpcmluZyBidXQgZGlkIGhhdmUgQkdSIHdpcmluZyBtb2Rl
+Lg0KPiANCj4+IHN0YXRpYyBjb25zdCBjaGFyICphdG1lbF9sY2RmYl93aXJpbmdfbW9kZXNbXSA9
+IHsNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBbQVRNRUxfTENEQ19XSVJJTkdfQkdSXSA9ICJCUkci
+LA0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgIFtBVE1FTF9MQ0RDX1dJUklOR19SR0JdID0gIlJHQiIs
+DQo+IA0KPiBUaGUgdGhpbmcgaXMgdGhhdCB3ZSBoYXZlIG9uZSBEVCB1c2luZyB0aGF0Og0KPiBh
+cmNoL2FybS9ib290L2R0cy9hdDkxc2FtOTI2MWVrLmR0cw0KPiANCj4gU28sIGVpdGhlciBJIHdv
+dWxkIGxlYXZlIGl0IGxpa2UgdGhhdDogaXQncyBvbmx5IG9sZCBwcm9kdWN0IHVzaW5nIGl0Lg0K
+DQpUaGFuayB5b3UgZm9yIHlvdXIgaW5wdXQsIE5pY29sYXMuIElmIFJvYiBpcyBpbiBhZ3JlZW1l
+bnQgd2l0aCB0aGlzDQpwcm9wb3NhbCBhcyB3ZWxsLCBJIHBsYW4gdG8gcHJvY2VlZCBhbmQgc3Vi
+bWl0IHY0LCBpbmNvcnBvcmF0aW5nDQphZGp1c3RtZW50cyBiYXNlZCBvbiBvdGhlciByZXZpZXcg
+Y29tbWVudHMuDQoNCj4gT3IganVzdCBmb2N1cyBvbiBmaXJzdCBjaGFyYWN0ZXIgaW4gdGhlIHN0
+cmluZyBzbyB0aGF0IGl0IHdvcmtzIGZvciBib3RoIA0KPiAiQlJHIiBvciAiQkdSIiwgYW5kIG1h
+aW50YWlucyB0aGUgYmFja3dhcmQgY29tcGF0aWJpbGl0eS4NCj4gDQo+IFJlZ2FyZHMsDQo+ICDC
+oCBOaWNvbGFzDQo+IA0KPiANCj4+IH07DQo+Pg0KPj4NCj4+Pg0KPj4+IEJ1dCB3YWl0LCB0aGUg
+ZXhhbXBsZSBzaG93cyB0aGUgdmFsdWUgaXMgJzEnLiBUaGF0IHNob3VsZCBmYWlsIHRlc3Rpbmcu
+DQo+Pj4gSXQgZGlkbid0LCBidXQgSSd2ZSBub3cgZml4ZWQgdGhhdC4NCj4+DQo+PiBJdCBzZWVt
+cyBjb3JyZWN0bHkgY29uZmlndXJlZCBpbiBvdXIgZHRzIGZpbGVzIGJ1dCBkaWRuJ3Qgbm90aWNl
+ZCB0aGUNCj4+IHNhbWUgaW4gdGhlIGJpbmRpbmdzIGV4YW1wbGUsIHRoYW5rcyBmb3IgbGV0dGlu
+ZyBtZSBrbm93LCBJIHdpbGwgY29ycmVjdA0KPj4gaXQgaW4gdGhlIG5leHQgcmV2aXNpb24uDQo+
+IA0KDQotLSANCldpdGggQmVzdCBSZWdhcmRzLA0KRGhhcm1hIEIuDQoNCg==
 
