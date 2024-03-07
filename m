@@ -1,130 +1,121 @@
-Return-Path: <linux-kernel+bounces-95989-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95988-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BD6F8755B1
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 18:59:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 199738755AD
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 18:59:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 20BEC1F22A94
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:59:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ACD041F22A19
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:59:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 097A613328B;
-	Thu,  7 Mar 2024 17:59:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5866A13173E;
+	Thu,  7 Mar 2024 17:59:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="fwQ/0QDK"
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="lvsqJQXD"
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5171131E25
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 17:59:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42E4D1BDDB
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 17:59:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709834368; cv=none; b=s480SIWJYdZanR3tPDtSBmAnmKyJfGA7nUC3Dpj9alR6OOqpwaV1MTEllLOpxeGw9GRIfNm3zV3u2VE3Fm7W91gcnhdOc5QB6nR2lttHXGpa2mFu+dkQnlx73jH2uvEqmPwNYlCaYMEETmLZFYHuBN+74/VWekriGF6QU507heU=
+	t=1709834358; cv=none; b=lwnxqHRbwdBWUGGJfCAbEjertfOoMgImWm7TeSIH2KjMI8WAy9B6iOCMwzteJTpSXY344JdS2w0OUR9hTRUkYjF6pN6mIV4UgJoMJTd0wMGpx16y7DeCRu6xWFoDaljQdxW52zc+rgwbVohcJwdNBQjAZul3jJqs07ptGV0sWG8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709834368; c=relaxed/simple;
-	bh=DOUOkcuf6REntWUk+39dCprquLsjGgsrA9o5nYOuJJw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=A+DmK5olJasxjLgO891AHwlMXii9xJYJYt9SUHkNwkADcmd4kW+TmdjE3qaFnx24Pr/LzI8GuvOi3ES4FTHaVHQCJjQ3LnauRarJDspzK6jbS5wlKyuynCeJK1YuIsa6Xeh+LSZ0gKLz8QFfyHLB/ozA94mJtV0fMWD/0+X7yrc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=fwQ/0QDK; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-568251882d7so738a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 09:59:26 -0800 (PST)
+	s=arc-20240116; t=1709834358; c=relaxed/simple;
+	bh=O2hdfjlzZlZ0CPCqJt23wbPJbF7Ae0mInAc+itOKRtw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=H7wYnShx2XVUaBfD8Cu0G852I82xdFN325F30Kg7Fz9qty7qZ9Da3ZQ8aektr8Q6KQWVlbPrD1epiH95txrWqKPPaKbqRk85BUCzzto5C1jF53kTjmi/RNKFftPHUPNCuSqpPuimaR9hfP0sVdjG4eLen5f7DAOGgKV3TErZatQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=lvsqJQXD; arc=none smtp.client-ip=209.85.210.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6d9f94b9186so1187270b3a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 09:59:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709834365; x=1710439165; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2o2Pln6r840e13WOJWTSVZVF4sTC1hDT+VsrrLWTTjQ=;
-        b=fwQ/0QDKdynqm0mcrInYhNelkKAhBVHVYHHEzeigU/oUkYJWcJszYX5LdwNfIUWCQ2
-         japNRTD2DgP0iRatUEPiJO6+HAJxg04LLZ9GyvfLxiY0yj34BbN3LuMA05eCsIOn4OJG
-         o4sI4IHPUiE+csSXFUd8QugHlPygT7T6wmsnqNDykil/rT5+YlwRXGq6G2cZLmQwwPQm
-         o21iZNvQu3JoCfg61VDlx6CErp05nsllyy6fDV5VPcFaemDFQHxSuL5v1H8K1iSAuV/l
-         sWnRzChBWN1lycpwei2FvxS71JgwU/RbIvHTmOoXN5dGv6QSUYdJoHpPguf1etNCVFX0
-         K85A==
+        d=chromium.org; s=google; t=1709834356; x=1710439156; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=VEqlp2HgRH1JvED8C1eQ8Jd7JtBfD5vT+Rfxt4u7aG4=;
+        b=lvsqJQXDodKjSvzCkHGyvGIv590mgf5/x5L8bNeJIkKlUuhyrGYEXKSyBKohU4K58c
+         8FK2Z//BCr7b8m1Egf1qWTEoL146hwp8ibyRWEvnAgg13VrTXobJJa13emiBnrAi1sgP
+         Hj8OxNmc8Be94QSabBeN6nbcM8WDbqE2K10Uk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709834365; x=1710439165;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2o2Pln6r840e13WOJWTSVZVF4sTC1hDT+VsrrLWTTjQ=;
-        b=iUBrn1DtytqdxwiMrK5Jtm59zZYiotER3/8BpYcGC6smF0jKHUUaOQ/rZjxI9+tAR3
-         sf4KC78Rx3+f2Gc+Lbx8sCFY+CZHue7izBNJSOXc760XhuFuAYKiRqPkNSkUI2VUZWyv
-         cXep7hew4wm2BfZ1h6H0u/SH9qZ9IOJYJ7qSaQb/SfGmsHaST3ZUqBc5BjS1yplKIRpP
-         vn5K3fLSDFcGYefDlt37xKidj4ySXtIZu4QxbTU6wTYTOZ+3oGxad7kfqEie1UBZWhLY
-         vqqL9M9av6G/XnrHXvyY76pWhIpvehrb2JXkYiYWCINV63AY991xT1alwUVO9e3cY+5a
-         4m5A==
-X-Forwarded-Encrypted: i=1; AJvYcCWXnnXLVh8bAQ0+eXHMcy13BBrTDsI8kWKClpJGCUmtjjf1pxs9R2hOROTIut0DL4jtghToiDkVy+6CdpWpdulL+9IqdTRvyVtGUNc/
-X-Gm-Message-State: AOJu0Yxcs3T485OQm0snr9EgWwHMAyDOgZvjy/zfoG4oIfCC9WoJbiZL
-	SQ1lXs7aLWW9FdDJTvk1s3obP+CbFw3+ACR3kyVS91O6/sXL59iQCSuQG69z8KoZWgReYnMC4Ry
-	kU7JtJw5BClZ/iA81V5Uo3/eRrtfdwoT1he7v
-X-Google-Smtp-Source: AGHT+IFZzIgjjQB+W6AfKsYHZz4lpE8ZpdiWPzeNLAFZEGTcK+JeSYq4V7wUar3hDsxNIaEiyYfxPN2wpBKMlCM60Y4=
-X-Received: by 2002:aa7:cd42:0:b0:566:b5f5:48cc with SMTP id
- v2-20020aa7cd42000000b00566b5f548ccmr227535edw.5.1709834364705; Thu, 07 Mar
- 2024 09:59:24 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709834356; x=1710439156;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VEqlp2HgRH1JvED8C1eQ8Jd7JtBfD5vT+Rfxt4u7aG4=;
+        b=Hb6LMCIbyD+oRNVwKZ4OUu1WsJjDHE1ZR37RiLW227e24Hh9jmxPcqK22bnpNBLg9C
+         NrqpOGK0hYnVtBCHXbmoJjAMi6jMQrj0OSjAWMqaf88VQj1dZyFq/LupFNfjwUpdi3HE
+         GLhxFx5cQR1Z3ODxALtPiwHApslxBtLCJDDUlVF7tOba58p56ajLLvHmCjX+Xfo+cDvk
+         U2wV+ChVQYzYfptMvm1MbsEe8bwPzHCRK3ocqF3Plc9oiWZk2m9bgQmRgWFXI+qVVUwf
+         JdtyB+Pw8FI6LMzbAF3c4fVTnnwxfkpguOyKTnRBX0B4pdlN43CqQLgeWFXZH27ldpkV
+         B8jg==
+X-Forwarded-Encrypted: i=1; AJvYcCXI6KM9YKQGEFB7GSxmRMJTsjgM9IkJLErkOdp+ga+kw7E5g1nTW8gmR5Sw5OdRnACK0nuMiHhZZp2s7godDADUWwRg7xQMf3kVRy40
+X-Gm-Message-State: AOJu0Yyd5ArtLax5vxBNngjZXdByRTuTZbGzVuR76tL8Vge2Av3cxR1o
+	sMVUTljACNVVEu/bvqy+ajxnLrnDhbIViIThqX8WWEUfvXiv4zjs7w0q5ZQ/pQ==
+X-Google-Smtp-Source: AGHT+IEOvEuUqre/6sdNhgEG9LkJsdT6YuHjsXW6DtfCKNmHlmt7CPFD+bSq/JO0jH9mi0j5BLd1wQ==
+X-Received: by 2002:a05:6a20:da87:b0:1a1:4cd2:441f with SMTP id iy7-20020a056a20da8700b001a14cd2441fmr9864304pzb.6.1709834355997;
+        Thu, 07 Mar 2024 09:59:15 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id q4-20020a63e944000000b005dc1edf7371sm13198387pgj.9.2024.03.07.09.59.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Mar 2024 09:59:15 -0800 (PST)
+Date: Thu, 7 Mar 2024 09:59:14 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Breno Leitao <leitao@debian.org>
+Cc: linux-wireless@vger.kernel.org, johannes.berg@intel.com,
+	gregory.greenman@intel.com,
+	Miri Korenblit <miriam.rachel.korenblit@intel.com>,
+	Kalle Valo <kvalo@kernel.org>, kuba@kernel.org,
+	Alon Giladi <alon.giladi@intel.com>,
+	Benjamin Berg <benjamin.berg@intel.com>,
+	Anjaneyulu <pagadala.yesu.anjaneyulu@intel.com>,
+	Avraham Stern <avraham.stern@intel.com>,
+	Christian Marangi <ansuelsmth@gmail.com>,
+	open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] wifi: iwlwifi: pcie: allocate dummy net_device
+ dynamically
+Message-ID: <202403070958.BE50CCDC@keescook>
+References: <20240307174843.1719130-1-leitao@debian.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <2ce1600b-e733-448b-91ac-9d0ae2b866a4@gmail.com> <2076d2ff-cd17-4ab0-b1db-4875d96bf9a6@gmail.com>
-In-Reply-To: <2076d2ff-cd17-4ab0-b1db-4875d96bf9a6@gmail.com>
-From: Eric Dumazet <edumazet@google.com>
-Date: Thu, 7 Mar 2024 18:59:10 +0100
-Message-ID: <CANn89iKq755tvJ1BZFXG5aX2YNd9AycbKu57taxi8gaSWn5Syw@mail.gmail.com>
-Subject: Re: [PATCH net-next v2 3/4] net: gro: set inner_network_header in
- receive phase
-To: Richard Gobert <richardbgobert@gmail.com>
-Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com, 
-	willemdebruijn.kernel@gmail.com, dsahern@kernel.org, shuah@kernel.org, 
-	idosch@nvidia.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240307174843.1719130-1-leitao@debian.org>
 
-On Thu, Mar 7, 2024 at 2:28=E2=80=AFPM Richard Gobert <richardbgobert@gmail=
-com> wrote:
->
-> This patch sets network_header and inner_network_header to their respecti=
-ve
-> values during the receive phase of GRO. This allows us to use
-> inner_network_header later on in GRO. network_header is already set in
-> dev_gro_receive and under encapsulation inner_network_header is set.
->
+On Thu, Mar 07, 2024 at 09:48:31AM -0800, Breno Leitao wrote:
+> struct net_device shouldn't be embedded into any structure, instead,
+> the owner should use the priv space to embed their state into net_device.
+> 
+> Embedding net_device into structures prohibits the usage of flexible
+> arrays in the net_device structure. For more details, see the discussion
+> at [1].
+> 
+> Un-embed the net_device from struct iwl_trans_pcie by converting it
+> into a pointer. Then use the leverage alloc_netdev() to allocate the
+> net_device object at iwl_trans_pcie_alloc.
+> 
+> The private data of net_device becomes a pointer for the struct
+> iwl_trans_pcie, so, it is easy to get back to the iwl_trans_pcie parent
+> given the net_device object.
+> 
+> [1] https://lore.kernel.org/all/20240229225910.79e224cf@kernel.org/
+> 
+> Signed-off-by: Breno Leitao <leitao@debian.org>
 
-> +static inline int skb_gro_network_offset(const struct sk_buff *skb)
-> +{
-> +       const u32 mask =3D NAPI_GRO_CB(skb)->encap_mark - 1;
-> +
-> +       return (skb_network_offset(skb) & mask) | (skb_inner_network_offs=
-et(skb) & ~mask);
+Ah, nice! Thanks for doing this.
 
-Presumably this is not needed.
+I had to double-check the pointer-to-pointer stuff, but it makes sense
+to me now. :)
 
-> +}
-> +
->  static inline void *skb_gro_network_header(const struct sk_buff *skb)
->  {
-> +       const int offset =3D skb_gro_network_offset(skb);
-> +
->         if (skb_gro_may_pull(skb, skb_gro_offset(skb)))
-> -               return skb_gro_header_fast(skb, skb_network_offset(skb));
-> +               return skb_gro_header_fast(skb, offset);
->
-> -       return skb_network_header(skb);
-> +       return skb->data + offset;
->  }
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-I would instead add a new offset parameter to this function.
-
-Again, ideally GRO should work without touching any skb->{offset}.
-
-GRO stack should maintain the offsets it needs in its own storage
-(stack parameter, or other storage if needed)
-
-Upper stack can not trust any of these skb fields, otherwise we would
-have some troubles with napi_reuse_skb()
+-- 
+Kees Cook
 
