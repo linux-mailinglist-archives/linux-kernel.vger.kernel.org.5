@@ -1,154 +1,105 @@
-Return-Path: <linux-kernel+bounces-96201-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96204-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5F76875879
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 21:33:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 228FE875885
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 21:35:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 131481C21C8F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:33:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A7693B25C29
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:35:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA0F164AB6;
-	Thu,  7 Mar 2024 20:33:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dp7wx2PO"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62DF5139571;
-	Thu,  7 Mar 2024 20:33:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E49EE13664A;
+	Thu,  7 Mar 2024 20:35:18 +0000 (UTC)
+Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
+	by smtp.subspace.kernel.org (Postfix) with SMTP id 89BDA64AB6
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 20:35:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.131.102.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709843624; cv=none; b=YTmFq9DnCwEjAa33FKSTpp+Es/bVONBR9uOTUMzuhj2qVXtz21saP6YfDsc02vDpC6a9h5s1ck9KIqZzeSYxlBLY0cj5suhhVHg2bZfGlewzLSd6grZfdlOC2Oj6NTdAIaEF3+Xpc488IkTw7Q+aYmuP0rQLMmgN/acCNo6/jAA=
+	t=1709843718; cv=none; b=BhZTH9bJnzVb3L13kkHK+YsS/kKCuW5NpbPnsTloIeyRPKlt2oMpbfUa8KasLNPGa9hsGJUwsJV++kCqQEAixUgOBESEAwsr0GHS52HqJFFKUa4Ld5bjCT6hK3LYWrAugZbDBMuHgalAznTwNAp3D8Gq0/Uub4o3wsL1Oz6x+3Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709843624; c=relaxed/simple;
-	bh=pYm922DxqcT6fMWqbP4U26AYgN9ggB1aB8F8XfUPFDY=;
+	s=arc-20240116; t=1709843718; c=relaxed/simple;
+	bh=sljL2bAz7fGa4csXLlDQhqA6Biu86JZwj+HTMWssYf4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jxpqlsPUJ9wkceLmJmFkPWAl3sTDrK6hUfIFygIZz668vGwohG7FgootaFGfx4qmjl73o/OzT7D24r0nypCaOXBnsveNzVbsCVMjjSGAxZtgcXup7z/OitRJIONHloD5lplcZpO2Dzf8hjzer0IVIwENf9yma5wD7jNrsYcx/CE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dp7wx2PO; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709843622; x=1741379622;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=pYm922DxqcT6fMWqbP4U26AYgN9ggB1aB8F8XfUPFDY=;
-  b=dp7wx2POs3xpLzSCM+m21mhYB5gxMakh50CsTujO1zMNKRcBFGjlvwK0
-   MjAvSoT30HTdj/LrLBNH59xXS1XqRTrChtp6li/TzWO0xiRmypfru/Jh/
-   vw+PNrVkVnf5DCRmUdG9dMvIHnsXUm2UhuMFPBA5EnbZ57sjq49wKBLH0
-   v420U6JMlJM7J+QM20SHUbGOgEWjY1XrESNtgykdQE0SvsaLz6VFqvyjJ
-   ESbwCm/QAmXlbhFfTnDis61nqqoESUKjcJ62jR6p+E7pF33bet3wiTcJB
-   ZqU0HJCDcRAVxz+1EH9pSEbTZ2n0UyNBd8Y+QQHyrcDkiUlDnXCzrf9dC
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="15109178"
-X-IronPort-AV: E=Sophos;i="6.07,107,1708416000"; 
-   d="scan'208";a="15109178"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 12:33:41 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,107,1708416000"; 
-   d="scan'208";a="41212476"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 12:33:41 -0800
-Date: Thu, 7 Mar 2024 12:33:40 -0800
-From: Isaku Yamahata <isaku.yamahata@linux.intel.com>
-To: "Huang, Kai" <kai.huang@intel.com>
-Cc: "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"Yamahata, Isaku" <isaku.yamahata@intel.com>,
-	"federico.parola@polito.it" <federico.parola@polito.it>,
-	"pbonzini@redhat.com" <pbonzini@redhat.com>,
-	"dmatlack@google.com" <dmatlack@google.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
-	"michael.roth@amd.com" <michael.roth@amd.com>,
-	"seanjc@google.com" <seanjc@google.com>,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [RFC PATCH 1/8] KVM: Document KVM_MAP_MEMORY ioctl
-Message-ID: <20240307203340.GI368614@ls.amr.corp.intel.com>
-References: <cover.1709288671.git.isaku.yamahata@intel.com>
- <c50dc98effcba3ff68a033661b2941b777c4fb5c.1709288671.git.isaku.yamahata@intel.com>
- <9f8d8e3b707de3cd879e992a30d646475c608678.camel@intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=YcTYrrXDFS+XHTZD0Sa4vdy/+jDdgW9qzU2gn5PQo+oa7NTS+ZhWVBAgLleLNnUWYivCWeFs2TiSez+oGC8sX+G5GW8MawIfvXmuebXryQYb5bfLl69thQmRMm/XwbmmxilPv+nYkrtgbJp5Pyoo6aY/PBw6/mVF6uQ96Fs4qpU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu; spf=pass smtp.mailfrom=netrider.rowland.org; arc=none smtp.client-ip=192.131.102.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netrider.rowland.org
+Received: (qmail 232122 invoked by uid 1000); 7 Mar 2024 15:35:15 -0500
+Date: Thu, 7 Mar 2024 15:35:15 -0500
+From: Alan Stern <stern@rowland.harvard.edu>
+To: Sam Sun <samsun1006219@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+  "xrivendell7@gmail.com" <xrivendell7@gmail.com>,
+  Greg KH <gregkh@linuxfoundation.org>, hgajjar@de.adit-jv.com,
+  quic_ugoswami@quicinc.com, stanley_chang@realtek.com,
+  heikki.krogerus@linux.intel.com
+Subject: Re: [Bug] INFO: task hung in hub_activate
+Message-ID: <0afd0885-1650-47db-b2b3-43b597352e6b@rowland.harvard.edu>
+References: <CAEkJfYO6jRVC8Tfrd_R=cjO0hguhrV31fDPrLrNOOHocDkPoAA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9f8d8e3b707de3cd879e992a30d646475c608678.camel@intel.com>
+In-Reply-To: <CAEkJfYO6jRVC8Tfrd_R=cjO0hguhrV31fDPrLrNOOHocDkPoAA@mail.gmail.com>
 
-On Thu, Mar 07, 2024 at 12:30:04PM +0000,
-"Huang, Kai" <kai.huang@intel.com> wrote:
-
-> On Fri, 2024-03-01 at 09:28 -0800, isaku.yamahata@intel.com wrote:
-> > From: Isaku Yamahata <isaku.yamahata@intel.com>
-> > 
-> > Adds documentation of KVM_MAP_MEMORY ioctl.
-> > 
-> > It pre-populates guest memory. And potentially do initialized memory
-> > contents with encryption and measurement depending on underlying
-> > technology.
-> > 
-> > Suggested-by: Sean Christopherson <seanjc@google.com>
-> > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> > ---
-> >  Documentation/virt/kvm/api.rst | 36 ++++++++++++++++++++++++++++++++++
-> >  1 file changed, 36 insertions(+)
-> > 
-> > diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-> > index 0b5a33ee71ee..33d2b63f7dbf 100644
-> > --- a/Documentation/virt/kvm/api.rst
-> > +++ b/Documentation/virt/kvm/api.rst
-> > @@ -6352,6 +6352,42 @@ a single guest_memfd file, but the bound ranges must not overlap).
-> >  
-> >  See KVM_SET_USER_MEMORY_REGION2 for additional details.
-> >  
-> > +4.143 KVM_MAP_MEMORY
-> > +------------------------
-> > +
-> > +:Capability: KVM_CAP_MAP_MEMORY
-> > +:Architectures: none
-> > +:Type: vcpu ioctl
+On Mon, Mar 04, 2024 at 08:10:02PM +0800, Sam Sun wrote:
+> Dear developers and maintainers,
 > 
-> I think "vcpu ioctl" means theoretically it can be called on multiple vcpus.
+> We encountered a task hung in function hub_activate(). It was reported
+> before by Syzbot several years ago
+> (https://groups.google.com/g/syzkaller-lts-bugs/c/_komEgHj03Y/m/rbcVKyLXBwAJ),
+> but no repro at that time. We have a C repro this time and kernel
+> config is attached to this email. The bug report is listed below.
+
+> If you have any questions, please contact us.
 > 
-> What happens in that case?
+> Reported by Yue Sun <samsun1006219@gmail.com>
+> Reported by xingwei lee <xrivendell7@gmail.com>
 
-Each vcpu can handle the ioctl simaltaneously.  If we assume tdp_mmu, each vcpu
-calls the kvm fault handler simultaneously with read spinlock.
-If gfn ranges overlap, vcpu will get 0 (success) or EAGAIN.
+Yue:
+
+Can you try testing the patch below?  Thanks.
+
+Alan Stern
 
 
-> > +:Parameters: struct kvm_memory_mapping(in/out)
-> > +:Returns: 0 on success, <0 on error
-> > +
-> > +KVM_MAP_MEMORY populates guest memory without running vcpu.
-> > +
-> > +::
-> > +
-> > +  struct kvm_memory_mapping {
-> > +	__u64 base_gfn;
-> > +	__u64 nr_pages;
-> > +	__u64 flags;
-> > +	__u64 source;
-> > +  };
-> > +
-> > +  /* For kvm_memory_mapping:: flags */
-> > +  #define KVM_MEMORY_MAPPING_FLAG_WRITE         _BITULL(0)
-> > +  #define KVM_MEMORY_MAPPING_FLAG_EXEC          _BITULL(1)
-> > +  #define KVM_MEMORY_MAPPING_FLAG_USER          _BITULL(2)
-> 
-> I am not sure what's the good of having "FLAG_USER"?
-> 
-> This ioctl is called from userspace, thus I think we can just treat this always
-> as user-fault?
 
-The point is how to emulate kvm page fault as if vcpu caused the kvm page
-fault.  Not we call the ioctl as user context.
--- 
-Isaku Yamahata <isaku.yamahata@linux.intel.com>
+Index: usb-devel/drivers/usb/core/sysfs.c
+===================================================================
+--- usb-devel.orig/drivers/usb/core/sysfs.c
++++ usb-devel/drivers/usb/core/sysfs.c
+@@ -1168,14 +1168,24 @@ static ssize_t interface_authorized_stor
+ {
+ 	struct usb_interface *intf = to_usb_interface(dev);
+ 	bool val;
++	struct kernfs_node *kn;
+ 
+ 	if (kstrtobool(buf, &val) != 0)
+ 		return -EINVAL;
+ 
+-	if (val)
++	if (val) {
+ 		usb_authorize_interface(intf);
+-	else
+-		usb_deauthorize_interface(intf);
++	} else {
++		/*
++		 * Prevent deadlock if another process is concurrently
++		 * trying to unregister intf or its parent device.
++		 */
++		kn = sysfs_break_active_protection(&dev->kobj, &attr->attr);
++		if (kn) {
++			usb_deauthorize_interface(intf);
++			sysfs_unbreak_active_protection(kn);
++		}
++	}
+ 
+ 	return count;
+ }
 
