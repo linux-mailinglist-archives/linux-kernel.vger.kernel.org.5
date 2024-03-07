@@ -1,107 +1,119 @@
-Return-Path: <linux-kernel+bounces-95744-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95742-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4ACA68751FC
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:36:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48E3C8751F6
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:36:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7BF7C1C221B6
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:36:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE94D1F2695E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:36:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 568E112E1DF;
-	Thu,  7 Mar 2024 14:36:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ggwxNMml"
-Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9EE11E87E;
+	Thu,  7 Mar 2024 14:36:11 +0000 (UTC)
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37A511DFC6
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 14:36:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3801E18E10;
+	Thu,  7 Mar 2024 14:36:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709822172; cv=none; b=s0mgOYTsJHc7zWJcGiJCWVNTWScokKX+pweI4JaDIIYbIqATCYWwfbqZzRcpQUeQDS+98mFcW3RWjo7mQd7l+o+JP8nVTRu5BCQ85U4OD+T5o33lGxWA0QRg+3edXwzjBcty1JwTlQHYT1vkRE0sTX6GC2/GCG4KfQSN1JBsUtg=
+	t=1709822171; cv=none; b=BypLOZjoCyGtA1YlTe/lVdsNB69l8M3hyZDXHwOp4tmebpJ7QdEBUmAeWvNLNHg3LtNB/+6dY/b53ARqKI9/2pLsdnbmw5QWEsffy7aBZ7QPmUVagpo7JkeBth5IAUi++zuTZsUn509F9Ywu4s2Ra6P3nYREQW7UU4P18VuspoU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709822172; c=relaxed/simple;
-	bh=x02DuFFFXqezeMPeX7N/K3LTJ7TADryYv7HqzE4nsfQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WtTL4BT1T7fwS6TukifsvRRVEZYj3haVLhky5WVE06VM0rnbkSEyMxOs3d+ZQFa6RTS8ykWa//C0KtWg755tXfOLkR2KdTfA9vkp4Ua4frazcyvv5uwE4nUOXE17a9xthVEpD3muRao9kjaBPV4ZW7BeZiW+YaAe4Wp94AU1Oj4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ggwxNMml; arc=none smtp.client-ip=209.85.160.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-428405a0205so295161cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 06:36:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709822169; x=1710426969; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=t6cjTaPA3JGO0htGi6Pjtb9XftoGgbKI0J0q9NK3+w4=;
-        b=ggwxNMmlVtIUpeUHoktMGiJt6NHEuOQM92GBz/UjBrcqAbPZLSV+lcvUX5vsIDLle4
-         Rpr4J9fD1HtjBPgMylJbxOHmZQVoHVsQqINPQlNrSvHajj/yos4lsrA/vjnvom048meu
-         pG91huk7uC+PjD+3hqOSoGZFxGRDqopuTYDzFLp8alN71qJ9OicVc1eOcD7PfkMtsSm+
-         piukZftKQTn6WFx6U4wQU3oqAWLmMpVIWdGhpRsAnF+v3QdgU+AQuO592Wam7FYcwPr+
-         US2rwNwN9TBdAmIzmggJ/B5KNS0wJ+yo264fpVdQd8Se4FRf9qMvFMTs/hMGpIQZITQK
-         wKIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709822169; x=1710426969;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=t6cjTaPA3JGO0htGi6Pjtb9XftoGgbKI0J0q9NK3+w4=;
-        b=WBsvJppMiT/kY5ss8Y5X2YvP1h4+LlJJUJLQYHFtgAvkhKiUYaZX4aeGvhX+dcXJmz
-         mx++ESFvwTOqLZqiELTFAsJUf/iw9hXcXh+yQb0qBAWJAocY/Ohw9pJWgQ1O+RrsRt0I
-         N7EdKRl/lOnSN2lxsHC0iL02ggTO16dUmOR2Y8dsRRTvYCEJXATZUTTCk1UBV+mT1cN2
-         74tbY+VWxYKbkiv60iGao1e1Hc474ZqbA9jt1R+d+rjnt2rRVNJgaxgRSIMFYc8oW/7M
-         9HRbuyS+th/wHAVwRpZRObSqsgrisOh+JeNwyPa0Wbtk0rCWSV4ir0UIPA44oP5Q+l0+
-         xgFA==
-X-Forwarded-Encrypted: i=1; AJvYcCUrU7xxSFFLnT0Xds3JI9UyedqNOqM4FQVCLdO8QBAFHu63mLajaw1om8ovZd+Yr9qvUA0O7c3tcpFem8m1YEGbiGZMHBU7XNxm+Pu1
-X-Gm-Message-State: AOJu0Yy+v+husz2RP3+0ThZ3LMrnKg0r21pd9yEOLMKOLdWDjKUx1D9P
-	mLbWvGOCh9fUf/4OcYZps6osAxX+sNzDdr72o+7HmRzj3o7uK7BJYpg73uU7q2fcmFGYoKjlOtD
-	0tCEh3q/ClYNRvb2oLkfQSf3Mws/WsgjCt+Jl
-X-Google-Smtp-Source: AGHT+IFTbUYTdln+HN5bHEZragkgBfryVrLW7yxjMefRnXhcn7EKiTuuupTzwNyjjzX/gNPojrKZtcxTSe69tmWWdIE=
-X-Received: by 2002:a05:622a:1c8:b0:42f:a3c:2d4e with SMTP id
- t8-20020a05622a01c800b0042f0a3c2d4emr266044qtw.15.1709822168971; Thu, 07 Mar
- 2024 06:36:08 -0800 (PST)
+	s=arc-20240116; t=1709822171; c=relaxed/simple;
+	bh=IN+B13K/eqW9yzntEF91yCyCk7hS1yU/DuL07Ghww0k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=OE9Vp0QQNHc+e3/0ZXATyU0223jl4prBcbY9A00QYgKRqzNE9KQ+HTszhv//5s/GsHzT0xWNOOdc/oplxzXbI4Zi0Kt7yqISUrJWOk/60ZdS4igFfeWH1t3+5PtwVZD0ii78qaDQyh8M4EHd6ygH43jhWseKfb+kcveIbAti+vA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4TrBck4sr8z1Q9mL;
+	Thu,  7 Mar 2024 22:33:42 +0800 (CST)
+Received: from kwepemm600012.china.huawei.com (unknown [7.193.23.74])
+	by mail.maildlp.com (Postfix) with ESMTPS id 2AD1E140155;
+	Thu,  7 Mar 2024 22:36:05 +0800 (CST)
+Received: from [10.174.178.220] (10.174.178.220) by
+ kwepemm600012.china.huawei.com (7.193.23.74) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 7 Mar 2024 22:36:04 +0800
+Message-ID: <193904fa-d1d6-4bf8-9f49-e44969bdfd85@huawei.com>
+Date: Thu, 7 Mar 2024 22:36:03 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240307094433.3440431-1-xuxinxiong@huaqin.corp-partner.google.com>
-In-Reply-To: <20240307094433.3440431-1-xuxinxiong@huaqin.corp-partner.google.com>
-From: Doug Anderson <dianders@google.com>
-Date: Thu, 7 Mar 2024 06:35:53 -0800
-Message-ID: <CAD=FV=U8wdT_5k-yrLVpmh=q4k18LntqujK7Mw88TdweBXCPgg@mail.gmail.com>
-Subject: Re: [PATCH] drm/panel-edp: Add several generic edp panels
-To: Xuxin Xiong <xuxinxiong@huaqin.corp-partner.google.com>
-Cc: sam@ravnborg.org, neil.armstrong@linaro.org, daniel@ffwll.ch, 
-	hsinyi@google.com, dri-devel@lists.freedesktop.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 4/4] scsi: scsi_core: Fix IO hang when device removing
+Content-Language: en-US
+To: "James E . J . Bottomley" <jejb@linux.ibm.com>, "Martin K . Petersen"
+	<martin.petersen@oracle.com>, <linux-scsi@vger.kernel.org>
+CC: <linux-kernel@vger.kernel.org>, <louhongxiang@huawei.com>
+References: <20231016020314.1269636-1-haowenchao2@huawei.com>
+ <20231016020314.1269636-5-haowenchao2@huawei.com>
+From: Wenchao Hao <haowenchao2@huawei.com>
+In-Reply-To: <20231016020314.1269636-5-haowenchao2@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600012.china.huawei.com (7.193.23.74)
 
-Hi,
+On 2023/10/16 10:03, Wenchao Hao wrote:
+> shost_for_each_device() would skip devices which is in progress of
+> removing, so scsi_run_queue() for these devices would be skipped in
+> scsi_run_host_queues() after blocking hosts' IO.
+> 
+> IO hang would be caused if return true when state is SDEV_CANCEL with
+> following order:
+> 
+> T1:					    T2:scsi_error_handler
+> __scsi_remove_device()
+>    scsi_device_set_state(sdev, SDEV_CANCEL)
+>    ...
+>    sd_remove()
+>    del_gendisk()
+>    blk_mq_freeze_queue_wait()
+>    					    scsi_eh_flush_done_q()
+> 					      scsi_queue_insert(scmd,...)
+> 
+> scsi_queue_insert() would not kick device's queue since commit
+> 8b566edbdbfb ("scsi: core: Only kick the requeue list if necessary")
+> 
+> After scsi_unjam_host(), the scsi error handler would call
+> scsi_run_host_queues() to trigger run queue for devices, while it
+> would not run queue for devices which is in progress of removing
+> because shost_for_each_device() would skip them.
+> 
+> So the requests added to these queues would not be handled any more,
+> and the removing device process would hang too.
+> 
+> Fix this issue by using shost_for_each_device_include_deleted() in
+> scsi_run_host_queues() to trigger a run queue for devices in removing.
+> 
 
-On Thu, Mar 7, 2024 at 1:44=E2=80=AFAM Xuxin Xiong
-<xuxinxiong@huaqin.corp-partner.google.com> wrote:
->
-> Add support for the following 2 panels:
-> 1. BOE NT116WHM-N44
-> 2. CMN N116BCA-EA1
->
-> Signed-off-by: Xuxin Xiong <xuxinxiong@huaqin.corp-partner.google.com>
+This issue is fixed by commit '6df0e077d76bd (scsi: core: Kick the requeue
+list after inserting when flushing)', so do not need any more.
+
+> Signed-off-by: Wenchao Hao <haowenchao2@huawei.com>
 > ---
->  drivers/gpu/drm/panel/panel-edp.c | 2 ++
->  1 file changed, 2 insertions(+)
+>   drivers/scsi/scsi_lib.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/scsi/scsi_lib.c b/drivers/scsi/scsi_lib.c
+> index 195ca80667d0..40f407ffd26f 100644
+> --- a/drivers/scsi/scsi_lib.c
+> +++ b/drivers/scsi/scsi_lib.c
+> @@ -466,7 +466,7 @@ void scsi_run_host_queues(struct Scsi_Host *shost)
+>   {
+>   	struct scsi_device *sdev;
+>   
+> -	shost_for_each_device(sdev, shost)
+> +	shost_for_each_device_include_deleted(sdev, shost)
+>   		scsi_run_queue(sdev->request_queue);
+>   }
+>   
 
-The patch looks OK, but please resend with a more unique subject. I
-think we've already landed more than one patch with the subject "Add
-several generic edp panels". Since this is just two panels, maybe just
-
-drm/panel-edp: Add BOE NT116WHM-N44 and CMN N116BCA-EA1
-
--Doug
 
