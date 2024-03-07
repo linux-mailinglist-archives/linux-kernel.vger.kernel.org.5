@@ -1,115 +1,120 @@
-Return-Path: <linux-kernel+bounces-95739-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95740-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D2038751EB
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:32:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E7DC8751F2
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:34:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF7E71C22FA8
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:32:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F3A471F26115
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:34:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 123881EB41;
-	Thu,  7 Mar 2024 14:31:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C81A1DFF7;
+	Thu,  7 Mar 2024 14:34:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pbC0xNQQ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="oOdqDMS2"
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 462501C6AD;
-	Thu,  7 Mar 2024 14:31:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2461A639
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 14:34:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709821878; cv=none; b=JLTMofrpG0vu0KdX45+x1wwonHgyZF4IzuzjASSQBXvZRbBVkJH8b6mIjX43wUI8P/TEYgE9WacgZHa7fk/SlnjnIXRzsd322fw8j9QxLnpJJwQVEOeIH91c3KRCRsbrEKbgy9lLTaKLsDxyZ0V//cURJhN2OUsXPMU9tgE8bzw=
+	t=1709822070; cv=none; b=iyhJ9RIZql46WUKjvPGsgMElbyvn3QwWZHJUrON80ifDJ/xgsMOsLrpe20LqJoUIkG3+6Twjf2gFOwl/U8cnR/kTkWlDXQ56ta8ru+zGMqIU9v64q2YaTR7tBOuRnsdzx6KUKJfdrpf0FrPvnQKhE37qyjswgcacjCPenmTFnGs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709821878; c=relaxed/simple;
-	bh=BoCuQpnKvXZmgHfTbdIlDgZOctJUi4njjxRSp+4CH5U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uGqIl3yr7+IWt1DEOeu9qZRzgggzbrGdPVNsXTsyzP5SHoMcUnVkb7aHoGlpksow2r0lUNbwsc6YM6of17o+JmCO7ieavRXPPo5Grx12tZO2IXM37QclyL8QT164n4JPmp68/8zauH5Dxt0Yi82UuFdlm/3n/tsA3KGaryrOp2s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pbC0xNQQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B15B7C433C7;
-	Thu,  7 Mar 2024 14:31:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709821877;
-	bh=BoCuQpnKvXZmgHfTbdIlDgZOctJUi4njjxRSp+4CH5U=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=pbC0xNQQrGejHQ2bitaJqqjSkMc3ngNCgVrKc4lmct9ZugZ4DVuNDalUqhOcmAfoB
-	 6fb3JKk/IYaOyPrqxkA5sNEZYYIpkwxcT8jt1fbFlcadr4RyVWEI9mz0lih8Fp01Kd
-	 uZ6nzAfci7WUsMGdOgDiNZKFx4zD2j3t+FvGKStRleoiz5tPTH83HX5pxO6+P8CTtN
-	 0ujkoGBENcgy6n0Az2w3IC/eH0XBg3+MCgnpnVSsWwHPXBHZ3IAVDv8nm9/bdmBw6C
-	 /YawpO4sw+i+UQ8k7YDcO2dOMO4IJ/r10vfitQxgRLLcadLplEQujRsmwV+RBhqLVR
-	 oMu7jY1yZUVeA==
-Date: Thu, 7 Mar 2024 08:31:16 -0600
-From: Seth Forshee <sforshee@kernel.org>
-To: Roberto Sassu <roberto.sassu@huaweicloud.com>
-Cc: zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
-	eric.snowberg@oracle.com, paul@paul-moore.com, jmorris@namei.org,
-	serge@hallyn.com, linux-integrity@vger.kernel.org,
-	linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Roberto Sassu <roberto.sassu@huawei.com>, stable@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	Christian Brauner <brauner@kernel.org>
-Subject: Re: [PATCH] evm: Change vfs_getxattr() with __vfs_getxattr() in
- evm_calc_hmac_or_hash()
-Message-ID: <ZenPtCfh6CyD2xz5@do-x1extreme>
-References: <20240307122240.3560688-1-roberto.sassu@huaweicloud.com>
+	s=arc-20240116; t=1709822070; c=relaxed/simple;
+	bh=f09FyQK6bbJpMAO+lRmbYEOGtoF6bKnHbS4uczC26iE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ShMR9PzoRAM1h+nrzAUka920lohDbZ+7Y2SLUNUjLUXAxXn+851/AfQ7+ZwGnhmWYcrZBxENXyziHFITnUM8kEXWVhOmldtXmAD186CQ/EEGu6q/xGBdpmwIDvT8T5JotdTK2e7ELNXX4ITS3wWkT14a5RLjHyUNZXnkeyXHEa4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=oOdqDMS2; arc=none smtp.client-ip=209.85.219.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dcbf82cdf05so941013276.2
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 06:34:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709822068; x=1710426868; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=f09FyQK6bbJpMAO+lRmbYEOGtoF6bKnHbS4uczC26iE=;
+        b=oOdqDMS2MGMqVO3TvI/YP1+J//YTmRntjELebKv/GcJ7A+xTnHa7/UV3Ms8TYkgb+P
+         D8pWHKsee2VXblCZbqtLKuUF9IbvuXhCsNljtTmTUZjT690FxVMF5+WV3r6uJyNbVCJs
+         XYGO45vC25pKQE0NxV3K0gEXgJi9SMP/54guXob9L9sPmqazbx8f88ANAf7zS+2utPnR
+         Z58fSXxKZu1Mz/9Esm9Sz0pYenNDow4IA391XJfgtufSaCIxg7cDExQrgFmb+041n8RM
+         Zi0roSi9AMuC2JhdBf8o8vkMgx1v1z3cFPj7qmpjjfFd2nMMEEAIL+VLvmbT2Q2bzVHa
+         er0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709822068; x=1710426868;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=f09FyQK6bbJpMAO+lRmbYEOGtoF6bKnHbS4uczC26iE=;
+        b=TIGI+bKAXyUyay9rSjnMssCNq50s9RgER0m7e56vzGlMFG22Mr9FSTjCq4+b/pBisn
+         pN4FuIaBOqHG8Fl9hAGNHNoO1Fad4JmvN0yBFCU1UaUP+CLwDhlR8msFcdbGqPecYhfr
+         F9yG+jJzp/oIpUUtoI/qG+Cq5f6BEsAkJhSFN1yCU5I/84mAseCHIZTo2tE1jwdq7llp
+         cOsZ02u77zqnwQJ/8Hf40S0SOg+Lhv+KTGxHzq9SN6zVajWkcqVjAHdgPqpjwXTgPFfR
+         HksSJ6b+fjEFoNFP1hliKQcwFb+cTxOxAXRSqzgFBuoNSEAGwI7FsdMyJfaqdRUYsEfP
+         5Ciw==
+X-Forwarded-Encrypted: i=1; AJvYcCVn3vdIlb/AtKqOT5CWgboce0NBdBivQP0gB3XLM5w9Dpi+nD7JNbB4d4UyvjqiR/0pj44ffoUc5ffgD4m1QTGConAQuLi37Dhg9wcQ
+X-Gm-Message-State: AOJu0YyZWY1TRIccu8urma7yqPQQVNYfPut3NzYvl8gSYMKSVipUIbG0
+	whYtT3PCIY87O9iPjvZ47ft8Tdfl9KW8z4nNMwYUZgx21e3zU/O4bf6Uw6R9WQFedED+QIjeriG
+	MLqlo6lIbVzqOMgliV+2dAbZZb/ek/6dj23odjg==
+X-Google-Smtp-Source: AGHT+IGtJf/U9W1EvqwT6Q6TAft9E+qFFl94fV/5gzwSC18F9/F33J4riY6vacrvZrkIUxqHcu1Irh0E1nLCimSCbtQ=
+X-Received: by 2002:a25:abea:0:b0:dd1:ebc:ca2d with SMTP id
+ v97-20020a25abea000000b00dd10ebcca2dmr3363260ybi.52.1709822067776; Thu, 07
+ Mar 2024 06:34:27 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240307122240.3560688-1-roberto.sassu@huaweicloud.com>
+References: <20240307140729.2278907-1-arnd@kernel.org>
+In-Reply-To: <20240307140729.2278907-1-arnd@kernel.org>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Thu, 7 Mar 2024 15:34:15 +0100
+Message-ID: <CACRpkdYOofmWd6=_XN0+FWDJjp0W8vV_deUZbNOr2n5BkGaL4w@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: aw9523: allow building as loadable module
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>, 
+	David Bauer <mail@david-bauer.net>, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
+	Arnd Bergmann <arnd@arndb.de>, Andy Shevchenko <andy.shevchenko@gmail.com>, linux-gpio@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 07, 2024 at 01:22:39PM +0100, Roberto Sassu wrote:
-> From: Roberto Sassu <roberto.sassu@huawei.com>
-> 
-> Use __vfs_getxattr() instead of vfs_getxattr(), in preparation for
-> deprecating using the vfs_ interfaces for retrieving fscaps.
-> 
-> __vfs_getxattr() is only used for debugging purposes, to check if kernel
-> space and user space see the same xattr value.
+On Thu, Mar 7, 2024 at 3:07=E2=80=AFPM Arnd Bergmann <arnd@kernel.org> wrot=
+e:
 
-__vfs_getxattr() won't give you the value as seen by userspace though.
-Userspace goes through vfs_getxattr() -> xattr_getsecurity() ->
-cap_inode_getsecurity(), which does the conversion to the value
-userspace sees. __vfs_getxattr() just gives the raw disk data.
 
-I'm also currently working on changes to my fscaps series that will make
-it so that __vfs_getxattr() also cannot be used to read fscaps xattrs.
-I'll fix this and other code in EVM which will be broken by that change
-as part of the next version too.
+> When CONFIG_I2C is set to =3Dm, the new aw9523 driver fails to link:
+>
+> arm-linux-gnueabi-ld: drivers/pinctrl/pinctrl-aw9523.o: in function `aw95=
+23_probe':
+> pinctrl-aw9523.c:(.text+0x9f8): undefined reference to `__devm_regmap_ini=
+t_i2c'
+> arm-linux-gnueabi-ld: drivers/pinctrl/pinctrl-aw9523.o: in function `aw95=
+23_driver_init':
+> pinctrl-aw9523.c:(.init.text+0x4): undefined reference to `i2c_register_d=
+river'
+> arm-linux-gnueabi-ld: drivers/pinctrl/pinctrl-aw9523.o: in function `aw95=
+23_driver_exit':
+> pinctrl-aw9523.c:(.exit.text+0x2): undefined reference to `i2c_del_driver=
+'
+>
+> Make it a tristate symbol so the dependency is correctly honored.
+>
+> Fixes: bfa5aa367a82 ("pinctrl: Add driver for Awinic AW9523/B I2C GPIO Ex=
+pander")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-> 
-> Cc: stable@vger.kernel.org # 5.14.x
-> Cc: linux-fsdevel@vger.kernel.org
-> Cc: Christian Brauner <brauner@kernel.org>
-> Cc: Seth Forshee (DigitalOcean) <sforshee@kernel.org>
-> Fixes: 907a399de7b0 ("evm: Check xattr size discrepancy between kernel and user")
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> ---
->  security/integrity/evm/evm_crypto.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/security/integrity/evm/evm_crypto.c b/security/integrity/evm/evm_crypto.c
-> index b1ffd4cc0b44..168d98c63513 100644
-> --- a/security/integrity/evm/evm_crypto.c
-> +++ b/security/integrity/evm/evm_crypto.c
-> @@ -278,8 +278,8 @@ static int evm_calc_hmac_or_hash(struct dentry *dentry,
->  		if (size < 0)
->  			continue;
->  
-> -		user_space_size = vfs_getxattr(&nop_mnt_idmap, dentry,
-> -					       xattr->name, NULL, 0);
-> +		user_space_size = __vfs_getxattr(dentry, inode, xattr->name,
-> +						 NULL, 0);
->  		if (user_space_size != size)
->  			pr_debug("file %s: xattr %s size mismatch (kernel: %d, user: %d)\n",
->  				 dentry->d_name.name, xattr->name, size,
-> -- 
-> 2.34.1
-> 
+I sent something similar yesterday:
+https://lore.kernel.org/linux-gpio/20240305-fix-aw9523-v2-1-2dc50bab2b17@li=
+naro.org/
+
+Thanks anyway!
+
+Yours,
+Linus Walleij
 
