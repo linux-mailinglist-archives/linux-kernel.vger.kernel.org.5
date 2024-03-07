@@ -1,164 +1,183 @@
-Return-Path: <linux-kernel+bounces-95863-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95864-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5750787543E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:36:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 474E9875443
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:37:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CF839B23391
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 16:36:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F22C5288E61
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 16:37:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B35E812FF67;
-	Thu,  7 Mar 2024 16:36:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D59C12FB33;
+	Thu,  7 Mar 2024 16:37:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="Lq+WBg8R"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fJ80NUNi"
+Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43E931DA27;
-	Thu,  7 Mar 2024 16:36:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC0811DA27;
+	Thu,  7 Mar 2024 16:37:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709829384; cv=none; b=FPHRU8kD853POyPLS3WsGWlRdfI8J1BUf6jmlOZNOUh/8iriOZitKhLfooVvF9W2ykhCl9NJZr06FOFRfJwyU8AidevY+e7ifA/DrVdVKx1/8EQ0inUv0r3e5dt8XFz9wWwdtVmYYWPcr3j9nuM4k3mD3ExivF+butVsEy+NFHU=
+	t=1709829426; cv=none; b=gz4S7HRZK0OgIC/ZSZ3d+VREBuzuNlRBuvE5OCoZIPinFp343q0/LGExwQzT7Ad0F5sYUXXlHp2wc3J7qjMrOrMb3xdoUNJuFV76iq3zYWXSk+xPOSR0s1HeoJN6L6tzPSJVfepEQ7KbxabS6Fc68i2z+LaHpoJQsjvYiUvuEWg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709829384; c=relaxed/simple;
-	bh=G4o8N1NeVBsGufGC9BwR+lthg1Y27nwFooGVezVt96g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HJPxf7Lo1gick0aXh7pec/+ZmhA514HJCmFKONE1gl7LuK5++0ph3DSnXn9BFkIjGFTNfhkVcDl3g4HgVMZkEhsiVCXHsyRzhyFPyTa/mNT16Sz7uvRcP35oB6Kr2dhm4KGtWO/pFc2UP36JwNPUoAGaiXOI5DSSLAALw1740XY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=Lq+WBg8R; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
-	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
-	Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
-	In-Reply-To:References; bh=1WYZfDzwGAqJU8Hrdq+9kEkrNFrZ6KcxJBYTknjo620=; b=Lq
-	+WBg8Rw2WaS1YOsmUCo7vNALu8FOjy00Jh8uga9wQAeMe6/i+ZTIy1srpErzfiBiKhhqOVdN8UVrJ
-	trWMH+8NcVOiLGbBc6DVL4LADHT9bo/n10u+oNxCQYcS+S0jK13geL+Qs7wZ6+aaEQnNMz6G8EOjm
-	UjpjXfblZBSpIp4=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1riGjV-009bQa-Ox; Thu, 07 Mar 2024 17:36:37 +0100
-Date: Thu, 7 Mar 2024 17:36:37 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Parthiban.Veerasooran@microchip.com
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, horms@kernel.org, saeedm@nvidia.com,
-	anthony.l.nguyen@intel.com, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, corbet@lwn.net,
-	linux-doc@vger.kernel.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	devicetree@vger.kernel.org, Horatiu.Vultur@microchip.com,
-	ruanjinjie@huawei.com, Steen.Hegelund@microchip.com,
-	vladimir.oltean@nxp.com, UNGLinuxDriver@microchip.com,
-	Thorsten.Kummermehr@microchip.com, Pier.Beruto@onsemi.com,
-	Selvamani.Rajagopal@onsemi.com, Nicolas.Ferre@microchip.com,
-	benjamin.bigler@bernformulastudent.ch
-Subject: Re: [PATCH net-next v3 06/12] net: ethernet: oa_tc6: implement
- internal PHY initialization
-Message-ID: <7ddbe599-187e-401f-b508-4dc62bca8374@lunn.ch>
-References: <20240306085017.21731-1-Parthiban.Veerasooran@microchip.com>
- <20240306085017.21731-7-Parthiban.Veerasooran@microchip.com>
- <8c2b95f4-75a7-4d6d-ab9c-9c3498c040d8@lunn.ch>
- <eeb57938-e21e-406d-a835-93c6fb19b161@microchip.com>
+	s=arc-20240116; t=1709829426; c=relaxed/simple;
+	bh=R7uLcewIPcCbOUA5r2domMq49Hm7h9Eduw6Ebo4E+5A=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lBaxzLUE7RElLcvNl0J8In+usCyQPXaFjbVWG/s777WllOJBomAFHTJLJby5Aqb6vcsNXBcWgGthOb31YSCcXElKpGRd8iXAM0vmnwzqWM5xCBBGpChy+L9mZrRDtKaruNDVWT5a9YrA8Ws8qBCl7tMO1kfi7CTIDhGai3nNV1A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fJ80NUNi; arc=none smtp.client-ip=209.85.210.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f44.google.com with SMTP id 46e09a7af769-6e445b4f80bso537673a34.0;
+        Thu, 07 Mar 2024 08:37:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709829424; x=1710434224; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DRR3aMrPNTHPyKTnpZBfnYrcMUQU7aCizh88lK2tEOw=;
+        b=fJ80NUNiUmKnSTARnjTsPNUA+JlWDmHIon6TBUJytnwrGpb3Ho8LnEcSKZBuMjS8pZ
+         kkK7dYyY6q0A6TJCJScBkUSANhR0HDzmyxo7ByneSsMPF1zKcD33g7zeNd2QkcNJk4hE
+         rCFOu0JrLrD2MzxwU8V5Tr2N1jk0QLHl71RRFDGbfvkrh8XEwApKOrBAaVpqEMnU3cKL
+         xCeCyQRMiXQoSgfnayXRrygUd5Gpm9jxlm3jvCUGCSpIkslkR7zZEwlEvGJ/Vb0efp3M
+         CXL221ajBI+YbmNUXNAmErdmkTm8vT3fFZ8l34aJLfS+rZTruxBplMNw5NWsOxNQMsPd
+         de0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709829424; x=1710434224;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DRR3aMrPNTHPyKTnpZBfnYrcMUQU7aCizh88lK2tEOw=;
+        b=q4x/t3VelqAANEIZEu8tsY58Mk7gePb8sMshdYARdlcLlBVK4t1gtiPOonQcSSzihx
+         OmpLmy/Y+9WvH2fTg8f1Z2xzww7qb1ZUHzANZ+SDuNpXxQMfkx2DsG+u/dLX3EcYqi8s
+         l15j0rdF1xEwxwkbBRFAd0ReS2W/Xt3SmlWz9E6wfbu6N+LjLepoSCbiHbPBeNM8Gt2H
+         ToP7sLzVt8zQP+tzbMXr2C6AfQLwmsofIWkLInsoaV9rDxVomIdosIUq5aBxlbEJzgXK
+         IxqTC0KwT8wUNyKoCG+emBKITP5t8EOq3Dkva2ZzHGFEfkLQXRyfg8kl81LK0GIK9/U7
+         bu9Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWq8/uoQgSNSqhGH5YrjXF98LYVxv3OG+rU/+Qd4hAGz1dVsWbkoPhwWoSv/9Xfp70lKBYg1Db+kHfTO19daLgVF6B8UrGYBzrZlS/sHvGGbmhlND4GU2pIqx7IKzmlH0Ql+1ika9fPI2LiObdPJgVsW5AYt9nkyzFRJu8aT2zNaoyudQ8=
+X-Gm-Message-State: AOJu0YwYoVnuI5NTQSYOddKuIrNmIuWXqKUYfUzx3wHcgnK/94RCjNgh
+	eopK9LETkx9IxLj9bv2UDOyqr5y4aJnZ+KtqXW1Axvoaf9X8iBPw+3J1nz6cEqQ0FZPXX5FEIAw
+	A1sImKMut1/cprNwrTPYFRS/MCsg=
+X-Google-Smtp-Source: AGHT+IFJQktXHafepx7m2ZI9QAsBmwKMITqcJJIw//kIMZ1qNUrVo2cXeWwX3DelxvQp+xNWB9FVPEmJ0rR4dSgR1Bg=
+X-Received: by 2002:a05:6871:782:b0:21e:e5db:7964 with SMTP id
+ o2-20020a056871078200b0021ee5db7964mr370234oap.23.1709829423970; Thu, 07 Mar
+ 2024 08:37:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <eeb57938-e21e-406d-a835-93c6fb19b161@microchip.com>
+References: <20240306201045.1475-1-justin.swartz@risingedge.co.za>
+ <20240306201045.1475-2-justin.swartz@risingedge.co.za> <CAMhs-H9WyQZsvEvCfUcZ0_eU8--EzxEmaxR50wdRFDGP3E64ZQ@mail.gmail.com>
+ <13e3063facfea3407dba23b74b0a56db@risingedge.co.za>
+In-Reply-To: <13e3063facfea3407dba23b74b0a56db@risingedge.co.za>
+From: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date: Thu, 7 Mar 2024 17:36:51 +0100
+Message-ID: <CAMhs-H_eUKm7C40oCzuKwwEMZAcOJ-g4MghAfkGAmxRM0AXPUw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mips: dts: ralink: mt7621: add serial1 and serial2 nodes
+To: Justin Swartz <justin.swartz@risingedge.co.za>
+Cc: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Matthias Brugger <matthias.bgg@gmail.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, linux-mips@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> >> +static int oa_tc6_mdiobus_register(struct oa_tc6 *tc6)
-> >> +{
-> >> +     int ret;
+Hi Justin,
+
+On Thu, Mar 7, 2024 at 4:15=E2=80=AFPM Justin Swartz
+<justin.swartz@risingedge.co.za> wrote:
+>
+> Hi Sergio
+>
+> On 2024-03-07 12:04, Sergio Paracuellos wrote:
+> > Hi Justin,
+> >
+> > On Wed, Mar 6, 2024 at 9:11=E2=80=AFPM Justin Swartz
+> > <justin.swartz@risingedge.co.za> wrote:
+> >>
+> >> Add serial1 and serial2 nodes to define the existence of
+> >> UART1 and UART2.
+> >>
+> >> Signed-off-by: Justin Swartz <justin.swartz@risingedge.co.za>
+> >> ---
+> >>  arch/mips/boot/dts/ralink/mt7621.dtsi | 38
+> >> +++++++++++++++++++++++++++
+> >>  1 file changed, 38 insertions(+)
+> >>
+> >> diff --git a/arch/mips/boot/dts/ralink/mt7621.dtsi
+> >> b/arch/mips/boot/dts/ralink/mt7621.dtsi
+> >> index dca415fdd..2069249c8 100644
+> >> --- a/arch/mips/boot/dts/ralink/mt7621.dtsi
+> >> +++ b/arch/mips/boot/dts/ralink/mt7621.dtsi
+> >> @@ -128,6 +128,44 @@ serial0: serial@c00 {
+> >>                         pinctrl-0 =3D <&uart1_pins>;
+> >>                 };
+> >>
+> >> +               serial1: serial@d00 {
+> >> +                       status =3D "disabled";
 > >> +
-> >> +     tc6->mdiobus = mdiobus_alloc();
-> >> +     if (!tc6->mdiobus) {
-> >> +             netdev_err(tc6->netdev, "MDIO bus alloc failed\n");
-> >> +             return -ENODEV;
-> >> +     }
+> >> +                       compatible =3D "ns16550a";
+> >> +                       reg =3D <0xd00 0x100>;
 > >> +
-> >> +     tc6->mdiobus->priv = tc6;
-> >> +     tc6->mdiobus->read = oa_tc6_mdiobus_direct_read;
-> >> +     tc6->mdiobus->write = oa_tc6_mdiobus_direct_write;
-> > 
-> > This might get answered in later patches. PLCA registers are in C45
-> > address space, VEND1 if i remember correctly. You don't provide any
-> > C45 access methods here. Does TC6 specify that C45 over C22 must be
-> > implemented?
-> No the spec doesn't say anything like this. But, as C22 registers are 
-> mapped in the MMS 0, registers 0xD and 0xE can be used to access C45 
-> registers indirectly. That's why the driver implemented the above 
-> functions. I agree that indirect access is slower and requires more 
-> control commands than direct access. So implementing the direct access 
-> of C45 registers will overcome this issue.
+> >> +                       clocks =3D <&sysc MT7621_CLK_UART2>;
+> >> +
+> >> +                       interrupt-parent =3D <&gic>;
+> >> +                       interrupts =3D <GIC_SHARED 27
+> >> IRQ_TYPE_LEVEL_HIGH>;
+> >> +
+> >> +                       reg-shift =3D <2>;
+> >> +                       reg-io-width =3D <4>;
+> >> +                       no-loopback-test;
+> >> +
+> >> +                       pinctrl-names =3D "default";
+> >> +                       pinctrl-0 =3D <&uart2_pins>;
+> >> +               };
+> >> +
+> >> +               serial2: serial@e00 {
+> >> +                       status =3D "disabled";
+> >> +
+> >> +                       compatible =3D "ns16550a";
+> >> +                       reg =3D <0xe00 0x100>;
+> >> +
+> >> +                       clocks =3D <&sysc MT7621_CLK_UART3>;
+> >> +
+> >> +                       interrupt-parent =3D <&gic>;
+> >> +                       interrupts =3D <GIC_SHARED 28
+> >> IRQ_TYPE_LEVEL_HIGH>;
+> >> +
+> >> +                       reg-shift =3D <2>;
+> >> +                       reg-io-width =3D <4>;
+> >> +                       no-loopback-test;
+> >> +
+> >> +                       pinctrl-names =3D "default";
+> >> +                       pinctrl-0 =3D <&uart3_pins>;
+> >> +               };
+> >> +
+> >
+> > Please follow the preferred order for properties described in dts
+> > coding style [0]. I know that there is some mess around the properties
+> > order in some nodes with the current dtsi file but we did not have
+> > coding style before and now we have it, so I think we should follow it
+> > at least for new additions.
+>
+> No problem. I see you've already "Acked-by" patch 1 (adding pinctrl
+> properties to serial0) of this set, so would it be a better move to
+> submit a new patch set that would look something like:
+>
+>   1. add pinctrl-name and pinctrl-0 to serial0 [no changes from what I
+> sent]
+>   2. reorder serial0 properties according to the DTS style guidelines
+>   3. add serial1 and serial2 with the correct property order
 
-It is not just about performance. It is about compliance to the
-standard. The standard does not say anything about C45 over C22. So
-there is no reason to expect a PHY device to implement it. It might,
-but its optional.
+This would be ok, thank you.
 
-> > The standard does say:
-> > 
-> > Vendor specific registers may be mapped into MMS 10 though MMS
-> > 15. When directly mapped, PHY vendor specific registers in MMD 30 or
-> > MMD 31 would be mapped into the vendor specific MMS 10 through MMS 15.
-> > 
-> > So i'm thinking you might need to provide C45 access, at least MMD 30,
-> > via MMS 10-15?
-> Thanks for this detailed comment. If understand you correctly by 
-> consolidating all your above explanations, the driver should provide C45 
-> access to the PHY vendor specific and PLCA registers (MMD 31). As per 
-> the specification, Table 6 describes the Register Memory Map Selector 
-> (MMS) Assignment. In this, MMS 4 maps the PHY vendor specific and PLCA 
-> registers. They are in the MMD 31 address space as per spec. They can be 
-> directly accessed using read_c45 and write_c45 functions in the mdio bus.
-
-Yes. I think this is required to conform to the standard.
-
-> In Microchip's MAC-PHY (LAN8650), PHY – Vendor Specific and PLCA 
-> Registers (MMD 31) mapped in the MMS 4 as per the table 6 in the spec.
-> There is no other PHY vendor specific registers are mapped in the MMS 10 
-> through 15. No idea whether any other vendor's MAC-PHY uses MMS 10 
-> through 15 to map PHY – Vendor Specific and PLCA Registers (MMD 31).
-> 
-> I have given the code below for the C45 access methods. Kindly check is 
-> this something you expected?
-
-The code got mangled by your mail client :-(
-
-> --- Code starts ---
-> 
-> /* PHY – Vendor Specific and PLCA Registers (MMD 31) */ 
-> 
-> #define OA_TC6_PHY_VS_PLCA_REG_ADDR_BASE        0x40000
-> ,,,
-> 
-> static int oa_tc6_mdiobus_read_c45(struct mii_bus *bus, int addr, int 
-> devnum, int regnum)
-> { 
-> 
->          struct oa_tc6 *tc6 = bus->priv; 
-> 
->          u32 regval; 
-> 
->          bool ret; 
-> 
->  
-> 
->          ret = oa_tc6_read_register(tc6, 
-> OA_TC6_PHY_VS_PLCA_REG_ADDR_BASE | regnum, &regval); 
-
-You appear to ignore devnum. I don't think you can do that. The core
-phylib code might try to access other MMDs, e.g. it might try to see
-if EEE is supported, by reading MDIO_MMD_PCS, MDIO_PCS_EEE_ABLE.
-
-	Andrew
+Best regards,
+    Sergio Paracuellos
 
