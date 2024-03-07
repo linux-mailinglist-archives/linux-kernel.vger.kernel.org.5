@@ -1,122 +1,110 @@
-Return-Path: <linux-kernel+bounces-95980-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95981-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B517875598
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 18:54:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17D3D87559B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 18:55:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0C3A9B2204D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:54:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC5001F222CE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:55:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F42B130E58;
-	Thu,  7 Mar 2024 17:54:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6539D130E5E;
+	Thu,  7 Mar 2024 17:54:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="DU5jzMG9"
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JnuyfUZ5"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 231991DA27
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 17:54:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A85E517722;
+	Thu,  7 Mar 2024 17:54:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709834065; cv=none; b=oTn7KyzBs2uQ/4eh+mgJqRZg6HnY8Z34EPktjhst0QHHvooTiVMAHzylfWQyhmWG6CIDXc0yVRsKQciK4edGnalSyQeHWjdUMhMXZcQVb+ll1jk1WO+p8kCCI370RPrmOBrPuf6CA3YftMNzXzED2ogwBnz1Aaot/Mxtu+Ljr0U=
+	t=1709834097; cv=none; b=g5UE541XGVHZrzKTnQ/FKS6fVf1oxmfICFe7S0bnkEZfsmopGOxvX2XG7gvX3c4dK5SLW9kIKbaYHuehaB7z7O2SMRg58rBlcCwAfmdSs5qg7yokbn+M0HAOUa/FMEQ7lGyPdFJK/ef66s2lD/FFW0JM3dszWxEpi9nH/MOxlxQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709834065; c=relaxed/simple;
-	bh=gL2PUG8wkeC1np6GBiLpogsA+xXsDUCoIx/Wk/Y2ahg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DVKx9XqRkxh/7hQau/9UsKl/gnOTLZfnxiUr/gaSqVu8uIBXjwqe0PDmeKmsZFBtYTX6eoqU+y2hcmMbgQSsYWjXuIWbNtNwCyWdgzrQ4NFcUIUpsl1viLi7DFmthUX/nIz6eC78a6n7dbAVudEZnLD9EpOxtS8BRiEaJ0NMEHE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=DU5jzMG9; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1dd10ae77d8so10463365ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 09:54:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709834063; x=1710438863; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=q/X9WiAZ298nMlpwZKocfmBQTYiNw1IbFj7J55m43DY=;
-        b=DU5jzMG9S2KQ3f4emnrXDRwe+CrWvJhdp7uQLvLQmX/vWpez7HiYJcyUfv9N+s8PF0
-         eCuNU0gjp+ZUcucBXSGIW/4+klv2T1/vqFOUtiA3hpdot+rVEJRNp8E4Ugwt6lXgDBQN
-         5arJjOvqnbD3XhwVga4zhl+eD6Qqz1/mxfTlw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709834063; x=1710438863;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=q/X9WiAZ298nMlpwZKocfmBQTYiNw1IbFj7J55m43DY=;
-        b=ZhfvlilEpY9SzXjlh1eJFBSOr+yzTwBDP+hkqA8fZ+tgd8JtV8pjLYDzLsc1k4n2Yg
-         ZaMWJHysjb//ESqT91c5PWNmkC+xTYqCzUTPzOmg3pLaNJTyCuuE3mimvl7nhHfkBuTR
-         Rf7eza+pivIqJ0Xjymgpq26gxMjGCcBRfdlpxnlS1EE8ReEnIWulc8W08vSVG8bowjEL
-         7R5YRnpNcFIli4Jv8d++DX/HTmzFRk2JelAHtMBCEZk0B10cSwzBQeYolbgZBCT0o+8l
-         P/J7jVUjTBhNRri7izTj0aBaxgJzqj8tKD7j9Y0UrXeN7hcPI3cBf2OKc2F6LxdSAWs/
-         OXyA==
-X-Forwarded-Encrypted: i=1; AJvYcCWGh1K3dXcFCSqHEW8Giy1spVy2t5TerRj6SVQ49Zzy2ILEQlbQgWbUpIzFuuyVNT7fmHby+soqQA74r/xr3hHb/ygn1duKviN/1Qdc
-X-Gm-Message-State: AOJu0YwZ3redhwbYtge9yj52OWssy1aVznglu1MKxqLg5MlTaKtNbnIR
-	SWg3So5XQprhSr/Eat2BH5C7CbAjqy2UscB2Zj/GZUziICbSXQte2EJxCHZDeg==
-X-Google-Smtp-Source: AGHT+IHUxQ9DWu9gysEex2ejtTK+1HHHKEo3vq3YQF4KtyNv591GHTuR4rvCLhlFEW54mpHAl/SO9Q==
-X-Received: by 2002:a17:903:2348:b0:1d7:5d88:f993 with SMTP id c8-20020a170903234800b001d75d88f993mr9618761plh.41.1709834063497;
-        Thu, 07 Mar 2024 09:54:23 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id y6-20020a17090322c600b001d9edac54b1sm14951503plg.171.2024.03.07.09.54.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Mar 2024 09:54:22 -0800 (PST)
-Date: Thu, 7 Mar 2024 09:54:22 -0800
-From: Kees Cook <keescook@chromium.org>
-To: =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
-Cc: Christian Brauner <brauner@kernel.org>,
-	=?iso-8859-1?Q?G=FCnther?= Noack <gnoack@google.com>,
-	Jann Horn <jannh@google.com>, Paul Moore <paul@paul-moore.com>,
-	Konstantin Meskhidze <konstantin.meskhidze@huawei.com>,
-	"Serge E . Hallyn" <serge@hallyn.com>, linux-kernel@vger.kernel.org,
-	linux-security-module@vger.kernel.org
-Subject: Re: [PATCH] landlock: Use f_cred in security_file_open() hook
-Message-ID: <202403070951.22E77FD709@keescook>
-References: <20240307095203.1467189-1-mic@digikod.net>
+	s=arc-20240116; t=1709834097; c=relaxed/simple;
+	bh=N/G00rBhFeUtQPFUnLF5UqWzkC0ItgBzrXMdpGLMz58=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=d3Ie7tjbZ415tluOgGbXrv5GzZ4dheQ+ASQU7JBwXxUW8MdZzDRVQENTM6WZr4JmdHAvGEZn0bGrZvRojDkewjq7szxnMGPffxdwobMGV/H0R3agYcpmOX+saW0/cR48LppS9wzdz2Ymoxd+vUji807Ch/wYyCaRgfWZQmtfbcY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JnuyfUZ5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CAE23C433C7;
+	Thu,  7 Mar 2024 17:54:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709834097;
+	bh=N/G00rBhFeUtQPFUnLF5UqWzkC0ItgBzrXMdpGLMz58=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=JnuyfUZ5k6RipLTJCjx0fB7LjTyCGUd8FcKG8zqs2T3r6UC2h3eX1v8ATZzAxx+Yp
+	 pYZncg0OdtOt84ZvuAKkfXJKxNwf0HqcEWVnhbyHjrW3ZDMAPYsq/e1g36Zm69DCGz
+	 y03mX2SOJHbBLK4ffQeATEek14ejx7XdAnKqQTZNV8SsaEAQww09Gh64i4Qnb7DucA
+	 aY1B0UKXp3Jjv3ap6vh20yzAeTNc12yiFLnaimwhxwPpSVfQY1bupmajce3ey2MnRU
+	 cHYXCVHj6fjAf7K3bh58r0ZIk1s3RA+wvMov59fRY/lH65ywsvr7EfRgW+oBrgc4M2
+	 Q9OzcxFbbUI9Q==
+From: Mark Brown <broonie@kernel.org>
+To: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, 
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, 
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>, 
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, 
+ Bard Liao <yung-chuan.liao@linux.intel.com>, 
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, 
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, 
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+In-Reply-To: <20240307163734.3852754-1-andriy.shevchenko@linux.intel.com>
+References: <20240307163734.3852754-1-andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v1 1/1] ASoC: Intel: catpt: Carefully use PCI bitwise
+ constants
+Message-Id: <170983409454.99823.12509782331460236693.b4-ty@kernel.org>
+Date: Thu, 07 Mar 2024 17:54:54 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240307095203.1467189-1-mic@digikod.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-a684c
 
-On Thu, Mar 07, 2024 at 10:52:03AM +0100, Mickaël Salaün wrote:
-> Use landlock_cred(file->f_cred)->domain instead of
-> landlock_get_current_domain() in security_file_open() hook
-> implementation.
+On Thu, 07 Mar 2024 18:37:34 +0200, Andy Shevchenko wrote:
+> PM constants for PCI devices are defined with bitwise annotation.
+> When used as is, sparse complains about that:
 > 
-> This should not change the current behavior but could avoid potential
-> race conditions in case of current task's credentials change.
+>   .../catpt/dsp.c:390:9: warning: restricted pci_power_t degrades to integer
+>   .../catpt/dsp.c:414:9: warning: restricted pci_power_t degrades to integer
 > 
-> This will also ensure consistency with upcoming audit support relying on
-> file->f_cred.
+> Force them to be u32 in the driver.
 > 
-> Add and use a new get_fs_domain() helper to mask non-filesystem domains.
-> 
-> file->f_cred is set by path_openat()/alloc_empty_file()/init_file() just
-> before calling security_file_alloc().
-> 
-> Cc: Christian Brauner <brauner@kernel.org>
-> Cc: Günther Noack <gnoack@google.com>
-> Cc: Jann Horn <jannh@google.com>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Paul Moore <paul@paul-moore.com>
-> Signed-off-by: Mickaël Salaün <mic@digikod.net>
-> Link: https://lore.kernel.org/r/20240307095203.1467189-1-mic@digikod.net
+> [...]
 
-This looks sensible to me. It follows best practices[1] for avoiding
-confused deputy attacks as well.
+Applied to
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-[1] https://docs.kernel.org/security/credentials.html?highlight=confused+deputy#open-file-credentials
+Thanks!
 
--- 
-Kees Cook
+[1/1] ASoC: Intel: catpt: Carefully use PCI bitwise constants
+      commit: 6c023ad32b192dea51a4f842cc6ecf89bb6238c9
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
 
