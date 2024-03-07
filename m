@@ -1,161 +1,196 @@
-Return-Path: <linux-kernel+bounces-95344-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95345-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B42D5874C80
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:36:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45B3C874C82
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:36:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E5081F23A3E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:36:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A653F1F22732
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:36:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D314985297;
-	Thu,  7 Mar 2024 10:35:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C93D08529C;
+	Thu,  7 Mar 2024 10:36:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="s+SxzqNB"
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CZRrB0zA"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C196563411
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 10:35:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19F05EAEB
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 10:36:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709807743; cv=none; b=XWhYGqaLc0WwvxX6erKbSS85OEf3CoaXE2rDiXUbsoDIL/Mq6pJbXiZe/p3gewykQaPeHLBQJNeLKjR83Uzyebu+/8NeF2wnGmnfqzSA6c+n5ekMxiQgud7ja3O7H4TzE5G7RejmsKrD1hTO7rXdjrVqYdHqeOX4IBFMFbfgwaQ=
+	t=1709807797; cv=none; b=hq6xuhYCc3yClzmFAliz/dqZJA6J4ZfEbg39NleHpqncIvl4r4QZ2anw3s43OYBHqumumNbGNO9ZOIsXj5GG/kJuSu3PiqA9GSvAGDvT8uHnDtMJ/k6S6BQ+cs7EAsZMDiddst0D3Ga+H+RK5/9SV8SnVgXRPO/JSgisK97ozB0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709807743; c=relaxed/simple;
-	bh=zUOzHqLYT+D2RHSlBC8CrTyheSw2k5G0eVCGqvx7Tuw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sEELtlG97DDJ9SyxQy8lnAcCVobxevYUaLPP0FgrdzO+uN6FymumxdXcsKhf1St33E4x0QILcn8R/bW7TJZnMD9zMI6GgSUGnnXI4fMEwe2wDWb1PqIEAGVpAS9Xw47wMTgzc5XSGv4ioL68ILtlTgSSX2nchfOjYDMaoLe5uFc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io; spf=pass smtp.mailfrom=layalina.io; dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b=s+SxzqNB; arc=none smtp.client-ip=209.85.218.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a452877ddcaso100431266b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 02:35:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1709807739; x=1710412539; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=4NI5nB7l1zMLQUnygTej5fwUcsau3Hoemt339OESZU0=;
-        b=s+SxzqNB5t1WIAeqpamu6UGg7olnQtz/U9/7MrryKznEMzwpQV5dxLdN+VtOYGerJY
-         U3ozYsstdDT8RR91NO5vh09e7ubZjnr+ZXRTJwbiKDc1kDn4WfCKisyK0Ti8vQP4+UB2
-         SPotG7CpEXrHdz7MAD27NJPf9SQPhix5tUKOgfalcDJYWhYMk4Rjkhgt1MSmzz/+MY0V
-         bOPmbKArj7p+R47jTQV1SgcLR5A6smv5pkSv+fe3HBsQYfomXJ4H2jZL8dfyiZp/Jco8
-         fzSDwgpkmCOADWlhf7iVkTWMZjwjk6nd1+vMLUPv/l8HyUi/78TjmqRiIYwpl496yr00
-         cUcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709807739; x=1710412539;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4NI5nB7l1zMLQUnygTej5fwUcsau3Hoemt339OESZU0=;
-        b=N0PV9MWuVr4Qj0LSwNNaWEGlRipeNDitNoA8koL9FigH1mKkJSDJFxzL/dpQ3GFnQ4
-         2kRnMglGUAG2KelmZcmqBGRKDYQaQLRzCLhQoLc3aJ5WZwn+C18No8flR+zFQ38IjICe
-         tBoQEGuaCVSK+R/mG/vvm6hfm094LBwN1cHdTN/M8woMnyM7H6OBHSSi8ggeKAf5NUwj
-         jV3TKjpzmXWvdvBwuzDQpQJLWtDRjjS0fcofqSYAIwZkUQRAHLR2fUfrSMA8uF4gIgR7
-         NkPEaejzj6oXQoPtlmnLLzIk8QtYKKe1Cxh7fr++endmakJSO2/ZJFtN7ExTKZ/toaUk
-         cEOg==
-X-Forwarded-Encrypted: i=1; AJvYcCVBhBga8IKsmz00KyGBcdbaIHY6u8KJlvWdPIDnnzX261bMyMaMcpkUPVrOp3VSzmQCBdSzEGKxVha1o28+8sECObHXZkhUmtifu94H
-X-Gm-Message-State: AOJu0YwcDIaeVdXTs32tP0ZO/NAjSI06gKOm7D8nD45LDQu+f64Uur60
-	81mJuG3X5xIvQsV4sBexdGsIk0lIueI5sGxJUUqYqUTwipfxg5D4R/TFlxdRpya+TcsJhRLZNrU
-	o
-X-Google-Smtp-Source: AGHT+IG5W3d1CCt18Dtuwpxk7bf8cDLqj0oeZsKjgMVha/3dKinH9O2VdObbsCeolCEvqZy187VsPg==
-X-Received: by 2002:a17:906:54c7:b0:a41:3e39:b918 with SMTP id c7-20020a17090654c700b00a413e39b918mr12072318ejp.24.1709807739015;
-        Thu, 07 Mar 2024 02:35:39 -0800 (PST)
-Received: from airbuntu (92.40.185.219.threembb.co.uk. [92.40.185.219])
-        by smtp.gmail.com with ESMTPSA id m14-20020a17090607ce00b00a45c9945251sm773913ejc.192.2024.03.07.02.35.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Mar 2024 02:35:38 -0800 (PST)
-Date: Thu, 7 Mar 2024 10:35:27 +0000
-From: Qais Yousef <qyousef@layalina.io>
-To: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Ingo Molnar <mingo@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
-	Pierre Gondois <Pierre.Gondois@arm.com>
-Subject: Re: [PATCH v6 2/4] sched/fair: Check a task has a fitting cpu when
- updating misfit
-Message-ID: <20240307103527.y5zrnkjvwoqhtyll@airbuntu>
-References: <20240220225622.2626569-1-qyousef@layalina.io>
- <20240220225622.2626569-3-qyousef@layalina.io>
- <d6699c3a-3df6-46a3-98db-e07c8722f106@arm.com>
- <20240303174416.7m3gv5wywcmedov4@airbuntu>
- <20240306214704.uditboboedut2lm2@airbuntu>
- <CAKfTPtBLUkZ0hEd8K=e9wjg+zn9N5jgia-7wwLa3jaeYK+qkCw@mail.gmail.com>
+	s=arc-20240116; t=1709807797; c=relaxed/simple;
+	bh=oSvpQF78OH2SIBcN2hrMJ6J8dbzBxbdEOqWa3QXaon8=;
+	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
+	 Content-Type:Date:Message-ID; b=OhdICG91ko767L8hQXtZgpp+ZHlsM3dS5UsyLjZXFxnfGGBuAS6s+c8RYharzxWnTpFrHAaj9ri0Mde13t3PKfcxr4OyfJVYdRyjJPimI4mLxKXIUgfOaxnMOWH3LCkaV6f33jK92fJ/WDhfOXCAVgbxcIsBCUEoAv8VpuC6LFE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CZRrB0zA; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709807794;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rD9pKOLlJMagBhvvso8urKdJzEY4DWr9MOofjPhNFFA=;
+	b=CZRrB0zA78RUduIO0smpVmRzUhPqgq+DsC9itHwWXuhRsQ0im+GgnjgNDbe8x+21JqQdRU
+	rpyZ1cbQa+76eaKXXoy85+T5zzHU4WCCj2kXFqDEjBwWj3kvI1MbOzQr5abUQltFvp8z8x
+	WmPtt/2cdBej1xOxEeeFGZzq4dykbRM=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-358-zJKFNu4oMJWt0JTIEUyesQ-1; Thu,
+ 07 Mar 2024 05:36:33 -0500
+X-MC-Unique: zJKFNu4oMJWt0JTIEUyesQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6F4E329AC020;
+	Thu,  7 Mar 2024 10:36:32 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.114])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 23538C01600;
+	Thu,  7 Mar 2024 10:36:29 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <ZelGX3vVlGfEZm8H@casper.infradead.org>
+References: <ZelGX3vVlGfEZm8H@casper.infradead.org> <1668172.1709764777@warthog.procyon.org.uk>
+To: Matthew Wilcox <willy@infradead.org>,
+    Trond Myklebust <trond.myklebust@hammerspace.com>,
+    Miklos Szeredi <miklos@szeredi.hu>, Christoph Hellwig <hch@lst.de>
+Cc: dhowells@redhat.com, Andrew Morton <akpm@linux-foundation.org>,
+    Alexander Viro <viro@zeniv.linux.org.uk>,
+    Christian Brauner <brauner@kernel.org>,
+    Jeff Layton <jlayton@kernel.org>, linux-mm@kvack.org,
+    linux-fsdevel@vger.kernel.org, netfs@lists.linux.dev,
+    v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
+    ceph-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
+    linux-nfs@vger.kernel.org, devel@lists.orangefs.org,
+    linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] mm: Replace ->launder_folio() with flush and wait
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAKfTPtBLUkZ0hEd8K=e9wjg+zn9N5jgia-7wwLa3jaeYK+qkCw@mail.gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1831808.1709807788.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date: Thu, 07 Mar 2024 10:36:28 +0000
+Message-ID: <1831809.1709807788@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
 
-On 03/07/24 10:14, Vincent Guittot wrote:
-> On Wed, 6 Mar 2024 at 22:47, Qais Yousef <qyousef@layalina.io> wrote:
-> >
-> > On 03/03/24 17:44, Qais Yousef wrote:
-> >
-> > >       diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > >       index 174687252e1a..b0e60a565945 100644
-> > >       --- a/kernel/sched/fair.c
-> > >       +++ b/kernel/sched/fair.c
-> > >       @@ -8260,6 +8260,8 @@ static void set_task_max_allowed_capacity(struct task_struct *p)
-> > >                       cpumask_t *cpumask;
-> > >
-> > >                       cpumask = cpu_capacity_span(entry);
-> > >       +               if (!cpumask_intersects(cpu_active_mask, cpumask))
-> > >       +                       continue;
-> > >                       if (!cpumask_intersects(p->cpus_ptr, cpumask))
-> > >                               continue;
-> > >
-> > >       @@ -8269,6 +8271,53 @@ static void set_task_max_allowed_capacity(struct task_struct *p)
-> > >               rcu_read_unlock();
-> > >        }
-> > >
-> > >       +static void __update_tasks_max_allowed_capacity(unsigned long capacity)
-> > >       +{
-> > >       +       struct task_struct *g, *p;
-> > >       +
-> > >       +       for_each_process_thread(g, p) {
-> > >       +               if (fair_policy(p->policy) && p->max_allowed_capacity == capacity)
-> >
-> > This condition actually not good enough. We need to differentiate between going
-> > online/offline. I didn't want to call set_task_max_allowed_capacity()
-> > unconditionally and make hotplug even slower.
-> 
-> But should we even try to fix this ? hotplugging a cpu is a special
-> case and with patch 4 you will not increase lb_interval anymore
+Matthew Wilcox <willy@infradead.org> wrote:
 
-I don't care to be honest and this was my first reaction, but I couldn't ignore
-the report.
+> On Wed, Mar 06, 2024 at 10:39:37PM +0000, David Howells wrote:
+> > Here's a patch to have a go at getting rid of ->launder_folio().  Sinc=
+e it's
+> > failable and cannot guarantee that pages in the range are removed, I'v=
+e tried
+> > to replace laundering with just flush-and-wait, dropping the folio loc=
+k around
+> > the I/O.
+> =
 
-I will need to do something to handle the dynamic EM changing capacities anyway
-after 6.9 merge window. Or maybe now; I still haven't thought about it. I am
-hoping I can trigger the update somewhere from the topology code. Maybe that
-work will make handling hotplug easier than the approach I've taken now on
-rq_online/offline.
+> My sense is that ->launder_folio doesn't actually need to be replaced.
+> =
 
-FWIW, I have a working patch that solves the problem. The only drawback is that
-rq_online/offline() are not only called from sched_cpu_activate/deactivate()
-path but from build_sched_domains() path which for some reasons ends up calling
-rq_offline/online() for each cpu in the map.  To be even more efficient I need
-to teach rq_offline/online() to differentiate between the two. Or refactor the
-code. Which if you don't think it's important too I'd be happy to drop this and
-replace it with a comment to see if someone cares. Only testing and dev could
-end up using hotplug; so there could be a difference in behavior in regards how
-often misfit migration can kick. But as you said hopefully with these fixes
-it'd just end up being unnecessary work. The only potential problem maybe is
-that misfit lb has a precedence over other types of lb types; so we could
-end up delaying load imbalance if there's a pointless misfit lb?
+> commit e3db7691e9f3dff3289f64e3d98583e28afe03db
+> Author: Trond Myklebust <Trond.Myklebust@netapp.com>
+> Date:   Wed Jan 10 23:15:39 2007 -0800
+> =
 
-I'm happy to follow the crowd. But it'd be nice if this series can be made
-mergeable with follow up work. It'd make life much easier for me.
+>     [PATCH] NFS: Fix race in nfs_release_page()
+> =
 
+>         NFS: Fix race in nfs_release_page()
+> =
 
-Thanks!
+>         invalidate_inode_pages2() may find the dirty bit has been set on=
+ a page
+>         owing to the fact that the page may still be mapped after it was=
+ locked.
+>         Only after the call to unmap_mapping_range() are we sure that th=
+e page
+>         can no longer be dirtied.
+>         In order to fix this, NFS has hooked the releasepage() method an=
+d tries
+>         to write the page out between the call to unmap_mapping_range() =
+and the
+>         call to remove_mapping(). This, however leads to deadlocks in th=
+e page
+>         reclaim code, where the page may be locked without holding a ref=
+erence
+>         to the inode or dentry.
+> =
 
---
-Qais Yousef
+>         Fix is to add a new address_space_operation, launder_page(), whi=
+ch will
+>         attempt to write out a dirty page without releasing the page loc=
+k.
+> =
+
+>     Signed-off-by: Trond Myklebust <Trond.Myklebust@netapp.com>
+> =
+
+> I don't understand why this couldn't've been solved by page_mkwrite.
+> NFS did later add nfs_vm_page_mkwrite in July 2007, and maybe it's just
+> not needed any more?  I haven't looked into it enough to make sure,
+> but my belief is that we should be able to get rid of it.
+
+Okay, it's slightly more complex than I thought - and I'm not sure all cal=
+lers
+are actually using it correctly.  There are some additional interesting ca=
+ses
+I've found, beyond the pre-/post-DIO case:
+
+ (1) NFS relies on it to retry the write before stripping the pages in the
+     case where a writeback error occurs.  I think this can probably be de=
+alt
+     with by sticking a filemap_fdatawrite() call before the invalidation.
+     I'm not sure if this would incur the deadlock with the page reclaim c=
+ode
+     of which Trond speaks.
+
+ (2) invalidate_inode_pages2() is used in some places to effect invalidati=
+on
+     of the pagecache in the case where the server tells us that a third p=
+arty
+     modified the server copy of a file.  What the right behaviour should =
+be
+     here, I'm not sure, but at the moment, any dirty data will get launde=
+red
+     back to the server.  Possibly it should be simply invalidated locally=
+ or
+     the user asked how they want to handle the divergence.
+
+     Some filesystems use invalidate_remote_inode() instead which seems to
+     leave the dirty pages in place locally.
+
+     If it is desirous to save the dirty data, then filemap_fdatawrite()
+     could be deployed before invalidating the pages.
+
+ (3) Fuse uses invalidate_inode_pages2() in fuse_do_setattr() to strip all=
+ the
+     pages from an inode that has had its size changed, laundering any pag=
+e
+     that's still dirty.  This would seem to be excessive, but maybe Miklo=
+s
+     had a reason for doing it that way.
+
+There are some places that should perhaps be using kiocb_invalidate_pages(=
+)
+and kiocb_invalidate_post_direct_write() instead - assuming Christoph has =
+no
+objection to the latter function being exported.
+
+David
+
 
