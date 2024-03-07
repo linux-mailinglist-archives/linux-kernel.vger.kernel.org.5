@@ -1,229 +1,120 @@
-Return-Path: <linux-kernel+bounces-95395-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95396-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70CC9874D24
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:13:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 677D0874D28
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:14:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F4102282280
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:13:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23C11282F85
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:14:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A692C1292C0;
-	Thu,  7 Mar 2024 11:13:12 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED68784FD0
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 11:13:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E03B8128836;
+	Thu,  7 Mar 2024 11:13:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DPrLV54m"
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96485DDC9;
+	Thu,  7 Mar 2024 11:13:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709809991; cv=none; b=e4IMYoE9hk8PpdQoEBRqPbQHCMg5dh0CaxGr9PzcYrc8RJAqm9hev46WoZPOR4+eS5V70p75ykhIRiKeIP0XuaL5FeL6vIxC+LzJUOujDJXstjIPkK0pjeD1DvGFknL12xSk6PoKSxJ7duZFgDKaX/NSdUeeF/Qs71x6G63zgZQ=
+	t=1709810036; cv=none; b=TsK4ab+yhhcdtJZ9k0SXkahKduXXPtmkk6NXTTJn9ulnrg0yD0k6p/EAiFi2w3+YUWYMTiq5K83VDLD/Q0ovaVdrvFlVGzD6JoMDzC6au3P0V5G9g7voC+Sp9z1qeKyoo2hi7kDVtVSRgrER64DQQjvxDCfSDwItSJmvUzaFxLM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709809991; c=relaxed/simple;
-	bh=fdIYqhAcE3p+DRpj3kch5U908fSjSxuv30CoXHAbRoQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rMCrXyQQHZzmAU4HZgeHS2+esCPlQfMFcpTUnkKI0lqmT/QAl4tj0Ch8POeHCErXf0cNT63wcGJDaeVEuyKUTdLuG34cv/g8bCe5EY8cxYqQi1gIaFrI2irLAsz+eyUdg11QQ7pD8Rvrz2ouJ/hX3GCYP2ijlIZfbYo9n09byUA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 89E631FB;
-	Thu,  7 Mar 2024 03:13:45 -0800 (PST)
-Received: from [10.1.25.184] (XHFQ2J9959.cambridge.arm.com [10.1.25.184])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 44DCD3F762;
-	Thu,  7 Mar 2024 03:13:06 -0800 (PST)
-Message-ID: <d24f8553-33f2-4ae7-a06d-badaf9462d84@arm.com>
-Date: Thu, 7 Mar 2024 11:13:04 +0000
+	s=arc-20240116; t=1709810036; c=relaxed/simple;
+	bh=vzH93D4jP/qdyA1AdyLTY5J4mAvCYF4Oh9LEd1nqK1g=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=iHXJY0E04c4BKzYpOZAY4zaXHnOdovzUrnoliSDMoaN/0ZTvef7Gx3gC/411NJGpeRQFRXzDznXF5gAf/O5u4qys/cBPUkNizK1eVesq8nsg9S6onrZieNw99bpvcUhdBrICBnXWutfut2V1ti457JcfA8y+tmo+x/VyU1kpGy8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DPrLV54m; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-33e17342ea7so407340f8f.2;
+        Thu, 07 Mar 2024 03:13:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709810033; x=1710414833; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=HMTM+W302u0jntrzElYraz9pp6IOGybZeSVVmTNPZVI=;
+        b=DPrLV54mHpyffnS1Uj0R3iXCdGRkdF5x/fuztpsNIanAPzv/iVQUOxYPerb9FbGGbq
+         uZ+7f9aHAEj3GxFZse8AYEvgyuXQNxRnWP2vxit1rQmVWwtRmQFVwGlB2v0J8aaPo2L2
+         Xtq2iwgmIM7qOJoCxqzEBBiKSeY6RsnMgtbo38ha0F79WmGFPg+WDluJ3qh/2DvKAQCZ
+         H0nQ9hRbLnbwzj8G+yj3y14x7klOMTpwB868PinkNnylI/sER3aRlFDkWVCa1xNyogsF
+         CijdUXGyXGHTgchkPoSdnc3sYZHbxUMcjiI/VlUjH3T5Ghw/9+VMJ7agf2I4O3M6LKwl
+         HnrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709810033; x=1710414833;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HMTM+W302u0jntrzElYraz9pp6IOGybZeSVVmTNPZVI=;
+        b=Bu40FclSJFYReT4/L4R0JzXdUSY0sv8nwNyY63m195Cc+OD6PzOyfdl7j6X8FIxBLZ
+         7zff46B54pTOxhXiNJz6ktl99wtHqa7uXEluTmDc5O78NXvEBHDOSHi7R/y0VCDNv2sx
+         43RLgKt4QA8h8X+RXIVKLD9dgxoUY+l+V1c1VEGesOYyo0pS980bRECx7ao+mQ56GsnJ
+         yTFSUrH2OA6GMDvo6lQ3vDgJGHweT6kl6gtZ405aNxgdatRPFZpvmeoukHmQIF5IJjI4
+         lllYZj40abSqBP6Hh4HLv+PZT+HSb5TiVOqC/V3phUbkC5vlIatpAyqklaN73mRZMMM3
+         F9Jw==
+X-Forwarded-Encrypted: i=1; AJvYcCX+8mJVT8hsWb6mMSuYJH9HakoEfkQ/Sp48k2f0aeHvjNnNXmZacu5QitkKpHbdXxA9GiMx8ZhRsW6rq6dVLnHCx06DQJL/HN+7lfS7dhPPvGN8ZbsxALksAJeVp035ONhyfGfxxVfK
+X-Gm-Message-State: AOJu0YzFTMsWqjoYmu8lNxtWzLSPVSNtzQqVBhn6nwSX6nKwMwOVJubi
+	cyFymx3CTJIx2dCimqzjHCOw7rHJtbKlzhhaf7h5JDkCkMBO3THE
+X-Google-Smtp-Source: AGHT+IHvBV7sDcOnurRdoGtHENGsA5MWuFky9TsdX6SGRc40zvSZN0wPOrZKxDJvP0GqaMGO8NfEoQ==
+X-Received: by 2002:adf:ef88:0:b0:33e:2f43:b35d with SMTP id d8-20020adfef88000000b0033e2f43b35dmr9539693wro.21.1709810032619;
+        Thu, 07 Mar 2024 03:13:52 -0800 (PST)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id bt17-20020a056000081100b0033e3cb02cefsm11067688wrb.86.2024.03.07.03.13.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Mar 2024 03:13:52 -0800 (PST)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	linux-usb@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] usb: sl811-hcd: only defined function checkdone if QUIRK2 is defined
+Date: Thu,  7 Mar 2024 11:13:51 +0000
+Message-Id: <20240307111351.1982382-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/1] mm/madvise: enhance lazyfreeing with mTHP in
- madvise_free
-Content-Language: en-GB
-To: David Hildenbrand <david@redhat.com>, Barry Song <21cnbao@gmail.com>
-Cc: Lance Yang <ioworker0@gmail.com>, Vishal Moola <vishal.moola@gmail.com>,
- akpm@linux-foundation.org, zokeefe@google.com, shy828301@gmail.com,
- mhocko@suse.com, fengwei.yin@intel.com, xiehuan09@gmail.com,
- wangkefeng.wang@huawei.com, songmuchun@bytedance.com, peterx@redhat.com,
- minchan@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20240307061425.21013-1-ioworker0@gmail.com>
- <CAGsJ_4xcRvZGdpPh1qcFTnTnDUbwz6WreQ=L_UO+oU2iFm9EPg@mail.gmail.com>
- <CAK1f24k2G_DSEjuqqqPyY0f7+btpYbjfoyMH7btLfP8nkasCTQ@mail.gmail.com>
- <CAGsJ_4xREM-P1mFqeM-s3-cJ9czb6PXwizb-3hOhwaF6+QM5QA@mail.gmail.com>
- <03458c20-5544-411b-9b8d-b4600a9b802f@arm.com>
- <CAGsJ_4zp1MXTjG=4gBO+J3owg7sHDgDJ8Ut51i1RBSnKnK0BfQ@mail.gmail.com>
- <501c9f77-1459-467a-8619-78e86b46d300@arm.com>
- <8f84c7d6-982a-4933-a7a7-3f640df64991@redhat.com>
- <e6bc142e-113d-4034-b92c-746b951a27ed@redhat.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <e6bc142e-113d-4034-b92c-746b951a27ed@redhat.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-On 07/03/2024 10:54, David Hildenbrand wrote:
-> On 07.03.24 11:54, David Hildenbrand wrote:
->> On 07.03.24 11:50, Ryan Roberts wrote:
->>> On 07/03/2024 09:33, Barry Song wrote:
->>>> On Thu, Mar 7, 2024 at 10:07 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>>>>
->>>>> On 07/03/2024 08:10, Barry Song wrote:
->>>>>> On Thu, Mar 7, 2024 at 9:00 PM Lance Yang <ioworker0@gmail.com> wrote:
->>>>>>>
->>>>>>> Hey Barry,
->>>>>>>
->>>>>>> Thanks for taking time to review!
->>>>>>>
->>>>>>> On Thu, Mar 7, 2024 at 3:00 PM Barry Song <21cnbao@gmail.com> wrote:
->>>>>>>>
->>>>>>>> On Thu, Mar 7, 2024 at 7:15 PM Lance Yang <ioworker0@gmail.com> wrote:
->>>>>>>>>
->>>>>>> [...]
->>>>>>>>> +static inline bool can_mark_large_folio_lazyfree(unsigned long addr,
->>>>>>>>> +                                                struct folio *folio,
->>>>>>>>> pte_t *start_pte)
->>>>>>>>> +{
->>>>>>>>> +       int nr_pages = folio_nr_pages(folio);
->>>>>>>>> +       fpb_t flags = FPB_IGNORE_DIRTY | FPB_IGNORE_SOFT_DIRTY;
->>>>>>>>> +
->>>>>>>>> +       for (int i = 0; i < nr_pages; i++)
->>>>>>>>> +               if (page_mapcount(folio_page(folio, i)) != 1)
->>>>>>>>> +                       return false;
->>>>>>>>
->>>>>>>> we have moved to folio_estimated_sharers though it is not precise, so
->>>>>>>> we don't do
->>>>>>>> this check with lots of loops and depending on the subpage's mapcount.
->>>>>>>
->>>>>>> If we don't check the subpage’s mapcount, and there is a cow folio
->>>>>>> associated
->>>>>>> with this folio and the cow folio has smaller size than this folio,
->>>>>>> should we still
->>>>>>> mark this folio as lazyfree?
->>>>>>
->>>>>> I agree, this is true. However, we've somehow accepted the fact that
->>>>>> folio_likely_mapped_shared
->>>>>> can result in false negatives or false positives to balance the
->>>>>> overhead.  So I really don't know :-)
->>>>>>
->>>>>> Maybe David and Vishal can give some comments here.
->>>>>>
->>>>>>>
->>>>>>>> BTW, do we need to rebase our work against David's changes[1]?
->>>>>>>> [1]
->>>>>>>> https://lore.kernel.org/linux-mm/20240227201548.857831-1-david@redhat.com/
->>>>>>>
->>>>>>> Yes, we should rebase our work against David’s changes.
->>>>>>>
->>>>>>>>
->>>>>>>>> +
->>>>>>>>> +       return nr_pages == folio_pte_batch(folio, addr, start_pte,
->>>>>>>>> +                                        ptep_get(start_pte), nr_pages,
->>>>>>>>> flags, NULL);
->>>>>>>>> +}
->>>>>>>>> +
->>>>>>>>>    static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
->>>>>>>>>                                   unsigned long end, struct mm_walk *walk)
->>>>>>>>>
->>>>>>>>> @@ -676,11 +690,45 @@ static int madvise_free_pte_range(pmd_t *pmd,
->>>>>>>>> unsigned long addr,
->>>>>>>>>                    */
->>>>>>>>>                   if (folio_test_large(folio)) {
->>>>>>>>>                           int err;
->>>>>>>>> +                       unsigned long next_addr, align;
->>>>>>>>>
->>>>>>>>> -                       if (folio_estimated_sharers(folio) != 1)
->>>>>>>>> -                               break;
->>>>>>>>> -                       if (!folio_trylock(folio))
->>>>>>>>> -                               break;
->>>>>>>>> +                       if (folio_estimated_sharers(folio) != 1 ||
->>>>>>>>> +                           !folio_trylock(folio))
->>>>>>>>> +                               goto skip_large_folio;
->>>>>>>>
->>>>>>>>
->>>>>>>> I don't think we can skip all the PTEs for nr_pages, as some of them
->>>>>>>> might be
->>>>>>>> pointing to other folios.
->>>>>>>>
->>>>>>>> for example, for a large folio with 16PTEs, you do MADV_DONTNEED(15-16),
->>>>>>>> and write the memory of PTE15 and PTE16, you get page faults, thus PTE15
->>>>>>>> and PTE16 will point to two different small folios. We can only skip
->>>>>>>> when we
->>>>>>>> are sure nr_pages == folio_pte_batch() is sure.
->>>>>>>
->>>>>>> Agreed. Thanks for pointing that out.
->>>>>>>
->>>>>>>>
->>>>>>>>> +
->>>>>>>>> +                       align = folio_nr_pages(folio) * PAGE_SIZE;
->>>>>>>>> +                       next_addr = ALIGN_DOWN(addr + align, align);
->>>>>>>>> +
->>>>>>>>> +                       /*
->>>>>>>>> +                        * If we mark only the subpages as lazyfree, or
->>>>>>>>> +                        * cannot mark the entire large folio as lazyfree,
->>>>>>>>> +                        * then just split it.
->>>>>>>>> +                        */
->>>>>>>>> +                       if (next_addr > end || next_addr - addr !=
->>>>>>>>> align ||
->>>>>>>>> +                           !can_mark_large_folio_lazyfree(addr, folio,
->>>>>>>>> pte))
->>>>>>>>> +                               goto split_large_folio;
->>>>>>>>> +
->>>>>>>>> +                       /*
->>>>>>>>> +                        * Avoid unnecessary folio splitting if the large
->>>>>>>>> +                        * folio is entirely within the given range.
->>>>>>>>> +                        */
->>>>>>>>> +                       folio_clear_dirty(folio);
->>>>>>>>> +                       folio_unlock(folio);
->>>>>>>>> +                       for (; addr != next_addr; pte++, addr +=
->>>>>>>>> PAGE_SIZE) {
->>>>>>>>> +                               ptent = ptep_get(pte);
->>>>>>>>> +                               if (pte_young(ptent) ||
->>>>>>>>> pte_dirty(ptent)) {
->>>>>>>>> +                                       ptent = ptep_get_and_clear_full(
->>>>>>>>> +                                               mm, addr, pte,
->>>>>>>>> tlb->fullmm);
->>>>>>>>> +                                       ptent = pte_mkold(ptent);
->>>>>>>>> +                                       ptent = pte_mkclean(ptent);
->>>>>>>>> +                                       set_pte_at(mm, addr, pte, ptent);
->>>>>>>>> +                                       tlb_remove_tlb_entry(tlb, pte,
->>>>>>>>> addr);
->>>>>>>>> +                               }
->>>>>>>>
->>>>>>>> Can we do this in batches? for a CONT-PTE mapped large folio, you are
->>>>>>>> unfolding
->>>>>>>> and folding again. It seems quite expensive.
->>>>>
->>>>> I'm not convinced we should be doing this in batches. We want the initial
->>>>> folio_pte_batch() to be as loose as possible regarding permissions so that we
->>>>> reduce our chances of splitting folios to the min. (e.g. ignore SW bits like
->>>>> soft dirty, etc). I think it might be possible that some PTEs are RO and other
->>>>> RW too (e.g. due to cow - although with the current cow impl, probably not.
->>>>> But
->>>>> its fragile to assume that). Anyway, if we do an initial batch that ignores
->>>>> all
->>>>
->>>> You are correct. I believe this scenario could indeed occur. For instance,
->>>> if process A forks process B and then unmaps itself, leaving B as the
->>>> sole process owning the large folio.  The current wp_page_reuse() function
->>>> will reuse PTE one by one while the specific subpage is written.
->>>
->>> Hmm - I thought it would only reuse if the total mapcount for the folio was 1.
->>> And since it is a large folio with each page mapped once in proc B, I thought
->>> every subpage write would cause a copy except the last one? I haven't looked at
->>> the code for a while. But I had it in my head that this is an area we need to
->>> improve for mTHP.
->>
->> wp_page_reuse() will currently reuse a PTE part of a large folio only if
->> a single PTE remains mapped (refcount == 0).
-> 
-> ^ == 1
+Function checkdone is only required if QUIRK2 is defined, so add
+appropriate #if / #endif around the function.
 
-Ahh yes. That's what I meant. I got the behacviour vagulely right though.
+Cleans up clang scan build warning:
+drivers/usb/host/sl811-hcd.c:588:18: warning: unused function
+'checkdone' [-Wunused-function]
 
-Anyway, regardless, I'm not sure we want to batch here. Or if we do, we want to
-batch function that will only clear access and dirty.
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ drivers/usb/host/sl811-hcd.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/usb/host/sl811-hcd.c b/drivers/usb/host/sl811-hcd.c
+index 0956495bba57..2b871540bb50 100644
+--- a/drivers/usb/host/sl811-hcd.c
++++ b/drivers/usb/host/sl811-hcd.c
+@@ -585,6 +585,7 @@ done(struct sl811 *sl811, struct sl811h_ep *ep, u8 bank)
+ 		finish_request(sl811, ep, urb, urbstat);
+ }
+ 
++#ifdef QUIRK2
+ static inline u8 checkdone(struct sl811 *sl811)
+ {
+ 	u8	ctl;
+@@ -616,6 +617,7 @@ static inline u8 checkdone(struct sl811 *sl811)
+ #endif
+ 	return irqstat;
+ }
++#endif
+ 
+ static irqreturn_t sl811h_irq(struct usb_hcd *hcd)
+ {
+-- 
+2.39.2
 
 
