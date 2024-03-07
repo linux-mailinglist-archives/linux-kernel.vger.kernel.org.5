@@ -1,93 +1,149 @@
-Return-Path: <linux-kernel+bounces-95182-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95183-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDFBB874A56
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:07:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD1AA874A58
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:07:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 89FBC284AAF
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:07:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C9EC1F20C2A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:07:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6628D839EE;
-	Thu,  7 Mar 2024 09:07:19 +0000 (UTC)
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35FB383A19;
+	Thu,  7 Mar 2024 09:07:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lZoMoFYo"
+Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38E16823BF;
-	Thu,  7 Mar 2024 09:07:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01A561C2A3;
+	Thu,  7 Mar 2024 09:07:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709802438; cv=none; b=iXBs/6aUgnTCeHTc8kRWBinvzCYiGfv+DOD37a9DInLWwN9Bo0wXoWNVxYPZ90C/gRiaR7o9aE4yGMCvJyAOFjrRD/DyvXd2D/HFJIWPRgQ03vQ9H+tCa8YDD4HV4Tufc/FTB8RmjwiuCtv+RmL/AgtfkQQRa4yGnhvWbUaXJAM=
+	t=1709802440; cv=none; b=jUzmgI5f1TrzCc4CDAfsnvjaMjlTlWKDNDjBW1zodvVRqsSGDairapoJjAt8ckVppAiuRknn/rdZq8pPDVqtZO0KJHaNZNxViNuwAB3R2zl3qIJaFzMfqLFIrGGMPsJ7ntUanSg6OV8bBeaLPOhAiSjJhonTa6kIAQfMH76LByE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709802438; c=relaxed/simple;
-	bh=2DRSDw8IU8iKhA8aEQNkiQBlZNCJhxwwQj5j96Furis=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Hk+XQ7ufCJ0jsZITBWSp7/0jHbsZh20GTyttFi68QZRCfVqmJSwsxOP0qEJ/R/+KwoxUcrZW2nDOB9nT+BZJ9F3XocF4FOOzcN6wUubA10Dddt488sHfJRyf6EB7yb4hKSuk625yLJvUZKQyh4Enkl/xcLdRSG4blKW3I2T/NOE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+	s=arc-20240116; t=1709802440; c=relaxed/simple;
+	bh=Pda2tifda1uxhTuwgSnRPk7P0Rx7Ri+GXcWDUQip8YM=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=NegkkpCKze1I6Vxcw+lD9TwLee5aL9B54y6EEu2EZWPYUMfdYrtgaTZKMd1abmmrzbw0Kc7PRmgF8/CvJ3bDQKG1aOOMCq8uAHedWZxgnM0qFgEJ+h8pMC1cTpfQRaIynCwNVe9TWqboSXKRkUNMdCPk7uhbA/MEojdvO0cr4rA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lZoMoFYo; arc=none smtp.client-ip=209.85.222.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-564fd9eea75so828056a12.3;
-        Thu, 07 Mar 2024 01:07:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709802435; x=1710407235;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-787edfea5adso43991985a.2;
+        Thu, 07 Mar 2024 01:07:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709802438; x=1710407238; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=A6qm10nZVIh7lWdjNXoXuKqxvr/b4LeOyBSQKG+SB4c=;
-        b=MpzF4QHLYvz6jmPS2se3wCeHXBjAz5Ftz6S7jEh5Ei7w7DEUVYqT82+ao6GDnW/aDJ
-         ws1oz1bF7KFFLgYp0eSA8vAIeypr8dsJrbAs9Gs5bQzfRIbaNW49qmXP3eq7UH3Lg5p6
-         IBEpI/p72je6Q0QW5nx/x42q6fyC15WstKmmMkJJN15l4F+3Yb6YAJl48d7EkMum0S/U
-         Aut/BxLYAoK0DlN7JQJMNRoH2qSu4Uqp3j6qPQlkEhG80sj2igwG8hxCqdeZh8/dFHAu
-         njlrDMfofjxBKf7tBH0E4ROFN/B9QpGVzxzwV+TLKpNNd+9iGATl4h6g3F1IykCAbFB5
-         u2pA==
-X-Forwarded-Encrypted: i=1; AJvYcCXad86huA+RsumqANhtBqyt5Ts/wblM7xWUrvhHQs8YnmxYWUQi1Ri+e/FTEhnl6DoGuqAtrWuz9slFKSDaw8d1DmHRJBNTyQDi4S/L
-X-Gm-Message-State: AOJu0YxEGTYjaXxv97BJFCFlmtJurQGjKKj+IfqShrTC3dzb/W/Ygt7+
-	cQD/ugb53181YupGJxs2dWXDauZHpPcfZYSOf7rfs6Xac8dwH0bD
-X-Google-Smtp-Source: AGHT+IHN2mtpp9T0Lax6cS0skgPxEK7+k04UUfrKc8rgWJ48EOUo3PwQaUK8P/E5ax7lFMecR+6OQQ==
-X-Received: by 2002:a17:906:ae55:b0:a45:c8d9:e8a0 with SMTP id lf21-20020a170906ae5500b00a45c8d9e8a0mr1089466ejb.43.1709802435211;
-        Thu, 07 Mar 2024 01:07:15 -0800 (PST)
-Received: from gmail.com (fwdproxy-lla-118.fbsv.net. [2a03:2880:30ff:76::face:b00c])
-        by smtp.gmail.com with ESMTPSA id pw20-20020a17090720b400b00a450164cec6sm5314346ejb.194.2024.03.07.01.07.14
+        bh=qDXKJ3yVafAMIzaPU15d+oR0sojzZuH0Yz2adcF+Uwc=;
+        b=lZoMoFYoFtJ3206rh4GSMMqjY71KFBGIjpvv2yZOxfIT0BZlajhuKpGrd4qTQEARim
+         VHa+95V1GM5ag2flmz3abT746nNUOEiefZZ21VFcrI2jOmutcpt4T1Bz0MycjB65s1av
+         asn+e17Hv+7WL35OZIY8EhlNIFt8Qjimu0yQwgU6xVa8octuuJxfwFCMV4bLvlDFgr3k
+         k+WBiW7aXrK9F5NyUTP68wPgBcy5sVrKKNz6HDeSH75sfhBsb/1A1kgJU4W0dQmTc0zZ
+         7YjK0hjYoQ2TiUoEXH1TAvQLix7JB793oRBaXUtIMNMwamVRMz2JfW73Ud5ufQz5DaKz
+         Bbpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709802438; x=1710407238;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=qDXKJ3yVafAMIzaPU15d+oR0sojzZuH0Yz2adcF+Uwc=;
+        b=CYeXr8yuKDKefxsXu7i8PqrpXA4phrie7IhFd8aeChKmDdOx5X4VxBOW43LQoD0Hsy
+         I0V/vO3FHuS3ctDAUsg0hLrXL4QKAmpQaq1xK7hBBMj3udIDKrNwN3vxrDqiXNI2sPL0
+         LjEdKGKxW1GtKoYCaUL+u70cQoKYMKMOc/l/ODI9kbFoZeADCuqdh+TlFuyb7QMtHhM0
+         2WQBOrcGrSdSCNfJWlT3b2vmgwD4Gd9b3DzlUE0+t81ijk/IneXvA1kp6LxCL9r4xYyu
+         BcUuLrOfxDfjBuOo7BkkVhp6PCbPsXs9ODAnTiej2eJBsVu2nJ/nhSxihxI+xayxCkPt
+         8L/A==
+X-Forwarded-Encrypted: i=1; AJvYcCX5uRmFaeJPCuGumIKECwdC/55Uz8gMfDoyrRoyMURrn+Zup0WtM7d4cmji4xvswQ2JWqBLqvK8PavZw+hd5hq/7X2DPN/ZRQT/MWjiYZrpdzQ4HK5Zg9wCzRwnjNeT/auP36Fo
+X-Gm-Message-State: AOJu0Yx7KAGurXYFOp2ERG4ZsOLi/RquqT0SdF8xABCc/tuI4qsNRvVs
+	HNy9A10fNyfGJ5VynU+tRARf34GEkb23wDya6bt4zmE0UXGXgkpm
+X-Google-Smtp-Source: AGHT+IEM5osKxEPkO+biHBaUBaE46cg/B0nhTfABPNlXDl6SuS5kKX6+XAcFSdN6DCuHcwNjGTBCsA==
+X-Received: by 2002:a05:620a:40d6:b0:788:49fc:c758 with SMTP id g22-20020a05620a40d600b0078849fcc758mr452659qko.38.1709802437737;
+        Thu, 07 Mar 2024 01:07:17 -0800 (PST)
+Received: from localhost (55.87.194.35.bc.googleusercontent.com. [35.194.87.55])
+        by smtp.gmail.com with ESMTPSA id o13-20020ae9f50d000000b00788269e5d5fsm4229013qkg.94.2024.03.07.01.07.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Mar 2024 01:07:14 -0800 (PST)
-Date: Thu, 7 Mar 2024 01:07:12 -0800
-From: Breno Leitao <leitao@debian.org>
-To: Florian Fainelli <florian.fainelli@broadcom.com>
-Cc: netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next] net: dsa: Leverage core stats allocator
-Message-ID: <ZemDwNQnyPXbtMcz@gmail.com>
-References: <20240306200416.2973179-1-florian.fainelli@broadcom.com>
+        Thu, 07 Mar 2024 01:07:17 -0800 (PST)
+Date: Thu, 07 Mar 2024 04:07:17 -0500
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
+ Marcelo Tosatti <mtosatti@redhat.com>, 
+ netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org
+Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
+ Jakub Kicinski <kuba@kernel.org>, 
+ Eric Dumazet <edumazet@google.com>, 
+ Frederic Weisbecker <frederic@kernel.org>, 
+ Valentin Schneider <vschneid@redhat.com>, 
+ Paolo Abeni <pabeni@redhat.com>
+Message-ID: <65e983c5155fa_f5b792941b@willemb.c.googlers.com.notmuch>
+In-Reply-To: <65e82e533857c_a463929462@willemb.c.googlers.com.notmuch>
+References: <ZeXQup48+X6U9TQ/@tpad>
+ <65e82e533857c_a463929462@willemb.c.googlers.com.notmuch>
+Subject: Re: [PATCH net-next -v3] net/core/dev.c: enable timestamp static key
+ if CPU isolation is configured
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240306200416.2973179-1-florian.fainelli@broadcom.com>
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Mar 06, 2024 at 12:04:09PM -0800, Florian Fainelli wrote:
-> With commit 34d21de99cea9 ("net: Move {l,t,d}stats allocation to core
-> and convert veth & vrf"), stats allocation could be done on net core
-> instead of in this driver.
+Willem de Bruijn wrote:
+> Marcelo Tosatti wrote:
+> > 
+> > For systems that use CPU isolation (via nohz_full), creating or destroying
+> > a socket with
 > 
-> With this new approach, the driver doesn't have to bother with error
-> handling (allocation failure checking, making sure free happens in the
-> right spot, etc). This is core responsibility now.
+> - timestamping (SOCK_TIMESTAMPING_RX_SOFTWARE) might cause a
+> + SO_TIMESTAMP, SO_TIMESTAMPNS or SO_TIMESTAMPING with flag
+> + SOF_TIMESTAMPING_RX_SOFTWARE will cause a
 > 
-> Remove the allocation in the DSA user network device code and leverage
-> the network core allocation instead.
+> > static key to be enabled/disabled. This in turn causes undesired
+> > IPIs to isolated CPUs.
+> > 
+> > So enable the static key unconditionally, if CPU isolation is enabled,
+> > thus avoiding the IPIs.
+> > 
+> > Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
 > 
-> Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
+> > diff --git a/net/core/dev.c b/net/core/dev.c
+> > index c588808be77f..15a32f5900e6 100644
+> > --- a/net/core/dev.c
+> > +++ b/net/core/dev.c
+> > @@ -155,6 +155,7 @@
+> >  #include <net/netdev_rx_queue.h>
+> >  #include <net/page_pool/types.h>
+> >  #include <net/page_pool/helpers.h>
+> > +#include <linux/sched/isolation.h>
+> >  
+> >  #include "dev.h"
+> >  #include "net-sysfs.h"
+> > @@ -11851,3 +11852,14 @@ static int __init net_dev_init(void)
+> >  }
+> >  
+> >  subsys_initcall(net_dev_init);
+> > +
+> > +static int __init net_dev_late_init(void)
+> > +{
+> > +	/* avoid static key IPIs to isolated CPUs */
+> > +	if (housekeeping_enabled(HK_TYPE_MISC))
+> > +		net_enable_timestamp();
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +late_initcall(net_dev_late_init);
+> > 
+> 
+> Can this be included in the existing net_dev_init
+> subsys_initcall?
 
-Reviewed-by: Breno Leitao <leitao@debian.org>
+You sent a v4, but can you answer this question?
+
 
