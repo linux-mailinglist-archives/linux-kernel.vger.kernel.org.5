@@ -1,276 +1,160 @@
-Return-Path: <linux-kernel+bounces-95155-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95157-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE7328749E9
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:42:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E80D874A00
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:44:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 909AD280FDC
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 08:42:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 05129B20C4A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 08:44:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07C9B8288B;
-	Thu,  7 Mar 2024 08:42:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 193B182D7E;
+	Thu,  7 Mar 2024 08:44:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="hIaGTcnA"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="gW+LiIMh";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="q9x+Oejp"
+Received: from wfhigh5-smtp.messagingengine.com (wfhigh5-smtp.messagingengine.com [64.147.123.156])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E2B274262
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 08:42:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C3E780C1F;
+	Thu,  7 Mar 2024 08:44:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.156
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709800929; cv=none; b=dowSardb/j79GfxTcnwj+Bc+QB87PIDCb+KiDX5UvmW/eHkIROL86NpFeali4c7jnyDQryl3I1BZNov3qo7YrEo6v2HS1mIK8/ycsxKXM3SIwaVy/PmuYo0is3oOMDtcrbLbQPDGRlgIgWzz3YB1FAVtO/EyIb2QgK7wZ2VsxtA=
+	t=1709801071; cv=none; b=NVWgiL67RMxEBQtm/Z5hcUhYculAFhozX2N9Ks3sJ2GVRnz59PIUsDOeKpg7F4aBP5HoIzjSoh08ysENo7eGRpb+EUnpdn8qgZx3Jo1axB5qJ6uFzKR7xirIgxt3cL/b/jIfDTEl0bie1w0WGB5G/Jc9ViQGSFkD3y02vDrri8Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709800929; c=relaxed/simple;
-	bh=USUiqAvoGE7+o32wLO4tteQywvAAkmi4uCjZ933thpw=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JVK5mNA9ZDINObrrNF3wLmwxhjBzrKCUriZlOU9n//EIdipSHUiM+sEP8XhTCUc/s2TfIHArLj2awmTmAxaDlDKzDxnYHpgyGLDZ8/S2Z4D9aFGvBRjplMnz6lmCoJAyVaPtj5SOuIJGwxPspLVRJXVx+bpkZq0MrN1R5OJILSk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=hIaGTcnA; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1709800925;
-	bh=USUiqAvoGE7+o32wLO4tteQywvAAkmi4uCjZ933thpw=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=hIaGTcnAXu2fNJovHDNfdIqUYvHUrZdK53yYmGa8Vuyz9o92DcK6AnN+avS0VEamv
-	 YlecSnAJ1TYYZeWUBw9kOL8UgXu7PO5zt4Dq5B2NO/x839ghanCJigMBWlafPBbPyN
-	 TfS3zQVNK2jEqJDurWSgjym+1JUSiSRRi/d9mQj5KMAcEwdTXQ5Haq2CEB8csckHGz
-	 kBYQKeRUIo+faEDpnWdZiSX0yurjio4tpQ/Z2dvwa5oqfkdzHipcYWrjnNcZvETlOs
-	 0O0iwGhOHOIEAMzD1hYABbi93gDSq8FoWT72OLiAQsU0D70T07p/3egNntmVhl4pRU
-	 dEAPF0SDfQEtw==
-Received: from eldfell (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: pq)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 7D0C43781FDF;
-	Thu,  7 Mar 2024 08:42:04 +0000 (UTC)
-Date: Thu, 7 Mar 2024 10:42:03 +0200
-From: Pekka Paalanen <pekka.paalanen@collabora.com>
-To: Louis Chauvet <louis.chauvet@bootlin.com>
-Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>, Melissa Wen
- <melissa.srw@gmail.com>, =?UTF-8?B?TWHDrXJh?= Canal
- <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>, Daniel
- Vetter <daniel@ffwll.ch>, Maarten Lankhorst
- <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- arthurgrillo@riseup.net, Jonathan Corbet <corbet@lwn.net>,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com,
- thomas.petazzoni@bootlin.com
-Subject: Re: [PATCH v2 3/9] drm/vkms: write/update the documentation for
- pixel conversion and pixel write functions
-Message-ID: <20240307104203.72855d2a.pekka.paalanen@collabora.com>
-In-Reply-To: <ZeioEcyCo4XKHHX8@localhost.localdomain>
-References: <20240223-yuv-v2-0-aa6be2827bb7@bootlin.com>
-	<20240223-yuv-v2-3-aa6be2827bb7@bootlin.com>
-	<20240226133700.3fef91d9.pekka.paalanen@collabora.com>
-	<Zd35cimh8BLICUuY@localhost.localdomain>
-	<20240229104833.2a404d6b.pekka.paalanen@collabora.com>
-	<ZeXonl-jZq4xHnBK@localhost.localdomain>
-	<20240305115007.0d0d49ef.pekka.paalanen@collabora.com>
-	<ZeioEcyCo4XKHHX8@localhost.localdomain>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1709801071; c=relaxed/simple;
+	bh=TImqIAoJvStQdyHuXOudqUE7tZvk0JApfWvejmmmwpM=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=p2+ZFc51lddYbywY6VWdF9f6HxP6m3Rirk1ldGK2qmn3Mqc4CB4jB/bZ7pHVJpF7PpSHhTWwfuLcMJPCfJZzbnCN7hYzUq/QlECp5LB0a7G+8KMKZpaNlBZiweOaAFJ6SqhCtU4XaZM9a9Fj4QYvi1u2Aq1Epgg6yo2suiKmrJE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=gW+LiIMh; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=q9x+Oejp; arc=none smtp.client-ip=64.147.123.156
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfhigh.west.internal (Postfix) with ESMTP id 6F05E18000AB;
+	Thu,  7 Mar 2024 03:44:25 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Thu, 07 Mar 2024 03:44:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1709801064; x=1709887464; bh=3x5EJge/Em
+	DoFbef/njqgwd3SUh9kx0m4dgwsd9pvxQ=; b=gW+LiIMhZ5dX+1y2jIuxu8urAV
+	I+94yqHIdHWJxG0UXkjcYfSOK6dQsSOi32Iv+aP7Jv5/JYJtlX6Y5i7goqvdlytM
+	5pH5oDSV6mBMltpmG6VaGNsrWcuIA4ebtVZDEUoTyIneh7XWkqr6OYzvd1m+i/pd
+	U9b90JwQgECo6EShjOk3WeNFU+mqUsAbjPHJ+E5EKY4Xn3fhanYASY54RzDB9T+L
+	jumYGX8OD4uGLR5hDXLkrmXLYo3zegUM0FfiSw0CytA7jfXHG/Nag2EX7RC8ZM29
+	P7z/fNb/NhuWWXmbYPHnL1L6azxhgE2vD1X4RmENlHy8M3DBh+a7scqE/Waw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1709801064; x=1709887464; bh=3x5EJge/EmDoFbef/njqgwd3SUh9
+	kx0m4dgwsd9pvxQ=; b=q9x+OejpwtxbInNV1pB+5UsW7B1Gw4/FdTM3Lrx85V09
+	tdnjq2nB4gxHdPkLexUIzWthuucc9iHoAF90BtEFSoLKWf9CWdFkTdPQ3qijhNth
+	Mj6amIrIcPhvwecUdxtRmy1ogm74ZRahxuuuedS+Pu6MjxqnFU91Qf96aDxvjFnU
+	Yh18JOHQxwrluTDgkI+Bj+ANNzWuIWfmCtLSJAPLRPnsqzpJnVrCIRUnrx2pQ1fH
+	eItLh4mm5V9ECSZAwNzt4q8IZXVkoDTvggYwWdgl41eSrwG/C2suz1RfEyOdmI7P
+	b5g0/2Ox+LDS2ZrirDM+E+c8dkomK51laVaVmgwV1g==
+X-ME-Sender: <xms:aH7pZQRMTZnFz-kMyHV_9d4-GkQ2_djj4i8jWTM-XNQPbrPvngIyiQ>
+    <xme:aH7pZdwR24tzB5RUIHDCB7PsVwoBT_PabPcsOyxqa2ingmIDh7Vg8Xl2hqGOK8Ytl
+    RT4xwU0TXul7CpzhiY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledriedvgdduvddvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:aH7pZd2agpRhZ7xsM1ATy3YKuwahGSz9xgCYItToeCPtFbApie4mrw>
+    <xmx:aH7pZUDqXUFNDhPSfBf4_cs6UUiHfHtDnqKgZ_asrswjo97rznzNfg>
+    <xmx:aH7pZZgBtuTvRxv0bmng63ucxota81RZhVR3D0hHA_s6u20_sf1YPA>
+    <xmx:aH7pZaGW_1q3sGd-4J14uI4cgPzvA_M0NAq9q0f446gyEUjUSUDroLfb2fQ>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 2E7F5B6008D; Thu,  7 Mar 2024 03:44:23 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-251-g8332da0bf6-fm-20240305.001-g8332da0b
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/nkji33S6ZRTzPKMkx=bO7ep";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Message-Id: <c9e9da9f-ff81-48eb-beec-4f54921cd268@app.fastmail.com>
+In-Reply-To: 
+ <f23da383a8fdbee15acd41fdcd38ef3a89045a43.1709780590.git.haibo1.xu@intel.com>
+References: <cover.1709780590.git.haibo1.xu@intel.com>
+ <f23da383a8fdbee15acd41fdcd38ef3a89045a43.1709780590.git.haibo1.xu@intel.com>
+Date: Thu, 07 Mar 2024 09:44:03 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Haibo Xu" <haibo1.xu@intel.com>
+Cc: "Alison Schofield" <alison.schofield@intel.com>,
+ "Jisheng Zhang" <jszhang@kernel.org>,
+ "Rafael J . Wysocki" <rafael@kernel.org>,
+ "Dave Hansen" <dave.hansen@linux.intel.com>,
+ =?UTF-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@rivosinc.com>,
+ "Conor.Dooley" <conor.dooley@microchip.com>, guoren <guoren@kernel.org>,
+ "Zong Li" <zong.li@sifive.com>, "James Morse" <james.morse@arm.com>,
+ linux-riscv@lists.infradead.org, "Ard Biesheuvel" <ardb@kernel.org>,
+ "Baoquan He" <bhe@redhat.com>, acpica-devel@lists.linux.dev,
+ "Robert Moore" <robert.moore@intel.com>, linux-acpi@vger.kernel.org,
+ "Sami Tolvanen" <samitolvanen@google.com>,
+ "Greentime Hu" <greentime.hu@sifive.com>,
+ "Dan Williams" <dan.j.williams@intel.com>, "Len Brown" <lenb@kernel.org>,
+ "Albert Ou" <aou@eecs.berkeley.edu>,
+ "Alexandre Ghiti" <alexghiti@rivosinc.com>,
+ "Charlie Jenkins" <charlie@rivosinc.com>,
+ "Chen Jiahao" <chenjiahao16@huawei.com>,
+ "Yuntao Wang" <ytcoode@gmail.com>,
+ "Paul Walmsley" <paul.walmsley@sifive.com>,
+ =?UTF-8?Q?Cl=C3=A9ment_L=C3=A9ger?= <cleger@rivosinc.com>,
+ "Haibo Xu" <xiaobo55x@gmail.com>, "Anup Patel" <apatel@ventanamicro.com>,
+ "Tony Luck" <tony.luck@intel.com>,
+ "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+ linux-kernel@vger.kernel.org,
+ "Samuel Holland" <samuel.holland@sifive.com>,
+ "Evan Green" <evan@rivosinc.com>, "Palmer Dabbelt" <palmer@dabbelt.com>,
+ "Andrew Jones" <ajones@ventanamicro.com>
+Subject: Re: [PATCH v2 5/6] ACPI: NUMA: Remove ARCH depends option in ACPI_NUMA Kconfig
+Content-Type: text/plain
 
---Sig_/nkji33S6ZRTzPKMkx=bO7ep
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Mar 7, 2024, at 09:47, Haibo Xu wrote:
+> x86/arm64/loongarch would select ACPI_NUMA by default and riscv
+> would do the same thing, so the dependency is no longer needed
+> since these are the four architectures that support ACPI.
+>
+> Suggested-by: Arnd Bergmann <arnd@arndb.de>
+> Suggested-by: Sunil V L <sunilvl@ventanamicro.com>
+> Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
+> ---
+>  drivers/acpi/numa/Kconfig | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/drivers/acpi/numa/Kconfig b/drivers/acpi/numa/Kconfig
+> index 849c2bd820b9..2bf47ad1ec9b 100644
+> --- a/drivers/acpi/numa/Kconfig
+> +++ b/drivers/acpi/numa/Kconfig
+> @@ -2,7 +2,6 @@
+>  config ACPI_NUMA
+>  	bool "NUMA support"
+>  	depends on NUMA
+> -	depends on (X86 || ARM64 || LOONGARCH)
+>  	default y if ARM64
 
-On Wed, 6 Mar 2024 18:29:53 +0100
-Louis Chauvet <louis.chauvet@bootlin.com> wrote:
+Can we remove the prompt as well and make this a
+hidden option? I think this is now always selected
+when it can be used anyway.
 
-> [...]
->=20
-> > > > > > > +++ b/drivers/gpu/drm/vkms/vkms_formats.c
-> > > > > > > @@ -9,6 +9,17 @@
-> > > > > > > =20
-> > > > > > >  #include "vkms_formats.h"
-> > > > > > > =20
-> > > > > > > +/**
-> > > > > > > + * packed_pixels_offset() - Get the offset of the block cont=
-aining the pixel at coordinates x/y
-> > > > > > > + * in the first plane
-> > > > > > > + *
-> > > > > > > + * @frame_info: Buffer metadata
-> > > > > > > + * @x: The x coordinate of the wanted pixel in the buffer
-> > > > > > > + * @y: The y coordinate of the wanted pixel in the buffer
-> > > > > > > + *
-> > > > > > > + * The caller must be aware that this offset is not always a=
- pointer to a pixel. If individual
-> > > > > > > + * pixel values are needed, they have to be extracted from t=
-he resulting block.     =20
-> > > > > >=20
-> > > > > > Just wondering how the caller will be able to extract the right=
- pixel
-> > > > > > from the block without re-using the knowledge already used in t=
-his
-> > > > > > function. I'd also expect the function to round down x,y to be
-> > > > > > divisible by block dimensions, but that's not visible in this e=
-mail.
-> > > > > > Then the caller needs the remainder from the round-down, too?  =
-   =20
-> > > > >=20
-> > > > > You are right, the current implementation is only working when bl=
-ock_h =3D=3D=20
-> > > > > block_w =3D=3D 1. I think I wrote the documentation for PATCHv2 5=
-/9, but when=20
-> > > > > backporting this comment for PATCHv2 3/9 I forgot to update it.
-> > > > > The new comment will be:
-> > > > >=20
-> > > > >  * pixels_offset() - Get the offset of a given pixel data at coor=
-dinate=20
-> > > > >  * x/y in the first plane
-> > > > >    [...]
-> > > > >  * The caller must ensure that the framebuffer associated with th=
-is=20
-> > > > >  * request uses a pixel format where block_h =3D=3D block_w =3D=
-=3D 1.
-> > > > >  * If this requirement is not fulfilled, the resulting offset can=
- be=20
-> > > > >  * completly wrong.   =20
-> > > >=20
-> > > > Hi Louis,   =20
-> > >=20
-> > > Hi Pekka,
-> > >  =20
-> > > > if there is no plan for how non-1x1 blocks would work yet, then I t=
-hink
-> > > > the above wording is fine. In my mind, the below wording would
-> > > > encourage callers to seek out and try arbitrary tricks to make thin=
-gs
-> > > > work for non-1x1 without rewriting the function to actually work.
-> > > >
-> > > > I believe something would need to change in the function signature =
-to
-> > > > make it properly usable for non-1x1 blocks, but I too cannot suggest
-> > > > anything off-hand.   =20
-> > >=20
-> > > I already made the change to support non-1x1 blocks in Patchv2 5/9=20
-> > > (I will extract this modification in "drm/vkms: Update pixels accesso=
-r to=20
-> > > support packed and multi-plane formats"), this function is now able=20
-> > > to extract the pointer to the start of a block. But as stated in the=
-=20
-> > > comment, the caller must manually extract the correct pixel values (i=
-f the=20
-> > > format is 2x2, the pointer will point to the first byte of this block=
-, the=20
-> > > caller must do some computation to access the bottom-right value). =20
-> >=20
-> > Patchv2 5/9 is not enough.
-> >=20
-> > "Manually extract the correct pixels" is the thing I have a problem
-> > with here. The caller should not need to re-do any semantic
-> > calculations this function already did. Most likely this function
-> > should return the remainders from the x,y coordinate division, so that
-> > the caller can extract the right pixels from the block, or something
-> > else equivalent.
-> >=20
-> > That same semantic division should not be done in two different places.
-> > It is too easy for someone later to come and change one site while
-> > missing the other. =20
->=20
-> I did not notice this, and I agree, thanks for this feedback. For the v5 =
-I=20
-> will change it and update the function signature to:
->=20
-> static void packed_pixels_offset(const struct vkms_frame_info *frame_info=
-, int x, int y,
-> 				 size_t plane_index, size_t *offset, size_t *rem_x, size_t *rem_y)
->=20
-> where rem_x and rem_y are those reminder.
+If we make it
 
-Ok, that's a start.
+      def_bool NUMA && !X86
 
-Why size_t? It's unsigned. You'll probably be mixing signed and
-unsigned variables in computations again.
+then the select statements except for the X86_64_ACPI_NUMA
+can also go away.
 
-> > I have a hard time finding in "[PATCH v2 6/9] drm/vkms: Add YUV
-> > support" how you actually handle blocks bigger than 1x1. I see
-> > get_subsampling() which returns format->{hsub,vsub}, and I see
-> > get_subsampling_offset() which combined with remainder-division gates U
-> > and V plane pixel pointer increments.
-> >=20
-> > However, I do not see you ever using
-> > drm_format_info_block_{width,height}() anywhere else. That makes me
-> > think you have no code to actually handle non-1x1 block formats, which
-> > means that you cannot get the function signature of
-> > packed_pixels_offset() right in this series either. It would be better
-> > to not even pretend the function works for non-1x1 blocks until you
-> > have code handling at least one such format.
-> >=20
-> > All of the YUV formats that patch 6 adds support for use 1x1 blocks all
-> > all their planes. =20
->=20
-> Yes, none of the supported format have block_h !=3D block_w !=3D 1, so th=
-ere=20
-> is no need to drm_format_info_block*() helpers.
->=20
-> I wrote the code for DRM_FORMAT_R*. They are packed, with block_w !=3D 1.=
- I=20
-> will add this patch in the next revision. I also wrote the IGT test for=20
-> DRM_FORMAT_R1 [1].
-
-Excellent!
-
-> Everything will be in the v5 (I will send it when you have the=20
-> time to review the v4).
-
-I'm too busy this week, I think. Maybe next.
-
-Why should I review v4 when I already know you will be changing things
-again? I'd probably flag the same things I've already said.
-
-
-Thanks,
-pq
-
-> For information, I also have a series ready for adding more RGB variants
-> (I introduced a macro to make it easier and avoid copy/pasting the same
-> loop). I don't send them yet, because I realy want this series merged=20
-> first. I also have the work for the writeback "line-by-line" algorithm=20
-> ready (I just need to rebase it, but it will be fast).
->=20
-> [1]: https://lore.kernel.org/igt-dev/20240306-b4-kms_tests-v1-0-8fe451efd=
-2ac@bootlin.com
->=20
-> Kind regards,
-> Louis Chauvet
->=20
-> [...]
->=20
-
-
---Sig_/nkji33S6ZRTzPKMkx=bO7ep
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmXpfdsACgkQI1/ltBGq
-qqdiCA//R0EDhfyntzvtK1HCEb2lMdMVQMtVu0twsiUfLRYWnxwmVtTnoBC4C1oX
-VW1hAXvdhnVgXP97Uilb2jl5OW6OSetYnDEWb/HXhquitJkbwBCVieKWJQwnHUe3
-dVIJEYoUPqW4UAMtYRHrC22bN0aW0SAUGvnnIzIpX17Zh+hVNjfqOw8gCfAq3PyA
-27ycXSUzmf9AZ0orOnBdemaGRsyynJLPChEnidfwlH4kTE3Cco1GB+sbjusJd+Mh
-LmLxyTy0AOJlXVeDQCu4Rqtznm1g8yhv0QfmUl+N3fUKwccn7W/ytuQR9Arjku38
-idDLqzSQEKU0dts8EBO6BuOhVSvp5IBTOp9cudR37QjI2F2s1DjGbMnhe+If+v8Y
-2hAu3Kq8i7EWjiR66gC6hb4v+m2up0BPPIwvjSEi3t6vlgkkNOSCwghYUcxqQPot
-k6tCnGzBTnfPu/jUQd0S7YwTSpFYVnLLgU3rpSQ5Aat3yqYXP0fbR6n0uvaUQidh
-NS98joH/XT5UKPrgOXIGHiOuUk3SYGQOqvRrSFmDp9Mdh/P1kX9UWypTfJTZXAEd
-EQxhGPXiAGtCC8F3i9oqBt3kGbSFMCMFHvNeWNDZGhptlt6YZETSSKHigDoa9QSv
-Fn9gdFQg0UgSzB9Xev5vKHk+ivXH/F3H26Afh7HEMv9jzQEcnE0=
-=hf3I
------END PGP SIGNATURE-----
-
---Sig_/nkji33S6ZRTzPKMkx=bO7ep--
+      Arnd
 
