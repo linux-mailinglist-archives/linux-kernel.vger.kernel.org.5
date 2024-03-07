@@ -1,133 +1,128 @@
-Return-Path: <linux-kernel+bounces-94827-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94828-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8419F8745AA
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 02:35:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C04FE8745AD
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 02:35:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E18DE286CBC
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 01:35:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42B26286BE6
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 01:35:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDAE54C9A;
-	Thu,  7 Mar 2024 01:34:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8394C4C92;
+	Thu,  7 Mar 2024 01:35:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YkjcK10B"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="dxxK26ul"
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E93C4689;
-	Thu,  7 Mar 2024 01:34:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16DC16AA7
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 01:35:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.244.123.138
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709775295; cv=none; b=lrtoUB5zfg2S8EO8R3h2xU23s2Jiq+ffxAYVTSF02Gf5/MZrcXkEIu0r635EXwOBPehYSJpQxeRzmKEyIKJg9JZxl06MeLesPhPXe1Fa4wPhlkvzwrUcwZJZtMIjco57xxEe2CA7A3fLGgIkuhIs7qQbyecGhqn/UsIw8XeaaXA=
+	t=1709775307; cv=none; b=jxMWS3L0XLzwiKlEOQ0dVXmYoxiLaRJUyK+3r/J6IeoGXQgRQTj/OqJPB66reSTSl81NLymQnwHjCBAoVy+DF/KCL4cabS3xgYfq7aUl9clkqauQm8+JNApVzxDPUt4fkXyJFCEfhZ1f8Ycw9QwPni0Be6qXO5ldMm3wDNorHf0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709775295; c=relaxed/simple;
-	bh=FxSafHmZOK92FTSBXrwz0pUq3BM0aeLdXeQdbuUUjS8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cHDlFG8X4jEU92aKRKF4u+Zp6QaeGbRgjlVZf1vR5hcuR4WYwcbq8Dr5/cmUW+w38P8hgKBWP/MBcCAfUUIgoz6bvlzVk5vF9SIQvJUhOlnriTfuahmJ+uY0jLfdCkeA8GplBiNwY2flpCPLlY80Hn9v3xuzDCCDTivDwTeLWXk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YkjcK10B; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709775294; x=1741311294;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=FxSafHmZOK92FTSBXrwz0pUq3BM0aeLdXeQdbuUUjS8=;
-  b=YkjcK10BrElQnTzXnXMFfLxoL+lUkKioYDPjlRla+2vI9zMJtAJ3djoC
-   uz4B+TuoUWK09DqisTnHiUPRce6tub6z0U1lX6NPo8b3MkqbNgz3bamFS
-   HufMzS6q9azIbhbYAiST17MwbKjfKhZRFTERO7mOOiVHmx8pXay9PWw6r
-   +LM8UiJisdhk7r0I9kqmejKGhGq5MKq6kSUuLuas2z2oMsonqb7VI3qZC
-   XpMWEAvznNeFvFEFefgoVvCUw2dehmjjx77Y5XOnEH2V+hMEpUNscGKev
-   tCZ3pN6qTeMebiAwKra8Pq5AIf2tIJXrW8/T8f536tscZw1NgpG5WSZRy
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11005"; a="4549168"
-X-IronPort-AV: E=Sophos;i="6.06,209,1705392000"; 
-   d="scan'208";a="4549168"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 17:34:51 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,209,1705392000"; 
-   d="scan'208";a="9929621"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 17:34:51 -0800
-Date: Wed, 6 Mar 2024 17:34:50 -0800
-From: Isaku Yamahata <isaku.yamahata@linux.intel.com>
-To: David Matlack <dmatlack@google.com>
-Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org, isaku.yamahata@gmail.com,
-	linux-kernel@vger.kernel.org,
-	Sean Christopherson <seanjc@google.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Michael Roth <michael.roth@amd.com>,
-	Federico Parola <federico.parola@polito.it>,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [RFC PATCH 6/8] KVM: x86: Implement kvm_arch_{,
- pre_}vcpu_map_memory()
-Message-ID: <20240307013450.GE368614@ls.amr.corp.intel.com>
-References: <cover.1709288671.git.isaku.yamahata@intel.com>
- <66a957f4ec4a8591d2ff2550686e361ec648b308.1709288671.git.isaku.yamahata@intel.com>
- <ZekKwlLdf6vm5e5u@google.com>
+	s=arc-20240116; t=1709775307; c=relaxed/simple;
+	bh=YpGRtlThcsNiB6M8IGk4O/YuB/PRPXqsfFpV5g88Gwg=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=KbieQqurkEhxBisn/ATZB7aZGVN4zhjU0U3O6uB3fRE2togjSSq8ESM9xf1odUBDr0RNaxJ7wGB0A1B2EVZm0nFPTClRBgoMVVExlVvlLQiKovCxhp7bHJo1McfWSi6SFN8lpcP4Mzr+rzSmBlTHJ7xeA93tBHowBMKdVTd8BEM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=dxxK26ul; arc=none smtp.client-ip=60.244.123.138
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: eaaffec2dc2211eeb8927bc1f75efef4-20240307
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=qsVeZY7ariDbPPGgJAwyIB3C+kJL90wnCgmOhDPi0CE=;
+	b=dxxK26ulPzJVIYey3EwXlO9fT+Tlm/G6xbTaPD7K74x5UxMZW9PlxyDQ6/VmU1FfNJFXp7uxr47DRFvBLSetkEPfyMQ+/0cCVo+Q5ip1Le7dpYsz3V0emZAU3ZieOjwL38mSfgze1UuhjQq6AymwoeYtRW5WHne0H92lA9AcGzM=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.37,REQID:a5073234-0e4d-41bb-9376-455107af8c36,IP:0,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:0
+X-CID-META: VersionHash:6f543d0,CLOUDID:f82299ff-c16b-4159-a099-3b9d0558e447,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
+	SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: eaaffec2dc2211eeb8927bc1f75efef4-20240307
+Received: from mtkmbs11n1.mediatek.inc [(172.21.101.185)] by mailgw01.mediatek.com
+	(envelope-from <jason-jh.lin@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 130986230; Thu, 07 Mar 2024 09:35:01 +0800
+Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Thu, 7 Mar 2024 09:35:00 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Thu, 7 Mar 2024 09:35:00 +0800
+From: Jason-JH.Lin <jason-jh.lin@mediatek.com>
+To: Jassi Brar <jassisinghbrar@gmail.com>, Chun-Kuang Hu
+	<chunkuang.hu@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>
+CC: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Jason-ch Chen <jason-ch.chen@mediatek.com>, "Jason-JH . Lin"
+	<jason-jh.lin@mediatek.com>, Singo Chang <singo.chang@mediatek.com>, "Nancy
+ Lin" <nancy.lin@mediatek.com>, Shawn Sung <shawn.sung@mediatek.com>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-mediatek@lists.infradead.org>,
+	<Project_Global_Chrome_Upstream_Group@mediatek.com>, Jason-jh Lin
+	<jason-jh.lin@mediatek.corp-partner.google.com>
+Subject: [PATCH v2 0/4] Add CMDQ API for upcoming ISP feature
+Date: Thu, 7 Mar 2024 09:34:54 +0800
+Message-ID: <20240307013458.23550-1-jason-jh.lin@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZekKwlLdf6vm5e5u@google.com>
+Content-Type: text/plain
+X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-AS-Result: No-10--7.233100-8.000000
+X-TMASE-MatchedRID: pJ+CdhK041Qssufzyd4qvjPDkSOzeDWW87QrIQgH3y3ANHjiWWI+7d96
+	V2NgrEHiDoqCl/x+niurnPeXenpUwBaTj8lkRWbAXSKcwPTzq/IhotH7bEpEMlwpnAAvAwaz0gE
+	LN9U+w7GDefyXDwaGu/3bv+uBVCY6WvrN47f+AFsflhDI6DvVln0tCKdnhB589yM15V5aWpj6C0
+	ePs7A07fk39LXMSri60LeqKkxroARqlYmP1kxHlxV5ziwakIth1e5jJb9JJQc=
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--7.233100-8.000000
+X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-SNTS-SMTP: 28C47FC7FE85B52C197D796DD901F072AA0166C80A81E406F968B2F69C21CA932000:8
+X-MTK: N
 
-On Wed, Mar 06, 2024 at 04:30:58PM -0800,
-David Matlack <dmatlack@google.com> wrote:
+From: Jason-jh Lin <jason-jh.lin@mediatek.corp-partner.google.com>
 
-> On 2024-03-01 09:28 AM, isaku.yamahata@intel.com wrote:
-> > From: Isaku Yamahata <isaku.yamahata@intel.com>
-> > 
-> > Wire KVM_MAP_MEMORY ioctl to kvm_mmu_map_tdp_page() to populate guest
-> > memory.
-> > 
-> > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> > ---
-> >  arch/x86/kvm/x86.c | 49 ++++++++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 49 insertions(+)
-> > 
-> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > index 3b8cb69b04fa..6025c0e12d89 100644
-> > --- a/arch/x86/kvm/x86.c
-> > +++ b/arch/x86/kvm/x86.c
-> > @@ -4660,6 +4660,7 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
-> >  	case KVM_CAP_VM_DISABLE_NX_HUGE_PAGES:
-> >  	case KVM_CAP_IRQFD_RESAMPLE:
-> >  	case KVM_CAP_MEMORY_FAULT_INFO:
-> > +	case KVM_CAP_MAP_MEMORY:
-> >  		r = 1;
-> >  		break;
-> >  	case KVM_CAP_EXIT_HYPERCALL:
-> > @@ -5805,6 +5806,54 @@ static int kvm_vcpu_ioctl_enable_cap(struct kvm_vcpu *vcpu,
-> >  	}
-> >  }
-> >  
-> > +int kvm_arch_vcpu_pre_map_memory(struct kvm_vcpu *vcpu)
-> > +{
-> > +	return kvm_mmu_reload(vcpu);
-> > +}
-> 
-> Why is the here and not kvm_arch_vcpu_map_memory()?
+In order to support the upcoming ISP functions, some CMDQ APIs
+need to be prepared:
+1. cmdq_pkt_mem_move():
+   For memory or register value from copy src_addr to dst_addr.
+2. cmdq_pkt_poll_addr():
+   Extending cmdq_pkt_poll() to support polling the register address
+   which doesn't have a subsys id.
+3. cmdq_pkt_acquire_event():
+   To support mutex_lock protection between GCE threads.
 
-We can push down kvm_mmu_relaod into kvm_arch_vcpu_map_memory() under gpa loop.
-Probably the inefficiency won't matter.
+Change in v2:
+1. Change the return variable from 'err' to 'ret'.
+2. Add more comment and commit message.
+3. Drop the last PATCH 5/5 in v1.
 
-kvm_mmu_realod()
-loop on gpa
-  kvm_arch_vcpu_map_memory()
+Change in RESEND v1:
+1. Remove Change-Id in commit message.
 
-=>
+Jason-JH.Lin (4):
+  soc: mediatek: mtk-cmdq: Add specific purpose register definitions for
+    GCE
+  soc: mediatek: mtk-cmdq: Add cmdq_pkt_mem_move() function
+  soc: mediatek: mtk-cmdq: Add cmdq_pkt_poll_addr() function
+  soc: mediatek: mtk-cmdq: Add cmdq_pkt_acquire_event() function
 
-loop on gpa
-    kvm_arch_vcpu_map_memory()
-      kvm_mmu_reload()
+ drivers/soc/mediatek/mtk-cmdq-helper.c | 90 ++++++++++++++++++++++++++
+ include/linux/soc/mediatek/mtk-cmdq.h  | 52 +++++++++++++++
+ 2 files changed, 142 insertions(+)
+
 -- 
-Isaku Yamahata <isaku.yamahata@linux.intel.com>
+2.18.0
+
 
