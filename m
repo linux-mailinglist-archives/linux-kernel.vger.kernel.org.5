@@ -1,116 +1,97 @@
-Return-Path: <linux-kernel+bounces-95045-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95048-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9BB387488D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 08:18:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45FBC874895
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 08:22:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D786284E52
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 07:18:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7797A1C21A46
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 07:22:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C7A31CFBC;
-	Thu,  7 Mar 2024 07:18:04 +0000 (UTC)
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E33B1D556;
+	Thu,  7 Mar 2024 07:22:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WVLvf9cE"
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E9BE200DB
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 07:17:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.154.21.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D995610A34
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 07:22:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709795884; cv=none; b=eTAxNoO39e7JUyGjyNMkb4p+PAiwfz/5Z5bU5VoHuxR7Yz0sSKE6/5Aet6ULP0QBGdVEitMHhuZ2G8jPBb6mgQOU+DMlkNmC/4KxkbK5p7FuFSlav0wKgg2vS86+/hzGkhqY398s6eL9tZSpw+i96hV4puGtTN4SIprx2F/sLTA=
+	t=1709796136; cv=none; b=NUK66KhF0gSoZ02UYPPHXjU5NHBWoQQC0Iv+UzJruor8O2yVYl4jdn+uxS8lsyopCoWHtMVJtnMfl1qu0i6ijdCJ5yaM/IFmohJClIE2rUK0N3Tln9cgeHuXdMprdD23ODQnnvA6lh1/wrSGxEInIQWSOznZbvP4BOjCoLGg03s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709795884; c=relaxed/simple;
-	bh=HIo01TJSTbErOtfFpggP4HNn4QWtzF0ZBECJeNpS3JQ=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=UMXqU3415Op58ZizomU2qUvee49nA8INnjE3evKUX4LR1niF57jzqrjkW9Ik+5QxvRXurPAr5/NkrKVp79LCOIbwp/+GPcozQRghyRU26iCeOST1zF77m8XDkALS6XfigbtBHWRkip0+trbIOsc41PeU3k21OYaMaQRDfVdfxpo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru; spf=pass smtp.mailfrom=omp.ru; arc=none smtp.client-ip=90.154.21.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
-Received: from localhost.localdomain (78.37.41.175) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Thu, 7 Mar
- 2024 10:17:51 +0300
-From: Roman Smirnov <r.smirnov@omp.ru>
-To: Andrew Morton <akpm@linux-foundation.org>
-CC: Roman Smirnov <r.smirnov@omp.ru>, Sergey Shtylyov <s.shtylyov@omp.ru>,
-	Karina Yankevich <k.yankevich@omp.ru>, <linux-kernel@vger.kernel.org>,
-	<lvc-project@linuxtesting.org>
-Subject: [PATCH] assoc_array: fix the return value in assoc_array_insert_mid_shortcut()
-Date: Thu, 7 Mar 2024 10:17:17 +0300
-Message-ID: <20240307071717.5318-1-r.smirnov@omp.ru>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1709796136; c=relaxed/simple;
+	bh=3Wvh//EdEK7OkgXxQfeb2wrZ1RrXwb+Opckfe+jFRYw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XjP8un908FkzS5XxD7hgIYrDCnMxf3Ig7s84Vo6YQoIfKZU1C3jMIDHmW1X8nl1gBoNIYNZSJzlioc6I0rBZ5KrgEWOtIJHY+LalSfC0U97jeaWSy+vqNyUPyBSW99fLzvizZ9TMjpA6kQj87X3hXLSCQjBdlKzfOXAGGXfHfzI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WVLvf9cE; arc=none smtp.client-ip=209.85.218.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a2f22bfb4e6so89038966b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 23:22:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709796133; x=1710400933; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1/YnS539ptGgyKKHfv4qhBSslUWwHqXXifjP5zqiAvI=;
+        b=WVLvf9cErRaL9IHCERBoAZAhN8c+q1bd5oELRfqtAwYH7VYpK17T+lX7koaDkZsXRB
+         HMDQkt0u1GPK/gaGLk5FPJseHfxv4yBb0ZAUKtTkQAMJY+gXV+hBS3+dV6gPmJT8an4Y
+         XSVthYuqhi7IOt7t0e+s8lXLf3WrL+tpZWl/fyz3gktXxFDb2gO5mcdHwEfJi5WkUF3A
+         O/InF2EoVBvnv/VYjCywn7AWJ8UQepBZEQggZOIdJAwbJcuWXdETZrvPojEiIfFxsXmh
+         h+EO9UH7wCYcvRHY1fn2MP54wKb3NKkXbqpZKx3n6tLirIbSq9iji8zOUyn7O3iJSkUU
+         BXvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709796133; x=1710400933;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1/YnS539ptGgyKKHfv4qhBSslUWwHqXXifjP5zqiAvI=;
+        b=KKIPGJhlEMmmDmHnv9e6htlhH/TTrfv4hpmUEBSb/C1YnHm6lh45C7d6UUtLq0+JKJ
+         YGEgeFQWhVJLe8RUrlo+XJEMFUbwCP9MwlTXnMjpSPTiUIC3eKzK4Jp4UZBmNks3MW+K
+         o2FiorKcU/91xTacQafTUW0+ddLl9n8LYyv/Z7snTvLssC2+fGCtuk0VKEsrHQKROAul
+         nApJUi/+vGWCTMnBYsxAvliGyhn2m7Y1HVecF9VfoFZjrUutFtWX+RJIL4wllBTgV8Aa
+         xHugLPSe45odDbMkk8nd1DjmOQCw9o8/J9zOrnhHC5aL17OxEk9yqmlVspkK/LzP/SJM
+         Wdmg==
+X-Forwarded-Encrypted: i=1; AJvYcCVMVEWUZhDCtpI26vEAVh6g7Tdwjx+Ww1/2E+GZUUZjNyHPcjGtHqSbSzsmzOI4mvpVlSfeu7U+G+y8KB7OOmy8r51TC64L4ewxHdrO
+X-Gm-Message-State: AOJu0Yw1OfpS41O28USD+oz3OrmKYFut6YSNDmh7z0o/Hi2HKlmEWige
+	cfA4s3Xz8bd8lzi52FVn+dTnUy8Utz3kXhbZ1yX1jFaSu4iy+kTM
+X-Google-Smtp-Source: AGHT+IH9OMD/+4rfy0poFbuqXp1wQlsi7ggivfzbiSEMqYHCyGWHqBb+sXt2TyB3psLbAjPsApO1hA==
+X-Received: by 2002:a17:906:da06:b0:a44:4c7e:fc07 with SMTP id fi6-20020a170906da0600b00a444c7efc07mr12293907ejb.0.1709796132798;
+        Wed, 06 Mar 2024 23:22:12 -0800 (PST)
+Received: from [93.173.64.159] (93-173-64-159.bb.netvision.net.il. [93.173.64.159])
+        by smtp.gmail.com with ESMTPSA id mb17-20020a170906eb1100b00a4490267ecfsm6807468ejb.221.2024.03.06.23.22.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Mar 2024 23:22:12 -0800 (PST)
+Message-ID: <b9af7523-8ff5-f35d-7f5e-a3b5f3aefde1@gmail.com>
+Date: Thu, 7 Mar 2024 09:19:21 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 03/07/2024 06:56:30
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 184019 [Mar 07 2024]
-X-KSE-AntiSpam-Info: Version: 6.1.0.3
-X-KSE-AntiSpam-Info: Envelope from: r.smirnov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 9 0.3.9 e923e63e431b6489f12901471775b2d1b59df0ba
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 78.37.41.175 in (user) dbl.spamhaus.org}
-X-KSE-AntiSpam-Info:
-	d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;omp.ru:7.1.1;78.37.41.175:7.4.1,7.7.3;127.0.0.199:7.1.2
-X-KSE-AntiSpam-Info: {cloud_iprep_silent}
-X-KSE-AntiSpam-Info: ApMailHostAddress: 78.37.41.175
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 03/07/2024 07:02:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 3/7/2024 2:51:00 AM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Subject: Re: [PATCH] char: xillybus: Convert to platform remove callback
+ returning void
+Content-Language: en-US
+To: =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ linux-kernel@vger.kernel.org, kernel@pengutronix.de
+References: <20240306175710.82569-2-u.kleine-koenig@pengutronix.de>
+From: Eli Billauer <eli.billauer@gmail.com>
+In-Reply-To: <20240306175710.82569-2-u.kleine-koenig@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Returning the edit variable is redundant because it is
-dereferenced right before it is returned. It would be better
-to return true.
+No objection. Thanks.
 
-Found by Linux Verification Center (linuxtesting.org) with Svace.
+    Eli
 
-Signed-off-by: Roman Smirnov <r.smirnov@omp.ru>
-Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
----
- lib/assoc_array.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/lib/assoc_array.c b/lib/assoc_array.c
-index ca0b4f360c1a..388e656ac974 100644
---- a/lib/assoc_array.c
-+++ b/lib/assoc_array.c
-@@ -938,7 +938,7 @@ static bool assoc_array_insert_mid_shortcut(struct assoc_array_edit *edit,
- 		edit->leaf_p = &new_n0->slots[0];
- 
- 	pr_devel("<--%s() = ok [split shortcut]\n", __func__);
--	return edit;
-+	return true;
- }
- 
- /**
--- 
-2.34.1
-
+Acked-by: Eli Billauer <eli.billauer@gmail.com>
 
