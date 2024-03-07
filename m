@@ -1,45 +1,39 @@
-Return-Path: <linux-kernel+bounces-95358-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95359-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28AA7874CB2
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:50:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8B4C874CB3
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:50:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 55D101C22B56
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:50:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F9EF1F2350D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:50:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B2DA8565A;
-	Thu,  7 Mar 2024 10:50:09 +0000 (UTC)
-Received: from www.kot-begemot.co.uk (ns1.kot-begemot.co.uk [217.160.28.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2797283CAF;
-	Thu,  7 Mar 2024 10:50:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.160.28.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14BD885644;
+	Thu,  7 Mar 2024 10:50:46 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 613FA85641
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 10:50:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709808608; cv=none; b=jhmHr0RFTo7UQt8Fhbqj/vswTLhPiSGGFJzL5awNJUWOSdLxg3JQUYBR6/lKol0WY5mrIOsAKvw9OgywlFS73I44l3N4VKRWNGNcTFzcxdakKuTV9Ow06NSUeIQ+C2fcI5ryTtiPIsIuvMUabmbT4pWaeJ9Nvw98g5b4jhcUfck=
+	t=1709808645; cv=none; b=IYV5URDTJbYxxZliMWxCuhX+zNjC1e5vOtQe6nkfvDIeYYQG3Ce8DJ3L8KzjVw8hswIKBYxhv/q8693mo2JCGLs/H8SdKOX+ZENiuJeNhWsrjfCCnTJsP3u7In3h3PHumpNhXcRTgKXfUL7gka8ySoJFC0W/ccgDdko+bZ8+baI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709808608; c=relaxed/simple;
-	bh=ZzG+eAiAVIliAT/8yyBZr4RKhrPLz83uIS/Odi/W98A=;
+	s=arc-20240116; t=1709808645; c=relaxed/simple;
+	bh=dLBWtzXmuxNb9Ha8327cbmKbIwdaV8Yc+gOYw2Ai4/0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=V3doLSWKkU3yRlwtiCq0YQE1jwI7AeiDpMJUEOeq5DQPN+OK+qoFEg0KPzlMj2rZiIzGpAytQDS+SlTfu58BbH15deehxYPyysIWd1g/iT9ReoOInEYpaXuyWvyu8Y/LZ264HQyUUd/HuXv3iDqjhP7dfbYSaQ46rKC7dmSSB/w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cambridgegreys.com; spf=pass smtp.mailfrom=cambridgegreys.com; arc=none smtp.client-ip=217.160.28.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cambridgegreys.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cambridgegreys.com
-Received: from [192.168.17.6] (helo=jain.kot-begemot.co.uk)
-	by www.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1riBK5-00DtdZ-EY; Thu, 07 Mar 2024 10:50:01 +0000
-Received: from jain.kot-begemot.co.uk ([192.168.3.3])
-	by jain.kot-begemot.co.uk with esmtp (Exim 4.96)
-	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1riBK0-002kf3-2N;
-	Thu, 07 Mar 2024 10:50:01 +0000
-Message-ID: <4ee83195-99f5-4823-b4d0-339ef4127013@cambridgegreys.com>
-Date: Thu, 7 Mar 2024 10:49:56 +0000
+	 In-Reply-To:Content-Type; b=gB/OgRJLG26bAT83ZY2K8L/tVIq4BLlkid0j75tqhcQ0pTq7fYun7t9A6zYQfunuUcmGL6t5aCyUxTbsRs9BaIMN09vSbfwnWhaI452L/FTBkaDgZ+4TPnLqb1Gp3uckIsOOidpPsuUHx4n1pSXq+sDFU40uVikfh7CZKZsV76k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6830C1FB;
+	Thu,  7 Mar 2024 02:51:18 -0800 (PST)
+Received: from [10.1.25.184] (XHFQ2J9959.cambridge.arm.com [10.1.25.184])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 245413F762;
+	Thu,  7 Mar 2024 02:50:39 -0800 (PST)
+Message-ID: <501c9f77-1459-467a-8619-78e86b46d300@arm.com>
+Date: Thu, 7 Mar 2024 10:50:37 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -47,63 +41,243 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: pcap-dbus.o:undefined reference to `dbus_message_demarshal'
-Content-Language: en-US
-To: Johannes Berg <johannes@sipsolutions.net>,
- Waqar Hameed <waqar.hameed@axis.com>, Ingo Molnar <mingo@kernel.org>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
- kernel@axis.com, Richard Weinberger <richard@nod.at>,
- linux-um@lists.infradead.org
-References: <202403052336.y6DkUd8a-lkp@intel.com> <pndzfvbibgm.fsf@axis.com>
- <87cfca1e-3f53-4935-a274-0920bce86373@cambridgegreys.com>
- <463be980baf66b967031e3294c3b9745b07aa058.camel@sipsolutions.net>
- <2cc222b7-618c-46a9-b78b-eb099d0f4be7@cambridgegreys.com>
- <a485fbdea26e19afe00f603bd65c83e2be20abe6.camel@sipsolutions.net>
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-In-Reply-To: <a485fbdea26e19afe00f603bd65c83e2be20abe6.camel@sipsolutions.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Score: -1.0
-X-Spam-Score: -1.0
-X-Clacks-Overhead: GNU Terry Pratchett
+Subject: Re: [PATCH v2 1/1] mm/madvise: enhance lazyfreeing with mTHP in
+ madvise_free
+Content-Language: en-GB
+To: Barry Song <21cnbao@gmail.com>
+Cc: Lance Yang <ioworker0@gmail.com>, david@redhat.com,
+ Vishal Moola <vishal.moola@gmail.com>, akpm@linux-foundation.org,
+ zokeefe@google.com, shy828301@gmail.com, mhocko@suse.com,
+ fengwei.yin@intel.com, xiehuan09@gmail.com, wangkefeng.wang@huawei.com,
+ songmuchun@bytedance.com, peterx@redhat.com, minchan@kernel.org,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240307061425.21013-1-ioworker0@gmail.com>
+ <CAGsJ_4xcRvZGdpPh1qcFTnTnDUbwz6WreQ=L_UO+oU2iFm9EPg@mail.gmail.com>
+ <CAK1f24k2G_DSEjuqqqPyY0f7+btpYbjfoyMH7btLfP8nkasCTQ@mail.gmail.com>
+ <CAGsJ_4xREM-P1mFqeM-s3-cJ9czb6PXwizb-3hOhwaF6+QM5QA@mail.gmail.com>
+ <03458c20-5544-411b-9b8d-b4600a9b802f@arm.com>
+ <CAGsJ_4zp1MXTjG=4gBO+J3owg7sHDgDJ8Ut51i1RBSnKnK0BfQ@mail.gmail.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <CAGsJ_4zp1MXTjG=4gBO+J3owg7sHDgDJ8Ut51i1RBSnKnK0BfQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-
-
-On 07/03/2024 10:29, Johannes Berg wrote:
-> On Thu, 2024-03-07 at 10:27 +0000, Anton Ivanov wrote:
+On 07/03/2024 09:33, Barry Song wrote:
+> On Thu, Mar 7, 2024 at 10:07 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>
+>> On 07/03/2024 08:10, Barry Song wrote:
+>>> On Thu, Mar 7, 2024 at 9:00 PM Lance Yang <ioworker0@gmail.com> wrote:
+>>>>
+>>>> Hey Barry,
+>>>>
+>>>> Thanks for taking time to review!
+>>>>
+>>>> On Thu, Mar 7, 2024 at 3:00 PM Barry Song <21cnbao@gmail.com> wrote:
+>>>>>
+>>>>> On Thu, Mar 7, 2024 at 7:15 PM Lance Yang <ioworker0@gmail.com> wrote:
+>>>>>>
+>>>> [...]
+>>>>>> +static inline bool can_mark_large_folio_lazyfree(unsigned long addr,
+>>>>>> +                                                struct folio *folio, pte_t *start_pte)
+>>>>>> +{
+>>>>>> +       int nr_pages = folio_nr_pages(folio);
+>>>>>> +       fpb_t flags = FPB_IGNORE_DIRTY | FPB_IGNORE_SOFT_DIRTY;
+>>>>>> +
+>>>>>> +       for (int i = 0; i < nr_pages; i++)
+>>>>>> +               if (page_mapcount(folio_page(folio, i)) != 1)
+>>>>>> +                       return false;
+>>>>>
+>>>>> we have moved to folio_estimated_sharers though it is not precise, so
+>>>>> we don't do
+>>>>> this check with lots of loops and depending on the subpage's mapcount.
+>>>>
+>>>> If we don't check the subpage’s mapcount, and there is a cow folio associated
+>>>> with this folio and the cow folio has smaller size than this folio,
+>>>> should we still
+>>>> mark this folio as lazyfree?
 >>>
->>> How's that required to be formatted and loaded? tcpdump itself can also
->>> dump the filter in BPF format, with -d/-ddd (-dd is a C representation,
->>> so probably not useful). Perhaps we could even automatically call
->>> 'tcpdump' at runtime?
+>>> I agree, this is true. However, we've somehow accepted the fact that
+>>> folio_likely_mapped_shared
+>>> can result in false negatives or false positives to balance the
+>>> overhead.  So I really don't know :-)
+>>>
+>>> Maybe David and Vishal can give some comments here.
+>>>
+>>>>
+>>>>> BTW, do we need to rebase our work against David's changes[1]?
+>>>>> [1] https://lore.kernel.org/linux-mm/20240227201548.857831-1-david@redhat.com/
+>>>>
+>>>> Yes, we should rebase our work against David’s changes.
+>>>>
+>>>>>
+>>>>>> +
+>>>>>> +       return nr_pages == folio_pte_batch(folio, addr, start_pte,
+>>>>>> +                                        ptep_get(start_pte), nr_pages, flags, NULL);
+>>>>>> +}
+>>>>>> +
+>>>>>>  static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
+>>>>>>                                 unsigned long end, struct mm_walk *walk)
+>>>>>>
+>>>>>> @@ -676,11 +690,45 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
+>>>>>>                  */
+>>>>>>                 if (folio_test_large(folio)) {
+>>>>>>                         int err;
+>>>>>> +                       unsigned long next_addr, align;
+>>>>>>
+>>>>>> -                       if (folio_estimated_sharers(folio) != 1)
+>>>>>> -                               break;
+>>>>>> -                       if (!folio_trylock(folio))
+>>>>>> -                               break;
+>>>>>> +                       if (folio_estimated_sharers(folio) != 1 ||
+>>>>>> +                           !folio_trylock(folio))
+>>>>>> +                               goto skip_large_folio;
+>>>>>
+>>>>>
+>>>>> I don't think we can skip all the PTEs for nr_pages, as some of them might be
+>>>>> pointing to other folios.
+>>>>>
+>>>>> for example, for a large folio with 16PTEs, you do MADV_DONTNEED(15-16),
+>>>>> and write the memory of PTE15 and PTE16, you get page faults, thus PTE15
+>>>>> and PTE16 will point to two different small folios. We can only skip when we
+>>>>> are sure nr_pages == folio_pte_batch() is sure.
+>>>>
+>>>> Agreed. Thanks for pointing that out.
+>>>>
+>>>>>
+>>>>>> +
+>>>>>> +                       align = folio_nr_pages(folio) * PAGE_SIZE;
+>>>>>> +                       next_addr = ALIGN_DOWN(addr + align, align);
+>>>>>> +
+>>>>>> +                       /*
+>>>>>> +                        * If we mark only the subpages as lazyfree, or
+>>>>>> +                        * cannot mark the entire large folio as lazyfree,
+>>>>>> +                        * then just split it.
+>>>>>> +                        */
+>>>>>> +                       if (next_addr > end || next_addr - addr != align ||
+>>>>>> +                           !can_mark_large_folio_lazyfree(addr, folio, pte))
+>>>>>> +                               goto split_large_folio;
+>>>>>> +
+>>>>>> +                       /*
+>>>>>> +                        * Avoid unnecessary folio splitting if the large
+>>>>>> +                        * folio is entirely within the given range.
+>>>>>> +                        */
+>>>>>> +                       folio_clear_dirty(folio);
+>>>>>> +                       folio_unlock(folio);
+>>>>>> +                       for (; addr != next_addr; pte++, addr += PAGE_SIZE) {
+>>>>>> +                               ptent = ptep_get(pte);
+>>>>>> +                               if (pte_young(ptent) || pte_dirty(ptent)) {
+>>>>>> +                                       ptent = ptep_get_and_clear_full(
+>>>>>> +                                               mm, addr, pte, tlb->fullmm);
+>>>>>> +                                       ptent = pte_mkold(ptent);
+>>>>>> +                                       ptent = pte_mkclean(ptent);
+>>>>>> +                                       set_pte_at(mm, addr, pte, ptent);
+>>>>>> +                                       tlb_remove_tlb_entry(tlb, pte, addr);
+>>>>>> +                               }
+>>>>>
+>>>>> Can we do this in batches? for a CONT-PTE mapped large folio, you are unfolding
+>>>>> and folding again. It seems quite expensive.
 >>
->> That is one option.
->>
->> As far as common use cases are concerned, at present you can:
->>
->> tcpdump -ddd, convert it to raw binary (3 liner in a language of choice) and pass that to vecX as a bpffile=
->>
->> It may be worth it to make vecX also take the -ddd format directly by adding "format" options to bpffile.
->>
->> I'd rather do that instead of invoking tcpdump out of a device open. The -ddd notation (+/- a comma here and there) is
->> standard - it is also used by iptables, etc. It can used by other code generators as well.
+>> I'm not convinced we should be doing this in batches. We want the initial
+>> folio_pte_batch() to be as loose as possible regarding permissions so that we
+>> reduce our chances of splitting folios to the min. (e.g. ignore SW bits like
+>> soft dirty, etc). I think it might be possible that some PTEs are RO and other
+>> RW too (e.g. due to cow - although with the current cow impl, probably not. But
+>> its fragile to assume that). Anyway, if we do an initial batch that ignores all
 > 
-> Yeah, that makes sense, this is all kind of special configuration
-> anyway, and given that it's been broken forever ...
-> 
-> I actually doubt anyone would scream if we just removed it, so maybe
-> just remove it and if they do scream, point to the above, including said
-> 3-liner in the response?
+> You are correct. I believe this scenario could indeed occur. For instance,
+> if process A forks process B and then unmaps itself, leaving B as the
+> sole process owning the large folio.  The current wp_page_reuse() function
+> will reuse PTE one by one while the specific subpage is written. 
 
-Let's make it so.
+Hmm - I thought it would only reuse if the total mapcount for the folio was 1.
+And since it is a large folio with each page mapped once in proc B, I thought
+every subpage write would cause a copy except the last one? I haven't looked at
+the code for a while. But I had it in my head that this is an area we need to
+improve for mTHP.
 
+> This can
+> make a part of PTE writable while the others are read-only.
 > 
-> johannes
+>> that then do this bit as a batch, you will end up smeering all the ptes with
+>> whatever properties were set on the first pte, which probably isn't right.
+>>
+>> I've done a similar conversion for madvise_cold_or_pageout_pte_range() as part
+>> of my swap-out series v4 (hoping to post imminently, but still working out a
+>> latent bug that it triggers). I use ptep_test_and_clear_young() in that, which
+>> arm64 can apply per-pte but avoid doing a contpte unfold/fold. I know you have
+>> to clear dirty here too, but I think this pattern is preferable.
 > 
+> nice to know ptep_test_and_clear_young() won't unfold and fold CONT-PTE.
+> I probably have missed this part of your CONT-PTE series as I was quite busy
+> with others :-)
 > 
+>>
+>> FYI, my swap-out series also halfway-batches madvise_free_pte_range() so that I
+>> can batch free_swap_and_cache() for the swap entry case. Ideally the work you
+>> are doing here would be rebased on top of that and plug-in to the approach
+>> implemented there. (subject to others' views of course).
+>>
+>> I'll cc you when I post it.
+>>
+>>>>
+>>>> Thanks for your suggestion. I'll do this in batches in v3.
+>>>>
+>>>> Thanks again for your time!
+>>>>
+>>>> Best,
+>>>> Lance
+>>>>
+>>>>>
+>>>>>> +                       }
+>>>>>> +                       folio_mark_lazyfree(folio);
+>>>>>> +                       goto next_folio;
+>>>>>> +
+>>>>>> +split_large_folio:
+>>>>>>                         folio_get(folio);
+>>>>>>                         arch_leave_lazy_mmu_mode();
+>>>>>>                         pte_unmap_unlock(start_pte, ptl);
+>>>>>> @@ -688,13 +736,28 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
+>>>>>>                         err = split_folio(folio);
+>>>>>>                         folio_unlock(folio);
+>>>>>>                         folio_put(folio);
+>>>>>> -                       if (err)
+>>>>>> -                               break;
+>>>>>> -                       start_pte = pte =
+>>>>>> -                               pte_offset_map_lock(mm, pmd, addr, &ptl);
+>>>>>> -                       if (!start_pte)
+>>>>>> -                               break;
+>>>>>> -                       arch_enter_lazy_mmu_mode();
+>>>>>> +
+>>>>>> +                       /*
+>>>>>> +                        * If the large folio is locked or cannot be split,
+>>>>>> +                        * we just skip it.
+>>>>>> +                        */
+>>>>>> +                       if (err) {
+>>>>>> +skip_large_folio:
+>>>>>> +                               if (next_addr >= end)
+>>>>>> +                                       break;
+>>>>>> +                               pte += (next_addr - addr) / PAGE_SIZE;
+>>>>>> +                               addr = next_addr;
+>>>>>> +                       }
+>>>>>> +
+>>>>>> +                       if (!start_pte) {
+>>>>>> +                               start_pte = pte = pte_offset_map_lock(
+>>>>>> +                                       mm, pmd, addr, &ptl);
+>>>>>> +                               if (!start_pte)
+>>>>>> +                                       break;
+>>>>>> +                               arch_enter_lazy_mmu_mode();
+>>>>>> +                       }
+>>>>>> +
+>>>>>> +next_folio:
+>>>>>>                         pte--;
+>>>>>>                         addr -= PAGE_SIZE;
+>>>>>>                         continue;
+>>>>>> --
+>>>>>> 2.33.1
+>>>>>>
+>>>
+> 
+> Thanks
+>  Barry
 
--- 
-Anton R. Ivanov
-Cambridgegreys Limited. Registered in England. Company Number 10273661
-https://www.cambridgegreys.com/
 
