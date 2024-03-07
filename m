@@ -1,245 +1,234 @@
-Return-Path: <linux-kernel+bounces-96209-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96210-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C13387589E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 21:40:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C3EE8758AA
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 21:40:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5FFE81C22461
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:40:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F26AA1C21E18
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:40:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B8B81386C5;
-	Thu,  7 Mar 2024 20:39:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LTLMpS3V"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A949139569;
+	Thu,  7 Mar 2024 20:40:48 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32AFD634E9;
-	Thu,  7 Mar 2024 20:39:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3C182375B
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 20:40:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709843996; cv=none; b=maIhfOBV9oZmrN06kcDammkeopy+3ljL5WOyUqhkiA1QrL6rALelGtaass2N5JUh8JpCbvGof4sudaQigT8opEiWuIk6IQyJQunUW420AAgW8p979VEE5sww1+3oHKR5PEpnwcWkuYPYOdDVEA1HlW/QmoQEF+icrQhqD5nixRo=
+	t=1709844047; cv=none; b=r0J1hoX+0ruKDrFY7Jx+rRg65l4bZi7SMq8CoJsqmiwk5kPnDQzQqnE6xHWyoVtAK8cv50Qp5tYL2y6QhKEmZnu3Yc6g+JemySh2gQtUS+4tviz4KL3JdIIFO4oZMya4xWJMQ5IFK0U8A+re5sbDt4Tm/aEwgpaL15bsyI3N5Ls=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709843996; c=relaxed/simple;
-	bh=xzOKp2H5xhff7RPjl7hUZinOqbqvSZ0ptOXYVgfGCwY=;
+	s=arc-20240116; t=1709844047; c=relaxed/simple;
+	bh=PU/nsmIjvcb9jT9tFNblBBBYPCVtyRr9mA8Zg4T1z34=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Fi7zpLVPHmK/GN2wrLuw9J2OWbf3zO/oXjJg1F/LhqJ/TQKA+WjV1nhdlvXti7RXCsP503n1Qu+Wqzp0K+q3+4eeFeIvNb5yoZmVAwh4QDrp3fowtvaTAZ+LPJealA2TV+bMu3v4GHmEG708SaoWlr51WXsDZKDDpTDhBSF9PMs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LTLMpS3V; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4708CC433F1;
-	Thu,  7 Mar 2024 20:39:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709843995;
-	bh=xzOKp2H5xhff7RPjl7hUZinOqbqvSZ0ptOXYVgfGCwY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LTLMpS3V56JS9D8rU1wNJes/qKPjQmq1Xy9PQLl9UYi85d/tBRdkmdybujPkQ0oc1
-	 lCh5LU5sR8iY6ZKRnZVzRsvjsaJ4iyxUYoHVqrCLU5MTyTSQth4Ok11AvCyeybhoiV
-	 R9nre40xIwxjSHJh0avjbHqEQynpt50oJBk8uWmgkBXqXxHjWVE2oSUa9pP4AJYgq6
-	 yqg5jtfLoySoJdERzW00Fym8HKrWWyBLnoKhYld/vSZR926l5KS4Q6e7/wb4p/iluj
-	 pqM6DhqT9yuG4mRnSPQffBQ4yRLhv8+PyB2NFSM0plLLgy7LPxuWDR5YelHrKhE5cp
-	 cS6Oy03pNvtvQ==
-Date: Thu, 7 Mar 2024 20:39:51 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Stefan Berger <stefanb@linux.ibm.com>
-Cc: Michael Ellerman <mpe@ellerman.id.au>, linux-integrity@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, conor.dooley@microchip.com,
-	nayna@linux.ibm.com, Lukas Wunner <lukas@wunner.de>,
-	linux-kernel@vger.kernel.org, jarkko@kernel.org,
-	rnsastry@linux.ibm.com, peterhuewe@gmx.de, viparash@in.ibm.com
-Subject: Re: [PATCH 1/2] powerpc/prom_init: Replace linux,sml-base/sml-size
- with linux,sml-log
-Message-ID: <20240307-cytoplasm-compare-6656aae737ac@spud>
-References: <20240306155511.974517-1-stefanb@linux.ibm.com>
- <20240306155511.974517-2-stefanb@linux.ibm.com>
- <87jzmenx2c.fsf@mail.lhotse>
- <768fc5f1-3919-477e-a8e6-16a7e8536add@linux.ibm.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=p9H8BT3uGhHFi3nS1RCHDrIAPe0w+XX3j9gwWd8/wzw4tJAYqm8T1+KQZSo6+COzIrYtIMR3xZRJtuZY8T+owuJnXoko63sVS5uI2EDYfAdIwwNWqvyDf9CHjYdLHk2j25wjsNUW8Ob+TorYqWS47rLy6ikN8TuwZFCgOg0HXA0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1riKXc-0000hJ-SE; Thu, 07 Mar 2024 21:40:36 +0100
+Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1riKXb-0050ZH-EG; Thu, 07 Mar 2024 21:40:35 +0100
+Received: from pengutronix.de (unknown [172.20.34.65])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id DE4C32A0DEE;
+	Thu,  7 Mar 2024 20:40:34 +0000 (UTC)
+Date: Thu, 7 Mar 2024 21:40:33 +0100
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: vitor <ivitro@gmail.com>
+Cc: manivannan.sadhasivam@linaro.org, thomas.kopp@microchip.com, 
+	wg@grandegger.com, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	vitor.soares@toradex.com, stable@vger.kernel.org
+Subject: Re: [PATCH] can: mcp251xfd: fix infinite loop when xmit fails
+Message-ID: <20240307-sturdy-cringe-fa9b095b25ab-mkl@pengutronix.de>
+References: <20240307120442.12262-1-ivitro@gmail.com>
+ <xmk5cgskx2ug2psec6qgbxndbuqq5cnin7rd4zt3thnhybxgeo@xudpdob7tcg2>
+ <75fa2711c1aace90a831f95a00b8ba41abf1c883.camel@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="IDMXI+tGPlolqedq"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="xzpod2lt32mid3zt"
 Content-Disposition: inline
-In-Reply-To: <768fc5f1-3919-477e-a8e6-16a7e8536add@linux.ibm.com>
+In-Reply-To: <75fa2711c1aace90a831f95a00b8ba41abf1c883.camel@gmail.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
 
---IDMXI+tGPlolqedq
-Content-Type: text/plain; charset=us-ascii
+--xzpod2lt32mid3zt
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 07, 2024 at 10:11:03AM -0500, Stefan Berger wrote:
-> On 3/7/24 05:41, Michael Ellerman wrote:
-> > Stefan Berger <stefanb@linux.ibm.com> writes:
+On 07.03.2024 16:54:13, vitor wrote:
+> > On 07.03.2024 12:04:42, Vitor Soares wrote:
+> > > From: Vitor Soares <vitor.soares@toradex.com>
+> > >=20
+> > > When the mcp251xfd_start_xmit() function fails, the driver stops
+> > > processing messages, and the interrupt routine does not return,
+> > > running indefinitely even after killing the running application.
+> > >=20
+> > > Error messages:
+> > > [=C2=A0 441.298819] mcp251xfd spi2.0 can0: ERROR in
+> > > mcp251xfd_start_xmit: -16
+> > > [=C2=A0 441.306498] mcp251xfd spi2.0 can0: Transmit Event FIFO buffer
+> > > not empty. (seq=3D0x000017c7, tef_tail=3D0x000017cf,
+> > > tef_head=3D0x000017d0, tx_head=3D0x000017d3).
+> > > ... and repeat forever.
+> > >=20
+> > > The issue can be triggered when multiple devices share the same
+> > > SPI interface. And there is concurrent access to the bus.
+> > >=20
+> > > The problem occurs because tx_ring->head increments even if
+> > > mcp251xfd_start_xmit() fails. Consequently, the driver skips one
+> > > TX package while still expecting a response in
+> > > mcp251xfd_handle_tefif_one().
+> > >=20
+> > > This patch resolves the issue by decreasing tx_ring->head if
+> > > mcp251xfd_start_xmit() fails. With the fix, if we attempt to
+> > > trigger
+> > > the issue again, the driver prints an error and discard the
+> > > message.
+> >=20
+> > What about returning NETDEV_TX_BUSY, then the networking stack will
+> > retry.
+>=20
+> Do you mean when err =3D=3D -EBUSY?
+
+ACK
 
 > >=20
-> > Also adding the new linux,sml-log property should be accompanied by a
-> > change to the device tree binding.
+> > > Fixes: 55e5b97f003e ("can: mcp25xxfd: add driver for Microchip
+> > > MCP25xxFD SPI CAN")
+> > > Cc: stable@vger.kernel.org
+> > > Signed-off-by: Vitor Soares <vitor.soares@toradex.com>
+> > > ---
+> > > =C2=A0drivers/net/can/spi/mcp251xfd/mcp251xfd-tx.c | 27 ++++++++++---=
+---
+> > > ----
+> > > =C2=A01 file changed, 14 insertions(+), 13 deletions(-)
+> > >=20
+> > > diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-tx.c
+> > > b/drivers/net/can/spi/mcp251xfd/mcp251xfd-tx.c
+> > > index 160528d3cc26..a8eb941c1b95 100644
+> > > --- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-tx.c
+> > > +++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-tx.c
+> > > @@ -181,25 +181,26 @@ netdev_tx_t mcp251xfd_start_xmit(struct
+> > > sk_buff *skb,
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0tx_obj =3D mcp251xfd_=
+get_tx_obj_next(tx_ring);
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0mcp251xfd_tx_obj_from=
+_skb(priv, tx_obj, skb, tx_ring-
+> > > >head);
+> > > =C2=A0
+> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* Stop queue if we occupy=
+ the complete TX FIFO */
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0tx_head =3D mcp251xfd=
+_get_tx_head(tx_ring);
+> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0tx_ring->head++;
+> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (mcp251xfd_get_tx_free(=
+tx_ring) =3D=3D 0)
+> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0netif_stop_queue(ndev);
+> > > -
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0frame_len =3D can_skb=
+_get_frame_len(skb);
+> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0err =3D can_put_echo_skb(s=
+kb, ndev, tx_head, frame_len);
+> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (!err)
+> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0netdev_sent_queue(priv->ndev, frame_len);
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0can_put_echo_skb(skb, ndev=
+, tx_head, frame_len);
+> > > +
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0tx_ring->head++;
+> > > =C2=A0
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0err =3D mcp251xfd_tx_=
+obj_write(priv, tx_obj);
+> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (err)
+> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0goto out_err;
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (err) {
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0can_free_echo_skb(ndev, tx_head, NULL);
+> > > =C2=A0
+> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return NETDEV_TX_OK;
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0tx_ring->head--;
+> > > +
 >=20
->=20
-> See my proposal below.
->=20
+> I'm testing returning here when err =3D -EBUSY, but can_put_echo_skb()
+> should be invoked after mcp251xfd_tx_obj_write(). Otherwise, I get a
+> Kernel NULL pointer dereference error.
+
+I mean if mcp251xfd_tx_obj_write() returns -EBUSY don't print an error
+message, on any other error it's ok to print the error.
+
 > >=20
-> > The syntax is not very obvious to me, but possibly something like?
+> > I'm not sure, if we want an error message for -EBUSY. We could add
+> > proper ethtool statistics.
 > >=20
-> > diff --git a/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml b/Docu=
-mentation/devicetree/bindings/tpm/ibm,vtpm.yaml
-> > index 50a3fd31241c..cd75037948bc 100644
-> > --- a/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml
-> > +++ b/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml
-> > @@ -74,8 +74,6 @@ required:
-> >     - ibm,my-dma-window
-> >     - ibm,my-drc-index
-> >     - ibm,loc-code
-> > -  - linux,sml-base
-> > -  - linux,sml-size
-> >   allOf:
-> >     - $ref: tpm-common.yaml#
-> > diff --git a/Documentation/devicetree/bindings/tpm/tpm-common.yaml b/Do=
-cumentation/devicetree/bindings/tpm/tpm-common.yaml
-> > index 3c1241b2a43f..616604707c95 100644
-> > --- a/Documentation/devicetree/bindings/tpm/tpm-common.yaml
-> > +++ b/Documentation/devicetree/bindings/tpm/tpm-common.yaml
-> > @@ -25,6 +25,11 @@ properties:
-> >         base address of reserved memory allocated for firmware event log
-> >       $ref: /schemas/types.yaml#/definitions/uint64
-> > +  linux,sml-log:
-> > +    description:
-> > +      Content of firmware event log
-> > +    $ref: /schemas/types.yaml#/definitions/uint8-array
-> > +
-> >     linux,sml-size:
-> >       description:
-> >         size of reserved memory allocated for firmware event log
-> > @@ -53,15 +58,22 @@ dependentRequired:
-> >     linux,sml-base: ['linux,sml-size']
-> >     linux,sml-size: ['linux,sml-base']
-> > -# must only have either memory-region or linux,sml-base
-> > +# must only have either memory-region or linux,sml-base/size or linux,=
-sml-log
-> >   # as well as either resets or reset-gpios
-> >   dependentSchemas:
-> >     memory-region:
-> >       properties:
-> >         linux,sml-base: false
-> > +      linux,sml-log: false
-> >     linux,sml-base:
-> >       properties:
-> >         memory-region: false
-> > +      linux,sml-log: false
-> > +  linux,sml-log:
-> > +    properties:
-> > +      memory-region: false
-> > +      linux,sml-base: false
-> > +      linux,sml-size: false
-> >     resets:
-> >       properties:
-> >         reset-gpios: false
-> >=20
-> >=20
->=20
-> I have been working with this patch here now and it passes the following
-> test:
->=20
-> make dt_binding_check dtbs_check DT_SCHEMA_FILES=3Dtpm/ibm,vtpm.yaml
->=20
->=20
-> diff --git a/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml
-> b/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml
-> index 50a3fd31241c..cacf6c3082de 100644
-> --- a/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml
-> +++ b/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml
-> @@ -74,8 +74,12 @@ required:
->    - ibm,my-dma-window
->    - ibm,my-drc-index
->    - ibm,loc-code
-> -  - linux,sml-base
-> -  - linux,sml-size
-> +oneOf:
-> +  - required:
-> +      - linux,sml-base
-> +      - linux,sml-size
-> +  - required:
-> +      - linux,sml-log
->=20
->  allOf:
->    - $ref: tpm-common.yaml#
-> @@ -102,3 +106,21 @@ examples:
->              linux,sml-size =3D <0xbce10200>;
->          };
->      };
-> +  - |
-> +    soc {
-> +        #address-cells =3D <1>;
-> +        #size-cells =3D <0>;
-> +
-> +        tpm@30000003 {
-> +            compatible =3D "IBM,vtpm";
-> +            device_type =3D "IBM,vtpm";
-> +            reg =3D <0x30000003>;
-> +            interrupts =3D <0xa0003 0x0>;
-> +            ibm,#dma-address-cells =3D <0x2>;
-> +            ibm,#dma-size-cells =3D <0x2>;
-> +            ibm,my-dma-window =3D <0x10000003 0x0 0x0 0x0 0x10000000>;
-> +            ibm,my-drc-index =3D <0x30000003>;
-> +            ibm,loc-code =3D "U8286.41A.10082DV-V3-C3";
-> +            linux,sml-log =3D <00 00 00 00 03 00 00>;
-> +        };
-> +    };
-> diff --git a/Documentation/devicetree/bindings/tpm/tpm-common.yaml
-> b/Documentation/devicetree/bindings/tpm/tpm-common.yaml
-> index 3c1241b2a43f..591c48f8cb74 100644
-> --- a/Documentation/devicetree/bindings/tpm/tpm-common.yaml
-> +++ b/Documentation/devicetree/bindings/tpm/tpm-common.yaml
-> @@ -30,6 +30,11 @@ properties:
->        size of reserved memory allocated for firmware event log
->      $ref: /schemas/types.yaml#/definitions/uint32
->=20
-> +  linux,sml-log:
-> +    description:
-> +      firmware event log
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0netdev_err(priv->ndev, "ERROR in %s: %d\n",
+> > > __func__, err);
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0} else {
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0/* Stop queue if we occupy the complete TX FIFO */
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0if (mcp251xfd_get_tx_free(tx_ring) =3D=3D 0)
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0net=
+if_stop_queue(ndev);
+> > > =C2=A0
+> > > - out_err:
+> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0netdev_err(priv->ndev, "ER=
+ROR in %s: %d\n", __func__, err);
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0netdev_sent_queue(priv->ndev, frame_len);
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
+> > > =C2=A0
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return NETDEV_TX_OK;
+> > > =C2=A0}
 
-Can you provide a more complete description here please as to what the
-different between this and the other property? If I was populating a DT
-I would have absolutely no idea whether or not to use this or the other
-property, nor how to go about actually populating it.
-The "log" in your example doesn't look like an actual log of any sort,
-but I know nothing about TPMs so I'll take your word for it that that's
-what a TPM log looks like.
+Marc
 
-> +    $ref: /schemas/types.yaml#/definitions/uint8-array
-> +
->    memory-region:
->      description: reserved memory allocated for firmware event log
->      maxItems: 1
->=20
->=20
-> Is my patch missing something?
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
-I think you also need the dependantSchema stuff you had in your original
-snippet that makes the linux,* properties mutually exclusive with
-memory-region (or at least something like that).
-
-Please make sure you CC the DT maintainers and list on the v2 and Lukas
-Wunner too.
-
-Thanks,
-Conor.
-
---IDMXI+tGPlolqedq
+--xzpod2lt32mid3zt
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZeomFgAKCRB4tDGHoIJi
-0rDjAQDCS+FWUSIjoa3pw2hIV6BHFi7ckp38kgze/iTx08jC2wD/Y6NcNqHRNxyH
-uqytmYK1UqfYlV6C3HtkWQilNytz6QA=
-=5EVs
+iQEzBAABCgAdFiEEUEC6huC2BN0pvD5fKDiiPnotvG8FAmXqJj4ACgkQKDiiPnot
+vG8ktgf/TaeKvlOG1Zbb+4QPh8JFFJQgGC8Ogk4kWCUziHvwfbBUwXv3gBJfWOvQ
+B7HyS+VTGIPr5oIJWGOYqMeVn2xEIhQj+9iakw1cqaD5Am0j8IPKV0R122mEzGuj
+/5tBnh7vbTI75iySRFz57ZdPU/ExqwXoGkaeeGAUh+YnZnQAaNcxqnv0JlctyaAe
+0YR1PII1tdZ4vS08J6hBwPgg7symH2uBKXra4/eWNxdOZdZimbiIbKn+t+i5vYrT
+SgyA1S+mdiIJpS56V/8s7+huLDtnx06iyUN0GG6pcFck7Mj2KSosodLwjs0xQapF
+Y1HEvd2o0MizYWbgK897zbi7t5um4g==
+=IaEp
 -----END PGP SIGNATURE-----
 
---IDMXI+tGPlolqedq--
+--xzpod2lt32mid3zt--
 
