@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-94869-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94875-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11B3587462D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 03:41:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CC4E87463A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 03:42:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9403E1F23F13
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 02:41:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A2861C21A73
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 02:42:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5F95CA6B;
-	Thu,  7 Mar 2024 02:40:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AD0B1C6B7;
+	Thu,  7 Mar 2024 02:41:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="ngT8lCR3"
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="k3w+8DQK"
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6806D1847;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6841710FD;
 	Thu,  7 Mar 2024 02:40:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.18.73.165
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709779256; cv=none; b=hpVIqg92GrjyfTZjhzs1EA13+SQNQZChAkxgA77aFjn0PyXbtlzi7Pd6VeMFjyczFrd2PR1PWUcH6bsoQIjr5GMJbQNOcib/O2WNK9PKBzMzC/LPFq33IPBVTgja/FJoIxG6DIa7iYFYPND7P9g2ZjyDMtsjLELx+s4Qep+mG8g=
+	t=1709779256; cv=none; b=Gi2jFavesK7FhB+LCvrxRaz+gkFSQg60kZtd0e06O/gkjQGgMjSR76XO9zOQ0BBRHjEinQxtw/QFpmg6UCnyoYtldxvs44xoTyjUUXabqc1ZUxAw/ZqC1Xc5S2sBUQ0O6SOaVvTl65ULugkLgTRrmU4WSAg+RdTaqRDaSv43XOk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1709779256; c=relaxed/simple;
-	bh=Yjjz5ewPjXZp4KyL2oiueZbhuwnsqUODQj8pNHnwbkc=;
+	bh=UE0TY/3q957KVRIjVYoueNUwmQf5HGQ0Hm6CoA9ZdTw=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=iJbtFnOEg6mXXJZPx4wiFzm1NEN4ci8mL569hfjFMV6Rbe6J4+MuYRQW82Yso+SABZPQGqKTWzBl1Kvnc74r4aArMURKosEIMNZ1O0qfQXL5dKGUVx3LlLFGWtm0qkvUyWnCnmAcaPks01TbMZ6bx7Og9TB2avbAUnKEp1h/TIA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=ngT8lCR3; arc=none smtp.client-ip=45.89.224.132
+	 MIME-Version:Content-Type; b=oYZ2kGTqgI6hYelI09O9vy00hYMQALoEhtnBpWUuxMILzcFsUi/3dFCAjEs+x7CgRvpVVt0mtmu2i0tEZirzrtsBph7ZZmXuuvnUsbEH2ezPR8x1u/hpNG2wdI0t7PE75ajA0uDuSRgvMxYxH6x9Mzyz6Le/zpvqWMh7IhBr4s0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=k3w+8DQK; arc=none smtp.client-ip=37.18.73.165
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 05C5312001F;
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 45A39100025;
 	Thu,  7 Mar 2024 05:40:45 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 05C5312001F
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 45A39100025
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
 	s=mail; t=1709779245;
-	bh=jEVsja8SSmoMIIjVaOxrbFMoSgIk5r+GyxaxqJuvUC4=;
+	bh=P/O5w/8cj7I+6+/1kVHjj9xK1e1tJXqkaq/6XxYDflE=;
 	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=ngT8lCR3EkUmke2AOk56uWYG4CAuNBWDlIKszqS1zln2UZaEF+1yEzt2vI7f8Nn0W
-	 KojlbOIIVzM95uqCKn1NJAG9vU7b7gTDCvhIX+GMFiquDk7sLDkBvk95nuPECE26q+
-	 /Eu1HxrZr7thZXj90/iIJeve4tbdPOdjyWU3MBLNdcnHzamHA9gDqdOxG0dw/J7M1Z
-	 k4bhE4Og8ZeCC8Een2FVn7E1O5Bi610KIzTocJq+EGHSvRT2FRDAQg/Qkcz5A8Yvpc
-	 wrhRfI+pCpolfY/a0nOpQJL8Kmbusli08c3YBudNBCLrJHzmh3LJFTmnH/15ZiZWEe
-	 qlS4PomkNG+nw==
+	b=k3w+8DQKlF91NKxB21htrdawx2AotviLb3pmh3STsrkcMwMLsI55bPu/xmidlzxrv
+	 92naq5T7S88QeSLNbmy67UABFnxK/9+jjVYGWzwJPQlVQ45NXbUWh+xyEZIucBReSm
+	 WVDQ3I1EtfxTrKUulke63Pk8LkaX8ZommFKMhtb+Tf3FXCU4Zu9qs3Bs+4ppEfKMBG
+	 fawCmnXBIgQZqUNlAP2eT+bVgO9bOB6FtdfTpIDmdGa3iWriwvfIBQfLNtZQ1nMKl6
+	 71In8X5XlWdXQ4sOPol3KCMk0FjP937env9HY61qbqFNwppK/gRcMSzYgjgzN+B97a
+	 H0rPCvtz4F1SA==
 Received: from smtp.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
 	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Thu,  7 Mar 2024 05:40:44 +0300 (MSK)
+	Thu,  7 Mar 2024 05:40:45 +0300 (MSK)
 Received: from localhost.localdomain (100.125.24.169) by
  p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
@@ -63,9 +63,9 @@ To: <andy.shevchenko@gmail.com>, <pavel@ucw.cz>, <lee@kernel.org>,
 CC: <linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
 	<linuxppc-dev@lists.ozlabs.org>, <kernel@salutedevices.com>, George Stark
 	<gnstark@salutedevices.com>
-Subject: [PATCH v5 01/10] locking/mutex: move mutex_destroy() definition lower
-Date: Thu, 7 Mar 2024 05:40:25 +0300
-Message-ID: <20240307024034.1548605-2-gnstark@salutedevices.com>
+Subject: [PATCH v5 02/10] locking/mutex: introduce devm_mutex_init
+Date: Thu, 7 Mar 2024 05:40:26 +0300
+Message-ID: <20240307024034.1548605-3-gnstark@salutedevices.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240307024034.1548605-1-gnstark@salutedevices.com>
 References: <20240307024034.1548605-1-gnstark@salutedevices.com>
@@ -96,53 +96,97 @@ X-KSMG-LinksScanning: Clean
 X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/02/29 19:21:00 #23899999
 X-KSMG-AntiVirus-Status: Clean, skipped
 
-mutex_destroy() definition is located in the middle of the code related
-purely to mutex initialization so place it separately after mutex_init()
+Using of devm API leads to a certain order of releasing resources.
+So all dependent resources which are not devm-wrapped should be deleted
+with respect to devm-release order. Mutex is one of such objects that
+often is bound to other resources and has no own devm wrapping.
+Since mutex_destroy() actually does nothing in non-debug builds
+frequently calling mutex_destroy() is just ignored which is safe for now
+but wrong formally and can lead to a problem if mutex_destroy() will be
+extended so introduce devm_mutex_init()
 
 Signed-off-by: George Stark <gnstark@salutedevices.com>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
-Hello Waiman. This is helper patch to make resulting mutex.h look like we discussed
-it in December. It was in you cleanup patch at first but slept away somehow
+ Hello Christophe. Hope you don't mind I put you SoB tag because you helped alot
+ to make this patch happen.
 
- include/linux/mutex.h | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ include/linux/mutex.h        | 13 +++++++++++++
+ kernel/locking/mutex-debug.c | 22 ++++++++++++++++++++++
+ 2 files changed, 35 insertions(+)
 
 diff --git a/include/linux/mutex.h b/include/linux/mutex.h
-index 67edc4ca2bee..f7611c092db7 100644
+index f7611c092db7..9bcf72cb941a 100644
 --- a/include/linux/mutex.h
 +++ b/include/linux/mutex.h
-@@ -37,14 +37,10 @@
- # define __DEBUG_MUTEX_INITIALIZER(lockname)				\
- 	, .magic = &lockname
+@@ -22,6 +22,8 @@
+ #include <linux/cleanup.h>
+ #include <linux/mutex_types.h>
 
--extern void mutex_destroy(struct mutex *lock);
--
++struct device;
++
+ #ifdef CONFIG_DEBUG_LOCK_ALLOC
+ # define __DEP_MAP_MUTEX_INITIALIZER(lockname)			\
+ 		, .dep_map = {					\
+@@ -115,10 +117,21 @@ do {							\
+
+ #ifdef CONFIG_DEBUG_MUTEXES
+
++int devm_mutex_init(struct device *dev, struct mutex *lock);
+ void mutex_destroy(struct mutex *lock);
+
  #else
 
- # define __DEBUG_MUTEX_INITIALIZER(lockname)
++static inline int devm_mutex_init(struct device *dev, struct mutex *lock)
++{
++	/*
++	 * since mutex_destroy is nop actually there's no need to register it
++	 * in devm subsystem.
++	 */
++	mutex_init(lock);
++	return 0;
++}
++
+ static inline void mutex_destroy(struct mutex *lock) {}
 
--static inline void mutex_destroy(struct mutex *lock) {}
--
  #endif
+diff --git a/kernel/locking/mutex-debug.c b/kernel/locking/mutex-debug.c
+index bc8abb8549d2..c9efab1a8026 100644
+--- a/kernel/locking/mutex-debug.c
++++ b/kernel/locking/mutex-debug.c
+@@ -19,6 +19,7 @@
+ #include <linux/kallsyms.h>
+ #include <linux/interrupt.h>
+ #include <linux/debug_locks.h>
++#include <linux/device.h>
 
- #ifndef CONFIG_PREEMPT_RT
-@@ -117,6 +113,16 @@ do {							\
- } while (0)
- #endif /* CONFIG_PREEMPT_RT */
+ #include "mutex.h"
 
-+#ifdef CONFIG_DEBUG_MUTEXES
+@@ -104,3 +105,24 @@ void mutex_destroy(struct mutex *lock)
+ }
+
+ EXPORT_SYMBOL_GPL(mutex_destroy);
 +
-+void mutex_destroy(struct mutex *lock);
++static void devm_mutex_release(void *res)
++{
++	mutex_destroy(res);
++}
 +
-+#else
-+
-+static inline void mutex_destroy(struct mutex *lock) {}
-+
-+#endif
-+
- /*
-  * See kernel/locking/mutex.c for detailed documentation of these APIs.
-  * Also see Documentation/locking/mutex-design.rst.
++/**
++ * devm_mutex_init - Resource-managed mutex initialization
++ * @dev:	Device which lifetime mutex is bound to
++ * @lock:	Pointer to a mutex
++ *
++ * Initialize mutex which is automatically destroyed when the driver is detached.
++ *
++ * Returns: 0 on success or a negative error code on failure.
++ */
++int devm_mutex_init(struct device *dev, struct mutex *lock)
++{
++	mutex_init(lock);
++	return devm_add_action_or_reset(dev, devm_mutex_release, lock);
++}
++EXPORT_SYMBOL_GPL(devm_mutex_init);
 --
 2.25.1
 
