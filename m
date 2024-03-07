@@ -1,231 +1,255 @@
-Return-Path: <linux-kernel+bounces-95450-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95451-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F8F6874DC6
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:43:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E82E9874DC8
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:43:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 79658B23E6C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:43:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F7C228318F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:43:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BF3A129A84;
-	Thu,  7 Mar 2024 11:41:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19C6312BE97;
+	Thu,  7 Mar 2024 11:41:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="fT3BTVS3"
-Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YgveHfsP"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEFF412880A
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 11:41:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.11
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709811678; cv=none; b=XGljorLweIfM6/hHtWQk1CWnXQFkMms5fisTR7m6Z+S74VlgJ6EQa1zSqlsGrD1Knc80i4DzWpv+MyD3qtN6KCkk5LuaoY1G2qKeYDgOzJr/8fjMzcgiU4CZahs8muFPp17NCSomWQWQ6CTiQ3XYFcTorFOGTy8ifctSrpUxEiI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709811678; c=relaxed/simple;
-	bh=tClZTSyEdvqyZlIqZj5UHmzzjNSZt47PKXfFHZjRqwA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:From:In-Reply-To:
-	 Content-Type:References; b=p1Vf4J7nbT4eGzrL2IFAUIEBmT/7DZUgQKZahdB8WJR1/ohP4ma9vkHEE6li9v15KPUrKzBB8jS5rCSHdFs9q4W5557qmA87ApX4BU/7akLkQlWa3cXbaNWjVVYwWelrRxKiBNsHr5s+69aOuKVs9JVuq2HIg6jPhEjgIVCYja8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=fT3BTVS3; arc=none smtp.client-ip=210.118.77.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-	by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20240307114108euoutp01adb264b8ee85854b715b213df0f8daa7~6eKdEYq1Z2127721277euoutp01C
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 11:41:08 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20240307114108euoutp01adb264b8ee85854b715b213df0f8daa7~6eKdEYq1Z2127721277euoutp01C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1709811668;
-	bh=ZX7XgwAbXzFGogvGS3yajGzBilU38GeCPw+l5z4vKwQ=;
-	h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
-	b=fT3BTVS3zHa6QBFF/OtSLceFKCp58U3IYfeY/SVGog1BKJ4dO9gBWV6+XBcA/CXtp
-	 W4IPV3GdUy9MkNjV9B1+5ghOAKV0ki9Fo5T0VegZoZ6uyoBYPUGDZXF3sjHAzdHnNg
-	 aRznxvFQxjFaMRZovEOva4sAB6Bfb+Evz/CFRc3w=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-	eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-	20240307114107eucas1p20c922e1fb6f12e62ad8079c4177b199b~6eKco74tO1220312203eucas1p2F;
-	Thu,  7 Mar 2024 11:41:07 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-	eusmges1new.samsung.com (EUCPMTA) with SMTP id D0.6A.09539.3D7A9E56; Thu,  7
-	Mar 2024 11:41:07 +0000 (GMT)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-	eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-	20240307114107eucas1p2d18f8261c44f0978c37100b1188bf8f3~6eKcQ-4RO0073300733eucas1p2y;
-	Thu,  7 Mar 2024 11:41:07 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-	eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-	20240307114107eusmtrp17eb6cdf0c6eeb490be742fb52bae0d9c~6eKcQPfdj0724507245eusmtrp1V;
-	Thu,  7 Mar 2024 11:41:07 +0000 (GMT)
-X-AuditID: cbfec7f2-515ff70000002543-8e-65e9a7d3a0ba
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-	eusmgms2.samsung.com (EUCPMTA) with SMTP id DB.CB.10702.3D7A9E56; Thu,  7
-	Mar 2024 11:41:07 +0000 (GMT)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-	eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-	20240307114106eusmtip2ce33a3f1f3bc135c0d39263534718f4f~6eKbyA8k80809308093eusmtip2h;
-	Thu,  7 Mar 2024 11:41:06 +0000 (GMT)
-Message-ID: <949c82da-f0dc-4824-ac57-bc86ae42d871@samsung.com>
-Date: Thu, 7 Mar 2024 12:41:06 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 336D5839E3;
+	Thu,  7 Mar 2024 11:41:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.9
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709811709; cv=fail; b=cLGKJETh+pXvle3HJ/qtYOzYub6bLpn5yl+tmkY1ZhKur/xLJCZ5bmERd3BIIoMYXrVnBR/L9+Zov3wUPhTRfzlVZn5fQFCt5mQW4KsklmiYMkJGgyqofL+5/xZbuO5rXiISr8AQNdGwVhO/C9IvZUS3tPsf3jG6EyB61kWcn/c=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709811709; c=relaxed/simple;
+	bh=X+pl/SgtKqtiOqn8C0tfIJa2+yPx4ktAcGgiCTya0gw=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=XhGFXgVrz5kFp51FNdCf368Ou1Nqb/FUqVc761L/v3JMtN9bUXkIvF8KJ7a9CxAMATftohX/k/Mzmw05/YNmufp5f4u+Sl2Nd6byXqcsitC2fEXQ3zI1AkN4hXFx+0phvWXALbgEzyo4LVaUpxMSNuZ+Gd1a5xK47saU2gFf4lk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YgveHfsP; arc=fail smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709811707; x=1741347707;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=X+pl/SgtKqtiOqn8C0tfIJa2+yPx4ktAcGgiCTya0gw=;
+  b=YgveHfsPpVzl54NtgATM88BLRNwiZC266tvy8l2NeJ7Ja+Hr5JhW4oXt
+   2+9c09PqR1F/GwjfJi2okKKF1PgS7Wq+aohjuHJAJswxz93Elo7FNmeVb
+   5ja7hwgR9MAFph2dTVvScrN5uITa/VeWvsVMGXPlZFY+BHmvqUKh/zYz1
+   /EOL1Yfe7F2KG7Cof5WHAKUAWWiDSmH5+0QF7dLWT5lNiFl8RqMX5S31H
+   nixFJgT0D7qZOLGHOLih29tsjfL0vOAROAYvFGuxp4VoVjUV+2JnsnZrI
+   p0tNLD3Ay0DqykZfTd7aE3yjw37A57gtVgTXpos0j/gj/GMmIxyO4cy0W
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11005"; a="26950692"
+X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
+   d="scan'208";a="26950692"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 03:41:46 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
+   d="scan'208";a="14752421"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orviesa004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 07 Mar 2024 03:41:47 -0800
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 7 Mar 2024 03:41:46 -0800
+Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 7 Mar 2024 03:41:45 -0800
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Thu, 7 Mar 2024 03:41:45 -0800
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.168)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 7 Mar 2024 03:41:45 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XC5FoyyD4+B8XpAa/Ui48JaWJRQ8HOiGc8kmzorKOpu3q5tAsZ4OhXE4/dji4QREqjhst+waF9un+D3jj5bTYYW8Nov6b4VxtkVgeaT9xfktUtPHKsUBZG0FkV8YBTGoakTmY20NcmocXWsWmy8hoseCq1xSjwk04nzhCjHoBuT/f/EJe7K8erIUnCsSneh+N0+tRwO4e9G7a65T2OJaSE6IT9PrqkoQfkqaVKDLa2bkKGlUfj3otyeKxgc9FYvpnWnJxk/NvjIiUZL+MNEqOq9NVKPopDdLOUyZ4OvsSdNeLh38KxR6lDieCf7VdFYx9/Me2V3tXrul/YZ4K+mgtw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pL7osRhrmaOM3TJsE7oZ9J2+veBO+L3UCCpW0/jqEYM=;
+ b=X8frVa8+71Pxzs6n+GMEyaonmtHky6c5ReI+fsuueG7MxZWDPHLCOGnhyWEz9AWbNgioL0StsdlhTdttBot3dljJzMdLZeNViVKYbHM8Bhf8V3f8UtUbTHgQatJnRhI/XCdSl07U6sIZYKsZSRTA/OP22LLZx8Yy/+MQLU2J8Lxj40l0DkBET+J7IdsBh6b8qDMBjywXDQxeADg18uqc9w3mrn4J4Znwra0eVfFAdwXVuvLBqnL7/e+rZ4w5MdVtBgH0mV99atDgMa89bh5rEVIMZM9b/Q1toDaQy33OQq0XHMS6eG/0hnpgLX8wUrAQXsafF11eN7UNoIK7SpTTVg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from MW4PR11MB5776.namprd11.prod.outlook.com (2603:10b6:303:183::9)
+ by DS0PR11MB7192.namprd11.prod.outlook.com (2603:10b6:8:13a::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.24; Thu, 7 Mar
+ 2024 11:41:43 +0000
+Received: from MW4PR11MB5776.namprd11.prod.outlook.com
+ ([fe80::8079:6172:11ca:5fe9]) by MW4PR11MB5776.namprd11.prod.outlook.com
+ ([fe80::8079:6172:11ca:5fe9%3]) with mapi id 15.20.7362.019; Thu, 7 Mar 2024
+ 11:41:43 +0000
+Message-ID: <8628b57e-3087-4fb5-9e8a-03a1b4b8c31a@intel.com>
+Date: Thu, 7 Mar 2024 12:41:36 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] net: hsr: Provide RedBox support
+Content-Language: en-US
+To: Lukasz Majewski <lukma@denx.de>, <netdev@vger.kernel.org>
+CC: Andrew Lunn <andrew@lunn.ch>, Eric Dumazet <edumazet@google.com>, "Florian
+ Fainelli" <f.fainelli@gmail.com>, Vladimir Oltean <olteanv@gmail.com>, "David
+ S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, "Oleksij
+ Rempel" <o.rempel@pengutronix.de>, <Tristram.Ha@microchip.com>, "Sebastian
+ Andrzej Siewior" <bigeasy@linutronix.de>, Paolo Abeni <pabeni@redhat.com>,
+	Ravi Gunasekaran <r-gunasekaran@ti.com>, Simon Horman <horms@kernel.org>,
+	Nikita Zhandarovich <n.zhandarovich@fintech.ru>, Murali Karicheri
+	<m-karicheri2@ti.com>, Dan Carpenter <dan.carpenter@linaro.org>, Ziyang Xuan
+	<william.xuanziyang@huawei.com>, Kristian Overskeid <koverskeid@gmail.com>,
+	Matthieu Baerts <matttbe@kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20240307113352.345388-1-lukma@denx.de>
+From: Wojciech Drewek <wojciech.drewek@intel.com>
+In-Reply-To: <20240307113352.345388-1-lukma@denx.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: WA0P291CA0023.POLP291.PROD.OUTLOOK.COM
+ (2603:10a6:1d0:1::10) To MW4PR11MB5776.namprd11.prod.outlook.com
+ (2603:10b6:303:183::9)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] i2c: exynos5: Init data before registering interrupt
- handler
-Content-Language: en-US
-To: Jesper Nilsson <jesper.nilsson@axis.com>, Andi Shyti
-	<andi.shyti@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski@linaro.org>, Alim Akhtar <alim.akhtar@samsung.com>
-Cc: linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kernel@axis.com
-From: Marek Szyprowski <m.szyprowski@samsung.com>
-In-Reply-To: <20240305-i2c_exynos5-v3-1-17a749688806@axis.com>
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrFKsWRmVeSWpSXmKPExsWy7djP87qXl79MNVi8WM/iwbxtbBb3v3Yw
-	Wjw/NIvZ4lOLqsXe11vZLTY9vsZq0fH3C6PF5V1z2CxmnN/H5MDpcX1dgMemVZ1sHneu7WHz
-	2Lyk3qNvyypGj8+b5ALYorhsUlJzMstSi/TtErgyPlx+ylxwXqZiw+y8BsY+8S5GTg4JAROJ
-	XVemsXYxcnEICaxglLg7t5sJwvnCKPHs7n1WkCohgc+MErdf6cF0PD7/khmiaDmjxIl9m6A6
-	PjJKzHizCKyDV8BO4tvpNYxdjBwcLAIqEvdmGkKEBSVOznzCAmKLCshL3L81gx3EFhYIk9i0
-	Yw8ziM0sIC5x68l8sJkiAhsZJc6/+ArmMAvMBHImnWMCqWITMJToetvFBmJzAi3bd/4rE0S3
-	vMT2t3PAzpMQ+MAhMWvfRlaIu10kDv18xgZhC0u8Or6FHcKWkTg9uYcFoqGdUWLB7/tMEM4E
-	RomG57cYIaqsJe6c+8UG8g+zgKbE+l36EGFHif0zGsDCEgJ8EjfeCkIcwScxadt0Zogwr0RH
-	mxBEtZrErOPr4NYevHCJeQKj0iykgJmFFACzkLwzC2HvAkaWVYziqaXFuempxYZ5qeV6xYm5
-	xaV56XrJ+bmbGIHJ6fS/4592MM599VHvECMTB+MhRgkOZiURXhaLl6lCvCmJlVWpRfnxRaU5
-	qcWHGKU5WJTEeVVT5FOFBNITS1KzU1MLUotgskwcnFINTAm+8WdXpm/X7WqQPRb2WcVHo6xf
-	hnnD7esZSyTenTOZd75N6nrQQbb+1XrmP1hWtHzfcPpHwJ1r/ksYn648ftRgwa/fVd/8Vsw8
-	zv59L/vfr9e7E3menXBRqmadOam34YZVTaPgM8myy2/905pWPfmWHv/x2Edz2fRrrzQz3hz3
-	DvoVH8Fv8Dl6+ifTiTX/6gOVO/bLvTB8fuCR1ia3ues/Ti3rOXXJ439iXfFSifmXE8N26+RF
-	zJJb8d9CaNcNg1ers9Y/DpltsF9FOFNxw7W/21W0Fin0SB9l03Up25A9YVqJ6aZb26d88S3+
-	K8y2q9Ipwna50AdvzqfRIcummy20E46UeH7zTVfTx8ojcxyVWIozEg21mIuKEwHns48tvQMA
-	AA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrDIsWRmVeSWpSXmKPExsVy+t/xe7qXl79MNTi7UtLiwbxtbBb3v3Yw
-	Wjw/NIvZ4lOLqsXe11vZLTY9vsZq0fH3C6PF5V1z2CxmnN/H5MDpcX1dgMemVZ1sHneu7WHz
-	2Lyk3qNvyypGj8+b5ALYovRsivJLS1IVMvKLS2yVog0tjPQMLS30jEws9QyNzWOtjEyV9O1s
-	UlJzMstSi/TtEvQyPlx+ylxwXqZiw+y8BsY+8S5GTg4JAROJx+dfMoPYQgJLGSWWr9GGiMtI
-	nJzWwAphC0v8udbF1sXIBVTznlFi4e4FYAleATuJb6fXMHYxcnCwCKhI3JtpCBEWlDg58wkL
-	iC0qIC9x/9YMdhBbWCBMYtOOPWC7mAXEJW49mc8EMlNEYDOjxJ7Nv8AWMAvMZJToXLCdHWLb
-	REaJtlfnwUaxCRhKdL0FOYOTgxNo877zX5kgRplJdG3tYoSw5SW2v53DPIFRaBaSS2Yh2TgL
-	ScssJC0LGFlWMYqklhbnpucWG+kVJ+YWl+al6yXn525iBEbjtmM/t+xgXPnqo94hRiYOxkOM
-	EhzMSiK8LBYvU4V4UxIrq1KL8uOLSnNSiw8xmgJDYyKzlGhyPjAd5JXEG5oZmBqamFkamFqa
-	GSuJ83oWdCQKCaQnlqRmp6YWpBbB9DFxcEo1MNnln8suSwuYt2pKTIVUc+ixa2l3ZqVGCshP
-	dHdd1/S5ZPtdczPDq04eAiUZJq4BtwUWtpUrM/Wu/8Uhaa0t/jA9LOe/cp7+iic7Z8+NrDuX
-	8md7wbJZj4pN9NVmyWz/KR8mvOr+nlol53P2ZjyTJ815VbTu9oueuIdR0y7/vf3t4aHyYwv1
-	YrgUXO/GSq8yVbxpJK9v+zM8eLNNutv6ytSMJp3vD8P4BJUsdoXO5mhlfyTxWv2m3In0JXvk
-	Ost93i11UAqx+aTq5KAYeiYozHfm7RjBYNtJxXLxPW+4JP5O1367sMVnqoy+7s99dZ8j4hQf
-	NukvqfD49Dunov7V+XOJuq0PrS5U1yjL7wtXYinOSDTUYi4qTgQART5uK08DAAA=
-X-CMS-MailID: 20240307114107eucas1p2d18f8261c44f0978c37100b1188bf8f3
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20240305105548eucas1p110f1ecf1570ff69a618ca86297eeba89
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20240305105548eucas1p110f1ecf1570ff69a618ca86297eeba89
-References: <CGME20240305105548eucas1p110f1ecf1570ff69a618ca86297eeba89@eucas1p1.samsung.com>
-	<20240305-i2c_exynos5-v3-1-17a749688806@axis.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW4PR11MB5776:EE_|DS0PR11MB7192:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3c19b408-551d-4245-5ddd-08dc3e9b8fea
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: YgSBmAby4gLrdew/oHJGc07PeOhmhG+mTh/litb4ZTrHhKOWCuScF5g+cdl0P/czjo4anOvUmd35wYtOwHzIjsKOO3CakF+LhthzpiSMUv07PlMYXsmX9kS3dX0T3mdG1LfXUnAVK8LyDKsc1lL3rnQX19VKAU9NmohXc5NnBG673hjjXJ39DE+5JPtFjtiP9RPA3wPi7Xuu7D6+DNkVhyxTCQrwzwHID8H+HDHT8ATetZdWqQcQB7uuSs66wQpTxEekVHaMahDQePN+y4IV3mfnS2M+r0kBSgH+AVa/OuyO4glWzXJTwfuntqpnWOquQlPCySGZNHdt0saYapZ1fz+f7tzq4iiKuidL17+/xnV02N1H6DEHIgdZluboPbQ/rsBvvFvZPfAJKZKwhw5kAJJWXRN+MvQx2GX3Dx8TdjIhu7C+eyM4/xBRz+zQngVj4ubBbATwdevz+ym7m+ZqkZskD8W4QZygofFf4wZPZ+aak4+fZT4xaAf+zTOWBSTpGH4/xNdgeZ2WgkjuqwnhDL8z4kK7QIEaUmPu4JSx063fqv1W4D6w9OnnFYfJ0zT/Ys81mR8emchXxd8fS29XXidAnaJH0Rwn/orMDzCi7cw=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR11MB5776.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YTY5Zmhiai9nVWt2YlBSaFFTeDhFdlkyOXFaMDN1R3BZbDhUZjBpT1lnNnlj?=
+ =?utf-8?B?RFFOd3RDUUlobFBoTm5MVWJxNWcyRkxnN29yZEgwclJwbUpualdmQm5Gc0tI?=
+ =?utf-8?B?eEZUUjZqN2ErYThwUm9kRWlKYkpLeFZpcnBuV0xJVWhTYndFVVZETlNJTEp3?=
+ =?utf-8?B?OUpja1hxUTlpNExqeGRmb2VuWEl5TGxDMGhPaFM2dGhXcDhBcU5ka0luc294?=
+ =?utf-8?B?NDhLSzNrcjErZGNIeGttVEt4K2Z2dStLZXJoQnVaL3RXaFhzN3BzVDRqNUZD?=
+ =?utf-8?B?OEtzaFZmanJ2VXlDOUZ4empvK21QaUc2cG5KaWhaZG5QZ25ZWlBkeE9sa0NW?=
+ =?utf-8?B?dEVaTWxSQlNRdXJyemEvTmdGM25sckdsT2lRTGV3dkFXY1YwS3hJWG5XY0ZN?=
+ =?utf-8?B?NS9SRjc0blkxeXJWZURkUmJTNVc4djE4djJ5MjhvNmlQaFR6TWFzWUJ4ZzdC?=
+ =?utf-8?B?TEVUTUx3M2VxVmdlNVJQRTJjYTF6ZU9xMmF3c25MSDZEanhtRzUybC91QVM3?=
+ =?utf-8?B?VTUvRERIU1lsMWFVUXJqZkQ1bmhDaU5xMmJCY2lQKzNpY1UvT1VIT3RKUTVZ?=
+ =?utf-8?B?TWhVZVgzdm5oRnhsR2VxK2c5em45TnpNQlNRd1V6YkRaek1FV2ZleHpKZFNU?=
+ =?utf-8?B?b1B2elNOelVDS2dyalFWTW9yTStaN2cvYnEzNG1sN3FpbGptZXhZZFFiNU4w?=
+ =?utf-8?B?NnQxN2kzRUgwRlZJOHc4cnBQMzRIZVRkRVZlbDMrbFhvRE95a3FVZGEvZmxJ?=
+ =?utf-8?B?WlZ6R0o3K1VmbUJ2MGhJa3owWlFCd2tNRVlzSmJ4SVlPK1RUZ2pmeGRwL0J6?=
+ =?utf-8?B?TWdzNHoyeWhjSXRvdmpMTG9SV0pQODFTc3dkdU5ydWQzNTBEKy84dmFEclM5?=
+ =?utf-8?B?dGxZbUlHQ2tDQ3RLdkhYaEtDUmkyVGpOQXA5Q0FEOThYdTBBYlI2QTdjYVIw?=
+ =?utf-8?B?UmhzcFdpSlBLTit2ZnZEUjVWWWxOeXBOYktFUVpVMzdqaHV4SFBvblFoeUEw?=
+ =?utf-8?B?bmEvY2IzZzIwdUZDRGQxM2ROMjA5Z2ZmUHhFNi9DNEFHV0hqNHJpanl0MHZp?=
+ =?utf-8?B?YjFaTHlkNldvenpVNklKWkFhUkd4MFUvQ2c1anl5a2daK0tuWVBNem1MRW50?=
+ =?utf-8?B?NDVzSDQraE0vYXdDYy8zNEovNkhuNnhiaVRQQzZDWWpvU2VKdHRpam1ndThG?=
+ =?utf-8?B?MkhpOGJOYTdwbUR0b2JmNVZOVnY4Mk5GK1NFUVVpSVQyblh2YWE2eVl1aVNh?=
+ =?utf-8?B?c1NUcWtaOTh1aHQ1MTJ6ZUZlSEZoNzRGblJKTmFzRU80bCtJNVY4WTVzSGhB?=
+ =?utf-8?B?MmhPQmQ2bFpYNkpRV1A5QUxWUUduWlJKR2lJK0hzTTA1OW1DYzZ4TzJsQlRY?=
+ =?utf-8?B?NVo5NlJJcWYzY3h0aDZkbUt5dko3TE5mR09laXN5MXdiUVZsSlQwL0NhVHJR?=
+ =?utf-8?B?dVJnVTdNSlZYSXVZUDk0cXRESFF0WUpWekl2L0NhdzVLd1BHM1NMSXdpcmhv?=
+ =?utf-8?B?Nmt2Y0M1UDFLR0RBSjdKMjZtK2l5OG83d3VLWjVEbnMwcFdtZ1VkbGFSbDZ3?=
+ =?utf-8?B?ZnlMeXlIc2tRdlB5aWhLQlpqSFpxSHNLZmh6ci9qTUhlWE1PZFlnZVpRZkEr?=
+ =?utf-8?B?dnhPWHJ5aitRTnQrdkFQMm80RlpFbC9vUTJqeHpGbmxwTzJKWWVKM3QxbUdz?=
+ =?utf-8?B?UnR5bDNZazFpZ1RyWlNZelJLSGxDT3VCYlNEOXlKMytvczVaSEd5TDZwNnlK?=
+ =?utf-8?B?Zi9HR1Q0SlZxS2xXckdkdm9GOEZLclpOL01NcWllcUFmNUxGMUJPWks5V2tI?=
+ =?utf-8?B?eXdGeFNjeFMvZjUrcUprQUdIckNFUkVRUGhDRDRscElVNUZKTE82L0huWjNP?=
+ =?utf-8?B?WUtmUldRcVYvSDJZOFZBdFExR2NoTnQzRGR5R28zOGp5eU1OWFlyQ1hpRklx?=
+ =?utf-8?B?em93TlMyWFB1OEYwYzV6anJ0SnM2NFFweEhybUdTeVhnNzQxL3BaSHpYeXBi?=
+ =?utf-8?B?d3hLVkRtWHcxMWYyYXpoR1c3Uk4yZlFMRXB0YjN2ZUxVZW01NjBuSTczazJV?=
+ =?utf-8?B?bkdtTG0zUVVjYkdBMktKcGFFUmRvOHFQMk42aDNEdEVYckRMTUVMK3FHWVMv?=
+ =?utf-8?B?ZjJaeFM0OVFxM2l4cXlIa3J0R3h1UnlMRElua3ZLeGJMa0d3VVZTS09tZ21K?=
+ =?utf-8?B?VUE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3c19b408-551d-4245-5ddd-08dc3e9b8fea
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR11MB5776.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Mar 2024 11:41:43.7527
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Spb4x7/J0AjAKM50O+CKZYRaZTc2XZ9mC4enBYvK/yLfUIgH9V2vsp32WLqxUn37u2Z7mDwRHikwsIMORC2SfHVCHMVv+lfleTIMsk5K2VI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7192
+X-OriginatorOrg: intel.com
 
-On 05.03.2024 11:50, Jesper Nilsson wrote:
-> devm_request_irq() is called before we initialize the "variant"
-> member variable from of_device_get_match_data(), so if an interrupt
-> is triggered inbetween, we can end up following a NULL pointer
-> in the interrupt handler.
->
-> This problem was exposed when the I2C controller in question was
-> (mis)configured to be used in both secure world and Linux.
->
-> That this can happen is also reflected by the existing code that
-> clears any pending interrupts from "u-boot or misc causes".
->
-> Move the clearing of pending interrupts and the call to
-> devm_request_irq() to the end of probe.
->
-> Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
-> Fixes: 218e1496135e ("i2c: exynos5: add support for HSI2C on Exynos5260 SoC")
-> Signed-off-by: Jesper Nilsson <jesper.nilsson@axis.com>
+
+
+On 07.03.2024 12:33, Lukasz Majewski wrote:
+> Introduce RedBox support (HSR-SAN to be more precise) for HSR networks.
+> The 'Mode U' has been implemented without optimizations for traffic
+> reduction - i.e. only sending HSR supervisory frames to Port C and not
+> forwarding to HSR ring frames addressed to Port C.
+> 
+> The corresponding patch to modify iptable2 sources has already been sent:
+> https://lore.kernel.org/netdev/20240226124110.37892211@hermes.local/T/
+> 
+> Testing procedure:
+> ------------------
+> The EVB-KSZ9477 has been used for testing on net-next branch
+> (SHA1: 709776ea8562).
+> 
+> Ports 4/5 were used for SW managed HSR (hsr1) as first hsr0 for ports 1/2
+> (with HW offloading for ksz9477) was created. Port 3 has been used as
+> interlink port (single USB-ETH dongle).
+> 
+> Configuration - RedBox (EVB-KSZ9477):
+> ifconfig lan1 down;ifconfig lan2 down
+> ip link add name hsr0 type hsr slave1 lan1 slave2 lan2 supervision 45 version 1
+> ip link add name hsr1 type hsr slave1 lan4 slave2 lan5 interlink lan3 supervision 45 version 1
+> ifconfig lan4 up;ifconfig lan5 up
+> ifconfig lan3 up
+> ifconfig hsr1 192.168.0.11 up
+> 
+> Configuration - DAN-H (EVB-KSZ9477):
+> 
+> ifconfig lan1 down;ifconfig lan2 down
+> ip link add name hsr0 type hsr slave1 lan1 slave2 lan2 supervision 45 version 1
+> ip link add name hsr1 type hsr slave1 lan4 slave2 lan5 supervision 45 version 1
+> ifconfig lan4 up;ifconfig lan5 up
+> ifconfig hsr1 192.168.0.12 up
+> 
+> This approach uses only SW based HSR devices (hsr1).
+> 
+> --------------          -----------------       ------------
+> DAN-H  Port5 | <------> | Port5         |       |
+>        Port4 | <------> | Port4   Port3 | <---> | PC
+>              |          | (RedBox)      |       | (USB-ETH)
+> EVB-KSZ9477  |          | EVB-KSZ9477   |       |
+> --------------          -----------------       ------------
+> 
+> Signed-off-by: Lukasz Majewski <lukma@denx.de>
+
+Reviewed-by: Wojciech Drewek <wojciech.drewek@intel.com>
+
+> 
 > ---
-> Changes in v3:
-> - Avoid multiple assignment
-> - Link to v2: https://lore.kernel.org/r/20240304-i2c_exynos5-v2-1-7b9c312be719@axis.com
->
-> Changes in v2:
-> - Use dev_err_probe() instead of open coding it
-> - Dropped the return failure if we can't find a match in devicetree
-> - Link to v1: https://lore.kernel.org/r/20240304-i2c_exynos5-v1-1-e91c889d2025@axis.com
+> Changes for v2:
+> 
+> - Add deleting of HSR_PT_INTERLINK node to hsr_del_ports()
+> - Rewrite handle_std_frame() to awoid code duplication
+> - Fix reverse christmas tree in hsr_prune_proxy_nodes() as well as
+>   remove stale node indication as interlink doesn't need this detection
+>   (only check if node is inactive for more than HSR_PROXY_NODE_FORGET_TIME
+>   is required)
+> - Rewrite commit message
 > ---
->   drivers/i2c/busses/i2c-exynos5.c | 29 +++++++++++++++--------------
->   1 file changed, 15 insertions(+), 14 deletions(-)
->
-> diff --git a/drivers/i2c/busses/i2c-exynos5.c b/drivers/i2c/busses/i2c-exynos5.c
-> index 385ef9d9e4d4..8458e22313a7 100644
-> --- a/drivers/i2c/busses/i2c-exynos5.c
-> +++ b/drivers/i2c/busses/i2c-exynos5.c
-> @@ -906,23 +906,9 @@ static int exynos5_i2c_probe(struct platform_device *pdev)
->   	i2c->adap.algo_data = i2c;
->   	i2c->adap.dev.parent = &pdev->dev;
->   
-> -	/* Clear pending interrupts from u-boot or misc causes */
-> -	exynos5_i2c_clr_pend_irq(i2c);
-> -
->   	spin_lock_init(&i2c->lock);
->   	init_completion(&i2c->msg_complete);
->   
-> -	i2c->irq = ret = platform_get_irq(pdev, 0);
-> -	if (ret < 0)
-> -		goto err_clk;
-> -
-> -	ret = devm_request_irq(&pdev->dev, i2c->irq, exynos5_i2c_irq,
-> -			       IRQF_NO_SUSPEND, dev_name(&pdev->dev), i2c);
-> -	if (ret != 0) {
-> -		dev_err(&pdev->dev, "cannot request HS-I2C IRQ %d\n", i2c->irq);
-> -		goto err_clk;
-> -	}
-> -
->   	i2c->variant = of_device_get_match_data(&pdev->dev);
->   
->   	ret = exynos5_hsi2c_clock_setup(i2c);
-> @@ -940,6 +926,21 @@ static int exynos5_i2c_probe(struct platform_device *pdev)
->   	clk_disable(i2c->clk);
->   	clk_disable(i2c->pclk);
->   
-> +	/* Clear pending interrupts from u-boot or misc causes */
-> +	exynos5_i2c_clr_pend_irq(i2c);
+>  include/uapi/linux/if_link.h |  1 +
+>  net/hsr/hsr_device.c         | 36 ++++++++++++++++++++--
+>  net/hsr/hsr_device.h         |  4 +--
+>  net/hsr/hsr_forward.c        | 58 ++++++++++++++++++++++++++++++------
+>  net/hsr/hsr_framereg.c       | 52 ++++++++++++++++++++++++++++++++
+>  net/hsr/hsr_framereg.h       |  6 ++++
+>  net/hsr/hsr_main.h           |  7 +++++
+>  net/hsr/hsr_netlink.c        | 29 ++++++++++++++++--
+>  net/hsr/hsr_slave.c          |  1 +
+>  9 files changed, 178 insertions(+), 16 deletions(-)
+> 
 
-Just above this call the clocks have been disabled, so any access to the 
-i2c host registers will result in freeze or external abort (depending on 
-the soc/cpu).
-
-To make things worse, this patch moved registering the interrupt handler 
-after the i2c_add_adapter() call. This means that all i2c devices that 
-will be probbed directly from i2c_add_adapter() won't be able to access 
-the i2c bus, as the host controller is still not fully functional that 
-time yet.
-
-This breaks today's linux-next on all Exynos5+ platforms. Has anyone 
-tested this change?
-
-> +
-> +	ret = platform_get_irq(pdev, 0);
-> +	if (ret < 0)
-> +		goto err_clk;
-> +	i2c->irq = ret;
-> +
-> +	ret = devm_request_irq(&pdev->dev, i2c->irq, exynos5_i2c_irq,
-> +			       IRQF_NO_SUSPEND, dev_name(&pdev->dev), i2c);
-> +	if (ret != 0) {
-> +		dev_err(&pdev->dev, "cannot request HS-I2C IRQ %d\n", i2c->irq);
-> +		goto err_clk;
-> +	}
-> +
->   	return 0;
->   
->    err_clk:
->
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
-
+<...>
 
