@@ -1,54 +1,46 @@
-Return-Path: <linux-kernel+bounces-95715-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95717-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4352C8751AA
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:18:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C41728751AC
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:19:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BECADB25EE3
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:18:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 69ED4B28DFF
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:18:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07C8212DDBF;
-	Thu,  7 Mar 2024 14:18:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8792112DD9F;
+	Thu,  7 Mar 2024 14:18:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="KbhypRNX"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="Ys1ocksK"
+Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A26A71D699
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 14:18:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E8C712D760
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 14:18:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.110
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709821090; cv=none; b=Aa7hRPsGW+Wb/GwlbsfYhkvQR/qip1WOFs5BcIcr96pqbojrpWhQZW/sd9VA8Y20j7hzRYEdQmJqZ9FF2TbyfrVWgf35vbO1ZXw6CQcU6+Dx9S67EAFwJbKUN5ICSIoWnaFVivKt8RXZjNkgo9B58YppRM02MZ0K0GYV4cRsOW4=
+	t=1709821132; cv=none; b=FSRQN9YSTXnj5rkurgT9hevzwtia7l6F7THlfUWDv4VjRF1DnuK+q+scNhiUwhk3dqoX0iw19QtDHmdd8jPOh/qZ1IKk1L3IuxYU3KQ7N+s99avH7YmqKdMu/QoEcwBYlCdPsbmdTYx7beTMVp+a4eTxrhk+urjFyT8OzZcKj6g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709821090; c=relaxed/simple;
-	bh=Dn57lnoeVPIi4ikb1eziAXS3zRHAGY/C1w2CfJ2RGII=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=VPfWYkH4Qci3wnkAag0BjZEyx9Gm+3w6mvxs5X0b+KesGBCn19LN1rQpaFUPLSV6H/PaoQI+hdmC2fMya0BnTP1E229UN+kbz7IqDtDVaSoIUdxlIMmCP3N/DUP98CT7jfY9lz3GkzTJcx38ViRN5WC8f4BnTlIRn5gCzoGB+U0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=KbhypRNX; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1709821086;
-	bh=Dn57lnoeVPIi4ikb1eziAXS3zRHAGY/C1w2CfJ2RGII=;
-	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-	b=KbhypRNXRGEBkNA6+Yn9VOXA9F9z8ZBGeSo1SxnOhiDY9Z42hf0L5WaqUkcidj7sx
-	 Czf2eHnygAIjlMdmrWgTUtMc6Uddx65Z/tao/xvdvtEA/WADl9Lh1p8I/Fq1rBlfNp
-	 b7RvGez5E0szPzORGg4Cnuc05s/bYrei9slOPoC4YzDcJSPQNb1T/QdXJmiLLPv1CH
-	 IEeVvEQ7zi+9itsufwirqc7UvHWIgNf/KpmPjn67BLGAgVV7a+nFBnbo1jAphcwLcc
-	 KyYG2dD9pW7aVcz8vX2DI6BbSF/B82S/AaL3yhQwQEZrnUpOQoI9z7kcbv/+YKTNnp
-	 eXQlnYUdxcxWg==
-Received: from [100.95.196.25] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
-	(No client certificate requested)
-	(Authenticated sender: koike)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id ED3B737809D0;
-	Thu,  7 Mar 2024 14:18:01 +0000 (UTC)
-Message-ID: <52f6475c-680c-4709-b64a-8b5be03d2343@collabora.com>
-Date: Thu, 7 Mar 2024 11:18:00 -0300
+	s=arc-20240116; t=1709821132; c=relaxed/simple;
+	bh=4s9GucHXufG/nCQ8eR0wFkr2F1XCrbV+EKzCFQTECf4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=huuzXOHZfMigfvhOS/Bp3e1mpgcb/d/hGVyFjOPJCKZap/ML43vOHJm0Igs1f4a2plVn4SW+RXJqvuGpS01wfDFdkp2CV7RLWmayLnJMq2TghInEkipucnAHiQ+lONPx4RFgjNZ0MTJ4/FsX3jzIuFVCk3fnsdU0r++IGcPwGys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Ys1ocksK; arc=none smtp.client-ip=115.124.30.110
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1709821121; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=npQu2INO/FdrwYje2DMJLJdc7DyZiThgqLfsw/glcu8=;
+	b=Ys1ocksK5MEvzTX0Q5KeCp3cHbA0DdNEtxbp9aVZVfw2fnS3zfgRIY48dK+TdsNZLP5vQsB4ZapjwyFDhjPJJ253+bCJrJRz1Pc5HgrgdZRGw7DkGtvJDbnraFH4gAMcjrp9StG276h4xlQMW7QoimnykiEbB4sQC6cLQEmxolY=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R961e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0W2-lSin_1709821117;
+Received: from 30.25.211.60(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0W2-lSin_1709821117)
+          by smtp.aliyun-inc.com;
+          Thu, 07 Mar 2024 22:18:40 +0800
+Message-ID: <60c18887-db8a-42a8-8a04-ef9d17263b15@linux.alibaba.com>
+Date: Thu, 7 Mar 2024 22:18:36 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,83 +48,98 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] drm/ci: update device type for volteer devices
-Content-Language: en-US
-From: Helen Koike <helen.koike@collabora.com>
-To: Vignesh Raman <vignesh.raman@collabora.com>,
- dri-devel@lists.freedesktop.org
-Cc: daniels@collabora.com, airlied@gmail.com, daniel@ffwll.ch,
- david.heidelberg@collabora.com, sergi.blanch.torne@collabora.com,
- guilherme.gallo@collabora.com, robdclark@gmail.com,
- jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
- rodrigo.vivi@intel.com, tvrtko.ursulin@linux.intel.com,
- intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20240307021841.100561-1-vignesh.raman@collabora.com>
- <a8ae3ca9-67d5-4d83-90e8-2777862473d7@collabora.com>
-In-Reply-To: <a8ae3ca9-67d5-4d83-90e8-2777862473d7@collabora.com>
+Subject: Re: [PATCH v2] erofs: fix lockdep false positives on initializing
+ erofs_pseudo_mnt
+To: Baokun Li <libaokun1@huawei.com>, linux-erofs@lists.ozlabs.org
+Cc: xiang@kernel.org, chao@kernel.org, huyue2@coolpad.com,
+ jefflexu@linux.alibaba.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
+ linux-kernel@vger.kernel.org, yangerkun@huawei.com, houtao1@huawei.com,
+ yukuai3@huawei.com, chengzhihao1@huawei.com
+References: <20240307101018.2021925-1-libaokun1@huawei.com>
+From: Gao Xiang <hsiangkao@linux.alibaba.com>
+In-Reply-To: <20240307101018.2021925-1-libaokun1@huawei.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
 
 
-On 07/03/2024 10:21, Helen Koike wrote:
+On 2024/3/7 18:10, Baokun Li wrote:
+> Lockdep reported the following issue when mounting erofs with a domain_id:
 > 
+> ============================================
+> WARNING: possible recursive locking detected
+> 6.8.0-rc7-xfstests #521 Not tainted
+> --------------------------------------------
+> mount/396 is trying to acquire lock:
+> ffff907a8aaaa0e0 (&type->s_umount_key#50/1){+.+.}-{3:3},
+> 						at: alloc_super+0xe3/0x3d0
 > 
-> On 06/03/2024 23:18, Vignesh Raman wrote:
->> Volteer devices in the collabora lab are categorized under the
->> asus-cx9400-volteer device type. The majority of these units
->> has an Intel Core i5-1130G7 CPU, while some of them have a
->> Intel Core i7-1160G7 CPU instead. So due to this difference,
->> new device type template is added for the Intel Core i5-1130G7
->> and i7-1160G7 variants of the Acer Chromebook Spin 514 (CP514-2H)
->> volteer Chromebooks. So update the same in drm-ci.
->>
->> https://gitlab.collabora.com/lava/lava/-/merge_requests/149
->>
->> Fixes: 0119c894ab0d ("drm: Add initial ci/ subdirectory")
->> Reviewed-by: David Heidelberg <david.heidelberg@collabora.com>
->> Signed-off-by: Vignesh Raman <vignesh.raman@collabora.com>
+> but task is already holding lock:
+> ffff907a8aaa90e0 (&type->s_umount_key#50/1){+.+.}-{3:3},
+> 						at: alloc_super+0xe3/0x3d0
 > 
-> Acked-by: Helen Koike <helen.koike@collabora.com>
+> other info that might help us debug this:
+>   Possible unsafe locking scenario:
+> 
+>         CPU0
+>         ----
+>    lock(&type->s_umount_key#50/1);
+>    lock(&type->s_umount_key#50/1);
+> 
+>   *** DEADLOCK ***
+> 
+>   May be due to missing lock nesting notation
+> 
+> 2 locks held by mount/396:
+>   #0: ffff907a8aaa90e0 (&type->s_umount_key#50/1){+.+.}-{3:3},
+> 			at: alloc_super+0xe3/0x3d0
+>   #1: ffffffffc00e6f28 (erofs_domain_list_lock){+.+.}-{3:3},
+> 			at: erofs_fscache_register_fs+0x3d/0x270 [erofs]
+> 
+> stack backtrace:
+> CPU: 1 PID: 396 Comm: mount Not tainted 6.8.0-rc7-xfstests #521
+> Call Trace:
+>   <TASK>
+>   dump_stack_lvl+0x64/0xb0
+>   validate_chain+0x5c4/0xa00
+>   __lock_acquire+0x6a9/0xd50
+>   lock_acquire+0xcd/0x2b0
+>   down_write_nested+0x45/0xd0
+>   alloc_super+0xe3/0x3d0
+>   sget_fc+0x62/0x2f0
+>   vfs_get_super+0x21/0x90
+>   vfs_get_tree+0x2c/0xf0
+>   fc_mount+0x12/0x40
+>   vfs_kern_mount.part.0+0x75/0x90
+>   kern_mount+0x24/0x40
+>   erofs_fscache_register_fs+0x1ef/0x270 [erofs]
+>   erofs_fc_fill_super+0x213/0x380 [erofs]
+> 
+> This is because the file_system_type of both erofs and the pseudo-mount
+> point of domain_id is erofs_fs_type, so two successive calls to
+> alloc_super() are considered to be using the same lock and trigger the
+> warning above.
+> 
+> Therefore add a nodev file_system_type called erofs_anon_fs_type in
+> fscache.c to silence this complaint. Because kern_mount() takes a
+> pointer to struct file_system_type, not its (string) name. So we don't
+> need to call register_filesystem(). In addition, call init_pseudo() in
+> erofs_anon_init_fs_context() as suggested by Al Viro, so that we can
+> remove erofs_fc_fill_pseudo_super(), erofs_fc_anon_get_tree(), and
+> erofs_anon_context_ops.
+> 
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
 
-Applied to drm-misc-next.
+I will add
 
-> 
-> Thanks
-> Helen
-> 
->> ---
->>
->> v2:
->>    - Add fixes tag so change gets propagated to stable.
->>      
->> https://gitlab.freedesktop.org/vigneshraman/linux/-/pipelines/1119672
->>
->> v3:
->>    - Fix checkpatch warning.
->>      Please use correct Fixes: style 'Fixes: <12 chars of sha1> 
->> ("<title line>")'
->>
->> ---
->>   drivers/gpu/drm/ci/test.yml | 6 +++---
->>   1 file changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/ci/test.yml b/drivers/gpu/drm/ci/test.yml
->> index 0857773e5c5f..8bc63912fddb 100644
->> --- a/drivers/gpu/drm/ci/test.yml
->> +++ b/drivers/gpu/drm/ci/test.yml
->> @@ -252,11 +252,11 @@ i915:cml:
->>   i915:tgl:
->>     extends:
->>       - .i915
->> -  parallel: 8
->> +  parallel: 5
->>     variables:
->> -    DEVICE_TYPE: asus-cx9400-volteer
->> +    DEVICE_TYPE: acer-cp514-2h-1130g7-volteer
->>       GPU_VERSION: tgl
->> -    RUNNER_TAG: mesa-ci-x86-64-lava-asus-cx9400-volteer
->> +    RUNNER_TAG: mesa-ci-x86-64-lava-acer-cp514-2h-1130g7-volteer
->>   .amdgpu:
->>     extends:
+Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
+
+when applying..
+
+Also since it's a false positive and too close to the
+final so let's keep this patch in -next for a while and
+then aim for v6.9-rc1 instead.
+
+Thanks,
+Gao Xiang
 
