@@ -1,119 +1,104 @@
-Return-Path: <linux-kernel+bounces-95742-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95743-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48E3C8751F6
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:36:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 517198751F7
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:36:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE94D1F2695E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:36:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 08C031F2698D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:36:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9EE11E87E;
-	Thu,  7 Mar 2024 14:36:11 +0000 (UTC)
-Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F1281EA7C;
+	Thu,  7 Mar 2024 14:36:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="KOwv1gkT"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3801E18E10;
-	Thu,  7 Mar 2024 14:36:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCEBD1C6B2
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 14:36:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709822171; cv=none; b=BypLOZjoCyGtA1YlTe/lVdsNB69l8M3hyZDXHwOp4tmebpJ7QdEBUmAeWvNLNHg3LtNB/+6dY/b53ARqKI9/2pLsdnbmw5QWEsffy7aBZ7QPmUVagpo7JkeBth5IAUi++zuTZsUn509F9Ywu4s2Ra6P3nYREQW7UU4P18VuspoU=
+	t=1709822171; cv=none; b=KUtLUGPO7oPtIScDi9sxy4Wu1EE+W2KmOUsHzTaBJ3+z4L5gnHOxtDd+HdRgsO6Ii6Xk4NxO/eeTTHGlJ0Q9EYjckAdv1NPq77NDpEohLERSDBPcNZmiDDz4E72Em7dyY1WhVH2YscX1ccJ/FkXe6HNv+mrumyD0FDR9GvOLdpY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1709822171; c=relaxed/simple;
-	bh=IN+B13K/eqW9yzntEF91yCyCk7hS1yU/DuL07Ghww0k=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=OE9Vp0QQNHc+e3/0ZXATyU0223jl4prBcbY9A00QYgKRqzNE9KQ+HTszhv//5s/GsHzT0xWNOOdc/oplxzXbI4Zi0Kt7yqISUrJWOk/60ZdS4igFfeWH1t3+5PtwVZD0ii78qaDQyh8M4EHd6ygH43jhWseKfb+kcveIbAti+vA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4TrBck4sr8z1Q9mL;
-	Thu,  7 Mar 2024 22:33:42 +0800 (CST)
-Received: from kwepemm600012.china.huawei.com (unknown [7.193.23.74])
-	by mail.maildlp.com (Postfix) with ESMTPS id 2AD1E140155;
-	Thu,  7 Mar 2024 22:36:05 +0800 (CST)
-Received: from [10.174.178.220] (10.174.178.220) by
- kwepemm600012.china.huawei.com (7.193.23.74) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 7 Mar 2024 22:36:04 +0800
-Message-ID: <193904fa-d1d6-4bf8-9f49-e44969bdfd85@huawei.com>
-Date: Thu, 7 Mar 2024 22:36:03 +0800
+	bh=5c2pdnlbWCYsX5AL6tAQ6PuzfWITspmp5cYuOF4KTUg=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=uTwbH2IGw69lnMRgpTGXCiyseiqqOs/mn+zO+2Kdq25Kx8UsPCOjOZ8MNDJ8D5PDjiXtyRztfuMDQrBy6OwNcftvoCiX8SmTWskU3M/mqumIpbRPZEsg997FJ6Dn7xA8kMjq7XTseuV5J53jOO477cnOW+lKcb7aMw+RVEWipZI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=KOwv1gkT; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-608ac8c5781so17301897b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 06:36:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709822169; x=1710426969; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=uQkndU5MaQMQimAlXbJ2bKIU8av7qyfvd42xkrItWQQ=;
+        b=KOwv1gkT34HkiFNiGgwW3I7Siwb8jdEV/eEP/tTXJP9R1EhMpAAa5x24qFnk+joyOQ
+         NM7Nc68HZRj6f6PTA2ZE6/M5qQ+2/6r4ULBsTxfVopx/xTGl3L1Os4DXY3S1atmlVWyP
+         2A5X+iYOW4dtgH7TtSnb6cImEhYr9X4abrFmVzITP6O3Pw+h320s8jJa2qs0JakH1tqU
+         qd/DW9Y26PEts76gL5pwfYC21frDGxffWYqvE4jQ6JgVvC76SRBh2mNGqgXGkpfLbC8J
+         xaeMCJcEUyxGuZtwnsm4OAO7ejY+jlAjUiTauthyEVzmirSCVKlXF3c+p1Pl8nIOocnC
+         2LtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709822169; x=1710426969;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uQkndU5MaQMQimAlXbJ2bKIU8av7qyfvd42xkrItWQQ=;
+        b=gY3SM0kIFKSE6GRT6mch3In/qoYN+1A1z/MimH5gyXNC3Pt8WoJ3v+SYr22BQhlF81
+         PhRF+Gn/Q5rIPsnKMTa/qSpx2ukcbIOOuDxbUpEJ+cwGWr3kj/PlO6zRths5gfuIa5Ht
+         eA2SRqgaioVS0hKRX6F6pvaPliQTKKKA3Dw6QRZYXA4KAiUBfpNmkVPzjnvwqZII0WuM
+         nxrRuchj7l84MyrYUjHFq56jzHI/L/M+V0SLHNplAHhMn5OpD9Qxwr8Kco5R9/k/k7/X
+         T1jfst+pbQMpoecwf9Y8v9GCWfF0+e1UWztfCdOrTPU+/5dQoJGgrt0Sd93a66yTCRXc
+         dhDw==
+X-Forwarded-Encrypted: i=1; AJvYcCWTtAwvctnqH11ACrcRJSReaeJeP0lxMsG8PdMyuJTEWpH+WvF8L6remK5VVbXTuh85YTU9tBf8n+sAkiWYVruSlqhQZHzFbiNdAn7k
+X-Gm-Message-State: AOJu0YwN9WX4rcj7ceFv3R9k//yOc3/HvxXQ0+LCXk64f5Wp8AgK3hqD
+	/9fMsn0Dg/4QKK6/+CJfArVrRG5lrZ9rqdtM3X8ZvXqbQlKy9TYV3LoIEN+0omarDi2304R7afl
+	1Sg==
+X-Google-Smtp-Source: AGHT+IFES2CcpL5jNV0bCQu5D8bKAvGmHTylSGvybuc45Nl4UwGQmVKoE4uXkDOBCpzqshSi3hTNjQCdGGY=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:18c7:b0:dcc:6065:2b3d with SMTP id
+ ck7-20020a05690218c700b00dcc60652b3dmr4413088ybb.8.1709822168860; Thu, 07 Mar
+ 2024 06:36:08 -0800 (PST)
+Date: Thu, 7 Mar 2024 06:36:07 -0800
+In-Reply-To: <ZemDaWzRCzV4Q5ni@yilunxu-OptiPlex-7050>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 4/4] scsi: scsi_core: Fix IO hang when device removing
-Content-Language: en-US
-To: "James E . J . Bottomley" <jejb@linux.ibm.com>, "Martin K . Petersen"
-	<martin.petersen@oracle.com>, <linux-scsi@vger.kernel.org>
-CC: <linux-kernel@vger.kernel.org>, <louhongxiang@huawei.com>
-References: <20231016020314.1269636-1-haowenchao2@huawei.com>
- <20231016020314.1269636-5-haowenchao2@huawei.com>
-From: Wenchao Hao <haowenchao2@huawei.com>
-In-Reply-To: <20231016020314.1269636-5-haowenchao2@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600012.china.huawei.com (7.193.23.74)
+Mime-Version: 1.0
+References: <20240228024147.41573-1-seanjc@google.com> <20240228024147.41573-6-seanjc@google.com>
+ <Zeg6tKA0zNQ+dUpn@yilunxu-OptiPlex-7050> <ZeiBLjzDsEN0UsaW@google.com> <ZemDaWzRCzV4Q5ni@yilunxu-OptiPlex-7050>
+Message-ID: <ZenQ15upgjUGD5tY@google.com>
+Subject: Re: [PATCH 05/16] KVM: x86/mmu: Use synthetic page fault error code
+ to indicate private faults
+From: Sean Christopherson <seanjc@google.com>
+To: Xu Yilun <yilun.xu@linux.intel.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Yan Zhao <yan.y.zhao@intel.com>, Isaku Yamahata <isaku.yamahata@intel.com>, 
+	Michael Roth <michael.roth@amd.com>, Yu Zhang <yu.c.zhang@linux.intel.com>, 
+	Chao Peng <chao.p.peng@linux.intel.com>, Fuad Tabba <tabba@google.com>, 
+	David Matlack <dmatlack@google.com>
+Content-Type: text/plain; charset="us-ascii"
 
-On 2023/10/16 10:03, Wenchao Hao wrote:
-> shost_for_each_device() would skip devices which is in progress of
-> removing, so scsi_run_queue() for these devices would be skipped in
-> scsi_run_host_queues() after blocking hosts' IO.
+On Thu, Mar 07, 2024, Xu Yilun wrote:
+> On Wed, Mar 06, 2024 at 06:45:30AM -0800, Sean Christopherson wrote:
+> > can be switched between private and shared, e.g. will return false for
+> > kvm_arch_has_private_mem().
+> > 
+> > And KVM _can't_ sanely use private/shared memslots for SEV(-ES), because it's
+> > impossible to intercept implicit conversions by the guest, i.e. KVM can't prevent
+> > the guest from encrypting a page that KVM thinks is private, and vice versa.
 > 
-> IO hang would be caused if return true when state is SDEV_CANCEL with
-> following order:
-> 
-> T1:					    T2:scsi_error_handler
-> __scsi_remove_device()
->    scsi_device_set_state(sdev, SDEV_CANCEL)
->    ...
->    sd_remove()
->    del_gendisk()
->    blk_mq_freeze_queue_wait()
->    					    scsi_eh_flush_done_q()
-> 					      scsi_queue_insert(scmd,...)
-> 
-> scsi_queue_insert() would not kick device's queue since commit
-> 8b566edbdbfb ("scsi: core: Only kick the requeue list if necessary")
-> 
-> After scsi_unjam_host(), the scsi error handler would call
-> scsi_run_host_queues() to trigger run queue for devices, while it
-> would not run queue for devices which is in progress of removing
-> because shost_for_each_device() would skip them.
-> 
-> So the requests added to these queues would not be handled any more,
-> and the removing device process would hang too.
-> 
-> Fix this issue by using shost_for_each_device_include_deleted() in
-> scsi_run_host_queues() to trigger a run queue for devices in removing.
-> 
+> Is it because there is no #NPF for RMP violation?
 
-This issue is fixed by commit '6df0e077d76bd (scsi: core: Kick the requeue
-list after inserting when flushing)', so do not need any more.
-
-> Signed-off-by: Wenchao Hao <haowenchao2@huawei.com>
-> ---
->   drivers/scsi/scsi_lib.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/scsi/scsi_lib.c b/drivers/scsi/scsi_lib.c
-> index 195ca80667d0..40f407ffd26f 100644
-> --- a/drivers/scsi/scsi_lib.c
-> +++ b/drivers/scsi/scsi_lib.c
-> @@ -466,7 +466,7 @@ void scsi_run_host_queues(struct Scsi_Host *shost)
->   {
->   	struct scsi_device *sdev;
->   
-> -	shost_for_each_device(sdev, shost)
-> +	shost_for_each_device_include_deleted(sdev, shost)
->   		scsi_run_queue(sdev->request_queue);
->   }
->   
-
+Yep, there is no RMP, thus no way for the host to express its view of shared vs.
+private to hardware.  As a result, KVM can't block conversions, and the given
+state of a page is completely unkown at any given time.  E.g. when memory is
+reclaimed from an SEV(-ES) guest, KVM has to assume that the page is encrypted
+and thus needs to be flushed (see sev_guest_memory_reclaimed()).
 
