@@ -1,147 +1,117 @@
-Return-Path: <linux-kernel+bounces-96224-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96225-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3ECFB8758E7
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 21:56:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E5E38758E8
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 21:57:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A76911F24F44
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:56:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 595A028684A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:57:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4C5413A88A;
-	Thu,  7 Mar 2024 20:56:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B7C813A26F;
+	Thu,  7 Mar 2024 20:57:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ndufresne-ca.20230601.gappssmtp.com header.i=@ndufresne-ca.20230601.gappssmtp.com header.b="yup57+5/"
-Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="KcMfZOh9"
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BFA613A254
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 20:56:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35DB113A256
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 20:57:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709844969; cv=none; b=n1rOVT8hJPCWktJkj/EyhGZzBc3EZKXGEHDXWzr66J2D4CdrFcrIcz51ay9AS1ZHg/wNTehEg8Lr34zLdtI4jqGWOf+jG4+I1BSCkx4nhs8F18sZzwqexAsxkhNh7tOaeRrKtT7GL3dRD64WhOyKnkz8q+arJu7NdZ39UG5aZkE=
+	t=1709845028; cv=none; b=gl4RB0Xd9FVk7w7waD1HpUtQC/pNkYvP6JE1eakyV4J1IvHawRAYLxDu2383rG0zDZMNHAgT/1HBRrfLHlHOMxDKPOLrlhn8BDzgdLe0IgY/8k08J0GvwROOZXc+P5UutYPCPoL61v9g4GgmkhDhb+LQyoFsWTGw2OrqHWSjDJE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709844969; c=relaxed/simple;
-	bh=2n/MjL/4X+81aIV4UEAdU1iKxvGLTF8COYlSEQXZy/U=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=McYo+E7z+2iPPe+AfZvWTOuim69Amz9TD+SRbnWGAl+qWedqMrIs3Rz+0iJDy2/zHfHGVQWsUM238RvTJGDNKOf8bL+rliUQZVfDtcZwVrJeYBnoR5WvYgn9j9WxPtjtDzSFT6IVIaWvjnjQEUcM2YEKFvpavaF+AOMcvqqVAjs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ndufresne.ca; spf=none smtp.mailfrom=ndufresne.ca; dkim=pass (2048-bit key) header.d=ndufresne-ca.20230601.gappssmtp.com header.i=@ndufresne-ca.20230601.gappssmtp.com header.b=yup57+5/; arc=none smtp.client-ip=209.85.222.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ndufresne.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ndufresne.ca
-Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-78850c6609bso2284385a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 12:56:06 -0800 (PST)
+	s=arc-20240116; t=1709845028; c=relaxed/simple;
+	bh=WzIUrKuTcQtnZfN/u8fsJicsMBuji7c9mAvndxpFOI8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gnzNRTshw7OPEgHAE0CEZlFRmKUVLPAiPlMzm5Y8CRZr++vE5j9BR/+znrdPiqe3UBMvSVpyY4pj4WT57mJBPi6jAo/x6hRuGNr8Jc2IUtPWuYvyUW4F9ne6Mkt8xRV8Ue1kxDPg5ZoDDjFZl/AjOzhnwJejnZHjfgkwF2u3Vqk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=KcMfZOh9; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1dcad814986so11320445ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 12:57:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20230601.gappssmtp.com; s=20230601; t=1709844965; x=1710449765; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=tw1twkim3tJHa4ruEXI5vxr7AEW36vJHstefhfBYjKw=;
-        b=yup57+5/OnW1ynH5Wx6P5l+ZYF5hRJqTSjU+n+tt6+huLUOXZRS2ynQ/wRtzs7BOf5
-         zYiU679eTbEEZV1/ByHTA8jQZcyQSSuUj8KgD/KOlMul+my3uJe9d7GuvG0qzabS/qXv
-         kLggHc2sIvS4rwmVKf83mgvMFdD10mRDHjYZiJbo+E+18rTtzbcnthwa9x8krRBMsRUw
-         otcKqv8ie+pQucBhWHJ6L4gDTHhNN1apViL7MCJNQK0ZKt/Z2cNf+SWBBUjAZzXihE2O
-         Lvyv+bshmCnAQYxv33D51fRR9541J9Zeq1ZMUxHSk89MP1EVErexUwqVVt11jPgkdrMR
-         eBZQ==
+        d=googlemail.com; s=20230601; t=1709845026; x=1710449826; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7HvgM94yOMQ3al/rhaQFl0ZOyGyu4vO9RcRBauMLLTQ=;
+        b=KcMfZOh9DHfIDWuM6gflNbc0j8MXk3mIspVNuysTBni7rVfdQoW9aMN1JlrW7cZNwq
+         gMrVjLBA2EUbQ/zf+4L6Ot4oAOYLvA2Qe9MOyb7jfgtZk+McwdjnYhdp8ICpuKW9+qQ1
+         Pzvn6cpjY2xoHnKOK/AdUKG5/Ifqtm2ibTRNdTirw0sdxEEokMcdLmeUEo4SvMoelVrQ
+         qtndog45NOW2Eirq5HDEuz3FnmLDSc9R8mjwpwwSVLV1onVdBdxT1xRYdSLEjuKBlWA7
+         ynXZxXiQDztjZ5xraQLd2Fmp8sEAD9M5oeocsAg/+7xG5MEGQO20QVmjtBA+0efDsrxp
+         YFyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709844965; x=1710449765;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tw1twkim3tJHa4ruEXI5vxr7AEW36vJHstefhfBYjKw=;
-        b=H/G14LcKq87lSQRmRAkohZV88osGt6efEIb0WdXvBwLjpFzDJZagBjs5T316hY7b0D
-         ieve40EttatbdT8xzWjBbCBAzBqY6JwojJge4bHCzCbm25gKrl5km1suflBaaVeGOPFX
-         +RYNClaciG9K8KPsFm9vvEkAc54SqeET8L3ADf1cdJF4oJ76YcqF034KiyWeb+dxdBVV
-         Juyn4lTb8GfYpS3onWl6CGr3WwXwI821ecrqt9vAKqKGAbJxspqCbp0Nw/ZSw85qBcHC
-         N6rwrBwhuANhzvbY6Gwq+jTyspKBKv++P5n62wE14R8fL2LF73Osy7XY6DgQByJ3pget
-         bw+g==
-X-Forwarded-Encrypted: i=1; AJvYcCVQvD5NIuIowJOAv8d9b1F29YWKYG8r7+XTv7i8myHCA7FbeVvKlS/nopTUnBq4yOxw6gpgrynU2hzSAYOAfGYmHBSeVl+elBslpxQ+
-X-Gm-Message-State: AOJu0YwfzTCLAUv5gB3QX6Lxe6bSLe/Mqkn3B72BFt7idPht8VvBXa27
-	yMr6JmbNGV/CwoMMtJy4Zpq+P45m5zzS8VkCrQTDcMmvhXKIz3VdH+6XYfTcbag=
-X-Google-Smtp-Source: AGHT+IHSboxGSHFyQhRKAiV/dXr6jr+xeGSxmpeqPr8L6HZBuX56WMJ5wkIjORNZwzAww9do3Q4Hdg==
-X-Received: by 2002:a05:620a:31a:b0:788:1a88:3cf6 with SMTP id s26-20020a05620a031a00b007881a883cf6mr8869605qkm.21.1709844965459;
-        Thu, 07 Mar 2024 12:56:05 -0800 (PST)
-Received: from nicolas-tpx395.localdomain ([2606:6d00:15:eba4::7a9])
-        by smtp.gmail.com with ESMTPSA id z17-20020a05620a101100b007876e91f392sm6204346qkj.79.2024.03.07.12.56.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Mar 2024 12:56:05 -0800 (PST)
-Message-ID: <c70935815ffc29ae5256b94c0e4880952abad79c.camel@ndufresne.ca>
-Subject: Re: [RFC PATCH v2 2/2] media: rkvdec: rewrite parts of the driver
- in Rust
-From: Nicolas Dufresne <nicolas@ndufresne.ca>
-To: Daniel Almeida <daniel.almeida@collabora.com>, wedsonaf@gmail.com, 
-	ojeda@kernel.org, mchehab@kernel.org, hverkuil@xs4all.nl
-Cc: rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-media@vger.kernel.org, kernel@collabora.com
-Date: Thu, 07 Mar 2024 15:56:03 -0500
-In-Reply-To: <20240307190841.10260-3-daniel.almeida@collabora.com>
-References: <20240227215146.46487-1-daniel.almeida@collabora.com>
-	 <20240307190841.10260-1-daniel.almeida@collabora.com>
-	 <20240307190841.10260-3-daniel.almeida@collabora.com>
-Autocrypt: addr=nicolas@ndufresne.ca; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+        d=1e100.net; s=20230601; t=1709845026; x=1710449826;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7HvgM94yOMQ3al/rhaQFl0ZOyGyu4vO9RcRBauMLLTQ=;
+        b=b6V9hwoQhCO5xZbt8uTdRQ9dCHLzfoa/+6OD3Z93Iw6xyU2wJSnu/uWL7AKxuopMu3
+         IyGbiwF954Mj1CJ4UuJ4NwSPSUPprmeNEdI6wJB0mtu6JOWG8lbudKnShglV7YjiMkHt
+         d/+KOxUuDgW+32DhDM9JoRHxtRUTmYauyxhHwNNy+Y1kbyWhHUliSBBZNVtLQPC/Y/Ym
+         /7TH5dqZCTZAmwaC/4GdGqTptfCUiSCLoS80yFvwLBV8AJwVIs55GqYqQbkj1tVtfI8r
+         55e2ZO4nEYbX7geqbR+t5BJHKCkmaBu0OY8ugmVA74wzfSSXysCQLAc0g/9FuH83qjvg
+         b46g==
+X-Forwarded-Encrypted: i=1; AJvYcCW+/7ML/jhe7rqcwhnMJFSIMNnlYMiU5rz9vz+qcjrOLTvsIKYhr9bX0JGX/taoT8+SyAhnBCelB+6yysQV2rJV39WpFZVYPFqJX7L9
+X-Gm-Message-State: AOJu0Yx5nNeuqkspAh9uuSLBgsmXvSwDHB8BnQ8XB6nMDJnLER3Mebuu
+	3gJD93M9ZRHebZPGlaMCtlVUN3q7NctyN4Wy7FcyT8vOuc2hgeYFSfpl5h5BwCZKSAScmEQRJHz
+	P/PMCYabn7G754HG6wMZRhpoCEpqnLio7Y3Q=
+X-Google-Smtp-Source: AGHT+IGt7Dqb5XEk2y4DbDdfMCVp5j+FZ950sYjKYa9RjJ9fuWNWUsuIQr2zJX9YLvdoU9GIH/i5pXMEg4OQLRCvLOY=
+X-Received: by 2002:a17:902:da92:b0:1dc:cf38:3a92 with SMTP id
+ j18-20020a170902da9200b001dccf383a92mr10372068plx.8.1709845026269; Thu, 07
+ Mar 2024 12:57:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <1709621888-3173-1-git-send-email-quic_mojha@quicinc.com>
+In-Reply-To: <1709621888-3173-1-git-send-email-quic_mojha@quicinc.com>
+From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date: Thu, 7 Mar 2024 21:56:55 +0100
+Message-ID: <CAFBinCC2n+Muu2qaAG0PWFj6f+bVFDtHnzm78jSpeodTD47TOg@mail.gmail.com>
+Subject: Re: [PATCH] nvmem: meson-mx-efuse: Remove nvmem_device from efuse struct
+To: Mukesh Ojha <quic_mojha@quicinc.com>
+Cc: srinivas.kandagatla@linaro.org, neil.armstrong@linaro.org, 
+	khilman@baylibre.com, jbrunet@baylibre.com, 
+	linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Daniel,
+Hello Mukesh,
 
-as I'm already sold to the idea, I decided to discuss other things ;-P see
-below.
+On Tue, Mar 5, 2024 at 7:58=E2=80=AFAM Mukesh Ojha <quic_mojha@quicinc.com>=
+ wrote:
+>
+> nvmem_device is used at one place while registering nvmem
+> device and it is not required to be present in efuse struct
+> for just this purpose.
+>
+> Drop nvmem_device and manage with nvmem device stack variable.
+I'm generally fine with this approach
 
-Le jeudi 07 mars 2024 =C3=A0 16:08 -0300, Daniel Almeida a =C3=A9crit=C2=A0=
-:
-> +++ b/drivers/staging/media/rkvdec/regs.rs
-> @@ -0,0 +1,237 @@
-> +#![allow(dead_code)]
-> +#![allow(unused_macros)]
-> +
-> +pub(crate) const RKVDEC_REG_INTERRUPT: u32 =3D 0x004;
-> +pub(crate) const RKVDEC_INTERRUPT_DEC_E: u32 =3D 1 << 0;
-> +pub(crate) const RKVDEC_CONFIG_DEC_CLK_GATE_E: u32 =3D 1 << 1;
-> +pub(crate) const RKVDEC_E_STRMD_CLKGATE_DIS: u32 =3D 1 << 2;
+[...]
+> @@ -223,9 +222,9 @@ static int meson_mx_efuse_probe(struct platform_devic=
+e *pdev)
+>                 return PTR_ERR(efuse->core_clk);
+>         }
+>
+> -       efuse->nvmem =3D devm_nvmem_register(&pdev->dev, &efuse->config);
+> +       nvmem =3D devm_nvmem_register(&pdev->dev, &efuse->config);
+But this doesn't compile for me:
+  CC      drivers/nvmem/meson-mx-efuse.o
+./drivers/nvmem/meson-mx-efuse.c: In function 'meson_mx_efuse_probe':
+./drivers/nvmem/meson-mx-efuse.c:252:9: error: 'nvmem' undeclared
+(first use in this function)
+ 252 |         nvmem =3D devm_nvmem_register(&pdev->dev, &efuse->config);
 
-Regs file are a bit our coded reference information on how the registers ar=
-e
-layout in memory. So I believe the alignment, indent and readability of tha=
-t
-file would at least need polishing.
 
-But to the light of your comment, being able to use more modern utility, is=
-n't
-there something in Rust we could use to better map the registers ? These
-variables are just mask offset to help someone write specific bits within a=
- list
-of 32bit registers (Hantro and RKVDEC have that in common). In downstream m=
-pp
-userspace driver, they maps all the register with a C struct.
-
-struct reg123 {
-  val1 :3  // bit 31-29
-  val2 :20 // bit 28-9
-  val3 :9  // bit 8-0
-};
-
-I seriously think it looks nicer, and when the compiler does not screw it u=
-p
-(the main reason we don't use that), it is also a lot safer and simpler to =
-use.
-Now, lets forget about C, my question is just if there is something in Rust=
- that
-could give us the safety to edit the right portion of a register, but also =
-allow
-expressing that map in a readable form.
-
-Note that sometimes, we may want to read the register before editing it,
-something MPP giant C struct does not help with.
-
-Nicolas
+Best regards,
+Martin
 
