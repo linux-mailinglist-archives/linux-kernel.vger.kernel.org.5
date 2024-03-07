@@ -1,47 +1,67 @@
-Return-Path: <linux-kernel+bounces-95768-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95767-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72969875247
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:50:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D2C0875244
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:50:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C126AB233A1
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:50:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF68D1C2156A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:50:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27D0912BEA6;
-	Thu,  7 Mar 2024 14:50:15 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00D4312B144;
+	Thu,  7 Mar 2024 14:49:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="SIOLXPmq"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACC951E865;
-	Thu,  7 Mar 2024 14:50:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B30711B94D;
+	Thu,  7 Mar 2024 14:49:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709823014; cv=none; b=AIbctfHstqM6s6SlejE/ivSxq004q0kWoDQQg7rDy50NgoWqpo11GV44mQ24x8xrTrRorl5EQfhvg0Zqw/XdikqFj+uh88ikuXFzXTLCU7h15BS1gY0v0NfZZzN9mLEzbzs+k/dVKEEDs5b0a4lZAmsKHe/CNCGPqtmYtb25mP8=
+	t=1709822998; cv=none; b=OfELjcdkE6G/wBTcZ2PLx8ac/q/qu+YGJZVcP17TaSjvLW4rQS0g5jCUA4IX4oo3rA3+aPuZuoS9+lulKCm2fXCV2J48xPrjiYUCZ/RGun+NER0tznUw65KMyI8IvZf/T4Uu6p+vINKV/47vhglqiBUXVDrv9KH3K47tUR8ej0k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709823014; c=relaxed/simple;
-	bh=C/qCrjhoIs3jvOYBesJnb1uSBPlCckrGFa/pt10VT+w=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=UxrW17U1pJYfE9LqtM5uFa8bhVU1u11nyoy+Pd4ptm0AQEGujl13bC5/9MOYgVSqh+PnftUV8wKIof/vWQtODJpgNzZaCBKm06DzafKhxutktFOqvFEGKnsuvOlObAV/ffpY5pCXWGad0EqbRn+HQSjnZhiOWx6TGnsR/6524Io=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB558C433C7;
-	Thu,  7 Mar 2024 14:50:11 +0000 (UTC)
-From: Huacai Chen <chenhuacai@loongson.cn>
-To: Paolo Bonzini <pbonzini@redhat.com>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Tianrui Zhao <zhaotianrui@loongson.cn>,
-	Bibo Mao <maobibo@loongson.cn>
-Cc: kvm@vger.kernel.org,
-	loongarch@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	Xuerui Wang <kernel@xen0n.name>,
-	Jiaxun Yang <jiaxun.yang@flygoat.com>,
-	Huacai Chen <chenhuacai@loongson.cn>
-Subject: [GIT PULL] LoongArch KVM changes for v6.9
-Date: Thu,  7 Mar 2024 22:49:30 +0800
-Message-ID: <20240307144930.3919566-1-chenhuacai@loongson.cn>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1709822998; c=relaxed/simple;
+	bh=m7rJ+0egJzJtARHOsYtJ2DtjkXer4oCX2aD/B5er6ws=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=gDo+rlk38MB0cm36Um08FxHrkmXaMUqFpeFxHU8C2s1XtPrEh2l9fI89+6TTR4XXeI/eT0TVVU7hbx9rmf7YajBWUhrmCIfJq6MUJF5T2aNl9/5lqZjt9lT5qyAA5+cSRQNGaJUIRK62TvoVRHDgu/PJsPbRbzMRZX1nLtaMq9Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=SIOLXPmq; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709822994;
+	bh=m7rJ+0egJzJtARHOsYtJ2DtjkXer4oCX2aD/B5er6ws=;
+	h=From:To:Cc:Subject:Date:From;
+	b=SIOLXPmqlTB70ND8BsPLGSLGfYA5mqSbmj9DKqb7/LD/nM5YLUUVR3ChCcuYr7Mxt
+	 cfN0gc8t2z6aAJihuUIi4pRI82RNIoCGutJJv6rwVJ1IuMJ71ryILSSLi2lbtIh5vr
+	 RdmsRCDa6/wbO6fhjctv0VIUE2EBNZjFO3lsBTkDO6QRKdKsWwyDTGvJFOsDYjMdK8
+	 iR1MVYmcoNIrx/Jxcjg9MYGrhiPXqN/QxXeQeWrgNEfwjMFBScCwf4LA5t1DbYoot3
+	 SY/sPFn+Agnxz3Z4KVI8Bpt1MH0LxqeOAHtUcr0Uty+jhr/YX16vk7LX5OFiqJ2PHD
+	 yTAkhiFlrVr2g==
+Received: from localhost.localdomain (broslavsky.collaboradmins.com [68.183.210.73])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 4C5FE37820DA;
+	Thu,  7 Mar 2024 14:49:51 +0000 (UTC)
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+To: Jaehoon Chung <jh80.chung@samsung.com>,
+	Ulf Hansson <ulf.hansson@linaro.org>,
+	tianshuliang <tianshuliang@hisilicon.com>,
+	Shawn Guo <shawn.guo@linaro.org>,
+	Jiancheng Xue <xuejiancheng@hisilicon.com>,
+	Shawn Lin <shawn.lin@rock-chips.com>
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+	kernel@collabora.com,
+	kernel-janitors@vger.kernel.org,
+	linux-mmc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] mmc: dw_mmc: remove unneeded assignment
+Date: Thu,  7 Mar 2024 19:50:13 +0500
+Message-Id: <20240307145013.2721326-1-usama.anjum@collabora.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -50,37 +70,28 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The following changes since commit 90d35da658da8cff0d4ecbb5113f5fac9d00eb72:
+The err is being set to 0 and replaced every time after this
+assignment. Remove this assignment as it is extraneous.
 
-  Linux 6.8-rc7 (2024-03-03 13:02:52 -0800)
+Fixes: e382ab741252 ("mmc: dw_mmc: add support for hi3798cv200 specific extensions of dw-mshc")
+Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+---
+ drivers/mmc/host/dw_mmc-hi3798cv200.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-are available in the Git repository at:
+diff --git a/drivers/mmc/host/dw_mmc-hi3798cv200.c b/drivers/mmc/host/dw_mmc-hi3798cv200.c
+index 61923a5183693..6099756e59b3c 100644
+--- a/drivers/mmc/host/dw_mmc-hi3798cv200.c
++++ b/drivers/mmc/host/dw_mmc-hi3798cv200.c
+@@ -87,7 +87,6 @@ static int dw_mci_hi3798cv200_execute_tuning(struct dw_mci_slot *slot,
+ 			goto tuning_out;
+ 
+ 		prev_err = err;
+-		err = 0;
+ 	}
+ 
+ tuning_out:
+-- 
+2.39.2
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/chenhuacai/linux-loongson.git tags/loongarch-kvm-6.9
-
-for you to fetch changes up to b99f783106ea5b2f8c9d74f4d3b1e2f77af9ec6e:
-
-  LoongArch: KVM: Remove unnecessary CSR register saving during enter guest (2024-03-06 09:12:13 +0800)
-
-----------------------------------------------------------------
-LoongArch KVM changes for v6.9
-
-1. Set reserved bits as zero in CPUCFG.
-2. Start SW timer only when vcpu is blocking.
-3. Do not restart SW timer when it is expired.
-4. Remove unnecessary CSR register saving during enter guest.
-
-KVM PV features are unfortunately missing in v6.9 for some
-implementation controversies, sigh.
-----------------------------------------------------------------
-Bibo Mao (4):
-      LoongArch: KVM: Set reserved bits as zero in CPUCFG
-      LoongArch: KVM: Start SW timer only when vcpu is blocking
-      LoongArch: KVM: Do not restart SW timer when it is expired
-      LoongArch: KVM: Remove unnecessary CSR register saving during enter guest
-
- arch/loongarch/kvm/switch.S |  6 ------
- arch/loongarch/kvm/timer.c  | 43 ++++++++++---------------------------------
- arch/loongarch/kvm/vcpu.c   | 33 ++++++++++++++++++++++++++-------
- 3 files changed, 36 insertions(+), 46 deletions(-)
 
