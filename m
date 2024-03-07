@@ -1,297 +1,102 @@
-Return-Path: <linux-kernel+bounces-95765-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95766-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34773875238
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:47:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 71F4787523D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:47:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5EA591C219C0
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:47:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A33791C21C6C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:47:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CD9F1EB40;
-	Thu,  7 Mar 2024 14:46:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED1D4127B7C;
+	Thu,  7 Mar 2024 14:47:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VGC0olyx"
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="BwetML2N"
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18B4E1EB21
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 14:46:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 035F81E866;
+	Thu,  7 Mar 2024 14:47:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709822765; cv=none; b=Ou4OiTvK3BBxOESTJ9ext/CvziKhAYyTOdelKmqvmwWMzFZXgciJLAZf95qVoRiRkvXk5Olac60HMkuXa3fOgNH9h+HITX+5rJqTnropMAhk1UBQ660TltQ+zghQ+c2WRUb5L5qdyFWmVZAt6oEl5DvNR6rPIvla43QfH83BiuA=
+	t=1709822849; cv=none; b=CzhSNNu3G//HmmsL+vKxnMi1gLBYw3FYE0fix9zBlL4ZDuE8r2TLiTg10g6vaH/7LXTrHK07LVbGqkX6ZsMzkhaT45+qX9qajyTJELNHEOcgW0NbEPZB8MlVl0Q3xhu6ffeEp64eRLf3oNwwVG2nFxo3tVgmi2dpNig0Gd4YVgI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709822765; c=relaxed/simple;
-	bh=T8zKZi+9e/wRkkXQuIyTPYSMNwjFkafxbUNOpkl3+qc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qCH7NXHSpnhtOFcrSKUZymM7lX7dyGt+cF9BqzM8QHsaFCnfG3Z+qig53t3LgdrxwLEMrgtyRwcGdGU+BTzH2R2xe533kugPiFJJ+Qo2MyBV9ZzI3B1skcArkOFsly1S9Y30HI/7KVcxcjuAJ8oBnkHSy6E2JXSJ90/a8h7jyEs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VGC0olyx; arc=none smtp.client-ip=209.85.219.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-db3a09e96daso886003276.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 06:46:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709822762; x=1710427562; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=2DO8lbCCr4NY9SSOFNXjweEcXDNHlsqaoWwqb/vXIE8=;
-        b=VGC0olyx4+ekyU73epZOlVwW2fbB9ZZXbSlRsOpBP4DD4BHSrIMU9aYkFZWtzsl9BD
-         swx7BBlIgnoHQTlhkihYv8dueiCe7oDPA5xQJnMO03jn2K9i5+xmDQFxhnloNVLGVwbA
-         B2I6NWNDej/+MHz9TlrMkdF97+xDhJAkdD/gnvceALRxUD6v6EVkloBVVDrhPqX23inS
-         tQbMUwiDoQmB+F0N76OClqB95Uu4Qv3YKu/GPoIzpaxBejDHlPe0f053YHiA/F4CUtTZ
-         3MSmVpjlEsxq4sPPmjhdSmcsVYd9NVIXamXTTSkBX2Q2CsYJ0mxP76g4ZSm3gdWRTfXy
-         dx+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709822762; x=1710427562;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2DO8lbCCr4NY9SSOFNXjweEcXDNHlsqaoWwqb/vXIE8=;
-        b=YbNUDt09bB+ma9n7WhX/3ijQhFZM511EywQ7vvhaxuonuNK2vN69CRFWKhof9YkhL3
-         YItqdNAPp+A66OzoZC+rBxUsRZIbMhORvcU1mqgm2tFL9/W7Lu0hIf9AFRJTmrKN6EsQ
-         OD5KATBawCfUp/ovTLeE7tHsZ9oZbim/dJkFxeLF/a1hTVab7FDZ+djrwUomvtqv53+X
-         QKQ8bhzfWKKwLntcnF2zkqqN9feuCcIzr2hphPxFEFSgmibENGcjoHgZdIE+c3CupgrF
-         K9rYt4VXca6KDZQbiFa2GuonKlyDzcN+PklRbBTPMfCQQf9EVHvn5jJg2xWZW+MzjvFd
-         ypuQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUW1SaBpEeKcsRx5uDiq7LtpGoSxHpldDhxmX6O/hS/SXOckg3Fbd11zl7DG2LjEkmVQzzhaca5WOohvu08kSq/mef0ZAxCINlczNao
-X-Gm-Message-State: AOJu0YyQMN4f/He9+xKQOEuWgTRkbMLGBek7AC15o+GG/3Q4Z/v/Ooxy
-	q4uBmUiXq7ONXBYoZww1+Ea6botZ4Gt6gx2IrP7LzinZLduGIAq73dvZNm0O6Mr+ZPcsmUY9u6p
-	50PG6NoYXYqbuVSOOJ3XDl2DNRvwsokBCxle8OHfbEjMnL41jypI=
-X-Google-Smtp-Source: AGHT+IHqhppg8UCV3HnmeMYmICt+0nHtX3/aUVZcC/1R/yM7ReBzagzjsighT1k9YP/mJ4X58nZ4HCAj9jCSD/TbItY=
-X-Received: by 2002:a25:3604:0:b0:dcd:97ad:74b3 with SMTP id
- d4-20020a253604000000b00dcd97ad74b3mr14205958yba.63.1709822761998; Thu, 07
- Mar 2024 06:46:01 -0800 (PST)
+	s=arc-20240116; t=1709822849; c=relaxed/simple;
+	bh=Km2LqwgcdVVDZyJtk6ImV9GP5lvaIR2i3Xbk0PN+jYk=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:To:From:Subject:
+	 References:In-Reply-To; b=NMTn4I05fLl8FugjmNKC9nFibK8FEkZYPIzvJqKJ08x/jqnMnhChHMy4XshVfRv2Q/CSSQssmeWG4qlIBFMsE+GbWC+7ps6zb2fpVYdcsl0Tfa2gcLO4cggqMp1BSzd2Zh9nMgf4xZde2+tCWlRjfckBUYu7BEs6Z5du0uwiXrE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=BwetML2N; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 4A8681C000C;
+	Thu,  7 Mar 2024 14:47:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709822843;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Km2LqwgcdVVDZyJtk6ImV9GP5lvaIR2i3Xbk0PN+jYk=;
+	b=BwetML2Nvuxg3humKkkGofoQSPzBvCFAr3106R7KsRbVuH95a8R3iv32qZfqvW3hP1N/bU
+	QftFWxf0kZmTZqAZ14iNng5XmOj46xH7JwF1PGrUQXPa3PRbxTA2yviKPDqxdZIjgAVf6d
+	vgwGwNsamireV7q6t9GjpudPj18/oW6Oo2W70U0MFchAZT1FkTYS4cwnBsyqfurtg5u+fO
+	tpONToan2coljFio+GwUqS/Lckl7HhAbEy6XGEobh52HN67rkgo7C3/mNmSEwDAuIaMzUu
+	zB2kqhqRXi29lyzlGSoeDhfcBpyuk0MNtUtJ4fA9+YGQ1b73Osi+lT56zb5Vpw==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240307093605.4142639-1-quic_msavaliy@quicinc.com>
- <CAA8EJprndszVSjAVs_UzAjhb+x1B1Of4JCkygZ=8kgzuY2RwCQ@mail.gmail.com> <25ec87af-c911-46b7-87c9-b21065d70f9f@quicinc.com>
-In-Reply-To: <25ec87af-c911-46b7-87c9-b21065d70f9f@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Thu, 7 Mar 2024 16:45:50 +0200
-Message-ID: <CAA8EJprky=tFjJbGTBL7+9E=kqxQKjxB_RcmzHUt31GqUVfNmQ@mail.gmail.com>
-Subject: Re: [PATCH v2] i2c: i2c-qcom-geni: Parse Error correctly in i2c GSI mode
-To: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
-Cc: konrad.dybcio@linaro.org, bjorn.andersson@linaro.org, vkoul@kernel.org, 
-	andi.shyti@kernel.org, wsa@kernel.org, linux-arm-msm@vger.kernel.org, 
-	dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-i2c@vger.kernel.org, quic_vdadhani@quicinc.com
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Thu, 07 Mar 2024 15:47:21 +0100
+Message-Id: <CZNLM1VYID7L.1PVM0H06E6TBO@bootlin.com>
+Cc: "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>,
+ =?utf-8?q?Gr=C3=A9gory_Clement?= <gregory.clement@bootlin.com>, "Kevin
+ Hilman" <khilman@kernel.org>, "Alan Stern" <stern@rowland.harvard.edu>,
+ <linux-usb@vger.kernel.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
+To: "Roger Quadros" <rogerq@kernel.org>, "Greg Kroah-Hartman"
+ <gregkh@linuxfoundation.org>, "Rob Herring" <robh+dt@kernel.org>,
+ "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley"
+ <conor+dt@kernel.org>, "Peter Chen" <peter.chen@kernel.org>, "Pawel
+ Laszczak" <pawell@cadence.com>, "Nishanth Menon" <nm@ti.com>, "Vignesh
+ Raghavendra" <vigneshr@ti.com>, "Tero Kristo" <kristo@kernel.org>
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Subject: Re: [PATCH v4 5/9] usb: cdns3-ti: pass auxdata from match data to
+ of_platform_populate()
+X-Mailer: aerc 0.15.2
+References: <20240307-j7200-usb-suspend-v4-0-5ec7615431f3@bootlin.com>
+ <20240307-j7200-usb-suspend-v4-5-5ec7615431f3@bootlin.com>
+ <bc361325-1510-4fe0-a7ee-bc5be0a1b4cc@kernel.org>
+In-Reply-To: <bc361325-1510-4fe0-a7ee-bc5be0a1b4cc@kernel.org>
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-On Thu, 7 Mar 2024 at 15:46, Mukesh Kumar Savaliya
-<quic_msavaliy@quicinc.com> wrote:
->
->
->
->
-> On 3/7/2024 3:23 PM, Dmitry Baryshkov wrote:
-> > On Thu, 7 Mar 2024 at 11:36, Mukesh Kumar Savaliya
-> > <quic_msavaliy@quicinc.com> wrote:
-> >>
-> >> We are seeing transfer failure instead of NACK error for simple
-> >> device scan test.Ideally it should report exact error like NACK
-> >> if device is not present.
-> >>
-> >> We may also expect errors like BUS_PROTO or ARB_LOST, hence we are
-> >> adding such error support in GSI mode and reporting it accordingly
-> >> by adding respective error logs.
-> >
-> > Please take a look at the
-> > Documentation/process/submitting-patches.rst. This is not the expected
-> > style of commit messages.
-> >
->
-> Thanks Dmitry ! Gone through the link and tried to align to the
-> guidance. I will be adding into the actual upload in V3.
+Hello,
 
-Let me quote the relevant part for you:
+On Thu Mar 7, 2024 at 1:38 PM CET, Roger Quadros wrote:
+>
+>
+> On 07/03/2024 11:55, Th=C3=A9o Lebrun wrote:
+> > Allow compatible to pick auxdata given to child platform devices.
+> >=20
+> > No compatible exploits this functionality, just yet.
+> >=20
+>
+> This patch could be merged with Patch 7 so we know exactly how auxdata
+> is used?
 
-Describe your changes in imperative mood, e.g. "make xyzzy do frotz"
-instead of "[This patch] makes xyzzy do frotz" or "[I] changed xyzzy
-to do frotz", as if you are giving orders to the codebase to change
-its behaviour.
+Indeed. I liked splitting. Previous revision had it as a single patch.
+I can revert.
 
->
-> When we run scan test for i2c devices, we see transfer failures instead
-> of NACK. This is wrong because there is no data transfer failure but
-> it's a slave response to the i2c master controller.
->
-> This change correctly identifies NACK error. Also adds support for other
-> protocol errors like BUS_PROTO and ARB_LOST. This helps to exactly know
-> the response on the bus.
->
-> Function geni_i2c_gpi_xfer() gets called for any i2c GSI mode transfer
-> and waits for the response as success OR failure. If slave is not
-> present OR NACKing, GSI generates an error interrupt which calls ISR and
-> it further calls gpi_process_xfer_compl_event(). Now
-> dmaengine_desc_callback_invoke() will call i2c_gpi_cb_result() where we
-> have added parsing status parameters to identify respective errors.
->
-> >>
-> >> During geni_i2c_gpi_xfer(), we should expect callback param as a
-> >> transfer result. For that we have added a new structure named
-> >> gpi_i2c_result, which will store xfer result.
-> >>
-> >> Upon receiving an interrupt, gpi_process_xfer_compl_event() will
-> >> store transfer result into status variable and then call the
-> >> dmaengine_desc_callback_invoke(). Hence i2c_gpi_cb_result() can
-> >> parse the respective errors.
-> >>
-> >> while parsing error from the status param, use FIELD_GET with the
-> >
-> > Sentences start with the uppercase letter.
->
-> Sure, will do while/While change. Will take care in next patch.
->
-> >
-> >> mask instead of multiple shifting operations for each error.
-> >
-> >
-> >>
-> >> Fixes: d8703554f4de ("i2c: qcom-geni: Add support for GPI DMA")
-> >> Co-developed-by: Viken Dadhaniya <quic_vdadhani@quicinc.com>
-> >> Signed-off-by: Viken Dadhaniya <quic_vdadhani@quicinc.com>
-> >> Signed-off-by: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
-> >> ---
-> >> ---
-> Sorry, i Missed to add V1 -> V2 : will add into next patch upload.
-> >> - Commit log changed we->We.
-> >> - Explained the problem that we are not detecing NACK error.
-> >> - Removed Heap based memory allocation and hence memory leakage issue.
-> >> - Used FIELD_GET and removed shiting and masking every time as suggested by Bjorn.
-> >> - Changed commit log to reflect the code changes done.
-> >> - Removed adding anything into struct gpi_i2c_config and created new structure
-> >>    for error status as suggested by Bjorn.
-> >> ---
-> >>   drivers/dma/qcom/gpi.c             | 12 +++++++++++-
-> >>   drivers/i2c/busses/i2c-qcom-geni.c | 19 +++++++++++++++----
-> >>   include/linux/dma/qcom-gpi-dma.h   | 10 ++++++++++
-> >>   3 files changed, 36 insertions(+), 5 deletions(-)
-> >>
-> >> diff --git a/drivers/dma/qcom/gpi.c b/drivers/dma/qcom/gpi.c
-> >> index 1c93864e0e4d..e3508d51fdc9 100644
-> >> --- a/drivers/dma/qcom/gpi.c
-> >> +++ b/drivers/dma/qcom/gpi.c
-> >> @@ -1076,7 +1076,17 @@ static void gpi_process_xfer_compl_event(struct gchan *gchan,
-> >>          dev_dbg(gpii->gpi_dev->dev, "Residue %d\n", result.residue);
-> >>
-> >>          dma_cookie_complete(&vd->tx);
-> >> -       dmaengine_desc_get_callback_invoke(&vd->tx, &result);
-> >> +       if (gchan->protocol == QCOM_GPI_I2C) {
-> >> +               struct dmaengine_desc_callback cb;
-> >> +               struct gpi_i2c_result *i2c;
-> >> +
-> >> +               dmaengine_desc_get_callback(&vd->tx, &cb);
-> >> +               i2c = cb.callback_param;
-> >> +               i2c->status = compl_event->status;
-> >> +               dmaengine_desc_callback_invoke(&cb, &result);
-> >> +       } else {
-> >> +               dmaengine_desc_get_callback_invoke(&vd->tx, &result);
-> >
-> > Is there such error reporting for SPI or UART protocols?
-> >
->
-> Such errors are not there for SPI or UART because
-> NACK/BUS_PROTO/ARB_LOST errors are protocol specific errors. These error
-> comes in
-> middle of the transfers. As these are like expected protocol errors
-> depending on the slave device/s response.
+Regards,
 
-Yes, these particular errors are I2C specific. My question was more
-generic: do we have any similar errors for SPI or UART GENI protocols
-that we should report from GPI to the corresponding driver?
+--
+Th=C3=A9o Lebrun, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
->
-> >> +       }
-> >>
-> >>   gpi_free_desc:
-> >>          spin_lock_irqsave(&gchan->vc.lock, flags);
-> >> diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-qcom-geni.c
-> >> index da94df466e83..36a7c0c0ff54 100644
-> >> --- a/drivers/i2c/busses/i2c-qcom-geni.c
-> >> +++ b/drivers/i2c/busses/i2c-qcom-geni.c
-> >> @@ -66,6 +66,7 @@ enum geni_i2c_err_code {
-> >>          GENI_TIMEOUT,
-> >>   };
-> >>
-> >> +#define I2C_DMA_TX_IRQ_MASK    GENMASK(12, 5)
-> >>   #define DM_I2C_CB_ERR          ((BIT(NACK) | BIT(BUS_PROTO) | BIT(ARB_LOST)) \
-> >>                                                                          << 5)
-> >>
-> >> @@ -99,6 +100,7 @@ struct geni_i2c_dev {
-> >>          struct dma_chan *rx_c;
-> >>          bool gpi_mode;
-> >>          bool abort_done;
-> >> +       struct gpi_i2c_result i2c_result;
-> >>   };
-> >>
-> >>   struct geni_i2c_desc {
-> >> @@ -484,9 +486,18 @@ static int geni_i2c_tx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
-> >>
-> >>   static void i2c_gpi_cb_result(void *cb, const struct dmaengine_result *result)
-> >>   {
-> >> -       struct geni_i2c_dev *gi2c = cb;
-> >> -
-> >> -       if (result->result != DMA_TRANS_NOERROR) {
-> >> +       struct gpi_i2c_result *i2c_res = cb;
-> >> +       struct geni_i2c_dev *gi2c = container_of(i2c_res, struct geni_i2c_dev, i2c_result);
-> >> +       u32 status;
-> >> +
-> >> +       status = FIELD_GET(I2C_DMA_TX_IRQ_MASK, i2c_res->status);
-> >> +       if (status == BIT(NACK)) {
-> >> +               geni_i2c_err(gi2c, NACK);
-> >> +       } else if (status == BIT(BUS_PROTO)) {
-> >> +               geni_i2c_err(gi2c, BUS_PROTO);
-> >> +       } else if (status == BIT(ARB_LOST)) {
-> >> +               geni_i2c_err(gi2c, ARB_LOST);
-> >> +       } else if (result->result != DMA_TRANS_NOERROR) {
-> >>                  dev_err(gi2c->se.dev, "DMA txn failed:%d\n", result->result);
-> >>                  gi2c->err = -EIO;
-> >>          } else if (result->residue) {
-> >> @@ -568,7 +579,7 @@ static int geni_i2c_gpi(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
-> >>          }
-> >>
-> >>          desc->callback_result = i2c_gpi_cb_result;
-> >> -       desc->callback_param = gi2c;
-> >> +       desc->callback_param = &gi2c->i2c_result;
-> >>
-> >>          dmaengine_submit(desc);
-> >>          *buf = dma_buf;
-> >> diff --git a/include/linux/dma/qcom-gpi-dma.h b/include/linux/dma/qcom-gpi-dma.h
-> >> index 6680dd1a43c6..f585c6a35e51 100644
-> >> --- a/include/linux/dma/qcom-gpi-dma.h
-> >> +++ b/include/linux/dma/qcom-gpi-dma.h
-> >> @@ -80,4 +80,14 @@ struct gpi_i2c_config {
-> >>          bool multi_msg;
-> >>   };
-> >>
-> >> +/**
-> >> + * struct gpi_i2c_result - i2c transfer status result in GSI mode
-> >> + *
-> >> + * @status: store txfer status value as part of callback
-> >> + *
-> >> + */
-> >> +struct gpi_i2c_result {
-> >> +       u32 status;
-> >> +};
-> >> +
-> >>   #endif /* QCOM_GPI_DMA_H */
-> >> --
-> >> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> >> a Linux Foundation Collaborative Project
-> >>
-> >>
-> >
-> >
-
-
-
--- 
-With best wishes
-Dmitry
 
