@@ -1,349 +1,139 @@
-Return-Path: <linux-kernel+bounces-95685-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95691-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 717D1875142
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:05:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C2B687514E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:07:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 117381F25BD4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:05:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1607B283CF1
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:07:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF47512FB21;
-	Thu,  7 Mar 2024 14:03:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6C66130E5B;
+	Thu,  7 Mar 2024 14:04:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ILYfLqv6"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="l0SAGa+K"
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDACE12FB00;
-	Thu,  7 Mar 2024 14:03:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECCE2130E58
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 14:04:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709820222; cv=none; b=DVdMgUETPJ6UuUG8L4uTLhaQZcNp39k+Lc2wWUtF/wI2tuYmW5zikrAWe/UP/FvUZ2hIPFum8F89gK1szeeLM0rKU66dSjTTB8Hx7WDu9nvVsxQo2Z04rNQ/LiCSkZOIeA373jIZS+fzOOOFJgt5t8FQeOj3v1lGWYJ2xmGvOtk=
+	t=1709820254; cv=none; b=d73fGe0TaVBdrv9d+ZYY0vsjuWIL6cZt2Cv5DJK/Eft/oGbIl7hIVwBkamZorCEsuQkKZ+P1LWWmgcnkcvlRAgpFysqUViJsr9AuR0yCfr7hSMkgmZDruffn6vawqIU3IL3mjfG1eqJTzy/KzRxbuLDj0GKRe55vX5hxU/j3cEM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709820222; c=relaxed/simple;
-	bh=BT6wZ8BkYsfqnC5k7BF68W2twgRaf3YZsPmPjxc0vlo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=N/WCJxMfVHQd2O2D+YEh4bx0Bb57C+78mzMqrpiPwQ9z4+eb+b59MqiyOEcCQYyHGtWBmKfrcM3XUy4cGSh/iZqNSGCSLFtqXCrR/foUr7hTjlyvBdTvusCTEntD1YRmQpI/kFNAqSyojKHvIeVxCUveZPhZXfIeQe8YLLSKxgI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ILYfLqv6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57DF3C433F1;
-	Thu,  7 Mar 2024 14:03:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709820222;
-	bh=BT6wZ8BkYsfqnC5k7BF68W2twgRaf3YZsPmPjxc0vlo=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=ILYfLqv6AdPmF8HKRsSyjdF8gEF+6ZbG9ncnMQ9J9FOqXbT3wrHjj8dBiJbShKWya
-	 YMtlJMOChfzz+ZW2bZYBbKzfo0aF3tlK4nMr2hHltakqhddL/ci7yH175k4DFaYfOd
-	 zJ1CfuuzJlEQfuJy1iOWsErkhdJbm3eEP2KZ9DGtoXWULXpjGu2+aIQybusyNZvwcC
-	 gtDLmQ1hB5/0faXfl/eg2uiFZUvYywt/JtCQBR73nG4iAmMkZ1z7V4ncUiOtKKCYZu
-	 N3bwr/oC7GVd7z4VqW6VazSZYvpP0lQzx6On7bPAwcoak+SPNwHIcJlOh/5hDEggm6
-	 GH7I5icGHgGiA==
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d311081954so9855671fa.2;
-        Thu, 07 Mar 2024 06:03:42 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUDCEPZz/aggmYdmQl2ULu4cU8PcASfjYtkqYG254+anOKnOnRW+ry4YBBz3aV9Tu23FVeKR6wu0N/E2OLth5uNDuEsB6LmI+yF2aeNxdZjI5dpogj/EYeK4oM4dbKv+tHpSPPtRHzZuPp30XDeCHuFo16vATZFv1xaxg8SL/SaYU31joD3
-X-Gm-Message-State: AOJu0Yz/csrow9xvWjMccxI4t0Nf6g4aTYIzFSf0jc3jM7+56SFYEMA8
-	KEzgpSpra7mzXoR17F3YkiXYxzL10OfdxdF5I+ijql2cyKpTGWmqI2ZLPx5VjkkSxtuv6Sv3gSP
-	5oU2WvNZNOvX0jqCc9Uz/n5JPuw==
-X-Google-Smtp-Source: AGHT+IF5Dc5jk0XZHS0IhbnbHN0DQ1ZhYnHDMr7Hbwtb+vashJF0QYaWL7v2IywW1l6pNzIj3tTpk4NskZfQ4ky22lQ=
-X-Received: by 2002:a05:6512:1094:b0:513:30fb:d64 with SMTP id
- j20-20020a056512109400b0051330fb0d64mr1862716lfg.44.1709820199915; Thu, 07
- Mar 2024 06:03:19 -0800 (PST)
+	s=arc-20240116; t=1709820254; c=relaxed/simple;
+	bh=rKzBeXR+4dT60DV6BPmoejLJGwtYaFZERH7vUM6fJO4=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=hi+Hk+NjMYN5Hpae2JdeYy10xBdRxuxm590yKLcFr1dloKNFFGjt8EJyOxYT6FyMudEYovYKmC4OJPtncm//oxPjGTWwfnfKPVDrLCFXhILGgmDcdGYYtx9B84WTqWBMFCw2nTlyHuqNedq5NFXeAMQ+zVwBt03BYebFtXJYBfs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=l0SAGa+K; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1dd59b95677so3751175ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 06:04:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1709820252; x=1710425052; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rjwrYvBNyQ/qNRs7Txb/BN/1bxuD6Rbun1oh6hMbldU=;
+        b=l0SAGa+KAPCBaYwjNC8heARGc8FKob5mDVxV5kO5azaEThS7M/5adLrfpj5WE1fD57
+         IFCa5ZVi2Jrcm2M4iaPhHlxpInFsKDleVVSaLXTFyQJatICfJj9Brs5AVWycXwIyRrCz
+         NqFZu8Y+H+gCSgI1wtOsroCPkgri2U4laTbtV446L82+2eupfU+U2jXbAczez4nRLR8i
+         NZ7hmi3peb6degP4uLY0AieQj/NcGlx7811bj9k8r822tVnr60p/o1GQBSVr2cRAR6fJ
+         39KQAxovNheJvymVr51YkOcn/ccsmIy1FpQ5EuOvoP/HcM73qRFR7FBWpRph8yTs+u6N
+         FsHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709820252; x=1710425052;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rjwrYvBNyQ/qNRs7Txb/BN/1bxuD6Rbun1oh6hMbldU=;
+        b=NF5gaxFSYFhW6f/i56PhHo5J/BmT73qoGkPuIATIgYdG5QK4LJ9gXwLZzBWHJhdNAy
+         Kdxah35YPuD5TnWLfhwTsFTHUSDh4qiRemU4slaLw7gqYJ1eFUhM13kAXhHXVGjqIeZh
+         BlCmdk6sum12VK/EUTklN+xMTUTmWfq/oOiO3i3kmrKxbIVa2ThN71Ob0HiY0mZBgw7b
+         wnnT4KnC2ty5KWMpC9Y2EVpqcqgqA+gmwlPM4yPacsWYY3bliynwD3m7mlBdxMnP221W
+         ZgZmmEFiTnHSKjegg5uZWm+ll0AiBGa1XmMe799H1pCGzvxDilbVuyRRFN5nqzk0NXpr
+         dVaw==
+X-Forwarded-Encrypted: i=1; AJvYcCWjkLCTEsbbfSle+bNvFxm9rawUTb6pu8vZFga45xUVcN7FclZQfzyxzDRXJdKvJ/SLtg2y9gYXkvwEpe6XOHMMPvBdIW723+JTr2mS
+X-Gm-Message-State: AOJu0YxszdSAW1IrQUcZkGCBkyl6lqwrUkgD62B1tSP+/WmUq9DuGzmj
+	XGkBxbHyaSEB8n6Tedad3yTSQcuwFAZDMwPGST9KnTPkHa1pI1bTp56ySyuDzaU=
+X-Google-Smtp-Source: AGHT+IH4vsjzsOStS+FThaKG7EnDgUZh+Gtnp0D2Nf7vkFgGFqKrbJUaxP4JwhRT8tXdH9oU6TvuQg==
+X-Received: by 2002:a17:903:94f:b0:1db:edb8:35d8 with SMTP id ma15-20020a170903094f00b001dbedb835d8mr9704187plb.34.1709820252379;
+        Thu, 07 Mar 2024 06:04:12 -0800 (PST)
+Received: from anup-ubuntu-vm.localdomain ([171.76.84.79])
+        by smtp.gmail.com with ESMTPSA id w1-20020a1709026f0100b001dd6174c651sm386228plk.149.2024.03.07.06.04.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Mar 2024 06:04:11 -0800 (PST)
+From: Anup Patel <apatel@ventanamicro.com>
+To: Palmer Dabbelt <palmer@dabbelt.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Frank Rowand <frowand.list@gmail.com>,
+	Conor Dooley <conor+dt@kernel.org>
+Cc: Marc Zyngier <maz@kernel.org>,
+	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+	Atish Patra <atishp@atishpatra.org>,
+	Andrew Jones <ajones@ventanamicro.com>,
+	Sunil V L <sunilvl@ventanamicro.com>,
+	Saravana Kannan <saravanak@google.com>,
+	Anup Patel <anup@brainfault.org>,
+	linux-riscv@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	Anup Patel <apatel@ventanamicro.com>
+Subject: [PATCH v16 9/9] MAINTAINERS: Add entry for RISC-V AIA drivers
+Date: Thu,  7 Mar 2024 19:33:07 +0530
+Message-Id: <20240307140307.646078-10-apatel@ventanamicro.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240307140307.646078-1-apatel@ventanamicro.com>
+References: <20240307140307.646078-1-apatel@ventanamicro.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240227120939.290143-1-angelogioacchino.delregno@collabora.com>
- <20240227120939.290143-20-angelogioacchino.delregno@collabora.com>
- <20240304142341.GA156846-robh@kernel.org> <0aa3dc07-67c8-40a4-9e83-f702979765c5@collabora.com>
-In-Reply-To: <0aa3dc07-67c8-40a4-9e83-f702979765c5@collabora.com>
-From: Rob Herring <robh@kernel.org>
-Date: Thu, 7 Mar 2024 08:03:06 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLNsS_Rx5z5F1vrYbr2g+5-wGYOq6mhtfUd7Db11F0W+Q@mail.gmail.com>
-Message-ID: <CAL_JsqLNsS_Rx5z5F1vrYbr2g+5-wGYOq6mhtfUd7Db11F0W+Q@mail.gmail.com>
-Subject: Re: [PATCH 19/22] ASoC: dt-bindings: mt8192: Document audio-routing
- and dai-link subnode
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: broonie@kernel.org, wenst@chromium.org, lgirdwood@gmail.com, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	matthias.bgg@gmail.com, perex@perex.cz, tiwai@suse.com, 
-	trevor.wu@mediatek.com, maso.huang@mediatek.com, 
-	xiazhengqiao@huaqin.corp-partner.google.com, arnd@arndb.de, 
-	kuninori.morimoto.gx@renesas.com, shraash@google.com, amergnat@baylibre.com, 
-	nicolas.ferre@microchip.com, u.kleine-koenig@pengutronix.de, 
-	dianders@chromium.org, frank.li@vivo.com, allen-kh.cheng@mediatek.com, 
-	eugen.hristev@collabora.com, claudiu.beznea@tuxon.dev, 
-	jarkko.nikula@bitmer.com, jiaxin.yu@mediatek.com, alpernebiyasak@gmail.com, 
-	ckeepax@opensource.cirrus.com, zhourui@huaqin.corp-partner.google.com, 
-	nfraprado@collabora.com, alsa-devel@alsa-project.org, 
-	shane.chien@mediatek.com, linux-sound@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, 
-	kernel@collabora.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Mar 5, 2024 at 5:20=E2=80=AFAM AngeloGioacchino Del Regno
-<angelogioacchino.delregno@collabora.com> wrote:
->
-> Il 04/03/24 15:23, Rob Herring ha scritto:
-> > On Tue, Feb 27, 2024 at 01:09:36PM +0100, AngeloGioacchino Del Regno wr=
-ote:
-> >> Document the dai-link subnodes and the audio-routing property, allowin=
-g
-> >> to describe machine specific audio hardware and links in device tree.
-> >>
-> >> While at it, also deprecate the old properties which were previously
-> >> used with the driver's partially hardcoded configuration.
-> >>
-> >> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@c=
-ollabora.com>
-> >> ---
-> >>   .../sound/mt8192-mt6359-rt1015-rt5682.yaml    | 129 ++++++++++++++++=
---
-> >>   1 file changed, 121 insertions(+), 8 deletions(-)
-> >>
-> >> diff --git a/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1=
-015-rt5682.yaml b/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1=
-015-rt5682.yaml
-> >> index 7e50f5d65c8f..78e221003750 100644
-> >> --- a/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5=
-682.yaml
-> >> +++ b/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5=
-682.yaml
-> >> @@ -20,6 +20,15 @@ properties:
-> >>         - mediatek,mt8192_mt6359_rt1015p_rt5682
-> >>         - mediatek,mt8192_mt6359_rt1015p_rt5682s
-> >>
-> >> +  audio-routing:
-> >> +    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
-> >
-> > Already defined in sound-card-common.yaml. Add a $ref.
-> >
->
-> Right. Done for v2.
->
-> >> +    description:
-> >> +      A list of the connections between audio components. Each entry =
-is a
-> >> +      pair of strings, the first being the connection's sink, the sec=
-ond
-> >> +      being the connection's source.
-> >> +      Valid names could be the input or output widgets of audio compo=
-nents,
-> >> +      power supplies, MicBias of codec and the software switch.
-> >
-> > Generally the names are defined here.
-> >
->
-> ...but those drivers want to support multiple codecs and multiple boards,=
- so
-> for each board we would maybe have to add (software defined) names in her=
-e
-> which don't always correspond to a HW pin name (but that's not really a p=
-roblem).
->
-> Sure a subset of the names can't change but, on the other hand, some othe=
-rs
-> can (as in, may be added).
->
-> Hence the question:
->
-> Is it mandatory to define the names in an enum here, or can that be avoid=
-ed?
-> If it is, I can add them no problem.
+Add myself as maintainer for RISC-V AIA drivers including the
+RISC-V INTC driver which supports both AIA and non-AIA platforms.
 
-Does the OS depend on what the names are? As-in if a name was "bar"
-and it changed to "baz" in either the DT or the kernel, would that
-break things? If yes, then yes, you need them defined here.
+Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+---
+ MAINTAINERS | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
->
-> >> +
-> >>     mediatek,platform:
-> >>       $ref: /schemas/types.yaml#/definitions/phandle
-> >>       description: The phandle of MT8192 ASoC platform.
-> >> @@ -27,10 +36,12 @@ properties:
-> >>     mediatek,hdmi-codec:
-> >>       $ref: /schemas/types.yaml#/definitions/phandle
-> >>       description: The phandle of HDMI codec.
-> >> +    deprecated: true
-> >>
-> >>     headset-codec:
-> >>       type: object
-> >>       additionalProperties: false
-> >> +    deprecated: true
-> >>
-> >>       properties:
-> >>         sound-dai:
-> >> @@ -41,6 +52,7 @@ properties:
-> >>     speaker-codecs:
-> >>       type: object
-> >>       additionalProperties: false
-> >> +    deprecated: true
-> >>
-> >>       properties:
-> >>         sound-dai:
-> >> @@ -51,13 +63,83 @@ properties:
-> >>       required:
-> >>         - sound-dai
-> >>
-> >> +patternProperties:
-> >> +  ".*-dai-link$":
-> >> +    type: object
-> >> +    description:
-> >> +      Container for dai-link level properties and CODEC sub-nodes.
-> >> +
-> >> +    properties:
-> >> +      link-name:
-> >> +        description: Indicates dai-link name and PCM stream name
-> >> +        items:
-> >> +          enum:
-> >> +            - I2S0
-> >> +            - I2S1
-> >> +            - I2S2
-> >> +            - I2S3
-> >> +            - I2S4
-> >> +            - I2S5
-> >> +            - I2S6
-> >> +            - I2S7
-> >> +            - I2S8
-> >> +            - I2S9
-> >> +            - TDM
-> >> +
-> >> +      codec:
-> >> +        description: Holds subnode which indicates codec dai.
-> >> +        type: object
-> >> +        additionalProperties: false
-> >> +        properties:
-> >> +          sound-dai:
-> >> +            minItems: 1
-> >> +            maxItems: 2
-> >> +        required:
-> >> +          - sound-dai
-> >> +
-> >> +      dai-format:
-> >> +        description: audio format
-> >> +        items:
-> >> +          enum:
-> >> +            - i2s
-> >> +            - right_j
-> >> +            - left_j
-> >> +            - dsp_a
-> >> +            - dsp_b
-> >> +
-> >> +      mediatek,clk-provider:
-> >> +        $ref: /schemas/types.yaml#/definitions/string
-> >> +        description: Indicates dai-link clock master.
-> >> +        items:
-> >> +          enum:
-> >> +            - cpu
-> >> +            - codec
-> >> +
-> >> +    additionalProperties: false
-> >
-> > Move this before properties.
-> >
->
-> Done for v2.
->
-> >> +
-> >> +    required:
-> >> +      - link-name
-> >> +
-> >>   additionalProperties: false
-> >>
-> >>   required:
-> >>     - compatible
-> >>     - mediatek,platform
-> >> -  - headset-codec
-> >> -  - speaker-codecs
-> >> +
-> >> +allOf:
-> >> +  # Disallow dai-link-xxx nodes if the legacy properties are specifie=
-d
-> >
-> > xxx-dai-link?
-> >
->
-> Oh! Yes, thanks for catching this.
->
-> That's what I initially wanted to do, but then I opted for xxx-dai-link a=
-nd
-> forgot to update this comment.
->
-> Fixed for v2.
->
-> >> +  - if:
-> >> +      patternProperties:
-> >> +        ".*-dai-link$": false
-> >> +    then:
-> >> +      required:
-> >> +        - headset-codec
-> >> +        - speaker-codecs
-> >> +    else:
-> >> +      properties:
-> >> +        headset-codec: false
-> >> +        speaker-codecs: false
-> >> +        mediatek,hdmi-codec: false
-> >
-> > Allowing both would preserve compatibility. That's not needed? If so,
-> > say why in the commit msg.
-> >
->
-> I'm thinking of writing:
->
-> "Since describing machine specific audio hardware and links replaces the
-> now deprecated old logic doing the same in a driver hardcoded fashion,
-> it is not allowed to have both the old and new properties together."
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 2ecaaec6a6bf..92efe5bcb3f6 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -18803,6 +18803,20 @@ S:	Maintained
+ F:	drivers/mtd/nand/raw/r852.c
+ F:	drivers/mtd/nand/raw/r852.h
+ 
++RISC-V AIA DRIVERS
++M:	Anup Patel <anup@brainfault.org>
++L:	linux-riscv@lists.infradead.org
++S:	Maintained
++F:	Documentation/devicetree/bindings/interrupt-controller/riscv,aplic.yaml
++F:	Documentation/devicetree/bindings/interrupt-controller/riscv,imsics.yaml
++F:	drivers/irqchip/irq-riscv-aplic-*.c
++F:	drivers/irqchip/irq-riscv-aplic-*.h
++F:	drivers/irqchip/irq-riscv-imsic-*.c
++F:	drivers/irqchip/irq-riscv-imsic-*.h
++F:	drivers/irqchip/irq-riscv-intc.c
++F:	include/linux/irqchip/riscv-aplic.h
++F:	include/linux/irqchip/riscv-imsic.h
++
+ RISC-V ARCHITECTURE
+ M:	Paul Walmsley <paul.walmsley@sifive.com>
+ M:	Palmer Dabbelt <palmer@dabbelt.com>
+-- 
+2.34.1
 
-What happened to that. Instead you just sent a new version with
-nothing about this.
-
-> ...but in short - both the old and the new can do exactly the same, but
-> imo it doesn't make any sense to actually rely on both as:
->   1. It's redundant (and one set of them makes the other useless);
->   2. I want to avoid confusion (as the other set won't be parsed);
->   3. I'm trying to *enforce* consistency as MTK cards have different
->      bindings for .. really, no good reason;
->   4. I want to see custom stuff disappear completely (and/or as much as
->      possible anyway) and use something that is (at least somewhat) commo=
-n
->      between all MTK and non-MTK or anyway as a start at least consistent
->      between MTK cards.
->
-> In theory, though, speaking of the driver side, there's nothing preventin=
-g
-> you from specifying both audio-routing xxx-dai-link and mediatek,hdmi-cod=
-ec,
-> as the drivers' action will be, in short
->     if (new_bindings)
->       forget_about_old_bindings_use_the_new_ones();
->     else
->       use_old_hardcoded_stuff(); /* and be sad */
-
-That works for newer kernels with this change, but existing kernels
-will only have:
-
-use_old_hardcoded_stuff(); /* and not know it's sad */
-
-If you want to support a new DT and old kernel, you need to populate
-both properties.
-
-> For that, I really don't want to allow both sets of properties - please, =
-please,
-> tell me that I don't *have to* remove this block :-)
-
-Ultimately it is your decision as Mediatek maintainer, not mine. My
-only requirement is the commit message explain why the above
-combination is not important for these platforms.
-
-You could leave it, but keep both in the dts files for some time
-period. That will cause warnings, but what's a few more. The ABI
-doesn't have to be a forever thing. Things evolve and there will be
-other reasons to upgrade.
-
-Rob
 
