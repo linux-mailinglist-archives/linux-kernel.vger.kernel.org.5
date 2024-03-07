@@ -1,142 +1,226 @@
-Return-Path: <linux-kernel+bounces-96222-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96223-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D87B8758DF
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 21:53:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D70A8758E5
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 21:56:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6FE13284D4B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:53:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3390C285862
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:56:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 059DC13A86B;
-	Thu,  7 Mar 2024 20:53:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E21613A256;
+	Thu,  7 Mar 2024 20:56:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="TOvuaa/3"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="QrSJoOqH"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EA2241C60;
-	Thu,  7 Mar 2024 20:53:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E77C351C45;
+	Thu,  7 Mar 2024 20:56:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709844814; cv=none; b=SbthuC0hIbJk5ULBMM73nHqznkMageQiKXSgNG8B8we7RiUiJyyzqhu+zTmlQdl91/mCCmWAcOe0ck+vMPyPUGe7AFE+Y3DXD7ZUel3GNya5wUUXoAWdkZsvLw04WevsOHylRP/7N54c1gIFnqIpJX0xL8MNJB8/YXpyt5shmh0=
+	t=1709844968; cv=none; b=dbjYyrYxXFH5WNcF8zjBgMBz/Q0U7+NVf92USvdbbz6KwJYKq9Uzh2qVgQeIHUVyFH2RJY+rmv/olpoCmYQh/RVcY73FMXj5xi4/Q80G8TIJYCDlb1XDFmnhLTw6xKLYbikq4h32gXhyiFYUwtQUxrqz7EX7Pa2ed4XFPYplYxg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709844814; c=relaxed/simple;
-	bh=zg0CO3XEyVe8+ghF9U9lAFrlk+J130/oBgEnLCNFpxY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UMod/kNMMLh6EsPAzXly5odvvb2UQGA9+ucjiYucD+Bdb/kVIJSzQhF9AXx67L9jzFHK8xM+WoDQZs5uHKcM88ajEvUZjgt6n0UMfcRypr5tHLNY4yxawAHk55i8t9RkKsb2sV2ZJFnsTLIYYHIaz79xt82AJ7YkoDzGERiApew=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=TOvuaa/3; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=p08jq4TIBI4zazg51JnXnjGH5Lu+du6lZuf9B2Rz4QQ=; b=TOvuaa/3wlEt4HaASAp9xkKucG
-	+PY7MI+cX1hSmkmfFLvtR4JkMMdWfcVn8YtHQDGiMS3PJt7AA09NmwT0+GjU4w7EvTcYU989bq3lA
-	Sh6H3anq6UeJdG7s5+p9HZ3DirzhzdP4JpB9MphGl6IsZAH4dOfsdtbzZJkSRJLswWFYPpauuyfXA
-	Sfzyecd0rAcXOKsin/ZW2uEow+r/lYb/9BCfKH8o5Krry/ndFvOqVqSjHrnsABA9QpX6LO/lLNPn5
-	mwcOKE/wR1613yI+3HUvjJwhhHwu/dOn5jZGJybhQAfPSWpxxpf3MHsWmV/YP2TEMLCSl1X1YJmQp
-	aZy2ZdFg==;
-Received: from [50.53.50.0] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1riKjl-00000006Lv6-1biU;
-	Thu, 07 Mar 2024 20:53:09 +0000
-Message-ID: <25a03dba-8d6b-4072-beae-7ea477fccbcb@infradead.org>
-Date: Thu, 7 Mar 2024 12:53:06 -0800
+	s=arc-20240116; t=1709844968; c=relaxed/simple;
+	bh=NP4zgZt0cTE7rhRV4Se3JY8O5wf2FFQhZbZxvSKs4BI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=L4GAGQp4V2JP09LKwq7BEUkKF7lxZDO+qjNAYJWNg7c7QtJLCVo6CJ/8q3CWBJQgq6dXNZRbhUFgUxVZibY9FdZm1let6QGXlwHBi6YrLXEia+gxLO88bUcvAy07ZGwr06lPwLtQMXcbtE574hR2dpIbsrfEBT3eWg0LeYUGO2w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=qualcomm.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=QrSJoOqH; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 427EBpCV019377;
+	Thu, 7 Mar 2024 20:55:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding; s=qcppdkim1; bh=+d7OVSuATLn425Bb65TL
+	fB0YiuVmCeXAixeBy4ZWyEU=; b=QrSJoOqHZIofRpb6ANGpHVhGdjIu0IxZr/cC
+	ceQvM/oPo5gGqX2vyBvUSSzLbZzRHQaFZ9uQL3a1wt33e561vH0Rukjhlz9zvrTo
+	lPdaIPnJ4he2+9rR1SbcjsD6cbztUBuuzFm3u+bkLCDfIHNcZwKsTizGcS9hasoP
+	yVBQbGJseihM6kJcvMZwpaWSgo+RJ09bWRiswdLCwARa3ih4WRSOs6KlRmDDrACz
+	8XgIUwEYrb4YiSg8B2976evQjT/s9nqcmrzGh829htRGi3LCitKu4GM/aEXufWNo
+	rN2Of2UicVrQwU3Q/eJ9nlUx8SM26ahXZQ8oDNi6Lii7OzPUow==
+Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wqf4r19r8-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 07 Mar 2024 20:55:52 +0000 (GMT)
+Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+	by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 427KtmvK026332;
+	Thu, 7 Mar 2024 20:55:48 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTPS id 3wp060hru8-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 07 Mar 2024 20:55:48 +0000
+Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 427Ktm1e026325;
+	Thu, 7 Mar 2024 20:55:48 GMT
+Received: from hu-maiyas-hyd.qualcomm.com (hu-msavaliy-hyd.qualcomm.com [10.213.110.207])
+	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTPS id 427Ktlos026323
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 07 Mar 2024 20:55:48 +0000
+Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 429934)
+	id BB03C22F8C; Fri,  8 Mar 2024 02:25:46 +0530 (+0530)
+From: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
+To: konrad.dybcio@linaro.org, andersson@kernel.org, vkoul@kernel.org,
+        andi.shyti@kernel.org, wsa@kernel.org, linux-arm-msm@vger.kernel.org,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org
+Cc: quic_vdadhani@quicinc.com,
+        Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
+Subject: [PATCH v3] i2c: i2c-qcom-geni: Parse Error correctly in i2c GSI mode
+Date: Fri,  8 Mar 2024 02:25:39 +0530
+Message-Id: <20240307205539.217204-1-quic_msavaliy@quicinc.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 37/37] memprofiling: Documentation
-Content-Language: en-US
-To: John Hubbard <jhubbard@nvidia.com>,
- Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org,
- mhocko@suse.com, vbabka@suse.cz, hannes@cmpxchg.org,
- roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
- willy@infradead.org, liam.howlett@oracle.com,
- penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com,
- peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com,
- will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
- dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
- david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
- nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev,
- rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com,
- yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
- hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
- ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org,
- ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org,
- dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
- bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
- iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
- elver@google.com, dvyukov@google.com, shakeelb@google.com,
- songmuchun@bytedance.com, jbaron@akamai.com, aliceryhl@google.com,
- rientjes@google.com, minchan@google.com, kaleshsingh@google.com,
- kernel-team@android.com, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
- linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-mm@kvack.org, linux-modules@vger.kernel.org,
- kasan-dev@googlegroups.com, cgroups@vger.kernel.org
-References: <20240306182440.2003814-1-surenb@google.com>
- <20240306182440.2003814-38-surenb@google.com>
- <10a95079-86e4-41bf-8e82-e387936c437d@infradead.org>
- <hsyclfp3ketwzkebjjrucpb56gmalixdgl6uld3oym3rvssyar@fmjlbpdkrczv>
- <f12e83ef-5881-4df8-87ae-86f8ca5a6ab4@infradead.org>
- <72bbe76c-fcf9-47c2-b583-63d5ad77b3c3@nvidia.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <72bbe76c-fcf9-47c2-b583-63d5ad77b3c3@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: VwkabYKHkD9raEFnHe6d8L-OlpVwNIPf
+X-Proofpoint-ORIG-GUID: VwkabYKHkD9raEFnHe6d8L-OlpVwNIPf
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-07_15,2024-03-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
+ malwarescore=0 phishscore=0 spamscore=0 mlxlogscore=999 suspectscore=0
+ impostorscore=0 bulkscore=0 lowpriorityscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2402120000
+ definitions=main-2403070148
 
+I2C driver currently reports "DMA txn failed" error even though it's
+NACK OR BUS_PROTO OR ARB_LOST. Detect NACK error when no device ACKs
+on the bus instead of generic transfer failure which doesn't give any
+specific clue.
 
+Make Changes inside i2c driver callback handler function
+i2c_gpi_cb_result() to parse these errors and make sure GSI driver
+stores the error status during error interrupt.
 
-On 3/7/24 12:15, John Hubbard wrote:
-> On 3/7/24 12:03, Randy Dunlap wrote:
->> On 3/7/24 10:17, Kent Overstreet wrote:
->>> On Wed, Mar 06, 2024 at 07:18:57PM -0800, Randy Dunlap wrote:
-> ...
->>>>> +- i.e. iterating over them to print them in debugfs/procfs.
->>>>
->>>>    i.e., iterating
->>>
->>> i.e. latin id est, that is: grammatically my version is fine
->>>
->>
->> Some of my web search hits say that a comma is required after "i.e.".
->> At least one of them says that it is optional.
->> And one says that it is not required in British English.
->>
->> But writing it with "that is":
->>
->>
->> hence code tagging) and then finding and operating on them at runtime
->> - that is iterating over them to print them in debugfs/procfs.
->>
->> is not good IMO. But it's your document.
->>
-> 
-> Technical writing often benefits from a small amount redundancy. Short
-> sentences and repetition of terms are helpful to most readers. And this
-> also stays out of the more advanced grammatical constructs, as a side
-> effect.
-> 
-> So, for example, something *approximately* like this, see what you
-> think:
-> 
-> Memory allocation profiling is based upon code tagging. Code tagging is
-> a library for declaring static structs (typically by associating a file
-> and line number with a descriptive string), and then finding and
-> operating on those structs at runtime. Memory allocation profiling's
-> runtime operation is simply: print the structs via debugfs/procfs.
+Fixes: d8703554f4de ("i2c: qcom-geni: Add support for GPI DMA")
+Co-developed-by: Viken Dadhaniya <quic_vdadhani@quicinc.com>
+Signed-off-by: Viken Dadhaniya <quic_vdadhani@quicinc.com>
+Signed-off-by: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
+---
+v2 -> v3:
+- Modifed commit log reflecting an imperative mood.
 
-Works for me.  Thanks.
+v1 -> v2:
+- Commit log changed we->We.
+- Explained the problem that we are not detecing NACK error.
+- Removed Heap based memory allocation and hence memory leakage issue.
+- Used FIELD_GET and removed shiting and masking every time as suggested by Bjorn.
+- Changed commit log to reflect the code changes done.
+- Removed adding anything into struct gpi_i2c_config and created new structure
+  for error status as suggested by Bjorn.
+---
 
+ drivers/dma/qcom/gpi.c             | 12 +++++++++++-
+ drivers/i2c/busses/i2c-qcom-geni.c | 19 +++++++++++++++----
+ include/linux/dma/qcom-gpi-dma.h   | 10 ++++++++++
+ 3 files changed, 36 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/dma/qcom/gpi.c b/drivers/dma/qcom/gpi.c
+index 1c93864e0e4d..e3508d51fdc9 100644
+--- a/drivers/dma/qcom/gpi.c
++++ b/drivers/dma/qcom/gpi.c
+@@ -1076,7 +1076,17 @@ static void gpi_process_xfer_compl_event(struct gchan *gchan,
+ 	dev_dbg(gpii->gpi_dev->dev, "Residue %d\n", result.residue);
+ 
+ 	dma_cookie_complete(&vd->tx);
+-	dmaengine_desc_get_callback_invoke(&vd->tx, &result);
++	if (gchan->protocol == QCOM_GPI_I2C) {
++		struct dmaengine_desc_callback cb;
++		struct gpi_i2c_result *i2c;
++
++		dmaengine_desc_get_callback(&vd->tx, &cb);
++		i2c = cb.callback_param;
++		i2c->status = compl_event->status;
++		dmaengine_desc_callback_invoke(&cb, &result);
++	} else {
++		dmaengine_desc_get_callback_invoke(&vd->tx, &result);
++	}
+ 
+ gpi_free_desc:
+ 	spin_lock_irqsave(&gchan->vc.lock, flags);
+diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-qcom-geni.c
+index da94df466e83..36a7c0c0ff54 100644
+--- a/drivers/i2c/busses/i2c-qcom-geni.c
++++ b/drivers/i2c/busses/i2c-qcom-geni.c
+@@ -66,6 +66,7 @@ enum geni_i2c_err_code {
+ 	GENI_TIMEOUT,
+ };
+ 
++#define I2C_DMA_TX_IRQ_MASK	GENMASK(12, 5)
+ #define DM_I2C_CB_ERR		((BIT(NACK) | BIT(BUS_PROTO) | BIT(ARB_LOST)) \
+ 									<< 5)
+ 
+@@ -99,6 +100,7 @@ struct geni_i2c_dev {
+ 	struct dma_chan *rx_c;
+ 	bool gpi_mode;
+ 	bool abort_done;
++	struct gpi_i2c_result i2c_result;
+ };
+ 
+ struct geni_i2c_desc {
+@@ -484,9 +486,18 @@ static int geni_i2c_tx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
+ 
+ static void i2c_gpi_cb_result(void *cb, const struct dmaengine_result *result)
+ {
+-	struct geni_i2c_dev *gi2c = cb;
+-
+-	if (result->result != DMA_TRANS_NOERROR) {
++	struct gpi_i2c_result *i2c_res = cb;
++	struct geni_i2c_dev *gi2c = container_of(i2c_res, struct geni_i2c_dev, i2c_result);
++	u32 status;
++
++	status = FIELD_GET(I2C_DMA_TX_IRQ_MASK, i2c_res->status);
++	if (status == BIT(NACK)) {
++		geni_i2c_err(gi2c, NACK);
++	} else if (status == BIT(BUS_PROTO)) {
++		geni_i2c_err(gi2c, BUS_PROTO);
++	} else if (status == BIT(ARB_LOST)) {
++		geni_i2c_err(gi2c, ARB_LOST);
++	} else if (result->result != DMA_TRANS_NOERROR) {
+ 		dev_err(gi2c->se.dev, "DMA txn failed:%d\n", result->result);
+ 		gi2c->err = -EIO;
+ 	} else if (result->residue) {
+@@ -568,7 +579,7 @@ static int geni_i2c_gpi(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
+ 	}
+ 
+ 	desc->callback_result = i2c_gpi_cb_result;
+-	desc->callback_param = gi2c;
++	desc->callback_param = &gi2c->i2c_result;
+ 
+ 	dmaengine_submit(desc);
+ 	*buf = dma_buf;
+diff --git a/include/linux/dma/qcom-gpi-dma.h b/include/linux/dma/qcom-gpi-dma.h
+index 6680dd1a43c6..f585c6a35e51 100644
+--- a/include/linux/dma/qcom-gpi-dma.h
++++ b/include/linux/dma/qcom-gpi-dma.h
+@@ -80,4 +80,14 @@ struct gpi_i2c_config {
+ 	bool multi_msg;
+ };
+ 
++/**
++ * struct gpi_i2c_result - i2c transfer status result in GSI mode
++ *
++ * @status: store txfer status value as part of callback
++ *
++ */
++struct gpi_i2c_result {
++	u32 status;
++};
++
+ #endif /* QCOM_GPI_DMA_H */
 -- 
-#Randy
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
 
