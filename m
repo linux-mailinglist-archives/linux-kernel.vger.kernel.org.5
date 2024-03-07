@@ -1,168 +1,187 @@
-Return-Path: <linux-kernel+bounces-95347-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95348-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EF9C874C91
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:41:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3106C874C94
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:43:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B4032824D4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:41:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7691283892
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:43:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0685D85284;
-	Thu,  7 Mar 2024 10:41:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAD1985268;
+	Thu,  7 Mar 2024 10:42:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="SSkWN/Cs"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dVraoWuK"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA0A583A0A;
-	Thu,  7 Mar 2024 10:41:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 182801E52A
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 10:42:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709808096; cv=none; b=nh5HFpfx+9DDNR4AjODaY+a3+G/Ays7M+DD5CsxOW5Qo6UU8guNc61uTmOZMXJqZQlSSSi6rx95k03Y5lMbiJZ50RsIbA2zLQ+CQ2gBUjoagMP1E9u+p/g6jV8uwLd4+4gP3NRropA8KvSSJQ8flh84J3/SaFzuoxk8uJUHYiSo=
+	t=1709808177; cv=none; b=bh+2hP2yxGIaCXvs3pBot0xb7pC93zmCILY3BmEnwSsiYy1Ecta38L2kRz23Xuk14km2eNQ6m5K2D1B7qTaU9EfR2I0FV4cKuNm8PMC1KTr398V+jiMjXZvz46r26bD6DozIFzNHUV8wlw58fNfG24/XdqbdjxNwP5xICLzYb04=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709808096; c=relaxed/simple;
-	bh=1BU5u/cwj2k3L3jOkekAJtHo8nXpzXkMUDvC4MeZ0ug=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=rt0JZm+qENkNo6+Zv2Mx5MV52TNxFTj2ZJMk4X/u0jDr4h187WKtiG1fV030KwNSOStFvefrLPsqa00ihh24zkE7VF5A/H3jTcUEOWSXiK5/HmFKFQOEkKb2Vv1PfzkyWoo+w6O1czA4a8jZ/rt1zid/eOAw9v4Cp9BnFGfphas=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=SSkWN/Cs; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-	s=201909; t=1709808092;
-	bh=QHwyFDcupjhTArKQOMkjJ6sLtDVOUhAmTuA0clhv4wM=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=SSkWN/CsUdTccQiVHbYQloY9qgzNHOhp2tWHvvoiKfSTW/OXDLdNJfX0VnHwmCfk3
-	 gtXjChFioqzzrlQZsgsma3C+QfV75e2zWgTRiuV2A33jW2W9DJDl2k/5DCfHf2s97R
-	 CtqUlxkXS5agv/jFDIXkpHkq/5X5/uPmaG5wSA+MM2l+xj1lu3ST142FhSKunOHswc
-	 cJ3cFlZHsZFtw5Xrvnba1Eo55c7kG6lwjb+21AQgqP1izxedl6YQ+k81o8+Q6TPQcv
-	 T05V3+iI3v1B70IsNm853jwb7VnOmpgMkd7Gh0fj5PxJ8JyKFdoSxGZAbRd7SS75ad
-	 c6F7yI7FwY3IA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Tr5Sr1LbWz4wc5;
-	Thu,  7 Mar 2024 21:41:32 +1100 (AEDT)
-From: Michael Ellerman <mpe@ellerman.id.au>
-To: Stefan Berger <stefanb@linux.ibm.com>, linux-integrity@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org
-Cc: linux-kernel@vger.kernel.org, jarkko@kernel.org, rnsastry@linux.ibm.com,
- peterhuewe@gmx.de, viparash@in.ibm.com, Stefan Berger
- <stefanb@linux.ibm.com>
-Subject: Re: [PATCH 1/2] powerpc/prom_init: Replace linux,sml-base/sml-size
- with linux,sml-log
-In-Reply-To: <20240306155511.974517-2-stefanb@linux.ibm.com>
-References: <20240306155511.974517-1-stefanb@linux.ibm.com>
- <20240306155511.974517-2-stefanb@linux.ibm.com>
-Date: Thu, 07 Mar 2024 21:41:31 +1100
-Message-ID: <87jzmenx2c.fsf@mail.lhotse>
+	s=arc-20240116; t=1709808177; c=relaxed/simple;
+	bh=J6KymZF8NIUdRFco8di0fBoXBKvjTPjWpoZdTGN0DgQ=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=Ssb6bcOAoSXHauACwY+u3n8RjxPU8Z6yDXG/tIusuI2QNaTPTaQXvv3dA3O+w3qWbi1mo4lmIDLu6RX+R+cjK/SmHl7YQ19Xnl0cYMm8gkmf0tRQ9e/t3SOJPkszVswb/ycNFzCwy4frC0Ix8Oh6pPP2isDRhxZ4HW+rr2t47PM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dVraoWuK; arc=none smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709808176; x=1741344176;
+  h=date:from:to:cc:subject:message-id;
+  bh=J6KymZF8NIUdRFco8di0fBoXBKvjTPjWpoZdTGN0DgQ=;
+  b=dVraoWuKVMIWLe9kSYkT6Xk8/r1D7pvFkkH5IYybT01/HuqMfULsMOC5
+   PnB8wFWNqt0ObCX2D0JacHf+IoyY6CNSOQnX+lQnvg6WX17ZlBH1qyOJ8
+   w/KMI/GqpR0ayi+PMCqji+MC+lQakcrBv3jA9T7ivmH7ztoAAcAHkEY5o
+   fIcingLx1CDfh49GWiNuxzqnqUi+wZp/nElwdDJZwfAHAHFfOwtwH5B6C
+   FdHY4W31YtkWJv1y/A6JKj3Pew7bqZLjmkVIYvLu9c9NNvqYwQuzWT6kE
+   0gy5eafv2ZU5TDJtU2s8xCmHv7KNsydQ6bftx+wlwBSgn8ztRHvxTH7GS
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11005"; a="4644766"
+X-IronPort-AV: E=Sophos;i="6.06,211,1705392000"; 
+   d="scan'208";a="4644766"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 02:42:55 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,211,1705392000"; 
+   d="scan'208";a="33224957"
+Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
+  by fmviesa002.fm.intel.com with ESMTP; 07 Mar 2024 02:42:54 -0800
+Received: from kbuild by b21307750695 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1riBDA-00055V-0O;
+	Thu, 07 Mar 2024 10:42:52 +0000
+Date: Thu, 07 Mar 2024 18:42:05 +0800
+From: kernel test robot <lkp@intel.com>
+To: "x86-ml" <x86@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [tip:timers/core] BUILD SUCCESS
+ 8ca1836769d758e4fbf5851bb81e181c52193f5d
+Message-ID: <202403071802.viL3umAr-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain
 
-Stefan Berger <stefanb@linux.ibm.com> writes:
-> linux,sml-base holds the address of a buffer with the TPM log. This
-> buffer may become invalid after a kexec and therefore embed the whole TPM
-> log in linux,sml-log. This helps to protect the log since it is properly
-> carried across a kexec with both of the kexec syscalls.
->
-> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-> ---
->  arch/powerpc/kernel/prom_init.c | 8 ++------
->  1 file changed, 2 insertions(+), 6 deletions(-)
->
-> diff --git a/arch/powerpc/kernel/prom_init.c b/arch/powerpc/kernel/prom_init.c
-> index e67effdba85c..41268c30de4c 100644
-> --- a/arch/powerpc/kernel/prom_init.c
-> +++ b/arch/powerpc/kernel/prom_init.c
-> @@ -1956,12 +1956,8 @@ static void __init prom_instantiate_sml(void)
->  
->  	reserve_mem(base, size);
->  
-> -	prom_setprop(ibmvtpm_node, "/vdevice/vtpm", "linux,sml-base",
-> -		     &base, sizeof(base));
-> -	prom_setprop(ibmvtpm_node, "/vdevice/vtpm", "linux,sml-size",
-> -		     &size, sizeof(size));
-> -
-> -	prom_debug("sml base     = 0x%llx\n", base);
-> +	prom_setprop(ibmvtpm_node, "/vdevice/vtpm", "linux,sml-log",
-> +		     (void *)base, size);
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers/core
+branch HEAD: 8ca1836769d758e4fbf5851bb81e181c52193f5d  timer/migration: Fix quick check reporting late expiry
 
-As we discussed via chat, doing it this way sucks the full content of
-the log back into Open Firmware. 
+elapsed time: 1227m
 
-That relies on OF handling such big properties, and also means more
-memory will be consumed, which can cause problems early in boot.
+configs tested: 99
+configs skipped: 5
 
-A better solution is to explicitly add the log to the FDT in the
-flattening phase.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Also adding the new linux,sml-log property should be accompanied by a
-change to the device tree binding.
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                                 defconfig   clang
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240307   clang
+i386         buildonly-randconfig-002-20240307   gcc  
+i386         buildonly-randconfig-003-20240307   clang
+i386         buildonly-randconfig-004-20240307   gcc  
+i386         buildonly-randconfig-005-20240307   gcc  
+i386         buildonly-randconfig-006-20240307   clang
+i386                                defconfig   clang
+i386                  randconfig-001-20240307   gcc  
+i386                  randconfig-002-20240307   gcc  
+i386                  randconfig-003-20240307   clang
+i386                  randconfig-004-20240307   gcc  
+i386                  randconfig-005-20240307   gcc  
+i386                  randconfig-006-20240307   clang
+i386                  randconfig-011-20240307   clang
+i386                  randconfig-012-20240307   gcc  
+i386                  randconfig-013-20240307   clang
+i386                  randconfig-014-20240307   clang
+i386                  randconfig-015-20240307   clang
+i386                  randconfig-016-20240307   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+riscv                            allmodconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+s390                              allnoconfig   clang
+s390                                defconfig   clang
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64                              defconfig   gcc  
+x86_64                          rhel-8.3-rust   clang
+xtensa                            allnoconfig   gcc  
 
-The syntax is not very obvious to me, but possibly something like?
-
-diff --git a/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml b/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml
-index 50a3fd31241c..cd75037948bc 100644
---- a/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml
-+++ b/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml
-@@ -74,8 +74,6 @@ required:
-   - ibm,my-dma-window
-   - ibm,my-drc-index
-   - ibm,loc-code
--  - linux,sml-base
--  - linux,sml-size
- 
- allOf:
-   - $ref: tpm-common.yaml#
-diff --git a/Documentation/devicetree/bindings/tpm/tpm-common.yaml b/Documentation/devicetree/bindings/tpm/tpm-common.yaml
-index 3c1241b2a43f..616604707c95 100644
---- a/Documentation/devicetree/bindings/tpm/tpm-common.yaml
-+++ b/Documentation/devicetree/bindings/tpm/tpm-common.yaml
-@@ -25,6 +25,11 @@ properties:
-       base address of reserved memory allocated for firmware event log
-     $ref: /schemas/types.yaml#/definitions/uint64
- 
-+  linux,sml-log:
-+    description:
-+      Content of firmware event log
-+    $ref: /schemas/types.yaml#/definitions/uint8-array
-+
-   linux,sml-size:
-     description:
-       size of reserved memory allocated for firmware event log
-@@ -53,15 +58,22 @@ dependentRequired:
-   linux,sml-base: ['linux,sml-size']
-   linux,sml-size: ['linux,sml-base']
- 
--# must only have either memory-region or linux,sml-base
-+# must only have either memory-region or linux,sml-base/size or linux,sml-log
- # as well as either resets or reset-gpios
- dependentSchemas:
-   memory-region:
-     properties:
-       linux,sml-base: false
-+      linux,sml-log: false
-   linux,sml-base:
-     properties:
-       memory-region: false
-+      linux,sml-log: false
-+  linux,sml-log:
-+    properties:
-+      memory-region: false
-+      linux,sml-base: false
-+      linux,sml-size: false
-   resets:
-     properties:
-       reset-gpios: false
-
-
-cheers
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
