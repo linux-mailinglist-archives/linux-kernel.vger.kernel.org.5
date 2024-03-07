@@ -1,121 +1,123 @@
-Return-Path: <linux-kernel+bounces-95830-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95833-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 059C987539D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 16:45:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 315068753A6
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 16:48:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF2BF1C234EA
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:45:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D822E1F24893
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:48:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 427F512F59C;
-	Thu,  7 Mar 2024 15:45:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aogAz55Y"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 377EF12F390;
-	Thu,  7 Mar 2024 15:45:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 952ED12F397;
+	Thu,  7 Mar 2024 15:48:39 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 432A112F36F
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 15:48:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709826318; cv=none; b=uI+E1w9wP4gD1/KHyt0DFKMwbefpZAKx9FElqd8GPIPx0Y7x4DtM7IsNSx62semzUKfLt4y6RKWc+3ZKOhoOyjVkrOR+u1y+3BpSAy/U6sVHWUKsn6dLGuPqi1uIRVsfUJ80VFqLxSdTHdIsdzAjukDYZHZ2qI8C6yuLFQhYF18=
+	t=1709826519; cv=none; b=XlCt6E7C4y6C23BOughG1GZ0uoVXQw4ql1Q86lUIIRyYFS3CD+B0IvKYuhZVUOzGf9SpR+TqbGFTSMCJxhLyTKNJ5Q3cuNAr2KdTKHL8AYkdL87oqSY1s3l5hfen1g6xCicifFgZ7ZlrVMRHaTFq3YHoPSh7XggBYglQC4b03RU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709826318; c=relaxed/simple;
-	bh=mj0GXkXy9Xs5y8Ltp8TCGwDRTY+Y95OlKnsw/V6zXtA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pknVQ8TJxjJqqEz22q0Nd4poRPwKv6MSfOXalob7++DQpjci3ZYYF0RXJJ7WehDo1HptXs1VWCfY0Me03XLcSnmOoP+buVXKiwDtFnHSmT1TS5sr+q40OPZVlAbI+zl1KJd5qd2Uc8O4ZgvG9Yyj3qZ/ofzRCKGZgAiPW7k8XGY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aogAz55Y; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709826317; x=1741362317;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=mj0GXkXy9Xs5y8Ltp8TCGwDRTY+Y95OlKnsw/V6zXtA=;
-  b=aogAz55Y4LgVy4tFKytrr9+WAqXBYAtkiDfFdYxdBzSZ5NYFb4CTKkSR
-   sKifNBK3excT7V2gvJRd/vknt0RP69dvz5qFy8PajpCPbSIvq3ug8SkoI
-   Xlq/8IV93SOo65052ahWUJQG8GJ2VMCZsbVAvipmTyqln7+zcgg9xOu0o
-   3NT8SNuXJdLeRqKhVhhVON3rv+ouALukFx5KHUJSIEOE4F3517uNIpopN
-   siM3lG005o2quhOFq2bOxvPmwXXKMkMdYlOIr32Wy9QWzf0aJ6Ra3FV5R
-   LDnONwfRPj9OK/sFZ40OQA3iEcaKONgH3JIQ+ypngyG8xPnYsEqoIczgN
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="15221965"
-X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
-   d="scan'208";a="15221965"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 07:45:14 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="937046336"
-X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
-   d="scan'208";a="937046336"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 07 Mar 2024 07:45:13 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id E64465BB; Thu,  7 Mar 2024 17:45:11 +0200 (EET)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	linux-spi@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: Mark Brown <broonie@kernel.org>,
-	Michal Simek <michal.simek@amd.com>
-Subject: [PATCH v1 3/3] spi: xilinx: Make num_chipselect 8-bit in the struct xspi_platform_data
-Date: Thu,  7 Mar 2024 17:43:59 +0200
-Message-ID: <20240307154510.3795380-4-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
-In-Reply-To: <20240307154510.3795380-1-andriy.shevchenko@linux.intel.com>
-References: <20240307154510.3795380-1-andriy.shevchenko@linux.intel.com>
+	s=arc-20240116; t=1709826519; c=relaxed/simple;
+	bh=YYYOROjZ4bykzGGlgE0adq5pcP/7AaunEdDwDHKG3Cs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=E8hpUSnrNxfgmg9sK1vhDydgkF5adW2MsBw7h/h7BU0iW31RR5R5iivBsZY3ZDRzGQR5NglLJfDuzLJoMrv7mWC9gMFTIPqShtv7iWv5jdHVrm0J2lUgN9BfHFxuHp5TSG+TEo7i2jXRexIw/ctWG+W7jM+JU1/ZOJMa49PqUS0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 83FC71FB;
+	Thu,  7 Mar 2024 07:49:13 -0800 (PST)
+Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0DE7F3F73F;
+	Thu,  7 Mar 2024 07:48:33 -0800 (PST)
+Message-ID: <95554e96-d8b9-4325-aa73-e698b1873a79@arm.com>
+Date: Thu, 7 Mar 2024 15:48:31 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] iommu: always select INTEL_IOMMU for IRQ_REMAP
+Content-Language: en-GB
+To: Arnd Bergmann <arnd@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+ Will Deacon <will@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, Jason Gunthorpe <jgg@ziepe.ca>,
+ Kevin Tian <kevin.tian@intel.com>, Lu Baolu <baolu.lu@linux.intel.com>,
+ Ard Biesheuvel <ardb@kernel.org>, Ingo Molnar <mingo@elte.hu>,
+ Suresh Siddha <suresh.b.siddha@intel.com>,
+ Dan Carpenter <dan.carpenter@linaro.org>,
+ Ethan Zhao <haifeng.zhao@linux.intel.com>, iommu@lists.linux.dev,
+ linux-kernel@vger.kernel.org
+References: <20240307140547.2201713-1-arnd@kernel.org>
+From: Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <20240307140547.2201713-1-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-There is no use for whole 16-bit for the number of chip select pins.
-Drop it to 8 bits and reshuffle the data structure layout to avoid
-unnecessary paddings.
+On 07/03/2024 2:05 pm, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> CONFIG_INTR_REMAP was originally split out of the intel iommu code to be
+> shared by IRQ_REMAP. This recently broke again because the IRQ_REMAP
+> code calls the global device_rbtree_find() function that is unavailable
+> for builds without INTEL_IOMMU:
+> 
+> x86_64-linux-ld: vmlinux.o: in function `qi_submit_sync':
+> (.text+0x10771e0): undefined reference to `device_rbtree_find'
+> 
+> It seems that the intel iommu code now contains a lot of generic helper
+> functions that are not specific to intel, such as alloc_pgtable_page(),
+> iommu_flush_write_buffer(), domain_attach_iommu() etc, so presumably
+> it is not x86 specific any more.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- include/linux/spi/xilinx_spi.h | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+No, it's still all very much Intel-specific, which in fact means it is 
+just recently now x86-specific since IA-64 has departed.
 
-diff --git a/include/linux/spi/xilinx_spi.h b/include/linux/spi/xilinx_spi.h
-index 4ba8f53ce570..a638ba2a55bd 100644
---- a/include/linux/spi/xilinx_spi.h
-+++ b/include/linux/spi/xilinx_spi.h
-@@ -8,18 +8,18 @@ struct spi_board_info;
- 
- /**
-  * struct xspi_platform_data - Platform data of the Xilinx SPI driver
-+ * @force_irq:		If set, forces QSPI transaction requirements.
-  * @num_chipselect:	Number of chip select by the IP.
-  * @bits_per_word:	Number of bits per word.
-- * @devices:		Devices to add when the driver is probed.
-  * @num_devices:	Number of devices in the devices array.
-- * @force_irq:		If set, forces QSPI transaction requirements.
-+ * @devices:		Devices to add when the driver is probed.
-  */
- struct xspi_platform_data {
--	u16 num_chipselect;
--	u8 bits_per_word;
--	struct spi_board_info *devices;
--	u8 num_devices;
- 	bool force_irq;
-+	u8 num_chipselect;
-+	u8 bits_per_word;
-+	u8 num_devices;
-+	struct spi_board_info *devices;
- };
- 
- #endif /* __LINUX_SPI_XILINX_SPI_H */
--- 
-2.43.0.rc1.1.gbec44491f096
+Historically it's always been the case that building IRQ remapping 
+support on its own without IOMMU_API was supported, and for a while we 
+even had the awkward iommu_device_set_ops() wrapper and various other 
+indirections and stubs in the core API solely to make it work. IMO the 
+underlying issue here is that there have never been very clear lines of 
+separation between the ACPI DMAR code, the IOMMU API driver, and the IRQ 
+remapping driver, so unless the whole design could be improved to make 
+it harder to break, it probably is time to start asking the question of 
+whether anyone actually cares about this config combination any more.
 
+Thanks,
+Robin.
+
+> Fix the build failure for now by just selectin INTEL_IOMMU by the
+> code that relies on it. It might be helpful to split out all the
+> functions without an intel_iommu_* prefix into a helper library
+> to avoid including the x86 specific bits on non-x86, but that could
+> be a follow-up.
+> 
+> Fixes: d3f138106b4b ("iommu: Rename the DMAR and INTR_REMAP config options")
+> Fixes: 80a9b50c0b9e ("iommu/vt-d: Improve ITE fault handling if target device isn't present")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+> Not sure about this one, I just ran across the build regression and
+> wasn't sure if the intel-iommu functions are meant to be generic
+> or just misnamed. The patch description assumes the former, if that
+> is wrong, it needs a different explanation or a different fix.
+> ---
+>   drivers/iommu/Kconfig | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
+> index df156f0a1a17..da5339bdb7e7 100644
+> --- a/drivers/iommu/Kconfig
+> +++ b/drivers/iommu/Kconfig
+> @@ -196,6 +196,7 @@ config IRQ_REMAP
+>   	bool "Support for Interrupt Remapping"
+>   	depends on X86_64 && X86_IO_APIC && PCI_MSI && ACPI
+>   	select DMAR_TABLE
+> +	select INTEL_IOMMU
+>   	help
+>   	  Supports Interrupt remapping for IO-APIC and MSI devices.
+>   	  To use x2apic mode in the CPU's which support x2APIC enhancements or
 
