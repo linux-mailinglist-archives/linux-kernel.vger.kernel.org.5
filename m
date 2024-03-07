@@ -1,126 +1,191 @@
-Return-Path: <linux-kernel+bounces-95370-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95371-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3501874CD0
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:58:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A39E874CD3
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:01:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 161031C227D3
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:58:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B50F2B20E17
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:01:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54406126F3C;
-	Thu,  7 Mar 2024 10:57:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDBDB1272B1;
+	Thu,  7 Mar 2024 11:00:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="potKs36F"
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bKmO+tKJ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E70A163411
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 10:57:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24E9A31A6B;
+	Thu,  7 Mar 2024 11:00:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709809075; cv=none; b=exQeCY8wruphAwpHZTJGfonX7C7+u0I8C5Yrn8u44MPp7UK6ZXkk4FKxsIiVK9F1ZNPQUEVlfCmZR0t4KuFT6lURi0Y5iSvVYPaJkv8+vaFcb3xfuvp2UzDMUmN/4Q/PkhoSC8ogEbvE2zd/2aSEA/im+6BjnrZ3Pj47XQUefd0=
+	t=1709809252; cv=none; b=dvm7n8ElOfV0iX5aX95ixVlzVXsUpSv1wu7tYV+gWDuxOaCSzR2ZPNG8Q4u5K8HDGNCIYm4EbFhlOL8vI42/y8t6H21oCEgcXtS0Vp5ESnBQdgPXEodDMHG2OJ+70q4ZD62vgvn8tsJst9gxuX9L3xwTWpPJJYxDoNlDHdUDIMA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709809075; c=relaxed/simple;
-	bh=/fiBZaDVI8D+68biIo4CAt/ib/Y3X7aN1Tu1p+7XeA4=;
+	s=arc-20240116; t=1709809252; c=relaxed/simple;
+	bh=2srlf9ydqNNrrFB5EuLcASZHo+Kr5YFVq2nvvdfqvqw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=egSMAeDqOv5sbB0OvxP2YbV7amd7BAp/6OxAW0gUodiwrtBkdIrmiTdV+2nxyTrquAwgf3Z4sdkahVhanM1Ff7lMvGUCSIxB3nSho7U/0jQHbs70yQfwYjPjQJdE/mxz6gUFOzkV35/WAgdNBfwa0OBnvl6Uh31mJ/AvDvmrutY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=potKs36F; arc=none smtp.client-ip=209.85.128.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-6096ff3e4abso6664037b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 02:57:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709809073; x=1710413873; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZNxbMXYwIPnmt8O7zwgRdhBxxDwkUuvEtABz+BytD3g=;
-        b=potKs36FdQiGFwxfytailT+Lu0noLufeLXha3aRGfKtkhnTwieaGFB/pg9SlT7GznM
-         MyDgILKuOCzHPja4SkFVZ2cl0GrK+Rg6mSAiTs6MZ2z/F6t8AibQyoqSkP2PnEVgfZQu
-         kc18sRW6RjvQNMMQ1kVg7uk50bKDEu6lldroabwit4Jgs/i0ZVwM7muRepVtTV8u6134
-         LRYRhaCrWpQlin94RwpuoyV5/pvCjwGDXLkSWjkw7rInz/utmy2IdES9+0qdIT6U+/Kp
-         adV4ctS6miq3eOX5NOUNz697Um8mRklyV7uzqZ+tb7v9CpWSdj2fOHhrUOOkMIRVQdug
-         Lxbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709809073; x=1710413873;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZNxbMXYwIPnmt8O7zwgRdhBxxDwkUuvEtABz+BytD3g=;
-        b=w5enOpHlcEQlddzCssATFrdZAZk+Z5GTxptlG4gPra/YETDcqfFyMF2SMZsajrbcOg
-         EFT2vniQuSo7tW00xfP/qKVpN05Q6rQSix6hD7dWAQq6h6KX+26FdYHQZSSgngusQCuI
-         7OW1sMMw691r48eYdJ0LPKAe0sVa4T8ElgBLMjGumnFwTX5VmwQIYbkk9OqkmVSs+5fa
-         7IQEHDWc+j3d4qkpzfCUTjnea4Al4/JTWnsSrJG8u7Am/58N2M+CIdQ9inl1VU19KhcR
-         jew0HmfwApCrG3SH1BlvuZe89W37yqgYcSNpUYFjt6Tl249YhUD1D/M1BXBCfVI3qAja
-         hcvg==
-X-Forwarded-Encrypted: i=1; AJvYcCW2tzxMWxXl1V4dKYEu2/gflpKRBBhbcH+ABuj6k2n2+JbiJ8k46mVJAM7n83j55sBiiJOagfcdu03+3+l3heOLz/P+IBoGnxj7iwv8
-X-Gm-Message-State: AOJu0Yz0JekY5VunRtnmcO96V+hEFpUZsKYpO4oVi8kXe5KWaHN76tj4
-	c9vjz9LAovlqprExnuj+0ugx1jWrZft41TodF63pqkQOTvollw1KMrGRSnla8rFTIYmVFeb8T+W
-	dZEdOeWzriwOwl7tpgyh4JHxlhAIoEfJuyZ3wEg==
-X-Google-Smtp-Source: AGHT+IEI8kispC//A1bCKjmVv5onGnRwEMCzuKG8Vfr/1UKLJdm/uHCFvoMXjzgrc6VtDDnVDrYtTnGU/SyINCrOfrc=
-X-Received: by 2002:a25:83cd:0:b0:dd0:453b:485e with SMTP id
- v13-20020a2583cd000000b00dd0453b485emr9701343ybm.58.1709809072881; Thu, 07
- Mar 2024 02:57:52 -0800 (PST)
+	 To:Cc:Content-Type; b=F1cUTlMkITjIXQKawB/PchVM8NLee18dGHAPvQY7TWkVs7vAZMzar6Av2OI5bEk3aYXD45etPw0b1QhHgZBMq4oBR3mgjgFr7tls6Y2BwLoh2BwKPmU69fP3dGQ7tl64aRZ4i1+ZVcqQgE5cuRzXOtqguqEr8gwxUK6UCev1zp8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bKmO+tKJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D9DFC433C7;
+	Thu,  7 Mar 2024 11:00:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709809251;
+	bh=2srlf9ydqNNrrFB5EuLcASZHo+Kr5YFVq2nvvdfqvqw=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=bKmO+tKJ/1YQQr0/VIfw/hwyUuDcDVmE8Xr+X09NbD3m6vup/kJ7F7uioHQTS7Kz9
+	 hQnIoUTa6Mj4wgjC6uiCtJ9T0RKKH7i2A/0+5SvyAZ3Cg6G0wc9WuL3P6Y3ERq05xi
+	 iWYNxcNORNwHdgQMc0oUjszSPSZKvji/hau++X6YhCZHirPh7ujTUwmg/DQFUxqJnC
+	 BougHGudyy21ivSHBewZLEsAZyrQ3GBLXVkPklkHP1+HkUNwu7WjP/DQDW5mcg8m33
+	 9t68U/wWQ2Het/PxZ+Gs0Iec3QwqjVjGQ3KKHCqkJRX+He03/tl7InvLXgjFnKhZju
+	 YYaVN8Vcz8iNQ==
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-51340e89df1so743535e87.1;
+        Thu, 07 Mar 2024 03:00:51 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUlhB51Ky7ZIqyt7edvtAWpbwBg0KTWNBMx9OBXIHRXUASMHiYLbdwDDcRNYvJ7jucrle8JewhYUFkj1xDYzdLDVAeI8nikl0IY
+X-Gm-Message-State: AOJu0YxqvwRmV4DOe011azqLybykPVI1JfwxX6Bwe+OsBxh4q6z4NuhN
+	PhKA7Ixr6IoJOYTrFaiIYps8ff8ic70eV02I2zKZv/NCty9uYLEJkBjFQTVIBVzGgz0Oe03BQzN
+	p4xzOPiBwBy8bSPrtVqOMRwzbrRY=
+X-Google-Smtp-Source: AGHT+IGV8i7TFek29fxBdK51QG520w2M1NKZWOoV5ynz9gcTXt09JyCjzQToUkh2vicgw3X/8DaYefI7A5gjjn2BEyM=
+X-Received: by 2002:a05:6512:234b:b0:512:fdb3:7a9e with SMTP id
+ p11-20020a056512234b00b00512fdb37a9emr1278036lfu.31.1709809249630; Thu, 07
+ Mar 2024 03:00:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240307085135.16245-1-amishin@t-argos.ru>
-In-Reply-To: <20240307085135.16245-1-amishin@t-argos.ru>
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Thu, 7 Mar 2024 11:57:16 +0100
-Message-ID: <CAPDyKFoYRT=P+4L+5ciNPxEHcS7hoXPef__NQoodxkSy=39Teg@mail.gmail.com>
-Subject: Re: [PATCH] mmc: dw_mmc: Fix potential null pointer risk
-To: Aleksandr Mishin <amishin@t-argos.ru>
-Cc: Jaehoon Chung <jh80.chung@samsung.com>, Wen Zhiwei <wenzhiwei@kylinos.cn>, 
-	linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	lvc-project@linuxtesting.org
+References: <20240307083154.346542-1-haibo1.xu@intel.com>
+In-Reply-To: <20240307083154.346542-1-haibo1.xu@intel.com>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Thu, 7 Mar 2024 12:00:38 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXGF_PNLYsLugQnm=gW08XuLEbd_C0-4YYzkH1aYRGSaYg@mail.gmail.com>
+Message-ID: <CAMj1kXGF_PNLYsLugQnm=gW08XuLEbd_C0-4YYzkH1aYRGSaYg@mail.gmail.com>
+Subject: Re: [PATCH] riscv: dmi: Add SMBIOS/DMI support
+To: Haibo Xu <haibo1.xu@intel.com>
+Cc: linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	linux-efi@vger.kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com, 
+	aou@eecs.berkeley.edu, sunilvl@ventanamicro.com, xiaobo55x@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 
-On Thu, 7 Mar 2024 at 09:53, Aleksandr Mishin <amishin@t-argos.ru> wrote:
+Hello Haibo,
+
+Some notes below.
+
+On Thu, 7 Mar 2024 at 09:18, Haibo Xu <haibo1.xu@intel.com> wrote:
 >
-> In dw_mci_runtime_resume() 'host->slot' could be null, but check is not cover all corresponding code.
-> Fix this bug by changing check place.
-
-In fact host->slot can never be NULL in dw_mci_runtime_resume() or in
-dw_mci_runtime_suspend().
-
-A better fix would thus be to remove the redundant checks.
-
-Kind regards
-Uffe
-
+> Enable the dmi driver for riscv which would allow access the
+> SMBIOS info through some userspace file(/sys/firmware/dmi/*).
 >
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> The change was based on that of arm64 and has been verified
+> by dmidecode tool.
 >
-> Fixes: 4a835afd808a (mmc: dw_mmc: Fix potential null pointer risk)
-> Signed-off-by: Aleksandr Mishin <amishin@t-argos.ru>
+> Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
 > ---
->  drivers/mmc/host/dw_mmc.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+>  arch/riscv/Kconfig                   | 11 +++++++++++
+>  arch/riscv/include/asm/dmi.h         | 29 ++++++++++++++++++++++++++++
+>  drivers/firmware/efi/riscv-runtime.c | 13 +++++++++++++
+>  3 files changed, 53 insertions(+)
+>  create mode 100644 arch/riscv/include/asm/dmi.h
 >
-> diff --git a/drivers/mmc/host/dw_mmc.c b/drivers/mmc/host/dw_mmc.c
-> index 829af2c98a44..a4f124452abc 100644
-> --- a/drivers/mmc/host/dw_mmc.c
-> +++ b/drivers/mmc/host/dw_mmc.c
-> @@ -3570,8 +3570,10 @@ int dw_mci_runtime_resume(struct device *dev)
->                    DW_MCI_ERROR_FLAGS);
->         mci_writel(host, CTRL, SDMMC_CTRL_INT_ENABLE);
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index 0bfcfec67ed5..a123a3e7e5f3 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -918,6 +918,17 @@ config EFI
+>           allow the kernel to be booted as an EFI application. This
+>           is only useful on systems that have UEFI firmware.
 >
-> +       if (!host->slot)
-> +               goto err;
+> +config DMI
+> +       bool "Enable support for SMBIOS (DMI) tables"
+> +       depends on EFI
+> +       default y
+> +       help
+> +         This enables SMBIOS/DMI feature for systems.
+> +
+> +         This option is only useful on systems that have UEFI firmware.
+> +         However, even with this option, the resultant kernel should
+> +         continue to boot on existing non-UEFI platforms.
+> +
+>  config CC_HAVE_STACKPROTECTOR_TLS
+>         def_bool $(cc-option,-mstack-protector-guard=tls -mstack-protector-guard-reg=tp -mstack-protector-guard-offset=0)
 >
-> -       if (host->slot && host->slot->mmc->pm_flags & MMC_PM_KEEP_POWER)
-> +       if (host->slot->mmc->pm_flags & MMC_PM_KEEP_POWER)
->                 dw_mci_set_ios(host->slot->mmc, &host->slot->mmc->ios);
->
->         /* Force setup bus to guarantee available clock output */
+> diff --git a/arch/riscv/include/asm/dmi.h b/arch/riscv/include/asm/dmi.h
+> new file mode 100644
+> index 000000000000..a861043f02dc
+> --- /dev/null
+> +++ b/arch/riscv/include/asm/dmi.h
+> @@ -0,0 +1,29 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (C) 2024 Intel Corporation
+> + *
+> + * based on arch/arm64/include/asm/dmi.h
+> + *
+> + * This file is subject to the terms and conditions of the GNU General Public
+> + * License.  See the file "COPYING" in the main directory of this archive
+> + * for more details.
+> + */
+> +
+> +#ifndef __ASM_DMI_H
+> +#define __ASM_DMI_H
+> +
+> +#include <linux/io.h>
+> +#include <linux/slab.h>
+> +
+> +/*
+> + * According to section 2.3.6 of the UEFI spec, the firmware should not
+> + * request a virtual mapping for configuration tables such as SMBIOS.
+> + * This means we have to map them before use.
+> + */
+
+You can drop this comment, it is not really accurate.
+
+'Requesting a virtual mapping' means the memory is mapped by the OS
+into the EFI page tables before calling a runtime service, so that the
+firmware (which runs under the OS's memory translation regime) can
+access the contents.
+
+SMBIOS tables are informational and for consumption by the OS only,
+not by the runtime service implementations themselves, and so they can
+be omitted from the EFI runtime page tables.
+
+
+> +#define dmi_early_remap(x, l)          ioremap_prot(x, l, _PAGE_KERNEL)
+> +#define dmi_early_unmap(x, l)          iounmap(x)
+> +#define dmi_remap(x, l)                        ioremap_prot(x, l, _PAGE_KERNEL)
+> +#define dmi_unmap(x)                   iounmap(x)
+
+Why not use memremap() here? That will reuse the linear map if it
+happens to already cover the region.
+
+> +#define dmi_alloc(l)                   kzalloc(l, GFP_KERNEL)
+> +
+> +#endif
+> diff --git a/drivers/firmware/efi/riscv-runtime.c b/drivers/firmware/efi/riscv-runtime.c
+> index 09525fb5c240..c3bfb9e77e02 100644
+> --- a/drivers/firmware/efi/riscv-runtime.c
+> +++ b/drivers/firmware/efi/riscv-runtime.c
+> @@ -152,3 +152,16 @@ void arch_efi_call_virt_teardown(void)
+>  {
+>         efi_virtmap_unload();
+>  }
+> +
+> +static int __init riscv_dmi_init(void)
+> +{
+> +       /*
+> +        * On riscv, DMI depends on UEFI, and dmi_setup() needs to
+> +        * be called early because dmi_id_init(), which is an arch_initcall
+> +        * itself, depends on dmi_scan_machine() having been called already.
+> +        */
+> +       dmi_setup();
+> +
+> +       return 0;
+> +}
+> +core_initcall(riscv_dmi_init);
 > --
-> 2.30.2
+> 2.34.1
 >
 >
 
