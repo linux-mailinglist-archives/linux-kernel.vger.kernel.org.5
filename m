@@ -1,103 +1,122 @@
-Return-Path: <linux-kernel+bounces-95983-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95985-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73C158755A0
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 18:56:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84CD08755A6
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 18:57:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A5EAD1C22710
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:56:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 370D61F21DFF
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:57:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24D61131731;
-	Thu,  7 Mar 2024 17:56:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EE8B13175D;
+	Thu,  7 Mar 2024 17:57:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qQshEQcU"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bP9Et7zi"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57283130E53;
-	Thu,  7 Mar 2024 17:56:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A65B130E44
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 17:57:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709834186; cv=none; b=QOApOjEnVXx9DdeG1GfnYIn/NqvcE6D/sfP6atecqGbll5D2Se5W4juU935uIjj8Ns+atX4omasHVDFegYvO9/pXKHQ5n+BrUYoxRv+oQ140vjiWN9p4IkGI8lpjJJLe9FNe6iwnyj3M3YIVeHRg7DVdfg+R57Pk96KFIouEVYo=
+	t=1709834246; cv=none; b=l3yTrBaS/PbYxFRWgpOBxWB1uXfRSqQsg0RSmU+XVpCoUnhFLoYYnGVXZ1IDSv13qUA5LfZ0PGUygLSc7elRcejjZMFdU0hfvfsobiao0H8tDQSlmhI8EBfMinFtHOEUu2QCLGAxSRcREzc/Td/+6dcmg8QS/b4DTfHIl0ZG+UM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709834186; c=relaxed/simple;
-	bh=B2FgKktTSONugKYQnhC/4pEKRPCpJzFpvs+S9ffQIpI=;
-	h=From:To:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=koxuQK8MDDnQMOzteinWxBECNj+UQIvFQfftqz4sUKdrr+7kBOK5mXJTNV1WCC2PEfhUpQHgUMRjz+n098b1Ylx8VYUPCZtXtHGKkDOhIeFDRwr2Xciwo9NKSQsHwb3GziLe8HhtWjgZnfnrD8g8snQNkt8lM7JXsXOuYL1t310=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qQshEQcU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43A04C433F1;
-	Thu,  7 Mar 2024 17:56:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709834185;
-	bh=B2FgKktTSONugKYQnhC/4pEKRPCpJzFpvs+S9ffQIpI=;
-	h=From:To:In-Reply-To:References:Subject:Date:From;
-	b=qQshEQcUc/foFOA2Z8fIim8m77X8c352TvdZ6Yxd9yGxjcFZ9okYN2TCJf8FPArML
-	 KhAu8WF9g4OQJbTAh12nxvtwWe9Wpyl2c3EeyRCLUeBaC4ESBUukOE7cvbt8EkK6pe
-	 /wtglXP2gBWKEwcHwmQeSUo//UOxsGeWoR+MsujUsM0Ynn4v6GfaEMcTO2McnoMG/t
-	 n7OqgRD/lBNtI/YS1iKKHDpOLFx8kwUARKPHRNdcPaxxc/syBnoXj06yJUxNaLNW7L
-	 X6bDeYsGCyDBtmXWnDfW5rxV4JVvAdtxWEr7r/zsB/tvG45B2+SkdmLyhuMKV1z7Fx
-	 1Ddb2oYl54gkg==
-From: Mark Brown <broonie@kernel.org>
-To: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20240307150256.3789138-1-andriy.shevchenko@linux.intel.com>
-References: <20240307150256.3789138-1-andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v1 0/3] spi: Add more consistency to CS handle
-Message-Id: <170983418500.101661.7369058564166082695.b4-ty@kernel.org>
-Date: Thu, 07 Mar 2024 17:56:25 +0000
+	s=arc-20240116; t=1709834246; c=relaxed/simple;
+	bh=waq91CYvNLCsRev1erIY6js5vkjT9ek80U+wM6ipCrQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MDe+g++MUhs9F9a+8JtrVAmJAZUH0SczJp8PGuw4cYaXIQ3KtfbVF9eMQC52eZKbPrPdesFuvEIp1VYk6+jAgv69uLGrcKl2TyL6RNL1mrMqyCMLOlcmYmmFGWqoDC5cggXn6U1wf9Tzf04wnHrFPCdVKHLnNGihsHK3cNG4wkU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bP9Et7zi; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709834245; x=1741370245;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=waq91CYvNLCsRev1erIY6js5vkjT9ek80U+wM6ipCrQ=;
+  b=bP9Et7ziGhImBg8yY3V6C0lg7huUl9jWJlUtKzilPRGSMCynuJdXyiVw
+   DMt4NR8Is1qPe2ioXvZzyDAM6NPALIOZ4N+LH/C3tQZuWa+N0obeNwfrt
+   KLJuxp6cTAvlf54P/to0XmhjxNykojC1rhcT+hTRahPbX5fQUEPANFeKp
+   psvUzeLrzmJouqqA4iEPJan0TCetXPtuqHGyDUwjM/KdS86E7n8d68aIK
+   UtniTYGenkfod8i17MVbtDC175tDiekvv4R1zMSPNxfz/qrs/Bubct/FS
+   HzfcSELd+TgDctVHxj18OedobI7r6jXbs8IyG3QQ3+glDPsapKg29bCAU
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="15952935"
+X-IronPort-AV: E=Sophos;i="6.07,107,1708416000"; 
+   d="scan'208";a="15952935"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 09:57:05 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="914220720"
+X-IronPort-AV: E=Sophos;i="6.07,107,1708416000"; 
+   d="scan'208";a="914220720"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 09:57:03 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1riHzJ-0000000AdGY-2K9c;
+	Thu, 07 Mar 2024 19:57:01 +0200
+Date: Thu, 7 Mar 2024 19:57:01 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: linux-kernel@vger.kernel.org,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v1 0/5] w1: gpio: A set of cleanups
+Message-ID: <Zen_7fDQghq6GJ_s@smile.fi.intel.com>
+References: <20240307143644.3787260-1-andriy.shevchenko@linux.intel.com>
+ <vsaqquulifmpk5fanl4i67nzag5huyibzy5lfr2jdsgk2dv7t3@5i4opts7npsj>
+ <ZenuzMtybS4CzwHv@smile.fi.intel.com>
+ <46qzdowo2om2bbuokiksah27x4qok7hffiefwsj4bihz2xg62y@hxrag6h55zw7>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-a684c
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <46qzdowo2om2bbuokiksah27x4qok7hffiefwsj4bihz2xg62y@hxrag6h55zw7>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Thu, 07 Mar 2024 17:00:58 +0200, Andy Shevchenko wrote:
-> There are the following issues with the current code:
-> - inconsistent use of 0xFF and -1 for invalid chip select pin
-> - inconsistent plain or BIT() use with a hard-to-understand comment
-> - wrong types used for last_cs_* fields
+On Thu, Mar 07, 2024 at 06:12:46PM +0100, Uwe Kleine-König wrote:
+> On Thu, Mar 07, 2024 at 06:43:56PM +0200, Andy Shevchenko wrote:
+> > On Thu, Mar 07, 2024 at 05:38:54PM +0100, Uwe Kleine-König wrote:
+
+..
+
+> > > I wonder about your choice of recipients. I would have added Krzysztof
+> > > to To and me at most to Cc:.
+> > 
+> > It's automatically generated using get_maintainers.pl.
+> > See details in the source of the script [1] I'm using.
+> > 
+> > [1]: https://github.com/andy-shev/home-bin-tools/blob/master/ge2maintainer.sh
 > 
-> Fix all of these here.
+> Getting something wrong automatically isn't an excuse for getting it
+> wrong :-)
+
+I'm not sure why you think it's wrong. You worked on the code lately and Git
+heuristics considered that over threshold of 67%.
+
+> That scripts has:
 > 
-> [...]
+> to=$(git show -$count "$COMMIT" | scripts/get_maintainer.pl $OPTS --no-m --no-r)
+> cc=$(git show -$count "$COMMIT" | scripts/get_maintainer.pl $OPTS --no-l)
+> 
+> I recommend to swap the values for to and cc here to make sure you have
+> the maintainer in $to and the relevant lists in $cc.
 
-Applied to
+Hmm... I don't remember why I put it this way.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+Btw, you are the first one for the entire life cycle of that script (3 years?)
+who complains about such details... So, patches are welcome! :-)
 
-Thanks!
+-- 
+With Best Regards,
+Andy Shevchenko
 
-[1/3] spi: Consistently use BIT for cs_index_mask
-      commit: 1209c5566f9b244bd047478b7fc90318c9a310f0
-[2/3] spi: Fix types of the last chip select storage variables
-      commit: 14fe5a98fb24192f73639590d9d3cdb5640d48db
-[3/3] spi: Introduce SPI_INVALID_CS and is_valid_cs()
-      commit: be84be4a35fa99cca7e81e6dd21516a324cca413
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
 
 
