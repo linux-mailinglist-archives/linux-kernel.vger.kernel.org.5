@@ -1,166 +1,219 @@
-Return-Path: <linux-kernel+bounces-95294-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95297-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8932874BDE
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:07:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE77D874BE7
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:08:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 775121F245F4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:07:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 747BB286042
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:08:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB87C12A148;
-	Thu,  7 Mar 2024 10:03:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 421908529C;
+	Thu,  7 Mar 2024 10:04:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="XQtsZgcJ"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PAMxW1zg"
+Received: from mail-vk1-f182.google.com (mail-vk1-f182.google.com [209.85.221.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FB70127B69;
-	Thu,  7 Mar 2024 10:03:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1FEF83CAE;
+	Thu,  7 Mar 2024 10:04:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709805796; cv=none; b=dlZ2drj3siaDlWrj8DhliA4BXNgrbFKzGJ6lQ/RoQyLbEQidovxCDbdzAs6o8Ec7YVVEKEJtcJw3RNxdKP6LLKFslfkrNlkMvjY/JHbl1wIcC43MwNOjhrOJKuU6bT0cLtT9GRWHU7/kJgphUxznJ44SOdJvBXavB+HmCUMR+iw=
+	t=1709805864; cv=none; b=folEbozIwFh7MWp2Te/nf19gULQU75J+roR0YNgkP3pmzYPLLQO1tHGCFdDj8yVnfi+jG3udigKVVY8f1frgx4h7HWN/V3fJ7oboOsglwiFh7nr4/1aLQm8zORL3LMwwpLcCauRSZf6+XOi1Pllpbmfx8vtN17AnC1r00F0/ZDY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709805796; c=relaxed/simple;
-	bh=zJyo4bnZGLxCdnY9Pzpotz8jl2H6vBOxOn7RieSQHoI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=sHvXvMHu/6T15F1wFtarzkk1znOc2gTtLVzeg4jRpwzeD22bpRe24sxSLEFqsAf2F4zcNWCgFSMY9GtGcIVd+75Oc18YfIuBoaqQXsNQndqRMO6o0AY0dd1Td+3HPPl9QtnfDnJf3I9+lijktbTJtPhxvcSk+N4+6fnAAGINxNs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=XQtsZgcJ; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4279PBub030562;
-	Thu, 7 Mar 2024 10:03:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=qyIQAGdttLWJE5dmHv7lEFyOysIlQJZF4NtHIZb++L0=; b=XQ
-	tsZgcJCnZCI7yv/QAViXLFGkSJP2iVEhQNWRkSRtvlLanl9rZMcwcCKY4uErZCJ/
-	+KfoEeI+3i+j1CTGS5931hqqiAeF+pgAS6xuNCrnOKKIqg476jIVp9PTdU/Eta8/
-	Cw+y5iCqafvS0vnptXop+Om7iTVeIdx6QUMLDU9niPNSUyglPvnvajieWhYUzrpB
-	5IJWj0N15xAikZcbDh8ZgrUEAXkqbt0SBU0SRDqzxU9/NgLq+uUETaIGkw4qW0oG
-	FYBwFfM2to9ILH8/+cm1LwTrPnqV9SjmvOQRewstu0PfIyG68++3ZVMLl277Giwa
-	RqiIyDUA/Bct/4b7QAew==
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wqaxd02m5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 07 Mar 2024 10:03:10 +0000 (GMT)
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 427A3Axv018481
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 7 Mar 2024 10:03:10 GMT
-Received: from [10.216.46.193] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 7 Mar
- 2024 02:03:04 -0800
-Message-ID: <9769c51f-a672-4ec9-b1c8-d8022f1988f5@quicinc.com>
-Date: Thu, 7 Mar 2024 15:32:59 +0530
+	s=arc-20240116; t=1709805864; c=relaxed/simple;
+	bh=iCkldeipvQOIgZslWygbPiAdWKmL3QMKJVqnBUCaJgg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=NZB/g/qrkP6TMW6dX2PeCDlPzIHvzzTs4Ru3i2Iibp2VVga1I+ixG2QKxYBFeLU8EIBuSgysS7WF9QAuDLtHK/WHkyJFdk0Q9FqWLjAcmQQ5kNCqB0y5lkDUZmkuA8sb6uxnOOqYJs9PZnL02/wwQocSqW7hI+ansSL4IDrd/OQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PAMxW1zg; arc=none smtp.client-ip=209.85.221.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f182.google.com with SMTP id 71dfb90a1353d-4d332d0db9cso72773e0c.3;
+        Thu, 07 Mar 2024 02:04:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709805862; x=1710410662; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DWung4S3LQUYquWoqIN1pFg5TBe+xxRcnHe+DZPUK4I=;
+        b=PAMxW1zgOHLGfoEd15KExzFr1xIKXWHxon5Z5mR9Gh+HlRgLf+KbglDst8jFRGSRm1
+         UypTg81gdGY+Jvj/rI6OUeo0A1p6vzP6edgb47RENcDzeWJfJaQoM9WKtkJXCcMS6T5Q
+         +Ewko7ZfQaaMlbQOLcjWDXBj9lDcqdw7JxwwNcJBRQ/c50LVSO5NF4VkUfDdASzYt2Xv
+         xXSVjx53R9T7SQkaRqjtjG8oRs4o+oHKYW/Hl/iIiSTw6+w0cjFD2xk3I8wDdonvZM30
+         bX2AZutKivzBQ46BiLiFGmFHzlnLX7lqxUa5fWBXbPJ0L54ejZ19r/sDkY0hvT0JxEGH
+         AQUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709805862; x=1710410662;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DWung4S3LQUYquWoqIN1pFg5TBe+xxRcnHe+DZPUK4I=;
+        b=sFdMeVs/D4AWbRdoQrsFm8P3Qi7O6SHOdpklDEgyOT8VCv6jyUjabQjxubtj9TmKeM
+         zHcHnmkCCv2WndN69Sp/kLxmy4v2GspQEI/in214XiQMBRPrnIdx5AMV9kaGSwUow8Si
+         l5iFa2dlUqVMa91tjJ2Xu57x/2V+eoRA259f+ypKSF4Dnmfif1Om4dEPQmpm+6SsOZhr
+         iWyw7djzmP+3mnqeEEKoq9OwTsZQqZFF1paNtT7b5ge6DwwP5U/c55Id3dXbvh6D35RK
+         5kn771ewJmmW0zJhw3lRvlkWdR9iMBrALYPnTjrMRoYd7KQaaFB70+ZeOhN40KDCxVrw
+         PiXQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW0viitFfH0Bmadl/oiifUIabUgia+eQ+SiRyUJTUBOWnq6KuqTWaG/MB5E/UmztvzPxwkQ79LXqWorAtkRGzpSV9H3rIHM0PTtae4xlLibADSgcLv/ToGKWrZ6HiZjbr0pHeGJAvWQ1XMdE84fKJBydP78Dw/lXYFBph2Q0EiharUCzSnf8izPOZjec/xKuJ3LdNqLSQ1THep91R+WXDJltQ8etmy4MtCF
+X-Gm-Message-State: AOJu0YwYtcPjuY5MRiz16L1blMs4+2dMgLS01kiY3HXrvr3CYuNBL0Tc
+	zvp9vOnVRcJZcuKmRpB3ZiBblDBgrfG7F4SsMBPgqw6Ss0TvA3fh6PIfrB4oZo3D4LgBD053BR5
+	lh5XK5hlEYyZ+588Cv1X4v2sjRlk=
+X-Google-Smtp-Source: AGHT+IHvRc3VC+D3ufvw9SI/LIPn3a2nBCWlUPuQ15pdNjsolhLr8jKUha05lO9Ya8FnROJ/wt2FBciPR617sF04dCU=
+X-Received: by 2002:a05:6122:2018:b0:4cd:b718:4b08 with SMTP id
+ l24-20020a056122201800b004cdb7184b08mr8157351vkd.11.1709805861784; Thu, 07
+ Mar 2024 02:04:21 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] i2c: i2c-qcom-geni: Parse Error correctly in i2c GSI
- mode
-Content-Language: en-US
-To: Andi Shyti <andi.shyti@kernel.org>
-CC: <konrad.dybcio@linaro.org>, <bjorn.andersson@linaro.org>,
-        <vkoul@kernel.org>, <wsa@kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-i2c@vger.kernel.org>, <quic_vdadhani@quicinc.com>
-References: <20240301112638.990045-1-quic_msavaliy@quicinc.com>
- <2wala6lz4vanhvfx6jtpdexnpohabuvhzt4i7kt2xvmlfrapq4@tmvl37npj7jy>
-From: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
-In-Reply-To: <2wala6lz4vanhvfx6jtpdexnpohabuvhzt4i7kt2xvmlfrapq4@tmvl37npj7jy>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: LFmIAbC4mhK5uPI_FFbzuPwYzrryFWn3
-X-Proofpoint-ORIG-GUID: LFmIAbC4mhK5uPI_FFbzuPwYzrryFWn3
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-07_06,2024-03-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- malwarescore=0 suspectscore=0 adultscore=0 priorityscore=1501
- lowpriorityscore=0 clxscore=1015 phishscore=0 spamscore=0 mlxlogscore=999
- mlxscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2403070073
+References: <20240306231007.13622-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20240306231007.13622-3-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdVQcyrwTCTukhLFiaawDgbKwZWcWCO7bc1FfFS-t=kcqg@mail.gmail.com>
+In-Reply-To: <CAMuHMdVQcyrwTCTukhLFiaawDgbKwZWcWCO7bc1FfFS-t=kcqg@mail.gmail.com>
+From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date: Thu, 7 Mar 2024 10:03:15 +0000
+Message-ID: <CA+V-a8v=zMW4oW+fH1nX70fEXP=f9BhWDYgxMy_LpuXvVG5wow@mail.gmail.com>
+Subject: Re: [PATCH 2/2] dt-bindings: serial: renesas,scif: Validate
+ 'interrupts' and 'interrupt-names'
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Magnus Damm <magnus.damm@gmail.com>, linux-kernel@vger.kernel.org, 
+	linux-serial@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-renesas-soc@vger.kernel.org, 
+	Fabrizio Castro <fabrizio.castro.jz@renesas.com>, 
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+Hi Geert,
 
+Thank you for the review.
 
-On 3/2/2024 12:14 AM, Andi Shyti wrote:
-> Hi Mukesh,
-> 
-> (I'm sorry for the noise but my mail server has marked this mail
-> as spam and put the spam tag in front of the subject. Therefore,
-> my reply might have been marked as spam.)
-> 
-> I'm going to send a new e-mail with the old answers.
-> 
+On Thu, Mar 7, 2024 at 8:58=E2=80=AFAM Geert Uytterhoeven <geert@linux-m68k=
+org> wrote:
+>
+> Hi Prabhakar,
+>
+> On Thu, Mar 7, 2024 at 12:11=E2=80=AFAM Prabhakar <prabhakar.csengg@gmail=
+com> wrote:
+> > From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> >
+> > This commit adds support to validate the 'interrupts' and 'interrupt-na=
+mes'
+> > properties for every supported SoC. This ensures proper handling and
+> > configuration of interrupt-related properties across supported platform=
+s.
+> >
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>
+> Thanks for your patch!
+>
+> > --- a/Documentation/devicetree/bindings/serial/renesas,scif.yaml
+> > +++ b/Documentation/devicetree/bindings/serial/renesas,scif.yaml
+> > @@ -82,38 +82,6 @@ properties:
+> >    reg:
+> >      maxItems: 1
+> >
+> > -  interrupts:
+> > -    oneOf:
+> > -      - items:
+> > -          - description: A combined interrupt
+> > -      - items:
+> > -          - description: Error interrupt
+> > -          - description: Receive buffer full interrupt
+> > -          - description: Transmit buffer empty interrupt
+> > -          - description: Break interrupt
+> > -      - items:
+> > -          - description: Error interrupt
+> > -          - description: Receive buffer full interrupt
+> > -          - description: Transmit buffer empty interrupt
+> > -          - description: Break interrupt
+> > -          - description: Data Ready interrupt
+> > -          - description: Transmit End interrupt
+>
+> As the above three groups are increasing supersets, you can just use
+> a single "items" listing all 6 interrupts, and describe the first one
+> as "Error interrupt or single combined interrupt".  After that, the
+> SoC-specific logic at the end just needs to specify the appropriate
+> minItems/maxItems.
+>
+Agreed, I will do that.
 
-Sure, no problem. Sorry for the late reply.
+> > -
+> > -  interrupt-names:
+> > -    oneOf:
+> > -      - items:
+> > -          - const: eri
+> > -          - const: rxi
+> > -          - const: txi
+> > -          - const: bri
+> > -      - items:
+> > -          - const: eri
+> > -          - const: rxi
+> > -          - const: txi
+> > -          - const: bri
+> > -          - const: dri
+> > -          - const: tei
+>
+> Likewise, with "interrupt-names: false" below for the ones that don't
+> need it.
+>
+Agreed.
 
-> On Fri, Mar 01, 2024 at 04:56:38PM +0530, Mukesh Kumar Savaliya wrote:
->> we are seeing protocol errors like NACK as transfer failure but
-> 
-> /we/We/
-> 
+> > -
+> >    clocks:
+> >      minItems: 1
+> >      maxItems: 4
+> > @@ -173,6 +141,91 @@ allOf:
+> >        required:
+> >          - resets
+> >
+> > +  - if:
+> > +      properties:
+> > +        compatible:
+> > +          contains:
+> > +            enum:
+> > +              - renesas,scif-r8a7742
+> > +              - renesas,scif-r8a7743
+> > +              - renesas,scif-r8a7744
+> > +              - renesas,scif-r8a7745
+> > +              - renesas,scif-r8a77470
+> > +              - renesas,scif-r8a774a1
+> > +              - renesas,scif-r8a774b1
+> > +              - renesas,scif-r8a774c0
+> > +              - renesas,scif-r8a774e1
+> > +              - renesas,scif-r8a7778
+> > +              - renesas,scif-r8a7779
+> > +              - renesas,scif-r8a7790
+> > +              - renesas,scif-r8a7791
+> > +              - renesas,scif-r8a7792
+> > +              - renesas,scif-r8a7793
+> > +              - renesas,scif-r8a7794
+> > +              - renesas,scif-r8a7795
+> > +              - renesas,scif-r8a7796
+> > +              - renesas,scif-r8a77961
+> > +              - renesas,scif-r8a77965
+> > +              - renesas,scif-r8a77970
+> > +              - renesas,scif-r8a77980
+> > +              - renesas,scif-r8a77990
+> > +              - renesas,scif-r8a77995
+> > +              - renesas,scif-r8a779a0
+> > +              - renesas,scif-r8a779f0
+> > +              - renesas,scif-r8a779g0
+>
+> Please simplify using family-specific names:
+>   - renesas,rcar-gen1-scif
+>   - renesas,rcar-gen2-scif
+>   - renesas,rcar-gen3-scif
+>   - renesas,rcar-gen4-scif
+>
+Yep, that makes sense.
 
-Done
-
->> ideally it should report exact error like NACK, BUS_PROTO or ARB_LOST.
->>
->> Hence we are adding such error support in GSI mode and reporting it
->> accordingly by adding respective error logs.
->>
->> geni_i2c_gpi_xfer() needed to allocate heap based memory instead of
-> 
-> Please use the imperative form.
-> 
-
-Thanks. New patch uploaded which doesn't need memory allocation dynamically.
-
->> stack memory to handle and store the geni_i2c_dev handle.
->>
->> Copy event status from GSI driver to the i2c device status and parse
->> error when callback comes from gsi driver to the i2c driver. In the
->> gpi.c, we need to store callback param into i2c config data structure
->> so that inside the i2c driver, we can check what exactly the error is
->> and parse it accordingly.
->>
->> Fixes: d8703554f4de ("i2c: qcom-geni: Add support for GPI DMA")
-> 
-> What bug are you fixing here? The description doesn't talk about
-> fixes rather than support added.
-> 
-
-Updated commit log in a latest patch. Basically we are getting simple
-transfer error which ideally should be NACK error. This happens while
-running scan test for devices.
-
-> ...
-> 
->> -	config.peripheral_config = &peripheral;
->> -	config.peripheral_size = sizeof(peripheral);
->> +	peripheral = devm_kzalloc(gi2c->se.dev, sizeof(*peripheral), GFP_KERNEL);
->> +	if (!peripheral)
->> +		return -ENOMEM;
-> 
-> This is a massive leak. Why are you deciding to make the
-> allocation dynamic?
-> 
-
-Agree, It's a memory leak. Thanks for catching BUG. Considered other 
-approach which doesn't need new structure and dynamic memory allocation.
-
-> Thanks,
-> Andi
-> 
+Cheers,
+Prabhakar
 
