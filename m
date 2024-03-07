@@ -1,152 +1,109 @@
-Return-Path: <linux-kernel+bounces-95126-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95127-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD322874981
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:24:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CFAA874984
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:24:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82BD8282990
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 08:24:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4ED811C20E2F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 08:24:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B307563401;
-	Thu,  7 Mar 2024 08:24:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5576062A1D;
+	Thu,  7 Mar 2024 08:24:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Uw/pCp4j"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yabwS6aa"
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E67B1CA6B;
-	Thu,  7 Mar 2024 08:24:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20B0A6306D
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 08:24:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709799848; cv=none; b=TRbA2SyJJ46oWTxzYEzTaRnbh/ke9w0fy5pXxiK0rTP29eANEpOmTXhE2gAh41no9xqILuBstrheFBT5mGeJrcYsFKmXyRNLq2gZauNIufezCEnUmEPfQg6OJS1x2TND1m38QyxYz9COhKXcfAuYhlVaQw0kYNm8wv4bsEBMorE=
+	t=1709799870; cv=none; b=MWeieIZPktMEl4l/uMOM4M7brElDOpzdTrw/o4bL4YlGxkxt1jnQy5tIB3sPJfbT9fWWZB2SLad7z6/+CM6oJKZFNBOgLsSSe7Q5t/LUnAp8VqclOJl9Q1HEpimougWOhWhfpI08DWT0HT+eYGm+vd3bCHnygYNs1/CKycNNBZk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709799848; c=relaxed/simple;
-	bh=LnK4aSk3ub7negQrRfXck0P2JGqhuT6jGuyWGnitA9g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=VRMgyDv1m0pyY9yc09pd/xZN2tJuSNbrMPeU4JT/+D+AQy/tX8QSsPyP6/bmgXo9rwlY2hqFg11UiK24td5bYlO0OHoUhyT2uik9XxEreqZ8O2Mh2KFB3XHtq7uvTeQ6NbwrXyOig9TA0wDWZx11WZlclP/Pk5j96F1AWcKcG/M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Uw/pCp4j; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 646A7C433C7;
-	Thu,  7 Mar 2024 08:24:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709799847;
-	bh=LnK4aSk3ub7negQrRfXck0P2JGqhuT6jGuyWGnitA9g=;
-	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=Uw/pCp4jYBGeE0xpSmi2Z0Fkc9gXd6atN/8AAx59H4+budzx8oOGV8HVEqFPT8R9A
-	 ep40uufbzSg6Dw77coIK+iyyO0FVDgrBZPOY2iv9LtRTAdmvTHVOqiZtKie6wZmd9y
-	 nzhxt8vi0z3wCKBtSH31IPylAfx8DWuX+MWt/FSzg4+VgIl+XdSoSylPNyC6mWJpzQ
-	 M7g8DAkjdA80fv6CwxRXUQQA5xhSJ/YEmX0lz7alUo4DWPmmg6RxzSLRU96nlf+0tx
-	 +iBY3wLKA600P0ieDLuBKjTxVtZ7FdisFiy+rjLHBGz/UG+YxjlcADJznA4YfGvpKu
-	 hRpQOvk2wkuKw==
-Message-ID: <3509c637-23f0-4e7e-847f-bf3f4f3bf8a0@kernel.org>
-Date: Thu, 7 Mar 2024 09:23:58 +0100
+	s=arc-20240116; t=1709799870; c=relaxed/simple;
+	bh=HwIOtDxBs12zJ1pvutYk5Ifex95KRtN8D3N43+ZcAH0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BvjJNMPLGPa7f4p47dknRtGLBtEI0JrUHJieacTK8IS7vU0cFvYGGyCEWS4fprgg0S/VSNTDAc5LuIlcpFLEbXmV7JCRaPxA8QSiNYtSekl9YQjzl2HZ+9fWOUCTh+2cAGU2t88qXJjOpIPqwZrZMfclBXqcyth6nS067eET2VY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=yabwS6aa; arc=none smtp.client-ip=209.85.219.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dcd9e34430cso635997276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 00:24:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709799868; x=1710404668; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=HrWzrMUBdT94HiU9dUcTPoeH7WMZ5J8gNIFhjinA3XM=;
+        b=yabwS6aaXCzgGvFibIinRm8ZSwvAXOfLiefILhrE84G1GObiyJyukOfnwE+z911cHk
+         t4zrC+KFZu1EGcn8gE31PLQpt0Li2WToMHv0joeWB2CGdSmkWNIZUuC409nIA1l+OlpN
+         ldQfWsQbHl9p9UzrEz0gjphgZZxKDrgb8fh0NwJBkWxSp6v4Tn4J02Rltt3M3zJ8AR51
+         Ll9fO6vhKwvxFzivk7IEkiaHCa4MWBx56DamQ/1PcnOnYBjcpROMhN7CxIMrK2dOCFBy
+         97XXU8JU5aPN4luq4dXqrl/ZtwC+yelVyVPcvwQecB6eAX6SysAMx7sJpnrjQHkZpdkr
+         ruWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709799868; x=1710404668;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HrWzrMUBdT94HiU9dUcTPoeH7WMZ5J8gNIFhjinA3XM=;
+        b=v3xegytgc4Tg679+xoQFmUaabF2H7z8T7fRpiyd+SjItIvLcWA5w8WqFYis1lCXFPg
+         Kqes1pVC6HFdyjVsYVgqxdmSgBd+HjbU/hnzwXCHpzn/L4CViGSJpk0uWnGgp4aQZq73
+         69Y93Ja7OD0+qTja0ZWMKnaWBjcNKsB72PkvhNdQQULReehGGfONi35pCmPHS1lY2Jrp
+         kqDcRNF8a4drFtEMfPxrzLeWp19NClbs1gRMJTGR9O6iFwCwDGa0i4jLXuraJvZSir0E
+         QE6yd8XzBgCVcGK6qs76Cd0bPcSGqtUKd9Qr83FAHzDsUFIsPzCA7i5XDIoyf78ECT81
+         79ww==
+X-Forwarded-Encrypted: i=1; AJvYcCUvqdRV7QE2mZm131ThHpoI/zTYFcspocg1VacXqufz2f7xbtMOIDCoDpJI+40d8Yss9kmFeu7ebDVbUVZZfk5dZGs7GJgD3dD05qXM
+X-Gm-Message-State: AOJu0YxDD6XQfwah0+f9JlHOwgVl2Zc2B9t5pyaWvp4IDyHVieqvcHjo
+	V2JWwAz9qyNv1Pn2DQ7tZwbo2o88a76WMjB1DrdblpL8c7rc8KW8fSQODser8Xk4aWcuY1IwtmB
+	pVDqCFjl/Y5VTdDxORKNu5cliXGez3UuCiQYikg==
+X-Google-Smtp-Source: AGHT+IGo9lHi+LEb+DS8+PgVMTubJMqAp8Nr0DkwjG6EMkEJSTxocKlvC0xiwUrwFMIXHE/XWrup2AjbpmgQzZTgH3U=
+X-Received: by 2002:a25:8a08:0:b0:dbe:4f15:b5cf with SMTP id
+ g8-20020a258a08000000b00dbe4f15b5cfmr14221787ybl.15.1709799868120; Thu, 07
+ Mar 2024 00:24:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 4/4] ASoC: fsl: imx-rpmsg: Update to correct DT node
-Content-Language: en-US
-To: Chancel Liu <chancel.liu@nxp.com>, shengjiu.wang@gmail.com,
- Xiubo.Lee@gmail.com, festevam@gmail.com, nicoleotsuka@gmail.com,
- lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
- linux-imx@nxp.com, alsa-devel@alsa-project.org,
- linuxppc-dev@lists.ozlabs.org, linux-sound@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20240307074437.1472593-1-chancel.liu@nxp.com>
- <20240307074437.1472593-5-chancel.liu@nxp.com>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <20240307074437.1472593-5-chancel.liu@nxp.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240215103929.19357-1-quic_riteshk@quicinc.com> <5271ebb4-68e7-468f-b1e0-b35a77f53902@quicinc.com>
+In-Reply-To: <5271ebb4-68e7-468f-b1e0-b35a77f53902@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Thu, 7 Mar 2024 10:24:17 +0200
+Message-ID: <CAA8EJpridDoMFRTo46n6dqvm1Lu8Bxka2S5AD97JjXM_6WhCLg@mail.gmail.com>
+Subject: Re: [PATCH v3 0/2] add display and panel on qcm6490 idp
+To: Ritesh Kumar <quic_riteshk@quicinc.com>
+Cc: andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	catalin.marinas@arm.com, will@kernel.org, quic_bjorande@quicinc.com, 
+	geert+renesas@glider.be, arnd@arndb.de, neil.armstrong@linaro.org, 
+	nfraprado@collabora.com, m.szyprowski@samsung.com, 
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	quic_abhinavk@quicinc.com, quic_rajeevny@quicinc.com, 
+	quic_vproddut@quicinc.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 07/03/2024 08:44, Chancel Liu wrote:
-> Platform device for card to probe is registered in imx-audio-rpmsg.
-> According to this change DT node of ASoC CPU DAI device is updated.
-> 
-> Signed-off-by: Chancel Liu <chancel.liu@nxp.com>
-> ---
->  sound/soc/fsl/imx-rpmsg.c | 21 ++++++++++++++++++---
->  1 file changed, 18 insertions(+), 3 deletions(-)
-> 
-> diff --git a/sound/soc/fsl/imx-rpmsg.c b/sound/soc/fsl/imx-rpmsg.c
-> index e5bd63dab10c..2686125b3043 100644
-> --- a/sound/soc/fsl/imx-rpmsg.c
-> +++ b/sound/soc/fsl/imx-rpmsg.c
-> @@ -108,10 +108,9 @@ static int imx_rpmsg_late_probe(struct snd_soc_card *card)
->  static int imx_rpmsg_probe(struct platform_device *pdev)
->  {
->  	struct snd_soc_dai_link_component *dlc;
-> -	struct device *dev = pdev->dev.parent;
->  	/* rpmsg_pdev is the platform device for the rpmsg node that probed us */
-> -	struct platform_device *rpmsg_pdev = to_platform_device(dev);
-> -	struct device_node *np = rpmsg_pdev->dev.of_node;
-> +	struct platform_device *rpmsg_pdev = NULL;
-> +	struct device_node *np = NULL;
->  	struct of_phandle_args args;
->  	const char *platform_name;
->  	struct imx_rpmsg *data;
-> @@ -127,6 +126,22 @@ static int imx_rpmsg_probe(struct platform_device *pdev)
->  		goto fail;
->  	}
->  
-> +	if (!strcmp(pdev->dev.platform_data, "rpmsg-micfil-channel"))
-> +		np = of_find_node_by_name(NULL, "rpmsg_micfil");
-> +	else
-> +		np = of_find_node_by_name(NULL, "rpmsg_audio");
+On Thu, 7 Mar 2024 at 10:20, Ritesh Kumar <quic_riteshk@quicinc.com> wrote:
+>
+>
+> On 2/15/2024 4:09 PM, Ritesh Kumar wrote:
+> > Build the Novatek NT36672E DSI Panel driver as module and enable
+> > display subsystem on Qualcomm qcm6490 idp board.
+> >
+> > Ritesh Kumar (2):
+> >    arm64: defconfig: enable Novatek NT36672E DSI Panel driver
+> >    arm64: dts: qcom: qcm6490-idp: add display and panel
+>
+> Can you please review and apply these two patches.
 
-Why do you create ABI on node names? Where is it documented? Why can't
-you use phandles?
+Can you please read docs regarding the kernel development process?
 
-Best regards,
-Krzysztof
 
+-- 
+With best wishes
+Dmitry
 
