@@ -1,221 +1,185 @@
-Return-Path: <linux-kernel+bounces-95501-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95502-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C537874E6A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:58:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76A78874E6D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:58:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE92F1F2114F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:58:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A8BD1C22BB9
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:58:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D92741292F1;
-	Thu,  7 Mar 2024 11:57:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 865D8129A98;
+	Thu,  7 Mar 2024 11:57:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mRlN0nQw"
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JKPelkEM"
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26A14129A98;
-	Thu,  7 Mar 2024 11:57:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FDCB129A72;
+	Thu,  7 Mar 2024 11:57:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709812665; cv=none; b=IP9cX9lILGBkC/7MV1x2EliMd9OCC4d13aXrD0sd1drlL8oK994sPUhZRYwLy53AK+Xm9dJSuj45akqbwJOCEWLwwLzoGO1njBz1QT7frX8Vv9/pZ4hqQz8el5m7p/Qk5BgFbr03+F8Suc/CyKhSvN9+VsH09ubtb59QL02Tv1E=
+	t=1709812675; cv=none; b=B92GCGaZplNm2Hv4oUB7GPF/RjmjGxm80s+NXbU7yMXD5psejiV2ICTHe1Atxo5uiThH/9YjgSdA88xNxLVNWOU+0mpzx6wd829tSu6bsaod4Yjin3D814L1CL5exm4nFBBDc7b5wkN7V5Vf68BUciBwVhjcZnbw0mLgcCRmwK0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709812665; c=relaxed/simple;
-	bh=vDgAX6P28rscWYU/Ap03VR4LmAwylCGv7dAfzgFQieo=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=AozIskKKZZXiWsz7Owf3q7titoE/vrcFoJJSu9oSJsG/uVcKp3ALGX7M9wX6KUXdavRmg9gf2hOgvd3n7dFcgCeDzL0o1d/a3cLoS9ae50yieXusqvw7w2FXOCBM8dxgxannYklpdn1BVJIZksLcjtLnYIsXvNnMfqe63ja/mCU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mRlN0nQw; arc=none smtp.client-ip=209.85.218.43
+	s=arc-20240116; t=1709812675; c=relaxed/simple;
+	bh=J86UKY8qhazKaB7pPML7j0nM+vkhkOPEx5DuuIIA3J8=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=PCcry7tefH44Ia3qqHzUEKceLJSLwnCU7JbAQ7o9fQmbPJ4ie8uA7HCTBODmZBUfnduPHTQftIgDaRsZDnZUF+gDQ0glGhDHNXYLpu9aaZNH93BCn4fQ5MMaxSSBqaT5Lg+2qvk+Rs1QZIWLVaDOwGL464fvtWvpVb1HASxY0cQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JKPelkEM; arc=none smtp.client-ip=209.85.215.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a449c5411e1so107997666b.1;
-        Thu, 07 Mar 2024 03:57:42 -0800 (PST)
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-5dbd519bde6so657265a12.1;
+        Thu, 07 Mar 2024 03:57:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709812661; x=1710417461; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=cJau7i3eV23vAJGOuiZvF0BMLOjfUjwE+0eIoNLgbl4=;
-        b=mRlN0nQw8itg1q/+cUV/R6VTcf5ZuqJa6dLHWWYGZc0auVLPYInHtJPTcdB/0ZPXfS
-         /c3zje+rUaMqGupgCOhPcJtMX09pjK9tkqIkvjroJ6F2X5uieR669Muu1ABRFHVrxure
-         QlFe/b+bNU+EEcRpzV7u+kOc97+FR8BOs8XhtmZFWvE6nZfg4eiUXNGCeqHuj4ijc0K/
-         H2/STOfK1+ghxTl9nEU9RPRV5yjc2DvnX9cZSR3Hkw2KjCsmGYt54ZhNW/ceV5wrKOUn
-         Sc2RjYcImYIKGhZPIlLagkHEBhUgPEviK63h54DrA/YiJjDvzRyZYU6hv8RY0ppQ5uqZ
-         M+UQ==
+        d=gmail.com; s=20230601; t=1709812674; x=1710417474; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GnDe8WtbZ9hcODNTV3jRGEgDe7+iT2YCtcCLNf4Qsns=;
+        b=JKPelkEMPcXIaOxjKzKvJfNaJXgH8pc9Ej3xlH1GvengBtze6GwrVyclaj9KFj1QqN
+         ua1F90If9HQV2l5MpwA8EQ63HvAbsyRp4pXSuJE5sy8dGlDPWd0d96eJv4hb1aQB3lwO
+         I7ONpCUrtzNVMojZgOgwOCkQ4y83ElfCbx5BNnnhhTsf0T30ljbdjX1Wy1Wm9vAPT76V
+         ouSEoApFTO6IfvnxAS82dviTPec5xR2b4zN4UdFTohmE+0qDxygEt+ORz6wwopVjmb2h
+         NwxP258R4n9hB1z850MeCvTZBlZ8myS1tveZGfkpw5G8Xt4zi02G8Y/85G4hY5HMniJ6
+         J/LQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709812661; x=1710417461;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cJau7i3eV23vAJGOuiZvF0BMLOjfUjwE+0eIoNLgbl4=;
-        b=N14h/6ixkY3Pott0M/9EvuBzFTjsRiKfxIa0g654qlsCj+9JsZqUUNbCqAXqnpzGUV
-         bjzcCgcEDdJ2sjbdbuxB3JLqZ7zv7TQe/hGei6NRJbb/do4If8f023WvTc2ns6TW9Q2p
-         jgv5fIBhr2HqpUU7/j8rTHFaNL916VWBRM671cY8rsmw75B0/Cv70MxF+gGSHkCAqgsi
-         dDBqx9Zif8OTnIpVxkNyOwHpPb9GbY43y3N/q2gkPDyfFfOKN/M2uLF4ZMProj9d/4iz
-         LkN63xEuXCfJnfCn3qdEQaY2mkQYtTFTO6fpf6NH/eW0F4xLXbhnNpAfzY6S/QOw32+2
-         YWgw==
-X-Forwarded-Encrypted: i=1; AJvYcCUt6hNJy/WC1/PyCHpwiIraYK3dha7U9bZnyxsGes/LRqJdss2EL5ftMIO3tO468srQGO+6W8CM26+bOiRIME187HQm/H9c+1B0/NFvYpiHH4MvkPnEjdAho2hYLBPvsHhViUEa0xh1NgbsmtKmhdqXAFKeVDCZ+2k6FNfCzIP0uw==
-X-Gm-Message-State: AOJu0YyEwYaJxVj7+EHo1iLjoY4tPDzwfss9SiRvVHyNbfKS13Q2UZor
-	InSNggiuHpo0rLI2nDNWicRs3nNqW290i3g3CYjt9XC2t3iYVUC7
-X-Google-Smtp-Source: AGHT+IES2n2T5Br6RCNdl+3OZjWous7H8ss7qKSezNckuGCcINqlL+OD2T2Eovh5MbUtGBx8SAdxHw==
-X-Received: by 2002:a17:906:6813:b0:a44:51d8:7dd with SMTP id k19-20020a170906681300b00a4451d807ddmr12385037ejr.0.1709812660908;
-        Thu, 07 Mar 2024 03:57:40 -0800 (PST)
-Received: from ?IPv6:2001:a61:343e:8301:d737:22b0:7431:8d01? ([2001:a61:343e:8301:d737:22b0:7431:8d01])
-        by smtp.gmail.com with ESMTPSA id mc18-20020a170906eb5200b00a3f28bf94f8sm8109585ejb.199.2024.03.07.03.57.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Mar 2024 03:57:40 -0800 (PST)
-Message-ID: <4c84f81c89b58886ad4e9df41f340790d2dee7d9.camel@gmail.com>
-Subject: Re: [PATCH v5 1/2] driver core: Introduce device_link_wait_removal()
-From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To: Herve Codina <herve.codina@bootlin.com>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, Rob
- Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>,
- Saravana Kannan <saravanak@google.com>
-Cc: Lizhi Hou <lizhi.hou@amd.com>, Max Zhen <max.zhen@amd.com>, Sonal Santan
- <sonal.santan@amd.com>, Stefano Stabellini <stefano.stabellini@xilinx.com>,
-  Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Allan Nielsen
- <allan.nielsen@microchip.com>, Horatiu Vultur
- <horatiu.vultur@microchip.com>, Steen Hegelund
- <steen.hegelund@microchip.com>, Luca Ceresoli <luca.ceresoli@bootlin.com>,
- Nuno Sa <nuno.sa@analog.com>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>,  stable@vger.kernel.org
-Date: Thu, 07 Mar 2024 12:57:34 +0100
-In-Reply-To: <94997e8720bc0a68afa85be3ef521c8844d0f0a0.camel@gmail.com>
-References: <20240307111036.225007-1-herve.codina@bootlin.com>
-	 <20240307111036.225007-2-herve.codina@bootlin.com>
-	 <94997e8720bc0a68afa85be3ef521c8844d0f0a0.camel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+        d=1e100.net; s=20230601; t=1709812674; x=1710417474;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GnDe8WtbZ9hcODNTV3jRGEgDe7+iT2YCtcCLNf4Qsns=;
+        b=ZlNOjMvev5cDBFrI5dcdOq2Ci6PdBvR5cTW4grc1w9Fcu/Kw21oF4w7evx3GIfkm9S
+         6x7Iwps7cNkgyJrCJbO1wZOEfwa4mX3VbQVCCexxzYXof850OtYNtdnsPEDSz85S0U9e
+         8AKyh55qKQeMfLMQV0X0Cpg1B8bng9J3yRsNqy7QFIKzBgF86EULIyfHhiucGvCaO/D/
+         s2ZdGBt87J5zTvsirHFIU6cFMhQBT4U1F+sA3FRFsHNpN+yuXlp2ioPbIOj+EYdTR2MZ
+         bj+dB+l6LhKv4pwGZ88lghCV95ig+Jw2wYZrpq7ffI6tMTi2V9E/iKQHePz+yV8JAD4g
+         yEgA==
+X-Forwarded-Encrypted: i=1; AJvYcCVL4lsdZrV6FUfeeAtxQAFgYbZGEwJnj1+C8KgtnQvCr+kdB04spG+MtSs3vu6b3ts+beWWcnx1JO9Tz6Ss/rtpm1W/cVBmU7HRxE3z
+X-Gm-Message-State: AOJu0YwHqPjar0FOBkZk+xpzxliuc9HTccYOrIMA+ahnnrfuZ6dPIroL
+	g85Reh+rQ0e/XbjaU2VGLADUMrrIR9G+b2xD2q7eSg1ea2ZJrPJ1
+X-Google-Smtp-Source: AGHT+IGh+oenmFUHmGunUsmpdxKdgB27yRhLeGFEaRlazILAGetA315ev5uBqawUMt3AexyzdHKHHQ==
+X-Received: by 2002:a05:6a20:ba84:b0:1a1:4df8:1ec4 with SMTP id fb4-20020a056a20ba8400b001a14df81ec4mr6282239pzb.19.1709812673611;
+        Thu, 07 Mar 2024 03:57:53 -0800 (PST)
+Received: from VM-147-239-centos.localdomain ([14.22.11.162])
+        by smtp.gmail.com with ESMTPSA id q4-20020a63e944000000b005dc1edf7371sm12722063pgj.9.2024.03.07.03.57.51
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 07 Mar 2024 03:57:53 -0800 (PST)
+From: Yongzhi Liu <hyperlyzcs@gmail.com>
+To: hdegoede@redhat.com,
+	wentong.wu@intel.com,
+	gregkh@linuxfoundation.org,
+	andi.shyti@linux.intel.com
+Cc: linux-usb@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	jitxie@tencent.com,
+	huntazhang@tencent.com,
+	Yongzhi Liu <hyperlyzcs@gmail.com>
+Subject: [PATCH V2] usb: misc: ljca: Fix double free in error handling path
+Date: Thu,  7 Mar 2024 19:57:43 +0800
+Message-Id: <20240307115743.13104-1-hyperlyzcs@gmail.com>
+X-Mailer: git-send-email 2.36.1
+In-Reply-To: <2c77e58a-fe07-464f-9032-3933080be349@redhat.com>
+References: <2c77e58a-fe07-464f-9032-3933080be349@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Thu, 2024-03-07 at 12:50 +0100, Nuno S=C3=A1 wrote:
-> Hi Herve,
->=20
->=20
-> On Thu, 2024-03-07 at 12:10 +0100, Herve Codina wrote:
-> > The commit 80dd33cf72d1 ("drivers: base: Fix device link removal")
-> > introduces a workqueue to release the consumer and supplier devices use=
-d
-> > in the devlink.
-> > In the job queued, devices are release and in turn, when all the
-> > references to these devices are dropped, the release function of the
-> > device itself is called.
-> >=20
-> > Nothing is present to provide some synchronisation with this workqueue
-> > in order to ensure that all ongoing releasing operations are done and
-> > so, some other operations can be started safely.
-> >=20
-> > For instance, in the following sequence:
-> > =C2=A0 1) of_platform_depopulate()
-> > =C2=A0 2) of_overlay_remove()
-> >=20
-> > During the step 1, devices are released and related devlinks are remove=
-d
-> > (jobs pushed in the workqueue).
-> > During the step 2, OF nodes are destroyed but, without any
-> > synchronisation with devlink removal jobs, of_overlay_remove() can rais=
-e
-> > warnings related to missing of_node_put():
-> > =C2=A0 ERROR: memory leak, expected refcount 1 instead of 2
-> >=20
-> > Indeed, the missing of_node_put() call is going to be done, too late,
-> > from the workqueue job execution.
-> >=20
-> > Introduce device_link_wait_removal() to offer a way to synchronize
-> > operations waiting for the end of devlink removals (i.e. end of
-> > workqueue jobs).
-> > Also, as a flushing operation is done on the workqueue, the workqueue
-> > used is moved from a system-wide workqueue to a local one.
-> >=20
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-> > Tested-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
-> > Reviewed-by: Nuno Sa <nuno.sa@analog.com>
-> > ---
-> > =C2=A0drivers/base/core.c=C2=A0=C2=A0=C2=A0 | 26 ++++++++++++++++++++++=
-+---
-> > =C2=A0include/linux/device.h |=C2=A0 1 +
-> > =C2=A02 files changed, 24 insertions(+), 3 deletions(-)
-> >=20
-> > diff --git a/drivers/base/core.c b/drivers/base/core.c
-> > index d5f4e4aac09b..48b28c59c592 100644
-> > --- a/drivers/base/core.c
-> > +++ b/drivers/base/core.c
-> > @@ -44,6 +44,7 @@ static bool fw_devlink_is_permissive(void);
-> > =C2=A0static void __fw_devlink_link_to_consumers(struct device *dev);
-> > =C2=A0static bool fw_devlink_drv_reg_done;
-> > =C2=A0static bool fw_devlink_best_effort;
-> > +static struct workqueue_struct *device_link_wq;
-> > =C2=A0
-> > =C2=A0/**
-> > =C2=A0 * __fwnode_link_add - Create a link between two fwnode_handles.
-> > @@ -532,12 +533,26 @@ static void devlink_dev_release(struct device *de=
-v)
-> > =C2=A0	/*
-> > =C2=A0	 * It may take a while to complete this work because of the SRCU
-> > =C2=A0	 * synchronization in device_link_release_fn() and if the consum=
-er or
-> > -	 * supplier devices get deleted when it runs, so put it into the "lon=
-g"
-> > -	 * workqueue.
-> > +	 * supplier devices get deleted when it runs, so put it into the
-> > +	 * dedicated workqueue.
-> > =C2=A0	 */
-> > -	queue_work(system_long_wq, &link->rm_work);
-> > +	queue_work(device_link_wq, &link->rm_work);
-> > =C2=A0}
-> > =C2=A0
-> > +/**
-> > + * device_link_wait_removal - Wait for ongoing devlink removal jobs to=
- terminate
-> > + */
-> > +void device_link_wait_removal(void)
-> > +{
-> > +	/*
-> > +	 * devlink removal jobs are queued in the dedicated work queue.
-> > +	 * To be sure that all removal jobs are terminated, ensure that any
-> > +	 * scheduled work has run to completion.
-> > +	 */
-> > +	flush_workqueue(device_link_wq);
-> > +}
-> > +EXPORT_SYMBOL_GPL(device_link_wait_removal);
-> > +
-> > =C2=A0static struct class devlink_class =3D {
-> > =C2=A0	.name =3D "devlink",
-> > =C2=A0	.dev_groups =3D devlink_groups,
-> > @@ -4099,9 +4114,14 @@ int __init devices_init(void)
-> > =C2=A0	sysfs_dev_char_kobj =3D kobject_create_and_add("char", dev_kobj)=
-;
-> > =C2=A0	if (!sysfs_dev_char_kobj)
-> > =C2=A0		goto char_kobj_err;
-> > +	device_link_wq =3D alloc_workqueue("device_link_wq", 0, 0);
->=20
-> My rb tag was with the assumption this is moved into devlink_class_init()=
- IIUC,
-> Saravana also agreed with that [1]. But it looks like he missed that we a=
-re
-> allocating the queue in devices_init() and not in devlink_class_init().
->=20
-> I'm also not sure if this is in line with what Rafael wanted for ccing st=
-able. How
-> do
-> we know the next patch depends on this one?
+When auxiliary_device_add() returns error and then calls
+auxiliary_device_uninit(), callback function ljca_auxdev_release
+calls kfree(auxdev->dev.platform_data) to free the parameter data
+of the function ljca_new_client_device. The callers of
+ljca_new_client_device shouldn't call kfree() again
+in the error handling path to free the platform data.
 
-Should have looked before:
+Fix this by cleaning up the redundant kfree() in all callers and
+adding kfree() the passed in platform_data on errors which happen
+before auxiliary_device_init() succeeds .
 
-https://www.kernel.org/doc/Documentation/process/stable-kernel-rules.rst
+Fixes: acd6199f195d ("usb: Add support for Intel LJCA device")
+Signed-off-by: Yongzhi Liu <hyperlyzcs@gmail.com>
+---
+ drivers/usb/misc/usb-ljca.c | 26 +++++++++-----------------
+ 1 file changed, 9 insertions(+), 17 deletions(-)
 
-So, I think what you have is correct :)
-
-- Nuno S=C3=A1
+diff --git a/drivers/usb/misc/usb-ljca.c b/drivers/usb/misc/usb-ljca.c
+index 35770e608c64..bd9ccbea6e72 100644
+--- a/drivers/usb/misc/usb-ljca.c
++++ b/drivers/usb/misc/usb-ljca.c
+@@ -518,8 +518,10 @@ static int ljca_new_client_device(struct ljca_adapter *adap, u8 type, u8 id,
+ 	int ret;
+ 
+ 	client = kzalloc(sizeof *client, GFP_KERNEL);
+-	if (!client)
++	if (!client) {
++		kfree(data);
+ 		return -ENOMEM;
++	}
+ 
+ 	client->type = type;
+ 	client->id = id;
+@@ -535,8 +537,10 @@ static int ljca_new_client_device(struct ljca_adapter *adap, u8 type, u8 id,
+ 	auxdev->dev.release = ljca_auxdev_release;
+ 
+ 	ret = auxiliary_device_init(auxdev);
+-	if (ret)
++	if (ret) {
++		kfree(data);
+ 		goto err_free;
++	}
+ 
+ 	ljca_auxdev_acpi_bind(adap, auxdev, adr, id);
+ 
+@@ -590,12 +594,8 @@ static int ljca_enumerate_gpio(struct ljca_adapter *adap)
+ 		valid_pin[i] = get_unaligned_le32(&desc->bank_desc[i].valid_pins);
+ 	bitmap_from_arr32(gpio_info->valid_pin_map, valid_pin, gpio_num);
+ 
+-	ret = ljca_new_client_device(adap, LJCA_CLIENT_GPIO, 0, "ljca-gpio",
++	return ljca_new_client_device(adap, LJCA_CLIENT_GPIO, 0, "ljca-gpio",
+ 				     gpio_info, LJCA_GPIO_ACPI_ADR);
+-	if (ret)
+-		kfree(gpio_info);
+-
+-	return ret;
+ }
+ 
+ static int ljca_enumerate_i2c(struct ljca_adapter *adap)
+@@ -626,13 +626,9 @@ static int ljca_enumerate_i2c(struct ljca_adapter *adap)
+ 		i2c_info->capacity = desc->info[i].capacity;
+ 		i2c_info->intr_pin = desc->info[i].intr_pin;
+ 
+-		ret = ljca_new_client_device(adap, LJCA_CLIENT_I2C, i,
++		return ljca_new_client_device(adap, LJCA_CLIENT_I2C, i,
+ 					     "ljca-i2c", i2c_info,
+ 					     LJCA_I2C1_ACPI_ADR + i);
+-		if (ret) {
+-			kfree(i2c_info);
+-			return ret;
+-		}
+ 	}
+ 
+ 	return 0;
+@@ -666,13 +662,9 @@ static int ljca_enumerate_spi(struct ljca_adapter *adap)
+ 		spi_info->id = desc->info[i].id;
+ 		spi_info->capacity = desc->info[i].capacity;
+ 
+-		ret = ljca_new_client_device(adap, LJCA_CLIENT_SPI, i,
++		return ljca_new_client_device(adap, LJCA_CLIENT_SPI, i,
+ 					     "ljca-spi", spi_info,
+ 					     LJCA_SPI1_ACPI_ADR + i);
+-		if (ret) {
+-			kfree(spi_info);
+-			return ret;
+-		}
+ 	}
+ 
+ 	return 0;
+-- 
+2.36.1
 
 
