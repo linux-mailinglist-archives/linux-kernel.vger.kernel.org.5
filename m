@@ -1,238 +1,164 @@
-Return-Path: <linux-kernel+bounces-94849-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94850-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF1AA8745E4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 03:06:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF9EB8745E6
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 03:07:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 34B312827D6
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 02:06:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE4721F25BC5
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 02:07:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CA8D5667;
-	Thu,  7 Mar 2024 02:06:06 +0000 (UTC)
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ED976112;
+	Thu,  7 Mar 2024 02:07:01 +0000 (UTC)
+Received: from CHN02-SH0-obe.outbound.protection.partner.outlook.cn (mail-sh0chn02on2109.outbound.protection.partner.outlook.cn [139.219.146.109])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B849646AF
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 02:06:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709777165; cv=none; b=MEF1vEfFuz/qDQYIsVkI3hwKuTqL5rIzj+F/CjiHUh7glKFijYIhvil0ZBI9CcKqSryt1ox/9MzfRH6RKxPB4njpexLTMjmkaF1AVwRFK/5AY5BKsotD/NbFRNz0JLQpg4vtCLVEEXMIYa+X2ElJWqjSj8oYUcU23LnY0MraCwI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709777165; c=relaxed/simple;
-	bh=Y88UC7R46aD1BQgRwNAiSDs/adySgEe/zSig9VydUe0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=gUbeYwDFp4175HsQ7U2pIJy48ZkjQYoRdQCDyWgp+Eu7H1QqfWid3aoZEX3gGywqB+cuGkJgC47BRAG6l3z5SnRKDmQfNl5gDC7eagdOftw5bmx7GT4lWwrZbTPOncsfKR3DJqkG1XgnFXUNYgfz0L2axix0l1vkXMcam0IGfvw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TqszD72dYz2Bf5C;
-	Thu,  7 Mar 2024 10:03:36 +0800 (CST)
-Received: from kwepemm600020.china.huawei.com (unknown [7.193.23.147])
-	by mail.maildlp.com (Postfix) with ESMTPS id A65A0180060;
-	Thu,  7 Mar 2024 10:05:58 +0800 (CST)
-Received: from [10.174.179.160] (10.174.179.160) by
- kwepemm600020.china.huawei.com (7.193.23.147) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 7 Mar 2024 10:05:57 +0800
-Message-ID: <f5df24df-00b4-154c-9805-4b6232f17825@huawei.com>
-Date: Thu, 7 Mar 2024 10:05:56 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29DAE4C98;
+	Thu,  7 Mar 2024 02:06:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.146.109
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709777221; cv=fail; b=qsaq3FYdDKfs/b0VFgAyCH1c3MzDr9TYcvUdtKCFcrmVI7DFegud3u2Pp2jZWR8rGx2Wb0R4zHQiprLgT7oamfHf8O73ZMil6gFy6hd0+zWp/Q5e8cWpq8HZhjHot76yftThCGzfTotzAFBdDIytfv24Hj/DxomwhH4pDuxMIWA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709777221; c=relaxed/simple;
+	bh=bwMkcnHep40Ot8OQSaKz/O/k3Rt+41OmBhzuB37FArw=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=QQVcpY9XmFwh6WY659NkdM0Fr1HGVIn5cvbTdKmsvSFQbNkTNBQHqUppMnMnXhijR462eKFjDg20TM4C4RdDEVoe7+JFZUHPwbKlQUeSRhkjwKar89x/56QhamJl8krlRub06gH/KdjJGQJB84pfKEQE7auTqQkrsLGVglrp3jE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.146.109
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GHmUdBsdPGpO/3Eh0ImInEv7of7/zgF73y4DhGs36yWfpGFI0Nurw/N6zEr3mFHDljNzYSVxdh6b7wUY+x3kKmUd2fFZxRL4lhYtXJrA5E5b5nJGxrhsvwvVKHu1QasqZAGKtBywkUzmLdZcIUn/3vDfEYmrb5G1s+z1D0HtEKlvA0bcD5Eg2T+vQG659WpcZeGbfAQoO1khRrcN16wIKoP7BxWPf4sGd6pIYq0Fvvc75oxmRXBU3VrvJvNtVPmg3hzSxnd6nz8Zcsm86qPQHsXq7DHCIf18zHrZnTrmA6ZoIncDh770j4ulO0GEwz1PoUx3+6X2Bm44p50OTuvwfQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bwMkcnHep40Ot8OQSaKz/O/k3Rt+41OmBhzuB37FArw=;
+ b=DaKcREvOb8z0gYVfgre42jNDqcLujiC/1CaEbA++1fVOF9obLjKSnkPVqR2h9df0/ijoSbkJenJ5VCTl+b6bzvFfyVRiuZKrEuY3djKY/kNYqYenDxhXYMcag5bwDlhX02riNOl8IvPQVlx4Wrkw+u3NZ2lhs0uigAbZifHuL1/gwVy0U3/JkYDRDZu7hbNc+8zvxOBMlt8btVCEc/5yhZjgYkSH3J/Dn7Ld70Ndqv7hE7EqWC25c3MWYITPQapIMCQaSPlKMZzJBUc9wEAoZILhVrwbLUSkii37/WMYCpT6Li9T3hgAgVxbM8gXEytD6Lw8/KaZQnKyuHWfosg7Pw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=starfivetech.com; dmarc=pass action=none
+ header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
+Received: from SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c311:25::10) by SHXPR01MB0799.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c311:25::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.51; Thu, 7 Mar
+ 2024 02:06:54 +0000
+Received: from SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn
+ ([fe80::b0af:4c9d:2058:a344]) by
+ SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn ([fe80::b0af:4c9d:2058:a344%6])
+ with mapi id 15.20.7249.041; Thu, 7 Mar 2024 02:06:54 +0000
+From: Changhuang Liang <changhuang.liang@starfivetech.com>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+CC: Mauro Carvalho Chehab <mchehab@kernel.org>, Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+	Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Jack Zhu
+	<jack.zhu@starfivetech.com>, "linux-media@vger.kernel.org"
+	<linux-media@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "linux-staging@lists.linux.dev"
+	<linux-staging@lists.linux.dev>
+Subject:
+ =?gb2312?B?u9i4tDogW1BBVENIIHYxIDIvN10gc3RhZ2luZzogbWVkaWE6IHN0YXJmaXZl?=
+ =?gb2312?Q?:_Add_raw_pad_for_ISP?=
+Thread-Topic: [PATCH v1 2/7] staging: media: starfive: Add raw pad for ISP
+Thread-Index: AQHab6liNM8G+dS+v0e9QtwEQzWL2rEqxGsAgADCv2A=
+Date: Thu, 7 Mar 2024 02:06:54 +0000
+Message-ID:
+ <SHXPR01MB0671B1E1146F4262749ED88BF220A@SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn>
+References: <20240306093334.9321-1-changhuang.liang@starfivetech.com>
+ <20240306093334.9321-3-changhuang.liang@starfivetech.com>
+ <4d54e516-448a-47ce-abcd-e705896935a7@moroto.mountain>
+In-Reply-To: <4d54e516-448a-47ce-abcd-e705896935a7@moroto.mountain>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=starfivetech.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SHXPR01MB0671:EE_|SHXPR01MB0799:EE_
+x-ms-office365-filtering-correlation-id: a7225a5d-5583-43fe-946d-08dc3e4b42f2
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ H33t2YR3YtiEe0AqKWuLmkkgrtGW6zr9V7C70HhqIVrjCMRYIhLERo3BNm1SmlTbijiSgs8oCDESbFrQUko7Bg5b9I0tLdNw6wIlQ4+TFpENNl4hRIHXM1zfVkYUThAtwBCLr7xi0OGEAa006r/6EHhfFmkWIYVOTid8sQ/TcAQDobGvfe/dFbaTN+rt1/RLK8+ARrJp9ep+L3XI8kagznvGPBnjrjJOOYDm563DTf5QR6U/NCmOGaKfjyFaRMrXSiV7mVlHgqzNpgraOEh0whBql6bL4yZVAAAB1cIsw2zqWo0V9SDIhcr0tmqUljfTlbicX2FxLoDwxVccMiswzkMBam1Wcj8Biw5Pb1/SPIlMu3Kmi+fakcn0i2lVw4rmZKT9qtTZVpBe5qUyFrnQIzMO23LYcfkiSuQ8AVLVQHh8qRwtxYVV6pFHx3LTp5+Aty7qAwFBcc/C1AGzRcjDqamSPNVX7FXm7o/sT6RpE4W72qfjT4DcFk2Dyw2poyAH1XAtMqAK/Th/iFNNUtO1xfvQz7GrEmQqmmJeb3o9+5RtA5crh1rREAZHiLk3TDlFYczvLhj2gqsyTeEaj8y0hARnt9IgD0U1Hw3VTEaCCa3DmkqnZEBInU0hvl9mijOO
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:zh-cn;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(41320700004)(38070700009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?gb2312?B?T05oSEtBbTBxQ0IwWDk4aXIxa1pHL3NPSlpMQ2JLd3QrMUcvQTdOTk9kdm9u?=
+ =?gb2312?B?QldBbzhUNDJaaitzajBiN3B4VERadDZObU16eFpKOUc1ak1ZM2NKa1dOSmwx?=
+ =?gb2312?B?WlpJNVg2ME1KREdGWHVqb2UyZCtuMW96UlRWcEFlMk85TXhZcnRPY0ZhdlBO?=
+ =?gb2312?B?aFJhQzMyMmtZUkdRYTN6VmZNWEpCUXYvR1BML0lHRmI5MVk2NHU5YWVUQU8y?=
+ =?gb2312?B?QlR6azZ4SFByVElFYzFxbjNnZXNhOUt3SHFBQ1lVK2lTQXhxTkt6U3Buc0ty?=
+ =?gb2312?B?dVFzeWtZUzZWb0FkcG1MSE84Q0pKeDhaQjdxbHZUMnFIVndxVDZZOEtWRnJB?=
+ =?gb2312?B?K3FQajVPQ1VQdlY4ckovaVRtT0U5d2V3ekNSaFF1NVBiaXZwMDV3Wmc3YjFQ?=
+ =?gb2312?B?WlhNaWhRR2Mwb2N0UXpibzA2SFVLQnFsTUtydDQ0dDB3SE1SQmZEVE9XOVhX?=
+ =?gb2312?B?akErM0d1S1lJNnFFQmdOMlJBZndUcVRkZG12VGQvMnZUa0cxaFJ4Y3ZEVFFR?=
+ =?gb2312?B?S1R2SHlQQTVsTnNsQXdtYSs5blZyS2F3emlWUW1adHlXemhtYnVodmhETDA1?=
+ =?gb2312?B?ZWxDV0piNklIZFRjRWFPNWRjUi9Ndmg1VzZ6QlUwR0VHVnRSYjd6SGQrNW1p?=
+ =?gb2312?B?VzN5Z3RDcXNGZXVnczNFUEdMbStWU0Mwc0VUdFFiV1Axa1FJRGZMbmFVVGNQ?=
+ =?gb2312?B?ZlRGY1Z3R0JwMENiYjNzODVFOUNiM3F2MHNOOWRJeXNOZ0tlVXE3Q2lHb05M?=
+ =?gb2312?B?ejllQVZwMzUxbGtxUUZpSG9jUXIwZ0xac0tmZ1NDMlB5MkJET3BmQVgyMDEr?=
+ =?gb2312?B?UXp4M0dwMEsyQldUdm1uNlZtaTQ4NGw2ODhQeVZUZ25QdVJKZjkxbVQ5SzZF?=
+ =?gb2312?B?ZkhzQ3hwK3h2YkNHc1FySDIydTJXOWhjaEl5czhHMXc2UGRPNThyUElWWUVh?=
+ =?gb2312?B?R3V1M2pxcVhtR3laNGVFcmNHc0pENzRpTFJsN0U0SVpuQ3J2QmVGdXJ2Ykp0?=
+ =?gb2312?B?SFBPV05udUxmdFpWODNMYWg0d2IzWVNubWs0aWRjZTFuQmZhM3RSa2FHbWYy?=
+ =?gb2312?B?d3k0U05TQ0pIY0VOWXBVOVVkd3BuT1U0QXJhUElrVytpdmdwK2FZZEs0bE1S?=
+ =?gb2312?B?Z3BVMzE2UFBKTXVzYU9JeWFQYlI2RFR0eWtaRXp5UW5wRndMb0UwdVdHSEhR?=
+ =?gb2312?B?VnNZY3hrYkdpVklNWjQ2MmhGVG9YWFNKYWhwRm1iY2pKU1Y3bnlZZ1dPNjNz?=
+ =?gb2312?B?eE54VmdkcjZSSWRma0VTRVYra2pFSmpNVGliakcvb2ZCd0Fxa2RGdFF0bHd1?=
+ =?gb2312?B?a3RXa1NSSzQ3V25ST01FT2ZXbVNadTZoamRSTE9YN1MrRlBCekFCcDBUekpw?=
+ =?gb2312?B?dmhBUm1wa3BiR0lhajc0ZVlGS0FLd2xEVGFTbXlFS2hkS0wxcFF1RXhSZUZQ?=
+ =?gb2312?B?cjkyMUc3bDdyN1VHZGtNb1M3a1hIeTgxbjRXd3NyR3lVdFI3Q05BMTV1YldZ?=
+ =?gb2312?B?Y1RLZGJzbHo4Z0xGaVQrSHdsc0FKc1FGVE1TRGhEczdFUEl0aEhHZ0VsZnMv?=
+ =?gb2312?B?Uk5hbnhzeWV3TkVaSnpIZ3JjMzdsQWc5NlI1dXBXTENvR3U2Mkp1elhUb3Nz?=
+ =?gb2312?B?QlpMSnNaOUFtVkdmdUFJaDlRUGlFR0dURm9qZlF5eG9IMWtSYm5XM3A4V283?=
+ =?gb2312?B?NDFTdzg1OC80dnI0My93V1JuS1pxN21Sdm96ZjlkbXRuTzRGcEtkYlZ6TGtk?=
+ =?gb2312?B?clB3dHZrY3Y3dGxXZlVtOVZVVE5SZXBRNk0rbkJ6dmZzb3hTY1RjOGgvb2la?=
+ =?gb2312?B?R1dubjhpNDZsMDBTTWlKQzkyU0picWlIdFdoeTltNlpKYUcvQlBJbC9VZHNh?=
+ =?gb2312?B?OFFEaUdSdHY1N21FU1orNXZheHNZTDU5MzFTUnpEdXEvMW96Y3FoMmpaT2VC?=
+ =?gb2312?B?OEtYdlloM0FuNFh0VEs5dnlzeG1aRTl3ZXZmQ2cvdFkwOEVNbGI2L0NhdkJV?=
+ =?gb2312?B?TmYzY0FQZ0EyV0Z0Y1M2c2ZReHZUUDRmQS9iY1lkQXdYYWErajJrNTA2V3dS?=
+ =?gb2312?B?YldXM2d1b3pkTElYSGxRa0FPWTlKWG93K3R3MzZBNjYrSWpWOFNBbDBaQTU2?=
+ =?gb2312?B?MHliank4Q3VGblM3UzRvUklWY3FoWHltbXVEM2ZONk1ZSjRYVmZxT0kvMUxj?=
+ =?gb2312?B?Tmc9PQ==?=
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH v4] filemap: avoid unnecessary major faults in
- filemap_fault()
-Content-Language: en-US
-To: David Hildenbrand <david@redhat.com>, <linux-mm@kvack.org>,
-	<linux-kernel@vger.kernel.org>
-CC: <akpm@linux-foundation.org>, <willy@infradead.org>,
-	<ying.huang@intel.com>, <fengwei.yin@intel.com>,
-	<aneesh.kumar@linux.ibm.com>, <shy828301@gmail.com>, <hughd@google.com>,
-	<wangkefeng.wang@huawei.com>, <sunnanyong@huawei.com>
-References: <20240306083809.1236634-1-zhangpeng362@huawei.com>
- <5691dff3-a944-42f2-9848-ea7287a89192@redhat.com>
-From: "zhangpeng (AS)" <zhangpeng362@huawei.com>
-In-Reply-To: <5691dff3-a944-42f2-9848-ea7287a89192@redhat.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600020.china.huawei.com (7.193.23.147)
+X-OriginatorOrg: starfivetech.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn
+X-MS-Exchange-CrossTenant-Network-Message-Id: a7225a5d-5583-43fe-946d-08dc3e4b42f2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Mar 2024 02:06:54.5867
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: uJboYlcB2hRLoVajUbVj8T6Qa8SnxSP1OlgdQsaSOt+aeZoNujRXGsM2R1eIGBdyV8DGL2LUnFEMtImbpEGspZMSYI7RUX07XDIEmjV95hmRl49FoWyiexLoM6liNnjT
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SHXPR01MB0799
 
-On 2024/3/6 18:24, David Hildenbrand wrote:
-
-> On 06.03.24 09:38, Peng Zhang wrote:
->> From: ZhangPeng <zhangpeng362@huawei.com>
->>
->> The major fault occurred when using mlockall(MCL_CURRENT | MCL_FUTURE)
->> in application, which leading to an unexpected issue[1].
->>
->> This caused by temporarily cleared PTE during a read+clear/modify/write
->> update of the PTE, eg, do_numa_page()/change_pte_range().
->>
->> For the data segment of the user-mode program, the global variable area
->> is a private mapping. After the pagecache is loaded, the private 
->> anonymous
->> page is generated after the COW is triggered. Mlockall can lock COW 
->> pages
->> (anonymous pages), but the original file pages cannot be locked and may
->> be reclaimed. If the global variable (private anon page) is accessed 
->> when
->> vmf->pte is zeroed in numa fault, a file page fault will be triggered.
->> At this time, the original private file page may have been reclaimed.
->> If the page cache is not available at this time, a major fault will be
->> triggered and the file will be read, causing additional overhead.
->>
->> This issue affects our traffic analysis service. The inbound traffic is
->> heavy. If a major fault occurs, the I/O schedule is triggered and the
->> original I/O is suspended. Generally, the I/O schedule is 0.7 ms. If
->> other applications are operating disks, the system needs to wait for
->> more than 10 ms. However, the inbound traffic is heavy and the NIC 
->> buffer
->> is small. As a result, packet loss occurs. But the traffic analysis 
->> service
->> can't tolerate packet loss.
->>
->> Fix this by holding PTL and rechecking the PTE in filemap_fault() before
->> triggering a major fault. We do this check only if vma is VM_LOCKED to
->> reduce the performance impact in common scenarios.
->>
->> In our product environment, there were 7 major faults every 12 hours.
->> After the patch is applied, no major fault have been triggered.
->>
->> Testing file page read and write page fault performance in ext4 and
->> ramdisk using will-it-scale[2] on a x86 physical machine. The data is
->> the average change compared with the mainline after the patch is 
->> applied.
->> The test results are within the range of fluctuation. We do this check
->> only if vma is VM_LOCKED, therefore, no performance regressions is 
->> caused
->> for most common cases.
->>
->> The test results are as follows:
->>                            processes processes_idle  threads 
->> threads_idle
->> ext4    private file write:  0.22%    0.26%           1.21% -0.15%
->> ext4    private file  read:  0.03%    1.00%           1.39% 0.34%
->> ext4    shared  file write: -0.50%   -0.02%          -0.14% -0.02%
->> ramdisk private file write:  0.07%    0.02%           0.53% 0.04%
->> ramdisk private file  read:  0.01%    1.60%          -0.32% -0.02%
->>
->> [1] 
->> https://lore.kernel.org/linux-mm/9e62fd9a-bee0-52bf-50a7-498fa17434ee@huawei.com/
->> [2] https://github.com/antonblanchard/will-it-scale/
->>
->> Suggested-by: "Huang, Ying" <ying.huang@intel.com>
->> Suggested-by: David Hildenbrand <david@redhat.com>
->> Signed-off-by: ZhangPeng <zhangpeng362@huawei.com>
->> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
->> ---
->> v3->v4:
->> - Update the performance data and commit message
->> - Check PTE without lock firstly per Huang, Ying
->> - Update comments for recheck function per David Hildenbrand
->> - Simply return 0 to make it easier to read per David Hildenbrand
->> - Check !FAULT_FLAG_ORIG_PTE_VALID instead of pmd_none()
->>
->> v2->v3:
->> - Do this check only if vma is VM_LOCKED per David Hildenbrand
->> - Hold PTL and recheck the PTE
->> - Place the recheck code in a new function filemap_fault_recheck_pte()
->>
->> v1->v2:
->> - Add more test results per Huang, Ying
->> - Add more comments before check PTE per Huang, Ying, David Hildenbrand
->>    and Yin Fengwei
->> - Change pte_offset_map_nolock to pte_offset_map as the PTL won't
->>    be used
->>
->> RFC->v1:
->> - Add error handling when ptep == NULL per Huang, Ying and Matthew
->>    Wilcox
->> - Check the PTE without acquiring PTL in filemap_fault(), suggested by
->>    Huang, Ying and Yin Fengwei
->> - Add pmd_none() check before PTE map
->> - Update commit message and add performance test information
->>
->>   mm/filemap.c | 46 ++++++++++++++++++++++++++++++++++++++++++++++
->>   1 file changed, 46 insertions(+)
->>
->> diff --git a/mm/filemap.c b/mm/filemap.c
->> index b4858d89f1b1..31ab455c4537 100644
->> --- a/mm/filemap.c
->> +++ b/mm/filemap.c
->> @@ -3181,6 +3181,48 @@ static struct file 
->> *do_async_mmap_readahead(struct vm_fault *vmf,
->>       return fpin;
->>   }
->>   +static vm_fault_t filemap_fault_recheck_pte_none(struct vm_fault 
->> *vmf)
->> +{
->> +    struct vm_area_struct *vma = vmf->vma;
->> +    vm_fault_t ret = 0;
->> +    pte_t *ptep;
->> +
->> +    /*
->> +     * We might have COW'ed a pagecache folio and might now have an 
->> mlocked
->> +     * anon folio mapped. The original pagecache folio is not 
->> mlocked and
->> +     * might have been evicted. During a read+clear/modify/write 
->> update of
->> +     * the PTE, such as done in do_numa_page()/change_pte_range(), we
->> +     * temporarily clear the PTE under PT lock and might detect it 
->> here as
->> +     * "none" when not holding the PT lock.
->> +     *
->> +     * Not rechecking the PTE under PT lock could result in an 
->> unexpected
->> +     * major fault in an mlock'ed region. Recheck only for this special
->> +     * scenario while holding the PT lock, to not degrade non-mlocked
->> +     * scenarios. Recheck the PTE without PT lock firstly, thereby 
->> reducing
->> +     * the number of times we hold PT lock.
->> +     */
->> +    if (!(vma->vm_flags & VM_LOCKED))
->> +        return 0;
->> +
->> +    if (!(vmf->flags & FAULT_FLAG_ORIG_PTE_VALID))
->> +        return 0;
->> +
->> +    ptep = pte_offset_map(vmf->pmd, vmf->address);
->> +    if (unlikely(!ptep))
->> +        return VM_FAULT_NOPAGE;
->> +
->> +    if (unlikely(!pte_none(ptep_get_lockless(ptep)))) {
->> +        ret = VM_FAULT_NOPAGE;
->> +    } else {
->> +        spin_lock(vmf->ptl);
->
-> I assume the assumption is that vmf->ptl is still set from 
-> handle_pte_fault(). But in the meantime, we did a pte_unmap(vmf->pte).
->
-> Looking at other users of vmf->ptl, this here sticks out.
->
-> I would suggest replacing the pte_offset_map() above by a 
-> pte_offset_map_nolock() that gives us the ptl.
->
->
-I'll replace it in the next version.
-
-Thanks!
-
-> With that
->
-> Reviewed-by: David Hildenbrand <david@redhat.com>
->
--- 
-Best Regards,
-Peng
-
+SGkgRGFuDQoNCj4gUmU6IFtQQVRDSCB2MSAyLzddIHN0YWdpbmc6IG1lZGlhOiBzdGFyZml2ZTog
+QWRkIHJhdyBwYWQgZm9yIElTUA0KPiANCj4gT24gV2VkLCBNYXIgMDYsIDIwMjQgYXQgMDE6MzM6
+MjlBTSAtMDgwMCwgQ2hhbmdodWFuZyBMaWFuZyB3cm90ZToNCj4gPiBBZGQgcmF3IHBhZCBmb3Ig
+SVNQLCBpdCBzdXBwb3J0ZWQgdGhlIGNvbnZlcnNpb24gb2YgUkFXMTAgaW50byBSQVcxMi4NCj4g
+Pg0KPiANCj4gVG8gYmUgaG9uZXN0LCBJIGRvbid0IHVuZGVyc3RhbmQgd2hhdCAiaXQgc3VwcG9y
+dGVkIHRoZSBjb252ZXJzaW9uIG9mDQo+IFJBVzEwIGludG8gUkFXMTIiIG1lYW5zLiAgSSBkb24n
+dCB0aGluayB0aGF0IHRoaXMgcGF0Y2ggaGFzIGFueSBpbXBhY3Qgb24NCj4gdXNlciBzcGFjZSBi
+dXQgSSdtIG5vdCAxMDAlIHN1cmUuDQo+IA0KDQpGb3IgU3RhckZpdmUgSVNQLCB0aGUgaW5wdXQg
+Zm9ybWF0IGlzIFJBVyAxMCwgd2hpY2ggaXMgY29udmVydGVkIHRvIFJBVyAxMiBhZnRlciBJU1Ag
+UkFXIHBhZCBvdXRwdXQuDQoNCj4gQSBsb3Qgb2YgdGhpcyBwYXRjaCBpcyBqdXN0IHJlZm9ybWF0
+aW5nIHN0dWZmIGFuZCBpdCB3b3VsZCBiZSBlYXNpZXIgdG8gcmV2aWV3IGlmDQo+IHRoZSByZWZv
+cm1hdGluZyB3ZXJlIHNlcGFyYXRlZCBpbnRvIGEgc2VwYXJhdGUgcGF0Y2guDQo+IA0KPiBwYXRj
+aCAyOiBDbGVhbiBwYWQgc2VsZWN0aW9uIGluIGlzcF90cnlfZm9ybWF0KCkNCj4gDQo+IFRoZSBj
+b2RlIHRvIHNlbGVjdCBpc3BfZGV2LT5mb3JtYXRzW10gaXMgb3Zlcmx5IGNvbXBsaWNhdGVkLiAg
+V2UgY2FuIGp1c3QgdXNlDQo+IHRoZSAicGFkIiBhcyB0aGUgaW5kZXguICBUaGlzIHdpbGwgbWFr
+aW5nIGFkZGluZyBuZXcgcGFkcyBlYXNpZXIgaW4gZnV0dXJlDQo+IHBhdGNoZXMuICBObyBmdW5j
+dGlvbmFsIGNoYW5nZS4NCj4gDQo+IHBhdGNoIDM6IEFkZCByYXcgcGFkIGZvciBJU1ANCj4gDQoN
+ClllcywgdGhpcyBwYXRjaCBjYW4gYWxzbyBiZSBzcGxpdCBpbnRvIHR3byBwYXRjaGVzDQoNCnJl
+Z2FyZHMsDQpDaGFuZ2h1YW5nDQo=
 
