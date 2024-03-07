@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-95724-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95726-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B4998751BE
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:24:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E28038751C2
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:25:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 364C32860E5
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:24:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7213CB2657E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:25:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 191BE12F584;
-	Thu,  7 Mar 2024 14:23:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17E8012FF84;
+	Thu,  7 Mar 2024 14:23:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=infotecs.ru header.i=@infotecs.ru header.b="BHDg436W"
+	dkim=pass (1024-bit key) header.d=infotecs.ru header.i=@infotecs.ru header.b="CSKC6bon"
 Received: from mx0.infotecs.ru (mx0.infotecs.ru [91.244.183.115])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4C0912D745;
-	Thu,  7 Mar 2024 14:23:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E18F412F398;
+	Thu,  7 Mar 2024 14:23:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.244.183.115
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709821435; cv=none; b=KxQgsfD7QZlf2jOH6s3rGLdfJ9McvchUE13coP/kV9iwjkTlq8C7t0pEmAdrYhlKeoOaPZ6qQStlAj0qheswNM0tjo/exh2addlkMBV3ksSW0rQA4EZuDnjXChnB8GyltXOw/ZleDPtTG2zhGrbHjL5cr9IiWda+o2MXJhsVfaE=
+	t=1709821437; cv=none; b=WJzlJUUEl/OH+mHmMmZ/vAplUwQvv3TlSmTceJTlqViv3VPpFXwSSlCvHetjdy0Ck69iiEaLdxnaf908+C7aDpoQhgDo9Psf6+4BbBm+xvW+9V3qT0WmbHvtVPhRt0szabn015U5QvjsnrcQbkLlUrVvYh6TrCIuAw9bh50DThg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709821435; c=relaxed/simple;
-	bh=CEXkOS+mriQWsWIUYob9llJ3dlmRIkZyGVNcMX66MRQ=;
+	s=arc-20240116; t=1709821437; c=relaxed/simple;
+	bh=vtO1NLo5DUmetb6YbznmKN592S3ILscEX8TxvmHk+mM=;
 	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=B4MGGbLbo1nDpGED9LGHD5fVdUOO0Ib2SeSG0q10y0P64KU+6GFn5knKLwr3pgwfM0XhorHMhNxASF2wtxGdkUoG/unmWjc66MATYz4juiwH1GAHh2k8k+JWkqh6hhnwnHAGefbcXCemt3scu4jxPJTRrNz3mbkdcs4pf23Grr4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=infotecs.ru; spf=pass smtp.mailfrom=infotecs.ru; dkim=pass (1024-bit key) header.d=infotecs.ru header.i=@infotecs.ru header.b=BHDg436W; arc=none smtp.client-ip=91.244.183.115
+	 Content-Type:MIME-Version; b=JhoV89O2m5DPjF2IyHNii1qKoTKDe3DX4Shy+lBv2g2MvJ40qvXWAOblkBRZAGVeSH0a7/uwrBMBkHDG6dpFxgnzt9eY2M9gMf54WRruOg8Z4SiDKBkvcDhr55aumHBPB01tKEZjYYRJODR5AZEZtKLWBTubLs8E/mCjkB47bbQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=infotecs.ru; spf=pass smtp.mailfrom=infotecs.ru; dkim=pass (1024-bit key) header.d=infotecs.ru header.i=@infotecs.ru header.b=CSKC6bon; arc=none smtp.client-ip=91.244.183.115
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=infotecs.ru
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=infotecs.ru
 Received: from mx0.infotecs-nt (localhost [127.0.0.1])
-	by mx0.infotecs.ru (Postfix) with ESMTP id 9E4EB14CD2A3;
-	Thu,  7 Mar 2024 17:23:50 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx0.infotecs.ru 9E4EB14CD2A3
+	by mx0.infotecs.ru (Postfix) with ESMTP id 645FA14CD2C1;
+	Thu,  7 Mar 2024 17:23:51 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx0.infotecs.ru 645FA14CD2C1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=infotecs.ru; s=mx;
-	t=1709821430; bh=jwhtPOdDBSnbts5GSh1Hp50/yNRBHBaJHIGVXA5KGK0=;
+	t=1709821431; bh=TH5DEcHLIXFsRrfmZsIlzESb7JbDicH3qRJLGnlj6io=;
 	h=From:To:CC:Subject:Date:References:In-Reply-To:From;
-	b=BHDg436WgP0hlp57M+1zZLDvLpDPdST9IJk9inpZGrX3QoU1kwxYrleLbqICi3gHL
-	 QoEcogViHS5b3jihvPMxcSvvQah2x3IVQR3IncyCBLChMWIW8mkV3lThxCGtFeRFcB
-	 zfKdKlkla7/N2Kan8Ym2UplTiwMxvq5/NX7CoPpA=
+	b=CSKC6bonPljDwT3yx3aRwX2VOnIFebvFMfc8W3Je1y75GndH5uCu9+Qm5tULHif98
+	 ExnPzMWxYYjLPEmSQoo6dgI5+fwQSyGVs4XIJ+wuVLyob84qrQZOuCh6ysmRF50htN
+	 zM/YIQMiAvcFzinAbhKliDCNSXfMk2LeMLlf3INw=
 Received: from msk-exch-02.infotecs-nt (msk-exch-02.infotecs-nt [10.0.7.192])
-	by mx0.infotecs-nt (Postfix) with ESMTP id 9979431923B0;
-	Thu,  7 Mar 2024 17:23:50 +0300 (MSK)
+	by mx0.infotecs-nt (Postfix) with ESMTP id 60E2231923B0;
+	Thu,  7 Mar 2024 17:23:51 +0300 (MSK)
 From: Gavrilov Ilia <Ilia.Gavrilov@infotecs.ru>
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-CC: "David S. Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>,
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, "Paolo
- Abeni" <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
+To: Martin Schiller <ms@dev.tdt.de>
+CC: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+	<pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
+	"linux-x25@vger.kernel.org" <linux-x25@vger.kernel.org>,
 	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
 	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>, "Willem de
- Bruijn" <willemb@google.com>
-Subject: [PATCH net-next v2 2/6] udp: fix incorrect parameter validation in
- the udp_lib_getsockopt() function
-Thread-Topic: [PATCH net-next v2 2/6] udp: fix incorrect parameter validation
- in the udp_lib_getsockopt() function
-Thread-Index: AQHacJsSjDbf8+7IiEaacwBYhQfFYA==
+	"lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>
+Subject: [PATCH net-next v2 6/6] net/x25: fix incorrect parameter validation
+ in the x25_getsockopt() function
+Thread-Topic: [PATCH net-next v2 6/6] net/x25: fix incorrect parameter
+ validation in the x25_getsockopt() function
+Thread-Index: AQHacJsTcTQB2aBL6kWXuOtcpnTzVg==
 Date: Thu, 7 Mar 2024 14:23:50 +0000
-Message-ID: <20240307142030.2708698-3-Ilia.Gavrilov@infotecs.ru>
+Message-ID: <20240307142030.2708698-7-Ilia.Gavrilov@infotecs.ru>
 References: <20240307142030.2708698-1-Ilia.Gavrilov@infotecs.ru>
 In-Reply-To: <20240307142030.2708698-1-Ilia.Gavrilov@infotecs.ru>
 Accept-Language: ru-RU, en-US
@@ -90,33 +90,31 @@ To fix the logic, check 'len' as read from 'optlen',
 where the types of relevant variables are (signed) int.
 
 Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Reviewed-by: Willem de Bruijn <willemb@google.com>
 Signed-off-by: Gavrilov Ilia <Ilia.Gavrilov@infotecs.ru>
 ---
-V2:
- - reword the patch description
- net/ipv4/udp.c | 4 ++--
+ net/x25/af_x25.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-index e474b201900f..17231c0f8830 100644
---- a/net/ipv4/udp.c
-+++ b/net/ipv4/udp.c
-@@ -2792,11 +2792,11 @@ int udp_lib_getsockopt(struct sock *sk, int level, =
-int optname,
+diff --git a/net/x25/af_x25.c b/net/x25/af_x25.c
+index f7a7c7798c3b..d18d51412cc0 100644
+--- a/net/x25/af_x25.c
++++ b/net/x25/af_x25.c
+@@ -460,12 +460,12 @@ static int x25_getsockopt(struct socket *sock, int le=
+vel, int optname,
  	if (get_user(len, optlen))
- 		return -EFAULT;
+ 		goto out;
 =20
 -	len =3D min_t(unsigned int, len, sizeof(int));
 -
+ 	rc =3D -EINVAL;
  	if (len < 0)
- 		return -EINVAL;
+ 		goto out;
 =20
 +	len =3D min_t(unsigned int, len, sizeof(int));
 +
- 	switch (optname) {
- 	case UDP_CORK:
- 		val =3D udp_test_bit(CORK, sk);
+ 	rc =3D -EFAULT;
+ 	if (put_user(len, optlen))
+ 		goto out;
 --=20
 2.39.2
 
