@@ -1,121 +1,127 @@
-Return-Path: <linux-kernel+bounces-95759-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95758-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07CD1875223
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:43:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA4FD87521A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:43:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7B4C2843BC
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:43:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6AC761F23EDF
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:43:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB6B91EB2F;
-	Thu,  7 Mar 2024 14:43:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=gaisler.com header.i=@gaisler.com header.b="cI0rJs/n"
-Received: from smtp-out3.simply.com (smtp-out3.simply.com [94.231.106.210])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 338CC127B7C;
+	Thu,  7 Mar 2024 14:42:57 +0000 (UTC)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 246131E865;
-	Thu,  7 Mar 2024 14:43:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=94.231.106.210
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41E5A1B94D;
+	Thu,  7 Mar 2024 14:42:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.201.40.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709822609; cv=none; b=Wy/8U4y9IPcS9DNVwI7eoJcl8/vBgwIYL6hBXXM/kfrsozON6GTtw/vnOL8CSBVYKi4GPPEJP4/fcbJvaT4SVRifJUWkqdGf5PjGBlwIfrTPokmXYWHcLJHLCWAmgUrErc7RJwbraCTv0mNT4MhrCJNCoeClBltUIwRUqM5Xe/s=
+	t=1709822576; cv=none; b=aRDVNX3o4agt4JmMBYLYAzj+MDpZqHQ8QoW++ZVF8wi9xBmDwAHmjSxQ4YBY8DpXFbs/ZynAswfbXA9N0XpeaUer6gLUJYPlZnkcL+uNK1LDZVM7tKF7KRlixeNaq8ZKpKxXC9+J8E+oE6wZ+1xCWfCI907c0l7xMXmlCGuEqDw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709822609; c=relaxed/simple;
-	bh=YmLmZj77zkxuMJT0tJQG78tQTce7Gx17YscP/2PSIVQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VuI2IU3Don5LTfdTMj0zDXP7EpteXWs5V/uymevruUIC+1m6tdK9uI/igcIQbRoxCKAGB+MoEUFhBDauEqjOdRNEbX2q7KL3FRZHs2NaNGE5dcVxXUxEVx8xA2jGqWvhFYjdoxr8p4RtFXZGCFIjjPBiD/yHixy6XBJDwzLcnFQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gaisler.com; spf=pass smtp.mailfrom=gaisler.com; dkim=pass (1024-bit key) header.d=gaisler.com header.i=@gaisler.com header.b=cI0rJs/n; arc=none smtp.client-ip=94.231.106.210
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gaisler.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gaisler.com
+	s=arc-20240116; t=1709822576; c=relaxed/simple;
+	bh=Hriwqv1VafwSnAEQgWhG3BftPtOdGMoUT9XyeEe3nbQ=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 MIME-Version:Content-Type; b=JPtZKRfQuQlJQbNPs930+AteCp/FadmERLyZHcNx4sHzxLiVPQ9BW8HyE8+VnkztBqh07Xv9j2zsLTG5XzZ9tjSIqm+oPCPCWtVs/m33UNDMbLiAHkarR5nnLCFPt04esQL4BWL7vfU50zIZAcdA8nFApxPojmUpsoAptRh2rb4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at; spf=fail smtp.mailfrom=nod.at; arc=none smtp.client-ip=195.201.40.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nod.at
 Received: from localhost (localhost [127.0.0.1])
-	by smtp.simply.com (Simply.com) with ESMTP id 4TrBqw0YTHz6871;
-	Thu,  7 Mar 2024 15:43:24 +0100 (CET)
-Received: from [192.168.0.25] (h-98-128-223-123.NA.cust.bahnhof.se [98.128.223.123])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(Client did not present a certificate)
-	by smtp.simply.com (Simply.com) with ESMTPSA id 4TrBpz5w11z686W;
-	Thu,  7 Mar 2024 15:42:34 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gaisler.com;
-	s=unoeuro; t=1709822603;
-	bh=9Vrev7IgmUrXRDq+27lTQvP4S7JHkTqf6RpOH6wBrY8=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=cI0rJs/n2a5JovKEHh1TYmBzRxJ87Bt5Bk9Xi2ViHf6tqC5yT0pNhekjnIplLA6zG
-	 +pFOMlnBFON+gaT+yppwquMwOHjqvX6GtdSnkG7oU1AsXu0gfEswgGVp6gSOiWhYfY
-	 6DpsBN4xKX8XZflxM1403bFN0rq2D47eZSFJCk/Y=
-Message-ID: <86cf6c72-e15a-4aa1-8c4b-499ec90a9a82@gaisler.com>
-Date: Thu, 7 Mar 2024 15:42:32 +0100
+	by lithops.sigma-star.at (Postfix) with ESMTP id DAC1B644CE97;
+	Thu,  7 Mar 2024 15:42:50 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id CIhG1qGm-RNL; Thu,  7 Mar 2024 15:42:50 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 58EF0644CE96;
+	Thu,  7 Mar 2024 15:42:50 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id 7EDauf2v-cth; Thu,  7 Mar 2024 15:42:50 +0100 (CET)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 1DE0A644CE90;
+	Thu,  7 Mar 2024 15:42:50 +0100 (CET)
+Date: Thu, 7 Mar 2024 15:42:49 +0100 (CET)
+From: Richard Weinberger <richard@nod.at>
+To: David Hildenbrand <david@redhat.com>
+Cc: linux-mm <linux-mm@kvack.org>, linux-fsdevel <linux-fsdevel@vger.kernel.org>, 
+	linux-kernel <linux-kernel@vger.kernel.org>, 
+	Linux Doc Mailing List <linux-doc@vger.kernel.org>, 
+	upstream+pagemap <upstream+pagemap@sigma-star.at>, 
+	adobriyan <adobriyan@gmail.com>, 
+	wangkefeng wang <wangkefeng.wang@huawei.com>, 
+	ryan roberts <ryan.roberts@arm.com>, hughd <hughd@google.com>, 
+	peterx <peterx@redhat.com>, avagin <avagin@google.com>, 
+	lstoakes <lstoakes@gmail.com>, vbabka <vbabka@suse.cz>, 
+	Andrew Morton <akpm@linux-foundation.org>, 
+	usama anjum <usama.anjum@collabora.com>, 
+	Jonathan Corbet <corbet@lwn.net>
+Message-ID: <2055158015.23529.1709822569814.JavaMail.zimbra@nod.at>
+In-Reply-To: <a73c78be-8cdc-4f0e-b72f-e5255c906a5f@redhat.com>
+References: <20240306232339.29659-1-richard@nod.at> <d673247b-a67b-43e1-a947-18fdae5f0ea1@redhat.com> <1058679077.23275.1709809843605.JavaMail.zimbra@nod.at> <7d9321db-a3c1-4593-91fa-c7f97bd9eecd@redhat.com> <1525238492.23321.1709812267495.JavaMail.zimbra@nod.at> <0644814b-869b-4694-bdb1-bab4e6186136@redhat.com> <a73c78be-8cdc-4f0e-b72f-e5255c906a5f@redhat.com>
+Subject: Re: [PATCH 1/2] [RFC] proc: pagemap: Expose whether a PTE is
+ writable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/3] arch: define CONFIG_PAGE_SIZE_*KB on all
- architectures
-Content-Language: en-US
-To: Arnd Bergmann <arnd@kernel.org>,
- Anna-Maria Behnsen <anna-maria@linutronix.de>,
- Thomas Gleixner <tglx@linutronix.de>,
- Vincenzo Frascino <vincenzo.frascino@arm.com>,
- Kees Cook <keescook@chromium.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Matt Turner <mattst88@gmail.com>,
- Vineet Gupta <vgupta@kernel.org>, Russell King <linux@armlinux.org.uk>,
- Catalin Marinas <catalin.marinas@arm.com>, Guo Ren <guoren@kernel.org>,
- Brian Cain <bcain@quicinc.com>, Huacai Chen <chenhuacai@kernel.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>, Michal Simek <monstr@monstr.eu>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Helge Deller
- <deller@gmx.de>, Michael Ellerman <mpe@ellerman.id.au>,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- Palmer Dabbelt <palmer@dabbelt.com>,
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- Richard Weinberger <richard@nod.at>, x86@kernel.org,
- Max Filippov <jcmvbkbc@gmail.com>, Andy Lutomirski <luto@kernel.org>,
- Jan Kiszka <jan.kiszka@siemens.com>, Kieran Bingham <kbingham@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
- linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
- linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
- linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
- linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
- linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
- sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
- Heiko Carstens <hca@linux.ibm.com>, Stafford Horne <shorne@gmail.com>,
- Johannes Berg <johannes@sipsolutions.net>
-References: <20240306141453.3900574-1-arnd@kernel.org>
- <20240306141453.3900574-4-arnd@kernel.org>
-From: Andreas Larsson <andreas@gaisler.com>
-In-Reply-To: <20240306141453.3900574-4-arnd@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
+Thread-Topic: proc: pagemap: Expose whether a PTE is writable
+Thread-Index: ALtl01Wd8Zr0Arr/iwJcm8Sl/cTDKQ==
 
-On 2024-03-06 15:14, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> Most architectures only support a single hardcoded page size. In order
-> to ensure that each one of these sets the corresponding Kconfig symbols,
-> change over the PAGE_SHIFT definition to the common one and allow
-> only the hardware page size to be selected.
-> 
-> Acked-by: Guo Ren <guoren@kernel.org>
-> Acked-by: Heiko Carstens <hca@linux.ibm.com>
-> Acked-by: Stafford Horne <shorne@gmail.com>
-> Acked-by: Johannes Berg <johannes@sipsolutions.net>
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
-> No changes from v1
+----- Urspr=C3=BCngliche Mail -----
+> Von: "David Hildenbrand" <david@redhat.com>
+>> One destructive way to find out in a writable mapping if the page would
+>> actually get remapped:
+>>=20
+>> a) Read the PFN of a virtual address using pagemap
+>> b) Write to the virtual address using /proc/pid/mem
+>> c) Read the PFN of a virtual address using pagemap to see if it changed
+>>=20
+>> If the application can be paused, you could read+write a single byte,
+>> turning it non-destructive.
 
->  arch/sparc/Kconfig                 | 2 ++
->  arch/sparc/include/asm/page_32.h   | 2 +-
->  arch/sparc/include/asm/page_64.h   | 3 +--
+I'm not so sure whether this works well if a mapping is device memory or su=
+ch.
+=20
+>> But that would still "hide" the remap-writable-type faults.
 
-Acked-by: Andreas Larsson <andreas@gaisler.com>
+Xenomai will tell me anyway when there was a page fault while a real time t=
+hread
+had the CPU.
+My idea was having a tool to check before the applications enters the criti=
+cal phase.
+
+>>> I fully understand that my use case is a corner case and anything but m=
+ainline.
+>>> While developing my debug tool I thought that improving the pagemap int=
+erface
+>>> might help others too.
+>>=20
+>> I'm fine with this (can be a helpful debugging tool for some other cases
+>> as well, and IIRC we don't have another interface to introspect this),
+>> as long as we properly document the corner case that there could still
+>> be writefaults on some architectures when the page would not be
+>> accessed/dirty yet.
+
+Cool. :)
+=20
+>=20
+> [and I just recall, there are some other corner cases. For example,
+> pages in a shadow stack can be pte_write(), but they can only be written
+> by HW indirectly when modifying the stack, and ordinary write access
+> would still fault]
+
+Yeah, I noticed this while browsing through various pte_write() implementat=
+ions.
+That's a tradeoff I can live with.
 
 Thanks,
-Andreas
-
+//richard
 
