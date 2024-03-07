@@ -1,65 +1,59 @@
-Return-Path: <linux-kernel+bounces-96317-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96318-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FAE3875A1F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 23:18:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F4A9875A26
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 23:19:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A56FFB21C19
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 22:18:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 918551C217D2
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 22:19:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 933F813EFE9;
-	Thu,  7 Mar 2024 22:17:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA38313E7F4;
+	Thu,  7 Mar 2024 22:19:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="lF9P/7XK"
-Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tsbNL5fT"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B96FE13DB9A
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 22:17:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03193138480;
+	Thu,  7 Mar 2024 22:19:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709849865; cv=none; b=YWqVajA7VES93Rj7SXSfaPgMn1KOvHAz9eyEBEtMSXYZgBns9u/HW+ObVn1oaux9yAr6WsTVDcUmwPdmTjcigU9e7JQrJf9Ms9jZF/JmdRcD6s/+1JIhJmmTj3wNYBdvOEG1qrDSmtoj2brbOeKGHyuxNBZziJQIHqvt3OYHwOQ=
+	t=1709849951; cv=none; b=qp0BEenpGx1l31rjXIs1yGZg4mqewfsAg+c4y44MsAbAdDGlsSkMCdcbhykT3DlPmwwUiHZkZrd/06584cAYKi29QDb9pQDnNv2Rxr089XIiaJDQ4PJS2IFgsiO+PLKmqHmTofzn0FGQZygZS9qCLgx8GiKuESLupuClTR8/RGY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709849865; c=relaxed/simple;
-	bh=mcVv85Y4EzW+ezvYao5rOnNjIVcYIVFYdvdOhYlj1TM=;
+	s=arc-20240116; t=1709849951; c=relaxed/simple;
+	bh=NAFhcgfMUP7spt7IIedCEfy35hhbhzwIEFEoh/NeEfM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=vGsWY5xQILcuwmLSqPQI8oJ8+yagoHqWUOzJL2fJdMNRrXtDNf5yvr5E3tbJq983cmMDgIAAk6jwAXBw1ChbMQI87vdeOo+hMJea9QBVBdUXK/Rc7BIaeS0DPNkMgNUV2YK3Vl4jg2wTUjY8ZAoxZj9AU9UOlCP0ZTRgX1kxYhQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=lF9P/7XK; arc=none smtp.client-ip=91.218.175.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 7 Mar 2024 22:17:34 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1709849860;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vYSZIyK2isZFgtLWNp5tqo04dM1Ssq7AMjL+0jjmigk=;
-	b=lF9P/7XKffvo6S5bw+4ysZaBIjZG/dHK8JhCDJA2mGMWzAK2oaEfpUzw7dj97wwGyTXJk0
-	wC8kkhkP8rXTBQYQT+Ary6L3NMfXgHBNmuAleTwon/jqaZKHFBd56XfDWnar0Iu4xK/HZO
-	2HBOd4bd6ljj8WvXppsSnlg3XzPOvPY=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Oliver Upton <oliver.upton@linux.dev>
-To: Colin Ian King <colin.i.king@gmail.com>
-Cc: Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
-	Anup Patel <anup@brainfault.org>,
-	Atish Patra <atishp@atishpatra.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-	kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kvm-riscv@lists.infradead.org,
-	linux-riscv@lists.infradead.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH][next] KVM: selftests: Fix spelling mistake "trigged" ->
- "triggered"
-Message-ID: <Zeo8_ulDb4wYI_rO@linux.dev>
-References: <20240307081951.1954830-1-colin.i.king@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=dxJv4HfmS0uTz2sELb9FvMt9HayDJH8gqexBTvIitNWgP0bMnZSFJVbTWSPpp9+qRXprna6Uxzn879mlcRR5DcB26S3aTk6mAyEXnU/RPBUAdojlwJonfFsFn+BFVJAZkrmK2yH4D3Fn96MtRPnAx7hGeOycvx0wAfY0iUelfvw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tsbNL5fT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77D7AC433F1;
+	Thu,  7 Mar 2024 22:19:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709849950;
+	bh=NAFhcgfMUP7spt7IIedCEfy35hhbhzwIEFEoh/NeEfM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=tsbNL5fTmJHEXUV4T3i+J45UyNghKGJh5J/Ee3Um2FXS43jCijoYt7WgveHk6nXF7
+	 LSNNzbv8qAp3G0+niY2F+7B/KpJ/ivwZtqQ60EDypwdYWblwwu5MAgbL97VeTnnWiZ
+	 183dRsQZFQmUSNODn/9CoN4z/1Lc3tk1wv8vxTDHXWeHuVu7JNpGDxFR+9Ko+GcH7k
+	 Jnp1ZPb/4jQdTWLaaYI53nic5WKN+E9NQ5z9cmEcvaC3O9XsJIONZNu76RPpnisyOD
+	 7kIlcWKao7IAByVD4vIimTF7wIvM+jV6qGDtfwMSpHX9yU9zP0wJ4eqvr0Cf1Mut87
+	 wPCOCxbkCBCTw==
+Date: Thu, 7 Mar 2024 16:19:07 -0600
+From: Rob Herring <robh@kernel.org>
+To: Claudiu <claudiu.beznea@tuxon.dev>
+Cc: magnus.damm@gmail.com, devicetree@vger.kernel.org, conor+dt@kernel.org,
+	linux-clk@vger.kernel.org, geert+renesas@glider.be,
+	krzysztof.kozlowski+dt@linaro.org,
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>, sboyd@kernel.org,
+	linux-kernel@vger.kernel.org, mturquette@baylibre.com,
+	linux-renesas-soc@vger.kernel.org
+Subject: Re: [PATCH v2 05/10] dt-bindings: clock: renesas,rzg2l-cpg: Update
+ #power-domain-cells = <1> for RZ/G3S
+Message-ID: <170984994653.3258431.619276607715437902.robh@kernel.org>
+References: <20240307140728.190184-1-claudiu.beznea.uj@bp.renesas.com>
+ <20240307140728.190184-6-claudiu.beznea.uj@bp.renesas.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,54 +62,39 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240307081951.1954830-1-colin.i.king@gmail.com>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20240307140728.190184-6-claudiu.beznea.uj@bp.renesas.com>
 
-Thanks for the fix Colin. Paolo/Anup, up to you how you want to play it,
-I see the 6.9 PR is already out for riscv.
 
-Acked-by: Oliver Upton <oliver.upton@linux.dev>
-
-On Thu, Mar 07, 2024 at 08:19:51AM +0000, Colin Ian King wrote:
-> There are spelling mistakes in __GUEST_ASSERT messages. Fix them.
+On Thu, 07 Mar 2024 16:07:23 +0200, Claudiu wrote:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 > 
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+> The driver will be modified (in the next commits) to be able to specify
+> individual power domain ID for each IP. The driver will still
+> support #power-domain-cells = <0>, thus, previous users are not
+> affected.
+> 
+> The #power-domain-cells = <1> has been instantiated only for RZ/G3S at
+> the moment as individual platform clock drivers need to be adapted for
+> this to be supported on the rest of the SoCs.
+> 
+> Also, the description for #power-domain-cells was updated with the links
+> to per-SoC power domain IDs.
+> 
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 > ---
->  tools/testing/selftests/kvm/aarch64/arch_timer.c | 2 +-
->  tools/testing/selftests/kvm/riscv/arch_timer.c   | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/tools/testing/selftests/kvm/aarch64/arch_timer.c b/tools/testing/selftests/kvm/aarch64/arch_timer.c
-> index ddba2c2fb5de..16ac74d07d68 100644
-> --- a/tools/testing/selftests/kvm/aarch64/arch_timer.c
-> +++ b/tools/testing/selftests/kvm/aarch64/arch_timer.c
-> @@ -136,7 +136,7 @@ static void guest_run_stage(struct test_vcpu_shared_data *shared_data,
->  		irq_iter = READ_ONCE(shared_data->nr_iter);
->  		__GUEST_ASSERT(config_iter + 1 == irq_iter,
->  				"config_iter + 1 = 0x%lx, irq_iter = 0x%lx.\n"
-> -				"  Guest timer interrupt was not trigged within the specified\n"
-> +				"  Guest timer interrupt was not triggered within the specified\n"
->  				"  interval, try to increase the error margin by [-e] option.\n",
->  				config_iter + 1, irq_iter);
->  	}
-> diff --git a/tools/testing/selftests/kvm/riscv/arch_timer.c b/tools/testing/selftests/kvm/riscv/arch_timer.c
-> index e22848f747c0..0f9cabd99fd4 100644
-> --- a/tools/testing/selftests/kvm/riscv/arch_timer.c
-> +++ b/tools/testing/selftests/kvm/riscv/arch_timer.c
-> @@ -60,7 +60,7 @@ static void guest_run(struct test_vcpu_shared_data *shared_data)
->  		irq_iter = READ_ONCE(shared_data->nr_iter);
->  		__GUEST_ASSERT(config_iter + 1 == irq_iter,
->  				"config_iter + 1 = 0x%x, irq_iter = 0x%x.\n"
-> -				"  Guest timer interrupt was not trigged within the specified\n"
-> +				"  Guest timer interrupt was not triggered within the specified\n"
->  				"  interval, try to increase the error margin by [-e] option.\n",
->  				config_iter + 1, irq_iter);
->  	}
-> -- 
-> 2.39.2
+> Changes in v2:
+> - updated patch title and description
+> - kept both 0 and 1 for #power-domain-cells as not all the drivers,
+>   device trees are adpated with this series
+> - added a reference to dt-bindings/clock/r9a0*-cpg.h for power domain
+>   specifiers
+> - dropped the changes from examples section
+> 
+>  .../bindings/clock/renesas,rzg2l-cpg.yaml      | 18 +++++++++++++++++-
+>  1 file changed, 17 insertions(+), 1 deletion(-)
 > 
 
--- 
-Thanks,
-Oliver
+Reviewed-by: Rob Herring <robh@kernel.org>
+
 
