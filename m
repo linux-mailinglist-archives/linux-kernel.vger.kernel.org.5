@@ -1,277 +1,225 @@
-Return-Path: <linux-kernel+bounces-95882-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95883-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B04C875474
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:49:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C380F875487
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:51:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E76F91F23882
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 16:49:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 798D5284CAB
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 16:51:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3942A12FF73;
-	Thu,  7 Mar 2024 16:49:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7C9812FB0D;
+	Thu,  7 Mar 2024 16:51:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XFl8X5TF"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CNmBpf27"
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F8AA12F5BD;
-	Thu,  7 Mar 2024 16:49:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16E817AE43
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 16:50:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709830143; cv=none; b=LNccEIsJj5H+z3fzNBYr9tHxa3EoDZdrvRkW28l5znbPdAa2JRbd2ng8e7UL2HApEzm4fay0z14BbSJIMj9p2g9TjCuErh+tlZE1FY9VGY6zCXHYVS1BpRs40L1ZKParr/3nGQ5v5N3uYqbLhOMxRs7WxL3n2Yd755kzWm9Gs78=
+	t=1709830260; cv=none; b=nnf6Y9XMt3oZQORRObo/sosebCqeZmoTza091CFs/FpzfyOepMmmoG9kuRgJWYvkqaLIYu1ZPevU+kV1JoOTITQSUwUuZl3LR1CJg0t5IwnjOmBQL0PfB42+UUs4DAJEXED6jSyeq1e4Yf8RxT19byhq4i4rjU/DKoe3YCuK5+8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709830143; c=relaxed/simple;
-	bh=bGXZFdGS/RNVJi7lWH1UGeye9PjK4WOUDOWy34WpgMk=;
+	s=arc-20240116; t=1709830260; c=relaxed/simple;
+	bh=cDg7BLE3fcUKhWVulwdNMzB+xKXZ9swBkar0n40qnFc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Rj9NRg/udRo9pdVDMnUKJwOVBtyL2oC2xBmi2FSoKtXZMYLc7okXiFlSw5KxmBNI3aBhj1eEKxzI+EhALmNRJMADB8XdwhNiTZ4nQmPdtvBaIB/n1zmal6PJkPb75OU9jYA/GQPWRJTmb7kYsqgF4th9uNo4Hy/vHeePFzPGq2w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XFl8X5TF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86AB1C433B1;
-	Thu,  7 Mar 2024 16:49:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709830142;
-	bh=bGXZFdGS/RNVJi7lWH1UGeye9PjK4WOUDOWy34WpgMk=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=XFl8X5TFwf707o/wdagb6Bjffdtcvw6uIf9RdTm7wJTnwXAzLuAFiXDo0yPNNgyNS
-	 YqUPALOeBG245VnW9rOdE5sXVYwDIaXNmuv5erhtRfbVhDmjlPo9Dm1k9FOhEuRCiT
-	 fMlysdm/3Xe24f594KdgossXHSczgVCwueiq+cOO5OePs2Wb5mv8Wa+tse3I3iZn45
-	 WhDnlJ6hntq7GN25fmSJTnC2L60dIhEURDS8QghX6a6bTeFD6IijSEA1/XTQHKrIJa
-	 73KfoeoIeg1KtX9jozsaxniz/qdnRWKsG7O7XJRZ0+Ufgji4vCl9O4+za/79swD0QX
-	 W8TLs4I4VKbUQ==
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-51340e89df1so1164573e87.1;
-        Thu, 07 Mar 2024 08:49:02 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCX53sbx9s+gn1ncNybIRg+7DZHAxiyBXlwpXnmdpx/fyRcIsHXsVzScuEzQojmTfvUYId+punNDCsXe/baKUGHKTbtfaaC9mpxT+TcSQSmJWscOGURUBbnx8PgRG5IreyoOPMXtanhm
-X-Gm-Message-State: AOJu0YwUow/U0QirPn39MsDH5lQtg+zXTTThd79tj5RWgq444CeCueZh
-	PBOgmuchyQoKnM9lW1k8l91A19LATXRK+qDTnX0kVH4ie5dY3lWLt+8ptulWqeIV1Eyl0RvV45b
-	DuC9X/pEmz4mk5vLGtGIODbAiHEI=
-X-Google-Smtp-Source: AGHT+IGHqIaoq6UC4dYQ48KRHV0PYDpHGBRgbgzKj5mSRGxFz3ei4Fb5ie9akjvh1UfC6e2loEpiHttdfnEf109FZyc=
-X-Received: by 2002:ac2:4e97:0:b0:513:8a39:e0d9 with SMTP id
- o23-20020ac24e97000000b005138a39e0d9mr427359lfr.64.1709830140457; Thu, 07 Mar
- 2024 08:49:00 -0800 (PST)
+	 To:Cc:Content-Type; b=fk+7/QeHVF+swoK7Zemc2YxGM7XEXcRopxeMv/cqjKhMETqTFzuy+Qooo5WZpTkbQMbBXOv00hTkf+33aIFnSsoeiZxeuNc8iwAHcyyK9VNQVWi04hb3zyd9Yed31SQzg6sBrxifvHJtKnX92ieub7DbsmF+8nytPZr8ixbdmwk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=CNmBpf27; arc=none smtp.client-ip=209.85.215.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-5d3912c9a83so709730a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 08:50:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709830258; x=1710435058; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=+2EL+36/QM0SPYJ1Yjq4H+n/RkoUib4NeLlBdPXO/Vc=;
+        b=CNmBpf27xr16E/xm6fXXnVYE6JWHnn8QkPt6USsGGZCCU6OmwHpySOmZwgS2ocjMct
+         y1u9EDpu8FdG7YMRdw7j3ZBExUOD9FSMdVBwWoSdD/ULT03bT8sqH0uyX2r7FFvvPmcW
+         vjH7SCJnVyQkqSaDtmSyCeBrWEMra30+DFZQvF0ZZ2Qqf7/aOcaSTxZw1/BGLCRlF+5n
+         jO9hmcu15ciABsAnHHUYn9gODKYw7ObsAGbdvTea33jZb0Hvu7j8Q6hMkritKsffmjkY
+         mOs0WmJoUeM8AJk1xphcKyTRlDXVSY5ceITHNgW7pNtUcCG81iJacB+aLgKqKuCH6N0L
+         RBnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709830258; x=1710435058;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+2EL+36/QM0SPYJ1Yjq4H+n/RkoUib4NeLlBdPXO/Vc=;
+        b=PlJUaDHzjWRcgPM4BYwcd2TiQMazKrsbVbc8yNUJe7wZXJEVrBSG+qoSLwgPvDxgaG
+         ERdX1zMo86SnuuNYddrtN2CNC8nQy7Q86qFcCZCLY7Q07ZmyPtGZZqSPm99Hl8Co4+5P
+         JeWV/dSNRUu0h7J+qrfWttOU8UBf4QHHPbYA7OLOzbmoGJKkcuhOQHaSN2GslNJPQ5Km
+         MZ2GLEYJ2AwpkBqDvEmX9TD/uH5tA3pJugjCkzqNTRsh806uOJ538aVz+DpK8xxug0hF
+         9VoWew2kIAhMGPCkQxfMD4q8yBFwQTn/O5HQJ0rs2HH3HDKV1ACqvvQRMvHSX+ma2Zqq
+         aHlw==
+X-Forwarded-Encrypted: i=1; AJvYcCU8PtRKwWtcOCPGq/NsLCrwt7a4nLs66iYrbQHj+aZwdriqJQHp1r7nU9bz1A9Roh/FzSuiASIIHFaeqTqsy/p1GA0CNNm6H24+/UxR
+X-Gm-Message-State: AOJu0YwpqRAeLuEP7F1hHdSPnkScuoyYnxlLvUqBM/JKtVIYamlf+iEm
+	0pYq/oYK2Tx/DUPxzkw2z0eVlikix18JdmX8mlY2Ac0DTCgRJEm4ZzSWcf6vbTfSXd8KpR8mUTU
+	LXe/+N2O1jEzzMwDnPh+NthlUDawRKJ+VH8Kftg==
+X-Google-Smtp-Source: AGHT+IHSnsjlea2bY/kzFtJY+SzGlSQzGtgrgjB2eUI5lJjJcb2+1sns5qQYCZYmWqxEBtkwkGxHsqBBYvCGRXKYrwc=
+X-Received: by 2002:a17:90a:de18:b0:29a:97f5:9970 with SMTP id
+ m24-20020a17090ade1800b0029a97f59970mr14151303pjv.45.1709830256753; Thu, 07
+ Mar 2024 08:50:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAMj1kXH1oMbONoHFMPaatfaqrHNE2ryfrG7kw-7J-eFsuXkK-Q@mail.gmail.com>
- <mhng-c53211c1-4708-459a-bdc5-6e013c2adaee@palmer-ri-x1c9>
- <CAMj1kXEFqMx8qUHQEbg=OqbG-H0Zpj-nWu=a6qhhvNEZPO7f4Q@mail.gmail.com>
- <CAMj1kXG4SXsBfNqWMRUJ+AVv=6trWUAow-f8Mk5oKCpO=WueFg@mail.gmail.com> <CAEEQ3wkN3HDUuPDfWTn4kTxKH03OaRxBTFru3jJzZgW+BVhABg@mail.gmail.com>
-In-Reply-To: <CAEEQ3wkN3HDUuPDfWTn4kTxKH03OaRxBTFru3jJzZgW+BVhABg@mail.gmail.com>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Thu, 7 Mar 2024 17:48:49 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXHuKbaXqWuFuMXhfL1_2w05CfJrk2uAPOW2HNHdpEnxXA@mail.gmail.com>
-Message-ID: <CAMj1kXHuKbaXqWuFuMXhfL1_2w05CfJrk2uAPOW2HNHdpEnxXA@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH 3/3] efistub: fix missed the initialization
- of gp
-To: yunhui cui <cuiyunhui@bytedance.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu, 
-	xuzhipeng.1973@bytedance.com, alexghiti@rivosinc.com, samitolvanen@google.com, 
-	bp@alien8.de, xiao.w.wang@intel.com, jan.kiszka@siemens.com, 
-	kirill.shutemov@linux.intel.com, nathan@kernel.org, 
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-efi@vger.kernel.org, Conor Dooley <conor@kernel.org>, 
-	Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+References: <20240307085725.444486-1-sshegde@linux.ibm.com> <20240307085725.444486-2-sshegde@linux.ibm.com>
+In-Reply-To: <20240307085725.444486-2-sshegde@linux.ibm.com>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Thu, 7 Mar 2024 17:50:43 +0100
+Message-ID: <CAKfTPtDauh-QEyyR2T8=zcbWe5vzndZKj3=+3TZFceYkizjXaw@mail.gmail.com>
+Subject: Re: [PATCH v6 1/3] sched/fair: Add EAS checks before updating overutilized
+To: Shrikanth Hegde <sshegde@linux.ibm.com>
+Cc: mingo@kernel.org, peterz@infradead.org, yu.c.chen@intel.com, 
+	dietmar.eggemann@arm.com, linux-kernel@vger.kernel.org, nysal@linux.ibm.com, 
+	aboorvad@linux.ibm.com, srikar@linux.ibm.com, vschneid@redhat.com, 
+	pierre.gondois@arm.com, qyousef@layalina.io
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, 7 Mar 2024 at 04:19, yunhui cui <cuiyunhui@bytedance.com> wrote:
+On Thu, 7 Mar 2024 at 09:57, Shrikanth Hegde <sshegde@linux.ibm.com> wrote:
 >
-> Hi Ard,
+> Overutilized field of root domain is only used for EAS(energy aware scheduler)
+> to decide whether to do load balance or not. It is not used if EAS
+> not possible.
 >
-> On Thu, Mar 7, 2024 at 12:15=E2=80=AFAM Ard Biesheuvel <ardb@kernel.org> =
-wrote:
-> >
-> > On Wed, 6 Mar 2024 at 16:44, Ard Biesheuvel <ardb@kernel.org> wrote:
-> > >
-> > > On Wed, 6 Mar 2024 at 16:21, Palmer Dabbelt <palmer@dabbelt.com> wrot=
-e:
-> > > >
-> > > > On Wed, 06 Mar 2024 05:09:07 PST (-0800), Ard Biesheuvel wrote:
-> > > > > On Wed, 6 Mar 2024 at 14:02, Ard Biesheuvel <ardb@kernel.org> wro=
-te:
-> > > > >>
-> > > > >> On Wed, 6 Mar 2024 at 13:34, yunhui cui <cuiyunhui@bytedance.com=
-> wrote:
-> > > > >> >
-> > > > >> > Hi Ard,
-> > > > >> >
-> > > > >> > On Wed, Mar 6, 2024 at 5:36=E2=80=AFPM Ard Biesheuvel <ardb@ke=
-rnel.org> wrote:
-> > > > >> > >
-> > > > >> > > On Wed, 6 Mar 2024 at 09:56, Yunhui Cui <cuiyunhui@bytedance=
-com> wrote:
-> > > > >> > > >
-> > > > >> > > > Compared with gcc version 12, gcc version 13 uses the gp
-> > > > >> > > > register for compilation optimization, but the efistub mod=
-ule
-> > > > >> > > > does not initialize gp.
-> > > > >> > > >
-> > > > >> > > > Signed-off-by: Yunhui Cui <cuiyunhui@bytedance.com>
-> > > > >> > > > Co-Developed-by: Zhipeng Xu <xuzhipeng.1973@bytedance.com>
-> > > > >> > >
-> > > > >> > > This needs a sign-off, and your signoff needs to come after.
-> > > > >> > >
-> > > > >> > > > ---
-> > > > >> > > >  arch/riscv/kernel/efi-header.S | 11 ++++++++++-
-> > > > >> > > >  1 file changed, 10 insertions(+), 1 deletion(-)
-> > > > >> > > >
-> > > > >> > > > diff --git a/arch/riscv/kernel/efi-header.S b/arch/riscv/k=
-ernel/efi-header.S
-> > > > >> > > > index 515b2dfbca75..fa17c08c092a 100644
-> > > > >> > > > --- a/arch/riscv/kernel/efi-header.S
-> > > > >> > > > +++ b/arch/riscv/kernel/efi-header.S
-> > > > >> > > > @@ -40,7 +40,7 @@ optional_header:
-> > > > >> > > >         .long   __pecoff_data_virt_end - __pecoff_text_end=
-      // SizeOfInitializedData
-> > > > >> > > >  #endif
-> > > > >> > > >         .long   0                                       //=
- SizeOfUninitializedData
-> > > > >> > > > -       .long   __efistub_efi_pe_entry - _start         //=
- AddressOfEntryPoint
-> > > > >> > > > +       .long   _efistub_entry - _start         // Address=
-OfEntryPoint
-> > > > >> > > >         .long   efi_header_end - _start                 //=
- BaseOfCode
-> > > > >> > > >  #ifdef CONFIG_32BIT
-> > > > >> > > >         .long  __pecoff_text_end - _start               //=
- BaseOfData
-> > > > >> > > > @@ -121,4 +121,13 @@ section_table:
-> > > > >> > > >
-> > > > >> > > >         .balign 0x1000
-> > > > >> > > >  efi_header_end:
-> > > > >> > > > +
-> > > > >> > > > +       .global _efistub_entry
-> > > > >> > > > +_efistub_entry:
-> > > > >> > >
-> > > > >> > > This should go into .text or .init.text, not the header.
-> > > > >> > >
-> > > > >> > > > +       /* Reload the global pointer */
-> > > > >> > > > +       load_global_pointer
-> > > > >> > > > +
-> > > > >> > >
-> > > > >> > > What is supposed to happen here if CONFIG_SHADOW_CALL_STACK=
-=3Dy? The EFI
-> > > > >> > > stub Makefile removes the SCS CFLAGS, so the stub will be bu=
-ilt
-> > > > >> > > without shadow call stack support, which I guess means that =
-it might
-> > > > >> > > use GP as a global pointer as usual?
-> > > > >> > >
-> > > > >> > > > +       call __efistub_efi_pe_entry
-> > > > >> > > > +       ret
-> > > > >> > > > +
-> > > > >> > >
-> > > > >> > > You are returning to the firmware here, but after modifying =
-the GP
-> > > > >> > > register. Shouldn't you restore it to its old value?
-> > > > >> > There is no need to restore the value of the gp register. Wher=
-e gp is
-> > > > >> > needed, the gp register must first be initialized. And here is=
- the
-> > > > >> > entry.
-> > > > >> >
-> > > > >>
-> > > > >> But how should the firmware know that GP was corrupted after cal=
-ling
-> > > > >> the kernel's EFI entrypoint? The EFI stub can return to the firm=
-ware
-> > > > >> if it encounters any errors while still running in the EFI boot
-> > > > >> services.
-> > > > >>
-> > > > >
-> > > > > Actually, I wonder if GP can be modified at all before
-> > > > > ExitBootServices(). The EFI timer interrupt is still live at this
-> > > > > point, and so the firmware is being called behind your back, and =
-might
-> > > > > rely on GP retaining its original value.
-> > > >
-> > > > [A few of us are talking on IRC as I'm writing this...]
-> > > >
-> > > > The UEFI spec says "UEFI firmware must neither trust the
-> > > > values of tp and gp nor make an assumption of owning the write acce=
-ss to
-> > > > these register in any circumstances".  It's kind of vague what "UEF=
-I
-> > > > firmware" means here, but I think it's reasonable to assume that th=
-e
-> > > > kernel (and thus the EFI stub) is not included there.
-> > > >
-> > > > So under that interpretation, the kernel (including the EFI stub) w=
-ould
-> > > > be allowed to overwrite GP with whatever it wants.
-> > > >
-> > >
-> > > OK, so even if the UEFI spec seems to suggest that using GP in EFI
-> > > applications such as the Linux EFI stub should be safe, I'd still lik=
-e
-> > > to understand why this change is necessary. The patches you are
-> > > reverting are supposed to ensure that a) the compiler does not
-> > > generate references that can be relaxed to GP based ones, and b) no
-> > > R_RISCV_RELAX relocations are present in any of the code that runs in
-> > > the context of the EFI firmware.
-> > >
-> > > Are you still seeing GP based symbol references? Is there C code that
-> > > gets pulled into the EFI stub that uses GP based relocations perhaps?
-> > > (see list below). If any of those are implemented in C, they should
-> > > not be used by the EFI stub directly unless they are guaranteed to be
-> > > uninstrumented and callable at arbitrary offsets other than the one
-> > > they were linked to run at.
-> > >
-> > >
-> > > __efistub_memcmp         =3D memcmp;
-> > > __efistub_memchr         =3D memchr;
-> > > __efistub_memcpy         =3D memcpy;
-> > > __efistub_memmove        =3D memmove;
-> > > __efistub_memset         =3D memset;
-> > > __efistub_strlen         =3D strlen;
-> > > __efistub_strnlen        =3D strnlen;
-> > > __efistub_strcmp         =3D strcmp;
-> > > __efistub_strncmp        =3D strncmp;
-> > > __efistub_strrchr        =3D strrchr;
-> > > __efistub___memcpy       =3D memcpy;
-> > > __efistub___memmove      =3D memmove;
-> > > __efistub___memset       =3D memset;
-> > > __efistub__start         =3D _start;
-> > > __efistub__start_kernel  =3D _start_kernel;
-> > >
-> > > (from arch/riscv/kernel/image-vars.h)
-> >
-> > Uhm never mind - these are all gone now, I was looking at a v6.1
-> > kernel source tree.
-> >
-> > So that means that, as far as I can tell, the only kernel C code that
-> > executes in the context of the EFI firmware is built with -mno-relax
-> > and is checked for the absence of R_RISCV_RELAX relocations. So I fail
-> > to see why these changes are needed.
-> >
-> > Yunhui, could you please explain the reason for this series?
+> Currently enqueue_task_fair and task_tick_fair accesses, sometime updates
+> this field. In update_sd_lb_stats it is updated often. This causes cache
+> contention due to true sharing and burns a lot of cycles. overload and
+> overutilized are part of the same cacheline. Updating it often invalidates
+> the cacheline. That causes access  to overload to slow down due to
+> false sharing. Hence add EAS check before accessing/updating this field.
+> EAS check is optimized at compile time or it is a static branch.
+> Hence it shouldn't cost much.
 >
-> From the logic of binutils, if "__global_pointer$" exists, it is
-> possible to use GP for optimization. For RISC-V, "__global_pointer$"
-> was introduced in commit "fbe934d69eb7e". Therefore, for the system as
-> a whole, we should keep using GP uniformly.
-
-There is no 'system as a whole' that can use GP 'uniformly'
-
-The EFI stub is a separate executable that runs from a different
-mapping of memory, in an execution context managed by the firmware. It
-happens to be linked into the same executable as the vmlinux kernel.
-
-> The root cause of this
-> problem is that GP is not loaded, rather than "On RISC-V, we also
-> avoid GP based relocations..." as commit "d2baf8cc82c17" said.
-
-GP is not loaded because in the EFI firmware context, there is no safe
-way to rely on it.
-
-> We need
-> to address problems head-on, rather than avoid them.
+> With the patch, both enqueue_task_fair and newidle_balance don't show
+> up as hot routines in perf profile.
 >
+> 6.8-rc4:
+> 7.18%  swapper          [kernel.vmlinux]              [k] enqueue_task_fair
+> 6.78%  s                [kernel.vmlinux]              [k] newidle_balance
+> +patch:
+> 0.14%  swapper          [kernel.vmlinux]              [k] enqueue_task_fair
+> 0.00%  swapper          [kernel.vmlinux]              [k] newidle_balance
+>
+> Minor change: trace_sched_overutilized_tp expect that second argument to
+> be bool. So do a int to bool conversion for that.
+>
+> Fixes: 2802bf3cd936 ("sched/fair: Add over-utilization/tipping point indicator")
+> Reviewed-by: Qais Yousef <qyousef@layalina.io>
+> Reviewed-by: Srikar Dronamraju <srikar@linux.ibm.com>
+> Signed-off-by: Shrikanth Hegde <sshegde@linux.ibm.com>
 
-So what solution are you proposing for the potential GP conflicts
-between the boot loader, the Linux EFI stub and the firmware?
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+
+
+> ---
+>  kernel/sched/fair.c | 53 +++++++++++++++++++++++++++++----------------
+>  1 file changed, 34 insertions(+), 19 deletions(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 6a16129f9a5c..5aa6e918598c 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -6663,22 +6663,42 @@ static inline void hrtick_update(struct rq *rq)
+>  #ifdef CONFIG_SMP
+>  static inline bool cpu_overutilized(int cpu)
+>  {
+> -       unsigned long rq_util_min = uclamp_rq_get(cpu_rq(cpu), UCLAMP_MIN);
+> -       unsigned long rq_util_max = uclamp_rq_get(cpu_rq(cpu), UCLAMP_MAX);
+> +       unsigned long  rq_util_min, rq_util_max;
+> +
+> +       if (!sched_energy_enabled())
+> +               return false;
+> +
+> +       rq_util_min = uclamp_rq_get(cpu_rq(cpu), UCLAMP_MIN);
+> +       rq_util_max = uclamp_rq_get(cpu_rq(cpu), UCLAMP_MAX);
+>
+>         /* Return true only if the utilization doesn't fit CPU's capacity */
+>         return !util_fits_cpu(cpu_util_cfs(cpu), rq_util_min, rq_util_max, cpu);
+>  }
+>
+> -static inline void update_overutilized_status(struct rq *rq)
+> +static inline void set_rd_overutilized_status(struct root_domain *rd,
+> +                                             unsigned int status)
+>  {
+> -       if (!READ_ONCE(rq->rd->overutilized) && cpu_overutilized(rq->cpu)) {
+> -               WRITE_ONCE(rq->rd->overutilized, SG_OVERUTILIZED);
+> -               trace_sched_overutilized_tp(rq->rd, SG_OVERUTILIZED);
+> -       }
+> +       if (!sched_energy_enabled())
+> +               return;
+> +
+> +       WRITE_ONCE(rd->overutilized, status);
+> +       trace_sched_overutilized_tp(rd, !!status);
+> +}
+> +
+> +static inline void check_update_overutilized_status(struct rq *rq)
+> +{
+> +       /*
+> +        * overutilized field is used for load balancing decisions only
+> +        * if energy aware scheduler is being used
+> +        */
+> +       if (!sched_energy_enabled())
+> +               return;
+> +
+> +       if (!READ_ONCE(rq->rd->overutilized) && cpu_overutilized(rq->cpu))
+> +               set_rd_overutilized_status(rq->rd, SG_OVERUTILIZED);
+>  }
+>  #else
+> -static inline void update_overutilized_status(struct rq *rq) { }
+> +static inline void check_update_overutilized_status(struct rq *rq) { }
+>  #endif
+>
+>  /* Runqueue only has SCHED_IDLE tasks enqueued */
+> @@ -6779,7 +6799,7 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
+>          * and the following generally works well enough in practice.
+>          */
+>         if (!task_new)
+> -               update_overutilized_status(rq);
+> +               check_update_overutilized_status(rq);
+>
+>  enqueue_throttle:
+>         assert_list_leaf_cfs_rq(rq);
+> @@ -10596,19 +10616,14 @@ static inline void update_sd_lb_stats(struct lb_env *env, struct sd_lb_stats *sd
+>                 env->fbq_type = fbq_classify_group(&sds->busiest_stat);
+>
+>         if (!env->sd->parent) {
+> -               struct root_domain *rd = env->dst_rq->rd;
+> -
+>                 /* update overload indicator if we are at root domain */
+> -               WRITE_ONCE(rd->overload, sg_status & SG_OVERLOAD);
+> +               WRITE_ONCE(env->dst_rq->rd->overload, sg_status & SG_OVERLOAD);
+>
+>                 /* Update over-utilization (tipping point, U >= 0) indicator */
+> -               WRITE_ONCE(rd->overutilized, sg_status & SG_OVERUTILIZED);
+> -               trace_sched_overutilized_tp(rd, sg_status & SG_OVERUTILIZED);
+> +               set_rd_overutilized_status(env->dst_rq->rd,
+> +                                          sg_status & SG_OVERUTILIZED);
+>         } else if (sg_status & SG_OVERUTILIZED) {
+> -               struct root_domain *rd = env->dst_rq->rd;
+> -
+> -               WRITE_ONCE(rd->overutilized, SG_OVERUTILIZED);
+> -               trace_sched_overutilized_tp(rd, SG_OVERUTILIZED);
+> +               set_rd_overutilized_status(env->dst_rq->rd, SG_OVERUTILIZED);
+>         }
+>
+>         update_idle_cpu_scan(env, sum_util);
+> @@ -12609,7 +12624,7 @@ static void task_tick_fair(struct rq *rq, struct task_struct *curr, int queued)
+>                 task_tick_numa(rq, curr);
+>
+>         update_misfit_status(curr, rq);
+> -       update_overutilized_status(task_rq(curr));
+> +       check_update_overutilized_status(task_rq(curr));
+>
+>         task_tick_core(rq, curr);
+>  }
+> --
+> 2.39.3
+>
 
