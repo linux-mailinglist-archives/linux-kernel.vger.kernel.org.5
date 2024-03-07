@@ -1,144 +1,150 @@
-Return-Path: <linux-kernel+bounces-96046-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96069-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EF5E875685
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:01:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13C828756BD
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:10:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A22E28389B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:01:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C33CC282F61
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:10:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FCD8135A6D;
-	Thu,  7 Mar 2024 19:01:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B07B813699A;
+	Thu,  7 Mar 2024 19:06:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YYqyygud"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=t-argos.ru header.i=@t-argos.ru header.b="qWS5xXLl"
+Received: from mx1.t-argos.ru (mx1.t-argos.ru [109.73.34.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53F98135A46
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 19:01:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD4BC136675;
+	Thu,  7 Mar 2024 19:06:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=109.73.34.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709838063; cv=none; b=srrsKKVk0GARgtUFbJ1+3zXEq/gTVjufsgs9R6fimhkR5R5D3s5/BXfzFtazz7Fa59MkdOB551XduEFgHTOh19b6b3OkOfLt0yWqD57RYl9vGLshVAEoiZv2n6GRk6OFLAUw+HUyO5ZeL/UNGwCjPclIM8WDueXGpaZMRsjbhiA=
+	t=1709838399; cv=none; b=AOpnAFdKt6oO5xyWnXXulCflS/m67RApz0Xq/XXzPaVDRu4M1MCcMH0FVyt50/HqMvYv4jHgNxqy8On+SzZWFvtBVtphLxecB9XzOyRYp5Qi5wFV5bOL1ZascmQKLSrwrscmsrx9YvjSCC/sQM2g0aWQEjqgbUya4dRqpwFFUcU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709838063; c=relaxed/simple;
-	bh=xqdCq5jKU4ORzMILrNtu9YOfneH1J2iFlj3zsYmWy4U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TTQul22TnDXbPEKVQ1gZ4rH9NUdwX5Pl607XVCRwsFPRJD/6jtXQX3lIYI+/60cbccrLga1gpDGEGXgXfyXBNoQVJZA2WjRGSQO+njJchNzVjLRw9K3D+EGTx0IaSanKX5GXCtqg/pH//hDroNxa2S8V8IO2HD7Pe2OqjbCoZtQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YYqyygud; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA86BC433C7;
-	Thu,  7 Mar 2024 19:01:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709838062;
-	bh=xqdCq5jKU4ORzMILrNtu9YOfneH1J2iFlj3zsYmWy4U=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=YYqyygudPMviN+nhtYpCH71pOTredcthSYaA3x3x4YyvKbXYJHfcEt3QZXk9UcalH
-	 sqsWcBFmCMTgjUFIZQXgGSytO7ASU1oV/+BM2kLnKrgk3XIlrBdfl6TITIlDZMst2r
-	 SIWA1xLPygIlDoZ5uXgtsb7p/Z9Z0baVYkeEQ38qvIEuXbWHfBYdfmPxOwZpP08VLD
-	 plLbiRQReVXvWsWqt2hAg9tef0Tduk39i+bo88SUGpq74KFd7BUfBRGX0CkNtyNgEq
-	 /7S/WybN823vswsIqxKIlqzDj9zOPEF4TTjPnpyWPzr7rmMa3rdWRf6A9QMunA8D3p
-	 nXtYbzmVDylxQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 5E7B3CE0716; Thu,  7 Mar 2024 11:01:02 -0800 (PST)
-Date: Thu, 7 Mar 2024 11:01:02 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Joel Fernandes <joel@joelfernandes.org>
-Cc: Ankur Arora <ankur.a.arora@oracle.com>, linux-kernel@vger.kernel.org,
-	tglx@linutronix.de, peterz@infradead.org,
-	torvalds@linux-foundation.org, akpm@linux-foundation.org,
-	luto@kernel.org, bp@alien8.de, dave.hansen@linux.intel.com,
-	hpa@zytor.com, mingo@redhat.com, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
-	jpoimboe@kernel.org, mark.rutland@arm.com, jgross@suse.com,
-	andrew.cooper3@citrix.com, bristot@kernel.org,
-	mathieu.desnoyers@efficios.com, geert@linux-m68k.org,
-	glaubitz@physik.fu-berlin.de, anton.ivanov@cambridgegreys.com,
-	mattst88@gmail.com, krypton@ulrich-teichert.org,
-	rostedt@goodmis.org, David.Laight@aculab.com, richard@nod.at,
-	mjguzik@gmail.com, jon.grimm@amd.com, bharata@amd.com,
-	raghavendra.kt@amd.com, boris.ostrovsky@oracle.com,
-	konrad.wilk@oracle.com
-Subject: Re: [PATCH 26/30] sched: handle preempt=voluntary under PREEMPT_AUTO
-Message-ID: <63380f0a-329c-43df-8e6c-4818de5eb371@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240213055554.1802415-1-ankur.a.arora@oracle.com>
- <20240213055554.1802415-27-ankur.a.arora@oracle.com>
- <65e3cd87.050a0220.bc052.7a29@mx.google.com>
- <87frx514jz.fsf@oracle.com>
- <12a20651-5429-43df-88d7-9d01ff6212c6@joelfernandes.org>
+	s=arc-20240116; t=1709838399; c=relaxed/simple;
+	bh=jF6iduJGIE+O3Bkq9YrSC7eRZxghqOnr34T4ybioEe4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=m7zxx9YX6JagZPfZ12XHdp4sXt82iFQ0vpRKNwgtm0NJaj7NFZnrGJN13f4kOR4RNFrAOVsBczZ7Jun/VzD49Pc2yVdb/+hNGFcteb6Ia0DRs3qrR2raJORJ99ywi8fXSGYJG4cFkKC/HgdKTbONeIFfqrtCLl9Jq4svxRA5H3g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=t-argos.ru; spf=pass smtp.mailfrom=t-argos.ru; dkim=pass (2048-bit key) header.d=t-argos.ru header.i=@t-argos.ru header.b=qWS5xXLl; arc=none smtp.client-ip=109.73.34.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=t-argos.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=t-argos.ru
+Received: from mx1.t-argos.ru (localhost [127.0.0.1])
+	by mx1.t-argos.ru (Postfix) with ESMTP id 31C0E100003;
+	Thu,  7 Mar 2024 22:06:15 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=t-argos.ru; s=mail;
+	t=1709838375; bh=CAvOEPtPFq6+eIgzAFJWMtkJyr4bIU2xSPDi8uBAnuY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	b=qWS5xXLl/V8vg8BJGHCJyaCIZChoxxuFF7FxrzEvzeFH7qBluOf1TpBh2p61QagHe
+	 QFgXChfsedVWvDwmgLQh5zYwXjbeaQ09meG5lx0yPk/8DYTdMtk1U2hQ+4Oclpcux7
+	 vxf8Grtn+KaP5xBq2DQiTw9txrm1YZrrKGYZr63Vay/oaSvok+yMN4e1w9qkCqbzRe
+	 we4SS4Yu2ZmKCb1uEOndz5xevCCdxCMdemI4O/1qlE21Nxe+5CAP1pcB1+G+zAnLgX
+	 JeVf411fPOff5qZVTzQq+DT/95W4N2qV0GSIU8kAPYDTH/g1Y/p5WjAso/yitCXX5k
+	 lFlLRjjnHU0iQ==
+Received: from mx1.t-argos.ru.ru (mail.t-argos.ru [172.17.13.212])
+	by mx1.t-argos.ru (Postfix) with ESMTP;
+	Thu,  7 Mar 2024 22:05:33 +0300 (MSK)
+Received: from [172.17.214.6] (172.17.214.6) by ta-mail-02 (172.17.13.212)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Thu, 7 Mar 2024
+ 22:05:13 +0300
+Message-ID: <98dea36b-41dc-4d2e-aec6-56c849e1d58b@t-argos.ru>
+Date: Thu, 7 Mar 2024 22:02:56 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <12a20651-5429-43df-88d7-9d01ff6212c6@joelfernandes.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mmc: dw_mmc: Fix potential null pointer risk
+To: Ulf Hansson <ulf.hansson@linaro.org>
+CC: Jaehoon Chung <jh80.chung@samsung.com>, Wen Zhiwei <wenzhiwei@kylinos.cn>,
+	<linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<lvc-project@linuxtesting.org>
+References: <20240307085135.16245-1-amishin@t-argos.ru>
+ <CAPDyKFoYRT=P+4L+5ciNPxEHcS7hoXPef__NQoodxkSy=39Teg@mail.gmail.com>
+Content-Language: ru
+From: Aleksandr Mishin <amishin@t-argos.ru>
+In-Reply-To: <CAPDyKFoYRT=P+4L+5ciNPxEHcS7hoXPef__NQoodxkSy=39Teg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: ta-mail-02.ta.t-argos.ru (172.17.13.212) To ta-mail-02
+ (172.17.13.212)
+X-KSMG-Rule-ID: 1
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 184049 [Mar 07 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.3
+X-KSMG-AntiSpam-Envelope-From: amishin@t-argos.ru
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 9 0.3.9 e923e63e431b6489f12901471775b2d1b59df0ba, {Tracking_from_domain_doesnt_match_to}, mx1.t-argos.ru.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;t-argos.ru:7.1.1, FromAlignment: s
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2024/03/07 17:51:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2024/03/07 17:21:00 #24036814
+X-KSMG-AntiVirus-Status: Clean, skipped
 
-On Wed, Mar 06, 2024 at 03:42:10PM -0500, Joel Fernandes wrote:
-> Hi Ankur,
-> 
-> On 3/5/2024 3:11 AM, Ankur Arora wrote:
-> > 
-> > Joel Fernandes <joel@joelfernandes.org> writes:
-> > 
-> [..]
-> >> IMO, just kill 'voluntary' if PREEMPT_AUTO is enabled. There is no
-> >> 'voluntary' business because
-> >> 1. The behavior vs =none is to allow higher scheduling class to preempt, it
-> >> is not about the old voluntary.
-> > 
-> > What do you think about folding the higher scheduling class preemption logic
-> > into preempt=none? As Juri pointed out, prioritization of at least the leftmost
-> > deadline task needs to be done for correctness.
-> > 
-> > (That'll get rid of the current preempt=voluntary model, at least until
-> > there's a separate use for it.)
-> 
-> Yes I am all in support for that. Its less confusing for the user as well, and
-> scheduling higher priority class at the next tick for preempt=none sounds good
-> to me. That is still an improvement for folks using SCHED_DEADLINE for whatever
-> reason, with a vanilla CONFIG_PREEMPT_NONE=y kernel. :-P. If we want a new mode
-> that is more aggressive, it could be added in the future.
 
-This would be something that happens only after removing cond_resched()
-might_sleep() functionality from might_sleep(), correct?
 
-							Thanx, Paul
+07.03.2024 13:57, Ulf Hansson wrote:
+> On Thu, 7 Mar 2024 at 09:53, Aleksandr Mishin <amishin@t-argos.ru> wrote:
+>>
+>> In dw_mci_runtime_resume() 'host->slot' could be null, but check is not cover all corresponding code.
+>> Fix this bug by changing check place.
+> 
+> In fact host->slot can never be NULL in dw_mci_runtime_resume() or in
+> dw_mci_runtime_suspend().
+> 
+> A better fix would thus be to remove the redundant checks.
+> 
+> Kind regards
+> Uffe
+> 
+>>
+>> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+>>
+>> Fixes: 4a835afd808a (mmc: dw_mmc: Fix potential null pointer risk)
+>> Signed-off-by: Aleksandr Mishin <amishin@t-argos.ru>
+>> ---
+>>   drivers/mmc/host/dw_mmc.c | 4 +++-
+>>   1 file changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/mmc/host/dw_mmc.c b/drivers/mmc/host/dw_mmc.c
+>> index 829af2c98a44..a4f124452abc 100644
+>> --- a/drivers/mmc/host/dw_mmc.c
+>> +++ b/drivers/mmc/host/dw_mmc.c
+>> @@ -3570,8 +3570,10 @@ int dw_mci_runtime_resume(struct device *dev)
+>>                     DW_MCI_ERROR_FLAGS);
+>>          mci_writel(host, CTRL, SDMMC_CTRL_INT_ENABLE);
+>>
+>> +       if (!host->slot)
+>> +               goto err;
+>>
+>> -       if (host->slot && host->slot->mmc->pm_flags & MMC_PM_KEEP_POWER)
+>> +       if (host->slot->mmc->pm_flags & MMC_PM_KEEP_POWER)
+>>                  dw_mci_set_ios(host->slot->mmc, &host->slot->mmc->ios);
+>>
+>>          /* Force setup bus to guarantee available clock output */
+>> --
+>> 2.30.2
+>>
+>>
+> 
 
-> >> 2. you are also planning to remove cond_resched()s via this series and leave
-> >> it to the scheduler right?
-> > 
-> > Yeah, under PREEMPT_AUTO, cond_resched() will /almost/ be not there. Gets
-> > defined to:
-> > 
-> > static inline int _cond_resched(void)
-> > {
-> >         klp_sched_try_switch();
-> >         return 0;
-> > }
-> > 
-> > Right now, we need cond_resched() to make timely forward progress while
-> > doing live-patching.
-> 
-> Cool, got it!
-> 
-> >> Or call it preempt=higher, or something? No one is going to understand the
-> >> meaning of voluntary the way it is implied here IMHO.
-> > 
-> > I don't think there's enough to make it worth adding a new model. For
-> > now I'm tending towards moving the correctness parts to preempt=none and
-> > making preempt=voluntary identical to preempt=none.
-> 
-> Got it, sounds good.
-> 
-> > Thanks for the review.
-> 
-> Sure! Thanks for this work. Looking forward to the next series,
-> 
->  - Joel
-> 
+At the same time there are few checks such as "if (host->slot)" in 
+dw_mci_runtime_resume() and commit 
+4a835afd808a3dbbac44bb399a902b822dc7445c message contains: "we 
+previously assumed 'host->slot' could be null, null pointer judgment 
+should be added" and replaces "if (host->slot->mmc->pm_flags & 
+MMC_PM_KEEP_POWER)" with "if (host->slot && host->slot->mmc->pm_flags & 
+MMC_PM_KEEP_POWER)"
+So where is the truth?
+
+-- 
+Kind regadrds
+Aleksandr
 
