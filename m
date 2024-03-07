@@ -1,130 +1,198 @@
-Return-Path: <linux-kernel+bounces-95769-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95770-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3241287524A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:50:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD9C487524E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:51:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 642811C22D87
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:50:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B8062831D7
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:51:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 201E912CDB6;
-	Thu,  7 Mar 2024 14:50:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00C915B1FD;
+	Thu,  7 Mar 2024 14:51:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="i8djEudV"
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A9Ry2aqE"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 003CC5B1FD;
-	Thu,  7 Mar 2024 14:50:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 248AD8526A;
+	Thu,  7 Mar 2024 14:51:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709823026; cv=none; b=APvAgHFjlWyDNCU4ib8UEj2j9D4ysFBTxG/ed3OWRZIfGSNlJExM9cW7c17pnqGzJzvhfJ77Vi4RhXOCFamSqjPJW/6JwJoz1fC/6uyni30fbKAgsV2PDt5EEWDKb/L5V2XK6Ew3BNzHr/Qw6hAhvprDR8s4I2DjmjelguZnFik=
+	t=1709823065; cv=none; b=qM3iHAm3oBGU1halIKpUc8u6MY1UmK6Upoc8w4IKVEQuQb+25EjoKYHbd1OLSsv8osblSSCkvNKIKyqVmofRUYKOJa4G64+Ev8TdHA9ZvHB/Thwp5pZ6yxbf3Q7SJmtKYH17NUBaqQAyMn9yKowTdK4AWEOxpIsu6YGnZUoxmJU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709823026; c=relaxed/simple;
-	bh=bMgcq8RI+0U/9suH2RY7GnPRGcioM+SwL8B1CFmqRKI=;
-	h=Mime-Version:Content-Type:Date:Message-Id:From:Subject:Cc:To:
-	 References:In-Reply-To; b=WAVBL5r1Gf4hcMiZr/94v0v9dzBqN/WRox3NW0z7TYY84D3yQ7tp0yWNUnn1wEN7wyjlFFY0SqkUdQqskJhHBG0CwCmgF4K86fkbu1pLIJgtO9CLHsLOXQWiR0++fPs0SuHTY6SCpj3oVq7gSDO9GE1o1aorqb02pNHHyYhZLLs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=i8djEudV; arc=none smtp.client-ip=217.70.183.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 80720E000E;
-	Thu,  7 Mar 2024 14:50:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709823022;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5Np8Esugsr9ZGR7h4Wh+XY5vmJlU7fOGNOduAjb30l0=;
-	b=i8djEudVbUI2ZCGYHvGBtxY00fhEPP/loSQiIlYzcojCGeisT56oYNXXRffq8XtzR/cMoB
-	fPzYUv64iAnrQyLRhVWIpHHVq9nlmg/ubisuFkgTzmnbCm+xuRjPwrb+5Lnl+gV7gIP9Ne
-	E7w7p0jqTFsxRna6XOm6NG0khpDFjY7ehRu7VgHIIy4CleCY652a0Z8n8GOouf7rfU0yKF
-	uRfSaxBxrQKTnZfldzs3GTZM3jLFFC4mPXBgH970EYSifusoqpWTgiAZbI7aRlWhVTtx3o
-	QCQZX0aCv7cCE3iv/Kq362a9icYAN1tIEXJAE+CVOfDwnZg0RYWDtkbsoknnRA==
+	s=arc-20240116; t=1709823065; c=relaxed/simple;
+	bh=+8ei9aDD5izWfXGOrU5GYMqyDqmFCVXE9yaNWpl1EQQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OvqCRPoIBj4HUspeNOLuU9/gt2ztKDJMCNv2NvXNQhflNg+gn2EoSpusGKpADyFK9gia9/xH8+17xZmHJCWs4G9HuQPxGBr6byG4+ZX/N07cLzGIbkiuO2d0LzDX+3Wa3uRTS6KF496lUvyMe8/kMX/SK8S1+ZRvzCQFW+Ajr+o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A9Ry2aqE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65331C433F1;
+	Thu,  7 Mar 2024 14:51:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709823064;
+	bh=+8ei9aDD5izWfXGOrU5GYMqyDqmFCVXE9yaNWpl1EQQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=A9Ry2aqEF7O9gBMf2orqRux/n+eQVd4ovBevC9rvzK2/WMu2MMDrcMkd/6FNJY/2T
+	 dASWKh3BZ47i/0b/Sle3ZmhgMkcoWF+StNGl0jz9hs+BJsq0Twtn0NiPn9damkYiIt
+	 QeUb/v6NZ1JB02rAdXIgOYCSGZmv/TFkkClA7ghFrrSw6gw+92o3C6BWiY152DyUPE
+	 kJ7aFN9bdtgKStEJX8uRTzdaPzo4hFSbzt1hHYPkmAp62Fwo2iS3XZm5WEzSqCEPZQ
+	 6Onm0MBcewJaBGfjjYmtF+68SjGJ0k5jSMZwFQqrGJoB8CTVTEB+oSU5jXiYo/qntK
+	 XQkpMfZ3DMxIA==
+Date: Thu, 7 Mar 2024 08:51:02 -0600
+From: Rob Herring <robh@kernel.org>
+To: Daniel Golle <daniel@makrotopia.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Ulf Hansson <ulf.hansson@linaro.org>, Jens Axboe <axboe@kernel.dk>,
+	Dave Chinner <dchinner@redhat.com>, Jan Kara <jack@suse.cz>,
+	Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+	Christian Brauner <brauner@kernel.org>,
+	Li Lingfeng <lilingfeng3@huawei.com>,
+	Damien Le Moal <dlemoal@kernel.org>, Min Li <min15.li@samsung.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Hannes Reinecke <hare@suse.de>,
+	Christian Loehle <CLoehle@hyperstone.com>,
+	Avri Altman <avri.altman@wdc.com>, Bean Huo <beanhuo@micron.com>,
+	Yeqi Fu <asuk4.q@gmail.com>,
+	Victor Shih <victor.shih@genesyslogic.com.tw>,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	"Ricardo B. Marliere" <ricardo@marliere.net>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mmc@vger.kernel.org, linux-block@vger.kernel.org,
+	Diping Zhang <diping.zhang@gl-inet.com>,
+	Jianhui Zhao <zhaojh329@gmail.com>,
+	Jieying Zeng <jieying.zeng@gl-inet.com>,
+	Chad Monroe <chad.monroe@adtran.com>,
+	Adam Fox <adam.fox@adtran.com>, John Crispin <john@phrozen.org>
+Subject: Re: [RFC PATCH v2 1/8] dt-bindings: block: add basic bindings for
+ block devices
+Message-ID: <20240307145102.GA2550133-robh@kernel.org>
+References: <cover.1709667858.git.daniel@makrotopia.org>
+ <f70bb480aef6f55228a25ce20ff0e88e670e1b70.1709667858.git.daniel@makrotopia.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 07 Mar 2024 15:50:21 +0100
-Message-Id: <CZNLOCAIE6P7.1BJ23DWJPCSHS@bootlin.com>
-From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Subject: Re: [PATCH v4 2/9] dt-bindings: usb: ti,j721e-usb: add ti,j7200-usb
- compatible
-Cc: "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>, "Krzysztof Kozlowski"
- <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
- "Roger Quadros" <rogerq@kernel.org>, "Peter Chen" <peter.chen@kernel.org>,
- "Pawel Laszczak" <pawell@cadence.com>, "Nishanth Menon" <nm@ti.com>,
- "Vignesh Raghavendra" <vigneshr@ti.com>, "Tero Kristo" <kristo@kernel.org>,
- "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>,
- =?utf-8?q?Gr=C3=A9gory_Clement?= <gregory.clement@bootlin.com>, "Kevin
- Hilman" <khilman@kernel.org>, "Alan Stern" <stern@rowland.harvard.edu>,
- <linux-usb@vger.kernel.org>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
-To: "Rob Herring" <robh@kernel.org>
-X-Mailer: aerc 0.15.2
-References: <20240307-j7200-usb-suspend-v4-0-5ec7615431f3@bootlin.com>
- <20240307-j7200-usb-suspend-v4-2-5ec7615431f3@bootlin.com>
- <20240307142159.GA2542409-robh@kernel.org>
-In-Reply-To: <20240307142159.GA2542409-robh@kernel.org>
-X-GND-Sasl: theo.lebrun@bootlin.com
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f70bb480aef6f55228a25ce20ff0e88e670e1b70.1709667858.git.daniel@makrotopia.org>
 
-Hello Rob,
+On Tue, Mar 05, 2024 at 08:23:20PM +0000, Daniel Golle wrote:
+> Add bindings for block devices which are used to allow referencing
+> nvmem bits on them.
+> 
+> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+> ---
+>  .../bindings/block/block-device.yaml          | 22 ++++++++
+>  .../devicetree/bindings/block/partition.yaml  | 51 +++++++++++++++++++
+>  .../devicetree/bindings/block/partitions.yaml | 20 ++++++++
+>  3 files changed, 93 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/block/block-device.yaml
+>  create mode 100644 Documentation/devicetree/bindings/block/partition.yaml
+>  create mode 100644 Documentation/devicetree/bindings/block/partitions.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/block/block-device.yaml b/Documentation/devicetree/bindings/block/block-device.yaml
+> new file mode 100644
+> index 0000000000000..c83ea525650ba
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/block/block-device.yaml
+> @@ -0,0 +1,22 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/block/block-device.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: block storage device
+> +
+> +description: |
+> +  This binding is generic and describes a block-oriented storage device.
+> +
+> +maintainers:
+> +  - Daniel Golle <daniel@makrotopia.org>
+> +
+> +properties:
+> +  partitions:
+> +    $ref: /schemas/block/partitions.yaml
+> +
+> +  nvmem-layout:
+> +    $ref: /schemas/nvmem/layouts/nvmem-layout.yaml#
+> +
+> +unevaluatedProperties: false
+> diff --git a/Documentation/devicetree/bindings/block/partition.yaml b/Documentation/devicetree/bindings/block/partition.yaml
+> new file mode 100644
+> index 0000000000000..df561dd33cbc9
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/block/partition.yaml
+> @@ -0,0 +1,51 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/block/partition.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Partition on a block device
+> +
+> +description: |
+> +  This binding describes a partition on a block storage device.
+> +  Partitions may be matched by a combination of partition number, name,
+> +  and UUID.
+> +
+> +maintainers:
+> +  - Daniel Golle <daniel@makrotopia.org>
+> +
+> +properties:
+> +  $nodename:
+> +    pattern: '^block-partition-.+$'
+> +
+> +  partnum:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      Matches partition by number if present.
+> +
+> +  partname:
+> +    $ref: /schemas/types.yaml#/definitions/string
+> +    description:
+> +      Matches partition by PARTNAME if present.
 
-On Thu Mar 7, 2024 at 3:21 PM CET, Rob Herring wrote:
-> On Thu, Mar 07, 2024 at 10:55:03AM +0100, Th=C3=A9o Lebrun wrote:
-> > On J7200, the controller & its wrapper are reset on resume. It has the
-> > same behavior as ti,j721e-usb with a different SoC integration.
-> >=20
-> > Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
-> > ---
-> >  Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml | 3 +++
-> >  1 file changed, 3 insertions(+)
-> >=20
-> > diff --git a/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml b/=
-Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
-> > index 653a89586f4e..e8f7e7511483 100644
-> > --- a/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
-> > +++ b/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
-> > @@ -16,6 +16,9 @@ properties:
-> >        - items:
-> >            - const: ti,am64-usb
-> >            - const: ti,j721e-usb
-> > +      - items:
-> > +          - const: ti,j7200-usb
-> > +          - const: ti,j721e-usb
->
-> Combine this with the previous entry:
->
-> items:
->   - enum:
->       - ti,am64-usb
->       - ti,j7200-usb
->   - const: ti,j721e-usb
+Why do we need something new here? The existing fixed-partitions can 
+already define block device partitions. It just matches by 
+address/offset which works whether its MBR or GPT. Also, in DT we always 
+have an address when there is an address.
 
-Makes sense, will do. Full block will become:
+I'm sure you want to statically define this and have it work even if the 
+partitions move, but sorry...
 
-	properties:
-	  compatible:
-	    oneOf:
-	      - const: ti,j721e-usb
-	      - items:
-	          - enum:
-	              - const: ti,am64-usb
-	              - const: ti,j7200-usb
-	          - const: ti,j721e-usb
+> +
+> +  uuid:
+> +    $ref: /schemas/types.yaml#/definitions/string
+> +    description:
+> +      Matches partition by PARTUUID if present.
 
-Thanks,
+If this remains it will need some work in the dtschema tools. The reason 
+is json-schema already has support for UUIDs as a defined 'format' key 
+value and we should use that.
 
---
-Th=C3=A9o Lebrun, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
-
+> +
+> +  nvmem-layout:
+> +    $ref: /schemas/nvmem/layouts/nvmem-layout.yaml#
+> +    description:
+> +      This container may reference an NVMEM layout parser.
+> +
+> +anyOf:
+> +  - required:
+> +      - partnum
+> +
+> +  - required:
+> +      - partname
+> +
+> +  - required:
+> +      - uuid
+> +
+> +unevaluatedProperties: false
 
