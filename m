@@ -1,261 +1,123 @@
-Return-Path: <linux-kernel+bounces-95880-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95881-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF85687546D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:46:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B92B875471
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:48:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 12754B26F0A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 16:46:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A6DF21C217A1
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 16:48:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B98112FF6B;
-	Thu,  7 Mar 2024 16:46:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C3CE12FF6B;
+	Thu,  7 Mar 2024 16:48:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="HSolM5VP"
-Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="vulfB8oD";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="G5TTTBKR"
+Received: from wfout1-smtp.messagingengine.com (wfout1-smtp.messagingengine.com [64.147.123.144])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9009712F5B0
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 16:46:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 153C01DA37;
+	Thu,  7 Mar 2024 16:48:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.144
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709829970; cv=none; b=qvffnE+qG7H9KT0ovhivLb+N1QB+lyYtd2oVrqKvU6Tj+cnpKX1ycffiGWQvi5LXECS5ppPbOYCFLKysMnnPgYgmMIn8Os+v0x238TykdNQM0NtU4R4zqDc34lvyB3kuby5npt/pWgCdZTfNOjg3BNuhYE50l2W8MDIe+ADTyAs=
+	t=1709830101; cv=none; b=TMlPRjpvOZXdRqvuIMzOx1V/TUSl/TgZN6AXfNCDN5z+X1DiwN1A4dqHdqOWd6k5gursvTqRsTlrwcpuopGwnXizC89Rpxj9PJXwMWA+qm4Arlb2yR6lBOCh+Te6oDLjqYgFRzjGMxjwPcszLcDaGcNquVO+mMxR7YkAtxmBUJA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709829970; c=relaxed/simple;
-	bh=ca2ECfmGdh+lPb0ZgM6o3LCAKKCh4yup/fgnToovGz0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dbgnd0SBWUEmnDJOjQEU7SOsTsqmRshm/rjb7J7KAkMc/YvxKG326dpfvRy2Qja03lIVTTS2NDYNkiTQ3+yZ5xXCGqwxM5dLRDY0V2CD3TbsaHW4c70ZSpyAUzeDVvB3EC3YbAzqy3NsDbYC0sRqFuteooNW4Bs/UynKLn7nakQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=HSolM5VP; arc=none smtp.client-ip=209.85.160.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-42f024b809cso342351cf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 08:46:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709829967; x=1710434767; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=n9/McXY1cqhuGh0I/LrZgjK1iM+tpaM0etIsMoa6+mM=;
-        b=HSolM5VPvP20crJTHNLM6mxjjAKj/VA0VyTMqqp6f0e1wvd3+CpS2e1Tpw0Wq9pW54
-         MqCsEcVCcVTvcliCEcn65k9Ufm5K6MS8aixOsiUJAwcekfowNedlMosqOoQl6+QSDcv+
-         6/Ib8L5lB/BplylXaKjJjzP2y/7X3QqgnruZD5l+sWsI0NJqgfY/ED+o1gMv6sNntUm9
-         4H8uUxHjFgdc5urfRei3aa/aWpSLvWsauOvw2Rg0Zp89D2thta/Ns3H+kOm38LpkCDU4
-         DeGj0Fi5MoK1+ioF+vG7sqrmvaOPoC6AHU1Xr4z5Qtd3H73qHfwpGi76vD4GwOm5S109
-         tM0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709829967; x=1710434767;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=n9/McXY1cqhuGh0I/LrZgjK1iM+tpaM0etIsMoa6+mM=;
-        b=RihlTcWUfabrEdkv43LK3FNuF1QbeyGwVqzRdsNxDkVtBnaWVYIsTRFulj+EPJTRUC
-         E5NTWO+NFff5sMnWeORLmBqgMtkrY8TYsjvHSYsCH1JT7JRN0VsWAF1QP/N+sTDoIcf3
-         u4zGszG2c0UomUESAfgHHBEtt5yaFg6l0XAcw6bMjvM2EzrlDzHEFtv4H17qOb51lnZO
-         Z+AugQRn2RX5paGyI66japJIlOinM2L2fnZ9C5LBJwGSD6Xa6ehOzl1yWLnZv08PMAzs
-         7wXT4UEh9X9MzMixKvv1cyNJCcgExgSdmXNpQzOUtO3PntYGnEzx6ijHGLJfoLl4JeuD
-         ifGw==
-X-Forwarded-Encrypted: i=1; AJvYcCUTSeVHO1BmJTv8EdYK7kh2a2QFeM0tgDy5jNdqVIb2dkplg0aBpr0QKF6WnFF/H1eQsQD0C2IxlRj5Fu0ZNgkS8zsuJ4qExSla5zIi
-X-Gm-Message-State: AOJu0YxqzD+fy0Po8DslVgvErJZRRNtaT9mf0MJnlvccMuJ8kIa2xLR+
-	uLnWzUAx7E0p1o1UNbxQLU+JSMX8zZtTGcSZ2+TlmC1daDB1r7ObyAR+TmZjqGrioGPCNVVvEoO
-	FwpW4zkgbz/xLQY+eTzJc264iRwQUR4vLxgox
-X-Google-Smtp-Source: AGHT+IGGaXzx67xcFvyAWUW6MFQTgwc95aB/V2T54UX2bkhrsBrYdzneVEzZIYQ9mEh9g6qo6RtT1xNO0GNtViV8vcI=
-X-Received: by 2002:ac8:590f:0:b0:42e:6de9:cd13 with SMTP id
- 15-20020ac8590f000000b0042e6de9cd13mr334460qty.3.1709829967309; Thu, 07 Mar
- 2024 08:46:07 -0800 (PST)
+	s=arc-20240116; t=1709830101; c=relaxed/simple;
+	bh=ha6KNAPit9v7EieX9EpAiZFqUT1Qcl+5YYJweXchLUk=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=HTa5eV8umuSmJ/DaN8uEVMVQbBdtg4xqqFxWjwBwIUtLSgPyM8d3a+dHjyqnWBwPNdgE3pKlgEe66u/kZCTbKBAteyGLA64IucIyVYBmdOv1liJFcnmtLXWV4cNbXKGX2513l3UmPrD+763GA0+/W9v8/bKgK+Asa9TueeK3/w4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=vulfB8oD; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=G5TTTBKR; arc=none smtp.client-ip=64.147.123.144
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfout.west.internal (Postfix) with ESMTP id 629831C0006E;
+	Thu,  7 Mar 2024 11:48:18 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Thu, 07 Mar 2024 11:48:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1709830097; x=1709916497; bh=WVCGOo2s7f
+	GNwjUl/6M3XK1yP4t35yFLPsJJVJkfebc=; b=vulfB8oDcJCnxjDBjJ31OC6/PA
+	XGOnDjl6BbVVNq/YpNTPeHJ3N/8/QaHuu+CEcua3P0hDjyabRd18cUsnuZ28/oMw
+	FapFH09qjKWjR+vayYNplQ7VOl2MXm36YRt3Lr0Kl4b/2tkFoYtz45rZ8sCsnbgd
+	zgKKIsegpwu4HoqW/VvCdn5HZYhKHff8/W9ikOEQPO8pE0071UmIlgv929B1Iasc
+	AN6eb/qsYNUEQfi9SuviqQP6x64wja4Lx6OORk0lwyD8PmyZVS/J6FSDSkVihC9b
+	ubgMzDrNKzYJPibw1f3GeD/yii8lOVhY83FU0/3PPAy7oxbgyWblvuRyhcDg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1709830097; x=1709916497; bh=WVCGOo2s7fGNwjUl/6M3XK1yP4t3
+	5yFLPsJJVJkfebc=; b=G5TTTBKRRaoMs8uI27KsdHUrLGvHWoHJ/awQOS/+ZSBi
+	Qc6uVdaT3UYzmnj58w5l9Owk4SvWJwODrmWuDEEmeY8zcetY1Viid9aUo4c2LC4f
+	0udFCFnIOyQ+I0zVdlSeWbIG+FrjyzeHH1vSU7Uey6dGBtV47ps0jfb8ibGj7NB8
+	ZosZ7xrG6v/E7ikYTDpU7SDMVt7uDj+C+lsZcmCS/ZFneRfbEJMDnn6AI4DVl1be
+	4QQWuQs7DIyLfgx9cs681J/1K34xYoNkhHplEcISTwRQGXkm2Fh9CUzXC6TyFR+r
+	VvIBa+R3bLvVJr3i/bZEIDDLtCyxoHfU5JUmwA/ZqQ==
+X-ME-Sender: <xms:0e_pZQrkVBOxMOrpDvHGr0A0uoMGrhNjrfmVJStFWpOzooUlaOQMNA>
+    <xme:0e_pZWowNK3sRm87qvk3uhfN68Md0L8rTrFQLr8WZAEpmcihziFa0BPgkY3RZjpfA
+    aulfhmXL-0B_qD-qw8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrieefgdelvdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
+    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
+    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
+    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
+    hnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:0e_pZVMx0CeDdj1Hf072tY_ITaqWMs-bZajxioRKHiF2CQeQpE4dZg>
+    <xmx:0e_pZX7-XLf7C3Jv-uJ9thrOVmajuNDqrEHLpqBo8IPyYI2C0XoWuQ>
+    <xmx:0e_pZf5TqbsXd6jDiPv_Ruv33GpIMmhEaY41DZDraF_peyW9lQ0n5w>
+    <xmx:0e_pZZsUim1Lij3eL4aDmjtmOe4fqZbt3LKbtNtaRvze9kxCL5ElLZA6tS4>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 312C7B60098; Thu,  7 Mar 2024 11:48:17 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-251-g8332da0bf6-fm-20240305.001-g8332da0b
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240307081412.3933750-1-irogers@google.com> <20240307081412.3933750-6-irogers@google.com>
- <c22e0d67-cf63-4bb7-8cef-05fccc384214@linux.intel.com>
-In-Reply-To: <c22e0d67-cf63-4bb7-8cef-05fccc384214@linux.intel.com>
-From: Ian Rogers <irogers@google.com>
-Date: Thu, 7 Mar 2024 08:45:56 -0800
-Message-ID: <CAP-5=fWeNgEPrHwXcFoLKB64v=DpQqKnNaZ_ckxK7B+tE8XWNQ@mail.gmail.com>
-Subject: Re: [PATCH v1 5/6] perf tools: Use pmus to describe type from attribute
-To: "Liang, Kan" <kan.liang@linux.intel.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Yang Jihong <yangjihong1@huawei.com>, 
-	James Clark <james.clark@arm.com>, Ravi Bangoria <ravi.bangoria@amd.com>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-Id: <fd47619b-e61f-4d89-af4c-5c967fa1ec2d@app.fastmail.com>
+In-Reply-To: <ZenuatjkgVhAAybv@smile.fi.intel.com>
+References: <20240307160823.3800932-1-andriy.shevchenko@linux.intel.com>
+ <20240307160823.3800932-2-andriy.shevchenko@linux.intel.com>
+ <1e2581ba-f7ce-43ad-8e32-c62601c8f5c9@app.fastmail.com>
+ <ZenuatjkgVhAAybv@smile.fi.intel.com>
+Date: Thu, 07 Mar 2024 17:47:56 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org, "Daniel Mack" <daniel@zonque.org>,
+ "Haojian Zhuang" <haojian.zhuang@gmail.com>,
+ "Robert Jarzmik" <robert.jarzmik@free.fr>,
+ "Russell King" <linux@armlinux.org.uk>, "Mark Brown" <broonie@kernel.org>
+Subject: Re: [PATCH v1 1/2] spi: pxa2xx: Kill pxa2xx_set_spi_info()
+Content-Type: text/plain
 
-On Thu, Mar 7, 2024 at 6:36=E2=80=AFAM Liang, Kan <kan.liang@linux.intel.co=
-m> wrote:
+On Thu, Mar 7, 2024, at 17:42, Andy Shevchenko wrote:
+> On Thu, Mar 07, 2024 at 05:30:10PM +0100, Arnd Bergmann wrote:
+>> On Thu, Mar 7, 2024, at 17:07, Andy Shevchenko wrote:
+>> >  	spi_register_board_info(ARRAY_AND_SIZE(spitz_spi_devices));
+>> 
+>> I think the normal interface these days would be
+>> platform_device_register_data(), which does it all in one step.
 >
->
->
-> On 2024-03-07 3:14 a.m., Ian Rogers wrote:
-> > When dumping a perf_event_attr, use pmus to find the PMU and its name
-> > by the type number. This allows dynamically added PMUs to be described.
-> >
-> > Before:
-> > ```
-> > $ perf stat -vv -e data_read true
-> > ...
-> > perf_event_attr:
-> >   type                             24
-> >   size                             136
-> >   config                           0x20ff
-> >   sample_type                      IDENTIFIER
-> >   read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNIN=
-G
-> >   disabled                         1
-> >   inherit                          1
-> >   exclude_guest                    1
-> > ...
-> > ```
-> >
-> > After:
-> > ```
-> > $ perf stat -vv -e data_read true
-> > ...
-> > perf_event_attr:
-> >   type                             24 (uncore_imc_free_running_0)
-> >   size                             136
-> >   config                           0x20ff
-> >   sample_type                      IDENTIFIER
-> >   read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNIN=
-G
-> >   disabled                         1
-> >   inherit                          1
-> >   exclude_guest                    1
-> > ...
-> > ```
-> >
-> > However, it also means that when we have a PMU name we prefer it to a
-> > hard coded name:
-> >
-> > Before:
-> > ```
-> > $ perf stat -vv -e cycles true
->
-> faults?
+> I'm not sure how is this related to the SPI board info registration.
 
-Thanks, will fix in v2. It does highlight we lack a struct pmu in pmus
-for legacy types like hardware, hence switching to faults as a
-software event that has a PMU. Perhaps we should just make legacy PMUs
-anyway, to avoid special case logic. Anyway, not in these changes.
+It's not. What I meant is that you could use
+platform_device_register_data() instead of the
+"platform_device_alloc(); platform_data = info; platform_device_add();"
+sequence.
 
-Thanks,
-Ian
+It should be a safe conversion, but it's also fine to stay
+with the existing version if you are worried about regressions.
 
-> Thanks,
-> Kan
-> > ...
-> > perf_event_attr:
-> >   type                             1 (PERF_TYPE_SOFTWARE)
-> >   size                             136
-> >   config                           0x2 (PERF_COUNT_SW_PAGE_FAULTS)
-> >   sample_type                      IDENTIFIER
-> >   read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNIN=
-G
-> >   disabled                         1
-> >   inherit                          1
-> >   enable_on_exec                   1
-> >   exclude_guest                    1
-> > ...
-> > ```
-> >
-> > After:
-> > ```
-> > $ perf stat -vv -e faults true
-> > ...
-> > perf_event_attr:
-> >   type                             1 (software)
-> >   size                             136
-> >   config                           0x2 (PERF_COUNT_SW_PAGE_FAULTS)
-> >   sample_type                      IDENTIFIER
-> >   read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNIN=
-G
-> >   disabled                         1
-> >   inherit                          1
-> >   enable_on_exec                   1
-> >   exclude_guest                    1
-> > ...
-> > ```
-> >
-> > It feels more consistent to do this, rather than only prefer a PMU
-> > name when a hard coded name isn't available.
-> >
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> > ---
-> >  tools/perf/util/perf_event_attr_fprintf.c | 16 +++++++++++-----
-> >  1 file changed, 11 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/tools/perf/util/perf_event_attr_fprintf.c b/tools/perf/uti=
-l/perf_event_attr_fprintf.c
-> > index 8f04d3b7f3ec..29e66835da3a 100644
-> > --- a/tools/perf/util/perf_event_attr_fprintf.c
-> > +++ b/tools/perf/util/perf_event_attr_fprintf.c
-> > @@ -7,6 +7,8 @@
-> >  #include <linux/types.h>
-> >  #include <linux/perf_event.h>
-> >  #include "util/evsel_fprintf.h"
-> > +#include "util/pmu.h"
-> > +#include "util/pmus.h"
-> >  #include "trace-event.h"
-> >
-> >  struct bit_names {
-> > @@ -75,9 +77,12 @@ static void __p_read_format(char *buf, size_t size, =
-u64 value)
-> >  }
-> >
-> >  #define ENUM_ID_TO_STR_CASE(x) case x: return (#x);
-> > -static const char *stringify_perf_type_id(u64 value)
-> > +static const char *stringify_perf_type_id(struct perf_pmu *pmu, u32 ty=
-pe)
-> >  {
-> > -     switch (value) {
-> > +     if (pmu)
-> > +             return pmu->name;
-> > +
-> > +     switch (type) {
-> >       ENUM_ID_TO_STR_CASE(PERF_TYPE_HARDWARE)
-> >       ENUM_ID_TO_STR_CASE(PERF_TYPE_SOFTWARE)
-> >       ENUM_ID_TO_STR_CASE(PERF_TYPE_TRACEPOINT)
-> > @@ -175,9 +180,9 @@ do {                                               =
-               \
-> >  #define print_id_unsigned(_s)        PRINT_ID(_s, "%"PRIu64)
-> >  #define print_id_hex(_s)     PRINT_ID(_s, "%#"PRIx64)
-> >
-> > -static void __p_type_id(char *buf, size_t size, u64 value)
-> > +static void __p_type_id(struct perf_pmu *pmu, char *buf, size_t size, =
-u64 value)
-> >  {
-> > -     print_id_unsigned(stringify_perf_type_id(value));
-> > +     print_id_unsigned(stringify_perf_type_id(pmu, value));
-> >  }
-> >
-> >  static void __p_config_hw_id(char *buf, size_t size, u64 value)
-> > @@ -246,7 +251,7 @@ static void __p_config_id(char *buf, size_t size, u=
-32 type, u64 value)
-> >  #define p_sample_type(val)   __p_sample_type(buf, BUF_SIZE, val)
-> >  #define p_branch_sample_type(val) __p_branch_sample_type(buf, BUF_SIZE=
-, val)
-> >  #define p_read_format(val)   __p_read_format(buf, BUF_SIZE, val)
-> > -#define p_type_id(val)               __p_type_id(buf, BUF_SIZE, val)
-> > +#define p_type_id(val)               __p_type_id(pmu, buf, BUF_SIZE, v=
-al)
-> >  #define p_config_id(val)     __p_config_id(buf, BUF_SIZE, attr->type, =
-val)
-> >
-> >  #define PRINT_ATTRn(_n, _f, _p, _a)                  \
-> > @@ -262,6 +267,7 @@ do {                                               =
-       \
-> >  int perf_event_attr__fprintf(FILE *fp, struct perf_event_attr *attr,
-> >                            attr__fprintf_f attr__fprintf, void *priv)
-> >  {
-> > +     struct perf_pmu *pmu =3D perf_pmus__find_by_type(attr->type);
-> >       char buf[BUF_SIZE];
-> >       int ret =3D 0;
-> >
+      Arnd
 
