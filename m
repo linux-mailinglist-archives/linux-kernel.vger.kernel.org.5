@@ -1,171 +1,224 @@
-Return-Path: <linux-kernel+bounces-94842-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94843-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 045308745D3
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 02:59:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D0028745D7
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 03:00:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 65ED01F25BBC
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 01:59:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 870311F25BC4
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 01:59:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97A9B5C82;
-	Thu,  7 Mar 2024 01:58:57 +0000 (UTC)
-Received: from CHN02-BJS-obe.outbound.protection.partner.outlook.cn (mail-bjschn02on2101.outbound.protection.partner.outlook.cn [139.219.17.101])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01B935677;
+	Thu,  7 Mar 2024 01:59:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="k/7wd482"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F8136139;
-	Thu,  7 Mar 2024 01:58:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.17.101
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709776736; cv=fail; b=uaQSayS+W7cPqfAcFa3ZKxXgE4pgMMwbwouKVb5wU54YSIS4HEKDQXeclVQMuvnDji+/a/t3vKNwodW7acgxbPoOoiGEWbf2g/eKN1LA2Vk2uezeHI50p2rSybGdtWymsYJeefq08XtTsxnIsvEIAOOcJ/EEuBSLM8nV6TRPHB8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709776736; c=relaxed/simple;
-	bh=ndvShWH0t82nxD8Gjx5lqLTEGm3QGCLKNvlfbMyg7ps=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=dlHGRBseRM/ANuJ52J8653oMCZPUz+UlrYrHRFqv2HxfNcamMXytec8cRRpLrHh4IP99ej9dEPuXqJufEaaz42MoitbCCREtYfR17MAw8DxK51dlcjxjoFEVf81AhrLd9tE/HPaXpieexQkTENE2u6GPqS3ycLIDKrA7fjftsQE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.17.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oTTfzg3+nMXAG9q4mzJkkdqclRWJ+JoZsV7r2mm8vYtO1u3HhB8BhxrG+Lq5N9B2aQ40j3/lkS0wHS2IULhifR+Y5T7bSNh034pln72bseblp3WFSXqGHouSPzSQHlAcGyS+vWQnviRjhlY7tjCglRH6Ep6ImavcKnTpmqeOKVu29kGp4+oDXuGFZCu966OGdYP6q0FQ9ZRHcTlf1N1MFxF6FvsNolPt8nXspFnx7WSGz/77kLvFfwZC5WKF8hoQL0anc/5g5JZQG806nvgfNkguET33MMLZaaJVcCTFPkLpEleF7Au5CHdrfdZVMdFBSU3YLt054Sodv106JpOvlg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ndvShWH0t82nxD8Gjx5lqLTEGm3QGCLKNvlfbMyg7ps=;
- b=YHqwjL+ylEkmKg8IiRx9+T1WEaIH1sKJ8QHdvGmPbEBJGPKyJaJQSa7USZ+GpKfSYg8+U5YbWYCtSdLHA6zYQb+9tZeCSMvIxSu8W1uSIP0aMF2JRsHxw0ZvXnmlJI409rBF7sdkadZjSi0meg7V9obgn+Bealc92M7yyso5fgFLCeMfDsyA/ppX0x+QFZzyPpCsKlGZhI26s3gm4dAO2N1x5JfSIZuL+QUWbhGhD43smRpJLLo1fTal75qtaJVsNgRscgpO2YtMCLaRK/KQWfWygUuAcDKkvRSNAHDnVmyNGmhkkmJzXNUeM3pKiEMCC9X0Hfo885cgsIBFyumGpQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=starfivetech.com; dmarc=pass action=none
- header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
-Received: from SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c311:25::10) by SHXPR01MB0639.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c311:1c::15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.51; Thu, 7 Mar
- 2024 01:58:50 +0000
-Received: from SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn
- ([fe80::b0af:4c9d:2058:a344]) by
- SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn ([fe80::b0af:4c9d:2058:a344%6])
- with mapi id 15.20.7249.041; Thu, 7 Mar 2024 01:58:49 +0000
-From: Changhuang Liang <changhuang.liang@starfivetech.com>
-To: Dan Carpenter <dan.carpenter@linaro.org>
-CC: Mauro Carvalho Chehab <mchehab@kernel.org>, Greg Kroah-Hartman
-	<gregkh@linuxfoundation.org>, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-	Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Jack Zhu
-	<jack.zhu@starfivetech.com>, "linux-media@vger.kernel.org"
-	<linux-media@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-staging@lists.linux.dev"
-	<linux-staging@lists.linux.dev>
-Subject:
- =?gb2312?B?u9i4tDogW1BBVENIIHYxIDEvN10gc3RhZ2luZzogbWVkaWE6IHN0YXJmaXZl?=
- =?gb2312?B?OiBSZXBsYWNlZCBjdXJyZW50X2ZtdCB3aXRoIGdldCBmcm9tIHNkX3N0YXRl?=
-Thread-Topic: [PATCH v1 1/7] staging: media: starfive: Replaced current_fmt
- with get from sd_state
-Thread-Index: AQHab6lh+h+3gieBvE+NYK6US9XDs7EqxEcAgADBSAA=
-Date: Thu, 7 Mar 2024 01:58:49 +0000
-Message-ID:
- <SHXPR01MB0671F91D3D83EAB515B94CB0F220A@SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn>
-References: <20240306093334.9321-1-changhuang.liang@starfivetech.com>
- <20240306093334.9321-2-changhuang.liang@starfivetech.com>
- <8a0cf244-1cb7-48a5-a900-1f82877d1e2f@moroto.mountain>
-In-Reply-To: <8a0cf244-1cb7-48a5-a900-1f82877d1e2f@moroto.mountain>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=starfivetech.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SHXPR01MB0671:EE_|SHXPR01MB0639:EE_
-x-ms-office365-filtering-correlation-id: e211fe1c-3624-4abb-cf9e-08dc3e4a21f5
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- ZzWOxBY0RqDW2q6Q6pE+lur62Q4SvjTj9LtTzMAZSpd/+rAxlGhSK8/E5amQDK8ZUSlQVN5AY2kEKqYiWPWN5cRGwTtB7cUKwqSMNZCja4wwakG4xeUByaJvvPni0J8syQg5pDLUwuCfueYxImiNfQedinRiR7WkLCNh9OF77MAPxqm2GnyBy937asnQd/J6Yfjy5NzQ0OoQpGDFWw4v51bgVwrivdVlN0GXCObmaAzLTPNDtLIDCDIhROqYRzVPzdDc29ffz2NqyjX1Ei9Fe0VeL8JIu1anIYifR68tQN8ZYfD9sqZQRushST1CcqbGdg82/Y+34+ISq5GeoW6tq0g0SBebof3VeWg5sk3JE0u2rQf9gNm8wJqBfS61tLW4HdUtOOF3j5RV79XNAwsyAOkX9bgKxAXbBItq0YnnwyuTJ33r4hd46NvatMlMHzdrPScY8qWvvBeD+dMFHNeH3mZ/IKOqY5cDADU8Dt0seIz90qMlqhZeKyfLeRB286b+R88DmlVE/tLXUcV6w/8GW6iXFpNIRmMgN94FWAn2InBJv08UnIs72gxZ+ZqdMT6oP7z6pnF0DgNg+livaLuyPpPrzM4lxCXx9oHFgWsowML4mKTWDHL5EQQrqhKO7YZU
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:zh-cn;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(41320700004)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?gb2312?B?NlhzaGVJSjZTY0Y5eFl4dEtjNTk3MVFCN1MxNlNzTzU1aHh1Ti9vRFVsSDJ6?=
- =?gb2312?B?WDRNSDduanNRR3VGbW92Q2FvQUw3d2ZTVEowZUhvS2ljeTgvZ25qT3Z5VkR0?=
- =?gb2312?B?VG5Gcm9VYjljRytxRzhvUWt4cjJTTVF6WFliMzYwR1pIaGx2dTZEdWUyYnYr?=
- =?gb2312?B?aVd4UkJPVHZIU0F0V0pjRkIzMmsxT1hndVhCZlNRUTlpTTd4TzQ5MnhIbzBG?=
- =?gb2312?B?R2hvckliRGc3RXk5aHZraFdRaXJveWNjL0RHRE9YZldUOGdoRlpQeVY1cVpu?=
- =?gb2312?B?MENXNnZhZnJIdmVmNkVkcjBkTVdNcUZ1Skk4STc2VzA1QStFWG1VU1FkTXNz?=
- =?gb2312?B?RHYvOGY4M0xaNzJoK3dHdndEZ0NDSmVRaHRSRy83TGJtR3lhR3NkYkZyTFlX?=
- =?gb2312?B?YW9WY1RiM2tvNHo0SUNwWjNXRVdoR0ZpSVpHK0h5VFRWbEZYR3hIbFdtY2s3?=
- =?gb2312?B?eG12SXBUU2FBTitRSFUwQU9sOWlWUXJlSEpzdWFyNVUvNWtFMDE0OG41Mmgr?=
- =?gb2312?B?ajY4UzJraTYySGFLNGFuYUNyUFBsSGtPTVcrd2VGODkxcnNIc2FmQTJjSjl6?=
- =?gb2312?B?a2JLcEJxNzhUSHVxSmF5eDE2eFRoWXREV2tkd1cxV3VkSzE2ZWZ6dEI2SVpF?=
- =?gb2312?B?Uk9uakY4RUo1dkorV2xpRlFJSStyY2d5alVNMGwvTlc0bWdUOEo3VHU3MEY5?=
- =?gb2312?B?dURibjY5enRyVkExaG5SNFJEMXFJckluNVJHUWpEOFhGOUhzVnVNY1hhdWNF?=
- =?gb2312?B?ajhSdzIzNjdoSnBuMTdHdGdwMGp3NGJIVUZiNEY2RThwZkhieFptdzgrcU5h?=
- =?gb2312?B?ais4NTFpcEoyUXFheXVyN3NHWjZkZEdkZktkekdSamsxY01hUnhlYVBlVEhS?=
- =?gb2312?B?SXNqT29oQmVRcnhlOTkyVERjSTJkSGRCeWRnL0QwdlhOMmNFYjhXZUJ5ck8r?=
- =?gb2312?B?VExoMEJkUFN3R1lsamNlejd4UHVMWGpQWEVoUXJZcTlpMFFMOVJxeGdWYUpp?=
- =?gb2312?B?cVRGNEZ1N3UrME1FckRsbUN1bTM1WHhFM0VwOXZjYVN2TUk5M2NhVGlRWUR0?=
- =?gb2312?B?ajl5MjNFRHJObFE2OW8xSXJrVjNDYzdTYXE2aWtxN1FVU3JmY2ZNVk1QZ1Z0?=
- =?gb2312?B?aEhlVTkyNXFLcDlLWnZaeHBISVJjNmdPZFFVRlMvYWM1TWVmSnkwSmFZY3dT?=
- =?gb2312?B?RVpscVJUY3pkdXVCQ2N5OWZKOVRvRkhQdlF3RVNQR2QwREhGVkMzc2xwaTNH?=
- =?gb2312?B?MmV2bUx0VHhkNFRhOCs4THMydmhCVTQwRXF5UDBHWVcvWGExM2JJaGI1a3FC?=
- =?gb2312?B?ODR0S2VBeXR0UFFLcWFMeUlWdUFwWmNUVzhpcUJwSUdUTVhiN01VWjkybUdL?=
- =?gb2312?B?OWtBTitYdDVXY3BiYWZqOTloOVN2cE9vUXhHelRWK1J1aEpXeE5sSFB3Z3oy?=
- =?gb2312?B?VkQ3Z0dqejRINGs3elAzeFV6S2ZaVU4wVUQyU0FxSk13elRQVlRtSFdQV0ts?=
- =?gb2312?B?NW16THVyNm5JM0lPMVAzaDlLTHQ3QTJCMUp3blVocVRiQWluQXVTMG5GT0VH?=
- =?gb2312?B?Nk1HcHdNa3FuVW9DRTNTN0g1VlNpUnBybmJWdmowVHAvbUtmU054dmxMODBl?=
- =?gb2312?B?WURlUk1yVlpaL1hvd3JLbmdBODFISXl0WHRkQ0M3bFhpZ2N5V29uemZRdzF4?=
- =?gb2312?B?WTFGbk5PdVA1ZnptZmRHWHErQ0tuOCtWYUNjZkdpdElXL0NRYUVzWnpVU0hv?=
- =?gb2312?B?YnBzS1ZYWnVlcE5oSEdGTnRkbnJBNXc1RSs3SnJGZVZ6UkZUWW52SEN0TXNq?=
- =?gb2312?B?K0R2dy91NnoxV1lHZzFmRzJCeEZSVDdWRmc4NVZ0TWxVNFFidTcrOVM2a2tk?=
- =?gb2312?B?OXhabEtQY2lvSHlZam5CQVI5ZnJORGk4MGRRQXpSOHVEcU5NRzFHTUx1SGZZ?=
- =?gb2312?B?ckpQL0ltQ285Rk9OaUVjaW1ubTV6T09yQlh5N1lpdVBQN0pBNW5FWk1GZ1hu?=
- =?gb2312?B?bVYxZG9aOS9QaXdjK3VBVTNPWnB1U2MwWThDSzFYSG5IRC82OXVQb1dYbkdQ?=
- =?gb2312?B?emVITm02OExxTHdLSUVKVzlUQ094MUJGVkhNV3o4cGp2bU5JZXBQTWMxYms5?=
- =?gb2312?B?SVUxR0FpNkl3S3pjWVBTaXVBSU9wcGlxcVhLUFV4ZlRMQWhaWW9yaE1zT2Qr?=
- =?gb2312?B?blE9PQ==?=
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FA5B4C9B;
+	Thu,  7 Mar 2024 01:59:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709776789; cv=none; b=QDLbrMxgxwq2h7qd4PpwA1Hrb9ySqcpTb7f3f1CEgAg2o6CS6UVBDRH81fEqaeCGyMWPnfnFvXq/ZbxU3r+gsTZhAnmA0Gu4IWUqcGrizaUfUbNpzE/W2buCojhui+o/YqiZJBq17wL3VVWz9kn0XgZ57i7OvcV4NDkVbtitQgU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709776789; c=relaxed/simple;
+	bh=iXEy1OKVX5U3UbielGi3xT8MapgMEL75d1p6MVZeUKY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=kWPcymj2QwtALoidnFb9qU61WEwgyHdC96ctUabylwnLva88iW2S6JFGt6YCzZc+L+I7PcaJEtuDHayk1WyBjAVXqB7syiM/QqXtVvgklFTdQhtqb+ST5J7a5+lmhMk5XbLHDnnXAv4tvrU+o9ijlYSBcXYstoBlxF8MbNrAbSI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=k/7wd482; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4270mY3l006009;
+	Thu, 7 Mar 2024 01:59:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=fo20e5u8kRX0TH8Ebk4q96Y5aavtMUPyPXPpSWsJ1kk=; b=k/
+	7wd482xhM+Nt9nIvRrgYgqfivMZsN79S5KkUI6ET8YUjBEi2HfuOJuP6lxP4BKIc
+	51hdv7lvQGiaOYW9hK3JNN9YN5bHVATUhvCUPGbNtkAVcLbpfV92Yggw/IhNKqGD
+	91g6f/maa54NlZ2w4FPrlcmyXN46mE7GQyhgc2v4MmgAoPoYimhIx1yOCqgedpfy
+	qOdrlY3nn3zL46ynkh9utCbjiiqZ4FtdSe+Df/93vc2Feoc3ogfYlR7qi3hcc4M3
+	8BbAEfSgShZwzEXnS7t6WKcYegN5SlYd+OGJkl88h4gEGGzfF4Ov2J7Y8gMKVPXa
+	rTFA6qkS096kdE5gg+gw==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wq2mfr5gn-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 07 Mar 2024 01:59:05 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4271x40J016549
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 7 Mar 2024 01:59:04 GMT
+Received: from [10.216.20.61] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 6 Mar
+ 2024 17:58:58 -0800
+Message-ID: <be760502-446b-f4cc-776d-8751bdb75ff7@quicinc.com>
+Date: Thu, 7 Mar 2024 07:28:54 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: starfivetech.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn
-X-MS-Exchange-CrossTenant-Network-Message-Id: e211fe1c-3624-4abb-cf9e-08dc3e4a21f5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Mar 2024 01:58:49.7932
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: YtYQAWYEGpBNVDakIoU6u7AHQ63MoGgaaxql8dv+E/QBCUAtvdchD2uvIPYHEkfMJwJ2XzFKo0RtvQ6NoGr34Nn7ZacyDfWQ9rdZHxjT3qajYc5TEflbbmicpZsrCcib
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SHXPR01MB0639
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.1
+Subject: Re: [PATCH v2] PCI: dwc: Enable runtime pm of the host bridge
+Content-Language: en-US
+To: Bjorn Helgaas <helgaas@kernel.org>
+CC: Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel
+	<gustavo.pimentel@synopsys.com>,
+        Manivannan Sadhasivam
+	<manivannan.sadhasivam@linaro.org>,
+        Lorenzo Pieralisi
+	<lpieralisi@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?=
+	<kw@linux.com>,
+        Rob Herring <robh@kernel.org>, Bjorn Helgaas
+	<bhelgaas@google.com>,
+        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_vbadigan@quicinc.com>, <quic_ramkri@quicinc.com>,
+        <quic_nitegupt@quicinc.com>, <quic_skananth@quicinc.com>,
+        <quic_parass@quicinc.com>
+References: <20240305195722.GA541937@bhelgaas>
+From: Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
+In-Reply-To: <20240305195722.GA541937@bhelgaas>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: qZMEMk_YTASH6IEsnk1l7XVue-ZdsUiT
+X-Proofpoint-ORIG-GUID: qZMEMk_YTASH6IEsnk1l7XVue-ZdsUiT
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-06_14,2024-03-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ lowpriorityscore=0 spamscore=0 adultscore=0 suspectscore=0 mlxscore=0
+ phishscore=0 malwarescore=0 mlxlogscore=999 priorityscore=1501 bulkscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2403070013
 
-SGksIERhbg0KDQpUaGFua3MgZm9yIHlvdXIgY29tbWVudHMuDQoNCj4gLS0tLS3Tyrz+1K28/i0t
-LS0tDQo+ILeivP7IyzogRGFuIENhcnBlbnRlciA8ZGFuLmNhcnBlbnRlckBsaW5hcm8ub3JnPg0K
-PiC3osvNyrG85DogMjAyNMTqM9TCNsjVIDIyOjIzDQo+IMrVvP7IyzogQ2hhbmdodWFuZyBMaWFu
-ZyA8Y2hhbmdodWFuZy5saWFuZ0BzdGFyZml2ZXRlY2guY29tPg0KPiCzrcvNOiBNYXVybyBDYXJ2
-YWxobyBDaGVoYWIgPG1jaGVoYWJAa2VybmVsLm9yZz47IEdyZWcgS3JvYWgtSGFydG1hbg0KPiA8
-Z3JlZ2toQGxpbnV4Zm91bmRhdGlvbi5vcmc+OyBIYW5zIFZlcmt1aWwgPGh2ZXJrdWlsLWNpc2Nv
-QHhzNGFsbC5ubD47DQo+IExhdXJlbnQgUGluY2hhcnQgPGxhdXJlbnQucGluY2hhcnRAaWRlYXNv
-bmJvYXJkLmNvbT47IEphY2sgWmh1DQo+IDxqYWNrLnpodUBzdGFyZml2ZXRlY2guY29tPjsgbGlu
-dXgtbWVkaWFAdmdlci5rZXJuZWwub3JnOw0KPiBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3Jn
-OyBsaW51eC1zdGFnaW5nQGxpc3RzLmxpbnV4LmRldg0KPiDW98ziOiBSZTogW1BBVENIIHYxIDEv
-N10gc3RhZ2luZzogbWVkaWE6IHN0YXJmaXZlOiBSZXBsYWNlZCBjdXJyZW50X2ZtdCB3aXRoDQo+
-IGdldCBmcm9tIHNkX3N0YXRlDQo+IA0KPiBPbiBXZWQsIE1hciAwNiwgMjAyNCBhdCAwMTozMzoy
-OEFNIC0wODAwLCBDaGFuZ2h1YW5nIExpYW5nIHdyb3RlOg0KPiA+IGN1cnJlbnRfZm10IG9ubHkg
-Y2FuIHN0b3JlIG9uZSBwYWQgZm9ybWF0LCB3aGVuIHNldHRpbmcgb3RoZXIgcGFkIGl0DQo+ID4g
-d2lsbCBiZSBvdmVyd3JvdGUuIFJlcGxhY2VkIGl0IHdpdGggZ2V0IGZyb20gc2Rfc3RhdGUgZGly
-ZWN0bHkuDQo+ID4NCj4gDQo+IFRoZXNlIGNvbW1pdCBkZXNjcmlwdGlvbnMgYXJlIGtpbmQgb2Yg
-aGFyZCB0byB1bmRlcnN0YW5kIHNvIEkgaGF2ZSBwcm9wb3NlZA0KPiBuZXcgY29tbWl0IG1lc3Nh
-Z2VzLg0KPiANCj4gU3ViamVjdDogc3RhZ2luZzogbWVkaWE6IHN0YXJmaXZlOiBHZXQgcmlkIG9m
-IGN1cnJlbnRfZm10DQo+IA0KPiBXZSB3YW50IHRvIHN1cHBvcnQgbXV0aXBsZSBmb3JtYXRzIHNv
-IHNhdmluZyBvbmUgImN1cnJlbnRfZm10IiBkb2Vzbid0DQo+IHdvcmsuICBUaGlzIHdhcyBvbmx5
-IHVzZWQgdG8gc2V0IHRoZSBJU1BfUkVHX1NUUklERSBzbyB1c2UgdGhlIHNkX3N0YXRlDQo+IGRp
-cmVjdGx5IGZvciB0aGF0IGFuZCBkZWxldGUgdGhlIC0+Y3VycmVudF9mbXQgcG9pbnRlci4gIE5v
-IGZ1bmN0aW9uYWwgY2hhbmdlLg0KPiANCg0KSSB3aWxsIHJlLWNoYW5nZSB0aGUgcGF0Y2ggZGVz
-Y3JpcHRpb24gYW5kIGFkZCBtb3JlIGRldGFpbHMgdG8gYWxsIHRoZSBwYXRjaGVzLg0KDQpUaGFu
-a3MNCg0KDQoNCg==
+
+
+On 3/6/2024 1:27 AM, Bjorn Helgaas wrote:
+> On Tue, Mar 05, 2024 at 03:19:01PM +0530, Krishna chaitanya chundru wrote:
+>> The Controller driver is the parent device of the PCIe host bridge,
+>> PCI-PCI bridge and PCIe endpoint as shown below.
+> 
+> Nit: add blank line here.
+> 
+Ack.
+>> 	PCIe controller(Top level parent & parent of host bridge)
+>> 			|
+>> 			v
+>> 	PCIe Host bridge(Parent of PCI-PCI bridge)
+>> 			|
+>> 			v
+>> 	PCI-PCI bridge(Parent of endpoint driver)
+>> 			|
+>> 			v
+>> 		PCIe endpoint driver
+> 
+> Nit: use spaces instead of tabs to ensure this still looks good when
+> "git log" indents this.  In this case it doesn't seem to matter,
+> 
+Ack.
+>> Since runtime PM is disabled for host bridge, the state of the child
+>> devices under the host bridge is not taken into account by PM framework
+>> for the top level parent, PCIe controller. So PM framework, allows
+>> the controller driver to enter runtime PM irrespective of the state
+>> of the devices under the host bridge.
+> 
+> IIUC this says that we runtime suspend the controller even though
+> runtime PM is disabled for the host bridge?  I have a hard time
+> parsing this; can you cite a function that does this or some relevant
+> documentation about how this part of runtime PM works?
+> 
+Generally controller should go to runtime suspend when endpoint client
+drivers and pci-pci host bridge drivers goes to runtime suspend as the
+controller driver is the parent, but we are observing controller driver
+goes to runtime suspend even when client drivers and PCI-PCI bridge are
+in active state.
+
+Unfortunately I don't have any reference for any documentation about how
+runtime PM works.
+>> And this causes the topology breakage and also possible PM issues.
+> 
+> Not sure what this refers to, since you didn't mention topology
+> breakage earlier.  And "possible PM" issues is too vague to be useful.
+> 
+>> So enable pm runtime for the host bridge, so that controller driver
+>> goes to suspend only when all child devices goes to runtime suspend.
+> 
+> s/pm runtime/runtime PM/ so all the references match (unless you mean
+> something different here) (also in subject line)
+> 
+>> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+>> ---
+>> Changes in v2:
+>> - Updated commit message as suggested by mani.
+>> - Link to v1: https://lore.kernel.org/r/20240219-runtime_pm_enable-v1-1-d39660310504@quicinc.com
+>> ---
+>>   drivers/pci/controller/dwc/pcie-designware-host.c | 4 ++++
+>>   1 file changed, 4 insertions(+)
+>>
+>> diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
+>> index d5fc31f8345f..57756a73df30 100644
+>> --- a/drivers/pci/controller/dwc/pcie-designware-host.c
+>> +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
+>> @@ -16,6 +16,7 @@
+>>   #include <linux/of_pci.h>
+>>   #include <linux/pci_regs.h>
+>>   #include <linux/platform_device.h>
+>> +#include <linux/pm_runtime.h>
+>>   
+>>   #include "../../pci.h"
+>>   #include "pcie-designware.h"
+>> @@ -505,6 +506,9 @@ int dw_pcie_host_init(struct dw_pcie_rp *pp)
+>>   	if (pp->ops->post_init)
+>>   		pp->ops->post_init(pp);
+>>   
+>> +	pm_runtime_set_active(&bridge->dev);
+> 
+> There are currently no callers of pm_runtime_set_active() in
+> drivers/pci/controller/.  This adds it to dw_pcie_host_init(), but it
+> doesn't seem to be a DWC-specific issue, so I assume other drivers and
+> driver cores like cadence and mobiveil should have this, too?
+> 
+I think cadence and mobiveil also should have this.
+>> +	pm_runtime_enable(&bridge->dev);
+> 
+> There are several existing calls of pci_runtime_enable(), including
+> from several DWC drivers.  Are they now redundant?
+> 
+No These are not redundant, Those drivers are calling this
+pm_runtime_enable() for their controller dev node. Here we are calling
+runtime enable for the bridge dev which is allocated and used by the
+PCIe framework.
+
+- Krishna Chaitanya.
+> In addition, [1] suggests that pm_runtime_enable() should be called
+> *after* pm_runtime_set_active(), but these existing calls
+> (dra7xx_pcie_probe(), ks_pcie_probe(), qcom_pcie_probe(),
+> rcar_gen4_pcie_prepare(), tegra_pcie_config_rp()) happen *before*
+> dw_pcie_host_init() calls pm_runtime_set_active().
+> 
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/power/runtime_pm.rst?id=v6.7#n582
+>  >>   	return 0;
+>>   
+>>   err_stop_link:
+>>
+>> ---
+>> base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+>> change-id: 20240219-runtime_pm_enable-bdc17914bd50
+>>
+>> Best regards,
+>> -- 
+>> Krishna chaitanya chundru <quic_krichai@quicinc.com>
+>>
 
