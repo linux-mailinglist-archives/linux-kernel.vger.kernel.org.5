@@ -1,139 +1,204 @@
-Return-Path: <linux-kernel+bounces-95913-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95914-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0A228754E4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 18:11:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 927468754EA
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 18:12:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA16A1F238C3
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:11:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 11B5BB20D26
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:11:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6B6F130E44;
-	Thu,  7 Mar 2024 17:10:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B373130AE1;
+	Thu,  7 Mar 2024 17:11:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HBnJ+36P"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="O18NOmG3"
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02olkn2024.outbound.protection.outlook.com [40.92.43.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37F48130AF8;
-	Thu,  7 Mar 2024 17:10:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709831442; cv=none; b=ES5FJeyD6SwQuMhIr9EjrLBzLxXy/YBg3i1bfnNfQVzOMtQStOd07Ao0tV4m9mrtkrdo8MvWQDM/cHVIycoEIlJeCyQWz54RGbURvZbrDE3ZH2eTJeFUU8x4q37qW8AYbxDXaNU/8PqG6An39fNgzVAmtdo0WBzYbfPcjQLHJFo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709831442; c=relaxed/simple;
-	bh=6CqTY8Cis5LdvB3OJwKtmRzxNEBIBumnzKN3pG/9xm4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=G73DAyXEsSh0JNSWRthUYzK166f6cKVWaPRQvKtASf1eOrVG5lJDVYdQE1TrKmvGGy3jcjprMU+LQxWQGwJZP4FTRss+lod0QSaOuFARRAzNDZnFmdvY+tuNC6P1QUB8TbsBK+5sTMCNDTcaKkO8bH4Jj9xZOwJban6LKIvEK5o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HBnJ+36P; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709831440; x=1741367440;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=6CqTY8Cis5LdvB3OJwKtmRzxNEBIBumnzKN3pG/9xm4=;
-  b=HBnJ+36PvEa9E0kGB6zIwPqUd1hxivIB7XOp68QY11qxCBdcfbJaT4v6
-   AMQdbyU8QgHdhBWR/Ohs7d1DtrCOOV+lMx3rig9KLMGn8ZrHi3WA0al6J
-   QMnJZYoVdwhSt9PsTNTxGhhdmSqV+7aK5Y3SsM/WiqkjqEr4s9NqyZen6
-   e80ZALT9EBA5g10OEvgPiEbbZvv2sWLSVGxv9QskUGzYnV0zvPywf7vuV
-   MZL5GkquFn9T3oiovnm5XawHQYtdalCXS2w2a7SBZiF0nJf/r21y8OBQa
-   FFS6H2ZAv9Wp1OGCr8eoVWTALo04ncEhfnjnC9fvTaZrEVqNQDToY7IK7
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="4393828"
-X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
-   d="scan'208";a="4393828"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 09:10:26 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="937046416"
-X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
-   d="scan'208";a="937046416"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 07 Mar 2024 09:10:22 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1000)
-	id 85F8A128; Thu,  7 Mar 2024 19:10:21 +0200 (EET)
-Date: Thu, 7 Mar 2024 19:10:21 +0200
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To: "Huang, Kai" <kai.huang@intel.com>
-Cc: Sean Christopherson <seanjc@google.com>, 
-	Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Yan Zhao <yan.y.zhao@intel.com>, Isaku Yamahata <isaku.yamahata@intel.com>, 
-	Michael Roth <michael.roth@amd.com>, Yu Zhang <yu.c.zhang@linux.intel.com>, 
-	Chao Peng <chao.p.peng@linux.intel.com>, Fuad Tabba <tabba@google.com>, 
-	David Matlack <dmatlack@google.com>
-Subject: Re: [PATCH 11/16] KVM: x86/mmu: Explicitly disallow private accesses
- to emulated MMIO
-Message-ID: <3acw6nkfyre4t46i5gmd4lzxxlveiaksp55hunidfhi6lr6brh@7oqn63pu3flb>
-References: <20240228024147.41573-1-seanjc@google.com>
- <20240228024147.41573-12-seanjc@google.com>
- <0a05d5ec-5352-4bab-96ae-2fa35235477c@intel.com>
- <ZejxqaEBi3q0TU_d@google.com>
- <5f230626-2738-41cc-875d-ab1a7ef19f64@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8D7412FB0D;
+	Thu,  7 Mar 2024 17:11:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.43.24
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709831507; cv=fail; b=X+7BMhPJeqnoOqLNcFSCrMUzQhoo+77F1HqiNlgzYVmx/c6Aq1zHMwOg29OOTiIWpaMRS3NzzqZSdBbk8pxRVnvkCiSN4raN8aXjVFPMom96wmD2jIUgkcVyo/tdtbCeyYqiGwRdkqkpTkTIRswr8R0HTYA7+PeJgi5SbLN6YVM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709831507; c=relaxed/simple;
+	bh=Ug5BaFYwQpY5dJpOzzj6zgR5yhv9vGCwAPBoiiCJOJo=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=JX9Uh2u43yRCgFum5TdIM9f2FVSoK4sgXeYMP3W6lQOgyeK9mzmvjmwGVVvHTdYue9fdHWYGJWEieCFFZJwCqQSm+CPGmaAII4dRFqsM6J8o24RxCakKpbwCX0T0q83yo+z4w3OtaPQ5KA4OyONQeHLQxpJKLVFWIsDAFh/c+Zk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=O18NOmG3; arc=fail smtp.client-ip=40.92.43.24
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GrnxwZ4jSkA79IptxOrL+0MZbK7tyynvco/nw6e6QxuD/YvMFjblNw19wEaRdTj8tNgwrnbAeuCV+7v9WCiLI+dYvnTOPt2Cs+l7jeA8hxYl9k1qV8qI5kcrRY/fvBTggQHSei/tE5HVo9iR8gCxMNdRaK31hjcoE+gYlx80Op8jKjU3RFi+mHJRpqIrR+YQkNWxRQmAU6a/qCx3ENhBfIG04BYvM+RKdXULhkqwi5NNlbJJ4Bdp3tj3SFykJXk/9KjSmnwba0rRLNCd4Q+c1lHk5Vz6sm+PxaiWqGhJFVgEICWsw8+9OP2ZDyYVXArldsCFgAGNITX9W/rBumegSg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=jyEw3+TZ8Cb/DL7MMUUI+H4SQ8Mo3kN2cAfnrECi7UA=;
+ b=M93Cx3ei5FgXxiJ6wWYO0VHxUkn66uzDVU6Ec0T4DDJleCUuV3ndfMoDSqRSiw1VDNPXNh6mMlp6TEdNfJYQU+hKOfYp3cRyrTy8vWxsL9nQW9muYm66//o6iDuGIcK16xKH0KtsZkCwORkd2oVAHBMk7Vzi+qfLdDc6waFwpHeprMJ5V8torJK88reT0QfmX3gRFoOdc98S3U0IcDHd/T4T7V5HL5RJNJnToxnH47h+2QfXED17C39DCqz4xat/Xgz5dztJAuQssJo1djI0TffItvKJRN7tlXb5nqOR7snokbyKpRkt9en4QqUEK+HAqmntfSctdwkr5zPThfJm7w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jyEw3+TZ8Cb/DL7MMUUI+H4SQ8Mo3kN2cAfnrECi7UA=;
+ b=O18NOmG3Zk99dIPDSr+o/BfbLKvbqs4sDPegexGM68bCZttKD3re+E4yWp/Pkp4ROE80iIWcT8DeXEkbv2P4HZ26IrEb2HynAF4ZmcEps8OrVjk/JUMztL/mvMiZRMBkQZlCwJt3tVBrhlpNati3or7vVJrpjBz4RfqEBGDqKUtKAVxOwI7+1wb9bxyyNdYonSN2UOjfpT6GIooXG/SdeWJt4EasJ4Tr4Z9ZL5iPgRhT+3iUMspcKQg/CFo0sQoM15sRfCPG36PKLbphxGk4WZEwBhLEd68GBGsryJ1xvnJu7rH6ejggQoqhLw3e9TFdTUUnslWiaYfrS9C904uP7g==
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
+ by LV3PR02MB10150.namprd02.prod.outlook.com (2603:10b6:408:197::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.39; Thu, 7 Mar
+ 2024 17:11:42 +0000
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::67a9:f3c0:f57b:86dd]) by SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::67a9:f3c0:f57b:86dd%5]) with mapi id 15.20.7362.024; Thu, 7 Mar 2024
+ 17:11:42 +0000
+From: Michael Kelley <mhklinux@outlook.com>
+To: Rick Edgecombe <rick.p.edgecombe@intel.com>, "kys@microsoft.com"
+	<kys@microsoft.com>, "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
+	"wei.liu@kernel.org" <wei.liu@kernel.org>, "decui@microsoft.com"
+	<decui@microsoft.com>, "linux-hyperv@vger.kernel.org"
+	<linux-hyperv@vger.kernel.org>, "gregkh@linuxfoundation.org"
+	<gregkh@linuxfoundation.org>, "davem@davemloft.net" <davem@davemloft.net>,
+	"edumazet@google.com" <edumazet@google.com>, "kuba@kernel.org"
+	<kuba@kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+	"linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC: "sathyanarayanan.kuppuswamy@linux.intel.com"
+	<sathyanarayanan.kuppuswamy@linux.intel.com>, "elena.reshetova@intel.com"
+	<elena.reshetova@intel.com>
+Subject: RE: [RFC RFT PATCH 0/4] Handle  set_memory_XXcrypted() errors in
+ hyperv
+Thread-Topic: [RFC RFT PATCH 0/4] Handle  set_memory_XXcrypted() errors in
+ hyperv
+Thread-Index: AQHaZTRXjdPXYbhP4karQ0dDTiSBNbEjNf9QgAlhAAA=
+Date: Thu, 7 Mar 2024 17:11:41 +0000
+Message-ID:
+ <SN6PR02MB4157AFF080839DB55294F5E9D4202@SN6PR02MB4157.namprd02.prod.outlook.com>
+References: <20240222021006.2279329-1-rick.p.edgecombe@intel.com>
+ <SN6PR02MB41575BD90488B63426A5CAB4D45E2@SN6PR02MB4157.namprd02.prod.outlook.com>
+In-Reply-To:
+ <SN6PR02MB41575BD90488B63426A5CAB4D45E2@SN6PR02MB4157.namprd02.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-tmn: [5PYBSSLBB9owHJIEI6l2DZKlq2VXLzCP]
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|LV3PR02MB10150:EE_
+x-ms-office365-filtering-correlation-id: ca2c74d8-7fa0-454c-386c-08dc3ec9a8b7
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ lLiq/D11Ksn/zRK7JqfGWm8q9wjy4Cxmohs7SUAvqXeqdu5DRHAELZn9ZGjajhdbUGKOXjZYSX8MrwgbhGsLnYMxYCdIXcxC67+b/do2Qp4UBAFeUUpAvrb5YA8Rf4VVh2oj99HZRM7tbDhhGTC2p+Eu31m2MafBVeOshc9UMLlc+A3/Y2M/6WCMcqc/WQVOA1DYUldg+gehjC2NJ+0xEG+avfDy0Y7xOi9JBl6+CEepICfFKE4gTvp/kHXZ6CO73fBlSeXy8R6wVdyeReCbm7nju9yZ1nHfwl2gVon5X+XbJGsS16GQFlPZSh2te+xUrDFE3CafD3EwMFJ6OqILLyGEu74IbB+4sH3iEa8gtD7aMAyKOw0jvK2i0yaeYf8xn8hXmE0j5jKO9IX3WavYfJT154fSgKQRvQRfs0RBrAc/XDLEVENuyKzlCWwEFt0l8vzvXmmSPVcYeM8DkNvL6/QT9tkncdjLYx0VwkfFcpXkX+FPwLdtwkAjlUTMaukI8Yr1yPlWgLxJfrId65W3vPoJwKRqxcKJ//ySRDcvbCEQonkG5UIqgckiPfZs0G5K
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?EO+MFclRxBiWZmd+3al1ovZRJCH0si8Dn9BgPZFyZQY/57xcV+7NLqt4d9Ql?=
+ =?us-ascii?Q?G/0MU8phe0fQhAwrqeTUJGwFO+b/z9F84E24cAHBL5I1W5mW4vpJR7+4Dzdi?=
+ =?us-ascii?Q?cOMvoiJGSnBg1WPS2yHczmoGO5b2DF77r6OE0SO418tK60CH2P9Lg+HgPS1X?=
+ =?us-ascii?Q?tl8JvCmk5mPe/9sYkKJEa9EMZdbZ7frdtxvvlpLibe4Op6g7z3alRDi2m/gm?=
+ =?us-ascii?Q?3kRXEnUKpWa+q8JvlzXIiEPdy/3/NiIutisrIk+Fz2nDwyfp9Ab0NB1mWuPE?=
+ =?us-ascii?Q?RqSJDwnlJPOWVtjLLT/DEUoK4JL/BN+Sc8BTQOZyGja/fI9RmWFOTpQVdM99?=
+ =?us-ascii?Q?8d3KeL9y1t50WGMvsfOejHcckPC9WcErdNSPxPOgaAhqgfWpysQdTILMJ3IC?=
+ =?us-ascii?Q?+FUTiJCx0lL4no2J6Soidq74QARErxs/YTs9lVg+uTbRZXZVRAJjSVtSkYdI?=
+ =?us-ascii?Q?SIjS5YHhyMvIjRahAcWMEtUnyXt1vS4jZFWifLpf5Kh9hXEwFgRy/YRTCkwR?=
+ =?us-ascii?Q?Q5nK8W+bAzeR/EXaG6EMTRq1OPEOiTjXkly6/2ukGWLPOaOxD7auRbxUK2uF?=
+ =?us-ascii?Q?C4KNxY5lfWpnnnqZ9AH32K1+aKh+JNStlSydHNNZaNRiBhtNVJj6I6lGzdsO?=
+ =?us-ascii?Q?cvB1MEH95fCdOADTfX9tQkeA2//F5vh8KUwozkjTAcwsZcUzGiaQbOotm4bU?=
+ =?us-ascii?Q?BYyKo/ir+wrBf6J3mQzCklYMO4V+dZ9hXSCQJnnKXBXPiTZF9a/QAEJ3WQXF?=
+ =?us-ascii?Q?7EmgNWsG8blTC2oWwnpAd9q7XHRXkfw0VNW2vsK1GpdurQUYX+pFdrjIPajC?=
+ =?us-ascii?Q?ZgP164j6z8c99Par0iOXVD221qSU/wwBOB1VGNM8vNjtSpeYcuw2fNdxBv1e?=
+ =?us-ascii?Q?lI2kmUNdu1yuviWkirs6jV1qNyB25CQE4LCOTmBizqXAaxc5tXt1dmPPIQYv?=
+ =?us-ascii?Q?NXTuTKKEbcI0MFWTOPvnnDd2OvrSe/PTV+y3BO/ioe9jOFQktgsCIylOeDHR?=
+ =?us-ascii?Q?z/w6orQ3fpGv9Xhd8tso5/HBQ9zVyDH7xVyDf3b8tuXKRJmVSKJNY4oRSNNr?=
+ =?us-ascii?Q?AFwJieRr1WAxYYArcth+t2kSwlmykJ9TLzgm/UjW9eAjTS/Gr6qybe1gl58A?=
+ =?us-ascii?Q?m/seVAZ5nGGavlIif3eOyRsVqSEQskH6Ks4IRJxvkmsyz3jUnOw0sms/BUMc?=
+ =?us-ascii?Q?l5qcyoZ8TYCpLXrItKEdf3B+7BtCx7KfnPVYAA=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5f230626-2738-41cc-875d-ab1a7ef19f64@intel.com>
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: ca2c74d8-7fa0-454c-386c-08dc3ec9a8b7
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Mar 2024 17:11:41.9311
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR02MB10150
 
-On Thu, Mar 07, 2024 at 11:49:11AM +1300, Huang, Kai wrote:
-> 
-> 
-> On 7/03/2024 11:43 am, Sean Christopherson wrote:
-> > On Thu, Mar 07, 2024, Kai Huang wrote:
-> > > 
-> > > 
-> > > On 28/02/2024 3:41 pm, Sean Christopherson wrote:
-> > > > Explicitly detect and disallow private accesses to emulated MMIO in
-> > > > kvm_handle_noslot_fault() instead of relying on kvm_faultin_pfn_private()
-> > > > to perform the check.  This will allow the page fault path to go straight
-> > > > to kvm_handle_noslot_fault() without bouncing through __kvm_faultin_pfn().
-> > > > 
-> > > > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> > > > ---
-> > > >    arch/x86/kvm/mmu/mmu.c | 5 +++++
-> > > >    1 file changed, 5 insertions(+)
-> > > > 
-> > > > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> > > > index 5c8caab64ba2..ebdb3fcce3dc 100644
-> > > > --- a/arch/x86/kvm/mmu/mmu.c
-> > > > +++ b/arch/x86/kvm/mmu/mmu.c
-> > > > @@ -3314,6 +3314,11 @@ static int kvm_handle_noslot_fault(struct kvm_vcpu *vcpu,
-> > > >    {
-> > > >    	gva_t gva = fault->is_tdp ? 0 : fault->addr;
-> > > > +	if (fault->is_private) {
-> > > > +		kvm_mmu_prepare_memory_fault_exit(vcpu, fault);
-> > > > +		return -EFAULT;
-> > > > +	}
-> > > > +
-> > > 
-> > > As mentioned in another reply in this series, unless I am mistaken, for TDX
-> > > guest the _first_ MMIO access would still cause EPT violation with MMIO GFN
-> > > being private.
-> > > 
-> > > Returning to userspace cannot really help here because the MMIO mapping is
-> > > inside the guest.
-> > 
-> > That's a guest bug.  The guest *knows* it's a TDX VM, it *has* to know.  Accessing
-> > emulated MMIO and thus taking a #VE before enabling paging is nonsensical.  Either
-> > enable paging and setup MMIO regions as shared, or go straight to TDCALL.
-> 
-> +Kirill,
-> 
-> I kinda forgot the detail, but what I am afraid is there might be bunch of
-> existing TDX guests (since TDX guest code is upstream-ed) using unmodified
-> drivers, which doesn't map MMIO regions as shared I suppose.
+From: Michael Kelley <mhklinux@outlook.com> Sent: Friday, March 1, 2024 11:=
+00 AM
+> >
+> > IMPORTANT NOTE:
+> > I don't have a setup to test tdx hyperv changes. These changes are comp=
+ile
+> > tested only. Previously Michael Kelley suggested some folks at MS might=
+ be
+> > able to help with this.
+>=20
+> Thanks for doing these changes.  Overall they look pretty good,
+> modulo a few comments.  The "decrypted" flag in the vmbus_gpadl
+> structure is a good way to keep track of the encryption status of
+> the associated memory.
+>=20
+> The memory passed to the gpadl (Guest Physical Address Descriptor
+> List) functions may allocated and freed directly by the driver, as in
+> the netvsc and UIO cases.  You've handled that case. But memory
+> may also be allocated by vmbus_alloc_ring() and freed by
+> vmbus_free_ring().  Your patch set needs an additional change
+> to check the "decrypted" flag in vmbus_free_ring().
+>=20
+> In reviewing the code, I also see some unrelated memory freeing
+> issues in error paths.  They are outside the scope of your changes.
+> I'll make a note of these for future fixing.
+>=20
+> For testing, I'll do two things:
+>=20
+> 1) Verify that the non-error paths still work correctly with the
+> changes.  That should be relatively straightforward as the
+> changes are pretty much confined to the error paths.
+>=20
+> 2) Hack set_memory_encrypted() to always fail.  I hope Linux
+> still boots in that case, but just leaks some memory.  Then if
+> I unbind a Hyper-V synthetic device, that should exercise the
+> path where set_memory_encrypted() is called.  Failures
+> should be handled cleanly, albeit while leaking the memory.
+>=20
+> I should be able to test in a normal VM, a TDX VM, and an
+> SEV-SNP VM.
+>=20
 
-Unmodified drivers gets their MMIO regions mapped with ioremap() that sets
-shared bit, unless asked explicitly to make it private (encrypted).
+Rick --
 
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+Using your patches plus the changes in my comments, I've
+done most of the testing described above. The normal
+paths work, and when I hack set_memory_encrypted()
+to fail, the error paths correctly did not free the memory.
+I checked both the ring buffer memory and the additional
+vmalloc memory allocated by the netvsc driver and the uio
+driver.  The memory status can be checked after-the-fact
+via /proc/vmmallocinfo and /proc/buddyinfo since these
+are mostly large allocations. As expected, the drivers
+output their own error messages after the failures to
+teardown the GPADLs.
+
+I did not test the vmbus_disconnect() path since that
+effectively kills the VM.
+
+I tested in a normal VM, and in an SEV-SNP VM.  I didn't
+specifically test in a TDX VM, but given that Hyper-V CoCo
+guests run with a paravisor, the guest sees the same thing
+either way.
+
+Michael
 
