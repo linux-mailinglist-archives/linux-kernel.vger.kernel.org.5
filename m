@@ -1,160 +1,192 @@
-Return-Path: <linux-kernel+bounces-95610-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95611-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D30F187502A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:36:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE84887502B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:37:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 01BEF1C24665
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 13:36:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 856291F24554
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 13:37:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FC4F12EBED;
-	Thu,  7 Mar 2024 13:35:31 +0000 (UTC)
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE09E12CDB9;
+	Thu,  7 Mar 2024 13:35:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="tBQjMU87"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AFB812EBD7;
-	Thu,  7 Mar 2024 13:35:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CA8512AAFD
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 13:35:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709818531; cv=none; b=cOPxVIkE+YGQTovKLP66mY8+softXQzfVRfNx8hc0yw/fDepOtptD+PWSVQmdVXy14HkSWLdWVnr+ld+yOZ04krPADkBoccWKP+3MrUdT0rbgLN5rtywKOPE6r+5ylAvjYawhgg/1abccwWjju+lKOuEHrNWoJzz7rPyVBiUTqw=
+	t=1709818549; cv=none; b=oPzfmhIMrD/UxNnRfWTapAINhkliAXZQKH/o+1amSifmLJnHrc25HgRMZ4YzRuhsoyhYf+0/oZm8eMhEae87V7zyOar3tDf8hSj9wZmXqIsnv388FuvNHjHSo2KMP+G2JVlxrqYIxnpbEL4dg5kZsuG0Ybay5O0u7zbomqC1TrI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709818531; c=relaxed/simple;
-	bh=aWB4bkGl3SzCR1pdF+VfhPOyhNRPA4wkeK3Q5H9cmPc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gNrZT1CoPMAk/n9qXt0JDBImfs4aTvBG+svXaG0oC/nGp2Tl2yM+q5uJ4I5h1DCyu59XFbyUlRrbvvpP8smF71JzHzZBrX96KNCY1IoZRdsyygK08NlMvMes85dgTBQRQfEjQ28G5MoGhzsXbrMz4B/Z1dSCN1mp3fkuOPc/INU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-dc74e33fe1bso864781276.0;
-        Thu, 07 Mar 2024 05:35:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709818528; x=1710423328;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=M82aLwITIdvRH9rbK4Grnml+csUrRgich9S+9BrPQj0=;
-        b=Ms7ME2LIgwqcwFoyXOS2vCK1/I5KBLlzF9hpwY3T0kESPDrN/aeNpH+Xik1HsIRNAD
-         kTVOIH8pewWBenAJjSI0y76VunYXwicunyZfMWg/gZPz+N/Xy28AWBJqX+N5zcMYO+hB
-         JqJUyYUcicerrn6izKPE3uuOXVjQOolUeZcwePEb3Z4DHXO9F/mslcm7WDC1h126/71G
-         QovDvDh94DMZkNhc+WPCIpHc+c63my+KK8wR9d07N74QF3l/hiaM3Pt/vgptyrmZ70EE
-         4UaR6CRvzr71AAb4/5UmmHZ4t1EI8w6EUa6rTDnjBKZnAo+S3TQLRrEkWNO2uv5QPfUe
-         SJFQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU2YMYRwdpChlKLHhe8WbosGJ4cA8kqH2VU21Jd3Bvh57R8bLP07ifJlE4JGvWkkn34BIvnfdHGACnFvlWDhhbPSFy+SYLi/9jK7xGyVZ8EJBJyU+FoO5K++U1KvOhsbP9AWY6Ak1lki0scfO3Tf3XUW04heBbBMFdO5/ezDEaQD8cW2seMmApmvxa17CTdzpADAZRJS+NfDG6agloNQwClsWCwLc0k5Xxb
-X-Gm-Message-State: AOJu0Ywf3INTL2KiM7hpD7iyMc92HjUsEO3JNPUsa+cVEaTOIfU021rW
-	fCgHc7dnKRTbfjAv5n+jZtW0pUe3qe7DXthp9IZZmORIRUEZLtmPMxn5x5ELmqs=
-X-Google-Smtp-Source: AGHT+IHYANxiWhvLOsprzRXUbBwwI3vrR7oxUbl8IOtAzzNH3fOyWETfQuV5iwhoKSVanocu53HuSg==
-X-Received: by 2002:a5b:44e:0:b0:dcc:67a7:430 with SMTP id s14-20020a5b044e000000b00dcc67a70430mr14452431ybp.15.1709818527574;
-        Thu, 07 Mar 2024 05:35:27 -0800 (PST)
-Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com. [209.85.219.179])
-        by smtp.gmail.com with ESMTPSA id u9-20020a250949000000b00dce0f2db9acsm3497578ybm.34.2024.03.07.05.35.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Mar 2024 05:35:26 -0800 (PST)
-Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-dcbef31a9dbso635024276.1;
-        Thu, 07 Mar 2024 05:35:26 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCU7JMQEKzXmJPRTBFRpHFcVVgZXFRQbPegClywvUA/jdzR23WadsIXgpNjUBYieFOSpyY2h/o4k9hBBB5q53s/jNHORWase5xm56HMMHUBGrC4FV2aO6aZeL+/rfxkyUc/tLiMCP3KEvBtOfRLnuRTTOHYZWxNGo4AlqGr+VoGKW2QzHRxED4z372f0mQugW5xsAwrWBpSSXxPcYpW6adtYPRF0yHgzqVGm
-X-Received: by 2002:a25:3355:0:b0:dc6:aed5:718a with SMTP id
- z82-20020a253355000000b00dc6aed5718amr15888780ybz.26.1709818525934; Thu, 07
- Mar 2024 05:35:25 -0800 (PST)
+	s=arc-20240116; t=1709818549; c=relaxed/simple;
+	bh=yJP/7iXYGTXtCetl/s5JdFVY3VfriXvZsF4XeIim0M0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=T+LvAY6PdYa6vPm8BtG5p+Avf47Z0oA7xKUmFdH4fgyFZJ0IirES8KHRdATKUgOTn452GW4rmudirPUelcpV26Xj55IgT/S5DRZwRWezpmpSTzR4+6Wk2sFgvfDQ3MKxZ0iCn0pch0SMNDpFJlklk4Y1jkoFcl0rxXEw//IPu9o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=tBQjMU87; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709818545;
+	bh=yJP/7iXYGTXtCetl/s5JdFVY3VfriXvZsF4XeIim0M0=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=tBQjMU87qe5jCl2C+zdTdhdh7t0yDM8aOgJHO8jGgM8emXDFFNd9rAWl3ps1+/bco
+	 y68F+SqpzdCj91Pgkmet7dJ4bOo4JZgOXMfNq+JbiRPJaEleahoPkH+DEAfIIsM7tF
+	 MWmq+5P7XRF1AVhyHtegsJT1Ps0KqXN/yeOSEV07dPzH3oKnK154TY/lN5GJl2tu0S
+	 fT16QQjJHTxKaC+phUdIDZAjuph9rLOznVC4Kp7OaGO1F3V58AwFHEzaA4Ejk59gt4
+	 Wf0GFI8VhMzrGn6ne36ZStBybICVwChX6pe1hMdRw6MGNUM2zaRIySFX/gQheJiX3S
+	 tJteXZOOrXgbg==
+Received: from [100.95.196.25] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	(No client certificate requested)
+	(Authenticated sender: koike)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 415F13780B5F;
+	Thu,  7 Mar 2024 13:35:38 +0000 (UTC)
+Message-ID: <db39d0cb-71d3-48b2-87b7-f2716c72e1a1@collabora.com>
+Date: Thu, 7 Mar 2024 10:35:37 -0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240307114731.34953-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20240307114731.34953-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 7 Mar 2024 14:35:14 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVi7ageQMmZYqCZJnCX79SBW=FGEHTMv7fZWRGmw4WwJg@mail.gmail.com>
-Message-ID: <CAMuHMdVi7ageQMmZYqCZJnCX79SBW=FGEHTMv7fZWRGmw4WwJg@mail.gmail.com>
-Subject: Re: [PATCH v2] dt-bindings: serial: renesas,scif: Document R9A09G057 support
-To: Prabhakar <prabhakar.csengg@gmail.com>
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Magnus Damm <magnus.damm@gmail.com>, linux-kernel@vger.kernel.org, 
-	linux-serial@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, 
-	Fabrizio Castro <fabrizio.castro.jz@renesas.com>, 
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 02/11] drm/ci: uprev mesa version
+Content-Language: en-US
+To: Vignesh Raman <vignesh.raman@collabora.com>,
+ dri-devel@lists.freedesktop.org
+Cc: daniels@collabora.com, airlied@gmail.com, daniel@ffwll.ch,
+ emma@anholt.net, robdclark@gmail.com, david.heidelberg@collabora.com,
+ guilherme.gallo@collabora.com, sergi.blanch.torne@collabora.com,
+ hamohammed.sa@gmail.com, rodrigosiqueiramelo@gmail.com,
+ melissa.srw@gmail.com, mairacanal@riseup.net, mcanal@igalia.com,
+ linux-mediatek@lists.infradead.org, linux-amlogic@lists.infradead.org,
+ linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20240306030649.60269-1-vignesh.raman@collabora.com>
+ <20240306030649.60269-3-vignesh.raman@collabora.com>
+From: Helen Koike <helen.koike@collabora.com>
+In-Reply-To: <20240306030649.60269-3-vignesh.raman@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Prabhakar,
 
-On Thu, Mar 7, 2024 at 12:48=E2=80=AFPM Prabhakar <prabhakar.csengg@gmail.c=
-om> wrote:
-> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->
-> Document support for the Serial Communication Interface with FIFO (SCIF)
-> available in the Renesas RZ/V2H(P) (R9A09G057) SoC. The SCIF interface in
-> the Renesas RZ/V2H(P) is similar to that available in the RZ/G2L
-> (R9A07G044) SoC, with the only difference being that the RZ/V2H(P) SoC ha=
-s
-> three additional interrupts: one for Tx end/Rx ready and the other two fo=
-r
-> Rx and Tx buffer full, which are edge-triggered.
->
-> No driver changes are required as generic compatible string
-> "renesas,scif-r9a07g044" will be used as a fallback on RZ/V2H(P) SoC.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+
+On 06/03/2024 00:06, Vignesh Raman wrote:
+> zlib.net is not allowing tarball download anymore and results
+> in below error in kernel+rootfs_arm32 container build,
+> urllib.error.HTTPError: HTTP Error 403: Forbidden
+> urllib.error.HTTPError: HTTP Error 415: Unsupported Media Type
+> 
+> Uprev mesa which includes a fix for this issue.
+> https://gitlab.freedesktop.org/mesa/mesa/-/commit/908f444e
+> 
+> Signed-off-by: Vignesh Raman <vignesh.raman@collabora.com>
+
+Acked-by: Helen Koike <helen.koike@collabora.com>
+
+Thanks
+Helen
+
 > ---
-> v1->v2
-> * Added validation to check interrupts and interrupt-names count
-
-Thanks for the update!
-
-> --- a/Documentation/devicetree/bindings/serial/renesas,scif.yaml
-> +++ b/Documentation/devicetree/bindings/serial/renesas,scif.yaml
-> @@ -77,6 +77,7 @@ properties:
->                - renesas,scif-r9a07g043      # RZ/G2UL and RZ/Five
->                - renesas,scif-r9a07g054      # RZ/V2L
->                - renesas,scif-r9a08g045      # RZ/G3S
-> +              - renesas,scif-r9a09g057      # RZ/V2H(P)
->            - const: renesas,scif-r9a07g044   # RZ/G2{L,LC} fallback
->
->    reg:
-> @@ -91,6 +92,9 @@ properties:
->        - description: Break interrupt
->        - description: Data Ready interrupt
->        - description: Transmit End interrupt
-> +      - description: Transmit End/Data Ready interrupt
-> +      - description: Receive buffer full interrupt (EDGE trigger)
-> +      - description: Transmit buffer empty interrupt (EDGE trigger)
->
->    interrupt-names:
->      minItems: 4
-> @@ -101,6 +105,9 @@ properties:
->        - const: bri
->        - const: dri
->        - const: tei
-> +      - const: teidri
-
-As the documentation calls this interrupt "ub1_tei_dri_n", I think
-"tei-dri" would be a better name.
-
-> +      - const: rxi-edge
-> +      - const: txi-edge
-
-The rest LGTM.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+> 
+> v3:
+>    - New patch in series to uprev mesa.
+> 
+> v4:
+>    - Fix checkpatch warning.
+> 
+> ---
+>   drivers/gpu/drm/ci/container.yml  | 6 +++---
+>   drivers/gpu/drm/ci/gitlab-ci.yml  | 6 +++---
+>   drivers/gpu/drm/ci/image-tags.yml | 3 ++-
+>   3 files changed, 8 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/ci/container.yml b/drivers/gpu/drm/ci/container.yml
+> index 9764e7921a4f..1060eb380b02 100644
+> --- a/drivers/gpu/drm/ci/container.yml
+> +++ b/drivers/gpu/drm/ci/container.yml
+> @@ -40,11 +40,11 @@ debian/x86_64_test-android:
+>     rules:
+>       - when: never
+>   
+> -windows_build_vs2019:
+> +windows_build_msvc:
+>     rules:
+>       - when: never
+>   
+> -windows_test_vs2019:
+> +windows_test_msvc:
+>     rules:
+>       - when: never
+>   
+> @@ -56,7 +56,7 @@ rustfmt:
+>      rules:
+>       - when: never
+>   
+> -windows_vs2019:
+> +windows_msvc:
+>      rules:
+>       - when: never
+>   
+> diff --git a/drivers/gpu/drm/ci/gitlab-ci.yml b/drivers/gpu/drm/ci/gitlab-ci.yml
+> index 084e3ff8e3f4..bc8cb3420476 100644
+> --- a/drivers/gpu/drm/ci/gitlab-ci.yml
+> +++ b/drivers/gpu/drm/ci/gitlab-ci.yml
+> @@ -1,6 +1,6 @@
+>   variables:
+>     DRM_CI_PROJECT_PATH: &drm-ci-project-path mesa/mesa
+> -  DRM_CI_COMMIT_SHA: &drm-ci-commit-sha 9d162de9a05155e1c4041857a5848842749164cf
+> +  DRM_CI_COMMIT_SHA: &drm-ci-commit-sha c4b32f9e90b7204735e6adf1f60c178bf85752e7
+>   
+>     UPSTREAM_REPO: git://anongit.freedesktop.org/drm/drm
+>     TARGET_BRANCH: drm-next
+> @@ -26,7 +26,7 @@ variables:
+>     JOB_ARTIFACTS_BASE: ${PIPELINE_ARTIFACTS_BASE}/${CI_JOB_ID}
+>     # default kernel for rootfs before injecting the current kernel tree
+>     KERNEL_REPO: "gfx-ci/linux"
+> -  KERNEL_TAG: "v6.6.4-for-mesa-ci-e4f4c500f7fb"
+> +  KERNEL_TAG: "v6.6.13-mesa-9916"
+>     KERNEL_IMAGE_BASE: https://${S3_HOST}/mesa-lava/${KERNEL_REPO}/${KERNEL_TAG}
+>     LAVA_TAGS: subset-1-gfx
+>     LAVA_JOB_PRIORITY: 30
+> @@ -98,6 +98,7 @@ include:
+>   stages:
+>     - sanity
+>     - container
+> +  - code-validation
+>     - git-archive
+>     - build
+>     - amdgpu
+> @@ -107,7 +108,6 @@ stages:
+>     - msm
+>     - rockchip
+>     - virtio-gpu
+> -  - lint
+>   
+>   # YAML anchors for rule conditions
+>   # --------------------------------
+> diff --git a/drivers/gpu/drm/ci/image-tags.yml b/drivers/gpu/drm/ci/image-tags.yml
+> index 7ab4f2514da8..cf07c3e09b8c 100644
+> --- a/drivers/gpu/drm/ci/image-tags.yml
+> +++ b/drivers/gpu/drm/ci/image-tags.yml
+> @@ -1,5 +1,5 @@
+>   variables:
+> -   CONTAINER_TAG: "2023-10-11-mesa-uprev"
+> +   CONTAINER_TAG: "2022-01-29-mesa-uprev"
+>      DEBIAN_X86_64_BUILD_BASE_IMAGE: "debian/x86_64_build-base"
+>      DEBIAN_BASE_TAG: "${CONTAINER_TAG}"
+>   
+> @@ -7,6 +7,7 @@ variables:
+>      DEBIAN_BUILD_TAG: "2023-10-08-config"
+>   
+>      KERNEL_ROOTFS_TAG: "2023-10-06-amd"
+> +   PKG_REPO_REV: "67f2c46b"
+>   
+>      DEBIAN_X86_64_TEST_BASE_IMAGE: "debian/x86_64_test-base"
+>      DEBIAN_X86_64_TEST_IMAGE_GL_PATH: "debian/x86_64_test-gl"
 
