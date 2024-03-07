@@ -1,69 +1,69 @@
-Return-Path: <linux-kernel+bounces-95792-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95793-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B64298752A7
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 16:03:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B3708752AA
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 16:04:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CC6431C2260B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:03:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF985282F72
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:04:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38C1412F593;
-	Thu,  7 Mar 2024 15:03:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99A6012FB0D;
+	Thu,  7 Mar 2024 15:03:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FLMn7+z/"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PzWiJLGH"
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F38D712DDBA;
-	Thu,  7 Mar 2024 15:03:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23E6F12F36D;
+	Thu,  7 Mar 2024 15:03:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709823784; cv=none; b=gn2kiRQU9rXsZ4p13MhtAwiJBCP7t7cJbOTGOA47U4WI0XOQbS2FWAUSd6vjmA+SdE0HWutMr9Uv+i7XiUHxQMRR8u9y3kalv20lG2hEDOY6kCy1qdjJEhbTF8V0qqTvHM1aYZLnx2M6+AhIMkFe5q0d+5HB96aTjEFQC7xGrak=
+	t=1709823785; cv=none; b=noyQ3C+EHRoW6UHalQYSSqPpanjgj3TNKaHOhBytbGHvNn6tuEW81ohO5A8fYUy0meNoPj3Mb2elNce0ei4CQf9c9tuPmhSggkpRGz24IO3Ws3KZ72p53xydC0N5PZUSJtO5wOyMDXMDweixkVq7CWD1OBN+vxgBX/ZUppEwHsM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709823784; c=relaxed/simple;
-	bh=Thbo6fqN781SvZRIGgY3Lf5UsS91S+L+RdrRfcust1U=;
+	s=arc-20240116; t=1709823785; c=relaxed/simple;
+	bh=igdABOawL1h4rO87mXAA8AcyfRv/CCBWSRMMYoBQs2w=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SZoriGc6wI3AP6chKCCkAWgGEaobaqFgA/AISylLHe1b/5jV99yaS2lRN379S20p6B7tDf+4uZG/wGvTk29mn+fqVHPrqmjuPyHyDEIb6o8QoR5Eu0XDi/An5DCKHMjkqi2nL3gW1zlkZvc7pbARz7d87PuZsTPu3H4bqFUiVMA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FLMn7+z/; arc=none smtp.client-ip=192.198.163.19
+	 MIME-Version; b=fzzi3ddvZgzPNlY1aBK75nojl8q+9nSO7w8lRwaPdyaZNz7R+OwkZgJI9RafxbmqwpirgP9Cmi+rmvkaUzBedi5bhNonV67/50mdJLf5H8DaBtJVg8LAaO8jCzevJpf0XbWXhwckCv2UoqIU/HtDJCjyp0uWHaukXEm4HXaOcvY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PzWiJLGH; arc=none smtp.client-ip=192.198.163.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709823783; x=1741359783;
+  t=1709823784; x=1741359784;
   h=from:to:subject:date:message-id:in-reply-to:references:
    mime-version:content-transfer-encoding;
-  bh=Thbo6fqN781SvZRIGgY3Lf5UsS91S+L+RdrRfcust1U=;
-  b=FLMn7+z/fo48Ih8mDgW3/hJfzf/6aKShOQqBTwLiVdcuUpu5GoFKaILd
-   R0XUY5u3nF9a2gIqLkGXkan7gq1s/R+5jCZaHOUzjxW9bIBpyWrGiNsXU
-   WmyNtq9YYPE+OglZ6Isb2Q2RoAxdlhdzHsLYt2f97I1i0Wckvj26dkRf0
-   mnUaICjKqNCqUWAD3BD5+MIk6V2No2hYxszvUdnOsf2ilV2qNoTNUAjb6
-   Zf7DWWBOzg5Ml5ZwEyIGJgchCSNL5zhHFD4BdluJPCbrIlcOJ2OnWBgqo
-   Hh9kYJSYxqcds55vOZyq0ViBaf9WHO3nfHGe14N7tC5w8in+oU9xff+jz
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="4351050"
+  bh=igdABOawL1h4rO87mXAA8AcyfRv/CCBWSRMMYoBQs2w=;
+  b=PzWiJLGHTW4YEQUEv0ZQPGsJZRgQy/esrszRFiyALy2aSl+BRsbU5bzT
+   VjTUPLPA2w3fdIoVLsZxz64vUT6Mgz4D+aWpCdiJU+o/SJG6OhwhkI4iz
+   brmfSpRhJeHagxnJWbCnWDU2gJnJIazbV5KkJEpcIoiW45j8fYo/Nv5nH
+   lLDh7yT4dP960TYuEkliepbrIlGHKF5hDkjw9EC6Kef1HCEcAX6RTJmxM
+   tT2rwKRHULaNVzE8PrAynFaLQGVjcEpDyVgXImbcsIaksMqbZ/Nfz+W8P
+   2ZKowTB9COGJIMgG29GJ6gEyAON7+pj78B0+eXUpsjEv0c6Gl8zWuaVZO
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="4351053"
 X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
-   d="scan'208";a="4351050"
+   d="scan'208";a="4351053"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
   by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 07:03:00 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="937046327"
+X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="937046328"
 X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
-   d="scan'208";a="937046327"
+   d="scan'208";a="937046328"
 Received: from black.fi.intel.com ([10.237.72.28])
   by fmsmga001.fm.intel.com with ESMTP; 07 Mar 2024 07:02:59 -0800
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 274A54E9; Thu,  7 Mar 2024 17:02:58 +0200 (EET)
+	id 30DB15BB; Thu,  7 Mar 2024 17:02:58 +0200 (EET)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Mark Brown <broonie@kernel.org>,
 	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
 	linux-spi@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v1 2/3] spi: Fix types of the last chip select storage variables
-Date: Thu,  7 Mar 2024 17:01:00 +0200
-Message-ID: <20240307150256.3789138-3-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 3/3] spi: Introduce SPI_INVALID_CS and is_valid_cs()
+Date: Thu,  7 Mar 2024 17:01:01 +0200
+Message-ID: <20240307150256.3789138-4-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 In-Reply-To: <20240307150256.3789138-1-andriy.shevchenko@linux.intel.com>
 References: <20240307150256.3789138-1-andriy.shevchenko@linux.intel.com>
@@ -75,63 +75,109 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-First of all, last_cs_index_mask should be aligned with the original
-cs_index_mask, which is 16-bit (for now) wide. Use the same pattern
-for the last_cs_index_mask.
-
-Second, last_cs can be negative and since 'char' is equal to 'unsigned
-char' in the kernel, it's incorrect, strictly speaking, to assign
-signed number to it. Use s8 type as it's done for *_native_cs ones.
-
-With this change, regroup a bit the ordering to avoid too much memory
-space to be wasted due to paddings. Shuffle kernel documentation
-accordignly.
+The SPI core inconsistently uses the marker value for unused chip select
+pin. Define a constant (with appropriate type) and introduce is_valid_cs()
+helper function to avoid spreading this inconsistency in the future.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- include/linux/spi/spi.h | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/spi/spi.c | 39 +++++++++++++++++++++++----------------
+ 1 file changed, 23 insertions(+), 16 deletions(-)
 
-diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
-index e400d454b3f0..c459809efee4 100644
---- a/include/linux/spi/spi.h
-+++ b/include/linux/spi/spi.h
-@@ -448,9 +448,11 @@ extern struct spi_device *spi_new_ancillary_device(struct spi_device *spi, u8 ch
-  *	the @cur_msg_completion. This flag is used to signal the context that
-  *	is running spi_finalize_current_message() that it needs to complete()
-  * @cur_msg_mapped: message has been mapped for DMA
-+ * @fallback: fallback to PIO if DMA transfer return failure with
-+ *	SPI_TRANS_FAIL_NO_START.
-+ * @last_cs_mode_high: was (mode & SPI_CS_HIGH) true on the last call to set_cs.
-  * @last_cs: the last chip_select that is recorded by set_cs, -1 on non chip
-  *           selected
-- * @last_cs_mode_high: was (mode & SPI_CS_HIGH) true on the last call to set_cs.
-  * @xfer_completion: used by core transfer_one_message()
-  * @busy: message pump is busy
-  * @running: message pump is running
-@@ -527,8 +529,6 @@ extern struct spi_device *spi_new_ancillary_device(struct spi_device *spi, u8 ch
-  *	If the driver does not set this, the SPI core takes the snapshot as
-  *	close to the driver hand-over as possible.
-  * @irq_flags: Interrupt enable state during PTP system timestamping
-- * @fallback: fallback to PIO if DMA transfer return failure with
-- *	SPI_TRANS_FAIL_NO_START.
-  * @queue_empty: signal green light for opportunistically skipping the queue
-  *	for spi_sync transfers.
-  * @must_async: disable all fast paths in the core
-@@ -708,10 +708,10 @@ struct spi_controller {
- 	bool				rt;
- 	bool				auto_runtime_pm;
- 	bool				cur_msg_mapped;
--	char				last_cs[SPI_CS_CNT_MAX];
--	char				last_cs_index_mask;
--	bool				last_cs_mode_high;
- 	bool                            fallback;
-+	bool				last_cs_mode_high;
-+	s8				last_cs[SPI_CS_CNT_MAX];
-+	u32				last_cs_index_mask : SPI_CS_CNT_MAX;
- 	struct completion               xfer_completion;
- 	size_t				max_dma_len;
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index 4ab155f698c8..f18738ae95f8 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -608,6 +608,22 @@ static void spi_dev_set_name(struct spi_device *spi)
+ 		     spi_get_chipselect(spi, 0));
+ }
  
++/*
++ * Zero(0) is a valid physical CS value and can be located at any
++ * logical CS in the spi->chip_select[]. If all the physical CS
++ * are initialized to 0 then It would be difficult to differentiate
++ * between a valid physical CS 0 & an unused logical CS whose physical
++ * CS can be 0. As a solution to this issue initialize all the CS to -1.
++ * Now all the unused logical CS will have -1 physical CS value & can be
++ * ignored while performing physical CS validity checks.
++ */
++#define SPI_INVALID_CS		((s8)-1)
++
++static inline bool is_valid_cs(s8 chip_select)
++{
++	return chip_select != SPI_INVALID_CS;
++}
++
+ static inline int spi_dev_check_cs(struct device *dev,
+ 				   struct spi_device *spi, u8 idx,
+ 				   struct spi_device *new_spi, u8 new_idx)
+@@ -618,7 +634,7 @@ static inline int spi_dev_check_cs(struct device *dev,
+ 	cs = spi_get_chipselect(spi, idx);
+ 	for (idx_new = new_idx; idx_new < SPI_CS_CNT_MAX; idx_new++) {
+ 		cs_new = spi_get_chipselect(new_spi, idx_new);
+-		if (cs != 0xFF && cs_new != 0xFF && cs == cs_new) {
++		if (is_valid_cs(cs) && is_valid_cs(cs_new) && cs == cs_new) {
+ 			dev_err(dev, "chipselect %u already in use\n", cs_new);
+ 			return -EBUSY;
+ 		}
+@@ -658,7 +674,7 @@ static int __spi_add_device(struct spi_device *spi)
+ 	for (idx = 0; idx < SPI_CS_CNT_MAX; idx++) {
+ 		/* Chipselects are numbered 0..max; validate. */
+ 		cs = spi_get_chipselect(spi, idx);
+-		if (cs != 0xFF && cs >= ctlr->num_chipselect) {
++		if (is_valid_cs(cs) && cs >= ctlr->num_chipselect) {
+ 			dev_err(dev, "cs%d >= max %d\n", spi_get_chipselect(spi, idx),
+ 				ctlr->num_chipselect);
+ 			return -EINVAL;
+@@ -698,7 +714,7 @@ static int __spi_add_device(struct spi_device *spi)
+ 
+ 		for (idx = 0; idx < SPI_CS_CNT_MAX; idx++) {
+ 			cs = spi_get_chipselect(spi, idx);
+-			if (cs != 0xFF)
++			if (is_valid_cs(cs))
+ 				spi_set_csgpiod(spi, idx, ctlr->cs_gpiods[cs]);
+ 		}
+ 	}
+@@ -756,17 +772,8 @@ static void spi_set_all_cs_unused(struct spi_device *spi)
+ {
+ 	u8 idx;
+ 
+-	/*
+-	 * Zero(0) is a valid physical CS value and can be located at any
+-	 * logical CS in the spi->chip_select[]. If all the physical CS
+-	 * are initialized to 0 then It would be difficult to differentiate
+-	 * between a valid physical CS 0 & an unused logical CS whose physical
+-	 * CS can be 0. As a solution to this issue initialize all the CS to 0xFF.
+-	 * Now all the unused logical CS will have 0xFF physical CS value & can be
+-	 * ignore while performing physical CS validity checks.
+-	 */
+ 	for (idx = 0; idx < SPI_CS_CNT_MAX; idx++)
+-		spi_set_chipselect(spi, idx, 0xFF);
++		spi_set_chipselect(spi, idx, SPI_INVALID_CS);
+ }
+ 
+ /**
+@@ -1050,7 +1057,7 @@ static void spi_set_cs(struct spi_device *spi, bool enable, bool force)
+ 
+ 	spi->controller->last_cs_index_mask = spi->cs_index_mask;
+ 	for (idx = 0; idx < SPI_CS_CNT_MAX; idx++)
+-		spi->controller->last_cs[idx] = enable ? spi_get_chipselect(spi, 0) : -1;
++		spi->controller->last_cs[idx] = enable ? spi_get_chipselect(spi, 0) : SPI_INVALID_CS;
+ 	spi->controller->last_cs_mode_high = spi->mode & SPI_CS_HIGH;
+ 
+ 	if (spi->mode & SPI_CS_HIGH)
+@@ -3333,9 +3340,9 @@ int spi_register_controller(struct spi_controller *ctlr)
+ 		goto free_bus_id;
+ 	}
+ 
+-	/* Setting last_cs to -1 means no chip selected */
++	/* Setting last_cs to SPI_INVALID_CS means no chip selected */
+ 	for (idx = 0; idx < SPI_CS_CNT_MAX; idx++)
+-		ctlr->last_cs[idx] = -1;
++		ctlr->last_cs[idx] = SPI_INVALID_CS;
+ 
+ 	status = device_add(&ctlr->dev);
+ 	if (status < 0)
 -- 
 2.43.0.rc1.1.gbec44491f096
 
