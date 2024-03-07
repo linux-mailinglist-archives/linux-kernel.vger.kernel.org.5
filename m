@@ -1,202 +1,198 @@
-Return-Path: <linux-kernel+bounces-95839-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95840-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DCE18753BA
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 16:56:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0745D8753CA
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:02:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A166F1F22E1E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:56:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5A2BEB236AD
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 16:02:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B83AB12F591;
-	Thu,  7 Mar 2024 15:56:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 283BE12F380;
+	Thu,  7 Mar 2024 16:02:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GejtSiM1"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	dkim=pass (2048-bit key) header.d=thorsis.com header.i=@thorsis.com header.b="E+e5my4E"
+Received: from mail.thorsis.com (mail.thorsis.com [92.198.35.195])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 625FA12F385
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 15:56:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D277B1EEEA
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 16:02:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=92.198.35.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709826967; cv=none; b=fr+73D1CnPgDzSvregIqn79PpxnVRrzF40LstLyy1U44SGnuP3zy0m4JsMeDfO0tfDPxgPdWUWDV00SaGLqMyTKHfpBUEbmAtx+nJRHkelk716wl7FRT3MWX+QSkS2I3Z9YP70pzymKPbRR2T2n/Hy0pEVHnS9hWtxcrrBsPwhc=
+	t=1709827347; cv=none; b=suYJyhQMofOk7PY0nhq9uK93z2wpFO1qikKGayeo4A5yF6hygrI4hRlxDwVaYynS2OlIsDrFFHJIi6dm0xniynedcg5BKukk5awc6sEqmBDPOxdjpD/6RQn7LAiB51Unq3MExrqZu3L+T6JKoYyN2tZpAr648yEIJTchlKPwnQg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709826967; c=relaxed/simple;
-	bh=C97P1YtElo3JLtKjB9OGWqTuuFxMbHJ54++v1vIY3Tg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dAdOFO4XkZO+vvdn/n9B5kGeemvPnHALH6RZn1KIHK76jNdx3H3CrYe9btCkGMve/DzHV1mmtXeIS6ng6FI+6r9gNUtwdp5HLb0+qWlXcxylo1fUWcQjGOkaIk1M6MJYYcJ3Gs7ybD1FHzG1E18jBf7coYP+K7XUOD97jCjqAWE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GejtSiM1; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709826965; x=1741362965;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=C97P1YtElo3JLtKjB9OGWqTuuFxMbHJ54++v1vIY3Tg=;
-  b=GejtSiM1TA9/oGn1/yuFTu2tUdnwuRXMHKaaoj0y39blTMGYyV+eHF1M
-   r0RAGfc8aVkKPtTBT3Ieu9aLOHlzDfWQBj9n9uB2aiX72Vx9ab2t14nE5
-   hiE25EiJsLeVbIKtEmX11WJfnsmj9PmVU/B/se0XYACNg0XRa+rlNVKrE
-   hmfWRBtF1HgkQlpHxBRa89X3X2U4HJ3+3LwpDI3Gk6snfcnW0CHnkJLQw
-   fgd+mtX+r5gIEvEWpIwL2jpMmzQ2ZR6epRJqrdXIrRTV/CuKwztM/hzU8
-   QVGFC0YYkSudhrQPlVLCqR0U9WFwbjf326tdPXhEPx56RJVpdHOMqP+He
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="15148084"
-X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
-   d="scan'208";a="15148084"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 07:56:05 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
-   d="scan'208";a="41049480"
-Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
-  by orviesa002.jf.intel.com with ESMTP; 07 Mar 2024 07:56:02 -0800
-Received: from kbuild by b21307750695 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1riG6B-0005JO-38;
-	Thu, 07 Mar 2024 15:55:59 +0000
-Date: Thu, 7 Mar 2024 23:55:09 +0800
-From: kernel test robot <lkp@intel.com>
-To: Max Kellermann <max.kellermann@ionos.com>, akpm@linux-foundation.org,
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, willy@infradead.org,
-	sfr@canb.auug.org.au, Max Kellermann <max.kellermann@ionos.com>
-Subject: Re: [PATCH v3 06/14] linux/mm.h: move folio_size(), ... to
- mm/folio_size.h
-Message-ID: <202403072311.1a9jXzWI-lkp@intel.com>
-References: <20240305085919.1601395-7-max.kellermann@ionos.com>
+	s=arc-20240116; t=1709827347; c=relaxed/simple;
+	bh=KnOCTDumG/A9/5/SUytK/rT0ZUv7KFO9BrmC1LlkoEw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To; b=A6Q8NDgOmJALsuKjyWrwgMGOy2tCQw/TAoQ6Kp7iXkTSLlQg8Py9DfgLa5t7MASSbL9aLM7wMzGBxPlk7xwMNsyN4iLfOflsRgp/ikl6/i/x0ycXqo72M3nKc6b874TVs5nMi5yDnw930UFL15F8i54IvZiSvPV/YlzUL1MmQNI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=thorsis.com; spf=pass smtp.mailfrom=thorsis.com; dkim=pass (2048-bit key) header.d=thorsis.com header.i=@thorsis.com header.b=E+e5my4E; arc=none smtp.client-ip=92.198.35.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=thorsis.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=thorsis.com
+Date: Thu, 7 Mar 2024 17:02:16 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=thorsis.com; s=default;
+	t=1709827335;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:content-type:content-type:in-reply-to:in-reply-to:
+	 references:references; bh=qNHy0ey9Rh5SkT/53hLFdIyIDdFiIk0IR0E13PdFioI=;
+	b=E+e5my4E7F4awvZ2mTvJztGmw9kmA5Znr5n03/FWxR0jS5qXRXTTys4QY6IsLuVIFV26pM
+	08Y/Nlif9P6prtPxiiXob2ffH7N7K/hXIi1+A1DuQOeslZivL4UoQuZ474fK4r7M5ptgeI
+	fSvjhUYED8Or2XoRjIxvCA+KlIpIG6F3WlXAml3J7DxJhP39HSys5QDM4zVdybs5rmm3M7
+	qMVnH7zzVgSsH2R0YWAKkv46TTFB3GDjgnOP5qtAgvzwKv04E1FNj4y2m7WF/+X9mAF1eV
+	juvo/if/vvrMB6Tiz16qew6OgVwWqVbgTwtVeH7eA4PZ1eBjBGlZLoLnIjTrgA==
+From: Alexander Dahl <ada@thorsis.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Alexander Dahl <ada@thorsis.com>, linux-mtd@lists.infradead.org,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org
+Subject: Re: mtd: nand: raw: Possible bug in nand_onfi_detect()?
+Message-ID: <20240307-pantry-deceit-78ce20f47899@thorsis.com>
+Mail-Followup-To: Miquel Raynal <miquel.raynal@bootlin.com>,
+	linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org
+References: <20240306-shaky-bunion-d28b65ea97d7@thorsis.com>
+ <20240306164831.29eed907@xps-13>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240306164831.29eed907@xps-13>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240305085919.1601395-7-max.kellermann@ionos.com>
 
-Hi Max,
+Hello Miquel,
 
-kernel test robot noticed the following build errors:
+thanks for looking into this, see my remarks below.
 
-[auto build test ERROR on next-20240305]
-[cannot apply to akpm-mm/mm-everything char-misc/char-misc-testing char-misc/char-misc-next char-misc/char-misc-linus joro-iommu/next broonie-spi/for-next powerpc/next powerpc/fixes linus/master v6.8-rc7 v6.8-rc6 v6.8-rc5 v6.8-rc7]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Am Wed, Mar 06, 2024 at 04:48:31PM +0100 schrieb Miquel Raynal:
+> Hi Alexander,
+> 
+> ada@thorsis.com wrote on Wed, 6 Mar 2024 15:36:04 +0100:
+> 
+> > Hello everyone,
+> > 
+> > I think I found a bug in nand_onfi_detect() which was introduced with
+> > commit c27842e7e11f ("mtd: rawnand: onfi: Adapt the parameter page
+> > read to constraint controllers") back in 2020.
+> 
+> Interesting. I don't think this patch did broke anything, as
+> constrained controllers would just not support the read_data_op() call
+> anyway.
+> 
+> That being said, I don't see why the atmel controller would
+> refuse this operation, as it is supposed to support all
+> operations without limitation. This is one of the three issues
+> you have, that probably needs fixing.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Max-Kellermann/drivers-add-missing-includes-on-linux-mm-h-and-others/20240305-170312
-base:   next-20240305
-patch link:    https://lore.kernel.org/r/20240305085919.1601395-7-max.kellermann%40ionos.com
-patch subject: [PATCH v3 06/14] linux/mm.h: move folio_size(), ... to mm/folio_size.h
-config: loongarch-defconfig (https://download.01.org/0day-ci/archive/20240307/202403072311.1a9jXzWI-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240307/202403072311.1a9jXzWI-lkp@intel.com/reproduce)
+I found a flaw in my debug messages hiding the underlying issue for
+this.  I'm afraid this is another bug introduced by you with commit
+9f820fc0651c ("mtd: rawnand: Check the data only read pattern only
+once").  See this line in rawnand_check_data_only_read_support():
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403072311.1a9jXzWI-lkp@intel.com/
+    if (!nand_read_data_op(chip, NULL, SZ_512, true, true))
 
-All error/warnings (new ones prefixed by >>):
+This leads to nand_read_data_op() returning -EINVAL, because it checks
+if its second argument is non-NULL.
 
-   In file included from include/linux/mm/folio_size.h:8,
-                    from include/linux/mm.h:5,
-                    from arch/loongarch/include/asm/vdso.h:10,
-                    from arch/loongarch/vdso/vgetcpu.c:6:
->> include/linux/page-flags.h:202:1: warning: data definition has no type or storage class
-     202 | DECLARE_STATIC_KEY_FALSE(hugetlb_optimize_vmemmap_key);
-         | ^~~~~~~~~~~~~~~~~~~~~~~~
->> include/linux/page-flags.h:202:1: error: type defaults to 'int' in declaration of 'DECLARE_STATIC_KEY_FALSE' [-Werror=implicit-int]
->> include/linux/page-flags.h:202:1: warning: parameter names (without types) in function declaration
-   In file included from include/linux/mm/folio_size.h:8,
-                    from include/linux/mm.h:5,
-                    from arch/loongarch/include/asm/vdso.h:10,
-                    from arch/loongarch/include/asm/vdso/vdso.h:11,
-                    from arch/loongarch/include/asm/vdso/gettimeofday.h:13,
-                    from include/vdso/datapage.h:151,
-                    from lib/vdso/gettimeofday.c:5,
-                    from <command-line>:
->> include/linux/page-flags.h:202:1: warning: data definition has no type or storage class
-     202 | DECLARE_STATIC_KEY_FALSE(hugetlb_optimize_vmemmap_key);
-         | ^~~~~~~~~~~~~~~~~~~~~~~~
->> include/linux/page-flags.h:202:1: error: type defaults to 'int' in declaration of 'DECLARE_STATIC_KEY_FALSE' [-Werror=implicit-int]
->> include/linux/page-flags.h:202:1: warning: parameter names (without types) in function declaration
-   include/linux/page-flags.h: In function 'page_fixed_fake_head':
->> include/linux/page-flags.h:210:14: error: implicit declaration of function 'static_branch_unlikely' [-Werror=implicit-function-declaration]
-     210 |         if (!static_branch_unlikely(&hugetlb_optimize_vmemmap_key))
-         |              ^~~~~~~~~~~~~~~~~~~~~~
-   include/linux/page-flags.h: In function 'page_fixed_fake_head':
->> include/linux/page-flags.h:210:14: error: implicit declaration of function 'static_branch_unlikely' [-Werror=implicit-function-declaration]
-     210 |         if (!static_branch_unlikely(&hugetlb_optimize_vmemmap_key))
-         |              ^~~~~~~~~~~~~~~~~~~~~~
->> include/linux/page-flags.h:210:38: error: 'hugetlb_optimize_vmemmap_key' undeclared (first use in this function)
-     210 |         if (!static_branch_unlikely(&hugetlb_optimize_vmemmap_key))
-         |                                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/page-flags.h:210:38: note: each undeclared identifier is reported only once for each function it appears in
->> include/linux/page-flags.h:210:38: error: 'hugetlb_optimize_vmemmap_key' undeclared (first use in this function)
-     210 |         if (!static_branch_unlikely(&hugetlb_optimize_vmemmap_key))
-         |                                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/page-flags.h:210:38: note: each undeclared identifier is reported only once for each function it appears in
-   cc1: some warnings being treated as errors
-   cc1: some warnings being treated as errors
-   make[3]: *** [scripts/Makefile.build:244: arch/loongarch/vdso/vgetcpu.o] Error 1
-   make[3]: *** [scripts/Makefile.build:244: arch/loongarch/vdso/vgettimeofday.o] Error 1
-   make[3]: Target 'include/generated/vdso-offsets.h' not remade because of errors.
-   make[2]: *** [arch/loongarch/Makefile:163: vdso_prepare] Error 2
-   make[2]: Target 'prepare' not remade because of errors.
-   make[1]: *** [Makefile:240: __sub-make] Error 2
-   make[1]: Target 'prepare' not remade because of errors.
-   make: *** [Makefile:240: __sub-make] Error 2
-   make: Target 'prepare' not remade because of errors.
+I guess not only the atmel nand controller is affected here, but _all_
+nand controllers?  The flag can never be set, and so use_datain is
+false here?
 
+> > Background on how I found this: I'm currently struggling getting raw
+> > nand flash access to fly with an at91 sam9x60 SoC and a S34ML02G1
+> > Spansion SLC raw NAND flash on a custom board.  The setup is
+> > comparable to the sam9x60 curiosity board and can be reproduced with
+> > that one.
+> > 
+> > NAND flash on sam9x60 curiosity board works fine with what is in
+> > mainline Linux kernel.  However after removing the line 'rb-gpios =
+> > <&pioD 5 GPIO_ACTIVE_HIGH>;' from at91-sam9x60_curiosity.dts all data
+> > read from the flash appears to be zeros only.  (I did not add that
+> > line to the dts of my custom board first, this is how I stumbled over
+> > this.)
+> > 
+> > I have no explanation for that behaviour, it should work without R/B#
+> > by reading the status register, maybe we investigate that
+> > in depth later.
+> 
+> I don't see why at a first look. The default is "no RB" if no property
+> is given in the DT so it should work.
 
-vim +202 include/linux/page-flags.h
+Correct, nand_soft_waitrdy() is used in that case.
 
-9223b4190fa129 Christoph Lameter 2008-04-28  200  
-47010c040dec8a Muchun Song       2022-04-28  201  #ifdef CONFIG_HUGETLB_PAGE_OPTIMIZE_VMEMMAP
-cf5472e5611338 Muchun Song       2022-06-28 @202  DECLARE_STATIC_KEY_FALSE(hugetlb_optimize_vmemmap_key);
-a6b40850c442bf Muchun Song       2022-03-22  203  
-e7d324850bfcb3 Muchun Song       2022-03-22  204  /*
-838691a1c0ec44 Muchun Song       2022-06-28  205   * Return the real head page struct iff the @page is a fake head page, otherwise
-838691a1c0ec44 Muchun Song       2022-06-28  206   * return the @page itself. See Documentation/mm/vmemmap_dedup.rst.
-e7d324850bfcb3 Muchun Song       2022-03-22  207   */
-e7d324850bfcb3 Muchun Song       2022-03-22  208  static __always_inline const struct page *page_fixed_fake_head(const struct page *page)
-e7d324850bfcb3 Muchun Song       2022-03-22  209  {
-cf5472e5611338 Muchun Song       2022-06-28 @210  	if (!static_branch_unlikely(&hugetlb_optimize_vmemmap_key))
-e7d324850bfcb3 Muchun Song       2022-03-22  211  		return page;
-e7d324850bfcb3 Muchun Song       2022-03-22  212  
-e7d324850bfcb3 Muchun Song       2022-03-22  213  	/*
-e7d324850bfcb3 Muchun Song       2022-03-22  214  	 * Only addresses aligned with PAGE_SIZE of struct page may be fake head
-e7d324850bfcb3 Muchun Song       2022-03-22  215  	 * struct page. The alignment check aims to avoid access the fields (
-e7d324850bfcb3 Muchun Song       2022-03-22  216  	 * e.g. compound_head) of the @page[1]. It can avoid touch a (possibly)
-e7d324850bfcb3 Muchun Song       2022-03-22  217  	 * cold cacheline in some cases.
-e7d324850bfcb3 Muchun Song       2022-03-22  218  	 */
-e7d324850bfcb3 Muchun Song       2022-03-22  219  	if (IS_ALIGNED((unsigned long)page, PAGE_SIZE) &&
-e7d324850bfcb3 Muchun Song       2022-03-22  220  	    test_bit(PG_head, &page->flags)) {
-e7d324850bfcb3 Muchun Song       2022-03-22  221  		/*
-e7d324850bfcb3 Muchun Song       2022-03-22  222  		 * We can safely access the field of the @page[1] with PG_head
-e7d324850bfcb3 Muchun Song       2022-03-22  223  		 * because the @page is a compound page composed with at least
-e7d324850bfcb3 Muchun Song       2022-03-22  224  		 * two contiguous pages.
-e7d324850bfcb3 Muchun Song       2022-03-22  225  		 */
-e7d324850bfcb3 Muchun Song       2022-03-22  226  		unsigned long head = READ_ONCE(page[1].compound_head);
-e7d324850bfcb3 Muchun Song       2022-03-22  227  
-e7d324850bfcb3 Muchun Song       2022-03-22  228  		if (likely(head & 1))
-e7d324850bfcb3 Muchun Song       2022-03-22  229  			return (const struct page *)(head - 1);
-e7d324850bfcb3 Muchun Song       2022-03-22  230  	}
-e7d324850bfcb3 Muchun Song       2022-03-22  231  	return page;
-e7d324850bfcb3 Muchun Song       2022-03-22  232  }
-e7d324850bfcb3 Muchun Song       2022-03-22  233  #else
-e7d324850bfcb3 Muchun Song       2022-03-22  234  static inline const struct page *page_fixed_fake_head(const struct page *page)
-e7d324850bfcb3 Muchun Song       2022-03-22  235  {
-e7d324850bfcb3 Muchun Song       2022-03-22  236  	return page;
-e7d324850bfcb3 Muchun Song       2022-03-22  237  }
-e7d324850bfcb3 Muchun Song       2022-03-22  238  #endif
-e7d324850bfcb3 Muchun Song       2022-03-22  239  
+> Tracing the wait ready function calls might help.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Did that already.  On each call here the status register read contains
+E0h and nand_soft_waitrdy() returns without error, because the
+NAND_STATUS_READY flag is set.  It just looks fine, although it is
+not afterwards.
+
+> >  However those all zeros data reads happens when
+> > reading the ONFI param page as well es data read from OOB/spare area
+> > later and I bet it's the same with usual data.
+> 
+> Reading data without observing tWB + tR may lead to this.
+
+I already suspected some timing issue.  Deeper investigation will have
+to wait until we soldered some wires to the chip and connect a logic
+analyzer however.  At least that's the plan, but this will have to
+wait some days until after I finished some other tasks.
+
+> > This read error reveals a bug in nand_onfi_detect().  After setting
+> > up some things there's this for loop:
+> > 
+> >     for (i = 0; i < ONFI_PARAM_PAGES; i++) {
+> > 
+> > For i = 0 nand_read_param_page_op() is called and in my case all zeros
+> > are returned and thus the CRC calculated does not match the all zeros
+> > CRC read.  So the usual break on successful reading the first page is
+> > skipped and for reading the second page nand_change_read_column_op()
+> > is called.  I think that one always fails on this line:
+> > 
+> >     if (offset_in_page + len > mtd->writesize + mtd->oobsize) {
+> > 
+> > Those variables contain the following values:
+> > 
+> >     offset_in_page: 256
+> >     len: 256
+> >     mtd->writesize: 0
+> >     mtd->oobsize: 0
+> 
+> Indeed. We probably need some kind of extra check that does not perform
+> the if clause above if !mtd->writesize.
+> 
+> > The condition is true and nand_change_read_column_op() returns with
+> > -EINVAL, because mtd->writesize and mtd->oobsize are not set yet in
+> > that code path.  Those are probably initialized later, maybe with
+> > parameters read from that ONFI param page?
+> > 
+> > Returning with error from nand_change_read_column_op() leads to
+> > jumping out of nand_onfi_detect() early, and no ONFI param page is
+> > evaluated at all, although the second or third page could be intact.
+> > 
+> > I guess this would also fail with any other reason for not matching
+> > CRCs in the first page, but I have not faulty NAND flash chip to
+> > confirm that.
+> 
+> Thanks for the whole report, it is interesting and should lead to fixes:
+> - why does the controller refuses the datain op?
+
+See above.
+
+> - why nand_soft_waitrdy is not enough?
+
+I don't know.  That's one reason I asked here.
+
+> - changing the condition in nand_change_read_column_op()
+> 
+> Can you take care of these?
+
+The last one probably after in depth reading of the code again, unsure
+for the other two.
+
+Greets
+Alex
+
 
