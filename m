@@ -1,204 +1,189 @@
-Return-Path: <linux-kernel+bounces-95914-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95916-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 927468754EA
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 18:12:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90D248754EE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 18:12:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 11B5BB20D26
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:11:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 246781F226C4
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:12:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B373130AE1;
-	Thu,  7 Mar 2024 17:11:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FF58130AD4;
+	Thu,  7 Mar 2024 17:12:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="O18NOmG3"
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02olkn2024.outbound.protection.outlook.com [40.92.43.24])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RL8Ctdtb"
+Received: from mail-wr1-f68.google.com (mail-wr1-f68.google.com [209.85.221.68])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8D7412FB0D;
-	Thu,  7 Mar 2024 17:11:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.43.24
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709831507; cv=fail; b=X+7BMhPJeqnoOqLNcFSCrMUzQhoo+77F1HqiNlgzYVmx/c6Aq1zHMwOg29OOTiIWpaMRS3NzzqZSdBbk8pxRVnvkCiSN4raN8aXjVFPMom96wmD2jIUgkcVyo/tdtbCeyYqiGwRdkqkpTkTIRswr8R0HTYA7+PeJgi5SbLN6YVM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709831507; c=relaxed/simple;
-	bh=Ug5BaFYwQpY5dJpOzzj6zgR5yhv9vGCwAPBoiiCJOJo=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=JX9Uh2u43yRCgFum5TdIM9f2FVSoK4sgXeYMP3W6lQOgyeK9mzmvjmwGVVvHTdYue9fdHWYGJWEieCFFZJwCqQSm+CPGmaAII4dRFqsM6J8o24RxCakKpbwCX0T0q83yo+z4w3OtaPQ5KA4OyONQeHLQxpJKLVFWIsDAFh/c+Zk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=O18NOmG3; arc=fail smtp.client-ip=40.92.43.24
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GrnxwZ4jSkA79IptxOrL+0MZbK7tyynvco/nw6e6QxuD/YvMFjblNw19wEaRdTj8tNgwrnbAeuCV+7v9WCiLI+dYvnTOPt2Cs+l7jeA8hxYl9k1qV8qI5kcrRY/fvBTggQHSei/tE5HVo9iR8gCxMNdRaK31hjcoE+gYlx80Op8jKjU3RFi+mHJRpqIrR+YQkNWxRQmAU6a/qCx3ENhBfIG04BYvM+RKdXULhkqwi5NNlbJJ4Bdp3tj3SFykJXk/9KjSmnwba0rRLNCd4Q+c1lHk5Vz6sm+PxaiWqGhJFVgEICWsw8+9OP2ZDyYVXArldsCFgAGNITX9W/rBumegSg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jyEw3+TZ8Cb/DL7MMUUI+H4SQ8Mo3kN2cAfnrECi7UA=;
- b=M93Cx3ei5FgXxiJ6wWYO0VHxUkn66uzDVU6Ec0T4DDJleCUuV3ndfMoDSqRSiw1VDNPXNh6mMlp6TEdNfJYQU+hKOfYp3cRyrTy8vWxsL9nQW9muYm66//o6iDuGIcK16xKH0KtsZkCwORkd2oVAHBMk7Vzi+qfLdDc6waFwpHeprMJ5V8torJK88reT0QfmX3gRFoOdc98S3U0IcDHd/T4T7V5HL5RJNJnToxnH47h+2QfXED17C39DCqz4xat/Xgz5dztJAuQssJo1djI0TffItvKJRN7tlXb5nqOR7snokbyKpRkt9en4QqUEK+HAqmntfSctdwkr5zPThfJm7w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jyEw3+TZ8Cb/DL7MMUUI+H4SQ8Mo3kN2cAfnrECi7UA=;
- b=O18NOmG3Zk99dIPDSr+o/BfbLKvbqs4sDPegexGM68bCZttKD3re+E4yWp/Pkp4ROE80iIWcT8DeXEkbv2P4HZ26IrEb2HynAF4ZmcEps8OrVjk/JUMztL/mvMiZRMBkQZlCwJt3tVBrhlpNati3or7vVJrpjBz4RfqEBGDqKUtKAVxOwI7+1wb9bxyyNdYonSN2UOjfpT6GIooXG/SdeWJt4EasJ4Tr4Z9ZL5iPgRhT+3iUMspcKQg/CFo0sQoM15sRfCPG36PKLbphxGk4WZEwBhLEd68GBGsryJ1xvnJu7rH6ejggQoqhLw3e9TFdTUUnslWiaYfrS9C904uP7g==
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
- by LV3PR02MB10150.namprd02.prod.outlook.com (2603:10b6:408:197::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.39; Thu, 7 Mar
- 2024 17:11:42 +0000
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::67a9:f3c0:f57b:86dd]) by SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::67a9:f3c0:f57b:86dd%5]) with mapi id 15.20.7362.024; Thu, 7 Mar 2024
- 17:11:42 +0000
-From: Michael Kelley <mhklinux@outlook.com>
-To: Rick Edgecombe <rick.p.edgecombe@intel.com>, "kys@microsoft.com"
-	<kys@microsoft.com>, "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
-	"wei.liu@kernel.org" <wei.liu@kernel.org>, "decui@microsoft.com"
-	<decui@microsoft.com>, "linux-hyperv@vger.kernel.org"
-	<linux-hyperv@vger.kernel.org>, "gregkh@linuxfoundation.org"
-	<gregkh@linuxfoundation.org>, "davem@davemloft.net" <davem@davemloft.net>,
-	"edumazet@google.com" <edumazet@google.com>, "kuba@kernel.org"
-	<kuba@kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	"kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-	"linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC: "sathyanarayanan.kuppuswamy@linux.intel.com"
-	<sathyanarayanan.kuppuswamy@linux.intel.com>, "elena.reshetova@intel.com"
-	<elena.reshetova@intel.com>
-Subject: RE: [RFC RFT PATCH 0/4] Handle  set_memory_XXcrypted() errors in
- hyperv
-Thread-Topic: [RFC RFT PATCH 0/4] Handle  set_memory_XXcrypted() errors in
- hyperv
-Thread-Index: AQHaZTRXjdPXYbhP4karQ0dDTiSBNbEjNf9QgAlhAAA=
-Date: Thu, 7 Mar 2024 17:11:41 +0000
-Message-ID:
- <SN6PR02MB4157AFF080839DB55294F5E9D4202@SN6PR02MB4157.namprd02.prod.outlook.com>
-References: <20240222021006.2279329-1-rick.p.edgecombe@intel.com>
- <SN6PR02MB41575BD90488B63426A5CAB4D45E2@SN6PR02MB4157.namprd02.prod.outlook.com>
-In-Reply-To:
- <SN6PR02MB41575BD90488B63426A5CAB4D45E2@SN6PR02MB4157.namprd02.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-tmn: [5PYBSSLBB9owHJIEI6l2DZKlq2VXLzCP]
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|LV3PR02MB10150:EE_
-x-ms-office365-filtering-correlation-id: ca2c74d8-7fa0-454c-386c-08dc3ec9a8b7
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- lLiq/D11Ksn/zRK7JqfGWm8q9wjy4Cxmohs7SUAvqXeqdu5DRHAELZn9ZGjajhdbUGKOXjZYSX8MrwgbhGsLnYMxYCdIXcxC67+b/do2Qp4UBAFeUUpAvrb5YA8Rf4VVh2oj99HZRM7tbDhhGTC2p+Eu31m2MafBVeOshc9UMLlc+A3/Y2M/6WCMcqc/WQVOA1DYUldg+gehjC2NJ+0xEG+avfDy0Y7xOi9JBl6+CEepICfFKE4gTvp/kHXZ6CO73fBlSeXy8R6wVdyeReCbm7nju9yZ1nHfwl2gVon5X+XbJGsS16GQFlPZSh2te+xUrDFE3CafD3EwMFJ6OqILLyGEu74IbB+4sH3iEa8gtD7aMAyKOw0jvK2i0yaeYf8xn8hXmE0j5jKO9IX3WavYfJT154fSgKQRvQRfs0RBrAc/XDLEVENuyKzlCWwEFt0l8vzvXmmSPVcYeM8DkNvL6/QT9tkncdjLYx0VwkfFcpXkX+FPwLdtwkAjlUTMaukI8Yr1yPlWgLxJfrId65W3vPoJwKRqxcKJ//ySRDcvbCEQonkG5UIqgckiPfZs0G5K
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?EO+MFclRxBiWZmd+3al1ovZRJCH0si8Dn9BgPZFyZQY/57xcV+7NLqt4d9Ql?=
- =?us-ascii?Q?G/0MU8phe0fQhAwrqeTUJGwFO+b/z9F84E24cAHBL5I1W5mW4vpJR7+4Dzdi?=
- =?us-ascii?Q?cOMvoiJGSnBg1WPS2yHczmoGO5b2DF77r6OE0SO418tK60CH2P9Lg+HgPS1X?=
- =?us-ascii?Q?tl8JvCmk5mPe/9sYkKJEa9EMZdbZ7frdtxvvlpLibe4Op6g7z3alRDi2m/gm?=
- =?us-ascii?Q?3kRXEnUKpWa+q8JvlzXIiEPdy/3/NiIutisrIk+Fz2nDwyfp9Ab0NB1mWuPE?=
- =?us-ascii?Q?RqSJDwnlJPOWVtjLLT/DEUoK4JL/BN+Sc8BTQOZyGja/fI9RmWFOTpQVdM99?=
- =?us-ascii?Q?8d3KeL9y1t50WGMvsfOejHcckPC9WcErdNSPxPOgaAhqgfWpysQdTILMJ3IC?=
- =?us-ascii?Q?+FUTiJCx0lL4no2J6Soidq74QARErxs/YTs9lVg+uTbRZXZVRAJjSVtSkYdI?=
- =?us-ascii?Q?SIjS5YHhyMvIjRahAcWMEtUnyXt1vS4jZFWifLpf5Kh9hXEwFgRy/YRTCkwR?=
- =?us-ascii?Q?Q5nK8W+bAzeR/EXaG6EMTRq1OPEOiTjXkly6/2ukGWLPOaOxD7auRbxUK2uF?=
- =?us-ascii?Q?C4KNxY5lfWpnnnqZ9AH32K1+aKh+JNStlSydHNNZaNRiBhtNVJj6I6lGzdsO?=
- =?us-ascii?Q?cvB1MEH95fCdOADTfX9tQkeA2//F5vh8KUwozkjTAcwsZcUzGiaQbOotm4bU?=
- =?us-ascii?Q?BYyKo/ir+wrBf6J3mQzCklYMO4V+dZ9hXSCQJnnKXBXPiTZF9a/QAEJ3WQXF?=
- =?us-ascii?Q?7EmgNWsG8blTC2oWwnpAd9q7XHRXkfw0VNW2vsK1GpdurQUYX+pFdrjIPajC?=
- =?us-ascii?Q?ZgP164j6z8c99Par0iOXVD221qSU/wwBOB1VGNM8vNjtSpeYcuw2fNdxBv1e?=
- =?us-ascii?Q?lI2kmUNdu1yuviWkirs6jV1qNyB25CQE4LCOTmBizqXAaxc5tXt1dmPPIQYv?=
- =?us-ascii?Q?NXTuTKKEbcI0MFWTOPvnnDd2OvrSe/PTV+y3BO/ioe9jOFQktgsCIylOeDHR?=
- =?us-ascii?Q?z/w6orQ3fpGv9Xhd8tso5/HBQ9zVyDH7xVyDf3b8tuXKRJmVSKJNY4oRSNNr?=
- =?us-ascii?Q?AFwJieRr1WAxYYArcth+t2kSwlmykJ9TLzgm/UjW9eAjTS/Gr6qybe1gl58A?=
- =?us-ascii?Q?m/seVAZ5nGGavlIif3eOyRsVqSEQskH6Ks4IRJxvkmsyz3jUnOw0sms/BUMc?=
- =?us-ascii?Q?l5qcyoZ8TYCpLXrItKEdf3B+7BtCx7KfnPVYAA=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B06F12D76A;
+	Thu,  7 Mar 2024 17:12:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.68
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709831560; cv=none; b=sb5RhrAkm8N2jYe1+/5KTx8MZpu1ecN+ABQld/prhcks0DozvTGPCNPRkdMo9QbphtVK8BR0OLpBpB/y5rSKN2z9SThlcJh06fmqqf3FLNuP1nPptM7twYuIzn3QHDvfRa4Drdp+tjDXyEw0QXFSSC488ZL/r25XuIQxDkJWDJo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709831560; c=relaxed/simple;
+	bh=lCKJCUOcpbJTmq6sx8VjS8e0okUIYSDK6ln/IsdnKII=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Xg9ZoGuiVvYxG9Bw3c1wvKzwtWhMPn0XOLHcx1WeLzBDWra9K1yiZbNOb9hfYpBjfIouF6YFxZUq0V9Bp2WTxaO6IXzXkhmmI/8zlhB1oBf6paADXnWyON4u7NcQFOT9Xv1OBLS5QktM+YtwgQjlJMOq6PvWTEqw+PVzJCn4ywQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RL8Ctdtb; arc=none smtp.client-ip=209.85.221.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f68.google.com with SMTP id ffacd0b85a97d-33e4f15710aso805176f8f.2;
+        Thu, 07 Mar 2024 09:12:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709831557; x=1710436357; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=vFWiokd+Aeip8+3Uvj28qY6fTKJ7gDMOKVvzVxfPJGo=;
+        b=RL8CtdtbEoyTUlg+RS3mxKI2cg4J5phqprW4mygTv7ijl9F3trNirHrvE5REK47wmP
+         elbs3Zp5PW9i5V0QKfD0HhdrKOo3Qtrl0K1ZIx96IUAg0RdWbq9aifk47ZCqjAwSYSQ+
+         rHOCtcxlvUYtM+VQHOozn6ac918ckWI0wY+A9p2JeO9snRsT/APsxfjWxlKQolGHcvs1
+         U9LYDjqHHXfpH7px+wz0fUchZjZKqGxGVjRRIEeUqX0x+t4LpWeC2w2TumkW5za2QhMG
+         deS2VWbX7jqJHPVfJJIMuCfe+8dlCcRQqsYyPsFVpE0Wb0qsLunN4N1lLaXXu138cFwQ
+         aQkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709831557; x=1710436357;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vFWiokd+Aeip8+3Uvj28qY6fTKJ7gDMOKVvzVxfPJGo=;
+        b=W2twAm2hm17O1seJBGnRX2Us7MDSwUNkYEr8t3oEA2So9YP5K0ANGcXYCMrPvCJUEw
+         lxrYKbJ9LIFVxSK+V7yVX/EXRDgt1VmKfa4YW1hgPiH3xhioKFkXB82zv7pvL0o0jMWS
+         paIW7/4infwTkmsZuRRBI4nNxSm3009GomXaEtz7DkhXXG2W7Tl842ROKE+u7QOj2SYV
+         CBCIUxngNVpi/KxZWgLj2YPhAOSpWvtQtd42HnykmK2AAMzGndaZmGgA4O06zd2CaO0x
+         oAppRZQBFqAd95L0LUra01MM7IK4tD58ssXS2wI2C7tXzEU4bTwn+uQyXXqGaJQ0wlyP
+         Rfww==
+X-Forwarded-Encrypted: i=1; AJvYcCVuospOh/YNPh5qYpcjsB4Y9gqTA/9p87oUrEEJX3KshQfMh/85EkLSyw10V/kPIhGC6QHTPHgn4KdQgIDzvIfZmJMd83p6ylK4LQAl
+X-Gm-Message-State: AOJu0YzaYXDe4dKpqL8ewsuFM5VG9sqVIkpLkqaj6C+/CFzYu0+BEpbo
+	hsW5QDlK5wrTtGtWKz3KY2gHrVJZEhhcA7H5zus3dHZyIPoTnoia+a7mLGL5vCI=
+X-Google-Smtp-Source: AGHT+IGvzB/nXqfowb7C03hBnN9p6TFqvJDm1Fyq2y+mxHs8jaFgD9GEeCK2+2WZRb7mlGKBRusF5w==
+X-Received: by 2002:a5d:58f0:0:b0:33e:6aee:6b56 with SMTP id f16-20020a5d58f0000000b0033e6aee6b56mr1198605wrd.25.1709831557093;
+        Thu, 07 Mar 2024 09:12:37 -0800 (PST)
+Received: from localhost ([45.130.85.5])
+        by smtp.gmail.com with ESMTPSA id dp14-20020a0560000c8e00b0033d8ce120f2sm20734678wrb.95.2024.03.07.09.12.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Mar 2024 09:12:36 -0800 (PST)
+From: Leone Fernando <leone4fernando@gmail.com>
+To: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	dsahern@kernel.org,
+	willemb@google.com
+Cc: netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Leone Fernando <leone4fernando@gmail.com>
+Subject: [PATCH net-next 0/4] net: route: improve route hinting
+Date: Thu,  7 Mar 2024 18:11:58 +0100
+Message-Id: <20240307171202.232684-1-leone4fernando@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: ca2c74d8-7fa0-454c-386c-08dc3ec9a8b7
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Mar 2024 17:11:41.9311
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR02MB10150
+Content-Transfer-Encoding: 8bit
 
-From: Michael Kelley <mhklinux@outlook.com> Sent: Friday, March 1, 2024 11:=
-00 AM
-> >
-> > IMPORTANT NOTE:
-> > I don't have a setup to test tdx hyperv changes. These changes are comp=
-ile
-> > tested only. Previously Michael Kelley suggested some folks at MS might=
- be
-> > able to help with this.
->=20
-> Thanks for doing these changes.  Overall they look pretty good,
-> modulo a few comments.  The "decrypted" flag in the vmbus_gpadl
-> structure is a good way to keep track of the encryption status of
-> the associated memory.
->=20
-> The memory passed to the gpadl (Guest Physical Address Descriptor
-> List) functions may allocated and freed directly by the driver, as in
-> the netvsc and UIO cases.  You've handled that case. But memory
-> may also be allocated by vmbus_alloc_ring() and freed by
-> vmbus_free_ring().  Your patch set needs an additional change
-> to check the "decrypted" flag in vmbus_free_ring().
->=20
-> In reviewing the code, I also see some unrelated memory freeing
-> issues in error paths.  They are outside the scope of your changes.
-> I'll make a note of these for future fixing.
->=20
-> For testing, I'll do two things:
->=20
-> 1) Verify that the non-error paths still work correctly with the
-> changes.  That should be relatively straightforward as the
-> changes are pretty much confined to the error paths.
->=20
-> 2) Hack set_memory_encrypted() to always fail.  I hope Linux
-> still boots in that case, but just leaks some memory.  Then if
-> I unbind a Hyper-V synthetic device, that should exercise the
-> path where set_memory_encrypted() is called.  Failures
-> should be handled cleanly, albeit while leaking the memory.
->=20
-> I should be able to test in a normal VM, a TDX VM, and an
-> SEV-SNP VM.
->=20
+In 2017, Paolo Abeni introduced the hinting mechanism [1] to the routing
+sub-system. The hinting optimization improves performance by reusing
+previously found dsts instead of looking them up for each skb.
 
-Rick --
+This patch series introduces a generalized version of the hinting mechanism that
+can "remember" a larger number of dsts. This reduces the number of dst
+lookups for frequently encountered daddrs.
 
-Using your patches plus the changes in my comments, I've
-done most of the testing described above. The normal
-paths work, and when I hack set_memory_encrypted()
-to fail, the error paths correctly did not free the memory.
-I checked both the ring buffer memory and the additional
-vmalloc memory allocated by the netvsc driver and the uio
-driver.  The memory status can be checked after-the-fact
-via /proc/vmmallocinfo and /proc/buddyinfo since these
-are mostly large allocations. As expected, the drivers
-output their own error messages after the failures to
-teardown the GPADLs.
+Before diving into the code and the benchmarking results, it's important
+to address the deletion of the old route cache [2] and why
+this solution is different. The original cache was complicated,
+vulnerable to DOS attacks and had unstable performance.
 
-I did not test the vmbus_disconnect() path since that
-effectively kills the VM.
+The new input dst_cache is much simpler thanks to its lazy approach,
+improving performance without the overhead of the removed cache
+implementation. Instead of using timers and GC, the deletion of invalid
+entries is performed lazily during their lookups.
+The dsts are stored in a simple, lightweight, static hash table. This
+keeps the lookup times fast yet stable, preventing DOS upon cache misses.
+The new input dst_cache implementation is built over the existing
+dst_cache code which supplies a fast lockless percpu behavior.
 
-I tested in a normal VM, and in an SEV-SNP VM.  I didn't
-specifically test in a TDX VM, but given that Hyper-V CoCo
-guests run with a paravisor, the guest sees the same thing
-either way.
+I tested this patch using udp floods with different number of daddrs.
+The benchmarking setup is comprised of 3 machines: a sender,
+a forwarder and a receiver. I measured the PPS received by the receiver
+as the forwarder was running either the mainline kernel or the patched
+kernel, comparing the results. The dst_cache I tested in this benchmark
+used a total of 512 hash table entries, split into buckets of 4
+entries each.
 
-Michael
+These are the results:
+  UDP             mainline              patched                   delta
+conns pcpu         Kpps                  Kpps                       %
+   1              274.0255              269.2205                  -1.75
+   2              257.3748              268.0947                   4.17
+  15              241.3513              258.8016                   7.23
+ 100              238.3419              258.4939                   8.46
+ 500              238.5390              252.6425                   5.91
+1000              238.7570              242.1820                   1.43
+2000              238.7780              236.2640                  -1.05
+4000              239.0440              233.5320                  -2.31
+8000              239.3248              232.5680                  -2.82
+
+As you can see, this patch improves performance up until ~1500
+connections, after which the rate of improvement diminishes
+due to the growing number of cache misses.
+It's important to note that in the worst scenario, every packet will
+cause a cache miss, resulting in only a constant performance degradation
+due to the fixed cache and bucket sizes. This means that the cache is
+resistant to DOS attacks.
+
+Based on the above measurements, it seems that the performance
+degradation flattens at around 3%. Note that the number of concurrent
+connections at which performance starts to degrade depends on the cache
+size and the amount of cpus.
+
+[1] https://lore.kernel.org/netdev/cover.1574252982.git.pabeni@redhat.com/
+[2] https://lore.kernel.org/netdev/20120720.142502.1144557295933737451.davem@davemloft.net/
+
+v1:
+- fix typo while allocating per-cpu cache
+- while using dst from the dst_cache set IPSKB_DOREDIRECT correctly
+- always compile dst_cache
+
+RFC-v2:
+- remove unnecessary macro
+- move inline to .h file
+
+RFC-v1: https://lore.kernel.org/netdev/d951b371-4138-4bda-a1c5-7606a28c81f0@gmail.com/
+RFC-v2: https://lore.kernel.org/netdev/3a17c86d-08a5-46d2-8622-abc13d4a411e@gmail.com/
+
+Leone Fernando (4):
+  net: route: expire rt if the dst it holds is expired
+  net: dst_cache: add input_dst_cache API
+  net: route: always compile dst_cache
+  net: route: replace route hints with input_dst_cache
+
+ drivers/net/Kconfig        |   1 -
+ include/net/dst_cache.h    |  68 +++++++++++++++++++
+ include/net/dst_metadata.h |   2 -
+ include/net/ip_tunnels.h   |   2 -
+ include/net/route.h        |   6 +-
+ net/Kconfig                |   4 --
+ net/core/Makefile          |   3 +-
+ net/core/dst.c             |   4 --
+ net/core/dst_cache.c       | 132 +++++++++++++++++++++++++++++++++++++
+ net/ipv4/Kconfig           |   1 -
+ net/ipv4/ip_input.c        |  58 ++++++++--------
+ net/ipv4/ip_tunnel_core.c  |   4 --
+ net/ipv4/route.c           |  75 +++++++++++++++------
+ net/ipv4/udp_tunnel_core.c |   4 --
+ net/ipv6/Kconfig           |   4 --
+ net/ipv6/ip6_udp_tunnel.c  |   4 --
+ net/netfilter/nft_tunnel.c |   2 -
+ net/openvswitch/Kconfig    |   1 -
+ net/sched/act_tunnel_key.c |   2 -
+ 19 files changed, 291 insertions(+), 86 deletions(-)
+
+-- 
+2.34.1
+
 
