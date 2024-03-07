@@ -1,238 +1,115 @@
-Return-Path: <linux-kernel+bounces-94853-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94858-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3B8A8745F2
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 03:11:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70772874609
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 03:16:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 173D21F2144C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 02:11:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 504E5286D8A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 02:16:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB91C5C89;
-	Thu,  7 Mar 2024 02:11:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03EBA17BB5;
+	Thu,  7 Mar 2024 02:16:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AqykEe/i"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e2haLrco"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3AB046AF
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 02:11:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47BB415EA6;
+	Thu,  7 Mar 2024 02:16:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709777496; cv=none; b=PkCC7t6cE+U9jNhaBugffowfuQxpRQCw56S8yTGwnX9LxuIDBPesJUa3ifbhSd//hDKLr3zbrRIkRWu4upItnPZul+zrk/ckcAdwlC4P46r1EyOh+/feyHWJwx0s7pMQtdkfTHDmpvbsesrOYcwVyTBQrcD1zf0Es0anmo0H5hw=
+	t=1709777762; cv=none; b=nLsIkrYbZHkrdlbFfW9jaqZD2KNuEmkYRz94OPiQsSVPFxKKSOoi9ufOUfCzwyXey/radYFcfr86dcER1+JtXupXaEQKC5lWPyl+cp9uw0+bskbOhzADs3DolB5uQ2uwenl9xfPYwK46yAYpUP3E8PiMgdYPVx0rHThD2TGlCZM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709777496; c=relaxed/simple;
-	bh=rSVzpqAtaP7VsIqGvDvnM7VnZ7HA9GL+hoNyerON4vw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=lQuvexJn1iXL748dag1DMbM/hoRSTs+K/TQZVCxU8R6avDyfd9Bhp67rvAK6XG0ypmM0uCYpdBOUbEbRWNFbI+mdwlgxb2sYuOj7/n+VK9ylrR5Vo3U/PZBeiqCZFxEVW0Jj3NTldP6k9eNZyweFY99L5CujZyk3pSrXh4x5lfE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AqykEe/i; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709777494; x=1741313494;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=rSVzpqAtaP7VsIqGvDvnM7VnZ7HA9GL+hoNyerON4vw=;
-  b=AqykEe/iPYhB8PFnj1dpGbAt/D+WWQ+wH2GTC/25MF5xXg0RktWt2n5g
-   2g8CYXm/OX8cqz0Yh8PA2vnzmyf494Y4awL2WDR7KAqVg+mx6++p4UDM1
-   JxINoDeLhxSQj5sqZXWbZFRpT7uYWjavLQpjCd2z/xv+D0FkIDw0WkQ4H
-   5SRPk9kshwvcKWWaXrQ1QCFNtx/Wa+bKpN/peoB7AF6qYU1EFgy+Url+g
-   3OoUCTJMHVXkKVG206N+YykNEgdtyQCK2yq0JWyPl+zG2nvysVa0B7v/Z
-   vKDN0I6UeTOqFsQGIsGoJzLknclh+JyVYz15fz9XqA4yeEM0KwLIGaNq+
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11005"; a="4594949"
-X-IronPort-AV: E=Sophos;i="6.06,209,1705392000"; 
-   d="scan'208";a="4594949"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 18:11:33 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,209,1705392000"; 
-   d="scan'208";a="9852876"
-Received: from linux-pnp-server-09.sh.intel.com ([10.239.176.190])
-  by fmviesa007.fm.intel.com with ESMTP; 06 Mar 2024 18:11:30 -0800
-From: rulinhuang <rulin.huang@intel.com>
-To: urezki@gmail.com,
-	bhe@redhat.com
-Cc: akpm@linux-foundation.org,
-	colin.king@intel.com,
-	hch@infradead.org,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	lstoakes@gmail.com,
-	rulin.huang@intel.com,
-	tianyou.li@intel.com,
-	tim.c.chen@intel.com,
-	wangyang.guo@intel.com,
-	zhiguo.zhou@intel.com
-Subject: [PATCH v8] mm/vmalloc: Eliminated the lock contention from twice to once
-Date: Wed,  6 Mar 2024 21:14:40 -0500
-Message-ID: <20240307021440.64967-1-rulin.huang@intel.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1709777762; c=relaxed/simple;
+	bh=Cw89We1aTAVBbcBRos65D+qMVJWNLUVeKILK2DWf540=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=T9jx8jzZ3kv1NM891tfP4ujUR+0oxkAKbi0rB577DSa3HnPKRGjmfKmqTrfQI0qyg9cFYMfQqDwCOCza2eUgtEllnJb8Wb7aHwO2oAJVM/a5Xus03Uuexn7X1LkFZC0IvHZABmnYVKFOJJdEX5NLORd/cgBpcoviKhhWubLNzbw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e2haLrco; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59B1BC43390;
+	Thu,  7 Mar 2024 02:16:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709777761;
+	bh=Cw89We1aTAVBbcBRos65D+qMVJWNLUVeKILK2DWf540=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=e2haLrcoYyKOlH2ZZ7Rf2CK7O15Lo2E4Oo5/0FMZRY1/4m0vAJc7leeijC1NOZL/Q
+	 VFqcSJcgHOooJ/oa6qlbuQ4Ae6kYuqlId0zP2V4BKXfRz7qldYKowGfkO0SC0LHa9b
+	 rCUh6zs2WQYuNhvgy05KaFAW3UzmQfdupjgIo4nyNIT6iwWozWi6D0gmspUrvORIPF
+	 4Ka4+bjiQR8ADhwLoCSpt3VlxbFfeRlynSh1LA1Ye/sA/O9fu1GmVl63FgJTgZ+6R6
+	 gmAm5XzUS7RlaaZi7B16Yg8ARBnUcqZcbvfJC1sTgYhXR4TwttR4QEgZjm8R1Vh/VA
+	 O20Ji8xeC+9Kw==
+Date: Wed, 6 Mar 2024 18:16:00 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Mina Almasry <almasrymina@google.com>
+Cc: Liang Chen <liangchen.linux@gmail.com>, Yunsheng Lin
+ <linyunsheng@huawei.com>, Dragos Tatulea <dtatulea@nvidia.com>,
+ "davem@davemloft.net" <davem@davemloft.net>, "herbert@gondor.apana.org.au"
+ <herbert@gondor.apana.org.au>, Gal Pressman <gal@nvidia.com>,
+ "dsahern@kernel.org" <dsahern@kernel.org>, "steffen.klassert@secunet.com"
+ <steffen.klassert@secunet.com>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>,
+ Leon Romanovsky <leonro@nvidia.com>, "edumazet@google.com"
+ <edumazet@google.com>, "ian.kumlien@gmail.com" <ian.kumlien@gmail.com>,
+ "Anatoli.Chechelnickiy@m.interpipe.biz"
+ <Anatoli.Chechelnickiy@m.interpipe.biz>, "netdev@vger.kernel.org"
+ <netdev@vger.kernel.org>
+Subject: Re: [RFC] net: esp: fix bad handling of pages from page_pool
+Message-ID: <20240306181600.5af8ef5f@kernel.org>
+In-Reply-To: <CAHS8izOoO-EovwMwAm9tLYetwikNPxC0FKyVGu1TPJWSz4bGoA@mail.gmail.com>
+References: <20240304094950.761233-1-dtatulea@nvidia.com>
+	<20240305190427.757b92b8@kernel.org>
+	<7fc334b847dc4d90af796f84a8663de9f43ede5d.camel@nvidia.com>
+	<20240306072225.4a61e57c@kernel.org>
+	<320ef2399e48ba0a8a11a3b258b7ad88384f42fb.camel@nvidia.com>
+	<20240306080931.2e24101b@kernel.org>
+	<CAHS8izMw_hxdoNDoCZs8T7c5kmX=0Lwqw_dboSj7z1LqtS-WKA@mail.gmail.com>
+	<9a78b37abdf40daafd9936299ea2c08f936ad3d5.camel@nvidia.com>
+	<20240306094133.7075c39f@kernel.org>
+	<CAHS8izN436pn3SndrzsCyhmqvJHLyxgCeDpWXA4r1ANt3RCDLQ@mail.gmail.com>
+	<CAHS8izOoO-EovwMwAm9tLYetwikNPxC0FKyVGu1TPJWSz4bGoA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-When allocating a new memory area where the mapping address range is
-known, it is observed that the vmap_node->busy.lock is acquired twice.
+On Wed, 6 Mar 2024 10:46:45 -0800 Mina Almasry wrote:
+> Gah, nevermind, skb_pp_frag_ref() actually returns -EINVAL if
+> !skb->pp_recycle, and in the call site we do a skb_frag_ref() on this
+> error, so all in all we end up doing a get_page/put_page pair. Sorry
+> for the noise.
+> 
+> So we're supposed to:
+> - !skb->pp_recycle && is_pp_page()
+> ref via get_page
+> unref via put_page
+> 
+> Very subtle stuff (for me at least). I'll try to propose some cleanup
+> to make this a bit simpler using helpers that handle all these subtle
+> details internally so that the call sites don't have to do this
+> special handling.
 
-The first acquisition occurs in the alloc_vmap_area() function when
-inserting the vm area into the vm mapping red-black tree. The second
-acquisition occurs in the setup_vmalloc_vm() function when updating the
-properties of the vm, such as flags and address, etc.
+Sure, although complexity is complexity, we can only do so much to hide
+it.
 
-Combine these two operations together in alloc_vmap_area(), which
-improves scalability when the vmap_node->busy.lock is contended.
-By doing so, the need to acquire the lock twice can also be eliminated
-to once.
+For pp_recycle - the problem is when we added page pool pages, hardly
+anything in the upper layers of the stack was made pp aware. So we can
+end up with someone doing
 
-With the above change, tested on intel sapphire rapids
-platform(224 vcpu), a 4% performance improvement is
-gained on stress-ng/pthread(https://github.com/ColinIanKing/stress-ng),
-which is the stress test of thread creations.
+	get_page(page);
+	skb_fill_page_desc(skb, page);
 
-Co-developed-by: "Chen, Tim C" <tim.c.chen@intel.com>
-Signed-off-by: "Chen, Tim C" <tim.c.chen@intel.com>
-Co-developed-by: "King, Colin" <colin.king@intel.com>
-Signed-off-by: "King, Colin" <colin.king@intel.com>
-Signed-off-by: rulinhuang <rulin.huang@intel.com>
----
-V1 -> V2: Avoided the partial initialization issue of vm and
-separated insert_vmap_area() from alloc_vmap_area()
-V2 -> V3: Rebased on 6.8-rc5
-V3 -> V4: Rebased on mm-unstable branch
-V4 -> V5: Canceled the split of alloc_vmap_area()
-and keep insert_vmap_area()
-V5 -> V6: Added bug_on
-V6 -> V7: Adjusted the macros
-V7 -> V8: Removed bugs_on and adjustion of macros
----
- mm/vmalloc.c | 50 ++++++++++++++++++++++----------------------------
- 1 file changed, 22 insertions(+), 28 deletions(-)
+on a PP page.
 
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index 25a8df497255..f933a62fef50 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -1841,15 +1841,26 @@ node_alloc(unsigned long size, unsigned long align,
- 	return va;
- }
- 
-+static inline void setup_vmalloc_vm(struct vm_struct *vm,
-+	struct vmap_area *va, unsigned long flags, const void *caller)
-+{
-+	vm->flags = flags;
-+	vm->addr = (void *)va->va_start;
-+	vm->size = va->va_end - va->va_start;
-+	vm->caller = caller;
-+	va->vm = vm;
-+}
-+
- /*
-  * Allocate a region of KVA of the specified size and alignment, within the
-- * vstart and vend.
-+ * vstart and vend. If vm is passed in, the two will also be bound.
-  */
- static struct vmap_area *alloc_vmap_area(unsigned long size,
- 				unsigned long align,
- 				unsigned long vstart, unsigned long vend,
- 				int node, gfp_t gfp_mask,
--				unsigned long va_flags)
-+				unsigned long va_flags, struct vm_struct *vm,
-+				unsigned long flags, const void *caller)
- {
- 	struct vmap_node *vn;
- 	struct vmap_area *va;
-@@ -1912,6 +1923,9 @@ static struct vmap_area *alloc_vmap_area(unsigned long size,
- 	va->vm = NULL;
- 	va->flags = (va_flags | vn_id);
- 
-+	if (vm)
-+		setup_vmalloc_vm(vm, va, flags, caller);
-+
- 	vn = addr_to_node(va->va_start);
- 
- 	spin_lock(&vn->busy.lock);
-@@ -2486,7 +2500,8 @@ static void *new_vmap_block(unsigned int order, gfp_t gfp_mask)
- 	va = alloc_vmap_area(VMAP_BLOCK_SIZE, VMAP_BLOCK_SIZE,
- 					VMALLOC_START, VMALLOC_END,
- 					node, gfp_mask,
--					VMAP_RAM|VMAP_BLOCK);
-+					VMAP_RAM|VMAP_BLOCK, NULL,
-+					0, NULL);
- 	if (IS_ERR(va)) {
- 		kfree(vb);
- 		return ERR_CAST(va);
-@@ -2843,7 +2858,8 @@ void *vm_map_ram(struct page **pages, unsigned int count, int node)
- 		struct vmap_area *va;
- 		va = alloc_vmap_area(size, PAGE_SIZE,
- 				VMALLOC_START, VMALLOC_END,
--				node, GFP_KERNEL, VMAP_RAM);
-+				node, GFP_KERNEL, VMAP_RAM,
-+				NULL, 0, NULL);
- 		if (IS_ERR(va))
- 			return NULL;
- 
-@@ -2946,26 +2962,6 @@ void __init vm_area_register_early(struct vm_struct *vm, size_t align)
- 	kasan_populate_early_vm_area_shadow(vm->addr, vm->size);
- }
- 
--static inline void setup_vmalloc_vm_locked(struct vm_struct *vm,
--	struct vmap_area *va, unsigned long flags, const void *caller)
--{
--	vm->flags = flags;
--	vm->addr = (void *)va->va_start;
--	vm->size = va->va_end - va->va_start;
--	vm->caller = caller;
--	va->vm = vm;
--}
--
--static void setup_vmalloc_vm(struct vm_struct *vm, struct vmap_area *va,
--			      unsigned long flags, const void *caller)
--{
--	struct vmap_node *vn = addr_to_node(va->va_start);
--
--	spin_lock(&vn->busy.lock);
--	setup_vmalloc_vm_locked(vm, va, flags, caller);
--	spin_unlock(&vn->busy.lock);
--}
--
- static void clear_vm_uninitialized_flag(struct vm_struct *vm)
- {
- 	/*
-@@ -3002,14 +2998,12 @@ static struct vm_struct *__get_vm_area_node(unsigned long size,
- 	if (!(flags & VM_NO_GUARD))
- 		size += PAGE_SIZE;
- 
--	va = alloc_vmap_area(size, align, start, end, node, gfp_mask, 0);
-+	va = alloc_vmap_area(size, align, start, end, node, gfp_mask, 0, area, flags, caller);
- 	if (IS_ERR(va)) {
- 		kfree(area);
- 		return NULL;
- 	}
- 
--	setup_vmalloc_vm(area, va, flags, caller);
--
- 	/*
- 	 * Mark pages for non-VM_ALLOC mappings as accessible. Do it now as a
- 	 * best-effort approach, as they can be mapped outside of vmalloc code.
-@@ -4584,7 +4578,7 @@ struct vm_struct **pcpu_get_vm_areas(const unsigned long *offsets,
- 
- 		spin_lock(&vn->busy.lock);
- 		insert_vmap_area(vas[area], &vn->busy.root, &vn->busy.head);
--		setup_vmalloc_vm_locked(vms[area], vas[area], VM_ALLOC,
-+		setup_vmalloc_vm(vms[area], vas[area], VM_ALLOC,
- 				 pcpu_get_vm_areas);
- 		spin_unlock(&vn->busy.lock);
- 	}
+You probably inspected a lot of those cases for the ZC work, and they
+can be fixed up to do a "pp-aware get()", but until then we need
+skb->pp_recycle. pp_recycle kinda denotes whether whoever constructed
+the skb was PP aware.
 
-base-commit: f4239a5d7acc1b5ff9bac4d5471000b952279ef0
--- 
-2.43.0
-
+So, yes, definitely a good long term goal, but not in a fix :)
 
