@@ -1,90 +1,97 @@
-Return-Path: <linux-kernel+bounces-95203-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95204-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D23D8874A9B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:19:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FF7E874AA5
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:20:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 89FE11F22597
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:19:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C26861C20E0D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:20:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C925483CC3;
-	Thu,  7 Mar 2024 09:19:31 +0000 (UTC)
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F5EC83A15;
+	Thu,  7 Mar 2024 09:19:43 +0000 (UTC)
+Received: from esa2.ltts.com (unknown [14.140.155.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C32EC839F4;
-	Thu,  7 Mar 2024 09:19:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2627E839F1;
+	Thu,  7 Mar 2024 09:19:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.140.155.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709803171; cv=none; b=UZt+PSwBKxk9QALJ7RQ+E2HTGpGhaPjcAHCNllUorh9jvQghtel/XJFt5G9JYXueWuhwekTaT25FJwIAvcKeb2AsTcyqdADJGzK+1Rx3+FWZvYrmScw5LhYfeQGbL8SzaIt4zjGm3LlXyn5l9Z4uCTcgRW0oTy6GfHgj0Ce7Dr8=
+	t=1709803182; cv=none; b=Z/eVuV2HzaDIFy1AEUkss8rRb37zmw9K0gymqAUO/lhQ5qjUerfxpcpL+zLt38z5qUsK+xte+By7aWXgVnaj2sZ/YWqTiwekLNKurl3m7ELgnbG3AcerCv0azYxHvdG8U3i2Rgk2EE4ukpR2bvSMgM6oltbBZXYg2OmAIdcGbsA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709803171; c=relaxed/simple;
-	bh=eQ4YiS6NQgEI0/5JNHw57o9eklne/wPcEXGDdoUR0P0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gLriM/G69/e0JUyla5AAarHH+vlQfKR1iozwHRGhdue0F+D0sJ8iS8T+Gc0QsX5MkmF8F4Vfyi+ib2ORbZYNSvBOvDiuYF7b+3t70QWUoP6laHMVEVurtStSYAU/5H7B2eUm4RC47wmkmU5mx7i7aW2Vh5zdZ0tdAFYFiZuZoFU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a45606c8444so77816266b.3;
-        Thu, 07 Mar 2024 01:19:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709803168; x=1710407968;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RcMYRCTYmBdwjjxBMVHv7nDqpJkI2KJP97kVGpj1vF0=;
-        b=FlLTLbOQ9IOuDl5hYvIzBMR8/bFVO7imEnPTXVpj8C6uPZLt7Em3M9AE381C61EK/F
-         Gl2cp5KWbgVqqWJxCnNRJC92F3K/q170Kbw3mDocPQBnfnJL5zh9TYgHWVklEj4lao+z
-         f+8MAq5VFWX7wlPCppzPE9l67ytSV/kCcxEfx4igLbqGIzmfjdKG6QtBYZ3OK6Td+VqX
-         4NgDJ5G0Z5Dd4Y/lG7IlWLiawdI0Z/f2Nn7kdBmlnDcsVoBO8aN9yvW2NYiITytuvpKt
-         ExTS8/mb2Jr5yzzFroK3UjUeznm63Knr0StdQ4OcEwad14HNIzq3FKSrM4s7t7PFZ3ZP
-         6xvQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUC+9a3BNmOz21iz8LVkMDFKyRhb5nGIIERiavvfkRnT4raqGP59RURSA0lWRvqOYdeNl9mBB09OoS4nW9t2p7R4yx6IZ2vjkXBM0It6+qfiA8I7uQJHh0OSeIZqZwCjnmtsAU9
-X-Gm-Message-State: AOJu0Yx/9kUoNjMZUAITvXOHhbyFIMvsTArYOULbZC5q8moRohVUNq7o
-	P6fg/qw7/KjttU2S1yk7oxEbZqaT/vOrenx+/X8eJJ2i6zwLs4zGl2Erv6Oj
-X-Google-Smtp-Source: AGHT+IE9e4KtBH24njgLcbSzNO6CmSzT4l/PaSKJ92fkeR+rlUv1HhUa6y0xJT9HU92eG2mrCEZfng==
-X-Received: by 2002:a17:907:76fa:b0:a43:b472:9a57 with SMTP id kg26-20020a17090776fa00b00a43b4729a57mr12388945ejc.62.1709803167754;
-        Thu, 07 Mar 2024 01:19:27 -0800 (PST)
-Received: from gmail.com (fwdproxy-lla-112.fbsv.net. [2a03:2880:30ff:70::face:b00c])
-        by smtp.gmail.com with ESMTPSA id tj10-20020a170907c24a00b00a4452ed413asm7884686ejc.16.2024.03.07.01.19.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Mar 2024 01:19:27 -0800 (PST)
-Date: Thu, 7 Mar 2024 01:19:25 -0800
-From: Breno Leitao <leitao@debian.org>
-To: Eric Dumazet <edumazet@google.com>
-Cc: gaoxingwang <gaoxingwang1@huawei.com>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-	liaichun@huawei.com, yanan@huawei.com
-Subject: Re: [PATCH] net: fix print in skb_panic()
-Message-ID: <ZemGnXjAbkG02NTg@gmail.com>
-References: <20240307061143.989505-1-gaoxingwang1@huawei.com>
- <CANn89iKJSGek0vKtH-0QhFgZ9S4Cb1jTmpTq1ZmUFd0G0+b3ng@mail.gmail.com>
+	s=arc-20240116; t=1709803182; c=relaxed/simple;
+	bh=xN2Adfm3WB83QwdH8jzScFd507HJQvspLjxK8bkDmbQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Pv72OvMk/2wH1iYkdpgtm+jzjgIMTefQqqIyhl6Gvd6Pk5bd4DC7M9UXvdJAf5sxJcLFt3K9Q0yAm8M0CflhFIvHo6cKlu2w9NiHBoKG9roaVKUNZ12wamlD3M2tf4MjZIMzDKq0qpt0d2kqAatYpCYwJCkqN9rPe+exjOvbcOA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ltts.com; spf=pass smtp.mailfrom=ltts.com; arc=none smtp.client-ip=14.140.155.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ltts.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ltts.com
+IronPort-SDR: OU7dAoQTIbtTp/5fOe/i5uiemmuv4EPuUaryBO/kNFmW7b1BnDXFRL/7gJgrtRGQRzT01R4qEc
+ 64ohoawppL9w==
+Received: from unknown (HELO localhost.localdomain) ([192.168.34.55])
+  by esa2.ltts.com with ESMTP; 07 Mar 2024 14:49:36 +0530
+From: Bhargav Raviprakash <bhargav.r@ltts.com>
+To: linus.walleij@linaro.org
+Cc: arnd@arndb.de,
+	bhargav.r@ltts.com,
+	broonie@kernel.org,
+	conor+dt@kernel.org,
+	devicetree@vger.kernel.org,
+	gregkh@linuxfoundation.org,
+	jpanis@baylibre.com,
+	kristo@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	lee@kernel.org,
+	lgirdwood@gmail.com,
+	linux-arm-kernel@lists.infradead.org,
+	linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	m.nirmaladevi@ltts.com,
+	nm@ti.com,
+	robh+dt@kernel.org,
+	vigneshr@ti.com
+Subject: Re: [PATCH v2 13/14] pinctrl: pinctrl-tps6594: Add TPS65224 PMIC pinctrl and GPIO
+Date: Thu,  7 Mar 2024 14:49:25 +0530
+Message-Id: <20240307091925.171679-1-bhargav.r@ltts.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <CACRpkdZzTheR=+=in7RYTFM2dquEPmGDudB7n1zoiUU4B1UCVg@mail.gmail.com>
+References: <CACRpkdZzTheR=+=in7RYTFM2dquEPmGDudB7n1zoiUU4B1UCVg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANn89iKJSGek0vKtH-0QhFgZ9S4Cb1jTmpTq1ZmUFd0G0+b3ng@mail.gmail.com>
 
-On Thu, Mar 07, 2024 at 07:29:47AM +0100, Eric Dumazet wrote:
-> On Thu, Mar 7, 2024 at 7:12 AM gaoxingwang <gaoxingwang1@huawei.com> wrote:
-> >
-> > skb->len and sz are printed as negative numbers during the panic:
-> > skbuff: skb_under_panic: text:ffffffff8e2d3eac len:-1961180312 put:-1961180408 head:ffff88800b6ac000 data:ffff887f804ffe78 tail:0x1e0 end:0xec0 dev:team0
-> >
-> 
-> This was on purpose.
-> 
-> I prefer the negative values, I find this more useful to immediately
-> spot the issue.
+Hi,
 
-I missed this reply, sorry. Please ignore my previous reviewed-by. I
-didn't have this context.
+On Thu, 29 Feb 2024 14:24:16 +0100, Linus Walleij wrote:
+> On Fri, Feb 23, 2024 at 10:37 AM Bhargav Raviprakash <bhargav.r@ltts.com> wrote:
+> 
+> > From: Nirmala Devi Mal Nadar <m.nirmaladevi@ltts.com>
+> >
+> > Add support for TPS65224 pinctrl and GPIOs to TPS6594 driver as they
+> > have significant functional overlap.
+> > TPS65224 PMIC has 6 GPIOS which can be configured as GPIO or other
+> > dedicated device functions.
+> >
+> > Signed-off-by: Nirmala Devi Mal Nadar <m.nirmaladevi@ltts.com>
+> > Signed-off-by: Bhargav Raviprakash <bhargav.r@ltts.com>
+> 
+> Acked-by: Linus Walleij <linus.walleij@linaro.org>
+> 
+> Is this something I can just merge to the pin control tree, or does it
+> need to be applied in lockstep with the other patches?
+> 
+> Yours,
+> Linus Walleij
+
+These patches need NOT be applied in lockstep with other patches.
+
+Regards,
+Bhargav
 
