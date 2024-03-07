@@ -1,214 +1,166 @@
-Return-Path: <linux-kernel+bounces-95086-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95087-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A44D5874919
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 08:53:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E850B87491A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 08:54:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F6A12855B7
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 07:53:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9FC2E2856C6
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 07:54:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79B006312F;
-	Thu,  7 Mar 2024 07:52:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 203EC6312B;
+	Thu,  7 Mar 2024 07:53:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="O67iqBrZ";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="S2cjqQWy"
-Received: from wfout3-smtp.messagingengine.com (wfout3-smtp.messagingengine.com [64.147.123.146])
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="igrOrrBM"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 943B06310B;
-	Thu,  7 Mar 2024 07:52:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.146
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 919A86310B;
+	Thu,  7 Mar 2024 07:53:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709797978; cv=none; b=nbL/wYOzqPspGAbhJyagmYxezPzrY7Orxc13fYaRguDzvaONrHvzdgRZFmxGVgTe9H3eesr+rcO12B6u8SMaQ16fEM6AWW97Fk8F3EWU8enRfzkNdiNaZEnA5AuTLkVXLnaN6frT16Ynlov+16Tyr9VGZRuGS7ia/zBfMiXAMeE=
+	t=1709798033; cv=none; b=T+XgUOUqMCyQ3Afq9gqNculd4LKz03Boo2NYHgipFTGtwIJzFdsEKnjFBaIA1+MxknxPWHVgTPRhF5WXW5YHPQRwPaUwkIYBLfO1VeqpXJH1LAKm33KYVWEPfgrqs+9NsXj+bFbncrukVfpXPgheN3G3N5l7mxLD+9WfgdAMr3o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709797978; c=relaxed/simple;
-	bh=2fjs0v2lhXf14YMF73sZlJKN1KHNF0BScIknj0t3qLY=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=EsxNCSoj0W4zuRbqJUcf0BdZv5JZVw5EdduOqjZgw1Ur44/3+PcdrUqO5Had3HBb8TsDC7bGlxnwWLhjLSTXu0kuImiz73Zh4N/inI8M6V4KwSxvVYQSu91CT16MsUaQF0KEecDz3hkyluPGatdMwPEeikc8zAgOEhQnWK77mus=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=O67iqBrZ; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=S2cjqQWy; arc=none smtp.client-ip=64.147.123.146
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfout.west.internal (Postfix) with ESMTP id 46B471C0005B;
-	Thu,  7 Mar 2024 02:52:54 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Thu, 07 Mar 2024 02:52:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1709797973; x=1709884373; bh=afyLY/l9R7
-	0gs9c2KrRiUpws6jfz5mx+nYl8UbTp5B8=; b=O67iqBrZKpaHV9f/a0eC5OlCA0
-	kvni3QdUEAKVVe49BScYaENsrH2cr0ILUtEbLWtwItOaWdbJblTaesgY9AHlQ/95
-	y8oI0WINk+NBdahQDvNEGkPZU1+CGSeIIaXYLEGCtpdZKApnTdZ+/4kyfY4kt/k0
-	5RAG2PbqLlJ65xtBsAUCpk84uBcQ9HpNaRukIRnurUTYiHs/Eu3EwftCOHQlP9DD
-	jnuYLZZCqOM4wIoGMZviymtb5Xl4LPsbcKqtoX+aT9FVpfeRSFSVz1aVZc8NCZvc
-	IvdkvpAoQWPYnJFwVf/U71/Xmrtu+Yg8Jla/5bIloQ5L1dCoiOpr5KJ3hgnw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1709797973; x=1709884373; bh=afyLY/l9R70gs9c2KrRiUpws6jfz
-	5mx+nYl8UbTp5B8=; b=S2cjqQWyS0Z1vUaCffjTUB4Af2LcwLMQ7UgF1khKCljU
-	pi/W0f58t5OKenZmRPdONVXFqjC+U6GrIbrEfxbg3LNA+wzcEmCHMLs8FvMV0I6Q
-	I1PGAMVhL8QT6Mr7dy/UcPJ1p9NkX2UWLKssTrAa4Bvj8ZBD/VPQ9QxWgnJdJLkD
-	6ZA8l0a0eoev7HliGWgpHGlKsO8C9Gg9rn6hhIam9wDVoSvt3JeUES8ogBHYGg5X
-	F2Y8z6+/vsJ/Kb4fkOL1IPshidNsbQORjiBaf+mH9O0v4jRa4+cp3/NX/HrYWIK/
-	xGRmNQEl/oZ89qsO7AyeqT7QT4j6ugA/UUQ5PhaHAQ==
-X-ME-Sender: <xms:VHLpZd67YGruW1Bk9nU_QnbfKrNMW43go98P3uV1LrB_EEqChHtdeA>
-    <xme:VHLpZa6NlzCjV-v276oagp-PJRYdhbZAAgLAK6C-6VDwedRSa4-7UUF7nF7MinW-8
-    9vyPUQWMysqZrqPgXw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledriedvgdduudduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:VHLpZUf_mVG7eglPqsXPeRpiRs4l4Amse2apiXIb5OApW0gNP5VgHg>
-    <xmx:VHLpZWLnQkaqTHWNduucbgPZr_IbCK13YEyIeetiALQOCdJChSLD-w>
-    <xmx:VHLpZRJV-ozFC3xj3XF-Q5SW0cRy1YKofRek_6VA71mWTzRPsXnEHg>
-    <xmx:VXLpZa6uxoGRkGneynLHOLw9bClFEiDKqksPaqouNdWlCTu2vCJhC34ogSI>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 91795B6008D; Thu,  7 Mar 2024 02:52:52 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-251-g8332da0bf6-fm-20240305.001-g8332da0b
+	s=arc-20240116; t=1709798033; c=relaxed/simple;
+	bh=/r9nglCTC2FJFPdLO1PJ8IUnVPMHZHCS6fzCi+JqmGo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=iYJWrF28MhHp9ExqRkw6er7wesyZcFGcczkjJ5Ar9tjXgk8kRlx/Os445KpnOEW4yEZL6xyk93Rr8fS6t+q1bRWBSatFv2WR/kUTF9x397zHPSqgHcXlT0415UttRZoe5B38Z/V/xOoI8ytzZo+lODAc8J36koBJmeXqK3oxymg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=igrOrrBM; arc=none smtp.client-ip=212.227.17.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+	s=s31663417; t=1709798020; x=1710402820; i=quwenruo.btrfs@gmx.com;
+	bh=/r9nglCTC2FJFPdLO1PJ8IUnVPMHZHCS6fzCi+JqmGo=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=igrOrrBMZj065dbt0VOyW9q8qgNnqoi0Ec6T1WmmJOQQWs5ExELzVkgWiYnGZclP
+	 u+Sbx4rUg2F9dNCQKcvqVKQY9w3laQHqs9kZ7Jbz4/fkLZqVmiQqeUznFm38jRsPv
+	 8pQZvE072kppSGX0/lybjPMRgcYK0zwmShGLahxGs5HMZMcPn+xLC9weeA1FGO7ml
+	 ztOOJCfCgCel24sRBajZzKPsmxZ4llA+G+xHARIrMn0uyEuqByJKdBk3fN7+8vFdM
+	 9xBfWnaKP/wNJdtuHgHD+BrXJqyrpeFMjWlacPWuQ0iNYhjXbTP20EtlBxBejlaV+
+	 R9FXuOXbAgBy7uU+kQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.219] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MTAFb-1rGp5w3HPr-00UXyj; Thu, 07
+ Mar 2024 08:53:40 +0100
+Message-ID: <40b4f295-5539-406e-ba63-384685cb482c@gmx.com>
+Date: Thu, 7 Mar 2024 18:23:34 +1030
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <8896bcc5-09b1-4886-9081-c8ce0afc1c40@app.fastmail.com>
-In-Reply-To: <20240306232052.21317-1-semen.protsenko@linaro.org>
-References: <20240306232052.21317-1-semen.protsenko@linaro.org>
-Date: Thu, 07 Mar 2024 08:52:31 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Sam Protsenko" <semen.protsenko@linaro.org>,
- "Jaehoon Chung" <jh80.chung@samsung.com>,
- "Ulf Hansson" <ulf.hansson@linaro.org>, "Christoph Hellwig" <hch@lst.de>
-Cc: "Chris Ball" <cjb@laptop.org>, "Will Newton" <will.newton@gmail.com>,
- "Matt Fleming" <matt@console-pimps.org>,
- "Christian Brauner" <brauner@kernel.org>, "Jens Axboe" <axboe@kernel.dk>,
- "Sumit Semwal" <sumit.semwal@linaro.org>,
- "Dan Carpenter" <dan.carpenter@linaro.org>,
- "Anders Roxell" <anders.roxell@linaro.org>,
- "Naresh Kamboju" <naresh.kamboju@linaro.org>,
- "linux-mmc @ vger . kernel . org" <linux-mmc@vger.kernel.org>,
- linux-block <linux-block@vger.kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mmc: dw_mmc: Fix IDMAC operation with pages bigger than 4K
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs: clean up some inconsistent indenting
+Content-Language: en-US
+To: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, clm@fb.com
+Cc: josef@toxicpanda.com, dsterba@suse.com, linux-btrfs@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>
+References: <20240307064753.36780-1-jiapeng.chong@linux.alibaba.com>
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <20240307064753.36780-1-jiapeng.chong@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:mFeAy2gujGp0g2bAr+6kqawQava7lQ4s/qQSG9IqWJxZBxmx+c+
+ wPNF/xMPmkfWcCO480raZxGqNAF66rhEO5lOrM+JghnHdBoJXcCvM9T05GayzGvqThUQJnS
+ NSbYrJAWu643GUPTYRKI6TD59laWkIovM1IFKNsJ5xzDkbKJ9GhM5F7r2pLBU78+xO5FcFG
+ BodvWF8vo9ys/8rCxAnJg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:8R6GA3XgJYM=;D/yAHbTuhcunwevULF/I0M85Jo2
+ QILqqdFUhOYo8U1cIdPgPKbk+jFXEKq34ZZFWIyXa7gXSQotoU0PGADGu94FBLCiSiFEcHtur
+ nNeP5P7HGV0Jd5d/PDP8VHjQt+hCZgBId/LLJS65aaENT5wo4chHczrkucMtYooPgEbLNVQ7Y
+ zMuRITvD/dd9uGmWlIEnZmYwhGLy0+QYHltcyzl/jXB7bP5JCa05AAgoyroHvxhi28DFCiTYp
+ nai7AOb6oL5hOcx7kPVj0x/7dynR/pyLboOjpg7f7Qf92muIlzrQrMajKTGV14we+XzJrIj+c
+ dq4KLgiqtzdJDx5WxVw8qdaGoc6V24B7mk4D254ZgoDTSlBEe6sUCBsYegsOPx3OO1FARS3BU
+ kPVh70xCCz2YF3ZCNitYlBUct9LnBb1UbwvtnvXy5DNwJhmphvSDJVKsuHpSXwh8r83eaxdj7
+ 0pqJa3JGUhj7FjRQ7/5++jGTH1l03ac8B/l/VvCjnUZJzVHggPX47VXKwtUpTYRukiMXINI6f
+ aEQdC4G15faYJmlQ2GLpQ46BYR/CttPF8MwNU+RIrYVe7ZfcbOOc8cVVFaMs5MwwuR539eEwo
+ 0AgwdhkT3zVBuUv0GYfo/y9fGKCk8OsVTtO8PmuAxLiZMk8582yzQFdvqN+kOJXdk0BBzXpUv
+ jV57Ud5+nsN9btb3Ty56hTa507/2RjSm4J5ymXg7enMMksuRF3IaVrZTvoVXEDu+g17ITXzhA
+ hCEoEYe0yq9FFqDJtwrK75o3kVw0vPHSkTSniYKrElkX4xUgioMTkUyyR+iAydBVqQC51hEzr
+ uy5E3he/oKYq41mgeJvKUBNYB9B0Usgf9ZdjBiHoYnjaQ=
 
-On Thu, Mar 7, 2024, at 00:20, Sam Protsenko wrote:
-> Commit 616f87661792 ("mmc: pass queue_limits to blk_mq_alloc_disk") [1]
-> revealed the long living issue in dw_mmc.c driver, existing since the
-> time when it was first introduced in commit f95f3850f7a9 ("mmc: dw_mmc:
-> Add Synopsys DesignWare mmc host driver."), also making kernel boot
-> broken on platforms using dw_mmc driver with 16K or 64K pages enabled,
-> with this message in dmesg:
+
+
+=E5=9C=A8 2024/3/7 17:17, Jiapeng Chong =E5=86=99=E9=81=93:
+> No functional modification involved.
 >
->     mmcblk: probe of mmc0:0001 failed with error -22
+> fs/btrfs/volumes.c:770 device_list_add() warn: inconsistent indenting.
+> fs/btrfs/volumes.c:1373 btrfs_scan_one_device() warn: inconsistent inden=
+ting.
 >
-> That's happening because mmc_blk_probe() fails when it calls
-> blk_validate_limits() consequently, which returns the error due to
-> failed max_segment_size check in this code:
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=3D8453
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+
+Can the bot be taught to watch the btrfs development branch
+(https://github.com/btrfs/linux.git for-next) and send feedback directly
+to the btrfs mailing list?
+So that we can catch the problem immediately before reaching mainline.
+
+I strongly doubt sending out such patches would leave any positive
+impression on the bot.
+
+Thanks,
+Qu
+> ---
+>   fs/btrfs/volumes.c | 7 ++++---
+>   1 file changed, 4 insertions(+), 3 deletions(-)
 >
->     /*
->      * The maximum segment size has an odd historic 64k default that
->      * drivers probably should override.  Just like the I/O size we
->      * require drivers to at least handle a full page per segment.
->      */
->     ...
->     if (WARN_ON_ONCE(lim->max_segment_size < PAGE_SIZE))
->         return -EINVAL;
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index a2d07fa3cfdf..caa3e83b0d6c 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -767,7 +767,7 @@ static noinline struct btrfs_device *device_list_add=
+(const char *path,
+>   		if (same_fsid_diff_dev) {
+>   			generate_random_uuid(fs_devices->fsid);
+>   			fs_devices->temp_fsid =3D true;
+> -		pr_info("BTRFS: device %s (%d:%d) using temp-fsid %pU\n",
+> +			pr_info("BTRFS: device %s (%d:%d) using temp-fsid %pU\n",
+>   				path, MAJOR(path_devt), MINOR(path_devt),
+>   				fs_devices->fsid);
+>   		}
+> @@ -1370,8 +1370,9 @@ struct btrfs_device *btrfs_scan_one_device(const c=
+har *path, blk_mode_t flags,
+>   		else
+>   			btrfs_free_stale_devices(devt, NULL);
 >
-> In case when IDMAC (Internal DMA Controller) is used, dw_mmc.c always
-> sets .max_seg_size to 4 KiB:
->
->     mmc->max_seg_size = 0x1000;
->
-> The comment in the code above explains why it's incorrect. Arnd
-> suggested setting .max_seg_size to .max_req_size to fix it, which is
-> also what some other drivers are doing:
->
->    $ grep -rl 'max_seg_size.*=.*max_req_size' drivers/mmc/host/ | \
->      wc -l
->    18
-
-Nice summary!
-
-> This change is not only fixing the boot with 16K/64K pages, but also
-> leads to a better MMC performance. The linear write performance was
-> tested on E850-96 board (eMMC only), before commit [1] (where it's
-> possible to boot with 16K/64K pages without this fix, to be able to do
-> a comparison). It was tested with this command:
->
->     # dd if=/dev/zero of=somefile bs=1M count=500 oflag=sync
->
-> Test results are as follows:
->
->   - 4K pages,  .max_seg_size = 4 KiB:                   94.2 MB/s
->   - 4K pages,  .max_seg_size = .max_req_size = 512 KiB: 96.9 MB/s
->   - 16K pages, .max_seg_size = 4 KiB:                   126 MB/s
->   - 16K pages, .max_seg_size = .max_req_size = 2 MiB:   128 MB/s
->   - 64K pages, .max_seg_size = 4 KiB:                   138 MB/s
->   - 64K pages, .max_seg_size = .max_req_size = 8 MiB:   138 MB/s
-
-Thanks for sharing these results. From what I can see here, the
-performance changes significantly with the page size, but barely
-with the max_seg_size, so this does not have the effect I was
-hoping for. On a more positive note this likely means that we
-don't have to urgently backport your fix.
-
-This could mean that either there is not much coalescing across
-pages after all, or that the bottleneck is somewhere else.
-
-> diff --git a/drivers/mmc/host/dw_mmc.c b/drivers/mmc/host/dw_mmc.c
-> index 8e2d676b9239..cccd5633ff40 100644
-> --- a/drivers/mmc/host/dw_mmc.c
-> +++ b/drivers/mmc/host/dw_mmc.c
-> @@ -2951,8 +2951,8 @@ static int dw_mci_init_slot(struct dw_mci *host)
->  	if (host->use_dma == TRANS_MODE_IDMAC) {
->  		mmc->max_segs = host->ring_size;
->  		mmc->max_blk_size = 65535;
-> -		mmc->max_seg_size = 0x1000;
-> -		mmc->max_req_size = mmc->max_seg_size * host->ring_size;
-> +		mmc->max_req_size = DW_MCI_DESC_DATA_LENGTH * host->ring_size;
-> +		mmc->max_seg_size = mmc->max_req_size;
-
-The change looks good to me.
-
-I see that the host->ring_size depends on PAGE_SIZE as well:
-
-#define DESC_RING_BUF_SZ        PAGE_SIZE
-host->ring_size = DESC_RING_BUF_SZ / sizeof(struct idmac_desc_64addr);
-host->sg_cpu = dmam_alloc_coherent(host->dev,
-               DESC_RING_BUF_SZ, &host->sg_dma, GFP_KERNEL);
-
-I don't see any reason for the ring buffer size to be tied to
-PAGE_SIZE at all, it was probably picked as a reasonable
-default in the initial driver but isn't necessarily ideal.
-
-From what I can see, the number of 4KB elements in the
-ring can be as small as 128 (4KB pages, 64-bit addresses)
-or as big as 4096 (64KB pages, 32-bit addresses), which is
-quite a difference. If you are still motivated to drill
-down into this, could you try changing DESC_RING_BUF_SZ
-to a fixed size of either 4KB or 64KB and test again
-with the opposite page size, to see if that changes the
-throughput?
-
-If a larger ring buffer gives us significantly better
-throughput, we may want to always use a higher number
-independent of page size. On the other hand, if the
-64KB number (the 138MB/s) does not change with a smaller
-ring, we may as well reduce that in order to limit the
-maximum latency that is caused by a single I/O operation.
-
-     Arnd
+> -	pr_debug("BTRFS: skip registering single non-seed device %s (%d:%d)\n"=
+,
+> -			path, MAJOR(devt), MINOR(devt));
+> +		pr_debug("BTRFS: skip registering single non-seed device %s (%d:%d)\n=
+",
+> +			 path, MAJOR(devt), MINOR(devt));
+> +
+>   		device =3D NULL;
+>   		goto free_disk_super;
+>   	}
 
