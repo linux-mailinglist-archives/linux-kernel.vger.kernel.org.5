@@ -1,116 +1,191 @@
-Return-Path: <linux-kernel+bounces-95617-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95648-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5144F87503B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:39:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11D9B8750B0
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:47:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F13171F22A0D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 13:39:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BBBF0286A4D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 13:47:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62DE412D745;
-	Thu,  7 Mar 2024 13:38:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F83213AA52;
+	Thu,  7 Mar 2024 13:40:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EZURRjwF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SuWdIUap"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96EB9128806;
-	Thu,  7 Mar 2024 13:38:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7D8C12EBDD;
+	Thu,  7 Mar 2024 13:40:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709818733; cv=none; b=sRx+8GPwSVXFZ8l2aEfpIm0e2qs3UEO/rFTbNHkms6hANP406xWuURNy6IFvWjwfP0kPShHmb+M207Swpe70Mf06DsPeY9BGkercOoCIvxG2Jr8m2MW+3I39Xky39wwQgBHcJLxa8MfhZMipEiVYtyFFkDtg8gFahqePQ6pKKZ8=
+	t=1709818803; cv=none; b=WiLkupnC+2qXG/Qj1BlRArQLB4yyciP797mqaCG+/+9SVXEKARJ0tVSQarTfrH3+Mv+dcAGLWlzEMAq7QR/dGVdwUDIX7h+OuyPNOw4BX2lchaRpuzK+wfi6C/kY4Y/avizceC9tUL5f9fd2KbFjREu6jwiUhw8eUdOtvV4hTcM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709818733; c=relaxed/simple;
-	bh=jdziFFhymjkKWVH2L66KHJLIKy2BknU2Y6GQbKeQUN0=;
-	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=eTvBP5V6APsXRDmkuImSFMEjbN1vnJzQyApF/fYIyqjfdSwVddiwef/m7AF5p3mHHwgEbM6iJVP/T2WuPoGWTyAYy7zqbc3d4Q3nMiky8pwbnNVtZO1oeFYxxPbS2DPC+o1S8RtogCKwKFNsVeMZI8Rz9A2Se/MMnYHfnfu8bX4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EZURRjwF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9A13C433C7;
-	Thu,  7 Mar 2024 13:38:52 +0000 (UTC)
+	s=arc-20240116; t=1709818803; c=relaxed/simple;
+	bh=xekVGAfWfJvLfOV1ebNOPUR3oLtTkCap7YpzVZIPKAQ=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=URVVsc/+9zoPfE9y9jtqnRkWLE7FJRXABx/dA4wejbwGjsJis7vhFmKIhMYVuKBuHuaHPzThOrhU/6WgyIkM1jXFfIeDtMKZTIVVsh1rHUdCE9B/shfb8m5LvbN6+a5fhYt8vMu3kzmEw+1cTfg4KevFdI1Bxr9ejaB81Os+fp8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SuWdIUap; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5416EC433A6;
+	Thu,  7 Mar 2024 13:40:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709818733;
-	bh=jdziFFhymjkKWVH2L66KHJLIKy2BknU2Y6GQbKeQUN0=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=EZURRjwFB6Gt7MazyGetYAEDZL/lr9tOV8UGUjY3V/0VSV11g+uGlqg+v7EiLtZV/
-	 BtjbRK0Iwoqh58ZgA3CdcQX84x2D6BX+RnLJ05UX63NrG/KOZzSbhfSzhPDd6Mi4Be
-	 FakJCatHxob98B+VZRFUls/7L1xD69bs07V+zYQR5bRlVwbsuCI3iVzd1+2ZtpPDG2
-	 eib4cAZTIz9b2oGNI1tpvWBW/mH/5gsTchrX16H2JhihpXGPU0i55WbQF8sdPb+Ig2
-	 XwBfFY+d1IWdJiUy4exyAQpwoHlBRI8wziWhbPzN43d11PHd/bCyou8/D+g/s0bAjD
-	 yTECBlR97r0Bw==
-Date: Thu, 07 Mar 2024 07:38:51 -0600
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	s=k20201202; t=1709818803;
+	bh=xekVGAfWfJvLfOV1ebNOPUR3oLtTkCap7YpzVZIPKAQ=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+	b=SuWdIUapJVkkow0eGOlH+l2/Pa0UI51/2OJWUQjY237Opj4Uw1TJfyIjn9q2Fn6jn
+	 Cvrnlt72FiN4NRUOdb8jfhTFfUPQ9JK01h5a1ob/840HwjFy2M2002k37EIVTNFIyg
+	 Qzjjq2d3kPMznjdvlEL7+sT+Kb+8IXPXWI4i3vBkrxhvDFX07KQS8VdFuRjVnwhBCA
+	 ch5Yy1gY6STdh21oVF73q2sgtJsNiwr4xMDaPLqEHolJW9nqhpzdA0OnJSssuvoJXN
+	 f21jiEQpgRT0uS7TOmTZDwpO/Ol0PkyDViWbMmx6QFWijorHFZYzPS5/nHKewSffHD
+	 0EtnNFL+HFBpA==
+From: Maxime Ripard <mripard@kernel.org>
+Date: Thu, 07 Mar 2024 14:38:51 +0100
+Subject: [PATCH v8 24/27] drm/vc4: tests: Remove vc4_dummy_plane structure
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: linux-arm-kernel@lists.infradead.org, shane.chien@mediatek.com, 
- nicolas.ferre@microchip.com, perex@perex.cz, allen-kh.cheng@mediatek.com, 
- linux-sound@vger.kernel.org, dianders@chromium.org, 
- krzysztof.kozlowski+dt@linaro.org, kernel@collabora.com, 
- matthias.bgg@gmail.com, alpernebiyasak@gmail.com, conor+dt@kernel.org, 
- linux-kernel@vger.kernel.org, tiwai@suse.com, eugen.hristev@collabora.com, 
- nfraprado@collabora.com, arnd@arndb.de, linux-mediatek@lists.infradead.org, 
- amergnat@baylibre.com, claudiu.beznea@tuxon.dev, frank.li@vivo.com, 
- zhourui@huaqin.corp-partner.google.com, wenst@chromium.org, 
- kuninori.morimoto.gx@renesas.com, 
- xiazhengqiao@huaqin.corp-partner.google.com, trevor.wu@mediatek.com, 
- devicetree@vger.kernel.org, jarkko.nikula@bitmer.com, 
- ckeepax@opensource.cirrus.com, lgirdwood@gmail.com, shraash@google.com, 
- alsa-devel@alsa-project.org, u.kleine-koenig@pengutronix.de, 
- jiaxin.yu@mediatek.com, broonie@kernel.org, maso.huang@mediatek.com
-In-Reply-To: <20240307114445.196981-20-angelogioacchino.delregno@collabora.com>
-References: <20240307114445.196981-1-angelogioacchino.delregno@collabora.com>
- <20240307114445.196981-20-angelogioacchino.delregno@collabora.com>
-Message-Id: <170981873007.2495472.10889414408252370603.robh@kernel.org>
-Subject: Re: [PATCH v2 19/22] ASoC: dt-bindings: mt8192: Document
- audio-routing and dai-link subnode
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20240307-kms-hdmi-connector-state-v8-24-ef6a6f31964b@kernel.org>
+References: <20240307-kms-hdmi-connector-state-v8-0-ef6a6f31964b@kernel.org>
+In-Reply-To: <20240307-kms-hdmi-connector-state-v8-0-ef6a6f31964b@kernel.org>
+To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
+ Daniel Vetter <daniel@ffwll.ch>, Jonathan Corbet <corbet@lwn.net>, 
+ Sandy Huang <hjc@rock-chips.com>, 
+ =?utf-8?q?Heiko_St=C3=BCbner?= <heiko@sntech.de>, 
+ Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
+ Samuel Holland <samuel@sholland.org>
+Cc: Hans Verkuil <hverkuil@xs4all.nl>, 
+ Sebastian Wick <sebastian.wick@redhat.com>, 
+ =?utf-8?q?Ville_Syrj=C3=A4l=C3=A4?= <ville.syrjala@linux.intel.com>, 
+ dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org, 
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org, 
+ linux-sunxi@lists.linux.dev, Maxime Ripard <mripard@kernel.org>, 
+ =?utf-8?q?Ma=C3=ADra_Canal?= <mcanal@igalia.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3744; i=mripard@kernel.org;
+ h=from:subject:message-id; bh=xekVGAfWfJvLfOV1ebNOPUR3oLtTkCap7YpzVZIPKAQ=;
+ b=owGbwMvMwCX2+D1vfrpE4FHG02pJDKkvD2cxJapNSD7aWnjhgt/e39+lPnUvbyx6EbQqIGTGg
+ qB/XPM+dJSyMIhxMciKKbLECJsviTs163UnG988mDmsTCBDGLg4BWAiD58yMhzz+L3ecpKyi+YV
+ 7pPp06sN7x1VUBfRZONuqHJXzPJ/9JCRYYfEQ6ttH9Q4Fv5V/hZ3Wr8mfdUBMaV39uWvP/1/tOr
+ zfx4A
+X-Developer-Key: i=mripard@kernel.org; a=openpgp;
+ fpr=BE5675C37E818C8B5764241C254BCFC56BF6CE8D
 
+The vc4_dummy_plane structure was introduced as a mean to add
+mock-specific fields.
 
-On Thu, 07 Mar 2024 12:44:42 +0100, AngeloGioacchino Del Regno wrote:
-> Document the dai-link subnodes and the audio-routing property, allowing
-> to describe machine specific audio hardware and links in device tree.
-> 
-> While at it, also deprecate the old properties which were previously
-> used with the driver's partially hardcoded configuration.
-> 
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> ---
->  .../sound/mt8192-mt6359-rt1015-rt5682.yaml    | 124 ++++++++++++++++--
->  1 file changed, 115 insertions(+), 9 deletions(-)
-> 
+However, we never really used it and it's still strictly equivalent to
+vc4_plane (which is in the same situation vs drm_plane), so we can
+simply remove the vc4_dummy_plane structure and make the mock code
+cleaner.
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Reviewed-by: Maíra Canal <mcanal@igalia.com>
+Signed-off-by: Maxime Ripard <mripard@kernel.org>
+---
+ drivers/gpu/drm/vc4/tests/vc4_mock.c       |  6 ++----
+ drivers/gpu/drm/vc4/tests/vc4_mock.h       |  9 ++-------
+ drivers/gpu/drm/vc4/tests/vc4_mock_plane.c | 14 +++++---------
+ 3 files changed, 9 insertions(+), 20 deletions(-)
 
-yamllint warnings/errors:
+diff --git a/drivers/gpu/drm/vc4/tests/vc4_mock.c b/drivers/gpu/drm/vc4/tests/vc4_mock.c
+index becb3dbaa548..0731a7d85d7a 100644
+--- a/drivers/gpu/drm/vc4/tests/vc4_mock.c
++++ b/drivers/gpu/drm/vc4/tests/vc4_mock.c
+@@ -107,20 +107,18 @@ static const struct vc4_mock_desc vc5_mock =
+ );
+ 
+ static int __build_one_pipe(struct kunit *test, struct drm_device *drm,
+ 			    const struct vc4_mock_pipe_desc *pipe)
+ {
+-	struct vc4_dummy_plane *dummy_plane;
+ 	struct drm_plane *plane;
+ 	struct vc4_dummy_crtc *dummy_crtc;
+ 	struct drm_crtc *crtc;
+ 	unsigned int i;
+ 
+-	dummy_plane = vc4_dummy_plane(test, drm, DRM_PLANE_TYPE_PRIMARY);
+-	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, dummy_plane);
++	plane = vc4_dummy_plane(test, drm, DRM_PLANE_TYPE_PRIMARY);
++	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, plane);
+ 
+-	plane = &dummy_plane->plane.base;
+ 	dummy_crtc = vc4_mock_pv(test, drm, plane, pipe->data);
+ 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, dummy_crtc);
+ 
+ 	crtc = &dummy_crtc->crtc.base;
+ 	for (i = 0; i < pipe->noutputs; i++) {
+diff --git a/drivers/gpu/drm/vc4/tests/vc4_mock.h b/drivers/gpu/drm/vc4/tests/vc4_mock.h
+index 2d0b339bd9f3..002b6218960c 100644
+--- a/drivers/gpu/drm/vc4/tests/vc4_mock.h
++++ b/drivers/gpu/drm/vc4/tests/vc4_mock.h
+@@ -19,17 +19,12 @@ struct drm_crtc *vc4_find_crtc_for_encoder(struct kunit *test,
+ 			return crtc;
+ 
+ 	return NULL;
+ }
+ 
+-struct vc4_dummy_plane {
+-	struct vc4_plane plane;
+-};
+-
+-struct vc4_dummy_plane *vc4_dummy_plane(struct kunit *test,
+-					struct drm_device *drm,
+-					enum drm_plane_type type);
++struct drm_plane *vc4_dummy_plane(struct kunit *test, struct drm_device *drm,
++				  enum drm_plane_type type);
+ 
+ struct vc4_dummy_crtc {
+ 	struct vc4_crtc crtc;
+ };
+ 
+diff --git a/drivers/gpu/drm/vc4/tests/vc4_mock_plane.c b/drivers/gpu/drm/vc4/tests/vc4_mock_plane.c
+index 62b18f5f41db..973f5f929097 100644
+--- a/drivers/gpu/drm/vc4/tests/vc4_mock_plane.c
++++ b/drivers/gpu/drm/vc4/tests/vc4_mock_plane.c
+@@ -20,28 +20,24 @@ static const struct drm_plane_funcs vc4_dummy_plane_funcs = {
+ 
+ static const uint32_t vc4_dummy_plane_formats[] = {
+ 	DRM_FORMAT_XRGB8888,
+ };
+ 
+-struct vc4_dummy_plane *vc4_dummy_plane(struct kunit *test,
+-					struct drm_device *drm,
+-					enum drm_plane_type type)
++struct drm_plane *vc4_dummy_plane(struct kunit *test, struct drm_device *drm,
++				  enum drm_plane_type type)
+ {
+-	struct vc4_dummy_plane *dummy_plane;
+ 	struct drm_plane *plane;
+ 
+-	dummy_plane = drmm_universal_plane_alloc(drm,
+-						 struct vc4_dummy_plane, plane.base,
++	plane = __drmm_universal_plane_alloc(drm, sizeof(struct drm_plane), 0,
+ 						 0,
+ 						 &vc4_dummy_plane_funcs,
+ 						 vc4_dummy_plane_formats,
+ 						 ARRAY_SIZE(vc4_dummy_plane_formats),
+ 						 NULL,
+ 						 DRM_PLANE_TYPE_PRIMARY,
+ 						 NULL);
+-	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, dummy_plane);
++	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, plane);
+ 
+-	plane = &dummy_plane->plane.base;
+ 	drm_plane_helper_add(plane, &vc4_dummy_plane_helper_funcs);
+ 
+-	return dummy_plane;
++	return plane;
+ }
 
-dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.example.dtb: mt8192-sound: 'model' does not match any of the regexes: '.*-dai-link$', 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/sound/mt8192-mt6359-rt1015-rt5682.yaml#
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240307114445.196981-20-angelogioacchino.delregno@collabora.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
+-- 
+2.43.2
 
 
