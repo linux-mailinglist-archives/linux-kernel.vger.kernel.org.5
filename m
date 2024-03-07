@@ -1,126 +1,130 @@
-Return-Path: <linux-kernel+bounces-94945-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94946-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15A83874703
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 04:58:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD670874705
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 04:59:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 42B5A1C21C5A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 03:58:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A746C1C21A54
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 03:59:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCEFC16426;
-	Thu,  7 Mar 2024 03:58:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D11114F70;
+	Thu,  7 Mar 2024 03:59:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dePuzdOv"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="XpmctIwi"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05A8813FF5;
-	Thu,  7 Mar 2024 03:58:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C6502907;
+	Thu,  7 Mar 2024 03:59:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709783931; cv=none; b=EVUDGin7xr649hAz9zI0B1eAUmJ5Vb9hcvsosqWlokrEUlXWJRQVcNM+GhpW6u+F78hQj8qlQ0/AZNODU6LGZlMbixwPunosNUzMqwEFR0gFd9QuNKDTmj7dFEHH1laGzuWs2eqPbi+7hNPvCsZIyRvc2+6kb7F5mmNJoVzD9qY=
+	t=1709783992; cv=none; b=YQDXwwsqSqOJuw6J9zD/2Ywln5fmtdmZd7MT4J8h5Qee1FpoZHdNOZWv2JkTCs2QW8X3X1aEYBygtRLnoPC47hOhday6mwHkp7YzuWbOPhMhyHmh4BsYEUiKZoNLHUjwp4ztzigYOHKWkeYtaEw1Aj1+8hJZRKBB2KgiK7LI+P0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709783931; c=relaxed/simple;
-	bh=0TJXdgdBtAlqCZeCOaVcYTRM1lqRL/9UgdNdraEbWe0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=L/5DCKQhl1As4xll70u8m7RKuCILjKS03C+4YbLFQEw/Uj2VYa+rfyFbJcgGX+3uCbrtSLZ9CQ+wnsbWmOog/XMHSUNx6dKAuwkhntwN1fDgESJylhw4hPlKz2PT1rfq2cUWCvFV0eXlaiErw3XvF9xDN8NtfWfFpiCel/HkomI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dePuzdOv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E39AC43394;
-	Thu,  7 Mar 2024 03:58:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709783930;
-	bh=0TJXdgdBtAlqCZeCOaVcYTRM1lqRL/9UgdNdraEbWe0=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=dePuzdOvoOg4rColoeij5qOOc2JOQppIIL4FuaKi8qvLf3WKZVDcOI4AcVEk5XHDc
-	 zZh9jcM5521nQcONIadAtSd2+kalmGdcugkhCBYQk9WISwEdfyBAgN9DoQMn56cvQ5
-	 D9vtoY4bt3XjaDFWWOxjUHf5Ia9lxru92MXUo1DATJRf+m6bBElWy9TwhD4BaHw+hk
-	 engbq9+8uADCL3wLSv5I1ivOqMCo3Fi3EETxG6h/3rEXrUvdbtSLyJHvrtYb8nmLSX
-	 Ny26qzw+yHFxWW9oW3a28pdFivNP57gyQFLtZ95scIZNNNaYNITTY9aGcUPT2SlIKV
-	 zHCYQUzQNYf6g==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 2DC5DCE10B8; Wed,  6 Mar 2024 19:58:50 -0800 (PST)
-Date: Wed, 6 Mar 2024 19:58:50 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: linke li <lilinke99@qq.com>
-Cc: Joel Fernandes <joel@joelfernandes.org>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>, linux-kernel@vger.kernel.org,
-	rcu@vger.kernel.org
-Subject: Re: [PATCH v2] rcutorture: Reuse value read using READ_ONCE instead
- of re-reading it
-Message-ID: <b01c476a-64ee-4030-8bc9-3807704efacc@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <tencent_5D8919B7D1F21906868DE81406015360270A@qq.com>
+	s=arc-20240116; t=1709783992; c=relaxed/simple;
+	bh=yPNMZIaAf1eKxNqvwbGmcEbv4O7LxTZ/kTwP05a7f7I=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=EYT49Wp5LcCPsjzAahOGIH053+ybm0eQDcbQEBp39XAD6OWHyRdfDuw1VSQ4M5preNX7ibNi0IUc5f7MWDOGrJChIvBaAyqt0HVy4RXx18dOG5z1CnmuuFoM1JVaUj3J+gL93fmEQdLbHJMnm0Lz9CMj+KX21hTO3XMjqbR9XJQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=XpmctIwi; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1709783988;
+	bh=4L/+DaWbCId5H2e83O6lG45R0RKroI5minai9klNoyc=;
+	h=Date:From:To:Cc:Subject:From;
+	b=XpmctIwiqJwwrdVlKq5MixaISOkBQRjQfqNrTVOEjigTbXVqIyyQbJmZ49gG6F6nh
+	 15S6kbn5JWol2cValHZU8RQe98FfE4BtnOdba8X8a+qAS1bLOKxOxc3NWruIXSRkgN
+	 Ye2g3v3XuZAcph1xxaQIweWAkx71h2qhLTr/5oxyDIH+edUI3er30kYhdA5GNZ4YZN
+	 Q2HrZc2UJx/dVJZB1UYcny43WOMu//4cFrHHyQB0CnVW4UAy/Djag7BSUYlISuY+tM
+	 UZouFDQaimNM2Q2uqNynEOiyUNouyjR882OkNbDleHmCPJkrT3JBqpgH41SYPDg0tw
+	 6tqAqSFk/g5pg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TqwYJ2R90z4wcC;
+	Thu,  7 Mar 2024 14:59:48 +1100 (AEDT)
+Date: Thu, 7 Mar 2024 14:59:46 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Sean Christopherson <seanjc@google.com>, Anup Patel
+ <anup@brainfault.org>
+Cc: Haibo Xu <haibo1.xu@intel.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>, Peter Gonda <pgonda@google.com>
+Subject: linux-next: manual merge of the kvm-x86 tree with the kvm-riscv
+ tree
+Message-ID: <20240307145946.7e014225@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <tencent_5D8919B7D1F21906868DE81406015360270A@qq.com>
+Content-Type: multipart/signed; boundary="Sig_/cT/yWs_83ci0fs0UAHyzWOS";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-On Wed, Mar 06, 2024 at 10:05:20AM +0800, linke li wrote:
-> rp->rtort_pipe_count is modified concurrently by rcu_torture_writer(). To
-> prevent a data race, reuse i which is read using READ_ONCE before instead
-> of re-reading it.
-> 
-> Signed-off-by: linke li <lilinke99@qq.com>
-> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> ---
+--Sig_/cT/yWs_83ci0fs0UAHyzWOS
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Thank you both!
+Hi all,
 
-This topic got quite a bit of discussion [1], with the result that I
-took your patch, but edited your commit log.  Could you please take a
-look below and let me know if I messed anything up?
+Today's linux-next merge of the kvm-x86 tree got a conflict in:
 
-							Thanx, Paul
+  tools/testing/selftests/kvm/include/kvm_util_base.h
 
-[1] https://lore.kernel.org/all/20240306103719.1d241b93@gandalf.local.home/
+between commit:
 
-------------------------------------------------------------------------
+  1e979288c9b5 ("KVM: riscv: selftests: Add guest helper to get vcpu id")
 
-commit e3038bbf5d746fd4c72975b792abbb63fa3f3421
-Author: linke li <lilinke99@qq.com>
-Date:   Wed Mar 6 19:51:10 2024 -0800
+from the kvm-riscv tree and commit:
 
-    rcutorture: Re-use value stored to ->rtort_pipe_count instead of re-reading
-    
-    Currently, the rcu_torture_pipe_update_one() writes the value (i + 1)
-    to rp->rtort_pipe_count, then immediately re-reads it in order to compare
-    it to RCU_TORTURE_PIPE_LEN.  This re-read is pointless because no other
-    update to rp->rtort_pipe_count can occur at this point.  This commit
-    therefore instead re-uses the (i + 1) value stored in the comparison
-    instead of re-reading rp->rtort_pipe_count.
-    
-    Signed-off-by: linke li <lilinke99@qq.com>
-    Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-    Cc: Linus Torvalds <torvalds@linux-foundation.org>
+  be1bd4c5394f ("KVM: selftests: Allow tagging protected memory in guest pa=
+ge tables")
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 0cb5452ecd945..dd7d5ba457409 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -467,7 +467,7 @@ rcu_torture_pipe_update_one(struct rcu_torture *rp)
- 	atomic_inc(&rcu_torture_wcount[i]);
- 	WRITE_ONCE(rp->rtort_pipe_count, i + 1);
- 	ASSERT_EXCLUSIVE_WRITER(rp->rtort_pipe_count);
--	if (rp->rtort_pipe_count >= RCU_TORTURE_PIPE_LEN) {
-+	if (i + 1 >= RCU_TORTURE_PIPE_LEN) {
- 		rp->rtort_mbtest = 0;
- 		return true;
- 	}
+from the kvm-x86 tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc tools/testing/selftests/kvm/include/kvm_util_base.h
+index 39c2499df341,194963e05341..000000000000
+--- a/tools/testing/selftests/kvm/include/kvm_util_base.h
++++ b/tools/testing/selftests/kvm/include/kvm_util_base.h
+@@@ -1081,6 -1128,6 +1128,8 @@@ void kvm_selftest_arch_init(void)
+ =20
+  void kvm_arch_vm_post_create(struct kvm_vm *vm);
+ =20
+ +uint32_t guest_get_vcpuid(void);
+ +
++ bool vm_is_gpa_protected(struct kvm_vm *vm, vm_paddr_t paddr);
++=20
+  #endif /* SELFTEST_KVM_UTIL_BASE_H */
+
+--Sig_/cT/yWs_83ci0fs0UAHyzWOS
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXpO7IACgkQAVBC80lX
+0GyG9Qf8DDP1fXzfBSzdkDdU4qEEiccdmqmezJaI8DGdGvOd0lWf4c7jIbksOkhz
+FQus6ycG/LnM+t8lK5dtMiWvdobwoy0JtYKvOjchozKrPMtGmHxIq0amuqIaIfc1
+eV20RrvdmVylHdQcEe0vLCUcGcUWsaSViuKzXK8LHXN+lqPlx4/b5IdW4BcXw917
+7ccMxIhvOGmBWktCT6m9zFZIMv9WC6WOmrgoNVtqiHdc6cEnlcGiCKFRwVDBT677
+Ez1Inmsexe60dQNvr51A4yZcUwHoLCtOp1k9hQpgcDSe4lvBLiw0CM0lc765TJjH
+SP1LUGwGt62e6CKlzPxhGcHilAwQmQ==
+=Hulk
+-----END PGP SIGNATURE-----
+
+--Sig_/cT/yWs_83ci0fs0UAHyzWOS--
 
