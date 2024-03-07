@@ -1,125 +1,161 @@
-Return-Path: <linux-kernel+bounces-96019-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96020-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4799875629
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:34:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8025087562B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:36:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 11FD01C2143C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 18:34:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 03A3C1F23229
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 18:36:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D9CC133406;
-	Thu,  7 Mar 2024 18:34:19 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A20C12F5A5;
-	Thu,  7 Mar 2024 18:34:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B393E133408;
+	Thu,  7 Mar 2024 18:35:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="jo3kuQ5w"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7725912F5A5
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 18:35:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709836459; cv=none; b=XzcN4qiTPH4EVAAEuM/5uBm5m77w/hbh5j2sozz42PVybTOm6IWY1NGQ2G/oeF34QBLA6J3yH9+7JwfmT1cB7PNnVygtToGu+eXXYyBbCsW54tk+RIF5EuAyuEUiERqKjsApF+ODwODap6H4b0ZKICw4FJuD1gndN0G7v5ZyUjo=
+	t=1709836559; cv=none; b=hCGh2rZY1JdfIJ+Zf1A7tSsOv9d6rYmdjCYWCP4gIGhd0ZyH5JjrYbfkFTXQJffdecnA0UVvrnOc84bHrVILDqBbrWFQPaMRh5wEIfyGbQ3VpM0LjCinwwRdYb7QrZSOqUc1B4PHY/JIe78QoR4vo24RMEOXLBj1MpaJkHIGKZg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709836459; c=relaxed/simple;
-	bh=c3690T2hw5jOKdAJMsouSoyRHA+UMx5AeSXSfJrDW4U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JUYas+iKer7dSbBu9w/vQQ84q67AOKMmn7p6up/ZMqdKT/StohFnf08eG888qKC19eqgtizxaAHu7vybEA7wU4Ui9//fSSzsHnv8rdRjJOby93gxSYH8YhAldR9XT4LX4b9C5Dgn7FN1Nu3x3eCuhNFXJChc/veyxLHecCq8Rq8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 835011FB;
-	Thu,  7 Mar 2024 10:34:52 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [10.57.69.155])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3450A3F762;
-	Thu,  7 Mar 2024 10:34:14 -0800 (PST)
-Date: Thu, 7 Mar 2024 18:34:11 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: Joel Fernandes <joel@joelfernandes.org>, paulmck@kernel.org,
-	Steven Rostedt <rostedt@goodmis.org>
-Cc: Network Development <netdev@vger.kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
-	kernel-team <kernel-team@cloudflare.com>
-Subject: Re: [PATCH] net: raise RCU qs after each threaded NAPI poll
-Message-ID: <ZeoIo1dOW11STQHb@FVFF77S0Q05N>
-References: <55900c6a-f181-4c5c-8de2-bca640c4af3e@paulmck-laptop>
- <10FC3F5F-AA33-4F81-9EB6-87EB2D41F3EE@joelfernandes.org>
- <99b2ccae-07f6-4350-9c55-25ec7ae065c0@paulmck-laptop>
- <CAEXW_YQ+40a1-hk5ZP+QJ54xniSutosC7MjMscJJy8fen-gU9Q@mail.gmail.com>
- <f1e77cd2-18b2-4ab1-8ce3-da2c6babbd53@paulmck-laptop>
- <CAEXW_YRDiTXJ_GwK5soSVno73yN9FUA5GjLYAOcCTtqQvPGcFA@mail.gmail.com>
- <fcaf6cad-9959-4b6d-a6e4-05ae1b2fabdc@joelfernandes.org>
- <Zenx_Q0UiwMbSAdP@FVFF77S0Q05N>
+	s=arc-20240116; t=1709836559; c=relaxed/simple;
+	bh=iEEp31JydCDbDDWUypoDZzp7A7ngZJq4AsyQqSmOJcQ=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=TovNFvWBR2Ug8KrmXKT4ck+I2fc7Uc7oQrz8SF64XFzm/ke5qzxNpTxP1k0iY4IJDlyTpH1f2uMtO2Xc6B1kcKJe7LxJ75p9dDIvOZkrfjwD9erMVFKlx46tOTKc6oWnsJrILpT/dLskaLYUz7fuBBE9+CACAC2iaNt6QVmVcHY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=jo3kuQ5w; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-5f38d676cecso29277597b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 10:35:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709836556; x=1710441356; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=6gcB7rs/ZShkZQFSJOEoG/IHLW4vs94Ivr+W9yFak8E=;
+        b=jo3kuQ5wbdX/qCJSNc2SUfUcCL8no5pI9za0iS5c5rznTyUPsWskbhr5hWtZ1Cg5h1
+         yGDB/dPRvw3ECkaDmPO+P1twDgLMSnk35kj0VR8TKYRIvcC1h8gyv3/vOxyPxXEHaMcl
+         6aKvofj9YvbY0ER8y8XzYFvdbHnr4yYEDK0Wvdme9mAjHoVrYxEvcjyMYFejVC9gRuY7
+         6AbOYloTfqq2PavZ+j2o2XigebgUZ0TvlFKO5rbaSvoIG0gm4R19BxTmkZ1OzpucFl41
+         FOl3xdxq7xyHes2BfBGVEdXN6D8RWVrnvq0Bhl8qKyLr8I1UFsl8e0uBlA0hTxr3Hxt4
+         2o+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709836556; x=1710441356;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6gcB7rs/ZShkZQFSJOEoG/IHLW4vs94Ivr+W9yFak8E=;
+        b=fFohtISNSolT5gxus+N6atX6/XvHf0fIm7jbtLL0nV4nvpoNd4g9dBVeibHzmIVCUH
+         vnOITJX7EpZ6boyzH0JY5tzy+KaxQerIiBEOMqjyAw8Jfuneviv9mRKh3XuFc78yXtC8
+         mzF3Ew64YRVn7HwkcjOnDyTZRnVPMerv69YypYkYMaXEKmPJKJgzCIM/HrgeEZZMwiI+
+         cZuHdwP8TGXUUafZ/2EYBLkotgvmzWp4HCbTR03AbS/aGnpu6NPHaz2ARI/vQh/M6cP8
+         n4a618XolIDKKLm+lBJhWlL4zY5c4QYmcm2uBMuIVaIIpHwi4eXowMuSWK0YV3syetVy
+         +KNA==
+X-Forwarded-Encrypted: i=1; AJvYcCUu09DyWw2vHOYHNcVeO8wqQC2KDJ4PGc1+w/YLjgeje6VwqV4rs8Y67FMYV//P+gEt55Y3Zp20AJRA+uYvR8+JTSX2AtdD7BKkNXOS
+X-Gm-Message-State: AOJu0YwfzFCSncIFIt6J6f8nLB0+eIzvFBgsrNXX/nHbKkh6bARjsc+L
+	5U2vHvjHDvjvkER6Dt6afETBRNZAHbQGRoOuy8aOSnxYK/txJSczOaZNhwCGD1Y47XVzoqdqmYU
+	zmA==
+X-Google-Smtp-Source: AGHT+IHhc6mNz1ANHVaB8ZUkzXjf7omeklnG6f34tO4A4cjqMQbKxS6N5ItrFCgNVIFlWJO4BMBghA0Z8Wk=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:3a03:0:b0:dc7:463a:46d2 with SMTP id
+ h3-20020a253a03000000b00dc7463a46d2mr49728yba.0.1709836556326; Thu, 07 Mar
+ 2024 10:35:56 -0800 (PST)
+Date: Thu, 7 Mar 2024 10:35:54 -0800
+In-Reply-To: <23a1af5f-e08d-4cf6-b4bd-8cfb6266f441@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zenx_Q0UiwMbSAdP@FVFF77S0Q05N>
+Mime-Version: 1.0
+References: <20240301074423.643779-1-sandipan.das@amd.com> <CALMp9eRbOQpVsKkZ9N1VYTyOrKPWCmvi0B5WZCFXAPsSkShmEA@mail.gmail.com>
+ <ZeYz7zPGcIQSH_NI@google.com> <23a1af5f-e08d-4cf6-b4bd-8cfb6266f441@amd.com>
+Message-ID: <ZeoJCrx7K_FLGLNA@google.com>
+Subject: Re: [PATCH] KVM: x86: Do not mask LVTPC when handling a PMI on AMD platforms
+From: Sean Christopherson <seanjc@google.com>
+To: Sandipan Das <sandipan.das@amd.com>
+Cc: Jim Mattson <jmattson@google.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
+	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
+	mlevitsk@redhat.com, vkuznets@redhat.com, mizhang@google.com, 
+	tao1.su@linux.intel.com, andriy.shevchenko@linux.intel.com, 
+	ravi.bangoria@amd.com, ananth.narayan@amd.com, nikunj.dadhania@amd.com, 
+	santosh.shukla@amd.com, manali.shukla@amd.com
+Content-Type: text/plain; charset="us-ascii"
 
-On Thu, Mar 07, 2024 at 04:57:33PM +0000, Mark Rutland wrote:
-> On Mon, Mar 04, 2024 at 04:16:01AM -0500, Joel Fernandes wrote:
-> > On 3/2/2024 8:01 PM, Joel Fernandes wrote:
-> > Case 1: For !CONFIG_DYNAMIC_FTRACE update of ftrace_trace_function
-> > 
-> > This config is itself expected to be slow. However seeing what it does, it is
-> > trying to make sure the global function pointer "ftrace_trace_function" is
-> > updated and any readers of that pointers would have finished reading it. I don't
-> > personally think preemption has to be disabled across the entirety of the
-> > section that calls into this function. So sensitivity to preempt disabling
-> > should not be relevant for this case IMO, but lets see if ftrace folks disagree
-> > (on CC). It has more to do with, any callers of this function pointer are no
-> > longer calling into the old function.
+On Thu, Mar 07, 2024, Sandipan Das wrote:
+> On 3/5/2024 2:19 AM, Sean Christopherson wrote:
+> The following are excerpts from some changes that I have been working on. Instead
+> of a boolean flag, this saves the compatible vendor in kvm_vcpu_arch and tries
+> to match it against X86_VENDOR_* values. The goal is to replace
+> guest_cpuid_is_{intel,amd_or_hygon}() with
+> guest_vendor_is_compatible(vcpu, X86_VENDOR_{INTEL,AMD}). Is this viable?
 > 
-> I've been looking into this case for the last couple of days, and the short
-> story is that the existing code is broken today for PREEMPT_FULL, and the code
-> for CONFIG_DYNAMIC_FTRACE=y is similarly broken. A number of architectures have
-> also implemented the entry assembly incorrectly...
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index d271ba20a0b2..c4ada5b12fc3 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1042,6 +1042,7 @@ struct kvm_vcpu_arch {
+>  #if IS_ENABLED(CONFIG_HYPERV)
+>         hpa_t hv_root_tdp;
+>  #endif
+> +       u8 compat_vendor;
 
-> I believe our options are:
+Ooh, clever, much better than my idea of using multiple booleans.
+
+One potential flaw though: the vCPU structure is zero-allocated, and so this will
+get a false positive on X86_VENDOR_INTEL if userspace never sets guest CPUID.
+
+That might actually be desirable though?  E.g. it's closer to KVM's current
+behavior.  Maybe.  I dunno :-)
+
+Anyways, KVM *does* need to be consistent, i.e. the default needs to yield the
+same behavior as guest CPUID without entry 0x0 so that setting *other* CPUID
+entries doesn't change from INTEL=>UNKNOWN.  More below.
+
+>  };
 > 
-> * Avoid the mismatch by construction:
+>  struct kvm_lpage_info {
+> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+> index adba49afb5fe..00170762e72a 100644
+> --- a/arch/x86/kvm/cpuid.c
+> +++ b/arch/x86/kvm/cpuid.c
+> @@ -376,6 +376,13 @@ static void kvm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+>         kvm_hv_set_cpuid(vcpu, kvm_cpuid_has_hyperv(vcpu->arch.cpuid_entries,
+>                                                     vcpu->arch.cpuid_nent));
 > 
->   - On architectures with trampolines, we could ensure that the list_ops gets
->     its own trampoline and that we *always* use a trampoline, never using a
->     common ftrace_caller. When we switch callers from one trampoline to another
->     they'd atomically get the new func+ops.
-> 
->     I reckon that might be a good option for x86-64?
-> 
->   - On architectures without trampolines we could 
->     require that that the ftrace_caller 
->     loads ops->func from the ops pointer.
->     
->     That'd mean removing the 'ftrace_trace_function' pointer and removing
->     patching of the call to the trace function (but the actual tracee callsites
->     would still be patched).
-> 
->     I'd be in favour of this for arm64 since that matches the way CALL_OPS
->     works; the only difference is we'd load a global ops pointer rather than a
->     per-callsite ops pointer.
-> 
-> * Use rcu_tasks_trace to synchronize updates?
+> +       if (guest_cpuid_is_intel_compatible(vcpu))
+> +               vcpu->arch.compat_vendor = X86_VENDOR_INTEL;
+> +       else if (guest_cpuid_is_amd_or_hygon(vcpu))
+> +               vcpu->arch.compat_vendor = X86_VENDOR_AMD;
+> +       else
+> +               vcpu->arch.compat_vendor = X86_VENDOR_UNKNOWN;
 
-Having acquainted myself with the RCU flavours, I think the RCU Tasks Trace
-suggestion wouldn't help, but *some* flavour of RCU might give us what we need.
+I would prefer to provide a helper for just getting the compat vendor.  E.g.
 
-That said, my preference is the "avoid the mismatch by construction" camp, as
-even if we need to wait for uses of the old func+ops to finish, we'd have fewer
-transitions (and consequently less patching) if we have:
+static u8 kvm_vcpu_get_compat_vendor(struct kvm_vcpu *vcpu)
+{
+	struct kvm_cpuid_entry2 *best;
 
-	switch_to_new_ops();
-	wait_for_old_ops_usage_to_finish();
+	best = kvm_find_cpuid_entry(vcpu, 0);
+	if (!best)
+		return ???;
 
-.. rather than:
+	if (is_guest_vendor_intel(best->ebx, best->ecx, best->edx) ||     
+	    is_guest_vendor_centaur(best->ebx, best->ecx, best->edx) ||   
+	    is_guest_vendor_zhaoxin(best->ebx, best->ecx, best->edx))
+		return X86_VENDOR_INTEL;
 
-	switch_to_list_func();
-	wait_for_old_ops_usage_to_finish();
-	switch_to_new_ops();
-	ensure_new_ops_are_visible();
-	switch_to_new_func();
+	if (is_guest_vendor_amd(best->ebx, best->ecx, best->edx) ||
+	    is_guest_vendor_hygon(best->ebx, best->ecx, best->edx))
+		return X86_VENDOR_AMD;
 
-Mark.
+	return X86_VENDOR_UNKNOWN;
+}
+
+and then a follow-up patch can remove guest_cpuid_is_amd_or_hygon() once all
+users are converted to guest_vendor_is_compatible().	
 
