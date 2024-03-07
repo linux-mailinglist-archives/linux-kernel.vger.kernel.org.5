@@ -1,117 +1,175 @@
-Return-Path: <linux-kernel+bounces-95804-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95806-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 073898752F3
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 16:18:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CFC83875304
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 16:22:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E58ABB29EB9
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:17:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 82D1F1F230E9
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:22:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC30212F37E;
-	Thu,  7 Mar 2024 15:17:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C00812F37A;
+	Thu,  7 Mar 2024 15:22:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J6BX5Gb8"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LgS+NoHh"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3088A12EBF1
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 15:17:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0567112DDBA;
+	Thu,  7 Mar 2024 15:22:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709824629; cv=none; b=pC+LWh23vRFgHZoCHL2p1BaUK/CyH0vap6mKWOwyaa2GmWLOTX2vsz9zZKeAvjdJ0FJS5KoB/nE25CHCKer5wnl0mZ9M2QIH5G4B5V7I9FLMXv8RNVzQp7KZSd4iP53fKEZX6xmT689gVKsh/jIf7G4oou8yIlC7dejDh4vyMKg=
+	t=1709824928; cv=none; b=ff5dyzpFxxBHDBG3gwI0Ixyxe+YAI0za/cj01CGo4wthSA0NidYteCbDIRVGNnOTuc8AKCwtRJscBpqwWcXLIYuI2WoIY8P3zBVEHa4+4yK2KzmVLEUf7KtXLZIrNV2GDjFBZvVs3Z4AHX89LtVPpZkC6N5YXKDwkYx/3yaKoYo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709824629; c=relaxed/simple;
-	bh=bcLaWbBdhUfJxU9PF6Qxo7YRYTZ8kvqVGWXXOykqSHU=;
+	s=arc-20240116; t=1709824928; c=relaxed/simple;
+	bh=dXXAP6ggtVzzLfF8jgYN0QQav58miECgxTM+SNjFCi0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=F2MvrS5r7JCzyevyrW/ipe6t/ob5CD8j0HjarTqo9H8JcqsRotHqDw3YepatBVlyBvUO3e97W/mNMNMNYZhBs4YkxZOFjKO0zn73oTx8rnUgvFrX1H3mocz2/EWVEdHprvf0IsrHOD9cmAdhfPs4dl6CNVH1eyaMOuiA13KVQNM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J6BX5Gb8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07169C433F1;
-	Thu,  7 Mar 2024 15:17:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709824628;
-	bh=bcLaWbBdhUfJxU9PF6Qxo7YRYTZ8kvqVGWXXOykqSHU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=J6BX5Gb8dHBGAgqEHmtm/z5NoMyr0XGC4ohF8EapfRMPzoiaWvmVpWGF7/Whk2sVN
-	 HJ8zaCB8Z5cx6V1j/pscPkfgQUZ2Df9XtiOkN1DnVlp+jzaNbEwluCRCPKZqOVihHy
-	 VedeRFyzlUGBaPnJ/S2fcv3zLjDMJ2X6fatx+5hXLfH1qp5K3UhPa5vt12cMPMUlbn
-	 JLFsQqxrAnchzuptZNZn6rIqrLjm+7boixC4PZXRtm2lL/DCAakRZp1j7jrIT+ciER
-	 izIff1KnKPMZLJ01HVlb1v8i1PiTF12yEvdQ2+GLGKTLT+JA6rSK/JjX43Y3LEDelr
-	 kwd/aUvRCDN3A==
-Date: Thu, 7 Mar 2024 08:17:05 -0700
-From: Keith Busch <kbusch@kernel.org>
-To: Len Brown <lenb@kernel.org>
-Cc: Max Gurtovoy <mgurtovoy@nvidia.com>, linux-nvme@lists.infradead.org,
-	maxg@mellanox.com, axboe@kernel.dk, hch@lst.de, sagi@grimberg.me,
-	linux-kernel@vger.kernel.org, Len Brown <len.brown@intel.com>
-Subject: Re: [PATCH 1/1] nvme: Use pr_dbg, not pr_info, when setting shutdown
- timeout
-Message-ID: <ZenacXkUAh4I1gkK@kbusch-mbp>
-References: <49a7c0b667abe23d95d67cf0cf7ea7e193d9f2a1.1709773065.git.len.brown@intel.com>
- <dc6c4d98-e56a-448d-b372-38ce0cd927e9@nvidia.com>
- <CAJvTdK=Fbo0in7diYv_4Zk_-zrOPP4skDgpTMOYw-UM8=3R29Q@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=iHFU6HDA5dT7A9MekrN06TSm3wYDM1zmHjVDkU2VgGJGWsVaOgPxz7+hZk6fSDV0nv6Ebx7SAncD7xde82Tx02z8vB+uIaupzgwpi9kzEYrWC5q1tLa0XWbRK5CAALRW5KgZOAklnKQ7nWftRfXhJ91y/1MFonSZOkr1J6L+XiM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LgS+NoHh; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709824925; x=1741360925;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=dXXAP6ggtVzzLfF8jgYN0QQav58miECgxTM+SNjFCi0=;
+  b=LgS+NoHhmTAdUkTPv42bZ82p3A7xtyqthiwJvUUeRqd5+yAQ+bHL66O9
+   61sH+uvQi+/NSvbhqYwarJk+ZWzAiKAOz2FSlv2mpBVQXX+fJw+AU1qE+
+   SguJwcKYZ+r1tjQC9SQmSD9aashEIHBHVA0MEbjxqqefEOVIJOQ54etBW
+   Eb9SvjMQhr6Owd07TWqjp+2jDCaOdCntpHII2IcTvNR1BA0b9PEOpf0YL
+   KDQzV5HUWTtaDeyq2gX6ZYbNFmRc11fTG7oTcNd6haA4/9b945SGHi2RZ
+   k0v6tqExpoutvdXex3qZB9Ge0gOloYxT/p7lI4IOudD7CUwOevjByh0I6
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="4617588"
+X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
+   d="scan'208";a="4617588"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 07:22:05 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
+   d="scan'208";a="14801134"
+Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
+  by orviesa003.jf.intel.com with ESMTP; 07 Mar 2024 07:22:01 -0800
+Received: from kbuild by b21307750695 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1riFZG-0005Hr-2x;
+	Thu, 07 Mar 2024 15:21:58 +0000
+Date: Thu, 7 Mar 2024 23:21:47 +0800
+From: kernel test robot <lkp@intel.com>
+To: Alex Williamson <alex.williamson@redhat.com>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	kvm@vger.kernel.org, eric.auger@redhat.com, clg@redhat.com,
+	reinette.chatre@intel.com, linux-kernel@vger.kernel.org,
+	kevin.tian@intel.com, diana.craciun@oss.nxp.com
+Subject: Re: [PATCH 7/7] vfio/fsl-mc: Block calling interrupt handler without
+ trigger
+Message-ID: <202403072356.jlxR3E5Q-lkp@intel.com>
+References: <20240306211445.1856768-8-alex.williamson@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJvTdK=Fbo0in7diYv_4Zk_-zrOPP4skDgpTMOYw-UM8=3R29Q@mail.gmail.com>
+In-Reply-To: <20240306211445.1856768-8-alex.williamson@redhat.com>
 
-On Thu, Mar 07, 2024 at 09:27:21AM -0500, Len Brown wrote:
-> On Thu, Mar 7, 2024 at 4:29 AM Max Gurtovoy <mgurtovoy@nvidia.com> wrote:
-> 
-> > > Some words are alarming in routine kernel messages.
-> > > "timeout" is one of them...
->
-> > > Here NVME is routinely setting a timeout value,
-> > > rather than reporting that a timeout has occurred.
-> >
-> > No.
-> > see the original commit message
-> >
-> > "When an NVMe controller reports RTD3 Entry Latency larger than the
-> > value of shutdown_timeout module parameter, we update the
-> > shutdown_timeout accordingly to honor RTD3 Entry Latency. Use an
-> > informational debug level instead of a warning level for it."
-> >
-> > So this is not a routine flow. This informs users about using a
-> > different value than the module param they set.
-> 
-> I have machines in automated testing.
-> Those machines have zero module params.
-> This message appears in their dmesg 100% of the time,
-> and our dmesg scanner complains about them 100% of the time.
-> 
-> Is this a bug in the NVME hardware or software?
-> 
-> If yes, I'll be happy to help  debug it.
-> 
-> If no, then exactly what action is the informed user supposed to take
-> upon seeing this message?
-> 
-> If none, then the message serves no purpose and should be deleted entirely.
+Hi Alex,
 
-It lets you know that your device takes longer to safely power off than
-the module's default tolerance. System low power transitions may take a
-long time, and at one point, people wanted to know about that since it
-may affect their power management decisions.
+kernel test robot noticed the following build warnings:
 
-This print was partly from when NVMe protocol did not provide a way to
-advertise an appropriate shutdown time, and we had no idea what devices
-in the wild actually needed. We often just get a dmesg with bug reports,
-and knowing device's shutdown timings was helpful at one point with
-suspend and power off issues.
+[auto build test WARNING on awilliam-vfio/next]
+[also build test WARNING on linus/master v6.8-rc7 next-20240307]
+[cannot apply to awilliam-vfio/for-linus]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-You can make the print go away by adding param
+url:    https://github.com/intel-lab-lkp/linux/commits/Alex-Williamson/vfio-pci-Disable-auto-enable-of-exclusive-INTx-IRQ/20240307-051931
+base:   https://github.com/awilliam/linux-vfio.git next
+patch link:    https://lore.kernel.org/r/20240306211445.1856768-8-alex.williamson%40redhat.com
+patch subject: [PATCH 7/7] vfio/fsl-mc: Block calling interrupt handler without trigger
+config: x86_64-allyesconfig (https://download.01.org/0day-ci/archive/20240307/202403072356.jlxR3E5Q-lkp@intel.com/config)
+compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240307/202403072356.jlxR3E5Q-lkp@intel.com/reproduce)
 
-  nvme_core.shutdown_timeout=<Largest Observed Value>
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202403072356.jlxR3E5Q-lkp@intel.com/
 
-But personally, I don't find this print very useful anymore, so I don't
-care if it gets removed.
+All warnings (new ones prefixed by >>):
+
+>> drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c:111:11: warning: variable 'hwirq' set but not used [-Wunused-but-set-variable]
+     111 |         int ret, hwirq;
+         |                  ^
+   1 warning generated.
+
+
+vim +/hwirq +111 drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c
+
+cc0ee20bd96971 Diana Craciun   2020-10-05  104  
+2e0d29561f593a Diana Craciun   2020-10-05  105  static int vfio_fsl_mc_set_irq_trigger(struct vfio_fsl_mc_device *vdev,
+2e0d29561f593a Diana Craciun   2020-10-05  106  				       unsigned int index, unsigned int start,
+2e0d29561f593a Diana Craciun   2020-10-05  107  				       unsigned int count, u32 flags,
+2e0d29561f593a Diana Craciun   2020-10-05  108  				       void *data)
+2e0d29561f593a Diana Craciun   2020-10-05  109  {
+cc0ee20bd96971 Diana Craciun   2020-10-05  110  	struct fsl_mc_device *mc_dev = vdev->mc_dev;
+cc0ee20bd96971 Diana Craciun   2020-10-05 @111  	int ret, hwirq;
+cc0ee20bd96971 Diana Craciun   2020-10-05  112  	struct vfio_fsl_mc_irq *irq;
+cc0ee20bd96971 Diana Craciun   2020-10-05  113  	struct device *cont_dev = fsl_mc_cont_dev(&mc_dev->dev);
+cc0ee20bd96971 Diana Craciun   2020-10-05  114  	struct fsl_mc_device *mc_cont = to_fsl_mc_device(cont_dev);
+cc0ee20bd96971 Diana Craciun   2020-10-05  115  
+159246378d8483 Diana Craciun   2020-10-15  116  	if (!count && (flags & VFIO_IRQ_SET_DATA_NONE))
+159246378d8483 Diana Craciun   2020-10-15  117  		return vfio_set_trigger(vdev, index, -1);
+159246378d8483 Diana Craciun   2020-10-15  118  
+cc0ee20bd96971 Diana Craciun   2020-10-05  119  	if (start != 0 || count != 1)
+2e0d29561f593a Diana Craciun   2020-10-05  120  		return -EINVAL;
+cc0ee20bd96971 Diana Craciun   2020-10-05  121  
+da119f387e9464 Jason Gunthorpe 2021-08-05  122  	mutex_lock(&vdev->vdev.dev_set->lock);
+cc0ee20bd96971 Diana Craciun   2020-10-05  123  	ret = fsl_mc_populate_irq_pool(mc_cont,
+cc0ee20bd96971 Diana Craciun   2020-10-05  124  			FSL_MC_IRQ_POOL_MAX_TOTAL_IRQS);
+cc0ee20bd96971 Diana Craciun   2020-10-05  125  	if (ret)
+cc0ee20bd96971 Diana Craciun   2020-10-05  126  		goto unlock;
+cc0ee20bd96971 Diana Craciun   2020-10-05  127  
+cc0ee20bd96971 Diana Craciun   2020-10-05  128  	ret = vfio_fsl_mc_irqs_allocate(vdev);
+cc0ee20bd96971 Diana Craciun   2020-10-05  129  	if (ret)
+cc0ee20bd96971 Diana Craciun   2020-10-05  130  		goto unlock;
+da119f387e9464 Jason Gunthorpe 2021-08-05  131  	mutex_unlock(&vdev->vdev.dev_set->lock);
+cc0ee20bd96971 Diana Craciun   2020-10-05  132  
+cc0ee20bd96971 Diana Craciun   2020-10-05  133  	if (flags & VFIO_IRQ_SET_DATA_EVENTFD) {
+cc0ee20bd96971 Diana Craciun   2020-10-05  134  		s32 fd = *(s32 *)data;
+cc0ee20bd96971 Diana Craciun   2020-10-05  135  
+cc0ee20bd96971 Diana Craciun   2020-10-05  136  		return vfio_set_trigger(vdev, index, fd);
+cc0ee20bd96971 Diana Craciun   2020-10-05  137  	}
+cc0ee20bd96971 Diana Craciun   2020-10-05  138  
+d86a6d47bcc6b4 Thomas Gleixner 2021-12-10  139  	hwirq = vdev->mc_dev->irqs[index]->virq;
+cc0ee20bd96971 Diana Craciun   2020-10-05  140  
+cc0ee20bd96971 Diana Craciun   2020-10-05  141  	irq = &vdev->mc_irqs[index];
+cc0ee20bd96971 Diana Craciun   2020-10-05  142  
+cc0ee20bd96971 Diana Craciun   2020-10-05  143  	if (flags & VFIO_IRQ_SET_DATA_NONE) {
+dce72fdf5c6be9 Alex Williamson 2024-03-06  144  		if (irq->trigger)
+dce72fdf5c6be9 Alex Williamson 2024-03-06  145  			eventfd_signal(irq->trigger);
+cc0ee20bd96971 Diana Craciun   2020-10-05  146  
+cc0ee20bd96971 Diana Craciun   2020-10-05  147  	} else if (flags & VFIO_IRQ_SET_DATA_BOOL) {
+cc0ee20bd96971 Diana Craciun   2020-10-05  148  		u8 trigger = *(u8 *)data;
+cc0ee20bd96971 Diana Craciun   2020-10-05  149  
+dce72fdf5c6be9 Alex Williamson 2024-03-06  150  		if (trigger && irq->trigger)
+dce72fdf5c6be9 Alex Williamson 2024-03-06  151  			eventfd_signal(irq->trigger);
+cc0ee20bd96971 Diana Craciun   2020-10-05  152  	}
+cc0ee20bd96971 Diana Craciun   2020-10-05  153  
+cc0ee20bd96971 Diana Craciun   2020-10-05  154  	return 0;
+cc0ee20bd96971 Diana Craciun   2020-10-05  155  
+cc0ee20bd96971 Diana Craciun   2020-10-05  156  unlock:
+da119f387e9464 Jason Gunthorpe 2021-08-05  157  	mutex_unlock(&vdev->vdev.dev_set->lock);
+cc0ee20bd96971 Diana Craciun   2020-10-05  158  	return ret;
+cc0ee20bd96971 Diana Craciun   2020-10-05  159  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
