@@ -1,61 +1,64 @@
-Return-Path: <linux-kernel+bounces-95046-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95050-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2CDC874891
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 08:21:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3005D87489A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 08:23:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 90CDB1C20EBB
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 07:21:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DFE45282794
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 07:23:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBEDE1D54D;
-	Thu,  7 Mar 2024 07:21:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6ECA1D558;
+	Thu,  7 Mar 2024 07:23:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="I3u7exF8"
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nLlingeY"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 679F21FDD
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 07:21:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECE573D6B;
+	Thu,  7 Mar 2024 07:23:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709796105; cv=none; b=DqZhU/yPvPCsc0miWFOJoaVNMKAxQditxJeEKR0f61Na2mVyPzg/DKzZKQIixiAc1crXKB7gxUU/s+EL1YWae06oHcbTpU0LLf1ayl2YafVD8sf+Cip7dypBlTx5Ho3ZMuVVTnR69a7MJ9ZgwRcD8j5PXHyphqTN0GqksofzvOg=
+	t=1709796184; cv=none; b=SXHEWzmJC9T5f+uOYTAZfs1fmIk3emuFy2POLb27dFJU+fgM0mCXMLEwg0pSyIHHGKkLafbZ7lKQFtPZd5c2Al79UCGjnV4ju9hnuv3VdeUPYRlHCyiV0EF2qCQXCWuNqE6BeONMCvtVzOdll7M8OPIjsbe1FutTV7WpuHG3jj0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709796105; c=relaxed/simple;
-	bh=MqVBXUoVntZHD125v6N35fVG05A3BHyjL4XSvBEiedY=;
+	s=arc-20240116; t=1709796184; c=relaxed/simple;
+	bh=zDK4jwPUVS3K65SBI2uDrKWUgERbKeIXVQOlOCTCKjU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IG/rRSMO3XgoQ68XxGH9qsvp+Pc8zGMhQrk1inOVBZ4dgl5WxpOHKxuNASVY0AP1q/G0DwWQg3RiNhIZIdFfqyhudnu47Zg9j1eGmOE4UWgkBQuj+TNq0mKlXa0uq7BlU9t5+3mq9DXAOmd9iMH6RugkLlYRrrOUZteqDYoHFnI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=I3u7exF8; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=8w8rejYB9PBmKB0DYtImdRxvM7rQ/tJG4QSkTuHYLXw=; b=I3u7exF8LYo6EnYsylcAmUSP+Z
-	R0i7G9s8p9OgKJN6jlZEfFTBNB+jIFnUR2Lfe+LMXnV1DiqReY6K+WzE/3TFxRtOWELmj2CYfDslt
-	2gyw22XfQUJ+JtsoAg63qUO7FmSMcl6Hp+1CuLtV1n5KaUrc+IPZKYeSMBrnW1ra+nuJY8k1VSx4Z
-	lDGuSBayME4GraArPrhR2obfaG+oUcwaJU4FKq0Rl2Q8b68HSjbdBfK3y267PwUK24ePKDf0osb9T
-	LVY5we2/bTF4Tp3weeVUVNxuH3EGW+4c7PmAi/fC0hYmQrR11bKHhVw1fb/O0IRUGsioIkaRPhQzt
-	Z+CFRwkA==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1ri841-003FW0-06;
-	Thu, 07 Mar 2024 07:21:13 +0000
-Date: Thu, 7 Mar 2024 07:21:12 +0000
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Baokun Li <libaokun1@huawei.com>
-Cc: linux-erofs@lists.ozlabs.org, xiang@kernel.org, chao@kernel.org,
-	huyue2@coolpad.com, jefflexu@linux.alibaba.com,
-	linux-kernel@vger.kernel.org, yangerkun@huawei.com,
-	houtao1@huawei.com, yukuai3@huawei.com, chengzhihao1@huawei.com
-Subject: Re: [PATCH] erofs: fix lockdep false positives on initializing
- erofs_pseudo_mnt
-Message-ID: <20240307072112.GC538574@ZenIV>
-References: <20240307024459.883044-1-libaokun1@huawei.com>
- <20240307050717.GB538574@ZenIV>
- <7e9746db-033e-64d0-a3d5-9d341c66cec7@huawei.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=taw+RBDkfKV9pmV1qb5L8FVERylU2rLwD2E3H5eR6/1zKwGMll2Reu3Ef5iLZIIR1rg1BTnRXwIAOyUasLIXZkJ0rvOzLus0NL2P+iptuv3ht+nUIldOESeLZrnsSLlcMcG8vYZrfKjjFTXg1XSNfwTjKNRJokrlzGTfVi4HuVg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nLlingeY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D43E0C433F1;
+	Thu,  7 Mar 2024 07:22:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709796183;
+	bh=zDK4jwPUVS3K65SBI2uDrKWUgERbKeIXVQOlOCTCKjU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=nLlingeY5dSoTNCuzLFH4Pi+5vHniY8+2eVCyy/3AXVHLinu0QNWXfJS5FNb8vNKn
+	 5/P4NtytF4nBIIKX7G3JJHKiZZFzmz+s1J+sYGsXaeJz6c2sxKG+YchPOd3b7/knxs
+	 5qZdGm5zOiWC8+UxQ6uAUmBKSGJHivUSylJ/HhVerxvZuQqVqaqTWECsLE7UFaQ4YQ
+	 3Bow3DPCmAmGcRiSJP8WY7Y4zGgpqdMXGR/piKgXvLCQNJiaPV1rnnwJf25scWOEIW
+	 4tRIjgUAB1zi09L7A/UAwNYxKUoEnHugdhWrxakDk8BUZCo/cuy5MbJxj0cxXK/+U1
+	 FCB3QMm0vmmpQ==
+Date: Thu, 7 Mar 2024 09:22:07 +0200
+From: Mike Rapoport <rppt@kernel.org>
+To: Calvin Owens <jcalvinowens@gmail.com>
+Cc: Luis Chamberlain <mcgrof@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Naveen N Rao <naveen.n.rao@linux.ibm.com>,
+	Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+	David S Miller <davem@davemloft.net>,
+	Thomas Gleixner <tglx@linutronix.de>, bpf@vger.kernel.org,
+	linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC][PATCH 3/4] kprobes: Allow kprobes with CONFIG_MODULES=n
+Message-ID: <ZelrH2hiUmaomDv2@kernel.org>
+References: <cover.1709676663.git.jcalvinowens@gmail.com>
+ <2af01251ca21d79fa29092505d192f1f1b746cff.1709676663.git.jcalvinowens@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,30 +67,72 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7e9746db-033e-64d0-a3d5-9d341c66cec7@huawei.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <2af01251ca21d79fa29092505d192f1f1b746cff.1709676663.git.jcalvinowens@gmail.com>
 
-On Thu, Mar 07, 2024 at 03:06:49PM +0800, Baokun Li wrote:
-> > > +int erofs_anon_register_fs(void)
-> > > +{
-> > > +	return register_filesystem(&erofs_anon_fs_type);
-> > > +}
-> > What for?  The only thing it gives you is an ability to look it up by
-> > name.  Which is completely pointless, IMO,
-> The helper function here is to avoid extern erofs_anon_fs_type(), because
-> we define it in fscache.c, but also use it in super.c. Moreover, we don't
-> need
-> to register it when CONFIG_EROFS_FS_ONDEMAND is not enabled, so we
+On Wed, Mar 06, 2024 at 12:05:10PM -0800, Calvin Owens wrote:
+> If something like this is merged down the road, it can go in at leisure
+> once the module_alloc change is in: it's a one-way dependency.
+> 
+> Signed-off-by: Calvin Owens <jcalvinowens@gmail.com>
+> ---
+>  arch/Kconfig                |  2 +-
+>  kernel/kprobes.c            | 22 ++++++++++++++++++++++
+>  kernel/trace/trace_kprobe.c | 11 +++++++++++
+>  3 files changed, 34 insertions(+), 1 deletion(-)
 
-You don't need to register it at all.
+When I did this in my last execmem posting, I think I've got slightly less
+ugly ifdery, you may want to take a look at that:
 
-The one and only effect of register_filesystem() is making file_system_type
-instance visible to get_fs_type() (and making it show up in /proc/filesystems).
+https://lore.kernel.org/all/20230918072955.2507221-13-rppt@kernel.org
+ 
+> diff --git a/arch/Kconfig b/arch/Kconfig
+> index cfc24ced16dd..e60ce984d095 100644
+> --- a/arch/Kconfig
+> +++ b/arch/Kconfig
+> @@ -52,8 +52,8 @@ config GENERIC_ENTRY
+>  
+>  config KPROBES
+>  	bool "Kprobes"
+> -	depends on MODULES
+>  	depends on HAVE_KPROBES
+> +	select MODULE_ALLOC
+>  	select KALLSYMS
+>  	select TASKS_RCU if PREEMPTION
+>  	help
+> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+> index 9d9095e81792..194270e17d57 100644
+> --- a/kernel/kprobes.c
+> +++ b/kernel/kprobes.c
+> @@ -1556,8 +1556,12 @@ static bool is_cfi_preamble_symbol(unsigned long addr)
+>  		str_has_prefix("__pfx_", symbuf);
+>  }
+>  
+> +#if IS_ENABLED(CONFIG_MODULES)
+>  static int check_kprobe_address_safe(struct kprobe *p,
+>  				     struct module **probed_mod)
+> +#else
+> +static int check_kprobe_address_safe(struct kprobe *p)
+> +#endif
+>  {
+>  	int ret;
+>  
+> @@ -1580,6 +1584,7 @@ static int check_kprobe_address_safe(struct kprobe *p,
+>  		goto out;
+>  	}
+>  
+> +#if IS_ENABLED(CONFIG_MODULES)
 
-That's it.  If you want to have it looked up by name (e.g. for userland
-mounts), you need to register.  If not, you do not need to do that.
+Plain #ifdef will do here and below. IS_ENABLED is for usage withing the
+code, like
 
-Note that kern_mount() take a pointer to struct file_system_type,
-not its (string) name.  So all you get from registration is an extra line
-in /proc/filesystems.  What's the point?
+	if (IS_ENABLED(CONFIG_MODULES))
+		;
+
+>  	/* Check if 'p' is probing a module. */
+>  	*probed_mod = __module_text_address((unsigned long) p->addr);
+>  	if (*probed_mod) {
+
+-- 
+Sincerely yours,
+Mike.
 
