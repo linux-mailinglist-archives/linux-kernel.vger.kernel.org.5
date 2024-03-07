@@ -1,167 +1,182 @@
-Return-Path: <linux-kernel+bounces-95794-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95795-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C3C28752AD
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 16:04:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38AF98752B5
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 16:05:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3052B1C24C01
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:04:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F38E1C24C5D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:05:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECEF7129A95;
-	Thu,  7 Mar 2024 15:03:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="r0tuvbzY";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="IMAiRVXx"
-Received: from wflow7-smtp.messagingengine.com (wflow7-smtp.messagingengine.com [64.147.123.142])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E95E12F36C;
+	Thu,  7 Mar 2024 15:05:18 +0000 (UTC)
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1635F12F365;
-	Thu,  7 Mar 2024 15:03:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2174E1DFC1;
+	Thu,  7 Mar 2024 15:05:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709823800; cv=none; b=dQx0pGF9Xysa1vhUHDwuWIjkJT9eVeMK6REWA1z3zITFZJ5NuSmRqR9jwbeMdB381uYcZugSxU5GX1bMVYcMMRq3Dm2U5heh3ElVB2qwau2x3Mg0luCIHJ1qvGG3kxx6lyPyzbiaZLcggFBbc/QepKOBdRuFdSwrSgPYZd6tF4I=
+	t=1709823918; cv=none; b=khZJ6v26ze6x/gyHQAtE9UYmuGAl4KlEHZmskMe44EHiAtEVnoChtuZiC/6DypaEEtt3e8a3aO+B7j4DUJNMfLdEtkVK+LF/Zs8VbZ2ruhltY00wnGTv1p6lsquI3QKMBSs4YTLmrWtbSHXX5357JQsozqNpTJt21YpY2DE5r20=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709823800; c=relaxed/simple;
-	bh=zrHvih0CRLls3gfTaqe/nco2QOUS/ZrmpGJoEnrrwuI=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=uVP4BEtUOuoGCmsCe/iEgqI0/YQftIVcS2h1MX+sJU2JbP9tuckBhkz4Ez/r1bVsbMBR3+csgzB+Lag/GUoNsnTMxvsiIJ9DfXApbOKwI++mpcfxkvrjfk5flIRqydrQs5LQTv3xFK5/Pi1HiURL8NLWrSWcKTX5z+khjyfhoGE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=r0tuvbzY; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=IMAiRVXx; arc=none smtp.client-ip=64.147.123.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailflow.west.internal (Postfix) with ESMTP id 403272CC00B9;
-	Thu,  7 Mar 2024 10:03:16 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Thu, 07 Mar 2024 10:03:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1709823795;
-	 x=1709830995; bh=KIk1du4pHCXSqXMFodBfcBDhm0Cr4cLrqXMscpRsEQg=; b=
-	r0tuvbzYDU2G/VrHHuosGqT9d0Rw3cKHv6Dja3Jxrfr92jUcWA6aBzINFkHmqsc+
-	W0VPxtTJ8B0vC2EEnOjj10f95OpjzDadOL+ys33iJqrTg8dt6h6A0ioD1vUy9eMA
-	rQDiBqRQkSnBZPzAryAgcIPLujfFbbQTaz+hhiYXup1yh83mGte/M+WqrDS75stp
-	2tn2S7bWM4dirwvRqVwurmSpM4mKZ4dA3+y3UwmilVoT8OJZAYdcOgKoABGNvuCQ
-	DseDxJwnKVLzq1eXCX1Zfa1nGfeI+Bygh/lkjPFh+98io7m1+xeCFmZxMh1uq1gJ
-	QEGpyLuNpu6sMRWsDUXowA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1709823795; x=
-	1709830995; bh=KIk1du4pHCXSqXMFodBfcBDhm0Cr4cLrqXMscpRsEQg=; b=I
-	MAiRVXx8U8UQHv+vZM3R4xLoWsqTcVM3UY8wf4FghptGdmRky7R7aKeDRrkxCmlU
-	6PHp7EG14pk2yboSB2QBFOlfKYC7DTi8Gj7hhiqnGmzXgANPCaSGRKEJwpQqQo+G
-	LU5ovHcTsYMe40U3G3h6/XsSKGY9V3rhFgzfEc6G+5QW+c+K/QXyacm+LdwWffUS
-	5KwOiWwOSyWsjja1bb+V07UAuBGmHNSHvCmIlgAKOQ/oIk2V8o7FIkKBBjCB/NQ0
-	2e7ZOdnJ2lulDwQaf9JwqnKNK3OAkH9n6agTMm0DE+GI//rCz1e+A9cMc6rKX2uC
-	QH9+Y3ks/2AkJoHdUqC7g==
-X-ME-Sender: <xms:MtfpZdjIhvvj2w5LIjBaYeBRm68khe7SPUWUIPyz3Qzr4DqMiJH59Q>
-    <xme:MtfpZSCw6-_D15CzMMJ6aMq4FMi2a38HaisIGgcg1cjfGUuDJtjoZKI4NGvsMsMWJ
-    8nh4Z6KFttFTRDe0rk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrieefgdejudcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepgeefjeehvdelvdffieejieejiedvvdfhleeivdelveehjeelteegudektdfg
-    jeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:MtfpZdEVd_wK33nQCCOfgC58V_P6HRkYxs0fK98U48nw3QCN6N9QrA>
-    <xmx:MtfpZSR83RszXpjRHFyEGpw4PYmBtg8qqnJj2iwBSZDSGIiLP24o7A>
-    <xmx:MtfpZaz3ScCYYHDe4yULQs_p0ex-0Ng_lJ48VBQtqruta0LNNK4Gmg>
-    <xmx:M9fpZfEH0QTEMK1lJt6knYQSuFAbpSIeOW9pH5A-AO4-PVMsrOqDdxgBn8g8FLuD>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id F1F00B6008D; Thu,  7 Mar 2024 10:03:13 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-251-g8332da0bf6-fm-20240305.001-g8332da0b
+	s=arc-20240116; t=1709823918; c=relaxed/simple;
+	bh=KcbjcoK0enYuZVWxTVuA3A7m2RX5v0vJJmwup26L1hs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=m/rkZhNRVb1YBGtGjoMLGPnUT1c0Rj+JaQ5tUtYIilNOa7HeuU+hbxeWrUtSpmDd3PIpcHp/vEdcjIbiBRcQihPddW1qIBT6IEuz6VjZY09hX8kgm7Kua6fwUJ5wr/HmofeSyNnjP6jcDksuUNqh6T1e8h0cHA1Veojxx3vEd6o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id 6CF2168CFE; Thu,  7 Mar 2024 16:05:05 +0100 (CET)
+Date: Thu, 7 Mar 2024 16:05:05 +0100
+From: Christoph Hellwig <hch@lst.de>
+To: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Christoph Hellwig <hch@lst.de>, Leon Romanovsky <leon@kernel.org>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+	Chaitanya Kulkarni <chaitanyak@nvidia.com>,
+	Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
+	Keith Busch <kbusch@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
+	Yishai Hadas <yishaih@nvidia.com>,
+	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
+	iommu@lists.linux.dev, linux-nvme@lists.infradead.org,
+	kvm@vger.kernel.org, linux-mm@kvack.org,
+	Bart Van Assche <bvanassche@acm.org>,
+	Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+	Amir Goldstein <amir73il@gmail.com>,
+	"josef@toxicpanda.com" <josef@toxicpanda.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	"daniel@iogearbox.net" <daniel@iogearbox.net>,
+	Dan Williams <dan.j.williams@intel.com>,
+	"jack@suse.com" <jack@suse.com>, Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: Re: [RFC RESEND 00/16] Split IOMMU DMA mapping operation to two
+ steps
+Message-ID: <20240307150505.GA28978@lst.de>
+References: <cover.1709635535.git.leon@kernel.org> <47afacda-3023-4eb7-b227-5f725c3187c2@arm.com> <20240305122935.GB36868@unreal> <20240306144416.GB19711@lst.de> <20240306154328.GM9225@ziepe.ca> <20240306162022.GB28427@lst.de> <20240306174456.GO9225@ziepe.ca> <20240306221400.GA8663@lst.de> <20240307000036.GP9225@ziepe.ca>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <f8d42bd5-5a89-49da-8da4-570e26ecc0e3@app.fastmail.com>
-In-Reply-To: 
- <CAPLW+4mVTvPBW0hd9pV6AsSezxPAhwPByq3WmGpprtseTgy-wg@mail.gmail.com>
-References: 
- <CA+G9fYtddf2Fd3be+YShHP6CmSDNcn0ptW8qg+stUKW+Cn0rjQ@mail.gmail.com>
- <d5c07950-6f42-4ac9-b0d8-776d444252ae@app.fastmail.com>
- <CAPLW+4=T1eGrWQcEJWvOcHgq9tnRhfi=AH_=qj1022k2WHmEhA@mail.gmail.com>
- <CAPLW+4mVTvPBW0hd9pV6AsSezxPAhwPByq3WmGpprtseTgy-wg@mail.gmail.com>
-Date: Thu, 07 Mar 2024 16:02:22 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Sam Protsenko" <semen.protsenko@linaro.org>
-Cc: "Naresh Kamboju" <naresh.kamboju@linaro.org>,
- linux-block <linux-block@vger.kernel.org>, lkft-triage@lists.linaro.org,
- "open list" <linux-kernel@vger.kernel.org>, "Jens Axboe" <axboe@kernel.dk>,
- "Christoph Hellwig" <hch@lst.de>, "Christian Brauner" <brauner@kernel.org>,
- "Ulf Hansson" <ulf.hansson@linaro.org>,
- "Dan Carpenter" <dan.carpenter@linaro.org>,
- "Anders Roxell" <anders.roxell@linaro.org>,
- "jh80.chung" <jh80.chung@samsung.com>,
- "linux-mmc @ vger . kernel . org" <linux-mmc@vger.kernel.org>,
- "Oleksij Rempel" <linux@rempel-privat.de>,
- "Manuel Lauss" <manuel.lauss@gmail.com>,
- "Neil Armstrong" <neil.armstrong@linaro.org>,
- "Jerome Brunet" <jbrunet@baylibre.com>, yann.gautier@foss.st.com,
- ludovic.barre@st.com,
- =?UTF-8?Q?David_Lanzend=C3=B6rfer?= <david.lanzendoerfer@o2s.ch>,
- "Chen-Yu Tsai" <wens@csie.org>
-Subject: Re: WinLink E850-96: WARNING: at block/blk-settings.c:204 blk_validate_limits
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240307000036.GP9225@ziepe.ca>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 
-On Fri, Mar 1, 2024, at 22:18, Sam Protsenko wrote:
-> On Fri, Mar 1, 2024 at 2:51=E2=80=AFPM Sam Protsenko <semen.protsenko@=
-linaro.org> wrote:
->> On Thu, Feb 29, 2024 at 8:56=E2=80=AFAM Arnd Bergmann <arnd@arndb.de>=
- wrote:
+On Wed, Mar 06, 2024 at 08:00:36PM -0400, Jason Gunthorpe wrote:
+> > 
+> > I don't think you can do without dma_addr_t storage.  In most cases
+> > your can just store the dma_addr_t in the LE/BE encoded hardware
+> > SGL, so no extra storage should be needed though.
+> 
+> RDMA (and often DRM too) generally doesn't work like that, the driver
+> copies the page table into the device and then the only reason to have
+> a dma_addr_t storage is to pass that to the dma unmap API. Optionally
+> eliminating long term dma_addr_t storage would be a worthwhile memory
+> savings for large long lived user space memory registrations.
 
->
-> Sorry, just noticed I commented on the wrong line. Here is the change =
-I made:
->
-> -               mmc->max_seg_size =3D 0x1000;
-> +               mmc->max_seg_size =3D PAGE_SIZE;
+It's just kinda hard to do.  For aligned IOMMU mapping you'd only
+have one dma_addr_t mappings (or maybe a few if P2P regions are
+involved), so this probably doesn't matter.  For direct mappings
+you'd have a few, but maybe the better answer is to use THP
+more aggressively and reduce the number of segments.
 
-I went over all MMC drivers to see what else sets a max_seg_size
-smaller than a page and found these:
+> I wrote the list as from a single IO operation perspective, so all but
+> 5 need to store a single IOVA range that could be stored in some
+> simple non-dynamic memory along with whatever HW SGLs/etc are needed.
+> 
+> The point of 5 being different is because the driver has to provide a
+> dynamically sized list of dma_addr_t's as storage until unmap. 5 is
+> the only case that requires that full list.
 
-drivers/mmc/host/alcor.c:       mmc->max_seg_size =3D AU6601_MAX_DMA_BLO=
-CK_SIZE; // 0x1000
-drivers/mmc/host/au1xmmc.c:             mmc->max_seg_size =3D AU1100_MMC=
-_DESCRIPTOR_SIZE; // 64K-1
-drivers/mmc/host/dw_mmc.c:              mmc->max_seg_size =3D 0x1000;
-drivers/mmc/host/meson-gx-mmc.c:        mmc->max_seg_size =3D mmc->max_r=
-eq_size; //  1536 bytes
-drivers/mmc/host/mmci_stm32_sdmmc.c:            host->mmc->max_seg_size =
-=3D host->variant->stm32_idmabsize_mask; //  GENMASK(12, 5),
-drivers/mmc/host/sunxi-mmc.c:   mmc->max_seg_size       =3D (1 << host->=
-cfg->idma_des_size_bits); // 1 << 13, only on arm32
-drivers/mmc/host/wmt-sdmmc.c:   .max_seg_size =3D 65024,=20
+No, all cases need to store one or more ranges.
 
-I've tried to add the maintainers to Cc here, these likely all
-need attention to work with large page sizes, in case of
-meson-gx-mmc it even seems like the limit is less than a 4KB
-page, so it will stop working entirely.
+> > > So are you thinking something more like a driver flow of:
+> > > 
+> > >   .. extent IO and get # aligned pages and know if there is P2P ..
+> > >   dma_init_io(state, num_pages, p2p_flag)
+> > >   if (dma_io_single_range(state)) {
+> > >        // #2, #4
+> > >        for each io()
+> > > 	    dma_link_aligned_pages(state, io range)
+> > >        hw_sgl = (state->iova, state->len)
+> > >   } else {
+> > 
+> > I think what you have a dma_io_single_range should become before
+> > the dma_init_io.  If we know we can't coalesce it really just is a
+> > dma_map_{single,page,bvec} loop, no need for any extra state.
+> 
+> I imagine dma_io_single_range() to just check a flag in state.
+> 
+> I still want to call dma_init_io() for the non-coalescing cases
+> because all the flows, regardless of composition, should be about as
+> fast as dma_map_sg is today.
 
-There are also a couple of drivers that look like they have
-an off-by-one error and pass a segment size of one less than
-a power-off-two number, e.g.:
+If all flows includes multiple non-coalesced regions that just makes
+things very complicated, and that's exactly what I'd want to avoid.
 
-drivers/mmc/host/davinci_mmc.c: mmc->max_seg_size       =3D MAX_CCNT * r=
-w_threshold;  // (64k-1) * 32
-drivers/mmc/host/atmel-mci.c:           mmc->max_seg_size =3D mmc->max_b=
-lk_size * mmc->max_segs; // 4095*256
+> That means we need to always pre-allocate the IOVA in any case where
+> the IOMMU might be active - even on a non-coalescing flow.
+> 
+> IOW, dma_init_io() always pre-allocates IOVA if the iommu is going to
+> be used and we can't just call today's dma_map_page() in a loop on the
+> non-coalescing side and pay the overhead of Nx IOVA allocations.
+> 
+> In large part this is for RDMA, were a single P2P page in a large
+> multi-gigabyte user memory registration shouldn't drastically harm the
+> registration performance by falling down to doing dma_map_page, and an
+> IOVA allocation, on a 4k page by page basis.
 
-I think some of these are intentional, while others are
-probably bugs.
+But that P2P page needs to be handled very differently, as with it
+we can't actually use a single iova range.  So I'm not sure how that
+is even supposed to work.  If you have
 
-     Arnd
+ +-------+-----+-------+
+ | local | P2P | local |
+ +-------+-----+-------+
+
+you need at least 3 hw SGL entries, as the IOVA won't be contigous.
+
+> The other thing that got hand waved here is how does dma_init_io()
+> know which of the 6 states we are looking at? I imagine we probably
+> want to do something like:
+> 
+>    struct dma_io_summarize summary = {};
+>    for each io()
+>         dma_io_summarize_range(&summary, io range)
+>    dma_init_io(dev, &state, &summary);
+>    if (state->single_range) {
+>    } else {
+>    }
+>    dma_io_done_mapping(&state); <-- flush IOTLB once
+
+That's why I really just want 2 cases.  If the caller guarantees the
+range is coalescable and there is an IOMMU use the iommu-API like
+API, else just iter over map_single/page.
+
+> Enhancing the single sgl case is not a big change, I think. It does
+> seem simplifying for the driver to not have to coalesce SGLs to detect
+> the single-SGL fast-path.
+> 
+> > > This is not quite what you said, we split the driver flow based on
+> > > needing 1 HW SGL vs need many HW SGL.
+> > 
+> > That's at least what I intended to say, and I'm a little curious as what
+> > it came across.
+> 
+> Ok, I was reading the discussion more about as alignment than single
+> HW SGL, I think you ment alignment as implying coalescing behavior
+> implying single HW SGL..
+
+Yes.
 
