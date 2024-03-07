@@ -1,167 +1,91 @@
-Return-Path: <linux-kernel+bounces-96162-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96163-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECD168757F1
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 21:08:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 448828757F3
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 21:09:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4EBCF281CDD
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:08:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C12E1B2534D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:09:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91A6513848A;
-	Thu,  7 Mar 2024 20:08:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Qhv3wS7r"
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2041.outbound.protection.outlook.com [40.107.243.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0C6E1384A3;
+	Thu,  7 Mar 2024 20:09:05 +0000 (UTC)
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B548D1DA2F;
-	Thu,  7 Mar 2024 20:08:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.41
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709842115; cv=fail; b=UMrt2vOGbuT66XS8hHfZOesB2F7WrNJDPJsIzZxH8HFsugIsPnBAMHuKy4Oze5D0r9Rr/I7aRZeEVt7/th2oq1CzjkUmoBwZXBzpzDa/L/sSNbafP7VhiDYkBDOeDful9xgnDWVIc1qUjYpibCArscmOFE/dqIgZXV6rQQcmx3M=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709842115; c=relaxed/simple;
-	bh=PrkvlCk5ml2tArIAivgu7axhHg9/DxnfeNSbmRHapvw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=saF7ZNGyP7Ko44E8acMNV6qcqi49yCmp/rJ+S5c/0VoryzA91VOA5Re04AfcMN2IU/z7/zgM92CfM/7HDrwIuYRqCUl6sk7ehCchV0IfmrfCewxAlEUh34dhv9kfqpSSWSVhs///ZGEXFaK+RM3Dg0OBixH+XlDGUUXsHiNuSBg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Qhv3wS7r; arc=fail smtp.client-ip=40.107.243.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ac8Fs6Hw4LimRkPHp/mMv43mhCPAt3gJVZCmHa/9037yLenYx2mz7xlubcY1xiUIsX++jOMANAcUepuBA6JXelYNMAyhi2jvHYBBxHZvyow5uVnkcV+GofzDnzLau0kr0n4ORDGDrKChs+6Z9e7luJQqDg0rLcQ071uF5UNry3L0Tare/nn6vB6Z+yIuvMus8HF731NVSujlsr85lOFX87w04pzCETsVd+dzKo+VNDbjj90E7VR+DTTmEyZxl6FoMbLnBKrOReLm9EEIlRGkIGSBCAJEnnanwJ8IlHcnYWR2dIeE9MWWc1xw6IDpfNeocjkqhTkNPOLB/x8D+HHVAw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=y8wQUDTOYSJlMARjTgmzAk5fpDYwgSG+FjZHuf2weMY=;
- b=SAPW3eCYJFCoctUs5cM/z80E1imm4P4wWb5mqAq0XdJfjELS7Nim6g+EzmUz8kq+tPn0TLfmvfOyK12nZOkz/qKizHciDlkUEBXQOfBZZQ9chjmEXqtL+mvGunAbvWA+RieGBp8b8Mva+rxNpoE8woMO4AN/pZ6MK32wTtW4Mn9E66UmA+CIKs3Ulq9pUkPcH7wSBtc5FwKqw2YrmxY1KMkHM0MDQeDWbi+DuNuzKWkyUBEkPXKwOmWUChPGpVN+4AYr6v1nXF+oJP1RNCmJATIlF4qCofrHQj7Wmb0wsSxgeaGglau3+01VNyFJ4bzNsSLzcnV3D0ZQDhC1K3JrNA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=y8wQUDTOYSJlMARjTgmzAk5fpDYwgSG+FjZHuf2weMY=;
- b=Qhv3wS7r61ETog1AQTy/bBDfpBUWwezej7bTW10Z6aT5nRBb2k6muvnmvWhpOXc/68uBodz1qTnWb+Xv/agMfv6liw8pjdq88v8xy4vxRNtwwPnQsDlngiDb+wYiFf0tLiWQ0m3LAIbnCoiIbNQsNpkxS3u1dsP6M5dnMS5bPuEBokiQqTqon8A2GycWPhWmKkQREIA9rAiNY2O8nSD2oF6rz0yXSOzv0M2dnJXTI5PdlUTYuqfDTC4DNGHCfwSgT5WkZ5Fa7sNJbMME9wzydzM5vMOYwMmhve/MnE4caIV2foDVo7aD8474a+piqKUC5T77zDsIv4d2Jlatrtmn+w==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3849.namprd12.prod.outlook.com (2603:10b6:5:1c7::26)
- by DS7PR12MB8292.namprd12.prod.outlook.com (2603:10b6:8:e2::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.27; Thu, 7 Mar
- 2024 20:08:29 +0000
-Received: from DM6PR12MB3849.namprd12.prod.outlook.com
- ([fe80::6aec:dbca:a593:a222]) by DM6PR12MB3849.namprd12.prod.outlook.com
- ([fe80::6aec:dbca:a593:a222%5]) with mapi id 15.20.7362.019; Thu, 7 Mar 2024
- 20:08:28 +0000
-Date: Thu, 7 Mar 2024 16:08:26 -0400
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: peterx@redhat.com
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Muchun Song <muchun.song@linux.dev>,
-	Matthew Wilcox <willy@infradead.org>,
-	Mike Rapoport <rppt@kernel.org>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>, x86@kernel.org,
-	sparclinux@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH RFC 03/13] mm/gup: Check p4d presence before going on
-Message-ID: <20240307200826.GE9179@nvidia.com>
-References: <20240306104147.193052-1-peterx@redhat.com>
- <20240306104147.193052-4-peterx@redhat.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240306104147.193052-4-peterx@redhat.com>
-X-ClientProxiedBy: SA9PR13CA0134.namprd13.prod.outlook.com
- (2603:10b6:806:27::19) To DM6PR12MB3849.namprd12.prod.outlook.com
- (2603:10b6:5:1c7::26)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90AB4130E39
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 20:09:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709842145; cv=none; b=SaT1jFN600738kUOMulnvgc0tSfZcjJGMMmH/La6vA1cVYqG7SYgJauXAupIhQy5GMUZtx+Pm3dF46P/0/1bRopfFRglx7t9wsSwIcXd0bhN10eqL4sfTQKQXfc4JPkCCps8/hZ7ZV4IJFyzFbdAtzopqodnKpybX8P1QYwMuM4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709842145; c=relaxed/simple;
+	bh=TSQ7AfrXLucKWQheLsgzlE+z8sjF6wEGYB6N+5YuKCA=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=p0r4kJETcm+DoH0OL0gn2CGs9rjAAVZokpckZ8d25l7D5bZquYYMVAQLizIECiBMHDomPg/1+VTy2SwjJKl4jn+hBP6CcJoHp0Rx6mTMFPZuQ/uybywWcVC+dJb1j6GLk956CconUHlb+XQJeTyii1ZAgZtUkIeqBMX2zDaS+qA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-363b161279aso621635ab.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 12:09:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709842142; x=1710446942;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zPnadW8PWoeFYDGj+Rcds2yWxUTI+tugiFM477DcjnU=;
+        b=RFbBwkUrbzSjtsI45C3DP7Hb9cE4ykqEfM1DVYjy+fJEQTUGnxGfmx4TQOA/wJ6olf
+         fpXu8xXFVN2mgnIu8t3is7M4hDwYvfCVRoBNlURVrKTs37vA/IMsAYKjbx3jUyDU2GMl
+         4qYAIQKuPEU9J68cTVhJgO4lw8cJjpGPF1wVYlNRuxxzwUYG39uPVyev1OdXv5tY3Mx4
+         nj8MeJfVL5t5wqymMtv2srhuWiatNtkQrZlVGstQoP+nWJ9SjEyGGRhqXeaVro2GAs83
+         6XFrrLyOY1UXgylq34jGGaj0oYBH4rXnpv1f/BkQDKAKJcq9O6/aFBcGztO3riLjTEc6
+         xRCA==
+X-Forwarded-Encrypted: i=1; AJvYcCXkmrqWIB9oN6HizRfQaqhscglcMGiDVERSt7ywBZLSEHCrbzIbI37t7/HL2VGiZRsvaQ7M6EnASl12EBDWus5Ti5ejc7i7zKd/952U
+X-Gm-Message-State: AOJu0YxrvjY/jm4VsEvp8Nr5A0deG89pZqyHTCW9NJeAkRZUPCJFpqqI
+	/fbY3garqUtJ4g2/+spPrIvbm0G9nJ7f7NcAj3lApbljKwYXi6xiDCErjWAuBtjaFX3VzLNzdVz
+	qau2uBJV9AZK9rTpK9fbXFjQnCqwj/JZGAhO/JsAmr4cg7BRbyRI1zK0=
+X-Google-Smtp-Source: AGHT+IHf0A1bbJbf40iM9gk/Vn5lgktnauIGxNzkggiI77z84bps/c8Vlpz+R4jEIRrBIDzEioemWGSOafctG0M9EBFR/8AFCv2Q
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3849:EE_|DS7PR12MB8292:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6b10a5c5-e075-4142-0b21-08dc3ee25ab1
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	fJsL/DeLsT3Haybnm2Y2kJUGYEhh/OcxVNROe/21sBWEKdg4Igg6Ck5ySrnTeFrTRDPrTJ8EYQWiRB5VfwCFTmGDYo0wt4xDBfYx6aAuzsnvv0LFqUly0oQ3Tg8z8m/EoN2HGFukOEQbCtrT8GIGm7WaGHOO++N1Tc4nHSKGjTLjYgL0TCfSu5xBHJxO2naZOMmjYwt/58P6W9WqVQ7vkXfNwd1Q/5rhVcJ6cSiIVyro7gri9Zr1NcVfKqRQkH9sip5WXb2/Q0Q6p5rEFeLTiSKw409EsEFc6ZfHdDF1S3TC0aXgeynMsc9Fc4FMT2I8dNHlLtqVmndZsXjtpvrMHNY4XEzjCRycN+bUwkSsgvnfFKJ39m4rZLNrJuY0HfZhwKo/3hzo/qs1NyAZmapPmBnR6uyibtA2yI+xYTxWlUeSr+0JHCd7rCEnjtSEE6tZNnqNB5BHr8SzXOyWvdL2o8q6dHaGQt+9IlAguMPexBTg7Wb09nAagLBtrYnMGGaJxByj0ww2W8WTxLuah6+mSpoFHYutSSlMPkmm/S02hk5HeF4/No6lX86jKhysbvM5X0/hso84vyEMnFME9g2VBbA4AeXZn0l6eIH+R6gfJCibElrLsHGp3Eh4q0bqHtFgaOGd99oWnx27KohVQooElX8bicFAbRL3oneVsoVbeZ4=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3849.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?H1K18NrF43ngrcnsp5NUFbt4fQoL4BH9lQUEl7UBDkCt3Gq/umwHhkB7tzQ+?=
- =?us-ascii?Q?eqeWxwyHIrlxTR25dLl+G2oPGrLy/hoXDdfQBnXbwnDc9qdv0YIWsGMLzmQj?=
- =?us-ascii?Q?fhenZcMERZdvAmBBIIobFEFppvaDvAwR5w9I7IeZQVGV5TnDyg9o68LvMBzz?=
- =?us-ascii?Q?mDTCMw0FV4+o4knmDYetADXvDqxOjw99VvFbtXm6yJL5RnMABsCjGkz2XEHx?=
- =?us-ascii?Q?sHZ962kRzTKZj/l7p4B6SDb4vyDRogVlpaqydlHHIUIFoqj7P1xh2A6w//O9?=
- =?us-ascii?Q?pc91VU3jn+NjjO3MlYRCCBXaHA2q377BpOcqdSxARE/7GvCe/tsT+eZkQ4ei?=
- =?us-ascii?Q?eQRZF3dERbgus3/aZxxSR3IN7tCfWq3Tf/GVc8SGPABe4wZ6o11gB4ytTfLW?=
- =?us-ascii?Q?f6uut1SjsV5w0BoPyH6sZz2LUa8TIGIq6kLVMNt2HDsCfTeYozlXwZWvL8Pr?=
- =?us-ascii?Q?iq/03PFg6VDgzs+cLBVPnkXIJqkOyYufkc7MtWhND6/jOggS1Ap6h65BpPtH?=
- =?us-ascii?Q?kqVkAXr0ZLnPkI4Oxq/JSnx/moM5oudl46LCQfo7Ln6ZGRDJlkgte33IQ7zz?=
- =?us-ascii?Q?id1Jr4ERHpBXf2vAmXfgUnuxPdTbkt429z7InFsT4mGEWFNELIriYPaW70dw?=
- =?us-ascii?Q?h+OpHUE2sthyzYr5UekjYVc+MNJdBs9VME7nCdcFRKu9H5SMxfTxDju4oKFl?=
- =?us-ascii?Q?pqnuYGjBXZ9JkJK0ZVXNc+Dr2chGfgGsdKYpdDtPVwnGBaQvBCFbLmwXjH2b?=
- =?us-ascii?Q?lf4dsMU8tGii0jSndrcuBgYfRVSctEUCCROZ4d0GFGrbSy4ex7fNhhR5g+9T?=
- =?us-ascii?Q?w+ukIXn4tElpLiD9LJZ29OX2Dorfncfi80e0+PgXyZt/zDdBfUtIjL3It0aX?=
- =?us-ascii?Q?gj/R7ro8hktxCVZe3FezuVSo5kuDv1C3xHGjWd7tCBklitgGxGSZueJwYHqd?=
- =?us-ascii?Q?iAxIurALRccV7rcPoq2Gve99zyCByMS79xLrGyOq+rEQXmXe1MdMR+pVHQNb?=
- =?us-ascii?Q?LRFjTBFEw2HzGQalAEDrFbRerDm0M3rYSw76TUGXnkP0vzWezb9gEnVHvO89?=
- =?us-ascii?Q?xxlY+jdxFzSGBZpiT3kzbxII87U2GrFFxZvW5eC0piOuyqHofMOhxs7vESqD?=
- =?us-ascii?Q?d5t0qb3uNNOh59WZ94y486o9o2UmSWI5XdkNlMvRSByqgMjBiIJ0kbHifWXI?=
- =?us-ascii?Q?EFj+IJZJUE1cWhLZ1h25f2ow6qxfzijucnKFghSdTNnkS3vDLq9dZRZWEBTp?=
- =?us-ascii?Q?Uy6V8PUzzGjs7rKAf7Rz9XwNjvQyBDQDMLub7nDcOU3+i7UIKOVm9JK9EQVz?=
- =?us-ascii?Q?ti31eQ05fTo0DNE642/d36tLlel4OU2SUdRpB5/AsI9l1jAId5KLiV4fFkL6?=
- =?us-ascii?Q?3LqlCzTprrEFUrK9ug/L03LG+OcDRNZKs2vyjgE7FvnaTMGlDnrfZDO7DBKB?=
- =?us-ascii?Q?9kzs5M+cZRMV2m1G+j8TJYC889ANNpNFywKS85lzuLvaAO5IlRUMO/Mte8oK?=
- =?us-ascii?Q?s+GNuvNQAgsQvdkerzjYqSBA8C44PZWaoZ9IuXxj0aiIVAbVPl9zg0szOq3D?=
- =?us-ascii?Q?cQ1So0tu8OMXtUWM8yg=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6b10a5c5-e075-4142-0b21-08dc3ee25ab1
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3849.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Mar 2024 20:08:28.6122
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Hh3/T1R3A0/2/VWGto8TaosNkvNNAkVY+qrhcRfHa6Yd8mH+VSFHupTFM/aXeCkI
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB8292
+X-Received: by 2002:a92:cd8e:0:b0:363:de50:f7b5 with SMTP id
+ r14-20020a92cd8e000000b00363de50f7b5mr794885ilb.2.1709842141829; Thu, 07 Mar
+ 2024 12:09:01 -0800 (PST)
+Date: Thu, 07 Mar 2024 12:09:01 -0800
+In-Reply-To: <000000000000aa9b7405f261a574@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007c7392061317a56f@google.com>
+Subject: Re: [syzbot] [hfs?] INFO: task hung in hfs_mdb_commit
+From: syzbot <syzbot+4fec87c399346da35903@syzkaller.appspotmail.com>
+To: axboe@kernel.dk, brauner@kernel.org, jack@suse.cz, kch@nvidia.com, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	martin.petersen@oracle.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Mar 06, 2024 at 06:41:37PM +0800, peterx@redhat.com wrote:
-> From: Peter Xu <peterx@redhat.com>
-> 
-> Currently there should have no p4d swap entries so it may not matter much,
-> however this may help us to rule out swap entries in pXd_huge() API, which
-> will include p4d_huge().  The p4d_present() checks make it 100% clear that
-> we won't rely on p4d_huge() for swap entries.
-> 
-> Signed-off-by: Peter Xu <peterx@redhat.com>
-> ---
->  mm/gup.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+syzbot suspects this issue was fixed by commit:
 
->  	p4dp = p4d_offset(pgdp, address);
->  	p4d = READ_ONCE(*p4dp);
-> -	if (p4d_none(p4d))
-> +	if (p4d_none(p4d) || !p4d_present(p4d))
->  		return no_page_table(vma, flags);
+commit 6f861765464f43a71462d52026fbddfc858239a5
+Author: Jan Kara <jack@suse.cz>
+Date:   Wed Nov 1 17:43:10 2023 +0000
 
-Like the other place I think this makes more sense as
+    fs: Block writes to mounted block devices
 
-    if (!p4_present(p4d))
-  		return no_page_table(vma, flags);
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=126c98ea180000
+start commit:   7475e51b8796 Merge tag 'net-6.7-rc2' of git://git.kernel.o..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d05dd66e2eb2c872
+dashboard link: https://syzkaller.appspot.com/bug?extid=4fec87c399346da35903
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1286c3c0e80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=121cc388e80000
 
-Since none can never be present.
+If the result looks correct, please mark the issue as fixed by replying with:
 
-IOW if the following code doesn't decode swap entries then it should
-be guarded with a chceck on present not none..
+#syz fix: fs: Block writes to mounted block devices
 
-Jason
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
