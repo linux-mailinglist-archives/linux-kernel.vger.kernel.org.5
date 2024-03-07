@@ -1,89 +1,197 @@
-Return-Path: <linux-kernel+bounces-96286-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96288-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1E788759C0
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 22:47:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 660D48759C2
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 22:47:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 801DA1F2511C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 21:47:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 89E291C210D6
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 21:47:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF4BF13F44D;
-	Thu,  7 Mar 2024 21:46:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4561F13B7BC;
+	Thu,  7 Mar 2024 21:46:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="tl17FZS5"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="VJVtEvUY"
+Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com [209.85.219.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22F5A13A256
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 21:46:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB4BC1CAAD
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 21:46:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709847961; cv=none; b=FZXAW8tNXQkZ2PGdHjAoHSOGJUXn5HAcs+7zBiOxEqZSXAeGb6yCjFZ7k6BhzULgnVNHTiOLQlyLlTkFJYOYzq9hhLVR0Bt04osxUwVIQ/TMeTgJyO/H/fIj68yOKByXWj4YoulzFrbkL7DhrCCb6G1yKEaLLqta35s6VJgWOC0=
+	t=1709848016; cv=none; b=kcy8tpaDKB40fi78K9GjTsGXP/hytPF5JcBqWVgUp0STYbxj8AaZURAMWa57ZrSHROx3cYdj8uuQy5tnhwvSm92wNYQ63fwOnEJ+UDh9fxhlnuBbmBZW0FKqSW1nf6VHLBp4sUEpdtI82Md1SmcG0TgC7pLGX4iNaiTV7G4UFmE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709847961; c=relaxed/simple;
-	bh=Q7TIejCnJnHk/kR+IlLj7k3Lb+YR9ALkHoKnXOcCLzQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=k/9FI0v3Ucw9ywA0l1EWzF2QJLYvXK9b5w0yD0Am+dCxgEQBAf314U7yyjFt4z3hNNhvRdOF8oLtpI/csPekVK1VXcY2AoskHeUBEDCl8eZZDFSV9QGr5K4jR9et8jsXxD8xc+jyWJfguemwEdEds6vWj5f2/PB4SwieevDxHGc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=tl17FZS5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 260ACC433C7;
-	Thu,  7 Mar 2024 21:45:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1709847960;
-	bh=Q7TIejCnJnHk/kR+IlLj7k3Lb+YR9ALkHoKnXOcCLzQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=tl17FZS5IHQ8SXTpVw+96t0csQrPFtjDBJUJnOPVKsKxMpOka/8hkQuLojdr6RlL2
-	 cgx57imeMVRQxh6MKMKK8oq4CaxpCFnicZxp+AVeFBVTx7LrrAPQol/ez/rcdoMba2
-	 4tMqk1rx8pwZq7DivVekqQV6o43n8oyovvIXDuE8=
-Date: Thu, 7 Mar 2024 21:45:58 +0000
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Thierry Reding <thierry.reding@gmail.com>
-Cc: Marek Szyprowski <m.szyprowski@samsung.com>,
-	linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>
-Subject: Re: [PATCH] tty: serial: amba-pl011: Fix removal of the QDF2xxx
- workarounds
-Message-ID: <2024030741-numbness-unshaved-8c03@gregkh>
-References: <CGME20240131213600eucas1p12ecf4d6fb101425fa35e50f45a241c84@eucas1p1.samsung.com>
- <20240131213543.958051-1-m.szyprowski@samsung.com>
- <CYTPHTGKM7FT.1DRXMURTS246L@gmail.com>
+	s=arc-20240116; t=1709848016; c=relaxed/simple;
+	bh=F3j/Z7+N4PcZCKrZiW0FCtgEdoKzgCyuGNASm1A9AQs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=V0UtB70Hq+shzRMvIpPOdWbxETGGRZ+ZmAA6MsUlEFTihy9okTlv5tBtjTm5mZOv7hlbXfkXt/1zCx4XjamirmEzpiHelMjun6uEKfbrao7b3NePNU6IxYZ2wSMflP2/qcNIDRjDMAaVcYmSC8cyEPLfKq0qIOQ2SQcYOMIhWxw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=VJVtEvUY; arc=none smtp.client-ip=209.85.219.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-68fb7928970so6254856d6.2
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 13:46:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1709848012; x=1710452812; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Q4K+s5sUxDYWx5pg6uBsJMOUkr+xrBl+2jFYJBWQaGY=;
+        b=VJVtEvUYOMg7EjH8K+TPe81sPj0UDQvmk/MD6YegnUiPOcA8OLrd00Nm9X+Xw4ojT9
+         7x6jRRiT7hnBHsZbGil7fyXfmtC5jWSsFhqAB5WAEnyT/RmdkroFh+fddg/8xMoXXnpO
+         QCPmnN5yXPSuvzUY5/tqI34vc4fAHykqnSQU4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709848012; x=1710452812;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Q4K+s5sUxDYWx5pg6uBsJMOUkr+xrBl+2jFYJBWQaGY=;
+        b=H79YrkiQ72Io4DR50y64aVHvdmrbOXR+IC+1n30tAn3wVkHQZkbmD84zOnFtG6vHwP
+         lgnm32MtR8QvI2a7iqgMMJKhRWfRXmHrm2oYsLEpFTwywwrD6BK7YqPVOdMonuVaKpJy
+         665WsTUmREu2kPTaEo8zPZ9cgR1OjsR3790Jx9CV/bmARn0DoR3RfsP0sQgvtp8IBITh
+         bJ/IGeBGyvdAssYhgMUu/zzvJ42OLwA9rIcbjWJi5bAbi4ekhwFJ4g5Yvmg59fQ/29N1
+         vyqdJXO3+Wy9jGbQIlD3bM00rVAMEFPpeO9wigqDVZIITjf/Pm/S7PJ+uWv0kChCt4pg
+         TYhw==
+X-Forwarded-Encrypted: i=1; AJvYcCVmScNejY439RGsHRuGoc1GOce+AR6UwOOqKKpLfCWD20NB21Cdbb2SLT4vHK4uW2r53PYeQEAW5F0RNnT2dFNvdi69wDNnmmfJdhV4
+X-Gm-Message-State: AOJu0Yxi9hIhY3gdbl2VWtf+6K6ZALTAb04JHt8BmzNlO5l56BMvTYZy
+	Q1TZw/gHyMCdxyHnnGgAAIUmKXqkUZyU7SMNUCijEbZ6p/I5oBU5HsEwThFhTcYx0oZ3Cz2c4b4
+	=
+X-Google-Smtp-Source: AGHT+IFV0dL39xs/9IQlosPk4fApjtul8EYvoNp11mMQ3k900vUTW9qp9nW1HaUpxL/xBXXGGa1AOA==
+X-Received: by 2002:ad4:4421:0:b0:690:513e:347 with SMTP id e1-20020ad44421000000b00690513e0347mr9374274qvt.30.1709848012379;
+        Thu, 07 Mar 2024 13:46:52 -0800 (PST)
+Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com. [209.85.160.175])
+        by smtp.gmail.com with ESMTPSA id nc8-20020a0562142dc800b006907904691dsm4876487qvb.17.2024.03.07.13.46.51
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Mar 2024 13:46:51 -0800 (PST)
+Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-42f024b809cso81971cf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 13:46:51 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCW4ZA5dDPjX8ImQVlIr+IAAyhQk6NmAy4aP03hhVBunL9l+3est6jTKtd7hmCTar6EPpGCnbTyfefhdA4ry7zm5a7/wteELHfUooRrP
+X-Received: by 2002:ac8:5fd6:0:b0:42e:f79c:ca37 with SMTP id
+ k22-20020ac85fd6000000b0042ef79cca37mr425362qta.18.1709848010477; Thu, 07 Mar
+ 2024 13:46:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CYTPHTGKM7FT.1DRXMURTS246L@gmail.com>
+References: <20240306200353.1436198-1-hsinyi@chromium.org> <20240306200353.1436198-7-hsinyi@chromium.org>
+ <CAD=FV=VvhKZHVzHQdOO=_p0E5m7ig1LY2s5MZRojRynKHbF1xw@mail.gmail.com>
+ <87msraw4q6.fsf@intel.com> <CAJMQK-izRv18V1o7_Q23vWFXQsFgaR74xxZ4Vby0FVtNn21TMg@mail.gmail.com>
+ <874jdhwzw4.fsf@intel.com>
+In-Reply-To: <874jdhwzw4.fsf@intel.com>
+From: Doug Anderson <dianders@chromium.org>
+Date: Thu, 7 Mar 2024 13:46:34 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=UKWd743ZWOgkP4Sn_aq9ca97QygdEcS93=tcGa7r7s8g@mail.gmail.com>
+Message-ID: <CAD=FV=UKWd743ZWOgkP4Sn_aq9ca97QygdEcS93=tcGa7r7s8g@mail.gmail.com>
+Subject: Re: [PATCH v5 6/6] drm/panel-edp: Fix AUO 0x405c panel naming and add
+ a variant
+To: Jani Nikula <jani.nikula@linux.intel.com>
+Cc: Hsin-Yi Wang <hsinyi@chromium.org>, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Jessica Zhang <quic_jesszhan@quicinc.com>, 
+	Sam Ravnborg <sam@ravnborg.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, dri-devel@lists.freedesktop.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 01, 2024 at 12:29:55PM +0100, Thierry Reding wrote:
-> On Wed Jan 31, 2024 at 10:35 PM CET, Marek Szyprowski wrote:
-> > Commit 196f34af2bf4 ("tty: serial: amba-pl011: Remove QDF2xxx
-> > workarounds") removed some quirks specific to QDF2xxx SoC family.
-> > Unfortunately it removed a bit too much code from the
-> > pl011_console_match() function, what broke console operation on QEMU's
-> > 'virt' ARM/ARM64 machines. Restore the "pl011" related string check as it
-> > was originally introduced in the commit 10879ae5f12e ("serial: pl011: add
-> > console matching function").
+Hi,
+
+On Thu, Mar 7, 2024 at 12:28=E2=80=AFPM Jani Nikula <jani.nikula@linux.inte=
+l.com> wrote:
+>
+> On Thu, 07 Mar 2024, Hsin-Yi Wang <hsinyi@chromium.org> wrote:
+> > On Thu, Mar 7, 2024 at 5:28=E2=80=AFAM Jani Nikula <jani.nikula@linux.i=
+ntel.com> wrote:
+> >>
+> >> On Wed, 06 Mar 2024, Doug Anderson <dianders@chromium.org> wrote:
+> >> > Hi,
+> >> >
+> >> > On Wed, Mar 6, 2024 at 12:04=E2=80=AFPM Hsin-Yi Wang <hsinyi@chromiu=
+m.org> wrote:
+> >> >>
+> >> >> @@ -1009,6 +1009,19 @@ static const struct panel_desc auo_b101ean01=
+ =3D {
+> >> >>         },
+> >> >>  };
+> >> >>
+> >> >> +static const struct drm_display_mode auo_b116xa3_mode =3D {
+> >> >> +       .clock =3D 70589,
+> >> >> +       .hdisplay =3D 1366,
+> >> >> +       .hsync_start =3D 1366 + 40,
+> >> >> +       .hsync_end =3D 1366 + 40 + 40,
+> >> >> +       .htotal =3D 1366 + 40 + 40 + 32,
+> >> >> +       .vdisplay =3D 768,
+> >> >> +       .vsync_start =3D 768 + 10,
+> >> >> +       .vsync_end =3D 768 + 10 + 12,
+> >> >> +       .vtotal =3D 768 + 10 + 12 + 6,
+> >> >> +       .flags =3D DRM_MODE_FLAG_NVSYNC | DRM_MODE_FLAG_NHSYNC,
+> >> >> +};
+> >> >> +
+> >> >>  static const struct drm_display_mode auo_b116xak01_mode =3D {
+> >> >>         .clock =3D 69300,
+> >> >>         .hdisplay =3D 1366,
+> >> >> @@ -1990,7 +2003,9 @@ static const struct edp_panel_entry edp_panel=
+s[] =3D {
+> >> >>         EDP_PANEL_ENTRY('A', 'U', 'O', 0x239b, &delay_200_500_e50, =
+"B116XAN06.1"),
+> >> >>         EDP_PANEL_ENTRY('A', 'U', 'O', 0x255c, &delay_200_500_e50, =
+"B116XTN02.5"),
+> >> >>         EDP_PANEL_ENTRY('A', 'U', 'O', 0x403d, &delay_200_500_e50, =
+"B140HAN04.0"),
+> >> >> -       EDP_PANEL_ENTRY('A', 'U', 'O', 0x405c, &auo_b116xak01.delay=
+, "B116XAK01.0"),
+> >> >> +       EDP_PANEL_ENTRY('A', 'U', 'O', 0x405c, &auo_b116xak01.delay=
+, "B116XAN04.0"),
+> >> >> +       EDP_PANEL_ENTRY2('A', 'U', 'O', 0x405c, &auo_b116xak01.dela=
+y, "B116XAK01.0 ",
+> >> >
+> >> > Remove the trailing space from the string above now?
+> >>
+> >> Maybe it actually needs to be considered part of the name; see my othe=
+r
+> >> reply in the earlier patch.
+> >>
+> > I randomly checked 3 of the AUO panels that I had a datasheet with,
+> > and all of them have a white space padding before \n.
+> > The descriptor of that field is marked as "Reserved for definition",
+> > unlike other characters, representing the name, which are marked with
+> > "Manufacture P/N".
 > >
-> > Fixes: 196f34af2bf4 ("tty: serial: amba-pl011: Remove QDF2xxx workarounds")
-> > Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> > ---
-> >  drivers/tty/serial/amba-pl011.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> 
-> I was about to send out the same patch:
-> 
-> Reviewed-by: Thierry Reding <treding@nvidia.com>
+> > For this example, do we still want to consider the white space part of
+> > the name? I know they didn't follow the spec exactly.
+>
+> If there's one thing that's for sure, EDIDs are full of stuff like this,
+> across the board.
+>
+> Ignoring the whitespace at the end seemed reasonable, initially, to me
+> too. But the question is, if we start catering for this, what else
+> should we cater for? Do we keep adding "reasonable" interpretations, or
+> just go by the spec?
 
-Oops, I applied this, but will drop it, as it's already fixed up in my
-tree with a different commit.
+Personally, I don't really care a whole lot either way. If I had to
+make a judgement call I think it's a little cleaner the way Hsin-Yi
+has it where we ignore whitespace at the end. Given that Dmitry also
+suggested ignoring whitespace at the end [1] I guess I'd believe that
+he also feels it's a little cleaner that way. However, If the only way
+to get the patch series landed is to put the space at the end of the
+name in panel-edp.c then I'm OK with that.
 
-thanks,
+In terms of what else we should cater to, I guess we'd have to answer
+that question when it comes up, with a bias against adding more
+special case rules. _Hopefully_ it won't be common that we even need
+this code and it will be the exception rather than the rule that
+panels with incompatible timings have the same panel ID anyway...
 
-greg k-h
+In any case, hopefully the above explains my opinion on this. If you
+feel strongly that we should remove the code handling whitespace at
+the end then so be it. If you're on the fence then I guess I'd say
+let's keep it...
+
+
+[1] https://lore.kernel.org/lkml/CAA8EJpr7LHvqeGXhbFQ8KNn0LGDuv19cw0i04qVUz=
+51TJeSQrA@mail.gmail.com/
 
