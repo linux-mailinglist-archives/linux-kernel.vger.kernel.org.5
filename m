@@ -1,226 +1,295 @@
-Return-Path: <linux-kernel+bounces-95118-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95119-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B646874961
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:17:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0454874965
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:17:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 323EB28336E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 08:17:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 666A6B21368
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 08:17:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0187D633F4;
-	Thu,  7 Mar 2024 08:17:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49FD7634E1;
+	Thu,  7 Mar 2024 08:17:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="OxTdZTpj"
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2084.outbound.protection.outlook.com [40.107.244.84])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="hsfNvDQv"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E645263128
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 08:17:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.84
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709799435; cv=fail; b=HUicTgbpq9xHmb7K/omD5cuQgfju0FRJC9jgtIfhD/qDTgJEZIoizJ8T67jXSRCDk099MHkRvvQFAKgvD8B3fraReeQygXSkDEExlr+EIEv5l2aHwctjESOhcbQiB6WtSinEIh89ygLwnxNXWrRSVS6qTye/4QS8R1CUlgcLYx0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709799435; c=relaxed/simple;
-	bh=jhn7+J2wqKVnFx1+hN6W4nZDStoQzVJKVHKocg4dgeU=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=RRMQGpKunqclip46uA/TnYdcKoN6aMreDhJv/Y5a0EF0kb5py6mIkT9SiL0NhMTIxxycyUqkYsGHARICga71yJ78rbA5Hib3G5JVP4EzhjD9OanI90b4MS12x/jrY/kvTN1v8g1aktK6JIksj5wuQxT6+vS94veZXKJWug/7tI8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=OxTdZTpj; arc=fail smtp.client-ip=40.107.244.84
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nc2Jj44QOVLgjjAG7Yj1kFs5zCufvNE8uUW8PqLOVz4gZENOHW3SUMVNqVyJ9mT0MkiechC8OZQpggDmZiVLZRtYOOHAbK0Cl2hjqFZb4405OpG4RCsvhGu61GgGqOhZpPOQGcOzLHZDmX1edYUWHLogTCLJgt6X+jKE6mAwHo4iTJBaa/s30ns4Dc2Y4S6lrFevx85CmNIJTMHWhUgYSowb2lAztV6ky414qoUhGBChu6K0QJrxEFg4ImaFNl08E6KsABNMJ4LOayCBSybaZFgYZ3fjtU34vefu/FQP4opyPN5ZEfp52IPg43I8hgwux2ABx/tFX9U8MJuOl9ooVQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=RR50PsoOi2PbM5kM/PJCN1MOh9r22Kd8jvX3WPgp/5A=;
- b=Ft2U+zX1IUlT14EoODSi/jNpavJOTlfOBfaVgFhxqhvMMGO7q/ohy+qC1DS1b/EWJAtqJoNyUjEoj55F8UIwjoEXWz4CjkDWDfYQXxKo+TFWpxspsyXPLztM9wFuObZCOZ0Pj+QBXTfxH5+V3ZWEzU90JI0LtgC6ZZuNhlnB/1rMs33Zx0ToNxsw7V4LTbwd6yM+VKRpbqTXTa/MW08nr+GcXUW6ea8N46M65xUZmdK8LMuz/lp9LOwoEF0Xtq/TD3UDLyOiMykdhfmAN+B4PPKeCilZa/eaWcaUqYek76hWPBT8YHvav4VezZ2h5l0DXkPjNG7Z5LLZZEQPLz7inA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RR50PsoOi2PbM5kM/PJCN1MOh9r22Kd8jvX3WPgp/5A=;
- b=OxTdZTpjarhH67resyydbhBXJ9cO+6IDeV3kj2/HNk+BnMyxZETyrm6q3ITm0TfSj7snUsmS9ekRMcy3I77B9KNqu/lrOeVeivwIJiKYVMTp2B926+22phfglhYqc4CJjbCmvI17of69MGd4MDcGA9RgkzEptLJcrWm1lucyLWg=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
- by CY8PR12MB7414.namprd12.prod.outlook.com (2603:10b6:930:5e::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.39; Thu, 7 Mar
- 2024 08:17:11 +0000
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::f2b6:1034:76e8:f15a]) by PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::f2b6:1034:76e8:f15a%6]) with mapi id 15.20.7362.024; Thu, 7 Mar 2024
- 08:17:11 +0000
-Message-ID: <f61edcbe-938f-4c48-920e-64c8352e87f4@amd.com>
-Date: Thu, 7 Mar 2024 09:17:05 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/amdgpu: add vm fault information to devcoredump
-Content-Language: en-US
-To: Sunil Khatri <sunil.khatri@amd.com>,
- Alex Deucher <alexander.deucher@amd.com>,
- Shashank Sharma <shashank.sharma@amd.com>
-Cc: amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, Mukul Joshi <mukul.joshi@amd.com>,
- Arunpravin Paneer Selvam <Arunpravin.PaneerSelvam@amd.com>
-References: <20240306181937.3551648-1-sunil.khatri@amd.com>
- <20240306181937.3551648-2-sunil.khatri@amd.com>
-From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-In-Reply-To: <20240306181937.3551648-2-sunil.khatri@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR3P281CA0035.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:1c::8) To PH7PR12MB5685.namprd12.prod.outlook.com
- (2603:10b6:510:13c::22)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0589151C54;
+	Thu,  7 Mar 2024 08:17:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709799447; cv=none; b=LhG6RQSnd1bGNzLdPWxiOAgwrMSIjwlyobZ8T0am9kFWGzBfRVJPmYNXTIu5LfK+X4+knfI5M/RRq2hnUAHQcpi3PavR7Hmn+ttllvUV4uK9PZOQr7iGqdDkpnsGL1s6sncKQXJKseU4WBOrPRm2oQYuucrtsptF7xeG/AnU3Lg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709799447; c=relaxed/simple;
+	bh=IAkVEpPKtdwRPqu6jdi+mPS8neOPSLuhvBKF3lEKN14=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=iDLZYWNlpfNFRQL38f8wDWljncM+t3vM73UZwG1Oo/Eb5eAxDYJcrBSPIbN7hHPRkznySERTft2a9tnH86CCAUSAG1DUeMG3xkKT+BS0p4RexLpNJDNGNiDf6vqvrt1KD/AKMF7RFkNGJMhrwlkSMooxLUoyz1ORaFDqy7r9pSk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=hsfNvDQv; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42787chX004384;
+	Thu, 7 Mar 2024 08:17:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=4sRre/AolYg7xh69CSuYvJ9K8owOux6mhJ3hCgsTQ4A=;
+ b=hsfNvDQv+7z0yXGRRc2O7ZR9yRrYDtaDgq3XzX2bQLTPYAVK/VW0uduGpYBVvuGqBaFY
+ I/R8R0g9CaFPnzudk3WCEDKpDLoFiE8I3UT3ea+3LbZPHwkBVmsnSnALZKq9R0fUO8OJ
+ +p8sHWn7EJTytON3VrbkfYKIWtmA5dv2k4DH2omAXbXZWiTtudMDiJ6Usq7d2J0WSWEj
+ It/Bx5dT7eO6ZHBPEfl8imPNt6FkhH/inpwLod1vAIoAjDgUy3lnWoVFJ+pUNcQDjJqy
+ Yr1hhWkpAXOfC4t9RTSkRzLgzOkjLzi2YEtV3vO58ypbhjEMDqMWQn9UhQVaqSdcbJJQ Cg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wq9sxg3pc-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 07 Mar 2024 08:17:17 +0000
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 4278HHnY028540;
+	Thu, 7 Mar 2024 08:17:17 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wq9sxg3nx-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 07 Mar 2024 08:17:16 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 4275W0np031533;
+	Thu, 7 Mar 2024 08:17:16 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wmgnkbxd4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 07 Mar 2024 08:17:16 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4278HCMj7012654
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 7 Mar 2024 08:17:14 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 5967B2004E;
+	Thu,  7 Mar 2024 08:17:12 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 1C04B2004B;
+	Thu,  7 Mar 2024 08:17:12 +0000 (GMT)
+Received: from [9.152.224.118] (unknown [9.152.224.118])
+	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Thu,  7 Mar 2024 08:17:12 +0000 (GMT)
+Message-ID: <1cb9a110-c877-4420-9b23-1e7980f1300a@linux.ibm.com>
+Date: Thu, 7 Mar 2024 09:17:11 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|CY8PR12MB7414:EE_
-X-MS-Office365-Filtering-Correlation-Id: e0c0fe2d-fd06-476b-3d98-08dc3e7efce2
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	ZIuUZ+fcXVrhDFYotfXvbvoMCrvoW/VnHbiJdtHFB96GupHdInP0d7EPt8Uj1XIEO8FsBGeOG6F0DHIW0t0klVhvymGd5wp6I/WOQQaRo1svxrfIsGVeL99qWecUmVbEX2AkQUloSBc9BTw7s9nO7JPR/eKcy14XZfBgoeZJ6XDUOoo/6/3gQtlwD8NRjjOzER8ZjC3IGnwRvNPp0nQ7ge6ebxf8c9pyw6uKc44lmIsif6e/RLCMIFJuy3dU76rx57+pAf0N8EIWc3aLSUMMRrWgR72Pnq2HW8zi1SsJlnoeBjJ9wv7R+zTPpk79atXBAzKe7dKKyektmJ6YluxwjUHV7hyfPtlPitrSPhakBT5Pb4K6CrWXxM890KQGv+OnOtK5S+2EkAFRxChKEcggYL58LlvAUGOCUMp4F2lbONXKmTKgqVxmboouRi9W7R8hrfthePuuthE8jVHyIST68jSQxKtNlS6cVc/l+//oCZrDKqNGPC+3iqtKUjgcmtRBZdPrncN7avem9mUW4hjiFgGY/7v0/6lnGNyPypHmfTOekCqKoHcDSLVmBe3qz08qNhE+92RgoEDvfyayNb6mTZgsHIM/EkJb9Ax//i81BAjZx3cB6wyiVidIY9vzlbkJ4NQUClVSMGep6iYInBg4N4Iki4Q1TIZQxHF88lWcsbo=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?cEFtOWw2b0JMeWNiUGxlZTNkQjl2aU5ld3JSTE9oNGdWR05QWW9VTjBWdUg1?=
- =?utf-8?B?TzFzNTUvcmkxbDF5QVRFczJyTVRxVHJmUTNYQzVrZlByK212Q0FHQWVWQkEr?=
- =?utf-8?B?Z3dNSHVhdXlPUGZmUDZsYytlL2xQMnhKTmFySmp2cjZWVmxKU1I0UFZodmNl?=
- =?utf-8?B?alVpN0oyc3JCaTM4RTMydUNxb3NaZ1o0SzIrSTlaanpteW5iT2VIaklIQWg1?=
- =?utf-8?B?VXdZSEhETG1lTGFKSTlwNVBrU3NZYzlVS1Rid3V1ZUI2b2JkL2licmpmTGFy?=
- =?utf-8?B?eVc0V0FvVEdwWm5kakVFREt0V3h6M0dzbkI3eDlKOThWRHFjcXdydnIvK3VD?=
- =?utf-8?B?UVI0eEtnLzJ5SjlmNWl1aENIbUVoRGtYcG5nd05GS08rUFlOTE1uV3FSZ0Nj?=
- =?utf-8?B?NndvblZLbllUdElkZyt3YTR6V21BcHZlM3oxbEZ4REpPaE9jZzBwaml0Q1ky?=
- =?utf-8?B?M2dlSkRnTnVsZ055bTdYb2JKMWpvU08rSVVob0VtN2NuMk9GUllONHlGcE5X?=
- =?utf-8?B?SlFaQWdVNVZQanpEVzhTZVl2V1lYK1B4bk9sWjZhVVY1NnlqVVdMajY4WkZw?=
- =?utf-8?B?ZzdSaFFWeldDQmFLc3JzTFhyZHNNNUtaaFBpdjMxbC84VWFJVHpqVHByd0hV?=
- =?utf-8?B?b09kVFREc1JNZjgzanRWeG0xTWYzYzhzUGtuVjlsdmdVNXBUd3ZnUk1vZUNv?=
- =?utf-8?B?enZibGRYaThIeEQveWpXV0V0eVRjOGNpVHk2cTQwYnRGL2Z5aEVMRk9rRkQ5?=
- =?utf-8?B?NlV4SGVwTG5TNjE1T2RrRnE3TGhuRkliQlBSQ21DUkVkd28zcFppeW1LUDRq?=
- =?utf-8?B?emg2LzhOd3Jzb2JjNitnQTBVSzVxRVAvUzZ1Y0Rtcm5zdlJKQS9JaFNKS0V4?=
- =?utf-8?B?NDdlR2tmTjgrdlNiY1ZBNDBFeUM5bzRqQXZkeUxBVVl4djNRckJOYk1kZVhR?=
- =?utf-8?B?MzVUVEFRQXo2MEV5WENCeVlPSkJLUjZkN092UTZ5Umh0VEhjZTBiaGs1NUFx?=
- =?utf-8?B?eFFUSmZjVHRQTTZFYlBveEIwSWJ0SUE0U1ZaQmZ3V0QwcmtKajlxT2tWcjE0?=
- =?utf-8?B?K21aNm9teS9veWVPT2ZvTld4K0lIaXNmV0srMmc1U0s3T3JCM0ZHTVdmWm1W?=
- =?utf-8?B?NGx3NU83bHRBSzlqRGlJcDYxYWZvUjBDNldCNlQ1aGI5QkNmSmxnRXQ2TnpY?=
- =?utf-8?B?S0Q1akVzcEdMNmNIYXE0ZTlTL3hybjdPR3B1enpaODZ5Q1NsQmdXYzlNYlpX?=
- =?utf-8?B?RlFPaVJtbHhGYVVsZzE1MTVYZEZabVdYYzN0RGpMMjB2SDJBYk1UdC9Rc3BE?=
- =?utf-8?B?QzBuY29wZ2Y4ek9zOVFCdUY5emVYdWFGUHBydEpYcnROb21NdXZreHRIa0NH?=
- =?utf-8?B?bnlKNUUzekdpelpxbmkvNU94TWVhVjRINGlUaEJ5WG1DZml4bmpsUTJMUmpI?=
- =?utf-8?B?d1R5OGRsWlpyUWpmVUtrdXp0dFQyZUZLdHprUVpSVFNTR1p4a0VqeXE5Wmow?=
- =?utf-8?B?Mjk4MkF2YndrUG5BZ2l3a01PTDdKVkFmRUhYb2pReExRaUhqQ0FXRElRcHF3?=
- =?utf-8?B?bGw1enpQMHpBWTFaS3gwVFVjTUhzMkN4MWpXd093RFp1aHNZaFF6RGlmYXFo?=
- =?utf-8?B?NS9DbXN2U2hrWkhCUmh5TmorTEw3QzFxUENybmhYalBoOXVIMzlyOEF0a2NN?=
- =?utf-8?B?ME51ckYyRmQ5cmhXS3lVUVg0NlI4QUtwTVBmZWsvZUN4ZTVYZFpFTWhJam1w?=
- =?utf-8?B?dG5wKzZpbnJiOXFzNUpSdTAxT21SNkdhNThjd2x6aW9aZjJrWCtrdUdQN3dP?=
- =?utf-8?B?M1BNdllWMjlkamN2Vm1PWUhIeHdoRDlOaUFoOTJ1TFVEakozZ2s4OE5OWkV6?=
- =?utf-8?B?OTFyZ3VNSmplbWpSK25qSFZ1Zm9DSkczSTBrVkc3V0RWcllBM040cFdYM1RT?=
- =?utf-8?B?SU9OTzh1YnhaQ2tXVmZQOEJObnFDOHUrbW91Z1NKRzZRVnBxMDYyMytwVEZF?=
- =?utf-8?B?Qm5OemxCNmY3ckhhMVpGRE1ub0xQVVB5bUh3Z3lNSmZsNytBOGZldGpWUzBp?=
- =?utf-8?B?WHR6RWJoT1ozclFIYzM5cEg1WUkwd0VFbEwyWUZhUk8xWGRySExJaVovL1BG?=
- =?utf-8?Q?yDjMHkEhQH6DROh/Hk+RMoIKq?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e0c0fe2d-fd06-476b-3d98-08dc3e7efce2
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Mar 2024 08:17:11.1579
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: pgpvHIEgRX+ubcS8LJ9tM06HGL1/cqP8csMOskXoI39eb29g0ju1GxB+PAXQSdhC
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7414
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH][next] net/smc: Avoid -Wflex-array-member-not-at-end
+ warnings
+To: Wen Gu <guwen@linux.alibaba.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Wenjia Zhang <wenjia@linux.ibm.com>,
+        "D. Wythe" <alibuda@linux.alibaba.com>,
+        Tony Lu <tonylu@linux.alibaba.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc: linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>
+References: <ZeIhOT44ON5rjPiP@neat>
+ <71aa847b-2edc-44a2-beb7-3610bf744937@linux.alibaba.com>
+From: Jan Karcher <jaka@linux.ibm.com>
+Organization: IBM - Network Linux on Z
+In-Reply-To: <71aa847b-2edc-44a2-beb7-3610bf744937@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: zXzRrXPAQlFz6ZXay5X7HzWLhifBU8Om
+X-Proofpoint-ORIG-GUID: gGpx2JWh5jFTNAN-UxG43oiT5onTSOFH
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-07_04,2024-03-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ lowpriorityscore=0 mlxscore=0 malwarescore=0 clxscore=1011 adultscore=0
+ spamscore=0 bulkscore=0 suspectscore=0 mlxlogscore=999 priorityscore=1501
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2403070059
 
-Am 06.03.24 um 19:19 schrieb Sunil Khatri:
-> Add page fault information to the devcoredump.
->
-> Output of devcoredump:
-> **** AMDGPU Device Coredump ****
-> version: 1
-> kernel: 6.7.0-amd-staging-drm-next
-> module: amdgpu
-> time: 29.725011811
-> process_name: soft_recovery_p PID: 1720
->
-> Ring timed out details
-> IP Type: 0 Ring Name: gfx_0.0.0
->
-> [gfxhub] Page fault observed for GPU family:143
-> Faulty page starting at address 0x0000000000000000
-> Protection fault status register:0x301031
->
-> VRAM is lost due to GPU reset!
->
-> Signed-off-by: Sunil Khatri <sunil.khatri@amd.com>
-> ---
->   drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c | 15 ++++++++++++++-
->   drivers/gpu/drm/amd/amdgpu/amdgpu_reset.h |  1 +
->   2 files changed, 15 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
-> index 147100c27c2d..d7fea6cdf2f9 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
-> @@ -203,8 +203,20 @@ amdgpu_devcoredump_read(char *buffer, loff_t offset, size_t count,
->   			   coredump->ring->name);
->   	}
->   
-> +	if (coredump->fault_info.status) {
-> +		struct amdgpu_vm_fault_info *fault_info = &coredump->fault_info;
-> +
-> +		drm_printf(&p, "\n[%s] Page fault observed for GPU family:%d\n",
-> +			   fault_info->vmhub ? "mmhub" : "gfxhub",
-> +			   coredump->adev->family);
-> +		drm_printf(&p, "Faulty page starting at address 0x%016llx\n",
-> +			   fault_info->addr);
-> +		drm_printf(&p, "Protection fault status register:0x%x\n",
-> +			   fault_info->status);
-> +	}
-> +
->   	if (coredump->reset_vram_lost)
-> -		drm_printf(&p, "VRAM is lost due to GPU reset!\n");
-> +		drm_printf(&p, "\nVRAM is lost due to GPU reset!\n");
->   	if (coredump->adev->reset_info.num_regs) {
->   		drm_printf(&p, "AMDGPU register dumps:\nOffset:     Value:\n");
->   
-> @@ -253,6 +265,7 @@ void amdgpu_coredump(struct amdgpu_device *adev, bool vram_lost,
->   	if (job) {
->   		s_job = &job->base;
->   		coredump->ring = to_amdgpu_ring(s_job->sched);
-> +		coredump->fault_info = job->vm->fault_info;
 
-That's illegal. The VM pointer might already be stale at this point.
 
-I think you need to add the fault info of the last fault globally in the 
-VRAM manager or move this to the process info Shashank is working on.
+On 04/03/2024 10:00, Wen Gu wrote:
+> 
+> 
+> On 2024/3/2 02:40, Gustavo A. R. Silva wrote:
+>> -Wflex-array-member-not-at-end is coming in GCC-14, and we are getting
+>> ready to enable it globally.
+>>
+>> There are currently a couple of objects in `struct 
+>> smc_clc_msg_proposal_area`
+>> that contain a couple of flexible structures:
+>>
 
-Regards,
-Christian.
+Thank you Gustavo for the proposal.
+I had to do some reading to better understand what's happening and how 
+your patch solves this.
 
->   	}
->   
->   	coredump->adev = adev;
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.h b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.h
-> index 60522963aaca..3197955264f9 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.h
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.h
-> @@ -98,6 +98,7 @@ struct amdgpu_coredump_info {
->   	struct timespec64               reset_time;
->   	bool                            reset_vram_lost;
->   	struct amdgpu_ring			*ring;
-> +	struct amdgpu_vm_fault_info	fault_info;
->   };
->   #endif
->   
+>> struct smc_clc_msg_proposal_area {
+>>     ...
+>>     struct smc_clc_v2_extension             pclc_v2_ext;
+>>     ...
+>>     struct smc_clc_smcd_v2_extension        pclc_smcd_v2_ext;
+>>     ...
+>> };
+>>
+>> So, in order to avoid ending up with a couple of flexible-array members
+>> in the middle of a struct, we use the `struct_group_tagged()` helper to
+>> separate the flexible array from the rest of the members in the flexible
+>> structure:
+>>
+>> struct smc_clc_smcd_v2_extension {
+>>          struct_group_tagged(smc_clc_smcd_v2_extension_hdr, hdr,
+>>                              u8 system_eid[SMC_MAX_EID_LEN];
+>>                              u8 reserved[16];
+>>          );
+>>          struct smc_clc_smcd_gid_chid gidchid[];
+>> };
+>>
+>> With the change described above, we now declare objects of the type of
+>> the tagged struct without embedding flexible arrays in the middle of
+>> another struct:
+>>
+>> struct smc_clc_msg_proposal_area {
+>>          ...
+>>          struct smc_clc_v2_extension_hdr        pclc_v2_ext;
+>>          ...
+>>          struct smc_clc_smcd_v2_extension_hdr    pclc_smcd_v2_ext;
+>>          ...
+>> };
+>>
+>> We also use `container_of()` when we need to retrieve a pointer to the
+>> flexible structures.
+>>
+>> So, with these changes, fix the following warnings:
+>>
+>> In file included from net/smc/af_smc.c:42:
+>> net/smc/smc_clc.h:186:49: warning: structure containing a flexible 
+>> array member is not at the end of another structure 
+>> [-Wflex-array-member-not-at-end]
+>>    186 |         struct smc_clc_v2_extension             pclc_v2_ext;
+>>        |                                                 ^~~~~~~~~~~
+>> net/smc/smc_clc.h:188:49: warning: structure containing a flexible 
+>> array member is not at the end of another structure 
+>> [-Wflex-array-member-not-at-end]
+>>    188 |         struct smc_clc_smcd_v2_extension        
+>> pclc_smcd_v2_ext;
+>>        |                                                 ^~~~~~~~~~~~~~~~
+>>
+>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>> ---
+>>   net/smc/smc_clc.c |  5 +++--
+>>   net/smc/smc_clc.h | 24 ++++++++++++++----------
+>>   2 files changed, 17 insertions(+), 12 deletions(-)
+>>
+>> diff --git a/net/smc/smc_clc.c b/net/smc/smc_clc.c
+>> index e55026c7529c..3094cfa1c458 100644
+>> --- a/net/smc/smc_clc.c
+>> +++ b/net/smc/smc_clc.c
+>> @@ -853,8 +853,9 @@ int smc_clc_send_proposal(struct smc_sock *smc, 
+>> struct smc_init_info *ini)
+>>       pclc_smcd = &pclc->pclc_smcd;
+>>       pclc_prfx = &pclc->pclc_prfx;
+>>       ipv6_prfx = pclc->pclc_prfx_ipv6;
+>> -    v2_ext = &pclc->pclc_v2_ext;
+>> -    smcd_v2_ext = &pclc->pclc_smcd_v2_ext;
+>> +    v2_ext = container_of(&pclc->pclc_v2_ext, struct 
+>> smc_clc_v2_extension, _hdr);
+>> +    smcd_v2_ext = container_of(&pclc->pclc_smcd_v2_ext,
+>> +                   struct smc_clc_smcd_v2_extension, hdr);
+>>       gidchids = pclc->pclc_gidchids;
+>>       trl = &pclc->pclc_trl;
+>> diff --git a/net/smc/smc_clc.h b/net/smc/smc_clc.h
+>> index 7cc7070b9772..5b91a1947078 100644
+>> --- a/net/smc/smc_clc.h
+>> +++ b/net/smc/smc_clc.h
+>> @@ -134,12 +134,14 @@ struct smc_clc_smcd_gid_chid {
+>>                */
+>>   struct smc_clc_v2_extension {
+>> -    struct smc_clnt_opts_area_hdr hdr;
+>> -    u8 roce[16];        /* RoCEv2 GID */
+>> -    u8 max_conns;
+>> -    u8 max_links;
+>> -    __be16 feature_mask;
+>> -    u8 reserved[12];
+>> +    struct_group_tagged(smc_clc_v2_extension_hdr, _hdr,
+>> +        struct smc_clnt_opts_area_hdr hdr;
+>> +        u8 roce[16];        /* RoCEv2 GID */
+>> +        u8 max_conns;
+>> +        u8 max_links;
+>> +        __be16 feature_mask;
+>> +        u8 reserved[12];
+>> +    );
+>>       u8 user_eids[][SMC_MAX_EID_LEN];
+>>   };
+>> @@ -159,8 +161,10 @@ struct smc_clc_msg_smcd {    /* SMC-D GID 
+>> information */
+>>   };
+>>   struct smc_clc_smcd_v2_extension {
+>> -    u8 system_eid[SMC_MAX_EID_LEN];
+>> -    u8 reserved[16];
+>> +    struct_group_tagged(smc_clc_smcd_v2_extension_hdr, hdr,
+>> +        u8 system_eid[SMC_MAX_EID_LEN];
+>> +        u8 reserved[16];
+>> +    );
+>>       struct smc_clc_smcd_gid_chid gidchid[];
+>>   };
+>> @@ -183,9 +187,9 @@ struct smc_clc_msg_proposal_area {
+>>       struct smc_clc_msg_smcd            pclc_smcd;
+>>       struct smc_clc_msg_proposal_prefix    pclc_prfx;
+>>       struct smc_clc_ipv6_prefix    
+>> pclc_prfx_ipv6[SMC_CLC_MAX_V6_PREFIX];
+>> -    struct smc_clc_v2_extension        pclc_v2_ext;
+>> +    struct smc_clc_v2_extension_hdr        pclc_v2_ext;
+>>       u8            user_eids[SMC_CLC_MAX_UEID][SMC_MAX_EID_LEN];
+>> -    struct smc_clc_smcd_v2_extension    pclc_smcd_v2_ext;
+>> +    struct smc_clc_smcd_v2_extension_hdr    pclc_smcd_v2_ext;
+>>       struct smc_clc_smcd_gid_chid
+>>                   pclc_gidchids[SMCD_CLC_MAX_V2_GID_ENTRIES];
+>>       struct smc_clc_msg_trail        pclc_trl;
+> 
+> Thank you! Gustavo. This patch can fix this warning well, just the name
+> '*_hdr' might not be very accurate, but I don't have a good idea ATM.
 
+I agree. Should we chose this option we should come up for a better name.
+
+> 
+> Besides, I am wondering if this can be fixed by moving
+> user_eids of smc_clc_msg_proposal_area into smc_clc_v2_extension,
+> and
+> pclc_gidchids of smc_clc_msg_proposal_area into smc_clc_smcd_v2_extension.
+> 
+> so that we can avoid to use the flexible-array in smc_clc_v2_extension
+> and smc_clc_smcd_v2_extension.
+
+I like the idea and put some thought into it. The only thing that is not 
+perfectly clean IMO is the following:
+By the current definition it is easily visible that we are dealing with 
+a variable sized array. If we move them into the structs one could think 
+they are always at their MAX size which they are not.
+E.g.: An incoming proposal can have 0 UEIDs indicated by the eid_cnt.
+That said nothing a comment can't fix.
+
+ From what i have seen the offset and length calculations regarding the 
+"real" size of those structs is fine with your proposal.
+
+Can you verify that your changes also resolve the warnings?
+
+[...]
+
+>   };
+> 
+> 
+> Thanks!
+> Wen Gu
+
+Thanks you
+- Jan
 
