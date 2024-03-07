@@ -1,107 +1,98 @@
-Return-Path: <linux-kernel+bounces-96236-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96237-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0931875911
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 22:09:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93AF9875914
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 22:10:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D89628645A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 21:09:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 494BD1F25175
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 21:10:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D12F13AA31;
-	Thu,  7 Mar 2024 21:09:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0F9C13A871;
+	Thu,  7 Mar 2024 21:10:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="X1urbiyQ"
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="W3ldtZQ7"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 523C4139593
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 21:09:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D89C24B33;
+	Thu,  7 Mar 2024 21:10:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709845769; cv=none; b=nde/02wr23otTbPfKIF6jb3ofvZDavjtWHna+wKAeIasT03G34Zdgiu++DxdCcVtORv838KYwi5lPn1tWFY+J3RlfOdPVMKsk4QAgeBms5+lY3QA3/PLmGRmt86uyZe1L8cVwCRYZ/31tu39jKPXTEewth83EvRGjeFLqX5zRzE=
+	t=1709845816; cv=none; b=c+bjHdWA4//Lk2ivz6O8mi/2OpS5tKYH2dJikPz28UMCrFgwVDgMtthiV9pMf0EH8Xako2A7MdkIk0HS71POxf0Kc/+gCYOyjopCK/0Xf0FF8+4Ez/jvnJSOru36iEuT+PAr+TflNfzCJx0vDsPHyPuWWGMJTdrrvTlW4+q/HLM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709845769; c=relaxed/simple;
-	bh=eMzZuZHHTXZANMsIDx1PTIX01hfAQhyyDCaKkfiYPSc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NFK7gixX1XkM6rP66Vm92V3JWkTq5pDOXyPW4ZYMC04YqTa+9+2Shbqm4WWIjvdoSF3cBviUksn4EOYrREnxcYZtnsrSTmXzKYAZnkg/Tz8hIbIcmWatgselpVJq30sU7IvIuRESk+QvvDR7zmhAGkRVsDlZldLxxlE3hA00+YE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=X1urbiyQ; arc=none smtp.client-ip=95.215.58.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <ce073b95-b8e9-4822-91a2-f2bd15997bc4@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1709845765;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=eMzZuZHHTXZANMsIDx1PTIX01hfAQhyyDCaKkfiYPSc=;
-	b=X1urbiyQvTDe4d3wLTYHE+64ojQc+fiEoPMH6lnGK2NakcshMZIMaDRHhBQ55waScQXkq9
-	v4pjIAKBdiuttIF4w+L1hTDS2gYkOAwYB9UnVCrvwCuqJSrAvZrp9OoxbBce5xQR0xgJ/B
-	T+6yjSIZ0HODgqBg3Wo08w2OTwJDTck=
-Date: Fri, 8 Mar 2024 05:09:13 +0800
+	s=arc-20240116; t=1709845816; c=relaxed/simple;
+	bh=n7ZPAEB1dZvHDu6WJsouZl5c+u9Qw0zlF94qU5Cjkzo=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=Vca9fne0UyCEKnqoREz7Urn0uy+k8QL20co+5H3jjnCdA7KB3sudYF8TF5L3reNbiCWmsRoR47hElhX794zlxnBUBDACeB/9OkqLuR70lVT4yOm1YP2/wDrsaH5dQs6VwSlKOrgIAmG8uHzaZEkk0o7ghxhBrjySCpz/klnQc+M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=W3ldtZQ7; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1709845808;
+	bh=HJI9tF6FIkF6n8qrUGTmQmO2iIl1wcZEqvCMKy+tnAk=;
+	h=Date:From:To:Cc:Subject:From;
+	b=W3ldtZQ7dk2Bj4KjtkobcEOthOCEJ8zZA2Bbt6ipH84xFsvGDqOGZ+uq9/qWFPZ/Z
+	 24ic1CJsC3DPHibkJq0R+7xRd73/CSpx13LRYGCawbEAKvkJpsdp+N+RGjJe6ReRf8
+	 gPwiFFfkSUwVk/9A5iDIERTF8eXMyF5ULRWVAACvjLwB4Fp08jFCs5SSIiBbt4BkpJ
+	 vcmvDlvoJjtmopzyEkE+pO3SSFQhPIz316ldzVSFMxk0/3vQ9xdbxh/UVv6jjptU9H
+	 ldCf7flsI7yNI/5lFbRNFZrCseFS9v9wx8hOBawEqYKP+YI2NZDqqQdmVKBFbzrgM/
+	 6Fu3sTjBXctYQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TrMQ84WRxz4wbh;
+	Fri,  8 Mar 2024 08:10:08 +1100 (AEDT)
+Date: Fri, 8 Mar 2024 08:10:06 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Chanwoo Choi <cw00.choi@samsung.com>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the devfreq tree
+Message-ID: <20240308081006.71f649bd@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 1/4] drm/bridge: Add fwnode based helpers to get the
- next bridge
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Andrzej Hajda <andrzej.hajda@intel.com>,
- Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>,
- Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
- Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Phong LE <ple@baylibre.com>, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org
-References: <20240307172334.1753343-1-sui.jingfeng@linux.dev>
- <20240307172334.1753343-2-sui.jingfeng@linux.dev>
- <CAA8EJpp8tsHi0RhsJXG+r6nOsV3AUC_n6jNHL0Cr6Ku2h3NMog@mail.gmail.com>
- <45f59f31-1f03-4a96-adb6-25c7cdd5e8a1@linux.dev>
- <CAA8EJpqq1-cEke6wEFZFDnpz4tFBcL6HF3=Qtf-8Q3WbogLS8A@mail.gmail.com>
- <c84fcdba-af50-4212-a8e3-f492c2b02ce4@linux.dev>
- <CAA8EJppTcPO3j7GpGcGbKPUjQ=3rTMMOrU1SYR3mtkWLztf2qQ@mail.gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Sui Jingfeng <sui.jingfeng@linux.dev>
-In-Reply-To: <CAA8EJppTcPO3j7GpGcGbKPUjQ=3rTMMOrU1SYR3mtkWLztf2qQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: multipart/signed; boundary="Sig_/lFgNFA=qnojv9B1H3Hw/y1z";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-Hi,
+--Sig_/lFgNFA=qnojv9B1H3Hw/y1z
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
 
-On 2024/3/8 04:40, Dmitry Baryshkov wrote:
->>> But really, there is nothing so hard about it:
->>> - Change of_node to fw_node, apply an automatic patch changing this in
->>> bridge drivers.
->>> - Make drm_of_bridge functions convert passed of_node and comp
->>>
->>> After this we can start cleaning up bridge drivers to use fw_node API
->>> natively as you did in your patches 2-4.
->> Yes, it's not so hard. But I'm a little busy due to other downstream developing
->> tasks. Sorry, very sorry!
->>
->> During the talk with you, I observed that you are very good at fwnode domain.
->> Are you willing to help the community to do something? For example, currently
->> the modern drm bridge framework is corrupted by legacy implement, is it possible
->> for us to migrate them to modern? Instead of rotting there? such as the lontium-lt9611uxc.c
->> which create a drm connector manually, not modernized yet and it's DT dependent.
->> So, there are a lot things to do.
-> Actually, lontium-lt9611uxc.c does both of that 😉 It supports
-> creating a connector and it as well supports attaching to a chain
-> without creating a connector. Pretty nice, isn't it?
+Commit
 
+  82d49b84535a ("PM / devfreq: mtk-cci: Convert to platform remove callback=
+ returning void")
 
-I'm not very sure. But I remember a most experienced told me that
-"Not having anything connector-related in the drm_bridge driver is a canonical design".
-And I think he is right and I believed.
+is missing a Signed-off-by from its committer.
 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/lFgNFA=qnojv9B1H3Hw/y1z
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXqLS4ACgkQAVBC80lX
+0GwVfAf+MtMArAdj/8FvircPg9jrWf7WYi5+Sa1HD6O42vyolbcEwO3OC+1tfIvr
+rSoi0nHHNEmI/lVkg+QJWJWDxIxE9aCXUwE813xr0vR1gLNf9hAD5QEPzGkcc1ab
+xaH1KXAd4tzwe3adtt4MgvmqdKWaEYNHeml5yoGN4Rv0bB2GXN2tZQ4UMG39+yjx
+kZ7p/CtPN3b8TVRXcJNPp9JO2ofun5TpCCTHgzEVqz7XAlcFFB5tCBbXKXLEi5zP
+y3a6XmVWBkn9+7Ox2OK0wDMhyYWtRirI9bT2XZA3EHWJfzvfEew76gCnOuFo6ikB
+PDkbZn2RbzbQwA/LzeUQ66II1RDTbQ==
+=vcfk
+-----END PGP SIGNATURE-----
+
+--Sig_/lFgNFA=qnojv9B1H3Hw/y1z--
 
