@@ -1,98 +1,86 @@
-Return-Path: <linux-kernel+bounces-96237-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96238-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93AF9875914
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 22:10:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED86B875918
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 22:13:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 494BD1F25175
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 21:10:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A85A7285ECC
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 21:13:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0F9C13A871;
-	Thu,  7 Mar 2024 21:10:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FFEE13B2A8;
+	Thu,  7 Mar 2024 21:13:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="W3ldtZQ7"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oW511bpF"
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D89C24B33;
-	Thu,  7 Mar 2024 21:10:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93EE564AAA
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 21:13:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709845816; cv=none; b=c+bjHdWA4//Lk2ivz6O8mi/2OpS5tKYH2dJikPz28UMCrFgwVDgMtthiV9pMf0EH8Xako2A7MdkIk0HS71POxf0Kc/+gCYOyjopCK/0Xf0FF8+4Ez/jvnJSOru36iEuT+PAr+TflNfzCJx0vDsPHyPuWWGMJTdrrvTlW4+q/HLM=
+	t=1709846028; cv=none; b=fCSIhFIzZUBiNxY63bvWcnl71C1Gv2i8Z0tIdgJ4pWpepwfMzvpLu8yTu2o0eZJsp+EJuwAibId9oMeGI+V1cWeaJCRhhEt65dW7khJtM8eblyjKY18Os83SstjvN+HSDmbYopHM3IQ0fafKzl1/CjMN13P7Ze/gdxh6w8P/7ik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709845816; c=relaxed/simple;
-	bh=n7ZPAEB1dZvHDu6WJsouZl5c+u9Qw0zlF94qU5Cjkzo=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=Vca9fne0UyCEKnqoREz7Urn0uy+k8QL20co+5H3jjnCdA7KB3sudYF8TF5L3reNbiCWmsRoR47hElhX794zlxnBUBDACeB/9OkqLuR70lVT4yOm1YP2/wDrsaH5dQs6VwSlKOrgIAmG8uHzaZEkk0o7ghxhBrjySCpz/klnQc+M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=W3ldtZQ7; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1709845808;
-	bh=HJI9tF6FIkF6n8qrUGTmQmO2iIl1wcZEqvCMKy+tnAk=;
-	h=Date:From:To:Cc:Subject:From;
-	b=W3ldtZQ7dk2Bj4KjtkobcEOthOCEJ8zZA2Bbt6ipH84xFsvGDqOGZ+uq9/qWFPZ/Z
-	 24ic1CJsC3DPHibkJq0R+7xRd73/CSpx13LRYGCawbEAKvkJpsdp+N+RGjJe6ReRf8
-	 gPwiFFfkSUwVk/9A5iDIERTF8eXMyF5ULRWVAACvjLwB4Fp08jFCs5SSIiBbt4BkpJ
-	 vcmvDlvoJjtmopzyEkE+pO3SSFQhPIz316ldzVSFMxk0/3vQ9xdbxh/UVv6jjptU9H
-	 ldCf7flsI7yNI/5lFbRNFZrCseFS9v9wx8hOBawEqYKP+YI2NZDqqQdmVKBFbzrgM/
-	 6Fu3sTjBXctYQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TrMQ84WRxz4wbh;
-	Fri,  8 Mar 2024 08:10:08 +1100 (AEDT)
-Date: Fri, 8 Mar 2024 08:10:06 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Chanwoo Choi <cw00.choi@samsung.com>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the devfreq tree
-Message-ID: <20240308081006.71f649bd@canb.auug.org.au>
+	s=arc-20240116; t=1709846028; c=relaxed/simple;
+	bh=N6/Yb17HsBRY3CxBuRchHyjaFCnZTW/nJ5xNbpcjezY=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=Qq2TOqPTXbdJs8jSZJq31j3H1OJpFT0OQKDYrz3A29JjnmM7ZtH5v3ujzRTLUb451TFiqGvdppsJy9QWLh7ogoQvX2sbcSAKfe41PbpLzyCsUQek5omS/spbhMf/dNsPPUFkT3NK5SCgbDMjmu4mRlDBdY+Vplp+yQt4xM7HK/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=oW511bpF; arc=none smtp.client-ip=91.218.175.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <80327a0e-3023-4806-9cdb-10fc3101e485@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1709846024;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=y8a57MGuDIDZwFDn2Ifq/6YhMtu+Kg9Tv0OiybrFZig=;
+	b=oW511bpFIkuvy75JtBqMEXd6D7ywkHrYI9SxwKHsfAIws8EQYUzR8Qi1qdjGHuoiY8Qa2o
+	Dtg1Ep75cemUx06wzUZQDqEBccIoxH3lE2XZ9uXPJTdYLYXpWGdAR4MY/3JY6qhfcGH8Yh
+	JB0ETAPw+9Mz/jI17r7pPmZ6aZ3J4c4=
+Date: Fri, 8 Mar 2024 05:13:29 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/lFgNFA=qnojv9B1H3Hw/y1z";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Subject: Re: [PATCH v2 1/4] drm/bridge: Add fwnode based helpers to get the
+ next bridge
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Sui Jingfeng <sui.jingfeng@linux.dev>
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Andrzej Hajda <andrzej.hajda@intel.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>,
+ Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+ Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Phong LE <ple@baylibre.com>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org
+References: <20240307172334.1753343-1-sui.jingfeng@linux.dev>
+ <20240307172334.1753343-2-sui.jingfeng@linux.dev>
+ <CAA8EJpp8tsHi0RhsJXG+r6nOsV3AUC_n6jNHL0Cr6Ku2h3NMog@mail.gmail.com>
+ <45f59f31-1f03-4a96-adb6-25c7cdd5e8a1@linux.dev>
+ <CAA8EJpqq1-cEke6wEFZFDnpz4tFBcL6HF3=Qtf-8Q3WbogLS8A@mail.gmail.com>
+ <c84fcdba-af50-4212-a8e3-f492c2b02ce4@linux.dev>
+ <CAA8EJppTcPO3j7GpGcGbKPUjQ=3rTMMOrU1SYR3mtkWLztf2qQ@mail.gmail.com>
+ <ce073b95-b8e9-4822-91a2-f2bd15997bc4@linux.dev>
+Content-Language: en-US
+In-Reply-To: <ce073b95-b8e9-4822-91a2-f2bd15997bc4@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
---Sig_/lFgNFA=qnojv9B1H3Hw/y1z
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+On 2024/3/8 05:09, Sui Jingfeng wrote:
+> a most experienced 
 
-Commit
 
-  82d49b84535a ("PM / devfreq: mtk-cci: Convert to platform remove callback=
- returning void")
+A most experienced programmer & developer.
 
-is missing a Signed-off-by from its committer.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/lFgNFA=qnojv9B1H3Hw/y1z
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXqLS4ACgkQAVBC80lX
-0GwVfAf+MtMArAdj/8FvircPg9jrWf7WYi5+Sa1HD6O42vyolbcEwO3OC+1tfIvr
-rSoi0nHHNEmI/lVkg+QJWJWDxIxE9aCXUwE813xr0vR1gLNf9hAD5QEPzGkcc1ab
-xaH1KXAd4tzwe3adtt4MgvmqdKWaEYNHeml5yoGN4Rv0bB2GXN2tZQ4UMG39+yjx
-kZ7p/CtPN3b8TVRXcJNPp9JO2ofun5TpCCTHgzEVqz7XAlcFFB5tCBbXKXLEi5zP
-y3a6XmVWBkn9+7Ox2OK0wDMhyYWtRirI9bT2XZA3EHWJfzvfEew76gCnOuFo6ikB
-PDkbZn2RbzbQwA/LzeUQ66II1RDTbQ==
-=vcfk
------END PGP SIGNATURE-----
-
---Sig_/lFgNFA=qnojv9B1H3Hw/y1z--
 
