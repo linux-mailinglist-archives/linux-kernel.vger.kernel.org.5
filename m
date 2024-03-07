@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-95686-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95687-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA431875144
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:06:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B30BE875146
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:06:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 551D81F25773
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:06:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A7601F25C9A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:06:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5434512FF67;
-	Thu,  7 Mar 2024 14:03:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D32AD12EBEF;
+	Thu,  7 Mar 2024 14:03:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="DNNuBKbm"
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="HDFuKBq+"
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0896712FB24
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 14:03:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18E1E12FF74
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 14:03:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709820225; cv=none; b=uVmnq9WTQ6WgFNErWgSxPh/R74dI/vN/yyKt2ULFKYz5UbKhBFGmJVzO530e6ycC7Nqc4MZbPYIfOR7uDr1xiOJCUUeekinbEYRH+iqarD+vNK8u/i/UdrrDkCcuiACTzk6tu36eRMyQ9zWoyB0xaVYZHizUnjnXwYyLbXPeei0=
+	t=1709820233; cv=none; b=eKNK7a31xVmcgBOkg+VCLue1n2qHT2rJGKt+RmBWu5EBsyU5VYFaRnUZ9QM4DG0SdQn0zs886dGbgTpyrTrnqkcH2Zu33Q9oJpTrUWm9AmDFypYl+z9vOVzRXW/mXgllZU4isWCDD92c+5Zh8XH/ZtCDs8dChuopza1AByV4zVc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709820225; c=relaxed/simple;
-	bh=1EX8L1zE26OQw962MFbAys4CFWP3ww+6xmUKKdVPt6M=;
+	s=arc-20240116; t=1709820233; c=relaxed/simple;
+	bh=UEqf02ho8KoC5uUf94NdYj/8svBvRgvzCWxf0JoVQU0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=oKoBw/6+CKCGgowkvOIjKZLAs5Hxy5++l5sA8WG/mV0bv3VfvS+ZnjBwZvPCPg9wKIgGjjdP5qCbhN8/LtH6EwwCfp+rLGxo1Cj1wttywP5RnZFh5B9wyFgRsfNoQMww8DVNThYR7u2DxvA7oVSicCRUTUvGUqCGOFcc7f8fiu8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=DNNuBKbm; arc=none smtp.client-ip=209.85.214.169
+	 MIME-Version; b=mih5HUldsUuUgCZkqPEXKrZvj0I6HAqvsrLwBH6zI+pwmPYKG3HoyL3UPUY+px3uRf7RwjHX+qrmZZzZLkBs+dOzLqa7IsQU3qYnzjrLr5NmtzbulE1O9ireadMpaAy1dare6FIX3J44fVUszpA0FnPgoj7hZ6QF2PNpfvXCrWc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=HDFuKBq+; arc=none smtp.client-ip=209.85.214.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1dd10ae77d8so8052815ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 06:03:43 -0800 (PST)
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1dcc7f4717fso8467575ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 06:03:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1709820223; x=1710425023; darn=vger.kernel.org;
+        d=ventanamicro.com; s=google; t=1709820229; x=1710425029; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7jRh4tMvuYcqr95qV4EQU7BolCnIgD6A0sDxFfSdHTU=;
-        b=DNNuBKbmwN1VVcdUTPogTr+dhdA+Ow3h5WIV4WP1kHzxFC2m2aBfMBpSO249uaqIu5
-         Y9aGMrK6qLe+ZKGcuWuU0OeBSe2Be7DOzQ8JIp49fCkoKeiucAcz/PN5AwI7vsjOvYOd
-         YN+AUgA74CZcgqRAWpdl1dY9Othag/wHa1ev8gCDQUjSNN3797do+QU865+KiScUlWwT
-         spSgjycvgsdNn+89z7V9OAYrZ4kQxE334Lz+FAANlHG1P0sBICI3zmZsN/fXRE31XDfC
-         U1H4hkiLj4ai1HnezmkpC47Zt+4M6MLkAhi2jqR1wi65hicrQl09Da8nytG4egnwG7UX
-         0F5Q==
+        bh=zlSSXeqmMrWeTCyKtywicMr25YT1KxbVoTbJX7XSN9g=;
+        b=HDFuKBq+imwf4yG7G5aQQ0UvEEuWn3P0v6wXPEG7ZJTMlFw5tkHi5V00kc3LmppKZe
+         5q0y3JzxROeKHjtTaEMM4fXmutKDu+0huwxkFx93//bC08DShneiddKf4FUh/RAp34cd
+         ggKQVfSacdtfNNF1OQkcoamkrkT71iK7gdm6gGaTUB/02y7fH6WZuRihmhUrlQ/0eidZ
+         H8Ove4ehpI7fG38g75O+OSF5XCcl1Kgbj1rp9wtGsxKowzBoIIj1rSGBSsy13jp9YByP
+         F4JaNeFSuqJDlkvroJ5+AbzYXmWVlh44vhLkg8VpBLmEEUQL/gNu8GdirnII+wcxDuLB
+         ESVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709820223; x=1710425023;
+        d=1e100.net; s=20230601; t=1709820229; x=1710425029;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7jRh4tMvuYcqr95qV4EQU7BolCnIgD6A0sDxFfSdHTU=;
-        b=Hrh99g2P0KwDF244jR6cd+DYDMK7Ob5ngSc7FaR7hN/MBNO02aoQqAprZhCoja20iR
-         5CHHPOqwwDi8fCOrPRz0HlSE2Z5P/zNbiFOs3hai74lnMaoKYfTDRe1y4AWHpr8skkxX
-         xTJ9qzXL/tSixWJRLdmtau/UV9tqk9IPy7p0wztLTgXQVi+LsLgA8/KB5riWaFsyYdAs
-         fj1/kn9sCa5HrdbTa1wPj8w5lboDQGG3WSJbp9XvSzQvPFMNdZEDcSWtjj41C/HyE/rY
-         BWx9ZnaPkAQyIFOmllHdFoBCmTn352uqJes9OvarszlyujnY8BRBjcLRhgfROxdE3keO
-         tzfw==
-X-Forwarded-Encrypted: i=1; AJvYcCXb6c+OH34JVATakrX1OFp3283AB4HJJ8eWrBJF98cdo0+TavRbhMG1TdLByiWoyiMjC6boTwN1i6RXS14vh+MSSYbW6sVe8vlitLlj
-X-Gm-Message-State: AOJu0YwuvO1IhrQ/5zgwHMnXgBCFzEGaCjDwFeyBbM3WqsiYU8sCoO3O
-	b27v+YxFajqLLQh7Z7R7r6w8qjNHgGs7oWSGuAQRaJlh59ESNGqknLC8so37IAQ=
-X-Google-Smtp-Source: AGHT+IHGmxFeZ72Q590ilBqOWS3an5Vyy6hLjQbRDQ0n1Sbt0i2JyCIRAP1shhfNGwpiSrO/aex5oA==
-X-Received: by 2002:a17:903:2305:b0:1dc:6fec:15d8 with SMTP id d5-20020a170903230500b001dc6fec15d8mr9709155plh.47.1709820223228;
-        Thu, 07 Mar 2024 06:03:43 -0800 (PST)
+        bh=zlSSXeqmMrWeTCyKtywicMr25YT1KxbVoTbJX7XSN9g=;
+        b=oHzk3Q9Qvec4trTi32F67xlgAyN+DBbYMsCFz2XoM+tRtrSskvLp05frXEPD7hA2Nt
+         7Z2JMT1p0VY8mv7sRRNB3pXWwYCbrv7gZa4gGdKdHFoiMJx8hcNrxXj1sL8Powp+KxcM
+         cIn+5VgTEoyi/xnhiGFWS1L7N4tVdH96XXTVLrzF5SxPTfC6CoGsv0SQYEeZfO3YOBaR
+         NKxBlrEp8VgpQh7NFL5FMk7E362upKb88d7JQs6DbHUSgk8wH3odkbRoDusCYL4sNZqT
+         M94W9yOztNEMlIqcHDoP4zF2otCbHrWaSgm0tPaOV8qJs0RsUWE2nrWY653n8SG/mJJZ
+         5TXg==
+X-Forwarded-Encrypted: i=1; AJvYcCWF4QEqAFRd7fbsSG9nsRHOLqJ8MKl+ejgHbwXuPRI9tpQRMtPnrfpTUOkbWpLdXTpS4QGomS6W7yW+eZEIJ48YFm5bdmCBQMiy1+V8
+X-Gm-Message-State: AOJu0Yw2uEMpeF595fdcISUM/Gus1WwZe/S9EaJivZ4iR6JBW6ZRg4vs
+	JgxSi6Q+cKqp3AYOb49gdb6R6OizyFvqpQ79LI5vY8h8jioZoJDw4Hbn75ykaV4=
+X-Google-Smtp-Source: AGHT+IEetsvrsALrjODyJ2qJwA+TW4Rzu1JjlSxDVd8F/hiCc23jE8KqiYp9J9Wy1ZM/+I8/Lx7NYw==
+X-Received: by 2002:a17:903:1245:b0:1dc:abeb:22fe with SMTP id u5-20020a170903124500b001dcabeb22femr9617182plh.65.1709820229184;
+        Thu, 07 Mar 2024 06:03:49 -0800 (PST)
 Received: from anup-ubuntu-vm.localdomain ([171.76.84.79])
-        by smtp.gmail.com with ESMTPSA id w1-20020a1709026f0100b001dd6174c651sm386228plk.149.2024.03.07.06.03.38
+        by smtp.gmail.com with ESMTPSA id w1-20020a1709026f0100b001dd6174c651sm386228plk.149.2024.03.07.06.03.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Mar 2024 06:03:42 -0800 (PST)
+        Thu, 07 Mar 2024 06:03:48 -0800 (PST)
 From: Anup Patel <apatel@ventanamicro.com>
 To: Palmer Dabbelt <palmer@dabbelt.com>,
 	Paul Walmsley <paul.walmsley@sifive.com>,
@@ -85,10 +85,11 @@ Cc: Marc Zyngier <maz@kernel.org>,
 	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	devicetree@vger.kernel.org,
-	Anup Patel <apatel@ventanamicro.com>
-Subject: [PATCH v16 4/9] irqchip/riscv-imsic: Add device MSI domain support for PCI devices
-Date: Thu,  7 Mar 2024 19:33:02 +0530
-Message-Id: <20240307140307.646078-5-apatel@ventanamicro.com>
+	Anup Patel <apatel@ventanamicro.com>,
+	Conor Dooley <conor.dooley@microchip.com>
+Subject: [PATCH v16 5/9] dt-bindings: interrupt-controller: Add RISC-V advanced PLIC
+Date: Thu,  7 Mar 2024 19:33:03 +0530
+Message-Id: <20240307140307.646078-6-apatel@ventanamicro.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240307140307.646078-1-apatel@ventanamicro.com>
 References: <20240307140307.646078-1-apatel@ventanamicro.com>
@@ -100,103 +101,195 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The Linux PCI framework supports per-device MSI domains for PCI devices
-so extend the IMSIC driver to allow PCI per-device MSI domains.
+Add DT bindings document for RISC-V advanced platform level interrupt
+controller (APLIC) defined by the RISC-V advanced interrupt architecture
+(AIA) specification.
 
 Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 ---
- drivers/irqchip/Kconfig                    |  7 +++++
- drivers/irqchip/irq-riscv-imsic-platform.c | 35 ++++++++++++++++++++--
- 2 files changed, 40 insertions(+), 2 deletions(-)
+ .../interrupt-controller/riscv,aplic.yaml     | 172 ++++++++++++++++++
+ 1 file changed, 172 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/riscv,aplic.yaml
 
-diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-index 85f86e31c996..2fc0cb32341a 100644
---- a/drivers/irqchip/Kconfig
-+++ b/drivers/irqchip/Kconfig
-@@ -553,6 +553,13 @@ config RISCV_IMSIC
- 	select GENERIC_IRQ_MATRIX_ALLOCATOR
- 	select GENERIC_MSI_IRQ
- 
-+config RISCV_IMSIC_PCI
-+	bool
-+	depends on RISCV_IMSIC
-+	depends on PCI
-+	depends on PCI_MSI
-+	default RISCV_IMSIC
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/riscv,aplic.yaml b/Documentation/devicetree/bindings/interrupt-controller/riscv,aplic.yaml
+new file mode 100644
+index 000000000000..190a6499c932
+--- /dev/null
++++ b/Documentation/devicetree/bindings/interrupt-controller/riscv,aplic.yaml
+@@ -0,0 +1,172 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/interrupt-controller/riscv,aplic.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- config EXYNOS_IRQ_COMBINER
- 	bool "Samsung Exynos IRQ combiner support" if COMPILE_TEST
- 	depends on (ARCH_EXYNOS && ARM) || COMPILE_TEST
-diff --git a/drivers/irqchip/irq-riscv-imsic-platform.c b/drivers/irqchip/irq-riscv-imsic-platform.c
-index 35291bf90d65..1e6dddfd3046 100644
---- a/drivers/irqchip/irq-riscv-imsic-platform.c
-+++ b/drivers/irqchip/irq-riscv-imsic-platform.c
-@@ -14,6 +14,7 @@
- #include <linux/irqdomain.h>
- #include <linux/module.h>
- #include <linux/msi.h>
-+#include <linux/pci.h>
- #include <linux/platform_device.h>
- #include <linux/spinlock.h>
- #include <linux/smp.h>
-@@ -207,6 +208,28 @@ static const struct irq_domain_ops imsic_base_domain_ops = {
- #endif
- };
- 
-+#ifdef CONFIG_RISCV_IMSIC_PCI
++title: RISC-V Advanced Platform Level Interrupt Controller (APLIC)
 +
-+static void imsic_pci_mask_irq(struct irq_data *d)
-+{
-+	pci_msi_mask_irq(d);
-+	irq_chip_mask_parent(d);
-+}
++maintainers:
++  - Anup Patel <anup@brainfault.org>
 +
-+static void imsic_pci_unmask_irq(struct irq_data *d)
-+{
-+	irq_chip_unmask_parent(d);
-+	pci_msi_unmask_irq(d);
-+}
++description:
++  The RISC-V advanced interrupt architecture (AIA) defines an advanced
++  platform level interrupt controller (APLIC) for handling wired interrupts
++  in a RISC-V platform. The RISC-V AIA specification can be found at
++  https://github.com/riscv/riscv-aia.
 +
-+#define MATCH_PCI_MSI		BIT(DOMAIN_BUS_PCI_MSI)
++  The RISC-V APLIC is implemented as hierarchical APLIC domains where all
++  interrupt sources connect to the root APLIC domain and a parent APLIC
++  domain can delegate interrupt sources to it's child APLIC domains. There
++  is one device tree node for each APLIC domain.
 +
-+#else
++allOf:
++  - $ref: /schemas/interrupt-controller.yaml#
 +
-+#define MATCH_PCI_MSI		0
++properties:
++  compatible:
++    items:
++      - enum:
++          - qemu,aplic
++      - const: riscv,aplic
 +
-+#endif
++  reg:
++    maxItems: 1
 +
- static bool imsic_init_dev_msi_info(struct device *dev,
- 				    struct irq_domain *domain,
- 				    struct irq_domain *real_parent,
-@@ -230,6 +253,13 @@ static bool imsic_init_dev_msi_info(struct device *dev,
- 
- 	/* Is the target supported? */
- 	switch (info->bus_token) {
-+#ifdef CONFIG_RISCV_IMSIC_PCI
-+	case DOMAIN_BUS_PCI_DEVICE_MSI:
-+	case DOMAIN_BUS_PCI_DEVICE_MSIX:
-+		info->chip->irq_mask = imsic_pci_mask_irq;
-+		info->chip->irq_unmask = imsic_pci_unmask_irq;
-+		break;
-+#endif
- 	case DOMAIN_BUS_DEVICE_MSI:
- 		/*
- 		 * Per-device MSI should never have any MSI feature bits
-@@ -269,11 +299,12 @@ static bool imsic_init_dev_msi_info(struct device *dev,
- #define MATCH_PLATFORM_MSI		BIT(DOMAIN_BUS_PLATFORM_MSI)
- 
- static const struct msi_parent_ops imsic_msi_parent_ops = {
--	.supported_flags	= MSI_GENERIC_FLAGS_MASK,
-+	.supported_flags	= MSI_GENERIC_FLAGS_MASK |
-+				  MSI_FLAG_PCI_MSIX,
- 	.required_flags		= MSI_FLAG_USE_DEF_DOM_OPS |
- 				  MSI_FLAG_USE_DEF_CHIP_OPS,
- 	.bus_select_token	= DOMAIN_BUS_NEXUS,
--	.bus_select_mask	= MATCH_PLATFORM_MSI,
-+	.bus_select_mask	= MATCH_PCI_MSI | MATCH_PLATFORM_MSI,
- 	.init_dev_msi_info	= imsic_init_dev_msi_info,
- };
- 
++  interrupt-controller: true
++
++  "#interrupt-cells":
++    const: 2
++
++  interrupts-extended:
++    minItems: 1
++    maxItems: 16384
++    description:
++      Given APLIC domain directly injects external interrupts to a set of
++      RISC-V HARTS (or CPUs). Each node pointed to should be a riscv,cpu-intc
++      node, which has a CPU node (i.e. RISC-V HART) as parent.
++
++  msi-parent:
++    description:
++      Given APLIC domain forwards wired interrupts as MSIs to a AIA incoming
++      message signaled interrupt controller (IMSIC). If both "msi-parent" and
++      "interrupts-extended" properties are present then it means the APLIC
++      domain supports both MSI mode and Direct mode in HW. In this case, the
++      APLIC driver has to choose between MSI mode or Direct mode.
++
++  riscv,num-sources:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    minimum: 1
++    maximum: 1023
++    description:
++      Specifies the number of wired interrupt sources supported by this
++      APLIC domain.
++
++  riscv,children:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    minItems: 1
++    maxItems: 1024
++    items:
++      maxItems: 1
++    description:
++      A list of child APLIC domains for the given APLIC domain. Each child
++      APLIC domain is assigned a child index in increasing order, with the
++      first child APLIC domain assigned child index 0. The APLIC domain child
++      index is used by firmware to delegate interrupts from the given APLIC
++      domain to a particular child APLIC domain.
++
++  riscv,delegation:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    minItems: 1
++    maxItems: 1024
++    items:
++      items:
++        - description: child APLIC domain phandle
++        - description: first interrupt number of the parent APLIC domain (inclusive)
++        - description: last interrupt number of the parent APLIC domain (inclusive)
++    description:
++      A interrupt delegation list where each entry is a triple consisting
++      of child APLIC domain phandle, first interrupt number of the parent
++      APLIC domain, and last interrupt number of the parent APLIC domain.
++      Firmware must configure interrupt delegation registers based on
++      interrupt delegation list.
++
++dependencies:
++  riscv,delegation: [ "riscv,children" ]
++
++required:
++  - compatible
++  - reg
++  - interrupt-controller
++  - "#interrupt-cells"
++  - riscv,num-sources
++
++anyOf:
++  - required:
++      - interrupts-extended
++  - required:
++      - msi-parent
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    // Example 1 (APLIC domains directly injecting interrupt to HARTs):
++
++    interrupt-controller@c000000 {
++      compatible = "qemu,aplic", "riscv,aplic";
++      interrupts-extended = <&cpu1_intc 11>,
++                            <&cpu2_intc 11>,
++                            <&cpu3_intc 11>,
++                            <&cpu4_intc 11>;
++      reg = <0xc000000 0x4080>;
++      interrupt-controller;
++      #interrupt-cells = <2>;
++      riscv,num-sources = <63>;
++      riscv,children = <&aplic1>, <&aplic2>;
++      riscv,delegation = <&aplic1 1 63>;
++    };
++
++    aplic1: interrupt-controller@d000000 {
++      compatible = "qemu,aplic", "riscv,aplic";
++      interrupts-extended = <&cpu1_intc 9>,
++                            <&cpu2_intc 9>;
++      reg = <0xd000000 0x4080>;
++      interrupt-controller;
++      #interrupt-cells = <2>;
++      riscv,num-sources = <63>;
++    };
++
++    aplic2: interrupt-controller@e000000 {
++      compatible = "qemu,aplic", "riscv,aplic";
++      interrupts-extended = <&cpu3_intc 9>,
++                            <&cpu4_intc 9>;
++      reg = <0xe000000 0x4080>;
++      interrupt-controller;
++      #interrupt-cells = <2>;
++      riscv,num-sources = <63>;
++    };
++
++  - |
++    // Example 2 (APLIC domains forwarding interrupts as MSIs):
++
++    interrupt-controller@c000000 {
++      compatible = "qemu,aplic", "riscv,aplic";
++      msi-parent = <&imsic_mlevel>;
++      reg = <0xc000000 0x4000>;
++      interrupt-controller;
++      #interrupt-cells = <2>;
++      riscv,num-sources = <63>;
++      riscv,children = <&aplic3>;
++      riscv,delegation = <&aplic3 1 63>;
++    };
++
++    aplic3: interrupt-controller@d000000 {
++      compatible = "qemu,aplic", "riscv,aplic";
++      msi-parent = <&imsic_slevel>;
++      reg = <0xd000000 0x4000>;
++      interrupt-controller;
++      #interrupt-cells = <2>;
++      riscv,num-sources = <63>;
++    };
++...
 -- 
 2.34.1
 
