@@ -1,129 +1,85 @@
-Return-Path: <linux-kernel+bounces-95224-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95225-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC262874AE4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:31:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C51E874AE6
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:33:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ECAED1C21298
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:31:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08FDC288B11
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:33:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5336883A1A;
-	Thu,  7 Mar 2024 09:31:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 563DA83A18;
+	Thu,  7 Mar 2024 09:33:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=t-argos.ru header.i=@t-argos.ru header.b="o7ya2Bbk"
-Received: from mx1.t-argos.ru (mx1.t-argos.ru [109.73.34.58])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JoQHEjfI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 820C4839EF;
-	Thu,  7 Mar 2024 09:31:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=109.73.34.58
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A4BC6350B;
+	Thu,  7 Mar 2024 09:33:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709803905; cv=none; b=ADLKPmJGiFMI7KqS3ZgjT+xf1EwAzWeaMgFeISfmH6fRVDvHVmXt0zLkYBk+rIBX4/cuPH7fpcSoZcD+mi7mh2TMujAOE511leggg1x2Kau92McMl+GHFcNAEqBoUEzXzreBAguIMNwc/RPMTAgVkf/rpUQ+EBteNPsltysvuqw=
+	t=1709803981; cv=none; b=OM78A/0Z9HwgnnA/iWjPYa8v4vA3+ePigJFUCcGrkzunaIQtf1vXi0hhfjU9Hr9xo50PROFwy7+UX5dS6QcPOKGe8ksEpeQ8Ictm37ImaM3hOqWUAFurlv8OYA8KjKSZxeOBqdtT1l6T3N4ERYfWyKH049nPHa3r6UVMTSFvjrc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709803905; c=relaxed/simple;
-	bh=pax4kMUXsJGJnoUzX9FvaDRqurWPA4Z3ms9k7p/CSr4=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=FT3hAMe+u2ibzrVESvcAf8aLxo5r8lmge0ykLeGTQqg/l6q8D8URIyLy4PrnKEjsJ0FzUzEHn2071vyyn+l8cGOlGIEAf5MMWJPZMO4qUdv5b6SRDgExnnIaDNQfJpRK/amc9YEBSucADQFck4MAKmPg/9wlghVRAmtrt+kauYU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=t-argos.ru; spf=pass smtp.mailfrom=t-argos.ru; dkim=pass (2048-bit key) header.d=t-argos.ru header.i=@t-argos.ru header.b=o7ya2Bbk; arc=none smtp.client-ip=109.73.34.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=t-argos.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=t-argos.ru
-Received: from mx1.t-argos.ru (localhost [127.0.0.1])
-	by mx1.t-argos.ru (Postfix) with ESMTP id 60CA6100003;
-	Thu,  7 Mar 2024 12:31:21 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=t-argos.ru; s=mail;
-	t=1709803881; bh=2TtaUxTCDa70M6gykgWVJXWVoctQT59eKYoSiehXjoc=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	b=o7ya2Bbk8Yf/SiTancm3WfYE5GRDOgJrggAe6E1ksUo3YFH42baTHQLsSCZOTwlWA
-	 jwG9fAnPGra/pMNC4xwqQ5oNsqPIm3UqfiLjdt/7Edoe68LqCpBzUaaFMzA2/lDwKT
-	 nqajLGYCHgUan1a/I8Nn63z24d+EIgOl09cENR1r1wLXE9y12HANGO9edzrTtWs0Fp
-	 jwZi6AhdP8cTJCYu+sMzaXyUCujFKVlu0gQZVt5OrD/36F/j+v4bGsqjAGHpAWHNVe
-	 RCV8T2fLKHvYIYdkBotbGY1hns78AIdlJ80Og5t/AfXOP9PeEL7kIN9PDUg3XV8syf
-	 ZoB+b+np6iPEA==
-Received: from mx1.t-argos.ru.ru (mail.t-argos.ru [172.17.13.212])
-	by mx1.t-argos.ru (Postfix) with ESMTP;
-	Thu,  7 Mar 2024 12:30:02 +0300 (MSK)
-Received: from localhost.localdomain (172.17.215.6) by ta-mail-02
- (172.17.13.212) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Thu, 7 Mar 2024
- 12:29:41 +0300
-From: Aleksandr Mishin <amishin@t-argos.ru>
-To: "David S. Miller" <davem@davemloft.net>
-CC: Aleksandr Mishin <amishin@t-argos.ru>, Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Kees Cook
-	<keescook@chromium.org>, Justin Stitt <justinstitt@google.com>, Felix
- Manlunas <felix.manlunas@cavium.com>, Satanand Burla
-	<satananda.burla@cavium.com>, Raghu Vatsavayi <raghu.vatsavayi@cavium.com>,
-	Vijaya Mohan Guvva <vijaya.guvva@cavium.com>, <netdev@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>
-Subject: [PATCH] liquidio: Fix potential null pointer dereference
-Date: Thu, 7 Mar 2024 12:29:32 +0300
-Message-ID: <20240307092932.18419-1-amishin@t-argos.ru>
-X-Mailer: git-send-email 2.30.2
+	s=arc-20240116; t=1709803981; c=relaxed/simple;
+	bh=TbHczZlPBD3G4U8vgeyYJgRyiPHXMuYIf8EG8WxAuaI=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=sjLe7HHKAl2XmUYOaf9sAPdpHoftZoqpX2guuLY6YAXggh3womkvc5sE3bk5TxtoBPOUPayGm1fym7gKTlkYRffzNjhAyAu1q1fQe87zyCG09/hcqSqDcAPB5jewm2SQeXcek/18e4+y5836fO+9e7B0ZkzBadWCfnngiRndS/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JoQHEjfI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4CA1C433C7;
+	Thu,  7 Mar 2024 09:33:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709803981;
+	bh=TbHczZlPBD3G4U8vgeyYJgRyiPHXMuYIf8EG8WxAuaI=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=JoQHEjfIJzV0hClmtf0M3fT9/pJO2D8Qs5sARInDbx4Xz0A0/KP2ZKG4ZndUJvUdi
+	 4y/BKZckyueDrxj6p5utDBVrYhEGLVf985anyv/XZUch87Hf11sd7Beq5DeMrVi5gy
+	 1uhZcklx/dwrI4BE9K/vi3YafiuLKflwlqJWwiT+LYk1KchRM720Iuz0GkCaVqkv5W
+	 AySza4O96gCbtB//akwUrmcquHvkiJI8qAJ2ktgwhcq2aU1hg4s33U/LJoQ7k0zja6
+	 udlnia5o1o2NlmmQJpj5cYTU1m0OQ/0D0yMi4T7elJy5UK2VuKoNc0jjyuwfotO2ns
+	 r/YZZ+TF7Az2Q==
+From: Leon Romanovsky <leon@kernel.org>
+To: kotaranov@microsoft.com, sharmaajay@microsoft.com, longli@microsoft.com, 
+ jgg@ziepe.ca, Konstantin Taranov <kotaranov@linux.microsoft.com>
+Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <1709560361-26393-1-git-send-email-kotaranov@linux.microsoft.com>
+References: <1709560361-26393-1-git-send-email-kotaranov@linux.microsoft.com>
+Subject: Re: [PATCH rdma-next v3 0/2] RDMA/mana_ib: Improve dma region
+ creation
+Message-Id: <170980397781.112869.7049742674464362128.b4-ty@kernel.org>
+Date: Thu, 07 Mar 2024 11:32:57 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: ta-mail-02.ta.t-argos.ru (172.17.13.212) To ta-mail-02
- (172.17.13.212)
-X-KSMG-Rule-ID: 1
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 184023 [Mar 07 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.3
-X-KSMG-AntiSpam-Envelope-From: amishin@t-argos.ru
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 9 0.3.9 e923e63e431b6489f12901471775b2d1b59df0ba, {Tracking_from_domain_doesnt_match_to}, t-argos.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;mx1.t-argos.ru.ru:7.1.1, FromAlignment: s
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean, bases: 2024/03/07 08:43:00
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2024/03/07 06:26:00 #24026065
-X-KSMG-AntiVirus-Status: Clean, skipped
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14-dev
 
-In lio_vf_rep_copy_packet() pg_info->page is compared to a NULL value,
-but then it is unconditionally passed to skb_add_rx_frag() which could
-lead to null pointer dereference.
-Fix this bug by moving skb_add_rx_frag() into conditional scope.
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
+On Mon, 04 Mar 2024 05:52:39 -0800, Konstantin Taranov wrote:
+> From: Konstantin Taranov <kotaranov@microsoft.com>
+> 
+> This patch series fixes an incorrect offset calculation for dma
+> regions and adds new functions to create dma regions:
+> 1)  with iova
+> 2)  without iova but with zero dma offset
+> 
+> [...]
 
-Fixes: 1f233f327913 (liquidio: switchdev support for LiquidIO NIC)
-Signed-off-by: Aleksandr Mishin <amishin@t-argos.ru>
----
- drivers/net/ethernet/cavium/liquidio/lio_vf_rep.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+Applied, thanks!
 
-diff --git a/drivers/net/ethernet/cavium/liquidio/lio_vf_rep.c b/drivers/net/ethernet/cavium/liquidio/lio_vf_rep.c
-index aa6c0dfb6f1c..e26b4ed33dc8 100644
---- a/drivers/net/ethernet/cavium/liquidio/lio_vf_rep.c
-+++ b/drivers/net/ethernet/cavium/liquidio/lio_vf_rep.c
-@@ -272,13 +272,12 @@ lio_vf_rep_copy_packet(struct octeon_device *oct,
- 				pg_info->page_offset;
- 			memcpy(skb->data, va, MIN_SKB_SIZE);
- 			skb_put(skb, MIN_SKB_SIZE);
-+			skb_add_rx_frag(skb, skb_shinfo(skb)->nr_frags,
-+					pg_info->page,
-+					pg_info->page_offset + MIN_SKB_SIZE,
-+					len - MIN_SKB_SIZE,
-+					LIO_RXBUFFER_SZ);
- 		}
--
--		skb_add_rx_frag(skb, skb_shinfo(skb)->nr_frags,
--				pg_info->page,
--				pg_info->page_offset + MIN_SKB_SIZE,
--				len - MIN_SKB_SIZE,
--				LIO_RXBUFFER_SZ);
- 	} else {
- 		struct octeon_skb_page_info *pg_info =
- 			((struct octeon_skb_page_info *)(skb->cb));
+[1/2] RDMA/mana_ib: Fix bug in creation of dma regions
+      https://git.kernel.org/rdma/rdma/c/e02497fb654689
+[2/2] RDMA/mana_ib: Use virtual address in dma regions for MRs
+      https://git.kernel.org/rdma/rdma/c/2d5c00815778ec
+
+Best regards,
 -- 
-2.30.2
+Leon Romanovsky <leon@kernel.org>
 
 
