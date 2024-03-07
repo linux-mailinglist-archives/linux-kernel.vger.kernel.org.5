@@ -1,59 +1,45 @@
-Return-Path: <linux-kernel+bounces-95329-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95330-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A36A6874C5C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:27:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E23E874C5F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:28:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 54B991F22CA4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:27:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF37A1F22E46
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:28:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AA8385275;
-	Thu,  7 Mar 2024 10:27:49 +0000 (UTC)
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 624CF85276;
+	Thu,  7 Mar 2024 10:28:04 +0000 (UTC)
+Received: from www.kot-begemot.co.uk (ns1.kot-begemot.co.uk [217.160.28.25])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A437C82D83
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 10:27:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92B8982880;
+	Thu,  7 Mar 2024 10:28:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.160.28.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709807269; cv=none; b=Iliz614pyiUQiPBmc4E6Ea8fKKGGZOJ2YhqbsHNe0ny+28wDo5wcw1F0D80YNtMiOI/W2cWQcet5+j+G6Fosg/l+IAEliQJt+fIQkqOm8fZZZbumqYfZhLtyAI8gvXDQoYgD6nJ4fijE69e7POzyswfaXmHF2kYlFg07cS9azE8=
+	t=1709807284; cv=none; b=hMBkQmgSG0+vi1WsTCyKWlj5G1Y90nBrl8cF6xkLZNCjhabSJWk29Ssp1XBXVUEGEaCirgqUL+UFF8NnZTcszGs+inOlN9nqBeaJpJkDf7IzbfUweNQ8thkqkkLblR21rP/MNjZeIxdJDgc5XSVPGSWcn8uoj3/OoQb7BTVgXeo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709807269; c=relaxed/simple;
-	bh=1b3cD1JzLzwXiFYhzW4TsWqoyMmImq6wp8ZpuvR6V0k=;
+	s=arc-20240116; t=1709807284; c=relaxed/simple;
+	bh=OoAeYuV38c9rz7v48CPlvcr99YsLrun7AvNytHK5PNs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=k3mfp1GP1PQKxCmRSP7MXR0O6jlieyCGImns/WhefaXJpqw1jm6W0vIBCkZizcAOJAWbGIUFu39SHq8c3vb9A2EtLPd8v+7LA2M318sh6GtkY9WLOpxbFAQnjrd2pANOhkuuBtdrhWaqdUjsyWbR4Ub7mm5qQRMWvnM2zEaAuNQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-50e4e36c09cso301673e87.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 02:27:47 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709807265; x=1710412065;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1b3cD1JzLzwXiFYhzW4TsWqoyMmImq6wp8ZpuvR6V0k=;
-        b=oqfxbq00KON44Q5S3YoTEqw8mo8d/zMyMIOgmj4ERU01H3RPRvj9yNz8GbnkUGwvRM
-         um/PK/j+UAeE1PqlmGHTIplP5bZXK6Xh1NdCaOSg5n9myoLHGvUMSsQri05CDUEpD10D
-         1REA7bEyb6EQb/GrsdRmfwABvqPoZf23eezVb/o2y9rrbnGBzy+xWSJwSOYt9kJRvILA
-         4Q71II1ohrSzbgYJR1e5IebGpxyU1JiL/jJQRj3l9inV8kefwDIfdSVICMbAui9lviGB
-         jTakg7x2Nce2lUrK/Z+srDuyLSJy5VUhDdcfuAUaZlqGsqtGnqIPwaftSITHWH/HqOME
-         l2WQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVA/gc1VKWcukK6LOp6SuNbmnghpwxQblduecfiFm7c10uzJsNBVvpM8vM0t8MzjOvw7VRPFPHbyJz4sM/DgHqf2VNCsNMuOeAv0hxY
-X-Gm-Message-State: AOJu0YwwfS1EWatiN/5fWOIefvUbnN2b9uohT0VmzSG7nI9ZKJaiWMvC
-	0fFKeE9iFm6NCIUftV+NgA//pvuU4gfScG+hQ43N1nIkExlxxNok
-X-Google-Smtp-Source: AGHT+IFgps20vqDI6X9001WLlcmXvxNG4XMdRKTXA56bfHc/jYT/w42AHA0Bzl9WrYACFz6oS3wHDA==
-X-Received: by 2002:a2e:7407:0:b0:2d3:364c:2620 with SMTP id p7-20020a2e7407000000b002d3364c2620mr3590171ljc.1.1709807265309;
-        Thu, 07 Mar 2024 02:27:45 -0800 (PST)
-Received: from [10.100.102.74] (46-117-80-176.bb.netvision.net.il. [46.117.80.176])
-        by smtp.gmail.com with ESMTPSA id bx10-20020a5d5b0a000000b0033df46f70dbsm20672235wrb.9.2024.03.07.02.27.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Mar 2024 02:27:45 -0800 (PST)
-Message-ID: <342cf4cf-ad14-4fd0-bcab-fe5fcecf4c0a@grimberg.me>
-Date: Thu, 7 Mar 2024 12:27:43 +0200
+	 In-Reply-To:Content-Type; b=laFHT/QFM0QP9uOE0FRthwBODTkvTcGaauBa4ooCnsmn/b1JCb/m+JsQkdWJmvs/YTlKy/8iGsGS743Dw7eY3XhSrNebUgM5wPLrxzoJjJefqN8ax+FL5aR2yUuEbtIqv9dkv26uh+3TE5ADr6lTF8xEryC/aajluSjEjEQDx1Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cambridgegreys.com; spf=pass smtp.mailfrom=cambridgegreys.com; arc=none smtp.client-ip=217.160.28.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cambridgegreys.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cambridgegreys.com
+Received: from [192.168.17.6] (helo=jain.kot-begemot.co.uk)
+	by www.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <anton.ivanov@cambridgegreys.com>)
+	id 1riAyi-00DtX0-4e; Thu, 07 Mar 2024 10:27:56 +0000
+Received: from jain.kot-begemot.co.uk ([192.168.3.3])
+	by jain.kot-begemot.co.uk with esmtp (Exim 4.96)
+	(envelope-from <anton.ivanov@cambridgegreys.com>)
+	id 1riAye-002hiC-1k;
+	Thu, 07 Mar 2024 10:27:55 +0000
+Message-ID: <2cc222b7-618c-46a9-b78b-eb099d0f4be7@cambridgegreys.com>
+Date: Thu, 7 Mar 2024 10:27:52 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,37 +47,66 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/5] nvme-fabrics: introduce ref counting for
- nvmf_ctrl_options
+Subject: Re: pcap-dbus.o:undefined reference to `dbus_message_demarshal'
 Content-Language: en-US
-To: Daniel Wagner <dwagner@suse.de>, James Smart <james.smart@broadcom.com>
-Cc: Keith Busch <kbusch@kernel.org>, Christoph Hellwig <hch@lst.de>,
- Hannes Reinecke <hare@suse.de>, linux-nvme@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <20240221132404.6311-1-dwagner@suse.de>
- <20240221132404.6311-4-dwagner@suse.de>
-From: Sagi Grimberg <sagi@grimberg.me>
-In-Reply-To: <20240221132404.6311-4-dwagner@suse.de>
+To: Johannes Berg <johannes@sipsolutions.net>,
+ Waqar Hameed <waqar.hameed@axis.com>, Ingo Molnar <mingo@kernel.org>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+ kernel@axis.com, Richard Weinberger <richard@nod.at>,
+ linux-um@lists.infradead.org
+References: <202403052336.y6DkUd8a-lkp@intel.com> <pndzfvbibgm.fsf@axis.com>
+ <87cfca1e-3f53-4935-a274-0920bce86373@cambridgegreys.com>
+ <463be980baf66b967031e3294c3b9745b07aa058.camel@sipsolutions.net>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+In-Reply-To: <463be980baf66b967031e3294c3b9745b07aa058.camel@sipsolutions.net>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Spam-Score: -1.0
+X-Spam-Score: -1.0
+X-Clacks-Overhead: GNU Terry Pratchett
 
 
 
-On 21/02/2024 15:24, Daniel Wagner wrote:
-> The FC transport is offloading the connect attempt to a workqueue. When
-> the attempt fails the transport is starting to cleanup resources. It is
-> possible for user space to trigger a crash because nvmf_ctrl_options are
-> exposed to sysfs.
->
-> This crash wasn't observed with blktests nvme/041 until now because the
-> retry loop was usually trying for several times (e.g. with defaults
-> 600s) and the test would trigger the cleanup itself. Though we the
-> recent change not retrying to use invalid credentials the crash can be
-> easily triggered.
->
-> The simplest way to control the life time of nvmf_ctrl_options is by
-> using ref counting.
+On 07/03/2024 10:03, Johannes Berg wrote:
+> On Thu, 2024-03-07 at 09:54 +0000, Anton Ivanov wrote:
+>>
+>> PCAP is not feasible to incorporate into the build system at present.
+>> It has grown all kinds of warts over the years and brings a lot of dependencies.
+>> IMHO we should remove it from the tree. It has reached a point where it cannot
+>> be built on a modern system.
+> 
+> I suppose it might be possible to call pcap-config? But agree that it
+> doesn't seem really worth investing in.
+> 
+>> The users who need the same functionality can produce a bpf filter using tcpdump
+>> and load it as "firmware" into the vector/raw driver.
+>>
+>> I am working on a pure python bpf compiler which takes the same syntax as PCAP.
+>> It is showing signs of life and it can do some of the simpler use cases. Once
+>> that is ready, it should be possible to use that instead of pcap/tcpdump.
+> 
+> How's that required to be formatted and loaded? tcpdump itself can also
+> dump the filter in BPF format, with -d/-ddd (-dd is a C representation,
+> so probably not useful). Perhaps we could even automatically call
+> 'tcpdump' at runtime?
 
-Why do we need a refcount for an object that has the same exact lifetime
-as the ctrl itself? It just feels like unneeded complication.
+That is one option.
+
+As far as common use cases are concerned, at present you can:
+
+tcpdump -ddd, convert it to raw binary (3 liner in a language of choice) and pass that to vecX as a bpffile=
+
+It may be worth it to make vecX also take the -ddd format directly by adding "format" options to bpffile.
+
+I'd rather do that instead of invoking tcpdump out of a device open. The -ddd notation (+/- a comma here and there) is
+standard - it is also used by iptables, etc. It can used by other code generators as well.
+
+> 
+> johannes
+> 
+
+-- 
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
 
