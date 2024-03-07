@@ -1,98 +1,159 @@
-Return-Path: <linux-kernel+bounces-96117-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96118-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14E1A875755
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:37:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8014875757
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:37:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 461551C20F49
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:37:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 49495B2261A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:37:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9272C137763;
-	Thu,  7 Mar 2024 19:36:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE12B1369A6;
+	Thu,  7 Mar 2024 19:37:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tOA5lQQA"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="wrEF6z5w"
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C81EF135A56;
-	Thu,  7 Mar 2024 19:36:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7866A136663
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 19:37:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709840215; cv=none; b=WuK7hxmoXh6ye7GAkAHbL9fm6TxW3WM3fdn3QBjvMxPrI+D4M9TAc2XmlNqZvxqYXWZnFzBuWabclwkUjjhYqEc/zOW2Gx/BrFTHzyw6k1od+/Iu2OOSf0cyfGnK+nPtWP59zVSJHA8erl/Abx6u2luLSREQTEdjbW59z/hEqR8=
+	t=1709840248; cv=none; b=LLkBBeLUUgApV3dpTiW+NbxYO6DeRdUBnboQTT41dX1XUuLXsAYhM+sO8U/2DeWSYgUcnKRncXTdTGiOeKkxYQ5VQYZL0sbRLMJkmeYzWAMVhZJ/2Nkf5VFuHBZ8YG8on7o0NMyGZ4ELhzISb3lPl47WFtQ9+Er+QY+U3efCdug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709840215; c=relaxed/simple;
-	bh=1KgGaAOEWbovalkj+qhFZ1YtOmYOmUKmUqLvlOtisHQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=r1AoJp9tSiOKbvdeMDq9VY7qeGCiWJspkjjyZrLZDGx7GT1XULfFxXa+qAvAcAzJJZkvvnLlNFkhxsINRGbyaiGcFf/Ty5lI5D00JPab78dzT8weKNlwyLSdI6roElnlqLN+aIgxo1ftEwxitUngOqwg0RjNiSjLNWqWTf2kCRs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tOA5lQQA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF3F2C433F1;
-	Thu,  7 Mar 2024 19:36:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709840215;
-	bh=1KgGaAOEWbovalkj+qhFZ1YtOmYOmUKmUqLvlOtisHQ=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=tOA5lQQAX0B3LhpjtoXKJRjGQ85CeIUnjIZ0wkJcN5D+SORITfOESXruD0j0BFK/E
-	 0UKY9dgzyyXDFzMgO8Px+GltHCeGcnat3LXBWdjEoetCR4/yG4rNPwQr4QhN1pvkfw
-	 E3eHtLIlMHsJjwiwSjPVoO/UWqK1XN3oTD9xmJBjpxywjZocsZgd8uh+9yxFImk532
-	 bCNIQevs5HSINTFzWTo76AegUv9XbnEgBo1qitZJsAjpDqEheNrzKURhWUX36P6x2t
-	 9TZX3kCp85qoFhPhZtsGH+vT/1YFk/37Pd2qdLZ6aPLRejdf3M3usNwAEM/naXI2YQ
-	 ke5B1CuE3sIww==
-Message-ID: <5487d52a-31de-4422-b5ed-a59390d23ca0@kernel.org>
-Date: Thu, 7 Mar 2024 12:36:53 -0700
+	s=arc-20240116; t=1709840248; c=relaxed/simple;
+	bh=a6lwjcKCqdtsf90Qal7wyFWTBM8QUGg4Zfu+M6m/CPE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kLkHgQkR+//SpmGVaKkcEplDkLlCoBGiMfrJBihvavq64BJ6u/o9Pm1h3KP1lZTK0wgGfoYE1CpqJMOyqoeWA2B+peOoPWEdfXmWgFiNuC/0/XdUi0AqSM97EkKvReMfGv1Lyr2XjSDeaqCLQFdOz8qiM09H+26jSfMrTYcXApM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=wrEF6z5w; arc=none smtp.client-ip=209.85.219.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dcbd1d4904dso1303665276.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 11:37:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709840245; x=1710445045; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=D+atELKvQOOLnHOaCYsPXNofIf9HuHvn8BNu51WCFxw=;
+        b=wrEF6z5weOcO0/ZTj1X0NNaZICgd42SzgcmwgzNqNWBhMQHXVAJsBqOgYzzLEnU2H/
+         SiDNT2EUCboN6nrZSv7G897HY8DSVK29x0ofqq5SS7Z0h/9TWbK/1fCQceuayMxnKYar
+         LZJxk/McgHHFMef/U42dENSD7AOdaxwjzNSI8krIZJ1VRXff6UTucMeJbMpI2GL6lsT2
+         jsLQzm8qrhgX02DKHOgCBJDNsRh1HdIJZMFr0X0TOKbVTvOl3RSqR+NEKR8ZztyEAW4v
+         SPEU0EZLXGhnPna2bBvwT14Cnj2Wxt2Idn5PK+Brun/SQapQEqW2mdd6Bxey1xHr0o9t
+         +D7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709840245; x=1710445045;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=D+atELKvQOOLnHOaCYsPXNofIf9HuHvn8BNu51WCFxw=;
+        b=XSa+caL6VZwY/L0OWjJDKy5Ib2C7ICSKVqueCCKPKaNQMrxWrf3xX+YBW/QjmvlIVL
+         TGs8GhE7tY682F8+Z0+DH5BX+r1dowB2DYWECcrP8ZLBLBQRQYDltxsfdOoqBk8F+zJJ
+         X/pL+G4L3qjMAAYgATyqlwnhmelkos39czWY9Nh+3uO4lo54plV5//Tqk98leynGWWFR
+         Ak8S+CtAz+4wlW57foHE7VHYS5M3ncEUdEdcpG63nUusGvEvy6qBfuhITCHHcQv9idm6
+         K3aT0IIxcMD1tdD6X0PrM1w71CodidZ2LPnz9f2uC7+u9AaZvZrO5oL8HrqvBuhVmEwj
+         HIow==
+X-Forwarded-Encrypted: i=1; AJvYcCUKHcZ6uxQqz8KCP5a2iC8petctMRsx6XH47I62guO+xSUP2GSoZfljfa2JOWKQs62EP64FHxcdPL15hjcnxvnhZRugiJXdhXZP7Jpn
+X-Gm-Message-State: AOJu0YwqoQWhiFXPSJ9rc9ADyLiBeplyymO5eTZdNWcmsrF1trYv63Ih
+	1GAzQtiZZRTWYlzXlMDcrzqE81FV6cJbn/kepiAYymdxaqJUce19zzCA3j1ohgBMUyVK4ReJr+g
+	nOoC49EPcMehqo8VtJ93PkOAzXFMrEd3OlhLuPg==
+X-Google-Smtp-Source: AGHT+IFAnShZV5B8zjpb+Ymnm9dteFJx1LbcFdYtXwIKtOPBCLHsKmz4rnlqziHI0HmbJieqTl2MvvMl+PazihZSUw8=
+X-Received: by 2002:a25:d502:0:b0:dbd:553d:9d6a with SMTP id
+ r2-20020a25d502000000b00dbd553d9d6amr15441308ybe.40.1709840245408; Thu, 07
+ Mar 2024 11:37:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net v5] ipv6: fib6_rules: flush route cache when rule is
- changed
-Content-Language: en-US
-To: Shiming Cheng <shiming.cheng@mediatek.com>, jiri@resnulli.us,
- kuba@kernel.org, pabeni@redhat.com, edumazet@google.com, davem@davemloft.net
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- Lena Wang <lena.wang@mediatek.com>
-References: <20240307100157.29699-1-shiming.cheng@mediatek.com>
-From: David Ahern <dsahern@kernel.org>
-In-Reply-To: <20240307100157.29699-1-shiming.cheng@mediatek.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240307172334.1753343-1-sui.jingfeng@linux.dev>
+ <20240307172334.1753343-2-sui.jingfeng@linux.dev> <CAA8EJpp8tsHi0RhsJXG+r6nOsV3AUC_n6jNHL0Cr6Ku2h3NMog@mail.gmail.com>
+ <45f59f31-1f03-4a96-adb6-25c7cdd5e8a1@linux.dev>
+In-Reply-To: <45f59f31-1f03-4a96-adb6-25c7cdd5e8a1@linux.dev>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Thu, 7 Mar 2024 21:37:14 +0200
+Message-ID: <CAA8EJpqq1-cEke6wEFZFDnpz4tFBcL6HF3=Qtf-8Q3WbogLS8A@mail.gmail.com>
+Subject: Re: [PATCH v2 1/4] drm/bridge: Add fwnode based helpers to get the
+ next bridge
+To: Sui Jingfeng <sui.jingfeng@linux.dev>
+Cc: Andrzej Hajda <andrzej.hajda@intel.com>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	Robert Foss <rfoss@kernel.org>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
+	Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Phong LE <ple@baylibre.com>, dri-devel@lists.freedesktop.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 3/7/24 3:01 AM, Shiming Cheng wrote:
-> When rule policy is changed, ipv6 socket cache is not refreshed.
-> The sock's skb still uses a outdated route cache and was sent to
-> a wrong interface.
-> 
-> To avoid this error we should update fib node's version when
-> rule is changed. Then skb's route will be reroute checked as
-> route cache version is already different with fib node version.
-> The route cache is refreshed to match the latest rule.
-> 
-> Fixes: 101367c2f8c4 ("[IPV6]: Policy Routing Rules")
-> Signed-off-by: Shiming Cheng <shiming.cheng@mediatek.com>
-> Signed-off-by: Lena Wang <lena.wang@mediatek.com>
-> ---
-> v5:
->   - rebase on the top of latest net/main branch.
-> v4:
->   - add "Fixes:" tag.
->   - update subject as requested.
-> v3:
->   - update patch description and name format in commit message.
-> v2:
->   - modify flush function same way as ipv4 flush cache.
->   - use tabs to aligh with existing code.
-> ---
-> ---
->  net/ipv6/fib6_rules.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
+On Thu, 7 Mar 2024 at 21:20, Sui Jingfeng <sui.jingfeng@linux.dev> wrote:
+>
+> Hi,
+>
+>
+> On 2024/3/8 02:43, Dmitry Baryshkov wrote:
+> >> +
+> >>   MODULE_AUTHOR("Ajay Kumar<ajaykumar.rs@samsung.com>");
+> >>   MODULE_DESCRIPTION("DRM bridge infrastructure");
+> >>   MODULE_LICENSE("GPL and additional rights");
+> >> diff --git a/include/drm/drm_bridge.h b/include/drm/drm_bridge.h
+> >> index 3606e1a7f965..d4c95afdd662 100644
+> >> --- a/include/drm/drm_bridge.h
+> >> +++ b/include/drm/drm_bridge.h
+> >> @@ -26,6 +26,7 @@
+> >>   #include <linux/ctype.h>
+> >>   #include <linux/list.h>
+> >>   #include <linux/mutex.h>
+> >> +#include <linux/of.h>
+> >>
+> >>   #include <drm/drm_atomic.h>
+> >>   #include <drm/drm_encoder.h>
+> >> @@ -721,6 +722,8 @@ struct drm_bridge {
+> >>          struct list_head chain_node;
+> >>          /** @of_node: device node pointer to the bridge */
+> >>          struct device_node *of_node;
+> > In my opinion, if you are adding fwnode, we can drop of_node
+> > completely. There is no need to keep both of them.
+>
+>
+> But the 'struct device' have both of them contained, we should *follow the core*, right?
+> They are two major firmware subsystems (DT and ACPT), both are great and large, right?
+> Personally, I think the drm_bridge should embeds 'struct device', after all, drm bridge
+> are mainly stand for display bridges device. And also to reflect what you said: "to
+> reflect the hardware perfectly" and remove some boilerplate.
 
-Reviewed-by: David Ahern <dsahern@kernel.org>
+struct device contains both because it is at the root of the hierarchy
+and it should support both API. drm_bridge is a consumer, so it's fine
+to have just one.
+
+>
+> I think I'm not good enough to do such a big refactor, sorry. I believe that Maxime
+> and Laurent are the advanced programmers who is good enough to do such things, maybe
+> you can ask them for help?
+
+Well, you picked up the task ;-)
+
+But really, there is nothing so hard about it:
+- Change of_node to fw_node, apply an automatic patch changing this in
+bridge drivers.
+- Make drm_of_bridge functions convert passed of_node and comp
+
+After this we can start cleaning up bridge drivers to use fw_node API
+natively as you did in your patches 2-4.
+
+>
+> Beside this, other reviews are acceptable and will be fixed at the next version,
+> thanks a lot for review.
+>
+>
+> Best Regards,
+> Sui
+>
 
 
+-- 
+With best wishes
+Dmitry
 
