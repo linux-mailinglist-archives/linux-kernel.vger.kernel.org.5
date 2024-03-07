@@ -1,56 +1,59 @@
-Return-Path: <linux-kernel+bounces-95772-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95773-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57499875254
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:52:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4048875257
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:52:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7ABEF1C22855
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:52:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 972491F23E5E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:52:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 175F912DD99;
-	Thu,  7 Mar 2024 14:51:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9954D12D775;
+	Thu,  7 Mar 2024 14:52:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VrKVEwwZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DTe6xz+t"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5714E1EB2B;
-	Thu,  7 Mar 2024 14:51:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D080E127B7C;
+	Thu,  7 Mar 2024 14:52:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709823112; cv=none; b=pn6W7cWrihbLHMzmMzcNFdG3e1zPVqc1z7/hqJp7t86xKNDz6JdHgUZGw8ohjn+fvi45GKL6ZMp8STPg8pDQ6CEoP8e0BjNFxIeXZt+jHcSGdOYGWVWEqQVCTjxd1VO1T7TuGJXp9c9Z42b2zKki1EyyfRij3Ci9v7gZW3q17Xc=
+	t=1709823133; cv=none; b=MrMuWbN6N3vpNuh+XMd1dMdL5jtF0QorlBk6njtABGEeLQp1lRj6rQsN16906ad6zzqM9wMapXsnXWK8lMtCm7aS0iP7QKoPhKi82FvV+2IMLvzzPDBHFoq5UwMBxFqjFu1Kfxn3SXFLHeJ5Mnosmqk4IGB6J97q0+bM3wLoIPM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709823112; c=relaxed/simple;
-	bh=jmDXRT1UHHl9wuZwkCbShwjLFqFjqh3WNMPKmI4PmDg=;
+	s=arc-20240116; t=1709823133; c=relaxed/simple;
+	bh=ZscmK6I0AMsgAV0JKmQuVIW/MQy3oRvjWEQXFP9oIUc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=irKIyZjdAKVP28S2UqooRsddSXv9BwHFCsUC72Annj1Pc/IruICXu0QmQI6vkaZXKLMPYHkS5gqke7CKzcBbC1dTuGmZP52YsSwNECvQZIDW8FtDTa2Byzxjbzq0mQhPUy405JIb++3U8AVpw5Tj6uHHo6gX2IzwMT353zXu8CI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VrKVEwwZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6196C433F1;
-	Thu,  7 Mar 2024 14:51:48 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=XSla3/csaHaPYAeU6awLK0vhVqm1t8pNPFv03dPCqCknJrfhue8Etu1kSF6Kcq6Ra1ajJhmR4qrhkesaHXL62mWb9mkwHp4YAYJeBWxq06N96vWn9tOjIuGF9UH0UrHOqPI0zoBg4cWDoxILkdW65I3Ni2wbsNWrL+TGTIfb1rI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DTe6xz+t; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23950C433F1;
+	Thu,  7 Mar 2024 14:52:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709823111;
-	bh=jmDXRT1UHHl9wuZwkCbShwjLFqFjqh3WNMPKmI4PmDg=;
+	s=k20201202; t=1709823133;
+	bh=ZscmK6I0AMsgAV0JKmQuVIW/MQy3oRvjWEQXFP9oIUc=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VrKVEwwZDMVXu96zzJnPJ98MvmbYZPykuAClMNSXnd8VstCnROhLvCLwUYqkBDLdL
-	 EQuwthvZpj9Rchvva+eRiZRyOTqRU1xPUdWsKyEzSt1DnNRtw2DIFaCLDkv2ZE89MV
-	 CExqMzSxfYV9wvGb55cO/DSRs4OgfVcjGfIH+kjY0xieCLx8nTTCkXIG3xl8STRMVW
-	 nHjMnHLFiKmLnIH9WqX+qeu31/5LSelkS1TwxDcPsajp0w9zLHBBBjb2X/fgjZ4EQe
-	 YxKnFuevN/q2mBGUXl4KOyaGVaziIYB9B7VrrD5T8c9YMZHwokmCojR+3FZixo+oXr
-	 YKD8HIDX8J2dA==
-Date: Thu, 7 Mar 2024 14:51:46 +0000
-From: Simon Horman <horms@kernel.org>
-To: Radha Mohan Chintakuntla <radhac@marvell.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, sgoutham@marvell.com,
-	lcherian@marvell.com, gakula@marvell.com, hkelam@marvell.com,
-	jerinj@marvell.com, sbhatta@marvell.com
-Subject: Re: [PATCH] octeontx2-af: Increase maximum BPID channels
-Message-ID: <20240307145146.GB576211@kernel.org>
-References: <20240306213806.431830-1-radhac@marvell.com>
+	b=DTe6xz+t+b2O26zPADjx3LZmWIu3i+nxHPt85N4EBUtDbxfwdqf1ETZvBvOyn2pr7
+	 jONiLY9WKMslE0wlk53Le/GCidLCftZmarVvmDwgjtHQnL+VYjEyhcFkA31ToVI7QM
+	 L6Ms/EldTngBZCHml0oxrbDJN3ABZ+ekxGD6b1xacxx8d3BjLodjmsASDcu1uCboAI
+	 8ZNc9IfCSRED1vgkyox83iP144hbG9FRy4uEmmv7npCLlN8nXvErWI/HJErx5Za0kt
+	 Ir5c185bpz4VCmBBmQHBA0JICOjRlA6ud+Y8xcoDDPRKzedx1M6QcOcsdB8t02cYjA
+	 SP9IiTKeOdKFA==
+Date: Thu, 7 Mar 2024 08:52:11 -0600
+From: Rob Herring <robh@kernel.org>
+To: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc: linux-kernel@vger.kernel.org, sebastian.hesselbarth@gmail.com,
+	devicetree@vger.kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	linux-arm-kernel@lists.infradead.org, andy@kernel.org,
+	gregory.clement@bootlin.com, linux-leds@vger.kernel.org,
+	andrew@lunn.ch, geert@linux-m68k.org, conor+dt@kernel.org,
+	robh+dt@kernel.org, lee@kernel.org
+Subject: Re: [PATCH v5 2/3] dt-bindings: auxdisplay: Add bindings for generic
+ 7-segment LED
+Message-ID: <170982313063.2579205.11281655136132729632.robh@kernel.org>
+References: <20240306235021.976083-1-chris.packham@alliedtelesis.co.nz>
+ <20240306235021.976083-3-chris.packham@alliedtelesis.co.nz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -59,55 +62,33 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240306213806.431830-1-radhac@marvell.com>
+In-Reply-To: <20240306235021.976083-3-chris.packham@alliedtelesis.co.nz>
 
-On Wed, Mar 06, 2024 at 01:38:06PM -0800, Radha Mohan Chintakuntla wrote:
-> Any NIX interface type can have maximum 256 channels. So increased the
-> backpressure ID count to 256 so that it can cover cn9k and cn10k SoCs that
-> have different NIX interface types with varied maximum channels.
+
+On Thu, 07 Mar 2024 12:50:20 +1300, Chris Packham wrote:
+> Add bindings for a generic 7-segment LED display using GPIOs.
 > 
-> Signed-off-by: Radha Mohan Chintakuntla <radhac@marvell.com>
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
 > ---
->  drivers/net/ethernet/marvell/octeontx2/af/mbox.h | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
 > 
-> diff --git a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-> index d5c4f810da61..223a2e39172c 100644
-> --- a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-> +++ b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-> @@ -1207,10 +1207,8 @@ struct nix_bp_cfg_req {
->  	/* bpid_per_chan = 1 assigns separate bp id for each channel */
->  };
->  
-> -/* PF can be mapped to either CGX or LBK interface,
-> - * so maximum 64 channels are possible.
-> - */
-> -#define NIX_MAX_BPID_CHAN	64
-> +/* Maximum channels any single NIX interface can have */
-> +#define NIX_MAX_BPID_CHAN	256
->  struct nix_bp_cfg_rsp {
->  	struct mbox_msghdr hdr;
->  	u16	chan_bpid[NIX_MAX_BPID_CHAN]; /* Channel and bpid mapping */
+> Notes:
+>     Changes in v5:
+>     - Preserve formatting, maxItems set to 8, group GPIO specifiers
+>       as suggested by Geert
+>     Changes in v4:
+>     - Add ASCII art diagram showing arrangement of segments
+>     Changes in v3:
+>     - Set maxItems: 7
+>     - Expand description of segment-gpios property.
+>     - Use compatible = "gpio-7-segment" as suggested by Rob
+>     Changes in v2:
+>     - Use compatible = "generic-gpio-7seg" to keep checkpatch.pl happy
+> 
+>  .../bindings/auxdisplay/gpio-7-segment.yaml   | 55 +++++++++++++++++++
+>  1 file changed, 55 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/auxdisplay/gpio-7-segment.yaml
+> 
 
-Hi Radha,
-
-looking over this, I am curious to know how out-of bounds access
-to chan_bpid is prevented. The bounds seems to be the
-the number of PF or VF rings. Which I assume is derived from
-the HW. But if so, what if the HW reports more than NIX_MAX_BPID_CHAN
-rings?
-
-On a different note, struct includes the following field:
-
-	u16 bpid[NIX_MAX_BPID_CHAN];
-
-But here the index used seems to be
-
-1. VLAN priority (which has maximum value of 8) if DCB is used
-2. 0 otherwise
-
-So perhaps fewer elements are needed?
-
-Apologies in advance if I'm on the wrong track here.
+Reviewed-by: Rob Herring <robh@kernel.org>
 
 
