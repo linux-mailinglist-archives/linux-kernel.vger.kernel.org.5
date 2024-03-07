@@ -1,208 +1,109 @@
-Return-Path: <linux-kernel+bounces-96141-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96142-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91BF4875795
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:53:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B513987579C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:53:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 10C6A1F245A8
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:53:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 706CA286F2B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:53:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 671321EB56;
-	Thu,  7 Mar 2024 19:52:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C74013790D;
+	Thu,  7 Mar 2024 19:52:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kays2Dit"
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kZm2YSwS"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B93F41386A2;
-	Thu,  7 Mar 2024 19:51:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BCF6137C42;
+	Thu,  7 Mar 2024 19:52:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709841119; cv=none; b=JvQaqkU+U6fFEJbDdmifnpT4S7UPTtVX/32Dhz6Fdu9NiE0aGXFbXuDzKiO6Hj7k/hmR3ksGGDnSqdeMJ8yZy/wlMVnUhm8/1AYB4Y/kAKbguXUOQRf8Q7NjhkEY1vyFEHT3hdemagHDoa7XygB8BCR6V18/EhZM3YczM7/jfEk=
+	t=1709841162; cv=none; b=hb8hODoA+whsFIAgnMGa4gGnyMWtTeqNoJIEu9g7XvM9OXqoyx5l9mdXcz+JyW7A830HjC8/gwKsU9b5i1rZ2xp1+/q6si+embIMj+seHKzyBNF0ruQBuBajkrX1Dk5DLnoE85Ir0OvwV6/7F3Tq8aZTCz+9nqEtPEKNRWI+fxA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709841119; c=relaxed/simple;
-	bh=TdtykXB7n8fNd9dJcXpahhooUT09J4+JKDYWfeZjLlE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VTIciQbr6MIdfmeEEmkCgaBwdNAR68Ffj1E8cngFNkC/ueHiKD86Xu+ivdF0fjOp14wEjDJXt/D+1p+3PbIbr6tmt6JzSw//QfOmrHsYhTv3Vv9rO6eUD2nJ5p5Lty78UC7F6+3IPYY7I2+nNA98Cf40XHm/ImDQmPbdlGkAizk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kays2Dit; arc=none smtp.client-ip=209.85.167.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-5133d26632fso163072e87.2;
-        Thu, 07 Mar 2024 11:51:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709841116; x=1710445916; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=c4I1lXn3FBBpmnufblffhcte7kEWdSkpeXIrFdn90Cs=;
-        b=kays2DitVDgF4FgstaCnHBHFrzGg1UAHnCJgtZMhnqM6UQOL5QFhmxrocNrT5sonZr
-         jiCl0MJ+YYAHr6CDbLUNVey/uZQpqFL3KyLDBwaakvJlrm4aSiS3q2wga81UtGnKsO7G
-         cfoU0ViP9fuXh2Cpief/A32A5JqRTVeZLmbyCMwY3QHvbuAud/ENJqY/5Mz1hVjwnIod
-         zvYBdyPydop32lhxqz/KJrcSo62O1XqdSNts27HjqPbTPCBY908efpo5j6NrKbBpaTrZ
-         6UiUFH1mzxu24a/bLm+NmOWqpcL7L99XeqdE147mO+sjlhHQgNYYPglXveD560rzn3IH
-         pgfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709841116; x=1710445916;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=c4I1lXn3FBBpmnufblffhcte7kEWdSkpeXIrFdn90Cs=;
-        b=CtgGQDZcwOAHqWwRBFzavJ6daQ0ldvRgUKstU29j8ImgTNjLEwE5V6kA86dbF/8f5R
-         1BrLcWB6fmkuVi0RPbTq9Xl1KWB++5nc29nexCaWTsUjROZ5F2ighIbS9xtjFzlRGyRt
-         /Pgmsw/HpL3PO/l17GBNeJB+e3Tu42QIcj2YvSvNeUFlorSKy+i8AkE8aKakcS7BZcx0
-         FS64cPc7mVVxCOykzGQg96mZz+m9oAa9msndKEE9DGLJpJdC8Mr0KBWFKAvxEdd7LDgk
-         XjHCKCaFclKp+FAg0YNUmxfp4RziTHIMjatS2mepnYUJ9XnWfFaPjug0m+2sFZp9Eyr3
-         3wNA==
-X-Forwarded-Encrypted: i=1; AJvYcCWLMDtOdkGhceUGbOV3uMQKMz4edxUmoO+BwswzuWHh61WuRaZ/xK2bBWZCB/ascnc3uAlYSSeEKhp+Ox1gWgX2lOZ/YwNKyhT5Mqok4qj5in/5Tosrmiai+dxToLl8w0NRE0kWECetGa9mi93BHNc3
-X-Gm-Message-State: AOJu0YxRSZr3KkRaMRfryUvztgKD1Qqcg0U9BrqhIM4AOrx5INHBtkN+
-	W56XQ4KdNcQ/zrCMSYhRjd9IIDRlamIDLgT4tmnBgt4RsgxjbkGF65kUFiSYTtqE4no2vXmzrqK
-	ta2upQm9FB4yMIbqK1uZBnt7hzVo=
-X-Google-Smtp-Source: AGHT+IFTDb9kSXJSV9aEH7Cc4i8JuuCykEZTMKhx5/zbStDpJtxFBfLhgQMojeCXfJ0KbIatFZO3IZs9FgExJRCFUoo=
-X-Received: by 2002:a05:6512:3d1f:b0:513:2f96:72b5 with SMTP id
- d31-20020a0565123d1f00b005132f9672b5mr2958723lfv.33.1709841115402; Thu, 07
- Mar 2024 11:51:55 -0800 (PST)
+	s=arc-20240116; t=1709841162; c=relaxed/simple;
+	bh=abVM7Az8c+fwhJYNf8SjY0MPBlfozwtnuPRGUqiuFH0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ejbGhXuIsYrpA+6VzfyjocJNZUAKMGufA+5bdAEnnSm7W0aWbCFrVZBAkzTIqQGaVtl0aHJUOB0gAKl4KhYU4yugbUXtw2k/7AKIx8Kybsd5Tgei3VtlQylmEAxiTCujg9/gEn76mSIN9ZYu0QL4wivX6J1aqRXfyczFG8shlQA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kZm2YSwS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE4C0C433F1;
+	Thu,  7 Mar 2024 19:52:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709841161;
+	bh=abVM7Az8c+fwhJYNf8SjY0MPBlfozwtnuPRGUqiuFH0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=kZm2YSwSeAjDl/IxeY39+GMpbM8g/8yLdpNPzBh9Kp9OI7lIHdGVkI0W/SiXGXlVY
+	 8Ye4MdEO3tCq/Rskx6KQb/6n0TYuz5hgFRUTqcPq5lMDRZ4e68xdlI+OtljF8BrAhW
+	 uU3G/XKfd2W+GAEpIvJOH8/VjiPRvy3xkmXqZ6ZJN16Jj5szHjOqM4WehX4qqAwgUo
+	 lK6yFgKRk4vAkGPgD4jvralrfWKvR87DyZ2a62ltCqD/q4ZXANAZfTOlh9cdeyaotn
+	 gMKzIMKEyAbzGgl9wgZHgDfKWgZnsBm8mLkobnvwBY2pLtH90c8M7zCL36b5O9cGzO
+	 9MQH5Xf1EoKww==
+Date: Thu, 7 Mar 2024 20:52:30 +0100
+From: Niklas Cassel <cassel@kernel.org>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Jingoo Han <jingoohan1@gmail.com>,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Marek Vasut <marek.vasut+renesas@gmail.com>,
+	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Kishon Vijay Abraham I <kishon@ti.com>,
+	Vidya Sagar <vidyas@nvidia.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Richard Zhu <hongxing.zhu@nxp.com>,
+	Lucas Stach <l.stach@pengutronix.de>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	Minghuan Lian <minghuan.Lian@nxp.com>,
+	Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
+	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Jesper Nilsson <jesper.nilsson@axis.com>,
+	Srikanth Thokala <srikanth.thokala@intel.com>,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+	linux-arm-kernel@axis.com, Frank Li <Frank.Li@nxp.com>
+Subject: Re: [PATCH v9 01/10] PCI: dwc: ep: Remove deinit() callback from
+ struct dw_pcie_ep_ops
+Message-ID: <ZeoaOn2dekvBD8ae@ryzen>
+References: <20240304-pci-dbi-rework-v9-0-29d433d99cda@linaro.org>
+ <20240304-pci-dbi-rework-v9-1-29d433d99cda@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240306165904.108141-1-puranjay12@gmail.com> <87ttlhdeqb.fsf@all.your.base.are.belong.to.us>
-In-Reply-To: <87ttlhdeqb.fsf@all.your.base.are.belong.to.us>
-From: Puranjay Mohan <puranjay12@gmail.com>
-Date: Thu, 7 Mar 2024 20:51:44 +0100
-Message-ID: <CANk7y0gbQdYw0V+CEv-z8wFGXnki8KSn4c8+i0iZ1UFNCg7wJQ@mail.gmail.com>
-Subject: Re: [RFC PATCH] riscv: Implement HAVE_DYNAMIC_FTRACE_WITH_CALL_OPS
-To: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Sami Tolvanen <samitolvanen@google.com>, Guo Ren <guoren@kernel.org>, 
-	Ley Foon Tan <leyfoon.tan@starfivetech.com>, Deepak Gupta <debug@rivosinc.com>, 
-	Sia Jee Heng <jeeheng.sia@starfivetech.com>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>, 
-	Song Shuai <suagrfillet@gmail.com>, =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>, 
-	Al Viro <viro@zeniv.linux.org.uk>, Jisheng Zhang <jszhang@kernel.org>, 
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240304-pci-dbi-rework-v9-1-29d433d99cda@linaro.org>
 
-Hi Bj=C3=B6rn,
+On Mon, Mar 04, 2024 at 02:52:13PM +0530, Manivannan Sadhasivam wrote:
+> deinit() callback was solely introduced for the pcie-rcar-gen4 driver where
+> it is used to do platform specific resource deallocation. And this callback
+> is called right at the end of the dw_pcie_ep_exit() API. So it doesn't
+> matter whether it is called within or outside of dw_pcie_ep_exit() API.
+> 
+> So let's remove this callback and directly call rcar_gen4_pcie_ep_deinit()
+> in pcie-rcar-gen4 driver to do resource deallocation after the completion
+> of dw_pcie_ep_exit() API in rcar_gen4_remove_dw_pcie_ep().
+> 
+> This simplifies the DWC layer.
+> 
+> Reviewed-by: Frank Li <Frank.Li@nxp.com>
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> ---
 
-On Thu, Mar 7, 2024 at 8:27=E2=80=AFPM Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.=
-org> wrote:
->
-> Puranjay!
->
-> Puranjay Mohan <puranjay12@gmail.com> writes:
->
-> > This patch enables support for DYNAMIC_FTRACE_WITH_CALL_OPS on RISC-V.
-> > This allows each ftrace callsite to provide an ftrace_ops to the common
-> > ftrace trampoline, allowing each callsite to invoke distinct tracer
-> > functions without the need to fall back to list processing or to
-> > allocate custom trampolines for each callsite. This significantly speed=
-s
-> > up cases where multiple distinct trace functions are used and callsites
-> > are mostly traced by a single tracer.
-> >
-> > The idea and most of the implementation is taken from the ARM64's
-> > implementation of the same feature. The idea is to place a pointer to
-> > the ftrace_ops as a literal at a fixed offset from the function entry
-> > point, which can be recovered by the common ftrace trampoline.
->
-> Not really a review, but some more background; Another rationale (on-top
-> of the improved per-call performance!) for CALL_OPS was to use it to
-> build ftrace direct call support (which BPF uses a lot!). Mark, please
-> correct me if I'm lying here!
->
-> On Arm64, CALL_OPS makes it possible to implement direct calls, while
-> only patching one BL instruction -- nice!
->
-> On RISC-V we cannot use use the same ideas as Arm64 straight off,
-> because the range of jal (compare to BL) is simply too short (+/-1M).
-> So, on RISC-V we need to use a full auipc/jal pair (the text patching
-> story is another chapter, but let's leave that aside for now). Since we
-> have to patch multiple instructions, the cmodx situation doesn't really
-> improve with CALL_OPS.
->
-> Let's say that we continue building on your patch and implement direct
-> calls on CALL_OPS for RISC-V as well.
->
-> From Florent's commit message for direct calls:
->
->   |    There are a few cases to distinguish:
->   |    - If a direct call ops is the only one tracing a function:
->   |      - If the direct called trampoline is within the reach of a BL
->   |        instruction
->   |         -> the ftrace patchsite jumps to the trampoline
->   |      - Else
->   |         -> the ftrace patchsite jumps to the ftrace_caller trampoline=
- which
->   |            reads the ops pointer in the patchsite and jumps to the di=
-rect
->   |            call address stored in the ops
->   |    - Else
->   |      -> the ftrace patchsite jumps to the ftrace_caller trampoline an=
-d its
->   |         ops literal points to ftrace_list_ops so it iterates over all
->   |         registered ftrace ops, including the direct call ops and call=
-s its
->   |         call_direct_funcs handler which stores the direct called
->   |         trampoline's address in the ftrace_regs and the ftrace_caller
->   |         trampoline will return to that address instead of returning t=
-o the
->   |         traced function
->
-> On RISC-V, where auipc/jalr is used, the direct called trampoline would
-> always be reachable, and then first Else-clause would never be entered.
-> This means the the performance for direct calls would be the same as the
-> one we have today (i.e. no regression!).
->
-> RISC-V does like x86 does (-ish) -- patch multiple instructions, long
-> reach.
->
-> Arm64 uses CALL_OPS and patch one instruction BL.
->
-> Now, with this background in mind, compared to what we have today,
-> CALL_OPS would give us (again assuming we're using it for direct calls):
->
-> * Better performance for tracer per-call (faster ops lookup) GOOD
-
-^ this was the only motivation for me to implement this patch.
-
-I don't think implementing direct calls over call ops is fruitful for
-RISC-V because once
-the auipc/jalr can be patched atomically, the direct call trampoline
-is always reachable.
-Solving the atomic text patching problem would be fun!! I am eager to
-see how it will be
-solved.
-
-> * Larger text size (function alignment + extra nops) BAD
-> * Same direct call performance NEUTRAL
-> * Same complicated text patching required NEUTRAL
->
-> It would be interesting to see how the per-call performance would
-> improve on x86 with CALL_OPS! ;-)
-
-If I remember from Steven's talk, x86 uses dynamically allocated trampoline=
-s
-for per callsite tracers, would CALL_OPS provide better performance than th=
-at?
-
->
-> I'm trying to wrap my head if it makes sense to have it on RISC-V, given
-> that we're a bit different from Arm64. Does the scale tip to the GOOD
-> side?
->
-> Oh, and we really need to see performance numbers on real HW! I have a
-> VF2 that I could try this series on.
-
-It would be great if you can do it :D.
-
-Thanks,
-Puranjay
+Reviewed-by: Niklas Cassel <cassel@kernel.org>
 
