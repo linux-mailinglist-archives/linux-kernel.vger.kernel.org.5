@@ -1,238 +1,145 @@
-Return-Path: <linux-kernel+bounces-95976-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95971-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 044AE87558B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 18:51:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 593FC875583
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 18:49:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE6C3286FF9
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:51:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F28A1F218D8
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:49:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7884213173E;
-	Thu,  7 Mar 2024 17:51:07 +0000 (UTC)
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51C9913173E;
+	Thu,  7 Mar 2024 17:49:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L9eY9P8G"
+Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE1EA130E23;
-	Thu,  7 Mar 2024 17:51:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F5DB12FB2B;
+	Thu,  7 Mar 2024 17:49:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709833866; cv=none; b=XHpslKcu+3+b4kyLLeYHZl7Py3DikNHvdQIoIqOrNVHRDgU2So3CJwvgeXNRBIZf4QkOpKqYvsubQSxT8mihq9seclMFHaWAgxbT3bKVf7jc3q/AzILlFQFDL28utSaQHBjBPj8nezHqL5hS186ji+oJlfz+okTIHUzvkMjhl1A=
+	t=1709833743; cv=none; b=QlUPijXGlEAuY8A1xdq7h5pvGNMrOjxQuSRAwZBF4r3Nno8fWJAmHOzFKFzCIkkxCxPcvpPOk/+8JcesXM7TedJs+tjlko5uR7oy6j0F3cYWNj1zJjVtmIPrTQW608ZUQjizrhMOpFl5uu2TFP+bUtWPJLreZWL+NkO0gKRzzno=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709833866; c=relaxed/simple;
-	bh=LrT0NGCNxkZ932L/HfzGFxMUYmyWozRwxheB5aYJdCY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=o15maJymv9odab9+gk5iTZIwhIVV2UNqI02CyxXb+TJrn46f6RuKIyKnNc7tun5iXWr+K9oBl+0sutRSzql6TkluilBj+AjoOyV1hnJaA33tkqDPNiguIizVu7meP0hFxwaZIcM0boQ7X1TleamIsXyMMFOYnJckVVyWuQxuz+w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+	s=arc-20240116; t=1709833743; c=relaxed/simple;
+	bh=SWaaB0XQCIhzAS6EmdUMQf+lLQWEmTzrwTE2/ASS73A=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=AbUPgOgRq8h8XoeitHtziEpt2PIMU7lJdmLHyB1OIcsCJO3T9WJuUsbBJ2hxyiCekXw6wi8yhbO+im0qDh5gBN+Gfhp9kwBgrYJKGABW0uPZbGTk8kfnjT1UEESmQ+MerDOLhC0cU2F22E0x/AFq3cLozCNeMkaY1sLmsZ9XCTs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L9eY9P8G; arc=none smtp.client-ip=209.85.160.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-564372fb762so1486313a12.0;
-        Thu, 07 Mar 2024 09:51:04 -0800 (PST)
+Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-42ee7fa077bso5066731cf.3;
+        Thu, 07 Mar 2024 09:49:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709833741; x=1710438541; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3azFskcK1Kr594pn4cAjp31V8LFrQG4+hgU7A9RDIXk=;
+        b=L9eY9P8GPvIGZ/1AOuhnZEwuBhpYq56SeoWY1rLiw87s+jgS3BBHoi7yJvP1jgb++y
+         s8vK3J4LizPptbc+OgZ/o0E+xHvH9rcCNXde+hMRqFjdtj4DGF+ep+iMSkxkbXXEFxrv
+         AeqYtGINbZrwyeExt2bzwDETTVUsYViEI7umLKHjQgX7HjdwSPLgVBDpT7vTFOp6s//T
+         GdlGxEwbma+TjI5bN+Lk+5kVfM+bSO//fP77Deq8RLZGaUulVp1PQX8r3amZ5r7hKNza
+         vzDYa/aRVSrgDwq5/nE7sWvgswRUcqiHnUzisfEnKRUgGN+aSoS60hafHd3GBrmkVK5O
+         Ju5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709833863; x=1710438663;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=G3MIfGO3k7f6zIfDg/I6OeKxvIxDh2bPbWHKtpIBemM=;
-        b=TSSaT7Osyqy6syYf1g/Aq4HF6sA21gCcvytFHapndtZ6Y+v03AW/QKliVmFDzv/kBv
-         JQqSaRDBDX78FKJMlsOAXF77nubzRd3+SJ+YWN3iZIWuAL5qNPOTVkzCyKzr153lAjVg
-         okRtyMOYvXkYh9JW9j+PLm+sr4D3UocT4ZFIo/L9+g6kLQ9Jvg0HQ4uo9Pk562DrGdyH
-         11cSsP+1ZllMU8IAWnn1fVfsEej+YBt7fLJZ71aqn8Qvh/hHxu+1aOy+FldHIbbur/OO
-         wyxJNyxxULZHMqAIzayknj0CT2s2lyfohJw5yRFo2E508o0eUHNl0Eq97sThmV0aJ5Nf
-         GWKA==
-X-Forwarded-Encrypted: i=1; AJvYcCWNu4temoYKwY67DR12KcPcCJl5cMOnKnZJOqU7M5S90Ib2k3MWUxxWGa1ANfdopMu0WblAkLXSBXQc2hHLd6GnKwQmnJ+Bcezd6PnA
-X-Gm-Message-State: AOJu0Yww/QXZF+DL0KcJ5Drb3gXMNrbhNZUFAfGCwZBtR5+z2fNxk7fj
-	jcfvgGvn8KCuztB1BPxG8wprW5go374leucs1SPyBpWdRFWE5uDFFH6JUKk5
-X-Google-Smtp-Source: AGHT+IGE7COA8LXHVdLL1oQMQdLJNzQLRVSrWgARCGiG2GDbuK/vK1S4PhIbtrctYJhuaa4usFoVsg==
-X-Received: by 2002:a50:8e56:0:b0:568:2149:329a with SMTP id 22-20020a508e56000000b005682149329amr355169edx.19.1709833862825;
-        Thu, 07 Mar 2024 09:51:02 -0800 (PST)
-Received: from localhost (fwdproxy-lla-007.fbsv.net. [2a03:2880:30ff:7::face:b00c])
-        by smtp.gmail.com with ESMTPSA id d8-20020a50fe88000000b005673e29cc0fsm5116984edt.54.2024.03.07.09.51.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Mar 2024 09:51:02 -0800 (PST)
-From: Breno Leitao <leitao@debian.org>
-To: linux-wireless@vger.kernel.org,
-	johannes.berg@intel.com,
-	gregory.greenman@intel.com,
-	Miri Korenblit <miriam.rachel.korenblit@intel.com>,
-	Kalle Valo <kvalo@kernel.org>
-Cc: kuba@kernel.org,
-	keescook@chromium.org,
-	Alon Giladi <alon.giladi@intel.com>,
-	Benjamin Berg <benjamin.berg@intel.com>,
-	Anjaneyulu <pagadala.yesu.anjaneyulu@intel.com>,
-	Avraham Stern <avraham.stern@intel.com>,
-	Christian Marangi <ansuelsmth@gmail.com>,
-	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] wifi: iwlwifi: pcie: allocate dummy net_device dynamically
-Date: Thu,  7 Mar 2024 09:48:31 -0800
-Message-ID: <20240307174843.1719130-1-leitao@debian.org>
-X-Mailer: git-send-email 2.43.0
+        d=1e100.net; s=20230601; t=1709833741; x=1710438541;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3azFskcK1Kr594pn4cAjp31V8LFrQG4+hgU7A9RDIXk=;
+        b=EhxOCExzdQjIEW+Qq6EiHvdRQgACrBDPsGyaSNEsr63ZoHkzjFWvTqK5bqvoQfF1sQ
+         L3aLA60Td+5iPW6lzWk/dGWEb89fUbv9OvHN4izFRTkXtLKfyxZjgkTVtyu7A509tTD1
+         8A9jzC8kePe/p7kmMxm0CRNl0YrD8mP+Lhf44bUyA0jacMMerpwYLUg0MmRqBZqDBlft
+         rW8/2M3pcFAKFGcf7+VbEwuxD2qlyeQT9WVM/GAqAO08aEeYphQtPOcfW/71LiSvUuo2
+         bmfGCMXwfx+e3vZ88NcPdyMO1uvq2hUHEIST94xZ+i1UrmS1OpiohIOo3Mu1EMPtrjwk
+         Y1Xw==
+X-Forwarded-Encrypted: i=1; AJvYcCVrXTwBU+83xKFF1EzF8veIrgJ/zYBqEbjN0csQXidimZay5WRidUowZ3mI/VEEEq4fv5l7+fuf7L7CAsOFnoMrCUMY/dpCwbbu8fuSGywDGHxVwNly91p4AiYjleNHThsUD370jkmqTrX/U1w3b52MHyM9mBKoPpAp
+X-Gm-Message-State: AOJu0YxMIw2eZhgdYm9nZ+2rZKeKYMmuXVr+linQ4Rit+DfOhKSMqs63
+	BIrikzMJeF2hyZ4qSXFVxxM52MVmeNAVJe2pNiOfnpGN6U16GYeb4QN7GWWI17lrWawSg+2Z9Zu
+	xOYlXzemiM/WbeoPzaYjTQ8SkPKksMU1OLV3fGw==
+X-Google-Smtp-Source: AGHT+IFtJCet5o1lyZnRcTyn4EgVIYVJsxWpjc8YqORCDIgVR49weziOGhMcQg3AfHy5K2m4sfmNZwGAEqxGK2ey/9E=
+X-Received: by 2002:a05:622a:15d6:b0:42e:da48:fbb3 with SMTP id
+ d22-20020a05622a15d600b0042eda48fbb3mr8812751qty.41.1709833740937; Thu, 07
+ Mar 2024 09:49:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <ZeiNxaq3jzloO9l6@boxer> <20240307142402.906681-1-dgouarin@gmail.com>
+ <ZenidKFF/gQefijz@boxer>
+In-Reply-To: <ZenidKFF/gQefijz@boxer>
+From: david gouarin <dgouarin@gmail.com>
+Date: Thu, 7 Mar 2024 18:48:50 +0100
+Message-ID: <CAH3uZAwOBeuV9FQpFJ5-S-j5HDWpxR5vvXKzUoq_UTOenz6=XQ@mail.gmail.com>
+Subject: Re: [PATCH net v2] dpaa_eth: fix XDP queue index
+To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc: david.gouarin@thalesgroup.com, Madalin Bucur <madalin.bucur@nxp.com>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Camelia Groza <camelia.groza@nxp.com>, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-struct net_device shouldn't be embedded into any structure, instead,
-the owner should use the priv space to embed their state into net_device.
+Le jeu. 7 mars 2024 =C3=A0 16:51, Maciej Fijalkowski
+<maciej.fijalkowski@intel.com> a =C3=A9crit :
+>
+> On Thu, Mar 07, 2024 at 03:24:02PM +0100, David Gouarin wrote:
+> > Make it possible to bind a XDP socket to a queue id.
+> > The DPAA FQ Id was passed to the XDP program in the XDP packet metadata
+> > which made it unusable with bpf_map_redirect.
+>
+> I think that referring to a member from xdp_rxq_info struct as 'packet
+> metadata' is confusing. I was trying to find a place where you are
+> actually storing this id at xdp_buff::data_meta. This is not happening
+> AFAICT. Thing is that xsk_rcv_check() picks xdp->rxq->queue_index which
+> holds fqid which is not related to queue number, right?
 
-Embedding net_device into structures prohibits the usage of flexible
-arrays in the net_device structure. For more details, see the discussion
-at [1].
+Correct. I have used the term xdp metadata because that is the terminology
+used in the xdp program (struct xdp_md).
+I should have said instead :
+The DPAA FQ Id was passed to the XDP program in the xdp_rxq_info->queue_ind=
+ex
+instead of the queue number [...]
 
-Un-embed the net_device from struct iwl_trans_pcie by converting it
-into a pointer. Then use the leverage alloc_netdev() to allocate the
-net_device object at iwl_trans_pcie_alloc.
+Maciej please forgive me for the double send and formatting mistakes,
+kernel mailing lists are new to me.
 
-The private data of net_device becomes a pointer for the struct
-iwl_trans_pcie, so, it is easy to get back to the iwl_trans_pcie parent
-given the net_device object.
-
-[1] https://lore.kernel.org/all/20240229225910.79e224cf@kernel.org/
-
-Signed-off-by: Breno Leitao <leitao@debian.org>
----
- .../wireless/intel/iwlwifi/pcie/internal.h    |  2 +-
- drivers/net/wireless/intel/iwlwifi/pcie/rx.c  | 11 +++++--
- .../net/wireless/intel/iwlwifi/pcie/trans.c   | 29 +++++++++++++------
- 3 files changed, 29 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/internal.h b/drivers/net/wireless/intel/iwlwifi/pcie/internal.h
-index 7805a42948af..a7eebe400b5b 100644
---- a/drivers/net/wireless/intel/iwlwifi/pcie/internal.h
-+++ b/drivers/net/wireless/intel/iwlwifi/pcie/internal.h
-@@ -386,7 +386,7 @@ struct iwl_trans_pcie {
- 	dma_addr_t iml_dma_addr;
- 	struct iwl_trans *trans;
- 
--	struct net_device napi_dev;
-+	struct net_device *napi_dev;
- 
- 	/* INT ICT Table */
- 	__le32 *ict_tbl;
-diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/rx.c b/drivers/net/wireless/intel/iwlwifi/pcie/rx.c
-index 9c2461ba13c5..984d7bcd381f 100644
---- a/drivers/net/wireless/intel/iwlwifi/pcie/rx.c
-+++ b/drivers/net/wireless/intel/iwlwifi/pcie/rx.c
-@@ -1000,6 +1000,11 @@ void iwl_pcie_rx_init_rxb_lists(struct iwl_rxq *rxq)
- 
- static int iwl_pcie_rx_handle(struct iwl_trans *trans, int queue, int budget);
- 
-+static inline struct iwl_trans_pcie *iwl_netdev_to_trans_pcie(struct net_device *dev)
-+{
-+	return *(struct iwl_trans_pcie **)netdev_priv(dev);
-+}
-+
- static int iwl_pcie_napi_poll(struct napi_struct *napi, int budget)
- {
- 	struct iwl_rxq *rxq = container_of(napi, struct iwl_rxq, napi);
-@@ -1007,7 +1012,7 @@ static int iwl_pcie_napi_poll(struct napi_struct *napi, int budget)
- 	struct iwl_trans *trans;
- 	int ret;
- 
--	trans_pcie = container_of(napi->dev, struct iwl_trans_pcie, napi_dev);
-+	trans_pcie = iwl_netdev_to_trans_pcie(napi->dev);
- 	trans = trans_pcie->trans;
- 
- 	ret = iwl_pcie_rx_handle(trans, rxq->id, budget);
-@@ -1034,7 +1039,7 @@ static int iwl_pcie_napi_poll_msix(struct napi_struct *napi, int budget)
- 	struct iwl_trans *trans;
- 	int ret;
- 
--	trans_pcie = container_of(napi->dev, struct iwl_trans_pcie, napi_dev);
-+	trans_pcie = iwl_netdev_to_trans_pcie(napi->dev);
- 	trans = trans_pcie->trans;
- 
- 	ret = iwl_pcie_rx_handle(trans, rxq->id, budget);
-@@ -1131,7 +1136,7 @@ static int _iwl_pcie_rx_init(struct iwl_trans *trans)
- 			if (trans_pcie->msix_enabled)
- 				poll = iwl_pcie_napi_poll_msix;
- 
--			netif_napi_add(&trans_pcie->napi_dev, &rxq->napi,
-+			netif_napi_add(trans_pcie->napi_dev, &rxq->napi,
- 				       poll);
- 			napi_enable(&rxq->napi);
- 		}
-diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/trans.c b/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
-index 6c76b2dd6878..e5af3d7dfbb1 100644
---- a/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
-+++ b/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
-@@ -1986,13 +1986,6 @@ static void iwl_trans_pcie_configure(struct iwl_trans *trans,
- 	trans->command_groups = trans_cfg->command_groups;
- 	trans->command_groups_size = trans_cfg->command_groups_size;
- 
--	/* Initialize NAPI here - it should be before registering to mac80211
--	 * in the opmode but after the HW struct is allocated.
--	 * As this function may be called again in some corner cases don't
--	 * do anything if NAPI was already initialized.
--	 */
--	if (trans_pcie->napi_dev.reg_state != NETREG_DUMMY)
--		init_dummy_netdev(&trans_pcie->napi_dev);
- 
- 	trans_pcie->fw_reset_handshake = trans_cfg->fw_reset_handshake;
- }
-@@ -2057,6 +2050,8 @@ void iwl_trans_pcie_free(struct iwl_trans *trans)
- 		iwl_pcie_tx_free(trans);
- 	iwl_pcie_rx_free(trans);
- 
-+	free_netdev(trans_pcie->napi_dev);
-+
- 	if (trans_pcie->rba.alloc_wq) {
- 		destroy_workqueue(trans_pcie->rba.alloc_wq);
- 		trans_pcie->rba.alloc_wq = NULL;
-@@ -3594,7 +3589,7 @@ struct iwl_trans *iwl_trans_pcie_alloc(struct pci_dev *pdev,
- 			       const struct pci_device_id *ent,
- 			       const struct iwl_cfg_trans_params *cfg_trans)
- {
--	struct iwl_trans_pcie *trans_pcie;
-+	struct iwl_trans_pcie *trans_pcie, **priv;
- 	struct iwl_trans *trans;
- 	int ret, addr_size;
- 	const struct iwl_trans_ops *ops = &trans_ops_pcie_gen2;
-@@ -3623,6 +3618,20 @@ struct iwl_trans *iwl_trans_pcie_alloc(struct pci_dev *pdev,
- 
- 	trans_pcie = IWL_TRANS_GET_PCIE_TRANS(trans);
- 
-+	/* Initialize NAPI here - it should be before registering to mac80211
-+	 * in the opmode but after the HW struct is allocated.
-+	 */
-+	trans_pcie->napi_dev = alloc_netdev(sizeof(struct iwl_trans_pcie *),
-+					    "dummy", NET_NAME_UNKNOWN,
-+					    init_dummy_netdev);
-+	if (!trans_pcie->napi_dev) {
-+		ret = -ENOMEM;
-+		goto out_free_trans;
-+	}
-+	/* The private struct in netdev is a pointer to struct iwl_trans_pcie */
-+	priv = netdev_priv(trans_pcie->napi_dev);
-+	*priv = trans_pcie;
-+
- 	trans_pcie->trans = trans;
- 	trans_pcie->opmode_down = true;
- 	spin_lock_init(&trans_pcie->irq_lock);
-@@ -3637,7 +3646,7 @@ struct iwl_trans *iwl_trans_pcie_alloc(struct pci_dev *pdev,
- 						   WQ_HIGHPRI | WQ_UNBOUND, 0);
- 	if (!trans_pcie->rba.alloc_wq) {
- 		ret = -ENOMEM;
--		goto out_free_trans;
-+		goto out_free_ndev;
- 	}
- 	INIT_WORK(&trans_pcie->rba.rx_alloc, iwl_pcie_rx_allocator_work);
- 
-@@ -3757,6 +3766,8 @@ struct iwl_trans *iwl_trans_pcie_alloc(struct pci_dev *pdev,
- 	iwl_pcie_free_ict(trans);
- out_no_pci:
- 	destroy_workqueue(trans_pcie->rba.alloc_wq);
-+out_free_ndev:
-+	free_netdev(trans_pcie->napi_dev);
- out_free_trans:
- 	iwl_trans_free(trans);
- 	return ERR_PTR(ret);
--- 
-2.43.0
-
+>
+> > Instead of the DPAA FQ Id, initialise the XDP rx queue with the channel=
+ id.
+> >
+> > Fixes: d57e57d0cd04 ("dpaa_eth: add XDP_TX support")
+> >
+> > Signed-off-by: David Gouarin <dgouarin@gmail.com>
+> > ---
+> > v2: add Fixes: in description
+> > ---
+> >  drivers/net/ethernet/freescale/dpaa/dpaa_eth.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c b/drivers/n=
+et/ethernet/freescale/dpaa/dpaa_eth.c
+> > index dcbc598b11c6..988dc9237368 100644
+> > --- a/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
+> > +++ b/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
+> > @@ -1154,7 +1154,7 @@ static int dpaa_fq_init(struct dpaa_fq *dpaa_fq, =
+bool td_enable)
+> >       if (dpaa_fq->fq_type =3D=3D FQ_TYPE_RX_DEFAULT ||
+> >           dpaa_fq->fq_type =3D=3D FQ_TYPE_RX_PCD) {
+> >               err =3D xdp_rxq_info_reg(&dpaa_fq->xdp_rxq, dpaa_fq->net_=
+dev,
+> > -                                    dpaa_fq->fqid, 0);
+> > +                                    dpaa_fq->channel, 0);
+> >               if (err) {
+> >                       dev_err(dev, "xdp_rxq_info_reg() =3D %d\n", err);
+> >                       return err;
+> > --
+> > 2.34.1
+> >
 
