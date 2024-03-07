@@ -1,120 +1,223 @@
-Return-Path: <linux-kernel+bounces-94966-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94968-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32023874754
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 05:22:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37AF487475B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 05:39:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA07C2850ED
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 04:22:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A2F28B23027
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 04:39:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B9451BDE1;
-	Thu,  7 Mar 2024 04:20:30 +0000 (UTC)
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9815F134BD;
+	Thu,  7 Mar 2024 04:39:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="an00fWQX"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6562A25767;
-	Thu,  7 Mar 2024 04:20:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D156663CF;
+	Thu,  7 Mar 2024 04:39:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709785229; cv=none; b=eXr1YBg/6CaXUr7BIrhgh00q9YOJp2pJUz889yMNTyXZxIJYIpZMLZ9BYMdEdMvEAasa0fCG9AI1sCkRX4ln29igYd/+QbLQLHxzwZV//w1n99yNfcC5BgAw0mVyBuqjTRaYCBpw4t4pjiw6ryEw0gMo5RMPpSD6+xys+DjvFro=
+	t=1709786351; cv=none; b=FDuT/K00Bxg3ceFQLds9tCFS2JqnOenG1FEjO+2N1CUEQ8rAi8aKrpkzjzU2DaPYTKAD/4kQUxc6OYe1m2XmV5DOlpkLvsIDsqcHxcpnZ+HJ94TswC6FIvGEbG74Jok0oXduKLamtaEV8oRsEsl7trPpmfriwxDXAydleX+7dAM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709785229; c=relaxed/simple;
-	bh=53JxyFKU3XAtE0lZPMuBF9A7iLQtuV0Q4p9eES+00j0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gvMTcyOjV8aWIidHIIvM+XzuiI9e3aFGhVp9b+0qhCtFQprQzIvUtXfLeyXfxmYaFOQSFDEqZWkj3c7xqv43TuD0xcCgWIax9yQmBXVbsBbF6mtWymzdUgbYdat+OIzCPP/9meLKLYbOcCCaJeMqcick0HhQX5dJ5VghngL0eMU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-299dba8fd24so258772a91.2;
-        Wed, 06 Mar 2024 20:20:28 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709785227; x=1710390027;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=J+lcNCz0f80j0accvsGVgfR5v7RKJSfcCBpAdb7j5m0=;
-        b=EbJMVmC20/3fqzFy5NtcjvZKQCUtoAJ6sHekLFIOSxr5MlVg3DoTHpgolA6pyMybk1
-         s1UFJ/BEkeZ6jsSZ3f6LYPXx1YHvMsSeS/ryQNzdsreAZ0RWbZvkn6jrGc50JAL+0uh6
-         iJIdPmImF0pTe41NUgbfW10WiH8kjy0F20cRlFoh6+njhPOp7Bt7rHfXSGHPxvUGBLFe
-         4MJeG8i3Q62HnLKIA3BUt8YuESFrCjmlND77MR5Te60DiheUYeh9A4goe8UX2tFg1HAL
-         hMaErqBuIFXVF5xQ089bzapjTUYZ9HAsun1xeM5iArNtjE07EzKL/wdRZVazcJfYEa7e
-         HmGw==
-X-Forwarded-Encrypted: i=1; AJvYcCW/YyaASI3TRCVf1PRIqbCsWY2la6AEwc0huSJ9EfI74Gy76JBF5fbAtRknjdux7hEYfViZmfZXIRV5EvDDyaqWD/TZcH7oGm86+4OIwmJ+kKTV+63IJTkn70twFJClUEuEFLyxXoAjxMIeuzNgDg==
-X-Gm-Message-State: AOJu0YxnhL/7iIC7eDzWXDRE8fF0KkU5pOgiJDManE++Q/3oH3mCOKk6
-	ocl51Joo9pgNzr0wRU2TleCU5L9HT53CmTAfKBivmoljS7IBCg9994gYE8tiLeNQ/IeW+k6OFJF
-	cSsW3g6Rw7unsf5ZUN3YAlBmrM24=
-X-Google-Smtp-Source: AGHT+IEJg/55esdoBBZ22UKlhPO5qyU5+AYFJ3a8FNzE2CU7mhAqtk9JrvYiIHJKnmMOglrVSM9M17uRpV+9QzJcIPQ=
-X-Received: by 2002:a17:90a:53e2:b0:29b:7244:c4eb with SMTP id
- y89-20020a17090a53e200b0029b7244c4ebmr4288131pjh.42.1709785227553; Wed, 06
- Mar 2024 20:20:27 -0800 (PST)
+	s=arc-20240116; t=1709786351; c=relaxed/simple;
+	bh=d23Iig9hJmHScc/rMODy/liRKbgEi8K7tGamUjUBsGE=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=bLrFAEviaOd6X+bOU+M2QecH1I93JlqjYHET7d07T8xSwrHECSeJWezQqERz0kaEyCyTuzuk062U3ob+qPQOiEX5hkivBWzJ/QDmW5h0IoEDUefcEW9wfRHWA9QPQiPDeAnkSAL1EogDS8ZKsxlb1JQ9c71Il7h8BYPZjbDEo8g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=an00fWQX; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709786349; x=1741322349;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=d23Iig9hJmHScc/rMODy/liRKbgEi8K7tGamUjUBsGE=;
+  b=an00fWQXKU2ZJOaoCCs7UsJH3YI/xZNQvwgkpGvr2Ajwr2/rTQ37LmuF
+   t7Rytcs4XVnobZTZpTNZ4uY1lsoMCWqwwSKb6tua9t9+uV6hjw/cY5+Rj
+   d3mpwr+7HJ5/V5FqHgdOVHqgpTvhuT7HbZd8soJ2F2jE+9V3o6bQ0iJLB
+   0XwDwBtyBicQYAJlWan9PvCjg1nGeizFkpI+nR/TJ6YExXC9evh8RmkW9
+   v2YNF4dOtkY1VUJ8BKZ4BZDAE3mPH2YYJ+c4hG7BN1I1T4IQXmGqvWzQ9
+   zx4vQ+AA9p+aG/OmBASU0G2NeTV9/Kh3B4PDFhF7eGgH+Rfiw7qUZKP1X
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11005"; a="4285651"
+X-IronPort-AV: E=Sophos;i="6.06,209,1705392000"; 
+   d="scan'208";a="4285651"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 20:39:08 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,209,1705392000"; 
+   d="scan'208";a="10410969"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 20:39:06 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Ryan Roberts <ryan.roberts@arm.com>
+Cc: Miaohe Lin <linmiaohe@huawei.com>,  Andrew Morton
+ <akpm@linux-foundation.org>,  David Hildenbrand <david@redhat.com>,
+  <linux-mm@kvack.org>,  <linux-kernel@vger.kernel.org>,
+  <stable@vger.kernel.org>
+Subject: Re: [PATCH v1] mm: swap: Fix race between free_swap_and_cache() and
+ swapoff()
+In-Reply-To: <af11bbca-3f6a-4db5-916c-b0d5b942352b@arm.com> (Ryan Roberts's
+	message of "Wed, 6 Mar 2024 09:31:01 +0000")
+References: <20240305151349.3781428-1-ryan.roberts@arm.com>
+	<875xy0842q.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<c8fe62d0-78b8-527a-5bef-ee663ccdc37a@huawei.com>
+	<af11bbca-3f6a-4db5-916c-b0d5b942352b@arm.com>
+Date: Thu, 07 Mar 2024 12:37:10 +0800
+Message-ID: <87plw67j49.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240304230815.1440583-1-namhyung@kernel.org> <ZejshUg8XiQz5YGa@x1>
-In-Reply-To: <ZejshUg8XiQz5YGa@x1>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Wed, 6 Mar 2024 20:20:15 -0800
-Message-ID: <CAM9d7cjfH7e5wiM9Zwfn_oCqL1tUvy1=c3RUuO=zvgTJVrU6oQ@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] perf annotate: Improve memory usage for symbol histogram
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	linux-perf-users@vger.kernel.org, Andi Kleen <ak@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=ascii
 
-On Wed, Mar 6, 2024 at 2:22=E2=80=AFPM Arnaldo Carvalho de Melo <acme@kerne=
-l.org> wrote:
->
-> On Mon, Mar 04, 2024 at 03:08:11PM -0800, Namhyung Kim wrote:
-> > Hello,
-> >
-> > This is another series of memory optimization in perf annotate.
-> >
-> > v2 changes:
-> >  * fix a bug when offset is bigger than 16 bits
-> >
-> >
-> > When perf annotate (or perf report/top with TUI) processes samples, it
-> > needs to save the sample period (overhead) at instruction level.  For
-> > now, it allocates an array to do that for the whole symbol when it
-> > hits any new symbol.  This comes with a lot of waste since samples can
-> > be very few and instructions span to multiple bytes.
-> >
-> > For example, when a sample hits symbol 'foo' that has size of 100 and
-> > that's the only sample falls into the symbol.  Then it needs to
-> > allocate a symbol histogram (sym_hist) and the its size would be
-> >
-> >   16 (header) + 16 (sym_hist_entry) * 100 (symbol_size) =3D 1616
-> >
-> > But actually it just needs 32 (header + sym_hist_entry) bytes.  Things
-> > get worse if the symbol size is bigger (and it doesn't have many
-> > samples in different places).  Also note that it needs a separate
-> > histogram for each event.
-> >
-> > Let's split the sym_hist_entry and have it in a hash table so that it
-> > can allocate only necessary entries.
-> >
-> > No functional change intended.
-> >
-> > Thanks,
-> > Namhyung
->
-> No difference before/after on that 'perf annotate --stdio2' for all
-> binaries in a perf record of building perf using the default binutils
-> objdump disassembler, etc.
->
-> Reviewed-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Ryan Roberts <ryan.roberts@arm.com> writes:
 
-Great, thanks for testing.
+> On 06/03/2024 08:51, Miaohe Lin wrote:
+>> On 2024/3/6 10:52, Huang, Ying wrote:
+>>> Ryan Roberts <ryan.roberts@arm.com> writes:
+>>>
+>>>> There was previously a theoretical window where swapoff() could run and
+>>>> teardown a swap_info_struct while a call to free_swap_and_cache() was
+>>>> running in another thread. This could cause, amongst other bad
+>>>> possibilities, swap_page_trans_huge_swapped() (called by
+>>>> free_swap_and_cache()) to access the freed memory for swap_map.
+>>>>
+>>>> This is a theoretical problem and I haven't been able to provoke it from
+>>>> a test case. But there has been agreement based on code review that this
+>>>> is possible (see link below).
+>>>>
+>>>> Fix it by using get_swap_device()/put_swap_device(), which will stall
+>>>> swapoff(). There was an extra check in _swap_info_get() to confirm that
+>>>> the swap entry was valid. This wasn't present in get_swap_device() so
+>>>> I've added it. I couldn't find any existing get_swap_device() call sites
+>>>> where this extra check would cause any false alarms.
+>>>>
+>>>> Details of how to provoke one possible issue (thanks to David Hilenbrand
+>>>> for deriving this):
+>>>>
+>>>> --8<-----
+>>>>
+>>>> __swap_entry_free() might be the last user and result in
+>>>> "count == SWAP_HAS_CACHE".
+>>>>
+>>>> swapoff->try_to_unuse() will stop as soon as soon as si->inuse_pages==0.
+>>>>
+>>>> So the question is: could someone reclaim the folio and turn
+>>>> si->inuse_pages==0, before we completed swap_page_trans_huge_swapped().
+>>>>
+>>>> Imagine the following: 2 MiB folio in the swapcache. Only 2 subpages are
+>>>> still references by swap entries.
+>>>>
+>>>> Process 1 still references subpage 0 via swap entry.
+>>>> Process 2 still references subpage 1 via swap entry.
+>>>>
+>>>> Process 1 quits. Calls free_swap_and_cache().
+>>>> -> count == SWAP_HAS_CACHE
+>>>> [then, preempted in the hypervisor etc.]
+>>>>
+>>>> Process 2 quits. Calls free_swap_and_cache().
+>>>> -> count == SWAP_HAS_CACHE
+>>>>
+>>>> Process 2 goes ahead, passes swap_page_trans_huge_swapped(), and calls
+>>>> __try_to_reclaim_swap().
+>>>>
+>>>> __try_to_reclaim_swap()->folio_free_swap()->delete_from_swap_cache()->
+>>>> put_swap_folio()->free_swap_slot()->swapcache_free_entries()->
+>>>> swap_entry_free()->swap_range_free()->
+>>>> ...
+>>>> WRITE_ONCE(si->inuse_pages, si->inuse_pages - nr_entries);
+>>>>
+>>>> What stops swapoff to succeed after process 2 reclaimed the swap cache
+>>>> but before process1 finished its call to swap_page_trans_huge_swapped()?
+>>>>
+>>>> --8<-----
+>>>
+>>> I think that this can be simplified.  Even for a 4K folio, this could
+>>> happen.
+>>>
+>>> CPU0                                     CPU1
+>>> ----                                     ----
+>>>
+>>> zap_pte_range
+>>>   free_swap_and_cache
+>>>   __swap_entry_free
+>>>   /* swap count become 0 */
+>>>                                          swapoff
+>>>                                            try_to_unuse
+>>>                                              filemap_get_folio
+>>>                                              folio_free_swap
+>>>                                              /* remove swap cache */
+>>>                                            /* free si->swap_map[] */
+>>>
+>>>   swap_page_trans_huge_swapped <-- access freed si->swap_map !!!
+>> 
+>> Sorry for jumping the discussion here. IMHO, free_swap_and_cache is called with pte lock held.
+>
+> I don't beleive it has the PTL when called by shmem.
 
-Namhyung
+Yes, we don't hold PTL there.
+
+After checking the code again.  I think that there may be race condition
+as above without PTL.  But I may miss something, again.
+
+>> So synchronize_rcu (called by swapoff) will wait zap_pte_range to release the pte lock. So this
+>> theoretical problem can't happen. Or am I miss something?
+>
+> For Huang Ying's example, I agree this can't happen because try_to_unuse() will
+> be waiting for the PTL (see the reply I just sent).
+>
+>> 
+>> CPU0                                     CPU1
+>> ----                                     ----
+>> 
+>> zap_pte_range
+>>   pte_offset_map_lock -- spin_lock is held.
+>>   free_swap_and_cache
+>>    __swap_entry_free
+>>    /* swap count become 0 */
+>>                                          swapoff
+>>                                            try_to_unuse
+>>                                              filemap_get_folio
+>>                                              folio_free_swap
+>>                                              /* remove swap cache */
+>> 					    percpu_ref_kill(&p->users);
+>>    swap_page_trans_huge_swapped
+>>   pte_unmap_unlock -- spin_lock is released.
+>> 					    synchronize_rcu();  --> Will wait pte_unmap_unlock to be called?
+>
+> Perhaps you can educate me here; I thought that synchronize_rcu() will only wait
+> for RCU critical sections to complete. The PTL is a spin lock, so why would
+> synchronize_rcu() wait for the PTL to become unlocked?
+
+Please take a look at the following link,
+
+https://www.kernel.org/doc/html/next/RCU/whatisRCU.html#rcu-read-lock
+
+"
+Note that anything that disables bottom halves, preemption, or
+interrupts also enters an RCU read-side critical section. Acquiring a
+spinlock also enters an RCU read-side critical sections, even for
+spinlocks that do not disable preemption, as is the case in kernels
+built with CONFIG_PREEMPT_RT=y. Sleeplocks do not enter RCU read-side
+critical sections.
+"
+
+--
+Best Regards,
+Huang, Ying
+
+>
+>>                                            /* free si->swap_map[] */
+>> 
+>> Thanks.
+>> 
+>> 
 
