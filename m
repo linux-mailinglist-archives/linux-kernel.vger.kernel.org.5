@@ -1,262 +1,130 @@
-Return-Path: <linux-kernel+bounces-95774-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95777-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D984287525B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:52:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E00B287526D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:54:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C70911C23242
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:52:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ADA56B26745
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:54:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B10312F36C;
-	Thu,  7 Mar 2024 14:52:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F40212EBF1;
+	Thu,  7 Mar 2024 14:53:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="GoX4+C50"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2135D12C80A;
-	Thu,  7 Mar 2024 14:52:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="no9EwJpz"
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E07B31EB23
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 14:53:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709823135; cv=none; b=f7ttwL4OOSOYBTukfoT4ZT/m+TnVOqoqilGWdb51+2Sd+E5KdZ1KPZmnKRymhseC1fGIBHPnPpAzEvjeYnjJyY9wph0ImbxoyiepNV/n82qZdLRz6tG3S5DSKP2R2shG7CbT+j6tuWSHqwftoiv914FLtuEB5l9FKEXhWzVbEII=
+	t=1709823235; cv=none; b=skeuFY0dHUi+jw2H5LIUmzoPz99BhPizsH00uVDgzoJg3SG4IwXi364mc9ysx4rxM0VBIX7mzNCaQ4JAcwDHMiXorlUyrFkSf5Axf1qJ8yjKSzkGi5aIADRGSs6krm7kpT/FWTuECVXfyuCnncb+TAGibK+K1bA//gHOC3qgZLs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709823135; c=relaxed/simple;
-	bh=SVl7ghUZZvLmqoxnJx1TfVNS1aFO+cS/rPtTkMU4lFo=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=Bh9Rqhnzulkw8xEqf96zhLbvei7DZhey1IFF60+5YcBfvTC8hLq1LHzpwr8IZqps00BjKsKfvV1lnIy+zY1hLG+zPflg3aRSWg7pfDumwodB1OKczv7ntOwptrFhn0idoHYM9lqSf44ZPWhJWlcJPt4p+kVayphvXyRjs8TWdtQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=GoX4+C50; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1134)
-	id 8480E20B74C0; Thu,  7 Mar 2024 06:52:13 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8480E20B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1709823133;
-	bh=DQrX++fk8abFgdjKuqnBcAVgOubzkQFol/TFp+HA04s=;
-	h=From:To:Cc:Subject:Date:From;
-	b=GoX4+C50fDnqEqTDLUQhX0jEvb2nweO7wCtxXMQfyCEtiaV1gxyaO5Rap/o7qic9e
-	 eSjxHeK0NdFqJQmUANMTP0aRr6atuBQktgzhNaWQ9arYXkyfks1vS7OL/jvY3BNDeU
-	 Fu/oiiRVCDjsDR+0hLQxeYSHfjLYGp/3JLuk+i7w=
-From: Shradha Gupta <shradhagupta@linux.microsoft.com>
-To: linux-kernel@vger.kernel.org,
-	linux-hyperv@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	netdev@vger.kernel.org
-Cc: Shradha Gupta <shradhagupta@linux.microsoft.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Ajay Sharma <sharmaajay@microsoft.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>,
-	Dexuan Cui <decui@microsoft.com>,
-	Long Li <longli@microsoft.com>,
-	Michael Kelley <mikelley@microsoft.com>,
-	Shradha Gupta <shradhagupta@microsoft.com>
-Subject: [PATCH] net :mana : Add per-cpu stats for MANA device
-Date: Thu,  7 Mar 2024 06:52:12 -0800
-Message-Id: <1709823132-22411-1-git-send-email-shradhagupta@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
+	s=arc-20240116; t=1709823235; c=relaxed/simple;
+	bh=BgaQiwD2BgE2lKCqkagvr7pupcRGUo7bbnxMpXhwpC8=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=PLHByFklu3baO0DSTxFCP4tsLHzLDxX5YSyXfSZfoVeZUbyZxiKd4+cbsJHjmJzmd5Mt72BZUC0pRESjfpwo2EPgeB7pCL/+asN97ucQTp0rQTqS63LyP+FvuSKYqGkSM2Uo5HL1FXrFpQJO8Ek78vM0neqOS3wwJGhapefF20Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=no9EwJpz; arc=none smtp.client-ip=209.85.221.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-33d18931a94so592475f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 06:53:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709823232; x=1710428032; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fBoKZX7YdfM81IXupkrtTPI9Yz71/qN8rU0jTLZj8s0=;
+        b=no9EwJpzk6qHj5ddI4BQkm7S6fs6fK9FGaPH+RvW4TOzt55no9lhPQiQ1A5OXmczub
+         eMxhU6cdNUzLTqTgf3vli0E0lYo55uaOXvV84Wt7CGlDrAS2sVElg5LiaXeOEBmGAJBc
+         VTrN9NnXq+mfXdb1vXnPVbdkP4fD+xJYcPumd8DmgvFBYseISP5H+Nb5DcoWRi1k7k81
+         qBGEyzA0dwWpBEMldDhIINL2ry/VLHhDnvpBEe3hqKPh6HTilawfc+H6p5RNkGNaxEA9
+         d0PPK42NGGUoXoWb7nYtgZQ9EZk55fOpY72Bs9cDKcNstQsS8VVPc1PiYueQ/09/gSMU
+         qQxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709823232; x=1710428032;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fBoKZX7YdfM81IXupkrtTPI9Yz71/qN8rU0jTLZj8s0=;
+        b=jzzXp64l2yjwYQBubAnIt2rYZqyQqmL9WVm5Jc1pravCGrxUK/s8aiDabRrIc4p2wo
+         IpQLDgGSWAz+bLMZmksGsovkI3ttGEVMajdiPeOWrXeFTnfnjRH2GjhmWQTCk6MMTPk+
+         u+PAwaMDDTvaXmiMCTMDhT/WAdg27YuTO8fXNRnLAfjz8E29ea8fPpdWGUFYY/pJ38kO
+         wsMKRIGB524h1WSqs+b327MeYF9ysN1iNMlpi40NcZwk8yV7ZoPvdMsNx3QzQUkFVcAy
+         XEgwQ5IdUEavyH74HDUG24KrcaIXPh1op5/YEbHPdTLAQf2Blc/szcIzvJcbvpvQDBqB
+         Vb2Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWKQnxnR3IYMBA0W3msUb7u/AkbM5wHb+WrC0Eq3+3xwz5bZ9UXIGO8snSTUDjW7BBEDz/bKA3kVbgDH5C5nYaUsdL9ocYjVuyR3M0j
+X-Gm-Message-State: AOJu0YxIxI+oHPoeE6veR15uPkVoq3D6F154VmRFmCxbLLcTmuujNYl+
+	W1Hkr4k/Rs6Mnoqwz4Co/dD+9RkWwTxuH72tzne7GSxfI8udmTU3lBZzB3iScaM=
+X-Google-Smtp-Source: AGHT+IFUEjlHro6WzlyWyuQ9cBGMioeI8bttkvKQcFN/hfeGvu18fOUyFwICBJE39CTWU8Z6PG+XTw==
+X-Received: by 2002:adf:e80d:0:b0:33d:1416:713b with SMTP id o13-20020adfe80d000000b0033d1416713bmr13031380wrm.69.1709823232228;
+        Thu, 07 Mar 2024 06:53:52 -0800 (PST)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id h14-20020a05600016ce00b0033e25e970c2sm16211635wrf.88.2024.03.07.06.53.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Mar 2024 06:53:51 -0800 (PST)
+Date: Thu, 7 Mar 2024 17:53:47 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Chris Mason <clm@fb.com>, Qu Wenruo <wqu@suse.com>
+Cc: Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org
+Subject: [PATCH] btrfs: qgroup: delete unnecessary check in
+ btrfs_qgroup_check_inherit()
+Message-ID: <cb21ce67-e9d8-4844-8c70-eb42f6ac4aee@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
 
-Extend 'ethtool -S' output for mana devices to include per-CPU packet
-stats
+This check "if (inherit->num_qgroups > PAGE_SIZE)" is confusing and
+unnecessary.
 
-Built-on: Ubuntu22
-Tested-on: Ubuntu22
-Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
+The problem with the check is that static checkers flag it as a
+potential mixup of between units of bytes vs number of elements.
+Fortunately, the check can safely be deleted because the next check is
+correct and applies an even stricter limit:
+
+	if (size != struct_size(inherit, qgroups, inherit->num_qgroups))
+		return -EINVAL;
+
+The "inherit" struct ends in a variable array of __u64 and
+"inherit->num_qgroups" is the number of elements in the array.  At the
+start of the function we check that:
+
+	if (size < sizeof(*inherit) || size > PAGE_SIZE)
+		return -EINVAL;
+
+Thus, since we verify that the whole struct fits within one page, that
+means that the number of elements in the inherit->qgroups[] array must
+be less than PAGE_SIZE.
+
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
 ---
- drivers/net/ethernet/microsoft/mana/mana_en.c | 22 ++++++++++
- .../ethernet/microsoft/mana/mana_ethtool.c    | 40 ++++++++++++++++++-
- include/net/mana/mana.h                       | 12 ++++++
- 3 files changed, 72 insertions(+), 2 deletions(-)
+ fs/btrfs/qgroup.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-index 59287c6e6cee..b27ee6684936 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-@@ -224,6 +224,7 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
- 	int gso_hs = 0; /* zero for non-GSO pkts */
- 	u16 txq_idx = skb_get_queue_mapping(skb);
- 	struct gdma_dev *gd = apc->ac->gdma_dev;
-+	struct mana_pcpu_stats *pcpu_stats;
- 	bool ipv4 = false, ipv6 = false;
- 	struct mana_tx_package pkg = {};
- 	struct netdev_queue *net_txq;
-@@ -234,6 +235,8 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
- 	struct mana_cq *cq;
- 	int err, len;
- 
-+	pcpu_stats = this_cpu_ptr(apc->pcpu_stats);
-+
- 	if (unlikely(!apc->port_is_up))
- 		goto tx_drop;
- 
-@@ -412,6 +415,12 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
- 	tx_stats->bytes += len;
- 	u64_stats_update_end(&tx_stats->syncp);
- 
-+	/* Also update the per-CPU stats */
-+	u64_stats_update_begin(&pcpu_stats->syncp);
-+	pcpu_stats->tx_packets++;
-+	pcpu_stats->tx_bytes += len;
-+	u64_stats_update_end(&pcpu_stats->syncp);
-+
- tx_busy:
- 	if (netif_tx_queue_stopped(net_txq) && mana_can_tx(gdma_sq)) {
- 		netif_tx_wake_queue(net_txq);
-@@ -425,6 +434,9 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
- 	kfree(pkg.sgl_ptr);
- tx_drop_count:
- 	ndev->stats.tx_dropped++;
-+	u64_stats_update_begin(&pcpu_stats->syncp);
-+	pcpu_stats->tx_dropped++;
-+	u64_stats_update_end(&pcpu_stats->syncp);
- tx_drop:
- 	dev_kfree_skb_any(skb);
- 	return NETDEV_TX_OK;
-@@ -1505,6 +1517,8 @@ static void mana_rx_skb(void *buf_va, bool from_pool,
- 	struct mana_stats_rx *rx_stats = &rxq->stats;
- 	struct net_device *ndev = rxq->ndev;
- 	uint pkt_len = cqe->ppi[0].pkt_len;
-+	struct mana_pcpu_stats *pcpu_stats;
-+	struct mana_port_context *apc;
- 	u16 rxq_idx = rxq->rxq_idx;
- 	struct napi_struct *napi;
- 	struct xdp_buff xdp = {};
-@@ -1512,6 +1526,9 @@ static void mana_rx_skb(void *buf_va, bool from_pool,
- 	u32 hash_value;
- 	u32 act;
- 
-+	apc = netdev_priv(ndev);
-+	pcpu_stats = this_cpu_ptr(apc->pcpu_stats);
-+
- 	rxq->rx_cq.work_done++;
- 	napi = &rxq->rx_cq.napi;
- 
-@@ -1570,6 +1587,11 @@ static void mana_rx_skb(void *buf_va, bool from_pool,
- 		rx_stats->xdp_tx++;
- 	u64_stats_update_end(&rx_stats->syncp);
- 
-+	u64_stats_update_begin(&pcpu_stats->syncp);
-+	pcpu_stats->rx_packets++;
-+	pcpu_stats->rx_bytes += pkt_len;
-+	u64_stats_update_end(&pcpu_stats->syncp);
-+
- 	if (act == XDP_TX) {
- 		skb_set_queue_mapping(skb, rxq_idx);
- 		mana_xdp_tx(skb, ndev);
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-index ab2413d71f6c..e3aa47ead601 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_ethtool.c
-@@ -83,8 +83,9 @@ static int mana_get_sset_count(struct net_device *ndev, int stringset)
- 	if (stringset != ETH_SS_STATS)
+diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+index 5f90f0605b12..a8197e25192c 100644
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -3067,9 +3067,6 @@ int btrfs_qgroup_check_inherit(struct btrfs_fs_info *fs_info,
+ 	if (inherit->num_ref_copies > 0 || inherit->num_excl_copies > 0)
  		return -EINVAL;
  
--	return ARRAY_SIZE(mana_eth_stats) + num_queues *
--				(MANA_STATS_RX_COUNT + MANA_STATS_TX_COUNT);
-+	return ARRAY_SIZE(mana_eth_stats) +
-+	       (num_queues * (MANA_STATS_RX_COUNT + MANA_STATS_TX_COUNT)) +
-+	       (num_present_cpus() * (MANA_STATS_RX_PCPU + MANA_STATS_TX_PCPU));
- }
+-	if (inherit->num_qgroups > PAGE_SIZE)
+-		return -EINVAL;
+-
+ 	if (size != struct_size(inherit, qgroups, inherit->num_qgroups))
+ 		return -EINVAL;
  
- static void mana_get_strings(struct net_device *ndev, u32 stringset, u8 *data)
-@@ -139,6 +140,19 @@ static void mana_get_strings(struct net_device *ndev, u32 stringset, u8 *data)
- 		sprintf(p, "tx_%d_mana_map_err", i);
- 		p += ETH_GSTRING_LEN;
- 	}
-+
-+	for (i = 0; i < num_present_cpus(); i++) {
-+		sprintf(p, "cpu%d_rx_packets", i);
-+		p += ETH_GSTRING_LEN;
-+		sprintf(p, "cpu%d_rx_bytes", i);
-+		p += ETH_GSTRING_LEN;
-+		sprintf(p, "cpu%d_tx_packets", i);
-+		p += ETH_GSTRING_LEN;
-+		sprintf(p, "cpu%d_tx_bytes", i);
-+		p += ETH_GSTRING_LEN;
-+		sprintf(p, "cpu%d_tx_dropped", i);
-+		p += ETH_GSTRING_LEN;
-+	}
- }
- 
- static void mana_get_ethtool_stats(struct net_device *ndev,
-@@ -222,6 +236,28 @@ static void mana_get_ethtool_stats(struct net_device *ndev,
- 		data[i++] = csum_partial;
- 		data[i++] = mana_map_err;
- 	}
-+
-+	for_each_possible_cpu(q) {
-+		const struct mana_pcpu_stats *pcpu_stats =
-+				per_cpu_ptr(apc->pcpu_stats, q);
-+		u64 rx_packets, rx_bytes, tx_packets, tx_bytes, tx_dropped;
-+		unsigned int start;
-+
-+		do {
-+			start = u64_stats_fetch_begin(&pcpu_stats->syncp);
-+			rx_packets = pcpu_stats->rx_packets;
-+			tx_packets = pcpu_stats->tx_packets;
-+			rx_bytes = pcpu_stats->rx_bytes;
-+			tx_bytes = pcpu_stats->tx_bytes;
-+			tx_dropped = pcpu_stats->tx_dropped;
-+		} while (u64_stats_fetch_retry(&pcpu_stats->syncp, start));
-+
-+		data[i++] = rx_packets;
-+		data[i++] = rx_bytes;
-+		data[i++] = tx_packets;
-+		data[i++] = tx_bytes;
-+		data[i++] = tx_dropped;
-+	}
- }
- 
- static int mana_get_rxnfc(struct net_device *ndev, struct ethtool_rxnfc *cmd,
-diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
-index 76147feb0d10..9a2414ee7f02 100644
---- a/include/net/mana/mana.h
-+++ b/include/net/mana/mana.h
-@@ -51,6 +51,8 @@ enum TRI_STATE {
- /* Update this count whenever the respective structures are changed */
- #define MANA_STATS_RX_COUNT 5
- #define MANA_STATS_TX_COUNT 11
-+#define MANA_STATS_RX_PCPU 2
-+#define MANA_STATS_TX_PCPU 3
- 
- struct mana_stats_rx {
- 	u64 packets;
-@@ -386,6 +388,15 @@ struct mana_ethtool_stats {
- 	u64 rx_cqe_unknown_type;
- };
- 
-+struct mana_pcpu_stats {
-+	u64 rx_packets;
-+	u64 rx_bytes;
-+	u64 tx_packets;
-+	u64 tx_bytes;
-+	u64 tx_dropped;
-+	struct u64_stats_sync syncp;
-+};
-+
- struct mana_context {
- 	struct gdma_dev *gdma_dev;
- 
-@@ -449,6 +460,7 @@ struct mana_port_context {
- 	bool port_st_save; /* Saved port state */
- 
- 	struct mana_ethtool_stats eth_stats;
-+	struct mana_pcpu_stats __percpu *pcpu_stats;
- };
- 
- netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev);
 -- 
-2.34.1
+2.43.0
 
 
