@@ -1,130 +1,109 @@
-Return-Path: <linux-kernel+bounces-95889-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95894-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA1F287549B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:52:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D8FF58754AB
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:54:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7DE041F227EA
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 16:52:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 79F071F23994
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 16:54:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56281130AC0;
-	Thu,  7 Mar 2024 16:52:09 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D7BA12F398;
+	Thu,  7 Mar 2024 16:53:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="F653QqMN"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DEA912DDBE
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 16:52:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 586EB1DA37;
+	Thu,  7 Mar 2024 16:53:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709830328; cv=none; b=M1YQdJ60gIpj/RkW+eT4jZVPWjJI+ZcMT1TFTqjZevguevrLYYx75gBqnVGvh+xZ4GpW5QpqNPS3PN0CVis37UYqEtmeJOYJ+ChjJMgTcl6bKlCrK6tKksbDP4J0vEti40ATLgdSevBDukHp+WrwP0STQVn6O2bJ7hFRN465DgA=
+	t=1709830431; cv=none; b=DGGt52K6DegA6efqdRIAifeVQ0Kxqyf9hjZYUBLkWm+1Q7ws0tBJk23HNwU7RCijBblHqrTCn05NY4HkskNJRggkJQEoGvxERpuDl+sK776USlu7hJzHKDqFAxPO8fV6CWQuBnQzFsfVq2acJqItgN2cGqIEfzRRSA0cLYDsUUQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709830328; c=relaxed/simple;
-	bh=i9CCT9j7BCqV2bE+0gCx3jMpwRqeW581xksody4aj88=;
+	s=arc-20240116; t=1709830431; c=relaxed/simple;
+	bh=oganuwlF5WZy6Fd8LiJnjle4bvTjEaVC7hfAlFeYgto=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NhtLLHcHOkXIQ5If2aPzn8HNYuo/EElvFgmE+6bpqFkrURynjVxuHfILtU6g+FcIR8w8qqoJfoEdU2/kOYVG2JfnFBZSLFPxDXKKmL8s2O7VuLROBqRBuUDQ50nBarm1s01eJQgoNIJGnNkr5gh2wMi2g5dgQhf8ircyQ49hJlI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1riGyO-00019r-AR; Thu, 07 Mar 2024 17:52:00 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1riGyN-004yht-Qw; Thu, 07 Mar 2024 17:51:59 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1riGyN-001PCL-2O;
-	Thu, 07 Mar 2024 17:51:59 +0100
-Date: Thu, 7 Mar 2024 17:51:59 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Colin Ian King <colin.i.king@gmail.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	linux-usb@vger.kernel.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] usb: gadget: net2272: remove redundant variable
- irqflags
-Message-ID: <mywsgq453muhggv5y7pfrsg7zrodtuebcpo5rbc4kus5h2ameo@fhnpemjuntaz>
-References: <20240307105135.1981060-1-colin.i.king@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Bt95EjeJQbXodiLxXJxLhqE3xBgcRb8a28doF+/7UggSIbocVppr0Jmp7Shuxh4+FUyeIaHAbNFuRi5k+sdI/ROHx/JPSBNPJvw2xyemU8EvVWUAfUGqczeWg9EDxGvj7jU6r9njwj3JtvUjxdbA2IYGbDfYBhVdiF0roICHK8E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=F653QqMN; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709830430; x=1741366430;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=oganuwlF5WZy6Fd8LiJnjle4bvTjEaVC7hfAlFeYgto=;
+  b=F653QqMNZBfKLbKKVOpjSUxZ8/DhiallF52NZbBbisW6IuSA38S/M8Aq
+   RkCuN3F63AyxJgT3Zk3R1U7aWmbzbH5/G80D5MSUz+3gtUvbaeQe4iNjj
+   n+zhIwmDELBqxrriPVC7I+T32IPBvXGD2k4A+4WeXwKMALeSrMfiJpSjt
+   hF9wws9IcIhuz1L+XBOcMeaqiB7mw6qOAH9786BNqo0COQpSfhASLUTpw
+   ii7SfyLAufWc6KQpvckaSYrGAi7C3Omn6Htk7XAxuROlGwEWkvvBTL6gI
+   OXWGa8dnYoaN5ymVIzkr6eXeX56c6HJJtXL4RDdU8EUsyL5xMxMlTpq9y
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="15233984"
+X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
+   d="scan'208";a="15233984"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 08:53:49 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="914219411"
+X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
+   d="scan'208";a="914219411"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 08:53:47 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1riH04-0000000AcTa-1zLu;
+	Thu, 07 Mar 2024 18:53:44 +0200
+Date: Thu, 7 Mar 2024 18:53:44 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-spi@vger.kernel.org, Daniel Mack <daniel@zonque.org>,
+	Haojian Zhuang <haojian.zhuang@gmail.com>,
+	Robert Jarzmik <robert.jarzmik@free.fr>,
+	Russell King <linux@armlinux.org.uk>,
+	Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v1 2/2] spi: pxa2xx: Make num_chipselect 8-bit in the
+ struct pxa2xx_spi_controller
+Message-ID: <ZenxGMHYcCFlpUd4@smile.fi.intel.com>
+References: <20240307160823.3800932-1-andriy.shevchenko@linux.intel.com>
+ <20240307160823.3800932-3-andriy.shevchenko@linux.intel.com>
+ <64cde1d1-1d4f-484a-940f-536c1279287e@app.fastmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="gewgcxuilb6kaoqd"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240307105135.1981060-1-colin.i.king@gmail.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <64cde1d1-1d4f-484a-940f-536c1279287e@app.fastmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+
+On Thu, Mar 07, 2024 at 05:37:17PM +0100, Arnd Bergmann wrote:
+> On Thu, Mar 7, 2024, at 17:07, Andy Shevchenko wrote:
+
+..
+
+> Acked-by: Arnd Bergmann <arnd@arndb.de>
+
+Thanks!
+
+..
+
+> I wonder if we could just move the entire header to drivers/spi/.
+> The spitz board only fills the num_chipselect field anyway,
+> and that could be derived from the GPIO lookups instead.
+
+It seems to be used by drivers/soc/pxa/ssp.c.
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
---gewgcxuilb6kaoqd
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Mar 07, 2024 at 10:51:35AM +0000, Colin Ian King wrote:
-> The variable irqflags is being initialized and being bit-or'd with
-> values but it is never read afterwards. The variable is redundant
-> and can be removed.
->=20
-> Cleans up clang scan build warning:
-> drivers/usb/gadget/udc/net2272.c:2610:15: warning: variable 'irqflags'
-> set but not used [-Wunused-but-set-variable]
->=20
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-
-this "problem" exists since the driver was introduced in commit
-ceb80363b2ec ("USB: net2272: driver for PLX NET2272 USB device
-controller"). Might be worth a Fixes: line.
-
-I wonder if the better fix would be:
-
-diff --git a/drivers/usb/gadget/udc/net2272.c b/drivers/usb/gadget/udc/net2=
-272.c
-index 12e76bb62c20..19bbc38f3d35 100644
---- a/drivers/usb/gadget/udc/net2272.c
-+++ b/drivers/usb/gadget/udc/net2272.c
-@@ -2650,7 +2650,7 @@ net2272_plat_probe(struct platform_device *pdev)
- 		goto err_req;
- 	}
-=20
--	ret =3D net2272_probe_fin(dev, IRQF_TRIGGER_LOW);
-+	ret =3D net2272_probe_fin(dev, irqflags);
- 	if (ret)
- 		goto err_io;
-=20
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---gewgcxuilb6kaoqd
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmXp8K4ACgkQj4D7WH0S
-/k726wgApuSl5j8yqZxfz0r/ljO+iYK/Mkfds9vddxUBRxPq16H/WB7iqdlAAj6L
-Z3+ZTxiXgsExqYh+ZEeU4lKwHa8DYotgoQZOxkANsqjJBIK+JQoDj73w+UvraCEv
-sGi0Uv606kD8zV1Nb8pYq5O9n8G24XWwH9f1y96zKlt+IAnwLnDrq0D8d6SfIfd4
-VJFvrVTl2oNsWky9RS74vRfGEkc2H9R3UrwRRyD1Sv2PpZOpyKJKru621qHw1kv/
-+aPOIxHEty7nTu87lQJZ1RwRX7rmwYwqlPChOoL6hLD4KM1fkcsihbGqSr/3pMqz
-EKbgDXH/dFyvvnrWghAoTkEkjujmmQ==
-=8zp0
------END PGP SIGNATURE-----
-
---gewgcxuilb6kaoqd--
 
