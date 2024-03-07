@@ -1,442 +1,276 @@
-Return-Path: <linux-kernel+bounces-95444-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95445-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBAF2874DB7
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:41:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10B6C874DB9
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:41:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2EA301F2841E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:41:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 794C6B233A2
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:41:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E7AE12BF2B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ACB312BF1F;
 	Thu,  7 Mar 2024 11:39:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="MI4M9uxx"
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b="Y/EKx0x5"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 751FE12A175;
-	Thu,  7 Mar 2024 11:39:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2E15129A61
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 11:39:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709811585; cv=none; b=tqnyqcuB93DhpGQ8FROk6e1ys37EylILEN20n7ZhUtYWbjlfaIqiLvUz90DPz3zsebOulIuKtTJEfGK6XJR4NDOCOW3MIVIFu73RiY11CvhyxK2RDmTejcZk6/2QjpEFJAt1sk93+Z+Bafux56gVH7xEdxTiiHjuCS5MZj3g6kI=
+	t=1709811585; cv=none; b=aOL3YFju03f6DvvMgbPBvAVdRicHTfvhwc4QyDdt1EokHCTgIBLOov/KmMCt6iLrXhduBTOSPM8ONIoU11BMV/zw+zFGQPBUDuAQzBkmyBfbCkYqvYyvazgNoUO1KonMK/+ZhQ/HZGPy7aYPdbl8QjWoFFH94SEgLYc3csKZbQA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1709811585; c=relaxed/simple;
-	bh=MBIHFZJofU8aCD6WkaXUw9ooHFcOdcjO0mWkOlTe+fE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Bi5l8n8DVOQcgKVtO+/XAmkRdXCic43F31I1udzKvjNm/beYg/ZVU452YoLm9MOfKYye+KU1jeGawIawKjjlxgL4SoJ7NtrOGuIwEmnezPQYMDvQYFfRfpFv6ZDyrwMjwakwRbFDPjtQrNfbbmqG5lo2528GoUNEpNWwDdYj50w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=MI4M9uxx; arc=none smtp.client-ip=217.70.183.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPA id 07CB8C000B;
-	Thu,  7 Mar 2024 11:39:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709811581;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1FQxpHC04vgNtXwOqyf17LpgwbKue3dZ/rSNXwUGmYQ=;
-	b=MI4M9uxxPbCY86mYyq3/EGeDNFnn9VGg/5DgP3L0EzLWE+j+xOKWiJ7YYEWFd1o5TdYBcy
-	M3dpunzkNvUAm2xm3W+6oKJqSaGA6giXt8RH/YevQ3E13CBV6dFZucymgs00p5ekjVcexG
-	I84q2MQyculwySU0dRJ80MI6nUIiIAk2pVwh3AIKHY+c8d8cbAugnD3osnegpKuCm9vpaV
-	dnPTo/pfm4PU/VqkDxf3551TiX2n+XL4n377C8ohC6+P6tE5f2/OBNLkq+4BDSRGLYs8eL
-	KwIthrNYen1kQq6e+bf27VR3T7TdTxVazEQE0s6lboebkx0gpeggaeQRxi2PrQ==
-From: Herve Codina <herve.codina@bootlin.com>
-To: Vadim Fedorenko <vadim.fedorenko@linux.dev>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Herve Codina <herve.codina@bootlin.com>,
-	Yury Norov <yury.norov@gmail.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc: linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	Andrew Lunn <andrew@lunn.ch>,
-	Mark Brown <broonie@kernel.org>,
-	Ratheesh Kannoth <rkannoth@marvell.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH v7 5/5] net: wan: fsl_qmc_hdlc: Add framer support
-Date: Thu,  7 Mar 2024 12:39:08 +0100
-Message-ID: <20240307113909.227375-6-herve.codina@bootlin.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240307113909.227375-1-herve.codina@bootlin.com>
-References: <20240307113909.227375-1-herve.codina@bootlin.com>
+	bh=kUtRXFv03Af2myonOW7iJH+7QC6OB41YDaO4QoZ6erc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bAm5jHerBupaAp7lWDA6QWEggZGSxleQ4L2SQLQUOcwDtALXCjjaqrBWG5mg0Ku60E+56YGN3Ar8mC3omW14putyyanHXEageTjg5WxKz1+m/U2F3t1WFzKA5IMq/EyYQEIpmmtfYEemy4Eat6CcCpoY3DTrJmYZHMHIwcAXiVk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com; spf=pass smtp.mailfrom=amarulasolutions.com; dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b=Y/EKx0x5; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amarulasolutions.com
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a450bedffdfso106790766b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 03:39:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google; t=1709811581; x=1710416381; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YmyofjGAATtNfbRkux5Tn72b+cMR3JWBDg4s/dxWhdo=;
+        b=Y/EKx0x5FXWSK4MlpeFFvF/bYC5iptrL7fmE9E2CucLtax9Pc++SOtueQjtpRBd6Qe
+         IVd10xEupxQeXchwYjwfxiNeoJObcSR+hIGuUdWAB6QhL4iqZ5RF7ux8KIga9Fu3AWzR
+         laGbJj0ikVnzSUnGPOvwof/O4w2oGiVHEYdLs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709811581; x=1710416381;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YmyofjGAATtNfbRkux5Tn72b+cMR3JWBDg4s/dxWhdo=;
+        b=VKJHJNA2L+N67CkHjNcFfzEUqdTZLgGnqxaGZyMXee8hsItMgSdiwTT+st/feW6yfp
+         DiInimXD95M3WgN19N73Mg2IapUxn1Mkb9MJ/4Lx2y0f74Z+XD8ur14mh5D4v7cQ4R27
+         FVcJwF+Y9Qd03Ye0r4OZQ1p99Z4usmdYWGAx8Q2Wmv/xqaAGZP1lvBq6nRlwibM0xCvH
+         9X4SuGJYItqOXEoq6OT7p8zmlKKxXH69bTjRxJjFoS8ylRUZPog+Vkru5m48Y2XJmRWh
+         ZtOB4mYXfxzC67K9iu8v9/UAiKWR/zB4o1yPsEJzcUoxSLvOPLxgo1PVflubZxdWMlEB
+         0G5Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUkbMLRi7780POvAKekhPhh651mhkOpe4/EodkJkdsVPDpcRosvqbJB1Uy5yh+yE88CJk6/q935ftc3GBJ6Aviji3DB3hORdPWySDHP
+X-Gm-Message-State: AOJu0YxYhyZWf6JyvHOXbONTkJrR3BhOpKkdWf/hCs6Xu0FpaZH+M7jV
+	nAMHZsyIcjpESmbKl9dY+da+ZZ38XdbdimtFKH4AUD/UryXTOD6f+zqTwiMJdVEU+7Yin8026e3
+	6Xj5qQOR/gYGRfd76lskUE6ROHL9tzaJsnvqeKQ==
+X-Google-Smtp-Source: AGHT+IEq4uXLnuvDMQxDLscG2Nl653AwCF7NrOD6IMSI06nfTPmzUcMJtV8xTGceFascG/93JVOwtTXBnv4kJciRtnM=
+X-Received: by 2002:a17:906:6049:b0:a45:c8cb:f5c1 with SMTP id
+ p9-20020a170906604900b00a45c8cbf5c1mr1697588ejj.63.1709811580611; Thu, 07 Mar
+ 2024 03:39:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
+References: <20240226100502.1845284-1-michael@amarulasolutions.com>
+ <20240226223643.pay4tb66j3q44cuk@synopsys.com> <CAOf5uwkcFuSRZy3F44pSZFpHk5Hah-r8m01JLt3Gd1ngvg-CPQ@mail.gmail.com>
+ <20240307012847.2tkn7nu3juf2x6w2@synopsys.com>
+In-Reply-To: <20240307012847.2tkn7nu3juf2x6w2@synopsys.com>
+From: Michael Nazzareno Trimarchi <michael@amarulasolutions.com>
+Date: Thu, 7 Mar 2024 12:39:29 +0100
+Message-ID: <CAOf5uwnx+VYXZnNHAHK9_6dLh5XsNJaQPSwbfUuER1uWwe4_gw@mail.gmail.com>
+Subject: Re: [PATCH V3] usb: dwc3: gadget: Fix suspend/resume warning when
+ no-gadget is connected
+To: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	"linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"linux-amarula@amarulasolutions.com" <linux-amarula@amarulasolutions.com>, 
+	"stable@vger.kernel.org" <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add framer support in the fsl_qmc_hdlc driver in order to be able to
-signal carrier changes to the network stack based on the framer status
-Also use this framer to provide information related to the E1/T1 line
-interface on IF_GET_IFACE and configure the line interface according to
-IF_IFACE_{E1,T1} information.
+Hi
 
-Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/net/wan/fsl_qmc_hdlc.c | 239 ++++++++++++++++++++++++++++++++-
- 1 file changed, 234 insertions(+), 5 deletions(-)
+On Thu, Mar 7, 2024 at 2:30=E2=80=AFAM Thinh Nguyen <Thinh.Nguyen@synopsys.=
+com> wrote:
+>
+> Hi,
+>
+> On Mon, Feb 26, 2024, Michael Nazzareno Trimarchi wrote:
+> > Hi
+> >
+> > On Mon, Feb 26, 2024 at 11:36=E2=80=AFPM Thinh Nguyen <Thinh.Nguyen@syn=
+opsys.com> wrote:
+> > >
+> > > Hi,
+> > >
+> > > On Mon, Feb 26, 2024, Michael Trimarchi wrote:
+> > > > This patch avoid to disconnect an already gadget in not connected s=
+tate
+> > > >
+> > > > [   45.597274] dwc3 31000000.usb: wait for SETUP phase timed out
+> > > > [   45.599140] dwc3 31000000.usb: failed to set STALL on ep0out
+> > > > [   45.601069] ------------[ cut here ]------------
+> > > > [   45.601073] WARNING: CPU: 0 PID: 150 at drivers/usb/dwc3/ep0.c:2=
+89 dwc3_ep0_out_start+0xcc/0xd4
+> > > > [   45.601102] Modules linked in: cfg80211 rfkill ipv6 rpmsg_ctrl r=
+pmsg_char crct10dif_ce rti_wdt k3_j72xx_bandgap rtc_ti_k3 omap_mailbox sa2u=
+l authenc [last unloaded: ti_k3_r5_remoteproc]
+> > > > [   45.601151] CPU: 0 PID: 150 Comm: sh Not tainted 6.8.0-rc5 #1
+> > > > [   45.601159] Hardware name: BSH - CCM-M3 (DT)
+> > > > [   45.601164] pstate: 600000c5 (nZCv daIF -PAN -UAO -TCO -DIT -SSB=
+S BTYPE=3D--)
+> > > > [   45.601172] pc : dwc3_ep0_out_start+0xcc/0xd4
+> > > > [   45.601179] lr : dwc3_ep0_out_start+0x50/0xd4
+> > > > [   45.601186] sp : ffff8000832739e0
+> > > > [   45.601189] x29: ffff8000832739e0 x28: ffff800082a21000 x27: fff=
+f8000808dc630
+> > > > [   45.601200] x26: 0000000000000002 x25: ffff800082530a44 x24: 000=
+0000000000000
+> > > > [   45.601210] x23: ffff000000e079a0 x22: ffff000000e07a68 x21: 000=
+0000000000001
+> > > > [   45.601219] x20: ffff000000e07880 x19: ffff000000e07880 x18: 000=
+0000000000040
+> > > > [   45.601229] x17: ffff7fff8e1ce000 x16: ffff800080000000 x15: fff=
+ffffffffe5260
+> > > > [   45.601239] x14: 0000000000000000 x13: 206e6f204c4c4154 x12: 532=
+0746573206f74
+> > > > [   45.601249] x11: 0000000000000001 x10: 000000000000000a x9 : fff=
+f800083273930
+> > > > [   45.601259] x8 : 000000000000000a x7 : ffffffffffff3f0c x6 : fff=
+fffffffff3f00
+> > > > [   45.601268] x5 : ffffffffffff3f0c x4 : 0000000000000000 x3 : 000=
+0000000000000
+> > > > [   45.601278] x2 : 0000000000000000 x1 : ffff000004e7e600 x0 : 000=
+00000ffffff92
+> > > > [   45.601289] Call trace:
+> > > > [   45.601293]  dwc3_ep0_out_start+0xcc/0xd4
+> > > > [   45.601301]  dwc3_ep0_stall_and_restart+0x98/0xbc
+> > > > [   45.601309]  dwc3_ep0_reset_state+0x5c/0x88
+> > > > [   45.601315]  dwc3_gadget_soft_disconnect+0x144/0x160
+> > > > [   45.601323]  dwc3_gadget_suspend+0x18/0xb0
+> > > > [   45.601329]  dwc3_suspend_common+0x5c/0x18c
+> > > > [   45.601341]  dwc3_suspend+0x20/0x44
+> > > > [   45.601350]  platform_pm_suspend+0x2c/0x6c
+> > > > [   45.601360]  __device_suspend+0x10c/0x34c
+> > > > [   45.601372]  dpm_suspend+0x1a8/0x240
+> > > > [   45.601382]  dpm_suspend_start+0x80/0x9c
+> > > > [   45.601391]  suspend_devices_and_enter+0x1c4/0x584
+> > > > [   45.601402]  pm_suspend+0x1b0/0x264
+> > > > [   45.601408]  state_store+0x80/0xec
+> > > > [   45.601415]  kobj_attr_store+0x18/0x2c
+> > > > [   45.601426]  sysfs_kf_write+0x44/0x54
+> > > > [   45.601434]  kernfs_fop_write_iter+0x120/0x1ec
+> > > > [   45.601445]  vfs_write+0x23c/0x358
+> > > > [   45.601458]  ksys_write+0x70/0x104
+> > > > [   45.601467]  __arm64_sys_write+0x1c/0x28
+> > > > [   45.601477]  invoke_syscall+0x48/0x114
+> > > > [   45.601488]  el0_svc_common.constprop.0+0x40/0xe0
+> > > > [   45.601498]  do_el0_svc+0x1c/0x28
+> > > > [   45.601506]  el0_svc+0x34/0xb8
+> > > > [   45.601516]  el0t_64_sync_handler+0x100/0x12c
+> > > > [   45.601522]  el0t_64_sync+0x190/0x194
+> > > > [   45.601531] ---[ end trace 0000000000000000 ]---
+> > > > [   45.608794] Disabling non-boot CPUs ...
+> > > > [   45.611029] psci: CPU1 killed (polled 0 ms)
+> > > > [   45.611837] Enabling non-boot CPUs ...
+> > > > [   45.612247] Detected VIPT I-cache on CPU1
+> > > >
+> > > > Tested on a am62x board with a usbnet gadget
+> > > >
+> > > > Fixes: 61a348857e86 ("usb: dwc3: gadget: Fix NULL pointer dereferen=
+ce in dwc3_gadget_suspend)
+> > > > Cc: stable@vger.kernel.org
+> > > > Signed-off-by: Michael Trimarchi <michael@amarulasolutions.com>
+> > > > ---
+> > > > V2->V3:
+> > > >       - Change the logic of the patch using the gadget connected st=
+ate
+> > > >       - Change of the commit message
+> > > > V1->V2:
+> > > >       - Add stable in CC
+> > > > ---
+> > > >  drivers/usb/dwc3/gadget.c | 9 +++++++++
+> > > >  1 file changed, 9 insertions(+)
+> > > >
+> > > > diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+> > > > index 4c8dd6724678..a7316a1703ad 100644
+> > > > --- a/drivers/usb/dwc3/gadget.c
+> > > > +++ b/drivers/usb/dwc3/gadget.c
+> > > > @@ -2650,6 +2650,15 @@ static int dwc3_gadget_soft_disconnect(struc=
+t dwc3 *dwc)
+> > > >       int ret;
+> > > >
+> > > >       spin_lock_irqsave(&dwc->lock, flags);
+> > > > +     /*
+> > > > +      * Attempt to disconnect a no connected gadget
+> > > > +      */
+> > > > +     if (!dwc->connected) {
+> > > > +             dev_warn(dwc->dev, "No connected device\n");
+> > > > +             spin_unlock_irqrestore(&dwc->lock, flags);
+> > > > +             return 0;
+> > > > +     }
+> > > > +
+> > > >       dwc->connected =3D false;
+> > > >
+> > > >       /*
+> > > > --
+> > > > 2.40.1
+> > > >
+> > >
+> > > There's already a fix for this, and it's already in mainline. Let me
+> > > know if this works for you:
+> > >
+> > > https://urldefense.com/v3/__https://git.kernel.org/pub/scm/linux/kern=
+el/git/torvalds/linux.git/commit/?id=3Db191a18cb5c47109ca696370a74a5062a70a=
+dfd0__;!!A4F2R9G_pg!dqF-dGSHGR41Bep_7ZG2mWfPNYWfC4T-_FpOf_pFIvqa9L1n1e6l6D3=
+oP9bOlRRFobW4Uvh0VAP8qBkLMfNkUlfaeTc$
+> > >
+> >
+> > Can you explain to me the logic here? I mean pullsup_connected seems
+> > never protected by spin lock and so I can not figure
+> > out it easily and the commit message does not explain so much
+> >
+>
+> Sorry for the delay response.
+>
+> Ah.. you're right, the spin_lock isn't useful there. My intention was to
+> avoid soft disconnect flow to occur during system suspend along with
+> pullup(off). I somehow forgot that it isn't protected with spin_lock.
+>
 
-diff --git a/drivers/net/wan/fsl_qmc_hdlc.c b/drivers/net/wan/fsl_qmc_hdlc.c
-index 57935b48a848..960371df470a 100644
---- a/drivers/net/wan/fsl_qmc_hdlc.c
-+++ b/drivers/net/wan/fsl_qmc_hdlc.c
-@@ -14,6 +14,7 @@
- #include <linux/dma-mapping.h>
- #include <linux/device.h>
- #include <linux/err.h>
-+#include <linux/framer/framer.h>
- #include <linux/hdlc.h>
- #include <linux/mod_devicetable.h>
- #include <linux/module.h>
-@@ -35,6 +36,9 @@ struct qmc_hdlc {
- 	struct device *dev;
- 	struct qmc_chan *qmc_chan;
- 	struct net_device *netdev;
-+	struct framer *framer;
-+	spinlock_t carrier_lock; /* Protect carrier detection */
-+	struct notifier_block nb;
- 	bool is_crc32;
- 	spinlock_t tx_lock; /* Protect tx descriptors */
- 	struct qmc_hdlc_desc tx_descs[8];
-@@ -48,6 +52,192 @@ static struct qmc_hdlc *netdev_to_qmc_hdlc(struct net_device *netdev)
- 	return dev_to_hdlc(netdev)->priv;
- }
- 
-+static int qmc_hdlc_framer_set_carrier(struct qmc_hdlc *qmc_hdlc)
-+{
-+	struct framer_status framer_status;
-+	int ret;
-+
-+	if (!qmc_hdlc->framer)
-+		return 0;
-+
-+	guard(spinlock_irqsave)(&qmc_hdlc->carrier_lock);
-+
-+	ret = framer_get_status(qmc_hdlc->framer, &framer_status);
-+	if (ret) {
-+		dev_err(qmc_hdlc->dev, "get framer status failed (%d)\n", ret);
-+		return ret;
-+	}
-+	if (framer_status.link_is_on)
-+		netif_carrier_on(qmc_hdlc->netdev);
-+	else
-+		netif_carrier_off(qmc_hdlc->netdev);
-+
-+	return 0;
-+}
-+
-+static int qmc_hdlc_framer_notifier(struct notifier_block *nb, unsigned long action,
-+				    void *data)
-+{
-+	struct qmc_hdlc *qmc_hdlc = container_of(nb, struct qmc_hdlc, nb);
-+	int ret;
-+
-+	if (action != FRAMER_EVENT_STATUS)
-+		return NOTIFY_DONE;
-+
-+	ret = qmc_hdlc_framer_set_carrier(qmc_hdlc);
-+	return ret ? NOTIFY_DONE : NOTIFY_OK;
-+}
-+
-+static int qmc_hdlc_framer_start(struct qmc_hdlc *qmc_hdlc)
-+{
-+	struct framer_status framer_status;
-+	int ret;
-+
-+	if (!qmc_hdlc->framer)
-+		return 0;
-+
-+	ret = framer_power_on(qmc_hdlc->framer);
-+	if (ret) {
-+		dev_err(qmc_hdlc->dev, "framer power-on failed (%d)\n", ret);
-+		return ret;
-+	}
-+
-+	/* Be sure that get_status is supported */
-+	ret = framer_get_status(qmc_hdlc->framer, &framer_status);
-+	if (ret) {
-+		dev_err(qmc_hdlc->dev, "get framer status failed (%d)\n", ret);
-+		goto framer_power_off;
-+	}
-+
-+	qmc_hdlc->nb.notifier_call = qmc_hdlc_framer_notifier;
-+	ret = framer_notifier_register(qmc_hdlc->framer, &qmc_hdlc->nb);
-+	if (ret) {
-+		dev_err(qmc_hdlc->dev, "framer notifier register failed (%d)\n", ret);
-+		goto framer_power_off;
-+	}
-+
-+	return 0;
-+
-+framer_power_off:
-+	framer_power_off(qmc_hdlc->framer);
-+	return ret;
-+}
-+
-+static void qmc_hdlc_framer_stop(struct qmc_hdlc *qmc_hdlc)
-+{
-+	if (!qmc_hdlc->framer)
-+		return;
-+
-+	framer_notifier_unregister(qmc_hdlc->framer, &qmc_hdlc->nb);
-+	framer_power_off(qmc_hdlc->framer);
-+}
-+
-+static int qmc_hdlc_framer_set_iface(struct qmc_hdlc *qmc_hdlc, int if_iface,
-+				     const te1_settings *te1)
-+{
-+	struct framer_config config;
-+	int ret;
-+
-+	if (!qmc_hdlc->framer)
-+		return 0;
-+
-+	ret = framer_get_config(qmc_hdlc->framer, &config);
-+	if (ret)
-+		return ret;
-+
-+	switch (if_iface) {
-+	case IF_IFACE_E1:
-+		config.iface = FRAMER_IFACE_E1;
-+		break;
-+	case IF_IFACE_T1:
-+		config.iface = FRAMER_IFACE_T1;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	switch (te1->clock_type) {
-+	case CLOCK_DEFAULT:
-+		/* Keep current value */
-+		break;
-+	case CLOCK_EXT:
-+		config.clock_type = FRAMER_CLOCK_EXT;
-+		break;
-+	case CLOCK_INT:
-+		config.clock_type = FRAMER_CLOCK_INT;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+	config.line_clock_rate = te1->clock_rate;
-+
-+	return framer_set_config(qmc_hdlc->framer, &config);
-+}
-+
-+static int qmc_hdlc_framer_get_iface(struct qmc_hdlc *qmc_hdlc, int *if_iface, te1_settings *te1)
-+{
-+	struct framer_config config;
-+	int ret;
-+
-+	if (!qmc_hdlc->framer) {
-+		*if_iface = IF_IFACE_E1;
-+		return 0;
-+	}
-+
-+	ret = framer_get_config(qmc_hdlc->framer, &config);
-+	if (ret)
-+		return ret;
-+
-+	switch (config.iface) {
-+	case FRAMER_IFACE_E1:
-+		*if_iface = IF_IFACE_E1;
-+		break;
-+	case FRAMER_IFACE_T1:
-+		*if_iface = IF_IFACE_T1;
-+		break;
-+	}
-+
-+	if (!te1)
-+		return 0; /* Only iface type requested */
-+
-+	switch (config.clock_type) {
-+	case FRAMER_CLOCK_EXT:
-+		te1->clock_type = CLOCK_EXT;
-+		break;
-+	case FRAMER_CLOCK_INT:
-+		te1->clock_type = CLOCK_INT;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+	te1->clock_rate = config.line_clock_rate;
-+	return 0;
-+}
-+
-+static int qmc_hdlc_framer_init(struct qmc_hdlc *qmc_hdlc)
-+{
-+	int ret;
-+
-+	if (!qmc_hdlc->framer)
-+		return 0;
-+
-+	ret = framer_init(qmc_hdlc->framer);
-+	if (ret) {
-+		dev_err(qmc_hdlc->dev, "framer init failed (%d)\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static void qmc_hdlc_framer_exit(struct qmc_hdlc *qmc_hdlc)
-+{
-+	if (!qmc_hdlc->framer)
-+		return;
-+
-+	framer_exit(qmc_hdlc->framer);
-+}
-+
- static int qmc_hdlc_recv_queue(struct qmc_hdlc *qmc_hdlc, struct qmc_hdlc_desc *desc, size_t size);
- 
- #define QMC_HDLC_RX_ERROR_FLAGS				\
-@@ -303,6 +493,12 @@ static int qmc_hdlc_set_iface(struct qmc_hdlc *qmc_hdlc, int if_iface, const te1
- 
- 	qmc_hdlc->slot_map = te1->slot_map;
- 
-+	ret = qmc_hdlc_framer_set_iface(qmc_hdlc, if_iface, te1);
-+	if (ret) {
-+		dev_err(qmc_hdlc->dev, "framer set iface failed %d\n", ret);
-+		return ret;
-+	}
-+
- 	return 0;
- }
- 
-@@ -310,11 +506,16 @@ static int qmc_hdlc_ioctl(struct net_device *netdev, struct if_settings *ifs)
- {
- 	struct qmc_hdlc *qmc_hdlc = netdev_to_qmc_hdlc(netdev);
- 	te1_settings te1;
-+	int ret;
- 
- 	switch (ifs->type) {
- 	case IF_GET_IFACE:
--		ifs->type = IF_IFACE_E1;
- 		if (ifs->size < sizeof(te1)) {
-+			/* Retrieve type only */
-+			ret = qmc_hdlc_framer_get_iface(qmc_hdlc, &ifs->type, NULL);
-+			if (ret)
-+				return ret;
-+
- 			if (!ifs->size)
- 				return 0; /* only type requested */
- 
-@@ -324,6 +525,11 @@ static int qmc_hdlc_ioctl(struct net_device *netdev, struct if_settings *ifs)
- 
- 		memset(&te1, 0, sizeof(te1));
- 
-+		/* Retrieve info from framer */
-+		ret = qmc_hdlc_framer_get_iface(qmc_hdlc, &ifs->type, &te1);
-+		if (ret)
-+			return ret;
-+
- 		/* Update slot_map */
- 		te1.slot_map = qmc_hdlc->slot_map;
- 
-@@ -357,10 +563,17 @@ static int qmc_hdlc_open(struct net_device *netdev)
- 	int ret;
- 	int i;
- 
--	ret = hdlc_open(netdev);
-+	ret = qmc_hdlc_framer_start(qmc_hdlc);
- 	if (ret)
- 		return ret;
- 
-+	ret = hdlc_open(netdev);
-+	if (ret)
-+		goto framer_stop;
-+
-+	/* Update carrier */
-+	qmc_hdlc_framer_set_carrier(qmc_hdlc);
-+
- 	chan_param.mode = QMC_HDLC;
- 	/* HDLC_MAX_MRU + 4 for the CRC
- 	 * HDLC_MAX_MRU + 4 + 8 for the CRC and some extraspace needed by the QMC
-@@ -407,6 +620,8 @@ static int qmc_hdlc_open(struct net_device *netdev)
- 	}
- hdlc_close:
- 	hdlc_close(netdev);
-+framer_stop:
-+	qmc_hdlc_framer_stop(qmc_hdlc);
- 	return ret;
- }
- 
-@@ -442,6 +657,7 @@ static int qmc_hdlc_close(struct net_device *netdev)
- 	}
- 
- 	hdlc_close(netdev);
-+	qmc_hdlc_framer_stop(qmc_hdlc);
- 	return 0;
- }
- 
-@@ -490,6 +706,7 @@ static int qmc_hdlc_probe(struct platform_device *pdev)
- 
- 	qmc_hdlc->dev = dev;
- 	spin_lock_init(&qmc_hdlc->tx_lock);
-+	spin_lock_init(&qmc_hdlc->carrier_lock);
- 
- 	qmc_hdlc->qmc_chan = devm_qmc_chan_get_bychild(dev, dev->of_node);
- 	if (IS_ERR(qmc_hdlc->qmc_chan))
-@@ -512,9 +729,19 @@ static int qmc_hdlc_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
- 
-+	qmc_hdlc->framer = devm_framer_optional_get(dev, "fsl,framer");
-+	if (IS_ERR(qmc_hdlc->framer))
-+		return PTR_ERR(qmc_hdlc->framer);
-+
-+	ret = qmc_hdlc_framer_init(qmc_hdlc);
-+	if (ret)
-+		return ret;
-+
- 	qmc_hdlc->netdev = alloc_hdlcdev(qmc_hdlc);
--	if (!qmc_hdlc->netdev)
--		return -ENOMEM;
-+	if (!qmc_hdlc->netdev) {
-+		ret = -ENOMEM;
-+		goto framer_exit;
-+	}
- 
- 	hdlc = dev_to_hdlc(qmc_hdlc->netdev);
- 	hdlc->attach = qmc_hdlc_attach;
-@@ -529,11 +756,12 @@ static int qmc_hdlc_probe(struct platform_device *pdev)
- 	}
- 
- 	platform_set_drvdata(pdev, qmc_hdlc);
--
- 	return 0;
- 
- free_netdev:
- 	free_netdev(qmc_hdlc->netdev);
-+framer_exit:
-+	qmc_hdlc_framer_exit(qmc_hdlc);
- 	return ret;
- }
- 
-@@ -543,6 +771,7 @@ static int qmc_hdlc_remove(struct platform_device *pdev)
- 
- 	unregister_hdlc_device(qmc_hdlc->netdev);
- 	free_netdev(qmc_hdlc->netdev);
-+	qmc_hdlc_framer_exit(qmc_hdlc);
- 
- 	return 0;
- }
--- 
-2.43.0
+You reduce the window of failure but we need to rework anyway
 
+> It's a very unlikely scenario. Even if it did happen, it should be
+> harmless. But to solve that perhaps we can:
+> 1) Keep the code simple and enforce no sleep and hold spin_lock during
+>    the entirety of run_stop() sequence
+
+
+If the run_stop is executing I can imagine that you only need to mark it as
+ongoing and protect with a spin_lock, returning -EINVAL on the suspend
+hook. I will keep
+it simple
+
+Michael
+
+> 2) Enforce a must-lock check to run_stop() and unlock during sleep. This
+>    requires more code changes and reviews.
+>
+> If you have some ideas, please share. (Note that using dwc->connected
+> isn't sufficient)
+>
+> Thanks,
+> Thinh
+
+
+
+--=20
+Michael Nazzareno Trimarchi
+Co-Founder & Chief Executive Officer
+M. +39 347 913 2170
+michael@amarulasolutions.com
+__________________________________
+
+Amarula Solutions BV
+Joop Geesinkweg 125, 1114 AB, Amsterdam, NL
+T. +31 (0)85 111 9172
+info@amarulasolutions.com
+www.amarulasolutions.com
 
