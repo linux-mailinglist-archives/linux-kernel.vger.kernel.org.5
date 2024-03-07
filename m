@@ -1,183 +1,174 @@
-Return-Path: <linux-kernel+bounces-95864-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95865-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 474E9875443
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:37:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16D9C875447
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:37:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F22C5288E61
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 16:37:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 84C4D1F2296B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 16:37:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D59C12FB33;
-	Thu,  7 Mar 2024 16:37:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34D6412FF74;
+	Thu,  7 Mar 2024 16:37:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fJ80NUNi"
-Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="eLMP+qid"
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2082.outbound.protection.outlook.com [40.107.100.82])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC0811DA27;
-	Thu,  7 Mar 2024 16:37:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.44
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709829426; cv=none; b=gz4S7HRZK0OgIC/ZSZ3d+VREBuzuNlRBuvE5OCoZIPinFp343q0/LGExwQzT7Ad0F5sYUXXlHp2wc3J7qjMrOrMb3xdoUNJuFV76iq3zYWXSk+xPOSR0s1HeoJN6L6tzPSJVfepEQ7KbxabS6Fc68i2z+LaHpoJQsjvYiUvuEWg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709829426; c=relaxed/simple;
-	bh=R7uLcewIPcCbOUA5r2domMq49Hm7h9Eduw6Ebo4E+5A=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lBaxzLUE7RElLcvNl0J8In+usCyQPXaFjbVWG/s777WllOJBomAFHTJLJby5Aqb6vcsNXBcWgGthOb31YSCcXElKpGRd8iXAM0vmnwzqWM5xCBBGpChy+L9mZrRDtKaruNDVWT5a9YrA8Ws8qBCl7tMO1kfi7CTIDhGai3nNV1A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fJ80NUNi; arc=none smtp.client-ip=209.85.210.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f44.google.com with SMTP id 46e09a7af769-6e445b4f80bso537673a34.0;
-        Thu, 07 Mar 2024 08:37:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709829424; x=1710434224; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DRR3aMrPNTHPyKTnpZBfnYrcMUQU7aCizh88lK2tEOw=;
-        b=fJ80NUNiUmKnSTARnjTsPNUA+JlWDmHIon6TBUJytnwrGpb3Ho8LnEcSKZBuMjS8pZ
-         kkK7dYyY6q0A6TJCJScBkUSANhR0HDzmyxo7ByneSsMPF1zKcD33g7zeNd2QkcNJk4hE
-         rCFOu0JrLrD2MzxwU8V5Tr2N1jk0QLHl71RRFDGbfvkrh8XEwApKOrBAaVpqEMnU3cKL
-         xCeCyQRMiXQoSgfnayXRrygUd5Gpm9jxlm3jvCUGCSpIkslkR7zZEwlEvGJ/Vb0efp3M
-         CXL221ajBI+YbmNUXNAmErdmkTm8vT3fFZ8l34aJLfS+rZTruxBplMNw5NWsOxNQMsPd
-         de0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709829424; x=1710434224;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DRR3aMrPNTHPyKTnpZBfnYrcMUQU7aCizh88lK2tEOw=;
-        b=q4x/t3VelqAANEIZEu8tsY58Mk7gePb8sMshdYARdlcLlBVK4t1gtiPOonQcSSzihx
-         OmpLmy/Y+9WvH2fTg8f1Z2xzww7qb1ZUHzANZ+SDuNpXxQMfkx2DsG+u/dLX3EcYqi8s
-         l15j0rdF1xEwxwkbBRFAd0ReS2W/Xt3SmlWz9E6wfbu6N+LjLepoSCbiHbPBeNM8Gt2H
-         ToP7sLzVt8zQP+tzbMXr2C6AfQLwmsofIWkLInsoaV9rDxVomIdosIUq5aBxlbEJzgXK
-         IxqTC0KwT8wUNyKoCG+emBKITP5t8EOq3Dkva2ZzHGFEfkLQXRyfg8kl81LK0GIK9/U7
-         bu9Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWq8/uoQgSNSqhGH5YrjXF98LYVxv3OG+rU/+Qd4hAGz1dVsWbkoPhwWoSv/9Xfp70lKBYg1Db+kHfTO19daLgVF6B8UrGYBzrZlS/sHvGGbmhlND4GU2pIqx7IKzmlH0Ql+1ika9fPI2LiObdPJgVsW5AYt9nkyzFRJu8aT2zNaoyudQ8=
-X-Gm-Message-State: AOJu0YwYoVnuI5NTQSYOddKuIrNmIuWXqKUYfUzx3wHcgnK/94RCjNgh
-	eopK9LETkx9IxLj9bv2UDOyqr5y4aJnZ+KtqXW1Axvoaf9X8iBPw+3J1nz6cEqQ0FZPXX5FEIAw
-	A1sImKMut1/cprNwrTPYFRS/MCsg=
-X-Google-Smtp-Source: AGHT+IFJQktXHafepx7m2ZI9QAsBmwKMITqcJJIw//kIMZ1qNUrVo2cXeWwX3DelxvQp+xNWB9FVPEmJ0rR4dSgR1Bg=
-X-Received: by 2002:a05:6871:782:b0:21e:e5db:7964 with SMTP id
- o2-20020a056871078200b0021ee5db7964mr370234oap.23.1709829423970; Thu, 07 Mar
- 2024 08:37:03 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9C4012F393;
+	Thu,  7 Mar 2024 16:37:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.100.82
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709829451; cv=fail; b=DdnDQ7nSgu7TSeOMYA9fdYuhAy/yi5Ufh3giHPHEFJWBvPZiLWkm9PUcizu2Wtb7rIl8ujuHs56bMgR1KvaZqZmtyGCNAhLB1iTHbI876KA+l5fve0uUgHGl4SbBI+jbYw0DtobeUb/6uKDkESsPeFmOSBEhe2OELVdlE1izlZ0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709829451; c=relaxed/simple;
+	bh=qMqLdflvLJxtBNr3GLuufLcfaitlqmGL9Bkj7aYE6MU=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ZD4XKcdxn+/pkqMKwQoYeZkP97PFUovYmmKkh5Lf1UYAy4ulAFAXyr1eA7aFH1OJ5H9Npp9pMd2F+lKstdsnHyfBTWr0vgBcFwI26u8QURXa73aWg4mKzojoieCYNt+A3tJ4sFSchWS72UrHJ6lJbGgai948jqCu3KALbzqW5ME=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=eLMP+qid; arc=fail smtp.client-ip=40.107.100.82
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lexNCBUbRdFr+c91nCjQ0UsS2TquKZFkajGchkzQdcCFjd5VQqodF97dm8MG0HuKqV9+VCdz2dxJKb8GCtB6o/G3ZQ5IDyA9RDxRTD7kjYZ7Cg9KlkHTo+nyVWLdnLAJyp89mRP4UOUYV7PfluaxHSF3zGcGibVhPUGn7UQcXMOR1CyQ6qk7Q+tkmC7kPTdpJlsf7k9/5Zr99kbby3LXtcZRu9I3VI9r9LVw61GW/dJVhZWCmvMchvshdgfHgX8wHY5nq9xCyMQehr0+0WvZvuHcR3kzC5nN/7xkyw8/NEZLmCGNurNg5HS6S2PCIIKTR88HSI8EebduCbCE1qSrCA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=T9q0yxDkkhrABhBbI+0EPppL5nIFwZNqwUTND1q3o2g=;
+ b=hBN/8th+uoWQjjSz0B60jF37GEtTDIBJ9idx/bKwi1nYzWjvO+RNsIfPDmSFhDLGQ1plTlDBktG9KaOX6i0jqbfYwikWcQ9Gz8KL1PXz71lbNEi9OtesFtT11jtXuUB4AsRDZcsy+Ggl56ECBYgOmyC46EUpiUth/aaaOAhWXWXK2Z+6nJLTgXCk31sjdRI7l7kjUd8mSLoiCr/PyONzOXhtHAV/a7taTIOhQlvqMfU54RsPTdhqEa4sqItztsoJArlnGpNKJWwn8yaWx81/Fc0s/jD/pspmeqbE2fvKnlEJAD8U4Li5QG2IDThJecN1vmfn/bbLBpEaHLNmqfulUA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=google.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=T9q0yxDkkhrABhBbI+0EPppL5nIFwZNqwUTND1q3o2g=;
+ b=eLMP+qidF8Wat95NtradcZjxoEGWgen437FAVDO8f1kxgsE0QQsVfsVHF6wKZ0a1dI89QzFfcDpM+LddNLOVICqgUXRgKXBabMg5tFMzej/8yJ1DmUYCSpVyXvEnFh/DjbwcqXWwaJO6GY3tPDq5FEJsLBfY9gaENuGpG2YNtvY=
+Received: from BL0PR05CA0011.namprd05.prod.outlook.com (2603:10b6:208:91::21)
+ by PH7PR12MB7377.namprd12.prod.outlook.com (2603:10b6:510:20c::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.41; Thu, 7 Mar
+ 2024 16:37:26 +0000
+Received: from BN2PEPF000044A7.namprd04.prod.outlook.com
+ (2603:10b6:208:91:cafe::e5) by BL0PR05CA0011.outlook.office365.com
+ (2603:10b6:208:91::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.9 via Frontend
+ Transport; Thu, 7 Mar 2024 16:37:26 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ BN2PEPF000044A7.mail.protection.outlook.com (10.167.243.101) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7362.11 via Frontend Transport; Thu, 7 Mar 2024 16:37:26 +0000
+Received: from AUS-P9-MLIMONCI.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 7 Mar
+ 2024 10:37:25 -0600
+From: Mario Limonciello <mario.limonciello@amd.com>
+To: Bjorn Helgaas <bhelgaas@google.com>
+CC: <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>, "Mario
+ Limonciello" <mario.limonciello@amd.com>, Eric Heintzmann
+	<heintzmann.eric@free.fr>
+Subject: [PATCH] PCI: Add a quirk for preventing D3 on a bridge
+Date: Thu, 7 Mar 2024 10:37:09 -0600
+Message-ID: <20240307163709.323-1-mario.limonciello@amd.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240306201045.1475-1-justin.swartz@risingedge.co.za>
- <20240306201045.1475-2-justin.swartz@risingedge.co.za> <CAMhs-H9WyQZsvEvCfUcZ0_eU8--EzxEmaxR50wdRFDGP3E64ZQ@mail.gmail.com>
- <13e3063facfea3407dba23b74b0a56db@risingedge.co.za>
-In-Reply-To: <13e3063facfea3407dba23b74b0a56db@risingedge.co.za>
-From: Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date: Thu, 7 Mar 2024 17:36:51 +0100
-Message-ID: <CAMhs-H_eUKm7C40oCzuKwwEMZAcOJ-g4MghAfkGAmxRM0AXPUw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mips: dts: ralink: mt7621: add serial1 and serial2 nodes
-To: Justin Swartz <justin.swartz@risingedge.co.za>
-Cc: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Matthias Brugger <matthias.bgg@gmail.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, linux-mips@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN2PEPF000044A7:EE_|PH7PR12MB7377:EE_
+X-MS-Office365-Filtering-Correlation-Id: 580ceaee-4ecc-4928-ff32-08dc3ec4df7b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	bwGXRqb2szzxDpZ+nl+mCYK9OZe7LUsiowRGo7jay9y4ZrYqLGslOrgOXd9iiyjXL2kBIuTivu6zyCwy4mJyCcm9ZAb093GWqE86PHKQbm26ylwI6ZGKZI8iYQQg80squFNpFMeg3HSuBK2/rW7vVTUt3jhWyhrhtfxZHhCytmf4K7+gJ2KRB1vjuC4zLfkSBtXbKnWJ+avU7bRm2+AGe6O4s1Vir5OarGd/QEd1mcvJPk6QfpsBelqgkdXhq8ijJa2lhP2pVD6RT/6f9SsQDk49dTpHYRfiwuF4o7CCYldpmEUIDnXjiyeUk4+BFWrC1od/k5z5Yh1aSxBBW4mQjHidsMRGn8EEdJGwX9KC45V/gUQ5hQj8x6eUfI7G0tYTfZs4ZrjF0JTFX2WgeCTBfrJxO62uBW5BnK9Jm/saa5sQgjep43ADgrtmlhnuM19AGhszMOIdPw2uy4s2Ob/ZSmChcSViUmecSbUHJC0FvRsjY7rp8KIhlzrwu0t/b1AlYcPsweEo+q0zawyq6j4Zh0k5AcnlTuW4ATVBOe+CWHIBzMkgnQdujon4wPg2v7T/sE07yYFuMG0cNLC10HNnadGGS+BGBxb+H12Q641Yr2j9rep9CStrxxi6fc/hblZt5U5MU+MncR5IwFva+f4R6SeddoA34nGi9Z8e7Uc0F+R6dUW21zi2S2Xuw2RgwYytSVZcL3c0OqDIz4KnOpHAHuvySrFMTKMM3P7ouh7nFQsTp6scUu5GiiZs1L6zEBGPAVS/2PaZLBLeAbhrSBQcWA==
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(82310400014)(376005)(15866825006)(41080700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Mar 2024 16:37:26.3100
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 580ceaee-4ecc-4928-ff32-08dc3ec4df7b
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BN2PEPF000044A7.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7377
 
-Hi Justin,
+Hewlett-Packard HP Pavilion 17 Notebook PC/1972 is an Intel Ivy Bridge
+system with a muxless AMD Radeon dGPU.  Attempting to use the dGPU fails
+with the following sequence:
 
-On Thu, Mar 7, 2024 at 4:15=E2=80=AFPM Justin Swartz
-<justin.swartz@risingedge.co.za> wrote:
->
-> Hi Sergio
->
-> On 2024-03-07 12:04, Sergio Paracuellos wrote:
-> > Hi Justin,
-> >
-> > On Wed, Mar 6, 2024 at 9:11=E2=80=AFPM Justin Swartz
-> > <justin.swartz@risingedge.co.za> wrote:
-> >>
-> >> Add serial1 and serial2 nodes to define the existence of
-> >> UART1 and UART2.
-> >>
-> >> Signed-off-by: Justin Swartz <justin.swartz@risingedge.co.za>
-> >> ---
-> >>  arch/mips/boot/dts/ralink/mt7621.dtsi | 38
-> >> +++++++++++++++++++++++++++
-> >>  1 file changed, 38 insertions(+)
-> >>
-> >> diff --git a/arch/mips/boot/dts/ralink/mt7621.dtsi
-> >> b/arch/mips/boot/dts/ralink/mt7621.dtsi
-> >> index dca415fdd..2069249c8 100644
-> >> --- a/arch/mips/boot/dts/ralink/mt7621.dtsi
-> >> +++ b/arch/mips/boot/dts/ralink/mt7621.dtsi
-> >> @@ -128,6 +128,44 @@ serial0: serial@c00 {
-> >>                         pinctrl-0 =3D <&uart1_pins>;
-> >>                 };
-> >>
-> >> +               serial1: serial@d00 {
-> >> +                       status =3D "disabled";
-> >> +
-> >> +                       compatible =3D "ns16550a";
-> >> +                       reg =3D <0xd00 0x100>;
-> >> +
-> >> +                       clocks =3D <&sysc MT7621_CLK_UART2>;
-> >> +
-> >> +                       interrupt-parent =3D <&gic>;
-> >> +                       interrupts =3D <GIC_SHARED 27
-> >> IRQ_TYPE_LEVEL_HIGH>;
-> >> +
-> >> +                       reg-shift =3D <2>;
-> >> +                       reg-io-width =3D <4>;
-> >> +                       no-loopback-test;
-> >> +
-> >> +                       pinctrl-names =3D "default";
-> >> +                       pinctrl-0 =3D <&uart2_pins>;
-> >> +               };
-> >> +
-> >> +               serial2: serial@e00 {
-> >> +                       status =3D "disabled";
-> >> +
-> >> +                       compatible =3D "ns16550a";
-> >> +                       reg =3D <0xe00 0x100>;
-> >> +
-> >> +                       clocks =3D <&sysc MT7621_CLK_UART3>;
-> >> +
-> >> +                       interrupt-parent =3D <&gic>;
-> >> +                       interrupts =3D <GIC_SHARED 28
-> >> IRQ_TYPE_LEVEL_HIGH>;
-> >> +
-> >> +                       reg-shift =3D <2>;
-> >> +                       reg-io-width =3D <4>;
-> >> +                       no-loopback-test;
-> >> +
-> >> +                       pinctrl-names =3D "default";
-> >> +                       pinctrl-0 =3D <&uart3_pins>;
-> >> +               };
-> >> +
-> >
-> > Please follow the preferred order for properties described in dts
-> > coding style [0]. I know that there is some mess around the properties
-> > order in some nodes with the current dtsi file but we did not have
-> > coding style before and now we have it, so I think we should follow it
-> > at least for new additions.
->
-> No problem. I see you've already "Acked-by" patch 1 (adding pinctrl
-> properties to serial0) of this set, so would it be a better move to
-> submit a new patch set that would look something like:
->
->   1. add pinctrl-name and pinctrl-0 to serial0 [no changes from what I
-> sent]
->   2. reorder serial0 properties according to the DTS style guidelines
->   3. add serial1 and serial2 with the correct property order
+```
+ACPI Error: Aborting method \AMD3._ON due to previous error (AE_AML_LOOP_TIMEOUT) (20230628/psparse-529)
+radeon 0000:01:00.0: not ready 1023ms after resume; waiting
+radeon 0000:01:00.0: not ready 2047ms after resume; waiting
+radeon 0000:01:00.0: not ready 4095ms after resume; waiting
+radeon 0000:01:00.0: not ready 8191ms after resume; waiting
+radeon 0000:01:00.0: not ready 16383ms after resume; waiting
+radeon 0000:01:00.0: not ready 32767ms after resume; waiting
+radeon 0000:01:00.0: not ready 65535ms after resume; giving up
+radeon 0000:01:00.0: Unable to change power state from D3cold to D0, device inaccessible
+radeon 0000:01:00.0: Unable to change power state from D3cold to D0, device inaccessible
+```
 
-This would be ok, thank you.
+The issue is that the root port the dGPU is connected to can't handle
+the transition from D3cold to D0 so the dGPU can't properly exit runpm.
 
-Best regards,
-    Sergio Paracuellos
+The existing logic in pci_bridge_d3_possible() checks for systems that
+are newer than 2015 to decide that D3 is safe.  This would nominally work
+for an Ivy Bridge system (which was discontinued in 2015), but this system
+appears to have continued to receive BIOS updates until 2017 and so this
+existing logic doesn't appropriately capture it.
+
+Add the system to bridge_d3_blacklist to prevent port pm from being used.
+
+Reported-and-tested-by: Eric Heintzmann <heintzmann.eric@free.fr>
+Closes: https://gitlab.freedesktop.org/drm/amd/-/issues/3229
+Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+---
+ drivers/pci/pci.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index c3585229c12a..9d5d08a420f1 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -3102,6 +3102,18 @@ static const struct dmi_system_id bridge_d3_blacklist[] = {
+ 			DMI_MATCH(DMI_BOARD_VERSION, "Continental Z2"),
+ 		},
+ 	},
++	{
++		/*
++		 * Changing power state of root port dGPU is connected fails
++		 * https://gitlab.freedesktop.org/drm/amd/-/issues/3229
++		 */
++		.ident = "Hewlett-Packard HP Pavilion 17 Notebook PC/1972",
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Hewlett-Packard"),
++			DMI_MATCH(DMI_BOARD_NAME, "1972"),
++			DMI_MATCH(DMI_BOARD_VERSION, "95.33"),
++		},
++	},
+ #endif
+ 	{ }
+ };
+-- 
+2.34.1
+
 
