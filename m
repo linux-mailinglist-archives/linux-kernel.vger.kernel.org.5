@@ -1,103 +1,113 @@
-Return-Path: <linux-kernel+bounces-95310-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95311-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08A88874C0C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:13:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08323874C0F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:13:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C1B77283AB8
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:13:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B51CC283D21
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:13:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31B2985289;
-	Thu,  7 Mar 2024 10:13:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E342385274;
+	Thu,  7 Mar 2024 10:13:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n1aHm13R"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IiG00BKT"
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F924839E8;
-	Thu,  7 Mar 2024 10:13:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A98F484FAB
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 10:13:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709806380; cv=none; b=peIG8ohfllDTZReEzfWLeE2+9v8EPkiCAKYda3QrOfgeqae3hXbyFqyb4qy4MrSfxRccjxtj9HAmx1VJc5lrWV0pzUsSLmTBzZRUKGvIzImQibeFAnpu0i8c4VP91S9W1RRoIuD0cL+gtPsfi9+07DRbyS5UhjR0+cPG/wOyhVw=
+	t=1709806395; cv=none; b=VMMHVqh+kv6yFaH2+mu1+TwK80zY3gaR9UaJtqSuyerSZ1OdKdKwQfmLwNrvnNNJVrJNGgBpCh6yGQjQOKS+fWOGPmZ/4N5rHX2VmXT2mvhBpeJ6tWW4cmql2BIKVfZJJ+aaUzzHq02w14n3M2ZvO2VloTkXpQZ77wmXt7cfbp4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709806380; c=relaxed/simple;
-	bh=ZySz9QgrBQQybSsyTJI7icgjidm8aIqzTfwrcnzHJms=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=avSdQQwFfAtqDUFuQIC1uvOmpNMOuVhAJphDDKK5oZqbOyKzIQFyvVMcvU3dATDUxAuMor+rOxnJVyCawK4eEzbOd3sOvtSggVrESUyjbKrDiAUxpUbMe2hKATG+j5njRK+CEtxEiImrnmVQtsrCF7uJ+BrAtE1OtN0VwXd6k8g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n1aHm13R; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98B72C43390;
-	Thu,  7 Mar 2024 10:12:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709806380;
-	bh=ZySz9QgrBQQybSsyTJI7icgjidm8aIqzTfwrcnzHJms=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=n1aHm13Rd9cU4L1C0ihNRRyWGQGhtcPSwBvQlTcpiYBn0WZvltr3HJy1iuh1j3SeA
-	 Yl8Qdz/V+RAKjZKC36Y6erLAkyoeKBpDQESZihqS9OdkhPyJlJEkaFFNTeQPglm2tP
-	 K6CaD17M8k/D9o6oS543k52x6O5BwaDlBA/B/Nls2ydii5GTpoMAfyZifiX7o4nsbv
-	 OiMlKQFUZj3HOgst/4CcvimrtXS4xXQ1iQTgybS98gjT5OIFNjKIC/HLZo8uxkGjw7
-	 nKJs8cWqInxz7llY78uMMlTWOhenZJpz2rQd3f4q9Aj67cLfoWY9KQzP5MCG6gJ2xf
-	 YRvyeusvppWlQ==
-Date: Thu, 7 Mar 2024 10:12:54 +0000
-From: Simon Horman <horms@kernel.org>
-To: Linus =?utf-8?Q?L=C3=BCssing?= <linus.luessing@c0d3.blue>
-Cc: netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Pablo Neira Ayuso <pablo@netfilter.org>,
-	Jozsef Kadlecsik <kadlec@netfilter.org>,
-	Florian Westphal <fw@strlen.de>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Dietmar Maurer <dietmar@proxmox.com>,
-	Thomas Lamprecht <t.lamprecht@proxmox.com>,
-	Wolfgang Bumiller <w.bumiller@proxmox.com>,
-	Alexandre Derumier <aderumier@odiso.com>
-Subject: Re: [PATCH net] netfilter: conntrack: fix ct-state for ICMPv6
- Multicast Router Discovery
-Message-ID: <20240307101254.GL281974@kernel.org>
-References: <20240306141805.17679-1-linus.luessing@c0d3.blue>
+	s=arc-20240116; t=1709806395; c=relaxed/simple;
+	bh=8YdxXpNkuEwyV5gctfJURbHnkvOwyYECpGB8fspck6k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=EnsybNqstF7tZQNpPFMBu3uM94AZbumzyIxgTxXVuegjbjY3EYovxDokbGkO9bhBpBdidVHdNC4eqg4pXRSEqaulBDIfxP5Ay5ZXwqS9Fmk+6MZljqy3JUJBlAYtIGhRZVrMpU1s0VHuU30ybx+FxCVmu7j1H4OmQU6MsZIV/Kc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=IiG00BKT; arc=none smtp.client-ip=209.85.128.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-6099703e530so6532817b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 02:13:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709806392; x=1710411192; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=o7aOhcZHxTQGvbokl+x//A8IHaimRa07w+fuZLXjuzg=;
+        b=IiG00BKTYqdKru/iPp/SEnlrGj3mAHvBtm+4xOpcTNacs0ZpT3J3djiAIOkZFWyETu
+         DatCWojm13AuDqOmMhpN8KPnVHe73PYpsjrHfAXkHbdSgbp1Uv05r93VtZDIzc7kIHdZ
+         BNJwkny43tMlNHxFz4Hl9Sqh7ni/1TjpVBS1Bs6VeNyVO0GGc7MPHmjnMmYCAXOFQ0Fj
+         r9CfRzekTLXOg2yaz1KExr4Cz7j7tDDgMwPI4dH7k75BpZRBZUolLkyNl13U5lPYvQKo
+         C1Cwhze+mqwI2BKwA6ViLbmlXIwCaGAx6/9S4p4Y1C4P0TF0WcHFIrYO6W17SE84ja7P
+         7LCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709806392; x=1710411192;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=o7aOhcZHxTQGvbokl+x//A8IHaimRa07w+fuZLXjuzg=;
+        b=e3U/GKvST6nyvf1D/zGu0KStjVGzelSp4T1yiS2hHCoG4mOJgxvul/diFrsRMMkT/A
+         d9zKUUS5+POQwuGv8SG7klek27C+S/hy2pIYWonWw+EH3biIR1F7h9dWTaME6fWowciP
+         2NXm3a1zOelxGu28yI9Pd4x6jUJ07dP7iw/oGKTl2g6Xjzba5TqBaKKPI7lCg3UWwya9
+         OyotN4BYfoty2rqWHJkX8sgr6N4JeDe+WHNv51jgq2knV0CN+CMHeHGDZglp2ERy51pI
+         McjTuHYVOFKMpfMFTWrwp/anr1akUoKUbkYjPw7DqD2u/xUUTLNRzDSz/AdCBDWHsZl3
+         DKyQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWzYC+vlFXvzGjTTiX6h6a9zsGRCKHkLsIYXNzJbkrMD93iYiq2IH3FftV0lj1QEEUx71MtoAs72Bf3bpsDkJ8zwuG/1VIPnw2xR+L3
+X-Gm-Message-State: AOJu0YxqJupD5+GyAEAoI/6+gGRZm164sZRbrGmwJad69PK4Q8KA4+oV
+	u9KocmRp77219sRUaJsOZpZHksJGQZ4SkjUnm8SnPKT7y7EFwklnt/3NlBB7WArI6wQVY46nAbV
+	v//Ik50+ubaOnG6sU3EO3xTRNr3Ii5SrLrXPNlOLFj9rg0a/X
+X-Google-Smtp-Source: AGHT+IHl5CeapJNGYmG4jcbrf0/CGta/u9Vx0DjHeSECpyJ/76TzCk8HkHkekirsWc2ykxiPbxF/R8BtaCyvIzxPrNg=
+X-Received: by 2002:a25:3009:0:b0:dc6:ff32:aae2 with SMTP id
+ w9-20020a253009000000b00dc6ff32aae2mr12290559ybw.63.1709806392540; Thu, 07
+ Mar 2024 02:13:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240306141805.17679-1-linus.luessing@c0d3.blue>
+References: <CAA8EJpp++=NLZVv7we3Cwz+G7vL9xFoXqHgsMyQZ8tgdNHKcyQ@mail.gmail.com>
+ <20240307100221.709254-1-amadeus@jmu.edu.cn>
+In-Reply-To: <20240307100221.709254-1-amadeus@jmu.edu.cn>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Thu, 7 Mar 2024 12:13:01 +0200
+Message-ID: <CAA8EJprgWiOyAk5rpaobsXET+yE1g=snaRqcW33hXDuu7DPcoQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/4] arm64: dts: qcom: ipq6018: add 1.2GHz CPU Frequency
+To: Chukun Pan <amadeus@jmu.edu.cn>
+Cc: andersson@kernel.org, conor+dt@kernel.org, devicetree@vger.kernel.org, 
+	konrad.dybcio@linaro.org, krzysztof.kozlowski+dt@linaro.org, 
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, robh@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Mar 06, 2024 at 03:18:04PM +0100, Linus Lüssing wrote:
-> So far Multicast Router Advertisements and Multicast Router
-> Solicitations from the Multicast Router Discovery protocol (RFC4286)
-> would be marked as INVALID for IPv6, even if they are in fact intact
-> and adhering to RFC4286.
-> 
-> This broke MRA reception and by that multicast reception on
-> IPv6 multicast routers in a Proxmox managed setup, where Proxmox
-> would install a rule like "-m conntrack --ctstate INVALID -j DROP"
-> at the top of the FORWARD chain with br-nf-call-ip6tables enabled
-> by default.
-> 
-> Similar to as it's done for MLDv1, MLDv2 and IPv6 Neighbor Discovery
-> already, fix this issue by excluding MRD from connection tracking
-> handling as MRD always uses predefined multicast destinations
-> for its messages, too. This changes the ct-state for ICMPv6 MRD messages
-> from INVALID to UNTRACKED.
-> 
-> This issue was found and fixed with the help of the mrdisc tool
-> (https://github.com/troglobit/mrdisc).
-> 
-> Signed-off-by: Linus Lüssing <linus.luessing@c0d3.blue>
+On Thu, 7 Mar 2024 at 12:02, Chukun Pan <amadeus@jmu.edu.cn> wrote:
+>
+> Hi, Dmitry
+> > So... Do you consider this SoC to be IPQ6018 or IPQ6000?
+>
+> According to the chip silk screen, this is ipq6000. In addition, I have
+> never seen a board with the SoC chip silk screen printed as ipq6018.
 
-Hi Linus,
+Hmm, then what kind of chips do you consider to be ipq6018 if you
+haven't seen it on a silkscreen?
 
-this appears to be a fix and as such I think it warrants a Fixes tag.
-You should be able to just add it to this thread if no other changes
-are required - no need for a v2 just to address this.
+>
+> > And anyway, this should be explained in the commit message. Otherwise
+> > anybody reading the commit will have the same questions as I do.
+>
+> Sorry, I will explain this in more detail.
+>
+> Thanks,
+> Chukun
+>
+> --
+> 2.25.1
+>
 
-..
+
+-- 
+With best wishes
+Dmitry
 
