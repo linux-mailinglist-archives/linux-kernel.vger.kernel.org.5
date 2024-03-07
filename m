@@ -1,131 +1,124 @@
-Return-Path: <linux-kernel+bounces-95350-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95352-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73CB0874C9C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:44:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88BA7874CA3
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:46:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD52E1C22B08
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:44:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 43B8D284088
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:46:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A47A58529C;
-	Thu,  7 Mar 2024 10:44:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 298AD8565A;
+	Thu,  7 Mar 2024 10:45:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="oK3hZtRn"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iFPInN2a"
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 759C61D699;
-	Thu,  7 Mar 2024 10:44:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9DE3839F6;
+	Thu,  7 Mar 2024 10:45:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709808242; cv=none; b=IMChZ0DIZEv15P6G+5bVFIHftRgwogHD4OMHIiBlZw/Rgv3hhibx+7p1e3dSZ1xu7pkmff4d3ro94fpUD5ZQEYmt8HG3/he3Y4oJ/wnSS3Flrd8KC+dP8u5qA/zuQR9V4xpMRDzjWNHr981QHXqGi/BDQIHRKFP58gjy0kqNhXw=
+	t=1709808358; cv=none; b=PpYn1PHR2K/ASIDfZXMn8uvf2nrVt1SUvHQKR2eyBaeRuSvOZeh8Nl0idBGGDatv5ecwXLqLQLtztqLElHEj7ee6XQfuaunUzmEIaNab7CM+NR2u47dkXU50RxObVDTNLF9Pg7TA2fyls/rzDWE8OmQcc6i1+nlgsY8Crn4DkSE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709808242; c=relaxed/simple;
-	bh=k0wg7qIECji7q28HelXRDU1MuWYWt7ZKoT/fy2ixp8I=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=FtL87WANMSEzqEvKN0qznI3b6ZICL6GYhyMIbaoz12Q0LV6a4FrpRvaMgsjFpQxmpxcQzPamvv0ILYEmDjG4Vatmk/vw+K8vz81Ek8ePAGhwovWWuQPgAFChPsIa6I76SHMdE8qFI1QP8mNPNBQHmJCe3z6+TlhXAQMh372R0qs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=oK3hZtRn; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1709808238;
-	bh=k0wg7qIECji7q28HelXRDU1MuWYWt7ZKoT/fy2ixp8I=;
-	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=oK3hZtRntHn5hpgtf/gZlqZNjgs9FVIGRX7PODR8hiBxLS2fG9ZXAiZ5M6BGlo4gK
-	 oT4oMtkNrUO52Au3E1PB9z/u3VzviqSAkf229UTWGz84wHqJs3DWBINPkFIpsj7MnZ
-	 HBOoA8u/UbRHRh1koH72lVaMVOoO5Y73NoEPyiJZ9N+Tykygq5DJy/LNR1veI7tKfL
-	 gkBRn4KEaJ5+oCFFK7/9N6r3aYHRsylGkM0Yih7zISIyvCdqctHEK/Y1gEVExefxLp
-	 OTeqg9bI5QuY3rgJABjonIPW0GYpVofKM3KzzsfjHnnhJzcH2I0AztdJhVNoiMi+/1
-	 QfwF4ugmFIKUg==
-Received: from [10.193.1.1] (broslavsky.collaboradmins.com [68.183.210.73])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 2CA0F3780EC6;
-	Thu,  7 Mar 2024 10:43:52 +0000 (UTC)
-Message-ID: <f5e8aee4-4985-48a1-849a-8837dfab07ea@collabora.com>
-Date: Thu, 7 Mar 2024 15:44:20 +0500
+	s=arc-20240116; t=1709808358; c=relaxed/simple;
+	bh=yWA89RNGcTng5B3DQcpfH6WrYH6fr6hNFOMjzckc8wk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=g+MRssN+9EiBaFTc90MqHW6ftdHcz01J9yWuOfWCEu2F4lJiUAs9Apob+FL93qW1PSI7a4/o6MA00SRWK/OR8de52NTSjGxPs2jz+h+icOoEwb/zahu5NKVdnGUNSonDECzdNXksaA2rQYTh821OYbO8/lYnSiYswsbqM8ZzxWg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iFPInN2a; arc=none smtp.client-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-33e2774bdc7so550034f8f.0;
+        Thu, 07 Mar 2024 02:45:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709808355; x=1710413155; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=PY1mUd4kv3FlWkn+eIDNZHfMhyNBjFnxhg0sQrefdgc=;
+        b=iFPInN2aN4jI0qxXxKdNjue4ONwyieGRqw3O7Hnz3nxwxny7xgDJ/Lsf93kVgWqBHA
+         VBKYkqf+TwQpsiKG9lJil1WjCkbDmZrbNO2SwOP/YrnCQXswwLS+EsPphF/8rPWiyn0v
+         Z81zDXbpps5lHKwVZggFWwTIrdn8dvVn5ZfG+a/8Uj0y+d3DWW3ykPJyDm0Mc4fubaGH
+         NywnnAcSfgwAXCf7wCPMBHllkl+Qw0Z58olWN6pGhQf5rlnM2SaBSXTx+022sUHk8ITU
+         5+pM8QRg+KD+bFekwfgmp9DslOa1BgYEx+8ARPA+ublOz0YgGuDr+6FH2oHSMdMf46KT
+         D9MQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709808355; x=1710413155;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PY1mUd4kv3FlWkn+eIDNZHfMhyNBjFnxhg0sQrefdgc=;
+        b=KjxOFw+KnoU7ONwD1bCLswjHIkQMEeRX2OT+iqBpeIW7lnSgUIWyHHg6lNGW9wAEuM
+         YG7MNjZHK6dT3ukpDY0hPo8rlHqZimm4wHsz05yDETO5NtF9tFp0eHiQsDg24l9joCX1
+         GWOJGC3Ml9T264DxlXqSaY7N8SYSd7vFamBl53CL5jQDj+9RA2WoXAo+lXwiRkVlTvpD
+         4fCW5yC1YBr481s3rS9GEM3OCqY6i+zWfbk+hepb4EYElQhpnBhw5ig3gi19hsuWkPka
+         5uhZXqKb6BFxhLh2W8Swm9ikaP3IPuzGF5WhgsAp31HANm3oqG6eWJwacre6Rw6kEWmP
+         8xeg==
+X-Forwarded-Encrypted: i=1; AJvYcCVd9JXtGdQJ4MKpb4VuS3QU31dLGBfQVGQEm1HIP7otgywq4nDcR0iwMn5jfmGlZvvqDEHOzSe+x8s350/VfgrqjAeReTSaKGr8XlEvhD64WbG+xKkZIkUHR4x0MFajCjXb3GinU77v29uuqClePPBTnvLWozpa6N80ExwpQlAhWXxuceFnRA==
+X-Gm-Message-State: AOJu0Yx5l3cNWwfWrhSFzokSN/9TsLU47BotfK7oJwgNNnmtNQ8RGjfu
+	2FJZheSU3DOzG4okHTtZfobBrENFlf+K5lE/dlHMiz2T0uX4ZQIP
+X-Google-Smtp-Source: AGHT+IFkqp30WTOm1FOBZcmNn5eudsr0yZrcK+JhyLknYHSmm1fw/5YxIT2KiGKlZiVlrTYCNjb9lg==
+X-Received: by 2002:adf:b60e:0:b0:33d:2d2c:f404 with SMTP id f14-20020adfb60e000000b0033d2d2cf404mr13151240wre.15.1709808354908;
+        Thu, 07 Mar 2024 02:45:54 -0800 (PST)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id bq26-20020a5d5a1a000000b0033e2777f313sm15206776wrb.72.2024.03.07.02.45.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Mar 2024 02:45:54 -0800 (PST)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: "Martin K . Petersen" <martin.petersen@oracle.com>,
+	Mike Christie <michael.christie@oracle.com>,
+	linux-scsi@vger.kernel.org,
+	target-devel@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH][next] scsi: target: iscsi: remove unused variable xfer_len
+Date: Thu,  7 Mar 2024 10:45:53 +0000
+Message-Id: <20240307104553.1980860-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, upstream+pagemap@sigma-star.at,
- adobriyan@gmail.com, wangkefeng.wang@huawei.com, ryan.roberts@arm.com,
- hughd@google.com, peterx@redhat.com, david@redhat.com, avagin@google.com,
- lstoakes@gmail.com, vbabka@suse.cz, akpm@linux-foundation.org, corbet@lwn.net
-Subject: Re: [PATCH 1/2] [RFC] proc: pagemap: Expose whether a PTE is writable
-Content-Language: en-US
-To: Richard Weinberger <richard@nod.at>, linux-mm@kvack.org
-References: <20240306232339.29659-1-richard@nod.at>
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <20240306232339.29659-1-richard@nod.at>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On 3/7/24 4:23 AM, Richard Weinberger wrote:
-> Is a PTE present and writable, bit 58 will be set.
-> This allows detecting CoW memory mappings and other mappings
-> where a write access will cause a page fault.
-> 
-> Signed-off-by: Richard Weinberger <richard@nod.at>
-> ---
->  fs/proc/task_mmu.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-> index 3f78ebbb795f..7c7e0e954c02 100644
-> --- a/fs/proc/task_mmu.c
-> +++ b/fs/proc/task_mmu.c
-> @@ -1341,6 +1341,7 @@ struct pagemapread {
->  #define PM_SOFT_DIRTY		BIT_ULL(55)
->  #define PM_MMAP_EXCLUSIVE	BIT_ULL(56)
->  #define PM_UFFD_WP		BIT_ULL(57)
-> +#define PM_WRITE		BIT_ULL(58)
-The name doesn't mention present from its "present and writable"
-definition. Maybe some other name like PM_PRESENT_WRITE?
+The variable xfer_len is being initialized and incremented but it is
+never actually referenced in any other way. The variable is redundant
+and can be removed.
 
->  #define PM_FILE			BIT_ULL(61)
->  #define PM_SWAP			BIT_ULL(62)
->  #define PM_PRESENT		BIT_ULL(63)
-> @@ -1417,6 +1418,8 @@ static pagemap_entry_t pte_to_pagemap_entry(struct pagemapread *pm,
->  			flags |= PM_SOFT_DIRTY;
->  		if (pte_uffd_wp(pte))
->  			flags |= PM_UFFD_WP;
-> +		if (pte_write(pte))
-> +			flags |= PM_WRITE;
->  	} else if (is_swap_pte(pte)) {
->  		swp_entry_t entry;
->  		if (pte_swp_soft_dirty(pte))
-> @@ -1483,6 +1486,8 @@ static int pagemap_pmd_range(pmd_t *pmdp, unsigned long addr, unsigned long end,
->  				flags |= PM_SOFT_DIRTY;
->  			if (pmd_uffd_wp(pmd))
->  				flags |= PM_UFFD_WP;
-> +			if (pmd_write(pmd))
-> +				flags |= PM_WRITE;
->  			if (pm->show_pfn)
->  				frame = pmd_pfn(pmd) +
->  					((addr & ~PMD_MASK) >> PAGE_SHIFT);
-> @@ -1586,6 +1591,9 @@ static int pagemap_hugetlb_range(pte_t *ptep, unsigned long hmask,
->  		if (huge_pte_uffd_wp(pte))
->  			flags |= PM_UFFD_WP;
->  
-> +		if (pte_write(pte))
-> +			flags |= PM_WRITE;
-> +
->  		flags |= PM_PRESENT;
->  		if (pm->show_pfn)
->  			frame = pte_pfn(pte) +
+Cleans up clang scan build warning:
+drivers/target/iscsi/iscsi_target_erl1.c:586:45: warning: variable
+'xfer_len' set but not used [-Wunused-but-set-variable]
 
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ drivers/target/iscsi/iscsi_target_erl1.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/target/iscsi/iscsi_target_erl1.c b/drivers/target/iscsi/iscsi_target_erl1.c
+index 679720021183..d9a6242264b7 100644
+--- a/drivers/target/iscsi/iscsi_target_erl1.c
++++ b/drivers/target/iscsi/iscsi_target_erl1.c
+@@ -583,7 +583,7 @@ int iscsit_dataout_datapduinorder_no_fbit(
+ 	struct iscsi_pdu *pdu)
+ {
+ 	int i, send_recovery_r2t = 0, recovery = 0;
+-	u32 length = 0, offset = 0, pdu_count = 0, xfer_len = 0;
++	u32 length = 0, offset = 0, pdu_count = 0;
+ 	struct iscsit_conn *conn = cmd->conn;
+ 	struct iscsi_pdu *first_pdu = NULL;
+ 
+@@ -596,7 +596,6 @@ int iscsit_dataout_datapduinorder_no_fbit(
+ 			if (cmd->pdu_list[i].seq_no == pdu->seq_no) {
+ 				if (!first_pdu)
+ 					first_pdu = &cmd->pdu_list[i];
+-				xfer_len += cmd->pdu_list[i].length;
+ 				pdu_count++;
+ 			} else if (pdu_count)
+ 				break;
 -- 
-BR,
-Muhammad Usama Anjum
+2.39.2
+
 
