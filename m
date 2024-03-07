@@ -1,93 +1,71 @@
-Return-Path: <linux-kernel+bounces-95457-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95454-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A2B6874DDE
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:44:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 382B5874DCE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:44:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE82F1C22088
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:44:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DCED51F21A2C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:44:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C97512C54C;
-	Thu,  7 Mar 2024 11:43:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B38B1292CD;
+	Thu,  7 Mar 2024 11:42:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ayC17i84"
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ki8nLuQj"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8D0A12B146;
-	Thu,  7 Mar 2024 11:43:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B43A12A156;
+	Thu,  7 Mar 2024 11:42:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709811786; cv=none; b=sut5yD4macGmAx9oREP1/5qv7Sl37OdAeDo7zQXNASxVw4nDOQlK466hik8VT7/yZdd0L538eRA2Pxzv2pd9nFfCVQymdRU6Wse6gckQEIC2vQ/Po1W0i8J1L5kcgCjnqlONHoQnuYrRn/TBNjMMl6PAURZOQVTez0tEH3xYhCM=
+	t=1709811769; cv=none; b=eBhfjJ9EZyR9wuxtZ36NYMxDZPuZN3KicGz6rwpfFWU6AjzcJGeHHyO9pbBUZVL9s3k7srRowdazz1lRZ76pjTu4sGzQVx+V2DugfK6rPB21L9qsO88FgdUvPsDxKCxEhaeY9Itb4I9AVC0vLhSpGAXuVPNRnt/Z11GmFiFJAKo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709811786; c=relaxed/simple;
-	bh=KvUwatnwe0tIeBh+4voAgQUNpxi9oR/OH7yerHe8wtA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=SA532DAPFE7vSITKNeoV+sMJaRtORFetTEaFommRI93n/vwF1oDojjNR3BGUbj0IkC0wD1tqSqaMeBHfnDvLQSXwVG8TQU7pcw44pIgXP2XCjSPZRKKbhrRx5DWZ2muELzXSGmAHJqbl7ZkDKaDBKxxKezAzmECZspYZgg7woWw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ayC17i84; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-33e1878e357so466439f8f.3;
-        Thu, 07 Mar 2024 03:43:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709811783; x=1710416583; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OveC7bIL2BTuZpDk8Lj9zkJQ+QM59MACb3HeWYWAygw=;
-        b=ayC17i84RX/Dbt8GO6xKj0oVPOXrjYvEs/G2EZmZi0yZbRgYslPYOxuIoVjTLoYNNK
-         hazijlv3adxhW6qur5FBtRE1Fdu1ypL2aRpwLyDf3Nv55Uz3I1R6fvNZq13vDMFxE3Ki
-         EdNFiAxcLyhhGWaX5aNBT2+LqCqQDgr+0pXenRyMov8IPSdcyYsIT86uujnJio8Wf2NF
-         sm/FAvlVSoi7Ge9SATfWrV3wkOhRFoopr3CEZnhCDPK0DSOgVaVB7i5jmvspd4J2DfNQ
-         100ZDPMI9b+5oTiWBOyNERLA90j5bSwcKAus08d73v8lHbrkfTzKOv8/+CfdtFH/d6kc
-         hsDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709811783; x=1710416583;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OveC7bIL2BTuZpDk8Lj9zkJQ+QM59MACb3HeWYWAygw=;
-        b=IHQOLsKJ9cmmLvWJgZEWJ50E8sDXyCX3S6fjD1dltDTPRjVl5P8zN+uZutTPM2iudR
-         DbFqNkufIrEZwMBirCAQCN8Iu/aVZbThxAiLabOXEDppvtylKwuOMjIKbp8vNkXwDBBE
-         B6uYXbYc+0HTyZP73eWBbk7Q7mtdDqTd93tVgCojLWnQBGze7YfeUd8gH5VxeHyTt6KM
-         Qmxyl5Ko5IrimS3ZLrvpnHa981Pg41fCmKh2yjmS42n9A2EsZ3qtubWpzkYepbvR5TMX
-         l3orC4w847cLuNRN22K6Wmpge9ov7j2P71qintgIgt/7DCCpO6ds6R4o/Gv41by9gHxN
-         UzhQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVyTL8Z2ADi57VGQC0Fm+FWb1N6bkSG3unFisXj60vKnqazU8FxfJKHu51+LWlTASyviQMtwRbittsouGlI/muwPAlIAHNlH3fCI9gIx1BseP3p5h6l5ut+cHupXiK56bliw2zdyag18fDYZxU29C11F5RBT3sNDaKbQhH1RmbJtWXQYSdRXOkczSdz
-X-Gm-Message-State: AOJu0YzfnvfMmdvn41vT6Oh0ofl+6oRw+fH+74rgIL6D8kIyotP2x65G
-	jrSz5k3nhS9+Y2Z9+DVflsqbd0YGBHb1CmCOJLcAjvIVDaPJA61s
-X-Google-Smtp-Source: AGHT+IEQqw2CF+xQhon9mUhvmCzJ1zzTdt6CwX7w/RKMnDEU/iGNK2A8v91+iHtJCLHYysH/m445Jw==
-X-Received: by 2002:adf:e711:0:b0:33e:69a5:68f9 with SMTP id c17-20020adfe711000000b0033e69a568f9mr593952wrm.17.1709811782970;
-        Thu, 07 Mar 2024 03:43:02 -0800 (PST)
-Received: from prasmi.home ([2a00:23c8:2500:a01:fef2:3c1d:a816:65f7])
-        by smtp.gmail.com with ESMTPSA id h5-20020adf9cc5000000b0033dd9b050f9sm19858722wre.14.2024.03.07.03.43.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Mar 2024 03:43:02 -0800 (PST)
-From: Prabhakar <prabhakar.csengg@gmail.com>
-X-Google-Original-From: Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To: Geert Uytterhoeven <geert+renesas@glider.be>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Magnus Damm <magnus.damm@gmail.com>
-Cc: linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org,
-	Prabhakar <prabhakar.csengg@gmail.com>,
-	Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH v2 2/2] dt-bindings: serial: renesas,scif: Validate 'interrupts' and 'interrupt-names'
-Date: Thu,  7 Mar 2024 11:42:17 +0000
-Message-Id: <20240307114217.34784-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240307114217.34784-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20240307114217.34784-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+	s=arc-20240116; t=1709811769; c=relaxed/simple;
+	bh=eyprLHFR1EiVFsCGdQ/GNrh/FyDMORPPriQDhRlU+Yk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=I6LjFO1NFO3dLZkey+Z3T/TQtkb+wkeCWi+Rg/lYCa4MYrXt/rdp2t8bKNFSqD49M7jACAOBkA0fBaekZVgUBh0hAp2owOXDI/0V6mhZvR6aUeeZE265GVE/0bsHMPPd0rrd5oVzYwK1YdkoFMHEEdYLPZdnuLknBiYeA6olp+I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ki8nLuQj; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709811768; x=1741347768;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=eyprLHFR1EiVFsCGdQ/GNrh/FyDMORPPriQDhRlU+Yk=;
+  b=ki8nLuQjhkBWELQaGww8nhzcQQTyp7m4IWE6GS2jAuyubSkUlsL5wo22
+   wi4b51KJwRx36bvD1hUDvCIbfrA+lePW66HnmKfVcToqf2K+t6vSNNXA0
+   rfGiKAklEdhusLe9Bee+sl1vpYDvjmqHNNPk4Ntx+L71NfjSY1wZOFixD
+   5pMsLtOcU6BhZ9kzMIhLfAZfPy3BHzptVovzZhWAZoM2v/tOKqyJUmt1W
+   XCohe8DA9pmnS39GXD0R4v3uzP3tbD527eq03DdvPXk9WcTSE4EMrroDS
+   /Yng6XyFSzneUHWmMQeMWuj/VQ3FdJLYQ7+Fc134tpfEJxq6JHl4jEvxc
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11005"; a="15119775"
+X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
+   d="scan'208";a="15119775"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 03:42:48 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11005"; a="937045879"
+X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
+   d="scan'208";a="937045879"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 07 Mar 2024 03:42:46 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id F401C193; Thu,  7 Mar 2024 13:42:44 +0200 (EET)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org
+Cc: Jiri Slaby <jirislaby@kernel.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/1] serial: pic32_uart: Replace of_gpio.h by proper one
+Date: Thu,  7 Mar 2024 13:42:43 +0200
+Message-ID: <20240307114243.3642832-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -96,133 +74,33 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+of_gpio.h is deprecated and subject to remove.
+The driver doesn't use it directly, replace it
+with what is really being used.
 
-This commit adds support to validate the 'interrupts' and 'interrupt-names'
-properties for every supported SoC. This ensures proper handling and
-configuration of interrupt-related properties across supported platforms.
-
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
-v1->v2
-* Defined the properties in top-level block instead of moving into
-  if/else block for each SoC.
-* Used Gen specific callback strings instead of each SoC variant
----
- .../bindings/serial/renesas,scif.yaml         | 90 +++++++++++++------
- 1 file changed, 62 insertions(+), 28 deletions(-)
+ drivers/tty/serial/pic32_uart.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/serial/renesas,scif.yaml b/Documentation/devicetree/bindings/serial/renesas,scif.yaml
-index af72c3420453..6ba6b6d52208 100644
---- a/Documentation/devicetree/bindings/serial/renesas,scif.yaml
-+++ b/Documentation/devicetree/bindings/serial/renesas,scif.yaml
-@@ -83,36 +83,24 @@ properties:
-     maxItems: 1
+diff --git a/drivers/tty/serial/pic32_uart.c b/drivers/tty/serial/pic32_uart.c
+index bbb46e6e98a2..1619186e158e 100644
+--- a/drivers/tty/serial/pic32_uart.c
++++ b/drivers/tty/serial/pic32_uart.c
+@@ -8,11 +8,11 @@
+  *   Sorin-Andrei Pistirica <andrei.pistirica@microchip.com>
+  */
  
-   interrupts:
--    oneOf:
--      - items:
--          - description: A combined interrupt
--      - items:
--          - description: Error interrupt
--          - description: Receive buffer full interrupt
--          - description: Transmit buffer empty interrupt
--          - description: Break interrupt
--      - items:
--          - description: Error interrupt
--          - description: Receive buffer full interrupt
--          - description: Transmit buffer empty interrupt
--          - description: Break interrupt
--          - description: Data Ready interrupt
--          - description: Transmit End interrupt
-+    minItems: 1
-+    items:
-+      - description: Error interrupt or single combined interrupt
-+      - description: Receive buffer full interrupt
-+      - description: Transmit buffer empty interrupt
-+      - description: Break interrupt
-+      - description: Data Ready interrupt
-+      - description: Transmit End interrupt
- 
-   interrupt-names:
--    oneOf:
--      - items:
--          - const: eri
--          - const: rxi
--          - const: txi
--          - const: bri
--      - items:
--          - const: eri
--          - const: rxi
--          - const: txi
--          - const: bri
--          - const: dri
--          - const: tei
-+    minItems: 4
-+    items:
-+      - const: eri
-+      - const: rxi
-+      - const: txi
-+      - const: bri
-+      - const: dri
-+      - const: tei
- 
-   clocks:
-     minItems: 1
-@@ -173,6 +161,52 @@ allOf:
-       required:
-         - resets
- 
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - renesas,rcar-gen1-scif
-+              - renesas,rcar-gen2-scif
-+              - renesas,rcar-gen3-scif
-+              - renesas,rcar-gen4-scif
-+    then:
-+      properties:
-+        interrupts:
-+          maxItems: 1
-+
-+        interrupt-names: false
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - renesas,scif-r7s72100
-+    then:
-+      properties:
-+        interrupts:
-+          minItems: 4
-+          maxItems: 4
-+
-+        interrupt-names:
-+          maxItems: 4
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - renesas,scif-r7s9210
-+              - renesas,scif-r9a07g044
-+    then:
-+      properties:
-+        interrupts:
-+          minItems: 6
-+
-+        interrupt-names:
-+          minItems: 6
-+
- unevaluatedProperties: false
- 
- examples:
++#include <linux/gpio/consumer.h>
+ #include <linux/kernel.h>
+ #include <linux/platform_device.h>
+ #include <linux/of.h>
+ #include <linux/of_irq.h>
+-#include <linux/of_gpio.h>
+ #include <linux/init.h>
+ #include <linux/module.h>
+ #include <linux/slab.h>
 -- 
-2.34.1
+2.43.0.rc1.1.gbec44491f096
 
 
