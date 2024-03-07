@@ -1,168 +1,126 @@
-Return-Path: <linux-kernel+bounces-96183-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96184-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9133A875834
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 21:23:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49345875836
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 21:24:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B51BD1C22A88
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:23:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 78FC81C21F58
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:24:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2D5213956B;
-	Thu,  7 Mar 2024 20:22:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B41831386AA;
+	Thu,  7 Mar 2024 20:23:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Z9qYltEc"
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UNrS1QcO"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64F201369A4
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 20:22:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E21B12FB2A
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 20:23:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709842972; cv=none; b=qQoKjwZG13ByZDJGHBT/baVWJWum0AwtgD7j0TLoKkjmqK78Mvu9Fmqyj3zHSJQv6PMV0mLBIX3RfEI5Po95sN7lKh/XSSIg1zX7UcMmxfU54GT/MNtMb5Kr70mpxKxUbUNMJWPrPM2AqvDgM+Vntqwo76B+tcwopuug4QebasE=
+	t=1709843035; cv=none; b=h8jBrzcqc6OSxN45U0FeQTEegQBUEqeq8b3zP1eMmP8ya1AieVicHwBMi+Zx32QtjuI1yhtts+4MCitXnhZyhvQ30+8wmRXCQACbvxPpKD+EJOxx/tIZm+oUCSV8qBRSrmmBRAnEGTftj5uveEV7GwcFUUV/pa1TkgTtzriAyMM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709842972; c=relaxed/simple;
-	bh=rsRY4KHhOJ11hCtZ8v0Bh9J/hZ5MuHy4e/+hy4b7p7c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fu01TK1tlv8BZp89jVgp7862Zb+hLyS74LGoIbodXwV6xf/ITFyWNB4Sz1bB4A/iDMZXpVh9McwHDTzZ30A3Y8VPNa5n4CqC01z15Io8SFmQQtNoQYyA5CzCgIa0ikSttCPHyYhd+3q4X18fYBJQKcMnty26v01HiY9PSrOyyNU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Z9qYltEc; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1dcafff3c50so10238335ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 12:22:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709842971; x=1710447771; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=gj7oOuwiWTs3D3sNhRN8A6+8rBskvEU4W316SxnrZUQ=;
-        b=Z9qYltEczee533bhL6XcuFl3TuMK+ESAhilan3P4tEKBrRuWu4xMSw2AVzsiGFK//K
-         Iv4JNewp1DzM5TKsoI+f9U+O6uxYMjMrNvITeoy+wMIfZRv7MEcUOrU73oQHCWG8JRim
-         EFrot9hhxqtP59O9lGYQT7iMAetLMkhmdVsb0=
+	s=arc-20240116; t=1709843035; c=relaxed/simple;
+	bh=n41G5cMXZfffNFebNQD0HhXIaaovLpPefnDOeOUdHew=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=HLtujjUevlLZCgT/jfBh31+M5pwdBZY5FyFEfrKE7p46OGA5aDKyXcJ401eW6e1oKxPKJQBgiDBu3m3bHLJSrmweS+QjyVRmCeQrngF+Lhpmwdq7S1jY0TlM1qK5UVfsmGkAEwpJTkIBt2KWAt5/Iob4YF6UYU0ENuVURlkIHgE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UNrS1QcO; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709843032;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JzYa2p0WN1L2k72Xj6BYuK/wXJ3KScc8Fyb6F0WXYSw=;
+	b=UNrS1QcO7diqxQkQ+yM5Hudv9LsGPzVQG1C71ecw1N+AzeTPiV4qpUQT85HGx9rvSoJlxZ
+	W+F+hhrI5ZvkRM6tafL4+mVfxwjFzt656/OGjpydbB5m7zErPeLSi5R2WQVuOxotdiCtl6
+	q1Bw7zXujqcZaqYpFVNXmtSAZHUsTTM=
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com
+ [209.85.166.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-290-PFwi8fPMOyiUnD9w66tQDQ-1; Thu, 07 Mar 2024 15:23:51 -0500
+X-MC-Unique: PFwi8fPMOyiUnD9w66tQDQ-1
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7c7f57fa5eeso11330439f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 12:23:50 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709842971; x=1710447771;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gj7oOuwiWTs3D3sNhRN8A6+8rBskvEU4W316SxnrZUQ=;
-        b=bzvOFY3WGf8VTBqmWg/bt/tcQ2b/E4NpFoZG0BYbub2u9R/HVJFbB/m8kE2O2ocuFo
-         Gt4rxH6zdAs5+6P2D7lu4JOEngqwRSsYVhamj59Q+pSTvGSAqkOgu3+L2p8xiRGBOXqm
-         Cdx2QVIGxXx/xj4tfP/N6H2UrxOfEFmF0NYMz5U/PYB58h44zuwNi6isLNCIaNGSLyHo
-         oUxBcRu7t3XUW7Ap62opC2OP8dT4fw4ehrFdLbFeXNtwbv4iEAooHz4c36r/qgdk3nKP
-         s6ye7VrY6H1KR5YMRAobayq2usoO/fB9cRxlisN+hW2EizOsz8MjUCjMghRhhfATzvPI
-         IJwQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUylt1lgGFMaVJNi/41vlbgPC8mFrSmccuopBYIG8cxQiv2JBDREf+lUO9aTyOMI6hD1SwSmXNPNkIoJg3sjB9bMVChSnccQYkoCKB4
-X-Gm-Message-State: AOJu0YyRnQJr9pJVYbo2TF6zNWGGKiMpU33/URaGaYB5hkxp8RmLw0rI
-	ulOfiTq4MUWvOVIKnMQ1MyaY/srR7kaX9J/eTolA5s8kFW7zUW8Xt8IcAyBokQ==
-X-Google-Smtp-Source: AGHT+IEaVq/z1Ao7qbCydAde3vlTjlckhexdCldutHJ7sK0OKwFxXDLmqCrbxxaDdS2K2YLHyqccRA==
-X-Received: by 2002:a17:902:e84f:b0:1dc:3c3f:c64b with SMTP id t15-20020a170902e84f00b001dc3c3fc64bmr10989479plg.24.1709842970750;
-        Thu, 07 Mar 2024 12:22:50 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id h14-20020a170902680e00b001dd62b4dd7asm581604plk.47.2024.03.07.12.22.50
+        d=1e100.net; s=20230601; t=1709843030; x=1710447830;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JzYa2p0WN1L2k72Xj6BYuK/wXJ3KScc8Fyb6F0WXYSw=;
+        b=Ur4VSR5Jf6ODdKyZceN1/Z0rGqcruesmmGOyKgBUgE4T7x+ZSp0YqCAzV8+GyAs8h7
+         4Qr2m5NSVBeM8e3usFeu5mgr5j4/tCJkDBW6SSOZzsfbcUAlK4NHGspyL41RK70Ona7z
+         P1Rglv3UZnvMHqYTdpuhHypIaoaLEohaP5QqgdRNPDqH/csbGnDW7KRmhuLerfpHvsL4
+         DsXIRXvUAvoSZw1uhERyrKFGDeYcHbkRD+yi7js5MOAu6SVab5695gASYAc9DZlaDFtu
+         fBVG46Y6vQ9jssC9ZTW6DTaTCXk7tbVA/Y3NMLfhOO148uIv03FXpD3mFabWgwKC2ExM
+         nCmA==
+X-Forwarded-Encrypted: i=1; AJvYcCWELZHIfDNMmqVchzU8v2HtK0xkeaXPoLmvZ2eckNFtHtwMdlvFuOuMGIWgO0YGXbTlnuOzsddWorEmAFJaKtsV0jcutnB81PxYV9Qk
+X-Gm-Message-State: AOJu0Yw7Vq7xXtfo9t4HKhgNm6lvWKjtriZ/ud0e8/v0lnQdP0Balwqy
+	tqptkSHO0sR4cvZUNjMllQpZXoVVoIcECFG0je3NWX6I9cSWjjnSDJCtArMTWJNexLx4d0mtpnO
+	Pz6Enir5AJorLrELrschIrDz1zAencfGUm5d08Pmxi2pdy0tEW8kussMP3LcxzQ==
+X-Received: by 2002:a6b:e509:0:b0:7c8:84c8:7813 with SMTP id y9-20020a6be509000000b007c884c87813mr3123553ioc.0.1709843030396;
+        Thu, 07 Mar 2024 12:23:50 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFi5cEQ2ohJmNhdL87DIGzEjk0iugzxVt59dKtJvpR8SdNhIluz4q5AmTctWKUVHAHjcsZauA==
+X-Received: by 2002:a6b:e509:0:b0:7c8:84c8:7813 with SMTP id y9-20020a6be509000000b007c884c87813mr3123548ioc.0.1709843030170;
+        Thu, 07 Mar 2024 12:23:50 -0800 (PST)
+Received: from redhat.com ([38.15.36.11])
+        by smtp.gmail.com with ESMTPSA id g12-20020a02c54c000000b00474f04561bdsm2269985jaj.136.2024.03.07.12.23.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Mar 2024 12:22:50 -0800 (PST)
-Date: Thu, 7 Mar 2024 12:22:49 -0800
-From: Kees Cook <keescook@chromium.org>
-To: "Christian A. Ehrhardt" <lk@c--e.de>
-Cc: Jameson Thies <jthies@google.com>, Hans de Goede <hdegoede@redhat.com>,
-	Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	linux-usb@vger.kernel.org, Benson Leung <bleung@chromium.org>,
-	Saranya Gopal <saranya.gopal@intel.com>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-	Prashant Malani <pmalani@chromium.org>,
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	linux-kernel@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-	linux-next@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: Coverity: ucsi_check_cable(): Null pointer dereferences
-Message-ID: <202403071216.DD2F952B@keescook>
-References: <202403071134.7C7C077655@keescook>
- <ZeoggIXSLy+lVHP1@cae.in-ulm.de>
+        Thu, 07 Mar 2024 12:23:49 -0800 (PST)
+Date: Thu, 7 Mar 2024 13:23:48 -0700
+From: Alex Williamson <alex.williamson@redhat.com>
+To: "Tian, Kevin" <kevin.tian@intel.com>
+Cc: "kvm@vger.kernel.org" <kvm@vger.kernel.org>, "eric.auger@redhat.com"
+ <eric.auger@redhat.com>, "clg@redhat.com" <clg@redhat.com>, "Chatre,
+ Reinette" <reinette.chatre@intel.com>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/7] vfio/pci: Disable auto-enable of exclusive INTx IRQ
+Message-ID: <20240307132348.5dbc57dc.alex.williamson@redhat.com>
+In-Reply-To: <BL1PR11MB527189373E8756AA8697E8D78C202@BL1PR11MB5271.namprd11.prod.outlook.com>
+References: <20240306211445.1856768-1-alex.williamson@redhat.com>
+	<20240306211445.1856768-2-alex.williamson@redhat.com>
+	<BL1PR11MB527189373E8756AA8697E8D78C202@BL1PR11MB5271.namprd11.prod.outlook.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZeoggIXSLy+lVHP1@cae.in-ulm.de>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, Mar 07, 2024 at 09:16:00PM +0100, Christian A. Ehrhardt wrote:
+On Thu, 7 Mar 2024 08:39:16 +0000
+"Tian, Kevin" <kevin.tian@intel.com> wrote:
+
+> > From: Alex Williamson <alex.williamson@redhat.com>
+> > Sent: Thursday, March 7, 2024 5:15 AM
+> > 
+> > Currently for devices requiring masking at the irqchip for INTx, ie.
+> > devices without DisINTx support, the IRQ is enabled in request_irq()
+> > and subsequently disabled as necessary to align with the masked status
+> > flag.  This presents a window where the interrupt could fire between
+> > these events, resulting in the IRQ incrementing the disable depth twice.
+> > This would be unrecoverable for a user since the masked flag prevents
+> > nested enables through vfio.
+> > 
+> > Instead, invert the logic using IRQF_NO_AUTOEN such that exclusive INTx
+> > is never auto-enabled, then unmask as required.
+> > 
+> > Fixes: 89e1f7d4c66d ("vfio: Add PCI device driver")
+> > Signed-off-by: Alex Williamson <alex.williamson@redhat.com>  
 > 
-> Hi,
-> 
-> On Thu, Mar 07, 2024 at 11:34:21AM -0800, coverity-bot wrote:
-> > Hello!
-> > 
-> > This is an experimental semi-automated report about issues detected by
-> > Coverity from a scan of next-20240307 as part of the linux-next scan project:
-> > https://scan.coverity.com/projects/linux-next-weekly-scan
-> > 
-> > You're getting this email because you were associated with the identified
-> > lines of code (noted below) that were touched by commits:
-> > 
-> >   Tue Mar 5 13:11:08 2024 +0000
-> >     f896d5e8726c ("usb: typec: ucsi: Register SOP/SOP' Discover Identity Responses")
-> > 
-> > Coverity reported the following:
-> > 
-> > *** CID 1584245:  Null pointer dereferences  (FORWARD_NULL)
-> > drivers/usb/typec/ucsi/ucsi.c:1136 in ucsi_check_cable()
-> > 1130     	}
-> > 1131
-> > 1132     	ret = ucsi_register_cable(con);
-> > 1133     	if (ret < 0)
-> > 1134     		return ret;
-> > 1135
-> > vvv     CID 1584245:  Null pointer dereferences  (FORWARD_NULL)
-> > vvv     Passing "con" to "ucsi_get_cable_identity", which dereferences null "con->cable".
-> > 1136     	ret = ucsi_get_cable_identity(con);
-> > 1137     	if (ret < 0)
-> > 1138     		return ret;
-> > 1139
-> > 1140     	ret = ucsi_register_plug(con);
-> > 1141     	if (ret < 0)
-> > 
-> > If this is a false positive, please let us know so we can mark it as
-> > such, or teach the Coverity rules to be smarter. If not, please make
-> > sure fixes get into linux-next. :) For patches fixing this, please
-> > include these lines (but double-check the "Fixes" first):
-> 
-> This looks like a false positive to me. The code looks like this:
-> 
-> 	if (con->cable)
-> 		return 0;
-> 	[ ... ]
-> 	ret = ucsi_register_cable(con)
-> 	if (ret < 0)
-> 		return ret;
-> 	ret = ucsi_get_cable_identity(con);
-> 	[ ... ]
-> 
-> From the con->cable check coverity concludes that con->cable is
-> initially NULL. Later ucsi_register_cable() initializes con->cable
-> if successful. Coverity seems to miss this and still thinks that
-> con->cable is NULL. Then converity correctly notices that
-> ucsi_get_cable_identity() dereferences con->cable and complains.
+> CC stable?
 
-Ah-ha! Yes, the ucsi_register_cable() check seems to have been missed.
-I think it's confused by:
+I've always found that having a Fixes: tag is sufficient to get picked
+up for stable, so I typically don't do both.  If it helps out someone's
+process I'd be happy to though.  Thanks,
 
-        cable = typec_register_cable(con->port, &desc);
-        if (IS_ERR(cable)) {
+Alex
 
-This isn't IS_ERR_OR_NULL, so it thinks cable might still be NULL, but
-there's no path through typec_register_cable() where that can be true.
-
-Thanks for taking a look!
-
--Kees
-
--- 
-Kees Cook
 
