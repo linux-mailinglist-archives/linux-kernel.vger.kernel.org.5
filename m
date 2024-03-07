@@ -1,132 +1,132 @@
-Return-Path: <linux-kernel+bounces-96111-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96112-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 717D1875743
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:32:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF3E6875748
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:32:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D1F9286E0D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:32:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 57116B22389
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:32:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BD20137C3C;
-	Thu,  7 Mar 2024 19:32:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D13E6137C37;
+	Thu,  7 Mar 2024 19:32:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DSSx0pmw"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="H35LTl9r"
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E60E136666;
-	Thu,  7 Mar 2024 19:32:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78A83136997
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 19:32:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709839937; cv=none; b=V6IjezSN/G+b8G/jvsPwRjWrsC4ICfI2Ghy6XhGwtlXLhKNjzfFXBvlw4BdgFyIkhLqbihMRK3Ef9nZefnHHsA682hp8j2Q3JlsmDeVlvtETlKOC9EPzVWnSIbPWz+7zU3AQ/sjm/hMwY2+M1n3B+mwqYqPw+1ZE9TCKWQUGyEM=
+	t=1709839948; cv=none; b=hLTtVMAPBSlKFVGIrDp4ePGoqqSmUc2hHDLcCcf8jWc72IawPHYcvIkPVcBbqOwTyeHm9SUSIsR8lSitTLFG6013MmbIok3cfYWgV1g6idE9/5WlYRmwT9dCTFMrRGiUoYPU1WDHzqnr7JLrHU+eL+Uar9Y5lK9ie22sc37CnAU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709839937; c=relaxed/simple;
-	bh=TXhaVJ7GnQctH6MS3SGDdX6MLHLH8awnbScWV9UkjqQ=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=t6a3cnmMAoB5ZNjQKB8RyTSGXbVbJftgppZ+5xr//oNgRPGBbkqBUzCWSZfKdkPCothOfvOSU5xWBOs9ARHyKda9CRUUutNbAAYtPmmbno8rse80yxhW0VazW5wVTSTs7Ewvii3ijV/A4KXT2230q8pE4xe8uPecFrzM3iJc68w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DSSx0pmw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BACD8C43390;
-	Thu,  7 Mar 2024 19:32:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709839937;
-	bh=TXhaVJ7GnQctH6MS3SGDdX6MLHLH8awnbScWV9UkjqQ=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=DSSx0pmwjQkO9GS/HOxdniHdntYdsOXkE9MDzZ8JuN1gglQLarMv+/BZONB7aAPKR
-	 4+crYH1NwJi/8DnyTimwzxMnop3y1gKNG0LH9WKKamzhtAS45nM73VYLyFd9taRMUQ
-	 9K+1/j5YTSwZFcRhOYEhxoiKjjAkUr9Ye1oCqRju5+OtmD2lDkFXeWD4QZiX07XnaY
-	 meMk+2f48dFhMhJ0SkYm+F1BeU9dARCbxMP0tsB/amewBo69FGfgrU8XITO4I4nKS5
-	 bLQN2EZbqOAV5ZOKViiYnQaMllT2rGr04yfDYn98ch9Ko3BdYeyRHqpsfsysyXti69
-	 SvOtPhKFoOEgg==
+	s=arc-20240116; t=1709839948; c=relaxed/simple;
+	bh=7GcxakZLq2oKSdXj+ofXzEBmRC7bzIxUkfqgxs8FG00=;
+	h=From:Date:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=EcHs/qPJ+2GL8geBCrseoJDc6EIcrKwjbHuNHZLZpiVW/9HBPP/ahznl9xG67lK6cCzWblBvIj8ix3/WVTIxNeEIGRRydKHoM3/aTxokdEfB4xMQ+c2pV4A7wIvHV6FRK1yj+h7nPbD6/fEAa9heJHkocp8aUGkMjHIRDpHNyfE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=H35LTl9r; arc=none smtp.client-ip=209.85.215.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-5d3907ff128so1027423a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 11:32:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1709839946; x=1710444746; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:date:from
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=N9qoSXzYZPN9ruMFhEGa01LS4BMnI7rAvWb4nFTzmXc=;
+        b=H35LTl9rrbmwdPzJ9BEr5gsW4yRvPb0B1ueFvVOAbbFCM1oOUGvMzXBIBjTaInzwOZ
+         p1FgntUUc1QUgw45r9wD1UyX3tBagKyGJDc7/EqCUuAgNBWsLfkyFwlJiabT7weDLDb+
+         NjOG3U5WmJKpZcGN2Mft/gDtzpUx7IA18poQE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709839946; x=1710444746;
+        h=content-disposition:mime-version:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=N9qoSXzYZPN9ruMFhEGa01LS4BMnI7rAvWb4nFTzmXc=;
+        b=ZrODtJ/YDY5sUyv8SxkUxPNlSA026iM5n3SYV+gMXV9ThXq7JLzIaDTNdWBpli8qVG
+         dvL6rqU2U8J8EKzklwr3NdpNc1gqZMNwOWw/Eoj1gbIxoEcoUpgw+9iQbtiGX3wCWh3S
+         bS9TuOBerQiNqp3vpkvE6ufzRw09cnwFxz/ycNBTLIjatN88Xrgcrwqc3r+VOLin0oXT
+         UcdWf9hYo7sRnFQYiCjRvoE+1mnxT46OO/npFGi14UBuuLwLJ0mHbZI70XWJ2EcfZoue
+         fUXWHiPTqU29q1MnLuOy0e8IGyI0E9eIbtZfssx5C+Ynj7Z7pcG/Y44M7aGsgZr1Sj0b
+         /Izg==
+X-Forwarded-Encrypted: i=1; AJvYcCU1YiYAOxyMHGuYZ8F1F5j+ap5kG8NlffYsnIuDUFYEMXyIl12XBJgmAksCbVsAryncSL6E43FIWNyGW8XeQ9rJ1Ux3ra365tmo/IAi
+X-Gm-Message-State: AOJu0YxuDCXKZijM6A1Su0Wav+OV+9nPLBbPdDcO+Rro0S43vUfWLBqw
+	/hpFGjmVS2xTa0G4fGUJNeqcfy4fTlG+PYNB7TVk+PkSwCUzn00pLqCDwuZnJg==
+X-Google-Smtp-Source: AGHT+IGOLBi4Qz9QnVx9qVdy304kZfGTtm1ed+Ruod8ne2tyM8cAlmd20ukwkMkoXTBqPPYmDqQq1w==
+X-Received: by 2002:a17:90b:24d:b0:29b:9c8f:5ea2 with SMTP id fz13-20020a17090b024d00b0029b9c8f5ea2mr1766760pjb.40.1709839945732;
+        Thu, 07 Mar 2024 11:32:25 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id h24-20020a17090adb9800b0029a849e7268sm1908119pjv.28.2024.03.07.11.32.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Mar 2024 11:32:25 -0800 (PST)
+From: coverity-bot <keescook@chromium.org>
+X-Google-Original-From: coverity-bot <keescook+coverity-bot@chromium.org>
+Date: Thu, 7 Mar 2024 11:32:24 -0800
+To: Edward Adam Davis <eadavis@qq.com>
+Cc: linux-rdma@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+	syzbot+d4faee732755bba9838e@syzkaller.appspotmail.com,
+	"David S. Miller" <davem@davemloft.net>,
+	Allison Henderson <allison.henderson@oracle.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	rds-devel@oss.oracle.com,
+	"Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+	linux-next@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Coverity: __rds_rdma_map(): Null pointer dereferences
+Message-ID: <202403071132.37BBF46E@keescook>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 07 Mar 2024 21:32:08 +0200
-Message-Id: <CZNRO3HH6T0W.R91RSALY7S88@kernel.org>
-Cc: "Shawn Guo" <shawnguo@kernel.org>, "Jonathan Corbet" <corbet@lwn.net>,
- "Sascha Hauer" <s.hauer@pengutronix.de>, "Pengutronix Kernel Team"
- <kernel@pengutronix.de>, "Fabio Estevam" <festevam@gmail.com>, "NXP Linux
- Team" <linux-imx@nxp.com>, "Ahmad Fatoum" <a.fatoum@pengutronix.de>, "sigma
- star Kernel Team" <upstream+dcp@sigma-star.at>, "David Howells"
- <dhowells@redhat.com>, "Li Yang" <leoyang.li@nxp.com>, "Paul Moore"
- <paul@paul-moore.com>, "James Morris" <jmorris@namei.org>, "Serge E.
- Hallyn" <serge@hallyn.com>, "Paul E. McKenney" <paulmck@kernel.org>, "Randy
- Dunlap" <rdunlap@infradead.org>, "Catalin Marinas"
- <catalin.marinas@arm.com>, "Rafael J. Wysocki"
- <rafael.j.wysocki@intel.com>, "Tejun Heo" <tj@kernel.org>, "Steven Rostedt
- (Google)" <rostedt@goodmis.org>, <linux-doc@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-integrity@vger.kernel.org>,
- <keyrings@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>, <linuxppc-dev@lists.ozlabs.org>,
- <linux-security-module@vger.kernel.org>, "Richard Weinberger"
- <richard@nod.at>, "David Oberhollenzer" <david.oberhollenzer@sigma-star.at>
-Subject: Re: [PATCH v6 5/6] docs: document DCP-backed trusted keys kernel
- params
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "David Gstir" <david@sigma-star.at>, "Mimi Zohar" <zohar@linux.ibm.com>,
- "James Bottomley" <jejb@linux.ibm.com>, "Herbert Xu"
- <herbert@gondor.apana.org.au>, "David S. Miller" <davem@davemloft.net>
-X-Mailer: aerc 0.17.0
-References: <20240307153842.80033-1-david@sigma-star.at>
- <20240307153842.80033-6-david@sigma-star.at>
-In-Reply-To: <20240307153842.80033-6-david@sigma-star.at>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Thu Mar 7, 2024 at 5:38 PM EET, David Gstir wrote:
-> Document the kernel parameters trusted.dcp_use_otp_key
-> and trusted.dcp_skip_zk_test for DCP-backed trusted keys.
->
-> Co-developed-by: Richard Weinberger <richard@nod.at>
-> Signed-off-by: Richard Weinberger <richard@nod.at>
-> Co-developed-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-> Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-> Signed-off-by: David Gstir <david@sigma-star.at>
-> ---
->  Documentation/admin-guide/kernel-parameters.txt | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
->
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentat=
-ion/admin-guide/kernel-parameters.txt
-> index 24c02c704049..b6944e57768a 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -6698,6 +6698,7 @@
->  			- "tpm"
->  			- "tee"
->  			- "caam"
-> +			- "dcp"
->  			If not specified then it defaults to iterating through
->  			the trust source list starting with TPM and assigns the
->  			first trust source as a backend which is initialized
-> @@ -6713,6 +6714,18 @@
->  			If not specified, "default" is used. In this case,
->  			the RNG's choice is left to each individual trust source.
-> =20
-> +	trusted.dcp_use_otp_key
-> +			This is intended to be used in combination with
-> +			trusted.source=3Ddcp and will select the DCP OTP key
-> +			instead of the DCP UNIQUE key blob encryption.
-> +
-> +	trusted.dcp_skip_zk_test
-> +			This is intended to be used in combination with
-> +			trusted.source=3Ddcp and will disable the check if all
-> +			the blob key is zero'ed. This is helpful for situations where
-> +			having this key zero'ed is acceptable. E.g. in testing
-> +			scenarios.
-> +
->  	tsc=3D		Disable clocksource stability checks for TSC.
->  			Format: <string>
->  			[x86] reliable: mark tsc clocksource as reliable, this
+Hello!
 
-I don't disagree with the API part.
+This is an experimental semi-automated report about issues detected by
+Coverity from a scan of next-20240307 as part of the linux-next scan project:
+https://scan.coverity.com/projects/linux-next-weekly-scan
 
-Mimi?
+You're getting this email because you were associated with the identified
+lines of code (noted below) that were touched by commits:
 
-BR, Jarkko
+  Wed Mar 6 11:58:42 2024 +0000
+    c055fc00c07b ("net/rds: fix WARNING in rds_conn_connect_if_down")
+
+Coverity reported the following:
+
+*** CID 1584247:  Null pointer dereferences  (FORWARD_NULL)
+net/rds/rdma.c:306 in __rds_rdma_map()
+300     			unpin_user_pages(pages, nr_pages);
+301     			kfree(sg);
+302     		}
+303     		ret = PTR_ERR(trans_private);
+304     		/* Trigger connection so that its ready for the next retry */
+305     		if (ret == -ENODEV)
+vvv     CID 1584247:  Null pointer dereferences  (FORWARD_NULL)
+vvv     Dereferencing null pointer "cp".
+306     			rds_conn_connect_if_down(cp->cp_conn);
+307     		goto out;
+308     	}
+309
+310     	mr->r_trans_private = trans_private;
+311
+
+If this is a false positive, please let us know so we can mark it as
+such, or teach the Coverity rules to be smarter. If not, please make
+sure fixes get into linux-next. :) For patches fixing this, please
+include these lines (but double-check the "Fixes" first):
+
+Reported-by: coverity-bot <keescook+coverity-bot@chromium.org>
+Addresses-Coverity-ID: 1584247 ("Null pointer dereferences")
+Fixes: c055fc00c07b ("net/rds: fix WARNING in rds_conn_connect_if_down")
+
+Thanks for your attention!
+
+-- 
+Coverity-bot
 
