@@ -1,84 +1,66 @@
-Return-Path: <linux-kernel+bounces-94781-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94782-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38C2C874529
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 01:31:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42F8C87452D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 01:35:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A3BB9B21507
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 00:31:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7454287168
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 00:35:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06D0A1C2D;
-	Thu,  7 Mar 2024 00:31:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11B6D3FEC;
+	Thu,  7 Mar 2024 00:35:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="lm8uwmt7"
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="V7Pm346G"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA2934C6F
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 00:31:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6EC6A21;
+	Thu,  7 Mar 2024 00:35:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709771465; cv=none; b=UzVWFffTjxtdI0tE6Jtbc0NC5j2uLn77OtTXijdFFenR0CbT6b51HPCgVfrw6a/QVU7zZU8piJj1olYf1Nf77YRPMPOBtvfiWyd5LOPiovumr7uqkTrg6q2ce4joVtuIFSKXo+HPiKkrceMHoxq/bZbG8nRCnO89V8Y4YKDXfio=
+	t=1709771714; cv=none; b=WzaSlQIN0WRt9QYoBHgnjR/wtH+UjToYwjcxFRrsQoTQOm+QPfwB4Krqc3T7LKfxAXSGm1YgzILLVucrwywi2TSBpR57v34NQKehEq5XqxUQQdOtEghEZYdjRnPwzyYSqRv6HKvZxBzbVXFs2oGnCp2Bnmi4RG7SDN6LgEgXxHI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709771465; c=relaxed/simple;
-	bh=pd9U5XZMi1oPg8Lscf6Mt9lBs/qEgPyJWmDOSKdvgcc=;
+	s=arc-20240116; t=1709771714; c=relaxed/simple;
+	bh=J2ieNpnYRjeck4oIq7yW7s+dh9dPDWpwIC/GAtYgbks=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iYhsl70y6ONGAYWxPGPyaTYWpCewGOdQH24JPSWCFah3gw3g7lYmC3UaOtpuCWkGQKL6A1qicZML+YNFo6xdKcQDtKeFITVaBZTmWtpPGAI9Jm7n3FDxwopVYG75w6JB4uhvgqe/siDDYZRnBvErefskmg2fAWAEFgr34m3wJVk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=lm8uwmt7; arc=none smtp.client-ip=209.85.214.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1dcab44747bso2813765ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 16:31:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709771463; x=1710376263; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=qVq7pyXwgwgu4A+bvfIL5VWqGeKZIwSqAv8m6DJwZHQ=;
-        b=lm8uwmt7eoc8A4LKD6EaWx9KCE7Xw1lR4cDJiXXlJtETfd+oVzpMpikqcG9msR8pIe
-         22Lh7SKypeUsxBm8jE7ZCTIM8wSYNacH9WET2AjoMFNrMdkyk69plkt8/GenVS2dG5hj
-         t+xVWbR0yjbqeiLRQ24QiX+6bBgmukMAQdi7jqVTiM8yAwVMod0cvv49grEOW656AUR5
-         tYY1tp5QHBj62L69+URMc1kBChVtjByYy10Xv4qa9HGScC3hiPzu6UMSxwj0glVlACP7
-         XGacRrd3Ji5icS4v4sCyh/k3JPnR2Y6y3sn5t3EnPb+tqUFeSHdZms4ghurLxCusbsl5
-         i4JA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709771463; x=1710376263;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qVq7pyXwgwgu4A+bvfIL5VWqGeKZIwSqAv8m6DJwZHQ=;
-        b=OZdyojGxSh0AJlwbmqX0SP7iJPVloYUFyshkQcqmW8CAOPvLJlJtMVfr40tSoHhHBL
-         L8FVSkRU/3ZVQFkegRZj0M1jehZbDSAalXr5VR6t8w0614T9cUkGENa0+6KFoM4iBYN9
-         x96T8bVXoXtZMCWzIu7ft78pCgjLyPi1s0CSo1ioBSvp9kWsWtWFGR4vncy29D1R1iov
-         EaOmCmGGEdFOPGW7mOyHQA7+jZ7F1oZ7xLNGHgjwEonxiSNIekbR+w5PKfRpIKiUpMRu
-         l0H5FpRyfYsvaE/st9hak1PIxwMzfBF7QdHRkXdtH9XMq3PINLBliw1PwmUXJf3+t+MF
-         mpvw==
-X-Forwarded-Encrypted: i=1; AJvYcCXCeBu8/5UFABm6GcBc9Y1Mteaa7LBDgPMPz5919AyTSvhjRgUIZSi6Y8bag4sxkZPFh71Enx2BDiX2W1r8TpSMS3dgBeXZEJ+/Tjw+
-X-Gm-Message-State: AOJu0YwodFUj8iJl+nCdCFyv66di5/3cNsL63IpKILsMkcBkv7MyBqPZ
-	CQXoRZDZmuH3lCuD+4Kvlj/P+WRHszuljrH19soNULZAY1RXGNC+MQoO22AphA==
-X-Google-Smtp-Source: AGHT+IF62LqATgEJWKwVf8OT6RXbxw/mOea+GfHlm4GB1D4za7a/1j70tlLpnxsqJ/S5CNU+KUfHnQ==
-X-Received: by 2002:a17:902:650f:b0:1dd:3929:3029 with SMTP id b15-20020a170902650f00b001dd39293029mr3704049plk.64.1709771462899;
-        Wed, 06 Mar 2024 16:31:02 -0800 (PST)
-Received: from google.com (61.139.125.34.bc.googleusercontent.com. [34.125.139.61])
-        by smtp.gmail.com with ESMTPSA id d6-20020a170902654600b001dcdf2576c6sm12757924pln.3.2024.03.06.16.31.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Mar 2024 16:31:02 -0800 (PST)
-Date: Wed, 6 Mar 2024 16:30:58 -0800
-From: David Matlack <dmatlack@google.com>
-To: isaku.yamahata@intel.com
-Cc: kvm@vger.kernel.org, isaku.yamahata@gmail.com,
-	linux-kernel@vger.kernel.org,
-	Sean Christopherson <seanjc@google.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Michael Roth <michael.roth@amd.com>,
-	Federico Parola <federico.parola@polito.it>
-Subject: Re: [RFC PATCH 6/8] KVM: x86: Implement kvm_arch_{,
- pre_}vcpu_map_memory()
-Message-ID: <ZekKwlLdf6vm5e5u@google.com>
-References: <cover.1709288671.git.isaku.yamahata@intel.com>
- <66a957f4ec4a8591d2ff2550686e361ec648b308.1709288671.git.isaku.yamahata@intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=tbT4sYn4l2RftkX8ZAe73TzNuy0x+dDvzOkY5PHgaSlZl3YjvrxqaCGRh2B6H5GL6gF/rdO0XvhUCDaAYjlW91rg6RocQNKhPidC4EFIrKuld2TR6jM/ri1EoLUg155kyuVVu2KpAORe9+r8NAUdr5MexmjcxopSjHSXz4cSXRM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=V7Pm346G; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=Ql4Cc0GtaCc5nuWW16/Qsukf8zJx8Z4gJkIgxE8Q64E=; b=V7Pm346GnV8zMd37NBFEOPXge0
+	1/lLMCbdYjyjd/sA99Mdgvxc5ad6BFj6n6QoBbOS1ggHBSzry4Vd+pQqsEUrVpT41XrPzLipsMG3V
+	+bx1texl9B1LZDUbKkXfQtEHi6UOUiPdGtr4TX7zA3E3rGlVuoBOCTWUKMXTnTeoOENc=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1ri1jN-009XlY-3Q; Thu, 07 Mar 2024 01:35:29 +0100
+Date: Thu, 7 Mar 2024 01:35:29 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, horms@kernel.org, saeedm@nvidia.com,
+	anthony.l.nguyen@intel.com, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, corbet@lwn.net,
+	linux-doc@vger.kernel.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	devicetree@vger.kernel.org, horatiu.vultur@microchip.com,
+	ruanjinjie@huawei.com, steen.hegelund@microchip.com,
+	vladimir.oltean@nxp.com, UNGLinuxDriver@microchip.com,
+	Thorsten.Kummermehr@microchip.com, Pier.Beruto@onsemi.com,
+	Selvamani.Rajagopal@onsemi.com, Nicolas.Ferre@microchip.com,
+	benjamin.bigler@bernformulastudent.ch
+Subject: Re: [PATCH net-next v3 04/12] net: ethernet: oa_tc6: implement
+ software reset
+Message-ID: <4e56f5c2-3d5c-4dda-8a37-01c1dbce27d7@lunn.ch>
+References: <20240306085017.21731-1-Parthiban.Veerasooran@microchip.com>
+ <20240306085017.21731-5-Parthiban.Veerasooran@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -87,97 +69,72 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <66a957f4ec4a8591d2ff2550686e361ec648b308.1709288671.git.isaku.yamahata@intel.com>
+In-Reply-To: <20240306085017.21731-5-Parthiban.Veerasooran@microchip.com>
 
-On 2024-03-01 09:28 AM, isaku.yamahata@intel.com wrote:
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
-> 
-> Wire KVM_MAP_MEMORY ioctl to kvm_mmu_map_tdp_page() to populate guest
-> memory.
-> 
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> ---
->  arch/x86/kvm/x86.c | 49 ++++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 49 insertions(+)
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 3b8cb69b04fa..6025c0e12d89 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -4660,6 +4660,7 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
->  	case KVM_CAP_VM_DISABLE_NX_HUGE_PAGES:
->  	case KVM_CAP_IRQFD_RESAMPLE:
->  	case KVM_CAP_MEMORY_FAULT_INFO:
-> +	case KVM_CAP_MAP_MEMORY:
->  		r = 1;
->  		break;
->  	case KVM_CAP_EXIT_HYPERCALL:
-> @@ -5805,6 +5806,54 @@ static int kvm_vcpu_ioctl_enable_cap(struct kvm_vcpu *vcpu,
->  	}
->  }
+> +/* Status Register #0 */
+> +#define OA_TC6_REG_STATUS0			0x0008
+> +#define STATUS0_RESETC				BIT(6)	/* Reset Complete */
+> +
+>  /* Control command header */
+>  #define OA_TC6_CTRL_HEADER_DATA_NOT_CTRL	BIT(31)
+>  #define OA_TC6_CTRL_HEADER_WRITE		BIT(29)
+> @@ -24,6 +34,8 @@
+>  						(OA_TC6_CTRL_MAX_REGISTERS *\
+>  						OA_TC6_CTRL_REG_VALUE_SIZE) +\
+>  						OA_TC6_CTRL_IGNORED_SIZE)
+> +#define STATUS0_RESETC_POLL_DELAY		5
+> +#define STATUS0_RESETC_POLL_TIMEOUT		100
 >  
-> +int kvm_arch_vcpu_pre_map_memory(struct kvm_vcpu *vcpu)
+>  /* Internal structure for MAC-PHY drivers */
+>  struct oa_tc6 {
+> @@ -279,6 +291,39 @@ int oa_tc6_write_register(struct oa_tc6 *tc6, u32 address, u32 value)
+>  }
+>  EXPORT_SYMBOL_GPL(oa_tc6_write_register);
+>  
+> +static int oa_tc6_read_sw_reset_status(struct oa_tc6 *tc6)
 > +{
-> +	return kvm_mmu_reload(vcpu);
-> +}
-
-Why is the here and not kvm_arch_vcpu_map_memory()?
-
+> +	u32 regval;
+> +	int ret;
 > +
-> +int kvm_arch_vcpu_map_memory(struct kvm_vcpu *vcpu,
-> +			     struct kvm_memory_mapping *mapping)
+> +	ret = oa_tc6_read_register(tc6, OA_TC6_REG_STATUS0, &regval);
+> +	if (ret)
+> +		return 0;
+> +
+> +	return regval;
+
+The function name does not really fit what the function does. The
+function returns OA_TC6_REG_STATUS0. I assume it has more bits in it
+than just STATUS0_RESETC. So either this function should be called
+oa_tc6_read_status0, or you should mask regval with STATUS0_RESETC, so
+that it does actually return the sw reset status.
+
+> +static int oa_tc6_sw_reset_macphy(struct oa_tc6 *tc6)
 > +{
-> +	u8 max_level, goal_level = PG_LEVEL_4K;
-> +	u32 error_code;
-> +	int r;
+> +	u32 regval = RESET_SWRESET;
+> +	int ret;
 > +
-> +	error_code = 0;
-> +	if (mapping->flags & KVM_MEMORY_MAPPING_FLAG_WRITE)
-> +		error_code |= PFERR_WRITE_MASK;
-> +	if (mapping->flags & KVM_MEMORY_MAPPING_FLAG_EXEC)
-> +		error_code |= PFERR_FETCH_MASK;
-> +	if (mapping->flags & KVM_MEMORY_MAPPING_FLAG_USER)
-> +		error_code |= PFERR_USER_MASK;
-> +	if (mapping->flags & KVM_MEMORY_MAPPING_FLAG_PRIVATE) {
-> +#ifdef PFERR_PRIVATE_ACCESS
-> +		error_code |= PFERR_PRIVATE_ACCESS;
-> +#else
-> +		return -OPNOTSUPP;
+> +	ret = oa_tc6_write_register(tc6, OA_TC6_REG_RESET, regval);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* Poll for soft reset complete for every 5us until 100us timeout */
 
--EOPNOTSUPP
+Is this 100us defined in the standard? It is pretty short. If it is
+not part of the standard, maybe set it to something much bigger?
 
-> +#endif
-> +	}
-> +
-> +	if (IS_ALIGNED(mapping->base_gfn, KVM_PAGES_PER_HPAGE(PG_LEVEL_1G)) &&
-> +	    mapping->nr_pages >= KVM_PAGES_PER_HPAGE(PG_LEVEL_1G))
-> +		max_level = PG_LEVEL_1G;
-> +	else if (IS_ALIGNED(mapping->base_gfn, KVM_PAGES_PER_HPAGE(PG_LEVEL_2M)) &&
-> +		 mapping->nr_pages >= KVM_PAGES_PER_HPAGE(PG_LEVEL_2M))
-> +		max_level = PG_LEVEL_2M;
-> +	else
-> +		max_level = PG_LEVEL_4K;
+Also, polling every 5us is pretty quick. I doubt most systems can even
+sleep that short a time. So maybe 1ms between polls, and 1 second
+before -ETIMEDOUT?
 
-Is there a requirement that KVM must not map memory outside of the
-requested region?
+> +	ret = readx_poll_timeout(oa_tc6_read_sw_reset_status, tc6, regval,
+> +				 regval & STATUS0_RESETC,
+> +				 STATUS0_RESETC_POLL_DELAY,
+> +				 STATUS0_RESETC_POLL_TIMEOUT);
+> +	if (ret)
+> +		return -ENODEV;
+> +
+> +	/* Clear the reset complete status */
+> +	return oa_tc6_write_register(tc6, OA_TC6_REG_STATUS0, regval);
 
-> +
-> +	r = kvm_mmu_map_page(vcpu, gfn_to_gpa(mapping->base_gfn), error_code,
-> +			     max_level, &goal_level);
-> +	if (r)
-> +		return r;
-> +
-> +	if (mapping->source)
-> +		mapping->source += KVM_HPAGE_SIZE(goal_level);
-> +	mapping->base_gfn += KVM_PAGES_PER_HPAGE(goal_level);
-> +	mapping->nr_pages -= KVM_PAGES_PER_HPAGE(goal_level);
-> +	return r;
-> +}
-> +
->  long kvm_arch_vcpu_ioctl(struct file *filp,
->  			 unsigned int ioctl, unsigned long arg)
->  {
-> -- 
-> 2.25.1
-> 
+	Andrew
 
