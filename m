@@ -1,93 +1,168 @@
-Return-Path: <linux-kernel+bounces-96079-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96080-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C58638756D4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:13:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B5218756D7
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:14:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8059828360C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:13:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3C86CB21223
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:14:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A89F136669;
-	Thu,  7 Mar 2024 19:13:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5785E135A73;
+	Thu,  7 Mar 2024 19:14:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pYiCp55t"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TegHkR+L"
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 844D3136666;
-	Thu,  7 Mar 2024 19:13:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C7A912CD8F
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 19:14:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709838817; cv=none; b=pXgnVNP1mvUGuR79BfuM2y2ywmUiNBDzMay4QE+OpHIChDv1DX/MBWZNPg0wZkHB/RGn0PsHelTIfXyCcpDgePIX4YnQxhFKKd3qK3AVd0wBeG0nqoyyMAE929udfJGlzY/eH5X6ItAufxKQcH/C2BUqMW9LrD/bbKT8n2IcI4A=
+	t=1709838866; cv=none; b=iouyv6FYcY/MhB2KHVZQJWvKAbT8rGgmqj1WdW08LiyyxkdOvN2cFM1Ngr0nqPmOlyNCnybaw/smrUdpKkxukX2fGillUhE8XkY/SIm9pRJDPEO05G2YFenDLWGLRK6i6xKPuf/nfjZukWD6Ob4ThpWRr0qjW4gIjcAgWcUeFQ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709838817; c=relaxed/simple;
-	bh=9zJnmGMsLqUQsUEkdPNsU0n9rJJ1agrvxLcltIkf3ps=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=ji4EPlBBofVzLRJZZ82LEjl9DM0HhqexDitdp9VIZGPDbT3KglXPId1BqBTEeqfAwYYXChq13qyxqChXIsVCkbaNaybStwJQMoS2jzkhKFCUimravhOJ98KU2JF+OMDtcZjMa7X+h2By7UQhRIg7voj6Tv5nV4wRTRic6dwRWyk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pYiCp55t; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5197EC433F1;
-	Thu,  7 Mar 2024 19:13:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709838817;
-	bh=9zJnmGMsLqUQsUEkdPNsU0n9rJJ1agrvxLcltIkf3ps=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=pYiCp55t6UoXb1ucGc0PMkLkkWFX44KYJUbznnyx/c036BYLyLl/zv9GZwCp1AQKk
-	 3dx05UcrloDd3FypVFDY0aag56FKHT3Eo0/Dr2+O7ygFY8O0LBBJ/UkhGbXLIlpkyT
-	 fPaLjkUVLMo8U/VCXlsraOQyk+LqSYCHdXoo2RQ4zIyJ5wsYWNJCHCKeYbKlNnwV/Y
-	 dQsgk3pBOPS/OJoo//upW/+67tXh8WVaDTOwr48nbbNA0voxoFFWy4Se+0rCNdE3fL
-	 6CH/Gm8UcCcAa3Ef2swupuinGvX8++Feqlc023feGCOwH2BlRGYJjC2+rE3TWGX3st
-	 e0hZFVXHHGEFQ==
+	s=arc-20240116; t=1709838866; c=relaxed/simple;
+	bh=MkafVSoOeGiVtVdHLIxUBlWxB9Cz21M/8qQdbdsgm+w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qajxt6nXKHSnT3AnkjdUJGtb1pb0IPJe5zEgZnE3EpIRZR0mTpV6FL4jJXKCIn+tGLgtUjdL+51NIEFQ7jsXorF3MEnBQsIeBKnQ0wP0nGNoYDq8wduEfH2TrtCMnEmuXaByI5OLciSsf4i2p/mPVlGzEU2qsfPjJRQR8u1f2bE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TegHkR+L; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1dd178fc492so8640515ad.2
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 11:14:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709838864; x=1710443664; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2se7G0iGKIEtkLcBAFedZUHevjiz1To/PvhvMoYqSbM=;
+        b=TegHkR+Lg9tMgNppGrlyjfKmfin0ZL3g1T7sjz6zrtB3FDpNMJzCoDWQcbF7v3wD/7
+         Ih6QflhyaoRSyI/FrFEssn+K0o17djtaYvUJSUF26r4izKV3j//ymt0q/AjxqA5ZCKFZ
+         pqg9kAAvvAXKEQUS35R4KTDstcx596fAd/Z9Uw6NpKEpc6lV5XZqJcAirUuzS3j9sDQr
+         SSVtREyaNYh3Wy0y5v/qzmvwMpIOwMDr4q5ZNGW11AZFYyuzGT3CTAzhrbqpU0jXDJzJ
+         ff0fFE/WhFeDDBwSQYq99cd8fjJjbDesbIVDQAgDM2HU33zI7VPfgAZ85jFrYNQMqcqX
+         NdHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709838864; x=1710443664;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2se7G0iGKIEtkLcBAFedZUHevjiz1To/PvhvMoYqSbM=;
+        b=lmN2yCFokuhjYRHn+5N1H5K24vhLRMCa0ZAGlKiTh/b8+OY3CRgvxLtTYxTcQLD/Z/
+         xdD/LR+jRNVd3WeqSjqcM9VUiaby7KS3D7GNmjxHzBXRnfT8Bdu7Wb2cJJqOuIyr6O76
+         mchCtfLO02D66Xceq6DVtrl6jaPitnr9N1l7pcaI+ywDTwXuOOzZrucuJB64NljH3qua
+         3KFtrKovFmLw/0CSDAFvedtCPzRWq5objCk1NSga/fDzEjn/Ji8W6/VPnvYsiJHCMQn9
+         M4n8YgXuVCDPP/o4iy0PvfUlJAqu6iMWTaSNTnx+AcKV2HvXiTxvTHiEeoHQL9BEIXEq
+         y3hw==
+X-Forwarded-Encrypted: i=1; AJvYcCU6ZdFBCNalL3QZ84YAIDo1IjDnd0HXqGaWRcT4mIrDH+aS4V82xbRGMx2xYcV1e06+sJSdGAbX4Sgh8omjZ0tnaDgGaDdzRpTQTLik
+X-Gm-Message-State: AOJu0YxnfwiMrftwK4QqqUr7OX4bffYDjFdYZLQ7T8v8jH/ykxVDXEu7
+	zWiU9nsVOHUTtnm4CjZg6XYSMafJay+l2+xWb5sY0+ANorJVRsr2F/Mb29tce9JVQXOWc9AqxkM
+	yVsIR+U5M3y820Az844jSmjP+FaI=
+X-Google-Smtp-Source: AGHT+IHRVNZAUpprQ4dXeszAr2p/sxRYdzvBxRpzG0DMC1RFVrho4mjcstm8PdLmMghCwTV/K39nXyPIHNPzQnu1L+4=
+X-Received: by 2002:a17:90a:5986:b0:29a:e05f:3f55 with SMTP id
+ l6-20020a17090a598600b0029ae05f3f55mr15893535pji.2.1709838864479; Thu, 07 Mar
+ 2024 11:14:24 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
+MIME-Version: 1.0
+References: <20240307165932.3856952-1-sunil.khatri@amd.com> <20240307165932.3856952-3-sunil.khatri@amd.com>
+In-Reply-To: <20240307165932.3856952-3-sunil.khatri@amd.com>
+From: Alex Deucher <alexdeucher@gmail.com>
+Date: Thu, 7 Mar 2024 14:14:12 -0500
+Message-ID: <CADnq5_OaCRAjCZGOEpd1gTFSUHdNkVbDqDgx_LQKw_JR1Qtv3Q@mail.gmail.com>
+Subject: Re: [PATCH 2/2] drm/amdgpu: add vm fault information to devcoredump
+To: Sunil Khatri <sunil.khatri@amd.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>, 
+	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	Shashank Sharma <shashank.sharma@amd.com>, amd-gfx@lists.freedesktop.org, 
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+	Mukul Joshi <mukul.joshi@amd.com>, 
+	Arunpravin Paneer Selvam <Arunpravin.PaneerSelvam@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 07 Mar 2024 21:13:33 +0200
-Message-Id: <CZNR9UY8J7Q0.2R1YYTOO4Z92G@kernel.org>
-Cc: <linux-kernel@vger.kernel.org>, <saulo.alessandre@tse.jus.br>,
- <lukas@wunner.de>
-Subject: Re: [PATCH v5 09/12] crypto: ecdsa - Rename keylen to bufsize where
- necessary
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Stefan Berger" <stefanb@linux.ibm.com>, <keyrings@vger.kernel.org>,
- <linux-crypto@vger.kernel.org>, <herbert@gondor.apana.org.au>,
- <davem@davemloft.net>
-X-Mailer: aerc 0.17.0
-References: <20240306222257.979304-1-stefanb@linux.ibm.com>
- <20240306222257.979304-10-stefanb@linux.ibm.com>
-In-Reply-To: <20240306222257.979304-10-stefanb@linux.ibm.com>
 
-On Thu Mar 7, 2024 at 12:22 AM EET, Stefan Berger wrote:
-> In some cases the name keylen does not reflect the purpose of the variabl=
-e
-> anymore once NIST P521 is used but it is the size of the buffer. There-
-> for, rename keylen to bufsize where appropriate.
+On Thu, Mar 7, 2024 at 12:00=E2=80=AFPM Sunil Khatri <sunil.khatri@amd.com>=
+ wrote:
 >
-> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-> Tested-by: Lukas Wunner <lukas@wunner.de>
+> Add page fault information to the devcoredump.
+>
+> Output of devcoredump:
+> **** AMDGPU Device Coredump ****
+> version: 1
+> kernel: 6.7.0-amd-staging-drm-next
+> module: amdgpu
+> time: 29.725011811
+> process_name: soft_recovery_p PID: 1720
+>
+> Ring timed out details
+> IP Type: 0 Ring Name: gfx_0.0.0
+>
+> [gfxhub] Page fault observed
+> Faulty page starting at address 0x0000000000000000
+
+Do you want a : before the address for consistency?
+
+> Protection fault status register:0x301031
+
+How about a space after the : for consistency?
+
+For parsability, it may make more sense to just have a list of key value pa=
+irs:
+[GPU page fault]
+hub:
+addr:
+status:
+[Ring timeout details]
+IP:
+ring:
+name:
+
+etc.
+
+>
+> VRAM is lost due to GPU reset!
+>
+> Signed-off-by: Sunil Khatri <sunil.khatri@amd.com>
 > ---
->  crypto/ecdsa.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c | 14 +++++++++++++-
+>  1 file changed, 13 insertions(+), 1 deletion(-)
 >
-> diff --git a/crypto/ecdsa.c b/crypto/ecdsa.c
-> index 4daefb40c37a..4e847b59622a 100644
-> --- a/crypto/ecdsa.c
-> +++ b/crypto/ecdsa.c
-> @@ -35,8 +35,8 @@ struct ecdsa_signature_ctx {
->  static int ecdsa_get_signature_rs(u64 *dest, size_t hdrlen, unsigned cha=
-r tag,
->  				  const void *value, size_t vlen, unsigned int ndigits)
->  {
-> -	size_t keylen =3D ndigits * sizeof(u64);
-
-nit: still don't get why "* sizeof(u64)" would ever be more readable
-thean "* 8".
-
-BR, Jarkko
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c b/drivers/gpu/drm/=
+amd/amdgpu/amdgpu_reset.c
+> index 147100c27c2d..dd39e614d907 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
+> @@ -203,8 +203,20 @@ amdgpu_devcoredump_read(char *buffer, loff_t offset,=
+ size_t count,
+>                            coredump->ring->name);
+>         }
+>
+> +       if (coredump->adev) {
+> +               struct amdgpu_vm_fault_info *fault_info =3D
+> +                       &coredump->adev->vm_manager.fault_info;
+> +
+> +               drm_printf(&p, "\n[%s] Page fault observed\n",
+> +                          fault_info->vmhub ? "mmhub" : "gfxhub");
+> +               drm_printf(&p, "Faulty page starting at address 0x%016llx=
+\n",
+> +                          fault_info->addr);
+> +               drm_printf(&p, "Protection fault status register:0x%x\n",
+> +                          fault_info->status);
+> +       }
+> +
+>         if (coredump->reset_vram_lost)
+> -               drm_printf(&p, "VRAM is lost due to GPU reset!\n");
+> +               drm_printf(&p, "\nVRAM is lost due to GPU reset!\n");
+>         if (coredump->adev->reset_info.num_regs) {
+>                 drm_printf(&p, "AMDGPU register dumps:\nOffset:     Value=
+:\n");
+>
+> --
+> 2.34.1
+>
 
