@@ -1,231 +1,107 @@
-Return-Path: <linux-kernel+bounces-96054-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96063-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 206CC87569C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:06:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73A668756AD
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:08:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6EEB9B217B4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:06:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A61A91C21275
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:08:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B5CB1369A9;
-	Thu,  7 Mar 2024 19:06:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC98313AA22;
+	Thu,  7 Mar 2024 19:06:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="H+MfpdE5"
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="eV2GjNTs"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8CA813665C
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 19:05:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F4B31386CB
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 19:06:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709838359; cv=none; b=AmLsK4lgfIBy/bTRVY2C5odCkV41kPefVIaCeCPa7FtL8Y2Tjo8Om5HwlmO5E0LEXzTVE/R2pbL0JD5btFlaT1bWs479xIlBvRvuZQPhwsp5C4rqeRD7dZl+wvC/eNeYJZDdd1mGEHTfxsv6DunPfW7zR6PK1ynzun5MexnwqT4=
+	t=1709838367; cv=none; b=AYlBsMcuJikQ23tWg3lcpEz2m+J2VS/aFl7Piuo1P56nNP6N0g+3zGcZ072YHBwSBHtgmpCETWoYLDg/yV2R2jj/BXPL6VbnoPbxT1noIP15wqhv4qcVlegjKgYugZQxoyP76QOpBZYCHrSF4/AqTn9gUHIMHshZdMjXQNQwWcY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709838359; c=relaxed/simple;
-	bh=IaoDcAIGwiU84s3iFQFa7IKKT21z3ZbSgM4n2pSHuEQ=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=WcZz81vAPKkfkt70WypZgs++tTxB2j3tufQA3t+OOHBJLxAS2TmjORb3IyEQweFXP1tuHMGWDCeoHRUldYkUf36uGQG0e/elD07wKhazbL1GjXeiwu/d2Ydl19EwONZ0nuoVk/BcvvkBcDfbeJxOxezEp3VlVWPfUC/En588jlA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=H+MfpdE5; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1d944e8f367so10903525ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 11:05:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1709838357; x=1710443157; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rcFiymo+h5H2KYUaV+euAHpHhZgWsCrhqFiINsYj2NQ=;
-        b=H+MfpdE5RjxaxOzspqY43kXNOK/QIzBYdzkWuPqbc2gKU8BIpd1l+Kd4246DOsYewe
-         SFFs4ZfP0ZcZh38GiWtwDedjFAKLlbiJbxlNjVXCfKKIIQjcf4IiWlDdo0h6wBRNAFRq
-         OGDljpX+/bIuvMqaBVj0hXXi+ei7MAM2mJd37A0+L8E2hZAy+SUfJ0EsHxUCZ6ChZL7k
-         jjsrYktpXHkFr0jsVsRW8WadGupSOcZ2gQYm3PP/utq0NRusF8IM+DUAdpaCX5at75CI
-         ErQMOK3qo+Ca2V/DX9j1sMagGcfb5TpcK6IUjS3nd/L8xMyclMPGAnuqE+2lA9cHU3Zm
-         h/WQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709838357; x=1710443157;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rcFiymo+h5H2KYUaV+euAHpHhZgWsCrhqFiINsYj2NQ=;
-        b=Ty/4ZR3ddwz6Qk7BtnvUJuNyxmlWzs4ioU8TViJI7XGPSMBlLs3bK80VqVjqolWVPp
-         ZGXBMUFTqpfcKT/prz7XwTm7At1Qu0EUOZjnY33ZeedtH1AbCG0xh5CCQSHzKjjwYltZ
-         W5AqKTMtQIr2bbbktm7qDkl8F+/9j/UvqTZdb5vMsNa7ZFBopDZ/xJtQ3kJyvpI3osK3
-         +9oZUNvZL7/f5V4xr10bxPrJnWPi49TTQPE8I7TtNh+IrZycd+wnlbefFx01usq7qUT5
-         dJEsCn+Y1XPm+QlQyz3LLnjNdAZlobDjF2hX9J82bnkdMMPXY8zUKKqz5EOMLm9oq4YS
-         vJ8g==
-X-Forwarded-Encrypted: i=1; AJvYcCVTvm2Wnuk+qY9wcy/8xdpvUISi6AXB2LVh8iCPd2/nIDbpsYXEWiBJVOkXRyCGCxrLzJA+54iEVsYrP4KV1HuZgtQ8hazG9TMlGwvf
-X-Gm-Message-State: AOJu0YwxW+5aGXu+sDF1jwpiyyA1Zq5QSurvy4R31gQpRjM7DL9vT8us
-	Kog7IQ6k35vPGjGQiYAyXqDQmjnqX/dkqb5tLuKVjv4dERHstlKB9UVjvt0iQhc/nGnJ1uj3dKi
-	f
-X-Google-Smtp-Source: AGHT+IGWkAQ/GgJHU1goRENWlzlo1nOGmjqZXS1Ap4YlB/sVxOCqmhx+oHH8w+U3FcSQCMZmvqiyag==
-X-Received: by 2002:a17:902:b202:b0:1dc:fb12:abbc with SMTP id t2-20020a170902b20200b001dcfb12abbcmr7992411plr.61.1709838357144;
-        Thu, 07 Mar 2024 11:05:57 -0800 (PST)
-Received: from charlie.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id h3-20020a170902680300b001dd526af36csm1747338plk.295.2024.03.07.11.05.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Mar 2024 11:05:56 -0800 (PST)
-From: Charlie Jenkins <charlie@rivosinc.com>
-Date: Thu, 07 Mar 2024 11:05:47 -0800
-Subject: [PATCH v8 3/4] riscv: Decouple emulated unaligned accesses from
- access speed
+	s=arc-20240116; t=1709838367; c=relaxed/simple;
+	bh=JZz52JX16HZ+UtSl1eWRwEyq6yI1e9kFnFSNg89Zjkw=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=ieV3Sdll2ow7igCFm5PYlIacGi58JQeP5T6MQV/3Gj1qS6hb3On1LriYLhc885Bx9eChWrCgvXRF+xZy0FXoGx3kV4RNpOY3JJkcWA0mat974g15ooil/ImwT7BG0BUo5K1Lz422Vr6ARgbJDLbHivN//dkNCwJYU42ozbQY9qc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=eV2GjNTs; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709838362;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Lg00SltJpoNRIhc0Zd1SHPpVGEI2+YhR9NTH/1oo+rQ=;
+	b=eV2GjNTsFL+dTMc3eK3FepLxOlx+n3hqe3sXXrxoONpCeV074Q7iej9Sx0+kOi1qH9kqC0
+	7eixk2v+5oqeBY+4gFCwgxK9GLPRS556t3MNmSGURFf8SFc7PTsBBsj/Z6HX1+g3inYAwH
+	yWJuuhQvMcjuDMWaliQEXy0bUfcmtN0=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-518-bXABBfJUNVGBfGntdYleAA-1; Thu, 07 Mar 2024 14:05:56 -0500
+X-MC-Unique: bXABBfJUNVGBfGntdYleAA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 48A7185A58C;
+	Thu,  7 Mar 2024 19:05:56 +0000 (UTC)
+Received: from llong.com (unknown [10.22.17.9])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id BD6AB2166AF1;
+	Thu,  7 Mar 2024 19:05:55 +0000 (UTC)
+From: Waiman Long <longman@redhat.com>
+To: Catalin Marinas <catalin.marinas@arm.com>,
+	Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	Waiman Long <longman@redhat.com>
+Subject: [PATCH 2/2] mm/kmemleak: Disable KASAN instrumentation in kmemleak
+Date: Thu,  7 Mar 2024 14:05:48 -0500
+Message-Id: <20240307190548.963626-3-longman@redhat.com>
+In-Reply-To: <20240307190548.963626-1-longman@redhat.com>
+References: <20240307190548.963626-1-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240307-disable_misaligned_probe_config-v8-3-55d696cb398b@rivosinc.com>
-References: <20240307-disable_misaligned_probe_config-v8-0-55d696cb398b@rivosinc.com>
-In-Reply-To: <20240307-disable_misaligned_probe_config-v8-0-55d696cb398b@rivosinc.com>
-To: Paul Walmsley <paul.walmsley@sifive.com>, 
- Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
- Jisheng Zhang <jszhang@kernel.org>, Evan Green <evan@rivosinc.com>, 
- =?utf-8?q?Cl=C3=A9ment_L=C3=A9ger?= <cleger@rivosinc.com>, 
- Eric Biggers <ebiggers@kernel.org>, 
- Elliot Berman <quic_eberman@quicinc.com>, Charles Lohr <lohr85@gmail.com>, 
- Conor Dooley <conor.dooley@microchip.com>
-Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
- Charlie Jenkins <charlie@rivosinc.com>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1709838351; l=4202;
- i=charlie@rivosinc.com; s=20231120; h=from:subject:message-id;
- bh=IaoDcAIGwiU84s3iFQFa7IKKT21z3ZbSgM4n2pSHuEQ=;
- b=Gd/AFd9UPYuU9gsHq8mkyXcCsBgVRVzPdcuQYH+roI4KVNNrqQUITF4Emy6vygu23m3rPxwio
- U5tr57dBkG8BJE6C+mIDw5LFGt6Z3a+kGFeNFUsbIiIjDF7+dODt76C
-X-Developer-Key: i=charlie@rivosinc.com; a=ed25519;
- pk=t4RSWpMV1q5lf/NWIeR9z58bcje60/dbtxxmoSfBEcs=
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 
-Detecting if a system traps into the kernel on an unaligned access
-can be performed separately from checking the speed of unaligned
-accesses. This decoupling will make it possible to selectively enable
-or disable each of these checks.
+Kmemleak ia a memory leak checker. KASAN is also a memory checker but
+it focuses more on finding out-of-bounds and use-after-free bugs. Since
+kmemleak is inherently slow especially on systems with large number of
+CPUs, adding KASAN instrumentation will make it slower even more. As
+kmemleak is not for production use, the utility of enabling KASAN there
+is questionable.
 
-Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+This patch disables KASAN instrumentation for configurations that
+enable both of them to slightly reduce performance overhead.
+
+Signed-off-by: Waiman Long <longman@redhat.com>
 ---
- arch/riscv/include/asm/cpufeature.h  |  2 +-
- arch/riscv/kernel/cpufeature.c       | 25 +++++++++++++++++++++----
- arch/riscv/kernel/traps_misaligned.c | 15 +++++++--------
- 3 files changed, 29 insertions(+), 13 deletions(-)
+ mm/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/riscv/include/asm/cpufeature.h b/arch/riscv/include/asm/cpufeature.h
-index 466e1f591919..6fec91845aa0 100644
---- a/arch/riscv/include/asm/cpufeature.h
-+++ b/arch/riscv/include/asm/cpufeature.h
-@@ -37,7 +37,7 @@ void riscv_user_isa_enable(void);
+diff --git a/mm/Makefile b/mm/Makefile
+index e4b5b75aaec9..fc0f9a63a61e 100644
+--- a/mm/Makefile
++++ b/mm/Makefile
+@@ -5,6 +5,7 @@
  
- #ifdef CONFIG_RISCV_MISALIGNED
- bool unaligned_ctl_available(void);
--bool check_unaligned_access_emulated(int cpu);
-+bool check_unaligned_access_emulated_all_cpus(void);
- void unaligned_emulation_finish(void);
- #else
- static inline bool unaligned_ctl_available(void)
-diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
-index 7878cddccc0d..abb3a2f53106 100644
---- a/arch/riscv/kernel/cpufeature.c
-+++ b/arch/riscv/kernel/cpufeature.c
-@@ -719,7 +719,8 @@ static int check_unaligned_access(void *param)
- 	void *src;
- 	long speed = RISCV_HWPROBE_MISALIGNED_SLOW;
+ KASAN_SANITIZE_slab_common.o := n
+ KASAN_SANITIZE_slub.o := n
++KASAN_SANITIZE_kmemleak.o := n
+ KCSAN_SANITIZE_kmemleak.o := n
  
--	if (check_unaligned_access_emulated(cpu))
-+	if (IS_ENABLED(CONFIG_RISCV_MISALIGNED) &&
-+	    per_cpu(misaligned_access_speed, cpu) != RISCV_HWPROBE_MISALIGNED_UNKNOWN)
- 		return 0;
- 
- 	/* Make an unaligned destination buffer. */
-@@ -896,8 +897,8 @@ static int riscv_offline_cpu(unsigned int cpu)
- 	return 0;
- }
- 
--/* Measure unaligned access on all CPUs present at boot in parallel. */
--static int check_unaligned_access_all_cpus(void)
-+/* Measure unaligned access speed on all CPUs present at boot in parallel. */
-+static int check_unaligned_access_speed_all_cpus(void)
- {
- 	unsigned int cpu;
- 	unsigned int cpu_count = num_possible_cpus();
-@@ -935,7 +936,6 @@ static int check_unaligned_access_all_cpus(void)
- 				  riscv_online_cpu, riscv_offline_cpu);
- 
- out:
--	unaligned_emulation_finish();
- 	for_each_cpu(cpu, cpu_online_mask) {
- 		if (bufs[cpu])
- 			__free_pages(bufs[cpu], MISALIGNED_BUFFER_ORDER);
-@@ -945,6 +945,23 @@ static int check_unaligned_access_all_cpus(void)
- 	return 0;
- }
- 
-+#ifdef CONFIG_RISCV_MISALIGNED
-+static int check_unaligned_access_all_cpus(void)
-+{
-+	bool all_cpus_emulated = check_unaligned_access_emulated_all_cpus();
-+
-+	if (!all_cpus_emulated)
-+		return check_unaligned_access_speed_all_cpus();
-+
-+	return 0;
-+}
-+#else
-+static int check_unaligned_access_all_cpus(void)
-+{
-+	return check_unaligned_access_speed_all_cpus();
-+}
-+#endif
-+
- arch_initcall(check_unaligned_access_all_cpus);
- 
- void riscv_user_isa_enable(void)
-diff --git a/arch/riscv/kernel/traps_misaligned.c b/arch/riscv/kernel/traps_misaligned.c
-index c2ed4e689bf9..e55718179f42 100644
---- a/arch/riscv/kernel/traps_misaligned.c
-+++ b/arch/riscv/kernel/traps_misaligned.c
-@@ -596,7 +596,7 @@ int handle_misaligned_store(struct pt_regs *regs)
- 	return 0;
- }
- 
--bool check_unaligned_access_emulated(int cpu)
-+static bool check_unaligned_access_emulated(int cpu)
- {
- 	long *mas_ptr = per_cpu_ptr(&misaligned_access_speed, cpu);
- 	unsigned long tmp_var, tmp_val;
-@@ -623,7 +623,7 @@ bool check_unaligned_access_emulated(int cpu)
- 	return misaligned_emu_detected;
- }
- 
--void unaligned_emulation_finish(void)
-+bool check_unaligned_access_emulated_all_cpus(void)
- {
- 	int cpu;
- 
-@@ -632,13 +632,12 @@ void unaligned_emulation_finish(void)
- 	 * accesses emulated since tasks requesting such control can run on any
- 	 * CPU.
- 	 */
--	for_each_online_cpu(cpu) {
--		if (per_cpu(misaligned_access_speed, cpu) !=
--					RISCV_HWPROBE_MISALIGNED_EMULATED) {
--			return;
--		}
--	}
-+	for_each_online_cpu(cpu)
-+		if (!check_unaligned_access_emulated(cpu))
-+			return false;
-+
- 	unaligned_ctl = true;
-+	return true;
- }
- 
- bool unaligned_ctl_available(void)
-
+ # These produce frequent data race reports: most of them are due to races on
 -- 
-2.43.2
+2.39.3
 
 
