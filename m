@@ -1,103 +1,164 @@
-Return-Path: <linux-kernel+bounces-94979-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94981-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CC4D87477D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 05:51:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B19DC874784
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 06:06:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D97E4286A95
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 04:51:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 667B72858BF
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 05:06:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19F6217BAB;
-	Thu,  7 Mar 2024 04:51:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BB6A1B813;
+	Thu,  7 Mar 2024 05:06:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="TDlFGypx"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kpsk6wZP"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 851FD15EA6;
-	Thu,  7 Mar 2024 04:51:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A82A81F;
+	Thu,  7 Mar 2024 05:06:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709787106; cv=none; b=YtqGN/XMjVBh4MfbLSs6aXL2Ln+ablBW0aMx9Ldhd1B5EbbNSaxDuezg7A524iFxI8ZYPHW/UfDCQFg7/kvrC3hkKuGvKsmdfeRCBcSZZHCx7nIXQdoR8AfBGpbYayGvMjOFjZP+MjY6rBekNd48VmAdqNFIbyh3n5TIpdHW1IY=
+	t=1709787983; cv=none; b=XJbjwshVFK1WKqf8q7DyM85TVEH2Fix8SPirnM79WWx3haZoe6btgzI7mn3H6hFo50B5ssdmUVwKUCkYAYPzT7awoOT5JAIyMkoVzn6BKjepI/5w9CgPZ0FbIP3hmehyceoQm/u3QiVialXYZrVGWH93MjxkUcfFqaMt/pBQfP0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709787106; c=relaxed/simple;
-	bh=Bq0DLXrbmUR2V5d/aU4hu9+nI65kDN8R3dpW9WLNnSM=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=H8AvzVVFfCIWHmjLizElqrtVNaD8Ufci577s204/+XFDy0Ks9AOjtpc2JIfHm6C4ga77XUMH5uWeAoqWHxdNfpcr+pJvrvJ5qNCPMlVDdW//IOoYg9dtaAWkyOB6+LnJ5lznhqhPQViNJPZu9uQstDlhYy3Ol7HwR0b6H55KZks=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=TDlFGypx; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1709787100;
-	bh=ZoNXxsmgq9stJfTSAYeDU7v9vK31/9ULNKvtA5uDRDE=;
-	h=Date:From:To:Cc:Subject:From;
-	b=TDlFGypxkzf+q23JhdE/YAr9c4BmHTdfH+UU0rW0DVMeckZwym0puNdSQYUlKfk1N
-	 FhJSmlBCZesl7vxAuTjaeAoz9P6t3WBIkOijjNo/S9prRHiyKiyt74SjNh6pkZXf/v
-	 sQ6HM3CECtJnFXuGaRq/Ah7pGRrCn/S08aB4oTD7/YkyaQNceW2wssYd5HmasvaKng
-	 zIZ2cq97WCGOZqm+TdnHc8ZiKmQHEIrgKNe6oLyFg4PPZ3754spj4e5pp/GogglgAa
-	 0a6f6aesmyTdPA0rpgEG43EILVPzTss1gCg35hU3FQQsf4fjf2U40H9uS4Vj7ZzrSh
-	 m5exIzETZnwaw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Tqxj826ZSz4wb0;
-	Thu,  7 Mar 2024 15:51:39 +1100 (AEDT)
-Date: Thu, 7 Mar 2024 15:51:37 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= <u.kleine-koenig@pengutronix.de>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the siox tree
-Message-ID: <20240307155137.19a2a2cb@canb.auug.org.au>
+	s=arc-20240116; t=1709787983; c=relaxed/simple;
+	bh=nhirl8E79VD7l3fSml+GRqae5Bq4nYEARjir2Aay5rQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CVGh2UjL/DOR7OhV+pDjGXIYBsuT0q3o+9SEg2IAiq2Pq5ZC9peQtFoRDNgu4fbZQKnsKeG0IEdZ+xCXo+Uup6LpGxvl6HPegFJJiXihLNMw1uAFm7UmkxteF+FidCSqNl/X4OZg5xcIml4QO7HvExTpQX9d7Cw7E1O6fy4niLo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kpsk6wZP; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709787982; x=1741323982;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=nhirl8E79VD7l3fSml+GRqae5Bq4nYEARjir2Aay5rQ=;
+  b=kpsk6wZP2ZgFhPZstlrfAoVmWd4L99uTtuuHEC79rT3dY0lP422uXsUq
+   vwxkHef5fIS2x7uUxZXGrGWmpmMYnQnRjLUk9iGj1Tg+pXQXGiP6p1ohR
+   212QB7GsUb09OZ4PJhacntnH65eP81J+SSo9CcmN4teKp8PGhjkKQwSka
+   0LGjN2oYpxMGQLklhuIj/lC4GEuNmI9uBVzE3eef2+9Py2VxoaTeTq8JK
+   /eidO3LbmZNT4qfRtghaVBuBsCNEA9SybcazWFp5xphwbS0kyh5ZaBlPO
+   fbZVFK9slKDjts0qdbLWzTaCZsas1e620nYJk6XiG1bLDHZle63mchO54
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11005"; a="4609016"
+X-IronPort-AV: E=Sophos;i="6.06,209,1705392000"; 
+   d="scan'208";a="4609016"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 21:06:21 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,209,1705392000"; 
+   d="scan'208";a="14547133"
+Received: from dpwomacx-mobl1.amr.corp.intel.com (HELO [10.209.25.153]) ([10.209.25.153])
+  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2024 21:06:21 -0800
+Message-ID: <32ac2ee6-26b1-4f37-bd88-db1ef2a31267@linux.intel.com>
+Date: Wed, 6 Mar 2024 21:06:20 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/A4KTHfWokm22WTSqP9DIjn7";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH kernel v3] PCI/DOE: Support discovery version 2
+Content-Language: en-US
+To: Alexey Kardashevskiy <aik@amd.com>, linux-pci@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+ Ira Weiny <ira.weiny@intel.com>, Dan Williams <dan.j.williams@intel.com>,
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+ Lukas Wunner <lukas@wunner.de>
+References: <20240307022006.3657433-1-aik@amd.com>
+From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <20240307022006.3657433-1-aik@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
---Sig_/A4KTHfWokm22WTSqP9DIjn7
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+On 3/6/24 6:20 PM, Alexey Kardashevskiy wrote:
+> PCIe r6.1, sec 6.30.1.1 defines a "DOE Discovery Version" field in
+> the DOE Discovery Request Data Object Contents (3rd DW) as:
+>
+> 15:8 DOE Discovery Version – must be 02h if the Capability Version in
+> the Data Object Exchange Extended Capability is 02h or greater.
 
-After merging the siox tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
+Does this change fix any functional issue? If yes, please add Fixes:
+tag and probably CC stable?
 
-ERROR: modpost: "devm_siox_master_alloc" [drivers/siox/siox-bus-gpio.ko] un=
-defined!
+>
+> Add support for the version on devices with the DOE v2 capability.
+>
+> Signed-off-by: Alexey Kardashevskiy <aik@amd.com>
+> ---
+Change wise looks fine to me.
 
-Caused by commit
+Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> Changes:
+> v3:
+> * updated subject line
+> * dropped "DISCOVER_" from the new field macro
+>
+> v2:
+> * added the section number to the commit log
+> ---
+>  include/uapi/linux/pci_regs.h |  1 +
+>  drivers/pci/doe.c             | 11 ++++++++---
+>  2 files changed, 9 insertions(+), 3 deletions(-)
+>
+> diff --git a/include/uapi/linux/pci_regs.h b/include/uapi/linux/pci_regs.h
+> index a39193213ff2..fbca743b2b86 100644
+> --- a/include/uapi/linux/pci_regs.h
+> +++ b/include/uapi/linux/pci_regs.h
+> @@ -1144,6 +1144,7 @@
+>  #define PCI_DOE_DATA_OBJECT_HEADER_2_LENGTH		0x0003ffff
+>  
+>  #define PCI_DOE_DATA_OBJECT_DISC_REQ_3_INDEX		0x000000ff
+> +#define PCI_DOE_DATA_OBJECT_DISC_REQ_3_VER		0x0000ff00
+>  #define PCI_DOE_DATA_OBJECT_DISC_RSP_3_VID		0x0000ffff
+>  #define PCI_DOE_DATA_OBJECT_DISC_RSP_3_PROTOCOL		0x00ff0000
+>  #define PCI_DOE_DATA_OBJECT_DISC_RSP_3_NEXT_INDEX	0xff000000
+> diff --git a/drivers/pci/doe.c b/drivers/pci/doe.c
+> index 61f0531d2b1d..c94c2b0767f3 100644
+> --- a/drivers/pci/doe.c
+> +++ b/drivers/pci/doe.c
+> @@ -381,11 +381,13 @@ static void pci_doe_task_complete(struct pci_doe_task *task)
+>  	complete(task->private);
+>  }
+>  
+> -static int pci_doe_discovery(struct pci_doe_mb *doe_mb, u8 *index, u16 *vid,
+> +static int pci_doe_discovery(struct pci_doe_mb *doe_mb, u8 capver, u8 *index, u16 *vid,
+>  			     u8 *protocol)
+>  {
+>  	u32 request_pl = FIELD_PREP(PCI_DOE_DATA_OBJECT_DISC_REQ_3_INDEX,
+> -				    *index);
+> +				    *index) |
+> +			 FIELD_PREP(PCI_DOE_DATA_OBJECT_DISC_REQ_3_VER,
+> +				    (capver >= 2) ? 2 : 0);
+>  	__le32 request_pl_le = cpu_to_le32(request_pl);
+>  	__le32 response_pl_le;
+>  	u32 response_pl;
+> @@ -419,13 +421,16 @@ static int pci_doe_cache_protocols(struct pci_doe_mb *doe_mb)
+>  {
+>  	u8 index = 0;
+>  	u8 xa_idx = 0;
+> +	u32 hdr = 0;
+> +
+> +	pci_read_config_dword(doe_mb->pdev, doe_mb->cap_offset, &hdr);
+>  
+>  	do {
+>  		int rc;
+>  		u16 vid;
+>  		u8 prot;
+>  
+> -		rc = pci_doe_discovery(doe_mb, &index, &vid, &prot);
+> +		rc = pci_doe_discovery(doe_mb, PCI_EXT_CAP_VER(hdr), &index, &vid, &prot);
+>  		if (rc)
+>  			return rc;
+>  
 
-  5c941dc7bb21 ("siox: bus-gpio: Simplify using devm_siox_* functions")
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
 
-I have dropped the siox tree for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/A4KTHfWokm22WTSqP9DIjn7
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXpR9kACgkQAVBC80lX
-0Gx8pQgAn7Dobee2IhrYr8jZaTiMjrr4XvdL6auGusPe9PqiEtSKweRdwexjM6QE
-2i9o1WitOiiu/U2xGzBbbZkNp+DWSDxaHrgkhcblQOVbu0cmllxK77ndX04uTfb0
-wlnuKEdeWoe/xcakd6LuD6X8Kj9Iq7alwCKatuyi1Mg40Ug2mqs5EoBpgysOcLXz
-YjRruLbpZRVYGRXOHrs1jbREAmQoGjJAqSnvLcucVY/pgksWIsBiFD4x5E4DVvPX
-riMPnC8hT156cDo3fCQa4hIQyPXm5QMDPrjaND0veGoDpCHuhIt35+/yrU3vB4Rl
-J6y0MWIfFDPgFp80Z9CRU2R3UMLKOg==
-=Vgjw
------END PGP SIGNATURE-----
-
---Sig_/A4KTHfWokm22WTSqP9DIjn7--
 
