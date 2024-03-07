@@ -1,179 +1,295 @@
-Return-Path: <linux-kernel+bounces-94834-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94835-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F39348745B9
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 02:39:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C55B98745BE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 02:41:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4D97CB211C4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 01:39:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4AFBC1F2450A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 01:41:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A8564C97;
-	Thu,  7 Mar 2024 01:39:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FEBD5695;
+	Thu,  7 Mar 2024 01:40:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a/udQcMt"
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="IrSkWBj7"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19D4F441F
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 01:39:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81FD6320E;
+	Thu,  7 Mar 2024 01:40:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709775578; cv=none; b=vBWxo6EET2L0hZrTwHJcnPdepK42yXyW4c8qMw/CVhdEJQifV+LhVrobIy3WveWWbCvSH5z+Cq/hriu2N5+swsPeKNkb3Ul1gJCZFuX+kC8cIeitT2eibGtMPKoEHt5O8T0k3uQj2gI1+7jr+mZL1sjEne7tuXBWf1Ui5M5NmaQ=
+	t=1709775644; cv=none; b=tbRKTqMODgwXQ1ZppvCWDWki86KtVo1Psu/ZImRBBDVa/pKveH51+/XrvEYFPLJTG0KTDoW2/XbVsHf4JdThDgWRfdkL8hcBzIhlOPzxiOYhqZ83R+rP8OW80Wm0MKctIp7SBIHmRISUE/NcXcqi6JY33R41tSrjhKOTqFt3fGY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709775578; c=relaxed/simple;
-	bh=ZiOZIBlTnrRuWu1vi5UFZ2Jy/cNQDCwLFkpzJcYZkQ0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SJgs4OeOnsSenHBmPQCzWUyvlHkHkJPWxxLQWSeAAD9EnTc5EIUJ5L93I4OBgXtkiU4wRsxzxoMXjL9XU1rjbyp2gzXVlbAh2rXW2bRES48M22ammF0o0rPFibTtkQ8CLuuOHEtzoKGh1fjqk2C0a9M0W3bQjy8NyoE+PXOJ4Qo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a/udQcMt; arc=none smtp.client-ip=209.85.208.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d382a78c38so2860881fa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 17:39:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709775575; x=1710380375; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=g3QXNsXc4pbyWagxE+E+WBrsLyAj39ySKirLt5REkOI=;
-        b=a/udQcMtEuYimvBdAUFmNpWGQU0QN9nx7QUwzErwNJvfhy/DWh4KbHWGTMqkS4QEIl
-         iMZb3P6NvE5IFFyhXW4N7WAV2dLvOmc/6XAtE6HrZfJM/MMvpXVXCRKmPM/HN+MuL7BG
-         FdQPTS/vMKlc+lH41511KwzBh6VFSDVQSIU8MmGrlg6Fd7WeZvaEGPeYsZ739H0tsvSm
-         TXGy/k7ckYMyqr2FdSFhDndb5ogqEPEizE5BBmuGbQNHggAHTfD9nH2lFefM66lMa5lG
-         ojXnWJwKer1Mo08C0yakUwvtlmYlYhEMgXmvXcE0oVtFTLycxBV8NjP7GmmtwbD5zOjO
-         J0ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709775575; x=1710380375;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=g3QXNsXc4pbyWagxE+E+WBrsLyAj39ySKirLt5REkOI=;
-        b=G+/WZW9BZjDzatv24a0HrWcBkaUP5hhGt+VdIflYyLSjpQmGOcGwp9ZpmqXO5W8Gfu
-         +b4CLXQDGf692qzDL5BAk75l5Qct6VTkDLmuuT6HjAVNHMpLiQDEmHxsI9XQlwNnbQuf
-         najM5WOf9/1X1q0aLthsLwTQy7uz3GS+v27enbo/Ks5DFUiHh1OCMfjSVLvy4uEQtdor
-         mJbVL3OEofpJCHyXtxlFdPZ8y7z4JTDZnTYXr+hsDBP0SpwaTr51B2KfXflds/l9A67B
-         A7crlF0xZoZANGT/E8vb0HQYP7NzSuGuyfrEG5prOqer3+EP17qj/QObjKWMgTHDV4E5
-         SvJw==
-X-Forwarded-Encrypted: i=1; AJvYcCVInTA56yCUKiSEJiYqDOFkBQ5h/zyUy5CWO8at0Z5g1n8+UDOnRZK76vfiRAGL4jPkqXB9w+oa9iW3kBoP+sE+PYKwkWmpeDQdJ02b
-X-Gm-Message-State: AOJu0YzWz95RtDOzMzds+YS3ajUAkgZ/TPmE7nQ52pbmqdzaqigVAm2c
-	QOTOVKaaRjuNxbayxIfY2H76XuW5AyDdhjtsoNxGCs31ypH6Gxa7yJrE+FFTi+LN4a3SOmu0xfB
-	++UmxDG51lWOEAGoV60YaQTloNJo=
-X-Google-Smtp-Source: AGHT+IEYEHVj3nb4kRCZcQZDkCMShKzbuAM8uVmrXcumu0XaDmz6dW4wpGa5HO7Cs3zMl+/xQvrYnakhGewj59tjVU0=
-X-Received: by 2002:a2e:b615:0:b0:2d2:9a8b:f45e with SMTP id
- r21-20020a2eb615000000b002d29a8bf45emr393672ljn.14.1709775574668; Wed, 06 Mar
- 2024 17:39:34 -0800 (PST)
+	s=arc-20240116; t=1709775644; c=relaxed/simple;
+	bh=Lo9iz+n9edm3o53h72vU/6OxtqAKFhQ+PPqRU6+UL/8=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=DE0Qc2mm0BuWPK2RljHTqQuvDcFLRzCeGJdzHn4sl7Ie9N8kf/360jpXMDd3801rC0+P06kowe5uhTbeKDsar3xxtAdOv1IUri2I+dpYpOQ2k+o2En7g9F4x6pJ5toufyKono2GP3t0BZunhEDry0WjdsGOtZSGWfAJVa3wkyM4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=IrSkWBj7; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1709775641;
+	bh=T/j2tECYmvWyYhRQzO6iM6NxszqMwlNlx0r9oi+lhHA=;
+	h=Date:From:To:Cc:Subject:From;
+	b=IrSkWBj7sq6MnNLa1BtDPXvkU7O/2wn8lp1Bj0avzfsosMzV5MhEa1ORbGbYdlWS5
+	 VOxZS9llx7QWnI65QFqxFGdY0ZtIQsTWG9hax2uwNxGdAl3WQ+PQcEmHfqf8DCd14Q
+	 4HZs7/d1qO8y4++WBGfMyHlhh29YVQo0+HN4A/ApBJ8arWDfCsF0xSkSyB4iriSeIt
+	 /xwutvofqnw0AMG7cJG2jffYOwp/Envrvqi1Uligbtoxabo9FME4qHJ4CX6pSO314d
+	 lIsQZQlH7mL9VzeZVKkTsPMjUAdJpR624n8/OtCzEKPqxWhfdobImX4ImAMYs8k5s1
+	 pVvnHyL+LmJrA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TqsSm59d9z4wcK;
+	Thu,  7 Mar 2024 12:40:40 +1100 (AEDT)
+Date: Thu, 7 Mar 2024 12:40:40 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov
+ <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>, Eduard
+ Zingerman <eddyz87@gmail.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the bpf-next tree with the bpf tree
+Message-ID: <20240307124040.1a177b71@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240227141928.1.I24ac8d51544e4624b7e9d438d95880c4283e611b@changeid>
- <60dc7697-d7a0-4bf4-a22e-32f1bbb792c2@suse.de> <CAF6AEGs2zCP1SWPzxz4v2CU--yyEsN0+PS3dKM1nOuGyVkCpLg@mail.gmail.com>
- <ZeiGi4l1lL_fYJ69@intel.com> <CAF6AEGs1ce2xzuo3xEO+xgj+0iCi59nM8AiTwBfEhwZZ2w6Vww@mail.gmail.com>
- <Zej7HOLVOAMtWvrn@intel.com>
-In-Reply-To: <Zej7HOLVOAMtWvrn@intel.com>
-From: Rob Clark <robdclark@gmail.com>
-Date: Wed, 6 Mar 2024 17:39:21 -0800
-Message-ID: <CAF6AEGvp9Z5axmjwjC7iJKm3NcOg9-8eL-Z86b4ZjBbMfv0HKw@mail.gmail.com>
-Subject: Re: [PATCH] drm/udl: Add ARGB8888 as a format
-To: =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
-Cc: Thomas Zimmermann <tzimmermann@suse.de>, Douglas Anderson <dianders@chromium.org>, 
-	dri-devel@lists.freedesktop.org, Rob Clark <robdclark@chromium.org>, 
-	Javier Martinez Canillas <javierm@redhat.com>, Daniel Vetter <daniel@ffwll.ch>, Dave Airlie <airlied@redhat.com>, 
-	David Airlie <airlied@gmail.com>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Maxime Ripard <mripard@kernel.org>, =?UTF-8?B?TWHDrXJhIENhbmFs?= <mcanal@igalia.com>, 
-	Sean Paul <sean@poorly.run>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/I9j87X6ApN8PS6sC_1mfoKA";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+
+--Sig_/I9j87X6ApN8PS6sC_1mfoKA
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 6, 2024 at 3:24=E2=80=AFPM Ville Syrj=C3=A4l=C3=A4
-<ville.syrjala@linux.intel.com> wrote:
->
-> On Wed, Mar 06, 2024 at 07:37:16AM -0800, Rob Clark wrote:
-> > On Wed, Mar 6, 2024 at 7:06=E2=80=AFAM Ville Syrj=C3=A4l=C3=A4
-> > <ville.syrjala@linux.intel.com> wrote:
-> > >
-> > > On Wed, Mar 06, 2024 at 06:49:15AM -0800, Rob Clark wrote:
-> > > > On Wed, Mar 6, 2024 at 4:18=E2=80=AFAM Thomas Zimmermann <tzimmerma=
-nn@suse.de> wrote:
-> > > > >
-> > > > > Hi,
-> > > > >
-> > > > > sorry that I did not see the patch before.
-> > > > >
-> > > > > Am 27.02.24 um 23:19 schrieb Douglas Anderson:
-> > > > > > Even though the UDL driver converts to RGB565 internally (see
-> > > > > > pixel32_to_be16() in udl_transfer.c), it advertises XRGB8888 fo=
-r
-> > > > > > compatibility. Let's add ARGB8888 to that list.
-> > > > >
-> > > > > We had a heated discussion about the emulation of color formats. =
-It was
-> > > > > decided that XRGB8888 is the only format to support; and that's o=
-nly
-> > > > > because legacy userspace sometimes expects it. Adding other forma=
-ts to
-> > > > > the list should not be done easily.
-> > > >
-> > > > OTOH it is fixing a kernel change that broke userspace
-> > > >
-> > > > > >
-> > > > > > This makes UDL devices work on ChromeOS again after commit
-> > > > > > c91acda3a380 ("drm/gem: Check for valid formats"). Prior to tha=
-t
-> > > > > > commit things were "working" because we'd silently treat the AR=
-GB8888
-> > > > > > that ChromeOS wanted as XRGB8888.
-> > > > >
-> > > > > This problem has been caused by userspace. Why can it not be fixe=
-d there?
-> > > > >
-> > > > > And udl is just one driver. Any other driver without ARGB8888, su=
-ch as
-> > > > > simpledrm or ofdrm, would be affected. Do these work?
-> > > >
-> > > > Probably any driver where ARGB8888 is equivalent to XRGB8888 (ie.
-> > > > single primary plane, etc) should advertise both.
-> > >
-> > > To me that seemes likely to trick userspace developers into
-> > > assuming that ARGB is always available, and then when they
-> > > finally try on hardware that doesn't have ARGB it'll just
-> > > fail miserably.
-> >
-> > I think that ship has sailed already, at least for any drivers that
-> > previously silently accepted ARGB8888
->
-> Perhaps. Although I don't actually understand what kind of weird
-> userspace people are running if it somehow expects ARGB to be there,
-> but only for some specific kms drivers. Is said userspace really
-> somehow checking which kms driver is present and then just ignoring
-> the pixel format list exposed by the driver? Or is it just some
-> super hw specific thing where they can just assume a specific kms
-> driver?
+Hi all,
 
-I think chrome compositor (as in CrOS) always just picks ARGB8888
-because, on devices that support overlays/underlays, it will use
-underlays in some cases.  Yes, lazy, and a userspace bug.  But this
-worked previously until commit c91acda3a380 ("drm/gem: Check for valid
-formats"), so it seems to me like a clear case of kernel breaking
-userspace.  I don't think we really have a choice other than to allow
-ARGB8888.
+Today's linux-next merge of the bpf-next tree got a conflict in:
 
-A lot of drivers like simpledrm will never encounter the chrome
-compositor, so it is ofc an option to leave them as-is until someone
-reports a regression, which is maybe unlikely.  I suppose udl is a
-special case because it can show up anywhere.
+  tools/testing/selftests/bpf/progs/verifier_iterating_callbacks.c
 
-BR,
--R
+between commit:
 
-> Anyways, adding ARGB to even more drivers seems like a terrible
-> idea to me.
->
-> --
-> Ville Syrj=C3=A4l=C3=A4
-> Intel
+  5c2bc5e2f81d ("selftests/bpf: test case for callback_depth states pruning=
+ logic")
+
+from the bpf tree and commit:
+
+  0c8bbf990bdd ("selftests/bpf: Test may_goto")
+
+from the bpf-next tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc tools/testing/selftests/bpf/progs/verifier_iterating_callbacks.c
+index a955a6358206,04cdbce4652f..000000000000
+--- a/tools/testing/selftests/bpf/progs/verifier_iterating_callbacks.c
++++ b/tools/testing/selftests/bpf/progs/verifier_iterating_callbacks.c
+@@@ -239,74 -237,103 +237,173 @@@ int bpf_loop_iter_limit_nested(void *un
+  	return 1000 * a + b + c;
+  }
+ =20
+ +struct iter_limit_bug_ctx {
+ +	__u64 a;
+ +	__u64 b;
+ +	__u64 c;
+ +};
+ +
+ +static __naked void iter_limit_bug_cb(void)
+ +{
+ +	/* This is the same as C code below, but written
+ +	 * in assembly to control which branches are fall-through.
+ +	 *
+ +	 *   switch (bpf_get_prandom_u32()) {
+ +	 *   case 1:  ctx->a =3D 42; break;
+ +	 *   case 2:  ctx->b =3D 42; break;
+ +	 *   default: ctx->c =3D 42; break;
+ +	 *   }
+ +	 */
+ +	asm volatile (
+ +	"r9 =3D r2;"
+ +	"call %[bpf_get_prandom_u32];"
+ +	"r1 =3D r0;"
+ +	"r2 =3D 42;"
+ +	"r0 =3D 0;"
+ +	"if r1 =3D=3D 0x1 goto 1f;"
+ +	"if r1 =3D=3D 0x2 goto 2f;"
+ +	"*(u64 *)(r9 + 16) =3D r2;"
+ +	"exit;"
+ +	"1: *(u64 *)(r9 + 0) =3D r2;"
+ +	"exit;"
+ +	"2: *(u64 *)(r9 + 8) =3D r2;"
+ +	"exit;"
+ +	:
+ +	: __imm(bpf_get_prandom_u32)
+ +	: __clobber_all
+ +	);
+ +}
+ +
+ +SEC("tc")
+ +__failure
+ +__flag(BPF_F_TEST_STATE_FREQ)
+ +int iter_limit_bug(struct __sk_buff *skb)
+ +{
+ +	struct iter_limit_bug_ctx ctx =3D { 7, 7, 7 };
+ +
+ +	bpf_loop(2, iter_limit_bug_cb, &ctx, 0);
+ +
+ +	/* This is the same as C code below,
+ +	 * written in assembly to guarantee checks order.
+ +	 *
+ +	 *   if (ctx.a =3D=3D 42 && ctx.b =3D=3D 42 && ctx.c =3D=3D 7)
+ +	 *     asm volatile("r1 /=3D 0;":::"r1");
+ +	 */
+ +	asm volatile (
+ +	"r1 =3D *(u64 *)%[ctx_a];"
+ +	"if r1 !=3D 42 goto 1f;"
+ +	"r1 =3D *(u64 *)%[ctx_b];"
+ +	"if r1 !=3D 42 goto 1f;"
+ +	"r1 =3D *(u64 *)%[ctx_c];"
+ +	"if r1 !=3D 7 goto 1f;"
+ +	"r1 /=3D 0;"
+ +	"1:"
+ +	:
+ +	: [ctx_a]"m"(ctx.a),
+ +	  [ctx_b]"m"(ctx.b),
+ +	  [ctx_c]"m"(ctx.c)
+ +	: "r1"
+ +	);
+ +	return 0;
+ +}
+ +
++ #define ARR_SZ 1000000
++ int zero;
++ char arr[ARR_SZ];
++=20
++ SEC("socket")
++ __success __retval(0xd495cdc0)
++ int cond_break1(const void *ctx)
++ {
++ 	unsigned long i;
++ 	unsigned int sum =3D 0;
++=20
++ 	for (i =3D zero; i < ARR_SZ; cond_break, i++)
++ 		sum +=3D i;
++ 	for (i =3D zero; i < ARR_SZ; i++) {
++ 		barrier_var(i);
++ 		sum +=3D i + arr[i];
++ 		cond_break;
++ 	}
++=20
++ 	return sum;
++ }
++=20
++ SEC("socket")
++ __success __retval(999000000)
++ int cond_break2(const void *ctx)
++ {
++ 	int i, j;
++ 	int sum =3D 0;
++=20
++ 	for (i =3D zero; i < 1000; cond_break, i++)
++ 		for (j =3D zero; j < 1000; j++) {
++ 			sum +=3D i + j;
++ 			cond_break;
++ 		}
++=20
++ 	return sum;
++ }
++=20
++ static __noinline int loop(void)
++ {
++ 	int i, sum =3D 0;
++=20
++ 	for (i =3D zero; i <=3D 1000000; i++, cond_break)
++ 		sum +=3D i;
++=20
++ 	return sum;
++ }
++=20
++ SEC("socket")
++ __success __retval(0x6a5a2920)
++ int cond_break3(const void *ctx)
++ {
++ 	return loop();
++ }
++=20
++ SEC("socket")
++ __success __retval(1)
++ int cond_break4(const void *ctx)
++ {
++ 	int cnt =3D zero;
++=20
++ 	for (;;) {
++ 		/* should eventually break out of the loop */
++ 		cond_break;
++ 		cnt++;
++ 	}
++ 	/* if we looped a bit, it's a success */
++ 	return cnt > 1 ? 1 : 0;
++ }
++=20
++ static __noinline int static_subprog(void)
++ {
++ 	int cnt =3D zero;
++=20
++ 	for (;;) {
++ 		cond_break;
++ 		cnt++;
++ 	}
++=20
++ 	return cnt;
++ }
++=20
++ SEC("socket")
++ __success __retval(1)
++ int cond_break5(const void *ctx)
++ {
++ 	int cnt1 =3D zero, cnt2;
++=20
++ 	for (;;) {
++ 		cond_break;
++ 		cnt1++;
++ 	}
++=20
++ 	cnt2 =3D static_subprog();
++=20
++ 	/* main and subprog have to loop a bit */
++ 	return cnt1 > 1 && cnt2 > 1 ? 1 : 0;
++ }
++=20
+  char _license[] SEC("license") =3D "GPL";
+
+--Sig_/I9j87X6ApN8PS6sC_1mfoKA
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXpGxgACgkQAVBC80lX
+0GyK+wf9GeKO29jQCn5GcUD1Y0Q9Ea6t3msOMQzBJh7hfCFniqOSxb08dYLj2uVc
+hLfU2MUZUTh1C5YDcU/DB7LGVfILtTmSev44Pjm1DzPFyKdv4fHSFofPR3xbd/VN
+S5HN7NxADM6vBGdEHOiWvXK5w0YmFthTpf/U3CHXuzhGJ7FZ7IhHIPkTeoEDsv9g
+muxjtMv4pok3Idzi9HJwBpiEYYgRvOO67gj92cJEFHv157swkQ9b9geoMVqqJbmy
+i2u0yY3KRwpu0r5t9GinXbfdtOQk6gVj/a1Pe1uF0pOp4Tlj5yXl1NGJVJa1vZQQ
+7ADXFlIzPTSUoMmV9M1HbwQ4xydJ7g==
+=HtY4
+-----END PGP SIGNATURE-----
+
+--Sig_/I9j87X6ApN8PS6sC_1mfoKA--
 
