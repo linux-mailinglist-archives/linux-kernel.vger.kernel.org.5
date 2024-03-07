@@ -1,226 +1,377 @@
-Return-Path: <linux-kernel+bounces-95656-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95598-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 188188750D4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:50:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB36F874FFA
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:30:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C74E528A005
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 13:50:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D87D1F2339D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 13:30:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 878BA12E1FE;
-	Thu,  7 Mar 2024 13:47:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B53512C801;
+	Thu,  7 Mar 2024 13:30:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fivetechno.de header.i=@fivetechno.de header.b="nL43zlXd"
-Received: from wp725.webpack.hosteurope.de (wp725.webpack.hosteurope.de [80.237.130.247])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XraYcgVO"
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 489F312E1FB;
-	Thu,  7 Mar 2024 13:47:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.247
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB821126F3E;
+	Thu,  7 Mar 2024 13:30:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709819234; cv=none; b=mlO5KGPuGzz09Of1DhbUg2BbiXOx/2Gzngk/mccPNpbzoy0RWVEuglRizXPbiPvx/pZ1K8BDQCJ5lPAV+bmOKIVh4osv0FWEDq1FbScUy2am7uYQu866JNLfpjVvB0LwtX24PURI8wAXSCtWvhrXCwIRonKE73fM8yDOovTlt/s=
+	t=1709818213; cv=none; b=dZ+n3SmWPapswrgf0+QrT6KGtg9R4hvy+GNg7K0iUWUJ197YBsfdcPQDl9ZW9Rjpb4TFxE32x6mL6AgfNFsGLlD61sgNbAzitvbi1u1DC1vT0POZh/xXXVuMgJSmMKrBswtLRrEfofZMMnryN69lT0VPzr6SziwRJF5ZRDgYtg0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709819234; c=relaxed/simple;
-	bh=dv62tGRYptDubici5vM7ijhoWIhLm4YHQ1AoA3GAGlM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Hp9Nwa14h6bEdz3NyOM2DYq1OeAObeRajxz60Edta2jV0NzHqlLYVGAYAUG7d6mvbmWCfPZTtvIbgPKLezc0KiZ/eLdOBP+EbvuG+QcnY01I0Mgt66Zban6Bmsa0dPEyerh+/ViWhsZuUbmbRJmD9VTfspORYxUWLaZQfgNyP6s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fivetechno.de; spf=pass smtp.mailfrom=fivetechno.de; dkim=pass (2048-bit key) header.d=fivetechno.de header.i=@fivetechno.de header.b=nL43zlXd; arc=none smtp.client-ip=80.237.130.247
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fivetechno.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fivetechno.de
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=fivetechno.de; s=he121032; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:From:
-	Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:In-Reply-To:
-	References; bh=L3pILwjmWiNz/UuxYopFxz90O1sPL169tOa3rXJQcXc=; t=1709819232;
-	x=1710251232; b=nL43zlXd8jFdtBaft5Qw2hoC/rhg3dMAkK+0dHQ3+ONMGbYzUBu6BkL74ezik
-	4MOrRDG+hUuf85y9UZjgbBx1kMbWy+h/fM0zb83HSEOBisCSHViCSCEZtNua/+uZX3/HtijJMAQtv
-	YXdQcagC8MmNZknBnb0dV+X34ZN27UYJivJr5sUfniKVjN+k2uzbjj2feotdCtkliAuSeELME9I3G
-	3pfvZX79+WCT5FlZppdbKiHdQ3Vrv7bBFay9MeUV7hpswqgAJZWADnJpo2sN2nU3+vxXjz9qh+tg/
-	kNPp7sk42qnxaKZcgjo4FbVxnmwOt9ADSGdcpn6dhAh6fhckvQ==;
-Received: from p5098d998.dip0.t-ipconnect.de ([80.152.217.152] helo=hermes.fivetechno.de); authenticated
-	by wp725.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	id 1riDoU-0002B4-Do; Thu, 07 Mar 2024 14:29:34 +0100
-X-Virus-Scanned: by amavisd-new 2.12.1 using newest ClamAV at
-	linuxbbg.five-lan.de
-Received: from [192.168.178.100] (p508f320b.dip0.t-ipconnect.de [80.143.50.11])
-	(authenticated bits=0)
-	by hermes.fivetechno.de (8.15.2/8.15.2/SUSE Linux 0.8) with ESMTPSA id 427DTVIU021364
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Thu, 7 Mar 2024 14:29:32 +0100
-Message-ID: <a46e91ad-8cbc-4a4d-9268-f27906077e68@fivetechno.de>
-Date: Thu, 7 Mar 2024 14:29:31 +0100
+	s=arc-20240116; t=1709818213; c=relaxed/simple;
+	bh=vkOMxHXD4nuVLrv6WmdabNYOCP9l1guIXj+KW4LR1do=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
+	 In-Reply-To:Content-Type; b=hpKZHh7eHozq+9SV8k4Jv5VAzK3nv8+PQJnQvHqMM11D04i6ekHAeGCqp47J/9AOl6c1AnuMQboFKwWP3F1HugyL76lrCLhexskTM3LECXYIG3rjcPTM5suM0S1zPyE/cncQGVK+aYt8lD2Nm1pq85jCN6G4QlO8ap+friGL2Ss=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XraYcgVO; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-4130fefef75so4809155e9.2;
+        Thu, 07 Mar 2024 05:30:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709818210; x=1710423010; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:references:to:from:subject
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=doHNYzpPaU/Jmbsj3ODm0NABIpGT3fJO+db8zfVfSF4=;
+        b=XraYcgVOPnatI3ONhaT+eASEIROHPgRFlVjFLJb2G1UvczoDA2yCpkJOR8g5kol+Vy
+         W9at145oa9raBPLIrqEpRwkgzlHdiwWIcx9v2+OcZlx7pYSwR2A1CT/bhIxEgAJ7368N
+         HF8YJZ6SH0v2jZgbRl+MmxbS4mi7/m8OuDkFA0LJDzlhmSHQNxCJi/jFuApn3tD59VQn
+         V/58wOV8a9STfo94b/OI5K781NTUQnYk6xAC6S2Kmpqz5kBjQHQ0WivoFt/3+miqsSfE
+         RjoDdR5z2N1UGf6RmMC7d0SwktNLeDOrFbzhA4RKl+feaSg85yJw5bmnU7f0alKX79Pm
+         sDaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709818210; x=1710423010;
+        h=content-transfer-encoding:in-reply-to:references:to:from:subject
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=doHNYzpPaU/Jmbsj3ODm0NABIpGT3fJO+db8zfVfSF4=;
+        b=eyRSHcA9ibHt6lXC7bT1j5C/UZHV3woLhe1r/65HWCNV/xiXsV9RBXgqEXs37HrRjP
+         28P2mYtqG7yWD87GYjt+ai3RXBGaKG4fBP1MsTGg8rpXp/i5/5G0qHmstLPfywH+NmHs
+         RyFRdK8DbNNAYXZcb4+7KVKAljt0G1yIJHqpna4RFYYY9tniW2G3apL4VdjvcDlWst2M
+         zAJIpRkJ9Wx4crunFEz3yuC6MCZ89r7bMk8s8PVKuSiHuoviF/EPf18p8W6/VDQkJePN
+         kvEn8ZApXyzj19VRE+nxWqE/qIVNrsIfQMg0llJvMrHEEtxuY4S5ov1rXrOA4P0UB4b/
+         ox0A==
+X-Forwarded-Encrypted: i=1; AJvYcCVwVQ4jFeoX7sB5DvonbdVMcfHFpFXnrQCLjRD0wbqZ3+OAA5shCq0L2WzDJyeWW2gZJAId8Yl4A1qU10b9611Ho3zZJoQi7F+xMfM1wgJcSFP1ub4+KmzN6L9az8jH8BldNPj0W8BQXl/pRGiTwZCrPtfs0aLZdJNsg9vmznUWvlxqvthe
+X-Gm-Message-State: AOJu0YxuHrLpjxrKo1jqYi8w7Sa3tjA3GrIQgMTqcFSyOqS2Y/43H/pn
+	HtGQAzkbZ9HWhMJbLqY26SGQyGjhNxfC9l2jaX94ATo92JgQljWk
+X-Google-Smtp-Source: AGHT+IGOXKOB/DpTDS46ZigfIY/sMM7eU8fn4aIS5/XqrPkFg4EAFhMM+QDivPnj6Mw6HerQOFA2fA==
+X-Received: by 2002:a05:600c:4fc3:b0:412:dc02:9824 with SMTP id o3-20020a05600c4fc300b00412dc029824mr10431099wmq.9.1709818209866;
+        Thu, 07 Mar 2024 05:30:09 -0800 (PST)
+Received: from debian ([146.70.204.204])
+        by smtp.gmail.com with ESMTPSA id m37-20020a05600c3b2500b0041312c0cc45sm1208587wms.0.2024.03.07.05.29.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Mar 2024 05:30:09 -0800 (PST)
+Message-ID: <a0d6798b-ad9e-4b12-bd07-9d4e22a64df6@gmail.com>
+Date: Thu, 7 Mar 2024 14:29:38 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] i2c: exynos5: Init data before registering interrupt
- handler
-To: Marek Szyprowski <m.szyprowski@samsung.com>,
-        Jesper Nilsson <jesper.nilsson@axis.com>,
-        Andi Shyti
- <andi.shyti@kernel.org>,
-        Krzysztof Kozlowski
- <krzysztof.kozlowski@linaro.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>
-Cc: linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@axis.com
-References: <CGME20240305105548eucas1p110f1ecf1570ff69a618ca86297eeba89@eucas1p1.samsung.com>
- <20240305-i2c_exynos5-v3-1-17a749688806@axis.com>
- <949c82da-f0dc-4824-ac57-bc86ae42d871@samsung.com>
-From: Markus Reichl <m.reichl@fivetechno.de>
-Content-Language: de-DE
-Autocrypt: addr=m.reichl@fivetechno.de; keydata=
- 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
- ZnS2JHg/17+ErCtiUzuJ5EGMPA==
-In-Reply-To: <949c82da-f0dc-4824-ac57-bc86ae42d871@samsung.com>
+Subject: [PATCH net-next v2 4/4] net: gro: move L3 flush checks to
+ tcp_gro_receive
+From: Richard Gobert <richardbgobert@gmail.com>
+To: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, willemdebruijn.kernel@gmail.com, dsahern@kernel.org,
+ shuah@kernel.org, idosch@nvidia.com, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <2ce1600b-e733-448b-91ac-9d0ae2b866a4@gmail.com>
+In-Reply-To: <2ce1600b-e733-448b-91ac-9d0ae2b866a4@gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;m.reichl@fivetechno.de;1709819232;308ca482;
-X-HE-SMSGID: 1riDoU-0002B4-Do
+Content-Transfer-Encoding: 7bit
 
-Hi Marek,
+{inet,ipv6}_gro_receive functions perform flush checks (ttl, flags,
+iph->id, ...) against all packets in a loop. These flush checks are
+relevant only to tcp flows, and as such they're used to determine whether
+the packets can be merged later in tcp_gro_receive.
 
-Am 07.03.24 um 12:41 schrieb Marek Szyprowski:
-> On 05.03.2024 11:50, Jesper Nilsson wrote:
-> > devm_request_irq() is called before we initialize the "variant"
-> > member variable from of_device_get_match_data(), so if an interrupt
-> > is triggered inbetween, we can end up following a NULL pointer
-> > in the interrupt handler.
-> >
-> > This problem was exposed when the I2C controller in question was
-> > (mis)configured to be used in both secure world and Linux.
-> >
-> > That this can happen is also reflected by the existing code that
-> > clears any pending interrupts from "u-boot or misc causes".
-> >
-> > Move the clearing of pending interrupts and the call to
-> > devm_request_irq() to the end of probe.
-> >
-> > Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
-> > Fixes: 218e1496135e ("i2c: exynos5: add support for HSI2C on Exynos5260 SoC")
-> > Signed-off-by: Jesper Nilsson <jesper.nilsson@axis.com>
-> > ---
-> > Changes in v3:
-> > - Avoid multiple assignment
-> > - Link to v2: https://lore.kernel.org/r/20240304-i2c_exynos5-v2-1-7b9c312be719@axis.com
-> >
-> > Changes in v2:
-> > - Use dev_err_probe() instead of open coding it
-> > - Dropped the return failure if we can't find a match in devicetree
-> > - Link to v1: https://lore.kernel.org/r/20240304-i2c_exynos5-v1-1-e91c889d2025@axis.com
-> > ---
-> >   drivers/i2c/busses/i2c-exynos5.c | 29 +++++++++++++++--------------
-> >   1 file changed, 15 insertions(+), 14 deletions(-)
-> >
-> > diff --git a/drivers/i2c/busses/i2c-exynos5.c b/drivers/i2c/busses/i2c-exynos5.c
-> > index 385ef9d9e4d4..8458e22313a7 100644
-> > --- a/drivers/i2c/busses/i2c-exynos5.c
-> > +++ b/drivers/i2c/busses/i2c-exynos5.c
-> > @@ -906,23 +906,9 @@ static int exynos5_i2c_probe(struct platform_device *pdev)
-> >   	i2c->adap.algo_data = i2c;
-> >   	i2c->adap.dev.parent = &pdev->dev;
-> >   
-> > -	/* Clear pending interrupts from u-boot or misc causes */
-> > -	exynos5_i2c_clr_pend_irq(i2c);
-> > -
-> >   	spin_lock_init(&i2c->lock);
-> >   	init_completion(&i2c->msg_complete);
-> >   
-> > -	i2c->irq = ret = platform_get_irq(pdev, 0);
-> > -	if (ret < 0)
-> > -		goto err_clk;
-> > -
-> > -	ret = devm_request_irq(&pdev->dev, i2c->irq, exynos5_i2c_irq,
-> > -			       IRQF_NO_SUSPEND, dev_name(&pdev->dev), i2c);
-> > -	if (ret != 0) {
-> > -		dev_err(&pdev->dev, "cannot request HS-I2C IRQ %d\n", i2c->irq);
-> > -		goto err_clk;
-> > -	}
-> > -
-> >   	i2c->variant = of_device_get_match_data(&pdev->dev);
-> >   
-> >   	ret = exynos5_hsi2c_clock_setup(i2c);
-> > @@ -940,6 +926,21 @@ static int exynos5_i2c_probe(struct platform_device *pdev)
-> >   	clk_disable(i2c->clk);
-> >   	clk_disable(i2c->pclk);
-> >   
-> > +	/* Clear pending interrupts from u-boot or misc causes */
-> > +	exynos5_i2c_clr_pend_irq(i2c);
->
-> Just above this call the clocks have been disabled, so any access to the 
-> i2c host registers will result in freeze or external abort (depending on 
-> the soc/cpu).
->
-> To make things worse, this patch moved registering the interrupt handler 
-> after the i2c_add_adapter() call. This means that all i2c devices that 
-> will be probbed directly from i2c_add_adapter() won't be able to access 
-> the i2c bus, as the host controller is still not fully functional that 
-> time yet.
->
-> This breaks today's linux-next on all Exynos5+ platforms. Has anyone 
-> tested this change?
-Tested this patch on top of stable 6.7.9, breaks booting odroid-xu4.
+These checks are not relevant to UDP packets. Furthermore, they need to be
+done only once in tcp_gro_receive and only against the found p skb, since
+they only affect flush and not same_flow.
 
-Gruß,
---
-Markus
+Leveraging the previous commit in the series, in which correct network header offsets
+are saved for both outer and inner network headers - allowing these checks
+to be done only once, in tcp_gro_receive. As a result,
+NAPI_GRO_CB(p)->flush is not used at all. In addition - flush_id checks are
+more declarative and contained in inet_gro_flush, thus removing the need
+for flush_id in napi_gro_cb.
 
->
-> > +
-> > +	ret = platform_get_irq(pdev, 0);
-> > +	if (ret < 0)
-> > +		goto err_clk;
-> > +	i2c->irq = ret;
-> > +
-> > +	ret = devm_request_irq(&pdev->dev, i2c->irq, exynos5_i2c_irq,
-> > +			       IRQF_NO_SUSPEND, dev_name(&pdev->dev), i2c);
-> > +	if (ret != 0) {
-> > +		dev_err(&pdev->dev, "cannot request HS-I2C IRQ %d\n", i2c->irq);
-> > +		goto err_clk;
-> > +	}
-> > +
-> >   	return 0;
-> >   
-> >    err_clk:
-> >
-> Best regards
+This results in less parsing code for UDP flows and non-loop flush tests
+for TCP flows.
 
+For example, running 40 IP/UDP netperf connections:
+/super_netperf.sh 40 -H 1.1.1.2 -t UDP_STREAM -l 120
+
+Running perf top for 90s we can see that relatively less time is spent
+on inet_gro_receive when GRO is not coalescing UDP:
+
+net-next:
+   1.26%  [kernel]  [k] inet_gro_receive
+
+patch applied:
+   0.85%  [kernel]  [k] inet_gro_receive
+
+udpgro_bench.sh single connection GRO improvement:
+net-next:
+   0.76%  [kernel]  [k] inet_gro_receive
+
+patch applied:
+   0.61%  [kernel]  [k] inet_gro_receive
+
+Signed-off-by: Richard Gobert <richardbgobert@gmail.com>
+---
+ include/net/gro.h      |  9 ++----
+ net/core/gro.c         |  3 --
+ net/ipv4/af_inet.c     | 36 ---------------------
+ net/ipv4/tcp_offload.c | 73 ++++++++++++++++++++++++++++++++++--------
+ net/ipv6/ip6_offload.c | 11 -------
+ 5 files changed, 63 insertions(+), 69 deletions(-)
+
+diff --git a/include/net/gro.h b/include/net/gro.h
+index 923cbcc4c2fa..835cfc38a7b7 100644
+--- a/include/net/gro.h
++++ b/include/net/gro.h
+@@ -35,15 +35,15 @@ struct napi_gro_cb {
+ 	/* This is non-zero if the packet cannot be merged with the new skb. */
+ 	u16	flush;
+ 
+-	/* Save the IP ID here and check when we get to the transport layer */
+-	u16	flush_id;
+-
+ 	/* Number of segments aggregated. */
+ 	u16	count;
+ 
+ 	/* Used in ipv6_gro_receive() and foo-over-udp and esp-in-udp */
+ 	u16	proto;
+ 
++	/* used to support CHECKSUM_COMPLETE for tunneling protocols */
++	__wsum	csum;
++
+ /* Used in napi_gro_cb::free */
+ #define NAPI_GRO_FREE             1
+ #define NAPI_GRO_FREE_STOLEN_HEAD 2
+@@ -83,9 +83,6 @@ struct napi_gro_cb {
+ 		/* GRO is done by frag_list pointer chaining. */
+ 		u8	is_flist:1;
+ 	);
+-
+-	/* used to support CHECKSUM_COMPLETE for tunneling protocols */
+-	__wsum	csum;
+ };
+ 
+ #define NAPI_GRO_CB(skb) ((struct napi_gro_cb *)(skb)->cb)
+diff --git a/net/core/gro.c b/net/core/gro.c
+index 7da3df2c634f..4128c16e76a2 100644
+--- a/net/core/gro.c
++++ b/net/core/gro.c
+@@ -332,8 +332,6 @@ static void gro_list_prepare(const struct list_head *head,
+ 	list_for_each_entry(p, head, list) {
+ 		unsigned long diffs;
+ 
+-		NAPI_GRO_CB(p)->flush = 0;
+-
+ 		if (hash != skb_get_hash_raw(p)) {
+ 			NAPI_GRO_CB(p)->same_flow = 0;
+ 			continue;
+@@ -472,7 +470,6 @@ static enum gro_result dev_gro_receive(struct napi_struct *napi, struct sk_buff
+ 					sizeof(u32))); /* Avoid slow unaligned acc */
+ 	*(u32 *)&NAPI_GRO_CB(skb)->zeroed = 0;
+ 	NAPI_GRO_CB(skb)->flush = skb_has_frag_list(skb);
+-	NAPI_GRO_CB(skb)->is_atomic = 1;
+ 	NAPI_GRO_CB(skb)->count = 1;
+ 	if (unlikely(skb_is_gso(skb))) {
+ 		NAPI_GRO_CB(skb)->count = skb_shinfo(skb)->gso_segs;
+diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
+index 09ab9ac4420b..a60301a43727 100644
+--- a/net/ipv4/af_inet.c
++++ b/net/ipv4/af_inet.c
+@@ -1512,7 +1512,6 @@ struct sk_buff *inet_gro_receive(struct list_head *head, struct sk_buff *skb)
+ 
+ 	list_for_each_entry(p, head, list) {
+ 		struct iphdr *iph2;
+-		u16 flush_id;
+ 
+ 		if (!NAPI_GRO_CB(p)->same_flow)
+ 			continue;
+@@ -1529,43 +1528,8 @@ struct sk_buff *inet_gro_receive(struct list_head *head, struct sk_buff *skb)
+ 			NAPI_GRO_CB(p)->same_flow = 0;
+ 			continue;
+ 		}
+-
+-		/* All fields must match except length and checksum. */
+-		NAPI_GRO_CB(p)->flush |=
+-			(iph->ttl ^ iph2->ttl) |
+-			(iph->tos ^ iph2->tos) |
+-			((iph->frag_off ^ iph2->frag_off) & htons(IP_DF));
+-
+-		NAPI_GRO_CB(p)->flush |= flush;
+-
+-		/* We need to store of the IP ID check to be included later
+-		 * when we can verify that this packet does in fact belong
+-		 * to a given flow.
+-		 */
+-		flush_id = (u16)(id - ntohs(iph2->id));
+-
+-		/* This bit of code makes it much easier for us to identify
+-		 * the cases where we are doing atomic vs non-atomic IP ID
+-		 * checks.  Specifically an atomic check can return IP ID
+-		 * values 0 - 0xFFFF, while a non-atomic check can only
+-		 * return 0 or 0xFFFF.
+-		 */
+-		if (!NAPI_GRO_CB(p)->is_atomic ||
+-		    !(iph->frag_off & htons(IP_DF))) {
+-			flush_id ^= NAPI_GRO_CB(p)->count;
+-			flush_id = flush_id ? 0xFFFF : 0;
+-		}
+-
+-		/* If the previous IP ID value was based on an atomic
+-		 * datagram we can overwrite the value and ignore it.
+-		 */
+-		if (NAPI_GRO_CB(skb)->is_atomic)
+-			NAPI_GRO_CB(p)->flush_id = flush_id;
+-		else
+-			NAPI_GRO_CB(p)->flush_id |= flush_id;
+ 	}
+ 
+-	NAPI_GRO_CB(skb)->is_atomic = !!(iph->frag_off & htons(IP_DF));
+ 	NAPI_GRO_CB(skb)->flush |= flush;
+ 
+ 	/* Note : No need to call skb_gro_postpull_rcsum() here,
+diff --git a/net/ipv4/tcp_offload.c b/net/ipv4/tcp_offload.c
+index fde800179b2e..a9ea6c681fa6 100644
+--- a/net/ipv4/tcp_offload.c
++++ b/net/ipv4/tcp_offload.c
+@@ -178,6 +178,55 @@ struct sk_buff *tcp_gso_segment(struct sk_buff *skb,
+ 	return segs;
+ }
+ 
++static int inet_gro_flush(const struct iphdr *iph, const struct iphdr *iph2,
++			  struct sk_buff *p, u32 outer)
++{
++	const u32 id = ntohl(*(__be32 *)&iph->id);
++	const u32 id2 = ntohl(*(__be32 *)&iph2->id);
++	const int flush_id = ntohs(id >> 16) - ntohs(id2 >> 16);
++	const u16 count = NAPI_GRO_CB(p)->count;
++	const u32 df = id & IP_DF;
++	u32 is_atomic;
++	int flush;
++
++	/* All fields must match except length and checksum. */
++	flush = (iph->ttl ^ iph2->ttl) | (iph->tos ^ iph2->tos) | (df ^ (id2 & IP_DF));
++
++	/* When we receive our second frame we can make a decision on if we
++	 * continue this flow as an atomic flow with a fixed ID or if we use
++	 * an incremdfenting ID.
++	 */
++	if (count == 1) {
++		is_atomic = df && flush_id == 0;
++		NAPI_GRO_CB(p)->is_atomic = is_atomic;
++	} else {
++		is_atomic = df && NAPI_GRO_CB(p)->is_atomic;
++	}
++
++	/* Ignore outer IP ID value if based on atomic datagram. */
++	outer = (outer && df) - 1;
++	is_atomic--;
++
++	return flush | ((flush_id ^ (count & is_atomic)) & outer);
++}
++
++static int ipv6_gro_flush(const struct ipv6hdr *iph, const struct ipv6hdr *iph2)
++{
++	/* <Version:4><Traffic_Class:8><Flow_Label:20> */
++	__be32 first_word = *(__be32 *)iph ^ *(__be32 *)iph2;
++
++	/* Flush if Traffic Class fields are different. */
++	return (first_word & htonl(0x0FF00000)) |
++		(__force __be32)(iph->hop_limit ^ iph2->hop_limit);
++}
++
++static int gro_network_flush(const void *nh, const void *nh2,
++			     struct sk_buff *p, u32 outer)
++{
++	return (((struct iphdr *)nh)->version == 6) ? ipv6_gro_flush(nh, nh2) :
++		inet_gro_flush(nh, nh2, p, outer);
++}
++
+ struct sk_buff *tcp_gro_receive(struct list_head *head, struct sk_buff *skb)
+ {
+ 	struct sk_buff *pp = NULL;
+@@ -190,6 +239,8 @@ struct sk_buff *tcp_gro_receive(struct list_head *head, struct sk_buff *skb)
+ 	unsigned int mss = 1;
+ 	unsigned int hlen;
+ 	unsigned int off;
++	unsigned int netoff_diff;
++	bool encap_mark;
+ 	int flush = 1;
+ 	int i;
+ 
+@@ -232,9 +283,7 @@ struct sk_buff *tcp_gro_receive(struct list_head *head, struct sk_buff *skb)
+ 	goto out_check_final;
+ 
+ found:
+-	/* Include the IP ID check below from the inner most IP hdr */
+-	flush = NAPI_GRO_CB(p)->flush;
+-	flush |= (__force int)(flags & TCP_FLAG_CWR);
++	flush = (__force int)(flags & TCP_FLAG_CWR);
+ 	flush |= (__force int)((flags ^ tcp_flag_word(th2)) &
+ 		  ~(TCP_FLAG_CWR | TCP_FLAG_FIN | TCP_FLAG_PSH));
+ 	flush |= (__force int)(th->ack_seq ^ th2->ack_seq);
+@@ -242,16 +291,14 @@ struct sk_buff *tcp_gro_receive(struct list_head *head, struct sk_buff *skb)
+ 		flush |= *(u32 *)((u8 *)th + i) ^
+ 			 *(u32 *)((u8 *)th2 + i);
+ 
+-	/* When we receive our second frame we can made a decision on if we
+-	 * continue this flow as an atomic flow with a fixed ID or if we use
+-	 * an incrementing ID.
+-	 */
+-	if (NAPI_GRO_CB(p)->flush_id != 1 ||
+-	    NAPI_GRO_CB(p)->count != 1 ||
+-	    !NAPI_GRO_CB(p)->is_atomic)
+-		flush |= NAPI_GRO_CB(p)->flush_id;
+-	else
+-		NAPI_GRO_CB(p)->is_atomic = false;
++	encap_mark = NAPI_GRO_CB(skb)->encap_mark;
++	netoff_diff = off - skb_network_offset(skb);
++	for (i = 0; i <= encap_mark; i++) {
++		flush |= gro_network_flush(((void *)th) - netoff_diff,
++					   ((void *)th2) - netoff_diff,
++					   p, i != encap_mark);
++		netoff_diff = off - skb_inner_network_offset(skb);
++	}
+ 
+ 	mss = skb_shinfo(p)->gso_size;
+ 
+diff --git a/net/ipv6/ip6_offload.c b/net/ipv6/ip6_offload.c
+index 29601be9fa90..6e29ddfc0bc1 100644
+--- a/net/ipv6/ip6_offload.c
++++ b/net/ipv6/ip6_offload.c
+@@ -288,19 +288,8 @@ INDIRECT_CALLABLE_SCOPE struct sk_buff *ipv6_gro_receive(struct list_head *head,
+ 				   nlen - sizeof(struct ipv6hdr)))
+ 				goto not_same_flow;
+ 		}
+-		/* flush if Traffic Class fields are different */
+-		NAPI_GRO_CB(p)->flush |= !!((first_word & htonl(0x0FF00000)) |
+-			(__force __be32)(iph->hop_limit ^ iph2->hop_limit));
+-		NAPI_GRO_CB(p)->flush |= flush;
+-
+-		/* If the previous IP ID value was based on an atomic
+-		 * datagram we can overwrite the value and ignore it.
+-		 */
+-		if (NAPI_GRO_CB(skb)->is_atomic)
+-			NAPI_GRO_CB(p)->flush_id = 0;
+ 	}
+ 
+-	NAPI_GRO_CB(skb)->is_atomic = true;
+ 	NAPI_GRO_CB(skb)->flush |= flush;
+ 
+ 	skb_gro_postpull_rcsum(skb, iph, nlen);
+-- 
+2.36.1
 
