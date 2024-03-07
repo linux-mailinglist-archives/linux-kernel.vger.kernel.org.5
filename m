@@ -1,124 +1,93 @@
-Return-Path: <linux-kernel+bounces-95333-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95334-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE730874C67
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:32:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D0BA874C6C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 11:33:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 35B05B21F28
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:32:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 38C5A285C31
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:33:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F44E85280;
-	Thu,  7 Mar 2024 10:32:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D6A485634;
+	Thu,  7 Mar 2024 10:33:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T703hviq"
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="qg/46i44"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E57585277
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 10:32:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E62C1CA84;
+	Thu,  7 Mar 2024 10:33:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709807563; cv=none; b=h0NdLYo3YcibBHTJx+604PKvJAH1sncrbY9Ew2qwS2aRqeT7V/wvIZsrwAPYrK9dJrPQSvKajtOIyhdRgWS/Q8jffRbmypBVkkQC87UNvdWSFO9CLkEcO+YKxhmYCT0Kv6RmIf5sY5oLYn78ygMIFl85QS/CHMkHRZSA88WJRso=
+	t=1709807590; cv=none; b=rIvW+af4mdqT4PdzPHmr8kF3AxdxqjkXD8E8LglS9IDaY1NIFFPMj55M30RAd9kHMUYqad2yfZlw6CwwJZZfynKm29MMwEWDW0uTWY4Pl3+nOaXUbBOyyR9A6SqJ9dD3yefXmER8VkJv7NGFcSHKdf1PIVml1A/e+YGvP72bOH4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709807563; c=relaxed/simple;
-	bh=wxkDjhkD5a+Y6VrB7ttMH2m1F90rKXIXRLbM/C0qwh8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KL6Hj+s5UTjNRn/nTfjvkP6G6OBLaPikfTY2LzLPl0fUlv+sZU/k6YxL2SIGAy15WDcxJyB8KtrQm5SkVumAPOMJvOIGIde6GzOfPOtHauAQeOkPqqyjgQeBvU/WRNroWgFfbBr/HtAR9x/Q+IdQOGyUolqi/gO2KSd8MO7qyls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T703hviq; arc=none smtp.client-ip=209.85.208.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-563cb3ba9daso765884a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 02:32:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709807560; x=1710412360; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DV8VykTlfYEay4JYWZz+3S/orVQV57jVe8+6o6hgukI=;
-        b=T703hviq/OcM4rFht8w3xCVSBFAEAChB0vRllbBHOzV1rYjZjOeuiR28TCJX7eD11M
-         lRDJ6EspbJhGBaziaVcrLw96rPeHmy9jTN//hYMUa+T0D8GItMV/ou5tG4u6gXYiwPHK
-         MyZVzLxGpbowrZGjBw6SJD2d08zsb8T/S9bCcjIuRrGHbcxEP2G6O610DZQd3z3n36V7
-         W2dPvEbGtr6ROpQkgCeCWQ4ISynTrfMoocj0CqUsn/dAhdRDeaz4rFGFo3YxnPIQRtuc
-         m2A771bfHGDd2uP6lGSdazWvrTk1w1SrcTO8YHWCIgoudX6A9G3nQWSrdkT2nabd5f+1
-         m5PA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709807560; x=1710412360;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DV8VykTlfYEay4JYWZz+3S/orVQV57jVe8+6o6hgukI=;
-        b=r0tj0VaNhbBjDVdOqT2u0UZGzpOki5Wb2ncTp7liG0PYOCWiWN08t3Q4hVtiC5PI47
-         dkeaqjX++fpFsPym/sU160uxxMtEuWni1NB0sE9TzDuTAL63m81BB+1yllMh4RquwOUZ
-         uPrSbGkMt+sdcOZPOa9SICYM1vAsXG4F0TABJRigk5DPyIR6vsOx8NP+Vsyps3v/tImR
-         kCZLY2XzA0Fk6SJCU00xVj+mqQKhNQyU+olEm/YpevbNp7NkwmodNXuMchBU4q/xjQlk
-         GNktJ6kIVphleV1uZSlAFy/eRiSTIvkTNGqdQTi+T9Cz4ITtxcYEJqpQg419syX6Adgc
-         ZPOw==
-X-Forwarded-Encrypted: i=1; AJvYcCWWq1GKDc1HixmJ5FFXDcSaBWPl935PfQMrF3DEwJ1ey9ACv4xaFEPknGSqAV1HDd4of8XsimeeYrfQLTWlo26GDTbEbX8MhEQGpkU9
-X-Gm-Message-State: AOJu0Yy2j9F0z4QwUk+RY0ESFTyOYQCcLvWrcMVOpiSkp/6BgwRHIGcD
-	OxCGymknjx4+puQ+5WW9W/JZr5FCHBT7AyuJYHP8f57Y9lziKatOCP1ivsOckW8AXYAFJIXLwW2
-	iUqISZH0qaoAJx9R07/Gb2nSjjKI=
-X-Google-Smtp-Source: AGHT+IEKtFy41Zi9l86FeDZm6p26SRwK8CTEeZ2dXozva1J6FKXwmOCFBMdGgGHCPc3OTMp6o5ORJETxtXVL13ssLTk=
-X-Received: by 2002:a17:906:1693:b0:a45:a6e1:30d3 with SMTP id
- s19-20020a170906169300b00a45a6e130d3mr5335228ejd.60.1709807560112; Thu, 07
- Mar 2024 02:32:40 -0800 (PST)
+	s=arc-20240116; t=1709807590; c=relaxed/simple;
+	bh=ZNlTKhT38L9w2ow/OTtwgahS1XjwIk25nFCjPgs4izU=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=SGEXoqdLi9Rs5RfNbVfj5IXYSBRnyzJPNnOVZyQVTrxUYk2YBcHcZhQgCap8twDcX1aI7SXEtLgwf9Lu44cccwJY71znTFrr+esF3kQVVrF3AfkN9x+7Pte7FTtpNQxMznNhDzak/MG0413wzVEX3xDGkq6DILdasaqPe5XOsmw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=qg/46i44; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+	s=201909; t=1709807585;
+	bh=wMkf3YBzzlJjow/0vVDRQvuksnXHfscP5DgovGq9Jug=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=qg/46i44H7pLCx54yhzkQgWVg4qZBTTKQD/Q8Bx1IRr8kgzzhEugpAN1Y2OEGOkGa
+	 oQOAWA19qY0L/SK4mQ00DydQh7P4PNpcK3IMibi3IeUjnyKgdicvq1f+/ZxQDmBuS/
+	 LoGul/mSORMBJrLlhh3VqPkSPQ3tnsgZ+gH+lYI900OncOg8nfTmLTTggZlnfcpxCa
+	 j5tTTxmPyzavMUc3zNNuiVVFdCM8i4cgRVATCxL7hNgvC01y1VnnbmkIgw2ATnYMes
+	 W45h2k28FZndeHFogXTQFJYwTYK9CRw3VDuYH39GZmpy0vNy2jFm33252OVfCS5SN2
+	 Vg/T4X/gy3Hww==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Tr5H31vRTz4wbh;
+	Thu,  7 Mar 2024 21:33:02 +1100 (AEDT)
+From: Michael Ellerman <mpe@ellerman.id.au>
+To: Thomas Zimmermann <tzimmermann@suse.de>, jani.nikula@intel.com,
+ naresh.kamboju@linaro.org, deller@gmx.de, npiggin@gmail.com,
+ christophe.leroy@csgroup.eu, aneesh.kumar@kernel.org,
+ naveen.n.rao@linux.ibm.com
+Cc: dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+ lkft-triage@lists.linaro.org, linux-kernel@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, Thomas Zimmermann <tzimmermann@suse.de>
+Subject: Re: [PATCH v3 3/3] arch/powerpc: Remove <linux/fb.h> from backlight
+ code
+In-Reply-To: <20240306122935.10626-4-tzimmermann@suse.de>
+References: <20240306122935.10626-1-tzimmermann@suse.de>
+ <20240306122935.10626-4-tzimmermann@suse.de>
+Date: Thu, 07 Mar 2024 21:33:00 +1100
+Message-ID: <87msranxgj.fsf@mail.lhotse>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240228091417.40110-1-brookxu.cn@gmail.com> <6eae3879-f9d2-4fe3-96b1-c9e2aa939264@grimberg.me>
-In-Reply-To: <6eae3879-f9d2-4fe3-96b1-c9e2aa939264@grimberg.me>
-From: =?UTF-8?B?6K645pil5YWJ?= <brookxu.cn@gmail.com>
-Date: Thu, 7 Mar 2024 18:32:27 +0800
-Message-ID: <CADtkEeeiNDO87L9MwC392gEp7YhhGGxojRu8nW_epkTe-jxcyg@mail.gmail.com>
-Subject: Re: [PATCH] nvme: fix reconnection fail due to reserved tag allocation
-To: Sagi Grimberg <sagi@grimberg.me>
-Cc: kbusch@kernel.org, axboe@kernel.dk, hch@lst.de, 
-	linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-Thanks for review, seems that we should revert this patch
-ed01fee283a0, ed01fee283a0 seems just a alone 'optimization'.  If no
-double, I will send another patch.
+Thomas Zimmermann <tzimmermann@suse.de> writes:
+> Replace <linux/fb.h> with a forward declaration in <asm/backlight.h> to
+> resolve an unnecessary dependency. Remove pmac_backlight_curve_lookup()
+> and struct fb_info from source and header files. The function and the
+> framebuffer struct are unused. No functional changes.
+>
+> v3:
+> 	* Add Fixes tag (Christophe)
+> 	* fix typos in commit message (Jani)
+>
+> Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+> Fixes: d565dd3b0824 ("[PATCH] powerpc: More via-pmu backlight fixes")
+> Reviewed-by: Jani Nikula <jani.nikula@intel.com>
+> ---
+>  arch/powerpc/include/asm/backlight.h        |  5 ++--
+>  arch/powerpc/platforms/powermac/backlight.c | 26 ---------------------
+>  2 files changed, 2 insertions(+), 29 deletions(-)
 
-Thanks
+Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
 
-Sagi Grimberg <sagi@grimberg.me> =E4=BA=8E2024=E5=B9=B43=E6=9C=887=E6=97=A5=
-=E5=91=A8=E5=9B=9B 17:36=E5=86=99=E9=81=93=EF=BC=9A
->
->
->
-> On 28/02/2024 11:14, brookxu.cn wrote:
-> > From: Chunguang Xu <chunguang.xu@shopee.com>
-> >
-> > We found a issue on production environment while using NVMe
-> > over RDMA, admin_q reconnect failed forever while remote
-> > target and network is ok. After dig into it, we found it
-> > may caused by a ABBA deadlock due to tag allocation. In my
-> > case, the tag was hold by a keep alive request waiting
-> > inside admin_q, as we quiesced admin_q while reset ctrl,
-> > so the request maked as idle and will not process before
-> > reset success. As fabric_q shares tagset with admin_q,
-> > while reconnect remote target, we need a tag for connect
-> > command, but the only one reserved tag was held by keep
-> > alive command which waiting inside admin_q. As a result,
-> > we failed to reconnect admin_q forever.
-> >
-> > In order to workaround this issue, I think we should not
-> > retry keep alive request while controller reconnecting,
-> > as we have stopped keep alive while resetting controller,
-> > and will start it again while init finish, so it maybe ok
-> > to drop it.
->
-> This is the wrong fix.
-> First we should note that this is a regression caused by:
-> ed01fee283a0 ("nvme-fabrics: only reserve a single tag")
->
-> Then, you need to restore reserving two tags for the admin
-> tagset.
+cheers
 
