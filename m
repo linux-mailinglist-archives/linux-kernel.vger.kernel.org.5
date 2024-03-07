@@ -1,148 +1,167 @@
-Return-Path: <linux-kernel+bounces-95789-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95794-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B81738752A1
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 16:03:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C3C28752AD
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 16:04:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E1C4285C73
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:03:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3052B1C24C01
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:04:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EAA512F361;
-	Thu,  7 Mar 2024 15:02:42 +0000 (UTC)
-Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECEF7129A95;
+	Thu,  7 Mar 2024 15:03:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="r0tuvbzY";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="IMAiRVXx"
+Received: from wflow7-smtp.messagingengine.com (wflow7-smtp.messagingengine.com [64.147.123.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02A5E12D754;
-	Thu,  7 Mar 2024 15:02:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.154
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1635F12F365;
+	Thu,  7 Mar 2024 15:03:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709823761; cv=none; b=QQfjogkxYlUzatjvNpI69uPo9lLTBh9wRzbVmsXjnWF5AjQNF7/XJum/5WE6aBdLpi3OWgo+V21HNcfkkYN+ht1kpgurRDCvp9kGhFUuUqvqjjnlHujECgM3d93cnpgIMYHxK7KXoveYTFe2B0e9wzUBGENTOQIBpwWKe8IefRg=
+	t=1709823800; cv=none; b=dQx0pGF9Xysa1vhUHDwuWIjkJT9eVeMK6REWA1z3zITFZJ5NuSmRqR9jwbeMdB381uYcZugSxU5GX1bMVYcMMRq3Dm2U5heh3ElVB2qwau2x3Mg0luCIHJ1qvGG3kxx6lyPyzbiaZLcggFBbc/QepKOBdRuFdSwrSgPYZd6tF4I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709823761; c=relaxed/simple;
-	bh=z3D5M3QBXmwHZtu6oMiapW9tSBhuH61YAr5Zlqn9s4s=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=PStrwxVB4rm58WmrG7RWSOnauZIaalmG5ljOOqkxzK5gL/wLzJRZTtX0Fk+yKrMTGGNX8u8ly62BIB4q5kV4hI2v59aEhBY2oorgZMOcIvaTl+jXB1BphdsAt6Rz55U0X+l6G2Y/P5a8VmyJjhgOFFWNmpiJYkDQ9VpXmKVaZfs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.154
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.18.186.51])
-	by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4TrBqG42nzz9xxcx;
-	Thu,  7 Mar 2024 22:42:50 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.47])
-	by mail.maildlp.com (Postfix) with ESMTP id E38521400D7;
-	Thu,  7 Mar 2024 23:02:35 +0800 (CST)
-Received: from [127.0.0.1] (unknown [10.204.63.22])
-	by APP1 (Coremail) with SMTP id LxC2BwAXCxQA1+llg+XkAw--.4752S2;
-	Thu, 07 Mar 2024 16:02:35 +0100 (CET)
-Message-ID: <2dbcd57e3905555b5d966c5403c8f94a307f4990.camel@huaweicloud.com>
-Subject: Re: [PATCH] evm: Change vfs_getxattr() with __vfs_getxattr() in
- evm_calc_hmac_or_hash()
-From: Roberto Sassu <roberto.sassu@huaweicloud.com>
-To: Seth Forshee <sforshee@kernel.org>
-Cc: zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
- eric.snowberg@oracle.com,  paul@paul-moore.com, jmorris@namei.org,
- serge@hallyn.com,  linux-integrity@vger.kernel.org,
- linux-security-module@vger.kernel.org,  linux-kernel@vger.kernel.org,
- Roberto Sassu <roberto.sassu@huawei.com>,  stable@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, Christian Brauner <brauner@kernel.org>
-Date: Thu, 07 Mar 2024 16:02:20 +0100
-In-Reply-To: <5a08af42118541c87ce0b173d03217c3623adce2.camel@huaweicloud.com>
-References: <20240307122240.3560688-1-roberto.sassu@huaweicloud.com>
-	 <ZenPtCfh6CyD2xz5@do-x1extreme>
-	 <5a08af42118541c87ce0b173d03217c3623adce2.camel@huaweicloud.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1709823800; c=relaxed/simple;
+	bh=zrHvih0CRLls3gfTaqe/nco2QOUS/ZrmpGJoEnrrwuI=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=uVP4BEtUOuoGCmsCe/iEgqI0/YQftIVcS2h1MX+sJU2JbP9tuckBhkz4Ez/r1bVsbMBR3+csgzB+Lag/GUoNsnTMxvsiIJ9DfXApbOKwI++mpcfxkvrjfk5flIRqydrQs5LQTv3xFK5/Pi1HiURL8NLWrSWcKTX5z+khjyfhoGE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=r0tuvbzY; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=IMAiRVXx; arc=none smtp.client-ip=64.147.123.142
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailflow.west.internal (Postfix) with ESMTP id 403272CC00B9;
+	Thu,  7 Mar 2024 10:03:16 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Thu, 07 Mar 2024 10:03:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1709823795;
+	 x=1709830995; bh=KIk1du4pHCXSqXMFodBfcBDhm0Cr4cLrqXMscpRsEQg=; b=
+	r0tuvbzYDU2G/VrHHuosGqT9d0Rw3cKHv6Dja3Jxrfr92jUcWA6aBzINFkHmqsc+
+	W0VPxtTJ8B0vC2EEnOjj10f95OpjzDadOL+ys33iJqrTg8dt6h6A0ioD1vUy9eMA
+	rQDiBqRQkSnBZPzAryAgcIPLujfFbbQTaz+hhiYXup1yh83mGte/M+WqrDS75stp
+	2tn2S7bWM4dirwvRqVwurmSpM4mKZ4dA3+y3UwmilVoT8OJZAYdcOgKoABGNvuCQ
+	DseDxJwnKVLzq1eXCX1Zfa1nGfeI+Bygh/lkjPFh+98io7m1+xeCFmZxMh1uq1gJ
+	QEGpyLuNpu6sMRWsDUXowA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1709823795; x=
+	1709830995; bh=KIk1du4pHCXSqXMFodBfcBDhm0Cr4cLrqXMscpRsEQg=; b=I
+	MAiRVXx8U8UQHv+vZM3R4xLoWsqTcVM3UY8wf4FghptGdmRky7R7aKeDRrkxCmlU
+	6PHp7EG14pk2yboSB2QBFOlfKYC7DTi8Gj7hhiqnGmzXgANPCaSGRKEJwpQqQo+G
+	LU5ovHcTsYMe40U3G3h6/XsSKGY9V3rhFgzfEc6G+5QW+c+K/QXyacm+LdwWffUS
+	5KwOiWwOSyWsjja1bb+V07UAuBGmHNSHvCmIlgAKOQ/oIk2V8o7FIkKBBjCB/NQ0
+	2e7ZOdnJ2lulDwQaf9JwqnKNK3OAkH9n6agTMm0DE+GI//rCz1e+A9cMc6rKX2uC
+	QH9+Y3ks/2AkJoHdUqC7g==
+X-ME-Sender: <xms:MtfpZdjIhvvj2w5LIjBaYeBRm68khe7SPUWUIPyz3Qzr4DqMiJH59Q>
+    <xme:MtfpZSCw6-_D15CzMMJ6aMq4FMi2a38HaisIGgcg1cjfGUuDJtjoZKI4NGvsMsMWJ
+    8nh4Z6KFttFTRDe0rk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrieefgdejudcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepgeefjeehvdelvdffieejieejiedvvdfhleeivdelveehjeelteegudektdfg
+    jeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:MtfpZdEVd_wK33nQCCOfgC58V_P6HRkYxs0fK98U48nw3QCN6N9QrA>
+    <xmx:MtfpZSR83RszXpjRHFyEGpw4PYmBtg8qqnJj2iwBSZDSGIiLP24o7A>
+    <xmx:MtfpZaz3ScCYYHDe4yULQs_p0ex-0Ng_lJ48VBQtqruta0LNNK4Gmg>
+    <xmx:M9fpZfEH0QTEMK1lJt6knYQSuFAbpSIeOW9pH5A-AO4-PVMsrOqDdxgBn8g8FLuD>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id F1F00B6008D; Thu,  7 Mar 2024 10:03:13 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-251-g8332da0bf6-fm-20240305.001-g8332da0b
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-CM-TRANSID:LxC2BwAXCxQA1+llg+XkAw--.4752S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7CFy5Aw1fGw4UAr4DZFy7KFg_yoW8KF45pF
-	WYyanFkrn5Xry5C3s5KF4DAayF93yjqrWjkrnFv340v3ZFvrnrZr93Wr13uryF9r1xtwn5
-	tw4qqFyavwnxA3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-	AFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI
-	7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
-	Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY
-	6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6x
-	AIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280
-	aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAPBF1jj5sZvQAAsE
+Message-Id: <f8d42bd5-5a89-49da-8da4-570e26ecc0e3@app.fastmail.com>
+In-Reply-To: 
+ <CAPLW+4mVTvPBW0hd9pV6AsSezxPAhwPByq3WmGpprtseTgy-wg@mail.gmail.com>
+References: 
+ <CA+G9fYtddf2Fd3be+YShHP6CmSDNcn0ptW8qg+stUKW+Cn0rjQ@mail.gmail.com>
+ <d5c07950-6f42-4ac9-b0d8-776d444252ae@app.fastmail.com>
+ <CAPLW+4=T1eGrWQcEJWvOcHgq9tnRhfi=AH_=qj1022k2WHmEhA@mail.gmail.com>
+ <CAPLW+4mVTvPBW0hd9pV6AsSezxPAhwPByq3WmGpprtseTgy-wg@mail.gmail.com>
+Date: Thu, 07 Mar 2024 16:02:22 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Sam Protsenko" <semen.protsenko@linaro.org>
+Cc: "Naresh Kamboju" <naresh.kamboju@linaro.org>,
+ linux-block <linux-block@vger.kernel.org>, lkft-triage@lists.linaro.org,
+ "open list" <linux-kernel@vger.kernel.org>, "Jens Axboe" <axboe@kernel.dk>,
+ "Christoph Hellwig" <hch@lst.de>, "Christian Brauner" <brauner@kernel.org>,
+ "Ulf Hansson" <ulf.hansson@linaro.org>,
+ "Dan Carpenter" <dan.carpenter@linaro.org>,
+ "Anders Roxell" <anders.roxell@linaro.org>,
+ "jh80.chung" <jh80.chung@samsung.com>,
+ "linux-mmc @ vger . kernel . org" <linux-mmc@vger.kernel.org>,
+ "Oleksij Rempel" <linux@rempel-privat.de>,
+ "Manuel Lauss" <manuel.lauss@gmail.com>,
+ "Neil Armstrong" <neil.armstrong@linaro.org>,
+ "Jerome Brunet" <jbrunet@baylibre.com>, yann.gautier@foss.st.com,
+ ludovic.barre@st.com,
+ =?UTF-8?Q?David_Lanzend=C3=B6rfer?= <david.lanzendoerfer@o2s.ch>,
+ "Chen-Yu Tsai" <wens@csie.org>
+Subject: Re: WinLink E850-96: WARNING: at block/blk-settings.c:204 blk_validate_limits
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2024-03-07 at 15:36 +0100, Roberto Sassu wrote:
-> On Thu, 2024-03-07 at 08:31 -0600, Seth Forshee wrote:
-> > On Thu, Mar 07, 2024 at 01:22:39PM +0100, Roberto Sassu wrote:
-> > > From: Roberto Sassu <roberto.sassu@huawei.com>
-> > >=20
-> > > Use __vfs_getxattr() instead of vfs_getxattr(), in preparation for
-> > > deprecating using the vfs_ interfaces for retrieving fscaps.
-> > >=20
-> > > __vfs_getxattr() is only used for debugging purposes, to check if ker=
-nel
-> > > space and user space see the same xattr value.
-> >=20
-> > __vfs_getxattr() won't give you the value as seen by userspace though.
-> > Userspace goes through vfs_getxattr() -> xattr_getsecurity() ->
-> > cap_inode_getsecurity(), which does the conversion to the value
-> > userspace sees. __vfs_getxattr() just gives the raw disk data.
-> >=20
-> > I'm also currently working on changes to my fscaps series that will mak=
-e
-> > it so that __vfs_getxattr() also cannot be used to read fscaps xattrs.
-> > I'll fix this and other code in EVM which will be broken by that change
-> > as part of the next version too.
->=20
-> You are right, thank you!
+On Fri, Mar 1, 2024, at 22:18, Sam Protsenko wrote:
+> On Fri, Mar 1, 2024 at 2:51=E2=80=AFPM Sam Protsenko <semen.protsenko@=
+linaro.org> wrote:
+>> On Thu, Feb 29, 2024 at 8:56=E2=80=AFAM Arnd Bergmann <arnd@arndb.de>=
+ wrote:
 
-(Apologies, I should have been more careful).
+>
+> Sorry, just noticed I commented on the wrong line. Here is the change =
+I made:
+>
+> -               mmc->max_seg_size =3D 0x1000;
+> +               mmc->max_seg_size =3D PAGE_SIZE;
 
-Roberto
+I went over all MMC drivers to see what else sets a max_seg_size
+smaller than a page and found these:
 
-> Roberto
->=20
-> > >=20
-> > > Cc: stable@vger.kernel.org # 5.14.x
-> > > Cc: linux-fsdevel@vger.kernel.org
-> > > Cc: Christian Brauner <brauner@kernel.org>
-> > > Cc: Seth Forshee (DigitalOcean) <sforshee@kernel.org>
-> > > Fixes: 907a399de7b0 ("evm: Check xattr size discrepancy between kerne=
-l and user")
-> > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> > > ---
-> > >  security/integrity/evm/evm_crypto.c | 4 ++--
-> > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > >=20
-> > > diff --git a/security/integrity/evm/evm_crypto.c b/security/integrity=
-/evm/evm_crypto.c
-> > > index b1ffd4cc0b44..168d98c63513 100644
-> > > --- a/security/integrity/evm/evm_crypto.c
-> > > +++ b/security/integrity/evm/evm_crypto.c
-> > > @@ -278,8 +278,8 @@ static int evm_calc_hmac_or_hash(struct dentry *d=
-entry,
-> > >  		if (size < 0)
-> > >  			continue;
-> > > =20
-> > > -		user_space_size =3D vfs_getxattr(&nop_mnt_idmap, dentry,
-> > > -					       xattr->name, NULL, 0);
-> > > +		user_space_size =3D __vfs_getxattr(dentry, inode, xattr->name,
-> > > +						 NULL, 0);
-> > >  		if (user_space_size !=3D size)
-> > >  			pr_debug("file %s: xattr %s size mismatch (kernel: %d, user: %d)\=
-n",
-> > >  				 dentry->d_name.name, xattr->name, size,
-> > > --=20
-> > > 2.34.1
-> > >=20
+drivers/mmc/host/alcor.c:       mmc->max_seg_size =3D AU6601_MAX_DMA_BLO=
+CK_SIZE; // 0x1000
+drivers/mmc/host/au1xmmc.c:             mmc->max_seg_size =3D AU1100_MMC=
+_DESCRIPTOR_SIZE; // 64K-1
+drivers/mmc/host/dw_mmc.c:              mmc->max_seg_size =3D 0x1000;
+drivers/mmc/host/meson-gx-mmc.c:        mmc->max_seg_size =3D mmc->max_r=
+eq_size; //  1536 bytes
+drivers/mmc/host/mmci_stm32_sdmmc.c:            host->mmc->max_seg_size =
+=3D host->variant->stm32_idmabsize_mask; //  GENMASK(12, 5),
+drivers/mmc/host/sunxi-mmc.c:   mmc->max_seg_size       =3D (1 << host->=
+cfg->idma_des_size_bits); // 1 << 13, only on arm32
+drivers/mmc/host/wmt-sdmmc.c:   .max_seg_size =3D 65024,=20
 
+I've tried to add the maintainers to Cc here, these likely all
+need attention to work with large page sizes, in case of
+meson-gx-mmc it even seems like the limit is less than a 4KB
+page, so it will stop working entirely.
+
+There are also a couple of drivers that look like they have
+an off-by-one error and pass a segment size of one less than
+a power-off-two number, e.g.:
+
+drivers/mmc/host/davinci_mmc.c: mmc->max_seg_size       =3D MAX_CCNT * r=
+w_threshold;  // (64k-1) * 32
+drivers/mmc/host/atmel-mci.c:           mmc->max_seg_size =3D mmc->max_b=
+lk_size * mmc->max_segs; // 4095*256
+
+I think some of these are intentional, while others are
+probably bugs.
+
+     Arnd
 
