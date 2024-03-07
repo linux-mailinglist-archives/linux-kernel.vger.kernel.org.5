@@ -1,119 +1,160 @@
-Return-Path: <linux-kernel+bounces-96092-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96093-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 505938756FB
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:21:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA2E98756FE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:21:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E5F3D1F22AC1
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:21:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 80D37283C31
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:21:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D15F1369A4;
-	Thu,  7 Mar 2024 19:20:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFC0C137C25;
+	Thu,  7 Mar 2024 19:20:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fLR491Ky"
-Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="MrwwIH4D"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E546D135A7E
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 19:20:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 341D2135A7E;
+	Thu,  7 Mar 2024 19:20:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709839227; cv=none; b=O55z6baVMssaFeqQyf+7ZQGe/lffXSxH4sbrss8hqsvkIhoEmW9yD0mDGVI7gvvk5Y2c8b0Dpf0Csng4gcU1K8TWlIQAtfSftI1uYooTPWcCYRMCob37wTCh7xRwrPxAEwhpc2CFs4QMGw25LKh/QCjEYZqG4wJjQ0MotATmnLk=
+	t=1709839235; cv=none; b=hVXTw3/eHURBaD/7XiOUoGc388Kbc05EWaohb5Z7JUgc6Uqlh7PI58rCj8svn26M9mK+qPn9IN/BsFJbJN+f5w69lnyYgC0zAL5fmA+Z9RoWTZuyy8cmWjXWPgJLRfvIzYspM6AkBcGBXIjsoyQGNNtVVzHnoB02xIOzL+ACcB4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709839227; c=relaxed/simple;
-	bh=66/OiU9kekT0wVFBm33Xdi8g7UDAgmAY/pPMP3kjYO4=;
+	s=arc-20240116; t=1709839235; c=relaxed/simple;
+	bh=9IU5mpnakOs+5J1LevBlkxNvYwaZJfrw6QKmQ6NaSSI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DMOOeUuR3UY8ZckkAQm3LzY9U692Lg2m4+R+sT2A2YST8+JVnM/aw/eTu01ETJmktGYZ41FDTdOz99e8s2IfBbOvyhsDEQpp9VHQkVTZ+yRszf9LyMX5jmFiLr5hEB4aU/oC44xw7T6H+jhUHtgV5mB0qVeObDiedrgBqRiMiaI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=fLR491Ky; arc=none smtp.client-ip=91.218.175.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <45f59f31-1f03-4a96-adb6-25c7cdd5e8a1@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1709839221;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VnFnbqDeKPmVvi03N+VBYRVISwQV8TV/BYHIxfxeVJo=;
-	b=fLR491KyRBd+vuj8QblEQG+I3EUMqpmzX4/kZPi2b4kFpWdfqOZPkLeLkSFaHXbbxDR2av
-	hMmBeUV/mrETplF47OVMIQLbBa+PcklOjWcl0Vm8FU0TmRLCuTaogLLkIOyM8qgIrw2PB3
-	SUkHxI+kqGAdhh7nm8CaTKrYZ9mrVA8=
-Date: Fri, 8 Mar 2024 03:20:07 +0800
+	 In-Reply-To:Content-Type; b=OUgfVa+e0DWJbXjq7sgoNvHX8XYeBG73LKVg5SID1g4Hr9Atuai5WAMBw/8BLMYTekUO0GNHDhkO8kGsreeHXTSDLvi37erJczq0uAzeXvo3Wik74af92bHzpeKEUkqPur+t2Ja4gEQaadY5Q3YOc9a5ApimT70TO83l4if6gLs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=MrwwIH4D; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 427JGu7g025966;
+	Thu, 7 Mar 2024 19:20:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=Vk4QugbaeYKAnB1a540+QpoGeFz71wRAP+xSfPiVcZk=;
+ b=MrwwIH4Du1ZeN8EKx0J/Efb0gDySc9iuFsDTpaVZBzjYcnwxqNzthL2iQh33tefRxGpg
+ VjYqnRnSoxrs26hnpU87/+8grq/cyIpNxAgGy7ZT2IyNyaxMkBaOlYajCARBYFx0oMKs
+ 3MrWcjLAfn0WD3emz522jzZ07ZL7GZhvYYesQnjRM5SKb5OeL5YvEMQ8tq7jHRheOJZZ
+ BQu83YLKzlb3ASKuh9tfeSLBRY9K0A2jXmWJl8KzytW1Us1dJp2KkxF7Qv3mv15Tq5+Q
+ Dreacqbv/rpn+EU0QrMlhQGLanEDPPoRpNQYsKkHYvY3YYe8muOTeaLZh0dfe2Ggijuo NA== 
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wqkbwgab1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 07 Mar 2024 19:20:17 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 427Ii6VB006051;
+	Thu, 7 Mar 2024 19:20:16 GMT
+Received: from smtprelay06.dal12v.mail.ibm.com ([172.16.1.8])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wmeetfxhg-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 07 Mar 2024 19:20:16 +0000
+Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com [10.39.53.232])
+	by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 427JKDG130867814
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 7 Mar 2024 19:20:16 GMT
+Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id CF59F58069;
+	Thu,  7 Mar 2024 19:20:13 +0000 (GMT)
+Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id B402158053;
+	Thu,  7 Mar 2024 19:20:12 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+	by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Thu,  7 Mar 2024 19:20:12 +0000 (GMT)
+Message-ID: <571aa199-00cc-4153-9424-0012d20dc6f6@linux.ibm.com>
+Date: Thu, 7 Mar 2024 14:20:12 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 1/4] drm/bridge: Add fwnode based helpers to get the
- next bridge
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Andrzej Hajda <andrzej.hajda@intel.com>,
- Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>,
- Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
- Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Phong LE <ple@baylibre.com>, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org
-References: <20240307172334.1753343-1-sui.jingfeng@linux.dev>
- <20240307172334.1753343-2-sui.jingfeng@linux.dev>
- <CAA8EJpp8tsHi0RhsJXG+r6nOsV3AUC_n6jNHL0Cr6Ku2h3NMog@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 09/12] crypto: ecdsa - Rename keylen to bufsize where
+ necessary
 Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Sui Jingfeng <sui.jingfeng@linux.dev>
-In-Reply-To: <CAA8EJpp8tsHi0RhsJXG+r6nOsV3AUC_n6jNHL0Cr6Ku2h3NMog@mail.gmail.com>
+To: Jarkko Sakkinen <jarkko@kernel.org>, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, herbert@gondor.apana.org.au,
+        davem@davemloft.net
+Cc: linux-kernel@vger.kernel.org, saulo.alessandre@tse.jus.br, lukas@wunner.de
+References: <20240306222257.979304-1-stefanb@linux.ibm.com>
+ <20240306222257.979304-10-stefanb@linux.ibm.com>
+ <CZNR9UY8J7Q0.2R1YYTOO4Z92G@kernel.org>
+From: Stefan Berger <stefanb@linux.ibm.com>
+In-Reply-To: <CZNR9UY8J7Q0.2R1YYTOO4Z92G@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: CCXseWuHPD1wYyiCkKCweDSlPR_abUD9
+X-Proofpoint-ORIG-GUID: CCXseWuHPD1wYyiCkKCweDSlPR_abUD9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-07_14,2024-03-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 mlxscore=0
+ suspectscore=0 spamscore=0 adultscore=0 bulkscore=0 phishscore=0
+ lowpriorityscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311290000 definitions=main-2403070135
 
-Hi,
 
 
-On 2024/3/8 02:43, Dmitry Baryshkov wrote:
->> +
->>   MODULE_AUTHOR("Ajay Kumar<ajaykumar.rs@samsung.com>");
->>   MODULE_DESCRIPTION("DRM bridge infrastructure");
->>   MODULE_LICENSE("GPL and additional rights");
->> diff --git a/include/drm/drm_bridge.h b/include/drm/drm_bridge.h
->> index 3606e1a7f965..d4c95afdd662 100644
->> --- a/include/drm/drm_bridge.h
->> +++ b/include/drm/drm_bridge.h
->> @@ -26,6 +26,7 @@
->>   #include <linux/ctype.h>
->>   #include <linux/list.h>
->>   #include <linux/mutex.h>
->> +#include <linux/of.h>
+On 3/7/24 14:13, Jarkko Sakkinen wrote:
+> On Thu Mar 7, 2024 at 12:22 AM EET, Stefan Berger wrote:
+>> In some cases the name keylen does not reflect the purpose of the variable
+>> anymore once NIST P521 is used but it is the size of the buffer. There-
+>> for, rename keylen to bufsize where appropriate.
 >>
->>   #include <drm/drm_atomic.h>
->>   #include <drm/drm_encoder.h>
->> @@ -721,6 +722,8 @@ struct drm_bridge {
->>          struct list_head chain_node;
->>          /** @of_node: device node pointer to the bridge */
->>          struct device_node *of_node;
-> In my opinion, if you are adding fwnode, we can drop of_node
-> completely. There is no need to keep both of them.
+>> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+>> Tested-by: Lukas Wunner <lukas@wunner.de>
+>> ---
+>>   crypto/ecdsa.c | 12 ++++++------
+>>   1 file changed, 6 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/crypto/ecdsa.c b/crypto/ecdsa.c
+>> index 4daefb40c37a..4e847b59622a 100644
+>> --- a/crypto/ecdsa.c
+>> +++ b/crypto/ecdsa.c
+>> @@ -35,8 +35,8 @@ struct ecdsa_signature_ctx {
+>>   static int ecdsa_get_signature_rs(u64 *dest, size_t hdrlen, unsigned char tag,
+>>   				  const void *value, size_t vlen, unsigned int ndigits)
+>>   {
+>> -	size_t keylen = ndigits * sizeof(u64);
+> 
+> nit: still don't get why "* sizeof(u64)" would ever be more readable
+> thean "* 8".
 
+Because existing code in crypto uses sizeof(u64) when converting ndigits 
+to number of bytes and '8' is not used for converting to bytes. Do we 
+need to change this now ? No, I think it's better to conform to existing 
+code.
 
-But the 'struct device' have both of them contained, we should *follow the core*, right?
-They are two major firmware subsystems (DT and ACPT), both are great and large, right?
-Personally, I think the drm_bridge should embeds 'struct device', after all, drm bridge
-are mainly stand for display bridges device. And also to reflect what you said: "to
-reflect the hardware perfectly" and remove some boilerplate.
+# grep -rI ndigits crypto/ | grep sizeof\(u64\)
+crypto/ecrdsa.c:        unsigned int ndigits = req->dst_len / sizeof(u64);
+crypto/ecrdsa.c:            req->dst_len != ctx->curve->g.ndigits * 
+sizeof(u64) ||
+crypto/ecrdsa.c:        vli_from_be64(r, sig + ndigits * sizeof(u64), 
+ndigits);
+crypto/ecrdsa.c:            ctx->curve->g.ndigits * sizeof(u64) != 
+ctx->digest_len)
+crypto/ecrdsa.c:            ctx->key_len != ctx->curve->g.ndigits * 
+sizeof(u64) * 2)
+crypto/ecrdsa.c:        ndigits = ctx->key_len / sizeof(u64) / 2;
+crypto/ecrdsa.c:        vli_from_le64(ctx->pub_key.y, ctx->key + ndigits 
+* sizeof(u64),
+crypto/ecrdsa.c:        return ctx->pub_key.ndigits * sizeof(u64);
+crypto/ecdh.c:      params.key_size > sizeof(u64) * ctx->ndigits)
+crypto/ecc.c:   size_t len = ndigits * sizeof(u64);
+crypto/ecc.c:           num_bits = sizeof(u64) * ndigits * 8 + 1;
+crypto/ecdsa.c: size_t bufsize = ndigits * sizeof(u64);
+crypto/ecdsa.c: size_t bufsize = ctx->curve->g.ndigits * sizeof(u64);
+crypto/ecdsa.c: ndigits = DIV_ROUND_UP(digitlen, sizeof(u64));
 
-I think I'm not good enough to do such a big refactor, sorry. I believe that Maxime
-and Laurent are the advanced programmers who is good enough to do such things, maybe
-you can ask them for help?
+    Stefan
 
-Beside this, other reviews are acceptable and will be fixed at the next version,
-thanks a lot for review.
-
-
-Best Regards,
-Sui
-
+> 
+> BR, Jarkko
 
