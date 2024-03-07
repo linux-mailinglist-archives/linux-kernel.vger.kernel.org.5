@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-94819-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94820-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D0C9874594
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 02:14:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 799C1874596
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 02:14:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5819B1C21C26
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 01:14:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB8351C21D73
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 01:14:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45352EAD5;
-	Thu,  7 Mar 2024 01:13:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BC5015EA6;
+	Thu,  7 Mar 2024 01:13:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="HxaFGzxn"
-Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1ioaFdpy"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35FDD5C89
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 01:13:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41FFBEACC
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 01:13:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709774032; cv=none; b=bCGYMHVw2rRqSLx6IrTA0hQm4xK58O0BzbA/Jx5Kq+XXr0UuMMEZxUgGihrRQNvkkNSRXlkgVjXMKzDK3tRY/tvTd7Hn+YWXy0aRrm9/ahxdtQEs/GaJJW7uPkx96Qrskk4fc1wZ5MUVngYbPzqjNS7VQAs2C/2/ghhsEdXO1pc=
+	t=1709774034; cv=none; b=auNwsHdYxX77+4yKpo+S4up3YqqvHxl4XVh46twTRZ2RB8hW1eqsud/VfvvM+vN+NHFwXiG01yjYoiJ6q5s2TMSFk1G7jlL9oKWEQaPYcQ+elFGnR78SB33La7c9pSOZhVpZEVoX6mO5URxICylFRKc4jeJjb8DUWakIQvHQZNE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709774032; c=relaxed/simple;
-	bh=pDYlO6655RQWWCS62vtsbuYOY+fbm6Nz4LPdmuV/H+M=;
+	s=arc-20240116; t=1709774034; c=relaxed/simple;
+	bh=pcz2Ucn1DKGCTxS7gDvUH85jIc5cUh+bswUIUHMbqQs=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=sZnksjOT4A7PVcpRp9dYgzZD/EyHtC0jOK/cVln3xUOAm3NeL4dlaHv3RnQ0U3oKkPzUrjjQnaYqAXQcnY38bVzPPHBy1+2b0VAJUOgNsXM6LoTFeLizv2RTTAuKJPLdtfr5TLtj0JFcIAEPHr3XwsVf/6D6KMhjJPHtGAAMhmw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=HxaFGzxn; arc=none smtp.client-ip=209.85.215.201
+	 To:Cc:Content-Type; b=tH7BoJGd/W/uQL9X7H09QNLyv2acWzoQuuDpPFSRDANsPGd0gCUNsnJKIMB9N/ZuNDwKtXSmgdfO4XVljQV7asbkX0zxWhJNLSvGFpPEIP76HPp0bBTK0gWEcewxNxEIMiofC6RwfciwWykZ+qbuBfimn2rgwPml0XUX5DwBZ40=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=1ioaFdpy; arc=none smtp.client-ip=209.85.219.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-5d8dd488e09so345578a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 17:13:51 -0800 (PST)
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dbf618042daso502363276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Mar 2024 17:13:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709774030; x=1710378830; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1709774032; x=1710378832; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=URdnb8no/gejybKx7VpZ/WZV3Jy5gWivUnugYsUgOO8=;
-        b=HxaFGzxneQWmKhHlBPb3/ZGmN8weGbFF+vRusrGdXoi+BN9wZ6aMUk6zH5avbOpg5K
-         jGYyQAtvJOs0ddJUG7Shxg4LAjXU07jE1GU9JZw04SyRSCyLuxlZ8zJNsd6oareD+t5D
-         9/sTof9JyzIoYm1co0jxgyg88QA17kLEAnkdd2YpmdpzEA4Iva4AwOaaJucMn+amknHA
-         XVFJSH8g/mbqKQ7bw/IrPHl/bY2oe17FbqQJ+micIJGEEwrGPXv2zOtGgDmyLTOHQzcr
-         UFhT5/xDAIBxCz0lzvOMQe1rHXr20XftgZ2uObJGKiCf28K48olJTweeEokfl0q6jOpe
-         /sYQ==
+        bh=o3SxNJAQq8uZUj+l9JJTY3oE5/SJJ0Uc20+Uo+WJGNo=;
+        b=1ioaFdpyZxEXxdv2HY6mKQNHhCecMQVUURH7MuC7VO+LPCuF9+8i94oRIK3eTrXoJV
+         sOdjhtccLwZju1iiiCWcjpWcsoabmFaXEo5IcCI0DFAxk5S6LXxbdnkZLGsHO6PNo1sB
+         kOfqFuXt93LvkTr+7k+n+hK61KJPwxy6FGVWjwrrPdB79LTf51R7tvkhdZZ0xuWzVXv3
+         qKvqU1h9Wolr2T+k+ESJVW+JWrb8M/qWyBMRtuMNV3YawIKOPyZGn4bTN3kicMJpyq8j
+         F5zuz0K1XHPlJfM8uq45LVP2WwUxfDi8s6CUVldXvkW17yyTefnIi8D7e2a1opOOb9yM
+         b1Zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709774030; x=1710378830;
+        d=1e100.net; s=20230601; t=1709774032; x=1710378832;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=URdnb8no/gejybKx7VpZ/WZV3Jy5gWivUnugYsUgOO8=;
-        b=U/JFKrwcnIwgfLuABRCiecCAqw5bh65jFzajnVuOlqjEodDugJ3hT26EWFa1iSjkfV
-         UCn5O7E1/CFBcD8zxWch5pn8pm3ofOsI2FbICk+FaZfnrUU99cEvc2HPxLiS5BuLGtv+
-         uCfpJPfcE4hDlHpeC8yn+Ij7uoWiuyQ++7ndmYS2XsKO7Oi9d1NajqipD5zao01qWWla
-         AOhY5lgkbN7ii8nz8CCOBBohE31jeXj9FBJ5jZ3ueZHr6NydS9reE7i9huwVqfCX7pYF
-         +yAvMP/8yth740mpCFkO1+HyBwzIix4XeS4jwjIT+4YEsYLnw1yq5P2DnqYAMc4miZdo
-         cBkw==
-X-Forwarded-Encrypted: i=1; AJvYcCVEswUKroEMae1x/MJeLnxccgf9sTdjLsWYdV099PYP99ZFEG11F7boQ1KlY4A/VtJ3I6pehhVbcLG1TCNGhKPQ8JsQcgXpqCm2rTGu
-X-Gm-Message-State: AOJu0YzZoPuJy/9BrSf9/8t0XAnAr3H//yFdVs5poAx0wHv6mUdC+KtB
-	0fv7auARwo84kCO9gkC2GzoBTX8bDM7ge2m6bJz3IkFGrblU7Kgm1xthSN9OcEGok5SdPtWbQaU
-	ZoA==
-X-Google-Smtp-Source: AGHT+IHE3hLUtN9mAa6biOVT2TlEtSXabGraYG0Zvf7THAU106ApQjXZwsK1IkK5O6pSCZp8GdlGKQw1rTY=
+        bh=o3SxNJAQq8uZUj+l9JJTY3oE5/SJJ0Uc20+Uo+WJGNo=;
+        b=DAtPsKK64vMLhQzxpIp492S/lRYeHWtgEGD9Rm45tHK7rv/WsflBiULd/cVUoVyCbq
+         eEL7tq6YWle2AZUl4Xloh810A4El2MdFiursn5MPTsBWi4jSfuI/w2UBS/nCjsrmBfR8
+         shZ30idJvUhTTuiM/Bzs9m00WuK+hh6h+G/pAT9nh84u0Iu2GTnL8b8T4YFTiNWGZ1Jb
+         rNfAdt+9hPM59paaXKGVBc4TqJQiAP/PVCXH8g9VrI901b4l/9eIidvax9rXbyRgEAy+
+         VoexAWRDtFfyzYWjx2fqIdj311BNpdozonL6+/Islh1e7eixb0z7S1nWDTfkuEammGaN
+         gJWA==
+X-Forwarded-Encrypted: i=1; AJvYcCVkb8KNHB7GPvbl1v5L85UXVZ6/bEx9oOECqRGHA1RSzmkMCOWpH+xudhCRgVpGvRHc6k6P6/qEVfPPmQ+iW2Xv3gOTxM9CeycmtKDe
+X-Gm-Message-State: AOJu0YwBJ8G/pTZXXGL8OULlonNVDE4R0ADo5y7rAxwZatpnJiqk++Tq
+	eKvqhN4gtci3YXw9qxuIb5CQRn7s4iyQK4I5YDM/fOKpOJbn/4dsJHrlILcKPQeNNj1sZRR5Mfb
+	2cQ==
+X-Google-Smtp-Source: AGHT+IGeL/DjPRgCNBVl+V/SB3gCWNCNZ4LpSUf0yDvzT/PpyTaaBz/Gs5dkdOT3yZ6PloXBBo6wJVf66G8=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a02:f87:b0:5e4:292b:d0eb with SMTP id
- dq7-20020a056a020f8700b005e4292bd0ebmr39689pgb.2.1709774030473; Wed, 06 Mar
- 2024 17:13:50 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a25:aaa3:0:b0:dc6:db9b:7a6d with SMTP id
+ t32-20020a25aaa3000000b00dc6db9b7a6dmr665270ybi.13.1709774032394; Wed, 06 Mar
+ 2024 17:13:52 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Wed,  6 Mar 2024 17:13:43 -0800
+Date: Wed,  6 Mar 2024 17:13:44 -0800
 In-Reply-To: <20240307011344.835640-1-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -75,8 +75,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240307011344.835640-1-seanjc@google.com>
 X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-Message-ID: <20240307011344.835640-3-seanjc@google.com>
-Subject: [PATCH 2/3] perf/x86/intel: Expose existence of callback support to KVM
+Message-ID: <20240307011344.835640-4-seanjc@google.com>
+Subject: [PATCH 3/3] KVM: VMX: Disable LBR virtualization if the CPU doesn't
+ support LBR callstacks
 From: Sean Christopherson <seanjc@google.com>
 To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
 	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
@@ -85,41 +86,45 @@ Cc: linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
 	kvm@vger.kernel.org, Mingwei Zhang <mizhang@google.com>, Jim Mattson <jmattson@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Add a "has_callstack" field to the x86_pmu_lbr structure used to pass
-information to KVM, and set it accordingly in x86_perf_get_lbr().  KVM
-will use has_callstack to avoid trying to create perf LBR events with
-PERF_SAMPLE_BRANCH_CALL_STACK on CPUs that don't support callstacks.
+Disable LBR virtualization if the CPU doesn't support callstacks, which
+were introduced in HSW (see commit e9d7f7cd97c4 ("perf/x86/intel: Add
+basic Haswell LBR call stack support"), as KVM unconditionally configures
+the perf LBR event with PERF_SAMPLE_BRANCH_CALL_STACK, i.e. LBR
+virtualization always fails on pre-HSW CPUs.
 
+Simply disable LBR support on such CPUs, as it has never worked, i.e.
+there is no risk of breaking an existing setup, and figuring out a way
+to performantly context switch LBRs on old CPUs is not worth the effort.
+
+Fixes: be635e34c284 ("KVM: vmx/pmu: Expose LBR_FMT in the MSR_IA32_PERF_CAPABILITIES")
+Cc: Mingwei Zhang <mizhang@google.com>
+Cc: Jim Mattson <jmattson@google.com>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/events/intel/lbr.c       | 1 +
- arch/x86/include/asm/perf_event.h | 1 +
- 2 files changed, 2 insertions(+)
+ arch/x86/kvm/vmx/vmx.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/events/intel/lbr.c b/arch/x86/events/intel/lbr.c
-index 78cd5084104e..4367aa77cb8d 100644
---- a/arch/x86/events/intel/lbr.c
-+++ b/arch/x86/events/intel/lbr.c
-@@ -1693,6 +1693,7 @@ void x86_perf_get_lbr(struct x86_pmu_lbr *lbr)
- 	lbr->from = x86_pmu.lbr_from;
- 	lbr->to = x86_pmu.lbr_to;
- 	lbr->info = x86_pmu.lbr_info;
-+	lbr->has_callstack = x86_pmu_has_lbr_callstack();
- }
- EXPORT_SYMBOL_GPL(x86_perf_get_lbr);
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 2a7cd66988a5..25a7652bee7c 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -7859,7 +7859,15 @@ static __init u64 vmx_get_perf_capabilities(void)
  
-diff --git a/arch/x86/include/asm/perf_event.h b/arch/x86/include/asm/perf_event.h
-index 3736b8a46c04..7f1e17250546 100644
---- a/arch/x86/include/asm/perf_event.h
-+++ b/arch/x86/include/asm/perf_event.h
-@@ -555,6 +555,7 @@ struct x86_pmu_lbr {
- 	unsigned int	from;
- 	unsigned int	to;
- 	unsigned int	info;
-+	bool		has_callstack;
- };
+ 	if (!cpu_feature_enabled(X86_FEATURE_ARCH_LBR)) {
+ 		x86_perf_get_lbr(&vmx_lbr_caps);
+-		if (vmx_lbr_caps.nr)
++
++		/*
++		 * KVM requires LBR callstack support, as the overhead due to
++		 * context switching LBRs without said support is too high.
++		 * See intel_pmu_create_guest_lbr_event() for more info.
++		 */
++		if (!vmx_lbr_caps.has_callstack)
++			memset(&vmx_lbr_caps, 0, sizeof(vmx_lbr_caps));
++		else if (vmx_lbr_caps.nr)
+ 			perf_cap |= host_perf_cap & PMU_CAP_LBR_FMT;
+ 	}
  
- extern void perf_get_x86_pmu_capability(struct x86_pmu_capability *cap);
 -- 
 2.44.0.278.ge034bb2e1d-goog
 
