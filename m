@@ -1,128 +1,87 @@
-Return-Path: <linux-kernel+bounces-96053-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96055-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2BCB87569A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:06:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BD7E87569B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:06:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41C16B2152B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:06:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C68A1C2141D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 19:06:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3E2513667D;
-	Thu,  7 Mar 2024 19:05:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B65B137C33;
+	Thu,  7 Mar 2024 19:06:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="2hh6kg83"
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZOrcAxHh"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F4D2135A75
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 19:05:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA2AB136663
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 19:05:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709838358; cv=none; b=quIMncyE1po9QQKxbSuSHJglPKgVSZDSHWrNyjRSC1h/KOsnEncmaumb4RdXawdr4orZli8BIi23XynEGpdNQ1raWQpEBSCtE5HLuYTb0dqjekEBAHl1I2PbirY2/dWNSmqtbEsDHNOozzQ47Ugqbq6IfWebIuHleq4zsoBRFVo=
+	t=1709838359; cv=none; b=oyMc09w7sqC9jCoXdzTzMf4qV2UjdR4L60qcOqzTL7Mw0bLMNYcBW4qxhLfPv2emeZ2SH9QpNxORFJ42IK14cDZ1S+Do9rE2ToZc5qB73Ux6yCZEthn3T+h4n9/9a4/rnj8Iv1UbcDdOG1aFnoZL5dUhgZkEn2YESqa5cZ+KsAg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709838358; c=relaxed/simple;
-	bh=VSZiKx13zcdCVDYwqIRzCcJDp79icXmI6mc1wjrw+wY=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=glI+N90FoU3rAwITB+L56ZYbSk1XcGLiQlHijUbuA8Z79K6uOk3djYdlD4/hDSW0BagXfxzxgFNC3lesHjCYYDXWoN5svRmxXbuacKZ7E2U2MK4RnXttswRYu5id8Tv6FxTWr607fWCcbyZoydFqeqp1bzl7HHOyUGonOTBgQ00=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=2hh6kg83; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1dd178fc492so8568395ad.2
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 11:05:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1709838356; x=1710443156; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=h8i7Hn0NjGdBjABWwTPM97LUVWqQ4V1pWIxyh4e32z8=;
-        b=2hh6kg83cEgyf699kuxP2hMBSkIZtXThRkCb+QdP/Jn7L+izyv9kh9XPVa+9ZFbiof
-         Pri+K9HlCQJrJP7lqmW05znauSIJC9jWmILR/PVuMFP8aJPYgx10sAXpbmFdbElp8UOb
-         2n8fhxR9iXlAMkmuRnondvkKM5DCaN+Z5rN89QUIIih0WV7s99NtKSde0+L+0GUVp00Q
-         gXVjZthMwY5IaloWpEICmk8lH8V/C1sy0YO0jehiurbnfXMoQPVE6fhTHXzHlQglyr62
-         sxIRG1gQB+OLSWoj0d9CqUVIkRttegS/Er8+xw9HkVR0XDjPpmKI1ayCq+uu/zOy8brr
-         mxlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709838356; x=1710443156;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=h8i7Hn0NjGdBjABWwTPM97LUVWqQ4V1pWIxyh4e32z8=;
-        b=Dz2fISAMQzNPcKKOO5PanW4NE6TZ2ViarqPhkG0hRv8hFFhP7jSnhrPzDZ7LzJ5czi
-         Tq78bF+c89ny6qhatUeM3YlXFWOyp1y7+ody1Bjv8fdsBvOYUaBYMZ461ssXbxq6+xzK
-         6LXTASGLkCK/7xqjEzdUjy8oHq927EM2JH/2uqxI0iC/0Cnh4kscWO344Q9mzCt9YpuG
-         oNB0XeX4hXbblk6WW09fL5guEz9O+EfngeCOiL8kRh4dkE6A0Kqe/fjY1DC/uaTld0lT
-         htfgdKeitxSd3PuFvGc1cj6Fk04JOPDadIJ53NNaYruzkOu2Z8Y6qGTgHWEfZWSs2cvc
-         CqSA==
-X-Forwarded-Encrypted: i=1; AJvYcCW6Vf8Gi2hrAb9PNdWfRc8mboebpcRcYHY7ycOkR5JBz12okR2Pr3BlcMlVM892x3AzcvKkdvP8YMD/NG1iRI9tbGdmLtZ+A1wCgNFM
-X-Gm-Message-State: AOJu0Yw8oSZ/LzRmuMK4JDsyq2j18me0/rgfEnzJab3hylm/4j0cZAQd
-	JQv1VFRLfvE1TEmSz9iGCNvT7/HXZnATkp2+0RyCz48KUqV5KZCOybz9O9363OY=
-X-Google-Smtp-Source: AGHT+IGWG50eIYNqJYtIEtMgtF56ZtFfU2/+liaC87qJQqHAa4lId+qqp/lStD4LT51B0M3EfKpmCg==
-X-Received: by 2002:a17:902:db0a:b0:1dd:a34:7321 with SMTP id m10-20020a170902db0a00b001dd0a347321mr10498088plx.25.1709838355931;
-        Thu, 07 Mar 2024 11:05:55 -0800 (PST)
-Received: from charlie.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id h3-20020a170902680300b001dd526af36csm1747338plk.295.2024.03.07.11.05.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Mar 2024 11:05:55 -0800 (PST)
-From: Charlie Jenkins <charlie@rivosinc.com>
-Date: Thu, 07 Mar 2024 11:05:46 -0800
-Subject: [PATCH v8 2/4] riscv: Only check online cpus for emulated accesses
+	s=arc-20240116; t=1709838359; c=relaxed/simple;
+	bh=Ih4ktTzIyaeVkaakCPU+cWTcUAGjxp+w40KS9sTMnEg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=dFhH9IOs2RHzHvZD3M9klxQLhFfeWR5meqX9skPCtQd8vQqB/JaxXReGxY+jClXHZeuw4D0nWXagFrEV4M/3aU/+sjdznYUKaCKLsEQ15XxjhtOpjVUXiQhjWhyqZ6CLxKHFXAyJy9PdGav68VnW4FU1OOGfe8VtLObiMBOHAvQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZOrcAxHh; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709838357;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=c6iPnAD0cw9qJdQfLtL9m8kcE1/+mcntTfIjJ/1xUPY=;
+	b=ZOrcAxHhk2Tge/H5sSrgsp+9t7bVb2gVz0doI3hGrErHMeq8KIkcGcM169/1yuPl1o4Ra4
+	XX4Dqq9e0KCNX/0wl4zoU6+lTjghc42tF4DW4jgrUH2fUvIpg4zmZbg1vveAAtGAP2gynL
+	mYgTwcxb3+Vm0O211T/a8cGJ2rq3Mcg=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-173-DOPq5pkLNH2vgVoWPXYZww-1; Thu, 07 Mar 2024 14:05:55 -0500
+X-MC-Unique: DOPq5pkLNH2vgVoWPXYZww-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1DEA4185A783;
+	Thu,  7 Mar 2024 19:05:55 +0000 (UTC)
+Received: from llong.com (unknown [10.22.17.9])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id EC6522166B33;
+	Thu,  7 Mar 2024 19:05:53 +0000 (UTC)
+From: Waiman Long <longman@redhat.com>
+To: Catalin Marinas <catalin.marinas@arm.com>,
+	Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	Waiman Long <longman@redhat.com>
+Subject: [PATCH 0/2] mm/kmemleak: Minor cleanup & performance tuning
+Date: Thu,  7 Mar 2024 14:05:46 -0500
+Message-Id: <20240307190548.963626-1-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240307-disable_misaligned_probe_config-v8-2-55d696cb398b@rivosinc.com>
-References: <20240307-disable_misaligned_probe_config-v8-0-55d696cb398b@rivosinc.com>
-In-Reply-To: <20240307-disable_misaligned_probe_config-v8-0-55d696cb398b@rivosinc.com>
-To: Paul Walmsley <paul.walmsley@sifive.com>, 
- Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
- Jisheng Zhang <jszhang@kernel.org>, Evan Green <evan@rivosinc.com>, 
- =?utf-8?q?Cl=C3=A9ment_L=C3=A9ger?= <cleger@rivosinc.com>, 
- Eric Biggers <ebiggers@kernel.org>, 
- Elliot Berman <quic_eberman@quicinc.com>, Charles Lohr <lohr85@gmail.com>, 
- Conor Dooley <conor.dooley@microchip.com>
-Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
- Charlie Jenkins <charlie@rivosinc.com>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1709838351; l=985;
- i=charlie@rivosinc.com; s=20231120; h=from:subject:message-id;
- bh=VSZiKx13zcdCVDYwqIRzCcJDp79icXmI6mc1wjrw+wY=;
- b=4lDes0vZrJms/4gMpoYeVGqXErBW/PLjmFFmXEprN4sEQrjl/O2TnHAvCflhkGywOBjrDhXZx
- brGOqXY3mv4DSqV1Bxg2PRf3Aizh4mrVFcQLGzt1urygWj2UkFOGR/j
-X-Developer-Key: i=charlie@rivosinc.com; a=ed25519;
- pk=t4RSWpMV1q5lf/NWIeR9z58bcje60/dbtxxmoSfBEcs=
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 
-The unaligned access checker only sets valid values for online cpus.
-Check for these values on online cpus rather than on present cpus.
+This series contains 2 simple cleanup patches to slightly reduce memory
+and performance overhead.
 
-Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-Fixes: 71c54b3d169d ("riscv: report misaligned accesses emulation to hwprobe")
----
- arch/riscv/kernel/traps_misaligned.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Waiman Long (2):
+  mm/kmemleak: Compact kmemleak_object further
+  mm/kmemleak: Disable KASAN instrumentation in kmemleak
 
-diff --git a/arch/riscv/kernel/traps_misaligned.c b/arch/riscv/kernel/traps_misaligned.c
-index 8ded225e8c5b..c2ed4e689bf9 100644
---- a/arch/riscv/kernel/traps_misaligned.c
-+++ b/arch/riscv/kernel/traps_misaligned.c
-@@ -632,7 +632,7 @@ void unaligned_emulation_finish(void)
- 	 * accesses emulated since tasks requesting such control can run on any
- 	 * CPU.
- 	 */
--	for_each_present_cpu(cpu) {
-+	for_each_online_cpu(cpu) {
- 		if (per_cpu(misaligned_access_speed, cpu) !=
- 					RISCV_HWPROBE_MISALIGNED_EMULATED) {
- 			return;
+ mm/Makefile   | 1 +
+ mm/kmemleak.c | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
 -- 
-2.43.2
+2.39.3
 
 
