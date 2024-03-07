@@ -1,174 +1,135 @@
-Return-Path: <linux-kernel+bounces-95865-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95866-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16D9C875447
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:37:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0513D875449
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:37:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 84C4D1F2296B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 16:37:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD380289909
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 16:37:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34D6412FF74;
-	Thu,  7 Mar 2024 16:37:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C105912FF65;
+	Thu,  7 Mar 2024 16:37:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="eLMP+qid"
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2082.outbound.protection.outlook.com [40.107.100.82])
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="jQWoFk7u";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="W1hpWE7+"
+Received: from wfout1-smtp.messagingengine.com (wfout1-smtp.messagingengine.com [64.147.123.144])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9C4012F393;
-	Thu,  7 Mar 2024 16:37:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.100.82
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709829451; cv=fail; b=DdnDQ7nSgu7TSeOMYA9fdYuhAy/yi5Ufh3giHPHEFJWBvPZiLWkm9PUcizu2Wtb7rIl8ujuHs56bMgR1KvaZqZmtyGCNAhLB1iTHbI876KA+l5fve0uUgHGl4SbBI+jbYw0DtobeUb/6uKDkESsPeFmOSBEhe2OELVdlE1izlZ0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709829451; c=relaxed/simple;
-	bh=qMqLdflvLJxtBNr3GLuufLcfaitlqmGL9Bkj7aYE6MU=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ZD4XKcdxn+/pkqMKwQoYeZkP97PFUovYmmKkh5Lf1UYAy4ulAFAXyr1eA7aFH1OJ5H9Npp9pMd2F+lKstdsnHyfBTWr0vgBcFwI26u8QURXa73aWg4mKzojoieCYNt+A3tJ4sFSchWS72UrHJ6lJbGgai948jqCu3KALbzqW5ME=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=eLMP+qid; arc=fail smtp.client-ip=40.107.100.82
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lexNCBUbRdFr+c91nCjQ0UsS2TquKZFkajGchkzQdcCFjd5VQqodF97dm8MG0HuKqV9+VCdz2dxJKb8GCtB6o/G3ZQ5IDyA9RDxRTD7kjYZ7Cg9KlkHTo+nyVWLdnLAJyp89mRP4UOUYV7PfluaxHSF3zGcGibVhPUGn7UQcXMOR1CyQ6qk7Q+tkmC7kPTdpJlsf7k9/5Zr99kbby3LXtcZRu9I3VI9r9LVw61GW/dJVhZWCmvMchvshdgfHgX8wHY5nq9xCyMQehr0+0WvZvuHcR3kzC5nN/7xkyw8/NEZLmCGNurNg5HS6S2PCIIKTR88HSI8EebduCbCE1qSrCA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=T9q0yxDkkhrABhBbI+0EPppL5nIFwZNqwUTND1q3o2g=;
- b=hBN/8th+uoWQjjSz0B60jF37GEtTDIBJ9idx/bKwi1nYzWjvO+RNsIfPDmSFhDLGQ1plTlDBktG9KaOX6i0jqbfYwikWcQ9Gz8KL1PXz71lbNEi9OtesFtT11jtXuUB4AsRDZcsy+Ggl56ECBYgOmyC46EUpiUth/aaaOAhWXWXK2Z+6nJLTgXCk31sjdRI7l7kjUd8mSLoiCr/PyONzOXhtHAV/a7taTIOhQlvqMfU54RsPTdhqEa4sqItztsoJArlnGpNKJWwn8yaWx81/Fc0s/jD/pspmeqbE2fvKnlEJAD8U4Li5QG2IDThJecN1vmfn/bbLBpEaHLNmqfulUA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=google.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=T9q0yxDkkhrABhBbI+0EPppL5nIFwZNqwUTND1q3o2g=;
- b=eLMP+qidF8Wat95NtradcZjxoEGWgen437FAVDO8f1kxgsE0QQsVfsVHF6wKZ0a1dI89QzFfcDpM+LddNLOVICqgUXRgKXBabMg5tFMzej/8yJ1DmUYCSpVyXvEnFh/DjbwcqXWwaJO6GY3tPDq5FEJsLBfY9gaENuGpG2YNtvY=
-Received: from BL0PR05CA0011.namprd05.prod.outlook.com (2603:10b6:208:91::21)
- by PH7PR12MB7377.namprd12.prod.outlook.com (2603:10b6:510:20c::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.41; Thu, 7 Mar
- 2024 16:37:26 +0000
-Received: from BN2PEPF000044A7.namprd04.prod.outlook.com
- (2603:10b6:208:91:cafe::e5) by BL0PR05CA0011.outlook.office365.com
- (2603:10b6:208:91::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.9 via Frontend
- Transport; Thu, 7 Mar 2024 16:37:26 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BN2PEPF000044A7.mail.protection.outlook.com (10.167.243.101) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7362.11 via Frontend Transport; Thu, 7 Mar 2024 16:37:26 +0000
-Received: from AUS-P9-MLIMONCI.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 7 Mar
- 2024 10:37:25 -0600
-From: Mario Limonciello <mario.limonciello@amd.com>
-To: Bjorn Helgaas <bhelgaas@google.com>
-CC: <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>, "Mario
- Limonciello" <mario.limonciello@amd.com>, Eric Heintzmann
-	<heintzmann.eric@free.fr>
-Subject: [PATCH] PCI: Add a quirk for preventing D3 on a bridge
-Date: Thu, 7 Mar 2024 10:37:09 -0600
-Message-ID: <20240307163709.323-1-mario.limonciello@amd.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A06112F393;
+	Thu,  7 Mar 2024 16:37:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.144
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709829461; cv=none; b=f4YBuqXlq+Ropmru8DSCe8RB7zae2ZQXBiCUIRxSyf+m7VY2MY/mJe3CZHVb4lTTtNNGxAT3xUTFiEiFClRJhhPnXJAj7srX6PxDnXNYuberKWWYcl59oo/9beVNPHximj6jjCFIdd85E4oJfwFYXkY28oT6QqmNRNca1Oce3e8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709829461; c=relaxed/simple;
+	bh=2UwQ/3+hZDOmDtUxHdUaBjK08KKgnnmo/Hpltvw0Fx8=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=SOQS58AqtoXLwnhUofyQG4R9MDh6KVvRHxMmPqCMhw+f1i3upOP4/VV5l2c4gf2iLJdhjw+5shCCE1RavCBrDrfYpCetBTENl2UO65ycIAWVm9v1GNGwLQUmCA0HEXdmE2qbDI314btBNvO41ao0avxpRVw2ScSEVr8H88/HKtI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=jQWoFk7u; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=W1hpWE7+; arc=none smtp.client-ip=64.147.123.144
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfout.west.internal (Postfix) with ESMTP id CCF2D1C00095;
+	Thu,  7 Mar 2024 11:37:38 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Thu, 07 Mar 2024 11:37:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1709829458; x=1709915858; bh=zm57BWWKRt
+	lKrAeEYm5SXUcxUkXEWzE2ICyPiQaKdnw=; b=jQWoFk7uGg8OwU9n3vq+E7jA1S
+	JI5YDg633AjJgk8W+NqwdcG1W3dfask6HCoPM8YTxQ7qN7ZkF6m1UgxswRcwiCnK
+	z6yeXBWtjqD+NhDJXFJDFdwtmCiO+wE3g7hkj9aeqZJjJBzkj3Y0IuGBtLxY8rB2
+	WU4il5MEEd8XmM7BY9D81r3qDQncL4VNlxRGsA1MpZB6Fk+0CACyXEXwtjg2HiYo
+	N/l1K/QwLn1FwCl/lykAr8ikSfQa5ep38DPnYY+DI+A0neQ8/SC0LOTdQ62xpCGP
+	LkYRzb3tlCZUuJdW15+eQOUw/z15tmbCMiII4Upco89OCDEaG+EoVUzEwcow==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1709829458; x=1709915858; bh=zm57BWWKRtlKrAeEYm5SXUcxUkXE
+	WzE2ICyPiQaKdnw=; b=W1hpWE7+yAcJjD47B8hs7D70imGpBnv3WJEApru7rBbP
+	+4FMxR24CmicDwZkONLm2an59hFgE/e6vJAjpGC5udQm96gAGt6h+a60BQGgWoCb
+	2wrMmup62eeMN4tZ+DI+dJGDICITFEv/S6rqSjs+x5+SnmSCkBFzbENZWY5mIKan
+	6E/mmjrHwveECM4S5lRJju+oNOGfQVdD00LIDVeIqgxWS91m6vGI5bzbfJZoqTt5
+	aKFgkNO/aYKxO1hfxMs8b0/UHmhOCXg4fUu8eNChl+JpMNNFDQcfYAySZscxmm1M
+	ECaEHMPXze2BTvfAVGogyYyKyB1+AuhC0na/FSNYvA==
+X-ME-Sender: <xms:Uu3pZYOgDm_lr72DNMYpwr3iXcbxojQmbuzam4nfhAA-DIhe_vLYnA>
+    <xme:Uu3pZe8lKkg8-NzUGcp2mlBXU4uyonUPzqb1sBKsp0n-2FvscuFXo-oVUta-B34XH
+    Pu-8qU8zvzfcyPaJw8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrieefgdeltdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
+    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
+    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
+    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
+    hnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:Uu3pZfQ4u8mIZ5xPCQmLMZtt7ZIRUwtqU6kpA13Aa6BrFnPyIfWSjw>
+    <xmx:Uu3pZQvktXfGkjxQMa8zNpYIpnO_RJRypy3qXAe2UV5yDRE0_oIaAg>
+    <xmx:Uu3pZQe_u2MeWHG32GX1X8HrzH6BY24bW1cN5-daZY1HoWH6iBNZyA>
+    <xmx:Uu3pZXxGOjWMFikQ7P0_IOrovpF06qaXaB7t7CHKZgyCBseOu6DmSPXD2RM>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 04133B60093; Thu,  7 Mar 2024 11:37:38 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-251-g8332da0bf6-fm-20240305.001-g8332da0b
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-Id: <64cde1d1-1d4f-484a-940f-536c1279287e@app.fastmail.com>
+In-Reply-To: <20240307160823.3800932-3-andriy.shevchenko@linux.intel.com>
+References: <20240307160823.3800932-1-andriy.shevchenko@linux.intel.com>
+ <20240307160823.3800932-3-andriy.shevchenko@linux.intel.com>
+Date: Thu, 07 Mar 2024 17:37:17 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org
+Cc: "Daniel Mack" <daniel@zonque.org>,
+ "Haojian Zhuang" <haojian.zhuang@gmail.com>,
+ "Robert Jarzmik" <robert.jarzmik@free.fr>,
+ "Russell King" <linux@armlinux.org.uk>, "Mark Brown" <broonie@kernel.org>
+Subject: Re: [PATCH v1 2/2] spi: pxa2xx: Make num_chipselect 8-bit in the struct
+ pxa2xx_spi_controller
 Content-Type: text/plain
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN2PEPF000044A7:EE_|PH7PR12MB7377:EE_
-X-MS-Office365-Filtering-Correlation-Id: 580ceaee-4ecc-4928-ff32-08dc3ec4df7b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	bwGXRqb2szzxDpZ+nl+mCYK9OZe7LUsiowRGo7jay9y4ZrYqLGslOrgOXd9iiyjXL2kBIuTivu6zyCwy4mJyCcm9ZAb093GWqE86PHKQbm26ylwI6ZGKZI8iYQQg80squFNpFMeg3HSuBK2/rW7vVTUt3jhWyhrhtfxZHhCytmf4K7+gJ2KRB1vjuC4zLfkSBtXbKnWJ+avU7bRm2+AGe6O4s1Vir5OarGd/QEd1mcvJPk6QfpsBelqgkdXhq8ijJa2lhP2pVD6RT/6f9SsQDk49dTpHYRfiwuF4o7CCYldpmEUIDnXjiyeUk4+BFWrC1od/k5z5Yh1aSxBBW4mQjHidsMRGn8EEdJGwX9KC45V/gUQ5hQj8x6eUfI7G0tYTfZs4ZrjF0JTFX2WgeCTBfrJxO62uBW5BnK9Jm/saa5sQgjep43ADgrtmlhnuM19AGhszMOIdPw2uy4s2Ob/ZSmChcSViUmecSbUHJC0FvRsjY7rp8KIhlzrwu0t/b1AlYcPsweEo+q0zawyq6j4Zh0k5AcnlTuW4ATVBOe+CWHIBzMkgnQdujon4wPg2v7T/sE07yYFuMG0cNLC10HNnadGGS+BGBxb+H12Q641Yr2j9rep9CStrxxi6fc/hblZt5U5MU+MncR5IwFva+f4R6SeddoA34nGi9Z8e7Uc0F+R6dUW21zi2S2Xuw2RgwYytSVZcL3c0OqDIz4KnOpHAHuvySrFMTKMM3P7ouh7nFQsTp6scUu5GiiZs1L6zEBGPAVS/2PaZLBLeAbhrSBQcWA==
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(82310400014)(376005)(15866825006)(41080700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Mar 2024 16:37:26.3100
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 580ceaee-4ecc-4928-ff32-08dc3ec4df7b
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BN2PEPF000044A7.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7377
 
-Hewlett-Packard HP Pavilion 17 Notebook PC/1972 is an Intel Ivy Bridge
-system with a muxless AMD Radeon dGPU.  Attempting to use the dGPU fails
-with the following sequence:
+On Thu, Mar 7, 2024, at 17:07, Andy Shevchenko wrote:
+> There is no use for whole 16-bit for the number of chip select pins.
+> Drop it to 8 bits.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-```
-ACPI Error: Aborting method \AMD3._ON due to previous error (AE_AML_LOOP_TIMEOUT) (20230628/psparse-529)
-radeon 0000:01:00.0: not ready 1023ms after resume; waiting
-radeon 0000:01:00.0: not ready 2047ms after resume; waiting
-radeon 0000:01:00.0: not ready 4095ms after resume; waiting
-radeon 0000:01:00.0: not ready 8191ms after resume; waiting
-radeon 0000:01:00.0: not ready 16383ms after resume; waiting
-radeon 0000:01:00.0: not ready 32767ms after resume; waiting
-radeon 0000:01:00.0: not ready 65535ms after resume; giving up
-radeon 0000:01:00.0: Unable to change power state from D3cold to D0, device inaccessible
-radeon 0000:01:00.0: Unable to change power state from D3cold to D0, device inaccessible
-```
+Acked-by: Arnd Bergmann <arnd@arndb.de>
 
-The issue is that the root port the dGPU is connected to can't handle
-the transition from D3cold to D0 so the dGPU can't properly exit runpm.
+> ---
+>  include/linux/spi/pxa2xx_spi.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/include/linux/spi/pxa2xx_spi.h b/include/linux/spi/pxa2xx_spi.h
+> index 56aba2f737b1..e5a4a045fb67 100644
+> --- a/include/linux/spi/pxa2xx_spi.h
+> +++ b/include/linux/spi/pxa2xx_spi.h
+> @@ -17,7 +17,7 @@ struct dma_chan;
+>   * (resides in device.platform_data).
+>   */
+>  struct pxa2xx_spi_controller {
+> -	u16 num_chipselect;
+> +	u8 num_chipselect;
+>  	u8 enable_dma;
+>  	u8 dma_burst_size;
+>  	bool is_target;
 
-The existing logic in pci_bridge_d3_possible() checks for systems that
-are newer than 2015 to decide that D3 is safe.  This would nominally work
-for an Ivy Bridge system (which was discontinued in 2015), but this system
-appears to have continued to receive BIOS updates until 2017 and so this
-existing logic doesn't appropriately capture it.
+I wonder if we could just move the entire header to drivers/spi/.
+The spitz board only fills the num_chipselect field anyway,
+and that could be derived from the GPIO lookups instead.
 
-Add the system to bridge_d3_blacklist to prevent port pm from being used.
-
-Reported-and-tested-by: Eric Heintzmann <heintzmann.eric@free.fr>
-Closes: https://gitlab.freedesktop.org/drm/amd/-/issues/3229
-Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
----
- drivers/pci/pci.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index c3585229c12a..9d5d08a420f1 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -3102,6 +3102,18 @@ static const struct dmi_system_id bridge_d3_blacklist[] = {
- 			DMI_MATCH(DMI_BOARD_VERSION, "Continental Z2"),
- 		},
- 	},
-+	{
-+		/*
-+		 * Changing power state of root port dGPU is connected fails
-+		 * https://gitlab.freedesktop.org/drm/amd/-/issues/3229
-+		 */
-+		.ident = "Hewlett-Packard HP Pavilion 17 Notebook PC/1972",
-+		.matches = {
-+			DMI_MATCH(DMI_BOARD_VENDOR, "Hewlett-Packard"),
-+			DMI_MATCH(DMI_BOARD_NAME, "1972"),
-+			DMI_MATCH(DMI_BOARD_VERSION, "95.33"),
-+		},
-+	},
- #endif
- 	{ }
- };
--- 
-2.34.1
-
+      Arnd
 
