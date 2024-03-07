@@ -1,69 +1,69 @@
-Return-Path: <linux-kernel+bounces-95747-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95751-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1204875205
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:37:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B456875209
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:38:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 664E6287FBD
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:37:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8BA731C24040
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:38:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D347812D775;
-	Thu,  7 Mar 2024 14:36:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C71612FB24;
+	Thu,  7 Mar 2024 14:36:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KTkmu1YY"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FwJteYJG"
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 566091C68F
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 14:36:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F151412F39D
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 14:36:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709822211; cv=none; b=t2+bYx59mAd6PMyCdjwiftddJURSMXdIMCFClI+lRS8ajnF9xDtzlSBZSOwbi2rVBPT7DgoMFLguGHCKE7KsAt0fmIRsL7q/ZC2HkwiF975zvdz9U5U3MLJHOS3epEuLP55V1JytzY+mwdKihAD5f1DbnHoh7nzITE2FOA2TuEA=
+	t=1709822214; cv=none; b=OrJljjtb9RHq//mYNFVC7Uw0y9UAXzYe550RWmi0ZyqUg9pPfwEhUxxm3jyW9c/+pNHGulLVOWp30MjVPPdfQJbKE8VaJyDA5nhyhtopCINTy9WRre64NtzBmJdk1lDtv1CCYMpvcejfPEWXFRzRWk8NtFKS1MjWtdBAFtWEm/k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709822211; c=relaxed/simple;
-	bh=5S2VXHGhxOzxNWvUFy88OLCLWKC5Vjs6OqaCwuy/fjo=;
+	s=arc-20240116; t=1709822214; c=relaxed/simple;
+	bh=xvcS3U4WyCuC99KlUMtUZiggvZqD/+Lbdgm2gFxqUiM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Ej/4zTuHFCZShPF8ZzMv5nhm6a8V8zJuF/QLfyPFEZWuyGIDrYBGSgzOKLxmt7txBIkCO1q/GHWRzbDMfqhZ2mr5carYAxaNMNAIymMErCXj1DiTo6cLCpqSkYrj137VLVl6QCci5ZQrWl5l5evMjqchAQl1NQyjpElo6f+aaXA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KTkmu1YY; arc=none smtp.client-ip=192.198.163.19
+	 MIME-Version; b=U1q+32Xtx9Y4KW6tyciCwivESrErbRpYGyrEJvAaZfvQMbOr8fQ8gG4R9QU/YHI/wItzk+L4d4IpqRaQO0Gc8ZOhaUoT63FLnumxswevTjP7aG/TIfSaKeC7QQw0kG0pNYHkr/nMn6YBX32moPyF152/+ZSDANWJfOGMw20f9Ho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FwJteYJG; arc=none smtp.client-ip=192.198.163.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709822209; x=1741358209;
+  t=1709822213; x=1741358213;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=5S2VXHGhxOzxNWvUFy88OLCLWKC5Vjs6OqaCwuy/fjo=;
-  b=KTkmu1YYNfj4Y7p5AwRTp8y1l2j/mAVmQztHCH5l/DyPUOSgDj4QSK/G
-   grppEdPjY9BgjWNZnSUKp1qU0JBHYaj0nlUWgaa6gSDp9UYNPx5BFZOZ7
-   7nrYFuoI9t3fzPJtdWqWUmvoKun+1R53B/FRXNuFN8V2WR/G3IuqP9JG6
-   nn8MExaVonmJ+fSqiyimp1XJ8dIMRKVJ0411ZVqUxTp+c3K35qvcQC48+
-   batLbMo3MLVaRnYJRvgCLH8T+Xis9nVw2tjNqXD/9MHPtfnL98BlgVGpr
-   G8oek9dfZCmCtrjtIlad883YKpic6Pxu2Aw1BDAWeBmholVV9Kish2X4k
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="4348207"
+  bh=xvcS3U4WyCuC99KlUMtUZiggvZqD/+Lbdgm2gFxqUiM=;
+  b=FwJteYJGJ0R35s8xlUE8942rI4bUFLu5c8YHknqNbNejJXbQdXKhmCKK
+   xu+sELQg2YquukODnO7CgpIyZzWBK8wbmMnpTRRsDaOrzvZknt1jYafFC
+   k9aaPj/ittst5ftdrWDHAC6amor35ig0mq6icTTrzmqE6utk/TZV8PkNJ
+   WbD0XuaWKD/OegbLExsGN0u7euYrcSCS6ot1/ou/9U42Ij6mOP7VujBBL
+   RA/6/Fweq9xBC3A1H+0NU5olv6+fldMjGE3k7PfEsZP/bQC+wQPN3875t
+   HSG1LZEZcl+GWYdFF2Gs3mvAuMWdxCgXk06MM8NyTK9Yj5PrpaGrz+O1B
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="4348216"
 X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
-   d="scan'208";a="4348207"
+   d="scan'208";a="4348216"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
   by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 06:36:48 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="937046239"
+X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="937046242"
 X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
-   d="scan'208";a="937046239"
+   d="scan'208";a="937046242"
 Received: from black.fi.intel.com ([10.237.72.28])
   by fmsmga001.fm.intel.com with ESMTP; 07 Mar 2024 06:36:47 -0800
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id EC2333C0; Thu,  7 Mar 2024 16:36:45 +0200 (EET)
+	id 021CC4E9; Thu,  7 Mar 2024 16:36:45 +0200 (EET)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
 	linux-kernel@vger.kernel.org
 Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
 	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/5] w1: gpio: Make use of device properties
-Date: Thu,  7 Mar 2024 16:35:47 +0200
-Message-ID: <20240307143644.3787260-2-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 2/5] w1: gpio: Switch to use dev_err_probe()
+Date: Thu,  7 Mar 2024 16:35:48 +0200
+Message-ID: <20240307143644.3787260-3-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 In-Reply-To: <20240307143644.3787260-1-andriy.shevchenko@linux.intel.com>
 References: <20240307143644.3787260-1-andriy.shevchenko@linux.intel.com>
@@ -75,82 +75,55 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Convert the module to be property provider agnostic and allow
-it to be used on non-OF platforms.
+Switch to use dev_err_probe() to simplify the error path and
+unify a message template.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/w1/masters/w1-gpio.c | 23 ++++++++++-------------
- 1 file changed, 10 insertions(+), 13 deletions(-)
+ drivers/w1/masters/w1-gpio.c | 20 +++++++-------------
+ 1 file changed, 7 insertions(+), 13 deletions(-)
 
 diff --git a/drivers/w1/masters/w1-gpio.c b/drivers/w1/masters/w1-gpio.c
-index 34128e6bbbfa..8ea53c757c99 100644
+index 8ea53c757c99..a5ac34b32f54 100644
 --- a/drivers/w1/masters/w1-gpio.c
 +++ b/drivers/w1/masters/w1-gpio.c
-@@ -6,13 +6,13 @@
-  */
+@@ -91,18 +91,14 @@ static int w1_gpio_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
  
- #include <linux/init.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
-+#include <linux/property.h>
- #include <linux/slab.h>
- #include <linux/gpio/consumer.h>
--#include <linux/of_platform.h>
- #include <linux/err.h>
--#include <linux/of.h>
- #include <linux/delay.h>
+ 	ddata->gpiod = devm_gpiod_get_index(dev, NULL, 0, gflags);
+-	if (IS_ERR(ddata->gpiod)) {
+-		dev_err(dev, "gpio_request (pin) failed\n");
+-		return PTR_ERR(ddata->gpiod);
+-	}
++	if (IS_ERR(ddata->gpiod))
++		return dev_err_probe(dev, PTR_ERR(ddata->gpiod), "gpio_request (pin) failed\n");
  
- #include <linux/w1.h>
-@@ -63,20 +63,11 @@ static u8 w1_gpio_read_bit(void *data)
- 	return gpiod_get_value(ddata->gpiod) ? 1 : 0;
- }
+ 	ddata->pullup_gpiod =
+ 		devm_gpiod_get_index_optional(dev, NULL, 1, GPIOD_OUT_LOW);
+-	if (IS_ERR(ddata->pullup_gpiod)) {
+-		dev_err(dev, "gpio_request_one "
+-			"(ext_pullup_enable_pin) failed\n");
+-		return PTR_ERR(ddata->pullup_gpiod);
+-	}
++	if (IS_ERR(ddata->pullup_gpiod))
++		return dev_err_probe(dev, PTR_ERR(ddata->pullup_gpiod),
++				     "gpio_request (ext_pullup_enable_pin) failed\n");
  
--#if defined(CONFIG_OF)
--static const struct of_device_id w1_gpio_dt_ids[] = {
--	{ .compatible = "w1-gpio" },
--	{}
--};
--MODULE_DEVICE_TABLE(of, w1_gpio_dt_ids);
--#endif
--
- static int w1_gpio_probe(struct platform_device *pdev)
- {
- 	struct w1_bus_master *master;
- 	struct w1_gpio_ddata *ddata;
- 	struct device *dev = &pdev->dev;
--	struct device_node *np = dev->of_node;
- 	/* Enforce open drain mode by default */
- 	enum gpiod_flags gflags = GPIOD_OUT_LOW_OPEN_DRAIN;
- 	int err;
-@@ -91,7 +82,7 @@ static int w1_gpio_probe(struct platform_device *pdev)
- 	 * driver it high/low like we are in full control of the line and
- 	 * open drain will happen transparently.
- 	 */
--	if (of_property_present(np, "linux,open-drain"))
-+	if (device_property_present(dev, "linux,open-drain"))
- 		gflags = GPIOD_OUT_LOW;
+ 	master->data = ddata;
+ 	master->read_bit = w1_gpio_read_bit;
+@@ -119,10 +115,8 @@ static int w1_gpio_probe(struct platform_device *pdev)
+ 		master->set_pullup = w1_gpio_set_pullup;
  
- 	master = devm_kzalloc(dev, sizeof(struct w1_bus_master),
-@@ -152,10 +143,16 @@ static void w1_gpio_remove(struct platform_device *pdev)
- 	w1_remove_master_device(master);
- }
+ 	err = w1_add_master_device(master);
+-	if (err) {
+-		dev_err(dev, "w1_add_master device failed\n");
+-		return err;
+-	}
++	if (err)
++		return dev_err_probe(dev, err, "w1_add_master device failed\n");
  
-+static const struct of_device_id w1_gpio_dt_ids[] = {
-+	{ .compatible = "w1-gpio" },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, w1_gpio_dt_ids);
-+
- static struct platform_driver w1_gpio_driver = {
- 	.driver = {
- 		.name	= "w1-gpio",
--		.of_match_table = of_match_ptr(w1_gpio_dt_ids),
-+		.of_match_table = w1_gpio_dt_ids,
- 	},
- 	.probe = w1_gpio_probe,
- 	.remove_new = w1_gpio_remove,
+ 	if (ddata->pullup_gpiod)
+ 		gpiod_set_value(ddata->pullup_gpiod, 1);
 -- 
 2.43.0.rc1.1.gbec44491f096
 
