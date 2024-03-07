@@ -1,149 +1,256 @@
-Return-Path: <linux-kernel+bounces-95183-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95184-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD1AA874A58
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:07:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AC28874A59
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:08:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C9EC1F20C2A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:07:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D187C286044
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:08:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35FB383A19;
-	Thu,  7 Mar 2024 09:07:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lZoMoFYo"
-Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01A561C2A3;
-	Thu,  7 Mar 2024 09:07:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8651082D67;
+	Thu,  7 Mar 2024 09:07:31 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31AFA82D9A
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 09:07:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709802440; cv=none; b=jUzmgI5f1TrzCc4CDAfsnvjaMjlTlWKDNDjBW1zodvVRqsSGDairapoJjAt8ckVppAiuRknn/rdZq8pPDVqtZO0KJHaNZNxViNuwAB3R2zl3qIJaFzMfqLFIrGGMPsJ7ntUanSg6OV8bBeaLPOhAiSjJhonTa6kIAQfMH76LByE=
+	t=1709802450; cv=none; b=RL9QDnlzNX2pzu2weQt/L4X5a435y3KxiOoxTXDMdZo2Vs1sO/To/ijslFVOOssa5MMyoz1+zOpq+ZSBYiJK6qM9H3TUgjk5XG7b4BEQXLyZPQ05ArLwytCNc8aDCKN8mMTZijA98xsFkqXyY/Q41/+WO39UolJ3D1ZdmuOKPMg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709802440; c=relaxed/simple;
-	bh=Pda2tifda1uxhTuwgSnRPk7P0Rx7Ri+GXcWDUQip8YM=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=NegkkpCKze1I6Vxcw+lD9TwLee5aL9B54y6EEu2EZWPYUMfdYrtgaTZKMd1abmmrzbw0Kc7PRmgF8/CvJ3bDQKG1aOOMCq8uAHedWZxgnM0qFgEJ+h8pMC1cTpfQRaIynCwNVe9TWqboSXKRkUNMdCPk7uhbA/MEojdvO0cr4rA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lZoMoFYo; arc=none smtp.client-ip=209.85.222.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-787edfea5adso43991985a.2;
-        Thu, 07 Mar 2024 01:07:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709802438; x=1710407238; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qDXKJ3yVafAMIzaPU15d+oR0sojzZuH0Yz2adcF+Uwc=;
-        b=lZoMoFYoFtJ3206rh4GSMMqjY71KFBGIjpvv2yZOxfIT0BZlajhuKpGrd4qTQEARim
-         VHa+95V1GM5ag2flmz3abT746nNUOEiefZZ21VFcrI2jOmutcpt4T1Bz0MycjB65s1av
-         asn+e17Hv+7WL35OZIY8EhlNIFt8Qjimu0yQwgU6xVa8octuuJxfwFCMV4bLvlDFgr3k
-         k+WBiW7aXrK9F5NyUTP68wPgBcy5sVrKKNz6HDeSH75sfhBsb/1A1kgJU4W0dQmTc0zZ
-         7YjK0hjYoQ2TiUoEXH1TAvQLix7JB793oRBaXUtIMNMwamVRMz2JfW73Ud5ufQz5DaKz
-         Bbpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709802438; x=1710407238;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=qDXKJ3yVafAMIzaPU15d+oR0sojzZuH0Yz2adcF+Uwc=;
-        b=CYeXr8yuKDKefxsXu7i8PqrpXA4phrie7IhFd8aeChKmDdOx5X4VxBOW43LQoD0Hsy
-         I0V/vO3FHuS3ctDAUsg0hLrXL4QKAmpQaq1xK7hBBMj3udIDKrNwN3vxrDqiXNI2sPL0
-         LjEdKGKxW1GtKoYCaUL+u70cQoKYMKMOc/l/ODI9kbFoZeADCuqdh+TlFuyb7QMtHhM0
-         2WQBOrcGrSdSCNfJWlT3b2vmgwD4Gd9b3DzlUE0+t81ijk/IneXvA1kp6LxCL9r4xYyu
-         BcUuLrOfxDfjBuOo7BkkVhp6PCbPsXs9ODAnTiej2eJBsVu2nJ/nhSxihxI+xayxCkPt
-         8L/A==
-X-Forwarded-Encrypted: i=1; AJvYcCX5uRmFaeJPCuGumIKECwdC/55Uz8gMfDoyrRoyMURrn+Zup0WtM7d4cmji4xvswQ2JWqBLqvK8PavZw+hd5hq/7X2DPN/ZRQT/MWjiYZrpdzQ4HK5Zg9wCzRwnjNeT/auP36Fo
-X-Gm-Message-State: AOJu0Yx7KAGurXYFOp2ERG4ZsOLi/RquqT0SdF8xABCc/tuI4qsNRvVs
-	HNy9A10fNyfGJ5VynU+tRARf34GEkb23wDya6bt4zmE0UXGXgkpm
-X-Google-Smtp-Source: AGHT+IEM5osKxEPkO+biHBaUBaE46cg/B0nhTfABPNlXDl6SuS5kKX6+XAcFSdN6DCuHcwNjGTBCsA==
-X-Received: by 2002:a05:620a:40d6:b0:788:49fc:c758 with SMTP id g22-20020a05620a40d600b0078849fcc758mr452659qko.38.1709802437737;
-        Thu, 07 Mar 2024 01:07:17 -0800 (PST)
-Received: from localhost (55.87.194.35.bc.googleusercontent.com. [35.194.87.55])
-        by smtp.gmail.com with ESMTPSA id o13-20020ae9f50d000000b00788269e5d5fsm4229013qkg.94.2024.03.07.01.07.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Mar 2024 01:07:17 -0800 (PST)
-Date: Thu, 07 Mar 2024 04:07:17 -0500
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
- Marcelo Tosatti <mtosatti@redhat.com>, 
- netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org
-Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
- Jakub Kicinski <kuba@kernel.org>, 
- Eric Dumazet <edumazet@google.com>, 
- Frederic Weisbecker <frederic@kernel.org>, 
- Valentin Schneider <vschneid@redhat.com>, 
- Paolo Abeni <pabeni@redhat.com>
-Message-ID: <65e983c5155fa_f5b792941b@willemb.c.googlers.com.notmuch>
-In-Reply-To: <65e82e533857c_a463929462@willemb.c.googlers.com.notmuch>
-References: <ZeXQup48+X6U9TQ/@tpad>
- <65e82e533857c_a463929462@willemb.c.googlers.com.notmuch>
-Subject: Re: [PATCH net-next -v3] net/core/dev.c: enable timestamp static key
- if CPU isolation is configured
+	s=arc-20240116; t=1709802450; c=relaxed/simple;
+	bh=AgkkfzG87LppxT5Q6LyQ+aMtDy/BNdQl+oPCFnZzVgs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rq756MCe3wjSnj1SEuMCfrI0vmIl6RVjSndjtOrhmQ4W1HCvrPFOXJ5r/CVacnBkWsPpd2acksvtyRz5+xxr6jK6ZbFLt1gEh6sWZ7Z8NScT8x3cCVzf+GifLjV8Kosh2jOF+rC0lxpYY643TA++BvfcuH+Gg8yCeSlhpBo+xtE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4AFA11FB;
+	Thu,  7 Mar 2024 01:08:04 -0800 (PST)
+Received: from [10.57.68.241] (unknown [10.57.68.241])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3BB813F762;
+	Thu,  7 Mar 2024 01:07:24 -0800 (PST)
+Message-ID: <03458c20-5544-411b-9b8d-b4600a9b802f@arm.com>
+Date: Thu, 7 Mar 2024 09:07:22 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/1] mm/madvise: enhance lazyfreeing with mTHP in
+ madvise_free
+Content-Language: en-GB
+To: Barry Song <21cnbao@gmail.com>, Lance Yang <ioworker0@gmail.com>,
+ david@redhat.com, Vishal Moola <vishal.moola@gmail.com>
+Cc: akpm@linux-foundation.org, zokeefe@google.com, shy828301@gmail.com,
+ mhocko@suse.com, fengwei.yin@intel.com, xiehuan09@gmail.com,
+ wangkefeng.wang@huawei.com, songmuchun@bytedance.com, peterx@redhat.com,
+ minchan@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240307061425.21013-1-ioworker0@gmail.com>
+ <CAGsJ_4xcRvZGdpPh1qcFTnTnDUbwz6WreQ=L_UO+oU2iFm9EPg@mail.gmail.com>
+ <CAK1f24k2G_DSEjuqqqPyY0f7+btpYbjfoyMH7btLfP8nkasCTQ@mail.gmail.com>
+ <CAGsJ_4xREM-P1mFqeM-s3-cJ9czb6PXwizb-3hOhwaF6+QM5QA@mail.gmail.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <CAGsJ_4xREM-P1mFqeM-s3-cJ9czb6PXwizb-3hOhwaF6+QM5QA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Willem de Bruijn wrote:
-> Marcelo Tosatti wrote:
-> > 
-> > For systems that use CPU isolation (via nohz_full), creating or destroying
-> > a socket with
+On 07/03/2024 08:10, Barry Song wrote:
+> On Thu, Mar 7, 2024 at 9:00 PM Lance Yang <ioworker0@gmail.com> wrote:
+>>
+>> Hey Barry,
+>>
+>> Thanks for taking time to review!
+>>
+>> On Thu, Mar 7, 2024 at 3:00 PM Barry Song <21cnbao@gmail.com> wrote:
+>>>
+>>> On Thu, Mar 7, 2024 at 7:15 PM Lance Yang <ioworker0@gmail.com> wrote:
+>>>>
+>> [...]
+>>>> +static inline bool can_mark_large_folio_lazyfree(unsigned long addr,
+>>>> +                                                struct folio *folio, pte_t *start_pte)
+>>>> +{
+>>>> +       int nr_pages = folio_nr_pages(folio);
+>>>> +       fpb_t flags = FPB_IGNORE_DIRTY | FPB_IGNORE_SOFT_DIRTY;
+>>>> +
+>>>> +       for (int i = 0; i < nr_pages; i++)
+>>>> +               if (page_mapcount(folio_page(folio, i)) != 1)
+>>>> +                       return false;
+>>>
+>>> we have moved to folio_estimated_sharers though it is not precise, so
+>>> we don't do
+>>> this check with lots of loops and depending on the subpage's mapcount.
+>>
+>> If we don't check the subpage’s mapcount, and there is a cow folio associated
+>> with this folio and the cow folio has smaller size than this folio,
+>> should we still
+>> mark this folio as lazyfree?
 > 
-> - timestamping (SOCK_TIMESTAMPING_RX_SOFTWARE) might cause a
-> + SO_TIMESTAMP, SO_TIMESTAMPNS or SO_TIMESTAMPING with flag
-> + SOF_TIMESTAMPING_RX_SOFTWARE will cause a
+> I agree, this is true. However, we've somehow accepted the fact that
+> folio_likely_mapped_shared
+> can result in false negatives or false positives to balance the
+> overhead.  So I really don't know :-)
 > 
-> > static key to be enabled/disabled. This in turn causes undesired
-> > IPIs to isolated CPUs.
-> > 
-> > So enable the static key unconditionally, if CPU isolation is enabled,
-> > thus avoiding the IPIs.
-> > 
-> > Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
+> Maybe David and Vishal can give some comments here.
 > 
-> > diff --git a/net/core/dev.c b/net/core/dev.c
-> > index c588808be77f..15a32f5900e6 100644
-> > --- a/net/core/dev.c
-> > +++ b/net/core/dev.c
-> > @@ -155,6 +155,7 @@
-> >  #include <net/netdev_rx_queue.h>
-> >  #include <net/page_pool/types.h>
-> >  #include <net/page_pool/helpers.h>
-> > +#include <linux/sched/isolation.h>
-> >  
-> >  #include "dev.h"
-> >  #include "net-sysfs.h"
-> > @@ -11851,3 +11852,14 @@ static int __init net_dev_init(void)
-> >  }
-> >  
-> >  subsys_initcall(net_dev_init);
-> > +
-> > +static int __init net_dev_late_init(void)
-> > +{
-> > +	/* avoid static key IPIs to isolated CPUs */
-> > +	if (housekeeping_enabled(HK_TYPE_MISC))
-> > +		net_enable_timestamp();
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +late_initcall(net_dev_late_init);
-> > 
-> 
-> Can this be included in the existing net_dev_init
-> subsys_initcall?
+>>
+>>> BTW, do we need to rebase our work against David's changes[1]?
+>>> [1] https://lore.kernel.org/linux-mm/20240227201548.857831-1-david@redhat.com/
+>>
+>> Yes, we should rebase our work against David’s changes.
+>>
+>>>
+>>>> +
+>>>> +       return nr_pages == folio_pte_batch(folio, addr, start_pte,
+>>>> +                                        ptep_get(start_pte), nr_pages, flags, NULL);
+>>>> +}
+>>>> +
+>>>>  static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
+>>>>                                 unsigned long end, struct mm_walk *walk)
+>>>>
+>>>> @@ -676,11 +690,45 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
+>>>>                  */
+>>>>                 if (folio_test_large(folio)) {
+>>>>                         int err;
+>>>> +                       unsigned long next_addr, align;
+>>>>
+>>>> -                       if (folio_estimated_sharers(folio) != 1)
+>>>> -                               break;
+>>>> -                       if (!folio_trylock(folio))
+>>>> -                               break;
+>>>> +                       if (folio_estimated_sharers(folio) != 1 ||
+>>>> +                           !folio_trylock(folio))
+>>>> +                               goto skip_large_folio;
+>>>
+>>>
+>>> I don't think we can skip all the PTEs for nr_pages, as some of them might be
+>>> pointing to other folios.
+>>>
+>>> for example, for a large folio with 16PTEs, you do MADV_DONTNEED(15-16),
+>>> and write the memory of PTE15 and PTE16, you get page faults, thus PTE15
+>>> and PTE16 will point to two different small folios. We can only skip when we
+>>> are sure nr_pages == folio_pte_batch() is sure.
+>>
+>> Agreed. Thanks for pointing that out.
+>>
+>>>
+>>>> +
+>>>> +                       align = folio_nr_pages(folio) * PAGE_SIZE;
+>>>> +                       next_addr = ALIGN_DOWN(addr + align, align);
+>>>> +
+>>>> +                       /*
+>>>> +                        * If we mark only the subpages as lazyfree, or
+>>>> +                        * cannot mark the entire large folio as lazyfree,
+>>>> +                        * then just split it.
+>>>> +                        */
+>>>> +                       if (next_addr > end || next_addr - addr != align ||
+>>>> +                           !can_mark_large_folio_lazyfree(addr, folio, pte))
+>>>> +                               goto split_large_folio;
+>>>> +
+>>>> +                       /*
+>>>> +                        * Avoid unnecessary folio splitting if the large
+>>>> +                        * folio is entirely within the given range.
+>>>> +                        */
+>>>> +                       folio_clear_dirty(folio);
+>>>> +                       folio_unlock(folio);
+>>>> +                       for (; addr != next_addr; pte++, addr += PAGE_SIZE) {
+>>>> +                               ptent = ptep_get(pte);
+>>>> +                               if (pte_young(ptent) || pte_dirty(ptent)) {
+>>>> +                                       ptent = ptep_get_and_clear_full(
+>>>> +                                               mm, addr, pte, tlb->fullmm);
+>>>> +                                       ptent = pte_mkold(ptent);
+>>>> +                                       ptent = pte_mkclean(ptent);
+>>>> +                                       set_pte_at(mm, addr, pte, ptent);
+>>>> +                                       tlb_remove_tlb_entry(tlb, pte, addr);
+>>>> +                               }
+>>>
+>>> Can we do this in batches? for a CONT-PTE mapped large folio, you are unfolding
+>>> and folding again. It seems quite expensive.
 
-You sent a v4, but can you answer this question?
+I'm not convinced we should be doing this in batches. We want the initial
+folio_pte_batch() to be as loose as possible regarding permissions so that we
+reduce our chances of splitting folios to the min. (e.g. ignore SW bits like
+soft dirty, etc). I think it might be possible that some PTEs are RO and other
+RW too (e.g. due to cow - although with the current cow impl, probably not. But
+its fragile to assume that). Anyway, if we do an initial batch that ignores all
+that then do this bit as a batch, you will end up smeering all the ptes with
+whatever properties were set on the first pte, which probably isn't right.
+
+I've done a similar conversion for madvise_cold_or_pageout_pte_range() as part
+of my swap-out series v4 (hoping to post imminently, but still working out a
+latent bug that it triggers). I use ptep_test_and_clear_young() in that, which
+arm64 can apply per-pte but avoid doing a contpte unfold/fold. I know you have
+to clear dirty here too, but I think this pattern is preferable.
+
+FYI, my swap-out series also halfway-batches madvise_free_pte_range() so that I
+can batch free_swap_and_cache() for the swap entry case. Ideally the work you
+are doing here would be rebased on top of that and plug-in to the approach
+implemented there. (subject to others' views of course).
+
+I'll cc you when I post it.
+
+>>
+>> Thanks for your suggestion. I'll do this in batches in v3.
+>>
+>> Thanks again for your time!
+>>
+>> Best,
+>> Lance
+>>
+>>>
+>>>> +                       }
+>>>> +                       folio_mark_lazyfree(folio);
+>>>> +                       goto next_folio;
+>>>> +
+>>>> +split_large_folio:
+>>>>                         folio_get(folio);
+>>>>                         arch_leave_lazy_mmu_mode();
+>>>>                         pte_unmap_unlock(start_pte, ptl);
+>>>> @@ -688,13 +736,28 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
+>>>>                         err = split_folio(folio);
+>>>>                         folio_unlock(folio);
+>>>>                         folio_put(folio);
+>>>> -                       if (err)
+>>>> -                               break;
+>>>> -                       start_pte = pte =
+>>>> -                               pte_offset_map_lock(mm, pmd, addr, &ptl);
+>>>> -                       if (!start_pte)
+>>>> -                               break;
+>>>> -                       arch_enter_lazy_mmu_mode();
+>>>> +
+>>>> +                       /*
+>>>> +                        * If the large folio is locked or cannot be split,
+>>>> +                        * we just skip it.
+>>>> +                        */
+>>>> +                       if (err) {
+>>>> +skip_large_folio:
+>>>> +                               if (next_addr >= end)
+>>>> +                                       break;
+>>>> +                               pte += (next_addr - addr) / PAGE_SIZE;
+>>>> +                               addr = next_addr;
+>>>> +                       }
+>>>> +
+>>>> +                       if (!start_pte) {
+>>>> +                               start_pte = pte = pte_offset_map_lock(
+>>>> +                                       mm, pmd, addr, &ptl);
+>>>> +                               if (!start_pte)
+>>>> +                                       break;
+>>>> +                               arch_enter_lazy_mmu_mode();
+>>>> +                       }
+>>>> +
+>>>> +next_folio:
+>>>>                         pte--;
+>>>>                         addr -= PAGE_SIZE;
+>>>>                         continue;
+>>>> --
+>>>> 2.33.1
+>>>>
+> 
+> Thanks
+> Barry
 
 
