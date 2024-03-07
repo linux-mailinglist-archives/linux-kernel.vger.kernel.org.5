@@ -1,163 +1,148 @@
-Return-Path: <linux-kernel+bounces-95775-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95553-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46A43875260
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:53:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40C35874F5D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 13:44:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 657A61C23082
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:53:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA28B1F233D8
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:44:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D519912CDB6;
-	Thu,  7 Mar 2024 14:53:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ttccUmx1";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="pqxNk3pz";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ttccUmx1";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="pqxNk3pz"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A82B012BEAC;
+	Thu,  7 Mar 2024 12:43:59 +0000 (UTC)
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 618992B9A5
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 14:53:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40EEF12AADB
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 12:43:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709823211; cv=none; b=A75ksOrqBuPprBeS8GOJYWCIatkCTWAvzXWpK88rWvDqkv9ecoH1L1bzjmkyhL6T/TCw1V2A7qkZkrXCQEPeyUvbULsjRVEL6ZdDgmmETxX/lH6/JbNGiaMIMuIejajPS00yBkc25bb7N5NjjEYJ8sWGjmBatvkkjJuVO27mZeM=
+	t=1709815439; cv=none; b=RGvLT9sqhl50buF/yqtZI/qsDDYxfL1WzjpoVGuVZYb/Up2O/tyv5FY7rw4aAKDbX8vrpZZ4NJtAIkMtpG8Geszf+aBcoFRGvkMJrBh/8QHahI3Du8jWXP/PkTQ8SY5bdX9nD8WUjWYRRxMh+MqArL0XCML+S/ZMDEzHQWLOhm0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709823211; c=relaxed/simple;
-	bh=GNSxQPg6Y6Kc97whzJ98RTS1q0QGeuTcWWwXCEa7ZCY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nq5nV3hcUgog8YCGNdwgClrdzZ6lGV8biwZ8H6hWPkoclzmXFJ6Ii5kpcA2hYEdo6Y9TbaGlBRE7qbLZ3mEyZG8OCVeQ+0CMhtThDMw2MmRw3Vd6hQeQcoGWCut+yOMCBdpw4btNZXGrqNF/5TGUhFt0x60Q+4kw2i47UU9Vayw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=ttccUmx1; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=pqxNk3pz; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=ttccUmx1; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=pqxNk3pz; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 906A925B68;
-	Thu,  7 Mar 2024 12:43:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1709815415; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xFSrhPAhdeU+042oYvavyOjg/sVd7TdbAFR+fQA1Bpc=;
-	b=ttccUmx1QeU+BppR9JgrXCg9E9b7S7d/IVMycDyD0IYMF/srVgCssFrEyZKN+rEwkpmD2O
-	CYugHIodpUJYPr4jQGjf+0kGfvaQxs+FQEQGLumK0g5A9Xt9cKAp+IQH4UonxuVZfYDmuN
-	ms8BGU6kmjBl8D17nVD8TP5D9YZYPNM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1709815415;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xFSrhPAhdeU+042oYvavyOjg/sVd7TdbAFR+fQA1Bpc=;
-	b=pqxNk3pzkXGBijZ0OTzkrXQGf/dILR6pSr8Q0sAfGmWzSN/YtK399b/p1hksivbcSMtFHo
-	8pzU8CtDYHZ9eVDA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1709815415; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xFSrhPAhdeU+042oYvavyOjg/sVd7TdbAFR+fQA1Bpc=;
-	b=ttccUmx1QeU+BppR9JgrXCg9E9b7S7d/IVMycDyD0IYMF/srVgCssFrEyZKN+rEwkpmD2O
-	CYugHIodpUJYPr4jQGjf+0kGfvaQxs+FQEQGLumK0g5A9Xt9cKAp+IQH4UonxuVZfYDmuN
-	ms8BGU6kmjBl8D17nVD8TP5D9YZYPNM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1709815415;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xFSrhPAhdeU+042oYvavyOjg/sVd7TdbAFR+fQA1Bpc=;
-	b=pqxNk3pzkXGBijZ0OTzkrXQGf/dILR6pSr8Q0sAfGmWzSN/YtK399b/p1hksivbcSMtFHo
-	8pzU8CtDYHZ9eVDA==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 7E86B13997;
-	Thu,  7 Mar 2024 12:43:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id i7HVHXa26WXGRwAAn2gu4w
-	(envelope-from <dwagner@suse.de>); Thu, 07 Mar 2024 12:43:34 +0000
-Date: Thu, 7 Mar 2024 13:43:33 +0100
-From: Daniel Wagner <dwagner@suse.de>
-To: Sagi Grimberg <sagi@grimberg.me>
-Cc: Hannes Reinecke <hare@suse.de>, James Smart <james.smart@broadcom.com>, 
-	Keith Busch <kbusch@kernel.org>, Christoph Hellwig <hch@lst.de>, linux-nvme@lists.infradead.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/5] nvme-fc: do not retry when auth fails or
- connection is refused
-Message-ID: <qbzzr6waj23q6rxrueevwoteg5i4ogr7hr45ckseu7ekdcc7sb@xgyvtkp27w5i>
-References: <20240221132404.6311-1-dwagner@suse.de>
- <20240221132404.6311-3-dwagner@suse.de>
- <d5b3d5b2-ec27-4057-aa76-63fe17066cfc@suse.de>
- <sqmla42yoidail73xukhxb6uoyayo66pxpdlrhns3v533wm7wy@ppyr7t5gk3u3>
- <609e0031-e97c-466b-8cbd-47755374b117@suse.de>
- <3xhhdconprn3vvkky4yj4iazku4eiqxl6l6rw6z5tivvdjwaby@ts7satqbih7w>
- <hxr2hztb64dank3jvbnrlciaebo4k2qkkrg3brhrppizeyelpo@ewupxurl7iqm>
- <5d67a55e-e979-4c3c-8dcc-597cb13c7c9d@suse.de>
- <83bca01f-fc34-405b-9f2e-8079130400ce@grimberg.me>
+	s=arc-20240116; t=1709815439; c=relaxed/simple;
+	bh=+5k+8rEgISBNGB59KLCG2aMKGbsCMx3Ul6Z2Iblf7J0=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=J63WIoCJL9WrnP9yweda2qRA5R6Rk1VUgPZpzZgOdod4A8sDqG80PALVO/Lir7oczGwB7c4L5p7Mj8qnlSTGY/aYJBMwNFjj0RwND/2bVgo6j1wWLCRpmlHXgn0doYLW2OWJf0/KzE5BC/nni91dr2yMQhH9dPr5pssI/iejdKE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.186.29])
+	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4Tr7qs4Kmxz9xHw5
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 20:28:09 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.47])
+	by mail.maildlp.com (Postfix) with ESMTP id 24626140154
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 20:43:52 +0800 (CST)
+Received: from [127.0.0.1] (unknown [10.204.63.22])
+	by APP1 (Coremail) with SMTP id LxC2BwBXTBWAtullIlHjAw--.4316S2;
+	Thu, 07 Mar 2024 13:43:51 +0100 (CET)
+Message-ID: <2d70513e9f84e650ef1ede5a8ae5960a9de782bc.camel@huaweicloud.com>
+Subject: Re: [PATCH] um: Add winch to winch_handlers before registering
+ winch IRQ
+From: Roberto Sassu <roberto.sassu@huaweicloud.com>
+To: richard@nod.at, anton.ivanov@cambridgegreys.com,
+ johannes@sipsolutions.net
+Cc: linux-kernel@vger.kernel.org, linux-um@lists.infradead.org, Roberto
+ Sassu <roberto.sassu@huawei.com>
+Date: Thu, 07 Mar 2024 13:43:40 +0100
+In-Reply-To: <20240307104926.3531358-1-roberto.sassu@huaweicloud.com>
+References: <20240307104926.3531358-1-roberto.sassu@huaweicloud.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <83bca01f-fc34-405b-9f2e-8079130400ce@grimberg.me>
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=ttccUmx1;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=pqxNk3pz
-X-Spamd-Result: default: False [-4.42 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 URIBL_BLOCKED(0.00)[suse.de:dkim];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DWL_DNSWL_HI(-3.50)[suse.de:dkim];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[7];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-1.11)[88.35%];
-	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from]
-X-Spam-Score: -4.42
-X-Rspamd-Queue-Id: 906A925B68
-X-Spam-Flag: NO
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-CM-TRANSID:LxC2BwBXTBWAtullIlHjAw--.4316S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7tF45Jr4fCF4UAFWDZFW3Awb_yoW8uFW5pF
+	WagFnavrWSqa10ganrJa1qyFWxAws7Gr1Uur1kK345ZryUXr9aqF1rGa42qF1DAry7Jr93
+	Xr4F9a9xuayDAwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUgCb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY
+	6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17
+	CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF
+	0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr
+	1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsG
+	vfC2KfnxnUUI43ZEXa7IU1zuWJUUUUU==
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAPBF1jj5sXFwABsh
 
-On Thu, Mar 07, 2024 at 12:25:16PM +0200, Sagi Grimberg wrote:
- > > Is this what you had in mind?
-> > 
-> > Which, incidentally, is basically the patch I just posted.
-> 
-> Reading this, the patchset from Hannes now is clearer.
-> Isn't the main issue is that nvme-fc tries to periodicly reconnect
-> when failing the first connect? This is exactly what the test expects
-> it to do right?
+On Thu, 2024-03-07 at 11:49 +0100, Roberto Sassu wrote:
+> From: Roberto Sassu <roberto.sassu@huawei.com>
+>=20
+> Registering a winch IRQ is racy, an interrupt may occur before the winch =
+is
+> added to the winch_handlers list.
+>=20
+> If that happens, register_winch_irq() adds to that list a winch that is
+> scheduled to be (or has already been) freed, causing a panic later in
+> winch_cleanup().
+>=20
+> Avoid the race by adding the winch to the winch_handlers list before
+> registering the IRQ, and rolling back if um_request_irq() fails.
+>=20
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
 
-Yes, the test expects that the initial connect attempt fails. nvme-fc is
-using one connect path and doesn't distinguish between the initial
-connect attempt and a reconnect.
+Fixes: 42a359e31a0e ("uml: SIGIO support cleanup")
 
-All fabric transport share the same problem when the connection has been
-established and later one a connection drop happens and a reconnnect is
-executed. The blktest nvme/048 case extension I've posted tests the
-reconnect attempt after the controller key has changed. In this
-scenario, nvme-tcp, nvme-rdma will also do a reconnect attempt although
-DNR is set.
+I see that before that commit there was the same ordering (list_add()
+before um_request_irq()).
+
+Failure from um_request_irq() should not result in executing
+winch_interrupt() which could call list_del() itself. Then, it should
+be fine to delete the winch in the error path.
+
+Roberto
+
+> ---
+>  arch/um/drivers/line.c | 14 ++++++++------
+>  1 file changed, 8 insertions(+), 6 deletions(-)
+>=20
+> diff --git a/arch/um/drivers/line.c b/arch/um/drivers/line.c
+> index ffc5cb92fa36..d82bc3fdb86e 100644
+> --- a/arch/um/drivers/line.c
+> +++ b/arch/um/drivers/line.c
+> @@ -676,24 +676,26 @@ void register_winch_irq(int fd, int tty_fd, int pid=
+, struct tty_port *port,
+>  		goto cleanup;
+>  	}
+> =20
+> -	*winch =3D ((struct winch) { .list  	=3D LIST_HEAD_INIT(winch->list),
+> -				   .fd  	=3D fd,
+> +	*winch =3D ((struct winch) { .fd  	=3D fd,
+>  				   .tty_fd 	=3D tty_fd,
+>  				   .pid  	=3D pid,
+>  				   .port 	=3D port,
+>  				   .stack	=3D stack });
+> =20
+> +	spin_lock(&winch_handler_lock);
+> +	list_add(&winch->list, &winch_handlers);
+> +	spin_unlock(&winch_handler_lock);
+> +
+>  	if (um_request_irq(WINCH_IRQ, fd, IRQ_READ, winch_interrupt,
+>  			   IRQF_SHARED, "winch", winch) < 0) {
+>  		printk(KERN_ERR "register_winch_irq - failed to register "
+>  		       "IRQ\n");
+> +		spin_lock(&winch_handler_lock);
+> +		list_del(&winch->list);
+> +		spin_unlock(&winch_handler_lock);
+>  		goto out_free;
+>  	}
+> =20
+> -	spin_lock(&winch_handler_lock);
+> -	list_add(&winch->list, &winch_handlers);
+> -	spin_unlock(&winch_handler_lock);
+> -
+>  	return;
+> =20
+>   out_free:
+
 
