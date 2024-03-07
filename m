@@ -1,216 +1,142 @@
-Return-Path: <linux-kernel+bounces-96221-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96222-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 889B18758D6
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 21:52:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D87B8758DF
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 21:53:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F389BB239A0
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:52:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6FE13284D4B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 20:53:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDBDC13A25F;
-	Thu,  7 Mar 2024 20:51:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 059DC13A86B;
+	Thu,  7 Mar 2024 20:53:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bbdzF0h9"
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="TOvuaa/3"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5463C51C45;
-	Thu,  7 Mar 2024 20:51:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EA2241C60;
+	Thu,  7 Mar 2024 20:53:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709844710; cv=none; b=NCE1MwR87GuhYvXbQ0Uiq5ugWMUd+n59IKprzV6gyXr3BMzJnCqsbjA5TJUB9WxwId2Opu0IpylLLWUxT7IDs87vPX5SxXVerUEHU03RdqJ0HetsDA6tk6rkoOAGdsEG9TdsMrb2QLupppC8Jt7MKcRQyG9O2r+kRIrEbLDQ6OA=
+	t=1709844814; cv=none; b=SbthuC0hIbJk5ULBMM73nHqznkMageQiKXSgNG8B8we7RiUiJyyzqhu+zTmlQdl91/mCCmWAcOe0ck+vMPyPUGe7AFE+Y3DXD7ZUel3GNya5wUUXoAWdkZsvLw04WevsOHylRP/7N54c1gIFnqIpJX0xL8MNJB8/YXpyt5shmh0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709844710; c=relaxed/simple;
-	bh=M9VgY37R5X5dK1MqkH7r/9BxhdJVg5x9aVOFx5ViFV0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PAfUtr+SZ9PWZBGrXIg8Vx5m6IXuHt6Oiqy5ssCWd0qX6+NHZ5RVmVpk0DpMD+NhsuRXXVJrjXoRiuT6h4aFnpe2h6GZAaG72eaJJK6rtpOWLpfFBd4debv3HEdhn2U0jWjVmWd01LluivICnyZgRCZTYMRjxwbqh4P4vNPrluw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bbdzF0h9; arc=none smtp.client-ip=209.85.219.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dc753905f1eso399812276.1;
-        Thu, 07 Mar 2024 12:51:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709844707; x=1710449507; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wzd9qyAHSj1dh2JiXc4kanSf03p7bVYoiTZbxFh6R+k=;
-        b=bbdzF0h96cw147+tlyGO6BwS9cK2U7/tFZTqTLRqZUkLjwgxH1wJao+7+Ko1CyhKfT
-         u8f65qcyqVyPKpHV2UHwF5AQ10S8Xgmjix7XIHagQX9SI6MP96CQOzdNSaTcJtTSWWux
-         EqBnNFpydFyi9AqdIkp4FzwWuBDKl8qaHYhlYIqOP0/x8B7VOUp88AXcobQsZAEwPsEN
-         Ee5yYmBOaJgWkikprZLHppdCkXOBSC1kVy915sc/GeUjQf4UhNmQNFDiM1dKq2pJN5H9
-         Vbd13rg+ajBRgObbhabpGt7e1Vg0zKQ5B6E5FJGhfWZPKJ+IpGRK/+DjiRMq+1VTTyEK
-         BwUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709844707; x=1710449507;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wzd9qyAHSj1dh2JiXc4kanSf03p7bVYoiTZbxFh6R+k=;
-        b=oYUSSBSEkhjL8mUpMK+/yCbu/NgOJks2gt7IKYkMcPh19LnBrBco7LLsmPw4DfXwSa
-         +DeKwNzxvb7Is/MBAY6xOIgR780xFDxS79HOhJMeBElnBkTSm1cE5tAZ2yPn6hzAnfJ+
-         RmX/pteGKkw+s2lAqeme6TaKArXQzOAIBlHjz32Y25YYEblJhZTAMMMZrpFqzL+c9ido
-         FhUUwbxPV+Rz3RGchDufKYGacd7EVfIv2ST6iQANHR4qMPDZuM2jjTvij0DCphTXHy5w
-         D38nknWvI+T3uwIsIJukvGctFQb7EcyT53azvAqg19oLAhV2OQzku8J/QAPRvVn2d6aF
-         UK6Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXYR1Vz8m7QyQt/qx8/fggWvEwjHKb/yRcoF6Uzurf8uMXsyMxWcfNumIlqk+BxjTzHzs20n2wgXA16+pOOiC9IPjLXXlLMeQAycTXE
-X-Gm-Message-State: AOJu0YzbCQBoyk0dHWxvP9kxsMNr/+r7gFcP2WdoT7TGu/wKx8Q8q2+H
-	izWDACa12FNiOSzomvYtQ4/FbJ1qJ1Y3tW63j/14T4AuiE19rAz3C3ypiTHFuCRUQOJ9jYKeEiq
-	4QcyVdximTSKA1D7RpIV2YpktCspltfjSvchkVR3/
-X-Google-Smtp-Source: AGHT+IFQ/YtkiCwFFFKPgR0SxuV0RELJaW0Q3Z/hLhITD3GTL5BXBsJE489DJS+jZyulDyy9FzgKdJH0evMjVHXP7bM=
-X-Received: by 2002:a05:6902:240f:b0:dcf:4c79:5f32 with SMTP id
- dr15-20020a056902240f00b00dcf4c795f32mr2762568ybb.4.1709844707091; Thu, 07
- Mar 2024 12:51:47 -0800 (PST)
+	s=arc-20240116; t=1709844814; c=relaxed/simple;
+	bh=zg0CO3XEyVe8+ghF9U9lAFrlk+J130/oBgEnLCNFpxY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=UMod/kNMMLh6EsPAzXly5odvvb2UQGA9+ucjiYucD+Bdb/kVIJSzQhF9AXx67L9jzFHK8xM+WoDQZs5uHKcM88ajEvUZjgt6n0UMfcRypr5tHLNY4yxawAHk55i8t9RkKsb2sV2ZJFnsTLIYYHIaz79xt82AJ7YkoDzGERiApew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=TOvuaa/3; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=p08jq4TIBI4zazg51JnXnjGH5Lu+du6lZuf9B2Rz4QQ=; b=TOvuaa/3wlEt4HaASAp9xkKucG
+	+PY7MI+cX1hSmkmfFLvtR4JkMMdWfcVn8YtHQDGiMS3PJt7AA09NmwT0+GjU4w7EvTcYU989bq3lA
+	Sh6H3anq6UeJdG7s5+p9HZ3DirzhzdP4JpB9MphGl6IsZAH4dOfsdtbzZJkSRJLswWFYPpauuyfXA
+	Sfzyecd0rAcXOKsin/ZW2uEow+r/lYb/9BCfKH8o5Krry/ndFvOqVqSjHrnsABA9QpX6LO/lLNPn5
+	mwcOKE/wR1613yI+3HUvjJwhhHwu/dOn5jZGJybhQAfPSWpxxpf3MHsWmV/YP2TEMLCSl1X1YJmQp
+	aZy2ZdFg==;
+Received: from [50.53.50.0] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1riKjl-00000006Lv6-1biU;
+	Thu, 07 Mar 2024 20:53:09 +0000
+Message-ID: <25a03dba-8d6b-4072-beae-7ea477fccbcb@infradead.org>
+Date: Thu, 7 Mar 2024 12:53:06 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CABXGCsOdvVwdLmSsC8TZ1jF0UOg_F_W3wqLECWX620PUkvNk=A@mail.gmail.com>
- <efcb591e162ff0b04a9878f7250ab6ee6907f4a4.camel@mediatek.com>
- <CABXGCsPF6MbSOpfUBbT77Hnfc450kutsc8Fzr1O_O9bgtQ5PAw@mail.gmail.com> <CABXGCsPfOd_pqHpOXsZZwmqLY+DBg+EiDfKb_Wf-UrXvyuZkOw@mail.gmail.com>
-In-Reply-To: <CABXGCsPfOd_pqHpOXsZZwmqLY+DBg+EiDfKb_Wf-UrXvyuZkOw@mail.gmail.com>
-From: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-Date: Fri, 8 Mar 2024 01:51:34 +0500
-Message-ID: <CABXGCsO8CjBRmgK_+wLOkSrzACYf4JPHW6rjZa7=GrkfwvDBMA@mail.gmail.com>
-Subject: Re: [BUG] Unloading mt7921e module cause use-after-free
-To: =?UTF-8?B?RGVyZW4gV3UgKOatpuW+t+S7gSk=?= <Deren.Wu@mediatek.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "nbd@nbd.name" <nbd@nbd.name>, 
-	"angelogioacchino.delregno@collabora.com" <angelogioacchino.delregno@collabora.com>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 37/37] memprofiling: Documentation
+Content-Language: en-US
+To: John Hubbard <jhubbard@nvidia.com>,
+ Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org,
+ mhocko@suse.com, vbabka@suse.cz, hannes@cmpxchg.org,
+ roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
+ willy@infradead.org, liam.howlett@oracle.com,
+ penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com,
+ peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com,
+ will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
+ dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
+ david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
+ nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev,
+ rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com,
+ yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
+ hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
+ ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org,
+ ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org,
+ dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+ bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+ iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+ elver@google.com, dvyukov@google.com, shakeelb@google.com,
+ songmuchun@bytedance.com, jbaron@akamai.com, aliceryhl@google.com,
+ rientjes@google.com, minchan@google.com, kaleshsingh@google.com,
+ kernel-team@android.com, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
+ linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-mm@kvack.org, linux-modules@vger.kernel.org,
+ kasan-dev@googlegroups.com, cgroups@vger.kernel.org
+References: <20240306182440.2003814-1-surenb@google.com>
+ <20240306182440.2003814-38-surenb@google.com>
+ <10a95079-86e4-41bf-8e82-e387936c437d@infradead.org>
+ <hsyclfp3ketwzkebjjrucpb56gmalixdgl6uld3oym3rvssyar@fmjlbpdkrczv>
+ <f12e83ef-5881-4df8-87ae-86f8ca5a6ab4@infradead.org>
+ <72bbe76c-fcf9-47c2-b583-63d5ad77b3c3@nvidia.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <72bbe76c-fcf9-47c2-b583-63d5ad77b3c3@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Fri, Jan 12, 2024 at 1:06=E2=80=AFPM Mikhail Gavrilov
-<mikhail.v.gavrilov@gmail.com> wrote:
->
-> On Fri, Jan 12, 2024 at 12:31=E2=80=AFPM Mikhail Gavrilov
-> <mikhail.v.gavrilov@gmail.com> wrote:
-> >
-> > Thanks, this patch looks good to me.
-> > Demonstration: https://youtu.be/nKnA2ftVoXw
-> >
-> > Tested-by: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-> >
->
-> I noticed DMA-API notice:
-> ------------[ cut here ]------------
-> DMA-API: pci 0000:0f:00.0: device driver has pending DMA allocations
-> while released from device [count=3D21]
-> One of leaked entries details: [device address=3D0x00000000ffbda000]
-> [size=3D4096 bytes] [mapped with DMA_FROM_DEVICE] [mapped as single]
-> WARNING: CPU: 13 PID: 11252 at kernel/dma/debug.c:863
-> dma_debug_device_change+0x276/0x3d0
-> Modules linked in: mt7921e(-) uinput rfcomm snd_seq_dummy snd_hrtimer
-> nf_conntrack_netbios_ns nf_conntrack_broadcast nft_fib_inet
-> nft_fib_ipv4 nft_fib_ipv6 nft_fib nft_reject_inet nf_reject_ipv4
-> nft_reject nft_ct nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6
-> nf_defrag_ipv4 ip_set nf_tables qrtr bnep sunrpc binfmt_misc
-> intel_rapl_msr intel_rapl_common mt7921_common mt792x_lib
-> snd_hda_codec_hdmi mt76 edac_mce_amd snd_hda_intel snd_intel_dspcfg
-> snd_intel_sdw_acpi mac80211 snd_usb_audio kvm_amd snd_hda_codec
-> snd_usbmidi_lib btusb snd_hda_core uvcvideo snd_ump btrtl kvm ntel
-> snd_hwdep btbcm uvc snd_seq vfat btmtk videobuf2_vmalloc
-> videobuf2_memops libarc4 fat snd_seq_device videobuf2_v4l2 bluetooth
-> snd_pcm irqbypass videobuf2_common snd_timer cfg80211 rapl of snd
-> joydev pcspkr mc k10temp i2c_piix4 soundcore rfkill gpio_amdpt
-> gpio_generic loop nfnetlink zram amdgpu amdxcp i2c_algo_bit
-> drm_ttm_helper ttm drm_exec crct10dif_pclmul gpu_sched
->  crc32_pclmul crc32c_intel drm_suballoc_helper polyval_clmulni
-> drm_buddy polyval_generic drm_display_helper ghash_clmulni_intel nvme
-> sha512_ssse3 sha256_ssse3 ccp nvme_core sha1_ssse3 sp5100_tco ek
-> nvme_auth video wmi ip6_tables ip_tables fuse [last unloaded: mt7921e]
-> CPU: 13 PID: 11252 Comm: rmmod Tainted: G        W    L     6.7.0-check-f=
-ix+ #70
-> Hardware name: Micro-Star International Co., Ltd. MS-7D73/MPG B650I
-> EDGE WIFI (MS-7D73), BIOS 1.81 01/05/2024
-> RIP: 0010:dma_debug_device_change+0x276/0x3d0
-> Code: 54 24 08 e8 5c d7 c8 01 48 8b 54 24 08 48 89 c6 ff 34 24 49 89
-> e9 49 89 d8 44 89 e1 41 56 48 c7 c7 40 46 52 b3 e8 1a c9 d6 ff <0f> 0b
-> 5a 59 4d 85 ed 74 49 48 c7 c7 80 47 52 b3 e8 15 04 f5 ff
-> RSP: 0018:ffffc90009c77bf0 EFLAGS: 00010286
-> RAX: 0000000000000000 RBX: 00000000ffbda000 RCX: 0000000000000000
-> RDX: 0000000000000002 RSI: 0000000000000004 RDI: 0000000000000001
-> RBP: 0000000000001000 R08: 0000000000000001 R09: ffffed11f587fff9
-> R10: ffff888fac3fffcb R11: 0000000000000000 R12: 0000000000000015
-> R13: ffff888109b02180 R14: ffffffffb35265e0 R15: ffff88811418e0c0
-> FS:  00007f5a1e4177c0(0000) GS:ffff888fac200000(0000) knlGS:0000000000000=
-000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007f8b1d394054 CR3: 0000000134cb8000 CR4: 0000000000f50ef0
-> PKRU: 55555554
-> Call Trace:
->  <TASK>
->  ? __warn+0xcd/0x2b0
->  ? __pfx_vprintk_emit+0x10/0x10
->  ? dma_debug_device_change+0x276/0x3d0
->  ? report_bug+0x2ea/0x390
->  ? handle_bug+0x79/0xa0
->  ? exc_invalid_op+0x17/0x40
->  ? asm_exc_invalid_op+0x1a/0x20
->  ? dma_debug_device_change+0x276/0x3d0
->  notifier_call_chain+0xa0/0x2a0
->  blocking_notifier_call_chain+0x64/0x90
->  bus_notify+0x51/0x70
->  device_release_driver_internal+0x42d/0x540
->  driver_detach+0xc5/0x180
->  bus_remove_driver+0x11e/0x2a0
->  ? __check_object_size+0x5b/0x680
->  pci_unregister_driver+0x2a/0x250
->  __do_sys_delete_module+0x350/0x580
->  ? __pfx___do_sys_delete_module+0x10/0x10
->  ? syscall_exit_to_user_mode+0xce/0x2b0
->  ? do_syscall_64+0xab/0x190
->  ? rcu_is_watching+0x15/0xb0
->  ? syscall_exit_to_user_mode+0xb6/0x2b0
->  ? trace_hardirqs_on_prepare+0xe3/0x100
->  ? do_syscall_64+0x58/0x190
->  do_syscall_64+0x9b/0x190
->  ? trace_hardirqs_on_prepare+0xe3/0x100
->  entry_SYSCALL_64_after_hwframe+0x6e/0x76
-> RIP: 0033:0x7f5a1dd2d05b
-> Code: 73 01 c3 48 8b 0d bd 8d 0c 00 f7 d8 64 89 01 48 83 c8 ff c3 66
-> 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa b8 b0 00 00 00 0f 05 <48> 3d
-> 01 f0 ff ff 73 01 c3 48 8b 0d 8d 8d 0c 00 f7 d8 64 89 01
-> RSP: 002b:00007ffc5ae71b68 EFLAGS: 00000206 ORIG_RAX: 00000000000000b0
-> RAX: ffffffffffffffda RBX: 000055e490fee760 RCX: 00007f5a1dd2d05b
-> RDX: 0000000000000000 RSI: 0000000000000800 RDI: 000055e490fee7c8
-> RBP: 00007ffc5ae71b90 R08: 1999999999999999 R09: 0000000000000000
-> R10: 00007f5a1dda5ac0 R11: 0000000000000206 R12: 0000000000000000
-> R13: 00007ffc5ae71df0 R14: 000055e490fee760 R15: 0000000000000000
->  </TASK>
-> irq event stamp: 0
-> hardirqs last  enabled at (0): [<0000000000000000>] 0x0
-> hardirqs last disabled at (0): [<ffffffffb023b291>] copy_process+0x2111/0=
-x88e0
-> softirqs last  enabled at (0): [<ffffffffb023b2f3>] copy_process+0x2173/0=
-x88e0
-> softirqs last disabled at (0): [<0000000000000000>] 0x0
-> ---[ end trace 0000000000000000 ]---
-> DMA-API: Mapped at:
->  debug_dma_map_page+0x60/0x3c0
->  dma_map_page_attrs+0x2fc/0xba0
->  page_pool_dma_map+0xaf/0x2d0
->  __page_pool_alloc_pages_slow+0x36f/0xab0
->  page_pool_alloc_frag+0x4fa/0x9c0
->
-> It happens when I unload driver mt7921e and in the background some
-> applications (in my case it is speedtest) have heavy network activity.
->
-> Demonstration: https://youtu.be/XYO4ueVlh90
->
-> But I am not sure what it is related to the mt7921e driver.
->
 
-Deren, excuse me.
-Do you plan to send this patch to the stable branch?
-Or will you find another approach?
 
---=20
-Best Regards,
-Mike Gavrilov.
+On 3/7/24 12:15, John Hubbard wrote:
+> On 3/7/24 12:03, Randy Dunlap wrote:
+>> On 3/7/24 10:17, Kent Overstreet wrote:
+>>> On Wed, Mar 06, 2024 at 07:18:57PM -0800, Randy Dunlap wrote:
+> ...
+>>>>> +- i.e. iterating over them to print them in debugfs/procfs.
+>>>>
+>>>>    i.e., iterating
+>>>
+>>> i.e. latin id est, that is: grammatically my version is fine
+>>>
+>>
+>> Some of my web search hits say that a comma is required after "i.e.".
+>> At least one of them says that it is optional.
+>> And one says that it is not required in British English.
+>>
+>> But writing it with "that is":
+>>
+>>
+>> hence code tagging) and then finding and operating on them at runtime
+>> - that is iterating over them to print them in debugfs/procfs.
+>>
+>> is not good IMO. But it's your document.
+>>
+> 
+> Technical writing often benefits from a small amount redundancy. Short
+> sentences and repetition of terms are helpful to most readers. And this
+> also stays out of the more advanced grammatical constructs, as a side
+> effect.
+> 
+> So, for example, something *approximately* like this, see what you
+> think:
+> 
+> Memory allocation profiling is based upon code tagging. Code tagging is
+> a library for declaring static structs (typically by associating a file
+> and line number with a descriptive string), and then finding and
+> operating on those structs at runtime. Memory allocation profiling's
+> runtime operation is simply: print the structs via debugfs/procfs.
+
+Works for me.  Thanks.
+
+-- 
+#Randy
 
