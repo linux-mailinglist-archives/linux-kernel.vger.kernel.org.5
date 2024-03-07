@@ -1,179 +1,170 @@
-Return-Path: <linux-kernel+bounces-95248-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95249-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 158D7874B3E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:48:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CBEF874B43
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 10:50:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98FA228213A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:48:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22C0E282127
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:50:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C514E84FBB;
-	Thu,  7 Mar 2024 09:48:11 +0000 (UTC)
-Received: from esa2.ltts.com (unknown [14.140.155.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 800DF84FB9;
+	Thu,  7 Mar 2024 09:50:05 +0000 (UTC)
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6383E84052;
-	Thu,  7 Mar 2024 09:48:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.140.155.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E98482D9C
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 09:50:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709804891; cv=none; b=GKmUVgeo3ZhYum6Wktyu2QrcX7vO847pbUEdB9xZEcXXEiBwURE6vn6NduDee7NDU2rZPiTH3PQToizaqdqSFmszk/7zEOYPVMs/Onck6pzXu6XR5285Bpenr83HgCGDdPuy6baKZYUMxp5rJIZFgakXl9U4CGwjM3VbdVSZrxA=
+	t=1709805005; cv=none; b=A5H8t9szvhms+gdxT/P/5NwAEnwuoc2ccuurYhOkjaUYClYPBjpgmq2fPpqVP8T2oEcY+QoMtG7e7Vk4K+8+lMhVl4pXD+9ajWMouX7S8lsjty7Gyh4wnpu2EENdRp2H1Wrr4g73UJ7k4B4eRSf5/gv58AyT1mQB6KjAjIwV+80=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709804891; c=relaxed/simple;
-	bh=T0vQqe3wQDgCmBiHKB5MY86dFbkqqis5Rjc6YBC2yFg=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=f/DKWZZWnoU/XmDmu/hRiv35yLlIRSAc7ei7Iok9v5oSrqIy4ZyQymfm0mX4q7Xx+uJc4EoHN+OCs8c7gbg/7ff/Ir4pD6luF8PPyAv8AcNgDXSkR7JyI3eB+LEdSrHKXdjYlbqST9Tw1Z7QCIFKAQlvr0zQbXCXTKcu2p7gGU0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ltts.com; spf=pass smtp.mailfrom=ltts.com; arc=none smtp.client-ip=14.140.155.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ltts.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ltts.com
-IronPort-SDR: /xSOhYlBDg1N1Qpcfld4tp3hwf86Wtgkqc8oDDR80mtX1KUxvoAXE2Xl6xhnORuxBOL+RyNVIm
- ilK25fQs9Vlw==
-Received: from unknown (HELO localhost.localdomain) ([192.168.34.55])
-  by esa2.ltts.com with ESMTP; 07 Mar 2024 15:18:04 +0530
-From: Bhargav Raviprakash <bhargav.r@ltts.com>
-To: lee@kernel.org
-Cc: arnd@arndb.de,
-	bhargav.r@ltts.com,
-	broonie@kernel.org,
-	conor+dt@kernel.org,
-	devicetree@vger.kernel.org,
-	gregkh@linuxfoundation.org,
-	jpanis@baylibre.com,
-	kristo@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	lgirdwood@gmail.com,
-	linus.walleij@linaro.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-gpio@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	m.nirmaladevi@ltts.com,
-	nm@ti.com,
-	robh+dt@kernel.org,
-	vigneshr@ti.com
-Subject: Re: [PATCH v2 00/14]  Add support for TI TPS65224 PMIC
-Date: Thu,  7 Mar 2024 15:17:53 +0530
-Message-Id: <20240307094753.172319-1-bhargav.r@ltts.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240229174952.GC1209090@google.com>
-References: <20240229174952.GC1209090@google.com>
+	s=arc-20240116; t=1709805005; c=relaxed/simple;
+	bh=slnB0VkPCmYRjEMKYGVTvhGjXrhDQHvvukoTVT6e47A=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=dVPlB3ICe12u/lsHLq8vFmwRM43RaUVRS9YilRw7vSQT8HInwR3YK0r0Dgd5CrdHT0Tyj+amgSHYMC12swSlMi/0tX/HF7Cuj9VLvgW1c4f6BnOTL+jf9mWu1/IlQZBztZQcSl4zVKmJNniOTZFOVotbO2Z6i1cEE3xwW9Op7Tk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-36541324e57so5078795ab.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 01:50:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709805002; x=1710409802;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=50bHIWv34gOWuzWRTJWazDpYdtTy9+axEClGHGpCYuA=;
+        b=tvj6B4oZ8nNlXmAxk5HnC4yWuKzQF/dmElQgqhMF3hSRHkERDrHUvNGnx2sn3x6BZ9
+         F00lB7i0pC1aswkuemkHL2C5/dPEpJXo/ZoLFQxoigAhuEAQrXSpTpMVoy7TsU5q9uHM
+         7SnUzdr6RzhAKsDNMt2Oiz7vuKKb94izfuPwwriOjsmTZ+yXkh5RUrPez8LWG4GICnLU
+         ZHENOH8gfpXNhxVgyaPZe29m3bqGmQP3uNQlpbn3hT2nuDvUTsvQ348ho41yALdWobk/
+         onO0Dy3cg00z7Qz5fnkNU0yKp1Gl46wSPIDxILynk4opoWxp3teJKb67mt7YDqLI+cfK
+         ZL5Q==
+X-Forwarded-Encrypted: i=1; AJvYcCU26+fabm7wIHz+1pabWVYUfQArTGckPVkh26OIqMJuWUcHi6YS0ShV67+4kkusCbm5Ij1wEwrU12gSZTm6xOQwroTmPvXIePKRfdGk
+X-Gm-Message-State: AOJu0YwR/AMqLpKcLos+NkqfFPotO1N6SczMlEq6doR+o2GlIPQziPxX
+	AJU3PbVw96ruI92xGcIJgr01qCuAu8kZ3qJroGFJ/e+3DueMLPgbV9AGZ8UZlHBYW597+vPfYUG
+	V2qHC1kAmkyTL75ormXpQilYtCeMfa1U7KPcjJcNFx0k/fPavVJpMuGI=
+X-Google-Smtp-Source: AGHT+IGhM9mrbJuSzTA1W5jR6v4ssyHW5Eyc6A5pBae3PyR2kXjDqjjaRzZOla370YKuRoNJkPdJYPY0Xzo5qrKpi7NIFT0a7Ymz
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:1a68:b0:365:366f:b652 with SMTP id
+ w8-20020a056e021a6800b00365366fb652mr977138ilv.1.1709805002501; Thu, 07 Mar
+ 2024 01:50:02 -0800 (PST)
+Date: Thu, 07 Mar 2024 01:50:02 -0800
+In-Reply-To: <tencent_11DF52D0864289AB2EC56EE80C82E7EA0606@qq.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000cf41ca06130effb3@google.com>
+Subject: Re: [syzbot] [net?] possible deadlock in team_port_change_check (2)
+From: syzbot <syzbot+3c47b5843403a45aef57@syzkaller.appspotmail.com>
+To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Hi,
+Hello,
 
-On Thu, 29 Feb 2024 17:49:52 +0000, Lee Jones wrote:
-> On Fri, 23 Feb 2024, Bhargav Raviprakash wrote:
-> 
-> > This series modifies the existing TPS6594 drivers to add support for the
-> > TPS65224 PMIC device that is a derivative of TPS6594. TPS65224 has a
-> > similar register map to TPS6594 with a few differences. SPI, I2C, ESM,
-> > PFSM, Regulators and GPIO features overlap between the two devices.
-> > 
-> > TPS65224 is a Power Management IC (PMIC) which provides regulators and
-> > other features like GPIOs, Watchdog, Error Signal Monitor (ESM) and
-> > Pre-configurable Finite State Machine (PFSM). The SoC and the PMIC can
-> > communicate through the I2C or SPI interfaces. The PMIC TPS65224
-> > additionally has a 12-bit ADC.
-> > Data Sheet for TPS65224: https://www.ti.com/product/TPS65224-Q1
-> > 
-> > Driver re-use is applied following the advice of the following series:
-> > https://lore.kernel.org/lkml/2f467b0a-1d11-4ec7-8ca6-6c4ba66e5887@baylibre.com/
-> > 
-> > The features implemented in this series are:
-> > - TPS65224 Register definitions
-> > - Core (MFD I2C and SPI entry points)
-> > - PFSM	
-> > - ESM
-> > - Regulators
-> > - Pinctrl
-> > 
-> > TPS65224 Register definitions:
-> > This patch adds macros for register field definitions of TPS65224
-> > to the existing TPS6594 driver.  
-> > 
-> > Core description:
-> > I2C and SPI interface protocols are implemented, with and without
-> > the bit-integrity error detection feature (CRC mode).
-> > 
-> > PFSM description:
-> > Strictly speaking, PFSM is not hardware. It is a piece of code.
-> > PMIC integrates a state machine which manages operational modes.
-> > Depending on the current operational mode, some voltage domains
-> > remain energized while others can be off.
-> > PFSM driver can be used to trigger transitions between configured
-> > states.
-> > 
-> > ESM description:
-> > This device monitors the SoC error output signal at its nERR_MCU
-> > input pin. On error detection, ESM driver toggles the PMIC nRSTOUT pin
-> > to reset the SoC.
-> > 
-> > Regulators description:
-> > 4 BUCKs and 3 LDOs.
-> > BUCK12 can be used in dual-phase mode.
-> > 
-> > Pinctrl description:
-> > TPS65224 family has 6 GPIOs. Those GPIOs can also serve different
-> > functions such as I2C or SPI interface or watchdog disable functions.
-> > The driver provides both pinmuxing for the functions and GPIO capability.
-> > 
-> > This series was tested on linux-next tag: next-20240118
-> > 
-> > Test logs can be found here:
-> > https://gist.github.com/LeonardMH/58ec135921fb1062ffd4a8b384831eb0
-> > 
-> > Changelog v1 -> v2:
-> > - Changes to patch sign-off
-> > - Commit message change in dt-bindings patch
-> > - regmap config included in the of_match_table data field
-> > 
-> > Bhargav Raviprakash (11):
-> >   mfd: tps6594: use volatile_table instead of volatile_reg
-> >   mfd: tps6594: add regmap config in match data
-> >   dt-bindings: mfd: ti,tps6594: Add TI TPS65224 PMIC
-> >   mfd: tps6594-i2c: Add TI TPS65224 PMIC I2C
-> >   mfd: tps6594-spi: Add TI TPS65224 PMIC SPI
-> >   mfd: tps6594-core: Add TI TPS65224 PMIC core
-> >   misc: tps6594-pfsm: Add TI TPS65224 PMIC PFSM
-> >   misc: tps6594-esm: reversion check limited to TPS6594 family
-> >   misc: tps6594-esm: use regmap_field
-> >   misc: tps6594-esm: Add TI TPS65224 PMIC ESM
-> >   arch: arm64: dts: ti: k3-am62p5-sk: Add TPS65224 PMIC support in AM62P
-> >     dts
-> > 
-> > Nirmala Devi Mal Nadar (3):
-> >   mfd: tps6594: Add register definitions for TI TPS65224 PMIC
-> >   regulator: tps6594-regulator: Add TI TPS65224 PMIC regulators
-> >   pinctrl: pinctrl-tps6594: Add TPS65224 PMIC pinctrl and GPIO
-> > 
-> >  .../devicetree/bindings/mfd/ti,tps6594.yaml   |   1 +
-> >  arch/arm64/boot/dts/ti/k3-am62p5-sk.dts       |  95 +++++
-> >  drivers/mfd/tps6594-core.c                    | 266 +++++++++++--
-> >  drivers/mfd/tps6594-i2c.c                     |  41 +-
-> >  drivers/mfd/tps6594-spi.c                     |  41 +-
-> >  drivers/misc/tps6594-esm.c                    |  89 +++--
-> >  drivers/misc/tps6594-pfsm.c                   |  55 ++-
-> >  drivers/pinctrl/pinctrl-tps6594.c             | 287 ++++++++++++--
-> >  drivers/regulator/Kconfig                     |   4 +-
-> >  drivers/regulator/tps6594-regulator.c         | 244 ++++++++++--
-> >  include/linux/mfd/tps6594.h                   | 369 +++++++++++++++++-
-> >  11 files changed, 1325 insertions(+), 167 deletions(-)
-> 
-> Does this set have to be taken in wholesale?
-> 
-> -- 
-> Lee Jones [李琼斯]
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+possible deadlock in team_port_change_check
 
-The drivers do not have to be applied in lockstep or taken in wholesale.
+veth0_vlan: left promiscuous mode
+veth0_vlan: entered promiscuous mode
+team0: Device veth0_vlan failed to register rx_handler
+============================================
+WARNING: possible recursive locking detected
+6.8.0-rc7-syzkaller-00051-g67be068d31d4-dirty #0 Not tainted
+--------------------------------------------
+syz-executor.0/5487 is trying to acquire lock:
+ffff88802dce4d00 (team->team_lock_key){+.+.}-{3:3}, at: team_port_change_check+0x51/0x1e0 drivers/net/team/team.c:2999
 
-Regards,
-Bhargav
+but task is already holding lock:
+ffff88802dce4d00 (team->team_lock_key){+.+.}-{3:3}, at: team_port_add drivers/net/team/team.c:1217 [inline]
+ffff88802dce4d00 (team->team_lock_key){+.+.}-{3:3}, at: team_add_slave+0x9bb/0x2710 drivers/net/team/team.c:1977
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(team->team_lock_key);
+  lock(team->team_lock_key);
+
+ *** DEADLOCK ***
+
+ May be due to missing lock nesting notation
+
+2 locks held by syz-executor.0/5487:
+ #0: ffffffff8f375d88 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:79 [inline]
+ #0: ffffffff8f375d88 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x82c/0x1040 net/core/rtnetlink.c:6614
+ #1: ffff88802dce4d00 (team->team_lock_key){+.+.}-{3:3}, at: team_port_add drivers/net/team/team.c:1217 [inline]
+ #1: ffff88802dce4d00 (team->team_lock_key){+.+.}-{3:3}, at: team_add_slave+0x9bb/0x2710 drivers/net/team/team.c:1977
+
+stack backtrace:
+CPU: 1 PID: 5487 Comm: syz-executor.0 Not tainted 6.8.0-rc7-syzkaller-00051-g67be068d31d4-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1e7/0x2e0 lib/dump_stack.c:106
+ check_deadlock kernel/locking/lockdep.c:3062 [inline]
+ validate_chain+0x15c0/0x58e0 kernel/locking/lockdep.c:3856
+ __lock_acquire+0x1345/0x1fd0 kernel/locking/lockdep.c:5137
+ lock_acquire+0x1e3/0x530 kernel/locking/lockdep.c:5754
+ __mutex_lock_common kernel/locking/mutex.c:608 [inline]
+ __mutex_lock+0x136/0xd70 kernel/locking/mutex.c:752
+ team_port_change_check+0x51/0x1e0 drivers/net/team/team.c:2999
+ team_device_event+0x161/0x5b0 drivers/net/team/team.c:3025
+ notifier_call_chain+0x18f/0x3b0 kernel/notifier.c:93
+ call_netdevice_notifiers_extack net/core/dev.c:2004 [inline]
+ call_netdevice_notifiers net/core/dev.c:2018 [inline]
+ dev_close_many+0x33c/0x4c0 net/core/dev.c:1559
+ vlan_device_event+0x18b7/0x1de0 net/8021q/vlan.c:449
+ notifier_call_chain+0x18f/0x3b0 kernel/notifier.c:93
+ call_netdevice_notifiers_extack net/core/dev.c:2004 [inline]
+ call_netdevice_notifiers net/core/dev.c:2018 [inline]
+ dev_close_many+0x33c/0x4c0 net/core/dev.c:1559
+ dev_close+0x1c0/0x2c0 net/core/dev.c:1581
+ team_port_add drivers/net/team/team.c:1314 [inline]
+ team_add_slave+0x1ac5/0x2710 drivers/net/team/team.c:1977
+ do_set_master net/core/rtnetlink.c:2707 [inline]
+ do_setlink+0xe58/0x41c0 net/core/rtnetlink.c:2913
+ rtnl_setlink+0x40d/0x5a0 net/core/rtnetlink.c:3209
+ rtnetlink_rcv_msg+0x885/0x1040 net/core/rtnetlink.c:6617
+ netlink_rcv_skb+0x1e3/0x430 net/netlink/af_netlink.c:2543
+ netlink_unicast_kernel net/netlink/af_netlink.c:1341 [inline]
+ netlink_unicast+0x7ea/0x980 net/netlink/af_netlink.c:1367
+ netlink_sendmsg+0xa3b/0xd70 net/netlink/af_netlink.c:1908
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ __sock_sendmsg+0x221/0x270 net/socket.c:745
+ sock_write_iter+0x2dd/0x400 net/socket.c:1160
+ do_iter_readv_writev+0x46c/0x640
+ vfs_writev+0x395/0xbb0 fs/read_write.c:971
+ do_writev+0x1b1/0x350 fs/read_write.c:1018
+ do_syscall_64+0xf9/0x240
+ entry_SYSCALL_64_after_hwframe+0x6f/0x77
+RIP: 0033:0x7f19b167dda9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f19b247f0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000014
+RAX: ffffffffffffffda RBX: 00007f19b17abf80 RCX: 00007f19b167dda9
+RDX: 0000000000000001 RSI: 0000000020000040 RDI: 0000000000000004
+RBP: 00007f19b16ca47a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007f19b17abf80 R15: 00007ffdad2a3d88
+ </TASK>
+
+
+Tested on:
+
+commit:         67be068d Merge tag 'vfs-6.8-release.fixes' of git://gi..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=16f71336180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c11c5c676adb61f0
+dashboard link: https://syzkaller.appspot.com/bug?extid=3c47b5843403a45aef57
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=15998cea180000
+
 
