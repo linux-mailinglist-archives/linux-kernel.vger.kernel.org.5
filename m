@@ -1,261 +1,163 @@
-Return-Path: <linux-kernel+bounces-95552-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95775-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF81A874F5C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 13:43:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46A43875260
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:53:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F3DF71C237E8
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:43:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 657A61C23082
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:53:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 291BB12C541;
-	Thu,  7 Mar 2024 12:43:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D519912CDB6;
+	Thu,  7 Mar 2024 14:53:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="3MPza5Lg"
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2063.outbound.protection.outlook.com [40.107.101.63])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ttccUmx1";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="pqxNk3pz";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ttccUmx1";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="pqxNk3pz"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 358BB12BF25
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 12:43:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.101.63
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709815403; cv=fail; b=aEAzG1UsuTOgDMDfdo+LcN9iwJkpCEXWRWCv9S9xP1HR+CYuPpFLgCF3K/VdqcbQuZ4/cQdQF1AowtPiKkuoZ69m+OFoqRfZlbo65PCgQpa7vtCLYO2zvn3HoBa389fh/F5Oc85FRRuI5K3bPHSB4iUa9tk6V5A2Eyft58Rvzew=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709815403; c=relaxed/simple;
-	bh=53VNrKhd3IjG80+ciN53+Ja68c99efAnX33Bw0AF0rE=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=UU14phGV2tVUsTFcN7Rfwro6sJVyviIoFrKJPoRe7Dcb8mU+U7dlHyv7C6q7N3hl0+AxEdxIK7L/3xm3YqFf47Sd4tzn/0gGmjSRnpc3WcRPf9uhpPg80HRD/du0Y1Cnq8ejwnDGuPL1WqwAEnfcLZgPK1iPV7pc15Mfv5j82e0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=3MPza5Lg; arc=fail smtp.client-ip=40.107.101.63
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KxFtIxIycDYzKB6dKKzm+PATRfzTetR0E2M5kPV7Id8cGhUtJgR41vRwg4CN8Vv/BscK5TCMVOBaPdQMIk2ZmcrNEL7Q7CYnFZ9EGR+cohyF2TIHE/xEbiyzlU6VVMeediYCLKRDIDy/hfs1VvRLEBGnxnOomOKgaXKDv54YNXRFJj/R4HQCUrgQYV+PtHhzskLICGgSsnv3kyR/6p03dZEyknLjZYiGjnSMfkEi4SzbV/BsM4FXm1f5o72PpwS+lv+O/DZL9jeI7KJbEPOaUDDQwrhZSnfzq/q0reONn9DGNBuRMi7JtCQqiprxx49+MhQo4c9Z3eQu8/Uonknlfw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=QwkyCC2IS4NAVWNpbpK0rh2Eb920REVMuZPQ9JlnIyU=;
- b=m2nKshv1WORsMDcjB7dnUVkbsaP3Ly6cQOSCJg/skcOAyyCz6QyX1HSCohrn+nFH6yqRYNYT2xvgOUpS9yeTxE9MG7LGwHY0MIDdO5XZ7s8+g3L8I07GFJo1yQiZgsabcHbiTtOfWOg43JWq3Zv1s2JrUvUvCUFCjjNxnalT3Rujef+mMW/AyQrONX3i0vGD3uOXvxEnTgSmMKO+MuTQ2vDRuIBtJTm+Bmz0CasDzQQQYBEWFZi7WXFghf/sKvePUkyynmu3w7CyBXuLcatdVrH4VglWjGx6kQUR5O0YONVq8oovDGM4sljPX5y+Gjg5k2zeJeOfriLpg3CeayYa2g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QwkyCC2IS4NAVWNpbpK0rh2Eb920REVMuZPQ9JlnIyU=;
- b=3MPza5LgvUkSTXJghJdMcj3uByi49mofsZRXZKH9Dt/lvsUCAh9xknLToBQTB1emry8E7terbQspLeIxdr2WMCbtLMFONDH6A906CRjB8MOOFEkpW+jtK0LWRDsHQ4Awi23t2aF6udbga9AmnhfkTviUoNYpDoO+Zf3+o5+WaJ4=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH7PR12MB5596.namprd12.prod.outlook.com (2603:10b6:510:136::13)
- by CYXPR12MB9443.namprd12.prod.outlook.com (2603:10b6:930:db::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.39; Thu, 7 Mar
- 2024 12:43:18 +0000
-Received: from PH7PR12MB5596.namprd12.prod.outlook.com
- ([fe80::6f48:e3f1:6ff9:75bd]) by PH7PR12MB5596.namprd12.prod.outlook.com
- ([fe80::6f48:e3f1:6ff9:75bd%4]) with mapi id 15.20.7362.019; Thu, 7 Mar 2024
- 12:43:18 +0000
-Message-ID: <3ff55fef-efd7-4de6-b81f-a5a57021e4bb@amd.com>
-Date: Thu, 7 Mar 2024 18:13:10 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/amdgpu: add vm fault information to devcoredump
-Content-Language: en-US
-To: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Sunil Khatri <sunil.khatri@amd.com>, Alex Deucher
- <alexander.deucher@amd.com>, Shashank Sharma <shashank.sharma@amd.com>
-Cc: amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, Mukul Joshi <mukul.joshi@amd.com>,
- Arunpravin Paneer Selvam <Arunpravin.PaneerSelvam@amd.com>
-References: <20240306181937.3551648-1-sunil.khatri@amd.com>
- <20240306181937.3551648-2-sunil.khatri@amd.com>
- <f61edcbe-938f-4c48-920e-64c8352e87f4@amd.com>
- <bd6a70dc-d710-498e-b4ed-35c6106cd898@amd.com>
- <f3b6d600-e8f2-48cf-b19b-ddb28e9bcbee@amd.com>
-From: "Khatri, Sunil" <sukhatri@amd.com>
-In-Reply-To: <f3b6d600-e8f2-48cf-b19b-ddb28e9bcbee@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: PN3PR01CA0167.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:de::11) To PH7PR12MB5596.namprd12.prod.outlook.com
- (2603:10b6:510:136::13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 618992B9A5
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 14:53:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709823211; cv=none; b=A75ksOrqBuPprBeS8GOJYWCIatkCTWAvzXWpK88rWvDqkv9ecoH1L1bzjmkyhL6T/TCw1V2A7qkZkrXCQEPeyUvbULsjRVEL6ZdDgmmETxX/lH6/JbNGiaMIMuIejajPS00yBkc25bb7N5NjjEYJ8sWGjmBatvkkjJuVO27mZeM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709823211; c=relaxed/simple;
+	bh=GNSxQPg6Y6Kc97whzJ98RTS1q0QGeuTcWWwXCEa7ZCY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nq5nV3hcUgog8YCGNdwgClrdzZ6lGV8biwZ8H6hWPkoclzmXFJ6Ii5kpcA2hYEdo6Y9TbaGlBRE7qbLZ3mEyZG8OCVeQ+0CMhtThDMw2MmRw3Vd6hQeQcoGWCut+yOMCBdpw4btNZXGrqNF/5TGUhFt0x60Q+4kw2i47UU9Vayw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=ttccUmx1; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=pqxNk3pz; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=ttccUmx1; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=pqxNk3pz; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 906A925B68;
+	Thu,  7 Mar 2024 12:43:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1709815415; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xFSrhPAhdeU+042oYvavyOjg/sVd7TdbAFR+fQA1Bpc=;
+	b=ttccUmx1QeU+BppR9JgrXCg9E9b7S7d/IVMycDyD0IYMF/srVgCssFrEyZKN+rEwkpmD2O
+	CYugHIodpUJYPr4jQGjf+0kGfvaQxs+FQEQGLumK0g5A9Xt9cKAp+IQH4UonxuVZfYDmuN
+	ms8BGU6kmjBl8D17nVD8TP5D9YZYPNM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1709815415;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xFSrhPAhdeU+042oYvavyOjg/sVd7TdbAFR+fQA1Bpc=;
+	b=pqxNk3pzkXGBijZ0OTzkrXQGf/dILR6pSr8Q0sAfGmWzSN/YtK399b/p1hksivbcSMtFHo
+	8pzU8CtDYHZ9eVDA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1709815415; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xFSrhPAhdeU+042oYvavyOjg/sVd7TdbAFR+fQA1Bpc=;
+	b=ttccUmx1QeU+BppR9JgrXCg9E9b7S7d/IVMycDyD0IYMF/srVgCssFrEyZKN+rEwkpmD2O
+	CYugHIodpUJYPr4jQGjf+0kGfvaQxs+FQEQGLumK0g5A9Xt9cKAp+IQH4UonxuVZfYDmuN
+	ms8BGU6kmjBl8D17nVD8TP5D9YZYPNM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1709815415;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xFSrhPAhdeU+042oYvavyOjg/sVd7TdbAFR+fQA1Bpc=;
+	b=pqxNk3pzkXGBijZ0OTzkrXQGf/dILR6pSr8Q0sAfGmWzSN/YtK399b/p1hksivbcSMtFHo
+	8pzU8CtDYHZ9eVDA==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 7E86B13997;
+	Thu,  7 Mar 2024 12:43:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id i7HVHXa26WXGRwAAn2gu4w
+	(envelope-from <dwagner@suse.de>); Thu, 07 Mar 2024 12:43:34 +0000
+Date: Thu, 7 Mar 2024 13:43:33 +0100
+From: Daniel Wagner <dwagner@suse.de>
+To: Sagi Grimberg <sagi@grimberg.me>
+Cc: Hannes Reinecke <hare@suse.de>, James Smart <james.smart@broadcom.com>, 
+	Keith Busch <kbusch@kernel.org>, Christoph Hellwig <hch@lst.de>, linux-nvme@lists.infradead.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/5] nvme-fc: do not retry when auth fails or
+ connection is refused
+Message-ID: <qbzzr6waj23q6rxrueevwoteg5i4ogr7hr45ckseu7ekdcc7sb@xgyvtkp27w5i>
+References: <20240221132404.6311-1-dwagner@suse.de>
+ <20240221132404.6311-3-dwagner@suse.de>
+ <d5b3d5b2-ec27-4057-aa76-63fe17066cfc@suse.de>
+ <sqmla42yoidail73xukhxb6uoyayo66pxpdlrhns3v533wm7wy@ppyr7t5gk3u3>
+ <609e0031-e97c-466b-8cbd-47755374b117@suse.de>
+ <3xhhdconprn3vvkky4yj4iazku4eiqxl6l6rw6z5tivvdjwaby@ts7satqbih7w>
+ <hxr2hztb64dank3jvbnrlciaebo4k2qkkrg3brhrppizeyelpo@ewupxurl7iqm>
+ <5d67a55e-e979-4c3c-8dcc-597cb13c7c9d@suse.de>
+ <83bca01f-fc34-405b-9f2e-8079130400ce@grimberg.me>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB5596:EE_|CYXPR12MB9443:EE_
-X-MS-Office365-Filtering-Correlation-Id: e29ed19e-edd7-4786-aeef-08dc3ea42a18
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	0ToiykIUWuLf/47xb/F1b8ZxOEZAnUY9RycxUQkNQXAu4zXai3pUuyQmecJVy8iiRTzvvcpJC48vsm46KfxZh1QS+4kQNklFxUmmV+vJqsh0z1Ol+bNzdGAZRVHGqO4KssFPEAGcgpOKHMJjrE/Mi5iGFngtfy1JezuaXHKr39+iq63SNyYEFGsQ8gPgM+inq53eutU6zXq6efqt5YY5Qgn8VGbho6xw/+TllARQOOSUTnXyY2tVYY8n9W03SeczaFewTfSWfTZPlgn1L6/P1lPt5Afp4AnM1Z/nukS+imSPgNpkzg41fafyblkrDfCUJpUpPqPF3fG4bej0cl4EM4G7EAKUMnYpWG0/hZ2sQE9xoyFyYIYf/P2TkVtyyOXpKx21utnUAY6uZOSfmKaP26NtKdQEkduZqMP5dZMvrwKqz+l60QQmVETSaWJP5X6/JkRXkfG1AtTPq01LxIATD63zTMzaE2AXff2+wkh3v9hdHKROnKjsn/ABittBFBOn7Wk+Bzvwap9TJ0tcLiWhYtUwTAYxXZxP6cXwYkdYtlc+pH1epI8xc1npA/1t6MpDi7MYC2nclNp1Y8uTWahm/+VxLWsX35sGS4yqnwCNDWmoNeVO10Bynh0jKdmVUTtXbvLdNVkfhmOGRHnHb3OJDI1K2Ec2aeEYrF5lIGeITkY=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5596.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?VnllejZkUGNDRmJRR2hsSk5RMDcvZHgweHdldjJaNnJwYkE5S3pJWTJnUGFS?=
- =?utf-8?B?ZU1mMXpta3IyQnIwT1hlcWVva1JqYTdwUDNpQjF1R2hEdWppcmF6U0l2UEdv?=
- =?utf-8?B?bjhYVVMrcEF4bk1xY01KSjE1NUNMZmpBMGhGMHBUcnlwemZFcVRFVktYVWFM?=
- =?utf-8?B?NHorWEdKc2dod0NGbk41S2E0aTZWbS8zeXI3NHBwWEZ3Wk5wMjdubC9xOVp6?=
- =?utf-8?B?dlpwU1AxNHQ5MXRncjFwWC8wMERpUE1nNTQyS0JGTmtYbGtuODhYZVY2bVhM?=
- =?utf-8?B?eHZMblkwbWR4OFp2cU0xazVtZVd1bFFjNktucjVYQ0VoZHY3UWV3VzVaMTlL?=
- =?utf-8?B?b2tjbUFsbkRkR3JNZTZuWmJXNzhvQUtNUXVhMFVIdEEzaUdnNmo4dE5PQy9U?=
- =?utf-8?B?RnhkMVJDOTVOTitleUYyRGN5VGJDZmc3ZWdVOHg5dW91UHl1clVDemxvQVNk?=
- =?utf-8?B?aHpzallHaDEwcmc5K2RnVW1VZG15a2g5MjdXdUp0UExxUzFnOGJGUC9uZjla?=
- =?utf-8?B?MHU1OFZXNmZ4TFpCa1NPUC9wL0dtRm5GQklvY09XYXRMb1AyK2hicU53Tmxo?=
- =?utf-8?B?M3lNQzZkekxTUWtOTVN0WHdKa1RuSk54ekhZU0I3L1lkQXJiQ3I5RThLNWZ6?=
- =?utf-8?B?K0tRK3hvYW5ydk1zdGhxSnhpb05aWE0weVhJRlhkTkxkMjF3SHo5Y1JGRW5W?=
- =?utf-8?B?c2VNRVNYaTVuRlp1OGdtSmVtbU1HWjVoVzFUL2dRN2pTdHhYTmpsMU5jUGtp?=
- =?utf-8?B?WWlCSzluajhaT292bXA5WDZIZU1OS1NPRGZvRkV5eDhmL1N0VGtoTFNFRFlj?=
- =?utf-8?B?SlUyWTJvTkpIS0RYajFnTEtWY0FqNHUvOWZJeWM3Q0RaRlhCSFlBaEZDNUhk?=
- =?utf-8?B?KzdMd0U0RDNCTjMzQ2Y1Mk1ZNWVaVHVYTXdWSUlnMzQva1RWTHRnaTlEcUY1?=
- =?utf-8?B?bnREeEdqNzhyOFc2dHVRTGJLU215R1Y3YTJkWVdxUFlyWEFCVXVxTTg3eDJ5?=
- =?utf-8?B?Y0VIWXZxQ1RlSUVReWZJVGhKK2VTeU1yTnVJamdvRjd4SGk5UnA1eEFzUHdH?=
- =?utf-8?B?NmxVMWVzditqY29ySUdHZkVkM3lBc1FsSDNQR1k4b1lWTTMzNHllME9CMWp2?=
- =?utf-8?B?SjdzR1p4b3VPRGU3Ym56cWsvU2pTQ3BCUlQ4ZXFUQ3JONkFIT2hFdm5Zakc3?=
- =?utf-8?B?UlZhaFZoRjlMUUFNenlzYXd4SzNFOWF2R2JtS2VxUElYVTkvVUZhQTZ4UDlI?=
- =?utf-8?B?OTVsNjFBaWMrdm9LeXhtRmFhT2xFVHpuQmErRi9yZlRwMlNWVnI0bEY0UEg5?=
- =?utf-8?B?b0twclBQL3BXc1dmMGUwejgrK2ovVG40RC9PNm0zeXc3aUd5ajA0V1Ivbm1W?=
- =?utf-8?B?cXZYVVFsZHhERGljZ213OFQxdlVJbVk5aE5hQ3kzNlUyVjVHNmRwVVR3dWN3?=
- =?utf-8?B?R1JqbjhNemNINWpUM1g2N0c4ejB0YU1QUjJWeXpCZUNBZTFYcVQ5L1ZhOEpl?=
- =?utf-8?B?RWNCOVlXS2lnTVcxTEZ3bGlhMkRUNVhSa2ZPT0RoYUQ1ck1yVWQ0amJLbGdu?=
- =?utf-8?B?dnFjdUdIU3NncUNGV1NMUmlobWtnRDVwb2UzaXlEdWJ2SEh4M2xTYnU3TW15?=
- =?utf-8?B?WVdpb1QxL0xLN0YwVFA2MS9sZmFtM0Fqb1Btc1lzcGtZQXBVZnVmV3JpNGg5?=
- =?utf-8?B?OENRUXJrV3VvOVRBaDRwTHdKNGEzb0Nvby9ldzFXNXJTSW55Vk9IOU9tQjl4?=
- =?utf-8?B?Qk8zTU5LUE9ya2MwTlRzSEo5UjdmenZVZTlOdU5NUEZzVFBRazJURTFUL29B?=
- =?utf-8?B?SHVyMStSOWFxdzZoMnZTZkoySHJUdWZsM0pCdDlmNHZnYWNMejljKzBpNjZ0?=
- =?utf-8?B?MjhmN3ZBYmFvVDBiQlhTOEltNnlzcDBKMWNkTHU4LzF0czRDdE1IMFNUbkpi?=
- =?utf-8?B?SUdlakZiSVNqS094RSsyWXh6ZVYxbTdQaFJVRUJ1NFVtUzBHcEJFYVo1NFdK?=
- =?utf-8?B?NkVZQ1JIQ0UxMi9WQlBoK25oQnFlVVhLaXJlR2wvS2ZnMzRGa3pIS2Vtdkh0?=
- =?utf-8?B?NUJQSElMSHhNeDhDQ0FFc0d1RzNKNU1URkJZR016L3RLRDJxZEVPYXBSMEtZ?=
- =?utf-8?Q?poMW/H8x5YhQc1GgYgVnQ4I2k?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e29ed19e-edd7-4786-aeef-08dc3ea42a18
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5596.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Mar 2024 12:43:18.4895
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: kQFssrT10jR2UVE8BpLt5gr4/s/VmZc64dRqQbyK3IPR+6Jh2H+XGqGG5xQxe9oWuR1PydTgQSXK2TQB6TCj5g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYXPR12MB9443
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <83bca01f-fc34-405b-9f2e-8079130400ce@grimberg.me>
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=ttccUmx1;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=pqxNk3pz
+X-Spamd-Result: default: False [-4.42 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 URIBL_BLOCKED(0.00)[suse.de:dkim];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DWL_DNSWL_HI(-3.50)[suse.de:dkim];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[7];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-1.11)[88.35%];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from]
+X-Spam-Score: -4.42
+X-Rspamd-Queue-Id: 906A925B68
+X-Spam-Flag: NO
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 
+On Thu, Mar 07, 2024 at 12:25:16PM +0200, Sagi Grimberg wrote:
+ > > Is this what you had in mind?
+> > 
+> > Which, incidentally, is basically the patch I just posted.
+> 
+> Reading this, the patchset from Hannes now is clearer.
+> Isn't the main issue is that nvme-fc tries to periodicly reconnect
+> when failing the first connect? This is exactly what the test expects
+> it to do right?
 
-On 3/7/2024 6:10 PM, Christian König wrote:
-> Am 07.03.24 um 09:37 schrieb Khatri, Sunil:
->>
->> On 3/7/2024 1:47 PM, Christian König wrote:
->>> Am 06.03.24 um 19:19 schrieb Sunil Khatri:
->>>> Add page fault information to the devcoredump.
->>>>
->>>> Output of devcoredump:
->>>> **** AMDGPU Device Coredump ****
->>>> version: 1
->>>> kernel: 6.7.0-amd-staging-drm-next
->>>> module: amdgpu
->>>> time: 29.725011811
->>>> process_name: soft_recovery_p PID: 1720
->>>>
->>>> Ring timed out details
->>>> IP Type: 0 Ring Name: gfx_0.0.0
->>>>
->>>> [gfxhub] Page fault observed for GPU family:143
->>>> Faulty page starting at address 0x0000000000000000
->>>> Protection fault status register:0x301031
->>>>
->>>> VRAM is lost due to GPU reset!
->>>>
->>>> Signed-off-by: Sunil Khatri <sunil.khatri@amd.com>
->>>> ---
->>>>   drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c | 15 ++++++++++++++-
->>>>   drivers/gpu/drm/amd/amdgpu/amdgpu_reset.h |  1 +
->>>>   2 files changed, 15 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c 
->>>> b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
->>>> index 147100c27c2d..d7fea6cdf2f9 100644
->>>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
->>>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
->>>> @@ -203,8 +203,20 @@ amdgpu_devcoredump_read(char *buffer, loff_t 
->>>> offset, size_t count,
->>>>                  coredump->ring->name);
->>>>       }
->>>>   +    if (coredump->fault_info.status) {
->>>> +        struct amdgpu_vm_fault_info *fault_info = 
->>>> &coredump->fault_info;
->>>> +
->>>> +        drm_printf(&p, "\n[%s] Page fault observed for GPU 
->>>> family:%d\n",
->>>> +               fault_info->vmhub ? "mmhub" : "gfxhub",
->>>> +               coredump->adev->family);
->>>> +        drm_printf(&p, "Faulty page starting at address 0x%016llx\n",
->>>> +               fault_info->addr);
->>>> +        drm_printf(&p, "Protection fault status register:0x%x\n",
->>>> +               fault_info->status);
->>>> +    }
->>>> +
->>>>       if (coredump->reset_vram_lost)
->>>> -        drm_printf(&p, "VRAM is lost due to GPU reset!\n");
->>>> +        drm_printf(&p, "\nVRAM is lost due to GPU reset!\n");
->>>>       if (coredump->adev->reset_info.num_regs) {
->>>>           drm_printf(&p, "AMDGPU register dumps:\nOffset:     
->>>> Value:\n");
->>>>   @@ -253,6 +265,7 @@ void amdgpu_coredump(struct amdgpu_device 
->>>> *adev, bool vram_lost,
->>>>       if (job) {
->>>>           s_job = &job->base;
->>>>           coredump->ring = to_amdgpu_ring(s_job->sched);
->>>> +        coredump->fault_info = job->vm->fault_info;
->>>
->>> That's illegal. The VM pointer might already be stale at this point.
->>>
->>> I think you need to add the fault info of the last fault globally in 
->>> the VRAM manager or move this to the process info Shashank is 
->>> working on.
->>> Are you saying that during the reset or otherwise a vm which is part 
->>> of this job could have been freed  and we might have a NULL 
->>> dereference or invalid reference? Till now based on the resets and 
->>> pagefaults that i have created till now using the same app which we 
->>> are using for IH overflow i am able to get the valid vm only.
->>>
->>> Assuming  amdgpu_vm is freed for this job or stale, are you 
->>> suggesting to update this information in adev-> vm_manager along 
->>> with existing per vm fault_info or only in vm_manager ?
->
-> Good question. having it both in the VM as well as the VM manager 
-> sounds like the simplest option for now.
+Yes, the test expects that the initial connect attempt fails. nvme-fc is
+using one connect path and doesn't distinguish between the initial
+connect attempt and a reconnect.
 
-Let me update the patch then with information in VM manager.
-
-Regards
-Sunil
-
->
-> Regards,
-> Christian.
->
->>>
->>> Regards,
->>> Christian.
->>>
->>>>       }
->>>>         coredump->adev = adev;
->>>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.h 
->>>> b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.h
->>>> index 60522963aaca..3197955264f9 100644
->>>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.h
->>>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.h
->>>> @@ -98,6 +98,7 @@ struct amdgpu_coredump_info {
->>>>       struct timespec64               reset_time;
->>>>       bool                            reset_vram_lost;
->>>>       struct amdgpu_ring            *ring;
->>>> +    struct amdgpu_vm_fault_info    fault_info;
->>>>   };
->>>>   #endif
->>>
->
+All fabric transport share the same problem when the connection has been
+established and later one a connection drop happens and a reconnnect is
+executed. The blktest nvme/048 case extension I've posted tests the
+reconnect attempt after the controller key has changed. In this
+scenario, nvme-tcp, nvme-rdma will also do a reconnect attempt although
+DNR is set.
 
