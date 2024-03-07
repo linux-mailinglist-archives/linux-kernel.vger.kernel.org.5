@@ -1,58 +1,61 @@
-Return-Path: <linux-kernel+bounces-96291-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96292-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66D398759C7
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 22:52:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E0C48759CC
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 22:55:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1DB94281F30
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 21:52:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6AD111C219CE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 21:55:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AFA113B2BD;
-	Thu,  7 Mar 2024 21:52:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DCA213BAC4;
+	Thu,  7 Mar 2024 21:55:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NQINbUxQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CJ3YI9xs"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DBCF131E3C;
-	Thu,  7 Mar 2024 21:52:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 542B964A9F;
+	Thu,  7 Mar 2024 21:55:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709848339; cv=none; b=Lb1pe21DrfHlO2k4sEz4MrQ/YKOx09iroZlrobcjTfjaF8X/QicaG+eQGxN4HR9eXVSl6W+iIDo0by7aQXN2aoxGN+HfbwjtEXR52EPrl8l8DXh3FybTVbZdu7DxgcmxIZ8GZfwtaIKTjWNf7OpnbvfhbcZyRxtHflxnPMO2aI8=
+	t=1709848508; cv=none; b=K1Uciov/SIjBSGrDFZV8qltrGm4vOWKtPyTdRTAIUY1ODlbs1axcMxadUIzrfxHBouYf/pRvRDS87NLvPcZCSrXTC9GusoRzltSjNH9jCpxUjS4h8PrsFxXUmX1ipiAzW4IA14diXC/De6VQuiv7/i97xoUU+Kew6CXgBZGKXkQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709848339; c=relaxed/simple;
-	bh=c7A0XMkbXZAFW7+3KxHmXP0sKvgNAhuc223K2RQHkmc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WQPODJ3EywbRWDdrSVLZ6mShcNOh1Nu7ssDlJu6a4zCwhF43E9QqRolyMX3ce5gfC9agJ2XjBa9rDB3dwklxVK+007Z98LFR6g7nZhAAJcnY5a2JEL5m4ivb+cLMVrMKyKhBVtAclBI/vbU6lX35GsJ9zo9ocVWL9UwExJCHTbY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NQINbUxQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F779C433C7;
-	Thu,  7 Mar 2024 21:52:18 +0000 (UTC)
+	s=arc-20240116; t=1709848508; c=relaxed/simple;
+	bh=ji+6eu2vEsL5PFLwf1Vo/c6h9m23l5VmdsuQsf6toAs=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=rwShnFvpOjGJlmI5pE/sFhPlWXvONCILfGWZEokvTPQQY9aLzakwuPz/S8KVoiIneSXmUc+OVQqozmluGPJ+j12cb7pWAI4nQENUol25v8HiLRMbRgefJPAtu1mD5X44445VepabiiJLlitEb5+2/kGV2+W1L6buPkV90QP1z5g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CJ3YI9xs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 701E2C433F1;
+	Thu,  7 Mar 2024 21:55:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709848339;
-	bh=c7A0XMkbXZAFW7+3KxHmXP0sKvgNAhuc223K2RQHkmc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NQINbUxQhR3TSRNApvgE1q8yLZipCir5NX4vAyKZrEeuPk/hrrrc/89iu5eVOKPY0
-	 vPHFtxqu2SrCjp81LcYDB76Jqz49DHQmieHjpbXzLhgNU+0gMJuU6vOd0UaEBSkBzX
-	 ec3nb59LmoL9zYCW57MPAf0kXPbFEI8Ct8CoFpF/jWurfroFwtqhLicm7mKr4U3OLa
-	 pYQ+XGQh0h6Ijfhj6B1kXkMN9s3sTt8JXyufrtuwwBudAm3JxN+bXeOo+n/b31utCY
-	 /Mx+nk/XR7uxXDu/DE2ArbKN+JWuuz6AlJWsf7i6NV96Pf/2DmSHruuXhu4C9FbufS
-	 ycJiWPGzinKIQ==
-Date: Thu, 7 Mar 2024 15:52:14 -0600
-From: Rob Herring <robh@kernel.org>
-To: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Stefan Berger <stefanb@linux.ibm.com>, linux-integrity@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-	jarkko@kernel.org, rnsastry@linux.ibm.com, peterhuewe@gmx.de,
-	viparash@in.ibm.com
-Subject: Re: [PATCH 1/2] powerpc/prom_init: Replace linux,sml-base/sml-size
- with linux,sml-log
-Message-ID: <20240307215214.GB3110385-robh@kernel.org>
-References: <20240306155511.974517-1-stefanb@linux.ibm.com>
- <20240306155511.974517-2-stefanb@linux.ibm.com>
- <87jzmenx2c.fsf@mail.lhotse>
+	s=k20201202; t=1709848507;
+	bh=ji+6eu2vEsL5PFLwf1Vo/c6h9m23l5VmdsuQsf6toAs=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=CJ3YI9xsKU7sTU3zQlSn2oj63JCFdICFfCu4TNCQHVuKukq+p+SsaPM3xC8i6r3nM
+	 d+sCJm4NP3zGhuAXGeEg+3BBIB/RQqM/UcJ2A6/8eoWZC5iimleTgrVa9blhArQHk8
+	 sX2GbmmE5VaPuNWo3Og88x/1+gSuTNWBzWgFTSCM1gbQ6i9xiZvmV3HauUD4hXsKIi
+	 n1RK3Mqxfa5X5My8YvH4CfYqhxm68kNA3KW8mHZRs/Vn/KDu2n6YqQZ8o/7sTQfjp7
+	 TDnsFI88QUrosv8esEw5Pe00YBCaNi7RpRv4JYlS1rnUH/VjmgnwRVmBhusuwld0Ii
+	 0W2RJys2Yiq+A==
+Date: Thu, 7 Mar 2024 15:55:05 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Krishna Chaitanya Chundru <quic_krichai@quicinc.com>,
+	"Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc: Jingoo Han <jingoohan1@gmail.com>,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	quic_vbadigan@quicinc.com, quic_ramkri@quicinc.com,
+	quic_nitegupt@quicinc.com, quic_skananth@quicinc.com,
+	quic_parass@quicinc.com
+Subject: Re: [PATCH v2] PCI: dwc: Enable runtime pm of the host bridge
+Message-ID: <20240307215505.GA632869@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,117 +64,74 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87jzmenx2c.fsf@mail.lhotse>
+In-Reply-To: <be760502-446b-f4cc-776d-8751bdb75ff7@quicinc.com>
 
-On Thu, Mar 07, 2024 at 09:41:31PM +1100, Michael Ellerman wrote:
-> Stefan Berger <stefanb@linux.ibm.com> writes:
-> > linux,sml-base holds the address of a buffer with the TPM log. This
-> > buffer may become invalid after a kexec and therefore embed the whole TPM
-> > log in linux,sml-log. This helps to protect the log since it is properly
-> > carried across a kexec with both of the kexec syscalls.
-> >
-> > Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-> > ---
-> >  arch/powerpc/kernel/prom_init.c | 8 ++------
-> >  1 file changed, 2 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/arch/powerpc/kernel/prom_init.c b/arch/powerpc/kernel/prom_init.c
-> > index e67effdba85c..41268c30de4c 100644
-> > --- a/arch/powerpc/kernel/prom_init.c
-> > +++ b/arch/powerpc/kernel/prom_init.c
-> > @@ -1956,12 +1956,8 @@ static void __init prom_instantiate_sml(void)
-> >  
-> >  	reserve_mem(base, size);
-> >  
-> > -	prom_setprop(ibmvtpm_node, "/vdevice/vtpm", "linux,sml-base",
-> > -		     &base, sizeof(base));
-> > -	prom_setprop(ibmvtpm_node, "/vdevice/vtpm", "linux,sml-size",
-> > -		     &size, sizeof(size));
-> > -
-> > -	prom_debug("sml base     = 0x%llx\n", base);
-> > +	prom_setprop(ibmvtpm_node, "/vdevice/vtpm", "linux,sml-log",
-> > +		     (void *)base, size);
-> 
-> As we discussed via chat, doing it this way sucks the full content of
-> the log back into Open Firmware. 
-> 
-> That relies on OF handling such big properties, and also means more
-> memory will be consumed, which can cause problems early in boot.
-> 
-> A better solution is to explicitly add the log to the FDT in the
-> flattening phase.
-> 
+[+to Rafael, sorry, another runtime PM question, beginning of thread:
+https://lore.kernel.org/r/20240305-runtime_pm_enable-v2-1-a849b74091d1@quicinc.com]
 
-Why can't you just use /reserved-memory here? That should be preserved 
-from one kernel entry to the next.
+On Thu, Mar 07, 2024 at 07:28:54AM +0530, Krishna Chaitanya Chundru wrote:
+> On 3/6/2024 1:27 AM, Bjorn Helgaas wrote:
+> > On Tue, Mar 05, 2024 at 03:19:01PM +0530, Krishna chaitanya chundru wrote:
+> > > The Controller driver is the parent device of the PCIe host bridge,
+> > > PCI-PCI bridge and PCIe endpoint as shown below.
+> > >
+> > > 	PCIe controller(Top level parent & parent of host bridge)
+> > > 			|
+> > > 			v
+> > > 	PCIe Host bridge(Parent of PCI-PCI bridge)
+> > > 			|
+> > > 			v
+> > > 	PCI-PCI bridge(Parent of endpoint driver)
+> > > 			|
+> > > 			v
+> > > 		PCIe endpoint driver
+> > >
+> > > Since runtime PM is disabled for host bridge, the state of the child
+> > > devices under the host bridge is not taken into account by PM framework
+> > > for the top level parent, PCIe controller. So PM framework, allows
+> > > the controller driver to enter runtime PM irrespective of the state
+> > > of the devices under the host bridge.
+> > 
+> > IIUC this says that we runtime suspend the controller even though
+> > runtime PM is disabled for the host bridge?  I have a hard time
+> > parsing this; can you cite a function that does this or some relevant
+> > documentation about how this part of runtime PM works?
+> > 
+> Generally controller should go to runtime suspend when endpoint client
+> drivers and pci-pci host bridge drivers goes to runtime suspend as the
+> controller driver is the parent, but we are observing controller driver
+> goes to runtime suspend even when client drivers and PCI-PCI bridge are
+> in active state.
 
+It surprises me that a device could be suspended while children are
+active.  A PCI-PCI bridge must be in D0 for any devices below it to be
+active.  The controller is a platform device, not a PCI device, but I
+am similarly surprised that we would suspend it when children are
+active, which makes me think we didn't set the hierarchy up correctly.
 
-> Also adding the new linux,sml-log property should be accompanied by a
-> change to the device tree binding.
-> 
-> The syntax is not very obvious to me, but possibly something like?
-> 
-> diff --git a/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml b/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml
-> index 50a3fd31241c..cd75037948bc 100644
-> --- a/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml
-> +++ b/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml
-> @@ -74,8 +74,6 @@ required:
->    - ibm,my-dma-window
->    - ibm,my-drc-index
->    - ibm,loc-code
-> -  - linux,sml-base
-> -  - linux,sml-size
+It doesn't seem like we should need to enable runtime PM for a parent
+to keep it from being suspended when children are active.
 
-Dropping required properties is an ABI break. If you drop them, an older 
-OS version won't work.
+> > > --- a/drivers/pci/controller/dwc/pcie-designware-host.c
+> > > +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
+> > > @@ -16,6 +16,7 @@
+> > >  #include <linux/of_pci.h>
+> > >  #include <linux/pci_regs.h>
+> > >  #include <linux/platform_device.h>
+> > > +#include <linux/pm_runtime.h>
+> > > 
+> > >  #include "../../pci.h"
+> > >  #include "pcie-designware.h"
+> > > @@ -505,6 +506,9 @@ int dw_pcie_host_init(struct dw_pcie_rp *pp)
+> > >         if (pp->ops->post_init)
+> > >                 pp->ops->post_init(pp);
+> > > 
+> > > +       pm_runtime_set_active(&bridge->dev);
+> > > +       pm_runtime_enable(&bridge->dev);
+> > > +
+> > >         return 0;
+> > > 
+> > >  err_stop_link:
 
->  
->  allOf:
->    - $ref: tpm-common.yaml#
-> diff --git a/Documentation/devicetree/bindings/tpm/tpm-common.yaml b/Documentation/devicetree/bindings/tpm/tpm-common.yaml
-> index 3c1241b2a43f..616604707c95 100644
-> --- a/Documentation/devicetree/bindings/tpm/tpm-common.yaml
-> +++ b/Documentation/devicetree/bindings/tpm/tpm-common.yaml
-> @@ -25,6 +25,11 @@ properties:
->        base address of reserved memory allocated for firmware event log
->      $ref: /schemas/types.yaml#/definitions/uint64
->  
-> +  linux,sml-log:
-
-Why is this Linux specific?
-
-> +    description:
-> +      Content of firmware event log
-> +    $ref: /schemas/types.yaml#/definitions/uint8-array
-> +
->    linux,sml-size:
->      description:
->        size of reserved memory allocated for firmware event log
-> @@ -53,15 +58,22 @@ dependentRequired:
->    linux,sml-base: ['linux,sml-size']
->    linux,sml-size: ['linux,sml-base']
->  
-> -# must only have either memory-region or linux,sml-base
-> +# must only have either memory-region or linux,sml-base/size or linux,sml-log
->  # as well as either resets or reset-gpios
->  dependentSchemas:
->    memory-region:
->      properties:
->        linux,sml-base: false
-> +      linux,sml-log: false
->    linux,sml-base:
->      properties:
->        memory-region: false
-> +      linux,sml-log: false
-> +  linux,sml-log:
-> +    properties:
-> +      memory-region: false
-> +      linux,sml-base: false
-> +      linux,sml-size: false
->    resets:
->      properties:
->        reset-gpios: false
-> 
-> 
-> cheers
+Bjorn
 
