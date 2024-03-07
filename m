@@ -1,51 +1,66 @@
-Return-Path: <linux-kernel+bounces-95972-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95973-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A563875584
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 18:49:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96759875585
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 18:49:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBAA41C2260B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:49:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51799286871
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 17:49:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3EA2130E55;
-	Thu,  7 Mar 2024 17:49:22 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE65C12FB2B
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 17:49:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71F88130E4F;
+	Thu,  7 Mar 2024 17:49:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U3lR1dWo"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0FCA12FF86;
+	Thu,  7 Mar 2024 17:49:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709833762; cv=none; b=OkPQP9GStsw4Rz5Q0767MrQ+W02mPyouHfJMNDYN1JfaCmvTh/dosLyjEGd7CC/yW9/iXIs3dh9xotnF7k2pIjhy4mziQb777fkkmB6gjXSVKesAaaashzNGejiMXkDHVLkE/nCcRTlW5JgzeOsBqC2deuHag+XsNi2YYEeLbeA=
+	t=1709833771; cv=none; b=RXYcQEnpUrM24BAlCYfP/2nv6+YQRHFdLwvPBXsdymxWss3M7bgttI4l9TLqP+MBHFmsHA8boA8sJsizOAaJC6tpKb8hdJz2JNbiHMuJJSqUh0268bOxtjEm2KnJpSSldWIKqGEYuc2bEIeAkl0IGFZCs4z1e2we4hCRn+rIG7A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709833762; c=relaxed/simple;
-	bh=e8DkOM8yTrydErY5KdZRvraYd3NqQqH7PbG2WVUjR6U=;
+	s=arc-20240116; t=1709833771; c=relaxed/simple;
+	bh=G3M4grb51tG5+EP2zqvMJoPp/ih2kVlYqks0xU3ILxY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=d9eBFNpa4+HJHPjV0Du6HfjNMAD2njcNcSWfOnIfe439QphNnpmroUWPFzZ6n9aVnIubZo53BwjwqHUKDDj0L/R1j64IAoNRpHVlKn3t00TtuPL/SINB7Zk2QxHDpny0pZPKPUpCXteqVxVAnmMWgEu3xq+4mlCJqzS0ksmCnPQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BCCF11FB;
-	Thu,  7 Mar 2024 09:49:55 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [10.57.69.155])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D7D073F762;
-	Thu,  7 Mar 2024 09:49:15 -0800 (PST)
-Date: Thu, 7 Mar 2024 17:49:12 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: "Christoph Lameter (Ampere)" <cl@gentwo.org>, catalin.marinas@arm.com
-Cc: Will Deacon <will@kernel.org>, Jonathan.Cameron@huawei.com,
-	Matteo.Carlini@arm.com, Valentin.Schneider@arm.com,
-	akpm@linux-foundation.org, anshuman.khandual@arm.com,
-	Eric Mackay <eric.mackay@oracle.com>, dave.kleikamp@oracle.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, linux@armlinux.org.uk, robin.murphy@arm.com,
-	vanshikonda@os.amperecomputing.com, yang@os.amperecomputing.com
-Subject: Re: [PATCH v3] ARM64: Dynamically allocate cpumasks and increase
- supported CPUs to 512
-Message-ID: <Zen-GAeTXKTpm4JQ@FVFF77S0Q05N>
-References: <37099a57-b655-3b3a-56d0-5f7fbd49d7db@gentwo.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=kBowmVJ17DJp7UAHULuykob5dHvyjOQ1VHj6J4FuMY+YTUtlnL3PcaT6696+JUsy32U4Ok/Qp3QP1kUEaNnQCxbizvKoRLHIoPBof5EMSXmiYrGREeG1YmaICxDm3GPXxi8d6PG7LdkBNIPlJ0k9wK+xrJQwePT2QlLgsb1MqVk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=U3lR1dWo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41D7FC43390;
+	Thu,  7 Mar 2024 17:49:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709833771;
+	bh=G3M4grb51tG5+EP2zqvMJoPp/ih2kVlYqks0xU3ILxY=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=U3lR1dWok89906CyLWg7p5Suq3NY0OB/h04UndTSoyhiR21Chzumm6fbV7H1/Q7t/
+	 YJ5i/z/0MBSuCE+QgQT/P0N/x9gSKhXgjyARc86j+r5maICquoEaTI1Zyn4tbKwhDq
+	 VpFkdrO453DMUH6TLxUY7FX4VAqwruYxSXql3/6eUifz4NHSPGh4eP1uD19vbFPHNZ
+	 KT6oCRJTkGg9L00VoZx0n4350+MriFC1rhCEbaCUORpZaBqtORRxHlIf9La6f3hJ2X
+	 8gl29C4ZK1EcOHedCB1BBbzu9gJ5Ws+jhLFMNzwLuWRezsINYyyEfeSePw7EfI5ukq
+	 sRSgowANH/Mtg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id C06D6CE0F1D; Thu,  7 Mar 2024 09:49:30 -0800 (PST)
+Date: Thu, 7 Mar 2024 09:49:30 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Stefan Wiehler <stefan.wiehler@nokia.com>
+Cc: Russell King <linux@armlinux.org.uk>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	linux-arm-kernel@lists.infradead.org, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm: smp: Avoid false positive CPU hotplug Lockdep-RCU
+ splat
+Message-ID: <0409e716-5bd5-4501-9a90-3a4aed048c7f@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240307160951.3607374-1-stefan.wiehler@nokia.com>
+ <49792f54-fa11-4984-8611-84ba640a2b86@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,140 +69,93 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <37099a57-b655-3b3a-56d0-5f7fbd49d7db@gentwo.org>
+In-Reply-To: <49792f54-fa11-4984-8611-84ba640a2b86@paulmck-laptop>
 
-Hi Christoph,
+On Thu, Mar 07, 2024 at 09:45:36AM -0800, Paul E. McKenney wrote:
+> On Thu, Mar 07, 2024 at 05:09:51PM +0100, Stefan Wiehler wrote:
+> > With CONFIG_PROVE_RCU_LIST=y and by executing
+> > 
+> >   $ echo 0 > /sys/devices/system/cpu/cpu1/online
+> > 
+> > one can trigger the following Lockdep-RCU splat on ARM:
+> > 
+> >   =============================
+> >   WARNING: suspicious RCU usage
+> >   6.8.0-rc7-00001-g0db1d0ed8958 #10 Not tainted
+> >   -----------------------------
+> >   kernel/locking/lockdep.c:3762 RCU-list traversed in non-reader section!!
+> > 
+> >   other info that might help us debug this:
+> > 
+> >   RCU used illegally from offline CPU!
+> >   rcu_scheduler_active = 2, debug_locks = 1
+> >   no locks held by swapper/1/0.
+> > 
+> >   stack backtrace:
+> >   CPU: 1 PID: 0 Comm: swapper/1 Not tainted 6.8.0-rc7-00001-g0db1d0ed8958 #10
+> >   Hardware name: Allwinner sun8i Family
+> >    unwind_backtrace from show_stack+0x10/0x14
+> >    show_stack from dump_stack_lvl+0x60/0x90
+> >    dump_stack_lvl from lockdep_rcu_suspicious+0x150/0x1a0
+> >    lockdep_rcu_suspicious from __lock_acquire+0x11fc/0x29f8
+> >    __lock_acquire from lock_acquire+0x10c/0x348
+> >    lock_acquire from _raw_spin_lock_irqsave+0x50/0x6c
+> >    _raw_spin_lock_irqsave from check_and_switch_context+0x7c/0x4a8
+> >    check_and_switch_context from arch_cpu_idle_dead+0x10/0x7c
+> >    arch_cpu_idle_dead from do_idle+0xbc/0x138
+> >    do_idle from cpu_startup_entry+0x28/0x2c
+> >    cpu_startup_entry from secondary_start_kernel+0x11c/0x124
+> >    secondary_start_kernel from 0x401018a0
+> > 
+> > The CPU is already reported as offline from RCU perspective in
+> > cpuhp_report_idle_dead() before arch_cpu_idle_dead() is invoked. Above
+> > RCU-Lockdep splat is then triggered by check_and_switch_context() acquiring the
+> > ASID spinlock.
+> > 
+> > Avoid the false-positive Lockdep-RCU splat by briefly reporting the CPU as
+> > online again while the spinlock is held.
+> > 
+> > Signed-off-by: Stefan Wiehler <stefan.wiehler@nokia.com>
+> 
+> From an RCU perspective, this looks plausible.  One question
+> below.
 
-On Wed, Mar 06, 2024 at 05:45:04PM -0800, Christoph Lameter (Ampere) wrote:
-> Currently defconfig selects NR_CPUS=256, but some vendors (e.g. Ampere
-> Computing) are planning to ship systems with 512 CPUs. So that all CPUs on
-> these systems can be used with defconfig, we'd like to bump NR_CPUS to 512.
-> Therefore this patch increases the default NR_CPUS from 256 to 512.
-> 
-> As increasing NR_CPUS will increase the size of cpumasks, there's a fear that
-> this might have a significant impact on stack usage due to code which places
-> cpumasks on the stack. To mitigate that concern, we can select
-> CPUMASK_OFFSTACK. As that doesn't seem to be a problem today with
-> NR_CPUS=256, we only select this when NR_CPUS > 256.
-> 
-> CPUMASK_OFFSTACK configures the cpumasks in the kernel to be
-> dynamically allocated. This was used in the X86 architecture in the
-> past to enable support for larger CPU configurations up to 8k cpus.
-> 
-> With that is becomes possible to dynamically size the allocation of
-> the cpu bitmaps depending on the quantity of processors detected on
-> bootup. Memory used for cpumasks will increase if the kernel is
-> run on a machine with more cores.
-> 
-> Further increases may be needed if ARM processor vendors start
-> supporting more processors. Given the current inflationary trends
-> in core counts from multiple processor manufacturers this may occur.
-> 
-> There are minor regressions for hackbench. The kernel data size
-> for 512 cpus is smaller with offstack than with onstack.
-> 
-> Benchmark results using hackbench average over 10 runs of
-> 
-> 	hackbench -s 512 -l 2000 -g 15 -f 25 -P
-> 
-> on Altra 80 Core
-> 
-> Support for 256 CPUs on stack. Baseline
-> 
-> 	7.8564 sec
-> 
-> Support for 512 CUs on stack.
-> 
-> 	7.8713 sec + 0.18%
-> 
-> 512 CPUS offstack
-> 
-> 	7.8916 sec + 0.44%
-> 
-> Kernel size comparison:
-> 
->    text		   data	    filename				Difference to onstack256 baseline
-> 25755648	9589248	    vmlinuz-6.8.0-rc4-onstack256
-> 25755648	9607680	    vmlinuz-6.8.0-rc4-onstack512	+0.19%
-> 25755648	9603584	    vmlinuz-6.8.0-rc4-offstack512	+0.14%
+But one additional caution...  If execution is delayed during that call
+to idle_task_exit(), RCU will stall and won't have a reasonable way of
+motivating this CPU.  Such delays could be due to vCPU preemption or
+due to firmware grabbing the CPU.
 
-Thanks for this data; I think that's a strong justification that this isn't
-likely to cause a big problem for us, and so I thing it makes sense to go with
-this.
+But this is only a caution, not opposition.  After all, you could have
+the same problem with an online CPU that gets similarly delayed while
+its interrupts are disabled.
 
-I have two minor comments below.
+						Thanx, Paul
 
-> Tested-by: Eric Mackay <eric.mackay@oracle.com>
-> Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-> Signed-off-by: Christoph Lameter (Ampere) <cl@linux.com>
-> ---
+> > ---
+> >  arch/arm/kernel/smp.c | 7 +++++++
+> >  1 file changed, 7 insertions(+)
+> > 
+> > diff --git a/arch/arm/kernel/smp.c b/arch/arm/kernel/smp.c
+> > index 3431c0553f45..6875e2c5dd50 100644
+> > --- a/arch/arm/kernel/smp.c
+> > +++ b/arch/arm/kernel/smp.c
+> > @@ -319,7 +319,14 @@ void __noreturn arch_cpu_idle_dead(void)
+> >  {
+> >  	unsigned int cpu = smp_processor_id();
+> >  
+> > +	/*
+> > +	 * Briefly report CPU as online again to avoid false positive
+> > +	 * Lockdep-RCU splat when check_and_switch_context() acquires ASID
+> > +	 * spinlock.
+> > +	 */
+> > +	rcutree_report_cpu_starting(cpu);
+> >  	idle_task_exit();
+> > +	rcutree_report_cpu_dead();
+> >  
+> >  	local_irq_disable();
 > 
-> 
-> Original post: https://www.spinics.net/lists/linux-mm/msg369701.html
-> V2: https://lkml.org/lkml/2024/2/7/505
-> 
-> 
-> V1->V2
-> 
-> - Keep quotation marks
-> - Remove whiltespace damage
-> - Add tested by
-> 
-> V2->V3:
-> - Add test results
-> - Rework descriptions
-> 
-> 
->  arch/arm64/Kconfig | 16 +++++++++++++++-
->  1 file changed, 15 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index aa7c1d435139..4e767dede47d 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -1427,7 +1427,21 @@ config SCHED_SMT
->  config NR_CPUS
->  	int "Maximum number of CPUs (2-4096)"
->  	range 2 4096
-> -	default "256"
-> +	default "512"
-> +
-> +#
-> +# Determines the placement of cpumasks.
-> +#
-> +# With CPUMASK_OFFSTACK the cpumasks are dynamically allocated.
-> +# Useful for machines with lots of core because it avoids increasing
-> +# the size of many of the data structures in the kernel.
-> +#
-> +# If this is off then the cpumasks have a static sizes and are
-> +# embedded within data structures.
-> +#
-> +	config CPUMASK_OFFSTACK
-> +	def_bool y
-> +	depends on NR_CPUS > 256
-
-As before, can we please delete the comment? That's the general semantic of
-CPUMASK_OFFSTACK, not why we're selecting it.
-
-That aside, this config option is defined in lib/Kconfig, so we should select
-it rather than redefining it. i.e. this should be:
-
-	select CPUMASK_OFFSTACK if NR_CPUS > 256
-
-Sorry for not spotting that before.
-
-With those changes:
-
-Acked-by: Mark Rutland <mark.rutland@arm.com>
-
-Catalin, are you happy to fix that up when applying?
-
-Mark.
-
-> 
->  config HOTPLUG_CPU
->  	bool "Support for hot-pluggable CPUs"
-> -- 
-> 2.39.2
-> 
+> Both rcutree_report_cpu_starting() and rcutree_report_cpu_dead() complain
+> bitterly via lockdep if interrupts are enabled.  And the call sites have
+> interrupts disabled.  So I don't understand what this local_irq_disable()
+> is needed for.
 
