@@ -1,80 +1,59 @@
-Return-Path: <linux-kernel+bounces-95513-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95514-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05D99874EA2
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 13:09:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07D9D874EAE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 13:14:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 850C6283DDC
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:09:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9C760B24A18
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 12:14:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3298F129A8A;
-	Thu,  7 Mar 2024 12:09:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BnR+GVP+"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F6CF129A8B;
+	Thu,  7 Mar 2024 12:14:10 +0000 (UTC)
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE3A03233
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 12:09:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF38D3233
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 12:14:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709813376; cv=none; b=JCRYVgXimA2SSFTYa4pb9CpYO7OfinWQkAD3I28qpfChC9tQ8Loh0MeNJ/nfII3H/exXae9E5nl2G/EX4xN65RIJuCLYWwWhfQLK/QNAvfTvmtnVLBg6St5PsvWQZ26DyHPesxJjPVcWqGYfTAWTWmDhET1diOU0YHsXFwv/sFY=
+	t=1709813649; cv=none; b=n/czwL6MDSSa0Z5Wrw7Hz/QgoDcWBfXZPp9P6JRBXRkZ0CjJKrmvl3RMfok/skDu2QjQtqBFsL9V+TO6hOjVQUP0gi86j3DcmiN74i1d7Vb8nM1ork+d8tYKLFIdoN2bSh5aWyxyQfpndklCG3CjtHO8JRIJX21JDyzXbCqBZsA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709813376; c=relaxed/simple;
-	bh=ZcbSxQHa64styGyObPAmI3FZxXzS+Ei0HMj7rBDGJks=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=E8Xw4OMfkNgQbeQGu+n67SHq0C88w0L+Hb+VYzs+ms9E8/cITupW5WlcjLEODYlap1tz1uBR0mHmzUKU3sccCimwWwIE8iwaBd8BmDow0cvLrr243dEopyz5vx9bkBmf4GEZYOt+i4b7DT0wuhLGMVXiGGfbXjjBTcCTbuFZKVc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BnR+GVP+; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709813373;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=sobtdTCw6g7Ovv2LKnqxm7QgwpUgMPOLE+MVJRQS8vw=;
-	b=BnR+GVP+phvw/5f3xq/jOwMN1jIHX108mSYvN4lmwHYox+vaQu0VA5QXBqsdVX1Bq1FM73
-	DsSjhskbNu+rwWk8szokZvEra3UgQXO5djWsKUDUEAjODCnN1g2aJ+PujQUmSN9qr5RM1Y
-	CWTH4GTST860CEv4Re4bsTPAwLjYEm4=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-6-JR1_HLWnNqOEfYVT66e9BA-1; Thu, 07 Mar 2024 07:09:32 -0500
-X-MC-Unique: JR1_HLWnNqOEfYVT66e9BA-1
-Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-2d2a5e2e7c3so5482831fa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 04:09:32 -0800 (PST)
+	s=arc-20240116; t=1709813649; c=relaxed/simple;
+	bh=3PEmWEx6elLryl2CM6/FMnZkO8+VE19YwQUChS0L3oU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=emyaOko/mMpioKPtOXxbgOSUgI2vOqjW5ME5p4aTsyu6psYvHILlQ1yeqJYNsUScK7itDY36Ku+7gAwCBVIMWDxe5cVXy3uk4vA6UXCOohxtSXmh5Dj3VXdAkdFceAvCFBMMofAJNfcnWEwNyC7Tagwmomz54kJHGuIn++YI+lw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-412bcca7c56so312685e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 04:14:07 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709813371; x=1710418171;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:from:content-language:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=sobtdTCw6g7Ovv2LKnqxm7QgwpUgMPOLE+MVJRQS8vw=;
-        b=Pwl1J038xj0UYv1I5rG7JMJLkpdzb/AG8/bQHtatVZl4sISEBFcX26eksFTt38st+o
-         +qa3jRoZH12tSgNq8oKbEWPFy1TMBf2EitjPGDsYkrdHOyrCQANZrGC8beg/s662IJqU
-         qMOhbUr0xj0jktxNrxbbokg5jMP9PqXoynjnTwWm90SsHIDYtbUullfp35FbQlsEW12U
-         yBCJYfl/t94i1+4RRTXiCNbQrItAp8N1SdZ9e3dGXmDqtUYVnd2SAzbFOAfUDGgKydnK
-         77DwvyPhchL0XintXY/rsveZZUqWoF/kWV8se3sETM5ufnmmTZxA92ke8BgJRGCEL4P9
-         GHYA==
-X-Forwarded-Encrypted: i=1; AJvYcCXbcn17A8tjN5b4RuKdsKhrJjq4pbigeWX1VrDePbGEg+hUj8AeRu1yTMiionKCfId+J6pVqnouvEL9mQoBb98VpNzrE79ddusuMWox
-X-Gm-Message-State: AOJu0YwHsDHhP9UtiCSQEWycGZITOarQsxpsHiP40sbF2x6BUor6CqLR
-	6iQdnxJn5dgMr34Us+k3D4WuiVNjwhqd4xOAzzEbMLg9rPonVhgK5HLEBk/v+admINqIozPd+dJ
-	mwp+jWy52D4o2oJ51g2oBtvODVd87NjrmNLdKN7uqifgBNZaBSG5L0xvBcJXv9w==
-X-Received: by 2002:a2e:a454:0:b0:2d3:f013:61d9 with SMTP id v20-20020a2ea454000000b002d3f01361d9mr1185953ljn.31.1709813371084;
-        Thu, 07 Mar 2024 04:09:31 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEGBqQrNg2/4YA5+A4tvNB+c5+9du3LnR6q5NsERUYIO5uu6WXY83AiEti24fQryCe6kaCZhA==
-X-Received: by 2002:a2e:a454:0:b0:2d3:f013:61d9 with SMTP id v20-20020a2ea454000000b002d3f01361d9mr1185932ljn.31.1709813370661;
-        Thu, 07 Mar 2024 04:09:30 -0800 (PST)
-Received: from ?IPV6:2003:cb:c74d:6400:4867:4ed0:9726:a0c9? (p200300cbc74d640048674ed09726a0c9.dip0.t-ipconnect.de. [2003:cb:c74d:6400:4867:4ed0:9726:a0c9])
-        by smtp.gmail.com with ESMTPSA id r12-20020adfe68c000000b0033df5710fabsm20100194wrm.44.2024.03.07.04.09.29
+        d=1e100.net; s=20230601; t=1709813646; x=1710418446;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pbOAwhMnSdJGlPlWPiV1Em71QncrNK6+P5igUXX/YWs=;
+        b=eELmFv9iNaC5YXwQBlRyY9mlrZFmDj809UqijXSQLZNHk6dWItJRzhw0DXqn5X5fIQ
+         zic8NlLYyeJRCAeiscwPijBbwB3yLJsk3uq6Z/KrIfkueaFzGGB14tNeQZcpWOW4OgXI
+         KUImHKbkqZocw8TkewkMGeFz+K7quRkAjkbWx0xNbp2k1y/pqHtiQLGW77QXSBexs6cg
+         TJO6JooWBUSKrzGBq+qX2AHtF3y0VXFj6QrllVc0F6GV5zPhrghYR33BEhqnmyqwfzRA
+         47+6T+qBl4X4EJM+3NfPPqI/BWR0tdOjC9QJXKJirxwbz1CCuXa+kUe+EE9Jbjb8M2Bs
+         o3xQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUkWL8qaVaIPLfbyvtp7KfGQO4H25mRwyPXSS+y4UTxfRW576Rx+zpapYnf7e8MWGkfvdkCdO4o3cEByr5gVgqZLJx8Psx0RfRFvHLv
+X-Gm-Message-State: AOJu0YzjbVnp+ifIier+SZGeJwb9U3TJcCZw9j0T1rN8enXddJCe8Y6v
+	NV9TSW3lvYnZdY1EvpDkhdQsI+2V0BWDaCVV6IB7jnqq59YFWW4B
+X-Google-Smtp-Source: AGHT+IG/23S4boJLNpBSrEFKOwJ9L/axhUWJLQuZX3EM3km9SAxXajGd7JKkgqOTFNaskOcCCdwV2w==
+X-Received: by 2002:a05:600c:444c:b0:412:eee0:a5e4 with SMTP id v12-20020a05600c444c00b00412eee0a5e4mr1337178wmn.1.1709813646229;
+        Thu, 07 Mar 2024 04:14:06 -0800 (PST)
+Received: from [10.100.102.74] (46-117-80-176.bb.netvision.net.il. [46.117.80.176])
+        by smtp.gmail.com with ESMTPSA id bs19-20020a056000071300b0033daaef7afcsm20579395wrb.83.2024.03.07.04.14.05
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Mar 2024 04:09:30 -0800 (PST)
-Message-ID: <a73c78be-8cdc-4f0e-b72f-e5255c906a5f@redhat.com>
-Date: Thu, 7 Mar 2024 13:09:28 +0100
+        Thu, 07 Mar 2024 04:14:05 -0800 (PST)
+Message-ID: <b02588cb-6fbc-4116-86d6-173c115f50c5@grimberg.me>
+Date: Thu, 7 Mar 2024 14:14:04 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,144 +61,101 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] [RFC] proc: pagemap: Expose whether a PTE is writable
-Content-Language: en-US
-From: David Hildenbrand <david@redhat.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-mm <linux-mm@kvack.org>,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- linux-kernel <linux-kernel@vger.kernel.org>,
- Linux Doc Mailing List <linux-doc@vger.kernel.org>,
- upstream+pagemap <upstream+pagemap@sigma-star.at>,
- adobriyan <adobriyan@gmail.com>, wangkefeng wang
- <wangkefeng.wang@huawei.com>, ryan roberts <ryan.roberts@arm.com>,
- hughd <hughd@google.com>, peterx <peterx@redhat.com>,
- avagin <avagin@google.com>, lstoakes <lstoakes@gmail.com>,
- vbabka <vbabka@suse.cz>, Andrew Morton <akpm@linux-foundation.org>,
- usama anjum <usama.anjum@collabora.com>, Jonathan Corbet <corbet@lwn.net>
-References: <20240306232339.29659-1-richard@nod.at>
- <d673247b-a67b-43e1-a947-18fdae5f0ea1@redhat.com>
- <1058679077.23275.1709809843605.JavaMail.zimbra@nod.at>
- <7d9321db-a3c1-4593-91fa-c7f97bd9eecd@redhat.com>
- <1525238492.23321.1709812267495.JavaMail.zimbra@nod.at>
- <0644814b-869b-4694-bdb1-bab4e6186136@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
- dBrn+lhhOYjjNefFQou6478faXE6o2AhmebqT4KiQoUQFV4R7y1KMEKoSyy8hQaK1umALTdL
- QZLQMzNE74ap+GDK0wnacPQFpcG1AE9RMq3aeErY5tujekBS32jfC/7AnH7I0v1v1TbbK3Gp
- XNeiN4QroO+5qaSr0ID2sz5jtBLRb15RMre27E1ImpaIv2Jw8NJgW0k/D1RyKCwaTsgRdwuK
- Kx/Y91XuSBdz0uOyU/S8kM1+ag0wvsGlpBVxRR/xw/E8M7TEwuCZQArqqTCmkG6HGcXFT0V9
- PXFNNgV5jXMQRwU0O/ztJIQqsE5LsUomE//bLwzj9IVsaQpKDqW6TAPjcdBDPLHvriq7kGjt
- WhVhdl0qEYB8lkBEU7V2Yb+SYhmhpDrti9Fq1EsmhiHSkxJcGREoMK/63r9WLZYI3+4W2rAc
- UucZa4OT27U5ZISjNg3Ev0rxU5UH2/pT4wJCfxwocmqaRr6UYmrtZmND89X0KigoFD/XSeVv
- jwBRNjPAubK9/k5NoRrYqztM9W6sJqrH8+UWZ1Idd/DdmogJh0gNC0+N42Za9yBRURfIdKSb
- B3JfpUqcWwE7vUaYrHG1nw54pLUoPG6sAA7Mehl3nd4pZUALHwARAQABzSREYXZpZCBIaWxk
- ZW5icmFuZCA8ZGF2aWRAcmVkaGF0LmNvbT7CwZgEEwEIAEICGwMGCwkIBwMCBhUIAgkKCwQW
- AgMBAh4BAheAAhkBFiEEG9nKrXNcTDpGDfzKTd4Q9wD/g1oFAl8Ox4kFCRKpKXgACgkQTd4Q
- 9wD/g1oHcA//a6Tj7SBNjFNM1iNhWUo1lxAja0lpSodSnB2g4FCZ4R61SBR4l/psBL73xktp
- rDHrx4aSpwkRP6Epu6mLvhlfjmkRG4OynJ5HG1gfv7RJJfnUdUM1z5kdS8JBrOhMJS2c/gPf
- wv1TGRq2XdMPnfY2o0CxRqpcLkx4vBODvJGl2mQyJF/gPepdDfcT8/PY9BJ7FL6Hrq1gnAo4
- 3Iv9qV0JiT2wmZciNyYQhmA1V6dyTRiQ4YAc31zOo2IM+xisPzeSHgw3ONY/XhYvfZ9r7W1l
- pNQdc2G+o4Di9NPFHQQhDw3YTRR1opJaTlRDzxYxzU6ZnUUBghxt9cwUWTpfCktkMZiPSDGd
- KgQBjnweV2jw9UOTxjb4LXqDjmSNkjDdQUOU69jGMUXgihvo4zhYcMX8F5gWdRtMR7DzW/YE
- BgVcyxNkMIXoY1aYj6npHYiNQesQlqjU6azjbH70/SXKM5tNRplgW8TNprMDuntdvV9wNkFs
- 9TyM02V5aWxFfI42+aivc4KEw69SE9KXwC7FSf5wXzuTot97N9Phj/Z3+jx443jo2NR34XgF
- 89cct7wJMjOF7bBefo0fPPZQuIma0Zym71cP61OP/i11ahNye6HGKfxGCOcs5wW9kRQEk8P9
- M/k2wt3mt/fCQnuP/mWutNPt95w9wSsUyATLmtNrwccz63XOwU0EVcufkQEQAOfX3n0g0fZz
- Bgm/S2zF/kxQKCEKP8ID+Vz8sy2GpDvveBq4H2Y34XWsT1zLJdvqPI4af4ZSMxuerWjXbVWb
- T6d4odQIG0fKx4F8NccDqbgHeZRNajXeeJ3R7gAzvWvQNLz4piHrO/B4tf8svmRBL0ZB5P5A
- 2uhdwLU3NZuK22zpNn4is87BPWF8HhY0L5fafgDMOqnf4guJVJPYNPhUFzXUbPqOKOkL8ojk
- CXxkOFHAbjstSK5Ca3fKquY3rdX3DNo+EL7FvAiw1mUtS+5GeYE+RMnDCsVFm/C7kY8c2d0G
- NWkB9pJM5+mnIoFNxy7YBcldYATVeOHoY4LyaUWNnAvFYWp08dHWfZo9WCiJMuTfgtH9tc75
- 7QanMVdPt6fDK8UUXIBLQ2TWr/sQKE9xtFuEmoQGlE1l6bGaDnnMLcYu+Asp3kDT0w4zYGsx
- 5r6XQVRH4+5N6eHZiaeYtFOujp5n+pjBaQK7wUUjDilPQ5QMzIuCL4YjVoylWiBNknvQWBXS
- lQCWmavOT9sttGQXdPCC5ynI+1ymZC1ORZKANLnRAb0NH/UCzcsstw2TAkFnMEbo9Zu9w7Kv
- AxBQXWeXhJI9XQssfrf4Gusdqx8nPEpfOqCtbbwJMATbHyqLt7/oz/5deGuwxgb65pWIzufa
- N7eop7uh+6bezi+rugUI+w6DABEBAAHCwXwEGAEIACYCGwwWIQQb2cqtc1xMOkYN/MpN3hD3
- AP+DWgUCXw7HsgUJEqkpoQAKCRBN3hD3AP+DWrrpD/4qS3dyVRxDcDHIlmguXjC1Q5tZTwNB
- boaBTPHSy/Nksu0eY7x6HfQJ3xajVH32Ms6t1trDQmPx2iP5+7iDsb7OKAb5eOS8h+BEBDeq
- 3ecsQDv0fFJOA9ag5O3LLNk+3x3q7e0uo06XMaY7UHS341ozXUUI7wC7iKfoUTv03iO9El5f
- XpNMx/YrIMduZ2+nd9Di7o5+KIwlb2mAB9sTNHdMrXesX8eBL6T9b+MZJk+mZuPxKNVfEQMQ
- a5SxUEADIPQTPNvBewdeI80yeOCrN+Zzwy/Mrx9EPeu59Y5vSJOx/z6OUImD/GhX7Xvkt3kq
- Er5KTrJz3++B6SH9pum9PuoE/k+nntJkNMmQpR4MCBaV/J9gIOPGodDKnjdng+mXliF3Ptu6
- 3oxc2RCyGzTlxyMwuc2U5Q7KtUNTdDe8T0uE+9b8BLMVQDDfJjqY0VVqSUwImzTDLX9S4g/8
- kC4HRcclk8hpyhY2jKGluZO0awwTIMgVEzmTyBphDg/Gx7dZU1Xf8HFuE+UZ5UDHDTnwgv7E
- th6RC9+WrhDNspZ9fJjKWRbveQgUFCpe1sa77LAw+XFrKmBHXp9ZVIe90RMe2tRL06BGiRZr
- jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <0644814b-869b-4694-bdb1-bab4e6186136@redhat.com>
+Subject: Re: [PATCH v3 0/2] nvme-fabrics: short-circuit connect retries
+Content-Language: he-IL, en-US
+To: Hannes Reinecke <hare@suse.de>, Daniel Wagner <dwagner@suse.de>,
+ James Smart <james.smart@broadcom.com>
+Cc: Keith Busch <kbusch@kernel.org>, Christoph Hellwig <hch@lst.de>,
+ linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20240305080005.3638-1-dwagner@suse.de>
+ <22b01fb4-b543-43b2-949c-1873105dc343@grimberg.me>
+ <72c1d3a8-14ad-43e8-a68a-25be903698c4@suse.de>
+ <432a39d5-6d08-4d38-a357-7c8d9123189a@grimberg.me>
+ <08f3d804-f94b-4a2f-897b-7fee3411e6fc@suse.de>
+From: Sagi Grimberg <sagi@grimberg.me>
+In-Reply-To: <08f3d804-f94b-4a2f-897b-7fee3411e6fc@suse.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On 07.03.24 12:59, David Hildenbrand wrote:
-> On 07.03.24 12:51, Richard Weinberger wrote:
->> ----- Ursprüngliche Mail -----
->>> Von: "David Hildenbrand" <david@redhat.com>
->>>> I'm currently investigating why a real-time application faces unexpected
->>>> page faults. Page faults are usually fatal for real-time work loads because
->>>> the latency constraints are no longer met.
->>>
->>> Are you concerned about any type of page fault, or are things like a
->>> simple remapping of the same page from "read-only to writable"
->>> acceptable? ("very minor fault")
+
+
+On 07/03/2024 13:45, Hannes Reinecke wrote:
+> On 3/7/24 12:30, Sagi Grimberg wrote:
 >>
->> Any page fault has to be avoided.
->> To give you more background, the real time application runs on Xenomai,
->> a real time extension for Linux.
->> Xenomai applies already many tweaks to the kernel to trigger pre-faulting of
->> memory areas. But sometimes the application does not use the Xenomai API
->> correctly or there is an bug in Xenomai it self.
->> Currently I'm suspecting the latter.
->>    
-> 
-> Thanks for the details!
-> 
+>>
+>> On 07/03/2024 12:37, Hannes Reinecke wrote:
+>>> On 3/7/24 09:00, Sagi Grimberg wrote:
 >>>>
->>>> So, I wrote a small tool to inspect the memory mappings of a process to find
->>>> areas which are not correctly pre-faulted. While doing so I noticed that
->>>> there is currently no way to detect CoW mappings.
->>>> Exposing the writable property of a PTE seemed like a good start to me.
+>>>> On 05/03/2024 10:00, Daniel Wagner wrote:
+>>>>> I've picked up Hannes' DNR patches. In short the make the 
+>>>>> transports behave the same way when the DNR bit set on a 
+>>>>> re-connect attempt. We
+>>>>> had a discussion this
+>>>>> topic in the past and if I got this right we all agreed is that 
+>>>>> the host should honor the DNR bit on a connect attempt [1]
+>>>> Umm, I don't recall this being conclusive though. The spec ought to 
+>>>> be clearer here I think.
 >>>
->>> Is it just about "detection" for debugging purposes or about "fixup" in
->>> running applications?
+>>> I've asked the NVMexpress fmds group, and the response was pretty 
+>>> unanimous that the DNR bit on connect should be evaluated.
 >>
->> It's only about debugging. If an application fails a test I want to have
->> a tool which tells me what memory mappings are wonky or could cause a fault
->> at runtime.
-> 
-> One destructive way to find out in a writable mapping if the page would
-> actually get remapped:
-> 
-> a) Read the PFN of a virtual address using pagemap
-> b) Write to the virtual address using /proc/pid/mem
-> c) Read the PFN of a virtual address using pagemap to see if it changed
-> 
-> If the application can be paused, you could read+write a single byte,
-> turning it non-destructive.
-> 
-> But that would still "hide" the remap-writable-type faults.
-> 
+>> OK.
 >>
->> I fully understand that my use case is a corner case and anything but mainline.
->> While developing my debug tool I thought that improving the pagemap interface
->> might help others too.
-> 
-> I'm fine with this (can be a helpful debugging tool for some other cases
-> as well, and IIRC we don't have another interface to introspect this),
-> as long as we properly document the corner case that there could still
-> be writefaults on some architectures when the page would not be
-> accessed/dirty yet.
-> 
+>>>
+>>>>>
+>>>>> The nvme/045 test case (authentication tests) in blktests is a 
+>>>>> good test case for this after extending it slightly. TCP and RDMA 
+>>>>> try to
+>>>>> reconnect with an
+>>>>> invalid key over and over again, while loop and FC stop after the 
+>>>>> first fail.
+>>>>
+>>>> Who says that invalid key is a permanent failure though?
+>>>>
+>>> See the response to the other patchset.
+>>> 'Invalid key' in this context means that the _client_ evaluated the 
+>>> key as invalid, ie the key is unusable for the client.
+>>> As the key is passed in via the commandline there is no way the client
+>>> can ever change the value here, and no amount of retry will change 
+>>> things here. That's what we try to fix.
+>>
+>> Where is this retried today, I don't see where connect failure is 
+>> retried, outside of a periodic reconnect.
+>> Maybe I'm missing where what is the actual failure here.
+>
+> static void nvme_tcp_reconnect_ctrl_work(struct work_struct *work)
+> {
+>         struct nvme_tcp_ctrl *tcp_ctrl =
+>                         container_of(to_delayed_work(work),
+>                         struct nvme_tcp_ctrl, connect_work);
+>         struct nvme_ctrl *ctrl = &tcp_ctrl->ctrl;
+>
+>         ++ctrl->nr_reconnects;
+>
+>         if (nvme_tcp_setup_ctrl(ctrl, false))
+>                 goto requeue;
+>
+>         dev_info(ctrl->device, "Successfully reconnected (%d attempt)\n",
+>                         ctrl->nr_reconnects);
+>
+>         ctrl->nr_reconnects = 0;
+>
+>         return;
+>
+> requeue:
+>         dev_info(ctrl->device, "Failed reconnect attempt %d\n",
+>
+> and nvme_tcp_setup_ctrl() returns either a negative errno or an NVMe 
+> status code (which might include the DNR bit).
 
-[and I just recall, there are some other corner cases. For example, 
-pages in a shadow stack can be pte_write(), but they can only be written 
-by HW indirectly when modifying the stack, and ordinary write access 
-would still fault]
+I thought this is about the initialization. yes today we ignore the 
+status in re-connection assuming that whatever
+happened, may (or may not) resolve itself. The basis for this assumption 
+is that if we managed to connect the first
+time there is no reason to assume that connecting again should fail 
+persistently.
 
--- 
-Cheers,
-
-David / dhildenb
-
+If there is a consensus that we should not assume it, its a valid 
+argument. I didn't see where this happens with respect
+to authentication though.
 
