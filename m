@@ -1,326 +1,227 @@
-Return-Path: <linux-kernel+bounces-96308-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96309-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0EBFA8759FB
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 23:09:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60EDF8759FF
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 23:09:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9C0328372B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 22:09:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B3C3EB21E87
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 22:09:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DE8713DB83;
-	Thu,  7 Mar 2024 22:09:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6228913DBBE;
+	Thu,  7 Mar 2024 22:09:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Gcra6qU1"
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b="eIEWW1n5"
+Received: from PAUP264CU001.outbound.protection.outlook.com (mail-francecentralazon11021011.outbound.protection.outlook.com [52.101.167.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57460135A5C
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 22:09:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709849363; cv=none; b=TlUrbSUzA+Hx4LwijsFmHPLkwICGLchbcd0yZIiC/kyoWOLHS4YFYexpK/YT6e7mxJ+3NvRDrrUw7uokdLzo9V8v3aCryHQHgQW6Ea72JmT/9P3KJ14jtu6pBJldRFngiRRxxWvb+sBhq6eA4KzRaadP0uLw+WVz8rpMhSkk5cI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709849363; c=relaxed/simple;
-	bh=vAdzToPuFiadhjRdva57YN1++dXHRx9iIG159uvmnjA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=byfwH1pTEGaKzEJ9r+0G0h6NrhZYeIgDIwsNT2rJefmyuOnWx9VLo7h4qumpnki8hPMKSMgP0G7izHwvkhqd6fHKfrsu4GTUNGmD1Xp+CNUCSXCMKJorFSoU3Prh6PJviArWmCI/Qi5eDbQZAmrez4Zo1ODzhAC/+1XHvxSSRL4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=Gcra6qU1; arc=none smtp.client-ip=209.85.208.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d29111272eso21567151fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 14:09:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1709849359; x=1710454159; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=NHQ32W6RSonxIEcKP3PBr7hrs/PAKBaa81snIL3bs2U=;
-        b=Gcra6qU1KWW/G10wxjjQS0igLApkpii1YRm0p2GA4hZX+Sp3WsSRfmBGua9ICdbyxE
-         +Kqo1Lb7v3It0xlzKgHEZ1eo7d7A5a6DQ3f/c20tWzOQXQzth7MO3yXRdGfIECL3qlYs
-         6sXNYTP4ci6u4pZZPTBCBrFp+dv3819Pt8eT0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709849359; x=1710454159;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NHQ32W6RSonxIEcKP3PBr7hrs/PAKBaa81snIL3bs2U=;
-        b=ughQiJkQao+uwWAhri2LUhXk1uIttWnAKDfO/mtP+C6j4ONRt/ytcZp7InYcfUlrwA
-         TiYg623yj3CNLkq+E394AzIQ2bEKoM3+UOeeU384hcTI3bqE1xZwoFrUh1m9udjK9xmU
-         HxbMDxlGuGxm/RGQeCfKDTFNvmjDy/HX8b71gzlWnIJoyV34yOSnvdq+AO4X9OEHAp5a
-         vgAX0m43Xd8ASUZsPStNl2DMp6enVejSlPWhWkpaS8xEncXW0ROx3ENpOU/2t3DnxJCW
-         GtcbUX61IyRpxuCOO2HpBCS0GLbcvG23TAQK42daB6emJq3Z8RmJeupYR3TqGL00ggpy
-         rVVQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXOc09n/upkjLsUwGzLGI7H+nlt61BNwelaWXyNiw76dtHUQ3QJQRWhpBDHi6RHJbSvMcgPMV0X/xcpmoiG9k8fWb2kUSor7kIczVNK
-X-Gm-Message-State: AOJu0YxRuUBA2CczqmtYs6whqVDz/jiZijPnWcV17Z5GBJuSLou3vqbo
-	MpnfqDbjsUeDe0bGoA3vYh7cQgskppo33PS08eiVQ2QaN7oSK53popT1gkkig4jBsttw4INC5wF
-	eIgCY8g==
-X-Google-Smtp-Source: AGHT+IFAVns8os4EU5kGnFYmbjdlDRoFrGfDrQM3rl0rckLv7PV6IOy5yRQUbcq+TKqNV5/5LmQWFA==
-X-Received: by 2002:a2e:9b43:0:b0:2d2:3fac:5fdc with SMTP id o3-20020a2e9b43000000b002d23fac5fdcmr2725552ljj.10.1709849358721;
-        Thu, 07 Mar 2024 14:09:18 -0800 (PST)
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
-        by smtp.gmail.com with ESMTPSA id x25-20020a05651c105900b002d10dcacde3sm3088755ljm.66.2024.03.07.14.09.17
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Mar 2024 14:09:18 -0800 (PST)
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-5131c48055cso1631209e87.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 14:09:17 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVmPvG2K6LL6RGGInd5QgnHC0wJxuCeED3Ki2zbF1rgFZYPBUpaN32ldZpzFEzqOYMHXDKlYhWqQYgEbyZLIhJ2XwrVx6EdyDGHvFED
-X-Received: by 2002:ac2:5f69:0:b0:513:fe6:6003 with SMTP id
- c9-20020ac25f69000000b005130fe66003mr2044316lfc.11.1709849357476; Thu, 07 Mar
- 2024 14:09:17 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BC1C13BAC3;
+	Thu,  7 Mar 2024 22:09:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.167.11
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709849377; cv=fail; b=V3VHuoBTWGaPVDgCDsrNV+XQ7Qn2IEY+04+lEtPOqKdE2avUfiBMz3G6KwJiqD0A5L4BFVlgEtjg+4oki/g12p/6JjL6rJwAdhjJe6Ii7dxhRJLjFxI2dgDYFuclgxXPvRCbo9h4h9TEdxIcKhELefUdGwRAlDjws/dwipiLBIM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709849377; c=relaxed/simple;
+	bh=njb1lG0QZJi7X4zY9/M+PnfCACEuxMn8PkuU1eB4ZeA=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=bNjb42tvhDBfVCMyXDZ8Pglihvp9SnyvXNFTmREDqUczWQ4n9baj8SLUdX+OVBQ6+tPjzFZ3NaSffkk3HJt4w3nvhuSprwx3TkH6L50KgXSZ9MeQq9isjHBZL6qLQIYVUP+OdNIbnica+7ZIouxJ26RDbdd4JViyHDSC+pb+ATE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b=eIEWW1n5; arc=fail smtp.client-ip=52.101.167.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RedWYBykVRHTgwp8qASDZuBawYHMZkfFCARwN8Fw12L7N1/Hj1nazajatSYKZJJDY+Ap6BJeWnFBFIpAxFuRiDtN/ZyZdtzFHl0uh8xe18kvovI+z4T2LIqQtT9+X1KHvk491/P2+XJhl5NZdJvGfxtv76oIv3VU6P8Yj9+1oYUEpxihjK6IWZyJcOJK+V8NPZ6gNlIwjieY7zqcqDeDB/ac24zzDEGCy2YKowttKlsY/IsN3fW51EFnY+exqVc/Jj8EKStY5H5aiJwHM8gifrPz8Bx/4uGy/KJADf13peHunIl6wv9Gp1FM2gNu92FwsFtBeL1e4Lv1xeH8dcnabw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=njb1lG0QZJi7X4zY9/M+PnfCACEuxMn8PkuU1eB4ZeA=;
+ b=G92ag3wm8rY6Ahf6k5bFUFgzYD2/BJD5tLnnO1m77reWLpKYlz+jKyjPM6ys0wOA3GC9VWf2jvhuGV72cbgJEB8oiQaTDEjeznx8DSCRVQDrcgwrSbq67KsPUYt64T00CrNScvCdatY83rdRRut6Wj6+U3hQ39SfvUuhw4jj7GLEL6vGluHxo3bcWLkQCQ/7RBCDXgcnX7dKcqs1qIzCpkj3g8sVb01Aro6VNidt80ShIAfTXWl3ohaHxrlgWTGR9uiUC7PkIDB4au4ikPCew/enUSBCGJpTuGXmXy42gMZX23jVmoHh2w2fL0DF4JvA9zVewYQ5fNj33BajV8I+Eg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
+ dkim=pass header.d=csgroup.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=njb1lG0QZJi7X4zY9/M+PnfCACEuxMn8PkuU1eB4ZeA=;
+ b=eIEWW1n5Vy23Qe0RNppmwvnwSIDl0DThIwLj4JvIUzpKDGTZV1Zk1WSyQdGtzn0nYZTc05fJRKxgmUYxtkbJDnUE50PLsDCE6S1o6qMIAfJgM8rCwhrFParunIEOdBp5BLXKEtraUyJgGJPBOmiXQYAYupsaFtbmTaEgJ+SoHUrQEKmOESty9kHk07W7A0GDDxy09ga7kieKI+Js25sjAyYT02Hr2K3TeBgWFILmihcRdkhPIgtXRmypiisIgKuFvIxh2rekWrEVaV0OFLS0+p7BcQI3g9JsvErCJhjHxoZzBTLC3HVgIBzgYm+4KuOhwn1++z+6FlTsFj60vzMfFQ==
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
+ by MR1P264MB2235.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:15::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.27; Thu, 7 Mar
+ 2024 22:09:31 +0000
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::c192:d40f:1c33:1f4e]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::c192:d40f:1c33:1f4e%6]) with mapi id 15.20.7362.024; Thu, 7 Mar 2024
+ 22:09:31 +0000
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
+To: Calvin Owens <jcalvinowens@gmail.com>, Luis Chamberlain
+	<mcgrof@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Alexei
+ Starovoitov <ast@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Masami
+ Hiramatsu <mhiramat@kernel.org>, Naveen N Rao <naveen.n.rao@linux.ibm.com>,
+	Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>, David S Miller
+	<davem@davemloft.net>, Thomas Gleixner <tglx@linutronix.de>
+CC: "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+	"linux-modules@vger.kernel.org" <linux-modules@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC][PATCH 2/4] bpf: Allow BPF_JIT with CONFIG_MODULES=n
+Thread-Topic: [RFC][PATCH 2/4] bpf: Allow BPF_JIT with CONFIG_MODULES=n
+Thread-Index: AQHacAITOav1MY0noEakQNWRTlTZ/7Es2DuA
+Date: Thu, 7 Mar 2024 22:09:31 +0000
+Message-ID: <a7ac9672-06d1-4f6a-b676-01c9868ea39c@csgroup.eu>
+References: <cover.1709676663.git.jcalvinowens@gmail.com>
+ <afebd15dd032f908e46871bec5be438063ae7458.1709676663.git.jcalvinowens@gmail.com>
+In-Reply-To:
+ <afebd15dd032f908e46871bec5be438063ae7458.1709676663.git.jcalvinowens@gmail.com>
+Accept-Language: fr-FR, en-US
+Content-Language: fr-FR
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Mozilla Thunderbird
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=csgroup.eu;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MRZP264MB2988:EE_|MR1P264MB2235:EE_
+x-ms-office365-filtering-correlation-id: 11265771-7ad4-4b8b-3613-08dc3ef343d6
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ 3Cpp67mPzfuRnjl2wBrZloWUoQKdtWV21uJkF2KcRRAtq2RVUVs4O3wPMPJn/XzxHYNW2S0g1eeSLAClh9ITx7/5wtbMoofaHCTwaI8u+q2WP+S6vqAar26BPFE07EeWfLqeX8Db6+P57SRe7RaKVQL3OsGzdSPgKS5T34kAVDJhtZ3EQlx/0cQGQ4ggymlvqIKbeFgK2stXuLDhQ1gSITMm/RW9aVxA5e6hIGxtOC0aSE1xNhym18cvu96RSxP2OBGWL75AIbXzwSIcaQiBOaGYEwF8nTbVVFQS/2tZV360f7k89U7YMTEKKA9S4o+l7OAywfnSpt3rgroFFAHtk6rH/xpOo2U4WxfvB//B2LDcWRmZEUt8zXIIy88aixGtTWBTupHht0F78o8lPNoWjMdhFly8fohGHpZrhz1GQS7/ZHIhL+YzKuAfh6vr2wQ3z9u9pD5+IoLJbFoOlcQD3AZYOccwEXIXHmc24olpeCDS3WAiOHNbPVwRJ2hZQ6uJmVQjVlN9Vi1JPpKmfJSTbBM36tYfwdvP00njxo1SvuzLVp1+GbHzp30orOG12hdzFoSFo9HZeEteqnqXyT9gckEWrE+u7kMqW/NohdlUNJG3PsN0bv3JEfbRU0Pd9gteJ/jGx7RqnQNnqPhyK2BZAUN1ggpTVkDDsDiX0iIM1LTsgUTNU3G7YrYhcF3Nkd0W
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(376005)(38070700009)(921011);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?aXhneDZwYUthOGhsUkxIdDg2RWMxeURDQzVZQXpiTWJIcTRLdFlsdkpTMkpx?=
+ =?utf-8?B?a3AyaUtBVmZvNDhUUzQwdzdhd0ZVcC9kcmltMW9yWmxiSzJ6QnB5SjkyUjcr?=
+ =?utf-8?B?S0ZsNno5SHF1NG9XWDlmU1k4dkZyVmc0VHlQMlgwTVRvZUVzaTQwTXlhcEYv?=
+ =?utf-8?B?QklsNTRIeWtCamRyMmcvSFNZRk12OEJLWjVhMVNVVGlxUUFQeTA1Z3E0VkJj?=
+ =?utf-8?B?RTQxdnBsUUtSeGxYQkhVUWVLdFFFRFNRN21QVmRka2JOa20xb0RYYmJsSk53?=
+ =?utf-8?B?L1Q4Y2YwdEI0WXJNVEVaVEcrL0NqY2ZVWTExVm82cE9GRzU2bTNaT2hKR0h2?=
+ =?utf-8?B?cUs2M3Vlb0Y3ZUdYSXpRTmVPMmJXOGs0NHRsUGl3Q1hYTTVKTnpxRWhURU1K?=
+ =?utf-8?B?aGUwYUxYSGI5anYzOEl2OTc1UWJKWS9rY0JkUDIySTZhVmhEc2gxeTZ1VWN3?=
+ =?utf-8?B?Vm5yaUh3RGlmeUJyM0lnMDdaalBMMEt5eFhpSmdIRFVWY1ZIZVRPWGxGM2pL?=
+ =?utf-8?B?anNFaXpZZ0prTDM4MVRNWUplRys2b0I1dll5WkdrcjhHNGIvTW1SOHBHSU9N?=
+ =?utf-8?B?Y0JXVGZUVkg2cTZuUGo4QTJoQWlEMTRubkhSU0RaVy9EbDBpYkZCV0JTUGxi?=
+ =?utf-8?B?cnZEQ2loTWZUSm4xUjhqdDdpd2pENmoydkNPUVFTREIzWk1vOFdzVVJSTmlY?=
+ =?utf-8?B?bVVUeE1qQWZPT2l4by83VTJERlQrTm1sRFVkVjFHRUNxbFlaenFFOFU1b0Fk?=
+ =?utf-8?B?aXlKNkMwU3hnb3o4QkZ6cGU2WXZsTVduMkw2dnVMZnNDZmM4dThQTUtiazZi?=
+ =?utf-8?B?VUpMZVo2OWxBSEd3TkRiYmFUSXVJcW4zNlZwOUpLWUJTSFVwVjlKc1B5WkxI?=
+ =?utf-8?B?bENOaTcxQ01XaWFTZ3FXWmt2dEpFWW5Vay9sUDN5bW9QZ3VmRUhIZWFQSXVm?=
+ =?utf-8?B?VzBhUGVabHJlMkxpVXlCYnpUeFVUSFpzRFh0d2tSZHNZYURlc0EzRzdleXRw?=
+ =?utf-8?B?ZHVERlFkalpBbU5kQ24yRnFKVVJzQkdCRG8zSGhpVE9QNk90K1E0aVVmRnRx?=
+ =?utf-8?B?VmhyTy9SSmkxWVY2R0NEK3pMUE5EbU9oVTJxb20wRVlGc20rZ1NiUzlBSUh4?=
+ =?utf-8?B?OUNmUHhQTm84MGVQcmFtS3ZpVER6RzZNNGFCZXU0MXMzdjV6QlQ2QzNYNlZR?=
+ =?utf-8?B?Y0VMNmhKTGhrejd1azFFZ1RRalp6WTN5MXdyeHJZSmdIUDFyQVN6VWNZNXR0?=
+ =?utf-8?B?L1VLTHREMWFjS3NXZDRwWjVGclBFVHBGVEQ2OTVZSCtoekhiNkRMVkdkOUlx?=
+ =?utf-8?B?ZUQzbk5VM3pLY3U4OENyaEVYaXFJMUMzSlVRaFVQQnUwZVpmWlhSUk9kbjY2?=
+ =?utf-8?B?R3hmYjFjY2N0MzhNeFNuT29kUXg0aVVUVEl5eCtObXBuMGtOcXdXWW5qckZi?=
+ =?utf-8?B?TXVOb2s2Qms3cmNJMkpua2ZQUklHRktBRWhoUWdrZkVZR2N1N1ZuQmZ1aG96?=
+ =?utf-8?B?TDhsb0x5YUtTSXZvVU9zQXgwN2hVSWFXcVZrRU1lekU4eEMrYTc5Vnc1bWVX?=
+ =?utf-8?B?bm5KMXpLYTN0OGRMYnpNT3FaV1ZjdWZXZ2ZNRzJGVkxoeVhwaC9NMkVDSk4z?=
+ =?utf-8?B?UGRvVTdEYkViVm1EcUlianBPK0RFMjM1QUZiazUxTFRGb1VxY2o2K1NNUnAy?=
+ =?utf-8?B?Z0NnOWRXZVJjeGx1T0kwbU5tWVQwL0VseWJXZGxMeWJFSVZLTmdoVDBxakdj?=
+ =?utf-8?B?UHpUaENBelNPR3lvZUxob2VzMGRhNHFtNEJnSlA5d3U5WmMrOFpldXRKdDZn?=
+ =?utf-8?B?SHpyL0V2SW5kV2QrYUJ5dkV6OW5wbUxBQkJIR0xidE9xQXlRenN4M0ZOWU0y?=
+ =?utf-8?B?U3dMTjhrcmpNcTJJRzdiMCt3TUk0V1V1NUNEOU5jOS9Ec2hjVGgwZVdaa2tH?=
+ =?utf-8?B?VHBodUk3UlNwcktDdlZwcjVFK1NMTitDbFloOGUvNUtFdG5JditzMmgrdGFI?=
+ =?utf-8?B?UmZLMU50MUgzNHRyTVdOTVVuUWQrNkRCSytYTTRkdmNNY0pQSzhTS1hEZVp1?=
+ =?utf-8?B?QzJzbDVDR01MbFd4L3Azd0dCVnFlTEF6OVJyeWZqajN3US9KOStaTUhmc1ZE?=
+ =?utf-8?B?bUVUbVUwZDVOdzh4ekRVTElQZGpwcFR4c0hYMmdoeGxjeFhPVTFXcXJIL0pN?=
+ =?utf-8?B?d1E9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <B26788E301691B40B7595B7D41C31262@FRAP264.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAHk-=wjbDgMKLgxbV+yK4LKZ+2Qj6zVL_sHeb+L9KDia980Q8Q@mail.gmail.com>
- <20240306142738.7b66a716@rorschach.local.home> <CAHk-=wgPAZ4KnCQergqAOUypwinYh=gZ0q4EQbwvuUcJ_8UK+Q@mail.gmail.com>
- <83b47424-e5e0-46de-aa63-d413a5aa6cec@paulmck-laptop> <CAHk-=wiX_zF5Mpt8kUm_LFQpYY-mshrXJPOe+wKNwiVhEUcU9g@mail.gmail.com>
- <851dc594-d2ea-4050-b7c6-e33a1cddf3a1@efficios.com> <72b14322-78c1-4479-9c4e-b0e11c1f0d53@paulmck-laptop>
- <bebbed4a-ced1-42c5-865c-dc9dc7857b6c@efficios.com> <c1bb35c4-29af-4a84-8ba7-81ba30639a69@paulmck-laptop>
- <CAHk-=wia769uoyVz3P7yZURhO8NNB7xeOLX07ZM2vWf1nTLYkQ@mail.gmail.com>
- <65a9665e-22d4-4f21-a1cb-7ef1c82ed078@paulmck-laptop> <alpine.DEB.2.22.394.2403072231130.3161@hadrien>
-In-Reply-To: <alpine.DEB.2.22.394.2403072231130.3161@hadrien>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Thu, 7 Mar 2024 14:09:00 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjq1g4jOhDvGNyvTiBxwhu97+Ymszf3W4i6MS1jqw5=kg@mail.gmail.com>
-Message-ID: <CAHk-=wjq1g4jOhDvGNyvTiBxwhu97+Ymszf3W4i6MS1jqw5=kg@mail.gmail.com>
-Subject: Re: [PATCH] rcutorture: Fix rcu_torture_pipe_update_one()/rcu_torture_writer()
- data race and concurrency bug
-To: Julia Lawall <julia.lawall@inria.fr>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, linke li <lilinke99@qq.com>, joel@joelfernandes.org, 
-	boqun.feng@gmail.com, dave@stgolabs.net, frederic@kernel.org, 
-	jiangshanlai@gmail.com, josh@joshtriplett.org, linux-kernel@vger.kernel.org, 
-	qiang.zhang1211@gmail.com, quic_neeraju@quicinc.com, rcu@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: csgroup.eu
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 11265771-7ad4-4b8b-3613-08dc3ef343d6
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Mar 2024 22:09:31.5580
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: osRxyW/S7VbvVAj67LwK8PH/DM3T/rx9hvcrp1nrxGejVJyJQ5ToGZ73Sj6rAf1elCuuTXXTSOvxwurHuzy7F+bJiPbYWAEjaPWfdD192lQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MR1P264MB2235
 
-On Thu, 7 Mar 2024 at 13:40, Julia Lawall <julia.lawall@inria.fr> wrote:
->
-> I tried the following:
->
-> @@
-> expression x;
-> @@
->
-> *WRITE_ONCE(x,<+...READ_ONCE(x)...+>)
->
-> This gave a number of results, shown below.  Let me know if some of them
-> are undesirable.
-
-Well, all the ones you list do look like garbage.
-
-That said, quite often the garbage does seem to be "we don't actually
-care about the result". Several of them look like statistics.
-
-Some of them look outright nasty, though:
-
-> --- /home/julia/linux/net/netfilter/nf_tables_api.c
-> +++ /tmp/nothing/net/netfilter/nf_tables_api.c
-> @@ -10026,8 +10026,6 @@ static unsigned int nft_gc_seq_begin(str
->         unsigned int gc_seq;
->
->         /* Bump gc counter, it becomes odd, this is the busy mark. */
-> -       gc_seq = READ_ONCE(nft_net->gc_seq);
-> -       WRITE_ONCE(nft_net->gc_seq, ++gc_seq);
-
-The above is garbage code, and the comment implies that it is garbage
-code that _should_ be reliable.
-
-> diff -u -p /home/julia/linux/fs/xfs/xfs_icache.c /tmp/nothing/fs/xfs/xfs_icache.c
-> --- /home/julia/linux/fs/xfs/xfs_icache.c
-> +++ /tmp/nothing/fs/xfs/xfs_icache.c
-> @@ -2076,8 +2076,6 @@ xfs_inodegc_queue(
->         cpu_nr = get_cpu();
->         gc = this_cpu_ptr(mp->m_inodegc);
->         llist_add(&ip->i_gclist, &gc->list);
-> -       items = READ_ONCE(gc->items);
-> -       WRITE_ONCE(gc->items, items + 1);
-
-In contrast, this is also garbage code, but the only user of it seems
-to be a heuristic, so if 'items' is off by one (or by a hundred), it
-probably doesn't matter.
-
-The xfs code is basically using that 'items' count to decide if it
-really wants to do GC or not.
-
-This is actually a case where having a "UNSAFE_INCREMENTISH()" macro
-might make sense.
-
-That said, this is also a case where using a "local_t" and using
-"local_add_return()" might be a better option. It falls back on true
-atomics, but at least on x86 you probably get *better* code generation
-for the "incrementish" operation than you get with READ_ONCE ->
-WRITE_ONCE.
-
-
-> diff -u -p /home/julia/linux/kernel/rcu/tree.c /tmp/nothing/kernel/rcu/tree.c
-> --- /home/julia/linux/kernel/rcu/tree.c
-> +++ /tmp/nothing/kernel/rcu/tree.c
-> @@ -1620,8 +1620,6 @@ static void rcu_gp_fqs(bool first_time)
->         /* Clear flag to prevent immediate re-entry. */
->         if (READ_ONCE(rcu_state.gp_flags) & RCU_GP_FLAG_FQS) {
->                 raw_spin_lock_irq_rcu_node(rnp);
-> -               WRITE_ONCE(rcu_state.gp_flags,
-> -                          READ_ONCE(rcu_state.gp_flags) & ~RCU_GP_FLAG_FQS);
->                 raw_spin_unlock_irq_rcu_node(rnp);
-
-This smells bad to me. The code is holding a lock, but apparently not
-one that protects gp_flags.
-
-And that READ_ONCE->WRITE_ONCE sequence can corrupt all the other flags.
-
-Maybe it's fine for some reason (that reason being either that the
-ONCE operations aren't actually needed at all, or because nobody
-*really* cares about the flags), but it smells.
-
-> @@ -1882,8 +1880,6 @@ static void rcu_report_qs_rsp(unsigned l
->  {
->         raw_lockdep_assert_held_rcu_node(rcu_get_root());
->         WARN_ON_ONCE(!rcu_gp_in_progress());
-> -       WRITE_ONCE(rcu_state.gp_flags,
-> -                  READ_ONCE(rcu_state.gp_flags) | RCU_GP_FLAG_FQS);
->         raw_spin_unlock_irqrestore_rcu_node(rcu_get_root(), flags);
-
-Same field, same lock held, same odd smelly pattern.
-
-> -       WRITE_ONCE(rcu_state.gp_flags,
-> -                  READ_ONCE(rcu_state.gp_flags) | RCU_GP_FLAG_FQS);
->         raw_spin_unlock_irqrestore_rcu_node(rnp_old, flags);
-
-. and again.
-
-> --- /home/julia/linux/drivers/net/ethernet/cavium/liquidio/cn23xx_vf_device.c
-> +++ /tmp/nothing/drivers/net/ethernet/cavium/liquidio/cn23xx_vf_device.c
-> @@ -80,8 +80,6 @@ static int cn23xx_vf_reset_io_queues(str
->                                 q_no);
->                         return -1;
->                 }
-> -               WRITE_ONCE(reg_val, READ_ONCE(reg_val) &
-> -                          ~CN23XX_PKT_INPUT_CTL_RST);
->                 octeon_write_csr64(oct, CN23XX_VF_SLI_IQ_PKT_CONTROL64(q_no),
->                                    READ_ONCE(reg_val));
-
-I suspect this is garbage that has been triggered by the usual
-mindless "fix the symptoms, not the bug" as a result of a "undefined
-behavior report".
-
->> --- /home/julia/linux/kernel/kcsan/kcsan_test.c
-> +++ /tmp/nothing/kernel/kcsan/kcsan_test.c
-> @@ -381,7 +381,6 @@ static noinline void test_kernel_change_
->                 test_var ^= TEST_CHANGE_BITS;
->                 kcsan_nestable_atomic_end();
->         } else
-> -               WRITE_ONCE(test_var, READ_ONCE(test_var) ^ TEST_CHANGE_BITS);
-
-Presumably this is intentionally testing whether KCSAN notices these
-things at all.
-
-> diff -u -p /home/julia/linux/arch/s390/kernel/idle.c /tmp/nothing/arch/s390/kernel/idle.c
->         /* Account time spent with enabled wait psw loaded as idle time. */
-> -       WRITE_ONCE(idle->idle_time, READ_ONCE(idle->idle_time) + idle_time);
-> -       WRITE_ONCE(idle->idle_count, READ_ONCE(idle->idle_count) + 1);
->         account_idle_time(cputime_to_nsecs(idle_time));
-
-This looks like another "UNSAFE_INCREMENTISH()" case.
-
-> --- /home/julia/linux/mm/mmap.c
-> +++ /tmp/nothing/mm/mmap.c
-> @@ -3476,7 +3476,6 @@ bool may_expand_vm(struct mm_struct *mm,
->
->  void vm_stat_account(struct mm_struct *mm, vm_flags_t flags, long npages)
->  {
-> -       WRITE_ONCE(mm->total_vm, READ_ONCE(mm->total_vm)+npages);
-
-As does this.
-
-> diff -u -p /home/julia/linux/fs/xfs/libxfs/xfs_iext_tree.c /tmp/nothing/fs/xfs/libxfs/xfs_iext_tree.c
->  static inline void xfs_iext_inc_seq(struct xfs_ifork *ifp)
->  {
-> -       WRITE_ONCE(ifp->if_seq, READ_ONCE(ifp->if_seq) + 1);
->  }
-
-Ugh. A sequence count that is "incrementish"? That smells wrong to me.
-But I didn't go look at the users. Maybe it's another case of "we
-don't *actually* care about the sequence count".
-
->
-> +++ /tmp/nothing/drivers/net/ethernet/cavium/liquidio/cn23xx_pf_device.c
-> @@ -379,8 +379,6 @@ static int cn23xx_reset_io_queues(struct
->                                 q_no);
->                         return -1;
->                 }
-> -               WRITE_ONCE(reg_val, READ_ONCE(reg_val) &
-> -                       ~CN23XX_PKT_INPUT_CTL_RST);
-> ....
-> -               WRITE_ONCE(d64, READ_ONCE(d64) &
-> -                                       (~(CN23XX_PKT_INPUT_CTL_RING_ENB)));
-> -               WRITE_ONCE(d64, READ_ONCE(d64) | CN23XX_PKT_INPUT_CTL_RST);
-
-
-More "likely wrong" cases.
-
-> +++ /tmp/nothing/mm/kfence/kfence_test.c
-> @@ -501,7 +501,6 @@ static void test_kmalloc_aligned_oob_wri
->          * fault immediately after it.
->          */
->         expect.addr = buf + size;
-> -       WRITE_ONCE(*expect.addr, READ_ONCE(*expect.addr) + 1);
-
-Looks like questionable test-code again.
-
-> +++ /tmp/nothing/io_uring/io_uring.c
-> @@ -363,7 +363,6 @@ static void io_account_cq_overflow(struc
->  {
->         struct io_rings *r = ctx->rings;
->
-> -       WRITE_ONCE(r->cq_overflow, READ_ONCE(r->cq_overflow) + 1);
->         ctx->cq_extra--;
-
-Bah. Looks like garbage, but the kernel doesn't actually use that
-value. Looks like a random number generator exposed to user space.
-Presumably this is another "statistics, but I don't care enouhg".
-
-> @@ -2403,8 +2402,6 @@ static bool io_get_sqe(struct io_ring_ct
-> -                       WRITE_ONCE(ctx->rings->sq_dropped,
-> -                                  READ_ONCE(ctx->rings->sq_dropped) + 1);
-
-As is the above.
-
-> +++ /tmp/nothing/security/apparmor/apparmorfs.c
-> @@ -596,7 +596,6 @@ static __poll_t ns_revision_poll(struct
->
->  void __aa_bump_ns_revision(struct aa_ns *ns)
->  {
-> -       WRITE_ONCE(ns->revision, READ_ONCE(ns->revision) + 1);
->         wake_up_interruptible(&ns->wait);
-
-This looks like somebody copied the RCU / tracing pattern?
-
-> +++ /tmp/nothing/arch/riscv/kvm/vmid.c
-> @@ -90,7 +90,6 @@ void kvm_riscv_gstage_vmid_update(struct
->
->         /* First user of a new VMID version? */
->         if (unlikely(vmid_next == 0)) {
-> -               WRITE_ONCE(vmid_version, READ_ONCE(vmid_version) + 1);
->                 vmid_next = 1;
-
-Looks bogus and wrong. An unreliable address space version does _not_
-sound sane, but who knows.
-
-Anyway, from a quick look, there's a mix of "this is just wrong" and a
-couple of "this seems to just want approximate statistics".
-
-Maybe the RCU 'flags' field is using WRITE_ONCE() because while the
-spinlock protects the bit changes, there are readers that look at
-other bits with READ_ONCE.
-
-That would imply that the READ_ONCE->WRITE_ONCE is just broken garbage
-- the WRITE_ONCE() part may be right, but the READ_ONCE is wrong
-because the value is stable.
-
-                  Linus
+DQoNCkxlIDA2LzAzLzIwMjQgw6AgMjE6MDUsIENhbHZpbiBPd2VucyBhIMOpY3JpdMKgOg0KPiBb
+Vm91cyBuZSByZWNldmV6IHBhcyBzb3V2ZW50IGRlIGNvdXJyaWVycyBkZSBqY2Fsdmlub3dlbnNA
+Z21haWwuY29tLiBEw6ljb3V2cmV6IHBvdXJxdW9pIGNlY2kgZXN0IGltcG9ydGFudCDDoCBodHRw
+czovL2FrYS5tcy9MZWFybkFib3V0U2VuZGVySWRlbnRpZmljYXRpb24gXQ0KPiANCj4gTm8gQlBG
+IGNvZGUgaGFzIHRvIGNoYW5nZSwgZXhjZXB0IGluIHN0cnVjdF9vcHMgKGZvciBtb2R1bGUgcmVm
+cykuDQo+IA0KPiBUaGlzIGNvbmZsaWN0cyB3aXRoIGJwZi1uZXh0IGJlY2F1c2Ugb2YgdGhpcyAo
+cmVsZXZhbnQpIHNlcmllczoNCj4gDQo+ICAgICAgaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvYWxs
+LzIwMjQwMTE5MjI1MDA1LjY2ODYwMi0xLXRoaW5rZXIubGlAZ21haWwuY29tLw0KPiANCj4gSWYg
+c29tZXRoaW5nIGxpa2UgdGhpcyBpcyBtZXJnZWQgZG93biB0aGUgcm9hZCwgaXQgY2FuIGdvIHRo
+cm91Z2gNCj4gYnBmLW5leHQgYXQgbGVpc3VyZSBvbmNlIHRoZSBtb2R1bGVfYWxsb2MgY2hhbmdl
+IGlzIGluOiBpdCdzIGEgb25lLXdheQ0KPiBkZXBlbmRlbmN5Lg0KPiANCj4gU2lnbmVkLW9mZi1i
+eTogQ2FsdmluIE93ZW5zIDxqY2Fsdmlub3dlbnNAZ21haWwuY29tPg0KPiAtLS0NCj4gICBrZXJu
+ZWwvYnBmL0tjb25maWcgICAgICAgICAgfCAgMiArLQ0KPiAgIGtlcm5lbC9icGYvYnBmX3N0cnVj
+dF9vcHMuYyB8IDI4ICsrKysrKysrKysrKysrKysrKysrKysrKy0tLS0NCj4gICAyIGZpbGVzIGNo
+YW5nZWQsIDI1IGluc2VydGlvbnMoKyksIDUgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0
+IGEva2VybmVsL2JwZi9LY29uZmlnIGIva2VybmVsL2JwZi9LY29uZmlnDQo+IGluZGV4IDZhOTA2
+ZmY5MzAwNi4uNzdkZjQ4M2E4OTI1IDEwMDY0NA0KPiAtLS0gYS9rZXJuZWwvYnBmL0tjb25maWcN
+Cj4gKysrIGIva2VybmVsL2JwZi9LY29uZmlnDQo+IEBAIC00Miw3ICs0Miw3IEBAIGNvbmZpZyBC
+UEZfSklUDQo+ICAgICAgICAgIGJvb2wgIkVuYWJsZSBCUEYgSnVzdCBJbiBUaW1lIGNvbXBpbGVy
+Ig0KPiAgICAgICAgICBkZXBlbmRzIG9uIEJQRg0KPiAgICAgICAgICBkZXBlbmRzIG9uIEhBVkVf
+Q0JQRl9KSVQgfHwgSEFWRV9FQlBGX0pJVA0KPiAtICAgICAgIGRlcGVuZHMgb24gTU9EVUxFUw0K
+PiArICAgICAgIHNlbGVjdCBNT0RVTEVfQUxMT0MNCj4gICAgICAgICAgaGVscA0KPiAgICAgICAg
+ICAgIEJQRiBwcm9ncmFtcyBhcmUgbm9ybWFsbHkgaGFuZGxlZCBieSBhIEJQRiBpbnRlcnByZXRl
+ci4gVGhpcyBvcHRpb24NCj4gICAgICAgICAgICBhbGxvd3MgdGhlIGtlcm5lbCB0byBnZW5lcmF0
+ZSBuYXRpdmUgY29kZSB3aGVuIGEgcHJvZ3JhbSBpcyBsb2FkZWQNCj4gZGlmZiAtLWdpdCBhL2tl
+cm5lbC9icGYvYnBmX3N0cnVjdF9vcHMuYyBiL2tlcm5lbC9icGYvYnBmX3N0cnVjdF9vcHMuYw0K
+PiBpbmRleCAwMjA2OGJkMGU0ZDkuLmZiZjA4YTFiYjAwYyAxMDA2NDQNCj4gLS0tIGEva2VybmVs
+L2JwZi9icGZfc3RydWN0X29wcy5jDQo+ICsrKyBiL2tlcm5lbC9icGYvYnBmX3N0cnVjdF9vcHMu
+Yw0KPiBAQCAtMTA4LDExICsxMDgsMzAgQEAgY29uc3Qgc3RydWN0IGJwZl9wcm9nX29wcyBicGZf
+c3RydWN0X29wc19wcm9nX29wcyA9IHsNCj4gICAjZW5kaWYNCj4gICB9Ow0KPiANCj4gKyNpZiBJ
+U19FTkFCTEVEKENPTkZJR19NT0RVTEVTKQ0KDQpDYW4geW91IGF2b2lkIGlmZGVmcyBhcyBtdWNo
+IGFzIHBvc3NpYmxlID8NCg0KPiAgIHN0YXRpYyBjb25zdCBzdHJ1Y3QgYnRmX3R5cGUgKm1vZHVs
+ZV90eXBlOw0KPiANCj4gK3N0YXRpYyBpbnQgYnBmX3N0cnVjdF9tb2R1bGVfdHlwZV9pbml0KHN0
+cnVjdCBidGYgKmJ0ZikNCj4gK3sNCj4gKyAgICAgICBzMzIgbW9kdWxlX2lkOw0KDQpDb3VsZCBi
+ZToNCg0KCWlmICghSVNfRU5BQkxFRChDT05GSUdfTU9EVUxFUykpDQoJCXJldHVybiAwOw0KDQo+
+ICsNCj4gKyAgICAgICBtb2R1bGVfaWQgPSBidGZfZmluZF9ieV9uYW1lX2tpbmQoYnRmLCAibW9k
+dWxlIiwgQlRGX0tJTkRfU1RSVUNUKTsNCj4gKyAgICAgICBpZiAobW9kdWxlX2lkIDwgMCkNCj4g
+KyAgICAgICAgICAgICAgIHJldHVybiAxOw0KPiArDQo+ICsgICAgICAgbW9kdWxlX3R5cGUgPSBi
+dGZfdHlwZV9ieV9pZChidGYsIG1vZHVsZV9pZCk7DQo+ICsgICAgICAgcmV0dXJuIDA7DQo+ICt9
+DQo+ICsjZWxzZQ0KPiArc3RhdGljIGludCBicGZfc3RydWN0X21vZHVsZV90eXBlX2luaXQoc3Ry
+dWN0IGJ0ZiAqYnRmKQ0KPiArew0KPiArICAgICAgIHJldHVybiAwOw0KPiArfQ0KPiArI2VuZGlm
+DQo+ICsNCj4gICB2b2lkIGJwZl9zdHJ1Y3Rfb3BzX2luaXQoc3RydWN0IGJ0ZiAqYnRmLCBzdHJ1
+Y3QgYnBmX3ZlcmlmaWVyX2xvZyAqbG9nKQ0KPiAgIHsNCj4gLSAgICAgICBzMzIgdHlwZV9pZCwg
+dmFsdWVfaWQsIG1vZHVsZV9pZDsNCj4gKyAgICAgICBzMzIgdHlwZV9pZCwgdmFsdWVfaWQ7DQo+
+ICAgICAgICAgIGNvbnN0IHN0cnVjdCBidGZfbWVtYmVyICptZW1iZXI7DQo+ICAgICAgICAgIHN0
+cnVjdCBicGZfc3RydWN0X29wcyAqc3Rfb3BzOw0KPiAgICAgICAgICBjb25zdCBzdHJ1Y3QgYnRm
+X3R5cGUgKnQ7DQo+IEBAIC0xMjUsMTIgKzE0NCwxMCBAQCB2b2lkIGJwZl9zdHJ1Y3Rfb3BzX2lu
+aXQoc3RydWN0IGJ0ZiAqYnRmLCBzdHJ1Y3QgYnBmX3ZlcmlmaWVyX2xvZyAqbG9nKQ0KPiAgICNp
+bmNsdWRlICJicGZfc3RydWN0X29wc190eXBlcy5oIg0KPiAgICN1bmRlZiBCUEZfU1RSVUNUX09Q
+U19UWVBFDQo+IA0KPiAtICAgICAgIG1vZHVsZV9pZCA9IGJ0Zl9maW5kX2J5X25hbWVfa2luZChi
+dGYsICJtb2R1bGUiLCBCVEZfS0lORF9TVFJVQ1QpOw0KPiAtICAgICAgIGlmIChtb2R1bGVfaWQg
+PCAwKSB7DQo+ICsgICAgICAgaWYgKGJwZl9zdHJ1Y3RfbW9kdWxlX3R5cGVfaW5pdChidGYpKSB7
+DQo+ICAgICAgICAgICAgICAgICAgcHJfd2FybigiQ2Fubm90IGZpbmQgc3RydWN0IG1vZHVsZSBp
+biBidGZfdm1saW51eFxuIik7DQo+ICAgICAgICAgICAgICAgICAgcmV0dXJuOw0KPiAgICAgICAg
+ICB9DQo+IC0gICAgICAgbW9kdWxlX3R5cGUgPSBidGZfdHlwZV9ieV9pZChidGYsIG1vZHVsZV9p
+ZCk7DQo+IA0KPiAgICAgICAgICBmb3IgKGkgPSAwOyBpIDwgQVJSQVlfU0laRShicGZfc3RydWN0
+X29wcyk7IGkrKykgew0KPiAgICAgICAgICAgICAgICAgIHN0X29wcyA9IGJwZl9zdHJ1Y3Rfb3Bz
+W2ldOw0KPiBAQCAtNDMzLDEyICs0NTAsMTUgQEAgc3RhdGljIGxvbmcgYnBmX3N0cnVjdF9vcHNf
+bWFwX3VwZGF0ZV9lbGVtKHN0cnVjdCBicGZfbWFwICptYXAsIHZvaWQgKmtleSwNCj4gDQo+ICAg
+ICAgICAgICAgICAgICAgbW9mZiA9IF9fYnRmX21lbWJlcl9iaXRfb2Zmc2V0KHQsIG1lbWJlcikg
+LyA4Ow0KPiAgICAgICAgICAgICAgICAgIHB0eXBlID0gYnRmX3R5cGVfcmVzb2x2ZV9wdHIoYnRm
+X3ZtbGludXgsIG1lbWJlci0+dHlwZSwgTlVMTCk7DQo+ICsNCj4gKyNpZiBJU19FTkFCTEVEKENP
+TkZJR19NT0RVTEVTKQ0KDQpDYW4ndCBzZWUgYW55dGhpbmcgZGVwZW5kaW5nIG9uIENPTkZJR19N
+T0RVTEVTIGhlcmUsIGNhbiB5b3UgaW5zdGVhZCBkbzoNCg0KCQlpZiAoSVNfRU5BQkxFRChDT05G
+SUdfTU9EVUxFUykgJiYgcHR5cGUgPT0gbW9kdWxlX3R5cGUpIHsNCg0KPiAgICAgICAgICAgICAg
+ICAgIGlmIChwdHlwZSA9PSBtb2R1bGVfdHlwZSkgew0KPiAgICAgICAgICAgICAgICAgICAgICAg
+ICAgaWYgKCoodm9pZCAqKikodWRhdGEgKyBtb2ZmKSkNCj4gICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgZ290byByZXNldF91bmxvY2s7DQo+ICAgICAgICAgICAgICAgICAgICAgICAg
+ICAqKHZvaWQgKiopKGtkYXRhICsgbW9mZikgPSBCUEZfTU9EVUxFX09XTkVSOw0KPiAgICAgICAg
+ICAgICAgICAgICAgICAgICAgY29udGludWU7DQo+ICAgICAgICAgICAgICAgICAgfQ0KPiArI2Vu
+ZGlmDQo+IA0KPiAgICAgICAgICAgICAgICAgIGVyciA9IHN0X29wcy0+aW5pdF9tZW1iZXIodCwg
+bWVtYmVyLCBrZGF0YSwgdWRhdGEpOw0KPiAgICAgICAgICAgICAgICAgIGlmIChlcnIgPCAwKQ0K
+PiAtLQ0KPiAyLjQzLjANCj4gDQo+IA0K
 
