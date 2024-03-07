@@ -1,135 +1,110 @@
-Return-Path: <linux-kernel+bounces-95730-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95732-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 516918751D1
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:27:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26AFA8751DE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:28:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 06D741F25F78
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:27:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BAE5C1F2637A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:28:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7186E12F374;
-	Thu,  7 Mar 2024 14:26:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="mUz6ukVh"
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF2D212E1D2;
+	Thu,  7 Mar 2024 14:27:35 +0000 (UTC)
+Received: from mail-oa1-f48.google.com (mail-oa1-f48.google.com [209.85.160.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D12E12C80A
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 14:26:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 060A612D775
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 14:27:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709821586; cv=none; b=AUmx09/IvxzJvg3Wptx2B/LCN28ZNdJ2sA3FJ8SQp9KeoPPvGE5JZTfFs9HcrO/9b3ow4WRGfssAULV9fqQYjtMd9DPJ6oOJdSfki83e+beWmz3mynW/R2x7WQRz6cLLIVJqSLipTYoasG+L2zbh6in5MCAn5whZwDB038jZnL8=
+	t=1709821655; cv=none; b=t93GosW12cEnppaAiw+HaQSK15uYVgFeYV+LX0FutrhTf5eHUr/Z00MRZKwR+lbPXNbgXWUcAv0uF0to6wx6htQb0/ap5p48hM/MTnd6+mHf/BzDMZ7vDooXPwhQCHUCrRJMWJpxDVWVb8obQqWXB5G8y2y+ntXOFHW/paHCdbY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709821586; c=relaxed/simple;
-	bh=RVEZ+dft9R/KhC9oPPIZ2jMLs62xUpkamwQZ5BNpAPE=;
+	s=arc-20240116; t=1709821655; c=relaxed/simple;
+	bh=wE/0lOTfGFzUn6G1MEw6iK6h6UCVuBRvP8Ecw6IOUQw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DSfjlzYiE70QEpjGqvaTzNlo3a5p8yHBKRaet5tBURuSJ5fsY83LUKew9LFPD4tRU+u9QsvsSojD0GxWjuaC9VQY2Cu8Fo/bOYocRu/ojA1xmHPSqnm8pj/9yxRGhJY7ff+9eDtdqfKZspZjEWotatpc6BX5XgI60avP/mLhgTU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=mUz6ukVh; arc=none smtp.client-ip=209.85.219.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dcbf82cdf05so931776276.2
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 06:26:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1709821584; x=1710426384; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RVEZ+dft9R/KhC9oPPIZ2jMLs62xUpkamwQZ5BNpAPE=;
-        b=mUz6ukVhcxePJds8RHQjtGXUbnLE2wHk+yeM3ONqQfUR7ZooBksU1RBlaCDgWXFNlZ
-         UMIf7hjZfV7ePhZgUxpUD5iT2ILPur9FpYCo1JBEaWa4V38M3bSOFumECZPbkJ30Ktf6
-         PyP+Gs5JWC7DFyyBAmuU2ohkQhpJ08uAeILYvgt2omBFxxb60eePDcZ09/JAdKzHPeHx
-         UeCwzF1kJ56jnFBFDGVEQoCPHj/p/nUCY0mhIoZRSA0N/cOHlmim8GYJrPhK49WFbURi
-         DVRb6/F9mPG9pGK6GZUYuq4e294FLCfTrvhlx9UXMva6mfyZwXrsJvaUSbzW243GJ+gy
-         Fx+g==
+	 To:Cc:Content-Type; b=qWmNzoOD4JhTwOHEylSsz6KcokGSqAYonZFwm/z/yZNvTnC1HpTYvHarYkxAU6L3yQeeKXmZJcIG9IPH91Ukrji+76daFlcDc9x1E5uWg3p+xTe0YDig7GnklJCNi628rudS3pgx285EG8yN2+avRaCa7DHBmtMv1TVhInHbPr0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.160.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f48.google.com with SMTP id 586e51a60fabf-21fb368b468so473266fac.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 06:27:33 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709821584; x=1710426384;
+        d=1e100.net; s=20230601; t=1709821653; x=1710426453;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RVEZ+dft9R/KhC9oPPIZ2jMLs62xUpkamwQZ5BNpAPE=;
-        b=hMcaI4pVHJHAfvxkkFPuzUpA2koWzBQtANO4YlfE7l1Giec+8EVHFKk4jY5X6lMYcX
-         kQhrsovb+OyyxrUGgsY29EUXnXqJlq8yzKMwRVo3gEkJDQ4e+ayGP2crLuAtEvvEKbbC
-         lBDUOuXsUVgp7bmxdBUYyQ+bE00DfKUQLaMHUPGWBX8xXHvNC+fafkTCz3yBP9YQ+TJI
-         Nk+4LzCE/pvvwcwulL4SbNaCoQ2Q4quTIZhPbF/4jEEtNFNmQnvzkPD+1FN/UmOhnmKl
-         IsOT/pJIKlH5mYBLAohgD2RT/qBJHKAwRNsB/ApXZ/YxpDSvQzfkYWJUNcWRP4Ume+Cv
-         HP+g==
-X-Forwarded-Encrypted: i=1; AJvYcCWzBAgDSN8LHpthINVBQeRj39Dc/Tu7YUnMyXmi1UzGgkvBfo/oqIM53ndLioBkwwy5KzosogwGlziCQiLRAAzi9Uc/3o8l132c06AK
-X-Gm-Message-State: AOJu0YxZFf2uZkYfx/vCJwgdcbsyo3OVO8Nxc2DHI+Eb2zkLzMN2Iuy4
-	j2vuZJHCU4bOVN3CUnjAevXz56dLaKeXX6aGJipwxCgHoioE388NfwYG+KCEy0TVvLb4bWBtei3
-	NP9DjqaRHawKzzXOAduQNSW3YaLrQGH5JhQAuRA==
-X-Google-Smtp-Source: AGHT+IH0e9LkMZRXB2SLv04xBgdnZvl1YCWhnRIb68p7wQZqfpVtJ9gNB06O9hNwjEIYIDsZ7xYBpYsf8k1DcJv3kqk=
-X-Received: by 2002:a5b:146:0:b0:dcb:cdce:3902 with SMTP id
- c6-20020a5b0146000000b00dcbcdce3902mr15663626ybp.55.1709821584085; Thu, 07
- Mar 2024 06:26:24 -0800 (PST)
+        bh=zz2eNH3ByABvVgHFT0hkzZRhLZmSUzNFJzczzdfYHaw=;
+        b=bavhgl0o1OgGUNANA689ek+EFwOk41Gyxv8uJjJPDZ8XDYCYHIapEvILqSpoxiVrMI
+         3TfQQtQfjHPJQ3pqVLMrLdxXGFIOIzCKPe4ffYqvxPCgxI41tjDJlxZDi/SITRGm5Et/
+         AqvqoEsudwebVKdNZtN68BZ5SZaoE3SAxNh3dWh6rptbZ9roiQOHOvGEFzlMbBorJhNW
+         JWQ96wCo5P6/VkcSR8KPivLzqabt9MD9IB3mwStvzScmf3fyVzoZPZHkOqfz61EcaG14
+         wqSjSkftpFIZXdYXiizFpR5ekJjFLivFqfX7SVYRTZARHt+PnmSQIYpn2x6KPSZSqWzw
+         rPlA==
+X-Forwarded-Encrypted: i=1; AJvYcCUtPwi22Nu0A4BaqElGZbhkeHhLUUOcCP+YWEH/Xy5Q7LOPOshyBj2aQtn3sEIS2enxxZF8cI9bHNe/ZLq0yhnZ/pOSrwcGu3JXPGUp
+X-Gm-Message-State: AOJu0YwhtYZyMp8s3qQEbR0K1MyH789foU+eiuUrtijVP6TFIIj7sxGH
+	AVbnLmM9+ZLs7vfgmvY5HxNaRSDJKRwmoiCSAn8FtoHlDyM2bQDO5eoonVrpqVRo7DTOgJYPBDR
+	Wnw4GX2alsAUSkuDMS/6uYa1zE6U=
+X-Google-Smtp-Source: AGHT+IGqfSUTe7mCD0pnZ/JliykSKoembhWqBxpNjNgmBqhFl8UiprBe2mqJOT+9O7kdEW/FaIX7LFRTHGa5Bc1mBEU=
+X-Received: by 2002:a05:6870:3123:b0:21f:d2e1:c93c with SMTP id
+ v35-20020a056870312300b0021fd2e1c93cmr8436495oaa.45.1709821653127; Thu, 07
+ Mar 2024 06:27:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240303104853.31511-1-brgl@bgdev.pl> <CAMuHMdXWdKZjjZc39iXfa6Nohtn+Xm9YvcF+YoRpNzCgeWD8tA@mail.gmail.com>
- <CAL_JsqJjo1SBcf=ZLi=iunaHiX6Mt5H6wkoPcecnZmiAcAyihw@mail.gmail.com>
- <CAMRc=McBf8Fbacnxozr+=-7AFQ0EOXbaG+zUhkNEb9g1mihmMw@mail.gmail.com> <CAL_JsqJaJciL5UT5f9y_omVj6OHCSoM6rHhVTVGfVTPtcqed4Q@mail.gmail.com>
-In-Reply-To: <CAL_JsqJaJciL5UT5f9y_omVj6OHCSoM6rHhVTVGfVTPtcqed4Q@mail.gmail.com>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Thu, 7 Mar 2024 15:26:12 +0100
-Message-ID: <CAMRc=Mcsh0yVzgCgKX=DKWBepogfkpUNVguvE0P6ojgf9QrxQw@mail.gmail.com>
-Subject: Re: [PATCH] of: make for_each_property_of_node() available to to !OF
-To: Rob Herring <robh+dt@kernel.org>
-Cc: Frank Rowand <frowand.list@gmail.com>, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, Geert Uytterhoeven <geert@linux-m68k.org>
+References: <49a7c0b667abe23d95d67cf0cf7ea7e193d9f2a1.1709773065.git.len.brown@intel.com>
+ <dc6c4d98-e56a-448d-b372-38ce0cd927e9@nvidia.com>
+In-Reply-To: <dc6c4d98-e56a-448d-b372-38ce0cd927e9@nvidia.com>
+From: Len Brown <lenb@kernel.org>
+Date: Thu, 7 Mar 2024 09:27:21 -0500
+Message-ID: <CAJvTdK=Fbo0in7diYv_4Zk_-zrOPP4skDgpTMOYw-UM8=3R29Q@mail.gmail.com>
+Subject: Re: [PATCH 1/1] nvme: Use pr_dbg, not pr_info, when setting shutdown timeout
+To: Max Gurtovoy <mgurtovoy@nvidia.com>
+Cc: kbusch@kernel.org, linux-nvme@lists.infradead.org, maxg@mellanox.com, 
+	axboe@kernel.dk, hch@lst.de, sagi@grimberg.me, linux-kernel@vger.kernel.org, 
+	Len Brown <len.brown@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 6, 2024 at 8:34=E2=80=AFPM Rob Herring <robh+dt@kernel.org> wro=
-te:
->
-> On Tue, Mar 5, 2024 at 12:46=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.p=
-l> wrote:
-> >
-> > On Tue, 5 Mar 2024 18:56:04 +0100, Rob Herring <robh+dt@kernel.org> sai=
-d:
-> > >
-> > > Long term, I want to make struct device_node opaque. So if we really
-> > > want to fix this, I think we'd want to convert this to use an iterato=
-r
-> > > function. Though I guess any user would be mucking with struct
-> > > property too, so the whole loop would need to be reworked. So in
-> > > conclusion, don't use for_each_property_of_node(). :) Shrug.
-> > >
-> >
-> > I basically just need to get the list of all properties of a node. Even=
- just
-> > names. I'm working on a testing driver that needs to request all GPIOs =
-assigned
-> > to it over DT so it must find all `foo-gpios` properties.
-> >
-> > How about:
-> >
-> > int of_node_for_each_property(struct device_node *dn, int
-> > (*func)(struct property *, void *), void *data)
-> >
-> > as the iterator?
->
-> Why would we make the caller provide the iterator? We just need a
-> function call like the other iterators rather than directly
-> dereferencing the pointers: of_next_property_iter(node, last_prop)
->
-> > You didn't say if you want to make struct property opaque as
-> > well but even then it can be used with provided interfaces.
->
-> Yes, I'd like to make struct property opaque as well. That's probably
-> the first step.
->
-> Rob
+On Thu, Mar 7, 2024 at 4:29=E2=80=AFAM Max Gurtovoy <mgurtovoy@nvidia.com> =
+wrote:
 
-Or maybe we should implement it at the fwnode_operations level?
-Although not sure how to handle it as fwnode doesn't have a separate
-structure for properties.
+> > Some words are alarming in routine kernel messages.
+> > "timeout" is one of them...
+> >
+> > Here NVME is routinely setting a timeout value,
+> > rather than reporting that a timeout has occurred.
+>
+> No.
+> see the original commit message
+>
+> "When an NVMe controller reports RTD3 Entry Latency larger than the
+> value of shutdown_timeout module parameter, we update the
+> shutdown_timeout accordingly to honor RTD3 Entry Latency. Use an
+> informational debug level instead of a warning level for it."
+>
+> So this is not a routine flow. This informs users about using a
+> different value than the module param they set.
 
-Bart
+I have machines in automated testing.
+Those machines have zero module params.
+This message appears in their dmesg 100% of the time,
+and our dmesg scanner complains about them 100% of the time.
+
+Is this a bug in the NVME hardware or software?
+
+If yes, I'll be happy to help  debug it.
+
+If no, then exactly what action is the informed user supposed to take
+upon seeing this message?
+
+If none, then the message serves no purpose and should be deleted entirely.
+
+thank you,
+
+Len Brown, Intel
 
