@@ -1,138 +1,113 @@
-Return-Path: <linux-kernel+bounces-95122-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95123-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75A1887496F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:20:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB3BA874974
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:21:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A7BA21C212CB
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 08:20:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92023281C78
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 08:21:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 884B763417;
-	Thu,  7 Mar 2024 08:19:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BA876340A;
+	Thu,  7 Mar 2024 08:21:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c7hYvPur"
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="aK9oK45t"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2513851C54;
-	Thu,  7 Mar 2024 08:19:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38334633F5;
+	Thu,  7 Mar 2024 08:21:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709799596; cv=none; b=i8/xsjhWPlKwXLwc1TV9psAf0gD/NOMlI9wdgHt6dHQqb338+GtIuTRWeEcc2MgqUdZcVfuonFQRzsq/t3JoTpZNJaV0wpP0WmFV0eV95ZSHGpAeK+qI+PggjGi7bINHaXeT8ANOWiJrlpJjLzTrHftOBI1OtYEYDNVbpd7Jq/I=
+	t=1709799665; cv=none; b=aBAHBf99uQq+wAcIF9d+SMSPqWHFLtMJZDqc4gBsCeYJxAreNUhViZe2Io42icggyA4wcrG8KHyk9iM+JJ6IG3GsYI3AtvaFvtR/Ibcj2Dbqg9GJHIfqQrbXt1TXhIV5PaGex3yxWGt2nkNAVu1cU55BnhLwxWDWVD93Rfdxkcs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709799596; c=relaxed/simple;
-	bh=8FP38S7OrZ+MpTjf4w+My1/hNKejVVNsZfh22HhsIUI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=DYOjrfq2chQnrFqexlbuFei0KrHgsRcIaQrFDD2iGMk8OBwiQjbM2qyBeENB4flhCnZqJ818Q0Z4gJZtD76gHrr0L/aycMF/Nl3cXskti+kpFxo6DS3F18tSaCAyN/xNjSi9VhWJ40NI7wwXTe18/ebO7PimkqywA9ckFj9TtdA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c7hYvPur; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-412fe981ef1so3301645e9.1;
-        Thu, 07 Mar 2024 00:19:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709799593; x=1710404393; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q3cfeh/qgTCzNyqJWZG5K1iEv2VogtsczNtBj4FEYbc=;
-        b=c7hYvPurgYXZGHx8zWUSDfdQtxiAKaKw6r3bd69EIKDeliNnstLdYr70aU0xynM9/N
-         DvyFY/khAEpJH4RLLbglYqzErnhnjRSCXtKmyGKVH9b0w+HOcXEOLk3SMKXevGAVn5KC
-         i9wqPSaQiVO/JRDyD7M29frCmYo2jyJ5A2sY6sJgpl10HJQPCkHqq6/gIhzEvzvbzgSc
-         a3oh3GQGownVWjnCM6nUNhQe6/luU/lDRIMXnWBmYE8oPemxw5DBKfRMPZPENF501pli
-         zMbKcE8bX8FRAFvgVjHZ+Qyv7siJcVZFnGsAujoP1cSlXwaROX/7+Ev2xzK0HSq1hJgq
-         h5kg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709799593; x=1710404393;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Q3cfeh/qgTCzNyqJWZG5K1iEv2VogtsczNtBj4FEYbc=;
-        b=PQq9m0BpU3LZkE/mTi7LObQpJBlccaqRY25aJMwvtwoK+Y8kDceaTacL1hv+Ykz9ql
-         DZM6ErBqrEXsIe9WaBIqahjE6Z/s7mnuvdl5MwNGjQdLWOvo3D7QpkGM2QFBzGWJS4mO
-         J23oTHmqRt7LYXGuq/EyoOZWhwvQd2TI8jq/gDNYdvcjQqFNBRV6Tlkef2L555vm9ahQ
-         V6+EOZfKUspdQ2egClIg3QwWcqGocJ7w65ZUaKkRXvqaDd8TJOSLebwLIc1w70tdXzT0
-         DZJYyKW+F/MBGrT9rDfxhXHhRCRZjMNSofUJg6emtKntF07s0Vjl3utxLfpglNwG2dO2
-         x3Ig==
-X-Forwarded-Encrypted: i=1; AJvYcCW/bgG3OSYgQ+GE5XZKqrbQhfV1/yTAkia8akWV8fySBmkbqOYUl6rYjkkcCDfNpQOZYIFdhAHUOkC8PQL0bRqTiXkZuzjG3XXPpLBFURLb48J/s9Ft9Kr2osQtp7su4U1XtF21rirhDfFgyUAAjyXKq+0OKzp8X/3r/4Bf0zQdHtit
-X-Gm-Message-State: AOJu0YxAMkmopqviI9j/rIQhoY6UB6YlZVir/CLX3OTYGUobUPWdZC5Y
-	clqm6a5YdCAH2L3gme2nJ+Cr3ZFtPpk8pAUnoOU/8mGXiLWBJuKz
-X-Google-Smtp-Source: AGHT+IHxp22ZICjNl26x1Qf0pwp3S9ZJz469LBsA59Wew3XXWy7W/Otp9bwAH8nrbisN+qEZRG5Xig==
-X-Received: by 2002:a05:600c:4f91:b0:413:119:33e2 with SMTP id n17-20020a05600c4f9100b00413011933e2mr701067wmq.14.1709799593095;
-        Thu, 07 Mar 2024 00:19:53 -0800 (PST)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id fb12-20020a05600c520c00b00412f81ba413sm1788954wmb.11.2024.03.07.00.19.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Mar 2024 00:19:52 -0800 (PST)
-From: Colin Ian King <colin.i.king@gmail.com>
-To: Marc Zyngier <maz@kernel.org>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Anup Patel <anup@brainfault.org>,
-	Atish Patra <atishp@atishpatra.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	linux-arm-kernel@lists.infradead.org,
-	kvmarm@lists.linux.dev,
-	kvm@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	kvm-riscv@lists.infradead.org,
-	linux-riscv@lists.infradead.org
-Cc: kernel-janitors@vger.kernel.org
-Subject: [PATCH][next] KVM: selftests: Fix spelling mistake "trigged" -> "triggered"
-Date: Thu,  7 Mar 2024 08:19:51 +0000
-Message-Id: <20240307081951.1954830-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1709799665; c=relaxed/simple;
+	bh=NDZ1E5gQ7TCSxucTvQcLUX4vB5AJPIVxD1vCXwDw9QY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=gK+cIUP4ftS8FtY98//Bpn1w12nnxCMgTvAktpdAAWj0hnAl3sPfNPhvldhMG7kK3qlQzcCO2qUYcZEto7Iq/3FONK0EUMVbVUxc2StxCk4x0VRM4L6RprUieJp/lcQeQd6+saA7ooPWRZx3bHW+ClcSI9QD8Wt5C+ck4/GTW8s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=aK9oK45t; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4277mu5a003580;
+	Thu, 7 Mar 2024 08:20:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=q7GoIHg6TGs1bP6qT2WFb6DV1jjf+4voLbe4S+7/Djg=; b=aK
+	9oK45tRtCgFsN2SOeA+8MB2cS9Nmar6HArVn9Es8LBS65u4XV2o3+2FqBNMQLGXa
+	3gSrOvoKYoHWrvkSgtgBbbai/fdq2leZTt/5ycs/IN08JaPTWgTpI8Qz968Tsbjx
+	a4T0VWz7CCPipSPFBrb1gedSij0D6dMQhZBSiUlwXcQI3cm4+Y7lK0GscuMj74Tj
+	IpFV83XKrcucaC27AswORQNhU6eAkfOk+xxio23ZBW0OuLQlTrF/egnpb9p2XxAn
+	OZpI174ICYAJNNttCPKIPLKlvXvicXAqTFFU2w93BeTesPbezxxBHjN4NgwihWDB
+	5fgtelbD5oDCUQ5EZeXw==
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wq9h8g1t4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 07 Mar 2024 08:20:42 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4278Kgel021266
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 7 Mar 2024 08:20:42 GMT
+Received: from [10.204.67.124] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 7 Mar
+ 2024 00:20:35 -0800
+Message-ID: <5271ebb4-68e7-468f-b1e0-b35a77f53902@quicinc.com>
+Date: Thu, 7 Mar 2024 13:50:32 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 0/2] add display and panel on qcm6490 idp
+Content-Language: en-US
+To: <andersson@kernel.org>, <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <catalin.marinas@arm.com>, <will@kernel.org>,
+        <quic_bjorande@quicinc.com>, <geert+renesas@glider.be>,
+        <arnd@arndb.de>, <neil.armstrong@linaro.org>,
+        <dmitry.baryshkov@linaro.org>, <nfraprado@collabora.com>,
+        <m.szyprowski@samsung.com>
+CC: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <quic_abhinavk@quicinc.com>, <quic_rajeevny@quicinc.com>,
+        <quic_vproddut@quicinc.com>
+References: <20240215103929.19357-1-quic_riteshk@quicinc.com>
+From: Ritesh Kumar <quic_riteshk@quicinc.com>
+In-Reply-To: <20240215103929.19357-1-quic_riteshk@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: iuZyJztrG5hMGBEQJb40NpGtMBEQPKFb
+X-Proofpoint-ORIG-GUID: iuZyJztrG5hMGBEQJb40NpGtMBEQPKFb
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-07_04,2024-03-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ lowpriorityscore=0 mlxlogscore=999 priorityscore=1501 suspectscore=0
+ spamscore=0 clxscore=1011 malwarescore=0 mlxscore=0 adultscore=0
+ phishscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2402120000 definitions=main-2403070059
 
-There are spelling mistakes in __GUEST_ASSERT messages. Fix them.
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- tools/testing/selftests/kvm/aarch64/arch_timer.c | 2 +-
- tools/testing/selftests/kvm/riscv/arch_timer.c   | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+On 2/15/2024 4:09 PM, Ritesh Kumar wrote:
+> Build the Novatek NT36672E DSI Panel driver as module and enable
+> display subsystem on Qualcomm qcm6490 idp board.
+>
+> Ritesh Kumar (2):
+>    arm64: defconfig: enable Novatek NT36672E DSI Panel driver
+>    arm64: dts: qcom: qcm6490-idp: add display and panel
 
-diff --git a/tools/testing/selftests/kvm/aarch64/arch_timer.c b/tools/testing/selftests/kvm/aarch64/arch_timer.c
-index ddba2c2fb5de..16ac74d07d68 100644
---- a/tools/testing/selftests/kvm/aarch64/arch_timer.c
-+++ b/tools/testing/selftests/kvm/aarch64/arch_timer.c
-@@ -136,7 +136,7 @@ static void guest_run_stage(struct test_vcpu_shared_data *shared_data,
- 		irq_iter = READ_ONCE(shared_data->nr_iter);
- 		__GUEST_ASSERT(config_iter + 1 == irq_iter,
- 				"config_iter + 1 = 0x%lx, irq_iter = 0x%lx.\n"
--				"  Guest timer interrupt was not trigged within the specified\n"
-+				"  Guest timer interrupt was not triggered within the specified\n"
- 				"  interval, try to increase the error margin by [-e] option.\n",
- 				config_iter + 1, irq_iter);
- 	}
-diff --git a/tools/testing/selftests/kvm/riscv/arch_timer.c b/tools/testing/selftests/kvm/riscv/arch_timer.c
-index e22848f747c0..0f9cabd99fd4 100644
---- a/tools/testing/selftests/kvm/riscv/arch_timer.c
-+++ b/tools/testing/selftests/kvm/riscv/arch_timer.c
-@@ -60,7 +60,7 @@ static void guest_run(struct test_vcpu_shared_data *shared_data)
- 		irq_iter = READ_ONCE(shared_data->nr_iter);
- 		__GUEST_ASSERT(config_iter + 1 == irq_iter,
- 				"config_iter + 1 = 0x%x, irq_iter = 0x%x.\n"
--				"  Guest timer interrupt was not trigged within the specified\n"
-+				"  Guest timer interrupt was not triggered within the specified\n"
- 				"  interval, try to increase the error margin by [-e] option.\n",
- 				config_iter + 1, irq_iter);
- 	}
--- 
-2.39.2
+Can you please review and apply these two patches.
 
+Thanks,
+Ritesh
 
