@@ -1,233 +1,261 @@
-Return-Path: <linux-kernel+bounces-95753-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95754-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D9B487520B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:39:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3842875210
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 15:40:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D3AECB28DFA
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:39:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E98A288B83
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 14:40:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08B30130ACF;
-	Thu,  7 Mar 2024 14:36:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EAD01EA7C;
+	Thu,  7 Mar 2024 14:39:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iQVGWNLa"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="KUvVw+Y0"
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E00512FB07;
-	Thu,  7 Mar 2024 14:36:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 791801B96E;
+	Thu,  7 Mar 2024 14:39:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709822216; cv=none; b=vFLfL2Snkh2DKM0bpeIUHqkodA/QoiPCUhA1sTRHRrQhvjbu+W3YFrIIPiC5w8FMrkk9hSrmzffwUCJMHPuyUh4Tqeb1qsFEz9kH3IGwp0mSCCatb3wLml14lWemwCBHocCLiEISuyn6reyBfFJvCLyZM7FWAYZBukSjBzRBMIQ=
+	t=1709822368; cv=none; b=Mp263hkAvLv78rWwUdPze7jM+Njf2sCRsp7JMQOTaoQOE/Ur7N0HHgax+MUZgbw25o1vccN8a1G6e8PaYDGv7CTAUwPMs/oTIY632VSJXzjOMZboWsGXLx7IE54tq+lzjhLpHgOBHOHtLyxaFcvAbCz10rRkwjf53BMA00yuIh8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709822216; c=relaxed/simple;
-	bh=bsvqT6rkyOsgS9431W5EFF9tfjXbGQErhla1EGxDfNA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=Xv5cTLIdcxJ5rZ6y/dUfFwRHl//MyBNJJHIwW3btCLH8UrSOYq87fN4AmFY0evIL+fZ6iYK7hhCNLlZ/q+MSgZxhLuS24vePS7DnRtwNW64JYEEIk+rqsuQO6iLppbhzjqBDfL1AnQJAjliQU/VWkCKD0xlifSJzT1Fw6Gi7c60=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iQVGWNLa; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709822215; x=1741358215;
-  h=message-id:date:mime-version:subject:to:references:from:
-   in-reply-to:content-transfer-encoding;
-  bh=bsvqT6rkyOsgS9431W5EFF9tfjXbGQErhla1EGxDfNA=;
-  b=iQVGWNLaKNP/Oz9YrYcI8QRyDVoS9LAfnnkStvlCF9b7qFia1rBtfemr
-   Gk67CVI48ndNAo9I9zG4xc6Ku7J/17T+83YMGKj05lMksYKt1AzIPclT/
-   iynZYqF7bToNzZS6uQ4vybV99Of+IBxYTG0NTzw7sSUSHa2ilmEF2bsIM
-   yKELqiJGjl8AXILggtUH6F1X9xjjCOkk4CWN6zq383pJhBjXGgeHVTmml
-   zUMg3Ut2SjWRsCXbvdccfLFheo3skrsJlDpoGMBWJM4osBHUf64fcJEgv
-   3Nc73vPF9SeHr4yFrsd+j++wWTHdp1RkgpgzOxeGmSctfX1YFSkT2iCL+
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="4662726"
-X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
-   d="scan'208";a="4662726"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 06:36:54 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,211,1708416000"; 
-   d="scan'208";a="10689007"
-Received: from linux.intel.com ([10.54.29.200])
-  by orviesa008.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 06:36:53 -0800
-Received: from [10.213.180.166] (kliang2-mobl1.ccr.corp.intel.com [10.213.180.166])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by linux.intel.com (Postfix) with ESMTPS id 9A142580D54;
-	Thu,  7 Mar 2024 06:36:51 -0800 (PST)
-Message-ID: <c22e0d67-cf63-4bb7-8cef-05fccc384214@linux.intel.com>
-Date: Thu, 7 Mar 2024 09:36:50 -0500
+	s=arc-20240116; t=1709822368; c=relaxed/simple;
+	bh=1wda9rVFemYUpjfFp/MVZ9nQg/5x5u0oC4XBV/jPWOA=;
+	h=Mime-Version:Content-Type:Date:Message-Id:From:Subject:Cc:To:
+	 References:In-Reply-To; b=i3Kgy7IldpVvEL+PdXmRahd7U8im/McxGJ2wTzfu207IDseQQ+PAw//PrkauBGHI8fq8/3zFeMYM/WMzTjIcIGao2caHO0dVADbwrh7W7UcY0Y2T5NVwfiuqJoddbabkXIf/ZMFUQICybV1zb0OP5qHffKDCYilfG3xkMXqs5BY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=KUvVw+Y0; arc=none smtp.client-ip=217.70.183.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id D65D3E000D;
+	Thu,  7 Mar 2024 14:39:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709822357;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DyyvLt3PFqGEcHS9MBOofH4aGB4ndkaOSLBfw95+8NY=;
+	b=KUvVw+Y01jMAdb7/WuVobY4KF3yUKmM23k9AgcVjHc/v5OwMpPfYQ4ZgVXW3tRHpjZGuPi
+	938qrKHa+lMcaX+rAnjITZIzrZWJLGP0FI/6LyDu6CZdYfR3Ig9b3SzffXnNEDNyVmVKGi
+	UUuO75aY3JPLLly0cdYMCCxDVzR+LQ8W+CPLo2J96wObP+emCBrFhPMEB/CUpC/zRf7sQ4
+	TSipvoVusU1LiQXGZw+6Et2ykxxFnvj689jZgGU/bsjVSy/iVgJn0Kz2AnXQf3dICGHhEe
+	GtZrD40tK6eSXTpacy4F6dnwfRzpyhDXLI1i7c7AzPI7y0k48UOIbCKJQZA/BA==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 5/6] perf tools: Use pmus to describe type from
- attribute
-Content-Language: en-US
-To: Ian Rogers <irogers@google.com>, Peter Zijlstra <peterz@infradead.org>,
- Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>,
- Yang Jihong <yangjihong1@huawei.com>, James Clark <james.clark@arm.com>,
- Ravi Bangoria <ravi.bangoria@amd.com>, linux-perf-users@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240307081412.3933750-1-irogers@google.com>
- <20240307081412.3933750-6-irogers@google.com>
-From: "Liang, Kan" <kan.liang@linux.intel.com>
-In-Reply-To: <20240307081412.3933750-6-irogers@google.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Date: Thu, 07 Mar 2024 15:39:15 +0100
+Message-Id: <CZNLFUH8WWIA.MAUN8E53X7PK@bootlin.com>
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Subject: Re: [PATCH v4 3/9] usb: cdns3-ti: move reg writes from probe into
+ ->runtime_resume()
+Cc: "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>,
+ =?utf-8?q?Gr=C3=A9gory_Clement?= <gregory.clement@bootlin.com>, "Kevin
+ Hilman" <khilman@kernel.org>, "Alan Stern" <stern@rowland.harvard.edu>,
+ <linux-usb@vger.kernel.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
+To: "Roger Quadros" <rogerq@kernel.org>, "Greg Kroah-Hartman"
+ <gregkh@linuxfoundation.org>, "Rob Herring" <robh+dt@kernel.org>,
+ "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley"
+ <conor+dt@kernel.org>, "Peter Chen" <peter.chen@kernel.org>, "Pawel
+ Laszczak" <pawell@cadence.com>, "Nishanth Menon" <nm@ti.com>, "Vignesh
+ Raghavendra" <vigneshr@ti.com>, "Tero Kristo" <kristo@kernel.org>
+X-Mailer: aerc 0.15.2
+References: <20240307-j7200-usb-suspend-v4-0-5ec7615431f3@bootlin.com>
+ <20240307-j7200-usb-suspend-v4-3-5ec7615431f3@bootlin.com>
+ <d1ca5d29-8ef4-4d7f-b1c8-bcb361e6c351@kernel.org>
+In-Reply-To: <d1ca5d29-8ef4-4d7f-b1c8-bcb361e6c351@kernel.org>
+X-GND-Sasl: theo.lebrun@bootlin.com
 
+Hello Roger,
 
+On Thu Mar 7, 2024 at 1:31 PM CET, Roger Quadros wrote:
+> Hi,
+>
+> On 07/03/2024 11:55, Th=C3=A9o Lebrun wrote:
+> > The hardware initialisation register write sequence is only used at
+> > probe. Move it from being done at explicitely at probe to being done
+> > implicitely by pm_runtime_get_sync() that calls ->runtime_resume().
+>
+> explicitly / implicitly
+>
+> >=20
+> > Keep devicetree parsing in probe and add a new field in the private
+> > struct to remember the USB2 refclk rate code computation result.
+> >=20
+> > This opens the door to having the init sequence being executed later
+> > down the road, at system-wide resume for example. This is NOT currently
+> > happening because runtime PM is disabled at suspend without the
+> > refcount being affected.
+> >=20
+> > Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
+> > ---
+> >  drivers/usb/cdns3/cdns3-ti.c | 90 +++++++++++++++++++++++++-----------=
+--------
+> >  1 file changed, 52 insertions(+), 38 deletions(-)
+> >=20
+> > diff --git a/drivers/usb/cdns3/cdns3-ti.c b/drivers/usb/cdns3/cdns3-ti.=
+c
+> > index 5945c4b1e11f..4c8a557e6a6f 100644
+> > --- a/drivers/usb/cdns3/cdns3-ti.c
+> > +++ b/drivers/usb/cdns3/cdns3-ti.c
+> > @@ -57,6 +57,7 @@ struct cdns_ti {
+> >  	unsigned vbus_divider:1;
+> >  	struct clk *usb2_refclk;
+> >  	struct clk *lpm_clk;
+> > +	int usb2_refclk_rate_code;
+> >  };
+> > =20
+> >  static const int cdns_ti_rate_table[] =3D {	/* in KHZ */
+> > @@ -90,10 +91,8 @@ static int cdns_ti_probe(struct platform_device *pde=
+v)
+> >  	struct device *dev =3D &pdev->dev;
+> >  	struct device_node *node =3D pdev->dev.of_node;
+> >  	struct cdns_ti *data;
+> > -	int error;
+> > -	u32 reg;
+> > -	int rate_code, i;
+> >  	unsigned long rate;
+> > +	int error, i;
+> > =20
+> >  	data =3D devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
+> >  	if (!data)
+> > @@ -133,7 +132,9 @@ static int cdns_ti_probe(struct platform_device *pd=
+ev)
+> >  		return -EINVAL;
+> >  	}
+> > =20
+> > -	rate_code =3D i;
+> > +	data->usb2_refclk_rate_code =3D i;
+> > +	data->vbus_divider =3D device_property_read_bool(dev, "ti,vbus-divide=
+r");
+> > +	data->usb2_only =3D device_property_read_bool(dev, "ti,usb2-only");
+> > =20
+> >  	pm_runtime_enable(dev);
+> >  	error =3D pm_runtime_get_sync(dev);
+> > @@ -142,40 +143,6 @@ static int cdns_ti_probe(struct platform_device *p=
+dev)
+> >  		goto err;
+> >  	}
+> > =20
+> > -	/* assert RESET */
+> > -	reg =3D cdns_ti_readl(data, USBSS_W1);
+> > -	reg &=3D ~USBSS_W1_PWRUP_RST;
+> > -	cdns_ti_writel(data, USBSS_W1, reg);
+> > -
+> > -	/* set static config */
+> > -	reg =3D cdns_ti_readl(data, USBSS_STATIC_CONFIG);
+> > -	reg &=3D ~USBSS1_STATIC_PLL_REF_SEL_MASK;
+> > -	reg |=3D rate_code << USBSS1_STATIC_PLL_REF_SEL_SHIFT;
+> > -
+> > -	reg &=3D ~USBSS1_STATIC_VBUS_SEL_MASK;
+> > -	data->vbus_divider =3D device_property_read_bool(dev, "ti,vbus-divide=
+r");
+> > -	if (data->vbus_divider)
+> > -		reg |=3D 1 << USBSS1_STATIC_VBUS_SEL_SHIFT;
+> > -
+> > -	cdns_ti_writel(data, USBSS_STATIC_CONFIG, reg);
+> > -	reg =3D cdns_ti_readl(data, USBSS_STATIC_CONFIG);
+> > -
+> > -	/* set USB2_ONLY mode if requested */
+> > -	reg =3D cdns_ti_readl(data, USBSS_W1);
+> > -	data->usb2_only =3D device_property_read_bool(dev, "ti,usb2-only");
+> > -	if (data->usb2_only)
+> > -		reg |=3D USBSS_W1_USB2_ONLY;
+> > -
+> > -	/* set default modestrap */
+> > -	reg |=3D USBSS_W1_MODESTRAP_SEL;
+> > -	reg &=3D ~USBSS_W1_MODESTRAP_MASK;
+> > -	reg |=3D USBSS_MODESTRAP_MODE_NONE << USBSS_W1_MODESTRAP_SHIFT;
+> > -	cdns_ti_writel(data, USBSS_W1, reg);
+> > -
+> > -	/* de-assert RESET */
+> > -	reg |=3D USBSS_W1_PWRUP_RST;
+> > -	cdns_ti_writel(data, USBSS_W1, reg);
+> > -
+> >  	error =3D of_platform_populate(node, NULL, NULL, dev);
+> >  	if (error) {
+> >  		dev_err(dev, "failed to create children: %d\n", error);
+> > @@ -211,6 +178,52 @@ static void cdns_ti_remove(struct platform_device =
+*pdev)
+> >  	platform_set_drvdata(pdev, NULL);
+> >  }
+> > =20
+> > +static int cdns_ti_runtime_resume(struct device *dev)
+> > +{
+> > +	struct cdns_ti *data =3D dev_get_drvdata(dev);
+> > +	u32 reg;
+> > +
+> > +	/* assert RESET */
+> > +	reg =3D cdns_ti_readl(data, USBSS_W1);
+> > +	reg &=3D ~USBSS_W1_PWRUP_RST;
+> > +	cdns_ti_writel(data, USBSS_W1, reg);
+> > +
+> > +	/* set static config */
+> > +	reg =3D cdns_ti_readl(data, USBSS_STATIC_CONFIG);
+> > +	reg &=3D ~USBSS1_STATIC_PLL_REF_SEL_MASK;
+> > +	reg |=3D data->usb2_refclk_rate_code << USBSS1_STATIC_PLL_REF_SEL_SHI=
+FT;
+> > +
+> > +	reg &=3D ~USBSS1_STATIC_VBUS_SEL_MASK;
+> > +
+> > +	if (data->vbus_divider)
+> > +		reg |=3D 1 << USBSS1_STATIC_VBUS_SEL_SHIFT;
+> > +
+> > +	cdns_ti_writel(data, USBSS_STATIC_CONFIG, reg);
+> > +	reg =3D cdns_ti_readl(data, USBSS_STATIC_CONFIG);
+> > +
+> > +	/* set USB2_ONLY mode if requested */
+> > +	reg =3D cdns_ti_readl(data, USBSS_W1);
+> > +
+> > +	if (data->usb2_only)
+> > +		reg |=3D USBSS_W1_USB2_ONLY;
+> > +
+> > +	/* set default modestrap */
+> > +	reg |=3D USBSS_W1_MODESTRAP_SEL;
+> > +	reg &=3D ~USBSS_W1_MODESTRAP_MASK;
+> > +	reg |=3D USBSS_MODESTRAP_MODE_NONE << USBSS_W1_MODESTRAP_SHIFT;
+> > +	cdns_ti_writel(data, USBSS_W1, reg);
+> > +
+> > +	/* de-assert RESET */
+> > +	reg |=3D USBSS_W1_PWRUP_RST;
+> > +	cdns_ti_writel(data, USBSS_W1, reg);
+>
+> I don't think USB controller requires a reset and re-init between
+> runtime suspend/resume.
+>
+> What you need is reset/re-init during system Resume on certain platforms.
+> So you should move this part of code into a helper function and call it
+> from .probe() and .system_resume()
 
-On 2024-03-07 3:14 a.m., Ian Rogers wrote:
-> When dumping a perf_event_attr, use pmus to find the PMU and its name
-> by the type number. This allows dynamically added PMUs to be described.
-> 
-> Before:
-> ```
-> $ perf stat -vv -e data_read true
-> ...
-> perf_event_attr:
->   type                             24
->   size                             136
->   config                           0x20ff
->   sample_type                      IDENTIFIER
->   read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
->   disabled                         1
->   inherit                          1
->   exclude_guest                    1
-> ...
-> ```
-> 
-> After:
-> ```
-> $ perf stat -vv -e data_read true
-> ...
-> perf_event_attr:
->   type                             24 (uncore_imc_free_running_0)
->   size                             136
->   config                           0x20ff
->   sample_type                      IDENTIFIER
->   read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
->   disabled                         1
->   inherit                          1
->   exclude_guest                    1
-> ...
-> ```
-> 
-> However, it also means that when we have a PMU name we prefer it to a
-> hard coded name:
-> 
-> Before:
-> ```
-> $ perf stat -vv -e cycles true
+Runtime resume is being called at probe() and system-wide resume. See
+our runtime_resume() implementation as that helper function you are
+describing.
 
-faults?
+A previous revision did what you are recommending. We leaned towards the
+current version. See:
+https://lore.kernel.org/lkml/7h34wxfmwn.fsf@baylibre.com/
 
-Thanks,
-Kan
-> ...
-> perf_event_attr:
->   type                             1 (PERF_TYPE_SOFTWARE)
->   size                             136
->   config                           0x2 (PERF_COUNT_SW_PAGE_FAULTS)
->   sample_type                      IDENTIFIER
->   read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
->   disabled                         1
->   inherit                          1
->   enable_on_exec                   1
->   exclude_guest                    1
-> ...
-> ```
-> 
-> After:
-> ```
-> $ perf stat -vv -e faults true
-> ...
-> perf_event_attr:
->   type                             1 (software)
->   size                             136
->   config                           0x2 (PERF_COUNT_SW_PAGE_FAULTS)
->   sample_type                      IDENTIFIER
->   read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
->   disabled                         1
->   inherit                          1
->   enable_on_exec                   1
->   exclude_guest                    1
-> ...
-> ```
-> 
-> It feels more consistent to do this, rather than only prefer a PMU
-> name when a hard coded name isn't available.
-> 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/util/perf_event_attr_fprintf.c | 16 +++++++++++-----
->  1 file changed, 11 insertions(+), 5 deletions(-)
-> 
-> diff --git a/tools/perf/util/perf_event_attr_fprintf.c b/tools/perf/util/perf_event_attr_fprintf.c
-> index 8f04d3b7f3ec..29e66835da3a 100644
-> --- a/tools/perf/util/perf_event_attr_fprintf.c
-> +++ b/tools/perf/util/perf_event_attr_fprintf.c
-> @@ -7,6 +7,8 @@
->  #include <linux/types.h>
->  #include <linux/perf_event.h>
->  #include "util/evsel_fprintf.h"
-> +#include "util/pmu.h"
-> +#include "util/pmus.h"
->  #include "trace-event.h"
->  
->  struct bit_names {
-> @@ -75,9 +77,12 @@ static void __p_read_format(char *buf, size_t size, u64 value)
->  }
->  
->  #define ENUM_ID_TO_STR_CASE(x) case x: return (#x);
-> -static const char *stringify_perf_type_id(u64 value)
-> +static const char *stringify_perf_type_id(struct perf_pmu *pmu, u32 type)
->  {
-> -	switch (value) {
-> +	if (pmu)
-> +		return pmu->name;
-> +
-> +	switch (type) {
->  	ENUM_ID_TO_STR_CASE(PERF_TYPE_HARDWARE)
->  	ENUM_ID_TO_STR_CASE(PERF_TYPE_SOFTWARE)
->  	ENUM_ID_TO_STR_CASE(PERF_TYPE_TRACEPOINT)
-> @@ -175,9 +180,9 @@ do {								\
->  #define print_id_unsigned(_s)	PRINT_ID(_s, "%"PRIu64)
->  #define print_id_hex(_s)	PRINT_ID(_s, "%#"PRIx64)
->  
-> -static void __p_type_id(char *buf, size_t size, u64 value)
-> +static void __p_type_id(struct perf_pmu *pmu, char *buf, size_t size, u64 value)
->  {
-> -	print_id_unsigned(stringify_perf_type_id(value));
-> +	print_id_unsigned(stringify_perf_type_id(pmu, value));
->  }
->  
->  static void __p_config_hw_id(char *buf, size_t size, u64 value)
-> @@ -246,7 +251,7 @@ static void __p_config_id(char *buf, size_t size, u32 type, u64 value)
->  #define p_sample_type(val)	__p_sample_type(buf, BUF_SIZE, val)
->  #define p_branch_sample_type(val) __p_branch_sample_type(buf, BUF_SIZE, val)
->  #define p_read_format(val)	__p_read_format(buf, BUF_SIZE, val)
-> -#define p_type_id(val)		__p_type_id(buf, BUF_SIZE, val)
-> +#define p_type_id(val)		__p_type_id(pmu, buf, BUF_SIZE, val)
->  #define p_config_id(val)	__p_config_id(buf, BUF_SIZE, attr->type, val)
->  
->  #define PRINT_ATTRn(_n, _f, _p, _a)			\
-> @@ -262,6 +267,7 @@ do {							\
->  int perf_event_attr__fprintf(FILE *fp, struct perf_event_attr *attr,
->  			     attr__fprintf_f attr__fprintf, void *priv)
->  {
-> +	struct perf_pmu *pmu = perf_pmus__find_by_type(attr->type);
->  	char buf[BUF_SIZE];
->  	int ret = 0;
->  
+Also, assuming we enable runtime PM, a reset and re-init after runtime
+suspend would be the right thing to do anyways. My reading of
+drivers/pmdomain/core.c tells me that if our device goes to runtime
+suspend, domains will be shut down. Our controller will be reset and
+we'll need to re-init it. The GENPD_FLAG_RPM_ALWAYS_ON flag is of
+interest to avoid the PD to be shut down during runtime PM.
+
+Regards,
+
+--
+Th=C3=A9o Lebrun, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
+
 
