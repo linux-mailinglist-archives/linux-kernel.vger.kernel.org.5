@@ -1,343 +1,149 @@
-Return-Path: <linux-kernel+bounces-95135-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-95136-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A453B8749A0
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:29:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E0478749A4
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 09:30:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B01B1F24344
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 08:29:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 271851F2417C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Mar 2024 08:30:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C6346340D;
-	Thu,  7 Mar 2024 08:29:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="4awMxTfs"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9733F64AB3;
+	Thu,  7 Mar 2024 08:30:20 +0000 (UTC)
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7239763408
-	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 08:29:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0CAB5B03B
+	for <linux-kernel@vger.kernel.org>; Thu,  7 Mar 2024 08:30:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709800175; cv=none; b=KdrJFLKUmuihS5MwdAUEmy+xLfFw3pDPQpFwZX4STR2AF9Fuhtr8ISjcfg5Kk4fCxgZQeX0mQ4wbnt4hQ5IF+zQdEfiEi1BUqSYPnezmKKwOvMg6F6hLuEAHJu7ch/UiOc6kR9mf+XIcxf5GD/5XiM6b7FhcHU2HT2hC+Psh0zA=
+	t=1709800220; cv=none; b=Kr8EFHFj4WyjVOrHGVbT/219qbo0xuamL79Jd+7EOUIqgRFWdqlbbiAhw/dq8UN5ZYHIcrMYI8uDFJpt8wHk+I+euAt7bsonpAH55EyB4qPfjINAzhFOpl0YeVkBo6aCVLqsWgn8d8n/ttvLDd3t5Dl3cg/UrMw3cu+lW2t7xUw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709800175; c=relaxed/simple;
-	bh=NMaQjJv++5pY7h2yzC0y0jCxvdwNmhLrZUnxJWQFy1A=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=E2b9xnn9UrLkXsSHM34wcdx8/p1vaOIzv2Ip3xLFPeGmyu1s9/4VTB0eghi1UivmJWW4vzJ77ffNQoUocoIEK/HnSkZygQdLDZpRzUGatOf7Mf3eJFnIlmAAAxBHK8xz0xZVOrwAQ+L2QoB/a+cqKSb/vkAOrHpG6y1cV0JyFkQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=4awMxTfs; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1709800171;
-	bh=NMaQjJv++5pY7h2yzC0y0jCxvdwNmhLrZUnxJWQFy1A=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=4awMxTfsvD/OyC45MNL/d9gtiFOiK6+BiP00ayKwRQAViDDS74zAYOs0qpxE8qkTj
-	 yd5mY2DJF82dViqnW0e6n+nVpsNQnRWeGy7x7HTqvYnxXDbtkpSWUSR5l0C5bwgqL+
-	 MLknvPBad2tCZODaZFLBMx5UFFZzim2X00kHbdJ4phDdXyHPLbkLqDEddgyOR5FbsP
-	 DJm1oAVcVXHkG1oF+2wSb5ZUIUalYOpAPJgcdKPdCyvGHPDZ0dtiX6s8xkjc3d1d/B
-	 wBctY8tF4cyaijQHtf2x5x1aUp8fCkFDvzC6gnRKEjk7Ejc/5El4jA5tB1BWsBJXkI
-	 tm8TU3ehLkkAg==
-Received: from eldfell (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: pq)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 98EAD3781FDF;
-	Thu,  7 Mar 2024 08:29:30 +0000 (UTC)
-Date: Thu, 7 Mar 2024 10:29:22 +0200
-From: Pekka Paalanen <pekka.paalanen@collabora.com>
-To: Sebastian Wick <sebastian.wick@redhat.com>
-Cc: Harry Wentland <harry.wentland@amd.com>, Ville =?UTF-8?B?U3lyasOkbMOk?=
- <ville.syrjala@linux.intel.com>, Xaver Hugl <xaver.hugl@gmail.com>, Maarten
- Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
- <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie
- <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] drm/drm_connector: Document Colorspace property
- variants
-Message-ID: <20240307102922.0f3701cb.pekka.paalanen@collabora.com>
-In-Reply-To: <20240306164209.GA11561@toolbox>
-References: <20240305135155.231687-1-sebastian.wick@redhat.com>
-	<20240306102721.3c9c3785.pekka.paalanen@collabora.com>
-	<20240306164209.GA11561@toolbox>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1709800220; c=relaxed/simple;
+	bh=0fAYZVzkNANajbEox82PcleCjcFCVD2kAiceHZsNeew=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=LWkIf4yYWq7TdCCAynu1U8foP0MIG9a7r0I6ebRs8LFh8keLJk+OdBGfZDcy/Ai57f2YUslnVBiCeoQIi//9hfcwrRVEK6C91fy8A1BVpU8Es1SKRQzddZ0OdrGO07L0LKk/tFosEsdPrJCJqD/xt+6cLuIC3b/2x5HHAHP+gfw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7c83e0f8c51so62751339f.2
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 00:30:18 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709800218; x=1710405018;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kOU1DI7iQ5eXeV3YAuu9M3eSVDmwHwlQYz6+06CcSoM=;
+        b=JH+9Wry8WmBxpro/7+tTc/QsX6XnZuI5+r8M1vjExb2QQqX580DKZNmtfs5LyXxTiN
+         5yhDJonYiazxFmBdMtet/N5K9vyXqUfiSvYMbosmjD14nen0tOui6H9dbs3658a2384Z
+         fmqX1vWqKdxsTr4B5Ig6lZ2zTq1tk8olT4QIxeRZEs4Jh8i14urvWbGbsJh5IUS1lHBB
+         tfLvQcDwbPJa5IBjC+mTVvcuYGiao1YwMfaINljMNSHHPRJT0dMB4mqssfZElTMly7pG
+         zQGMwUiGiNF9FZhK8eW/Qk/MEPfbM3XdWFbDz8bdDCrnqoWQm5l5aN3sHYu2PA+uHrEi
+         OhZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUh4RDRny5kE6zP+5bx2whA5SxvoCPVzaMmP9EFO7FFsr3XvANIX8QDTtiN3hiwz/OMdtvJ1dWKQIhrapehkNkq0n0OauysNTS3ls/l
+X-Gm-Message-State: AOJu0YzqX7KW/o0tkN6Z/evXGkVODfATPkFDPYXpAN68pPNAA7jZdO7p
+	U8xaeTq7ad2WwHKr8m94qrpkee0SSTx+OZtiNubQQyuRdZX1z9XevQIWUSAGs8trTkT/ROXl0zf
+	UZToi9+pf424e87KckdF5yoKUg+L0Ezc6+1gJGh+rFuwTDYgJ/GUYanM=
+X-Google-Smtp-Source: AGHT+IGxje5CvjesTv569fcM4amnpaVbp5+6kcuhA3pdKJql1WDwPUd6qNa+669L7vRC8jMZ+dgpqeDH3mIt0EXsiXok97fTAryj
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_//Cw8w_2vLFiUbjjCx/dX51m";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Received: by 2002:a05:6638:16ca:b0:474:c490:d051 with SMTP id
+ g10-20020a05663816ca00b00474c490d051mr368161jat.3.1709800217762; Thu, 07 Mar
+ 2024 00:30:17 -0800 (PST)
+Date: Thu, 07 Mar 2024 00:30:17 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009e2ff406130de279@google.com>
+Subject: [syzbot] [bpf?] KMSAN: uninit-value in strnchr
+From: syzbot <syzbot+9b8be5e35747291236c8@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com, 
+	jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org, 
+	martin.lau@linux.dev, sdf@google.com, song@kernel.org, 
+	syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
---Sig_//Cw8w_2vLFiUbjjCx/dX51m
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello,
 
-On Wed, 6 Mar 2024 17:42:09 +0100
-Sebastian Wick <sebastian.wick@redhat.com> wrote:
+syzbot found the following issue on:
 
-> On Wed, Mar 06, 2024 at 10:27:21AM +0200, Pekka Paalanen wrote:
-> > On Tue,  5 Mar 2024 14:51:49 +0100
-> > Sebastian Wick <sebastian.wick@redhat.com> wrote:
-> >  =20
-> > > The initial idea of the Colorspace prop was that this maps 1:1 to
-> > > InfoFrames/SDP but KMS does not give user space enough information nor
-> > > control over the output format to figure out which variants can be us=
-ed
-> > > for a given KMS commit. At the same time, properties like Broadcast R=
-GB
-> > > expect full range quantization range being produced by user space from
-> > > the CRTC and drivers to convert to the range expected by the sink for
-> > > the chosen output format, mode, InfoFrames, etc.
-> > >=20
-> > > This change documents the reality of the Colorspace property. The
-> > > Default variant unfortunately is very much driver specific and not
-> > > reflected by the EDID. The BT2020 variants are in active use by gener=
-ic
-> > > compositors which have expectations from the driver about the
-> > > conversions it has to do when selecting certain output formats.
-> > >=20
-> > > Everything else is also marked as undefined. Coming up with valid
-> > > behavior that makes it usable from user space and consistent with oth=
-er
-> > > KMS properties for those variants is left as an exercise for whoever
-> > > wants to use them.
-> > >=20
-> > > v2:
-> > >  * Talk about "pixel operation properties" that user space configures
-> > >  * Mention that user space is responsible for checking the EDID for s=
-ink
-> > >    support
-> > >  * Make it clear that drivers can choose between RGB and YCbCr on the=
-ir
-> > >    own
-> > >=20
-> > > Signed-off-by: Sebastian Wick <sebastian.wick@redhat.com>
-> > > ---
-> > >  drivers/gpu/drm/drm_connector.c | 79 +++++++++++++++++++++++++------=
---
-> > >  include/drm/drm_connector.h     |  8 ----
-> > >  2 files changed, 61 insertions(+), 26 deletions(-)
-> > >=20
-> > > diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_co=
-nnector.c
-> > > index b0516505f7ae..65cdcc7d22db 100644
-> > > --- a/drivers/gpu/drm/drm_connector.c
-> > > +++ b/drivers/gpu/drm/drm_connector.c
-> > > @@ -2147,24 +2147,67 @@ EXPORT_SYMBOL(drm_mode_create_aspect_ratio_pr=
-operty);
-> > >   * DOC: standard connector properties
-> > >   *
-> > >   * Colorspace:
-> > > - *     This property helps select a suitable colorspace based on the=
- sink
-> > > - *     capability. Modern sink devices support wider gamut like BT20=
-20.
-> > > - *     This helps switch to BT2020 mode if the BT2020 encoded video =
-stream
-> > > - *     is being played by the user, same for any other colorspace. T=
-hereby
-> > > - *     giving a good visual experience to users.
-> > > - *
-> > > - *     The expectation from userspace is that it should parse the ED=
-ID
-> > > - *     and get supported colorspaces. Use this property and switch t=
-o the
-> > > - *     one supported. Sink supported colorspaces should be retrieved=
- by
-> > > - *     userspace from EDID and driver will not explicitly expose the=
-m.
-> > > - *
-> > > - *     Basically the expectation from userspace is:
-> > > - *      - Set up CRTC DEGAMMA/CTM/GAMMA to convert to some sink
-> > > - *        colorspace
-> > > - *      - Set this new property to let the sink know what it
-> > > - *        converted the CRTC output to.
-> > > - *      - This property is just to inform sink what colorspace
-> > > - *        source is trying to drive.
-> > > + *	This property is used to inform the driver about the color encodi=
-ng
-> > > + *	user space configured the pixel operation properties to produce.
-> > > + *	The variants set the colorimetry, transfer characteristics, and w=
-hich
-> > > + *	YCbCr conversion should be used when necessary.
-> > > + *	The transfer characteristics from HDR_OUTPUT_METADATA takes prece=
-dence
-> > > + *	over this property.
-> > > + *	User space always configures the pixel operation properties to pr=
-oduce
-> > > + *	full quantization range data (see the Broadcast RGB property).
-> > > + *
-> > > + *	Drivers inform the sink about what colorimetry, transfer
-> > > + *	characteristics, YCbCr conversion, and quantization range to expe=
-ct
-> > > + *	(this can depend on the output mode, output format and other
-> > > + *	properties). Drivers also convert the user space provided data to=
- what
-> > > + *	the sink expects. =20
-> >=20
-> > Hi Sebastian,
-> >=20
-> > should it be more explicit that drivers are allowed to do only
-> > RGB->YCbCr and quantization range conversions, but not TF nor gamut
-> > conversions?
-> >=20
-> > That is, if the driver cannot pick the TF implied by "Colorspace"
-> > property for the sink, then it cannot pick another TF for the sink and
-> > silently convert. It think this should apply to all options including
-> > the undefined ones. Or is that too much to guess? =20
->=20
-> That's a really good point. I'll add it in the next revision.
->=20
-> > > + *
-> > > + *	User space has to check if the sink supports all of the possible
-> > > + *	colorimetries that the driver is allowed to pick by parsing the E=
-DID. =20
-> >=20
-> > All? Rather than at least one?
-> >=20
-> > Is this how it has been implemented for BT2020, that userspace picked
-> > colorimetry and driver picked color model and quantization are
-> > completely independent, and drivers do not check the combination
-> > against EDID? =20
->=20
-> AFAIK the driver exposes all Colorspace variants that it can support in
-> the driver, independent of the sink. That means user space has to make
-> sure that the sink supports all colorimetry variants the driver can
-> pick.
+HEAD commit:    04b8076df253 Merge tag 'firewire-fixes-6.8-rc7' of git://g..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=10bb9306180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=80c7a82a572c0de3
+dashboard link: https://syzkaller.appspot.com/bug?extid=9b8be5e35747291236c8
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11093316180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15a53082180000
 
-I didn't mean exposing but the driver could reject the atomic commit
-that would lead to a combination not advertised as supported in EDID.
-If drivers reject, then userspace does not need to check for all
-driver-choosable variants, just one would be enough. Theoretically not
-needing all might allow some cases to work that don't support all.
-"Colorspace" property value could direct the driver's choice based on
-what EDID claims to support.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/a4610b1ff2a7/disk-04b8076d.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/991e9d902d39/vmlinux-04b8076d.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/a5b8e8e98121/bzImage-04b8076d.xz
 
-Of course, if drivers don't do that already, then "all" it must be.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+9b8be5e35747291236c8@syzkaller.appspotmail.com
+
+=====================================================
+BUG: KMSAN: uninit-value in strnchr+0x90/0xd0 lib/string.c:388
+ strnchr+0x90/0xd0 lib/string.c:388
+ bpf_bprintf_prepare+0x1c2/0x23b0 kernel/bpf/helpers.c:829
+ ____bpf_trace_printk kernel/trace/bpf_trace.c:385 [inline]
+ bpf_trace_printk+0xec/0x3e0 kernel/trace/bpf_trace.c:375
+ ___bpf_prog_run+0x2180/0xdb80 kernel/bpf/core.c:1986
+ __bpf_prog_run32+0xb2/0xe0 kernel/bpf/core.c:2225
+ bpf_dispatcher_nop_func include/linux/bpf.h:1231 [inline]
+ __bpf_prog_run include/linux/filter.h:651 [inline]
+ bpf_prog_run include/linux/filter.h:658 [inline]
+ bpf_test_run+0x482/0xaf0 net/bpf/test_run.c:423
+ bpf_prog_test_run_skb+0x14e5/0x1f20 net/bpf/test_run.c:1056
+ bpf_prog_test_run+0x6af/0xac0 kernel/bpf/syscall.c:4107
+ __sys_bpf+0x649/0xd60 kernel/bpf/syscall.c:5475
+ __do_sys_bpf kernel/bpf/syscall.c:5561 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5559 [inline]
+ __x64_sys_bpf+0xa0/0xe0 kernel/bpf/syscall.c:5559
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+
+Local variable stack created at:
+ __bpf_prog_run32+0x43/0xe0 kernel/bpf/core.c:2225
+ bpf_dispatcher_nop_func include/linux/bpf.h:1231 [inline]
+ __bpf_prog_run include/linux/filter.h:651 [inline]
+ bpf_prog_run include/linux/filter.h:658 [inline]
+ bpf_test_run+0x482/0xaf0 net/bpf/test_run.c:423
+
+CPU: 0 PID: 5019 Comm: syz-executor938 Not tainted 6.8.0-rc6-syzkaller-00250-g04b8076df253 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
+=====================================================
 
 
-Thanks,
-pq
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-> Would be good to get a confirmation from Harry and Ville.
->=20
-> > If so, "all" it is. Would be good to explain this in the commit message=
- =20
->=20
-> Will do.
->=20
-> > > + *
-> > > + *	For historical reasons this property exposes a number of variants=
- which
-> > > + *	result in undefined behavior.
-> > > + *
-> > > + *	Default:
-> > > + *		The behavior is driver-specific.
-> > > + *	BT2020_RGB:
-> > > + *	BT2020_YCC:
-> > > + *		User space configures the pixel operation properties to produce
-> > > + *		RGB content with Rec. ITU-R BT.2020 colorimetry, Rec.
-> > > + *		ITU-R BT.2020 (Table 4, RGB) transfer characteristics and full
-> > > + *		quantization range.
-> > > + *		User space can use the HDR_OUTPUT_METADATA property to set the
-> > > + *		transfer characteristics to PQ (Rec. ITU-R BT.2100 Table 4) or
-> > > + *		HLG (Rec. ITU-R BT.2100 Table 5) in which case, user space
-> > > + *		configures pixel operation properties to produce content with
-> > > + *		the respective transfer characteristics.
-> > > + *		User space has to make sure the sink supports Rec.
-> > > + *		ITU-R BT.2020 R'G'B' and Rec. ITU-R BT.2020 Y'C'BC'R
-> > > + *		colorimetry.
-> > > + *		Drivers can configure the sink to use an RGB format, tell the
-> > > + *		sink to expect Rec. ITU-R BT.2020 R'G'B' colorimetry and convert
-> > > + *		to the appropriate quantization range.
-> > > + *		Drivers can configure the sink to use a YCbCr format, tell the
-> > > + *		sink to expect Rec. ITU-R BT.2020 Y'C'BC'R colorimetry, convert
-> > > + *		to YCbCr using the Rec. ITU-R BT.2020 non-constant luminance
-> > > + *		conversion matrix and convert to the appropriate quantization
-> > > + *		range.
-> > > + *		The variants BT2020_RGB and BT2020_YCC are equivalent and the
-> > > + *		driver chooses between RGB and YCbCr on its own.
-> > > + *	SMPTE_170M_YCC:
-> > > + *	BT709_YCC:
-> > > + *	XVYCC_601:
-> > > + *	XVYCC_709:
-> > > + *	SYCC_601:
-> > > + *	opYCC_601:
-> > > + *	opRGB:
-> > > + *	BT2020_CYCC:
-> > > + *	DCI-P3_RGB_D65:
-> > > + *	DCI-P3_RGB_Theater:
-> > > + *	RGB_WIDE_FIXED:
-> > > + *	RGB_WIDE_FLOAT:
-> > > + *	BT601_YCC:
-> > > + *		The behavior is undefined.
-> > >   *
-> > >   * Because between HDMI and DP have different colorspaces,
-> > >   * drm_mode_create_hdmi_colorspace_property() is used for HDMI conne=
-ctor and
-> > > diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
-> > > index fe88d7fc6b8f..02c42b01a3a7 100644
-> > > --- a/include/drm/drm_connector.h
-> > > +++ b/include/drm/drm_connector.h
-> > > @@ -437,14 +437,6 @@ enum drm_privacy_screen_status {
-> > >   *
-> > >   * DP definitions come from the DP v2.0 spec
-> > >   * HDMI definitions come from the CTA-861-H spec
-> > > - *
-> > > - * A note on YCC and RGB variants:
-> > > - *
-> > > - * Since userspace is not aware of the encoding on the wire
-> > > - * (RGB or YCbCr), drivers are free to pick the appropriate
-> > > - * variant, regardless of what userspace selects. E.g., if
-> > > - * BT2020_RGB is selected by userspace a driver will pick
-> > > - * BT2020_YCC if the encoding on the wire is YUV444 or YUV420.
-> > >    *
-> > >   * @DRM_MODE_COLORIMETRY_DEFAULT:
-> > >   *   Driver specific behavior. =20
-> >=20
-> > This looks really good. This also makes me need to revisit the Weston
-> > series I've been brewing that adds "Colorspace" KMS support.
-> >=20
-> > I think the two questions I had may be slightly too much in the
-> > direction of improving rather than just documenting this property, so
-> > I'll already give
-> >=20
-> > Reviewed-by: Pekka Paalanen <pekka.paalanen@collabora.com> =20
->=20
-> Thanks.
->=20
-> >=20
-> > Thanks,
-> > pq =20
->=20
->=20
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
---Sig_//Cw8w_2vLFiUbjjCx/dX51m
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
------BEGIN PGP SIGNATURE-----
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmXpeuIACgkQI1/ltBGq
-qqeWmQ/8CQNE9BFYBgGexaOt9gvbnwK8jNE8AmNlLZGkKPAFLuqsdNFYAcIiuWPw
-J8yse3Fh3TvA8RYgHc1U26MQmB7Wxa1rOTB9JJAiqo1FqeT1kSVb9JFLjuwVOiQs
-DoilkacjnB/NSAAsL/oOhcAX6WLzoWvV10olByFLutj/BGnzUj9nu0zmvdkqMYBl
-ZYkTJGWB2EvNY4N13QHq3gcRXSDZhbtZneSjLHbJ7mNGqyoEdqjI9Vy0xWy3WvKU
-NBPTspPon89Y/Rkb8A7zNbINoSYG6jEZ2nT0TRAOlv5jLP0guxo97jaafVnN63+I
-QorzUC4FOxF4w5cPZ8v0zM8imd9UZcJpi8BXxBa6LBSUvEHEOTaj70vCzJZXAW3A
-Gex9opNoVOJ19R7p7NLrYQQGts0BFN8PsYKBSESUlnqcjlaZLqdwDnrrnX2xLv1t
-/KzTLg4P4WbuVszm1XKUmHfyN532WcIxpgjvT/b+/dW0UXQJw7BAGNJcpWKKQA3A
-koBwmKcN9aW/Ud+4NSuWqzmXBDDurIaAxyFgIXlrRomn1sDmUuEmUb5yj8KPhOqb
-dE+WLZR9Dq1AeygLECEs1EMSOs1hLZq6QajsdJdTDUVAqexFT7ciKKkRVFhU9tfv
-Jk96yAcxoOEtRHskIjoKGJ9lQd+9ypilOCGZWnq+Egnd4EY71i8=
-=m5KP
------END PGP SIGNATURE-----
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
 
---Sig_//Cw8w_2vLFiUbjjCx/dX51m--
+If you want to undo deduplication, reply with:
+#syz undup
 
