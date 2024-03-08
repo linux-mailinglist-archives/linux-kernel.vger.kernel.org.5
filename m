@@ -1,271 +1,213 @@
-Return-Path: <linux-kernel+bounces-97571-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97574-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A457D876C04
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 21:50:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 505DE876C09
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 21:52:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 74C1C1C212DB
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 20:50:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 74FFF1C21167
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 20:52:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BA825E089;
-	Fri,  8 Mar 2024 20:50:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 626995F47B;
+	Fri,  8 Mar 2024 20:52:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="odAR7b2V"
-Received: from mail-vk1-f175.google.com (mail-vk1-f175.google.com [209.85.221.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fu/dLl+Y"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85F6A1EF1E
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 20:50:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55DB25E077;
+	Fri,  8 Mar 2024 20:52:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709931014; cv=none; b=Ie8KGKennC85vaYnDATAfPbkabkO8oBc1fHyuZDvPS+4zMyzDJGZkHH24UT2RXnWhXMvMEzGWxnPhRv/5bmLRPFBgr5RaAt3Q1U4tz1asqFryF+zA4vZJ2pR0bVJtvKWbkYorC53RYwTnnPkapC8xcvJSpLqrvjN6S1IjTSk5FI=
+	t=1709931165; cv=none; b=ZGbu4M80JVFXa/4B1SI7wr3WMwNwTisocZNS6Nrlz6BqbFdgV5W9ibTpNTKLl46YKK0LVFT2wtzwjCBw5dlf/LpFXYsUU1lHkTCANrFZ4tOUxTavUNoKxJSg0/9yZKjJlIKps0riJqhdaxXeIjC5ZK7GSOh880HUZ+PRaNABM5Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709931014; c=relaxed/simple;
-	bh=9Yk2zU22u4ahP1TfGgXBQ5aj6Z1/aKxFStFwhwlLi0M=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rO/4ZSUvlztvIaXd01WDlZIfaVNJ13FB9+8y/ub5ErbCSfoLvUpQp/c4lNHLtSDx8+5cz7kkfXl0Qeb681/OuCrG8opQt8waS56vDj0+R8Ke7tD5rcDZcljbd/EeGSAlUqNDjb4MRYDgpz9ApttO8TsCoaOFn2x4SIrLLB1tDzw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=odAR7b2V; arc=none smtp.client-ip=209.85.221.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-vk1-f175.google.com with SMTP id 71dfb90a1353d-4d35b644c1bso400453e0c.3
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 12:50:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709931011; x=1710535811; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Yhono+IKW3A3aFCNK76Tw4xIWHBRl+7R1BmzIBU82N4=;
-        b=odAR7b2VM8Jmvl3vFl72J6FR/IsqG/XZ0bjhZmCFumoCrPm3wHApXDDsELpSjbLOtj
-         Sv080E9KIFytIDTDwKbwJ/bsaNrt4PcdxUhHTw6PNPFdK4nRmnrjR1Phxv5V6SbVf4il
-         nb0RORr3Z9cuZoyVER3K5kAtNOEyNn5yVRJ33HQx+8TSbK+R9/p2nrEe+M//4HsMZ0kO
-         2X24/XdWmsd76jRZRXui1CAjixV8YzTh6buUhm/NAshlQKoqe3v6WBLyttWPZ/SD8h2v
-         of6jXNakW8yX0Fd3BuAXdbXpwNu9rVyUaFPTZJCL4pdh3u9zfIAgMYlRtUp7XzaPEOdk
-         rJNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709931011; x=1710535811;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Yhono+IKW3A3aFCNK76Tw4xIWHBRl+7R1BmzIBU82N4=;
-        b=Whx4cZZvt+obqie0sSb0I+iT+qzLIMLDcM+XjzveTBCTu+0h/21OomlFtXgB3MJpM1
-         5sMm0Kq0ftJwqbDIrHvPEgOeVbQ2W8PzrJ5CZVILzrPg2YwSs7DL43o18XG94UdaUlA7
-         kJf0Sk5t6Ie9D6O52XHbhsGncxGrafDYBwt1aIx/4oo58KnJXpRV9cT+CUV5nwONCelK
-         0HE+VFjMErsk6+a+Pv5uaV+668Q/QWJRHKk3U6iCEXOWQC9ki9uepVegqXqkK3510kTA
-         FNdq2jLBCUqUxajgFwnCs+ljkUMIUttzkCPxT2JHZ1W/ZIqZ5c3ZMPEWT12e6EfsHW8f
-         Irkg==
-X-Forwarded-Encrypted: i=1; AJvYcCUtlKW6J1Wuxtr2ecbBoLxeXJuy6NJWxjqYao1wD6tRHK9DvB6xIQpBvvT212eQKU4A+GiMerIk9JuR7rX6tRy9kv7tGy+eGS4vlXyz
-X-Gm-Message-State: AOJu0YyVV2UCg9HAUdB+6CldBUTYSyzQ9nbv6njy7oUdap4gNnXo3HFF
-	ZC6/YkUKxTQNRzr8Y9EPFcltKRwulgohM/772souoWtBqOHvE2uHn9bQSTYSkAPuFENCGzvyT+V
-	Do9vu+0ojKx0g2AsHPP1Qq3Sle/wkYtSTufoj
-X-Google-Smtp-Source: AGHT+IHqmsZ/CPjFAWcQSxB2JNuicl3QdjXnnBY4zIUXjm3Tz1h1yUMw0R0+5QOQDfDoF8BXygBAd/kpoc1NI9oJZpE=
-X-Received: by 2002:a05:6122:907:b0:4d3:43f8:8533 with SMTP id
- j7-20020a056122090700b004d343f88533mr402266vka.13.1709931011092; Fri, 08 Mar
- 2024 12:50:11 -0800 (PST)
+	s=arc-20240116; t=1709931165; c=relaxed/simple;
+	bh=ZB4XLzuTnKuC50gzNd+rXih9ug99YPWfYdi+0hwyfBk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=r5d1aAkpOYDnj7xNsXUFVImrCE1A+dZRH1uCOoC8IQL5anMPnrlgvTgZgVKngEiCDSQvgmOoum/DSrQpkQGQAQoF2y8ikyvZCEtf6S58QFB+2Jey2Y4jAZmdkFzc8FFmtHg2+PAYYo0noPuKKiNTKfXtdUYS95JRfx35ZOavytU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fu/dLl+Y; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709931163; x=1741467163;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ZB4XLzuTnKuC50gzNd+rXih9ug99YPWfYdi+0hwyfBk=;
+  b=fu/dLl+YF5iDcZ8KI4Iw1fXru/wL+m92p8LFVRF/oNXbcSwpRvCCSFzk
+   jPsYp4Xq5uxKpb8xBUzYLIWs22ytpu/ou2yib2zEcydvkotZ4/f2rz7sP
+   l5OMVymM8bH2KPJNIJM/vo2IR+GCFT6ZjmcJqH6sqWkN+Kpbhsf5/T/86
+   w5mJZvM8VZ2WikSafzSF8Tf7PMAVfgk0BJrGCLQdjuHOFp7YiWb9JnyAm
+   hv6Ugl4j79VoxkuyiAfJr2Zkok0id4ixTjNfRUvwFRjEvY87xQnxFp2r2
+   sjLJMNRVvbxf64pugwd06bpYjuCgACFLbto9WY5gUifAFUHrn7YlbbLyK
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11007"; a="27140621"
+X-IronPort-AV: E=Sophos;i="6.07,110,1708416000"; 
+   d="scan'208";a="27140621"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 12:52:14 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,110,1708416000"; 
+   d="scan'208";a="41540941"
+Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
+  by fmviesa001.fm.intel.com with ESMTP; 08 Mar 2024 12:52:02 -0800
+Received: from kbuild by b21307750695 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rihCB-0006i1-2F;
+	Fri, 08 Mar 2024 20:51:59 +0000
+Date: Sat, 9 Mar 2024 04:51:56 +0800
+From: kernel test robot <lkp@intel.com>
+To: Umang Jain <umang.jain@ideasonboard.com>, linux-media@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev,
+	Alexander Shiyan <eagle.alexander923@gmail.com>,
+	Kieran Bingham <kieran.bingham@ideasonboard.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Sakari Ailus <sakari.ailus@linux.intel.com>,
+	open list <linux-kernel@vger.kernel.org>,
+	Umang Jain <umang.jain@ideasonboard.com>
+Subject: Re: [PATCH 1/5] media: imx335: Support 2 or 4 lane operation modes
+Message-ID: <202403090429.oocT1Laz-lkp@intel.com>
+References: <20240306081038.212412-2-umang.jain@ideasonboard.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAGdbjmK9WoOQSbKUvcTdLJDW-RB=qe2tHFDZ-MeD266xZOxh7w@mail.gmail.com>
- <20240222202404.36206-1-kevinloughlin@google.com> <CAMj1kXFsX1HZ3=x1cjN0-7i5EV9LXkSrAW22dc1wERUaTdAMaA@mail.gmail.com>
-In-Reply-To: <CAMj1kXFsX1HZ3=x1cjN0-7i5EV9LXkSrAW22dc1wERUaTdAMaA@mail.gmail.com>
-From: Kevin Loughlin <kevinloughlin@google.com>
-Date: Fri, 8 Mar 2024 15:50:00 -0500
-Message-ID: <CAGdbjmLVN0dxqGHno0BjaryCbb=51EnkX3qESveE46GH1asffw@mail.gmail.com>
-Subject: Re: [PATCH v2] x86/kernel: skip ROM range scans and validation for
- SEV-SNP guests
-To: Ard Biesheuvel <ardb@kernel.org>
-Cc: acdunlap@google.com, alexander.shishkin@linux.intel.com, 
-	andrisaar@google.com, bhe@redhat.com, bp@alien8.de, brijesh.singh@amd.com, 
-	dave.hansen@linux.intel.com, dionnaglaze@google.com, grobler@google.com, 
-	hpa@zytor.com, jacobhxu@google.com, jpoimboe@kernel.org, kai.huang@intel.com, 
-	linux-kernel@vger.kernel.org, michael.roth@amd.com, mingo@redhat.com, 
-	peterz@infradead.org, pgonda@google.com, ross.lagerwall@citrix.com, 
-	sidtelang@google.com, tglx@linutronix.de, thomas.lendacky@amd.com, 
-	x86@kernel.org, ytcoode@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240306081038.212412-2-umang.jain@ideasonboard.com>
 
-On Fri, Mar 8, 2024 at 5:31=E2=80=AFAM Ard Biesheuvel <ardb@kernel.org> wro=
-te:
->
-> On Thu, 22 Feb 2024 at 21:25, Kevin Loughlin <kevinloughlin@google.com> w=
-rote:
-> >
-> > SEV-SNP requires encrypted memory to be validated before access.
-> > Because the ROM memory range is not part of the e820 table, it is not
-> > pre-validated by the BIOS. Therefore, if a SEV-SNP guest kernel wishes
-> > to access this range, the guest must first validate the range.
-> >
-> > The current SEV-SNP code does indeed scan the ROM range during early
-> > boot and thus attempts to validate the ROM range in probe_roms().
-> > However, this behavior is neither necessary nor sufficient.
-> >
-> > With regards to sufficiency, if EFI_CONFIG_TABLES are not enabled and
-> > CONFIG_DMI_SCAN_MACHINE_NON_EFI_FALLBACK is set, the kernel will
-> > attempt to access the memory at SMBIOS_ENTRY_POINT_SCAN_START (which
-> > falls in the ROM range) prior to validation. The specific problematic
-> > call chain occurs during dmi_setup() -> dmi_scan_machine() and results
-> > in a crash during boot if SEV-SNP is enabled under these conditions.
-> >
-> > With regards to necessity, SEV-SNP guests currently read garbage (which
-> > changes across boots) from the ROM range, meaning these scans are
-> > unnecessary. The guest reads garbage because the legacy ROM range
-> > is unencrypted data but is accessed via an encrypted PMD during early
-> > boot (where the PMD is marked as encrypted due to potentially mapping
-> > actually-encrypted data in other PMD-contained ranges).
-> >
-> > While one solution would be to overhaul the early PMD mapping to treat
-> > the ROM region of the PMD as unencrypted, SEV-SNP guests do not rely on
-> > data from the legacy ROM region during early boot (nor can they
-> > currently, since the data would be garbage that changes across boots).
-> > As such, this patch opts for the simpler approach of skipping the ROM
-> > range scans (and the otherwise-necessary range validation) during
-> > SEV-SNP guest early boot.
-> >
-> > Ultimatly, the potential SEV-SNP guest crash due to lack of ROM range
-> > validation is avoided by simply not accessing the ROM range.
-> >
-> > Fixes: 9704c07bf9f7 ("x86/kernel: Validate ROM memory before accessing =
-when SEV-SNP is active")
-> > Signed-off-by: Kevin Loughlin <kevinloughlin@google.com>
-> > ---
-> >  arch/x86/include/asm/sev.h   |  2 --
-> >  arch/x86/kernel/mpparse.c    |  7 +++++++
-> >  arch/x86/kernel/probe_roms.c | 11 ++++-------
-> >  arch/x86/kernel/sev.c        | 15 ---------------
-> >  drivers/firmware/dmi_scan.c  |  7 ++++++-
-> >  5 files changed, 17 insertions(+), 25 deletions(-)
-> >
->
-> Agree with the analysis and the conclusion. However, this will need to
-> be split into generic and x86 specific changes, given that the DMI
-> code is shared between all architectures, and explicitly checking for
-> SEV-SNP support in generic code is not appropriate.
->
-> So what we will need is:
-> - a generic change that implements a static inline wrapper around
-> IS_ENABLED(CONFIG_DMI_SCAN_MACHINE_NON_EFI_FALLBACK), and wires it up
-> in  drivers/firmware/dmi_scan.c;
-> - a x86 specific change that overrides this DMI helper in terms of
-> cc_platform_has(CC_ATTR_GUEST_SEV_SNP);
-> - x86 specific changes that deal with the other scanning
->
-> Note that this means that Oak based platforms will lose DMI reporting
-> and DMI-based quirks, but I think this is reasonable.
+Hi Umang,
 
-Agreed. However, upon further review, I think we can get away with
-only modifying arch/x86/ code.
+kernel test robot noticed the following build errors:
 
-Besides the DMI case, all other needed changes are already contained
-in arch/x86/, and we can replace the relevant init functions for
-SEV-SNP guests with empty stubs as Boris and you mention in our
-discussion.
+[auto build test ERROR on linuxtv-media-stage/master]
+[cannot apply to media-tree/master sailus-media-tree/streams linus/master v6.8-rc7 next-20240308]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-For the DMI case, we can add an x86-init function pointer to
-dmi_setup() that defaults to the generic dmi_setup function(), which
-would be modified to point to snp_dmi_setup() on SNP-enabled guests
-during initialization (where the fallback scan would be skipped for
-SNP guests). This way, we would both leave multi-arch code alone and
-avoid spreading cc_platform_has() scans around as Boris mentioned.
+url:    https://github.com/intel-lab-lkp/linux/commits/Umang-Jain/media-imx335-Support-2-or-4-lane-operation-modes/20240306-161903
+base:   https://git.linuxtv.org/media_stage.git master
+patch link:    https://lore.kernel.org/r/20240306081038.212412-2-umang.jain%40ideasonboard.com
+patch subject: [PATCH 1/5] media: imx335: Support 2 or 4 lane operation modes
+config: m68k-allmodconfig (https://download.01.org/0day-ci/archive/20240309/202403090429.oocT1Laz-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240309/202403090429.oocT1Laz-lkp@intel.com/reproduce)
 
-I plan to implement this behavior in v3 unless you have a preference
-for something different.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202403090429.oocT1Laz-lkp@intel.com/
 
->
-> More feedback below.
->
->
-> > diff --git a/arch/x86/include/asm/sev.h b/arch/x86/include/asm/sev.h
-> > index 5b4a1ce3d368..474c24ba0f6f 100644
-> > --- a/arch/x86/include/asm/sev.h
-> > +++ b/arch/x86/include/asm/sev.h
-> > @@ -203,7 +203,6 @@ void __init early_snp_set_memory_private(unsigned l=
-ong vaddr, unsigned long padd
-> >                                          unsigned long npages);
-> >  void __init early_snp_set_memory_shared(unsigned long vaddr, unsigned =
-long paddr,
-> >                                         unsigned long npages);
-> > -void __init snp_prep_memory(unsigned long paddr, unsigned int sz, enum=
- psc_op op);
-> >  void snp_set_memory_shared(unsigned long vaddr, unsigned long npages);
-> >  void snp_set_memory_private(unsigned long vaddr, unsigned long npages)=
-;
-> >  void snp_set_wakeup_secondary_cpu(void);
-> > @@ -227,7 +226,6 @@ static inline void __init
-> >  early_snp_set_memory_private(unsigned long vaddr, unsigned long paddr,=
- unsigned long npages) { }
-> >  static inline void __init
-> >  early_snp_set_memory_shared(unsigned long vaddr, unsigned long paddr, =
-unsigned long npages) { }
-> > -static inline void __init snp_prep_memory(unsigned long paddr, unsigne=
-d int sz, enum psc_op op) { }
-> >  static inline void snp_set_memory_shared(unsigned long vaddr, unsigned=
- long npages) { }
-> >  static inline void snp_set_memory_private(unsigned long vaddr, unsigne=
-d long npages) { }
-> >  static inline void snp_set_wakeup_secondary_cpu(void) { }
-> > diff --git a/arch/x86/kernel/mpparse.c b/arch/x86/kernel/mpparse.c
-> > index b223922248e9..39ea771e2d4c 100644
-> > --- a/arch/x86/kernel/mpparse.c
-> > +++ b/arch/x86/kernel/mpparse.c
-> > @@ -553,6 +553,13 @@ static int __init smp_scan_config(unsigned long ba=
-se, unsigned long length)
-> >                     base, base + length - 1);
-> >         BUILD_BUG_ON(sizeof(*mpf) !=3D 16);
-> >
-> > +       /*
-> > +        * Skip scan in SEV-SNP guest if it would touch the legacy ROM =
-region,
-> > +        * as this memory is not pre-validated and would thus cause a c=
-rash.
-> > +        */
-> > +       if (cc_platform_has(CC_ATTR_GUEST_SEV_SNP) && base < 0x100000 &=
-& base + length >=3D 0xC0000)
-> > +               return 0;
-> > +
->
-> Please don't use magic numbers like this, and use memory_intersects()
-> [unless there is a reason to avoid it which I missed]
+All errors (new ones prefixed by >>, old ones prefixed by <<):
 
-Yes, memory_intersects() is better, as are macros here. Thanks.
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mtd/parsers/tplink_safeloader.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mtd/chips/cfi_util.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mtd/chips/cfi_cmdset_0020.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mtd/maps/map_funcs.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/spmi/hisi-spmi-controller.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/spmi/spmi-pmic-arb.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/uio/uio.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/uio/uio_pruss.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/pcmcia/pcmcia_rsrc.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/pcmcia/i82365.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hwmon/corsair-cpro.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hwmon/mr75203.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/vhost/vringh.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/greybus/greybus.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/greybus/gb-es2.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/rpmsg/rpmsg_char.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/iio/adc/ingenic-adc.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/iio/adc/xilinx-ams.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/iio/buffer/kfifo_buf.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/fsi/fsi-core.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/fsi/fsi-master-hub.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/fsi/fsi-master-aspeed.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/fsi/fsi-master-gpio.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/fsi/fsi-master-ast-cf.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/fsi/fsi-scom.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/siox/siox-bus-gpio.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/counter/ftm-quaddec.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/oss/dmasound/dmasound_core.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/oss/dmasound/dmasound_atari.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/oss/dmasound/dmasound_paula.o
+WARNING: modpost: sound/oss/dmasound/dmasound_paula: section mismatch in reference: amiga_audio_driver+0x8 (section: .data) -> amiga_audio_remove (section: .exit.text)
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/core/snd-pcm-dmaengine.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/drivers/snd-pcmtest.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/pci/hda/snd-hda-cirrus-scodec-test.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/soc-topology-test.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/codecs/snd-soc-ab8500-codec.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/codecs/snd-soc-sigmadsp.o
+WARNING: modpost: sound/soc/codecs/snd-soc-tlv320adc3xxx: section mismatch in reference: adc3xxx_i2c_driver+0x8 (section: .data) -> adc3xxx_i2c_remove (section: .exit.text)
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/codecs/snd-soc-wm-adsp.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/fsl/imx-pcm-dma.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/mxs/snd-soc-mxs-pcm.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/qcom/snd-soc-qcom-common.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/qcom/snd-soc-qcom-sdw.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/qcom/qdsp6/snd-q6dsp-common.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/sof/intel/snd-sof-intel-atom.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/sof/intel/snd-sof-acpi-intel-byt.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/sof/intel/snd-sof-acpi-intel-bdw.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/sof/imx/snd-sof-imx8.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/sof/imx/snd-sof-imx8m.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/sof/imx/snd-sof-imx8ulp.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/sof/imx/imx-common.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/sof/mediatek/mtk-adsp-common.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/sof/mediatek/mt8195/snd-sof-mt8195.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/sof/mediatek/mt8186/snd-sof-mt8186.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/sof/snd-sof-utils.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/sof/snd-sof-acpi.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/sof/snd-sof-of.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/xilinx/snd-soc-xlnx-i2s.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/xilinx/snd-soc-xlnx-formatter-pcm.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/ac97_bus.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in samples/vfio-mdev/mtty.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in samples/vfio-mdev/mdpy.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in samples/vfio-mdev/mdpy-fb.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in samples/vfio-mdev/mbochs.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in samples/configfs/configfs_sample.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in samples/kfifo/bytestream-example.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in samples/kfifo/dma-example.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in samples/kfifo/inttype-example.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in samples/kfifo/record-example.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in samples/kobject/kobject-example.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in samples/kobject/kset-example.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/sched/em_cmp.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/sched/em_nbyte.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/sched/em_u32.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/sched/em_meta.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/sched/em_text.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/sched/em_canid.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/ip_tunnel.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/ipip.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/ip_gre.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/udp_tunnel.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/ip_vti.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/ah4.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/esp4.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/xfrm4_tunnel.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/tunnel4.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/xfrm/xfrm_algo.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/xfrm/xfrm_user.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/ah6.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/esp6.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/xfrm6_tunnel.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/tunnel6.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/mip6.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/sit.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/ip6_udp_tunnel.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/key/af_key.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/atm/mpoa.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/6lowpan/6lowpan.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ieee802154/6lowpan/ieee802154_6lowpan.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ieee802154/ieee802154_socket.o
+>> ERROR: modpost: "__divdi3" [drivers/media/i2c/imx335.ko] undefined!
 
->
-> Also, really?!? Does modern x86 still rely on scanning arbitrary
-> regions of memory for magic numbers? Or is this only for those who
-> prefer vintage boot protocols?
->
-> If so, I suppose we might need a generic helper
->
-> static inline bool platform_allows_memory_probing(void)
->
-> [modulo bikeshedding over the name] where the generic implementation
-> returns false, and the x86 implementation could take
-> cc_platform_has(CC_ATTR_GUEST_SEV_SNP) into account, and return true
-> otherwise.
->
-> (On ARM based systems, memory probing is never ok, because the memory
-> map is not architected, and so probing random addresses might bring
-> down the machine)
-
-Roughly-speaking, the x86 memory probes are generally performed to
-support legacy devices/reserved regions/boot sequences that assume
-these hardcoded addresses. Given the ability to point probe_roms() and
-similar x86_init functions to empty stubs (and the fact that x86_init
-functions are, by definition, x86-specific), we should be able to
-avoid needing a "platform_allows_memory_probing()" function in these
-cases.
-
-As for the DMI probing behavior in dmi_scan_machine(), the probing
-only currently occurs if both (a) the config tables are not provided
-by EFI [i.e., `efi_enabled(EFI_CONFIG_TABLES)` is false] and (b)
-DMI_SCAN_MACHINE_NON_EFI_FALLBACK is set [which is not selected on
-ARM, consistent with memory probing on ARM being disallowed]. As such,
-DMI_SCAN_MACHINE_NON_EFI_FALLBACK effectively provides the
-"platform_allows_memory_probing" functionality for this singular use
-case.
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
