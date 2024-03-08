@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-96520-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96521-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 353B0875D73
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 06:11:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8517875D74
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 06:11:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A9DE0283256
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 05:10:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D6D7D1C21AE0
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 05:11:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BD8E36139;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EFB5364B4;
 	Fri,  8 Mar 2024 05:10:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m0X7bSyg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QEDDpfAm"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7433E2E65B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4F692E84A;
 	Fri,  8 Mar 2024 05:10:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709874641; cv=none; b=TWoqOZXqcT2x2zRsWOsatXdDEM6MX56ffRaVt+Umm21Bd6mWO+06Dh1BvusC9BTCl2rp7RqI2Ym6hFcPQMiwIhlOYkl7TKqREtSFL83/IjM8Vy2RPK3MFoGffYos1cPdqfiCgJN0KMmwOq1/gUOxcXwSdpa0WFbMAmxuwvklYIs=
+	t=1709874641; cv=none; b=ZMHbo6CnvOWxIM5DOnRXNrkdOQSfoSeLCUzpGkYjRr7wafMuqf/RUokOpPnMsHoP2yW7ZN86/BoD7roDDtB1qgfxu7BJ429yaZ0MTbQbSY3jCYKZque9ngtE/WJ6XnLcHfbIgRbFs9sLtkslArI/UdgmDEsGRSHyTZbQGvmg43s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1709874641; c=relaxed/simple;
-	bh=HztKOIg4+66lGu7czS+0k1V+1CxY0EBqO13dTWTKoBQ=;
+	bh=qZ78qFcl7k/7Rui8/PriB7iG4Q9wj8DC4UpF5qtA0mw=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=I9T5vU+P8QUtxNhvwHWjWuCqwXQ2qM7zO0dzEt5cE1YbNFtUPh3H1jkE76ImZF5jSbdVBivDznxMRUcUZkr62kmw4I+Ap4VYWjgKMmRdqCJH6McbUE9vutZbiWdfedSSxmpWxDLara78FgXdwiIGaob1I8A3Va7hecIcl0pA0DM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m0X7bSyg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id EDABAC43390;
-	Fri,  8 Mar 2024 05:10:40 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=nxV3A1QZyWNyCXkyvDWkk0HOrjfxwLlUDwBmyMbefIpRwDvywBoIu1h6GonSoj2TluJ4VNTKaRSSS4gCWTQNh3sduV2rJ1Kea566Dm6z8XuhcOzMY0ikufQPw3RE6cXnunpJMUUt6YQk6dM1N4WBTQgMBtAR3U2GyjixyKNtNE8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QEDDpfAm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 08DDBC433C7;
+	Fri,  8 Mar 2024 05:10:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1709874641;
-	bh=HztKOIg4+66lGu7czS+0k1V+1CxY0EBqO13dTWTKoBQ=;
+	bh=qZ78qFcl7k/7Rui8/PriB7iG4Q9wj8DC4UpF5qtA0mw=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=m0X7bSygxms7Saliz5w6r+X1fdN5mTyVR8IszbQvetGR5fdl9DNihlDV1QTZO9Z3M
-	 m8gbbBzbwSCYtNKAnieS18N6hJZLbe/inag3MG+2RtcKYnR0oxPbi4fYR+t7eMPIpP
-	 z3//AglzOt+grvT1UYRH87qHvUjIgJXz8rgLlqaLHKlrZaS2xmKq2/7V7GkCGe653Q
-	 xcDkmfxzkuQjhXfx2en/vvBFDdCRmAW22JVRKZRalEEdYNaAx0QYsf90B0+WfAT7da
-	 iTc9B3xesi16KHeQPrCMdiJTEjO3Knv4+GPpJtrSntsOmRoUFX3OKgORiwAwJdbWrI
-	 xZo8xFPnHhF7A==
+	b=QEDDpfAmkMZuKRZyTm4mrVksO27WpBKsiFh7LsqkKIaKdDWI4GYmuufTV+KTvjtHi
+	 Iea/e3A7Czdd8+Cv6KuffnXufXQHW0xo9FlHBvgHtsJzG3Ev4HXyt4bVbTqH1BXp7/
+	 3efQ9pAyF4SCgdD8hlSDornNLIZs/4j218zkr2iwvlynjCinLSc74shbN3/8mt2h/q
+	 RNLw5JwDDQknhnYSx9Xq7JuELdGBi/eLPKyiNlxXGTOWtCjtgxKwnykqsXL9CkKtoc
+	 XA7c38Gy5KrlQ8bsmPhEOaumrkBSgCRBmS1JNmTDEpie1xenN1QrHn1u3PZjEINhXe
+	 jwObybiUodWiA==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D34E4D84BBF;
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id DE45BD84BDB;
 	Fri,  8 Mar 2024 05:10:40 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
@@ -51,78 +51,62 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v3 00/21] rxrpc: Miscellaneous changes and make use
- of MSG_SPLICE_PAGES
+Subject: Re: [PATCH net-next v2 00/12] selftests: mptcp: share code and fix
+ shellcheck warnings
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <170987464085.14945.491149931271263670.git-patchwork-notify@kernel.org>
+ <170987464090.14945.15081894796160593216.git-patchwork-notify@kernel.org>
 Date: Fri, 08 Mar 2024 05:10:40 +0000
-References: <20240306000655.1100294-1-dhowells@redhat.com>
-In-Reply-To: <20240306000655.1100294-1-dhowells@redhat.com>
-To: David Howells <dhowells@redhat.com>
-Cc: netdev@vger.kernel.org, marc.dionne@auristor.com, horms@kernel.org,
+References: <20240306-upstream-net-next-20240304-selftests-mptcp-shared-code-shellcheck-v2-0-bc79e6e5e6a0@kernel.org>
+In-Reply-To: <20240306-upstream-net-next-20240304-selftests-mptcp-shared-code-shellcheck-v2-0-bc79e6e5e6a0@kernel.org>
+To: Matthieu Baerts <matttbe@kernel.org>
+Cc: mptcp@lists.linux.dev, martineau@kernel.org, geliang@kernel.org,
  davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org
+ shuah@kernel.org, netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org, pablo@netfilter.org, tanggeliang@kylinos.cn
 
 Hello:
 
 This series was applied to netdev/net-next.git (main)
-by David Howells <dhowells@redhat.com>:
+by Jakub Kicinski <kuba@kernel.org>:
 
-On Wed,  6 Mar 2024 00:06:30 +0000 you wrote:
-> Here are some changes to AF_RXRPC:
+On Wed, 06 Mar 2024 10:42:49 +0100 you wrote:
+> This series cleans MPTCP selftests code.
 > 
->  (1) Cache the transmission serial number of ACK and DATA packets in the
->      rxrpc_txbuf struct and log this in the retransmit tracepoint.
+> Patch 1 stops using 'iptables-legacy' if available, but uses 'iptables',
+> which is likely 'iptables-nft' behind.
 > 
->  (2) Don't use atomics on rxrpc_txbuf::flags[*] and cache the intended wire
->      header flags there too to avoid duplication.
+> Patches 2, 4 and 6 move duplicated code to mptcp_lib.sh. Patch 3 is a
+> preparation for patch 4, and patch 5 adds generic actions at the
+> creation and deletion of netns.
 > 
 > [...]
 
 Here is the summary with links:
-  - [net-next,v3,01/21] rxrpc: Record the Tx serial in the rxrpc_txbuf and retransmit trace
-    https://git.kernel.org/netdev/net-next/c/ba132d841d56
-  - [net-next,v3,02/21] rxrpc: Convert rxrpc_txbuf::flags into a mask and don't use atomics
-    https://git.kernel.org/netdev/net-next/c/12bdff73a147
-  - [net-next,v3,03/21] rxrpc: Note cksum in txbuf
-    https://git.kernel.org/netdev/net-next/c/41b8debba79c
-  - [net-next,v3,04/21] rxrpc: Fix the names of the fields in the ACK trailer struct
-    https://git.kernel.org/netdev/net-next/c/17469ae0582a
-  - [net-next,v3,05/21] rxrpc: Strip barriers and atomics off of timer tracking
-    https://git.kernel.org/netdev/net-next/c/d73f3a748875
-  - [net-next,v3,06/21] rxrpc: Remove atomic handling on some fields only used in I/O thread
-    https://git.kernel.org/netdev/net-next/c/693f9c13ec89
-  - [net-next,v3,07/21] rxrpc: Do lazy DF flag resetting
-    https://git.kernel.org/netdev/net-next/c/d32636982ce9
-  - [net-next,v3,08/21] rxrpc: Merge together DF/non-DF branches of data Tx function
-    https://git.kernel.org/netdev/net-next/c/1ac6a8536c2c
-  - [net-next,v3,09/21] rxrpc: Add a kvec[] to the rxrpc_txbuf struct
-    https://git.kernel.org/netdev/net-next/c/ff342bdc59f4
-  - [net-next,v3,10/21] rxrpc: Split up the DATA packet transmission function
-    https://git.kernel.org/netdev/net-next/c/44125d5aadda
-  - [net-next,v3,11/21] rxrpc: Don't pick values out of the wire header when setting up security
-    https://git.kernel.org/netdev/net-next/c/a1c9af4d4467
-  - [net-next,v3,12/21] rxrpc: Move rxrpc_send_ACK() to output.c with rxrpc_send_ack_packet()
-    https://git.kernel.org/netdev/net-next/c/99afb28c676c
-  - [net-next,v3,13/21] rxrpc: Use rxrpc_txbuf::kvec[0] instead of rxrpc_txbuf::wire
-    https://git.kernel.org/netdev/net-next/c/8985f2b09b33
-  - [net-next,v3,14/21] rxrpc: Do zerocopy using MSG_SPLICE_PAGES and page frags
-    https://git.kernel.org/netdev/net-next/c/49489bb03a50
-  - [net-next,v3,15/21] rxrpc: Parse received packets before dealing with timeouts
-    https://git.kernel.org/netdev/net-next/c/3e0b83ee535d
-  - [net-next,v3,16/21] rxrpc: Don't permit resending after all Tx packets acked
-    https://git.kernel.org/netdev/net-next/c/a711d976e1cd
-  - [net-next,v3,17/21] rxrpc: Differentiate PING ACK transmission traces.
-    https://git.kernel.org/netdev/net-next/c/12a66e77c499
-  - [net-next,v3,18/21] rxrpc: Use ktimes for call timeout tracking and set the timer lazily
-    https://git.kernel.org/netdev/net-next/c/153f90a066dd
-  - [net-next,v3,19/21] rxrpc: Record probes after transmission and reduce number of time-gets
-    https://git.kernel.org/netdev/net-next/c/4d267ad6fd56
-  - [net-next,v3,20/21] rxrpc: Clean up the resend algorithm
-    https://git.kernel.org/netdev/net-next/c/37473e416234
-  - [net-next,v3,21/21] rxrpc: Extract useful fields from a received ACK to skb priv data
-    https://git.kernel.org/netdev/net-next/c/4b68137a20bc
+  - [net-next,v2,01/12] selftests: mptcp: stop forcing iptables-legacy
+    https://git.kernel.org/netdev/net-next/c/7c2eac649054
+  - [net-next,v2,02/12] selftests: mptcp: add mptcp_lib_check_tools helper
+    https://git.kernel.org/netdev/net-next/c/3fb8c33ef4b9
+  - [net-next,v2,03/12] selftests: mptcp: add local variables rndh
+    https://git.kernel.org/netdev/net-next/c/4214aac14e51
+  - [net-next,v2,04/12] selftests: mptcp: add mptcp_lib_ns_init/exit helpers
+    https://git.kernel.org/netdev/net-next/c/3a0f9bed3c28
+  - [net-next,v2,05/12] selftests: mptcp: more operations in ns_init/exit
+    https://git.kernel.org/netdev/net-next/c/df8d3ba55b4f
+  - [net-next,v2,06/12] selftests: mptcp: add mptcp_lib_events helper
+    https://git.kernel.org/netdev/net-next/c/35bc143a8514
+  - [net-next,v2,07/12] selftests: mptcp: diag: fix shellcheck warnings
+    https://git.kernel.org/netdev/net-next/c/97633aa74d93
+  - [net-next,v2,08/12] selftests: mptcp: connect: fix shellcheck warnings
+    https://git.kernel.org/netdev/net-next/c/e3aae1098f10
+  - [net-next,v2,09/12] selftests: mptcp: sockopt: fix shellcheck warnings
+    https://git.kernel.org/netdev/net-next/c/5751c291349d
+  - [net-next,v2,10/12] selftests: mptcp: pm netlink: fix shellcheck warnings
+    https://git.kernel.org/netdev/net-next/c/21781b42f2f3
+  - [net-next,v2,11/12] selftests: mptcp: simult flows: fix shellcheck warnings
+    https://git.kernel.org/netdev/net-next/c/2aebd3579d90
+  - [net-next,v2,12/12] selftests: userspace pm: avoid relaunching pm events
+    https://git.kernel.org/netdev/net-next/c/c66fb480a330
 
 You are awesome, thank you!
 -- 
