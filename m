@@ -1,192 +1,453 @@
-Return-Path: <linux-kernel+bounces-96828-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96829-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 844278761F2
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:28:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FE0A8761F5
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:29:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8BC81C2149C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 10:28:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 925431F21BE5
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 10:29:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E82854672;
-	Fri,  8 Mar 2024 10:28:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iM+wuZR2"
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 225DF53E1A
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 10:28:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7383C5477C;
+	Fri,  8 Mar 2024 10:29:17 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C4D553E1A;
+	Fri,  8 Mar 2024 10:29:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709893693; cv=none; b=Gqf1fpD/dtk0zm9FfoSvTXaldsfpEgtx+KBQhCaT0FReQggF7sboU6KsHqHMIdCwHrxdiDr1VDLnrvySR3WwQ+dZwQIjRvsdbasFabpK9LCMykEIrgtrzNual6qxEVIaO6cd2O7lhEQPRzAg+LGVVuKSZzBhc1qmuFI4uKHSAv0=
+	t=1709893756; cv=none; b=pzCG/tZBZEbm5TpMHXUe1Vxp2KT0pBHe8Tdn/8yXmnK6f56Dg/u+wRyfZNAvRKcb5Y/CAHnZv0fFlWtdKL+JcRvreJMcQgVTwPLV/TVFvWOo2Au+X/+Kv6zZDw9LXaPrsmD6x9nXx4OMLDCUEa4aHgv4rtHMEPl6A/RJ7xB/Ylg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709893693; c=relaxed/simple;
-	bh=SkCmbVseqTChv+k4hU/N5P8H84yWE+pvBjawPWM4LOk=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eWZt6Jcgy43idfurdhcNQmgNN9fgQx7GuuFlb6xzc9whDrZdH3LiliAz2LLGrusH92XiPALGCo+E8esk5LvccIwbPv6c5J38J6ci/HgrkKLXm2knRhhUZVGM2KIK2XaOJYbnkpGLSrVrC6iQWS7wU88WLstnNhq1ZCBDmlzHAUk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iM+wuZR2; arc=none smtp.client-ip=209.85.167.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-51326436876so2498997e87.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 02:28:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709893690; x=1710498490; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=jBDERlcMFtZu/muYJ2+aOhb4NEueDDD1cqxDNs7/Kqs=;
-        b=iM+wuZR2YeN7cZriuyx+2l/st6eA4K4ocm2u4qPY5pE4rF7T3Y2Ir+fB+dn2wGMx6r
-         YtMuNPTGrFA19cquzxsDHl2jaDBWpoAWiyM9CJ22KjQvR4mDKEXSnxCoaOAjCKetAsmG
-         ctvIdvYvY/UUWI30xdsxZcXOIuiGhWrQ7BZwJMDg3bQu+vskThEUkspsOgt0X9aF+ZNP
-         3Y/iyuwZ6VSJ4jmw9rXcGM8d0l48GZl3GdvYfoTvy9HIbWAZ3gv3nsdMkBVgylCd3fUa
-         rwUMiqohO4ivHHJZTXSBhRPbPhG7Z5yUh2nDEnzOx341c0R3Mwl3dOJEs++B/TgiacpI
-         z2JQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709893690; x=1710498490;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jBDERlcMFtZu/muYJ2+aOhb4NEueDDD1cqxDNs7/Kqs=;
-        b=qCRJV1qS92nNL8N+LWjWmgZQVurmYJmKUbiOnX7ojzcZ3z36lbB+f84d+9oZAIYD9i
-         5gtylL5AT4sqOGGW/1LcUY80MlPtQmYuQNZl3/SxjRvFaWWKA+LMdD8FGxop6ANw8U9F
-         z7h2Se7OcHpDzGEiJCzub0kVChpDmOO433hVNVHvcO/JjE8onaJMNNG19UjHNONiE3i8
-         TsUbO2nh+LVA1DPTHzGBzqKXlYbXO+h+9p3AqepDccph4bbGzFRf/MdVPFvZDj1yjZpH
-         tLD5SClAo6jQ8c2Plz5IRPo3Us0j29rewpKzEpbsK5hQzTAuZO06R/BMQ7jN/2UmlLUu
-         YHbQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUEn8c6j/SnBb+ojH0xrY6HHyqoFGKVBVKlHb5TaBOIsU5MRViI1SPX9ogDCjPyjFcl34ByT1FmZTg1Yt0xwkWA9YEyncpvRZhqQMFz
-X-Gm-Message-State: AOJu0Yxq9Z8jfRAQIV4xOBy41GvZP1q7ra/cMmZBMlQ6t8wzjZzh91Oc
-	ymCGALECJbnsgEgRO7/fUOM4o7EtrKRRC6iPmVcl+Z+CFDuG1rjUUvhP95XqN/4=
-X-Google-Smtp-Source: AGHT+IEMWl0js3+29IRQOofJrkKm0NRvkzc7iWaN92QgEAsMgbOrM9gjzbja4OSrLul7AlcHmIBDrw==
-X-Received: by 2002:ac2:47f3:0:b0:512:cda1:9bab with SMTP id b19-20020ac247f3000000b00512cda19babmr3031431lfp.13.1709893689854;
-        Fri, 08 Mar 2024 02:28:09 -0800 (PST)
-Received: from pc636 (host-90-235-19-15.mobileonline.telia.com. [90.235.19.15])
-        by smtp.gmail.com with ESMTPSA id i15-20020a0565123e0f00b00512851da32esm1238742lfv.248.2024.03.08.02.28.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Mar 2024 02:28:08 -0800 (PST)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Fri, 8 Mar 2024 11:28:05 +0100
-To: Baoquan He <bhe@redhat.com>
-Cc: Uladzislau Rezki <urezki@gmail.com>, rulinhuang <rulin.huang@intel.com>,
-	akpm@linux-foundation.org, colin.king@intel.com, hch@infradead.org,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	lstoakes@gmail.com, tianyou.li@intel.com, tim.c.chen@intel.com,
-	wangyang.guo@intel.com, zhiguo.zhou@intel.com
-Subject: Re: [PATCH v7 1/2] mm/vmalloc: Moved macros with no functional
- change happened
-Message-ID: <ZeroNTcyEMx6jiZF@pc636>
-References: <20240301155417.1852290-1-rulin.huang@intel.com>
- <20240301155417.1852290-2-rulin.huang@intel.com>
- <Zei9n-VMxtzG8z4Y@pc636>
- <ZekW/nGXfTqOlvPZ@MiWiFi-R3L-srv>
- <ZeoSiP-hOeHG89BJ@pc638.lan>
- <ZerLB/LNWAOvC2HM@MiWiFi-R3L-srv>
+	s=arc-20240116; t=1709893756; c=relaxed/simple;
+	bh=mpGPPXrIn6TS/fFQvb/j4q5Ps6S4+Y7ZleP59hy6DIs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Ql5IqSD49BdfsDgc1T2uw7o66j3Dul31tm9K0UC8L6NZd7WBjR8UeqN3xpWra1KojaSauhRHryBAlJAtBsYPrJGLJ+y6XFUSFgfRldK3wwZiUvljEFcljtvsBEN5voSqMYH6XlXt7NMaubhRowCtENLrNOjDiuBt0kz154QBwrE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D9698C15;
+	Fri,  8 Mar 2024 02:29:48 -0800 (PST)
+Received: from [10.57.50.143] (unknown [10.57.50.143])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 366853F73F;
+	Fri,  8 Mar 2024 02:29:10 -0800 (PST)
+Message-ID: <0b5aa4be-c466-4e1b-91c4-45a26f2f67bf@arm.com>
+Date: Fri, 8 Mar 2024 10:29:08 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZerLB/LNWAOvC2HM@MiWiFi-R3L-srv>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V5 07/11] coresight: catu: Move ACPI support from AMBA
+ driver to platform driver
+To: Anshuman Khandual <anshuman.khandual@arm.com>,
+ linux-arm-kernel@lists.infradead.org
+Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ Sudeep Holla <sudeep.holla@arm.com>, Mike Leach <mike.leach@linaro.org>,
+ James Clark <james.clark@arm.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>, linux-acpi@vger.kernel.org,
+ linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
+ linux-stm32@st-md-mailman.stormreply.com
+References: <20240222082142.3663983-1-anshuman.khandual@arm.com>
+ <20240222082142.3663983-8-anshuman.khandual@arm.com>
+ <c43fcd3a-9813-4e1f-adb3-25cc32c54438@arm.com>
+ <c52865b2-8608-4a47-967a-6cf3e11b197a@arm.com>
+ <2bd6ed98-fd58-42ef-8b86-fddac28df5c7@arm.com>
+ <a553951a-9432-4336-82a6-32fc338d0c91@arm.com>
+Content-Language: en-GB
+From: Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <a553951a-9432-4336-82a6-32fc338d0c91@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-> > I would remove it, because it is really hard to mess it, there is only
-> > one place also BUG_ON() is really a show stopper. I really appreciate
-> > what rulinhuang <rulin.huang@intel.com> is doing and i understand that
-> > it might be not so easy.
+On 08/03/2024 04:25, Anshuman Khandual wrote:
 > 
-> I agree, I was hesitant, now it firms up my mind.
 > 
-> > 
-> > So, if we can avoid of moving the code, that looks to me that we can do,
-> > if we can pass less arguments into alloc_vmap_area() since it is overloaded 
-> > that would be great.
+> On 3/6/24 22:51, Suzuki K Poulose wrote:
+>> On 06/03/2024 06:14, Anshuman Khandual wrote:
+>>>
+>>>
+>>> On 3/5/24 23:02, Suzuki K Poulose wrote:
+>>>> On 22/02/2024 08:21, Anshuman Khandual wrote:
+>>>>> Add support for the catu devices in a new platform driver, which can then
+>>>>> be used on ACPI based platforms. This change would now allow runtime power
+>>>>> management for ACPI based systems. The driver would try to enable the APB
+>>>>> clock if available. But first this renames and then refactors catu_probe()
+>>>>> and catu_remove(), making sure it can be used both for platform and AMBA
+>>>>> drivers. This also moves pm_runtime_put() from catu_probe() to the callers.
+>>>>>
+>>>>> Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
+>>>>> Cc: Sudeep Holla <sudeep.holla@arm.com>
+>>>>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+>>>>> Cc: Mike Leach <mike.leach@linaro.org>
+>>>>> Cc: James Clark <james.clark@arm.com>
+>>>>> Cc: linux-acpi@vger.kernel.org
+>>>>> Cc: linux-arm-kernel@lists.infradead.org
+>>>>> Cc: linux-kernel@vger.kernel.org
+>>>>> Cc: coresight@lists.linaro.org
+>>>>> Acked-by: Sudeep Holla <sudeep.holla@arm.com> # For ACPI related changes
+>>>>> Reviewed-by: James Clark <james.clark@arm.com>
+>>>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>>>>> ---
+>>>>> Changes in V5:
+>>>>>
+>>>>> - Updated commit message regarding catu_probe/remove() refactoring and renaming
+>>>>>
+>>>>>     drivers/acpi/arm64/amba.c                    |   1 -
+>>>>>     drivers/hwtracing/coresight/coresight-catu.c | 142 ++++++++++++++++---
+>>>>>     drivers/hwtracing/coresight/coresight-catu.h |   1 +
+>>>>>     3 files changed, 124 insertions(+), 20 deletions(-)
+>>>>>
+>>>>> diff --git a/drivers/acpi/arm64/amba.c b/drivers/acpi/arm64/amba.c
+>>>>> index afb6afb66967..587061b0fd2f 100644
+>>>>> --- a/drivers/acpi/arm64/amba.c
+>>>>> +++ b/drivers/acpi/arm64/amba.c
+>>>>> @@ -27,7 +27,6 @@ static const struct acpi_device_id amba_id_list[] = {
+>>>>>         {"ARMHC503", 0}, /* ARM CoreSight Debug */
+>>>>>         {"ARMHC979", 0}, /* ARM CoreSight TPIU */
+>>>>>         {"ARMHC97C", 0}, /* ARM CoreSight SoC-400 TMC, SoC-600 ETF/ETB */
+>>>>> -    {"ARMHC9CA", 0}, /* ARM CoreSight CATU */
+>>>>>         {"", 0},
+>>>>>     };
+>>>>>     diff --git a/drivers/hwtracing/coresight/coresight-catu.c b/drivers/hwtracing/coresight/coresight-catu.c
+>>>>> index 3949ded0d4fa..a3ea46b53898 100644
+>>>>> --- a/drivers/hwtracing/coresight/coresight-catu.c
+>>>>> +++ b/drivers/hwtracing/coresight/coresight-catu.c
+>>>>> @@ -7,6 +7,8 @@
+>>>>>      * Author: Suzuki K Poulose <suzuki.poulose@arm.com>
+>>>>>      */
+>>>>>     +#include <linux/platform_device.h>
+>>>>> +#include <linux/acpi.h>
+>>>>>     #include <linux/amba/bus.h>
+>>>>>     #include <linux/device.h>
+>>>>>     #include <linux/dma-mapping.h>
+>>>>> @@ -502,28 +504,20 @@ static const struct coresight_ops catu_ops = {
+>>>>>         .helper_ops = &catu_helper_ops,
+>>>>>     };
+>>>>>     -static int catu_probe(struct amba_device *adev, const struct amba_id *id)
+>>>>> +static int __catu_probe(struct device *dev, struct resource *res)
+>>>>>     {
+>>>>>         int ret = 0;
+>>>>>         u32 dma_mask;
+>>>>> -    struct catu_drvdata *drvdata;
+>>>>> +    struct catu_drvdata *drvdata = dev_get_drvdata(dev);
+>>>>>         struct coresight_desc catu_desc;
+>>>>>         struct coresight_platform_data *pdata = NULL;
+>>>>> -    struct device *dev = &adev->dev;
+>>>>>         void __iomem *base;
+>>>>>           catu_desc.name = coresight_alloc_device_name(&catu_devs, dev);
+>>>>>         if (!catu_desc.name)
+>>>>>             return -ENOMEM;
+>>>>>     -    drvdata = devm_kzalloc(dev, sizeof(*drvdata), GFP_KERNEL);
+>>>>> -    if (!drvdata) {
+>>>>> -        ret = -ENOMEM;
+>>>>> -        goto out;
+>>>>> -    }
+>>>>> -
+>>>>> -    dev_set_drvdata(dev, drvdata);
+>>>>> -    base = devm_ioremap_resource(dev, &adev->res);
+>>>>> +    base = devm_ioremap_resource(dev, res);
+>>>>>         if (IS_ERR(base)) {
+>>>>>             ret = PTR_ERR(base);
+>>>>>             goto out;
+>>>>> @@ -567,19 +561,39 @@ static int catu_probe(struct amba_device *adev, const struct amba_id *id)
+>>>>>         drvdata->csdev = coresight_register(&catu_desc);
+>>>>>         if (IS_ERR(drvdata->csdev))
+>>>>>             ret = PTR_ERR(drvdata->csdev);
+>>>>> -    else
+>>>>> -        pm_runtime_put(&adev->dev);
+>>>>>     out:
+>>>>>         return ret;
+>>>>>     }
+>>>>>     -static void catu_remove(struct amba_device *adev)
+>>>>> +static int catu_probe(struct amba_device *adev, const struct amba_id *id)
+>>>>>     {
+>>>>> -    struct catu_drvdata *drvdata = dev_get_drvdata(&adev->dev);
+>>>>> +    struct catu_drvdata *drvdata;
+>>>>> +    int ret;
+>>>>> +
+>>>>> +    drvdata = devm_kzalloc(&adev->dev, sizeof(*drvdata), GFP_KERNEL);
+>>>>> +    if (!drvdata)
+>>>>> +        return -ENOMEM;
+>>>>> +
+>>>>> +    amba_set_drvdata(adev, drvdata);
+>>>>> +    ret = __catu_probe(&adev->dev, &adev->res);
+>>>>> +    if (!ret)
+>>>>> +        pm_runtime_put(&adev->dev);
+>>>>> +
+>>>>> +    return ret;
+>>>>> +}
+>>>>> +
+>>>>> +static void __catu_remove(struct device *dev)
+>>>>> +{
+>>>>> +    struct catu_drvdata *drvdata = dev_get_drvdata(dev);
+>>>>>           coresight_unregister(drvdata->csdev);
+>>>>>     }
+>>>>>     +static void catu_remove(struct amba_device *adev)
+>>>>> +{
+>>>>> +    __catu_remove(&adev->dev);
+>>>>> +}
+>>>>> +
+>>>>>     static struct amba_id catu_ids[] = {
+>>>>>         CS_AMBA_ID(0x000bb9ee),
+>>>>>         {},
+>>>>> @@ -598,13 +612,103 @@ static struct amba_driver catu_driver = {
+>>>>>         .id_table            = catu_ids,
+>>>>>     };
+>>>>>     +static int catu_platform_probe(struct platform_device *pdev)
+>>>>> +{
+>>>>> +    struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>>>>> +    struct catu_drvdata *drvdata;
+>>>>> +    int ret = 0;
+>>>>> +
+>>>>> +    drvdata = devm_kzalloc(&pdev->dev, sizeof(*drvdata), GFP_KERNEL);
+>>>>> +    if (!drvdata)
+>>>>> +        return -ENOMEM;
+>>>>> +
+>>>>> +    drvdata->pclk = coresight_get_enable_apb_pclk(&pdev->dev);
+>>>>> +    if (IS_ERR(drvdata->pclk))
+>>>>> +        return -ENODEV;
+>>>>
+>>>>
+>>>> ---8>---
+>>>>
+>>>>> +
+>>>>> +    if (res) {
+>>>>> +        drvdata->base = devm_ioremap_resource(&pdev->dev, res);
+>>>>> +        if (IS_ERR(drvdata->base)) {
+>>>>> +            clk_put(drvdata->pclk);
+>>>>> +            return PTR_ERR(drvdata->base);
+>>>>> +        }
+>>>>> +    }
+>>>>
+>>>> ---<8---
+>>>>
+>>>> The above section seems unncessary as we already try to map the base in __catu_probe ?
+>>>
+>>> Agreed, though it seems unnecessary, there is a small difference in there. In the platform
+>>> driver case i.e catu_platform_probe(), clk_put() is called on platform clock drvdata->pclk
+>>> (just enabled earlier) for cases when devm_ioremap_resource() fails.
+>>>
+>>> To remove this redundancy, let's move devm_ioremap_resource() into it's AMBA caller i.e
+>>> catu_probe() thus dropping struct resource argument from __catu_probe(). Similar situation
+>>> is present in coresight-cpu-debug driver as well, will fix that.
+>>>
+>>> But there are some other drivers in the series where coresight_get_enable_apb_pclk() called
+>>> on 'drvdata->pclk' and devm_ioremap_resource() is attempted inside the factored __xxx_probe()
+>>> function which is common for both AMBA and platform drivers.
+>>>
+>>> Such drivers are ...
+>>>
+>>> - tpiu
+>>> - tmc
+>>> - stm
+>>> - replicator
+>>>
+>>> IMHO it would be better to follow same scheme for all drivers in the series. Please do let
+>>> me know which method will be preferred.
+>>
+>> Lets pass the "res" to the common probe and deal it there.
 > 
-> Agree too, less arguments is much better. While I personnally prefer the open
-> coding a little bit like below. There is suspicion of excessive packaging in
-> __pre/__post_setup_vmalloc_vm() wrapping. They are very simple and few
-> assignments after all. 
-> 
-> ---
->  mm/vmalloc.c | 20 ++++++++++++--------
->  1 file changed, 12 insertions(+), 8 deletions(-)
-> 
-> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> index 0fd8ebaad17b..0c738423976d 100644
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -1924,8 +1924,7 @@ static struct vmap_area *alloc_vmap_area(unsigned long size,
->  				unsigned long align,
->  				unsigned long vstart, unsigned long vend,
->  				int node, gfp_t gfp_mask,
-> -				unsigned long va_flags, struct vm_struct *vm,
-> -				unsigned long flags, const void *caller)
-> +				unsigned long va_flags, struct vm_struct *vm)
->  {
->  	struct vmap_node *vn;
->  	struct vmap_area *va;
-> @@ -1988,8 +1987,11 @@ static struct vmap_area *alloc_vmap_area(unsigned long size,
->  	va->vm = NULL;
->  	va->flags = (va_flags | vn_id);
->  
-> -	if (vm)
-> -		setup_vmalloc_vm(vm, va, flags, caller);
-> +	if (vm) {
-> +		vm->addr = (void *)va->va_start;
-> +		vm->size = va->va_end - va->va_start;
-> +		va->vm = vm;
-> +	}
->  
->  	vn = addr_to_node(va->va_start);
->  
-> @@ -2565,8 +2567,7 @@ static void *new_vmap_block(unsigned int order, gfp_t gfp_mask)
->  	va = alloc_vmap_area(VMAP_BLOCK_SIZE, VMAP_BLOCK_SIZE,
->  					VMALLOC_START, VMALLOC_END,
->  					node, gfp_mask,
-> -					VMAP_RAM|VMAP_BLOCK, NULL,
-> -					0, NULL);
-> +					VMAP_RAM|VMAP_BLOCK, NULL);
->  	if (IS_ERR(va)) {
->  		kfree(vb);
->  		return ERR_CAST(va);
-> @@ -2924,7 +2925,7 @@ void *vm_map_ram(struct page **pages, unsigned int count, int node)
->  		va = alloc_vmap_area(size, PAGE_SIZE,
->  				VMALLOC_START, VMALLOC_END,
->  				node, GFP_KERNEL, VMAP_RAM,
-> -				NULL, 0, NULL);
-> +				NULL);
->  		if (IS_ERR(va))
->  			return NULL;
->  
-> @@ -3063,7 +3064,10 @@ static struct vm_struct *__get_vm_area_node(unsigned long size,
->  	if (!(flags & VM_NO_GUARD))
->  		size += PAGE_SIZE;
->  
-> -	va = alloc_vmap_area(size, align, start, end, node, gfp_mask, 0, area, flags, caller);
-> +	area->flags = flags;
-> +	area->caller = caller;
-> +
-> +	va = alloc_vmap_area(size, align, start, end, node, gfp_mask, 0, area);
->  	if (IS_ERR(va)) {
->  		kfree(area);
->  		return NULL;
-> -- 
-> 2.41.0
-> 
-Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> Sure, but then will have to deal with drvdata->pclk in the caller, where it was originally
+> acquired, when the __xxxx_probe() fails. For example - in case with the debug cpu driver,
+> following changes will be required.
 
-Looks even better :) It can be applied on on top of:
+Of course, why not. Because that is specific to the platform driver (for 
+a reason). The whole point is, push everything that is common across 
+AMBA or Platform to a common __xxx_probe()/remove() routine, rather than
+duplicating things around.
 
-[PATCH v8] mm/vmalloc: Eliminated the lock contention from twice to once
 
-We are a bit ahead since v8 will be taken later. Anyway please use the
-reviewed-by tag once you send a complete patch. 
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-cpu-debug.c b/drivers/hwtracing/coresight/coresight-cpu-debug.c
+> index 68d077174a6a..2d77f9a17692 100644
+> --- a/drivers/hwtracing/coresight/coresight-cpu-debug.c
+> +++ b/drivers/hwtracing/coresight/coresight-cpu-debug.c
+> @@ -577,11 +577,11 @@ static int __debug_probe(struct device *dev, struct resource *res)
+>          }
+>   
+>          drvdata->dev = dev;
+> -
+> -       /* Validity for the resource is already checked by the AMBA core */
+> -       base = devm_ioremap_resource(dev, res);
+> -       if (IS_ERR(base))
+> -               return PTR_ERR(base);
+> +       if (res) {
+> +               base = devm_ioremap_resource(dev, res);
+> +               if (IS_ERR(base))
+> +                       return PTR_ERR(base);
+> +       }
+>   
+>          drvdata->base = base;
+>   
+> @@ -703,14 +703,6 @@ static int debug_platform_probe(struct platform_device *pdev)
+>          if (IS_ERR(drvdata->pclk))
+>                  return -ENODEV;
+>   
+> -       if (res) {
+> -               drvdata->base = devm_ioremap_resource(&pdev->dev, res);
+> -               if (IS_ERR(drvdata->base)) {
+> -                       clk_put(drvdata->pclk);
+> -                       return PTR_ERR(drvdata->base);
+> -               }
+> -       }
+> -
+>          dev_set_drvdata(&pdev->dev, drvdata);
+>          pm_runtime_get_noresume(&pdev->dev);
+>          pm_runtime_set_active(&pdev->dev);
+> @@ -720,6 +712,8 @@ static int debug_platform_probe(struct platform_device *pdev)
+>          if (ret) {
+>                  pm_runtime_put_noidle(&pdev->dev);
+>                  pm_runtime_disable(&pdev->dev);
+> +               if (drvdata && !IS_ERR_OR_NULL(drvdata->pclk))
+> +                       clk_put(drvdata->pclk);
+>          }
+>          return ret;
+> 
+>>>
+>>>>
+>>>>> +
+>>>
+>>>>> +    pm_runtime_get_noresume(&pdev->dev);
+>>>>> +    pm_runtime_set_active(&pdev->dev);
+>>>>> +    pm_runtime_enable(&pdev->dev);
+>>>>> +
+>>>>> +    dev_set_drvdata(&pdev->dev, drvdata);
+>>>>> +    ret = __catu_probe(&pdev->dev, res);
+>>>>> +    pm_runtime_put(&pdev->dev);
+>>>>> +    if (ret)
+>>>>> +        pm_runtime_disable(&pdev->dev);
+>>>>> +
+>>>>> +    return ret;
+>>>>> +}
+>>>>> +
+>>>>> +static int catu_platform_remove(struct platform_device *pdev)
+>>>>> +{
+>>>>> +    struct catu_drvdata *drvdata = dev_get_drvdata(&pdev->dev);
+>>>>> +
+>>>>> +    if (drvdata)
+>>>>> +        __catu_remove(&pdev->dev);
+>>>>
+>>>> I don't understand the need for if () check here (and on all the other drivers). Even if we have a drvdata != NULL, what guarantees that
+>>>> the drvdata->csdev is valid (which is used in xx_remove) ?
+>>>
+>>> Agreed, although drvdata is derived in __xxx_remove() functions, a pre-check here is not
+>>> required - similar to the AMBA remove path. Sure, will drop them across drivers.
+>>
+>> No, my point is : Is there a case where :
+>>
+>> 1) drvdata == NULL, but we have a device to do some cleanup ?
+> 
+> NO, I don't believe there are any such cases.
+> 
+>> 2) If drvdata != NULL, but drvdata->csdev is not valid, because we failed to register the coresight device ?
+> 
+> I don't believe so. If drvdata->csdev is not valid because coresight_register() has failed,
+> that would have also failed driver' probe() as well. Hence driver remove() could not have
+> been called in such situations.
 
-Thanks!
+So, all of those seem to be cases we don't expect. To be on the safer 
+side, add a if (WARN_ON(!drvdata)) and return. Deal the rest with
+drvdata and drvdata->csdev being valid.
 
---
-Uladzislau Rezki
+Suzuki
+
+
+> 
+>>
+>>
+>> Suzuki
+>>
+>>
+>>>
+>>>>
+>>>> Suzuki
+>>>>
+>>>>> +
+>>>>> +    pm_runtime_disable(&pdev->dev);
+>>>>> +    if (drvdata && !IS_ERR_OR_NULL(drvdata->pclk))
+>>>>> +        clk_put(drvdata->pclk);
+>>>>> +    return 0;
+>>>>> +}
+>>>>> +
+>>>>> +#ifdef CONFIG_PM
+>>>>> +static int catu_runtime_suspend(struct device *dev)
+>>>>> +{
+>>>>> +    struct catu_drvdata *drvdata = dev_get_drvdata(dev);
+>>>>> +
+>>>>> +    if (drvdata && !IS_ERR_OR_NULL(drvdata->pclk))
+>>>>> +        clk_disable_unprepare(drvdata->pclk);
+>>>>> +    return 0;
+>>>>> +}
+>>>>> +
+>>>>> +static int catu_runtime_resume(struct device *dev)
+>>>>> +{
+>>>>> +    struct catu_drvdata *drvdata = dev_get_drvdata(dev);
+>>>>> +
+>>>>> +    if (drvdata && !IS_ERR_OR_NULL(drvdata->pclk))
+>>>>> +        clk_prepare_enable(drvdata->pclk);
+>>>>> +    return 0;
+>>>>> +}
+>>>>> +#endif
+>>>>> +
+>>>>> +static const struct dev_pm_ops catu_dev_pm_ops = {
+>>>>> +    SET_RUNTIME_PM_OPS(catu_runtime_suspend, catu_runtime_resume, NULL)
+>>>>> +};
+>>>>> +
+>>>>> +#ifdef CONFIG_ACPI
+>>>>> +static const struct acpi_device_id catu_acpi_ids[] = {
+>>>>> +    {"ARMHC9CA", 0}, /* ARM CoreSight CATU */
+>>>>> +    {},
+>>>>> +};
+>>>>> +
+>>>>> +MODULE_DEVICE_TABLE(acpi, catu_acpi_ids);
+>>>>> +#endif
+>>>>> +
+>>>>> +static struct platform_driver catu_platform_driver = {
+>>>>> +    .probe    = catu_platform_probe,
+>>>>> +    .remove    = catu_platform_remove,
+>>>>> +    .driver    = {
+>>>>> +        .name            = "coresight-catu-platform",
+>>>>> +        .acpi_match_table    = ACPI_PTR(catu_acpi_ids),
+>>>>> +        .suppress_bind_attrs    = true,
+>>>>> +        .pm            = &catu_dev_pm_ops,
+>>>>> +    },
+>>>>> +};
+>>>>> +
+>>>>>     static int __init catu_init(void)
+>>>>>     {
+>>>>>         int ret;
+>>>>>     -    ret = amba_driver_register(&catu_driver);
+>>>>> -    if (ret)
+>>>>> -        pr_info("Error registering catu driver\n");
+>>>>> +    ret = coresight_init_driver("catu", &catu_driver, &catu_platform_driver);
+>>>>>         tmc_etr_set_catu_ops(&etr_catu_buf_ops);
+>>>>>         return ret;
+>>>>>     }
+>>>>> @@ -612,7 +716,7 @@ static int __init catu_init(void)
+>>>>>     static void __exit catu_exit(void)
+>>>>>     {
+>>>>>         tmc_etr_remove_catu_ops();
+>>>>> -    amba_driver_unregister(&catu_driver);
+>>>>> +    coresight_remove_driver(&catu_driver, &catu_platform_driver);
+>>>>>     }
+>>>>>       module_init(catu_init);
+>>>>> diff --git a/drivers/hwtracing/coresight/coresight-catu.h b/drivers/hwtracing/coresight/coresight-catu.h
+>>>>> index 442e034bbfba..141feac1c14b 100644
+>>>>> --- a/drivers/hwtracing/coresight/coresight-catu.h
+>>>>> +++ b/drivers/hwtracing/coresight/coresight-catu.h
+>>>>> @@ -61,6 +61,7 @@
+>>>>>     #define CATU_IRQEN_OFF        0x0
+>>>>>       struct catu_drvdata {
+>>>>> +    struct clk *pclk;
+>>>>>         void __iomem *base;
+>>>>>         struct coresight_device *csdev;
+>>>>>         int irq;
+>>>>
+>>
+
 
