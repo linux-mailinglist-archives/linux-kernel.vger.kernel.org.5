@@ -1,114 +1,238 @@
-Return-Path: <linux-kernel+bounces-97437-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97438-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D11DA876A77
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 19:07:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13C8F876A79
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 19:07:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B395284EAA
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:07:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 290A6B20E53
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:07:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19B0754667;
-	Fri,  8 Mar 2024 18:06:57 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E4EB2A8C1;
-	Fri,  8 Mar 2024 18:06:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FB6A22086;
+	Fri,  8 Mar 2024 18:07:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="yvTqmyAj"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCEF34B5C1
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 18:07:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709921216; cv=none; b=OoOW9ytSTiFc0FF0598nWCA06OkFDV0YWOhwdrtcxbrMDs6+QfAeMRgELuStsjCxxSCIr7+qlfn5lat3y4huKIHO9Fwl315fGqd6K6nmAfO8h67SpRdW9Hk5b54qL7rcwVB265qIiGsnjhWxUX0OMzLaLpDMi9vI52jtD+yKHOg=
+	t=1709921238; cv=none; b=mytabZepQjQOYRXAE5mzG5sFU7JjlqgHTL3WucQ2pgQQuK8/V2W3oZ59ssc0z7NZOgK37d9ZG7Bkjwbaizysh9DD/oGD6uG9Z8h8CdZoQ4qiw72ZrbJdgIX5t13Du5LODYfZbWDXoJ4zS6G9IbwBwSsQPlDAOyme0XnkdUY+AdY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709921216; c=relaxed/simple;
-	bh=ROE3uYVoQdalc9qxMEBafin0xWxDiJexqDsB2sDZKtI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qbhCIXZZTx3bG0OWsdJUpb294DIDALBCNSRydWf/GM0FGqtFD+4AXTSrSBMthn85rImWpI4BreUS4Ni3nh/Ffj74A3XMwVmI0GPa0MoNP/7bxP7ktDi5vRkHWmx3k6k4WbLw+hCF+c5F5HJ9GiZZifTnwXNwNTtAhnrd3mFxT0E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0F631C15;
-	Fri,  8 Mar 2024 10:07:28 -0800 (PST)
-Received: from [10.1.197.60] (eglon.cambridge.arm.com [10.1.197.60])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 06CAD3F738;
-	Fri,  8 Mar 2024 10:06:49 -0800 (PST)
-Message-ID: <eacdc287-24bd-4137-85c8-df055cfd78b1@arm.com>
-Date: Fri, 8 Mar 2024 18:06:45 +0000
+	s=arc-20240116; t=1709921238; c=relaxed/simple;
+	bh=+C3DESb3MnVB5uzdRmVfV+pgXhsL1ZNMQKGRRckZLVw=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=obYSUROjVqYd5Vg5Il3BxuyzmpSshBdiPXMDOAm9cbJhr8vH8GymHKdQ/i8rQYi3hi2gdU6w46VTC5SOmytuy8CIyXQkKX/42A4vXQyuguRoIi0BoGqf2HWkBhQV8a7PR65J4+W4TfCmL3bnvSMsqS+QA8uEXbHXggCC7+j7pUI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=yvTqmyAj; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709921234;
+	bh=+C3DESb3MnVB5uzdRmVfV+pgXhsL1ZNMQKGRRckZLVw=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=yvTqmyAjWMTu5J6PTWlCVUO520zYAaqqBijs+pTAa408NbKOCyauF+cS/g35FudYz
+	 BZ+Xa9glw0ZIlQbz/kmEuqMoZJskvp5bUDAKZGW0AIOc8jlNNhtD0V0ZdDh5TtMzHG
+	 cX5xAK8aD0kWOrxEoga7qKN/S9sjydSeEspsy+h/POviy49cx5hh+mPvrELI+08iTz
+	 dMCMDCO2RdYlbW0cFzJcMngjp4D8uQyn/deSwrLW7C9YoeLMHSQ8tWvt3urM+tVVoF
+	 NtUMRKwS7f6AYhPwoOCq3F2dFuHLWX+iJTHPQRI3utvtv6rmxZeHK6YPSXO6qWykDq
+	 QshNy8HseNqNQ==
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: bbrezillon)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id E846637813E1;
+	Fri,  8 Mar 2024 18:07:13 +0000 (UTC)
+Date: Fri, 8 Mar 2024 19:07:12 +0100
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Liviu Dudau <liviu.dudau@arm.com>
+Cc: =?UTF-8?B?QWRyacOhbg==?= Larumbe <adrian.larumbe@collabora.com>, Steven
+ Price <steven.price@arm.com>, Maarten Lankhorst
+ <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, kernel@collabora.com,
+ linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, Mihail
+ Atanassov <Mihail.Atanassov@arm.com>
+Subject: Re: [PATCH] drm/panthor: Add support for performance counters
+Message-ID: <20240308190712.76a0a06e@collabora.com>
+In-Reply-To: <ZetEl5h40pcB73t7@e110455-lin.cambridge.arm.com>
+References: <20240305165820.585245-1-adrian.larumbe@collabora.com>
+	<ZesYErFVdqLyjblW@e110455-lin.cambridge.arm.com>
+	<20240308161515.1d74fd55@collabora.com>
+	<ZetEl5h40pcB73t7@e110455-lin.cambridge.arm.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/4] selftests/resctrl: Adjust SNC support messages
-Content-Language: en-GB
-To: Tony Luck <tony.luck@intel.com>,
- Reinette Chatre <reinette.chatre@intel.com>
-Cc: "Wieczor-Retman, Maciej" <maciej.wieczor-retman@intel.com>,
- "Yu, Fenghua" <fenghua.yu@intel.com>, Shuah Khan <shuah@kernel.org>,
- "ilpo.jarvinen@linux.intel.com" <ilpo.jarvinen@linux.intel.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
-References: <cover.1709721159.git.maciej.wieczor-retman@intel.com>
- <8a158ada92f06b97a4679721e84e787e94b94647.1709721159.git.maciej.wieczor-retman@intel.com>
- <SJ1PR11MB608310C72D7189C139EA6302FC212@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <o6va7b7rc3q46olsbscav7pla4hxot2g6xhctflhmf64pj5hpx@56vtbg3yyquy>
- <SJ1PR11MB60830E546B3D575B01D37104FC202@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <159474e6-ef11-4769-a182-86483efcf2a6@intel.com>
- <SJ1PR11MB60832DAD58E864F99A16FCC4FC202@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <0393c4ce-7e41-4dcc-940a-a6bea9437970@intel.com>
- <SJ1PR11MB6083AACB10645E41DD3F9639FC202@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <55a55960-8bb1-4ce2-a2c7-68e167da8bcc@intel.com>
- <ZepK4mtoV_J8-UbE@agluck-desk3>
-From: James Morse <james.morse@arm.com>
-In-Reply-To: <ZepK4mtoV_J8-UbE@agluck-desk3>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 
-Hi guys,
+On Fri, 8 Mar 2024 17:02:15 +0000
+Liviu Dudau <liviu.dudau@arm.com> wrote:
 
-On 07/03/2024 23:16, Tony Luck wrote:
-> On Thu, Mar 07, 2024 at 02:39:08PM -0800, Reinette Chatre wrote:
->> Thank you for the example. I find that significantly easier to
->> understand than a single number in a generic "nodes_per_l3_cache".
->> Especially with potential confusion surrounding inconsistent "nodes"
->> between allocation and monitoring. 
->>
->> How about domain_cpu_list and domain_cpu_map ?
+> On Fri, Mar 08, 2024 at 04:15:15PM +0100, Boris Brezillon wrote:
+> > On Fri, 8 Mar 2024 13:52:18 +0000
+> > Liviu Dudau <liviu.dudau@arm.com> wrote:
+> >  =20
+> > > Hi Adri=C3=A1n,
+> > >=20
+> > > Thanks for the patch and appologies for taking a bit longer to respon=
+d,
+> > > I was trying to gather some internal Arm feedback before replying.
+> > >=20
+> > > On Tue, Mar 05, 2024 at 04:58:16PM +0000, Adri=C3=A1n Larumbe wrote: =
+=20
+> > > > This brings in support for Panthor's HW performance counters and qu=
+erying
+> > > > them from UM through a specific ioctl(). The code is inspired by ex=
+isting
+> > > > functionality for the Panfrost driver, with some noteworthy differe=
+nces:
+> > > >=20
+> > > >  - Sample size is now reported by the firmware rather than having t=
+o reckon
+> > > >  it by hand
+> > > >  - Counter samples are chained in a ring buffer that can be accessed
+> > > >  concurrently, but only from threads within a single context (this =
+is
+> > > >  because of a HW limitation).
+> > > >  - List of enabled counters must be explicitly told from UM
+> > > >  - Rather than allocating the BO that will contain the perfcounter =
+values
+> > > >  in the render context's address space, the samples ring buffer is =
+mapped
+> > > >  onto the MCU's VM.
+> > > >  - If more than one thread within the same context tries to dump a =
+sample,
+> > > >  then the kernel will copy the same frame to every single thread th=
+at was
+> > > >  able to join the dump queue right before the FW finished processin=
+g the
+> > > >  sample request.
+> > > >  - UM must provide a BO handle for retrieval of perfcnt values rath=
+er
+> > > >  than passing a user virtual address.
+> > > >=20
+> > > > The reason multicontext access to the driver's perfcnt ioctl interf=
+ace
+> > > > isn't tolerated is because toggling a different set of counters tha=
+n the
+> > > > current one implies a counter reset, which also messes up with the =
+ring
+> > > > buffer's extraction and insertion pointers. This is an unfortunate
+> > > > hardware limitation.   =20
+> > >=20
+> > > There are a few issues that we would like to improve with this patch.
+> > >=20
+> > > I'm not sure what user space app has been used for testing this (I'm =
+guessing
+> > > gputop from igt?) but whatever is used it needs to understand the cou=
+nters
+> > > being exposed. =20
+> >=20
+> > We are using perfetto to expose perfcounters.
+> >  =20
+> > > In your patch there is no information given to the user space
+> > > about the layout of the counters and / or their order. Where is this =
+being
+> > > planned to be defined? =20
+> >=20
+> > That's done on purpose. We want to keep the kernel side as dumb as
+> > possible so we don't have to maintain a perfcounter database there. All
+> > the kernel needs to know is how much data it should transfer pass to
+> > userspace, and that's pretty much it. =20
+>=20
+> I was not thinking about a perfcounter database but hints about counter v=
+alue
+> size. In the future we might have 64bits counters and you will not be abl=
+e to
+> tell only from the sample size if you're talking with an old firmware or =
+not.
 
-> Like this (my test system doesn't have SNC, so all domains are the same):
-> 
-> $ cd /sys/fs/resctrl/info/
-> $ grep . */domain*
-> L3/domain_cpu_list:0: 0-35,72-107
-> L3/domain_cpu_list:1: 36-71,108-143
-> L3/domain_cpu_map:0: 0000,00000fff,ffffff00,0000000f,ffffffff
-> L3/domain_cpu_map:1: ffff,fffff000,000000ff,fffffff0,00000000
-> L3_MON/domain_cpu_list:0: 0-35,72-107
-> L3_MON/domain_cpu_list:1: 36-71,108-143
-> L3_MON/domain_cpu_map:0: 0000,00000fff,ffffff00,0000000f,ffffffff
-> L3_MON/domain_cpu_map:1: ffff,fffff000,000000ff,fffffff0,00000000
-> MB/domain_cpu_list:0: 0-35,72-107
-> MB/domain_cpu_list:1: 36-71,108-143
-> MB/domain_cpu_map:0: 0000,00000fff,ffffff00,0000000f,ffffffff
-> MB/domain_cpu_map:1: ffff,fffff000,000000ff,fffffff0,00000000
+No, but the FW should tell us through its versioning scheme :P. I
+mean, if the counter semantics for a given GPU changes with the FW
+version, we should expose the FW version to userspace, and let
+userspace maintain proper <gpu_id,fw_version> =3D> perfcnt_defs mappings.
+This being said, I'm a bit concerned by this kind of non-backward
+compatible ABI changes. If we're not careful, we will end up in the
+same situation the proprietary PowerVR driver was, where userspace and
+FW have to match for things to work properly, and that's not great...
 
-This duplicates the information in /sys/devices/system/cpu/cpuX/cache/indexY ... is this
-really because that information is, er, wrong on SNC systems. Is it possible to fix that?
+> (Read: future GPUs are likely to go bigger on number of perf counters bef=
+ore
+> they gain higher definition).
+>=20
+> >  =20
+> > > Long term, I think it would be good to have details
+> > > about the counters available. =20
+> >=20
+> > The perfcounter definitions are currently declared in mesa (see the G57
+> > perfcounter definitions for instance [1]). Mesa also contains a perfetto
+> > datasource for Panfrost [2]. =20
+>=20
+> Sorry, I've missed that perfetto got updated.
+>=20
+> >  =20
+> > >=20
+> > > The other issue we can see is with the perfcnt_process_sample() and i=
+ts
+> > > handling of threshold event and overflows. If the userspace doesn't s=
+ample
+> > > quick enough and we cross the threshold we are going to lose samples =
+and
+> > > there is no mechanism to communicate to user space that the values th=
+ey
+> > > are getting have gaps. I believe the default mode for the firmware is=
+ to
+> > > give you counter values relative to the last read value, so if you dr=
+op
+> > > samples you're not going to make any sense of the data. =20
+> >=20
+> > If we get relative values, that's indeed a problem. I thought we were
+> > getting absolute values though, in which case, if you miss two 32-bit
+> > wraparounds, either your sampling rate is very slow, or events occur at
+> > a high rate. =20
+>=20
+> First CSF GPUs have some erratas around perf counters that firmware tries=
+ to
+> hide. I need to dig a bit deeper into what firmware does for each GPU bef=
+ore
+> confirming the counting mode.
+>=20
+> The main issue with the code is that we should not be dropping samples at
+> all, even if they are absolute values, as there will be gaps in the analy=
+sis.
 
-From Tony's earlier description of how SNC changes things, the MB controls remain
-per-socket. To me it feels less invasive to fix the definition of L3 on these platforms to
-describe how it behaves (assuming that is possible), and define a new 'MB' that is NUMA
-scoped.
-This direction of redefining L3 means /sys/fs/resctrl and /sys/devices have different
-views of 'the' cache hierarchy.
+The only events that might trigger automatic sampling are power state
+transitions and protection mode entry/exit. With PM being forced to
+always on at the moment, I was assuming we wouldn't care about the
+intermediate results if we get absolute values. Of course, that's
+completely different if we're passed relative values.
 
-(I also think that this be over the threshold on 'funny machines look funny' - but I bet
-someone builds an arm machine that looks like this too!)
+> Looking at perfcnt_process_sample(), it does not increase the sampling ra=
+te
+> if we reach the threshold, nor does it tell the user space to do so. From=
+ our
+> DDK experience, if you've reached the threshold with the app sampling
+> then you're likely to overflow as well, missing samples.
 
+Again, if counters are absolute, overflowing is okay, it's overflowing
+twice that's not okay, because then you lose a full 2^32 offset (or more
+if you missed more than two overflows).
 
-Thanks,
+Anyway, if we want to make sure perfcnt users get all the samples, we're
+probably better off providing a uAPI that mimics the FW interface. That
+is, allow userspace to manage the ringbuf directly (with a new ioctl to
+control the ringbuf head/tail and lets the kernel report low
+threshold/sample lost events) instead of keeping this ringbuf-slot
+-> user-provided-buffer copy we have right now.
 
-James
 
