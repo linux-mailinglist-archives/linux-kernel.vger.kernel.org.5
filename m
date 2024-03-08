@@ -1,161 +1,185 @@
-Return-Path: <linux-kernel+bounces-97587-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97586-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DA70876C36
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 22:02:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 285B1876C2E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 22:02:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D19CA1F218F6
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 21:02:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B8E681F212F2
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 21:02:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B68635F578;
-	Fri,  8 Mar 2024 21:01:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EFCB5FB99;
+	Fri,  8 Mar 2024 21:01:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UDi+XCkQ"
-Received: from mail-vk1-f172.google.com (mail-vk1-f172.google.com [209.85.221.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ce5BxOhb"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50D4D5E073;
-	Fri,  8 Mar 2024 21:01:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27B035E090;
+	Fri,  8 Mar 2024 21:01:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709931717; cv=none; b=o9P7wadKAh5MQYt4hDFFZFKASvFt6UUeEnF4J254Fq3YDMAnLuxsoBfiMQVE1tptNqaYV5jB5AcxKjCnX3nQsSFV6iKfNnQbGkQUyRLDkuOnFCJoIqMb6DtzeD3T7mbWMaS5Sc1DB4XALJNEozNiJuukp77mZFy4Jr9OeGHWPI0=
+	t=1709931680; cv=none; b=V3dsQKeaAAsPNtFtGQmdpxGRCSH71EpxtHEwcuegARsZqUruU6N9ATcjh8ZAxnEcIZ8oD7Y1n/pcUASXQCiiN6K7WdIuOetq3aimep52tfMAi+OobdpSh996nTgwIhzU58KRyKqTt9v2OQ/9Hq6vJ9FdABin3B1zcEEgUZNWnlg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709931717; c=relaxed/simple;
-	bh=XiN9Fa9QuOna06HjksVQ2Nm0qV0d3fdQcZqGcIcMRc0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=N4lRIQdftEf5N08rYMmW/pejbDyq7sCnSLCg8X0/H9VKtvnUy/32uD0AA0jalqmKoYJEJq/5m+ruKEneTF5CVsnhC6KWXdymUUI1fOXVWZNseTK/xhFgFXqzr93cPjOwFUcuHDnGOO6zjAdMsFXfqnuwY7qKIJWPyn29wR0bS2g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UDi+XCkQ; arc=none smtp.client-ip=209.85.221.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f172.google.com with SMTP id 71dfb90a1353d-4d34abf66deso282670e0c.1;
-        Fri, 08 Mar 2024 13:01:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709931714; x=1710536514; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RCymEiGpipubs/MqTyZ4nrqmBe9tQmx2x+DjRvTmJuA=;
-        b=UDi+XCkQSCONS4zDom5uZXV3UG1FB48dhCuQthMCEbIM6jTlEehsg3AHMMLzKBl3Lq
-         1zsvjqFEaH+MA+f1406kzOhJXrw3Xk/5gbP8iTvfBaECxnjZou8Rnuo2rT8TqMwbmJQw
-         8qb4TwCHGqCIYBRMLbNv58oWsKS7LvXNVNp8YZQfy/F4uffe4TNjf7XWNiw6dzgwmhMr
-         8dZ7E0TxYFsdREsxkCACDsfuLyPIDy0UWHpui3PJDiXvpr7Lyi3f4njkyjIPxrBUQg3l
-         kl+6+fjmqcuZq9J2kNItj5XS/E68n8Zomb3521MvP48dXeFFBhGBw6gHfispK4lSDXzx
-         u7ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709931714; x=1710536514;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RCymEiGpipubs/MqTyZ4nrqmBe9tQmx2x+DjRvTmJuA=;
-        b=amFuqJXaYv0vF7azrqutkLRn28aVs4yRUxj+q8IjsxYqjaJNvbUyw+k9mdXPc6DE3g
-         KsZZ50gQa5NUzOIzXkF3CUe7tEr0eJ+HOAJCe4qFHq0wvLOW2/fS2OpGhRVLSfQVGKyJ
-         TWdmyOYmxCVdG9GrvpnwK0UpKGSc85Y80l8ThvNZGE9Z4ZlOlHeKFJWSeRpJylGLDS/w
-         T8d5OynK8LS8Cr8Py6KXHSJE0VQc12CXZ4XqEVlBPwbP6XRqTgeKXknbzMsl4qNeVq/+
-         FQKnMraYqyKb0nwCSLOVHvizXZ+XoNsRkMtUXvRA73S/pCFzAQ1onY9OD2KiwCgBhia0
-         +tvw==
-X-Forwarded-Encrypted: i=1; AJvYcCWfqN9VVr3nwov6sitTCO8jiov7CkkmNZM7OouUpdENZY79XQxbuxjbC/Taq+aUQnwc5QLyCA3yEThgUL+pHYUmax7npaT0PpkLgSJKfwN0HaRNaRrfKDznSG5t0Uezq2iwMceb8otbwnRs/WRYgvB2R/wSQYKKUg8IzlP4rvpVg693B+baMDU8lK9IXpA1jWSq9pepNaESzrYQHK20b34y4AnQy2hd
-X-Gm-Message-State: AOJu0Yz6g9zabs1A7+uRG67zJBJgYfrODzZ0fJcX0Gpgp2OhB6+xaJ3H
-	uVshgY2DIYgdAGzzceYNP4Fv3Q14e0AtP9bS1G6bFW1O+QjawA8mQzcvW94d1RtBR2ztgb7A8Zt
-	5atWx70Mth3XDnFpmmDR0cwwFeig=
-X-Google-Smtp-Source: AGHT+IGnq51iE4+BqWlMAemT74cR1wABtqmatGGKO31Zy2uvzaKVgj19n72J8jv/Bl7YJRlXBZzTdV/xtxW3w4cCeDs=
-X-Received: by 2002:a05:6122:1c0e:b0:4d3:4aad:22d4 with SMTP id
- et14-20020a0561221c0e00b004d34aad22d4mr555569vkb.0.1709931714135; Fri, 08 Mar
- 2024 13:01:54 -0800 (PST)
+	s=arc-20240116; t=1709931680; c=relaxed/simple;
+	bh=DDl8vWySAK96jU7FvSbeJPzo1lFEUUlodXhYmz+FK+o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fhIyiAxce9PN1nSerMPVcZC8lZChbuPyKjVT+5tuYqoKkXZTl492RlsJFg7N7ecOqe3kQk2hymmKrS6tPoqnbBEz5NwgBEreUp8GDKZLppw+wFiQTgN0naUbrHAn3EYrYVi6Vg3h3UuXVFTP8SXcd2ZZFkaHU07K5G5JmbqVluo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ce5BxOhb; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709931678; x=1741467678;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=DDl8vWySAK96jU7FvSbeJPzo1lFEUUlodXhYmz+FK+o=;
+  b=ce5BxOhb7mJEsC10tFHwQb6Xc74RRP8Mu+V3LLyE8CHEUiJsh8Deo8Mn
+   PrEki+08cVqFtIxh736+biYeSCwREScuj5UvOGDG70JRLkznHGHrV/7nM
+   TaVoGFB7A5Z52xv+sWltN1b0Drv3GBxhoBjqtYxNY45ziL0hj1pEoL8y2
+   RxUCyAbtj+aH7y0YEvFONDsrYB/lQUSU9e5j3TjPmBJjsmzXU+f0H4EaP
+   GNqyPUcCUGLTKDSjZy/QzVelGPr3AqxLPIeBrQ5Z7nGd7a7kAvauo1pgC
+   JwcexCbEEFoBfWP65c9KvDNN+YOds26sbFW8fn0YmJJmi40iEJCxhim0p
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11007"; a="8485088"
+X-IronPort-AV: E=Sophos;i="6.07,110,1708416000"; 
+   d="scan'208";a="8485088"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 13:01:18 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,110,1708416000"; 
+   d="scan'208";a="15067143"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 13:01:17 -0800
+Date: Fri, 8 Mar 2024 13:01:16 -0800
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: Yin Fengwei <fengwei.yin@intel.com>
+Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+	Sean Christopherson <seanjc@google.com>,
+	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
+	isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v19 014/130] KVM: Add KVM vcpu ioctl to pre-populate
+ guest memory
+Message-ID: <20240308210116.GB713729@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <8b7380f1b02f8e3995f18bebb085e43165d5d682.1708933498.git.isaku.yamahata@intel.com>
+ <6b453972-2723-47c5-981e-56c150f217d7@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240308172726.225357-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20240308172726.225357-4-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdW56ihcdZE_=y5MgURbmFjuPXkVjnHtA8HZ+BWznrvTXA@mail.gmail.com>
-In-Reply-To: <CAMuHMdW56ihcdZE_=y5MgURbmFjuPXkVjnHtA8HZ+BWznrvTXA@mail.gmail.com>
-From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date: Fri, 8 Mar 2024 21:00:47 +0000
-Message-ID: <CA+V-a8uHHM3MY+CpGOmTdc_jn++bgngUqkZgVQgyBfF2jOXHXQ@mail.gmail.com>
-Subject: Re: [PATCH 3/5] i2c: riic: Introduce helper functions for I2C
- read/write operations
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Chris Brandt <chris.brandt@renesas.com>, Andi Shyti <andi.shyti@kernel.org>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Magnus Damm <magnus.damm@gmail.com>, Wolfram Sang <wsa+renesas@sang-engineering.com>, 
-	linux-renesas-soc@vger.kernel.org, linux-i2c@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Fabrizio Castro <fabrizio.castro.jz@renesas.com>, 
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <6b453972-2723-47c5-981e-56c150f217d7@intel.com>
 
-Hi Geert,
+On Thu, Mar 07, 2024 at 03:01:11PM +0800,
+Yin Fengwei <fengwei.yin@intel.com> wrote:
 
-Thank you for the review.
-
-On Fri, Mar 8, 2024 at 7:47=E2=80=AFPM Geert Uytterhoeven <geert@linux-m68k=
-org> wrote:
->
-> Hi Prabhakar,
->
-> On Fri, Mar 8, 2024 at 6:28=E2=80=AFPM Prabhakar <prabhakar.csengg@gmail.=
-com> wrote:
-> > From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> >
-> > Introduce helper functions for performing I2C read and write operations
-> > in the RIIC driver.
-> >
-> > These helper functions lay the groundwork for adding support for the
-> > RZ/V2H SoC. This is essential because the register offsets for the RZ/V=
-2H
-> > SoC differ from those of the RZ/A SoC. By abstracting the read and writ=
-e
-> > operations, we can seamlessly adapt the driver to support different SoC
-> > variants without extensive modifications.
-> >
-> > This patch is part of the preparation process for integrating support f=
-or
-> > the RZ/V2H SoC into the RIIC driver.
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > Reviewed-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
->
-> Thanks for your patch!
->
-> > --- a/drivers/i2c/busses/i2c-riic.c
-> > +++ b/drivers/i2c/busses/i2c-riic.c
-> > @@ -105,9 +105,19 @@ struct riic_irq_desc {
-> >         char *name;
-> >  };
-> >
-> > +static inline void riic_writeb_reg(u8 val, struct riic_dev *riic, u8 o=
-ffset)
->
-> Having "riic" in the middle is definitely the wrong order of parameters ;=
--)
-> Please make "riic" the first parameter.
->
-Agreed, will do.
-
+> > diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> > index 0349e1f241d1..2f0a8e28795e 100644
+> > --- a/virt/kvm/kvm_main.c
+> > +++ b/virt/kvm/kvm_main.c
+> > @@ -4409,6 +4409,62 @@ static int kvm_vcpu_ioctl_get_stats_fd(struct kvm_vcpu *vcpu)
+> >  	return fd;
+> >  }
+> >  
+> > +__weak void kvm_arch_vcpu_pre_memory_mapping(struct kvm_vcpu *vcpu)
 > > +{
-> > +       writeb(val, riic->base + offset);
 > > +}
 > > +
-> > +static inline u8 riic_readb_reg(struct riic_dev *riic, u8 offset)
+> > +__weak int kvm_arch_vcpu_memory_mapping(struct kvm_vcpu *vcpu,
+> > +					struct kvm_memory_mapping *mapping)
 > > +{
-> > +       return readb(riic->base + offset);
+> > +	return -EOPNOTSUPP;
 > > +}
->
->
-> > -       writeb(0, riic->base + RIIC_ICSR2);
-> > +       riic_writeb_reg(0, riic, RIIC_ICSR2);
->
-> This clearly shows that the new accessors involve more typing work.
-> Why not just call them riic_writeb() and riic_readb()?
->
-Ok, I'll rename them to riic_writeb() and riic_readb().
+> > +
+> > +static int kvm_vcpu_memory_mapping(struct kvm_vcpu *vcpu,
+> > +				   struct kvm_memory_mapping *mapping)
+> > +{
+> > +	bool added = false;
+> > +	int idx, r = 0;
+> > +
+> > +	/* flags isn't used yet. */
+> > +	if (mapping->flags)
+> > +		return -EINVAL;
+> > +
+> > +	/* Sanity check */
+> > +	if (!IS_ALIGNED(mapping->source, PAGE_SIZE) ||
+> > +	    !mapping->nr_pages ||
+> > +	    mapping->nr_pages & GENMASK_ULL(63, 63 - PAGE_SHIFT) ||
+> > +	    mapping->base_gfn + mapping->nr_pages <= mapping->base_gfn)
+> I suppose !mapping->nr_pages can be deleted as this line can cover it.
+> > +		return -EINVAL;
+> > +
+> > +	vcpu_load(vcpu);
+> > +	idx = srcu_read_lock(&vcpu->kvm->srcu);
+> > +	kvm_arch_vcpu_pre_memory_mapping(vcpu);
+> > +
+> > +	while (mapping->nr_pages) {
+> > +		if (signal_pending(current)) {
+> > +			r = -ERESTARTSYS;
+> > +			break;
+> > +		}
+> > +
+> > +		if (need_resched())
+> > +			cond_resched();
+> > +
+> > +		r = kvm_arch_vcpu_memory_mapping(vcpu, mapping);
+> > +		if (r)
+> > +			break;
+> > +
+> > +		added = true;
+> > +	}
+> > +
+> > +	srcu_read_unlock(&vcpu->kvm->srcu, idx);
+> > +	vcpu_put(vcpu);
+> > +
+> > +	if (added && mapping->nr_pages > 0)
+> > +		r = -EAGAIN;
+> > +
+> > +	return r;
+> > +}
+> > +
+> >  static long kvm_vcpu_ioctl(struct file *filp,
+> >  			   unsigned int ioctl, unsigned long arg)
+> >  {
+> > @@ -4610,6 +4666,17 @@ static long kvm_vcpu_ioctl(struct file *filp,
+> >  		r = kvm_vcpu_ioctl_get_stats_fd(vcpu);
+> >  		break;
+> >  	}
+> > +	case KVM_MEMORY_MAPPING: {
+> > +		struct kvm_memory_mapping mapping;
+> > +
+> > +		r = -EFAULT;
+> > +		if (copy_from_user(&mapping, argp, sizeof(mapping)))
+> > +			break;
+> > +		r = kvm_vcpu_memory_mapping(vcpu, &mapping);
+> return value r should be checked before copy_to_user
 
-Cheers,
-Prabhakar
+That's intentional to tell the mapping is partially or fully processed
+regardless that error happened or not.
+
+> 
+> 
+> Regards
+> Yin, Fengwei
+> 
+> > +		if (copy_to_user(argp, &mapping, sizeof(mapping)))
+> > +			r = -EFAULT;
+> > +		break;
+> > +	}
+> >  	default:
+> >  		r = kvm_arch_vcpu_ioctl(filp, ioctl, arg);
+> >  	}
+> 
+
+-- 
+Isaku Yamahata <isaku.yamahata@intel.com>
 
