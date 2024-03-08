@@ -1,208 +1,124 @@
-Return-Path: <linux-kernel+bounces-97548-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97540-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A07CB876BCB
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 21:24:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8B8C876BB0
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 21:22:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 183041F21EB9
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 20:24:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 551CAB21480
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 20:22:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C30255E081;
-	Fri,  8 Mar 2024 20:23:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="JA++mUN6"
-Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D219F5D8EE;
+	Fri,  8 Mar 2024 20:22:34 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 072A25CDF7
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 20:23:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 605542D60B;
+	Fri,  8 Mar 2024 20:22:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709929426; cv=none; b=EMr2SMk5CNPzb0WeG7g8C00HnlWG0Sb7L43cdTR9jABzzzm1125Ai7CUSHuvJSbFiYbGtUpNHR3BRVZ94WnD+ZtjqbSnnRF0JIovOQqvURcm77UXNyX2fXW9MMb4C0xkijZ6VH06fzbNqjz07r9iv7OptIzQNW4h1MZyZfMWmxU=
+	t=1709929354; cv=none; b=R9FANjdopi8SDLS8vImykYCTjV02/cNPhGi3YVgR+0dGtMhwqtcHA44iSRPL37EscEuec9PXCbo7JQFv5Dqvs2/3DFbqrJw+5wbB4k2IZ9p8+nzq3T/NMvaJRbhu1tSwjr2ZL5RWBFieZrMJ4KAgjOUxve6DpJ2Ox6AcgwvnS30=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709929426; c=relaxed/simple;
-	bh=rY0A8eHAZI5cB1A3V08JRigtUPLCemhE15iuR8N+mnw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=idam/7DfJMbg+iuU1zmHx5FOVrUVb6G6F0mXKObI8ejheCVaoLzQzTL17wkqqlB14tF7AA30xCANSf7BukTInavK4JZUx+1S0wpEgxnws6tPeYN/xiqS0zfEvCYrhqzbFQL8nUF7R7z30GTg+BNNd2YhFiD1HJLSgAzGg2NAvsU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=JA++mUN6; arc=none smtp.client-ip=209.85.161.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-5a1bc321852so787386eaf.2
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 12:23:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1709929424; x=1710534224; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LwAnb64EwkeKmrTREui8emTN6ZYCNogBTHISie/yQU0=;
-        b=JA++mUN6qf41+Xed6p4Z+H5PhtGQNIDEvXPgdgaIPFZELSI7wqn38/PePhxy879qVa
-         dxvja0Op082DnEjyrhAwgqIGSwEe1Z+iiA76lNBYh7zWqTNBPdJd/EXg21KmLtPdqwWU
-         w1JBMNk8sOCzFjKW/t5qyzJ31cKXQri3BrrE2w52j0hnWoz1ZDuTE5reXXgGN44KF6ct
-         YvuLwUjssC4rdjcP9SM6lAVDhjlqcQD0DfQ3ugh7PgeY21/eqmaynXx0fy/OS0oA2srm
-         rrMAlpE+MeXB7kp7BX2B6EKe7DQosXXKGixCM/qaWs9swVugGCsuRGw4FDmVB+tOcNC6
-         E1ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709929424; x=1710534224;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LwAnb64EwkeKmrTREui8emTN6ZYCNogBTHISie/yQU0=;
-        b=jxmcbLGIMFuTjEbamNqlBml4HnrS0PFzPOpftiVkmgVkHegOO5O6dddvuDUE+If36z
-         N2pCF11bFpYFJC1dCwu1+kt97HyYA3AY3UtOGAcTcigyA20TPWbgbcalwS2JxgzrjCYz
-         Df4BV9z0xpOfM02HrRZU95iDIksxPVRo8S9GzvFFrRttEnjqIVVZSnJTlauGYmt8Sbb9
-         TpURlcucVcJSSSXfHxXyF67WNGsLUhPrIOO24mviHXZh1iWL0N08ARzCwgtObR5oTOKS
-         Gd6lp6CXtA+NAo5yqykcdE6CvVUnhqlgzS/9jt7hABL5TwKHng2szgQTzyXnnNjQCCaP
-         vdYQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUd8GAPqm0Kw4YaOg0hlCEmQcwLIdUKcUPtetobUIIJcRXcfsQ673lHtyK5mmd8muS6oMAhoylV1AwDdJ89SBui09fzPxpQPRg0JUE2
-X-Gm-Message-State: AOJu0Yy3Jjfj206hbD/EDJg+6jviHRh37taRGLcOOeEvLXcC2WGASzKk
-	eGI+EUbwBYMWYZrWGyY0xRdzgorzQOhGuLhY87hiqfhaF344zbMefss0y9skQ38=
-X-Google-Smtp-Source: AGHT+IF/qfykmuaRb5uNoRhqiqioiMWJKv2ds3n4ZiUYzIpQ3ydAyGQZJUUw4tTE2mYtsW4uV3seEQ==
-X-Received: by 2002:a4a:311e:0:b0:5a1:c4b6:bb76 with SMTP id k30-20020a4a311e000000b005a1c4b6bb76mr357202ooa.5.1709929424080;
-        Fri, 08 Mar 2024 12:23:44 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
-        by smtp.gmail.com with ESMTPSA id p14-20020a056830130e00b006e513edb0e3sm18031otq.17.2024.03.08.12.23.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Mar 2024 12:23:43 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1rigko-007vqd-D8;
-	Fri, 08 Mar 2024 16:23:42 -0400
-Date: Fri, 8 Mar 2024 16:23:42 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Leon Romanovsky <leon@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-	Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-	Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
-	Keith Busch <kbusch@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	=?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-	iommu@lists.linux.dev, linux-nvme@lists.infradead.org,
-	kvm@vger.kernel.org, linux-mm@kvack.org,
-	Bart Van Assche <bvanassche@acm.org>,
-	Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-	Amir Goldstein <amir73il@gmail.com>,
-	"josef@toxicpanda.com" <josef@toxicpanda.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	"daniel@iogearbox.net" <daniel@iogearbox.net>,
-	Dan Williams <dan.j.williams@intel.com>,
-	"jack@suse.com" <jack@suse.com>, Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [RFC RESEND 00/16] Split IOMMU DMA mapping operation to two steps
-Message-ID: <20240308202342.GZ9225@ziepe.ca>
-References: <20240305122935.GB36868@unreal>
- <20240306144416.GB19711@lst.de>
- <20240306154328.GM9225@ziepe.ca>
- <20240306162022.GB28427@lst.de>
- <20240306174456.GO9225@ziepe.ca>
- <20240306221400.GA8663@lst.de>
- <20240307000036.GP9225@ziepe.ca>
- <20240307150505.GA28978@lst.de>
- <20240307210116.GQ9225@ziepe.ca>
- <20240308164920.GA17991@lst.de>
+	s=arc-20240116; t=1709929354; c=relaxed/simple;
+	bh=Bfcz+ch/WDp/CnGyCAsW9l/B8/ERIAXXzUoqKYlPxBU=;
+	h=Message-ID:Date:From:To:Cc:Subject; b=oVGmeSgnGk4VdGS51nFuHDlx8+B4LCRZOzNwznGnn4pB+ulFzc5AC42pdm25BinOsXmFD14SLctSVjSu/4T/uBnsyr1pkV1sSOHxf0sxoYkuTsDcWGUK+2peZ+wqneGy7mFPjwcTrQhMRxV7ascrzXwBwh6noc365m819Y/yxuc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7190C433C7;
+	Fri,  8 Mar 2024 20:22:33 +0000 (UTC)
+Received: from rostedt by gandalf with local (Exim 4.97)
+	(envelope-from <rostedt@goodmis.org>)
+	id 1riglb-00000000yq9-3DuL;
+	Fri, 08 Mar 2024 15:24:31 -0500
+Message-ID: <20240308202402.234176464@goodmis.org>
+User-Agent: quilt/0.67
+Date: Fri, 08 Mar 2024 15:24:02 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org
+Cc: Masami Hiramatsu <mhiramat@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ joel@joelfernandes.org,
+ linke li <lilinke99@qq.com>,
+ Rabin Vincent <rabin@rab.in>
+Subject: [PATCH v2 0/6] tracing/ring-buffer: Fix wakeup of ring buffer waiters
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240308164920.GA17991@lst.de>
 
-On Fri, Mar 08, 2024 at 05:49:20PM +0100, Christoph Hellwig wrote:
-> On Thu, Mar 07, 2024 at 05:01:16PM -0400, Jason Gunthorpe wrote:
-> > > 
-> > > It's just kinda hard to do.  For aligned IOMMU mapping you'd only
-> > > have one dma_addr_t mappings (or maybe a few if P2P regions are
-> > > involved), so this probably doesn't matter.  For direct mappings
-> > > you'd have a few, but maybe the better answer is to use THP
-> > > more aggressively and reduce the number of segments.
-> > 
-> > Right, those things have all been done. 100GB of huge pages is still
-> > using a fair amount of memory for storing dma_addr_t's.
-> > 
-> > It is hard to do perfectly, but I think it is not so bad if we focus
-> > on the direct only case and simple systems that can exclude swiotlb
-> > early on.
-> 
-> Even with direct mappings only we still need to take care of
-> cache synchronization.
 
-Yes, we still have to unmap, but the unmap for cache synchronization
-doesn't need the dma_addr_t to flush the CPU cache.
+A patch was sent to "fix" the wait_index variable that is used to help with
+waking of waiters on the ring buffer. The patch was rejected, but I started
+looking at associated code. Discussing it on IRC with Mathieu Desnoyers
+we discovered a design flaw.
 
-> > > If all flows includes multiple non-coalesced regions that just makes
-> > > things very complicated, and that's exactly what I'd want to avoid.
-> > 
-> > I don't see how to avoid it unless we say RDMA shouldn't use this API,
-> > which is kind of the whole point from my perspective..
-> 
-> The DMA API callers really need to know what is P2P or not for
-> various reasons.  And they should generally have that information
-> available, either from pin_user_pages that needs to special case
-> it or from the in-kernel I/O submitter that build it from P2P and
-> normal memory.
+The waiter reads "wait_index" then enters a "wait loop". After adding
+itself to the wait queue, if the buffer is filled or a signal is pending
+it will exit out. If wait_index is different, it will also exit out.
+(Note, I noticed that the check for wait_index was after the schedule()
+call and should have been before it, but that's besides the point).
 
-I think that is a BIO thing. RDMA just calls with FOLL_PCI_P2PDMA and
-shoves the resulting page list into in a scattertable. It never checks
-if any returned page is P2P - it has no reason to care. dma_map_sg()
-does all the work.
+The race is what happens if the waker updates the wait_index,
+a new waiter comes in and reads the updated wait_index before it adds
+itself to the queue, it will miss the update!
 
-That is the kind of abstraction I am coming to this problem with.
+This is a series of changes to fix the design, and other bugs found
+along the way.
 
-You are looking at BIO where you already needed to split things up for
-other reasons, but I think that is a uniquely block thing that will
-not be shared in other subsystems.
+1) Remove the wait loop in the ring_buffer_wait() code. It doesn't
+   have enough context to know if it should continue to wait.
 
-> > If you don't preserve that then we are calling, 4k at a time, a
-> > dma_map_page() which is not anywhere close to the same outcome as what
-> > dma_map_sg did. I may not get contiguous IOVA, I may not get 3 SGLs,
-> > and we call into the IOVA allocator a huge number of times.
-> 
-> Again, your callers must know what is a P2P region and what is not.
+2) Fix "shortest_full" accounting. When zero, it gets set to the
+   smallest percentage requested of the buffer before the writers need to
+   start waking up waiters. But after waiters are all woken up,
+   it never gets reset, so the smallest value will always be the
+   smallest value until the buffer itself is reset.
 
-I don't see this at all. We don't do this today in RDMA. There is no
-"P2P region".
+3) The wake up of readers on close was incorrectly added to the
+   .release() callback and not the .flush(). That is, waiters
+   in the .read() call, will never be woken up because .release()
+   isn't called until all .read()s have finished. Move the wakeup
+   to .flush() which is called immediately by close().
 
-> > > That's why I really just want 2 cases.  If the caller guarantees the
-> > > range is coalescable and there is an IOMMU use the iommu-API like
-> > > API, else just iter over map_single/page.
-> > 
-> > But how does the caller even know if it is coalescable? Other than the
-> > trivial case of a single CPU range, that is a complicated detail based
-> > on what pages are inside the range combined with the capability of the
-> > device doing DMA. I don't see a simple way for the caller to figure
-> > this out. You need to sweep every page and collect some information on
-> > it. The above is to abstract that detail.
-> 
-> dma_get_merge_boundary already provides this information in terms
-> of the device capabilities.  And given that the callers knows what
-> is P2P and what is not we have all the information that is needed.
+4) Add a "waking" field to the trace iterator that gets set when a
+   waker wants to wake up the readers. For the .flush() callback,
+   it is set and never cleared to make sure new readers do not block.
 
-Encrypted memory too.
+5/6) Break up ring_buffer_wait() into three functions:
 
-RDMA also doesn't call dma_get_merge_boundary(). It doesn't keep track
-of P2P regions. It doesn't break out encrypted memory. It has no
-purpose to do any of those things.
+  ring_buffer_prepare_to_wait()
+  ring_buffer_wait()
+  ring_buffer_finish_wait()
 
-You fundamentally cannot subdivide a memory registration.
+    This allows the caller to add itself to the wait queue, check
+    if its own condition has been set (in this case: iter->waking)
+    and then sleep. Follows the same semantics as any other wait logic.
 
-So we could artificially introduce the concept of limited coalescing
-into RDMA, dmabuf and others just to drive this new API - but really
-that feels much much worse than just making the DMA API still able to
-do IOMMU coalescing in more cases.
 
-Even if we did that, it will still be less efficient than today where
-we just call dma_map_sg() on the jumble of pages.
+Changes since v1: https://lore.kernel.org/lkml/20240308183816.676883229@goodmis.org/
 
-Jason
+- My tests triggered a warning about calling a mutex_lock() after a
+  prepare_to_wait() that changed the task's state. Convert the affected
+  mutex over to a spinlock.
+
+Steven Rostedt (Google) (6):
+      ring-buffer: Fix waking up ring buffer readers
+      ring-buffer: Fix resetting of shortest_full
+      tracing: Use .flush() call to wake up readers
+      tracing: Fix waking up tracing readers
+      ring-buffer: Restructure ring_buffer_wait() to prepare for updates
+      tracing/ring-buffer: Fix wait_on_pipe() race
+
+----
+ include/linux/ring_buffer.h  |   4 +
+ include/linux/trace_events.h |   3 +-
+ kernel/trace/ring_buffer.c   | 251 +++++++++++++++++++++++++++----------------
+ kernel/trace/trace.c         | 131 ++++++++++++++++++----
+ 4 files changed, 272 insertions(+), 117 deletions(-)
 
