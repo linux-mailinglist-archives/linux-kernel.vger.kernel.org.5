@@ -1,105 +1,213 @@
-Return-Path: <linux-kernel+bounces-97555-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97556-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43016876BE3
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 21:33:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72E27876BE5
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 21:34:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 73EEC1C2174C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 20:33:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 95F8F1C21288
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 20:34:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2161A5E077;
-	Fri,  8 Mar 2024 20:33:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Y9f9RbSq";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="MOUx0g/2"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECE6E31A66;
-	Fri,  8 Mar 2024 20:33:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9177B5E070;
+	Fri,  8 Mar 2024 20:34:15 +0000 (UTC)
+Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
+	by smtp.subspace.kernel.org (Postfix) with SMTP id DC92B50A80
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 20:34:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.131.102.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709930014; cv=none; b=Qi3ePBDTcPylSN0z8WBFv0gYP/1zfGynknf2KWY/6IZjXNuD+JLJfFMmIknRlF5yDWajAT6/ntLmoUrlBReI+5m8DAPnAj1LDW2AVWBEZCaUajct9GYa4A6eK0uje88AAyXog66cDzrMWl9OJ2Wo4cqDesymIvC0cJoZnZ590co=
+	t=1709930055; cv=none; b=NkML2CNnw++vRh7hu9M4GtNksYvXatwexzgS4S1V935LD0V1oUpxibdwSiiCatFpQYPwClTekU38QliSwCK3gcDlFRazwHp61V1ul77/QdsEqEzlJ9ouOtIkn3LXULAodb4Um64LzpFSumYRjLWbKMfSSRzpANFkMm2Q0H4piMs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709930014; c=relaxed/simple;
-	bh=mbU8isap81SxzNzDKLf+EXRxnmhyRYSIpTTrNxuafgw=;
+	s=arc-20240116; t=1709930055; c=relaxed/simple;
+	bh=IZaH6aC/i1n7v7img2naof+9A7gZ7xNYIB9VhpQKeaA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sOPzkLyt2YfrcOF+ESaSSsTYP+honxhjr9I2onevDVCYaZQ9ZJAF7d9KI9po0melq34ghTpneR0XlAFmPQR2paXK/wNuLDLMEOHmdxfIF2yKexcrr2nGRFziqLBzVcnZ/6l4ExxPOey8UpoRvZZaPM1ML1qQgMb018OIS0Ehr+o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Y9f9RbSq; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=MOUx0g/2; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Fri, 8 Mar 2024 21:33:28 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1709930010;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vwt+VDLDRvl/LmacdV+mArgWDFVTfPr6L4CGq1jg7iM=;
-	b=Y9f9RbSqdey9V8dfdCvfDsnukOebtoJo+6d2pQKjR7kElvsby2DO2FvbgifxygGaG6lWZS
-	Ju8mCG9/05W3bHjnk+GD4SeMi2yIjHt+UYM1CvCRHEKZm0ntRs+qJAMWeh7ta+s3YlIseu
-	Wj3UNnRnSyAC5Fg8Z35dJu1hZXKwOjWd0biYGjnihXAq+1Hw56B9wPO1Qbfag96ZKDLl+k
-	wBNHhNyOixrZuoVwuQ/gQXESQ02d/o4Q2oNOBQRiyfQJIb9F+gBWSEH7RRGhzcr3vOej/F
-	oxOKYImAFl85qeUIjI4l2y1ZlZOjM0DiiUQgYCazCGJl1yHrEIgW5a5diGuBsQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1709930010;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vwt+VDLDRvl/LmacdV+mArgWDFVTfPr6L4CGq1jg7iM=;
-	b=MOUx0g/2AvvcSiTbU8MX33za3/D88DDcKUIh16xlqY3skmnxiyrhRHlAgdgLf2qsj2+Ce/
-	q5/pd0mZvSVkZ/Aw==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Haiyang Zhang <haiyangz@microsoft.com>
-Cc: Jakub Kicinski <kuba@kernel.org>,
-	Shradha Gupta <shradhagupta@linux.microsoft.com>,
-	Shradha Gupta <shradhagupta@microsoft.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	Ajay Sharma <sharmaajay@microsoft.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	KY Srinivasan <kys@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
-	Dexuan Cui <decui@microsoft.com>, Long Li <longli@microsoft.com>,
-	Paul Rosswurm <paulros@microsoft.com>,
-	Alireza Dabagh <alid@microsoft.com>,
-	Sharath George John <sgeorgejohn@microsoft.com>
-Subject: Re: RE: [PATCH] net :mana : Add per-cpu stats for MANA device
-Message-ID: <20240308203328.IvakSEHd@linutronix.de>
-References: <1709823132-22411-1-git-send-email-shradhagupta@linux.microsoft.com>
- <20240307072923.6cc8a2ba@kernel.org>
- <DM6PR21MB14817597567C638DEF020FE3CA202@DM6PR21MB1481.namprd21.prod.outlook.com>
- <20240307090145.2fc7aa2e@kernel.org>
- <CH2PR21MB1480D3ACADFFD2FC3B1BB7ECCA272@CH2PR21MB1480.namprd21.prod.outlook.com>
- <20240308112244.391b3779@kernel.org>
- <CH2PR21MB1480D4AE8D329B5F00B184A7CA272@CH2PR21MB1480.namprd21.prod.outlook.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=FAvfOx36aAmkTvlG7E4AbLFDeS55QbaTifDrUKGtI6LKUB2WHdFBdKhZTv4C2JEicrduOtiTwHz0Kj1Rjggs4uWDgd9xUsYkJdZO9jHr1VBJGuAbUYZUifvDLKpGcFzZ4tl7RQ+fInV5YrqjtJ1qxOR2kxgDynVXZi2iHPo2n6M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu; spf=pass smtp.mailfrom=netrider.rowland.org; arc=none smtp.client-ip=192.131.102.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netrider.rowland.org
+Received: (qmail 271622 invoked by uid 1000); 8 Mar 2024 15:34:04 -0500
+Date: Fri, 8 Mar 2024 15:34:04 -0500
+From: Alan Stern <stern@rowland.harvard.edu>
+To: Dingyan Li <18500469033@163.com>
+Cc: gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+  linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] USB: Use EHCI control transfer pid macros instead of
+ constant values.
+Message-ID: <37bdd932-07a4-4514-a5cc-b70d48c962a6@rowland.harvard.edu>
+References: <1e7f57d6-a4c1-4a3d-8cff-f966c89a8140@rowland.harvard.edu>
+ <20240308010859.81987-1-18500469033@163.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CH2PR21MB1480D4AE8D329B5F00B184A7CA272@CH2PR21MB1480.namprd21.prod.outlook.com>
+In-Reply-To: <20240308010859.81987-1-18500469033@163.com>
 
-On 2024-03-08 19:43:57 [+0000], Haiyang Zhang wrote:
-> > Do you have experimental data showing this making a difference
-> > in production?
-> Shradha, could you please add some data before / after enabling irqbalancer 
-> which changes cpu affinity?
+On Fri, Mar 08, 2024 at 09:08:59AM +0800, Dingyan Li wrote:
+> Macros with good names offer better readability. Besides, also move
+> the definition to ehci.h.
+> 
+> Signed-off-by: Dingyan Li <18500469033@163.com>
+> ---
 
-so you have one queue and one interrupt and then the irqbalancer is
-pushing the interrupt from CPU to another. What kind of information do
-you gain from per-CPU counters here?
+You found some things that I missed!  Good for you.  When you resubmit 
+with a list of changes from the original version, you can add:
 
-> Thanks,
-> - Haiyang
+Reviewed-by: Alan Stern <stern@rowland.harvard.edu>
 
-Sebastian
+>  drivers/usb/host/ehci-dbg.c | 10 +++++-----
+>  drivers/usb/host/ehci-q.c   | 20 ++++++++------------
+>  drivers/usb/host/ehci.h     |  8 +++++++-
+>  3 files changed, 20 insertions(+), 18 deletions(-)
+> 
+> diff --git a/drivers/usb/host/ehci-dbg.c b/drivers/usb/host/ehci-dbg.c
+> index c063fb042926..435001128221 100644
+> --- a/drivers/usb/host/ehci-dbg.c
+> +++ b/drivers/usb/host/ehci-dbg.c
+> @@ -430,13 +430,13 @@ static void qh_lines(struct ehci_hcd *ehci, struct ehci_qh *qh,
+>  				mark = '/';
+>  		}
+>  		switch ((scratch >> 8) & 0x03) {
+> -		case 0:
+> +		case PID_CODE_OUT:
+>  			type = "out";
+>  			break;
+> -		case 1:
+> +		case PID_CODE_IN:
+>  			type = "in";
+>  			break;
+> -		case 2:
+> +		case PID_CODE_SETUP:
+>  			type = "setup";
+>  			break;
+>  		default:
+> @@ -602,10 +602,10 @@ static unsigned output_buf_tds_dir(char *buf, struct ehci_hcd *ehci,
+>  	list_for_each_entry(qtd, &qh->qtd_list, qtd_list) {
+>  		temp++;
+>  		switch ((hc32_to_cpu(ehci, qtd->hw_token) >> 8)	& 0x03) {
+> -		case 0:
+> +		case PID_CODE_OUT:
+>  			type = "out";
+>  			continue;
+> -		case 1:
+> +		case PID_CODE_IN:
+>  			type = "in";
+>  			continue;
+>  		}
+> diff --git a/drivers/usb/host/ehci-q.c b/drivers/usb/host/ehci-q.c
+> index 666f5c4db25a..ba37a9fcab92 100644
+> --- a/drivers/usb/host/ehci-q.c
+> +++ b/drivers/usb/host/ehci-q.c
+> @@ -27,10 +27,6 @@
+>  
+>  /*-------------------------------------------------------------------------*/
+>  
+> -/* PID Codes that are used here, from EHCI specification, Table 3-16. */
+> -#define PID_CODE_IN    1
+> -#define PID_CODE_SETUP 2
+> -
+>  /* fill a qtd, returning how much of the buffer we were able to queue up */
+>  
+>  static unsigned int
+> @@ -230,7 +226,7 @@ static int qtd_copy_status (
+>  			/* fs/ls interrupt xfer missed the complete-split */
+>  			status = -EPROTO;
+>  		} else if (token & QTD_STS_DBE) {
+> -			status = (QTD_PID (token) == 1) /* IN ? */
+> +			status = (QTD_PID(token) == PID_CODE_IN) /* IN ? */
+>  				? -ENOSR  /* hc couldn't read data */
+>  				: -ECOMM; /* hc couldn't write data */
+>  		} else if (token & QTD_STS_XACT) {
+> @@ -606,7 +602,7 @@ qh_urb_transaction (
+>  		/* SETUP pid */
+>  		qtd_fill(ehci, qtd, urb->setup_dma,
+>  				sizeof (struct usb_ctrlrequest),
+> -				token | (2 /* "setup" */ << 8), 8);
+> +				token | (PID_CODE_SETUP << 8), 8);
+>  
+>  		/* ... and always at least one more pid */
+>  		token ^= QTD_TOGGLE;
+> @@ -620,7 +616,7 @@ qh_urb_transaction (
+>  
+>  		/* for zero length DATA stages, STATUS is always IN */
+>  		if (len == 0)
+> -			token |= (1 /* "in" */ << 8);
+> +			token |= (PID_CODE_IN << 8);
+>  	}
+>  
+>  	/*
+> @@ -642,7 +638,7 @@ qh_urb_transaction (
+>  	}
+>  
+>  	if (is_input)
+> -		token |= (1 /* "in" */ << 8);
+> +		token |= (PID_CODE_IN << 8);
+>  	/* else it's already initted to "out" pid (0 << 8) */
+>  
+>  	maxpacket = usb_endpoint_maxp(&urb->ep->desc);
+> @@ -709,7 +705,7 @@ qh_urb_transaction (
+>  
+>  		if (usb_pipecontrol (urb->pipe)) {
+>  			one_more = 1;
+> -			token ^= 0x0100;	/* "in" <--> "out"  */
+> +			token ^= (PID_CODE_IN << 8);	/* "in" <--> "out"  */
+>  			token |= QTD_TOGGLE;	/* force DATA1 */
+>  		} else if (usb_pipeout(urb->pipe)
+>  				&& (urb->transfer_flags & URB_ZERO_PACKET)
+> @@ -1203,7 +1199,7 @@ static int ehci_submit_single_step_set_feature(
+>  		/* SETUP pid, and interrupt after SETUP completion */
+>  		qtd_fill(ehci, qtd, urb->setup_dma,
+>  				sizeof(struct usb_ctrlrequest),
+> -				QTD_IOC | token | (2 /* "setup" */ << 8), 8);
+> +				QTD_IOC | token | (PID_CODE_SETUP << 8), 8);
+>  
+>  		submit_async(ehci, urb, &qtd_list, GFP_ATOMIC);
+>  		return 0; /*Return now; we shall come back after 15 seconds*/
+> @@ -1216,7 +1212,7 @@ static int ehci_submit_single_step_set_feature(
+>  	token ^= QTD_TOGGLE;   /*We need to start IN with DATA-1 Pid-sequence*/
+>  	buf = urb->transfer_dma;
+>  
+> -	token |= (1 /* "in" */ << 8);  /*This is IN stage*/
+> +	token |= (PID_CODE_IN << 8);  /*This is IN stage*/
+>  
+>  	maxpacket = usb_endpoint_maxp(&urb->ep->desc);
+>  
+> @@ -1229,7 +1225,7 @@ static int ehci_submit_single_step_set_feature(
+>  	qtd->hw_alt_next = EHCI_LIST_END(ehci);
+>  
+>  	/* STATUS stage for GetDesc control request */
+> -	token ^= 0x0100;        /* "in" <--> "out"  */
+> +	token ^= (PID_CODE_IN << 8);        /* "in" <--> "out"  */
+>  	token |= QTD_TOGGLE;    /* force DATA1 */
+>  
+>  	qtd_prev = qtd;
+> diff --git a/drivers/usb/host/ehci.h b/drivers/usb/host/ehci.h
+> index 1441e3400796..d7a3c8d13f6b 100644
+> --- a/drivers/usb/host/ehci.h
+> +++ b/drivers/usb/host/ehci.h
+> @@ -321,10 +321,16 @@ struct ehci_qtd {
+>  	size_t			length;			/* length of buffer */
+>  } __aligned(32);
+>  
+> +/* PID Codes that are used here, from EHCI specification, Table 3-16. */
+> +#define PID_CODE_OUT   0
+> +#define PID_CODE_IN    1
+> +#define PID_CODE_SETUP 2
+> +
+>  /* mask NakCnt+T in qh->hw_alt_next */
+>  #define QTD_MASK(ehci)	cpu_to_hc32(ehci, ~0x1f)
+>  
+> -#define IS_SHORT_READ(token) (QTD_LENGTH(token) != 0 && QTD_PID(token) == 1)
+> +#define IS_SHORT_READ(token) (QTD_LENGTH(token) != 0 && \
+> +						QTD_PID(token) == PID_CODE_IN)
+>  
+>  /*-------------------------------------------------------------------------*/
+>  
+> -- 
+> 2.25.1
+> 
 
