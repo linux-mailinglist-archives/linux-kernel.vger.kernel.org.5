@@ -1,128 +1,161 @@
-Return-Path: <linux-kernel+bounces-97584-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97587-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 507CB876C26
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 22:01:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DA70876C36
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 22:02:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B067283478
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 21:01:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D19CA1F218F6
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 21:02:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 811ED5FB9B;
-	Fri,  8 Mar 2024 21:00:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B68635F578;
+	Fri,  8 Mar 2024 21:01:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="LM8CdNqT"
-Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UDi+XCkQ"
+Received: from mail-vk1-f172.google.com (mail-vk1-f172.google.com [209.85.221.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B0AF5FB90
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 21:00:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50D4D5E073;
+	Fri,  8 Mar 2024 21:01:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709931647; cv=none; b=X6Zp2AprlCl25MZQFxaWYvKdCtBVHyzhqnpAYN754QUZuP84nOHcnDT+WuaJu3fgLu2P6j9/2ksZfCsQHzPRXxtL5om02IS4uEoFfi/HzvOkrFre4Los9rWjGjb90QAi22pL6hl5w9ONiUSLWARQN7tiKaY12rGNpwYqJl65DpM=
+	t=1709931717; cv=none; b=o9P7wadKAh5MQYt4hDFFZFKASvFt6UUeEnF4J254Fq3YDMAnLuxsoBfiMQVE1tptNqaYV5jB5AcxKjCnX3nQsSFV6iKfNnQbGkQUyRLDkuOnFCJoIqMb6DtzeD3T7mbWMaS5Sc1DB4XALJNEozNiJuukp77mZFy4Jr9OeGHWPI0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709931647; c=relaxed/simple;
-	bh=PfOtw4OihwZuOwZcHtxjLP/RlXrLSDvq77dCrKgYKKo=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=rOlAR7StUGeA05wvWcw/Mm5tEei16NKI+MC7ksHMXVRNtfJW7Bh4x48fp3klBPdH9cTcF2C1flsV6Pt03UZNdLJIHIV6iobo4TpxtxhrXMdXaLPZvzhjYKMbmE5CNVlAYApaQ6WZqhT9S76iy2NlX3Fds5bv6HnsHvJk1Rvo6s0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=LM8CdNqT; arc=none smtp.client-ip=95.215.58.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1709931644;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3TBItYHtNpx6y+be/gmPb27c0lB7KPRGke/Atz5DFWA=;
-	b=LM8CdNqT0MBTgf9TwPay3IyWuxlOK352de/uQ2LfvOQ3j0wQXrJxi6XmPm08hhqA1uqcXP
-	o+r16RKkbia3KozpbmnzKugqodpFmc7a3+mgAuXVKMtSv1LFI32Vm09Omv+pWAL0MJPPEH
-	T071LojHi+2P2g3dsvDAjfrKbdfkfb4=
-From: Sean Anderson <sean.anderson@linux.dev>
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-	Vinod Koul <vkoul@kernel.org>,
-	dmaengine@vger.kernel.org
-Cc: Michal Simek <michal.simek@amd.com>,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	Sean Anderson <sean.anderson@linux.dev>
-Subject: [PATCH 3/3] dma: Add lockdep asserts to virt-dma
-Date: Fri,  8 Mar 2024 16:00:34 -0500
-Message-Id: <20240308210034.3634938-4-sean.anderson@linux.dev>
-In-Reply-To: <20240308210034.3634938-1-sean.anderson@linux.dev>
-References: <20240308210034.3634938-1-sean.anderson@linux.dev>
+	s=arc-20240116; t=1709931717; c=relaxed/simple;
+	bh=XiN9Fa9QuOna06HjksVQ2Nm0qV0d3fdQcZqGcIcMRc0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=N4lRIQdftEf5N08rYMmW/pejbDyq7sCnSLCg8X0/H9VKtvnUy/32uD0AA0jalqmKoYJEJq/5m+ruKEneTF5CVsnhC6KWXdymUUI1fOXVWZNseTK/xhFgFXqzr93cPjOwFUcuHDnGOO6zjAdMsFXfqnuwY7qKIJWPyn29wR0bS2g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UDi+XCkQ; arc=none smtp.client-ip=209.85.221.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f172.google.com with SMTP id 71dfb90a1353d-4d34abf66deso282670e0c.1;
+        Fri, 08 Mar 2024 13:01:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709931714; x=1710536514; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RCymEiGpipubs/MqTyZ4nrqmBe9tQmx2x+DjRvTmJuA=;
+        b=UDi+XCkQSCONS4zDom5uZXV3UG1FB48dhCuQthMCEbIM6jTlEehsg3AHMMLzKBl3Lq
+         1zsvjqFEaH+MA+f1406kzOhJXrw3Xk/5gbP8iTvfBaECxnjZou8Rnuo2rT8TqMwbmJQw
+         8qb4TwCHGqCIYBRMLbNv58oWsKS7LvXNVNp8YZQfy/F4uffe4TNjf7XWNiw6dzgwmhMr
+         8dZ7E0TxYFsdREsxkCACDsfuLyPIDy0UWHpui3PJDiXvpr7Lyi3f4njkyjIPxrBUQg3l
+         kl+6+fjmqcuZq9J2kNItj5XS/E68n8Zomb3521MvP48dXeFFBhGBw6gHfispK4lSDXzx
+         u7ig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709931714; x=1710536514;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RCymEiGpipubs/MqTyZ4nrqmBe9tQmx2x+DjRvTmJuA=;
+        b=amFuqJXaYv0vF7azrqutkLRn28aVs4yRUxj+q8IjsxYqjaJNvbUyw+k9mdXPc6DE3g
+         KsZZ50gQa5NUzOIzXkF3CUe7tEr0eJ+HOAJCe4qFHq0wvLOW2/fS2OpGhRVLSfQVGKyJ
+         TWdmyOYmxCVdG9GrvpnwK0UpKGSc85Y80l8ThvNZGE9Z4ZlOlHeKFJWSeRpJylGLDS/w
+         T8d5OynK8LS8Cr8Py6KXHSJE0VQc12CXZ4XqEVlBPwbP6XRqTgeKXknbzMsl4qNeVq/+
+         FQKnMraYqyKb0nwCSLOVHvizXZ+XoNsRkMtUXvRA73S/pCFzAQ1onY9OD2KiwCgBhia0
+         +tvw==
+X-Forwarded-Encrypted: i=1; AJvYcCWfqN9VVr3nwov6sitTCO8jiov7CkkmNZM7OouUpdENZY79XQxbuxjbC/Taq+aUQnwc5QLyCA3yEThgUL+pHYUmax7npaT0PpkLgSJKfwN0HaRNaRrfKDznSG5t0Uezq2iwMceb8otbwnRs/WRYgvB2R/wSQYKKUg8IzlP4rvpVg693B+baMDU8lK9IXpA1jWSq9pepNaESzrYQHK20b34y4AnQy2hd
+X-Gm-Message-State: AOJu0Yz6g9zabs1A7+uRG67zJBJgYfrODzZ0fJcX0Gpgp2OhB6+xaJ3H
+	uVshgY2DIYgdAGzzceYNP4Fv3Q14e0AtP9bS1G6bFW1O+QjawA8mQzcvW94d1RtBR2ztgb7A8Zt
+	5atWx70Mth3XDnFpmmDR0cwwFeig=
+X-Google-Smtp-Source: AGHT+IGnq51iE4+BqWlMAemT74cR1wABtqmatGGKO31Zy2uvzaKVgj19n72J8jv/Bl7YJRlXBZzTdV/xtxW3w4cCeDs=
+X-Received: by 2002:a05:6122:1c0e:b0:4d3:4aad:22d4 with SMTP id
+ et14-20020a0561221c0e00b004d34aad22d4mr555569vkb.0.1709931714135; Fri, 08 Mar
+ 2024 13:01:54 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20240308172726.225357-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20240308172726.225357-4-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdW56ihcdZE_=y5MgURbmFjuPXkVjnHtA8HZ+BWznrvTXA@mail.gmail.com>
+In-Reply-To: <CAMuHMdW56ihcdZE_=y5MgURbmFjuPXkVjnHtA8HZ+BWznrvTXA@mail.gmail.com>
+From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date: Fri, 8 Mar 2024 21:00:47 +0000
+Message-ID: <CA+V-a8uHHM3MY+CpGOmTdc_jn++bgngUqkZgVQgyBfF2jOXHXQ@mail.gmail.com>
+Subject: Re: [PATCH 3/5] i2c: riic: Introduce helper functions for I2C
+ read/write operations
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Chris Brandt <chris.brandt@renesas.com>, Andi Shyti <andi.shyti@kernel.org>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Magnus Damm <magnus.damm@gmail.com>, Wolfram Sang <wsa+renesas@sang-engineering.com>, 
+	linux-renesas-soc@vger.kernel.org, linux-i2c@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Fabrizio Castro <fabrizio.castro.jz@renesas.com>, 
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add lockdep asserts to all functions with "vc.lock must be held by
-caller" in their documentation. This will help catch cases where these
-assumptions do not hold.
+Hi Geert,
 
-Signed-off-by: Sean Anderson <sean.anderson@linux.dev>
----
+Thank you for the review.
 
- drivers/dma/virt-dma.h | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+On Fri, Mar 8, 2024 at 7:47=E2=80=AFPM Geert Uytterhoeven <geert@linux-m68k=
+org> wrote:
+>
+> Hi Prabhakar,
+>
+> On Fri, Mar 8, 2024 at 6:28=E2=80=AFPM Prabhakar <prabhakar.csengg@gmail.=
+com> wrote:
+> > From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> >
+> > Introduce helper functions for performing I2C read and write operations
+> > in the RIIC driver.
+> >
+> > These helper functions lay the groundwork for adding support for the
+> > RZ/V2H SoC. This is essential because the register offsets for the RZ/V=
+2H
+> > SoC differ from those of the RZ/A SoC. By abstracting the read and writ=
+e
+> > operations, we can seamlessly adapt the driver to support different SoC
+> > variants without extensive modifications.
+> >
+> > This patch is part of the preparation process for integrating support f=
+or
+> > the RZ/V2H SoC into the RIIC driver.
+> >
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > Reviewed-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+>
+> Thanks for your patch!
+>
+> > --- a/drivers/i2c/busses/i2c-riic.c
+> > +++ b/drivers/i2c/busses/i2c-riic.c
+> > @@ -105,9 +105,19 @@ struct riic_irq_desc {
+> >         char *name;
+> >  };
+> >
+> > +static inline void riic_writeb_reg(u8 val, struct riic_dev *riic, u8 o=
+ffset)
+>
+> Having "riic" in the middle is definitely the wrong order of parameters ;=
+-)
+> Please make "riic" the first parameter.
+>
+Agreed, will do.
 
-diff --git a/drivers/dma/virt-dma.h b/drivers/dma/virt-dma.h
-index e9f5250fbe4d..59d9eabc8b67 100644
---- a/drivers/dma/virt-dma.h
-+++ b/drivers/dma/virt-dma.h
-@@ -81,6 +81,8 @@ static inline struct dma_async_tx_descriptor *vchan_tx_prep(struct virt_dma_chan
-  */
- static inline bool vchan_issue_pending(struct virt_dma_chan *vc)
- {
-+	lockdep_assert_held(&vc->lock);
-+
- 	list_splice_tail_init(&vc->desc_submitted, &vc->desc_issued);
- 	return !list_empty(&vc->desc_issued);
- }
-@@ -96,6 +98,8 @@ static inline void vchan_cookie_complete(struct virt_dma_desc *vd)
- 	struct virt_dma_chan *vc = to_virt_chan(vd->tx.chan);
- 	dma_cookie_t cookie;
- 
-+	lockdep_assert_held(&vc->lock);
-+
- 	cookie = vd->tx.cookie;
- 	dma_cookie_complete(&vd->tx);
- 	dev_vdbg(vc->chan.device->dev, "txd %p[%x]: marked complete\n",
-@@ -146,6 +150,8 @@ static inline void vchan_terminate_vdesc(struct virt_dma_desc *vd)
- {
- 	struct virt_dma_chan *vc = to_virt_chan(vd->tx.chan);
- 
-+	lockdep_assert_held(&vc->lock);
-+
- 	list_add_tail(&vd->node, &vc->desc_terminated);
- 
- 	if (vc->cyclic == vd)
-@@ -160,6 +166,8 @@ static inline void vchan_terminate_vdesc(struct virt_dma_desc *vd)
-  */
- static inline struct virt_dma_desc *vchan_next_desc(struct virt_dma_chan *vc)
- {
-+	lockdep_assert_held(&vc->lock);
-+
- 	return list_first_entry_or_null(&vc->desc_issued,
- 					struct virt_dma_desc, node);
- }
-@@ -177,6 +185,8 @@ static inline struct virt_dma_desc *vchan_next_desc(struct virt_dma_chan *vc)
- static inline void vchan_get_all_descriptors(struct virt_dma_chan *vc,
- 	struct list_head *head)
- {
-+	lockdep_assert_held(&vc->lock);
-+
- 	list_splice_tail_init(&vc->desc_allocated, head);
- 	list_splice_tail_init(&vc->desc_submitted, head);
- 	list_splice_tail_init(&vc->desc_issued, head);
--- 
-2.35.1.1320.gc452695387.dirty
+> > +{
+> > +       writeb(val, riic->base + offset);
+> > +}
+> > +
+> > +static inline u8 riic_readb_reg(struct riic_dev *riic, u8 offset)
+> > +{
+> > +       return readb(riic->base + offset);
+> > +}
+>
+>
+> > -       writeb(0, riic->base + RIIC_ICSR2);
+> > +       riic_writeb_reg(0, riic, RIIC_ICSR2);
+>
+> This clearly shows that the new accessors involve more typing work.
+> Why not just call them riic_writeb() and riic_readb()?
+>
+Ok, I'll rename them to riic_writeb() and riic_readb().
 
+Cheers,
+Prabhakar
 
