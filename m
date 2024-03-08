@@ -1,191 +1,174 @@
-Return-Path: <linux-kernel+bounces-96824-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96825-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30FD28761E2
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:22:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D8438761E9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:23:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E8A58B21679
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 10:22:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F6561C21A98
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 10:23:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB0B754BF6;
-	Fri,  8 Mar 2024 10:21:46 +0000 (UTC)
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4DB554775;
+	Fri,  8 Mar 2024 10:23:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eMTB0dxI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83B7F54BDE
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 10:21:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B1CFD29E;
+	Fri,  8 Mar 2024 10:23:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709893306; cv=none; b=h+RV4PpiKKPJE+7TlnGuQ9NKg7+jMcgJuIc5JJyAO5pb/ma6Ow4CrZbr1rXoUACplyPPJoAaJYnf8S2x5q+x2EVp1mXKJcjdQSqnjbHIxt1wdDxdDnl7+oD/gn+XR9mkzqeBuyumq1oc1hvG8gEBCkkyzO/FsrZLrjNi6V/auaI=
+	t=1709893383; cv=none; b=kYvwi/y7jK5bj19NKzXvzV3OCcP2DeVyJIrpfZ892TalY5b9VxJ8j+sq6OVAff2Eqc2GW4K7yFoDEfbn09ZNcGqYCZLAkUB9LUVn89spwSOWY/VJr9OLi0FWdI4COO1SbcGfU8cUWT27+VeOkFcNahA6pQvvzoKMzV6WZGexams=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709893306; c=relaxed/simple;
-	bh=t+yeOVuLz5XArA05ID9cnrDzM7mi7gMMr5EtHRQf7sQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=epEcwkV8xC1KxRjxcbmboSzy4RISXEUhYb9oGxvOO3k5ztNS0eF1LvOKWxRRU5r25lsIjtAyjRCxvFTMvJ1QoYoGIOElJjXlTnvz0SwOj+4JPQKWePPbb+/Sw8uB4YJTEr0HMHwznQbtRpHULnob/5CujABgtGDnkLCal/N3EOg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-513830f18d9so195596e87.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 02:21:44 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709893303; x=1710498103;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nOyJ0vXvYfxQRLj0ZrdvSqI4qJstkPbTgrDZPnLnrv4=;
-        b=kFHWrsNbgl1sFkpN7qDnzDvxt/gOiLOAxyW8BBcvgRIZ7gbdN2f2awyMW/+tNxnwrz
-         mSbhm2rt9KjlijSnTTOBNP1JNGARb2WAGD2YEs+O+snK/r/C39w9YgwQBuWeruIxoF1I
-         MzQH208VNmn84ieH1TxJXVdRExXoYKLCl3nx/Cq8CqlOZbVIoCGb3EYFnMv/7Et0qWIL
-         etNdsUK8frJPFKXt8VA0M8yiAf7hUtkys/CE+oS5aQ3d0fAtag2clIQgYc2pPb3YXeDC
-         B3ciiKJZI6eDEI0EMv0bGkh8fCeGfAdmaIuwqYbYx8vBWJ6aaym57VwRd0aXS/ZTxO7T
-         /GCA==
-X-Forwarded-Encrypted: i=1; AJvYcCUn6zx1uIF3CwITrjvOEL6eLpLgVmvCFB2L4VPc7tTQ6tK1Re2qiFS2ZNjlaqjKhxKwmI/P7fVdsMJLoFXGe1DV7n/OkKCwFzXWkVHQ
-X-Gm-Message-State: AOJu0Yz5OKoGHtXgCsP3ahPwiSwKKbGSgLaZ61Lt+bJpvi3pGvokOmOf
-	ZFsJpxwVCqd/UOSDw5Q4ugxSEwdtw4i4CR2taM3vg+HpjodMmWwZ
-X-Google-Smtp-Source: AGHT+IEg7otObSNvAQkRZFRGAB1RYZTFwqMGbwMIpvLuU2IT7sSktAUSbK5hI7G9hD5ARZBuyLu+aA==
-X-Received: by 2002:ac2:48ae:0:b0:513:4467:523c with SMTP id u14-20020ac248ae000000b005134467523cmr891239lfg.3.1709893302423;
-        Fri, 08 Mar 2024 02:21:42 -0800 (PST)
-Received: from [10.100.102.74] (46-117-80-176.bb.netvision.net.il. [46.117.80.176])
-        by smtp.gmail.com with ESMTPSA id jh3-20020a05600ca08300b0041304100fa9sm5430817wmb.45.2024.03.08.02.21.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Mar 2024 02:21:42 -0800 (PST)
-Message-ID: <2cda7c9a-a460-4bb4-95f7-ab44f8f1007c@grimberg.me>
-Date: Fri, 8 Mar 2024 12:21:40 +0200
+	s=arc-20240116; t=1709893383; c=relaxed/simple;
+	bh=lHycvlNl7OVIrzQI78hPFaTIMft0lPdksi6rDoX3W/g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=u17qCdi7+wZwI/MJGL12KcM9hrN2Annuc14QnmgXOWaDYIt4uWlB0T3wVvabU3TvgHbP9VVb4R5g6hzfQU8aFqRb4rP2a8fjXEYssnRYaTmj8BaDtUUEPMWnJK8yYDTs12atDKzwty7BAlR7er6SV4pMK461FekqNbAnECLRWA4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eMTB0dxI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E1BFC433C7;
+	Fri,  8 Mar 2024 10:22:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709893382;
+	bh=lHycvlNl7OVIrzQI78hPFaTIMft0lPdksi6rDoX3W/g=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=eMTB0dxIOS+2itv74DP87TT3a7S3lfZoD0+2Ls0iMrgdCcuIV4TZHR8C/py3lEoLM
+	 rGXHcOX82vv7YXrL1/xhf67lvGXpZQbd+56lYq8J4pfE1vSC4Z9QmS9P8uZkL4AnaS
+	 UE+ngGFia7kmUXjyWDby8Q4Cd9pZqA2t88xVQTlABBPsGJEFng7d1B4ndq/wO4Spkp
+	 nhGLBhuH+r3uinoM2tful9m8gThPphuZ2QPQ8mte4TEAThEeCy4ovpQm1GN6JR0HEX
+	 mCHXeItsOiBq9vlmwyPHb0GtJgonfjHk4SSF350AxdKeECKF73Js76nM3nPgm2jTIn
+	 10tpVfabCXnxQ==
+Date: Fri, 8 Mar 2024 11:22:52 +0100
+From: Niklas Cassel <cassel@kernel.org>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Jingoo Han <jingoohan1@gmail.com>,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Marek Vasut <marek.vasut+renesas@gmail.com>,
+	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Kishon Vijay Abraham I <kishon@ti.com>,
+	Vidya Sagar <vidyas@nvidia.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Richard Zhu <hongxing.zhu@nxp.com>,
+	Lucas Stach <l.stach@pengutronix.de>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	Minghuan Lian <minghuan.Lian@nxp.com>,
+	Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
+	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Jesper Nilsson <jesper.nilsson@axis.com>,
+	Srikanth Thokala <srikanth.thokala@intel.com>,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+	linux-arm-kernel@axis.com
+Subject: Re: [PATCH v9 06/10] PCI: dwc: ep: Call dw_pcie_ep_init_registers()
+ API directly from all glue drivers
+Message-ID: <Zerm_LukciAYCZxD@ryzen>
+References: <20240304-pci-dbi-rework-v9-0-29d433d99cda@linaro.org>
+ <20240304-pci-dbi-rework-v9-6-29d433d99cda@linaro.org>
+ <ZeolaEIRYmKZjnvT@ryzen>
+ <20240308053624.GB3789@thinkpad>
+ <ZerUx9Vw_W997LZk@ryzen>
+ <20240308094947.GH3789@thinkpad>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 0/2] nvme-fabrics: short-circuit connect retries
-Content-Language: he-IL, en-US
-To: Hannes Reinecke <hare@suse.de>, Daniel Wagner <dwagner@suse.de>,
- James Smart <james.smart@broadcom.com>
-Cc: Keith Busch <kbusch@kernel.org>, Christoph Hellwig <hch@lst.de>,
- linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240305080005.3638-1-dwagner@suse.de>
- <22b01fb4-b543-43b2-949c-1873105dc343@grimberg.me>
- <72c1d3a8-14ad-43e8-a68a-25be903698c4@suse.de>
- <432a39d5-6d08-4d38-a357-7c8d9123189a@grimberg.me>
- <08f3d804-f94b-4a2f-897b-7fee3411e6fc@suse.de>
- <b02588cb-6fbc-4116-86d6-173c115f50c5@grimberg.me>
- <b23a5c7c-a877-4cde-acd4-50c21c3ef1fc@suse.de>
-From: Sagi Grimberg <sagi@grimberg.me>
-In-Reply-To: <b23a5c7c-a877-4cde-acd4-50c21c3ef1fc@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240308094947.GH3789@thinkpad>
+
+On Fri, Mar 08, 2024 at 03:19:47PM +0530, Manivannan Sadhasivam wrote:
+> > > > > @@ -467,6 +467,13 @@ static int dra7xx_add_pcie_ep(struct dra7xx_pcie *dra7xx,
+> > > > >  		return ret;
+> > > > >  	}
+> > > > >  
+> > > > > +	ret = dw_pcie_ep_init_registers(ep);
+> > > > > +	if (ret) {
+> > > > 
+> > > > Here you are using if (ret) to error check the return from
+> > > > dw_pcie_ep_init_registers().
+> > > > 
+> > > > 
+> > > > > index c0c62533a3f1..8392894ed286 100644
+> > > > > --- a/drivers/pci/controller/dwc/pci-keystone.c
+> > > > > +++ b/drivers/pci/controller/dwc/pci-keystone.c
+> > > > > @@ -1286,6 +1286,13 @@ static int ks_pcie_probe(struct platform_device *pdev)
+> > > > >  		ret = dw_pcie_ep_init(&pci->ep);
+> > > > >  		if (ret < 0)
+> > > > >  			goto err_get_sync;
+> > > > > +
+> > > > > +		ret = dw_pcie_ep_init_registers(&pci->ep);
+> > > > > +		if (ret < 0) {
+> > > > 
+> > > > Here you are using if (ret < 0) to error check the return from
+> > > > dw_pcie_ep_init_registers(). Please be consistent.
+> > > > 
+> > > 
+> > > I maintained the consistency w.r.t individual drivers. Please check them
+> > > individually.
+> > > 
+> > > If I maintain consistency w.r.t this patch, then the style will change within
+> > > the drivers.
+> > 
+> > Personally, I disagree with that.
+> > 
+> > All glue drivers should use the same way of checking dw_pcie_ep_init(),
+> > depending on the kdoc of dw_pcie_ep_init().
+> > 
+> > If the kdoc for dw_pcie_ep_init() says returns 0 on success,
+> > then I think that it is strictly more correct to do:
+> > 
+> > ret = dw_pcie_ep_init()
+> > if (ret) {
+> > 	<error handling>
+> > }
+> > 
+> > And if a glue driver doesn't look like that, then I think we should change
+> > them. (Same reasoning for dw_pcie_ep_init_registers().)
+> > 
+> > 
+> > If you read code that looks like:
+> > ret = dw_pcie_ep_init()
+> > if (ret < 0) {
+> > 	<error handling>
+> > }
+> > 
+> > then you assume that is is a function with a kdoc that says it can return 0
+> > or a positive value on success, e.g. a function that returns an index in an
+> > array.
+> > 
+> 
+> But if you read the same function from the individual drivers, it could present
+> a different opinion because the samantics is different than others.
+
+Is there any glue driver where a positive result from dw_pcie_ep_init() is
+considered valid?
 
 
+> 
+> I'm not opposed to keeping the API semantics consistent, but we have to take
+> account of the drivers style as well.
 
-On 07/03/2024 14:52, Hannes Reinecke wrote:
-> On 3/7/24 13:14, Sagi Grimberg wrote:
->>
->>
->> On 07/03/2024 13:45, Hannes Reinecke wrote:
->>> On 3/7/24 12:30, Sagi Grimberg wrote:
->>>>
-> [ .. ]
->>>>
->>>> Where is this retried today, I don't see where connect failure is 
->>>> retried, outside of a periodic reconnect.
->>>> Maybe I'm missing where what is the actual failure here.
->>>
->>> static void nvme_tcp_reconnect_ctrl_work(struct work_struct *work)
->>> {
->>>         struct nvme_tcp_ctrl *tcp_ctrl =
->>>                         container_of(to_delayed_work(work),
->>>                         struct nvme_tcp_ctrl, connect_work);
->>>         struct nvme_ctrl *ctrl = &tcp_ctrl->ctrl;
->>>
->>>         ++ctrl->nr_reconnects;
->>>
->>>         if (nvme_tcp_setup_ctrl(ctrl, false))
->>>                 goto requeue;
->>>
->>>         dev_info(ctrl->device, "Successfully reconnected (%d 
->>> attempt)\n",
->>>                         ctrl->nr_reconnects);
->>>
->>>         ctrl->nr_reconnects = 0;
->>>
->>>         return;
->>>
->>> requeue:
->>>         dev_info(ctrl->device, "Failed reconnect attempt %d\n",
->>>
->>> and nvme_tcp_setup_ctrl() returns either a negative errno or an NVMe 
->>> status code (which might include the DNR bit).
->>
->> I thought this is about the initialization. yes today we ignore the 
->> status in re-connection assuming that whatever
->> happened, may (or may not) resolve itself. The basis for this 
->> assumption is that if we managed to connect the first
->> time there is no reason to assume that connecting again should fail 
->> persistently.
->>
-> And that is another issue where I'm not really comfortable with.
-> While it would make sense to have the connect functionality to be
-> one-shot, and let userspace retry if needed, the problem is that we
-> don't have a means of transporting that information to userspace.
-> The only thing which we can transport is an error number, which
-> could be anything and mean anything.
+kdoc > "driver style"
+IMO, but you are the maintainer, I just offered my 50 cents :)
 
-Not necessarily. error codes semantics exists for a reason.
-I just really don't think that doing reconnects on a user-driven 
-initialization is a good idea at all
-unlike the case where the controller was connected and got disrupted, 
-this is not user driven and
-hence makes sense.
 
-> If we had a defined way stating: 'This is a retryable, retry with the 
-> same options.' vs 'This is retryable error, retry with modified 
-> options.' vs 'This a non-retryable error, don't bother.' I'd be
-> fine with delegating retries to userspace.
-> But currently we don't.
-
-Well, TBH I don't know if userspace even needs it. Most likely what a 
-user would want is to define
-a number of retries and give up if they expire. Adding the intelligence 
-for what connect is retry-able or
-not does not seem all that useful to me.
-
->
->> If there is a consensus that we should not assume it, its a valid 
->> argument. I didn't see where this happens with respect
->> to authentication though.
->
-> nvmf_connect_admin_queue():
->
->             /* Authentication required */
->             ret = nvme_auth_negotiate(ctrl, 0);
->             if (ret) {
->                     dev_warn(ctrl->device,
->                              "qid 0: authentication setup failed\n");
->                     ret = NVME_SC_AUTH_REQUIRED;
->                     goto out_free_data;
->             }
->             ret = nvme_auth_wait(ctrl, 0);
->             if (ret)
->                     dev_warn(ctrl->device,
->                              "qid 0: authentication failed\n");
->             else
->                     dev_info(ctrl->device,
->                              "qid 0: authenticated\n");
->
-> The first call to 'nvme_auth_negotiate()' is just for setting up
-> the negotiation context and start the protocol. So if we get
-> an error here it's pretty much non-retryable as it's completely
-> controlled by the fabrics options.
-> nvme_auth_wait(), OTOH, contains the actual result from the negotiation,
-> so there we might or might not retry, depending on the value of 'ret'.
->
-> Cheers,
->
-> Hannes
->
-
+Kind regards,
+Niklas
 
