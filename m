@@ -1,222 +1,192 @@
-Return-Path: <linux-kernel+bounces-96782-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96784-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91D5787615A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 10:55:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 656A0876161
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 10:56:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E6351F229D1
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 09:55:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 972E61C22744
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 09:56:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA08353E1B;
-	Fri,  8 Mar 2024 09:54:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CB3254654;
+	Fri,  8 Mar 2024 09:56:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eCh/g4jq"
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="XuZEmsET"
+Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69137535A3;
-	Fri,  8 Mar 2024 09:54:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51FBA53E1A
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 09:56:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709891689; cv=none; b=Wvszyko43yUQqi5+rFQ+NYwx4Yr345zUPa8QGxXESvYUS8aB/rSRpXMLq981F/YGUtd5YIcRAb3S6epYFy5Th7tU+nKnFFs3eZnQwHXK3YuMZoFv+sABwNtBGVNIOE1BjmdMPZFFXO6s+9v8g2yvd2OU4QSvboekHXz21d3H27s=
+	t=1709891762; cv=none; b=Or1hynE4z0EfjcOPc9lTg9jEmCNj7o24dOs4dBxX2umsS0LQX5jJ9vQW1sDg78A+MpkvsMdZmNs3v/Smrx61UwuqOy6PkG8JlRYamjn6yA5lUPe49Y4mkG9naubzjiwOQDD4bO1BEB6AsCxNtaZgei4OItQKttqTSJkz4+bl4k0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709891689; c=relaxed/simple;
-	bh=9+F2N1xirgPO1B/K5OKBxAdcA6ZxVjinMYU43eppFog=;
+	s=arc-20240116; t=1709891762; c=relaxed/simple;
+	bh=048FL+lWMOSIyoKXUVx1l4I7KcqtMLG1ou1jUMFPos4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MtvT7YfW4n5PqNcUqyrvsxC5qQzcetkAE1crvukdsnBysTBr2/wxUidlzBbcDPO9ksTcvQ1XFDdqla0nEhXvq2hWwTy22wDcfLia7MpFKtxjJajJTeSOjFwqe+yre6tIEFsHfD9PPA0SxqK1GT2JfJC4R98bdpU/XBNPBef1jC8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eCh/g4jq; arc=none smtp.client-ip=209.85.218.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a28a6cef709so97677466b.1;
-        Fri, 08 Mar 2024 01:54:47 -0800 (PST)
+	 Content-Type:Content-Disposition:In-Reply-To; b=iZ/VeM7mc7SxPzycWPKoBTpg9Y5bFauB7rutQazim0e7uY99u7Lci2Xd7iSYmeVP1hIPW0QP+CAO4MEfB6uD739cV7ptKnMNeJceE4v1PF0zgMlNyoKKs0mxfZoXpFQgETm4cMACPUA8tyLLfDAaxi/10DXPmRD1H4+v+Aniquc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=XuZEmsET; arc=none smtp.client-ip=209.85.215.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-5dbd519bde6so1611200a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 01:56:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709891686; x=1710496486; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=lx3npHykkw1gOdQqXLW5o/F+B78jLU3tilBWulRgUu0=;
-        b=eCh/g4jqDMU+DIb1Xuo1g8UFa5GVdj/eOurzpE/mpP1FGEPS3sUsGP4obd4q3jv0ot
-         Ynuj/+oUSaGg/8tnJx9tpbMj6k+McA5J9dUiuu8DcNz5hGiltVHHO+ekneafIo2ibRVi
-         n9Lugq8Bl+Ylthl0D0tTCTDiGNd5GsvC0Id2y2i/CK9eEH72RkUoNZ1MMVbqNBUgc/0I
-         bkQhNx8GxFynienzKMMQ6ZoEdzniNdzY4Ib39m8zgfkT5TAZnKcvllhhEQbwSa9oC/D4
-         GTqUICVsz1b2cfLAk2DOpHsp2JhEbLL43/y/VCTNyO3/KQR87q6vzLZzopl3SLsOHqZF
-         M9VQ==
+        d=linaro.org; s=google; t=1709891760; x=1710496560; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=JUK3zdKghpmKi7BAcVW5ImJ4qoLWxSUUxIXqc6+4Iww=;
+        b=XuZEmsETlMxjF0BysDZ3t5MKj1Ufh7KMAu/xSplVht/x+deWgiKV2mbzhRzF+aBee5
+         /Pffifls2UbfptuqrfxQHlt5A2O820WjJpdlGKbNezvOGWCSZApo9B7nUGO5peHoWkEC
+         kw1Fi++xtVpQ5UzGIPtAsIwc4XLAggD/PqP5Xw6wES6mYprx2e9FKECkBmsSQwfiCKZV
+         l+BWTnCPdLnK4/le4yQcVx9tTncPedjlljxIWKJuYH1im7oR/fRtKHXA+geWOk+ctQR9
+         mDyOoZtTE5EjwYW8dQdj0GH5BIpxCKoRqNbpvCCdl0wHEBMbpgyL0Q3oD4/gzpuhxs8K
+         5zeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709891686; x=1710496486;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lx3npHykkw1gOdQqXLW5o/F+B78jLU3tilBWulRgUu0=;
-        b=Bz4UJb4PISRHtTtyfKhH/3uHeNNsZOeYH62EYfphS7QiE6sXOsRaeAr//rDFdi+42B
-         Pg1sSRRaEG1wOFr+juEINd5SFuMmewExqZoeLnMMid2OJndF/+57MVB3/V1IygZnCIZb
-         5k/wa3uCRYms4nVovBs0snaOTORPIlMMZnqYGVq/jswzTpKvIvnhRLS3zKaMo2LB3Lag
-         PQwoCAF6Pz8DfgISSCqzrZr+ylZZh7O3iFPZDMLb0UknBzbxTVEeZNaSeuDy5NuzFCuf
-         OnfV61gARZpVqGHyQgp38IYwJbnyrXBwxtL/ATAiC2MOqHcJxKv50nZdCAVj2QRK2QUM
-         FZtA==
-X-Forwarded-Encrypted: i=1; AJvYcCXOdGh1bgpA2CX7qwRB3VcORWFEU28VUPR4Ikpi1drSPejaOK+90I/g0slGPNjDFAzrURmY9rOpdm47oACZT59A7R7MM+Zms7IbZPIo
-X-Gm-Message-State: AOJu0YzF/ULrOdMRgXUuwm6K+yPGBK7OrjxKRHBnPMdmCrsmei8oIaIw
-	DAupka6vS/JM9FevwAm0c7PqA0EUrL0xAbaqmoqLpGvK4V8b1Lq2
-X-Google-Smtp-Source: AGHT+IF38PLd9vqK/V55Sk1fgDRHT28mC+PYjI17HoOSs0pCHtJdQhnEXF3SzRGotS0o/cQ2MQuZAg==
-X-Received: by 2002:a17:906:f850:b0:a45:bdc0:7f00 with SMTP id ks16-20020a170906f85000b00a45bdc07f00mr4849698ejb.46.1709891685642;
-        Fri, 08 Mar 2024 01:54:45 -0800 (PST)
-Received: from skbuf ([2a02:2f04:d207:f600::b2c])
-        by smtp.gmail.com with ESMTPSA id cm26-20020a170906f59a00b00a3ca56e9bcfsm9199309ejd.187.2024.03.08.01.54.44
+        d=1e100.net; s=20230601; t=1709891760; x=1710496560;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JUK3zdKghpmKi7BAcVW5ImJ4qoLWxSUUxIXqc6+4Iww=;
+        b=rwMLEY10NNcUFKPiEWTnwehxafeUEMecqmaYZWTbxj+PylbSGC25WQWs7dNtdqEy3N
+         J9/TO2qLaDR7XXvI38giL/V5QxmGojOm9liM9Xs30ZKzTXkfeIAkXVcEESWCR5DzvzFD
+         ScK2uloMhI9qYLEBsGQ6cvQyBQk1zyY7Pb3bsNnIIX/Mvu1MBIEsV9wXUWdPxk6JBDUV
+         4LO/qTsWzVB5y23mIR961nFTLw1o9iPFz7etiwEtpPPf23gDzBXhN0B/WCU4H++YDoi9
+         BuSrMaa5Vz8ITsgKACYL9akzOentOlhUT8/4Db2NF4jSv68ILmhmMYbaaJz+KIKd3mhA
+         PXcw==
+X-Forwarded-Encrypted: i=1; AJvYcCW0YSLIjxBFgp5Md42FvL4LesqodAa4fC3v0CN6iLHzqACWsPxzE0C77L6XmJ4JWvFL6pzx3eEe+ygsYrvCygKy6SOb0xrLuQGcUsV6
+X-Gm-Message-State: AOJu0Yx0RbFTQdc8DMuarw6iboHkD23z6r4JwWB6Uxl2N7RqX/yGipK5
+	JvCTlpOR9XZ3/WMbxcFpx9j725niEEC1TH1WMZeM4/3OY4xMliYPrsl48LsanQ==
+X-Google-Smtp-Source: AGHT+IGOTlUHapfqElkZxE+j6NSs76sL89OIFPzQbD3+yFMWYqGGsRtHUD1W1wK1/RK2ZY2d13ivWw==
+X-Received: by 2002:a17:90a:a8f:b0:299:7b37:9221 with SMTP id 15-20020a17090a0a8f00b002997b379221mr16693450pjw.12.1709891759544;
+        Fri, 08 Mar 2024 01:55:59 -0800 (PST)
+Received: from thinkpad ([117.217.183.232])
+        by smtp.gmail.com with ESMTPSA id ei16-20020a17090ae55000b0029b73ccf4fesm2806572pjb.30.2024.03.08.01.55.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Mar 2024 01:54:45 -0800 (PST)
-Date: Fri, 8 Mar 2024 11:54:42 +0200
-From: Vladimir Oltean <olteanv@gmail.com>
-To: Pawel Dembicki <paweldembicki@gmail.com>
-Cc: netdev@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
-	Simon Horman <horms@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Claudiu Manoil <claudiu.manoil@nxp.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	UNGLinuxDriver@microchip.com, Russell King <linux@armlinux.org.uk>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v6 06/16] net: dsa: vsc73xx: add
- port_stp_state_set function
-Message-ID: <20240308095442.ug4pmh4entgah5l3@skbuf>
-References: <20240301221641.159542-1-paweldembicki@gmail.com>
- <20240301221641.159542-1-paweldembicki@gmail.com>
- <20240301221641.159542-7-paweldembicki@gmail.com>
- <20240301221641.159542-7-paweldembicki@gmail.com>
+        Fri, 08 Mar 2024 01:55:59 -0800 (PST)
+Date: Fri, 8 Mar 2024 15:25:47 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kwilczynski@kernel.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	linux-omap@vger.kernel.org, linux-pci@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-amlogic@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+	linux-tegra@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>,
+	Siddharth Vadapalli <s-vadapalli@ti.com>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Yue Wang <yue.wang@Amlogic.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Kevin Hilman <khilman@baylibre.com>,
+	Jerome Brunet <jbrunet@baylibre.com>,
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>
+Subject: Re: [PATCH v1 1/1] PCI: dwc: Remove unused of_gpio.h
+Message-ID: <20240308095547.GI3789@thinkpad>
+References: <20240307122840.3682287-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240301221641.159542-7-paweldembicki@gmail.com>
- <20240301221641.159542-7-paweldembicki@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240307122840.3682287-1-andriy.shevchenko@linux.intel.com>
 
-On Fri, Mar 01, 2024 at 11:16:28PM +0100, Pawel Dembicki wrote:
-> This isn't a fully functional implementation of 802.1D, but
-> port_stp_state_set is required for a future tag8021q operations.
+On Thu, Mar 07, 2024 at 02:28:40PM +0200, Andy Shevchenko wrote:
+> of_gpio.h is deprecated and subject to remove.
+> The driver doesn't use it, simply remove the unused header.
 > 
-> This implementation handles properly all states, but vsc73xx doesn't
-> forward STP packets.
-> 
-> Signed-off-by: Pawel Dembicki <paweldembicki@gmail.com>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > ---
-> v6:
->   - fix inconsistent indenting
-> v5:
->   - remove unneeded 'RECVMASK' operations
->   - reorganise vsc73xx_refresh_fwd_map function
-> v4:
->   - fully reworked port_stp_state_set
-> v3:
->   - use 'VSC73XX_MAX_NUM_PORTS' define
->   - add 'state == BR_STATE_DISABLED' condition
->   - fix style issues
-> v2:
->   - fix kdoc
+>  drivers/pci/controller/dwc/pci-dra7xx.c    | 1 -
+>  drivers/pci/controller/dwc/pci-meson.c     | 1 -
+>  drivers/pci/controller/dwc/pcie-qcom.c     | 1 -
+>  drivers/pci/controller/dwc/pcie-tegra194.c | 2 --
+
+What about the rest?
+
+drivers/pci/controller/dwc/pcie-kirin.c
+drivers/pci/controller/dwc/pci-imx6.c
+
+There is also one non-dwc driver:
+
+drivers/pci/controller/pci-aardvark.c
+
+It is better to remove it from all PCI drivers in a single patch.
+
+- Mani
+
+>  4 files changed, 5 deletions(-)
 > 
->  drivers/net/dsa/vitesse-vsc73xx-core.c | 99 +++++++++++++++++++++++---
->  1 file changed, 88 insertions(+), 11 deletions(-)
+> diff --git a/drivers/pci/controller/dwc/pci-dra7xx.c b/drivers/pci/controller/dwc/pci-dra7xx.c
+> index 0e406677060d..f6d2ba42958b 100644
+> --- a/drivers/pci/controller/dwc/pci-dra7xx.c
+> +++ b/drivers/pci/controller/dwc/pci-dra7xx.c
+> @@ -17,7 +17,6 @@
+>  #include <linux/kernel.h>
+>  #include <linux/module.h>
+>  #include <linux/of.h>
+> -#include <linux/of_gpio.h>
+>  #include <linux/of_pci.h>
+>  #include <linux/pci.h>
+>  #include <linux/phy/phy.h>
+> diff --git a/drivers/pci/controller/dwc/pci-meson.c b/drivers/pci/controller/dwc/pci-meson.c
+> index 6477c83262c2..db9482a113e9 100644
+> --- a/drivers/pci/controller/dwc/pci-meson.c
+> +++ b/drivers/pci/controller/dwc/pci-meson.c
+> @@ -9,7 +9,6 @@
+>  #include <linux/clk.h>
+>  #include <linux/delay.h>
+>  #include <linux/gpio/consumer.h>
+> -#include <linux/of_gpio.h>
+>  #include <linux/pci.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/reset.h>
+> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+> index 2ce2a3bd932b..0084a3390040 100644
+> --- a/drivers/pci/controller/dwc/pcie-qcom.c
+> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+> @@ -20,7 +20,6 @@
+>  #include <linux/kernel.h>
+>  #include <linux/init.h>
+>  #include <linux/of.h>
+> -#include <linux/of_gpio.h>
+>  #include <linux/pci.h>
+>  #include <linux/pm_runtime.h>
+>  #include <linux/platform_device.h>
+> diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
+> index 1f7b662cb8e1..633d8dc50339 100644
+> --- a/drivers/pci/controller/dwc/pcie-tegra194.c
+> +++ b/drivers/pci/controller/dwc/pcie-tegra194.c
+> @@ -13,7 +13,6 @@
+>  #include <linux/clk.h>
+>  #include <linux/debugfs.h>
+>  #include <linux/delay.h>
+> -#include <linux/gpio.h>
+>  #include <linux/gpio/consumer.h>
+>  #include <linux/interconnect.h>
+>  #include <linux/interrupt.h>
+> @@ -21,7 +20,6 @@
+>  #include <linux/kernel.h>
+>  #include <linux/module.h>
+>  #include <linux/of.h>
+> -#include <linux/of_gpio.h>
+>  #include <linux/of_pci.h>
+>  #include <linux/pci.h>
+>  #include <linux/phy/phy.h>
+> -- 
+> 2.43.0.rc1.1.gbec44491f096
 > 
-> diff --git a/drivers/net/dsa/vitesse-vsc73xx-core.c b/drivers/net/dsa/vitesse-vsc73xx-core.c
-> index 425999d7bf41..d1e84a9a83d1 100644
-> --- a/drivers/net/dsa/vitesse-vsc73xx-core.c
-> +++ b/drivers/net/dsa/vitesse-vsc73xx-core.c
-> @@ -1036,6 +1029,89 @@ static void vsc73xx_phylink_get_caps(struct dsa_switch *dsa, int port,
->  	config->mac_capabilities = MAC_SYM_PAUSE | MAC_10 | MAC_100 | MAC_1000;
->  }
->  
-> +static void vsc73xx_refresh_fwd_map(struct dsa_switch *ds, int port, u8 state)
-> +{
-> +	struct dsa_port *other_dp, *dp = dsa_to_port(ds, port);
-> +	struct vsc73xx *vsc = ds->priv;
-> +	u16 mask;
-> +
-> +	if (state != BR_STATE_FORWARDING) {
-> +		/* Ports that aren't in the forwarding state must not
-> +		 * forward packets anywhere.
-> +		 */
-> +		vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ANALYZER, 0,
-> +				    VSC73XX_SRCMASKS + port,
-> +				    VSC73XX_SRCMASKS_PORTS_MASK, 0);
-> +
-> +		dsa_switch_for_each_available_port(other_dp, ds) {
-> +			if (other_dp == dp)
-> +				continue;
-> +			vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ANALYZER, 0,
-> +					    VSC73XX_SRCMASKS + other_dp->index,
-> +					    BIT(port), 0);
-> +		}
-> +
-> +		return;
-> +	}
-> +
-> +	/* Forwarding ports must forward to the CPU and to other ports
-> +	 * in the same bridge
-> +	 */
-> +	vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ANALYZER, 0,
-> +			    VSC73XX_SRCMASKS + CPU_PORT, BIT(port), BIT(port));
-> +
-> +	mask = BIT(CPU_PORT);
-> +
-> +	if (dp->bridge) {
-> +		dsa_switch_for_each_user_port(other_dp, ds) {
-> +			if (other_dp->bridge == dp->bridge &&
 
-You could use dsa_port_bridge_same(dp, other_dp) and that could
-eliminate the extra "if (dp->bridge)" condition, because it explicitly
-makes standalone ports isolated from other standalone ports.
-
-> +			    other_dp->index != port &&
-
-You could move the "int other_port" definition to dsa_switch_for_each_user_port()
-scope, and thus reuse it here.
-
-> +			    other_dp->stp_state == BR_STATE_FORWARDING) {
-
-You could "continue" on the negated condition, and reduce the
-indentation one level further.
-
-> +				int other_port = other_dp->index;
-> +
-> +				mask |= BIT(other_port);
-> +				vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ANALYZER,
-> +						    0,
-> +						    VSC73XX_SRCMASKS +
-> +						    other_port,
-> +						    BIT(port), BIT(port));
-> +			}
-> +		}
-> +	}
-
-All in all, I would have written this as:
-
-	dsa_switch_for_each_user_port(other_dp, ds) {
-		int other_port = other_dp->index;
-
-		if (port == other_port || !dsa_port_bridge_same(dp, other_dp) ||
-		    other_dp->stp_state != BR_STATE_FORWARDING)
-			continue;
-
-		mask |= BIT(other_port);
-
-		vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ANALYZER, 0,
-				    VSC73XX_SRCMASKS + other_port,
-				    BIT(port), BIT(port));
-	}
-
-Anyway this does not affect functionality, and it is up to you if you
-integrate these suggestions or not.
-
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
-
-> +
-> +	vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ANALYZER, 0,
-> +			    VSC73XX_SRCMASKS + port,
-> +			    VSC73XX_SRCMASKS_PORTS_MASK, mask);
-> +}
+-- 
+மணிவண்ணன் சதாசிவம்
 
