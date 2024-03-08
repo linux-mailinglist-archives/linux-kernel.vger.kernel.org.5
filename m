@@ -1,141 +1,112 @@
-Return-Path: <linux-kernel+bounces-97314-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97316-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 621128768AA
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:40:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D75648768B0
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:43:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2A972873FA
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 16:40:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C5D1286807
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 16:43:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C54D51170F;
-	Fri,  8 Mar 2024 16:40:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1872EDDD7;
+	Fri,  8 Mar 2024 16:43:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y8P2CCKN"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ILvJamj0"
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 087F31CA8E;
-	Fri,  8 Mar 2024 16:40:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCAF72107
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 16:43:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709916043; cv=none; b=J7lTrnBHA/Lz6VZSlU6lpRFMCu10egCEt11CJCHauP03xFd1d+SCW0jxhFoz2C5Msmh64Y1QZldDuOsIpDGPfe4JhUEdY74UModw0cQFOqGkCffdvn5/Gy8GttFhUbWP1FV65rrow34fw1cg68f0qWaprGfmdkv2ltmuBsp5PvU=
+	t=1709916204; cv=none; b=MIgcvqdS50+cBAQ55voyPj9AUtDc0P30p1qN0pgRrX9Nl+F5CcFB+BgGKllHV0HYSzd3MmAVcvCTS2/o2JKSnUIPA7Fpbbxh4h+5+iUu932WLKFZrw9kX43Yjk+t+oG6JVH97Ocet7R4+6e5yF3i1bus1LSADaMReKOxzEnHMz0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709916043; c=relaxed/simple;
-	bh=ivspc6KyS5C5s0+lppQbNKthOBmzM+WjLyrCDyM1dTs=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=D6/zKY6Jk3Tq80MdILmFjKo2gRPj25DxmhatgpaL5H5ntnCProekqx1y8Ky1lZdL9Wt3bQjgZt1EHycb9E+fQLsaM9NvlRP+a0AQ41o2+UZ+iQXV2GMg1B3+qiLEjWdhK4ikmSRkgz/Z9Gw5pNHgY/a6B99EKSPTqryFRRfClS0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y8P2CCKN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6479EC433C7;
-	Fri,  8 Mar 2024 16:40:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709916042;
-	bh=ivspc6KyS5C5s0+lppQbNKthOBmzM+WjLyrCDyM1dTs=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=Y8P2CCKNotEK8bIPwpQaSJNAUOzJkpkjGk1h4jqzyEoYEel48uJPzIeSsND50VvqB
-	 1sNPZNAk1dJnTIAPjE3YRQ01yrbEavHZjiuxx3fm4yk3XoHAmbz22gJZ7L4HK4kZO5
-	 +klRU1+rlY7EmtVjnZkxAOfjbsJRN59WKIS2cax4VgRwjenyftUJx1lnf1WJhzCI+N
-	 bqwklRn+5FbIkhnxjNsTmRpbdGg+gVave4Nrnervp4+T8dy+ma9GfpD6nvrW3S2hua
-	 q4qMF3+x0HpiSLjxH6J690K+LembhWfzlv1zZqyTT0ImivUm3k6CssfUpMNNtY42ux
-	 ZEsWgXWjlz/3w==
-Date: Fri, 8 Mar 2024 10:40:40 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc: Michael Schaller <michael@5challer.de>, bhelgaas@google.com,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	regressions@lists.linux.dev, macro@orcam.me.uk,
-	ajayagarwal@google.com, sathyanarayanan.kuppuswamy@linux.intel.com,
-	gregkh@linuxfoundation.org, hkallweit1@gmail.com,
-	michael.a.bottini@linux.intel.com, johan+linaro@kernel.org
-Subject: Re: [Regression] [PCI/ASPM] [ASUS PN51] Reboot on resume attempt
- (bisect done; commit found)
-Message-ID: <20240308164040.GA683683@bhelgaas>
+	s=arc-20240116; t=1709916204; c=relaxed/simple;
+	bh=r0ks+X+TrbMq/iO/OYuxGWhhqU2jbzwN9Ibe0O/43vI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BwhU9KzaJ1o5kR2L8O0ZPXeZzryKGuFO5o7thBzgc/7s2wwP/WUnfjuyWErsOro9AsTWEll2eVedyf+x+fvrymB3P5TAKjb2tOrFuaTZSGR+ypI/jGaBsckjAZR4P6ax3EWEY7kyKHX0janXO+wBd/69W86w7j7OxB4hBiJYGyA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ILvJamj0; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-56781070f38so5871555a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 08:43:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709916201; x=1710521001; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wyLxpmRa9vDZTdfVvWg2aO7vI6t1684BUA4BOk13UCE=;
+        b=ILvJamj0UlJSU9HjJJdSKT0C4/QfKmPOUuDvVu7Ztg3sfNcIPAScPPwO7UVS5XHhGz
+         Ee4hAgoi91Dn2ycb4q84Xqx6MuDlC7hNZ50E/a8ROg++IxfXmBkamaeRWQvEF8cDuG8X
+         nJbVZzeOCF/GeXZXqV+Lpde6lZuSG6Q816X1+Kc9YBoVtwqcqLD6r4LOWvL/cH74EHtH
+         TAhhMaRJdKugC9n2SwhlIhXR0q4s+nMCBvhQa+7YK+9KF39VR2WBLrQk9SFtL/lI9r9e
+         KCssxtGw2Qq2JUOzbcHCfnaWKGGY1CYAoGUjijiNkFUe2/oeG7NRPcxG+GTzUvcHvC3R
+         FNBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709916201; x=1710521001;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wyLxpmRa9vDZTdfVvWg2aO7vI6t1684BUA4BOk13UCE=;
+        b=CHMlm1ZUQPwUFnDekihntfJjJywMQ2TRbPVsY6ax2D1I3Vifo4hi8+64w2wIJnyGln
+         /koRVVWc7NxlSxyjQ/XIHDQX/g0V+TUOpwkUBkINtYLqfLvTRS2+k/nFqcQfDChsIBkM
+         qH4sG5NjczC3aduraZNb38UEPdF4vHdNG2wON2Wbc/0EXkw3OdcbDrvCzx7+IoY6NT+7
+         cF3IVmk4l79WXxasMlg3UfjK7GcbdWFlhM4Eedlg4Fr9Gd2CVnEFB3iVAJlLKXs/KFG9
+         1rj5a+daMdrIVTCwXzT9E/YjyH3KSYwj8fWp4NBv0p3iRZPrsxockd/4xHpLx73qOPtL
+         Vhig==
+X-Forwarded-Encrypted: i=1; AJvYcCXcOda1h0jTFVObbAI6UIdmbY+z8h/bDRP4PqCeoSjQDb5we5MXXteCMw1CFucOdF20XalABDPkelC0Y1V6wrlC/gBHKLsvUXAP1XTQ
+X-Gm-Message-State: AOJu0YwIO0P0oYp1/T5iccZmz+F7lnDsTNo9nkan0l6S6//D+f8JaxNO
+	2Bc9VKnf0Kn8Tmi1X42CD29lq7UOJU/UzXTtiYg5Il4CQuo1lNVLnb6kdrEVYOTg0pRWONmj17S
+	+0rC773xtHVJTyHXabRdWK/X2kFU=
+X-Google-Smtp-Source: AGHT+IEfeIZXRSqypmb9U/23WbS9AVqjeSavKZ/LF+/nDtBRuH3PxWvbMYSILot6HKmpEAjJZMAW26NHGxMVPhHoPl4=
+X-Received: by 2002:a17:907:2495:b0:a45:d7fb:8423 with SMTP id
+ zg21-20020a170907249500b00a45d7fb8423mr707357ejb.9.1709916201065; Fri, 08 Mar
+ 2024 08:43:21 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAAd53p6GEPJe3rNNrUAah5PdLXspKh5Gz9tFstR6SFCREs+9=Q@mail.gmail.com>
+References: <20240308015435.100968-1-brookxu.cn@gmail.com> <20240308144208.GA9194@lst.de>
+ <CADtkEefTzbYN4qEAgAXDTB-+HMxfENw2m+xcoxzy83YW-bGEhA@mail.gmail.com> <20240308163100.GA17078@lst.de>
+In-Reply-To: <20240308163100.GA17078@lst.de>
+From: =?UTF-8?B?6K645pil5YWJ?= <brookxu.cn@gmail.com>
+Date: Sat, 9 Mar 2024 00:43:12 +0800
+Message-ID: <CADtkEecyqONmjRorKOWzToH9y1SVXf3GXXvg_BHcFZ506mPWkA@mail.gmail.com>
+Subject: Re: [PATCH v3] nvme: fix reconnection fail due to reserved tag allocation
+To: Christoph Hellwig <hch@lst.de>
+Cc: kbusch@kernel.org, axboe@kernel.dk, sagi@grimberg.me, 
+	linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 07, 2024 at 02:51:05PM +0800, Kai-Heng Feng wrote:
-> On Wed, Jan 10, 2024 at 8:40 PM Michael Schaller <michael@5challer.de> wrote:
-> > On 10.01.24 04:43, Kai-Heng Feng wrote:
-> > > On Fri, Jan 5, 2024 at 11:51 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > >> On Fri, Jan 05, 2024 at 12:18:32PM +0100, Michael Schaller wrote:
-> > >>> On 05.01.24 04:25, Kai-Heng Feng wrote:
-> > >>>> Just wondering, does `echo 0 > /sys/power/pm_asysnc` help?
-> > >>>
-> > >>> Yes, `echo 0 | sudo tee /sys/power/pm_async` does indeed also result in a
-> > >>> working resume. I've tested this on kernel 6.6.9 (which still has commit
-> > >>> 08d0cc5f3426). I've also attached the relevant dmesg output of the
-> > >>> suspend/resume cycle in case this helps.
-> > >>
-> > >> Thanks for testing that!
-> > >>
-> > >>> Furthermore does this mean that commit 08d0cc5f3426 isn't at fault but
-> > >>> rather that we are dealing with a timing issue?
-> > >>
-> > >> PCI does have a few software timing requirements, mostly related to
-> > >> reset and power state (D0/D3cold).  ASPM has some timing parameters,
-> > >> too, but I think they're all requirements on the hardware, not on
-> > >> software.
-> > >>
-> > >> Adding an arbitrary delay anywhere shouldn't break anything, and other
-> > >> than those few required situations, it shouldn't fix anything either.
-> > >
-> > > At least it means 8d0cc5f3426 isn't the culprit?
-> > >
-> > > Michael, does the issue happen when iwlwifi module is not loaded? It
-> > > can be related to iwlwifi firmware.
-> > >
-> > The issue still happens if the iwlwifi module has been blacklisted and
-> > after a reboot. This was again with vanilla kernel 6.6.9 and I've
-> > confirmed via dmesg that iwlwifi wasn't loaded.
-> 
-> Can you please give latest mainline kernel a try? With commit
-> f93e71aea6c60ebff8adbd8941e678302d377869 (Revert "PCI/ASPM: Remove
-> pcie_aspm_pm_state_change()") reverted.
-> 
-> Also do you have efi-pstore enabled? Is there anything logged in
-> /var/lib/systemd/pstore (assuming systemd is used)?
+Christoph Hellwig <hch@lst.de> =E4=BA=8E2024=E5=B9=B43=E6=9C=889=E6=97=A5=
+=E5=91=A8=E5=85=AD 00:31=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On Sat, Mar 09, 2024 at 12:29:27AM +0800, =E8=AE=B8=E6=98=A5=E5=85=89 wro=
+te:
+> > This works now, but I donot know whether
+> > nvme_alloc_admin_tag_set()/nvme_alloc_io_tag_set()
+> > will be suitable for all driver in future, such as driver for apple
+> > device not use these two funcs
+> > to init tagset (anyway it not use these two macros too), so maybe new
+> > driver would use these
+> > value in other position.
+>
+> nvme-apply should realy be converted to use the generic helpers,
+> I just need some help from the maintainers.  I'll ping them.
+noted, that sounds great.
 
-It seems possible that some recent ASPM fixes could help this issue.
-These fixes are not upstream yet, but should appear in v6.9-rc1.
+>
+> But I'm fine with just taking this bug fix as-is and clean this up
+> later.
 
-Your (Michael's) bisection identified 08d0cc5f3426 ("PCI/ASPM: Remove
-pcie_aspm_pm_state_change()"), which appeared in v6.0.  This was
-intended to solve the problem of ASPM config changes made via sysfs
-getting lost.
-
-We removed 08d0cc5f3426 in v6.7 with f93e71aea6c6 ("Revert "PCI/ASPM:
-Remove pcie_aspm_pm_state_change()"") to address the reboot after
-resume problem that you reported.
-
-e4dbf699467e ("PCI/ASPM: Update save_state when configuration
-changes") is planned for v6.9-rc1 and should solve the same problem
-08d0cc5f3426 tried to solve, but in a different way.
-
-390fd84739c5 ("PCI/ASPM: Save L1 PM Substates Capability for
-suspend/resume") is also planned for v6.9-rc1 and fixes some problems
-with restoring L1 Substates config during resume.  These substates are
-enabled for your 03:00.0 device, so this commit may also be related.
-
-That's all a long way to say that I think testing v6.9-rc1 or later
-(or linux-next as of Mar 7 or later) would be very interesting.
-
-> > I've also checked if there is a newer firmware but Ubuntu 23.10 is
-> > already using the newest firmware available from
-> > https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/log/iwlwifi-8265-36.ucode
-> > (version 36.ca7b901d.0 according to dmesg).
-> >
-> > Michael
-> >
-> > >>
-> > >> Bjorn
+Sorry for delay to reply, I found the patch have applied just about 10
+minutes ago.
+According what you plan to do, I think as-is maybe fine, But anyway if
+need, I will
+send another patch to cleanup, thanks.
 
