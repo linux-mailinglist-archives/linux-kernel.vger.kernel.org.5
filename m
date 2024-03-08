@@ -1,201 +1,255 @@
-Return-Path: <linux-kernel+bounces-97362-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97361-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6F62876970
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:16:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DA5A87696A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:16:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EAD5A1C20BF1
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:16:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EB843B2201E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:16:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A619A3BBDD;
-	Fri,  8 Mar 2024 17:16:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9341728DA4;
+	Fri,  8 Mar 2024 17:15:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="ENLps3ky";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="fYnE7C0U"
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lrzyg+dP"
+Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEAA5288D7;
-	Fri,  8 Mar 2024 17:16:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709918185; cv=fail; b=fKSY4RpnirXf7+8ynm5cEoYdc2rgT7/WaT9DFddn/86EAtUAdeSA1tW69dgDk/wr3fe0zc6HZkXeHjpt30S5v13w16G9mjcovU5XZ2Vb+9WQsxVUeRxkDNlk9sHf3UIcyUJQwZpQ14WSOND/wdKg+hlH3HlrZjxSxny26sgURgQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709918185; c=relaxed/simple;
-	bh=QB6eTbK9MVba8F0xD1j3w6pT/tRXTUISSkN9q8Mdw+4=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=iBY7hrgXcAHQlPNzJRA6PNmZf7d3v+E1IUdiDJrWMBvSverNhjqj3daC5sHalA8GfvdKjYJ+hN4yp/wNiUfJTMdMPFy2Bxbv/ktnF/bB2vycL+nMXIY9aX81ijJrUr2f3+P4KhTx7sBblUQR24mwZDN9ReRHagim2U+BFzwBeXE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=ENLps3ky; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=fYnE7C0U; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 428DTMcM027341;
-	Fri, 8 Mar 2024 17:15:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=HIgV9iWgeoInW7F2pyCgSecaDBCSy26jHyglAovYB8Y=;
- b=ENLps3kyaBXBwgW3m7Jq22R7gwIub95OavIHqCk7Z/oz83kbNFAPWdivLxWOSYU2i/Ga
- lFsezkRxrmuxUN77pqZ40ZR3soarIHkTDI6L6/8xeFV4eq6Uuqujv0i2aOqn6vULETth
- zc+nY0aVJZXxSQPKMhmhiGpDdANoBluIRJKkf0WSLALdeGfJV3Urx1NsYFXbD+ykZ3Cf
- ceMKUr1ElgubFl216RqyyMfSp/FREUOCpgZW4NTSoeg29NnMqgaicVxJy0muODTIuOYg
- cQVBqWgoYuaGZIEPm2v/gnPftknQWaErCROkHqcRRHcStPNnkoFlWPaBUWG5FVeqwyAF 5A== 
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wktq2ehrv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 08 Mar 2024 17:15:30 +0000
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 428GWXr5015959;
-	Fri, 8 Mar 2024 17:15:29 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2041.outbound.protection.outlook.com [104.47.66.41])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3wktjd48s1-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 08 Mar 2024 17:15:29 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bSL2UETgahPvThwtY/OFpaDjJDzgX69vNgf5bVNvFx5Z6wyPOfuwGu2USRj9vFAsdOs0FjXwGe4k3rv58R4rbqz7mI48r4IaUy2gUNvdeWalG21l8jBR+Wyw9wgVfEWdhB4zesHFALvVa0t2M4a9NTta/sdvywu1dNngGG1Ulz2tkhycFF93lSTkZA2Qa7CRDQqt7LvjugY8DEW3Z31Lr5XCdrnU4D9cAeBtAt1zdKR9JVQe5e1gISTl/10T0a1GAxUmxk/wBorLSrzOcLHYzd6MmJlkx9HBMkh3XGTtkA4fIxb6mtUOA+T26qjSgFE4o8GTt8Wi6on200QOQYin0w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HIgV9iWgeoInW7F2pyCgSecaDBCSy26jHyglAovYB8Y=;
- b=S22pQQX3pN5c7XVaajr+KW7cmDxOBQJYdpZsGETh81dFuLPjuoMfG7vhndnyxjoH1s9sH6Euq5At0BmpPbPthNTgW98K+MjTwoWTzB/l7VvzrsJnxSCry1R5pto/+3ZTOufWvQjn9iuyaRQKW4L/1kOUzoPCAmDrinf7iYvUhGvC2Vyf3t6Ar8W79VRM26kmTfw0BjGzxdP+KWYHACaKyzXRb1B5DByujivH95AAYgv0a/GDyvX7IQE0+BH+TFaXVxOXBGjNRoqtTsh+Rkn5HJOeWC0zIImQZePGAElC0fNFc0Tn+VRSPV/+FyFQsv2cTZ3KY91p1ZMxbbJubQFQ5A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BD4825570;
+	Fri,  8 Mar 2024 17:15:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.174
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709918158; cv=none; b=dL07VAHBXsC2CvjHhT0Z9ilo1Syb4KXMfWSmMWKiszWzFAm564ShQPRBlPwLvl1yr+l0Ae7wEkwIwQwHT6XpbopIyNF2O2Dmee0jJ5MxdFBsfMIcnlnLZvYUKl0B+wbUN0UcsnW9wbo+LjldaUwPq8uHLoCxIzLASX0aBxVnpZw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709918158; c=relaxed/simple;
+	bh=6GuBU2MDif7sF819XGqAwoGuMINRtFdixtdfEd3c6P8=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=Skf7uvgdrzlARbuLN4ietDIy1L9r8zVlMAiiYZ36tkFiC+y4o8aCZ6rH0bk+lso3kgsULAH0HXcO9KB6zJELoa7dTZPGg4PRNLMp/pd0+cIANDDlYfClC1dCFgBQm911VGu7nvC/fo0mI3/tyxgiKy1wkSLHV9Ofl48PVB37Is8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lrzyg+dP; arc=none smtp.client-ip=209.85.222.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-78851160a10so72779285a.1;
+        Fri, 08 Mar 2024 09:15:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HIgV9iWgeoInW7F2pyCgSecaDBCSy26jHyglAovYB8Y=;
- b=fYnE7C0USv6yiHkaqxaTtJrs52ugEea0YDjcL/9+9pVkSTsakFcnbhUcjvSdmsW9yzZ7bJ9H/k0Y0NBsHx4RnK7EZU2pMwMzkAE4A4JVprctosHwY0PhQBy+QO3bgPLltZ/pDPon4ur5h9CdPUdA9QDu2mMJmkC9x8Ep3a0Rz6s=
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
- by MW6PR10MB7591.namprd10.prod.outlook.com (2603:10b6:303:249::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.39; Fri, 8 Mar
- 2024 17:15:27 +0000
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::ae68:7d51:133f:324]) by DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::ae68:7d51:133f:324%4]) with mapi id 15.20.7362.019; Fri, 8 Mar 2024
- 17:15:27 +0000
-Message-ID: <8fde7b95-fed0-4cfd-a47e-455cccf1a190@oracle.com>
-Date: Fri, 8 Mar 2024 17:15:21 +0000
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 03/10] fs: Initial atomic write support
-To: Jens Axboe <axboe@kernel.dk>, kbusch@kernel.org, hch@lst.de,
-        sagi@grimberg.me, jejb@linux.ibm.com, martin.petersen@oracle.com,
-        djwong@kernel.org, viro@zeniv.linux.org.uk, brauner@kernel.org,
-        dchinner@redhat.com, jack@suse.cz
-Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        tytso@mit.edu, jbongio@google.com, linux-scsi@vger.kernel.org,
-        ojaswin@linux.ibm.com, linux-aio@kvack.org,
-        linux-btrfs@vger.kernel.org, io-uring@vger.kernel.org,
-        nilay@linux.ibm.com, ritesh.list@gmail.com,
-        Prasad Singamsetty <prasad.singamsetty@oracle.com>
-References: <20240226173612.1478858-1-john.g.garry@oracle.com>
- <20240226173612.1478858-4-john.g.garry@oracle.com>
- <1f68ab8c-e8c2-4669-a59a-65a645e568a3@kernel.dk>
- <67aa0476-e449-414c-8953-a5d3d0fe6857@oracle.com>
- <eef12540-84b6-4591-a797-6cfea7b28d48@kernel.dk>
-Content-Language: en-US
-From: John Garry <john.g.garry@oracle.com>
-Organization: Oracle Corporation
-In-Reply-To: <eef12540-84b6-4591-a797-6cfea7b28d48@kernel.dk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO4P123CA0533.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:2c5::18) To DM6PR10MB4313.namprd10.prod.outlook.com
- (2603:10b6:5:212::20)
+        d=gmail.com; s=20230601; t=1709918156; x=1710522956; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :feedback-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=eg/6ZiZ+BqYM2RugqdnytHz98Dd7p5sKblhsba++MaY=;
+        b=lrzyg+dPX9qb7suyqzAgQH6rTDecmA258FQE91g27xXPIXobMD0y904ynoYRfQJ25k
+         eH/yXMogCstQrnXQ6GG1ZaIQi6t0Oxo8k+83vVToSgQUlLAICjLnwLEdGrpxZTQ1Ce82
+         YX99O62OsOd7Pjs3Xa03WnuD83hctENaoSC+PMVwpUalrK3zfXglTml0Dx2Yz+1AZ593
+         A70IW3dSOkzEBZA9z5WDoKo16h6wiS/4d7LmyOLsgWnDGMGDhzhrMn2u+/EukX9+dj7Y
+         lj3r282zu6OQaAmFADhN8FDKEvnLzDhLLLG71KLmrtOZYLtCeigHfWSNhgImqaWWAIju
+         bUuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709918156; x=1710522956;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :feedback-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eg/6ZiZ+BqYM2RugqdnytHz98Dd7p5sKblhsba++MaY=;
+        b=J2Tu3Dyhl6UMIXbT/Cl1LfPCROC8EiNZnNSH7wm2MVf7PWiHuVlJl1lUyFFNpA+eKT
+         Nymvx8S0WkHrEqAHGe2vJfAEfXZj2bZBkjIQce9FyibQA5CGiOv7PdtN3nF/sJz37YHV
+         Qy7c0WlTyAvHDTDmiK1x+b43eavX7wiOJSYI8r2xBoKgcB5pCRRumZVC2GozNYOO56cV
+         +H/XLtTsVdjoCzwp3MPucec2EsRIsg7MRMfOxexygXqh1bIvNDNAa8RBf647dIjqUIjL
+         Cj/vEc87cPQpNwhIykuIX4QC4D6mIUHBrKuiOeNfKQogbX/9RTpl75blb65dMTbBNAGU
+         oaog==
+X-Forwarded-Encrypted: i=1; AJvYcCWkU0S1E3ey5Sit97ihPAEeXBbheTOq7wsn5kx4+6FXajk3NgfxfL7ugJwMtTOlrNtCEKJfGHCIgV6MXjxuYtsYSo44
+X-Gm-Message-State: AOJu0YwFPTG6aZ0fDM+ZOD59iu+iXATdF/gxKQ06dNOKWtUrIZWjtFsl
+	2BmsaX6/bR+Won6Y0/X23nZj8lt+FS94HhjcwywRnJYZY/OyZUA1
+X-Google-Smtp-Source: AGHT+IG7d3scmZ1pnEvqmtpaYmtauh/0YkxCtyR6tNL/JC9w4GL0YnOeDyI1lZPm05SnEM9ax2e5Ng==
+X-Received: by 2002:a0c:ef05:0:b0:690:9e6d:efe9 with SMTP id t5-20020a0cef05000000b006909e6defe9mr1716089qvr.27.1709918155910;
+        Fri, 08 Mar 2024 09:15:55 -0800 (PST)
+Received: from fauth1-smtp.messagingengine.com (fauth1-smtp.messagingengine.com. [103.168.172.200])
+        by smtp.gmail.com with ESMTPSA id o18-20020a056214181200b00690b43d39f0sm814547qvw.85.2024.03.08.09.15.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Mar 2024 09:15:55 -0800 (PST)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailfauth.nyi.internal (Postfix) with ESMTP id 69D231200068;
+	Fri,  8 Mar 2024 12:15:54 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Fri, 08 Mar 2024 12:15:54 -0500
+X-ME-Sender: <xms:yUfrZZypfgMBhKTxbtqVNubmCKG6mZXkwfRtUxBSA3jv-_w65Psbdg>
+    <xme:yUfrZZR7FjVIYNZFucMiV8Og04d-1uoSt1ti6rQGU-l7-Eju9gjLyXC3kyk86vz77
+    4PzWvXZyMgtn0AE_g>
+X-ME-Received: <xmr:yUfrZTXuaQkmyYU9Unz8wr60QVKKn7iOs-fn2AgjWj7h-CqEX1xl-Sd-Xw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrieehgdelkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhepfffhvfevuffkgggtugesthdtredttd
+    dtvdenucfhrhhomhepuehoqhhunhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgr
+    ihhlrdgtohhmqeenucggtffrrghtthgvrhhnpeeltdefueegfefhuedtheefvdelhfefte
+    dvhfdtveelueegtdejjedvieettedugfenucffohhmrghinhepkhgvrhhnvghlrdhorhhg
+    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqh
+    hunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieegqddu
+    jeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvg
+    drnhgrmhgv
+X-ME-Proxy: <xmx:yUfrZbh23QHbWBreZfymiiwQedkjdkLAzq7Iwjf_svVzhR_flbTk8A>
+    <xmx:yUfrZbCg2AFmKnSSAwy4Hj7OAdv1D6e8dh3KaIJURVg-gQSrEMsUBg>
+    <xmx:yUfrZUInwazUw30ZhdFEkbMjO1t1U2NZRKOg-6-Jv-xFmDXK5defuw>
+    <xmx:ykfrZT5Sm4JXaqO1d6DogFrDn7H9dyV_LkMfrNpKjZAm__A8pWqOuOR6TWw>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 8 Mar 2024 12:15:53 -0500 (EST)
+Date: Fri, 8 Mar 2024 09:15:46 -0800
+From: Boqun Feng <boqun.feng@gmail.com>
+To: torvalds@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com, paulmck@kernel.org,
+	mingo@kernel.org, tglx@linutronix.de, rcu@vger.kernel.org,
+	boqun.feng@gmail.com, joel@joelfernandes.org,
+	neeraj.upadhyay@amd.com, urezki@gmail.com,
+	qiang.zhang1211@gmail.com, frederic@kernel.org,
+	bigeasy@linutronix.de, anna-maria@linutronix.de,
+	chenzhongjin@huawei.com, yangjihong1@huawei.com,
+	rostedt@goodmis.org
+Subject: [GIT PULL] RCU changes for v6.9
+Message-ID: <ZetHwrCb0KXE0xFI@tardis>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|MW6PR10MB7591:EE_
-X-MS-Office365-Filtering-Correlation-Id: 65341a53-f80a-4ad5-bbe4-08dc3f935925
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	oM1gRv958dpe8d/KESdO301vpg0sMzMDyTVBAAL1OsEKB6i48SVlRJhAZpy24IAnnroGmG95FNEvgG2LsOonvbKd0czo1nIuRGjAB73bYfwI1jCEJbv8w483t4eWeVFac/NUhkoNVkNMXHU0xBQH/505u9/73BkMiiXT/qFUE4O3nyUAqU7Jemz3a+iwogfWRQGkbYfexnCTnWUc9E3T+qSIPnScHTuK42PlDLkKNHMbbxjDFLb9jsSCYhZciEjsKLbehPiAJgvNa0l2oPjaj70awKWYnC7s7HPCEPMF+tkgW2HfGVQBAX7XBJqrFVNPfbjELoDXCOBXEiqkc+P3JWIJICRfUIL8Nmk8oFOAilkOcu+nQr4MvGT7vjoX4MSNWG8n1UJt02TiqF+YWr3juNp/1P+1zvZ7Zi9GDlo3MEtCGPMRSpT7BGoCB2cJTr7XiH1gbWjFMQwGm/gW9tBJa9wRvWBrtVydrxsSNJkWy0xLyiZjuGqiJyLaQl+n21/+q0MyrtmdOQHrgNDQVE47AkQPYcVbVNjtHmtBzRzAIZ/rfwhX2bhDXROiWxFxbJo6JcAB+6IPief7hC9Q+veCmlKi6iThq42DzRW5gowalIzvvb2gFqbv+Byl09Q/BKUpZC2948JZrQWyacCJTDvpWW9T6M3rIA1xHVgd5hFvuwtBdowjtU6kABeCrTXxSmGol/aiqvGSl52jBCF30GsPuQ==
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(7416005)(921011);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?TFVQVjB6L0t0a2sxYnIzTEIrYnBEYm5UV3dlMjU3Y2FPR1NBQjV3Q2tKWWtn?=
- =?utf-8?B?SGN5alRnck5JYVI1TllMa0loZjJ2ZTl0OThKMGExeHZmLzZPcFgrNkZCblkv?=
- =?utf-8?B?d2VrL1A3UDFPVVJZUk55VEJQa3VRZXFBVCthRXZsZ2pCczE3Y2lmbXJjRWd1?=
- =?utf-8?B?Y2E4S3YzdHNDdDVuQTJxVXlQaDZUeU1sZzlDWmE1ZlNTeW5BQXB3TUptWGp2?=
- =?utf-8?B?dG9kbVhGbnVXSkRCUmtHVGtTVFVIYlQyRXVFTzBxTzBzSi8rWXZ3aHNOZHhJ?=
- =?utf-8?B?RmhOalg3OVIxRWFPcytCbTNPQzBpSFliMWJsMFl2Ky9Hait2MS83RlRsOG1E?=
- =?utf-8?B?SkFlT1IyMElxaFZwRG01eVpneHdJS0t4SDhUNmdiaTgycVZUR3EyWXkrSEk1?=
- =?utf-8?B?ZmVtMWdvTW9uaklrbnhZUktPbkFaWTRPaVlSVzM5bFJoK1VWSkFmc3h1S0Ft?=
- =?utf-8?B?MDFGT1l6Y04reTZzQi9YZGthL1JQT0pvVy8yV0NFMlE2b1ZreFIyekdtNG11?=
- =?utf-8?B?YlJXMlJjSEtaSTZieHZJaXRHOXF4RDlLaTlWNjZMVTRvZzNtK1MvNU5qQU9j?=
- =?utf-8?B?SkRGKy9wNHRoWGh4L21ENHduNFJoTmh4TGFXdE1rZzI2VzFycGx6VkovQ1NU?=
- =?utf-8?B?N3lsWE9yVGVFdzZNNW80TDY5WUFBZy9wRnluMDJSb1VmdUszZmFlaFBEalNz?=
- =?utf-8?B?UXB1N0llVTlGOU1TQ3hhWFFXMzZaaDg0M2VyRWZVQlRlNXBJVjNYckZCRkh0?=
- =?utf-8?B?YktYclJnVlUwTlE0SDEzYm5CZDVmTW53M09LdkQzeDQ5SmlXcFB4T1YyZWYw?=
- =?utf-8?B?dU1laTcxQkNvRUFvQ1JzZ2dDNFdObmNUYi9IQ2FNa3dpa3owNGM0OHFqeXRJ?=
- =?utf-8?B?aDl1Mkt3RkIrRlhBZGs1OXN1T1NCVWJKT3hucnNPUEFJeEhVU1dIZGNlOUQy?=
- =?utf-8?B?b1V1MkpFTDlWaVRQTHdwV0FtdndnY1pvZGkyNnEycVpZbE1KMHl4Ym9ZRDd0?=
- =?utf-8?B?dGhhbERjdmJkYm1tQXFkVFpDNGpzMW9vM0JJa25KNWtaUUNhOGtxcndrYXUv?=
- =?utf-8?B?RFZXVGU5QmZIUHBIQkJhYXlRWDh0b1NncXAxc1BjWWw3MFJwOUpVMmtzRERL?=
- =?utf-8?B?ektHTXMza0FKL2xiQTJwaGxPMDRGODVjaS9EZzM5cUdiU0VyZ2dJelN2dHNl?=
- =?utf-8?B?MzRUR0xQd3l2Z3c3NEYzSVc5YWVjTVJDSTZERHJPWGQrcG11dVZIS2RrREFW?=
- =?utf-8?B?NGRzNHc3YWxaQVlJenloRTJTUzN4SzdZbnZUb09YR0Y4VThuVXpsdlhidWpu?=
- =?utf-8?B?T0xzL0dJNndhYnhCZXp1NEtoS3pOT3hCeER3Z0ttWDFSYmhHbnh0NHlRc2k3?=
- =?utf-8?B?MXJlZGJJQzJjRjRwSkd3RGF5QzFkcFNROGVLUGNJb0t2SnExS0dKTkhSQ1hW?=
- =?utf-8?B?cnZXYzY3YmJxSFRydVlxVGZOMWxyanUyRWEvMXJOejJoSWRGVFRMZ21odnFT?=
- =?utf-8?B?aFA1clc4ZGxRd0FlODhBV0RJSVZaMjhzNlNtamZNT0pQd0N2MW00c1Z2eVRO?=
- =?utf-8?B?ZWIrNm5LOXYxNkYrMldkQnNGdk9KeUh6WDNsTkdyUHBOd1VYMExWUmxJRXVu?=
- =?utf-8?B?QlYyblhmaW1LNkU1YUlCRjVNa0IwbTlhTjJCN0J5RG1OTnoxR2FrbmdDbmZN?=
- =?utf-8?B?Nk5pSWVpbWE0bDVVNWN3TjZxOGRBeDlUYWlrR3lueTEvc0EwT3JiVkxGVHYv?=
- =?utf-8?B?Y29LN2JUd3hYayt1M3RYMHpjRVZlMDZEKzJrWkNLeU5OTzg2VWNYTm1OR0xo?=
- =?utf-8?B?MFIwUmU5SXF0VnFHYzBYbXRJamJncXBwbnVyb2VsNDNNWHE0Z0g3YWgwNW1O?=
- =?utf-8?B?YnhCdmdxWnJJT01RTVcvUnNVTUhpbW5VRTZUYnZOdjd2QnpYaHRQOUswcmhp?=
- =?utf-8?B?U0NFQ0tBSVBGdTBwZytJcWhtTmsybkxrWjN0b2sxWGxLcG44Tm4rcHFURnd0?=
- =?utf-8?B?cy9LYXNSUTJpZnZ4ZUQ2Z2lzclFZMWx5R2JaLzIyeVlLRTNXelozRXFDaDlY?=
- =?utf-8?B?Uy80eklpWThNejhYNXFWbzc2SnNzVGswUGUyTW41cXVwN0NLZit5TG1xbDdO?=
- =?utf-8?B?VW5BTVZ5cDl0ekR6RHFlY1ltWjA0bitocjZDRFFYamRYUFpnMktXbVBhdjdr?=
- =?utf-8?B?SEE9PQ==?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	oGJLbrcxkChio5G+5+QAgwTpCz3e9Br5c7IhILB8lRmxSfBeky3/YIqrbkDQqiOIpTSSlPN3IVgxBVT54j7etGaaTCk+aKayV9pOCr0V5YnaFbSb4dcIIpqPVKltGjMHV0EdM5NC5Yuumhc0toddoy8ZSjcmOgoMRjdvAUInk8Fn0SDJZDojtKii3HpXZvEZJfEDDybCCLRt1WFw4sZc6/Z5Gfetp+PoSGlNYm2JC1E3FMaTXyR8F8U9YW3uT2LP+3yw5ACeIQ8y3FByJzSnwKMzT4p3N38NwtMuyjAw5tCSaPdeJTXaYla0A92H6/LChimXjl8fxGnpMdyLxxeBO1PO2QfDdXl24u6mNXUTDO5Kue3lSCVXAxPSlwHt0uuW1Dk8V3S2XED+5DiuO9JyjbIOTHbpOJd5Z+KKqXp4pLt6BW0tub7teMoX7zVxx+UqPJQ5akfQsZyWWyuWYqW8XUCUMuF/EP452fv/3ISU00+/3cIImJqV5KIs28ULOiLnOV7VVfUYqpAAtY8U+p1b2wdGCS1kZ6VL1BwJZHEpmIJDwShyAqdltdXETsYPNUbSu2cYHCS6ZheGzongvhiRVp91w7M38StLfuC8LlqkIx0=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 65341a53-f80a-4ad5-bbe4-08dc3f935925
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Mar 2024 17:15:27.0085
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ExPPbV42Vsx8g8bKCB+DCJb/TthDuKJLcDjsECrdURmv8kX+w7jbVvGGREoPiMQVWnIqrD06FZC9LomWbbF6uw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR10MB7591
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-08_08,2024-03-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0
- mlxlogscore=999 suspectscore=0 spamscore=0 malwarescore=0 mlxscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2403080137
-X-Proofpoint-GUID: qAkaUOvEcGE5W-AVY4TFaEcS1HFT8DcR
-X-Proofpoint-ORIG-GUID: qAkaUOvEcGE5W-AVY4TFaEcS1HFT8DcR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 08/03/2024 17:05, Jens Axboe wrote:
->> And the callers can hardcode rw_type?
-> Yep, basically making the change identical to the aio one. Not sure why
-> you did it differently in those two spots.
+Hi Linus,
 
-In the aio code, rw_type was readily available. For io_uring it was not, 
-and I chose to derive from something locally available. But that's a bit 
-awkward and is not good for performance, so I'll follow your suggestion.
+Please pull this for the RCU changes of v6.9:
 
-Thanks,
-John
+The following changes since commit 41bccc98fb7931d63d03f326a746ac4d429c1dd3:
 
+  Linux 6.8-rc2 (2024-01-28 17:01:12 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/boqun/linux.git tags/rcu.next.v6.9
+
+for you to fetch changes up to 3add00be5fe5810d7aa5ec3af8b6a245ef33144b:
+
+  Merge branches 'rcu-doc.2024.02.14a', 'rcu-nocb.2024.02.14a', 'rcu-exp.2024.02.14a', 'rcu-tasks.2024.02.26a' and 'rcu-misc.2024.02.14a' into rcu.2024.02.26a (2024-02-26 17:37:25 -0800)
+
+
+Two merge conflicts were detected by linux-next:
+
+* https://lore.kernel.org/lkml/20240226135745.12ac854d@canb.auug.org.au/
+* https://lore.kernel.org/lkml/20240227125522.2bdbe6be@canb.auug.org.au/
+
+These conflict resolutions from linux-next look good to me, plus I made
+my own resolutions at branch merge/rcu.2024.02.27a for your reference.
+
+
+Some highlights of the changes:
+
+* Eliminates deadlocks involving do_exit() and RCU tasks, by Paul:
+  Instead of SRCU read side critical sections, now a percpu list is used
+  in do_exit() for scaning yet-to-exit tasks.
+
+* Fixes a deadlock due to the dependency between workqueue and RCU
+  expedited grace period, reported by Anna-Maria Behnsen and Thomas
+  Gleixner and fixed by Frederic: Now RCU expedited always uses its own
+  kthread worker instead of a workqueue.
+
+
+Regards,
+Boqun
+
+
+----------------------------------------------------------------
+RCU pull request for v6.9
+
+This pull request contains the following branches:
+
+rcu-doc.2024.02.14a: Documentation updates.
+
+rcu-nocb.2024.02.14a: RCU NOCB updates, code cleanups, unnecessary
+        barrier removals and minor bug fixes.
+
+rcu-exp.2024.02.14a: RCU exp, fixing a circular dependency between
+        workqueue and RCU expedited callback handling.
+
+rcu-tasks.2024.02.26a: RCU tasks, avoiding deadlocks in do_exit() when
+        calling synchronize_rcu_task() with a mutex hold, maintaining
+	real-time response in rcu_tasks_postscan() and a minor
+        fix for tasks trace quiescence check.
+
+rcu-misc.2024.02.14a: Misc updates, comments and readibility
+	improvement, boot time parameter for lazy RCU and rcutorture
+	improvement.
+
+----------------------------------------------------------------
+Boqun Feng (1):
+      Merge branches 'rcu-doc.2024.02.14a', 'rcu-nocb.2024.02.14a', 'rcu-exp.2024.02.14a', 'rcu-tasks.2024.02.26a' and 'rcu-misc.2024.02.14a' into rcu.2024.02.26a
+
+Frederic Weisbecker (13):
+      rcu/nocb: Remove needless LOAD-ACQUIRE
+      rcu/nocb: Remove needless full barrier after callback advancing
+      rcu/nocb: Make IRQs disablement symmetric
+      rcu/nocb: Re-arrange call_rcu() NOCB specific code
+      rcu/exp: Remove full barrier upon main thread wakeup
+      rcu/exp: Fix RCU expedited parallel grace period kworker allocation failure recovery
+      rcu/exp: Handle RCU expedited grace period kworker allocation failure
+      rcu: s/boost_kthread_mutex/kthread_mutex
+      rcu/exp: Move expedited kthread worker creation functions above rcutree_prepare_cpu()
+      rcu/exp: Make parallel exp gp kworker per rcu node
+      rcu/exp: Handle parallel exp gp kworkers affinity
+      rcu/exp: Remove rcu_par_gp_wq
+      rcu: Rename jiffies_till_flush to jiffies_lazy_flush
+
+Joel Fernandes (Google) (1):
+      srcu: Improve comments about acceleration leak
+
+Onkarnath (1):
+      rcu/sync: remove un-used rcu_sync_enter_start function
+
+Paul E. McKenney (16):
+      doc: Spinlocks are implied RCU readers
+      doc: Make whatisRCU.rst note that spinlocks are RCU readers
+      doc: Make checklist.rst note that spinlocks are implied RCU readers
+      doc: Add CONFIG_RCU_STRICT_GRACE_PERIOD to checklist.rst
+      doc: Add EARLY flag to early-parsed kernel boot parameters
+      context_tracking: Fix kerneldoc headers for __ct_user_{enter,exit}()
+      doc: Clarify use of slab constructors and SLAB_TYPESAFE_BY_RCU
+      doc: Update checklist.rst discussion of callback execution
+      rcutorture: Suppress rtort_pipe_count warnings until after stalls
+      rcu-tasks: Repair RCU Tasks Trace quiescence check
+      rcu-tasks: Add data to eliminate RCU-tasks/do_exit() deadlocks
+      rcu-tasks: Initialize callback lists at rcu_init() time
+      rcu-tasks: Initialize data to eliminate RCU-tasks/do_exit() deadlocks
+      rcu-tasks: Maintain lists to eliminate RCU-tasks/do_exit() deadlocks
+      rcu-tasks: Eliminate deadlocks involving do_exit() and RCU tasks
+      rcu-tasks: Maintain real-time response in rcu_tasks_postscan()
+
+Qais Yousef (1):
+      rcu: Provide a boot time parameter to control lazy RCU
+
+Zqiang (2):
+      rcu/nocb: Fix WARN_ON_ONCE() in the rcu_nocb_bypass_lock()
+      rcu/nocb: Check rdp_gp->nocb_timer in __call_rcu_nocb_wake()
+
+ Documentation/RCU/checklist.rst                 |  32 +-
+ Documentation/RCU/rcu_dereference.rst           |   5 +-
+ Documentation/RCU/whatisRCU.rst                 |  19 +-
+ Documentation/admin-guide/kernel-parameters.rst |   1 +
+ Documentation/admin-guide/kernel-parameters.txt | 489 ++++++++++++------------
+ include/linux/rcu_sync.h                        |   1 -
+ include/linux/rcupdate.h                        |   4 +-
+ include/linux/sched.h                           |   2 +
+ init/init_task.c                                |   1 +
+ kernel/context_tracking.c                       |   4 +
+ kernel/fork.c                                   |   1 +
+ kernel/rcu/Kconfig                              |  13 +
+ kernel/rcu/rcu.h                                |  19 +-
+ kernel/rcu/rcuscale.c                           |   6 +-
+ kernel/rcu/rcutorture.c                         |  13 +-
+ kernel/rcu/srcutree.c                           |  24 +-
+ kernel/rcu/sync.c                               |  16 -
+ kernel/rcu/tasks.h                              | 135 +++++--
+ kernel/rcu/tiny.c                               |   1 +
+ kernel/rcu/tree.c                               | 237 ++++++++----
+ kernel/rcu/tree.h                               |  20 +-
+ kernel/rcu/tree_exp.h                           |  83 +---
+ kernel/rcu/tree_nocb.h                          |  69 ++--
+ kernel/rcu/tree_plugin.h                        |  52 +--
+ 24 files changed, 687 insertions(+), 560 deletions(-)
 
