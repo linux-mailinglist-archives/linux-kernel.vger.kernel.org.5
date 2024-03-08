@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-97470-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97471-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE0E4876AD0
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 19:38:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4745876AD1
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 19:38:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9257E281730
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:38:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79E99281366
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:38:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 147875BAE6;
-	Fri,  8 Mar 2024 18:37:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 516FF57332;
+	Fri,  8 Mar 2024 18:37:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="JGKwY3LV"
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2067.outbound.protection.outlook.com [40.107.244.67])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="AUG3xDAZ"
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2052.outbound.protection.outlook.com [40.107.101.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50D5F5B666
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 18:37:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3DCB5D47A
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 18:37:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.101.52
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709923036; cv=fail; b=ddrq07kV9je5qHPYLUM04Kj13BR1TiMl7UYZNVMeKtoALj9anmhCIiNRTU2cALRthMO+9L6LWKolk57NL3YiwiWiwgheXNjS00B60fl8VwUhraswC4mRyqLLOc5MJcv7QrqhfjqG+1/M33XXYaISgYqn+2CSid93Xxyy5eAxWB0=
+	t=1709923042; cv=fail; b=srw3tuDybPUA0xwwZlYeS7MysWvVSI3Q3VkuvmdHnzuFS9gUtwlrd0xakc0isBEWR+UM9/XoaIK4f7+8tRpd5ARoooA/tZrr/Ivs0+To8qWtZ6HSU1aKlyW7+gUcIymOpUkkDaWZnMAPnE2mroFpdpp+gWGfjf/9V506mnESWcE=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709923036; c=relaxed/simple;
-	bh=zDpmafLeA6l7+jyUDQOvxjTfKnaLs5Jfkt9kgIPJ8Cs=;
+	s=arc-20240116; t=1709923042; c=relaxed/simple;
+	bh=T0sBT2K70G3fossRDQHd8cX6zaEOR0dbDLIeSsY6eQ4=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=lk21zmTUbpG5VrG+MFRga8+elphKpzMIzqEsvvmXbVfSrD446JP3oE5dHOx4JvgXW4ODtIOYDR5MGdqm+pZnD+28d+stTNEqa240xTiF6pzg4uiAsfa5GfeVNRsjqBnm7gFLPyBJyKvMhLJRc0ci8mkbpbnjhnQUfuWgpS9HqQc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=JGKwY3LV; arc=fail smtp.client-ip=40.107.244.67
+	 MIME-Version:Content-Type; b=SX6lxPt2LT8rf8raVeav1Jgy2fqTZBCCDhQ6tRGjvB4x3R1ySkmXxaN9Pw9TUQ0cmIn4ysuDu1VDLe+wYbaueZraO+ZjPDlzE2AnDoGMe6ptNx/Am4ofNW/xaf6PwleNEZ3G6L3tRMMkANRbIGCL5LokBh/KRYRJhgtcVxm5yos=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=AUG3xDAZ; arc=fail smtp.client-ip=40.107.101.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=V+B3/rUb03kFII19rAzsG7RqygKvURVJb6L8ITa1htwCyEkEhjDXyh8cLuay2YOuc1K2gE7WaJOa1eC0wEEs2Jw+8sxLvD8AXRiCKO35ssu7pPBJqsUTxiIt++1Kgvu1ofjTNrYpdlmOKjUSgIYSi1tYgHnjJCnpf2R0ysu5xmx7j7LUn4jE+t+frg5qs0cMHaTj0DhyfXf06GiKpra01pTj62yFB7UeEp/2Gen5WerkFLrky7l07DbjVmxRlcjSFGhru/G18ZVIH+81DtLwqjgFPaJvowLmTePlb306nQSyygKmpO+9vhxiQCCYH1jvvMOz0TIksvmYdNBWdKZ/kg==
+ b=ILho64SpFJesIDJu2K1hFe0Y/j+MneCBGPFjCbXw2hmqW10khks8kg6n5XP7i0yJdPzGAZR0LZTz8oRY6RYdvFQCDpE0nIL70Iv2v9pv2NO952xYoqZms55QSM3K6AX8g5UxeQcf8RQ9Qw5NY/HJY8NwPoZBIPMds+1yfTy/gK31gvNKPknX4ywe8WoT/KIaux//N7Z/+eCdNfWJplxPOY70RuawTV9F0zlPZwoJmUSA0pvbFzXHGC2yI53tQ3Aj3jXiA8Ofqn97qqA068PrA4rEu+A/6SSO5UAVf2rfmqS6/9alg5gJoG0Qcp7gCOP8VbRUwkhkij5LIJYbPcMybw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EkUAlRSdDuhKwARqIe/C79iDnZnCm247QfCYPxzLWTw=;
- b=fEP0VqwCxz/PDAEZN5S73dFuLuSslv+ZgXjG7OtbjAijwXhmSABwkFQT2ugZBcnHTQlT2DOk+Wrg5sYRN78oBFTqxI0Ag6V28D3q94isnEMEQjnUP5V6nmPp97CvL8mA6Zgq8wTydF8102AlPLRE7H6vCGDC2q/da6NbVaCxnQnCYSOBtMlEJr2rhQ/B2H18666qejX1xQ6NEEFuG4ARoDVTM75VVXWvRIIx3N+90tEn0z2gseIOleA4rMKnqEIyryJpAR8H3IS4XDSQhSfZOffz8fcofdA/8nOI4zqkiZ6xFlaSmYFXDRB9mTGMH+7IpAjY2T5T7FtcI56JZT+jXA==
+ bh=239Tm5VZoByxWYfaPNcpwknZ00ofzWk/m10A9j/45h0=;
+ b=bMlYbB/acviU13/gBRhu2ZHrxNdQGAgBDwLsFnFwRRceCDyYZE+MIl0ltgi89V0tCsl5FTWHJaAJtnfm5WjBVcKJpKaKIOyoIjvQ6vhiwpM704GErxtW9++o7+mfwFp6jT2VzFlks+4H1ckgXTfBVhEltHWXMIYMiwS/QvfzAUmmL3xWr2jJFZOoEZgsFZswgVKBg6nzM3H/OIz76shRnaX0fpKMY4vhnh+1oQTdGOLOa02FvB6qJdtRJheaRVUHQnbP3ekXPqYst4cM26F2JuCvSKs7La1V7uAWcBT4N0AwUj8q4RAj8czAMXPqcwFy8R2beuWX4iappUJAUS5FZw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
  header.from=amd.com; dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EkUAlRSdDuhKwARqIe/C79iDnZnCm247QfCYPxzLWTw=;
- b=JGKwY3LVeJER5ZGKnY2G5l35wj/3uMFYELQek8TjANI0eJIHIyjQF2j3tQ/M8O7Xj2O2cECla6CdI3l/fr3WU1sc5/QxGjDsRGNq36PKsopUXc6q9dXEi2VjV5NgawRdEVaV2DmpyBfoySCM1/IkIesexBlHLftGRL1OGqzQ4ok=
-Received: from BL1PR13CA0320.namprd13.prod.outlook.com (2603:10b6:208:2c1::25)
- by IA1PR12MB6113.namprd12.prod.outlook.com (2603:10b6:208:3eb::8) with
+ bh=239Tm5VZoByxWYfaPNcpwknZ00ofzWk/m10A9j/45h0=;
+ b=AUG3xDAZWwjrZpmUd8GZo1C5kfOp4iTwYZn6TELW1yrXpQFjePtME8snfu+szCuB2Fz6XyS7RwmioccjRz7IGZyOO/gup9pSqvESlQhJpl73cm47xvY9gkFo0xPObbO68MM7QOCWX1dgoe03eTKZtCfNcRXMODmAACDGl3DYymk=
+Received: from BN9PR03CA0277.namprd03.prod.outlook.com (2603:10b6:408:f5::12)
+ by SJ0PR12MB6878.namprd12.prod.outlook.com (2603:10b6:a03:483::16) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.29; Fri, 8 Mar
- 2024 18:37:10 +0000
-Received: from BN3PEPF0000B078.namprd04.prod.outlook.com
- (2603:10b6:208:2c1:cafe::a9) by BL1PR13CA0320.outlook.office365.com
- (2603:10b6:208:2c1::25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.24 via Frontend
- Transport; Fri, 8 Mar 2024 18:37:10 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.39; Fri, 8 Mar
+ 2024 18:37:18 +0000
+Received: from BN3PEPF0000B077.namprd04.prod.outlook.com
+ (2603:10b6:408:f5:cafe::47) by BN9PR03CA0277.outlook.office365.com
+ (2603:10b6:408:f5::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.28 via Frontend
+ Transport; Fri, 8 Mar 2024 18:37:17 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -62,13 +62,13 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
  client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BN3PEPF0000B078.mail.protection.outlook.com (10.167.243.123) with Microsoft
+ BN3PEPF0000B077.mail.protection.outlook.com (10.167.243.122) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7362.11 via Frontend Transport; Fri, 8 Mar 2024 18:37:10 +0000
+ 15.20.7362.11 via Frontend Transport; Fri, 8 Mar 2024 18:37:17 +0000
 Received: from tlendack-t1.amdoffice.net (10.180.168.240) by
  SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 8 Mar 2024 12:37:09 -0600
+ 15.1.2507.35; Fri, 8 Mar 2024 12:37:16 -0600
 From: Tom Lendacky <thomas.lendacky@amd.com>
 To: <linux-kernel@vger.kernel.org>, <x86@kernel.org>
 CC: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
@@ -77,9 +77,9 @@ CC: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
  Zijlstra" <peterz@infradead.org>, Dan Williams <dan.j.williams@intel.com>,
 	Michael Roth <michael.roth@amd.com>, Ashish Kalra <ashish.kalra@amd.com>,
 	Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>
-Subject: [PATCH v2 12/14] fs/configfs: Add a callback to determine attribute visibility
-Date: Fri, 8 Mar 2024 12:35:27 -0600
-Message-ID: <b851e5f74398141bda2f5e6e1f0308cd13b39aa1.1709922929.git.thomas.lendacky@amd.com>
+Subject: [PATCH v2 13/14] x86/sev: Hide SVSM attestation entries if not running under an SVSM
+Date: Fri, 8 Mar 2024 12:35:28 -0600
+Message-ID: <fabdf811d27a2539d1d016f75d95910b9bca24c4.1709922929.git.thomas.lendacky@amd.com>
 X-Mailer: git-send-email 2.43.2
 In-Reply-To: <cover.1709922929.git.thomas.lendacky@amd.com>
 References: <cover.1709922929.git.thomas.lendacky@amd.com>
@@ -95,242 +95,133 @@ X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN3PEPF0000B078:EE_|IA1PR12MB6113:EE_
-X-MS-Office365-Filtering-Correlation-Id: 64282d1a-0e35-470d-acda-08dc3f9ec414
+X-MS-TrafficTypeDiagnostic: BN3PEPF0000B077:EE_|SJ0PR12MB6878:EE_
+X-MS-Office365-Filtering-Correlation-Id: b486f07a-fd34-4735-3ba2-08dc3f9ec866
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	mQZZi5CvkpKJ5AzjN1eL6AeJ4oNvNCNSFoKMaKJLgypMTtLIsVdk7+S1HfYaX2tMl/WH0uqC+vNV3qjU4/JCoZyIqgfo0oBMlQswVNX80jpi41o7yOLsr3fQqYk6j4cYMaSuByIwJQbw6Y2NAHOuiHmFVc6YhaxzumAW9/HZ4ZIFhvGXPtsMcs69/IAxSUOd6qmuolCtDy3MdJwSltfk+s0ZOGpOtKcRiVMTTKbsZFzZgG7e8CcTgI/9bOjqKOyaO+C4xHTQKSEN8oZSczDv9M3iobWCQf9/LdfIHGkO13vjr+bZmO5rjkesWKgZOcMnxMMyrfB1y88lWykWu/osCI+hkBRwkuAlXWi4Tz+ezPFI7FRzIzcVR7HzAYQiOqgylB8m43sUwSCxXdBhHs+fqO3OwCx6SALwbiVntE3ipqGJ8Q8kY3EPlobtXlOzXaUdW7e+DaCRfd/NLNgd4uU43J7QNLssg9jZRV5kya2CtklMRBnmNf3+LXz/E/79jwb4MvGQAvDw3VnImw7FUa1xcCiNXX7MfLro9UvRjrkBYwBrqR7q4mA3dzxSeWOypxXbwrRRv1LzbFNpPJVjK+eppfD5v6vugKUjnfgr2DxLbZ0OYLLF7Tw0Pd80vOFL5SplsJ/y8avV+yH1jXfnJpIjyBYNzS4W3HVDYsgtZink7T1EdfejlcDRBVwnv+K3TAWcULLmH61AXAbO7Ao5riLg9QYRho9dXkt/oY5ogX+fqjNa9XsA1rkDpk7nQBZ19g9o
+	ox9E2urUE35VXBxZ2VK0881JOLCa4Tqtmq6SzhS5QWZoBr744A2k8knlV2K7rD+SoSALh578NzB1x3IQYVWyJWQ7XYVjN5xR/V4c0q2tWtufShwzH9TxpTXPv62Nvs1mcKpZmkWh0MAe2ouN8tup82ZoomvdMoj5kTsT5etU5/tf/zVGBCTrz8JgEyrk3SFs4I1ygixr2yevqKRnYhzCUAvN6pJq1yJDczixmMBGMuWvuCovVZQuHclpxP37ZNrYFIIASaYP5l1vIMe5Gzf4sQFvcfi66XQM6FnF7dHFG7VFWGkNouF1P3Z0D+u0y0uQrZwgk1yu3vLh7/NkT+nB+5wi+dd/C8cXyyf3Yo1SiUsUAZ+eQLjikyvlmMaYJUx+hY53HQWb9DrGl1XfOilWvp2P5pI1KhhlOzdMMxKoyi3CyQ9mMepSElzL2p7mte6e5Rb1R4OEG2oMdWAD2yrBD0vJM/HUo22dxYWPelzPHektQn+u9Du36d+GNmTj1qgktNcwGJZF1iTgKLvH0+WKbZIxzBENcTQJrrEskLnrZjt7s3Lw3jDzdoqsSbrHbplRjM9qn62esvocRkIfxq4jk8MtyAeQV7U0VtDKAC5Jj7CGgoeW3q1vIlQjPwsFhOzZyK5mFr+7uI3YH9INxHplbcgiAfR2+KewYpdGbQUKgTe0bshnieB0t0sKb9SpW1DhVrOYmVI2xSz17jTdLY9mvWYVekXSsiZsb34Jzx8oYF9/eKKIWv3C8rYE9PyZn5vW
 X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(36860700004)(376005)(82310400014);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(82310400014)(376005)(7416005)(1800799015)(36860700004);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Mar 2024 18:37:10.6527
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Mar 2024 18:37:17.8824
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 64282d1a-0e35-470d-acda-08dc3f9ec414
+X-MS-Exchange-CrossTenant-Network-Message-Id: b486f07a-fd34-4735-3ba2-08dc3f9ec866
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	BN3PEPF0000B078.namprd04.prod.outlook.com
+	BN3PEPF0000B077.namprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6113
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB6878
 
-In order to support dynamic decisions as to whether an attribute should be
-created, add a callback that returns a bool to indicate whether the
-attribute should be display. If no callback is registered, the attribute
-is displayed by default.
+Config-fs provides support to hide individual attribute entries. Using
+this support, base the display of the SVSM related entries on the presence
+of an SVSM.
 
 Cc: Joel Becker <jlbec@evilplan.org>
 Cc: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
 ---
- fs/configfs/file.c       |  13 +++++
- include/linux/configfs.h | 114 +++++++++++++++++++++++++++------------
- 2 files changed, 93 insertions(+), 34 deletions(-)
+ arch/x86/coco/core.c        |  4 ++++
+ drivers/virt/coco/tsm.c     | 13 +++++++++----
+ include/linux/cc_platform.h |  8 ++++++++
+ 3 files changed, 21 insertions(+), 4 deletions(-)
 
-diff --git a/fs/configfs/file.c b/fs/configfs/file.c
-index 0ad32150611e..c758bcc11235 100644
---- a/fs/configfs/file.c
-+++ b/fs/configfs/file.c
-@@ -451,6 +451,12 @@ int configfs_create_file(struct config_item * item, const struct configfs_attrib
- 	umode_t mode = (attr->ca_mode & S_IALLUGO) | S_IFREG;
- 	int error = 0;
+diff --git a/arch/x86/coco/core.c b/arch/x86/coco/core.c
+index d07be9d05cd0..efa0f648f754 100644
+--- a/arch/x86/coco/core.c
++++ b/arch/x86/coco/core.c
+@@ -12,6 +12,7 @@
  
-+	if (attr->ca_is_visible) {
-+		mode = attr->ca_is_visible(item, attr);
-+		if (!mode)
-+			return 0;
-+	}
+ #include <asm/coco.h>
+ #include <asm/processor.h>
++#include <asm/sev.h>
+ 
+ enum cc_vendor cc_vendor __ro_after_init = CC_VENDOR_NONE;
+ u64 cc_mask __ro_after_init;
+@@ -78,6 +79,9 @@ static bool noinstr amd_cc_platform_has(enum cc_attr attr)
+ 	case CC_ATTR_GUEST_STATE_ENCRYPT:
+ 		return sev_status & MSR_AMD64_SEV_ES_ENABLED;
+ 
++	case CC_ATTR_GUEST_SVSM_PRESENT:
++		return snp_get_vmpl();
 +
- 	inode_lock_nested(d_inode(dir), I_MUTEX_NORMAL);
- 	error = configfs_make_dirent(parent_sd, NULL, (void *) attr, mode,
- 				     CONFIGFS_ITEM_ATTR, parent_sd->s_frag);
-@@ -470,9 +476,16 @@ int configfs_create_bin_file(struct config_item *item,
+ 	/*
+ 	 * With SEV, the rep string I/O instructions need to be unrolled
+ 	 * but SEV-ES supports them through the #VC handler.
+diff --git a/drivers/virt/coco/tsm.c b/drivers/virt/coco/tsm.c
+index 07b4c95ce704..2efa6e578477 100644
+--- a/drivers/virt/coco/tsm.c
++++ b/drivers/virt/coco/tsm.c
+@@ -64,6 +64,11 @@ static struct tsm_report_state *to_state(struct tsm_report *report)
+ 	return container_of(report, struct tsm_report_state, report);
+ }
+ 
++static umode_t svsm_visibility(const struct config_item *item, const struct configfs_attribute *attr)
++{
++	return cc_platform_has(CC_ATTR_GUEST_SVSM_PRESENT) ? attr->ca_mode : 0;
++}
++
+ static int try_advance_write_generation(struct tsm_report *report)
  {
- 	struct dentry *dir = item->ci_dentry;
- 	struct configfs_dirent *parent_sd = dir->d_fsdata;
-+	const struct configfs_attribute *attr = &bin_attr->cb_attr;
- 	umode_t mode = (bin_attr->cb_attr.ca_mode & S_IALLUGO) | S_IFREG;
- 	int error = 0;
+ 	struct tsm_report_state *state = to_state(report);
+@@ -139,7 +144,7 @@ static ssize_t tsm_report_svsm_store(struct config_item *cfg,
  
-+	if (attr->ca_is_visible) {
-+		mode = attr->ca_is_visible(item, attr);
-+		if (!mode)
-+			return 0;
-+	}
-+
- 	inode_lock_nested(dir->d_inode, I_MUTEX_NORMAL);
- 	error = configfs_make_dirent(parent_sd, NULL, (void *) bin_attr, mode,
- 				     CONFIGFS_ITEM_BIN_ATTR, parent_sd->s_frag);
-diff --git a/include/linux/configfs.h b/include/linux/configfs.h
-index 2606711adb18..18011f78ffde 100644
---- a/include/linux/configfs.h
-+++ b/include/linux/configfs.h
-@@ -112,39 +112,64 @@ static inline void configfs_add_default_group(struct config_group *new_group,
- 	list_add_tail(&new_group->group_entry, &group->default_groups);
+ 	return len;
  }
+-CONFIGFS_ATTR_WO(tsm_report_, svsm);
++CONFIGFS_ATTR_VISIBLE_WO(tsm_report_, svsm, svsm_visibility);
  
-+typedef umode_t (*configfs_is_visible_t)(const struct config_item *item,
-+					 const struct configfs_attribute *attr);
+ static ssize_t tsm_report_service_guid_store(struct config_item *cfg,
+ 					     const char *buf, size_t len)
+@@ -168,7 +173,7 @@ static ssize_t tsm_report_service_guid_store(struct config_item *cfg,
+ 
+ 	return len;
+ }
+-CONFIGFS_ATTR_WO(tsm_report_, service_guid);
++CONFIGFS_ATTR_VISIBLE_WO(tsm_report_, service_guid, svsm_visibility);
+ 
+ static ssize_t tsm_report_service_manifest_version_store(struct config_item *cfg,
+ 							 const char *buf, size_t len)
+@@ -189,7 +194,7 @@ static ssize_t tsm_report_service_manifest_version_store(struct config_item *cfg
+ 
+ 	return len;
+ }
+-CONFIGFS_ATTR_WO(tsm_report_, service_manifest_version);
++CONFIGFS_ATTR_VISIBLE_WO(tsm_report_, service_manifest_version, svsm_visibility);
+ 
+ static ssize_t tsm_report_inblob_write(struct config_item *cfg,
+ 				       const void *buf, size_t count)
+@@ -336,7 +341,7 @@ static ssize_t tsm_report_manifestblob_read(struct config_item *cfg, void *buf,
+ 
+ 	return tsm_report_read(report, buf, count, TSM_MANIFEST);
+ }
+-CONFIGFS_BIN_ATTR_RO(tsm_report_, manifestblob, NULL, TSM_OUTBLOB_MAX);
++CONFIGFS_BIN_ATTR_VISIBLE_RO(tsm_report_, manifestblob, NULL, TSM_OUTBLOB_MAX, svsm_visibility);
+ 
+ #define TSM_DEFAULT_ATTRS() \
+ 	&tsm_report_attr_generation, \
+diff --git a/include/linux/cc_platform.h b/include/linux/cc_platform.h
+index cb0d6cd1c12f..f1b4266c1484 100644
+--- a/include/linux/cc_platform.h
++++ b/include/linux/cc_platform.h
+@@ -90,6 +90,14 @@ enum cc_attr {
+ 	 * Examples include TDX Guest.
+ 	 */
+ 	CC_ATTR_HOTPLUG_DISABLED,
 +
- struct configfs_attribute {
- 	const char		*ca_name;
- 	struct module 		*ca_owner;
- 	umode_t			ca_mode;
-+	configfs_is_visible_t	ca_is_visible;
- 	ssize_t (*show)(struct config_item *, char *);
- 	ssize_t (*store)(struct config_item *, const char *, size_t);
++	/**
++	 * @CC_ATTR_GUEST_SVSM_PRESENT: Guest is running under an SVSM
++	 *
++	 * The platform/OS is running as a guest/virtual machine and is
++	 * running under a Secure VM Service Module (SVSM).
++	 */
++	CC_ATTR_GUEST_SVSM_PRESENT,
  };
  
--#define CONFIGFS_ATTR(_pfx, _name)			\
-+#define __CONFIGFS_ATTR(_pfx, _name, _vis)		\
- static struct configfs_attribute _pfx##attr_##_name = {	\
- 	.ca_name	= __stringify(_name),		\
- 	.ca_mode	= S_IRUGO | S_IWUSR,		\
- 	.ca_owner	= THIS_MODULE,			\
-+	.ca_is_visible	= _vis,				\
- 	.show		= _pfx##_name##_show,		\
- 	.store		= _pfx##_name##_store,		\
- }
- 
--#define CONFIGFS_ATTR_RO(_pfx, _name)			\
-+#define __CONFIGFS_ATTR_RO(_pfx, _name, _vis)		\
- static struct configfs_attribute _pfx##attr_##_name = {	\
- 	.ca_name	= __stringify(_name),		\
- 	.ca_mode	= S_IRUGO,			\
- 	.ca_owner	= THIS_MODULE,			\
-+	.ca_is_visible	= _vis,				\
- 	.show		= _pfx##_name##_show,		\
- }
- 
--#define CONFIGFS_ATTR_WO(_pfx, _name)			\
-+#define __CONFIGFS_ATTR_WO(_pfx, _name, _vis)		\
- static struct configfs_attribute _pfx##attr_##_name = {	\
- 	.ca_name	= __stringify(_name),		\
- 	.ca_mode	= S_IWUSR,			\
- 	.ca_owner	= THIS_MODULE,			\
-+	.ca_is_visible	= _vis,				\
- 	.store		= _pfx##_name##_store,		\
- }
- 
-+#define CONFIGFS_ATTR(_pfx, _name)			\
-+	__CONFIGFS_ATTR(_pfx, _name, NULL)
-+
-+#define CONFIGFS_ATTR_RO(_pfx, _name)			\
-+	__CONFIGFS_ATTR_RO(_pfx, _name, NULL)
-+
-+#define CONFIGFS_ATTR_WO(_pfx, _name)			\
-+	__CONFIGFS_ATTR_WO(_pfx, _name, NULL)
-+
-+#define CONFIGFS_ATTR_VISIBLE(_pfx, _name, _vis)	\
-+	__CONFIGFS_ATTR(_pfx, _name, _vis)
-+
-+#define CONFIGFS_ATTR_VISIBLE_RO(_pfx, _name, _vis)	\
-+	__CONFIGFS_ATTR_RO(_pfx, _name, _vis)
-+
-+#define CONFIGFS_ATTR_VISIBLE_WO(_pfx, _name, _vis)	\
-+	__CONFIGFS_ATTR_WO(_pfx, _name, _vis)
-+
- struct file;
- struct vm_area_struct;
- 
-@@ -156,43 +181,64 @@ struct configfs_bin_attribute {
- 	ssize_t (*write)(struct config_item *, const void *, size_t);
- };
- 
--#define CONFIGFS_BIN_ATTR(_pfx, _name, _priv, _maxsz)		\
--static struct configfs_bin_attribute _pfx##attr_##_name = {	\
--	.cb_attr = {						\
--		.ca_name	= __stringify(_name),		\
--		.ca_mode	= S_IRUGO | S_IWUSR,		\
--		.ca_owner	= THIS_MODULE,			\
--	},							\
--	.cb_private	= _priv,				\
--	.cb_max_size	= _maxsz,				\
--	.read		= _pfx##_name##_read,			\
--	.write		= _pfx##_name##_write,			\
-+#define __CONFIGFS_BIN_ATTR(_pfx, _name, _priv, _maxsz, _vis)		\
-+static struct configfs_bin_attribute _pfx##attr_##_name = {		\
-+	.cb_attr = {							\
-+		.ca_name	= __stringify(_name),			\
-+		.ca_mode	= S_IRUGO | S_IWUSR,			\
-+		.ca_owner	= THIS_MODULE,				\
-+		.ca_is_visible	= _vis,					\
-+	},								\
-+	.cb_private	= _priv,					\
-+	.cb_max_size	= _maxsz,					\
-+	.read		= _pfx##_name##_read,				\
-+	.write		= _pfx##_name##_write,				\
- }
- 
--#define CONFIGFS_BIN_ATTR_RO(_pfx, _name, _priv, _maxsz)	\
--static struct configfs_bin_attribute _pfx##attr_##_name = {	\
--	.cb_attr = {						\
--		.ca_name	= __stringify(_name),		\
--		.ca_mode	= S_IRUGO,			\
--		.ca_owner	= THIS_MODULE,			\
--	},							\
--	.cb_private	= _priv,				\
--	.cb_max_size	= _maxsz,				\
--	.read		= _pfx##_name##_read,			\
-+#define __CONFIGFS_BIN_ATTR_RO(_pfx, _name, _priv, _maxsz, _vis)	\
-+static struct configfs_bin_attribute _pfx##attr_##_name = {		\
-+	.cb_attr = {							\
-+		.ca_name	= __stringify(_name),			\
-+		.ca_mode	= S_IRUGO,				\
-+		.ca_owner	= THIS_MODULE,				\
-+		.ca_is_visible	= _vis,					\
-+	},								\
-+	.cb_private	= _priv,					\
-+	.cb_max_size	= _maxsz,					\
-+	.read		= _pfx##_name##_read,				\
- }
- 
--#define CONFIGFS_BIN_ATTR_WO(_pfx, _name, _priv, _maxsz)	\
--static struct configfs_bin_attribute _pfx##attr_##_name = {	\
--	.cb_attr = {						\
--		.ca_name	= __stringify(_name),		\
--		.ca_mode	= S_IWUSR,			\
--		.ca_owner	= THIS_MODULE,			\
--	},							\
--	.cb_private	= _priv,				\
--	.cb_max_size	= _maxsz,				\
--	.write		= _pfx##_name##_write,			\
-+#define __CONFIGFS_BIN_ATTR_WO(_pfx, _name, _priv, _maxsz, _vis)	\
-+static struct configfs_bin_attribute _pfx##attr_##_name = {		\
-+	.cb_attr = {							\
-+		.ca_name	= __stringify(_name),			\
-+		.ca_mode	= S_IWUSR,				\
-+		.ca_owner	= THIS_MODULE,				\
-+		.ca_is_visible	= _vis,					\
-+	},								\
-+	.cb_private	= _priv,					\
-+	.cb_max_size	= _maxsz,					\
-+	.write		= _pfx##_name##_write,				\
- }
- 
-+#define CONFIGFS_BIN_ATTR(_pfx, _name, _priv, _maxsz)			\
-+	__CONFIGFS_BIN_ATTR(_pfx, _name, _priv, _maxsz, NULL)
-+
-+#define CONFIGFS_BIN_ATTR_RO(_pfx, _name, _priv, _maxsz)		\
-+	__CONFIGFS_BIN_ATTR_RO(_pfx, _name, _priv, _maxsz, NULL)
-+
-+#define CONFIGFS_BIN_ATTR_WO(_pfx, _name, _priv, _maxsz)		\
-+	__CONFIGFS_BIN_ATTR_WO(_pfx, _name, _priv, _maxsz, NULL)
-+
-+#define CONFIGFS_BIN_ATTR_VISIBLE(_pfx, _name, _priv, _maxs, _vis)	\
-+	__CONFIGFS_BIN_ATTR(_pfx, _name, _priv, _maxsz, _vis)
-+
-+#define CONFIGFS_BIN_ATTR_VISIBLE_RO(_pfx, _name, _priv, _maxsz, _vis)	\
-+	__CONFIGFS_BIN_ATTR_RO(_pfx, _name, _priv, _maxsz, _vis)
-+
-+#define CONFIGFS_BIN_ATTR_VISIBLE_WO(_pfx, _name, _priv, _maxsz, _vis)	\
-+	__CONFIGFS_BIN_ATTR_WO(_pfx, _name, _priv, _maxsz, _vis)
-+
- /*
-  * If allow_link() exists, the item can symlink(2) out to other
-  * items.  If the item is a group, it may support mkdir(2).
+ #ifdef CONFIG_ARCH_HAS_CC_PLATFORM
 -- 
 2.43.2
 
