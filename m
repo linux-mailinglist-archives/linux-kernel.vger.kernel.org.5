@@ -1,91 +1,89 @@
-Return-Path: <linux-kernel+bounces-96901-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96902-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5C238762C4
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 12:10:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED5AA8762C9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 12:11:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5ED73282A25
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:10:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8B6B3B214CF
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:11:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B47455E41;
-	Fri,  8 Mar 2024 11:10:06 +0000 (UTC)
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 827FC55E55;
+	Fri,  8 Mar 2024 11:11:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O/WC80qG"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D1205579F
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 11:10:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4D8C55C20;
+	Fri,  8 Mar 2024 11:11:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709896205; cv=none; b=c7LBXGb9DrD9I4hb1+rkGGs48pUo2F3qRl1WZQiaS2jHAsIRD+t7F7uFbC1FqEkP5ZZhps8KaKFBo9sneHYwPDsaDWJ0lbUIsvdSwwwGCFJYoe4koEsnJbisbkj3jD0OtX+PYqHKITmdBuQ0P6RCTYXwx8a91jyvsDbxxboB7ow=
+	t=1709896307; cv=none; b=Ia+4eW5iG+ZqLnP63HyrlLxx1GoYbf7vj7k4ehgr00ELdmdloCHL9Sn+/Cz/QAsx9di+dXlHik/4CgvSVNE97OFNdhRwBNzZWsW52ArEXdjZiwM0ufh2QWaNLCvmfiRxvWs24gEYFQOGeLxnks27kaoPmZqW0I01CklSqoMjhFE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709896205; c=relaxed/simple;
-	bh=FrYzcEw0p+l4M5ctio1889wXMZgzFn5PhPC+9nAVQMQ=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=OuZkhiFMFnOL78Z0h1oqPU219nBsEMeSRnZHO7RBs0Z7rg7SWPQ1+Nn6Oo2YMs+8pNOYyZgRqxFK76EaEgAV6zrU11PMglFEh/IRuAJ0EvB/RS1eTBvGrUblvJprdzo/+vYOpqqGZOt/umP+EGmr1f2BwsZt630q21yteLZrGzo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7c83a903014so202502039f.2
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 03:10:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709896203; x=1710501003;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NQ8TufsD7KPXCcu0y//i8jXNAGtGghQ7YVU08pwafXc=;
-        b=FhJpe1Lv4xsY3q85IdBpBQA6PksS14AIvzbJS2WmuSP5BOblewLjGH1FeuVf+RDZbq
-         uR5AADsn5VGE0umVPjLcbmRVlw/OwwyvBpKLoM+vpcmQrdiNhf9LImLHRtcyyjR+4Lm1
-         VpUz92DhBkqkrYH1DBaKqE3hqkHY+RgoyFCYSFwyI2+FgvMXVAvj+N4+8j9BXwHFI4vJ
-         /gkGctTc/y0hV2I3G/KSZCy5Jkh9Oikyt0umunRLXGPnYFTJFzqiv0ns8xHkBwOPcoNO
-         tzzpBzWRlUu68jnqBX//ILT+63dnd4EEOkev8qiIjHFjkGH90QjO5OvcSZFuQTzbHlZb
-         11wA==
-X-Forwarded-Encrypted: i=1; AJvYcCWOVPD0CzEyqzzkxOfhQD7N/v7aEJ6wWzED9PHAY5lLLHocP61Fa4489xz1Oufoaqeb30NTw5B9d4y41YdtjF0olGeE9Jqbmqu8RRii
-X-Gm-Message-State: AOJu0YwFFvfpSfg1T9bA+rfvEHqpsDLXcotwQ0cTRCOmxmpQpTz5tXK/
-	Eg5yGSwZO1wOSe5JT/Xs5wRm6M1tSuS2/zG6XQPjiZh1/K/8/ok+KUWY5P/FkNw/W1BfU5j85KT
-	fbQzzxKfBTOw2PIfoMWXxsJ/nS8Un70YmCVcSPfyKxZX1AT3gTlFvZKc=
-X-Google-Smtp-Source: AGHT+IGrLI/lkv//KLnRzr8N0GslKr2WdWvndoicXU9vRVvsv+s8NjyH+J4paVGfZOzRmFDKbXuH24vQEPpqDo/fnF7pqFuARKZw
+	s=arc-20240116; t=1709896307; c=relaxed/simple;
+	bh=VObxaL0t5qKtJJ8GQluFyj0qWx/502F8HOOdmlaZLOg=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=WPKRkrBe5PLNGb80h5wouuIX8H71Ym5hhgHUmySrOIWXaZ6lK5sJ+Os8cFvdmbF/7DLbWXrQfHHK9Mg+HZ35P2XyocH75nNtQkFxeF8YR79U0RMNtJo1tUBPAnYyEYRYvq6toi6R+q1TRe9s6u2RvG1DqzGj8brU72Gf+qIMZZE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O/WC80qG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4968C433C7;
+	Fri,  8 Mar 2024 11:11:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709896307;
+	bh=VObxaL0t5qKtJJ8GQluFyj0qWx/502F8HOOdmlaZLOg=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=O/WC80qGQcYPK/zi3+6WT1dlOUKe/lBgfWzU6gkZf78kgo2cMet4Z9crddF8q4OXo
+	 CKHOnqrUWNNF3XAO/0zpfcfxLDqrPpZiApNa7b6+jyP8T4MJxkK5BdvuwLDNtsPshG
+	 Xay2Td2slg9EIjXIAL6jVmsRuFHU08LPInXAs8BIMU3PCzKsMWJKCdim0vrKeE6zIu
+	 FC9sHJzcCDRnhVICUyo/FwFwpWcvL85AISByTVzTsfjh0eER1pgBooNNrHQRfI3RJA
+	 clacMvW8NKi3YJIc2pxDT/R03w8a6lgNWXmDX9gmND3HuDYFzw/QpiThl0/AvK0bKv
+	 JgtaeLe6Lzy4A==
+From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To: Anup Patel <apatel@ventanamicro.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, Thomas
+ Gleixner <tglx@linutronix.de>, Rob Herring <robh+dt@kernel.org>, Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Frank Rowand
+ <frowand.list@gmail.com>, Conor Dooley <conor+dt@kernel.org>
+Cc: Anup Patel <apatel@ventanamicro.com>, devicetree@vger.kernel.org,
+ Saravana Kannan <saravanak@google.com>, Marc Zyngier <maz@kernel.org>,
+ Anup Patel <anup@brainfault.org>, linux-kernel@vger.kernel.org, Atish
+ Patra <atishp@atishpatra.org>, linux-riscv@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, Andrew Jones
+ <ajones@ventanamicro.com>
+Subject: Re: [PATCH v16 0/9] Linux RISC-V AIA Support
+In-Reply-To: <20240307140307.646078-1-apatel@ventanamicro.com>
+References: <20240307140307.646078-1-apatel@ventanamicro.com>
+Date: Fri, 08 Mar 2024 12:11:44 +0100
+Message-ID: <87edclou4v.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:35a7:b0:475:402:bf46 with SMTP id
- v39-20020a05663835a700b004750402bf46mr413607jal.3.1709896203803; Fri, 08 Mar
- 2024 03:10:03 -0800 (PST)
-Date: Fri, 08 Mar 2024 03:10:03 -0800
-In-Reply-To: <000000000000fd56c405eabc7b6d@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d4c7fb0613243b62@google.com>
-Subject: Re: [syzbot] [reiserfs?] possible deadlock in path_openat (2)
-From: syzbot <syzbot+a844a888fbc0ba4829ce@syzkaller.appspotmail.com>
-To: axboe@kernel.dk, brauner@kernel.org, jack@suse.cz, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	reiserfs-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-syzbot suspects this issue was fixed by commit:
+Anup Patel <apatel@ventanamicro.com> writes:
 
-commit 6f861765464f43a71462d52026fbddfc858239a5
-Author: Jan Kara <jack@suse.cz>
-Date:   Wed Nov 1 17:43:10 2023 +0000
+> The RISC-V AIA specification is ratified as-per the RISC-V international
+> process. The latest ratified AIA specifcation can be found at:
+> https://github.com/riscv/riscv-aia/releases/download/1.0/riscv-interrupts=
+-1.0.pdf
 
-    fs: Block writes to mounted block devices
+It's been a been a long ride, and I got in late (v10)... Thanks for the
+hard work, Anup!
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10a231de180000
-start commit:   833477fce7a1 Merge tag 'sound-6.1-rc1' of git://git.kernel..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=dd3623e135f4c106
-dashboard link: https://syzkaller.appspot.com/bug?extid=a844a888fbc0ba4829ce
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10dfb81a880000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15a68f24880000
+Note that Alex' text-patching/IPI series [1] needs to go into the RV
+tree at roughly the same time as AIA.
 
-If the result looks correct, please mark the issue as fixed by replying with:
+I've not caught any regressions for kselftests on qemu for this version
+(with Alex' series applied). I have not run it on real hardware.
 
-#syz fix: fs: Block writes to mounted block devices
+For the series:
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Tested-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
+Reviewed-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
 
