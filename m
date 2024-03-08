@@ -1,106 +1,140 @@
-Return-Path: <linux-kernel+bounces-97308-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97309-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6845C87688D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:33:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8217E87688F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:33:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F0D41C22361
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 16:33:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF654283B65
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 16:33:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ED6416FF34;
-	Fri,  8 Mar 2024 16:33:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED63536D;
+	Fri,  8 Mar 2024 16:33:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d0hre7N0"
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VkUsgxrv"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3652D36D
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 16:33:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20DCEE545;
+	Fri,  8 Mar 2024 16:33:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709915599; cv=none; b=aQM+rFIx7Jd9WBxjiY1A+aoS7XflOl++J5WntzYuyrZZ2RWYaVn+laJlM5vI18ifXwRrpOJNxK1frkW2XND1l7fAbve5d7V8Kk/LJ8/dO9WuWwMKqfE/1l2Jixh4+93z3pkUV5U7jQalTu/NKKKhx7I94snbzCCSaxvWbECIwhc=
+	t=1709915602; cv=none; b=oKO9LbMSQSeiKnqIePXkd16o83M8SYiOk3O+IpP/oRccpnsl5r4IcIaHBQPxK6w0Jd74Kw0wK6JBBEmq7ndwHbeD483srCm24pT4JmsKVyhCS5zyDj5/Meip6rnQIo6GuyNtSF8nRENIX3fgqMQ1+CP1I7jwtY5E0+oF+brIfO4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709915599; c=relaxed/simple;
-	bh=YLr6G3rAMNcVza6oIHRd6RKxX87uDcHfFYf/FpowA9c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pcG5c7ge7tYVN2l8CLMJHPlDLGeUJuaUar3bevfprHXiEz5eXW3/hF34PbGAyf4g3uq620WCdCVBddO5Zo8VixqxggBP84i6lp/zlYtLOF+R6XbnfHKhBqirJJzEtc7nAZFm56yO5L/nUvDNe/GGaynmmVtSHmgSti3x+WUOBzQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=d0hre7N0; arc=none smtp.client-ip=209.85.218.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a293f2280c7so367200566b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 08:33:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709915596; x=1710520396; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JUeIfZJ43gO8lAwOVHd9gk61hYVExWZlcr16GPR9ZJ8=;
-        b=d0hre7N0DLC0n+3Sdr10AkiaL1KeWg2odY+czhV9qnRDHpkpsSm/6tLICxTsOog/Ny
-         BTBAgtqUcq1IzzBODIeKfNxPN4ib1CHHJLEz7Fc72dsQXvCCFLXiB2zH3WeyZenwm5Tw
-         xAikXDO7uCM06JKBSLNv7ihRUB/HUOBf8aAa/5mB/2f0BhBKN1bSb1w/o5o8/25TJn82
-         Y71Z5ixy9JqN4qZqkID/tNHhqOYkFMW6XZIdC5lUh668ckVpvEGe0SM4opdWi9hy6evY
-         V7N+1FFBbZ5osCA7x6fICUxssUphaugHwCMEsxh8ZQJMd7adjECs6QI6SS3Xd2K7lW5A
-         iS9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709915596; x=1710520396;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JUeIfZJ43gO8lAwOVHd9gk61hYVExWZlcr16GPR9ZJ8=;
-        b=q63V7VaSzOHmCDm4aOGW90fKPLdGYEHhjlGAndIbTK/GVAexiXfStbrDtzWTiKexeu
-         raL74doKCry9F3TL9DhFvPcqQMj7/A+ozvLldElldvi6n8wnCDDBkGMV054vi4ZvNlGa
-         KJfNRgbvdTOa8TMmGq2/bmMYCs+T8XZ/01MrV+X5BbT4TXRf2OWJ/Eu3RZZyL/ttR5mE
-         Ydg+qdw3QPR7q21zVVhl9BilJynxrmobnbMfgxHRpRI1u7XeyQ9mZSE/FuXolgKtCAFH
-         zNBlz3Sec9XoQYbXKmStc5uqGYfywKFntpIQe42wkcx761ZExIBolTVnG5OoKkp4CPdz
-         qgAQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWIvDSzFQ5zlpkJGe9r/+Wya5UfETvPFF7E3LgN0/EKV2tx+cu3LkrZMBwEUajlxt6wWr3su1aAGg498JqYPJsCqpFF5yej0y4PGtIJ
-X-Gm-Message-State: AOJu0YzJD6h7RaCaInftZWfppeMERNNKcvLbJVmxn93yOKPLQI3kDEZI
-	wP4fegSkY2BEqbpsU0A4A0ZB9AKlXveC1fBPDAVzg0/6cxZBeYpuASolcAHIPD5gQMxPvuo3iui
-	+2Sej0YQr5vuVnTyu1Wpj1uXySmQ2dsgOb8G+ng==
-X-Google-Smtp-Source: AGHT+IFufWYJDsITgpL7UXaFj2BN8cigArfb1h/ryoZ7D9OkY/0oqOqz+QCWLnkhrwH1vzy0xR2WiJinQTfCeoaPrYA=
-X-Received: by 2002:a17:906:ce26:b0:a44:415d:fa3a with SMTP id
- sd6-20020a170906ce2600b00a44415dfa3amr14864468ejb.40.1709915596471; Fri, 08
- Mar 2024 08:33:16 -0800 (PST)
+	s=arc-20240116; t=1709915602; c=relaxed/simple;
+	bh=r2+iM8M2Z34V5nudt6nzbhdrCjOpq+BHqqDCvSY1X98=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=epjhHKGBjBbrYX640CtsMa4Q6oZ+zqmlTrbZtdXCbToizCciGhWANDOXv5YE9/DFPCpGsG6B2Mw4EzqMyNAoB99mzMewPrLQv7ry3Xag+7xIOkGSDjpMOAMZCT2M8tKX2FwRp9YvRbiCssc9P5wvUQckA++/mdJh0hJrpZfA4C8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VkUsgxrv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75D48C43390;
+	Fri,  8 Mar 2024 16:33:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709915601;
+	bh=r2+iM8M2Z34V5nudt6nzbhdrCjOpq+BHqqDCvSY1X98=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=VkUsgxrvaiRIAY8MlqNwt/I6J3aSpY4Yfp4yLCTeyny+YkWOloT61h5p8kBv5iLQj
+	 YLFM5fqZYNhideHjYSBtzmgl88FlgezOkSpF6ekmKKsJow2IX5QrYUY2kTqbkBjjRE
+	 Z9k/7U/V9FxiXMGLzACNmUT8D6H2F+foQH6+djUTLpy+vIGjdHUZsWWRfHvqC0sVD2
+	 hpDUhbzoYFp7spQ4XwFGM3olq8+Jff7w3COQb2xiwWLOdjSlPqPSitqtXMrgpmM1GX
+	 LBQTi/K34cBXf3wcYQ6u7oPF2dpFCCsevuLX4a9AYsYbk5RA52J0ALZQeBS+lXQ8O3
+	 qJGWOl4Y/ukZw==
+Date: Fri, 8 Mar 2024 16:33:16 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Frank Li <Frank.Li@nxp.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	Shengjiu Wang <shengjiu.wang@nxp.com>, linux-sound@vger.kernel.org,
+	devicetree@vger.kernel.org, imx@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Conor Dooley <conor.dooley@microchip.com>
+Subject: Re: [PATCH v5 3/4] ASoC: dt-bindings: fsl-sai: allow only one
+ dma-names
+Message-ID: <20240308-flyaway-hangup-112b11535823@spud>
+References: <20240307-asrc_8qxp-v5-0-db363740368d@nxp.com>
+ <20240307-asrc_8qxp-v5-3-db363740368d@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240308015435.100968-1-brookxu.cn@gmail.com> <20240308144208.GA9194@lst.de>
- <CADtkEefTzbYN4qEAgAXDTB-+HMxfENw2m+xcoxzy83YW-bGEhA@mail.gmail.com> <20240308163100.GA17078@lst.de>
-In-Reply-To: <20240308163100.GA17078@lst.de>
-From: =?UTF-8?B?6K645pil5YWJ?= <brookxu.cn@gmail.com>
-Date: Sat, 9 Mar 2024 00:33:07 +0800
-Message-ID: <CADtkEeeZfkJnW9-3B5r_rujjRWq7oDdJG4TtEKg8aB8+WHB1ig@mail.gmail.com>
-Subject: Re: [PATCH v3] nvme: fix reconnection fail due to reserved tag allocation
-To: Christoph Hellwig <hch@lst.de>
-Cc: kbusch@kernel.org, axboe@kernel.dk, sagi@grimberg.me, 
-	linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="AC0SKmhkrE3YKJD+"
+Content-Disposition: inline
+In-Reply-To: <20240307-asrc_8qxp-v5-3-db363740368d@nxp.com>
+
+
+--AC0SKmhkrE3YKJD+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-noted, sounds great.
+On Thu, Mar 07, 2024 at 02:19:10PM -0500, Frank Li wrote:
+> Some sai only connect one direction dma (rx/tx) in SOC. For example:
+> imx8qxp sai5 only connect tx dma channel. So allow only one "rx" or "tx"
+> for dma-names.
+>=20
+> Remove description under dmas because no user use index to get dma channe=
+l.
+> All user use 'dma-names' to get correct dma channel. dma-names already in
+> 'required' list.
+>=20
+> Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-Christoph Hellwig <hch@lst.de> =E4=BA=8E2024=E5=B9=B43=E6=9C=889=E6=97=A5=
-=E5=91=A8=E5=85=AD 00:31=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Sat, Mar 09, 2024 at 12:29:27AM +0800, =E8=AE=B8=E6=98=A5=E5=85=89 wro=
-te:
-> > This works now, but I donot know whether
-> > nvme_alloc_admin_tag_set()/nvme_alloc_io_tag_set()
-> > will be suitable for all driver in future, such as driver for apple
-> > device not use these two funcs
-> > to init tagset (anyway it not use these two macros too), so maybe new
-> > driver would use these
-> > value in other position.
->
-> nvme-apply should realy be converted to use the generic helpers,
-> I just need some help from the maintainers.  I'll ping them.
->
-> But I'm fine with just taking this bug fix as-is and clean this up
-> later.
+Could you please drop the ack when you change a patch significantly
+between versions?
+
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
+>  Documentation/devicetree/bindings/sound/fsl,sai.yaml | 8 +++-----
+>  1 file changed, 3 insertions(+), 5 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/sound/fsl,sai.yaml b/Docum=
+entation/devicetree/bindings/sound/fsl,sai.yaml
+> index 2456d958adeef..93e7737a49a7b 100644
+> --- a/Documentation/devicetree/bindings/sound/fsl,sai.yaml
+> +++ b/Documentation/devicetree/bindings/sound/fsl,sai.yaml
+> @@ -81,15 +81,13 @@ properties:
+> =20
+>    dmas:
+>      minItems: 1
+> -    items:
+> -      - description: DMA controller phandle and request line for RX
+> -      - description: DMA controller phandle and request line for TX
+> +    maxItems: 2
+> =20
+>    dma-names:
+>      minItems: 1
+> +    maxItems: 2
+>      items:
+> -      - const: rx
+> -      - const: tx
+> +      enum: [ rx, tx ]
+> =20
+>    interrupts:
+>      items:
+>=20
+> --=20
+> 2.34.1
+>=20
+
+--AC0SKmhkrE3YKJD+
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZes9zAAKCRB4tDGHoIJi
+0uwUAQDcaoMs1u+9QgLu4SZf0tZtJEIUg5uNYbiBoVj3GhR5wwEA/LOxIJVjMGHJ
+DQtJaLtRvDKsgIRW78M+Zlg/BVuPhA8=
+=PcA6
+-----END PGP SIGNATURE-----
+
+--AC0SKmhkrE3YKJD+--
 
