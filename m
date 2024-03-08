@@ -1,184 +1,147 @@
-Return-Path: <linux-kernel+bounces-96997-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96998-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62D19876438
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:24:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6D2E87643B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:24:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1820C2814A1
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 12:24:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 720AC282B94
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 12:24:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AFA156B70;
-	Fri,  8 Mar 2024 12:23:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A85315731C;
+	Fri,  8 Mar 2024 12:24:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="rqw0fYeO"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iCUsUGoA"
+Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39162537E5;
-	Fri,  8 Mar 2024 12:23:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EB1F56459;
+	Fri,  8 Mar 2024 12:24:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709900632; cv=none; b=m2XzVsBYzg6A1Xp6sYMhb8PC37HcKnFCmzgnYk4mJoqhwQXkZaxQb5cDp8bTV517qhJVI/r61+g2xavgyg0QswhsnOvUYftFN8urxLFmBLt5TJDS77Nc6sec4a9xi7Eulmr7fB5mBBBtmQy1rYuvTgsdYxkkEc9RoP/tYqlfLGU=
+	t=1709900674; cv=none; b=WpDB/1/sCoObVsZTaFITtxTlBc1ImEDmlFJQzcpRZbTQG09XcvOC2NnMG2awvQ5XP7d3X135HNE2SBx6aJ+JRtAvcULB0+fgwwESe71U7igBJ3LiyINsvKneklggmzZAcjSyQtuRmh02yzAM2+RFtFRYSxbwXV+SCjf1ZD3QG+s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709900632; c=relaxed/simple;
-	bh=hfx1eX/0pdpRvQbWZNMymmeVZCicleQqUgHbKjP4P64=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=FRFnEmd8fBk0XbRqhHRipxGiMUW9ycDDvptGtOZi6ucBWGjTiSTHC0cFLgtNEBa5OWRDqcglDFNTv9Nq1PeA6jZ6z7A5l24alpNpSiq2VZ7v/nYJWctfL7lx4KPdJe5ik3Atm/6SBu15GaB0KDU4UOPyrEWsykUrNU8ae8Cjtww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=rqw0fYeO; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 428CMrLG026298;
-	Fri, 8 Mar 2024 12:23:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=i/GpeF8aIkUiB3ATFSlTu7zEj8XwcmOJq0bYMsncVRo=;
- b=rqw0fYeOrE+wZ5VQxbB8+0WdZE/naJlaUljuw339OITZYeEeGzCae+SddWTxbFaTpUNA
- u1ZtHPOhY/Q9gsaZakGWPh/osQ21Yt7dlRnTZpD07XFAPfszpkjGTOz0IveUOLPzI52R
- ZsvBkizNjW+jDdgCw2PG1ZHaFfMRjDV+li4oADdG6R2ZlGj5HpJ5flzFhPB1ur6kDHZP
- uK3Wc+lPaUjy/xPtG5nXMKrCyyaFxnrQv8MCvIPbjSBqaM6I5f468jkGiSdMg53ahTMP
- h/jWhyiktVxCpokypLYIYOjNF2IV1Dj5ptOAVHIk25G76Vg/fn2oaBwc95DQIXoN8gYQ JA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wr2mk00ks-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 08 Mar 2024 12:23:41 +0000
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 428CN5bW026609;
-	Fri, 8 Mar 2024 12:23:40 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wr2mk00kh-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 08 Mar 2024 12:23:40 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 4289tIZb010886;
-	Fri, 8 Mar 2024 12:23:40 GMT
-Received: from smtprelay06.wdc07v.mail.ibm.com ([172.16.1.73])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wmh52uvbj-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 08 Mar 2024 12:23:40 +0000
-Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
-	by smtprelay06.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 428CNaja35717604
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 8 Mar 2024 12:23:38 GMT
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 4F2EA58066;
-	Fri,  8 Mar 2024 12:23:36 +0000 (GMT)
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id BD6A458057;
-	Fri,  8 Mar 2024 12:23:35 +0000 (GMT)
-Received: from [9.47.158.152] (unknown [9.47.158.152])
-	by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Fri,  8 Mar 2024 12:23:35 +0000 (GMT)
-Message-ID: <851536a5-ad8f-4d65-8c33-707e2fe762df@linux.ibm.com>
-Date: Fri, 8 Mar 2024 07:23:35 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] powerpc/prom_init: Replace linux,sml-base/sml-size
- with linux,sml-log
-Content-Language: en-US
-To: Rob Herring <robh@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>
-Cc: linux-integrity@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, jarkko@kernel.org,
-        rnsastry@linux.ibm.com, peterhuewe@gmx.de, viparash@in.ibm.com
-References: <20240306155511.974517-1-stefanb@linux.ibm.com>
- <20240306155511.974517-2-stefanb@linux.ibm.com> <87jzmenx2c.fsf@mail.lhotse>
- <20240307215214.GB3110385-robh@kernel.org>
-From: Stefan Berger <stefanb@linux.ibm.com>
-In-Reply-To: <20240307215214.GB3110385-robh@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: OnG9UxkmCSl9Pj-ME8nh6ntAyQQlV3Hq
-X-Proofpoint-GUID: ZrkP2al_ODQpPZDwS3ZLQ66v5sWS64Pw
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	s=arc-20240116; t=1709900674; c=relaxed/simple;
+	bh=Ase+5+31oDbJYm8v66P+FyYugxyAlKL6wBNvXJiUHgg=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=klyXZt7U/yIRlTflW2Yw5+LQhx4oGk1Kl454uBa5wkid5crGuqYxxfjbdBf9+W30BMkADouwtTd25qVVKiwsUrLvS64UY9yFpU8qh8e7E2ewpbGhrIXjGwQaxlj8APOvjpotM/ZUoG6T7kWzLqdiDbIAnCFzGy+vrZotXdZbLnU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iCUsUGoA; arc=none smtp.client-ip=209.85.160.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-42ee23c64e3so3531591cf.2;
+        Fri, 08 Mar 2024 04:24:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709900671; x=1710505471; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qyeTx4l+PfTtnxPQ3ZJbKCz/ab6s4jrqxemMSoIoEeg=;
+        b=iCUsUGoA16FSWliuuRZNpav/TNoHBmok6EIRE9IeYkm8rgmty6hzJ548VzRoU6rNFK
+         MTNm720wZrK9dH103DC5G5jkojLA0wNGv0I7EWuMqZWTywPdhUOCHFIBmO31jgDM/G+m
+         lwF22Zk1hUSuCfpXYNm/Bs83P6Ah/vGMXSGpsF/Pi41+Zx1OXNf+/Nzp8O9pehY6haiw
+         wTCSAQjoa3B1BfJATEk1JJtqnYQsrwVMsAJakcwAY5HrnNFBYC9hHVQdaIDqoLabbhCc
+         ynLmZ+bdN/PKFD0lYgYL3QxGnOxjlJUXqIselBz85cNWqwhKCU+RABdqxnO/07vLTS3W
+         6vMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709900671; x=1710505471;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=qyeTx4l+PfTtnxPQ3ZJbKCz/ab6s4jrqxemMSoIoEeg=;
+        b=CCvv3wQwOjWQ9sxlneo9ywL/0H7LeoYGTmZRl2qy7XgcXOlIjlXjjRd0wCQA16DB68
+         K+5JR/49nbtJgr0Pb5D7vzDw71E4cR+M2GVMnlxf32spR+rNA7rzdLxBfLkwKXoau06G
+         lZdl0hVUFVcEMT4S4MxccJsN89Ge9dGgfvXnlJ6lFpxtHPwOQNfLv56Wd4bzcJAK9dKa
+         8NKhucwY2UAPJ3KoS8hJTbdHWlUZa5wjIAKfgbMwlEBQmGK2sL1nF15gJBnLiH0yWVwu
+         drevY/5LedpjaWzh4WKHicgLpFFz6MI031OkmXaqVYHerZlszFyHSgUx/z0AinE0QHiS
+         K5jw==
+X-Forwarded-Encrypted: i=1; AJvYcCU3aQQyitBaZxVZgXVomU2hujxLXBcukKETssgCQN+/25CPmVW9uMd1xQ4//dlsFIXAR1cZqqZ2QWNpaFJegR6sHUGcQxcSm5Ro5iw+
+X-Gm-Message-State: AOJu0YwPSPXP7ZaW8axTVDse2KhPi1KpGsO8AouAOeZR4YHmoM+wgulj
+	l3RF2qboZY9vUcFKqa4tlRpOOz5PCrkHonB/S5qOJVMd7Vzw440m
+X-Google-Smtp-Source: AGHT+IH0hjodA7QR2VzGv0582KlBhi53oqM+xOWmxnX3vjKaCKuXDqcrAsNVLzbM+HuPdnJrTG93eg==
+X-Received: by 2002:ac8:5748:0:b0:42e:e42d:e4a6 with SMTP id 8-20020ac85748000000b0042ee42de4a6mr10277649qtx.47.1709900671275;
+        Fri, 08 Mar 2024 04:24:31 -0800 (PST)
+Received: from localhost (55.87.194.35.bc.googleusercontent.com. [35.194.87.55])
+        by smtp.gmail.com with ESMTPSA id c12-20020ac87d8c000000b0042f068d3d8asm3420786qtd.43.2024.03.08.04.24.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Mar 2024 04:24:30 -0800 (PST)
+Date: Fri, 08 Mar 2024 07:24:30 -0500
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Juntong Deng <juntong.deng@outlook.com>, 
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
+ davem@davemloft.net, 
+ edumazet@google.com, 
+ kuba@kernel.org, 
+ pabeni@redhat.com
+Cc: netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org
+Message-ID: <65eb037ebbd4a_1356ef29497@willemb.c.googlers.com.notmuch>
+In-Reply-To: <AM6PR03MB58489E6E890BA4A20D429DDC99272@AM6PR03MB5848.eurprd03.prod.outlook.com>
+References: <AM6PR03MB5848595A20BB5D958C2D9DE299272@AM6PR03MB5848.eurprd03.prod.outlook.com>
+ <65eaf9e336d07_133b25294db@willemb.c.googlers.com.notmuch>
+ <AM6PR03MB58489E6E890BA4A20D429DDC99272@AM6PR03MB5848.eurprd03.prod.outlook.com>
+Subject: Re: [PATCH net-next] net/packet: Add getsockopt support for
+ PACKET_COPY_THRESH
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-08_08,2024-03-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- lowpriorityscore=0 suspectscore=0 bulkscore=0 phishscore=0 malwarescore=0
- spamscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2403080099
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-
-
-On 3/7/24 16:52, Rob Herring wrote:
-> On Thu, Mar 07, 2024 at 09:41:31PM +1100, Michael Ellerman wrote:
->> Stefan Berger <stefanb@linux.ibm.com> writes:
->>> linux,sml-base holds the address of a buffer with the TPM log. This
->>> buffer may become invalid after a kexec and therefore embed the whole TPM
->>> log in linux,sml-log. This helps to protect the log since it is properly
->>> carried across a kexec with both of the kexec syscalls.
->>>
->>> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
->>> ---
->>>   arch/powerpc/kernel/prom_init.c | 8 ++------
->>>   1 file changed, 2 insertions(+), 6 deletions(-)
->>>
-
+Juntong Deng wrote:
+> On 2024/3/8 19:43, Willem de Bruijn wrote:
+> > Juntong Deng wrote:
+> >> Currently getsockopt does not support PACKET_COPY_THRESH,
+> >> and we are unable to get the value of PACKET_COPY_THRESH
+> >> socket option through getsockopt.
+> >>
+> >> This patch adds getsockopt support for PACKET_COPY_THRESH.
+> >>
+> >> Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
+> >> ---
+> >>   net/packet/af_packet.c | 3 +++
+> >>   1 file changed, 3 insertions(+)
+> >>
+> >> diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
+> >> index 0db31ca4982d..65042edd1a97 100644
+> >> --- a/net/packet/af_packet.c
+> >> +++ b/net/packet/af_packet.c
+> >> @@ -4090,6 +4090,9 @@ static int packet_getsockopt(struct socket *sock, int level, int optname,
+> >>   	case PACKET_VNET_HDR_SZ:
+> >>   		val = READ_ONCE(po->vnet_hdr_sz);
+> >>   		break;
+> >> +	case PACKET_COPY_THRESH:
+> >> +		val = pkt_sk(sk)->copy_thresh;
+> >> +		break;
+> > 
+> > This is probably a good opportunity to use READ_ONCE/WRITE_ONCE for
+> > this variable that can be modified and read concurrently.
+> > 
+> > Alternatively I can fix up all three locations in a follow-on patch.
+> > 
+> > No concerns with adding the getsockopt itself.
+> > 
+> >>   	case PACKET_VERSION:
+> >>   		val = po->tp_version;
+> >>   		break;
+> >> -- 
+> >> 2.39.2
+> >>
+> > 
+> > 
 > 
+> Thanks for reviewing.
 > 
->> Also adding the new linux,sml-log property should be accompanied by a
->> change to the device tree binding.
->>
->> The syntax is not very obvious to me, but possibly something like?
->>
->> diff --git a/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml b/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml
->> index 50a3fd31241c..cd75037948bc 100644
->> --- a/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml
->> +++ b/Documentation/devicetree/bindings/tpm/ibm,vtpm.yaml
->> @@ -74,8 +74,6 @@ required:
->>     - ibm,my-dma-window
->>     - ibm,my-drc-index
->>     - ibm,loc-code
->> -  - linux,sml-base
->> -  - linux,sml-size
+> So, do I need to send PATCH V2 to add READ_ONCE?
 > 
-> Dropping required properties is an ABI break. If you drop them, an older
-> OS version won't work.
+> Or do you want you to use a follow-on patch to fix all three locations 
+> at once?
 
-1) On PowerVM and KVM on Power these two properties were added in the 
-Linux code. I replaced the creation of these properties with creation of 
-linux,sml-log (1/2 in this series). I also replaced the handling of
-these two (2/2 in this series) for these two platforms but leaving it 
-for powernv systems where the firmware creates these.
-
-https://elixir.bootlin.com/linux/latest/source/arch/powerpc/kernel/prom_init.c#L1959
-
-2) There is an example in the ibm,vtpm.yaml file that has both of these
-and the test case still passes the check when the two entries above are 
-removed. I will post v2 with the changes to the DT bindings for 
-linux,sml-log including an example for linux,sml-log. [The test cases 
-fail, as expected, when an additional property is added, such as when 
-linux,sml-base is added when linux,sml-log is there or linux,sml-log is 
-added when linux,sml-base is there.]
-
-> 
->>   
->>   allOf:
->>     - $ref: tpm-common.yaml#
->> diff --git a/Documentation/devicetree/bindings/tpm/tpm-common.yaml b/Documentation/devicetree/bindings/tpm/tpm-common.yaml
->> index 3c1241b2a43f..616604707c95 100644
->> --- a/Documentation/devicetree/bindings/tpm/tpm-common.yaml
->> +++ b/Documentation/devicetree/bindings/tpm/tpm-common.yaml
->> @@ -25,6 +25,11 @@ properties:
->>         base address of reserved memory allocated for firmware event log
->>       $ref: /schemas/types.yaml#/definitions/uint64
->>   
->> +  linux,sml-log:
-> 
-> Why is this Linux specific?
-
-I am not sure about the criteria when to prefix with 'linux,' and when 
-not to. In this case I did it because it is created by Linux and because 
-of existing linux,sml-base and linux,sml-size.
+Please use READ_ONCE and convert the existing accesses to copy_thresh
+in the same patch to READ_ONCE/WRITE_ONCE. That's simplest.
 
