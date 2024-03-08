@@ -1,119 +1,201 @@
-Return-Path: <linux-kernel+bounces-97336-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97337-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CEB68768F6
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:56:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E009C8768F8
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:56:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC61A283C38
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 16:56:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59D2F284441
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 16:56:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38BB81C295;
-	Fri,  8 Mar 2024 16:56:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AC371F941;
+	Fri,  8 Mar 2024 16:56:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="XsOfXz8H";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="KK1Jby4P"
-Received: from fout2-smtp.messagingengine.com (fout2-smtp.messagingengine.com [103.168.172.145])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iyTMxIno"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A753215D0;
-	Fri,  8 Mar 2024 16:56:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.145
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF7521D534;
+	Fri,  8 Mar 2024 16:56:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709916973; cv=none; b=CEAC49sq0fQx8e21ZKRBnIimTgAbRAJxPWGG9xiNngLetHtVexen/iPhqJKs7jJTAFFwh7s4u8VC8HLAePckULOOrNkZtL8rqMiykFdPeHJt2eOw56fT3tDwRP1d5KnJdE/zrJYcu283EQ/km0W2aVxB6NXavp0Z8W3UGC+mwCo=
+	t=1709916994; cv=none; b=XXvw9QA5NJWdO82XMbRunkJEXraXu/YN8zHIzLgLr4xmE7qdDu/Ouf16hTC9VdfuV3LdqyNXzlcwIPqff0WJUZBtEeeyRrb45b5wDGVdpinOGx8omX/m0Q+eUHvRSkB3jr62/2Nsaczy3fJY2z7jgrsZsnMSLN/LU8PiaFWqnyA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709916973; c=relaxed/simple;
-	bh=r6uhChX0M6c6VxGFVC7vM450cA6B04bHqZgorw1HNmM=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=M4rKr9i6RiCF2vQSEZmvNYjDUouEqu3FrHZotrfJ0J8SrFoD7rm7nlvfojAn36sGSQF83vhWC0wOANfSDJ7UVblsN7YpLd/By4hXtxozKjiga45dQteuk4FkxMIzOnPV/3DqW4SH4trb840ayd5S/YmaNKxNQkPu4vUy+LWmz+E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=XsOfXz8H; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=KK1Jby4P; arc=none smtp.client-ip=103.168.172.145
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfout.nyi.internal (Postfix) with ESMTP id AF35713800AB;
-	Fri,  8 Mar 2024 11:56:09 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Fri, 08 Mar 2024 11:56:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1709916969; x=1710003369; bh=xnhX7BeGxm
-	k4GyXvpk9AHkxVWY0R4hFv5lV38tPGFzQ=; b=XsOfXz8Hrc3z3uQcnfV4LZHI0p
-	cg8hl+yYhAS7op9WmmA/y5q5dtBYZuICP5MKa/WErMm2861Aku/SD3+F21VrY5k6
-	UoRlYFSBZUio7pHYjXoX6W0X8CdtD/BnMv3mDLQ75wiM4Bgjiy9ppeIuvFCSJv91
-	vfqLg8G3YaUiRsRkmu/gxhSjQeUpI58/wGxXUZQ0dR6qR9amiVRJLA7JWPerf/sw
-	fhCwIZcaLz8TLTPvk5PIbe83Mjj5zr4WiKz50YKekxy1qNA7zHygmS4G+66jbi6d
-	WEONHu/uoc0zMync+OCisR8u74QUcbQk3GlyEr3VQ+MY58qNfLSxryWZLAAQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1709916969; x=1710003369; bh=xnhX7BeGxmk4GyXvpk9AHkxVWY0R
-	4hFv5lV38tPGFzQ=; b=KK1Jby4PfnfUScWKuMK4MSoC077hXEs8ssf+0Ietjz4Z
-	cM1yLUhGzuLAA8bpZmnmdr3fycJkYHPvUe0vFmm3GVXimU1yz8KaDTGk+Nfqnifz
-	3Mz/hgjH9z0lat62clYSbtszh+6RyZ8OeHwtRDwZBNXAem/r3t4XfVH2XStIZmE5
-	X+wBapjIetzTU7rMeoqCOpwOugo9M7j/H2RNi4oSGAqfJgza6a1PQJmrb7T3IgrN
-	zTLPWC1O7ZMl9bi7CI7Qc1uR+BgUxlgM8Wr0lI7JkQMNCX5oeEsNk8WiRnKRRmmL
-	528NUjFiDAOlI3bPaL+qvvM0LNMnzRhf3g7e4xr/DA==
-X-ME-Sender: <xms:KUPrZb-77X0uixuahGbxkTeUwfr41D-T2l2kZ4JXkyKGOsRiOWF6jQ>
-    <xme:KUPrZXum8DLdNzxAsgOtv4Z7rKtpUWodo49nGzZEbESB79rSa0x_uhTYLlrF6jfi1
-    1ciwlicWFlG6tmrvgM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrieehgdelgecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
-    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
-    hnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:KUPrZZC8zQB-_8yI-wlBzI72EA9xJ4U66zYsllKF9HB7Rt4gqdYlQw>
-    <xmx:KUPrZXcVpihXYHImq6WqC1vQFolXY-3w6S3ccRxZ0KwDpBIcv-nTNA>
-    <xmx:KUPrZQPS973zsoDqZvM79gBaqaSzYVaegO-TPyFHl0AVwrj7yxL8uA>
-    <xmx:KUPrZRjppHjw9ExvAyjG00wrX2gJA1ggoy0-fbjwF6GeWYvnm5-C2g>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 10EAFB6008D; Fri,  8 Mar 2024 11:56:09 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-251-g8332da0bf6-fm-20240305.001-g8332da0b
+	s=arc-20240116; t=1709916994; c=relaxed/simple;
+	bh=f7IeXH5Ea9BXgzNxn3Q/+rkUDulpRb7CeEz87gBe8zw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NyWM4FJ5F8HyxsGrQcHWoZGgWQs8Qw3ygjyLthWBzqveR5/FNGH+J3iyDTonVV1pCIcMF4gwSTC5EkFVg4QsONI9qYOR9gjF07XDOvZgeJH9IrYfXQdZIadIAyKy09Vb1LC/iAOg68hbpszjZ+PC4jGYKfcv3zalwRZ663gmAx8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iyTMxIno; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F0DCC433C7;
+	Fri,  8 Mar 2024 16:56:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709916994;
+	bh=f7IeXH5Ea9BXgzNxn3Q/+rkUDulpRb7CeEz87gBe8zw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=iyTMxInokP4XaeTmRTIiCps4U3jOzHAOKqRLJcngKiVmf8EkMhwZTjb9zAGwve9xj
+	 aI62VexwEuxZTBo5vNRZ8rtN/NwVgxHBf5tM7TYFlXqnv8HNfTViXUIo9iEfvUiD3d
+	 tSpXuyfwFO5r8SdEA+0p+s/QY0fE7NQvIgyLOaw1+pNiMYoFAVF14orRSiQVB/Gn5D
+	 9iP+xCHYIwwt38rBPEY8eayALB3RlNCrsNhb0GKCsstaE2mZ0IBVe/NXGwUEczaUUO
+	 tkIpVLHyXT4qHSeVQ++nRRalyFlDLI7LD9z9OFZUZwxsAaxjQXpi6QLaQRiLgWYM7o
+	 1zBjS9ktNf5kQ==
+Date: Fri, 8 Mar 2024 08:56:33 -0800
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Neal Gompa <neal@gompa.dev>, linux-fsdevel@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+	Miklos Szeredi <mszeredi@redhat.com>,
+	Christian Brauner <brauner@kernel.org>,
+	David Howells <dhowells@redhat.com>
+Subject: Re: [PATCH v2] statx: stx_subvol
+Message-ID: <20240308165633.GO6184@frogsfrogsfrogs>
+References: <20240308022914.196982-1-kent.overstreet@linux.dev>
+ <CAEg-Je96OKs_LOXorNVj1a1=e+1f=-gw34v4VWNOmfKXc6PLSQ@mail.gmail.com>
+ <i2oeask3rxxd5w4k7ikky6zddnr2qgflrmu52i7ah6n4e7va26@2qmghvmb732p>
+ <CAEg-Je_URgYd6VJL5Pd=YDGQM=0T5tspfnTvgVTMG-Ec1fTt6g@mail.gmail.com>
+ <2uk6u4w7dp4fnd3mrpoqybkiojgibjodgatrordacejlsxxmxz@wg5zymrst2td>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <d43790a0-d6a3-4178-a298-a86db68918e5@app.fastmail.com>
-In-Reply-To: <ZesoygjRoCR9HO_V@smile.fi.intel.com>
-References: <20240307195056.4059864-1-andriy.shevchenko@linux.intel.com>
- <20240307195056.4059864-4-andriy.shevchenko@linux.intel.com>
- <ZesoygjRoCR9HO_V@smile.fi.intel.com>
-Date: Fri, 08 Mar 2024 17:55:48 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>,
- linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
-Cc: "Mark Brown" <broonie@kernel.org>, "Daniel Mack" <daniel@zonque.org>,
- "Haojian Zhuang" <haojian.zhuang@gmail.com>,
- "Robert Jarzmik" <robert.jarzmik@free.fr>,
- "Russell King" <linux@armlinux.org.uk>
-Subject: Re: [PATCH v3 3/3] spi: pxa2xx: Use proper SSP header in soc/pxa/ssp.c
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2uk6u4w7dp4fnd3mrpoqybkiojgibjodgatrordacejlsxxmxz@wg5zymrst2td>
 
-On Fri, Mar 8, 2024, at 16:03, Andy Shevchenko wrote:
-> On Thu, Mar 07, 2024 at 09:47:47PM +0200, Andy Shevchenko wrote:
->> There is nothing from pxa2xx_spi.h used by soc/pxa/ssp.c.
->> Replace it with pxa2xx_ssp.h.
->
-> Acked-by: Arnd Bergmann <arnd@arndb.de>
->
-> P.S.
-> I dared to add Arnd's tag from previous version as this patch
-> hasn't been changed.
->
+On Fri, Mar 08, 2024 at 11:48:31AM -0500, Kent Overstreet wrote:
+> On Fri, Mar 08, 2024 at 11:44:48AM -0500, Neal Gompa wrote:
+> > On Fri, Mar 8, 2024 at 11:34 AM Kent Overstreet
+> > <kent.overstreet@linux.dev> wrote:
+> > >
+> > > On Fri, Mar 08, 2024 at 06:42:27AM -0500, Neal Gompa wrote:
+> > > > On Thu, Mar 7, 2024 at 9:29 PM Kent Overstreet
+> > > > <kent.overstreet@linux.dev> wrote:
+> > > > >
+> > > > > Add a new statx field for (sub)volume identifiers, as implemented by
+> > > > > btrfs and bcachefs.
+> > > > >
+> > > > > This includes bcachefs support; we'll definitely want btrfs support as
+> > > > > well.
+> > > > >
+> > > > > Link: https://lore.kernel.org/linux-fsdevel/2uvhm6gweyl7iyyp2xpfryvcu2g3padagaeqcbiavjyiis6prl@yjm725bizncq/
+> > > > > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> > > > > Cc: Josef Bacik <josef@toxicpanda.com>
+> > > > > Cc: Miklos Szeredi <mszeredi@redhat.com>
+> > > > > Cc: Christian Brauner <brauner@kernel.org>
+> > > > > Cc: David Howells <dhowells@redhat.com>
+> > > > > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> > > > > ---
+> > > > >  fs/bcachefs/fs.c          | 3 +++
+> > > > >  fs/stat.c                 | 1 +
+> > > > >  include/linux/stat.h      | 1 +
+> > > > >  include/uapi/linux/stat.h | 4 +++-
+> > > > >  4 files changed, 8 insertions(+), 1 deletion(-)
+> > > > >
+> > > > > diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
+> > > > > index 3f073845bbd7..6a542ed43e2c 100644
+> > > > > --- a/fs/bcachefs/fs.c
+> > > > > +++ b/fs/bcachefs/fs.c
+> > > > > @@ -840,6 +840,9 @@ static int bch2_getattr(struct mnt_idmap *idmap,
+> > > > >         stat->blksize   = block_bytes(c);
+> > > > >         stat->blocks    = inode->v.i_blocks;
+> > > > >
+> > > > > +       stat->subvol    = inode->ei_subvol;
+> > > > > +       stat->result_mask |= STATX_SUBVOL;
+> > > > > +
+> > > > >         if (request_mask & STATX_BTIME) {
+> > > > >                 stat->result_mask |= STATX_BTIME;
+> > > > >                 stat->btime = bch2_time_to_timespec(c, inode->ei_inode.bi_otime);
+> > > > > diff --git a/fs/stat.c b/fs/stat.c
+> > > > > index 77cdc69eb422..70bd3e888cfa 100644
+> > > > > --- a/fs/stat.c
+> > > > > +++ b/fs/stat.c
+> > > > > @@ -658,6 +658,7 @@ cp_statx(const struct kstat *stat, struct statx __user *buffer)
+> > > > >         tmp.stx_mnt_id = stat->mnt_id;
+> > > > >         tmp.stx_dio_mem_align = stat->dio_mem_align;
+> > > > >         tmp.stx_dio_offset_align = stat->dio_offset_align;
+> > > > > +       tmp.stx_subvol = stat->subvol;
+> > > > >
+> > > > >         return copy_to_user(buffer, &tmp, sizeof(tmp)) ? -EFAULT : 0;
+> > > > >  }
+> > > > > diff --git a/include/linux/stat.h b/include/linux/stat.h
+> > > > > index 52150570d37a..bf92441dbad2 100644
+> > > > > --- a/include/linux/stat.h
+> > > > > +++ b/include/linux/stat.h
+> > > > > @@ -53,6 +53,7 @@ struct kstat {
+> > > > >         u32             dio_mem_align;
+> > > > >         u32             dio_offset_align;
+> > > > >         u64             change_cookie;
+> > > > > +       u64             subvol;
+> > > > >  };
+> > > > >
+> > > > >  /* These definitions are internal to the kernel for now. Mainly used by nfsd. */
+> > > > > diff --git a/include/uapi/linux/stat.h b/include/uapi/linux/stat.h
+> > > > > index 2f2ee82d5517..67626d535316 100644
+> > > > > --- a/include/uapi/linux/stat.h
+> > > > > +++ b/include/uapi/linux/stat.h
+> > > > > @@ -126,8 +126,9 @@ struct statx {
+> > > > >         __u64   stx_mnt_id;
+> > > > >         __u32   stx_dio_mem_align;      /* Memory buffer alignment for direct I/O */
+> > > > >         __u32   stx_dio_offset_align;   /* File offset alignment for direct I/O */
+> > > > > +       __u64   stx_subvol;     /* Subvolume identifier */
+> > > > >         /* 0xa0 */
+> > > > > -       __u64   __spare3[12];   /* Spare space for future expansion */
+> > > > > +       __u64   __spare3[11];   /* Spare space for future expansion */
+> > > > >         /* 0x100 */
+> > > > >  };
+> > > > >
+> > > > > @@ -155,6 +156,7 @@ struct statx {
+> > > > >  #define STATX_MNT_ID           0x00001000U     /* Got stx_mnt_id */
+> > > > >  #define STATX_DIOALIGN         0x00002000U     /* Want/got direct I/O alignment info */
+> > > > >  #define STATX_MNT_ID_UNIQUE    0x00004000U     /* Want/got extended stx_mount_id */
+> > > > > +#define STATX_SUBVOL           0x00008000U     /* Want/got stx_subvol */
+> > > > >
+> > > > >  #define STATX__RESERVED                0x80000000U     /* Reserved for future struct statx expansion */
+> > > > >
+> > > > > --
+> > > > > 2.43.0
+> > > > >
+> > > > >
+> > > >
+> > > > I think it's generally expected that patches that touch different
+> > > > layers are split up. That is, we should have a patch that adds the
+> > > > capability and a separate patch that enables it in bcachefs. This also
+> > > > helps make it clearer to others how a new feature should be plumbed
+> > > > into a filesystem.
+> > > >
+> > > > I would prefer it to be split up in this manner for this reason.
+> > >
+> > > I'll do it that way if the patch is big enough that it ought to be
+> > > split up. For something this small, seeing how it's used is relevant
+> > > context for both reviewers and people looking at it afterwards.
+> > >
+> > 
+> > It needs to also be split up because fs/ and fs/bcachefs are
+> > maintained differently. And while right now bcachefs is the only
+> > consumer of the API, btrfs will add it right after it's committed, and
+> > for people who are cherry-picking/backporting accordingly, having to
+> > chop out part of a patch would be unpleasant.
+> 
+> It's a new feature, not a bugfix, this should never get backported. And
+> I the bcachefs maintainer wrote the patch, and I'm submitting it to the
+> VFS maintainer, so if it's fine with him it's fine with me.
 
-Thanks, I mixed up the two messages and thought I had replied to v3.
+But then how am I supposed to bikeshed the structure of the V2 patchset
+by immediately asking you to recombine the patches and spit out a V3?
 
-    Arnd
+</sarcasm>
+
+But, seriously, can you update the manpage too?  Is stx_subvol a u64
+cookie where userspace mustn't try to read anything into its contents?
+Just like st_ino and st_dev are (supposed) to be?
+
+Should the XFS data and rt volumes be reported with different stx_vol
+values?
+
+--D
 
