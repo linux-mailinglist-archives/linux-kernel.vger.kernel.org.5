@@ -1,112 +1,122 @@
-Return-Path: <linux-kernel+bounces-97616-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97617-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69A1B876C80
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 22:51:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87121876C81
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 22:52:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 92C291C21278
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 21:51:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E4656282B18
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 21:52:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FA235FB8D;
-	Fri,  8 Mar 2024 21:51:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9223B5FB99;
+	Fri,  8 Mar 2024 21:52:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GPWe0YY/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rewK1cN9"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48C1E3FB9E;
-	Fri,  8 Mar 2024 21:51:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8BB35FB8A;
+	Fri,  8 Mar 2024 21:52:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709934690; cv=none; b=dX/kYPOhlqOUOOkiE1ZU/vzPd+VHvhMDLnNpWcq/zN3m6Hr4raYjYnmywW/F17Hn2/WCDnWSpRAaduovxll8SyWODdo4RyOnoqnU+luBhQkTlnJQHtJV1afqrfBDjKipRK2haefZ2Y+I2S72w5JJj+uKPGq8p0MFj8KEXw/NPMQ=
+	t=1709934725; cv=none; b=rK6OexFKfMV01q1dO3wjL9obgrY9DIFjeQkCvPKc3CE32kcflO287cajdNYMTBKmGFmt6wMIzcNHhvSRLGwW+JSBZa3CtgXtf1HqFOidfqSjUeStnwZCprlO6EVOWngDxC9pOYdvy4cpJR+SG7oaDB7iWg8Xn+leop5aGwHtsF8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709934690; c=relaxed/simple;
-	bh=DgzJgOIltqwNHqOYEOKxyuP05a5tnack1aI+I0jVx80=;
+	s=arc-20240116; t=1709934725; c=relaxed/simple;
+	bh=dbXkGWO24AcaqW30+bWpUykQ8s/OPhFTkOUOiAbXrr0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fS7NyFYm+hUvVyv1Q2PFJJZNNMDWo+3soSmEI2iN6tRQXcFWznNNYQ+RAeaMPokINA1xbpeGcv5LKvCqSCdRN/tbJwx7M+ZrU6st2PNjJ38WHFtjnZcewxpv8+oCKWzjiJxoR6oxkAS3LgCJQaGR7oH6k1+Kp/Rjt1Sj/TyYi7Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GPWe0YY/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3535C433C7;
-	Fri,  8 Mar 2024 21:51:29 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=cS7IgJjHDFLkdkE67QdvpJEuSvP53I4ZQwcs0pI/fktVcloe5RaYkY9CT/axox26UK2SCZU1mBW+I185/HsLkwruvA6NV/5JlTVV4O0elfO/vVxr3nxamtuzIfmQX5rBKah0g1Af6jGs1mhDABldLe6oqYpHIg9+ZjcT0JauR0g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rewK1cN9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5666FC433F1;
+	Fri,  8 Mar 2024 21:52:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709934689;
-	bh=DgzJgOIltqwNHqOYEOKxyuP05a5tnack1aI+I0jVx80=;
+	s=k20201202; t=1709934725;
+	bh=dbXkGWO24AcaqW30+bWpUykQ8s/OPhFTkOUOiAbXrr0=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=GPWe0YY/kEBNEc1ubsPcyYiz2c0B6cJyve3g/YCfzKDan0ab3yZC3ex4yzzkdwUli
-	 K2FcS7+9jkygAz/5UAm1bPCLM1/X1n1vkNs4x2jUvsi1rqmO4/qdUexNBMMb7MQBm+
-	 2plBuuXVcZvIiWI3y+9v9vsITButre0CPay5gI+mhZvJPnQ5HnU2ZEZqLqTGH5wush
-	 g4O0VJIUCCL4+GfMRgQsYGUDupr1a3KW02fwuYAZujHHVrHU3vcB1yaAF528lHQdoY
-	 hEfFVH6Y2finwnCWkgZAEf/Frxqh1Z22hXPLWcLEwUz49V7wdVLfB1P01etVZ6UO0d
-	 QkpA64DbQZffA==
+	b=rewK1cN96yTC30A1Dsk2GivqNSpEhDRJI8qw2saB6PRX2GFjpd3iYtD5uMoBpEIsS
+	 RlxNDbT6CirSso3TWQaUlHdPf4tCVUIg7H3ApN07G9GGg+Pb5OudVn8lbb6PhBf2x/
+	 uhUPjIUF2QTCNjAMqdWYpIfqYbWXH+/RErw1VWSc2kySpzb5KYKLqwR55Gq9rGPmXO
+	 WN46Mk/GyYaHHpGsHbHV5CDonjx+uETPDe/w0wxrcXQrwPHfLSJL0BtXJZwbgM4lbV
+	 hUAr96R85X84byUqE91+cGf5QWPdTeQpfiZPfAGdbcSCiJf1DitM0MfJqHziNhFZjN
+	 XNoZo2qV30lOA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 86F38CE0548; Fri,  8 Mar 2024 13:51:29 -0800 (PST)
-Date: Fri, 8 Mar 2024 13:51:29 -0800
+	id 06E5DCE0548; Fri,  8 Mar 2024 13:52:05 -0800 (PST)
+Date: Fri, 8 Mar 2024 13:52:05 -0800
 From: "Paul E. McKenney" <paulmck@kernel.org>
-To: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Cc: RCU <rcu@vger.kernel.org>, Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-	Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH v6 0/6] Reduce synchronize_rcu() latency(v6)
-Message-ID: <63e54cb9-fd08-43c3-9f42-3627198634e8@paulmck-laptop>
+To: Uladzislau Rezki <urezki@gmail.com>
+Cc: Joel Fernandes <joel@joelfernandes.org>, linux-kernel@vger.kernel.org,
+	frederic@kernel.org, boqun.feng@gmail.com, neeraj.iitr10@gmail.com,
+	rcu@vger.kernel.org, rostedt@goodmis.org,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>
+Subject: Re: [PATCH] [RFC] rcu/tree: Reduce wake up for synchronize_rcu()
+ common case
+Message-ID: <d75fd0b2-f6e0-4102-a5d2-11c7c5487949@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20240308173409.335345-1-urezki@gmail.com>
+References: <20240307234852.2132637-1-joel@joelfernandes.org>
+ <CAEXW_YQ-TZB-1gpxvf7v+QAZhHtzV5waBA1VemtgEwNktSp=ww@mail.gmail.com>
+ <ccbdf4d4-6972-430c-a479-0d20b318213b@paulmck-laptop>
+ <ZespK0CrkVFCu6_p@pc636>
+ <ZetNHb6MrmHkQKJN@pc636>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240308173409.335345-1-urezki@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZetNHb6MrmHkQKJN@pc636>
 
-On Fri, Mar 08, 2024 at 06:34:03PM +0100, Uladzislau Rezki (Sony) wrote:
-> This is v6. It is based on the Paul's "dev" branch:
+On Fri, Mar 08, 2024 at 06:38:37PM +0100, Uladzislau Rezki wrote:
+> On Fri, Mar 08, 2024 at 04:05:15PM +0100, Uladzislau Rezki wrote:
+> > On Thu, Mar 07, 2024 at 04:06:06PM -0800, Paul E. McKenney wrote:
+> > > On Thu, Mar 07, 2024 at 06:52:14PM -0500, Joel Fernandes wrote:
+> > > > On Thu, Mar 7, 2024 at 6:48 PM Joel Fernandes (Google)
+> > > > <joel@joelfernandes.org> wrote:
+> > > > >
+> > > > > In the synchronize_rcu() common case, we will have less than
+> > > > > SR_MAX_USERS_WAKE_FROM_GP number of users per GP. Waking up the kworker
+> > > > > is pointless just to free the last injected wait head since at that point,
+> > > > > all the users have already been awakened.
+> > > > >
+> > > > > Introduce a new counter to track this and prevent the wakeup in the
+> > > > > common case.
+> > > > >
+> > > > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > > > > ---
+> > > > 
+> > > > Forgot to mention, this is based on the latest RCU -dev branch and
+> > > > passes light rcutorture testing on all configs. Heavier rcutorture
+> > > > testing (60 minutes) was performed on TREE03.
+> > > 
+> > > Very good, thank you!
+> > > 
+> > > Uladzislau, could you please pull this into the next series you send?
+> > > I can then replace your commits in -rcu with the updated series.
+> > > 
+> > Absolutely. I will go through it and send out the next version!
+> > 
 > 
-> HEAD: f1bfe538c7970283040a7188a291aca9f18f0c42
+> Joel, i sent out the v6: [PATCH v6 0/6] Reduce synchronize_rcu() latency(v6)
 > 
-> please note, that patches should be applied from scratch,
-> i.e. the v5 has to be dropped from the "dev".
-> 
-> v5 -> v6:
->  - Fix a race due to realising a wait-head from the gp-kthread;
->  - Use our own private workqueue with WQ_MEM_RECLAIM to have
->    at least one execution context.
-> 
-> v5: https://lore.kernel.org/lkml/20240220183115.74124-1-urezki@gmail.com/
-> v4: https://lore.kernel.org/lkml/ZZ2bi5iPwXLgjB-f@google.com/T/
-> v3: https://lore.kernel.org/lkml/cd45b0b5-f86b-43fb-a5f3-47d340cd4f9f@paulmck-laptop/T/
-> v2: https://lore.kernel.org/all/20231030131254.488186-1-urezki@gmail.com/T/
-> v1: https://lore.kernel.org/lkml/20231025140915.590390-1-urezki@gmail.com/T/
+> Could you please rework the patch on latest tip once the series i sent is
+> settled on Paul's dev?
 
-Queued in place of your earlier series, thank you!
-
-Not urgent, but which rcutorture scenario should be pressed into service
-testing this?
+It is there now.
 
 							Thanx, Paul
 
-> Uladzislau Rezki (Sony) (6):
->   rcu: Add data structures for synchronize_rcu()
->   rcu: Reduce synchronize_rcu() latency
->   rcu: Add a trace event for synchronize_rcu_normal()
->   rcu: Support direct wake-up of synchronize_rcu() users
->   rcu: Do not release a wait-head from a GP kthread
->   rcu: Allocate WQ with WQ_MEM_RECLAIM bit set
+> I have not sent your patch because it is not cleanly applied and needs some
+> review.
 > 
->  .../admin-guide/kernel-parameters.txt         |  14 +
->  include/trace/events/rcu.h                    |  27 ++
->  kernel/rcu/tree.c                             | 361 +++++++++++++++++-
->  kernel/rcu/tree.h                             |  20 +
->  kernel/rcu/tree_exp.h                         |   2 +-
->  5 files changed, 422 insertions(+), 2 deletions(-)
+> Thank you in advance!
 > 
-> -- 
-> 2.39.2
-> 
+> --
+> Uladzislau Rezki
 
