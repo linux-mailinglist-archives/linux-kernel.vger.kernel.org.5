@@ -1,181 +1,253 @@
-Return-Path: <linux-kernel+bounces-97149-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97150-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38FC9876620
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 15:15:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DCFB876628
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 15:19:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B7E0E1F266A4
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:15:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C15561C226E6
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:19:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABC8F43AAF;
-	Fri,  8 Mar 2024 14:15:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 149F543AAF;
+	Fri,  8 Mar 2024 14:18:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gdeeycQr"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KXXMI/DP"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF602381C1;
-	Fri,  8 Mar 2024 14:15:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDD5440840;
+	Fri,  8 Mar 2024 14:18:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709907318; cv=none; b=P6wsLRkj4tk8NGeJPcBl0OHuYRbU69aOLW4lvSNReec9Ar4UCBUR/NcHc81ZQ2g27xIcK1vkGaJ0T1cltg0VTZ9V3fHpEqSpWdi53cUxk56mskfAMJFqW8h86CF4HBd4JQz4xCyKunfrO3v25gXMaU19yu7hrW9y5SByITx3aHg=
+	t=1709907533; cv=none; b=t/5sShivkbyRKao5fFqXXjcNCuiH8O2unzkN4TwxD7c66ZuVLvNQhqTJQ3i8XsTPuT8bco2GyEpKs/d0TWNZpwySU7fKUGO0mQFguqwaM9wNom9RCz26kgnDTAlvHSMwzUosC4opq+EKOaBYLjGheR5IMvkVBjdSQfFoDK+DbNo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709907318; c=relaxed/simple;
-	bh=nnJa2eJuW3gIneCAKpj1Ao6WHMfBOJS01uvb6VF/qzs=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=OCw7emKKprpaz+TuzVpFV15v+iw+zkWqKJPeFBFnh7RVJWRTOmxzzK99nMBXtAdLHKJHwTHWonYSNYLNKSnskGDSGHjjBVyuSgVSZ5GszkCEjCDYQCToACS89MY9OM8URMUmkJQEMuqRMiIx6b3KLKqBS3wcElVhNATvVTyMV2c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gdeeycQr; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+	s=arc-20240116; t=1709907533; c=relaxed/simple;
+	bh=RwpHhMlY0TqrMS1s4V56hL4gwB9k2v+2t7BuVUiKIKQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=cRudkL5c+CluhCfPQuH+aSNStkTZulkNkkPbwp2VU+ecHObA2lR8tdcW+8ewweXpqWUnpHj78jGRtuuYtpvd3LLUHXmkTr7h4VIlRDLeobz9r4bsbDxua8c1IvblsoNtc5docub7CyVmAUd8evp/nc2hH/enmhFMtvN31yeQ8cE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KXXMI/DP; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709907317; x=1741443317;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=nnJa2eJuW3gIneCAKpj1Ao6WHMfBOJS01uvb6VF/qzs=;
-  b=gdeeycQrQO5MrNoDxjXzqqJZi1e80RmiTZq8CTVgkqBHnaEp4pD7o6/c
-   o80RXF0ZKEhbAsJHH4dqckSGhZUjxqQ5ATxH5kNffTmcgQANTdvDYfEIL
-   GnBR87Rz1sp19loxURRo5XTDSLfUWsyWjpzYekyQvViaC6EGLrMqpCUhh
-   YAO0PGx7u5SDWn6tumPgECL3CzfP2Vbv66Bkv18GtWoaqHMBOhZFJNsbw
-   H/7BaEfj+NA0UpmxPWjQUStWHdu51nEPMbNA1TLtraSoYceIHFLej4wZh
-   E9/jiWJVHptUjKSXnDPtN5AVSRx639GIBjAenV9RupVPBXPFhz+6olK0p
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="15765639"
+  t=1709907531; x=1741443531;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=RwpHhMlY0TqrMS1s4V56hL4gwB9k2v+2t7BuVUiKIKQ=;
+  b=KXXMI/DPuBmn9aAnF39l1JeNwPsYKDd+zYzn0tNGbbAgFej2B3uGJlsJ
+   /qo8/iFn2ovwsgJhBOIvI+1S1THK4IQ2mqiUBMQ9IPlUNke6pzxTphsBn
+   be24JcWwJQ7Wink/R3aSuQYnMwXACVgswGon2NoEpUhdnVt0Ujr0fahGY
+   lVhU7qYC9uSAWYo3ny9VxgWw1mHUybHvBtbhdaRt5CVizxlNGtMcWPFC8
+   JAiJK+dwyh2FhfCffXIzBg98cjDeUcEfOh+lzBL3UVIJfgreKl+VqVrsK
+   b+8xc9hF9i1W0x/o3WtnY0YwlyVorp4frObyK2mo2UEKfDAUV0RmzJZPV
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="4504420"
 X-IronPort-AV: E=Sophos;i="6.07,109,1708416000"; 
-   d="scan'208";a="15765639"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 06:15:15 -0800
+   d="scan'208";a="4504420"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 06:18:50 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,109,1708416000"; 
-   d="scan'208";a="41450832"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.244.186])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 06:15:11 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Fri, 8 Mar 2024 16:15:08 +0200 (EET)
-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-cc: broonie@kernel.org, tiwai@suse.com, Hans de Goede <hdegoede@redhat.com>, 
-    lenb@kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>, 
-    linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, 
-    LKML <linux-kernel@vger.kernel.org>, patches@opensource.cirrus.com, 
-    platform-driver-x86@vger.kernel.org, linux-acpi@vger.kernel.org, 
-    Simon Trimmer <simont@opensource.cirrus.com>
-Subject: Re: [PATCH 3/3] platform/x86: serial-multi-instantiate: Add support
- for CS35L54 and CS35L57
-In-Reply-To: <20240308135900.603192-4-rf@opensource.cirrus.com>
-Message-ID: <ea3c3230-cdf1-c41f-47fd-8b47667f7c5c@linux.intel.com>
-References: <20240308135900.603192-1-rf@opensource.cirrus.com> <20240308135900.603192-4-rf@opensource.cirrus.com>
+   d="scan'208";a="15176981"
+Received: from newjersey.igk.intel.com ([10.102.20.203])
+  by orviesa005.jf.intel.com with ESMTP; 08 Mar 2024 06:18:46 -0800
+From: Alexander Lobakin <aleksander.lobakin@intel.com>
+To: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
+	Alexander Duyck <alexanderduyck@fb.com>,
+	Yunsheng Lin <linyunsheng@huawei.com>,
+	David Christensen <drc@linux.vnet.ibm.com>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+	Paul Menzel <pmenzel@molgen.mpg.de>,
+	nex.sw.ncis.osdt.itp.upstreaming@intel.com,
+	netdev@vger.kernel.org,
+	intel-wired-lan@lists.osuosl.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v8 0/8] net: intel: start The Great Code Dedup + Page Pool for iavf
+Date: Fri,  8 Mar 2024 15:18:25 +0100
+Message-ID: <20240308141833.2966600-1-aleksander.lobakin@intel.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323328-2054902426-1709907308=:9765"
+Content-Transfer-Encoding: 8bit
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Here's a two-shot: introduce {,Intel} Ethernet common library (libeth and
+libie) and switch iavf to Page Pool. Details are in the commit messages;
+here's a summary:
 
---8323328-2054902426-1709907308=:9765
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Not a secret there's a ton of code duplication between two and more Intel
+ethernet modules. Before introducing new changes, which would need to be
+copied over again, start decoupling the already existing duplicate
+functionality into a new module, which will be shared between several
+Intel Ethernet drivers. The first name that came to my mind was
+"libie" -- "Intel Ethernet common library". Also this sounds like
+"lovelie" (-> one word, no "lib I E" pls) and can be expanded as
+"lib Internet Explorer" :P
+The "generic", pure-software part is placed separately, so that it can be
+easily reused in any driver by any vendor without linking to the Intel
+pre-200G guts. In a few words, it's something any modern driver does the
+same way, but nobody moved it level up (yet).
+The series is only the beginning. From now on, adding every new feature
+or doing any good driver refactoring will remove much more lines than add
+for quite some time. There's a basic roadmap with some deduplications
+planned already, not speaking of that touching every line now asks:
+"can I share this?". The final destination is very ambitious: have only
+one unified driver for at least i40e, ice, iavf, and idpf with a struct
+ops for each generation. That's never gonna happen, right? But you still
+can at least try.
+PP conversion for iavf lands within the same series as these two are tied
+closely. libie will support Page Pool model only, so that a driver can't
+use much of the lib until it's converted. iavf is only the example, the
+rest will eventually be converted soon on a per-driver basis. That is
+when it gets really interesting. Stay tech.
 
-On Fri, 8 Mar 2024, Richard Fitzgerald wrote:
+Alexander Lobakin (8):
+  net: intel: introduce {,Intel} Ethernet common library
+  iavf: kill "legacy-rx" for good
+  iavf: drop page splitting and recycling
+  page_pool: constify some read-only function arguments
+  page_pool: add DMA-sync-for-CPU inline helper
+  libeth: add Rx buffer management
+  iavf: pack iavf_ring more efficiently
+  iavf: switch to Page Pool
 
-> From: Simon Trimmer <simont@opensource.cirrus.com>
->=20
-> Add the ACPI HIDs and smi_node descriptions for the CS35L54 and CS35L57
-> Boosted Smart Amplifiers.
->=20
-> Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
-> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-> ---
-> This patch doesn't have any build dependencies on the ASOC/HDA code so
-> can be take separately.
+ MAINTAINERS                                   |   4 +-
+ drivers/net/ethernet/intel/Kconfig            |   7 +
+ drivers/net/ethernet/intel/libeth/Kconfig     |   9 +
+ drivers/net/ethernet/intel/libie/Kconfig      |  10 +
+ drivers/net/ethernet/intel/Makefile           |   3 +
+ drivers/net/ethernet/intel/libeth/Makefile    |   6 +
+ drivers/net/ethernet/intel/libie/Makefile     |   6 +
+ include/net/page_pool/types.h                 |   4 +-
+ .../net/ethernet/intel/i40e/i40e_prototype.h  |   7 -
+ drivers/net/ethernet/intel/i40e/i40e_type.h   |  88 ---
+ drivers/net/ethernet/intel/iavf/iavf.h        |   2 +-
+ .../net/ethernet/intel/iavf/iavf_prototype.h  |   7 -
+ drivers/net/ethernet/intel/iavf/iavf_txrx.h   | 146 +----
+ drivers/net/ethernet/intel/iavf/iavf_type.h   |  90 ---
+ .../net/ethernet/intel/ice/ice_lan_tx_rx.h    | 320 ----------
+ include/linux/net/intel/libie/rx.h            |  50 ++
+ include/net/libeth/rx.h                       | 240 ++++++++
+ include/net/page_pool/helpers.h               |  34 +-
+ drivers/net/ethernet/intel/i40e/i40e_common.c | 253 --------
+ drivers/net/ethernet/intel/i40e/i40e_main.c   |   1 +
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c   |  72 +--
+ drivers/net/ethernet/intel/iavf/iavf_common.c | 253 --------
+ .../net/ethernet/intel/iavf/iavf_ethtool.c    | 140 -----
+ drivers/net/ethernet/intel/iavf/iavf_main.c   |  40 +-
+ drivers/net/ethernet/intel/iavf/iavf_txrx.c   | 550 +++---------------
+ .../net/ethernet/intel/iavf/iavf_virtchnl.c   |  17 +-
+ drivers/net/ethernet/intel/ice/ice_main.c     |   1 +
+ drivers/net/ethernet/intel/ice/ice_txrx_lib.c | 111 +---
+ drivers/net/ethernet/intel/libeth/rx.c        | 148 +++++
+ drivers/net/ethernet/intel/libie/rx.c         | 124 ++++
+ net/core/page_pool.c                          |  10 +-
+ 31 files changed, 798 insertions(+), 1955 deletions(-)
+ create mode 100644 drivers/net/ethernet/intel/libeth/Kconfig
+ create mode 100644 drivers/net/ethernet/intel/libie/Kconfig
+ create mode 100644 drivers/net/ethernet/intel/libeth/Makefile
+ create mode 100644 drivers/net/ethernet/intel/libie/Makefile
+ create mode 100644 include/linux/net/intel/libie/rx.h
+ create mode 100644 include/net/libeth/rx.h
+ create mode 100644 drivers/net/ethernet/intel/libeth/rx.c
+ create mode 100644 drivers/net/ethernet/intel/libie/rx.c
 
-Acked-by: Ilpo J=E4rvinen <ilpo.jarvinen@linux.intel.com>
+---
+libeth has way more generic functionality and code in the idpf XDP
+tree[0], take a look if you want to have more complete picture of
+what this really is about.
 
---=20
- i.
+From v7[1]:
+* drop Page Pool optimization prereqs;
+* drop generic stats part: will redo to the new per-queue stats later;
+* split libie into "generic" and "fnic" (i40e, ice, iavf) parts;
+* use shorter and modern struct names;
+* #1: allow to compile-out hotpath IPv6 code when !CONFIG_IPV6;
+* #1: generate XDP RSS hash directly in the lookup table;
+* #8: fix rare skb nullptr deref bug.
 
-> ---
->  drivers/acpi/scan.c                           |  2 ++
->  .../platform/x86/serial-multi-instantiate.c   | 28 +++++++++++++++++++
->  2 files changed, 30 insertions(+)
->=20
-> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-> index e6ed1ba91e5c..091c501bed1f 100644
-> --- a/drivers/acpi/scan.c
-> +++ b/drivers/acpi/scan.c
-> @@ -1725,7 +1725,9 @@ static bool acpi_device_enumeration_by_parent(struc=
-t acpi_device *device)
->  =09=09{"BSG1160", },
->  =09=09{"BSG2150", },
->  =09=09{"CSC3551", },
-> +=09=09{"CSC3554", },
->  =09=09{"CSC3556", },
-> +=09=09{"CSC3557", },
->  =09=09{"INT33FE", },
->  =09=09{"INT3515", },
->  =09=09/* Non-conforming _HID for Cirrus Logic already released */
-> diff --git a/drivers/platform/x86/serial-multi-instantiate.c b/drivers/pl=
-atform/x86/serial-multi-instantiate.c
-> index 8158e3cf5d6d..97b9c6392230 100644
-> --- a/drivers/platform/x86/serial-multi-instantiate.c
-> +++ b/drivers/platform/x86/serial-multi-instantiate.c
-> @@ -329,6 +329,19 @@ static const struct smi_node cs35l41_hda =3D {
->  =09.bus_type =3D SMI_AUTO_DETECT,
->  };
-> =20
-> +static const struct smi_node cs35l54_hda =3D {
-> +=09.instances =3D {
-> +=09=09{ "cs35l54-hda", IRQ_RESOURCE_AUTO, 0 },
-> +=09=09{ "cs35l54-hda", IRQ_RESOURCE_AUTO, 0 },
-> +=09=09{ "cs35l54-hda", IRQ_RESOURCE_AUTO, 0 },
-> +=09=09{ "cs35l54-hda", IRQ_RESOURCE_AUTO, 0 },
-> +=09=09/* a 5th entry is an alias address, not a real device */
-> +=09=09{ "cs35l54-hda_dummy_dev" },
-> +=09=09{}
-> +=09},
-> +=09.bus_type =3D SMI_AUTO_DETECT,
-> +};
-> +
->  static const struct smi_node cs35l56_hda =3D {
->  =09.instances =3D {
->  =09=09{ "cs35l56-hda", IRQ_RESOURCE_AUTO, 0 },
-> @@ -342,6 +355,19 @@ static const struct smi_node cs35l56_hda =3D {
->  =09.bus_type =3D SMI_AUTO_DETECT,
->  };
-> =20
-> +static const struct smi_node cs35l57_hda =3D {
-> +=09.instances =3D {
-> +=09=09{ "cs35l57-hda", IRQ_RESOURCE_AUTO, 0 },
-> +=09=09{ "cs35l57-hda", IRQ_RESOURCE_AUTO, 0 },
-> +=09=09{ "cs35l57-hda", IRQ_RESOURCE_AUTO, 0 },
-> +=09=09{ "cs35l57-hda", IRQ_RESOURCE_AUTO, 0 },
-> +=09=09/* a 5th entry is an alias address, not a real device */
-> +=09=09{ "cs35l57-hda_dummy_dev" },
-> +=09=09{}
-> +=09},
-> +=09.bus_type =3D SMI_AUTO_DETECT,
-> +};
-> +
->  /*
->   * Note new device-ids must also be added to ignore_serial_bus_ids in
->   * drivers/acpi/scan.c: acpi_device_enumeration_by_parent().
-> @@ -350,7 +376,9 @@ static const struct acpi_device_id smi_acpi_ids[] =3D=
- {
->  =09{ "BSG1160", (unsigned long)&bsg1160_data },
->  =09{ "BSG2150", (unsigned long)&bsg2150_data },
->  =09{ "CSC3551", (unsigned long)&cs35l41_hda },
-> +=09{ "CSC3554", (unsigned long)&cs35l54_hda },
->  =09{ "CSC3556", (unsigned long)&cs35l56_hda },
-> +=09{ "CSC3557", (unsigned long)&cs35l57_hda },
->  =09{ "INT3515", (unsigned long)&int3515_data },
->  =09/* Non-conforming _HID for Cirrus Logic already released */
->  =09{ "CLSA0100", (unsigned long)&cs35l41_hda },
->=20
---8323328-2054902426-1709907308=:9765--
+From v6[2]:
+* #04: resolve ethtool_puts() Git conflict (Jakub);
+* #06: pick RB from Ilias;
+* no functional changes.
+
+From v5[3]:
+* drop Page Pool DMA shortcut: will pick up Eric's more global DMA sync
+  optimization[4] and expand it to cover both IOMMU and direct DMA a bit
+  later (Yunsheng);
+* drop per-queue Page Pool Ethtool stats: they are now exported via
+  generic Netlink interface (Jakub);
+* #01: leave a comment why exactly this alignment (Jakub, Yunsheng);
+* #08: make use of page_pool_params::netdev when calculating PP params;
+* #08: rename ``libie_rx_queue`` -> ``libie_buf_queue``.
+
+From v4[5]:
+* make use of Jakub's &page_pool_params split;
+* #01: prevent frag fields from spanning into 2 cachelines after
+  splitting &page_pool_params into fast and slow;
+* #02-03: bring back the DMA sync shortcut, now as a per-page flag
+  (me, Yunsheng);
+* #04: let libie have its own Kconfig to stop further bloating of poor
+  intel/Kconfig;
+* #06: merge page split-reuse-recycle drop into one commit (Alex);
+* #07: decouple constifying of several Page Pool function arguments
+  into a separate commit, constify some more;
+* #09: stop abusing internal PP fields in the driver code (Yunsheng);
+* #09: calculate DMA sync size (::max_len) correctly: within one page,
+  not one buffer (Yunsheng);
+* #10: decouple rearranging &iavf_ring into separate commit, optimize
+  it even more;
+* #11: let the driver get back to the last descriptor to process after
+  an skb allocation fail, don't drop it (Alex);
+* #11: stop touching unrelated stuff like watchdog timeout etc. (Alex);
+* fix "Return:" in the kdoc (now `W=12 C=1` is clean), misc typos.
+
+From v3[6]:
+* base on the latest net-next, update bloat-o-meter and perf stats;
+* split generic PP optimizations into a separate series;
+* drop "optimize hotpath a bunch" commit: a lot of [controversial]
+  changes in one place, worth own series (Alex);
+* 02: pick Rev-by (Alex);
+* 03: move in-place recycling removal here from the dropped patch;
+* 05: new, add libie Rx buffer API separatelly from IAVF changes;
+* 05-06: use new "hybrid" allocation API from[7] to reduce memory usage
+  when a page can fit more than 1 truesize (also asked by David);
+* 06: merge with "always use order-0 page" commit to reduce diffs and
+  simplify things (Alex);
+* 09: fix page_alloc_fail counter.
+
+From v2[8]:
+* 0006: fix page_pool.h include in OcteonTX2 files (Jakub, Patchwork);
+* no functional changes.
+
+From v1[9]:
+* 0006: new (me, Jakub);
+* 0008: give the helpers more intuitive names (Jakub, Ilias);
+*  -^-: also expand their kdoc a bit for the same reason;
+*  -^-: fix kdoc copy-paste issue (Patchwork, Jakub);
+* 0011: drop `inline` from C file (Patchwork, Jakub).
+
+[0] https://github.com/alobakin/linux/commits/idpf-libie-new
+[1] https://lore.kernel.org/netdev/20231213112835.2262651-1-aleksander.lobakin@intel.com
+[2] https://lore.kernel.org/netdev/20231207172010.1441468-1-aleksander.lobakin@intel.com
+[3] https://lore.kernel.org/netdev/20231124154732.1623518-1-aleksander.lobakin@intel.com
+[4] https://lore.kernel.org/netdev/20221115182841.2640176-1-edumazet@google.com
+[5] https://lore.kernel.org/netdev/20230705155551.1317583-1-aleksander.lobakin@intel.com
+[6] https://lore.kernel.org/netdev/20230530150035.1943669-1-aleksander.lobakin@intel.com
+[7] https://lore.kernel.org/netdev/20230629120226.14854-1-linyunsheng@huawei.com
+[8] https://lore.kernel.org/netdev/20230525125746.553874-1-aleksander.lobakin@intel.com
+[9] https://lore.kernel.org/netdev/20230516161841.37138-1-aleksander.lobakin@intel.com
+
+-- 
+2.44.0
+
 
