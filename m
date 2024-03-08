@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-96386-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96387-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE7F3875B7B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 01:20:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25C7E875B7C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 01:21:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 14FD12831B8
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 00:20:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 536581C211ED
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 00:21:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D83B1CD2A;
-	Fri,  8 Mar 2024 00:19:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41B7A1D6A7;
+	Fri,  8 Mar 2024 00:19:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="nFTx2lMC"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="Drj2RPID"
 Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF70D13AF2
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 00:19:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F13111CD15
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 00:19:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709857189; cv=none; b=oEbKLPk+Na5DlgqfOLcwjEYJ4XvpWqLilPxMOldcuWpHE2rdoT54rKj+2ID6LGzHt8ivFdPsCthgG8eeG1H+CcUt+fxh42MN2XF4UOKx3c8g26LC797lPcg54sQb9SxO830kYaHNmXurVkK10viIXtAWMhoZielzOzK4VKTK2Yo=
+	t=1709857191; cv=none; b=tcVuTeUhTzYul0SUDPENJ8wM3PmsLh6++GaMGooFFIGlkijkt7zcXR6RAWu6F+Za6O/32K1EV3nKvE4P+7luFe33jWvQIJDakFk4mg8fiYbAn/XrinVeYc7Zll2jSd4ZojOi+3DRTH+QbJpFNr9kqvDU09w0Yr8F+z1M7e+X19I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709857189; c=relaxed/simple;
-	bh=qRbM4J1nMnCOTtjpsDerekpdTUM2CRL3YgboxCf8VXI=;
+	s=arc-20240116; t=1709857191; c=relaxed/simple;
+	bh=elK0Xs+m/oAU3QVrIgg0bRnVn1Wp0yji7Lirhn51ur8=;
 	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Content-Type; b=THcflBY6x+QXh6Zy2ZzCmT3INq1AHYZua0dq30FfBkr7ZVHYRVTjB7a3oR3T05+PxhUtpdKsb8VN2ewtwnus9bFzKdvZsPThouw/g7CUYELhDbLZPHsTQtGruXGX4gGkQw+1WtIAR01iEEiSGYJuXCfcW6PsLDP9eZNy/UStVcw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=nFTx2lMC; arc=none smtp.client-ip=209.85.128.202
+	 To:Content-Type; b=k8EoyU7QwyyYJbWKzw/hESop9OveGySHjZOeVBmX8D8CaA/f58G/0wrfl8KMLKFN5WA2AdyEt9EX/QchoZFizNg16COQnjCllbTv4MVCbrh2w3TAEVFSmd2qyjQ/nrJjW1mzLC1mC/UJIIBawl4dDREiMd5e3p3b9thbpQEwQkY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Drj2RPID; arc=none smtp.client-ip=209.85.128.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-609e2b87a6bso25601797b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 16:19:47 -0800 (PST)
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-60987370f06so5712327b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 16:19:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709857187; x=1710461987; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1709857189; x=1710461989; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=WnCRzMIwEmUWcP4taw0TGh+kO0P1YkAyutoR+GaoeIk=;
-        b=nFTx2lMCMk0ii5Y9Sv12Do9RxicDmi34+BWvgqM0YHYQQhjS8cXXkeiN0RXQm/xAMx
-         WcP1aV/hHjz+7MY5VQHZ4zeA9QDKJHUVoThebsxyC6/uyqHfT68WBU1zEX7R/+vDbp19
-         t0aXfNr45ZPMZtgfVLiOFN+/Eyavi1bh/ZbEaQTkFbRUS3LlW8WzcX5gJluS+gbZwa+F
-         8i671RQvmhd3nBfaJ8wJjXyg0ZglbaDAx0ev7H55qOOlSSmyKtlE4Nxg8sCuJRssSCB7
-         UQEibIvaCnaCV+g3V4BUa+rjqkcscjHBIrSToVwUgLdX9CfZ4q00UQYIB+zdVFnn3MqQ
-         wMIQ==
+        bh=fHILL1gTCxm4QF9OC7v7hNL2u1lMsUcHDUfAM6Pn4Kw=;
+        b=Drj2RPIDd55nY7YDmzY4v+g0n3cWp51aSC4U36n9vzsqC9usS1wvdD9Be1EbHv4udW
+         nBWCzBg2p56RArZ3Zahd0HkRc6ZvxhXWQV0lY3RJEOfMY/XMXg6RI+zdplWu6SYbkHwt
+         1oYxKE332ndT8qyPtoiNoEqUIV9PviFktYnX/024o4Brh8CxzU3PtIepO2XFMytbnfBd
+         qgBnQ/gfjuv2Nt+acrU6qY1IwoJoHLKXIP5bDuMZn6DFCz2Zbg4BFGC76K7bfFN3v0nI
+         esS0n0rnrqKJyxudsrH54XlsKo0c1wr9l5SIjNhYx6yipjF/M9foiNV+SIzagqGrfBz8
+         1eVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709857187; x=1710461987;
+        d=1e100.net; s=20230601; t=1709857189; x=1710461989;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WnCRzMIwEmUWcP4taw0TGh+kO0P1YkAyutoR+GaoeIk=;
-        b=NtBLgZwgzQoymhn96GCqBOw4hT72oXOcSIZ5Xf+jKGee8O9YJd8uk+mqviMG3dsvl4
-         cZAT/ubgatZnoR7KDFX5uVgeJJNZXlGgjCVUYBUUzhO1QePsVvSIiHzMqOO6xs4L1pLF
-         jc0yFmgQoeF0CBVF+gLOAfnisTGz9E2diIrlChDXjZXTIY4K7Rud+z4YYBpgZuCAqX92
-         3gD4CuUZWJVYPFaBSRmcs6tD/FNGUsuoyDWbbYCvpeo4MJD4G89ObU/lQGxmBnyyRDZc
-         /tn0NjTuDjD/OD8jXhl3H/9oeZDwuwhAEde6BX8OuY39yIwmTpu4wnPyH+gOu+3fS/bJ
-         +iPg==
-X-Forwarded-Encrypted: i=1; AJvYcCWJaOoZ0EUFhYqhCEmfNzrUAj75ok7dv/90S2lpfM2X7r9EzvT8CGomDKx2dB38UUgOgvmrKUKOUmwaKOFjXo4swQUTyyvSRQ2N3tnZ
-X-Gm-Message-State: AOJu0Yw/BD0PfWXe5pOt8ekwMs9mtGGQt1cOqpIXe7YF546qIUrKpmvN
-	B1gvr8M+fgYacOJHRu/q0tnrKRfUcFCQS3bduCPyjtO37xnXMCQOwIiIwZ9EDStXLsZM4FrZOJG
-	P3r3NYw==
-X-Google-Smtp-Source: AGHT+IHJCTyaNqBxaTLU14hVtz+CLHQZ93ZrH5zbxunYvvExtWwXEhrwq/UeDgTB3Xlg6ocZjXgQewrFG8Hr
+        bh=fHILL1gTCxm4QF9OC7v7hNL2u1lMsUcHDUfAM6Pn4Kw=;
+        b=gkPF6pjHGyc0l/KYLME5cBByWtbpVfjrnp6h8r7syDl4dB0uKY3jx8auvDbCnr5AY2
+         DykhYaWFot6Rd1D8utOB128WOL8dE7pFSJTvRyiG/P+1IRGgN1+Rs8SQjIU21A0v9vah
+         LzCtVpeb7KWk6QU75PI1TjoHufAG5jjAE89odVReqSCSNj9e9toEq5s1snp5J9LckBHo
+         VtVOp/XRIPvrvMyWEgwXj3Rgwsho14MvD9BLvG1ZnHHa2pDgoCKb6jMRnODrtlHO+9/r
+         vg3gXY7+u86AAO0MIdu+URMzMiOhPyQWUv3DFdbxaqp/439XuAk9Pel9nUTXNRGcslaq
+         nMKA==
+X-Forwarded-Encrypted: i=1; AJvYcCV4lPUZvyPhkofqEW0Xc+1DpuilizThmgs6UbAKf4bFla/nNGyhw4l4KbmT1jxtNWprfJe+rCZqpaq5ntTH8LpnABJ3ICxFZNNULNbb
+X-Gm-Message-State: AOJu0YyvkDZBKn5sP4/YPYbNqB9IHcDph7zP6rj4UwL4kzkKwYUR6/kF
+	uMrNMvjoRRz7nCK8FHxgScGkhhQ0Y9Imp4L3jbk7uMiPP1l5OgGlQv3bBqf9ebKyIeP2RFweSkO
+	Fmh2V6g==
+X-Google-Smtp-Source: AGHT+IHfYCLrCxH6IMYKIHQMOCbjZR2PuEAhqv5gdFqF8CzTI7yhvZtUX8woAvon6/3IiKe5aOPZmDaO0xi3
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:218f:92ee:d543:c1a2])
- (user=irogers job=sendgmr) by 2002:a0d:e643:0:b0:609:fbb4:3076 with SMTP id
- p64-20020a0de643000000b00609fbb43076mr598138ywe.3.1709857186828; Thu, 07 Mar
- 2024 16:19:46 -0800 (PST)
-Date: Thu,  7 Mar 2024 16:19:14 -0800
+ (user=irogers job=sendgmr) by 2002:a81:9b97:0:b0:609:3c53:d489 with SMTP id
+ s145-20020a819b97000000b006093c53d489mr4063810ywg.3.1709857189029; Thu, 07
+ Mar 2024 16:19:49 -0800 (PST)
+Date: Thu,  7 Mar 2024 16:19:15 -0800
 In-Reply-To: <20240308001915.4060155-1-irogers@google.com>
-Message-Id: <20240308001915.4060155-6-irogers@google.com>
+Message-Id: <20240308001915.4060155-7-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,7 +74,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240308001915.4060155-1-irogers@google.com>
 X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-Subject: [PATCH v3 5/6] perf tools: Use pmus to describe type from attribute
+Subject: [PATCH v3 6/6] perf tools: Add/use PMU reverse lookup from config to name
 From: Ian Rogers <irogers@google.com>
 To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
 	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
@@ -86,33 +86,20 @@ To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
 	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-When dumping a perf_event_attr, use pmus to find the PMU and its name
-by the type number. This allows dynamically added PMUs to be described.
+Add perf_pmu__name_from_config that does a reverse lookup from a
+config number to an alias name. The lookup is expensive as the config
+is computed for every alias by filling in a perf_event_attr, but this
+is only done when verbose output is enabled. The lookup also only
+considers config, and not config1, config2 or config3.
 
-Before:
-```
-$ perf stat -vv -e data_read true
-..
-perf_event_attr:
-  type                             24
-  size                             136
-  config                           0x20ff
-  sample_type                      IDENTIFIER
-  read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
-  disabled                         1
-  inherit                          1
-  exclude_guest                    1
-..
-```
-
-After:
+An example of the output:
 ```
 $ perf stat -vv -e data_read true
 ..
 perf_event_attr:
   type                             24 (uncore_imc_free_running_0)
   size                             136
-  config                           0x20ff
+  config                           0x20ff (data_read)
   sample_type                      IDENTIFIER
   read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
   disabled                         1
@@ -120,109 +107,80 @@ perf_event_attr:
   exclude_guest                    1
 ..
 ```
-
-However, it also means that when we have a PMU name we prefer it to a
-hard coded name:
-
-Before:
-```
-$ perf stat -vv -e faults true
-..
-perf_event_attr:
-  type                             1 (PERF_TYPE_SOFTWARE)
-  size                             136
-  config                           0x2 (PERF_COUNT_SW_PAGE_FAULTS)
-  sample_type                      IDENTIFIER
-  read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
-  disabled                         1
-  inherit                          1
-  enable_on_exec                   1
-  exclude_guest                    1
-..
-```
-
-After:
-```
-$ perf stat -vv -e faults true
-..
-perf_event_attr:
-  type                             1 (software)
-  size                             136
-  config                           0x2 (PERF_COUNT_SW_PAGE_FAULTS)
-  sample_type                      IDENTIFIER
-  read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
-  disabled                         1
-  inherit                          1
-  enable_on_exec                   1
-  exclude_guest                    1
-..
-```
-
-It feels more consistent to do this, rather than only prefer a PMU
-name when a hard coded name isn't available.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/perf_event_attr_fprintf.c | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+ tools/perf/util/perf_event_attr_fprintf.c | 10 ++++++++--
+ tools/perf/util/pmu.c                     | 18 ++++++++++++++++++
+ tools/perf/util/pmu.h                     |  1 +
+ 3 files changed, 27 insertions(+), 2 deletions(-)
 
 diff --git a/tools/perf/util/perf_event_attr_fprintf.c b/tools/perf/util/perf_event_attr_fprintf.c
-index 8f04d3b7f3ec..29e66835da3a 100644
+index 29e66835da3a..59fbbba79697 100644
 --- a/tools/perf/util/perf_event_attr_fprintf.c
 +++ b/tools/perf/util/perf_event_attr_fprintf.c
-@@ -7,6 +7,8 @@
- #include <linux/types.h>
- #include <linux/perf_event.h>
- #include "util/evsel_fprintf.h"
-+#include "util/pmu.h"
-+#include "util/pmus.h"
- #include "trace-event.h"
- 
- struct bit_names {
-@@ -75,9 +77,12 @@ static void __p_read_format(char *buf, size_t size, u64 value)
+@@ -222,8 +222,14 @@ static void __p_config_tracepoint_id(char *buf, size_t size, u64 value)
  }
+ #endif
  
- #define ENUM_ID_TO_STR_CASE(x) case x: return (#x);
--static const char *stringify_perf_type_id(u64 value)
-+static const char *stringify_perf_type_id(struct perf_pmu *pmu, u32 type)
+-static void __p_config_id(char *buf, size_t size, u32 type, u64 value)
++static void __p_config_id(struct perf_pmu *pmu, char *buf, size_t size, u32 type, u64 value)
  {
--	switch (value) {
-+	if (pmu)
-+		return pmu->name;
++	const char *name = perf_pmu__name_from_config(pmu, value);
 +
-+	switch (type) {
- 	ENUM_ID_TO_STR_CASE(PERF_TYPE_HARDWARE)
- 	ENUM_ID_TO_STR_CASE(PERF_TYPE_SOFTWARE)
- 	ENUM_ID_TO_STR_CASE(PERF_TYPE_TRACEPOINT)
-@@ -175,9 +180,9 @@ do {								\
- #define print_id_unsigned(_s)	PRINT_ID(_s, "%"PRIu64)
- #define print_id_hex(_s)	PRINT_ID(_s, "%#"PRIx64)
- 
--static void __p_type_id(char *buf, size_t size, u64 value)
-+static void __p_type_id(struct perf_pmu *pmu, char *buf, size_t size, u64 value)
- {
--	print_id_unsigned(stringify_perf_type_id(value));
-+	print_id_unsigned(stringify_perf_type_id(pmu, value));
- }
- 
- static void __p_config_hw_id(char *buf, size_t size, u64 value)
-@@ -246,7 +251,7 @@ static void __p_config_id(char *buf, size_t size, u32 type, u64 value)
- #define p_sample_type(val)	__p_sample_type(buf, BUF_SIZE, val)
++	if (name) {
++		print_id_hex(name);
++		return;
++	}
+ 	switch (type) {
+ 	case PERF_TYPE_HARDWARE:
+ 		return __p_config_hw_id(buf, size, value);
+@@ -252,7 +258,7 @@ static void __p_config_id(char *buf, size_t size, u32 type, u64 value)
  #define p_branch_sample_type(val) __p_branch_sample_type(buf, BUF_SIZE, val)
  #define p_read_format(val)	__p_read_format(buf, BUF_SIZE, val)
--#define p_type_id(val)		__p_type_id(buf, BUF_SIZE, val)
-+#define p_type_id(val)		__p_type_id(pmu, buf, BUF_SIZE, val)
- #define p_config_id(val)	__p_config_id(buf, BUF_SIZE, attr->type, val)
+ #define p_type_id(val)		__p_type_id(pmu, buf, BUF_SIZE, val)
+-#define p_config_id(val)	__p_config_id(buf, BUF_SIZE, attr->type, val)
++#define p_config_id(val)	__p_config_id(pmu, buf, BUF_SIZE, attr->type, val)
  
  #define PRINT_ATTRn(_n, _f, _p, _a)			\
-@@ -262,6 +267,7 @@ do {							\
- int perf_event_attr__fprintf(FILE *fp, struct perf_event_attr *attr,
- 			     attr__fprintf_f attr__fprintf, void *priv)
- {
-+	struct perf_pmu *pmu = perf_pmus__find_by_type(attr->type);
- 	char buf[BUF_SIZE];
- 	int ret = 0;
+ do {							\
+diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+index e24bc3b8f696..97ad299f463f 100644
+--- a/tools/perf/util/pmu.c
++++ b/tools/perf/util/pmu.c
+@@ -2145,3 +2145,21 @@ void perf_pmu__delete(struct perf_pmu *pmu)
+ 	zfree(&pmu->id);
+ 	free(pmu);
+ }
++
++const char *perf_pmu__name_from_config(struct perf_pmu *pmu, u64 config)
++{
++	struct perf_pmu_alias *event;
++
++	if (!pmu)
++		return NULL;
++
++	pmu_add_cpu_aliases(pmu);
++	list_for_each_entry(event, &pmu->aliases, list) {
++		struct perf_event_attr attr = {.config = 0,};
++		int ret = perf_pmu__config(pmu, &attr, &event->terms, NULL);
++
++		if (ret == 0 && config == attr.config)
++			return event->name;
++	}
++	return NULL;
++}
+diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
+index 9f5284b29ecf..152700f78455 100644
+--- a/tools/perf/util/pmu.h
++++ b/tools/perf/util/pmu.h
+@@ -276,5 +276,6 @@ struct perf_pmu *perf_pmu__lookup(struct list_head *pmus, int dirfd, const char
+ struct perf_pmu *perf_pmu__create_placeholder_core_pmu(struct list_head *core_pmus);
+ void perf_pmu__delete(struct perf_pmu *pmu);
+ struct perf_pmu *perf_pmus__find_core_pmu(void);
++const char *perf_pmu__name_from_config(struct perf_pmu *pmu, u64 config);
  
+ #endif /* __PMU_H */
 -- 
 2.44.0.278.ge034bb2e1d-goog
 
