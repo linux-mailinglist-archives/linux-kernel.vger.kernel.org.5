@@ -1,95 +1,109 @@
-Return-Path: <linux-kernel+bounces-96529-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96530-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31FE7875D93
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 06:31:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21C9A875D96
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 06:34:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 23FECB22E29
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 05:31:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E4BC1C21B48
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 05:34:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 379AB32C9C;
-	Fri,  8 Mar 2024 05:31:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E93503218B;
+	Fri,  8 Mar 2024 05:34:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="PTfa9+jt"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F8032564;
-	Fri,  8 Mar 2024 05:31:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="kOmE/ZkL"
+Received: from smtp-relay-canonical-1.canonical.com (smtp-relay-canonical-1.canonical.com [185.125.188.121])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E533E1E536;
+	Fri,  8 Mar 2024 05:34:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.121
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709875865; cv=none; b=XGNas+N2e3NOLOB41tmxc6zTx4NHVA+cKlPy0ZxNbMtTh4iIQnTGqzPn+nCSbpQCvzqHgIEB8AoRvEavIGeY+Hp+mHeNkkhtn6nfDOPDxm1xLFOGRnG74Th6N5J6KCZC2eQCkvPl7nXO/MWL+8m/GKdxz/X/17k7TdJ7f0RITO4=
+	t=1709876067; cv=none; b=l2SA8gVTAClkRHl0I+jlXkCr8shqluTg/V0rDxXSyTUsm5lhTwWs3zQSYlRavrodUUt382McYTxx2XTPBEKQb6oaZ64tBsNj3Bf460o4Qv/KhZY0LaPHdQfBoF1ub/t2R7Tet5hhEN8j1P4Rh9cKggH1s68HZa6AHKL96GdafUw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709875865; c=relaxed/simple;
-	bh=4QA+qfkTVt82T4MJ6mB+KmRrnBaFSpMS1IGiL/1JjJ0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nMoSf8/pMBCSoPeCal5+i+72QuACjYleabrCtrwzpSTT7Lc6yj/Dqs9ViKsSEhMlpmlazWy04NxI1tAJJOK8PoVlil6zwIMCmVUFFONfZFQpRF5UdJYIxAYUVlpxdJHRyzoY6affHUFACS/nVJP4jy7NRxeLgVvpKWJBnZuRA1A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=PTfa9+jt; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1134)
-	id 238CE20B74C0; Thu,  7 Mar 2024 21:30:56 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 238CE20B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1709875856;
-	bh=u2kPWb3IsqjyN6FSEPkizuq4H3ww/4ROAGYubZNDML8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=PTfa9+jt0Q6hKwjBdaXtnHtFyd5ME7DtKa/Q8PYhW+s6pOgjSxmzLDFquvbnH1yh7
-	 4oaRwleRRtKqtNLao+7oXEFtJ67BPVLXXgglcbspIIUogItaQ2qhuJVT9N9+697WD0
-	 vnRBA/gNCCbPWUJF689KDtyKXn9qEWGZjtVTqdr8=
-Date: Thu, 7 Mar 2024 21:30:56 -0800
-From: Shradha Gupta <shradhagupta@linux.microsoft.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Haiyang Zhang <haiyangz@microsoft.com>,
-	Shradha Gupta <shradhagupta@microsoft.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	Ajay Sharma <sharmaajay@microsoft.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	KY Srinivasan <kys@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
-	Dexuan Cui <decui@microsoft.com>, Long Li <longli@microsoft.com>,
-	Michael Kelley <mikelley@microsoft.com>
-Subject: Re: [PATCH] net :mana : Add per-cpu stats for MANA device
-Message-ID: <20240308053056.GA16944@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1709823132-22411-1-git-send-email-shradhagupta@linux.microsoft.com>
- <20240307072923.6cc8a2ba@kernel.org>
- <DM6PR21MB14817597567C638DEF020FE3CA202@DM6PR21MB1481.namprd21.prod.outlook.com>
- <20240307090145.2fc7aa2e@kernel.org>
+	s=arc-20240116; t=1709876067; c=relaxed/simple;
+	bh=YwaMj8OxKhbhgSm2YdeZYbZgnCMpwoZo7BgGT64eeoQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=eCoCpApEb5lf3hLl+f9G5MDlFEiSvjJy3ewqKuPsDryvohgOTnYMrUfHi6EfPtHAeCSJDkK4cdNpdtbi1t3+hheqaWe10kgprzIKI1K1vAPXzfmHcXblRPlQe0hhHBeq/fC31QhhR9CPRM57opvT1d2zh6Ri0IxQ1WI3KTJOqDc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=kOmE/ZkL; arc=none smtp.client-ip=185.125.188.121
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from localhost.localdomain (1.general.khfeng.us.vpn [10.172.68.174])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 0ACD23F6CA;
+	Fri,  8 Mar 2024 05:34:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1709876055;
+	bh=jGaP/9i8KsRXJscPtFKRu9e1FyFkCOLKnNjl8D0Gs4Q=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+	b=kOmE/ZkLJY8t3f8peh8ddo762kmj7mq12NyE00rlKzPbIU7lJK/oF6ylfLQ3i7YBW
+	 d8MqlmkQZMt3b2++/5Y6g8r4B2dTC26wsVMUprrLPC0PpnvvxL4H8ufTrPNkigtILM
+	 ZCcN2hrXvliEM4gTB55Wvq1RN9ipwQPuYjZcJdcKXBvz+ZQ9P3jaQ4P+2jnWNDIReb
+	 +IsyJW1S8TjYJx8YPAaE6WWREK7Ce3c9df8qyfoyJoTH7r3PNARfciO2Psopsrf0Qe
+	 NhfDED3wEM7p/C5ITbdFMhLgn2822903ghA/GzFnLsgPweSJWxtYdFGP2sD5eJRglK
+	 mrskrOw0Wct9A==
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+To: corentin.chary@gmail.com,
+	luke@ljones.dev,
+	hdegoede@redhat.com,
+	ilpo.jarvinen@linux.intel.com
+Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>,
+	platform-driver-x86@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] platform/x86: asus-wmi: Consider device is absent when the read is ~0
+Date: Fri,  8 Mar 2024 13:32:55 +0800
+Message-Id: <20240308053255.224496-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240307090145.2fc7aa2e@kernel.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: 8bit
 
-Thanks for the comments, I am sending out a newer version with these fixes.
+AAEON PICO-TGU4 board doesn't have any LED but there are bogus LED
+controls under /sys/class/leds:
+$ ls /sys/class/leds
+asus::kbd_backlight asus::lightbar  platform::micmute
 
-On Thu, Mar 07, 2024 at 09:01:45AM -0800, Jakub Kicinski wrote:
-> On Thu, 7 Mar 2024 15:49:15 +0000 Haiyang Zhang wrote:
-> > > > Extend 'ethtool -S' output for mana devices to include per-CPU packet
-> > > > stats  
-> > > 
-> > > But why? You already have per queue stats.  
-> > Yes. But the q to cpu binding is dynamic, we also want the per-CPU stat 
-> > to analyze the CPU usage by counting the packets and bytes on each CPU.
-> 
-> Dynamic is a bit of an exaggeration, right? On a well-configured system
-> each CPU should use a single queue assigned thru XPS. And for manual
-> debug bpftrace should serve the purpose quite well.
-> 
-> Please note that you can't use num_present_cpus() to size stats in
-> ethtool -S , you have to use possible_cpus(), because the retrieval
-> of the stats is done in a multi-syscall fashion and there are no
-> explicit lengths in the API. So you must always report all possible
-> stats, not just currently active :(
+The reason is that the ~0 read from asus_wmi_get_devstate() is treated
+as a valid state, in truth it means the device is absent.
+
+So filter out ~0 read to prevent bogus LED controls being created.
+
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+ drivers/platform/x86/asus-wmi.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
+index 18be35fdb381..8cb2afafde16 100644
+--- a/drivers/platform/x86/asus-wmi.c
++++ b/drivers/platform/x86/asus-wmi.c
+@@ -489,7 +489,17 @@ static int asus_wmi_evaluate_method_agfn(const struct acpi_buffer args)
+ 
+ static int asus_wmi_get_devstate(struct asus_wmi *asus, u32 dev_id, u32 *retval)
+ {
+-	return asus_wmi_evaluate_method(asus->dsts_id, dev_id, 0, retval);
++	int err;
++
++	err = asus_wmi_evaluate_method(asus->dsts_id, dev_id, 0, retval);
++
++	if (err)
++		return err;
++
++	if (*retval == ~0)
++		return -ENODEV;
++
++	return 0;
+ }
+ 
+ static int asus_wmi_set_devstate(u32 dev_id, u32 ctrl_param,
+-- 
+2.34.1
+
 
