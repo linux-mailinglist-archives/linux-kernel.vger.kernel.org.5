@@ -1,121 +1,218 @@
-Return-Path: <linux-kernel+bounces-97511-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97512-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AEFF876B37
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 20:30:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EB9D876B3E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 20:32:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CBBAE1C2148E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 19:29:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E5C01C213E6
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 19:32:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72AE75A7B7;
-	Fri,  8 Mar 2024 19:29:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B9935B5A8;
+	Fri,  8 Mar 2024 19:32:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MiTGaLQa"
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="RiGfyZb4"
+Received: from BL0PR05CU006.outbound.protection.outlook.com (mail-eastusazon11023015.outbound.protection.outlook.com [52.101.51.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A8A025774;
-	Fri,  8 Mar 2024 19:29:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709926192; cv=none; b=Uy3sjCS3iHrwsghQfGUjLYPxAa4X5GOn2ywf7NY09HslNjzGzcZryQ8/pEveYMBwcKk0HajtD65gMbDrwDJSZT8TeD+NJrDOY389vgxikmmTJlCber5rEfx7SHBxAizBucdE6tPhZIOf9kRD6vJkhZIT+iAGifdoyB9bPTPyIsI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709926192; c=relaxed/simple;
-	bh=RMRgdsBHJyxDqGQTUczfYvV37B+xx0l9E6N+68thdNY=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=WMiG96OSEVTlkpqvZQupof84iNc3O43SJsQiQtdXBU72d3rcHZtzV83iYwvWXa5jVmsXURWr4Zv/HlS0/Onhy/yZW11WQw5VF2XMzF5YInkBSqujMeUh99DV+gjAbQOiHGtXv7aK3Nox0qZTLq8AW5mWrV9GcdZa8s01kZXgWyQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MiTGaLQa; arc=none smtp.client-ip=209.85.167.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-512e4f4e463so3462218e87.1;
-        Fri, 08 Mar 2024 11:29:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709926189; x=1710530989; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=RMRgdsBHJyxDqGQTUczfYvV37B+xx0l9E6N+68thdNY=;
-        b=MiTGaLQa4KrmbzMlJuO6wq8VWco0tlfoBcIffti/+5BKbgJJAF8no4woKo0nj/7jBV
-         0CpgN2mltylnweWKiTWdKxZIxype3RU+922YbwZSaf46VugfrRjNWFGnO/YxuANMyQy4
-         NKkZaHsriChlXRQsNu4hG5j42y/5h6l43RpVnb1efXMdPLncI1Ol0hJHmnpwsVARI/pe
-         log8Dv2Jo/+PFgZaDUd5Vn+o9t8LhFeB+q8iphUMhq1Uuor0/qabiyZxAraxY8wxcfAT
-         PgvxEW5wl3G4Q5EILe1AzzE/imLpXvIKIjHOB0MVC8KiXC5hmlAJPI7EZZODp9pzCYK9
-         An9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709926189; x=1710530989;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RMRgdsBHJyxDqGQTUczfYvV37B+xx0l9E6N+68thdNY=;
-        b=JgO2Wa9cVp//+6++TGznWQZT5w49/Z3Lor6U+v6UQf75FEGPek/dLlBuu+szKry8GS
-         1Q3ii3h/ghna9z8Gbr1kS2fWG8r3KW3SlYu3WpQTl78TT4jOIW6e8lD72KgAS0XWnJ3e
-         owjVSzIrLGdc1UXs7UwRpRr87X/xcFgtAwdMMWVZrNwLAXW9jf/B6y7xsOwdky15lZzF
-         nXtAHRhRfhzc3wjZFv1usg32wI2zUDtyHREJHRWF/BpEb7wGvE+ehI/jd43JasNA7RaL
-         8f5ZyF1dWihSr26g7LlatAyNgMMQDBAo3S8GBG6/z79+T1DbK51jR4kBoBUMgzcx/eeN
-         jhNg==
-X-Forwarded-Encrypted: i=1; AJvYcCVO8ki3eGoNKjoZDCOQvoKcULDNzeDQvZzPsP5bVUz6vwb+mYtuFTZTLdgFho/+xcVEFV2nhe0kx9Ztj0NNLmMByv/I/A5Qjrk7JjWrKgIln80GbWEYD0HNFYwZMXIG1z7QRqSXVcSrXA==
-X-Gm-Message-State: AOJu0YxTDMU+XKekAK4bgR5bBKY9SqzB+8bZuFwDwGl39LPbR2F9JTrf
-	gIN7Wx7ntRw+4EHRgHHTX9ldxUmQYPicQPlCEWlFH/n8IqVV5Y0b
-X-Google-Smtp-Source: AGHT+IH17VTWtbb/T2JbzXCWcrj4STjOoGKe2CYFs7brPVKMcgV7JeYRxZlNDF7KQXU8nix1zfLaeg==
-X-Received: by 2002:a19:691c:0:b0:513:2b10:cc28 with SMTP id e28-20020a19691c000000b005132b10cc28mr18935lfc.9.1709926188993;
-        Fri, 08 Mar 2024 11:29:48 -0800 (PST)
-Received: from p200300c58728637afaa070da676dcf95.dip0.t-ipconnect.de (p200300c58728637afaa070da676dcf95.dip0.t-ipconnect.de. [2003:c5:8728:637a:faa0:70da:676d:cf95])
-        by smtp.gmail.com with ESMTPSA id ws7-20020a170907704700b00a42f6d17123sm98411ejb.46.2024.03.08.11.29.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Mar 2024 11:29:48 -0800 (PST)
-Message-ID: <e96bd7b0b5b6abbde6a5e2396bc5a291e4c9ddad.camel@gmail.com>
-Subject: Re: [PATCH v2 2/4] scsi: ufs: Re-use exec_dev_cmd
-From: Bean Huo <huobean@gmail.com>
-To: Avri Altman <Avri.Altman@wdc.com>, "James E . J . Bottomley"
- <jejb@linux.vnet.ibm.com>, "Martin K . Petersen"
- <martin.petersen@oracle.com>
-Cc: Bart Van Assche <bvanassche@acm.org>, Bean Huo <beanhuo@micron.com>, 
-	"linux-scsi@vger.kernel.org"
-	 <linux-scsi@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	 <linux-kernel@vger.kernel.org>
-Date: Fri, 08 Mar 2024 20:29:47 +0100
-In-Reply-To: <DM6PR04MB6575A5D43DF0589B480A4EA9FC202@DM6PR04MB6575.namprd04.prod.outlook.com>
-References: <20240305210051.10847-1-avri.altman@wdc.com>
-	 <20240305210051.10847-3-avri.altman@wdc.com>
-	 <6c75ce4cc05c6983137e954043d5ae7323a96172.camel@gmail.com>
-	 <DM6PR04MB6575A5D43DF0589B480A4EA9FC202@DM6PR04MB6575.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A3AA56479;
+	Fri,  8 Mar 2024 19:32:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.51.15
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709926343; cv=fail; b=C/+Nn5/sjneDCN5QFuRZ7HWB9aoOsePauImo4FLeM6iUTEXqMb+dMcdPwDbsJ/gA+bbay/eLUXeB2b23ZjArF8Bu0i6y+Rmngy8qeC5numWvRq8/Wb4rv/jwDLC5p56JbQq1J4qjad0S3JzEd/G88F+WytisCQsoNqOotrYbrPg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709926343; c=relaxed/simple;
+	bh=Dhm8vBwfSOpnPM3psOZoJPvLfRFSBPtRot3NHDiyEYI=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=m22nw9UwsUFEiIydESCS5RQWocNuazeeq05uNPRNsgRnIBNDFNGaPM+GMd+E4W3bjYIU/HeoPEUIkHqTy5POpovKlgwtdk559mlflv2KpynamhJaG5dVUD4nDDigQNermImzRkcrjkVeCL8t7E3mvCpBpAfidXcD159ndhKRVGQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=RiGfyZb4; arc=fail smtp.client-ip=52.101.51.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oRYbRzuKaO0iQA9ErmzDeTpoh0ir3PAcZsCqpF/7ovGPK02fIb7w2R2qgL5l2DYXhCDNZuVsO/vTlvI+QQl1FnqqO/h7NwRHlm9ss3X5ybXnuNmeEV2EMDPX0YbwQ4JhB/PnphZqcGlqaT+NTbPFp02AXR9811oFM1bUKtAW2Hwy0M0cZN3MJ/uE4XxguVvf93s2N6ZLhT3+eXiRbxFhmvnV7m1iatIYhBF1fkR3bXGHXKhWidVpjjwL9ahnjp/EuCHcEtS4ZZDeq/D9Clc9/I3krsYGW/jzexDm8FVqzjsrA5xrDssNQPYPtV3o1WyySNJXdw6wQKLJM/d494zV0A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=CH47peTn7o+tlhJ+j8PJ/TllzAdCDbf2sUaLguysu64=;
+ b=bRfHKEL2ptu3bme/B9lMfqzJYzrT5XsjTpQl3+z2mkBfszO9MntIFsqbzxTso49PydsbBsEcHXZ6H0h1qh7IK7D2HQLbshZLi04yzCD/ISipMDIBn+uDbHQE4K8bAVq6gbkOF/JWznNhkpHY1e592BvcYlCOqb/VEJWCMC5gfTfeeLJ8or8+ImRHFN6B8P9YiRdbsCiSDlATWOHKZLGFCShKB9p7ug2csc1b3l82xQJ538VWhC3hw0hXzsN4C2io/ex8dnaxaBmr0+1FIgXSKdNv5ijSJROYMV1P3dnpW/SidGs6FoM8OeyHxpDCO/7id7cjGCIBmXQ33GO/d5aGiA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CH47peTn7o+tlhJ+j8PJ/TllzAdCDbf2sUaLguysu64=;
+ b=RiGfyZb46utwFK6p+ihsYHzBzXHxNUELrRVlbqFCbuhjrsUQGwAvsFrhm6ZFkoGDPOyno1yLYG7pc/PpVXXVBvxUvwsRxJlER65iT3vuuH9eOVFSE2G9CNAOLB9qoyM8bm3Yq/d+xibFVKB3RVzKJsL2KCsxrQrln2sYcihJgVw=
+Received: from CH2PR21MB1480.namprd21.prod.outlook.com (2603:10b6:610:87::22)
+ by DM6PR21MB1451.namprd21.prod.outlook.com (2603:10b6:5:25c::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.10; Fri, 8 Mar
+ 2024 19:31:17 +0000
+Received: from CH2PR21MB1480.namprd21.prod.outlook.com
+ ([fe80::70d6:9c52:d97e:3401]) by CH2PR21MB1480.namprd21.prod.outlook.com
+ ([fe80::70d6:9c52:d97e:3401%4]) with mapi id 15.20.7386.011; Fri, 8 Mar 2024
+ 19:31:17 +0000
+From: Haiyang Zhang <haiyangz@microsoft.com>
+To: Shradha Gupta <shradhagupta@linux.microsoft.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>
+CC: Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>, Ajay Sharma <sharmaajay@microsoft.com>, Leon
+ Romanovsky <leon@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Sebastian
+ Andrzej Siewior <bigeasy@linutronix.de>, KY Srinivasan <kys@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>, Long Li
+	<longli@microsoft.com>, Shradha Gupta <shradhagupta@microsoft.com>
+Subject: RE: [PATCH v2] net :mana : Add per-cpu stats for MANA device
+Thread-Topic: [PATCH v2] net :mana : Add per-cpu stats for MANA device
+Thread-Index: AQHacUWfk2HeYZCfmEiJ39aQbYx317EuNjXA
+Date: Fri, 8 Mar 2024 19:31:17 +0000
+Message-ID:
+ <CH2PR21MB1480ECD5D7F0105B736703B4CA272@CH2PR21MB1480.namprd21.prod.outlook.com>
+References:
+ <1709894671-1018-1-git-send-email-shradhagupta@linux.microsoft.com>
+In-Reply-To:
+ <1709894671-1018-1-git-send-email-shradhagupta@linux.microsoft.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=2b8cfc48-fc88-43d4-aaaf-335176f641b1;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2024-03-08T19:11:09Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: CH2PR21MB1480:EE_|DM6PR21MB1451:EE_
+x-ms-office365-filtering-correlation-id: 46eabb28-11ee-467f-694b-08dc3fa6537d
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ ZtrvSazl6zpYMHl3CeDiPAwu5krlxIlfLauaEhEvCW9XmQMMJZ/7cOE8rY97FLAen9OPuDoIn6PJQVutg7oasyLTnxi5nbKzsb3MhgZSgLLG+eMkx3zzsN+3mRwgx0SGfwbLxAGnFUwEsiUkyn+2OlceXW7/jSuvKDK05A1BaltcHjA9NGjH4XF21ELLwurXNTgIC72vNMhvwgX3wIoG6stp/kH4SRjIkgJgLY+v9hOlE17dRWlKxdKwBKJYbSGtKGyc2etJeQ5UpO0t06C6Jkgll64craGd1c0D0d1JOCaTpWl+SX7rAej52dGJoVAxH5xKXySYXyQ9gHI/WxwWeK67eOUvwRd0AgR1cnNwwOdy/jIgmA6EQ/yxlCuLwyUk1UqTXk9A8MfIxohBQEUKb6c5Ocirc7vQW+9eWB2l7koFMpGZjJvXRwN+sAAGd0rKDi23EPPuI3eyjEbE6tjmlXDR2jYuK9oaH8Sm4Xhy0gLfS9n0urqv8BGsX4qltiJdIgzT2GY+0JEr5I91z61Ml4lqTn4RijKruNekjbfGb34605roslDscet4KSUd7VbNrDxdpHUjgsZ0Xoe8Twwk3P7bWQ+kdoiqyY8XxSwxG+59G4PziyHtZrsIxie1DpkQUvqFMucMPXPssar+aYVxvZm+yClgpjCEdKlgnofSBFnURVUghHcuHQAYlqipJeKcLuoVD4AE0jJHP4+QRg/ln9Byab4vEgp3C9Aahw4tOb0=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR21MB1480.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015)(38070700009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?p9LLeiQqebGd4b3a8ZEujT1jX3zYH6VuwyUi9tD+aQUdLrHLAfN+4/pXPlhy?=
+ =?us-ascii?Q?ZAdrHv28xo/RGeT5MewChNo8QNS5FpkEf+DHMDvuUDx49nkEwZ/2HDug9iMF?=
+ =?us-ascii?Q?tH8U9Nf6BDdZuqDXarWrayjk927bfVmExw8Aqww5svNf5xTJT/Vro29EU3XQ?=
+ =?us-ascii?Q?MYgjiZaOvuQvzBE7DovQKEYVc9eMQ6IUexUcIKaYi9bINeFemEj3xH6/+Sdh?=
+ =?us-ascii?Q?cOckBHUVQEsv/YT0JSABWc76/HqBlC0ZUFVoipx73C2rfB03AbBymdRrIr2O?=
+ =?us-ascii?Q?gKH3C2iRuJOic5YKG10oq5QkAAcTPVacc7XpjKXnpX0a/rFMfBpGEXfNeNX9?=
+ =?us-ascii?Q?VpdhEbEAObgGDvGmhxvnd1q3o20JpOifiBtDizmuNFeVByMbyGltFTBvSd6u?=
+ =?us-ascii?Q?SqHbQITKmVHl5n/jXdln6lbClUCGYelZQyDw71wqy4rlD2Rm0Z3/AR/QILt1?=
+ =?us-ascii?Q?nt6W67L5tiJlqw/ipicmCodU5ZSH7jMa1tIXRBPt8xkPCA/9Qru/dwlyndac?=
+ =?us-ascii?Q?m2Z3Lmj+6loSmiEvBdR0e2uDVJ7f0GAdgIGJyVKgHUf3QtpnudrZbMa83eXq?=
+ =?us-ascii?Q?OqfTwdq0EcGUbFJV3rylQoWr3R222D6rw99toyFOccPMCmVnlM0SBCnHwDeQ?=
+ =?us-ascii?Q?J6huXpQWoa+ndeTrNHJp1GtpcBH8he6+ObmtaTyEw9ow8wdg7PRY5ij8LsvP?=
+ =?us-ascii?Q?pGsoaWKK2bRQnX3OSZYMz9Qz7xgwj521FGuD2WEkSDJLEK5dMNoZDA0xl2Ff?=
+ =?us-ascii?Q?xFuRw5eAsd1PNJTvc0HdqtqVAOptc8RNjnmSPrRZ2wexe/qsaNmVaSTx8Iz3?=
+ =?us-ascii?Q?56XqEkcKusoDXogFdrHbUiT9rAIaZtzhGr++dMARq0MhSg/TkFyhZsPsJrt/?=
+ =?us-ascii?Q?WHHkA+aZHetHXHubEgmXY+oeXXF+aaRdtjA+SVJzwn01NAxdBPPJFA9r/1ed?=
+ =?us-ascii?Q?CiXHKbvhmAZjfYkGu5h+kzPF7ayza1rICk7ePkbsuJ5+yPDSZzhV2S3rimJ+?=
+ =?us-ascii?Q?qphZbT1uZAZpi3ptjT7UcyMo4ghUgp3cFY95EGbE3byVpgG92tlN9fAyJxII?=
+ =?us-ascii?Q?ykiRRjt5RdPG++BZ50gBl0KPpJYY7+NXnyCBODJ1iSYc9rqCMh2JOt0TZ4Oa?=
+ =?us-ascii?Q?zgd7nkEC4tnvgMnf6iXKFFgIOSsQVF3jhBDYlqAZ0Wo5BGcnn8j4XBPZ8zjR?=
+ =?us-ascii?Q?sFseNsIplyWI4rABogR1oMnQap7CzZt0NJ+1/9cA5KD4zebnOyXAb9efSz1B?=
+ =?us-ascii?Q?WuH4GG187ODWe3RrWvR4U+N2n1m1LLRsZhxo5nA/0xsR/M+iV9IlPQE7P+47?=
+ =?us-ascii?Q?ASX++sNSUgVV6IqPEAOa8GvvubF8sK/NxGFwXgAiTmmoWeqSE6bQhBa6b35u?=
+ =?us-ascii?Q?kg8qeEgeNmVI5SIe/Pm2jzpYWKwlRcm1bJho7jf0dOzoO5sEwGFk+iXTWf2q?=
+ =?us-ascii?Q?QmT2fe7xp1F86kCSgsTpPm0Mfm1KhxaD1+uQf0AWDiJ2QKjUr9MMM3gBPplU?=
+ =?us-ascii?Q?WL0PBItg6OLYv+9qo9+8+3XPjm1+Dcue2sbpM+FaupW3MRSqcLhfDQoPVZNv?=
+ =?us-ascii?Q?btyYS8wWE0+FhcacPNqhmchFKf2jGt0kIusACs+S?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CH2PR21MB1480.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 46eabb28-11ee-467f-694b-08dc3fa6537d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Mar 2024 19:31:17.7593
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 5uVOp1rPgwJXVS+5iL3bc9KB6L1XRv/A6afwjd8lpbdIbUFbgrf7UMr1Yp2D9HibKEMlm2rsNzpy/sypicBqYA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR21MB1451
 
-On Thu, 2024-03-07 at 19:28 +0000, Avri Altman wrote:
-> > On Tue, 2024-03-05 at 23:00 +0200, Avri Altman wrote:
-> > > Move out the actual command issue from exec_dev_cmd so it can be
-> > > used
-> > > elsewhere.=C2=A0 While at it, remove a redundant "lrbp->cmd =3D NULL"
-> > > assignment.=C2=A0 Also, as a free bonus, call the upiu trace if it
-> > > doesn't.
-> >=20
-> >=20
-> > This statement is a bit strange, what it is "if it doesn't"?
-> >=20
-> > from the change, the patch refactors command issue for broader
-> > usage
-> > and enhance UPIU tracing, isolate the command issuance logic from
-> > `ufshcd_exec_dev_cmd` to allow reuse across different contexts.
-> What I meant is, that I see no downside for including the bsg path in
-> the upiu trace event.
-> Do you object to that?
 
-Avri,=20
 
-no, I meant your commit message is not clearer. and then understood
-after reading your patch.
+> -----Original Message-----
+> From: Shradha Gupta <shradhagupta@linux.microsoft.com>
+> Sent: Friday, March 8, 2024 5:45 AM
+> To: linux-kernel@vger.kernel.org; linux-hyperv@vger.kernel.org; linux-
+> rdma@vger.kernel.org; netdev@vger.kernel.org
+> Cc: Shradha Gupta <shradhagupta@linux.microsoft.com>; Eric Dumazet
+> <edumazet@google.com>; Jakub Kicinski <kuba@kernel.org>; Paolo Abeni
+> <pabeni@redhat.com>; Ajay Sharma <sharmaajay@microsoft.com>; Leon
+> Romanovsky <leon@kernel.org>; Thomas Gleixner <tglx@linutronix.de>;
+> Sebastian Andrzej Siewior <bigeasy@linutronix.de>; KY Srinivasan
+> <kys@microsoft.com>; Haiyang Zhang <haiyangz@microsoft.com>; Wei Liu
+> <wei.liu@kernel.org>; Dexuan Cui <decui@microsoft.com>; Long Li
+> <longli@microsoft.com>; Shradha Gupta <shradhagupta@microsoft.com>
+> Subject: [PATCH v2] net :mana : Add per-cpu stats for MANA device
+>=20
+> Extend 'ethtool -S' output for mana devices to include per-CPU packet
+> stats
+>=20
+> Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
+> ---
+>  Changes in v2
+>  * Corrected the patch description to remove redundant built and
+>    Tested info
+>  * Used num_possible_cpus() as suggested
+>  * Added the missing allocation and deallocation sections for
+>    per-CPU counters.
+> ---
+>  drivers/net/ethernet/microsoft/mana/mana_en.c | 30 ++++++++++++++
+>  .../ethernet/microsoft/mana/mana_ethtool.c    | 41 ++++++++++++++++++-
+>  include/net/mana/mana.h                       | 12 ++++++
+>  3 files changed, 81 insertions(+), 2 deletions(-)
 
-Kind regards,
-Bean
+
+> @@ -2660,6 +2682,7 @@ int mana_detach(struct net_device *ndev, bool
+> from_close)
+>=20
+>  	apc->port_st_save =3D apc->port_is_up;
+>  	apc->port_is_up =3D false;
+> +	free_percpu(apc->pcpu_stats);
+
+Mana_detach() is called in multiple places like changing MTU,=20
+#channels, etc. After that you will use freed ptr.
+
+This should be in mana_remove() before calling free_netdev():=20
+
+                rtnl_unlock();
+
++		free_percpu(apc->pcpu_stats);
+                free_netdev(ndev);
+
+You should test with multiple changing mtu, #channels, and=20
+reloading driver to ensure the stats are working correctly, and no=20
+panics/errors in the dmesg.
+
+
+> diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
+> index 76147feb0d10..9a2414ee7f02 100644
+> --- a/include/net/mana/mana.h
+> +++ b/include/net/mana/mana.h
+> @@ -51,6 +51,8 @@ enum TRI_STATE {
+>  /* Update this count whenever the respective structures are changed */
+>  #define MANA_STATS_RX_COUNT 5
+>  #define MANA_STATS_TX_COUNT 11
+> +#define MANA_STATS_RX_PCPU 2
+> +#define MANA_STATS_TX_PCPU 3
+Move these defines just above struct mana_pcpu_stats,
+so people will remember to update them together.
+
+Thanks,
+-Haiyang
 
