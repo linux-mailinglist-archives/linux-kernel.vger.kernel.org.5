@@ -1,56 +1,82 @@
-Return-Path: <linux-kernel+bounces-96893-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96894-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B9DB8762A7
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 12:02:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B0698762A9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 12:03:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 085ADB23FCA
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:02:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0406AB2405C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:03:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D5BE5E089;
-	Fri,  8 Mar 2024 10:59:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1011E55C0B;
+	Fri,  8 Mar 2024 11:01:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Qc9/YQLJ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="fZWgaYjZ"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D42E55E50;
-	Fri,  8 Mar 2024 10:59:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD76C2CCB3
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 11:01:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709895582; cv=none; b=sZ63lAd/x17ET9X9P4869ktzMxssLk+ngQY2vA1+U/eXEp3S3K2eUXGHnHJUWCzfow4dqZN4FUGClRJs2T3/ZUvLr9Gn/DtJABSQGAQwI01pPIVs+2Fuc7mnwMafmvJBUnbiF8GC9LRYx11ys0gRXU8L4RuVb7HJN2tWgJKCxWA=
+	t=1709895681; cv=none; b=lic3mddGDUeHJFaXxh8JLYa+VnWmN9utErYqiYdchrgg8PxqvINc8JholK2kQ43VSKyQNToezB/vNMlNU8sPS0S6R8Uco9qBrNy7CSFEN7Ae5VU7SiIH8uXsO6EN2UbCCxJV3OmQ7KE6lwa71Dg/trRg6aIYUJbGCQRVHfIdN6U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709895582; c=relaxed/simple;
-	bh=XCx6rBF5QXE5ljZ6dgmSjPlktK82y9NFAFmToHiY3rM=;
+	s=arc-20240116; t=1709895681; c=relaxed/simple;
+	bh=uHV1gGkgr6Tmt56AjXTymwnJiCemKOzJZhmAXfR2VYU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MCJBrzKuaoVLuXbSKWCVmrDUIQdMKqR99ph2no0ygSUF6YfuyM7aZrep7Dx9TVhdIHRbN3lDEX8KhtCXqY28YAEvHWq07IS1cF4inQyOut5rTB1O05DGvgUVDIVt+bPglifXLVtWJ9I9mpG3gN6CF6eDCoX4xwxuk7Aamzgc/p4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Qc9/YQLJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F1A1C433C7;
-	Fri,  8 Mar 2024 10:59:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709895581;
-	bh=XCx6rBF5QXE5ljZ6dgmSjPlktK82y9NFAFmToHiY3rM=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=ufxhjavpR28mbqT+cn8+t0c7o1g+W+xj2ac+oQ+8diBbph4u7GaKRdV2a7O6u8KaGXBf2e18Rg3xm/afwbj/lbyGY/V2RoxwmwQOF181EywiaQAKgQL7sSx3D75+lT5ErPwIY/Ktd8Yt61dLcZ+BOTj5a1hYYcxoThzWZfBefdw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=fZWgaYjZ; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 144D940E0173;
+	Fri,  8 Mar 2024 11:01:16 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id zj6u7WGxYIDy; Fri,  8 Mar 2024 11:01:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1709895674; bh=NVFJ/6oWHZdVHQAZ5JD2IT894wi7c6NAiBJiCcucup4=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Qc9/YQLJqkDldT6nTmCJ9jNzgiOZI4nHUSHkFPdsNoG2yuVaomoPar+KYppkc5q3y
-	 yoHfW+OfBFS1ZJZUp47J76Noncnw71Loxw8R+PvRKf4oebIptJtXoAm1ZlKpf7qj+3
-	 +tlfLfOGAuxn8uEYuGXHYlWsP8KJuFFXcZ1mPkHpG7uh5EdaU8jT0T7zIGYG4oSyOo
-	 GyxaRoQQ+8uP77ICDPDbjiRIKGOikgR7rgMftZw24JUOpjXfvxQplJ5QfbWKxmMGjq
-	 IJQRbV2bvumrCOimGX+9/Jt67pGPPobSTq5jb7yEYhPfPpWof8XGfw9ei8BDhi6oDT
-	 ARQqftLEDHxuA==
-Date: Fri, 8 Mar 2024 11:59:37 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>, 
-	Miklos Szeredi <mszeredi@redhat.com>, David Howells <dhowells@redhat.com>
-Subject: Re: [PATCH] statx: stx_vol
-Message-ID: <20240308-vorkam-aufgearbeitet-44ed64f7de69@brauner>
-References: <20240302220203.623614-1-kent.overstreet@linux.dev>
- <20240304-konfus-neugierig-5c7c9d5a8ad6@brauner>
- <xqazmch5ybt7fatipwkuk7lnouwwdn55cirvaiuypjmy3y4fte@6vwyvv3uurl5>
+	b=fZWgaYjZPrf5m6zPSbVcy0iC/3EfnIGhQrPB2OBkoJLszCSlql6LX72MbByBHWneT
+	 lJFMnLB/LfoIuIuiI6NTC52pFHxiUgEplXowi2GNt2VRN/fDuaUWNVsdNeqk8ibAPJ
+	 e+YQ2/Vmj88WNNR2GxUc4SvCsslMqQAefhFjnKXqh75nmBSU1w6zrImk9ZsL67CSJT
+	 ZEcDx5bICTwUbmgie/O604hZZNMFB8IQN9aCQJ37Q8iDqDc5LbGjVhRCmZpGKEtX6t
+	 d2h9IytAbgB7rj0uV8pUFvlOCUyo4FilBVYWuVw+2b6AQB/xA4OXraLBn8wEzvGTRL
+	 ++oYja268Tb9H9mvW8bVOV8+05SwDM1NsJQmY0msiGjIitPEdMlZUXK641qSuIokG/
+	 2C8iIsFPhriqYxK4Tg1FGdujoUlfK2KtQuuI15ePOF6NYrBo/+MkSdgE7aQblMpi+Y
+	 ZCPmVc0IjFXgPkcUjkKgXj5x2Fh9wDI2jOIbbxX/WWSJxWLz4bMlv3fQBzCY7XPNRX
+	 7gItvuB5lok/fNcGC8s4O99RdKTJejZsaZUOmzVf2UhHf9OVv3jJAMJ1ojbdwSA89+
+	 quguGO0xamnBK7yZeHo1pekKH1euOd4pPN4bIl9abnzof9W8FuIrqBJv8aGlo0wEUR
+	 40leEO+ooWzpbwN8XrDjxrzY=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A5FBF40E01B5;
+	Fri,  8 Mar 2024 11:00:48 +0000 (UTC)
+Date: Fri, 8 Mar 2024 12:00:43 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Ard Biesheuvel <ardb@kernel.org>
+Cc: Kevin Loughlin <kevinloughlin@google.com>, acdunlap@google.com,
+	alexander.shishkin@linux.intel.com, andrisaar@google.com,
+	bhe@redhat.com, brijesh.singh@amd.com, dave.hansen@linux.intel.com,
+	dionnaglaze@google.com, grobler@google.com, hpa@zytor.com,
+	jacobhxu@google.com, jpoimboe@kernel.org, kai.huang@intel.com,
+	linux-kernel@vger.kernel.org, michael.roth@amd.com,
+	mingo@redhat.com, peterz@infradead.org, pgonda@google.com,
+	ross.lagerwall@citrix.com, sidtelang@google.com, tglx@linutronix.de,
+	thomas.lendacky@amd.com, x86@kernel.org, ytcoode@gmail.com
+Subject: Re: [PATCH v2] x86/kernel: skip ROM range scans and validation for
+ SEV-SNP guests
+Message-ID: <20240308110043.GEZerv21Qj10Q7-8p5@fat_crate.local>
+References: <CAGdbjmK9WoOQSbKUvcTdLJDW-RB=qe2tHFDZ-MeD266xZOxh7w@mail.gmail.com>
+ <20240222202404.36206-1-kevinloughlin@google.com>
+ <CAMj1kXFsX1HZ3=x1cjN0-7i5EV9LXkSrAW22dc1wERUaTdAMaA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -59,35 +85,29 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <xqazmch5ybt7fatipwkuk7lnouwwdn55cirvaiuypjmy3y4fte@6vwyvv3uurl5>
+In-Reply-To: <CAMj1kXFsX1HZ3=x1cjN0-7i5EV9LXkSrAW22dc1wERUaTdAMaA@mail.gmail.com>
 
-On Thu, Mar 07, 2024 at 12:39:58PM -0500, Kent Overstreet wrote:
-> On Mon, Mar 04, 2024 at 10:18:22AM +0100, Christian Brauner wrote:
-> > On Sat, Mar 02, 2024 at 05:02:03PM -0500, Kent Overstreet wrote:
-> > > Add a new statx field for (sub)volume identifiers.
-> > > 
-> > > This includes bcachefs support; we'll definitely want btrfs support as
-> > > well.
-> > > 
-> > > Link: https://lore.kernel.org/linux-fsdevel/2uvhm6gweyl7iyyp2xpfryvcu2g3padagaeqcbiavjyiis6prl@yjm725bizncq/
-> > > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> > > Cc: Josef Bacik <josef@toxicpanda.com>
-> > > Cc: Miklos Szeredi <mszeredi@redhat.com>
-> > > Cc: Christian Brauner <brauner@kernel.org>
-> > > Cc: David Howells <dhowells@redhat.com>
-> > > ---
-> > 
-> > As I've said many times before I'm supportive of this and would pick up
-> > a patch like this. There's definitely a lot of userspace that would make
-> > use of this that I'm aware of. If the btrfs people could provide an Ack
-> > on this to express their support here that would be great.
-> > 
-> > And it would be lovely if we could expand the commit message a bit and
-> > do some renaming/bikeshedding. Imho, STATX_SUBVOLUME_ID is great and
-> > then stx_subvolume_id or stx_subvol_id. And then subvolume_id or
-> > subvol_id for the field in struct kstat.
+On Fri, Mar 08, 2024 at 11:30:50AM +0100, Ard Biesheuvel wrote:
+> Agree with the analysis and the conclusion. However, this will need to
+> be split into generic and x86 specific changes, given that the DMI
+> code is shared between all architectures, and explicitly checking for
+> SEV-SNP support in generic code is not appropriate.
 > 
-> _id is too redundant for me, can we just do STATX_SUBVOL/statx.subvol?
+> So what we will need is:
 
-Fine by me.
+I was actually thinking of:
+
+	x86_init.resources.probe_roms = snp_probe_roms;
+
+and snp_probe_roms() is an empty stub.
+
+Problem solved without ugly sprinkling of checks everywhere.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
