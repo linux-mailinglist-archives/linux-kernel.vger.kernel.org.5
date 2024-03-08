@@ -1,157 +1,170 @@
-Return-Path: <linux-kernel+bounces-97106-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97108-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 871A487659A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:49:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 836D687659D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:49:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D1A51F21561
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:49:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 18723288B00
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:49:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6758D3BBE5;
-	Fri,  8 Mar 2024 13:48:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12AC53FBA7;
+	Fri,  8 Mar 2024 13:49:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="mdafCrbE"
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="G+VsO23I"
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2050.outbound.protection.outlook.com [40.107.212.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEED21DA5F;
-	Fri,  8 Mar 2024 13:48:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709905738; cv=none; b=cMXS8okoZ7pD6NccXVIMjDRkTG4xNxxo+H+IeHxd+wqrrVnde0YK4PuLoz4eNregkJ2LV6nhwYQ5vmj/mQx3oSpdpKGmNPNM9wf+x8nP5xOozhp6ZQu6LzAMfTLoOauRnnuKEHsNkRt90Li34xD3wlp6+/oIY1wGsOI0SL7UA7w=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709905738; c=relaxed/simple;
-	bh=vvvvYf26CIZ/Wxg5hOzKU0MiKEwKcgbx8mMiDy3OHyk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=s8f4+BCsSqqZt1yEM7ZZC4X+Nhg7GUks4uyzvJA5ayLFuFyNoGGzcK8OfXdzajPFk4MTG0h3FKJM/bZ+lsjyiYE+6cl3XbQ79MlTEpwq2eNq5t7RCloYFXD+sUK42rzasI0P0UFFQik1LgT2osjB5YXlT3IH2dw4BarTO6NPrNk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=mdafCrbE; arc=none smtp.client-ip=217.70.183.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 599A620004;
-	Fri,  8 Mar 2024 13:48:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-	t=1709905733;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=m1W1uIW1yTRjaOWSrRZn4XPwWcs/FMebFW0j769IDic=;
-	b=mdafCrbE238vktgOYBwyLl+3RD4vjLBbljQ4Wwj1cCVBr0Ytaw2p8D5AuTJRDZ2bILdkuM
-	bzt0LDOrWPwlprR1NDCSGxokr/h7bz0UPV7wFn6WjyiQpW6yloK+NJA9sa8H5bUY6v+kA4
-	MWRmEN/M5BLjRQXyJY5Lde9i8LWlF7B0J3CbhGMYb8XmWcZnLVRHKaqMbLgTA80g3JLs47
-	5S+8E8cD4i2KeK431KaxiiwPR9YfR4VAFd0aRWxM4V6BigFAOnSn4QuHl02mVqtukihcQ3
-	0mFNBqPQUxcDfd/ofQiFDD5qHErmLNUYiIIBJ52xkgoM2gM4qLyY7egttYMYkw==
-Message-ID: <7e9221ae-e53b-475f-9b6f-4cab58b2d109@arinc9.com>
-Date: Fri, 8 Mar 2024 16:48:43 +0300
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 913491DA5F
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 13:49:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.212.50
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709905749; cv=fail; b=R9wewOmkemhhIBO1o+FguQ+pOP4RpPx6SBlKd4iy6wkBMjBste686+raqydQCTEYVqKok5kW3gU8oRv5TYc1JDMIIgVzommHNxJTaoOdGrVHzqI29ZnE5Q5DO/B5ukQWLdujEBzybM5RPlVIAFukFFmdnXRB7Uiz6h7xtLhK3xI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709905749; c=relaxed/simple;
+	bh=CQso5UPv9hsuFhUkynFHinzkzd9owjWkneXDx3r7IBg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=iXUhKn75xLWFLtiwJrWxBeMyMFcAhhwRVZa3ib+G2D4JDdsP+N2FNyOh05ZVMC4rIT5FoLmcAeX1ozdnvlrYwslz0bItda6c8zME9uuEkEPDjLqs3xHwCy6veyZqxNuuj5v7ca/HKQq274JgV8I415xkfVSkS6dENWCb2xrzJv0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=G+VsO23I; arc=fail smtp.client-ip=40.107.212.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=g44BbU7M8MYbGRh1c5vIJDc3QEv1KvHKljV2SZCvrVhXhC2tEGgR9WPvYS0QoKB++dAC3xOVEZFgw9bV9TY9hZLuBIp0r+X3UptdTyQSOhPvOsXMAZF8319irYHtTaYyalN99cPhZ9jf9u6FAvWTI7ZuXnPK+OtNu2AtaE/SYETKHEm26Zpj3upKHfGn/8JpC3D6+fHN3OGuvscV7QapNTauqcOY3Faddr7xiZjqssXY/sbTEPmLhU8Zxob7OWRto8Oc4vMlNDrCE6zmZd4tgO6SEbaJCFyKO/HflMwOhvLfa7setCBnICoXflEW6BZoEfuWMTUIzMNOqpb7qc1LQg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=QNDYF+WS7stqij01bGZcYQvfiCeYI7ke+63nUTPHPgI=;
+ b=VSEL5It+3T1Bq7xNNNhRuyGA3rga2SlidOydjHGrQNygCOcVQ+GnDmHyexznd6PoaoDjcteRNSRtGRJpjkeT51nJKGkKbvWJOUgkvHIEmsfWwecWatniDyt6fNkJ39v8tUb0U0klgGqxvVaHhpN0xSoErMpLakAxXAGp01cEidA2JdS6iP//ol5nfAo6LdSDNnUmJ+Gzvern5Mns4xHuqjCS/OqXdIddA2O2shxmDd+rzPPbLMA6wSn0far01IT6jBIrRXEoiabfWYNHNFKsCXEUgNoL2qtnEt6xsvYhssLu4N+cgwY21lZbVE/BiahTCR0efKEoil+254opzD660g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QNDYF+WS7stqij01bGZcYQvfiCeYI7ke+63nUTPHPgI=;
+ b=G+VsO23IJo+7atKWhWz8vUr0+cKxxQ6ywUhkOpuodHRhh9Zh1+GH92CatvZ+7ixwlAC4TzFc9l2LRePFJ89D8d3mpea8Xh+BZ982wfqkTeEIr9qppeDQRac0lObrlB2qqszN1ao0m2QQpqxHlgageJcyQPMKbU3z9GYzfvdCyEYZ/8SSNNHx9nJHd2Iw6FlE86ihs26J0wj5rr8Ne1LTJdLH4bSiPcwyritPzhObCDUZG3BWA2ddhfsNTarOXXAklPlUa1wWZML23rugaMRRF09UGvqqjOb45Ugjm9j+d47TMt+XUKwDpz9tQbNdLJR+BRgK3qPyJ0JkhifbRP2ACg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3849.namprd12.prod.outlook.com (2603:10b6:5:1c7::26)
+ by DM6PR12MB4282.namprd12.prod.outlook.com (2603:10b6:5:223::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.27; Fri, 8 Mar
+ 2024 13:49:04 +0000
+Received: from DM6PR12MB3849.namprd12.prod.outlook.com
+ ([fe80::6aec:dbca:a593:a222]) by DM6PR12MB3849.namprd12.prod.outlook.com
+ ([fe80::6aec:dbca:a593:a222%5]) with mapi id 15.20.7362.019; Fri, 8 Mar 2024
+ 13:48:58 +0000
+Date: Fri, 8 Mar 2024 09:48:56 -0400
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Cc: linux-kernel@vger.kernel.org, iommu@lists.linux.dev, joro@8bytes.org,
+	yi.l.liu@intel.com, kevin.tian@intel.com, nicolinc@nvidia.com,
+	eric.auger@redhat.com, vasant.hegde@amd.com, jon.grimm@amd.com,
+	santosh.shukla@amd.com, Dhaval.Giani@amd.com, pandoh@google.com,
+	loganodell@google.com
+Subject: Re: [RFCv2 PATCH 1/7] iommu/amd: Introduce struct gcr3_tbl_info.giov
+Message-ID: <20240308134856.GI9179@nvidia.com>
+References: <20240112000646.98001-1-suravee.suthikulpanit@amd.com>
+ <20240112000646.98001-2-suravee.suthikulpanit@amd.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240112000646.98001-2-suravee.suthikulpanit@amd.com>
+X-ClientProxiedBy: SN4PR0501CA0011.namprd05.prod.outlook.com
+ (2603:10b6:803:40::24) To DM6PR12MB3849.namprd12.prod.outlook.com
+ (2603:10b6:5:1c7::26)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] mips: dts: ralink: mt7621: add cell count properties
- to usb
-Content-Language: en-US
-To: Justin Swartz <justin.swartz@risingedge.co.za>
-Cc: Sergio Paracuellos <sergio.paracuellos@gmail.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org
-References: <0001-mips-dts-ralink-mt7621-add-cell-count-properties-to-.patch>
- <20240307223756.31643-1-justin.swartz@risingedge.co.za>
- <c445fd12-f8a8-41df-bee8-8b126b26110b@arinc9.com>
- <067071a9d57ffb09f437718cf905b121@risingedge.co.za>
-From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-In-Reply-To: <067071a9d57ffb09f437718cf905b121@risingedge.co.za>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Flag: yes
-X-Spam-Level: **************************
-X-GND-Spam-Score: 400
-X-GND-Status: SPAM
-X-GND-Sasl: arinc.unal@arinc9.com
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3849:EE_|DM6PR12MB4282:EE_
+X-MS-Office365-Filtering-Correlation-Id: 67282cab-89f9-49d5-a25c-08dc3f768130
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	+CCgUpKl3orKVTjKVMKK0tbRf9S7bVTStUBvurB9Oulxg2zeh7U7x6xfKdAxVVxa0NJ9RU8kDyBUKJCi8/2d2XZYPUl8f6FxEWtpUeRX1nRcoYvRW8hIR2PKXZe5RC8TrynE+xUJnmgbl99VXGY3uuyrVWEQ/wss9oOJOnQEr9ZkL1YmVOGbh7UiQCTvfmrgGCi3fVl2lr6lewAGxSxOP2zyWbJlmhJPlDRDtR/T1GxcViaWjUvz2uuZ/kHBpivEdtxOTWrda2e8DjRBS5PFCw/CEx8Dd3LljB7Oa89dVYLXlTPIkA9WOnYQ1rGT/kx1iyQvpGBIkr+I0E+3+1xzyIDdMmTaf+GvkLXF7tTLZanVMrcFNwD5p9MVfBtuSLJj1/BD8llNdaaI24l6OohU+3s+EVIPZIxNsMT1ypaBqrn6xsh+iHUi4iwm/Vr4vp13X9puCUAWpHAqajHnsHmtNq+bgpdBNtDG30z/7ZFNGdh2bh2yA9o+6EfJ8JXVR1xmthpNqGoBoPNIJzNlcGFoCAprHV1bzGmuOskZio4KG+XhRWAaCmRACiJn/gI5khApo8JyszhDgZ7bCp/9afkSZzm8tHol/ZPrBIza1vAuxHAZ5IaxG7EPm2WxNWyyqXKAdq2UFquRXkaGwDyq6pP/dQioB+iAlQ0XBT0JzceWRTo=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3849.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?2PPhY5S1SdKoAKkJG7RFNXHg1S4Csdn/4LhG37bcT3uWUpkEWgv6BAprEfIJ?=
+ =?us-ascii?Q?CRV98MFRuteuhwsgYpZridLwwcx2N6lKu+2hFL53BNYqhTqYBcN6P3EAz5yA?=
+ =?us-ascii?Q?XuHAg4DoBWMl6L+kzfVJ5RwilUEg8aUbUvuEnoSQc9klhPQ/1MeQ/k0KcdLn?=
+ =?us-ascii?Q?BebPOAMKBW9Ws+5/rIkjFb1OSPJTGAr1kWNHE7AmJRMN7xiV09DPBbEJUw19?=
+ =?us-ascii?Q?1nzipKPhtUAq8aZxgKPhiPmhEhOT8bw/dUj4BBvEIhsaZfxIHBoYzVa+kStL?=
+ =?us-ascii?Q?2M5VkKdsQKv2Vijc7oJJCLY00Nk71VKpYBxKPT/N/gLEOPAclPI9PoIlNw2U?=
+ =?us-ascii?Q?viE+fR3MBUMmrHMH7wg4oNeTeq82+7/HzS8PCge8MSofMerA6/PFviq31veI?=
+ =?us-ascii?Q?qXnILRQbjPWbHRHe69S5RUvRXqHXLw1IPk/OPd2iTS2Sf6//3YbCUoKrCx7V?=
+ =?us-ascii?Q?tCnR0rLpSFDbq0nIn1WIImB1PSjr+Cf0OpnRhcSFag+zYO9WXFubLQKVhMLR?=
+ =?us-ascii?Q?RbDTPCb/8LjvitPtoENqNgOtWzw32PdK3dPydCvcH0U5ORkrDvFqaq1tu2u2?=
+ =?us-ascii?Q?YzC4nDB/l0P05gZtOw0WjSc/Jf1AaVw/D36bwGWWCHnqxMoOhwoKm1cZkHsq?=
+ =?us-ascii?Q?+pTun1MomL+N67sCinAf/rmqoTu6DOepgYHNcw31SFh2/WUl8IsnsGMVmV2D?=
+ =?us-ascii?Q?Wfd8um/rVHE2+WSdRy3qdxikmP1o5XOKolCRsaPkbE90YAkZPi4e/Q081jC1?=
+ =?us-ascii?Q?3lOzWy++9VMXqT4ow9JwO50kRLHdO8zh4Uyp89AXW/v9DEg85nQQOT7yURON?=
+ =?us-ascii?Q?qG087V9MqbsZsaJGnNr3guYKoQXJeJHkFacviwSAv8DAEha0ADLSURPsq0sf?=
+ =?us-ascii?Q?Lz0IUjC+D+OWX9NbsDPdvdoKq2qcPmamboQvH0we8BB0J6WuQt3CekkLVHHV?=
+ =?us-ascii?Q?ULMiCJ8MBTPo2aTW5jcW9NJeQRClGs0sVylDiQFgGSJIGw1oOIjj5h/aE/t9?=
+ =?us-ascii?Q?vxBgj1Aqj0rdrXm6qLpyOuBIAti0B2SVaftiR0WMe6zaT/l0tH1b2dUune4V?=
+ =?us-ascii?Q?2Wm3ftXrH3X93nV4qCr2jA+emM7SULrM3n+O0H9FP0z6INtpgjzXn5oit6oX?=
+ =?us-ascii?Q?IeULBlqaYurvwovoFhaCLFw19wHibEt7SOgMtcXbsi3ud4IYaMfd+XH50kNO?=
+ =?us-ascii?Q?RhPR3kGruEqon4WJ3C4/Do1CrlftWltSqMrO5pHU8ZC6ht2rhDby54WfYKvI?=
+ =?us-ascii?Q?eIg2rQ1cnlo3XFXYJGV3DUp5v7H1UAnTEFdvG1XYXVGAo6ojpO94yKArRnRE?=
+ =?us-ascii?Q?spPYWGBubrABk/d6n0uR5YvKB0hyYPKRJJCJAkGOUK6P0tRV8OSGanZb3ao1?=
+ =?us-ascii?Q?PyW2cxtbk+haSzZBnhbiq8dJ0YrPn3QBJ2ACNXNPOWb0UNbY5QtoWlyOEzb7?=
+ =?us-ascii?Q?9DtaKZiDlf4zgOa2Y2vXoHk7RO5eiks4gTmHDVz4sYenHnwjdM51X3vimVcU?=
+ =?us-ascii?Q?ebSRroJF8QaqiJOynIpJz4trM9PYrLRPH5AYNt/MxC6hEyS259rBtY8iATKB?=
+ =?us-ascii?Q?mDSjMJY6Fnj4W3KuLPE=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 67282cab-89f9-49d5-a25c-08dc3f768130
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3849.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Mar 2024 13:48:58.8693
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: D0qAlBbJtnWM3yEZezQcZIln5TbR2OhjCw2h0NNeSvFZjmDWr5kle94rm2jpaszI
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4282
 
-On 8.03.2024 16:21, Justin Swartz wrote:
+On Thu, Jan 11, 2024 at 06:06:40PM -0600, Suravee Suthikulpanit wrote:
+> To track DTE[GIOV] programming during IOMMU domain attach, also add logic
+> to determine if the GIOV is required, and set the variable accordinglly.
 > 
-> On 2024-03-08 14:01, Arınç ÜNAL wrote:
->> On 8.03.2024 01:37, Justin Swartz wrote:
->>> Add default #address-cells and #size-cells properties to the
->>> usb node, which should be suitable for hubs and devices without
->>> explicitly declared interface nodes, as:
->>>
->>>    "#address-cells":
->>>      description: should be 1 for hub nodes with device nodes,
->>>        should be 2 for device nodes with interface nodes.
->>>      enum: [1, 2]
->>>
->>>    "#size-cells":
->>>      const: 0
->>>
->>> -- Documentation/devicetree/bindings/usb/usb-device.yaml
->>>
->>> This version of the patch places the properties according to
->>> the order recommended by:
->>>
->>>     Documentation/devicetree/bindings/dts-coding-style.rst
->>>
->>> Signed-off-by: Justin Swartz <justin.swartz@risingedge.co.za>
->>> ---
->>>   arch/mips/boot/dts/ralink/mt7621.dtsi | 4 ++--
->>>   1 file changed, 2 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/arch/mips/boot/dts/ralink/mt7621.dtsi b/arch/mips/boot/dts/ralink/mt7621.dtsi
->>> index 5a89f0b8c..7532e17dd 100644
->>> --- a/arch/mips/boot/dts/ralink/mt7621.dtsi
->>> +++ b/arch/mips/boot/dts/ralink/mt7621.dtsi
->>> @@ -289,10 +289,10 @@ usb: usb@1e1c0000 {
->>>           reg = <0x1e1c0000 0x1000
->>>                  0x1e1d0700 0x0100>;
->>>           reg-names = "mac", "ippc";
->>> -
->>> +        #address-cells = <1>;
->>> +        #size-cells = <0>;
->>>           clocks = <&sysc MT7621_CLK_XTAL>;
->>>           clock-names = "sys_ck";
->>> -
->>
->> Please keep the empty lines. It's easier to read. I don't see anything on
->> the Devicetree Sources (DTS) Coding Style that would restrict this.
+> This is also a preparation for adding nested domain support, where the GIOV
+> setting is determined by the child domain.
 > 
-> The reason I removed them was due to the SoC DTSI example shown in [1]
-> lacking empty lines between properties, but then using them instead as
-> visual separation between properties and child nodes, or at least that's
-> how I understood it when I looked at it.
-> 
-> Personally, I prefer the look of the SoC DTSI example - but I don't mind
-> recreating the patch set with the empty lines between the properties left
-> entact.
-> 
-> As there is a mix of property spacing and ordering styles in mt7621.dtsi
-> already - what is the consensus on what a node in this file should look
-> like?
+> Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+> ---
+>  drivers/iommu/amd/amd_iommu_types.h |  1 +
+>  drivers/iommu/amd/iommu.c           | 11 +++++++++--
+>  2 files changed, 10 insertions(+), 2 deletions(-)
 
-There's no precise spacing style I maintain here. I simply group together
-properties that describe a single attribute, and separate those that
-describe different attributes.
+I really think the DTE handling needs to be cleaned up before nesting
+will be easy.
 
-> 
-> I also don't mind following that pattern and cleaning up the whole dtsi
-> according to that if it'll save us all time and energy in future.
+Various bits of the DTE should just flow directly through from the
+VM's version of the DTE, it is going to be a mess to do that in this
+manner
 
-If you'd like to improve the ordering style of the MT7621 device tree
-sources accordingly with
-Documentation/devicetree/bindings/dts-coding-style.rst, I'd be happy to
-review those patches.
+> @@ -2067,6 +2066,14 @@ static int do_attach(struct iommu_dev_data *dev_data,
+>  			free_gcr3_table(dev_data);
+>  			return ret;
+>  		}
+> +
+> +		/*
+> +		 * GIOV is required for PD_MODE_V2 because we need
+> +		 * to support the case where the end-point device
+> +		 * does not have PASID in the TLP prefix when setting
+> +		 * up to use the v2 table.
+> +		 */
+> +		dev_data->gcr3_info.giov = true;
 
-Arınç
+Ie who clears this once you set it ? :(
+
+Jason
 
