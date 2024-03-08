@@ -1,155 +1,205 @@
-Return-Path: <linux-kernel+bounces-97436-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97435-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E208876A71
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 19:05:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 052FA876A6F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 19:05:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8F09B1F215D3
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:05:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C978BB21B33
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:05:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE06140861;
-	Fri,  8 Mar 2024 18:05:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 498A553E17;
+	Fri,  8 Mar 2024 18:05:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="K9YowF0l"
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="nH6RN648"
+Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E5D048CFC
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 18:05:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1F9C4879B
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 18:05:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709921122; cv=none; b=I+1E7Wv2VeDsbBhhh1wq3Wyg0anaGvMqGNY5fmpY5+bkVkhzkp1DaOe+jreffOeDPjtCYDGx7mFWAjvb8SCQz0AZheNI8Ln6hvrFDR0gmB50BlWVMibv2PjMDl1qgDuk/u3wS3T7AfX9Ggx0D4f1x4DN/aqlsAXN8NGtS+b91Rk=
+	t=1709921109; cv=none; b=ZqbaX4DszqnLqpkE/8JxNMVyNkVr0o1p/0Av0JOj4d630VT3NoapVsOH0Y8mnrnDG+rQ750qH/GstiM3snsKUgktIfNGPqVF0j0Bxv0lyGCqT9uX0H1rogfzrpL7n8CkfGE9EAH3qQF+HQmqIWKjVUrP+Jk9pStpPwDWlhOL45E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709921122; c=relaxed/simple;
-	bh=k4qoNEgTAI/NBFOIEmoqhhmmaXxIBENDE2kiy+x+1J8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=e1iRIipfKRcqGzb7hecMrDVfTNULCxK4jpOgoK62XEDL6fisAZdyLRj3xcOGaDNxQXoP+M5OvRTGsdfzGcKrOgv4L7vttANb7+FRgyamHaLfp8o/QY7qWmCRERFhJlBdD81MMbWRleZ2nX78DHEGXkUAwCPuytG7JL7EI/Hb5H0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=K9YowF0l; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-565223fd7d9so287a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 10:05:20 -0800 (PST)
+	s=arc-20240116; t=1709921109; c=relaxed/simple;
+	bh=/aIrNO8xFlwugwx4fBrTPk+mSw79iBQ4+5XToAQE04Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=liderQhKx7RLksyK7AKVirS/Ia/stOgLvVFgxTOoIx5bxtRhF6Oiy0+u0fJh/vAUZtZBjf+QdVL3hFx1CyrPMd8qnbWHddjdoC0hZlvt0L7+MMVYyiTXRsc2kxbdB4r+CMYUAKBlMPlCSK4ctABQrtXPa3iKw4CixOw5k89n1sY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=nH6RN648; arc=none smtp.client-ip=209.85.215.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5d8b276979aso1726675a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 10:05:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709921119; x=1710525919; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=C+erbz9PPCR1ZEYV82oV8Vbs5yNtZyW1/t5a2qxXOXM=;
-        b=K9YowF0lhwms9+2vwe2OYR1Sh3DP/5QSN50Q89eDfBzMDW38fwh0yD8VvKS2ISWjqA
-         VQNE9d8wgJireGAALVpadhzleHYwchqXk27LVS3QoLerj/WPbyqPr8XjPkJLe7+Ugul9
-         Ra2nFMiU9dvsrwySqnU8e+V4bnJd6Yofr+MaspH58uKHmiy1HwF/pzVr3uVrUXoGHvH0
-         Nxzk2+JnXHZ4zm944WhxhxFmbIGRyYt+JshlzLNo4/euHxH8PxQbd9y7YM9ydoqVp8eF
-         h0HDc3SS1jXXeBU6H0tF2twCLC23eXnCF8u/1eyGFHtBpOIIFo663OUvm9nSYd/5WYwu
-         KR0g==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1709921107; x=1710525907; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xLs3kZ5OblOBLvikyewkAB+57eMxN1fpqXGCrqHaNUI=;
+        b=nH6RN648rqUA/+EvSV0DtjXWXDoT98tYcXX3lxXjTR67qczy5H4Ey2tYY0sERBqtih
+         ovb+pFrcldV1R2EXz+enuwdZNh6APbbX0o4zlrCch1T8sN1e+jeaxCsnQaFPbS7z4TpI
+         vZyAYPYKmDWscKxtYv4UHeYHfqNsRrYrcFMTA9nPiH/28QQpCwf5JZCNJzv633efstM5
+         PbqHpHZyQ5xgcebBjDiSJ1bzFl+fLGMbrgPKWDHqLhBEHJasB76uJgIgBmAwonGc8Kj+
+         4XKUh1sy2CfBJPiKZQ46y3YMRMdryEm3PoxOWJFOpYx6HVBhr+7pd5kzBbao01Um+oRd
+         Xc8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709921119; x=1710525919;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=C+erbz9PPCR1ZEYV82oV8Vbs5yNtZyW1/t5a2qxXOXM=;
-        b=AEAFYqxCMbNhVQ50xC87xyVm6I6/7Og8T5e8IkVdvXBuQ9fnBv6p3bscYP1aNz9zMd
-         DuyWuvGmbjoCp0UPR1YKAkz36JuRf9Cp+QPcMuvEF0v2goIJt8VrmMp3MkYmKRZGFCI/
-         elpRnBwHQ1vSjr6BsIFp2q3d8ew5gBZ1MNFv10SubgFJI2nImXitPHrhdiEYhNpDdsuV
-         YaSrWrkoH7IEhNeKozj1qhnZVNXxxmJDP1sXv07T2Q1CkAwwdGsKnFuTavxgHjm2P7GS
-         EkBahbJ6Jrgdby249Oiw5TzdbF+M/G8Tkbx89p4HK2qb+VDHMgZ876v87dnqN+YWeV2V
-         8NUA==
-X-Forwarded-Encrypted: i=1; AJvYcCVmtnoBAECBttbvQAylj33YjFFNG9axz1CCHXC3ZBMIKdHaHafEQfNjqD4NYhjz4l1j+8M4bdeuJ4FkEazj1JuTDskQNRy6j/V5CEz/
-X-Gm-Message-State: AOJu0YzieZFhR3qGylHzRY/S/a3YlRWM85I3/QVCPCM68vI2K3QOy5D0
-	0bZKRjfZVTRbq28wS7JltYzCLnKC+/KFC9y503RFZffEK+LgdRwNyTLJCAQDA4fm5+ePa9SbGDZ
-	r1q9OX/Hj/yYSMLS8E4I+tMfJpEI+spoKQN9F
-X-Google-Smtp-Source: AGHT+IGmkrwNAWPQ65TNLci3z2Qo5DY/oK3TNmr5uwh7kn4VJhIp0suR062ltivW/oexJghPveJmlU3qllXt7eV0lVc=
-X-Received: by 2002:a05:6402:2022:b0:568:271a:8c0f with SMTP id
- ay2-20020a056402202200b00568271a8c0fmr267936edb.7.1709921118696; Fri, 08 Mar
- 2024 10:05:18 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709921107; x=1710525907;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xLs3kZ5OblOBLvikyewkAB+57eMxN1fpqXGCrqHaNUI=;
+        b=UAfSltqe7ow8Aksv1/lljExOT8X5Kq6bIU3IyLz3tOgqjNVOOEGZslGwAsCKB0KTru
+         a4Q1JTMKwBOfWVz3FPJsjKLLKMCm4EkVuc0kO+6Qac94zxVqPZ44V0ReUcgRydafSOHm
+         6CpDWE6bAFFuuz9qW7jddo2aVPEG9dWgv3CVekaaRHIzZBJdqbZ6BCZE3jvEQ6H7+h6G
+         AuhKTFPzFgn5EEbVlPiQ4nSsUqTRyhPJFGxLJ+p0bjyinf5P5yIqIGBj+IE4LUFYAp1x
+         X+mwA+ZL76QyaPMcsalNVionLocVM0PHdK59c59DA1P114ugiIeGFpEa4AHkcSBUXM6z
+         SNaA==
+X-Forwarded-Encrypted: i=1; AJvYcCXyDkcvgRe/cCjhNCZ6b2h0IRyJnxqWXcnIFzEmBB7VKDFDpwfUVZQtIKefRmLWgIlF+I8w/IVZK1v3PILx+rEA5Bt1sLBBfAPQUb6T
+X-Gm-Message-State: AOJu0Yyw5LrB9mGNmY/g1+HiJSde1LehMt/OsVUtlatYPD4LvXbqNeUL
+	823nCdR/HZEhgHwEm2HCK/cKw6zCp6VdhTjIfFb++tEae5CUVQdW/6PGsReUitc=
+X-Google-Smtp-Source: AGHT+IENQYcM6sGyM8j6pDoEai9UQoUvp+q5q0Z2Rg+MMx+kdD4QbDMnrmI/tcug7Njwiwm+KSu6Qg==
+X-Received: by 2002:a17:90b:914:b0:29b:976d:b5b2 with SMTP id bo20-20020a17090b091400b0029b976db5b2mr758045pjb.17.1709921106862;
+        Fri, 08 Mar 2024 10:05:06 -0800 (PST)
+Received: from ghost (mobile-166-137-160-039.mycingular.net. [166.137.160.39])
+        by smtp.gmail.com with ESMTPSA id a24-20020a631a18000000b005dc491ccdcesm14313052pga.14.2024.03.08.10.05.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Mar 2024 10:05:06 -0800 (PST)
+Date: Fri, 8 Mar 2024 10:05:02 -0800
+From: Charlie Jenkins <charlie@rivosinc.com>
+To: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Cc: Conor Dooley <conor.dooley@microchip.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, linux-kernel@vger.kernel.org,
+	Eric Biggers <ebiggers@kernel.org>, Evan Green <evan@rivosinc.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Jisheng Zhang <jszhang@kernel.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
+	linux-riscv@lists.infradead.org, Charles Lohr <lohr85@gmail.com>
+Subject: Re: [PATCH v8 4/4] riscv: Set unaligned access speed at compile time
+Message-ID: <ZetTThVgR0U29EN4@ghost>
+References: <20240307-disable_misaligned_probe_config-v8-0-55d696cb398b@rivosinc.com>
+ <20240307-disable_misaligned_probe_config-v8-4-55d696cb398b@rivosinc.com>
+ <CAJM55Z9SYA=QMg0Wg-e0Q8nOTP6qSKkc+kxHMGOmmmWrEcVf7w@mail.gmail.com>
+ <20240308-docile-pretense-b44c3a84d8b2@wendy>
+ <CAJM55Z8EX5D0HZ1xKTkaQEL1RF46DrBynUoTSMP5q8kmDGY_=w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240223143833.1509961-1-guanyulin@google.com>
- <a299118d-eeec-40b4-9a3d-48dc40f34e12@gmail.com> <CAOuDEK3wP6zhEwgUn5zSedtwTYVFaJeBfeXkSg897EhpGP9=ig@mail.gmail.com>
- <3208c5b9-5286-48d1-81ab-cc3b2bc4303e@gmail.com> <CAOuDEK39Bdru5wAbxW-g2c=POgRxZwdQzPO5uNXP96AfSyA6pw@mail.gmail.com>
- <7292dc5c-dff0-45f0-99b1-f1687451b23f@gmail.com> <CAOuDEK2OtAO7GqPzWkdC=SARkuHYGzqW4iPdFfMx8dyw4Cy+Lg@mail.gmail.com>
- <2024022901-getaway-bacon-b805@gregkh>
-In-Reply-To: <2024022901-getaway-bacon-b805@gregkh>
-From: Guan-Yu Lin <guanyulin@google.com>
-Date: Sat, 9 Mar 2024 02:04:00 +0800
-Message-ID: <CAOuDEK31NFNErYcGr-h0KA7=RkXQ2d5nV3wT6q6LqdGCY4tcxw@mail.gmail.com>
-Subject: Re: [PATCH v3] PM / core: conditionally skip system pm in
- device/driver model
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: Florian Fainelli <f.fainelli@gmail.com>, rafael@kernel.org, pavel@ucw.cz, 
-	len.brown@intel.com, andriy.shevchenko@linux.intel.com, rdunlap@infradead.org, 
-	james@equiv.tech, broonie@kernel.org, james.clark@arm.com, 
-	masahiroy@kernel.org, linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJM55Z8EX5D0HZ1xKTkaQEL1RF46DrBynUoTSMP5q8kmDGY_=w@mail.gmail.com>
 
-On Fri, Mar 1, 2024 at 4:34=E2=80=AFAM Greg KH <gregkh@linuxfoundation.org>=
- wrote:
->
-> On Thu, Feb 29, 2024 at 05:08:00PM +0800, Guan-Yu Lin wrote:
-> > We want to introduce a mechanism that allows the Linux kernel to make
-> > power transitions for the peripheral based on whether the other
-> > operating system kernel is actively using it. To achieve this, we
-> > propose this patch that adds a sysfs attribute, providing the Linux
-> > kernel with the necessary information.
->
-> Don't create random user/kernel apis in sysfs for no good reason just
-> because it is "easy" :(
->
+On Fri, Mar 08, 2024 at 05:35:03AM -0800, Emil Renner Berthing wrote:
+> Conor Dooley wrote:
+> > On Fri, Mar 08, 2024 at 01:52:24AM -0800, Emil Renner Berthing wrote:
+> > > Charlie Jenkins wrote:
+> >
+> > > >  config RISCV_MISALIGNED
+> > > > -	bool "Support misaligned load/store traps for kernel and userspace"
+> > > > +	bool
+> > > >  	select SYSCTL_ARCH_UNALIGN_ALLOW
+> > > > -	default y
+> > > >  	help
+> > > > -	  Say Y here if you want the kernel to embed support for misaligned
+> > > > -	  load/store for both kernel and userspace. When disable, misaligned
+> > > > -	  accesses will generate SIGBUS in userspace and panic in kernel.
+> > > > +	  Embed support for misaligned load/store for both kernel and userspace.
+> > > > +	  When disabled, misaligned accesses will generate SIGBUS in userspace
+> > > > +	  and panic in the kernel.
+> > >
+> > > Hmm.. this is *may* generate SIGBUS in userspace and panic the kernel. The CPU
+> > > could support unaligned access natively or there might be a handler in M-mode,
+> > > right?
+> >
+> > Correct. The last sentence could become "When disabled, and there is no
+> > support in hardware or firmware, unsigned accesses will...". That said,
+> > this option is no longer user visible, so we could really simplify the
+> > hell out of this option to just mention that it controls building the
+> > in-kernel emulator.
+> >
+> > > > +choice
+> > > > +	prompt "Unaligned Accesses Support"
+> > > > +	default RISCV_PROBE_UNALIGNED_ACCESS
+> > > > +	help
+> > > > +	  This determines the level of support for unaligned accesses. This
+> > > > +	  information is used by the kernel to perform optimizations. It is also
+> > > > +	  exposed to user space via the hwprobe syscall. The hardware will be
+> > > > +	  probed at boot by default.
+> > > > +
+> > > > +config RISCV_PROBE_UNALIGNED_ACCESS
+> > > > +	bool "Probe for hardware unaligned access support"
+> > > > +	select RISCV_MISALIGNED
+> > > > +	help
+> > > > +	  During boot, the kernel will run a series of tests to determine the
+> > > > +	  speed of unaligned accesses. This probing will dynamically determine
+> > > > +	  the speed of unaligned accesses on the underlying system. If unaligned
+> > > > +	  memory accesses trap into the kernel as they are not supported by the
+> > > > +	  system, the kernel will emulate the unaligned accesses to preserve the
+> > > > +	  UABI.
+> > > > +
+> > > > +config RISCV_EMULATED_UNALIGNED_ACCESS
+> > > > +	bool "Emulate unaligned access where system support is missing"
+> > > > +	select RISCV_MISALIGNED
+> > > > +	help
+> > > > +	  If unaligned memory accesses trap into the kernel as they are not
+> > > > +	  supported by the system, the kernel will emulate the unaligned
+> > > > +	  accesses to preserve the UABI. When the underlying system does support
+> > > > +	  unaligned accesses, the unaligned accesses are assumed to be slow.
+> > >
+> > > It's still not quite clear to me when you'd want to choose this over probing
+> > > above. Assuming the probe measures correctly this can only result in a kernel
+> > > that behaves the same or slower than with the option above, right?
+> >
+> > Aye, mostly the same - some people don't want the boot-time overhead
+> > of actually running the profiling code, so this option is for them.
+> > Maybe that's not such a big deal anymore with the improvements to do it
+> > in parallel, but given how bad performance on some of the systems is
+> > when firmware does the emulation, it is definitely still noticeable.
+> > I know we definitely have customers that care about their boot time very
+> > strongly, so I can imagine they'd be turning this off.
+> 
+> Ah, that makes sense. So maybe a help text more along the lines of "Disable
+> probing and optimizations for CPUs with fast unaligned memory access" would be
+> a better description of this choice?
 
-We initially considered using sysfs because it could provide a
-universal interface regardless of which operating system kernel shares
-the device with the Linux kernel. This would allow users to modify the
-feature through simple sysfs interactions. However, the current method
-of using information in sysfs doesn't seem to integrate well with the
-existing system power management framework. Could we refine how sysfs
-is used in system power management to enable cross-kernel
-communication? Alternatively, should we avoid exposing the information
-of whether a device is used by multiple operating systems to user
-space?
+It does cause probing/optimizations to not be enabled, but it does not
+"disable" them. For maximal optimizations for fast unaligned accesses,
+the user must select RISCV_EFFICIENT_UNALIGNED_ACCESS before and after
+this change. For probing, the user must select
+RISCV_PROBE_UNALIGNED_ACCESS.
 
-> If the "other operating system is actively using it" isn't able to be
-> detected by Linux, then Linux shouldn't be able to change the PM state,
-> so this sounds like you need to fix your Linux driver to properly know
-> this information, just like any other device type (think about a sound
-> device that needs to know if it is being used or not, nothing different
-> here.)
->
+- Charlie
 
-I think the variable `usage_count` in struct `dev_pm_info` records
-whether the device is being used. Could we leverage this information
-in the design? We could modify the device tree to record which devices
-are shared across operating system kernels. Then, we could
-conditionally skip system power management steps for those devices if
-they're actively in use. We'll need to carefully consider potential
-corner cases and assess any impact on runtime power management. If
-this proposal seems worthwhile, I can prepare a more detailed v4 for
-discussion.
-
-> So please post your Linux driver and we can see what needs to be done
-> there to get this to work properly, odds are you are just missing
-> something.  Have a pointer to the code anywhere?
->
-> Also, as you know, we can NOT add interfaces to the kernel without any
-> real user, so without a driver for your hardware, none of this is able
-> to go anywhere at all, sorry.
->
-
-The Linux device driver we're using here is the upstream xhci driver.
-We configure only partial interrupts for the controller in the device
-tree. This prevents the Linux kernel from accessing other interrupts
-handled by another operating system kernel. Consequently, the
-controller can function normally even with two operating system
-kernels accessing it, as long as we completely disable system power
-management functionality.
-
-> thanks,
->
-> greg k-h
+> 
+> > > > +
+> > > > +config RISCV_SLOW_UNALIGNED_ACCESS
+> > > > +	bool "Assume the system supports slow unaligned memory accesses"
+> > > > +	depends on NONPORTABLE
+> > > > +	help
+> > > > +	  Assume that the system supports slow unaligned memory accesses. The
+> > > > +	  kernel and userspace programs may not be able to run at all on systems
+> > > > +	  that do not support unaligned memory accesses.
+> > >
+> > > Again you're just explicitly saying no to the optimizations the kernel might do
+> > > if it detects fast unaligned access, only here you'll also crash if they're not
+> > > handled by the CPU or M-mode. Why would you want that?
+> > >
+> > > I'm probably missing something, but the only reason I can think of is if you
+> > > want build a really small kernel and save the few bytes for the handler and
+> > > probing code.
+> >
+> > Aye, just to allow you to disable the in-kernel emulator. That's
+> > currently a choice that is presented to people, so this option preserves
+> > that. IMO this is by far the least useful option and is locked behind
+> > NONPORTABLE anyway. Maybe we could delete it, and if someone really wants
+> > it, it would not be all that much of a hassle to add back in the future?
+> 
+> Yeah, if noone really needs this less config options is better, but I don't
+> feel strongly about this option either way.
+> 
+> /Emil
 
