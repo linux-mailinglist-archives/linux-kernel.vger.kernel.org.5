@@ -1,304 +1,159 @@
-Return-Path: <linux-kernel+bounces-97478-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97480-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CB9E876ADE
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 19:40:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 100A7876AE1
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 19:43:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A62251F2196E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:40:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8016DB21401
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:43:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D206A5FB87;
-	Fri,  8 Mar 2024 18:38:12 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 422B02BD12;
+	Fri,  8 Mar 2024 18:43:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TgTNQzUK"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0EFE2A8C1;
-	Fri,  8 Mar 2024 18:38:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2F163C32;
+	Fri,  8 Mar 2024 18:43:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709923090; cv=none; b=IP+t+sWxkw5Gqz/4Qxw0dEXMizfd4wmdscswaTJjIVV6Iw9YwBnvUd6lYe47Hi0Q1va8EhsWAsTk/KL37rB7OuV8k78CfWKmHxpI3q0E3iMsvMevtB0FBrAkIf64l4ukaq5tVYyQRfIriqGnn8P12GXtVyZPyci0VHiEAy5XM4s=
+	t=1709923393; cv=none; b=WBA9Zhtkjh91mX0rtuYE7xrPzXdxvpP+/CrbaXr1G1nkQ7bf/phRJSMvXc9sJ+N4B/zZPZNIDdYEtkZJl+uaqeNVtH1W2+W8I7nOQS3PsKAmBgbI6fCyK2INWgCHqn4ILzw7vjAkkEUc59Rmnl93QP+2k+oEFpI1bUNuDqM4bck=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709923090; c=relaxed/simple;
-	bh=w/Zk0nnX24fbKNl6dHVI5TcQ68z72hFSO937IkSltBo=;
-	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=PlGF0dRwfi6RH5ADG3XAdck4PKam189nqa2assEpkwVy04JDnE+jrthAzK82CRnzBSA0J9061zopr2NCm8HHW4IarLY2VFmCpd+6Bt5+vEA4H32mc/2xRB9OJaoj0i5teHYFrXXixsLMxQLQkTBeyL1utPhfQYBDS3+lzuu/ogA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D15CC4166B;
-	Fri,  8 Mar 2024 18:38:10 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.97)
-	(envelope-from <rostedt@goodmis.org>)
-	id 1rif8a-00000000xYg-13yq;
-	Fri, 08 Mar 2024 13:40:08 -0500
-Message-ID: <20240308184008.120434979@goodmis.org>
-User-Agent: quilt/0.67
-Date: Fri, 08 Mar 2024 13:38:22 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- joel@joelfernandes.org,
- linke li <lilinke99@qq.com>,
- Rabin Vincent <rabin@rab.in>,
- stable@vger.kernel.org
-Subject: [PATCH 6/6] tracing/ring-buffer: Fix wait_on_pipe() race
-References: <20240308183816.676883229@goodmis.org>
+	s=arc-20240116; t=1709923393; c=relaxed/simple;
+	bh=xpbjIkk947s/Pk2+JEVwmDNVEUavN0dMxwiURBoqHks=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Zi5jGwXKoa8ejl8Ns1+jpNGazFfP37ayz/1pOkB0r4SGcYCySEwtvEC55zltQLhOD/t6lLSWNI6EWr1L5YnoAd9mXc97cLsa4MovbNsLtk8o5TJbAG6XivZumHvSZUr8XEgDOd3LO1K/BxGRo2XhNkq+MDk+mW4RrLifZKbO7BY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TgTNQzUK; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709923391; x=1741459391;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=xpbjIkk947s/Pk2+JEVwmDNVEUavN0dMxwiURBoqHks=;
+  b=TgTNQzUKrR/6OG1xyczrW1QMYtwzHWE9QY+vjPri/C924ISSSV/Gjfbx
+   /V1ShKHYHJeiaMBdkQ+JMFktaTQaTbLhyoBL5hEyE16AGAX88jZ4Xzy32
+   nNw2ky02pKPN+F6845Yu7a3/lNSStR/zI+zyDPd6pPovvtScL4zwB1h2q
+   MAaGHy/Oa4QOgLK6BlaFv7vDnyYrZ4Lwn9UsO2GC7hnjscl1lgDS9BVau
+   EpHhi8ojwAp60+IIvZzNKiEE7/83scWolYWPgilPhCK0fvAZXFawxroat
+   fk5NnrlDtWUHmgkQef/LVbxJNJfGrIzynDqyMkseNMAqU5qaT019yhRQt
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11007"; a="4524152"
+X-IronPort-AV: E=Sophos;i="6.07,110,1708416000"; 
+   d="scan'208";a="4524152"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 10:43:01 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,110,1708416000"; 
+   d="scan'208";a="33681531"
+Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.105])
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 10:43:01 -0800
+Date: Fri, 8 Mar 2024 10:42:59 -0800
+From: Tony Luck <tony.luck@intel.com>
+To: James Morse <james.morse@arm.com>
+Cc: Reinette Chatre <reinette.chatre@intel.com>,
+	"Wieczor-Retman, Maciej" <maciej.wieczor-retman@intel.com>,
+	"Yu, Fenghua" <fenghua.yu@intel.com>, Shuah Khan <shuah@kernel.org>,
+	"ilpo.jarvinen@linux.intel.com" <ilpo.jarvinen@linux.intel.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
+Subject: Re: [PATCH 4/4] selftests/resctrl: Adjust SNC support messages
+Message-ID: <ZetcM9GO2PH6SC0j@agluck-desk3>
+References: <SJ1PR11MB608310C72D7189C139EA6302FC212@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <o6va7b7rc3q46olsbscav7pla4hxot2g6xhctflhmf64pj5hpx@56vtbg3yyquy>
+ <SJ1PR11MB60830E546B3D575B01D37104FC202@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <159474e6-ef11-4769-a182-86483efcf2a6@intel.com>
+ <SJ1PR11MB60832DAD58E864F99A16FCC4FC202@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <0393c4ce-7e41-4dcc-940a-a6bea9437970@intel.com>
+ <SJ1PR11MB6083AACB10645E41DD3F9639FC202@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <55a55960-8bb1-4ce2-a2c7-68e167da8bcc@intel.com>
+ <ZepK4mtoV_J8-UbE@agluck-desk3>
+ <eacdc287-24bd-4137-85c8-df055cfd78b1@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <eacdc287-24bd-4137-85c8-df055cfd78b1@arm.com>
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On Fri, Mar 08, 2024 at 06:06:45PM +0000, James Morse wrote:
+> Hi guys,
+> 
+> On 07/03/2024 23:16, Tony Luck wrote:
+> > On Thu, Mar 07, 2024 at 02:39:08PM -0800, Reinette Chatre wrote:
+> >> Thank you for the example. I find that significantly easier to
+> >> understand than a single number in a generic "nodes_per_l3_cache".
+> >> Especially with potential confusion surrounding inconsistent "nodes"
+> >> between allocation and monitoring. 
+> >>
+> >> How about domain_cpu_list and domain_cpu_map ?
+> 
+> > Like this (my test system doesn't have SNC, so all domains are the same):
+> > 
+> > $ cd /sys/fs/resctrl/info/
+> > $ grep . */domain*
+> > L3/domain_cpu_list:0: 0-35,72-107
+> > L3/domain_cpu_list:1: 36-71,108-143
+> > L3/domain_cpu_map:0: 0000,00000fff,ffffff00,0000000f,ffffffff
+> > L3/domain_cpu_map:1: ffff,fffff000,000000ff,fffffff0,00000000
+> > L3_MON/domain_cpu_list:0: 0-35,72-107
+> > L3_MON/domain_cpu_list:1: 36-71,108-143
+> > L3_MON/domain_cpu_map:0: 0000,00000fff,ffffff00,0000000f,ffffffff
+> > L3_MON/domain_cpu_map:1: ffff,fffff000,000000ff,fffffff0,00000000
+> > MB/domain_cpu_list:0: 0-35,72-107
+> > MB/domain_cpu_list:1: 36-71,108-143
+> > MB/domain_cpu_map:0: 0000,00000fff,ffffff00,0000000f,ffffffff
+> > MB/domain_cpu_map:1: ffff,fffff000,000000ff,fffffff0,00000000
+> 
+> This duplicates the information in /sys/devices/system/cpu/cpuX/cache/indexY ... is this
+> really because that information is, er, wrong on SNC systems. Is it possible to fix that?
 
-When the trace_pipe_raw file is closed, there should be no new readers on
-the file descriptor. This is mostly handled with the waking and wait_index
-fields of the iterator. But there's still a slight race.
+On an SNC system the resctrl domain for L3_MON becomes the SNC node
+instead of the L3 cache instance. With 2, 3, or 4 SNC nodes per L3.
 
-     CPU 0				CPU 1
-     -----				-----
- wait_woken_prepare()
-    if (waking)
-       woken = true;
-    index = wait_index;
-				   wait_woken_set()
-				      waking = true
-				      wait_index++;
-				   ring_buffer_wake_waiters();
- wait_on_pipe()
-    ring_buffer_wait();
+Even without the SNC issue this duplication may be a useful
+convienience. On Intel to get from a resctrl domain is a multi-step
+process to first find which of the indexY directories has level=3
+and then look for the "id" that matches the domain.
 
-The ring_buffer_wait() will miss the wakeup from CPU 1. The problem is
-that the ring_buffer_wait() needs the logic of:
+> >From Tony's earlier description of how SNC changes things, the MB controls remain
+> per-socket. To me it feels less invasive to fix the definition of L3 on these platforms to
+> describe how it behaves (assuming that is possible), and define a new 'MB' that is NUMA
+> scoped.
+> This direction of redefining L3 means /sys/fs/resctrl and /sys/devices have different
+> views of 'the' cache hierarchy.
 
-	prepare_to_wait();
-	if (!condition)
-		schedule();
+I almost went partly in that direction when I started this epic voyage.
+The "almost" part was to change the names of the monitoring directories
+under mon_data from (legacy non-SNC system):
 
-Where the missing condition check is the iter->waking.
+$ ls -l mon_data
+total 0
+dr-xr-xr-x. 2 root root 0 Mar  8 10:31 mon_L3_00
+dr-xr-xr-x. 2 root root 0 Mar  8 10:31 mon_L3_01
 
-Either that condition check needs to be passed to ring_buffer_wait() or
-the function needs to be broken up into three parts. This chooses to do
-the break up.
+to (2 socket, SNC=2 system):
 
-Break ring_buffer_wait() into:
+$ ls -l mon_data
+total 0
+dr-xr-xr-x. 2 root root 0 Mar  8 10:31 mon_NODE_00
+dr-xr-xr-x. 2 root root 0 Mar  8 10:31 mon_NODE_01
+dr-xr-xr-x. 2 root root 0 Mar  8 10:31 mon_NODE_02
+dr-xr-xr-x. 2 root root 0 Mar  8 10:31 mon_NODE_03
 
-	ring_buffer_prepare_to_wait();
-	ring_buffer_wait();
-	ring_buffer_finish_wait();
+While that is in some ways a more accurate view, it breaks a lot of
+legacy monitoring applications that expect the "L3" names.
 
-Now wait_on_pipe() can have:
+> (I also think that this be over the threshold on 'funny machines look funny' - but I bet
+> someone builds an arm machine that looks like this too!)
 
-	ring_buffer_prepare_to_wait();
-	if (!iter->waking)
-		ring_buffer_wait();
-	ring_buffer_finish_wait();
-
-And this will catch the above race, as the waiter will either see waking,
-or already have been woken up.
-
-Link: https://lore.kernel.org/all/CAHk-=whs5MdtNjzFkTyaUy=vHi=qwWgPi0JgTe6OYUYMNSRZfg@mail.gmail.com/
-
-Cc: stable@vger.kernel.org
-Fixes: f3ddb74ad0790 ("tracing: Wake up ring buffer waiters on closing of the file")
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- include/linux/ring_buffer.h |  4 ++
- kernel/trace/ring_buffer.c  | 88 ++++++++++++++++++++++++++-----------
- kernel/trace/trace.c        | 14 +++++-
- 3 files changed, 78 insertions(+), 28 deletions(-)
-
-diff --git a/include/linux/ring_buffer.h b/include/linux/ring_buffer.h
-index fa802db216f9..e5b5903cdc21 100644
---- a/include/linux/ring_buffer.h
-+++ b/include/linux/ring_buffer.h
-@@ -98,7 +98,11 @@ __ring_buffer_alloc(unsigned long size, unsigned flags, struct lock_class_key *k
- 	__ring_buffer_alloc((size), (flags), &__key);	\
- })
- 
-+int ring_buffer_prepare_to_wait(struct trace_buffer *buffer, int cpu, int *full,
-+				struct wait_queue_entry *wait);
- int ring_buffer_wait(struct trace_buffer *buffer, int cpu, int full);
-+void ring_buffer_finish_wait(struct trace_buffer *buffer, int cpu, int full,
-+				 struct wait_queue_entry *wait);
- __poll_t ring_buffer_poll_wait(struct trace_buffer *buffer, int cpu,
- 			  struct file *filp, poll_table *poll_table, int full);
- void ring_buffer_wake_waiters(struct trace_buffer *buffer, int cpu);
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index 856d0e5b0da5..fa7090f6b4fc 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -868,29 +868,29 @@ rb_get_work_queue(struct trace_buffer *buffer, int cpu, int *full)
- }
- 
- /**
-- * ring_buffer_wait - wait for input to the ring buffer
-+ * ring_buffer_prepare_to_wait - Prepare to wait for data on the ring buffer
-  * @buffer: buffer to wait on
-  * @cpu: the cpu buffer to wait on
-- * @full: wait until the percentage of pages are available, if @cpu != RING_BUFFER_ALL_CPUS
-+ * @full: wait until the percentage of pages are available,
-+ *         if @cpu != RING_BUFFER_ALL_CPUS. It may be updated via this function.
-+ * @wait: The wait queue entry.
-  *
-- * If @cpu == RING_BUFFER_ALL_CPUS then the task will wake up as soon
-- * as data is added to any of the @buffer's cpu buffers. Otherwise
-- * it will wait for data to be added to a specific cpu buffer.
-+ * This must be called before ring_buffer_wait(). It calls the prepare_to_wait()
-+ * on @wait for the necessary wait queue defined by @buffer, @cpu, and @full.
-  */
--int ring_buffer_wait(struct trace_buffer *buffer, int cpu, int full)
-+int ring_buffer_prepare_to_wait(struct trace_buffer *buffer, int cpu, int *full,
-+				 struct wait_queue_entry *wait)
- {
- 	struct rb_irq_work *rbwork;
--	DEFINE_WAIT(wait);
--	int ret = 0;
- 
--	rbwork = rb_get_work_queue(buffer, cpu, &full);
-+	rbwork = rb_get_work_queue(buffer, cpu, full);
- 	if (IS_ERR(rbwork))
- 		return PTR_ERR(rbwork);
- 
--	if (full)
--		prepare_to_wait(&rbwork->full_waiters, &wait, TASK_INTERRUPTIBLE);
-+	if (*full)
-+		prepare_to_wait(&rbwork->full_waiters, wait, TASK_INTERRUPTIBLE);
- 	else
--		prepare_to_wait(&rbwork->waiters, &wait, TASK_INTERRUPTIBLE);
-+		prepare_to_wait(&rbwork->waiters, wait, TASK_INTERRUPTIBLE);
- 
- 	/*
- 	 * The events can happen in critical sections where
-@@ -912,30 +912,66 @@ int ring_buffer_wait(struct trace_buffer *buffer, int cpu, int full)
- 	 * that is necessary is that the wake up happens after
- 	 * a task has been queued. It's OK for spurious wake ups.
- 	 */
--	if (full)
-+	if (*full)
- 		rbwork->full_waiters_pending = true;
- 	else
- 		rbwork->waiters_pending = true;
- 
--	if (rb_watermark_hit(buffer, cpu, full))
--		goto out;
-+	return 0;
-+}
- 
--	if (signal_pending(current)) {
--		ret = -EINTR;
--		goto out;
--	}
-+/**
-+ * ring_buffer_finish_wait - clean up of ring_buffer_prepare_to_wait()
-+ * @buffer: buffer to wait on
-+ * @cpu: the cpu buffer to wait on
-+ * @full: wait until the percentage of pages are available, if @cpu != RING_BUFFER_ALL_CPUS
-+ * @wait: The wait queue entry.
-+ *
-+ * This must be called after ring_buffer_prepare_to_wait(). It cleans up
-+ * the @wait for the queue defined by @buffer, @cpu, and @full.
-+ */
-+void ring_buffer_finish_wait(struct trace_buffer *buffer, int cpu, int full,
-+				 struct wait_queue_entry *wait)
-+{
-+	struct rb_irq_work *rbwork;
-+
-+	rbwork = rb_get_work_queue(buffer, cpu, &full);
-+	if (WARN_ON_ONCE(IS_ERR(rbwork)))
-+		return;
- 
--	schedule();
-- out:
- 	if (full)
--		finish_wait(&rbwork->full_waiters, &wait);
-+		finish_wait(&rbwork->full_waiters, wait);
- 	else
--		finish_wait(&rbwork->waiters, &wait);
-+		finish_wait(&rbwork->waiters, wait);
-+}
- 
--	if (!ret && !rb_watermark_hit(buffer, cpu, full) && signal_pending(current))
--		ret = -EINTR;
-+/**
-+ * ring_buffer_wait - wait for input to the ring buffer
-+ * @buffer: buffer to wait on
-+ * @cpu: the cpu buffer to wait on
-+ * @full: wait until the percentage of pages are available, if @cpu != RING_BUFFER_ALL_CPUS
-+ *
-+ * If @cpu == RING_BUFFER_ALL_CPUS then the task will wake up as soon
-+ * as data is added to any of the @buffer's cpu buffers. Otherwise
-+ * it will wait for data to be added to a specific cpu buffer.
-+ *
-+ * ring_buffer_prepare_to_wait() must be called before this function
-+ * and ring_buffer_finish_wait() must be called after.
-+ */
-+int ring_buffer_wait(struct trace_buffer *buffer, int cpu, int full)
-+{
-+	if (rb_watermark_hit(buffer, cpu, full))
-+		return 0;
- 
--	return ret;
-+	if (signal_pending(current))
-+		return -EINTR;
-+
-+	schedule();
-+
-+	if (!rb_watermark_hit(buffer, cpu, full) && signal_pending(current))
-+		return -EINTR;
-+
-+	return 0;
- }
- 
- /**
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 4e8f6cdeafd5..790ce3ba2acb 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -1981,7 +1981,8 @@ static bool wait_woken_prepare(struct trace_iterator *iter, int *wait_index)
- 	mutex_lock(&wait_mutex);
- 	if (iter->waking)
- 		woken = true;
--	*wait_index = iter->wait_index;
-+	if (wait_index)
-+		*wait_index = iter->wait_index;
- 	mutex_unlock(&wait_mutex);
- 
- 	return woken;
-@@ -2016,13 +2017,22 @@ static void wait_woken_clear(struct trace_iterator *iter)
- 
- static int wait_on_pipe(struct trace_iterator *iter, int full)
- {
-+	struct trace_buffer *buffer;
-+	DEFINE_WAIT(wait);
- 	int ret;
- 
- 	/* Iterators are static, they should be filled or empty */
- 	if (trace_buffer_iter(iter, iter->cpu_file))
- 		return 0;
- 
--	ret = ring_buffer_wait(iter->array_buffer->buffer, iter->cpu_file, full);
-+	buffer = iter->array_buffer->buffer;
-+
-+	ret = ring_buffer_prepare_to_wait(buffer, iter->cpu_file, &full, &wait);
-+	if (ret < 0)
-+		return ret;
-+	if (!wait_woken_prepare(iter, NULL))
-+		ret = ring_buffer_wait(buffer, iter->cpu_file, full);
-+	ring_buffer_finish_wait(buffer, iter->cpu_file, full, &wait);
- 
- #ifdef CONFIG_TRACER_MAX_TRACE
- 	/*
--- 
-2.43.0
-
-
+-Tony
 
