@@ -1,250 +1,220 @@
-Return-Path: <linux-kernel+bounces-96410-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96397-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10261875BBC
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 02:00:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6074F875B9F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 01:55:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 342981C20FC7
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 01:00:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 175B5282F16
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 00:55:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1AB8224F0;
-	Fri,  8 Mar 2024 00:58:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4780B2134B;
+	Fri,  8 Mar 2024 00:55:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LPOMpFkB"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XGREz/gF"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73B8E2135C;
-	Fri,  8 Mar 2024 00:58:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79B9A21101
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 00:55:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709859531; cv=none; b=m75vBdoD/3C8g5vCc/kuqtdt61lZYI3s3dGVWCkdo3c9bDS8cx3SqLrzT5+lvTbwf5oRZ7E/Sz80oZip0PIwNVwGvN+sYQ5pvKu2/2F0fwktgty8+5JT01nNDmNH4DJB1d47obt6Pj0loQcjUwWoW6NLmvgKPOqPGL8fc8PmrZ4=
+	t=1709859335; cv=none; b=XAZ9Y+OJLJVilcOWObWoCc+RcWsIQw/eD70jHsgMntClyd8TeV44FQ6LbymHAaOu57YRHkDoRSGdQIEpQLJ0w8m7xkmFl+ewUgcx3E3Erg3q9cVaPtxOMto6rq5/RGlS17NlteRmcC0PJBGiGKDvy8Qfm5Rr536/GE0PAqCHNkM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709859531; c=relaxed/simple;
-	bh=UnUW87fuiaXOWWLX9//SnpFXWJlC5GpqiAqCizoHHQ0=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=FJHwuczv+EbmT+rH7iMDgHZKR+y1EwK9OKYcCFLjUMIXW0NYXRVdx9ClS9DjnaguopWHr9CKbgGrU6nfq40dUF0YwUde76rd+1vMSi+YtBBfBVO7oIpCcO8LxhXEVi9Y0WcqL076rlxR7XGDdAJXVvVFEef+Nfue1VvKQ0ylE5E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LPOMpFkB; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709859529; x=1741395529;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=UnUW87fuiaXOWWLX9//SnpFXWJlC5GpqiAqCizoHHQ0=;
-  b=LPOMpFkBVyJ+ZKEw/OFlli2E1244yMgrQO7LcB2dBUmRZPodPdJBuPGJ
-   EdaXKjlUHgixXzB9A2xXHJA955+ApsAP/ss8UWJHQfoqszA16PRIOedc3
-   sOq5hG+ffpNRSgsjM24jDczj8plAiOJtADZfLCJgpl+wTaQK9AMLyBgTu
-   WUBIZQVGaKgoMlQlqw9u3nFmFOJko3KDz0Sqv+4Um5FqQyHukXVqE5Bvp
-   m8+BI0WNelAWGcxA/SRoqZfInJsVIjpmeTZWBLjQXu0GIk+05rM/+NIUu
-   AF4z+S2NjeG87TBpcFipsIBt3ZW8+v7WJLeInuf3wan0B7xo541l6LBjO
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="15133567"
-X-IronPort-AV: E=Sophos;i="6.07,108,1708416000"; 
-   d="scan'208";a="15133567"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 16:57:15 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,108,1708416000"; 
-   d="scan'208";a="14793930"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 16:57:12 -0800
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: Miaohe Lin <linmiaohe@huawei.com>,  Andrew Morton
- <akpm@linux-foundation.org>,  David Hildenbrand <david@redhat.com>,
-  <linux-mm@kvack.org>,  <linux-kernel@vger.kernel.org>,
-  <stable@vger.kernel.org>
-Subject: Re: [PATCH v1] mm: swap: Fix race between free_swap_and_cache() and
- swapoff()
-In-Reply-To: <29335a89-b14b-4ef3-abf8-0b41e6d0ec67@arm.com> (Ryan Roberts's
-	message of "Thu, 7 Mar 2024 09:19:20 +0000")
-References: <20240305151349.3781428-1-ryan.roberts@arm.com>
-	<875xy0842q.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<c8fe62d0-78b8-527a-5bef-ee663ccdc37a@huawei.com>
-	<af11bbca-3f6a-4db5-916c-b0d5b942352b@arm.com>
-	<ff6aec00-f939-b7ba-c127-b133c4d95ee5@huawei.com>
-	<87bk7q7ffp.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<0925807f-d226-7f08-51d1-ab771b1a6c24@huawei.com>
-	<8734t27awd.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<92672c62-47d8-44ff-bd05-951c813c95a5@arm.com>
-	<87y1au5smu.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<29335a89-b14b-4ef3-abf8-0b41e6d0ec67@arm.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
-Date: Fri, 08 Mar 2024 08:55:18 +0800
-Message-ID: <87jzmd5yq1.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	s=arc-20240116; t=1709859335; c=relaxed/simple;
+	bh=e0ccYedOJCgEkhN+ZKip6Y2Wg4KOHk1fAiTFxhhILoU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=t+gdsYhkvXQqO2sJYGOezWPH25DDEZWfDRkGBEbkofKgbQ4GWPakk4dpXMx0QEKuRFtp1qWMyrNrnR9WvRtiCxsmLus6gjoPVf/qxsuxoIOUx61JvIZlioLo28EDwMaZf7Sff1K2/HkK+EeyOjgcO5ECLN/AtY3ci2tWElCZjIc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XGREz/gF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16806C433F1;
+	Fri,  8 Mar 2024 00:55:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709859334;
+	bh=e0ccYedOJCgEkhN+ZKip6Y2Wg4KOHk1fAiTFxhhILoU=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=XGREz/gF4eq/YRDqV7Ao6RgZ7MpE/xqApokBvdQ5PrQb2SXpxBBnt0r8263bpM8D/
+	 fYnr3kCI8JEuF0+0DMsJF03P4GRuZ8u4guRAY8aNqdl/9UVRXSxCdX8LRx7xfwuymt
+	 RodQndq+27/22PdVul1PDxqSqhpcT4gj0/NydCnxVuBpd8OsppqSwPLYAvzJoMwpcS
+	 h0B6XR+2ZE112Wfl/yNZH0NglxX8xhd0UKlpcedHPpbHv2BhAMxEljLK8lPo0HN+zT
+	 TufD6Bq7VBq/s/t/65pE+7ApImBeIGTIgYgp7EKp8LL+kFICnGK3nm+TJfL4XKD1o1
+	 GLFzC0dMWGNWg==
+Message-ID: <2c8ef129-9381-4c82-a421-57b698a18291@kernel.org>
+Date: Fri, 8 Mar 2024 08:55:30 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] f2fs: fix to truncate meta inode pages forcely
+Content-Language: en-US
+To: Jaegeuk Kim <jaegeuk@kernel.org>
+Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+References: <20240307151235.3864725-1-chao@kernel.org>
+ <ZeoJa705xDrPRNQY@google.com>
+From: Chao Yu <chao@kernel.org>
+In-Reply-To: <ZeoJa705xDrPRNQY@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Ryan Roberts <ryan.roberts@arm.com> writes:
+On 2024/3/8 2:37, Jaegeuk Kim wrote:
+> On 03/07, Chao Yu wrote:
+>> Below race case can cause data corruption:
+>>
+>> Thread A				GC thread
+>> - f2fs_inplace_write_data
+>> 					- gc_data_segment
+>> 					 - ra_data_block
+>> 					  - locked meta_inode page
+>>   - invalidate_mapping_pages
+>>   : fail to invalidate meta_inode page
+>>     due to lock failure or dirty|writeback
+>>     status
+> 
+> Wasn't the original data page locked in both cases?
 
-> On 07/03/2024 08:54, Huang, Ying wrote:
->> Ryan Roberts <ryan.roberts@arm.com> writes:
->> 
->>> On 07/03/2024 07:34, Huang, Ying wrote:
->>>> Miaohe Lin <linmiaohe@huawei.com> writes:
->>>>
->>>>> On 2024/3/7 13:56, Huang, Ying wrote:
->>>>>> Miaohe Lin <linmiaohe@huawei.com> writes:
->>>>>>
->>>>>>> On 2024/3/6 17:31, Ryan Roberts wrote:
->>>>>>>> On 06/03/2024 08:51, Miaohe Lin wrote:
->>>>>>>>> On 2024/3/6 10:52, Huang, Ying wrote:
->>>>>>>>>> Ryan Roberts <ryan.roberts@arm.com> writes:
->>>>>>>>>>
->>>>>>>>>>> There was previously a theoretical window where swapoff() could run and
->>>>>>>>>>> teardown a swap_info_struct while a call to free_swap_and_cache() was
->>>>>>>>>>> running in another thread. This could cause, amongst other bad
->>>>>>>>>>> possibilities, swap_page_trans_huge_swapped() (called by
->>>>>>>>>>> free_swap_and_cache()) to access the freed memory for swap_map.
->>>>>>>>>>>
->>>>>>>>>>> This is a theoretical problem and I haven't been able to provoke it from
->>>>>>>>>>> a test case. But there has been agreement based on code review that this
->>>>>>>>>>> is possible (see link below).
->>>>>>>>>>>
->>>>>>>>>>> Fix it by using get_swap_device()/put_swap_device(), which will stall
->>>>>>>>>>> swapoff(). There was an extra check in _swap_info_get() to confirm that
->>>>>>>>>>> the swap entry was valid. This wasn't present in get_swap_device() so
->>>>>>>>>>> I've added it. I couldn't find any existing get_swap_device() call sites
->>>>>>>>>>> where this extra check would cause any false alarms.
->>>>>>>>>>>
->>>>>>>>>>> Details of how to provoke one possible issue (thanks to David Hilenbrand
->>>>>>>>>>> for deriving this):
->>>>>>>>>>>
->>>>>>>>>>> --8<-----
->>>>>>>>>>>
->>>>>>>>>>> __swap_entry_free() might be the last user and result in
->>>>>>>>>>> "count == SWAP_HAS_CACHE".
->>>>>>>>>>>
->>>>>>>>>>> swapoff->try_to_unuse() will stop as soon as soon as si->inuse_pages==0.
->>>>>>>>>>>
->>>>>>>>>>> So the question is: could someone reclaim the folio and turn
->>>>>>>>>>> si->inuse_pages==0, before we completed swap_page_trans_huge_swapped().
->>>>>>>>>>>
->>>>>>>>>>> Imagine the following: 2 MiB folio in the swapcache. Only 2 subpages are
->>>>>>>>>>> still references by swap entries.
->>>>>>>>>>>
->>>>>>>>>>> Process 1 still references subpage 0 via swap entry.
->>>>>>>>>>> Process 2 still references subpage 1 via swap entry.
->>>>>>>>>>>
->>>>>>>>>>> Process 1 quits. Calls free_swap_and_cache().
->>>>>>>>>>> -> count == SWAP_HAS_CACHE
->>>>>>>>>>> [then, preempted in the hypervisor etc.]
->>>>>>>>>>>
->>>>>>>>>>> Process 2 quits. Calls free_swap_and_cache().
->>>>>>>>>>> -> count == SWAP_HAS_CACHE
->>>>>>>>>>>
->>>>>>>>>>> Process 2 goes ahead, passes swap_page_trans_huge_swapped(), and calls
->>>>>>>>>>> __try_to_reclaim_swap().
->>>>>>>>>>>
->>>>>>>>>>> __try_to_reclaim_swap()->folio_free_swap()->delete_from_swap_cache()->
->>>>>>>>>>> put_swap_folio()->free_swap_slot()->swapcache_free_entries()->
->>>>>>>>>>> swap_entry_free()->swap_range_free()->
->>>>>>>>>>> ...
->>>>>>>>>>> WRITE_ONCE(si->inuse_pages, si->inuse_pages - nr_entries);
->>>>>>>>>>>
->>>>>>>>>>> What stops swapoff to succeed after process 2 reclaimed the swap cache
->>>>>>>>>>> but before process1 finished its call to swap_page_trans_huge_swapped()?
->>>>>>>>>>>
->>>>>>>>>>> --8<-----
->>>>>>>>>>
->>>>>>>>>> I think that this can be simplified.  Even for a 4K folio, this could
->>>>>>>>>> happen.
->>>>>>>>>>
->>>>>>>>>> CPU0                                     CPU1
->>>>>>>>>> ----                                     ----
->>>>>>>>>>
->>>>>>>>>> zap_pte_range
->>>>>>>>>>   free_swap_and_cache
->>>>>>>>>>   __swap_entry_free
->>>>>>>>>>   /* swap count become 0 */
->>>>>>>>>>                                          swapoff
->>>>>>>>>>                                            try_to_unuse
->>>>>>>>>>                                              filemap_get_folio
->>>>>>>>>>                                              folio_free_swap
->>>>>>>>>>                                              /* remove swap cache */
->>>>>>>>>>                                            /* free si->swap_map[] */
->>>>>>>>>>
->>>>>>>>>>   swap_page_trans_huge_swapped <-- access freed si->swap_map !!!
->>>>>>>>>
->>>>>>>>> Sorry for jumping the discussion here. IMHO, free_swap_and_cache is called with pte lock held.
->>>>>>>>
->>>>>>>> I don't beleive it has the PTL when called by shmem.
->>>>>>>
->>>>>>> In the case of shmem, folio_lock is used to guard against the race.
->>>>>>
->>>>>> I don't find folio is lock for shmem.  find_lock_entries() will only
->>>>>> lock the folio if (!xa_is_value()), that is, not swap entry.  Can you
->>>>>> point out where the folio is locked for shmem?
->>>>>
->>>>> You're right, folio is locked if not swap entry. That's my mistake. But it seems above race is still nonexistent.
->>>>> shmem_unuse() will first be called to read all the shared memory data that resides in the swap device back into
->>>>> memory when doing swapoff. In that case, all the swapped pages are moved to page cache thus there won't be any
->>>>> xa_is_value(folio) cases when calling shmem_undo_range(). free_swap_and_cache() even won't be called from
->>>>> shmem_undo_range() after shmem_unuse(). Or am I miss something?
->>>>
->>>> I think the following situation is possible.  Right?
->>>>
->>>> CPU0                               CPU1
->>>> ----                               ----
->>>> shmem_undo_range
->>>>   shmem_free_swap
->>>>     xa_cmpxchg_irq
->>>>     free_swap_and_cache
->>>>       __swap_entry_free
->>>>       /* swap count become 0 */
->>>>                                    swapoff
->>>>                                      try_to_unuse
->>>>                                        shmem_unuse /* cannot find swap entry */
->>>>                                        find_next_to_unuse
->>>>                                        filemap_get_folio
->>>>                                        folio_free_swap
->>>>                                        /* remove swap cache */
->>>>                                        /* free si->swap_map[] */
->>>>       swap_page_trans_huge_swapped <-- access freed si->swap_map !!!
->>>>
->>>> shmem_undo_range can run earlier.
->>>
->>> Yes that's the shmem problem I've been trying to convey. Perhaps there are other
->>> (extremely subtle) mechanisms that make this impossible, I don't know.
->>>
->>> Either way, given the length of this discussion, and the subtleties in the
->>> syncrhonization mechanisms that have so far been identified, I think the safest
->>> thing to do is just apply the patch. Then we have explicit syncrhonization that
->>> we can trivially reason about.
->> 
->> Yes.  This is tricky and we can improve it.  So I suggest to,
->> 
->> - Revise the patch description to use shmem race as example except
->>   someone found it's impossible.
->> 
->> - Revise the comments of get_swap_device() about RCU reader side lock
->>   (including IRQ off, spinlock, etc.) can prevent swapoff via
->>   synchronize_rcu() in swapoff().
->> 
->> - Revise the comments of synchronize_rcu() in swapoff(), which can
->>   prevent swapoff in parallel with RCU reader side lock including swap
->>   cache operations, etc.
->
-> The only problem with this is that Andrew has already put my v2 into mm-*stable* :-|
->
-> So (1) from that list isn't possible. I could do a patch for (2) and (3), but to
-> be honest, I think you would do a better job of writing it up than I would - any
-> chance you could post the patch?
->
+Oh, the race case needs to fixed as below:
 
-Sure.  I will do that.
+Thread A				GC thread
+					- gc_data_segment
+					 - ra_data_block
+					  - locked meta_inode page
+- f2fs_inplace_write_data
+  - invalidate_mapping_pages
+  : fail to invalidate meta_inode page
+    due to lock failure or dirty|writeback
+    status
+  - f2fs_submit_page_bio
+  : write last dirty data to old blkaddr
+					 - move_data_block
+					  - load old data from meta_inode page
+					  - f2fs_submit_page_write
+					  : write old data to new blkaddr
 
---
-Best Regards,
-Huang, Ying
+There is a hole in between ra_data_block() and move_data_block(),
+in where the data page is unlocked.
+
+Thanks,
+
+> 
+>>   - f2fs_submit_page_bio
+>>   : write last dirty data to old blkaddr
+>> 					 - move_data_block
+>> 					  - load old data from meta_inode page
+>> 					  - f2fs_submit_page_write
+>> 					  : write old data to new blkaddr
+>>
+>> Because invalidate_mapping_pages() will skip invalidating page when the
+>> page has unclear status including locked, dirty, writeback and so on, so
+>> we need to use truncate_inode_pages_range() instead of
+>> invalidate_mapping_pages() to make sure meta_inode page will be dropped.
+>>
+>> Fixes: 6aa58d8ad20a ("f2fs: readahead encrypted block during GC")
+>> Fixes: e3b49ea36802 ("f2fs: invalidate META_MAPPING before IPU/DIO write")
+>> Signed-off-by: Chao Yu <chao@kernel.org>
+>> ---
+>>   fs/f2fs/checkpoint.c    |  5 +++--
+>>   fs/f2fs/f2fs.h          | 28 +++++++++++++++++++++++++++-
+>>   fs/f2fs/segment.c       |  5 ++---
+>>   include/linux/f2fs_fs.h |  1 +
+>>   4 files changed, 33 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
+>> index a09a9609e228..55b7d2cf030f 100644
+>> --- a/fs/f2fs/checkpoint.c
+>> +++ b/fs/f2fs/checkpoint.c
+>> @@ -1598,8 +1598,9 @@ static int do_checkpoint(struct f2fs_sb_info *sbi, struct cp_control *cpc)
+>>   	 */
+>>   	if (f2fs_sb_has_encrypt(sbi) || f2fs_sb_has_verity(sbi) ||
+>>   		f2fs_sb_has_compression(sbi))
+>> -		invalidate_mapping_pages(META_MAPPING(sbi),
+>> -				MAIN_BLKADDR(sbi), MAX_BLKADDR(sbi) - 1);
+>> +		f2fs_bug_on(sbi,
+>> +			invalidate_inode_pages2_range(META_MAPPING(sbi),
+>> +				MAIN_BLKADDR(sbi), MAX_BLKADDR(sbi) - 1));
+>>   
+>>   	f2fs_release_ino_entry(sbi, false);
+>>   
+>> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+>> index 4836e7cb0efe..9814e5981a6a 100644
+>> --- a/fs/f2fs/f2fs.h
+>> +++ b/fs/f2fs/f2fs.h
+>> @@ -4655,10 +4655,36 @@ static inline bool f2fs_is_readonly(struct f2fs_sb_info *sbi)
+>>   	return f2fs_sb_has_readonly(sbi) || f2fs_readonly(sbi->sb);
+>>   }
+>>   
+>> +static inline void f2fs_truncate_meta_inode_pages(struct f2fs_sb_info *sbi,
+>> +					block_t blkaddr, unsigned int cnt)
+>> +{
+>> +	bool need_submit = false;
+>> +	int i = 0;
+>> +
+>> +	do {
+>> +		struct page *page;
+>> +
+>> +		page = find_get_page(META_MAPPING(sbi), blkaddr + i);
+>> +		if (page) {
+>> +			if (PageWriteback(page))
+>> +				need_submit = true;
+>> +			f2fs_put_page(page, 0);
+>> +		}
+>> +	} while (++i < cnt && !need_submit);
+>> +
+>> +	if (need_submit)
+>> +		f2fs_submit_merged_write_cond(sbi, sbi->meta_inode,
+>> +							NULL, 0, DATA);
+>> +
+>> +	truncate_inode_pages_range(META_MAPPING(sbi),
+>> +			F2FS_BLK_TO_BYTES((loff_t)blkaddr),
+>> +			F2FS_BLK_END_BYTES((loff_t)(blkaddr + cnt - 1)));
+>> +}
+>> +
+>>   static inline void f2fs_invalidate_internal_cache(struct f2fs_sb_info *sbi,
+>>   								block_t blkaddr)
+>>   {
+>> -	invalidate_mapping_pages(META_MAPPING(sbi), blkaddr, blkaddr);
+>> +	f2fs_truncate_meta_inode_pages(sbi, blkaddr, 1);
+>>   	f2fs_invalidate_compress_page(sbi, blkaddr);
+>>   }
+>>   
+>> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+>> index 4ff3b2d14ddf..20af48d7f784 100644
+>> --- a/fs/f2fs/segment.c
+>> +++ b/fs/f2fs/segment.c
+>> @@ -3741,8 +3741,7 @@ int f2fs_inplace_write_data(struct f2fs_io_info *fio)
+>>   	}
+>>   
+>>   	if (fio->post_read)
+>> -		invalidate_mapping_pages(META_MAPPING(sbi),
+>> -				fio->new_blkaddr, fio->new_blkaddr);
+>> +		f2fs_truncate_meta_inode_pages(sbi, fio->new_blkaddr, 1);
+>>   
+>>   	stat_inc_inplace_blocks(fio->sbi);
+>>   
+>> @@ -3932,7 +3931,7 @@ void f2fs_wait_on_block_writeback_range(struct inode *inode, block_t blkaddr,
+>>   	for (i = 0; i < len; i++)
+>>   		f2fs_wait_on_block_writeback(inode, blkaddr + i);
+>>   
+>> -	invalidate_mapping_pages(META_MAPPING(sbi), blkaddr, blkaddr + len - 1);
+>> +	f2fs_truncate_meta_inode_pages(sbi, blkaddr, len);
+>>   }
+>>   
+>>   static int read_compacted_summaries(struct f2fs_sb_info *sbi)
+>> diff --git a/include/linux/f2fs_fs.h b/include/linux/f2fs_fs.h
+>> index 755e9a41b196..a357287eac1e 100644
+>> --- a/include/linux/f2fs_fs.h
+>> +++ b/include/linux/f2fs_fs.h
+>> @@ -27,6 +27,7 @@
+>>   
+>>   #define F2FS_BYTES_TO_BLK(bytes)	((bytes) >> F2FS_BLKSIZE_BITS)
+>>   #define F2FS_BLK_TO_BYTES(blk)		((blk) << F2FS_BLKSIZE_BITS)
+>> +#define F2FS_BLK_END_BYTES(blk)		(F2FS_BLK_TO_BYTES(blk + 1) - 1)
+>>   
+>>   /* 0, 1(node nid), 2(meta nid) are reserved node id */
+>>   #define F2FS_RESERVED_NODE_NUM		3
+>> -- 
+>> 2.40.1
 
