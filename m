@@ -1,83 +1,84 @@
-Return-Path: <linux-kernel+bounces-96926-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96928-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11BB587633E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 12:25:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35110876343
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 12:26:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A57021F22704
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:25:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B44361F220DA
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:26:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72F6C56443;
-	Fri,  8 Mar 2024 11:25:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DE6D55C27;
+	Fri,  8 Mar 2024 11:25:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fjZNPKT7"
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HGLkbCIi"
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFCA63C24;
-	Fri,  8 Mar 2024 11:25:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C975555C3F
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 11:25:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709897112; cv=none; b=m1MXiTrcDz+UTh4HP3RvLVchsIdZXWn3ceaBtmoerbXJw38RM0DGSh/FKows3g+xnIiCTTmLWSmD+xWniqqga5zwruKPJ48o8RnZtweQyaRJ4oSchJaO6FzCqVsbUnx1d6nJ+P1OQYR+6h1Xr0HpUV5H1MdyvcAtwEU7oIvw2i4=
+	t=1709897129; cv=none; b=B9hHXFUImkF2LdOKpkyr4tPWzWj68adJ3JcYPZlKC8KrTH+Ah0tw8CBQg5qtGlpg/8yYkCesoRGBIVuskp8EENs1lgGJq6lC/lCxhvRhMkANVZcEAorfIeXsyM/l2OHpgUw//tqtuqWNKFV7kfG2hH39gfCh1t8UrLz+x0wqqX0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709897112; c=relaxed/simple;
-	bh=o2hNrgL13/sLtHdBP4TmsgTiEkFTQ3vVc2NOhew4J4k=;
+	s=arc-20240116; t=1709897129; c=relaxed/simple;
+	bh=/cOUoq0pPmQJ/61Wbw6wQLXN/7hfj8X2V4O0MdPSRCo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PqVztLJ4wEYHjaTboAXzqDiNFxoXzlXpe1j+uvTzibeLtw7b+K0Yx17z9d4C+GHkCwHw+yYCIsHeNlzg0XbuUNJe/FH2TDsndKZ9+a5VhPQ7FzBC7HDiyZj89wbC1DKcgvEg5+WkL3uUg5joPe1VJJpt/GZdxQayml123376Op8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fjZNPKT7; arc=none smtp.client-ip=209.85.208.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	 Content-Type:Content-Disposition:In-Reply-To; b=ImGbc4/jMEHASkSDLbWQJU4lnHcER1VOUsprxC/11yohr9PaDIgAX45XwxBBypd5xvk5u008g7tvDaKygh9cpcK41PrOJcxWCcnKQn9CVpgXxWaXvHMdoauUxdBLyu30m9XAj3XGAsx4ibkCAq6gOIHkjntanNnB9CmDYiiLFbw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HGLkbCIi; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2d2ab9c5e83so17952701fa.2;
-        Fri, 08 Mar 2024 03:25:09 -0800 (PST)
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-412f0655d81so5684235e9.2
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 03:25:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709897108; x=1710501908; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1709897126; x=1710501926; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=sZEG5PQAxEQMJdi4y7r2f556cfCDtnRfMruM9cmX0as=;
-        b=fjZNPKT7Ps2YmPxxkCl7XBDrBQzcguq6Bq1Ur+hp9z5ymZU3/YVrUiA7OvbYPQZhsx
-         y1gJ6gVuJG7tYtTdM4ylND8BpptPadhpjIIk7BVMnxcwgK52R4+SH/bqxPhFwrH/c/S6
-         sF5bvoDzYFpALvnsmUAQzhLKdllhH7q3/lIV+djqEkk28hREuhOu3fzi27+FZi+Wm1HU
-         1xe+rr+OGIhHR54Esq/3OBRMS3JrfuDcIq1LfrguHWgZo/UjVDURC7DQ8D6OzLWHmRq1
-         uH3GlDuoC+JYOTlgFDZfmzoRgResAHLC62hMVmpel4Gc2CqnU8jfshSMTaDSr1HpyHmL
-         zFXw==
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fNeg4yhr/3u8GpTRBFZQZ6wGSUgg4jp42cdMOAyaLTI=;
+        b=HGLkbCIiPU6WjM39f6VeRQH8p8CgXf587j/18uvf3Txyx/4bB/hByu3gbj+ydl+IIA
+         qzZ+pw3NOYc+lBW9wnBXQPCZF1q3VwHicJgockk9xZkMrP2ERJy1T3BqQI76lv1K4UW0
+         6apJM6TPiIsBGxXUKQwENpiGELP49611MjiDY3DVo7lH7w4QJUD643pldXoUTCgmVqJW
+         CqjVBUDrYXZ0Au9TDwzusALSASgpFPjB7zHq79weKI2Jb+j2su150sGFbUuydKFp2eEG
+         +cyrC3JxB2y+ZBXwlg3NBVpOCE0KxBA7EELcjZ6SwSHLLIxcN/+gskI1MJWswR6YQJEG
+         82jQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709897108; x=1710501908;
+        d=1e100.net; s=20230601; t=1709897126; x=1710501926;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sZEG5PQAxEQMJdi4y7r2f556cfCDtnRfMruM9cmX0as=;
-        b=P8D8C3Qko+lVbZPUTK4bax+YrYDdTVQcVJ90+zoH/VcXjMpTMIBllHaR+xaOiu338x
-         HaWdQrV55froQ0VmDl1RRN5mRilRXwdFqgXXz9IfUW/Mp1C0taJFiwd82EfgVRAAe/7Q
-         EXLazLwv0R46jXQyQb+c/sPc+T1uvUkavf7MKT0H9jABDwp83ynzdOYk58v3TuYKIBmA
-         0xHgSELIQLe0OP/3oEiy6AtF6DcGgwB2JY44VQmQc5lcPgtFM1Ff7XdJm+Jw+j1gp6CP
-         NpWsB9mSXIJPgAOdkcmeyF6qEFYDGPGLyUvwmTkDj/0P+YBpivwQ+b4vRw6gvsWZQOrA
-         19/w==
-X-Forwarded-Encrypted: i=1; AJvYcCXempQs7L/LRqBzZJrO1SwpZ0+lKsC7PDd9rMdRLh80zaxtApIKwmGQ9YICSplIA1f9PFBYXxc7OcZzTIzBe6n0ymdhc0ejZbLRP1z2
-X-Gm-Message-State: AOJu0YxgHwQERKjsWAFSOfIkEEyKf93J6YgiFkdlg1s2/6fEdpv2hmBr
-	MpK9Nx/vMhhnN4Brv3hRrirwGW3J5MIUgy7Fm5AQvmdEJERL0lb+vhuoLUFGlck=
-X-Google-Smtp-Source: AGHT+IEeplHr/QBHhr5GpCgqcEdkoivlC4i/RyyWQPsFh/o5fRlVuchcWc0P9iwLjjrdnMRGr0l85g==
-X-Received: by 2002:a2e:8945:0:b0:2d2:4160:bb73 with SMTP id b5-20020a2e8945000000b002d24160bb73mr3674359ljk.3.1709897107640;
-        Fri, 08 Mar 2024 03:25:07 -0800 (PST)
-Received: from tom-HP-ZBook-Fury-15-G7-Mobile-Workstation (net-188-217-49-82.cust.vodafonedsl.it. [188.217.49.82])
-        by smtp.gmail.com with ESMTPSA id b20-20020a0564021f1400b00567fa27e75fsm2415001edb.32.2024.03.08.03.25.06
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fNeg4yhr/3u8GpTRBFZQZ6wGSUgg4jp42cdMOAyaLTI=;
+        b=lsRoMWz6sBo9k+p/jh0G58ePgPohbgA5Hdle5IMgOfJH5KQXAYADLynxmmAxHhqBXA
+         p0he2/STyIDsYsJeL7RFZRoAigTBPUn1UWI83kl1mf4ucT0bgz8MMgC6/IJuXTd2WHEt
+         vV+RYh6iTNVa3NySKojTUHRuVMXSkAifn5vLFImGzBTyZlsI9ElP0Lw+PknjRXUUS1ha
+         5nQQnxs4QWPT5iBW5/2MsGYpnterCsni5Uvs2InLjuYCeYwz5EnXQMvzzy8ajpXi3QD+
+         s65pvJbsQ41DzW3Z2O3EwdV5t22GEtBUTE3gP9Ne4CY6DuZ2cEpV2ldzAyUHzoe85Aar
+         ftTw==
+X-Gm-Message-State: AOJu0YwPB6uzT9lRp+G+RWFghHKAAW2kT0hkzD0RiqTm9HNkCgfWClA1
+	i4S4de7CjwKPdy97q7h8HTZYiJODn3cZ1ZHdeHTEidEzQJdbg9VYlYC3EQLPfck=
+X-Google-Smtp-Source: AGHT+IF1o0ARx6QuADTerrZixpK7ROXUJEOweAJ3Mbwtdo5g8jTYpI9ABpgoUirtJDSn8bJfJRqnKw==
+X-Received: by 2002:a05:600c:1c0a:b0:412:eef2:f92c with SMTP id j10-20020a05600c1c0a00b00412eef2f92cmr6845785wms.31.1709897125996;
+        Fri, 08 Mar 2024 03:25:25 -0800 (PST)
+Received: from gmail.com (1F2EF3E5.nat.pool.telekom.hu. [31.46.243.229])
+        by smtp.gmail.com with ESMTPSA id bq26-20020a5d5a1a000000b0033e2777f313sm18040865wrb.72.2024.03.08.03.25.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Mar 2024 03:25:07 -0800 (PST)
-Date: Fri, 8 Mar 2024 12:25:05 +0100
-From: Tommaso Merciai <tomm.merciai@gmail.com>
-To: Umang Jain <umang.jain@ideasonboard.com>
-Cc: linux-media@vger.kernel.org,
-	Alexander Shiyan <eagle.alexander923@gmail.com>,
-	Kieran Bingham <kieran.bingham@ideasonboard.com>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	open list <linux-kernel@vger.kernel.org>,
-	Dave Stevenson <dave.stevenson@raspberrypi.com>
-Subject: Re: [PATCH v2 6/6] media: imx335: Limit analogue gain value
-Message-ID: <Zer1kQvdA+Nf9KG1@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
-References: <20240308083312.90279-1-umang.jain@ideasonboard.com>
- <20240308083312.90279-7-umang.jain@ideasonboard.com>
+        Fri, 08 Mar 2024 03:25:25 -0800 (PST)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date: Fri, 8 Mar 2024 12:25:23 +0100
+From: Ingo Molnar <mingo@kernel.org>
+To: linux-kernel@vger.kernel.org
+Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Shrikanth Hegde <sshegde@linux.ibm.com>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>
+Subject: Re: [PATCH -v1 00/13] sched/balancing: Standardize the naming of
+ scheduler load-balancing functions
+Message-ID: <Zer1o5bhkiq1cxaj@gmail.com>
+References: <20240308111819.1101550-1-mingo@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -86,71 +87,44 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240308083312.90279-7-umang.jain@ideasonboard.com>
+In-Reply-To: <20240308111819.1101550-1-mingo@kernel.org>
 
-Hi Umang,
 
-On Fri, Mar 08, 2024 at 02:03:12PM +0530, Umang Jain wrote:
-> The sensor gain (both analog and digital) are controlled by a
-> single gain value where:
-> - 0dB to 30dB correspond to analog gain
-> - 30.3dB to 72dB correspond to digital gain
->   (with 0.3dB step)
+* Ingo Molnar <mingo@kernel.org> wrote:
+
+> Over the years we've grown a colorful zoo of scheduler
+> load-balancing function names - both following random,
+> idiosyncratic patterns, and gaining historic misnomers
+> that are not accurate anymore.
 > 
-> Hence, limit the analogue gain value to 100.
-> For digital gain, support can be added later if needed.
+> We have 'newidle_balance()' to rebalance newly idle tasks,
+> but 'balance_domains()' to rebalance domains. We have
+> a find_idlest_cpu() function whose purpose is not to find
+> the idlest CPU anymore, and a find_busiest_queue() function
+> whose purpose is not to find the busiest runqueue anymore.
 > 
-> Signed-off-by: Umang Jain <umang.jain@ideasonboard.com>
-> Reviewed-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
-> ---
->  drivers/media/i2c/imx335.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
+> Fix most of the misnomers and organize the functions along the
+> sched_balance_*() namespace:
 > 
-> diff --git a/drivers/media/i2c/imx335.c b/drivers/media/i2c/imx335.c
-> index 85cb53e3d5d4..cc59f446cd09 100644
-> --- a/drivers/media/i2c/imx335.c
-> +++ b/drivers/media/i2c/imx335.c
-> @@ -53,7 +53,7 @@
->  /* Analog gain control */
->  #define IMX335_REG_AGAIN		CCI_REG8(0x30e8)
->  #define IMX335_AGAIN_MIN		0
-> -#define IMX335_AGAIN_MAX		240
-> +#define IMX335_AGAIN_MAX		100
->  #define IMX335_AGAIN_STEP		1
->  #define IMX335_AGAIN_DEFAULT		0
->  
-> @@ -1174,6 +1174,14 @@ static int imx335_init_controls(struct imx335 *imx335)
->  					     IMX335_EXPOSURE_STEP,
->  					     IMX335_EXPOSURE_DEFAULT);
->  
-> +	/*
-> +	 * The sensor has an analog gain and a digital gain, both controlled
-> +	 * through a single gain value, expressed in 0.3dB increments. Values
-> +	 * from 0.0dB (0) to 30.0dB (100) apply analog gain only, higher values
-> +	 * up to 72.0dB (240) add further digital gain. Limit the range to
-> +	 * analog gain only, support for digital gain can be added separately
-> +	 * if needed.
-> +	 */
->  	imx335->again_ctrl = v4l2_ctrl_new_std(ctrl_hdlr,
->  					       &imx335_ctrl_ops,
->  					       V4L2_CID_ANALOGUE_GAIN,
-> -- 
-> 2.43.0
-> 
-> 
+>   scheduler_tick()		=> sched_tick()
+>   run_rebalance_domains()	=> sched_balance_softirq()
+>   trigger_load_balance()	=> sched_balance_trigger()
+>   rebalance_domains()		=> sched_balance_domains()
+>   load_balance()		=> sched_balance_rq()
+>   newidle_balance()		=> sched_balance_newidle()
+>   find_busiest_queue()	=> sched_balance_find_src_rq()
+>   find_busiest_group()	=> sched_balance_find_src_group()
+>   find_idlest_group_cpu()	=> sched_balance_find_dst_group_cpu()
+>   find_idlest_group()		=> sched_balance_find_dst_group()
+>   find_idlest_cpu()		=> sched_balance_find_dst_cpu()
+>   update_blocked_averages()	=> sched_balance_update_blocked_averages()
 
-Unfortunately I don't have the datasheet of this sensor but the logic
-behind this patch looks good to me. :)
+Forgot to mention that this series is on top of the scheduler tree 
+(tip:sched/core) plus my other pending queue:
 
-Btw I check the datasheet of IMX323LQN-C and the gain controll logic
-it's pretty similar except for the values in dB (different sensor).
-Hope this help.
+   https://lore.kernel.org/r/20240308105901.1096078-1-mingo@kernel.org
 
-Reviewed-by: Tommaso Merciai <tomm.merciai@gmail.com>
+Thanks,
 
-Thanks & Regards,
-Tommaso
-
-
-
+	Ingo
 
