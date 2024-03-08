@@ -1,111 +1,190 @@
-Return-Path: <linux-kernel+bounces-96414-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96415-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D33B875BC5
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 02:08:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0AE2875BCE
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 02:08:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3408D283693
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 01:08:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0F551C20FAD
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 01:08:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D6252137F;
-	Fri,  8 Mar 2024 01:07:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB40E2233E;
+	Fri,  8 Mar 2024 01:08:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KyCkon8j"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UQxZ1rYG"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C911C21103;
-	Fri,  8 Mar 2024 01:07:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B202219F6
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 01:08:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709860070; cv=none; b=hPXEW1z8LTCQ558indHS9GOTZrrYEWU7GkyFbn27ws13t0pm3vvePiVXyNcOw8lcBAjWdY7Do+vQVGvq5TiaF8uYsgMqSyCDpVXblF1i4sC1FQ+viGxYDeoATkCNntvOfDD1WCHJua/yPZ1p3zngvDk0kWv3HjcUZ0KVKh01HBo=
+	t=1709860123; cv=none; b=hVwRY95YPb1Egs8OZN1wBafAIoIzt6qoL6BgUwjRR1dUbH6lSxHdLXdPmb2uNygd+dgiG/Ywn3iwk7ZziYD4oxVFF13UXEi8Dj5WRxqm63+JWSK/5CHaxv2NptB07VpzmB9so1iK/TFsz6Semc+HitbO2oic4G5f+AFE7hus4d4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709860070; c=relaxed/simple;
-	bh=0R9xuIBQcNVdlIuQa7+jPBg5UvVbDCYySe1bOSH30pM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Fn3peP1vfzobjyeGJhwC/CpdJx6H2EOaiUQe0cf8MNLg/JdECQknbHfU9Hy2AZ8Z/OOnxqo7D8vpmn/jNEk7pKnCFiu87k+VRTB1diHJkGJl8zpm8JHtIGgdLsBsMcDjSXfaNmWKCpAVJXcW8dVUhZMszB0SUmyE1wwU9vNL/6o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KyCkon8j; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709860069; x=1741396069;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=0R9xuIBQcNVdlIuQa7+jPBg5UvVbDCYySe1bOSH30pM=;
-  b=KyCkon8jl2Tnxti35WQ0+LPCz6XEK/Ppf1ZI8i3bjw7iyUomJO56zAcB
-   1St6uLa9CdtGmmgXvl67mnv4SqBeroj/CS2/NQp3G/P7V8/Tpetjj0uVu
-   zv84jRKlNrzv+Jes9bVF5MTu2jSgr0WhOYBNagKZaDxWeyRif0Zk9ugp0
-   40O4Mj4/qcky6aajc8TXnXGzRzqntCsrk5nPvssjfmMfFryAVPU+42kOv
-   uTyEz6odQBoj3RF2rHlDBXyd5SU8B+k8p15mdr92WBierzup+AdpDcsf3
-   EBoePHNl5v4BhzFYgAd+Z3CK+IgWBcQJq3RDeS+ljj8t92YpPYMQYgFV8
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="15134791"
-X-IronPort-AV: E=Sophos;i="6.07,108,1708416000"; 
-   d="scan'208";a="15134791"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 17:07:43 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,108,1708416000"; 
-   d="scan'208";a="14795366"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 17:07:42 -0800
-Date: Thu, 7 Mar 2024 17:07:42 -0800
-From: Isaku Yamahata <isaku.yamahata@linux.intel.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Isaku Yamahata <isaku.yamahata@linux.intel.com>,
-	David Matlack <dmatlack@google.com>, isaku.yamahata@intel.com,
-	kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
-	erdemaktas@google.com, Sagi Shahar <sagis@google.com>,
-	Kai Huang <kai.huang@intel.com>, chen.bo@intel.com,
-	hang.yuan@intel.com, tina.zhang@intel.com, gkirkpatrick@google.com,
-	Vipin Sharma <vipinsh@google.com>
-Subject: Re: [PATCH v18 064/121] KVM: TDX: Create initial guest memory
-Message-ID: <20240308010742.GK368614@ls.amr.corp.intel.com>
-References: <cover.1705965634.git.isaku.yamahata@intel.com>
- <97bb1f2996d8a7b828cd9e3309380d1a86ca681b.1705965635.git.isaku.yamahata@intel.com>
- <Zbrj5WKVgMsUFDtb@google.com>
- <CALzav=diVvCJnJpuKQc7-KeogZw3cTFkzuSWu6PLAHCONJBwhg@mail.gmail.com>
- <20240226180712.GF177224@ls.amr.corp.intel.com>
- <Zdzdj6zcDqQJcrNx@google.com>
- <20240227141242.GT177224@ls.amr.corp.intel.com>
- <Zd4cIxZPABFlt-sE@google.com>
+	s=arc-20240116; t=1709860123; c=relaxed/simple;
+	bh=/5W1ItLMiLDBcxiqWbCKid+EHj6ZdkuzqaV/WRK8wUg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=rLZqr/TiRQyiRGO5Dua3ICFog8giezbWtnIyPDu5rIGIUW+fCxtBy6HJHmsn8QCPfIdrTE6HkQ/atWDY8aSHx8Zu3QsSLSWeEVQw1EBHhIp3AZUo4YgFRxALhHoN2aE2KIFZJIb7HBY9C4oRP0p3ZjIEjw2bxersdDHbUGeC6TU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UQxZ1rYG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CC6CC433C7;
+	Fri,  8 Mar 2024 01:08:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709860122;
+	bh=/5W1ItLMiLDBcxiqWbCKid+EHj6ZdkuzqaV/WRK8wUg=;
+	h=From:To:Cc:Subject:Date:From;
+	b=UQxZ1rYG46lk1o72JjSJjBgutl5LLwRrw3/HcbSTeyiHTP2qiSXlA47F/hWyk3hBV
+	 hs1p3MhmhXRy33gi3FnbQ/SrcsKBLGdrQQjO+yiHnmsD3vpsHJ0K2c4CfT3AuyeZRU
+	 n2ug3YXHT+Ydq7YhIZGZ/QaEkPP2Nk+p1TeM1OZ3RBoS5rF9J7SeWzMZeA1LpZYE2h
+	 XVA6XXsa0yzA0oYGEj4wS186pWs8YcKmRxHcWi/z0BPYXgDu0YrC1RN5mmrpQMm7Jz
+	 3u01N9b3mzPuawrCPQS1A8FDkCyuGZcdTXZu86f22+8F/0QW2zur4em35VnHqdZvK1
+	 YDD6RQ4B/DlLw==
+From: Chao Yu <chao@kernel.org>
+To: jaegeuk@kernel.org
+Cc: linux-f2fs-devel@lists.sourceforge.net,
+	linux-kernel@vger.kernel.org,
+	Chao Yu <chao@kernel.org>
+Subject: [PATCH v2] f2fs: fix to truncate meta inode pages forcely
+Date: Fri,  8 Mar 2024 09:08:34 +0800
+Message-Id: <20240308010834.4023772-1-chao@kernel.org>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <Zd4cIxZPABFlt-sE@google.com>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Feb 27, 2024 at 09:30:11AM -0800,
-Sean Christopherson <seanjc@google.com> wrote:
+Below race case can cause data corruption:
 
-> On Tue, Feb 27, 2024, Isaku Yamahata wrote:
-> > On Mon, Feb 26, 2024 at 10:50:55AM -0800,
-> > Sean Christopherson <seanjc@google.com> wrote:
-> > 
-> > > Please post an RFC for _just_ this functionality, and follow-up in existing,
-> > > pre-v19 conversations for anything else that changed between v18 and v19 and might
-> > > need additional input/discussion.
-> > 
-> > Sure, will post it. My plan is as follow for input/discussion
-> > - Review SEV-SNP patches by Paolo for commonality 
-> > - RFC patch to KVM_MAP_MEMORY or KVM_FAULTIN_MEMORY
-> > - RFC patch for uKVM for confidential VM
-> 
-> uKVM?
+Thread A				GC thread
+					- gc_data_segment
+					 - ra_data_block
+					  - locked meta_inode page
+- f2fs_inplace_write_data
+ - invalidate_mapping_pages
+ : fail to invalidate meta_inode page
+   due to lock failure or dirty|writeback
+   status
+ - f2fs_submit_page_bio
+ : write last dirty data to old blkaddr
+					 - move_data_block
+					  - load old data from meta_inode page
+					  - f2fs_submit_page_write
+					  : write old data to new blkaddr
 
-I meant uAPI, sorry for typo.
-Although I looked into a unified uAPI with SEV, the gain seem to be small or
-none. I'm currently planning to drop it based on the feedback at
-https://lore.kernel.org/kvm/ZL%2Fr6Vca8WkFVaic@google.com/
+Because invalidate_mapping_pages() will skip invalidating page which
+has unclear status including locked, dirty, writeback and so on, so
+we need to use truncate_inode_pages_range() instead of
+invalidate_mapping_pages() to make sure meta_inode page will be dropped.
+
+Fixes: 6aa58d8ad20a ("f2fs: readahead encrypted block during GC")
+Fixes: e3b49ea36802 ("f2fs: invalidate META_MAPPING before IPU/DIO write")
+Signed-off-by: Chao Yu <chao@kernel.org>
+---
+v2:
+- fix race condition description.
+ fs/f2fs/checkpoint.c    |  5 +++--
+ fs/f2fs/f2fs.h          | 28 +++++++++++++++++++++++++++-
+ fs/f2fs/segment.c       |  5 ++---
+ include/linux/f2fs_fs.h |  1 +
+ 4 files changed, 33 insertions(+), 6 deletions(-)
+
+diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
+index a09a9609e228..55b7d2cf030f 100644
+--- a/fs/f2fs/checkpoint.c
++++ b/fs/f2fs/checkpoint.c
+@@ -1598,8 +1598,9 @@ static int do_checkpoint(struct f2fs_sb_info *sbi, struct cp_control *cpc)
+ 	 */
+ 	if (f2fs_sb_has_encrypt(sbi) || f2fs_sb_has_verity(sbi) ||
+ 		f2fs_sb_has_compression(sbi))
+-		invalidate_mapping_pages(META_MAPPING(sbi),
+-				MAIN_BLKADDR(sbi), MAX_BLKADDR(sbi) - 1);
++		f2fs_bug_on(sbi,
++			invalidate_inode_pages2_range(META_MAPPING(sbi),
++				MAIN_BLKADDR(sbi), MAX_BLKADDR(sbi) - 1));
+ 
+ 	f2fs_release_ino_entry(sbi, false);
+ 
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index 4836e7cb0efe..9814e5981a6a 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -4655,10 +4655,36 @@ static inline bool f2fs_is_readonly(struct f2fs_sb_info *sbi)
+ 	return f2fs_sb_has_readonly(sbi) || f2fs_readonly(sbi->sb);
+ }
+ 
++static inline void f2fs_truncate_meta_inode_pages(struct f2fs_sb_info *sbi,
++					block_t blkaddr, unsigned int cnt)
++{
++	bool need_submit = false;
++	int i = 0;
++
++	do {
++		struct page *page;
++
++		page = find_get_page(META_MAPPING(sbi), blkaddr + i);
++		if (page) {
++			if (PageWriteback(page))
++				need_submit = true;
++			f2fs_put_page(page, 0);
++		}
++	} while (++i < cnt && !need_submit);
++
++	if (need_submit)
++		f2fs_submit_merged_write_cond(sbi, sbi->meta_inode,
++							NULL, 0, DATA);
++
++	truncate_inode_pages_range(META_MAPPING(sbi),
++			F2FS_BLK_TO_BYTES((loff_t)blkaddr),
++			F2FS_BLK_END_BYTES((loff_t)(blkaddr + cnt - 1)));
++}
++
+ static inline void f2fs_invalidate_internal_cache(struct f2fs_sb_info *sbi,
+ 								block_t blkaddr)
+ {
+-	invalidate_mapping_pages(META_MAPPING(sbi), blkaddr, blkaddr);
++	f2fs_truncate_meta_inode_pages(sbi, blkaddr, 1);
+ 	f2fs_invalidate_compress_page(sbi, blkaddr);
+ }
+ 
+diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+index 4ff3b2d14ddf..20af48d7f784 100644
+--- a/fs/f2fs/segment.c
++++ b/fs/f2fs/segment.c
+@@ -3741,8 +3741,7 @@ int f2fs_inplace_write_data(struct f2fs_io_info *fio)
+ 	}
+ 
+ 	if (fio->post_read)
+-		invalidate_mapping_pages(META_MAPPING(sbi),
+-				fio->new_blkaddr, fio->new_blkaddr);
++		f2fs_truncate_meta_inode_pages(sbi, fio->new_blkaddr, 1);
+ 
+ 	stat_inc_inplace_blocks(fio->sbi);
+ 
+@@ -3932,7 +3931,7 @@ void f2fs_wait_on_block_writeback_range(struct inode *inode, block_t blkaddr,
+ 	for (i = 0; i < len; i++)
+ 		f2fs_wait_on_block_writeback(inode, blkaddr + i);
+ 
+-	invalidate_mapping_pages(META_MAPPING(sbi), blkaddr, blkaddr + len - 1);
++	f2fs_truncate_meta_inode_pages(sbi, blkaddr, len);
+ }
+ 
+ static int read_compacted_summaries(struct f2fs_sb_info *sbi)
+diff --git a/include/linux/f2fs_fs.h b/include/linux/f2fs_fs.h
+index 755e9a41b196..a357287eac1e 100644
+--- a/include/linux/f2fs_fs.h
++++ b/include/linux/f2fs_fs.h
+@@ -27,6 +27,7 @@
+ 
+ #define F2FS_BYTES_TO_BLK(bytes)	((bytes) >> F2FS_BLKSIZE_BITS)
+ #define F2FS_BLK_TO_BYTES(blk)		((blk) << F2FS_BLKSIZE_BITS)
++#define F2FS_BLK_END_BYTES(blk)		(F2FS_BLK_TO_BYTES(blk + 1) - 1)
+ 
+ /* 0, 1(node nid), 2(meta nid) are reserved node id */
+ #define F2FS_RESERVED_NODE_NUM		3
 -- 
-Isaku Yamahata <isaku.yamahata@linux.intel.com>
+2.40.1
+
 
