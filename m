@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-96833-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96832-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D78B8761FE
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:31:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B5ED8761FD
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:31:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5EBCD1C20B0A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 10:31:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3CCE51C20323
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 10:31:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78FF555C27;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54D4455C08;
 	Fri,  8 Mar 2024 10:30:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n6NG8FI0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qG53Um5m"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABD7954775;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88AF51E48E;
 	Fri,  8 Mar 2024 10:30:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709893834; cv=none; b=m2F0sJPJoylIJQo0j0Dc0zU1kqt/LgS1uc7oKzRch9zs4HvQiUOBpocLwmQb3Eq56KF4Jv4tMNtrNY+F+N98HZhQthOOzLPTEBn3Pg8HMVRe9DVR7MT4pCd+hciPxNvOns4uZeZvSfNynJpdiNAKZskt+nqnp5Xm/6zS1yh1Uu4=
+	t=1709893834; cv=none; b=TuvRCZQICnSHDBnCu1kEgXtWcswyZtTw9srXNSMoVQDKR2/0imhY5q3l5ZlYzJMD90dgqsgnPmS3Xx93+8PaUVvcHiHIq9UjGQwQrAlj7+WQPLMTVzzjDXH06vCH5FWGX4Fjgb555xAHrNCSje1fw5unolA3DvDw6yOB9QXWPjI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1709893834; c=relaxed/simple;
-	bh=jXZRPKHn0JFP8FteGX2Hur/wWRGFd7wXTpyzyCjO2qw=;
+	bh=DBJyvUiFYHBmEE5Rw8Tzk8KpqQceFdTVRr7W62ft2DU=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=Hm2iuOsCEV6Bzoha7d0fH+GE+GWieg7z1ujEjw8S6eE/Uyq0E6aRtLmgT4z7qvliDicoNC3v31uMkJgbRNf98tznN7NiGk7G/i050qc4fJBduCgiLdhMrIjKvhDzMZrzCPd0ZbSkBVIxFaWMcrR9FZXDaZAoUXO1cWlTt7ob50A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n6NG8FI0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 3ACC0C433B1;
+	 In-Reply-To:To:Cc; b=EKpj8YvAs46RrGlMQay+SUmgeFyKkj2BpBgihM/s/pt+XsakjXuwZS4xaLnA7srKk5IP9sykLJ55pUYYythpqo/Hpnd0Q+i1i1H8NCbvLU8iw2Lij3yZyIzO5zuEjuyusAZcvUXDIlzwebIlHiINQd8Wr45V7OQoo7xPZF39shs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qG53Um5m; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 363BBC433A6;
 	Fri,  8 Mar 2024 10:30:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1709893834;
-	bh=jXZRPKHn0JFP8FteGX2Hur/wWRGFd7wXTpyzyCjO2qw=;
+	bh=DBJyvUiFYHBmEE5Rw8Tzk8KpqQceFdTVRr7W62ft2DU=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=n6NG8FI0yUlWyavOwVgKXevPY+TLRUmH5R/FGfe7KkjAxAUC87jSXqkaYAioUxnXN
-	 Gg+RKGTgYQkJDCZDpzI0I45t9FdAYgvwrKvaO91z0Lf2594RXsCvyn/4dkIzpTO3Rt
-	 8NnqgfEzKYe3ki4d8Rf8BK9nge0zzwJgPZHpCNDBAFDYdXa6RWNOZQSNEOX8OpOtML
-	 8w5vPPC8SpJTMh5cgSNlFx/9qSu732hCHK3ZDVoeOYCNp2iyoD6JDTBPsECdVtaPZ+
-	 bpeeXRzJSFwQkLnYjhJmQYMH75psRLc8K62VdaR4C/J4bTgMWQMMdrJs3+tMqDi2FB
-	 R30nrYQQ9H/tg==
+	b=qG53Um5mAWgMveKQoLnosEWx8G31xr4T853Bc+Hxzr0zReHgFufMJInKHrgQZRWGd
+	 y1/g/93stjS7tEs3Ah1LPe3/YgWjnnz7T9uMTxMi9wsWHmAeO/cHdBwUhgbGaR+KYN
+	 9MQT0jnhKGMWTyIufzoeLKCxTzWcntlXOWwMLfzdoBHIupiArRloxzdEiJOvBlPmB6
+	 Ih25sCNLi3PeBBlOr9NVd+3+ryUMJH+LJB1CHc8aWOzJv4CsXe+8le4ILefkCA0aDN
+	 8JcCeNMm6zOEnJcnCXqbY274AWaLgMgYtpJAUJZOOuVMfYLkW5Xf7AvncX4og3mQgg
+	 GCoCgyulNJg1w==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1FF1AD84BDB;
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 12C99D84BDC;
 	Fri,  8 Mar 2024 10:30:34 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
@@ -51,39 +51,41 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v4] net: dqs: add NIC stall detector based on BQL
+Subject: Re: [net-next PATCH] octeontx2-pf: Add TC flower offload support for TCP
+ flags
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <170989383412.12583.2389930654847220179.git-patchwork-notify@kernel.org>
+ <170989383407.12583.3109784089553687997.git-patchwork-notify@kernel.org>
 Date: Fri, 08 Mar 2024 10:30:34 +0000
-References: <20240304140901.121533-1-leitao@debian.org>
-In-Reply-To: <20240304140901.121533-1-leitao@debian.org>
-To: Breno Leitao <leitao@debian.org>
-Cc: kuba@kernel.org, davem@davemloft.net, pabeni@redhat.com,
- edumazet@google.com, rostedt@goodmis.org, mhiramat@kernel.org,
- mathieu.desnoyers@efficios.com, akpm@linux-foundation.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org, horms@kernel.org,
- dsahern@kernel.org, bhelgaas@google.com, rdunlap@infradead.org,
- corbet@lwn.net, johannes.berg@intel.com, linux-trace-kernel@vger.kernel.org
+References: <20240305181606.244208-1-saikrishnag@marvell.com>
+In-Reply-To: <20240305181606.244208-1-saikrishnag@marvell.com>
+To: Sai Krishna Gajula <saikrishnag@marvell.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ sgoutham@marvell.com, gakula@marvell.com, hkelam@marvell.com,
+ sbhatta@marvell.com
 
 Hello:
 
 This patch was applied to netdev/net-next.git (main)
 by David S. Miller <davem@davemloft.net>:
 
-On Mon,  4 Mar 2024 06:08:47 -0800 you wrote:
-> From: Jakub Kicinski <kuba@kernel.org>
+On Tue, 5 Mar 2024 23:46:06 +0530 you wrote:
+> This patch adds TC offload support for matching TCP flags
+> from TCP header.
 > 
-> softnet_data->time_squeeze is sometimes used as a proxy for
-> host overload or indication of scheduling problems. In practice
-> this statistic is very noisy and has hard to grasp units -
-> e.g. is 10 squeezes a second to be expected, or high?
+> Example usage:
+> tc qdisc add dev eth0 ingress
+> 
+> TC rule to drop the TCP SYN packets:
+> tc filter add dev eth0 ingress protocol ip flower ip_proto tcp tcp_flags
+> 0x02/0x3f skip_sw action drop
 > 
 > [...]
 
 Here is the summary with links:
-  - [net-next,v4] net: dqs: add NIC stall detector based on BQL
-    https://git.kernel.org/netdev/net-next/c/6025b9135f7a
+  - [net-next] octeontx2-pf: Add TC flower offload support for TCP flags
+    https://git.kernel.org/netdev/net-next/c/3b43f19d065d
 
 You are awesome, thank you!
 -- 
