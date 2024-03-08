@@ -1,117 +1,91 @@
-Return-Path: <linux-kernel+bounces-96713-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96715-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EA1887606F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 09:57:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7802287607B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 09:59:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D015F1C21FA6
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 08:57:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31435281193
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 08:59:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB79052F79;
-	Fri,  8 Mar 2024 08:57:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3F28524D2;
+	Fri,  8 Mar 2024 08:59:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="fSSGiIhj"
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="bdSRG0xm"
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2F4DCA78;
-	Fri,  8 Mar 2024 08:57:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 439935103F;
+	Fri,  8 Mar 2024 08:59:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709888266; cv=none; b=kHLjeExHCwntr0r21LX/1Rju1gnNEiCwvcAplwvwOik1QarbgFwgzTEKV72bC3yZrn8jqpoQsRsq/9Wy0RxrWrTWdxz7Eg94Ld+RDEWDe6ADSExpA3myzAjM4LqUvylUMOC7hoy3aeutIGOz/9NQs9sCUPmzGNjEoPZvI3WskuA=
+	t=1709888359; cv=none; b=hha/vUgFN0SxzdzuSwLb6/AuuDj53FTsSPg4aV51U1LMQtMl5MUaXO+LI914/FH/hVqCEgNPb+/7nffQIxmCYNTZFdV9QmV2YT1Jq460R8IFmqbMtAm1fDi8gSS28B0x38DXEO/4iwiifGBedp92mxSi8tuNOAcJLAZeMneQ7ZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709888266; c=relaxed/simple;
-	bh=uJ3EyYuTfpSTSeJvokr2q70eVIcyAYGuvsrPShpdwLk=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:To:From:Subject:
-	 References:In-Reply-To; b=AZEHgHB44XTx9/E95N6crSAygnvzRIGRDAx1aYnLluSLKW8Py/r+/8eZf9MdByx86ZVPeC7yCi+oO/yOZ7+SzYuXkC7ivYiJ7sA+jxvW0jxMfOxQqyk6n60zXEdpCmCmZcpuBgnY4SyxnBDi2hYftFk5TPFLIecwvfVA5LCXIWw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=fSSGiIhj; arc=none smtp.client-ip=217.70.183.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 261D5240012;
-	Fri,  8 Mar 2024 08:57:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709888260;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6wpE0Hg9jSaOaaAHVX5lz1UQTKT/gbia9ZxM7ce23zk=;
-	b=fSSGiIhjdhlTXL7ypsCX8Q/rGBtXrmUC+3UmYox8nwCoFM+QtNq05DuKpwfjwAgwjDeQ87
-	+dMbqmsTqmv9bjhkIPw9lxpasMEL+liUQNJiyBxSqUmQPn6N8D3J6H3pRZTYZR16dDW/i3
-	DyzzmTr6FT60wlkCts2xU9tP5muwJW0cJ9ir5wCQzVcqdjmWNdiPt4WFI4frZq99DYk5iL
-	PANweUx4Sw3BBo8Hw9VVbo3IAE+k8kTSxQ99WCJUs1dxkCVHK6oHdkfzh44hEPN2xLxQCi
-	yAonmeerihXrGFRu/4e0+DKdlgKHApehOnlARjjGme2WUhMTfqZzaVO2P1rr5Q==
+	s=arc-20240116; t=1709888359; c=relaxed/simple;
+	bh=9nk/LM8qbXxqqrGQTnt5jKWaF87oDn2J91q3tvQdGAc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kB0lJfT7YVSp5Zqqc051xJSF9sdMtkOwdpYbTEUDKt0vhD7jltvACkQTiCVrguWaPPPBO2EGZ333N4RNy+9TaAHJbCCWimKHZXxUY/kLZVwt1iQeuPAGE5HOPU/sLS3bGFJxQjzcRgsIhci/4ZdrJ7CVQktVnbRbQbWmbeCLql8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=bdSRG0xm; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:From:
+	Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:In-Reply-To:
+	References; bh=9nk/LM8qbXxqqrGQTnt5jKWaF87oDn2J91q3tvQdGAc=; t=1709888357;
+	x=1710320357; b=bdSRG0xmeLMlyH1q4zHZRFOQZ96DPNKdWGyVdBaPjbdgD+cyotvxft8Pp2eT/
+	YcXx2DlQlwhSHI32OlTD0s8i1ydk2n+dTkmlNvQZvT84ui5MzQfPTwTBwTetKwWWN+rxm9FnnBzjC
+	wfIiLRJ6ct9u1RosnHKNHmn9D7VB/IY3H5B0WvLc/huDV1IN/eMICIbT4SspgsgSs8eU5QAyFEHNg
+	30Jfq9zl0u9wP7QhZpGmvdIz4I5utKPup2aNkQ6+dtfzcQ3r+pW36ZoCq+J8GqJUlHiP7W/WgwOdc
+	iiU17RskOH0mhca0IzS5NMTYU3gnM1XgL2m+IUMERlTPSZuMkw==;
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1riW4D-0001ul-M1; Fri, 08 Mar 2024 09:59:01 +0100
+Message-ID: <7c7e363b-ec9b-4b46-a0bf-7ae062d734d1@leemhuis.info>
+Date: Fri, 8 Mar 2024 09:58:59 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/1] drm/qxl: fixes qxl_fence_wait
+Content-Language: en-US, de-DE
+To: Alex Constantino <dreaming.about.electric.sheep@gmail.com>
+Cc: 1054514@bugs.debian.org, airlied@redhat.com, carnil@debian.org,
+ daniel@ffwll.ch, dri-devel@lists.freedesktop.org, kraxel@redhat.com,
+ linux-kernel@vger.kernel.org, regressions@lists.linux.dev,
+ spice-devel@lists.freedesktop.org, timo.lindfors@iki.fi,
+ tzimmermann@suse.de, virtualization@lists.linux-foundation.org
+References: <fb0fda6a-3750-4e1b-893f-97a3e402b9af@leemhuis.info>
+ <20240308010851.17104-1-dreaming.about.electric.sheep@gmail.com>
+ <20240308010851.17104-2-dreaming.about.electric.sheep@gmail.com>
+From: Thorsten Leemhuis <regressions@leemhuis.info>
+In-Reply-To: <20240308010851.17104-2-dreaming.about.electric.sheep@gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Date: Fri, 08 Mar 2024 09:57:39 +0100
-Message-Id: <CZO8SUELNP4R.230VKX59UIHC8@bootlin.com>
-Cc: "Linus Walleij" <linus.walleij@linaro.org>, "Rob Herring"
- <robh+dt@kernel.org>, "Krzysztof Kozlowski"
- <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
- "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
- <linux-arm-kernel@lists.infradead.org>, <linux-i2c@vger.kernel.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <linux-mips@vger.kernel.org>, "Gregory Clement"
- <gregory.clement@bootlin.com>, "Vladimir Kondratiev"
- <vladimir.kondratiev@mobileye.com>, "Thomas Petazzoni"
- <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
- <tawfik.bayouk@mobileye.com>
-To: "Andi Shyti" <andi.shyti@kernel.org>
-From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Subject: Re: [PATCH v3 03/11] i2c: nomadik: simplify IRQ masking logic
-X-Mailer: aerc 0.15.2
-References: <20240306-mbly-i2c-v3-0-605f866aa4ec@bootlin.com>
- <20240306-mbly-i2c-v3-3-605f866aa4ec@bootlin.com>
- <422szb2dtgnq56xznfqsqtqs3dai2jipnntrp6yb2og353whs7@g4ia5ynnmqu6>
-In-Reply-To: <422szb2dtgnq56xznfqsqtqs3dai2jipnntrp6yb2og353whs7@g4ia5ynnmqu6>
-X-GND-Sasl: theo.lebrun@bootlin.com
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1709888357;95bd5470;
+X-HE-SMSGID: 1riW4D-0001ul-M1
 
-Hello,
+On 08.03.24 02:08, Alex Constantino wrote:
+> Fix OOM scenario by doing multiple notifications to the OOM handler through
+> a busy wait logic.
+> Changes from commit 5a838e5d5825 ("drm/qxl: simplify qxl_fence_wait") would
+> result in a '[TTM] Buffer eviction failed' exception whenever it reached a
+> timeout.
 
-On Fri Mar 8, 2024 at 12:01 AM CET, Andi Shyti wrote:
-> Hi Theo,
->
-> On Wed, Mar 06, 2024 at 06:59:23PM +0100, Th=C3=A9o Lebrun wrote:
-> > IRQ_MASK and I2C_CLEAR_ALL_INTS both mask available interrupts. IRQ_MAS=
-K
-> > removes top options (bits 29-31). I2C_CLEAR_ALL_INTS removes reserved
-> > options including top bits. Keep the latter.
-> >=20
-> > 31  29  27  25  23  21  19  17  15  13  11  09  07  05  03  01
-> >   30  28  26  24  22  20  18  16  14  12  10  08  06  04  02  00
-> > --- IRQ_MASK: --------------------------------------------------
-> >       1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
-> > 0 0 0
-> > --- I2C_CLEAR_ALL_INTS: ----------------------------------------
-> >       1     1 1       1 1 1 1 1                   1 1 1 1 1 1 1
-> > 0 0 0   0 0     0 0 0           0 0 0 0 0 0 0 0 0
-> >=20
-> > Notice I2C_CLEAR_ALL_INTS is more restrictive than IRQ_MASK.
-> >=20
-> > Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> > Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
->
-> You did answer my question in v2, thanks, Theo!
+Thx for working on this.
 
-Oops my mailer syntax is telling me that the lines starting with '---'
-might cause issue as it might mark the end of commit messages. I'll fix
-that in next revision. If it gets applied before that it should be
-checked that part of the message doesn't get lost.
+> Fixes: 5a838e5d5825 ("drm/qxl: simplify qxl_fence_wait")
+> Link: https://lore.kernel.org/regressions/fb0fda6a-3750-4e1b-893f-97a3e402b9af@leemhuis.info
 
-Thanks Andi,
+Nitpicking: that ideally should be pointing to
+https://lore.kernel.org/regressions/ZTgydqRlK6WX_b29@eldamar.lan/ , as
+that the report and not just a reply to prod things.
 
---
-Th=C3=A9o Lebrun, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
-
+Ciao, Thorsten
 
