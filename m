@@ -1,212 +1,200 @@
-Return-Path: <linux-kernel+bounces-96474-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96477-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13191875CA7
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 04:18:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A28AA875CB1
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 04:26:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 364891C2140A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 03:18:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D78E4B21AB6
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 03:26:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9BF42D043;
-	Fri,  8 Mar 2024 03:17:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEC822C1A0;
+	Fri,  8 Mar 2024 03:26:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="QpqXMXc3"
-Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="V8Airerv"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEC6C2C684;
-	Fri,  8 Mar 2024 03:17:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.113
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D906C2C19A
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 03:25:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709867859; cv=none; b=d0N4PeDTMaQHMxrNI6SG9EoGb4yq7N2qhY0zvNXbF79xHrMoVyW3WYu2nP1QmpRc668cUOX9B0PItB4+1+wWTnqpha/jTeOUJoJhvyyksvtK7r9mvFmkjzyplc4he+Bsz4yy2QGP0HdRPMo20Jj86JjD9IQWhheUh18IDd0tEB8=
+	t=1709868361; cv=none; b=fppvzQJ1tKk5aOxydI3LOpniwf/C/8Wv7S4zaTIa7FjC1gyZQIkk7IbE6szY9Nar9+Cst3fV5uXh8gopXoOj0Nl3GozSTlpXEuzBqhYKkL1ByHnO+mHXPijEsUp9T+yZU0qaENOjd8yddhBOAVDu799iKhq+sN0jSuagy9Y3beQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709867859; c=relaxed/simple;
-	bh=4Sy6HjQT0R4TSYXK22k7jkxy7MdvO9WkaPp52ywCZYA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=nmeMHVirU8hXRUMaqq44ne8feWq7QANgLF/aqO0Cs2lAzQgLE6S3x/HyKuBqsR/2r3NFQ6Qta3AQ0erz3xu4Of3zWUbjfFrZ2phvrAuq/tH6pKS6MGJ3ag5/omxIuby5xmJHs3D7zYIjMHVUBwHoSaG+Qcst+e4m0e4jEjLnr38=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=QpqXMXc3; arc=none smtp.client-ip=115.124.30.113
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1709867853; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=TQjtAD0VH/M9/CSlEii+2IdqraHARU9mdrM1K9D7Z2Q=;
-	b=QpqXMXc3iFbNKjxPg2/mhodTMCEO9dOuMzbYSYp19OTxVKwNi7OhxJwxlptZ6Ccowl6/CLRWYWN8xQI3lr2uAOcSi3NClVjKRrajpB6J5qjkzWNeVjY0BuCqTUtJwp39wlBTU5OqMxP35fkhDAvl7o8xD2CFWLAU9KtGi1Njnpw=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R791e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=xiangzao@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0W21N1Nr_1709867851;
-Received: from localhost.localdomain(mailfrom:xiangzao@linux.alibaba.com fp:SMTPD_---0W21N1Nr_1709867851)
-          by smtp.aliyun-inc.com;
-          Fri, 08 Mar 2024 11:17:32 +0800
-From: Yuanhe Shu <xiangzao@linux.alibaba.com>
-To: keescook@chromium.org,
-	tony.luck@intel.com,
-	gpiccoli@igalia.com,
-	shuah@kernel.org,
-	corbet@lwn.net
-Cc: xlpang@linux.alibaba.com,
-	linux-kernel@vger.kernel.org,
-	xiangzao@linux.alibaba.com,
-	yixingrui@linux.alibaba.com,
-	linux-doc@vger.kernel.org,
-	linux-hardening@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH v4 4/4] tools/testing: adjust pstore backend related selftest
-Date: Fri,  8 Mar 2024 11:16:56 +0800
-Message-Id: <20240308031656.9672-5-xiangzao@linux.alibaba.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20240308031656.9672-1-xiangzao@linux.alibaba.com>
-References: <20240308031656.9672-1-xiangzao@linux.alibaba.com>
+	s=arc-20240116; t=1709868361; c=relaxed/simple;
+	bh=YxYsPp2jT0+nsgvCsO0L9tTPd6klWc6+ck0k5NkCspQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OM/8FgYmJOz5VEqrtwCKmlKZGGumSRe2HmkPkwtcj4RGfGAq9ESKsgxSwJmucZtySMozTFX9cNaO6JADqoszBwtw684spojOEiJOC0HgRNobFHVMQVNuoWXaONr/w4oU8AG6ymuOnKlQMyJnFv0fIor7gBFtuv+OX8QnT6OhI2w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=V8Airerv; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709868358;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PybR5AcU1HfTv1X4VNBJgftVTm18j/aD+eRiC/mDwDM=;
+	b=V8AirervOibKZ1F0WKoNUmQMfTROwJyXLONsXecen2OZQML/TFaltqzJS9CmOOIBOhPY3W
+	dXBsayybAUY+l6ahSdZWT4TunR1Iy161EJUfOmhQ1waNr+tK/JH6l6wQgMSv0RtBvFYslF
+	oVSf8hDr7Xjem7T/WqgR3Op+WRHetIY=
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
+ [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-591-JVXOh-4uMpCBCYVtNxBlQw-1; Thu, 07 Mar 2024 22:25:57 -0500
+X-MC-Unique: JVXOh-4uMpCBCYVtNxBlQw-1
+Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1dbcbffd853so18425235ad.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 19:25:56 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709868351; x=1710473151;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PybR5AcU1HfTv1X4VNBJgftVTm18j/aD+eRiC/mDwDM=;
+        b=fhn4oBMFpUSg5wkVLmnr397IHK22WBPFZdvAQWDI082zu5GC329wo5YSvNrRj8T6Ig
+         fs/IsY4KyQ7wNA25tvgrXTBkviFefkdgFX9h17kvpCbifVZPpc9/O7l6gO5PvF1Vn9PG
+         oBWpE95aARFD3VnREpCvQrB6Y2DfQSF/SrT1xttKIjNjznv+an9+qsnTblzW0EqC1eUI
+         X3c4bgoVrf+/wyeKytRhgjDa0pw5yn2E+ZzGAxyajl7WQZU7NBEF1I6ITQoq1A7DR7Le
+         TWYJF771ofrhYpY/Y/uW+bgDpGBGF3QdJHidrx5g7t2TT+ym9OARye0nf/z9wNCpvN1J
+         dB8A==
+X-Gm-Message-State: AOJu0YzKFIvvUTSEQXqSV3n8Z1fW+DF7tQRTbEdz3nz/4MHJdLKZJX+F
+	WBbhu/En2FVWfNXS0Kz8NwcUB6n1xedtkgN5ZZhG83QKLX3zcqhDPaCiJOsAafVLnecPwVZ9R65
+	ykAjRGkNH0aw2630iDlbt8puiArZ9Dltl5e8ljLsnuS3ehDNf7QHmF6OUIXoaRA==
+X-Received: by 2002:a17:902:ea12:b0:1dd:528e:9bd with SMTP id s18-20020a170902ea1200b001dd528e09bdmr4024735plg.34.1709868351025;
+        Thu, 07 Mar 2024 19:25:51 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHxLZl1+bQFUoT9RAmqGoW5BDWYJ6KqC6bmlwf1NbsnLayaLnh2DK4Bmp+XlKoPDIQgjasuBw==
+X-Received: by 2002:a17:902:ea12:b0:1dd:528e:9bd with SMTP id s18-20020a170902ea1200b001dd528e09bdmr4024717plg.34.1709868350551;
+        Thu, 07 Mar 2024 19:25:50 -0800 (PST)
+Received: from localhost.localdomain ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id x15-20020a170902ec8f00b001dcb654d1a5sm15324100plg.21.2024.03.07.19.25.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Mar 2024 19:25:50 -0800 (PST)
+Date: Fri, 8 Mar 2024 11:25:41 +0800
+From: Tao Liu <ltao@redhat.com>
+To: Dave Rodgman <dave.rodgman@arm.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Matt Sealey <Matt.Sealey@arm.com>,
+	"davem@davemloft.net" <davem@davemloft.net>,
+	"gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+	"herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
+	"markus@oberhumer.com" <markus@oberhumer.com>,
+	"minchan@kernel.org" <minchan@kernel.org>,
+	"nitingupta910@gmail.com" <nitingupta910@gmail.com>,
+	"rpurdie@openedhand.com" <rpurdie@openedhand.com>,
+	"sergey.senozhatsky.work@gmail.com" <sergey.senozhatsky.work@gmail.com>,
+	"sonnyrao@google.com" <sonnyrao@google.com>,
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+	"sfr@canb.auug.org.au" <sfr@canb.auug.org.au>, nd <nd@arm.com>
+Subject: Re: [PATCH v5 0/3]: lib/lzo: run-length encoding support
+Message-ID: <ZeqFNf6Ay6yNq2kW@localhost.localdomain>
+References: <20190205155944.16007-1-dave.rodgman@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190205155944.16007-1-dave.rodgman@arm.com>
 
-Pstore now supports multiple backends, the module parameter
-pstore.backend varies from 'registered backend' to 'backends that are
-allowed to register' and a new entry /sys/module/pstore/loaded_backend
-is added to show which pstore backends are loaded at present. Adjust
-selftests to match the change.
+Hi Dave,
 
-Signed-off-by: Yuanhe Shu <xiangzao@linux.alibaba.com>
----
- tools/testing/selftests/pstore/common_tests   |  8 +--
- .../selftests/pstore/pstore_post_reboot_tests | 67 ++++++++++---------
- tools/testing/selftests/pstore/pstore_tests   |  2 +-
- 3 files changed, 40 insertions(+), 37 deletions(-)
+On Tue, Feb 05, 2019 at 03:59:59PM +0000, Dave Rodgman wrote:
+> Hi,
+> 
+> Following on from the previous lzo-rle patchset:
+> 
+> https://lkml.org/lkml/2018/11/30/972
+> 
+> This patchset contains only the RLE patches, and should be applied on top of
+> the non-RLE patches ( https://lkml.org/lkml/2019/2/5/366 ).
+> 
 
-diff --git a/tools/testing/selftests/pstore/common_tests b/tools/testing/selftests/pstore/common_tests
-index 4509f0cc9c91..db717f656a73 100755
---- a/tools/testing/selftests/pstore/common_tests
-+++ b/tools/testing/selftests/pstore/common_tests
-@@ -27,9 +27,9 @@ show_result() { # result_value
- }
- 
- check_files_exist() { # type of pstorefs file
--    if [ -e ${1}-${backend}-0 ]; then
-+    if [ -e ${1}-${2}-0 ]; then
- 	prlog "ok"
--	for f in `ls ${1}-${backend}-*`; do
-+	for f in `ls ${1}-${2}-*`; do
-             prlog -e "\t${f}"
- 	done
-     else
-@@ -74,9 +74,9 @@ prlog "=== Pstore unit tests (`basename $0`) ==="
- prlog "UUID="$UUID
- 
- prlog -n "Checking pstore backend is registered ... "
--backend=`cat /sys/module/pstore/parameters/backend`
-+backends=`cat /sys/module/pstore/loaded_backend`
- show_result $?
--prlog -e "\tbackend=${backend}"
-+prlog -e "\tbackends=${backends}"
- prlog -e "\tcmdline=`cat /proc/cmdline`"
- if [ $rc -ne 0 ]; then
-     exit 1
-diff --git a/tools/testing/selftests/pstore/pstore_post_reboot_tests b/tools/testing/selftests/pstore/pstore_post_reboot_tests
-index d6da5e86efbf..666b45bd7b87 100755
---- a/tools/testing/selftests/pstore/pstore_post_reboot_tests
-+++ b/tools/testing/selftests/pstore/pstore_post_reboot_tests
-@@ -35,46 +35,49 @@ else
-     fi
- fi
- 
-+IFS=','
- cd ${mount_point}
-+for backend in ${backends}; do
-+    prlog -n "Checking ${backend}-dmesg files exist in pstore filesystem ... "
-+    check_files_exist dmesg ${backend}
- 
--prlog -n "Checking dmesg files exist in pstore filesystem ... "
--check_files_exist dmesg
-+    prlog -n "Checking ${backend}-console files exist in pstore filesystem ... "
-+    check_files_exist console ${backend}
- 
--prlog -n "Checking console files exist in pstore filesystem ... "
--check_files_exist console
-+    prlog -n "Checking ${backend}-pmsg files exist in pstore filesystem ... "
-+    check_files_exist pmsg ${backend}
- 
--prlog -n "Checking pmsg files exist in pstore filesystem ... "
--check_files_exist pmsg
-+    prlog -n "Checking ${backend}-dmesg files contain oops end marker"
-+    grep_end_trace() {
-+        grep -q "\---\[ end trace" $1
-+    }
-+    files=`ls dmesg-${backend}-*`
-+    operate_files $? "$files" grep_end_trace
- 
--prlog -n "Checking dmesg files contain oops end marker"
--grep_end_trace() {
--    grep -q "\---\[ end trace" $1
--}
--files=`ls dmesg-${backend}-*`
--operate_files $? "$files" grep_end_trace
-+    prlog -n "Checking ${backend}-console file contains oops end marker ... "
-+    grep -q "\---\[ end trace" console-${backend}-0
-+    show_result $?
- 
--prlog -n "Checking console file contains oops end marker ... "
--grep -q "\---\[ end trace" console-${backend}-0
--show_result $?
--
--prlog -n "Checking pmsg file properly keeps the content written before crash ... "
--prev_uuid=`cat $TOP_DIR/prev_uuid`
--if [ $? -eq 0 ]; then
--    nr_matched=`grep -c "$TEST_STRING_PATTERN" pmsg-${backend}-0`
--    if [ $nr_matched -eq 1 ]; then
--	grep -q "$TEST_STRING_PATTERN"$prev_uuid pmsg-${backend}-0
--	show_result $?
-+    prlog -n "Checking ${backend}-pmsg file properly keeps the content written before crash ... "
-+    prev_uuid=`cat $TOP_DIR/prev_uuid`
-+    if [ $? -eq 0 ]; then
-+        nr_matched=`grep -c "$TEST_STRING_PATTERN" pmsg-${backend}-0`
-+        if [ $nr_matched -eq 1 ]; then
-+	    grep -q "$TEST_STRING_PATTERN"$prev_uuid pmsg-${backend}-0
-+	    show_result $?
-+        else
-+            prlog "FAIL"
-+            rc=1
-+        fi
-     else
--	prlog "FAIL"
--	rc=1
-+        prlog "FAIL"
-+        rc=1
-     fi
--else
--    prlog "FAIL"
--    rc=1
--fi
- 
--prlog -n "Removing all files in pstore filesystem "
--files=`ls *-${backend}-*`
--operate_files $? "$files" rm
-+    prlog -n "Removing all ${backend} files in pstore filesystem "
-+    files=`ls *-${backend}-*`
-+    operate_files $? "$files" rm
-+done
-+unset IFS
- 
- exit $rc
-diff --git a/tools/testing/selftests/pstore/pstore_tests b/tools/testing/selftests/pstore/pstore_tests
-index 2aa9a3852a84..f4665a8c77dc 100755
---- a/tools/testing/selftests/pstore/pstore_tests
-+++ b/tools/testing/selftests/pstore/pstore_tests
-@@ -10,7 +10,7 @@
- . ./common_tests
- 
- prlog -n "Checking pstore console is registered ... "
--dmesg | grep -Eq "console \[(pstore|${backend})"
-+dmesg | grep -Eq "console \[(pstore console)"
- show_result $?
- 
- prlog -n "Checking /dev/pmsg0 exists ... "
--- 
-2.39.3
+Sorry for the interruption, since it is an old patchset and discussion.
+I have a few questions on lzo-rle support, hope you can give me some
+directions, thanks in advance!
+
+1) Is lzo-rle suitable for userspace library? I've checked the current
+userspace lzo library lzo-2.10, it seems no lzo-rle support (Please
+correct me if I'm wrong). If lzo-rle have better performance in kernel,
+then is it possible to implement one in userspace and gain better
+performance as well?
+
+2) Currently Yulong TANG have encountered problem that, crash utility
+cannot decompress a lzo-rle compressed zram since kernel 5.1 [1], since
+there is no lzo-rle support for current lzo library, crash have to
+import the kernel source code directly into crash, which is not good for
+crash utility code maintainance. It will be better if we can update lzo
+library with lzo-rle support. I guess not only crash, but also other
+kernel debugging tools running in userspace such as drgn may also need
+this feature.
+
+Do you have any suggestions on for these?
+
+[1]: https://www.mail-archive.com/devel@lists.crash-utility.osci.io/msg00475.html
+
+Thanks,
+Tao Liu 
+
+
+> 
+> Previously, some questions were raised around the RLE patches. I've done some
+> additional benchmarking to answer these questions. In short:
+> 
+>  - RLE offers significant additional performance (data-dependent)
+>  - I didn't measure any regressions that were clearly outside the noise
+> 
+> 
+> One concern with this patchset was around performance - specifically, measuring
+> RLE impact separately from Matt Sealey's patches (CTZ & fast copy). I have done
+> some additional benchmarking which I hope clarifies the benefits of each part
+> of the patchset.
+> 
+> Firstly, I've captured some memory via /dev/fmem from a Chromebook with many
+> tabs open which is starting to swap, and then split this into 4178 4k pages.
+> I've excluded the all-zero pages (as zram does), and also the no-zero pages
+> (which won't tell us anything about RLE performance). This should give a
+> realistic test dataset for zram. What I found was that the data is VERY
+> bimodal: 44% of pages in this dataset contain 5% or fewer zeros, and 44%
+> contain over 90% zeros (30% if you include the no-zero pages). This supports
+> the idea of special-casing zeros in zram.
+> 
+> Next, I've benchmarked four variants of lzo on these pages (on 64-bit Arm at
+> max frequency): baseline LZO; baseline + Matt Sealey's patches (aka MS);
+> baseline + RLE only; baseline + MS + RLE. Numbers are for weighted roundtrip
+> throughput (the weighting reflects that zram does more compression than
+> decompression).
+> 
+> https://drive.google.com/file/d/1VLtLjRVxgUNuWFOxaGPwJYhl_hMQXpHe/view?usp=sharing
+> 
+> Matt's patches help in all cases for Arm (and no effect on Intel), as expected.
+> 
+> RLE also behaves as expected: with few zeros present, it makes no difference;
+> above ~75%, it gives a good improvement (50 - 300 MB/s on top of the benefit
+> from Matt's patches).
+> 
+> Best performance is seen with both MS and RLE patches.
+> 
+> Finally, I have benchmarked the same dataset on an x86-64 device. Here, the
+> MS patches make no difference (as expected); RLE helps, similarly as on Arm.
+> There were no definite regressions; allowing for observational error, 0.1%
+> (3/4178) of cases had a regression > 1 standard deviation, of which the largest
+> was 4.6% (1.2 standard deviations). I think this is probably within the noise.
+> 
+> https://drive.google.com/file/d/1xCUVwmiGD0heEMx5gcVEmLBI4eLaageV/view?usp=sharing
+> 
+> One point to note is that the graphs show RLE appears to help very slightly
+> with no zeros present! This is because the extra code causes the clang
+> optimiser to change code layout in a way that happens to have a significant
+> benefit. Taking baseline LZO and adding a do-nothing line like
+> "__builtin_prefetch(out_len);" immediately before the "goto next" has the same
+> effect. So this is a real, but basically spurious effect - it's small enough
+> not to upset the overall findings.
+> 
+> Dave
+> 
+> 
 
 
