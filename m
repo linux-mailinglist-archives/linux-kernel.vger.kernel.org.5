@@ -1,138 +1,118 @@
-Return-Path: <linux-kernel+bounces-97389-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97390-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0666C8769EB
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:30:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D92B38769EE
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:30:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D2DB1C2129C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:30:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 62018B20C39
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:30:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55E045D75E;
-	Fri,  8 Mar 2024 17:28:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9073E4C627;
+	Fri,  8 Mar 2024 17:29:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="dtDlJ6AJ"
-Received: from bee.tesarici.cz (bee.tesarici.cz [37.205.15.56])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="2jeLcoHp"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A331D5B5C3
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 17:28:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.205.15.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADC9D28DAE;
+	Fri,  8 Mar 2024 17:29:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709918902; cv=none; b=aJtCmssRpuCxKC1GNlo/Jn9FNFNBAp/bwInN+9c3hToPi4EaZkWHr1zvfGlrNBRT6DcCDvNAgHr6TeToHEeUV0QdwDLApNuL74WFX1QBMZcsvzhbEPLBNydV5s98w3GbZ7njwRbC2yzxJgnQn/t+Wvk5P6DozmJTokiSYxyb2HY=
+	t=1709918986; cv=none; b=FB5XVOfwAilaoNEiu99X1xPKwDaCQvBOMlwXvZW17h2fTGRhkE5/yxUb5OUCc560+mEtXMMa+NGhkN5ehpLEHGqr4pdG711wb16GddB6N3yLee9z3PaUAlFpMhT40MSbp3jFQ/RrX+BmHoTI9vFt7hfVF5Ibct40KuGwIvvarro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709918902; c=relaxed/simple;
-	bh=RpplHZoWRCwJBQzacp1/sEZWsMwTazs9ZvYuQaaQW3s=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=fw1JeKMVCa77R+n0MBaNKVkL/pOE1uiOvEOyrOGCDsqfiFC5jNFAQWkHBkEd9hza7DnvTu8KV9ca6iSn6ZG/h2I3+iNgViXiZW2wByK24dMvJq/8p/25yYz3dV+g+OaHBU0mnmurXVaIWp+CqZQLHsmga0jl44l+lAPfqvkJrxY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz; spf=pass smtp.mailfrom=tesarici.cz; dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b=dtDlJ6AJ; arc=none smtp.client-ip=37.205.15.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tesarici.cz
-Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by bee.tesarici.cz (Postfix) with ESMTPSA id 5ACC91CDD3D;
-	Fri,  8 Mar 2024 18:28:18 +0100 (CET)
-Authentication-Results: mail.tesarici.cz; dmarc=fail (p=quarantine dis=none) header.from=tesarici.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tesarici.cz; s=mail;
-	t=1709918898; bh=Kh5qXYlmNI8yXj7FHKJySjYJ+bgEs1XYPseFJ0PQC3I=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=dtDlJ6AJTV0HohsVWIa/BdsZ4tUcZ5RlOZUFwSV8B9JYNQgwfQgXneqKDPmCRxOhi
-	 4I4k4NziEPUCjyPt1FiY4D4ePPb144pZCdZku48qsHlz5D5bt1HnSgUb0wJwr1YxDF
-	 od4lXCx4tVaXSPqACZiKZwKXXmOMxChMZR+Jp1bB5kvFx60CXZBE+mgDRZa9XGgxm5
-	 Lhi11D7770Ypj/PmD4aeKmeqFYltqDCqOba2A+RfeihUAaXh7BF2tv6mUE3DnROdxJ
-	 xhSJh0xI+8YX0Axo5fo5dQcKQH/qR7dRPLvani5ohkdP1vrpmZ22V9JXUBNHb1DoAq
-	 El/mgKgHc6+8Q==
-Date: Fri, 8 Mar 2024 18:28:17 +0100
-From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
-To: Will Deacon <will@kernel.org>
-Cc: linux-kernel@vger.kernel.org, kernel-team@android.com,
- iommu@lists.linux.dev, Christoph Hellwig <hch@lst.de>, Marek Szyprowski
- <m.szyprowski@samsung.com>, Robin Murphy <robin.murphy@arm.com>, Petr
- Tesarik <petr.tesarik1@huawei-partners.com>, Dexuan Cui
- <decui@microsoft.com>, Nicolin Chen <nicolinc@nvidia.com>, Michael Kelley
- <mhklinux@outlook.com>
-Subject: Re: [PATCH v6 6/6] swiotlb: Reinstate page-alignment for mappings
- >= PAGE_SIZE
-Message-ID: <20240308182817.7687329f@meshulam.tesarici.cz>
-In-Reply-To: <20240308152829.25754-7-will@kernel.org>
-References: <20240308152829.25754-1-will@kernel.org>
-	<20240308152829.25754-7-will@kernel.org>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-suse-linux-gnu)
+	s=arc-20240116; t=1709918986; c=relaxed/simple;
+	bh=iuKd7BJCZde3rcVymwHNOdzVrzk9Y9A/nmtw093sWLs=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=Z20ZqBpN4p5Q/hkq3td9/FB8Vq4DyNhO/IXpRRBT0B1Vb5mNI+vG9bmwc+G0xS0fS6himSzDXbCrmnLs5gNQ7/cua4PpP3TcbqsVTpgtIspGW0KFsYa7aMMSbJ6PkL+x12uQts59Ojl1D200DbY6Qa2pYUUBl6x8ScM14txm2w0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=2jeLcoHp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B283AC433F1;
+	Fri,  8 Mar 2024 17:29:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1709918986;
+	bh=iuKd7BJCZde3rcVymwHNOdzVrzk9Y9A/nmtw093sWLs=;
+	h=Date:From:To:Cc:Subject:From;
+	b=2jeLcoHp/Hw7n2ScOxtQ53yPVWPgJ0G/T32fHwopai0qdXc5P9JMbRIAIxta2W+/8
+	 tg23Ig4WOzaG2acN392GnbSlsgf6xb9N0//+ogbt4Z+IyAMUGeMPbT403xfhQiuRwH
+	 Z+bhryRhefUz/+wXQQPYoc+fj38HgZLuU5DjSrPE=
+Date: Fri, 8 Mar 2024 17:29:43 +0000
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
+	linux-usb@vger.kernel.org
+Subject: [GIT PULL] USB/Thunderbolt driver fixes for 6.8-rc8
+Message-ID: <ZetLB2-_00QyZZJs@kroah.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Fri,  8 Mar 2024 15:28:29 +0000
-Will Deacon <will@kernel.org> wrote:
+The following changes since commit d206a76d7d2726f3b096037f2079ce0bd3ba329b:
 
-> For swiotlb allocations >= PAGE_SIZE, the slab search historically
-> adjusted the stride to avoid checking unaligned slots. This had the
-> side-effect of aligning large mapping requests to PAGE_SIZE, but that
-> was broken by 0eee5ae10256 ("swiotlb: fix slot alignment checks").
-> 
-> Since this alignment could be relied upon drivers, reinstate PAGE_SIZE
-> alignment for swiotlb mappings >= PAGE_SIZE.
-> 
-> Reported-by: Michael Kelley <mhklinux@outlook.com>
-> Signed-off-by: Will Deacon <will@kernel.org>
-> 
-> ---
->  kernel/dma/swiotlb.c | 18 +++++++++++-------
->  1 file changed, 11 insertions(+), 7 deletions(-)
-> 
-> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-> index c381a7ed718f..c5851034523f 100644
-> --- a/kernel/dma/swiotlb.c
-> +++ b/kernel/dma/swiotlb.c
-> @@ -992,6 +992,17 @@ static int swiotlb_search_pool_area(struct device *dev, struct io_tlb_pool *pool
->  	BUG_ON(!nslots);
->  	BUG_ON(area_index >= pool->nareas);
->  
-> +	/*
-> +	 * Historically, swiotlb allocations >= PAGE_SIZE were guaranteed to be
-> +	 * page-aligned in the absence of any other alignment requirements.
-> +	 * 'alloc_align_mask' was later introduced to specify the alignment
-> +	 * explicitly, however this is passed as zero for streaming mappings
-> +	 * and so we preserve the old behaviour there in case any drivers are
-> +	 * relying on it.
-> +	 */
-> +	if (!alloc_align_mask && !iotlb_align_mask && alloc_size >= PAGE_SIZE)
-> +		alloc_align_mask = PAGE_SIZE - 1;
-> +
+  Linux 6.8-rc6 (2024-02-25 15:46:06 -0800)
 
-This could be moved up the call chain to swiotlb_tbl_map_single(), but
-since there is already a plan to modify the call signatures for the
-next release, let's keep it here.
+are available in the Git repository at:
 
-Reviewed-by: Petr Tesarik <petr.tesarik1@huawei-partners.com>
+  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-6.8-rc8
 
-Petr T
+for you to fetch changes up to b234c70fefa7532d34ebee104de64cc16f1b21e4:
 
->  	/*
->  	 * Ensure that the allocation is at least slot-aligned and update
->  	 * 'iotlb_align_mask' to ignore bits that will be preserved when
-> @@ -1006,13 +1017,6 @@ static int swiotlb_search_pool_area(struct device *dev, struct io_tlb_pool *pool
->  	 */
->  	stride = get_max_slots(max(alloc_align_mask, iotlb_align_mask));
->  
-> -	/*
-> -	 * For allocations of PAGE_SIZE or larger only look for page aligned
-> -	 * allocations.
-> -	 */
-> -	if (alloc_size >= PAGE_SIZE)
-> -		stride = umax(stride, PAGE_SHIFT - IO_TLB_SHIFT + 1);
-> -
->  	spin_lock_irqsave(&area->lock, flags);
->  	if (unlikely(nslots > pool->area_nslabs - area->used))
->  		goto not_found;
+  xhci: Fix failure to detect ring expansion need. (2024-03-05 13:47:08 +0000)
 
+----------------------------------------------------------------
+USB / Thunderbolt fixes for 6.8-rc8 (or -final)
+
+Here are some small remaining fixes for USB and Thunderbolt drivers for
+6.8-rc8.  Included in here are fixes for:
+  - thunderbold NULL dereference fix
+  - typec driver fixes
+  - xhci driver regression fix
+  - usb-storage divide-by-0 fix
+  - ncm gadget driver fix
+
+All of these have been in linux-next with no reported issues.
+
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+----------------------------------------------------------------
+Alan Stern (1):
+      USB: usb-storage: Prevent divide-by-0 error in isd200_ata_command
+
+Badhri Jagan Sridharan (1):
+      usb: typec: tpcm: Fix PORT_RESET behavior for self powered devices
+
+Greg Kroah-Hartman (1):
+      Merge tag 'thunderbolt-for-v6.8-rc7' of git://git.kernel.org/pub/scm/linux/kernel/git/westeri/thunderbolt into usb-linus
+
+Krishna Kurapati (1):
+      usb: gadget: ncm: Fix handling of zero block length packets
+
+Mathias Nyman (2):
+      usb: port: Don't try to peer unused USB ports based on location
+      xhci: Fix failure to detect ring expansion need.
+
+Mika Westerberg (1):
+      thunderbolt: Fix NULL pointer dereference in tb_port_update_credits()
+
+Neil Armstrong (1):
+      usb: typec: ucsi: fix UCSI on SM8550 & SM8650 Qualcomm devices
+
+RD Babiera (1):
+      usb: typec: altmodes/displayport: create sysfs nodes as driver's default device attribute group
+
+ drivers/thunderbolt/switch.c             |  3 +++
+ drivers/usb/core/port.c                  |  5 +++--
+ drivers/usb/gadget/function/f_ncm.c      |  2 +-
+ drivers/usb/host/xhci-ring.c             |  8 +++++++-
+ drivers/usb/storage/isd200.c             | 23 ++++++++++++++++++-----
+ drivers/usb/typec/altmodes/displayport.c | 18 +++++++++---------
+ drivers/usb/typec/tcpm/tcpm.c            |  7 +++++--
+ drivers/usb/typec/ucsi/ucsi_glink.c      |  1 +
+ 8 files changed, 47 insertions(+), 20 deletions(-)
 
