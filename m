@@ -1,348 +1,270 @@
-Return-Path: <linux-kernel+bounces-97444-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97443-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80291876AA3
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 19:16:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0B79876AA1
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 19:16:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36ED5283066
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:16:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3ADEE1F21D96
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:16:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9F125823E;
-	Fri,  8 Mar 2024 18:16:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAE4A56745;
+	Fri,  8 Mar 2024 18:15:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="VAHkuw4h"
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+	dkim=pass (1024-bit key) header.d=bp.renesas.com header.i=@bp.renesas.com header.b="AOHNBk/x"
+Received: from OS0P286CU010.outbound.protection.outlook.com (mail-japanwestazon11010000.outbound.protection.outlook.com [52.101.228.0])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F402F17745;
-	Fri,  8 Mar 2024 18:15:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.148.174
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709921760; cv=none; b=Ub450gDwQo1SRATnapAvmxSG0UasIsCaEiUTumXVdffbYMcovqCxZcxvRJdYdFxlRwgMZ6D0QoQ/f1atHG3RhCVhzCF8gPw3AHV0PhbogBB910DD2vmKV8u2tzp5r3AYe8FujV0Im188VI+MNtZya5JP29YBxyKqzEjo8OhCc9M=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709921760; c=relaxed/simple;
-	bh=wxRD1ZTYNzvztdW5CptHw+5R78yFujNF+v6DS4NwlGk=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=jkF9ArG9ykcR5v+m8uyxNIRCbgxwSoOsoGvm2yRdDex4kv3DayJcTQw+mR8mh/FysBgu/OVytzqZJNjDRYmVT+4dp+1zROE6ootkVsDi2d9CSYXLpK2Gg/gXPFNPq/aCBs3cF6pA0FJArc8ot2ZsR80XUns/LL2PtANa+0mH1yk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=VAHkuw4h; arc=none smtp.client-ip=67.231.148.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-	by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 428GdXHQ015669;
-	Fri, 8 Mar 2024 10:15:52 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=pfpt0220; bh=SnUBZ7x6
-	ixGGP9j5iu8zqYX1t+21E4VeEcMOUAJbdW4=; b=VAHkuw4hOza6n81HGHKIg1LO
-	XjAW6jbbgGMAJey2+v7JS2ZTAfOeRSacqAsxESeX4tgDyMfyqjWlfgGWCtCIZAte
-	D0FddGAt1Cu1kaUiEJYZdZWMQGiE2OY1iW6fSDItu4blg0LtIgBd1e6zvFErLndq
-	EYYfmnsebtADKDo3hIlK05bI0HlQmzwtyXA7iqfwm+au2dauFc1//nwOHm+K+ads
-	O3FyUA0zpYF3CQK5KV+1lRlt6oYlfki5h5qAQtDwpgdEKzj/sYP1ztREfRTQK0X5
-	MzpKtEDz5meR0bszPmJdJTOS3lSpc6u4DjxcaTBBCJxA/9GoNoLb5um9SLmvlA==
-Received: from dc6wp-exch02.marvell.com ([4.21.29.225])
-	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3wr5r2ghur-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 08 Mar 2024 10:15:51 -0800 (PST)
-Received: from DC6WP-EXCH02.marvell.com (10.76.176.209) by
- DC6WP-EXCH02.marvell.com (10.76.176.209) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.12; Fri, 8 Mar 2024 10:15:50 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC6WP-EXCH02.marvell.com
- (10.76.176.209) with Microsoft SMTP Server id 15.2.1258.12 via Frontend
- Transport; Fri, 8 Mar 2024 10:15:50 -0800
-Received: from hyd1425.marvell.com (unknown [10.29.37.83])
-	by maili.marvell.com (Postfix) with ESMTP id E105B5B6929;
-	Fri,  8 Mar 2024 10:15:46 -0800 (PST)
-From: Sai Krishna <saikrishnag@marvell.com>
-To: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <sgoutham@marvell.com>,
-        <gakula@marvell.com>, <hkelam@marvell.com>, <sbhatta@marvell.com>
-CC: Sai Krishna <saikrishnag@marvell.com>
-Subject: [net-next PATCH v3] octeontx2-pf: Reset MAC stats during probe
-Date: Fri, 8 Mar 2024 23:45:44 +0530
-Message-ID: <20240308181544.806928-1-saikrishnag@marvell.com>
-X-Mailer: git-send-email 2.25.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49BC917745;
+	Fri,  8 Mar 2024 18:15:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.228.0
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709921752; cv=fail; b=q9IC4a9a+gBrP7JdyraqVaDU4wUM1rKrB2kkOnXPrQ3rAvYVh5eoi9O9rFEKDMFX0OejZ8bHHCE8REJfOSBO8RrUGJQ+PdtGFkBCJ6syOyG6g6yqkclx+ZWkAY4lL5YZgwEGhVNH0y/m5+Uzr2UjDJL9Wo7Hp1GMXUYuQdX0fjU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709921752; c=relaxed/simple;
+	bh=QIqWaef2GYYOTpSNEWzLQ34GHj6HAuCrFLV9kPYPxNE=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=GwqlPKb4YComlsbtIyGGLele5/oZKcdazh/fDuRQJG5DGEmGuJn4bv7uCa/PsQeNdMw8eRh94Bn3dtplB6L3uioMQ5T79oAgvrXXXaGsyJeqYQrR2fc15yjPCjm39zI5wkvE9iSHRvlR7z4rYaIJvl0b1vRIZ3U8IUr+/6K90NE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com; spf=pass smtp.mailfrom=bp.renesas.com; dkim=pass (1024-bit key) header.d=bp.renesas.com header.i=@bp.renesas.com header.b=AOHNBk/x; arc=fail smtp.client-ip=52.101.228.0
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bp.renesas.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UokO4ewIiV13m5lfz0Jjv0bofIUCqpX4fd4ZFX2IBtTWze2Mu7iIUqt9Poko7MY1ATsHthtgGat3uMo6Rep2SDdawQBXNLwmKYHMmoaSFTBscCvrG79zB93fHaorXZk1KfOCvURHEIj8W2bE0uN3tEB3Un8PaiyeddG1fNrlzqU2PQI/S2B+Hdk3AZ1n8lTFojp3hagKrO3iK0vrGrpNYQilkDJN9ftp56FMtk+ldVdRwzryFdQw22Ph45+TZZ4MVi0X5L4jhyBO/KnkpzAlT+FwG5rmKc222ZEsuUH9tvC9tMca8C3OTe0T6wnLSdrZCnI86vo4TTIrp7FHTBUzMw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=QIqWaef2GYYOTpSNEWzLQ34GHj6HAuCrFLV9kPYPxNE=;
+ b=GhdM2IwqypiHwM1huqVMrXoD7zOtiXzrl5XVN++es9MYS/WrX2C5SgeROzx3WpvasZajVTpy6ZlKqxUMFfIJgsY3v3+cvijyGhUxjTr1Um5oAFiyWAMx6R4smQ8MYY0dYHVKkII7YeMAbPo3bj5OSk3S7Gcb48tSXAxw67ICRPpsUOyGX7uPFFrbvLLon4CWSQjo+iu0CjKs8N4TFbGNyYDzWpYoKeu9hMzlscg4ilIzcQFAi8LAZhlu3otsMJqRXAVjfRnOadO9D6SxroIlMhf1Q0bEzi2bhDsos1DdMMXhSNXRAVBQ607b3mbh7ZYMbb4ud/jWashCNPHKGFJ8uA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
+ header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bp.renesas.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QIqWaef2GYYOTpSNEWzLQ34GHj6HAuCrFLV9kPYPxNE=;
+ b=AOHNBk/xL4KMWY0Da8qB5zpFCu5XwDTxUEYM9cOYSL7kxaCod2YjwoYD7gNFJl0rtbuv7e4niEdoJCj8W9yC0oiuP0gts0PIh4nMt/1OkKupBqdK97ZP3ekMLpaEzb1mjCg4DCkCFytH/gZMd0KvJAwIWebvTVSdaryE4xqLEJM=
+Received: from OSAPR01MB1587.jpnprd01.prod.outlook.com (2603:1096:603:2e::16)
+ by OS3PR01MB5654.jpnprd01.prod.outlook.com (2603:1096:604:b4::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.27; Fri, 8 Mar
+ 2024 18:15:46 +0000
+Received: from OSAPR01MB1587.jpnprd01.prod.outlook.com
+ ([fe80::5ff4:8ba7:96e5:7a5b]) by OSAPR01MB1587.jpnprd01.prod.outlook.com
+ ([fe80::5ff4:8ba7:96e5:7a5b%7]) with mapi id 15.20.7362.024; Fri, 8 Mar 2024
+ 18:15:45 +0000
+From: Biju Das <biju.das.jz@bp.renesas.com>
+To: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+CC: Geert Uytterhoeven <geert+renesas@glider.be>, Chris Brandt
+	<Chris.Brandt@renesas.com>, Andi Shyti <andi.shyti@kernel.org>, Rob Herring
+	<robh+dt@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+	Magnus Damm <magnus.damm@gmail.com>, Wolfram Sang
+	<wsa+renesas@sang-engineering.com>, "linux-renesas-soc@vger.kernel.org"
+	<linux-renesas-soc@vger.kernel.org>, "linux-i2c@vger.kernel.org"
+	<linux-i2c@vger.kernel.org>, "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, Fabrizio Castro
+	<fabrizio.castro.jz@renesas.com>, Prabhakar Mahadev Lad
+	<prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: RE: [PATCH 4/5] i2c: riic: Pass register offsets and chip details as
+ OF data
+Thread-Topic: [PATCH 4/5] i2c: riic: Pass register offsets and chip details as
+ OF data
+Thread-Index: AQHacX4tmFc1CI8ipE+h03wpRb2Q9LEuGoKggAAIZoCAAAI6MA==
+Date: Fri, 8 Mar 2024 18:15:45 +0000
+Message-ID:
+ <OSAPR01MB158788EB1E8959BA8455E5FD86272@OSAPR01MB1587.jpnprd01.prod.outlook.com>
+References: <20240308172726.225357-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20240308172726.225357-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <OSAPR01MB1587CFE774834B31820E7D5486272@OSAPR01MB1587.jpnprd01.prod.outlook.com>
+ <CA+V-a8uJO_qz6CaD2zUXC1Kf7tuM+Nzq6W+WHjy09NN2FAn+fA@mail.gmail.com>
+In-Reply-To:
+ <CA+V-a8uJO_qz6CaD2zUXC1Kf7tuM+Nzq6W+WHjy09NN2FAn+fA@mail.gmail.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=bp.renesas.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: OSAPR01MB1587:EE_|OS3PR01MB5654:EE_
+x-ms-office365-filtering-correlation-id: 95567c57-2e10-48b1-c661-08dc3f9bc60d
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ 9iLRIES0C/MgguOz7rqouSXWFT60wAwVmCrpyRSZ8BRdvDNs8YO61WeLicwRzTVuTpJ77guwKtrGB7NgTfwLiPBW4+99hNbtXgkUEprcKHJanL+F/FBMKq51XrVlOsfB6H/TW33QScMcu666PapQmv7elYH3KB03jHTwaavC2F7twSwiVU7SAxYQl0NFyTg11ig+He1iHla9L1zKsefbmgxEl+Os81MPRSwRefB8V271Cz4orO1BypZJxLo/G2OzpwOpismYFdupXMuMNN04bKXBGBjsxz7+38lB6GOU7a1IDwjU+2l5LnLA/ebf7KhZsSjlbv/hK8UQecMvBQqbuLde9/NeTNW3rhBwFCiED9OQbi/kPqQ171PpVFJe2duQWtyIqik+WH/2zqqUvIKs/S5cVBdrNz2cYgulKwzIxQzS3GYSRO5RW0Y2sMGXyOz5Bq73G2QA1PZnqomiRHjsBQTTKEPhSZ2DI7F0lF60moLPQbNlc4V5I7LgfOYiGZEvcSipIpCIoAT3o3YfFO94fzkCnh2eCHQy+tiGIPx8/n2SQXxmGmJTn1WyxyrVTGi5PQV06UqJxGaKULWL414F+1k49JDXqVBMODhhk9u4toF8NzQdvMyi13c0u8Dr+ObtKp5bQkRv74ay6WvAMLXtiRKLd/o8zPja2gCaOmMiX68kwooKJ8n8xTSZ69p6JUGl/CaT2uJEGNgIbbZ6663QfuhiL5vr1TrVkftUHnwqCqo=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSAPR01MB1587.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(7416005)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?a25abEtZQXFlT3FXVUIrSmdwQWZ6Z2pSTjZVOFRQOU5GT3F3QjFVcXRyaVpL?=
+ =?utf-8?B?SDl3ZEJrUGV0VXdjK0ovNDRrWjZUb0V0SFQwK1BuNGRJWVIwVExqcC9rY0VW?=
+ =?utf-8?B?WXU3eEd0eHc1T1JGb0NRMGVnb1ZDYlFjYy9uU1FPUlcyc0FwZlRXd2JPSjFG?=
+ =?utf-8?B?VXkzV3R5UWZnb0gxVGNqb2dwekRONDcyVW9PU1dNK083S2lSVyt5djhzclpx?=
+ =?utf-8?B?cTdua0lLMUN1enRFVTZjeUg2ZDZldHAySXRLS2Y3K3RrdWsyaGdpeDV2SnVD?=
+ =?utf-8?B?bURoNkRNd2RJOHpaUHpCU2hISVJRbUdWazRuZlR3TjNUVno1Nk1lN01GSUw3?=
+ =?utf-8?B?eXZkQlVOYkxMd2lCaWwxTmIvMXUrdjBKMHFMYmNDRFo2VXlXR1FaMy9XdXBI?=
+ =?utf-8?B?Z3Z1cWx4RURFVzcydHozZDRZbWRjU09MM05NWmdXVTNGODNiU0JGR2QzVGh3?=
+ =?utf-8?B?VkJuNE51VzdkelphZ1ZiMmY0dXRUUlcrcWNRcm9LaHR2d3dPN1JCdnE5dUhP?=
+ =?utf-8?B?dGpObzR1RUY4N3hlVDFqYUxkdWlWT0FGUUpWc0w5NjdqR08xQzJxdDZSZm93?=
+ =?utf-8?B?d1ovZ05wMGlwVVBFZE54VC80aVpreGVJZDlvdEc3L1NaMmhsWE5sUXZndHJW?=
+ =?utf-8?B?MjR0VWJtRkpQd21VTXZqT0pjSlJtTkVZK1dyTDVpVlFZa2dqSE1yM0UzNXY5?=
+ =?utf-8?B?ZEFPdzlZa3pZbFNoVUIyZjBJZUN4WlAreHA3SURsUjZRMml6OVZkM0MyQlZm?=
+ =?utf-8?B?SFVVMW1mSS9QSjQrZUZ5ejV0THIzTzNTQkRwVjRTSWFIQUJRTnZBcnNMNzNJ?=
+ =?utf-8?B?Ulh6MXVHeHl1RDlBWFJvZk0zd1QxVFgwNnJVTXVkb3V5QkNGTHVOTEZMMm84?=
+ =?utf-8?B?cmtjbjdJUlArUDF3SzVVWHlaSXA2QUNHMTF4VEJvZkJKSTZpV21JbXkyTml2?=
+ =?utf-8?B?VldNOHNkb0xvc2x2SDdWUVBHbHFmWDA0NWpzbnAzYjhDMk4rbmpTaEtoZzZW?=
+ =?utf-8?B?WHZoUkNQVWgxbjMzL1VpWE9DWDdoTWNXNDRCVy9MaDVMNyswT2lTUlJGR1A0?=
+ =?utf-8?B?QndReG5YelBjeEhxWlU0eURBRjhjWkp6MjRNQ2N2UitIWERDSzcyelRWbFdp?=
+ =?utf-8?B?TmxlOGxIYkwvQmJ3WHdBZ2t0aFBUMGpoZEZvRHhzZlN4K0dROVRjQkNSaTgv?=
+ =?utf-8?B?c1VpTVhZbThQUWJCc3VjK3M4d3I1bjJIcXVxdGZGajJFMkdaSE13V3h3ajNC?=
+ =?utf-8?B?RHFqOEY0OHVScllIM0grOHAyKytCS3h2U2Q5VkRIVDhNbzY4VWxYQUtTa2R6?=
+ =?utf-8?B?VGxrZ0laYzl4UzB2QzdWbjhFTkozc2VNT0tFRytNa1UwRXl2bTA1VUozT3RM?=
+ =?utf-8?B?VVhqR3paRjluT1BFUGlPMjV1UVJiK0htWktzUWlnazZxc2tXaENRNjFjbGo2?=
+ =?utf-8?B?eFlENzU1ejJ6aHY5L0hlZ1dmOWlwbEg4REkwTjZPZnUzV3kySFlBQ0VkTVpD?=
+ =?utf-8?B?L01PZnlxMzNObXdUU2x5dEZsd1RLY3lkaG9aKzBMaHFKNktHZjZwc2RFM29M?=
+ =?utf-8?B?SXRLczVVeXoyZGZKdzhXamtvaDZ4Rkd1S08rcGNQWS8vd2RVdDhmS092b3lF?=
+ =?utf-8?B?aW1zT1FZdlJtdUpoVklPMk5tTWRuY1ZBOUZWZVBtNnBRR3h3UWl3cnFKaWxP?=
+ =?utf-8?B?RDYzZEswTzZGNjZLRFRMcmg0QzI4RVFUdmM3OWNKS3cxZGFmNWRlWGZSQjhs?=
+ =?utf-8?B?YzhaUk5pTStzbE9XNHVYalhwK3hYdkJOOXVMd1hvTzRyRE9FNkgzcmFmN05U?=
+ =?utf-8?B?QyszSzh4aU05WWtKaldKcE5vSlh4N3VxbFRmS28wY2Jnc0JkQ2tSdkQwZFVW?=
+ =?utf-8?B?YVZZWmZvTzMwdkN4K1kyU1Vpd1Noa1lvY2VmN05STTd4VE1CMjJBdENxM1d5?=
+ =?utf-8?B?eE9uSlZXeEF1STVpVm1MWVpnZFA0L09UZnNJN29IOHJaV3F5MnUrNjZvV1Nw?=
+ =?utf-8?B?OEZMek9MV2M3azhDdVV3K0pjbmdkZWp3QWYvUlRBTENVT29tTFFQdGRVT0lJ?=
+ =?utf-8?B?WE13MGh2M2hMTHFzQk03OGdoNTNuVkNORXNuVlNRc2VoRHFJQ2JkWXVwYjd4?=
+ =?utf-8?B?UWZESXlaT05xTUhsdURwRzdzb0dVUjc4ellET3h3ekVqTjlEUHB4TkppZlc0?=
+ =?utf-8?B?RkE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: JUYINUEk74dAp2Pg1dQGPkAzIgUY3h81
-X-Proofpoint-ORIG-GUID: JUYINUEk74dAp2Pg1dQGPkAzIgUY3h81
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-08_08,2024-03-06_01,2023-05-22_02
+X-OriginatorOrg: bp.renesas.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: OSAPR01MB1587.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 95567c57-2e10-48b1-c661-08dc3f9bc60d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Mar 2024 18:15:45.4831
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 9/M9sLkDpT3aBx0xnlBsSsD5WLZOnAP3p3hByVkR+cd3UzqwOlLY8C6/uIwuI4NTLHFK/QaHoQuThGm15CThsM7n6AJ4MbEgRdyhCi8x2OQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS3PR01MB5654
 
-Reset CGX/RPM MAC HW statistics at the time of driver probe()
-
-Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
-Signed-off-by: Sai Krishna <saikrishnag@marvell.com>
----
-v3:
-    - Addressed review comments given by Jakub Kicinski
-        1. Removed un-necessary EXPORT_SYMBOL 
-v2:
-    - Addressed review comments given by Jakub Kicinski
-	1. Removed devlink option to reset MAC stats, 
-           will implement stats reset with debugfs in later patches.
-
- .../net/ethernet/marvell/octeontx2/af/cgx.c   | 27 +++++++++++++++++
- .../net/ethernet/marvell/octeontx2/af/cgx.h   |  1 +
- .../marvell/octeontx2/af/lmac_common.h        |  1 +
- .../net/ethernet/marvell/octeontx2/af/mbox.h  |  1 +
- .../net/ethernet/marvell/octeontx2/af/rpm.c   | 17 +++++++++++
- .../net/ethernet/marvell/octeontx2/af/rpm.h   |  3 ++
- .../ethernet/marvell/octeontx2/af/rvu_cgx.c   | 29 +++++++++++++++++++
- .../marvell/octeontx2/nic/otx2_common.h       |  1 +
- .../ethernet/marvell/octeontx2/nic/otx2_pf.c  | 20 +++++++++++++
- 9 files changed, 100 insertions(+)
-
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/cgx.c b/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
-index 6c70c8498690..c117489f5caf 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
-@@ -24,6 +24,8 @@
- #define DRV_NAME	"Marvell-CGX/RPM"
- #define DRV_STRING      "Marvell CGX/RPM Driver"
- 
-+#define CGX_RX_STAT_GLOBAL_INDEX	9
-+
- static LIST_HEAD(cgx_list);
- 
- /* Convert firmware speed encoding to user format(Mbps) */
-@@ -701,6 +703,30 @@ u64 cgx_features_get(void *cgxd)
- 	return ((struct cgx *)cgxd)->hw_features;
- }
- 
-+int cgx_stats_reset(void *cgxd, int lmac_id)
-+{
-+	struct cgx *cgx = cgxd;
-+	int stat_id;
-+
-+	if (!is_lmac_valid(cgx, lmac_id))
-+		return -ENODEV;
-+
-+	for (stat_id = 0 ; stat_id < CGX_RX_STATS_COUNT; stat_id++) {
-+		if (stat_id >= CGX_RX_STAT_GLOBAL_INDEX)
-+		/* pass lmac as 0 for CGX_CMR_RX_STAT9-12 */
-+			cgx_write(cgx, 0,
-+				  (CGXX_CMRX_RX_STAT0 + (stat_id * 8)), 0);
-+		else
-+			cgx_write(cgx, lmac_id,
-+				  (CGXX_CMRX_RX_STAT0 + (stat_id * 8)), 0);
-+	}
-+
-+	for (stat_id = 0 ; stat_id < CGX_TX_STATS_COUNT; stat_id++)
-+		cgx_write(cgx, lmac_id, CGXX_CMRX_TX_STAT0 + (stat_id * 8), 0);
-+
-+	return 0;
-+}
-+
- static int cgx_set_fec_stats_count(struct cgx_link_user_info *linfo)
- {
- 	if (!linfo->fec)
-@@ -1783,6 +1809,7 @@ static struct mac_ops	cgx_mac_ops    = {
- 	.pfc_config =                   cgx_lmac_pfc_config,
- 	.mac_get_pfc_frm_cfg   =        cgx_lmac_get_pfc_frm_cfg,
- 	.mac_reset   =			cgx_lmac_reset,
-+	.mac_stats_reset       =	cgx_stats_reset,
- };
- 
- static int cgx_probe(struct pci_dev *pdev, const struct pci_device_id *id)
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/cgx.h b/drivers/net/ethernet/marvell/octeontx2/af/cgx.h
-index 6f7d1dee5830..dc9ace30554a 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/cgx.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/cgx.h
-@@ -141,6 +141,7 @@ int cgx_lmac_evh_register(struct cgx_event_cb *cb, void *cgxd, int lmac_id);
- int cgx_lmac_evh_unregister(void *cgxd, int lmac_id);
- int cgx_get_tx_stats(void *cgxd, int lmac_id, int idx, u64 *tx_stat);
- int cgx_get_rx_stats(void *cgxd, int lmac_id, int idx, u64 *rx_stat);
-+int cgx_stats_reset(void *cgxd, int lmac_id);
- int cgx_lmac_rx_tx_enable(void *cgxd, int lmac_id, bool enable);
- int cgx_lmac_tx_enable(void *cgxd, int lmac_id, bool enable);
- int cgx_lmac_addr_set(u8 cgx_id, u8 lmac_id, u8 *mac_addr);
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/lmac_common.h b/drivers/net/ethernet/marvell/octeontx2/af/lmac_common.h
-index 0b4cba03f2e8..9ffc6790c513 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/lmac_common.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/lmac_common.h
-@@ -132,6 +132,7 @@ struct mac_ops {
- 	/* FEC stats */
- 	int			(*get_fec_stats)(void *cgxd, int lmac_id,
- 						 struct cgx_fec_stats_rsp *rsp);
-+	int			(*mac_stats_reset)(void *cgxd, int lmac_id);
- };
- 
- struct cgx {
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-index 61ab7f66f053..cfe8a8327e1b 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-@@ -168,6 +168,7 @@ M(CGX_FEC_STATS,	0x217, cgx_fec_stats, msg_req, cgx_fec_stats_rsp) \
- M(CGX_SET_LINK_MODE,	0x218, cgx_set_link_mode, cgx_set_link_mode_req,\
- 			       cgx_set_link_mode_rsp)	\
- M(CGX_GET_PHY_FEC_STATS, 0x219, cgx_get_phy_fec_stats, msg_req, msg_rsp) \
-+M(CGX_STATS_RST,	0x21A, cgx_stats_rst, msg_req, msg_rsp)		\
- M(CGX_FEATURES_GET,	0x21B, cgx_features_get, msg_req,		\
- 			       cgx_features_info_msg)			\
- M(RPM_STATS,		0x21C, rpm_stats, msg_req, rpm_stats_rsp)	\
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rpm.c b/drivers/net/ethernet/marvell/octeontx2/af/rpm.c
-index 76218f1cb459..1b34cf9c9703 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rpm.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rpm.c
-@@ -38,6 +38,7 @@ static struct mac_ops		rpm_mac_ops   = {
- 	.pfc_config =                   rpm_lmac_pfc_config,
- 	.mac_get_pfc_frm_cfg   =        rpm_lmac_get_pfc_frm_cfg,
- 	.mac_reset   =			rpm_lmac_reset,
-+	.mac_stats_reset		 =	  rpm_stats_reset,
- };
- 
- static struct mac_ops		rpm2_mac_ops   = {
-@@ -70,6 +71,7 @@ static struct mac_ops		rpm2_mac_ops   = {
- 	.pfc_config =                   rpm_lmac_pfc_config,
- 	.mac_get_pfc_frm_cfg   =        rpm_lmac_get_pfc_frm_cfg,
- 	.mac_reset   =			rpm_lmac_reset,
-+	.mac_stats_reset	    =	rpm_stats_reset,
- };
- 
- bool is_dev_rpm2(void *rpmd)
-@@ -443,6 +445,21 @@ int rpm_get_tx_stats(void *rpmd, int lmac_id, int idx, u64 *tx_stat)
- 	return 0;
- }
- 
-+int rpm_stats_reset(void *rpmd, int lmac_id)
-+{
-+	rpm_t *rpm = rpmd;
-+	u64 cfg;
-+
-+	if (!is_lmac_valid(rpm, lmac_id))
-+		return -ENODEV;
-+
-+	cfg = rpm_read(rpm, 0, RPMX_MTI_STAT_STATN_CONTROL);
-+	cfg |= RPMX_CMD_CLEAR_TX | RPMX_CMD_CLEAR_RX | BIT_ULL(lmac_id);
-+	rpm_write(rpm, 0, RPMX_MTI_STAT_STATN_CONTROL, cfg);
-+
-+	return 0;
-+}
-+
- u8 rpm_get_lmac_type(void *rpmd, int lmac_id)
- {
- 	rpm_t *rpm = rpmd;
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rpm.h b/drivers/net/ethernet/marvell/octeontx2/af/rpm.h
-index b79cfbc6f877..34b11deb0f3c 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rpm.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rpm.h
-@@ -85,6 +85,8 @@
- #define RPMX_MTI_STAT_STATN_CONTROL			0x10018
- #define RPMX_MTI_STAT_DATA_HI_CDC			0x10038
- #define RPMX_RSFEC_RX_CAPTURE				BIT_ULL(27)
-+#define RPMX_CMD_CLEAR_RX				BIT_ULL(30)
-+#define RPMX_CMD_CLEAR_TX				BIT_ULL(31)
- #define RPMX_MTI_RSFEC_STAT_COUNTER_CAPTURE_2		0x40050
- #define RPMX_MTI_RSFEC_STAT_COUNTER_CAPTURE_3		0x40058
- #define RPMX_MTI_FCFECX_VL0_CCW_LO			0x38618
-@@ -134,4 +136,5 @@ int rpm2_get_nr_lmacs(void *rpmd);
- bool is_dev_rpm2(void *rpmd);
- int rpm_get_fec_stats(void *cgxd, int lmac_id, struct cgx_fec_stats_rsp *rsp);
- int rpm_lmac_reset(void *rpmd, int lmac_id, u8 pf_req_flr);
-+int rpm_stats_reset(void *rpmd, int lmac_id);
- #endif /* RPM_H */
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
-index 38acdc7a73bb..9ea9a06af8ef 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
-@@ -596,6 +596,35 @@ int rvu_mbox_handler_rpm_stats(struct rvu *rvu, struct msg_req *req,
- 	return rvu_lmac_get_stats(rvu, req, (void *)rsp);
- }
- 
-+int rvu_mbox_handler_cgx_stats_rst(struct rvu *rvu, struct msg_req *req,
-+				   struct msg_rsp *rsp)
-+{
-+	int pf = rvu_get_pf(req->hdr.pcifunc);
-+	struct rvu_pfvf	*parent_pf;
-+	struct mac_ops *mac_ops;
-+	u8 cgx_idx, lmac;
-+	void *cgxd;
-+
-+	if (!is_cgx_config_permitted(rvu, req->hdr.pcifunc))
-+		return LMAC_AF_ERR_PERM_DENIED;
-+
-+	parent_pf = &rvu->pf[pf];
-+	/* To ensure reset cgx stats won't affect VF stats,
-+	 *  check if it used by only PF interface.
-+	 *  If not, return
-+	 */
-+	if (parent_pf->cgx_users > 1) {
-+		dev_info(rvu->dev, "CGX busy, could not reset statistics\n");
-+		return 0;
-+	}
-+
-+	rvu_get_cgx_lmac_id(rvu->pf2cgxlmac_map[pf], &cgx_idx, &lmac);
-+	cgxd = rvu_cgx_pdata(cgx_idx, rvu);
-+	mac_ops = get_mac_ops(cgxd);
-+
-+	return mac_ops->mac_stats_reset(cgxd, lmac);
-+}
-+
- int rvu_mbox_handler_cgx_fec_stats(struct rvu *rvu,
- 				   struct msg_req *req,
- 				   struct cgx_fec_stats_rsp *rsp)
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-index 06910307085e..a60eff335cd4 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-@@ -961,6 +961,7 @@ void otx2_get_mac_from_af(struct net_device *netdev);
- void otx2_config_irq_coalescing(struct otx2_nic *pfvf, int qidx);
- int otx2_config_pause_frm(struct otx2_nic *pfvf);
- void otx2_setup_segmentation(struct otx2_nic *pfvf);
-+int otx2_reset_mac_stats(struct otx2_nic *pfvf);
- 
- /* RVU block related APIs */
- int otx2_attach_npa_nix(struct otx2_nic *pfvf);
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-index e5fe67e73865..8728122d465a 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-@@ -1124,6 +1124,23 @@ static int otx2_cgx_config_linkevents(struct otx2_nic *pf, bool enable)
- 	return err;
- }
- 
-+int otx2_reset_mac_stats(struct otx2_nic *pfvf)
-+{
-+	struct msg_req *req;
-+	int err;
-+
-+	mutex_lock(&pfvf->mbox.lock);
-+	req = otx2_mbox_alloc_msg_cgx_stats_rst(&pfvf->mbox);
-+	if (!req) {
-+		mutex_unlock(&pfvf->mbox.lock);
-+		return -ENOMEM;
-+	}
-+
-+	err = otx2_sync_mbox_msg(&pfvf->mbox);
-+	mutex_unlock(&pfvf->mbox.lock);
-+	return err;
-+}
-+
- static int otx2_cgx_config_loopback(struct otx2_nic *pf, bool enable)
- {
- 	struct msg_req *msg;
-@@ -3048,6 +3065,9 @@ static int otx2_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 
- 	otx2_qos_init(pf, qos_txqs);
- 
-+	/* reset CGX/RPM MAC stats */
-+	otx2_reset_mac_stats(pf);
-+
- 	return 0;
- 
- err_pf_sriov_init:
--- 
-2.25.1
-
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTGFkLCBQcmFiaGFrYXIg
+PHByYWJoYWthci5jc2VuZ2dAZ21haWwuY29tPg0KPiBTZW50OiBGcmlkYXksIE1hcmNoIDgsIDIw
+MjQgNjowNCBQTQ0KPiBUbzogQmlqdSBEYXMgPGJpanUuZGFzLmp6QGJwLnJlbmVzYXMuY29tPg0K
+PiBDYzogR2VlcnQgVXl0dGVyaG9ldmVuIDxnZWVydCtyZW5lc2FzQGdsaWRlci5iZT47IENocmlz
+IEJyYW5kdCA8Q2hyaXMuQnJhbmR0QHJlbmVzYXMuY29tPjsgQW5kaSBTaHl0aQ0KPiA8YW5kaS5z
+aHl0aUBrZXJuZWwub3JnPjsgUm9iIEhlcnJpbmcgPHJvYmgrZHRAa2VybmVsLm9yZz47IEtyenlz
+enRvZiBLb3psb3dza2kNCj4gPGtyenlzenRvZi5rb3psb3dza2krZHRAbGluYXJvLm9yZz47IENv
+bm9yIERvb2xleSA8Y29ub3IrZHRAa2VybmVsLm9yZz47IE1hZ251cyBEYW1tDQo+IDxtYWdudXMu
+ZGFtbUBnbWFpbC5jb20+OyBXb2xmcmFtIFNhbmcgPHdzYStyZW5lc2FzQHNhbmctZW5naW5lZXJp
+bmcuY29tPjsgbGludXgtcmVuZXNhcy0NCj4gc29jQHZnZXIua2VybmVsLm9yZzsgbGludXgtaTJj
+QHZnZXIua2VybmVsLm9yZzsgZGV2aWNldHJlZUB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LQ0KPiBr
+ZXJuZWxAdmdlci5rZXJuZWwub3JnOyBGYWJyaXppbyBDYXN0cm8gPGZhYnJpemlvLmNhc3Ryby5q
+ekByZW5lc2FzLmNvbT47IFByYWJoYWthciBNYWhhZGV2IExhZA0KPiA8cHJhYmhha2FyLm1haGFk
+ZXYtbGFkLnJqQGJwLnJlbmVzYXMuY29tPg0KPiBTdWJqZWN0OiBSZTogW1BBVENIIDQvNV0gaTJj
+OiByaWljOiBQYXNzIHJlZ2lzdGVyIG9mZnNldHMgYW5kIGNoaXAgZGV0YWlscyBhcyBPRiBkYXRh
+DQo+IA0KPiBIaSBCaWp1LA0KPiANCj4gT24gRnJpLCBNYXIgOCwgMjAyNCBhdCA1OjM24oCvUE0g
+QmlqdSBEYXMgPGJpanUuZGFzLmp6QGJwLnJlbmVzYXMuY29tPiB3cm90ZToNCj4gPg0KPiA+IEhp
+IFByYWJoYWthciwNCj4gPg0KPiA+IFRoYW5rcyBmb3IgdGhlIHBhdGNoLg0KPiA+DQo+ID4gPiAt
+LS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiA+ID4gRnJvbTogUHJhYmhha2FyIDxwcmFiaGFr
+YXIuY3NlbmdnQGdtYWlsLmNvbT4NCj4gPiA+IFNlbnQ6IEZyaWRheSwgTWFyY2ggOCwgMjAyNCA1
+OjI3IFBNDQo+ID4gPiBTdWJqZWN0OiBbUEFUQ0ggNC81XSBpMmM6IHJpaWM6IFBhc3MgcmVnaXN0
+ZXIgb2Zmc2V0cyBhbmQgY2hpcA0KPiA+ID4gZGV0YWlscyBhcyBPRiBkYXRhDQo+ID4gPg0KPiA+
+ID4gRnJvbTogTGFkIFByYWJoYWthciA8cHJhYmhha2FyLm1haGFkZXYtbGFkLnJqQGJwLnJlbmVz
+YXMuY29tPg0KPiA+ID4NCj4gPiA+IFdpdGggYW4gaW5jcmVhc2luZyBudW1iZXIgb2YgU29DcyBy
+ZXVzaW5nIHRoaXMgZHJpdmVyLCBlYWNoIHdpdGgNCj4gPiA+IHNsaWdodCB2YXJpYXRpb25zIGlu
+IHRoZSBSSUlDIElQLCBpdCBiZWNvbWVzIG5lY2Vzc2FyeSB0byBzdXBwb3J0DQo+ID4gPiBwYXNz
+aW5nIHRoZXNlIGRldGFpbHMgYXMgT0YgZGF0YS4gVGhpcyBhcHByb2FjaCBzaW1wbGlmaWVzIHRo
+ZSBleHRlbnNpb24gb2YgdGhlIGRyaXZlciBmb3Igb3RoZXINCj4gU29Dcy4NCj4gPiA+DQo+ID4g
+PiBUaGlzIHBhdGNoIGxheXMgdGhlIGdyb3VuZHdvcmsgZm9yIGFkZGluZyBzdXBwb3J0IGZvciB0
+aGUgUmVuZXNhcyBSWi9WMkggU29DLg0KPiA+ID4NCj4gPiA+IFNpZ25lZC1vZmYtYnk6IExhZCBQ
+cmFiaGFrYXINCj4gPiA+IDxwcmFiaGFrYXIubWFoYWRldi1sYWQucmpAYnAucmVuZXNhcy5jb20+
+DQo+ID4gPiBSZXZpZXdlZC1ieTogRmFicml6aW8gQ2FzdHJvIDxmYWJyaXppby5jYXN0cm8uanpA
+cmVuZXNhcy5jb20+DQo+ID4gPiAtLS0NCj4gPiA+ICBkcml2ZXJzL2kyYy9idXNzZXMvaTJjLXJp
+aWMuYyB8IDU5DQo+ID4gPiArKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLQ0KPiA+
+ID4gIDEgZmlsZSBjaGFuZ2VkLCA0NCBpbnNlcnRpb25zKCspLCAxNSBkZWxldGlvbnMoLSkNCj4g
+PiA+DQo+ID4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9pMmMvYnVzc2VzL2kyYy1yaWljLmMNCj4g
+PiA+IGIvZHJpdmVycy9pMmMvYnVzc2VzL2kyYy1yaWljLmMgaW5kZXgNCj4gPiA+IDQ5YTEyZjFl
+Y2RmOS4uMzM5OGQ2MzliNzU0IDEwMDY0NA0KPiA+ID4gLS0tIGEvZHJpdmVycy9pMmMvYnVzc2Vz
+L2kyYy1yaWljLmMNCj4gPiA+ICsrKyBiL2RyaXZlcnMvaTJjL2J1c3Nlcy9pMmMtcmlpYy5jDQo+
+ID4gPiBAQCAtNDYsMTggKzQ2LDYgQEANCj4gPiA+ICAjaW5jbHVkZSA8bGludXgvcG1fcnVudGlt
+ZS5oPg0KPiA+ID4gICNpbmNsdWRlIDxsaW51eC9yZXNldC5oPg0KPiA+ID4NCj4gPiA+IC0jZGVm
+aW5lIFJJSUNfSUNDUjEgICAweDAwDQo+ID4gPiAtI2RlZmluZSBSSUlDX0lDQ1IyICAgMHgwNA0K
+PiA+ID4gLSNkZWZpbmUgUklJQ19JQ01SMSAgIDB4MDgNCj4gPiA+IC0jZGVmaW5lIFJJSUNfSUNN
+UjMgICAweDEwDQo+ID4gPiAtI2RlZmluZSBSSUlDX0lDU0VSICAgMHgxOA0KPiA+ID4gLSNkZWZp
+bmUgUklJQ19JQ0lFUiAgIDB4MWMNCj4gPiA+IC0jZGVmaW5lIFJJSUNfSUNTUjIgICAweDI0DQo+
+ID4gPiAtI2RlZmluZSBSSUlDX0lDQlJMICAgMHgzNA0KPiA+ID4gLSNkZWZpbmUgUklJQ19JQ0JS
+SCAgIDB4MzgNCj4gPiA+IC0jZGVmaW5lIFJJSUNfSUNEUlQgICAweDNjDQo+ID4gPiAtI2RlZmlu
+ZSBSSUlDX0lDRFJSICAgMHg0MA0KPiA+ID4gLQ0KPiA+ID4gICNkZWZpbmUgSUNDUjFfSUNFICAg
+IDB4ODANCj4gPiA+ICAjZGVmaW5lIElDQ1IxX0lJQ1JTVCAweDQwDQo+ID4gPiAgI2RlZmluZSBJ
+Q0NSMV9TT1dQICAgMHgxMA0KPiA+ID4gQEAgLTg3LDYgKzc1LDEzIEBADQo+ID4gPg0KPiA+ID4g
+ICNkZWZpbmUgUklJQ19JTklUX01TRyAgICAgICAgLTENCj4gPiA+DQo+ID4gPiArI2RlZmluZSBS
+SUlDX1JaX0FfVFlQRSAgICAgICAwDQo+ID4NCj4gPiA+ICsNCj4gPiA+ICtzdHJ1Y3QgcmlpY19v
+Zl9kYXRhIHsNCj4gPiA+ICsgICAgIHU4IGZhbWlseTsNCj4gPg0KPiA+IERvIHlvdSBuZWVkIGZh
+bWlseSBhcyBjb21wYXRpYmxlIGhhdmUgdGhpcyBpbmZvcm1hdGlvbj8NCj4gPg0KPiBZZXMgdGhp
+cyBpcyBhZGRlZCB0byBmdXR1cmUgcHJvb2YgaXQsIGFzIHRoZSBSWi9WMkggU29DIGhhcyBzb21l
+IGJpdCBkaWZmZXJlbmNlcyBpbiB0aGUgc2xhdmUgYWRkcmVzcw0KPiByZWdpc3RlciBhcyBjb21w
+YXJlZCB0byBSWi9BIGFuZCBSWi9HMkwuIENvbXBhcmluZyB0aGUgZmFtaWx5IG91dHNpZGUgcHJv
+YmUgaXMgbm90IGFsd2F5cyBwcmVmZXJyZWQNCj4gaGVuY2UgdGhpcyBpcyBhZGRlZCBhcyBwYXJ0
+IG9mIE9GIGRhdGEuDQoNCk9rLiBHb3QgaXQuDQpCdXQgdGhlIGZhbWlseSB2YXJpYWJsZSBpcyB1
+bnVzZWQgYW5kIGlzIHdhc3RpbmcgbWVtb3J5Lg0KU2ltcGxlIHJlZyBsYXlvdXQgaXMgZW5vdWdo
+IGZvciBkZXZpY2UgZGF0YT8/DQoNCkNoZWVycywNCkJpanUNCg0KPiANCj4gQ2hlZXJzLA0KPiBQ
+cmFiaGFrYXINCj4gDQo+ID4gPiArICAgICB1OCByZWdzW107DQo+ID4gPiArfTsNCj4gPiA+ICsN
+Cj4gPiA+ICBzdHJ1Y3QgcmlpY19kZXYgew0KPiA+ID4gICAgICAgdm9pZCBfX2lvbWVtICpiYXNl
+Ow0KPiA+ID4gICAgICAgdTggKmJ1ZjsNCj4gPiA+IEBAIC05NCw2ICs4OSw3IEBAIHN0cnVjdCBy
+aWljX2RldiB7DQo+ID4gPiAgICAgICBpbnQgYnl0ZXNfbGVmdDsNCj4gPiA+ICAgICAgIGludCBl
+cnI7DQo+ID4gPiAgICAgICBpbnQgaXNfbGFzdDsNCj4gPiA+ICsgICAgIGNvbnN0IHN0cnVjdCBy
+aWljX29mX2RhdGEgKmluZm87DQo+ID4gPiAgICAgICBzdHJ1Y3QgY29tcGxldGlvbiBtc2dfZG9u
+ZTsNCj4gPiA+ICAgICAgIHN0cnVjdCBpMmNfYWRhcHRlciBhZGFwdGVyOw0KPiA+ID4gICAgICAg
+c3RydWN0IGNsayAqY2xrOw0KPiA+ID4gQEAgLTEwNSwxNCArMTAxLDI4IEBAIHN0cnVjdCByaWlj
+X2lycV9kZXNjIHsNCj4gPiA+ICAgICAgIGNoYXIgKm5hbWU7DQo+ID4gPiAgfTsNCj4gPiA+DQo+
+ID4gPiArZW51bSByaWljX3JlZ19saXN0IHsNCj4gPiA+ICsgICAgIFJJSUNfSUNDUjEgPSAwLA0K
+PiA+ID4gKyAgICAgUklJQ19JQ0NSMiwNCj4gPiA+ICsgICAgIFJJSUNfSUNNUjEsDQo+ID4gPiAr
+ICAgICBSSUlDX0lDTVIzLA0KPiA+ID4gKyAgICAgUklJQ19JQ1NFUiwNCj4gPiA+ICsgICAgIFJJ
+SUNfSUNJRVIsDQo+ID4gPiArICAgICBSSUlDX0lDU1IyLA0KPiA+ID4gKyAgICAgUklJQ19JQ0JS
+TCwNCj4gPiA+ICsgICAgIFJJSUNfSUNCUkgsDQo+ID4gPiArICAgICBSSUlDX0lDRFJULA0KPiA+
+ID4gKyAgICAgUklJQ19JQ0RSUiwNCj4gPiA+ICt9Ow0KPiA+ID4gKw0KPiA+ID4gIHN0YXRpYyBp
+bmxpbmUgdm9pZCByaWljX3dyaXRlYl9yZWcodTggdmFsLCBzdHJ1Y3QgcmlpY19kZXYgKnJpaWMs
+IHU4IG9mZnNldCkgIHsNCj4gPiA+IC0gICAgIHdyaXRlYih2YWwsIHJpaWMtPmJhc2UgKyBvZmZz
+ZXQpOw0KPiA+ID4gKyAgICAgd3JpdGViKHZhbCwgcmlpYy0+YmFzZSArIHJpaWMtPmluZm8tPnJl
+Z3Nbb2Zmc2V0XSk7DQo+ID4gPiAgfQ0KPiA+ID4NCj4gPiA+ICBzdGF0aWMgaW5saW5lIHU4IHJp
+aWNfcmVhZGJfcmVnKHN0cnVjdCByaWljX2RldiAqcmlpYywgdTggb2Zmc2V0KSAgew0KPiA+ID4g
+LSAgICAgcmV0dXJuIHJlYWRiKHJpaWMtPmJhc2UgKyBvZmZzZXQpOw0KPiA+ID4gKyAgICAgcmV0
+dXJuIHJlYWRiKHJpaWMtPmJhc2UgKyByaWljLT5pbmZvLT5yZWdzW29mZnNldF0pOw0KPiA+ID4g
+IH0NCj4gPiA+DQo+ID4gPiAgc3RhdGljIGlubGluZSB2b2lkIHJpaWNfY2xlYXJfc2V0X2JpdChz
+dHJ1Y3QgcmlpY19kZXYgKnJpaWMsIHU4DQo+ID4gPiBjbGVhciwgdTggc2V0LCB1OCByZWcpIEBA
+IC00NTMsNg0KPiA+ID4gKzQ2Myw4IEBAIHN0YXRpYyBpbnQgcmlpY19pMmNfcHJvYmUoc3RydWN0
+IHBsYXRmb3JtX2RldmljZSAqcGRldikNCj4gPiA+ICAgICAgICAgICAgICAgfQ0KPiA+ID4gICAg
+ICAgfQ0KPiA+ID4NCj4gPiA+ICsgICAgIHJpaWMtPmluZm8gPSBvZl9kZXZpY2VfZ2V0X21hdGNo
+X2RhdGEoJnBkZXYtPmRldik7DQo+ID4gPiArDQo+ID4gPiAgICAgICBhZGFwID0gJnJpaWMtPmFk
+YXB0ZXI7DQo+ID4gPiAgICAgICBpMmNfc2V0X2FkYXBkYXRhKGFkYXAsIHJpaWMpOw0KPiA+ID4g
+ICAgICAgc3Ryc2NweShhZGFwLT5uYW1lLCAiUmVuZXNhcyBSSUlDIGFkYXB0ZXIiLA0KPiA+ID4g
+c2l6ZW9mKGFkYXAtPm5hbWUpKTsgQEAgLTQ5Nyw4ICs1MDksMjUgQEAgc3RhdGljIHZvaWQgcmlp
+Y19pMmNfcmVtb3ZlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpDQo+ID4gPiAgICAgICBw
+bV9ydW50aW1lX2Rpc2FibGUoJnBkZXYtPmRldik7ICB9DQo+ID4gPg0KPiA+ID4gK3N0YXRpYyBj
+b25zdCBzdHJ1Y3QgcmlpY19vZl9kYXRhIHJpaWNfcnpfYV9pbmZvID0gew0KPiA+ID4gKyAgICAg
+LmZhbWlseSA9IFJJSUNfUlpfQV9UWVBFLA0KPiA+ID4gKyAgICAgLnJlZ3MgPSB7DQo+ID4gPiAr
+ICAgICAgICAgICAgIFtSSUlDX0lDQ1IxXSA9IDB4MDAsDQo+ID4gPiArICAgICAgICAgICAgIFtS
+SUlDX0lDQ1IyXSA9IDB4MDQsDQo+ID4gPiArICAgICAgICAgICAgIFtSSUlDX0lDTVIxXSA9IDB4
+MDgsDQo+ID4gPiArICAgICAgICAgICAgIFtSSUlDX0lDTVIzXSA9IDB4MTAsDQo+ID4gPiArICAg
+ICAgICAgICAgIFtSSUlDX0lDU0VSXSA9IDB4MTgsDQo+ID4gPiArICAgICAgICAgICAgIFtSSUlD
+X0lDSUVSXSA9IDB4MWMsDQo+ID4gPiArICAgICAgICAgICAgIFtSSUlDX0lDU1IyXSA9IDB4MjQs
+DQo+ID4gPiArICAgICAgICAgICAgIFtSSUlDX0lDQlJMXSA9IDB4MzQsDQo+ID4gPiArICAgICAg
+ICAgICAgIFtSSUlDX0lDQlJIXSA9IDB4MzgsDQo+ID4gPiArICAgICAgICAgICAgIFtSSUlDX0lD
+RFJUXSA9IDB4M2MsDQo+ID4gPiArICAgICAgICAgICAgIFtSSUlDX0lDRFJSXSA9IDB4NDAsDQo+
+ID4gPiArICAgICB9LA0KPiA+ID4gK307DQo+ID4gPiArDQo+ID4gPiAgc3RhdGljIGNvbnN0IHN0
+cnVjdCBvZl9kZXZpY2VfaWQgcmlpY19pMmNfZHRfaWRzW10gPSB7DQo+ID4gPiAtICAgICB7IC5j
+b21wYXRpYmxlID0gInJlbmVzYXMscmlpYy1yeiIsIH0sDQo+ID4gPiArICAgICB7IC5jb21wYXRp
+YmxlID0gInJlbmVzYXMscmlpYy1yeiIsIC5kYXRhID0gJnJpaWNfcnpfYV9pbmZvIH0sDQo+ID4g
+PiAgICAgICB7IC8qIFNlbnRpbmVsICovIH0sDQo+ID4gPiAgfTsNCj4gPiA+DQo+ID4gPiAtLQ0K
+PiA+ID4gMi4zNC4xDQo+ID4gPg0KPiA+DQoNCg==
 
