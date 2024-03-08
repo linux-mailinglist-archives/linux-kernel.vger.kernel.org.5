@@ -1,122 +1,189 @@
-Return-Path: <linux-kernel+bounces-97326-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97327-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAA858768CE
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:49:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 775FD8768D1
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:49:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DBE3A1C20B41
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 16:49:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA8201F2129B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 16:49:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B06218E03;
-	Fri,  8 Mar 2024 16:49:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DF511B7E9;
+	Fri,  8 Mar 2024 16:49:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="Tfa+BseJ"
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Szq9eLfL"
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E757A175BE;
-	Fri,  8 Mar 2024 16:49:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F08E1CF8F;
+	Fri,  8 Mar 2024 16:49:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709916553; cv=none; b=Aya2QnrqQSFUbXGhbVVTDFXu9iFpYNxLhH0VYbacsQ1JAUBJrcYi/0c+IptbStMaKrtdbGYmRbp6wA7rWjErrm658Tcn4n0DiPTQwSFbEpJYT59IB7gVemf78zto3OqdA+F0X79HL7kXp0UWsW/m5I2LokQfcWAacJx2AIwTvYI=
+	t=1709916562; cv=none; b=JYB/YkUJu5O30oi97/DrriKtwU+VQsL55Pr+VHJMIJy0xdtu41BM1TWidoEvzZOAp0dzKdaP0yabM5SnssiUUNuYYN4H+IvPQ+r2h7buVWm81mbpfLzZ60qtaREgJWHlrgko4iPjMMdOG5CHzbn4pee5kNWMMDyiymuRU1g5018=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709916553; c=relaxed/simple;
-	bh=dp4f7tpqFRN9XFjkTecp9FwtbYISiPJKREb/NnDaXg8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XtKaucQjtECEZaU9mP7VpocB7LwBPjAuxqfZw64r4knwJ8azqUAdUQZrl9icsqnmRd7jmdKZfxqim6/yWMiG6DX3tP/fxstHxGbqSKheWKM+du8WW3wjawZ2JlKeKt38EGvkJCxVB++UFE69A63pRx+3TxSPryctr9rctLNHI9U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=Tfa+BseJ; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
+	s=arc-20240116; t=1709916562; c=relaxed/simple;
+	bh=S0Dp/WBR/EujGLQqqCGTWW5cVi0WtWTDa9DqA4ijtho=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=OfAzxeQ6VTlh+Wgr7XVK/GzxiSBYQZtOSGX8PpbHUV9TFyJqqPUrYcEU6lGYrtfzSsZRjezbjdGDhJJkW5liCHw3soZS46W0Blg8Samiz53w2xfIATJdhEjJCorp0E5kRSmZdoGWSfK/6CLoBt71fhtgJaI3q1F1OeM5z9StIck=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Szq9eLfL; arc=none smtp.client-ip=209.85.215.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1dc13fb0133so7911905ad.3;
-        Fri, 08 Mar 2024 08:49:11 -0800 (PST)
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5d8b887bb0cso1836349a12.2;
+        Fri, 08 Mar 2024 08:49:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709916560; x=1710521360; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=c0nYRWlBOyohOq+wmgk45L39MksWf6aczzJ+KIoLdfo=;
+        b=Szq9eLfLmnuaMp/8ey66kKKLbPs9nhVuay/Cc69+GqUJbmnxQrbXXjvTp5DYrkczGW
+         BrOaoIv6i93tIqXSwl74e7eUAuTWXvRSNgc24x8Xvw2WWhx/UkDYDhuEi+kkn82T58Id
+         iMRbSUeVGGkbg7kakhvk8QISnIb3OPG544Vw8COJpOldYu1K10Em8pFVQM66TMTfPe1R
+         +FCoE3pHSlH6fLLQTknndOZuhycYqKIUTKd0+6A9n7NAOTszyZQdQUCaKa+lTqBWWvha
+         2L1fajzZTzQUhzKJOa+ZhCRCDZkpkD3Ylu3VADJNpWALmTGWVToLg6ys12JnaoJDFFsA
+         d00Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709916551; x=1710521351;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:dkim-signature:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=jQzlRemqcpG/B25dEVwxgd2nqjD2iV1Oc0H8JZ1sMs0=;
-        b=SJImZleCZ4u+vh1HgnHtvoziy9mFDANDwgzCjjiU6MM05+PVhdCbsfdrnyydqAE1Hi
-         nkQQEKx6KJeT/DnnCrsn7+3tfWdjbyTF0S+NSlomiVDleZrn67Vm6RmE92mzYY8Td/YV
-         wbWw/ptSL75AjmuV3jST+P9AbIZA905E3WObU59pq7Do/DtNGlIep/1b8xFxULPHSXzM
-         oj6IUou+X9HKGwf5yAZZVZtAzpS53KrouiX0kKh7e0x3IhM55Jgx22Rmir1Qz++C3NFg
-         IUaHgx2+CzgrTt5GHUbL2DHIOMB2edy0trCIsoFLepuG639PwMdsqKQN5rz2NL6yihRG
-         YB2A==
-X-Forwarded-Encrypted: i=1; AJvYcCVdd3M4o4b77uQ76OQhkAkNTQssFYGLqa7dYjoszBusGy9vtTeGIlnyBZla8XtOKFrHWfomX7tRl3MyqxI6tq1myjWo78hcF7guCJ2Jsnl4xeq9SXb5ETzWwaEJBjRfH8XYeYBq8UV9dg==
-X-Gm-Message-State: AOJu0YwgIqSGW7dh5TGaVjYiHOf/94fKYIn3Y1X6mV5dXz0j3l/tDR5u
-	UqL2Evm7ZGLsYRaMx9MNgezo33SK0S6b8+a1Tg0h0o9oOUaAcVNI
-X-Google-Smtp-Source: AGHT+IFWG1EplbtVMvjGJC2PomQuFgrore7TK9HZk0oyPLTXlVX6SwtEk6/eMj9Sjm7MfkAr8kC9ow==
-X-Received: by 2002:a17:902:d511:b0:1db:be69:d037 with SMTP id b17-20020a170902d51100b001dbbe69d037mr13299032plg.46.1709916550959;
-        Fri, 08 Mar 2024 08:49:10 -0800 (PST)
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id 2-20020a170902c10200b001dd69a072absm1356614pli.178.2024.03.08.08.49.10
+        d=1e100.net; s=20230601; t=1709916560; x=1710521360;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=c0nYRWlBOyohOq+wmgk45L39MksWf6aczzJ+KIoLdfo=;
+        b=gUClNTtf5B1Zb/zv00bTuBgCgSa/+1so1RcM1czoetNdQWtR9VdoqepZjvhF5gyo1l
+         wq9lZBuolXJ4/A8lvAfR7YY39n1Q280woCd53pyNO3/BpDKQrmh1wIcNRtzThId19LNO
+         YXFYEKnnt7wgU23W2HADbbBL1xI6LEdO8pdRA4JvBpTp6TCAmlt6U3aoW+FN0ypyweHT
+         0oFr87YTu/gRb3HL28005yGrhKc20Tx2uWRaEPI0/lxVaj9BBqwNkuYw0SNj1tQ/gFJf
+         5KJ2gYxv+FVJFPPTpknil9xk2xolYSL/3k6QSRWzL8q+T+n8Q4lAV01Sdj73qT2Aj4w3
+         YUow==
+X-Forwarded-Encrypted: i=1; AJvYcCUFeuW+3JKchX3HRfKt6B+0yPLI2UrUd1+RlTT1xfIkhIKd9JXj/kgUJcstuN/+t2Kdr9cZpW8huvBTKzC0mrKRDiOc+VwlZsyLw7S8ObkLBHkQmwf77BgkJU4gZMmKTJes
+X-Gm-Message-State: AOJu0YzNDDkzXvyJQUxLLaY19sz0U1OxehfApax6uuVh0Qjsg6emQ7DG
+	/EvPM/Ksp0HehWTk7IFDkyV8lHWEgdtDy03DNgJtTVVf26wdrs/Y
+X-Google-Smtp-Source: AGHT+IGoXj2uKpQqLd5DtfnhCg/6JNd8Lt1Wdw018u5BYLYSz8lFaPR7sSVCQCTVcuIq4bLALVv3LA==
+X-Received: by 2002:a17:90a:de85:b0:29b:a149:2fed with SMTP id n5-20020a17090ade8500b0029ba1492fedmr583646pjv.10.1709916560239;
+        Fri, 08 Mar 2024 08:49:20 -0800 (PST)
+Received: from localhost ([117.147.31.93])
+        by smtp.gmail.com with ESMTPSA id h22-20020a17090a051600b002992f49922csm3689154pjh.25.2024.03.08.08.49.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Mar 2024 08:49:10 -0800 (PST)
-Date: Fri, 8 Mar 2024 13:49:04 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2024; t=1709916549;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jQzlRemqcpG/B25dEVwxgd2nqjD2iV1Oc0H8JZ1sMs0=;
-	b=Tfa+BseJHRha3HkgFzAZDzu7GoxGFFkFq1Rl9HUGs+rlI5IHYOSloTFJQhbg4kBBHJm63d
-	2lsM51Wkn+uxJTmhLEG1AsOLybfQ/VLPVS3E2Fg5/aHjvwdW4ShoPBePTDRw+uKYVSChQ1
-	lb/Lk92oO+R06frfzA+cXOgiIiCYpwlPUbSdzz8riwN7U296YB7ACBboMGTjmCjlbhgQzp
-	EMn2Tt4CZR36eFcTrDmRiKOHs3MXS+8NGoHCnYIhdFT5CF1JiDTIrXIQwDt+s6JJ+ml3Hz
-	oqLYg4AdmW0/8ESeMPhEz+mHWVOVu6JrU7U9+TeIHvlOYj+oNxP6JPKCChwg2w==
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-From: "Ricardo B. Marliere" <ricardo@marliere.net>
-To: Heiko Carstens <hca@linux.ibm.com>
-Cc: Harald Freudenberger <freude@linux.ibm.com>, 
-	Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, 
-	Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, linux-s390@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH 1/6] s390: zcrypt: make zcrypt_class constant
-Message-ID: <lznbxodysy66hssioarbe4ugfezri5dwdyuyvsxgfbbqu4h2xc@7wyzf2txq3ua>
-References: <20240305-class_cleanup-s390-v1-0-c4ff1ec49ffd@marliere.net>
- <20240305-class_cleanup-s390-v1-1-c4ff1ec49ffd@marliere.net>
- <84263def1d38584cd83558a33bb52f22@linux.ibm.com>
- <nh5d7ock5gb4zttfmq354si3iewm4u2zxqquzg3erl55jxjhuo@5yveroq4li4s>
- <20240308144437.26074-G-hca@linux.ibm.com>
+        Fri, 08 Mar 2024 08:49:19 -0800 (PST)
+From: Tao Chen <chen.dylane@gmail.com>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>
+Cc: chen.dylane@gmail.com,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] WIP: bpf: Support lookup_and_delete_elem for stackmap
+Date: Sat,  9 Mar 2024 00:49:11 +0800
+Message-Id: <20240308164911.118640-1-chen.dylane@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240308144437.26074-G-hca@linux.ibm.com>
+Content-Transfer-Encoding: 8bit
 
-Hi Heiko!
+Extend lookup_and_delete_elem for stackmap, so we can clear the
+elem in time in the userspace like the eBPF tool profile in bcc.
 
-On  8 Mar 15:44, Heiko Carstens wrote:
-> On Fri, Mar 08, 2024 at 11:38:14AM -0300, Ricardo B. Marliere wrote:
-> > > Thanks Ricardo, nice work.
-> > > The only thing I would do is to rename the label "out_class_create_failed"
-> > > with "out_class_register_failed".
-> > 
-> > Ah, indeed. Thanks for catching that. I will wait for more feedback on
-> > the other patches and send a v2 if required.
-> > 
-> > > 
-> > > Who will pick this patch? As this is part of a bundle of fixes, Richardo
-> > > do you have a way to push this into the kernel? Otherwise as the AP/zcrypt
-> > > maintainer I would pick only this patch and forward it to the s390
-> > > subsystem.
-> > 
-> > I have no ways of pushing this, sorry. The series is based on
-> > s390/linux.git/for-next, so perhaps the s390 maintainers can pick this
-> > one along with the others with your Acked-by: provided? :) 
-> 
-> I will pick up the whole series, but need some more time.
-> 
-> There is no need to send a v2 for this patch - I'll change the label as
-> requested by Harald.
+Signed-off-by: Tao Chen <chen.dylane@gmail.com>
+---
+ include/linux/bpf.h   |  2 +-
+ kernel/bpf/stackmap.c |  8 ++++++--
+ kernel/bpf/syscall.c  | 12 +++++++++---
+ 3 files changed, 16 insertions(+), 6 deletions(-)
 
-Thank you for this.
--	Ricardo
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 49f8b691496c..11d21e4e861b 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -2284,7 +2284,7 @@ int bpf_percpu_hash_update(struct bpf_map *map, void *key, void *value,
+ int bpf_percpu_array_update(struct bpf_map *map, void *key, void *value,
+ 			    u64 flags);
+ 
+-int bpf_stackmap_copy(struct bpf_map *map, void *key, void *value);
++int bpf_stackmap_copy_and_delete(struct bpf_map *map, void *key, void *value, bool delete);
+ 
+ int bpf_fd_array_map_update_elem(struct bpf_map *map, struct file *map_file,
+ 				 void *key, void *value, u64 map_flags);
+diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
+index 458bb80b14d5..935f537dced0 100644
+--- a/kernel/bpf/stackmap.c
++++ b/kernel/bpf/stackmap.c
+@@ -563,7 +563,7 @@ static void *stack_map_lookup_elem(struct bpf_map *map, void *key)
+ }
+ 
+ /* Called from syscall */
+-int bpf_stackmap_copy(struct bpf_map *map, void *key, void *value)
++int bpf_stackmap_copy_and_delete(struct bpf_map *map, void *key, void *value, bool delete)
+ {
+ 	struct bpf_stack_map *smap = container_of(map, struct bpf_stack_map, map);
+ 	struct stack_map_bucket *bucket, *old_bucket;
+@@ -580,7 +580,11 @@ int bpf_stackmap_copy(struct bpf_map *map, void *key, void *value)
+ 	memcpy(value, bucket->data, trace_len);
+ 	memset(value + trace_len, 0, map->value_size - trace_len);
+ 
+-	old_bucket = xchg(&smap->buckets[id], bucket);
++	if (!delete)
++		old_bucket = xchg(&smap->buckets[id], bucket);
++	else
++		old_bucket = bucket;
++
+ 	if (old_bucket)
+ 		pcpu_freelist_push(&smap->freelist, &old_bucket->fnode);
+ 	return 0;
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index d77b2f8b9364..77afce8710a4 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -225,7 +225,7 @@ static int bpf_map_copy_value(struct bpf_map *map, void *key, void *value,
+ 	} else if (map->map_type == BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE) {
+ 		err = bpf_percpu_cgroup_storage_copy(map, key, value);
+ 	} else if (map->map_type == BPF_MAP_TYPE_STACK_TRACE) {
+-		err = bpf_stackmap_copy(map, key, value);
++		err = bpf_stackmap_copy_and_delete(map, key, value, false);
+ 	} else if (IS_FD_ARRAY(map) || IS_FD_PROG_ARRAY(map)) {
+ 		err = bpf_fd_array_map_lookup_elem(map, key, value);
+ 	} else if (IS_FD_HASH(map)) {
+@@ -1372,7 +1372,8 @@ struct bpf_map *bpf_map_inc_not_zero(struct bpf_map *map)
+ }
+ EXPORT_SYMBOL_GPL(bpf_map_inc_not_zero);
+ 
+-int __weak bpf_stackmap_copy(struct bpf_map *map, void *key, void *value)
++int __weak bpf_stackmap_copy_and_delete(struct bpf_map *map, void *key, void *value,
++										bool delete)
+ {
+ 	return -ENOTSUPP;
+ }
+@@ -1897,7 +1898,8 @@ static int map_lookup_and_delete_elem(union bpf_attr *attr)
+ 
+ 	if (attr->flags &&
+ 	    (map->map_type == BPF_MAP_TYPE_QUEUE ||
+-	     map->map_type == BPF_MAP_TYPE_STACK)) {
++	     map->map_type == BPF_MAP_TYPE_STACK ||
++		 map->map_type == BPF_MAP_TYPE_STACK_TRACE)) {
+ 		err = -EINVAL;
+ 		goto err_put;
+ 	}
+@@ -1936,6 +1938,10 @@ static int map_lookup_and_delete_elem(union bpf_attr *attr)
+ 			rcu_read_unlock();
+ 			bpf_enable_instrumentation();
+ 		}
++	} else if (map->map_type == BPF_MAP_TYPE_STACK_TRACE) {
++		bpf_disable_instrumentation();
++		err = bpf_stackmap_copy_and_delete(map, key, value, true);
++		bpf_enable_instrumentation();
+ 	}
+ 
+ 	if (err)
+-- 
+2.34.1
+
 
