@@ -1,127 +1,125 @@
-Return-Path: <linux-kernel+bounces-96696-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96701-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E236876029
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 09:51:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 081FE876038
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 09:52:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6FC621C2294E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 08:51:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B0A391F278E1
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 08:52:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C94C94E1D3;
-	Fri,  8 Mar 2024 08:51:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="of2pqqxZ"
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 590A1537E5;
+	Fri,  8 Mar 2024 08:51:59 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5CDB208AD;
-	Fri,  8 Mar 2024 08:51:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 772DF208AD
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 08:51:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709887879; cv=none; b=SgpaxdbafI7kdjexLz1U8d21gdMgVEhKIsDjM49hETnH8h8X/KXYTqIuQRKmGJC5WokamvVGPMgX0VfxnxsuyfrqxNBI1lKJdmukgbLBmRs5rBTcCCItTviUhVV55AhzyWHxF2H9KkFLqglbB7wUBElLPDKYXwN/qntMHXL9f6E=
+	t=1709887918; cv=none; b=VpGw9XYXCMBGEd9slVPWprLwi+ua4cI1dN1vER+pswF5zjwASNhtc72GKfUzpRsbdGKCTSz9T9bCPhcGpslKahuUpect0KQsi5etiNbNTcNB8WYvUrla0fTo0GnBUewKNd9ihltN+m5kt8DcPYu6oV0KRL4dxVHmf68OABMZ1Ms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709887879; c=relaxed/simple;
-	bh=xa9S9gA+2Kdx0nRGP4a+OCGAFa+zMDo98VZV5Yh0Xcg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=HKb+gO2wUttVDRUw9fk4H82hWUAQP46Xa8E0J0+SuOCzBNpvKV1Ma6fqoRlKsDlmk7irfQd5WraM8TStUldavxX792ScmFEHOeQnp/Csj1hC44Vqu+w0m1dYwz2wq6EeBCd1+oZlf9S2tb/UMUXh2iW4hFIkBscH88VYa5Rffco=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=of2pqqxZ; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:Reply-To:MIME-Version:Date:
-	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
-	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
-	In-Reply-To:References; bh=IPYOyNy9SYM4JNCOX10vMNStn8WkuVS6FnTRy1OZhq8=;
-	t=1709887877; x=1710319877; b=of2pqqxZxl23woIulpy9kOTQsuDdqvWDpRW5oc0AXqzKULJ
-	tXR3gQ6nPdgX0WIUcrFZ5n/RtE+pN5PEmy8RO2yuZgmFehjgqzjGYRjFy+y5vTaInSVwFLlzL8bFp
-	cQhMnCDhJqp5jbx0vUM0dNeOpDT0oyPLJTIdIbYTOXV8xXb8CTeDvHE3KniTKUuCBiaRbKrOe5hBg
-	ZDz7KhgCGMjf9j01af7OCtvAbiJjOCfqD+R26VayiX42juYJwjU6L2nQ9Af9NZuaNK/F9VC6Ww+Ju
-	Dwk+DI84ZvUdiu/qwuCGOknJ7W7VpM4fo63vBkDFt2Vc6+QziMuBu9kj3egnFOsA==;
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1riVwf-0005on-QT; Fri, 08 Mar 2024 09:51:13 +0100
-Message-ID: <12de921e-ae42-4eb3-a61a-dadc6cd640b8@leemhuis.info>
-Date: Fri, 8 Mar 2024 09:51:13 +0100
+	s=arc-20240116; t=1709887918; c=relaxed/simple;
+	bh=aVN8+EY/uO3cH4FEyS7VfiUXi1DIt1cu/7mR+1Q406s=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=LjSob8jXUotiVmPydxYC1IXYzsyVpId9xN64z0mtGA7PlyPXLakPuQj6ObNG+kB+mbWRlhVIjc0RbJo4m7mJzazqggslud37yh/wl9Dza9LtrO5s2/xKixv2qRD6UUqpd/YxpwBL2h9sSvd40CPdbW34sGNaBtitfkN+44mrFo8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1riVxG-0006wb-Ea; Fri, 08 Mar 2024 09:51:50 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1riVxG-0056NT-1J; Fri, 08 Mar 2024 09:51:50 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1riVxF-00245s-35;
+	Fri, 08 Mar 2024 09:51:49 +0100
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+	Vinod Koul <vkoul@kernel.org>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Michal Simek <michal.simek@amd.com>
+Cc: linux-kernel@vger.kernel.org,
+	linux-phy@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	kernel@pengutronix.de
+Subject: [PATCH] phy: xilinx: Convert to platform remove callback returning void
+Date: Fri,  8 Mar 2024 09:51:13 +0100
+Message-ID:  <57a3338a1cec683ac84d48e00dbf197e15ee5481.1709886922.git.u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-Subject: Re: dmaengine: CPU stalls while loading bluetooth module
-Content-Language: en-US, de-DE
-To: "bumyong.lee" <bumyong.lee@samsung.com>,
- 'karthikeyan' <karthikeyan@linumiz.com>, vkoul@kernel.org
-Cc: dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
- parthiban@linumiz.com, saravanan@linumiz.com,
- Linux kernel regressions list <regressions@lists.linux.dev>
-References: <CGME20240305062038epcas2p143c5e1e725d8a934b0208266a2f78ccb@epcas2p1.samsung.com>
- <1553a526-6f28-4a68-88a8-f35bd22d9894@linumiz.com>
- <000001da6ecc$adb25420$0916fc60$@samsung.com>
-From: "Linux regression tracking (Thorsten Leemhuis)"
- <regressions@leemhuis.info>
-In-Reply-To: <000001da6ecc$adb25420$0916fc60$@samsung.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1709887877;4e0565a6;
-X-HE-SMSGID: 1riVwf-0005on-QT
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1882; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=aVN8+EY/uO3cH4FEyS7VfiUXi1DIt1cu/7mR+1Q406s=; b=owGbwMvMwMXY3/A7olbonx/jabUkhtRXF1si/vb/PSe45SCjRmGIw8xerZNOGfblPP3qfFvys zrFV+7qZDRmYWDkYpAVU2Sxb1yTaVUlF9m59t9lmEGsTCBTGLg4BWAiKc7s/8tcY5vkpm0St7Tb s9f2PWug6qxKa5X7KqK9Zza+OT9d1r+68h9vYWX8cZYTPa+uf2C/fU911ep9+gYXZjHWRimkNJx YevbjwnXL7DN5G1bpM83M7WeLiVFw6v94Q8dP5vZ20eaKsCTt+I3hSgv8zj8z5ZNJuslx2Ydzg3 aguh2PgIrh1snVue4BkxY2nXEq3tGkofxz7c7OkvLjnbKzFfe5n0l+l9j5lKfTWmiutZKMlRrb2 TnZAZsMHp4K6DOTXPHeaPlut/dmK+/7HPojLeMYsTF1tXuzSNTXjSwOp89nNas2v+bZKyi8S1Gs MZLjRvPOpb2MctJPr0wUEVnLdW3O3N/rb/64embNjqJ3AA==
+X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-[CCing the regression list, as it should be in the loop for regressions:
-https://docs.kernel.org/admin-guide/reporting-regressions.html]
+The .remove() callback for a platform driver returns an int which makes
+many driver authors wrongly assume it's possible to do error handling by
+returning an error code. However the value returned is ignored (apart
+from emitting a warning) and this typically results in resource leaks.
 
-On 05.03.24 08:13, bumyong.lee wrote:
->> we have encountered CPU stalls in mainline kernel while loading the
->> bluetooth module. We have custom board based on rockchip rv1109 soc and
->> there is bluetooth chipset of relatek 8821cs. CPU is stalls  while realtek
->> 8821cs module.
->>
->> Bug/Regression:
->> In current mainline, we found CPU is stalls when we load bluetooth module.
->> git bisect shows commit 22a9d9585812440211b0b34a6bc02ade62314be4
->> as a bad, which produce CPU stalls.
->>
->> git show 22a9d9585812440211b0b34a6bc02ade62314be4
->> commit 22a9d9585812440211b0b34a6bc02ade62314be4
->> Author: Bumyong Lee <bumyong.lee@samsung.com>
->> Date:   Tue Dec 19 14:50:26 2023 +0900
->>
->>      dmaengine: pl330: issue_pending waits until WFP state
->>
-> [...]
->>
->> By reverting this commit, we have success in loading of bluetooth module.
-> 
->> Output of CPU stalls:
-> [...]
-> 
-> I discussed this issue. Could you refer to this[1]?
-> I haven't received anymore reply from him after that.
-> If you have any more opinion, please let me know.
-> [1]: https://lore.kernel.org/lkml/000001da3869$ca643fa0$5f2cbee0$@samsung.com/T/
+To improve here there is a quest to make the remove callback return
+void. In the first step of this quest all drivers are converted to
+remove_new(), which already returns void. Eventually after all drivers
+are converted, .remove_new() will be renamed to .remove().
 
-Hmmm. 6.8 final is due. Is that something we can live with? Or would it
-be a good idea to revert above commit for now and reapply it when
-something better emerged? I doubt that the answer is "yes, let's do
-that", but I have to ask.
+Trivially convert this driver from always returning zero in the remove
+callback to the void returning variant.
 
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-If I did something stupid, please tell me, as explained on that page.
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+ drivers/phy/xilinx/phy-zynqmp.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-P.S.: To be sure the issue doesn't fall through the cracks unnoticed,
-I'm adding it to regzbot, the Linux kernel regression tracking bot:
+diff --git a/drivers/phy/xilinx/phy-zynqmp.c b/drivers/phy/xilinx/phy-zynqmp.c
+index f72c5257d712..dc8319bda43d 100644
+--- a/drivers/phy/xilinx/phy-zynqmp.c
++++ b/drivers/phy/xilinx/phy-zynqmp.c
+@@ -995,15 +995,13 @@ static int xpsgtr_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static int xpsgtr_remove(struct platform_device *pdev)
++static void xpsgtr_remove(struct platform_device *pdev)
+ {
+ 	struct xpsgtr_dev *gtr_dev = platform_get_drvdata(pdev);
+ 
+ 	pm_runtime_disable(gtr_dev->dev);
+ 	pm_runtime_put_noidle(gtr_dev->dev);
+ 	pm_runtime_set_suspended(gtr_dev->dev);
+-
+-	return 0;
+ }
+ 
+ static const struct of_device_id xpsgtr_of_match[] = {
+@@ -1015,7 +1013,7 @@ MODULE_DEVICE_TABLE(of, xpsgtr_of_match);
+ 
+ static struct platform_driver xpsgtr_driver = {
+ 	.probe = xpsgtr_probe,
+-	.remove	= xpsgtr_remove,
++	.remove_new = xpsgtr_remove,
+ 	.driver = {
+ 		.name = "xilinx-psgtr",
+ 		.of_match_table	= xpsgtr_of_match,
 
-#regzbot report /
-#regzbot introduced 22a9d9585812440211b
-#regzbot duplicate: https://lore.kernel.org/lkml/ZYhQ2-OnjDgoqjvt@wens.tw/
-#regzbot title dmaengine: CPU stalls while loading bluetooth module
-#regzbot ignore-activity
+base-commit: 8ffc8b1bbd505e27e2c8439d326b6059c906c9dd
+-- 
+2.43.0
+
 
