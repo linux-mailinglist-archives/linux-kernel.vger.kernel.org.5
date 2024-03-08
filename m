@@ -1,119 +1,144 @@
-Return-Path: <linux-kernel+bounces-96510-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96514-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55CF7875D43
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 05:51:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC84C875D58
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 05:58:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7D482828D6
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 04:51:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8D53FB22452
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 04:58:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D08322E647;
-	Fri,  8 Mar 2024 04:51:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFBF72E821;
+	Fri,  8 Mar 2024 04:58:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="Oa1zzPsK"
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FfgQrOcX"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB8512C1A6;
-	Fri,  8 Mar 2024 04:51:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.148.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F9BC2D608;
+	Fri,  8 Mar 2024 04:58:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709873496; cv=none; b=TSAaTkDVUtXag/Sj/D585s0aAuHTkCxTowoupYRAPjDaKjNUPkZ0ikHUbAbjXfRJ1Ib3vPKAqGsNb/Pup4u6uaBmHfVAk49PixPNWSkIwnTo5YAO6+FV0z5tGEfLEUU6nkJWAZB9KVHNChIKdxhCyvdxpeznXbrgnMTBfXEIu0c=
+	t=1709873918; cv=none; b=eb7B+wQXuLPVh+H7g4ZJvgQaAMVeX0VB7Wg51n+eONPd+pRzx2sntaHQiJxQClLpp9pe7GrZE20ugMQK1aP6EWHV4idIJosGj+fxMQKLLFMDBtpUKNOrOmOz8rWOqj75KsUWWJ5vImSCEjdUkpcS0QPVtrKEnAUzRzNP7rUTaNg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709873496; c=relaxed/simple;
-	bh=5YjNoXGg6Bs8FmswpCrCP+Om2sTeGqLdQ+96OMKpJFs=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=T26aYC4sayvTgnkFUxEjMszqN0UjfY6NlCf/GY0iGo88rn5jDaRaX3d5C8eC9rk6B1vqPUZ5wVh94tEsEK/r2OrOVWG/VvYhhGS2HYB1g+xfll+97Msf93jmHqSV9Vpchk8XkxND/yz1N1eiuB4vvQh0lqIGXbYlQ5Zq/H2Ritc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=Oa1zzPsK; arc=none smtp.client-ip=67.231.148.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-	by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 427JDiLf022726;
-	Thu, 7 Mar 2024 20:51:33 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
-	from:to:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	pfpt0220; bh=liNBfDir+IIS6IUcJjVY5WIWeMrz2msTky0/4R3OTKo=; b=Oa1
-	zzPsKhJOayYQwbdr9ZkAYbuFKEoVevrDPS5TkQ+Wszp6LpNpHN37wE5CXC80Z8g/
-	/8vNwOPkR9ejk6lCKdHbwMm0rLk8NLE0FJvPHmbr6M5/Vui7DEDvAy8u3MiPyHBQ
-	WUxq3WlxN/6ZjfpKbxEQ4IghtpNTqtHd4xRyyilbg/ipH2qw6sans061Y9jyjbq/
-	zg6wUr1npjZ2YApzfUTg8T9gBmfLJPH97+9YooWvjChFHWmpU95kAFNOTdT1vp36
-	h4ODIwKJPNs2XwXFcluErr0xtJyTu2GWGexf5K0tMYXgZUHNfxiWN8hP8yz92mGR
-	ZhGaj31J7QntNOTvVXg==
-Received: from dc6wp-exch02.marvell.com ([4.21.29.225])
-	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3wqkj61j6a-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 07 Mar 2024 20:51:32 -0800 (PST)
-Received: from DC6WP-EXCH02.marvell.com (10.76.176.209) by
- DC6WP-EXCH02.marvell.com (10.76.176.209) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.12; Thu, 7 Mar 2024 20:51:31 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC6WP-EXCH02.marvell.com
- (10.76.176.209) with Microsoft SMTP Server id 15.2.1258.12 via Frontend
- Transport; Thu, 7 Mar 2024 20:51:31 -0800
-Received: from localhost.localdomain (unknown [10.28.36.165])
-	by maili.marvell.com (Postfix) with ESMTP id DF9CD5B6930;
-	Thu,  7 Mar 2024 20:51:29 -0800 (PST)
-From: Ratheesh Kannoth <rkannoth@marvell.com>
-To: <rkannoth@marvell.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Heiner Kallweit <hkallweit1@gmail.com>
-Subject: Re: [PATCH] net: phy: simplify a check in phy_check_link_status
-Date: Fri, 8 Mar 2024 10:20:58 +0530
-Message-ID: <20240308045058.1221154-1-rkannoth@marvell.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <de37bf30-61dd-49f9-b645-2d8ea11ddb5d@gmail.com>
-References: 
+	s=arc-20240116; t=1709873918; c=relaxed/simple;
+	bh=jy0XW6HpXLjNKng6SUOk46z3P56Zbsjo+182MvNZfNQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FdWd+2u2kqlRVjQOMUj6+oOTnKRf9krIAxosZ/PeJ78nfK6yKJmqr4xqcexmxTSxdOsF/Kq2R7IvlmZmD0OmsNGg9FR7kALTryzIwEXBYn3eUQ6zJB7PgNrq25tTdVLwKvza90VfLlI9+YtETwrJfM5Awkyq5DVgpJjzUovZlVs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FfgQrOcX; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709873916; x=1741409916;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=jy0XW6HpXLjNKng6SUOk46z3P56Zbsjo+182MvNZfNQ=;
+  b=FfgQrOcXxMJKfCJC8EBFf2vjhn/q1GqXnsy6QZ05oGtlpZjPK0XqyB6Q
+   qYWhGwwOzEUQVrycKb7t5NiKIVOb9FJgII9ON1+sfqFznBWK9BNJE1+UX
+   4CIh978wR6+LYW2oKI8MFTqVwLi9gxZNTc9kxsAbBNOSXKL6Hpf1Kuzgu
+   faeGsZb5C3uXtRIHOkjhX5JJ+ju1FvmsWgx9Q+cZk2CmNeGiFvbznu9o9
+   m7KIx9Z7JizbBPHvPjynR3HS0NY+C/uWJaMEVI/bfFyieJFkymuyS9OQ0
+   ONn/HALPK5Ly/u0RRMn8qgrDNXnqc2b1wxCBopCggbSsuaq9ouvFtX1w8
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="16013259"
+X-IronPort-AV: E=Sophos;i="6.07,108,1708416000"; 
+   d="scan'208";a="16013259"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 20:58:35 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,108,1708416000"; 
+   d="scan'208";a="15022427"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by orviesa004.jf.intel.com with ESMTP; 07 Mar 2024 20:58:33 -0800
+Date: Fri, 8 Mar 2024 12:54:16 +0800
+From: Xu Yilun <yilun.xu@linux.intel.com>
+To: Sean Christopherson <seanjc@google.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Yan Zhao <yan.y.zhao@intel.com>,
+	Isaku Yamahata <isaku.yamahata@intel.com>,
+	Michael Roth <michael.roth@amd.com>,
+	Yu Zhang <yu.c.zhang@linux.intel.com>,
+	Chao Peng <chao.p.peng@linux.intel.com>,
+	Fuad Tabba <tabba@google.com>, David Matlack <dmatlack@google.com>
+Subject: Re: [PATCH 09/16] KVM: x86/mmu: Move private vs. shared check above
+ slot validity checks
+Message-ID: <ZeqZ+BDTN5bIx0rm@yilunxu-OptiPlex-7050>
+References: <20240228024147.41573-1-seanjc@google.com>
+ <20240228024147.41573-10-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: VJQcQiyUU8Sal91s8wd6-8cgReF1Trvb
-X-Proofpoint-ORIG-GUID: VJQcQiyUU8Sal91s8wd6-8cgReF1Trvb
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-08_03,2024-03-06_01,2023-05-22_02
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240228024147.41573-10-seanjc@google.com>
 
-On 2024-03-08 at 02:46:12, Heiner Kallweit (hkallweit1@gmail.com) wrote:
-> Handling case err == 0 in the other branch allows to simplify the
-> code. In addition I assume in "err & phydev->eee_cfg.tx_lpi_enabled"
-> it should have been a logical and operator. It works as expected also
-> with the bitwise and, but using a bitwise and with a bool value looks
-> ugly to me.
->
-> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+On Tue, Feb 27, 2024 at 06:41:40PM -0800, Sean Christopherson wrote:
+> Prioritize private vs. shared gfn attribute checks above slot validity
+> checks to ensure a consistent userspace ABI.  E.g. as is, KVM will exit to
+> userspace if there is no memslot, but emulate accesses to the APIC access
+> page even if the attributes mismatch.
+> 
+> Fixes: 8dd2eee9d526 ("KVM: x86/mmu: Handle page fault for private memory")
+> Cc: Yu Zhang <yu.c.zhang@linux.intel.com>
+> Cc: Chao Peng <chao.p.peng@linux.intel.com>
+> Cc: Fuad Tabba <tabba@google.com>
+> Cc: Michael Roth <michael.roth@amd.com>
+> Cc: Isaku Yamahata <isaku.yamahata@intel.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 > ---
->  drivers/net/phy/phy.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/net/phy/phy.c b/drivers/net/phy/phy.c
-> index c3a0a5ee5..c4236564c 100644
-> --- a/drivers/net/phy/phy.c
-> +++ b/drivers/net/phy/phy.c
-> @@ -985,10 +985,10 @@ static int phy_check_link_status(struct phy_device *phydev)
->  		phydev->state = PHY_RUNNING;
->  		err = genphy_c45_eee_is_active(phydev,
->  					       NULL, NULL, NULL);
-IMO, better to rename "err" to "ret", and do if (ret == true). OR,
-we should fix syntax of genphy_c45_eee_is_active() to return bool (true/false)
-than doing this, because function name suggest so , xxx_is_active(). err == 0, norm is
-for success case.
+>  arch/x86/kvm/mmu/mmu.c | 15 ++++++++++-----
+>  1 file changed, 10 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 9206cfa58feb..58c5ae8be66c 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -4365,11 +4365,6 @@ static int __kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault
+>  			return RET_PF_EMULATE;
+>  	}
+>  
+> -	if (fault->is_private != kvm_mem_is_private(vcpu->kvm, fault->gfn)) {
+> -		kvm_mmu_prepare_memory_fault_exit(vcpu, fault);
+> -		return -EFAULT;
+> -	}
+> -
+>  	if (fault->is_private)
+>  		return kvm_faultin_pfn_private(vcpu, fault);
+>  
+> @@ -4410,6 +4405,16 @@ static int kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault,
+>  	fault->mmu_seq = vcpu->kvm->mmu_invalidate_seq;
+>  	smp_rmb();
+>  
+> +	/*
+> +	 * Check for a private vs. shared mismatch *after* taking a snapshot of
+> +	 * mmu_invalidate_seq, as changes to gfn attributes are guarded by the
+> +	 * invalidation notifier.
 
-> -		if (err < 0)
-> +		if (err <= 0)
->  			phydev->enable_tx_lpi = false;
->  		else
-> -			phydev->enable_tx_lpi = (err & phydev->eee_cfg.tx_lpi_enabled);
-> +			phydev->enable_tx_lpi = phydev->eee_cfg.tx_lpi_enabled;
->
->  		phy_link_up(phydev);
->  	} else if (!phydev->link && phydev->state != PHY_NOLINK) {
-> --
-> 2.44.0
+I didn't see how mmu_invalidate_seq influences gfn attribute judgement.
+And there is no synchronization between the below check and
+kvm_vm_set_mem_attributes(), the gfn attribute could still be changing
+after the snapshot.  So why this comment?
+
+Thanks,
+Yilun
+
+> +	 */
+> +	if (fault->is_private != kvm_mem_is_private(vcpu->kvm, fault->gfn)) {
+> +		kvm_mmu_prepare_memory_fault_exit(vcpu, fault);
+> +		return -EFAULT;
+> +	}
+> +
+>  	/*
+>  	 * Check for a relevant mmu_notifier invalidation event before getting
+>  	 * the pfn from the primary MMU, and before acquiring mmu_lock.
+> -- 
+> 2.44.0.278.ge034bb2e1d-goog
+> 
+> 
 
