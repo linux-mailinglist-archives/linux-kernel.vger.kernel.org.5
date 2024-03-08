@@ -1,222 +1,256 @@
-Return-Path: <linux-kernel+bounces-96532-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96533-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3014875DA3
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 06:36:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FB81875DA6
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 06:37:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 260641F21970
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 05:36:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C21441C21707
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 05:37:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AF2633CCF;
-	Fri,  8 Mar 2024 05:36:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A3B432C9C;
+	Fri,  8 Mar 2024 05:37:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="v2uqPTcp"
-Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com [209.85.167.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="g8VviZX3"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 149191E536
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 05:36:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78A2A1E4AE;
+	Fri,  8 Mar 2024 05:37:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709876203; cv=none; b=DRE1te6erp6nZALesw/iRLv3KRr0DnmrmU2vacpdOkZPDRD15ODCh/vI6WGWiko7AuB2tY1vI2ZQw729SVRynRKbcL1hVqVvE7OWBYbezUAiYp0FRl+MQuACYNPr07zKKJwWRizoAwuiuNNAECouaMmVCRmjHb924iJWls8zJlk=
+	t=1709876249; cv=none; b=DVD4csRtAHYLLMzcNRi79BgZhAx9G0aneK1MPnklEVGtFaXonqUF8wcd3o9Ti0IR6/ZDWVehyAP5CsghQJ3Zsm9AdwtJnu72lBGMb4nUqeOt3yZF29/CkPZK1tqbkwfhMLJFn0cZ5eAXY3SEcraVY+Liff/MSBC5o5/kzSAFD2k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709876203; c=relaxed/simple;
-	bh=CGWk1k+osmUSnjHGpIloUEL/BTJMGKlT7uAEdzjuHTo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VxcGbKJG56cNd4lvBIQrInj4wOsp9NeHSgElPq4IRcwJes77kjU7Y1SHZ6IVF0lKA2CxPDLnQrmSLUX3dCJwZ35xWusyrnNz2aykwj6kfAJ2V3EXPxdMHBIub3QnOCAPBlsefrTaod6TbNoBHX38DTxm2Rkcp8/UhFeFZTtIK3Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=v2uqPTcp; arc=none smtp.client-ip=209.85.167.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-oi1-f176.google.com with SMTP id 5614622812f47-3c1ec2c07ffso792737b6e.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 21:36:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709876199; x=1710480999; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=t5usu+wIHjrQwBdpY/kUT6MzVOdZTbW6PSQFUQqDoaA=;
-        b=v2uqPTcp9dXDlK0NKL8G06wXWA8y+J92Wgr2fdtbBzlkkTV68eBfAIzqkoNazWBmFa
-         2xStiKbKeOfsVjGwAQIfo1RmtTGZxVAOdm7b3pQfzIVcRiUFurk0KuMBWwOFbRsSAwBQ
-         cTGnhyYzzAF6nlloUocuPaTXQhvtm3YYW/yb5oMov6E+W/noaEp34V8klUbP+hl80eeJ
-         nJz3ggToUPMxNNeQjAT3VeFqABKworqBIMvBBvynLKqxFOwXw8yKl0u61oQxbWQ9Kkl5
-         K+Ht9XClxupt6drl8FUTMDecIVZrPgbApfkWALWsVmJL5pXN8ORsPbD7bla+F0ydK4e6
-         X4Iw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709876199; x=1710480999;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=t5usu+wIHjrQwBdpY/kUT6MzVOdZTbW6PSQFUQqDoaA=;
-        b=oBfBHG4Cwgs0XB4Opibm/CQj5cBDjGao7lZzeMBgh1RGyQyhQsnvClIhe1/R6xBXjp
-         Rmww8BJcTNnMCxLG6z8SQMl5FIAv8BdALPjfQliCWJsja4LYIKF+++/j2ecFbUOa5xVc
-         7dp1qpnz3pvDj032c1R8K0TL9f43BhfsY8FkqMuNrS40ii6+cFuJ49yii6/lAeXzZje2
-         YNSctXuNHzYWcmT7CRkiY76GGecHZGttL4Zt8s0wKfiu/BLP7Oxu6B4wtGcnmcGwHSOG
-         qFQ2tUkIV5Nwjsf0ZhADn/cPJOq8oRjSLux1N5ZCYseBoPaBmNxSgY7VVzZDhoGyBsxA
-         mr6g==
-X-Forwarded-Encrypted: i=1; AJvYcCWhxFqe0n00/oiOWoPJb4dX9Y7S+SltoqWspx8aM16NyrmdhpcLdHDo8EC2kjX6GV+7+w/HBwl/MgUi27quBk5Ur7WE7aI+bpvFW34N
-X-Gm-Message-State: AOJu0YxJCHedI0TW/bcjareUMbTNLPQzlzUooeug+eNUHMpZ23zEnj1p
-	Fei+3CH4Uz/Ufb3TwByBOmBlDErAyb2fTz8RYAY1asSpTi4c4VWbcqR0wgMcWw==
-X-Google-Smtp-Source: AGHT+IHj0s/MgXdETk1px2mifakT3T/ik8rZsoVSs9rmOK2GEfO1NijLKPOfSrYwO+VEWrCBP34KEg==
-X-Received: by 2002:aca:2b17:0:b0:3c1:f32e:8acd with SMTP id i23-20020aca2b17000000b003c1f32e8acdmr9318128oik.59.1709876198985;
-        Thu, 07 Mar 2024 21:36:38 -0800 (PST)
-Received: from thinkpad ([117.217.178.39])
-        by smtp.gmail.com with ESMTPSA id u20-20020a62d454000000b006e468cd0a5asm14446363pfl.178.2024.03.07.21.36.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Mar 2024 21:36:38 -0800 (PST)
-Date: Fri, 8 Mar 2024 11:06:24 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Niklas Cassel <cassel@kernel.org>
-Cc: Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Marek Vasut <marek.vasut+renesas@gmail.com>,
-	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Kishon Vijay Abraham I <kishon@ti.com>,
-	Vidya Sagar <vidyas@nvidia.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Richard Zhu <hongxing.zhu@nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Minghuan Lian <minghuan.Lian@nxp.com>,
-	Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
-	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Jesper Nilsson <jesper.nilsson@axis.com>,
-	Srikanth Thokala <srikanth.thokala@intel.com>,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-	linux-arm-kernel@axis.com
-Subject: Re: [PATCH v9 06/10] PCI: dwc: ep: Call dw_pcie_ep_init_registers()
- API directly from all glue drivers
-Message-ID: <20240308053624.GB3789@thinkpad>
-References: <20240304-pci-dbi-rework-v9-0-29d433d99cda@linaro.org>
- <20240304-pci-dbi-rework-v9-6-29d433d99cda@linaro.org>
- <ZeolaEIRYmKZjnvT@ryzen>
+	s=arc-20240116; t=1709876249; c=relaxed/simple;
+	bh=pA30PD9ao8YE5foGBh05uYpzAzeO2NEFV6KJ7h9RX6M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=lBjlM56LDBCrk7FnuzALWbppkAFVpy8oHBR+h6uL3T7dDHgABGzDIf8X2sqySPwE2ll5cTXw+9s1QNUzNqJvp8mfMj5DVKfBG8lAdd2x3RCSRUDQ6z2BfV/Ejcme6xfAqJSfUepiYiypXN3GYiLiAMVQCiKor34kowi1YyIGSdY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=g8VviZX3; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from [192.168.1.102] (unknown [103.251.226.70])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 414FEBEB;
+	Fri,  8 Mar 2024 06:37:03 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1709876225;
+	bh=pA30PD9ao8YE5foGBh05uYpzAzeO2NEFV6KJ7h9RX6M=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=g8VviZX3q4rZL7qQ5OA9CJkETDg/eW0FYARZLzYXwf+6IZz9EidLPngl5w/WjSOJm
+	 tkr4bKD3orgrdhqbZEoAXmtravb1m/qWD/AC5zdhHO0J51zxOq5P7Ov5CgssblgUSc
+	 zZnWw9D6tVBbpOJoxUTY1eWN0It9honeNs1ur52o=
+Message-ID: <72903fa4-be78-48e1-88e1-7c6b2146bc1b@ideasonboard.com>
+Date: Fri, 8 Mar 2024 11:07:16 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/5] media: imx335: Support 2 or 4 lane operation modes
+To: Dave Stevenson <dave.stevenson@raspberrypi.com>
+Cc: linux-media@vger.kernel.org,
+ Alexander Shiyan <eagle.alexander923@gmail.com>,
+ Kieran Bingham <kieran.bingham@ideasonboard.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Sakari Ailus <sakari.ailus@linux.intel.com>,
+ open list <linux-kernel@vger.kernel.org>
+References: <20240306081038.212412-1-umang.jain@ideasonboard.com>
+ <20240306081038.212412-2-umang.jain@ideasonboard.com>
+ <CAPY8ntAv2XCgMoA7N6Wj72jOX4rRt4b-HRUr1WXR1diH1bHx8A@mail.gmail.com>
+Content-Language: en-US
+From: Umang Jain <umang.jain@ideasonboard.com>
+In-Reply-To: <CAPY8ntAv2XCgMoA7N6Wj72jOX4rRt4b-HRUr1WXR1diH1bHx8A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZeolaEIRYmKZjnvT@ryzen>
 
-On Thu, Mar 07, 2024 at 09:36:56PM +0100, Niklas Cassel wrote:
-> On Mon, Mar 04, 2024 at 02:52:18PM +0530, Manivannan Sadhasivam wrote:
-> > Currently, dw_pcie_ep_init_registers() API is directly called by the glue
-> > drivers requiring active refclk from host. But for the other drivers, it is
-> > getting called implicitly by dw_pcie_ep_init(). This is due to the fact
-> > that this API initializes DWC EP specific registers and that requires an
-> > active refclk (either from host or generated locally by endpoint itsef).
-> > 
-> > But, this causes a discrepancy among the glue drivers. So to avoid this
-> > confusion, let's call this API directly from all glue drivers irrespective
-> > of refclk dependency. Only difference here is that the drivers requiring
-> > refclk from host will call this API only after the refclk is received and
-> > other drivers without refclk dependency will call this API right after
-> > dw_pcie_ep_init().
-> > 
-> > With this change, the check for 'core_init_notifier' flag can now be
-> > dropped from dw_pcie_ep_init() API. This will also allow us to remove the
-> > 'core_init_notifier' flag completely in the later commits.
-> > 
-> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > ---
-> >  drivers/pci/controller/dwc/pci-dra7xx.c           |  7 +++++++
-> >  drivers/pci/controller/dwc/pci-imx6.c             |  8 ++++++++
-> >  drivers/pci/controller/dwc/pci-keystone.c         |  9 +++++++++
-> >  drivers/pci/controller/dwc/pci-layerscape-ep.c    |  7 +++++++
-> >  drivers/pci/controller/dwc/pcie-artpec6.c         | 13 ++++++++++++-
-> >  drivers/pci/controller/dwc/pcie-designware-ep.c   | 22 ----------------------
-> >  drivers/pci/controller/dwc/pcie-designware-plat.c |  9 +++++++++
-> >  drivers/pci/controller/dwc/pcie-keembay.c         | 16 +++++++++++++++-
-> >  drivers/pci/controller/dwc/pcie-rcar-gen4.c       | 12 +++++++++++-
-> >  drivers/pci/controller/dwc/pcie-uniphier-ep.c     | 13 ++++++++++++-
-> >  10 files changed, 90 insertions(+), 26 deletions(-)
-> > 
-> > diff --git a/drivers/pci/controller/dwc/pci-dra7xx.c b/drivers/pci/controller/dwc/pci-dra7xx.c
-> > index 0e406677060d..395042b29ffc 100644
-> > --- a/drivers/pci/controller/dwc/pci-dra7xx.c
-> > +++ b/drivers/pci/controller/dwc/pci-dra7xx.c
-> > @@ -467,6 +467,13 @@ static int dra7xx_add_pcie_ep(struct dra7xx_pcie *dra7xx,
-> >  		return ret;
-> >  	}
-> >  
-> > +	ret = dw_pcie_ep_init_registers(ep);
-> > +	if (ret) {
-> 
-> Here you are using if (ret) to error check the return from
-> dw_pcie_ep_init_registers().
-> 
-> 
-> > index c0c62533a3f1..8392894ed286 100644
-> > --- a/drivers/pci/controller/dwc/pci-keystone.c
-> > +++ b/drivers/pci/controller/dwc/pci-keystone.c
-> > @@ -1286,6 +1286,13 @@ static int ks_pcie_probe(struct platform_device *pdev)
-> >  		ret = dw_pcie_ep_init(&pci->ep);
-> >  		if (ret < 0)
-> >  			goto err_get_sync;
-> > +
-> > +		ret = dw_pcie_ep_init_registers(&pci->ep);
-> > +		if (ret < 0) {
-> 
-> Here you are using if (ret < 0) to error check the return from
-> dw_pcie_ep_init_registers(). Please be consistent.
-> 
+Hi Dave
 
-I maintained the consistency w.r.t individual drivers. Please check them
-individually.
+On 06/03/24 10:12 pm, Dave Stevenson wrote:
+> Hi Umang and Kieran
+>
+> On Wed, 6 Mar 2024 at 08:11, Umang Jain <umang.jain@ideasonboard.com> wrote:
+>> From: Kieran Bingham <kieran.bingham@ideasonboard.com>
+>>
+>> The IMX335 can support both 2 and 4 lane configurations.
+>> Extend the driver to configure the lane mode accordingly.
+>> Update the pixel rate depending on the number of lanes in use.
+>>
+>> Signed-off-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
+>> Signed-off-by: Umang Jain <umang.jain@ideasonboard.com>
+>> ---
+>>   drivers/media/i2c/imx335.c | 46 +++++++++++++++++++++++++++++++-------
+>>   1 file changed, 38 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/drivers/media/i2c/imx335.c b/drivers/media/i2c/imx335.c
+>> index dab6d080bc4c..a42f48823515 100644
+>> --- a/drivers/media/i2c/imx335.c
+>> +++ b/drivers/media/i2c/imx335.c
+>> @@ -21,6 +21,11 @@
+>>   #define IMX335_MODE_STANDBY    0x01
+>>   #define IMX335_MODE_STREAMING  0x00
+>>
+>> +/* Data Lanes */
+>> +#define IMX335_LANEMODE                0x3a01
+>> +#define IMX335_2LANE           1
+>> +#define IMX335_4LANE           3
+>> +
+>>   /* Lines per frame */
+>>   #define IMX335_REG_LPFR                0x3030
+>>
+>> @@ -67,8 +72,6 @@
+>>   #define IMX335_LINK_FREQ_594MHz                594000000LL
+>>   #define IMX335_LINK_FREQ_445MHz                445500000LL
+>>
+>> -#define IMX335_NUM_DATA_LANES  4
+>> -
+>>   #define IMX335_REG_MIN         0x00
+>>   #define IMX335_REG_MAX         0xfffff
+>>
+>> @@ -115,7 +118,6 @@ static const char * const imx335_supply_name[] = {
+>>    * @vblank: Vertical blanking in lines
+>>    * @vblank_min: Minimum vertical blanking in lines
+>>    * @vblank_max: Maximum vertical blanking in lines
+>> - * @pclk: Sensor pixel clock
+>>    * @reg_list: Register list for sensor mode
+>>    */
+>>   struct imx335_mode {
+>> @@ -126,7 +128,6 @@ struct imx335_mode {
+>>          u32 vblank;
+>>          u32 vblank_min;
+>>          u32 vblank_max;
+>> -       u64 pclk;
+>>          struct imx335_reg_list reg_list;
+>>   };
+>>
+>> @@ -147,6 +148,7 @@ struct imx335_mode {
+>>    * @exp_ctrl: Pointer to exposure control
+>>    * @again_ctrl: Pointer to analog gain control
+>>    * @vblank: Vertical blanking in lines
+>> + * @lane_mode Mode for number of connected data lanes
+>>    * @cur_mode: Pointer to current selected sensor mode
+>>    * @mutex: Mutex for serializing sensor controls
+>>    * @link_freq_bitmap: Menu bitmap for link_freq_ctrl
+>> @@ -171,6 +173,7 @@ struct imx335 {
+>>                  struct v4l2_ctrl *again_ctrl;
+>>          };
+>>          u32 vblank;
+>> +       u32 lane_mode;
+>>          const struct imx335_mode *cur_mode;
+>>          struct mutex mutex;
+>>          unsigned long link_freq_bitmap;
+>> @@ -377,7 +380,6 @@ static const struct imx335_mode supported_mode = {
+>>          .vblank = 2560,
+>>          .vblank_min = 2560,
+>>          .vblank_max = 133060,
+>> -       .pclk = 396000000,
+>>          .reg_list = {
+>>                  .num_of_regs = ARRAY_SIZE(mode_2592x1940_regs),
+>>                  .regs = mode_2592x1940_regs,
+>> @@ -936,6 +938,11 @@ static int imx335_start_streaming(struct imx335 *imx335)
+>>                  return ret;
+>>          }
+>>
+>> +       /* Configure lanes */
+>> +       ret = imx335_write_reg(imx335, IMX335_LANEMODE, 1, imx335->lane_mode);
+>> +       if (ret)
+>> +               return ret;
+>> +
+>>          /* Setup handler will write actual exposure and gain */
+>>          ret =  __v4l2_ctrl_handler_setup(imx335->sd.ctrl_handler);
+>>          if (ret) {
+>> @@ -1096,7 +1103,14 @@ static int imx335_parse_hw_config(struct imx335 *imx335)
+>>          if (ret)
+>>                  return ret;
+>>
+>> -       if (bus_cfg.bus.mipi_csi2.num_data_lanes != IMX335_NUM_DATA_LANES) {
+>> +       switch (bus_cfg.bus.mipi_csi2.num_data_lanes) {
+>> +       case 2:
+>> +               imx335->lane_mode = IMX335_2LANE;
+>> +               break;
+>> +       case 4:
+>> +               imx335->lane_mode = IMX335_4LANE;
+>> +               break;
+>> +       default:
+>>                  dev_err(imx335->dev,
+>>                          "number of CSI2 data lanes %d is not supported\n",
+>>                          bus_cfg.bus.mipi_csi2.num_data_lanes);
+>> @@ -1209,6 +1223,9 @@ static int imx335_init_controls(struct imx335 *imx335)
+>>          struct v4l2_ctrl_handler *ctrl_hdlr = &imx335->ctrl_handler;
+>>          const struct imx335_mode *mode = imx335->cur_mode;
+>>          u32 lpfr;
+>> +       u64 pclk;
+>> +       s64 link_freq_in_use;
+>> +       u8 bpp;
+>>          int ret;
+>>
+>>          ret = v4l2_ctrl_handler_init(ctrl_hdlr, 7);
+>> @@ -1252,11 +1269,24 @@ static int imx335_init_controls(struct imx335 *imx335)
+>>                                       0, 0, imx335_tpg_menu);
+>>
+>>          /* Read only controls */
+>> +
+>> +       /* pixel rate = link frequency * lanes * 2 / bits_per_pixel */
+>> +       switch (imx335->cur_mbus_code) {
+>> +       case MEDIA_BUS_FMT_SRGGB10_1X10:
+>> +               bpp = 10;
+>> +               break;
+>> +       case MEDIA_BUS_FMT_SRGGB12_1X12:
+>> +               bpp = 12;
+>> +               break;
+>> +       }
+>> +
+>> +       link_freq_in_use = link_freq[__ffs(imx335->link_freq_bitmap)];
+>> +       pclk = link_freq_in_use * (imx335->lane_mode + 1) * 2 / bpp;
+>>          imx335->pclk_ctrl = v4l2_ctrl_new_std(ctrl_hdlr,
+>>                                                &imx335_ctrl_ops,
+>>                                                V4L2_CID_PIXEL_RATE,
+>> -                                             mode->pclk, mode->pclk,
+>> -                                             1, mode->pclk);
+>> +                                             pclk, pclk,
+>> +                                             1, pclk);
+> Is this actually correct?
+> A fair number of the sensors I've encountered have 2 PLL paths - one
+> for the pixel array, and one for the CSI block. The bpp will generally
+> be fed into the CSI block PLL path, but not into the pixel array one.
+> The link frequency will therefore vary with bit depth, but
+> V4L2_CID_PIXEL_RATE doesn't change.
+>
+> imx290 certainly has a disjoin between pixel rate and link freq
+> (cropping reduces link freq, but not pixel rate), and we run imx477 in
+> 2 lane mode with the pixel array at full tilt (840MPix/s) but large
+> horizontal blanking to allow CSI2 enough time to send the data.
+>
+> If you've validated that for a range of frame rates you get the
+> correct output from the sensor in both 10 and 12 bit modes, then I
 
-If I maintain consistency w.r.t this patch, then the style will change within
-the drivers.
+I've not validated in such cases. Computing from pixel rate from the 
+link_freq and lane mode came out to be the same as the value currently 
+hardcoded in the mode structure hence I introduced this change. However, 
+I am inclined to dropping it after reading your review  ;-)
+> don't object. I just have an instinctive tick whenever I see drivers
+> computing PIXEL_RATE from LINK_FREQ or vice versa :)
 
-- Mani
+Having said that, I do know, the reporting is not perfect since the bpp 
+can be changed and it would change the link-frequency.
+> If you get the right frame rate it may also imply that the link
+> frequency isn't as configured, but that rarely has any negative
 
-> 
-> > diff --git a/drivers/pci/controller/dwc/pcie-artpec6.c b/drivers/pci/controller/dwc/pcie-artpec6.c
-> > index 9ed0a9ba7619..0edd9ab3f139 100644
-> > --- a/drivers/pci/controller/dwc/pcie-artpec6.c
-> > +++ b/drivers/pci/controller/dwc/pcie-artpec6.c
-> > @@ -441,7 +441,18 @@ static int artpec6_pcie_probe(struct platform_device *pdev)
-> >  
-> >  		pci->ep.ops = &pcie_ep_ops;
-> >  
-> > -		return dw_pcie_ep_init(&pci->ep);
-> > +		ret = dw_pcie_ep_init(&pci->ep);
-> > +		if (ret < 0)
-> 
-> Here you are using if (ret < 0) to error check the return from
-> dw_pcie_ep_init().
-> 
-> 
-> > index 778588b4be70..ca9b22e654cd 100644
-> > --- a/drivers/pci/controller/dwc/pcie-designware-plat.c
-> > +++ b/drivers/pci/controller/dwc/pcie-designware-plat.c
-> > @@ -145,6 +145,15 @@ static int dw_plat_pcie_probe(struct platform_device *pdev)
-> >  
-> >  		pci->ep.ops = &pcie_ep_ops;
-> >  		ret = dw_pcie_ep_init(&pci->ep);
-> > +		if (ret)
-> 
-> Here you are using if (ret) to error check the return from
-> dw_pcie_ep_init(). Please be consistent.
+Indeed ;-)
+> effects. You need a reasonably good oscilloscope to be able to measure
+> the link frequency.
 
--- 
-மணிவண்ணன் சதாசிவம்
+AH, I see.
+>
+>    Dave
+>
+>>          imx335->link_freq_ctrl = v4l2_ctrl_new_int_menu(ctrl_hdlr,
+>>                                                          &imx335_ctrl_ops,
+>> --
+>> 2.43.0
+>>
+>>
+
 
