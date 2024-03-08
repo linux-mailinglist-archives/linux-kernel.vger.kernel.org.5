@@ -1,127 +1,127 @@
-Return-Path: <linux-kernel+bounces-96747-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96748-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BC1B8760F5
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 10:30:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B5DE8760F9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 10:32:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D05C61F22BB4
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 09:30:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AFA97B20CAB
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 09:32:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1772852F91;
-	Fri,  8 Mar 2024 09:30:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17711535A4;
+	Fri,  8 Mar 2024 09:32:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="poqyepOR"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eNSAuLDq"
+Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6755722F0F
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 09:30:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C052053388;
+	Fri,  8 Mar 2024 09:32:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709890247; cv=none; b=hVmYI+aYMqy+QvJ0awXzSkGIu5f8umwapzPInJNH85AXOzjUb3pbUoixy2604Hu9TYjGCkRyWATO9Kzb6J6kb4ZPuyht3l4LHQXjxCetqS+0O7cm0b4bvxx6HDY/BJ6ghMjSetOiWFMIYt4L0dUsj0hexVspApMPlYOYt21HxOM=
+	t=1709890345; cv=none; b=tDwqwecIP1+T8EM7W6Ry56rfK+DVgYEd0CMyMIiEm6wQxuuB6cimxTQj7zJPrUjmlfTEx7p4yKCQXBEt6VWWSajZVjXfrTATLhH8Yws7hKESNRx+DuXgmzPG4n9Lr7uW8gUTHqDrfIuMj6VKpa5hMUGTwkV1/XrA0tJnqxx28oE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709890247; c=relaxed/simple;
-	bh=tiO0bXgsOr+PuXLGnaMqo6dxWeWjXreRkFH/dObAfKs=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=AC6fJibJfOj6KOChzSymPo/UWwCtyFttyOj62gipJIsT2MybE77pwAoncQkU4zludHQquIrXHPpvajJpP3L4xB6Qj3OYy8ndEaQnlqVy84w+7e9Z6NB/ymgPYb7zZ6uT4JUsqoQMoxpG/hn3WtaYzp1Bccz7WfIBxDmtGXbopfg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=poqyepOR; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-	s=201909; t=1709890241;
-	bh=YrG1vi6s/nTwQkG4YsY+XqFiQyMrqUljBKJEXiaxAlo=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=poqyepOR/C++MsETS/6QVuyHg2UIBvlhqaSA6Ce5Go5wIxdCFrubcjS2LSzyhflBx
-	 5Q8AwLdlL2B59MTdND6P3EKY3yJHoSAF5lQwj+e3T5JjlYw/NFKrOAMlt7OKAil0jj
-	 YW14/V32vV7XsCKTeyA889fdfzECaYF2iEYktWeiycbVj5Ac8St5Le2sG+/b3PSqVw
-	 xXOvXyMSA0SUfjBYo24HFVHSMiUygB5X8tWiLkyxMM6aDZHznE3RrumAU5gQIRV9eN
-	 Je+IdqrXNZpGz8tPt0SXHU475HQ0xcw7+qbjPtDVRAgtHtZmA515omGgpXybBDi7Nq
-	 etlkkl91F1cxA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Trgrc6vwJz4wc4;
-	Fri,  8 Mar 2024 20:30:40 +1100 (AEDT)
-From: Michael Ellerman <mpe@ellerman.id.au>
-To: Joel Savitz <jsavitz@redhat.com>
-Cc: linux-kernel@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>, "Aneesh Kumar K.V"
- <aneesh.kumar@kernel.org>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
- Benjamin Gray <bgray@linux.ibm.com>, Paul Mackerras <paulus@ozlabs.org>,
- linuxppc-dev@lists.ozlabs.org, Gonzalo Siero <gsierohu@redhat.com>
-Subject: Re: [PATCH] powerpc: align memory_limit to 16MB in early_parse_mem
-In-Reply-To: <CAL1p7m7nHfLM=koNaFZ0MrrcC6Lyj3VWdC9i8rOWGmrijKR3+Q@mail.gmail.com>
-References: <20240301203023.2197451-1-jsavitz@redhat.com>
- <87cysdfsef.fsf@mail.lhotse>
- <CAL1p7m7nHfLM=koNaFZ0MrrcC6Lyj3VWdC9i8rOWGmrijKR3+Q@mail.gmail.com>
-Date: Fri, 08 Mar 2024 20:30:39 +1100
-Message-ID: <87zfv9m5og.fsf@mail.lhotse>
+	s=arc-20240116; t=1709890345; c=relaxed/simple;
+	bh=QnO0szRdTsmWrR6KpbcgxmZYiPQ7eKZeIX8N9Y8tJ3k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=su9XT77qi+0hiE0jRA6gA/I53SGmy/YVcDkVNx4lbx8K2zPy6TwasaOvZyEv5BohaVLyLuC1qK7/jYOcFG+LGpUtLx6xsZ8GbzWFQ3KXVLUS2Y6D/fCaD4KK+loBJ0tGybJxxDKA2M0hlf05VHmin91Wc7ckOjctTmZh+H9wCY8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eNSAuLDq; arc=none smtp.client-ip=209.85.167.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3bd72353d9fso1014867b6e.3;
+        Fri, 08 Mar 2024 01:32:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709890343; x=1710495143; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=e7wrWKLckR9dwH/ul31j0XrWIjQzUvip9OZaiMJtVGs=;
+        b=eNSAuLDqmVfXAdKXUl0+vZTPrUXEfUtU2A5lnkXtK1kZLEzEKFLa2pcRvFa4GmwOv4
+         WNB1GW6FHru8/NJFjAcmRLO1Fe+qU2STA0BkGenAMhheiaGSAHS18j4s5zZ8IQg4ausz
+         bVFek6FIjTWpFrJuhl4OBIPWWxtBD+Xi2+3So9WkNp/Q7g7K1NTbRkR50vWrMstY5rWG
+         K5XXW3qAXMk+Wvxi03Vm9Fs6JY07192Y3IFnzqSPvq+KfGIzLau2SmWtzgSF473vLlUU
+         Ga1yiP7qzJ2UyEbElLJJssu8LuK3rnEYBTLAfdS4mw1Z2QR91aMLxvMflDRcmGq3Jr/3
+         mrAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709890343; x=1710495143;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=e7wrWKLckR9dwH/ul31j0XrWIjQzUvip9OZaiMJtVGs=;
+        b=I0N0pd13ERTFVLwWUnB1aLA05jzCeV3AZPrkKzw5+UvYBKK8qywkMPr3QX7auwWkEx
+         eKB/S9gK06VwIryEJGAEzL8EGUOvJ11V11317/gD1FWHSBnbmAmiDvjhSEFZC1XTynwG
+         9Vt9mMRMNXRkIYgLm2sLtWIEJoWvnys/VcXh94BByKqCKkkqdhV2mZJ0icR+U+yEtRMD
+         PyqPbqGNAiJ9+4pEoomXNta6TlqW5dpdADQftYcHOcnRgJWQd0mUxx9hPcx3pDpOW9RN
+         YKT1TGm+xDCbQ243ENv+mFtCUJkYKQyZcdjEdbjfOkMvxgjxafDv/tSogTJynjz038pI
+         Hj1g==
+X-Forwarded-Encrypted: i=1; AJvYcCUuPO5HUWJkrkK9lzeVL8LZaEm80o5H/QZBDjNhNK8tWf7EAuulKjPQeA7VgE/QEECWHIOc7E6H6EYg2v9v2z2Dk0TbRYvl04R4KtEaKgDkhQvv9WLIB6LsQjA7B02/4CCicqKe2PM85mJoZMCSX9w+61igI/o7ARBGGLZ0L7+6pOaBfe8=
+X-Gm-Message-State: AOJu0YyLXFAufO96fKzJnP/De5P1BhAD3br4kCl2EN+0+1ZuIjOb0E8Z
+	AUnA/ARNJQyyHlBkzWGtMFJ6DH6jb3JKIZXVlCXDB2tbomuSV8rywCd8GACx/UveuiHnaVasy6E
+	VeGPZgmAcBhQK51w7pN9WXZIm84U=
+X-Google-Smtp-Source: AGHT+IGacdulsw0UFb3sV/FTp+egnN/XnS6ykv5Ng+mKb56dZEwnb3aIMac6MUYw3XaqOLGnIGe4ULUlcpk37CqqAVk=
+X-Received: by 2002:a05:6870:819e:b0:221:96fb:9ca5 with SMTP id
+ k30-20020a056870819e00b0022196fb9ca5mr1765584oae.33.1709890342746; Fri, 08
+ Mar 2024 01:32:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20240307223756.31643-1-justin.swartz@risingedge.co.za>
+In-Reply-To: <20240307223756.31643-1-justin.swartz@risingedge.co.za>
+From: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date: Fri, 8 Mar 2024 10:32:10 +0100
+Message-ID: <CAMhs-H_W7WL1ss6Htk8zCxuerF4EzsQR95FfVvdBai1rSCthKg@mail.gmail.com>
+Subject: Re: [PATCH v2] mips: dts: ralink: mt7621: add cell count properties
+ to usb
+To: Justin Swartz <justin.swartz@risingedge.co.za>
+Cc: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Matthias Brugger <matthias.bgg@gmail.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, linux-mips@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Joel Savitz <jsavitz@redhat.com> writes:
-> On Fri, Mar 1, 2024 at 6:23=E2=80=AFPM Michael Ellerman <mpe@ellerman.id.=
-au> wrote:
->> Joel Savitz <jsavitz@redhat.com> writes:
->> > On 64-bit powerpc, usage of a non-16MB-aligned value for the mem=3D ke=
-rnel
->> > cmdline parameter results in a system hang at boot.
->>
->> Can you give us any more details on that? It might be a bug we can fix.
+On Thu, Mar 7, 2024 at 11:39=E2=80=AFPM Justin Swartz
+<justin.swartz@risingedge.co.za> wrote:
 >
-> The console freezes after the following output:
+> Add default #address-cells and #size-cells properties to the
+> usb node, which should be suitable for hubs and devices without
+> explicitly declared interface nodes, as:
 >
->   Booting a command list
+>   "#address-cells":
+>     description: should be 1 for hub nodes with device nodes,
+>       should be 2 for device nodes with interface nodes.
+>     enum: [1, 2]
 >
-> OF stdout device is: /vdevice/vty@30000000
-> Preparing to boot Linux version 6.8.0-rc6.memNOfix-00120-g87adedeba51a
-> (root@ibm-p9z-26-lp11.virt.pnr.lab.eng.rdu2.redhat.com) (gcc (GCC)
-> 11.4.1 20231218 (Red Hat 11.4.1-3), GNU ld version 2.35.2-43.el9) #3
-> SMP Fri Mar  1 10:45:45 EST 2024
-> Detected machine type: 0000000000000101
-> command line: BOOT_IMAGE=3D(ieee1275//vdevice/v-scsi@30000003/disk@810000=
-0000000000,msdos2)/vmlinuz-6.8.0-rc6.memNOfix-00120-g87adedeba51a
-> root=3D/dev/mapper/rhel_ibm--p9z--26--lp11-root ro
-> crashkernel=3D2G-4G:384M,4G-16G:512M,16G-64G:1G,64G-128G:2G,128G-:4G
-> rd.lvm.lv=3Drhel_ibm-p9z-26-lp11/root
-> rd.lvm.lv=3Drhel_ibm-p9z-26-lp11/swap mem=3D4198400K
-> Max number of cores passed to firmware: 256 (NR_CPUS =3D 2048)
-> Calling ibm,client-architecture-support... done
-> Ignoring mem=3D0000000101000000 >=3D ram_top.
-> memory layout at init:
->   memory_limit : 0000000000000000 (16 MB aligned)
->   alloc_bottom : 00000000114f0000
->   alloc_top    : 0000000020000000
->   alloc_top_hi : 0000000020000000
->   rmo_top      : 0000000020000000
->   ram_top      : 0000000020000000
-> instantiating rtas at 0x000000001ecb0000... done
-> prom_hold_cpus: skipped
-> copying OF device tree...
-> Building dt strings...
-> Building dt structure...
-> Device tree strings 0x0000000011500000 -> 0x00000000115017b7
-> Device tree struct  0x0000000011510000 -> 0x0000000011520000
-> Quiescing Open Firmware ...
-> Booting Linux via __start() @ 0x000000000a6e0000 ...
+>   "#size-cells":
+>     const: 0
+>
+> -- Documentation/devicetree/bindings/usb/usb-device.yaml
+>
+> This version of the patch places the properties according to
+> the order recommended by:
+>
+>    Documentation/devicetree/bindings/dts-coding-style.rst
 
-Thanks.
+Drop these three lines, this explanation would be after --- line as
+information about the changes from v1.
 
-I haven't been able to reproduce this unfortunately, and I don't see the
-bug. As Aneesh pointed out the code should be aligning later anyway.
+>
+> Signed-off-by: Justin Swartz <justin.swartz@risingedge.co.za>
+> ---
+>  arch/mips/boot/dts/ralink/mt7621.dtsi | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
-Can you build a kernel with CONFIG_PPC_EARLY_DEBUG_LPAR=3Dy and boot it
-without the patch? That should hopefully give you some more output.
+With the three lines removal addressed:
+Acked-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
 
-cheers
+Best regards,
+    Sergio Paracuellos
 
