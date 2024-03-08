@@ -1,74 +1,61 @@
-Return-Path: <linux-kernel+bounces-97257-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97258-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 876B08767B8
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 16:50:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7078C8767CD
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 16:53:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA4CC1C20E0C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 15:50:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1DBF028316A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 15:53:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66A4921A14;
-	Fri,  8 Mar 2024 15:50:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D19F24B21;
+	Fri,  8 Mar 2024 15:53:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="eVtdgRvP"
-Received: from out203-205-221-164.mail.qq.com (out203-205-221-164.mail.qq.com [203.205.221.164])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="W/C3unvi"
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B0761DFDE
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 15:50:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.164
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD8CC1DDEA;
+	Fri,  8 Mar 2024 15:53:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709913049; cv=none; b=F44pzo9S96xCdwIVQ25ipbEz9kaDyVRjuSfGCaIUXS/vtkc27BJApS3iqHcdphJjHQmN8JpG5AEKh8YuguwUf02xQZqUHH9UNISNDmhuaB3ullOgS4RKqdKofUhEJi0usA2HaGaddyuoPuelWoa9OP657kahtrIUnn4m3nvPwXQ=
+	t=1709913217; cv=none; b=cvT78UUSnT5XHTeHtI+WK7yTyiSzI2YGBO0BY93xnhgQ6hEyhwdG7WgPqIldpnIHPG5pDQ/FXdgFd9uei0juuPGTPNeoRVdDQtOA7y01/vx00q7hBS1DlCmNG6FPATl52ZUVKij/dhk+w7FaT/sjpJWqiIIRic14KbIh79y5PnE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709913049; c=relaxed/simple;
-	bh=ozJI79HqGE92jgwvFuOdH4xM0GwWyR9/93hWEIkAQRg=;
-	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=id4HCSSs9xBMGB06lgdW7tW4bdFXV9f3Q7HrP4p4zgd80/balopalCENyG8q7mit2RY02BOIL42NUdc5VZtVGv1RoNd3MNhscX39R35BwM1NHnhT1rjgzDCBeq5KVwHEzivpMleiBZA22JbfaZoJHYADWm6V0jf1P4U61EJXS1Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=eVtdgRvP; arc=none smtp.client-ip=203.205.221.164
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-	s=s201512; t=1709913028;
-	bh=RKzkR9vje7Jpn9cyD5wBQ0iJFQUWAC2XF40CQ7KS6RU=;
-	h=From:To:Cc:Subject:Date;
-	b=eVtdgRvPwChoGirDalsQK9w6I+eVrDjt3LlT3ePTmWVrWA6HoPcQ7+MCdwo2dzSli
-	 jlliaLNBITHiwvWD9bNVLQuQVrOvRVrKiz+pDqGAvbnD3hnUjdJtmTL94MO0c+Wgor
-	 Mil92/2poqdOB6xBiwrbqeEyb5swkWu6juk+jR8g=
-Received: from localhost.localdomain ([2409:8961:2b04:1689:623f:173e:f19f:c2])
-	by newxmesmtplogicsvrszb9-1.qq.com (NewEsmtp) with SMTP
-	id C9827248; Fri, 08 Mar 2024 23:50:24 +0800
-X-QQ-mid: xmsmtpt1709913024tdm381xel
-Message-ID: <tencent_06797E65CFC655DCD4F0414B9380E95ECC08@qq.com>
-X-QQ-XMAILINFO: NMGzQWUSIfvT2vJnAjZfUSDvuECqJ34yFFveLCtZatygK/gwXZNBtww4iUmeBk
-	 2l+f/U3LWNLv1aPUUuH4vUP0RrmHJYKYlrB0A34v9K4Kj1rpRp5N8wOlAJf237JLeUPZbDNvHhWu
-	 r4MKhzDTz0Fydch2mR5Osz3s/kA5+CHGx8DGV4Eiz/m4m+MmasefEeS7XVepqC12HfqAhdcAETjB
-	 oDaCn8Njvj+bxW6oBpYQn8FGleCucIeN6k/Anira2+7YQv6aJxjVKbRt6WIGIkUQGIVWOhI6on5i
-	 9Kgy3naIOwCTvSopy2ejS+kFCPkvEsE/aRmgiXPBAlgEcxgahgSye0pFpinqPuEgy/uOYgotLlw7
-	 hgEwBbnN7G5DGliYAKy0vqg5Nokb41DcuTth6a3BgsgjLX+1nP9NamZS0+Ucka5XmUFss3X0o+Yh
-	 E3XnrFuHou/Gll7NXSveqbfwZpT5VULiPBPu1LDIzzBMMWi3Zk2Gr7W5XwdgbmZ2aArvYcGeSjPr
-	 sBvt7X3mbT9YiBnJyg0i+Y2hi+xBZXuSbt50z77c3nPzdbaZF4xzxB+5pueIt2c4PfvcJZQZ8Ba6
-	 BT/2FecNeLkpNYNsjpLTgaDdGpSfz2vRjVjDsHei9vPp/qGxdh5tFQW314EvHkSrdhnOSsGhncuS
-	 BxxM+48eItdb25FOLJIQ3zszPKKq1apbYLFwB9EY7fQRq82WnzB5hb+aDmF0ghGAp6KMGzW/71B7
-	 qnZoGcAK5sNeDj7DHm/suF3FOLGO856jqWkTLKZQN39wYIzQNAlqhvHdG7ff/KcGjEuc6lNnwin7
-	 9jSfF2synbzNH8bx+jasxcKooAHv/DH+/dY/XU3kLiEX5tU2bPiCuwndbO4M2Hp/aXBuIK8xYFix
-	 Gi7BZwwBuAWroXpXtUvWXiJEy/CKem4Jv1ydxoiqgdtPORRGa1uI5taHSfxuvA1Lc7yp9Q6OPoe5
-	 gV8sOoQzbPcccHamc3PzBdeHJ6WqucGYJxArkRr3xRlJas+CEUbkUSKSWLiLETsXL2Tp5D4Mh82G
-	 bf/VdDod/6ZfcjRm08iIkXx7CYBPrPVP5I1YEOeA==
-X-QQ-XMRINFO: NyFYKkN4Ny6FSmKK/uo/jdU=
-From: wenyang.linux@foxmail.com
-To: "Eric W . Biederman" <ebiederm@xmission.com>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Kees Cook <keescook@chromium.org>,
-	Joel Granados <j.granados@samsung.com>,
-	Christian Brauner <brauner@kernel.org>
-Cc: Wen Yang <wenyang.linux@foxmail.com>,
-	linux-kernel@vger.kernel.org
-Subject: [RESEND PATCH v2] sysctl: move the extra1/2 boundary check of u8 to sysctl_check_table_array
-Date: Fri,  8 Mar 2024 23:50:16 +0800
-X-OQ-MSGID: <20240308155016.350518-1-wenyang.linux@foxmail.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1709913217; c=relaxed/simple;
+	bh=9kAAhRqLMcrr+9tK5hG3rSo+G/V409qzT0sY2Wbs5UQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=P0m5e4/osvsE2Zt+m+lZ0o8w1Evsq5Wr+RAVm7Tm8mPhNnpD1YJPCqdO2VGeLyW8BDA7abz+YntPe0JAUn5+t6Yqsb5seUBW+jfTMCSqBZv+VVGPCCANvuk10GAO5wP6S1slu16HORGp+f2FhM/Uw/YYVLdZgCsdPYKTuAHPaCw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=W/C3unvi; arc=none smtp.client-ip=217.70.183.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id EB7B14000C;
+	Fri,  8 Mar 2024 15:53:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709913212;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=h7W6BFf6l9QjXDA+QpEkgFe1Y6FIQH4Amx5REeeID6o=;
+	b=W/C3unvijSCZ/FzEysXHcVv2ziKW4sX7FWV+BvIkbTU3jx12EQgZqK3B7Z7AFchOejxVle
+	lmw1qV5Tfe5xMVMIkhRMKd9+OF6VUyW53Yg3MZita4xnCgyfnzTBu10Glh2wgODfed/810
+	U+TgauQBkZo7oFWVmpyQsD0P5+DQOQzTDyn7PkVIOjcyho3D0gBC2rKfhX5eFtipf+xMx8
+	htx31PGb+CiKE9LCzHwqMDIuAGhQOtBbQhenqvtxHaY/pfJ1xe5P24P16DrCrC4eExu7OX
+	NgxsmJRL2q76w9Dn5dKsyjQTRWsLvj/eI7GAiymecA5SkHCcCZaxX0jfH1xcbw==
+From: thomas.perrot@bootlin.com
+To: Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Thomas Perrot <thomas.perrot@bootlin.com>
+Subject: [PATCH] net: macb: remove change_mtu callback
+Date: Fri,  8 Mar 2024 16:53:30 +0100
+Message-ID: <20240308155330.1610616-1-thomas.perrot@bootlin.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,181 +63,55 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-GND-Sasl: thomas.perrot@bootlin.com
 
-From: Wen Yang <wenyang.linux@foxmail.com>
+From: Thomas Perrot <thomas.perrot@bootlin.com>
 
-The boundary check of u8's extra is currently performed at runtime.
-This may result in some kernel modules that can be loaded normally without
-any errors, but not works, as follows:
+Because it doesn't allow MTU changes when the interface is up, although
+it is not necessary.
 
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/sysctl.h>
+This callback has been added to add in a first implementation of the Jumbo
+support [1],since it has been reworked and moved to the probe [2].
 
-static struct ctl_table_header *_table_header;
-unsigned char _data = 0;
-struct ctl_table table[] = {
-	{
-		.procname       = "foo",
-		.data           = &_data,
-		.maxlen         = sizeof(u8),
-		.mode           = 0644,
-		.proc_handler   = proc_dou8vec_minmax,
-		.extra1         = SYSCTL_ZERO,
-		.extra2         = SYSCTL_ONE_THOUSAND,
-	},
-	{}
-};
+[1] commit a5898ea09aad ("net: macb: Add change_mtu callback with
+    jumbo support")
+[2] commit 44770e1180de ("ethernet: use core min/max MTU checking")
 
-static int init_demo(void) {
-	if (!_table_header)
-		_table_header = register_sysctl("kernel", table);
-
-	pr_info("test: init module.\n");
-	return 0;
-}
-
-static void cleanup_demo(void) {
-	if (_table_header) {
-		unregister_sysctl_table(_table_header);
-	}
-
-	pr_info("test: cleanup module.\n");
-}
-
-module_init(init_demo);
-module_exit(cleanup_demo);
-MODULE_LICENSE("GPL");
-
- # insmod test.ko
- # cat /proc/sys/kernel/foo
- cat: /proc/sys/kernel/foo: Invalid argument
- # echo 1 >  /proc/sys/kernel/foo
- -bash: echo: write error: Invalid argument
-
-This patch moves the boundary check forward to module loading and
-also adds a kunit test case.
-
-Signed-off-by: Wen Yang <wenyang.linux@foxmail.com>
-Cc: Luis Chamberlain <mcgrof@kernel.org>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Joel Granados <j.granados@samsung.com>
-Cc: Eric W. Biederman <ebiederm@xmission.com>
-Cc: Christian Brauner <brauner@kernel.org>
-Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Thomas Perrot <thomas.perrot@bootlin.com>
 ---
-v2->v1:
-- kunit: detect registration failure with KUNIT_EXPECT_NULL
+ drivers/net/ethernet/cadence/macb_main.c | 11 -----------
+ 1 file changed, 11 deletions(-)
 
- fs/proc/proc_sysctl.c | 12 ++++++++++++
- kernel/sysctl-test.c  | 30 ++++++++++++++++++++++++++++++
- kernel/sysctl.c       | 14 ++++----------
- 3 files changed, 46 insertions(+), 10 deletions(-)
-
-diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
-index 37cde0efee57..136e3f8966c3 100644
---- a/fs/proc/proc_sysctl.c
-+++ b/fs/proc/proc_sysctl.c
-@@ -1096,6 +1096,7 @@ static int sysctl_err(const char *path, struct ctl_table *table, char *fmt, ...)
- 
- static int sysctl_check_table_array(const char *path, struct ctl_table *table)
- {
-+	unsigned int extra;
- 	int err = 0;
- 
- 	if ((table->proc_handler == proc_douintvec) ||
-@@ -1107,6 +1108,17 @@ static int sysctl_check_table_array(const char *path, struct ctl_table *table)
- 	if (table->proc_handler == proc_dou8vec_minmax) {
- 		if (table->maxlen != sizeof(u8))
- 			err |= sysctl_err(path, table, "array not allowed");
-+
-+		if (table->extra1) {
-+			extra = *(unsigned int *) table->extra1;
-+			if (extra > 255U)
-+				err |= sysctl_err(path, table, "array not allowed");
-+		}
-+		if (table->extra2) {
-+			extra = *(unsigned int *) table->extra2;
-+			if (extra > 255U)
-+				err |= sysctl_err(path, table, "array not allowed");
-+		}
- 	}
- 
- 	if (table->proc_handler == proc_dobool) {
-diff --git a/kernel/sysctl-test.c b/kernel/sysctl-test.c
-index 6ef887c19c48..84e759a8328f 100644
---- a/kernel/sysctl-test.c
-+++ b/kernel/sysctl-test.c
-@@ -367,6 +367,35 @@ static void sysctl_test_api_dointvec_write_single_greater_int_max(
- 	KUNIT_EXPECT_EQ(test, 0, *((int *)table.data));
+diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
+index 898debfd4db3..0532215e5236 100644
+--- a/drivers/net/ethernet/cadence/macb_main.c
++++ b/drivers/net/ethernet/cadence/macb_main.c
+@@ -3017,16 +3017,6 @@ static int macb_close(struct net_device *dev)
+ 	return 0;
  }
  
-+/*
-+ * Test that registering an invalid extra value is not allowed.
-+ */
-+static void sysctl_test_register_sysctl_sz_invalid_extra_value(
-+		struct kunit *test)
-+{
-+	unsigned char data = 0;
-+	struct ctl_table table[] = {
-+		{
-+			.procname	= "foo",
-+			.data		= &data,
-+			.maxlen		= sizeof(u8),
-+			.mode		= 0644,
-+			.proc_handler	= proc_dou8vec_minmax,
-+			.extra1		= SYSCTL_ZERO,
-+			.extra2		= SYSCTL_ONE_THOUSAND,
-+		},
-+		{}
-+	};
-+	unsigned int size = ARRAY_SIZE(table);
-+
-+	KUNIT_EXPECT_NULL(test, register_sysctl_sz("foo", table, size));
-+	table[0].extra1 = SYSCTL_ONE_THOUSAND;
-+	KUNIT_EXPECT_NULL(test, register_sysctl_sz("foo", table, size));
-+	table[0].extra1 = SYSCTL_ONE_HUNDRED;
-+	table[0].extra2 = SYSCTL_TWO_HUNDRED;
-+	KUNIT_EXPECT_NOT_NULL(test, register_sysctl_sz("foo", table, size));
-+}
-+
- static struct kunit_case sysctl_test_cases[] = {
- 	KUNIT_CASE(sysctl_test_api_dointvec_null_tbl_data),
- 	KUNIT_CASE(sysctl_test_api_dointvec_table_maxlen_unset),
-@@ -378,6 +407,7 @@ static struct kunit_case sysctl_test_cases[] = {
- 	KUNIT_CASE(sysctl_test_dointvec_write_happy_single_negative),
- 	KUNIT_CASE(sysctl_test_api_dointvec_write_single_less_int_min),
- 	KUNIT_CASE(sysctl_test_api_dointvec_write_single_greater_int_max),
-+	KUNIT_CASE(sysctl_test_register_sysctl_sz_invalid_extra_value),
- 	{}
- };
- 
-diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index f67b39d3d6e5..28888744626a 100644
---- a/kernel/sysctl.c
-+++ b/kernel/sysctl.c
-@@ -977,16 +977,10 @@ int proc_dou8vec_minmax(struct ctl_table *table, int write,
- 	if (table->maxlen != sizeof(u8))
- 		return -EINVAL;
- 
--	if (table->extra1) {
--		min = *(unsigned int *) table->extra1;
--		if (min > 255U)
--			return -EINVAL;
--	}
--	if (table->extra2) {
--		max = *(unsigned int *) table->extra2;
--		if (max > 255U)
--			return -EINVAL;
--	}
-+	if (table->extra1)
-+		min = *(unsigned char *) table->extra1;
-+	if (table->extra2)
-+		max = *(unsigned char *) table->extra2;
- 
- 	tmp = *table;
- 
+-static int macb_change_mtu(struct net_device *dev, int new_mtu)
+-{
+-	if (netif_running(dev))
+-		return -EBUSY;
+-
+-	dev->mtu = new_mtu;
+-
+-	return 0;
+-}
+-
+ static int macb_set_mac_addr(struct net_device *dev, void *addr)
+ {
+ 	int err;
+@@ -3897,7 +3887,6 @@ static const struct net_device_ops macb_netdev_ops = {
+ 	.ndo_get_stats		= macb_get_stats,
+ 	.ndo_eth_ioctl		= macb_ioctl,
+ 	.ndo_validate_addr	= eth_validate_addr,
+-	.ndo_change_mtu		= macb_change_mtu,
+ 	.ndo_set_mac_address	= macb_set_mac_addr,
+ #ifdef CONFIG_NET_POLL_CONTROLLER
+ 	.ndo_poll_controller	= macb_poll_controller,
 -- 
-2.25.1
+2.44.0
 
 
