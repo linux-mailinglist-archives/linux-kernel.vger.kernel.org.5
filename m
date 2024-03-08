@@ -1,159 +1,185 @@
-Return-Path: <linux-kernel+bounces-97324-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97325-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2BBF8768C9
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:48:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40FA88768CB
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:48:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 04723B21DE0
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 16:48:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C173C1F215C6
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 16:48:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A12412B8B;
-	Fri,  8 Mar 2024 16:48:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 641041CD2E;
+	Fri,  8 Mar 2024 16:48:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="MZbD6e0X"
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="sQdkbJJE"
+Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 837881CD2A
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 16:48:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADBA21BDED
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 16:48:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709916488; cv=none; b=FAq3cvDqIK7NlD3i+CfmwAX0b740YyCDi1jIR5KszRzd707EWhP8g+RTKqZXjAExGeEFY3skzG1f60W8j8m7BKfdUbkupO3TZrWA7H2Pya6jAfUMqoNcG6KGIHDUY4GeL791igA0jhFclHbZ1IQlwXO4JjOq0bcLLaTXRWbfqyI=
+	t=1709916520; cv=none; b=Un0kEkz7owphDXLBgQ49S8SKEqGt+aSY5Z208Q8fZtT7aagruxDXyOih0DGX04ESZo8ujqlbA6zbAuwiG8VJ2diElxees/FEsO9eXp3gzy1baNm6FLrYsap2RWM644vlYcen0llqfdiXQKLWMr+xJtFrzkWQAWwu0IMm6FiUJ3Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709916488; c=relaxed/simple;
-	bh=Y3+J+DGthX9LLnIZodenrbd6SIsoFqZdJRXiEVqxb64=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=M3ULbpqh3Si6jMDmXqo/Sya2iwBRh/KaDVq28kg5XV7djzaU84H24yXMEaNVoBwAYm8Er3hBRZhwmeRs3dtoGoDYX4iJKH5yl9y1uUYByEUm3dmd4bDycD8rDSGT+/pi260PjT4WdPZ+xx511zfGZQlwk5I4uXWrJ4YBjuLCFso=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=MZbD6e0X; arc=none smtp.client-ip=209.85.208.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d4141c4438so26915331fa.3
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 08:48:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709916484; x=1710521284; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=av2fWGGqod21kKXmBF9bISMvMli5hmBzFo0FJK4YLYM=;
-        b=MZbD6e0X4kNlG0tHobiwM2fXqdq/Y/fESmtA0NpLnnz/UtHsaAfy0G2iUMUAhDluAk
-         RecP4Sfz3NpGETMALz2z0rifyPKc0bdx9KL6fqQmxEepaC8wAgFccSBIaHc02IUUjyxn
-         JTIBzOP04crvyCVcnclIGFiCMKxJcTRVY0/ko59nKh1b3GL6xfqJNK1gntYbSAfgKA6n
-         U1n7+NlWxOEgI59GSiHt7pHP0zukT5nHqwIxWBFNxoxqx/Nhu0e6a0rexlhcuDaiJDX8
-         mQNUdGs/WclQkcI0p9fpaF66aR+A3sNiJ+dqvCo/zH9ej63VJclnUfhpCL/cQjAW9nNE
-         XNMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709916484; x=1710521284;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=av2fWGGqod21kKXmBF9bISMvMli5hmBzFo0FJK4YLYM=;
-        b=S7I7LGmzMLM34rS4C9Ym9KKQSjXB0bBMrvLcVtIuVTkwl5TioFZ08Crf+6Z/ASmi+w
-         tdorTcJdmJtQ3aGzvHU2kTETlagAJkyefE9nYckgD0Ko2b3W5Vim0/HoI7ly1NOTHAUG
-         dvfbrcxEZhtJB/hGsg1xsTSAefYlUHL+EsPChJSYWQdYYTAV4AjXeGkdm9SlRzU3Nkll
-         NNWuJAMuvwZ9SKg5I1Fp/XKfeF0IOWyCl+QBgMso3TaNgZ2i638P43XWQD5GVb4HNV0c
-         4YdFSYFh829KEZmcSxXP6i4fmOoVw8f7zyKs+Pp1/ftMgIhTDqxdkOOzoACOXUs2iz7o
-         oEcA==
-X-Forwarded-Encrypted: i=1; AJvYcCUh6ZRYZ/hicm3IpxLifczeLlxr+9GR3XaT8Zue3Uw40taYBVjwQ4l5KDepPmqbk4niNZBdnZXAfOvlU1UnS+UgkyJoziNB0uTyb0U8
-X-Gm-Message-State: AOJu0YxiE0P2Y5lBebkjQ3Y4w2gvpoLx2OjUeaOfeqb4tfFQQXO9+vKN
-	jrEX2wbeBOYgba1qOmJ9jqB+xaKjz1wBGWGzNBGpW+dMmNEYglA945uKPbAiLg0=
-X-Google-Smtp-Source: AGHT+IFe8Srdtyu3rPnldUQz0JOkKdxVj/KoBjSLaX2+JKOghRs5toQOXAnTUD4RkmIe7t1r66pGjA==
-X-Received: by 2002:a05:651c:1049:b0:2d3:24cb:f273 with SMTP id x9-20020a05651c104900b002d324cbf273mr3898204ljm.36.1709916484586;
-        Fri, 08 Mar 2024 08:48:04 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id wr8-20020a170907700800b00a4553c6d52csm5611824ejb.35.2024.03.08.08.48.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Mar 2024 08:48:03 -0800 (PST)
-Message-ID: <bbc16b3c-7e76-4f0a-8ada-42d2da3426fd@linaro.org>
-Date: Fri, 8 Mar 2024 17:48:02 +0100
+	s=arc-20240116; t=1709916520; c=relaxed/simple;
+	bh=QIZKj4Z83WuA4uYBUadyPi2oeYIM0L4PUub6Rq8vQRU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WfODeDb73/7YKKavd2jCZV/7MNsbLFpGcuN5h0Hv/on3OfE9K252zhc1U8UwRsdzGlCAVbRXfOxPSk5i8CzdJ1O/FsUdXiFtIs5wN10AfyAZ3gErUQDsZcYmlF11BQXyiRXqO8oikMRQOZREHSPm1PZrHFhYD66C8EEmW+za/lQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=sQdkbJJE; arc=none smtp.client-ip=95.215.58.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Fri, 8 Mar 2024 11:48:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1709916516;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ci0HpMufqp2Bu96vO1gZkJinKX+/hjpnFJ+C8Bb41Uw=;
+	b=sQdkbJJEauJJiHERFg1DyR0hklZf/GXmz6HbQeWVy+mDomDESmXvHbpP+Aw4noxvg5v0s/
+	qRQdoVXDkTB65Si0syqpSGaJ+OMxDkCMEcda7sp11YG8Cz6L4Kb15sxY2BbyXxe0urdkA+
+	EVoiiNez5UEGcjBY3cGOFKgePnIRp8E=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Neal Gompa <neal@gompa.dev>
+Cc: linux-fsdevel@vger.kernel.org, linux-bcachefs@vger.kernel.org, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>, 
+	Miklos Szeredi <mszeredi@redhat.com>, Christian Brauner <brauner@kernel.org>, 
+	David Howells <dhowells@redhat.com>
+Subject: Re: [PATCH v2] statx: stx_subvol
+Message-ID: <2uk6u4w7dp4fnd3mrpoqybkiojgibjodgatrordacejlsxxmxz@wg5zymrst2td>
+References: <20240308022914.196982-1-kent.overstreet@linux.dev>
+ <CAEg-Je96OKs_LOXorNVj1a1=e+1f=-gw34v4VWNOmfKXc6PLSQ@mail.gmail.com>
+ <i2oeask3rxxd5w4k7ikky6zddnr2qgflrmu52i7ah6n4e7va26@2qmghvmb732p>
+ <CAEg-Je_URgYd6VJL5Pd=YDGQM=0T5tspfnTvgVTMG-Ec1fTt6g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] memory: omap-gpmc: fixup wrongly hierarchy of the
- sub-devices
-Content-Language: en-US
-To: Brock Zheng <yzheng@techyauld.com>, Roger Quadros <rogerq@kernel.org>
-Cc: Andreas Kemnade <andreas@kemnade.info>, Tony Lindgren <tony@atomide.com>,
- linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <6fftq2zlkpaf7xptyff6ky63cinr76ziyvdbm5jhj2apubr5vf@l4gvbdax3l2e>
- <f45b3195-38a9-4c49-b873-01e5a0b275a3@kernel.org>
- <20240301133809.0d26865e@aktux>
- <f59c9450-2784-46fa-afc9-4f194055cb24@kernel.org>
- <laqqencookmgwesfaetd5xw5wfmjdffmjvyjitapfehmu7zy5y@k7gsdexf3jcv>
- <beacb55c-951b-4177-83ab-94fda44cd2b7@kernel.org>
- <yxefg4ie4vxblxvr272jvzncxvj2t6xjfuisvmkt2jk663xgsu@o2ogbyepmg3z>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <yxefg4ie4vxblxvr272jvzncxvj2t6xjfuisvmkt2jk663xgsu@o2ogbyepmg3z>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEg-Je_URgYd6VJL5Pd=YDGQM=0T5tspfnTvgVTMG-Ec1fTt6g@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-On 03/03/2024 09:18, Brock Zheng wrote:
-> On TI-AM335x，FPGA under GPMC local-bus can not work on 6.x kernel.
+On Fri, Mar 08, 2024 at 11:44:48AM -0500, Neal Gompa wrote:
+> On Fri, Mar 8, 2024 at 11:34 AM Kent Overstreet
+> <kent.overstreet@linux.dev> wrote:
+> >
+> > On Fri, Mar 08, 2024 at 06:42:27AM -0500, Neal Gompa wrote:
+> > > On Thu, Mar 7, 2024 at 9:29 PM Kent Overstreet
+> > > <kent.overstreet@linux.dev> wrote:
+> > > >
+> > > > Add a new statx field for (sub)volume identifiers, as implemented by
+> > > > btrfs and bcachefs.
+> > > >
+> > > > This includes bcachefs support; we'll definitely want btrfs support as
+> > > > well.
+> > > >
+> > > > Link: https://lore.kernel.org/linux-fsdevel/2uvhm6gweyl7iyyp2xpfryvcu2g3padagaeqcbiavjyiis6prl@yjm725bizncq/
+> > > > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> > > > Cc: Josef Bacik <josef@toxicpanda.com>
+> > > > Cc: Miklos Szeredi <mszeredi@redhat.com>
+> > > > Cc: Christian Brauner <brauner@kernel.org>
+> > > > Cc: David Howells <dhowells@redhat.com>
+> > > > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> > > > ---
+> > > >  fs/bcachefs/fs.c          | 3 +++
+> > > >  fs/stat.c                 | 1 +
+> > > >  include/linux/stat.h      | 1 +
+> > > >  include/uapi/linux/stat.h | 4 +++-
+> > > >  4 files changed, 8 insertions(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
+> > > > index 3f073845bbd7..6a542ed43e2c 100644
+> > > > --- a/fs/bcachefs/fs.c
+> > > > +++ b/fs/bcachefs/fs.c
+> > > > @@ -840,6 +840,9 @@ static int bch2_getattr(struct mnt_idmap *idmap,
+> > > >         stat->blksize   = block_bytes(c);
+> > > >         stat->blocks    = inode->v.i_blocks;
+> > > >
+> > > > +       stat->subvol    = inode->ei_subvol;
+> > > > +       stat->result_mask |= STATX_SUBVOL;
+> > > > +
+> > > >         if (request_mask & STATX_BTIME) {
+> > > >                 stat->result_mask |= STATX_BTIME;
+> > > >                 stat->btime = bch2_time_to_timespec(c, inode->ei_inode.bi_otime);
+> > > > diff --git a/fs/stat.c b/fs/stat.c
+> > > > index 77cdc69eb422..70bd3e888cfa 100644
+> > > > --- a/fs/stat.c
+> > > > +++ b/fs/stat.c
+> > > > @@ -658,6 +658,7 @@ cp_statx(const struct kstat *stat, struct statx __user *buffer)
+> > > >         tmp.stx_mnt_id = stat->mnt_id;
+> > > >         tmp.stx_dio_mem_align = stat->dio_mem_align;
+> > > >         tmp.stx_dio_offset_align = stat->dio_offset_align;
+> > > > +       tmp.stx_subvol = stat->subvol;
+> > > >
+> > > >         return copy_to_user(buffer, &tmp, sizeof(tmp)) ? -EFAULT : 0;
+> > > >  }
+> > > > diff --git a/include/linux/stat.h b/include/linux/stat.h
+> > > > index 52150570d37a..bf92441dbad2 100644
+> > > > --- a/include/linux/stat.h
+> > > > +++ b/include/linux/stat.h
+> > > > @@ -53,6 +53,7 @@ struct kstat {
+> > > >         u32             dio_mem_align;
+> > > >         u32             dio_offset_align;
+> > > >         u64             change_cookie;
+> > > > +       u64             subvol;
+> > > >  };
+> > > >
+> > > >  /* These definitions are internal to the kernel for now. Mainly used by nfsd. */
+> > > > diff --git a/include/uapi/linux/stat.h b/include/uapi/linux/stat.h
+> > > > index 2f2ee82d5517..67626d535316 100644
+> > > > --- a/include/uapi/linux/stat.h
+> > > > +++ b/include/uapi/linux/stat.h
+> > > > @@ -126,8 +126,9 @@ struct statx {
+> > > >         __u64   stx_mnt_id;
+> > > >         __u32   stx_dio_mem_align;      /* Memory buffer alignment for direct I/O */
+> > > >         __u32   stx_dio_offset_align;   /* File offset alignment for direct I/O */
+> > > > +       __u64   stx_subvol;     /* Subvolume identifier */
+> > > >         /* 0xa0 */
+> > > > -       __u64   __spare3[12];   /* Spare space for future expansion */
+> > > > +       __u64   __spare3[11];   /* Spare space for future expansion */
+> > > >         /* 0x100 */
+> > > >  };
+> > > >
+> > > > @@ -155,6 +156,7 @@ struct statx {
+> > > >  #define STATX_MNT_ID           0x00001000U     /* Got stx_mnt_id */
+> > > >  #define STATX_DIOALIGN         0x00002000U     /* Want/got direct I/O alignment info */
+> > > >  #define STATX_MNT_ID_UNIQUE    0x00004000U     /* Want/got extended stx_mount_id */
+> > > > +#define STATX_SUBVOL           0x00008000U     /* Want/got stx_subvol */
+> > > >
+> > > >  #define STATX__RESERVED                0x80000000U     /* Reserved for future struct statx expansion */
+> > > >
+> > > > --
+> > > > 2.43.0
+> > > >
+> > > >
+> > >
+> > > I think it's generally expected that patches that touch different
+> > > layers are split up. That is, we should have a patch that adds the
+> > > capability and a separate patch that enables it in bcachefs. This also
+> > > helps make it clearer to others how a new feature should be plumbed
+> > > into a filesystem.
+> > >
+> > > I would prefer it to be split up in this manner for this reason.
+> >
+> > I'll do it that way if the patch is big enough that it ought to be
+> > split up. For something this small, seeing how it's used is relevant
+> > context for both reviewers and people looking at it afterwards.
+> >
 > 
-> GPMC <--> FPGA  <--> sub-devices....
-> 
-> I found that the platform sub-devices are in wrongly organized
-> hierarchy.  The grandchildren are now under the GPMC device directly,
-> not under it's father(FPGA).
-> 
-> Signed-off-by: Brock.Zheng <yzheng@techyauld.com>
+> It needs to also be split up because fs/ and fs/bcachefs are
+> maintained differently. And while right now bcachefs is the only
+> consumer of the API, btrfs will add it right after it's committed, and
+> for people who are cherry-picking/backporting accordingly, having to
+> chop out part of a patch would be unpleasant.
 
-Your SoB still has '.' between names. I can remove it while applying.
-It is too late in the cycle for me to pick it up. I will take it after
-the merge window.
-
-
-Best regards,
-Krzysztof
-
+It's a new feature, not a bugfix, this should never get backported. And
+I the bcachefs maintainer wrote the patch, and I'm submitting it to the
+VFS maintainer, so if it's fine with him it's fine with me.
 
