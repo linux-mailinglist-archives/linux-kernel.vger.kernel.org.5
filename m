@@ -1,231 +1,143 @@
-Return-Path: <linux-kernel+bounces-96588-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96589-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00635875E9B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 08:35:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20A5A875EA0
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 08:36:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5A19DB22CB0
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 07:35:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF2BB1F2298B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 07:36:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5F454F208;
-	Fri,  8 Mar 2024 07:35:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5F154F218;
+	Fri,  8 Mar 2024 07:36:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FRy0dfsj"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="DqWmuoxK"
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A8B842C0B
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 07:35:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 970B74EB49;
+	Fri,  8 Mar 2024 07:36:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709883346; cv=none; b=EUc/DOqIk8bJD3KMagTtSFSn5f6Z5y8K7ZLPJudHL+H1fVJgwARn3kMIlCr09+RQ6BD4RyaldJF5SdlM6Z1UM3mpwZl3VfQ47cUG4iaYbsUNVPElxDpqqcVtelSFB2X7SGRIYQoGVYQUQRYxnDxPuXZmNVBG15f7a/yEPAlXQDo=
+	t=1709883407; cv=none; b=oP+A6Vl+Gd6ReM36ZPkRLyV2AuHqsAcHLPdOitJSPpx/3r+FKIGHLpm3ApDKebTzhR6EaWK/UfLg4OneNV/58YGSGGGE6n/ctD2G2i9aq3kQ0J5RPvgqdK0Tkm2NH5/rBguWpifM9/fPjqFrjbyXdNtoeIae8v3SG4eUGGW1NSY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709883346; c=relaxed/simple;
-	bh=po73pu5DBfyclHo3/J7d/GzzzWfzsTn6dptqtYP6cWU=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=cmLiaDt0l5Rl2VVZbTesHGzu7E/Xst7aBNdonxbsb30bL9cyGzsaow7pd7LBmmbpcYsXiPyv8DwIeMzADdWrqjH//fAAfWn5itQSi8mjPWjSZZeS8Yeb+xRM/jWxnVwDYlOSGvQl1tiM44AWq/welbrk/50xikAczkGtIuBBg9o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FRy0dfsj; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709883344; x=1741419344;
-  h=date:from:to:cc:subject:message-id;
-  bh=po73pu5DBfyclHo3/J7d/GzzzWfzsTn6dptqtYP6cWU=;
-  b=FRy0dfsjN49U7C7ds/yjYIsMrmTOzprLcAwoQnp8cJ4KmJ+YiGKJa81y
-   XsEvgobG8f3urBNI4mNzfDjlWaCKy4+eTQ27WQRC6BwX5ZikHUvhccMI9
-   MOawA15DhaUcb/XOopNDxrsnavq/stwiExw/dp7q+wGFxf7/Tn3zz4zst
-   wJs2ThEoCwJYSP21Mm9LqZpyYFbRmDiVxJ1TB4Q14SNvBrU8dzEK3+ce1
-   EHQ7nVFDXxKnGG44YFA2JGnifGF+9REfhba9iFGCKOJxvAzZgj0JGyJ9T
-   vg1SjZZSdsMFur3FScf5xQZlQM5iacoOFGvBULbe/wOecY0iG6SOP0vui
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="4771945"
-X-IronPort-AV: E=Sophos;i="6.07,108,1708416000"; 
-   d="scan'208";a="4771945"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2024 23:35:44 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,108,1708416000"; 
-   d="scan'208";a="33531604"
-Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
-  by fmviesa002.fm.intel.com with ESMTP; 07 Mar 2024 23:35:43 -0800
-Received: from kbuild by b21307750695 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1riUlY-0006AO-2H;
-	Fri, 08 Mar 2024 07:35:40 +0000
-Date: Fri, 08 Mar 2024 15:34:41 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- ffab9c05c4e30cc4fd9dd22970c575b46fc0a1aa
-Message-ID: <202403081537.aUaxgbl0-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1709883407; c=relaxed/simple;
+	bh=ZiDn02LUfgV+/6Ykmt+R1wh4EgqPqJ+M2GikjKwMG+4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=l2p+v2f8kTxz1NFHEnC3aiELsm64SlkuxiUKO/NYAvwT5GmfwRDR1r9Va9vlJ6jNVibrU74ClXLb1faMnrzoH7xhLlA4j4275knL1x44wGZGBRoe1tGYN/MnrLADfG+JMgaVrmVUp5b024zKaQZYX/uDnR1+sUIIwLLMMBfNkNA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=DqWmuoxK; arc=none smtp.client-ip=217.70.183.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 07F1920007;
+	Fri,  8 Mar 2024 07:36:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709883401;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zGSqe7AdSDq/rJELatqXvjh2l9o5p+96qyY9cUtuWlw=;
+	b=DqWmuoxK2s2FgZggo+7Fb+2aCTBDGG26G0JrfQh4B+IpyGom4N8b/iHlAFgV0XvbuXPgS2
+	A/nThYrBp2kX2h3tcTQ3iBXWi1EjXh3f/Quu9oKQGC2EXlptBTaZo3Sg/hPzzxA+K7EH48
+	ZwOgvj/m9z87BaLl2ySAxP45teiKUEbKgBGnojsdEKJw7wofXlUaUbyuNx2Tknv97J02uC
+	XLa421ACTtXtvuCAL9Fa7kuzijn6vGxHhXb9innAJFDOYeyVz8N7V/a79gK7MTgfaq3kKQ
+	p1Z11i73iycAH4WmBFFUhhspQSAfmAW6ryMHpC1F5b+64G3CKFdzJTxSpP5CUA==
+From: Gregory CLEMENT <gregory.clement@bootlin.com>
+To: Chris Packham <chris.packham@alliedtelesis.co.nz>, andy@kernel.org,
+ geert@linux-m68k.org, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, andrew@lunn.ch,
+ sebastian.hesselbarth@gmail.com, lee@kernel.org
+Cc: linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Chris
+ Packham <chris.packham@alliedtelesis.co.nz>
+Subject: Re: [PATCH v5 3/3] ARM: dts: marvell: Add 7-segment LED display on
+ x530
+In-Reply-To: <20240306235021.976083-4-chris.packham@alliedtelesis.co.nz>
+References: <20240306235021.976083-1-chris.packham@alliedtelesis.co.nz>
+ <20240306235021.976083-4-chris.packham@alliedtelesis.co.nz>
+Date: Fri, 08 Mar 2024 08:36:40 +0100
+Message-ID: <87edclgoon.fsf@BL-laptop>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-GND-Sasl: gregory.clement@bootlin.com
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: ffab9c05c4e30cc4fd9dd22970c575b46fc0a1aa  Merge branch into tip/master: 'x86/tdx'
+Chris Packham <chris.packham@alliedtelesis.co.nz> writes:
 
-elapsed time: 1334m
+> The Allied Telesis x530 products have a 7-segment LED display which is
+> used for node identification when the devices are stacked. Represent
+> this as a gpio-7-segment device.
+>
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
 
-configs tested: 143
-configs skipped: 3
+Acked-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Normally, this patch should be taken in mvebu and then merged by
+arm-soc. However, I haven't seen any other patch touching this file (so
+no risk of merge conflict) and I think it's too late for me to make a
+new pull request to arm-soc. So I'm not against it being taken with the
+rest of the patches. However, I think it would be a good idea to see
+what Arnd thinks about it.
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20240308   gcc  
-arc                   randconfig-002-20240308   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                                 defconfig   clang
-arm                   randconfig-001-20240308   gcc  
-arm                   randconfig-002-20240308   clang
-arm                   randconfig-003-20240308   clang
-arm                   randconfig-004-20240308   clang
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20240308   clang
-arm64                 randconfig-002-20240308   clang
-arm64                 randconfig-003-20240308   clang
-arm64                 randconfig-004-20240308   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240308   gcc  
-csky                  randconfig-002-20240308   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-hexagon               randconfig-001-20240308   clang
-hexagon               randconfig-002-20240308   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240307   clang
-i386         buildonly-randconfig-002-20240307   gcc  
-i386         buildonly-randconfig-003-20240307   clang
-i386         buildonly-randconfig-004-20240307   gcc  
-i386         buildonly-randconfig-005-20240307   gcc  
-i386         buildonly-randconfig-006-20240307   clang
-i386                                defconfig   clang
-i386                  randconfig-001-20240307   gcc  
-i386                  randconfig-002-20240307   gcc  
-i386                  randconfig-003-20240307   clang
-i386                  randconfig-004-20240307   gcc  
-i386                  randconfig-005-20240307   gcc  
-i386                  randconfig-006-20240307   clang
-i386                  randconfig-011-20240307   clang
-i386                  randconfig-012-20240307   gcc  
-i386                  randconfig-013-20240307   clang
-i386                  randconfig-014-20240307   clang
-i386                  randconfig-015-20240307   clang
-i386                  randconfig-016-20240307   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240308   gcc  
-loongarch             randconfig-002-20240308   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240308   gcc  
-nios2                 randconfig-002-20240308   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20240308   clang
-x86_64       buildonly-randconfig-002-20240308   gcc  
-x86_64       buildonly-randconfig-003-20240308   gcc  
-x86_64       buildonly-randconfig-004-20240308   clang
-x86_64       buildonly-randconfig-005-20240308   gcc  
-x86_64       buildonly-randconfig-006-20240308   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20240308   gcc  
-x86_64                randconfig-002-20240308   clang
-x86_64                randconfig-003-20240308   clang
-x86_64                randconfig-004-20240308   clang
-x86_64                randconfig-005-20240308   gcc  
-x86_64                randconfig-006-20240308   gcc  
-x86_64                randconfig-011-20240308   clang
-x86_64                randconfig-012-20240308   gcc  
-x86_64                randconfig-013-20240308   clang
-x86_64                randconfig-014-20240308   clang
-x86_64                randconfig-015-20240308   gcc  
-x86_64                randconfig-016-20240308   gcc  
-x86_64                randconfig-071-20240308   clang
-x86_64                randconfig-072-20240308   gcc  
-x86_64                randconfig-073-20240308   gcc  
-x86_64                randconfig-074-20240308   gcc  
-x86_64                randconfig-075-20240308   gcc  
-x86_64                randconfig-076-20240308   gcc  
-x86_64                          rhel-8.3-rust   clang
-xtensa                            allnoconfig   gcc  
+Gregory
+
+> ---
+>
+> Notes:
+>     Changes in v5:
+>     - group GPIO specifiers
+>     Changes in v4:
+>     - Use correct compatible name in commit message
+>     Changes in v3:
+>     - Use compatible = "gpio-7-segment" as suggested by Rob
+>     Changes in v2:
+>     - Use compatible = "generic-gpio-7seg" to keep checkpatch.pl happy
+>
+>  arch/arm/boot/dts/marvell/armada-385-atl-x530.dts | 13 ++++++++++++-
+>  1 file changed, 12 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/arm/boot/dts/marvell/armada-385-atl-x530.dts b/arch/arm/boot/dts/marvell/armada-385-atl-x530.dts
+> index 5a9ab8410b7b..2fb7304039be 100644
+> --- a/arch/arm/boot/dts/marvell/armada-385-atl-x530.dts
+> +++ b/arch/arm/boot/dts/marvell/armada-385-atl-x530.dts
+> @@ -43,6 +43,17 @@ uart0: serial@12000 {
+>  			};
+>  		};
+>  	};
+> +
+> +	led-7seg {
+> +		compatible = "gpio-7-segment";
+> +		segment-gpios = <&led_7seg_gpio 0 GPIO_ACTIVE_LOW>,
+> +				<&led_7seg_gpio 1 GPIO_ACTIVE_LOW>,
+> +				<&led_7seg_gpio 2 GPIO_ACTIVE_LOW>,
+> +				<&led_7seg_gpio 3 GPIO_ACTIVE_LOW>,
+> +				<&led_7seg_gpio 4 GPIO_ACTIVE_LOW>,
+> +				<&led_7seg_gpio 5 GPIO_ACTIVE_LOW>,
+> +				<&led_7seg_gpio 6 GPIO_ACTIVE_LOW>;
+> +	};
+>  };
+>  
+>  &pciec {
+> @@ -149,7 +160,7 @@ i2c@3 {
+>  			#size-cells = <0>;
+>  			reg = <3>;
+>  
+> -			gpio@20 {
+> +			led_7seg_gpio: gpio@20 {
+>  				compatible = "nxp,pca9554";
+>  				gpio-controller;
+>  				#gpio-cells = <2>;
+> -- 
+> 2.43.2
+>
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Gregory Clement, Bootlin
+Embedded Linux and Kernel engineering
+http://bootlin.com
 
