@@ -1,245 +1,162 @@
-Return-Path: <linux-kernel+bounces-96872-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96869-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FA40876274
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:54:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 265B0876269
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:48:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C7F201F23E5E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 10:54:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A7D6B1F23C50
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 10:48:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 119BA55780;
-	Fri,  8 Mar 2024 10:54:34 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81F5A55780;
+	Fri,  8 Mar 2024 10:48:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R4IwoUao"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4675C52F91
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 10:54:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C32F654FB2;
+	Fri,  8 Mar 2024 10:48:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709895273; cv=none; b=Q6P/jyLzGH0dcRAsJH4hLp/HH9zvH5Qo/kjawT5CXcWPH1cbcAi+o/gU/W3aJhqWq2fvEzCiqQqkhkTobW9o4OuK0mMG1uxNqewnniZ6m8lSxIZ31lp6XxUkhBxJQ/yUBhVMi6WemmJfUhvc1H/WJOIQYAGVs2qwZUJckaACUVA=
+	t=1709894891; cv=none; b=fTgzjbvUwjXww9A8eXi2LaAMoZlmieaG3H66OYUcwS7l6fgP9ls0eyE7wqjbs/5eQSP19yRO6ikCEDfxBpjc3HApqJxBnx7FzCsVosSx7fSB7JIBDUboDGYMDvXcXBNIKExNLpmOPuM+lseFFMGgV6y3oO06vm/HdMJgnr2hdj8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709895273; c=relaxed/simple;
-	bh=XYyAbukvO6V6EJGXOTJSyoZD5mAk75e5vecVWiM95Ek=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=OSXKQn/terDR7LTHQBP7tphwwT7qnoNkXe5K25lbh6jcZUwsY0GhqHZEzD6O06b52FqesF+UIIBdpZwnH8e9uN1MrF3ojIQC0czREzif1g7swCj3/KhpsPREwRUkn/IgpKauPbaqnFCi/dACE2zy/cExz288SMAF/SzaJOv6XUM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ore@pengutronix.de>)
-	id 1riXl9-0008OM-Oq; Fri, 08 Mar 2024 11:47:27 +0100
-Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ore@pengutronix.de>)
-	id 1riXl8-0057Ot-97; Fri, 08 Mar 2024 11:47:26 +0100
-Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ore@pengutronix.de>)
-	id 1riXl8-00AhUu-0h;
-	Fri, 08 Mar 2024 11:47:26 +0100
-From: Oleksij Rempel <o.rempel@pengutronix.de>
-To: Jiri Pirko <jiri@resnulli.us>,
-	Ivan Vecera <ivecera@redhat.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Eric Dumazet <edumazet@google.com>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Vladimir Oltean <olteanv@gmail.com>
-Cc: Oleksij Rempel <o.rempel@pengutronix.de>,
-	Simon Horman <horms@kernel.org>,
-	kernel@pengutronix.de,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH net-next v2 1/1] net: bridge: switchdev: Improve error message clarity for switchdev_port_obj_add/del_deffered operations
-Date: Fri,  8 Mar 2024 11:47:24 +0100
-Message-Id: <20240308104725.2550469-1-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1709894891; c=relaxed/simple;
+	bh=Oh9+83stTEAWMxwiZmN2wXsRzxzcIcyaMy4cNtT2Vm8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PV4SOzK8GMOSebRTOQUdAzVkwJ4g25q5rxwR2lOlvgTh+XIsu/WhCRXTYQPk0IMSOOX+lTmmd1Lrdk8+AxyaDADRkh3twhFF35+u9HVUzDCXuPB2Gg53MpcGyrseGFqb6S9NLKhJMy/8pkFTwY9bnZ2xBLHAGtF2Slu8LdJUohA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R4IwoUao; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35ED0C433F1;
+	Fri,  8 Mar 2024 10:48:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709894890;
+	bh=Oh9+83stTEAWMxwiZmN2wXsRzxzcIcyaMy4cNtT2Vm8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=R4IwoUaoLjXJA6CTTrAUzh3glAZf2bLgRzsNjadq5egUbe/oPJfLUvSw4aDjzcOf1
+	 T/BYyopXyLoJJ9YgO1cOizZIQEvvJkCesQCowbsIh2/xm1/+Uiv6hVZlo4PH1kv7KP
+	 39TzmqqlkZ74cVfA/WF/xVWlpKCsEA6G39JW5DC5hAEh9u+vfhRFAS6zeM1iRIZRZI
+	 uNKl9faqpCsGunQY1rItPtmXX+rkJ0ZfwC+nWq3WVp99OV+8Qu51vAIA3hbWdTMsdC
+	 ConXosMVMCxWdA1EB89rFIFskhlsJ+rEl9Vkwp+79S9DR4kHdm6UIWOZK8tXznxYwn
+	 wd6iKGVE2nMhQ==
+Date: Fri, 8 Mar 2024 11:48:07 +0100
+From: Maxime Ripard <mripard@kernel.org>
+To: =?utf-8?B?SsOpcsOpbWll?= Dautheribes <jeremie.dautheribes@bootlin.com>
+Cc: Neil Armstrong <neil.armstrong@linaro.org>, 
+	Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Thierry Reding <thierry.reding@gmail.com>, 
+	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Yen-Mei Goh <yen-mei.goh@keysight.com>
+Subject: Re: [PATCH v2 3/3] drm/panel: simple: add CMT430B19N00 LCD panel
+ support
+Message-ID: <20240308-shiny-meaty-duck-446e8d@houat>
+References: <20240304160454.96977-1-jeremie.dautheribes@bootlin.com>
+ <20240304160454.96977-4-jeremie.dautheribes@bootlin.com>
+ <20240304-inquisitive-kickass-pronghorn-c641ff@houat>
+ <ee36a60d-5b65-4eb8-ac41-e4b6be1cf81f@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="vglunjsivqojxdbh"
+Content-Disposition: inline
+In-Reply-To: <ee36a60d-5b65-4eb8-ac41-e4b6be1cf81f@bootlin.com>
 
-Enhance the error reporting mechanism in the switchdev framework to
-provide more informative and user-friendly error messages.
 
-Following feedback from users struggling to understand the implications
-of error messages like "failed (err=-28) to add object (id=2)", this
-update aims to clarify what operation failed and how this might impact
-the system or network.
+--vglunjsivqojxdbh
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-With this change, error messages now include a description of the failed
-operation, the specific object involved, and a brief explanation of the
-potential impact on the system. This approach helps administrators and
-developers better understand the context and severity of errors,
-facilitating quicker and more effective troubleshooting.
+On Tue, Mar 05, 2024 at 10:46:55AM +0100, J=E9r=E9mie Dautheribes wrote:
+> Hi Maxime,
+>=20
+> On 04/03/2024 17:25, Maxime Ripard wrote:
+> > Hi,
+> >=20
+> > On Mon, Mar 04, 2024 at 05:04:54PM +0100, J=E9r=E9mie Dautheribes wrote:
+> > > Add support for Crystal Clear Technology CMT430B19N00 4.3" 480x272
+> > > TFT-LCD panel.
+> > >=20
+> > > Signed-off-by: J=E9r=E9mie Dautheribes <jeremie.dautheribes@bootlin.c=
+om>
+> > > ---
+> > >   drivers/gpu/drm/panel/panel-simple.c | 29 +++++++++++++++++++++++++=
++++
+> > >   1 file changed, 29 insertions(+)
+> > >=20
+> > > diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/p=
+anel/panel-simple.c
+> > > index 20e3df1c59d4..b940220f56e2 100644
+> > > --- a/drivers/gpu/drm/panel/panel-simple.c
+> > > +++ b/drivers/gpu/drm/panel/panel-simple.c
+> > > @@ -1457,6 +1457,32 @@ static const struct panel_desc boe_hv070wsa =
+=3D {
+> > >   	.connector_type =3D DRM_MODE_CONNECTOR_LVDS,
+> > >   };
+> > > +static const struct drm_display_mode cct_cmt430b19n00_mode =3D {
+> > > +	.clock =3D 9000,
+> > > +	.hdisplay =3D 480,
+> > > +	.hsync_start =3D 480 + 43,
+> > > +	.hsync_end =3D 480 + 43 + 8,
+> > > +	.htotal =3D 480 + 43 + 8 + 4,
+> > > +	.vdisplay =3D 272,
+> > > +	.vsync_start =3D 272 + 12,
+> > > +	.vsync_end =3D 272 + 12 + 8,
+> > > +	.vtotal =3D 272 + 12 + 8 + 4,
+> > > +	.flags =3D DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC,
+> > > +};
+> >=20
+> > Your pixel clock doesn't really match the rest of the timings:
+> >=20
+> > (480 + 43 + 8 + 4) * (272 + 12 + 8 + 4) * 60 =3D 9501600
+> >=20
+> > So a ~6% deviation.
+> >=20
+> > What does the datasheet say?
+>=20
+> Indeed it does not exactly match but the datasheet indicates that the
+> typical clock frequency is 9MHz and when this frequency is used, the
+> typical values of the other parameters are those we have defined in
+> the drm_display_mode structure.
 
-Example of the improved logging:
+It seems weird to me that all the typical timings end up in a
+non-typical configuration, but I've seen my fair share of weird
+datasheet, so.. yeah.
 
-[   70.516446] ksz-switch spi0.0 uplink: Failed to add Port Multicast
-               Database entry (object id=2) with error: -ENOSPC (-28).
-[   70.516446] Failure in updating the port's Multicast Database could
-               lead to multicast forwarding issues.
-[   70.516446] Current HW/SW setup lacks sufficient resources.
+I guess the best thing to do if you have access to the min/typ/max
+timings is to actually use the display_timings structure here and define
+all of them.
 
-This comprehensive update includes handling for a range of switchdev
-object IDs, ensuring that most operations within the switchdev framework
-benefit from clearer error reporting.
+It at least gives us the opportunity to fix it later on.
 
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Reviewed-by: Simon Horman <horms@kernel.org>
----
-changes v2:
-- make all variables const
-- add Reviewed-by: Simon Horman <horms@kernel.org>
+> I don't see any information about the accepted deviation either.
 
- net/switchdev/switchdev.c | 106 ++++++++++++++++++++++++++++++++++++--
- 1 file changed, 102 insertions(+), 4 deletions(-)
+It's not only about the panel itself. 6% gives your roughly 56fps when
+you meant 60. This can then trip up some applications too. Like if
+you're playing a 60fps application, it will either play too fast or
+you'll get stutter, depending on how the video playback has been
+implemented exactly.
 
-diff --git a/net/switchdev/switchdev.c b/net/switchdev/switchdev.c
-index c9189a970eec3..de4a7505ceb4d 100644
---- a/net/switchdev/switchdev.c
-+++ b/net/switchdev/switchdev.c
-@@ -244,6 +244,106 @@ static int switchdev_port_obj_notify(enum switchdev_notifier_type nt,
- 	return 0;
- }
- 
-+static void switchdev_obj_id_to_helpful_msg(struct net_device *dev,
-+					    enum switchdev_obj_id obj_id,
-+					    int err, bool add)
-+{
-+	const char *action = add ? "add" : "del";
-+	const char *reason = "";
-+	const char *problem;
-+	const char *obj_str;
-+
-+	switch (obj_id) {
-+	case SWITCHDEV_OBJ_ID_UNDEFINED:
-+		obj_str = "Undefined object";
-+		problem = "Attempted operation is undefined, indicating a "
-+			  "possible programming error.\n";
-+		break;
-+	case SWITCHDEV_OBJ_ID_PORT_VLAN:
-+		obj_str = "VLAN entry";
-+		problem = "Failure in VLAN settings on this port might disrupt "
-+		          "network segmentation or traffic isolation, affecting\n"
-+		          "network partitioning.\n";
-+		break;
-+	case SWITCHDEV_OBJ_ID_PORT_MDB:
-+		obj_str = "Port Multicast Database entry";
-+		problem = "Failure in updating the port's Multicast Database "
-+			  "could lead to multicast forwarding issues.\n";
-+		break;
-+	case SWITCHDEV_OBJ_ID_HOST_MDB:
-+		obj_str = "Host Multicast Database entry";
-+		problem = "Failure in updating the host's Multicast Database"
-+		          "may impact multicast group memberships or\n"
-+			  "traffic delivery, affecting multicast communication.\n";
-+		break;
-+	case SWITCHDEV_OBJ_ID_MRP:
-+		obj_str = "Media Redundancy Protocol configuration for port";
-+		problem = "Failure to set MRP ring ID on this port prevents"
-+			  "communication with the specified redundancy ring,\n"
-+			  "resulting in an inability to engage in MRP-based "
-+			  "network operations.\n";
-+		break;
-+	case SWITCHDEV_OBJ_ID_RING_TEST_MRP:
-+		obj_str = "MRP Test Frame Operations for port";
-+		problem = "Failure to generate/monitor MRP test frames may lead"
-+			  "to inability to assess the ring's operational\n"
-+			  "integrity and fault response, hindering proactive "
-+			  "network management.\n";
-+		break;
-+	case SWITCHDEV_OBJ_ID_RING_ROLE_MRP:
-+		obj_str = "MRP Ring Role Configuration";
-+		problem = "Improper MRP ring role configuration may create "
-+		          "conflicts in the ring, disrupting communication\n"
-+			  "for all participants, or isolate the local system "
-+			  "from the ring, hindering its ability to communicate "
-+			  "with other participants.\n";
-+		break;
-+	case SWITCHDEV_OBJ_ID_RING_STATE_MRP:
-+		obj_str = "MRP Ring State Configuration";
-+		problem = "Failure to correctly set the MRP ring state can "
-+		          "result in network loops or leave segments without\n"
-+			  "communication. In a Closed state, it maintains loop "
-+			  "prevention by blocking one MRM port, while an Open\n"
-+			  "state activates in response to failures, changing "
-+			  "port states to preserve network connectivity.\n";
-+		break;
-+	case SWITCHDEV_OBJ_ID_IN_TEST_MRP:
-+		obj_str = "MRP_InTest Frame Generation Configuration";
-+		problem = "Failure in managing MRP_InTest frame generation can "
-+			  "misjudge the interconnection ring's state, leading\n"
-+			  "to incorrect blocking or unblocking of the I/C port."
-+			  "This misconfiguration might result in unintended\n"
-+			  "network loops or isolate critical network segments, "
-+			  "compromising network integrity and reliability.\n";
-+		break;
-+	case SWITCHDEV_OBJ_ID_IN_ROLE_MRP:
-+		obj_str = "Interconnection Ring Role Configuration";
-+		problem = "Failure in incorrect assignment of interconnection "
-+			  "ring roles (MIM/MIC) can impair the formation of the\n"
-+			  "interconnection rings.\n";
-+		break;
-+	case SWITCHDEV_OBJ_ID_IN_STATE_MRP:
-+		obj_str = "Interconnection Ring State Configuration";
-+		problem = "Failure in updating the interconnection ring state "
-+			  "can lead in case of Open state to incorrect blocking\n"
-+			  "or unblocking of the I/C port, resulting in unintended"
-+			  "network loops or isolation of critical network\n";
-+		break;
-+	default:
-+		obj_str = "Unknown object";
-+		problem	= "Indicating a possible programming error.\n";
-+	}
-+
-+	switch (err) {
-+	case -ENOSPC:
-+		reason = "Current HW/SW setup lacks sufficient resources.\n";
-+		break;
-+	}
-+
-+	netdev_err(dev, "Failed to %s %s (object id=%d) with error: %pe (%d).\n%s%s\n",
-+		   action, obj_str, obj_id, ERR_PTR(err), err, problem, reason);
-+}
-+
- static void switchdev_port_obj_add_deferred(struct net_device *dev,
- 					    const void *data)
- {
-@@ -254,8 +354,7 @@ static void switchdev_port_obj_add_deferred(struct net_device *dev,
- 	err = switchdev_port_obj_notify(SWITCHDEV_PORT_OBJ_ADD,
- 					dev, obj, NULL);
- 	if (err && err != -EOPNOTSUPP)
--		netdev_err(dev, "failed (err=%d) to add object (id=%d)\n",
--			   err, obj->id);
-+		switchdev_obj_id_to_helpful_msg(dev, obj->id, err, true);
- 	if (obj->complete)
- 		obj->complete(dev, err, obj->complete_priv);
- }
-@@ -304,8 +403,7 @@ static void switchdev_port_obj_del_deferred(struct net_device *dev,
- 
- 	err = switchdev_port_obj_del_now(dev, obj);
- 	if (err && err != -EOPNOTSUPP)
--		netdev_err(dev, "failed (err=%d) to del object (id=%d)\n",
--			   err, obj->id);
-+		switchdev_obj_id_to_helpful_msg(dev, obj->id, err, false);
- 	if (obj->complete)
- 		obj->complete(dev, err, obj->complete_priv);
- }
--- 
-2.39.2
+Maxime
 
+--vglunjsivqojxdbh
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZers5wAKCRDj7w1vZxhR
+xRi0APwMTxCozvo10NB+M+y2Z3QMtuMjP1GtOoTo/nC52Lx3AgD/dLgDGRrAJ+ex
+3iIbCnd/WsMDVaQyTwOqnJ8OeOQ5ygc=
+=2WQs
+-----END PGP SIGNATURE-----
+
+--vglunjsivqojxdbh--
 
