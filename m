@@ -1,105 +1,115 @@
-Return-Path: <linux-kernel+bounces-97086-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97087-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 270BC87654D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:28:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51DBB876554
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:32:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6A48287550
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:28:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7F414B231A7
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:32:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB5B5364AB;
-	Fri,  8 Mar 2024 13:28:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1BD236AFC;
+	Fri,  8 Mar 2024 13:31:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LF7FWAoD"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="K+7Kl1jQ"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C553410A34
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 13:28:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41FF423767;
+	Fri,  8 Mar 2024 13:31:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709904526; cv=none; b=L8hx/Xv1uSWD9GzpmOwSCtFslfItMgQoZ6s6xbYtKxRPqKGUanVWZPsalnqgPaKI3v/oYeuZ8OziYGA/XW22YBlCtKoAvZHbtkLZ4wbVlt/BJuIfhITiDOR3V6Ta7Fl4jV7riAPEbPkXGvYjW/kK1VGiFdeZaC12EdbQAFzovlY=
+	t=1709904718; cv=none; b=bhrMUJu/DDIhCTseCQgsGM+I5c9SdhlXsE68xbMhUJo+hcZHZGzZ4KP1nNYAEfVqmz7MaOCtwM8PAQ+J0FckKr5gieOhMk1iHyTFEIRv4WGJKqIR2JxDyoVQsDMyXZ7wCPtKkIwviJ6UYVNt/4ykAWROznQoQJAr6bfxIzLjocE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709904526; c=relaxed/simple;
-	bh=pDtP91+/9FBnxVSNA2MPCx46kzd4j//SOx6TrloGR+s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IwcGtLTQEdxb+0oAlISd/58Ol9YMq7fZUt3LZ/QJHvfD8/+6wG/geHXuB5xesdQ+QK6Qm9SoKzWnAENeU+ztqkomVLLPX03laprbQ7TYYxz9516854HAK+Q0dI9X62ESkxlBZn3D6fRSSO0Ayzqnf6EgZch/ghj+rGqZtLg6Fgo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LF7FWAoD; arc=none smtp.client-ip=192.198.163.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+	s=arc-20240116; t=1709904718; c=relaxed/simple;
+	bh=VRiN8CKS3sh1wMvDsax50mAoOBJo3MCRXqXUv0ang2U=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ixZG7mva0cnWTUk46ahZf+6Ld2LFfsS7CXCvFUJPrnKSHVnNItWMW2QLC/mC9peFIeQ9KoAXXeifThjh6IIuwRJAGnlpG6tMtcJJxuX/yCItrTV9vmHUfptm1Yr1CSnL+jxvnuAT0R4oMrlctcUL6KH1wEuHLJDqIgkDimYNqq8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=K+7Kl1jQ; arc=none smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709904525; x=1741440525;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1709904716; x=1741440716;
   h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=pDtP91+/9FBnxVSNA2MPCx46kzd4j//SOx6TrloGR+s=;
-  b=LF7FWAoDBvL2kU8jCZN7jtlCM9iAtb6dO09JN0iU6ognQ4rqYFV/Kuav
-   pEPwNv5MSDOIorNDn/TdEpnzpbNt5LD7fEHOafvZzS6+6pSLYeiqhcFZl
-   duAT9g0XzWOC8Wq0beYvyviY/EYKRV6u5lBynWORPXghxaSt+PfZy79d8
-   A8k6KTMOR2NpkV27qyBNJOMZn5B17KiqTnu1M7pnX+QLWuRchi46o3DMr
-   dgoGkj8uBbwDjkewmXbgjtuFsQGTPtZNeAkLdkq7vqQ/UjBVzfU1rUiSn
-   cF5KZclYgSkEkSaYsWMhTNnrSu7AcyLRnte5lNRRyNbTNCbfrAjEBr9rn
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="4492835"
-X-IronPort-AV: E=Sophos;i="6.07,109,1708416000"; 
-   d="scan'208";a="4492835"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 05:28:44 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="914246577"
-X-IronPort-AV: E=Sophos;i="6.07,109,1708416000"; 
-   d="scan'208";a="914246577"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 05:28:42 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1riaHA-0000000Aqk7-328O;
-	Fri, 08 Mar 2024 15:28:40 +0200
-Date: Fri, 8 Mar 2024 15:28:40 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 0/5] w1: gpio: A set of cleanups
-Message-ID: <ZesSiO2Oojf5HTLM@smile.fi.intel.com>
-References: <20240307143644.3787260-1-andriy.shevchenko@linux.intel.com>
- <vsaqquulifmpk5fanl4i67nzag5huyibzy5lfr2jdsgk2dv7t3@5i4opts7npsj>
- <30beae0c-86fe-493e-b286-2573597a653c@linaro.org>
+   mime-version:in-reply-to;
+  bh=VRiN8CKS3sh1wMvDsax50mAoOBJo3MCRXqXUv0ang2U=;
+  b=K+7Kl1jQBVaco1bkKh5N+d3JtB9ehhpPAd/CbbhKsuhtlA8BN8m4xc78
+   +x0HJnjzTFC9dDxcIbXcL73QPjqDsTjcPq8KHyMO3kXSBSIY0v0/7dAY7
+   xzTaoWWGgUsrNg6cyOZSKFhZLk4rAHHDo6DCFRZfZAphBaAHFR6v8GGoy
+   w2/u+pmw6Zpj9C5j49fuiU9rdoKmZqxS36sCRz6GhViKN402FRm9n35Hp
+   UBMpHZN+e8gzQLpxolA9lnv4kirlYUOcApHbeUafGEcXUQPy83xmTHUOE
+   +Wth+4bA6GHZKhc8+p3FiThOddbtz4XrKu+tYaUErvil+TQLWEDBJlaHT
+   A==;
+X-CSE-ConnectionGUID: 14jFhm6gRRWLoLmFhY4w/Q==
+X-CSE-MsgGUID: DOI968ShSd6ruVMdhr/kkw==
+X-IronPort-AV: E=Sophos;i="6.07,109,1708412400"; 
+   d="asc'?scan'208";a="19066625"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 08 Mar 2024 06:31:53 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 8 Mar 2024 06:31:53 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex01.mchp-main.com (10.10.85.143)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
+ Transport; Fri, 8 Mar 2024 06:31:50 -0700
+Date: Fri, 8 Mar 2024 13:31:05 +0000
+From: Conor Dooley <conor.dooley@microchip.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC: <stable@vger.kernel.org>, <patches@lists.linux.dev>,
+	<linux-kernel@vger.kernel.org>, <torvalds@linux-foundation.org>,
+	<akpm@linux-foundation.org>, <linux@roeck-us.net>, <shuah@kernel.org>,
+	<patches@kernelci.org>, <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+	<jonathanh@nvidia.com>, <f.fainelli@gmail.com>, <sudipm.mukherjee@gmail.com>,
+	<srw@sladewatkins.net>, <rwarsow@gmx.de>, <conor@kernel.org>,
+	<allen.lkml@gmail.com>
+Subject: Re: [PATCH 6.7 000/161] 6.7.9-rc3 review
+Message-ID: <20240308-upstate-unfixable-fed1854c1bb0@wendy>
+References: <20240305112824.448003471@linuxfoundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="zZw4yvtNimRxhiAJ"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <30beae0c-86fe-493e-b286-2573597a653c@linaro.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20240305112824.448003471@linuxfoundation.org>
 
-On Fri, Mar 08, 2024 at 09:34:47AM +0100, Krzysztof Kozlowski wrote:
-> On 07/03/2024 17:38, Uwe Kleine-König wrote:
-> > Hello Andy,
-> > 
-> > I wonder about your choice of recipients. I would have added Krzysztof
-> > to To and me at most to Cc:.
-> 
-> That's indeed odd (and reminds me Qualcomm proposing wrapper over
-> get_maintainers.pl which on purpose put the maintainers in "To:" and
-> lists in "Cc:") and I imagine people having filters depending on To: and
-> Cc: distinction, but for the record: I don't care. People put it usually
-> wrong, so my filters just choose (To Or Cc).
-> 
-> Anyway all the patches will wait till the end of the merge window.
+--zZw4yvtNimRxhiAJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Fine by me, thank you!
+On Tue, Mar 05, 2024 at 11:28:47AM +0000, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.7.9 release.
+> There are 161 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Clearly I am rather late, but I did get around to testing this one
+yesterday.
+Tested-by: Conor Dooley <conor.dooley@microchip.com>
 
+Thanks,
+Conor.
 
+--zZw4yvtNimRxhiAJ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZesTGQAKCRB4tDGHoIJi
+0kX4AQCv00O2M6yh5MtQrgDk3ZQuEa0ffaeAI3tB/F6RASqF+wD/aHhZZiGmAaOZ
+1QHCx7+UHu/ugZIzv2QL0+jpxwSt+gc=
+=drbk
+-----END PGP SIGNATURE-----
+
+--zZw4yvtNimRxhiAJ--
 
