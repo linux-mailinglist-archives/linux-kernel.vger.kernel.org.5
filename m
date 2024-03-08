@@ -1,132 +1,157 @@
-Return-Path: <linux-kernel+bounces-97255-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97256-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7E518767A6
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 16:49:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFD158767AC
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 16:50:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C00F1F22080
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 15:49:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F08C1F211D6
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 15:50:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE301241E2;
-	Fri,  8 Mar 2024 15:49:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EgoSEAE9"
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 850A324205;
+	Fri,  8 Mar 2024 15:49:51 +0000 (UTC)
+Received: from sender4-of-o55.zoho.com (sender4-of-o55.zoho.com [136.143.188.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A854366;
-	Fri,  8 Mar 2024 15:49:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709912970; cv=none; b=Fivub/gMSk8cT3a0Ey4JlcllYLZOsStzBwhdlOSeLzSdXeUTsOicn9YBcV59rycD6pxNUrFUD72s/UaIwJzc+VwXusokB0TPkPk3i0nrPj0I31eQOajiYnJpJ2X6V8YbGgj/H8jAv2KTblToG7LMXM2+CaZjKnvF74HcbGOv+hE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709912970; c=relaxed/simple;
-	bh=91DpN+5jqCtFxdFAdJyx2F5lCUgsbaBUIGnQ7cQW6Vo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ugm6K51lnGuAVj/QuB3VESIxpYdW8qNFnVBugAnpCfhTBNRYGblALjCsaCLI50YIqiC+q/upoT7rOkCWTWkRi5i5Gtt8j17uxf9NbeXZQNNvoHDM2PyXJXjlLiur+s/vofrSQDm/gDw5bDUIq8kNGjnfAM1+bQQLl4TFwYLF9xc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EgoSEAE9; arc=none smtp.client-ip=209.85.167.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-5134d7e16a8so2011381e87.3;
-        Fri, 08 Mar 2024 07:49:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709912967; x=1710517767; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ld+4cFJiCUpIgeEmlpcazZFkXkoYjxiqrgcd7maZMKE=;
-        b=EgoSEAE9Kc+Kl86M1QHBI+dh3gMT7xzuPaKchZ2ptb+McrNa2b+9LKdat87/kh4uhh
-         B9URnxqCGr9CtBC+/EqgzbZqi0ekr9LjgOkAAMNL4TG1U84UnfXB8D9+ZnxgFjm9yRZi
-         XnBXky1JQaf1RcrKFhxEeIMBSi17vJ5XGcRnbZVMWEImTYuhgWCeEFKHkhtrG9e5bTGC
-         RcS51hmIZtE5AVZm6+MXJoUSSjF6NUeN9R5oKhmpN3sFqSEpNCkclkIGe+YxjV22O8dj
-         Tc+FekWR4kvOlk3GCM+Khf8+RIIH4asWg8yy72r49rrI1Na4do+jdDCu+CojYgadDFrd
-         53NA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709912967; x=1710517767;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ld+4cFJiCUpIgeEmlpcazZFkXkoYjxiqrgcd7maZMKE=;
-        b=fS/xzeLfV6GTmOTJfuLVkZZTiVUj3dDIfjIFZefQpE/Zx0+gp0x42FDWJMAtQd9Zzw
-         YseoAs+6n9sLlpM+iPow2HynDsSNxP1Y/mjPaNrI6raB2hTN1U9wV3u++JQvYecK0M3U
-         SbwGaAg1aErD3YccDbjICErxEDZZKt53dYNvQ85OflycchRF2XnehyYRfQdkI5DcIbhW
-         Nin7qj96zDIvZTQnM0RkhHZ9JiEya2EssmeFMcW24Vs9JPGF4/USjcbbCW3IiDCn6P5H
-         t7NXw1NFdpZgriWR062403mElY1ABfFIYQzqBLz2z+MVRverPsEnuTV9Bp17s5mndNtS
-         5s9A==
-X-Forwarded-Encrypted: i=1; AJvYcCVUDjEsXsqSGO+TYVvp/kSWoY5yversnkZunvqiXBoeQ7duPwjOcTpsPF3O685TVOGECOnjgkRdsMlBSRUf4zr4ipkCD9zkugYpvTjBMDSQMpJDVFwdYfN1iEoNdOtNwVhRVd+ilp060w==
-X-Gm-Message-State: AOJu0YyhmykZGIDNtl6MdgnS9jqvbrPX5+tKE0NDDiymvunFl5i35V7I
-	ffXMmclbG37ZRcWsKogfF2eEBljIfBxzomCjgMYJsuTKgeAVXib9ImW8RC6zMdf07tNNLm9qa6D
-	emb+wkicZJSLTGy4Pku+EvRx0xzM=
-X-Google-Smtp-Source: AGHT+IGPyssiDhhfcu2ArxzuzahLXmqh8jRRtzzOKzL6wiSwUy7U9ClXjqn4LMqSqv3rNw24PwXN+9uNqUZrMxSzDL4=
-X-Received: by 2002:a05:6512:3d09:b0:513:3309:cc62 with SMTP id
- d9-20020a0565123d0900b005133309cc62mr4774260lfv.47.1709912966304; Fri, 08 Mar
- 2024 07:49:26 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95A89249EE;
+	Fri,  8 Mar 2024 15:49:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.55
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709912991; cv=pass; b=dQBzGcuvQotOxyXTpw19JJuj9oZeKrQaMIZRKMZTmFBEQTRySwUwFwaV7mEWhDN7Mpm9p6ZRM/zGknNZ2INFJaDf7c/1H7QR58oeuh/sKNiaOTdI9JbYnreS6VGZNaRePMhYbsG5EImjH3cNe0nu23k2MiGTHUeDMqdvdD7tv2M=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709912991; c=relaxed/simple;
+	bh=A6rOa92ElDEwzMdoZFfPn9imL/LVoNUf7ePmW7mKcIo=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 MIME-Version:Content-Type; b=AdBdErds8bs1TkYVxPj7UEOb7Oa8hGWcH7+zaZ2C49HKDQnaG84SqdZpAgjswuEIwYL0vDzEYBF7za9Z5df7ZZFGN3pO1gAZqJV3CJ3TdkwJeB87A0o4e48pnqfeVR9wif1mIUwdC56Gs+jzjQ4cZ+ryQvDJIilHgH7it7aIEew=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=5challer.de; spf=none smtp.mailfrom=5challer.de; arc=pass smtp.client-ip=136.143.188.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=5challer.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=5challer.de
+ARC-Seal: i=1; a=rsa-sha256; t=1709912972; cv=none; 
+	d=zohomail.com; s=zohoarc; 
+	b=K9OrE1BAliFUVhEZbVOmYk+h2+KgNTPZwTxbZlwCdgIbBvV9hoCLEPTGzj7D/aSEkvrvEiCDEz/pm6wUjdfrVhWVZ+7h8aMbypII8Y+JkjPL3BHz5qgIhxg5erbYC/O7PAMKYzaieATR37YCDWo70axhjtsK/8Fjp7XWdLUTTxs=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+	t=1709912972; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
+	bh=5YNPXuGQzikjhDPAoMwfNKrszjWl/dlfwI8/cu9vNBc=; 
+	b=OGxVRBZrMWNPzpvDS+2gUfvaj3x3PuTBeJKP+Z8QLGueJlaD2CUdOHaUCIPqmM9qeQqqeOyhq+KjLhq1DRzB3CGDHo/BefmtKaA6cLBXUYoZUGZvNZgKDGbIjCRv5gajJUdQEFDaXRU/AVUiTbClPv7m/S5qJt4gOWFJ8wjDj/c=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+	spf=pass  smtp.mailfrom=michael@5challer.de;
+	dmarc=pass header.from=<michael@5challer.de>
+Received: from mail.zoho.com by mx.zohomail.com
+	with SMTP id 1709912969795903.1225612775684; Fri, 8 Mar 2024 07:49:29 -0800 (PST)
+Date: Fri, 08 Mar 2024 16:49:29 +0100
+From: michael <michael@5challer.de>
+To: "Kai-Heng Feng" <kai.heng.feng@canonical.com>
+Cc: "Bjorn Helgaas" <helgaas@kernel.org>, "bhelgaas" <bhelgaas@google.com>,
+	"linux-pci" <linux-pci@vger.kernel.org>,
+	"linux-kernel" <linux-kernel@vger.kernel.org>,
+	"regressions" <regressions@lists.linux.dev>,
+	"macro" <macro@orcam.me.uk>, "ajayagarwal" <ajayagarwal@google.com>,
+	"sathyanarayanan.kuppuswamy" <sathyanarayanan.kuppuswamy@linux.intel.com>,
+	"gregkh" <gregkh@linuxfoundation.org>,
+	"hkallweit1" <hkallweit1@gmail.com>,
+	"michael.a.bottini" <michael.a.bottini@linux.intel.com>,
+	"johan+linaro" <johan+linaro@kernel.org>
+Message-ID: <18e1ebf2b92.bedd9a071161871.3718292789549008231@5challer.de>
+In-Reply-To: <CAAd53p6GEPJe3rNNrUAah5PdLXspKh5Gz9tFstR6SFCREs+9=Q@mail.gmail.com>
+References: <954f0b86-dd9e-4d84-8d67-fba7e80bc94e@5challer.de>
+ <20240105155100.GA1861423@bhelgaas> <CAAd53p5Eg4J9bRtAHY+JZ11cy1D0TnKmAaLfzcRJzw15VRBxXw@mail.gmail.com>
+ <9f0f9de4-2d34-4ff3-a901-c3e4b48e4ab0@5challer.de> <CAAd53p6GEPJe3rNNrUAah5PdLXspKh5Gz9tFstR6SFCREs+9=Q@mail.gmail.com>
+Subject: Re: [Regression] [PCI/ASPM] [ASUS PN51] Reboot on resume attempt
+ (bisect done; commit found)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CA+G9fYsVni7x6AuP97i10oxcusUrB4+m2wpM4Z3mTzWsnMz-Mg@mail.gmail.com>
- <8f69d1f2-0ce3-4851-a784-c76b274dd9ff@app.fastmail.com> <CA+G9fYvhxJ_Tokrc3zxgP4UNjrRXjhxjfqMtSbMOoURCF1GjmQ@mail.gmail.com>
-In-Reply-To: <CA+G9fYvhxJ_Tokrc3zxgP4UNjrRXjhxjfqMtSbMOoURCF1GjmQ@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 8 Mar 2024 07:49:14 -0800
-Message-ID: <CAADnVQJLhKPA1MGtpqDwAnSDrCXBd1dxoCor2RwD22a-VLpiKA@mail.gmail.com>
-Subject: Re: arm64: WARNING: at mm/vmalloc.c:315 ioremap_page_range
-To: Naresh Kamboju <naresh.kamboju@linaro.org>, Christoph Hellwig <hch@infradead.org>, 
-	Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, linux-mm <linux-mm@kvack.org>, 
-	linux-next <linux-next@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>, 
-	Linux Regressions <regressions@lists.linux.dev>, lkft-triage@lists.linaro.org, 
-	Andrew Morton <akpm@linux-foundation.org>, Ard Biesheuvel <ardb@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Dan Carpenter <dan.carpenter@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+Importance: Medium
+User-Agent: Zoho Mail
+X-Mailer: Zoho Mail
 
-On Fri, Mar 8, 2024 at 6:24=E2=80=AFAM Naresh Kamboju <naresh.kamboju@linar=
-o.org> wrote:
->
-> On Fri, 8 Mar 2024 at 17:34, Arnd Bergmann <arnd@arndb.de> wrote:
-> >
-> > On Fri, Mar 8, 2024, at 12:53, Naresh Kamboju wrote:
-> > > The following warning was noticed while boot arm and arm64 devices.
-> > > The below log is extracted from arm64 ROCK Pi 4B while booting and
-> > > another issue is kernel oops noticed while testing selftests:  kvm:
-> > > memslot_perf_test.
-> > >
-> > > 1) WARNING: CPU: 1 PID: 201 at mm/vmalloc.c:315 ioremap_page_range
-> > > 2)  Unable to handle kernel NULL pointer dereference at virtual addre=
-ss
-> > >   Internal error: Oops: 0000000096000006 [#1] PREEMPT SMP
-> > >   Kernel panic - not syncing: Oops: Fatal exception in interrupt
-> > >
-> > > Please find steps to reproduce, logs and config file links below.
-> > >
-> > > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
->
-> <trim>
->
-> > The warning was added by commit 3e49a866c9dc ("mm: Enforce
-> > VM_IOREMAP flag and range in ioremap_page_range.").
-> >
-> > This indeed uses a special memory area at a fixed physical address,
-> > but I don't see where the vm_struct comes from.
->
-> Thanks for your explanation.
->
-> > No idea here, but it seems unrelated to the first one.
->
-> I will reproduce this issue a few more times and get back to you.
+Hi Kai-Heng,
 
-See the proposed fix:
-https://lore.kernel.org/bpf/CAADnVQLP=3DdxBb+RiMGXoaCEuRrbK387J6B+pfzWKF_F=
-=3DaRgCPQ@mail.gmail.com/
+ ---- On Thu, 07 Mar 2024 07:51:05 +0100  Kai-Heng Feng  wrote ---=20
+ > Hi Michael,
+ >=20
+ > Sorry for the belated response.
+ >=20
+No worries.
 
-but Christoph believes a different approach is necessary:
-https://lore.kernel.org/bpf/Zeso7eNj1sBhH5zY@infradead.org/
+ > On Wed, Jan 10, 2024 at 8:40=E2=80=AFPM Michael Schaller michael@5challe=
+r.de> wrote:
+ > >
+ > >
+ > > On 10.01.24 04:43, Kai-Heng Feng wrote:
+ > > > On Fri, Jan 5, 2024 at 11:51=E2=80=AFPM Bjorn Helgaas helgaas@kernel=
+org> wrote:
+ > > >>
+ > > >> On Fri, Jan 05, 2024 at 12:18:32PM +0100, Michael Schaller wrote:
+ > > >>> On 05.01.24 04:25, Kai-Heng Feng wrote:
+ > > >>>> Just wondering, does `echo 0 > /sys/power/pm_asysnc` help?
+ > > >>>
+ > > >>> Yes, `echo 0 | sudo tee /sys/power/pm_async` does indeed also resu=
+lt in a
+ > > >>> working resume. I've tested this on kernel 6.6.9 (which still has =
+commit
+ > > >>> 08d0cc5f3426). I've also attached the relevant dmesg output of the
+ > > >>> suspend/resume cycle in case this helps.
+ > > >>
+ > > >> Thanks for testing that!
+ > > >>
+ > > >>> Furthermore does this mean that commit 08d0cc5f3426 isn't at fault=
+ but
+ > > >>> rather that we are dealing with a timing issue?
+ > > >>
+ > > >> PCI does have a few software timing requirements, mostly related to
+ > > >> reset and power state (D0/D3cold).  ASPM has some timing parameters=
+,
+ > > >> too, but I think they're all requirements on the hardware, not on
+ > > >> software.
+ > > >>
+ > > >> Adding an arbitrary delay anywhere shouldn't break anything, and ot=
+her
+ > > >> than those few required situations, it shouldn't fix anything eithe=
+r.
+ > > >
+ > > > At least it means 8d0cc5f3426 isn't the culprit?
+ > > >
+ > > > Michael, does the issue happen when iwlwifi module is not loaded? It
+ > > > can be related to iwlwifi firmware.
+ > > >
+ > > > Kai-Heng
+ > > >
+ > > The issue still happens if the iwlwifi module has been blacklisted and
+ > > after a reboot. This was again with vanilla kernel 6.6.9 and I've
+ > > confirmed via dmesg that iwlwifi wasn't loaded.
+ >=20
+ > Can you please give latest mainline kernel a try? With commit
+ > f93e71aea6c60ebff8adbd8941e678302d377869 (Revert "PCI/ASPM: Remove
+ > pcie_aspm_pm_state_change()") reverted.
+ >=20
+ > Also do you have efi-pstore enabled? Is there anything logged in
+ > /var/lib/systemd/pstore (assuming systemd is used)?
+ >=20
+I'm happy to test once I'm out of the hospital (long COVID). I should be ba=
+ck home in 5 weeks.
+
+Michael
+
+ > Kai-Heng
+ >=20
+ > >
+ > > I've also checked if there is a newer firmware but Ubuntu 23.10 is
+ > > already using the newest firmware available from
+ > > https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmwar=
+e.git/log/iwlwifi-8265-36.ucode
+ > > (version 36.ca7b901d.0 according to dmesg).
+ > >
+ > > Michael
+ > >
+ > > >>
+ > > >> Bjorn
+ >=20
 
