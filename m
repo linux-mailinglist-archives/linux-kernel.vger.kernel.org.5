@@ -1,170 +1,110 @@
-Return-Path: <linux-kernel+bounces-97114-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97115-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4BC68765AD
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:53:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4C2E8765B3
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:54:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CB4DC1C2167C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:53:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 519A7B20519
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:54:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E520B3BBEC;
-	Fri,  8 Mar 2024 13:53:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF27E3FB80;
+	Fri,  8 Mar 2024 13:54:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="abQY7zjk"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="UodPQ+YM"
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A71E038DF9;
-	Fri,  8 Mar 2024 13:53:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E45936132;
+	Fri,  8 Mar 2024 13:54:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709906009; cv=none; b=ufCoFWWe9pnq3lAwv/C0Nampc0r+ctQGorWE2J/Aux9Zt11j9amKP3U8PfODNBrolc6sk3pV8M9Wq9mqRdQuKJlA5dE744HQYpXsKc6whWNKRzVy7B4QuM9vbZ3i+yo+zRJmX8EIF8ayahO1rTZAlLD3SZZ27c5L2NRD5CoPbuE=
+	t=1709906074; cv=none; b=fZi61mHXFjCY883suy4HpHmlTnukK03C9hGwSXcxGk77WGFGif42ITtqFKZ3k7eK34IlefYgabJn5M6n9JlNsFvR+T18tNrm7Wk+zQvOJooS+kl4luhAXkdF5yrtz6pv0UUHxfWUXYAmx4nwvHgupg/BMbRbSY8IUNT+PhJ50EU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709906009; c=relaxed/simple;
-	bh=NITzIM94nELtuCjZkBEgy9jlRwa/xY4KvHM838qFBec=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=BYrsyZvVsSC5mFOg2/iT47koZ/sXyv+2GImF6zenUvnT45y2orNHcMdFbBOeGWngqBdAFw9Qt4DR9vMeCyCo+sw7MeSCJWAM3IKT6SJZ9vx0wfHCbsatQ9fnqUlebsmwC1/3X3gisNU9O2BK2FRrRRA6m9QNBl11EMGasB6qVtM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=abQY7zjk; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709906008; x=1741442008;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=NITzIM94nELtuCjZkBEgy9jlRwa/xY4KvHM838qFBec=;
-  b=abQY7zjkzSJAJHTQ2jyk4Fx8dk5ia6mwX8PDFsMocjCLDwQ0BjdEDCGL
-   4zMpgpw57yfo0q5vDDOJg9mAqNJhuY2ZY7x0A3SNKhf8TL0JiMzn/tVmW
-   ARua/F/+QJAuaKps5iWOHuRrRDwFhTXbOcJBynocAbDYnuIjQuwg54s/s
-   Nnk668oEK7dyzHOswsLDILRep005a95fnPSob+vHBRpPJ94PfwNLV4hW+
-   hBIfCXk3HUcdPESKeDMELc0cKfrLaWpKaTfksokb9CrDBB1KfJDQ1/NE/
-   SBf4t+wrMYlSwhTytkJXj5P9vlHXs087otb1c210fiVzDp7hT2no7SwUY
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="4469818"
-X-IronPort-AV: E=Sophos;i="6.07,109,1708416000"; 
-   d="scan'208";a="4469818"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 05:53:27 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,109,1708416000"; 
-   d="scan'208";a="41444446"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.244.186])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 05:53:24 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Fri, 8 Mar 2024 15:53:19 +0200 (EET)
-To: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
-cc: Fenghua Yu <fenghua.yu@intel.com>, 
-    Reinette Chatre <reinette.chatre@intel.com>, Shuah Khan <shuah@kernel.org>, 
-    tony.luck@intel.com, "Shaopeng Tan (Fujitsu)" <tan.shaopeng@fujitsu.com>, 
-    LKML <linux-kernel@vger.kernel.org>, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 2/4] selftests/resctrl: SNC support for CMT
-In-Reply-To: <75849cb145429798b21c23b6be4abd7ece9df57b.1709721159.git.maciej.wieczor-retman@intel.com>
-Message-ID: <6181937a-54b4-8b17-0c24-734764a205d1@linux.intel.com>
-References: <cover.1709721159.git.maciej.wieczor-retman@intel.com> <75849cb145429798b21c23b6be4abd7ece9df57b.1709721159.git.maciej.wieczor-retman@intel.com>
+	s=arc-20240116; t=1709906074; c=relaxed/simple;
+	bh=aG3+CKOKqnEHD8zClL8ksocZPjrpA9A3lAGAuXz771A=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=nijpqiRRhEYbdZv22TCT2JvkTrC3KMNVEI/EUgeBkka+SUlZe6dajFn/VHwGY1nBb/uTEJgpPZcEmUS5Ren3tXI9/D0ojBSI/G6OS92Sb3rckI9I+VwiDLN6X8EaQJP3CaZHwnzlZmZFSWY680CrZ8fQK6+8o86+k1uUkLHbHSE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=UodPQ+YM; arc=none smtp.client-ip=217.70.183.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 7B17DE0002;
+	Fri,  8 Mar 2024 13:54:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709906069;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aG3+CKOKqnEHD8zClL8ksocZPjrpA9A3lAGAuXz771A=;
+	b=UodPQ+YMKvaHGMrbgD52PyzC/shaIII3K4mzJfXghCFjJAz3b/IFhvAThZwQXjyACBXHha
+	7PeNTGCYtLn/YiWLh8dUBvMAOTBmMgQSQtD1E2FONBy5M6OymFCrz/SUkLhqzMZP9pq+Su
+	iPZJ+iFlIc3JJrBRWbg/vYxR1s2Fa+iAUnTVBrdvKoT8YPstN8VwW9jTiQ2wnY0x66q1fq
+	0LMRLL2NA/p6hauDHdeu+hN1Egxg9GEmAL/fMW+dt2cwZWYN7kQVAhmxX9G36O3RwoApaN
+	adFQ1GcSTefB34p5Z2EXZNsvNV7jkVylsGWvZymQGshKMoj/k3rFfsceBxxJdw==
+Date: Fri, 8 Mar 2024 14:54:26 +0100
+From: =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
+To: Jamal Hadi Salim <jhs@mojatatu.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+ <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>, Luis Chamberlain
+ <mcgrof@kernel.org>, Russ Weight <russ.weight@linux.dev>, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki"
+ <rafael@kernel.org>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Oleksij Rempel <o.rempel@pengutronix.de>, Mark Brown <broonie@kernel.org>,
+ Frank Rowand <frowand.list@gmail.com>, Andrew Lunn <andrew@lunn.ch>, Heiner
+ Kallweit <hkallweit1@gmail.com>, Russell King <linux@armlinux.org.uk>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ devicetree@vger.kernel.org, Dent Project <dentproject@linuxfoundation.org>
+Subject: Re: [PATCH net-next v5 00/17] net: Add support for Power over
+ Ethernet (PoE)
+Message-ID: <20240308145426.7eb4b043@kmaincent-XPS-13-7390>
+In-Reply-To: <CAM0EoM=Q3hdXSHNADKX=erJQJWT4Jz0XeAD8kMYHv_VGagvPQA@mail.gmail.com>
+References: <20240227-feature_poe-v5-0-28f0aa48246d@bootlin.com>
+	<CAM0EoM=Q3hdXSHNADKX=erJQJWT4Jz0XeAD8kMYHv_VGagvPQA@mail.gmail.com>
+Organization: bootlin
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: kory.maincent@bootlin.com
 
-On Wed, 6 Mar 2024, Maciej Wieczor-Retman wrote:
+On Tue, 27 Feb 2024 10:31:05 -0500
+Jamal Hadi Salim <jhs@mojatatu.com> wrote:
 
-> Cache Monitoring Technology (CMT) works by measuring how much data in L3
-> cache is occupied by a given process identified by its Resource
-> Monitoring ID (RMID).
-> 
-> On systems with Sub-Numa Clusters (SNC) enabled, a process can occupy
-> not only the cache that belongs to its own NUMA node but also pieces of
-> other NUMA nodes' caches that lie on the same socket.
-> 
-> A simple correction to make the CMT selftest NUMA-aware is to sum values
-> reported by all nodes on the same socket for a given RMID.
-> 
-> Reported-by: "Shaopeng Tan (Fujitsu)" <tan.shaopeng@fujitsu.com>
-> Closes: https://lore.kernel.org/all/TYAPR01MB6330B9B17686EF426D2C3F308B25A@TYAPR01MB6330.jpnprd01.prod.outlook.com/
-> Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
-> ---
->  tools/testing/selftests/resctrl/cache.c       | 17 +++++++++++------
->  tools/testing/selftests/resctrl/resctrl.h     |  4 +++-
->  tools/testing/selftests/resctrl/resctrl_val.c |  9 ++++++---
->  3 files changed, 20 insertions(+), 10 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/resctrl/cache.c b/tools/testing/selftests/resctrl/cache.c
-> index 1b339d6bbff1..dab81920033b 100644
-> --- a/tools/testing/selftests/resctrl/cache.c
-> +++ b/tools/testing/selftests/resctrl/cache.c
-> @@ -161,16 +161,21 @@ int perf_event_measure(int pe_fd, struct perf_event_read *pe_read,
->   *
->   * Return: =0 on success. <0 on failure.
->   */
-> -int measure_llc_resctrl(const char *filename, int bm_pid)
-> +int measure_llc_resctrl(const char *filename, int bm_pid, const char *ctrlgrp,
-> +			const char *mongrp, int res_id)
->  {
-> -	unsigned long llc_occu_resc = 0;
-> +	unsigned long sum = 0, llc_occu_resc = 0;
->  	int ret;
->  
-> -	ret = get_llc_occu_resctrl(&llc_occu_resc);
-> -	if (ret < 0)
-> -		return ret;
-> +	for (int i = 0 ; i < snc_ways() ; i++) {
+> On Tue, Feb 27, 2024 at 9:43=E2=80=AFAM Kory Maincent <kory.maincent@boot=
+lin.com>
+> wrote:
+> >
+> > This patch series aims at adding support for PoE (Power over Ethernet),
+> > based on the already existing support for PoDL (Power over Data Line)
+> > implementation. In addition, it adds support for two specific PoE
+> > controller, the Microchip PD692x0 and the TI TPS23881.
+> >
+> > This patch series is sponsored by Dent Project
+> > <dentproject@linuxfoundation.org>. =20
+>=20
+> Sorry, couldnt resist because it sounded like a commercial;-> And
+> likely i am out of touch. I am all for giving credit but does it have
+> to be explicitly called out as "this patch is sponsored by X"?
 
-Spaces as per usual coding style:
+Hello Jamal,
 
-	for (int i = 0; i < snc_ways(); i++) {
+I will remove the line and add it in the From field as suggested by Jakub.
+It seems to be the usual way to do it.
 
-> +		set_cmt_path(ctrlgrp, mongrp, res_id + i);
-> +		ret = get_llc_occu_resctrl(&llc_occu_resc);
-> +		if (ret < 0)
-> +			return ret;
-> +		sum += llc_occu_resc;
-> +	}
->  
-> -	return print_results_cache(filename, bm_pid, llc_occu_resc);
-> +	return print_results_cache(filename, bm_pid, sum);
->  }
->  
->  /*
-
-> @@ -828,6 +828,8 @@ int resctrl_val(const struct resctrl_test *test,
->  	sleep(1);
->  
->  	/* Test runs until the callback setup() tells the test to stop. */
-> +	get_domain_id("L3", uparams->cpu, &res_id);
-
-Hardcoding L3 here limits the genericness of this function. You don't even 
-need to do it, get_domain_id() does "MB" -> "L3" transformation implicitly 
-for you so you can just pass test->resource instead.
-
-Also, I don't understand why you now again make the naming inconsistent 
-with "res_id".
-
-If you based this on top of the patches I just posted, resctl_val() 
-already the domain_id variable.
-
--- 
- i.
-
-> +	res_id *= snc_ways();
->  	while (1) {
->  		ret = param->setup(test, uparams, param);
->  		if (ret == END_OF_TESTS) {
-> @@ -844,7 +846,8 @@ int resctrl_val(const struct resctrl_test *test,
->  				break;
->  		} else if (!strncmp(resctrl_val, CMT_STR, sizeof(CMT_STR))) {
->  			sleep(1);
-> -			ret = measure_llc_resctrl(param->filename, bm_pid);
-> +			ret = measure_llc_resctrl(param->filename, bm_pid, param->ctrlgrp,
-> +						  param->mongrp, res_id);
->  			if (ret)
->  				break;
->  		}
-> 
-
+Regards,
+--=20
+K=C3=B6ry Maincent, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
 
