@@ -1,104 +1,122 @@
-Return-Path: <linux-kernel+bounces-97669-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97672-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB65A876D4F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 23:45:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 122E4876D60
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 23:58:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8BF3A1F227F5
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 22:45:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 418B71C20C86
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 22:58:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BF4636AF8;
-	Fri,  8 Mar 2024 22:45:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="RFLV3qf5"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 900E4381C8;
+	Fri,  8 Mar 2024 22:58:21 +0000 (UTC)
+Received: from 3.mo583.mail-out.ovh.net (3.mo583.mail-out.ovh.net [46.105.40.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCC293FBBD
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 22:45:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60A731F93E
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 22:58:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.105.40.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709937904; cv=none; b=qgKHJjLiJwkTQIwoXO6dyLjVKAY93MSS+bMP3dHLef2krw6lO5k7ch9YYZ4UM4Yv9Qi+ZAPgqHfh9Quw/Cm0wCsaestWV8Wn2nVM3vLq6Y+Mnkuue9SOPJ8qG8ygj5lZy6w/NgFwB1JmNMWN46L4ogfgZyp1lgMOrdeli20988w=
+	t=1709938701; cv=none; b=j3xC94d5agyzOYhsNR4ZFu3sV2XwBhrMxJdgfvVmTydCS9d+i6MfxlGp4bI7rBE9i8Ci+PszZvmetBzoSSM0t/iByrP+K3LWmn090PUBcpe7NfhhWAOLFn2vaBGxDb5IfbM3RR5fN7B4fRvKfl9m29G5FDbBcXNAXZbCHdMk5xw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709937904; c=relaxed/simple;
-	bh=KZRGbBNF0GTtJzvOMXF5VklG5k9DvU5JzIOJGPDdwQI=;
-	h=Date:Message-Id:Mime-Version:Subject:From:To:Cc:Content-Type; b=AUPjD+gN+G/1D/M9ZeC2UZRXerZo27XOCtI25C46fHPXIFNAlPU73yYP7h9j3mcawv+m1F2DMPU3daJoIaordtlr/6hPJGTylqsgG+zqAH91ObW9X49KuMeEqpQWoesAmP7L9yWyY0Q4bYD5u8qj9XtHKhjWqYGbS9x9yRdFCKo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--saravanak.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=RFLV3qf5; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--saravanak.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-60a0151f194so25758317b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 14:45:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709937901; x=1710542701; darn=vger.kernel.org;
-        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=IiMp4Q84ZRHG2huJ3D03WkrKLgdFSmD9U9ReR7uCK6U=;
-        b=RFLV3qf5sNxacB65Ib0q1PqL8+KAYXKGUgu879ZIcdJ0qVLrQl70VUI0FMxg1c4MdX
-         QEZWlqoBgF5rzKlo0bBXekOUJGCFfDI1yF+x0Agp5HXF+gjIkiC4m0LTPziwaC3FFXfQ
-         bAq0a8ceovtmA8MQv7yNtdzhTukpnLVLitUK24sub4LMQLhOQSTbg/iGfGbq6GD5RD2n
-         l7YrxZc4cWrw1At1W3odrUYEF8jUC0BiLhTmjAdKWSTNYYNUiDgFYWgiy0iv1urSwUAj
-         4yW1QEjk35psTJxtTv2ExH5TDSoHIb6HxDkXe/yt5bBdjEjJCds4yzFgCF3zX+fLtajR
-         EcAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709937901; x=1710542701;
-        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=IiMp4Q84ZRHG2huJ3D03WkrKLgdFSmD9U9ReR7uCK6U=;
-        b=joYUlOBKDPVyegB0/XViXWkqvAdt9UUvF9SnyAAG584Bd32+TbbkTn9kzzgx1gbvRp
-         u/G9CqQmX0Fji5TQANMABbr6CmFUsFBCsISfkW9+8Ooipjb+FLFWNI/X16uMuFNhecq2
-         NoeoqHqrliy3YIDEpk01hhxfdgKMzOIKTHFCsZA64UoGBT6AlVbaIbLcOGTnig/x2yzu
-         5INPH8Sy/ZS/rfrZfe99e3+G1SgArNgZfoQZZxmGeDnred+1STP80KTwPXUprKAQKHlI
-         XFvmV6ukPnjEVGYPoCq0HPvSxnlFDz/hU69m5FgrIDs2YOD2qJQBuZisWR1GQTxmR5E5
-         jP9A==
-X-Forwarded-Encrypted: i=1; AJvYcCVrA9/byOJjuXvmwvV6Vop4yeJOtGGvMJma+NwikwVu4BKg0hX5+jhHKNMwVM3ScMaO6PBtsS2tsdQ6bWSnHa4TLeZKYL2QzFYRNKeM
-X-Gm-Message-State: AOJu0YxdkW7MQTHEccpw7KV4NNzO1dJsIFm2Y+8SV0c0aCeaN0B0xJrh
-	8P+1e6HqESLTZRE08n8d/h55Q09j6twC4kdAhQpN8z4niST2PaZhpT7iBE8Lj1rDncc/JYLb3mP
-	+DWXE+vnt8rWIvA==
-X-Google-Smtp-Source: AGHT+IG/emX2/VZdtlMuRgEiAhbEydXKKDZZNEwpuRFiPRm8SORpqs38ydYiV9bQtRKmc6lUxN4XqNmkfzHamhE=
-X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:b307:13b8:5743:15a9])
- (user=saravanak job=sendgmr) by 2002:a05:6902:102b:b0:dcc:e1a6:aca9 with SMTP
- id x11-20020a056902102b00b00dcce1a6aca9mr96836ybt.9.1709937900881; Fri, 08
- Mar 2024 14:45:00 -0800 (PST)
-Date: Fri,  8 Mar 2024 14:44:50 -0800
-Message-Id: <20240308224450.2327415-1-saravanak@google.com>
+	s=arc-20240116; t=1709938701; c=relaxed/simple;
+	bh=JC/1Hu15t3XDRrwUWjQx6XQH7Jgd9AvFXSl+dsOCvpo=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=k6BwjYt2IsZqeeJ3HP1eBGW/IGeawLL57OmF3o5AoHINQw0CcB7WFockFHOAvHEC+ZqxazrRKr+MQQISAkCuDNi+tt+33smrYdUBZ98Ma26vnQXcIGsWhyLucmfsxdVQRD6axo753e6NI0ky8cpAJIKO5PQrXapczPhDgLm8zUQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=etezian.org; arc=none smtp.client-ip=46.105.40.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=etezian.org
+Received: from director10.ghost.mail-out.ovh.net (unknown [10.108.2.197])
+	by mo583.mail-out.ovh.net (Postfix) with ESMTP id 4Ts1dy2LKVz1GF3
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 22:52:38 +0000 (UTC)
+Received: from ghost-submission-6684bf9d7b-ntc96 (unknown [10.110.96.185])
+	by director10.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 7A5501FDF9;
+	Fri,  8 Mar 2024 22:52:33 +0000 (UTC)
+Received: from etezian.org ([37.59.142.103])
+	by ghost-submission-6684bf9d7b-ntc96 with ESMTPSA
+	id 9KAtF7GW62U7/wgAM1TUiA
+	(envelope-from <andi@etezian.org>); Fri, 08 Mar 2024 22:52:33 +0000
+Authentication-Results:garm.ovh; auth=pass (GARM-103G0052d1e97d6-28cc-4232-bc2f-0242f8e7f9a9,
+                    2D11F706EFA52336831762ECFB2C8F5C1953C755) smtp.auth=andi@etezian.org
+X-OVh-ClientIp:89.217.109.169
+From: Andi Shyti <andi.shyti@kernel.org>
+To: Linus Walleij <linus.walleij@linaro.org>, 
+ Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+ =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-mips@vger.kernel.org, Gregory Clement <gregory.clement@bootlin.com>, 
+ Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Tawfik Bayouk <tawfik.bayouk@mobileye.com>, 
+ Wolfram Sang <wsa+renesas@sang-engineering.com>
+In-Reply-To: <20240306-mbly-i2c-v3-0-605f866aa4ec@bootlin.com>
+References: <20240306-mbly-i2c-v3-0-605f866aa4ec@bootlin.com>
+Subject: Re: (subset) [PATCH v3 00/11] Add Mobileye EyeQ5 support to the
+ Nomadik I2C controller & use hrtimers for timeouts
+Message-Id: <170993835026.2617902.961311079016126204.b4-ty@kernel.org>
+Date: Fri, 08 Mar 2024 23:52:30 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-Subject: [PATCH] Documentation: power: Fix typo in suspend and interrupts doc
-From: Saravana Kannan <saravanak@google.com>
-To: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>
-Cc: Saravana Kannan <saravanak@google.com>, kernel-team@android.com, linux-pm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.13.0
+X-Ovh-Tracer-Id: 10859586080687524573
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrieeigddtfecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevjghfuffkffggtgfgofesthekredtredtjeenucfhrhhomheptehnughiucfuhhihthhiuceorghnughirdhshhihthhisehkvghrnhgvlhdrohhrgheqnecuggftrfgrthhtvghrnhephfdukeehgfegueeuleehveejueegveeiudejgfegteffvdetjeektdeltdeiueeknecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepuddvjedrtddrtddruddpkeelrddvudejrddutdelrdduieelpdefjedrheelrddugedvrddutdefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepuddvjedrtddrtddruddpmhgrihhlfhhrohhmpegrnhguihesvghtvgiiihgrnhdrohhrghdpnhgspghrtghpthhtohepuddprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdpoffvtefjohhsthepmhhoheekfedpmhhouggvpehsmhhtphhouhht
 
-Typos are bad. Fix them.
+Hi
 
-Signed-off-by: Saravana Kannan <saravanak@google.com>
----
- Documentation/power/suspend-and-interrupts.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Wed, 06 Mar 2024 18:59:20 +0100, Théo Lebrun wrote:
+> This series adds two tangent features to the Nomadik I2C controller:
+> 
+>  - Add a new compatible to support Mobileye EyeQ5 which uses the same IP
+>    block as Nomadik.
+> 
+>    It has two quirks to be handled:
+>     - The memory bus only supports 32-bit accesses. Avoid readb() and
+>       writeb() calls that might generate byte load/store instructions.
+>     - We must write a value into a shared register region (OLB)
+>       depending on the I2C bus speed.
+> 
+> [...]
 
-diff --git a/Documentation/power/suspend-and-interrupts.rst b/Documentation/power/suspend-and-interrupts.rst
-index dfbace2f4600..f588feeecad0 100644
---- a/Documentation/power/suspend-and-interrupts.rst
-+++ b/Documentation/power/suspend-and-interrupts.rst
-@@ -78,7 +78,7 @@ handling the given IRQ as a system wakeup interrupt line and disable_irq_wake()
- turns that logic off.
- 
- Calling enable_irq_wake() causes suspend_device_irqs() to treat the given IRQ
--in a special way.  Namely, the IRQ remains enabled, by on the first interrupt
-+in a special way.  Namely, the IRQ remains enabled, but on the first interrupt
- it will be disabled, marked as pending and "suspended" so that it will be
- re-enabled by resume_device_irqs() during the subsequent system resume.  Also
- the PM core is notified about the event which causes the system suspend in
--- 
-2.44.0.278.ge034bb2e1d-goog
+Applied to i2c/i2c-host on
+
+git://git.kernel.org/pub/scm/linux/kernel/git/andi.shyti/linux.git
+
+Thank you,
+Andi
+
+Patches applied
+===============
+[01/11] dt-bindings: i2c: nomadik: add mobileye,eyeq5-i2c bindings and example
+        commit: 1b9a8e8af0d969ad8f2deece827e691a1b07ba1b
+[02/11] i2c: nomadik: rename private struct pointers from dev to priv
+        commit: ae9977eefc4a1e6e8fda619f5b8734efb6f11b58
+[03/11] i2c: nomadik: simplify IRQ masking logic
+        commit: 43f58f3e4b6678f7138461e17a37eb3aed223bf5
+[04/11] i2c: nomadik: use bitops helpers
+        commit: 9ab4b2a4faf459514f2c84c5302b207b4bb8b1e1
+[05/11] i2c: nomadik: support short xfer timeouts using waitqueue & hrtimer
+        commit: 127b87a5d11571932ea7f4d8115f4effc2f110a8
+[06/11] i2c: nomadik: replace jiffies by ktime for FIFO flushing timeout
+        commit: 0aaab5ad3a615bab4e1d401f545f77889377fffd
+[07/11] i2c: nomadik: fetch i2c-transfer-timeout-us property from devicetree
+        commit: 0148feec0a51445d29a773e55bc8be9aa3b61a8f
+[08/11] i2c: nomadik: support Mobileye EyeQ5 I2C controller
+        commit: 983548d0e62a93146f35185e6c49e568b05fb44d
+[09/11] i2c: nomadik: sort includes
+        commit: e275c0cf70e47304bc63c050c14129237c588123
 
 
