@@ -1,96 +1,145 @@
-Return-Path: <linux-kernel+bounces-96778-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96776-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B25F0876152
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 10:54:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E07287614F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 10:53:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E38731C22568
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 09:54:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B77BD1F21B15
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 09:53:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF2CE5380E;
-	Fri,  8 Mar 2024 09:53:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AA9A53801;
+	Fri,  8 Mar 2024 09:53:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="QG1dOEGP"
-Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XtH6iBRE"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8EC5535BA
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 09:53:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D21F3535BC;
+	Fri,  8 Mar 2024 09:53:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709891614; cv=none; b=qNcvA7HoH6SIbCIU8oNDEYyXOg0JMhFWUYcGTDpbbWAN5C1JX4demdf4/n8PUJTplgOr5zMCVOnI0XGQg1w1YmEcz6bnwi8xsVKLzOqRIuo+8GGfg9LHDhE1mgUmGxxasHO614U650GU5R7PN2auDx9/FINiltTbpvjTeBlrYuc=
+	t=1709891611; cv=none; b=PySgpcBlh6DCNMHyzvpl974gTy4VHGU9N2NTDBUxgn4hUl3TyD5QD5hWAfvFCoRSrYM2B4vjBLthLGPeobnGuRwIjXLmoT393YjiO+4Xu2Ne80ywSJKAJoN4dn4SENP1q2F1k8+5nR5WBVMdW1xZQki1d9sr2HwcXmCzCgSEFi0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709891614; c=relaxed/simple;
-	bh=ndHO+dbK771sCXkhMw7b5U4+3upvw4nenUdZ5aegvaY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=V72pLDo0be/F/fvE9VGxI30ha6n6ZslERC7q8Y5ah44xONZJn6nMkTUiCQoSSpeG44hy0yseAJeBqc6WsezR1C2h6qPUxJyW0ST2MP/wJ9hBKLmXpQWooFaoF8HPJcnjxzhLoT2SXzOKRvjIaFF4ZVnNXbJCXwR4tJ9QEK2lpBs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=QG1dOEGP; arc=none smtp.client-ip=115.124.30.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1709891607; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=SVLuV58Wf88RJz4QCYei0USy2gOFJ7vIuBSJPd4JPzE=;
-	b=QG1dOEGP0AM81HMX5YvQCdCLyiEfSIxFCOGgYXWZnkKltwDbaa3JfLfHHD88tmogsG1XKHfSRPu4cZFaAW42zAgKHPI4zjLbg+B6SR40LPpJ3pzp4slmolU6d80+7oaXGohOy4L/ObBkHpwuFywgB7we0XyFtYML6WQweKujs5s=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0W22PPMk_1709891605;
-Received: from 30.97.48.168(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0W22PPMk_1709891605)
-          by smtp.aliyun-inc.com;
-          Fri, 08 Mar 2024 17:53:27 +0800
-Message-ID: <54e39ceb-834a-4f37-9dc3-7db84fa59927@linux.alibaba.com>
-Date: Fri, 8 Mar 2024 17:53:25 +0800
+	s=arc-20240116; t=1709891611; c=relaxed/simple;
+	bh=QmRLKVLKdt30yVzpTeSE0AYS+PV/cT94dyjGByHQZGI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rkG5ZmLzU7dlBOOFMZNfXgKaXHZLC2fISJRJS9z4sGZLzxMfBt8hvvRNl2JqEmugwYIVAnxoVqczBGT9CJEuGXRbPm5PiVktKuzMzOMp2MjPqg8MMhqiDu22Zsj9ImYWVBFqFJcs+8Dl8yIszRjlkSpATb03MN86bNdspdDnoL8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XtH6iBRE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F71FC43399;
+	Fri,  8 Mar 2024 09:53:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709891611;
+	bh=QmRLKVLKdt30yVzpTeSE0AYS+PV/cT94dyjGByHQZGI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=XtH6iBREN3fVVbo0N98tpdhelBvJwfta1zM+gE/yvF18IO5iE87HFY4lXF56SGXBC
+	 kfA/twpwFNN6zkz9o5kHiYAIigkaQWNx1W625GlLF0ECkUajoYcHp+5D7ex0cpOEUd
+	 sEYKQ3DkTH72v7llSvb3nIRzJsR/IxsWbzs/xRevqAVtCc30bIc8TcGQUFjcwuWW27
+	 OHAKUnSrl2Vq3SBUSQXLvr2Op7avFBjDWLafKD56EP9l5GOtlMwkAs3Cz/C/qTaV7A
+	 iXKRr01hwuLcx5zDqGxrCDLJoW9eIw/4OwGCpqHmra+EUNn0rnVAQduOepaSxxcbHI
+	 SuzZNHn2+YKkA==
+Date: Fri, 8 Mar 2024 10:53:25 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Jan Kara <jack@suse.cz>
+Cc: Luis Henriques <lhenriques@suse.de>, Theodore Ts'o <tytso@mit.edu>, 
+	Andreas Dilger <adilger.kernel@dilger.ca>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Miklos Szeredi <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>, linux-ext4@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] fs_parser: handle parameters that can be empty and
+ don't have a value
+Message-ID: <20240308-fahrdienst-torten-eae8f3eed3b4@brauner>
+References: <20240229163011.16248-1-lhenriques@suse.de>
+ <20240229163011.16248-2-lhenriques@suse.de>
+ <20240301-gegossen-seestern-683681ea75d1@brauner>
+ <87il269crs.fsf@suse.de>
+ <20240307151356.ishrtxrsge2i5mjn@quack3>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] erofs: make iov_iter describe target buffers over
- fscache
-To: Jingbo Xu <jefflexu@linux.alibaba.com>, xiang@kernel.org,
- chao@kernel.org, huyue2@coolpad.com, linux-erofs@lists.ozlabs.org
-Cc: linux-kernel@vger.kernel.org
-References: <20240308094159.40547-1-jefflexu@linux.alibaba.com>
-From: Gao Xiang <hsiangkao@linux.alibaba.com>
-In-Reply-To: <20240308094159.40547-1-jefflexu@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240307151356.ishrtxrsge2i5mjn@quack3>
 
-
-
-On 2024/3/8 17:41, Jingbo Xu wrote:
-> So far the fscache mode supports uncompressed data only, and the data
-> read from fscache is put directly into the target page cache.  As the
-> support for compressed data in fscache mode is going to be introduced,
-> rework the fscache internals so that the following compressed part
-> could make the raw data read from fscache be directed to the target
-> buffer it wants, decompress the raw data, and finally fill the page
-> cache with the decompressed data.
+On Thu, Mar 07, 2024 at 04:13:56PM +0100, Jan Kara wrote:
+> On Fri 01-03-24 15:45:27, Luis Henriques wrote:
+> > Christian Brauner <brauner@kernel.org> writes:
+> > 
+> > > On Thu, Feb 29, 2024 at 04:30:08PM +0000, Luis Henriques wrote:
+> > >> Currently, only parameters that have the fs_parameter_spec 'type' set to
+> > >> NULL are handled as 'flag' types.  However, parameters that have the
+> > >> 'fs_param_can_be_empty' flag set and their value is NULL should also be
+> > >> handled as 'flag' type, as their type is set to 'fs_value_is_flag'.
+> > >> 
+> > >> Signed-off-by: Luis Henriques <lhenriques@suse.de>
+> > >> ---
+> > >>  fs/fs_parser.c | 3 ++-
+> > >>  1 file changed, 2 insertions(+), 1 deletion(-)
+> > >> 
+> > >> diff --git a/fs/fs_parser.c b/fs/fs_parser.c
+> > >> index edb3712dcfa5..53f6cb98a3e0 100644
+> > >> --- a/fs/fs_parser.c
+> > >> +++ b/fs/fs_parser.c
+> > >> @@ -119,7 +119,8 @@ int __fs_parse(struct p_log *log,
+> > >>  	/* Try to turn the type we were given into the type desired by the
+> > >>  	 * parameter and give an error if we can't.
+> > >>  	 */
+> > >> -	if (is_flag(p)) {
+> > >> +	if (is_flag(p) ||
+> > >> +	    (!param->string && (p->flags & fs_param_can_be_empty))) {
+> > >>  		if (param->type != fs_value_is_flag)
+> > >>  			return inval_plog(log, "Unexpected value for '%s'",
+> > >>  				      param->key);
+> > >
+> > > If the parameter was derived from FSCONFIG_SET_STRING in fsconfig() then
+> > > param->string is guaranteed to not be NULL. So really this is only
+> > > about:
+> > >
+> > > FSCONFIG_SET_FD
+> > > FSCONFIG_SET_BINARY
+> > > FSCONFIG_SET_PATH
+> > > FSCONFIG_SET_PATH_EMPTY
+> > >
+> > > and those values being used without a value. What filesystem does this?
+> > > I don't see any.
+> > >
+> > > The tempting thing to do here is to to just remove fs_param_can_be_empty
+> > > from every helper that isn't fs_param_is_string() until we actually have
+> > > a filesystem that wants to use any of the above as flags. Will lose a
+> > > lot of code that isn't currently used.
+> > 
+> > Right, I find it quite confusing and I may be fixing the issue in the
+> > wrong place.  What I'm seeing with ext4 when I mount a filesystem using
+> > the option '-o usrjquota' is that fs_parse() will get:
+> > 
+> >  * p->type is set to fs_param_is_string
+> >    ('p' is a struct fs_parameter_spec, ->type is a function)
+> >  * param->type is set to fs_value_is_flag
+> >    ('param' is a struct fs_parameter, ->type is an enum)
+> > 
+> > This is because ext4 will use the __fsparam macro to set define a
+> > fs_param_spec as a fs_param_is_string but will also set the
+> > fs_param_can_be_empty; and the fsconfig() syscall will get that parameter
+> > as a flag.  That's why param->string will be NULL in this case.
 > 
-> As the first step, a new structure, i.e. erofs_fscache_io (io), is
-> introduced to describe a generic read request from the fscache, while
-> the caller can specify the target buffer it wants in the iov_iter
-> structure (io->iter).  Besides, the caller can also specify its
-> completion callback and private data through erofs_fscache_io, which
-> will be called to make further handling, e.g. unlocking the page cache
-> for uncompressed data or decompressing the read raw data, when the read
-> request from the fscache completes.  Now erofs_fscache_read_io_async()
-> serves as a generic interface for reading raw data from fscache for both
-> compressed and uncompressed data.
-> 
-> The erofs_fscache_rq structure is kept to describe a request to fill the
-> page cache in the specified range.
-> 
-> Signed-off-by: Jingbo Xu <jefflexu@linux.alibaba.com>
+> So I'm a bit confused here. Valid variants of these quota options are like
+> "usrjquota=<filename>" (to set quota file name) or "usrjquota=" (to clear
+> quota file name). The variant "usrjquota" should ideally be rejected
+> because it doesn't make a good sense and only adds to confusion. Now as far
+> as I'm reading fs/ext4/super.c: parse_options() (and as far as my testing
+> shows) this is what is happening so what is exactly the problem you're
+> trying to fix?
 
-As we discussed offline, for the whole series:
-Reviewed-by: Gao Xiang <hsiangkao@linux.alibaba.com>
-
-Thanks for the work!
-
-Thanks,
-Gao Xiang
+mount(8) has no way of easily knowing that for something like
+mount -o usrjquota /dev/sda1 /mnt that "usrjquota" is supposed to be
+set as an empty string via FSCONFIG_SET_STRING. For mount(8) it is
+indistinguishable from a flag because it's specified without an
+argument. So mount(8) passes FSCONFIG_SET_FLAG and it seems strange that
+we should require mount(8) to know what mount options are strings or no.
+I've ran into this issue before myself when using the mount api
+programatically.
 
