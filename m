@@ -1,73 +1,74 @@
-Return-Path: <linux-kernel+bounces-97451-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97452-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47095876AB3
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 19:26:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34FCF876AB4
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 19:26:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 636511C213F6
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:26:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59DA01C213CD
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:26:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31AEB56473;
-	Fri,  8 Mar 2024 18:26:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F9A757880;
+	Fri,  8 Mar 2024 18:26:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="CC1P8bWP"
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="EfsJ06ds"
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C88A3381D4
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 18:26:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30D6A54792
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 18:26:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709922362; cv=none; b=KfPCVhpcrcr+al24UR06JBwg/2V1ThcfVXOlvFNPOvkRVMu573bXPKqrGb7DngwN9zq1GxV3tVrf7/9n/87gmOx8Z8YccsMrhVS9hmm/4dNgKR301qLwnoA99KNeYrTI2eHMOhNTl0qVgT3/Lv93q5lHfi2omoEXOy6+OYgToWo=
+	t=1709922363; cv=none; b=DNn+/lcDUJKDxGRWxkGprCd6xMPNg2ZYgnEBuyl+V+erzvz2sgAID1UPVGTWD9P3JxTZxKRcQuVlEyxVoV2zF0i2+Oe+DthWs6IwjkgRqfW8kpv5KEQ0p4SshYDO612RpIhPPAoWEPZ57r+xJS525v3U1711zslLDrqXw6AgX4U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709922362; c=relaxed/simple;
-	bh=mhSJPSDAQcTli1q8D3Nd6CYHlA7Z7/7MIiS4fHVZ1pM=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=CQJ92O2l6fYbDljh7cPNAZTjt/q4B9I/GRfUhAXd75dodXL24+VhHsCj9k/BSSEgR1TaEaQTngn0cTcZt3MlsTMO+aU1kHRlm+GjbOBKbt6+eOzy0f2M2aqVp+eF2MOWigSHhlrHyCi/PJgIyxtedmVtrV3mp8yENCn9lJSgmpw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=CC1P8bWP; arc=none smtp.client-ip=209.85.216.49
+	s=arc-20240116; t=1709922363; c=relaxed/simple;
+	bh=ejS3FVJ1L+bLL4KR96q6ZNDMwke6NlmAthP91enITHI=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=EYYn7z42yA6KqQfursfS5uasJ11PufP5+s+Od8Wz9mIuutGai0JXEzTINre1Jroz7swBj3Vr5TTTYQHnbxOj5QXIRCI9qLQHliJDzwqoVI8abhYvD5NS+Ak97sDj+85tZ/cxYh4nHS3+NfeDDtZV/XedmvmU46Q2Q9D/GeUFPNc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=EfsJ06ds; arc=none smtp.client-ip=209.85.216.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-29b7dbe39ccso1708450a91.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 10:26:00 -0800 (PST)
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-29acdf99d5aso1648288a91.2
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 10:26:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1709922360; x=1710527160; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=hoSjgbEckKxxEroEjUzvoD7N56Z9lulxyyOlHDmHt9o=;
-        b=CC1P8bWPncOBEdB4UBaWosJz0ML9l+5gP6ZsFBhfuo4QKbOABpfP1c7E087GpQcnO9
-         /AbT964FTVg1hFSs5KZXTNiPDNNrVTJ+BJvqM350zQxvoi9wGsTm2XOXI026DzX5R83l
-         NjIYkrpH++1vfxRgUPx1Wcfi4TliRGJHPEwoJ4KNJyS0wQew3apITjnHdCLx3Wfe7oIo
-         bl9GPDZEoHTwkgr5Pw9V0VdyOd/pWM4QGG+gyMFyesWpAHnq8bH/BrTb4z+kv3ySdA/o
-         T7C91nfr2I3lKNIfTPh4PFRZK6ClMek+4fZDttWUdNCiaEhuNX9AA28jkjGCqza6R481
-         VPjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709922360; x=1710527160;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1709922361; x=1710527161; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=hoSjgbEckKxxEroEjUzvoD7N56Z9lulxyyOlHDmHt9o=;
-        b=nAly+aiVep+CCW6RgtTMuHsDEVqFXVO9YfpX4oawoep624Rz8t8myW+LQIMOHXJ/mv
-         azYmC9Q7otNGVmhgr4o44A9xN97Qfw8+/CdzZhWIuZFDgTZsoQGog6LNnL7NPi7OXaFW
-         BE853tVJCGdGCGYklkzB+yjSCyz65EuH9EbinuiPGoJ6E6ANxSVlEoIQ4WRgvMnA6HxU
-         8Ej9biaM00eGbVDtql8EJBG8OETpj8KtBwAj9UiThzx1HN+YV1eG/lH6mxsOAs9or8AU
-         kKqdyQn/VDigCJ5ZJ4CJ1OQDpBLP9S75BsHW7aKEbvAcn4LPSJrXbnOUxIhgmlvELMxd
-         O/Qw==
-X-Forwarded-Encrypted: i=1; AJvYcCWmhckjdKpUnH+c/dLeMw5FYZl0zSCWAvARj31m9gywVPFDjkQZrK5MmLhqLdHRZMWGXgkpdrm7FioyPDwKbIxDGUoc0H+996tXS33X
-X-Gm-Message-State: AOJu0YznQuBjx4/WWBVeut5wzltFJU//UOuCrq+X1qGl4g4cAOBtGyIg
-	D+t5o9YOIVK+ZW8atzaMaSU7SqsPl8pdVp+k6T2Pr0G1YyS3Rsnp82LB7Fr0LM8=
-X-Google-Smtp-Source: AGHT+IFSkIT+TXIPw4/bXmAyNxdGsROJwo28zL5x77kShll5vQLukvADn1/0mZJpHVwpHsmR+jFDVQ==
-X-Received: by 2002:a17:90a:df86:b0:29b:c432:c1bb with SMTP id p6-20020a17090adf8600b0029bc432c1bbmr257530pjv.24.1709922360133;
-        Fri, 08 Mar 2024 10:26:00 -0800 (PST)
+        bh=akMpdDedBfqF60/fNsk+O8npKk5JqF+ySZ0f9xW5/1M=;
+        b=EfsJ06dstPNrOk7teIsWGrajE3Mqrn9DvcSIz2pJAW9T8/G9kuFyP7CzEVm49oglU/
+         ZGvvqgA8Naem9Ui1EivntfUF7/RXijfucg83Z+r1+JWYcxtKww1oDnvNvb+sjv/xO5nR
+         Syg2J120NptFpv34britAGMftaZPk3jvbbSXSbL7VEdH82ngOjZEy/27Y1t7omziZmsD
+         M5Uxe7hvUi+2aUQHl09D6KtpTOPGRfQU7gijeI4wHmVMVEZ3g407RffvhWIFTgX88DsH
+         vPiH6JoZBH/iV8VbiGefrRMDdGOJWDYWHbsyhGAdMLD5/Fj1uMQ7/XFvVu8rIjFNdgFQ
+         6Adg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709922361; x=1710527161;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=akMpdDedBfqF60/fNsk+O8npKk5JqF+ySZ0f9xW5/1M=;
+        b=hXRQ8aF/M5IR0nQeT1BYJWtEJfBncq8rrvFlyaVw6Eouo8I6y42KAsXNlSK7E5szBN
+         cedrL2J6zlTdt0X7IG94mEGql65Q36oMniX/RzhkH7YHncl7WNld7SLhmHunVIqxW3Zs
+         JfxPTaoQNrhWg4bSbTJHOHb8dgRN9zjP7ifauDIR02ym7tHS2fG/itFpTNXGQHxNGuw7
+         FgY2CdvgUPC9hmIGl65gMHXD2hHuecBGNEEOVoZIXWG6zScJ3iL8FhiI1e/VSN5uKG7l
+         4pMbv4xdpXFhPFOYUjYjev81SK+sWA05Pp+3zFuxPreGJkWBPXVCvVUfdAQFHT7HO9ES
+         wcfA==
+X-Forwarded-Encrypted: i=1; AJvYcCWaSF0pujNO1/PLuvkRrnUHuT8lHBfcOjSiNvt9XygKVHshtNsANvMWIF6Bzi/ILVMLimfXiOi/jN7gc8/1w9BvpA5Ehqo3oNF3/DTb
+X-Gm-Message-State: AOJu0YxpexLvD5v/KPkKcafghNZSbytktuOhrRjSfJUHHsNPC/27wEht
+	quaReEoV3ZzZNEYRwYihkGyt4UoA3YbwTuJR3bFMjNm/x8cmId+q8KluO/9Vyx8=
+X-Google-Smtp-Source: AGHT+IHedflOqFeHEwgfr854USwwC55wJSFS3hsQJ1T3yn5ygm4BiYm2PUImp7bGuhG8F7kabsskTg==
+X-Received: by 2002:a17:90b:216:b0:29b:c179:9ba with SMTP id fy22-20020a17090b021600b0029bc17909bamr730495pjb.47.1709922361463;
+        Fri, 08 Mar 2024 10:26:01 -0800 (PST)
 Received: from charlie.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id e13-20020a17090ac20d00b0029bb1bb298dsm44821pjt.35.2024.03.08.10.25.58
+        by smtp.gmail.com with ESMTPSA id e13-20020a17090ac20d00b0029bb1bb298dsm44821pjt.35.2024.03.08.10.26.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Mar 2024 10:25:59 -0800 (PST)
+        Fri, 08 Mar 2024 10:26:00 -0800 (PST)
 From: Charlie Jenkins <charlie@rivosinc.com>
-Subject: [PATCH v9 0/4] riscv: Use Kconfig to set unaligned access speed
-Date: Fri, 08 Mar 2024 10:25:54 -0800
-Message-Id: <20240308-disable_misaligned_probe_config-v9-0-a388770ba0ce@rivosinc.com>
+Date: Fri, 08 Mar 2024 10:25:55 -0800
+Subject: [PATCH v9 1/4] riscv: lib: Introduce has_fast_unaligned_access()
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,13 +76,10 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-B4-Tracking: v=1; b=H4sIADJY62UC/43QyWrDMBAG4FcJOtdF+5JT36MUo2XsCBIrSMW0B
- L975VxiisA+Df8cvlkeqECOUND59EAZ5lhimmowbyfkL3YaoYuhZkQx5Zgw0oVYrLtCf6v1Gsc
- JQn/PyUHv0zTEscOcWbBMicEwVJV7hiH+PCd8ftV8ieU75d/nwJms3eP2TDrcGR2IEGB8sPojx
- zmVOPl3n25o5Wf6Iik+QNJKKuWZ1A6CcrRBsi1J90lWSc/5YMiAmXOyQfINSeQ+ySsZPCYgNPH
- Y+gYpNiRV+6SopJNaMM0lUGUbpHyR7MgvZSUloeCCNANnuEGqLXngcLWS3mBODChrWr/UW/LA4
- bqSQtQVpXfMaPePXJblD0PDG6kWAwAA
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240308-disable_misaligned_probe_config-v9-1-a388770ba0ce@rivosinc.com>
+References: <20240308-disable_misaligned_probe_config-v9-0-a388770ba0ce@rivosinc.com>
+In-Reply-To: <20240308-disable_misaligned_probe_config-v9-0-a388770ba0ce@rivosinc.com>
 To: Paul Walmsley <paul.walmsley@sifive.com>, 
  Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
  Jisheng Zhang <jszhang@kernel.org>, Evan Green <evan@rivosinc.com>, 
@@ -92,87 +90,108 @@ To: Paul Walmsley <paul.walmsley@sifive.com>,
 Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
  Charlie Jenkins <charlie@rivosinc.com>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1709922358; l=3401;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1709922358; l=3428;
  i=charlie@rivosinc.com; s=20231120; h=from:subject:message-id;
- bh=mhSJPSDAQcTli1q8D3Nd6CYHlA7Z7/7MIiS4fHVZ1pM=;
- b=9nd3CN2A2kFLFI1Z1TTqF/VXEKKQTjlAt9ZnI6vd03L2nOq15g+9nnrrcshi6CpFEerdBVIEC
- 8i49edyJt3XBKpYQyftb+jc88oWQZWh3zRpgB731qopvdzKlje8w8xT
+ bh=ejS3FVJ1L+bLL4KR96q6ZNDMwke6NlmAthP91enITHI=;
+ b=SJMPynNndVY7EsAyEorrdTi5vigiwbschT4Hh2s6NWRzNuKQv7kmdQH1jlqRP0WwxvdIrlvD5
+ dLhky32sTVtCvLuntQiohAff3ZBkbKDJ0Ms+9YYieJh871kgkrrcG6J
 X-Developer-Key: i=charlie@rivosinc.com; a=ed25519;
  pk=t4RSWpMV1q5lf/NWIeR9z58bcje60/dbtxxmoSfBEcs=
 
-If the hardware unaligned access speed is known at compile time, it is
-possible to avoid running the unaligned access speed probe to speedup
-boot-time.
+Create has_fast_unaligned_access to avoid needing to explicitly check
+the fast_misaligned_access_speed_key static key.
 
 Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+Reviewed-by: Evan Green <evan@rivosinc.com>
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 ---
-Changes in v9:
-- Clarify wording for RISCV_MISALIGNED Kconfig option
-- Link to v8: https://lore.kernel.org/r/20240307-disable_misaligned_probe_config-v8-0-55d696cb398b@rivosinc.com
+ arch/riscv/include/asm/cpufeature.h | 11 ++++++++---
+ arch/riscv/kernel/cpufeature.c      |  6 +++---
+ arch/riscv/lib/csum.c               |  7 ++-----
+ 3 files changed, 13 insertions(+), 11 deletions(-)
 
-Changes in v8:
-- Minor commit message changes (Conor)
-- Clean up hwprobe_misaligned() (Conor)
-- Link to v7: https://lore.kernel.org/r/20240306-disable_misaligned_probe_config-v7-0-6c90419e7a96@rivosinc.com
+diff --git a/arch/riscv/include/asm/cpufeature.h b/arch/riscv/include/asm/cpufeature.h
+index 5a626ed2c47a..466e1f591919 100644
+--- a/arch/riscv/include/asm/cpufeature.h
++++ b/arch/riscv/include/asm/cpufeature.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0-only */
+ /*
+- * Copyright 2022-2023 Rivos, Inc
++ * Copyright 2022-2024 Rivos, Inc
+  */
+ 
+ #ifndef _ASM_CPUFEATURE_H
+@@ -53,6 +53,13 @@ static inline bool check_unaligned_access_emulated(int cpu)
+ static inline void unaligned_emulation_finish(void) {}
+ #endif
+ 
++DECLARE_STATIC_KEY_FALSE(fast_unaligned_access_speed_key);
++
++static __always_inline bool has_fast_unaligned_accesses(void)
++{
++	return static_branch_likely(&fast_unaligned_access_speed_key);
++}
++
+ unsigned long riscv_get_elf_hwcap(void);
+ 
+ struct riscv_isa_ext_data {
+@@ -135,6 +142,4 @@ static __always_inline bool riscv_cpu_has_extension_unlikely(int cpu, const unsi
+ 	return __riscv_isa_extension_available(hart_isa[cpu].isa, ext);
+ }
+ 
+-DECLARE_STATIC_KEY_FALSE(fast_misaligned_access_speed_key);
+-
+ #endif
+diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
+index 89920f84d0a3..7878cddccc0d 100644
+--- a/arch/riscv/kernel/cpufeature.c
++++ b/arch/riscv/kernel/cpufeature.c
+@@ -810,14 +810,14 @@ static void check_unaligned_access_nonboot_cpu(void *param)
+ 		check_unaligned_access(pages[cpu]);
+ }
+ 
+-DEFINE_STATIC_KEY_FALSE(fast_misaligned_access_speed_key);
++DEFINE_STATIC_KEY_FALSE(fast_unaligned_access_speed_key);
+ 
+ static void modify_unaligned_access_branches(cpumask_t *mask, int weight)
+ {
+ 	if (cpumask_weight(mask) == weight)
+-		static_branch_enable_cpuslocked(&fast_misaligned_access_speed_key);
++		static_branch_enable_cpuslocked(&fast_unaligned_access_speed_key);
+ 	else
+-		static_branch_disable_cpuslocked(&fast_misaligned_access_speed_key);
++		static_branch_disable_cpuslocked(&fast_unaligned_access_speed_key);
+ }
+ 
+ static void set_unaligned_access_static_branches_except_cpu(int cpu)
+diff --git a/arch/riscv/lib/csum.c b/arch/riscv/lib/csum.c
+index af3df5274ccb..7178e0acfa22 100644
+--- a/arch/riscv/lib/csum.c
++++ b/arch/riscv/lib/csum.c
+@@ -3,7 +3,7 @@
+  * Checksum library
+  *
+  * Influenced by arch/arm64/lib/csum.c
+- * Copyright (C) 2023 Rivos Inc.
++ * Copyright (C) 2023-2024 Rivos Inc.
+  */
+ #include <linux/bitops.h>
+ #include <linux/compiler.h>
+@@ -318,10 +318,7 @@ unsigned int do_csum(const unsigned char *buff, int len)
+ 	 * branches. The largest chunk of overlap was delegated into the
+ 	 * do_csum_common function.
+ 	 */
+-	if (static_branch_likely(&fast_misaligned_access_speed_key))
+-		return do_csum_no_alignment(buff, len);
+-
+-	if (((unsigned long)buff & OFFSET_MASK) == 0)
++	if (has_fast_unaligned_accesses() || (((unsigned long)buff & OFFSET_MASK) == 0))
+ 		return do_csum_no_alignment(buff, len);
+ 
+ 	return do_csum_with_alignment(buff, len);
 
-Changes in v7:
-- Fix check_unaligned_access_emulated_all_cpus to return false when any
-  cpu has emulated accesses
-- Fix wording in Kconfig (Conor)
-- Link to v6: https://lore.kernel.org/r/20240301-disable_misaligned_probe_config-v6-0-612ebd69f430@rivosinc.com
-
-Changes in v6:
-- Consolidate Kconfig into 4 options (probe, emulated, slow,
-  efficient)
-- Change the behavior of "emulated" to allow hwprobe to return "slow" if
-  unaligned accesses are not emulated by the kernel
-- With this consolidation, check_unaligned_access_emulated is able to be
-  moved back into the original file (traps_misaligned.c)
-- Link to v5: https://lore.kernel.org/r/20240227-disable_misaligned_probe_config-v5-0-b6853846e27a@rivosinc.com
-
-Changes in v5:
-- Clarify Kconfig options from Conor's feedback
-- Use "unaligned" instead of "misaligned" in introduced file/function.
-  This is a bit hard to standardize because the riscv manual says
-  "misaligned" but the existing Linux configs say "unaligned".
-- Link to v4: https://lore.kernel.org/r/20240216-disable_misaligned_probe_config-v4-0-dc01e581c0ac@rivosinc.com
-
-Changes in v4:
-- Add additional Kconfig options for the other unaligned access speeds
-- Link to v3: https://lore.kernel.org/r/20240202-disable_misaligned_probe_config-v3-0-c44f91f03bb6@rivosinc.com
-
-Changes in v3:
-- Revert change to csum (Eric)
-- Change ifndefs for ifdefs (Eric)
-- Change config in Makefile (Elliot/Eric)
-- Link to v2: https://lore.kernel.org/r/20240201-disable_misaligned_probe_config-v2-0-77c368bed7b2@rivosinc.com
-
-Changes in v2:
-- Move around definitions to reduce ifdefs (Clément)
-- Make RISCV_MISALIGNED depend on !HAVE_EFFICIENT_UNALIGNED_ACCESS
-  (Clément)
-- Link to v1: https://lore.kernel.org/r/20240131-disable_misaligned_probe_config-v1-0-98d155e9cda8@rivosinc.com
-
----
-Charlie Jenkins (4):
-      riscv: lib: Introduce has_fast_unaligned_access()
-      riscv: Only check online cpus for emulated accesses
-      riscv: Decouple emulated unaligned accesses from access speed
-      riscv: Set unaligned access speed at compile time
-
- arch/riscv/Kconfig                         |  58 ++++--
- arch/riscv/include/asm/cpufeature.h        |  31 ++--
- arch/riscv/kernel/Makefile                 |   4 +-
- arch/riscv/kernel/cpufeature.c             | 255 --------------------------
- arch/riscv/kernel/sys_hwprobe.c            |  13 ++
- arch/riscv/kernel/traps_misaligned.c       |  17 +-
- arch/riscv/kernel/unaligned_access_speed.c | 282 +++++++++++++++++++++++++++++
- arch/riscv/lib/csum.c                      |   7 +-
- 8 files changed, 374 insertions(+), 293 deletions(-)
----
-base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
-change-id: 20240131-disable_misaligned_probe_config-043aea375f93
 -- 
-- Charlie
+2.43.2
 
 
