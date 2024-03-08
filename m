@@ -1,115 +1,114 @@
-Return-Path: <linux-kernel+bounces-97606-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97602-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B729876C6F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 22:32:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7CFB876C6A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 22:31:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 14A272821FD
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 21:32:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C8E81F220C1
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 21:31:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ACD2605C8;
-	Fri,  8 Mar 2024 21:31:16 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55E7A5FDA0;
+	Fri,  8 Mar 2024 21:31:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TW7YYjfk"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBB175FB8F
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 21:31:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7247A5EE96;
+	Fri,  8 Mar 2024 21:31:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709933475; cv=none; b=vEj8gYR2opEIOUYoHNjcjr1sk2GcrFiBHUctg/gIOEexyZdWrvNZU16Fk84s1kUSAZ7HnfKv71uOlI4YDdUjuJiVb5R/iBvRQ9GRxX/vwSH//bv6Y+3mK/IjOtd2L9gPU8RjHVdkU9muHd3uhQKurR8eD5v3adO3xFZH+BM6gC8=
+	t=1709933469; cv=none; b=kd0ZqaCQ/HdueZAOLLO0kjlGOvAX6W+P9t+TDEWZDeydw5Q+NET3N2us/hR+7sfNc94O/JtkClDpNcic2hPfQMzsVgJdlw0yUJeVLuxSr5Nq9Qky2e+/RVqg+Spc/cEaH78UpsqAaRMDlz2ICe+VPZFgXVV84T6eZRLlS7SEs6U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709933475; c=relaxed/simple;
-	bh=e4QWWPA5Cs+kCP0dOK0A8iAqYDs/2ITiIBiXdA0C+tY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jZIcDNEiS8GnxtMu2qgXfUalYNJqVw+WBbIGFV3ipzVVCqG4BSfUUAALMr++jIC/u61feeeL+bv7XZDegejwUx9cIrEvk0GZIFtMl233kqTP8PDHe7DHBJslh4a4yJBoH9kZl3vFjfzVslvyMad1UxqlK9TK/YNF38ZhbgHeXrY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1riho6-0004iK-6x; Fri, 08 Mar 2024 22:31:10 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1riho5-005D0O-PQ; Fri, 08 Mar 2024 22:31:09 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1riho5-002WXM-2H;
-	Fri, 08 Mar 2024 22:31:09 +0100
-From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-kernel@vger.kernel.org,
-	kernel@pengutronix.de
-Subject: [PATCH 2/2] uio: pruss: Convert to platform remove callback returning void
-Date: Fri,  8 Mar 2024 22:31:02 +0100
-Message-ID:  <c57a6d6c9842d2905c0cd3d8ae83ab6ed8a57a41.1709933231.git.u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1709933231.git.u.kleine-koenig@pengutronix.de>
-References: <cover.1709933231.git.u.kleine-koenig@pengutronix.de>
+	s=arc-20240116; t=1709933469; c=relaxed/simple;
+	bh=BIrlIu35U2rimElEMkh+0WBDV89ooLPXuL5UGm7857c=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=WqDf+6eDjBhyc77xsJzRG8S60GMdUwk+cR5vS4PxTgu/SNEWgYULthk0Jb/o8iIIhgaiqEBPiPOAPA4NvKdeFfnAL/pKXRsjYLPwp9TiUUcJTmh21PiuO31qXiKybRzjNTlumfonZsZMWIBLFz2+Eq/gMxrgqVw7bW+ORwCZDjs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TW7YYjfk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97843C43394;
+	Fri,  8 Mar 2024 21:31:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709933468;
+	bh=BIrlIu35U2rimElEMkh+0WBDV89ooLPXuL5UGm7857c=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=TW7YYjfkc2/7XCq1OsOk4JnkQ2Z4roe/55Aod6b+odn0SZoI1mh5iU4avPdsBAWNJ
+	 vKBopD5GVzT90xHrQM+caKjUTuYrTM7tQ+t8f8Rtpg0do1sXZN4uug2ChAwfwUt8oD
+	 FYO5MDsYtY3VOSDjGJM9RCJyjHti1KtmK4BjwP7C+HHelSf9pmB/FblcRkwN1JJygS
+	 8cvT2c6sCebDAogOn97OZTUAmx5lOItuq5MiswxsqBTwwpFBq4sChVbLa+1RPGMnYF
+	 PnJky00JFyo6T5VFhhxyakNMX6h7kcYchNcS/Xl5ww125XNcuXJ7pVUOeybv5tcaQm
+	 78wmQeAI82sxA==
+Date: Fri, 8 Mar 2024 15:31:07 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>
+Cc: linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+	Jesse Brandeburg <jesse.brandeburg@intel.com>,
+	intel-wired-lan@lists.osuosl.org,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	Ard Biesheuvel <ardb@kernel.org>, Borislav Petkov <bp@alien8.de>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, linux-edac@vger.kernel.org,
+	linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	Mahesh J Salgaonkar <mahesh@linux.ibm.com>, netdev@vger.kernel.org,
+	Oliver O'Halloran <oohall@gmail.com>,
+	Paolo Abeni <pabeni@redhat.com>, Tony Luck <tony.luck@intel.com>
+Subject: Re: [PATCH 0/4] PCI: Consolidate TLP Log reading and printing
+Message-ID: <20240308213107.GA700934@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1531; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=e4QWWPA5Cs+kCP0dOK0A8iAqYDs/2ITiIBiXdA0C+tY=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBl64OY/Mhq2wkRNkJmOkndodCTyVS0sWAaKJ5sh kluygqQVVyJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZeuDmAAKCRCPgPtYfRL+ ThfYB/9JdOTSOwytRG7bQS8eB2ewlp/5ERnj+Ys5xSPLKA8Q1u5EJavym3by61+9NLtkirXIM6f p27Y1+DGx3axEo64PXgz2drYdPnvJHTu2g+MvyIHqzKt7LDlxMWu9fO2HjGAfw6ZePlm2S+cFQ5 JzfeL9KBhRh/+dI14tNV4nzNztvG/4mkI9UnIiaHsbjg5LBPZxBJH19m3oJqD3YFXYghXevQlDt j+wFDk3OlCO/bPl8j2h5emRgsAMyGzu0NAnDEfjPUWm7HWzgFTev/wGZbF5ra8+UweFlVLObx0f XXrxxHbae416EvN2ElnrDvuAyhxd4AUFf7kVCQkXe/h8ellF
-X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20240206135717.8565-1-ilpo.jarvinen@linux.intel.com>
 
-The .remove() callback for a platform driver returns an int which makes
-many driver authors wrongly assume it's possible to do error handling by
-returning an error code. However the value returned is ignored (apart
-from emitting a warning) and this typically results in resource leaks.
+On Tue, Feb 06, 2024 at 03:57:13PM +0200, Ilpo Järvinen wrote:
+> This series consolidates AER & DPC TLP Log handling code. Helpers are
+> added for reading and printing the TLP Log and the format is made to
+> include E-E Prefixes in both cases (previously only one DPC RP PIO
+> displayed the E-E Prefixes).
+> 
+> I'd appreciate if people familiar with ixgbe could check the error
+> handling conversion within the driver is correct.
+> 
+> Ilpo Järvinen (4):
+>   PCI/AER: Cleanup register variable
+>   PCI: Generalize TLP Header Log reading
 
-To improve here there is a quest to make the remove callback return
-void. In the first step of this quest all drivers are converted to
-remove_new(), which already returns void. Eventually after all drivers
-are converted, .remove_new() will be renamed to .remove().
+I applied these first two to pci/aer for v6.9, thanks, these are all
+nice improvements!
 
-Trivially convert this driver from always returning zero in the remove
-callback to the void returning variant.
+I postponed the ixgbe part for now because I think we should get an
+ack from those maintainers or just send it to them since it subtly
+changes the error and device removal checking there.
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
- drivers/uio/uio_pruss.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+>   PCI: Add TLP Prefix reading into pcie_read_tlp_log()
+>   PCI: Create helper to print TLP Header and Prefix Log
 
-diff --git a/drivers/uio/uio_pruss.c b/drivers/uio/uio_pruss.c
-index 77e2dc404885..fb9f26468ae4 100644
---- a/drivers/uio/uio_pruss.c
-+++ b/drivers/uio/uio_pruss.c
-@@ -229,17 +229,16 @@ static int pruss_probe(struct platform_device *pdev)
- 	return ret;
- }
- 
--static int pruss_remove(struct platform_device *dev)
-+static void pruss_remove(struct platform_device *dev)
- {
- 	struct uio_pruss_dev *gdev = platform_get_drvdata(dev);
- 
- 	pruss_cleanup(&dev->dev, gdev);
--	return 0;
- }
- 
- static struct platform_driver pruss_driver = {
- 	.probe = pruss_probe,
--	.remove = pruss_remove,
-+	.remove_new = pruss_remove,
- 	.driver = {
- 		   .name = DRV_NAME,
- 		   },
--- 
-2.43.0
+I'll respond to these with some minor comments.
 
+>  drivers/firmware/efi/cper.c                   |  4 +-
+>  drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 39 +++------
+>  drivers/pci/ats.c                             |  2 +-
+>  drivers/pci/pci.c                             | 79 +++++++++++++++++++
+>  drivers/pci/pci.h                             |  2 +-
+>  drivers/pci/pcie/aer.c                        | 28 ++-----
+>  drivers/pci/pcie/dpc.c                        | 31 ++++----
+>  drivers/pci/probe.c                           | 14 ++--
+>  include/linux/aer.h                           | 16 ++--
+>  include/linux/pci.h                           |  2 +-
+>  include/ras/ras_event.h                       | 10 +--
+>  include/uapi/linux/pci_regs.h                 |  2 +
+>  12 files changed, 145 insertions(+), 84 deletions(-)
+> 
+> -- 
+> 2.39.2
+> 
 
