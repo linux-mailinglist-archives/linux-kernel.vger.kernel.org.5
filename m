@@ -1,113 +1,150 @@
-Return-Path: <linux-kernel+bounces-97496-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97513-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A256C876B0C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 20:11:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E1BF876B41
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 20:37:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 27894B21A5E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 19:11:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8DC161F222B0
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 19:37:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60DB45917C;
-	Fri,  8 Mar 2024 19:11:16 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 902495A7B7;
+	Fri,  8 Mar 2024 19:37:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="dVTCME5n";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="uCH3Nep4";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="dVTCME5n";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="uCH3Nep4"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E189356473;
-	Fri,  8 Mar 2024 19:11:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0AF52C699;
+	Fri,  8 Mar 2024 19:37:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709925076; cv=none; b=M6Ylgyy4uJUynZvwqsX6iYtxITzSAgHOaf20ZYLS97BrmRDMBcR73rPCPfWF3Dd3iU1O9BoK+keEl1DUGnlcTAp30y/rcwU+PG5amWqpqHCUgPsTKQNIB9DMlasspaukPZlE8+o3lVBHCWpl6RTV938ej5DxAAScjKOp66NJPMo=
+	t=1709926635; cv=none; b=NsNf6kg3HEUbA9cJAculQEnvVC/tW2Ns90bz6bUd4OE6eJa8MJM8fwCPHbk1iIYelWmTKGR5OlGlUXjCOlK959Nv7J14f7gr+ZljGeFvN9yiAvvWydSWHB2aUtGwh4l+N8zBA/hqhk6K4wjDTxzT85rgZaVU3esHi+jsd2DYss0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709925076; c=relaxed/simple;
-	bh=5iYekLuVg5uyeI7ptQHbUlgVXer2/uWfi4AzNIce3mo=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jh7LU1cTYBpKCERt/RywD5uYeIWvvJRSmx3V1al/i/DdFIP8e6H45yV4j91U1ouN3LPSG0TTFJfJd4fSdBWks9fPKqQl/xNNX+2csYGj7Hbae6UIcPWvwi1EDEBPQGmDxV4s1kPAxANJCRe4nMrgB+Y1zXo6p13dKOEBjHo5uO0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26841C433F1;
-	Fri,  8 Mar 2024 19:11:14 +0000 (UTC)
-Date: Fri, 8 Mar 2024 14:13:11 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland
- <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds
- <torvalds@linux-foundation.org>, joel@joelfernandes.org, linke li
- <lilinke99@qq.com>, Rabin Vincent <rabin@rab.in>, stable@vger.kernel.org
-Subject: Re: [PATCH 4/6] tracing: Fix waking up tracing readers
-Message-ID: <20240308141311.03eefef1@gandalf.local.home>
-In-Reply-To: <20240308184007.805898590@goodmis.org>
-References: <20240308183816.676883229@goodmis.org>
-	<20240308184007.805898590@goodmis.org>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1709926635; c=relaxed/simple;
+	bh=AYGxzqtWFZzjVFm4jYl0RBSDkqII6yUctYob3MJlJGo=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=r/d1wGfly6JsdJuRyP/XW7cWdLRlmCZfbnuRMMvX5fc8COCUZypOXbBanmLLx3hhAsHLr7yfGqLJtaRG8sIH0EOZ65oCEJ7WVQjUx3vS8ziaPilQRyIaDbgYht/RqRcU1gf3hFaeZGgxQVf6qFu6bDpHlmt1j35arMDmhlH4h2Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=dVTCME5n; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=uCH3Nep4; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=dVTCME5n; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=uCH3Nep4; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 867BC5D4B8;
+	Fri,  8 Mar 2024 19:16:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1709925398; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Kab6475NNC9w/20248v/V/kqivMNMdqsH2NoWAUHlNA=;
+	b=dVTCME5npzzOIHDurrdqJrMn7ka+G5xyG2QtkbzwJn4Mbj8a7F8qmoIyVjOD3FZFZEHHrC
+	RObd999zwv7Bm9hpq8vl4/Moht2w/YgAw26gH2NtlsNO5BoTtgq0wbGSTWmiinYwC9kV7B
+	Zl8sRIg+pv/BJ6T7aBM9LssSle5rHj0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1709925398;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Kab6475NNC9w/20248v/V/kqivMNMdqsH2NoWAUHlNA=;
+	b=uCH3Nep4vF7IQHASNx+5tSLqMV6/MtzHFhRazpLudWfqhmuLnZySbRdMtPAgfULNWv/eqS
+	jSMcXAr6OMtXZRAA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1709925398; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Kab6475NNC9w/20248v/V/kqivMNMdqsH2NoWAUHlNA=;
+	b=dVTCME5npzzOIHDurrdqJrMn7ka+G5xyG2QtkbzwJn4Mbj8a7F8qmoIyVjOD3FZFZEHHrC
+	RObd999zwv7Bm9hpq8vl4/Moht2w/YgAw26gH2NtlsNO5BoTtgq0wbGSTWmiinYwC9kV7B
+	Zl8sRIg+pv/BJ6T7aBM9LssSle5rHj0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1709925398;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Kab6475NNC9w/20248v/V/kqivMNMdqsH2NoWAUHlNA=;
+	b=uCH3Nep4vF7IQHASNx+5tSLqMV6/MtzHFhRazpLudWfqhmuLnZySbRdMtPAgfULNWv/eqS
+	jSMcXAr6OMtXZRAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4E03B13310;
+	Fri,  8 Mar 2024 19:16:38 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id QfALDRZk62VBDQAAD6G6ig
+	(envelope-from <krisman@suse.de>); Fri, 08 Mar 2024 19:16:38 +0000
+From: Gabriel Krisman Bertazi <krisman@suse.de>
+To: linux-fsdevel@vger.kernel.org, Ben Dooks <ben.dooks@codethink.co.uk>
+Cc: krisman@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240308183215.1924331-1-ben.dooks@codethink.co.uk>
+References: <20240308183215.1924331-1-ben.dooks@codethink.co.uk>
+Subject: Re: [PATCH] unicode: make utf8 test count static
+Message-Id: <170992539715.13713.18221873605558734700.b4-ty@suse.de>
+Date: Fri, 08 Mar 2024 14:16:37 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-
-On Fri, 08 Mar 2024 13:38:20 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
-
-> +static DEFINE_MUTEX(wait_mutex);
-> +
-> +static bool wait_woken_prepare(struct trace_iterator *iter, int *wait_index)
-> +{
-> +	bool woken = false;
-> +
-> +	mutex_lock(&wait_mutex);
-> +	if (iter->waking)
-> +		woken = true;
-> +	*wait_index = iter->wait_index;
-> +	mutex_unlock(&wait_mutex);
-> +
-> +	return woken;
-> +}
-
-The last patch adds this code after a prepare_to_wait(), which triggered
-the warning:
-
-  do not call blocking ops when !TASK_RUNNING; state=1 set at [<00000000797e3e20>] prepare_to_wait+0x48/0xf0
-
-Which is correct. The prepare_to_wait() set task state to
-TASK_INTERRUPTIBLE, so I can not call a mutex after that.
-
-I'll send a v2 where I switch this over to spin locks.
-
--- Steve
+X-Mailer: b4 0.12.4
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -1.43
+X-Spamd-Result: default: False [-1.43 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 BAYES_HAM(-0.13)[67.35%];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[4];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 RCVD_TLS_ALL(0.00)[]
+X-Spam-Flag: NO
 
 
-> +
-> +static bool wait_woken_check(struct trace_iterator *iter, int *wait_index)
-> +{
-> +	bool woken = false;
-> +
-> +	mutex_lock(&wait_mutex);
-> +	if (iter->waking || *wait_index != iter->wait_index)
-> +		woken = true;
-> +	mutex_unlock(&wait_mutex);
-> +
-> +	return woken;
-> +}
-> +
-> +static void wait_woken_set(struct trace_iterator *iter)
-> +{
-> +	mutex_lock(&wait_mutex);
-> +	iter->waking++;
-> +	iter->wait_index++;
-> +	mutex_unlock(&wait_mutex);
-> +}
-> +
-> +static void wait_woken_clear(struct trace_iterator *iter)
-> +{
-> +	mutex_lock(&wait_mutex);
-> +	iter->waking--;
-> +	mutex_unlock(&wait_mutex);
-> +}
-> +
+On Fri, 08 Mar 2024 18:32:15 +0000, Ben Dooks wrote:
+> The variables failed_tests and total_tests are not used outside of the
+> utf8-selftest.c file so make them static to avoid the following warnings:
+> 
+> fs/unicode/utf8-selftest.c:17:14: warning: symbol 'failed_tests' was not declared. Should it be static?
+> fs/unicode/utf8-selftest.c:18:14: warning: symbol 'total_tests' was not declared. Should it be static?
+> 
+> 
+> [...]
+
+Applied, thanks!
+
+[1/1] unicode: make utf8 test count static
+      commit: 0131c1f3cce7c01b0eb657a9e9e1a5e42c09a68b
+
+Best regards,
+-- 
+Gabriel Krisman Bertazi <krisman@suse.de>
+
 
