@@ -1,180 +1,131 @@
-Return-Path: <linux-kernel+bounces-97066-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97067-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2AC5D87650E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:22:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36034876515
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:23:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D64E2281C89
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:22:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DFE2C1F224FC
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:23:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0655C225CE;
-	Fri,  8 Mar 2024 13:21:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E76E124B29;
+	Fri,  8 Mar 2024 13:23:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=risingedge.co.za header.i=@risingedge.co.za header.b="Z4ifZzY7"
-Received: from outgoing1.flk.host-h.net (outgoing1.flk.host-h.net [188.40.0.86])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AraYN6oc"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4432C1EEE9;
-	Fri,  8 Mar 2024 13:21:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.40.0.86
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D82A256D;
+	Fri,  8 Mar 2024 13:23:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709904118; cv=none; b=qL4oGsnHUVYHX4cUtHUOtP2voqE/AlWZt3J0AMYoxfyS3PAN+Hw/iyFRF3zKENlj4pkwRf6gs7fTGFy/RtRVk71hPa4ulAl13Sht9acSE4dtxt+fC2eOZsrPZ25+4rF2lqHqJB+cLuSkdZ+zvJsxBUTz4drMJ006WbMproKzbPg=
+	t=1709904200; cv=none; b=cliyLGAfmcs+iDuQJQ2PfWsMYJ5N627TnchISEMS8PL8/QaPYGdDfVXDZk91ngo6pFLkuSQFlpuEa5x+KCEVv175/wmMXowMSeKFJ3Rjr4uyo8UBYbx9ZfqkdRqu8odmgWRZ2A+IqjiduzGWOprfWRKYxA6wERGnPecawvhsffQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709904118; c=relaxed/simple;
-	bh=zeUib85jZcQhoa3IiCkBV25TPD8WzpxP7R4+2D41mEo=;
-	h=MIME-Version:Content-Type:Date:From:To:Cc:Subject:In-Reply-To:
-	 References:Message-ID; b=GDlGz80/1286vIHxVu29iFAlgneW+JKWJp6K9YeOXYJUGAwNjXncbjTKnzPRep7cg2K57jT82GXVcOEUhViwmYA5ZYMqe57Bz8qEZmfxcJiS0TamRxxp0nvWP+mIUbDb6FL0DbaZe15E4whqNuV9D1pjAsvjSQYtDQY1PSGwbO0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=risingedge.co.za; spf=pass smtp.mailfrom=risingedge.co.za; dkim=pass (2048-bit key) header.d=risingedge.co.za header.i=@risingedge.co.za header.b=Z4ifZzY7; arc=none smtp.client-ip=188.40.0.86
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=risingedge.co.za
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=risingedge.co.za
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=risingedge.co.za; s=xneelo; h=Message-ID:References:In-Reply-To:Subject:Cc:
-	To:From:Date:Content-Transfer-Encoding:Content-Type:MIME-Version:reply-to:
-	sender:bcc; bh=ObvZZnhqWGMMI4j2NDLft9bUQX4DpsXHSeMG4OORKkw=; b=Z4ifZzY7EFOSBl
-	bfNwVlfUzqlHP03HuxgoOCSCCl48qdE9/Ah2FQxCue3ZJbiJ37e4wOro0gYTKoXY9vk9CISeT1aAY
-	vVC62HCa5+G5FRinzgL/kYqFCKf5TESpoL3Wz80oQ5q3c4X2pEsW+QS4pQICN5rfl8b1BigPAI6D5
-	+k7VO2Ensq0vUZBxlAPKm++oMmnwk8slRia+WEpmMYxsoJUg24MzvFv3kytpz3vw4ROjB3EKebJiR
-	9rfyBbCo1eNf+Lpz7VNqOi8D4PFvjo1FlOijNII1qXfaQAEMjHAUFLZydPVxinWJddty6o4Cf45Q1
-	42HAVyVxPoJy3RiR4/4A==;
-Received: from www31.flk1.host-h.net ([188.40.1.173])
-	by antispam3-flk1.host-h.net with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <justin.swartz@risingedge.co.za>)
-	id 1riaAT-004l26-AV; Fri, 08 Mar 2024 15:21:48 +0200
-Received: from roundcubeweb1.flk1.host-h.net ([138.201.244.33] helo=webmail9.konsoleh.co.za)
-	by www31.flk1.host-h.net with esmtpa (Exim 4.92)
-	(envelope-from <justin.swartz@risingedge.co.za>)
-	id 1riaAS-0000N5-92; Fri, 08 Mar 2024 15:21:44 +0200
+	s=arc-20240116; t=1709904200; c=relaxed/simple;
+	bh=VDlo6QyC8WPJ+nIOkUcxD/O95WbBhi8FFuUJ57pGDCU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=N3n4I8mcnH9zyjmxvaclhwT3ZHQq1/M2uzdm2azeqNclnLOpyHUPeWOmXZYQpOkEojrpX1N76NiOA0tKbEionR3ojao+DylC+v0TY/I54CR4We2NXa9JhzgRGhD4S168LNNCgBwRgIOdCyOgLabP17x7g9Nt6ESjlBEAIP4p/Z8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AraYN6oc; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709904198; x=1741440198;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=VDlo6QyC8WPJ+nIOkUcxD/O95WbBhi8FFuUJ57pGDCU=;
+  b=AraYN6ocpNBwj6msqsdH3YyhhUIa1TV4pxASSzXHZGIZ+zYyTS8w/e4/
+   /7cfd92AxmCIJCcBClUqYf+f6NG54F5bILfaH3l64rmuGExVCoCKHzQF/
+   fghYAY/KGKAy65f5BxtydTi1BbUnpLDVJrg3HHypMSUZ9SExRa/c4dMiA
+   rN5tfhMzMK58dyNnUVKD01pclRx25m203f3rxK/nmzAp8D9RQIIlC6CkL
+   pxpVh9K9QECLEXTIbXCLfs70AoioUUbzuXUtokdIlI9oEG4WGQ+Br7rnJ
+   aWivXEdd++TZuk6Nsq3PMs/1niZdBckIOnuqD9v7ACYSmfTmNXazr4gTw
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="7568390"
+X-IronPort-AV: E=Sophos;i="6.07,109,1708416000"; 
+   d="scan'208";a="7568390"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 05:23:15 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,109,1708416000"; 
+   d="scan'208";a="47927911"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.244.186])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 05:23:12 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To: linux-kselftest@vger.kernel.org,
+	Reinette Chatre <reinette.chatre@intel.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Babu Moger <babu.moger@amd.com>,
+	=?UTF-8?q?Maciej=20Wiecz=C3=B3r-Retman?= <maciej.wieczor-retman@intel.com>
+Cc: Fenghua Yu <fenghua.yu@intel.com>,
+	linux-kernel@vger.kernel.org,
+	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Subject: [PATCH 00/13] selftests/resctrl: resctrl_val() related cleanups & improvements
+Date: Fri,  8 Mar 2024 15:22:42 +0200
+Message-Id: <20240308132255.14442-1-ilpo.jarvinen@linux.intel.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Date: Fri, 08 Mar 2024 15:21:44 +0200
-From: Justin Swartz <justin.swartz@risingedge.co.za>
-To: =?UTF-8?Q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
-Cc: Sergio Paracuellos <sergio.paracuellos@gmail.com>, Rob Herring
- <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Matthias Brugger
- <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
- <angelogioacchino.delregno@collabora.com>, linux-mips@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH v2] mips: dts: ralink: mt7621: add cell count properties
- to usb
-In-Reply-To: <c445fd12-f8a8-41df-bee8-8b126b26110b@arinc9.com>
-References: <0001-mips-dts-ralink-mt7621-add-cell-count-properties-to-.patch>
- <20240307223756.31643-1-justin.swartz@risingedge.co.za>
- <c445fd12-f8a8-41df-bee8-8b126b26110b@arinc9.com>
-Message-ID: <067071a9d57ffb09f437718cf905b121@risingedge.co.za>
-X-Sender: justin.swartz@risingedge.co.za
-User-Agent: Roundcube Webmail/1.3.17
-X-Authenticated-Sender: justin.swartz@risingedge.co.za
-X-Virus-Scanned: Clear
-X-SpamExperts-Domain: risingedge.co.za
-X-SpamExperts-Username: 
-Authentication-Results: host-h.net; auth=pass (login) smtp.auth=@risingedge.co.za
-X-SpamExperts-Outgoing-Class: ham
-X-SpamExperts-Outgoing-Evidence: Combined (0.02)
-X-Recommended-Action: accept
-X-Filter-ID: Pt3MvcO5N4iKaDQ5O6lkdGlMVN6RH8bjRMzItlySaT+eZKPMCAkNhsVy7Wze5JuSPUtbdvnXkggZ
- 3YnVId/Y5jcf0yeVQAvfjHznO7+bT5wCPRB8bAzJcv2cv+UqiTTc2+CpNcmBnO4XM3Sck4bwNogU
- WCl1nkLBzZX0KuJ9bXiS85Z42w/+2OBolTNFbPomXFWCX8oNdggW7HE9XDTdSejrkEpbuUvwMvHx
- 3T+KSG//gbuP7hnUK8NQdLwsVWKIFDZRrTGv3rxiw9tFrqFSCFNiLZt/QXQnOBRD+jq1HsKsDh/6
- Srgk2K3gr1VBfJbChkYH6fbrypLNrde+UooQVNLReLErukdelEOHUIpaBbp5GdnsN8+UvimwMinK
- 0+Txhz2u9qvrL2PODYgMZQApJXOjDLkqunZ9NcY2bHZn7CfFscMZZf3sCkN20I5vMh4akiObI7Kj
- vK7X04QEin24qbfMFd8eGjnYW8aSH5qj4ujh/13psIvqSqJFa1CcANErDW/w69saM9prk3jNnHtn
- nuEt/J9wDZeQfiNOYsLDFBdwYt2XtlLzy7G7T4kla0JNnAWQx3FS11bhwUa9HCIwKB+TroNcRY33
- oNmH4nRQzHQazgY7lmveanvOdQzf6IMJ3345q/s6ySNrGnXycmhg3OV3zLgvFM9V92BlAE9xGCJ0
- xYCHwzEoZpUBagq+YQPMLtBcNrQxKZYuPe8bdCyw79zlPbqLQkZr26Lcxdvj8cqI+CogZdOhX7v3
- ClXzrmMENhJLl6MBfhzHVBR0wHQZxzIUka7Uq615Mik1qzcz30+tdk6yIuh9K7v+Nq0Cm3JVhle6
- F/kpBdN+oWjoATjEFDwcaiz0R34rhTN+GTbl4uS+pZovX9cex7Ac4fawcerGI7TrGXpM/B/M0BZd
- PfIU1BX7pZc1sE3vsz58auH/srM2fgZ9JmgLbj7sqoEiwv7LCxIiAE5ODMnmwjvj2589zjbyZCiM
- WpBpW8YvoIIqmZcWhL/r/eFjMjJnMHeiAPOVAT1rE1/vP68Bb4z3v3h3gCdXrv2+9GnNX30LKqXb
- fwFKgm/rnYBl+Mj5KqOl6Jzub/f3QhLRbOgisvi5VU9eNBtgo6zjiatjNO/pnMCjuIvXs/AyV/Ns
- URB/R+FlEHyAzksgfaRvdgw0WK34QWnzHHMcN6qoXPjenLhIOF1oeRYbjF1Hp647mOWoQlc3hL3c
- dBMSQgQtiTUcJp5roVy0aeRaEElbOe2fP+D3ZzQfg594u/m4iBmYb1/LCV4/EuVHup06w3Vwxf9C
- F7D6LKKRTfdjzQ6YC7Heg3Xf7O1TOd6RcY/MXB8eEq3bCN2QohZvyS03iBmgsz450Kmjd3fGV9di
- 8pECEDQlq6/G7i+xG+VFX/95gERVFH1TbKdKoLY3Ibtf63VNbf0lrvssY+k7AHGi1NevGWTo2+h8
- Lhk4HCeZR7ymlGVRtthBJ2y8A5arx6JItKpFaUNPGMMlvbMX0nyK1NiAJ0y2Qvvn6ds6mor35w4f
- SfHzQbABJfgy21HclcZkPRq7NhoxyMwqi8Q23Rgadfh5T5n5D4OHHpbEIgsllZKWnzc5M5WlNtVJ
- qo05MS+4ayUpOtEhdxekWDmK9g==
-X-Report-Abuse-To: spam@antispamquarantine.host-h.net
 
+Hi all,
 
-On 2024-03-08 14:01, Arınç ÜNAL wrote:
-> On 8.03.2024 01:37, Justin Swartz wrote:
->> Add default #address-cells and #size-cells properties to the
->> usb node, which should be suitable for hubs and devices without
->> explicitly declared interface nodes, as:
->> 
->>    "#address-cells":
->>      description: should be 1 for hub nodes with device nodes,
->>        should be 2 for device nodes with interface nodes.
->>      enum: [1, 2]
->> 
->>    "#size-cells":
->>      const: 0
->> 
->> -- Documentation/devicetree/bindings/usb/usb-device.yaml
->> 
->> This version of the patch places the properties according to
->> the order recommended by:
->> 
->>     Documentation/devicetree/bindings/dts-coding-style.rst
->> 
->> Signed-off-by: Justin Swartz <justin.swartz@risingedge.co.za>
->> ---
->>   arch/mips/boot/dts/ralink/mt7621.dtsi | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->> 
->> diff --git a/arch/mips/boot/dts/ralink/mt7621.dtsi 
->> b/arch/mips/boot/dts/ralink/mt7621.dtsi
->> index 5a89f0b8c..7532e17dd 100644
->> --- a/arch/mips/boot/dts/ralink/mt7621.dtsi
->> +++ b/arch/mips/boot/dts/ralink/mt7621.dtsi
->> @@ -289,10 +289,10 @@ usb: usb@1e1c0000 {
->>   		reg = <0x1e1c0000 0x1000
->>   		       0x1e1d0700 0x0100>;
->>   		reg-names = "mac", "ippc";
->> -
->> +		#address-cells = <1>;
->> +		#size-cells = <0>;
->>   		clocks = <&sysc MT7621_CLK_XTAL>;
->>   		clock-names = "sys_ck";
->> -
-> 
-> Please keep the empty lines. It's easier to read. I don't see anything 
-> on
-> the Devicetree Sources (DTS) Coding Style that would restrict this.
+This series does a number of cleanups into resctrl_val() and
+generalizes it by removing test name specific handling from the
+function.
 
-The reason I removed them was due to the SoC DTSI example shown in [1]
-lacking empty lines between properties, but then using them instead as
-visual separation between properties and child nodes, or at least that's
-how I understood it when I looked at it.
+One of the changes improves MBA/MBM measurement by narrowing down the
+period the resctrl FS derived memory bandwidth numbers are measured
+over. My feel is it didn't cause noticeable difference into the numbers
+because they're generally good anyway except for the small number of
+outliers. To see the impact on outliers, I'd need to setup a test to
+run large number of replications and do a statistical analysis, which
+I've not spent my time on. Even without the statistical analysis, the
+new way to measure seems obviously better and makes sense even if I
+cannot see a major improvement with the setup I'm using.
 
-Personally, I prefer the look of the SoC DTSI example - but I don't mind
-recreating the patch set with the empty lines between the properties 
-left
-entact.
+This series has some conflicts with SNC series from Maciej and also
+with the MBA/MBM series from Babu.
 
-As there is a mix of property spacing and ordering styles in mt7621.dtsi
-already - what is the consensus on what a node in this file should look
-like?
+--
+ i.
 
-I also don't mind following that pattern and cleaning up the whole dtsi
-according to that if it'll save us all time and energy in future.
+Ilpo Järvinen (13):
+  selftests/resctrl: Convert get_mem_bw_imc() fd close to for loop
+  selftests/resctrl: Calculate resctrl FS derived mem bw over sleep(1)
+    only
+  selftests/resctrl: Consolidate get_domain_id() into resctrl_val()
+  selftests/resctrl: Use correct type for pids
+  selftests/resctrl: Cleanup bm_pid and ppid usage & limit scope
+  selftests/resctrl: Rename measure_vals() to measure_mem_bw_vals() &
+    document
+  selftests/resctrl: Add ->measure() callback to resctrl_val_param
+  selftests/resctrl: Add ->init() callback into resctrl_val_param
+  selftests/resctrl: Simplify bandwidth report type handling
+  selftests/resctrl: Make some strings passed to resctrlfs functions
+    const
+  selftests/resctrl: Convert ctrlgrp & mongrp to pointers
+  selftests/resctrl: Remove mongrp from MBA test
+  selftests/resctrl: Remove test name comparing from
+    write_bm_pid_to_resctrl()
 
-Regards
-Justin
+ tools/testing/selftests/resctrl/cache.c       |   6 +-
+ tools/testing/selftests/resctrl/cat_test.c    |   5 +-
+ tools/testing/selftests/resctrl/cmt_test.c    |  21 +-
+ tools/testing/selftests/resctrl/mba_test.c    |  34 ++-
+ tools/testing/selftests/resctrl/mbm_test.c    |  33 ++-
+ tools/testing/selftests/resctrl/resctrl.h     |  48 ++--
+ tools/testing/selftests/resctrl/resctrl_val.c | 269 ++++++------------
+ tools/testing/selftests/resctrl/resctrlfs.c   |  55 ++--
+ 8 files changed, 224 insertions(+), 247 deletions(-)
 
-[1] https://docs.kernel.org/devicetree/bindings/dts-coding-style.html
+-- 
+2.39.2
+
 
