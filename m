@@ -1,169 +1,104 @@
-Return-Path: <linux-kernel+bounces-97668-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97669-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19D64876D4D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 23:45:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DB65A876D4F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 23:45:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 96D951F21FB0
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 22:45:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8BF3A1F227F5
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 22:45:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E2E73BBC6;
-	Fri,  8 Mar 2024 22:44:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BF4636AF8;
+	Fri,  8 Mar 2024 22:45:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="Vh0eXsio"
-Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="RFLV3qf5"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 335C73611E
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 22:44:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCC293FBBD
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 22:45:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709937887; cv=none; b=pnC8Tt2VISEktfFfSfmWXYJoOEHoFu4pu4ff6Ho7GFSPtkJk9TeZ5lD9dYIyFEOeN34/lz126w3MAoPKUUTXUoGee6WBXNhU3EGuGp6K4QtktGahZDHQQgkA/mZSD/kvS/tTlX5PKPtDzdJrI4ZO16uzl4dkqINQveNSTyUX5Wo=
+	t=1709937904; cv=none; b=qgKHJjLiJwkTQIwoXO6dyLjVKAY93MSS+bMP3dHLef2krw6lO5k7ch9YYZ4UM4Yv9Qi+ZAPgqHfh9Quw/Cm0wCsaestWV8Wn2nVM3vLq6Y+Mnkuue9SOPJ8qG8ygj5lZy6w/NgFwB1JmNMWN46L4ogfgZyp1lgMOrdeli20988w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709937887; c=relaxed/simple;
-	bh=Q/dpA4EDL9DKNd657tQSSkB0gcrr3hEqFVGn6lgUnrs=;
-	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=G4gtDd2/H/Jj9j/ZX+cqIluNP1+qYpg0hX/R4hO9ZC1MqefBZrEG77dlePT8B+5ZfPep6Tk7Zpf+N6oKNyG5v7mkV2HSLH3wxrD69mw04HR6G6UeWrrXW43MYf4vIEkkVFUltXuoMUdl/AFC2FyW2jYxIjrnWqFLSvrbzMXDPgc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=Vh0eXsio; arc=none smtp.client-ip=209.85.219.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
-Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-6902947c507so14886226d6.3
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 14:44:45 -0800 (PST)
+	s=arc-20240116; t=1709937904; c=relaxed/simple;
+	bh=KZRGbBNF0GTtJzvOMXF5VklG5k9DvU5JzIOJGPDdwQI=;
+	h=Date:Message-Id:Mime-Version:Subject:From:To:Cc:Content-Type; b=AUPjD+gN+G/1D/M9ZeC2UZRXerZo27XOCtI25C46fHPXIFNAlPU73yYP7h9j3mcawv+m1F2DMPU3daJoIaordtlr/6hPJGTylqsgG+zqAH91ObW9X49KuMeEqpQWoesAmP7L9yWyY0Q4bYD5u8qj9XtHKhjWqYGbS9x9yRdFCKo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--saravanak.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=RFLV3qf5; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--saravanak.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-60a0151f194so25758317b3.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 14:45:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1709937884; x=1710542684; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xGozGRObik8kRBqAaXDv14vyB9qXJuUjlDQ4UlEdAqY=;
-        b=Vh0eXsio4QZPnTr3kIzy7UeGWLYCc4w26wLtOlwuVa6B8cFSWaaQcl5+MaHl+wHKp8
-         q6mEcfyTip67af4fPMimuyjBcmXwsw/JtN1/zeXZp6MCWkxt4XKqIoD3gSHJAYtb0ANg
-         /h5Q+XddKt/c88RhFRo1iK3RmLxF0nz6qHVoA=
+        d=google.com; s=20230601; t=1709937901; x=1710542701; darn=vger.kernel.org;
+        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=IiMp4Q84ZRHG2huJ3D03WkrKLgdFSmD9U9ReR7uCK6U=;
+        b=RFLV3qf5sNxacB65Ib0q1PqL8+KAYXKGUgu879ZIcdJ0qVLrQl70VUI0FMxg1c4MdX
+         QEZWlqoBgF5rzKlo0bBXekOUJGCFfDI1yF+x0Agp5HXF+gjIkiC4m0LTPziwaC3FFXfQ
+         bAq0a8ceovtmA8MQv7yNtdzhTukpnLVLitUK24sub4LMQLhOQSTbg/iGfGbq6GD5RD2n
+         l7YrxZc4cWrw1At1W3odrUYEF8jUC0BiLhTmjAdKWSTNYYNUiDgFYWgiy0iv1urSwUAj
+         4yW1QEjk35psTJxtTv2ExH5TDSoHIb6HxDkXe/yt5bBdjEjJCds4yzFgCF3zX+fLtajR
+         EcAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709937884; x=1710542684;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xGozGRObik8kRBqAaXDv14vyB9qXJuUjlDQ4UlEdAqY=;
-        b=WKnEfyzAzYeRHacLpFOwy2MBNkGT4ROqcRyxYJfrdv/cVjAYqOavUa0pAMNWNH1Xmn
-         caft2BK50HWEOL7U4kKsMF7+56Ci3GkM9O5ZgrwjdeVYxoIgoVcn4OtUAv4xSpUeJu3H
-         itAgiWAb6vWT/hnRfFJMr3lStZMCA1Wia3gdOrTXYIhi3glSvAu2u+sRHbGYYQl5zuXw
-         plpvlUdiVht02T6ocpDgrEhaZJmoqzWw7yMpjsPgzOy8K0rztalb5wtGm4dufpZs6bcs
-         WsyOR7+oPtozExO85/HObxS4A/kWUWzCzKw6bzqKn0hcZKGXMyXUq2T5f+mPBVO5z9tD
-         9AWA==
-X-Gm-Message-State: AOJu0Yz+QYRg7wKB7NdObpq+i5o8T1OVbv65JoLkvibgpLyHt2lx1Nsh
-	ip9edhxgmv90CBSGN2JAHxm0VePZ0ah496w6x4chgOsE4Gwwfmmvn7MwqrQymacj9z7B3lVoizz
-	5
-X-Google-Smtp-Source: AGHT+IEw+M//3zPkORy6vYQ+apdR177VVl0Z+YSd4BJ66C+o526aJdoXX71W9ee7sW7ili48pmMCCw==
-X-Received: by 2002:ad4:4d4b:0:b0:690:4ac8:2283 with SMTP id m11-20020ad44d4b000000b006904ac82283mr436827qvm.20.1709937884436;
-        Fri, 08 Mar 2024 14:44:44 -0800 (PST)
-Received: from joelbox2.. (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
-        by smtp.gmail.com with ESMTPSA id px21-20020a056214051500b00690c0936d70sm36960qvb.127.2024.03.08.14.44.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Mar 2024 14:44:43 -0800 (PST)
-From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
-To: linux-kernel@vger.kernel.org,
-	frederic@kernel.org,
-	boqun.feng@gmail.com,
-	urezki@gmail.com,
-	neeraj.iitr10@gmail.com,
-	joel@joelfernandes.org,
-	rcu@vger.kernel.org,
-	rostedt@goodmis.org,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>
-Subject: [PATCH v2 rcu/dev 2/2] rcu/tree: Add comments explaining now-offline-CPU QS reports
-Date: Fri,  8 Mar 2024 17:44:38 -0500
-Message-Id: <20240308224439.281349-2-joel@joelfernandes.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240308224439.281349-1-joel@joelfernandes.org>
-References: <20240308224439.281349-1-joel@joelfernandes.org>
+        d=1e100.net; s=20230601; t=1709937901; x=1710542701;
+        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IiMp4Q84ZRHG2huJ3D03WkrKLgdFSmD9U9ReR7uCK6U=;
+        b=joYUlOBKDPVyegB0/XViXWkqvAdt9UUvF9SnyAAG584Bd32+TbbkTn9kzzgx1gbvRp
+         u/G9CqQmX0Fji5TQANMABbr6CmFUsFBCsISfkW9+8Ooipjb+FLFWNI/X16uMuFNhecq2
+         NoeoqHqrliy3YIDEpk01hhxfdgKMzOIKTHFCsZA64UoGBT6AlVbaIbLcOGTnig/x2yzu
+         5INPH8Sy/ZS/rfrZfe99e3+G1SgArNgZfoQZZxmGeDnred+1STP80KTwPXUprKAQKHlI
+         XFvmV6ukPnjEVGYPoCq0HPvSxnlFDz/hU69m5FgrIDs2YOD2qJQBuZisWR1GQTxmR5E5
+         jP9A==
+X-Forwarded-Encrypted: i=1; AJvYcCVrA9/byOJjuXvmwvV6Vop4yeJOtGGvMJma+NwikwVu4BKg0hX5+jhHKNMwVM3ScMaO6PBtsS2tsdQ6bWSnHa4TLeZKYL2QzFYRNKeM
+X-Gm-Message-State: AOJu0YxdkW7MQTHEccpw7KV4NNzO1dJsIFm2Y+8SV0c0aCeaN0B0xJrh
+	8P+1e6HqESLTZRE08n8d/h55Q09j6twC4kdAhQpN8z4niST2PaZhpT7iBE8Lj1rDncc/JYLb3mP
+	+DWXE+vnt8rWIvA==
+X-Google-Smtp-Source: AGHT+IG/emX2/VZdtlMuRgEiAhbEydXKKDZZNEwpuRFiPRm8SORpqs38ydYiV9bQtRKmc6lUxN4XqNmkfzHamhE=
+X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:b307:13b8:5743:15a9])
+ (user=saravanak job=sendgmr) by 2002:a05:6902:102b:b0:dcc:e1a6:aca9 with SMTP
+ id x11-20020a056902102b00b00dcce1a6aca9mr96836ybt.9.1709937900881; Fri, 08
+ Mar 2024 14:45:00 -0800 (PST)
+Date: Fri,  8 Mar 2024 14:44:50 -0800
+Message-Id: <20240308224450.2327415-1-saravanak@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
+Subject: [PATCH] Documentation: power: Fix typo in suspend and interrupts doc
+From: Saravana Kannan <saravanak@google.com>
+To: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>
+Cc: Saravana Kannan <saravanak@google.com>, kernel-team@android.com, linux-pm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-This a confusing piece of code (rightfully so as the issue it deals with
-is complex). Recent discussions brought up a question -- what prevents the
-rcu_implicit_dyntick_qs() from warning about QS reports for offline
-CPUs.
+Typos are bad. Fix them.
 
-QS reporting for now-offline CPUs should only happen from:
-- gp_init()
-- rcutree_cpu_report_dead()
-
-Add some comments to this code explaining how QS reporting is not
-missed when these functions are concurrently running.
-
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Signed-off-by: Saravana Kannan <saravanak@google.com>
 ---
- kernel/rcu/tree.c | 36 +++++++++++++++++++++++++++++++++++-
- 1 file changed, 35 insertions(+), 1 deletion(-)
+ Documentation/power/suspend-and-interrupts.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index bd29fe3c76bf..f3582f843a05 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -1917,7 +1917,22 @@ static noinline_for_stack bool rcu_gp_init(void)
- 		trace_rcu_grace_period_init(rcu_state.name, rnp->gp_seq,
- 					    rnp->level, rnp->grplo,
- 					    rnp->grphi, rnp->qsmask);
--		/* Quiescent states for tasks on any now-offline CPUs. */
-+		/*
-+		 * === Quiescent states for tasks on any now-offline CPUs. ===
-+		 *
-+		 * QS reporting for now-offline CPUs should only be performed from
-+		 * either here, i.e., gp_init() or from rcutree_report_cpu_dead().
-+		 *
-+		 * Note that, when reporting quiescent states for now-offline CPUs,
-+		 * the sequence of code doing those reports while also accessing
-+		 * ->qsmask and ->qsmaskinitnext, has to be an atomic sequence so
-+		 * that QS reporting is not missed! Otherwise it possible that
-+		 * rcu_implicit_dyntick_qs() screams. This is ensured by keeping
-+		 * the rnp->lock acquired throughout these QS-reporting
-+		 * sequences, which is also acquired in
-+		 * rcutree_report_cpu_dead(), so, acquiring ofl_lock is not
-+		 * necessary here to synchronize with that function.
-+		 */
- 		mask = rnp->qsmask & ~rnp->qsmaskinitnext;
- 		rnp->rcu_gp_init_mask = mask;
- 		if ((mask || rnp->wait_blkd_tasks) && rcu_is_leaf_node(rnp))
-@@ -5116,6 +5131,25 @@ void rcutree_report_cpu_dead(void)
- 	raw_spin_lock_irqsave_rcu_node(rnp, flags); /* Enforce GP memory-order guarantee. */
- 	rdp->rcu_ofl_gp_seq = READ_ONCE(rcu_state.gp_seq);
- 	rdp->rcu_ofl_gp_state = READ_ONCE(rcu_state.gp_state);
-+
-+	/*
-+	 * === Quiescent state reporting for now-offline CPUs ===
-+	 *
-+	 * QS reporting for now-offline CPUs should only be performed from
-+	 * either here, i.e. rcutree_report_cpu_dead(), or gp_init().
-+	 *
-+	 * Note that, when reporting quiescent states for now-offline CPUs,
-+	 * the sequence of code doing those reports while also accessing
-+	 * ->qsmask and ->qsmaskinitnext, has to be an atomic sequence so
-+	 * that QS reporting is not missed! Otherwise it possible that
-+	 * rcu_implicit_dyntick_qs() screams. This is ensured by keeping
-+	 * the rnp->lock acquired throughout these QS-reporting sequences, which
-+	 * is also acquired in gp_init().
-+	 * One slight change to this rule is below, where we release and
-+	 * reacquire the lock after a QS report, but before we clear the
-+	 * ->qsmaskinitnext bit. That is OK to do, because gp_init() report a
-+	 * QS again, if it acquired the rnp->lock before we reacquired below.
-+	 */
- 	if (rnp->qsmask & mask) { /* RCU waiting on outgoing CPU? */
- 		/* Report quiescent state -before- changing ->qsmaskinitnext! */
- 		rcu_disable_urgency_upon_qs(rdp);
+diff --git a/Documentation/power/suspend-and-interrupts.rst b/Documentation/power/suspend-and-interrupts.rst
+index dfbace2f4600..f588feeecad0 100644
+--- a/Documentation/power/suspend-and-interrupts.rst
++++ b/Documentation/power/suspend-and-interrupts.rst
+@@ -78,7 +78,7 @@ handling the given IRQ as a system wakeup interrupt line and disable_irq_wake()
+ turns that logic off.
+ 
+ Calling enable_irq_wake() causes suspend_device_irqs() to treat the given IRQ
+-in a special way.  Namely, the IRQ remains enabled, by on the first interrupt
++in a special way.  Namely, the IRQ remains enabled, but on the first interrupt
+ it will be disabled, marked as pending and "suspended" so that it will be
+ re-enabled by resume_device_irqs() during the subsequent system resume.  Also
+ the PM core is notified about the event which causes the system suspend in
 -- 
-2.34.1
+2.44.0.278.ge034bb2e1d-goog
 
 
