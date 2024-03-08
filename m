@@ -1,309 +1,224 @@
-Return-Path: <linux-kernel+bounces-97487-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97488-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96640876AF5
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 19:57:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0489E876AFA
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 19:57:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 003F4281FC5
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:57:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 280F81C214F5
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:57:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 205AA58132;
-	Fri,  8 Mar 2024 18:57:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 616005A4E3;
+	Fri,  8 Mar 2024 18:57:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="DhIxn+UE";
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="3QjxS+a/"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kf1JhdDm"
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3772040865;
-	Fri,  8 Mar 2024 18:56:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.154.123
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709924220; cv=fail; b=gjz5xiCDEgqaqjiqyrVq52wiImrDRD59N6cLIjs2COh6ebJ9KbpXxogQcFfQDnbd9NqcBSiwnjZgbRJAeYKhWRknfH0RY9rL4jli9KLqlXWgqzqoiKeRIQ4Z2cWeLI/11+uEnoIMzKx9ae9NXJQcir1GoxbQ21x8diVrc8SdfMc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709924220; c=relaxed/simple;
-	bh=36M8OtiXv5x1ZlrrZwHkXSarknCiLNVF/63/mCIgfns=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=IxpKCHQiJqCrH8GfMicA+uIDg1Zk9BBAEETEVItN3Xq9u4Dmt5dTlGRuy9FTOMii5qBggjLCRGaG7wZ15pUe1NnH/m8UaqIPCws8UITkwplsCHnQm275MzmMS+VKSkaX+GbW6r4MdrzPa0l0Rh4qCnsikSIx/CuZAuNIfLKpXdo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=DhIxn+UE; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=3QjxS+a/; arc=fail smtp.client-ip=68.232.154.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1709924218; x=1741460218;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=36M8OtiXv5x1ZlrrZwHkXSarknCiLNVF/63/mCIgfns=;
-  b=DhIxn+UEnHTxI0STmYOUb91lIeZ1Xzh6m9uWOQc0crsU0oHhNHX9pJwo
-   40DMm2x9rMFU3aXq4QJoLmOjrJEm4eeHec6onp9PxdqtNSaQUJCUmxlSK
-   5AbyVhxopkFUwGpnV7RIhz1ObOUNITr77sTdQqhXvAO3pwamf48JWQGir
-   PlkzPWZYiqizElrHmXcsEt5wbqPUEXo5058M8RSZTnib7WTmIYQEWN6y7
-   nh5L53IIVWyEiEJ92Z8Rh7G7RfcQRiwYg+EGg8XLEcYhDz7mXbc5jw/hC
-   QswtICe0CtMYK1IduRw8YZs1tkNQ0lMdGlcBK112E3Kik5kwF4ZyguDhR
-   A==;
-X-CSE-ConnectionGUID: sS5AqeNrTWy8AXHLRFkCbQ==
-X-CSE-MsgGUID: zST8KQzrROWCldncQb86kw==
-X-IronPort-AV: E=Sophos;i="6.07,110,1708412400"; 
-   d="scan'208";a="184687784"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 08 Mar 2024 11:56:56 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 8 Mar 2024 11:56:43 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (10.10.215.250)
- by email.microchip.com (10.10.87.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Fri, 8 Mar 2024 11:56:42 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YAtdU1d84KJ4WE6hw9BtvWFdhxdluPHhy7PKlyJ+L4x0gavcZ04es9cGQANNnZQkV97uIS6F022ZfcDElw7cLeg+yFNtihLtUTzhX9SqggYAYt8CAUVNDzqt0YGvlTnKB+htftS9q1K96Nq+jZF4mSXduHxO5oEgh+oKX+pGQ9xU55gPWPkAIrUEbewCA7p90IinE6G+lzIWvyInZeBd2iYe4ZaidNxNYuhUqXPqYlkYMcSQ35qvTeJFeJ5yL400pT6LqDDDIFE8MDQzGgPRyd6a6bSnIA6Pejq2MCwX6Gpka60zs4sVUIOap1XDVoIq63IXCsT6dlum7XRyBi3neQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=C7PaJ5nxYaLJI8sxcggwOSNAMI6twTF5fdbNNq0LRWo=;
- b=brQs5akkWWGG46aKJUYBYRT7hBBiI9s8OWMEgFJGuAddKBAZXArSCJmPfvbojqP22Comrgy2kTzpUJ8UirfKx00PpUVypVlIne3ZnlcQGAE/Q9N0hnQ1XZMDJMbUe5ycHJcais/nVRF/zqUicOKaBH/tGGEObwrVRV0Ku3n870GjC61n3itqKpezBIi+Ggfcc4melV+0U78V0LlLpiPXUH2bGNRJehjJGmn40SoZEsfHOLHL4vKqrEJ6+Q8/+CzS8TUrVOfPMnGXCtlUR48loLmjjrmCI0sIC4Df6Osm9QfmuyIGlBofTzXiswc3WfY4HiCyjIie2GjT0V7Dswbmdw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microchip.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=C7PaJ5nxYaLJI8sxcggwOSNAMI6twTF5fdbNNq0LRWo=;
- b=3QjxS+a/0c12NnVzWNeGBSAppo+uyyzdnED9rwWNox7WaiO/lpxNivHqV8E8sijn4hfOyJ5fGMogBrD8k/BsNqaGUEpryiSDyZd+o1vO2tRL6NnJSOOeoefwZOQ22KXiboNfonymTcYUvGrVkXJdbPtlQzRdqzydMaKlJ+Bbo36ieeOJd/UHVict6Q4MGm0A7mqtamyPLBWW+BdAxUM6al1g6OtrCDNoMUR2eSoduIGR+c6Bix6LoN2zExxMxnCSVZNtgfsYrPQztY/xdTJbV1nLuvmtkW4K1t9O7Rbmd1LlXN5yGYwICy2E0jOgGt8qxiq0KnSDPaIbvjPLusvh8Q==
-Received: from PH8PR11MB7965.namprd11.prod.outlook.com (2603:10b6:510:25c::13)
- by MW6PR11MB8392.namprd11.prod.outlook.com (2603:10b6:303:23a::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.6; Fri, 8 Mar
- 2024 18:56:39 +0000
-Received: from PH8PR11MB7965.namprd11.prod.outlook.com
- ([fe80::1a3a:422d:1406:cd7]) by PH8PR11MB7965.namprd11.prod.outlook.com
- ([fe80::1a3a:422d:1406:cd7%5]) with mapi id 15.20.7386.005; Fri, 8 Mar 2024
- 18:56:39 +0000
-From: <Ronnie.Kunin@microchip.com>
-To: <Raju.Lakkaraju@microchip.com>, <andrew@lunn.ch>
-CC: <netdev@vger.kernel.org>, <davem@davemloft.net>, <kuba@kernel.org>,
-	<linux-kernel@vger.kernel.org>, <Bryan.Whitehead@microchip.com>,
-	<richardcochran@gmail.com>, <UNGLinuxDriver@microchip.com>
-Subject: RE: [PATCH net 3/3] net: lan743x: Address problems with wake option
- flags configuration sequences
-Thread-Topic: [PATCH net 3/3] net: lan743x: Address problems with wake option
- flags configuration sequences
-Thread-Index: AQHaaIt9/9VvJ3PDJ0OgsYtGoeCEQLErcdiAgAIgIYCAAJu7MA==
-Disposition-Notification-To: <Ronnie.Kunin@microchip.com>
-Date: Fri, 8 Mar 2024 18:56:39 +0000
-Message-ID: <PH8PR11MB79656DCF7806D7390C7100DE95272@PH8PR11MB7965.namprd11.prod.outlook.com>
-References: <20240226080934.46003-1-Raju.Lakkaraju@microchip.com>
- <20240226080934.46003-4-Raju.Lakkaraju@microchip.com>
- <78d7e538-9fa0-490e-bcfb-0a5943ad80c9@lunn.ch>
- <LV8PR11MB87008454A629EE15B9CE14099F272@LV8PR11MB8700.namprd11.prod.outlook.com>
-In-Reply-To: <LV8PR11MB87008454A629EE15B9CE14099F272@LV8PR11MB8700.namprd11.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microchip.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH8PR11MB7965:EE_|MW6PR11MB8392:EE_
-x-ms-office365-filtering-correlation-id: 57a8af67-8e4c-44e0-7845-08dc3fa17ce1
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: UVT683025I+glF4ME0RVrzZnMcPspiR3gET3iWIvs+wBmucLEEJOjxOxwIeFNtdOgxkoA4CwkE0kEkDCxrSVEHGLdcXf4nGwuWwARAQo1hKUF4mz09MaBHHRQjSLFM6d6sOEbiB8PilKz61thD4FgI6k1Bwm2FAyi69xSO93UlaPm0ea4dCkuVvdL+wr9EnW8dP0Vli235nz/RPxdmkSld6xYwhG8h8lASZuVfLdLkO12qAJO85vBt72J4itKPJX3lYzBAldQAkznK8CPZS7ZhFIA5+LBZyTC3nUUCGr/m2yGsiakOtd9OXOLlKaa66ty133HKOHNHPnweF07wy9vmbfH8tTByqiBiHk2R9IZgCZk5+whp6k3PzMJbAR9sHdXg5c7ZrQju+hUmw/qVIg9/0CX5rQUMSYLb1K+4EbpLQHnroSRijv+rD8COQXBGeNqdf6Cy9jbeZVQIOmzK4csRQUTVwkUNFVzwRuUpbQ1jYin2Xc2+R20Wja1rGf05YYaszXwpTzjtdLBrvcRu/HZDd0h7B0HxoUQtsnUGPwmOXzcF88ZdYCOE7xvakZUNTA3bWIfF+56kDfJ60ZVIHnzZWX5TM4SZvM/y19N7ir55lKYhe6/ExuBv/yBCf+ptOCxLcd90kgIc2OY6m3PVAdIAjlloysq3RnzijhwXKGezJq6cywHNCXcajY0md+qicf
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB7965.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?wesaNpZlIHMygpH/3zEl4d/h3J4whXYHlVtw6qeOA/kh9FDQiUBvT6p1A9kS?=
- =?us-ascii?Q?dPg8MCgKlkhBnGfhfFRUzAzVPwzcP5oG3CC9HqAjU/fZH4UOGLcD/sxtURXJ?=
- =?us-ascii?Q?O16H4Iy/fsKYeNNjb9aV9jMTE2drrqKHshjR3QKcrJmKYdOiea7LFsfDxrfI?=
- =?us-ascii?Q?bLyi0uqHk8XGURJjC3haEquU5ngiuP2pMrq6GxwLh+NqHx7sl6avxQ6zb4pi?=
- =?us-ascii?Q?XHtd5eRLE4+11cubEExQ3MVmthgS1aw4+l+d3dMNu04hXXeZYW91ZbyN8Ooq?=
- =?us-ascii?Q?K4MX+8TbBp7fVGcsWp1cdrH2zibI8olUIP3D0z/UTZVr8TMEC9NewDeEfKKQ?=
- =?us-ascii?Q?fH3FcWNm4HjZlkRffYsb/yGhYcanG/eIqyB5Ht3PMfllAss2ZEbNt2qbMMME?=
- =?us-ascii?Q?lk2ptWUfIT4LBuiRme7bd+kuhqV/EcgimkVXHdUNixuOCowkmWFdFU9K2Y4A?=
- =?us-ascii?Q?3twFt8pEkLwI8lcwT9+AfJgVrj4UrB+AeasoyhhvvjaKyr4ELSfXHJTJ7F52?=
- =?us-ascii?Q?XUPlvGwqv7eodUG/YEpQC2LxXlllUc3m/fU/jiOvGxBYOJnya5svb3tvQjBp?=
- =?us-ascii?Q?zokS+BVhc+ge1zBXEew6BY6DZ+UlDDBMMT6iV5rWxVuIKxJ+QzxyTtTl8cR7?=
- =?us-ascii?Q?NcsiLQftToaimqU1zajKJJV8MBTyk8AEanww9Be6/Of/IY1iSsX9WB9QECqe?=
- =?us-ascii?Q?uecpPrpYlwyEFmsRr71IdpdYGX6AV/f63kK2unMj+VJjeZ1EdRyqpgAkgYux?=
- =?us-ascii?Q?nefMqxFQwxXicWsCVg50s9oKi0qCdUh4AW69EepT+lAAWY1A4dgc50RYOmT8?=
- =?us-ascii?Q?aDRmB9+K5pP1FtbLDqvDa27qZIXewkxy90E9LtgpQl0fdNlzLMrGV/PICZD8?=
- =?us-ascii?Q?7zfU2xhCdxRWYS9yYnBpYLCDoDWIFXju9ETMBJ8qbJTWu3goeF0AMKGrKDxe?=
- =?us-ascii?Q?7A1qe7Y9p5oxBH2fQndL7qCV/X6yg7+yNycTjDC0CvdODAhkA1sLaCclbwgO?=
- =?us-ascii?Q?jg8GiNHOcbj1NxqrJyxUpvxTcybaLI6pZ4655itpzAv9yaBLdCozGpqlwxhF?=
- =?us-ascii?Q?PgXG74aQ+8DMPH7J7/jdCmmx6VCxRMx0+2ZQmGpMAGv/2TjWc6wZpzxU+vnA?=
- =?us-ascii?Q?TSYKJjmEfK5cCa1lWnl8eU3zpTKnk76rft3trww++zUyQRgoyg3TbIaeppnV?=
- =?us-ascii?Q?PYgW/I+aeWaKjpTrK3mLRLpBYtwC+5ASyKwdkQOli9JtKoZOqztKAaIyZGOk?=
- =?us-ascii?Q?gKwXz6zWF1EasJJB9xzl1hPGJrLIAyEKzcqwVayRsZsvllROA1483w7hE76F?=
- =?us-ascii?Q?o7Ztx6MSERXu/Dj0Qvd0Pz/tPL5Mnf/S9lgjTjuHOAVrb2/78kQPimNu0jkB?=
- =?us-ascii?Q?cX6wneOuSW2+RQcWeQ1oak1ig6iSnq8CXAgGOnZEQ33cIXk1h0oIrvkQ68Ha?=
- =?us-ascii?Q?p8e3L8q6kANZnDZKcrD1OP2GSfPRTMipHogMyS80cJ5oUUuBuPxBdMWliaZJ?=
- =?us-ascii?Q?cInX7jKzj3cbNzUWD8lE+g3T7XY9oAeYdbZh3mAu7YoZgvIJFA+BtJqqfyVK?=
- =?us-ascii?Q?3h0EVxU5sZWVzVUeKE0oWK5p+t60vj9P+0zv6R03?=
-Content-Type: text/plain; charset="us-ascii"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 967BB5646D;
+	Fri,  8 Mar 2024 18:57:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709924237; cv=none; b=updM53HJZh6J6OWPPytaFFedgiFG4ni5CYnzP5Xal49ICA+UlWViVB3fStLWf1a6J+KLCOj6+KrLjX38hHr8L4zTEqJhkBG80wyuLMLVcGHDGVjnDr49IQkEWC51N8MaVGP+qewbWUSi6DaWxpHOeR8tI1OrmXJA4KX8T5aQhFQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709924237; c=relaxed/simple;
+	bh=FJgFmqNXVg7ulbIhGqVx48qvgnBGK9ovdaTclrAmH14=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=W4n/hZTsHN+VC8AixolMqqnFffaF9K2zxGqeFeBSrphPC1kRwUNlEeIQTV3TAGRFbM+o8y/t1R0hbgwNEWtC2AvIEpwYHPP+oT7ja9Umht3mO4P7oy77UgAeQU65VnatbmsVTADwhux3piuiqjj4rmTGe8anW57oHX+lct+XSlU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kf1JhdDm; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-51364c3d5abso2712221e87.2;
+        Fri, 08 Mar 2024 10:57:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709924234; x=1710529034; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=FJgFmqNXVg7ulbIhGqVx48qvgnBGK9ovdaTclrAmH14=;
+        b=kf1JhdDmJlaIpU3VBjzwGeFuen+DpVS85iCt+qThum26VQjL24HD3GfvVi/oRJ4W9H
+         4gAhfel8QrZutSUBTQHyBasYyk31ujPeVmTQrJO0O8/9xb5rwNStMMVkcCXIi9jwTsr2
+         GyZJPXGuBpclSqdzpKUMtGoATf2M/8EA1j3KU76xPCQz9FieGRJU65/Z7Wp09aFTLu9H
+         KrMZ1Z/NrSj2hy4v1FUQ0qBEN4rQtQnFRLYjWPbJcpemtwcXTp+5uuCcvr3x7PqmGd+f
+         YLVPGXeuDNKjo9LaO4VQ0a+VP9LiokOldWWlw1LJdzDU/Wg1ZRJR2V8skrqzTgTA8On7
+         Z5zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709924234; x=1710529034;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FJgFmqNXVg7ulbIhGqVx48qvgnBGK9ovdaTclrAmH14=;
+        b=dUvRA1IB6wWXSrepokSXtQKykhydK5zxWIG3ubQKC7gCzY3lohv5QmPJNfcTkZTmY1
+         RY65UU7GP7eS7gV+BGSoqf+rCCUcKhsbQQXenaCE6k0JU7MwPR1pJn4ngb4qs6oyIfIH
+         kWZUGSrInH6N9J3nttGVOO78+IvVCygBSEudAaMDr4tbOLuVoj8bgdK6LtQ6OCmYMDmq
+         c3VC0YqppuytsF9Y/dta5ZH+cOBjNCs5ZBEyv3XImGJp27Vq66lOlUxoWCRu6iGJVUKq
+         7QJGswn1Zjze3QE2X1P7g81hsbTp+n9LAo3vyrlGJWla2jf1fy7HEjS1QUKeqBGSnb28
+         f1zQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUWyfT+S2NCPWzTmVpXUfz9pB0ShYTVizucjFwonQT6OZikJpAcIoYJYss+bz4/0BPwuWKQaT4wBNQLryah019vKE6gIcjLAZMy56jH1hq0VtiGi+IE46W1VkTAPYw++3tclwRsdGToUhtp/1dF7rv3hm1XW6aUzjbYVuixiKLzdWbxifwOBAR/cGpWxZ/nPmnT8rgmt0BG
+X-Gm-Message-State: AOJu0Yz3JgFAN/J2AJXq1i7KjDkFPf0+YKtkh2P9HwIjJeeHmmzQbTw5
+	5j9OlXZKWCsPQLZ/FEJ/OSEFmRlVuWOqAKlK9OEJpggatG0/5wPR
+X-Google-Smtp-Source: AGHT+IFb+l5lb3Rt/se2MEwUbkeIsA8alEVe6QpXMRmHCrxeUIUjHWtLgHUhvNRZB35lAOZhG2h2Kg==
+X-Received: by 2002:ac2:5f08:0:b0:513:1e47:bc5b with SMTP id 8-20020ac25f08000000b005131e47bc5bmr3833679lfq.25.1709924233403;
+        Fri, 08 Mar 2024 10:57:13 -0800 (PST)
+Received: from ?IPv6:2001:8a0:e60f:3100:f642:8b0a:d2f8:3e61? ([2001:8a0:e60f:3100:f642:8b0a:d2f8:3e61])
+        by smtp.gmail.com with ESMTPSA id m24-20020a195218000000b005130bbcd263sm19374lfb.271.2024.03.08.10.57.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Mar 2024 10:57:12 -0800 (PST)
+Message-ID: <e19cafe1a7933d1e35ee4715fa36df8090c100eb.camel@gmail.com>
+Subject: Re: [PATCH v2] can: mcp251xfd: fix infinite loop when xmit fails
+From: vitor <ivitro@gmail.com>
+To: mkl@pengutronix.de, Manivannan Sadhasivam
+ <manivannan.sadhasivam@linaro.org>,  Thomas Kopp
+ <thomas.kopp@microchip.com>, Wolfgang Grandegger <wg@grandegger.com>
+Cc: Vitor Soares <vitor.soares@toradex.com>, linux-can@vger.kernel.org, 
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Date: Fri, 08 Mar 2024 18:57:10 +0000
+In-Reply-To: <20240308151523.191860-1-ivitro@gmail.com>
+References: <20240308151523.191860-1-ivitro@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB7965.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 57a8af67-8e4c-44e0-7845-08dc3fa17ce1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Mar 2024 18:56:39.6941
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: VebfRYD5qhegGmDJgK/JXm1wwczf0c0jv9Johai7DMfXwWzpZLtQSZ/ru95iimQz+ofFFG9pIQ3e0Jgd83vV5YXTlt9J8gz1y3XFLraWDFQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR11MB8392
 
-Hi Andrew
-
-> -----Original Message-----
-> From: Raju Lakkaraju - I30499 <Raju.Lakkaraju@microchip.com>
-> Sent: Friday, March 8, 2024 3:21 AM
-> To: Andrew Lunn <andrew@lunn.ch>
-> Cc: netdev@vger.kernel.org; davem@davemloft.net; kuba@kernel.org; linux-k=
-ernel@vger.kernel.org;
-> Bryan Whitehead - C21958 <Bryan.Whitehead@microchip.com>; richardcochran@=
-gmail.com;
-> UNGLinuxDriver <UNGLinuxDriver@microchip.com>
-> Subject: RE: [PATCH net 3/3] net: lan743x: Address problems with wake opt=
-ion flags configuration
-> sequences
+On Fri, 2024-03-08 at 15:15 +0000, Vitor Soares wrote:
+> From: Vitor Soares <vitor.soares@toradex.com>
 >=20
-> Hi Andrew,
+> When the mcp251xfd_start_xmit() function fails, the driver stops
+> processing messages and the interrupt routine does not return,
+> running indefinitely even after killing the running application.
 >=20
-> Thank you for valuable information.
+> Error messages:
+> [=C2=A0 441.298819] mcp251xfd spi2.0 can0: ERROR in mcp251xfd_start_xmit:
+> -16
+> [=C2=A0 441.306498] mcp251xfd spi2.0 can0: Transmit Event FIFO buffer not
+> empty. (seq=3D0x000017c7, tef_tail=3D0x000017cf, tef_head=3D0x000017d0,
+> tx_head=3D0x000017d3).
+> ... and repeat forever.
 >=20
-> > -----Original Message-----
-> > From: Andrew Lunn <andrew@lunn.ch>
-> > Sent: Thursday, March 7, 2024 5:23 AM
-> > To: Raju Lakkaraju - I30499 <Raju.Lakkaraju@microchip.com>
-> > Cc: netdev@vger.kernel.org; davem@davemloft.net; kuba@kernel.org;
-> > linux- kernel@vger.kernel.org; Bryan Whitehead - C21958
-> > <Bryan.Whitehead@microchip.com>; richardcochran@gmail.com;
-> > UNGLinuxDriver <UNGLinuxDriver@microchip.com>
-> > Subject: Re: [PATCH net 3/3] net: lan743x: Address problems with wake
-> > option flags configuration sequences
-> >
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you know
-> > the content is safe
-> >
-> > On Mon, Feb 26, 2024 at 01:39:34PM +0530, Raju Lakkaraju wrote:
-> > > Wake options handling has been reworked as follows:
-> > > a. We only enable secure on magic packet when both secure and magic w=
-ol
-> > >    options are requested together.
-> >
-> > So it appears unclear what should happen here.
-> >
-> > https://elixir.bootlin.com/linux/latest/source/drivers/net/phy/bcm-phy
-> > -
-> > lib.c#L909
-> >
-> > WAKE_MAGICSECURE is a standalone option. You do not need WAKE_MAGIC.
-> > And even i you did request both WAKE_MAGIC and WAKE_MAGICSECURE, the
-> > WAKE_MAGIC would be ignored.
-> >
-> > https://elixir.bootlin.com/linux/latest/source/drivers/net/phy/dp83822
-> > .c#L153
-> >
-> > WAKE_MAGICSECURE is a standalone option. You do not need WAKE_MAGIC.
-> > However, unlike the broadcom device, you can have both WAKE_MAGIC and
-> > WAKE_MAGICSECURE at the same time. They are not mutually exclusive.
-> >
-> > This also looks to be true for other dp8**** devices.
-> >
-> > https://elixir.bootlin.com/linux/latest/source/drivers/net/phy/mscc/ms
-> > cc_mai
-> > n.c#L318
-> >
-> > WAKE_MAGICSECURE is a standalone option. You do not need WAKE_MAGIC.
-> > Also, you can have both WAKE_MAGIC and WAKE_MAGICSECURE at the same
-> > time. They are not mutually exclusive.
-> >
-> > So i think your point a. above is questionable. Can the hardware
-> > support both magic and secure magic at the same time? If so, follow the=
- TI way of doing it.
-
-I guess the question here is what "support both magic and secure magic at t=
-he same time" means ...
-
-The original (i.e. not secure) Magic packet specification says it is a fram=
-e like this:
-DESTINATION, SOURCE, MISC_PRE, 6 x FF, 16 x MAC_ADDR, MISC_POST, FCS
-So a "magic packet pattern" consists of six 'FF' bytes (synchronization pat=
-tern) immediately followed by 16 consecutive repetitions of the mac address=
- of the device and this can be anywhere within the frame.
-(a) Note that if magic packet wake is enabled in a device and an incoming f=
-rame includes a "magic packet pattern", whatever is before (MISC_PRE) and a=
-fter (MISC_POST) the "magic packet pattern" does not matter, the device wil=
-l generate a wake up event.
-
-The "Secure-on" magic packet, adds a 6 byte password immediately after the =
-16 repetitions of the mac address of the device to the pattern that has to =
-be matched, so the frames looks like this:
-DESTINATION, SOURCE, MISC_PRE, 6 x FF, 16 x MAC_ADDR, 6-BYTE_PWD, MISC_POST=
-, FCS
-(b) Note that If secure-on magic packet wake is enabled in a device an inco=
-ming frame will only cause a wake event if the whole pattern *including the=
- password* matches.
-
- (a) and (b) are mutually exclusive behaviors for frames that do not carry =
-passwords (i.e. they have the FCS right after the 16th repletion of the Mac=
- address) or have a non-matching password, so you cannot really enable both=
- simultaneously (at least not in the sense that you would be able to comply=
- with both standards for all possible frames simultaneously).
-
+> The issue can be triggered when multiple devices share the same
+> SPI interface. And there is concurrent access to the bus.
 >=20
-> Yes. I will do.
+> The problem occurs because tx_ring->head increments even if
+> mcp251xfd_start_xmit() fails. Consequently, the driver skips one
+> TX package while still expecting a response in
+> mcp251xfd_handle_tefif_one().
 >=20
+> This patch resolves the issue by decreasing tx_ring->head if
+> mcp251xfd_start_xmit() fails. With the fix, if we trigger the issue
+> and
+> the err =3D -EBUSY, the driver returns NETDEV_TX_BUSY. The network
+> stack
+> retries to transmit the message.
+> Otherwise, it prints an error and discards the message.
+>=20
+> Fixes: 55e5b97f003e ("can: mcp25xxfd: add driver for Microchip
+> MCP25xxFD SPI CAN")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Vitor Soares <vitor.soares@toradex.com>
+> ---
+>=20
+> V1->V2:
+> =C2=A0 - Return NETDEV_TX_BUSY if mcp251xfd_tx_obj_write() =3D=3D -EBUSY
+> =C2=A0 - Rework the commit message to address the change above
+> =C2=A0 - Change can_put_echo_skb() to be called after
+> mcp251xfd_tx_obj_write() succeed. Otherwise, we get Kernel NULL
+> pointer dereference error.
+>=20
+> =C2=A0drivers/net/can/spi/mcp251xfd/mcp251xfd-tx.c | 29 +++++++++++------=
+-
+> --
+> =C2=A01 file changed, 16 insertions(+), 13 deletions(-)
+>=20
+> diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-tx.c
+> b/drivers/net/can/spi/mcp251xfd/mcp251xfd-tx.c
+> index 160528d3cc26..0fdaececebdd 100644
+> --- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-tx.c
+> +++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-tx.c
+> @@ -181,25 +181,28 @@ netdev_tx_t mcp251xfd_start_xmit(struct sk_buff
+> *skb,
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0tx_obj =3D mcp251xfd_get_=
+tx_obj_next(tx_ring);
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0mcp251xfd_tx_obj_from_skb=
+(priv, tx_obj, skb, tx_ring->head);
+> =C2=A0
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* Stop queue if we occupy the=
+ complete TX FIFO */
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0tx_head =3D mcp251xfd_get=
+_tx_head(tx_ring);
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0tx_ring->head++;
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (mcp251xfd_get_tx_free(tx_r=
+ing) =3D=3D 0)
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0netif_stop_queue(ndev);
+> -
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0frame_len =3D can_skb_get=
+_frame_len(skb);
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0err =3D can_put_echo_skb(skb, =
+ndev, tx_head, frame_len);
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (!err)
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0netdev_sent_queue(priv->ndev, frame_len);
+> +
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0tx_ring->head++;
+> =C2=A0
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0err =3D mcp251xfd_tx_obj_=
+write(priv, tx_obj);
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (err)
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0goto out_err;
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (err) {
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0tx_ring->head--;
+> =C2=A0
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return NETDEV_TX_OK;
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0if (err =3D=3D -EBUSY)
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return NE=
+TDEV_TX_BUSY;
 
-I understand that the TI devices give the *impression* of supporting both, =
-but based on what I explained above, even if you accept WAKE_MAGIC and WAKE=
-_MAGICSEGURE on a set and report them both back as enabled on a get; whatev=
-er behavior your hardware does will not be fully compliant to both specs si=
-multaneously anyway. I discussed this with Raju and what we decided to do f=
-or our driver/device is that if you pass both WAKE_MAGIC and WAKE_MAGICSEGU=
-RE flags to us we will report them back as both being enabled in a subseque=
-nt get as you suggested, but the behavior of our driver/hardware will be as=
- if you had only enabled WAKE_MAGIC.
+Missing the stats for dropped packages. I will add on v3.
 
-> > If you cannot do both at the same time, and that is requested, you
-> > should probably return -EOPNOTSUPP. That is probably better than what
-> > the broadcom driver does, silently ignore WAKE_MAGIC.
-> >
-> > > b. If secure-on magic packet had been previously enabled, and a
-> > subsequent
-> > >    command does not include it, we add it. This was done to workaroun=
-d a
-> > >    problem with the 'pm-suspend' application which is unaware of secu=
-re-on
-> > >    magic packet being enabled and can unintentionally disable it prio=
-r to
-> > >    putting the system into suspend.
-> >
->=20
-> Ok. I will try to fix in 'pm-suspend' application
->=20
-> > The kernel should not be working around broken userspace. But i also
-> > suspect this is to do with it being unclear if WOL options are
-> > incremental or not. Since it seems that they are not incremental, it
-> > does not matter if "If secure-on magic packet had been previously
-> > enable". pm-suspend is setting Wol how it wants it, which you say is
-> > plain magic. So magic is what the PHY driver should do. Feel free to
-> > submit patches to pm-suspend to make it understand secure magic, or
-> > not touch WoL at all with the assumption it has already been setup by s=
-omething else.
-> >
-> >           Andrew
->=20
-> Thanks,
-> Raju
+> =C2=A0
+> - out_err:
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0netdev_err(priv->ndev, "ERROR =
+in %s: %d\n", __func__, err);
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0netdev_err(priv->ndev, "ERROR in %s: %d\n", __func__,
+> err);
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0} else {
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0can_put_echo_skb(skb, ndev, tx_head, frame_len);
+
+Not sure if it is save to call this here.
+
+> +
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0/* Stop queue if we occupy the complete TX FIFO */
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0if (mcp251xfd_get_tx_free(tx_ring) =3D=3D 0)
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0netif_sto=
+p_queue(ndev);
+> +
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0netdev_sent_queue(priv->ndev, frame_len);
+
+This is not correct. Should be called only if can_put_echo_skb()
+succeed. I will fix this in v3.
+
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
+> =C2=A0
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return NETDEV_TX_OK;
+> =C2=A0}
+
+Best regards,
+Vitor Soares
 
