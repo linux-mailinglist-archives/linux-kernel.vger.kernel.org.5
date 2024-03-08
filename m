@@ -1,74 +1,48 @@
-Return-Path: <linux-kernel+bounces-97623-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97625-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5E89876CB8
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 23:09:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CB0A876CC1
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 23:10:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1005E1C2130C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 22:09:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8EFD1C219F6
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 22:10:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 317EB60889;
-	Fri,  8 Mar 2024 22:08:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED62E6026D;
+	Fri,  8 Mar 2024 22:10:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xZYiFUk7"
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O2LC/ApK"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC747605B0
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 22:08:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 209AD24B5B;
+	Fri,  8 Mar 2024 22:10:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709935719; cv=none; b=sAJ/Xcp9lHl3VYD3IDnY195BTYyAk3qu9E2LR0vr9rGskd/xin4r5KNmSwjJ7EKy7fAG/aUgF6YQtJyXoMQuT5XhlaH3i2NZNFdVMYcLAUpQPZISHhNR6mm0StfwXPnRvunhplwKynrH7jvjqW3oHDD2Q/KqwXHqnc+loS4MZv4=
+	t=1709935822; cv=none; b=BkWSJAKtawy4pOIESv2HJaKJga8EfNcy6oFvg45QczyoL3VugyPNcwe4L2PaGxpO/sV5SYDiB2tCNSs1xx5y4DMcS960xdduPSefa7RdAeANotEf9jM0G5VWk5elB+BHgIbaxjvYjEkpVNVweKj0YiJP6n1vVlaqe/GgsmmPsco=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709935719; c=relaxed/simple;
-	bh=5u9DxCgppmXza0/wpVNVHXJbUVr3KnjNCvIqClA8mBE=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=CMX/IJmNGSgL++1uE8UqSGVy8Z3sJrMy0rY6wvrQtCyZ3aOWQkN87B0nLtnriyTrX94AEtYdEL9TLio32K9ncTh95V3qn20iQygi54FSovmGy20rrCNnqgVNz+9dXj75d4Ji7NyT8OFVzUbjI+U1Ga91j2UtAS6Up/3TP/oHZmE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=xZYiFUk7; arc=none smtp.client-ip=209.85.167.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-5133bd7eb47so3022704e87.3
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 14:08:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709935716; x=1710540516; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xiv70EIyoAolaEKbYPrfg91si2P2mKJ8bXqLlaDWuLk=;
-        b=xZYiFUk7ESggSMK9Sx+A51BmjSYJAgC+SsP8P5G9WkoXKuCNwtKOOWh5r6u13+M70C
-         jy2oGtMU1FxXVeYs5E4iKxdg28s7qtJleSvxgKpsfJoio3XIKnCIs0Pdz9f/IxZdyGm1
-         YS2h1dDlvatZR7wxeTLltlMqtBs6yiuhkbPcPVfLPq2xGVrF+aGh1imnLPMtu0saOlUT
-         9GJ+nzqrkRR8QeVTKdIJbkjTYe4H1GadJ0iTAronPVZ/yW5/WEB7TlY3RnE2vF1XnO7L
-         u5Z/1SNhKtREVZEV/70NTTbpV9zlCd7lTSlOXgpQnauiEKSaZhIAh1LGuKjllvLwSUqa
-         lRgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709935716; x=1710540516;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xiv70EIyoAolaEKbYPrfg91si2P2mKJ8bXqLlaDWuLk=;
-        b=RvSLIxT2UiCOse6peBw86lzlwyqnKNpyjOMMLEtIIGx8UhTGb0o+B0MUfBIAuZ+BCj
-         Q8kPaO7IknyJlt9E7gvWccKwI6RKqbHNqnEdaIXWWdqyAzTWZvB+zfu3owdioy88Ivz2
-         oE2hjDG3syht5PvrTwyD/zQMsWc2pmT/7tPH/8knf6gT5Q9AKXDkalTMP+dEmOQBsFrU
-         NYWCdAGsSNAPYA9UMlB31J5YtKABHnSHaDzpCzx8b9a39X7jaMRCn3wmDlS9BUC75Fok
-         QqgfTbjJR//yiUqIAZ1e/TbW+o4SDE419UJqIlChlFIY4xVrxrjc7ePjSJpvY5EWODCI
-         o3PA==
-X-Forwarded-Encrypted: i=1; AJvYcCUh1/WI6zMS1BLp5krUp986BhWLgl0CkHcH6Ysz21pInXWeT67tn0JwRlWiW0/YdZ9Y7cGPOvnd8KC+9Fq4WZ4FCvY1uOz32hTiIvDL
-X-Gm-Message-State: AOJu0YxZRuNmiUkaCaJS7hXrkNzyveLN9a8bw9MgRnTFY71ccigVGSnN
-	SZ+nNogiANmJ00zkzC45EyYAO2AiJjsz9yHu76Kk2EjQoh6suoM0yVvCckn04mA=
-X-Google-Smtp-Source: AGHT+IFQ+WmVI2GU3PDAyIWW/rk8kRwoJTIYLIYiPVn8TW0QHNcwRGtUVzrQ9MZ2VZqtjgmsCbLLOQ==
-X-Received: by 2002:ac2:54ad:0:b0:513:5eea:2942 with SMTP id w13-20020ac254ad000000b005135eea2942mr199912lfk.37.1709935716060;
-        Fri, 08 Mar 2024 14:08:36 -0800 (PST)
-Received: from [10.167.154.1] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id a14-20020a056512020e00b005130ff68b87sm78241lfo.109.2024.03.08.14.08.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Mar 2024 14:08:35 -0800 (PST)
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Date: Fri, 08 Mar 2024 23:08:22 +0100
-Subject: [PATCH 3/3] arm64: dts: qcom: qcm2290: Add LMH node
+	s=arc-20240116; t=1709935822; c=relaxed/simple;
+	bh=JIxUciwVa8bzLAqmaXJhXCld/T6pcGUs1jfkE0sEc50=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=fw+Bd95324GMLaScg2ASkaVb6g2cffU7ZG/+he3+adm+dZoUL2ksidSyxLaQEMzILNddfzn5F1qNHDEuT8zIF8auPGHesV3Z8niqX6QDZXIunf20tZUKkN+n1LmS7t3bJmDiL3UeJSg4WHHTqWtrOQvm/gAJJdComxK9fks0y8o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O2LC/ApK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 659A2C433F1;
+	Fri,  8 Mar 2024 22:10:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709935821;
+	bh=JIxUciwVa8bzLAqmaXJhXCld/T6pcGUs1jfkE0sEc50=;
+	h=From:Subject:Date:To:Cc:From;
+	b=O2LC/ApKFv3kKthz3zwVJCgCNdJKl7OLmwvoj+dzh/DqaDo2MYDT5FXYcfG/9UKJ8
+	 nhfHoKUpBi72GPf8x4JnaASrKFVMYida12XU7Dcy4b8Zd5FRGIfDg68gdMENYhfWki
+	 fDS+fMVrrUoLOOJEl56rDM56HdoFmX+CTwLNEmdAWloXCnXyi+rlgnLjLCX5CodM5m
+	 Hyc8xpPron+yxKBCgBDn5jmNdbdNrLnyvogS+XYIvv+jfqO9JtgVHDF9dcQ8EgAWcQ
+	 1IEpzdrzilkEOQaQipBETCTETrGIPG2LPttfPHFZS3pQo0SqnsOskqUlL6lJnvxPo5
+	 Il+PsXFb3crwA==
+From: "Matthieu Baerts (NGI0)" <matttbe@kernel.org>
+Subject: [PATCH net-next 00/15] selftests: mptcp: various improvements
+Date: Fri, 08 Mar 2024 23:10:07 +0100
+Message-Id: <20240308-upstream-net-next-20240308-selftests-mptcp-unification-v1-0-4f42c347b653@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,77 +51,105 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240308-topic-rb1_lmh-v1-3-50c60ffe1130@linaro.org>
-References: <20240308-topic-rb1_lmh-v1-0-50c60ffe1130@linaro.org>
-In-Reply-To: <20240308-topic-rb1_lmh-v1-0-50c60ffe1130@linaro.org>
-To: Bjorn Andersson <andersson@kernel.org>, 
- "Rafael J. Wysocki" <rafael@kernel.org>, 
- Daniel Lezcano <daniel.lezcano@linaro.org>, Zhang Rui <rui.zhang@intel.com>, 
- Lukasz Luba <lukasz.luba@arm.com>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Thara Gopinath <thara.gopinath@gmail.com>, Amit Kucheria <amitk@kernel.org>
-Cc: Marijn Suijten <marijn.suijten@somainline.org>, 
- linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org, 
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, 
- Loic Poulain <loic.poulain@linaro.org>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1709935708; l=1579;
- i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=ghHIdqDBrllaHBUjq5ng+yJ/UVI9wsqAfkk77psz8Gs=;
- b=LUOzr91VCQTW00KvaZATYi/GF/2cy2hmUe9Cq/VCc+E+esGo0fpeEQPT2TldvkzYt3iZYpTp5
- bUqbWUfhqfMBZYK87/ENNWjJ1sk62z2PrRj0ky3lPq9v8f7zY31FG9L
-X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
- pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
+X-B4-Tracking: v=1; b=H4sIAL+M62UC/z2NQQrCQAxFr1KyNjCtUgevIi6GNNGAHYdJKoXSu
+ zsIuviLx4f3NjCuygaXboPKbzV95Qb9oQN6pHxn1KkxDGE4hWOIuBTzymnGzN62Ov4v46c4mxv
+ OxangklWUkjcljpP050gUZUzQ5KWy6PoNX+Gngtu+fwBxzOGakgAAAA==
+To: mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>, 
+ Geliang Tang <geliang@kernel.org>, Geliang Tang <tanggeliang@kylinos.cn>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+ Shuah Khan <shuah@kernel.org>
+Cc: netdev@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, "Matthieu Baerts (NGI0)" <matttbe@kernel.org>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3328; i=matttbe@kernel.org;
+ h=from:subject:message-id; bh=JIxUciwVa8bzLAqmaXJhXCld/T6pcGUs1jfkE0sEc50=;
+ b=owEBbQKS/ZANAwAIAfa3gk9CaaBzAcsmYgBl64zI0uZFA0FjpRYfDGXXfdO0C8/RQ0mFGOuPF
+ RSD6na+38WJAjMEAAEIAB0WIQToy4X3aHcFem4n93r2t4JPQmmgcwUCZeuMyAAKCRD2t4JPQmmg
+ c0l+EADsHYXdOhF3YbBxsBXHpP95w2yKVpcJm8ignaylgQorQof1mcRIQ3zfPQsLR6J2Ff/HHMR
+ NK6iSS6GzYqCn1EomzxlNjS4gcRjJFjIdiEg3VdmZo687YQHeObw3RnuMzBOdWmESXjer4ENMAo
+ TqGq6rgZe0GhE/0vLw5dtToLl+yRGihN9DoysAwB+y8ugSuDNBjfNRqM6CU+sHhRenKZmxiLYqF
+ /2Ajs41PMKGJ2c4v8FTw3qtEErF6XRTB3frwBemSahx2N0p/2DE5a5N25TXvTelydVKMzbnUQuo
+ sznqsRBjavuf2R2FbUTBRJ9/L2MMmtrHg+I9eFUvHP1hZktBeXbHsYkvPnlQYaGauZspXV4lCxU
+ HBYGt116v2JwBuDNJ45iSjSt6s50eSq/pOoGib8WxUwAy1QQaRyZpPSaIL6XUdq3yu1MmRKz+BS
+ ehRH0HubI0+39g34MHQT30Gs0R7HUtPdnM9jMgunxmExgrOlpLmqs+ADvH6/jYvXYDavGr4qgjL
+ LbIUZB+yf/0e9c9D2Wjwbsgr3FyDR7gCMhpiXKqyoqWK9/CgAvXIsU689M23sRHwyDJthhDNzeE
+ 8f0uKQQtGWsNhYgu5vTfV2iif0O72j8CPvxfR6CjStFV2onTMmdlR4QsFogkLrpJ4J2qbymrmTp
+ ZFTJv5m2EixhbjQ==
+X-Developer-Key: i=matttbe@kernel.org; a=openpgp;
+ fpr=E8CB85F76877057A6E27F77AF6B7824F4269A073
 
-From: Loic Poulain <loic.poulain@linaro.org>
+In this series from Geliang, there are various improvements in MPTCP
+selftests: sharing code, doing actions the same way, colours, etc.
 
-Add a node for the Limits Mangement Hardware to ensure it can be
-configured by the operating system.
+Patch 1 prints all error messages to stdout: what was done in almost all
+other MPTCP selftests. This can be now easily changed later if needed.
 
-Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
-[Konrad: add commit msg, rebase]
-Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Patch 2 makes sure the test counter is continuous in mptcp_connect.sh.
+
+Patch 3 aligns the messages that are printed in mptcp_connect.sh.
+
+Patch 4 prints each test results in mptcp_sockopt.sh, similar to what we
+have in the TAP output.
+
+Patch 5 moves the different test counters to a single one in
+mptcp_lib.sh, to uniform how it is used.
+
+Patch 6 moves how titles are printed from mptcp_join.sh to the lib, to
+be reused in patch 7 by all other MPTCP selftests.
+
+Patch 8 uses the '+=' operator to append strings instead of repeating
+twice the variable name: that's shorter, easier to read.
+
+Patch 9 adds colours for the [ OK ], [SKIP], [FAIL] and INFO keywords in
+all MPTCP selftests.
+
+Patch 10 to 12 are some preparation patches for patch 13: patch 10
+modifies how some 'test_fail' helpers, patch 11 moves a helper from
+userspace_pm.sh to the lib, and patch 12 changes where titles are
+printed in userspace_pm.sh. Patch 13 moves some duplicated helpers from
+mptcp_join.sh and userspace_pm.sh to mptcp_lib.sh.
+
+Patch 14 moves duplicated read-only variables from mptcp_join.sh and
+userspace_pm.sh to mptcp_lib.sh as well.
+
+Patch 15 uses explicit variables instead of hard-coded numbers for the
+exit status.
+
+Signed-off-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/qcm2290.dtsi | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+Geliang Tang (15):
+      selftests: mptcp: print all error messages to stdout
+      selftests: mptcp: connect: add dedicated port counter
+      selftests: mptcp: connect: fix misaligned output
+      selftests: mptcp: sockopt: print every test result
+      selftests: mptcp: export TEST_COUNTER variable
+      selftests: mptcp: add print_title in mptcp_lib
+      selftests: mptcp: print test results with counters
+      selftests: mptcp: use += operator to append strings
+      selftests: mptcp: print test results with colors
+      selftests: mptcp: call test_fail without argument
+      selftests: mptcp: extract mptcp_lib_check_expected
+      selftests: mptcp: print_test out of verify_listener_events
+      selftests: mptcp: add mptcp_lib_verify_listener_events
+      selftests: mptcp: declare event macros in mptcp_lib
+      selftests: mptcp: use KSFT_SKIP/KSFT_PASS/KSFT_FAIL
 
-diff --git a/arch/arm64/boot/dts/qcom/qcm2290.dtsi b/arch/arm64/boot/dts/qcom/qcm2290.dtsi
-index 89beac833d43..1aacad50e7fc 100644
---- a/arch/arm64/boot/dts/qcom/qcm2290.dtsi
-+++ b/arch/arm64/boot/dts/qcom/qcm2290.dtsi
-@@ -1858,7 +1858,7 @@ cpufreq_hw: cpufreq@f521000 {
- 			compatible = "qcom,qcm2290-cpufreq-hw", "qcom,cpufreq-hw";
- 			reg = <0x0 0x0f521000 0x0 0x1000>;
- 			reg-names = "freq-domain0";
--			interrupts = <GIC_SPI 37 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupts-extended = <&lmh_cluster 0>;
- 			interrupt-names = "dcvsh-irq-0";
- 			clocks = <&rpmcc RPM_SMD_XO_CLK_SRC>, <&gcc GPLL0>;
- 			clock-names = "xo", "alternate";
-@@ -1866,6 +1866,18 @@ cpufreq_hw: cpufreq@f521000 {
- 			#freq-domain-cells = <1>;
- 			#clock-cells = <1>;
- 		};
-+
-+		lmh_cluster: lmh@f550800 {
-+			compatible = "qcom,qcm2290-lmh", "qcom,sm8150-lmh";
-+			reg = <0x0 0x0f550800 0x0 0x400>;
-+			interrupts = <GIC_SPI 37 IRQ_TYPE_LEVEL_HIGH>;
-+			cpus = <&CPU0>;
-+			qcom,lmh-temp-arm-millicelsius = <65000>;
-+			qcom,lmh-temp-low-millicelsius = <94500>;
-+			qcom,lmh-temp-high-millicelsius = <95000>;
-+			interrupt-controller;
-+			#interrupt-cells = <1>;
-+		};
- 	};
- 
- 	thermal-zones {
+ tools/testing/selftests/net/mptcp/diag.sh          |  19 ++-
+ tools/testing/selftests/net/mptcp/mptcp_connect.sh | 145 +++++++++++----------
+ tools/testing/selftests/net/mptcp/mptcp_join.sh    | 120 +++++++----------
+ tools/testing/selftests/net/mptcp/mptcp_lib.sh     | 113 ++++++++++++++--
+ tools/testing/selftests/net/mptcp/mptcp_sockopt.sh |  53 ++++----
+ tools/testing/selftests/net/mptcp/pm_netlink.sh    |  13 +-
+ tools/testing/selftests/net/mptcp/simult_flows.sh  |  18 +--
+ tools/testing/selftests/net/mptcp/userspace_pm.sh  | 117 +++++------------
+ 8 files changed, 312 insertions(+), 286 deletions(-)
+---
+base-commit: 19cfdc0d57696c92523da8eb26c0f3e092400bee
+change-id: 20240308-upstream-net-next-20240308-selftests-mptcp-unification-6df178cc8f6a
 
+Best regards,
 -- 
-2.44.0
+Matthieu Baerts (NGI0) <matttbe@kernel.org>
 
 
