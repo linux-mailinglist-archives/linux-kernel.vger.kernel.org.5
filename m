@@ -1,299 +1,160 @@
-Return-Path: <linux-kernel+bounces-96813-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96814-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62FE78761C2
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:18:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A66AB8761C3
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:18:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0EA8CB21498
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 10:18:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 000EB2826C0
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 10:18:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1C9153E3B;
-	Fri,  8 Mar 2024 10:17:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4FFF53E28;
+	Fri,  8 Mar 2024 10:18:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tAnOxogi"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BxPOpg+b"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A06AD5381D;
-	Fri,  8 Mar 2024 10:17:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC6C75380F
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 10:18:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709893073; cv=none; b=OLLA3KI64phlpJYcYgaMByKaRRoArnv0GSwI7NU8Ncpn1J/k0bIP5JDBvXbYb43dBzPdZUMwBcoSZm5OiNb405ezgfGYM+ltangYHQFx/QzX221wR8+lAB78cya9L652+3rswdgB6aO24rSPje7Zftb9Rr/FSzF25z8Nz7KjN2I=
+	t=1709893121; cv=none; b=u6i0/ZncFAu/Pr7svlUam6jHj60tKFWfFGibqfe/2rK07NokyrLSaBoy/o4xyX+G4UgK2Q21jP8lmQzTHWsGj+sfCdIXmz1oj5TL5PXSqGeuTH+LeiysrdqUUAetpruDqYqPbOfUG73Lx4bh/iDNoGIeB8zyBuSNqjnRW9Kgjic=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709893073; c=relaxed/simple;
-	bh=/AiXCtOqePehZ6oQmK5vs3o854833GC/H+MSNrC8PN8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LJZ7/2gsgwnViT8AZK/y0vwNY3bOvtgPYQvaTScn+VrbhvmJCRKoLSp/7HaGzeI6xU6vc3NuOzEGSgUGdOiqe0PmNfAZYgq0VXRHDkREKkvVxWlLLnLKJR5z2lVK8B67hV2b40FiA8vBAErzG+brPna6CuEjY4AAqeTAkt+eLF8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tAnOxogi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7B9CC43399;
-	Fri,  8 Mar 2024 10:17:51 +0000 (UTC)
+	s=arc-20240116; t=1709893121; c=relaxed/simple;
+	bh=3uPEOLY0R8u0f839xVMRXXBi8YVsivNFPKf3O1J7qNs=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=e4RomUpYCTBuCHanYNP/35ZdoSOjC2bJ8iRG4XH4XvItS28ryS09vr4RGJTAeB8ZaVoC4LpHB10w9RrDynCqKVFtbMWG+9oOWGDz+UPTuOH136x+HPyGGmprpu1htLL7S8rf72S5HfKozplYzaIo1pVWiDhN0h8ptN+AJZ4kb5s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BxPOpg+b; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9AFEC433F1;
+	Fri,  8 Mar 2024 10:18:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709893073;
-	bh=/AiXCtOqePehZ6oQmK5vs3o854833GC/H+MSNrC8PN8=;
-	h=From:To:Cc:Subject:Date:From;
-	b=tAnOxogi0gTRYofmzDxhXMcxT79AMk5aI2IlvaVoMaD+ZY5ez2TQbMWYZ0d0b39+X
-	 Y7R0Z3Fs6YSsxlP7KE/yZBppTE2EzS52PVAR1bpLMK3pAtrXzi4yeRko1qkwGi5Vf7
-	 ticyYYeZHuRhyYOb65wO8U7vhMvd5FhbuoGw5ZLRXlxCbVDVZigjX2MIwBuSFTIumu
-	 qsEyMKi3ZrIiadJrowsqQYiSAALnZw+N9l4A+Odzn1EO9pd7yXgYQluwbFNfUwqI9J
-	 UnwgNmZA/4BqpSE4t5SLz6zrLPLGJSEesZdKrMtIP3EDSGpdcOBSwF7f9wdkyoRzzo
-	 eAoTKeHVRDIvQ==
-From: Christian Brauner <brauner@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Christian Brauner <brauner@kernel.org>,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [GIT PULL] vfs super
-Date: Fri,  8 Mar 2024 11:17:38 +0100
-Message-ID: <20240308-vfs-super-ebcd3585c240@brauner>
-X-Mailer: git-send-email 2.43.0
+	s=k20201202; t=1709893120;
+	bh=3uPEOLY0R8u0f839xVMRXXBi8YVsivNFPKf3O1J7qNs=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=BxPOpg+bhV+KBS0mLQI78eSs3cndRSQ9NhacMpxaXzdjUxuWwewylGCD6cwzQTXtx
+	 /61cECHK09553s0H9+wZ3aenaI/58yBw0xur53BgOWl5sBfrppOXtcGpddn310YOfH
+	 HLLlHxK5hqoywWofwlrisjhw0/Bdhw23iJaoiGlp5L0JHaYEN3RFooLjemKAZLWnbx
+	 eNSNohMWS8XKGxgSqQNYZ5YAK6d8udR8agt41n8NHvHpDZOyDGXLdVWYp3g53kzGto
+	 QYSoazTKsXE1QA5oOWLDF4g/N89qO4HRz4V+pNy7fBVeqZxjwixYOgqGh/hG5JkVWk
+	 ArJud5hIexy4A==
+X-Mailer: emacs 29.2 (via feedmail 11-beta-1 I)
+From: Aneesh Kumar K.V <aneesh.kumar@kernel.org>
+To: Joel Savitz <jsavitz@redhat.com>, linux-kernel@vger.kernel.org
+Cc: Joel Savitz <jsavitz@redhat.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	Benjamin Gray <bgray@linux.ibm.com>,
+	Paul Mackerras <paulus@ozlabs.org>, linuxppc-dev@lists.ozlabs.org,
+	Gonzalo Siero <gsierohu@redhat.com>
+Subject: Re: [PATCH] powerpc: align memory_limit to 16MB in early_parse_mem
+In-Reply-To: <20240301203023.2197451-1-jsavitz@redhat.com>
+References: <20240301203023.2197451-1-jsavitz@redhat.com>
+Date: Fri, 08 Mar 2024 15:48:33 +0530
+Message-ID: <87jzmduiva.fsf@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=10795; i=brauner@kernel.org; h=from:subject:message-id; bh=/AiXCtOqePehZ6oQmK5vs3o854833GC/H+MSNrC8PN8=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaS+enrkWNmJRTxb6leqVslqxV9ln35IfuX87oret3LGi 1hvMu5g6ihlYRDjYpAVU2RxaDcJl1vOU7HZKFMDZg4rE8gQBi5OAZjIo2aGv/IL47+lHQ+znVKh lnEoS0phdnFZ541pDssvBPsw3bubJc3wV2CLb+gM01rdDxcbVqpU6X44coV54kObb3U1lzVTOx5 LsQIA
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-Hey Linus,
+Joel Savitz <jsavitz@redhat.com> writes:
 
-/* Summary */
-Last cycle we changed opening of block devices in [1]. Now opening a
-block device would return a bdev_handle. This allowed us to implement
-support for restricting and forbidding writes to mounted block devices.
-It was accompanied by converting and adding helpers to operate on
-bdev_handles instead of plain block devices.
+> On 64-bit powerpc, usage of a non-16MB-aligned value for the mem= kernel
+> cmdline parameter results in a system hang at boot.
+>
+> For example, using 'mem=4198400K' will always reproduce this issue.
+>
+> This patch fixes the problem by aligning any argument to mem= to 16MB
+> corresponding with the large page size on powerpc.
+>
+> Fixes: 2babf5c2ec2f ("[PATCH] powerpc: Unify mem= handling")
+> Co-developed-by: Gonzalo Siero <gsierohu@redhat.com>
+> Signed-off-by: Gonzalo Siero <gsierohu@redhat.com>
+> Signed-off-by: Joel Savitz <jsavitz@redhat.com>
+> ---
+>  arch/powerpc/kernel/prom.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/powerpc/kernel/prom.c b/arch/powerpc/kernel/prom.c
+> index 0b5878c3125b..8cd3e2445d8a 100644
+> --- a/arch/powerpc/kernel/prom.c
+> +++ b/arch/powerpc/kernel/prom.c
+> @@ -82,8 +82,12 @@ static int __init early_parse_mem(char *p)
+>  {
+>  	if (!p)
+>  		return 1;
+> -
+> +#ifdef CONFIG_PPC64
+> +	/* Align to 16 MB == size of ppc64 large page */
+> +	memory_limit = ALIGN(memparse(p, &p), 0x1000000);
+> +#else
+>  	memory_limit = PAGE_ALIGN(memparse(p, &p));
+> +#endif
+>  	DBG("memory limit = 0x%llx\n", memory_limit);
+>  
+>  	return 0;
+> -- 
+> 2.43.0
 
-That was already a good step forward but ultimately it isn't necessary
-to have special purpose helpers for opening block devices internally
-that return a bdev_handle.
+Can you try this change?
 
-Fundamentally, opening a block device internally should just be
-equivalent to opening files. So with this pull request all internal
-opens of block devices return files just as a userspace open would.
-Instead of introducing a separate indirection into bdev_open_by_*() via
-struct bdev_handle bdev_file_open_by_*() is made to just return
-a struct file. Opening and closing a block device just becomes
-equivalent to opening and closing a file.
+commit 5555bc55e1aa71f545cff31e1eccdb4a2e39df84
+Author: Aneesh Kumar K.V (IBM) <aneesh.kumar@kernel.org>
+Date:   Fri Mar 8 14:45:26 2024 +0530
 
-This all works well because internally we already have a pseudo fs for
-block devices and so opening block devices is simple. There's a few
-places where we needed to be careful such as during boot when the kernel
-is supposed to mount the rootfs directly without init doing it. Here we
-need to take care to ensure that we flush out any asynchronous file
-close. That's what we already do for opening, unpacking, and closing the
-initramfs. So nothing new here.
-
-The equivalence of opening and closing block devices to regular files is
-a win in and of itself. But it also has various other advantages. We can
-remove struct bdev_handle completely. Various low-level helpers are now
-private to the block layer. Other helpers were simply removable
-completely.
-
-A follow-up series that is already reviewed build on this and makes it
-possible to remove bdev->bd_inode and allows various clean ups of the
-buffer head code as well. All places where we stashed a bdev_handle now
-just stash a file and use simple accessors to get to the actual block
-device which was already the case for bdev_handle.
-
-Link: 3f6984e7301f ("Merge tag 'vfs-6.8.super' of git://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs") [1]
-
-/* Testing */
-clang: Debian clang version 16.0.6 (19)
-gcc: (Debian 13.2.0-7) 13.2.0
-
-All patches are based on v6.8-rc1 and have been sitting in linux-next.
-No build failures or warnings were observed.
-
-This series has been in -next for a very long time and it held up in
-xfstests and in blktests so far.
-
-/* Conflicts */
-
-Merge conflicts with other trees
-================================
-
-[1] linux-next: manual merge of the block tree with the vfs-brauner tree
-    https://lore.kernel.org/linux-next/20240206124852.6183d0f7@canb.auug.org.au
-
-    Full transparency: I had intended to coordinate this merge with Jens
-    to minimize the conflict but I just remembered the merge conflict
-    right now as I went through all the conflicts I had written down.
-
-[2] linux-next: manual merge of the vfs-brauner tree with the bcachefs tree
-    https://lore.kernel.org/linux-next/20240213100455.07e181c8@canb.auug.org.au
-
-[3] linux-next: manual merge of the vfs-brauner tree with the bcachefs tree
-    https://lore.kernel.org/linux-next/20240215100517.027fd255@canb.auug.org.au
-
-[4] linux-next: manual merge of the vfs-brauner tree with the bcachefs tree
-    https://lore.kernel.org/linux-next/20240226111257.2784c310@canb.auug.org.au
-
-[5] linux-next: manual merge of the vfs-brauner tree with the xfs tree
-    https://lore.kernel.org/linux-next/20240227102827.313113cd@canb.auug.org.au
-
-[6] linux-next: manual merge of the vfs-brauner tree with the f2fs tree
-    https://lore.kernel.org/linux-next/20240229104140.2927da29@canb.auug.org.au
-
-Merge conflicts with mainline
-=============================
-
-[1] There's a merge conflict with bcachefs that can be resolved as follows:
-
-    diff --cc fs/bcachefs/super-io.c
-    index 36988add581f,ce8cf2d91f84..000000000000
-    --- a/fs/bcachefs/super-io.c
-    +++ b/fs/bcachefs/super-io.c
-    @@@ -715,11 -715,11 +715,11 @@@ retry
-                            opt_set(*opts, nochanges, true);
-            }
+    powerpc/mm: Align memory_limit value specified using mem= kernel parameter
     
-    -       if (IS_ERR(sb->bdev_handle)) {
-    -               ret = PTR_ERR(sb->bdev_handle);
-    +       if (IS_ERR(sb->s_bdev_file)) {
-    +               ret = PTR_ERR(sb->s_bdev_file);
-     -              goto out;
-     +              goto err;
-            }
-    -       sb->bdev = sb->bdev_handle->bdev;
-    +       sb->bdev = file_bdev(sb->s_bdev_file);
+    The value specified for the memory limit is used to set a restriction on
+    memory usage. It is important to ensure that this restriction is within
+    the linear map kernel address space range. The hash page table
+    translation uses a 16MB page size to map the kernel linear map address
+    space. htab_bolt_mapping() function aligns down the size of the range
+    while mapping kernel linear address space. Since the memblock limit is
+    enforced very early during boot, before we can detect the type of memory
+    translation (radix vs hash), we align the memory limit value specified
+    as a kernel parameter to 16MB. This alignment value will work for both
+    hash and radix translations.
     
-            ret = bch2_sb_realloc(sb, 0);
-            if (ret) {
+    Signed-off-by: Aneesh Kumar K.V (IBM) <aneesh.kumar@kernel.org>
 
-The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
-
-  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
-
-are available in the Git repository at:
-
-  git@gitolite.kernel.org:pub/scm/linux/kernel/git/vfs/vfs tags/vfs-6.9.super
-
-for you to fetch changes up to 40ebc18b991bdb867bc693a4ac1b5d7db44838f3:
-
-  Merge series 'Open block devices as files' of https://lore.kernel.org/r/20240123-vfs-bdev-file-v2-0-adbd023e19cc@kernel.org (2024-02-25 12:05:28 +0100)
-
-Please consider pulling these changes from the signed vfs-6.9.super tag.
-
-Thanks!
-Christian
-
-----------------------------------------------------------------
-vfs-6.9.super
-
-----------------------------------------------------------------
-Christian Brauner (36):
-      init: flush async file closing
-      file: prepare for new helper
-      file: add alloc_file_pseudo_noaccount()
-      bdev: open block device as files
-      block/ioctl: port blkdev_bszset() to file
-      block/genhd: port disk_scan_partitions() to file
-      md: port block device access to file
-      swap: port block device usage to file
-      power: port block device access to file
-      xfs: port block device access to files
-      drbd: port block device access to file
-      pktcdvd: port block device access to file
-      rnbd: port block device access to file
-      xen: port block device access to file
-      zram: port block device access to file
-      bcache: port block device access to files
-      block2mtd: port device access to files
-      nvme: port block device access to file
-      s390: port block device access to file
-      target: port block device access to file
-      bcachefs: port block device access to file
-      btrfs: port device access to file
-      erofs: port device access to file
-      ext4: port block device access to file
-      f2fs: port block device access to files
-      jfs: port block device access to file
-      nfs: port block device access to files
-      ocfs2: port block device access to file
-      reiserfs: port block device access to file
-      bdev: remove bdev_open_by_path()
-      bdev: make bdev_{release, open_by_dev}() private to block layer
-      bdev: make struct bdev_handle private to the block layer
-      bdev: remove bdev pointer from struct bdev_handle
-      block: don't rely on BLK_OPEN_RESTRICT_WRITES when yielding write access
-      block: remove bdev_handle completely
-      Merge series 'Open block devices as files' of https://lore.kernel.org/r/20240123-vfs-bdev-file-v2-0-adbd023e19cc@kernel.org
-
- block/bdev.c                        | 252 ++++++++++++++++++++++--------------
- block/blk.h                         |   4 +
- block/fops.c                        |  46 +++----
- block/genhd.c                       |  12 +-
- block/ioctl.c                       |   9 +-
- drivers/block/drbd/drbd_int.h       |   4 +-
- drivers/block/drbd/drbd_nl.c        |  58 ++++-----
- drivers/block/pktcdvd.c             |  68 +++++-----
- drivers/block/rnbd/rnbd-srv.c       |  28 ++--
- drivers/block/rnbd/rnbd-srv.h       |   2 +-
- drivers/block/xen-blkback/blkback.c |   4 +-
- drivers/block/xen-blkback/common.h  |   4 +-
- drivers/block/xen-blkback/xenbus.c  |  37 +++---
- drivers/block/zram/zram_drv.c       |  26 ++--
- drivers/block/zram/zram_drv.h       |   2 +-
- drivers/md/bcache/bcache.h          |   4 +-
- drivers/md/bcache/super.c           |  74 +++++------
- drivers/md/dm.c                     |  23 ++--
- drivers/md/md.c                     |  12 +-
- drivers/md/md.h                     |   2 +-
- drivers/mtd/devices/block2mtd.c     |  46 +++----
- drivers/nvme/target/io-cmd-bdev.c   |  16 +--
- drivers/nvme/target/nvmet.h         |   2 +-
- drivers/s390/block/dasd.c           |  10 +-
- drivers/s390/block/dasd_genhd.c     |  36 +++---
- drivers/s390/block/dasd_int.h       |   2 +-
- drivers/s390/block/dasd_ioctl.c     |   2 +-
- drivers/target/target_core_iblock.c |  18 +--
- drivers/target/target_core_iblock.h |   2 +-
- drivers/target/target_core_pscsi.c  |  22 ++--
- drivers/target/target_core_pscsi.h  |   2 +-
- fs/bcachefs/super-io.c              |  20 +--
- fs/bcachefs/super_types.h           |   2 +-
- fs/btrfs/dev-replace.c              |  14 +-
- fs/btrfs/ioctl.c                    |  16 +--
- fs/btrfs/volumes.c                  |  92 ++++++-------
- fs/btrfs/volumes.h                  |   4 +-
- fs/cramfs/inode.c                   |   2 +-
- fs/erofs/data.c                     |   6 +-
- fs/erofs/internal.h                 |   2 +-
- fs/erofs/super.c                    |  16 +--
- fs/ext4/ext4.h                      |   2 +-
- fs/ext4/fsmap.c                     |   8 +-
- fs/ext4/super.c                     |  52 ++++----
- fs/f2fs/f2fs.h                      |   2 +-
- fs/f2fs/super.c                     |  12 +-
- fs/file_table.c                     |  83 +++++++++---
- fs/jfs/jfs_logmgr.c                 |  26 ++--
- fs/jfs/jfs_logmgr.h                 |   2 +-
- fs/jfs/jfs_mount.c                  |   2 +-
- fs/nfs/blocklayout/blocklayout.h    |   2 +-
- fs/nfs/blocklayout/dev.c            |  68 +++++-----
- fs/ocfs2/cluster/heartbeat.c        |  32 ++---
- fs/reiserfs/journal.c               |  38 +++---
- fs/reiserfs/procfs.c                |   2 +-
- fs/reiserfs/reiserfs.h              |   8 +-
- fs/romfs/super.c                    |   2 +-
- fs/super.c                          |  18 +--
- fs/xfs/xfs_buf.c                    |  10 +-
- fs/xfs/xfs_buf.h                    |   4 +-
- fs/xfs/xfs_super.c                  |  44 +++----
- include/linux/blkdev.h              |  13 +-
- include/linux/device-mapper.h       |   2 +-
- include/linux/file.h                |   2 +
- include/linux/fs.h                  |   4 +-
- include/linux/pktcdvd.h             |   4 +-
- include/linux/swap.h                |   2 +-
- init/do_mounts.c                    |   3 +
- init/do_mounts.h                    |   9 ++
- init/initramfs.c                    |   6 +-
- kernel/power/swap.c                 |  28 ++--
- mm/swapfile.c                       |  22 ++--
- 72 files changed, 812 insertions(+), 703 deletions(-)
+diff --git a/arch/powerpc/kernel/prom.c b/arch/powerpc/kernel/prom.c
+index 0b5878c3125b..9bd965d35352 100644
+--- a/arch/powerpc/kernel/prom.c
++++ b/arch/powerpc/kernel/prom.c
+@@ -824,8 +824,11 @@ void __init early_init_devtree(void *params)
+ 		reserve_crashkernel();
+ 	early_reserve_mem();
+ 
+-	/* Ensure that total memory size is page-aligned. */
+-	limit = ALIGN(memory_limit ?: memblock_phys_mem_size(), PAGE_SIZE);
++	if (memory_limit > memblock_phys_mem_size())
++		memory_limit = 0;
++
++	/* Align down to 16 MB which is large page size with hash page translation */
++	limit = ALIGN_DOWN(memory_limit ?: memblock_phys_mem_size(), SZ_16M);
+ 	memblock_enforce_memory_limit(limit);
+ 
+ #if defined(CONFIG_PPC_BOOK3S_64) && defined(CONFIG_PPC_4K_PAGES)
+diff --git a/arch/powerpc/kernel/prom_init.c b/arch/powerpc/kernel/prom_init.c
+index e67effdba85c..d6410549e141 100644
+--- a/arch/powerpc/kernel/prom_init.c
++++ b/arch/powerpc/kernel/prom_init.c
+@@ -817,8 +817,8 @@ static void __init early_cmdline_parse(void)
+ 		opt += 4;
+ 		prom_memory_limit = prom_memparse(opt, (const char **)&opt);
+ #ifdef CONFIG_PPC64
+-		/* Align to 16 MB == size of ppc64 large page */
+-		prom_memory_limit = ALIGN(prom_memory_limit, 0x1000000);
++		/* Align down to 16 MB which is large page size with hash page translation */
++		prom_memory_limit = ALIGN_DOWN(prom_memory_limit, SZ_16M);
+ #endif
+ 	}
+ 
 
