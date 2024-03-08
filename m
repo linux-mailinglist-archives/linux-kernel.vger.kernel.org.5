@@ -1,50 +1,49 @@
-Return-Path: <linux-kernel+bounces-97391-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97392-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 630788769F0
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:30:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 004118769F3
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:31:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 196EE1F22301
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:30:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 952411F21FE9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:31:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22DFA4F213;
-	Fri,  8 Mar 2024 17:30:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 673F640853;
+	Fri,  8 Mar 2024 17:30:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="zZ9WRtmj"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="HoJR+jDg"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61C7817BDC;
-	Fri,  8 Mar 2024 17:30:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A43333309E
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 17:30:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709919003; cv=none; b=isOHC5nakSFOdIvF2x0AewzqOrsyA1WLJ7XO6SHoDaEONQwAs8m09PPEmDhxImVKQwbPahRSaMVDISZ9DwCqgoXYmEvEzgEGOeaVqYsEdqFR56zNkP1L8oG3muRecMDFQ6vkWRT4dgAdE1NbzkC1amGxdJ4q2wPxOtBWTBcYcBU=
+	t=1709919026; cv=none; b=XqgndkvIqesbn6hGIBGZcaNOaZWB5pynQuLyMsnNQ0aHruPe9UYBTabwfCeAMKIqaamkYCm73fqqe9MjSaqFSYR1q/rpiK/pfNJ1g2fRXh51COXfeS9zzHzolXlBQkvqqIznfSxjXxYU6S2qhk3rkLV3Vy0pSfKeaubtIjlUHhc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709919003; c=relaxed/simple;
-	bh=+fYU4rVa57612tN4lcMLxbO7KHDmsQ7TxqDmyM2EsSA=;
+	s=arc-20240116; t=1709919026; c=relaxed/simple;
+	bh=0tjok9qYVr02zjkLB7D5hc/K8Id5Sl72q3jr/3O8PGg=;
 	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=ei6gXjEBU91mjiBvDR7+bEGEbyfJZ5np/AG4EkMuzDZuDLQJolThWjT2Fow5cw+QjkLTXtpP/G+3mT4eAtO+CadaRVuyTilAp7Q9H48T1J+DgLtnIl4bObKRIXQtTZoOFCulHUg+Z4yLYaNvjvdj7EcDyMDx2O/1Aq5OCpwwVbs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=zZ9WRtmj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67719C433C7;
-	Fri,  8 Mar 2024 17:30:02 +0000 (UTC)
+	 Content-Disposition; b=feuv/JGnVt/BS5ixmXHL1pwI+DdzY93+vRJywV8Etbvw/0TJhvHOCW8LCSVcusQsFIG8Cmj6dTP86v4HJsUHcSXwFJOzFAVqaEQ1NXoXU8qpGUk3Rwyt3kDtw9KY3mHdVhy/h/vqBYFOlKThzfaRaku1Uf9BoAgGd1JOgaNecb8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=HoJR+jDg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCE97C433F1;
+	Fri,  8 Mar 2024 17:30:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1709919002;
-	bh=+fYU4rVa57612tN4lcMLxbO7KHDmsQ7TxqDmyM2EsSA=;
+	s=korg; t=1709919026;
+	bh=0tjok9qYVr02zjkLB7D5hc/K8Id5Sl72q3jr/3O8PGg=;
 	h=Date:From:To:Cc:Subject:From;
-	b=zZ9WRtmj1mMb1Bc38bj3FGl7FIVLGdG19Iel4dI6Qv/TsmSjWmwb3QdK75VPA1pO6
-	 A2D72zko9YGI7X5b+Ja04lqS6das5srg4fH1LXw60An8GMSqHP8vguGWrreVIw3ZTg
-	 wPBYgj3VZ+kSWIjvtXoA+LCzzSpdaY6nyms7lLKU=
-Date: Fri, 8 Mar 2024 17:29:59 +0000
+	b=HoJR+jDgpSaSNAL51JU6K8X/bgKfm85kpgbmBO/RbqPPiBu/sGhLL6M4lP4aMbLLA
+	 XpN3kBCaYfhfC/hppd68ANNLL0811n+DdsX1LsZQOpiRxKjlry9pjti1xwMgZ9buax
+	 J0uCr3v3L6CAy7VFdx2EsKWedCLf7hVS4NHhL95o=
+Date: Fri, 8 Mar 2024 17:30:23 +0000
 From: Greg KH <gregkh@linuxfoundation.org>
 To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Jiri Slaby <jslaby@suse.cz>, Stephen Rothwell <sfr@canb.auug.org.au>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: [GIT PULL] TTY/Serial driver fixes for 6.8-rc8
-Message-ID: <ZetLF6nPrugVB28o@kroah.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Char/Misc driver fixes for 6.8-rc8
+Message-ID: <ZetLL3YjQ32l-2pW@kroah.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,58 +53,94 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-The following changes since commit d206a76d7d2726f3b096037f2079ce0bd3ba329b:
+The following changes since commit b401b621758e46812da61fa58a67c3fd8d91de0d:
 
-  Linux 6.8-rc6 (2024-02-25 15:46:06 -0800)
+  Linux 6.8-rc5 (2024-02-18 12:56:25 -0800)
 
 are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tags/tty-6.8-rc8
+  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git tags/char-misc-6.8-rc8
 
-for you to fetch changes up to 3d9319c27ceb35fa3d2c8b15508967f3fc7e5b78:
+for you to fetch changes up to a0776c214d47ea4f7aaef138095beaa41cff03ef:
 
-  Revert "tty: serial: simplify qcom_geni_serial_send_chunk_fifo()" (2024-03-05 13:40:34 +0000)
+  mei: gsc_proxy: match component when GSC is on different bus (2024-03-05 14:30:09 +0000)
 
 ----------------------------------------------------------------
-TTY/Serial fixes for 6.8-rc8 (or -final)
+Char/Misc driver changes for 6.8-rc8 (or -final)
 
-Here are some small remaining tty/serial driver fixes for 6.8-rc8.
-Included in here is fixes for:
-  - vt unicode buffer corruption fix
-  - imx serial driver fixes, again
-  - port suspend fix
-  - 8250_dw driver fix
-  - fsl_lpuart driver fix
-  - revert for the qcom_geni_serial driver to fix a reported regression
+Here are a few small char/misc and other driver subsystem fixes for
+reported issues that have been in my tree for inclusion in 6.8-rc8 or
+-final, which ever is next.
 
-All of these have been in linux-next with no reported issues.
+Included in here are fixes for:
+  - iio driver fixes for reported problems
+  - much reported bugfix for a lis3lv02d_i2c regression
+  - comedi driver bugfix
+  - mei new device ids
+  - mei driver fixes
+  - counter core fix
+
+All of these have been in linux-next with no reported issues, some for
+many weeks.
 
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ----------------------------------------------------------------
-Douglas Anderson (1):
-      Revert "tty: serial: simplify qcom_geni_serial_send_chunk_fifo()"
+Alexander Usyskin (3):
+      mei: me: add arrow lake point S DID
+      mei: me: add arrow lake point H DID
+      mei: gsc_proxy: match component when GSC is on different bus
 
-Nicolas Pitre (1):
-      vt: fix unicode buffer corruption when deleting characters
+Cosmin Tanislav (2):
+      iio: accel: adxl367: fix DEVID read after reset
+      iio: accel: adxl367: fix I2C FIFO data register
 
-Peter Collingbourne (1):
-      serial: 8250_dw: Do not reclock if already at correct rate
+Ekansh Gupta (1):
+      misc: fastrpc: Pass proper arguments to scm call
 
-Rickard x Andersson (1):
-      tty: serial: imx: Fix broken RS485
+Frej Drejhammar (1):
+      comedi: comedi_8255: Correct error in subdevice initialization
 
-Sherry Sun (1):
-      tty: serial: fsl_lpuart: avoid idle preamble pending if CTS is enabled
+Greg Kroah-Hartman (2):
+      Merge tag 'counter-fixes-for-6.8b' of https://git.kernel.org/pub/scm/linux/kernel/git/wbg/counter into char-misc-linus
+      Merge tag 'iio-fixes-for-6.8b' of https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio into char-misc-linus
 
-Yicong Yang (1):
-      serial: port: Don't suspend if the port is still busy
+Hans de Goede (1):
+      misc: lis3lv02d_i2c: Fix regulators getting en-/dis-abled twice on suspend/resume
 
- drivers/tty/serial/8250/8250_dw.c     |  6 +++---
- drivers/tty/serial/fsl_lpuart.c       |  7 +++++--
- drivers/tty/serial/imx.c              | 22 ++++++++++++++++++----
- drivers/tty/serial/qcom_geni_serial.c | 10 ++++++----
- drivers/tty/serial/serial_port.c      | 25 ++++++++++++++++++++++++-
- drivers/tty/vt/vt.c                   |  2 +-
- 6 files changed, 57 insertions(+), 15 deletions(-)
+Ian Abbott (1):
+      comedi: comedi_test: Prevent timers rescheduling during deletion
+
+Jean-Baptiste Maneyrol (2):
+      iio: imu: inv_mpu6050: fix FIFO parsing when empty
+      iio: imu: inv_mpu6050: fix frequency setting when chip is off
+
+Kees Cook (1):
+      iio: pressure: dlhl60d: Initialize empty DLH bytes
+
+Nuno Sa (1):
+      counter: fix privdata alignment
+
+Vasileios Amoiridis (1):
+      iio: pressure: Fixes BMP38x and BMP390 SPI support
+
+Wentong Wu (1):
+      mei: Add Meteor Lake support for IVSC device
+
+ drivers/comedi/drivers/comedi_8255.c          |  1 +
+ drivers/comedi/drivers/comedi_test.c          | 30 +++++++++++++---
+ drivers/counter/counter-core.c                |  7 ++--
+ drivers/iio/accel/adxl367.c                   |  8 +++--
+ drivers/iio/accel/adxl367_i2c.c               |  2 +-
+ drivers/iio/imu/inv_mpu6050/inv_mpu_ring.c    |  2 ++
+ drivers/iio/imu/inv_mpu6050/inv_mpu_trigger.c |  5 +++
+ drivers/iio/pressure/bmp280-spi.c             | 50 ++++++++++++++++++++++++++-
+ drivers/iio/pressure/dlhl60d.c                |  7 ++--
+ drivers/misc/fastrpc.c                        | 10 +++---
+ drivers/misc/lis3lv02d/lis3lv02d_i2c.c        | 21 ++++++-----
+ drivers/misc/mei/gsc_proxy/mei_gsc_proxy.c    |  8 +++--
+ drivers/misc/mei/hw-me-regs.h                 |  2 ++
+ drivers/misc/mei/pci-me.c                     |  2 ++
+ drivers/misc/mei/vsc-tp.c                     |  1 +
+ 15 files changed, 126 insertions(+), 30 deletions(-)
 
