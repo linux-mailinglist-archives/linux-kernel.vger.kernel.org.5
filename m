@@ -1,170 +1,370 @@
-Return-Path: <linux-kernel+bounces-97108-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97107-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 836D687659D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:49:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4015787659C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:49:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 18723288B00
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:49:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1CE2FB238FF
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:49:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12AC53FBA7;
-	Fri,  8 Mar 2024 13:49:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="G+VsO23I"
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2050.outbound.protection.outlook.com [40.107.212.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 913491DA5F
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 13:49:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.212.50
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709905749; cv=fail; b=R9wewOmkemhhIBO1o+FguQ+pOP4RpPx6SBlKd4iy6wkBMjBste686+raqydQCTEYVqKok5kW3gU8oRv5TYc1JDMIIgVzommHNxJTaoOdGrVHzqI29ZnE5Q5DO/B5ukQWLdujEBzybM5RPlVIAFukFFmdnXRB7Uiz6h7xtLhK3xI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709905749; c=relaxed/simple;
-	bh=CQso5UPv9hsuFhUkynFHinzkzd9owjWkneXDx3r7IBg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=iXUhKn75xLWFLtiwJrWxBeMyMFcAhhwRVZa3ib+G2D4JDdsP+N2FNyOh05ZVMC4rIT5FoLmcAeX1ozdnvlrYwslz0bItda6c8zME9uuEkEPDjLqs3xHwCy6veyZqxNuuj5v7ca/HKQq274JgV8I415xkfVSkS6dENWCb2xrzJv0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=G+VsO23I; arc=fail smtp.client-ip=40.107.212.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=g44BbU7M8MYbGRh1c5vIJDc3QEv1KvHKljV2SZCvrVhXhC2tEGgR9WPvYS0QoKB++dAC3xOVEZFgw9bV9TY9hZLuBIp0r+X3UptdTyQSOhPvOsXMAZF8319irYHtTaYyalN99cPhZ9jf9u6FAvWTI7ZuXnPK+OtNu2AtaE/SYETKHEm26Zpj3upKHfGn/8JpC3D6+fHN3OGuvscV7QapNTauqcOY3Faddr7xiZjqssXY/sbTEPmLhU8Zxob7OWRto8Oc4vMlNDrCE6zmZd4tgO6SEbaJCFyKO/HflMwOhvLfa7setCBnICoXflEW6BZoEfuWMTUIzMNOqpb7qc1LQg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=QNDYF+WS7stqij01bGZcYQvfiCeYI7ke+63nUTPHPgI=;
- b=VSEL5It+3T1Bq7xNNNhRuyGA3rga2SlidOydjHGrQNygCOcVQ+GnDmHyexznd6PoaoDjcteRNSRtGRJpjkeT51nJKGkKbvWJOUgkvHIEmsfWwecWatniDyt6fNkJ39v8tUb0U0klgGqxvVaHhpN0xSoErMpLakAxXAGp01cEidA2JdS6iP//ol5nfAo6LdSDNnUmJ+Gzvern5Mns4xHuqjCS/OqXdIddA2O2shxmDd+rzPPbLMA6wSn0far01IT6jBIrRXEoiabfWYNHNFKsCXEUgNoL2qtnEt6xsvYhssLu4N+cgwY21lZbVE/BiahTCR0efKEoil+254opzD660g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QNDYF+WS7stqij01bGZcYQvfiCeYI7ke+63nUTPHPgI=;
- b=G+VsO23IJo+7atKWhWz8vUr0+cKxxQ6ywUhkOpuodHRhh9Zh1+GH92CatvZ+7ixwlAC4TzFc9l2LRePFJ89D8d3mpea8Xh+BZ982wfqkTeEIr9qppeDQRac0lObrlB2qqszN1ao0m2QQpqxHlgageJcyQPMKbU3z9GYzfvdCyEYZ/8SSNNHx9nJHd2Iw6FlE86ihs26J0wj5rr8Ne1LTJdLH4bSiPcwyritPzhObCDUZG3BWA2ddhfsNTarOXXAklPlUa1wWZML23rugaMRRF09UGvqqjOb45Ugjm9j+d47TMt+XUKwDpz9tQbNdLJR+BRgK3qPyJ0JkhifbRP2ACg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3849.namprd12.prod.outlook.com (2603:10b6:5:1c7::26)
- by DM6PR12MB4282.namprd12.prod.outlook.com (2603:10b6:5:223::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.27; Fri, 8 Mar
- 2024 13:49:04 +0000
-Received: from DM6PR12MB3849.namprd12.prod.outlook.com
- ([fe80::6aec:dbca:a593:a222]) by DM6PR12MB3849.namprd12.prod.outlook.com
- ([fe80::6aec:dbca:a593:a222%5]) with mapi id 15.20.7362.019; Fri, 8 Mar 2024
- 13:48:58 +0000
-Date: Fri, 8 Mar 2024 09:48:56 -0400
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Cc: linux-kernel@vger.kernel.org, iommu@lists.linux.dev, joro@8bytes.org,
-	yi.l.liu@intel.com, kevin.tian@intel.com, nicolinc@nvidia.com,
-	eric.auger@redhat.com, vasant.hegde@amd.com, jon.grimm@amd.com,
-	santosh.shukla@amd.com, Dhaval.Giani@amd.com, pandoh@google.com,
-	loganodell@google.com
-Subject: Re: [RFCv2 PATCH 1/7] iommu/amd: Introduce struct gcr3_tbl_info.giov
-Message-ID: <20240308134856.GI9179@nvidia.com>
-References: <20240112000646.98001-1-suravee.suthikulpanit@amd.com>
- <20240112000646.98001-2-suravee.suthikulpanit@amd.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240112000646.98001-2-suravee.suthikulpanit@amd.com>
-X-ClientProxiedBy: SN4PR0501CA0011.namprd05.prod.outlook.com
- (2603:10b6:803:40::24) To DM6PR12MB3849.namprd12.prod.outlook.com
- (2603:10b6:5:1c7::26)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B49513BBE0;
+	Fri,  8 Mar 2024 13:49:08 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F8CA3FB9E
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 13:49:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709905747; cv=none; b=cwvNrag6+XVKYL9BG2tu/fesc+5Ws8il4rOLbylEhirDayJeDyc9TB2aQS2O96iP12TYYY8RAUPc9yOV9WIywwEK92h41vz7bajJOnj+6xRIOp3nQM1k9o6wgMD33WBkxNm4cN4ROvUTcMklK/FtsYO/urep38KALv/zvLkwONI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709905747; c=relaxed/simple;
+	bh=WNQm5ukdEY+T1sxmfUmEjdi0/4Ug5eSfxIuRTepwbtY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=G1pDHSryoujxliY/Ap56JFeyDtkvO73EU3t/MWaH3e1EUkT/UrVrkqyHZzyaeurCDDCg5ajhV75Gsx429xUZq4fYajEgvQoao7847l4l6uTVG7MxWUN7rhWNVZqigv/Tx55NezcToRoJBhCggOmb58QIpsqJmQX0kw9Ba7avsXQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C87D8C15;
+	Fri,  8 Mar 2024 05:49:40 -0800 (PST)
+Received: from [10.57.70.163] (unknown [10.57.70.163])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2A19B3F762;
+	Fri,  8 Mar 2024 05:49:01 -0800 (PST)
+Message-ID: <b20b4dbc-bf49-4f44-985b-4d21c86f5f59@arm.com>
+Date: Fri, 8 Mar 2024 13:48:59 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3849:EE_|DM6PR12MB4282:EE_
-X-MS-Office365-Filtering-Correlation-Id: 67282cab-89f9-49d5-a25c-08dc3f768130
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	+CCgUpKl3orKVTjKVMKK0tbRf9S7bVTStUBvurB9Oulxg2zeh7U7x6xfKdAxVVxa0NJ9RU8kDyBUKJCi8/2d2XZYPUl8f6FxEWtpUeRX1nRcoYvRW8hIR2PKXZe5RC8TrynE+xUJnmgbl99VXGY3uuyrVWEQ/wss9oOJOnQEr9ZkL1YmVOGbh7UiQCTvfmrgGCi3fVl2lr6lewAGxSxOP2zyWbJlmhJPlDRDtR/T1GxcViaWjUvz2uuZ/kHBpivEdtxOTWrda2e8DjRBS5PFCw/CEx8Dd3LljB7Oa89dVYLXlTPIkA9WOnYQ1rGT/kx1iyQvpGBIkr+I0E+3+1xzyIDdMmTaf+GvkLXF7tTLZanVMrcFNwD5p9MVfBtuSLJj1/BD8llNdaaI24l6OohU+3s+EVIPZIxNsMT1ypaBqrn6xsh+iHUi4iwm/Vr4vp13X9puCUAWpHAqajHnsHmtNq+bgpdBNtDG30z/7ZFNGdh2bh2yA9o+6EfJ8JXVR1xmthpNqGoBoPNIJzNlcGFoCAprHV1bzGmuOskZio4KG+XhRWAaCmRACiJn/gI5khApo8JyszhDgZ7bCp/9afkSZzm8tHol/ZPrBIza1vAuxHAZ5IaxG7EPm2WxNWyyqXKAdq2UFquRXkaGwDyq6pP/dQioB+iAlQ0XBT0JzceWRTo=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3849.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?2PPhY5S1SdKoAKkJG7RFNXHg1S4Csdn/4LhG37bcT3uWUpkEWgv6BAprEfIJ?=
- =?us-ascii?Q?CRV98MFRuteuhwsgYpZridLwwcx2N6lKu+2hFL53BNYqhTqYBcN6P3EAz5yA?=
- =?us-ascii?Q?XuHAg4DoBWMl6L+kzfVJ5RwilUEg8aUbUvuEnoSQc9klhPQ/1MeQ/k0KcdLn?=
- =?us-ascii?Q?BebPOAMKBW9Ws+5/rIkjFb1OSPJTGAr1kWNHE7AmJRMN7xiV09DPBbEJUw19?=
- =?us-ascii?Q?1nzipKPhtUAq8aZxgKPhiPmhEhOT8bw/dUj4BBvEIhsaZfxIHBoYzVa+kStL?=
- =?us-ascii?Q?2M5VkKdsQKv2Vijc7oJJCLY00Nk71VKpYBxKPT/N/gLEOPAclPI9PoIlNw2U?=
- =?us-ascii?Q?viE+fR3MBUMmrHMH7wg4oNeTeq82+7/HzS8PCge8MSofMerA6/PFviq31veI?=
- =?us-ascii?Q?qXnILRQbjPWbHRHe69S5RUvRXqHXLw1IPk/OPd2iTS2Sf6//3YbCUoKrCx7V?=
- =?us-ascii?Q?tCnR0rLpSFDbq0nIn1WIImB1PSjr+Cf0OpnRhcSFag+zYO9WXFubLQKVhMLR?=
- =?us-ascii?Q?RbDTPCb/8LjvitPtoENqNgOtWzw32PdK3dPydCvcH0U5ORkrDvFqaq1tu2u2?=
- =?us-ascii?Q?YzC4nDB/l0P05gZtOw0WjSc/Jf1AaVw/D36bwGWWCHnqxMoOhwoKm1cZkHsq?=
- =?us-ascii?Q?+pTun1MomL+N67sCinAf/rmqoTu6DOepgYHNcw31SFh2/WUl8IsnsGMVmV2D?=
- =?us-ascii?Q?Wfd8um/rVHE2+WSdRy3qdxikmP1o5XOKolCRsaPkbE90YAkZPi4e/Q081jC1?=
- =?us-ascii?Q?3lOzWy++9VMXqT4ow9JwO50kRLHdO8zh4Uyp89AXW/v9DEg85nQQOT7yURON?=
- =?us-ascii?Q?qG087V9MqbsZsaJGnNr3guYKoQXJeJHkFacviwSAv8DAEha0ADLSURPsq0sf?=
- =?us-ascii?Q?Lz0IUjC+D+OWX9NbsDPdvdoKq2qcPmamboQvH0we8BB0J6WuQt3CekkLVHHV?=
- =?us-ascii?Q?ULMiCJ8MBTPo2aTW5jcW9NJeQRClGs0sVylDiQFgGSJIGw1oOIjj5h/aE/t9?=
- =?us-ascii?Q?vxBgj1Aqj0rdrXm6qLpyOuBIAti0B2SVaftiR0WMe6zaT/l0tH1b2dUune4V?=
- =?us-ascii?Q?2Wm3ftXrH3X93nV4qCr2jA+emM7SULrM3n+O0H9FP0z6INtpgjzXn5oit6oX?=
- =?us-ascii?Q?IeULBlqaYurvwovoFhaCLFw19wHibEt7SOgMtcXbsi3ud4IYaMfd+XH50kNO?=
- =?us-ascii?Q?RhPR3kGruEqon4WJ3C4/Do1CrlftWltSqMrO5pHU8ZC6ht2rhDby54WfYKvI?=
- =?us-ascii?Q?eIg2rQ1cnlo3XFXYJGV3DUp5v7H1UAnTEFdvG1XYXVGAo6ojpO94yKArRnRE?=
- =?us-ascii?Q?spPYWGBubrABk/d6n0uR5YvKB0hyYPKRJJCJAkGOUK6P0tRV8OSGanZb3ao1?=
- =?us-ascii?Q?PyW2cxtbk+haSzZBnhbiq8dJ0YrPn3QBJ2ACNXNPOWb0UNbY5QtoWlyOEzb7?=
- =?us-ascii?Q?9DtaKZiDlf4zgOa2Y2vXoHk7RO5eiks4gTmHDVz4sYenHnwjdM51X3vimVcU?=
- =?us-ascii?Q?ebSRroJF8QaqiJOynIpJz4trM9PYrLRPH5AYNt/MxC6hEyS259rBtY8iATKB?=
- =?us-ascii?Q?mDSjMJY6Fnj4W3KuLPE=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 67282cab-89f9-49d5-a25c-08dc3f768130
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3849.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Mar 2024 13:48:58.8693
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: D0qAlBbJtnWM3yEZezQcZIln5TbR2OhjCw2h0NNeSvFZjmDWr5kle94rm2jpaszI
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4282
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/1] mm/madvise: enhance lazyfreeing with mTHP in
+ madvise_free
+Content-Language: en-GB
+To: David Hildenbrand <david@redhat.com>, Barry Song <21cnbao@gmail.com>
+Cc: Lance Yang <ioworker0@gmail.com>, Vishal Moola <vishal.moola@gmail.com>,
+ akpm@linux-foundation.org, zokeefe@google.com, shy828301@gmail.com,
+ mhocko@suse.com, fengwei.yin@intel.com, xiehuan09@gmail.com,
+ wangkefeng.wang@huawei.com, songmuchun@bytedance.com, peterx@redhat.com,
+ minchan@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240307061425.21013-1-ioworker0@gmail.com>
+ <CAGsJ_4xREM-P1mFqeM-s3-cJ9czb6PXwizb-3hOhwaF6+QM5QA@mail.gmail.com>
+ <03458c20-5544-411b-9b8d-b4600a9b802f@arm.com>
+ <CAGsJ_4zp1MXTjG=4gBO+J3owg7sHDgDJ8Ut51i1RBSnKnK0BfQ@mail.gmail.com>
+ <501c9f77-1459-467a-8619-78e86b46d300@arm.com>
+ <8f84c7d6-982a-4933-a7a7-3f640df64991@redhat.com>
+ <e6bc142e-113d-4034-b92c-746b951a27ed@redhat.com>
+ <d24f8553-33f2-4ae7-a06d-badaf9462d84@arm.com>
+ <CAGsJ_4za-2xpg21phWi2WWLF1iPXhoc1xM__FDTwYYBBKsTPgw@mail.gmail.com>
+ <a07deb2c-49e1-4324-8e70-e897605faa9d@redhat.com>
+ <b1bf4b62-8e9b-470f-a300-d13c24177688@arm.com>
+ <b174d4e1-e1ef-4766-91bc-de822eee30fb@redhat.com>
+ <CAGsJ_4xXS0MsxRVTbf74DY_boQVUE2oP=AP6JmdXZSqsAOZzRQ@mail.gmail.com>
+ <f3b1cb43-cb33-4db4-a3dd-0c787e30b113@arm.com>
+ <CAGsJ_4wGe9SdMvojw_2XchEttrbww3RttoOENoF-O4bLWUd_rw@mail.gmail.com>
+ <60dc7309-cb38-45e3-b2c0-ff0119202a12@arm.com>
+ <2962269e-fb74-4da3-b7b7-b75a5c436e0e@redhat.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <2962269e-fb74-4da3-b7b7-b75a5c436e0e@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Thu, Jan 11, 2024 at 06:06:40PM -0600, Suravee Suthikulpanit wrote:
-> To track DTE[GIOV] programming during IOMMU domain attach, also add logic
-> to determine if the GIOV is required, and set the variable accordinglly.
+On 08/03/2024 13:27, David Hildenbrand wrote:
+> On 08.03.24 14:05, Ryan Roberts wrote:
+>> On 07/03/2024 18:54, Barry Song wrote:
+>>> On Fri, Mar 8, 2024 at 12:31 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>>>
+>>>> On 07/03/2024 12:01, Barry Song wrote:
+>>>>> On Thu, Mar 7, 2024 at 7:45 PM David Hildenbrand <david@redhat.com> wrote:
+>>>>>>
+>>>>>> On 07.03.24 12:42, Ryan Roberts wrote:
+>>>>>>> On 07/03/2024 11:31, David Hildenbrand wrote:
+>>>>>>>> On 07.03.24 12:26, Barry Song wrote:
+>>>>>>>>> On Thu, Mar 7, 2024 at 7:13 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>>>>>>>>>
+>>>>>>>>>> On 07/03/2024 10:54, David Hildenbrand wrote:
+>>>>>>>>>>> On 07.03.24 11:54, David Hildenbrand wrote:
+>>>>>>>>>>>> On 07.03.24 11:50, Ryan Roberts wrote:
+>>>>>>>>>>>>> On 07/03/2024 09:33, Barry Song wrote:
+>>>>>>>>>>>>>> On Thu, Mar 7, 2024 at 10:07 PM Ryan Roberts
+>>>>>>>>>>>>>> <ryan.roberts@arm.com> wrote:
+>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>> On 07/03/2024 08:10, Barry Song wrote:
+>>>>>>>>>>>>>>>> On Thu, Mar 7, 2024 at 9:00 PM Lance Yang <ioworker0@gmail.com>
+>>>>>>>>>>>>>>>> wrote:
+>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>> Hey Barry,
+>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>> Thanks for taking time to review!
+>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>> On Thu, Mar 7, 2024 at 3:00 PM Barry Song <21cnbao@gmail.com>
+>>>>>>>>>>>>>>>>> wrote:
+>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>> On Thu, Mar 7, 2024 at 7:15 PM Lance Yang
+>>>>>>>>>>>>>>>>>> <ioworker0@gmail.com> wrote:
+>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>> [...]
+>>>>>>>>>>>>>>>>>>> +static inline bool can_mark_large_folio_lazyfree(unsigned
+>>>>>>>>>>>>>>>>>>> long addr,
+>>>>>>>>>>>>>>>>>>> +                                                struct folio
+>>>>>>>>>>>>>>>>>>> *folio,
+>>>>>>>>>>>>>>>>>>> pte_t *start_pte)
+>>>>>>>>>>>>>>>>>>> +{
+>>>>>>>>>>>>>>>>>>> +       int nr_pages = folio_nr_pages(folio);
+>>>>>>>>>>>>>>>>>>> +       fpb_t flags = FPB_IGNORE_DIRTY | FPB_IGNORE_SOFT_DIRTY;
+>>>>>>>>>>>>>>>>>>> +
+>>>>>>>>>>>>>>>>>>> +       for (int i = 0; i < nr_pages; i++)
+>>>>>>>>>>>>>>>>>>> +               if (page_mapcount(folio_page(folio, i)) != 1)
+>>>>>>>>>>>>>>>>>>> +                       return false;
+>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>> we have moved to folio_estimated_sharers though it is not
+>>>>>>>>>>>>>>>>>> precise, so
+>>>>>>>>>>>>>>>>>> we don't do
+>>>>>>>>>>>>>>>>>> this check with lots of loops and depending on the subpage's
+>>>>>>>>>>>>>>>>>> mapcount.
+>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>> If we don't check the subpage’s mapcount, and there is a cow folio
+>>>>>>>>>>>>>>>>> associated
+>>>>>>>>>>>>>>>>> with this folio and the cow folio has smaller size than this
+>>>>>>>>>>>>>>>>> folio,
+>>>>>>>>>>>>>>>>> should we still
+>>>>>>>>>>>>>>>>> mark this folio as lazyfree?
+>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>> I agree, this is true. However, we've somehow accepted the fact
+>>>>>>>>>>>>>>>> that
+>>>>>>>>>>>>>>>> folio_likely_mapped_shared
+>>>>>>>>>>>>>>>> can result in false negatives or false positives to balance the
+>>>>>>>>>>>>>>>> overhead.  So I really don't know :-)
+>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>> Maybe David and Vishal can give some comments here.
+>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>> BTW, do we need to rebase our work against David's changes[1]?
+>>>>>>>>>>>>>>>>>> [1]
+>>>>>>>>>>>>>>>>>> https://lore.kernel.org/linux-mm/20240227201548.857831-1-david@redhat.com/
+>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>> Yes, we should rebase our work against David’s changes.
+>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>> +
+>>>>>>>>>>>>>>>>>>> +       return nr_pages == folio_pte_batch(folio, addr,
+>>>>>>>>>>>>>>>>>>> start_pte,
+>>>>>>>>>>>>>>>>>>> +                                        ptep_get(start_pte),
+>>>>>>>>>>>>>>>>>>> nr_pages,
+>>>>>>>>>>>>>>>>>>> flags, NULL);
+>>>>>>>>>>>>>>>>>>> +}
+>>>>>>>>>>>>>>>>>>> +
+>>>>>>>>>>>>>>>>>>>       static int madvise_free_pte_range(pmd_t *pmd, unsigned
+>>>>>>>>>>>>>>>>>>> long addr,
+>>>>>>>>>>>>>>>>>>>                                      unsigned long end,
+>>>>>>>>>>>>>>>>>>> struct mm_walk
+>>>>>>>>>>>>>>>>>>> *walk)
+>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>> @@ -676,11 +690,45 @@ static int madvise_free_pte_range(pmd_t
+>>>>>>>>>>>>>>>>>>> *pmd,
+>>>>>>>>>>>>>>>>>>> unsigned long addr,
+>>>>>>>>>>>>>>>>>>>                       */
+>>>>>>>>>>>>>>>>>>>                      if (folio_test_large(folio)) {
+>>>>>>>>>>>>>>>>>>>                              int err;
+>>>>>>>>>>>>>>>>>>> +                       unsigned long next_addr, align;
+>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>> -                       if (folio_estimated_sharers(folio) != 1)
+>>>>>>>>>>>>>>>>>>> -                               break;
+>>>>>>>>>>>>>>>>>>> -                       if (!folio_trylock(folio))
+>>>>>>>>>>>>>>>>>>> -                               break;
+>>>>>>>>>>>>>>>>>>> +                       if (folio_estimated_sharers(folio) !=
+>>>>>>>>>>>>>>>>>>> 1 ||
+>>>>>>>>>>>>>>>>>>> +                           !folio_trylock(folio))
+>>>>>>>>>>>>>>>>>>> +                               goto skip_large_folio;
+>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>> I don't think we can skip all the PTEs for nr_pages, as some
+>>>>>>>>>>>>>>>>>> of them
+>>>>>>>>>>>>>>>>>> might be
+>>>>>>>>>>>>>>>>>> pointing to other folios.
+>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>> for example, for a large folio with 16PTEs, you do
+>>>>>>>>>>>>>>>>>> MADV_DONTNEED(15-16),
+>>>>>>>>>>>>>>>>>> and write the memory of PTE15 and PTE16, you get page faults,
+>>>>>>>>>>>>>>>>>> thus PTE15
+>>>>>>>>>>>>>>>>>> and PTE16 will point to two different small folios. We can
+>>>>>>>>>>>>>>>>>> only skip
+>>>>>>>>>>>>>>>>>> when we
+>>>>>>>>>>>>>>>>>> are sure nr_pages == folio_pte_batch() is sure.
+>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>> Agreed. Thanks for pointing that out.
+>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>> +
+>>>>>>>>>>>>>>>>>>> +                       align = folio_nr_pages(folio) *
+>>>>>>>>>>>>>>>>>>> PAGE_SIZE;
+>>>>>>>>>>>>>>>>>>> +                       next_addr = ALIGN_DOWN(addr + align,
+>>>>>>>>>>>>>>>>>>> align);
+>>>>>>>>>>>>>>>>>>> +
+>>>>>>>>>>>>>>>>>>> +                       /*
+>>>>>>>>>>>>>>>>>>> +                        * If we mark only the subpages as
+>>>>>>>>>>>>>>>>>>> lazyfree, or
+>>>>>>>>>>>>>>>>>>> +                        * cannot mark the entire large folio as
+>>>>>>>>>>>>>>>>>>> lazyfree,
+>>>>>>>>>>>>>>>>>>> +                        * then just split it.
+>>>>>>>>>>>>>>>>>>> +                        */
+>>>>>>>>>>>>>>>>>>> +                       if (next_addr > end || next_addr -
+>>>>>>>>>>>>>>>>>>> addr !=
+>>>>>>>>>>>>>>>>>>> align ||
+>>>>>>>>>>>>>>>>>>> +                          
+>>>>>>>>>>>>>>>>>>> !can_mark_large_folio_lazyfree(addr, folio,
+>>>>>>>>>>>>>>>>>>> pte))
+>>>>>>>>>>>>>>>>>>> +                               goto split_large_folio;
+>>>>>>>>>>>>>>>>>>> +
+>>>>>>>>>>>>>>>>>>> +                       /*
+>>>>>>>>>>>>>>>>>>> +                        * Avoid unnecessary folio splitting
+>>>>>>>>>>>>>>>>>>> if the
+>>>>>>>>>>>>>>>>>>> large
+>>>>>>>>>>>>>>>>>>> +                        * folio is entirely within the given
+>>>>>>>>>>>>>>>>>>> range.
+>>>>>>>>>>>>>>>>>>> +                        */
+>>>>>>>>>>>>>>>>>>> +                       folio_clear_dirty(folio);
+>>>>>>>>>>>>>>>>>>> +                       folio_unlock(folio);
+>>>>>>>>>>>>>>>>>>> +                       for (; addr != next_addr; pte++, addr +=
+>>>>>>>>>>>>>>>>>>> PAGE_SIZE) {
+>>>>>>>>>>>>>>>>>>> +                               ptent = ptep_get(pte);
+>>>>>>>>>>>>>>>>>>> +                               if (pte_young(ptent) ||
+>>>>>>>>>>>>>>>>>>> pte_dirty(ptent)) {
+>>>>>>>>>>>>>>>>>>> +                                       ptent =
+>>>>>>>>>>>>>>>>>>> ptep_get_and_clear_full(
+>>>>>>>>>>>>>>>>>>> +                                               mm, addr, pte,
+>>>>>>>>>>>>>>>>>>> tlb->fullmm);
+>>>>>>>>>>>>>>>>>>> +                                       ptent =
+>>>>>>>>>>>>>>>>>>> pte_mkold(ptent);
+>>>>>>>>>>>>>>>>>>> +                                       ptent =
+>>>>>>>>>>>>>>>>>>> pte_mkclean(ptent);
+>>>>>>>>>>>>>>>>>>> +                                       set_pte_at(mm, addr,
+>>>>>>>>>>>>>>>>>>> pte,
+>>>>>>>>>>>>>>>>>>> ptent);
+>>>>>>>>>>>>>>>>>>> +                                      
+>>>>>>>>>>>>>>>>>>> tlb_remove_tlb_entry(tlb, pte,
+>>>>>>>>>>>>>>>>>>> addr);
+>>>>>>>>>>>>>>>>>>> +                               }
+>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>> Can we do this in batches? for a CONT-PTE mapped large folio,
+>>>>>>>>>>>>>>>>>> you are
+>>>>>>>>>>>>>>>>>> unfolding
+>>>>>>>>>>>>>>>>>> and folding again. It seems quite expensive.
+>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>> I'm not convinced we should be doing this in batches. We want the
+>>>>>>>>>>>>>>> initial
+>>>>>>>>>>>>>>> folio_pte_batch() to be as loose as possible regarding
+>>>>>>>>>>>>>>> permissions so
+>>>>>>>>>>>>>>> that we
+>>>>>>>>>>>>>>> reduce our chances of splitting folios to the min. (e.g. ignore
+>>>>>>>>>>>>>>> SW bits
+>>>>>>>>>>>>>>> like
+>>>>>>>>>>>>>>> soft dirty, etc). I think it might be possible that some PTEs are
+>>>>>>>>>>>>>>> RO and
+>>>>>>>>>>>>>>> other
+>>>>>>>>>>>>>>> RW too (e.g. due to cow - although with the current cow impl,
+>>>>>>>>>>>>>>> probably not.
+>>>>>>>>>>>>>>> But
+>>>>>>>>>>>>>>> its fragile to assume that). Anyway, if we do an initial batch
+>>>>>>>>>>>>>>> that ignores
+>>>>>>>>>>>>>>> all
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> You are correct. I believe this scenario could indeed occur. For
+>>>>>>>>>>>>>> instance,
+>>>>>>>>>>>>>> if process A forks process B and then unmaps itself, leaving B as the
+>>>>>>>>>>>>>> sole process owning the large folio.  The current wp_page_reuse()
+>>>>>>>>>>>>>> function
+>>>>>>>>>>>>>> will reuse PTE one by one while the specific subpage is written.
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> Hmm - I thought it would only reuse if the total mapcount for the
+>>>>>>>>>>>>> folio
+>>>>>>>>>>>>> was 1.
+>>>>>>>>>>>>> And since it is a large folio with each page mapped once in proc B,
+>>>>>>>>>>>>> I thought
+>>>>>>>>>>>>> every subpage write would cause a copy except the last one? I haven't
+>>>>>>>>>>>>> looked at
+>>>>>>>>>>>>> the code for a while. But I had it in my head that this is an area
+>>>>>>>>>>>>> we need to
+>>>>>>>>>>>>> improve for mTHP.
+>>>>>>>>>
+>>>>>>>>> So sad I am wrong again 😢
+>>>>>>>>>
+>>>>>>>>>>>>
+>>>>>>>>>>>> wp_page_reuse() will currently reuse a PTE part of a large folio
+>>>>>>>>>>>> only if
+>>>>>>>>>>>> a single PTE remains mapped (refcount == 0).
+>>>>>>>>>>>
+>>>>>>>>>>> ^ == 1
+>>>>>>>>>
+>>>>>>>>> seems this needs improvement. it is a waste the last subpage can
+>>>>>>>>
+>>>>>>>> My take that is WIP:
+>>>>>>>>
+>>>>>>>> https://lore.kernel.org/all/20231124132626.235350-1-david@redhat.com/T/#u
+>>>>>>>>
+>>>>>>>>> reuse the whole large folio. i was doing it in a quite different way,
+>>>>>>>>> if the large folio had only one subpage left, i would do copy and
+>>>>>>>>> released the large folio[1]. and if i could reuse the whole large folio
+>>>>>>>>> with CONT-PTE, i would reuse the whole large folio[2]. in mainline,
+>>>>>>>>> we don't have this cont-pte luxury exposed to mm, so i guess we can
+>>>>>>>>> not do [2] easily, but [1] seems to be an optimization.
+>>>>>>>>
+>>>>>>>> Yeah, I had essentially the same idea: just free up the large folio if
+>>>>>>>> most of
+>>>>>>>> the stuff is unmapped. But that's rather a corner-case optimization, so
+>>>>>>>> I did
+>>>>>>>> not proceed with that.
+>>>>>>>>
+>>>>>>>
+>>>>>>> I'm not sure it's a corner case, really? - process forks, then both
+>>>>>>> parent and
+>>>>>>> child and write to all pages in what was previously a fully & contiguously
+>>>>>>> mapped large folio?
+>>>>>>
+>>>>>> Well, with 2 MiB my assumption was that while it can happen, it's rather
+>>>>>> rare. With smaller THP it might get more likely, agreed.
+>>>>>>
+>>>>>>>
+>>>>>>> Reggardless, why is it an optimization to do the copy for the last
+>>>>>>> subpage and
+>>>>>>> syncrhonously free the large folio? It's already partially mapped so is
+>>>>>>> on the
+>>>>>>> deferred split list and can be split if memory is tight.
+>>>>>
+>>>>> we don't want reclamation overhead later. and we want memories immediately
+>>>>> available to others.
+>>>>
+>>>> But by that logic, you also don't want to leave the large folio partially
+>>>> mapped
+>>>> all the way until the last subpage is CoWed. Surely you would want to
+>>>> reclaim it
+>>>> when you reach partial map status?
+>>>
+>>> To some extent, I agree. But then we will have two many copies. The last
+>>> subpage is small, and a safe place to copy instead.
+>>>
+>>> We actually had to tune userspace to decrease partial map as too much
+>>> partial map both unfolded CONT-PTE and wasted too much memory. if a
+>>> vma had too much partial map, we disabled mTHP on this VMA.
+>>
+>> I actually had a whacky idea around introducing selectable page size ABI
+>> per-process that might help here. I know Android is doing work to make the
+>> system 16K page compatible. You could run most of the system processes with 16K
+>> ABI on top of 4K kernel. Then those processes don't even have the ability to
+>> madvise/munmap/mprotect/mremap anything less than 16K alignment so that acts as
+>> an anti-fragmentation mechanism while allowing non-16K capable processes to run
+>> side-by-side. Just a passing thought...
 > 
-> This is also a preparation for adding nested domain support, where the GIOV
-> setting is determined by the child domain.
-> 
-> Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-> ---
->  drivers/iommu/amd/amd_iommu_types.h |  1 +
->  drivers/iommu/amd/iommu.c           | 11 +++++++++--
->  2 files changed, 10 insertions(+), 2 deletions(-)
+> It sounds interesting, but and also like a lot of work.
 
-I really think the DTE handling needs to be cleaned up before nesting
-will be easy.
+I have working patches. But I was originally doing it in the context of also
+using the 16K (or 64K) page table structure for those processes. But that was
+too hard because there are lots of edge cases (page cache, drivers, current CoW
+impl, etc) where 4K mapping is needed. So abandoned. The user space ABI part was
+the easy bit. I think Google have also mentioned something similar (at
+plumbers?) that they were doing to allow emulation of 16K ABI on x86.
 
-Various bits of the DTE should just flow directly through from the
-VM's version of the DTE, it is going to be a mess to do that in this
-manner
-
-> @@ -2067,6 +2066,14 @@ static int do_attach(struct iommu_dev_data *dev_data,
->  			free_gcr3_table(dev_data);
->  			return ret;
->  		}
-> +
-> +		/*
-> +		 * GIOV is required for PD_MODE_V2 because we need
-> +		 * to support the case where the end-point device
-> +		 * does not have PASID in the TLP prefix when setting
-> +		 * up to use the v2 table.
-> +		 */
-> +		dev_data->gcr3_info.giov = true;
-
-Ie who clears this once you set it ? :(
-
-Jason
 
