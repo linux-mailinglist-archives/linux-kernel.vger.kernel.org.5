@@ -1,333 +1,231 @@
-Return-Path: <linux-kernel+bounces-97167-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97168-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6235C87665A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 15:28:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AEF487665D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 15:29:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16C17282A63
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:28:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 54CDCB21414
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:29:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7DFF4644F;
-	Fri,  8 Mar 2024 14:28:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DB4A48CFC;
+	Fri,  8 Mar 2024 14:29:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cncRy3ak"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="MsEd9dn3";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="1LDzq8iF";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="MsEd9dn3";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="1LDzq8iF"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC21440868
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 14:28:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7A6A3FBB9;
+	Fri,  8 Mar 2024 14:29:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709908092; cv=none; b=P2SrbNA+PSM7iSXpM/XEMC9Ao7iFzjwStFR8y/FGSLhui3OaJlGDAFq2EcBYOwoTTRk9yBcuWMUhFVfLLb3mtwjOiNVNgXEClTDh+ygMQwUSWWRsFE2wAFGg5YId0rJoPr3p++nfaieWYG46wc4Of3VDBFn8T3w4WAfiFG8dHPg=
+	t=1709908183; cv=none; b=IdfxJhDstlxwT+y761sbkDWU3Q/yz9zpQEB5nHjPYUK+ovZjvfbgblloHA+S+1kVP+O6pX9J2uL9vCu7hNskfpBYvPY2/IBxK4BXrvHLFTcds4DUGmTC54XjY0r0upUFC4QBK3IBCpHpkNh8L5Ux0QoJl0wQngbOz51R9Iqa9vg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709908092; c=relaxed/simple;
-	bh=5AtrVtoFX1VaNMDaxCXkrQKi2UrlX1NqmyJLiBNj0EM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VVQjAk7yDPn9VIg9+A6+4Jr5clVs7KyJ/Tc+yDJcb1Bx768Ogff8sdgRpE/mhZOokwXPHq0uSQD8IJ3K0uqDDXY8ZRTPSs/OGnOc3CVdJv5Tf4xXT9LZCoecKEU8RG6mUvzaK6h23pp14UujAZR+l5PwxHO3eKYtrUWnit5rqSs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cncRy3ak; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75558C43399
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 14:28:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709908092;
-	bh=5AtrVtoFX1VaNMDaxCXkrQKi2UrlX1NqmyJLiBNj0EM=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=cncRy3akY/qEcMzh1DPZZTiHsIsiUaDNHTdKPuyfjLSoshUlU+j7MPCRfpyn0/mjg
-	 w9xQaSUs/TU/f9kJ2WYJw3ixiOqRyxiSVyPjSAGO6mLqZY9GUMut+JUqXk2oe53jbD
-	 QiqjpNd76FcAu0G2zsRqlw7R7rLYRu00GZh5CMonJt7Tgc6/P/0uJW2FjhCEfTbRDC
-	 8I0jMppjjsIn1re2oo4GYhmHES3nwXJ9pT7lPaA37TjSgaYnMkQ/jh2HCk8RfxwU7b
-	 7TCSgV4e5P74rEIvoG3+qBs+Ha1JxfbTqAQsQKBC/oQzAEEpjEHX1dXPXEiCJlW3gG
-	 ACfOB4GGoB1zg==
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d382a78c38so23961731fa.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 06:28:12 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUfykger4STA6vKG5U8RbfAbJ5cO7DyiqklhaLdwfPRbkChSW1X4DSKjvUPCMFQMH5WMKlKHJXz0pUFClr1teSqD3eFakx2LKubj0tz
-X-Gm-Message-State: AOJu0Yww8vRtCQWKIRv8cDwlejUtVWtvK/8mpJWiXL/QpvFepHmySV4N
-	opM1ASXr4/ltmaPFEEy5hfha1qtKWe35qwhl/XCotvh2LWJ/ins+M3zpGZRflEuCb2BNgIs+xLf
-	IrQyiDANvPtfEtuSFnSm0V+xOBY8=
-X-Google-Smtp-Source: AGHT+IF5uHe3Ybfym3btfzJUZ3KHe5KT343E2oyUu1ff3KCEamuWvorqVCa8Uu1aEPBrfUGEtQlQO4VkGIGz0cjXw+o=
-X-Received: by 2002:a2e:9d86:0:b0:2d2:7a4e:f5ec with SMTP id
- c6-20020a2e9d86000000b002d27a4ef5ecmr3276650ljj.7.1709908090621; Fri, 08 Mar
- 2024 06:28:10 -0800 (PST)
+	s=arc-20240116; t=1709908183; c=relaxed/simple;
+	bh=yfuZ3hSb+pB8JejaZWTf0biUpqodcxuCK85UX6EWMYc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=a2xaSHMUWyIBsfVEE9xx57yn/uniGJomQBZ6Md9spBr5t6lJvk25QNpHENPO8nxhOliTvg482/7Df3UuyEFcJ+J5M67b7TRmTbHUU+XTHk5SZdSG3qjTggmAh8q8oTdT/TQLnsVThPizcocMbQHjR9Nrg10ikxdXw6uQkpv0Z5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=MsEd9dn3; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=1LDzq8iF; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=MsEd9dn3; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=1LDzq8iF; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id C301D5BFAE;
+	Fri,  8 Mar 2024 14:29:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1709908179; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wCaGv2zXEJ+yXUxCmBT8XWgEX8+94ycfxb1ZkVsrRK4=;
+	b=MsEd9dn3ccmnP9T3Cpj5mLwWH2TbeFojx1VQLYTt1JnuDBwvclcfpYBwqcg5Y0Znb6OvCY
+	xd0SvAq/Kd97jFtX/Ox5nG8nXibxhUF32uaf/f2GMkAxdKIcpSTJ4StbdUibuh43kdhWSA
+	4DnNDHQAK1pAms43FeAg/QOT7BkCz/A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1709908179;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wCaGv2zXEJ+yXUxCmBT8XWgEX8+94ycfxb1ZkVsrRK4=;
+	b=1LDzq8iFTWk+W6vOGZ7wHNgG0BT1LqS/bq86WbX/lM8SF9ZNqM8n2K9f1zEbea75gvpCX+
+	9u9B3WnSDKlZKsAw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1709908179; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wCaGv2zXEJ+yXUxCmBT8XWgEX8+94ycfxb1ZkVsrRK4=;
+	b=MsEd9dn3ccmnP9T3Cpj5mLwWH2TbeFojx1VQLYTt1JnuDBwvclcfpYBwqcg5Y0Znb6OvCY
+	xd0SvAq/Kd97jFtX/Ox5nG8nXibxhUF32uaf/f2GMkAxdKIcpSTJ4StbdUibuh43kdhWSA
+	4DnNDHQAK1pAms43FeAg/QOT7BkCz/A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1709908179;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wCaGv2zXEJ+yXUxCmBT8XWgEX8+94ycfxb1ZkVsrRK4=;
+	b=1LDzq8iFTWk+W6vOGZ7wHNgG0BT1LqS/bq86WbX/lM8SF9ZNqM8n2K9f1zEbea75gvpCX+
+	9u9B3WnSDKlZKsAw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9675C13310;
+	Fri,  8 Mar 2024 14:29:36 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id NM/rEdAg62V3MQAAD6G6ig
+	(envelope-from <colyli@suse.de>); Fri, 08 Mar 2024 14:29:36 +0000
+Date: Fri, 8 Mar 2024 22:29:29 +0800
+From: Coly Li <colyli@suse.de>
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: song@kernel.org, yukuai3@huawei.com, xueshi.hu@smartx.com, 
+	linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org, yi.zhang@huawei.com, 
+	yangerkun@huawei.com
+Subject: Re: [PATCH] raid1: fix use-after-free for original bio in
+ raid1_write_request()
+Message-ID: <lch3c5p36igfup7vzsagjfxwr3otefv4igr2qahxwc2fpsntrd@qoeo67iwxzvr>
+References: <20240308093726.1047420-1-yukuai1@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240307151231.654025-1-liuyuntao12@huawei.com> <58cc1053-7208-4b22-99cb-210fdf700569@app.fastmail.com>
-In-Reply-To: <58cc1053-7208-4b22-99cb-210fdf700569@app.fastmail.com>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Fri, 8 Mar 2024 15:27:59 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXFEdRZsy8FovGrfWotoaws1KoKbFv5q+7yKL=pRV8zkZw@mail.gmail.com>
-Message-ID: <CAMj1kXFEdRZsy8FovGrfWotoaws1KoKbFv5q+7yKL=pRV8zkZw@mail.gmail.com>
-Subject: Re: [PATCH-next v2] arm32: enable HAVE_LD_DEAD_CODE_DATA_ELIMINATION
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Yuntao Liu <liuyuntao12@huawei.com>, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, Fangrui Song <maskray@google.com>, 
-	Russell King <linux@armlinux.org.uk>, Andrew Davis <afd@ti.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, 
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, 
-	Geert Uytterhoeven <geert+renesas@glider.be>, Jonathan Corbet <corbet@lwn.net>, 
-	Mike Rapoport <rppt@kernel.org>, Rob Herring <robh@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, 
-	Linus Walleij <linus.walleij@linaro.org>, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240308093726.1047420-1-yukuai1@huaweicloud.com>
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [-2.60 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 URIBL_BLOCKED(0.00)[suse.de:email,huawei.com:email];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 RCPT_COUNT_SEVEN(0.00)[8];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Score: -2.60
+X-Spam-Flag: NO
 
-On Fri, 8 Mar 2024 at 14:16, Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Thu, Mar 7, 2024, at 16:12, Yuntao Liu wrote:
-> > The current arm32 architecture does not yet support the
-> > HAVE_LD_DEAD_CODE_DATA_ELIMINATION feature. arm32 is widely used in
-> > embedded scenarios, and enabling this feature would be beneficial for
-> > reducing the size of the kernel image.
-> >
-> > In order to make this work, we keep the necessary tables by annotating
-> > them with KEEP, also it requires further changes to linker script to KEEP
-> > some tables and wildcard compiler generated sections into the right place.
-> >
-> > It boots normally with defconfig, vexpress_defconfig and tinyconfig.
-> >
-> > The size comparison of zImage is as follows:
-> > defconfig       vexpress_defconfig      tinyconfig
-> > 5137712         5138024                 424192          no dce
-> > 5032560         4997824                 298384          dce
-> > 2.0%            2.7%                    29.7%           shrink
-> >
-> > When using smaller config file, there is a significant reduction in the
-> > size of the zImage.
-> >
-> > We also tested this patch on a commercially available single-board
-> > computer, and the comparison is as follows:
-> > a15eb_config
-> > 2161384         no dce
-> > 2092240         dce
-> > 3.2%            shrink
-> >
-> > The zImage size has been reduced by approximately 3.2%, which is 70KB on
-> > 2.1M.
-> >
-> > Signed-off-by: Yuntao Liu <liuyuntao12@huawei.com>
->
-> I've retested with both gcc-13 and clang-18, and so no
-> more build issues. Your previous version already worked
-> fine for me.
->
-> I did some tests combining this with CONFIG_TRIM_UNUSED_KSYMS,
-> which showed a significant improvement as expected. I also
-> tried combining it with an experimental CONFIG_LTO_CLANG
-> patch, but that did not show any further improvements.
->
-> Tested-by: Arnd Bergmann <arnd@arndb.de>
-> Reviewed-by: Arnd Bergmann <arnd@arndb.de>
->
-> Adding Ard Biesheuvel and Fangrui Song to Cc, so they can comment
-> on the ARM_VECTORS_TEXT workaround. I don't understand enough of
-> the details of what is going on here.
->
+On Fri, Mar 08, 2024 at 05:37:26PM +0800, Yu Kuai wrote:
+> From: Yu Kuai <yukuai3@huawei.com>
+> 
+> r1_bio->bios[] is used to record new bios that will be issued to
+> underlying disks, however, in raid1_write_request(), r1_bio->bios[]
+> will set to the original bio temporarily. Meanwhile, if blocked rdev
+> is set, free_r1bio() will be called causing that all r1_bio->bios[]
+> to be freed:
+> 
+> raid1_write_request()
+>  r1_bio = alloc_r1bio(mddev, bio); -> r1_bio->bios[] is NULL
+>  for (i = 0;  i < disks; i++) -> for each rdev in conf
+>   // first rdev is normal
+>   r1_bio->bios[0] = bio; -> set to original bio
+>   // second rdev is blocked
+>   if (test_bit(Blocked, &rdev->flags))
+>    break
+> 
+>  if (blocked_rdev)
+>   free_r1bio()
+>    put_all_bios()
+>     bio_put(r1_bio->bios[0]) -> original bio is freed
+> 
+> Test scripts:
+> 
+> mdadm -CR /dev/md0 -l1 -n4 /dev/sd[abcd] --assume-clean
+> fio -filename=/dev/md0 -ioengine=libaio -rw=write -bs=4k -numjobs=1 \
+>     -iodepth=128 -name=test -direct=1
+> echo blocked > /sys/block/md0/md/rd2/state
+> 
+> Test result:
+> 
+> BUG bio-264 (Not tainted): Object already free
+> -----------------------------------------------------------------------------
+> 
+> Allocated in mempool_alloc_slab+0x24/0x50 age=1 cpu=1 pid=869
+>  kmem_cache_alloc+0x324/0x480
+>  mempool_alloc_slab+0x24/0x50
+>  mempool_alloc+0x6e/0x220
+>  bio_alloc_bioset+0x1af/0x4d0
+>  blkdev_direct_IO+0x164/0x8a0
+>  blkdev_write_iter+0x309/0x440
+>  aio_write+0x139/0x2f0
+>  io_submit_one+0x5ca/0xb70
+>  __do_sys_io_submit+0x86/0x270
+>  __x64_sys_io_submit+0x22/0x30
+>  do_syscall_64+0xb1/0x210
+>  entry_SYSCALL_64_after_hwframe+0x6c/0x74
+> Freed in mempool_free_slab+0x1f/0x30 age=1 cpu=1 pid=869
+>  kmem_cache_free+0x28c/0x550
+>  mempool_free_slab+0x1f/0x30
+>  mempool_free+0x40/0x100
+>  bio_free+0x59/0x80
+>  bio_put+0xf0/0x220
+>  free_r1bio+0x74/0xb0
+>  raid1_make_request+0xadf/0x1150
+>  md_handle_request+0xc7/0x3b0
+>  md_submit_bio+0x76/0x130
+>  __submit_bio+0xd8/0x1d0
+>  submit_bio_noacct_nocheck+0x1eb/0x5c0
+>  submit_bio_noacct+0x169/0xd40
+>  submit_bio+0xee/0x1d0
+>  blkdev_direct_IO+0x322/0x8a0
+>  blkdev_write_iter+0x309/0x440
+>  aio_write+0x139/0x2f0
+> 
+> Since that bios for underlying disks are not allocated yet, fix this
+> problem by using mempool_free() directly to free the r1_bio.
+> 
 
-Thanks for the cc
+Yes, the panic doesn't show up anymore with this patch.
 
-> Full quote of the patch below so they can see the whole thing.
->
-> If they are also happy with the patch, I think you can send it
-> into Russell's patch tracker at
-> https://www.armlinux.org.uk/developer/patches/info.php
->
-
-No, not happy at all :-)
-
-The resulting kernel does not boot (built with GCC or Clang). And the
-patch is buggy (see below)
-
-> > ---
-> > v2:
-> >    - Support config XIP_KERNEL.
-> >    - Support LLVM compilation.
-> >
-> > v1: https://lore.kernel.org/all/20240220081527.23408-1-liuyuntao12@huawei.com/
-> > ---
-> >  arch/arm/Kconfig                       |  1 +
-> >  arch/arm/boot/compressed/vmlinux.lds.S |  4 ++--
-> >  arch/arm/include/asm/vmlinux.lds.h     | 18 +++++++++++++++++-
-> >  arch/arm/kernel/vmlinux-xip.lds.S      |  8 ++++++--
-> >  arch/arm/kernel/vmlinux.lds.S          | 10 +++++++---
-> >  5 files changed, 33 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-> > index 0af6709570d1..de78ceb821df 100644
-> > --- a/arch/arm/Kconfig
-> > +++ b/arch/arm/Kconfig
-> > @@ -113,6 +113,7 @@ config ARM
-> >       select HAVE_KERNEL_XZ
-> >       select HAVE_KPROBES if !XIP_KERNEL && !CPU_ENDIAN_BE32 && !CPU_V7M
-> >       select HAVE_KRETPROBES if HAVE_KPROBES
-> > +     select HAVE_LD_DEAD_CODE_DATA_ELIMINATION
-> >       select HAVE_MOD_ARCH_SPECIFIC
-> >       select HAVE_NMI
-> >       select HAVE_OPTPROBES if !THUMB2_KERNEL
-> > diff --git a/arch/arm/boot/compressed/vmlinux.lds.S
-> > b/arch/arm/boot/compressed/vmlinux.lds.S
-> > index 3fcb3e62dc56..da21244aa892 100644
-> > --- a/arch/arm/boot/compressed/vmlinux.lds.S
-> > +++ b/arch/arm/boot/compressed/vmlinux.lds.S
-> > @@ -89,7 +89,7 @@ SECTIONS
-> >       * The EFI stub always executes from RAM, and runs strictly before
-> > the
-> >       * decompressor, so we can make an exception for its r/w data, and
-> > keep it
-> >       */
-> > -    *(.data.efistub .bss.efistub)
-> > +    *(.data.* .bss.*)
-
-Why is this necessary? There is a reason we don't allow .data in the
-decompressor.
-
-> >      __pecoff_data_end = .;
-> >
-> >      /*
-> > @@ -125,7 +125,7 @@ SECTIONS
-> >
-> >    . = BSS_START;
-> >    __bss_start = .;
-> > -  .bss                       : { *(.bss) }
-> > +  .bss                       : { *(.bss .bss.*) }
-> >    _end = .;
-> >
-> >    . = ALIGN(8);              /* the stack must be 64-bit aligned */
-> > diff --git a/arch/arm/include/asm/vmlinux.lds.h
-> > b/arch/arm/include/asm/vmlinux.lds.h
-> > index 4c8632d5c432..dfe2b6ad6b51 100644
-> > --- a/arch/arm/include/asm/vmlinux.lds.h
-> > +++ b/arch/arm/include/asm/vmlinux.lds.h
-> > @@ -42,7 +42,7 @@
-> >  #define PROC_INFO                                                    \
-> >               . = ALIGN(4);                                           \
-> >               __proc_info_begin = .;                                  \
-> > -             *(.proc.info.init)                                      \
-> > +             KEEP(*(.proc.info.init))                                \
-> >               __proc_info_end = .;
-> >
-> >  #define IDMAP_TEXT                                                   \
-> > @@ -87,6 +87,22 @@
-> >               *(.vfp11_veneer)                                        \
-> >               *(.v4_bx)
-> >
-> > +/*
-> > +When CONFIG_LD_DEAD_CODE_DATA_ELIMINATION is enabled, it is important
-> > to
-> > +annotate .vectors sections with KEEP. While linking with ld, it is
-> > +acceptable to directly use KEEP with .vectors sections in ARM_VECTORS.
-> > +However, when using ld.lld for linking, KEEP is not recognized within
-> > the
-> > +OVERLAY command; it is treated as a regular string. Hence, it is
-> > advisable
-> > +to define a distinct section here that explicitly retains the .vectors
-> > +sections when CONFIG_LD_DEAD_CODE_DATA_ELIMINATION is turned on.
-> > +*/
-> > +#define ARM_VECTORS_TEXT                                             \
-> > +     .vectors.text : {                                               \
-> > +             KEEP(*(.vectors))                                       \
-> > +             KEEP(*(.vectors.bhb.loop8))                             \
-> > +             KEEP(*(.vectors.bhb.bpiall))                            \
-> > +       }
-> > +
-
-This looks fishy to me. How is this supposed to work? You cannot emit
-these sections into some random other place in the binary.
-
-And also, ARM_VECTORS_TEXT is never used (by accident, see below)
-
-> >  #define ARM_TEXT                                                     \
-> >               IDMAP_TEXT                                              \
-> >               __entry_text_start = .;                                 \
-> > diff --git a/arch/arm/kernel/vmlinux-xip.lds.S
-> > b/arch/arm/kernel/vmlinux-xip.lds.S
-> > index c16d196b5aad..035fa18060b3 100644
-> > --- a/arch/arm/kernel/vmlinux-xip.lds.S
-> > +++ b/arch/arm/kernel/vmlinux-xip.lds.S
-> > @@ -63,7 +63,7 @@ SECTIONS
-> >       . = ALIGN(4);
-> >       __ex_table : AT(ADDR(__ex_table) - LOAD_OFFSET) {
-> >               __start___ex_table = .;
-> > -             ARM_MMU_KEEP(*(__ex_table))
-> > +             ARM_MMU_KEEP(KEEP(*(__ex_table)))
-> >               __stop___ex_table = .;
-> >       }
-> >
-> > @@ -83,7 +83,7 @@ SECTIONS
-> >       }
-> >       .init.arch.info : {
-> >               __arch_info_begin = .;
-> > -             *(.arch.info.init)
-> > +             KEEP(*(.arch.info.init))
-> >               __arch_info_end = .;
-> >       }
-> >       .init.tagtable : {
-> > @@ -135,6 +135,10 @@ SECTIONS
-> >       ARM_TCM
-> >  #endif
-> >
-> > +#ifdef LD_DEAD_CODE_DATA_ELIMINATION
-
-This should be CONFIG_LD_DEAD_CODE_DATA_ELIMINATION
-
-> > +     ARM_VECTORS_TEXT
-> > +#endif
-> > +
-> >       /*
-> >        * End of copied data. We need a dummy section to get its LMA.
-> >        * Also located before final ALIGN() as trailing padding is not stored
-> > diff --git a/arch/arm/kernel/vmlinux.lds.S b/arch/arm/kernel/vmlinux.lds.S
-> > index bd9127c4b451..2cfb890c93fb 100644
-> > --- a/arch/arm/kernel/vmlinux.lds.S
-> > +++ b/arch/arm/kernel/vmlinux.lds.S
-> > @@ -74,7 +74,7 @@ SECTIONS
-> >       . = ALIGN(4);
-> >       __ex_table : AT(ADDR(__ex_table) - LOAD_OFFSET) {
-> >               __start___ex_table = .;
-> > -             ARM_MMU_KEEP(*(__ex_table))
-> > +             ARM_MMU_KEEP(KEEP(*(__ex_table)))
-> >               __stop___ex_table = .;
-> >       }
-> >
-> > @@ -99,7 +99,7 @@ SECTIONS
-> >       }
-> >       .init.arch.info : {
-> >               __arch_info_begin = .;
-> > -             *(.arch.info.init)
-> > +             KEEP(*(.arch.info.init))
-> >               __arch_info_end = .;
-> >       }
-> >       .init.tagtable : {
-> > @@ -116,7 +116,7 @@ SECTIONS
-> >  #endif
-> >       .init.pv_table : {
-> >               __pv_table_begin = .;
-> > -             *(.pv_table)
-> > +             KEEP(*(.pv_table))
-> >               __pv_table_end = .;
-> >       }
->
-> I previously asked about this bit, since it appeared that this
-> might prevent a lot of code from being discarded when
-> CONFIG_ARM_PATCH_PHYS_VIRT is set. I tested this again now,
-> and found this makes very little practical difference, so
-> it's all good.
->
-> > @@ -134,6 +134,10 @@ SECTIONS
-> >       ARM_TCM
-> >  #endif
-> >
-> > +#ifdef LD_DEAD_CODE_DATA_ELIMINATION
-
-Same here
+Thanks for the fixup.
 
 
-> > +     ARM_VECTORS_TEXT
-> > +#endif
-> > +
-> >  #ifdef CONFIG_STRICT_KERNEL_RWX
-> >       . = ALIGN(1<<SECTION_SHIFT);
-> >  #else
+> Fixes: 992db13a4aee ("md/raid1: free the r1bio before waiting for blocked rdev")
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+
+Reported-and-tested-by: Coly Li <colyli@suse.de>
+
+
+Coly Li
+
+> ---
+>  drivers/md/raid1.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
+> index afca975ec7f3..fde8434c33df 100644
+> --- a/drivers/md/raid1.c
+> +++ b/drivers/md/raid1.c
+> @@ -1565,7 +1565,7 @@ static void raid1_write_request(struct mddev *mddev, struct bio *bio,
+>  		for (j = 0; j < i; j++)
+>  			if (r1_bio->bios[j])
+>  				rdev_dec_pending(conf->mirrors[j].rdev, mddev);
+> -		free_r1bio(r1_bio);
+> +		mempool_free(r1_bio, &conf->r1bio_pool);
+>  		allow_barrier(conf, bio->bi_iter.bi_sector);
+>  
+>  		if (bio->bi_opf & REQ_NOWAIT) {
+> -- 
+> 2.39.2
+> 
+> 
 
