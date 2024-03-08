@@ -1,185 +1,122 @@
-Return-Path: <linux-kernel+bounces-97325-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97326-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40FA88768CB
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:48:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAA858768CE
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:49:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C173C1F215C6
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 16:48:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DBE3A1C20B41
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 16:49:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 641041CD2E;
-	Fri,  8 Mar 2024 16:48:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B06218E03;
+	Fri,  8 Mar 2024 16:49:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="sQdkbJJE"
-Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="Tfa+BseJ"
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADBA21BDED
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 16:48:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E757A175BE;
+	Fri,  8 Mar 2024 16:49:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709916520; cv=none; b=Un0kEkz7owphDXLBgQ49S8SKEqGt+aSY5Z208Q8fZtT7aagruxDXyOih0DGX04ESZo8ujqlbA6zbAuwiG8VJ2diElxees/FEsO9eXp3gzy1baNm6FLrYsap2RWM644vlYcen0llqfdiXQKLWMr+xJtFrzkWQAWwu0IMm6FiUJ3Q=
+	t=1709916553; cv=none; b=Aya2QnrqQSFUbXGhbVVTDFXu9iFpYNxLhH0VYbacsQ1JAUBJrcYi/0c+IptbStMaKrtdbGYmRbp6wA7rWjErrm658Tcn4n0DiPTQwSFbEpJYT59IB7gVemf78zto3OqdA+F0X79HL7kXp0UWsW/m5I2LokQfcWAacJx2AIwTvYI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709916520; c=relaxed/simple;
-	bh=QIZKj4Z83WuA4uYBUadyPi2oeYIM0L4PUub6Rq8vQRU=;
+	s=arc-20240116; t=1709916553; c=relaxed/simple;
+	bh=dp4f7tpqFRN9XFjkTecp9FwtbYISiPJKREb/NnDaXg8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WfODeDb73/7YKKavd2jCZV/7MNsbLFpGcuN5h0Hv/on3OfE9K252zhc1U8UwRsdzGlCAVbRXfOxPSk5i8CzdJ1O/FsUdXiFtIs5wN10AfyAZ3gErUQDsZcYmlF11BQXyiRXqO8oikMRQOZREHSPm1PZrHFhYD66C8EEmW+za/lQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=sQdkbJJE; arc=none smtp.client-ip=95.215.58.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Fri, 8 Mar 2024 11:48:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1709916516;
+	 Content-Type:Content-Disposition:In-Reply-To; b=XtKaucQjtECEZaU9mP7VpocB7LwBPjAuxqfZw64r4knwJ8azqUAdUQZrl9icsqnmRd7jmdKZfxqim6/yWMiG6DX3tP/fxstHxGbqSKheWKM+du8WW3wjawZ2JlKeKt38EGvkJCxVB++UFE69A63pRx+3TxSPryctr9rctLNHI9U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=Tfa+BseJ; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1dc13fb0133so7911905ad.3;
+        Fri, 08 Mar 2024 08:49:11 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709916551; x=1710521351;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:dkim-signature:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=jQzlRemqcpG/B25dEVwxgd2nqjD2iV1Oc0H8JZ1sMs0=;
+        b=SJImZleCZ4u+vh1HgnHtvoziy9mFDANDwgzCjjiU6MM05+PVhdCbsfdrnyydqAE1Hi
+         nkQQEKx6KJeT/DnnCrsn7+3tfWdjbyTF0S+NSlomiVDleZrn67Vm6RmE92mzYY8Td/YV
+         wbWw/ptSL75AjmuV3jST+P9AbIZA905E3WObU59pq7Do/DtNGlIep/1b8xFxULPHSXzM
+         oj6IUou+X9HKGwf5yAZZVZtAzpS53KrouiX0kKh7e0x3IhM55Jgx22Rmir1Qz++C3NFg
+         IUaHgx2+CzgrTt5GHUbL2DHIOMB2edy0trCIsoFLepuG639PwMdsqKQN5rz2NL6yihRG
+         YB2A==
+X-Forwarded-Encrypted: i=1; AJvYcCVdd3M4o4b77uQ76OQhkAkNTQssFYGLqa7dYjoszBusGy9vtTeGIlnyBZla8XtOKFrHWfomX7tRl3MyqxI6tq1myjWo78hcF7guCJ2Jsnl4xeq9SXb5ETzWwaEJBjRfH8XYeYBq8UV9dg==
+X-Gm-Message-State: AOJu0YwgIqSGW7dh5TGaVjYiHOf/94fKYIn3Y1X6mV5dXz0j3l/tDR5u
+	UqL2Evm7ZGLsYRaMx9MNgezo33SK0S6b8+a1Tg0h0o9oOUaAcVNI
+X-Google-Smtp-Source: AGHT+IFWG1EplbtVMvjGJC2PomQuFgrore7TK9HZk0oyPLTXlVX6SwtEk6/eMj9Sjm7MfkAr8kC9ow==
+X-Received: by 2002:a17:902:d511:b0:1db:be69:d037 with SMTP id b17-20020a170902d51100b001dbbe69d037mr13299032plg.46.1709916550959;
+        Fri, 08 Mar 2024 08:49:10 -0800 (PST)
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id 2-20020a170902c10200b001dd69a072absm1356614pli.178.2024.03.08.08.49.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Mar 2024 08:49:10 -0800 (PST)
+Date: Fri, 8 Mar 2024 13:49:04 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+	s=2024; t=1709916549;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ci0HpMufqp2Bu96vO1gZkJinKX+/hjpnFJ+C8Bb41Uw=;
-	b=sQdkbJJEauJJiHERFg1DyR0hklZf/GXmz6HbQeWVy+mDomDESmXvHbpP+Aw4noxvg5v0s/
-	qRQdoVXDkTB65Si0syqpSGaJ+OMxDkCMEcda7sp11YG8Cz6L4Kb15sxY2BbyXxe0urdkA+
-	EVoiiNez5UEGcjBY3cGOFKgePnIRp8E=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Neal Gompa <neal@gompa.dev>
-Cc: linux-fsdevel@vger.kernel.org, linux-bcachefs@vger.kernel.org, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>, 
-	Miklos Szeredi <mszeredi@redhat.com>, Christian Brauner <brauner@kernel.org>, 
-	David Howells <dhowells@redhat.com>
-Subject: Re: [PATCH v2] statx: stx_subvol
-Message-ID: <2uk6u4w7dp4fnd3mrpoqybkiojgibjodgatrordacejlsxxmxz@wg5zymrst2td>
-References: <20240308022914.196982-1-kent.overstreet@linux.dev>
- <CAEg-Je96OKs_LOXorNVj1a1=e+1f=-gw34v4VWNOmfKXc6PLSQ@mail.gmail.com>
- <i2oeask3rxxd5w4k7ikky6zddnr2qgflrmu52i7ah6n4e7va26@2qmghvmb732p>
- <CAEg-Je_URgYd6VJL5Pd=YDGQM=0T5tspfnTvgVTMG-Ec1fTt6g@mail.gmail.com>
+	bh=jQzlRemqcpG/B25dEVwxgd2nqjD2iV1Oc0H8JZ1sMs0=;
+	b=Tfa+BseJHRha3HkgFzAZDzu7GoxGFFkFq1Rl9HUGs+rlI5IHYOSloTFJQhbg4kBBHJm63d
+	2lsM51Wkn+uxJTmhLEG1AsOLybfQ/VLPVS3E2Fg5/aHjvwdW4ShoPBePTDRw+uKYVSChQ1
+	lb/Lk92oO+R06frfzA+cXOgiIiCYpwlPUbSdzz8riwN7U296YB7ACBboMGTjmCjlbhgQzp
+	EMn2Tt4CZR36eFcTrDmRiKOHs3MXS+8NGoHCnYIhdFT5CF1JiDTIrXIQwDt+s6JJ+ml3Hz
+	oqLYg4AdmW0/8ESeMPhEz+mHWVOVu6JrU7U9+TeIHvlOYj+oNxP6JPKCChwg2w==
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+From: "Ricardo B. Marliere" <ricardo@marliere.net>
+To: Heiko Carstens <hca@linux.ibm.com>
+Cc: Harald Freudenberger <freude@linux.ibm.com>, 
+	Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, 
+	Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, linux-s390@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 1/6] s390: zcrypt: make zcrypt_class constant
+Message-ID: <lznbxodysy66hssioarbe4ugfezri5dwdyuyvsxgfbbqu4h2xc@7wyzf2txq3ua>
+References: <20240305-class_cleanup-s390-v1-0-c4ff1ec49ffd@marliere.net>
+ <20240305-class_cleanup-s390-v1-1-c4ff1ec49ffd@marliere.net>
+ <84263def1d38584cd83558a33bb52f22@linux.ibm.com>
+ <nh5d7ock5gb4zttfmq354si3iewm4u2zxqquzg3erl55jxjhuo@5yveroq4li4s>
+ <20240308144437.26074-G-hca@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEg-Je_URgYd6VJL5Pd=YDGQM=0T5tspfnTvgVTMG-Ec1fTt6g@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20240308144437.26074-G-hca@linux.ibm.com>
 
-On Fri, Mar 08, 2024 at 11:44:48AM -0500, Neal Gompa wrote:
-> On Fri, Mar 8, 2024 at 11:34 AM Kent Overstreet
-> <kent.overstreet@linux.dev> wrote:
-> >
-> > On Fri, Mar 08, 2024 at 06:42:27AM -0500, Neal Gompa wrote:
-> > > On Thu, Mar 7, 2024 at 9:29 PM Kent Overstreet
-> > > <kent.overstreet@linux.dev> wrote:
-> > > >
-> > > > Add a new statx field for (sub)volume identifiers, as implemented by
-> > > > btrfs and bcachefs.
-> > > >
-> > > > This includes bcachefs support; we'll definitely want btrfs support as
-> > > > well.
-> > > >
-> > > > Link: https://lore.kernel.org/linux-fsdevel/2uvhm6gweyl7iyyp2xpfryvcu2g3padagaeqcbiavjyiis6prl@yjm725bizncq/
-> > > > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> > > > Cc: Josef Bacik <josef@toxicpanda.com>
-> > > > Cc: Miklos Szeredi <mszeredi@redhat.com>
-> > > > Cc: Christian Brauner <brauner@kernel.org>
-> > > > Cc: David Howells <dhowells@redhat.com>
-> > > > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> > > > ---
-> > > >  fs/bcachefs/fs.c          | 3 +++
-> > > >  fs/stat.c                 | 1 +
-> > > >  include/linux/stat.h      | 1 +
-> > > >  include/uapi/linux/stat.h | 4 +++-
-> > > >  4 files changed, 8 insertions(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
-> > > > index 3f073845bbd7..6a542ed43e2c 100644
-> > > > --- a/fs/bcachefs/fs.c
-> > > > +++ b/fs/bcachefs/fs.c
-> > > > @@ -840,6 +840,9 @@ static int bch2_getattr(struct mnt_idmap *idmap,
-> > > >         stat->blksize   = block_bytes(c);
-> > > >         stat->blocks    = inode->v.i_blocks;
-> > > >
-> > > > +       stat->subvol    = inode->ei_subvol;
-> > > > +       stat->result_mask |= STATX_SUBVOL;
-> > > > +
-> > > >         if (request_mask & STATX_BTIME) {
-> > > >                 stat->result_mask |= STATX_BTIME;
-> > > >                 stat->btime = bch2_time_to_timespec(c, inode->ei_inode.bi_otime);
-> > > > diff --git a/fs/stat.c b/fs/stat.c
-> > > > index 77cdc69eb422..70bd3e888cfa 100644
-> > > > --- a/fs/stat.c
-> > > > +++ b/fs/stat.c
-> > > > @@ -658,6 +658,7 @@ cp_statx(const struct kstat *stat, struct statx __user *buffer)
-> > > >         tmp.stx_mnt_id = stat->mnt_id;
-> > > >         tmp.stx_dio_mem_align = stat->dio_mem_align;
-> > > >         tmp.stx_dio_offset_align = stat->dio_offset_align;
-> > > > +       tmp.stx_subvol = stat->subvol;
-> > > >
-> > > >         return copy_to_user(buffer, &tmp, sizeof(tmp)) ? -EFAULT : 0;
-> > > >  }
-> > > > diff --git a/include/linux/stat.h b/include/linux/stat.h
-> > > > index 52150570d37a..bf92441dbad2 100644
-> > > > --- a/include/linux/stat.h
-> > > > +++ b/include/linux/stat.h
-> > > > @@ -53,6 +53,7 @@ struct kstat {
-> > > >         u32             dio_mem_align;
-> > > >         u32             dio_offset_align;
-> > > >         u64             change_cookie;
-> > > > +       u64             subvol;
-> > > >  };
-> > > >
-> > > >  /* These definitions are internal to the kernel for now. Mainly used by nfsd. */
-> > > > diff --git a/include/uapi/linux/stat.h b/include/uapi/linux/stat.h
-> > > > index 2f2ee82d5517..67626d535316 100644
-> > > > --- a/include/uapi/linux/stat.h
-> > > > +++ b/include/uapi/linux/stat.h
-> > > > @@ -126,8 +126,9 @@ struct statx {
-> > > >         __u64   stx_mnt_id;
-> > > >         __u32   stx_dio_mem_align;      /* Memory buffer alignment for direct I/O */
-> > > >         __u32   stx_dio_offset_align;   /* File offset alignment for direct I/O */
-> > > > +       __u64   stx_subvol;     /* Subvolume identifier */
-> > > >         /* 0xa0 */
-> > > > -       __u64   __spare3[12];   /* Spare space for future expansion */
-> > > > +       __u64   __spare3[11];   /* Spare space for future expansion */
-> > > >         /* 0x100 */
-> > > >  };
-> > > >
-> > > > @@ -155,6 +156,7 @@ struct statx {
-> > > >  #define STATX_MNT_ID           0x00001000U     /* Got stx_mnt_id */
-> > > >  #define STATX_DIOALIGN         0x00002000U     /* Want/got direct I/O alignment info */
-> > > >  #define STATX_MNT_ID_UNIQUE    0x00004000U     /* Want/got extended stx_mount_id */
-> > > > +#define STATX_SUBVOL           0x00008000U     /* Want/got stx_subvol */
-> > > >
-> > > >  #define STATX__RESERVED                0x80000000U     /* Reserved for future struct statx expansion */
-> > > >
-> > > > --
-> > > > 2.43.0
-> > > >
-> > > >
-> > >
-> > > I think it's generally expected that patches that touch different
-> > > layers are split up. That is, we should have a patch that adds the
-> > > capability and a separate patch that enables it in bcachefs. This also
-> > > helps make it clearer to others how a new feature should be plumbed
-> > > into a filesystem.
-> > >
-> > > I would prefer it to be split up in this manner for this reason.
-> >
-> > I'll do it that way if the patch is big enough that it ought to be
-> > split up. For something this small, seeing how it's used is relevant
-> > context for both reviewers and people looking at it afterwards.
-> >
+Hi Heiko!
+
+On  8 Mar 15:44, Heiko Carstens wrote:
+> On Fri, Mar 08, 2024 at 11:38:14AM -0300, Ricardo B. Marliere wrote:
+> > > Thanks Ricardo, nice work.
+> > > The only thing I would do is to rename the label "out_class_create_failed"
+> > > with "out_class_register_failed".
+> > 
+> > Ah, indeed. Thanks for catching that. I will wait for more feedback on
+> > the other patches and send a v2 if required.
+> > 
+> > > 
+> > > Who will pick this patch? As this is part of a bundle of fixes, Richardo
+> > > do you have a way to push this into the kernel? Otherwise as the AP/zcrypt
+> > > maintainer I would pick only this patch and forward it to the s390
+> > > subsystem.
+> > 
+> > I have no ways of pushing this, sorry. The series is based on
+> > s390/linux.git/for-next, so perhaps the s390 maintainers can pick this
+> > one along with the others with your Acked-by: provided? :) 
 > 
-> It needs to also be split up because fs/ and fs/bcachefs are
-> maintained differently. And while right now bcachefs is the only
-> consumer of the API, btrfs will add it right after it's committed, and
-> for people who are cherry-picking/backporting accordingly, having to
-> chop out part of a patch would be unpleasant.
+> I will pick up the whole series, but need some more time.
+> 
+> There is no need to send a v2 for this patch - I'll change the label as
+> requested by Harald.
 
-It's a new feature, not a bugfix, this should never get backported. And
-I the bcachefs maintainer wrote the patch, and I'm submitting it to the
-VFS maintainer, so if it's fine with him it's fine with me.
+Thank you for this.
+-	Ricardo
 
