@@ -1,163 +1,118 @@
-Return-Path: <linux-kernel+bounces-96866-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96862-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAECB876261
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:45:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8510B876252
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:44:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E968284006
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 10:45:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C04F31C21363
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 10:44:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E668356745;
-	Fri,  8 Mar 2024 10:44:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D07F25577A;
+	Fri,  8 Mar 2024 10:44:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="DGV2WEJx"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OTU2Dv/v"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C76FE55C18;
-	Fri,  8 Mar 2024 10:44:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 813BB54665
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 10:44:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709894692; cv=none; b=F300FwnywXKsSqbRG6bl2d7OCQgStcoxLjfG865w7KYDbIhgKMRu7bpsgH37kS5DWyoMhMB/08Ia7NCOXsrX8cQjiI/Zos51X//y6Hx7IzIocvotBnQZ0AExMoZ7eeskHuUA+SLrdVskvU0gS6oRSLSxaS8muRRULJ6Ueh+BDt8=
+	t=1709894670; cv=none; b=nj1xSLEW+MCFwoIhViQvd0B2vsI49+cdPFFsqBhD4VsPMGpq30/QXLdYbLC1bLXETE223zZuJMvIcMenN/gD1nRGrtN5B2h6Q9NyPwVCjJqZlOd1TL6r3p3b+u5krPVDhx6FAwnR1gKhfHJzPDl77U7HRCV12A8tjUCesLAI0gQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709894692; c=relaxed/simple;
-	bh=PwBP36oa/1ya7DgHCgl3s8pna248l/mNWtOjYUzA5Mo=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=pdkUzeiTiEqu7k2hnwoN3evz0djYUqzhCZHTtuutvqrZa1ajv4igP8z/IxZj5L5P/YnbK8CK3GaF9oXAWWkfrVsnlZEMruoPEjcjdLhw5vnLDQJdKlqLMGnPlt1xWnW/9BmznrDKlt9ChfxRFqeoZyZQXZ911QEnqLjtNptXmXQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=DGV2WEJx; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 428A5jtr027172;
-	Fri, 8 Mar 2024 10:44:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=XbzGmI/H+M7jrcCmm5O2fs2KrZylOonYBZ9JNoiny3s=; b=DG
-	V2WEJxsPWMNs5aCf53D6RIlCFveXMD2Me/1Dg5bi6YeBZjNNpVL3zcaIpE3r6yZv
-	1QH1hem0bZS3RcNIoc0KLMlmy5loesI8Sd++DxDQ4TTFk67ncl5oznCUIS93dS8k
-	AQcsDbyYXock4ECmKY/m9Qb/np/j8aCf2eNYdkjf4vZ81wBtCU5AgPwjVRK4adGT
-	GbeEeN01mCRo9dv4+LwHzoVEo2WFLH7tqmL1TpPJ9I1Fpztffj9yNP6fsQeCmgz6
-	UvQUibRDiKTsZL3zi4kQSMCePW+uV7YPcYUHlyp/EWvOOyO47Ru75CW9GZTjmVG5
-	gqIfnotd6Jna7JFRhycw==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wqyfsr79r-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 08 Mar 2024 10:44:39 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 428AicmT016118
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 8 Mar 2024 10:44:38 GMT
-Received: from hu-sibis-blr.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 8 Mar 2024 02:44:33 -0800
-From: Sibi Sankar <quic_sibis@quicinc.com>
-To: <sudeep.holla@arm.com>, <cristian.marussi@arm.com>, <rafael@kernel.org>,
-        <viresh.kumar@linaro.org>, <morten.rasmussen@arm.com>,
-        <dietmar.eggemann@arm.com>, <lukasz.luba@arm.com>, <sboyd@kernel.org>
-CC: <linux-arm-kernel@lists.infradead.org>, <linux-pm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_mdtipton@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <nm@ti.com>,
-        Sibi Sankar
-	<quic_sibis@quicinc.com>
-Subject: [PATCH V3 2/2] cpufreq: scmi: Enable boost support
-Date: Fri, 8 Mar 2024 16:14:10 +0530
-Message-ID: <20240308104410.385631-3-quic_sibis@quicinc.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240308104410.385631-1-quic_sibis@quicinc.com>
-References: <20240308104410.385631-1-quic_sibis@quicinc.com>
+	s=arc-20240116; t=1709894670; c=relaxed/simple;
+	bh=2q+QCW5HvvcJeCeirvDXQ0Rp4AEuyCTVjiF1DkHGmL8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=qFZPu1UvBf/qnRVcmwpYdNtAZDjmLAmBsh8wxrYAPz8Vusnidb40bcGFZqyNYKxtbmk6xqh0a0J3x77srb74BU2rbXDkDaAGKpXLLHU14E5fZgX3Q63YwBrB72mJl+ZVG5EdALuwqkhi2vopiDGV336etMbXJ/aSS6O4nKQXUMA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=OTU2Dv/v; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709894667;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2B8S6vEInG2XvsiNtvqjWYEzrG1YbZ9wSDWIeXEAcpY=;
+	b=OTU2Dv/v0jyih0omd+N1RXn/yjZpnKvTOs/gmAH9ludT09ZOHJ7yuegpVgtp39dbRKsO9r
+	hke9skOylMvU9Jv/sBBnY9BG1Z8ng+umfVuemjEroRaBlb+87+h4D5irwY/y/BeVJYZ2cZ
+	2+y7LMUvzFwmlBVlU5JV33kPqe43wL0=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-695-PNowfwXfO26l8YhNkSxtDA-1; Fri, 08 Mar 2024 05:44:25 -0500
+X-MC-Unique: PNowfwXfO26l8YhNkSxtDA-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-33e79d3f462so98179f8f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 02:44:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709894664; x=1710499464;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2B8S6vEInG2XvsiNtvqjWYEzrG1YbZ9wSDWIeXEAcpY=;
+        b=ZrxNIeen4TeM3nxY4EMA079FxdEI274KolYUE2XpTnoVRwLpiwkglZl0fVNIiRiYue
+         3WNn3y+DMDojs1ld6O72H+2nQYtEvGsrp4f/34OQxHGpQvo2wmshraIPfBMZO4dUUT8g
+         9oQRVIDSaCD2vfj0+c7ReYDFryZHxh/CTOdIXATcmx1eekcs81QmGuYQrsG9DZU6V3H/
+         dsBqjB/xWaOTxz2FFL7hAj2qiLsoD+gxlo0UIfIpvnFNBKTp0t3UlQwbJLe+GjxPqpvw
+         kReHDT+kzh3kIZr3SR6tEWYlcmF9Kx4C1CnV1ymDmJ+agIDvJWNBEcsI6/u8gDzI0CF7
+         d9MQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW4uPPyjuH9Rum8wmgHQjzp7GXBzEdzHHuu/VM/wm2s/TgmGbr73uiln0aIat/+IKzLNm1GWsQilGAAz3xHwaHNTtfMD1XH/l7+hUDi
+X-Gm-Message-State: AOJu0Yw50OsJU7ObxlBdaPcr9dLpSFYZz1INhve0D3yvs7wMmxAu9o1/
+	vEJ5HMlVyBxWDAEQoJqgXlxgFTDCE8lwebYl8ZT51xrrOXuJsflFZxKlFgmP/CVntj6Mtc9tcL0
+	pTvocyOiVJ+7XYyxdTqtG9wO++7M3O115Vr+EZedfuJD9+A1S1K6IkP33XeBRVg==
+X-Received: by 2002:a5d:4587:0:b0:33e:7380:df37 with SMTP id p7-20020a5d4587000000b0033e7380df37mr1786330wrq.58.1709894664591;
+        Fri, 08 Mar 2024 02:44:24 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFDoidnEFnBtmTI6W6Naq/q7YTfz7qnJ8M943W9JMuTziVDbw3Bo1T/K0PGBUVj6ZkPFZGPQw==
+X-Received: by 2002:a5d:4587:0:b0:33e:7380:df37 with SMTP id p7-20020a5d4587000000b0033e7380df37mr1786317wrq.58.1709894664230;
+        Fri, 08 Mar 2024 02:44:24 -0800 (PST)
+Received: from fedora (g2.ign.cz. [91.219.240.8])
+        by smtp.gmail.com with ESMTPSA id c14-20020a056000104e00b0033e72e104c5sm2324018wrx.34.2024.03.08.02.44.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Mar 2024 02:44:23 -0800 (PST)
+From: Vitaly Kuznetsov <vkuznets@redhat.com>
+To: Sean Christopherson <seanjc@google.com>
+Cc: Li RongQing <lirongqing@baidu.com>, linux-kernel@vger.kernel.org,
+ kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH 0/3] KVM: x86: Fix KVM_FEATURE_PV_UNHALT update logic
+In-Reply-To: <170987090131.1157339.1162545682759176638.b4-ty@google.com>
+References: <20240228101837.93642-1-vkuznets@redhat.com>
+ <170987090131.1157339.1162545682759176638.b4-ty@google.com>
+Date: Fri, 08 Mar 2024 11:44:22 +0100
+Message-ID: <87plw5knp5.fsf@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: z5IqSlU8GBXzu3i9Asa1x7JbYnmalQTy
-X-Proofpoint-ORIG-GUID: z5IqSlU8GBXzu3i9Asa1x7JbYnmalQTy
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-08_08,2024-03-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
- malwarescore=0 mlxscore=0 lowpriorityscore=0 mlxlogscore=999
- priorityscore=1501 suspectscore=0 bulkscore=0 adultscore=0 clxscore=1015
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2403080085
 
-The X1E80100 SoC hosts a number of cpu boost frequencies, so let's enable
-boost support if the freq_table has any opps marked as turbo in it.
+Sean Christopherson <seanjc@google.com> writes:
 
-Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
----
+> On Wed, 28 Feb 2024 11:18:34 +0100, Vitaly Kuznetsov wrote:
+>> Guest hangs in specific configurations (KVM_X86_DISABLE_EXITS_HLT) are
+>> reported and the issue was bisected to commit ee3a5f9e3d9b ("KVM: x86: Do
+>> runtime CPUID update before updating vcpu->arch.cpuid_entries") which, of
+>> course, carries "No functional change intended" blurb. Turns out, moving
+>> __kvm_update_cpuid_runtime() earlier in kvm_set_cpuid() to tweak the
+>> incoming CPUID data before checking it wasn't innocent as
+>> KVM_FEATURE_PV_UNHALT reset logic relies on cached KVM CPUID base which
+>> gets updated later.
+>> 
+>> [...]
+>
+> Applied to kvm-x86 hyperv.  I won't send a pull request for this until next week,
+> but I do plan on landing it in 6.9.  Holler if the selftests tweaks look wrong
+> (or you just don't like them).
 
-v3:
-* Don't set per-policy boost flags from the cpufreq driver. [Viresh]
+Looks great, thanks :-)
 
- drivers/cpufreq/scmi-cpufreq.c | 20 +++++++++++++++++++-
- 1 file changed, 19 insertions(+), 1 deletion(-)
+I was also considering introducing 'vcpu_cpuid_has()' first but then I
+succumbed to my laziness and decided to postpone it until we have a
+*second* user in the tree).
 
-diff --git a/drivers/cpufreq/scmi-cpufreq.c b/drivers/cpufreq/scmi-cpufreq.c
-index 0b483bd0d3ca..3b4f6bfb2f4c 100644
---- a/drivers/cpufreq/scmi-cpufreq.c
-+++ b/drivers/cpufreq/scmi-cpufreq.c
-@@ -30,6 +30,7 @@ struct scmi_data {
- 
- static struct scmi_protocol_handle *ph;
- static const struct scmi_perf_proto_ops *perf_ops;
-+static struct cpufreq_driver scmi_cpufreq_driver;
- 
- static unsigned int scmi_cpufreq_get_rate(unsigned int cpu)
- {
-@@ -167,6 +168,12 @@ scmi_get_rate_limit(u32 domain, bool has_fast_switch)
- 	return rate_limit;
- }
- 
-+static struct freq_attr *scmi_cpufreq_hw_attr[] = {
-+	&cpufreq_freq_attr_scaling_available_freqs,
-+	NULL,
-+	NULL,
-+};
-+
- static int scmi_cpufreq_init(struct cpufreq_policy *policy)
- {
- 	int ret, nr_opp, domain;
-@@ -276,6 +283,17 @@ static int scmi_cpufreq_init(struct cpufreq_policy *policy)
- 	policy->transition_delay_us =
- 		scmi_get_rate_limit(domain, policy->fast_switch_possible);
- 
-+	if (policy_has_boost_freq(policy)) {
-+		ret = cpufreq_enable_boost_support();
-+		if (ret) {
-+			dev_warn(cpu_dev, "failed to enable boost: %d\n", ret);
-+			goto out_free_opp;
-+		} else {
-+			scmi_cpufreq_hw_attr[1] = &cpufreq_freq_attr_scaling_boost_freqs;
-+			scmi_cpufreq_driver.boost_enabled = true;
-+		}
-+	}
-+
- 	return 0;
- 
- out_free_opp:
-@@ -334,7 +352,7 @@ static struct cpufreq_driver scmi_cpufreq_driver = {
- 		  CPUFREQ_NEED_INITIAL_FREQ_CHECK |
- 		  CPUFREQ_IS_COOLING_DEV,
- 	.verify	= cpufreq_generic_frequency_table_verify,
--	.attr	= cpufreq_generic_attr,
-+	.attr	= scmi_cpufreq_hw_attr,
- 	.target_index	= scmi_cpufreq_set_target,
- 	.fast_switch	= scmi_cpufreq_fast_switch,
- 	.get	= scmi_cpufreq_get_rate,
 -- 
-2.34.1
+Vitaly
 
 
