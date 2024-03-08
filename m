@@ -1,304 +1,154 @@
-Return-Path: <linux-kernel+bounces-96937-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96940-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB88E876360
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 12:32:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A885876369
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 12:37:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1470282F84
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:32:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE8071F21EAD
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:37:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF6C855E7A;
-	Fri,  8 Mar 2024 11:32:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 872145644E;
+	Fri,  8 Mar 2024 11:37:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XyiWCp0K"
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="Vv2UMVph"
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05olkn2067.outbound.protection.outlook.com [40.92.91.67])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C614D219FC
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 11:32:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709897559; cv=none; b=b/Wclld/pcDfticI7Ryhr/r16ZNTYhucSCmf4y3XNlRfBVFm7UMQKCTi42t7jTOVh2PbK7UkV6YTclgP3IdTHNjTuD84kUF8vyiiYsEEd3OEwMgN8Uh9nIK3+JXTftjox66J8ci93+OUP2zAaVcHZ3m9tsdb6iXZrCPSOGbRRaY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709897559; c=relaxed/simple;
-	bh=hQmKsFKDXe3MCWFDk4h1FMOU5wAXmrlOGgSlbm6vpCA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=t6zfweTRm+HLp7/zxktswxYnIUyw8R22QDR/fWn90oThP2PXqGNchWI0zoJD9CE1HZ6TKnc39iKJYY8UAL74XVMPJUlxt4LL8rWuvJ551bvBfNbHkJwoTCk5BAPagnoPBZ/P2l+jgss4ALSdFtjJbmSXOhC8fR3VbeZD4rSRpb8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XyiWCp0K; arc=none smtp.client-ip=209.85.221.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-33e6aca1ca9so1180153f8f.2
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 03:32:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709897556; x=1710502356; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=V/U4R8MBg204kG8ugYCLmUhdGr32W8Oze66n2rkC7QY=;
-        b=XyiWCp0K7C0a7NwgZEnsdnlnrYqMX/y+NjObjfE6Wq1UsGKr0p6XnAMGG2F0BEZaWL
-         vHSufAMgmm3z95pVo9sE7ImQoY+gsc7C2BPL35rX/1oIZvgPIhJhHRnxSbW5Y98cghTU
-         dR30O/zd1F1ycZSPzhr+pipaxSVjK7Rr3gInwhwEfiKPXbbKfV+mLhrkwBEG6G8/FhR1
-         tMLOTxPFtdb5OzU6z1INWYymjXTh2x7dhi4R2x+urr66U7tTKHFoQt7MmEtg6GFjF9tN
-         lwCLLOc2v2WMLurvpWokPj5EmEKuiEmXK3alog6VT9hGm1gYPr/F3F+T1fKeP2nTAi10
-         lP5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709897556; x=1710502356;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=V/U4R8MBg204kG8ugYCLmUhdGr32W8Oze66n2rkC7QY=;
-        b=TEypq4KmxkFUlVid2D+qereQG/M3TcI0Qw2HCIl6vrX8W4ZgiNPR7NbfGsTZZ2lKKM
-         LpHzpgb7wbUSCih81i8hPuKykdqqMsVY2m7S+pT2fpqMBSOHqBrTRkkMH/qwweRFL+sB
-         CbVTc9BRH1e79YtBqJwqMAQ+opYnHn3FeBBcYXKpSGN7/mx9QrYZxiUSmyXrTivpVpgo
-         iyJgluSeBUWjHeKcup000qIe6qhx+z9Y5Rw4aOlmSTJsDV7OLpFrdBpH7Ic/CLuawNDC
-         appPiggBkUTCzH5E7eOOr7xeJocGKKudTydgsbnoBQHjkPzXsmboKt/BmCOkhzE/w/uD
-         5WuA==
-X-Forwarded-Encrypted: i=1; AJvYcCUrlbyZBsTejkv2I5Rzln7Scv9eb3UY2N4SoHS+X6PzJFSEfhchrE39dcXpdv+eOHk1hm32sap7tHkdQBkuiIvjGpUDDpWei8q/LLIF
-X-Gm-Message-State: AOJu0YxtxOGOVhXkoa+1aSBs3RDT/5oqLz7a8zRtQjiUDw+6c2RpmVUo
-	RzOBnO2p2BE9x2WPn5fmGGUe33KUtqhMOFgnHoo+l28dzxgs+ajf
-X-Google-Smtp-Source: AGHT+IEcSif1kuJgvWx4ygkHntU5v9ZhD5o0vNZtjvZgIHMZpgFceu8DSdXPEKon71q2BG0DrNE5jA==
-X-Received: by 2002:a5d:5942:0:b0:33d:af84:2a59 with SMTP id e2-20020a5d5942000000b0033daf842a59mr13886868wri.28.1709897555662;
-        Fri, 08 Mar 2024 03:32:35 -0800 (PST)
-Received: from [10.254.108.81] (munvpn.amd.com. [165.204.72.6])
-        by smtp.gmail.com with ESMTPSA id r27-20020adfa15b000000b0033e7938e218sm826032wrr.43.2024.03.08.03.32.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Mar 2024 03:32:35 -0800 (PST)
-Message-ID: <c411dce6-faaf-46c3-8bb6-8c4db871e598@gmail.com>
-Date: Fri, 8 Mar 2024 12:32:33 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B93015578A;
+	Fri,  8 Mar 2024 11:37:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.91.67
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709897847; cv=fail; b=H6Sz7dHEf5046NIMdM7y3T8BJJGXeVPtVCpDX4UNMgideYcqIR2DtA7N8X6Y6WKT/82t8/pQAlrotuFOd8SpANIP59VTymIdxKBQzvWCWLNsmr44I3GXp8OkIX3Fq7JU8QkuRRc5b/2JASOBfGBrxS6mWtWKTjXBnDXzT6EWqhk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709897847; c=relaxed/simple;
+	bh=5W8OQsTkb8zlsQtLe8dbiSIO5acTornZARWuIWrGn08=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=Ddi6pTeCHmTzYbvWGA4Mgl4B5Ef5PLksszA20nSBaGY6f5fImlBXGD5J4lCTAmlbjFAVjNeemv+ObK805GGeqqk0si0M2uESH4/tVF2zz2IEOk5M8TuqJButTdOCR+DXCbnRYHTAvjNsi6JemyT2gdbyP2Kgc86duKvJ/WMz7Dw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=Vv2UMVph; arc=fail smtp.client-ip=40.92.91.67
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jiSX6wHNlh/tEJEIztC7Tsan90A6Vg6W/wtAeF2ZoKKmLa37UgGm19Q4kD2S9cTAQd8npYoXwW+lahl9jm8boBUxh8v6wuPeiTl659P5hSztsgnIBWwNemYiYgJ9brWSTL+zt/JgrmDsaNsocxKvL0QOzymrK04ktro5bXMXscM2ngMmSvaVWI9aTlvnhwuzi0ZUNajtDPXTtSr0e44Yr25AlnB4MgTTPGAnOusGIEF4X+BpM6ZRF4YAzIeVltNFQQ+qlN+TZEj4LUF6kVrW+eJqiHR2XPqMjxe5TimGt1ii3Q9eS5QZUlYoJx6SXND1kjdM/nqAcgvIByJAGccl+Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=oZPjAIqUphboDKkP5eYqFo5/dKb7IepaomOF1h29P14=;
+ b=AVcTwUpUOKCje3fR9Qh/pDCO/nY7JaBlnZOJQZJTlXasGd9vPES4S0sd0ij45UcGFj0pF9ynXmyYn9EZL3F2RfSqlv0dwTwufeTMTN8+rn3nDA8YJa43aIS5tJhtC2zN1IMrlhEjWb7KH6FWxRAsg9NqGOYnv4NUmxO8Ha5qxLLmHxl5blcx+CM5d2WFjmbHgog683eMqsHD1PpSj+ZuRX3cT8/YJdlhgAyHpCRkCf+u9gBlRQ62X+TmX8kTCVjCMw61A0lA2hESxSa6rbI8d3a9FSu6v4NuvKmyjOhereeEOmBfIBOk9UzNDD+qRRPOTzp2ABUqn1mCNbyDxfxS7g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oZPjAIqUphboDKkP5eYqFo5/dKb7IepaomOF1h29P14=;
+ b=Vv2UMVphRPmn/zyUN0aSRdc9NQfqZzaf++W8b6fKCN7QEDQPkxQ59Xib8qnTARizdUiwFrQrAWl9iwv9TVE+A7SCiVNMfcrg3l/aGvHanx+7jJrT234xsPhjdL828LpSHRl51oYHrfW/Lms+6T1Cx3TCglUCuoMBoHFGqHiOcD5KBMNXl4WQP6TkptkPAIzRZfwp4o8N5pBZuAiSI0Bq6yWkI+kFkG+3ShH/OL3+C4wV7go0yoz0rmcLi3LSaoBpswUIyQrtq4+GXYLFhO5pJNHI5Lx44uM1b2B2Tqtwou1MsBYX1xVRJcUTDV4JyjzR4lYQUokHCAQ1gD/H3G+8AQ==
+Received: from AM6PR03MB5848.eurprd03.prod.outlook.com (2603:10a6:20b:e4::10)
+ by AM7PR03MB6309.eurprd03.prod.outlook.com (2603:10a6:20b:131::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.27; Fri, 8 Mar
+ 2024 11:37:23 +0000
+Received: from AM6PR03MB5848.eurprd03.prod.outlook.com
+ ([fe80::58d5:77b7:b985:3a18]) by AM6PR03MB5848.eurprd03.prod.outlook.com
+ ([fe80::58d5:77b7:b985:3a18%7]) with mapi id 15.20.7362.028; Fri, 8 Mar 2024
+ 11:37:23 +0000
+From: Juntong Deng <juntong.deng@outlook.com>
+To: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	horms@kernel.org,
+	Liam.Howlett@oracle.com
+Cc: netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH net-next] net/netlink: Add getsockopt support for NETLINK_LISTEN_ALL_NSID
+Date: Fri,  8 Mar 2024 11:33:04 +0000
+Message-ID:
+ <AM6PR03MB58482322B7B335308DA56FE599272@AM6PR03MB5848.eurprd03.prod.outlook.com>
+X-Mailer: git-send-email 2.39.2
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN: [JA9sT5KNrvqKZHaox87B830FOKZqk6E/]
+X-ClientProxiedBy: LO4P123CA0111.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:192::8) To AM6PR03MB5848.eurprd03.prod.outlook.com
+ (2603:10a6:20b:e4::10)
+X-Microsoft-Original-Message-ID:
+ <20240308113304.12061-1-juntong.deng@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/amdgpu: fix deadlock while reading mqd from debugfs
-Content-Language: en-US
-To: Johannes Weiner <hannes@cmpxchg.org>,
- Alex Deucher <alexander.deucher@amd.com>,
- "Sharma, Shashank" <Shashank.Sharma@amd.com>
-Cc: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org
-References: <20240307221609.7651-1-hannes@cmpxchg.org>
-From: =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>
-In-Reply-To: <20240307221609.7651-1-hannes@cmpxchg.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM6PR03MB5848:EE_|AM7PR03MB6309:EE_
+X-MS-Office365-Filtering-Correlation-Id: 264ea03d-b2f2-4bc8-6a50-08dc3f641f1b
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	nhzAW36gHmOkEbNg2oKhDSFeQZ/i/bXWKLdToFjxkxuyoWI32soe9Lm03dBBFzwpgNjwddG7Gq/LsXTsJr6OOwUl0qufcEDS4cAKM2kZNfqgdOP54agrXrGea7YSo2hv4dv28IF4FK35pi5d56h2pdlyBaiE0OEP4GbKsFnXqxZvFJgPl72dnqEZxMPFIKPjcBM+a+dALOfuQrCngkbs2Yx/MBPUE+u5oeMPIDfDqXyRN8eVlv47utw8nRgZD3fn2ja2rlgYKFn+kpN3EcAW8XAu+716AFkmRZN//oO8/SPveXKM+KIh9yj/jBhfXsi2iH7tGeDbh1PmVbXQVNHzjlr0JZTXklVJS5789yTaHpIdtt04bcnrA6AzbTJZ3tjU7mjtqvKd3DUUybQBoOC3lSfka7J5Y9aQnfu0d2uXdLkU16LgapVEaVgZAZz6STRtNSpTZx6h2K8f29xF1vGWYo0SptwHZyjDr5t02jsW1gVb/hWXSsHCTenLVWgamXALkNLDEQgPo7sve+EWYLijD0V8U6G0GbsifNdELw/ji4U132bMYQxJvw9BkCrDi0SY
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?912d1s8w57kiceH+niu2NFreFRPUKtBnfThF111yNW4cSbVubR9khLC5hNWf?=
+ =?us-ascii?Q?mWiquniLovu1apxzIvGGAJ2S/bcCbchw0SNl6eTRMmfdRvsfSI7oBmHWvF/+?=
+ =?us-ascii?Q?k/A0OwIXd9t+rZakai9AA33oDXidBlZpvwpEpwuDgHPz6lNKWX7xU/8xhBsh?=
+ =?us-ascii?Q?WormD6ch+kk/Fs+WT5ajiTohNufRfN7Xk05EC19ol6o21rXy4RjSonNe3fm0?=
+ =?us-ascii?Q?Ddis78Tn+gJcPJD5MCksl4MlM8/ccs20z4Y+d3XtA/2bnqqS2OEia/Q7Mx/M?=
+ =?us-ascii?Q?oZXjsUyFvs9S8KSLRuEQHfXsjLAybA63wnvWWPeCubIkE4Cn6NA4A7DQiRWs?=
+ =?us-ascii?Q?1wG4ipGWXlPkodHfgzMEPEe/edNU55GtmroYtf8hP5Qf7MDAZOA6RPS/QIoF?=
+ =?us-ascii?Q?fzh7uji3Elxhk2A/d3HUfETihKZ9TB0JNQqMomgr/QYzob+MOspvwi8ihyoJ?=
+ =?us-ascii?Q?dTAJqLm0Ap6uHKHadL+Vnp5MlRV6EzvuQn6dGkfEIlurad1CMV1B0LTvzJ5o?=
+ =?us-ascii?Q?7kww2DSwaS2gILYiu8SF7svrs2CV40gC+hQkklcVjkrZLvfSYuJKWLBTcOtW?=
+ =?us-ascii?Q?HR6rT6JrlEWkJ0cA2p5kahlRw/58yHhD64RIz6ac1s+wdvi09vVvHVsjiM2q?=
+ =?us-ascii?Q?KhApkJ7A7kbYbZ+hEas+hyv+H8NEiwT9ZtelvlmJalWfgbqKu0LIZ2A6d0Ss?=
+ =?us-ascii?Q?wIP1QKuVu1HrgZf+dRp0UO6DfelVjVJVxR3Ec9t7J7ABQ7/RH+RbAJ8p0ZAL?=
+ =?us-ascii?Q?cCf+IlOoRnsHkjVGNgwa55WQaoaYk5YwUPvap5xsZo6VhZa/5pvqp8fyXNpK?=
+ =?us-ascii?Q?KdBQaOZdV9nf13jtheVhKFjPKar/ZofR8k4lVxlwi+Eqbg/1m3SzvGpyJ5D6?=
+ =?us-ascii?Q?cYClokB+VR8r1toL1iRia2QphwINZQv/cjEX7IkjKqrqem7UCUKu/KCH6Cdr?=
+ =?us-ascii?Q?uC8gVsqTLpyYYZ4EIWkl4RfjWMEHpxb7D4UJEfMmuhvbCC0y4ZRLmSaB+vW9?=
+ =?us-ascii?Q?hQaPGhPDTPk39i+7x0ZOiwTDwNwXb+J4Y7GZueWsrGE33/5oa/eH++Uj/euJ?=
+ =?us-ascii?Q?/IhOcb7v2cmfnrBpor5O3SGCYZv9uWo35OW31BTH/iKI9HdGuC2ujEcIALnM?=
+ =?us-ascii?Q?BgV5M+lcclmeKwC371p/eMOM5rtZPZNczkGdXV/ul4iXU/ZIVs7dKBvoEZmL?=
+ =?us-ascii?Q?l+VDrIKxDrsHq4n7U0fJ7Rx11VMM8cibnyETMEJT4jaJ7+iUhZNeUvVOGe1Z?=
+ =?us-ascii?Q?C1YaNNKfZgwKrVMLBDJ2?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 264ea03d-b2f2-4bc8-6a50-08dc3f641f1b
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR03MB5848.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Mar 2024 11:37:23.3006
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR03MB6309
 
-Good catch, Shashank can you take a closer look?
+Currently getsockopt does not support NETLINK_LISTEN_ALL_NSID,
+and we are unable to get the value of NETLINK_LISTEN_ALL_NSID
+socket option through getsockopt.
 
-Thanks,
-Christian.
+This patch adds getsockopt support for NETLINK_LISTEN_ALL_NSID.
 
-Am 07.03.24 um 23:07 schrieb Johannes Weiner:
-> An errant disk backup on my desktop got into debugfs and triggered the
-> following deadlock scenario in the amdgpu debugfs files. The machine
-> also hard-resets immediately after those lines are printed (although I
-> wasn't able to reproduce that part when reading by hand):
->
-> [ 1318.016074][ T1082] ======================================================
-> [ 1318.016607][ T1082] WARNING: possible circular locking dependency detected
-> [ 1318.017107][ T1082] 6.8.0-rc7-00015-ge0c8221b72c0 #17 Not tainted
-> [ 1318.017598][ T1082] ------------------------------------------------------
-> [ 1318.018096][ T1082] tar/1082 is trying to acquire lock:
-> [ 1318.018585][ T1082] ffff98c44175d6a0 (&mm->mmap_lock){++++}-{3:3}, at: __might_fault+0x40/0x80
-> [ 1318.019084][ T1082]
-> [ 1318.019084][ T1082] but task is already holding lock:
-> [ 1318.020052][ T1082] ffff98c4c13f55f8 (reservation_ww_class_mutex){+.+.}-{3:3}, at: amdgpu_debugfs_mqd_read+0x6a/0x250 [amdgpu]
-> [ 1318.020607][ T1082]
-> [ 1318.020607][ T1082] which lock already depends on the new lock.
-> [ 1318.020607][ T1082]
-> [ 1318.022081][ T1082]
-> [ 1318.022081][ T1082] the existing dependency chain (in reverse order) is:
-> [ 1318.023083][ T1082]
-> [ 1318.023083][ T1082] -> #2 (reservation_ww_class_mutex){+.+.}-{3:3}:
-> [ 1318.024114][ T1082]        __ww_mutex_lock.constprop.0+0xe0/0x12f0
-> [ 1318.024639][ T1082]        ww_mutex_lock+0x32/0x90
-> [ 1318.025161][ T1082]        dma_resv_lockdep+0x18a/0x330
-> [ 1318.025683][ T1082]        do_one_initcall+0x6a/0x350
-> [ 1318.026210][ T1082]        kernel_init_freeable+0x1a3/0x310
-> [ 1318.026728][ T1082]        kernel_init+0x15/0x1a0
-> [ 1318.027242][ T1082]        ret_from_fork+0x2c/0x40
-> [ 1318.027759][ T1082]        ret_from_fork_asm+0x11/0x20
-> [ 1318.028281][ T1082]
-> [ 1318.028281][ T1082] -> #1 (reservation_ww_class_acquire){+.+.}-{0:0}:
-> [ 1318.029297][ T1082]        dma_resv_lockdep+0x16c/0x330
-> [ 1318.029790][ T1082]        do_one_initcall+0x6a/0x350
-> [ 1318.030263][ T1082]        kernel_init_freeable+0x1a3/0x310
-> [ 1318.030722][ T1082]        kernel_init+0x15/0x1a0
-> [ 1318.031168][ T1082]        ret_from_fork+0x2c/0x40
-> [ 1318.031598][ T1082]        ret_from_fork_asm+0x11/0x20
-> [ 1318.032011][ T1082]
-> [ 1318.032011][ T1082] -> #0 (&mm->mmap_lock){++++}-{3:3}:
-> [ 1318.032778][ T1082]        __lock_acquire+0x14bf/0x2680
-> [ 1318.033141][ T1082]        lock_acquire+0xcd/0x2c0
-> [ 1318.033487][ T1082]        __might_fault+0x58/0x80
-> [ 1318.033814][ T1082]        amdgpu_debugfs_mqd_read+0x103/0x250 [amdgpu]
-> [ 1318.034181][ T1082]        full_proxy_read+0x55/0x80
-> [ 1318.034487][ T1082]        vfs_read+0xa7/0x360
-> [ 1318.034788][ T1082]        ksys_read+0x70/0xf0
-> [ 1318.035085][ T1082]        do_syscall_64+0x94/0x180
-> [ 1318.035375][ T1082]        entry_SYSCALL_64_after_hwframe+0x46/0x4e
-> [ 1318.035664][ T1082]
-> [ 1318.035664][ T1082] other info that might help us debug this:
-> [ 1318.035664][ T1082]
-> [ 1318.036487][ T1082] Chain exists of:
-> [ 1318.036487][ T1082]   &mm->mmap_lock --> reservation_ww_class_acquire --> reservation_ww_class_mutex
-> [ 1318.036487][ T1082]
-> [ 1318.037310][ T1082]  Possible unsafe locking scenario:
-> [ 1318.037310][ T1082]
-> [ 1318.037838][ T1082]        CPU0                    CPU1
-> [ 1318.038101][ T1082]        ----                    ----
-> [ 1318.038350][ T1082]   lock(reservation_ww_class_mutex);
-> [ 1318.038590][ T1082]                                lock(reservation_ww_class_acquire);
-> [ 1318.038839][ T1082]                                lock(reservation_ww_class_mutex);
-> [ 1318.039083][ T1082]   rlock(&mm->mmap_lock);
-> [ 1318.039328][ T1082]
-> [ 1318.039328][ T1082]  *** DEADLOCK ***
-> [ 1318.039328][ T1082]
-> [ 1318.040029][ T1082] 1 lock held by tar/1082:
-> [ 1318.040259][ T1082]  #0: ffff98c4c13f55f8 (reservation_ww_class_mutex){+.+.}-{3:3}, at: amdgpu_debugfs_mqd_read+0x6a/0x250 [amdgpu]
-> [ 1318.040560][ T1082]
-> [ 1318.040560][ T1082] stack backtrace:
-> [ 1318.041053][ T1082] CPU: 22 PID: 1082 Comm: tar Not tainted 6.8.0-rc7-00015-ge0c8221b72c0 #17 3316c85d50e282c5643b075d1f01a4f6365e39c2
-> [ 1318.041329][ T1082] Hardware name: Gigabyte Technology Co., Ltd. B650 AORUS PRO AX/B650 AORUS PRO AX, BIOS F20 12/14/2023
-> [ 1318.041614][ T1082] Call Trace:
-> [ 1318.041895][ T1082]  <TASK>
-> [ 1318.042175][ T1082]  dump_stack_lvl+0x4a/0x80
-> [ 1318.042460][ T1082]  check_noncircular+0x145/0x160
-> [ 1318.042743][ T1082]  __lock_acquire+0x14bf/0x2680
-> [ 1318.043022][ T1082]  lock_acquire+0xcd/0x2c0
-> [ 1318.043301][ T1082]  ? __might_fault+0x40/0x80
-> [ 1318.043580][ T1082]  ? __might_fault+0x40/0x80
-> [ 1318.043856][ T1082]  __might_fault+0x58/0x80
-> [ 1318.044131][ T1082]  ? __might_fault+0x40/0x80
-> [ 1318.044408][ T1082]  amdgpu_debugfs_mqd_read+0x103/0x250 [amdgpu 8fe2afaa910cbd7654c8cab23563a94d6caebaab]
-> [ 1318.044749][ T1082]  full_proxy_read+0x55/0x80
-> [ 1318.045042][ T1082]  vfs_read+0xa7/0x360
-> [ 1318.045333][ T1082]  ksys_read+0x70/0xf0
-> [ 1318.045623][ T1082]  do_syscall_64+0x94/0x180
-> [ 1318.045913][ T1082]  ? do_syscall_64+0xa0/0x180
-> [ 1318.046201][ T1082]  ? lockdep_hardirqs_on+0x7d/0x100
-> [ 1318.046487][ T1082]  ? do_syscall_64+0xa0/0x180
-> [ 1318.046773][ T1082]  ? do_syscall_64+0xa0/0x180
-> [ 1318.047057][ T1082]  ? do_syscall_64+0xa0/0x180
-> [ 1318.047337][ T1082]  ? do_syscall_64+0xa0/0x180
-> [ 1318.047611][ T1082]  entry_SYSCALL_64_after_hwframe+0x46/0x4e
-> [ 1318.047887][ T1082] RIP: 0033:0x7f480b70a39d
-> [ 1318.048162][ T1082] Code: 91 ba 0d 00 f7 d8 64 89 02 b8 ff ff ff ff eb b2 e8 18 a3 01 00 0f 1f 84 00 00 00 00 00 80 3d a9 3c 0e 00 00 74 17 31 c0 0f 05 <48> 3d 00 f0 ff ff 77 5b c3 66 2e 0f 1f 84 00 00 00 00 00 53 48 83
-> [ 1318.048769][ T1082] RSP: 002b:00007ffde77f5c68 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-> [ 1318.049083][ T1082] RAX: ffffffffffffffda RBX: 0000000000000800 RCX: 00007f480b70a39d
-> [ 1318.049392][ T1082] RDX: 0000000000000800 RSI: 000055c9f2120c00 RDI: 0000000000000008
-> [ 1318.049703][ T1082] RBP: 0000000000000800 R08: 000055c9f2120a94 R09: 0000000000000007
-> [ 1318.050011][ T1082] R10: 0000000000000000 R11: 0000000000000246 R12: 000055c9f2120c00
-> [ 1318.050324][ T1082] R13: 0000000000000008 R14: 0000000000000008 R15: 0000000000000800
-> [ 1318.050638][ T1082]  </TASK>
->
-> amdgpu_debugfs_mqd_read() holds a reservation when it calls
-> put_user(), which may fault and acquire the mmap_sem. This violates
-> the established locking order.
->
-> Bounce the mqd data through a kernel buffer to get put_user() out of
-> the illegal section.
->
-> Fixes: 445d85e3c1df ("drm/amdgpu: add debugfs interface for reading MQDs")
-> Cc: stable@vger.kernel.org		[v6.5+]
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-> ---
->   drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c | 46 +++++++++++++++---------
->   1 file changed, 29 insertions(+), 17 deletions(-)
->
-> This fixes the lockdep splat for me, and the hexdump of the output
-> looks sane after the patch. However, I'm not at all familiar with this
-> code to say for sure that this is the right solution. The mqd seems
-> small enough that the kmalloc won't get crazy. I'm also assuming that
-> ring->mqd_size is safe to access before the reserve & kmap. Lastly I
-> went with an open loop instead of a memcpy() as I wasn't sure if that
-> memory is safe to address a byte at at time.
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c
-> index 5505d646f43a..06f0a6534a94 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c
-> @@ -524,46 +524,58 @@ static ssize_t amdgpu_debugfs_mqd_read(struct file *f, char __user *buf,
->   {
->   	struct amdgpu_ring *ring = file_inode(f)->i_private;
->   	volatile u32 *mqd;
-> -	int r;
-> +	u32 *kbuf;
-> +	int r, i;
->   	uint32_t value, result;
->   
->   	if (*pos & 3 || size & 3)
->   		return -EINVAL;
->   
-> -	result = 0;
-> +	kbuf = kmalloc(ring->mqd_size, GFP_KERNEL);
-> +	if (!kbuf)
-> +		return -ENOMEM;
->   
->   	r = amdgpu_bo_reserve(ring->mqd_obj, false);
->   	if (unlikely(r != 0))
-> -		return r;
-> +		goto err_free;
->   
->   	r = amdgpu_bo_kmap(ring->mqd_obj, (void **)&mqd);
-> -	if (r) {
-> -		amdgpu_bo_unreserve(ring->mqd_obj);
-> -		return r;
-> -	}
-> +	if (r)
-> +		goto err_unreserve;
->   
-> +	/*
-> +	 * Copy to local buffer to avoid put_user(), which might fault
-> +	 * and acquire mmap_sem, under reservation_ww_class_mutex.
-> +	 */
-> +	for (i = 0; i < ring->mqd_size/sizeof(u32); i++)
-> +		kbuf[i] = mqd[i];
-> +
-> +	amdgpu_bo_kunmap(ring->mqd_obj);
-> +	amdgpu_bo_unreserve(ring->mqd_obj);
-> +
-> +	result = 0;
->   	while (size) {
->   		if (*pos >= ring->mqd_size)
-> -			goto done;
-> +			break;
->   
-> -		value = mqd[*pos/4];
-> +		value = kbuf[*pos/4];
->   		r = put_user(value, (uint32_t *)buf);
->   		if (r)
-> -			goto done;
-> +			goto err_free;
->   		buf += 4;
->   		result += 4;
->   		size -= 4;
->   		*pos += 4;
->   	}
->   
-> -done:
-> -	amdgpu_bo_kunmap(ring->mqd_obj);
-> -	mqd = NULL;
-> -	amdgpu_bo_unreserve(ring->mqd_obj);
-> -	if (r)
-> -		return r;
-> -
-> +	kfree(kbuf);
->   	return result;
-> +
-> +err_unreserve:
-> +	amdgpu_bo_unreserve(ring->mqd_obj);
-> +err_free:
-> +	kfree(kbuf);
-> +	return r;
->   }
->   
->   static const struct file_operations amdgpu_debugfs_mqd_fops = {
+Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
+---
+ net/netlink/af_netlink.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/net/netlink/af_netlink.c b/net/netlink/af_netlink.c
+index da846212fb9b..7554803218a2 100644
+--- a/net/netlink/af_netlink.c
++++ b/net/netlink/af_netlink.c
+@@ -1773,6 +1773,9 @@ static int netlink_getsockopt(struct socket *sock, int level, int optname,
+ 		netlink_unlock_table();
+ 		return err;
+ 	}
++	case NETLINK_LISTEN_ALL_NSID:
++		flag = NETLINK_F_LISTEN_ALL_NSID;
++		break;
+ 	case NETLINK_CAP_ACK:
+ 		flag = NETLINK_F_CAP_ACK;
+ 		break;
+-- 
+2.39.2
 
 
