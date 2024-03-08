@@ -1,130 +1,108 @@
-Return-Path: <linux-kernel+bounces-96964-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96965-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47D958763E0
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 12:58:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B9958763E6
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:01:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 793091C20CB9
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:58:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9E3B281B7A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 12:01:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA1AA56742;
-	Fri,  8 Mar 2024 11:58:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0BFC5674F;
+	Fri,  8 Mar 2024 12:00:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VooACwFN"
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W97ON/Ls"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76E5F5645C
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 11:58:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25A6D5645C;
+	Fri,  8 Mar 2024 12:00:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709899088; cv=none; b=GsKIb4zNZGHNf714PC+v0nf4KbqAM+QTCrcJaldUyLGqc/WDCukdh1zL3mkxtIqyMp6Jf7FJbYRdaYAObSx4a7aKFuKW+PN3j1+NIKPEvrgGhd5fSbl/wCa40YqEdOHMaYLCWjmlFFnlzpesixY/I5UeXEJu22p6DHfeB+9tnX0=
+	t=1709899257; cv=none; b=sybCZFKsQwFbyr8SfX73cXlPbr1e7DOkdUYoqVtlAm6z4cL5fmEeZ1sG03bKyMSXsuzOcbA041YRVJ4QFpoRY71we4MhRwM9EVf006zXg4q4xqba/JcBSYcucGc05xUjnxVsIQ2nx4OPklSGV1j34+KutTZJgzzVINBPuV4sQuA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709899088; c=relaxed/simple;
-	bh=tBAwUGRbXq59I/dWai3Bt85iAagt+HvpW8FxlvtMZps=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OYEESiEwkL3hcrjzdNSM/DWiI5SVqX30x1viyLG6GQH4Lo5u6plrIF/2GBsBcbVOyA1V2YHCgq09SmBEOup/DS3wlP6h4GdYvsnr1d2W/6+afr3dfM+2NHLv2l2PZasDL3pII4MBgbOpr61pgAgPGtGrDD00hxwgAyAdYDqp/hc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VooACwFN; arc=none smtp.client-ip=209.85.216.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-29a8911d11cso1278056a91.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 03:58:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709899086; x=1710503886; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=toCza1XInuOraHxuy2SmQIYltdK3DEIguvFMU6ymn7Q=;
-        b=VooACwFNIqEO6OcFC92hk7o4dXYWHi5KmPbrwQHA/52UfIdCx506gq/5P8j5MNEwvf
-         ujScx5ItnvK/tEf2cBefXdm3azqJumqguXPJkbx7GRxAZkiNENRmkUYOG4nypbyu8/Hs
-         yNbjMmhrCwfU0FM7u7dKybvC4dRmdQJQMY6MUQGOjgvn901vlZgcwJkanQTt0XQGi3DT
-         g6+JTYeVTyj80Vm4+xO7pBVM81E84qqTeVzUJHXsAahnMGiYlPm6qnzlq116lRzLCl4X
-         nxN4GrFKtlrej57JbOkztSIR60gx5OqwoKI45KC4QzdZ7YubZwbVeScJuVMuC9+bmm1r
-         lcOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709899086; x=1710503886;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=toCza1XInuOraHxuy2SmQIYltdK3DEIguvFMU6ymn7Q=;
-        b=WM4J8wJlc1gu/knoRVvebEtjHUu4OdQZc6FvdskqTkb1cPkbJFS9mWpp12APCPHIN1
-         /BpQS1UeR1zPNFeHHv2No56LBByzvlbQl+GdhBvUxBSY6kYSkHXdXy0C8KwJH68MG8P8
-         9XQ2u+YRZix2cWq8sYw8rQz3mouytbedIdWY+PLF/Ph44I79llm/FK4xsr7uh2QFUEDP
-         84wbSJaCIQcf9RnbstFEeuCRpb93eePvNDz3M4VF1Q6bZLV1W77zgLa3apQBl6yP379S
-         p8Ys/6g/0Jlgv8TYl3rrRZzSXIM0G8JFlroVgM3pTND4dZDj0l8wrD3zV1adHZcikAcY
-         EuaA==
-X-Forwarded-Encrypted: i=1; AJvYcCV0x0BJ2ecPzrqhhhPdKhYIvM2rpcoMQjUiaqE9alZ+WJAJhNJxh3nxdDZIyIccLAOzNiKGq4MyU3I6RFgy5FTbxcjDDCmddGJ3LRCK
-X-Gm-Message-State: AOJu0YwRyApdH4f9q5snv06KEEtaO0ydOQq9cEqo+mI1/IS7YUI4Q33o
-	JrR4WMMxWsMdzLyffgMOJ1WK6HX7E87oYp5TSLENJ8WOjpOOPw2WQ2SdUB9H+ugPt9R4uAObeKo
-	GMzcql3VmkCTM4EOFvQBkfTgEam/+Ita8MWGQvg==
-X-Google-Smtp-Source: AGHT+IFaxX+qgK6PnYUhIWTkawo4oWOqMv+nsZ0Bq6fJaPNdk5lpumWA4F58ozA4HYNfA+YqA596LG8DmZ8P9fOsJPE=
-X-Received: by 2002:a17:90b:1bd0:b0:29b:3d08:c644 with SMTP id
- oa16-20020a17090b1bd000b0029b3d08c644mr14900070pjb.9.1709899085761; Fri, 08
- Mar 2024 03:58:05 -0800 (PST)
+	s=arc-20240116; t=1709899257; c=relaxed/simple;
+	bh=LWR/498Kq6rWVdryO0v1b1PSggeQr7N6MpR1wJl067U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nSOM/ZbC3fhOs8VCUVtZVQ4bIgnIYrXMaFhAWqTiUUaLb4fIk5cVVIHBwMoohGJlUFJVZGHqORVreFS75Lie9neMv/ze1GZ84GIan6rkI1LkOowm/m/xd71aoxSepyK0b2BenuBQYSqTIcUupwd50BEGsUeecv8hjn3QS8t0FyQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W97ON/Ls; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F73FC433F1;
+	Fri,  8 Mar 2024 12:00:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709899256;
+	bh=LWR/498Kq6rWVdryO0v1b1PSggeQr7N6MpR1wJl067U=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=W97ON/LsH20ncTfxxUqSWOkOYpd0BhJEkl8fgQfPySxsw0gJetxHxtGAtkcpVq4HD
+	 io9mF/6xV3QiRu0Xo6TglH/B5u9Z9O4PlQFz4irLpWtzqsQv6wE+IJGtQyJrvWYUOd
+	 TW8QQEKuRmcBGN1kbBWh99Kx80oEIkl5o1RfISsEYChqQFX5BUwZHn+lQzFXHALWtx
+	 9/WX87FKrWhm9vb7Fy3r1xB+uaQL9Jvcfrraj7Ls6+korh8RKOZxsxaB73g7qMMg1n
+	 hkU6zuFzbnFz5x0iTEcyg4fauar8m4FkSFgPjJnzFA2SfqrcLMzI930C4sbci4FSr3
+	 WtpMIB/2Tntrg==
+Date: Fri, 8 Mar 2024 13:00:53 +0100
+From: Andi Shyti <andi.shyti@kernel.org>
+To: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
+Cc: konrad.dybcio@linaro.org, andersson@kernel.org, vkoul@kernel.org, 
+	wsa@kernel.org, linux-arm-msm@vger.kernel.org, dmaengine@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org, quic_vdadhani@quicinc.com
+Subject: Re: [PATCH v3] i2c: i2c-qcom-geni: Parse Error correctly in i2c GSI
+ mode
+Message-ID: <tbbpjk7ddpqnbtdu26pdcj3kzpanbih7cnok6vudbjq32qeoly@rrdsi2mgfsfp>
+References: <20240307205539.217204-1-quic_msavaliy@quicinc.com>
+ <cmtru4nvoab6g5emp2yrxnvfpvtrcsuna6dqsyewpagg3qmkau@r2zoj6vgslet>
+ <9dbe987a-fdd1-4bec-b350-5936abf69b1b@quicinc.com>
+ <yocn3rjxn37c7qniv2kkawgg2k7ghdwvrxcf77tdlpujnul3du@6oqvt5v4ykno>
+ <6bacd2be-14d4-49cc-9c98-7010a5f9f9bc@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240304094831.3639338-1-mingo@kernel.org> <20240304094831.3639338-7-mingo@kernel.org>
- <xhsmhbk7tdkac.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <CAKfTPtCNnTVFdf85sRdJxPhdNZxc8qKcnHL3sznjg-KBVn8Bew@mail.gmail.com> <ZerlUU4kAv580rLh@gmail.com>
-In-Reply-To: <ZerlUU4kAv580rLh@gmail.com>
-From: Vincent Guittot <vincent.guittot@linaro.org>
-Date: Fri, 8 Mar 2024 12:57:54 +0100
-Message-ID: <CAKfTPtAwh-khpNw-=oku3VU8xR6qVpoL2hrzEF6u1AZ7WQ+3Cw@mail.gmail.com>
-Subject: Re: [PATCH 6/9] sched/balancing: Update run_rebalance_domains() comments
-To: Ingo Molnar <mingo@kernel.org>
-Cc: Valentin Schneider <vschneid@redhat.com>, linux-kernel@vger.kernel.org, 
-	Shrikanth Hegde <sshegde@linux.ibm.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Dietmar Eggemann <dietmar.eggemann@arm.com>, Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6bacd2be-14d4-49cc-9c98-7010a5f9f9bc@quicinc.com>
 
-On Fri, 8 Mar 2024 at 11:15, Ingo Molnar <mingo@kernel.org> wrote:
->
->
-> * Vincent Guittot <vincent.guittot@linaro.org> wrote:
->
-> > > """
-> > > The run_rebalance_domains() softirq handler is triggered via SCHED_SOFTIRQ
-> > > from two places:
-> > >
-> > > - directly from trigger_load_balance() in scheduler_tick(), for periodic
-> > >   load balance
-> > >
-> > > - indirectly from kick_ilb() (invoked down the scheduler_tick() too), which
-> > >   issues an SMP cross-call to nohz_csd_func() which will itself raise the
-> > >   softirq, for NOHZ idle balancing.
-> >
-> > I'm not sure that we should provide too many details of the path as
-> > this might change in the future. What about the below ?
-> >
-> >  - directly from the local scheduler_tick() for periodic load balance
-> >
-> > - indirectly from a remote scheduler_tick() for NOHZ idle balancing
-> > through the SMP cross-call nohz_csd_func()
->
-> Okay - I updated it to:
->
->   /*
->    * This softirq handler is triggered via SCHED_SOFTIRQ from two places:
->    *
->    * - directly from the local scheduler_tick() for periodic load balancing
->    *
->    * - indirectly from a remote scheduler_tick() for NOHZ idle balancing
->    *   through the SMP cross-call nohz_csd_func()
->    */
->   static __latent_entropy void run_rebalance_domains(struct softirq_action *h)
->
-> Does this work with everyone?
+Hi Mukesh,
 
-yes looks good for me
+> > > > > Fixes: d8703554f4de ("i2c: qcom-geni: Add support for GPI DMA")
+> > > > 
+> > > > I still don't understand what's the fix here. You are making a
+> > > > generic DMA error to be more specific... where is the bug? What
+> > > > exactly is broken now?
+> > > > 
+> > > This is about being particular while reporting specific error.
+> > > Like i mentioned, instead of generic DMA transfer error, it should be
+> > > particular error 1) NACK 2) BUT_PROTO 3)ARB_LOST.
+> > > Ofcourse when data transfer via DMA fails, it can be considered as
+> > > DMA Txfer fail.
+> > > In summary so far driver was considering all failure as txfer failure,
+> > > but i2c has errors which are kind of response/condition on the bus.
+> > 
+> > I understand that, but what I need to know is: does the system
+> > crash? does the system act in unexpected way?
+> > 
+> > Moving from "you received an error" to "you received a nack" is
+> > not a fix, it's an improvement and it should not have the Fixes
+> > tag.
+> > 
+> > Having the Fixes tag decides which path this patch will take to
+> > to reach upstream. It's important because after it gets to
+> > upstream other people will take your patch and backport it older
+> > kernels.
+> > 
+> > I want to avoid this extra work when not necessary.
+> > 
+> 
+> Sure, then i think i should be removing fixes tag. It's not a crash but
+> it's an improvement. That being said, i think don't need to CC stable kernel
+> list and i should remove fixes tag ?
 
->
-> Thanks,
->
->         Ingo
+yes, don't need to do anything else, I will take care of
+everything from now on. If Wolfram accepts a last minute pull
+request, I can queue this up for 6.9.
+
+Thank you,
+Andi
 
