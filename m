@@ -1,135 +1,176 @@
-Return-Path: <linux-kernel+bounces-96436-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96435-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66965875C13
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 02:48:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33177875C11
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 02:47:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 074C3B2184E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 01:48:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4C4FA1F22866
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 01:47:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 585052377A;
-	Fri,  8 Mar 2024 01:47:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D8CD2263A;
+	Fri,  8 Mar 2024 01:47:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="jUZ5AzYd"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bmAGwlbf"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5617224EF;
-	Fri,  8 Mar 2024 01:47:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D946523D7
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 01:47:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709862465; cv=none; b=LQooEjDB3SroaMQ0j5sWzD0h4Me/qsJV81Y9fwvz0aOtwN3VguR1uba9BwSgZikRz32+4+fFQvPRbWnAOwTf2lxLHIWyN/VPS5s8jU/Atl43842B2ZB2OpEgtNexJsvb48KWUYETi3um7TKdRBTPpCI/h59awiUxMWUmpdxQmrU=
+	t=1709862463; cv=none; b=R9G7dyucBpcCqSWoemBHU+HGsiZLUt8igb9aVKoLsjvKN+bIRW9Mia74Goam3sCz5i3lTFWLrom2EZtWpxv3bmeGMN8w62ksk4fHiNhEoWmld2uzpdC3JUqax8T++qYb6Xxu/96j45vHmJPHgMnuqNeq19/iuANu4ehGPfhXtZk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709862465; c=relaxed/simple;
-	bh=qnucwu8sC+b5UCLM9QazJeTUSkl3RvfDeIUyhAnL+GY=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=m+d1x5eR4mK+ufFjKVson0r3iLn6aAarblfsPhr2BMdH+hxYFUt9mUh2sM5bN7MK2+oPtPN5o2QJA0IEpyiD03HhczJyZgi+15AKcHAPfQtfK41GIR/leAnnGsxEInL+qs0uBkLaW7ICjxw9A0pfKWkRiV/RAvE35DVDex61vvY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=jUZ5AzYd; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1709862454;
-	bh=qAbAssxvhgRYu6NVeoFSc//1sLgqbgjwD49nQyyyh2I=;
-	h=Date:From:To:Cc:Subject:From;
-	b=jUZ5AzYd6fSljeswlwQ7oyinqWQYzTBEvbhvAyk0Hg5i8fKemgZwdkhiHM0+Bi8ig
-	 PJdrkiTmb5sN17HTkDKFlI4zM9tJj9NEF6Cg2A9zTAd8vmTKO/WqHfiDquP58vKmKl
-	 sYvkuH+zF4Uo+mTKe4gmzgUw2q0ABnStPgLIPJsAkhoenTf6ZBx23Z+mqBwbfLnA5A
-	 mMrxBQtmzT/7p2Zb6mAtWHVVDvc3UBe9a7+CmCF/vgCJUsDq3geNjB1jrcscpvtH+S
-	 WzluQO3KV03U71kAuQmORIG/yaxZABcxI3+qt8aWEt1eYAXUYQm/EEBZ8ryj3u/l5N
-	 CO3HaDqfik9FQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TrTZF5y4Pz4wb0;
-	Fri,  8 Mar 2024 12:47:33 +1100 (AEDT)
-Date: Fri, 8 Mar 2024 12:47:31 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Christoffer Dall <cdall@cs.columbia.edu>, Marc Zyngier <maz@kernel.org>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>, Mark Brown <broonie@kernel.org>,
- Oliver Upton <oliver.upton@linux.dev>
-Subject: linux-next: manual merge of the kvm-arm tree with the arm64 tree
-Message-ID: <20240308124731.098502b1@canb.auug.org.au>
+	s=arc-20240116; t=1709862463; c=relaxed/simple;
+	bh=cnZ9yuC3MdU1ljMWVNI7gN+v/Dv5mrzJIaBRs1Mi8nQ=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=gjy7pbVdpl9oxaO30sPGf2TAlHY6p0V0n62YsCP4g5+kUvX46XdvnDQdCPSsp4dbsWzhlT3oDJwzyAkNo6SPjtjoMJM7zusOb+ZhIobJp+UL7l9C1lhwMg9cgmvFKn8zg4ZYkJUYr+nKEaRvxbYH+aVe4RhSjOK4pGjY66m0Kz8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=bmAGwlbf; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc64e0fc7c8so2451510276.2
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 17:47:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709862461; x=1710467261; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gfpgu33XDv7gN5c8kt8Yl/1FH+hpdm97kb/imNVS4FI=;
+        b=bmAGwlbfjhj6jHgRZdF9rloPbnJQRUjj+MQOClgjji0T/Ibp1G/ep6pZIEvkZ1ifLM
+         /13ff2rFm7uji/2B5RZSqAfNjtYv5l6NCDDLrs0p0iVXPsPnNF0qjmpcNcLAQiPmscEi
+         JLYGMAB5U4UCusHKtUPiyqpTU5Vrwt8Uf8m60f4+lQp57XViemL+KeIXTt5Fa9j84q/d
+         +3GxoKZmKnWQOqwu+vxlpYT/1gbJoag0//TlebACkUwTzVE2AiF67ll4iSUapV7AAG+z
+         xqOznnD33NopST7VRVND5gNm2M3Setmupjj1+EH5fUMcJ1d4bU/bihSvmEpUvxVQfdoL
+         ZUog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709862461; x=1710467261;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=gfpgu33XDv7gN5c8kt8Yl/1FH+hpdm97kb/imNVS4FI=;
+        b=Oh+KoNRcQkREUxqZfxxoOHlOxiqMHrzgT2sbQnOCrPMEldg9uJgPc8glYPIXO7ZC2+
+         eg17ArhoaB8tpoaRDRimngKDwKWfV/KigFLnqCAVgg5USbxESehQiC2nJTWTGLTuuLs4
+         KETnRdVREMYe/8Mciqy/nlvJS+yOfmInLRLRYa1XsOYWXHji0bHT4PASqgZG33/JgWKw
+         sxjhfSM79Ssubcm4R/WagdUFkhSrqGQxhHbAABeuXokGHKcqccytPgBTPfR4PNB4kwaU
+         tbeqa42o8Md+TBesylkEwiobQ+MGDz3zYJJsA+J8dvqYPo+unMPHCAhyV7Sszf5rk0SQ
+         1G8w==
+X-Forwarded-Encrypted: i=1; AJvYcCVWS7t8eibExEDMvXwemjzbGT+ltUpMdLy07Wlq06PgbxFOPCkuyPENWkz78fQY75UH/xV4lOq5Kbj51aZ6kqKX/Kypuc3xU6dFDBh4
+X-Gm-Message-State: AOJu0YyscCFN6CWuKekt6nqTxL8c/hhlukS/n0Ql72JKBxx9x0PjzUM3
+	ufusz/oQD/PW0sw7Uie7l17ISxebpdiIUbSZ9X7xIEoV9v7tvybFFFxaUBfYsZkMDiQQP+yAGqw
+	Jv9qvDYudpGlX94zruw==
+X-Google-Smtp-Source: AGHT+IEm1M+oGVLssHL64fBS/glWkZaxFmMJGGdFsNWWr37E1HSxI9bR/8WTdkuSFSgHSnIMFlAMyRb29kIpm944
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
+ (user=yosryahmed job=sendgmr) by 2002:a25:6943:0:b0:dcc:4785:b51e with SMTP
+ id e64-20020a256943000000b00dcc4785b51emr893146ybc.12.1709862460910; Thu, 07
+ Mar 2024 17:47:40 -0800 (PST)
+Date: Fri, 8 Mar 2024 01:47:39 +0000
+In-Reply-To: <420fcb06-c3c3-4e8f-a82d-be2fb2ef444d@app.fastmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/yUSZTzhEF0rOIcqwwxU2xH5";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-
---Sig_/yUSZTzhEF0rOIcqwwxU2xH5
-Content-Type: text/plain; charset=US-ASCII
+Mime-Version: 1.0
+References: <20240307133916.3782068-1-yosryahmed@google.com>
+ <20240307133916.3782068-3-yosryahmed@google.com> <420fcb06-c3c3-4e8f-a82d-be2fb2ef444d@app.fastmail.com>
+Message-ID: <ZepuO5bDoE-5T0RB@google.com>
+Subject: Re: [RFC PATCH 2/3] x86/mm: make sure LAM is up-to-date during
+ context switching
+From: Yosry Ahmed <yosryahmed@google.com>
+To: Andy Lutomirski <luto@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@intel.com>, 
+	"Peter Zijlstra (Intel)" <peterz@infradead.org>, 
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, "the arch/x86 maintainers" <x86@kernel.org>, linux-mm@kvack.org, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+On Thu, Mar 07, 2024 at 05:34:21PM -0800, Andy Lutomirski wrote:
+> Catching up a bit...
+>=20
+> On Thu, Mar 7, 2024, at 5:39 AM, Yosry Ahmed wrote:
+> > During context switching, if we are not switching to new mm and no TLB
+> > flush is needed, we do not write CR3. However, it is possible that a
+> > user thread enables LAM while a kthread is running on a different CPU
+> > with the old LAM CR3 mask. If the kthread context switches into any
+> > thread of that user process, it may not write CR3 with the new LAM mask=
+,
+> > which would cause the user thread to run with a misconfigured CR3 that
+> > disables LAM on the CPU.
+>=20
+> So I think (off the top of my head -- haven't thought about it all that h=
+ard) that LAM is logically like PCE and LDT: it's a property of an mm that =
+is only rarely changed, and it doesn't really belong as part of the tlb_gen=
+ mechanism.  And, critically, it's not worth the effort and complexity to t=
+ry to optimize LAM changes when we have a lazy CPU (just like PCE and LDT) =
+(whereas TLB flushes are performance critical and are absolutely worth opti=
+mizing).
+>=20
+> So...
+>=20
+> >
+> > Fix this by making sure we write a new CR3 if LAM is not up-to-date. No
+> > problems were observed in practice, this was found by code inspection.
+>=20
+> I think it should be fixed with a much bigger hammer: explicit IPIs.  Jus=
+t don't ever let it get out of date, like install_ldt().
 
-Today's linux-next merge of the kvm-arm tree got a conflict in:
+I like this, and I think earlier versions of the code did this. I think
+the code now assumes it's fine to not send an IPI since only
+single-threaded processes can enable LAM, but this means we have to
+handle kthreads switching to user threads with outdated LAMs (what this
+patch is trying to do).
 
-  arch/arm64/include/asm/kvm_arm.h
+I also think there is currently an assumption that it's fine for
+kthreads to run with an incorrect LAM, which is mostly fine, but the IPI
+also drops that assumption.
 
-between commit:
+>=20
+> >
+> > Not that it is possible that mm->context.lam_cr3_mask changes throughou=
+t
+> > switch_mm_irqs_off(). But since LAM can only be enabled by a
+> > single-threaded process on its own behalf, in that case we cannot be
+> > switching to a user thread in that same process, we can only be
+> > switching to another kthread using the borrowed mm or a different user
+> > process, which should be fine.
+>=20
+> The thought process is even simpler with the IPI: it *can* change while s=
+witching, but it will resynchronize immediately once IRQs turn back on.  An=
+d whoever changes it will *synchronize* with us, which would otherwise requ=
+ire extremely complex logic to get right.
+>=20
+> And...
+>=20
+> > -		if (!was_lazy)
+> > -			return;
+> > +		if (was_lazy) {
+> > +			/*
+> > +			 * Read the tlb_gen to check whether a flush is needed.
+> > +			 * If the TLB is up to date, just use it.  The barrier
+> > +			 * synchronizes with the tlb_gen increment in the TLB
+> > +			 * shootdown code.
+> > +			 */
+> > +			smp_mb();
+>=20
+> This is actually rather expensive -- from old memory, we're talking maybe=
+ 20 cycles here, but this path is *very* hot and we try fairly hard to make=
+ it be fast.  If we get the happy PCID path, it's maybe 100-200 cycles, so =
+this is like a 10% regression.  Ouch.
 
-  b6c0b424cb91 ("arm64/fpsimd: Enable host kernel access to FPMR")
+This is not newly introduced by this patch. I merely refactored this
+code (reversed the if conditions). I think if we keep the current
+approach I should move this refactoring to a separate patch to make
+things clearer.
 
-from the arm64 tree and commit:
+>=20
+> And you can delete all of this if you accept my suggestion.
 
-  84de212d739e ("KVM: arm64: Make FEAT_MOPS UNDEF if not advertised to the =
-guest")
-
-from the kvm-arm tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/arm64/include/asm/kvm_arm.h
-index 7f45ce9170bb,a1769e415d72..000000000000
---- a/arch/arm64/include/asm/kvm_arm.h
-+++ b/arch/arm64/include/asm/kvm_arm.h
-@@@ -102,10 -102,8 +102,8 @@@
-  #define HCR_HOST_NVHE_PROTECTED_FLAGS (HCR_HOST_NVHE_FLAGS | HCR_TSC)
-  #define HCR_HOST_VHE_FLAGS (HCR_RW | HCR_TGE | HCR_E2H)
- =20
-- #define HCRX_GUEST_FLAGS \
-- 	(HCRX_EL2_SMPME | HCRX_EL2_TCR2En | \
-- 	 (cpus_have_final_cap(ARM64_HAS_MOPS) ? (HCRX_EL2_MSCEn | HCRX_EL2_MCE2)=
- : 0))
-+ #define HCRX_GUEST_FLAGS (HCRX_EL2_SMPME | HCRX_EL2_TCR2En)
- -#define HCRX_HOST_FLAGS (HCRX_EL2_MSCEn | HCRX_EL2_TCR2En)
- +#define HCRX_HOST_FLAGS (HCRX_EL2_MSCEn | HCRX_EL2_TCR2En | HCRX_EL2_EnFP=
-M)
- =20
-  /* TCR_EL2 Registers bits */
-  #define TCR_EL2_DS		(1UL << 32)
-
---Sig_/yUSZTzhEF0rOIcqwwxU2xH5
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXqbjMACgkQAVBC80lX
-0GytMwf/Wt4r7IPuELrFWWrxuNxwXwMbkS8EdIxLkDqfTyq3DSOV8hly/M+gfRjC
-xQQmlgPBcdnL1T1CG9HrPZIvkWQeHRbDHvMmmkzHBWLV4Gh2yz4eSxvHux+6Eu43
-HTo3OsvZQ0RqikJ4gtoh+A966iVP/g4BO9khGv1eP81UAkKdxb/ZF2gG1DHtkL2Z
-6Y+Ec86cLRGu/LOzUFrri2VQuIDD/1+GPwa/YhhT8FVlyklFlK1OI++Gc1qUHcYb
-iifXsi691xVWwlFJotF391UgQPyClg8dfrJkeoJVB0b8vjcIDaU9RPG9dqO7Y/4v
-GDf5cW4ijOgJooje7b1wcZovuQratQ==
-=qKbr
------END PGP SIGNATURE-----
-
---Sig_/yUSZTzhEF0rOIcqwwxU2xH5--
+I like it very much. The problem now is, as I told Dave, I realized I
+cannot do any testing beyond compilation due to lack of hardware. I am
+happy to send a next version if this is acceptable or if someone else
+can test.
 
