@@ -1,205 +1,216 @@
-Return-Path: <linux-kernel+bounces-97523-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97522-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6F5B876B71
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 20:55:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82121876B69
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 20:53:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D11128290C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 19:55:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E3D2B1F21FB0
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 19:53:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73EB75B5DC;
-	Fri,  8 Mar 2024 19:55:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 025A85BAE3;
+	Fri,  8 Mar 2024 19:53:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="P3+Ws3i/"
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2054.outbound.protection.outlook.com [40.107.243.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="FQIcIjit"
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C49C27FF;
-	Fri,  8 Mar 2024 19:55:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.54
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709927709; cv=fail; b=Prr1cAF40JPJhILjUe39vaC+dKYc5FEWTmYg5cnx3G4g3qCj0CcLN8RuUQ3NW+I3eh9pa+yqOGZc9J+Y+VtVpTMqOKMFgxOtw2KwtzQh5c+Bpupb4UOPGVjimd0VvquSLVLMarGoDX/bqWXLfQUr8VHHhidfbZiKqSV/yp/q2T4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709927709; c=relaxed/simple;
-	bh=IAW/F4+ksBlf+kSMb8uanXSufXyq0IQ+a7qMPEVXbaY=;
-	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
-	 Content-Type:MIME-Version; b=MtMOYHK5dMj71++NTTaog1dwwY8ex2Yg+WQLMhPEBuLSwgVeA5g3b5cwDrhkxYN2SKj3e1W28KeZXGXaQZZpJdASYC6dStomeAM3yHbIN9hqCqn89qWtLxFmf1ZjBZjTwM/b+KHW+wUh3i5MV9PrC0HUy65ZiWVVKjxaKCpSM84=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=P3+Ws3i/; arc=fail smtp.client-ip=40.107.243.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cRD3j86aQj8188ArWz5ShlFZS1c6/tZqNPIxZL2040IlrLS+QRkhuweqYuhsWmm8FsqLNFgSGGeCq77vKHf+Jj5qactq9Xm2TYx8nR+dIBKIAqMtNk/oaYN03gG4KN4bLGGf4FH+Sp66ito0Dv8ww7pGjYYYO1d2ZTR3RxTUUVxsrTZc93yy94QuibTvD4N+yW/SKcEVKaHpZptukTP2653DY68hd0ocGgl558rPYu2I71fqHU6U/0XexnRwfxw2orfQBkgdA5NM5lSOgzouKh89d51sD7sQzEBygHAfAxRHON5+bWKOlKKV7E0sonuHUnp8PE/6PPV337CY+IGRnA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xQhKF1eYw/OKjJb5dVKND974TxYXMdDGfSrregLDhFc=;
- b=TIJ2p6Z2Tnc5fXXAmsdHI/2CDDAMuKxew9Dz1SDEtXcuiAf/VUcXs/QRuYq+Lh8twzWFbgvU2Mdj5Mofg20TkBFPmk9wmFh6VpH8e5wygujKhz2jqlPHnd/lKEJa/c1BnMKdD9Q4oKqsBGQmZK2xplLfdyZdmNgGuKas2Rd5pIZYlspPsij9jRn57hr4HQ2l1kfAOoZ6h1MK07pMLHP6uHT+RSzX/DV0bVoCqpYOp5A/58pg0SrpwxKxCfLxc4mKAKsKRosiWy33Hu9BH8S+1RvNxXHkfAJOmMbPwg/QyZE8N5mtI1pbZLy8iKsUWW0WgKzfGA+y7pZ5Tc4pgB2/QQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xQhKF1eYw/OKjJb5dVKND974TxYXMdDGfSrregLDhFc=;
- b=P3+Ws3i/ppqTe1MVpiYAsB082nke7/SZ/K7ZuYnb1lgaSWDq3dJN7r6xGMf9ABFbGDbjiLFDey/5HaxsPAyFrXxQxF9CFj0+J3j/qLY8+iPjS+FxEjnhlbVtkZ/QILljKG2/XBvwHoMl9KnX15TuPD3WQSFnhuDK3k3d7AT3Ub8z+cCNI0LDYK7xnC9QOUXUbq0Sb45SKeFn7D4/tg6qNvi4E2QxhWeqBdBOh10MlfO/k2ULqCHmE5rlYJS10+/xjmpN4JZ25Vz1OlwZRriGHi0JEWlPRTfedvUs5rVSWoZoDBfPRlqRSMEi7FOGLd7PN+9GVYAyrUmUhtciwl/9iA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BYAPR12MB2743.namprd12.prod.outlook.com (2603:10b6:a03:61::28)
- by IA1PR12MB8407.namprd12.prod.outlook.com (2603:10b6:208:3d9::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.29; Fri, 8 Mar
- 2024 19:55:04 +0000
-Received: from BYAPR12MB2743.namprd12.prod.outlook.com
- ([fe80::459b:b6fe:a74c:5fbf]) by BYAPR12MB2743.namprd12.prod.outlook.com
- ([fe80::459b:b6fe:a74c:5fbf%6]) with mapi id 15.20.7362.024; Fri, 8 Mar 2024
- 19:55:04 +0000
-References: <1709823132-22411-1-git-send-email-shradhagupta@linux.microsoft.com>
- <20240307072923.6cc8a2ba@kernel.org>
- <DM6PR21MB14817597567C638DEF020FE3CA202@DM6PR21MB1481.namprd21.prod.outlook.com>
- <20240307090145.2fc7aa2e@kernel.org>
- <CH2PR21MB1480D3ACADFFD2FC3B1BB7ECCA272@CH2PR21MB1480.namprd21.prod.outlook.com>
- <20240308112244.391b3779@kernel.org>
- <CH2PR21MB1480D4AE8D329B5F00B184A7CA272@CH2PR21MB1480.namprd21.prod.outlook.com>
-User-agent: mu4e 1.10.8; emacs 28.2
-From: Rahul Rameshbabu <rrameshbabu@nvidia.com>
-To: Haiyang Zhang <haiyangz@microsoft.com>
-Cc: Jakub Kicinski <kuba@kernel.org>, Shradha Gupta
- <shradhagupta@linux.microsoft.com>, Shradha Gupta
- <shradhagupta@microsoft.com>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "linux-hyperv@vger.kernel.org"
- <linux-hyperv@vger.kernel.org>, "linux-rdma@vger.kernel.org"
- <linux-rdma@vger.kernel.org>, "netdev@vger.kernel.org"
- <netdev@vger.kernel.org>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
- <pabeni@redhat.com>, Ajay Sharma <sharmaajay@microsoft.com>, Leon
- Romanovsky <leon@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
- Sebastian Andrzej  Siewior <bigeasy@linutronix.de>, KY Srinivasan
- <kys@microsoft.com>, Wei Liu <wei.liu@kernel.org>, Dexuan Cui
- <decui@microsoft.com>, Long Li <longli@microsoft.com>, Paul Rosswurm
- <paulros@microsoft.com>, Alireza Dabagh <alid@microsoft.com>, Sharath
- George John <sgeorgejohn@microsoft.com>
-Subject: Re: [PATCH] net :mana : Add per-cpu stats for MANA device
-Date: Fri, 08 Mar 2024 11:52:42 -0800
-In-reply-to: <CH2PR21MB1480D4AE8D329B5F00B184A7CA272@CH2PR21MB1480.namprd21.prod.outlook.com>
-Message-ID: <87bk7oebxk.fsf@nvidia.com>
-Content-Type: text/plain
-X-ClientProxiedBy: SJ0PR13CA0123.namprd13.prod.outlook.com
- (2603:10b6:a03:2c6::8) To BYAPR12MB2743.namprd12.prod.outlook.com
- (2603:10b6:a03:61::28)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9FC25A7B7
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 19:53:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709927617; cv=none; b=Ts5rnj1H0bTIcn20Cs1MhE1sv992dOHUK5UZQylyrIvnt/emk+8UmmAKXq1IWwjsdfslRzb4VUs2os9vuP5K3rt3Fg6P5ThcevPMAaio5qwFgH56iR4VwKW9mDROpg0fa3WxIWaqL62gqwQYs2CC+eozY3X5GhxdCBSpFFHA9xM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709927617; c=relaxed/simple;
+	bh=+JPchmRbdEWp2hPvsQ8mwR8SsWihb9svN/keL3PqCmM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mlUAmJri1kYI5CTY6evnqUhos91P01Ir0DgBSvPuPh4CHrlBoEuEiWfEsKQm4b+x8CNA577Bh6HCdYHR2X6RaRXXul33JTvxbOqLuDlGzEOitLf7CyxD5YILbKCpx4O0qpIZJDXqPXj8gXXAJ5LWrXgj95hvMEuWYyGSGRPpKR4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=FQIcIjit; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a45bdf6e9c2so301397966b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 11:53:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709927613; x=1710532413; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Pd2ZoV00c/hvjjV6TuUocydSDT4SN2a80zpBvuI43a4=;
+        b=FQIcIjitCXslDz2GbbUrP/Dl2A1fHjodIwfcVwX7edPGJjzUe6ft0Dzx4S5sFwe1Vh
+         g88zviT2eLf5PmHmjVJB2aNpgv9n3ocJvS72MSrLxPfMODNwXkIqGml7VkVhyDJXPZ65
+         MjMUs4Lqmk59C5q9pviF7lrr5HVfpNnp9VtqWc7ZvnuMI0EGx3Q5NM/4uZGay3xcEJFy
+         qYcxb+eRfAcYnwP/UVfmW9ErY4qC/DPOwckI+rRsS39kszwhkv8lEpCyJ9PUorpE+Wmk
+         8YbTN6+zdx0SrM+L7muhYuk5uJr4h+Hit4pCKYkJfFmlBE74LLcVw8ZHHf4d82NY4qR1
+         jV5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709927613; x=1710532413;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Pd2ZoV00c/hvjjV6TuUocydSDT4SN2a80zpBvuI43a4=;
+        b=AD067is/zRbIG18e8Z7zC4YI0uhDYo07X50KYTJw4KZf0GT8JFPSEiDRk575V/htnZ
+         D+tSbChg58ZGnEC0bqLr5Bf/X4jQzfwDif7BYleulnx1tq7wWgsZDuSNjK1ayaHq0MY5
+         vopcfexam1hgzCXf/mSuBiDtW2DCyuk6f0UtCT7Bs2U7gd455u5SxxRjwXCML08dZ/85
+         W2jK/UYY+NBFEmwNf8yo2a3ZGmuLMrUHHNQqoAsmNAxjYNqeHNgtN6WTjyF1/kub0ygp
+         7un3FAr9E8ItChVdfbTZgAHVSzhfj+ZSoKdCbhzJjtFwg9Ai7n2JP5MV8hFuwCZJ74Zs
+         D6oQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWm6E8axWp4G70hMUwGPtPbugCOL86HGNLXEoGGXX7UJuW3HOyUvu2oP5Lx0UE1zzWguLheHTA9YDelyKTW9oImVgZYLZLUEE4vG9FB
+X-Gm-Message-State: AOJu0Yw5pb6TG6m5TRxpjmF/pVuppwYhsGZqzB07UWDDMkdE4zXr1bg4
+	AKNrbVkvele1s1fho7mkeJJCGtiBOoQtsEtoGD1+ojyy7EYK877nxEBWxp6feNjS+Qs0FCxEG4V
+	qmUO8ll/zZr7P2gGYIkRjm8pDpinKvLQu6/pu
+X-Google-Smtp-Source: AGHT+IGdfTizwHQnCpRk5GeSjOHjssHLcb+cVFlrr45NHBDRApEdAye6AN9i0+rO/lWinEjVvgcrkAuNBm/bbSNX5ic=
+X-Received: by 2002:a17:907:76d7:b0:a3e:9aa3:7024 with SMTP id
+ kf23-20020a17090776d700b00a3e9aa37024mr57660ejc.34.1709927612751; Fri, 08 Mar
+ 2024 11:53:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR12MB2743:EE_|IA1PR12MB8407:EE_
-X-MS-Office365-Filtering-Correlation-Id: b47b1b9d-1acd-41f9-ea71-08dc3fa9a57a
-X-LD-Processed: 43083d15-7273-40c1-b7db-39efd9ccc17a,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	4/TUrpBXuZBQ/mk3LfaoavvF2LtKVec202u4BiB3LWss6mgHPCMqMWNHEm2pmElF/Xqj7tCOBoPUl1XIpCECN2zCg2cMrCsik0+r7K7c1bM0QgTOM7Ps65h0sjKQ7jIIT9lg4uWALE08x+zs8DQMCoY0a0vgpafXMi6luSSCTIfFqx8IaNr/bnwTQi5u4JyKvfrXAk0JtZsRvyryWwRagbA1nM3HPNmvMu3xHtDEvoekunf/5aG8HlUJJ/0kxZzYd3e6eebSkWm4ylMHs0MgzQDEhR+KJqZLr1GyJX3U/fTCwKko0STfFFrv+wT0zimOxrIXLKc1gn3M+tFRQQg5hDEfJsEDhTce4FDl/MSFPcgCxOl/w/yTZzkPmK1BwZTGfK3fUg8m1/nBjYzUHvfLnl1+RrejycfJd6psWJsp84ND7hYnun6HvX41JCD41sOWJqar83Ps2CE4BietmlN6LlOJm51jDomN6t+HqJyCpGt8W3KdfwNXc/nMXMI+O1ywK6ZvvQoAaDgQ0KXvQejcOC0b/XiqCbU7EPIXnKTCX2vBEIP98y2aUNRux9sk1ehkG05l3DUHX1wwMFaF/Q0a+x8q7wFC/RUjrQMeNT/141KzVcOZqQRpz/Tc0mwpTTlYdCIa9DEFaZ7UPXsGoOYFZ4trijc+jvUgr7E2JoTWSjo=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB2743.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(7416005)(376005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?lR3sw8s2Whs4DCEkdzYThy1XpEcT9gKufKAePC7KdNpGyXaOU7WlNzITNDl8?=
- =?us-ascii?Q?VuDsiwwBF+k0mV4iUhJkyeTG/YnWF6kFaVY9yEmFFkkrb4rTS6ItG3hdEakU?=
- =?us-ascii?Q?BdV2f24LflyLAYp+lZ8rZXwdn5ZE9wdLm7X4yyNYC93deyQ7++Yf77pNQ4nL?=
- =?us-ascii?Q?9MQ13giEw7FR2BeZxUHsajiihOhJak0u0ToHUJHepjt+LTu4bjJJSEINJ8gt?=
- =?us-ascii?Q?kk+AqHXO8YWKrP7v9YcmnoD0R4Km3UPnmdzUm8SNbbxdG40kp+IqAvkZ95rR?=
- =?us-ascii?Q?nTXlAIkfHQP+RkMogyi4TansEqdL1LVHspFdIjo4X3JHYwneZkE2biNntWDW?=
- =?us-ascii?Q?+SrZU0nqm5VDNAp8h2n/QBOgQa4LScmW5ZCCFTTygM/0MBeOPoGPY/bOtSP7?=
- =?us-ascii?Q?g8zoSZg/VLIaJx0YrGeUBfGbnK5gqf2spwxaajbSGWWF882JxAzWrcT2kbEa?=
- =?us-ascii?Q?j3oIjB2MZ7hp/iye6bWysmgtJPm8XM5+OAw6QJx67EZbPDCJ2Nu3VuYMNxmf?=
- =?us-ascii?Q?kLUS/8klAf+RkYw8yt/eLUDPFAI4fR5/hdcvFMbtFKicHJ4tNwSBiPI76ILo?=
- =?us-ascii?Q?8sdJ5YOHHt2dOJQDkKhkzJTfx45iwRzoDPCxy/uSr9bVwcPYlAyzB48/sqQt?=
- =?us-ascii?Q?5L4DHpiSv8aUvIfpNXrxcV8E7bC8FACwLm4pbB5D6LjmkzOdF5jXfSfgaGbs?=
- =?us-ascii?Q?UXjek5q/R3j3C/ocTFLJikHjof0bJ3iZYbYUKHONGGEJ6qaX8BMMLQ1nlzGr?=
- =?us-ascii?Q?qeaHIoI9ymY0wIEszgu98cq0O5dd/twedd+RLOf0h4Epl9LMSmfox7syjvdu?=
- =?us-ascii?Q?TveegeOIdo4IALDQFrgc3moRgJprZVwqFpZjJXBgBADoYrDf9ctQBPaO5bSE?=
- =?us-ascii?Q?yqui+/QJENM+rjFqJ629tkFPqKaX+3XOgOmodTs52BsEiVH7M+hvecqj9aV7?=
- =?us-ascii?Q?D2LuxC1OHsbdaXF3zS+SqT9U8oe85YOXWKx5msD/KvByChAbS5QrRdePanOn?=
- =?us-ascii?Q?tbIK9oMiXXikg7WMFF1Ly+r6jXTCkLkSAtnaO/IrioULSt43+BsKs5qClWQt?=
- =?us-ascii?Q?A9aV/PekmPtn5nudqWC8jEofwIQ1lfTuhJEoo+B8NdFfxTl1K9VoLd3jJHb+?=
- =?us-ascii?Q?z1F7iPFLmFOfY57mhzQOvMVzwk5hhhBco+fFns+/XXt1f1L75yrtwIjCHABH?=
- =?us-ascii?Q?PVadLOjqAhl5N2aqgPuZRDPBFPqWgFfQ2CUUqhYg+p2ZNLEarvVdkiPkIbF4?=
- =?us-ascii?Q?i8l+pCHs4MlsYvXPZ5nicaV3WaIeUKTHQPUXMJfR9uYGfLVKN24doVT/tUDm?=
- =?us-ascii?Q?GwUeJ3ufnw8nqG7STw1bfyh0zwys26HpoSsFfsx8NgwOXm/cBhykm1AX0vIj?=
- =?us-ascii?Q?+slJZO6GuaF2fIjnbZchGRGqSeZeC6yqAx77ME4QCJ0bz7tYLsou9nzRMYl7?=
- =?us-ascii?Q?midHsnwwOeo/nD82lGUuZGuQHCTP3PEpls3cxCb1RDl6n4vcCz0k/RERDG+H?=
- =?us-ascii?Q?XNp1LTSncr2gUINwDKNhmjzsqmnRz+PEJ+piybyhUdXSB/xAVaEejD9whm9t?=
- =?us-ascii?Q?G2SzKzq6/PxiqLSHyKViBnWFwaP1xRWPl8MxLRHA+iE0rPWaGY65D86bvT2g?=
- =?us-ascii?Q?OA=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b47b1b9d-1acd-41f9-ea71-08dc3fa9a57a
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB2743.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Mar 2024 19:55:03.9203
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /7IrEigsTSzqZjpm2Cp5kRImpPLPlnd6r4LACK3tnvm5o3rLvTEKoaR/o4QBPxxxvezYVCtIL2jfc/IQi5WOOA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB8407
+References: <20240305020153.2787423-1-almasrymina@google.com>
+ <20240305020153.2787423-3-almasrymina@google.com> <15625bac-dfec-4c4e-a828-d11424f7aced@davidwei.uk>
+In-Reply-To: <15625bac-dfec-4c4e-a828-d11424f7aced@davidwei.uk>
+From: Mina Almasry <almasrymina@google.com>
+Date: Fri, 8 Mar 2024 11:53:18 -0800
+Message-ID: <CAHS8izMC=q_DuR94i-NCKFVsW0JadX7NEbDfyT8PfG3tBwPv-Q@mail.gmail.com>
+Subject: Re: [RFC PATCH net-next v6 02/15] net: page_pool: create hooks for
+ custom page providers
+To: David Wei <dw@davidwei.uk>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	linux-arch@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Richard Henderson <richard.henderson@linaro.org>, 
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, David Ahern <dsahern@kernel.org>, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
+	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	Pavel Begunkov <asml.silence@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
+	Yunsheng Lin <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>, 
+	Harshitha Ramamurthy <hramamurthy@google.com>, Jeroen de Borst <jeroendb@google.com>, 
+	Praveen Kaligineedi <pkaligineedi@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-On Fri, 08 Mar, 2024 19:43:57 +0000 Haiyang Zhang <haiyangz@microsoft.com> wrote:
->> -----Original Message-----
->> From: Jakub Kicinski <kuba@kernel.org>
->> Sent: Friday, March 8, 2024 2:23 PM
->> To: Haiyang Zhang <haiyangz@microsoft.com>
->> Cc: Shradha Gupta <shradhagupta@linux.microsoft.com>; Shradha Gupta
->> <shradhagupta@microsoft.com>; linux-kernel@vger.kernel.org; linux-
->> hyperv@vger.kernel.org; linux-rdma@vger.kernel.org;
->> netdev@vger.kernel.org; Eric Dumazet <edumazet@google.com>; Paolo Abeni
->> <pabeni@redhat.com>; Ajay Sharma <sharmaajay@microsoft.com>; Leon
->> Romanovsky <leon@kernel.org>; Thomas Gleixner <tglx@linutronix.de>;
->> Sebastian Andrzej Siewior <bigeasy@linutronix.de>; KY Srinivasan
->> <kys@microsoft.com>; Wei Liu <wei.liu@kernel.org>; Dexuan Cui
->> <decui@microsoft.com>; Long Li <longli@microsoft.com>; Michael Kelley
->> <mikelley@microsoft.com>
->> Subject: Re: [PATCH] net :mana : Add per-cpu stats for MANA device
->> 
->> On Fri, 8 Mar 2024 18:51:58 +0000 Haiyang Zhang wrote:
->> > > Dynamic is a bit of an exaggeration, right? On a well-configured
->> system
->> > > each CPU should use a single queue assigned thru XPS. And for manual
->> > > debug bpftrace should serve the purpose quite well.
->> >
->> > Some programs, like irqbalancer can dynamically change the CPU
->> affinity,
->> > so we want to add the per-CPU counters for better understanding of the
->> CPU
->> > usage.
->> 
->> Do you have experimental data showing this making a difference
->> in production?
-> Shradha, could you please add some data before / after enabling irqbalancer 
-> which changes cpu affinity?
+On Thu, Mar 7, 2024 at 8:57=E2=80=AFPM David Wei <dw@davidwei.uk> wrote:
 >
->> 
->> Seems unlikely, but if it does work we should enable it for all
->> devices, no driver by driver.
-> There are some existing drivers, like mlx, rmnet, netvsc, etc. using percpu 
-> counters. Are you suggesting we add a common API for all drivers?
+> On 2024-03-04 18:01, Mina Almasry wrote:
+> > From: Jakub Kicinski <kuba@kernel.org>
+> >
+> > The page providers which try to reuse the same pages will
+> > need to hold onto the ref, even if page gets released from
+> > the pool - as in releasing the page from the pp just transfers
+> > the "ownership" reference from pp to the provider, and provider
+> > will wait for other references to be gone before feeding this
+> > page back into the pool.
+> >
+> > Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> > Signed-off-by: Mina Almasry <almasrymina@google.com>
+> >
+> > ---
+> >
+> > This is implemented by Jakub in his RFC:
+> > https://lore.kernel.org/netdev/f8270765-a27b-6ccf-33ea-cda097168d79@red=
+hat.com/T/
+> >
+> > I take no credit for the idea or implementation; I only added minor
+> > edits to make this workable with device memory TCP, and removed some
+> > hacky test code. This is a critical dependency of device memory TCP
+> > and thus I'm pulling it into this series to make it revewable and
+> > mergeable.
+> >
+> > RFC v3 -> v1
+> > - Removed unusued mem_provider. (Yunsheng).
+> > - Replaced memory_provider & mp_priv with netdev_rx_queue (Jakub).
+> >
+> > ---
+> >  include/net/page_pool/types.h | 12 ++++++++++
+> >  net/core/page_pool.c          | 43 +++++++++++++++++++++++++++++++----
+> >  2 files changed, 50 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/include/net/page_pool/types.h b/include/net/page_pool/type=
+s.h
+> > index 5e43a08d3231..ffe5f31fb0da 100644
+> > --- a/include/net/page_pool/types.h
+> > +++ b/include/net/page_pool/types.h
+> > @@ -52,6 +52,7 @@ struct pp_alloc_cache {
+> >   * @dev:     device, for DMA pre-mapping purposes
+> >   * @netdev:  netdev this pool will serve (leave as NULL if none or mul=
+tiple)
+> >   * @napi:    NAPI which is the sole consumer of pages, otherwise NULL
+> > + * @queue:   struct netdev_rx_queue this page_pool is being created fo=
+r.
+> >   * @dma_dir: DMA mapping direction
+> >   * @max_len: max DMA sync memory size for PP_FLAG_DMA_SYNC_DEV
+> >   * @offset:  DMA sync address offset for PP_FLAG_DMA_SYNC_DEV
+> > @@ -64,6 +65,7 @@ struct page_pool_params {
+> >               int             nid;
+> >               struct device   *dev;
+> >               struct napi_struct *napi;
+> > +             struct netdev_rx_queue *queue;
+> >               enum dma_data_direction dma_dir;
+> >               unsigned int    max_len;
+> >               unsigned int    offset;
+> > @@ -126,6 +128,13 @@ struct page_pool_stats {
+> >  };
+> >  #endif
+> >
+> > +struct memory_provider_ops {
+> > +     int (*init)(struct page_pool *pool);
+> > +     void (*destroy)(struct page_pool *pool);
+> > +     struct page *(*alloc_pages)(struct page_pool *pool, gfp_t gfp);
+> > +     bool (*release_page)(struct page_pool *pool, struct page *page);
+> > +};
+>
+> Separate question as I try to adapt bnxt to this and your queue
+> configuration API.
+>
+> How does GVE handle the need to allocate kernel pages for headers and
+> dmabuf for payloads?
+>
+> Reading the code, struct gve_rx_ring is the main per-ring object with a
+> page pool. gve_queue_page_lists are filled with page pool netmem
+> allocations from the page pool in gve_alloc_queue_page_list(). Are these
+> strictly used for payloads only?
+>
 
-Wanted to chime in with regards to mlx. You might be conflating per-cpu
-with per-queue. When we run ethtool -S, we present counters per netdev
-queue rather than per-cpu. The number of queues we instantiate is
-related to CPUs but it not always 1-1.
+You're almost correct. We actually don't use the gve queue page lists
+for devmem TCP, that's an unrelated GVE feature/code path for low
+memory VMs. The code in effect is the !qpl code. In that code, for
+incoming RX packets we allocate a new or recycled netmem from the page
+pool in gve_alloc_page_dqo(). These buffers are used for payload only
+in the case where header split is enabled. In the case header split is
+disabled, these buffers are used for the entire incoming packet.
 
-Jakub just recently supported a proper interface for per-queue stats
-counters that we are interested in supporting.
+> I found a struct gve_header_buf in both gve_rx_ring and struct
+> gve_per_rx_queue_mem_dpo. This is allocated in gve_rx_queue_mem_alloc()
+> using dma_alloc_coherent(). Is this where GVE stores headers?
+>
 
-  https://lore.kernel.org/netdev/20240222223629.158254-1-kuba@kernel.org/
+Yes, this is where GVE stores headers.
 
---
+> IOW, GVE only uses page pool to allocate memory for QPLs, and QPLs are
+> used by the device for split payloads. Is my understanding correct?
+>
+
+--=20
 Thanks,
-
-Rahul Rameshbabu
+Mina
 
