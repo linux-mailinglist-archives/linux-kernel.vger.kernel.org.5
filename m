@@ -1,146 +1,226 @@
-Return-Path: <linux-kernel+bounces-96591-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96592-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C73A6875EA6
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 08:37:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C613875EAA
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 08:38:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B99E28314F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 07:37:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0D99EB230C6
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 07:38:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BC234F5E6;
-	Fri,  8 Mar 2024 07:37:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16AD54F5E6;
+	Fri,  8 Mar 2024 07:38:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hVenKu+8"
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UT3fPqR1"
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1781C4EB58
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 07:37:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80C434EB49;
+	Fri,  8 Mar 2024 07:38:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709883471; cv=none; b=QnkYIyQgze/4OaR13I80cvg3T6l4OMyitu0wnWl1g7h3kO3u8cYIOBtS54pT9mcSw6kxZFtBBBMA80fE4T4KLeSGMlyOK8gT7HFjfYhCCydhDTp4k0VhHUNAb+tfV5gQIMlUX9n2dPcj8YsiBMVrnUHqZO3JUfGtW10P0nLleeE=
+	t=1709883513; cv=none; b=oehSxCEhlcfDKvFWTXcFHBvMAev999YoK/2AenAMRNyx0jc10p6bEplT1fDrGHD9f6jpC4mYsp3+h4gp5Xlsa8I6mWXkm4+Zw6MNj1CHd/jmHxuItQAgHMidAREQSZNqU6+T4o13yUJEGJ7o+uCMgurG4lEtlv5njIh4hAwoXG8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709883471; c=relaxed/simple;
-	bh=wBiR39uzYKc4tZlVThLdr1KErfH2j2DZYVoFRU26Mew=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XAEL+uq1rSCqOSE7/uKlEIe/YFoci8WZAska+nWA2DivJQ07+GHEa0HqrVBuyyBUZAL7RaJ/+Nfu0xaBxA4xSK2tzxzDuWK30svJVuD6/fhD+IWqpWy5fMaY/Es279/VS/9zSl2lNVsa5wtB/nR4GbyyBIKUDpqo1P6tpoA7J0o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hVenKu+8; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-412ee276dc9so3851265e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 23:37:49 -0800 (PST)
+	s=arc-20240116; t=1709883513; c=relaxed/simple;
+	bh=k4zLKYhyCGr26WYVbIckZEF+Uc4ZGsgM7GdKazOgOM8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=aKynSP84WW+mbfn4nwA3oGAe+QK4Er0/uiY26xlGFaZbIcug0ZGqJClz5hCBEgw3L5sEoWiNXLcfdFvxTvbgD45X1GVd92mXVOwdZstFhi+fMNQhoiFmXlRmcOViuZsqZhonMij89gOrQD7N741OIdly/3jCtbKDf0r1ZZggL/Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UT3fPqR1; arc=none smtp.client-ip=209.85.167.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-512e4f4e463so2427942e87.1;
+        Thu, 07 Mar 2024 23:38:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709883468; x=1710488268; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OhiQMXQwl+cGnIcsRqQff0Uowg+nqWN2zmSceUCwYy0=;
-        b=hVenKu+8BkDkhrH/FqyvIr5q7QSMi/FaUjCpHbdjRPz79fq7mcnyEu1m9P3YEHImzF
-         T+ykQC2GTOUhfnYP/fxwbTUHVYt8+2YJUip/SMnpxtL8bX90o4WcXAepvIKMTpdVPsyp
-         8H5E3PqNzAX9l5hXocgp+3LkAxrzJA4bkNIgPU1hoCFMnW0hDXyHOH6jv9Y2t6aVXweX
-         EKRd36QNtX0sY9CE6iE/KUBNPMkugopHv+BP3vychi7JhKjkoqFQzOqOypi8urh8vO+I
-         Am0LI3bPKxNgRjMmk9an93tt6vvr7RIC+kgahqrK2ZVGze0fcMB/zS3zr4bmnl4owB11
-         9fnA==
+        d=gmail.com; s=20230601; t=1709883509; x=1710488309; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WQAkvdiUkr5StdP/yppIaHyxE5vK72hC1JwtmqddXFw=;
+        b=UT3fPqR1E7dJFF9lk6fVR/vteH242ogMm8mHXkMRQxD0CdkcuCuKPGHDvBaCCjcbT7
+         OCsdfVYIivBAlYMFqCI+x9p0o9HFIb1LzOOdBei+0OYW7J5k28G7Sj/EXvVO2JBhzuLI
+         U8dw013u4f7vetds8fHvJcG7W9CUJDaag2DqJ99SSnA6+N/gsY0daCGNgx7dIPI0Y+2q
+         TXoKTxjpDMj3mWWjqvNSx2ttpOkDKdxSI2D+f2HvuCVkOunlsUlf6aYTL8O/eu4ypcnA
+         szKW7jEp2UfWn/TxaQOG5k5+8xMYByNclvRFYB46iY5M3oufM5ZT7t7F7Xx/dLnXXPkA
+         S5rQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709883468; x=1710488268;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OhiQMXQwl+cGnIcsRqQff0Uowg+nqWN2zmSceUCwYy0=;
-        b=aKW5dDoGL9RoT0Trjb2RKIlHjblW0QZ3g6V9ZQvHa2yIl/Vrqzger9zktvtK16i0Cl
-         2DKbBdBKAAWsPn1tEZN/cjOdNq2IRiGQR8nnlHw9soKAVqjV8LF6AVz8a4xfX3FWp7Nz
-         pbeTgSvkMrWkoBu6q4BEkMlBxIXgCh/2gfG56LZnFpFKKERccOsGhhK+HfvwGCOlA2MA
-         x54z8v95EtiY9jQlePl+LGlLPsJ0D/onDbSmizeCzXhVrrdAY3fPhgQQzj8sdoI6+3xC
-         QxoP156Pk11RISOhYLrTWn7VJ+UdMckQ2Mjycvi67GEmApjSLy62WNTVnp+exb1Nf30s
-         +ftg==
-X-Forwarded-Encrypted: i=1; AJvYcCVtcL88Fk9Tk1yMVJnpEvD9e1IZ9x1q5ZednS9ntknJnQHhtGnYhuAZDjiTwYhh7ejDl+AWbwM+FyG8Ipz/d2zxz0yNDCcjNt64zAEY
-X-Gm-Message-State: AOJu0Yzv2GADZVUbC79Mb9BRtsIU6RwQarXSNEZW5wkdYaUZ26R6JgR8
-	xUIe1DcSpqXXLXStH2ucEd7LmvySu0D0dIlAfiQkgsgndAh9PFdU2qdWlWc8ZfU=
-X-Google-Smtp-Source: AGHT+IHeM3AFJo8jH68+WgOn5Bb5yw3pborl2F1ryp8Z37+rRnPpazNBL9tDmD3xUUjWGzp5w/3qaA==
-X-Received: by 2002:a05:600c:4fd3:b0:412:fa5f:7f85 with SMTP id o19-20020a05600c4fd300b00412fa5f7f85mr4665433wmq.19.1709883468522;
-        Thu, 07 Mar 2024 23:37:48 -0800 (PST)
-Received: from [192.168.2.107] ([79.115.63.35])
-        by smtp.gmail.com with ESMTPSA id b6-20020a05600c4e0600b004131b337c82sm375764wmq.31.2024.03.07.23.37.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Mar 2024 23:37:48 -0800 (PST)
-Message-ID: <4124c401-512e-469c-9080-2f2fa5d548b7@linaro.org>
-Date: Fri, 8 Mar 2024 07:37:46 +0000
+        d=1e100.net; s=20230601; t=1709883509; x=1710488309;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WQAkvdiUkr5StdP/yppIaHyxE5vK72hC1JwtmqddXFw=;
+        b=oJK5q+5eh0MIW+DrMi6XJdrGK62bQGRhBCkVoSaRJigfmyG/jU3OFP1RBZ9S8qzZis
+         /zuPT+WmgwpiHrmT8p17urEXyq7rJg5Fj5ZGYiQkCGht4YIPQtitzT/nCI4GSHGrzR8T
+         pCDxs57HdLeIoPPPA6nvoQkq3Nk5PFRe9KGkEK6OEwKBzV9zcHWpkaVS3pBhwmlbUPOu
+         tWTbzuZCc50qU66MGhDFpXqE95SSI/h1rj57XPMTTnPrQBuYbFndxJR7+Ob/qK3cHtK1
+         o8BTUOSFPbp2gXlg963qecqVib9zOvGKArc/YcjAphClRJ7b4OBtz1b8EiIxPnKeIKeD
+         GObw==
+X-Forwarded-Encrypted: i=1; AJvYcCVIvOuNNYQvhq/bVuUQYol1iubN8tu4qJHn9p2QYaSxbUvY1PHvwRNxv+l1OtGG98+cdixn2tPvNgp+VMp0rtU0tbzn7/+3BFOH3O7+vsD7n91HUDHP5l+sPrnoi4dKHzAFKTb5PGWB
+X-Gm-Message-State: AOJu0YyqSWMUtQgZUgPaP2VkEgIspSMi+gFVCqLUVLrHeEdGKixJmwSX
+	X2fKUOENA7n30RNpM4OxdV5BPo5DXLCYUMnWoc2MT81T7NdusgK6myh3ZIdDFHenH9RprpnLhZY
+	MA9kukSBZhFLMB7whkUD/4r0LTRM=
+X-Google-Smtp-Source: AGHT+IF7G6Xk/L/aKLhElFAzkpvBNtVrF1Oyi1lLAdilAWOuLZetAVg+DcZcpdxSjWmHuxxJno1Fz6k/kcFcerGICMk=
+X-Received: by 2002:a19:7614:0:b0:513:1e2a:f9c5 with SMTP id
+ c20-20020a197614000000b005131e2af9c5mr2915212lff.17.1709883509072; Thu, 07
+ Mar 2024 23:38:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: exynos: gs101: move serial_0 pinctrl-0/names
- to dtsi
-Content-Language: en-US
-To: =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>,
- peter.griffin@linaro.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc: alim.akhtar@samsung.com, linux-arm-kernel@lists.infradead.org,
- linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, willmcvicker@google.com,
- kernel-team@android.com
-References: <20240307135248.162752-1-tudor.ambarus@linaro.org>
- <3acffe042bde796dc47d4bdcb339f0081a05193c.camel@linaro.org>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <3acffe042bde796dc47d4bdcb339f0081a05193c.camel@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240307083154.346542-1-haibo1.xu@intel.com> <CAMj1kXGF_PNLYsLugQnm=gW08XuLEbd_C0-4YYzkH1aYRGSaYg@mail.gmail.com>
+In-Reply-To: <CAMj1kXGF_PNLYsLugQnm=gW08XuLEbd_C0-4YYzkH1aYRGSaYg@mail.gmail.com>
+From: Haibo Xu <xiaobo55x@gmail.com>
+Date: Fri, 8 Mar 2024 15:38:17 +0800
+Message-ID: <CAJve8ok1E3viWwQS3+mwt02i07BfA5wAnmhOpTALpEEuuGkpEw@mail.gmail.com>
+Subject: Re: [PATCH] riscv: dmi: Add SMBIOS/DMI support
+To: Ard Biesheuvel <ardb@kernel.org>
+Cc: Haibo Xu <haibo1.xu@intel.com>, linux-kernel@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, linux-efi@vger.kernel.org, 
+	paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, 
+	sunilvl@ventanamicro.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Thu, Mar 7, 2024 at 7:00=E2=80=AFPM Ard Biesheuvel <ardb@kernel.org> wro=
+te:
+>
+> Hello Haibo,
+>
+> Some notes below.
+>
+> On Thu, 7 Mar 2024 at 09:18, Haibo Xu <haibo1.xu@intel.com> wrote:
+> >
+> > Enable the dmi driver for riscv which would allow access the
+> > SMBIOS info through some userspace file(/sys/firmware/dmi/*).
+> >
+> > The change was based on that of arm64 and has been verified
+> > by dmidecode tool.
+> >
+> > Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
+> > ---
+> >  arch/riscv/Kconfig                   | 11 +++++++++++
+> >  arch/riscv/include/asm/dmi.h         | 29 ++++++++++++++++++++++++++++
+> >  drivers/firmware/efi/riscv-runtime.c | 13 +++++++++++++
+> >  3 files changed, 53 insertions(+)
+> >  create mode 100644 arch/riscv/include/asm/dmi.h
+> >
+> > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> > index 0bfcfec67ed5..a123a3e7e5f3 100644
+> > --- a/arch/riscv/Kconfig
+> > +++ b/arch/riscv/Kconfig
+> > @@ -918,6 +918,17 @@ config EFI
+> >           allow the kernel to be booted as an EFI application. This
+> >           is only useful on systems that have UEFI firmware.
+> >
+> > +config DMI
+> > +       bool "Enable support for SMBIOS (DMI) tables"
+> > +       depends on EFI
+> > +       default y
+> > +       help
+> > +         This enables SMBIOS/DMI feature for systems.
+> > +
+> > +         This option is only useful on systems that have UEFI firmware=
+.
+> > +         However, even with this option, the resultant kernel should
+> > +         continue to boot on existing non-UEFI platforms.
+> > +
+> >  config CC_HAVE_STACKPROTECTOR_TLS
+> >         def_bool $(cc-option,-mstack-protector-guard=3Dtls -mstack-prot=
+ector-guard-reg=3Dtp -mstack-protector-guard-offset=3D0)
+> >
+> > diff --git a/arch/riscv/include/asm/dmi.h b/arch/riscv/include/asm/dmi.=
+h
+> > new file mode 100644
+> > index 000000000000..a861043f02dc
+> > --- /dev/null
+> > +++ b/arch/riscv/include/asm/dmi.h
+> > @@ -0,0 +1,29 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +/*
+> > + * Copyright (C) 2024 Intel Corporation
+> > + *
+> > + * based on arch/arm64/include/asm/dmi.h
+> > + *
+> > + * This file is subject to the terms and conditions of the GNU General=
+ Public
+> > + * License.  See the file "COPYING" in the main directory of this arch=
+ive
+> > + * for more details.
+> > + */
+> > +
+> > +#ifndef __ASM_DMI_H
+> > +#define __ASM_DMI_H
+> > +
+> > +#include <linux/io.h>
+> > +#include <linux/slab.h>
+> > +
+> > +/*
+> > + * According to section 2.3.6 of the UEFI spec, the firmware should no=
+t
+> > + * request a virtual mapping for configuration tables such as SMBIOS.
+> > + * This means we have to map them before use.
+> > + */
+>
+> You can drop this comment, it is not really accurate.
+>
+> 'Requesting a virtual mapping' means the memory is mapped by the OS
+> into the EFI page tables before calling a runtime service, so that the
+> firmware (which runs under the OS's memory translation regime) can
+> access the contents.
+>
+> SMBIOS tables are informational and for consumption by the OS only,
+> not by the runtime service implementations themselves, and so they can
+> be omitted from the EFI runtime page tables.
+>
 
+Sure. Thanks for elaborating on it and it's very helpful!
 
-On 3/7/24 14:00, André Draszik wrote:
-> On Thu, 2024-03-07 at 13:52 +0000, Tudor Ambarus wrote:
->> The pinctrl nodes are coming from the shared gs101-pinctrl.dtsi,
->> thus the pinctrl-0/names shall stay in dtsi. Move them.
->>
->> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
->> ---
->>  arch/arm64/boot/dts/exynos/google/gs101-oriole.dts | 2 --
->>  arch/arm64/boot/dts/exynos/google/gs101.dtsi       | 2 ++
->>  2 files changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/arm64/boot/dts/exynos/google/gs101-oriole.dts b/arch/arm64/boot/dts/exynos/google/gs101-oriole.dts
->> index 6ccade2c8cb4..9dc0f47ef646 100644
->> --- a/arch/arm64/boot/dts/exynos/google/gs101-oriole.dts
->> +++ b/arch/arm64/boot/dts/exynos/google/gs101-oriole.dts
->> @@ -103,8 +103,6 @@ key_power: key-power-pins {
->>  };
->>  
->>  &serial_0 {
->> -	pinctrl-names = "default";
->> -	pinctrl-0 = <&uart0_bus>;
->>  	status = "okay";
->>  };
->>  
->> diff --git a/arch/arm64/boot/dts/exynos/google/gs101.dtsi b/arch/arm64/boot/dts/exynos/google/gs101.dtsi
->> index 55e6bcb3689e..ee65ed9d2cfc 100644
->> --- a/arch/arm64/boot/dts/exynos/google/gs101.dtsi
->> +++ b/arch/arm64/boot/dts/exynos/google/gs101.dtsi
->> @@ -421,6 +421,8 @@ serial_0: serial@10a00000 {
->>  				reg = <0x10a00000 0xc0>;
->>  				interrupts = <GIC_SPI 634
->>  					      IRQ_TYPE_LEVEL_HIGH 0>;
->> +				pinctrl-names = "default";
->> +				pinctrl-0 = <&uart0_bus>;
-> 
-> The preferred order for these is pinctrl-0 pinctrl-names (and I thought
-> I had sent a patch for all such issues in gs101, but looks like I
-> didn't...)
+> > +#define dmi_early_remap(x, l)          ioremap_prot(x, l, _PAGE_KERNEL=
+)
+> > +#define dmi_early_unmap(x, l)          iounmap(x)
+> > +#define dmi_remap(x, l)                        ioremap_prot(x, l, _PAG=
+E_KERNEL)
+> > +#define dmi_unmap(x)                   iounmap(x)
+>
+> Why not use memremap() here? That will reuse the linear map if it
+> happens to already cover the region.
+>
 
-Okay, I'll send v2 and change the order in the same patch.
+Yes, memremap() is better here. Will update it in v2.
+Thank you for the review!
 
-> 
-> Once addressed:
-> 
-> Reviewed-by: André Draszik <andre.draszik@linaro.org>
-> 
-> Cheers,
-> Andre'
-> 
+> > +#define dmi_alloc(l)                   kzalloc(l, GFP_KERNEL)
+> > +
+> > +#endif
+> > diff --git a/drivers/firmware/efi/riscv-runtime.c b/drivers/firmware/ef=
+i/riscv-runtime.c
+> > index 09525fb5c240..c3bfb9e77e02 100644
+> > --- a/drivers/firmware/efi/riscv-runtime.c
+> > +++ b/drivers/firmware/efi/riscv-runtime.c
+> > @@ -152,3 +152,16 @@ void arch_efi_call_virt_teardown(void)
+> >  {
+> >         efi_virtmap_unload();
+> >  }
+> > +
+> > +static int __init riscv_dmi_init(void)
+> > +{
+> > +       /*
+> > +        * On riscv, DMI depends on UEFI, and dmi_setup() needs to
+> > +        * be called early because dmi_id_init(), which is an arch_init=
+call
+> > +        * itself, depends on dmi_scan_machine() having been called alr=
+eady.
+> > +        */
+> > +       dmi_setup();
+> > +
+> > +       return 0;
+> > +}
+> > +core_initcall(riscv_dmi_init);
+> > --
+> > 2.34.1
+> >
+> >
 
