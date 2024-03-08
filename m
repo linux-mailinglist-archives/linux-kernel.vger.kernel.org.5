@@ -1,87 +1,83 @@
-Return-Path: <linux-kernel+bounces-96861-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96860-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8438E876251
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:44:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BDE687624E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 11:43:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42014283BC3
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 10:44:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CA5BAB22170
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 10:43:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87AF65576B;
-	Fri,  8 Mar 2024 10:44:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 778E35576D;
+	Fri,  8 Mar 2024 10:43:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="W+Cz3GGE"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UCuKD/a7"
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2325F53E01;
-	Fri,  8 Mar 2024 10:43:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 107A242061;
+	Fri,  8 Mar 2024 10:42:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709894640; cv=none; b=evZNdUShGU2wCxm2BELwVNpelFjO2YHZk8UYS021k3ZID7FUUQUrKje/3RZBobdUbdG2q59wjvG9TGKxi4LuuGjujDabUSrA0KP/dbsofjx9Qx0DhTpO9uKf9DkC3ER3IAJB5845UhqSTDTAUUHLvHNvZaRHTP8xXwV4xtczPwg=
+	t=1709894581; cv=none; b=G/e87pai25nt82558PU5qs+O4C4cwvHsaEK2j3YW5+n/vLrFxUP61T8GqI8aUzRsnwF6U4PjLSrj6GdVSag27s3yjapCSI/EXdGxfeSA9mubAFY43uT6sgsfqcMGw1mAbFVzcROJ3n0cPGNqIKpMMxjQwAt99sB6gQwEPhVKn60=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709894640; c=relaxed/simple;
-	bh=IaAaj7Tsi92YD//SZUxnQaYxfr+Kq1MmRFiJG/TyF0c=;
+	s=arc-20240116; t=1709894581; c=relaxed/simple;
+	bh=Hskuh0jcTrLaj35GMhuvTS9BPTLaCsiZ/Ramp31XeMo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WKfGcpe8rE6d3Cf8Ifir9vBEGyCpiy3ZiaORaFqB48pM78AqL+Rus17kgNtfut9sHLSaFtrdZke26HixZCPDGv/taCjGmyPJYJxmbVRUd8V3S2TFK2CjgBg4sd8ZVpscSj8MPa7uZlRJyedwYzmphxcTCKCi8U4KO7ycj/zsXo0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=W+Cz3GGE; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709894640; x=1741430640;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=IaAaj7Tsi92YD//SZUxnQaYxfr+Kq1MmRFiJG/TyF0c=;
-  b=W+Cz3GGE0DHUHF1pF9k/zB2pQ88gPgfxnA0MMSZ7Bi5GBCRrBZnAy6IJ
-   MSgsheqDKn+yBHUIWbtW9RO4K69dbgEz6o3hRfUqJaKkHrWTbpiQgq3NB
-   qvo7aq76vp3eFc/cK1jqMdcvvd1cDJVNjjohgND4c140WJrz0ckmrcHYa
-   y4O+KXjXJyOfGP5d1BIYA7jpnRmd0ITO1fpuRotcJp9/2X8tFeEj7kNWP
-   smQSG3w9JJeYmowfNsuuZbWtD55FIvJGewq3iuKL7JKd0LN5G0JQ3s4l/
-   jycPlnRLef2Dfxzb9eT/n5JLmM7K7XGl/Xk0vQT79G+3MnoWJ2in67B6D
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="4537008"
-X-IronPort-AV: E=Sophos;i="6.07,109,1708416000"; 
-   d="scan'208";a="4537008"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 02:43:54 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,109,1708416000"; 
-   d="scan'208";a="10439511"
-Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
-  by orviesa010.jf.intel.com with ESMTP; 08 Mar 2024 02:43:48 -0800
-Received: from kbuild by b21307750695 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1riXhZ-0006Id-0a;
-	Fri, 08 Mar 2024 10:43:45 +0000
-Date: Fri, 8 Mar 2024 18:42:51 +0800
-From: kernel test robot <lkp@intel.com>
-To: Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, Masami Hiramatsu <mhiramat@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Linux Memory Management List <linux-mm@kvack.org>,
-	Vincent Donnefort <vdonnefort@google.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Daniel Bristot de Oliveira <bristot@redhat.com>,
-	Ingo Molnar <mingo@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>, suleiman@google.com,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Vineeth Pillai <vineeth@bitbyteword.org>,
-	Youssef Esmat <youssefesmat@google.com>,
-	Beau Belgrave <beaub@linux.microsoft.com>,
-	Alexander Graf <graf@amazon.com>, Baoquan He <bhe@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	David Howells <dhowells@redhat.com>
-Subject: Re: [PATCH 5/8] ring-buffer: Add ring_buffer_meta data
-Message-ID: <202403081831.EWSQPo2a-lkp@intel.com>
-References: <20240306020006.100449500@goodmis.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=fKLb8QxN6u3IpJz0ZPokDiQt/8sT5/u5VJ6y2RGZdNNO7DsH1UpR2KYSRDOyUvHn+7XNM2EnGmQQ1CDhsMwXE+Z45HCTopLCwDD/AJ57QNpDRA+hTY2D8ziZ0/ybonuuwThQRQ6Kyg5p/z2XU+2fNW17petdxheCwXK6Z/Hw36w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UCuKD/a7; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a45bb2a9c20so246512966b.0;
+        Fri, 08 Mar 2024 02:42:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709894578; x=1710499378; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=YnXeKNe3Pth18IqLBpLGUfhGrY47izo6nmAUIr2+va0=;
+        b=UCuKD/a7Gz0QlR2l7xXHAtWsRAo00atLD3GGYIancPJeWMjwU3T4/LKdoqztxSe6pp
+         pfKWUg1aNy8MP1hh/hc5MfoD0ZxL9FevQCBMkt+2Y/sWY5ZUKsahAuelQ5/r6GybcBNE
+         RuhSR+tTdQeUdLXfFAyZGC52NSbw4OC+7qxt8TIOsR+VTRNeUHAmcigtfcYNsVC7ELXT
+         IoODx3rWu7iuqmREjMX+XrK2yqCVcGWT1uVuLY7+/382hqvPI3+Eeu/dA7a+lsKlcnu7
+         4ToIh5Xt/V6ZEsGXk0l5PFBnpL4EA48Rjzeqp/yfeeYOu4Kf93MKYFSjY7w2Hb35pb7v
+         0T3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709894578; x=1710499378;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YnXeKNe3Pth18IqLBpLGUfhGrY47izo6nmAUIr2+va0=;
+        b=NL30iFdx1TIPsTaDPPGousZY5ftV+GA9pgORzMXO4E+lpNfMyykFDO5QvDpTDY4gpw
+         aKSnEcpSE8/ntB/G3ovxukT4HDipvsY3dxpLwq8+QoEc8xZAmZZSFyWvzBBTEALkupAc
+         8ltQATfV7mY9dHFPZ2BtwlzO7T23XoTN0b4csMIzfighPxqXX1ZPh9hQaTCI9LJ9QxGk
+         eKU3tB7P8gHwJDCYeDuQRB5aZsughxwc4O8SnmsApj33xr1rsH+KKKaCTucAIP1YgoEg
+         sbU8LNlf+HOVb6oTJlTZcWOQbrfm6+Xl6lpt0Tahr4aDoQqPO4z58rTRX+Ce3e1P365a
+         QLlw==
+X-Forwarded-Encrypted: i=1; AJvYcCX9e1PFZd4AtJZsatnX3cgWNUOHp5EvEUk5XLE3TMDw+B30YembHJITniIPASxikn0szZs/6jg5/VMagnCj0X71BXP9suZ8UZGYW0Q7
+X-Gm-Message-State: AOJu0YyGH0/znOyR2tKyzJD0fqJgzRx6yi9BzmGlbohjq5mOsxwSbMef
+	McqYD7gisC5pON3WWlsT6iRF0RVLFHb5CJUEVq4DEkoVrUFxI1Jk
+X-Google-Smtp-Source: AGHT+IESCUTGqASumIRxK7U41TDylsD3apKm0+G3vyNHYy9bMp467afRiz4QVnpfuoQd7c5oZbjJNw==
+X-Received: by 2002:a17:906:3bd5:b0:a3f:ac54:5aa1 with SMTP id v21-20020a1709063bd500b00a3fac545aa1mr15553263ejf.21.1709894577966;
+        Fri, 08 Mar 2024 02:42:57 -0800 (PST)
+Received: from tom-HP-ZBook-Fury-15-G7-Mobile-Workstation (net-188-217-49-82.cust.vodafonedsl.it. [188.217.49.82])
+        by smtp.gmail.com with ESMTPSA id wk15-20020a170907054f00b00a4519304f8bsm6208907ejb.14.2024.03.08.02.42.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Mar 2024 02:42:57 -0800 (PST)
+Date: Fri, 8 Mar 2024 11:42:55 +0100
+From: Tommaso Merciai <tomm.merciai@gmail.com>
+To: Umang Jain <umang.jain@ideasonboard.com>
+Cc: linux-media@vger.kernel.org,
+	Alexander Shiyan <eagle.alexander923@gmail.com>,
+	Kieran Bingham <kieran.bingham@ideasonboard.com>,
+	Sakari Ailus <sakari.ailus@linux.intel.com>,
+	open list <linux-kernel@vger.kernel.org>,
+	Dave Stevenson <dave.stevenson@raspberrypi.com>
+Subject: Re: [PATCH v2 1/6] media: imx335: Support 2 or 4 lane operation modes
+Message-ID: <Zerrr01BhCxIQq1d@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
+References: <20240308083312.90279-1-umang.jain@ideasonboard.com>
+ <20240308083312.90279-2-umang.jain@ideasonboard.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -90,105 +86,97 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240306020006.100449500@goodmis.org>
+In-Reply-To: <20240308083312.90279-2-umang.jain@ideasonboard.com>
 
-Hi Steven,
+Hi Umang,
 
-kernel test robot noticed the following build warnings:
+On Fri, Mar 08, 2024 at 02:03:07PM +0530, Umang Jain wrote:
+> From: Kieran Bingham <kieran.bingham@ideasonboard.com>
+> 
+> The IMX335 can support both 2 and 4 lane configurations.
+> Extend the driver to configure the lane mode accordingly.
+> Update the pixel rate depending on the number of lanes in use.
+> 
+> Signed-off-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
+> Signed-off-by: Umang Jain <umang.jain@ideasonboard.com>
+> ---
+>  drivers/media/i2c/imx335.c | 21 ++++++++++++++++++++-
+>  1 file changed, 20 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/media/i2c/imx335.c b/drivers/media/i2c/imx335.c
+> index b47ec71054c3..7162b0a3cef3 100644
+> --- a/drivers/media/i2c/imx335.c
+> +++ b/drivers/media/i2c/imx335.c
+> @@ -21,6 +21,11 @@
+>  #define IMX335_MODE_STANDBY	0x01
+>  #define IMX335_MODE_STREAMING	0x00
+>  
+> +/* Data Lanes */
+> +#define IMX335_LANEMODE		0x3a01
+> +#define IMX335_2LANE		1
+> +#define IMX335_4LANE		3
+> +
+>  /* Lines per frame */
+>  #define IMX335_REG_LPFR		0x3030
+>  
+> @@ -145,6 +150,7 @@ struct imx335_mode {
+>   * @exp_ctrl: Pointer to exposure control
+>   * @again_ctrl: Pointer to analog gain control
+>   * @vblank: Vertical blanking in lines
+> + * @lane_mode Mode for number of connected data lanes
+>   * @cur_mode: Pointer to current selected sensor mode
+>   * @mutex: Mutex for serializing sensor controls
+>   * @link_freq_bitmap: Menu bitmap for link_freq_ctrl
+> @@ -169,6 +175,7 @@ struct imx335 {
+>  		struct v4l2_ctrl *again_ctrl;
+>  	};
+>  	u32 vblank;
+> +	u32 lane_mode;
+>  	const struct imx335_mode *cur_mode;
+>  	struct mutex mutex;
+>  	unsigned long link_freq_bitmap;
+> @@ -934,6 +941,11 @@ static int imx335_start_streaming(struct imx335 *imx335)
+>  		return ret;
+>  	}
+>  
+> +	/* Configure lanes */
+> +	ret = imx335_write_reg(imx335, IMX335_LANEMODE, 1, imx335->lane_mode);
+> +	if (ret)
+> +		return ret;
+> +
+>  	/* Setup handler will write actual exposure and gain */
+>  	ret =  __v4l2_ctrl_handler_setup(imx335->sd.ctrl_handler);
+>  	if (ret) {
+> @@ -1094,7 +1106,14 @@ static int imx335_parse_hw_config(struct imx335 *imx335)
+>  	if (ret)
+>  		return ret;
+>  
+> -	if (bus_cfg.bus.mipi_csi2.num_data_lanes != IMX335_NUM_DATA_LANES) {
+> +	switch (bus_cfg.bus.mipi_csi2.num_data_lanes) {
+> +	case 2:
+> +		imx335->lane_mode = IMX335_2LANE;
+> +		break;
+> +	case 4:
+> +		imx335->lane_mode = IMX335_4LANE;
+> +		break;
+> +	default:
+>  		dev_err(imx335->dev,
+>  			"number of CSI2 data lanes %d is not supported\n",
+>  			bus_cfg.bus.mipi_csi2.num_data_lanes);
 
-[auto build test WARNING on next-20240305]
-[cannot apply to tip/x86/core akpm-mm/mm-everything linus/master v6.8-rc7 v6.8-rc6 v6.8-rc5 v6.8-rc7]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Steven-Rostedt/ring-buffer-Allow-mapped-field-to-be-set-without-mapping/20240306-100047
-base:   next-20240305
-patch link:    https://lore.kernel.org/r/20240306020006.100449500%40goodmis.org
-patch subject: [PATCH 5/8] ring-buffer: Add ring_buffer_meta data
-config: sh-defconfig (https://download.01.org/0day-ci/archive/20240308/202403081831.EWSQPo2a-lkp@intel.com/config)
-compiler: sh4-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240308/202403081831.EWSQPo2a-lkp@intel.com/reproduce)
+Looks good to me.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403081831.EWSQPo2a-lkp@intel.com/
+Similar on what we have on imx219 drv:
+ret = imx219_configure_lanes(imx219);
 
-All warnings (new ones prefixed by >>):
+Reviewed-by: Tommaso Merciai <tomm.merciai@gmail.com>
 
-   kernel/trace/ring_buffer.c: In function 'rb_set_commit_to_write':
->> kernel/trace/ring_buffer.c:3224:45: warning: assignment to 'long unsigned int' from 'struct buffer_data_page *' makes integer from pointer without a cast [-Wint-conversion]
-    3224 |                         meta->commit_buffer = cpu_buffer->commit_page->page;
-         |                                             ^
+Thanks & Regards,
+Tommaso
 
-
-vim +3224 kernel/trace/ring_buffer.c
-
-  3192	
-  3193	static __always_inline void
-  3194	rb_set_commit_to_write(struct ring_buffer_per_cpu *cpu_buffer)
-  3195	{
-  3196		unsigned long max_count;
-  3197	
-  3198		/*
-  3199		 * We only race with interrupts and NMIs on this CPU.
-  3200		 * If we own the commit event, then we can commit
-  3201		 * all others that interrupted us, since the interruptions
-  3202		 * are in stack format (they finish before they come
-  3203		 * back to us). This allows us to do a simple loop to
-  3204		 * assign the commit to the tail.
-  3205		 */
-  3206	 again:
-  3207		max_count = cpu_buffer->nr_pages * 100;
-  3208	
-  3209		while (cpu_buffer->commit_page != READ_ONCE(cpu_buffer->tail_page)) {
-  3210			if (RB_WARN_ON(cpu_buffer, !(--max_count)))
-  3211				return;
-  3212			if (RB_WARN_ON(cpu_buffer,
-  3213				       rb_is_reader_page(cpu_buffer->tail_page)))
-  3214				return;
-  3215			/*
-  3216			 * No need for a memory barrier here, as the update
-  3217			 * of the tail_page did it for this page.
-  3218			 */
-  3219			local_set(&cpu_buffer->commit_page->page->commit,
-  3220				  rb_page_write(cpu_buffer->commit_page));
-  3221			rb_inc_page(&cpu_buffer->commit_page);
-  3222			if (cpu_buffer->ring_meta) {
-  3223				struct ring_buffer_meta *meta = cpu_buffer->ring_meta;
-> 3224				meta->commit_buffer = cpu_buffer->commit_page->page;
-  3225			}
-  3226			/* add barrier to keep gcc from optimizing too much */
-  3227			barrier();
-  3228		}
-  3229		while (rb_commit_index(cpu_buffer) !=
-  3230		       rb_page_write(cpu_buffer->commit_page)) {
-  3231	
-  3232			/* Make sure the readers see the content of what is committed. */
-  3233			smp_wmb();
-  3234			local_set(&cpu_buffer->commit_page->page->commit,
-  3235				  rb_page_write(cpu_buffer->commit_page));
-  3236			RB_WARN_ON(cpu_buffer,
-  3237				   local_read(&cpu_buffer->commit_page->page->commit) &
-  3238				   ~RB_WRITE_MASK);
-  3239			barrier();
-  3240		}
-  3241	
-  3242		/* again, keep gcc from optimizing */
-  3243		barrier();
-  3244	
-  3245		/*
-  3246		 * If an interrupt came in just after the first while loop
-  3247		 * and pushed the tail page forward, we will be left with
-  3248		 * a dangling commit that will never go forward.
-  3249		 */
-  3250		if (unlikely(cpu_buffer->commit_page != READ_ONCE(cpu_buffer->tail_page)))
-  3251			goto again;
-  3252	}
-  3253	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> -- 
+> 2.43.0
+> 
+> 
 
