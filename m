@@ -1,119 +1,129 @@
-Return-Path: <linux-kernel+bounces-97624-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97620-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA84F876CBA
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 23:09:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8020D876CAE
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 23:08:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C8AA282E1E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 22:09:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E9B481F2223B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 22:08:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 987EE5FDCC;
-	Fri,  8 Mar 2024 22:09:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B92DD6026E;
+	Fri,  8 Mar 2024 22:08:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b="Agh3+Jvo";
-	dkim=permerror (0-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b="I2qD65yd"
-Received: from mailrelay1-1.pub.mailoutpod2-cph3.one.com (mailrelay1-1.pub.mailoutpod2-cph3.one.com [46.30.211.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="W7epss16"
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D85EC5FBA3
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 22:09:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.30.211.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 571541E515
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 22:08:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709935768; cv=none; b=GBELePV5mkNqZZCpCbU3qsE4cZOjsXZc7FR7rcAVqDv/C70L+l+idQ72HuR/EBFm4X49Wo0ZlFQHJTU87G8b+6gFdJYa9jmZPIi6JMySFBfAAi99q50b/EztdAYd5gyjT8YSUaVkWJAs7d1GijtszHWQILE/rhj9YHHtpLi8reM=
+	t=1709935715; cv=none; b=hN26QWslDGPdg2dNaexcJ7rf940FnWpqHV/U47x4wrQIG+ZRKAgu2MV7eJOODUDs7zeLJ2knw6ErFInH8UKiPmR5c6lGFkL2hJgk57kLukth7UCDzlMXbconW14XT+k8lQ8UAzuxAL4vRj9+bpdZj+BFV16svDa0N2enOXx877k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709935768; c=relaxed/simple;
-	bh=834qs+3joZCkbp+FMZGEpLkV7x/MjBrhqaWUUY7wOBk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dt483qEw+u9PxY7sjB2mcaP4C/S/cnUjwNFqvPSOOAtujC/IGJGrKfUXa+0eC/yzBDVt/lUwrEpcROarCG3Vll1wrqVHwEsJkGsukzxHtG3CZiGBgH8PLaLPh9sP0eskRw/GnhYf7C+5zaxxSfk733Q794Ml79MSZBjtR23PIbA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org; spf=none smtp.mailfrom=ravnborg.org; dkim=pass (2048-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b=Agh3+Jvo; dkim=permerror (0-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b=I2qD65yd; arc=none smtp.client-ip=46.30.211.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ravnborg.org
+	s=arc-20240116; t=1709935715; c=relaxed/simple;
+	bh=6hqLrE2kGzcpPPlaLbbol8vDLZeqtCffaioj6zahxA8=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=V77C654xCTdiprwlU6ZEeY+RAw8VDWqf2JZspoe4UeDsjedqS+mCZefP03+Cd2uqtIDVbOssGI6B/sNBh22X5l7ZWIJayXIWwgmMf+1BMxOkhhye+ly+kRu0uLZpCf9MLNgkgrj3j+K9dv/RSneFrvYtslowORWg8DGBvAJh0bI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=W7epss16; arc=none smtp.client-ip=209.85.167.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-513298d6859so2530705e87.3
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 14:08:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=ravnborg.org; s=rsa2;
-	h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
-	 from:date:from;
-	bh=AtLoa8zacGc0oIyeREeKHPcnZjoGrtMtwWVKHTle0wI=;
-	b=Agh3+Jvoz+GCNvC+CwlKqVzOUVZ1Z9OZCQraAVQjni7waNpR2PTEc2tUUIXWuIM3HZMcWyxZuF6gK
-	 pSpsy6SH0oEXcZBi3VsSzW8iuuJBnHo5TlAiGhCDJlIjT06tFIhS/313awg/JDjy4feI2CZ4cmcfem
-	 ds8iBFwfT92aEJGHLBe16ZqdLKKmgeWAPRdUtzHhpxvlUC8XyZRVbgoisaBOd6tMWkzNSZVBZNucJs
-	 wrUKZ28IBFPtyTRWJn47jCJw3VMZJoEopRdxRDHGPWhh9D41O+ACJRqM7pbl0BrXuODjcPF+cpVicp
-	 KYqMr5rJFoI5P74pSEkTqWJtLNXhINA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
-	d=ravnborg.org; s=ed2;
-	h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
-	 from:date:from;
-	bh=AtLoa8zacGc0oIyeREeKHPcnZjoGrtMtwWVKHTle0wI=;
-	b=I2qD65ydnGFNH7+ZYpW9viE8IvI+NRbisMLG42LjFddJ35JUBJgBAYWASxJzwt/4ETuUou7GLNoHR
-	 xyl3y+jBg==
-X-HalOne-ID: 5a44b079-dd98-11ee-83ef-516168859393
-Received: from ravnborg.org (2-105-2-98-cable.dk.customer.tdc.net [2.105.2.98])
-	by mailrelay1.pub.mailoutpod2-cph3.one.com (Halon) with ESMTPSA
-	id 5a44b079-dd98-11ee-83ef-516168859393;
-	Fri, 08 Mar 2024 22:08:13 +0000 (UTC)
-Date: Fri, 8 Mar 2024 23:08:12 +0100
-From: Sam Ravnborg <sam@ravnborg.org>
-To: Andreas Larsson <andreas@gaisler.com>
-Cc: "Maciej W. Rozycki" <macro@orcam.me.uk>, sparclinux@vger.kernel.org,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	linux-parport@lists.infradead.org,
-	"David S. Miller" <davem@davemloft.net>,
-	Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-	Arvind Yadav <arvind.yadav.cs@gmail.com>
-Subject: Re: [PATCH v2 7/7] sparc32: Fix section mismatch in leon_pci_grpci
-Message-ID: <20240308220812.GA4091237@ravnborg.org>
-References: <20240224-sam-fix-sparc32-all-builds-v2-0-1f186603c5c4@ravnborg.org>
- <20240224-sam-fix-sparc32-all-builds-v2-7-1f186603c5c4@ravnborg.org>
- <b62d0ae6-c2cb-4f2c-b792-2dba52a44e35@gaisler.com>
- <c5654b69-209e-4406-ac70-9a4547adfc36@gaisler.com>
+        d=linaro.org; s=google; t=1709935710; x=1710540510; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=444788bR8YBECKjRiKnANVI+jwd9C5/5ss16HCbJeCs=;
+        b=W7epss16OhMlSxauvCOCN3QjqlDzgzdrYthPdAIi58ucs4cZQd+BHwMgUElrUyB3Hc
+         gExBPBHj05CUly/jPcZ848GB8cM8TOssgswcE0C4h8890xFhJdMl1YScRplnHwMor19b
+         +7lJRHm3ERoLD6lUXaD7WFhiKAj7yUmde8I0seTiz+jCr2YDQXeMnUOQf7bfCt85y4mv
+         il9FK2d4Q36bgpvocxPLrIM8mYETklD+XKU2dR5lGo9ZKmR/rwCf5f0eRhJgpZnhHP4b
+         GPDeQq0HBx7NTVY3/NgLCxyof3XFGhxxAslGIHJR7iQN0a4tLnRH1Hd9iz4YSNkOO6SV
+         Lzag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709935710; x=1710540510;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=444788bR8YBECKjRiKnANVI+jwd9C5/5ss16HCbJeCs=;
+        b=O9bwcpvJ0tJh2zaeVfXZ08x/FFhy4kxtV2hgM1EqoBDr5UDrzlHW8DH7m1P+Bs23YU
+         f3uiCkQTTWKecI14GE/CWwiUUA7z7cD/N6TRMmvSTRfSGTHgW9PTQvOdTE4VRXon5czE
+         R/8JC+XLDn9Pe0oHWkJ+LL21gbiY6vuqHSwSFpeoRF7lFELQEb9OsBdd0TSuRK1pxuGM
+         lzg2Xc6s98gSZzBJjJWZP/NPg+SBQNKN2wMd/B6dqMjFixmpiOpF6/66X/rl+9MWA5rv
+         4MnLOfk0kz8hM03mcubW7WBufg/J6GRbfJyyQvNa3ozOU/r1WPoTFlMavm8u19RRAGcv
+         eNWg==
+X-Forwarded-Encrypted: i=1; AJvYcCWKG79ozz4l1LI6ma27lCwzj8CogDMQ1m6NHYbAifuilrrZ4p/0klmFAZNa0QvBofCw8MbbqVr/IkKlT6nD8byDcDiw2fN/MUoJFumu
+X-Gm-Message-State: AOJu0Ywrpcae2YEUHXP95+bbZ5B4kjG56BAloQyaEJrv9D+ESdL+RNty
+	yZ6Dqd/c6Slt0kHfN+jU2pcIbsTGh/WDQpZCksPUIgMUEnoHD+6Xm5m9Gt2Bkos=
+X-Google-Smtp-Source: AGHT+IGfdV0sn6fso7vz9UOJkRQBSyomE8U61mJRksNWd2WuskneuQ8WFl+tp7BYBYK96WxWaFtgLQ==
+X-Received: by 2002:ac2:5bd0:0:b0:512:d575:4745 with SMTP id u16-20020ac25bd0000000b00512d5754745mr222889lfn.1.1709935710464;
+        Fri, 08 Mar 2024 14:08:30 -0800 (PST)
+Received: from [10.167.154.1] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
+        by smtp.gmail.com with ESMTPSA id a14-20020a056512020e00b005130ff68b87sm78241lfo.109.2024.03.08.14.08.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Mar 2024 14:08:30 -0800 (PST)
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Subject: [PATCH 0/3] QCM2290 LMH
+Date: Fri, 08 Mar 2024 23:08:19 +0100
+Message-Id: <20240308-topic-rb1_lmh-v1-0-50c60ffe1130@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c5654b69-209e-4406-ac70-9a4547adfc36@gaisler.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAFOM62UC/x2N0QrCMAwAf2Xk2UDa9UH9FRFpu8wGajdSFWHs3
+ xd8vIPjNuiswh2uwwbKX+myNAN3GiCX2J6MMhmDJx9opDO+l1UyanKP+iromOYQKI8XH8GaFDt
+ j0thysap9ajW5Ks/y+09u930/AGbD0iJ0AAAA
+To: Bjorn Andersson <andersson@kernel.org>, 
+ "Rafael J. Wysocki" <rafael@kernel.org>, 
+ Daniel Lezcano <daniel.lezcano@linaro.org>, Zhang Rui <rui.zhang@intel.com>, 
+ Lukasz Luba <lukasz.luba@arm.com>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Thara Gopinath <thara.gopinath@gmail.com>, Amit Kucheria <amitk@kernel.org>
+Cc: Marijn Suijten <marijn.suijten@somainline.org>, 
+ linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, stable@vger.kernel.org, 
+ Loic Poulain <loic.poulain@linaro.org>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1709935708; l=807;
+ i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
+ bh=6hqLrE2kGzcpPPlaLbbol8vDLZeqtCffaioj6zahxA8=;
+ b=a0axESlwZwu80bUuECyc07XfWyvUNwVbZgVKdTsfIs74EWLuM+j4lhtnGG5ZoJ8T/oa+7Ed8C
+ WEN6GC92xCXDcwyiBqcfRG8tfAjyqhBfZEsuaXPDebvLzxH5pT/XrdR
+X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
+ pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
 
-Hi Andreas,
+Wire up LMH on QCM2290 and fix a bad bug while at it.
 
-On Thu, Mar 07, 2024 at 07:20:11PM +0100, Andreas Larsson wrote:
-> On 2024-03-05 16:06, Andreas Larsson wrote:
-> > On 2024-02-24 18:42, Sam Ravnborg via B4 Relay wrote:
-> >> From: Sam Ravnborg <sam@ravnborg.org>
-> >>
-> >> Passing a datastructre marked _initconst to platform_driver_register()
-> >> is wrong. Drop the __initconst notation.
-> >>
-> >> This fixes the following warnings:
-> >>
-> >> WARNING: modpost: vmlinux: section mismatch in reference: grpci1_of_driver+0x30 (section: .data) -> grpci1_of_match (section: .init.rodata)
-> >> WARNING: modpost: vmlinux: section mismatch in reference: grpci2_of_driver+0x30 (section: .data) -> grpci2_of_match (section: .init.rodata)
-> >>
-> >> Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
-> >> Cc: "David S. Miller" <davem@davemloft.net>
-> >> Cc: Andreas Larsson <andreas@gaisler.com>
-> > 
-> > Could you also add
-> > 
-> > Fixes: 4154bb821f0b ("sparc: leon: grpci1: constify of_device_id")
-> > Fixes: 03949b1cb9f1 ("sparc: leon: grpci2: constify of_device_id")
-> > 
-> > for these fixes in your v3 of the series as well as CCing stable?
-> 
-> I'll pick up the whole series apart for the ZONE_DMA removal, so there
-> is no other need for a v3. I can add the Fixes lines to this one, if it
-> is ok with you Sam, or take it as is.
+P1-2 for thermal, P3 for qcom
 
-I did not verify the two fixes lines - but seems legit.
-So would be super if you add them before applying.
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+---
+Konrad Dybcio (2):
+      dt-bindings: thermal: lmh: Add QCM2290 compatible
+      thermal: qcom: lmh: Check for SCM avaiability at probe
 
-Thanks for picking up the other patches, we are now much closer to
-an all{yes,mod}config that can build (but not link).
+Loic Poulain (1):
+      arm64: dts: qcom: qcm2290: Add LMH node
 
-	Sam
+ Documentation/devicetree/bindings/thermal/qcom-lmh.yaml | 13 +++++++++----
+ arch/arm64/boot/dts/qcom/qcm2290.dtsi                   | 14 +++++++++++++-
+ drivers/thermal/qcom/lmh.c                              |  3 +++
+ 3 files changed, 25 insertions(+), 5 deletions(-)
+---
+base-commit: 8ffc8b1bbd505e27e2c8439d326b6059c906c9dd
+change-id: 20240308-topic-rb1_lmh-1e0f440c392a
+
+Best regards,
+-- 
+Konrad Dybcio <konrad.dybcio@linaro.org>
+
 
