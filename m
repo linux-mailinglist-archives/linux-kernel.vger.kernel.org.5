@@ -1,154 +1,114 @@
-Return-Path: <linux-kernel+bounces-97225-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97226-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFC3887674A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 16:24:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DBDF887674E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 16:25:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F2A2D1C21724
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 15:24:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 221CA1C2191C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 15:25:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F3A91DFDE;
-	Fri,  8 Mar 2024 15:24:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EC761DFFA;
+	Fri,  8 Mar 2024 15:25:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hdCY2uow"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="FqDfLKQ/"
+Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 656781DDF1
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 15:24:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A6D11DDFC
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 15:25:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709911441; cv=none; b=W41jW5wqS2tkS0hPjbROQR2EZ8MwycKwQ/4Mc4gSGuF3YaN3BUqH+E1isrK3LSKjiB+fJTXpMjgZ21OHDLv1VQULsNXu5qBXSdXBfFmqMbz2BsOkFOm+/b5j/HI90M2Ec2g1s2P084HAvvpTAOV8mgLX/PpIstr2L4YJ3S+pe34=
+	t=1709911549; cv=none; b=o8uJ3Tx7XE9EKGQAKDiOn0UhlgDe+kc+VYocP2cENzhJmK5cYTf30+qmwmO7wsW4dTV+JzCgD93WwWOJO49yoQuvYMl6e0xeLN76jlW/Oq2Ui6GAr5bMtfokXhJoNi2d6veFaOfJHv35VflB5YIR7yY072Bk0ae/GlAvSgEty3o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709911441; c=relaxed/simple;
-	bh=D7fa23jwhdR/0Ruut/uLrO8UufA0ppltESXABl7U58o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Yk9MJa8eJdSMh/NPdPONjzb2NM7UIjcYREOPBArbkDhsZWdqBnssFIcSFk8yIYSs2olB/CMmAvdnE+LnYBopE+hDg2i/olZVd4toTxrJ+1FF3XS6Iw7Tpen/r5R7Gr23gX9l0F7j9qaEpCIzo1M9txqjyYkMi1p1hRtH7garxG8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hdCY2uow; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709911440; x=1741447440;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=D7fa23jwhdR/0Ruut/uLrO8UufA0ppltESXABl7U58o=;
-  b=hdCY2uownEkkReeLz/26nzJOSzX/HIH8iFg8dPBf/pI5Nk101bLsxGxX
-   3jsYfGAdgl+ZY2IAalyDLGh0mMK2hC6MIdehPblKMo8uSaG4+G8vdPJsl
-   zFrzrguqoZ8bqkmPkWagjZNrwvpmwGs8G/TCIfPdbTC38fv4v2XOc/qy0
-   jpru7fNNroVh6JAkmo4sZF9NtnrUGG6pwxhLz05ycIS5IK5ABeciqdgs8
-   vvleE57dgiT46S/jzUgKOhwaumTU8jw5BiVhHuREHMBpdLg0I5LV/3IUe
-   wUiGit9m/bgpBq+kMY/TOcL9cktMJ3d2Rre3+Xa1LLzl2vi7Ooi3k9Xt7
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11006"; a="5234621"
-X-IronPort-AV: E=Sophos;i="6.07,109,1708416000"; 
-   d="scan'208";a="5234621"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 07:23:59 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,109,1708416000"; 
-   d="scan'208";a="47949762"
-Received: from mananmeh-mobl.amr.corp.intel.com (HELO [10.212.139.209]) ([10.212.139.209])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Mar 2024 07:23:59 -0800
-Message-ID: <35b670e2-9ef5-4d3a-b6ea-f8016dfa088d@intel.com>
-Date: Fri, 8 Mar 2024 07:23:58 -0800
+	s=arc-20240116; t=1709911549; c=relaxed/simple;
+	bh=TFLZXdU3ies1N74nkimz1dUi49Sig9GXkWQrBIaS9r0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=q61zvEbDGih0p8s9efSNGvLKGfg9OzfqqQlMJWQgdKbMnfVWlHiFKPJMxphSMyrUUAsfjp+7s6KRtq/OE2tCOJREslnh3SzEppxAsJhoU3Yl8ElOjS+2f4zal56GLsNNpecYSoxqD34li+qA8KdyaBHZ2dYkEpumBAF4kBr6i0U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=FqDfLKQ/; arc=none smtp.client-ip=209.85.160.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-42ef8193ae6so272221cf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 07:25:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709911547; x=1710516347; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TFLZXdU3ies1N74nkimz1dUi49Sig9GXkWQrBIaS9r0=;
+        b=FqDfLKQ/fbi6S70lRntmG3wXPNXSvPEHkdf5NFj4Kcsa7KOBkDpL10OS6YEI1Z9ZJK
+         3TJvmK2Sy2TQ/9BykghT1jWCo4Y3s0hNlwKD2ivcGUm10XYDQ1Gq+G8pQWv3M9+JfEqi
+         H31wWdNBuEo7DRRvc7Q+oaY1QwD+5QAckRE2VwS8Ks0MkJn8r55p5lW/YNJw7BlaScgR
+         VOOPVE2A6DwVAjse5IaPV1Bf9bWR44EiWCcXo4CLuCUrcOT+2zPpjDsSktTSBevEm2iy
+         ly0Alhu3XUG6L3Ovw1l/V0mUZh5SiQyl0GMJ0+A+ByEiGyyRp90SQIrRrLyBir2Gk49E
+         pgSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709911547; x=1710516347;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TFLZXdU3ies1N74nkimz1dUi49Sig9GXkWQrBIaS9r0=;
+        b=V0vTj7Xli6qVqokUWRM/POj7doZhy+ZJTnCrVVrlSYL82ASf1HJUNjN4+XzjpS0SLn
+         IDVOmYgPrJwJRSaWuTUA30cmToREbsYMjaMs/EPeKF+xpE258NR45jZhZAIi79Fk/tNn
+         rvnpA6cTTbA97wsocGXi2feT0MgcKzEyImrx4hY0gKJLpchhtl5h1RakYDYMRoQM2cZH
+         Yh9+qzAJMfZK6cOMFSRY8SiUX5KvvnYgSHWfN6EmhDkyc3xAHCOne4rSNGuq9gOYnZFF
+         CiUWjIACfQsCrYM7XAgm4qvRbf0sFa1DMU/SdN8aJDasm6SMUV9F23YATzNpKElwwihS
+         HbrQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVbnjvKgh2CXJSbjKb/8ck7jOSWd+p2q78hqw9aCy6TOdw2OuxPNlvQTEyzFLc/UVPtpRSeCDjmeqXJnnxMl/r9NZTB1ZP/pTXm/Pw4
+X-Gm-Message-State: AOJu0Yy9xXnsoTWHGwO/HBepRfLGzQiYlN5972k+Q33VvDtxiDhWJbq8
+	qn+YziNb32a43M/jc91eIaBEufqdl6hKU9VzgLH1Vj0fi/yKNMs7rKYbNE5i6qRPjJ0HRmSBcIN
+	eaGh6JhhStu8yIxlcendZwO92SMakLiuHWhqX
+X-Google-Smtp-Source: AGHT+IGwvRqhH5/5u0dRebXEE93CUmjojhrEOWLQxodoD5XGA8x68lzCwMdItYYAqK5wHkhfsJazt1RD0edt8txgF60=
+X-Received: by 2002:a05:622a:295:b0:42e:b2a8:e239 with SMTP id
+ z21-20020a05622a029500b0042eb2a8e239mr627320qtw.21.1709911546958; Fri, 08 Mar
+ 2024 07:25:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 2/3] x86/mm: make sure LAM is up-to-date during
- context switching
-Content-Language: en-US
-To: Andy Lutomirski <luto@kernel.org>, Yosry Ahmed <yosryahmed@google.com>,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, "Peter Zijlstra (Intel)"
- <peterz@infradead.org>, "Kirill A. Shutemov"
- <kirill.shutemov@linux.intel.com>, the arch/x86 maintainers
- <x86@kernel.org>, linux-mm@kvack.org,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20240307133916.3782068-1-yosryahmed@google.com>
- <20240307133916.3782068-3-yosryahmed@google.com>
- <420fcb06-c3c3-4e8f-a82d-be2fb2ef444d@app.fastmail.com>
-From: Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <420fcb06-c3c3-4e8f-a82d-be2fb2ef444d@app.fastmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240308004757.1048284-1-xuxinxiong@huaqin.corp-partner.google.com>
+In-Reply-To: <20240308004757.1048284-1-xuxinxiong@huaqin.corp-partner.google.com>
+From: Doug Anderson <dianders@google.com>
+Date: Fri, 8 Mar 2024 07:25:31 -0800
+Message-ID: <CAD=FV=V7t8vYZLunDLBh7xDPLoennBP+7Gi6b1Y_GKnYOW1cMw@mail.gmail.com>
+Subject: Re: [V2] drm/panel-edp: Add BOE NT116WHM-N44 and CMN N116BCA-EA1
+To: Xuxin Xiong <xuxinxiong@huaqin.corp-partner.google.com>
+Cc: sam@ravnborg.org, neil.armstrong@linaro.org, daniel@ffwll.ch, 
+	hsinyi@google.com, dri-devel@lists.freedesktop.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 3/7/24 17:34, Andy Lutomirski wrote:
->> Fix this by making sure we write a new CR3 if LAM is not
->> up-to-date. No problems were observed in practice, this was found
->> by code inspection.
-> I think it should be fixed with a much bigger hammer: explicit IPIs.
-> Just don't ever let it get out of date, like install_ldt().
-I guess it matters whether the thing that matters is having a persistent
-inconsistency or a temporary one.  IPIs will definitely turn a permanent
-one into a temporary one.
+Hi,
 
-But this is all easier to reason about if we can get rid of even the
-temporary inconsistency.
+On Thu, Mar 7, 2024 at 4:48=E2=80=AFPM Xuxin Xiong
+<xuxinxiong@huaqin.corp-partner.google.com> wrote:
+>
+> Add support for the following 2 panels:
+> 1. BOE NT116WHM-N44
+> 2. CMN N116BCA-EA1
+>
+> Signed-off-by: Xuxin Xiong <xuxinxiong@huaqin.corp-partner.google.com>
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
 
-Wouldn't this be even simpler than IPIs?
+It's fine this time, but please be careful in the future. I never
+actually gave you my "Reviewed-by" tag for v1, I just said "The patch
+looks OK" [1]. You should only add/carry someone's "Reviewed-by" tag
+if they explicitly give that tag.
 
-static inline unsigned long set_tlbstate_lam_mode(struct mm_struct *mm)
-{
-	unsigned long lam = READ_ONCE(mm->context.lam_cr3_mask);
+I'll also note that the subject of your patch starts with "[V2]". I'd
+normally expect it to start with "[PATCH v2]". Maybe something you can
+fix about your process for next time?
 
-+	/* LAM is for userspace only.  Ignore it for kernel threads: */
-+	if (tsk->flags & PF_KTHREAD)
-+		return 0;
+In any case, I've applied to drm-misc-next.
 
-	this_cpu_write(cpu_tlbstate.lam, lam >> X86_CR3_LAM_U57_BIT);
- 	this_cpu_write(tlbstate_untag_mask, mm->context.untag_mask);
-	return lam;
-}
+dcb6c8ee6acc drm/panel-edp: Add BOE NT116WHM-N44 and CMN N116BCA-EA1
+
+
+[1] https://lore.kernel.org/r/CAD=3DFV=3DU8wdT_5k-yrLVpmh=3Dq4k18LntqujK7Mw=
+88TdweBXCPgg@mail.gmail.com
 
