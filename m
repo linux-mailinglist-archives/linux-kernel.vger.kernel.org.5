@@ -1,143 +1,111 @@
-Return-Path: <linux-kernel+bounces-97691-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97692-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28CB8876DDE
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 00:28:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 350F4876DE2
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 00:41:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59FE11C21544
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 23:28:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CBC5D1F2191A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 23:41:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 505991DA3A;
-	Fri,  8 Mar 2024 23:28:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="WRAxvtG5"
-Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A9E53BBF2;
+	Fri,  8 Mar 2024 23:41:03 +0000 (UTC)
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 269223BBC3
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 23:28:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E10C6AC0;
+	Fri,  8 Mar 2024 23:41:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709940491; cv=none; b=VtajWtM1yRTquyMWY+18CRpn31xI0LitqxNNSEL9eVZRxkk9zi59vjKWRJFqjBnZ3HG8cwkeb9fxSUVpPH46tcuFbqYXY2O6Mckb6KY5g6mxQST8QsUKCuaRJSVqiTyGj1wkIbkRMwi5VP56FXDsegkq86Img897KnjAjsJpssE=
+	t=1709941263; cv=none; b=td8aX7/O67XxDrIWk53+N08SfsbKloJMGX9oWJjOG5hUTRORFaiQAwTFeuiHqtgvTMi46Dr3DQPJeWwIojlVO+Ud+L9mLDZpxDdyWeV8GbQiYesTpSbWQXs8XR7hNS436xOXRxYAFwldlcLmMK4jriw2SSdYbQTRDiR3fLi/ciM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709940491; c=relaxed/simple;
-	bh=BpN4iQW4PFrq3WVtA7bWTxphTlwS/fKO8mFIPGOtpZc=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=Buf6KesE8K8fF1dyjozZqoHrJ5Kso/cYHfRjGcaj0l/8HvngFtkFH7JQE5O6EGKNAa7gOWf6H5NXQVTbtXOQCiV7s6BSauXYHGAtzXukb4XdXgluosIv91dgKiVD8GE1po4HiBwqSyEY0LaqXHQlWSIpK1bX/zi7WXFjTH1gYto=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=WRAxvtG5; arc=none smtp.client-ip=209.85.210.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6e62136860eso1216144b3a.3
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 15:28:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709940489; x=1710545289; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=N25dHtdFBFZm2u6EyvcAjsvLHySdv26qbRgS6+X49N0=;
-        b=WRAxvtG5vRvZT1YNgSI3niXFlBqKbkMll4cCmp0t2El7oTO7DAnbQPbVBh32wrJUSe
-         cv9yJIe7ue5azDN59RnFZjVgj5USUN66eJgB+2HNRyjl1nbVaqMWAEHjJH4AiSKxBvXW
-         EneuvUgimHyFAO4GERAM4m9qku9haemxByAN/taS6tgkzVX+sscMoTIzkxZO/7ax7C02
-         CclO62pZPcPddmFvlJdaCtqZ+PVmVCZTMEszjPwwj++mZ1ABTQ98C8oPezyAE+BpxAXN
-         uRvN8UxwpmpqSZQo4PqOPTRwd8ramGkQdzmS234re6X+XsxGK+6yIGYjwtj5ap17wOXk
-         UuFw==
+	s=arc-20240116; t=1709941263; c=relaxed/simple;
+	bh=D6gzLwzqOzpvQah9QvGx9R5y4EQMAGBwu9cG1sS5btg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CKF9i3rWMskSAhvI+5ig/WwRwoz6vUJQx15/heQFGcwPXKR4mqmoxFQsLuKSTNvT/hVga7z8Rr+WmdXQFnSfy4vfnANEc7F5Ntro5PYqlDQZbf7YOXhJg30wFlsWvfWPg0eX7vI/PGvG76R2axJCWZiA+GmBIT1gixpYPIUoJYA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1dd6198c4e2so15266025ad.2;
+        Fri, 08 Mar 2024 15:41:01 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709940489; x=1710545289;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=N25dHtdFBFZm2u6EyvcAjsvLHySdv26qbRgS6+X49N0=;
-        b=pXgK+koaaJNX26JBgqMTUzcREISNeWOHqcZ0oTHdYStMFaVGfJCQA9Jhuh8v8WOqqa
-         KQL3ruLHlmthi0vG3Pu7FWrV65ZWtchu/wQZEnwcpPOV4f+H1AiYieAN5iUz4x5K7bM1
-         XvY5fS4D/jIsYp7RWqcEYUAtOC0Fqb5HMMB0DgE7wmjik4/CiY7doTLThZsCn0XIl8pO
-         FZ0TiYGdaVk2EXha8aXxa0ePfi14N06c5vH+PlNGVcYk9d/Rlxo7ZBvO9L9E7W5rucMP
-         8oIIfJbaD1lB3G4iZWs76YPgk9dHsjjcj1k4SQqEykx8ZyHRinohR6+ZbhHrp8Thql05
-         DbBw==
-X-Forwarded-Encrypted: i=1; AJvYcCWCmZS0Wjq/wjVPlOC+VrhGQf/KLX65bJRZlLchglaGiqYoi/0BIwG8mbBT7q5X2YGS1JsxauGO8T2Sa9kmXhQPMjIhP/j9UGUrtijz
-X-Gm-Message-State: AOJu0Yz/vEX7EvvjXbXKyE0U4xsNq1jCM4BzRfkFjYaKtsBqCSMVrkHN
-	H/+c6VefIu3YyujtGcc5/jKbXv2wVr4PtNOlI7KV72vcHnZVO4CrgsK65SlV4oKlEMnMBDfM8NZ
-	gmQ==
-X-Google-Smtp-Source: AGHT+IGN3zZ+AWtJsEXlh5PO0OTuMsdAAMR54BndbvnDsWJGS/ngLorn4ve0GCie0y+F/f1QDNXI6IGNe7w=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:1817:b0:6e6:508e:395c with SMTP id
- y23-20020a056a00181700b006e6508e395cmr23698pfa.3.1709940489438; Fri, 08 Mar
- 2024 15:28:09 -0800 (PST)
-Date: Fri, 8 Mar 2024 15:28:08 -0800
-In-Reply-To: <ZeqZ+BDTN5bIx0rm@yilunxu-OptiPlex-7050>
+        d=1e100.net; s=20230601; t=1709941261; x=1710546061;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zlfQth9DPWSsn+arH/qgpKnNXviHjH835S37nR4dhGE=;
+        b=qn0wtM+rZHuWuZMSgEwae6WWIAEE55KsBd3N5ktRmEI24FCsI9ylv8/kHTBAQbOP87
+         5uwW9fZJ2S5mzc8bQykQemgHsxzPfsEv7vgl2SICGQnSMgSOLbqTra/YptyIcqwVL3TL
+         /bdDffnA4e6BTiXp83GTosITESl4EwRzTKCizs4YvoomhkXj/YMPje9e4Ug+Osi0v9O9
+         GMXSAan2ZObnoKN8/14kDuy0J1uQkej8+TLUYrTouOfxZiSuA0TqAyzQfUbYRReHgCC6
+         Bky7GsVdrZnSYS/iad92Blp58ZiWORpzCZfa91UxB1T/zTqwHmVCUvcQjUm/a4XPx5MJ
+         qFuw==
+X-Forwarded-Encrypted: i=1; AJvYcCUNRBouqO/+QvXz1dYBaCaP0OYzhpWM4342E4zoNDkJEuEgYxAn7yyLGmd+35sxP54U/qPUQQnH7ABAxHnnTxWfXA3bm5899CrWgodxicJxwgr0bGvoCJtQhktgyJHppWxNAeFcQq4I6Bfu
+X-Gm-Message-State: AOJu0YzRv1FVw6JnWlzMcWx8I8aErDJz5k0ib+ruvmzvNFantsyOvlRD
+	QVjC2jpdMwANAotaRFfZt5zXo5VPy+QxHyUU3S3BvwiX0A24Pmw2
+X-Google-Smtp-Source: AGHT+IGzZk1NMbfydS+xIShLQ6OuLXndJnAnzyGSFS+eV9QcPxPWGIumjzeC2yIzNsFyq4yVWsdabg==
+X-Received: by 2002:a17:902:cf11:b0:1dc:d642:aaf0 with SMTP id i17-20020a170902cf1100b001dcd642aaf0mr249479plg.6.1709941260826;
+        Fri, 08 Mar 2024 15:41:00 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
+        by smtp.gmail.com with ESMTPSA id w10-20020a170902e88a00b001db55b5d68bsm188703plg.69.2024.03.08.15.40.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Mar 2024 15:41:00 -0800 (PST)
+Date: Fri, 8 Mar 2024 23:40:55 +0000
+From: Wei Liu <wei.liu@kernel.org>
+To: Saurabh Singh Sengar <ssengar@linux.microsoft.com>
+Cc: Wei Liu <wei.liu@kernel.org>, kys@microsoft.com, haiyangz@microsoft.com,
+	decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
+	bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+	hpa@zytor.com, dwmw@amazon.co.uk, peterz@infradead.org,
+	linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+	ssengar@microsoft.com, mhklinux@outlook.com
+Subject: Re: [PATCH v3] x86/hyperv: Use per cpu initial stack for vtl context
+Message-ID: <ZeuiB8bH-m5NTCHD@liuwe-devbox-debian-v2>
+References: <1709452896-13342-1-git-send-email-ssengar@linux.microsoft.com>
+ <ZeVpG07p9ayjk7yb@liuwe-devbox-debian-v2>
+ <20240304070817.GA501@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <ZeZmysa1x4dogjQs@liuwe-devbox-debian-v2>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240228024147.41573-1-seanjc@google.com> <20240228024147.41573-10-seanjc@google.com>
- <ZeqZ+BDTN5bIx0rm@yilunxu-OptiPlex-7050>
-Message-ID: <ZeufCK2Yj_8Bx7EV@google.com>
-Subject: Re: [PATCH 09/16] KVM: x86/mmu: Move private vs. shared check above
- slot validity checks
-From: Sean Christopherson <seanjc@google.com>
-To: Xu Yilun <yilun.xu@linux.intel.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Yan Zhao <yan.y.zhao@intel.com>, Isaku Yamahata <isaku.yamahata@intel.com>, 
-	Michael Roth <michael.roth@amd.com>, Yu Zhang <yu.c.zhang@linux.intel.com>, 
-	Chao Peng <chao.p.peng@linux.intel.com>, Fuad Tabba <tabba@google.com>, 
-	David Matlack <dmatlack@google.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZeZmysa1x4dogjQs@liuwe-devbox-debian-v2>
 
-On Fri, Mar 08, 2024, Xu Yilun wrote:
-> On Tue, Feb 27, 2024 at 06:41:40PM -0800, Sean Christopherson wrote:
-> > Prioritize private vs. shared gfn attribute checks above slot validity
-> > checks to ensure a consistent userspace ABI.  E.g. as is, KVM will exit to
-> > userspace if there is no memslot, but emulate accesses to the APIC access
-> > page even if the attributes mismatch.
+On Tue, Mar 05, 2024 at 12:26:50AM +0000, Wei Liu wrote:
+> On Sun, Mar 03, 2024 at 11:08:17PM -0800, Saurabh Singh Sengar wrote:
+> > On Mon, Mar 04, 2024 at 06:24:27AM +0000, Wei Liu wrote:
+> > > On Sun, Mar 03, 2024 at 12:01:36AM -0800, Saurabh Sengar wrote:
+> > > > Currently, the secondary CPUs in Hyper-V VTL context lack support for
+> > > > parallel startup. Therefore, relying on the single initial_stack fetched
+> > > > from the current task structure suffices for all vCPUs.
+> > > > 
+> > > > However, common initial_stack risks stack corruption when parallel startup
+> > > > is enabled. In order to facilitate parallel startup, use the initial_stack
+> > > > from the per CPU idle thread instead of the current task.
+> > > > 
+> > > > Fixes: 18415f33e2ac ("cpu/hotplug: Allow "parallel" bringup up to CPUHP_BP_KICK_AP_STATE")
+> > > 
+> > > I don't think this patch is buggy. Instead, it exposes an assumption in
+> > > the VTL code. So this either should be dropped or point to the patch
+> > > which introduces the assumption.
+> > > 
+> > > Let me know what you would prefer.
 > > 
-> > Fixes: 8dd2eee9d526 ("KVM: x86/mmu: Handle page fault for private memory")
-> > Cc: Yu Zhang <yu.c.zhang@linux.intel.com>
-> > Cc: Chao Peng <chao.p.peng@linux.intel.com>
-> > Cc: Fuad Tabba <tabba@google.com>
-> > Cc: Michael Roth <michael.roth@amd.com>
-> > Cc: Isaku Yamahata <isaku.yamahata@intel.com>
-> > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> > ---
-> >  arch/x86/kvm/mmu/mmu.c | 15 ++++++++++-----
-> >  1 file changed, 10 insertions(+), 5 deletions(-)
+> > The VTL code will crash if this fix is not present post above mentioned patch:
+> > 18415f33e2ac ("cpu/hotplug: Allow "parallel" bringup up to CPUHP_BP_KICK_AP_STATE").
+> > So I would prefer a fixes which added the assumption in VTL:
 > > 
-> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> > index 9206cfa58feb..58c5ae8be66c 100644
-> > --- a/arch/x86/kvm/mmu/mmu.c
-> > +++ b/arch/x86/kvm/mmu/mmu.c
-> > @@ -4365,11 +4365,6 @@ static int __kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault
-> >  			return RET_PF_EMULATE;
-> >  	}
-> >  
-> > -	if (fault->is_private != kvm_mem_is_private(vcpu->kvm, fault->gfn)) {
-> > -		kvm_mmu_prepare_memory_fault_exit(vcpu, fault);
-> > -		return -EFAULT;
-> > -	}
-> > -
-> >  	if (fault->is_private)
-> >  		return kvm_faultin_pfn_private(vcpu, fault);
-> >  
-> > @@ -4410,6 +4405,16 @@ static int kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault,
-> >  	fault->mmu_seq = vcpu->kvm->mmu_invalidate_seq;
-> >  	smp_rmb();
-> >  
-> > +	/*
-> > +	 * Check for a private vs. shared mismatch *after* taking a snapshot of
-> > +	 * mmu_invalidate_seq, as changes to gfn attributes are guarded by the
-> > +	 * invalidation notifier.
+> > Fixes: 3be1bc2fe9d2 ("x86/hyperv: VTL support for Hyper-V")
+> > 
+> > Please let me know if you need V4 for it.
 > 
-> I didn't see how mmu_invalidate_seq influences gfn attribute judgement.
-> And there is no synchronization between the below check and
-> kvm_vm_set_mem_attributes(), the gfn attribute could still be changing
-> after the snapshot.
+> No need to repost. I can change the commit message.
 
-There is synchronization.  If kvm_vm_set_mem_attributes() changes the attributes,
-and thus bumps mmu_invalidate_seq, after kvm_faultin_pfn() takes its snapshot,
-then is_page_fault_stale() will detect that an invalidation related to the gfn
-occured and resume the guest *without* installing a mapping in KVM's page tables.
-
-I.e. KVM may read the old, stale gfn attributes, but it will never actually
-expose the stale attirubtes to the guest.
+Applied to hyperv-next with the new Fixes tag. Thanks.
 
