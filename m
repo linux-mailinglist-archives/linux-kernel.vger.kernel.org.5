@@ -1,68 +1,62 @@
-Return-Path: <linux-kernel+bounces-97457-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97486-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0082876AC1
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 19:30:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 269FF876AF3
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 19:56:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 29D931C219F0
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:30:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D0C671F218A8
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:56:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E73F656773;
-	Fri,  8 Mar 2024 18:30:08 +0000 (UTC)
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED0F154BDA;
+	Fri,  8 Mar 2024 18:56:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=codethink.co.uk header.i=@codethink.co.uk header.b="Fr3jdjo8"
+Received: from imap4.hz.codethink.co.uk (imap4.hz.codethink.co.uk [188.40.203.114])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9BE556776;
-	Fri,  8 Mar 2024 18:30:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B93902DF92;
+	Fri,  8 Mar 2024 18:56:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.40.203.114
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709922608; cv=none; b=tXSnIWatCB4MxAoridrLF5ZFK/AG1mHfOkwucQTMpzq8ZrOjT7tzwBtIioXMKJ5GTh8hkt+rALmTUHhpwF7b/2X8kHarU4I2Wz8nVpyaAcmGx60sJ0ownlt3ROpVMXfcJMp7jigBxhcmXYk2oZyi0qwzBkDhOYpO9c8eVAC+Mso=
+	t=1709924205; cv=none; b=jSsetAd1grzvmSqS3KBs8/mmKNJkwUlHzfWdOhfr1mbGf4lG+ko3zv6nrEa+f1XKbdcFyTiPVZrLrql0r5tM38c43r+cVmO0BUNTtDyMt1tXesqUb47dSxd/pUY0qXh7Cof4sc1nbzYsYk+SAMr6X6RzZeltthMtfUx7PGW8glc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709922608; c=relaxed/simple;
-	bh=HFG1MynytzLWg0eicMZQdvo4JlKR6eu7Ns14s2RLGiw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=G79E92K/qwQn1BG4y/34ZivaBcXHvVy2QR0I3ru0sqwf7dYzjCMeGczVIWyQmAjATzbFN7Jl5yhOAKIkumnVMOvm3xbD7lPH3SMfLX+xvPsb1YyW9xRMuUU41g3DNfZvgdeMrqqGvl9l1bi90/2SIPUZjVBwpLyHKU9h00r6MI0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a3ddc13bbb3so627851566b.0;
-        Fri, 08 Mar 2024 10:30:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709922605; x=1710527405;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yFXpUhEJ/ItvZNUQqkXHwG73XavxT72enjAMgAKDLJc=;
-        b=W2J3Hr4ZLBeGbd2wKMgm8PWzBdGJYzBeTcppGgrQnwi0oj9Sws+JoLCH9pibClQ+sq
-         UXFOZazuvLLFs6F3L4Uo7/soYIgg8kuYw7ykQF38NTYRbRsFbMODo0FwJuB7+kSGt6It
-         qf/KeUXxTR0KNF26DZtTljXYZQEcvp2RvzPPISK2g+hajfgGlVVvvLi4FRMT7z0hDypH
-         fk15nOiU0TE+ptUeqp+L8tEu5bfTzrjj/DCg3ErYeMoLTZ7LYNLPzadr6BWzhzs9+PWz
-         OSAQM+g6Sk/GDl5qc8szRDQdYHJpj9rSlfzEPU5MrWVoyx7YpgouMX3LWn1q2AU/gvKf
-         0aTg==
-X-Forwarded-Encrypted: i=1; AJvYcCVzKsfucWA0MC31hnKRuoZl5K6ilSjXGlp/ABmX3F5/1NlsY2Uq321SDbnylA4IgUfPDzQiUzq7wW74VhEf3oJGqST4fgC7WgfVHX/qPA6SSJRBOJk6Cimlc9fRjm+Ig4HdtYvGIs5hhA==
-X-Gm-Message-State: AOJu0Yz8+2gk0nv+WLYoCsQZ0oi34HTGJoghoxxbg6OrwJRUUvlaYcOa
-	0btXdnlnHveMM8T4bIpDKco7pXKrnd2NyBj6noprdg8itLBNBJIM
-X-Google-Smtp-Source: AGHT+IFq4IUV8gyyu9ldBeK/L2ipBwAFO6hBH2Xp0n9UMXbgtEjM58NS9VO7Ix6Sq8JEeZ7uLRFHPA==
-X-Received: by 2002:a17:907:a08e:b0:a45:73b0:bcc3 with SMTP id hu14-20020a170907a08e00b00a4573b0bcc3mr801361ejc.34.1709922605113;
-        Fri, 08 Mar 2024 10:30:05 -0800 (PST)
-Received: from localhost (fwdproxy-lla-111.fbsv.net. [2a03:2880:30ff:6f::face:b00c])
-        by smtp.gmail.com with ESMTPSA id l19-20020a170906231300b00a449d6184dasm54434eja.6.2024.03.08.10.30.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Mar 2024 10:30:04 -0800 (PST)
-From: Breno Leitao <leitao@debian.org>
-To: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>
-Cc: kuba@kernel.org,
-	keescook@chromium.org,
-	linux-rdma@vger.kernel.org (open list:HFI1 DRIVER),
-	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net-next] IB/hfi1: allocate dummy net_device dynamically
-Date: Fri,  8 Mar 2024 10:29:50 -0800
-Message-ID: <20240308182951.2137779-1-leitao@debian.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1709924205; c=relaxed/simple;
+	bh=m1gSWDGhOAmMvJJN4zC6tWoZplCX09QlxH0eeqoof+Y=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=SsWNxymoXxY/MdICNEUNmji79NJrwW98ogupHh9yKgyHrIg2c25bqRIiY2+urO/hJM2KHqHRqRMSqCx5Ibw+YskMAoLJGioMZJrM2CknZ6WzNFLTjvnKTtTrNYxJvcZ89NA2DvtjrsFlxCLnU6OI+j7E9wIRTBjHvjeO1d1ER3I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=codethink.co.uk; spf=pass smtp.mailfrom=codethink.com; dkim=pass (2048-bit key) header.d=codethink.co.uk header.i=@codethink.co.uk header.b=Fr3jdjo8; arc=none smtp.client-ip=188.40.203.114
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=codethink.co.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codethink.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=codethink.co.uk; s=imap4-20230908; h=Sender:Content-Transfer-Encoding:
+	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=wpcBiUaBaPQQIxzHAFN2Kj+yFFh9wih3axC8gZA47FQ=; b=Fr3jdjo8JbgHm2Ys+D8EYSwPP8
+	yJgTFQ2fvP8c6RuOAaUJJXVwZnz0dGlIkTstiryvFT+N2+tnEVZbtf4hIUvxSCLHGVJE1cLiBfg0r
+	dBFzsMYUn513pPb42XJlonxxVgWKNMjxCB6jLDrOSPcG/dTMPGOHsjwAMGuR+c9+Jo0Eno00eFuRO
+	R44Zn17SKZ2/4vwLVdnGdAW6KUV0yHCmVrKSZaXhoKcMNgHXMhDoqZZ5qhsyiZR/HHFp1Oz8tyyJf
+	2BaSZN7T0unvBoLobhjpOUu8yQDAMv8lw93sgkbc7OzdbFeGGJj279ytu8dmwpOhsvqA76tutU0DT
+	Ui1vRU/g==;
+Received: from [167.98.27.226] (helo=rainbowdash)
+	by imap4.hz.codethink.co.uk with esmtpsa  (Exim 4.94.2 #2 (Debian))
+	id 1rif10-00COsw-Vd; Fri, 08 Mar 2024 18:32:19 +0000
+Received: from ben by rainbowdash with local (Exim 4.97)
+	(envelope-from <ben@rainbowdash>)
+	id 1rif10-000000084bp-2CXU;
+	Fri, 08 Mar 2024 18:32:18 +0000
+From: Ben Dooks <ben.dooks@codethink.co.uk>
+To: linux-fsdevel@vger.kernel.org
+Cc: krisman@kernel.org,
+	linux-kernel@vger.kernel.org,
+	Ben Dooks <ben.dooks@codethink.co.uk>
+Subject: [PATCH] unicode: make utf8 test count static
+Date: Fri,  8 Mar 2024 18:32:15 +0000
+Message-Id: <20240308183215.1924331-1-ben.dooks@codethink.co.uk>
+X-Mailer: git-send-email 2.37.2.352.g3c44437643
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -70,78 +64,35 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Sender: srv_ts003@codethink.com
 
-struct net_device shouldn't be embedded into any structure, instead,
-the owner should use the priv space to embed their state into net_device.
+The variables failed_tests and total_tests are not used outside of the
+utf8-selftest.c file so make them static to avoid the following warnings:
 
-Embedding net_device into structures prohibits the usage of flexible
-arrays in the net_device structure. For more details, see the discussion
-at [1].
+fs/unicode/utf8-selftest.c:17:14: warning: symbol 'failed_tests' was not declared. Should it be static?
+fs/unicode/utf8-selftest.c:18:14: warning: symbol 'total_tests' was not declared. Should it be static?
 
-Un-embed the net_device from struct iwl_trans_pcie by converting it
-into a pointer. Then use the leverage alloc_netdev() to allocate the
-net_device object at iwl_trans_pcie_alloc.
-
-The private data of net_device becomes a pointer for the struct
-iwl_trans_pcie, so, it is easy to get back to the iwl_trans_pcie parent
-given the net_device object.
-
-[1] https://lore.kernel.org/all/20240229225910.79e224cf@kernel.org/
-
-Signed-off-by: Breno Leitao <leitao@debian.org>
+Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
 ---
- drivers/infiniband/hw/hfi1/netdev.h    | 2 +-
- drivers/infiniband/hw/hfi1/netdev_rx.c | 9 +++++++--
- 2 files changed, 8 insertions(+), 3 deletions(-)
+ fs/unicode/utf8-selftest.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hfi1/netdev.h b/drivers/infiniband/hw/hfi1/netdev.h
-index 8aa074670a9c..07c8f77c9181 100644
---- a/drivers/infiniband/hw/hfi1/netdev.h
-+++ b/drivers/infiniband/hw/hfi1/netdev.h
-@@ -49,7 +49,7 @@ struct hfi1_netdev_rxq {
-  *		When 0 receive queues will be freed.
-  */
- struct hfi1_netdev_rx {
--	struct net_device rx_napi;
-+	struct net_device *rx_napi;
- 	struct hfi1_devdata *dd;
- 	struct hfi1_netdev_rxq *rxq;
- 	int num_rx_q;
-diff --git a/drivers/infiniband/hw/hfi1/netdev_rx.c b/drivers/infiniband/hw/hfi1/netdev_rx.c
-index 720d4c85c9c9..5c26a69fa2bb 100644
---- a/drivers/infiniband/hw/hfi1/netdev_rx.c
-+++ b/drivers/infiniband/hw/hfi1/netdev_rx.c
-@@ -188,7 +188,7 @@ static int hfi1_netdev_rxq_init(struct hfi1_netdev_rx *rx)
- 	int i;
- 	int rc;
- 	struct hfi1_devdata *dd = rx->dd;
--	struct net_device *dev = &rx->rx_napi;
-+	struct net_device *dev = rx->rx_napi;
+diff --git a/fs/unicode/utf8-selftest.c b/fs/unicode/utf8-selftest.c
+index eb2bbdd688d7..c928e6007356 100644
+--- a/fs/unicode/utf8-selftest.c
++++ b/fs/unicode/utf8-selftest.c
+@@ -14,8 +14,8 @@
  
- 	rx->num_rx_q = dd->num_netdev_contexts;
- 	rx->rxq = kcalloc_node(rx->num_rx_q, sizeof(*rx->rxq),
-@@ -360,7 +360,11 @@ int hfi1_alloc_rx(struct hfi1_devdata *dd)
- 	if (!rx)
- 		return -ENOMEM;
- 	rx->dd = dd;
--	init_dummy_netdev(&rx->rx_napi);
-+	rx->rx_napi = alloc_netdev(sizeof(struct iwl_trans_pcie *),
-+				   "dummy", NET_NAME_UNKNOWN,
-+				   init_dummy_netdev);
-+	if (!rx->rx_napi)
-+		return -ENOMEM;
+ #include "utf8n.h"
  
- 	xa_init(&rx->dev_tbl);
- 	atomic_set(&rx->enabled, 0);
-@@ -374,6 +378,7 @@ void hfi1_free_rx(struct hfi1_devdata *dd)
- {
- 	if (dd->netdev_rx) {
- 		dd_dev_info(dd, "hfi1 rx freed\n");
-+		free_netdev(dd->netdev_rx->rx_napi);
- 		kfree(dd->netdev_rx);
- 		dd->netdev_rx = NULL;
- 	}
+-unsigned int failed_tests;
+-unsigned int total_tests;
++static unsigned int failed_tests;
++static unsigned int total_tests;
+ 
+ /* Tests will be based on this version. */
+ #define UTF8_LATEST	UNICODE_AGE(12, 1, 0)
 -- 
-2.43.0
+2.37.2.352.g3c44437643
 
 
