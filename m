@@ -1,246 +1,184 @@
-Return-Path: <linux-kernel+bounces-96610-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96624-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62480875EE5
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 08:55:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AD74875F0C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 09:05:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7A7428445E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 07:55:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0268B1F21C7C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 08:05:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 208B04F8A3;
-	Fri,  8 Mar 2024 07:55:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5705651009;
+	Fri,  8 Mar 2024 08:04:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="yyK/+/8z"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ssi.bg header.i=@ssi.bg header.b="uwbJryeQ"
+Received: from mg.ssi.bg (mg.ssi.bg [193.238.174.37])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 235F21CD09;
-	Fri,  8 Mar 2024 07:55:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B798481DC;
+	Fri,  8 Mar 2024 08:04:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.238.174.37
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709884519; cv=none; b=eY5I9wLhmFjrCl7J/TP2NZDoM91ta30TabbhuSKvl4C9uO8v7ygZTEKwKNaYfYyAodceBMPRna0ZzOefXCKMC4IkAGgQuewwwhJnm+s3XOvjF2tiFzlH2LC0zG0vE7gVUEv06RpvADGhGso9+A7kXDReBgM2+kkxzM7NV7ZHU/s=
+	t=1709885090; cv=none; b=mmgtuW2HpyMCQ6X0Ws+SrBCifiTqxwnfPZ5vnTBgcBwsCcuuHAaOqtmdaJUfWH+H5kgfmKcQRV59/+Vm9VRaubSgCM9oDz7YV0I+ZhB8+wan/hgormosgi4lbgimnqkxBikJgxnSI3Go1HfQEas3NlXDTW0xhZHfIxhmyV+OuLo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709884519; c=relaxed/simple;
-	bh=LdHdlTz00/xGuGZrRMcWu5Guyy6/rT9KdfA6ao/pU6c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=q1tcFvwf/g6EDYjHY67KZHLjoRYm1owJnRriteNRtP9vCTid58NiaGrDpdwLOPRBvKwPfPea4q9cOLaGMbAbnp5U9b6/16mt41KyGI3g4MjFJc465z6ELMKvovxR13fowR7EiPGSibZ6fcQdF5rBHyzogNDqjHcD0OATt7hEJlI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=yyK/+/8z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B843C433C7;
-	Fri,  8 Mar 2024 07:55:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1709884518;
-	bh=LdHdlTz00/xGuGZrRMcWu5Guyy6/rT9KdfA6ao/pU6c=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=yyK/+/8zqyTe2hKRyMhT3GgGH/Kh+i/kPwiF1jso98anyRttX/LPN+RmyKZol0Vfi
-	 cBZ0vACiHC4yhXYuXLAZvsJ1hwGKwj/IO01FS6I/IrWNiSfNZnrn77XIW9CWZvd7OK
-	 SO2rFAyLfhP9yxa+m1lI6wIdTUZ9i4dWFeXFvUSk=
-Date: Fri, 8 Mar 2024 07:55:16 +0000
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Dingyan Li <18500469033@163.com>
-Cc: stern@rowland.harvard.edu, linux-usb@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] USB: Use EHCI control transfer pid macros instead of
- constant values.
-Message-ID: <2024030802-huntsman-undertake-a38a@gregkh>
-References: <1e7f57d6-a4c1-4a3d-8cff-f966c89a8140@rowland.harvard.edu>
- <20240308010859.81987-1-18500469033@163.com>
+	s=arc-20240116; t=1709885090; c=relaxed/simple;
+	bh=QZTAxiGWwpEexgLFe9jZSIY9NbeDwvSTqVQZnYmTvI4=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=MRqIfpAkpm1Eb8i7FMuyZdbZLYAT9DWijx97qmpiflCvCtLhwi4Uf8CL8Ds0/yny3M+DnWSr/CPJNcZzh/CphzJlF1DLLVz3jpL2rqEy9bKTOAVruS0B2cUJKb5BmS2DjS0FYch1jYyE6LETpcI2TQTkv8AkfjIGWDHUxpYn/Tg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ssi.bg; spf=pass smtp.mailfrom=ssi.bg; dkim=pass (1024-bit key) header.d=ssi.bg header.i=@ssi.bg header.b=uwbJryeQ; arc=none smtp.client-ip=193.238.174.37
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ssi.bg
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ssi.bg
+Received: from mg.ssi.bg (localhost [127.0.0.1])
+	by mg.ssi.bg (Proxmox) with ESMTP id 3DAD4210EA;
+	Fri,  8 Mar 2024 09:55:40 +0200 (EET)
+Received: from ink.ssi.bg (ink.ssi.bg [193.238.174.40])
+	by mg.ssi.bg (Proxmox) with ESMTPS id 21A7D20E79;
+	Fri,  8 Mar 2024 09:55:40 +0200 (EET)
+Received: from ja.ssi.bg (unknown [213.16.62.126])
+	by ink.ssi.bg (Postfix) with ESMTPSA id 840543C0439;
+	Fri,  8 Mar 2024 09:55:34 +0200 (EET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ssi.bg; s=ink;
+	t=1709884536; bh=QZTAxiGWwpEexgLFe9jZSIY9NbeDwvSTqVQZnYmTvI4=;
+	h=Date:From:To:cc:Subject:In-Reply-To:References;
+	b=uwbJryeQTqOraXtDwW0CqiNcFIwZl1Qg5NaS2QLFcunSAsCGPap9cjb43fPYdi53l
+	 yiO1mtQ2jGfow6vIwAd/dSXxzzMFuiOQJuUkprRvsRYVwrlCIWyOd1yjJGAJfYFHrM
+	 MLoG9QLnx96tgCc/7vAyISjjV9S7n3/rKy9GQ6pc=
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by ja.ssi.bg (8.17.1/8.17.1) with ESMTP id 4287tOn7014553;
+	Fri, 8 Mar 2024 09:55:26 +0200
+Date: Fri, 8 Mar 2024 09:55:24 +0200 (EET)
+From: Julian Anastasov <ja@ssi.bg>
+To: =?UTF-8?Q?Michael_Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
+cc: Simon Horman <horms@verge.net.au>, gyroidos@aisec.fraunhofer.de,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ipvs: allow netlink configuration from non-initial user
+ namespace
+In-Reply-To: <20240307203107.63815-1-michael.weiss@aisec.fraunhofer.de>
+Message-ID: <e1c8e477-ae59-48de-4aa8-e6df09013831@ssi.bg>
+References: <20240307203107.63815-1-michael.weiss@aisec.fraunhofer.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240308010859.81987-1-18500469033@163.com>
+Content-Type: multipart/mixed; boundary="-1463811672-396118792-1709884526=:4390"
 
-On Fri, Mar 08, 2024 at 09:08:59AM +0800, Dingyan Li wrote:
-> Macros with good names offer better readability. Besides, also move
-> the definition to ehci.h.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+---1463811672-396118792-1709884526=:4390
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+
+
+	Hello,
+
+On Thu, 7 Mar 2024, Michael Weiß wrote:
+
+> Configuring ipvs in a non-initial user namespace using the genl
+> netlink interface, e.g., by 'ipvsadm' is currently resulting in an
+> '-EPERM'. This is due to the use of GENL_ADMIN_PERM flag in
+> 'ip_vs_ctl.c'.
 > 
-> Signed-off-by: Dingyan Li <18500469033@163.com>
+> Similarly to other genl interfaces, we switch to the use of
+> GENL_UNS_ADMIN_PERM flag which allows connection from non-initial
+> user namespace. Thus, it would be feasible to configure ipvs using
+> the genl interface also from within an unprivileged system container.
+> 
+> Since adding of new services and new dests are triggered from
+> userspace, accounting for the corresponding memory allocations in
+> ip_vs_new_dest() and ip_vs_add_service() is activated.
+> 
+> We tested this by simply running some samples from "man ipvsadm"
+> within an unprivileged user namespaced system container in GyroidOS.
+> Further, we successfully passed an adapted version of the ipvs
+> selftest in 'tools/testing/selftests/netfilter/ipvs.sh' using
+> preliminary created network namespaces from unprivileged GyroidOS
+> containers.
+
+	I planned such change but as followup patchset to other
+work which converts many structures to be per-netns.
+
+	There is a RFC v2 patchset for reference:
+
+https://archive.linuxvirtualserver.org/html/lvs-devel/2023-12/index.html
+
+	My goal was to isolate the different namespaces as much as
+possible: different structures, different kthreads, etc. with the
+goal to reduce the security risks of giving power to unprivileged roots.
+Such isolation should help when namespaces are served from different CPUs.
+
+	May be I should push fresh v3 soon, so that we can later use
+GFP_KERNEL_ACCOUNT not only for services and dests but also
+for allocations by schedulers, estimators, etc. The access to
+sysctl vars should be enabled too, around comment
+"Don't export sysctls to unprivileged users",
+alloc_percpu => alloc_percpu_gfp(,GFP_KERNEL_ACCOUNT),
+SLAB_ACCOUNT for kmem_cache_create, not sure about __GFP_NOWARN and
+__GFP_NORETRY usage too.
+
+	Not sure about the sysctl vars: now they are cloned from
+init_net, do we give full access for writing, some can be privileged,
+etc.
+
+	I didn't push such changes yet because I'm not sure what
+is needed: looks like, for now, what was needed is root from init_net to 
+control rules in different netns and there was no demand from the 
+virtualization world to extend this. If we can clearly define what is 
+good and what is bad from security perspective, we can go with such 
+changes after pushing the above patchset, i.e. the GENL_UNS_ADMIN_PERM
+change should follow all other changes.
+
+> Signed-off-by: Michael Weiß <michael.weiss@aisec.fraunhofer.de>
 > ---
->  drivers/usb/host/ehci-dbg.c | 10 +++++-----
->  drivers/usb/host/ehci-q.c   | 20 ++++++++------------
->  drivers/usb/host/ehci.h     |  8 +++++++-
->  3 files changed, 20 insertions(+), 18 deletions(-)
+>  net/netfilter/ipvs/ip_vs_ctl.c | 36 +++++++++++++++++-----------------
+>  1 file changed, 18 insertions(+), 18 deletions(-)
 > 
-> diff --git a/drivers/usb/host/ehci-dbg.c b/drivers/usb/host/ehci-dbg.c
-> index c063fb042926..435001128221 100644
-> --- a/drivers/usb/host/ehci-dbg.c
-> +++ b/drivers/usb/host/ehci-dbg.c
-> @@ -430,13 +430,13 @@ static void qh_lines(struct ehci_hcd *ehci, struct ehci_qh *qh,
->  				mark = '/';
->  		}
->  		switch ((scratch >> 8) & 0x03) {
-> -		case 0:
-> +		case PID_CODE_OUT:
->  			type = "out";
->  			break;
-> -		case 1:
-> +		case PID_CODE_IN:
->  			type = "in";
->  			break;
-> -		case 2:
-> +		case PID_CODE_SETUP:
->  			type = "setup";
->  			break;
->  		default:
-> @@ -602,10 +602,10 @@ static unsigned output_buf_tds_dir(char *buf, struct ehci_hcd *ehci,
->  	list_for_each_entry(qtd, &qh->qtd_list, qtd_list) {
->  		temp++;
->  		switch ((hc32_to_cpu(ehci, qtd->hw_token) >> 8)	& 0x03) {
-> -		case 0:
-> +		case PID_CODE_OUT:
->  			type = "out";
->  			continue;
-> -		case 1:
-> +		case PID_CODE_IN:
->  			type = "in";
->  			continue;
->  		}
-> diff --git a/drivers/usb/host/ehci-q.c b/drivers/usb/host/ehci-q.c
-> index 666f5c4db25a..ba37a9fcab92 100644
-> --- a/drivers/usb/host/ehci-q.c
-> +++ b/drivers/usb/host/ehci-q.c
-> @@ -27,10 +27,6 @@
->  
->  /*-------------------------------------------------------------------------*/
->  
-> -/* PID Codes that are used here, from EHCI specification, Table 3-16. */
-> -#define PID_CODE_IN    1
-> -#define PID_CODE_SETUP 2
-> -
->  /* fill a qtd, returning how much of the buffer we were able to queue up */
->  
->  static unsigned int
-> @@ -230,7 +226,7 @@ static int qtd_copy_status (
->  			/* fs/ls interrupt xfer missed the complete-split */
->  			status = -EPROTO;
->  		} else if (token & QTD_STS_DBE) {
-> -			status = (QTD_PID (token) == 1) /* IN ? */
-> +			status = (QTD_PID(token) == PID_CODE_IN) /* IN ? */
->  				? -ENOSR  /* hc couldn't read data */
->  				: -ECOMM; /* hc couldn't write data */
->  		} else if (token & QTD_STS_XACT) {
-> @@ -606,7 +602,7 @@ qh_urb_transaction (
->  		/* SETUP pid */
->  		qtd_fill(ehci, qtd, urb->setup_dma,
->  				sizeof (struct usb_ctrlrequest),
-> -				token | (2 /* "setup" */ << 8), 8);
-> +				token | (PID_CODE_SETUP << 8), 8);
->  
->  		/* ... and always at least one more pid */
->  		token ^= QTD_TOGGLE;
-> @@ -620,7 +616,7 @@ qh_urb_transaction (
->  
->  		/* for zero length DATA stages, STATUS is always IN */
->  		if (len == 0)
-> -			token |= (1 /* "in" */ << 8);
-> +			token |= (PID_CODE_IN << 8);
+> diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
+> index 143a341bbc0a..d39120c64207 100644
+> --- a/net/netfilter/ipvs/ip_vs_ctl.c
+> +++ b/net/netfilter/ipvs/ip_vs_ctl.c
+> @@ -1080,7 +1080,7 @@ ip_vs_new_dest(struct ip_vs_service *svc, struct ip_vs_dest_user_kern *udest)
+>  			return -EINVAL;
 >  	}
 >  
->  	/*
-> @@ -642,7 +638,7 @@ qh_urb_transaction (
+> -	dest = kzalloc(sizeof(struct ip_vs_dest), GFP_KERNEL);
+> +	dest = kzalloc(sizeof(struct ip_vs_dest), GFP_KERNEL_ACCOUNT);
+>  	if (dest == NULL)
+>  		return -ENOMEM;
+>  
+> @@ -1421,7 +1421,7 @@ ip_vs_add_service(struct netns_ipvs *ipvs, struct ip_vs_service_user_kern *u,
+>  		ret_hooks = ret;
 >  	}
 >  
->  	if (is_input)
-> -		token |= (1 /* "in" */ << 8);
-> +		token |= (PID_CODE_IN << 8);
->  	/* else it's already initted to "out" pid (0 << 8) */
->  
->  	maxpacket = usb_endpoint_maxp(&urb->ep->desc);
-> @@ -709,7 +705,7 @@ qh_urb_transaction (
->  
->  		if (usb_pipecontrol (urb->pipe)) {
->  			one_more = 1;
-> -			token ^= 0x0100;	/* "in" <--> "out"  */
-> +			token ^= (PID_CODE_IN << 8);	/* "in" <--> "out"  */
->  			token |= QTD_TOGGLE;	/* force DATA1 */
->  		} else if (usb_pipeout(urb->pipe)
->  				&& (urb->transfer_flags & URB_ZERO_PACKET)
-> @@ -1203,7 +1199,7 @@ static int ehci_submit_single_step_set_feature(
->  		/* SETUP pid, and interrupt after SETUP completion */
->  		qtd_fill(ehci, qtd, urb->setup_dma,
->  				sizeof(struct usb_ctrlrequest),
-> -				QTD_IOC | token | (2 /* "setup" */ << 8), 8);
-> +				QTD_IOC | token | (PID_CODE_SETUP << 8), 8);
->  
->  		submit_async(ehci, urb, &qtd_list, GFP_ATOMIC);
->  		return 0; /*Return now; we shall come back after 15 seconds*/
-> @@ -1216,7 +1212,7 @@ static int ehci_submit_single_step_set_feature(
->  	token ^= QTD_TOGGLE;   /*We need to start IN with DATA-1 Pid-sequence*/
->  	buf = urb->transfer_dma;
->  
-> -	token |= (1 /* "in" */ << 8);  /*This is IN stage*/
-> +	token |= (PID_CODE_IN << 8);  /*This is IN stage*/
->  
->  	maxpacket = usb_endpoint_maxp(&urb->ep->desc);
->  
-> @@ -1229,7 +1225,7 @@ static int ehci_submit_single_step_set_feature(
->  	qtd->hw_alt_next = EHCI_LIST_END(ehci);
->  
->  	/* STATUS stage for GetDesc control request */
-> -	token ^= 0x0100;        /* "in" <--> "out"  */
-> +	token ^= (PID_CODE_IN << 8);        /* "in" <--> "out"  */
->  	token |= QTD_TOGGLE;    /* force DATA1 */
->  
->  	qtd_prev = qtd;
-> diff --git a/drivers/usb/host/ehci.h b/drivers/usb/host/ehci.h
-> index 1441e3400796..d7a3c8d13f6b 100644
-> --- a/drivers/usb/host/ehci.h
-> +++ b/drivers/usb/host/ehci.h
-> @@ -321,10 +321,16 @@ struct ehci_qtd {
->  	size_t			length;			/* length of buffer */
->  } __aligned(32);
->  
-> +/* PID Codes that are used here, from EHCI specification, Table 3-16. */
-> +#define PID_CODE_OUT   0
-> +#define PID_CODE_IN    1
-> +#define PID_CODE_SETUP 2
-> +
->  /* mask NakCnt+T in qh->hw_alt_next */
->  #define QTD_MASK(ehci)	cpu_to_hc32(ehci, ~0x1f)
->  
-> -#define IS_SHORT_READ(token) (QTD_LENGTH(token) != 0 && QTD_PID(token) == 1)
-> +#define IS_SHORT_READ(token) (QTD_LENGTH(token) != 0 && \
-> +						QTD_PID(token) == PID_CODE_IN)
->  
->  /*-------------------------------------------------------------------------*/
->  
-> -- 
-> 2.25.1
-> 
-> 
+> -	svc = kzalloc(sizeof(struct ip_vs_service), GFP_KERNEL);
+> +	svc = kzalloc(sizeof(struct ip_vs_service), GFP_KERNEL_ACCOUNT);
+>  	if (svc == NULL) {
+>  		IP_VS_DBG(1, "%s(): no memory\n", __func__);
+>  		ret = -ENOMEM;
+> @@ -4139,98 +4139,98 @@ static const struct genl_small_ops ip_vs_genl_ops[] = {
+>  	{
+>  		.cmd	= IPVS_CMD_NEW_SERVICE,
+>  		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
+> -		.flags	= GENL_ADMIN_PERM,
+> +		.flags	= GENL_UNS_ADMIN_PERM,
+>  		.doit	= ip_vs_genl_set_cmd,
+..
 
-Hi,
+Regards
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+--
+Julian Anastasov <ja@ssi.bg>
+---1463811672-396118792-1709884526=:4390--
 
-You are receiving this message because of the following common error(s)
-as indicated below:
-
-- This looks like a new version of a previously submitted patch, but you
-  did not list below the --- line any changes from the previous version.
-  Please read the section entitled "The canonical patch format" in the
-  kernel file, Documentation/process/submitting-patches.rst for what
-  needs to be done here to properly describe this.
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
 
