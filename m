@@ -1,128 +1,189 @@
-Return-Path: <linux-kernel+bounces-97345-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97347-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF972876933
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:03:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B22C87693B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:03:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5EC8A1F23E31
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:03:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3FFA5286E53
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:03:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4011224A06;
-	Fri,  8 Mar 2024 17:02:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=risingedge.co.za header.i=@risingedge.co.za header.b="s3msyLbE"
-Received: from outgoing1.flk.host-h.net (outgoing1.flk.host-h.net [188.40.0.86])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6F272421E;
-	Fri,  8 Mar 2024 17:01:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.40.0.86
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DEA020B10;
+	Fri,  8 Mar 2024 17:02:31 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47E3D15C8
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 17:02:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709917322; cv=none; b=HOT31gJDPvLicnd0N5YJTmbFR/pNn6N2IcmNYNts8If+L9XdLQtAedV+09wde98yOh1dmrmgev9k/to+I5Dtu97Upgr+buvVMLdXWr2gp7NQiPxhFLYZ2u4vajOZAwSiWGE8SZ6WnRl7cgU86xL5DtY/mgtUNZe4fcD2nEhEPus=
+	t=1709917350; cv=none; b=c4rBEXK8yJpjfFh/LJgAv0XmnsshHAygtQ9ghikpnv0NZqm+JVWHoXVOuvGV2jHIC21OIL+gRtBTOSTqwvfdRbhOVDrGv4zrbxaFOzuEzYoqp9Ux0g0HCc94Dg/MiAT3Fisx2JcuBpDDUyQSqRgdChqd0YgILzQkFPx1roQMOsg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709917322; c=relaxed/simple;
-	bh=AccsSPF0jDJvCAdd9RMQg1UL432jF4z2EPF1mFPu/4U=;
-	h=MIME-Version:Content-Type:Date:From:To:Cc:Subject:In-Reply-To:
-	 References:Message-ID; b=ENiQfir4XRXRFLLVwYv3RU7O+br5UcFDYWjKaAnjZTUbh/S82nmvOKizlTX2BPhNYiZ1ftCqvgtoc1Yib7QEjrepBihHxzl3YZYneaZN1opVN2Ax7YlNJzEJMuabhZGbwF1PwXYFSZIWlgpNFepeiGpd0BRowvX4DlTut6OUNXs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=risingedge.co.za; spf=pass smtp.mailfrom=risingedge.co.za; dkim=pass (2048-bit key) header.d=risingedge.co.za header.i=@risingedge.co.za header.b=s3msyLbE; arc=none smtp.client-ip=188.40.0.86
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=risingedge.co.za
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=risingedge.co.za
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=risingedge.co.za; s=xneelo; h=Message-ID:References:In-Reply-To:Subject:Cc:
-	To:From:Date:Content-Transfer-Encoding:Content-Type:MIME-Version:reply-to:
-	sender:bcc; bh=sRjl7XYl/PGRpGuJTyM07HHols00JQDh+d7SIJ99lF4=; b=s3msyLbEuJDiD1
-	EvIiS5TeOy8LnDzzJMrgZgRlGKJcKbYV2AgR2Y/bu1JpOUYQ++L5Z08crYWeXefo5mALmVz1Lh56p
-	I/cnm3vaL6qCuU9wmTEajKS+/UezYTYsCmAPozFvMhO6E4AvXQhMupgvWykQRI6WdM8oMgi0PHvU7
-	BEptilxZhFeJg1Wtlz21ZnK8vRks+0805gFAxv8/dQ9JaDNZ7JpC+BeaCOl/fl/EPuAh1O2era/+S
-	MMiPzkjZO1ovOdgkrDlQD+tS4Qisrny0YECCPKW6bCrVqzTIbMtxqKmOawvmt26tXoyBM+pguUihr
-	B0+QRQx8JB9pCiEorWSw==;
-Received: from www31.flk1.host-h.net ([188.40.1.173])
-	by antispam3-flk1.host-h.net with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <justin.swartz@risingedge.co.za>)
-	id 1ridbU-006Zrv-Gq; Fri, 08 Mar 2024 19:01:54 +0200
-Received: from roundcubeweb1.flk1.host-h.net ([138.201.244.33] helo=webmail9.konsoleh.co.za)
-	by www31.flk1.host-h.net with esmtpa (Exim 4.92)
-	(envelope-from <justin.swartz@risingedge.co.za>)
-	id 1ridbT-0003Fr-KO; Fri, 08 Mar 2024 19:01:51 +0200
+	s=arc-20240116; t=1709917350; c=relaxed/simple;
+	bh=nBf0mh1Mx2uJcthMaU8Eokutt3sv+hG4RQslq3NtpVM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qCmz0uOpNRVxUi7te3QWbI1YdrHNI+devU1AqRlHogNHMAXBL9JZXhDKA14Dp+sgb2ndbN/qiNgZGxyKoKE/LppUc8D6oqeDnm5QFHZJPiomN43TzBt9EClAIcK9oUZ3pkkBYD/x3nwgTzRaaJTzR7Cl4KzFdd0jXsb1iRVCdZw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0F1DEC15
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 09:03:04 -0800 (PST)
+Received: from e110455-lin.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 32F323F73F
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 09:02:27 -0800 (PST)
+Date: Fri, 8 Mar 2024 17:02:15 +0000
+From: Liviu Dudau <liviu.dudau@arm.com>
+To: Boris Brezillon <boris.brezillon@collabora.com>
+Cc: =?utf-8?Q?Adri=C3=A1n?= Larumbe <adrian.larumbe@collabora.com>,
+	Steven Price <steven.price@arm.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	kernel@collabora.com, linux-kernel@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	Mihail Atanassov <Mihail.Atanassov@arm.com>
+Subject: Re: [PATCH] drm/panthor: Add support for performance counters
+Message-ID: <ZetEl5h40pcB73t7@e110455-lin.cambridge.arm.com>
+References: <20240305165820.585245-1-adrian.larumbe@collabora.com>
+ <ZesYErFVdqLyjblW@e110455-lin.cambridge.arm.com>
+ <20240308161515.1d74fd55@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Date: Fri, 08 Mar 2024 19:01:51 +0200
-From: Justin Swartz <justin.swartz@risingedge.co.za>
-To: =?UTF-8?Q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
-Cc: Sergio Paracuellos <sergio.paracuellos@gmail.com>, Rob Herring
- <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Matthias Brugger
- <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
- <angelogioacchino.delregno@collabora.com>, linux-mips@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH v3 1/3] mips: dts: ralink: mt7621: associate uart1_pins
- with serial0
-In-Reply-To: <70822db4-d642-4180-9db8-eb0aa5728ef1@arinc9.com>
-References: <20240308155616.11742-1-justin.swartz@risingedge.co.za>
- <20240308155616.11742-2-justin.swartz@risingedge.co.za>
- <70822db4-d642-4180-9db8-eb0aa5728ef1@arinc9.com>
-Message-ID: <bec06da5c4099898d9e531181d0797ca@risingedge.co.za>
-X-Sender: justin.swartz@risingedge.co.za
-User-Agent: Roundcube Webmail/1.3.17
-X-Authenticated-Sender: justin.swartz@risingedge.co.za
-X-Virus-Scanned: Clear
-X-SpamExperts-Domain: risingedge.co.za
-X-SpamExperts-Username: 
-Authentication-Results: host-h.net; auth=pass (login) smtp.auth=@risingedge.co.za
-X-SpamExperts-Outgoing-Class: ham
-X-SpamExperts-Outgoing-Evidence: Combined (0.03)
-X-Recommended-Action: accept
-X-Filter-ID: Pt3MvcO5N4iKaDQ5O6lkdGlMVN6RH8bjRMzItlySaT+Ii1571bF7nYhcAwAFtCT5PUtbdvnXkggZ
- 3YnVId/Y5jcf0yeVQAvfjHznO7+bT5wCPRB8bAzJcv2cv+UqiTTc2+CpNcmBnO4XM3Sck4bwNogU
- WCl1nkLBzZX0KuJ9bXiS85Z42w/+2OBolTNFbPomXFWCX8oNdggW7HE9XDTdSejrkEpbuUvwMvHx
- 3T+KSG//gbuP7hnUK8NQdLwsVWKIFDZRrTGv3rxiw9tFrqFSCFNiLZt/QXQnOBRD+jq1HsKsDh/6
- Srgk2K3gr1VBfJbChkYH6fbrypLNrde+UooQVNLReLErukdelEOHUIpaBbp5GdnsN8+UvimwMinK
- 0+Txhz2u9qvrL2PODYgMZQApJXOjDLkqunZ9NcY2bHZn7CfFscMZZf3sCkN20I5vMh4akiObI7Kj
- vK7X04QEin24qbfMFd8eGjnYW8aSH5qj4ujh/13psIvqSqJFa1CcANErDW/w69saM9prk3jNnHtn
- nuEt/J9wDZeQfiNOYsLDFBdwYt2XtlLzy7G7T4kla0JNnAWQx3FS11bhwUa9HCIwKB+TroNcRY33
- oNmH4nRQzHQazgY7lmveanvOdQzf6IMJ3345q/s6ySNrGnXycmhg3NT7e1QHD5IMWQJA50ktgR2o
- naNQbqJUPRwZtKOTN8gOLtBcNrQxKZYuPe8bdCyw79zlPbqLQkZr26Lcxdvj8cqI+CogZdOhX7v3
- ClXzrmMENhJLl6MBfhzHVBR0wHQZxzIUka7Uq615Mik1qzcz30+tdk6yIuh9K7v+Nq0Cm3JVhle6
- F/kpBdN+oWjoATjEFDwcaiz0R34rhTN+GTbl4uS+pZovX9cex7Ac4fawcerGI7TrGXpM/B/M0BZd
- PfIU1BX7pZc1sE3vsz58auH/srM2fgZ9JmgLbj7sqoEiwv7LCxIiAE5ODMnmwjvj2589zjbyZCiM
- WpBpW8YvoIIqmZcWhL/r/eFjMjJnMHeiAPOVAT1rE1/vP68Bb4z3v3h3gCdXrv2+9GnNX30LKqXb
- fwFKgm/rnYBl+Mj5KqOl6Jzub/f3QhLRbOgisvi5VU9eNBtgo6zjiatjNO/pnMCjuIvXs/AyV/Ns
- URB/R+FlEHyAzksgfaRvdgw0WK34QWnzHHMcN6qoXPjenLhIOF1oeRYbjF1Hp647mOWoQlc3hL3c
- dBMSQgQtiTUcJp5roVy0aRtSNV8PU3+FWuyIQnbx8eB4u/m4iBmYb1/LCV4/EuVHup06w3Vwxf9C
- F7D6LKKRTfdjzQ6YC7Heg3Xf7O1TOd6RcY/MXB8eEq3bCN2QohZvyS03iBmgsz450Kmjd3fGV2Jt
- unc/A+T40yFOxOeH+1yxtZHZOXSNzt6etGjYKTk8Ibtf63VNbf0lrvssY+k7AHGi1NevGWTo2+h8
- Lhk4HCeZR7ymlGVRtthBJ2y8A5arx6JItKpFaUNPGMMlvbMX0nyK1NiAJ0y2Qvvn6ds6mor35w4f
- SfHzQbABJfgy21HclcZkPRq7NhoxyMwqi8Q23Rgadfh5T5n5D4OHHpbEIgsllZKWnzc5M5WlNtVJ
- qo05MS+4ayUpOtEhdxekWDmK9g==
-X-Report-Abuse-To: spam@antispamquarantine.host-h.net
+In-Reply-To: <20240308161515.1d74fd55@collabora.com>
 
-On 2024-03-08 18:14, Arınç ÜNAL wrote:
-> On 08/03/2024 18:56, Justin Swartz wrote:
->> Add missing pinctrl-name and pinctrl-0 properties to declare
->> that the uart1_pins group is associated with serial0.
->> 
->> Acked-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
->> Signed-off-by: Justin Swartz <justin.swartz@risingedge.co.za>
+On Fri, Mar 08, 2024 at 04:15:15PM +0100, Boris Brezillon wrote:
+> On Fri, 8 Mar 2024 13:52:18 +0000
+> Liviu Dudau <liviu.dudau@arm.com> wrote:
 > 
-> Reviewed-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+> > Hi Adrián,
+> > 
+> > Thanks for the patch and appologies for taking a bit longer to respond,
+> > I was trying to gather some internal Arm feedback before replying.
+> > 
+> > On Tue, Mar 05, 2024 at 04:58:16PM +0000, Adrián Larumbe wrote:
+> > > This brings in support for Panthor's HW performance counters and querying
+> > > them from UM through a specific ioctl(). The code is inspired by existing
+> > > functionality for the Panfrost driver, with some noteworthy differences:
+> > > 
+> > >  - Sample size is now reported by the firmware rather than having to reckon
+> > >  it by hand
+> > >  - Counter samples are chained in a ring buffer that can be accessed
+> > >  concurrently, but only from threads within a single context (this is
+> > >  because of a HW limitation).
+> > >  - List of enabled counters must be explicitly told from UM
+> > >  - Rather than allocating the BO that will contain the perfcounter values
+> > >  in the render context's address space, the samples ring buffer is mapped
+> > >  onto the MCU's VM.
+> > >  - If more than one thread within the same context tries to dump a sample,
+> > >  then the kernel will copy the same frame to every single thread that was
+> > >  able to join the dump queue right before the FW finished processing the
+> > >  sample request.
+> > >  - UM must provide a BO handle for retrieval of perfcnt values rather
+> > >  than passing a user virtual address.
+> > > 
+> > > The reason multicontext access to the driver's perfcnt ioctl interface
+> > > isn't tolerated is because toggling a different set of counters than the
+> > > current one implies a counter reset, which also messes up with the ring
+> > > buffer's extraction and insertion pointers. This is an unfortunate
+> > > hardware limitation.  
+> > 
+> > There are a few issues that we would like to improve with this patch.
+> > 
+> > I'm not sure what user space app has been used for testing this (I'm guessing
+> > gputop from igt?) but whatever is used it needs to understand the counters
+> > being exposed.
 > 
-> Please add the trailers from previous patch versions from now on.
+> We are using perfetto to expose perfcounters.
+> 
+> > In your patch there is no information given to the user space
+> > about the layout of the counters and / or their order. Where is this being
+> > planned to be defined?
+> 
+> That's done on purpose. We want to keep the kernel side as dumb as
+> possible so we don't have to maintain a perfcounter database there. All
+> the kernel needs to know is how much data it should transfer pass to
+> userspace, and that's pretty much it.
 
-What do you mean by trailers?
+I was not thinking about a perfcounter database but hints about counter value
+size. In the future we might have 64bits counters and you will not be able to
+tell only from the sample size if you're talking with an old firmware or not.
+(Read: future GPUs are likely to go bigger on number of perf counters before
+they gain higher definition).
 
-Regards
-Justin
+> 
+> > Long term, I think it would be good to have details
+> > about the counters available.
+> 
+> The perfcounter definitions are currently declared in mesa (see the G57
+> perfcounter definitions for instance [1]). Mesa also contains a perfetto
+> datasource for Panfrost [2].
+
+Sorry, I've missed that perfetto got updated.
+
+> 
+> > 
+> > The other issue we can see is with the perfcnt_process_sample() and its
+> > handling of threshold event and overflows. If the userspace doesn't sample
+> > quick enough and we cross the threshold we are going to lose samples and
+> > there is no mechanism to communicate to user space that the values they
+> > are getting have gaps. I believe the default mode for the firmware is to
+> > give you counter values relative to the last read value, so if you drop
+> > samples you're not going to make any sense of the data.
+> 
+> If we get relative values, that's indeed a problem. I thought we were
+> getting absolute values though, in which case, if you miss two 32-bit
+> wraparounds, either your sampling rate is very slow, or events occur at
+> a high rate.
+
+First CSF GPUs have some erratas around perf counters that firmware tries to
+hide. I need to dig a bit deeper into what firmware does for each GPU before
+confirming the counting mode.
+
+The main issue with the code is that we should not be dropping samples at
+all, even if they are absolute values, as there will be gaps in the analysis.
+Looking at perfcnt_process_sample(), it does not increase the sampling rate
+if we reach the threshold, nor does it tell the user space to do so. From our
+DDK experience, if you've reached the threshold with the app sampling
+then you're likely to overflow as well, missing samples.
+
+> 
+> > 
+> > The third topic that is worth discussing is the runtime PM. Currently your
+> > patch will increment the runtime PM usage count when the performance
+> > counter dump is enabled, which means you will not be able to instrument
+> > your power saving modes. It might not be a concern for the current users
+> > of the driver, but it is worth discussing how to enable that workflow
+> > for future.
+> 
+> I guess we could add a flags field to drm_panthor_perfcnt_config and
+> declare a DRM_PANTHOR_PERFCNT_CFG_ALLOW_GPU_SUSPEND flag to support this
+> use case.
+
+Yes, sounds like a good plan. Doesn't have to be included in this patch.
+
+Best regards,
+Liviu
+
+> 
+> [1]https://gitlab.freedesktop.org/mesa/mesa/-/blob/main/src/panfrost/perf/G57.xml?ref_type=heads
+> [2]https://gitlab.freedesktop.org/mesa/mesa/-/tree/main/src/panfrost/ds?ref_type=heads
+
+-- 
+====================
+| I would like to |
+| fix the world,  |
+| but they're not |
+| giving me the   |
+ \ source code!  /
+  ---------------
+    ¯\_(ツ)_/¯
 
