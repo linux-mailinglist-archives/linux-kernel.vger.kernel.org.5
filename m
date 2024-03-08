@@ -1,76 +1,78 @@
-Return-Path: <linux-kernel+bounces-97222-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97220-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C6C487672D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 16:17:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 637E787672B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 16:17:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8B84284949
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 15:17:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 84C471C2184A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 15:17:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86DB663B8;
-	Fri,  8 Mar 2024 15:17:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B13351DDF5;
+	Fri,  8 Mar 2024 15:17:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="sM/8bn7l"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="M5uhEC5u"
 Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0D7F1DFFD
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 15:17:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 583481D54D
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 15:17:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709911041; cv=none; b=ombivv4+u/hjRkTpfcGMuwyfucPkx4MoNuACXNWwRBsUXZadrzs5oM6/ssCNO7225KpjgtNmFMdFFetZupMgy4nJXIm7/NIpzq+OQS63N2KcpUThpor11oX9d6XkTd98/rZ4lsTiUMuxM61ZbdOHI3oo6oj4A6PmS9PdZmvXehc=
+	t=1709911025; cv=none; b=VO7Q778eTWcTNQG4Nuikm47mcwitfaV4eAuGDsidi+ImJLArBr3YgQQVkSQTMhmmFQIzjtF/mIWxzRHLAN43OfBQ/zu6wcqNdVtaBoGL3wQ19FMR6earhGlOgjprbmA+LMKz98GKcHbd9KG7o6pmO5N8jSpCENJwVJPgWPiXziE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709911041; c=relaxed/simple;
-	bh=wM++zWrNE62p+xL8XVoIj+vcCKy1hJZR9m9huazCC4I=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=UlZx+cGOyEOmoRJ5lAv/UB8FDg5NgEIBMaqDr8loxpv0yKJX+8TpM97yWn6L8XhYWNgx7mpP5sylFBh9M1gxXznCya9VtAJ7MWVlROKO2q6PFv6o3HuOodOC2GWFhtvKk3k+aSydiPvCRMqcphrreLgg23m4xsURxMZrM8vLoME=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=sM/8bn7l; arc=none smtp.client-ip=148.163.156.1
+	s=arc-20240116; t=1709911025; c=relaxed/simple;
+	bh=i46mWTUPmsls5AqdeU81Fh2yDrBBdW1Qnq9rKANiCmk=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=ktQD/vfZJni8KINKesSupnIydyGQskeQ5C9alF83NuCBq28Q42KHoCZz/Jg0wZxAKfBswJOuv0bK15fKXAVVEVagwCkzsE/Ej/4qRKvCAGkiWphRkmmGo542nNwBHxkf3L8e2mZ9Du0iCyIqNx/v6Vw5QM+aM4c7BYU6qJljbb0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=M5uhEC5u; arc=none smtp.client-ip=148.163.156.1
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 428F7FGC004940;
-	Fri, 8 Mar 2024 15:16:28 GMT
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 428F1wLv032748;
+	Fri, 8 Mar 2024 15:16:35 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : content-transfer-encoding : mime-version; s=pp1;
- bh=MvrDX0dkLUQjrwJI3GByS9ZHPaZz9JeJvCJGU/DolGg=;
- b=sM/8bn7lpoSoG0xPk/0QiQjjGjQYvSQCenytI5Ne821ELZ+E9P5krqvGhPwigqHCPado
- UYh7aNw7o91bhWNu376dpV5flNjsAO9mey20stSK+jI76K+suRRMqX4I7rPHkUzUEUb2
- ThCAVOS1kYY71Rb3r/MBRDdPDa6XUACnUmcHSg7qhCJcpOEEPcy6gXr5mzmDpAks97L+
- /nJydbjf4m85VlwdiuwKIQEajmpQFqUe0ZKNYtJWdQOFLcNKcl81K779/nkGqkF9ipOF
- KUjPbQPvRCUXp++nioW0yH1cOLZb6rpg/MWLhIwbgB4NGx7OB5U+OVy/4/iCvuaj0we0 5g== 
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=pp1;
+ bh=nlqWPtM5+DbIaChmmWJ9jy3Ip4vFxPNuZPDBM45ynrI=;
+ b=M5uhEC5uly1aj+/t0SibrVysHyUB5V3MH4tcj2D/jtHacxCYj4udL/Nzns77hV1n8tXC
+ b4RsevVCczfUrb69NQ91nyaUT/4U5GIOyH2YGhctwGSXvLfL+9YzXz7/SCYgukTS0P/E
+ DcvedO/oCL2oQirceBAVWHerhvvKeOMYqhUjGQOpCJ70AKQ5gFQ2UzhlVU/F814JDdHH
+ fv1JBl00ezSyGd/fy53/w+FbW5zRn6iGJ8nP1hcVtW5AiA3NE7wdRVZ/i5DqpXCj2x5u
+ lAGKg22ZDy2aiv3Jhzx54HOv6pSDC5lxLqUcyx9+MuopudSA2XRqjKEtz2k96qDdPQGu dw== 
 Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wr51jr4rj-1
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wr4y788ff-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 08 Mar 2024 15:16:27 +0000
-Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 428F8e2E010141;
-	Fri, 8 Mar 2024 15:16:27 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wr51jr4r2-1
+	Fri, 08 Mar 2024 15:16:34 +0000
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 428F3ESG005308;
+	Fri, 8 Mar 2024 15:16:34 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wr4y788f8-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 08 Mar 2024 15:16:27 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 428EFrnH025387;
-	Fri, 8 Mar 2024 15:16:25 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3wmeu059qm-1
+	Fri, 08 Mar 2024 15:16:34 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 428E1WWS006077;
+	Fri, 8 Mar 2024 15:16:33 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wmeetncjy-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 08 Mar 2024 15:16:25 +0000
+	Fri, 08 Mar 2024 15:16:32 +0000
 Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 428FGLpH34734492
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 428FGTX427853246
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 8 Mar 2024 15:16:23 GMT
+	Fri, 8 Mar 2024 15:16:31 GMT
 Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 8CEAE20043;
-	Fri,  8 Mar 2024 15:16:21 +0000 (GMT)
+	by IMSVA (Postfix) with ESMTP id 35ACC2004F;
+	Fri,  8 Mar 2024 15:16:29 +0000 (GMT)
 Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 95A182004E;
-	Fri,  8 Mar 2024 15:16:18 +0000 (GMT)
+	by IMSVA (Postfix) with ESMTP id 3FB952004E;
+	Fri,  8 Mar 2024 15:16:26 +0000 (GMT)
 Received: from ltczz402-lp1.aus.stglabs.ibm.com (unknown [9.53.171.174])
 	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Fri,  8 Mar 2024 15:16:18 +0000 (GMT)
+	Fri,  8 Mar 2024 15:16:26 +0000 (GMT)
 From: Donet Tom <donettom@linux.ibm.com>
 To: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
@@ -87,189 +89,172 @@ Cc: Aneesh Kumar <aneesh.kumar@kernel.org>, Huang Ying <ying.huang@intel.com>,
         Kefeng Wang <wangkefeng.wang@huawei.com>,
         Suren Baghdasaryan <surenb@google.com>,
         Donet Tom <donettom@linux.ibm.com>
-Subject: [PATCH v2 0/2] Allow migrate on protnone reference with MPOL_PREFERRED_MANY policy
-Date: Fri,  8 Mar 2024 09:15:36 -0600
-Message-Id: <cover.1709909210.git.donettom@linux.ibm.com>
+Subject: [PATCH v2 1/2] mm/mempolicy: Use numa_node_id() instead of cpu_to_node()
+Date: Fri,  8 Mar 2024 09:15:37 -0600
+Message-Id: <744646531af02cc687cde8ae788fb1779e99d02c.1709909210.git.donettom@linux.ibm.com>
 X-Mailer: git-send-email 2.39.3
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: dz6WQicQ7yDFSFge9YVM14OTooKmwlro
-X-Proofpoint-GUID: UNkepK4yDNo7wby3-J_PaFMZ85cfzzXn
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+In-Reply-To: <cover.1709909210.git.donettom@linux.ibm.com>
+References: <cover.1709909210.git.donettom@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: gqq7bvBqapxNbYosgNU363AECOXd4lLJ
+X-Proofpoint-ORIG-GUID: DWdelyt722JB92dQEikvrgbgtsRFaeD7
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-03-08_08,2024-03-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 bulkscore=0
- spamscore=0 priorityscore=1501 malwarescore=0 mlxlogscore=999 mlxscore=0
- lowpriorityscore=0 phishscore=0 suspectscore=0 impostorscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
+ impostorscore=0 mlxscore=0 lowpriorityscore=0 mlxlogscore=999
+ clxscore=1015 phishscore=0 adultscore=0 bulkscore=0 suspectscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2311290000 definitions=main-2403080123
 
-This patchset is to optimize the cross-socket memory access with
-MPOL_PREFERRED_MANY policy.
+Instead of using 'cpu_to_node()', we use 'numa_node_id()', which
+is quicker. smp_processor_id is guaranteed to be stable in the
+'mpol_misplaced()' function because it is called with ptl held.
+lockdep_assert_held was added to ensure that.
 
-To test this patch we ran the following test on a 3 node system.
- Node 0 - 2GB   - Tier 1
- Node 1 - 11GB  - Tier 1
- Node 6 - 10GB  - Tier 2
+No functional change in this patch.
 
-Below changes are made to memcached to set the memory policy,
-It select Node0 and Node1 as preferred nodes.
-
-   #include <numaif.h>
-   #include <numa.h>
-
-    unsigned long nodemask;
-    int ret;
-
-    nodemask = 0x03;
-    ret = set_mempolicy(MPOL_PREFERRED_MANY | MPOL_F_NUMA_BALANCING,
-                                               &nodemask, 10);
-    /* If MPOL_F_NUMA_BALANCING isn't supported,
-     * fall back to MPOL_PREFERRED_MANY */
-    if (ret < 0 && errno == EINVAL){
-       printf("set mem policy normal\n");
-        ret = set_mempolicy(MPOL_PREFERRED_MANY, &nodemask, 10);
-    }
-    if (ret < 0) {
-       perror("Failed to call set_mempolicy");
-       exit(-1);
-    }
-
-Test Procedure:
-===============
-1. Make sure memory tiring and demotion are enabled.
-2. Start memcached.
-
-   # ./memcached -b 100000 -m 204800 -u root -c 1000000 -t 7
-       -d -s "/tmp/memcached.sock"
-
-3. Run memtier_benchmark to store 3200000 keys.
-
-  #./memtier_benchmark -S "/tmp/memcached.sock" --protocol=memcache_binary
-    --threads=1 --pipeline=1 --ratio=1:0 --key-pattern=S:S --key-minimum=1
-    --key-maximum=3200000 -n allkeys -c 1 -R -x 1 -d 1024
-
-4. Start a memory eater on node 0 and 1. This will demote all memcached
-   pages to node 6.
-5. Make sure all the memcached pages got demoted to lower tier by reading
-   /proc/<memcaced PID>/numa_maps.
-
-    # cat /proc/2771/numa_maps
-     ---
-    default anon=1009 dirty=1009 active=0 N6=1009 kernelpagesize_kB=64
-    default anon=1009 dirty=1009 active=0 N6=1009 kernelpagesize_kB=64
-     ---
-
-6. Kill memory eater.
-7. Read the pgpromote_success counter.
-8. Start reading the keys by running memtier_benchmark.
-
-  #./memtier_benchmark -S "/tmp/memcached.sock" --protocol=memcache_binary
-   --pipeline=1 --distinct-client-seed --ratio=0:3 --key-pattern=R:R
-   --key-minimum=1 --key-maximum=3200000 -n allkeys
-   --threads=64 -c 1 -R -x 6
-
-9. Read the pgpromote_success counter.
-
-Test Results:
-=============
-Without Patch
-------------------
-1. pgpromote_success  before test
-Node 0:  pgpromote_success 11
-Node 1:  pgpromote_success 140974
-
-pgpromote_success  after test
-Node 0:  pgpromote_success 11
-Node 1:  pgpromote_success 140974
-
-2. Memtier-benchmark result.
-AGGREGATED AVERAGE RESULTS (6 runs)
-==================================================================
-Type    Ops/sec   Hits/sec   Misses/sec  Avg. Latency  p50 Latency
-------------------------------------------------------------------
-Sets     0.00       ---         ---        ---          ---
-Gets    305792.03  305791.93   0.10       0.18949       0.16700
-Waits    0.00       ---         ---        ---          ---
-Totals  305792.03  305791.93   0.10       0.18949       0.16700
-
-======================================
-p99 Latency  p99.9 Latency  KB/sec
--------------------------------------
----          ---            0.00
-0.44700     1.71100        11542.69
----           ---            ---
-0.44700     1.71100        11542.69
-
-With Patch
----------------
-1. pgpromote_success  before test
-Node 0:  pgpromote_success 5
-Node 1:  pgpromote_success 89386
-
-pgpromote_success  after test
-Node 0:  pgpromote_success 57895
-Node 1:  pgpromote_success 141463
-
-2. Memtier-benchmark result.
-AGGREGATED AVERAGE RESULTS (6 runs)
-====================================================================
-Type    Ops/sec    Hits/sec  Misses/sec  Avg. Latency  p50 Latency
---------------------------------------------------------------------
-Sets     0.00        ---       ---        ---           ---
-Gets    521942.24  521942.07  0.17       0.11459        0.10300
-Waits    0.00        ---       ---         ---          ---
-Totals  521942.24  521942.07  0.17       0.11459        0.10300
-
-=======================================
-p99 Latency  p99.9 Latency  KB/sec
----------------------------------------
- ---          ---            0.00
-0.23100      0.31900        19701.68
----          ---             ---
-0.23100      0.31900        19701.68
-
-
-Test Result Analysis:
-=====================
-1. With patch we could observe pages are getting promoted.
-2. Memtier-benchmark results shows that, with the patch,
-   performance has increased more than 50%.
-
- Ops/sec without fix -  305792.03
- Ops/sec with fix    -  521942.24
-
-Changes:
-v2:
-- Rebased on latest upstream (v6.8-rc7)
-- Used 'numa_node_id()' to get the current execution node ID, Added
-  'lockdep_assert_held' to make sure that the 'mpol_misplaced()' is
-  called with ptl held.
-- The migration condition has been updated; now, migration will only
-  occur if the execution node is present in the policy nodemask.
-
--v1: https://lore.kernel.org/linux-mm/9c3f7b743477560d1c5b12b8c111a584a2cc92ee.1708097962.git.donettom@linux.ibm.com/#t
-
-
-Donet Tom (2):
-  mm/mempolicy: Use numa_node_id() instead of cpu_to_node()
-  mm/numa_balancing:Allow migrate on protnone reference with
-    MPOL_PREFERRED_MANY policy
-
+Signed-off-by: Aneesh Kumar K.V (IBM) <aneesh.kumar@kernel.org>
+Signed-off-by: Donet Tom <donettom@linux.ibm.com>
+---
  include/linux/mempolicy.h |  5 +++--
  mm/huge_memory.c          |  2 +-
  mm/internal.h             |  2 +-
  mm/memory.c               |  8 +++++---
- mm/mempolicy.c            | 34 ++++++++++++++++++++++++++--------
- 5 files changed, 36 insertions(+), 15 deletions(-)
+ mm/mempolicy.c            | 12 +++++++++---
+ 5 files changed, 19 insertions(+), 10 deletions(-)
 
+diff --git a/include/linux/mempolicy.h b/include/linux/mempolicy.h
+index 931b118336f4..1add16f21612 100644
+--- a/include/linux/mempolicy.h
++++ b/include/linux/mempolicy.h
+@@ -167,7 +167,8 @@ extern void mpol_to_str(char *buffer, int maxlen, struct mempolicy *pol);
+ /* Check if a vma is migratable */
+ extern bool vma_migratable(struct vm_area_struct *vma);
+ 
+-int mpol_misplaced(struct folio *, struct vm_area_struct *, unsigned long);
++int mpol_misplaced(struct folio *folio, struct vm_fault *vmf,
++					unsigned long addr);
+ extern void mpol_put_task_policy(struct task_struct *);
+ 
+ static inline bool mpol_is_preferred_many(struct mempolicy *pol)
+@@ -282,7 +283,7 @@ static inline int mpol_parse_str(char *str, struct mempolicy **mpol)
+ #endif
+ 
+ static inline int mpol_misplaced(struct folio *folio,
+-				 struct vm_area_struct *vma,
++				 struct vm_fault *vmf,
+ 				 unsigned long address)
+ {
+ 	return -1; /* no node preference */
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index 94c958f7ebb5..7f944e0c4571 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -1752,7 +1752,7 @@ vm_fault_t do_huge_pmd_numa_page(struct vm_fault *vmf)
+ 	 */
+ 	if (node_is_toptier(nid))
+ 		last_cpupid = folio_last_cpupid(folio);
+-	target_nid = numa_migrate_prep(folio, vma, haddr, nid, &flags);
++	target_nid = numa_migrate_prep(folio, vmf, haddr, nid, &flags);
+ 	if (target_nid == NUMA_NO_NODE) {
+ 		folio_put(folio);
+ 		goto out_map;
+diff --git a/mm/internal.h b/mm/internal.h
+index f309a010d50f..ae175be9165e 100644
+--- a/mm/internal.h
++++ b/mm/internal.h
+@@ -992,7 +992,7 @@ void vunmap_range_noflush(unsigned long start, unsigned long end);
+ 
+ void __vunmap_range_noflush(unsigned long start, unsigned long end);
+ 
+-int numa_migrate_prep(struct folio *folio, struct vm_area_struct *vma,
++int numa_migrate_prep(struct folio *folio, struct vm_fault *vmf,
+ 		      unsigned long addr, int page_nid, int *flags);
+ 
+ void free_zone_device_page(struct page *page);
+diff --git a/mm/memory.c b/mm/memory.c
+index 0bfc8b007c01..4e258a8564ca 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -4899,9 +4899,11 @@ static vm_fault_t do_fault(struct vm_fault *vmf)
+ 	return ret;
+ }
+ 
+-int numa_migrate_prep(struct folio *folio, struct vm_area_struct *vma,
++int numa_migrate_prep(struct folio *folio, struct vm_fault *vmf,
+ 		      unsigned long addr, int page_nid, int *flags)
+ {
++	struct vm_area_struct *vma = vmf->vma;
++
+ 	folio_get(folio);
+ 
+ 	/* Record the current PID acceesing VMA */
+@@ -4913,7 +4915,7 @@ int numa_migrate_prep(struct folio *folio, struct vm_area_struct *vma,
+ 		*flags |= TNF_FAULT_LOCAL;
+ 	}
+ 
+-	return mpol_misplaced(folio, vma, addr);
++	return mpol_misplaced(folio, vmf, addr);
+ }
+ 
+ static vm_fault_t do_numa_page(struct vm_fault *vmf)
+@@ -4987,7 +4989,7 @@ static vm_fault_t do_numa_page(struct vm_fault *vmf)
+ 		last_cpupid = (-1 & LAST_CPUPID_MASK);
+ 	else
+ 		last_cpupid = folio_last_cpupid(folio);
+-	target_nid = numa_migrate_prep(folio, vma, vmf->address, nid, &flags);
++	target_nid = numa_migrate_prep(folio, vmf, vmf->address, nid, &flags);
+ 	if (target_nid == NUMA_NO_NODE) {
+ 		folio_put(folio);
+ 		goto out_map;
+diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+index 10a590ee1c89..e635d7ed501b 100644
+--- a/mm/mempolicy.c
++++ b/mm/mempolicy.c
+@@ -2477,18 +2477,24 @@ static void sp_free(struct sp_node *n)
+  * Return: NUMA_NO_NODE if the page is in a node that is valid for this
+  * policy, or a suitable node ID to allocate a replacement folio from.
+  */
+-int mpol_misplaced(struct folio *folio, struct vm_area_struct *vma,
++int mpol_misplaced(struct folio *folio, struct vm_fault *vmf,
+ 		   unsigned long addr)
+ {
+ 	struct mempolicy *pol;
+ 	pgoff_t ilx;
+ 	struct zoneref *z;
+ 	int curnid = folio_nid(folio);
++	struct vm_area_struct *vma = vmf->vma;
+ 	int thiscpu = raw_smp_processor_id();
+-	int thisnid = cpu_to_node(thiscpu);
++	int thisnid = numa_node_id();
+ 	int polnid = NUMA_NO_NODE;
+ 	int ret = NUMA_NO_NODE;
+ 
++	/*
++	 * Make sure ptl is held so that we don't preempt and we
++	 * have a stable smp processor id
++	 */
++	lockdep_assert_held(vmf->ptl);
+ 	pol = get_vma_policy(vma, addr, folio_order(folio), &ilx);
+ 	if (!(pol->flags & MPOL_F_MOF))
+ 		goto out;
+@@ -2526,7 +2532,7 @@ int mpol_misplaced(struct folio *folio, struct vm_area_struct *vma,
+ 		if (node_isset(curnid, pol->nodes))
+ 			goto out;
+ 		z = first_zones_zonelist(
+-				node_zonelist(numa_node_id(), GFP_HIGHUSER),
++				node_zonelist(thisnid, GFP_HIGHUSER),
+ 				gfp_zone(GFP_HIGHUSER),
+ 				&pol->nodes);
+ 		polnid = zone_to_nid(z->zone);
 -- 
 2.39.3
 
