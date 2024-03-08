@@ -1,370 +1,147 @@
-Return-Path: <linux-kernel+bounces-96540-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96541-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EF64875DC5
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 06:42:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25199875DC9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 06:43:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 62AE21C21D76
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 05:42:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2F4028129F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 05:43:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDE8D36129;
-	Fri,  8 Mar 2024 05:42:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7102D36114;
+	Fri,  8 Mar 2024 05:43:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LMNABL73"
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="XzVibmSv"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94A0238389
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 05:42:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C21B2564;
+	Fri,  8 Mar 2024 05:43:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709876531; cv=none; b=J7yuWWzP5z9MimATM01CXwdXzzYUtYbdKrjXBXyCFkfkrJEQT2A2vVavhnnlTl+0UBaw+D8Z1q+IrsIKUs72wqI9h0LvlKa0ol3Zu3GSfC7fsJSPZFByo/S1iwRYD1N/lE/HpkCC0kVvkDrmbvG5fZBDEqk6UpgAwdLUVvk0XDg=
+	t=1709876612; cv=none; b=gjceCudE0slbdtHp/G+hVzjrrEbJaNHy+xuNRht71sJBduZzNarjpF88ZiOPl/aaIpgFWJ/mijJVbKXw0Xl96hgE6Yt2cr/A0Jm2W6VKXtGqHs+NbmpqRm1cjrx+1Fyh2WFcFUkshF4wbZp157zcTzAfCS9AveotPGIHkgGbDFs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709876531; c=relaxed/simple;
-	bh=3s/RLuQGTpmiFw81IdmZywu6jHPsMcW/eF4L59BYu9Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mBGoye9ZLnLWdg3AKKZtNZWt1xf2YcCj8jOG5ZY7q1oLQameUUAZaSSV0ObfXzUV7L65AkostCMfIJm2EzhcCYOobLjYywST1NDovkPc4IlfPQd+wt+3QruSOljsh6O8Y8ilGZ8aR+KD1DalR89HUZf7uGslGpIcykRTAgfN7Ms=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=LMNABL73; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1dd3bdb6e9eso12093755ad.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 21:42:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709876527; x=1710481327; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Wj7ac9ROAndLu9NTzKRLw7kY+6dSERw+t3Ms1EcCpQw=;
-        b=LMNABL73+POAwPioh9Qr2GNOhXuuy54fTEi9hUndeOFtiv12EV8uogiOxDyTb2uGDN
-         FWBKqDQGKssVtP4j46TcJWZSFhpvcxaGRUyBQAhv+Ya69hB5pLpl7beRBlUwGPVgvKGY
-         C4TsOX2LsLbkI3+V7wcnSHJC0aJNA3iZKqh6k/alihyPh1SrJHypH2WUoi24po1EY3Yy
-         4RHVLgxrWrtRGb2Gih+V2ImwIPPX8dClp3RT63PDXTSfCjgdgzipGZGxCv9WxoK2a02f
-         /0kw7VuIupsExWDacknhN51lQXkj3NW7Xwq2gCzlWPIaWulA3R6wEa+o24pLLoQ/Xq+t
-         Jjqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709876527; x=1710481327;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Wj7ac9ROAndLu9NTzKRLw7kY+6dSERw+t3Ms1EcCpQw=;
-        b=w1BV4980eXbnhvhmzs0aAtSE0D7OZKiPGWDlEkEBhXz/QDfT68/Uf008s7UXvmy+N7
-         neEdwsvKnFfAJ9OuBXmXG1RK0jXTNqAb+zNsc9hpjFm6BzR86OhoWpO56FAnR3gPgd/a
-         AACfJFo8Jub52fHnwf8/6gCp4olw8OZCYgfD9wJWjyVdsHpitV8dfkVf7HZRLwFP8lxX
-         1d+lEwpH4miVqX8+GJbCU5HUiaQOtz00xwvHcCfnK+LRJSrEEqFghaKMXUQeab8w0rs/
-         DB/6iBJ5kUKmCSn9pQ/NEj0dLPqmMlKCFmGfpX61mBcu77Yq57gAEjoOstHJSAeIScQc
-         G5Dw==
-X-Forwarded-Encrypted: i=1; AJvYcCUOKt8pKhrn/kg9Hh1pYcHHhycYz9sq1CknXJK0jfA7Hv/E5TaEpUiaeWskhriXUJ9PDc4PGjFHm62mYI4+NtDtb+7jwAL5uUGQs0Eo
-X-Gm-Message-State: AOJu0YynX9IWolpc+NI0qwW4HLEUyrWW2g2lzhvpAEGdLK84Rk4Fu5+e
-	u4Afqh4eZ8C2ue1MtGxJ/FpxZOWe6x7fxe7x5f82HsGel60c0f1mK42LN8YXGQ==
-X-Google-Smtp-Source: AGHT+IGPo1kH4a7F0KYLb9k/4GMe62ypgOZCiBVkqJtP9bo7e8O9nDucCm38qy36kskyFMcYV2JE9A==
-X-Received: by 2002:a17:902:6b4c:b0:1dc:ffb7:e857 with SMTP id g12-20020a1709026b4c00b001dcffb7e857mr9330126plt.57.1709876526773;
-        Thu, 07 Mar 2024 21:42:06 -0800 (PST)
-Received: from thinkpad ([117.217.178.39])
-        by smtp.gmail.com with ESMTPSA id u11-20020a170903124b00b001dc01efaec2sm15532041plh.168.2024.03.07.21.41.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Mar 2024 21:42:06 -0800 (PST)
-Date: Fri, 8 Mar 2024 11:11:52 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Niklas Cassel <cassel@kernel.org>
-Cc: Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Marek Vasut <marek.vasut+renesas@gmail.com>,
-	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Kishon Vijay Abraham I <kishon@ti.com>,
-	Vidya Sagar <vidyas@nvidia.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Richard Zhu <hongxing.zhu@nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Minghuan Lian <minghuan.Lian@nxp.com>,
-	Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
-	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Jesper Nilsson <jesper.nilsson@axis.com>,
-	Srikanth Thokala <srikanth.thokala@intel.com>,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-	linux-arm-kernel@axis.com
-Subject: Re: [PATCH v9 08/10] PCI: dwc: ep: Add a generic
- dw_pcie_ep_linkdown() API to handle LINK_DOWN event
-Message-ID: <20240308054152.GD3789@thinkpad>
-References: <20240304-pci-dbi-rework-v9-0-29d433d99cda@linaro.org>
- <20240304-pci-dbi-rework-v9-8-29d433d99cda@linaro.org>
- <Zeo0996FscpDSnjL@ryzen>
+	s=arc-20240116; t=1709876612; c=relaxed/simple;
+	bh=sZJ1rdk707vKoNzkaw+eRMJ9uw5RBuN0hPr+AtRP024=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=d+tO/OMNhn+wA+RUkupAnbdoYnA5afhY5MLfaOo2exM3yBKWVS+IEQtvajMKB7+jtRNZc0TmsVREufEkumTdprYdorlB05FZZ6+eWfLAhr36X20sFW2HcgKRLzmzP+7A+sv3/UxaYEMezctu6wsvCVfozfuLPMRqFy9gIy1LxZw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=XzVibmSv; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4280IhW5012661;
+	Fri, 8 Mar 2024 05:43:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=hBW0/JobW8mlK+ZTPhjJTLvOB59Mci3YgjCROfvXlCY=; b=Xz
+	VibmSvRE0EscASljFDxui0sFpShczbW2yIlKCr1Ubn03FQ8V4ba1hsd5uF2Jfut1
+	VCS6/XZCTxUhYIXoYiikFqm9fMn79ZnlrFWy+Vf27PQvhUxE/crAwpZiA1Of7tly
+	sHUKItSJszldVI/vR2ClDrIpi86c2k+76Z3wEN4otPw5e+aVaSC2Uhnd3ASsKUy3
+	VJVSOCg2nYNmAcSVNLhlDPdPq3gTIXT5xWENK/SHZdDymION7E8EyDpJ4JVovgJ0
+	IvtJHPGDPHbyEU7+4WBxGuAMqRMBq3whmlyFiGd0GXCLVfxcSwYmWpGt7DCdjtpZ
+	XNvM7eE3AS8oj+YiLNlw==
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wqn8n8v74-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 08 Mar 2024 05:43:26 +0000 (GMT)
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4285hP7h016540
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 8 Mar 2024 05:43:25 GMT
+Received: from [10.216.43.112] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 7 Mar
+ 2024 21:43:22 -0800
+Message-ID: <9dbe987a-fdd1-4bec-b350-5936abf69b1b@quicinc.com>
+Date: Fri, 8 Mar 2024 11:13:18 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Zeo0996FscpDSnjL@ryzen>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] i2c: i2c-qcom-geni: Parse Error correctly in i2c GSI
+ mode
+Content-Language: en-US
+To: Andi Shyti <andi.shyti@kernel.org>
+CC: <konrad.dybcio@linaro.org>, <andersson@kernel.org>, <vkoul@kernel.org>,
+        <wsa@kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-i2c@vger.kernel.org>, <quic_vdadhani@quicinc.com>
+References: <20240307205539.217204-1-quic_msavaliy@quicinc.com>
+ <cmtru4nvoab6g5emp2yrxnvfpvtrcsuna6dqsyewpagg3qmkau@r2zoj6vgslet>
+From: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
+In-Reply-To: <cmtru4nvoab6g5emp2yrxnvfpvtrcsuna6dqsyewpagg3qmkau@r2zoj6vgslet>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: QJZ4wP8DjNCk7R13WlBZ7D9Rm_1Ot2ni
+X-Proofpoint-ORIG-GUID: QJZ4wP8DjNCk7R13WlBZ7D9Rm_1Ot2ni
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-08_04,2024-03-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
+ adultscore=0 suspectscore=0 lowpriorityscore=0 priorityscore=1501
+ mlxlogscore=999 bulkscore=0 phishscore=0 impostorscore=0 mlxscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2403080044
 
-On Thu, Mar 07, 2024 at 10:43:19PM +0100, Niklas Cassel wrote:
-> On Mon, Mar 04, 2024 at 02:52:20PM +0530, Manivannan Sadhasivam wrote:
-> > The PCIe link can go to LINK_DOWN state in one of the following scenarios:
-> > 
-> > 1. Fundamental (PERST#)/hot/warm reset
-> > 2. Link transition from L2/L3 to L0
-> > 
-> > In those cases, LINK_DOWN causes some non-sticky DWC registers to loose the
-> > state (like REBAR, PTM_CAP etc...). So the drivers need to reinitialize
-> > them to function properly once the link comes back again.
-> > 
-> > This is not a problem for drivers supporting PERST# IRQ, since they can
-> > reinitialize the registers in the PERST# IRQ callback. But for the drivers
-> > not supporting PERST#, there is no way they can reinitialize the registers
-> > other than relying on LINK_DOWN IRQ received when the link goes down. So
-> > let's add a DWC generic API dw_pcie_ep_linkdown() that reinitializes the
-> > non-sticky registers and also notifies the EPF drivers about link going
-> > down.
-> > 
-> > This API can also be used by the drivers supporting PERST# to handle the
-> > scenario (2) mentioned above.
-> > 
-> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > ---
-> >  drivers/pci/controller/dwc/pcie-designware-ep.c | 111 ++++++++++++++----------
-> >  drivers/pci/controller/dwc/pcie-designware.h    |   5 ++
-> >  2 files changed, 72 insertions(+), 44 deletions(-)
-> > 
-> > diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
-> > index 278bdc9b2269..fed4c2936c78 100644
-> > --- a/drivers/pci/controller/dwc/pcie-designware-ep.c
-> > +++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
-> > @@ -14,14 +14,6 @@
-> >  #include <linux/pci-epc.h>
-> >  #include <linux/pci-epf.h>
-> >  
-> > -void dw_pcie_ep_linkup(struct dw_pcie_ep *ep)
-> > -{
-> > -	struct pci_epc *epc = ep->epc;
-> > -
-> > -	pci_epc_linkup(epc);
-> > -}
-> > -EXPORT_SYMBOL_GPL(dw_pcie_ep_linkup);
-> > -
-> >  void dw_pcie_ep_init_notify(struct dw_pcie_ep *ep)
-> >  {
-> >  	struct pci_epc *epc = ep->epc;
-> > @@ -603,19 +595,56 @@ static unsigned int dw_pcie_ep_find_ext_capability(struct dw_pcie *pci, int cap)
-> >  	return 0;
-> >  }
-> >  
-> > +static void dw_pcie_ep_init_non_sticky_registers(struct dw_pcie *pci)
-> > +{
-> > +	unsigned int offset, ptm_cap_base;
-> > +	unsigned int nbars;
-> > +	u32 reg, i;
-> > +
-> > +	offset = dw_pcie_ep_find_ext_capability(pci, PCI_EXT_CAP_ID_REBAR);
-> > +	ptm_cap_base = dw_pcie_ep_find_ext_capability(pci, PCI_EXT_CAP_ID_PTM);
-> > +
-> > +	dw_pcie_dbi_ro_wr_en(pci);
-> > +
-> > +	if (offset) {
-> > +		reg = dw_pcie_readl_dbi(pci, offset + PCI_REBAR_CTRL);
-> > +		nbars = (reg & PCI_REBAR_CTRL_NBAR_MASK) >>
-> > +			PCI_REBAR_CTRL_NBAR_SHIFT;
-> > +
-> > +		for (i = 0; i < nbars; i++, offset += PCI_REBAR_CTRL)
-> > +			dw_pcie_writel_dbi(pci, offset + PCI_REBAR_CAP, 0x0);
+
+
+On 3/8/2024 4:28 AM, Andi Shyti wrote:
+> Hi Mukesh,
 > 
-> If you look at PCI_REBAR_CAP, you will see that it is sticky,
-> but you have to actually read the databook to see that:
+> On Fri, Mar 08, 2024 at 02:25:39AM +0530, Mukesh Kumar Savaliya wrote:
+>> I2C driver currently reports "DMA txn failed" error even though it's
+>> NACK OR BUS_PROTO OR ARB_LOST. Detect NACK error when no device ACKs
+>> on the bus instead of generic transfer failure which doesn't give any
+>> specific clue.
+>>
+>> Make Changes inside i2c driver callback handler function
+>> i2c_gpi_cb_result() to parse these errors and make sure GSI driver
+>> stores the error status during error interrupt.
 > 
-> "The RESBAR_CTRL_REG_BAR_SIZE field is automatically updated
-> when you write to RESBAR_CAP_REG_0_REG through the DBI."
+> funny note: this is half "imperative mood" :-)
 > 
-> So the reason why we need to write this register, even though
-> it is sticky, is to update the RESBAR_CTRL_REG_BAR_SIZE register,
-> which is not sticky :)
-> 
-> (Perhaps we should add that as a comment?)
+> A real imperative would be "Pares the error inside
+> i2c_gpi_cb_result()... blah blah blah". No need to resend.
 > 
 
-Yeah, makes sense.
+  :-) Thanks !
+
+>> Fixes: d8703554f4de ("i2c: qcom-geni: Add support for GPI DMA")
+> 
+> I still don't understand what's the fix here. You are making a
+> generic DMA error to be more specific... where is the bug? What
+> exactly is broken now?
+> 
+This is about being particular while reporting specific error.
+Like i mentioned, instead of generic DMA transfer error, it should be 
+particular error 1) NACK 2) BUT_PROTO 3)ARB_LOST.
+Ofcourse when data transfer via DMA fails, it can be considered as
+DMA Txfer fail.
+In summary so far driver was considering all failure as txfer failure,
+but i2c has errors which are kind of response/condition on the bus.
+
+Sorry if it confusing still, but please let me know if anything required 
+to be updated in  commit log which can bring clarity.
+
+> Besides, keep in mind, that commits with fixes tags get
+> backported to older kernels (this one dates back to 5.18) and you
+> should also Cc the stable mailing list:
+> 
+> Cc: <stable@vger.kernel.org> # v5.18+
+
+Sure, will add into CC. was waiting for reviewed-by tag.
 
 > 
-> > +	}
-> > +
-> > +	/*
-> > +	 * PTM responder capability can be disabled only after disabling
-> > +	 * PTM root capability.
-> > +	 */
-> > +	if (ptm_cap_base) {
-> > +		dw_pcie_dbi_ro_wr_en(pci);
-> > +		reg = dw_pcie_readl_dbi(pci, ptm_cap_base + PCI_PTM_CAP);
-> > +		reg &= ~PCI_PTM_CAP_ROOT;
-> > +		dw_pcie_writel_dbi(pci, ptm_cap_base + PCI_PTM_CAP, reg);
-> > +
-> > +		reg = dw_pcie_readl_dbi(pci, ptm_cap_base + PCI_PTM_CAP);
-> > +		reg &= ~(PCI_PTM_CAP_RES | PCI_PTM_GRANULARITY_MASK);
-> > +		dw_pcie_writel_dbi(pci, ptm_cap_base + PCI_PTM_CAP, reg);
-> > +		dw_pcie_dbi_ro_wr_dis(pci);
-> 
-> From looking at the databook:
-> PCI_PTM_CAP_ROOT:
-> Note: This register field is sticky.
-> 
-> PCI_PTM_CAP_RES:
-> Note: This register field is sticky.
-> 
-> PCI_PTM_GRANULARITY_MASK:
-> Dbi: if (DBI_RO_WR_EN == 1) then R/W(sticky) else
-> R(sticky)
-> 
-> So all these register fields appear to be sticky to me.
-> So I would assume that the PTM related writes could be
-> done in dw_pcie_ep_init_registers().
-> 
-
-Sorry, I didn't cross check the registers w/ databook as I was under the
-assumption that all PTM registers are non-sticky. Will move them.
-
-- Mani
-
-> 
-> > +	}
-> > +
-> > +	dw_pcie_setup(pci);
-> > +	dw_pcie_dbi_ro_wr_dis(pci);
-> > +}
-> > +
-> >  int dw_pcie_ep_init_registers(struct dw_pcie_ep *ep)
-> >  {
-> >  	struct dw_pcie *pci = to_dw_pcie_from_ep(ep);
-> >  	struct dw_pcie_ep_func *ep_func;
-> >  	struct device *dev = pci->dev;
-> >  	struct pci_epc *epc = ep->epc;
-> > -	unsigned int offset, ptm_cap_base;
-> > -	unsigned int nbars;
-> >  	u8 hdr_type;
-> >  	u8 func_no;
-> > -	int i, ret;
-> >  	void *addr;
-> > -	u32 reg;
-> > +	int ret;
-> >  
-> >  	hdr_type = dw_pcie_readb_dbi(pci, PCI_HEADER_TYPE) &
-> >  		   PCI_HEADER_TYPE_MASK;
-> > @@ -678,38 +707,7 @@ int dw_pcie_ep_init_registers(struct dw_pcie_ep *ep)
-> >  	if (ep->ops->init)
-> >  		ep->ops->init(ep);
-> >  
-> > -	offset = dw_pcie_ep_find_ext_capability(pci, PCI_EXT_CAP_ID_REBAR);
-> > -	ptm_cap_base = dw_pcie_ep_find_ext_capability(pci, PCI_EXT_CAP_ID_PTM);
-> > -
-> > -	dw_pcie_dbi_ro_wr_en(pci);
-> > -
-> > -	if (offset) {
-> > -		reg = dw_pcie_readl_dbi(pci, offset + PCI_REBAR_CTRL);
-> > -		nbars = (reg & PCI_REBAR_CTRL_NBAR_MASK) >>
-> > -			PCI_REBAR_CTRL_NBAR_SHIFT;
-> > -
-> > -		for (i = 0; i < nbars; i++, offset += PCI_REBAR_CTRL)
-> > -			dw_pcie_writel_dbi(pci, offset + PCI_REBAR_CAP, 0x0);
-> > -	}
-> > -
-> > -	/*
-> > -	 * PTM responder capability can be disabled only after disabling
-> > -	 * PTM root capability.
-> > -	 */
-> > -	if (ptm_cap_base) {
-> > -		dw_pcie_dbi_ro_wr_en(pci);
-> > -		reg = dw_pcie_readl_dbi(pci, ptm_cap_base + PCI_PTM_CAP);
-> > -		reg &= ~PCI_PTM_CAP_ROOT;
-> > -		dw_pcie_writel_dbi(pci, ptm_cap_base + PCI_PTM_CAP, reg);
-> > -
-> > -		reg = dw_pcie_readl_dbi(pci, ptm_cap_base + PCI_PTM_CAP);
-> > -		reg &= ~(PCI_PTM_CAP_RES | PCI_PTM_GRANULARITY_MASK);
-> > -		dw_pcie_writel_dbi(pci, ptm_cap_base + PCI_PTM_CAP, reg);
-> > -		dw_pcie_dbi_ro_wr_dis(pci);
-> > -	}
-> > -
-> > -	dw_pcie_setup(pci);
-> > -	dw_pcie_dbi_ro_wr_dis(pci);
-> > +	dw_pcie_ep_init_non_sticky_registers(pci);
-> >  
-> >  	return 0;
-> >  
-> > @@ -720,6 +718,31 @@ int dw_pcie_ep_init_registers(struct dw_pcie_ep *ep)
-> >  }
-> >  EXPORT_SYMBOL_GPL(dw_pcie_ep_init_registers);
-> >  
-> > +void dw_pcie_ep_linkup(struct dw_pcie_ep *ep)
-> > +{
-> > +	struct pci_epc *epc = ep->epc;
-> > +
-> > +	pci_epc_linkup(epc);
-> > +}
-> > +EXPORT_SYMBOL_GPL(dw_pcie_ep_linkup);
-> > +
-> > +void dw_pcie_ep_linkdown(struct dw_pcie_ep *ep)
-> > +{
-> > +	struct dw_pcie *pci = to_dw_pcie_from_ep(ep);
-> > +	struct pci_epc *epc = ep->epc;
-> > +
-> > +	/*
-> > +	 * Initialize the non-sticky DWC registers as they would've reset post
-> > +	 * LINK_DOWN. This is specifically needed for drivers not supporting
-> > +	 * PERST# as they have no way to reinitialize the registers before the
-> > +	 * link comes back again.
-> > +	 */
-> > +	dw_pcie_ep_init_non_sticky_registers(pci);
-> > +
-> > +	pci_epc_linkdown(epc);
-> > +}
-> > +EXPORT_SYMBOL_GPL(dw_pcie_ep_linkdown);
-> > +
-> >  int dw_pcie_ep_init(struct dw_pcie_ep *ep)
-> >  {
-> >  	int ret;
-> > diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
-> > index f8e5431a207b..152969545b0a 100644
-> > --- a/drivers/pci/controller/dwc/pcie-designware.h
-> > +++ b/drivers/pci/controller/dwc/pcie-designware.h
-> > @@ -668,6 +668,7 @@ static inline void __iomem *dw_pcie_own_conf_map_bus(struct pci_bus *bus,
-> >  
-> >  #ifdef CONFIG_PCIE_DW_EP
-> >  void dw_pcie_ep_linkup(struct dw_pcie_ep *ep);
-> > +void dw_pcie_ep_linkdown(struct dw_pcie_ep *ep);
-> >  int dw_pcie_ep_init(struct dw_pcie_ep *ep);
-> >  int dw_pcie_ep_init_registers(struct dw_pcie_ep *ep);
-> >  void dw_pcie_ep_init_notify(struct dw_pcie_ep *ep);
-> > @@ -688,6 +689,10 @@ static inline void dw_pcie_ep_linkup(struct dw_pcie_ep *ep)
-> >  {
-> >  }
-> >  
-> > +static inline void dw_pcie_ep_linkdown(struct dw_pcie_ep *ep)
-> > +{
-> > +}
-> > +
-> >  static inline int dw_pcie_ep_init(struct dw_pcie_ep *ep)
-> >  {
-> >  	return 0;
-> > 
-> > -- 
-> > 2.25.1
-> > 
-
--- 
-மணிவண்ணன் சதாசிவம்
+> Thanks,
+> Andi
 
