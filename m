@@ -1,181 +1,144 @@
-Return-Path: <linux-kernel+bounces-96424-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96396-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1190875BEE
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 02:23:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B91A2875B9E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 01:55:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF889283651
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 01:23:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E75D282FA7
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 00:55:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA2A922619;
-	Fri,  8 Mar 2024 01:23:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF33321344;
+	Fri,  8 Mar 2024 00:55:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="ITwLt15h"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ChQoYXcP"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 296645C99;
-	Fri,  8 Mar 2024 01:23:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CCCD139E;
+	Fri,  8 Mar 2024 00:55:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709860992; cv=none; b=IGwNHjuUcAVfKTqKuO3NXQQ5E/CHo9aMOv8ElnjZHAC5PzDCnXJSR0xOBPplQPxJ7C2HX05s7Th61UQRuNRgIKiE31CEs+tlT1NjQZKzuU8lot0Xxz8hBmz7o7qDfjxEDdTG+rfR9VK9iyUd7rF3UhPSP7/gxtBOmj/1qjWfITY=
+	t=1709859309; cv=none; b=U5M0NJL4E27oE/7h6+0bv6Hq7xLkfPjvTzK/pscUgnPrawxeEKb6O31J6rXk3F6gi+cjAl8CaGZzCf8zJvyAvpUrS7ilUuTx2HkI1az2b4ApvvJMk4oETInaDP7O1Xi+pmgTm5wFhoDLDEb/a5o8UGRahs7UQEZSwCmDMhWdLZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709860992; c=relaxed/simple;
-	bh=0dv3xxWZmDNpXTtAWUNhAAV8ATrbMSOq1nB+QBhfrBQ=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=JqtqJORSnEaFytuz3yzI9VgdldDmbvj/xofS4xc656q3mlhvX7U/AXKwPGCt4wanT0+1f9jzfwy5k2YeNOaNg/l/xJFsJAmBqr6zjNBhk+6qmwzJVKvU1wB2d3xuofvcoViO28x+NxustMtW26pnm3vX6hraGjN6sNVm6/uv/0c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=ITwLt15h; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4280MBlm024727;
-	Fri, 8 Mar 2024 01:23:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=H1WYce/8MFs5Q989GTZBqxx9XcmYVYcVdgqiDXSu6nk=;
- b=ITwLt15hfORD2M5JLe5WafX7Yd+/Wnl8YAM1AOJTJEwOVKuGz0OhCxYpmaTAY0zx9wd5
- gAqRrBiP5fh2kyv707BJyzG3Sx1UnU92OnpsF29hciMae1al2JlAqdP/aoLuDtteYuvH
- YYMbrk7W0okBYCS/Y+6NA2mtS+v4lh8W5IvwiCDDVibHD0KcZdDV2+lqi7Wf0B0ZJdY3
- ArN93E2kkujqJU9GbqjhePMrxQ74CP7PICe2RRLz1PKAqrfQehGum+qHvwILdezI/xGg
- yqnl23SWPtSPTE/ojQTqtvhOEMeMdx4Te5fMM6qRq8KesGThRuERYsKtDm6RZbxn4x4J Wg== 
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wqr2sgvq3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 08 Mar 2024 01:23:00 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 4281LN3x026183;
-	Fri, 8 Mar 2024 01:22:58 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3wmfep9bhm-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 08 Mar 2024 01:22:57 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4281Msjs34537948
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 8 Mar 2024 01:22:56 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id EBB992004F;
-	Fri,  8 Mar 2024 01:22:53 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 821EE20043;
-	Fri,  8 Mar 2024 01:22:53 +0000 (GMT)
-Received: from ozlabs.au.ibm.com (unknown [9.192.253.14])
-	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Fri,  8 Mar 2024 01:22:53 +0000 (GMT)
-Received: from [10.61.2.106] (haven.au.ibm.com [9.192.254.114])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by ozlabs.au.ibm.com (Postfix) with ESMTPSA id 7200360235;
-	Fri,  8 Mar 2024 11:53:13 +1100 (AEDT)
-Message-ID: <66a2c8b3-b1e8-4d2c-8a19-09e62099a2d7@linux.ibm.com>
-Date: Fri, 8 Mar 2024 11:53:13 +1100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] rtc: fix uninitialized read of rtc_wkalrm.time
-Content-Language: en-US
-To: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc: a.zummo@towertech.it, linux-rtc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231129073647.2624497-1-nicholas@linux.ibm.com>
- <20240229215850a1990100@mail.local>
-From: Nicholas Miehlbradt <nicholas@linux.ibm.com>
-In-Reply-To: <20240229215850a1990100@mail.local>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: KQdH1YjVq4O2PEIylo0dRelwFwy3FeDS
-X-Proofpoint-ORIG-GUID: KQdH1YjVq4O2PEIylo0dRelwFwy3FeDS
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	s=arc-20240116; t=1709859309; c=relaxed/simple;
+	bh=Kl50z5rZDKN8yW2rlkLfQHge6/CEjtccvWbBjiAdYPo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jjaMn52xPJdmrykH3bNhskjJyqMNxzlKTSKgFcF/sjVgnOUmUIcmjOS5ckGIpV9Uvfb0/oL4uEx7f6X9uNkJStOpDaUKQ0VpER8SEbj45TP/5QhmhNup2EZZZfXpm/5o7p4KRtvFpqO5wzL5bcImbaqrKaoe7vOAjYjXp0aSx4g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ChQoYXcP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E44BC433F1;
+	Fri,  8 Mar 2024 00:55:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709859308;
+	bh=Kl50z5rZDKN8yW2rlkLfQHge6/CEjtccvWbBjiAdYPo=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=ChQoYXcPHNSJcbPbOm+q5p2knS/G6zVfeycEJtC8Vi7AqGJkfiDYx6Ur82DEPJ05o
+	 cGXi74OjU9LjfVNuZS742VXlzOkImZofiNGypL5eHAkq+1CSNzppcdnwmXXtTvWad0
+	 AH7OmuAkhX2BuNZ3CBv0bCL1ge3T8FNymLEGsbKgCswzjX2q5xfoSvPaQ2ePT26CjB
+	 Zz2Le+qJwzFxHNO5gJwDF7C7vFpEEcvUruZ7BXeIhXqntb+mCkFcwjps6PbUtT4ab+
+	 oLsfXZukF77+3jX27CI38ArI9Q7TKrwmE2xvAo5M6+KfuEDU2SHgRI22bsDlglgkup
+	 pf8stVrg5UCNg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 103F1CE0716; Thu,  7 Mar 2024 16:55:08 -0800 (PST)
+Date: Thu, 7 Mar 2024 16:55:08 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Julia Lawall <julia.lawall@inria.fr>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Steven Rostedt <rostedt@goodmis.org>, linke li <lilinke99@qq.com>,
+	joel@joelfernandes.org, boqun.feng@gmail.com, dave@stgolabs.net,
+	frederic@kernel.org, jiangshanlai@gmail.com, josh@joshtriplett.org,
+	linux-kernel@vger.kernel.org, qiang.zhang1211@gmail.com,
+	quic_neeraju@quicinc.com, rcu@vger.kernel.org
+Subject: Re: [PATCH] rcutorture: Fix
+ rcu_torture_pipe_update_one()/rcu_torture_writer() data race and concurrency
+ bug
+Message-ID: <7b11260c-ebed-4440-9d35-d6a788151888@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <83b47424-e5e0-46de-aa63-d413a5aa6cec@paulmck-laptop>
+ <CAHk-=wiX_zF5Mpt8kUm_LFQpYY-mshrXJPOe+wKNwiVhEUcU9g@mail.gmail.com>
+ <851dc594-d2ea-4050-b7c6-e33a1cddf3a1@efficios.com>
+ <72b14322-78c1-4479-9c4e-b0e11c1f0d53@paulmck-laptop>
+ <bebbed4a-ced1-42c5-865c-dc9dc7857b6c@efficios.com>
+ <c1bb35c4-29af-4a84-8ba7-81ba30639a69@paulmck-laptop>
+ <CAHk-=wia769uoyVz3P7yZURhO8NNB7xeOLX07ZM2vWf1nTLYkQ@mail.gmail.com>
+ <65a9665e-22d4-4f21-a1cb-7ef1c82ed078@paulmck-laptop>
+ <alpine.DEB.2.22.394.2403072231130.3161@hadrien>
+ <CAHk-=wjq1g4jOhDvGNyvTiBxwhu97+Ymszf3W4i6MS1jqw5=kg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-07_18,2024-03-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 phishscore=0
- malwarescore=0 lowpriorityscore=0 mlxscore=0 impostorscore=0
- suspectscore=0 adultscore=0 priorityscore=1501 spamscore=0 mlxlogscore=999
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2403080009
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjq1g4jOhDvGNyvTiBxwhu97+Ymszf3W4i6MS1jqw5=kg@mail.gmail.com>
 
+On Thu, Mar 07, 2024 at 02:09:00PM -0800, Linus Torvalds wrote:
+> On Thu, 7 Mar 2024 at 13:40, Julia Lawall <julia.lawall@inria.fr> wrote:
+> >
+> > I tried the following:
+> >
+> > @@
+> > expression x;
+> > @@
+> >
+> > *WRITE_ONCE(x,<+...READ_ONCE(x)...+>)
+> >
+> > This gave a number of results, shown below.  Let me know if some of them
+> > are undesirable.
+> 
+> Well, all the ones you list do look like garbage.
+> 
+> That said, quite often the garbage does seem to be "we don't actually
+> care about the result". Several of them look like statistics.
 
+[ . . . ]
 
-On 1/3/2024 8:58 am, Alexandre Belloni wrote:
-> Hello,
+> > diff -u -p /home/julia/linux/kernel/rcu/tree.c /tmp/nothing/kernel/rcu/tree.c
+> > --- /home/julia/linux/kernel/rcu/tree.c
+> > +++ /tmp/nothing/kernel/rcu/tree.c
+> > @@ -1620,8 +1620,6 @@ static void rcu_gp_fqs(bool first_time)
+> >         /* Clear flag to prevent immediate re-entry. */
+> >         if (READ_ONCE(rcu_state.gp_flags) & RCU_GP_FLAG_FQS) {
+> >                 raw_spin_lock_irq_rcu_node(rnp);
+> > -               WRITE_ONCE(rcu_state.gp_flags,
+> > -                          READ_ONCE(rcu_state.gp_flags) & ~RCU_GP_FLAG_FQS);
+> >                 raw_spin_unlock_irq_rcu_node(rnp);
 > 
-> On 29/11/2023 07:36:47+0000, Nicholas Miehlbradt wrote:
->> If either of the first two branches of the if statement in
->> rtc_read_alarm_internal are taken the fields of alarm->time are not
->> initialized but are subsequently read by the call to rtc_tm_to_time64.
->>
->> Refactor so that the time field is only read if the final branch of the
->> if statment which initializes the field is taken.
->>
+> This smells bad to me. The code is holding a lock, but apparently not
+> one that protects gp_flags.
 > 
-> While the problem description is correct, the solution is not because
-> you have no guarantee that the fields have been initialized if
-> ->read_alarm returns a value different from 0
+> And that READ_ONCE->WRITE_ONCE sequence can corrupt all the other flags.
 > 
-> So, instead of avoiding the conversion unless the final branch is taken,
-> it should be avoided as long as err != 0.
+> Maybe it's fine for some reason (that reason being either that the
+> ONCE operations aren't actually needed at all, or because nobody
+> *really* cares about the flags), but it smells.
 > 
-> But, I'm also wondering whether there is actually an issue. mktime64
-> can be fed whatever value without bugging out and the value of err will
-> be part of the trace so userspace knows that it shouldn't trust the
-> value.
+> > @@ -1882,8 +1880,6 @@ static void rcu_report_qs_rsp(unsigned l
+> >  {
+> >         raw_lockdep_assert_held_rcu_node(rcu_get_root());
+> >         WARN_ON_ONCE(!rcu_gp_in_progress());
+> > -       WRITE_ONCE(rcu_state.gp_flags,
+> > -                  READ_ONCE(rcu_state.gp_flags) | RCU_GP_FLAG_FQS);
+> >         raw_spin_unlock_irqrestore_rcu_node(rcu_get_root(), flags);
 > 
-> So, what is the actual issue? :)
+> Same field, same lock held, same odd smelly pattern.
+> 
+> > -       WRITE_ONCE(rcu_state.gp_flags,
+> > -                  READ_ONCE(rcu_state.gp_flags) | RCU_GP_FLAG_FQS);
+> >         raw_spin_unlock_irqrestore_rcu_node(rnp_old, flags);
+> 
+> .. and again.
 
-Thank you for your feedback.
-I found this issue during my implementation of KMSAN for powerpc. The 
-goal with this patch is to eliminate use of undefined memory which leads 
-to undefined behaviour, I should have made this more clear in my 
-original message. You can find the KMSAN patch series here:
-https://lore.kernel.org/linuxppc-dev/20231214055539.9420-1-nicholas@linux.ibm.com/
+In all three cases, the updates are protected by the lock, so the
+READ_ONCE() is unnecessary.  I have queued a commit to remove the
+READ_ONCE()s.
 
-I can make the changes suggested and fold this patch into the next 
-version of my KMSAN series if that would help to add context as to why I 
-am submitting this patch?
-> 
->> Signed-off-by: Nicholas Miehlbradt <nicholas@linux.ibm.com>
->> ---
->>   drivers/rtc/interface.c | 4 +++-
->>   1 file changed, 3 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/rtc/interface.c b/drivers/rtc/interface.c
->> index 1b63111cdda2..f40e76d2fe2b 100644
->> --- a/drivers/rtc/interface.c
->> +++ b/drivers/rtc/interface.c
->> @@ -179,6 +179,7 @@ static int rtc_read_alarm_internal(struct rtc_device *rtc,
->>   				   struct rtc_wkalrm *alarm)
->>   {
->>   	int err;
->> +	time64_t trace_time = -1;
->>   
->>   	err = mutex_lock_interruptible(&rtc->ops_lock);
->>   	if (err)
->> @@ -201,11 +202,12 @@ static int rtc_read_alarm_internal(struct rtc_device *rtc,
->>   		alarm->time.tm_yday = -1;
->>   		alarm->time.tm_isdst = -1;
->>   		err = rtc->ops->read_alarm(rtc->dev.parent, alarm);
->> +		trace_time = rtc_tm_to_time64(&alarm->time);
->>   	}
->>   
->>   	mutex_unlock(&rtc->ops_lock);
->>   
->> -	trace_rtc_read_alarm(rtc_tm_to_time64(&alarm->time), err);
->> +	trace_rtc_read_alarm(trace_time, err);
->>   	return err;
->>   }
->>   
->> -- 
->> 2.37.2
->>
-> 
+Thanks to both of you (Julia and Linus) for spotting these!
+
+							Thanx, Paul
 
