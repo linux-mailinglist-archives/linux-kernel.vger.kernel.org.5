@@ -1,176 +1,141 @@
-Return-Path: <linux-kernel+bounces-97618-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97619-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9C61876C93
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 22:58:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BF2A2876C96
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 23:00:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F07341C20FA6
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 21:58:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F08011C2140B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 22:00:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDE135FB9B;
-	Fri,  8 Mar 2024 21:58:29 +0000 (UTC)
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B2515FB91;
+	Fri,  8 Mar 2024 22:00:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bMTDWgCS"
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9053F5EE96
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 21:58:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C54D5E06C
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 22:00:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709935109; cv=none; b=h2WIfIxyIXS/tXRwuBeVFpLIfE/mlEVyovbgeyR+cgayae3H+ljkGgQU3UF4z8JQlRcqusWo6FQQGQHKm++dHOo5pBsPHsDT1UswfdkJui3ojLZrHG9mDI/vWh//zaTWxkfNvhvrwylsw0oZac1uzQLwUCNu69QYoDFFg31Svzo=
+	t=1709935247; cv=none; b=oZG3LldeaHrQWXjvlHfRp8TVpLNKxGihZFW8WC1J6VNWKESmu6bjEvlAiQXuCeaVtRKGwb6NOzj638IX+87LdpYGPZEe2trXN7xTg7a7UawQpCp1JSjsqU0XIeDuUIuUgP59fLtZiId6lTMXPuSl0Z/Aui0fskfkaeSavkBnAeU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709935109; c=relaxed/simple;
-	bh=jdRp3ycnJ2inLRjB5QbGRF0M5UnIWgjy+M+stLJdElI=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=IcMXtrrHX6qJOiC2oDF0X4CAzAYW/kZD7TTd3RwmGyBByz8RwB2IQnwIvyppxSE/Khfi8N35D0S/UksHV1dnb/c/RJh49CNkVYKk1qmaf8Io15WE/WFL/Lxy/c4c0au0xr2l4Q23Xuker7cwCbJj+7iCCUmoc1ABtcT6uFUCEts=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=baylibre.com; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6e61851dbaeso1649847b3a.2
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 13:58:27 -0800 (PST)
+	s=arc-20240116; t=1709935247; c=relaxed/simple;
+	bh=sLyCnNsNT2eyI3Bon3bnXfxLB5jOz7soycx0lB68P8Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hRxLfAhK2L/WK0KTnxBe3xfLzSJy0qncMjLgRdzN2/Jw3gc5tos1fIFD2NtalGsDfmtlPvcxQNITEVWX98czdiRq7RyVW4nYTGWs1k4RCZMDXWPi3eK5VK2oMqVWbKXm3E+qPs8nKgeTiZodMXgVHE+gygcGcd2OnQuGLHtIe7s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=bMTDWgCS; arc=none smtp.client-ip=209.85.167.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-5133d26632fso1733415e87.2
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 14:00:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709935242; x=1710540042; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=JZm++aDLJ0XwMXEzw9POFukHlDkOsStLmO8u8UA76+I=;
+        b=bMTDWgCS/tUahzOARuIlMmma+bVp0bpylX13xaER6YdhDRe1sHVALmqiEhVhMhUy/D
+         AP5Pbv7DOd6jH8UudMXiRoDeS1OOeWrr7cDUHF5aCzVvPScW5uTvyJYnKYnK9u1RhpmX
+         Ub9bSXmAPrV9sD9G6b5XJt7hPBuTMyThjBVfEWdLgS6LBM/QvzzndNtub11XcD/zK0Ux
+         aYn3UnreXw+OsX+jlSjV9pABMi+r23BtoB4Mgukfq8mgETAVrKvWfNqCdcGYUAVcZ/sU
+         +hyd98g5Eg1lt4OemClN4P+k4efTM4RXMllwKU9mA6x7lvSjXoh0MnRyKoMO/CHHsvi8
+         9Lrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709935107; x=1710539907;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ssskNoWRSgCf0JIsEmdc/9vm6xbNQG/h290+Hjyy4Ms=;
-        b=CWR4INm4s8NSNvjIVc5EohvkrEqThODQRQdTAfO2KCa3JstOM7NQb3R0nZBAcddM8z
-         CX/ODtWZqcWd6XuLVRY6CLBO3ocxon6rp99u7ovksFVKC4kB2fKT13RUgAMPt32foOWv
-         dNwpb0Tmzd40ThmcxXhY3bW6mEl7s0h/daH71lAdJD7b6o5AlFeLBnW3d/GAqeuXqzkZ
-         9HAHzwN8Fvg2cEk6PLtqdxmB1kFz+nCRXDjmvS9xc/z4WwKNPjd2IJQqkkqVxIgC6oXI
-         vKFr8H8vl5KyKroETlEyoM7bWyTf1ALENhMwhyzQKC6kB/u+W8/dD3Z6bcksEftQYqog
-         xDzw==
-X-Forwarded-Encrypted: i=1; AJvYcCWEytTrPoL0sXKDJYCtxXlKkNqMVD5VzIZLej8IWWMePMRsGi7NXL3OsUZFRC2sAL7/5J+4Dig8lQBljpD08zuY5qnTcTeXFRk84egn
-X-Gm-Message-State: AOJu0YyER9DJwHuNhQq0QreiouWLm/x+2EW9ZeVpjiDt4S5CSl/pBSHg
-	OhjhP8ueKDma/mzQi5icWxiBrdK4Fqa5X5rRdWw/eKnPFSr+7TqJ1TJD1QCl/Qo=
-X-Google-Smtp-Source: AGHT+IFZ/B9Q9BM4+JaRrVPqYSOZwZirEIB9Olp87R9nCLM6pykqEyS178FOw4nQALVX/Vp33qnx1A==
-X-Received: by 2002:a05:6a20:1454:b0:1a0:e944:15b7 with SMTP id a20-20020a056a20145400b001a0e94415b7mr357270pzi.5.1709935106742;
-        Fri, 08 Mar 2024 13:58:26 -0800 (PST)
-Received: from localhost (71-212-63-227.tukw.qwest.net. [71.212.63.227])
-        by smtp.gmail.com with ESMTPSA id g19-20020a631113000000b005cd8044c6fesm167442pgl.23.2024.03.08.13.58.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Mar 2024 13:58:26 -0800 (PST)
-From: Kevin Hilman <khilman@kernel.org>
-To: =?utf-8?Q?Th=C3=A9o?= Lebrun <theo.lebrun@bootlin.com>, Greg
- Kroah-Hartman
- <gregkh@linuxfoundation.org>, Rob Herring <robh+dt@kernel.org>, Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>, Roger Quadros <rogerq@kernel.org>, Peter Chen
- <peter.chen@kernel.org>, Pawel Laszczak <pawell@cadence.com>, Nishanth
- Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo
- <kristo@kernel.org>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, =?utf-8?Q?Gr=C3=A9gor?=
- =?utf-8?Q?y?= Clement
- <gregory.clement@bootlin.com>, Alan Stern <stern@rowland.harvard.edu>,
- linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- =?utf-8?Q?Th=C3=A9o?=
- Lebrun <theo.lebrun@bootlin.com>
-Subject: Re: [PATCH v4 4/9] usb: cdns3-ti: support reset-on-resume behavior
-In-Reply-To: <20240307-j7200-usb-suspend-v4-4-5ec7615431f3@bootlin.com>
-References: <20240307-j7200-usb-suspend-v4-0-5ec7615431f3@bootlin.com>
- <20240307-j7200-usb-suspend-v4-4-5ec7615431f3@bootlin.com>
-Date: Fri, 08 Mar 2024 13:58:25 -0800
-Message-ID: <7h4jdgperi.fsf@baylibre.com>
+        d=1e100.net; s=20230601; t=1709935242; x=1710540042;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JZm++aDLJ0XwMXEzw9POFukHlDkOsStLmO8u8UA76+I=;
+        b=N/Xc+aimUD3X9Ij07ICA4u2fZ8C5Iunv7FIp1mUAptMZ2MuUVMXHGH8juenrgdPScF
+         nG9gzuKYArHnT6Oz38CkdSjOcO6S4Zgww3n7lhh0qx+p8WmVOnSAXF97pccsU5k1kSX7
+         UdilSG3i2H1kG4gglXnIFoxLIC/vPqqUTRb7E1JA1q22iQO5jxmZo2ZUUfGSCA5ZcK75
+         EYO0x141EWpUWvvSXRtm4amfDrit4zILoTQz38dY5DUAE9ya4jWYgpFr+tPaLaNYv6gE
+         0apxpWql7E55d12s1Kuo6/Wg1bWlagl8FDl8w2Irhti68Fu0/fG99DjohGeNsahM8mNT
+         bvVg==
+X-Forwarded-Encrypted: i=1; AJvYcCWTzSfk+JowP20zJ8ycnWI0ik7qCKp9/DEmMKQQ/PaDver9kfKqj3jMyjnHryCEtgZXrM5wjedzep+UmmNNWSlNDAmHZ7xPN2P11Ehu
+X-Gm-Message-State: AOJu0Yz9Ndt+RB46P5K+67JQl1Lb8OrAyS7ykuX26j4cS/sAF2WLjevi
+	56QOmu5TGouDUdTh4FXYMNKs0XIdhkcLIM/2a2z+wQ8qDYES1iT7mk3KhWb0IMY=
+X-Google-Smtp-Source: AGHT+IH0IqAGaG90+vGY+Hz6Pw86eDpkRmsO6T1VXhM+s79uwJaLfO0ImbRNyJ29ya1n664plyKitg==
+X-Received: by 2002:a2e:b0f3:0:b0:2d3:7aaa:b340 with SMTP id h19-20020a2eb0f3000000b002d37aaab340mr284963ljl.26.1709935242277;
+        Fri, 08 Mar 2024 14:00:42 -0800 (PST)
+Received: from [192.168.16.246] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
+        by smtp.gmail.com with ESMTPSA id b26-20020a05651c033a00b002d0b231dce7sm70474ljp.77.2024.03.08.14.00.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Mar 2024 14:00:33 -0800 (PST)
+Message-ID: <b8b1064b-a3d5-4b33-918a-2cef60b5c59d@linaro.org>
+Date: Fri, 8 Mar 2024 23:00:30 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] firmware: qcom_scm: remove IS_ERR() checks from
+ qcom_scm_bw_{en,dis}able()
+To: Gabor Juhos <j4g8y7@gmail.com>, Bjorn Andersson <andersson@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240308-qcom_scm-is_err-check-v1-1-9c3e1ceefafe@gmail.com>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20240308-qcom_scm-is_err-check-v1-1-9c3e1ceefafe@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Th=C3=A9o Lebrun <theo.lebrun@bootlin.com> writes:
-
-> Add match data support, with one boolean to indicate whether the
-> hardware resets after a system-wide suspend. If hardware resets, we
-> force execute ->runtime_resume() at system-wide resume to run the
-> hardware init sequence.
-
-Is "whether the hardware resets after a system-wide suspend" really a
-function of the IP itself, or rather whether the IP is in a power domain
-that might power down?
-
-> No compatible exploits this functionality, just yet.
->
-> Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
+On 8.03.2024 10:25, Gabor Juhos wrote:
+> Since the qcom_scm_probe() function returns with an error if
+> __scm->path contains an error pointer, it is not needed to
+> verify that again in the qcom_scm_bw_{en,dis}able() functions
+> so remove the superfluous IS_ERR() checks.
+> 
+> Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
 > ---
->  drivers/usb/cdns3/cdns3-ti.c | 27 +++++++++++++++++++++++++++
->  1 file changed, 27 insertions(+)
->
-> diff --git a/drivers/usb/cdns3/cdns3-ti.c b/drivers/usb/cdns3/cdns3-ti.c
-> index 4c8a557e6a6f..f76327566798 100644
-> --- a/drivers/usb/cdns3/cdns3-ti.c
-> +++ b/drivers/usb/cdns3/cdns3-ti.c
-> @@ -57,9 +57,14 @@ struct cdns_ti {
->  	unsigned vbus_divider:1;
->  	struct clk *usb2_refclk;
->  	struct clk *lpm_clk;
-> +	const struct cdns_ti_match_data *match_data;
->  	int usb2_refclk_rate_code;
->  };
->=20=20
-> +struct cdns_ti_match_data {
-> +	bool reset_on_resume;
-> +};
-> +
->  static const int cdns_ti_rate_table[] =3D {	/* in KHZ */
->  	9600,
->  	10000,
-> @@ -101,6 +106,7 @@ static int cdns_ti_probe(struct platform_device *pdev)
->  	platform_set_drvdata(pdev, data);
->=20=20
->  	data->dev =3D dev;
-> +	data->match_data =3D device_get_match_data(dev);
->=20=20
->  	data->usbss =3D devm_platform_ioremap_resource(pdev, 0);
->  	if (IS_ERR(data->usbss)) {
-> @@ -220,8 +226,29 @@ static int cdns_ti_runtime_resume(struct device *dev)
->  	return 0;
->  }
->=20=20
-> +static int cdns_ti_suspend(struct device *dev)
-> +{
-> +	struct cdns_ti *data =3D dev_get_drvdata(dev);
-> +
-> +	if (data->match_data && data->match_data->reset_on_resume)
-> +		return pm_runtime_force_suspend(dev);
-> +	else
-> +		return 0;
-> +}
-> +
-> +static int cdns_ti_resume(struct device *dev)
-> +{
-> +	struct cdns_ti *data =3D dev_get_drvdata(dev);
-> +
-> +	if (data->match_data && data->match_data->reset_on_resume)
-> +		return pm_runtime_force_resume(dev);
-> +	else
-> +		return 0;
-> +}
+> Based on v6.8-rc7.
+> ---
 
-Conditionally forcing runtime suspend/resume based on a property of the
-IP doesn't feel right to me.
+LGTM
 
-IMO, the device should always runtime suspend/resume, and in the
-runtime PM hooks is where the conditional logic should be.
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-And speaking of the conditional logic... let's go back to whether
-"resets_on_resume" is a property of the IP or the enclosing power
-domain.
-
-Instead of having an IP-specific flag, another way of approaching this
-when ->runtime_resume() is called every time is simply for that hook to
-check if a reset has happend.  Sometimes you can tell this simply by
-reading a register that has been previously programmed by the driver but
-has a known reset.  Simply check that regisister and you can tell
-whether context has been lost.
-
-Doing it this way makes the driver "smart" and then you don't have to
-rely on bool flag based on the IP and dependent on the DT compatible.
-
-Kevin
+Konrad
 
