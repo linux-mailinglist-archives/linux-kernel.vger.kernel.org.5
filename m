@@ -1,194 +1,122 @@
-Return-Path: <linux-kernel+bounces-96723-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96708-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A443F8760A2
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 10:05:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E0FF876058
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 09:54:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2C534B224C1
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 09:05:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB08A281B19
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 08:54:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 973D0535D3;
-	Fri,  8 Mar 2024 09:05:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C672C4F883;
+	Fri,  8 Mar 2024 08:54:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MWkI4xtH"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=ite.com.tw header.i=@ite.com.tw header.b="U+DIYKfh"
+Received: from ironport.ite.com.tw (60-251-196-230.hinet-ip.hinet.net [60.251.196.230])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2DDC52F73;
-	Fri,  8 Mar 2024 09:05:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 665622C85C
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 08:54:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.251.196.230
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709888722; cv=none; b=KxXBXuB7RiBc4G0zoCHZkeG56zGIfO9Zaa860Rbf7O4irCJ9nWfD2zOlkLgrXS6XvCaillEPulLAQ6VMBymNUWVNImbQFuGRD2e3o28dS8dQlRx381lMcFzJWRrpOEOezWxUtsKPC022uy+w/0iYCmN4ucLqhKOAvDDFAEJrk1w=
+	t=1709888084; cv=none; b=V8wk+BCjPDWdBCe1c1AOdaTU1yGAgU2KZ4hNAxEintzJbcyhlL1COJfg0/nIwn206A+xLx9Rx7engcMJ8X3/JZQO23tDoyAxwwMcsLVzFx8T7QKzYR4UR9K9JFEFDmNKjuSUIhIMRqW+rSIXfpdcvnwwsdDSQK7q8sWOSq7RwaU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709888722; c=relaxed/simple;
-	bh=bZE3lLlkuJ7PvYUKEQqczGXk3MirQvfYGrIhBNhV2+0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XUFCxXQO43SrTBEbxbYv52/D6XiRKIXvWJcNjDyvDLQey9kw3hP83L2mh1sGmxja2V4jVv/XHDtL5s91D6djtauA/XmzgJ6i9470AoHSBdKY/ANEtqkpbVuMceSPuzrUW9n92Z/emU2IkftCVOTVU7h7Fi53tqJZuh7Odu7I6TY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MWkI4xtH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6806C433B1;
-	Fri,  8 Mar 2024 09:05:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709888722;
-	bh=bZE3lLlkuJ7PvYUKEQqczGXk3MirQvfYGrIhBNhV2+0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=MWkI4xtHh0q/rku6OXru8Y5F0uyRm3OagmGFpmUyIc2rYcZiMSPOiATfm4KcSiUkW
-	 IA/wiVN/IG7POxQlNaaz79LCo+ocHGUmXgYP6x6UEr/8a5tlpJo5msNuAtAERLfowz
-	 OydyRBOmxFQHHf4+urZfZqiXS8SHOFOoGxXqRrutLHKA76PqWRFuhnOKTTspI+kuci
-	 BQ28JitosqrxLAk3FoKKSH0YNWL74SOgWXdv6mXlpxLAHHLBY1yr79+O6wbAgLS4s4
-	 B4A1F/m+kSB0tUh7hiHLnsNWlFj4wbjuW+NQlJBLF+NrcRpNktQGGd61YzrHsCJ5xm
-	 y+8eyn0zKZ4sA==
-Date: Fri, 8 Mar 2024 10:05:11 +0100
-From: Niklas Cassel <cassel@kernel.org>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Marek Vasut <marek.vasut+renesas@gmail.com>,
-	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Kishon Vijay Abraham I <kishon@ti.com>,
-	Vidya Sagar <vidyas@nvidia.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Richard Zhu <hongxing.zhu@nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Minghuan Lian <minghuan.Lian@nxp.com>,
-	Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
-	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Jesper Nilsson <jesper.nilsson@axis.com>,
-	Srikanth Thokala <srikanth.thokala@intel.com>,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-	linux-arm-kernel@axis.com
-Subject: Re: [PATCH v9 06/10] PCI: dwc: ep: Call dw_pcie_ep_init_registers()
- API directly from all glue drivers
-Message-ID: <ZerUx9Vw_W997LZk@ryzen>
-References: <20240304-pci-dbi-rework-v9-0-29d433d99cda@linaro.org>
- <20240304-pci-dbi-rework-v9-6-29d433d99cda@linaro.org>
- <ZeolaEIRYmKZjnvT@ryzen>
- <20240308053624.GB3789@thinkpad>
+	s=arc-20240116; t=1709888084; c=relaxed/simple;
+	bh=z4hLB/fY9KztPv+9M7jWfOpVmDxi/McpzD+W7P2T/lA=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=uU8/GBbOwzafZuy/xBNMsfKzjKKuQzrDnYN0g0PaQkytutL5klUK2d3be+yyeN0PC+hjC4zTgzt/pnLXY7U7XVjJfRtQ88s9MYIWWibIgdCVLJXN0iqTXwTCx+kY9Ro5aglKKEuuFPoNoL/rQiKp+q5td8/IPSMslNkLcUFhlhU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ite.com.tw; spf=pass smtp.mailfrom=ite.com.tw; dkim=fail (0-bit key) header.d=ite.com.tw header.i=@ite.com.tw header.b=U+DIYKfh reason="key not found in DNS"; arc=none smtp.client-ip=60.251.196.230
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ite.com.tw
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ite.com.tw
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=ite.com.tw; s=dkim;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=ueYuErBzNOQow9i3cCLMsyBomG/pby6aV6w567ivZY4=;
+  b=U+DIYKfhbKZmmrLVBDFw3kOcAYxoAfbWLFcr2qyIseEx3IpE98uMol8O
+   zjGrA9YYi+QPHqcGkS7GKCYOAPuyyyUFsUomknrqmcPIQVJBpiDBcbims
+   3aHDBxF1AxsetHjCE1jP3irdXgBCSzQ4yRoCAQS6AwJ/HGc9Zr/LSaWI6
+   ylWB2rehzjySN60GE6UwEaF6Wy+jx6FGDOKXpNIudrwn0wjZlIlun8s2X
+   beWM24ydrBRJu9ik/ps/vsysgkV9Qu8CGRSucNxRQ+9Vyom9NejAU0bxP
+   4gPkj2P+X/fptLAsqzEjSKUMWcafVMOik4U0YfDCi0VAKHYTNpfhj12TT
+   Q==;
+Received: from unknown (HELO mse.ite.com.tw) ([192.168.35.30])
+  by ironport.ite.com.tw with ESMTP; 08 Mar 2024 16:54:33 +0800
+Received: from CSBMAIL1.internal.ite.com.tw (CSBMAIL1.internal.ite.com.tw [192.168.65.58])
+	by mse.ite.com.tw with ESMTP id 4288sSeO079655;
+	Fri, 8 Mar 2024 16:54:28 +0800 (GMT-8)
+	(envelope-from kuro.chung@ite.com.tw)
+Received: from ite-XPS-13-9360.internal.ite.com.tw (192.168.72.42) by
+ CSBMAIL1.internal.ite.com.tw (192.168.65.58) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 8 Mar 2024 16:54:28 +0800
+From: kuro <kuro.chung@ite.com.tw>
+To:
+CC: Allen Chen <allen.chen@ite.com.tw>, Pin-yen Lin <treapking@chromium.org>,
+        Kuro Chung <kuro.chung@ite.com.tw>,
+        Kenneth Haung <kenneth.hung@ite.com.tw>,
+        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+        Jernej Skrabec
+	<jernej.skrabec@gmail.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart
+	<Laurent.pinchart@ideasonboard.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: [PATCH v4 0/1] drm/bridge: it6505: fix hibernate to resume no display issue
+Date: Fri, 8 Mar 2024 17:05:46 +0800
+Message-ID: <20240308090548.269625-1-kuro.chung@ite.com.tw>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240308053624.GB3789@thinkpad>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: CSBMAIL1.internal.ite.com.tw (192.168.65.58) To
+ CSBMAIL1.internal.ite.com.tw (192.168.65.58)
+X-TM-SNTS-SMTP:
+	0787A66D1D05A46525F5F1DB9E5BA4C8B4B3FFE9486B63953D78B7D6F5C182042002:8
+X-MAIL:mse.ite.com.tw 4288sSeO079655
 
-On Fri, Mar 08, 2024 at 11:06:24AM +0530, Manivannan Sadhasivam wrote:
-> On Thu, Mar 07, 2024 at 09:36:56PM +0100, Niklas Cassel wrote:
-> > On Mon, Mar 04, 2024 at 02:52:18PM +0530, Manivannan Sadhasivam wrote:
-> > > Currently, dw_pcie_ep_init_registers() API is directly called by the glue
-> > > drivers requiring active refclk from host. But for the other drivers, it is
-> > > getting called implicitly by dw_pcie_ep_init(). This is due to the fact
-> > > that this API initializes DWC EP specific registers and that requires an
-> > > active refclk (either from host or generated locally by endpoint itsef).
-> > > 
-> > > But, this causes a discrepancy among the glue drivers. So to avoid this
-> > > confusion, let's call this API directly from all glue drivers irrespective
-> > > of refclk dependency. Only difference here is that the drivers requiring
-> > > refclk from host will call this API only after the refclk is received and
-> > > other drivers without refclk dependency will call this API right after
-> > > dw_pcie_ep_init().
-> > > 
-> > > With this change, the check for 'core_init_notifier' flag can now be
-> > > dropped from dw_pcie_ep_init() API. This will also allow us to remove the
-> > > 'core_init_notifier' flag completely in the later commits.
-> > > 
-> > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > > ---
-> > >  drivers/pci/controller/dwc/pci-dra7xx.c           |  7 +++++++
-> > >  drivers/pci/controller/dwc/pci-imx6.c             |  8 ++++++++
-> > >  drivers/pci/controller/dwc/pci-keystone.c         |  9 +++++++++
-> > >  drivers/pci/controller/dwc/pci-layerscape-ep.c    |  7 +++++++
-> > >  drivers/pci/controller/dwc/pcie-artpec6.c         | 13 ++++++++++++-
-> > >  drivers/pci/controller/dwc/pcie-designware-ep.c   | 22 ----------------------
-> > >  drivers/pci/controller/dwc/pcie-designware-plat.c |  9 +++++++++
-> > >  drivers/pci/controller/dwc/pcie-keembay.c         | 16 +++++++++++++++-
-> > >  drivers/pci/controller/dwc/pcie-rcar-gen4.c       | 12 +++++++++++-
-> > >  drivers/pci/controller/dwc/pcie-uniphier-ep.c     | 13 ++++++++++++-
-> > >  10 files changed, 90 insertions(+), 26 deletions(-)
-> > > 
-> > > diff --git a/drivers/pci/controller/dwc/pci-dra7xx.c b/drivers/pci/controller/dwc/pci-dra7xx.c
-> > > index 0e406677060d..395042b29ffc 100644
-> > > --- a/drivers/pci/controller/dwc/pci-dra7xx.c
-> > > +++ b/drivers/pci/controller/dwc/pci-dra7xx.c
-> > > @@ -467,6 +467,13 @@ static int dra7xx_add_pcie_ep(struct dra7xx_pcie *dra7xx,
-> > >  		return ret;
-> > >  	}
-> > >  
-> > > +	ret = dw_pcie_ep_init_registers(ep);
-> > > +	if (ret) {
-> > 
-> > Here you are using if (ret) to error check the return from
-> > dw_pcie_ep_init_registers().
-> > 
-> > 
-> > > index c0c62533a3f1..8392894ed286 100644
-> > > --- a/drivers/pci/controller/dwc/pci-keystone.c
-> > > +++ b/drivers/pci/controller/dwc/pci-keystone.c
-> > > @@ -1286,6 +1286,13 @@ static int ks_pcie_probe(struct platform_device *pdev)
-> > >  		ret = dw_pcie_ep_init(&pci->ep);
-> > >  		if (ret < 0)
-> > >  			goto err_get_sync;
-> > > +
-> > > +		ret = dw_pcie_ep_init_registers(&pci->ep);
-> > > +		if (ret < 0) {
-> > 
-> > Here you are using if (ret < 0) to error check the return from
-> > dw_pcie_ep_init_registers(). Please be consistent.
-> > 
-> 
-> I maintained the consistency w.r.t individual drivers. Please check them
-> individually.
-> 
-> If I maintain consistency w.r.t this patch, then the style will change within
-> the drivers.
-
-Personally, I disagree with that.
-
-All glue drivers should use the same way of checking dw_pcie_ep_init(),
-depending on the kdoc of dw_pcie_ep_init().
-
-If the kdoc for dw_pcie_ep_init() says returns 0 on success,
-then I think that it is strictly more correct to do:
-
-ret = dw_pcie_ep_init()
-if (ret) {
-	<error handling>
-}
-
-And if a glue driver doesn't look like that, then I think we should change
-them. (Same reasoning for dw_pcie_ep_init_registers().)
+From: Kuro Chung <kuro.chung@ite.com.tw>
 
 
-If you read code that looks like:
-ret = dw_pcie_ep_init()
-if (ret < 0) {
-	<error handling>
-}
+New patch description for v4 patch
 
-then you assume that is is a function with a kdoc that says it can return 0
-or a positive value on success, e.g. a function that returns an index in an
-array.
+	update by reviewer Pin-yen Lin comment, remove function it6505_irq_video_fifo_error/it6505_irq_io_latch_fifo_overflow
+	update by reviewer Pin-yen Lin comment, update Signed-off-by column
+
+New patch description for v3 patch 
+	
+	update upstream MAINTAINERS mail list
+
+New patch description for v2 patch
+
+	Missing declaration for i variable in function it6505_irq_video_error_handler
+	, add it by this patch
+
+Origianl description for v1 patch 
+
+	drm/bridge: it6505: fix hibernate to resume no display issue
+
+	ITE added a FIFO reset bit for input video. When system power resume,
+	the TTL input of it6505 may get some noise before video signal stable
+	and the hardware function reset is required.
+	But the input FIFO reset will also trigger error interrupts of output module rising.
+	Thus, it6505 have to wait a period can clear those expected error interrupts
+	caused by manual hardware reset in one interrupt handler calling to avoid interrupt looping.
 
 
-Kind regards,
-Niklas
+allen (1):
+  UPSTREAM: drm/bridge: it6505: fix hibernate to resume no display issue
+
+ drivers/gpu/drm/bridge/ite-it6505.c | 50 ++++++++++++++++++++---------
+ 1 file changed, 35 insertions(+), 15 deletions(-)
+
+-- 
+2.25.1
+
 
