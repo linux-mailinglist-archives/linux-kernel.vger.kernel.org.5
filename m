@@ -1,99 +1,85 @@
-Return-Path: <linux-kernel+bounces-97705-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97643-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D18E876E24
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 01:29:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B1DE876CFA
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 23:20:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CB26FB2224C
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Mar 2024 00:29:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B98E22831FC
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 22:20:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36472111E;
-	Sat,  9 Mar 2024 00:29:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43B0960259;
+	Fri,  8 Mar 2024 22:20:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="3TnBNkrV";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="KGpfX1iJ";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="11OMVG5k";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="kdZWHlhS"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="knv80yvg"
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4271E37A;
-	Sat,  9 Mar 2024 00:29:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E758D5FBB9;
+	Fri,  8 Mar 2024 22:20:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709944146; cv=none; b=GiDG7emYOMfGR2M4+SO8vaIwh9KQoQtiY8MNzof3TBRG3d32QJ17VajyKojmKtv1UKLJuOMszh4F9H0kkQ3y/3bCJ1QHa9oO0AQRzLWN05Mo5kGv/sB9M2Z5/jbZZuYlThcC/i25no7AHd4HtK6v40RgA1dEfC+UTZ+OnVP2Dt0=
+	t=1709936414; cv=none; b=OphKReKatFwjjXt0JDJBuiqwBydyUdBtSD4lOK6xD6TMJCmoj1vKJqGiYMJ4JEZ+LgkUu9LEiuXcp39Qc+Qk/q9Pg0OlTEhUfpjG5n4n+GNa8CRIllHP3F2HoH5iQqLdLXRROg7O0nJ8/v/QPxSN3ddFvqDQtCznsT6Sm4D//qo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709944146; c=relaxed/simple;
-	bh=hKBfxrSmNRaZ1C0QVb8ykK5TUgaExQKKJu1L+1QMJnQ=;
+	s=arc-20240116; t=1709936414; c=relaxed/simple;
+	bh=UvaPv/XPHrH2WNEAzYheoSrYhZzFwh6ItrrN3RRyQiE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AyOCsYrPB6HmnuMtYifowu10APw60Pjaayt9MZxDxQ7feuXGGaURJS96ER9oaMr8BhnKEn0fSpHlC30ydrGyEbpuFZ4sW2zoefE/PFdLYA6/KzLNCosQFwIWhwJF7mRv4eIxmSbILLyY05RpxROMYoLDs5ifA3fl3vJyB1CrkVc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=3TnBNkrV; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=KGpfX1iJ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=11OMVG5k; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=kdZWHlhS; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id B52DF2070C;
-	Fri,  8 Mar 2024 22:19:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1709936387; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zwRPwzFnD9SACxO6sDVxQL/jE1uGXeBYAssp/iPTmM8=;
-	b=3TnBNkrVM0mCT8bjbeCYqaaOUE9BQglZRzBcXLjIvGTnRRCKmr1OgeW7hVsgvgoopwkf0l
-	+x8p+tm+c3MWKRXl1sVYvHsrQ9yKP0pX2YajmDUjvT19pUVKMboUF/Lipl2P4VqkErUKzi
-	TvUInpJhdG+J4qqcsGKEKT83jTTSng8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1709936387;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zwRPwzFnD9SACxO6sDVxQL/jE1uGXeBYAssp/iPTmM8=;
-	b=KGpfX1iJQoRrdghVjkjbXgVVQE039JeTw9lo6vkzqhdyx11fy0+iBF3j7N2eMFqJUqVg+/
-	Sg5/zdF9Cr759ECw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1709936385; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zwRPwzFnD9SACxO6sDVxQL/jE1uGXeBYAssp/iPTmM8=;
-	b=11OMVG5kgv1+zC9B+ihdFfkqPM8k2VdFfWD13ogOpv5QZh+Gw0ZdQUFs765x/XfzsG0xDR
-	hFliGY7ZfjgCyO1B0SeclxqCiRrnd/u7fCQ7n8XN/Oyx4dgfw4fo/osrcQGLAu/5sBEz/L
-	7D4yIrlD7+V+iM3q/Z4blEXKQb4ZXuA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1709936385;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zwRPwzFnD9SACxO6sDVxQL/jE1uGXeBYAssp/iPTmM8=;
-	b=kdZWHlhSs7J0madnPwZzPOEUErCnWbCYQBibr6yoq8BlYdLuvg15FBpuhe4Jag5bPSgezg
-	t8twFFLUCI1EmLBQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AA6A1133DC;
-	Fri,  8 Mar 2024 22:19:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id aNGUKQGP62WLQgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Fri, 08 Mar 2024 22:19:45 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 6C5FCA0807; Fri,  8 Mar 2024 23:19:45 +0100 (CET)
-Date: Fri, 8 Mar 2024 23:19:45 +0100
-From: Jan Kara <jack@suse.cz>
-To: syzbot <syzbot+4f7a1fc5ec86b956afb4@syzkaller.appspotmail.com>
-Cc: axboe@kernel.dk, brauner@kernel.org, jack@suse.cz,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [hfs?] KASAN: slab-out-of-bounds Write in
- hfs_bnode_read_key
-Message-ID: <20240308221945.2ddq5o2h75x7eoej@quack3>
-References: <000000000000a2c13905fda1757e@google.com>
- <0000000000004b8d8206123dd402@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Q/cyq5tFvl1P7/lCBjphgBsnVrgz6AtdmQ5/L4K/mG2P044EYXHx5gIW9Te5kQJ8W59zGnQSYunPM5B62P8bEKXcB+eMOYOdW8ZGbIlPoZRYLj0s351UV6ekuZPW9zufj2sy1OkL+fqziitt2FxoLAbovt8SkJp0KS27lwFR+FA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=knv80yvg; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-4131b27cda2so6810585e9.0;
+        Fri, 08 Mar 2024 14:20:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709936411; x=1710541211; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=j62oPnIVjNXEkLwc6x1vxDDwPNWZwfNz/IeZcBMO0U4=;
+        b=knv80yvgtBCQpRL2YuxAIGifr8ASeIS/rdaX8xYUeomB6RzgWw2SaFzZBMwtZX56me
+         5Ycw1xgFcc1BOSJtX7BQKORXCJfdenz+vZrGVhMJD0Yet727Jwx/oeBCWAxitvJxjUEE
+         OhREW57TvV/6izeW18WgC1q9vY2JIIg/Eg+SySVvH2gkzoAhesi9J+c0gdc4KBeBU2B3
+         yrtCBki9DQ6izg+tGsQJ7f6GSFkpLkfFUPG49l58kz2GEcQ8qi7aV66oMubnOtURQ/qi
+         2tf7BLQXjQrwMLdyXsYUGWgAnv5bSVSoEK53Z3Gp4NKzvXOGxd+a0KkolVoNhwOqSLZQ
+         SYJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709936411; x=1710541211;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=j62oPnIVjNXEkLwc6x1vxDDwPNWZwfNz/IeZcBMO0U4=;
+        b=XsKQxoDs72k0LZNwAnjywxcs77B9+FbOiwWe/CQ1A1LsmR/HiiNYI4qVwl/QymsZzb
+         NRLwptfGA+RDpmTxlVWYIpQ3xwcNAh5EMsIRgEnT2CnHYsSLMD+cfrz5QA9xjlcr3+bQ
+         Nf+Rh9aXMk6QYitnz9/H6UPziwYy+SteoVldrxD39sjwu8mXSRO56If1RWH5YnjMtX2s
+         LTT+kmnVvDoSrVrCErGSEtNGe/cmtSJWy9UymS/6owHLX9X+EmW/GWfW3s/v4NK9pszC
+         PQEnkuLp8+E+/6Rtw+zYJ/CcGIsRtAdGQrDsyw6ZcZjtN9ikpXf3Ev89B97K5OJgb1cI
+         aUvw==
+X-Forwarded-Encrypted: i=1; AJvYcCUC1ZkLeJJ7L6OEmFVWuRSGSp41e//8OoI+JRe+FvaU1psN/I0BREjRnhGZ6ayJhSQhPv8bIpNgqg8GVEyKIxY0uJCO5G8WSckhDjBgLMRCMVxnCwG0+vCSPFOm7yrohsutyAg/NDmfvjusDa37TUKYQ36rVlpTf2rsmUwE0srHe+dd4d/1+bfp9weXwKTSw38+7M7biE+dQ4G9dSZZXpElYj0=
+X-Gm-Message-State: AOJu0YzSA5NiEEpVz04TU5PjpGldr6ZjdFc/40x8aePM9c/XppGhf8Wx
+	DV9CaqlG5lsELA+bgOikmjB2Jrg1kQalvl2S5IkaolT52AupjuzY
+X-Google-Smtp-Source: AGHT+IE5arD0uaO0cShKSZUbPrmiaI8REwNOOjBGWARkTT+WqsPSIbayV70MjZcasIR3uWjdwQ0JcQ==
+X-Received: by 2002:a05:600c:ccb:b0:413:1438:cbd4 with SMTP id fk11-20020a05600c0ccb00b004131438cbd4mr359744wmb.17.1709936410844;
+        Fri, 08 Mar 2024 14:20:10 -0800 (PST)
+Received: from localhost (cpc1-brnt4-2-0-cust862.4-2.cable.virginm.net. [86.9.131.95])
+        by smtp.gmail.com with ESMTPSA id hg6-20020a05600c538600b00412c8117a34sm608258wmb.47.2024.03.08.14.20.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Mar 2024 14:20:09 -0800 (PST)
+Date: Fri, 8 Mar 2024 22:20:08 +0000
+From: Stafford Horne <shorne@gmail.com>
+To: Oreoluwa Babatunde <quic_obabatun@quicinc.com>
+Cc: chenhuacai@kernel.org, jonas@southpole.se,
+	stefan.kristiansson@saunalahti.fi, ysato@users.sourceforge.jp,
+	dalias@libc.org, glaubitz@physik.fu-berlin.de, robh+dt@kernel.org,
+	frowand.list@gmail.com, linux-openrisc@vger.kernel.org,
+	loongarch@lists.linux.dev, linux-sh@vger.kernel.org,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+	kernel@quicinc.com
+Subject: Re: [PATCH 0/3] Restructure init sequence to set aside reserved
+ memory earlier
+Message-ID: <ZeuPGOzPpOuUFTwF@antec>
+References: <1707524971-146908-1-git-send-email-quic_obabatun@quicinc.com>
+ <467b8479-dfd8-43a4-92eb-d19dc65989cd@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -102,61 +88,47 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0000000000004b8d8206123dd402@google.com>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: *
-X-Spam-Score: 1.69
-X-Spamd-Result: default: False [1.69 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_HAM(-0.01)[45.68%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=162cf2103e4a7453];
-	 TAGGED_RCPT(0.00)[4f7a1fc5ec86b956afb4];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_SEVEN(0.00)[7];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.com:email,syzkaller.appspot.com:url];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[];
-	 SUBJECT_HAS_QUESTION(0.00)[]
-X-Spam-Flag: NO
+In-Reply-To: <467b8479-dfd8-43a4-92eb-d19dc65989cd@quicinc.com>
 
-On Sun 25-02-24 16:17:04, syzbot wrote:
-> syzbot suspects this issue was fixed by commit:
+On Tue, Mar 05, 2024 at 10:59:20AM -0800, Oreoluwa Babatunde wrote:
 > 
-> commit 6f861765464f43a71462d52026fbddfc858239a5
-> Author: Jan Kara <jack@suse.cz>
-> Date:   Wed Nov 1 17:43:10 2023 +0000
+> On 2/9/2024 4:29 PM, Oreoluwa Babatunde wrote:
+> > The loongarch, openric, and sh architectures allocate memory from
+> > memblock before it gets the chance to set aside reserved memory regions.
+> > This means that there is a possibility for memblock to allocate from
+> > memory regions that are supposed to be reserved.
+> >
+> > This series makes changes to the arch specific setup code to call the
+> > functions responsible for setting aside the reserved memory regions earlier
+> > in the init sequence.
+> > Hence, by the time memblock starts being used to allocate memory, the
+> > reserved memory regions should already be set aside, and it will no
+> > longer be possible for allocations to come from them.
+> >
+> > I am currnetly using an arm64 device, and so I will need assistance from
+> > the relevant arch maintainers to help check if this breaks anything from
+> > compilation to device bootup.
+> >
+> > Oreoluwa Babatunde (3):
+> >   loongarch: Call arch_mem_init() before platform_init() in the init
+> >     sequence
+> >   openrisc: Call setup_memory() earlier in the init sequence
+> >   sh: Call paging_init() earlier in the init sequence
+> >
+> >  arch/loongarch/kernel/setup.c | 2 +-
+> >  arch/openrisc/kernel/setup.c  | 6 +++---
+> >  arch/sh/kernel/setup.c        | 4 ++--
+> >  3 files changed, 6 insertions(+), 6 deletions(-)
+> Hello,
 > 
->     fs: Block writes to mounted block devices
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12e81c54180000
-> start commit:   e5282a7d8f6b Merge tag 'scsi-fixes' of git://git.kernel.or..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=162cf2103e4a7453
-> dashboard link: https://syzkaller.appspot.com/bug?extid=4f7a1fc5ec86b956afb4
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12feb345280000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=123cb2a5280000
-> 
-> If the result looks correct, please mark the issue as fixed by replying with:
- 
-Unclear but let's see whether there are other reproducers.
+> Loongarch patch has already merged for this, but review is still pending
+> from openrisc and sh architectures.
+> Could someone please comment on these?
 
-#syz fix: fs: Block writes to mounted block devices
+Hello,
 
-								Honz
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+The OpenRISC patch looks fine to me.  I will test it out.  Sorry, I thought you
+were getting this merged via other means.
+
+-Stafford
 
