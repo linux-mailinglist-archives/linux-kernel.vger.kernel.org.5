@@ -1,122 +1,160 @@
-Return-Path: <linux-kernel+bounces-97236-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97237-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB297876764
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 16:29:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3930876767
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 16:30:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B3241F2320D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 15:29:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D3AEE1C218DA
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 15:30:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FEBB56B60;
-	Fri,  8 Mar 2024 15:28:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81D9E1EB56;
+	Fri,  8 Mar 2024 15:30:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CWbYXEOa"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="FMRMp4DA"
+Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A328E5674C;
-	Fri,  8 Mar 2024 15:28:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EB8B15C0;
+	Fri,  8 Mar 2024 15:30:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709911735; cv=none; b=iO2hrzPkdoi3qrLDmb1dAY0cLifzR2qDUXNVj/NWb7c6GoVng7MkXT+Zmte4VFbzb/PJahB2Hq7EYNHR8egh4rU77KZ0Xct6BfYT7CFr4bLGYllEFPk3n6dFRyyxaqY8atPTvNEik7h+3pCk8n6GGVnpf4C78hYCnbyuM1pWfAk=
+	t=1709911823; cv=none; b=WnN7JxATaOr8YbUtdsS9lNqunK4FE/Ag1Rg1ZMrhdVOHaJdrqr1d84Qg/2cc8/rg1J0yyVAhTjXC0W6te9yj6KpiGQcK4qelU0Ux8IgavAdKAnoql0K/iBjh+6LM3hrYi0xuBYb3Nlc1yFfyFCRKlLMUV+1Q8YLwHl2Crjc7nx8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709911735; c=relaxed/simple;
-	bh=bMtbuNa4OfY3K2WJdXy/zJcV5S/fCzZ4bwmKbkY1b0s=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=NyAhIp+RHj60HXP9ePW06+K6mV1GSwvi+FhT3jQxcu43u2/4cgWRaS9GMJfQjPYCce0sfc7umX58XNUl+oRlbZR5tMf5U/ctumdE+W+M5OOYDwbbQi1ZCOp+6ACSxE8YVZMysVkny7ysB3NiIlxvXRbP/sCPDv6Qdzong1Jw3XE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CWbYXEOa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C4AAC43399;
-	Fri,  8 Mar 2024 15:28:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709911735;
-	bh=bMtbuNa4OfY3K2WJdXy/zJcV5S/fCzZ4bwmKbkY1b0s=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=CWbYXEOa6wE27t0jsLOmA9bTsLR6V2AlvBrk9RktDdS3R6g9SZe+VXXgiqY5iCmQM
-	 BLsOZxtpGCfCeilWAcXaUoe01rL/2+jfsdkGBtf1Mp8hYwzzgT/apZ99IIIK5kBrVq
-	 RhHjx7Tb8sR7LP3hknRbpH86ZV/wDKXlRloDx6rQUHWfHd6KgoAIpmzBNdLrPOiE9s
-	 RP6DvfPeGP+eQfGB1u93rLXhVuGS+TUzmblBNlnulL7USEx9Z6yh9tPswczTDxQ3m4
-	 wGbeGkVm1EKuGnWCWy/P1ueOqelDsezPCP+2b43C3kIcartNXssO36WKyf+3i2OP6B
-	 AdWdNeBf6S+TQ==
-From: Will Deacon <will@kernel.org>
-To: linux-kernel@vger.kernel.org
-Cc: kernel-team@android.com,
-	Will Deacon <will@kernel.org>,
-	iommu@lists.linux.dev,
-	Christoph Hellwig <hch@lst.de>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Petr Tesarik <petr.tesarik1@huawei-partners.com>,
-	Dexuan Cui <decui@microsoft.com>,
-	Nicolin Chen <nicolinc@nvidia.com>,
-	Michael Kelley <mhklinux@outlook.com>
-Subject: [PATCH v6 6/6] swiotlb: Reinstate page-alignment for mappings >= PAGE_SIZE
-Date: Fri,  8 Mar 2024 15:28:29 +0000
-Message-Id: <20240308152829.25754-7-will@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20240308152829.25754-1-will@kernel.org>
-References: <20240308152829.25754-1-will@kernel.org>
+	s=arc-20240116; t=1709911823; c=relaxed/simple;
+	bh=1GElJX1Xw1oAZ5mV/Qo9Ld5EzCaVHoLQ4gdCY21VeAQ=;
+	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
+	 Message-ID:Content-Type; b=BwcYFycRm+P4Fx4FQC0G94yZM7PGIObVjc5lXw3oF238kcRetNiRJv5epIuYeCjjsLEmzesCjQ4+MiBkL8umf5nF0Q+aBb5u3yng4UfK/W4HE7tthcmvFvhIsG+Z5pcAf6KnfmDv9d71Z2zZqxSN1rSMXDZOyGw8hjMCSSXlZvE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=FMRMp4DA; arc=none smtp.client-ip=116.203.91.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
+	t=1709911811;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xg1YcmdTDNEGczDED8tux3NJ6CN5mtOf9f1Wq1pu2YI=;
+	b=FMRMp4DAPDc4xE88bB02SCtuoYaWHG2IANOV/F+lU4IEhdSFnF037DKFGlz63eKC4ISQlH
+	U86kqpqYVrFihcEvIjVcmajELJL1gmbjdqj0aYZXvZpzaxN1iS9wWOXOKTghqLtB55GLFC
+	RzGkUHg2Lr/ASWxIbPrcheZDc5raRG6UxsrtaYCygKVu6K0kTqn7HyuXv/l9xg6dmwvhVD
+	eyDrjMYL83UdY47gyt87Hq0nAgBYS5W+sTpo7CCUwYG6Nap4+x/vhyi/m19yfPlzJv7PaN
+	c1yRzoSEa0BmnSVaOLt0CpsCuHw9DstA+eaTwARoQgft/FEUdhi5Ylg6JD03LQ==
+Date: Fri, 08 Mar 2024 16:30:10 +0100
+From: Dragan Simic <dsimic@manjaro.org>
+To: Quentin Schulz <foss+kernel@0leil.net>
+Cc: Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Heiko Stuebner <heiko@sntech.de>, Klaus Goger
+ <klaus.goger@theobroma-systems.com>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Quentin Schulz
+ <quentin.schulz@theobroma-systems.com>
+Subject: Re: [PATCH 3/3] arm64: dts: rockchip: add regulators for PCIe on
+ RK3399 Puma Haikou
+In-Reply-To: <20240308-puma-diode-pu-v1-3-2b38457bcdc0@theobroma-systems.com>
+References: <20240308-puma-diode-pu-v1-0-2b38457bcdc0@theobroma-systems.com>
+ <20240308-puma-diode-pu-v1-3-2b38457bcdc0@theobroma-systems.com>
+Message-ID: <adc58b09d99d62df2c7559657547ca29@manjaro.org>
+X-Sender: dsimic@manjaro.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
 
-For swiotlb allocations >= PAGE_SIZE, the slab search historically
-adjusted the stride to avoid checking unaligned slots. This had the
-side-effect of aligning large mapping requests to PAGE_SIZE, but that
-was broken by 0eee5ae10256 ("swiotlb: fix slot alignment checks").
+On 2024-03-08 13:52, Quentin Schulz wrote:
+> From: Quentin Schulz <quentin.schulz@theobroma-systems.com>
+> 
+> The PCIe PHY requires two regulators and are present on the SoM
+> directly, while the PCIe connector also exposes 3V3 and 12V power rails
+> which are available on the baseboard.
+> 
+> Considering that 3/4 regulators are always-on on HW level and that the
+> last one depends on a regulator from the PMIC that is specified as
+> always on, this commit should be purely cosmetic and no change in
+> behavior is expected.
+> 
+> Let's add all regulators for PCIe on RK3399 Puma Haikou.
+> 
+> Signed-off-by: Quentin Schulz <quentin.schulz@theobroma-systems.com>
 
-Since this alignment could be relied upon drivers, reinstate PAGE_SIZE
-alignment for swiotlb mappings >= PAGE_SIZE.
+Looking good to me, assuming that the regulator naming follows the
+labels used in the schematics.
 
-Reported-by: Michael Kelley <mhklinux@outlook.com>
-Signed-off-by: Will Deacon <will@kernel.org>
----
- kernel/dma/swiotlb.c | 18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+Reviewed-by: Dragan Simic <dsimic@manjaro.org>
 
-diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-index c381a7ed718f..c5851034523f 100644
---- a/kernel/dma/swiotlb.c
-+++ b/kernel/dma/swiotlb.c
-@@ -992,6 +992,17 @@ static int swiotlb_search_pool_area(struct device *dev, struct io_tlb_pool *pool
- 	BUG_ON(!nslots);
- 	BUG_ON(area_index >= pool->nareas);
- 
-+	/*
-+	 * Historically, swiotlb allocations >= PAGE_SIZE were guaranteed to be
-+	 * page-aligned in the absence of any other alignment requirements.
-+	 * 'alloc_align_mask' was later introduced to specify the alignment
-+	 * explicitly, however this is passed as zero for streaming mappings
-+	 * and so we preserve the old behaviour there in case any drivers are
-+	 * relying on it.
-+	 */
-+	if (!alloc_align_mask && !iotlb_align_mask && alloc_size >= PAGE_SIZE)
-+		alloc_align_mask = PAGE_SIZE - 1;
-+
- 	/*
- 	 * Ensure that the allocation is at least slot-aligned and update
- 	 * 'iotlb_align_mask' to ignore bits that will be preserved when
-@@ -1006,13 +1017,6 @@ static int swiotlb_search_pool_area(struct device *dev, struct io_tlb_pool *pool
- 	 */
- 	stride = get_max_slots(max(alloc_align_mask, iotlb_align_mask));
- 
--	/*
--	 * For allocations of PAGE_SIZE or larger only look for page aligned
--	 * allocations.
--	 */
--	if (alloc_size >= PAGE_SIZE)
--		stride = umax(stride, PAGE_SHIFT - IO_TLB_SHIFT + 1);
--
- 	spin_lock_irqsave(&area->lock, flags);
- 	if (unlikely(nslots > pool->area_nslabs - area->used))
- 		goto not_found;
--- 
-2.44.0.278.ge034bb2e1d-goog
-
+> ---
+>  .../arm64/boot/dts/rockchip/rk3399-puma-haikou.dts |  2 ++
+>  arch/arm64/boot/dts/rockchip/rk3399-puma.dtsi      | 26 
+> ++++++++++++++++++++++
+>  2 files changed, 28 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3399-puma-haikou.dts
+> b/arch/arm64/boot/dts/rockchip/rk3399-puma-haikou.dts
+> index 18a98c4648eae..66ebb148bbc9a 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3399-puma-haikou.dts
+> +++ b/arch/arm64/boot/dts/rockchip/rk3399-puma-haikou.dts
+> @@ -194,6 +194,8 @@ &pcie0 {
+>  	num-lanes = <4>;
+>  	pinctrl-names = "default";
+>  	pinctrl-0 = <&pcie_clkreqn_cpm>;
+> +	vpcie3v3-supply = <&vcc3v3_baseboard>;
+> +	vpcie12v-supply = <&dc_12v>;
+>  	status = "okay";
+>  };
+> 
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3399-puma.dtsi
+> b/arch/arm64/boot/dts/rockchip/rk3399-puma.dtsi
+> index 2484ad2bd86fc..1113f57b09313 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3399-puma.dtsi
+> +++ b/arch/arm64/boot/dts/rockchip/rk3399-puma.dtsi
+> @@ -79,6 +79,26 @@ vcc5v0_sys: vcc5v0-sys {
+>  		regulator-max-microvolt = <5000000>;
+>  	};
+> 
+> +	vcca0v9: vcca0v9-regulator {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vcca0v9";
+> +		regulator-always-on;
+> +		regulator-boot-on;
+> +		regulator-min-microvolt = <900000>;
+> +		regulator-max-microvolt = <900000>;
+> +		vin-supply = <&vcc_1v8>;
+> +	};
+> +
+> +	vcca1v8: vcca1v8-regulator {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vcca1v8";
+> +		regulator-always-on;
+> +		regulator-boot-on;
+> +		regulator-min-microvolt = <1800000>;
+> +		regulator-max-microvolt = <1800000>;
+> +		vin-supply = <&vcc3v3_sys>;
+> +	};
+> +
+>  	vdd_log: vdd-log {
+>  		compatible = "pwm-regulator";
+>  		pwms = <&pwm2 0 25000 1>;
+> @@ -416,6 +436,12 @@ &io_domains {
+>  	gpio1830-supply = <&vcc_1v8>;
+>  };
+> 
+> +&pcie0 {
+> +	/* PCIe PHY supplies */
+> +	vpcie0v9-supply = <&vcca0v9>;
+> +	vpcie1v8-supply = <&vcca1v8>;
+> +};
+> +
+>  &pcie_clkreqn_cpm {
+>  	rockchip,pins =
+>  		<2 RK_PD2 RK_FUNC_GPIO &pcfg_pull_up>;
 
