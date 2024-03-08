@@ -1,122 +1,108 @@
-Return-Path: <linux-kernel+bounces-96979-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96980-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51A6087640A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:10:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6918D87640D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 13:10:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8336D1C21533
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 12:10:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E9D96B22EA3
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 12:10:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F79E5676E;
-	Fri,  8 Mar 2024 12:10:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DADDB57886;
+	Fri,  8 Mar 2024 12:10:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FvwdXM/I"
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HExJL939"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6572A535CA;
-	Fri,  8 Mar 2024 12:10:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AE8257880;
+	Fri,  8 Mar 2024 12:10:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709899826; cv=none; b=S98WSt33X0QTeHI4TNHV6rK3F0P20Z4lEVQTGYvwjF0fYyk6A2Kgjm/BUbnMCd1F1o54glbttfY4HY7ECVvxusSEHH3KmvYwmRwy7otE3jQSGA8KLap/inPwsT/M0xVz6tn+WcT7mXsOEGgt89Fv9gEX3HaU1b9tpWYwajjM6Mo=
+	t=1709899834; cv=none; b=eCXCvMq0uyWK+53Q1byfWU3XT31AkcaMXDTuBaER3eStiveZbWs5HDEkAFm5n1WbbRYU1ttIS6exsRrOuLa8Y6YbI63Ah9nMBooFq+vXp0OEk6AAeKBzkKhM3zGSqJCv+trVHUr4yDRFKgMs6OGsWtukHdFgGTuPpRww2HLHWKg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709899826; c=relaxed/simple;
-	bh=Umw52OeAdsCrNTCL2UqZxJ1nYRjrDFqkST66g4dDbGc=;
-	h=From:To:Subject:Date:Message-Id; b=iMxMHEQ8G8WFYy+G+Ml3YGfztOIZd1TkR/S0DCD0hNhhVCoMKTfHt4/Ub/MgKSrUFaHvji6avaDv1Xse91DJqlggYcaS9YtlRqmxAINvl7gqdk1Q6H53RlBaKPy70qb0FgmeN33RkxkCf+v/Qv0sOll8/9Q+YJc6gzvg4NOxsaQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FvwdXM/I; arc=none smtp.client-ip=209.85.214.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1dc29f1956cso5088275ad.0;
-        Fri, 08 Mar 2024 04:10:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709899825; x=1710504625; darn=vger.kernel.org;
-        h=message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FT4YKhx1arQKM4uZFE6CXUn3u3YsdPfEE6W1XkpDDy0=;
-        b=FvwdXM/IPjZt+7o3kBFuAll5FU/BVwPWDbIfpmdEZ8FOh3TTwDh7XjxpQfdRPhzvt7
-         2Bwr5d7W14h+Elt24k4g46BXGnQrlhg1JNWbrN6XL2+2wdQu70nYKvtvkB3co2W9eqLt
-         /8lYwD5EttxlNuE+YLcW9AFjK4NZKMen/nQuKBr2UOsUVKXtviz15gWxvhZYfg8EfnTH
-         xxMCiUQtlMKnO2fOM8JZJ+mh99kiXNkech8jyWp2kH9zq1PAHpSMYoRmsjBujRhUDAZK
-         4Nf00Inpy1+XRuKdfKWrMixMDRj024q79SfsurbNqr9I6k37DPaRD/7vn6yZeA/y5o6Z
-         bL3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709899825; x=1710504625;
-        h=message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FT4YKhx1arQKM4uZFE6CXUn3u3YsdPfEE6W1XkpDDy0=;
-        b=j0CSGjjmegYcvsdI1A2BV/URH07eANl7t4j4N9TxN02iUUSWUK1SMFgLL0JTESI6XG
-         cASrKfUAtgrvPu/iDOtv1gFN9Hm+RdS/Kz3FojZ6Xg7ZjwmtJr/qNMLlgJRTwBIsN3js
-         JVYQHF1v5ISSelaw+FyTl4/R+z/bR/7/I6cXCJ5g6WN2jymUzUoXzOP66BpaSfUZiCYf
-         pPmVAAWjuBLaazionwOeINRH34Q2SEDoD3w/4Hu0pNd8ozGPOKpTrtIiXJxfLTwnVVqO
-         ZMrfawhsGq8gEAT1ONKaF/Jj3n55wI5vKFoox+Wgm9FLd8hXwCIYQJ1F0ei4vHsNdB4s
-         FcsA==
-X-Forwarded-Encrypted: i=1; AJvYcCWbS6/gG8+VXl9lqNpZ3dj9WDn32y3fUCa7GGx51fNaFaFT3ROZbxJeQEH/+PoeRn/UC5dSfKKQoEsxvAqy4ass5LGZZUvVtkZvjaC/7DrtKRLkSBS5KBrt2gsJLKL7Pf1iF2HQUVWoXJo=
-X-Gm-Message-State: AOJu0YzkSCI+fsv6/MzgBN+RvrjAQp82dTBkfanzcWBMVAiZvjAxgdhE
-	85r4ZLNwSoyEyDR+glc8Rayu1uHBUtdCdsF4cf+AeSpQhSTn4+EBVdzpvjawRwA=
-X-Google-Smtp-Source: AGHT+IHsH8NDwM4TODYOCRN5NcxpEfZ5S2tEIVEttMzmnICm6qCNbDEBiYPhQlBVvEUzv2dZkNIrTA==
-X-Received: by 2002:a17:902:ec92:b0:1dc:42da:bad with SMTP id x18-20020a170902ec9200b001dc42da0badmr12957207plg.62.1709899824581;
-        Fri, 08 Mar 2024 04:10:24 -0800 (PST)
-Received: from goorm.ap-northeast-2.compute.internal (ec2-52-78-100-77.ap-northeast-2.compute.amazonaws.com. [52.78.100.77])
-        by smtp.gmail.com with ESMTPSA id jf19-20020a170903269300b001db37fd26bcsm2491016plb.116.2024.03.08.04.10.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Mar 2024 04:10:24 -0800 (PST)
-From: yongsuyoo0215@gmail.com
-To: mchehab@kernel.org,
-	yongsuyoo0215@gmail.com,
-	v4bel@theori.io,
-	linux-media@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] media: dvb_ca_en50221: Fix a bug for detecting CI MODULE
-Date: Fri,  8 Mar 2024 12:10:21 +0000
-Message-Id: <20240308121021.1732-1-yongsuyoo0215@gmail.com>
-X-Mailer: git-send-email 2.17.1
+	s=arc-20240116; t=1709899834; c=relaxed/simple;
+	bh=Rh7ep53yssknr1kNn8KtS8YyEUbCMnHW87CArF64XNQ=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=alKnzTsVrgOEzbrzXnxe59VX7KGDKeezpAUU2ylwRpifHECYa+PAKuOGq8696B5KNWjvIwxb9jfHym1WiPQyMSBl3X/4gd0gQfA2UGeZrQChFVjIHX8AfrH6hP6UMvV1PXVgeXbiJ51mDk6MQt74kV4yjfRT2AznjKIwX7750GY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HExJL939; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id DBDF5C43390;
+	Fri,  8 Mar 2024 12:10:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709899833;
+	bh=Rh7ep53yssknr1kNn8KtS8YyEUbCMnHW87CArF64XNQ=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=HExJL939LX1FYbdAjxDjX/pI8bvsOO6gFtVcJf9DBrp9EChmO44e6DUBB5LfVciIa
+	 f9+ErKl8Old/Lue3CnOrepEOc0WaMz8nXDNndWM6BTIgw+5iqN52LSc9iTWUCVpTgo
+	 7xTzNWo4EruBhJ3F5vkGdZjlf6OKMjvkwXZgOSogTbMVeoB6XyxgyZJzpqXp8w0C2r
+	 TG+unwqY/C+cKNxpOOw+QwYblp7q/nA2OfOSEto5bvxQo9mG+kCcFrYoH4IOQIQXy5
+	 QjiI/Lkt2/iBW8/l0OVCjFoaN3ckR6u72XmkLJ9ndPIiQwKhRPGvR8nVxdDUh+0WJe
+	 fYNr/7TqXx5/Q==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B270DC59A4C;
+	Fri,  8 Mar 2024 12:10:33 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net 0/8] There are some bugfix for the HNS3 ethernet driver
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170989983372.7796.11570830400912357021.git-patchwork-notify@kernel.org>
+Date: Fri, 08 Mar 2024 12:10:33 +0000
+References: <20240307010115.3054770-1-shaojijie@huawei.com>
+In-Reply-To: <20240307010115.3054770-1-shaojijie@huawei.com>
+To: Jijie Shao <shaojijie@huawei.com>
+Cc: yisen.zhuang@huawei.com, salil.mehta@huawei.com, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ shenjian15@huawei.com, wangjie125@huawei.com, liuyonglong@huawei.com,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 
-From: Yongsu yoo <yongsuyoo0215@gmail.com>
+Hello:
 
-Signed-off-by:Yongsu Yoo <yongsuyoo0215@gmail.com>
+This series was applied to netdev/net-next.git (main)
+by David S. Miller <davem@davemloft.net>:
 
-In source/drivers/media/dvb-core/dvb_ca_en50221.c, if the CA_RESET
-ioctl is called, the dvb_ca_en50221_slot_shutdown will also be called.
-Inside of the dvb_ca_en50221_slot_shutdown,
-the ca->slot_info[slot].slot_state will become DVB_CA_SLOTSTATE_NONE.
-In the most of cases, the ca->slot_info[slot].slot_state will quickly
-becomes restored to other states by the subsequent operations of the
-thread dvb_ca_en50221_thread_state_machine.
-But in some rare cases, when the CA_GET_SLOT_INFO ioctl is immediately
-called after the CA_RESET ioctl is called, the
-the ca->slot_info[slot].slot_state can still remains at
-DVB_CA_SLOTSTATE_NONE, and this causes CA_GET_SLOT_INFO ioctl not to
-return CA_CI_MODULE_PRESENT as info->flags even if CA_CI_MODULE is
-really connected on TV. This means that the CA_GET_SLOT_INFO ioctl
-does not return right informtion. This is a Bug. We fix this bug.
----
- drivers/media/dvb-core/dvb_ca_en50221.c | 4 ++++
- 1 file changed, 4 insertions(+)
+On Thu, 7 Mar 2024 09:01:07 +0800 you wrote:
+> There are some bugfix for the HNS3 ethernet driver
+> 
+> Hao Lan (2):
+>   net: hns3: add new 200G link modes for hisilicon device
+>   net: hns3: Disable SerDes serial loopback for HiLink H60
+> 
+> Jian Shen (1):
+>   net: hns3: add checking for vf id of mailbox
+> 
+> [...]
 
-diff --git a/drivers/media/dvb-core/dvb_ca_en50221.c b/drivers/media/dvb-core/dvb_ca_en50221.c
-index baf64540dc00..8d37c3c13227 100644
---- a/drivers/media/dvb-core/dvb_ca_en50221.c
-+++ b/drivers/media/dvb-core/dvb_ca_en50221.c
-@@ -1403,6 +1403,10 @@ static int dvb_ca_en50221_io_do_ioctl(struct file *file,
- 		    (sl->slot_state != DVB_CA_SLOTSTATE_INVALID)) {
- 			info->flags = CA_CI_MODULE_PRESENT;
- 		}
-+		if ((sl->slot_state == DVB_CA_SLOTSTATE_NONE) &&
-+		    (sl->camchange_type == DVB_CA_EN50221_CAMCHANGE_INSERTED)) {
-+			info->flags = CA_CI_MODULE_PRESENT;
-+	     	}
- 		if (sl->slot_state == DVB_CA_SLOTSTATE_RUNNING)
- 			info->flags |= CA_CI_MODULE_READY;
- 		break;
+Here is the summary with links:
+  - [net,1/8] net: hns3: fix wrong judgment condition issue
+    https://git.kernel.org/netdev/net-next/c/07a1d6dc90ba
+  - [net,2/8] net: hns3: add new 200G link modes for hisilicon device
+    https://git.kernel.org/netdev/net-next/c/dd1f65f0db27
+  - [net,3/8] net: hns3: Disable SerDes serial loopback for HiLink H60
+    https://git.kernel.org/netdev/net-next/c/0448825b8992
+  - [net,4/8] net: hns3: fix kernel crash when 1588 is received on HIP08 devices
+    https://git.kernel.org/netdev/net-next/c/0fbcf2366ba9
+  - [net,5/8] net: hns3: fix delete tc fail issue
+    https://git.kernel.org/netdev/net-next/c/03f92287b251
+  - [net,6/8] net: hns3: fix reset timeout under full functions and queues
+    https://git.kernel.org/netdev/net-next/c/216bc415d663
+  - [net,7/8] net: hns3: fix port duplex configure error in IMP reset
+    https://git.kernel.org/netdev/net-next/c/11d80f79dd9f
+  - [net,8/8] net: hns3: add checking for vf id of mailbox
+    https://git.kernel.org/netdev/net-next/c/4e2969a0d6a7
+
+You are awesome, thank you!
 -- 
-2.17.1
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
