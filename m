@@ -1,130 +1,128 @@
-Return-Path: <linux-kernel+bounces-97421-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97422-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AFFF6876A48
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:54:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96640876A4A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 18:55:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 501EF1F24E22
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:54:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5182D284EAA
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 17:55:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7744840861;
-	Fri,  8 Mar 2024 17:54:46 +0000 (UTC)
-Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
-	by smtp.subspace.kernel.org (Postfix) with SMTP id 9275C36D
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 17:54:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.131.102.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E7EF40861;
+	Fri,  8 Mar 2024 17:55:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="zcfC6NeS"
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDA1F4779F
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 17:54:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709920486; cv=none; b=smpsid6inEvT6mbrHJ/lCYhwZxvuopwqNW4A6VdjuyDNHqj4bmR6+2KcUTNBcVpjPJOs/xzgOqcISaQwfY0y4x2iXNKWHWmtK/QOcRea5Pur6HoXdgQtTPTSrBd5PaVU3AR/GAX9e673ffmIIUYSnJA0QK9QBKHrOCrIb2luHWg=
+	t=1709920500; cv=none; b=a+aWNuVgUQYQ+JCjqGmsSnFICl/FUJxEjGgX9hMzLAhYmoDYu0LlKvudvV4hu0Wz6PQ1qnTGXsG0MDMtT4Jcn69VrWboZQO2fS7CkUFm2w/D/xrR/ZLld31KKD7mcc8rcsNvYxyhLfwp0lrDImCWXKU7/h6On7e8t/CCGcB5P9o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709920486; c=relaxed/simple;
-	bh=/H8WjFvFPxyLsZIPjl4/bakKUkVA3AKPXdEEQ/B6xns=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Zdw+YDCnqyC6uCvbLmGtUZU+KgLNhFyRovMcfbzBodleUmLhSjOUbn3EpF5M0CSTTOXYhYpEy2cOcWKE0ZPQ2s8Vk8qYdR7ijcizcKcRfykfaeYFWDRSSFhYuangBpSyjiJSjh6dh9wpFAwCDTGlaTJHLUnVA0ltoK8tAiBrEzg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu; spf=pass smtp.mailfrom=netrider.rowland.org; arc=none smtp.client-ip=192.131.102.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netrider.rowland.org
-Received: (qmail 266266 invoked by uid 1000); 8 Mar 2024 12:54:42 -0500
-Date: Fri, 8 Mar 2024 12:54:42 -0500
-From: Alan Stern <stern@rowland.harvard.edu>
-To: Andrea Parri <parri.andrea@gmail.com>
-Cc: Kenneth-Lee-2012@foxmail.com, linux-kernel@vger.kernel.org,
-  paulmck@kernel.org
-Subject: Re: Question about PB rule of LKMM
-Message-ID: <198f16f6-1d61-4868-b522-1bc5d34bf7af@rowland.harvard.edu>
-References: <ZeipiSVLR01jmM6b@andrea>
- <e05fa6a9-c810-46cb-b033-b91ae7a5c382@rowland.harvard.edu>
- <ZejC+lutRuwXQrMz@andrea>
- <Zenip+8BDM3p+MUh@andrea>
- <eb8f2a21-d388-424d-8504-ccd7bdb53a93@rowland.harvard.edu>
- <ZeoFBkB1BeTdEQsn@andrea>
- <bde188b0-1c5b-4b3b-94de-395a52fc37ce@rowland.harvard.edu>
- <ZeoQvj3l6moF9KdQ@andrea>
- <b3137a9b-0776-421f-8b3b-b5ddd6bce96a@rowland.harvard.edu>
- <ZeosQDNK8hN/KgJR@andrea>
+	s=arc-20240116; t=1709920500; c=relaxed/simple;
+	bh=PqbYnoeebkLlNwNR80jokddThH4j13xSW/+xyPtw1Jc=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=mID6fMOvjl6i8YYk8WIiGjk2o4idxq+IzuPLDJ7FDef5oONZ/CG/LQDAfEuEk4/fCFXj16pq8cxIffv7EeAB6CT8rGKp0VjnKhEv7YO13mYxa60gowOZ0BXyfI42EMjzhONiFeQnsF0ae8UWxc8am8LBt5sUVYYZwLiGspibHCo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=zcfC6NeS; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1dc75972f25so19432295ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Mar 2024 09:54:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1709920497; x=1710525297; darn=vger.kernel.org;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=EamBEUqzL9Iiqztd/HotFBvV3nM4Pbfu8Iqoqukog0c=;
+        b=zcfC6NeSUDVSOX0DFih3g4kWmr7Ctro4sCUJX9fmd6mc9kgIGqbv6HU9kDYCg8ZeE+
+         9/61adcgjPa2mYjYPCHvFC7Z8uWtmUYPC0iw4ubJUGpT3ApskHDtgz1+3CfjVpr8IbLB
+         Q+3z3lRAsmgv6CtQfe9M4r4dEx6YE8ZJwyJMG927g2MytjivZxoP7lFxwp0NzNEkxwnp
+         5gPJSITjOH9e3nTIv3a5JJ2s+JKFzEE4y8QkHFBV1VjIJU9KD+U3WAf13sNIeUBfTTMF
+         FxSslFwKZ6pmWbQPDpm8vMtHxEu2+ewaL6qFgS7LSN614+3MqWV87HWBBTNJOdGHYL32
+         ywDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709920497; x=1710525297;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=EamBEUqzL9Iiqztd/HotFBvV3nM4Pbfu8Iqoqukog0c=;
+        b=XizdWDgDIAdEqdVeOIU5Bv5pVsK3MO0ckdsp9W0c0mshzyVqnXzLc4CXt90KlaQCDI
+         LgFkB2O1KbCgfrNZT1IEXsuA96yozKUQszBFXT7brLdix8xUEHJ1Tvr/4IY1xuRqmks/
+         hAeW7uWhAW+V+HwVud9BzqnTZ2GHOnBxvSRQGeJgRMqmcCV0BZ2VbhGQnFkZt+ZVVALU
+         YRDxvVSO+LE8dhCKxRaIF2s5sbtAjGr5osa3+sJGuHqLUzKITvxcxUUkkaAHG4DU05nX
+         Veqe2hDxA+Iar1936WO18poAFOs8FUS5Om2dOov9X0114Q/5RIJgr4VameKlEHuMk062
+         3fZg==
+X-Forwarded-Encrypted: i=1; AJvYcCVKF1pGz2ARaaBMoHD/dyVvEqnvvk4zdQv0ntES2LUAyfsHOSun933RmiigBtjxx9GTqZr6JmQA3fgwaa/Wx5xVacUfgaaU4wGpgFiy
+X-Gm-Message-State: AOJu0Yw4yiUm2bgaiXtAA1Z1dMfNz8O9DSbug3qLgnl37QMEvtYjPth4
+	q9EsZ4+q6dwaZj3Iz2PgfpFpEyGjZCuzjYatjFjKK85V8jX2F50hXkQLSWnNARE=
+X-Google-Smtp-Source: AGHT+IHA4RG5j/V//vGz+610MDvs64AMo45dipHrCspxD7J7JXQra4JvVWAZSTY7TNiNzGWiYg9wog==
+X-Received: by 2002:a17:902:db0a:b0:1dd:a34:7321 with SMTP id m10-20020a170902db0a00b001dd0a347321mr14382430plx.25.1709920497123;
+        Fri, 08 Mar 2024 09:54:57 -0800 (PST)
+Received: from localhost (71-212-63-227.tukw.qwest.net. [71.212.63.227])
+        by smtp.gmail.com with ESMTPSA id d14-20020a170903230e00b001da15580ca8sm16565649plh.52.2024.03.08.09.54.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Mar 2024 09:54:56 -0800 (PST)
+From: Kevin Hilman <khilman@baylibre.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Rob Herring
+ <robh@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Neil Armstrong <neil.armstrong@linaro.org>, Martin Blumenstingl
+ <martin.blumenstingl@googlemail.com>, Jerome Brunet
+ <jbrunet@baylibre.com>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH 2/2] dt-bindings: arm: amlogic: add Neil, Martin and
+ Jerome as maintainers
+In-Reply-To: <20240224084030.5867-2-krzysztof.kozlowski@linaro.org>
+References: <20240224084030.5867-1-krzysztof.kozlowski@linaro.org>
+ <20240224084030.5867-2-krzysztof.kozlowski@linaro.org>
+Date: Fri, 08 Mar 2024 09:54:56 -0800
+Message-ID: <7ha5n8pq1b.fsf@baylibre.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZeosQDNK8hN/KgJR@andrea>
+Content-Type: text/plain
 
-On Thu, Mar 07, 2024 at 10:06:08PM +0100, Andrea Parri wrote:
-> > > C test
-> > > 
-> > > {}
-> > > 
-> > > P0(int *x)
-> > > {
-> > > 	*x = 1;
-> > > }
-> > > 
-> > > P1(int *x)
-> > > {
-> > > 	*x = 2;
-> > > }
-> > 
-> > Ah, but you see, any time you run this program one of those statements
-> > will execute before the other.  Which will go first is indeterminate,
-> > but the chance of them executing at _exactly_ the same moment is zero.
-> 
-> TBH, I don't.  But I trust you know your memory controller.  ;-)
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> writes:
 
-I can't tell which aspect of this bothers you more: the fact that the 
-text uses an argument by contradiction, or the fact that it ignores the 
-possibility of two instructions executing at the same time.
+> Add rest of Linux Amlogic Meson SoC maintainers and reviewers to the
+> Amlogic board/SoC binding maintainers.
+>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>
+> ---
+>
+> Entries ordered by lastname.
+> ---
+>  Documentation/devicetree/bindings/arm/amlogic.yaml | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/arm/amlogic.yaml b/Documentation/devicetree/bindings/arm/amlogic.yaml
+> index edbc21159588..949537cea6be 100644
+> --- a/Documentation/devicetree/bindings/arm/amlogic.yaml
+> +++ b/Documentation/devicetree/bindings/arm/amlogic.yaml
+> @@ -7,6 +7,9 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+>  title: Amlogic SoC based Platforms
+>  
+>  maintainers:
+> +  - Neil Armstrong <neil.armstrong@linaro.org>
+> +  - Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> +  - Jerome Brunet <jbrunet@baylibre.com>
+>    - Kevin Hilman <khilman@baylibre.com>
 
-If it's the latter, consider this: Although the text doesn't say so, 
-the reasoning it gives also covers the case where F executes at the same 
-time as E.  You can still deduce that W must have propagated to E's 
-CPU before E executed, because W must propagate to every CPU before F 
-executes.
+Acked-by: Kevin Hilman <khilman@baylibre.com>
 
-> > The way you put it also relies on argument by contradiction.  This
-> > just wasn't visible, because you omitted a lot of intermediate steps in
-> > the reasoning.
-> > 
-> > If you want to see this in detail, try explaining why it is that "W is
-> > coherence-later than E" implies "E must execute before W propagates to
-> > E's CPU" in the operational model.
-> 
-> But that's all over in explanation.txt??  FWIW, a quick search returned
-> (wrt fre):
-> 
->   R ->fre W means that W overwrites the value which R reads, but it
->   doesn't mean that W has to execute after R.  All that's necessary
->   is for the memory subsystem not to propagate W to R's CPU until
->   after R has executed
+FWIW, I still believe "stable DT" is an oxymoron, but I don't care
+enough anymore to fight this battle, so happy to see the other
+maintainers listed & recognized for the great work they're doing.
 
-(In fact, that sentence isn't entirely accurate.  It should say "... not 
-to propagate W (or a co-later store)...".)
+Thanks,
 
-Let's consider coe instead of fre.  The description of how the 
-operational model manages the coherence order of stores is found in 
-section 13 (AN OPERATIONAL MODEL):
+Kevin
 
-	When CPU C executes a store instruction, it tells the memory 
-	subsystem to store a certain value at a certain location.  The 
-	memory subsystem propagates the store to all the other CPUs as 
-	well as to RAM.  (As a special case, we say that the store 
-	propagates to its own CPU at the time it is executed.)  The 
-	memory subsystem also determines where the store falls in the 
-	location's coherence order.  In particular, it must arrange for 
-	the store to be co-later than (i.e., to overwrite) any other 
-	store to the same location which has already propagated to CPU 
-	C.
-
-So now if E is a store and is co-before W, how do we know that W didn't 
-propagate to E's CPU before E executed?  It's clear from the last 
-sentence of the text above: If W had propagated to E's CPU before E 
-executed then the memory subsystem would have arranged for E to be 
-co-later than W.  That's an argument by contradiction, and there's no 
-way to avoid it here.
-
-Alan
 
