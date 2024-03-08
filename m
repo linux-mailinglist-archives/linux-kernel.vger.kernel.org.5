@@ -1,231 +1,152 @@
-Return-Path: <linux-kernel+bounces-97168-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-97169-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AEF487665D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 15:29:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79FCD876661
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 15:32:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 54CDCB21414
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:29:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AAA431C21836
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 14:32:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DB4A48CFC;
-	Fri,  8 Mar 2024 14:29:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E548715C0;
+	Fri,  8 Mar 2024 14:32:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="MsEd9dn3";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="1LDzq8iF";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="MsEd9dn3";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="1LDzq8iF"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="WOV78bzO"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7A6A3FBB9;
-	Fri,  8 Mar 2024 14:29:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97FEF366
+	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 14:31:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709908183; cv=none; b=IdfxJhDstlxwT+y761sbkDWU3Q/yz9zpQEB5nHjPYUK+ovZjvfbgblloHA+S+1kVP+O6pX9J2uL9vCu7hNskfpBYvPY2/IBxK4BXrvHLFTcds4DUGmTC54XjY0r0upUFC4QBK3IBCpHpkNh8L5Ux0QoJl0wQngbOz51R9Iqa9vg=
+	t=1709908320; cv=none; b=S2l2fUPlWb4I19IlHQH4LtV9UsQYflWcvE3lxXnhBiaa2sJOMW6665Gb3p8mgF2W9/CAU5gSd5Yy5xu4U/dbF8ld5XRmsTv9JNbYcx2LSE5AWk7AdSyawQD0BBpmD1nnKTDYNf1IUWBzDlfFgBJPRNJ/tXkSqJizTCtdoGIGJ48=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709908183; c=relaxed/simple;
-	bh=yfuZ3hSb+pB8JejaZWTf0biUpqodcxuCK85UX6EWMYc=;
+	s=arc-20240116; t=1709908320; c=relaxed/simple;
+	bh=wdtYuwWx8ORQMwU47Qj5g2L7s2yOzijaUjNod58MtHc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=a2xaSHMUWyIBsfVEE9xx57yn/uniGJomQBZ6Md9spBr5t6lJvk25QNpHENPO8nxhOliTvg482/7Df3UuyEFcJ+J5M67b7TRmTbHUU+XTHk5SZdSG3qjTggmAh8q8oTdT/TQLnsVThPizcocMbQHjR9Nrg10ikxdXw6uQkpv0Z5A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=MsEd9dn3; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=1LDzq8iF; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=MsEd9dn3; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=1LDzq8iF; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	 Content-Type:Content-Disposition:In-Reply-To; b=HuK4QtRbGdt7rivX05lDiL05A3TtfuRnhQL4JtOu9Yx4/3KTdcFrIcDxTlZsseMlpHLIBsNFxZOJdlU65DHjan2FtUxW1B3lr6VwDKRPNlNTwjBms5Vs70gpj0p0CWX+bi8Xdb/leIb8C6IsPXRBLZIHlwy4ZCPEyLdo3K+JYbw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=WOV78bzO; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709908317;
+	bh=wdtYuwWx8ORQMwU47Qj5g2L7s2yOzijaUjNod58MtHc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=WOV78bzOtFgbkclVF1IHUAojPBKxxPeMbLzSqAkg93ILAG1TPRonZhHVToLUUKerl
+	 OBGMcXxyT9ozJdaCYQcLI1absu/0fJ3VL3mG6siOMAWwkbpRvVbJaNwx5xzDIMWj4o
+	 t8B8DrXILMB+OgyhVvbTHlFGQL4VOQk/zQXdTpRpaulErM4EcQsj1N6wePREhWHlQk
+	 KkqXUCBn8BPY/urVHoe+xqOBr+6+gu9eGWu2ky2tDZOdyQ8GBDPgNMyDn9n4AZGExc
+	 lg3p2EFHPey7EMKIJu7kOVhofva1YqpBdgsxYASnZst/+wCQgYrWGyjn/PafgWZ8Mo
+	 Dsi/vkQHKarig==
+Received: from notapiano (zone.collabora.co.uk [167.235.23.81])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id C301D5BFAE;
-	Fri,  8 Mar 2024 14:29:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1709908179; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wCaGv2zXEJ+yXUxCmBT8XWgEX8+94ycfxb1ZkVsrRK4=;
-	b=MsEd9dn3ccmnP9T3Cpj5mLwWH2TbeFojx1VQLYTt1JnuDBwvclcfpYBwqcg5Y0Znb6OvCY
-	xd0SvAq/Kd97jFtX/Ox5nG8nXibxhUF32uaf/f2GMkAxdKIcpSTJ4StbdUibuh43kdhWSA
-	4DnNDHQAK1pAms43FeAg/QOT7BkCz/A=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1709908179;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wCaGv2zXEJ+yXUxCmBT8XWgEX8+94ycfxb1ZkVsrRK4=;
-	b=1LDzq8iFTWk+W6vOGZ7wHNgG0BT1LqS/bq86WbX/lM8SF9ZNqM8n2K9f1zEbea75gvpCX+
-	9u9B3WnSDKlZKsAw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1709908179; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wCaGv2zXEJ+yXUxCmBT8XWgEX8+94ycfxb1ZkVsrRK4=;
-	b=MsEd9dn3ccmnP9T3Cpj5mLwWH2TbeFojx1VQLYTt1JnuDBwvclcfpYBwqcg5Y0Znb6OvCY
-	xd0SvAq/Kd97jFtX/Ox5nG8nXibxhUF32uaf/f2GMkAxdKIcpSTJ4StbdUibuh43kdhWSA
-	4DnNDHQAK1pAms43FeAg/QOT7BkCz/A=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1709908179;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wCaGv2zXEJ+yXUxCmBT8XWgEX8+94ycfxb1ZkVsrRK4=;
-	b=1LDzq8iFTWk+W6vOGZ7wHNgG0BT1LqS/bq86WbX/lM8SF9ZNqM8n2K9f1zEbea75gvpCX+
-	9u9B3WnSDKlZKsAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9675C13310;
-	Fri,  8 Mar 2024 14:29:36 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id NM/rEdAg62V3MQAAD6G6ig
-	(envelope-from <colyli@suse.de>); Fri, 08 Mar 2024 14:29:36 +0000
-Date: Fri, 8 Mar 2024 22:29:29 +0800
-From: Coly Li <colyli@suse.de>
-To: Yu Kuai <yukuai1@huaweicloud.com>
-Cc: song@kernel.org, yukuai3@huawei.com, xueshi.hu@smartx.com, 
-	linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org, yi.zhang@huawei.com, 
-	yangerkun@huawei.com
-Subject: Re: [PATCH] raid1: fix use-after-free for original bio in
- raid1_write_request()
-Message-ID: <lch3c5p36igfup7vzsagjfxwr3otefv4igr2qahxwc2fpsntrd@qoeo67iwxzvr>
-References: <20240308093726.1047420-1-yukuai1@huaweicloud.com>
+	(Authenticated sender: nfraprado)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id A282D37820C3;
+	Fri,  8 Mar 2024 14:31:54 +0000 (UTC)
+Date: Fri, 8 Mar 2024 09:31:52 -0500
+From: =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado <nfraprado@collabora.com>
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Chen-Yu Tsai <wenst@chromium.org>
+Cc: regressions@lists.linux.dev, linux-mediatek@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	kernel@collabora.com
+Subject: Re: Probe regression of efuse@11f10000 on
+ mt8183-kukui-jacuzzi-juniper-sku16 running next-20240202
+Message-ID: <c4416256-eedc-4c9b-b968-3a02490c4c09@notapiano>
+References: <47cdeac1-121d-4b1a-a3ac-e2affc7a2fc3@notapiano>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20240308093726.1047420-1-yukuai1@huaweicloud.com>
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [-2.60 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 URIBL_BLOCKED(0.00)[suse.de:email,huawei.com:email];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 RCPT_COUNT_SEVEN(0.00)[8];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Score: -2.60
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <47cdeac1-121d-4b1a-a3ac-e2affc7a2fc3@notapiano>
 
-On Fri, Mar 08, 2024 at 05:37:26PM +0800, Yu Kuai wrote:
-> From: Yu Kuai <yukuai3@huawei.com>
+On Tue, Feb 06, 2024 at 11:11:00AM -0500, Nícolas F. R. A. Prado wrote:
+> Hi,
 > 
-> r1_bio->bios[] is used to record new bios that will be issued to
-> underlying disks, however, in raid1_write_request(), r1_bio->bios[]
-> will set to the original bio temporarily. Meanwhile, if blocked rdev
-> is set, free_r1bio() will be called causing that all r1_bio->bios[]
-> to be freed:
+> KernelCI has identified a regression [1] on the
+> mt8183-kukui-jacuzzi-juniper-sku16 machine running on next-20240202 compared to
+> next-20240118:
 > 
-> raid1_write_request()
->  r1_bio = alloc_r1bio(mddev, bio); -> r1_bio->bios[] is NULL
->  for (i = 0;  i < disks; i++) -> for each rdev in conf
->   // first rdev is normal
->   r1_bio->bios[0] = bio; -> set to original bio
->   // second rdev is blocked
->   if (test_bit(Blocked, &rdev->flags))
->    break
+> <4>[    0.627077] sysfs: cannot create duplicate filename '/bus/nvmem/devices/mtk-efuse0'
+> <4>[    0.634945] CPU: 7 PID: 1 Comm: swapper/0 Not tainted 6.8.0-rc2-next-20240202 #1
+> <4>[    0.642542] Hardware name: Google juniper sku16 board (DT)
+> <4>[    0.648237] Call trace:
+> <4>[    0.650917]  dump_backtrace+0x94/0xec
+> <4>[    0.654815]  show_stack+0x18/0x24
+> <4>[    0.658359]  dump_stack_lvl+0x48/0x60
+> <4>[    0.662252]  dump_stack+0x18/0x24
+> <4>[    0.665796]  sysfs_warn_dup+0x64/0x80
+> <4>[    0.669688]  sysfs_do_create_link_sd+0xf0/0xf8
+> <4>[    0.674353]  sysfs_create_link+0x20/0x40
+> <4>[    0.678500]  bus_add_device+0x64/0x104
+> <4>[    0.682475]  device_add+0x33c/0x778
+> <4>[    0.686193]  nvmem_register+0x514/0x714
+> <4>[    0.690256]  devm_nvmem_register+0x1c/0x6c
+> <4>[    0.694577]  mtk_efuse_probe+0xe8/0x170
+> <4>[    0.698637]  platform_probe+0x68/0xd8
+> <4>[    0.702525]  really_probe+0x148/0x2b4
+> <4>[    0.706413]  __driver_probe_device+0x78/0x12c
+> <4>[    0.710990]  driver_probe_device+0xdc/0x160
+> <4>[    0.715394]  __driver_attach+0x94/0x19c
+> <4>[    0.719453]  bus_for_each_dev+0x74/0xd4
+> <4>[    0.723512]  driver_attach+0x24/0x30
+> <4>[    0.727312]  bus_add_driver+0xe4/0x1e8
+> <4>[    0.731284]  driver_register+0x60/0x128
+> <4>[    0.735343]  __platform_driver_register+0x28/0x34
+> <4>[    0.740265]  mtk_efuse_init+0x20/0x5c
+> <4>[    0.744155]  do_one_initcall+0x6c/0x1b0
+> <4>[    0.748214]  kernel_init_freeable+0x1c8/0x290
+> <4>[    0.752795]  kernel_init+0x20/0x1dc
+> <4>[    0.756512]  ret_from_fork+0x10/0x20
+> <4>[    0.760353] mediatek,efuse: probe of 11f10000.efuse failed with error -17
 > 
->  if (blocked_rdev)
->   free_r1bio()
->    put_all_bios()
->     bio_put(r1_bio->bios[0]) -> original bio is freed
+> This efuse probe failure causes the probe failure of other components that
+> depend on it, including the display pipeline:
 > 
-> Test scripts:
+> /soc/dsi-phy@11e50000
+> /soc/dsi@14014000
+> /soc/efuse@11f10000
+> /soc/i2c@11008000/anx7625@58
+> /soc/i2c@11008000/anx7625@58/aux-bus/panel
+> /soc/thermal@1100b000
 > 
-> mdadm -CR /dev/md0 -l1 -n4 /dev/sd[abcd] --assume-clean
-> fio -filename=/dev/md0 -ioengine=libaio -rw=write -bs=4k -numjobs=1 \
->     -iodepth=128 -name=test -direct=1
-> echo blocked > /sys/block/md0/md/rd2/state
+> There is a series already addressing the issue [2]. The first two patches have
+> been merged into the mediatek tree, but that tree isn't currently being
+> integrated into linux-next. Besides that, patch 3 hasn't been merged into the
+> nvmem tree yet, and it is required in order to solve the issue.
 > 
-> Test result:
+> I'm sending this regression report so we can properly track the regression while
+> the fixes don't land on linux-next.
 > 
-> BUG bio-264 (Not tainted): Object already free
-> -----------------------------------------------------------------------------
+> Thanks,
+> Nícolas
 > 
-> Allocated in mempool_alloc_slab+0x24/0x50 age=1 cpu=1 pid=869
->  kmem_cache_alloc+0x324/0x480
->  mempool_alloc_slab+0x24/0x50
->  mempool_alloc+0x6e/0x220
->  bio_alloc_bioset+0x1af/0x4d0
->  blkdev_direct_IO+0x164/0x8a0
->  blkdev_write_iter+0x309/0x440
->  aio_write+0x139/0x2f0
->  io_submit_one+0x5ca/0xb70
->  __do_sys_io_submit+0x86/0x270
->  __x64_sys_io_submit+0x22/0x30
->  do_syscall_64+0xb1/0x210
->  entry_SYSCALL_64_after_hwframe+0x6c/0x74
-> Freed in mempool_free_slab+0x1f/0x30 age=1 cpu=1 pid=869
->  kmem_cache_free+0x28c/0x550
->  mempool_free_slab+0x1f/0x30
->  mempool_free+0x40/0x100
->  bio_free+0x59/0x80
->  bio_put+0xf0/0x220
->  free_r1bio+0x74/0xb0
->  raid1_make_request+0xadf/0x1150
->  md_handle_request+0xc7/0x3b0
->  md_submit_bio+0x76/0x130
->  __submit_bio+0xd8/0x1d0
->  submit_bio_noacct_nocheck+0x1eb/0x5c0
->  submit_bio_noacct+0x169/0xd40
->  submit_bio+0xee/0x1d0
->  blkdev_direct_IO+0x322/0x8a0
->  blkdev_write_iter+0x309/0x440
->  aio_write+0x139/0x2f0
+> [1] https://linux.kernelci.org/test/plan/id/65bd63c3f12d8a95e200a225/
+> [2] https://lore.kernel.org/linux-mediatek/20240130095656.3712469-1-wenst@chromium.org/
 > 
-> Since that bios for underlying disks are not allocated yet, fix this
-> problem by using mempool_free() directly to free the r1_bio.
-> 
+> #regzbot introduced next-20240118..next-20240202
 
-Yes, the panic doesn't show up anymore with this patch.
+Not sure why this got filed by regzbot under the mainline tab rather than next.
+Maybe it was the missing collon? Let me try again:
 
-Thanks for the fixup.
+#regzbot introduced: next-20240118..next-20240202
 
+In any case, the fix has already made it to linux-next, so this should close the
+regression:
 
-> Fixes: 992db13a4aee ("md/raid1: free the r1bio before waiting for blocked rdev")
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+#regzbot fix: nvmem: mtk-efuse: Drop NVMEM device name
 
-Reported-and-tested-by: Coly Li <colyli@suse.de>
-
-
-Coly Li
-
-> ---
->  drivers/md/raid1.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
-> index afca975ec7f3..fde8434c33df 100644
-> --- a/drivers/md/raid1.c
-> +++ b/drivers/md/raid1.c
-> @@ -1565,7 +1565,7 @@ static void raid1_write_request(struct mddev *mddev, struct bio *bio,
->  		for (j = 0; j < i; j++)
->  			if (r1_bio->bios[j])
->  				rdev_dec_pending(conf->mirrors[j].rdev, mddev);
-> -		free_r1bio(r1_bio);
-> +		mempool_free(r1_bio, &conf->r1bio_pool);
->  		allow_barrier(conf, bio->bi_iter.bi_sector);
->  
->  		if (bio->bi_opf & REQ_NOWAIT) {
-> -- 
-> 2.39.2
-> 
-> 
+Thanks,
+Nícolas
 
