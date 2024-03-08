@@ -1,93 +1,53 @@
-Return-Path: <linux-kernel+bounces-96421-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-96416-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD4F1875BE0
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 02:12:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 537EA875BD9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 02:09:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 476001F227CE
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 01:12:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AD7B3B20C53
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Mar 2024 01:09:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5836224EF;
-	Fri,  8 Mar 2024 01:12:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03FF4224DD;
+	Fri,  8 Mar 2024 01:09:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PxkS3Y3M"
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CD5523750
-	for <linux-kernel@vger.kernel.org>; Fri,  8 Mar 2024 01:12:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="C1ulDhg5"
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.3])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63AC020B35;
+	Fri,  8 Mar 2024 01:09:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709860348; cv=none; b=tMP0Yrviw8J2Eos9X5jKTdSEuHBEJbDHR3ELcVJ9V4xHaODcDLNyOHm6rNOoNYU7xDjyViI7OkPtHjR8BYK4RqD+9mHCydzjBTBrt3eRgx2B6uGJIlD7BrOSjfW+NstntUWk6m0spxfscTagF0FVH9xAp6KAfOQWTHJUNjZ1NTA=
+	t=1709860171; cv=none; b=o/9NA9eLcw6CYvle1ytKVz4lgpzRKJr5DfO/g++aKaSepLbmKV3SO4ayfDURMLywTIdymZhMDVitLvrEWQkukl0LRSkL2Tay8Cset1JAsLQAEGPXQSMbcCvd1bF9b002i9ri/UQ1ouOI8jqRz63/9cFxpLeiV43JwhQbYCNteKY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709860348; c=relaxed/simple;
-	bh=sA5YotOtX3AcvjjrYf5fHrYUORIzots7hTq07UQbKVI=;
+	s=arc-20240116; t=1709860171; c=relaxed/simple;
+	bh=S5oTdDbKKJ9uCz6925DSgCk/EUQPohigcFEx7WR6WHE=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=f3Y4/lvJO+nluz5GD6eSoOHJ7ZNPQHZUIODAAgM9Ydl4z/YwDtECwDetYd2T4iXrjrJ7kPZ9J2v60z6MvS3MGHa18Jjgd7dsLH+L/f7VG4iPGMx8TNrDBCCXO9EleVOcpk5S0V0i7ozvUqAhBUVEn+krQiD0ik46oFa8+3V2mU8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PxkS3Y3M; arc=none smtp.client-ip=209.85.221.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-33e742ca96bso404483f8f.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Mar 2024 17:12:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709860345; x=1710465145; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Owx6jt72g5QT/V0uQHGstO9uCqzU46h0v31gh/DzxSw=;
-        b=PxkS3Y3MU+Ds4ZgLtFQCLvB35mWreYDwDKbu+q1SeOQBVjewFykej39z3w8s/bkAZo
-         /gZyqQwUanCxijE6clPgp3HYgkGerqqAMqPrhuoch1MhaamW9wvgBPFUGSaQpDOjhaDd
-         vXCb4PD9+rrZz1Cb74sfpZ9o33HCeArsIvCEhkuIUY1Si6XTi0vrzQn+9JtMkbN/3FNu
-         KgQLptuh6GVKbRhB/Xsme2HjFIcXJPgwGRgjPoJjocCA1gC7YyvWsyDOMcz/FXpTDmeg
-         S2brMlNBSdRWHzjB/m3rqZwrlRMPeeNkcbVNcZF5SbAV4MBRgO6RAiOQefwebiXnwzft
-         WFKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709860345; x=1710465145;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Owx6jt72g5QT/V0uQHGstO9uCqzU46h0v31gh/DzxSw=;
-        b=GvuS+6GJ8hzZDUGN6+6g6rCYdffi+h0AbdhNoMFUAelXew6JO6v5hkSPoJVp3fivyI
-         1oeC0h4bLGH898Oz5fdFFN6tKY2g2W84VgvOTNwPJjNNAtpsAcizYVlvgPqRSwn3aUr8
-         f9XGnLkIcgNz7sxmZCNJrG0Z4Q5o6EdDSFHOJNqwPR9zwoWjs3ZU7AvVQJgKs2TdfBFB
-         QcUakDJQFDWYf6Tal4GTlXd2UPO3aVjsIFHUXd/1jWZfixJALvgNFFU8fbi4m5L3b6KA
-         zVFsdpvXqjCNTY6qq1PCY+TTM1302Dw72vM84iFmTNmsvjJLPCmbIL3qN4lCI6faGGc9
-         3IMw==
-X-Forwarded-Encrypted: i=1; AJvYcCV/CqdC2PqdPS1DPojXrwAmtPvcFyEi+wZD/+YqKBCPe4EKf+F73VO4AqgnvkxtWgxF4O2fHh38fX1y7f7T27Hl41I1sHMdmAnnWzh+
-X-Gm-Message-State: AOJu0YxEIkVrkshix4mk6wA7XW8/MvyLwLpYC2bbNq4iQCFqzwNK+935
-	U2R2fVxPx26vGxh7aQkUTIAE5q5blJNum4SaNVpuBb9iQuaoq09L
-X-Google-Smtp-Source: AGHT+IGyFK85fLcK62sC298qj//c9CgMsC5e3P8Va0z/mRDqMFtCe0XGX8iOSmZnzWnJeMlfMP112A==
-X-Received: by 2002:a5d:554d:0:b0:33e:6760:6def with SMTP id g13-20020a5d554d000000b0033e67606defmr2195331wrw.56.1709860344707;
-        Thu, 07 Mar 2024 17:12:24 -0800 (PST)
-Received: from localhost (ec2-18-169-47-158.eu-west-2.compute.amazonaws.com. [18.169.47.158])
-        by smtp.gmail.com with ESMTPSA id f14-20020a5d50ce000000b0033b66c2d61esm21450770wrt.48.2024.03.07.17.12.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Mar 2024 17:12:24 -0800 (PST)
-From: Alex Constantino <dreaming.about.electric.sheep@gmail.com>
-To: regressions@leemhuis.info
-Cc: 1054514@bugs.debian.org,
-	airlied@redhat.com,
-	carnil@debian.org,
-	daniel@ffwll.ch,
-	dri-devel@lists.freedesktop.org,
-	kraxel@redhat.com,
-	linux-kernel@vger.kernel.org,
-	regressions@lists.linux.dev,
-	spice-devel@lists.freedesktop.org,
-	timo.lindfors@iki.fi,
-	tzimmermann@suse.de,
-	virtualization@lists.linux-foundation.org,
-	Alex Constantino <dreaming.about.electric.sheep@gmail.com>
-Subject: [PATCH 1/1] drm/qxl: fixes qxl_fence_wait
-Date: Fri,  8 Mar 2024 01:08:51 +0000
-Message-Id: <20240308010851.17104-2-dreaming.about.electric.sheep@gmail.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240308010851.17104-1-dreaming.about.electric.sheep@gmail.com>
-References: <fb0fda6a-3750-4e1b-893f-97a3e402b9af@leemhuis.info>
- <20240308010851.17104-1-dreaming.about.electric.sheep@gmail.com>
+	 MIME-Version; b=tcnVOiPyyue1sfWQPD1Jy2KgFH8mMlwqT4gnwbI6PUP6QrKfK98pIkybuQ8otq5b+hxOgiY2MpTU2ZTRRri85orsqQbsKGliocOw3CS/Dihp+3JtbDSMbITg6PW8wbrWIzSRQMiAL7CWRfMqfxXWjoMcKu0n+eJjvn2graCLnIs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=C1ulDhg5; arc=none smtp.client-ip=220.197.31.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=1iFaV
+	287Y0eGK7s0IO6GL/mOj5DAK8MslBCFLFMR+hg=; b=C1ulDhg5gNEul61gUji6Q
+	yG4T4Dl+k4lXFXJdCkH6p3MJefz2DZ4RWxQp2WxbmGlp221QddyucrVywW5RHnlw
+	N/UoC6srh1XzJRf8ct5j/Bzseo2RfFVH3oNkjOnp+Ft4ioKJvq9N5Gzpm8YJdSc/
+	1WPi0Qxog0pPRqC9Z6mWi8=
+Received: from ldingyan9LVDQ.vmware.com.com (unknown [114.250.139.10])
+	by gzga-smtp-mta-g1-0 (Coremail) with SMTP id _____wBH76AxZeplz6ePAw--.49439S2;
+	Fri, 08 Mar 2024 09:09:06 +0800 (CST)
+From: Dingyan Li <18500469033@163.com>
+To: stern@rowland.harvard.edu
+Cc: gregkh@linuxfoundation.org,
+	linux-usb@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] USB: Use EHCI control transfer pid macros instead of constant values.
+Date: Fri,  8 Mar 2024 09:08:59 +0800
+Message-Id: <20240308010859.81987-1-18500469033@163.com>
+X-Mailer: git-send-email 2.39.3 (Apple Git-145)
+In-Reply-To: <1e7f57d6-a4c1-4a3d-8cff-f966c89a8140@rowland.harvard.edu>
+References: <1e7f57d6-a4c1-4a3d-8cff-f966c89a8140@rowland.harvard.edu>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -95,65 +55,167 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wBH76AxZeplz6ePAw--.49439S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxZr43JFyxtr47AF4Uuw1xXwb_yoW7JrWfpF
+	W3WrW7tayUJr4YqwnrGrsYyF1rJw13G34UKFy29397Gr4vyr15GF17KFWftr9rXry8ur1Y
+	qr45Xr98urs7JFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UiJ5wUUUUU=
+X-CM-SenderInfo: jprykiiquwmiitt6il2tof0z/1tbiVBmay2VOByQVUAABsQ
 
-Fix OOM scenario by doing multiple notifications to the OOM handler through
-a busy wait logic.
-Changes from commit 5a838e5d5825 ("drm/qxl: simplify qxl_fence_wait") would
-result in a '[TTM] Buffer eviction failed' exception whenever it reached a
-timeout.
+Macros with good names offer better readability. Besides, also move
+the definition to ehci.h.
 
-Fixes: 5a838e5d5825 ("drm/qxl: simplify qxl_fence_wait")
-Link: https://lore.kernel.org/regressions/fb0fda6a-3750-4e1b-893f-97a3e402b9af@leemhuis.info
-Reported-by: Timo Lindfors <timo.lindfors@iki.fi>
-Closes: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1054514
-Signed-off-by: Alex Constantino <dreaming.about.electric.sheep@gmail.com>
+Signed-off-by: Dingyan Li <18500469033@163.com>
 ---
- drivers/gpu/drm/qxl/qxl_release.c | 20 ++++++++++++++------
- 1 file changed, 14 insertions(+), 6 deletions(-)
+ drivers/usb/host/ehci-dbg.c | 10 +++++-----
+ drivers/usb/host/ehci-q.c   | 20 ++++++++------------
+ drivers/usb/host/ehci.h     |  8 +++++++-
+ 3 files changed, 20 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/gpu/drm/qxl/qxl_release.c b/drivers/gpu/drm/qxl/qxl_release.c
-index 368d26da0d6a..51c22e7f9647 100644
---- a/drivers/gpu/drm/qxl/qxl_release.c
-+++ b/drivers/gpu/drm/qxl/qxl_release.c
-@@ -20,8 +20,6 @@
-  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-  */
+diff --git a/drivers/usb/host/ehci-dbg.c b/drivers/usb/host/ehci-dbg.c
+index c063fb042926..435001128221 100644
+--- a/drivers/usb/host/ehci-dbg.c
++++ b/drivers/usb/host/ehci-dbg.c
+@@ -430,13 +430,13 @@ static void qh_lines(struct ehci_hcd *ehci, struct ehci_qh *qh,
+ 				mark = '/';
+ 		}
+ 		switch ((scratch >> 8) & 0x03) {
+-		case 0:
++		case PID_CODE_OUT:
+ 			type = "out";
+ 			break;
+-		case 1:
++		case PID_CODE_IN:
+ 			type = "in";
+ 			break;
+-		case 2:
++		case PID_CODE_SETUP:
+ 			type = "setup";
+ 			break;
+ 		default:
+@@ -602,10 +602,10 @@ static unsigned output_buf_tds_dir(char *buf, struct ehci_hcd *ehci,
+ 	list_for_each_entry(qtd, &qh->qtd_list, qtd_list) {
+ 		temp++;
+ 		switch ((hc32_to_cpu(ehci, qtd->hw_token) >> 8)	& 0x03) {
+-		case 0:
++		case PID_CODE_OUT:
+ 			type = "out";
+ 			continue;
+-		case 1:
++		case PID_CODE_IN:
+ 			type = "in";
+ 			continue;
+ 		}
+diff --git a/drivers/usb/host/ehci-q.c b/drivers/usb/host/ehci-q.c
+index 666f5c4db25a..ba37a9fcab92 100644
+--- a/drivers/usb/host/ehci-q.c
++++ b/drivers/usb/host/ehci-q.c
+@@ -27,10 +27,6 @@
  
--#include <linux/delay.h>
+ /*-------------------------------------------------------------------------*/
+ 
+-/* PID Codes that are used here, from EHCI specification, Table 3-16. */
+-#define PID_CODE_IN    1
+-#define PID_CODE_SETUP 2
 -
- #include <trace/events/dma_fence.h>
+ /* fill a qtd, returning how much of the buffer we were able to queue up */
  
- #include "qxl_drv.h"
-@@ -59,14 +57,24 @@ static long qxl_fence_wait(struct dma_fence *fence, bool intr,
- {
- 	struct qxl_device *qdev;
- 	unsigned long cur, end = jiffies + timeout;
-+	signed long iterations = 1;
-+	signed long timeout_fraction = timeout;
+ static unsigned int
+@@ -230,7 +226,7 @@ static int qtd_copy_status (
+ 			/* fs/ls interrupt xfer missed the complete-split */
+ 			status = -EPROTO;
+ 		} else if (token & QTD_STS_DBE) {
+-			status = (QTD_PID (token) == 1) /* IN ? */
++			status = (QTD_PID(token) == PID_CODE_IN) /* IN ? */
+ 				? -ENOSR  /* hc couldn't read data */
+ 				: -ECOMM; /* hc couldn't write data */
+ 		} else if (token & QTD_STS_XACT) {
+@@ -606,7 +602,7 @@ qh_urb_transaction (
+ 		/* SETUP pid */
+ 		qtd_fill(ehci, qtd, urb->setup_dma,
+ 				sizeof (struct usb_ctrlrequest),
+-				token | (2 /* "setup" */ << 8), 8);
++				token | (PID_CODE_SETUP << 8), 8);
  
- 	qdev = container_of(fence->lock, struct qxl_device, release_lock);
+ 		/* ... and always at least one more pid */
+ 		token ^= QTD_TOGGLE;
+@@ -620,7 +616,7 @@ qh_urb_transaction (
  
--	if (!wait_event_timeout(qdev->release_event,
-+	// using HZ as a factor since it is used in ttm_bo_wait_ctx too
-+	if (timeout_fraction > HZ) {
-+		iterations = timeout_fraction / HZ;
-+		timeout_fraction = HZ;
-+	}
-+	for (int i = 0; i < iterations; i++) {
-+		if (wait_event_timeout(
-+				qdev->release_event,
- 				(dma_fence_is_signaled(fence) ||
--				 (qxl_io_notify_oom(qdev), 0)),
--				timeout))
--		return 0;
-+					(qxl_io_notify_oom(qdev), 0)),
-+				timeout_fraction))
-+			break;
-+	}
+ 		/* for zero length DATA stages, STATUS is always IN */
+ 		if (len == 0)
+-			token |= (1 /* "in" */ << 8);
++			token |= (PID_CODE_IN << 8);
+ 	}
  
- 	cur = jiffies;
- 	if (time_after(cur, end))
+ 	/*
+@@ -642,7 +638,7 @@ qh_urb_transaction (
+ 	}
+ 
+ 	if (is_input)
+-		token |= (1 /* "in" */ << 8);
++		token |= (PID_CODE_IN << 8);
+ 	/* else it's already initted to "out" pid (0 << 8) */
+ 
+ 	maxpacket = usb_endpoint_maxp(&urb->ep->desc);
+@@ -709,7 +705,7 @@ qh_urb_transaction (
+ 
+ 		if (usb_pipecontrol (urb->pipe)) {
+ 			one_more = 1;
+-			token ^= 0x0100;	/* "in" <--> "out"  */
++			token ^= (PID_CODE_IN << 8);	/* "in" <--> "out"  */
+ 			token |= QTD_TOGGLE;	/* force DATA1 */
+ 		} else if (usb_pipeout(urb->pipe)
+ 				&& (urb->transfer_flags & URB_ZERO_PACKET)
+@@ -1203,7 +1199,7 @@ static int ehci_submit_single_step_set_feature(
+ 		/* SETUP pid, and interrupt after SETUP completion */
+ 		qtd_fill(ehci, qtd, urb->setup_dma,
+ 				sizeof(struct usb_ctrlrequest),
+-				QTD_IOC | token | (2 /* "setup" */ << 8), 8);
++				QTD_IOC | token | (PID_CODE_SETUP << 8), 8);
+ 
+ 		submit_async(ehci, urb, &qtd_list, GFP_ATOMIC);
+ 		return 0; /*Return now; we shall come back after 15 seconds*/
+@@ -1216,7 +1212,7 @@ static int ehci_submit_single_step_set_feature(
+ 	token ^= QTD_TOGGLE;   /*We need to start IN with DATA-1 Pid-sequence*/
+ 	buf = urb->transfer_dma;
+ 
+-	token |= (1 /* "in" */ << 8);  /*This is IN stage*/
++	token |= (PID_CODE_IN << 8);  /*This is IN stage*/
+ 
+ 	maxpacket = usb_endpoint_maxp(&urb->ep->desc);
+ 
+@@ -1229,7 +1225,7 @@ static int ehci_submit_single_step_set_feature(
+ 	qtd->hw_alt_next = EHCI_LIST_END(ehci);
+ 
+ 	/* STATUS stage for GetDesc control request */
+-	token ^= 0x0100;        /* "in" <--> "out"  */
++	token ^= (PID_CODE_IN << 8);        /* "in" <--> "out"  */
+ 	token |= QTD_TOGGLE;    /* force DATA1 */
+ 
+ 	qtd_prev = qtd;
+diff --git a/drivers/usb/host/ehci.h b/drivers/usb/host/ehci.h
+index 1441e3400796..d7a3c8d13f6b 100644
+--- a/drivers/usb/host/ehci.h
++++ b/drivers/usb/host/ehci.h
+@@ -321,10 +321,16 @@ struct ehci_qtd {
+ 	size_t			length;			/* length of buffer */
+ } __aligned(32);
+ 
++/* PID Codes that are used here, from EHCI specification, Table 3-16. */
++#define PID_CODE_OUT   0
++#define PID_CODE_IN    1
++#define PID_CODE_SETUP 2
++
+ /* mask NakCnt+T in qh->hw_alt_next */
+ #define QTD_MASK(ehci)	cpu_to_hc32(ehci, ~0x1f)
+ 
+-#define IS_SHORT_READ(token) (QTD_LENGTH(token) != 0 && QTD_PID(token) == 1)
++#define IS_SHORT_READ(token) (QTD_LENGTH(token) != 0 && \
++						QTD_PID(token) == PID_CODE_IN)
+ 
+ /*-------------------------------------------------------------------------*/
+ 
 -- 
-2.39.2
+2.25.1
 
 
